@@ -759,6 +759,18 @@ begin
   end;
 end;
 
+function GetWindowsDir: string;
+begin
+  SetLength(Result, MAX_PATH);
+  SetLength(Result, GetWindowsDirectory(PChar(Result), Length(Result)));
+end;
+
+function GetSystemDir: string;
+begin
+  SetLength(Result, MAX_PATH);
+  SetLength(Result, GetSystemDirectory(PChar(Result), Length(Result)));
+end;
+
 /// <summary>
 /// CompileProjectGroup starts the make file for the templates, starts the
 /// packages generator, calls the GenerateResource method and compiles all
@@ -781,6 +793,8 @@ var
   end;
 
 begin
+  ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
+
   SetEnvironmentVariable('MAKEOPTIONS', nil);
   Result := False;
   FCurrentProjectGroup := ProjectGroup;
@@ -819,6 +833,7 @@ begin
     if TargetConfig.GenerateMapFiles then
       DccOpt := DccOpt + ' -GD';
 
+    SetEnvironmentVariable('PATH', PChar(GetWindowsDir + ';' + GetSystemDir + ';' + TargetConfig.Target.RootDir));
     SetEnvironmentVariable('DCCOPT', Pointer(DccOpt));
     // especially for BCB generated make file
     SetEnvironmentVariable('DCC', PChar('"' + TargetConfig.Target.RootDir + '\bin\dcc32.exe" ' + DccOpt));
