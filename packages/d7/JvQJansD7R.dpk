@@ -29,7 +29,8 @@ requires
   rtl,
   visualclx,
   JvQCoreD7R,
-  JvQStdCtrlsD7R;
+  JvQStdCtrlsD7R,
+  DJcl;
 
 contains
   JvQMarkupCommon in '..\..\qrun\JvQMarkupCommon.pas',
@@ -63,6 +64,7 @@ contains
   JvQGridFilter in '..\..\qrun\JvQGridFilter.pas',
   JvQGridPreviewForm in '..\..\qrun\JvQGridPreviewForm.pas' {jvGridPreviewF},
   JvQGridPrinter in '..\..\qrun\JvQGridPrinter.pas',
-  JvQSimIndicator in '..\..\qrun\JvQSimIndicator.pas';
+  JvQSimIndicator in '..\..\qrun\JvQSimIndicator.pas',
+  JvQTurtle in '..\..\qrun\JvQTurtle.pas';
 
 end.

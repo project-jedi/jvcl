@@ -94,8 +94,8 @@ OutputDir=
 UnitOutputDir=..\..\lib\d7
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=G:\Program Files\Borland\Delphi7\Source\ToolsAPI;C:\CVSCheckout\dev\JVCL3\qrun;C:\CVSCheckout\dev\JVCL3\qcommon;C:\CVSCheckout\dev\JVCL3\Resources
-Packages=vcl;rtl;vclx;indy;vclie;xmlrtl;inetdbbde;inet;inetdbxpress;dbrtl;soaprtl;dsnap;VclSmp;dbexpress;vcldb;dbxcds;inetdb;bdertl;vcldbx;adortl;teeui;teedb;tee;ibxpress;visualclx;visualdbclx;vclactnband;vclshlctrls;IntrawebDB_50_70;Intraweb_50_70;Rave50CLX;Rave50VCL;dclaxserver;DJcl;JVCL200_R70;qrpt;PDF_InTheBox_Delphi;JvXPCtrlsD7R;JvWizardD7R;JvCtrlsD7R;JvUIBD7R;JvTimeFrameworkD7R;JvCoreD7R;JvSystemD7R;JvStdCtrlsD7R;JvPrintPreviewD7R;JvCmpD7R;JvJansD7R;JvGlobusD7R;JvDotNetCtrlsD7R;JvDlgsD7R;JvCustomD7R;dclusr;DJclVcl
+SearchPath=..\..\qrun;..\..\qcommon;..\..\Resources
+Packages=
 Conditionals=VisualCLX
 DebugSourceDirs=
 UsePackages=0
@@ -108,10 +108,10 @@ DebugCWD=
 [Language]
 ActiveLang=
 ProjectLang=
-RootDir=G:\Program Files\Borland\Delphi7\Bin\
+RootDir=
 [Version Info]
 IncludeVerInfo=1
-AutoIncBuild=1
+AutoIncBuild=0
 MajorVer=7
 MinorVer=0
 Release=4

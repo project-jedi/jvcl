@@ -88,7 +88,7 @@ RemoteSymbols=0
 MinStackSize=16384
 MaxStackSize=1048576
 ImageBase=4194304
-ExeDescription=JVCLX Controls Runtime Package
+ExeDescription=JVCLX Custom Controls Runtime Package
 [Directories]
 OutputDir=
 UnitOutputDir=..\..\lib\d7
@@ -115,7 +115,7 @@ AutoIncBuild=0
 MajorVer=7
 MinorVer=0
 Release=4
-Build=463
+Build=462
 Debug=0
 PreRelease=0
 Special=0
@@ -126,7 +126,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Borland Software Corporation
 FileDescription=Jedi VisualCLX Component Library
-FileVersion=7.0.4.463
+FileVersion=7.0.4.462
 InternalName=DCLUSR70
 LegalCopyright=Copyright © 2003 André Snepvangers
 LegalTrademarks=
