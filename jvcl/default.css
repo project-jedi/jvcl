@@ -105,7 +105,8 @@ pre
 
 pre,code
 	{
-	font: 100% Courier New, Courier, mono; 
+	font-family: Courier New, Courier, mono;
+        font-size: 100%; 
 	color: #660000;
 	}
 

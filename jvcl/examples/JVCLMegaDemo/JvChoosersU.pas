@@ -5,7 +5,7 @@ interface
 uses 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvGammaPanel, JvColorCombo, StdCtrls, JvCombobox, JvComponent,
-  JvColorBox, JvColorBtn, JvArrow, JvLabel, JvxCtrls, JvDialogs;
+  JvColorBox, JvColorBtn, JvArrow, JvLabel, JvDialogs;
 
 type
   TJvChoosersFrm = class(TForm)
