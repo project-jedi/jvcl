@@ -52,13 +52,11 @@ type
     ListViewPackages: TListView;
     ListViewTargets: TListView;
     ImageListPackages: TImageList;
-    CheckBoxClearJVCLPalette: TCheckBox;
     BtnUninstall: TBitBtn;
     ImageListTargets: TImageList;
     ActionList1: TActionList;
     ActionInstall: TAction;
     ActionUninstall: TAction;
-    CheckBoxBuild: TCheckBox;
     ImageOpen: TImage;
     imgProjectJEDI: TImage;
     BevelTop: TBevel;
@@ -72,16 +70,24 @@ type
     CheckBoxOptRegGlobalDsgnEditor: TCheckBox;
     CheckBoxOptDxgettext: TCheckBox;
     CheckBoxOptJvGIF: TCheckBox;
+    CheckBoxShowRuntimePackages: TCheckBox;
+    Panel1: TPanel;
     Bevel1: TBevel;
-    CheckBoxDeveloperInstall: TCheckBox;
     Bevel2: TBevel;
     Bevel3: TBevel;
     Bevel4: TBevel;
-    CheckBoxInstallJcl: TCheckBox;
     Bevel5: TBevel;
-    CheckBoxShowRuntimePackages: TCheckBox;
-    CheckBoxCompileOnly: TCheckBox;
     Bevel6: TBevel;
+    CheckBoxClearJVCLPalette: TCheckBox;
+    CheckBoxBuild: TCheckBox;
+    CheckBoxDeveloperInstall: TCheckBox;
+    CheckBoxInstallJcl: TCheckBox;
+    CheckBoxCompileOnly: TCheckBox;
+    EditHppFilesDir: TEdit;
+    Bevel7: TBevel;
+    LblHppFilesDir: TLabel;
+    BtnHppFilesBrowse: TButton;
+    LblBCBInstallation: TLabel;
     procedure BtnQuitClick(Sender: TObject);
     procedure BtnAdvancedOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -104,6 +110,8 @@ type
     procedure LblVersionsClick(Sender: TObject);
     procedure LblPackagesClick(Sender: TObject);
     procedure CheckBoxShowRuntimePackagesClick(Sender: TObject);
+    procedure BtnHppFilesBrowseClick(Sender: TObject);
+    procedure LblBCBInstallationClick(Sender: TObject);
   private
     { Private-Deklarationen }
     FXPThemeSupportFirstClick: Boolean;
@@ -117,6 +125,8 @@ type
     procedure UpdatePackageList;
     procedure UpdatePackageCheckStates;
 
+    procedure TransferTargetOptions(ToTarget: Boolean);
+
     function CheckTargetUpdates(Target: TTargetInfo): Boolean;
       // ** CheckTargetUpdates is responsilbe for UPDATE warnings **
   public
@@ -129,7 +139,7 @@ var
 
 implementation
 uses
-  MainConfig, JVCLConfiguration, FrmMake;
+  MainConfig, JVCLConfiguration, FrmMake, JvBrowseFolder;
 
 {$R *.dfm}
 
@@ -329,6 +339,83 @@ begin
     Result := True;
 end;
 
+procedure TFormMain.TransferTargetOptions(ToTarget: Boolean);
+
+  procedure SetEnable(e: Boolean);
+  begin
+    CheckBoxClearJVCLPalette.Enabled := e;
+    CheckBoxBuild.Enabled := e;
+    CheckBoxDeveloperInstall.Enabled := e;
+    CheckBoxInstallJcl.Enabled := e;
+    CheckBoxCompileOnly.Enabled := e;
+    LblHppFilesDir.Enabled := e;
+    EditHppFilesDir.Enabled := e;
+    BtnHppFilesBrowse.Enabled := e;
+  end;
+
+var
+  Selected: Boolean;
+begin
+  if FLockOptClick > 0 then Exit;
+  Inc(FLockOptClick);
+  try
+    Selected := SelTarget <> nil;
+
+    if ToTarget then
+    begin
+      if SelTarget <> nil then
+      begin
+        SelTarget.ClearJVCLPalette := CheckBoxClearJVCLPalette.Checked;
+        SelTarget.Build := CheckBoxBuild.Checked;
+        SelTarget.DeveloperInstall := CheckBoxDeveloperInstall.Checked;
+        SelTarget.InstallJcl := CheckBoxInstallJcl.Checked;
+        SelTarget.CompileOnly := CheckBoxCompileOnly.Checked;
+        SelTarget.HppFilesDir := SelTarget.ExpandDirMacros(EditHppFilesDir.Text);
+      end;
+    end
+
+    else // -----------------------------------
+
+    begin
+      SetEnable(Selected);
+      if Selected then
+      begin
+        CheckTargetUpdates(SelTarget);
+        Update_JVCL_INC_Config;
+        CheckBoxClearJVCLPalette.Checked := SelTarget.ClearJVCLPalette;
+        CheckBoxBuild.Checked := SelTarget.Build;
+        CheckBoxDeveloperInstall.Checked := SelTarget.DeveloperInstall;
+        CheckBoxInstallJcl.Checked := SelTarget.InstallJcl;
+        if (SelTarget.IsJCLInstalled) and (SelTarget.IsOldJVCLInstalled = 0) then
+          CheckBoxInstallJcl.Font.Style := []
+        else
+          CheckBoxInstallJcl.Font.Style := [fsBold];
+        CheckBoxCompileOnly.Checked := SelTarget.CompileOnly;
+        if SelTarget.IsBCB then
+          EditHppFilesDir.Text := SelTarget.InsertDirMacros(SelTarget.HppFilesDir)
+        else
+          EditHppFilesDir.Text := '';
+        BtnHppFilesBrowse.Enabled := SelTarget.IsBCB;
+        LblBCBInstallation.Visible := SelTarget.IsBCB;
+      end
+      else
+      begin
+        CheckBoxClearJVCLPalette.Checked := False;
+        CheckBoxBuild.Checked := False;
+        CheckBoxDeveloperInstall.Checked := False;
+        CheckBoxInstallJcl.Checked := False;
+        CheckBoxInstallJcl.Font.Style := [];
+        CheckBoxCompileOnly.Checked := False;
+        EditHppFilesDir.Text := '';
+      end;
+      UpdatePackageList;
+    end;
+
+  finally
+    Dec(FLockOptClick);
+  end;
+end;
+
 procedure TFormMain.BtnQuitClick(Sender: TObject);
 begin
   Close;
@@ -387,46 +474,8 @@ end;
 
 procedure TFormMain.ListViewTargetsSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
-
-  procedure SetEnable(e: Boolean);
-  begin
-    CheckBoxClearJVCLPalette.Enabled := e;
-    CheckBoxBuild.Enabled := e;
-    CheckBoxDeveloperInstall.Enabled := e;
-    CheckBoxInstallJcl.Enabled := e;
-    CheckBoxCompileOnly.Enabled := e;
-  end;
 begin
-  Inc(FLockOptClick);
-  try
-    SetEnable(Selected);
-    if Selected then
-    begin
-      CheckTargetUpdates(Item.Data);
-      Update_JVCL_INC_Config;
-      CheckBoxClearJVCLPalette.Checked := SelTarget.ClearJVCLPalette;
-      CheckBoxBuild.Checked := SelTarget.Build;
-      CheckBoxDeveloperInstall.Checked := SelTarget.DeveloperInstall;
-      CheckBoxInstallJcl.Checked := SelTarget.InstallJcl;
-      if (SelTarget.IsJCLInstalled) and (SelTarget.IsOldJVCLInstalled = 0) then
-        CheckBoxInstallJcl.Font.Style := []
-      else
-        CheckBoxInstallJcl.Font.Style := [fsBold];
-      CheckBoxCompileOnly.Checked := SelTarget.CompileOnly;
-    end
-    else
-    begin
-      CheckBoxClearJVCLPalette.Checked := False;
-      CheckBoxBuild.Checked := False;
-      CheckBoxDeveloperInstall.Checked := False;
-      CheckBoxInstallJcl.Checked := False;
-      CheckBoxInstallJcl.Font.Style := [];
-      CheckBoxCompileOnly.Checked := False;
-    end;
-    UpdatePackageList;
-  finally
-    Dec(FLockOptClick);
-  end;
+  TransferTargetOptions(False);
 end;
 
 procedure TFormMain.CheckBoxOptThemingClick(Sender: TObject);
@@ -542,15 +591,7 @@ end;
 
 procedure TFormMain.CheckBoxClearJVCLPaletteClick(Sender: TObject);
 begin
-  if FLockOptClick > 0 then Exit;
-  if SelTarget <> nil then
-  begin
-    SelTarget.ClearJVCLPalette := CheckBoxClearJVCLPalette.Checked;
-    SelTarget.Build := CheckBoxBuild.Checked;
-    SelTarget.DeveloperInstall := CheckBoxDeveloperInstall.Checked;
-    SelTarget.InstallJcl := CheckBoxInstallJcl.Checked;
-    SelTarget.CompileOnly := CheckBoxCompileOnly.Checked;
-  end;
+  TransferTargetOptions(True);
 end;
 
 procedure TFormMain.BtnInstallClick(Sender: TObject);
@@ -686,6 +727,21 @@ end;
 procedure TFormMain.CheckBoxShowRuntimePackagesClick(Sender: TObject);
 begin
   UpdatePackageList;
+end;
+
+procedure TFormMain.BtnHppFilesBrowseClick(Sender: TObject);
+var
+  Dir: string;
+begin
+  Dir := SelTarget.HppFilesDir;
+  if BrowseDirectory(Dir, 'Select the directory where the .hpp files should go.', 0) then
+    SelTarget.HppFilesDir := Dir;
+end;
+
+procedure TFormMain.LblBCBInstallationClick(Sender: TObject);
+begin
+  if ShellExecute(Handle, 'open', PChar('"' + JVCLDir + '\install.htm"'), nil, nil, SW_SHOWNORMAL) < 32 then
+    MessageDlg('Error opening install.htm', mtError, [mbOk], 0);
 end;
 
 end.

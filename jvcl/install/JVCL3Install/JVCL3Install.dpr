@@ -37,7 +37,8 @@ uses
   FrmMake in 'FrmMake.pas' {FormMake},
   BuildHelpers in 'BuildHelpers.pas',
   CapExec in 'CapExec.pas',
-  JvSimpleXML in '..\..\run\JvSimpleXml.pas';
+  JvSimpleXML in '..\..\run\JvSimpleXml.pas',
+  JvBrowseFolder in '..\..\run\JvBrowseFolder.pas';
 
 {$R *.res}
 

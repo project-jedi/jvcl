@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-12-05
+Last Modified: 2003-12-07
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -64,6 +64,7 @@ type
     FInstallJcl: Boolean;
     FJCLNeedsDcp: Boolean;
     FCompileOnly: Boolean;
+    FHppFilesDir: string;
 
     function GetSymbol: string;
     function GetMajorVersion: Integer;
@@ -101,6 +102,7 @@ type
     procedure JclRegistryInstall;
 
     function ExpandDirMacros(const Path: string): string;
+    function InsertDirMacros(const Dir: string): string;
     function IsTargetFor(const Targets: string): Boolean;
 
     procedure SetJCLDir(const NewDir: string);
@@ -142,6 +144,7 @@ type
     property DeveloperInstall: Boolean read FDeveloperInstall write FDeveloperInstall;
     property InstallJcl: Boolean read FInstallJcl write FInstallJcl;
     property CompileOnly: Boolean read FCompileOnly write FCompileOnly;
+    property HppFilesDir: string read FHppFilesDir write FHppFilesDir;
 
     property Packages: TPackageList read FPackages;
     property TargetList: TTargetList read FTargetList;
@@ -892,6 +895,27 @@ begin
   end;
 end;
 
+function TTargetInfo.InsertDirMacros(const Dir: string): string;
+begin
+  Result := Dir + '\';
+  if StartsWith(Dir, RootDir + '\', True) then
+  begin
+    if IsDelphi then
+      Result := '$(DELPHI)'
+    else
+      Result := '$(BCB)';
+    Result := Result + Copy(Dir, Length(RootDir) + 1, MaxInt);
+  end
+  else if StartsWith(Dir, JVCLDir + '\', True) then
+  begin
+    Result := '$(JVCL)' + Copy(Dir, Length(JVCLDir) + 1, MaxInt);
+  end
+  else if (JCLDir <> '') and StartsWith(Dir, JCLDir + '\', True) then
+  begin
+    Result := '$(JCL)' + Copy(Dir, Length(JCLDir) + 1, MaxInt);
+  end
+end;
+
 function TTargetInfo.GetBpgName: string;
 begin
   Result := GetPackageGroupName(Self);
@@ -1100,6 +1124,8 @@ begin
                  {and (JCLPairInstallation)};
 
   FCompileFor := FCompileFor and not ((not FIsJCLInstalled) and (not JCLPairInstallation));
+
+  FHppFilesDir := FRootDir + '\Include\Vcl';
 end;
 
 function TTargetInfo.GetDisplayName: string;
