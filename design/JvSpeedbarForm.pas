@@ -899,7 +899,7 @@ type
     ParamNameAndType: array [0..100] of Char;
   end;
 const
-  {$IFDEF CBUILDER}
+  {$IFDEF BCB}
   sSender: string[7] = '*Sender';
   {$ELSE}
   sSender: string[6] = 'Sender';

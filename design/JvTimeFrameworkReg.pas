@@ -39,7 +39,7 @@ interface
 {$R ..\Resources\JvTimeFrameworkReg.dcr}
 
 {$IFDEF COMPILER6_UP}
-uses 
+uses
   DesignIntf, DesignEditors, ColnEdit;
 {$ELSE}
 uses
@@ -77,7 +77,7 @@ uses
 { TJvTFGridLayoutCategory }
 class function TJvTFGridLayoutCategory.Name: String;
 begin
-  Result := 'Grid Layout';
+  Result := _('Grid Layout');
 end;
 {$ENDIF}
 
@@ -85,7 +85,7 @@ end;
 {$IFDEF COMPILER5}
 class function TJvTFCustomDrawCategory.Name: String;
 begin
-  Result := 'Custom Draw';
+  Result := _('Custom Draw');
 end;
 {$ENDIF}
 

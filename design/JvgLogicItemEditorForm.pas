@@ -120,7 +120,7 @@ function TJvgLogicItemEditor.Execute(Logics: TJvgLogics; LogicElement: TJvgLogic
 var
   i: integer;
 begin
-  Caption := 'Logic Element: ' + LogicElement.Caption;
+  Caption := _('Logic Element: %s', [LogicElement.Caption]);
   self.Logics := Logics;
   self.LogicElement := LogicElement;
 
@@ -312,9 +312,9 @@ procedure TJvgLogicItemEditor.ToolButton1Click(Sender: TObject);
 begin
   with LogicElement.LogicVariants.Add do
   begin
-    Value := '[ not defined ]';
-    TrueResult := '[ not defined ]';
-    FalseResult := '[ not defined ]';
+    Value := _('[ not defined ]');
+    TrueResult := _('[ not defined ]');
+    FalseResult := _('[ not defined ]');
   end;
   LB.Items.Add('1');
 end;

@@ -37,9 +37,9 @@ function TJvGroupHeaderEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := 'Standard/Flat';
+      Result := _('Standard/Flat');
     1:
-      Result := 'Web';
+      Result := _('Web');
   end;
 end;
 

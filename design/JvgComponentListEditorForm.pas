@@ -160,7 +160,7 @@ end;
 function TJvgComponentListEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := 'Edit component list...';
+    0: Result := _('Edit component list...');
   end;
 end;
 

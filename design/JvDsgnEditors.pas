@@ -286,7 +286,7 @@ end;
 
 function TJvFilenameProperty.GetFilter: string;
 begin
-  Result := 'All files (*.*)|*.*';
+  Result := _('All files (*.*)|*.*');
 end;
 
 function TJvFilenameProperty.GetOptions: TOpenOptions;
@@ -801,14 +801,14 @@ end;
 
 procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
 begin
-  SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, '&Strip file path');
+  SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(_('&Strip file path')));
 end;
 
 //=== TJvExeNameProperty =====================================================
 
 function TJvExeNameProperty.GetFilter: string;
 begin
-  Result := 'Executable files (*.exe)|*.exe|All files (*.*)|*.*';
+  Result := _('Executable files (*.exe)|*.exe|All files (*.*)|*.*');
 end;
 
 //=== TJvIntegerProperty =====================================================

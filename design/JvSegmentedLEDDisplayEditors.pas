@@ -133,10 +133,10 @@ end;
 function TJvSegmentedLEDDisplayEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := 'Add digit';
-    1: Result := 'Remove digit';
-    2: Result := '-';
-    3: Result := 'Edit mapping...';
+    0: Result := _('Add digit');
+    1: Result := _('Remove digit');
+    2: Result := '-'; // do not localize
+    3: Result := _('Edit mapping...');
   end;
 end;
 

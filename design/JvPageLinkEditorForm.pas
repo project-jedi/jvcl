@@ -148,7 +148,7 @@ procedure TfrmJvTreeViewLinksEditor.CreatePopUpItem(Index: integer);
 var m: TMenuItem;
 begin
   m := TMenuItem.Create(popTree);
-  m.Caption := Format('Create link to page %d', [Index]);
+  m.Caption := Format(_('Create link to page %d'), [Index]);
   m.Tag := Index;
   if Index < 10 then
     m.ShortCut := ShortCut(Ord('0') + Index, [ssCtrl])

@@ -145,8 +145,8 @@ end;
 function TCSVDataSetComponentEditor.GetVerb (Index : Integer) : string;
 begin
  case Index of
-   0 :  Result := 'Edit CSV Field Definitions...'; //Label displayed for each
-   1 :  Result := 'Edit VCL Field Definitions...';
+   0 :  Result := _('Edit CSV Field Definitions...'); //Label displayed for each
+   1 :  Result := _('Edit VCL Field Definitions...');
  else
         result := '';
   end;
@@ -191,7 +191,7 @@ var
   csvFileOpen: TOpenDialog;
 begin
   csvFileOpen := TOpenDialog.Create(Application);
-  csvFileOpen.Title := 'JvCsvDataSet - Select CSV File to Open';
+  csvFileOpen.Title := _('JvCsvDataSet - Select CSV File to Open');
   csvFileOpen.Filename := GetValue;
   csvFileOpen.Filter := '*.csv';
   csvFileOpen.Options := csvFileOpen.Options + [ofPathMustExist];

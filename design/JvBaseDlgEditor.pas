@@ -86,7 +86,7 @@ function TJvBaseDlgEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := 'Preview...';
+      Result := _('Preview...');
   end;
 end;
 

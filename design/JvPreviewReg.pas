@@ -82,9 +82,9 @@ function TJvPreviewerEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := 'Create Preview';
+      Result := _('Create Preview');
     1:
-      Result := 'Clear Preview';
+      Result := _('Clear Preview');
   end;
 end;
 

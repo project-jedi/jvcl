@@ -112,7 +112,7 @@ end;
 function TJvgShadowEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := 'Update all edit control';
+    0: Result := _('Update all edit control');
   end;
 end;
 

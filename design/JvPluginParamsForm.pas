@@ -63,15 +63,13 @@ var
 
 implementation
 
-//uses
-//  JvTypes;
+uses
+  JvTypes;
 
-const
-  CrLf = #13#10;
-
+resourcestring
   SInfoText = 'The settings above will create the following project:' +
-    CrLf + CrLf +
-    '* A project called Plg%0:s.%1:s' + CrLf +
+    sLineBreak + sLineBreak +
+    '* A project called Plg%0:s.%1:s' + sLineBreak +
     '* A unit called Plugin%0:s, containing the data module T%0:s.';
 
 {$R *.DFM}

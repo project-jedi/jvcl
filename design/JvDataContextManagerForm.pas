@@ -182,7 +182,7 @@ end;
 
 function TfrmJvDataContextManager.DesignerFormName: string;
 begin
-  Result := 'DataProvider Context Manager';
+  Result := _('DataProvider Context Manager');
 end;
 
 procedure TfrmJvDataContextManager.FormDestroy(Sender: TObject);

@@ -187,7 +187,7 @@ end;
 
 function TJvBandObjectDLLWizard.GetComment: string;
 begin
-  Result := 'Creates a Band Object DLL Project.';
+  Result := _('Creates a Band Object DLL Project.');
 end;
 
 {$IFDEF COMPILER6_Up}
@@ -206,7 +206,7 @@ end;
 
 function TJvBandObjectDLLWizard.GetName: string;
 begin
-  Result := 'Band Object DLL Wizard';
+  Result := _('Band Object DLL Wizard');
 end;
 
 function TJvBandObjectDLLWizard.GetPage: string;

@@ -153,7 +153,7 @@ begin
   {Left := 354;
   Top := 338;}
   BorderStyle := bsDialog;
-  Caption := 'Item editor';
+  Caption := _('Item editor');
   ClientHeight := 92;
   ClientWidth := 330;
   Font.Color := clWindowText;
@@ -207,9 +207,9 @@ begin
   begin
     Parent := Self;
     Style := csDropDownList;
-    Items.Add('Unchecked');
-    Items.Add('Checked');
-    Items.Add('Grayed');
+    Items.Add('Unchecked'); // do not localize
+    Items.Add('Checked'); // do not localize
+    Items.Add('Grayed'); // do not localize
     Left := 8;
     Top := 38;
     Width := 88;
@@ -224,7 +224,7 @@ begin
     Top := 40;
     Width := 70;
     Height := 17;
-    Caption := 'Enabled';
+    Caption := _('Enabled');
     State := cbChecked;
     TabOrder := 4;
   end;

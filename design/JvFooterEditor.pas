@@ -23,6 +23,7 @@ type
 
 implementation
 uses
+  Consts, 
   JvTypes, JvFooter;
 
 //=== TJvFooterEditor ========================================================
@@ -36,15 +37,15 @@ function TJvFooterEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := 'Add button';
+      Result := _('Add button');
     1:
-      Result := '-';
+      Result := '-'; // do not localize
     2:
-      Result := 'MS Office 2000';
+      Result := _('MS Office 2000');
     3:
-      Result := 'MS Enterprise Manager Wizard';
+      Result := _('MS Enterprise Manager Wizard');
     4:
-      Result := 'Dialog Mode';
+      Result := _('Dialog Mode');
   end;
 end;
 
@@ -60,30 +61,30 @@ begin
     2:
       begin
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
-        FButton.Caption := 'Help';
+        FButton.Caption := SHelpButton;
         FButton.Alignment := taLeftJustify;
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
-        FButton.Caption := 'OK';
+        FButton.Caption := SOKButton;
         FButton.Default := True;
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
-        FButton.Caption := 'Cancel';
+        FButton.Caption := SCancelButton;
         FButton.Cancel := True;
       end;
     3:
       begin
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
-        FButton.Caption := 'Previous';
+        FButton.Caption := _('Previous');
         FButton.SpaceInterval := 0;
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
-        FButton.Caption := 'Next';
+        FButton.Caption := _('Next');
         FButton.Default := True;
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
-        FButton.Caption := 'Close';
+        FButton.Caption := SCloseButton;
       end;
     4:
       begin
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
-        FButton.Caption := 'OK';
+        FButton.Caption := SOKButton;
         FButton.SpaceInterval := 0;
         FButton.Alignment := taCenter;
       end;

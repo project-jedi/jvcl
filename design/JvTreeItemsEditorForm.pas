@@ -426,7 +426,7 @@ end;
 function TJvTreeViewComponentEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := 'Items Editor...'
+    Result := _('Items Editor...')
   else
     Result := '';
 end;
@@ -539,7 +539,7 @@ end;
 function TJvPageTreeViewComponentEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 1 then
-    Result := 'Links Editor...'
+    Result := _('Links Editor...')
   else
     Result := inherited GetVerb(Index);
 end;

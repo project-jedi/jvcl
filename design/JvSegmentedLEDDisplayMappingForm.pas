@@ -110,7 +110,7 @@ end;
 
 function TfrmJvSLDMappingEditor.DesignerFormName: string;
 begin
-  Result := 'Segmented LED Display Mapping Editor';
+  Result := _('Segmented LED Display Mapping Editor');
 end;
 
 function TfrmJvSLDMappingEditor.AutoStoreSettings: Boolean;

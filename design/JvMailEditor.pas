@@ -51,9 +51,9 @@ function TJvMailEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := 'Send';
+      Result := _('Send');
     1:
-      Result := 'Address';
+      Result := _('Address');
   end;
 end;
 
