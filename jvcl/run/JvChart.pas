@@ -76,7 +76,7 @@ const
   jvChartHintColorIndex          = -2;
   jvChartPaperColorIndex         = -1;
 
-
+  JvChartDefaultMarkerSize    =3;
 
 resourcestring
    JvChartDesigntimeLabel = ': JEDI JVCL Charting Component';
@@ -85,15 +85,20 @@ type
   {CHART TYPES}
   TJvChartKind =
    (ckChartNone, // Blank graph.
+    ckChartLine, // default type. Line and Marker plots.
     ckChartBar,
     ckChartStackedBar,
-    ckChartLine, // default
     ckChartBarAverage,
     ckChartStackedBarAverage,
     ckChartPieChart,
-    ckChartLineWithMarkers,
+    //ckChartLineWithMarkers, // obsolete. use ckChartLine, and set PenMarkerKind to cmDiamond. 
     ckChartMarkers,
     ckChartDeltaAverage);
+
+    // ckChartLine can have a different pen type for each pen:
+
+
+  TJvChartPenMarkerKind = ( pmkNone, pmkDiamond, pmkCircle, pmkSquare, pmkCross );
 
   TJvChartLegend = (clChartLegendNone,clChartLegendRight,clChartLegendBelow);
 
@@ -183,8 +188,14 @@ type
 
     FXValueCount: Integer;
     FYValueCount: Integer; // WHAT THE HECK IS IT?
+
     FPenCount: Integer;
-    FPenColors: array of TColor;
+
+    FPenColors: Array of TColor;
+
+    FPenStyles: Array of TPenStyle; // solid, dotted
+    FPenMarkerKind : Array of TJvChartPenMarkerKind;
+
     FAverageValue: array of Double;
 
 
@@ -200,7 +211,7 @@ type
     FYStartOffset: Longint;
     FXEnd: Longint; { From top left of control, add XEnd to find where the right margin starts }
     FYEnd: Longint; { from top left of control, add YEnd to find where the below-the bottom margin starts }
-    FPointSize: Integer;
+    FMarkerSize: Integer; { marker size. previously called PointSize which sounded like a Font attribute. }
     { more design time }
     FDefaultYLegends: Integer;
     FLegendWidth: Integer;
@@ -216,10 +227,15 @@ type
     FHintColor: TColor;
   protected
     {accessors}
-    function GetAverageValue(Index: Integer): Double;
+    function  GetAverageValue(Index: Integer): Double;
     procedure SetAverageValue(Index: Integer; AValue: Double);
-    function GetPenColor(Index: Integer): TColor;
+    function  GetPenColor(Index: Integer): TColor;
     procedure SetPenColor(Index: Integer; AColor: TColor);
+    function  GetPenStyle(Index:Integer):TPenStyle;
+    procedure SetPenStyle(Index:Integer; aPenStyle:TPenStyle);
+    function  GetPenMarkerKind(Index:Integer):TJvChartPenMarkerKind;
+    procedure SetPenMarkerKind(Index:Integer; aMarkKind:TJvChartPenMarkerKind);
+
     procedure SetXStartOffset(Offset: Integer);
     procedure SetPenCount(Count: Integer);
     procedure SetChartKind(AKind: TJvChartKind);
@@ -248,7 +264,10 @@ type
     { runtime properties }
     property AverageValue[Index: Integer]: Double read GetAverageValue write SetAverageValue;
     property PenColor[Index: Integer]: TColor read GetPenColor write SetPenColor;
+    property PenStyle[index:integer]:TPenStyle read GetPenStyle write SetPenStyle;
+    property PenMarkerKind[index:integer]: TJvChartPenMarkerKind read GetPenMarkerKind write SetPenMarkerKind;
 
+    
     property YLegends: TStrings read GetYLegends write SetYLegends;     { Y Axis Legends as Strings }
     property XLegends: TStrings read GetXLegends write SetXLegends;     { X Axis Legends as Strings }
     
@@ -293,7 +312,9 @@ type
     { Y Range }
     property YMax: Double read FYMax write SetYMax;
     property YMin: Double read FYMin write FYMin;
-    property PointSize: Integer read FPointSize write FPointSize;
+
+    { plotting markers }
+    property MarkerSize: Integer read FMarkerSize write FMarkerSize default JvChartDefaultMarkerSize;
 
 
 
@@ -407,7 +428,7 @@ type
 //    procedure   MyArc(X1, Y1, X2, Y2, X3, Y3, X4, Y4: Integer);  { arc } // not used (ahuser)
     procedure MyPolygon(Points: array of TPoint);
 //    procedure   MyEllipse(X1, Y1, X2, Y2: Integer); // not used (ahuser)
-//    procedure   MyDrawLine(X1, Y1, X2, Y2: Integer); // not used (ahuser)
+    procedure   MyDrawLine(X1, Y1, X2, Y2: Integer); // not used (ahuser)
     procedure MyDrawAxisMark(X1, Y1, X2, Y2: Integer); // solid line as a tick on an axis.
     procedure MyDrawDotLine(X1, Y1, X2, Y2: Integer);
     procedure EditXHeader;
@@ -426,10 +447,13 @@ type
     procedure GraphDeltaAverage;
     procedure MyPieLegend(nPen: Integer);
     procedure ShowMouseMessage(X, Y:Integer);
-{    procedure   PlotCross(x, y: Integer); }// not used (ahuser)
+
+    // marker symbols:
+    procedure PlotCross(x, y: Integer);
     procedure PlotDiamond(x, y: Integer);
-//    procedure   PlotCircle(x, y: Integer); // not used (ahuser)
-//    procedure   PlotSquare(x, y: Integer); // not used (ahuser)
+    procedure PlotCircle(x, y: Integer);
+    procedure PlotSquare(x, y: Integer); 
+
     function MyPt(AX, AY: Integer): TPoint;
     procedure ClearScreen;
 
@@ -539,7 +563,7 @@ const
   MAX_X_LEGENDS = 50;
   MAX_GRAPH_LEGEND_LEN = 9;
   REALPREC = 7;
-  DEFAULT_POINT_SIZE = 3;
+  DEFAULT_MARKER_SIZE = 3;
   DEFAULT_VALUE_COUNT  = 100; // By Default TJvChartData holds 100 values per pen. Grows autofragellisticexpialidociously. :-)
 
 //=== TJvChartData ===========================================================
@@ -708,7 +732,7 @@ begin
   FPenCount := 1;
 
   FLegend := clChartLegendNone; //default Legend is None.
-  
+
  // Create TStringList property objects
   FXLegends := TStringList.Create;
   FYLegends := TStringList.Create;
@@ -719,7 +743,7 @@ begin
 
  // Defaults for Graph Options:
 
-  FPointSize := DEFAULT_POINT_SIZE;
+  FMarkerSize := JvChartDefaultMarkerSize;
   FXStartOffset := 45; {DEFAULT}
   FYStartOffset := 40;
   FTitle := '';
@@ -765,13 +789,24 @@ begin
   if AKind = FChartKind then
     exit;
   FChartKind := AKind;
+end;
 
 
- { XXX NOT SURE IF I REALLY THINK OPTIONS CHANGES SHOULD IMMEDIATELY REFRESH THE SCREEN }
-{
-  if Assigned(FOwner) then
-    if not (csDesigning in FOwner.ComponentState) then
-      FOwner.PlotGraph;}
+
+function TJvChartOptions.GetPenMarkerKind(Index:Integer):TJvChartPenMarkerKind;
+begin
+  result := pmkNone;
+  if (Index < 0) or ( Index >= Length(FPenMarkerKind) ) then
+      exit;
+  result := FPenMarkerKind[Index];
+end;
+
+procedure TJvChartOptions.SetPenMarkerKind(Index:Integer;aMarkKind:TJvChartPenMarkerKind);
+begin
+  if (Index<0) then exit;
+  if Index >= Length(FPenMarkerKind) then
+    SetLength(FPenMarkerKind, Index + 1);
+  FPenMarkerKind[Index] := aMarkKind;
 end;
 
 function TJvChartOptions.GetPenColor(Index: Integer): TColor;
@@ -805,6 +840,22 @@ begin
   if Index >= Length(FPenColors) then
     SetLength(FPenColors, Index + 1);
   FPenColors[Index] := AColor;
+end;
+
+
+
+procedure TJvChartOptions.SetPenStyle(Index:Integer; aPenStyle:TPenStyle);
+begin
+  if Index >= Length(FPenColors) then
+    SetLength(FPenStyles,Index+1);
+  FPenStyles[index] := aPenStyle;
+end;
+
+function TJvChartOptions.GetPenStyle(Index:Integer):TPenStyle;
+begin
+  result := psSolid;
+  if (index<0) or (Index>=Length(FPenStyles)) then exit;
+  result := FPenStyles[index];
 end;
 
 function TJvChartOptions.GetAverageValue(Index: Integer): Double;
@@ -1647,6 +1698,9 @@ var
         ChartCanvas.Pen.Style := psSolid;
         for I := 0 to Options.PenCount - 1 do
         begin
+          // No line types?
+          if Options.GetPenStyle(I) = psClear then 
+              continue;
           SetLineColor(I);
           J := 0;
           V := GraphConstrainedLineY(I,J);
@@ -1675,14 +1729,35 @@ var
             end;
           end; {for J}
          end; {for I} 
-        if Options.ChartKind = ckChartLineWithMarkers then
-          for I := 0 to Options.PenCount - 1 do
+         // MARKERS:
+          for I := 0 to Options.PenCount - 1 do begin
+            if Options.GetPenMarkerKind(I)=pmkNone then
+                continue; 
             for J := 0 to Options.XValueCount - 1 do
             begin
-              SetLineColor(I);
-              PlotDiamond(Round(xOrigin + J * Options.XPixelGap),
-                Round(yOrigin - ((FData.Value[I, J] / Options.YGap) * Options.YPixelGap)));
-            end;
+                V := FData.Value[I, J];
+                if IsNan(V) then
+                    continue;
+                    
+                // Calculate Marker position:
+                X := Round(xOrigin + J * Options.XPixelGap);
+                Y := Round(yOrigin - ((V / Options.YGap) * Options.YPixelGap));
+                SetLineColor(I);
+                
+                // Now plot the right kind of marker: 
+                case Options.GetPenMarkerKind(I) of
+                    pmkDiamond:
+                        PlotDiamond(X,Y);
+                    pmkCircle:
+                        PlotCircle( X,Y);
+                    pmkSquare:
+                        PlotSquare( X,Y);
+                    pmkCross:
+                        PlotCross( X,Y);
+                end;{case}
+
+            end; {for}
+          end; {for}
         SetLineColor(-3);
     end; {PlotGraphChartLine}
 
@@ -1862,7 +1937,7 @@ begin
     ckChartStackedBar:
         PlotGraphStackedBar;
 
-    ckChartLine, ckChartLineWithMarkers:
+    ckChartLine: //, ckChartLineWithMarkers:
         PlotGraphChartLine;
 
     ckChartMarkers:
@@ -2905,35 +2980,41 @@ begin
   end;
 end;
 
-{procedure TJvChart.PlotSquare(x, y: Integer);
+// Used in line charting as a Marker kind:
+procedure TJvChart.PlotSquare(x, y: Integer);
 begin
-   MyPolygon([MyPt(x - Options.PointSize, y - Options.PointSize),
-              MyPt(x + Options.PointSize, y - Options.PointSize),
-              MyPt(x + Options.PointSize, y + Options.PointSize),
-              MyPt(x - Options.PointSize, y + Options.PointSize)]);
+   MyPolygon([MyPt(x - Options.MarkerSize, y - Options.MarkerSize),
+              MyPt(x + Options.MarkerSize, y - Options.MarkerSize),
+              MyPt(x + Options.MarkerSize, y + Options.MarkerSize),
+              MyPt(x - Options.MarkerSize, y + Options.MarkerSize)]);
 end;
 
-procedure TJvChart.PlotCircle(x, y: Integer);
-begin
-   MyEllipse(x - Options.PointSize,
-             y - Options.PointSize,
-             x + Options.PointSize,
-             y + Options.PointSize);
-end;}// not used (ahuser)
 
+// Used in line charting as a Marker kind:
 procedure TJvChart.PlotDiamond(x, y: Integer);
 begin
-  MyPolygon([MyPt(x, y - Options.PointSize),
-    MyPt(x + Options.PointSize, y),
-      MyPt(x, y + Options.PointSize),
-      MyPt(x - Options.PointSize, y)]);
+  MyPolygon([MyPt(x, y - Options.MarkerSize),
+    MyPt(x + Options.MarkerSize, y),
+      MyPt(x, y + Options.MarkerSize),
+      MyPt(x - Options.MarkerSize, y)]);
 end;
 
-{procedure TJvChart.PlotCross(x, y: Integer);
+// Used in line charting as a Marker kind:
+procedure TJvChart.PlotCircle(x, y: Integer);
 begin
-   MyDrawLine(x - Options.PointSize, y, x + Options.PointSize, y);
-   MyDrawLine(x, y - Options.PointSize, x, y + Options.PointSize);
-end;}// not used (ahuser)
+  ChartCanvas.Pen.Style := psSolid;
+  ChartCanvas.Ellipse( x-Options.MarkerSize,
+                      y-Options.MarkerSize,
+                      x+Options.MarkerSize,
+                      y+Options.MarkerSize ); // Marker Circle radius 3.
+end;
+
+// Used in line charting as a Marker kind:
+procedure TJvChart.PlotCross(x, y: Integer);
+begin
+   MyDrawLine(x - Options.MarkerSize, y, x + Options.MarkerSize, y);
+   MyDrawLine(x, y - Options.MarkerSize, x, y + Options.MarkerSize);
+end;
 
 procedure TJvChart.ClearScreen;
 begin
@@ -3213,13 +3294,13 @@ end;
 {Procedure TJvChart.MyEllipse(X1, Y1, X2, Y2: Integer);
 begin
   ChartCanvas.Ellipse(X1, Y1, X2, Y2);
-end;
+end;}
 
 procedure TJvChart.MyDrawLine(X1, Y1, X2, Y2: Integer);
 begin
    ChartCanvas.MoveTo(X1, Y1);
    ChartCanvas.LineTo(X2, Y2);
-end;}// not used (ahuser)
+end;
 
 procedure TJvChart.MyDrawAxisMark(X1, Y1, X2, Y2: Integer);
 begin
