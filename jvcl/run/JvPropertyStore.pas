@@ -545,20 +545,25 @@ begin
     Exit;
   if not Assigned(AppStorage) then
     Exit;
-  UpdateChildPaths;
-  DisableAutoLoadDown;
-  SaveProperties := IgnoreLastLoadTime or (GetLastSaveTime < FLastLoadTime);
-  if DeleteBeforeStore then
-    AppStorage.DeleteSubTree(AppStoragePath);
-  if not IgnoreLastLoadTime then
-    AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime]), DateTimeToStr(Now));
-  if Assigned(FOnBeforeStoreProperties) then
-    FOnBeforeStoreProperties(Self);
-  if SaveProperties then
-    StoreData;
-  AppStorage.WritePersistent(AppStoragePath, Self, True, CombinedIgnoreProperties);
-  if Assigned(FOnAfterStoreProperties) then
-    FOnAfterStoreProperties(Self);
+  AppStorage.BeginUpdate;
+  try
+    UpdateChildPaths;
+    DisableAutoLoadDown;
+    SaveProperties := IgnoreLastLoadTime or (GetLastSaveTime < FLastLoadTime);
+    if DeleteBeforeStore then
+      AppStorage.DeleteSubTree(AppStoragePath);
+    if not IgnoreLastLoadTime then
+      AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime]), DateTimeToStr(Now));
+    if Assigned(FOnBeforeStoreProperties) then
+      FOnBeforeStoreProperties(Self);
+    if SaveProperties then
+      StoreData;
+    AppStorage.WritePersistent(AppStoragePath, Self, True, CombinedIgnoreProperties);
+    if Assigned(FOnAfterStoreProperties) then
+      FOnAfterStoreProperties(Self);
+  finally
+    AppStorage.EndUpdate;
+  end;
 end;
 
 procedure TJvCustomPropertyStore.LoadData;
