@@ -31,8 +31,9 @@
 
   We start this tutorial by creating a new plugin project. Go to \File|\New..., select the
   <B>Projects</B> tab, select the <B>JEDI Plugin Wizard</B> and press OK. In the dialog that
-  appears, type in the name of the plugin, in this case we'll enter "Tutorial1". In the box
-  below we'll select <B>Package-Plugin</B> as the plugin type (this is the default).
+  appears, type in the name of the plugin, in this case we'll enter "Tutorial1". Below the edit box
+  are two options: <B>Package plugin</B> and <B>DLL plugin</B> where package plugin is selected by
+  default. We'll leave this setting for now.
 
   Pressing OK will create a new project <B>PlgTutorial1.dpk</B> and a unit called
   <B>PluginTutorial1.pas</B>. The unit contains a data module named <B>Tutorial1</B>. When you
@@ -59,8 +60,8 @@
 
   To create the command we'll doubleclick on the Commands property to show a familiar editor. Press
   <B>\Insert</B> to create a new command. The object inspector will now show the properties and
-  events for our command. To keep the tutorial simple, we'll set the <B>Name</B> property to
-  'Command1' and the <B>Caption</B> property to 'Test1'.
+  events for our command. The <B.Name</B> property will be set to '<B>Command1</B>' by default.
+  We'll set the <B>Caption</B> property to '<B>Test1</B>'.
 
   Next, doubleclick on the <B>OnExecute</B> event to generate a new event. In this event we'll
   show our most important message. The code will look like this:
