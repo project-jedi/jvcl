@@ -312,6 +312,7 @@ type
     function Focused: Boolean; override;
     function FocusedItem: TJvCustomInspectorItem; virtual;
     function VisibleIndex(const AItem: TJvCustomInspectorItem): Integer; virtual;
+    procedure RefreshValues;
   end;
 
   TJvInspector = class(TJvCustomInspector)
@@ -3320,6 +3321,16 @@ function TJvCustomInspector.VisibleIndex(
   const AItem: TJvCustomInspectorItem): Integer;
 begin
   Result := FVisible.IndexOfObject(AItem);
+end;
+
+procedure TJvCustomInspector.RefreshValues;
+begin
+  if (Selected <> nil) and Selected.Editing then
+  begin
+    Selected.DoneEdit(True);
+    Selected.InitEdit;
+  end;
+  Invalidate;
 end;
 
 //=== TJvInspectorPainter ====================================================
