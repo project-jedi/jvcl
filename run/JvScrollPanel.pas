@@ -39,7 +39,7 @@ uses
   Windows, Messages, Graphics, Controls, ToolWin, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QToolWin, QExtCtrls, Types,
+  QGraphics, QControls, QToolWin, QExtCtrls, Types, QWindows,
   {$ENDIF VisualCLX}
   JvComponent, JvExForms;
 
