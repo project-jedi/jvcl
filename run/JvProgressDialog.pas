@@ -176,7 +176,7 @@ uses
   {$IFDEF VisualCLX}
   QControls,
   {$ENDIF VisualCLX}
-  JvProgressForm;
+  JvProgressForm, JvJVCLUtils;
 
 constructor TJvProgressDialog.Create(AOwner: TComponent);
 begin
@@ -235,7 +235,7 @@ end;
 
 function TJvProgressDialog.Execute: Boolean;
 begin
-  Result := IsPositiveResult(ShowModal);
+  Result := JvJVCLUtils.IsPositiveResult(ShowModal);
 end;
 
 procedure TJvProgressDialog.SetPicture(const Value: TPicture);

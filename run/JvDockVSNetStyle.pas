@@ -35,13 +35,6 @@ uses
   ImgList, Forms, Dialogs,
   JvDockControlForm, JvDockSupportControl, JvDockTree, JvDockVIDStyle;
 
-const
-  HTAUTOHIDE = 40;
-  DefaultVSNETGrabberSize = 19;
-  MaxActivePaneWidth = 100;
-  VSNETPageInactiveFontColor = $00525552;
-  VSNETPageInactiveSheetColor = $00EFF3F7;
-
 type
   TJvDockVSNETConjoinServerOption = class(TJvDockVIDConjoinServerOption)
   protected

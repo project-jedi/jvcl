@@ -33,6 +33,33 @@ uses
   Messages,
   JvDockControlForm, JvDockInfo, JvDockSupportControl;
 
+const
+  RsDockBaseDockTreeVersion = $00040000;
+
+  RsDockVCDockTreeVersion = $00040010;
+
+  DefExpandoRect = 10;
+
+  WM_NCMOUSEFIRST = WM_NCMOUSEMOVE;
+  WM_NCMOUSELAST = WM_NCMBUTTONDBLCLK;
+
+  HTSPLITTER = 30;
+  HTEXPAND = 31;
+  HTNONE = 31;
+  HTAUTOHIDE = 40;
+
+  VCDefaultGrabberSize = 15;
+  VCDefaultDockSplitterWidth = 4;
+  VCDefaultBorderWidth = 4;
+
+  VIDDefaultDockGrabbersSize = 18;
+  VIDDefaultDockSplitterWidth = 4;
+
+  DefaultVSNETGrabberSize = 19;
+  MaxActivePaneWidth = 100;
+  VSNETPageInactiveFontColor = $00525552;
+  VSNETPageInactiveSheetColor = $00EFF3F7;
+
 resourcestring
   {$IFNDEF USEJVCL}
   RsPaletteDocking = 'Jv Docking';
@@ -96,16 +123,6 @@ resourcestring
   RsDockCannotFindWindow = 'Cannot find window';
 
   RsEInvalidDockSiteOrientationValue = 'Invalid DockSiteOrientation value doNoOrient';
-
-const
-  RsDockBaseDockTreeVersion = $00040000;
-
-  RsDockVCDockTreeVersion = $00040010;
-
-  DefExpandoRect = 10;
-
-  WM_NCMOUSEFIRST = WM_NCMOUSEMOVE;
-  WM_NCMOUSELAST = WM_NCMBUTTONDBLCLK;
 
 var
   JvGlobalDockManager: TJvDockManager = nil;

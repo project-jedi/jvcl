@@ -33,12 +33,6 @@ uses
   Windows, Classes, Controls, Messages, Graphics, ExtCtrls,
   JvDockControlForm, JvDockSupportControl, JvDockTree;
 
-const
-  HTEXPAND = 31;
-  VCDefaultGrabberSize = 15;
-  VCDefaulTJvDockSplitterWidth = 4;
-  VCDefaultBorderWidth = 4;
-
 type
   TJvDockVCConjoinServerOption = class(TJvDockBasicConjoinServerOption)
   private

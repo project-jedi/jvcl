@@ -625,7 +625,13 @@ function GetAppHandle: HWND;
 // pointing to the left
 procedure DrawArrow(Canvas: TCanvas; Rect: TRect; Color: TColor = clBlack; Direction: TAnchorKind = akBottom);
 
+function IsPositiveResult(Value: TModalResult): Boolean;
+function IsNegativeResult(Value: TModalResult): Boolean;
+function IsAbortResult(const Value: TModalResult): Boolean;
+function StripAllFromResult(const Value: TModalResult): TModalResult;
+
 implementation
+
 uses
   SysConst,
   {$IFDEF VCL}
@@ -6704,6 +6710,35 @@ begin
           Canvas.LineTo(Rect.Right - I, Rect.Top + I);
         end;
       end;
+  end;
+end;
+
+function IsPositiveResult(Value: TModalResult): Boolean;
+begin
+  Result := Value in [mrOk, mrYes, mrAll, mrYesToAll];
+end;
+
+function IsNegativeResult(Value: TModalResult): Boolean;
+begin
+  Result := Value in [mrNo, mrNoToAll];
+end;
+
+function IsAbortResult(const Value: TModalResult): Boolean;
+begin
+  Result := Value in [mrCancel, mrAbort];
+end;
+
+function StripAllFromResult(const Value: TModalResult): TModalResult;
+begin
+  case Value of
+    mrAll:
+      Result := mrOk;
+    mrNoToAll:
+      Result := mrNo;
+    mrYesToAll:
+      Result := mrYes;
+  else
+    Result := Value;
   end;
 end;
 
