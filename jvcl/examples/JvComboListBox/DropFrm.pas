@@ -1,4 +1,5 @@
 unit DropFrm;
+{$I JVCL.INC}
 
 interface
 
@@ -14,16 +15,16 @@ type
     tvFolders: TTreeView;
     ImageList1: TImageList;
     btnOK: TButton;
-    procedure FormShow(Sender: TObject);
     procedure tvFoldersDblClick(Sender: TObject);
     procedure tvFoldersExpanding(Sender: TObject; Node: TTreeNode;
       var AllowExpansion: Boolean);
-    procedure tvFoldersAddition(Sender: TObject; Node: TTreeNode);
-    procedure tvFoldersCollapsed(Sender: TObject; Node: TTreeNode);
-    procedure tvFoldersExpanded(Sender: TObject; Node: TTreeNode);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnCancelClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure tvFoldersGetImageIndex(Sender: TObject; Node: TTreeNode);
+    procedure tvFoldersGetSelectedIndex(Sender: TObject; Node: TTreeNode);
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FOnAccept: TDropFrmAcceptEvent;
     procedure BuildFolderList(Items: TTreeNodes; Parent: TTreeNode; const Root: string; Level: integer);
@@ -45,6 +46,11 @@ var
 function GetFullPath(Item: TTreeNode): string;
 
 implementation
+{$IFNDEF COMPILER6_UP}
+uses
+ JvJCLUtils, // DirectoryExists
+ JvJVCLUtils; // Include/ExcludeTrailingPathDelimiter
+{$ENDIF} 
 
 {$R *.dfm}
 
@@ -102,11 +108,6 @@ begin
   Params.Style := Params.Style and not WS_BORDER;
 end;
 
-procedure TfrmDrop.FormShow(Sender: TObject);
-begin
-  BuildFileSystem;
-end;
-
 procedure TfrmDrop.tvFoldersDblClick(Sender: TObject);
 begin
   if (tvFolders.Selected <> nil) and (not tvFolders.Selected.HasChildren) then
@@ -125,24 +126,6 @@ begin
     Screen.Cursor := crDefault;
     tvFolders.Items.EndUpdate;
   end;
-end;
-
-procedure TfrmDrop.tvFoldersAddition(Sender: TObject; Node: TTreeNode);
-begin
-  Node.ImageIndex := 0;
-  Node.SelectedIndex := 0;
-end;
-
-procedure TfrmDrop.tvFoldersCollapsed(Sender: TObject; Node: TTreeNode);
-begin
-  Node.ImageIndex := 0;
-  Node.SelectedIndex := 0;
-end;
-
-procedure TfrmDrop.tvFoldersExpanded(Sender: TObject; Node: TTreeNode);
-begin
-  Node.ImageIndex := 1;
-  Node.SelectedIndex := 1;
 end;
 
 procedure TfrmDrop.WMActivate(var Message: TWMActivate);
@@ -170,6 +153,34 @@ procedure TfrmDrop.btnOKClick(Sender: TObject);
 begin
   if not (fsModal in FormState) then
     Close;
+end;
+
+procedure TfrmDrop.tvFoldersGetImageIndex(Sender: TObject;
+  Node: TTreeNode);
+begin
+  if Node.Expanded or Node.Selected then
+    Node.ImageIndex := 1
+  else
+    Node.ImageIndex := 0;
+end;
+
+procedure TfrmDrop.tvFoldersGetSelectedIndex(Sender: TObject;
+  Node: TTreeNode);
+begin
+  if Node.Expanded or Node.Selected then
+    Node.SelectedIndex := 1
+  else
+    Node.SelectedIndex := 0;
+end;
+
+procedure TfrmDrop.FormCreate(Sender: TObject);
+begin
+  BuildFileSystem;
+end;
+
+procedure TfrmDrop.FormShow(Sender: TObject);
+begin
+  if tvFolders.CanFocus then tvFolders.SetFocus;
 end;
 
 end.
