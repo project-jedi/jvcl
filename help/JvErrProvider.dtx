@@ -13,8 +13,7 @@ Author
 Summary
   The type used for the BlinkStyle property in an error provider component.
 Description
-  TJvErrorBlinkStyle defines the allowable values for the BlinkStyle property in TJvErrorProvider. TJvErrorBlinkStyle
-  can have one of the follwing values:
+  TJvErrorBlinkStyle defines the allowable values for the BlinkStyle property in TJvErrorProvider. 
 @@TJvErrorBlinkStyle.ebsAlwaysBlink
   The error icon is always blinked on and off.
 @@TJvErrorBlinkStyle.ebsBlinkIfDifferentError
@@ -45,14 +44,14 @@ Summary
   Calculates the size and location of the control.
 Description
   CalcBoundsRect calculates the suggested size and location of the control.
-  The calculation is based on the size and location of the associated <LINK Control, Control>,
+  The calculation is based on the size and location of the associated Control,
   the size of the image used for the error icon as well as the value of the ImageAligment property.
 Return value
   A TRect that defines the size and location where the control should be located. Note that this does not imply
-  that the returned location is where the control is actually located. The returned values are in client rect and is directly
-  assignment compatible with the <LINK TControl.BoundsRect, BoundsRect> property.
+  that the returned location is where the control is actually located. The returned values are in client
+  coordinates and is directly assignment compatible with the <LINK TControl.BoundsRect, BoundsRect> property.
 See Also
-  <LINK TControl.BoundsRect, BoundsRect>, Control, ImageIndex, ImageAlignment, Imagelist
+  TControl.BoundsRect, Control, ImageIndex, ImageAlignment, Imagelist
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.Control
 Summary
@@ -69,11 +68,11 @@ See Also
 Summary
   Method that draws the error icon.
 Description
-  DrawImage is called by the error rpovider to draw the error icon as appropriate. Override this method
-  in descendant classes to draw the icon differently.
+  DrawImage is called by the error provider to draw or erase the error icon to simulate blinking the icon.
+  Override this method in descendant classes to draw the icon differently.
   the error
 Parameters
-  Erase - set to false if the icon should be visible, false otherwise
+  Erase - set to false if the icon should be erased, false otherwise
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.Error
 Summary
@@ -180,7 +179,7 @@ Summary
   Specifies how blinking is performed.
 Description
   Use BlinkStyle to specify how the error icons are blinked. For more information on the possible values of BlinkStyle,
-  see the help topic on <LINK TJvErrorBlinkStyle, TJvErrorBlinkStyle>.
+  see the help topic on TJvErrorBlinkStyle.
 See Also
   TJvErrorBlinkStyle
 ----------------------------------------------------------------------------------------------------
@@ -224,9 +223,8 @@ Summary
 Description
  Use Error along with the AControl parameter to access the error message associated with a control. Setting the error message to an empty string removes the error image
  (this is the only way to remove an error image for a single control).
- <AUTOLINK OFF>
- Use <CODE>Error[nil] := 'SomeValue';</CODE>to assign the error message 'SomeValue' to all controls. Using
- <CODE>Error[nil] := '';</CODE> is equivalent to calling ClearErrors but ClearErrors is faster. <AUTOLINK ON>
+ Use Error[nil] := 'SomeValue' to assign the error message 'SomeValue' to all controls. Using
+ Error[nil] := '' is equivalent to calling ClearErrors but ClearErrors is slightly faster.
 See Also
   Controls
 ----------------------------------------------------------------------------------------------------
