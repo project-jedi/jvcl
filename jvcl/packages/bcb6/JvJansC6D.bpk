@@ -14,7 +14,7 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi JvJansC6R.bpi JvCoreC6R.bpi"/>
+    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi JvJansC6R.bpi JvCoreC6R.bpi vclsmp.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design"/>
     <PATHRC value=".;"/>
@@ -26,7 +26,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvJansC6D.cpp"/>
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;..\..\design;..\..\common"/>
-    <LIBPATH value="C:\Prog\delphi6\Lib\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;..\..\design;$(BCB)\lib\obj;$(BCB)\lib;..\..\dcu;..\..\resources"/>
+    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\debug;..\..\design;$(BCB)\lib\obj;$(BCB)\lib;..\..\dcu;..\..\resources"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -57,6 +57,7 @@
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvJansC6R.bpi" FORMNAME="" UNITNAME="JvJansC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vclsmp.bpi" FORMNAME="" UNITNAME="vclsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
