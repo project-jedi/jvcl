@@ -68,7 +68,7 @@ type
     procedure LoadData; virtual;
     procedure StoreData; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    property CombinedIgnoreList: TStrings read FCombinedIgnoreList;
+    function CombinedIgnoreList: TStrings;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -273,8 +273,6 @@ begin
   FIgnoreProperties := TStringList.Create;
   FIgnoreLastLoadTime := False;
   FCombinedIgnoreList := TCombinedStrings.Create;
-  FCombinedIgnoreList.AddStrings(FIntIgnoreProperties);
-  FCombinedIgnoreList.AddStrings(FIgnoreProperties);
   with FIntIgnoreProperties do
   begin
     Add('AboutJVCL');
@@ -308,6 +306,13 @@ begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FAppStorage) then
     FAppStorage := nil;
+end;
+
+function TJvCustomPropertyStore.CombinedIgnoreList: TStrings;
+begin
+  FCombinedIgnoreList.Assign(FIntIgnoreProperties);
+  FCombinedIgnoreList.AddStrings(FIgnoreProperties);
+  Result := FCombinedIgnoreList;
 end;
 
 function TJvCustomPropertyStore.GetPropCount(Instance: TPersistent): Integer;
@@ -501,7 +506,7 @@ begin
   if Assigned(FOnBeforeLoadProperties) then
     FOnBeforeLoadProperties(Self);
   LoadData;
-  AppStorage.ReadPersistent(AppStoragePath, Self, True, False);
+  AppStorage.ReadPersistent(AppStoragePath, Self, True, False, CombinedIgnoreList);
   if Assigned(FOnAfterLoadProperties) then
     FOnAfterLoadProperties(Self);
 end;
@@ -640,7 +645,7 @@ begin
         else
         if NewObject is TPersistent then
           Sender.ReadPersistent(Sender.ConcatPaths([Path, cObject + IntToStr(Index)]),
-            TPersistent(NewObject), True, True);
+            TPersistent(NewObject), True, True, CombinedIgnoreList);
       end;
       if Sender.ValueStored(Sender.ConcatPaths([Path, cItem + IntToStr(Index)])) then
         ObjectName := Sender.ReadString(Sender.ConcatPaths([Path, cItem + IntToStr(Index)]))
@@ -665,7 +670,7 @@ begin
       else
       if Objects[Index] is TPersistent then
         Sender.ReadPersistent(Sender.ConcatPaths([Path, cObject + IntToStr(Index)]),
-          TPersistent(Objects[Index]), True, True);
+          TPersistent(Objects[Index]), True, True, CombinedIgnoreList);
     end;
     if Sender.ValueStored(Sender.ConcatPaths([Path, cItem + IntToStr(Index)])) then
       Strings[Index] := Sender.ReadString(Sender.ConcatPaths([Path, cItem + IntToStr(Index)]))
