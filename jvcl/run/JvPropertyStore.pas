@@ -48,6 +48,7 @@ type
     FAutoLoad: Boolean;
     FLastLoadTime: TDateTime;
     FIgnoreLastLoadTime: Boolean;
+    FCombinedIgnoreList: TStrings;
     FOnBeforeLoadProperties: TNotifyEvent;
     FOnAfterLoadProperties: TNotifyEvent;
     FOnBeforeStoreProperties: TNotifyEvent;
@@ -59,6 +60,7 @@ type
     procedure CloneClass(Src, Dest: TPersistent);
     function GetLastSaveTime: TDateTime;
   protected
+    procedure UpdateChildPaths(OldPath: string = ''); virtual;
     procedure SetPath(Value: string); virtual;
     procedure SetAppStore(Value: TJvCustomAppStore);
     procedure Loaded; override;
@@ -68,6 +70,7 @@ type
     procedure LoadData; virtual;
     procedure StoreData; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    property CombinedIgnoreList: TStrings read FCombinedIgnoreList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -135,10 +138,116 @@ type
 implementation
 
 uses
-  SysUtils, Typinfo;
+  Consts, SysUtils, Typinfo;
 
 const
   cLastSaveTime = 'Last Save Time';
+
+type
+  // Read-only TStrings combining multiple TStrings instances in a single list
+  TCombinedStrings = class(TStrings)
+  private
+    FList: TList;
+  protected
+    function Get(Index: Integer): string; override;
+    function GetObject(Index: Integer): TObject; override;
+    function GetCount: Integer; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    procedure AddStrings(Strings: TStrings); override;
+//    procedure DeleteStrings(Strings: TStrings);
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    procedure Insert(Index: Integer; const S: string); override;
+  end;
+
+//===TCombinedStrings===============================================================================
+
+function TCombinedStrings.Get(Index: Integer): string;
+var
+  OrgIndex: Integer;
+  I: Integer;
+begin
+  OrgIndex := Index;
+  I := 0;
+  if Index < 0 then
+    Error(SListIndexError, Index);
+  while (I < FList.Count) and (Index >= TStrings(FList[I]).Count) do
+  begin
+    Dec(Index, TStrings(FList[I]).Count);
+    Inc(I);
+  end;
+  if I >= FList.Count then
+    Error(SListIndexError, OrgIndex);
+  Result := TStrings(FList[I])[Index];
+end;
+
+function TCombinedStrings.GetObject(Index: Integer): TObject;
+var
+  OrgIndex: Integer;
+  I: Integer;
+begin
+  OrgIndex := Index;
+  I := 0;
+  if Index < 0 then
+    Error(SListIndexError, Index);
+  while (Index < TStrings(FList[I]).Count) and (I < FList.Count) do
+  begin
+    Dec(Index, TStrings(FList[I]).Count);
+    Inc(I);
+  end;
+  if I >= FList.Count then
+    Error(SListIndexError, OrgIndex);
+  Result := TStrings(FList[I]).Objects[Index];
+end;
+
+function TCombinedStrings.GetCount: Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := 0 to FList.Count - 1 do
+    Inc(Result, TStrings(FList[I]).Count);
+end;
+
+constructor TCombinedStrings.Create;
+begin
+  inherited Create;
+  FList := TList.Create;
+end;
+
+destructor TCombinedStrings.Destroy;
+begin
+  FreeAndNil(FList);
+  inherited Destroy;
+end;
+
+procedure TCombinedStrings.AddStrings(Strings: TStrings);
+begin
+  if FList.IndexOf(Strings) = -1 then
+    FList.Add(Strings);
+end;
+
+(*
+procedure TCombinedStrings.DeleteStrings(Strings: TStrings);
+begin
+  FList.Remove(Strings);
+end;
+*)
+procedure TCombinedStrings.Clear;
+begin
+  FList.Clear;
+end;
+
+procedure TCombinedStrings.Delete(Index: Integer);
+begin
+end;
+
+procedure TCombinedStrings.Insert(Index: Integer; const S: string);
+begin
+end;
 
 //===TJvCustomPropertyStore=========================================================================
 
@@ -153,6 +262,9 @@ begin
   FIntIgnoreProperties := TStringList.Create;
   FIgnoreProperties := TStringList.Create;
   FIgnoreLastLoadTime := False;
+  FCombinedIgnoreList := TCombinedStrings.Create;
+  FCombinedIgnoreList.AddStrings(FIntIgnoreProperties);
+  FCombinedIgnoreList.AddStrings(FIgnoreProperties);
   FIntIgnoreProperties.Add('AboutJVCL');
   FIntIgnoreProperties.Add('Path');
   FIntIgnoreProperties.Add('AutoLoad');
@@ -169,6 +281,7 @@ begin
   if not (csDesigning in ComponentState) then
     if AutoLoad then
       StoreProperties;
+  FreeAndNil(FCombinedIgnoreList);
   FreeAndNil(FIntIgnoreProperties);
   FreeAndNil(FIgnoreProperties);
   Clear;
@@ -294,12 +407,14 @@ begin
   end;
 end;
 
-procedure TJvCustomPropertyStore.SetPath(Value: string);
+procedure TJvCustomPropertyStore.UpdateChildPaths(OldPath: string);
 var
   Index: Integer;
   VisPropName: string;
   PropName: string;
 begin
+  if OldPath = '' then
+    OldPath := Path;
   for Index := 0 to GetPropCount(Self) - 1 do
   begin
     PropName := GetPropName(Self, Index);
@@ -312,13 +427,21 @@ begin
     if PropType(Self, GetPropName(Self, Index)) = tkClass then
       if (TPersistent(GetOrdProp(Self, PropName)) is TJvCustomPropertyStore) then
         if (TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).Path =
-          AppStore.ConcatPaths([Path, VisPropName])) or
+          AppStore.ConcatPaths([OldPath, VisPropName])) or
           (TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).Path = '') then
             TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).Path :=
-            AppStore.ConcatPaths([Value, VisPropName]);
+            AppStore.ConcatPaths([Path, VisPropName]);
   end;
+end;
+
+procedure TJvCustomPropertyStore.SetPath(Value: string);
+var
+  OldPath: string;
+begin
+  OldPath := FPath;
   if Value <> Path then
     FPath := Value;
+  UpdateChildPaths(OldPath);
 end;
 
 procedure TJvCustomPropertyStore.SetAppStore(Value: TJvCustomAppStore);
@@ -357,7 +480,7 @@ begin
     Exit;
   if not Assigned(AppStore) then
     Exit;
-//  Path := Path; (marcelb): what's this doing?
+  UpdateChildPaths;
   FLastLoadTime := Now;
   if ClearBeforeLoad then
     Clear;
@@ -377,7 +500,7 @@ begin
     Exit;
   if not Assigned(AppStore) then
     Exit;
-//  Path := Path; (marcelb): what's this doing?
+  UpdateChildPaths;
   DisableAutoLoadDown;
   SaveProperties := IgnoreLastLoadTime or (GetLastSaveTime < FLastLoadTime);
   if DeleteBeforeStore then
@@ -388,7 +511,7 @@ begin
     OnBeforeStoreProperties(self);
   if SaveProperties then
     StoreData;
-  AppStore.WritePersistent(Path, Self, True, IgnoreProperties, TranslatePropertyName);
+  AppStore.WritePersistent(Path, Self, True, CombinedIgnoreList, TranslatePropertyName);
   if Assigned(FOnAfterStoreProperties) then
     OnAfterStoreProperties(self);
 end;
@@ -556,7 +679,7 @@ begin
     else
     if Objects[Index] is TPersistent then
       Sender.WritePersistent(Sender.ConcatPaths([Path, 'Object' + IntToStr(Index)]),
-        TPersistent(Objects[Index]), True, IgnoreProperties, TranslatePropertyName);
+        TPersistent(Objects[Index]), True, CombinedIgnoreList, TranslatePropertyName);
     if Strings[Index] <> '' then
       Sender.WriteString(Sender.ConcatPaths([Path, 'Item' + IntToStr(Index)]), Strings[Index]);
   end

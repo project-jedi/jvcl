@@ -394,6 +394,40 @@ begin
     Result := '';
 end;
 
+procedure CopyEnumValue(const Source; var Target; const Kind: TOrdType);
+begin
+  case Kind of
+    otSByte,
+    otUByte:
+      Byte(Target) := Byte(Source);
+    otSWord,
+    otUWord:
+      Word(Target) := Word(Source);
+    otSLong,
+    otULong:
+      Longword(Target) := Longword(Source);
+  end;
+end;
+
+function OrdOfEnum(const Value; OrdType: TOrdType): Integer;
+begin
+  case OrdType of
+    otSByte:
+      Result := ShortInt(Value);
+    otUByte:
+      Result := Byte(Value);
+    otSWord:
+      Result := SmallInt(Value);
+    otUWord:
+      Result := Word(Value);
+    otSLong,
+    otULong:
+      Result := LongInt(Value);
+    else
+      Result := -1;
+  end;
+end;
+
 //===TJvAppStoreOptions=============================================================================
 
 constructor TJvAppStoreOptions.Create;
@@ -909,79 +943,59 @@ begin
   WriteList(Path, SL.Count, WriteSLItem, DeleteSLItems);
 end;
 
-procedure CopyEnumValue(const Source; var Target; const Kind: TOrdType);
-begin
-  case Kind of
-    otSByte,
-    otUByte:
-      Byte(Target) := Byte(Source);
-    otSWord,
-    otUWord:
-      Word(Target) := Word(Source);
-    otSLong,
-    otULong:
-      Longword(Target) := Longword(Source);
-  end;
-end;
-
 procedure TJvCustomAppStore.ReadEnumeration(const Path: string; const TypeInfo: PTypeInfo;
   const Default; out Value);
 var
   OrdValue: Integer;
 begin
-  if TypeInfo.Kind <> tkEnumeration then
-    raise EJVCLException.Create('Not an enumeration type.');
-  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
+  OrdValue := 0;
+  CopyEnumValue(Default, OrdValue, GetTypeData(TypeInfo).OrdType);
+  if (TypeInfo = System.TypeInfo(Boolean)) or
+      (GetTypeData(GetTypeData(TypeInfo).BaseType^).MinValue < 0) then
+    OrdValue := Ord(ReadBoolean(Path, OrdValue <> 0))
+  else
   begin
-    CopyEnumValue(Default, Value, GetTypeData(TypeInfo).OrdType);
-    Exit;
-  end;
-  try
-    // Usage of an invalid identifier to signal the value does not exist
-    OrdValue := GetEnumValue(TypeInfo, ReadString(Path, ' #!@not known@!# '));
-    if OrdValue = -1 then
+    if TypeInfo.Kind <> tkEnumeration then
+      raise EJVCLException.Create('Not an enumeration type.');
+    if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
     begin
-      // Invalid string or not string found; try as Integer instead
-      OrdValue := 0;
-      CopyEnumValue(Default, OrdValue, GetTypeData(TypeInfo).OrdType);
-      OrdValue := ReadInteger(Path, OrdValue);
-    end
-  except
-    on E: EConvertError do
-      if StoreOptions.DefaultIfReadConvertError then
-        CopyEnumValue(Default, Value, GetTypeData(TypeInfo).OrdType)
-      else
-        raise;
+      CopyEnumValue(Default, Value, GetTypeData(TypeInfo).OrdType);
+      Exit;
+    end;
+    try
+      // Usage of an invalid identifier to signal the value does not exist
+      OrdValue := GetEnumValue(TypeInfo, ReadString(Path, ' #!@not known@!# '));
+      if OrdValue = -1 then
+      begin
+        // Invalid string or not string found; try as Integer instead
+        OrdValue := ReadInteger(Path, OrdValue);
+      end
+    except
+      on E: EConvertError do
+        if StoreOptions.DefaultIfReadConvertError then
+          CopyEnumValue(Default, Value, GetTypeData(TypeInfo).OrdType)
+        else
+          raise;
+    end;
   end;
   CopyEnumValue(OrdValue, Value, GetTypeData(TypeInfo).OrdType);
-end;
-
-function OrdOfEnum(const Value; OrdType: TOrdType): Integer;
-begin
-  case OrdType of
-    otSByte:
-      Result := ShortInt(Value);
-    otUByte:
-      Result := Byte(Value);
-    otSWord:
-      Result := SmallInt(Value);
-    otUWord:
-      Result := Word(Value);
-    otSLong,
-    otULong:
-      Result := LongInt(Value);
-    else
-      Result := -1;
-  end;
 end;
 
 procedure TJvCustomAppStore.WriteEnumeration(const Path: string; const TypeInfo: PTypeInfo;
   const Value);
 begin
-  if StoreOptions.EnumerationAsString then
-    WriteString(Path, GetEnumName(TypeInfo, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType)))
+  if TypeInfo = System.TypeInfo(Boolean) then
+    WriteBoolean(Path, Boolean(Value))
   else
-    WriteInteger(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType));
+  if GetTypeData(GetTypeData(TypeInfo).BaseType^).MinValue < 0 then
+    WriteBoolean(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType) <> 0)
+  else
+  begin
+    if StoreOptions.EnumerationAsString then
+      WriteString(Path, GetEnumName(TypeInfo, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType)))
+    else
+      WriteInteger(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType));
+  end;
 end;
 
 procedure TJvCustomAppStore.ReadSet(const Path: string; const ATypeInfo: PTypeInfo; const Default;
