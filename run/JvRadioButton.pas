@@ -52,10 +52,19 @@ type
     FCanvas: TControlCanvas;
     FHotTrackFontOptions: TJvTrackFontOptions;
     FWordWrap: Boolean;
+    FReadOnly: boolean;
+    FAlignment: TAlignment;
+    FLayout: TTextLayout;
+    FRightButton: boolean;
     procedure SetHotFont(const Value: TFont);
     function GetCanvas: TCanvas;
     procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
     procedure SetWordWrap(const Value: Boolean);
+    procedure SetAlignment(const Value: TAlignment);
+    procedure SetLayout(const Value: TTextLayout);
+    procedure SetReadOnly(const Value: boolean);
+    procedure SetRightButton(const Value: boolean);
+    function GetReadOnly: boolean;
   protected
     procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
@@ -68,9 +77,11 @@ type
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure CalcAutoSize; virtual;
     procedure Loaded;override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
@@ -79,7 +90,11 @@ type
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
+    property ReadOnly:boolean read GetReadOnly write SetReadOnly;
+    property RightButton:boolean read FRightButton write SetRightButton;
+    property Alignment:TAlignment read FAlignment write SetAlignment;
+    property Layout:TTextLayout read FLayout write SetLayout;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -104,7 +119,10 @@ begin
   // ControlStyle := ControlStyle + [csAcceptsControls];
   FHotTrackFontOptions := DefaultTrackFontOptions;
   FAutoSize := True;
-  FWordWrap := True;
+  FWordWrap := False;
+  FAlignment := taLeftJustify;
+  FRightButton := False;
+  FLayout := tlTop;
 end;
 
 destructor TJvRadioButton.Destroy;
@@ -117,10 +135,15 @@ begin
 end;
 
 procedure TJvRadioButton.CreateParams(var Params: TCreateParams);
+const
+  cAlign:array[TAlignment] of word = (BS_LEFT, BS_RIGHT, BS_CENTER);
+  cRightButton:array[boolean] of word = (0, BS_RIGHTBUTTON);
+  cLayout:array[TTextLayout] of word = (BS_TOP, BS_VCENTER, BS_BOTTOM);
+  cWordWrap:array[boolean] of word = (0,BS_MULTILINE);
 begin
   inherited CreateParams(Params);
-  if WordWrap then
-    Params.Style := Params.Style or BS_MULTILINE or BS_TOP;
+  with Params do
+    Style := Style or cAlign[Alignment] or cLayout[Layout] or cRightButton[RightButton] or cWordWrap[WordWrap];
 end;
 
 procedure TJvRadioButton.CMCtl3DChanged(var Msg: TMessage);
@@ -268,6 +291,44 @@ procedure TJvRadioButton.Loaded;
 begin
   inherited Loaded;
   CalcAutoSize;
+end;
+
+procedure TJvRadioButton.SetAlignment(const Value: TAlignment);
+begin
+  if FAlignment <> Value then
+  begin
+    FAlignment := Value;
+    RecreateWnd;
+  end;
+end;
+
+procedure TJvRadioButton.SetLayout(const Value: TTextLayout);
+begin
+  if FLayout <> Value then
+  begin
+    FLayout := Value;
+    RecreateWnd;
+  end;
+end;
+
+procedure TJvRadioButton.SetReadOnly(const Value: boolean);
+begin
+  if ClicksDisabled <> Value then
+    ClicksDisabled := Value;
+end;
+
+procedure TJvRadioButton.SetRightButton(const Value: boolean);
+begin
+  if FRightButton<> Value then
+  begin
+    FRightButton := Value;
+    RecreateWnd;
+  end;
+end;
+
+function TJvRadioButton.GetReadOnly: boolean;
+begin
+  Result := ClicksDisabled;
 end;
 
 end.
