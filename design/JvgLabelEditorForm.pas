@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvgLabelEditorForm.PAS, released on 2003-01-15.
+The Original Code is: JvgLabelEditor.PAS, released on 2003-01-15.
 
 The Initial Developer of the Original Code is Michael Beck [mbeck@bigfoot.com]
 Portions created by Michael Beck are Copyright (C) 2003 Michael Beck
@@ -29,9 +29,8 @@ unit JvgLabelEditorForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, 
-  ExtCtrls, Buttons, JvgSpeedButton, ComCtrls,
-  JvCompEditorTemplateForm,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  JvCompEditorTemplateForm, Buttons, JvgSpeedButton, ComCtrls,
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   DesignEditors,
@@ -40,11 +39,12 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
 
-  JvgTypes, JvgGroupBox, JvgLabel, JvgCheckBox, JvgSplit, JvComCtrls, JvgShadow,
+  JvgPage, JvgTypes,
+  ExtCtrls, JvgSplit, JvComponent, JvgWizardHeader, JvgShadow, StdCtrls,
+  JvgGroupBox, JvgLabel, JvgCheckBox, JvComCtrls,
   JvColorBox, JvColorButton, JvDialogs, JvCombobox, JvColorCombo, ImgList,
   JvxSlider, JvImageWindow, JvBaseDlg, JvImageDlg, JvListComb, JvImage,
   ExtDlgs, JvgImage;
-
 
 type
   TJvgLabelEditorDlg = class(TJvgCompEditorTemplate)
@@ -534,7 +534,6 @@ function TJvgLabelEditorDlg.UpdateComponent: Boolean;
 begin
 
   inherited UpdateComponent;
-
   if (JvgLabelTest.Background <> nil) and (cbxActiveBackground.Checked) then
   begin
     FLabelSource.Background.Assign(JvgLabelTest.Background);

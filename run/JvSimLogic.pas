@@ -788,11 +788,11 @@ end;
 procedure TJvSIMConnector.MoveConnector(logTL: TPoint);
 var
   nw, nh: integer;
-  d, d2: integer;
+  d: integer;
   nc: Tpoint;
 begin
   d := conSize;
-  d2 := d div 2;
+//  d2 := d div 2;
   nc := point(LogTL.x + ConOffset.x, logTL.y + ConOffset.y);
   case conMode of
     jcmTL:
@@ -1518,7 +1518,9 @@ begin
   else if index = 4 then
     lit := Foutput2
   else if index = 5 then
-    lit := Foutput3;
+    lit := Foutput3
+  else
+    lit := false;
   if lit then
   begin
     if Gates[index].Style = jgsDI then
@@ -2040,10 +2042,9 @@ end;
 procedure TJvSimLight.Paint;
 var
   tlpoly, brpoly: array[0..2] of TPoint;
-  cr, xw, yh: integer;
+  xw, yh: integer;
   R: Trect;
   hiColor, loColor, surfcol: Tcolor;
-  x4: integer;
 
   procedure drawframe;
   begin
@@ -2084,8 +2085,8 @@ begin
   frame3D(canvas, R, clbtnhighlight, clbtnshadow, 1);
   xw := width - 1;
   yh := height - 1;
-  cr := width div 4;
-  x4 := width div 4;
+//  cr := width div 4;
+//  x4 := width div 4;
   // topleft region
   tlpoly[0] := point(left, top + yh);
   tlpoly[1] := point(left, top);
@@ -2555,7 +2556,9 @@ begin
   else if index = 2 then
     lit := FOutput2
   else if index = 3 then
-    lit := FOutput3;
+    lit := FOutput3
+  else
+    lit := false;
   if lit then
   begin
     if Gates[index].Style = jgsDI then

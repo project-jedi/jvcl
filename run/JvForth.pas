@@ -183,7 +183,7 @@ type
     rsp: integer;
     vstack: array[0..StackMax] of variant;
     vsp: integer;
-    ostack: array[0..StackMax] of TToken;
+//    ostack: array[0..StackMax] of TToken;
     osp: integer;
     pstack: array[0..StackMax] of TToken;
     psp: integer;
@@ -196,7 +196,7 @@ type
     FonGetSystem: TonGetSystem;
     FonSetSystem: TonSetSystem;
     FonInclude: TonInclude;
-    procedure ClearAtoms;
+//    procedure ClearAtoms;
     procedure SetScript(const Value: string);
     procedure SetonGetVariable(const Value: TonGetVariable);
     procedure SetonSetVariable(const Value: TonSetVariable);
@@ -300,10 +300,10 @@ type
     procedure procRight;
     function vpop: variant;
     procedure vpush(aValue: variant);
-    function opop: TToken;
-    procedure opush(aValue: TToken);
-    function ppop: TToken;
-    procedure ppush(aValue: TToken);
+//    function opop: TToken;
+//    procedure opush(aValue: TToken);
+//    function ppop: TToken;
+//    procedure ppush(aValue: TToken);
     function rpop: integer;
     procedure rpush(aValue: Integer);
     procedure doproc;
@@ -909,13 +909,15 @@ begin
     raise EJvjanScriptError.Create('stack overflow');
 end;
 
+(*
 procedure TJvForthScript.opush(aValue: TToken);
 begin
   ostack[osp] := avalue;
   if osp < StackMax then
     inc(osp);
 end;
-
+*)
+(*
 function TJvForthScript.opop: TToken;
 begin
   showmessage('opop');
@@ -927,14 +929,16 @@ begin
     result := ostack[osp];
   end;
 end;
-
+*)
+(*
 procedure TJvForthScript.ppush(aValue: TToken);
 begin
   pstack[psp] := avalue;
   if psp < StackMax then
     inc(psp);
 end;
-
+*)
+(*
 function TJvForthScript.ppop: TToken;
 begin
   if psp = 0 then
@@ -945,7 +949,7 @@ begin
     result := pstack[psp];
   end;
 end;
-
+*)
 function TJvForthScript.vpop: variant;
 begin
   if vsp = 0 then
@@ -1508,6 +1512,7 @@ begin
   FonGetVariable := Value;
 end;
 
+(*)
 procedure TJvForthScript.ClearAtoms;
 var
   i, c: integer;
@@ -1518,6 +1523,7 @@ begin
     Tobject(atoms[i]).free;
   atoms.Clear;
 end;
+(*)
 
 procedure TJvForthScript.SetonSetVariable(const Value: TonSetVariable);
 begin
@@ -1914,7 +1920,9 @@ var
   c: integer;
   token: TToken;
 begin
-  while pc < c do { TODO -oJVCL -cPOSSIBLEBUG : what should "c" be here? }
+  { TODO -oJVCL -cPOSSIBLEBUG : (p3) What should "c" really be here? }
+  c := atoms.Count; //??
+  while pc < c do
   begin
     token := TAtom(atoms[pc]).token;
     if token = dfoEndSub then

@@ -32,7 +32,7 @@ requires
 
 contains
   JvAppFrmReg in '..\..\design\JvAppFrmReg.pas',
+  JvGradientCaptionForm in '..\..\design\JvGradientCaptionForm.pas' {GradCaptionsEditor},
   JvFormWallpaperEditor in '..\..\design\JvFormWallpaperEditor.pas',
-  JvGradientCaptionForm in '..\..\design\JvGradientCaptionForm.pas';
-
+  JvWallpaperEditForm in '..\..\run\JvWallpaperEditForm.pas' {FoWallpaperChooser};
 end.

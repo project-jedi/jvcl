@@ -32,7 +32,7 @@ requires
   JvBandsD6R;
 
 contains
-  JvBandObjectDLLWizardForm in '..\..\design\JvBandObjectDLLWizardForm.pas',
+  JvBandObjectDLLWizardForm in '..\..\design\JvBandObjectDLLWizardForm.pas' {zWizardForm},
   JvBandObjectDLLWizard in '..\..\design\JvBandObjectDLLWizard.pas',
   JvBandsReg in '..\..\design\JvBandsReg.pas';
 

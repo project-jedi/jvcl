@@ -244,6 +244,7 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
     end
   end
   object FormPlacement1: TJvFormStorage
+    RegistryRoot = hkClassesRoot
     StoredValues = <>
     Left = 64
     Top = 88

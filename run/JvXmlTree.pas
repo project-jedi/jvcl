@@ -1046,7 +1046,8 @@ var
 
   end;
 begin
-  result := false;
+  Result := false;
+  AttResult := false;
   if objFilter.Filters.Count = 0 then
   begin // just filter on name
     result := objFilter.Name = name;

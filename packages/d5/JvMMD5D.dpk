@@ -34,13 +34,11 @@ requires
 contains
   JvMMReg in '..\..\design\JvMMReg.pas',
   JvAnimatedEditor in '..\..\design\JvAnimatedEditor.pas',
-  JvDirectoryListForm in '..\..\design\JvDirectoryListForm.pas',
-  JvPictureEditForm in '..\..\design\JvPictureEditForm.pas',
-  JvImagePreviewForm in '..\..\design\JvImagePreviewForm.pas',
+  JvDirectoryListForm in '..\..\design\JvDirectoryListForm.pas' {JvDirectoryListDialog},
+  JvPictureEditForm in '..\..\design\JvPictureEditForm.pas' {PictureEditDialog},
+  JvImagePreviewForm in '..\..\design\JvImagePreviewForm.pas' {ImageForm},
   JvID3v2EditorForm in '..\..\design\JvID3v2EditorForm.pas' {JvID3FramesEditor},
   JvID3v2DefineForm in '..\..\design\JvID3v2DefineForm.pas' {JvID3DefineDlg},
-  JvIconListForm in '..\..\design\JvIconListForm.pas',
-  JvGradientCaptionForm in '..\..\design\JvGradientCaptionForm.pas' {GradCaptionsEditor},
-  JvGradientCaption in '..\..\run\JvGradientCaption.pas';
+  JvIconListForm in '..\..\design\JvIconListForm.pas' {IconListDialog};
 
 end.

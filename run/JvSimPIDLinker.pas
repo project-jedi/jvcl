@@ -101,6 +101,8 @@ procedure TJvSimPIDLinker.Execute;
 var
   value: extended;
 begin
+  { TODO -oJVCL -cPOSSIBLEBUG : (p3) What is "value" supposed to be here ? }
+  value := 0.0;
   if assigned(FIn1) then value := Fin1.CV;
   if assigned(FOut1) then FOut1.MV := value;
   if assigned(FIn2) then value := Fin2.CV;

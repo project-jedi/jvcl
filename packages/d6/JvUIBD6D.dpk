@@ -1,7 +1,6 @@
 package JvUIBD6D;
 
 {$R *.res}
-{$R '..\Resources\JvUIBReg.dcr'}
 {$ALIGN 8}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}

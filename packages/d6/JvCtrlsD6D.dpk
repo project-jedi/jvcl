@@ -39,7 +39,7 @@ contains
   JvScrollMaxEditor in '..\..\design\JvScrollMaxEditor.pas',
   JvFooterEditor in '..\..\design\JvFooterEditor.pas',
   JvGroupHeaderEditor in '..\..\design\JvGroupHeaderEditor.pas',
-  JvSpeedbarForm in '..\..\design\JvSpeedbarForm.pas',
+  JvSpeedbarForm in '..\..\design\JvSpeedbarForm.pas' {JvSpeedbarEditor}, 
   JvHTHintForm in '..\..\design\JvHTHintForm.pas' {JvHintEditor};
 
 end.

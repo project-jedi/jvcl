@@ -133,9 +133,8 @@ type
       y2: integer);
     procedure drawrisingwavesphere(color1, color2: tcolor; x1, y1, x2,
       y2: integer);
-    function GetAngle(origin, endpoint: tpoint): integer;
-    procedure TextRotate(x, y, angle: integer; atext: string;
-      afont: tfont);
+//    function GetAngle(origin, endpoint: tpoint): integer;
+//    procedure TextRotate(x, y, angle: integer; atext: string; afont: tfont);
     function reducevector(origin, endpoint: tpoint; factor: real): tpoint;
     procedure star(x, y: integer);
     procedure Setpolygonchecked(const Value: boolean);
@@ -302,18 +301,14 @@ var
   mypenstyle: tpenstyle;
   myoldbrushstyle: tbrushstyle;
   myoldpenwidth: integer;
-  shadowdy: integer;
-  shadow: tcolor;
   myround: integer;
 
   clipcm: Tcopymode;
 
   pointarray: array[0..12] of Tpoint;
-  pastemode: string;
   spiralfactor: real;
   spiraldir: integer;
   TargetPoint: Tpoint;
-  GadLabelX, GadLabelY: integer;
   zoomrect: trect;
   freepoly: array[0..100] of tpoint;
   freepolycount: integer;
@@ -484,13 +479,13 @@ end;
 
 procedure TJvDrawImage.star(x, y: integer);
 var
-  i, x0, y0, d, damult: integer;
+  i, x0, y0, damult: integer;
   apoint: tpoint;
   da: real;
 begin
   x0 := myorigin.x;
   y0 := myorigin.y;
-  d := abs(y - y0);
+//777  d := abs(y - y0);
   damult := 1;
   if not polygonchecked then
   begin
@@ -534,7 +529,7 @@ begin
   result.x := origin.x + variant(r * cos(a));
   result.y := origin.y + variant(r * sin(a));
 end;
-
+(*)
 procedure TJvDrawImage.TextRotate(x, y, angle: integer; atext: string;
   afont: tfont);
 var
@@ -576,12 +571,13 @@ begin
   DeleteObject(hfnt);
   Repaint;
 end;
-
+(*)
+(*)
 function TJvDrawImage.GetAngle(origin, endpoint: tpoint): integer;
 var
-  a, d, r: real;
+  a, d: real;
 begin
-  r := sqrt(sqr(endpoint.x - origin.x) + sqr(endpoint.y - origin.y));
+//  r := sqrt(sqr(endpoint.x - origin.x) + sqr(endpoint.y - origin.y));
   d := endpoint.x - origin.x;
   if (d >= 0) and (d < 0.001) then d := 0.001;
   if (d < 0) and (d > -0.001) then d := -0.001;
@@ -589,7 +585,7 @@ begin
   a := a * 360 / (2 * pi);
   result := variant(-a);
 end;
-
+(*)
 procedure TJvDrawImage.drawrisingwavesphere(color1, color2: tcolor; x1, y1, x2, y2: integer);
 var
   t, xcenter, a, ycenter, b: integer;
@@ -665,7 +661,7 @@ procedure TJvDrawImage.drawwavesphere(color1, color2: tcolor; x1, y1, x2, y2: in
 var
   t, xcenter, a, ycenter, b: integer;
   r1, g1, b1, r2, g2, b2: byte;
-  sph, i, dx, dy, xo, yo, r, bl: integer;
+  i, dx, dy, xo, yo, r, bl: integer;
 begin
   picture.bitmap.pixelformat := pf24bit;
   clip.assign(picture.bitmap);
@@ -974,10 +970,12 @@ var
     t, t2, z, iz,
     rp, rp2, gp,
     gp2, bp, bp2,
-    xx, dx: Integer;
+    xx: Integer;
   pb: PByteArray;
   c00, c10, c01, c11: TFColor;
 begin
+  t := 0;
+  t2 := 0;
   if x2 < x1 then
   begin
     t := x2;
@@ -995,7 +993,7 @@ begin
   iz := $100000;
   if x2 <> x1 then t := $100000 div (x2 - x1);
   if y2 <> y1 then t2 := $100000 div (y2 - y1);
-  dx := x2 - x1;
+/////  dx := x2 - x1;
   pb := bmp.scanline[y1];
   c00.r := pb[x1 * 3];
   c00.g := pb[x1 * 3 + 1];
@@ -1070,7 +1068,7 @@ end;
 
 procedure TJvDrawImage.drawtexrects(x0, y0, x, y: integer);
 var
-  dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, tx, ty, xi, yi: integer;
+  dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, xi, yi: integer;
   bcolor, pcolor, hcolor, scolor: tcolor;
 begin
   w := width;
@@ -1086,8 +1084,8 @@ begin
   dy := abs(y - y0);
   if dy < 3 then dy := 3;
   if dx < 3 then dx := 3;
-  tx := w div dx;
-  ty := h div dy;
+//  tx := w div dx;
+//  ty := h div dy;
   yr := round(dy / dx * xr);
   yi := 0;
   repeat
@@ -1131,22 +1129,22 @@ end;
 
 procedure TJvDrawImage.drawtexpoly(x0, y0, x, y: integer);
 var
-  dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, tx, ty, xi, yi: integer;
-  pcolor, hcolor, scolor: tcolor;
+  dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, xi, yi: integer;
+  pcolor: tcolor;
   points: array[0..3] of tpoint;
 begin
   w := width;
   h := height;
   pcolor := canvas.pen.color;
-  hcolor := texhighlight(pcolor);
-  scolor := texshadow(pcolor);
+//  hcolor := texhighlight(pcolor);
+//  scolor := texshadow(pcolor);
   xr := abs(round(sqrt(sqr(x - x0) + sqr(y - y0))));
   dx := abs(x - x0);
   dy := abs(y - y0);
   if dy < 3 then dy := 3;
   if dx < 3 then dx := 3;
-  tx := w div dx;
-  ty := h div dy;
+//  tx := w div dx;
+//  ty := h div dy;
   yr := round(dy / dx * xr);
   yi := 0;
   repeat
@@ -1190,22 +1188,22 @@ end;
 
 procedure TJvDrawImage.drawtexcurves(x0, y0, x, y: integer);
 var
-  dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, tx, ty, xi, yi: integer;
-  pcolor, hcolor, scolor: tcolor;
+  dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, xi, yi: integer;
+  pcolor: tcolor;
   points: array[0..3] of tpoint;
 begin
   w := width;
   h := height;
   pcolor := canvas.pen.color;
-  hcolor := texhighlight(pcolor);
-  scolor := texshadow(pcolor);
+//  hcolor := texhighlight(pcolor);
+//  scolor := texshadow(pcolor);
   xr := abs(round(sqrt(sqr(x - x0) + sqr(y - y0))));
   dx := abs(x - x0);
   dy := abs(y - y0);
   if dy < 3 then dy := 3;
   if dx < 3 then dx := 3;
-  tx := w div dx;
-  ty := h div dy;
+//  tx := w div dx;
+//  ty := h div dy;
   yr := round(dy / dx * xr);
   yi := 0;
   repeat
@@ -1308,7 +1306,7 @@ end;
 
 procedure TJvDrawImage.drawtexovals(x0, y0, x, y: integer);
 var
-  dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, tx, ty, xi, yi: integer;
+  dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, xi, yi: integer;
   bcolor, pcolor, hcolor, scolor: tcolor;
 begin
   w := width;
@@ -1324,8 +1322,8 @@ begin
   dy := abs(y - y0);
   if dy < 3 then dy := 3;
   if dx < 3 then dx := 3;
-  tx := w div dx;
-  ty := h div dy;
+//  tx := w div dx;
+//  ty := h div dy;
   yr := round(dy / dx * xr);
   yi := 0;
   repeat
@@ -1406,7 +1404,7 @@ end; { Shadow }
 
 procedure TJvDrawImage.drawtexlines(x0, y0, x, y: integer);
 var
-  dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, tx, ty, xi, yi: integer;
+  dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, xi, yi: integer;
   pcolor, hcolor, scolor: tcolor;
 begin
   w := width;
@@ -1419,8 +1417,8 @@ begin
   dy := abs(y - y0);
   if dy = 0 then dy := 1;
   if dx = 0 then dx := 1;
-  tx := w div dx;
-  ty := h div dy;
+//  tx := w div dx;
+//  ty := h div dy;
   yr := round(dy / dx * xr);
   yi := 0;
   repeat
@@ -1838,6 +1836,8 @@ begin
   Rd := rect(0, 0, cm.width, cm.height);
   Rs := rect(x - radius, y - radius, x + radius, y + radius);
   cm.canvas.CopyRect(Rd, bm.canvas, RS);
+  p0 := nil;
+  p1 := nil;
   for j := 0 to cm.height - 1 do
   begin
     p := cm.scanline[j];
@@ -2440,7 +2440,7 @@ begin
   if ((ssctrl in shift) and (ssalt in shift)) then exit;
   mypen := canvas.pen.mode;
   h := abs(y - myorigin.y);
-  w := abs(x - myorigin.x);
+//  w := abs(x - myorigin.x);
   if mydraw then
   begin
     if (myshape = 'rangemove') or (myshape = 'rangesmear') then
@@ -2996,7 +2996,7 @@ begin
       x1 := myprevpoint.x;
       y1 := myprevpoint.y;
       x2 := width;
-      y2 := height;
+//      y2 := height;
       canvas.PenPos := point(x2 - x1, y1);
       canvas.lineto(x2 - x, y);
       canvas.penpos := point(x1, y1);
@@ -3035,7 +3035,7 @@ begin
     begin
       x1 := myprevpoint.x;
       y1 := myprevpoint.y;
-      x2 := width;
+//      x2 := width;
       y2 := height;
       canvas.PenPos := point(x1, y2 - y1);
       canvas.lineto(x, y2 - y);

@@ -15,9 +15,6 @@ object JvgfPrintPreview: TJvgfPrintPreview
   Scaled = False
   WindowState = wsMaximized
   OnCreate = FormCreate
-  DesignSize = (
-    632
-    610)
   PixelsPerInch = 96
   TextHeight = 13
   object Panel2: TPanel
