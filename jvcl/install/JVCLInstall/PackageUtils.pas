@@ -38,7 +38,6 @@ uses
 type
   TPackageTarget = class;
   TProjectGroup = class;
-  TPackageInfo = class;
 
   TPackageGroupArray = array[{Personal:}Boolean, {Kind:}TPackageGroupKind] of TProjectGroup;
 
@@ -66,14 +65,10 @@ type
   /// Info property. This class is used to specify if the package should be
   /// compiled and/or installed. But it does not perform these actions itself.
   /// </summary>
-  TPackageTarget = class(TObject)
+  TPackageTarget = class(TBpgPackageTarget)
   private
-    FOwner: TProjectGroup;
     FLockInstallChange: Integer;
 
-    FTargetName: string;
-    FSourceName: string;
-    FInfo: TPackageInfo;
     FJvDependencies: TStringList;  // Strings[]: "JvXxxx-"[D|R] | "JvQXxxx-"[D|R]
                                    // Objects[]: TRequiredPackage
     FJclDependencies: TStringList; // Strings[]: "JvXxxx-"[D|R] | "JvQXxxx-"[D|R]
@@ -81,135 +76,56 @@ type
     FCompile: Boolean;
     FInstall: Boolean;
 
-    FRequireList: TList;
-    FContaineList: TList;
-
-    function GetRelSourceDir: string;
-    function GetSourceDir: string;
     procedure SetCompile(Value: Boolean);
     procedure SetInstall(const Value: Boolean);
-    function GetContainCount: Integer;
-    function GetContains(Index: Integer): TContainedFile;
-    function GetRequireCount: Integer;
-    function GetRequires(Index: Integer): TRequiredPackage;
     function GetJclDependenciesReqPkg(Index: Integer): TRequiredPackage;
     function GetJvDependenciesReqPkg(Index: Integer): TRequiredPackage;
+    function GetOwner: TProjectGroup;
   protected
-    procedure UpdateContainList; virtual;
-    procedure UpdateRequireList; virtual;
-    procedure GetDependencies; virtual; // is called after alle package targets are created
+    procedure GetDependencies; override; // is called after alle package targets are created
   public
-    constructor Create(AOwner: TProjectGroup; const ATargetName, ASourceName: string);
+    constructor Create(AOwner: TPackageGroup; const ATargetName, ASourceName: string); override;
     destructor Destroy; override;
 
     function FindRuntimePackage: TPackageTarget;
 
-    property TargetName: string read FTargetName;
-    property SourceName: string read FSourceName;
-    property SourceDir: string read GetSourceDir;
-    property RelSourceDir: string read GetRelSourceDir;
-
-    property Info: TPackageInfo read FInfo;
     property JvDependencies: TStringList read FJvDependencies;
     property JvDependenciesReqPkg[Index: Integer]: TRequiredPackage read GetJvDependenciesReqPkg;
     property JclDependencies: TStringList read FJclDependencies;
     property JclDependenciesReqPkg[Index: Integer]: TRequiredPackage read GetJclDependenciesReqPkg;
 
-    // In contrast to Info.Xxx these properties only returns the
-    // required/contained for this target.
-    property RequireCount: Integer read GetRequireCount;
-    property Requires[Index: Integer]: TRequiredPackage read GetRequires;
-    property ContainCount: Integer read GetContainCount;
-    property Contains[Index: Integer]: TContainedFile read GetContains;
-
-
-    property Owner: TProjectGroup read FOwner;
     property Compile: Boolean read FCompile write SetCompile;
     property Install: Boolean read FInstall write SetInstall;
+
+    property Owner: TProjectGroup read GetOwner;
   end;
 
   /// <summary>
   /// TProjectGroup contains the data from a .bpg (Borland Package Group) file.
   /// </summary>
-  TProjectGroup = class(TInterfacedObject, IPackageXmlInfoOwner)
+  TProjectGroup = class(TPackageGroup)
   private
-    FPackages: TObjectList;
     FTargetConfig: ITargetConfig;
-    FFilename: string;
-
     FOnCompileChange: TNotifyEvent;
 
-    function GetCount: Integer;
     function GetPackages(Index: Integer): TPackageTarget;
-    function GetBpgName: string;
     function GetTarget: TCompileTarget;
-    function GetIsVCLX: Boolean;
-
-    function _AddRef: Integer; stdcall;
-    function _Release: Integer; stdcall;
   protected
-    function Add(const TargetName, SourceName: string): TPackageTarget;
-    procedure LoadFile;
+    function GetIsVCLX: Boolean; override;
     procedure DoInstallChange; virtual;
+    function GetPackageTargetClass: TBpgPackageTargetClass; override;
   public
     constructor Create(ATargetConfig: ITargetConfig; const AFilename: string);
-    destructor Destroy; override;
-    procedure AddPackage(Pkg: TPackageTarget);
 
+    function GetBplNameOf(Package: TRequiredPackage): string; override;
     function FindPackageByXmlName(const XmlName: string): TPackageTarget;
       { FindPackageByXmlName returns the TPackageTarget object that contains
         the specified .xml file. }
-    function GetBplNameOf(Package: TRequiredPackage): string;
 
-    property Count: Integer read GetCount;
     property Packages[Index: Integer]: TPackageTarget read GetPackages; default;
-
-    property BpgName: string read GetBpgName;
-    property Filename: string read FFilename;
     property TargetConfig: ITargetConfig read FTargetConfig;
     property Target: TCompileTarget read GetTarget;
-    property IsVCLX: Boolean read GetIsVCLX;
-
     property OnCompileChange: TNotifyEvent read FOnCompileChange;
-  end;
-
-  /// <summary>
-  /// TPackageInfo is a wrapper for TPackageXmlInfo objects that contains the
-  /// generic .xml file for a bpl target.
-  /// </summary>
-  TPackageInfo = class(TObject)
-  private
-    FOwner: TPackageTarget;
-    FXmlInfo: TPackageXmlInfo;
-    FXmlDir: string;
-
-    function GetRequireCount: Integer;
-    function GetRequires(Index: Integer): TRequiredPackage;
-    function GetTarget: TCompileTarget;
-    function GetContainCount: Integer;
-    function GetContains(Index: Integer): TContainedFile;
-    function GetBplName: string;
-    function GetDescription: string;
-    function GetDisplayName: string;
-    function GetIsDesign: Boolean;
-    function GetName: string;
-    function GetRequiresDB: Boolean;
-  public
-    constructor Create(AOwner: TPackageTarget; const AXmlDir: string);
-
-    property Name: string read GetName; // "PackageName-"[R|D]
-    property DisplayName: string read GetDisplayName; // "PackageName"
-    property BplName: string read GetBplName; // "PackageName"[D|C][5-7][R|D]
-    property Description: string read GetDescription;
-    property RequiresDB: Boolean read GetRequiresDB;
-    property RequireCount: Integer read GetRequireCount;
-    property Requires[Index: Integer]: TRequiredPackage read GetRequires;
-    property ContainCount: Integer read GetContainCount;
-    property Contains[Index: Integer]: TContainedFile read GetContains;
-    property IsDesign: Boolean read GetIsDesign;
-
-    property Target: TCompileTarget read GetTarget;
-    property Owner: TPackageTarget read FOwner;
   end;
 
 implementation
@@ -260,42 +176,10 @@ end;
 
 { TProjectGroup }
 
-function TProjectGroup.Add(const TargetName, SourceName: string): TPackageTarget;
-begin
-  Result := nil;
-  if FileExists(TargetConfig.JVCLPackagesXmlDir + '\' + BplNameToGenericName(TargetName) + '.xml') then // do not localize
-  begin
-    try
-      Result := TPackageTarget.Create(Self, TargetName, SourceName)
-    except
-      on E: EFOpenError do
-        FreeAndNil(Result);
-    end;
-    if Result <> nil then
-      FPackages.Add(Result);
-  end;
-end;
-
-procedure TProjectGroup.AddPackage(Pkg: TPackageTarget);
-begin
-  if Pkg <> nil then
-    FPackages.Add(Pkg);
-end;
-
 constructor TProjectGroup.Create(ATargetConfig: ITargetConfig; const AFilename: string);
 begin
-  inherited Create;
-  FFilename := AFilename;
-  FPackages := TObjectList.Create(Filename <> '');
   FTargetConfig := ATargetConfig;
-  if Filename <> '' then
-    LoadFile;
-end;
-
-destructor TProjectGroup.Destroy;
-begin
-  FPackages.Free;
-  inherited Destroy;
+  inherited Create(AFilename, ATargetConfig.JVCLPackagesXmlDir, ATargetConfig.TargetSymbol);
 end;
 
 procedure TProjectGroup.DoInstallChange;
@@ -305,42 +189,16 @@ begin
 end;
 
 function TProjectGroup.FindPackageByXmlName(const XmlName: string): TPackageTarget;
-var
-  i: Integer;
 begin
-  for i := 0 to Count - 1 do
-  begin
-    Result := Packages[i];
-    if CompareText(Result.Info.Name, XmlName) = 0 then
-      Exit;
-  end;
-  Result := nil;
-end;
-
-function TProjectGroup.GetBpgName: string;
-begin
-  Result := ExtractFileName(Filename);
+  Result := TPackageTarget(inherited FindPackageByXmlName(XmlName));
 end;
 
 function TProjectGroup.GetBplNameOf(Package: TRequiredPackage): string;
-var
-  Pkg: TPackageTarget;
 begin
   if StartsWith(Package.Name, 'Jv', True) then
-  begin
-    Pkg := FindPackagebyXmlName(Package.Name);
-    if Pkg <> nil then
-      Result := Pkg.TargetName
-    else
-      Result := Package.Name;
-  end
+    Result := inherited GetBplNameOf(Package)
   else
     Result := Package.Name;
-end;
-
-function TProjectGroup.GetCount: Integer;
-begin
-  Result := FPackages.Count;
 end;
 
 function TProjectGroup.GetIsVCLX: Boolean;
@@ -350,7 +208,12 @@ end;
 
 function TProjectGroup.GetPackages(Index: Integer): TPackageTarget;
 begin
-  Result := TPackageTarget(FPackages[Index]);
+  Result := TPackageTarget(inherited Packages[Index]);
+end;
+
+function TProjectGroup.GetPackageTargetClass: TBpgPackageTargetClass;
+begin
+  Result := TPackageTarget;
 end;
 
 function TProjectGroup.GetTarget: TCompileTarget;
@@ -374,114 +237,24 @@ begin
   end;
 end;
 
-procedure TProjectGroup.LoadFile;
-var
-  Lines: TStrings;
-  i, ps: Integer;
-  S: string;
-  TgName: string;
-begin
-  Lines := TStringList.Create;
-  try
-    Lines.LoadFromFile(FileName);
-    i := 0;
-
-   // find "default:" target
-    while i < Lines.Count do
-    begin
-      if StartsWith(Lines[I], 'default:', True) then // do not localize
-        Break;
-      Inc(i);
-    end;
-    Inc(i, 2);
-
-   // now read the available targets
-    while i < Lines.Count do
-    begin
-      S := Lines[i];
-     // find targets
-      if S <> '' then
-      begin
-        if S[1] > #32 then
-        begin
-          ps := Pos(':', S);
-          if ps > 0 then
-          begin
-            TgName := TrimRight(Copy(S, 1, ps - 1));
-           // does the .xml file exists for this target? <-> is it a vaild target?
-            Add(TgName, Trim(Copy(S, ps + 1, MaxInt)));
-          end;
-        end;
-      end;
-      Inc(i);
-    end;
-  finally
-    Lines.Free;
-  end;
-
- // we use dependecies so the order if irrelevant and we can sort sort alpha.
-  FPackages.Sort(SortProc_PackageTarget);
-
- // update dependencies after all package targets are created
-  for i := 0 to Count - 1 do
-    Packages[i].GetDependencies;
-end;
-
-function TProjectGroup._AddRef: Integer;
-begin
-  Result := 1;
-end;
-
-function TProjectGroup._Release: Integer;
-begin
-  Result := 1;
-end;
-
 { TPackageTarget }
 
-constructor TPackageTarget.Create(AOwner: TProjectGroup; const ATargetName,
+constructor TPackageTarget.Create(AOwner: TPackageGroup; const ATargetName,
   ASourceName: string);
 begin
-  inherited Create;
-  FOwner := AOwner;
-  FTargetName := ATargetName;
-  FSourceName := ASourceName;
-  FInfo := TPackageInfo.Create(Self, AOwner.TargetConfig.JVCLPackagesXmlDir);
+  inherited Create(AOwner, ATargetName, ASourceName);
   FJvDependencies := TStringList.Create;
   FJvDependencies.Sorted := True;
   FJclDependencies := TStringList.Create;
   FJclDependencies.Sorted := True;
   FCompile := True;
-
-  FRequireList := TList.Create;
-  FContaineList := TList.Create;
 end;
 
 destructor TPackageTarget.Destroy;
 begin
-  FRequireList.Free;
-  FContaineList.Free;
   FJvDependencies.Free;
   FJclDependencies.Free;
-  // FInfo is buffered and is destroyed by XmlFileCache
   inherited Destroy;
-end;
-
-function TPackageTarget.FindRuntimePackage: TPackageTarget;
-begin
-  Result := Owner.FindPackagebyXmlName(Copy(Info.Name, 1, Length(Info.Name) - 1) + 'R'); // do not localize
-end;
-
-function TPackageTarget.GetContainCount: Integer;
-begin
-  UpdateContainList;
-  Result := FContaineList.Count;
-end;
-
-function TPackageTarget.GetContains(Index: Integer): TContainedFile;
-begin
-  UpdateContainList;
-  Result := TContainedFile(FContaineList[Index]);
 end;
 
 /// <summary>
@@ -492,6 +265,11 @@ end;
 /// JvDependencies are physical files and are a valid JVCL target. All items in
 /// JclDependencies must not be physical files.
 /// </summary>
+function TPackageTarget.FindRuntimePackage: TPackageTarget;
+begin
+  Result := TPackageTarget(inherited FindRuntimePackage);
+end;
+
 procedure TPackageTarget.GetDependencies;
 var
   i: Integer;
@@ -502,9 +280,9 @@ begin
     // JVCL dependencies
     if StartsWith(Info.Requires[i].Name, 'Jv', True) then // do not localize
     begin
-      if FileExists(Info.FXmlDir + '\' + Info.Requires[i].Name + '.xml') and // do not localize
+      if FileExists(Info.XmlDir + '\' + Info.Requires[i].Name + '.xml') and // do not localize
          (Owner.FindPackagebyXmlName(Info.Requires[i].Name) <> nil) and
-         Info.Requires[i].IsRequiredByTarget(Owner.TargetConfig.TargetSymbol) then
+         Info.Requires[i].IsRequiredByTarget(Owner.TargetSymbol) then
       begin
         FJvDependencies.AddObject(Info.Requires[i].Name, Info.Requires[i]);
       end;
@@ -514,7 +292,7 @@ begin
     if StartsWith(Info.Requires[i].Name, 'DJcl', True) or // do not localize
        StartsWith(Info.Requires[i].Name, 'CJcl', True) then // do not localize
     begin
-      if Info.Requires[i].IsRequiredByTarget(Owner.TargetConfig.TargetSymbol) then
+      if Info.Requires[i].IsRequiredByTarget(Owner.TargetSymbol) then
         FJclDependencies.AddObject(Info.Requires[i].Name, Info.Requires[i]);
     end;
   end;
@@ -530,26 +308,9 @@ begin
   Result := TRequiredPackage(JvDependencies.Objects[Index]);
 end;
 
-function TPackageTarget.GetRelSourceDir: string;
+function TPackageTarget.GetOwner: TProjectGroup;
 begin
-  Result := ExtractFileDir(FSourceName);
-end;
-
-function TPackageTarget.GetRequireCount: Integer;
-begin
-  UpdateRequireList;
-  Result := FRequireList.Count;
-end;
-
-function TPackageTarget.GetRequires(Index: Integer): TRequiredPackage;
-begin
-  UpdateRequireList;
-  Result := TRequiredPackage(FRequireList[Index]);
-end;
-
-function TPackageTarget.GetSourceDir: string;
-begin
-  Result := FollowRelativeFilename(ExtractFileDir(Owner.Filename), RelSourceDir);
+  Result := TProjectGroup(inherited Owner);
 end;
 
 procedure TPackageTarget.SetCompile(Value: Boolean);
@@ -604,97 +365,6 @@ begin
     FInstall := False; // runtime packages are not installable.
   if Value then
     Compile := True;
-end;
-
-procedure TPackageTarget.UpdateContainList;
-var
-  i: Integer;
-begin
-  if FContaineList.Count <> 0 then
-    Exit;
-  for i := 0 to Info.ContainCount - 1 do
-  begin
-    if Info.Contains[i].IsUsedByTarget(Owner.TargetConfig.TargetSymbol) then
-      FContaineList.Add(Info.Contains[i]);
-  end;
-end;
-
-procedure TPackageTarget.UpdateRequireList;
-var
-  i: Integer;
-begin
-  if FRequireList.Count <> 0 then
-    Exit;
-  for i := 0 to Info.RequireCount - 1 do
-  begin
-    if Info.Requires[i].IsRequiredByTarget(Owner.TargetConfig.TargetSymbol) then
-      FRequireList.Add(Info.Requires[i]);
-  end;
-end;
-
-{ TPackageInfo }
-
-constructor TPackageInfo.Create(AOwner: TPackageTarget; const AXmlDir: string);
-begin
-  inherited Create;
-  FOwner := AOwner;
-  FXmlDir := AXmlDir;
-  FXmlInfo := GetPackageXmlInfo(Owner.TargetName, AXmlDir);
-end;
-
-function TPackageInfo.GetBplName: string;
-begin
-  Result := Owner.TargetName;
-end;
-
-function TPackageInfo.GetTarget: TCompileTarget;
-begin
-  Result := Owner.Owner.TargetConfig.Target;
-end;
-
-function TPackageInfo.GetContainCount: Integer;
-begin
-  Result := FXmlInfo.ContainCount;
-end;
-
-function TPackageInfo.GetContains(Index: Integer): TContainedFile;
-begin
-  Result := FXmlInfo.Contains[Index];
-end;
-
-function TPackageInfo.GetRequireCount: Integer;
-begin
-  Result := FXmlInfo.RequireCount;
-end;
-
-function TPackageInfo.GetRequires(Index: Integer): TRequiredPackage;
-begin
-  Result := FXmlInfo.Requires[Index];
-end;
-
-function TPackageInfo.GetDescription: string;
-begin
-  Result := FXmlInfo.Description;
-end;
-
-function TPackageInfo.GetDisplayName: string;
-begin
-  Result := FXmlInfo.DisplayName;
-end;
-
-function TPackageInfo.GetIsDesign: Boolean;
-begin
-  Result := FXmlInfo.IsDesign;
-end;
-
-function TPackageInfo.GetName: string;
-begin
-  Result := FXmlInfo.Name;
-end;
-
-function TPackageInfo.GetRequiresDB: Boolean;
-begin
-  Result := FXmlInfo.RequiresDB;
 end;
 
 initialization
