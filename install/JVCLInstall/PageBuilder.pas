@@ -182,12 +182,14 @@ var
   ItemIndex: Integer;
   S: string;
   HorzOrientation: THorzOrientation;
-  Width: Integer;
+  Width, tmpWidth: Integer;
+  Canvas: TControlCanvas;
 begin
   Result := nil;
   Options := TStringList.Create;
+  Canvas := TControlCanvas.Create;
   try
-    Width := Parent.ClientWidth - 16;
+    Canvas.Control := Parent;
 
     // RadioButtons
     HorzOrientation := hoDefault;
@@ -205,16 +207,35 @@ begin
       HorzOrientation := hoLeft;
     LockedHorzOrientation := HorzOrientation;
 
-    if HorzOrientation = hoLeft then
-      X := 8
-    else if HorzOrientation = hoCenter then
-      X := (Parent.ClientWidth - Width) div 2
-    else
-      X := Parent.ClientWidth - 8 - Width;
-
     if Options.Count > 0 then
     begin
       ItemIndex := Inst.GetSelectedOption;
+
+      // find text with largest width
+      Width := 0;
+      for i := 0 to Options.Count - 1 do
+      begin
+        S := Options[i];
+        if S <> '' then
+        begin
+          ps := Pos('|', S);
+          if ps = 0 then
+            ps := Length(S) + 1;
+
+          tmpWidth := Canvas.TextWidth(Copy(S, 1, ps - 1));
+          if tmpWidth > Width then
+             Width := tmpWidth;
+        end;
+      end;
+      Inc(Width, GetDefaultCheckBoxSize.cx*4 div 2);  // add checkbox size
+
+      if HorzOrientation = hoLeft then
+        X := 8
+      else if HorzOrientation = hoCenter then
+        X := (Parent.ClientWidth - Width) div 2
+      else
+        X := Parent.ClientWidth - 8 - Width;
+
       // create radion buttons
       AbsH := (Parent.ClientHeight - 8) div Options.Count;
       Y := 8;
@@ -230,11 +251,11 @@ begin
           RadioButton.Name := 'piOption_' + IntToStr(i); // do not localize
           RadioButton.Left := X;
           RadioButton.Top := Y;
-          RadioButton.Width := Width;
           RadioButton.Caption := Copy(S, 1, ps - 1);
           RadioButton.Hint := Copy(S, ps + 1, MaxInt);
           RadioButton.ShowHint := RadioButton.Hint <> '';
           RadioButton.Parent := Parent;
+          RadioButton.ClientWidth := Width;
 
           with TSingleChooseOptionClick.Create(Parent) do
           begin
@@ -255,6 +276,7 @@ begin
     end;
   finally
     Options.Free;
+    Canvas.Free;
   end;
 end;
 
@@ -266,12 +288,14 @@ var
   CheckBox: TCheckBox;
   S: string;
   HorzOrientation: THorzOrientation;
-  Width: Integer;
+  Width, tmpWidth: Integer;
+  Canvas: TControlCanvas;
 begin
   Result := nil;
   CheckBoxes := TStringList.Create;
+  Canvas := TControlCanvas.Create;
   try
-    Width := Parent.ClientWidth - 16;
+    Canvas.Control := Parent;
 
     HorzOrientation := hoDefault;
     Inst.CheckBoxes(CheckBoxes, HorzOrientation);
@@ -288,15 +312,34 @@ begin
       HorzOrientation := hoLeft;
     LockedHorzOrientation := HorzOrientation;
 
-    if HorzOrientation = hoLeft then
-      X := 8
-    else if HorzOrientation = hoCenter then
-      X := (Parent.ClientWidth - Width) div 2
-    else
-      X := Parent.ClientWidth - 8 - Width;
-
     if CheckBoxes.Count > 0 then
     begin
+      // find text with largest width
+      Width := 0;
+      for i := 0 to CheckBoxes.Count - 1 do
+      begin
+        S := CheckBoxes[i];
+        if S <> '' then
+        begin
+          ps := Pos('|', S);
+          if ps = 0 then
+            ps := Length(S) + 1;
+
+          tmpWidth := Canvas.TextWidth(Copy(S, 1, ps - 1));
+          if tmpWidth > Width then
+             Width := tmpWidth;
+        end;
+      end;
+      Inc(Width, GetDefaultCheckBoxSize.cx*4 div 2);  // add checkbox size
+
+
+      if HorzOrientation = hoLeft then
+        X := 8
+      else if HorzOrientation = hoCenter then
+        X := (Parent.ClientWidth - Width) div 2
+      else
+        X := Parent.ClientWidth - 8 - Width;
+
       // create check boxes
       AbsH := (Parent.ClientHeight - 8) div CheckBoxes.Count;
       Y := 8;
@@ -312,11 +355,11 @@ begin
           CheckBox.Name := 'piCheckBox_' + IntToStr(i);
           CheckBox.Left := X;
           CheckBox.Top := Y;
-          CheckBox.Width := Width;
           CheckBox.Caption := Copy(S, 1, ps - 1);
           CheckBox.Hint := Copy(S, ps + 1, MaxInt);
           CheckBox.ShowHint := CheckBox.Hint <> '';
           CheckBox.Parent := Parent;
+          CheckBox.ClientWidth := Width;
 
           with TMultiChooseCheckBoxClick.Create(Parent) do
           begin
@@ -334,6 +377,7 @@ begin
     end;
   finally
     CheckBoxes.Free;
+    Canvas.Free;
   end;
 end;
 
