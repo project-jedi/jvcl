@@ -1,6 +1,6 @@
 object PictureEditDialog: TPictureEditDialog
-  Left = 202
-  Top = 102
+  Left = 611
+  Top = 112
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Picture Editor'
@@ -179,10 +179,9 @@ object PictureEditDialog: TPictureEditDialog
     TabOrder = 2
   end
   object FormStorage: TJvFormStorage
-    IniFileName = 'DELPHI.INI'
-    IniSection = 'RX.ImageEditor'
+    AppStorage = AppStore
+    AppStoragePath = 'RX.ImageEditor\'
     Options = [fpPosition]
-    RegistryRoot = hkClassesRoot
     OnSavePlacement = FormStorageSavePlacement
     OnRestorePlacement = FormStorageRestorePlacement
     StoredProps.Strings = (
@@ -207,5 +206,10 @@ object PictureEditDialog: TPictureEditDialog
     OnClick = PathsMRUClick
     Left = 136
     Top = 30
+  end
+  object AppStore: TJvAppRegistryStore
+    RegRoot = hkCurrentUser
+    Left = 29
+    Top = 81
   end
 end

@@ -50,7 +50,7 @@ object ImageForm: TImageForm
     Width = 146
     Height = 15
     AutoSize = False
-    Caption = 'C:\...\dev\JVCL3\design'
+    Caption = 'E:\...\dev\JVCL3\design'
   end
   object ImageName: TLabel
     Left = 319
@@ -269,13 +269,16 @@ object ImageForm: TImageForm
     Top = 6
   end
   object FormStorage: TJvFormStorage
-    IniFileName = 'DELPHI.INI'
-    IniSection = 'RX.ImagePreview'
-    RegistryRoot = hkClassesRoot
+    AppStoragePath = 'RX.ImagePreview\'
     StoredProps.Strings = (
       'StretchCheck.Checked')
     StoredValues = <>
     Left = 272
     Top = 6
+  end
+  object AppStore: TJvAppRegistryStore
+    RegRoot = hkCurrentUser
+    Left = 215
+    Top = 5
   end
 end
