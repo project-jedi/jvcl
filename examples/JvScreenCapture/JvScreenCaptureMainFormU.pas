@@ -4,13 +4,14 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, clipbrd;
+  ExtCtrls, StdCtrls, ClipBrd;
 
 type
   TJvScreenCaptureMainForm = class(TForm)
     Button1: TButton;
     Image1: TImage;
     Button2: TButton;
+    TaskBar: TCheckBox;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
   end;
@@ -23,25 +24,26 @@ implementation
 {$R *.DFM}
 
 uses
-  JvJVCLUtils;
+  JclGraphics;
 
 procedure TJvScreenCaptureMainForm.Button1Click(Sender: TObject);
 var
-  b : TBitmap;
+  B: TBitmap;
 begin
-   b := CaptureScreen;
-   self.image1.picture.bitmap.assign(b);
-   b.Free;
+   b := TBitmap.Create;
+   ScreenShot(B, TaskBar.Checked);
+   Self.Image1.Picture.Bitmap.Assign(B);
+   B.Free;
 end;
 
 procedure TJvScreenCaptureMainForm.Button2Click(Sender: TObject);
 var
-  MyFormat : Word;
+  AFormat: Word;
   AData: THandle;
-  APalette:HPalette;
+  APalette: HPALETTE;
 begin
-   self.image1.picture.bitmap.SaveToClipboardFormat(MyFormat,AData,APalette);
-   ClipBoard.SetAsHandle(MyFormat,AData);
+   Self.Image1.Picture.Bitmap.SaveToClipboardFormat(AFormat, AData, APalette);
+   ClipBoard.SetAsHandle(AFormat, AData);
 end;
 
 end.

@@ -91,12 +91,14 @@ type
 procedure SetWallpaper(const Path: string); overload;
 procedure SetWallpaper(const Path: string; Style: TJvWallpaperStyle); overload;
 
+(* (rom) to be deleted. Use ScreenShot from JCL
 {$IFDEF VCL}
 // screen capture functions
 function CaptureScreen(IncludeTaskBar: Boolean = True): TBitmap; overload;
 function CaptureScreen(Rec: TRect): TBitmap; overload;
 function CaptureScreen(WndHandle: Longword): TBitmap; overload;
 {$ENDIF VCL}
+*)
 
 {$ENDIF MSWINDOWS}
 //Convert RGB Values to HSV
@@ -780,6 +782,7 @@ begin
   end;
 end;
 
+(* (rom) to be deleted. Use ScreenShot from JCL
 {$IFDEF VCL}
 
 function CaptureScreen(Rec: TRect): TBitmap;
@@ -848,6 +851,7 @@ begin
     Result := nil;
 end;
 {$ENDIF VCL}
+*)
 
 procedure SetWallpaper(const Path: string);
 begin
