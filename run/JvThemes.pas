@@ -937,10 +937,6 @@ begin
       if ThemeServices.ThemesEnabled then
         ThemedPaint(TWMPaint(Msg), Handled);
 
-    WM_NCPAINT:
-      if ThemeServices.ThemesEnabled then
-        ThemedNCPaint(TWMNCPaint(Msg), Handled);
-
     WM_ERASEBKGND:
       if ThemeServices.ThemesEnabled then
         ThemedEraseBkGnd(TWMEraseBkGnd(Msg), Handled);
@@ -949,10 +945,14 @@ begin
   if not Handled then
     FOrgWndProc(Msg);
 
-  if Msg.Msg = WM_DESTROY then
-  begin
-    if (csDestroying in Control.ComponentState) and (ThemeHooks.RecreationList.IndexOf(Control) = -1) then
-      DeleteHook;
+  case Msg.Msg of
+    WM_NCPAINT:
+      if ThemeServices.ThemesEnabled then
+        ThemedNCPaint(TWMNCPaint(Msg), Handled);
+
+    WM_DESTROY:
+        if (csDestroying in Control.ComponentState) and (ThemeHooks.RecreationList.IndexOf(Control) = -1) then
+          DeleteHook;
   end;
 
   while ThemeHooks.RecreationList.Count > 0 do
