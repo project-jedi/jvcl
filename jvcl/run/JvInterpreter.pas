@@ -1212,6 +1212,7 @@ var
 {$ENDIF JvInterpreter_DEBUG}
 
 {$IFDEF COMPILER6_UP}
+
 var
   VariantRecordInstance: TJvRecordVariantType;
   VariantObjectInstance: TJvObjectVariantType;
@@ -1220,7 +1221,7 @@ var
   VariantSetInstance: TJvSetVariantType;
   VariantArrayInstance: TJvArrayVariantType;
 
-{ TJvSimpleVariantType }
+//=== TJvSimpleVariantType ===================================================
 
 procedure TJvSimpleVariantType.Clear(var V: TVarData);
 begin
@@ -1243,25 +1244,26 @@ begin
   Result := VariantObjectInstance.VarType
 end;
 
-function varClass : TVarType;
+function varClass: TVarType;
 begin
   Result := VariantClassInstance.VarType;
 end;
 
-function varPointer : TVarType;
+function varPointer: TVarType;
 begin
   Result := VariantPointerInstance.VarType;
 end;
 
-function varSet : TVarType;
+function varSet: TVarType;
 begin
   Result := VariantSetInstance.VarType;
 end;
 
-function varArray : TVarType;
+function varArray: TVarType;
 begin
   Result := VariantArrayInstance.VarType;
 end;
+
 {$ENDIF COMPILER6_UP}
 
 //=== EJvInterpreterError ====================================================

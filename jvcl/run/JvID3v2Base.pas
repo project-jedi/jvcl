@@ -3518,7 +3518,7 @@ begin
     else
       raise;
     {$ELSE}
-    Application.HandleException(ExceptObject)
+    Application.HandleException(ExceptObject);
     {$ENDIF COMPILER6_UP}
   end;
 end;
@@ -3992,7 +3992,7 @@ begin
     else
       raise;
     {$ELSE}
-    Application.HandleException(ExceptObject)
+    Application.HandleException(ExceptObject);
     {$ENDIF COMPILER6_UP}
   end;
 end;

@@ -407,7 +407,7 @@ begin
   Result := TJvTimerEvent(inherited Add);
   {$IFNDEF COMPILER6_UP}
   // (p3) yuk! some hack...
-  Notify(Result,cnAdded);
+  Notify(Result, cnAdded);
   {$ENDIF}
 end;
 
