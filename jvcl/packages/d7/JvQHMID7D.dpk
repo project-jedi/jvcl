@@ -1,4 +1,4 @@
-package JvQCtrlsD7D;
+package JvQHMID7D;
 {$R *.res}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
@@ -21,21 +21,18 @@ package JvQCtrlsD7D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCLX Visual Controls'}
+{$DESCRIPTION 'JVCLX HMI Controls design time unit'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 {$DEFINE VisualCLX}
 
 requires
   JvQCoreD7D,
-  JvQCtrlsD7R,
-  designide;
+  JvQHMID7R,
+  designide,
+  rtl;
 
 contains
-  JvQHTHintForm in '..\..\qdesign\JvQHTHintForm.pas' {JvHintEditor},
-  JvQBehaviorLabelEditor in '..\..\qdesign\JvQBehaviorLabelEditor.pas',
-  JvQCtrlsReg in '..\..\qdesign\JvQCtrlsReg.pas',
-  JvQFooterEditor in '..\..\qdesign\JvQFooterEditor.pas',
-  JvQGroupHeaderEditor in '..\..\qdesign\JvQGroupHeaderEditor.pas';
+  JvQHMIReg in '..\..\qdesign\JvQHMIReg.pas';
 
 end.

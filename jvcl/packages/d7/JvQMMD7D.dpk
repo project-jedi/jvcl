@@ -37,7 +37,6 @@ requires
   JvQCoreD7R;
 
 contains
-  JvQDirectoryListForm in '..\..\qdesign\JvQDirectoryListForm.pas' {JvDirectoryListDialog},
   JvQMMReg in '..\..\qdesign\JvQMMReg.pas';
 
 end.
