@@ -30,6 +30,6 @@
     <File Name="..\..\design\JvCtrlsReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvFooterEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvGroupHeaderEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvTransparentButtonEditors" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvTransparentButtonEditors.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

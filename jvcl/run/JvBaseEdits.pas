@@ -43,24 +43,24 @@ type
   private
     FCanvas: TControlCanvas;
     FAlignment: TAlignment;
-    FFocused: boolean;
+    FFocused: Boolean;
     FValue: Extended;
     FMinValue: Extended;
     FMaxValue: Extended;
     FDecimalPlaces: Cardinal;
-    FBeepOnError: boolean;
-    FCheckOnExit: boolean;
-    FZeroEmpty: boolean;
-    FFormatOnEditing: boolean;
-    FFormatting: boolean;
+    FBeepOnError: Boolean;
+    FCheckOnExit: Boolean;
+    FZeroEmpty: Boolean;
+    FFormatOnEditing: Boolean;
+    FFormatting: Boolean;
     FDisplayFormat: string;
     // Polaris
-    FDecimalPlaceRound: boolean;
-    procedure SetDecimalPlaceRound(Value: boolean);
+    FDecimalPlaceRound: Boolean;
+    procedure SetDecimalPlaceRound(Value: Boolean);
 
-    procedure SetFocused(Value: boolean);
+    procedure SetFocused(Value: Boolean);
     procedure SetAlignment(Value: TAlignment);
-    procedure SetBeepOnError(Value: boolean);
+    procedure SetBeepOnError(Value: Boolean);
     procedure SetDisplayFormat(const Value: string);
     function GetDisplayFormat: string;
     procedure SetDecimalPlaces(Value: Cardinal);
@@ -70,13 +70,13 @@ type
     procedure SetAsInteger(AValue: Longint);
     procedure SetMaxValue(AValue: Extended);
     procedure SetMinValue(AValue: Extended);
-    procedure SetZeroEmpty(Value: boolean);
-    procedure SetFormatOnEditing(Value: boolean);
+    procedure SetZeroEmpty(Value: Boolean);
+    procedure SetFormatOnEditing(Value: Boolean);
     function GetText: string;
     procedure SetText(const AValue: string);
     function TextToValText(const AValue: string): string;
     //Polaris    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
-    function IsFormatStored: boolean;
+    function IsFormatStored: Boolean;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMEnter(var Msg: TCMEnter); message CM_ENTER;
     procedure CMExit(var Msg: TCMExit); message CM_EXIT;
@@ -85,42 +85,38 @@ type
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
   protected
     //Polaris up to protected
-    function CheckValue(NewValue: Extended; RaiseOnError: boolean): Extended;
+    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     procedure AcceptValue(const Value: Variant); override;
     procedure Change; override;
     procedure ReformatEditText; dynamic;
-    function GetDefaultBitmap(var DestroyNeeded: boolean): TBitmap; override;
+    function GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap; override;
     procedure DataChanged; virtual;
     function DefaultDisplayFormat: string; virtual;
-    procedure KeyPress(var Key: char); override;
-    function IsValidChar(Key: char): boolean; virtual;
+    procedure KeyPress(var Key: Char); override;
+    function IsValidChar(Key: Char): Boolean; virtual;
     function FormatDisplayText(Value: Extended): string;
     function GetDisplayText: string; virtual;
     procedure Reset; override;
     procedure CheckRange;
     procedure UpdateData;
     procedure UpdatePopup; virtual;
-    property Formatting: boolean read FFormatting;
-    property Alignment: TAlignment read FAlignment write SetAlignment
-      default taRightJustify;
-    property BeepOnError: boolean read FBeepOnError write SetBeepOnError
-      default true;
-    property CheckOnExit: boolean read FCheckOnExit write FCheckOnExit default false;
+    procedure DoBeepOnError; virtual;
+    property Formatting: Boolean read FFormatting;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taRightJustify;
+    property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
+    property CheckOnExit: Boolean read FCheckOnExit write FCheckOnExit default False;
     property GlyphKind default gkDefault;
     property ButtonWidth default 21; //Polaris 20;
-    property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces
-      default 2;
-    property DisplayFormat: string read GetDisplayFormat write SetDisplayFormat
-      stored IsFormatStored;
+    property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces default 2;
+    property DisplayFormat: string read GetDisplayFormat write SetDisplayFormat stored IsFormatStored;
     property MaxValue: Extended read FMaxValue write SetMaxValue;
     property MinValue: Extended read FMinValue write SetMinValue;
-    property FormatOnEditing: boolean read FFormatOnEditing
-      write SetFormatOnEditing default false;
-    property Text: string read GetText write SetText stored false;
+    property FormatOnEditing: Boolean read FFormatOnEditing write SetFormatOnEditing default False;
+    property Text: string read GetText write SetText stored False;
     property MaxLength default 0;
-    property ZeroEmpty: boolean read FZeroEmpty write SetZeroEmpty default true;
+    property ZeroEmpty: Boolean read FZeroEmpty write SetZeroEmpty default True;
     //Polaris
-    property DecimalPlaceRound: boolean read FDecimalPlaceRound write SetDecimalPlaceRound default false;
+    property DecimalPlaceRound: Boolean read FDecimalPlaceRound write SetDecimalPlaceRound default False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -206,10 +202,10 @@ type
 
   TJvCustomCalcEdit = class(TJvCustomNumEdit)
   private
-    FEnablePopupChange: boolean;
+    FEnablePopupChange: Boolean;
   protected
     procedure PopupChange; override;
-    property EnablePopupChange: boolean read FEnablePopupChange write FEnablePopupChange default false;
+    property EnablePopupChange: Boolean read FEnablePopupChange write FEnablePopupChange default False;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -217,8 +213,6 @@ type
   TJvCalcEdit = class(TJvCustomCalcEdit)
   published
     property Align; //Polaris
-    property DecimalPlaceRound; //Polaris
-
     property Alignment;
     property AutoSelect;
     property AutoSize;
@@ -229,6 +223,7 @@ type
     property ClickKey;
     property Color;
     property Ctl3D;
+    property DecimalPlaceRound; //Polaris
     property DecimalPlaces;
     property DirectInput;
     property DisplayFormat;
@@ -312,23 +307,23 @@ var
 type
   TJvPopupWindowHack = class(TJvPopupWindow);
 
-function IsValidFloat(const Value: string; var RetValue: Extended): boolean;
+function IsValidFloat(const Value: string; var RetValue: Extended): Boolean;
 var
-  I: integer;
-  Buffer: array[0..63] of char;
+  I: Integer;
+  Buffer: array [0..63] of Char;
 begin
-  Result := false;
+  Result := False;
   for I := 1 to Length(Value) do
     if not (Value[I] in [DecimalSeparator, '-', '+', '0'..'9', 'e', 'E']) then
       Exit;
   Result := TextToFloat(StrPLCopy(Buffer, Value,
-    sizeof(Buffer) - 1), RetValue, fvExtended);
+    SizeOf(Buffer) - 1), RetValue, fvExtended);
 end;
 
-function FormatFloatStr(const S: string; Thousands: boolean): string;
+function FormatFloatStr(const S: string; Thousands: Boolean): string;
 var
-  I, MaxSym, MinSym, Group: integer;
-  IsSign: boolean;
+  I, MaxSym, MinSym, Group: Integer;
+  IsSign: Boolean;
 begin
   Result := '';
   MaxSym := Length(S);
@@ -365,13 +360,13 @@ constructor TJvCustomNumEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csSetCaption];
-  FDecimalPlaceRound := false; // Polaris
+  FDecimalPlaceRound := False; // Polaris
   MaxLength := 0;
-  FBeepOnError := true;
+  FBeepOnError := True;
   FAlignment := taRightJustify;
   FDisplayFormat := DefaultDisplayFormat;
   FDecimalPlaces := 2;
-  FZeroEmpty := true;
+  FZeroEmpty := True;
   inherited Text := '';
   inherited Alignment := taLeftJustify;
   FDefNumGlyphs := 2;
@@ -391,33 +386,30 @@ destructor TJvCustomNumEdit.Destroy;
 begin
   FCanvas.Free;
   if FPopup <> nil then
-  begin
     TJvPopupWindow(FPopup).OnCloseUp := nil;
-    FPopup.Free;
-    FPopup := nil;
-  end;
+  FreeAndNil(FPopup);
   inherited Destroy;
 end;
 
 //Polaris
 
-procedure TJvCustomNumEdit.SetDecimalPlaceRound(Value: boolean);
+procedure TJvCustomNumEdit.SetDecimalPlaceRound(Value: Boolean);
 begin
   if FDecimalPlaceRound <> Value then
   begin
     FDecimalPlaceRound := Value;
-    SetValue(CheckValue(FValue, false));
+    SetValue(CheckValue(FValue, False));
     Invalidate;
   end;
 end;
 
-function TJvCustomNumEdit.GetDefaultBitmap(var DestroyNeeded: boolean): TBitmap;
+function TJvCustomNumEdit.GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap;
 begin
-  DestroyNeeded := false;
+  DestroyNeeded := False;
   if CalcBitmap = nil then
   begin
     CalcBitmap := TBitmap.Create;
-    CalcBitmap.Handle := LoadBitmap(HInstance, sCalcBmp);
+    CalcBitmap.LoadFromResourceName(HInstance, sCalcBmp);
   end;
   Result := CalcBitmap;
 end;
@@ -427,18 +419,18 @@ begin
   Result := ',0.##';
 end;
 
-function TJvCustomNumEdit.IsFormatStored: boolean;
+function TJvCustomNumEdit.IsFormatStored: Boolean;
 begin
   Result := (DisplayFormat <> DefaultDisplayFormat);
 end;
 
-function TJvCustomNumEdit.IsValidChar(Key: char): boolean;
+function TJvCustomNumEdit.IsValidChar(Key: Char): Boolean;
 var
   S: string;
-  SelStart, SelStop, DecPos: integer;
+  SelStart, SelStop, DecPos: Integer;
   RetValue: Extended;
 begin
-  Result := false;
+  Result := False;
   S := EditText;
   GetSel(SelStart, SelStop);
   System.Delete(S, SelStart + 1, SelStop - SelStart);
@@ -452,15 +444,15 @@ begin
       DecPos := SelStart - DecPos
     else
       DecPos := Length(S) - DecPos;
-    if DecPos > integer(FDecimalPlaces) then
+    if DecPos > Integer(FDecimalPlaces) then
       Exit;
   end;
   Result := IsValidFloat(S, RetValue);
   if Result and (FMinValue >= 0) and (FMaxValue > 0) and (RetValue < 0) then
-    Result := false;
+    Result := False;
 end;
 
-procedure TJvCustomNumEdit.KeyPress(var Key: char);
+procedure TJvCustomNumEdit.KeyPress(var Key: Char);
 begin
   if PopupVisible and (UpCase(Key) in ['0'..'9', DecimalSeparator, '.', ',',
     '+', '-', '*', '/', '_', '=', 'C', 'R', 'Q', '%', #8, #13] -
@@ -474,11 +466,11 @@ begin
   inherited KeyPress(Key);
   if (Key in [#32..#255]) and not IsValidChar(Key) then
   begin
-    if BeepOnError then
-      MessageBeep(0);
+    DoBeepOnError;
     Key := #0;
   end
-  else if Key = #27 then
+  else
+  if Ord(Key) = VK_ESCAPE then
   begin
     Reset;
     Key := #0;
@@ -491,7 +483,7 @@ begin
   SelectAll;
 end;
 
-procedure TJvCustomNumEdit.SetZeroEmpty(Value: boolean);
+procedure TJvCustomNumEdit.SetZeroEmpty(Value: Boolean);
 begin
   if FZeroEmpty <> Value then
   begin
@@ -500,7 +492,7 @@ begin
   end;
 end;
 
-procedure TJvCustomNumEdit.SetBeepOnError(Value: boolean);
+procedure TJvCustomNumEdit.SetBeepOnError(Value: Boolean);
 begin
   if FBeepOnError <> Value then
   begin
@@ -533,22 +525,22 @@ begin
   Result := FDisplayFormat;
 end;
 
-procedure TJvCustomNumEdit.SetFocused(Value: boolean);
+procedure TJvCustomNumEdit.SetFocused(Value: Boolean);
 begin
   if FFocused <> Value then
   begin
     FFocused := Value;
     Invalidate;
-    FFormatting := true;
+    FFormatting := True;
     try
       DataChanged;
     finally
-      FFormatting := false;
+      FFormatting := False;
     end;
   end;
 end;
 
-procedure TJvCustomNumEdit.SetFormatOnEditing(Value: boolean);
+procedure TJvCustomNumEdit.SetFormatOnEditing(Value: Boolean);
 begin
   if FFormatOnEditing <> Value then
   begin
@@ -559,7 +551,8 @@ begin
       inherited Alignment := taLeftJustify;
     if FFormatOnEditing and FFocused then
       ReformatEditText
-    else if FFocused then
+    else
+    if FFocused then
     begin
       UpdateData;
       DataChanged;
@@ -572,7 +565,7 @@ begin
   if FDecimalPlaces <> Value then
   begin
     FDecimalPlaces := Value;
-    SetValue(CheckValue(FValue, false)); // Polaris (?)
+    SetValue(CheckValue(FValue, False)); // Polaris (?)
     DataChanged;
     Invalidate;
   end;
@@ -606,24 +599,13 @@ begin
   if (FValue = 0.0) and FZeroEmpty then
     EditText := ''
   else
-    EditText := FormatFloat(EditFormat, CheckValue(FValue, false));
+    EditText := FormatFloat(EditFormat, CheckValue(FValue, False));
 end;
 
 function TJvCustomNumEdit.CheckValue(NewValue: Extended;
-  RaiseOnError: boolean): Extended;
-
-  function Sign(Value: Extended): integer;
-  begin
-    if Value = 0 then
-      Result := 0
-    else if Value < 0 then
-      Result := -1
-    else
-      Result := 1;
-  end;
-
+  RaiseOnError: Boolean): Extended;
 var
-  DP: integer;
+  DP: Integer;
 begin
   if FDecimalPlaceRound then
   begin //Polaris
@@ -637,7 +619,8 @@ begin
     begin
       if NewValue < FMinValue then
         Result := FMinValue
-      else if NewValue > FMaxValue then
+      else
+      if NewValue > FMaxValue then
         Result := FMaxValue;
     end
     else
@@ -647,7 +630,8 @@ begin
         if NewValue < FMinValue then
           Result := FMinValue;
       end
-      else if FMinValue = 0 then
+      else
+      if FMinValue = 0 then
       begin
         if NewValue > FMaxValue then
           Result := FMaxValue;
@@ -662,19 +646,25 @@ end;
 procedure TJvCustomNumEdit.CheckRange;
 begin
   if not (csDesigning in ComponentState) and CheckOnExit then
-    CheckValue(StrToFloat(TextToValText(EditText)), true);
+    CheckValue(StrToFloat(TextToValText(EditText)), True);
 end;
 
 procedure TJvCustomNumEdit.UpdateData;
 begin
   ValidateEdit;
-  FValue := CheckValue(StrToFloat(TextToValText(EditText)), false);
+  FValue := CheckValue(StrToFloat(TextToValText(EditText)), False);
 end;
 
 procedure TJvCustomNumEdit.UpdatePopup;
 begin
   if FPopup <> nil then
     SetupPopupCalculator(FPopup, DefCalcPrecision, BeepOnError);
+end;
+
+procedure TJvCustomNumEdit.DoBeepOnError;
+begin
+  if BeepOnError then
+    MessageBeep(0);
 end;
 
 function TJvCustomNumEdit.GetValue: Extended;
@@ -690,7 +680,7 @@ end;
 
 procedure TJvCustomNumEdit.SetValue(AValue: Extended);
 begin
-  FValue := CheckValue(AValue, false);
+  FValue := CheckValue(AValue, False);
   DataChanged;
   Invalidate;
 end;
@@ -730,8 +720,8 @@ end;
 
 function TJvCustomNumEdit.TextToValText(const AValue: string): string;
 var
-  I: integer;
-  x: char;
+  I: Integer;
+  X: Char;
 begin
   Result := DelRSpace(AValue);
   if DecimalSeparator <> ThousandSeparator then
@@ -745,8 +735,8 @@ begin
   I := 1;
   while I <= Length(Result) do
   begin
-    x := Result[I];
-    if (x = DecimalSeparator) or (x = '-') or ((x >= '0') and (x <= '9')) then
+    X := Result[I];
+    if (X = DecimalSeparator) or (X = '-') or ((X >= '0') and (X <= '9')) then
     begin
       I := I + 1;
       Continue;
@@ -757,7 +747,8 @@ begin
 
   if Result = '' then
     Result := '0'
-  else if Result = '-' then
+  else
+  if Result = '-' then
     Result := '-0';
 end;
 
@@ -765,7 +756,7 @@ procedure TJvCustomNumEdit.SetText(const AValue: string);
 begin
   if not (csReading in ComponentState) then
   begin
-    FValue := CheckValue(StrToFloat(TextToValText(AValue)), false);
+    FValue := CheckValue(StrToFloat(TextToValText(AValue)), False);
     DataChanged;
     Invalidate;
   end;
@@ -774,10 +765,10 @@ end;
 procedure TJvCustomNumEdit.ReformatEditText;
 var
   S: string;
-  IsEmpty: boolean;
-  OldLen, SelStart, SelStop: integer;
+  IsEmpty: Boolean;
+  OldLen, SelStart, SelStop: Integer;
 begin
-  FFormatting := true;
+  FFormatting := True;
   try
     S := inherited Text;
     OldLen := Length(S);
@@ -795,7 +786,7 @@ begin
       SetCursor(SelStart);
     end;
   finally
-    FFormatting := false;
+    FFormatting := False;
   end;
 end;
 
@@ -812,7 +803,7 @@ end;
 procedure TJvCustomNumEdit.AcceptValue(const Value: Variant);
 begin
   inherited AcceptValue(Value);
-  Self.Value := CheckValue(Value, false); //Polaris
+  Self.Value := CheckValue(Value, False); //Polaris
 end;
 
 procedure TJvCustomNumEdit.WMPaste(var Msg: TMessage);
@@ -828,14 +819,13 @@ begin
     SelectAll;
     if CanFocus then
       SetFocus;
-    if BeepOnError then
-      MessageBeep(0);
+    DoBeepOnError;
   end;
 end;
 
 procedure TJvCustomNumEdit.CMEnter(var Msg: TCMEnter);
 begin
-  SetFocused(true);
+  SetFocused(True);
   if FFormatOnEditing then
     ReformatEditText;
   inherited;
@@ -852,7 +842,7 @@ begin
       SetFocus;
     raise;
   end;
-  SetFocused(false);
+  SetFocused(False);
   SetCursor(0);
   DoExit;
 end;
@@ -899,8 +889,8 @@ end;
 function TJvxCurrencyEdit.DefaultDisplayFormat: string;
 var
   CurrStr: string;
-  I: integer;
-  C: char;
+  I: Integer;
+  C: Char;
 begin
   Result := ',0.' + MakeStr('0', CurrencyDecimals);
   CurrStr := '';
@@ -941,14 +931,6 @@ begin
   end;
 end;
 
-procedure DestroyLocals;
-begin
-  CalcBitmap.Free;
-  CalcBitmap := nil;
-end;
-
-{ TJvCustomCalcEdit }
-
 procedure TJvCustomCalcEdit.PopupChange;
 begin
   inherited;
@@ -959,7 +941,7 @@ end;
 initialization
 
 finalization
-  DestroyLocals;
+  FreeAndNil(CalcBitmap);
 
 end.
 

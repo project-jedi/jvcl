@@ -39,7 +39,8 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  SysUtils, Classes, IniFiles, JvAppStore;
+  SysUtils, Classes, IniFiles,
+  JvAppStore;
 
 type
   TJvAppIniStore = class(TJvCustomAppStore)
