@@ -29,8 +29,15 @@ unit JvParameterListParameter;
 interface
 
 uses
-  Classes, SysUtils, StdCtrls, ExtCtrls, Graphics, Forms,
+  Classes, SysUtils,
+  {$IFDEF VCL}
+  StdCtrls, ExtCtrls, Graphics, Forms,
   Controls, FileCtrl, Dialogs, ComCtrls, Buttons,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QStdCtrls, QExtCtrls, Types, QGraphics, QForms, 
+  QControls, QFileCtrlS, QDialogs, QComCtrls, QButtons,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}

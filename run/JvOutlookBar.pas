@@ -53,7 +53,7 @@ uses
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-  Types, QControls, QButtons, QGraphics,
+  Types, QControls, QButtons, QGraphics, QTypes,
   QImgList, QForms, QStdCtrls, QExtCtrls, QWindows,
 {$ENDIF VisualCLX}
   JvThemes, JvComponent, JvExButtons;
@@ -260,15 +260,23 @@ type
     procedure CMCaptionEditing(var Msg: TMessage); message CM_CAPTION_EDITING;
     procedure CMCaptionEditAccept(var Msg: TMessage); message CM_CAPTION_EDIT_ACCEPT;
     procedure CMCaptionEditCancel(var Msg: TMessage); message CM_CAPTION_EDIT_CANCEL;
+{$IFDEF VCL}
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
+{$ENDIF VCL}
     procedure DoButtonEdit(NewText: string; B: TJvOutlookBarButton);
     procedure DoPageEdit(NewText: string; P: TJvOutlookBarPage);
     function GetActivePage: TJvOutlookBarPage;
     function GetActivePageIndex: Integer;
   protected
+{$IFDEF VisualCLX}
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+{$ENDIF VisualCLX}
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure FontChanged; override;
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
     function GetButtonHeight(PageIndex: Integer): Integer;
     function GetButtonFrameRect(PageIndex, ButtonIndex: Integer): TRect;
     function GetButtonTextRect(PageIndex, ButtonIndex: Integer): TRect;
@@ -450,13 +458,23 @@ end;
 
 procedure TJvOutlookBarEdit.EditAccept;
 begin
+  {$IFDEF VCL}
   Parent.Perform(CM_CAPTION_EDIT_ACCEPT, Integer(Self), Tag);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Perform(Parent, CM_CAPTION_EDIT_ACCEPT, Integer(Self), Tag);
+  {$ENDIF VisualCLX}
   Hide;
 end;
 
 procedure TJvOutlookBarEdit.EditCancel;
 begin
+  {$IFDEF VCL}
   Parent.Perform(CM_CAPTION_EDIT_CANCEL, Integer(Self), Tag);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Perform(Parent, CM_CAPTION_EDIT_CANCEL, Integer(Self), Tag);
+  {$ENDIF VisualCLX}
   Hide;
 end;
 
@@ -1981,7 +1999,12 @@ begin
   if FBorderStyle <> Value then
   begin
     FBorderStyle := Value;
+    {$IFDEF VCL}
     RecreateWnd;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    RecreateWidget;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -2289,6 +2312,9 @@ end;
 
 procedure TJvCustomOutlookBar.RedrawRect(R: TRect; Erase: Boolean = False);
 begin
+  {$IFDEF VisualCLX}
+  QWindows.
+  {$ENDIF VisualCLX}
   InvalidateRect(Handle, @R, Erase);
 end;
 
@@ -2438,6 +2464,8 @@ begin
     end;
 end;
 
+
+{$IFDEF VCL}
 procedure TJvCustomOutlookBar.CMDialogChar(var Message: TCMDialogChar);
 var
   I: integer;
@@ -2466,6 +2494,26 @@ begin
   end;
   inherited;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+function TJvCustomOutlookBar.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+var
+  I:integer;
+begin
+  if CanFocus and (ActivePage <> nil) then
+  begin
+    for I := 0 to ActivePage.Buttons.Count - 1 do
+      if IsAccel(Key, ActivePage.Buttons[I].Caption) then
+      begin
+        Result := True;
+        DoButtonClick(I);
+        Exit;
+      end;
+  end;
+  Result := inherited WantKey(Key, Shift, KeyText);
+end;
+{$ENDIF VisualCLX}
 
 function TJvCustomOutlookBar.DoCustomDraw(ARect: TRect; Stage: TJvOutlookBarCustomDrawStage;
   Index: integer; Down, Inside: boolean): boolean;

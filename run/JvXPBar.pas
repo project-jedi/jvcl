@@ -617,6 +617,7 @@ begin
   Client := AClient as TJvXPBarItem;
 end;
 
+{$IFDEF VCL}
 {$IFDEF COMPILER6_UP}
 
 function TJvXPBarItemActionLink.IsAutoCheckLinked: Boolean;
@@ -624,6 +625,7 @@ begin
   Result := (Client.AutoCheck = (Action as TCustomAction).AutoCheck);
 end;
 {$ENDIF COMPILER6_UP}
+{$ENDIF VCL}
 
 function TJvXPBarItemActionLink.IsCaptionLinked: Boolean;
 begin

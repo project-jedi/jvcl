@@ -1282,7 +1282,12 @@ begin
     if FDown then
       OffsetRect(R, FOffset, FOffset);
     FTextRect := R;
+    {$IFDEF VCL}
     H := DrawText(Canvas.Handle, PChar(Caption), -1, FTextRect, Flags or DT_CALCRECT);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    H := DrawText(Canvas, Caption, -1, FTextRect, Flags or DT_CALCRECT);
+    {$ENDIF VisualCLX}
     if ImageSize = isLarge then
     begin
       FTextRect.Top := R.Top;
@@ -1295,7 +1300,12 @@ begin
       FTextRect.Bottom := FTextRect.Top + Canvas.TextHeight(Caption);
       FTextRect.Right := R.Left + Canvas.TextWidth(Caption);
     end;
+    {$IFDEF VCL}
     DrawText(Canvas.Handle, PChar(Caption), -1, R, Flags);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawText(Canvas, Caption, -1, R, Flags);
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -2287,7 +2297,12 @@ begin
       { draw disabled text }
       SetTextColor(DC, ColorToRGB(clBtnHighLight));
       OffsetRect(R, 1, 1);
+      {$IFDEF VCL}
       DrawText(DC, PChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      DrawTextW(DC, PWideChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      {$ENDIF VisualCLX}
       OffsetRect(R, -1, -1);
       SetTextColor(DC, ColorToRGB(clBtnShadow));
     end
@@ -2295,7 +2310,12 @@ begin
       SetTextColor(DC, ColorToRGB(Canvas.Font.Color));
     if FShowPressed and FDown then
       OffsetRect(R, 1, 1);
+    {$IFDEF VCL}
     DrawText(DC, PChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawTextW(DC, PWideChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+    {$ENDIF VisualCLX}
   end;
 end;
 
