@@ -2782,7 +2782,8 @@ begin
 end;
 procedure TJvExCustomTreeView.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
+  inherited;
+//  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 function TJvExCustomTreeView.NeedKey(Key: Integer; Shift: TShiftState;
