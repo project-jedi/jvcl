@@ -10,11 +10,11 @@ implementation
 uses
   Classes, ImgList,
   {$IFDEF COMPILER6_UP}
-  FiltEdit, DesignEditors, DesignIntf,
+  DesignEditors, DesignIntf,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  ExptIntf, ToolsApi,
+  FiltEdit, ExptIntf, ToolsApi,
   JclSchedule,
 
   JvTrayIcon, JvGammaPanel, JvInspector, JvLinkLabel,

@@ -29,7 +29,6 @@ package JvSystemD7D;
 requires
   JvSystemD7R,
   designide,
-  JvStdCtrlsD7R,
   dclstd,
   JvCoreD7D,
   JvCustomD7D;

@@ -15,14 +15,14 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvAni, JvAnimate, JvBmpAnimator, JvPicClip, JvIconList, 
-  JvEasterEgg, JvGradient, JvGradientCaption, JvId3v1, JvId3v2,
+  JvAni, JvAnimate, JvBmpAnimator, JvPicClip, JvIconList,
+  JvEasterEgg, JvGradient, JvGradientHeaderPanel, JvId3v1, JvId3v2,
   JvImageRotate, JvImageTransform, JvImageWindow, JvPcx,
   JvStarfield, JvWaitingGradient, JvWaitingProgress, JvWavePlayer,
   JvSpecialProgress, JvSlider, {$IFDEF USE_JV_GIF} JvGIF, JvGIFCtrl, {$ENDIF} JvID3v2Base, JvAnimatedImage,
   JvSpecialImage,
 
-  JvAnimatedEditor, JvID3v2EditorForm, JvPictureEditForm, JvIconListForm, JvGradientCaptionForm;
+  JvAnimatedEditor, JvID3v2EditorForm, JvPictureEditForm, JvIconListForm;
 
 {$R ..\resources\JvMMReg.dcr}
 
@@ -30,7 +30,7 @@ procedure Register;
 begin
   RegisterComponents('Jv Multimedia',[
     TJvAnimate, TJvBmpAnimator, TJvPicClip,
-    TJvGradient, TJvGradientCaption,
+    TJvGradient, TJvGradientHeaderPanel,
     TJvId3v1, TJvId3v2, 
     TJvImageRotate, TJvImageTransform, TJvImageWindow,
     TJvStarfield, TJvWaitingGradient, TJvWaitingProgress, TJvWavePlayer,
@@ -39,7 +39,7 @@ begin
     ]);
   RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
 
-  RegisterComponentEditor(TJvGradientCaption,TGradientCaptionEditor);
+
 
   RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
   RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);

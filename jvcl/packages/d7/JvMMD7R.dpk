@@ -32,11 +32,15 @@ requires
   JvCmpD7R,
   designide,
   JvStdCtrlsD7R,
-  JvCtrlsD7R;
+  JvCtrlsD7R,
+  vcl,
+  rtl,
+  vclx,
+  DJCL70,
+  vcljpg;
 
 contains
   JvGradient in '..\..\run\JvGradient.pas',
-  JvGradientCaption in '..\..\run\JvGradientCaption.pas',
   JvId3v1 in '..\..\run\JvId3v1.pas',
   JvId3v2 in '..\..\run\JvId3v2.pas',
   JvId3v2Types in '..\..\run\JvId3v2Types.pas',
@@ -61,6 +65,7 @@ contains
   JvAniFile in '..\..\run\JvAniFile.pas',
   JvAnimate in '..\..\run\JvAnimate.pas',
   JvBmpAnimator in '..\..\run\JvBmpAnimator.pas',
-  JvIconList in '..\..\run\JvIconList.pas';
+  JvIconList in '..\..\run\JvIconList.pas',
+  JvGradientHeaderPanel in '..\..\run\JvGradientHeaderPanel.pas';
 
 end.
