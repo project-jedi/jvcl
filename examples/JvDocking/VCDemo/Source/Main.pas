@@ -471,6 +471,7 @@ type
     procedure View_Debug_Windows_ActionExecute(Sender: TObject);
     procedure View_CallStack_ActionExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     {$IFDEF USEJVCL}
     JvAppStorage:TJvAppIniFileStorage;
@@ -479,6 +480,10 @@ type
     function GetCloseButtonRect: TRect;
     function ActionEnable: Boolean;
     procedure SetToolButtonDownAndActionCheck;
+
+    function FindExistFile(AFileName: string): TCustomForm;
+    function FindOrOpenFile(filename:String):TCustomForm;
+
     { Private declarations }
   public
     { Public declarations }
@@ -583,9 +588,8 @@ begin
   ShowMessage(Format('You have click ''%s''', [TAction(Sender).Caption]));
 end;
 
-procedure TMainForm.File_Open_ActionExecute(Sender: TObject);
 
-  function FindExistFile(AFileName: string): TCustomForm;
+function TMainForm.FindExistFile(AFileName: string): TCustomForm;
   var i: Integer;
   begin
     Result := nil;
@@ -597,8 +601,29 @@ procedure TMainForm.File_Open_ActionExecute(Sender: TObject);
       end;
   end;
 
+function TMainForm.FindOrOpenFile(filename:String):TCustomForm;
 var
   ExistForm: TCustomForm;
+begin
+        ExistForm := FindExistFile(filename);
+        if ExistForm = nil then
+        begin
+          with TSourceEditForm.Create(nil) do
+          begin
+            try
+              LoadFromFile(filename);
+            except
+              Release;
+              ShowMessage('Open file Failed!');
+            end;
+          end;
+        end else if not ExistForm.Active then begin
+          ExistForm.Show;
+        end;
+end;
+
+procedure TMainForm.File_Open_ActionExecute(Sender: TObject);
+var
   i: Integer;
 
 begin
@@ -615,20 +640,7 @@ begin
 
       for i := 0 to OpenDialog1.Files.Count - 1 do
       begin
-        ExistForm := FindExistFile(OpenDialog1.Files[i]);
-        if ExistForm = nil then
-        begin
-          with TSourceEditForm.Create(nil) do
-          begin
-            try
-              LoadFromFile(OpenDialog1.Files[i]);
-            except
-              Release;
-              ShowMessage('Open file Fail!');
-            end;
-          end;
-        end else if not ExistForm.Active then
-          ExistForm.Show;
+          FindOrOpenFile(OpenDialog1.Files[i]);
       end;
     end;
   end;
@@ -980,6 +992,23 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   LoadDockInfo;
+end;
+
+procedure TMainForm.FormShow(Sender: TObject);
+var
+  openfilename:String;
+begin
+  openfilename := ExtractFilePath(Application.ExeName)+'..\C++ File\MyApp.cpp';
+  if FileExists( openfilename) then begin
+      FindOrOpenFile(openfilename);
+  end;
+  View_Workspace_ActionExecute(Sender);
+  if Assigned(WorkSpaceForm) then begin
+     ShowDockForm(WorkSpaceForm);
+     WorkSpaceForm.ClassView_TreeView.FullExpand;
+     // --- HOW TO DOCK A WINDOW TO A DOCK SERVER IN CODE: ---
+     WorkSpaceForm.ManualDock(lbDockServer1.LeftDockPanel );
+  end;
 end;
 
 end.
