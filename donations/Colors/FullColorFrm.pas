@@ -81,6 +81,8 @@ type
     FScrollBarAxes: array [TAxisIndex] of TScrollBar;
     FSpinEditAxes: array [TAxisIndex] of TSpinEdit;
     FLabelAxes: array [TAxisIndex] of TLabel;
+    FFilled: Boolean;
+    procedure FillInternalArrays;
   protected
     procedure UpdateColorValue;
     procedure UpdateColorSpace;
@@ -89,6 +91,7 @@ type
     procedure Loaded; override;
     property Expanded: Boolean read FExpanded;
   public
+    procedure AfterConstruction; override;
     procedure Expand;
     procedure Collapse;
   end;
@@ -122,20 +125,33 @@ begin
   SetOptions(Options);
 end;
 
+procedure TFullColorForm.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  FillInternalArrays;
+end;
+
+procedure TFullColorForm.FillInternalArrays;
+begin
+  if not FFilled then
+  begin
+    FScrollBarAxes[axIndex0] := ScrollBarAxis0;
+    FScrollBarAxes[axIndex1] := ScrollBarAxis1;
+    FScrollBarAxes[axIndex2] := ScrollBarAxis2;
+    FSpinEditAxes[axIndex0] := SpinEditAxis0;
+    FSpinEditAxes[axIndex1] := SpinEditAxis1;
+    FSpinEditAxes[axIndex2] := SpinEditAxis2;
+    FLabelAxes[axIndex0] := LabelAxis0;
+    FLabelAxes[axIndex1] := LabelAxis1;
+    FLabelAxes[axIndex2] := LabelAxis2;
+    FFilled := True;
+  end;
+end;
+
 procedure TFullColorForm.Loaded;
 begin
   inherited Loaded;
   FExpandedWidth := Width;
-
-  FScrollBarAxes[axIndex0] := ScrollBarAxis0;
-  FScrollBarAxes[axIndex1] := ScrollBarAxis1;
-  FScrollBarAxes[axIndex2] := ScrollBarAxis2;
-  FSpinEditAxes[axIndex0] := SpinEditAxis0;
-  FSpinEditAxes[axIndex1] := SpinEditAxis1;
-  FSpinEditAxes[axIndex2] := SpinEditAxis2;
-  FLabelAxes[axIndex0] := LabelAxis0;
-  FLabelAxes[axIndex1] := LabelAxis1;
-  FLabelAxes[axIndex2] := LabelAxis2;
 end;
 
 procedure TFullColorForm.Expand;
@@ -231,6 +247,7 @@ var
 begin
   if FUpdating then
     Exit;
+  FillInternalArrays;
 
   FUpdating := True;
 
@@ -294,6 +311,7 @@ var
 begin
   if FUpdating then
     Exit;
+  FillInternalArrays;
 
   FUpdating := True;
 

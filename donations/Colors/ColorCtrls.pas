@@ -79,6 +79,7 @@ type
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMKeyDown(var Msg: TWMKeyDown); message WM_KEYDOWN;
     procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
+    procedure SetWantDrawBuffer(Value: Boolean);
   protected
     procedure Paint; override;
     procedure SetFullColor(const Value: TFullColor); virtual;
@@ -93,7 +94,7 @@ type
     procedure ColorSpaceChange; virtual;
     procedure CalcSize; virtual;
     procedure KeyMove(KeyCode: TKeyCode; MoveCount: Integer); virtual;
-    property WantDrawBuffer: Boolean read FWantDrawBuffer write FWantDrawBuffer;
+    property WantDrawBuffer: Boolean read FWantDrawBuffer write SetWantDrawBuffer;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -696,7 +697,6 @@ end;
 procedure TColorComponent.CalcSize;
 begin
   WantDrawBuffer := True;
-  Invalidate;
 end;
 
 procedure TColorComponent.DrawBuffer;
@@ -804,6 +804,13 @@ begin
     FOnAxisConfigChange(Self);
 end;
 
+procedure TColorComponent.SetWantDrawBuffer(Value: Boolean);
+begin
+  FWantDrawBuffer := Value;
+  if Value then
+    Invalidate;
+end;
+
 procedure TColorComponent.WMGetDlgCode(var Msg: TWMGetDlgCode);
 begin
   Msg.Result := DLGC_WANTARROWS;
@@ -849,7 +856,6 @@ procedure TColorComponent.CMColorChanged(var Msg: TMessage);
 begin
   inherited;
   WantDrawBuffer := True;
-  Invalidate;
 end;
 
 //=== { TColor2D } ===========================================================
@@ -907,7 +913,6 @@ begin
   FValueZAuto := False;
   FValueZ := Value;
   WantDrawBuffer := True;
-  Invalidate;
 end;
 
 procedure TColorComponent2D.SetValueZAuto(const Value: Boolean);
@@ -916,7 +921,6 @@ begin
   if Value then
     UpdateDefaultValueZ;
   WantDrawBuffer := True;
-  Invalidate;
 end;
 
 procedure TColorComponent2D.UpdateDefaultValueZ;
@@ -1096,7 +1100,6 @@ begin
   begin
     FReverseAxisX := Value;
     WantDrawBuffer := True;
-    Invalidate;
   end;
 end;
 
@@ -1106,7 +1109,6 @@ begin
   begin
     FReverseAxisY := Value;
     WantDrawBuffer := True;
-    Invalidate;
   end;
 end;
 
@@ -1637,7 +1639,6 @@ end;
 procedure TColorCircle.PenChanged(Sender: TObject);
 begin
   WantDrawBuffer := True;
-  Invalidate;
 end;
 
 procedure TColorCircle.ConvertColorToColorID(NewFullColor: TFullColor);
@@ -1805,7 +1806,6 @@ begin
   begin
     FInvertRadius := Value;
     WantDrawBuffer := True;
-    Invalidate;
   end;
 end;
 
@@ -1815,7 +1815,6 @@ begin
   begin
     FInvertRotation := Value;
     WantDrawBuffer := True;
-    Invalidate;
   end;
 end;
 
@@ -1827,7 +1826,6 @@ begin
   begin
     FLineWidth := Value;
     WantDrawBuffer := True;
-    Invalidate;
   end;
 end;
 
@@ -1837,7 +1835,6 @@ begin
   begin
     FStyles := Value;
     WantDrawBuffer := True;
-    Invalidate;
   end;
 end;
 
@@ -1969,7 +1966,6 @@ begin
   begin
     FCrossBlueColor := Value;
     WantDrawBuffer := True;
-    Invalidate;
   end;
 end;
 
@@ -1979,7 +1975,6 @@ begin
   begin
     FCrossGreenColor := Value;
     WantDrawBuffer := True;
-    Invalidate;
   end;
 end;
 
@@ -1989,7 +1984,6 @@ begin
   begin
     FCrossRedColor := Value;
     WantDrawBuffer := True;
-    Invalidate;
   end;
 end;
 
@@ -2436,7 +2430,6 @@ begin
   begin
     FColorOrientation := Value;
     WantDrawBuffer := True;
-    Invalidate;
   end;
 end;
 
@@ -2456,10 +2449,7 @@ begin
   if FullColorDrawing then
   begin
     if FullColor <> OldColor then
-    begin
       WantDrawBuffer := True;
-      Invalidate;
-    end;
   end
   else
   begin
@@ -2475,7 +2465,6 @@ begin
   begin
     FFullColorDrawing := Value;
     WantDrawBuffer := True;
-    Invalidate;
   end;
 end;
 
@@ -2489,7 +2478,6 @@ begin
   FValueX := Value;
   FValueXAuto := False;
   WantDrawBuffer := True;
-  Invalidate;
 end;
 
 procedure TColorTrackBar.SetValueXAuto(const Value: Boolean);
@@ -2498,7 +2486,6 @@ begin
   if Value then
     UpdateDefaultValueX;
   WantDrawBuffer := True;
-  Invalidate;
 end;
 
 procedure TColorTrackBar.SetValueY(const Value: Byte);
@@ -2506,7 +2493,6 @@ begin
   FValueY := Value;
   FValueYAuto := False;
   WantDrawBuffer := True;
-  Invalidate;
 end;
 
 procedure TColorTrackBar.SetValueYAuto(const Value: Boolean);
@@ -2515,7 +2501,6 @@ begin
   if Value then
     UpdateDefaultValueY;
   WantDrawBuffer := True;
-  Invalidate;
 end;
 
 procedure TColorTrackBar.UpdateDefaultValueX;

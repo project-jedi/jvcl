@@ -128,6 +128,8 @@ type
     FCheckBoxRed: array [TAxisIndex] of TCheckBox;
     FCheckBoxGreen: array [TAxisIndex] of TCheckBox;
     FCheckBoxBlue: array [TAxisIndex] of TCheckBox;
+    FFilled: Boolean;
+    procedure FillInternalArrays;
   protected
     procedure Loaded; override;
     procedure SetOptions(const Value: TColorCircleDialogOptions); override;
@@ -136,6 +138,7 @@ type
     procedure SetBlueDelta(const Value: TAxisDelta); override;
     procedure SetDelta(const Value: TColorDelta); override;
   public
+    procedure AfterConstruction; override;
     procedure UpdateDeltaValue;
     procedure CalcDeltaValue(ARotateColor: TRotateColor);
     procedure UpdateColorSpace;
@@ -172,41 +175,54 @@ begin
   AxisConfigCombo.Selected := ColorCircle.AxisConfig;
 end;
 
+procedure TColorCircleForm.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  FillInternalArrays;
+end;
+
+procedure TColorCircleForm.FillInternalArrays;
+begin
+  if not FFilled then
+  begin
+    FSpinEditComAxes[axIndex0] := SpinEditComAxis0;
+    FSpinEditComAxes[axIndex1] := SpinEditComAxis1;
+    FSpinEditComAxes[axIndex2] := SpinEditComAxis2;
+    FSpinEditRedAxes[axIndex0] := SpinEditRedAxis0;
+    FSpinEditRedAxes[axIndex1] := SpinEditRedAxis1;
+    FSpinEditRedAxes[axIndex2] := SpinEditRedAxis2;
+    FSpinEditGreenAxes[axIndex0] := SpinEditGreenAxis0;
+    FSpinEditGreenAxes[axIndex1] := SpinEditGreenAxis1;
+    FSpinEditGreenAxes[axIndex2] := SpinEditGreenAxis2;
+    FSpinEditBlueAxes[axIndex0] := SpinEditBlueAxis0;
+    FSpinEditBlueAxes[axIndex1] := SpinEditBlueAxis1;
+    FSpinEditBlueAxes[axIndex2] := SpinEditBlueAxis2;
+    FLabelComAxes[axIndex0] := LabelComAxis0;
+    FLabelComAxes[axIndex1] := LabelComAxis1;
+    FLabelComAxes[axIndex2] := LabelComAxis2;
+    FLabelAxes[axIndex0] := LabelAxis0;
+    FLabelAxes[axIndex1] := LabelAxis1;
+    FLabelAxes[axIndex2] := LabelAxis2;
+    FCheckBoxCom[axIndex0] := CheckBoxCom0;
+    FCheckBoxCom[axIndex1] := CheckBoxCom1;
+    FCheckBoxCom[axIndex2] := CheckBoxCom2;
+    FCheckBoxRed[axIndex0] := CheckBoxRed0;
+    FCheckBoxRed[axIndex1] := CheckBoxRed1;
+    FCheckBoxRed[axIndex2] := CheckBoxRed2;
+    FCheckBoxGreen[axIndex0] := CheckBoxGreen0;
+    FCheckBoxGreen[axIndex1] := CheckBoxGreen1;
+    FCheckBoxGreen[axIndex2] := CheckBoxGreen2;
+    FCheckBoxBlue[axIndex0] := CheckBoxBlue0;
+    FCheckBoxBlue[axIndex1] := CheckBoxBlue1;
+    FCheckBoxBlue[axIndex2] := CheckBoxBlue2;
+    FFilled := True;
+  end;
+end;
+
 procedure TColorCircleForm.Loaded;
 begin
   inherited Loaded;
   FExpandedWidth := Width;
-
-  FSpinEditComAxes[axIndex0] := SpinEditComAxis0;
-  FSpinEditComAxes[axIndex1] := SpinEditComAxis1;
-  FSpinEditComAxes[axIndex2] := SpinEditComAxis2;
-  FSpinEditRedAxes[axIndex0] := SpinEditRedAxis0;
-  FSpinEditRedAxes[axIndex1] := SpinEditRedAxis1;
-  FSpinEditRedAxes[axIndex2] := SpinEditRedAxis2;
-  FSpinEditGreenAxes[axIndex0] := SpinEditGreenAxis0;
-  FSpinEditGreenAxes[axIndex1] := SpinEditGreenAxis1;
-  FSpinEditGreenAxes[axIndex2] := SpinEditGreenAxis2;
-  FSpinEditBlueAxes[axIndex0] := SpinEditBlueAxis0;
-  FSpinEditBlueAxes[axIndex1] := SpinEditBlueAxis1;
-  FSpinEditBlueAxes[axIndex2] := SpinEditBlueAxis2;
-  FLabelComAxes[axIndex0] := LabelComAxis0;
-  FLabelComAxes[axIndex1] := LabelComAxis1;
-  FLabelComAxes[axIndex2] := LabelComAxis2;
-  FLabelAxes[axIndex0] := LabelAxis0;
-  FLabelAxes[axIndex1] := LabelAxis1;
-  FLabelAxes[axIndex2] := LabelAxis2;
-  FCheckBoxCom[axIndex0] := CheckBoxCom0;
-  FCheckBoxCom[axIndex1] := CheckBoxCom1;
-  FCheckBoxCom[axIndex2] := CheckBoxCom2;
-  FCheckBoxRed[axIndex0] := CheckBoxRed0;
-  FCheckBoxRed[axIndex1] := CheckBoxRed1;
-  FCheckBoxRed[axIndex2] := CheckBoxRed2;
-  FCheckBoxGreen[axIndex0] := CheckBoxGreen0;
-  FCheckBoxGreen[axIndex1] := CheckBoxGreen1;
-  FCheckBoxGreen[axIndex2] := CheckBoxGreen2;
-  FCheckBoxBlue[axIndex0] := CheckBoxBlue0;
-  FCheckBoxBlue[axIndex1] := CheckBoxBlue1;
-  FCheckBoxBlue[axIndex2] := CheckBoxBlue2;
 end;
 
 procedure TColorCircleForm.Collapse;
@@ -239,6 +255,7 @@ var
 
 begin
   inherited SetOptions(Value);
+  FillInternalArrays;
 
   if roFullOpen in Options then
     Expand
@@ -293,6 +310,7 @@ var
 begin
   if FUpdating then
     Exit;
+  FillInternalArrays;
 
   FUpdating := True;
 
@@ -353,9 +371,11 @@ var
       Dec(Value, AMax - AMin + 1);
     Result := Value;
   end;
+
 begin
   if FUpdating then
     Exit;
+  FillInternalArrays;
 
   FUpdating := True;
 
@@ -400,6 +420,7 @@ var
   LColor: TColor;
   EnabledA, EnabledB: Boolean;
 begin
+  FillInternalArrays;
   EnabledA := roCommon in Options;
 
   if not EnabledA then
@@ -580,6 +601,7 @@ var
 begin
   if FUpdating then
     Exit;
+  FillInternalArrays;
 
   FUpdating := True;
   for I := Low(TAxisIndex) to High(TAxisIndex) do
