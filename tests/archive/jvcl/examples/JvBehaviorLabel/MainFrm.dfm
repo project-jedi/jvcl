@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 197
   Top = 107
   BorderStyle = bsDialog
-  Caption = 'Form1'
+  Caption = 'JvBehaviorLabel Demo'
   ClientHeight = 303
   ClientWidth = 573
   Color = clBtnFace
@@ -24,7 +24,7 @@ object Form1: TForm1
     BehaviorOptions.Interval = 5
     Alignment = taCenter
     AutoSize = False
-    Caption = 'ABCDEFGHIJKLMNOPQ'
+    Caption = 'BREAK THE CODE'
     Color = clBlack
     Font.Charset = ANSI_CHARSET
     Font.Color = clLime
@@ -44,7 +44,7 @@ object Form1: TForm1
     BehaviorOptions.Pixels = 2
     Alignment = taCenter
     AutoSize = False
-    Caption = 'ENTER THE MATRIX!'
+    Caption = 'MAKE ME APPEAR'
     Color = clBlack
     Font.Charset = ANSI_CHARSET
     Font.Color = clLime
@@ -63,7 +63,7 @@ object Form1: TForm1
     BehaviorOptions.Interval = 220
     Alignment = taCenter
     AutoSize = False
-    Caption = 'ENTER THE MATRIX!'
+    Caption = 'BLINK ME'
     Color = clBlack
     Font.Charset = ANSI_CHARSET
     Font.Color = clLime
@@ -83,7 +83,7 @@ object Form1: TForm1
     BehaviorOptions.Pixels = 4
     Alignment = taCenter
     AutoSize = False
-    Caption = 'ENTER THE MATRIX!'
+    Caption = 'BOUNCE ME'
     Color = clBlack
     Font.Charset = ANSI_CHARSET
     Font.Color = clLime
@@ -102,7 +102,7 @@ object Form1: TForm1
     BehaviorOptions.Interval = 70
     Alignment = taCenter
     AutoSize = False
-    Caption = 'ENTER THE MATRIX!'
+    Caption = 'SCROLL ME'
     Color = clBlack
     Font.Charset = ANSI_CHARSET
     Font.Color = clLime
@@ -121,7 +121,7 @@ object Form1: TForm1
     BehaviorOptions.Interval = 35
     Alignment = taCenter
     AutoSize = False
-    Caption = 'ENTER THE MATRIX!'
+    Caption = 'I ACT IN A SPECIAL WAY'
     Color = clBlack
     Font.Charset = ANSI_CHARSET
     Font.Color = clLime
@@ -140,7 +140,7 @@ object Form1: TForm1
     BehaviorOptions.Interval = 120
     Alignment = taCenter
     AutoSize = False
-    Caption = 'ENTER THE MATRIX!'
+    Caption = 'TYPE THE TEXT'
     Color = clBlack
     Font.Charset = ANSI_CHARSET
     Font.Color = clLime
@@ -155,7 +155,7 @@ object Form1: TForm1
     Top = 50
     Width = 80
     Height = 25
-    Caption = 'CodeBreaker'
+    Caption = '&CodeBreaker'
     TabOrder = 0
     OnClick = Button1Click
   end
@@ -164,7 +164,7 @@ object Form1: TForm1
     Top = 48
     Width = 80
     Height = 25
-    Caption = 'Appearing'
+    Caption = '&Appearing'
     TabOrder = 1
     OnClick = Button2Click
   end
@@ -173,7 +173,7 @@ object Form1: TForm1
     Top = 121
     Width = 80
     Height = 25
-    Caption = 'Blinking'
+    Caption = '&Blinking'
     TabOrder = 2
     OnClick = Button3Click
   end
@@ -182,7 +182,7 @@ object Form1: TForm1
     Top = 121
     Width = 80
     Height = 25
-    Caption = 'Bouncing'
+    Caption = 'B&ouncing'
     TabOrder = 3
     OnClick = Button4Click
   end
@@ -191,7 +191,7 @@ object Form1: TForm1
     Top = 193
     Width = 80
     Height = 25
-    Caption = 'Scrolling'
+    Caption = '&Scrolling'
     TabOrder = 4
     OnClick = Button5Click
   end
@@ -200,7 +200,7 @@ object Form1: TForm1
     Top = 193
     Width = 80
     Height = 25
-    Caption = 'Special'
+    Caption = 'S&pecial'
     TabOrder = 5
     OnClick = Button6Click
   end
@@ -209,7 +209,7 @@ object Form1: TForm1
     Top = 265
     Width = 80
     Height = 25
-    Caption = 'Typing'
+    Caption = '&Typing'
     TabOrder = 6
     OnClick = Button7Click
   end

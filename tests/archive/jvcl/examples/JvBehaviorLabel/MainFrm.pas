@@ -56,7 +56,7 @@ end;
 
 procedure TForm1.DoCodeBreakStart(Sender: TObject);
 begin
-  lblCodeBreaker.Caption := 'ABCDEFGHIJKLMNOPQ';
+  lblCodeBreaker.Caption := 'BREAK THE CODE';
 end;
 
 procedure TForm1.DoCodeBreakStop(Sender: TObject);
