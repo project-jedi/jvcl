@@ -8,13 +8,12 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvQExControls.macros, released on 2004-09-21
+The Original Code is: JvQExStdCtrls.pas, released on 2004-09-21
 
-The Initial Developer of the Original Code is André Snepvangers [ASnepvangers att users.sourceforge.net]
+The Initial Developer of the Original Code is André Snepvangers [asn att xs4all dott nl]
 Portions created by André Snepvangers are Copyright (C) 2004 André Snepvangers.
 All Rights Reserved.
 
-Contributor(s):
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http:(jvcl.sourceforge.net
@@ -27,7 +26,6 @@ to process these files.
 It is included in JVCL 3: devtools\dpp32
 
 Known Issues:
-  UNDER CONSTRUCTION !!
 -----------------------------------------------------------------------------}
 
 // This comment is inserted into every JvQExXxx.pas file
@@ -49,7 +47,7 @@ initialization
 
 finalization
   OutputDebugString(PChar('Closed ' + UnitVersion));
-EMPTYLINE  
+EMPTYLINE
 *)
 
 {$UNDEF CREATE_CUSTOMCODE}
@@ -103,16 +101,16 @@ EMPTYLINE
   { QControl }
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FDoubleBuffered: Boolean;
     FDragCursor: TCursor;
     FDragKind: TDragKind;
     FHintColor: TColor;
     FOnParentColorChanged: TNotifyEvent;
+    procedure CMFocusChanged(var Message: TMessage); message CM_FOCUSCHANGED;
+    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
   protected
-    procedure WndProc(var Msg: TMessage); virtual;
-    procedure ColorChanged; override;
-    procedure FocusChanged; virtual;
+    function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure ParentColorChanged; override;
+    procedure WndProc(var Msg: TMessage); virtual;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
     property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
@@ -120,7 +118,6 @@ EMPTYLINE
     procedure Dispatch(var Message); override;
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   published
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
@@ -133,11 +130,6 @@ EMPTYLINE
 *)
 
 (*$DEFINE JV_CONTROL_END(ClassName)
-  private
-    FSavedHintColor: TColor;
-  protected
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -160,9 +152,8 @@ EMPTYLINE
   { QWinCustomControl }
   private
     FNativeKeys: TInputKeys;
+    FDoubleBuffered: Boolean;
     procedure OnFontChanged(Sender: TObject);
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CMFocusChanged(var Message: TMessage); message CM_FOCUSCHANGED;
     procedure WMEraseBkGnd(var Message: TMessage); message WM_ERASEBKGND;
   protected
     procedure CreateWidget; override;
@@ -171,6 +162,7 @@ EMPTYLINE
     procedure DoSetFocus(Wnd: HWND); dynamic;
     procedure GotFocus; dynamic;
     procedure LostFocus; dynamic;
+    procedure ColorChanged; override;
     function EraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
@@ -179,6 +171,7 @@ EMPTYLINE
   public
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
     function ColorToRGB(Value: TColor): TColor;
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
 *)
 
 //
@@ -298,7 +291,6 @@ EMPTYLINE
   published
     property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
       write SetClipboardCommands default [caCopy..caUndo];
-    property ReadOnly: boolean read GetReadOnly write SetReadOnly default False;
 *)
 
 (*$DEFINE JV_EDITCONTROL_BEGIN(ClassName)
@@ -369,9 +361,29 @@ EMPTYLINE
 
 (*$DEFINE JV_IMPL_CONTROL(ClassName)
 { QControl }
+procedure TJvEx##ClassName.CMFocusChanged(var Message: TMessage);
+begin
+  FocusChanged;
+end;
+
+procedure TJvEx##ClassName.CMFontChanged(var Message: TMessage);
+begin
+  FontChanged;
+end;
+
 procedure TJvEx##ClassName.FontChanged;
 begin
   Canvas.Font.Assign := Font;
+end;
+
+function TJvEx##ClassName.HintShow(var HintInfo : THintInfo): Boolean;
+begin
+  case HintColor of
+  clNone, ClDefault: HintInfo.HintColor := GetHintColor(Self.Parent);
+  else
+    HintInfo.HintColor := HintColor;
+  end;
+  Result := inherited HintShow(HintInfo);
 end;
 
 procedure TJvEx##ClassName.ParentColorChanged;
@@ -434,20 +446,13 @@ end;
 (*$DEFINE JV_CONTROL_IMPL(ClassName)
 JV_IMPL_CONTROL_CREATE(ClassName)
 
-procedure TJvEx##ClassName.ColorChanged;
-begin
-  inherited ColorChanged;
-  Canvas.Brush.Color := Color;
-end;
-
 procedure TJvEx##ClassName.FocusChanged;
 begin
   { notification }
 end;
 
-
 JV_IMPL_CONTROL(ClassName)
-JV_IMPL_CONTROL_COMMON(ClassName)
+
 *)
 
 //
@@ -467,22 +472,27 @@ begin
   end;
 end;
 
-procedure TJvEx##ClassName.FocusChanged;
-begin
-  NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvEx##ClassName.GotFocus(FocusedWnd: QWidgetH);
+procedure TJvEx##ClassName.DoSetFocus(FocusedWnd: QWidgetH);
 begin
   { notification }
 end;
 
-procedure TJvEx##ClassName.LostFocus(FocusedWnd: QWidgetH);
+procedure TJvEx##ClassName.DoKillFocus(FocusedWnd: QWidgetH);
 begin
   { notification }
 end;
 
-function TJvEx##ClassName.EraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+procedure TJvEx##ClassName.GotFocus;
+begin
+  { notification }
+end;
+
+procedure TJvEx##ClassName.LostFocus;
+begin
+  { notification }
+end;
+
+function TJvEx##ClassName.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -516,6 +526,11 @@ end;
 procedure TJvEx##ClassName.CreateWnd;
 begin
   inherited CreateWidget;
+end;
+
+procedure TJvEx##ClassName.FocusChanged;
+begin
+  NotifyControls(CM_FOCUSCHANGED);
 end;
 
 procedure TJvEx##ClassName.RecreateWnd;
@@ -585,6 +600,7 @@ begin
   inherited Create(AOwner);
   Font.OnChange := OnFontChanged;
   FHintColor := clDefault;
+  FDoubleBuffered := True;
   CREATE_CUSTOMCODE
 end;
 
@@ -597,16 +613,22 @@ EMPTYLINE
 *)
 
 (*$DEFINE JV_WINCUSTOMCONTROL_IMPL(ClassName)
-   JV_IMPL_WINCUSTOMCONTROL_CREATE(ClassName)
-   JV_IMPL_WINCUSTOMCONTROL(ClassName)
-   JV_IMPL_WINCONTROL_PAINT(ClassName)
-   JV_IMPL_CONTROL(ClassName)
+JV_IMPL_WINCUSTOMCONTROL_CREATE(ClassName)
+JV_IMPL_WINCUSTOMCONTROL(ClassName)
+JV_IMPL_WINCONTROL_PAINT(ClassName)
+JV_IMPL_CONTROL(ClassName)
 *)
 
 (*$DEFINE JV_CUSTOMCONTROL_IMPL(ClassName)
    JV_IMPL_WINCUSTOMCONTROL_CREATE(ClassName)
    JV_IMPL_WINCUSTOMCONTROL(ClassName)
    JV_IMPL_CONTROL(ClassName)
+
+procedure TJvEx##ClassName.FocusChanged;
+begin
+  NotifyControls(CM_FOCUSCHANGED);
+end;
+ EMPTYLINE
 *)
 
 (*$DEFINE JV_IMPL_WINCONTROL_CREATE(ClassName)
@@ -618,6 +640,7 @@ begin
   TControlCanvas(FCanvas).Control := Self;
   Font.OnChange := OnFontChanged;
   FHintColor := clDefault;
+  FDoubleBuffered := True;
   CREATE_CUSTOMCODE
 end;
 
@@ -632,10 +655,10 @@ end;
 
 
 (*$DEFINE JV_WINCONTROL_IMPL(ClassName)
-   JV_IMPL_WINCONTROL_CREATE(ClassName)
-   JV_IMPL_WINCUSTOMCONTROL(ClassName)
-   JV_IMPL_WINCONTROL_PAINT(ClassName)
-   JV_IMPL_CONTROL(ClassName)
+JV_IMPL_WINCONTROL_CREATE(ClassName)
+JV_IMPL_WINCUSTOMCONTROL(ClassName)
+JV_IMPL_WINCONTROL_PAINT(ClassName)
+JV_IMPL_CONTROL(ClassName)
 *)
 
 (*$DEFINE JV_IMPL_EDITCONTROL(ClassName)
@@ -696,15 +719,16 @@ begin
     FEditRect := ClientRect;
   Invalidate;
 end;
+
 *) // end of JV_IMPL_EDITCONTROL
 
 
 (*$DEFINE JV_EDITCONTROL_IMPL(ClassName)
-   JV_IMPL_WINCONTROL_CREATE(ClassName)
-   JV_IMPL_EDITCONTROL(ClassName)
-   JV_IMPL_WINCUSTOMCONTROL(ClassName)
-   JV_IMPL_WINCONTROL_PAINT(ClassName)
-   JV_IMPL_CONTROL(ClassName)
+JV_IMPL_WINCONTROL_CREATE(ClassName)
+JV_IMPL_EDITCONTROL(ClassName)
+JV_IMPL_WINCUSTOMCONTROL(ClassName)
+JV_IMPL_WINCONTROL_PAINT(ClassName)
+JV_IMPL_CONTROL(ClassName)
 *)
 
 (*$DEFINE JV_IMPL_CUSTOMFORM(ClassName)
@@ -713,6 +737,7 @@ constructor TJvEx##ClassName.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
   inherited CreateNew(AOwner, Dummy);
   FHintColor := clDefault;
+//  FDoubleBuffered := True;
   Font.OnChange := OnFontChanged;
   CREATE_CUSTOMCODE
 end;
@@ -722,11 +747,11 @@ end;
 // ************************************************
 
 (*$DEFINE JV_CUSTOMFORM_IMPL(ClassName)
-   JV_IMPL_WINCUSTOMCONTROL_CREATE(ClassName)
-   JV_IMPL_CUSTOMFORM(ClassName)
-   JV_IMPL_WINCUSTOMCONTROL(ClassName)
-   JV_IMPL_CUSTOMCONTROL_PAINT(ClassName)
-   JV_IMPL_CONTROL(ClassName)
+JV_IMPL_WINCUSTOMCONTROL_CREATE(ClassName)
+JV_IMPL_CUSTOMFORM(ClassName)
+JV_IMPL_WINCUSTOMCONTROL(ClassName)
+JV_IMPL_CUSTOMCONTROL_PAINT(ClassName)
+JV_IMPL_CONTROL(ClassName)
 *)
 
 
