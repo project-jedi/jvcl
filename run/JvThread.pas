@@ -47,7 +47,6 @@ type
     FFreeOnTerminate: Boolean;
     procedure DoCreate;
     procedure DoTerminate(Sender: TObject);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -77,26 +76,33 @@ type
     procedure Execute; override;
   end;
 
+// Cannot be synchronized to the MainThread (VCL)
 procedure Synchronize(Method: TNotifyEvent);
 procedure SynchronizeParams(Method: TJvNotifyParamsEvent; P: Pointer);
 
 implementation
 
 var
-  Mtx: THandle;
+  SyncMtx: THandle;
 
 procedure Synchronize(Method: TNotifyEvent);
 begin
-  WaitForSingleObject(Mtx, INFINITE);
-  Method(nil);
-  ReleaseMutex(Mtx);
+  WaitForSingleObject(SyncMtx, INFINITE);
+  try
+    Method(nil);
+  finally
+    ReleaseMutex(SyncMtx);
+  end;
 end;
 
 procedure SynchronizeParams(Method: TJvNotifyParamsEvent; P: Pointer);
 begin
-  WaitForSingleObject(Mtx, INFINITE);
-  Method(nil, P);
-  ReleaseMutex(Mtx);
+  WaitForSingleObject(SyncMtx, INFINITE);
+  try
+    Method(nil, P);
+  finally
+    ReleaseMutex(SyncMtx);
+  end;
 end;
 
 //=== TJvThread ==============================================================
@@ -107,11 +113,13 @@ begin
   FThreadCount := 0;
   FRunOnCreate := True;
   FExclusive := True;
-  FreeOnTerminate := True;
+  FFreeOnTerminate := True;
 end;
 
 destructor TJvThread.Destroy;
 begin
+  while OneThreadIsRunning do
+    Sleep(0);
   inherited Destroy;
 end;
 
@@ -120,16 +128,21 @@ var
   HideThread: TJvHideThread;
 begin
   Result := 0;
+  if Exclusive and OneThreadIsRunning then
+    Exit;
+    
   if Assigned(FOnExecute) then
   begin
-    if Exclusive then
-      if OneThreadIsRunning then
-        Exit;
     Inc(FThreadCount);
     HideThread := TJvHideThread.Create(FOnExecute, P);
-    HideThread.FreeOnTerminate := FFreeOnTerminate;
-    HideThread.OnTerminate := DoTerminate;
-    DoCreate;
+    try
+      HideThread.FreeOnTerminate := FFreeOnTerminate;
+      HideThread.OnTerminate := DoTerminate;
+      DoCreate;
+    except
+      HideThread.Free;
+      raise;
+    end;
     if FRunOnCreate then
       HideThread.Resume;
     Result := HideThread.ThreadID;
@@ -172,11 +185,14 @@ end;
 procedure TJvThread.DoTerminate;
 begin
   Dec(FThreadCount);
-  if Assigned(FOnFinish) then
-    FOnFinish(nil);
-  if FThreadCount = 0 then
-    if Assigned(FOnFinishAll) then
-      FOnFinishAll(nil);
+  try
+    if Assigned(FOnFinish) then
+      FOnFinish(nil);
+  finally
+    if FThreadCount = 0 then
+      if Assigned(FOnFinishAll) then
+        FOnFinishAll(nil);
+  end;
 end;
 
 function TJvThread.OneThreadIsRunning: Boolean;
@@ -199,10 +215,10 @@ begin
 end;
 
 initialization
-  Mtx := CreateMutex(nil, False, 'VCLJvThreadMutex');
+  SyncMtx := CreateMutex(nil, False, 'VCLJvThreadMutex');
 
 finalization
-  CloseHandle(Mtx);
+  CloseHandle(SyncMtx);
 
 end.
 
