@@ -95,18 +95,19 @@ type
 type
   TDesigner = IDesigner;
   TFormDesigner = IFormDesigner;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 var
   glCompListEditor: TJvgCompListEditor;
 
-
-resourcestring
-  sEditComponentList = 'Edit component list...';
-
 implementation
+
+uses
+  JvDsgnConsts;
+
 {$R *.DFM}
-//----------- common proc
+
+//=== common proc ============================================================
 
 procedure ShowCompListEditor(Designer: TDesigner; glPropertyCenter:
   TJvgPropertyCenter);
@@ -116,10 +117,10 @@ begin
   Dialog := TJvgCompListEditor.Create(Application);
   Dialog.Component := glPropertyCenter; //TJvgPropertyCenter(GetComponent(0));
   Dialog.ShowModal;
-  Dialog.free;
+  Dialog.Free;
 end;
 
-//----------- TJvgComponentListProperty
+//=== TJvgComponentListProperty ==============================================
 
 function TJvgComponentListProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -136,19 +137,22 @@ begin
   ShowCompListEditor(Designer, TJvgPropertyCenter(GetComponent(0)));
   //  GetComponent(0).Owner.Name
 end;
-//----------- TJvgComponentListEditor
+
+//=== TJvgComponentListEditor ================================================
 
 procedure TJvgComponentListEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-    0: ShowCompListEditor(Designer, TJvgPropertyCenter(Component));
+    0:
+      ShowCompListEditor(Designer, TJvgPropertyCenter(Component));
   end;
 end;
 
 function TJvgComponentListEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := sEditComponentList;
+    0:
+      Result := SEditComponentList;
   end;
 end;
 
@@ -157,11 +161,11 @@ begin
   Result := 1;
 end;
 
-//----------- TJvgCompListEditor
+//=== TJvgCompListEditor =====================================================
 
 procedure TJvgCompListEditor.FormCreate(Sender: TObject);
 begin
-  //  ControlsList := TList.create;
+  //  ControlsList := TList.Create;
 end;
 
 procedure TJvgCompListEditor.FormDestroy(Sender: TObject);
@@ -170,52 +174,53 @@ begin
 end;
 
 procedure TJvgCompListEditor.FormShow(Sender: TObject);
+const
+  cSigns: array [Boolean] of PChar = ('-', '+');
+  cFont = 'Font';
+  cColor = 'Color';
 var
-  i, j: integer;
+  I, J: Integer;
   ListItem: TListItem;
   Comp: TComponent;
   ColorPropInfo, FontPropInfo: PPropInfo;
-const
-  aSigns: array[boolean] of string = ('-', '+');
 begin
   lvAll.Items.Clear;
   lvSel.Items.Clear;
 
-  for i := 0 to Component.ComponentList.Count - 1 do
+  for I := 0 to Component.ComponentList.Count - 1 do
   begin
     ListItem := lvSel.Items.Add;
-    ListItem.Caption := Component.ComponentList[i];
-    Comp := Component.Owner.FindComponent(Component.ComponentList[i]);
+    ListItem.Caption := Component.ComponentList[I];
+    Comp := Component.Owner.FindComponent(Component.ComponentList[I]);
     if Comp = nil then
-      continue;
-    ColorPropInfo := GetPropInfo(Comp.ClassInfo, 'Color');
-    FontPropInfo := GetPropInfo(Comp.ClassInfo, 'Font');
-    ListItem.SubItems.Add(aSigns[Assigned(ColorPropInfo)]);
-    ListItem.SubItems.Add(aSigns[Assigned(FontPropInfo)]);
+      Continue;
+    ColorPropInfo := GetPropInfo(Comp.ClassInfo, cColor);
+    FontPropInfo := GetPropInfo(Comp.ClassInfo, cFont);
+    ListItem.SubItems.Add(cSigns[Assigned(ColorPropInfo)]);
+    ListItem.SubItems.Add(cSigns[Assigned(FontPropInfo)]);
     ListItem.ImageIndex := 1;
   end;
 
   with Component.Owner do
-    for i := 0 to ComponentCount - 1 do
+    for I := 0 to ComponentCount - 1 do
     begin
-      ColorPropInfo := GetPropInfo(Components[i].ClassInfo, 'Color');
-      FontPropInfo := GetPropInfo(Components[i].ClassInfo, 'Font');
+      ColorPropInfo := GetPropInfo(Components[I].ClassInfo, cColor);
+      FontPropInfo := GetPropInfo(Components[I].ClassInfo, cFont);
       if (ColorPropInfo <> nil) or (FontPropInfo <> nil) then
       begin
         ListItem := lvAll.Items.Add;
-        ListItem.Caption := Components[i].Name;
-        ListItem.SubItems.Add(aSigns[Assigned(ColorPropInfo)]);
-        ListItem.SubItems.Add(aSigns[Assigned(FontPropInfo)]);
+        ListItem.Caption := Components[I].Name;
+        ListItem.SubItems.Add(cSigns[Assigned(ColorPropInfo)]);
+        ListItem.SubItems.Add(cSigns[Assigned(FontPropInfo)]);
 
-        for j := 0 to lvSel.Items.Count - 1 do
-          if lvSel.Items[j].Caption = ListItem.Caption then
+        for J := 0 to lvSel.Items.Count - 1 do
+          if lvSel.Items[J].Caption = ListItem.Caption then
           begin
             ListItem.ImageIndex := 1;
-            break;
+            Break;
           end;
-
       end;
-      //  SetOrdProp( FormX.Components[i], PropInfo, clGreen );
+      //  SetOrdProp(FormX.Components[I], PropInfo, clGreen);
     end;
 end;
 
@@ -224,7 +229,7 @@ var
   ListItem: TListItem;
 begin
   if (lvAll.Selected = nil) or (lvAll.Selected.ImageIndex = 1) then
-    exit;
+    Exit;
 
   ListItem := lvSel.Items.Add;
   ListItem.Caption := lvAll.Selected.Caption;
@@ -236,39 +241,40 @@ end;
 
 procedure TJvgCompListEditor.BitBtn4Click(Sender: TObject);
 begin
-  close;
+  Close;
 end;
 
 procedure TJvgCompListEditor.BitBtn3Click(Sender: TObject);
 var
-  i: integer;
+  I: Integer;
   Comp: TComponent;
 begin
   Component.ComponentList.Clear;
   Component.CompList.Clear;
-  for i := 0 to lvSel.Items.Count - 1 do
+  for I := 0 to lvSel.Items.Count - 1 do
   begin
-    Comp := Component.Owner.FindComponent(lvSel.Items[i].Caption);
+    Comp := Component.Owner.FindComponent(lvSel.Items[I].Caption);
     if Comp = nil then
-      continue;
+      Continue;
     Component.CompList.Add(Comp);
-    Component.ComponentList.Add(lvSel.Items[i].Caption);
+    Component.ComponentList.Add(lvSel.Items[I].Caption);
   end;
-  close;
+  Close;
 end;
 
 procedure TJvgCompListEditor.lvSelDblClick(Sender: TObject);
 var
-  i: integer;
+  I: Integer;
 begin
   if not Assigned(lvSel.Selected) then
-    exit;
-  for i := 0 to lvAll.Items.Count - 1 do
-    if lvAll.Items[i].Caption = lvSel.Selected.Caption then
-      break;
-
-  lvAll.Items[i].ImageIndex := 0;
-  lvSel.Items.Delete(lvSel.Selected.Index);
+    Exit;
+  for I := 0 to lvAll.Items.Count - 1 do
+    if lvAll.Items[I].Caption = lvSel.Selected.Caption then
+    begin
+      lvAll.Items[I].ImageIndex := 0;
+      lvSel.Items.Delete(lvSel.Selected.Index);
+      Break;
+    end;
 end;
 
 procedure TJvgCompListEditor.lvSelChange(Sender: TObject; Item: TListItem;
@@ -280,8 +286,7 @@ end;
 procedure TJvgCompListEditor.lvAllChange(Sender: TObject; Item: TListItem;
   Change: TItemChange);
 begin
-  pbAdd.Enabled := Assigned(lvAll.Selected) and (lvAll.Selected.ImageIndex =
-    0);
+  pbAdd.Enabled := Assigned(lvAll.Selected) and (lvAll.Selected.ImageIndex = 0);
 end;
 
 end.

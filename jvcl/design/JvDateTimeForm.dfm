@@ -15,6 +15,9 @@ object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
   OldCreateOrder = False
   PopupMenu = PopupMenu1
   OnCreate = FormCreate
+  DesignSize = (
+    254
+    144)
   PixelsPerInch = 96
   TextHeight = 13
   object lblDate: TLabel

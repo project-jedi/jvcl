@@ -104,6 +104,34 @@ resourcestring
   SUnknown = '<unknown>';
   SNoItem = '<no item>';
 
+  //=== JvDateTimeForm.pas ===================================================
+  SSelectDate = 'Select Date';
+  SSelectTime = 'Select Time';
+  SSelectDateTime = 'Select Date and Time';
+
+  //=== JvDsgnEditors.pas ====================================================
+  SAllFiles = 'All files (*.*)|*.*';
+  SStripFilePath = '&Strip file path';
+  SExecutableFilesExeExeAllFiles = 'Executable files (*.exe)|*.exe|All files (*.*)|*.*';
+  SItems = 'Items';
+  SFmtEditProperty = '%s Editor...';
+
+  //=== JvFooterEditor.pas ===================================================
+  SAddButton = 'Add button';
+  SMSOffice = 'MS Office 2000';
+  SMSEnterpriseManagerWizard = 'MS Enterprise Manager Wizard';
+  SDialogMode = 'Dialog Mode';
+  SPrevious = 'Previous';
+  SNext = 'Next';
+
+  //=== JvgComponentListEditorForm.pas =======================================
+  SEditComponentList = 'Edit component list...';
+
+  //=== JvgHelpPanelEditor.pas ===============================================
+  SRTFAndTextFilesrtftxtrtftxt = 'RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt';
+  SLoadRTFFile = 'Load RTF file';
+  SPreviewRTFText = 'Preview RTF text';
+
   //=== DataProvider design time constants ===================================
   SDataProviderDesignerCaption = 'Editing %s%s...';
   SDataProviderContextManCaption = 'Editing contexts for ''%s''...';

@@ -34,7 +34,8 @@ requires
   qrpt50,
   vcljpg50,
   vclie50,
-  JvGlobusD5R;
+  JvGlobusD5R,
+  JvCoreD5D;
 
 contains
   JvGlobusReg in '..\..\design\JvGlobusReg.pas',

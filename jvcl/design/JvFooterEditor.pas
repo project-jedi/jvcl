@@ -1,5 +1,32 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvAnimatedEditor.PAS, released on 2002-05-26.
+
+The Initial Developer of the Original Code is John Doe.
+Portions created by John Doe are Copyright (C) 2003 John Doe.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-11-09
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
+
 unit JvFooterEditor;
 
 interface
@@ -9,7 +36,7 @@ uses
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   SysUtils, Classes, Dialogs, Controls;
 
 type
@@ -21,19 +48,11 @@ type
     procedure Edit; override;
   end;
 
-
-resourcestring
-  sAddButton = 'Add button';
-  sMSOffice = 'MS Office 2000';
-  sMSEnterpriseManagerWizard = 'MS Enterprise Manager Wizard';
-  sDialogMode = 'Dialog Mode';
-  sPrevious = 'Previous';
-  sNext = 'Next';
-
 implementation
+
 uses
-  Consts, 
-  JvTypes, JvFooter;
+  Consts,
+  JvTypes, JvFooter, JvDsgnConsts;
 
 //=== TJvFooterEditor ========================================================
 
@@ -46,19 +65,21 @@ function TJvFooterEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := sAddButton;
+      Result := SAddButton;
     1:
       Result := '-'; // do not localize
     2:
-      Result := sMSOffice;
+      Result := SMSOffice;
     3:
-      Result := sMSEnterpriseManagerWizard;
+      Result := SMSEnterpriseManagerWizard;
     4:
-      Result := sDialogMode;
+      Result := SDialogMode;
   end;
 end;
 
 procedure TJvFooterEditor.ExecuteVerb(Index: Integer);
+const
+  cButtonHeight = 50;
 var
   FButton: TJvFooterBtn;
 begin
@@ -69,30 +90,30 @@ begin
       ;
     2:
       begin
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
+        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
         FButton.Caption := SHelpButton;
         FButton.Alignment := taLeftJustify;
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
+        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
         FButton.Caption := SOKButton;
         FButton.Default := True;
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
+        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
         FButton.Caption := SCancelButton;
         FButton.Cancel := True;
       end;
     3:
       begin
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
-        FButton.Caption := sPrevious;
+        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
+        FButton.Caption := SPrevious;
         FButton.SpaceInterval := 0;
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
-        FButton.Caption := sNext;
+        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
+        FButton.Caption := SNext;
         FButton.Default := True;
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
+        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
         FButton.Caption := SCloseButton;
       end;
     4:
       begin
-        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
+        FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
         FButton.Caption := SOKButton;
         FButton.SpaceInterval := 0;
         FButton.Alignment := taCenter;
@@ -104,6 +125,5 @@ procedure TJvFooterEditor.Edit;
 begin
   // We don't need to add band on double click
 end;
-  
 
 end.

@@ -35,12 +35,13 @@ interface
 uses
   {$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls, Menus;
 
 type
   { define the different types of date and time combinations supported by the dialog }
   TDateSelectType = (dstDate, dstTime, dstDateTime);
+
   { the edit dialog }
   TFrmSelectDateTimeDlg = class(TForm)
     dtpDate: TDateTimePicker;
@@ -61,16 +62,12 @@ type
     class function SelectDateTime(var ADate: TDateTime; AType: TDateSelectType): Boolean;
   end;
 
-resourcestring
-  SSelectDate = 'Select Date';
-  SSelectTime = 'Select Time';
-  SSelectDateTime = 'Select Date and Time';
-
 implementation
 
-{$R *.dfm}
+uses
+  JvDsgnConsts;
 
-{ TFrmSelectDateTimeDlg }
+{$R *.dfm}
 
 class function TFrmSelectDateTimeDlg.SelectDateTime(var ADate: TDateTime;
   AType: TDateSelectType): Boolean;
@@ -79,13 +76,13 @@ var
 begin
   F := Self.Create(Application);
   try
-    F.dtpDate.Date := trunc(ADate);
-    F.dtpTime.Time := frac(ADate);
+    F.dtpDate.Date := Trunc(ADate);
+    F.dtpTime.Time := Frac(ADate);
     case AType of
       dstDate:
         begin
-          F.mnuDate.Visible := false;
-          F.mnuTime.Visible := false;
+          F.mnuDate.Visible := False;
+          F.mnuTime.Visible := False;
           F.Caption := SSelectDate;
           F.lblTime.Visible := False;
           F.dtpTime.Visible := False;
@@ -93,8 +90,8 @@ begin
         end;
       dstTime:
         begin
-          F.mnuTime.Visible := false;
-          F.mnuDate.Visible := false;
+          F.mnuTime.Visible := False;
+          F.mnuDate.Visible := False;
           F.Caption := SSelectTime;
           F.lblDate.Visible := False;
           F.dtpDate.Visible := False;
@@ -103,7 +100,7 @@ begin
           F.Height := F.Height - F.lblTime.Height - F.dtpTime.Height;
         end;
     end;
-    Result := F.ShowModal = mrOK;
+    Result := F.ShowModal = mrOk;
     if Result then
       ADate := Trunc(F.dtpDate.Date) + Frac(F.dtpTime.Time);
   finally
@@ -119,7 +116,7 @@ end;
 procedure TFrmSelectDateTimeDlg.mnuNowClick(Sender: TObject);
 begin
   dtpDate.Date := Now;
-  dtpTime.Time := frac(Now);
+  dtpTime.Time := Frac(Now);
 end;
 
 procedure TFrmSelectDateTimeDlg.mnuDateClick(Sender: TObject);
@@ -129,7 +126,7 @@ end;
 
 procedure TFrmSelectDateTimeDlg.mnuTimeClick(Sender: TObject);
 begin
-  dtpTime.Time := frac(Now);
+  dtpTime.Time := Frac(Now);
 end;
 
 end.

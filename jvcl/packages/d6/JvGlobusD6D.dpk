@@ -36,7 +36,8 @@ requires
   vclie,
   designide,
   rtl,
-  JvGlobusD6R;
+  JvGlobusD6R,
+  JvCoreD6D;
 
 contains
   JvGlobusReg in '..\..\design\JvGlobusReg.pas',

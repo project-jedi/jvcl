@@ -31,7 +31,8 @@ requires
   vclx50,
   VclSmp50,
   vcljpg50,
-  JvGlobusD5R;
+  JvGlobusD5R,
+  JvCoreD5D;
 
 contains
   JvGlobusReg in '..\..\design\JvGlobusReg.pas',
