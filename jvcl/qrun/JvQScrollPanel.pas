@@ -487,8 +487,8 @@ begin
   // this is very strange: without it I get a "Control '' has no parent window" error
   // when dropping it in design-time. Never seen the need before
   // (rom) probably assigning Align causes it. That needs a parent.
-  if AOwner is TWinControl then
-    Parent := TWinControl(AOwner);
+//  if AOwner is TWinControl then
+//    Parent := TWinControl(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls]; 
   FScrollDirection := sdHorizontal;
   FScrollAmount := 16;

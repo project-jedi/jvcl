@@ -1437,8 +1437,8 @@ begin
     Msg.Msg := CM_BUTTONPRESSED;
     Msg.Index := FGroupIndex;
     Msg.Control := Self;
-    Msg.Result := 0;
-    Parent.Broadcast(Msg);
+    Msg.Result := 0;  
+    BroadcastMsg(Parent, Msg); 
   end;
 end;
 

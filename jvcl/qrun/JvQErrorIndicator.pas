@@ -212,10 +212,10 @@ uses
   JvQTypes, JvQResources;
 
 {$IFDEF MSWINDOWS}
-{$R ..\Resources\JvErrorIndicator.res}
+{$R ..\Resources\JvQErrorIndicator.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
-{$R ../Resources/JvErrorIndicator.res}
+{$R ../Resources/JvQErrorIndicator.res}
 {$ENDIF UNIX}
 
 const

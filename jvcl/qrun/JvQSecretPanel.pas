@@ -50,7 +50,7 @@ type
   TScrollDirection = (sdVertical, sdHorizontal);
   TPanelDrawEvent = procedure(Sender: TObject; Canvas: TCanvas; Rect: TRect) of object;
 
-  TJvSecretPanel = class(TJvPubCustomPanel)
+  TJvSecretPanel = class(TJvCustomPanel)
   private
     FActive: Boolean;
     FAlignment: TAlignment;
@@ -154,7 +154,7 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnContextPopup;
-    property OnResize;
+    property OnResize; 
   end;
 
 implementation

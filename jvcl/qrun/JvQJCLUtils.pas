@@ -4319,8 +4319,8 @@ begin
 end;
 
 { begin JvStrUtils }
-{$IFDEF UNIX}
 
+{$IFDEF UNIX}
 function iconversion(InP: PChar; OutP: Pointer; InBytes, OutBytes: Cardinal;
   const ToCode, FromCode: string): Boolean;
 var
@@ -4366,7 +4366,6 @@ function AnsiStrToOem(const S: string): string;
 begin
   Result := iconvString(S, 'CP850', 'WINDOWS-1250');
 end;
-
 {$ENDIF UNIX}
 
 function StrToOem(const AnsiStr: string): string;

@@ -21,7 +21,7 @@ All Rights Reserved.
 
 Contributor(s):
     dejoy(dejoy att ynl dott gov dott cn)
-    tsoyran(tsoyran@otenet.gr), Jan Verhoeven, Kyriakos Tasos,
+    tsoyran(tsoyran att otenet dott gr), Jan Verhoeven, Kyriakos Tasos,
     Andreas Hausladen <ahuser at users dot sourceforge dot net>.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -64,7 +64,6 @@ type
   TJvListBoxDataEvent = procedure(Sender: TWinControl; Index: Integer; var Text: string) of object; // JvListBox
   TJvComboListBox = class(TJvExCustomListBox) 
   private
-    FMouseOver: Boolean;
     FPushed: Boolean;
     FDropdownMenu: TPopupMenu;
     FDrawStyle: TJvComboListBoxDrawStyle;
@@ -191,12 +190,11 @@ procedure TJvComboListBox.MouseLeave(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  inherited MouseLeave(Control);
-  if FMouseOver then
+  if MouseOver then
   begin
     InvalidateItem(ItemIndex);
-    FMouseOver := False;
   end;
+  inherited MouseLeave(Control);
   if HotTrackCombo and (FLastHotTrack > -1) then
   begin
     InvalidateItem(FLastHotTrack);
@@ -410,7 +408,7 @@ begin
       begin
         TmpRect := Classes.Rect(Rect.Right - ButtonWidth - 1,
           Rect.Top + 1, Rect.Right - 2 - Ord(FPushed), Rect.Bottom - 2 - Ord(FPushed));
-        DrawComboArrow(Canvas, TmpRect, FMouseOver and Focused, FPushed);
+        DrawComboArrow(Canvas, TmpRect, MouseOver and Focused, FPushed);
       end;
       Canvas.Brush.Style := bsSolid;
     end
@@ -489,7 +487,7 @@ procedure TJvComboListBox.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   I: Integer;
   R: TRect;
-  P: TPoint; 
+  P: TPoint;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if ItemIndex > -1 then
@@ -499,7 +497,7 @@ begin
     R := ItemRect(I);
     if (I = ItemIndex) and (X >= R.Right - ButtonWidth) and (X <= R.Right) then
     begin
-      FMouseOver := True;
+      MouseOver := True;
       FPushed := True;
       InvalidateItem(I);
       if (DropdownMenu <> nil) and DoDropDown(I, X, Y) then
@@ -544,16 +542,16 @@ begin
     end;
     if ((I = ItemIndex) or HotTrackCombo) and (X >= R.Right - ButtonWidth) and (X <= R.Right) then
     begin
-      if not FMouseOver then
+      if not MouseOver then
       begin
-        FMouseOver := True;
+        MouseOver := True;
         InvalidateItem(I);
       end;
     end
     else
-    if FMouseOver then
+    if MouseOver then
     begin
-      FMouseOver := False;
+      MouseOver := False;
       InvalidateItem(I);
     end;
   end;

@@ -182,7 +182,6 @@ end;
 
 procedure TJvTimeSpin.UpClick(Sender: TObject) ;
 var
-  delta : TDateTime;
   tf : TTimeField;
   cp : integer;
 begin
@@ -196,7 +195,6 @@ end;
 
 procedure TJvTimeSpin.DownClick(Sender: TObject);
 var
-  delta : TDateTime;
   tf : TTimeField;
   cp : integer;
 begin

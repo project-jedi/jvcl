@@ -190,7 +190,6 @@ type
     property AutoSelect;
     property AutoSize; 
     property BorderStyle;
-    property Caret;
     property CheckChars;
     property CharCase;
     property ClipboardCommands;

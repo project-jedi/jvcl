@@ -1824,24 +1824,31 @@ end;
 
 procedure TJvCustomOutlookBar.Paint;
 var
-  I: Integer; 
+  I: Integer;  
+  R2: TRect; 
 begin
   if csDestroying in ComponentState then
     Exit;
+  Canvas.Brush.Style := bsSolid;  
   Canvas.Font := Self.Font;
   Canvas.Brush.Color := Self.Color;
+  Canvas.Brush.Style := bsSolid;
   if Pages.Count = 0 then // we only need to draw the background when there are no pages
-  begin 
+  begin
     begin
       if DoDrawBackGround then
         Canvas.FillRect(ClientRect);
     end;
   end;
-  SetBkMode(Canvas.Handle, TRANSPARENT);
   I := DrawTopPages;
-  if I >= 0 then
-    DrawCurrentPage(I);
   DrawBottomPages(I + 1);
+  if I >= 0 then
+  begin
+    R2 := GetPageRect(I);
+    Canvas.SetClipRect(R2);
+    DrawCurrentPage(I);
+    Canvas.ResetClipRegion;
+  end; 
 end;
 
 function TJvCustomOutlookBar.DoPageChanging(Index: Integer): Boolean;
@@ -1897,8 +1904,8 @@ procedure TJvCustomOutlookBar.SetBorderStyle(const Value: TBorderStyle);
 begin
   if FBorderStyle <> Value then
   begin
-    FBorderStyle := Value;
-    RecreateWnd;
+    FBorderStyle := Value;  
+    Invalidate; 
   end;
 end;
 
@@ -2160,7 +2167,7 @@ end;
 
 procedure TJvCustomOutlookBar.RedrawRect(R: TRect; Erase: Boolean = False);
 begin
-  QWindows.InvalidateRect(Handle, @R, Erase);
+//  QWindows.InvalidateRect(Handle, @R, Erase);
 end;
 
 procedure TJvCustomOutlookBar.CMCaptionEditing(var Msg: TMessage);

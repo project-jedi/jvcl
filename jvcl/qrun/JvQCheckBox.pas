@@ -157,8 +157,8 @@ end;
 
 
 procedure TJvCheckBox.UpdateProperties;
-begin  
-  RecreateWidget; 
+begin
+  RecreateWnd;
 end;
 
 

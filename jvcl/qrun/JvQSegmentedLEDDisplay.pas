@@ -106,8 +106,8 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure Loaded; override;
     procedure Paint; override;
-    function GetText: string;
-    procedure SetText(Value: string);
+    function GetText: string;  reintroduce;
+    procedure SetText(Value: string); reintroduce;
     procedure SetDigitHeight(Value: Integer);
     procedure SetDigits(Value: TJvSegmentedLEDDigits);
     procedure SetDigitSpacing(Value: Integer);

@@ -63,39 +63,21 @@ unit JvQMouseGesture;
 interface
 
 uses
-  SysUtils, Classes, QWindows, QMessages, 
-  Qt, QControls, QForms, QStdCtrls,
+  SysUtils, Classes, QControls, QWindows, QMessages, 
+  Qt, QForms, 
   JvQComponent;
 
 type
   { Description
-    This type defines a set of available buttons for the hook.
-
-    See Also:
-    TJvMouseGestureHook
-  }
-  TJvMouseGestureButton = (JvMButtonLeft, JvMButtonMiddle, JvMButtonRight);
-
-  { Description
     Defines, whether or not the hook will be activated automatically or not.
   }
-  TJvActivationMode = (JvOnAppStart, JvManually);
-
-  { Description
-    Defines a simple gesture (one letter event
-
-    See Also:
-    TOnJvMouseGestureCustomInterpretation
-  }
-  TOnJvMouseGestureSimple = procedure of object;
+  TJvActivationMode = (amAppStart, amManual);
 
   { Description
     Defines a complex gesture (two or more letters event)
 
-    See Also:
-    TOnJvMouseGestureSimple
   }
-  TOnJvMouseGestureCustomInterpretation = procedure(AGesture: string) of object;
+  TOnMouseGestureCustomInterpretation = procedure(Sender:TObject; const AGesture: string) of object;
 
   { Description
     This class implements the basic interpreter. It can be used
@@ -167,15 +149,17 @@ type
     FLastPushed: Char;
     FGesture: string;
     FGestureList: TStringList;
-    FOnJvMouseGestureRight: TOnJvMouseGestureSimple;
-    FOnJvMouseGestureLeft: TOnJvMouseGestureSimple;
-    FOnJvMouseGestureUp: TOnJvMouseGestureSimple;
-    FOnJvMouseGestureDown: TOnJvMouseGestureSimple;
-    FOnJvMouseGestureLeftLowerEdge: TOnJvMouseGestureSimple;
-    FOnJvMouseGestureRightUpperEdge: TOnJvMouseGestureSimple;
-    FOnJvMouseGestureLeftUpperEdge: TOnJvMouseGestureSimple;
-    FOnJvMouseGestureRightLowerEdge: TOnJvMouseGestureSimple;
-    FOnJvMouseGestureCustomInterpretation: TOnJvMouseGestureCustomInterpretation;
+
+    FOnMouseGestureRight: TNotifyEvent;
+    FOnMouseGestureLeft: TNotifyEvent;
+    FOnMouseGestureUp: TNotifyEvent;
+    FOnMouseGestureDown: TNotifyEvent;
+    FOnMouseGestureLeftLowerEdge: TNotifyEvent;
+    FOnMouseGestureRightUpperEdge: TNotifyEvent;
+    FOnMouseGestureLeftUpperEdge: TNotifyEvent;
+    FOnMouseGestureRightLowerEdge: TNotifyEvent;
+    FOnMouseGestureCancelled: TNotifyEvent;
+    FOnMouseGestureCustomInterpretation: TOnMouseGestureCustomInterpretation;
     { Description
       Adds a detected sub gesture to gesture string
     }
@@ -184,10 +168,6 @@ type
     procedure SetTrailInterval(const Value: Integer);
     procedure SetDelay(const Value: Integer);
     procedure SetGrid(const Value: Integer);
-    procedure SetOnJvMouseGestureDown(const Value: TOnJvMouseGestureSimple);
-    procedure SetOnJvMouseGestureLeft(const Value: TOnJvMouseGestureSimple);
-    procedure SetOnJvMouseGestureRight(const Value: TOnJvMouseGestureSimple);
-    procedure SetOnJvMouseGestureUp(const Value: TOnJvMouseGestureSimple);
     { Description
       Loads the known gestures for matching events
 
@@ -195,15 +175,21 @@ type
       In this version only evaluation of simple mouse gestures are implemented
     }
     procedure LoadGestureTable;
-    procedure SetOnJvMouseGestureLeftLowerEdge(const Value: TOnJvMouseGestureSimple);
-    procedure SetOnJvMouseGestureLeftUpperEdge(const Value: TOnJvMouseGestureSimple);
-    procedure SetOnJvMouseGestureRightLowerEdge(const Value: TOnJvMouseGestureSimple);
-    procedure SetOnJvMouseGestureRightUpperEdge(const Value: TOnJvMouseGestureSimple);
-    procedure SetOnJvMouseGestureCustomInterpretation(const Value: TOnJvMouseGestureCustomInterpretation);
     { Description
       Standard setter method for Active
     }
     procedure SetActive(const Value: Boolean);
+  protected
+    procedure DoMouseGestureRight;virtual;
+    procedure DoMouseGestureLeft;virtual;
+    procedure DoMouseGestureUp;virtual;
+    procedure DoMouseGestureDown;virtual;
+    procedure DoMouseGestureLeftLowerEdge;virtual;
+    procedure DoMouseGestureRightUpperEdge;virtual;
+    procedure DoMouseGestureLeftUpperEdge;virtual;
+    procedure DoMouseGestureRightLowerEdge;virtual;
+    procedure DoMouseGestureCancelled;virtual;
+    function DoMouseGestureCustomInterpretation(const AGesture:string):boolean;virtual;
   public
     { Description
       Standard constructor
@@ -275,51 +261,52 @@ type
       Event for own evaluation of detected gesture. If this event is used all
       others will be ignored!
     }
-    property OnJvMouseGestureCustomInterpretation: TOnJvMouseGestureCustomInterpretation read
-      FOnJvMouseGestureCustomInterpretation write SetOnJvMouseGestureCustomInterpretation;
+    property OnMouseGestureCustomInterpretation: TOnMouseGestureCustomInterpretation read
+      FOnMouseGestureCustomInterpretation write FOnMouseGestureCustomInterpretation;
     { Description
       Event for a simple MOUSE UP gesture
     }
-    property OnJvMouseGestureUp: TOnJvMouseGestureSimple read FOnJvMouseGestureUp write SetOnJvMouseGestureUp;
+    property OnMouseGestureCancelled:TNotifyEvent read FOnMouseGestureCancelled write FOnMouseGestureCancelled;
+    property OnMouseGestureUp: TNotifyEvent read FOnMouseGestureUp write FOnMouseGestureUp;
     { Description
       Event for a simple MOUSE DOWN gesture
     }
-    property OnJvMouseGestureDown: TOnJvMouseGestureSimple read FOnJvMouseGestureDown write SetOnJvMouseGestureDown;
+    property OnMouseGestureDown: TNotifyEvent read FOnMouseGestureDown write FOnMouseGestureDown;
     { Description
       Event for a simple MOUSE LEFT gesture
     }
-    property OnJvMouseGestureLeft: TOnJvMouseGestureSimple read FOnJvMouseGestureLeft write SetOnJvMouseGestureLeft;
+    property OnMouseGestureLeft: TNotifyEvent read FOnMouseGestureLeft write FOnMouseGestureLeft;
     { Description
       Event for a simple MOUSE RIGHT gesture
     }
-    property OnJvMouseGestureRight: TOnJvMouseGestureSimple read FOnJvMouseGestureRight write SetOnJvMouseGestureRight;
+    property OnMouseGestureRight: TNotifyEvent read FOnMouseGestureRight write FOnMouseGestureRight;
     { Description
       Event for a simple diagonally MOUSE LEFT LOWER EDGE (point 1 in grid) gesture
     }
-    property OnJvMouseGestureLeftLowerEdge: TOnJvMouseGestureSimple read FOnJvMouseGestureLeftLowerEdge write
-      SetOnJvMouseGestureLeftLowerEdge;
+    property OnMouseGestureLeftLowerEdge: TNotifyEvent read FOnMouseGestureLeftLowerEdge write
+      FOnMouseGestureLeftLowerEdge;
     { Description
       Event for a simple diagonally MOUSE RIGHT LOWER EDGE (point 3 in grid) gesture
     }
-    property OnJvMouseGestureRightLowerEdge: TOnJvMouseGestureSimple read FOnJvMouseGestureRightLowerEdge write
-      SetOnJvMouseGestureRightLowerEdge;
+    property OnMouseGestureRightLowerEdge: TNotifyEvent read FOnMouseGestureRightLowerEdge write
+      FOnMouseGestureRightLowerEdge;
     { Description
       Event for a simple diagonally MOUSE LEFT UPPER EDGE (point 7 in grid) gesture
     }
-    property OnJvMouseGestureLeftUpperEdge: TOnJvMouseGestureSimple read FOnJvMouseGestureLeftUpperEdge write
-      SetOnJvMouseGestureLeftUpperEdge;
+    property OnMouseGestureLeftUpperEdge: TNotifyEvent read FOnMouseGestureLeftUpperEdge write
+      FOnMouseGestureLeftUpperEdge;
     { Description
       Event for a simple diagonally MOUSE RIGHT UPPER EDGE (point 9 in grid) gesture
     }
-    property OnJvMouseGestureRightUpperEdge: TOnJvMouseGestureSimple read FOnJvMouseGestureRightUpperEdge write
-      SetOnJvMouseGestureRightUpperEdge;
+    property OnMouseGestureRightUpperEdge: TNotifyEvent read FOnMouseGestureRightUpperEdge write
+      FOnMouseGestureRightUpperEdge;
   end;
 
   { Description
     This class implements a application wide mouse hook for mouse gestures.
     Programmers get only one event for a detected mouse gesture:
 
-    OnJvMouseGestureCustomInterpretation
+    OnMouseGestureCustomInterpretation
 
     See Also
     TJvMouseGesture
@@ -329,9 +316,10 @@ type
     { Description
       True if a hook is installed
     }
-    FHookInstalled: Boolean;
-    FHook: QObject_hookH;
-    FOnJvMouseGestureCustomInterpretation: TOnJvMouseGestureCustomInterpretation;
+    FHookInstalled: Boolean;  
+    FCurrentHook: QApplication_hookH; 
+
+    FOnMouseGestureCustomInterpretation: TOnMouseGestureCustomInterpretation;
     { Description
       Field for active state of component
     }
@@ -339,7 +327,7 @@ type
     { Description
       Field for mouse key
     }
-    FMouseButton: TJvMouseGestureButton;
+    FMouseButton: TMouseButton;
     { Description
       Field for activation mode
     }
@@ -347,7 +335,6 @@ type
     { Description
       Standard setter method for evaluation of detected gesture
     }
-    procedure SetOnJvMouseGestureCustomInterpretation(const Value: TOnJvMouseGestureCustomInterpretation);
     { Description
       Standard setter method for Active
     }
@@ -355,18 +342,21 @@ type
     { Description
       Standard setter method for MouseButton
     }
-    procedure SetMouseButton(const Value: TJvMouseGestureButton);
+    procedure SetMouseButton(const Value: TMouseButton);
     { Description
       Standard setter method for ActivationMode
     }
     procedure SetActivationMode(const Value: TJvActivationMode);
-    function JvMouseGestureHook(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    procedure SetMouseGestureCustomInterpretation(const Value: TOnMouseGestureCustomInterpretation);
+    function GetMouseGesture: TJvMouseGesture;
   protected
     { Description
       Create the hook. Maybe used in a later version as a new constructor
       to enable system wide hooks ...
     }
     procedure CreateForThreadOrSystem(AOwner: TComponent; ADwThreadID: Cardinal);
+    function DoMouseGestureCustomInterpretation(const AGesture:string):boolean;virtual;
+    function JvMouseGestureHook(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   public
     { Description
       Standard constructor
@@ -378,7 +368,8 @@ type
     destructor Destroy; override;
     { Description
       TRUE if hook was installed successfully
-    } 
+    }
+    property MouseGesture:TJvMouseGesture read GetMouseGesture;
   published
     { Description
       TRUE if component is active, otherwise FALSE. Can be changed during runtime
@@ -394,15 +385,15 @@ type
       Set the mouse key to be used for start/stop gesture
 
       See Also
-      TJvMouseGestureButton
+      TMouseButton
     }
-    property MouseButton: TJvMouseGestureButton read FMouseButton write SetMouseButton default JvMButtonRight;
+    property MouseButton: TMouseButton read FMouseButton write SetMouseButton default mbRight;
     { Description
       Set the event to be executed if a gesture will be detected
     }
-    property OnJvMouseGestureCustomInterpretation: TOnJvMouseGestureCustomInterpretation read
-      FOnJvMouseGestureCustomInterpretation write SetOnJvMouseGestureCustomInterpretation;
+    property OnMouseGestureCustomInterpretation: TOnMouseGestureCustomInterpretation read FOnMouseGestureCustomInterpretation write SetMouseGestureCustomInterpretation;
   end;
+
 
 
 implementation
@@ -433,11 +424,13 @@ var
   }
   JvMouseGestureHookAlreadyInstalled: Boolean = False;
   //<combine JvMouseGestureHookAlreadyInstalled>
-  JvMouseGestureHookActive: Boolean = False;  
+  JvMouseGestureHookActive: Boolean = False;
   //<combine JvMouseGestureHookAlreadyInstalled>
   JvMouseButtonDown: ButtonState = ButtonState_RightButton;
   //<combine JvMouseGestureHookAlreadyInstalled>
-  JvMouseButtonUp: ButtonState = ButtonState_RightButton; 
+  JvMouseButtonUp: ButtonState = ButtonState_RightButton;
+
+  JvCurrentHook: QApplication_hookH = nil; //contains the handle of the currently installed hook 
 
 //=== { TJvMouseGesture } ====================================================
 
@@ -517,56 +510,6 @@ begin
     FGrid := 15;
 
   FGridHalf := FGrid div 2;
-end;
-
-procedure TJvMouseGesture.SetOnJvMouseGestureCustomInterpretation(
-  const Value: TOnJvMouseGestureCustomInterpretation);
-begin
-  FOnJvMouseGestureCustomInterpretation := Value;
-end;
-
-procedure TJvMouseGesture.SetOnJvMouseGestureDown(const Value: TOnJvMouseGestureSimple);
-begin
-  FOnJvMouseGestureDown := Value;
-end;
-
-procedure TJvMouseGesture.SetOnJvMouseGestureLeft(const Value: TOnJvMouseGestureSimple);
-begin
-  FOnJvMouseGestureLeft := Value;
-end;
-
-procedure TJvMouseGesture.SetOnJvMouseGestureRight(const Value: TOnJvMouseGestureSimple);
-begin
-  FOnJvMouseGestureRight := Value;
-end;
-
-procedure TJvMouseGesture.SetOnJvMouseGestureUp(const Value: TOnJvMouseGestureSimple);
-begin
-  FOnJvMouseGestureUp := Value;
-end;
-
-procedure TJvMouseGesture.SetOnJvMouseGestureLeftLowerEdge(
-  const Value: TOnJvMouseGestureSimple);
-begin
-  FOnJvMouseGestureLeftLowerEdge := Value;
-end;
-
-procedure TJvMouseGesture.SetOnJvMouseGestureLeftUpperEdge(
-  const Value: TOnJvMouseGestureSimple);
-begin
-  FOnJvMouseGestureLeftUpperEdge := Value;
-end;
-
-procedure TJvMouseGesture.SetOnJvMouseGestureRightLowerEdge(
-  const Value: TOnJvMouseGestureSimple);
-begin
-  FOnJvMouseGestureRightLowerEdge := Value;
-end;
-
-procedure TJvMouseGesture.SetOnJvMouseGestureRightUpperEdge(
-  const Value: TOnJvMouseGestureSimple);
-begin
-  FOnJvMouseGestureRightUpperEdge := Value;
 end;
 
 procedure TJvMouseGesture.AddGestureChar(AChar: Char);
@@ -707,14 +650,14 @@ begin
   FTrailActive := False;
 
   if FGesture = '' then
-    Exit;
-
-  // check for custom interpretation first
-  if Assigned(FOnJvMouseGestureCustomInterpretation) then
   begin
-    FOnJvMouseGestureCustomInterpretation(FGesture);
+    DoMouseGestureCancelled;
     Exit;
   end;
+
+  // check for custom interpretation first
+  if DoMouseGestureCustomInterpretation(FGesture) then
+    Exit;
 
   // if no custom interpretation is implemented we chaeck for known gestures
   // and matching events
@@ -727,45 +670,98 @@ begin
   case Index of
     JVMG_LEFT:
       begin
-        if Assigned(FOnJvMouseGestureLeft) then
-          FOnJvMouseGestureLeft;
+        DoMouseGestureLeft;
       end;
     JVMG_RIGHT:
       begin
-        if Assigned(FOnJvMouseGestureRight) then
-          FOnJvMouseGestureRight;
+        DoMouseGestureRight;
       end;
     JVMG_UP:
       begin
-        if Assigned(FOnJvMouseGestureUp) then
-          FOnJvMouseGestureUp;
+        DoMouseGestureUp;
       end;
     JVMG_DOWN:
       begin
-        if Assigned(FOnJvMouseGestureDown) then
-          FOnJvMouseGestureDown;
+        DoMouseGestureDown;
       end;
     JVMG_LEFTLOWER:
       begin
-        if Assigned(FOnJvMouseGestureLeftLowerEdge) then
-          FOnJvMouseGestureLeftLowerEdge;
+        DoMouseGestureLeftLowerEdge;
       end;
     JVMG_RIGHTLOWER:
       begin
-        if Assigned(FOnJvMouseGestureRightLowerEdge) then
-          FOnJvMouseGestureRightLowerEdge;
+        DoMouseGestureRightLowerEdge;
       end;
     JVMG_LEFTUPPER:
       begin
-        if Assigned(FOnJvMouseGestureLeftUpperEdge) then
-          FOnJvMouseGestureLeftUpperEdge;
+        DoMouseGestureLeftUpperEdge;
       end;
     JVMG_RIGHTUPPER:
       begin
-        if Assigned(FOnJvMouseGestureRightUpperEdge) then
-          FOnJvMouseGestureRightUpperEdge;
+        DoMouseGestureRightUpperEdge;
       end;
   end;
+end;
+
+procedure TJvMouseGesture.DoMouseGestureCancelled;
+begin
+  if Assigned(FOnMouseGestureCancelled) then
+    FOnMouseGestureCancelled(Self);
+end;
+
+function TJvMouseGesture.DoMouseGestureCustomInterpretation(const AGesture: string):boolean;
+begin
+   Result := Assigned(FOnMouseGestureCustomInterpretation);
+   if Result then
+     FOnMouseGestureCustomInterpretation(Self, FGesture);
+end;
+
+procedure TJvMouseGesture.DoMouseGestureDown;
+begin
+  if Assigned(FOnMouseGestureDown) then
+    FOnMouseGestureDown(Self);
+end;
+
+procedure TJvMouseGesture.DoMouseGestureLeft;
+begin
+  if Assigned(FOnMouseGestureLeft) then
+    FOnMouseGestureLeft(Self);
+end;
+
+procedure TJvMouseGesture.DoMouseGestureLeftLowerEdge;
+begin
+  if Assigned(FOnMouseGestureLeftLowerEdge) then
+    FOnMouseGestureLeftLowerEdge(Self);
+end;
+
+procedure TJvMouseGesture.DoMouseGestureLeftUpperEdge;
+begin
+  if Assigned(FOnMouseGestureLeftUpperEdge) then
+    FOnMouseGestureLeftUpperEdge(Self);
+end;
+
+procedure TJvMouseGesture.DoMouseGestureRight;
+begin
+  if Assigned(FOnMouseGestureRight) then
+    FOnMouseGestureRight(Self);
+end;
+
+procedure TJvMouseGesture.DoMouseGestureRightLowerEdge;
+begin
+  if Assigned(FOnMouseGestureRightLowerEdge) then
+    FOnMouseGestureRightLowerEdge(Self);
+end;
+
+procedure TJvMouseGesture.DoMouseGestureRightUpperEdge;
+begin
+  if Assigned(FOnMouseGestureRightUpperEdge) then
+    FOnMouseGestureRightUpperEdge(Self);
+end;
+
+procedure TJvMouseGesture.DoMouseGestureUp;
+begin
+  if Assigned(FOnMouseGestureUp) then
+    FOnMouseGestureUp(Self);
 end;
 
 //=== { TJvMouseGestureHook } ================================================
@@ -780,41 +776,47 @@ destructor TJvMouseGestureHook.Destroy;
 begin
   FreeAndNil(JvMouseGestureInterpreter);
 
-  if JvMouseGestureHookAlreadyInstalled then
+  if JvMouseGestureHookAlreadyInstalled then  
   begin
-    QObject_hook_destroy(FHook);
+    QApplication_hook_destroy(JvCurrentHook);
     JvMouseGestureHookAlreadyInstalled := False;
-  end;
+  end; 
   inherited Destroy;
 end;
 
 procedure TJvMouseGestureHook.CreateForThreadOrSystem(AOwner: TComponent; ADwThreadID: Cardinal);
-
 begin
   if JvMouseGestureHookAlreadyInstalled then
     raise EJVCLException.CreateRes(@RsECannotHookTwice);
 
   JvMouseGestureInterpreter := TJvMouseGesture.Create(nil);
-  FMouseButton := JvMButtonRight;
+  FMouseButton := mbRight;
   if csDesigning in ComponentState then
   begin
     FActive := False;
     Exit;
   end;
 
-  FActive := FActivationMode = JvOnAppStart;
-  
-  FHook := InstallApplicationEventHook(JvMouseGestureHook);
+  FActive := FActivationMode = amAppStart;
 
+  FCurrentHook := InstallApplicationEventHook(JvMouseGestureHook);
   JvMouseGestureHookAlreadyInstalled := True;
-  FHookInstalled := True; 
+  FHookInstalled := True;
+  JvCurrentHook := FCurrentHook;
 
   // map event
-  if Assigned(FOnJvMouseGestureCustomInterpretation) then
-    JvMouseGestureInterpreter.OnJvMouseGestureCustomInterpretation :=
-      FOnJvMouseGestureCustomInterpretation
+  if Assigned(FOnMouseGestureCustomInterpretation) then
+    JvMouseGestureInterpreter.OnMouseGestureCustomInterpretation :=
+      FOnMouseGestureCustomInterpretation
   else
-    JvMouseGestureInterpreter.OnJvMouseGestureCustomInterpretation := nil;
+    JvMouseGestureInterpreter.OnMouseGestureCustomInterpretation := nil;
+end;
+
+function TJvMouseGestureHook.DoMouseGestureCustomInterpretation(const AGesture: string): boolean;
+begin
+  Result := Assigned(FOnMouseGestureCustomInterpretation);
+  if Result then
+    FOnMouseGestureCustomInterpretation(Self, AGesture);
 end;
 
 procedure TJvMouseGestureHook.SetActivationMode(const Value: TJvActivationMode);
@@ -832,21 +834,21 @@ begin
   JvMouseGestureHookActive := FActive;
 end;
 
-procedure TJvMouseGestureHook.SetMouseButton(const Value: TJvMouseGestureButton);
+procedure TJvMouseGestureHook.SetMouseButton(const Value: TMouseButton);
 begin
   FMouseButton := Value;
   case Value of
-    JvMButtonLeft:
+    mbLeft:
       begin
         JvMouseButtonDown := ButtonState_LeftButton;
         JvMouseButtonUp := ButtonState_LeftButton;
       end;
-    JvMButtonMiddle:
+    mbMiddle:
       begin
         JvMouseButtonDown := ButtonState_MidButton;
         JvMouseButtonUp := ButtonState_MidButton;
       end;
-    JvMButtonRight:
+    mbRight:
       begin
         JvMouseButtonDown := ButtonState_RightButton;
         JvMouseButtonUp := ButtonState_RightButton;
@@ -854,12 +856,17 @@ begin
   end; 
 end;
 
-procedure TJvMouseGestureHook.SetOnJvMouseGestureCustomInterpretation(
-  const Value: TOnJvMouseGestureCustomInterpretation);
+procedure TJvMouseGestureHook.SetMouseGestureCustomInterpretation(
+  const Value: TOnMouseGestureCustomInterpretation);
 begin
-  FOnJvMouseGestureCustomInterpretation := Value;
+  FOnMouseGestureCustomInterpretation := Value;
   if Assigned(JvMouseGestureInterpreter) then
-    JvMouseGestureInterpreter.OnJvMouseGestureCustomInterpretation := Value;
+    JvMouseGestureInterpreter.OnMouseGestureCustomInterpretation := Value;
+end;
+
+function TJvMouseGestureHook.GetMouseGesture: TJvMouseGesture;
+begin
+  Result := JvMouseGestureInterpreter;
 end;
 
 //============================================================================
@@ -912,6 +919,9 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+
+
+
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

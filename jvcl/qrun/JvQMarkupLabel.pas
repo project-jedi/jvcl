@@ -42,7 +42,7 @@ uses
   JvQComponent, JvQMarkupCommon;
 
 type
-  TJvMarkupLabel = class(TJvPubGraphicControl)
+  TJvMarkupLabel = class(TJvGraphicControl)
   private
     FElementStack: TJvHTMLElementStack;
     FTagStack: TJvHTMLElementStack;

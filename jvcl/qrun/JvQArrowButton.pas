@@ -1037,7 +1037,12 @@ begin
     Msg.Index := GroupIndex;
     Msg.Control := Self;
     Msg.Result := 0;
+    {$IFDEF VCL}
     Parent.Broadcast(Msg);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    BroadcastMsg(Parent, Msg);
+    {$ENDIF VisualCLX}
   end;
 end;
 

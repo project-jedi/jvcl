@@ -855,8 +855,8 @@ procedure TJvCustomRollOut.DrawButtonFrame;
 var
   R: TRect;
   TopC, BottomC: TColor;
-  FIndex: Integer;
-  WS: WideString;
+  FIndex: Integer; 
+  WS: WideString; 
 begin
   if FPlacement = plTop then
     FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
@@ -930,13 +930,13 @@ begin
   begin
     SetBkMode(Canvas.Handle, Transparent);
     if FMouseDown and FInsideButton then
-      OffsetRect(R, 1, 1);
+      OffsetRect(R, 1, 1);  
     WS := Caption;
     SetPenColor(Canvas.Handle, Font.Color);
     if Placement = plLeft then
       DrawText(Canvas, WS, -1, R, DT_VCENTER, 270)
     else
-      DrawText(Canvas, WS, -1, R, DT_VCENTER, 0)
+      DrawText(Canvas, WS, -1, R, DT_VCENTER, 0) 
   end;
   if ShowFocus and Focused then
   begin
@@ -989,8 +989,8 @@ begin
     Msg.Msg := CM_EXPANDED;
     Msg.WParam := FGroupIndex;
     Msg.LParam := Longint(Self);
-    Msg.Result := 0;
-    Parent.Broadcast(Msg);
+    Msg.Result := 0;  
+    BroadcastMsg(Parent, Msg); 
   end;
 end;
 

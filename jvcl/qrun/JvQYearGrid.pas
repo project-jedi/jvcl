@@ -342,6 +342,7 @@ begin
   SetupYearData;
 
   FAutoSize := True;
+  ScrollBars := ssNone;
   FSavedScrollBars := ScrollBars;
   Invalidate;
 end;

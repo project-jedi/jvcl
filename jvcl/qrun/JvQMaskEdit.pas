@@ -40,22 +40,21 @@ interface
 uses
   QWindows, QMessages,
   SysUtils, Classes, QGraphics, QControls, QMask, QForms,
-  JvQComponent, JvQTypes, JvQCaret, JvQToolEdit, JvQExMask;
+  JvQComponent, JvQTypes, 
+  JvQToolEdit, JvQExMask;
 
 type
   TJvCustomMaskEdit = class(TJvCustomComboEdit)
   private
     FHotTrack: Boolean;
-    FCaret: TJvCaret;
     FEntering: Boolean;
     FLeaving: Boolean;
     FProtectPassword: Boolean;
     FLastNotifiedText: string;
     FOnSetFocus: TJvFocusChangeEvent;
-    FOnKillFocus: TJvFocusChangeEvent;
-    procedure SetHotTrack(Value: Boolean); 
+    FOnKillFocus: TJvFocusChangeEvent; 
+    procedure SetHotTrack(Value: Boolean);
   protected
-    procedure CaretChanged(Sender: TObject); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
@@ -63,8 +62,7 @@ type
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override; 
     procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure SetCaret(const Value: TJvCaret);
+    procedure MouseLeave(Control: TControl); override; 
     procedure NotifyIfChanged;
     procedure Change; override;
   public 
@@ -78,7 +76,6 @@ type
     // set to True to disable read/write of PasswordChar and read of Text
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
-    property Caret: TJvCaret read FCaret write SetCaret;
     property ShowButton default False;
 
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
@@ -87,7 +84,6 @@ type
 
   TJvMaskEdit = class(TJvCustomMaskEdit)
   published
-    property Caret;
     property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
@@ -147,10 +143,7 @@ uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
 
-procedure TJvCustomMaskEdit.CaretChanged(Sender: TObject);
-begin
-  FCaret.CreateCaret;
-end;
+
 
 procedure TJvCustomMaskEdit.Change;
 begin
@@ -161,9 +154,7 @@ end;
 constructor TJvCustomMaskEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHotTrack := False;
-  FCaret := TJvCaret.Create(Self);
-  FCaret.OnChanged := CaretChanged;
+  FHotTrack := False; 
   FEntering := False;
   FLeaving := False;
 
@@ -178,17 +169,14 @@ end;
 
 
 destructor TJvCustomMaskEdit.Destroy;
-begin
-  FCaret.OnChanged := nil;
-  FreeAndNil(FCaret);
+begin 
   inherited Destroy;
 end;
 
 procedure TJvCustomMaskEdit.DoKillFocus(FocusedWnd: HWND);
 begin
   FLeaving := True;
-  try
-    FCaret.DestroyCaret;
+  try 
     inherited DoKillFocus(FocusedWnd);
     DoKillFocusEvent(FindControl(FocusedWnd));
   finally
@@ -207,8 +195,7 @@ procedure TJvCustomMaskEdit.DoSetFocus(FocusedWnd: HWND);
 begin
   FEntering := True;
   try
-    inherited DoSetFocus(FocusedWnd);
-    FCaret.CreateCaret;
+    inherited DoSetFocus(FocusedWnd); 
     DoSetFocusEvent(FindControl(FocusedWnd));
   finally
     FEntering := False;
@@ -269,10 +256,7 @@ begin
   end;
 end;
 
-procedure TJvCustomMaskEdit.SetCaret(const Value: TJvCaret);
-begin
-  FCaret.Assign(Value);
-end;
+
 
 procedure TJvCustomMaskEdit.SetHotTrack(Value: Boolean);
 begin

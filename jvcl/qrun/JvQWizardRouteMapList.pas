@@ -122,6 +122,7 @@ type
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont; 
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions; 
+    property Image;
     property TextOnly: Boolean read FTextOnly write SetTextOnly default False;
     property IncludeDisabled: Boolean read FIncludeDisabled write SetIncludeDisabled default False;
     property BorderColor: TColor read FBorderColor write SetBorderColor default clNavy;
@@ -251,7 +252,10 @@ begin
   GetCursorPos(P);
   P := ScreenToClient(P);
   R := ClientRect;
-  Canvas.Rectangle(R);
+  if not HasPicture then
+    Canvas.Rectangle(R)
+  else
+    Image.PaintTo(Canvas, R);
   if ItemHeight <= 0 then
     Exit;
   InflateRect(R, -HorzOffset, -VertOffset);
@@ -284,12 +288,12 @@ begin
     if Assigned(Wizard) and (Pages[PageIndex] = Wizard.ActivePage) then
       ACanvas.Font := ActiveFont
     else
-    if PtInRect(ARect, MousePos) and Pages[PageIndex].Enabled and HotTrack and
-       Clickable then
+    if PtInRect(ARect, MousePos) and Pages[PageIndex].Enabled and HotTrack and Clickable then
       ACanvas.Font := HotTrackFont
     else
     if not Pages[PageIndex].Enabled then
       ACanvas.Font.Color := clGrayText;
+
     ACanvas.Brush.Color := ItemColor;
     ACanvas.Pen.Color := Color;
     DefaultDraw := True;
@@ -308,6 +312,8 @@ begin
 
       if not TextOnly then
       begin
+        if ItemColor = clNone then
+          ACanvas.Brush.Style := bsClear;
         if Rounded then
           ACanvas.RoundRect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom, Curvature, Curvature)
         else

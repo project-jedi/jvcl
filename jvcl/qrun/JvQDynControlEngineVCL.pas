@@ -40,6 +40,11 @@ uses
   JvQDynControlEngine, JvQDynControlEngineIntf;
 
 type
+  TJvDynControlEngineVCL = class(TJvDynControlEngine)
+  public
+    procedure RegisterControls; override;
+  end;
+
   TJvDynControlVCLMaskEdit = class (TMaskEdit, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlReadOnly, IJvDynControlEdit)
   public
     procedure ControlSetDefaultProperties;
@@ -1609,32 +1614,30 @@ begin
   Result := IntDynControlEngineVCL;
 end;
 
-type
-  TJvDynControlEngineVCL = class(TJvDynControlEngine)
-  public
-    procedure RegisterControls; override;
-  end;
 
 procedure TJvDynControlEngineVCL.RegisterControls;
 begin
-  RegisterControl(jctLabel, TJvDynControlVCLLabel); 
-  RegisterControl(jctButton, TJvDynControlVCLButton);
-  RegisterControl(jctScrollBox, TJvDynControlVCLScrollBox);
-  RegisterControl(jctGroupBox, TJvDynControlVCLGroupBox);
-  RegisterControl(jctPanel, TJvDynControlVCLPanel);
-  RegisterControl(jctImage, TJvDynControlVCLImage);
-  RegisterControl(jctCheckBox, TJvDynControlVCLCheckBox);
-  RegisterControl(jctComboBox, TJvDynControlVCLComboBox);
-  RegisterControl(jctListBox, TJvDynControlVCLListBox);
-  RegisterControl(jctCheckListBox, TJvDynControlVCLCheckListBox);
-  RegisterControl(jctRadioGroup, TJvDynControlVCLRadioGroup); 
-  RegisterControl(jctEdit, TJvDynControlVCLMaskEdit);
-//  RegisterControl(jctCalculateEdit, TJvDynControlVCLMaskEdit);
-//  RegisterControl(jctSpinEdit, TJvDynControlVCLMaskEdit);
-  RegisterControl(jctDirectoryEdit, TJvDynControlVCLDirectoryEdit);
-  RegisterControl(jctFileNameEdit, TJvDynControlVCLFileNameEdit);
-  RegisterControl(jctMemo, TJvDynControlVCLMemo);
-  RegisterControl(jctButtonEdit, TJvDynControlVCLButtonEdit);
+  RegisterControlType(jctLabel, TJvDynControlVCLLabel); 
+  RegisterControlType(jctButton, TJvDynControlVCLButton);
+  RegisterControlType(jctScrollBox, TJvDynControlVCLScrollBox);
+  RegisterControlType(jctGroupBox, TJvDynControlVCLGroupBox);
+  RegisterControlType(jctPanel, TJvDynControlVCLPanel);
+  RegisterControlType(jctImage, TJvDynControlVCLImage);
+  RegisterControlType(jctCheckBox, TJvDynControlVCLCheckBox);
+  RegisterControlType(jctComboBox, TJvDynControlVCLComboBox);
+  RegisterControlType(jctListBox, TJvDynControlVCLListBox);
+  RegisterControlType(jctCheckListBox, TJvDynControlVCLCheckListBox);
+  RegisterControlType(jctRadioGroup, TJvDynControlVCLRadioGroup); 
+  RegisterControlType(jctDateTimeEdit, TJvDynControlVCLMaskEdit);
+  RegisterControlType(jctTimeEdit, TJvDynControlVCLMaskEdit);
+  RegisterControlType(jctDateEdit, TJvDynControlVCLMaskEdit); 
+  RegisterControlType(jctEdit, TJvDynControlVCLMaskEdit);
+//  RegisterControlType(jctCalculateEdit, TJvDynControlVCLMaskEdit);
+//  RegisterControlType(jctSpinEdit, TJvDynControlVCLMaskEdit);
+  RegisterControlType(jctDirectoryEdit, TJvDynControlVCLDirectoryEdit);
+  RegisterControlType(jctFileNameEdit, TJvDynControlVCLFileNameEdit);
+  RegisterControlType(jctMemo, TJvDynControlVCLMemo);
+  RegisterControlType(jctButtonEdit, TJvDynControlVCLButtonEdit);
 end;
 
 {$IFDEF UNITVERSIONING}

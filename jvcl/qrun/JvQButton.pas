@@ -70,7 +70,7 @@ type
     procedure SetHotFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
-    procedure ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: Integer);
+    procedure ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: Integer);virtual;
     procedure ForceSize(Sender: TControl; AWidth, AHeight: Integer);
     function DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean; virtual;
     procedure UpdateExclusive;
@@ -440,8 +440,7 @@ begin
       Msg.Msg := CM_FORCESIZE;
       Msg.Sender := Self;
       Msg.NewSize.X := AWidth;
-      Msg.NewSize.Y := AHeight;
-      Form.Broadcast(Msg); 
+      Msg.NewSize.Y := AHeight;  
       for I := 0 to Form.ControlCount - 1 do
         if Form.Controls[I] is TJvCustomGraphicButton then
           TJvCustomGraphicButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight); 
@@ -481,16 +480,15 @@ end;
 procedure TJvCustomGraphicButton.UpdateExclusive;
 var
   Msg: TCMButtonPressed; 
-//  I: Integer; 
 begin
   if (GroupIndex <> 0) and (Parent <> nil) then
   begin
     Msg.Msg := CM_BUTTONPRESSED;
     Msg.Index := GroupIndex;
     Msg.Control := Self;
-    Msg.Result := 0;
-    Parent.Broadcast(Msg); 
-//    for I := 0 to Parent.ControlCount - 1 do
+    Msg.Result := 0;  
+    BroadcastMsg(Parent, Msg);
+//     for I := 0 to Parent.ControlCount - 1 do
 //      if Parent.Controls[I] is TJvCustomGraphicButton then
 //        TJvCustomGraphicButton(Parent.Controls[I]).ButtonPressed(Self, GroupIndex); 
   end;
@@ -686,7 +684,7 @@ procedure TJvCustomButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
   Form: TCustomForm;
   Msg: TCMForceSize; 
-  I: Integer; 
+//  I: Integer; 
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if ForceSameSize then
@@ -697,11 +695,11 @@ begin
       Msg.Msg := CM_FORCESIZE;
       Msg.Sender := Self;
       Msg.NewSize.X := AWidth;
-      Msg.NewSize.Y := AHeight;
-      Form.Broadcast(Msg); 
-      for I := 0 to Form.ControlCount - 1 do
-        if Form.Controls[I] is TJvCustomButton then
-          TJvCustomButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight); 
+      Msg.NewSize.Y := AHeight;  
+      BroadcastMsg(Form, Msg);
+//      for I := 0 to Form.ControlCount - 1 do
+//        if Form.Controls[I] is TJvCustomButton then
+//          TJvCustomButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight); 
     end;
   end;
 end;

@@ -524,6 +524,8 @@ type
     15:
     ( // WM_ERASEBKGND | WM_PAINT
       DC: HDC;
+      // EM_GET/SETRECT
+      Rect: PRect;
     );
 
     16:
@@ -535,9 +537,9 @@ type
       NewSize: TSmallPoint; //CM_FORCESIZE wParam
     );
     18:
-    ( { alternative naming for CM_BUTTONPRESSED } 
-      Button: TControl; 
-      GroupIndex: Integer; 
+    ( { alternative naming for CM_BUTTONPRESSED }
+      Button: TControl;
+      GroupIndex: Integer;
     );
   end;
 

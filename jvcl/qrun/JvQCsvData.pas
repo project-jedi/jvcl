@@ -147,18 +147,14 @@ Known Issues and Updates:
 // All Copyrights and Ownership donated to the Delphi Jedi Project.
 //------------------------------------------------------------------------
 
-{$I jvcl.inc}
-
 unit JvQCsvData;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS} 
-  QWindows, 
-  Classes, DB;
+  QWindows, Classes, DB;
 
 const
   MaxCalcDataOffset = 256; // 128 bytes per record for Calculated Field Data.
@@ -272,7 +268,7 @@ type
   { TJvCustomCsvDataSetFilterFunction: Defines callback function to be passed to CustomFilter routine }
   TJvCustomCsvDataSetFilterFunction = function(RecNo: Integer): Boolean of object;
 
-  // Easily Customizeable Dataset descendant our CSV handler and
+  // Easily Customizeable DataSet descendant our CSV handler and
   // any other variants we create:
   TJvCustomCsvDataSet = class(TDataSet)
   private
@@ -280,10 +276,13 @@ type
     FOpenFileName: string; // This is the Fully Qualified path and filename expanded from the FTableName property when InternalOpen was last called.
     FValidateHeaderRow: Boolean;
     FExtendedHeaderInfo: Boolean;
+    FCreatePaths: Boolean; // When saving, create subdirectories/paths if it doesn't exist?
     procedure SetSeparator(const Value: Char);
     procedure InternalQuickSort(SortList: PPointerList; L, R: Integer;
-      SortColumns: TArrayOfPCsvColumn; ACount: Integer; Ascending: Boolean);
-    procedure QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn; ACount: Integer; Ascending: Boolean);
+      SortColumns: TArrayOfPCsvColumn; ACount: Integer; SortAscending: Array of Boolean);
+      
+    procedure QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn; ACount: Integer; SortAscending: Array of Boolean);
+    procedure AutoCreateDir(const FileName: string);
   protected
     // (rom) inacceptable names. Probably most of this should be private.
     FTempBuffer: PChar;
@@ -296,6 +295,8 @@ type
     FCsvFieldDef: string; // Our own "Csv Field Definition String"
     FCsvKeyDef: string; // CSV Key Definition String. Required if FCsvUniqueKeys is True
     FCsvKeyCount: Integer; // Set by parsing FCsvKeyDef
+    FAscending:Array of Boolean;
+
     FCsvKeyFields: TArrayOfPCsvColumn;
 
     FCsvUniqueKeys: Boolean;
@@ -354,7 +355,7 @@ type
     // Internal methods used by sorting:
     function InternalFieldCompare(Column: PCsvColumn; Left, Right: PCsvRow): Integer;
     function InternalCompare(SortColumns: TArrayOfPCsvColumn; SortColumnCount: Integer;
-      Left, Right: PCsvRow; Ascending: Boolean): Integer;
+      Left, Right: PCsvRow; SortAscending: Array of Boolean): Integer;
 
     // key uniqueness needs this:
     function InternalFindByKey(Row: PCsvRow): Integer;
@@ -445,7 +446,7 @@ type
     function GetAutoincrement(const FieldName: string): Integer;
 
     // NEW: COPY FROM ANOTHER TDATASET (TTable, TADOTable, TQuery, or whatever)
-    function CopyFromDataset(DataSet: TDataset): Integer;
+    function CopyFromDataset(DataSet: TDataSet): Integer;
 
     // SELECT * FROM TABLE WHERE <fieldname> LIKE <pattern>:
     procedure SetFilter(const FieldName: string; Pattern: string); // Make Rows Visible Only if they match filterString
@@ -590,12 +591,13 @@ type
       Not recommended behaviour, except when absolutely necessary! }
     property EnquoteBackslash: Boolean read FEnquoteBackslash write FEnquoteBackslash default False;
 
+    {new}
+    property CreatePaths: Boolean read FCreatePaths write FCreatePaths default True; // When saving, create subdirectories/paths if it doesn't exist?
 
     { Additional Events }
     property OnSpecialData: TJvCsvOnSpecialData read FOnSpecialData write FOnSpecialData;
     property OnGetFieldData: TJvCsvOnGetFieldData read FOnGetFieldData write FOnGetFieldData;
     property OnSetFieldData: TJvCsvOnSetFieldData read FOnSetFieldData write FOnSetFieldData;
-
    public
     { these MUST be available at runtime even when the object is of the Custom base class type
       This enables interoperability at design time between non-visual helper components
@@ -702,8 +704,13 @@ function JvCsvWildcardMatch(Data, Pattern: string): Boolean;
 
 implementation
 
-uses 
-  Variants, 
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, QControls, QForms,  
   JvQJCLUtils, JvQCsvParse, JvQConsts, JvQResources;
 
@@ -736,6 +743,7 @@ constructor TJvCustomCsvDataSet.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSeparator := ',';
+  FCreatePaths := True; // Creates subdirectories automatically when saving.
 
   FInitialWorkingDirectory := GetCurrentDir; // from SysUtils;
 
@@ -1420,8 +1428,12 @@ var
   Value: Variant;
   MatchCount: Integer;
   StrValueA, StrValueB: string;
+  CompareResult: Boolean;
 begin
   Result := False;
+  Lo := -1;
+//  Hi := -1;  // Value is never used
+
   if not Active then
     Exit;
   if Pos(',', KeyFields) > 0 then
@@ -1429,11 +1441,15 @@ begin
   else
     Count := StrSplit(KeyFields, ';', Chr(0), KeyFieldArray, 20);
 
-  if not ((VarType(KeyValues) and VarArray) > 0) then
-    Exit;
-  Lo := VarArrayLowBound(KeyValues, 1);
-  Hi := VarArrayHighBound(KeyValues, 1);
-  VarCount := (Hi - Lo) + 1;
+  (* Single value need not be an array type! *)
+  if (VarType(KeyValues) and VarArray) > 0 then
+  begin
+    Lo := VarArrayLowBound(KeyValues, 1);
+    Hi := VarArrayHighBound(KeyValues, 1);
+    VarCount := (Hi - Lo) + 1;
+  end
+  else
+    VarCount := 1;
   if VarCount <> Count then
     Exit;
   if Count = 0 then
@@ -1465,7 +1481,12 @@ begin
     for I := 0 to Count - 1 do
     begin
       Value := GetFieldValueAsVariant(CsvColumnData[I], FieldLookup[I], RecIndex);
-      if Value = KeyValues[I + Lo] then
+      if Lo < 0 then // non-vararray!
+        CompareResult := (Value = KeyValues)
+      else // vararray!
+        CompareResult := Value = KeyValues[I + Lo];
+
+      if CompareResult then
         Inc(MatchCount)
       else
       if Options <> [] then
@@ -1700,7 +1721,10 @@ begin
     if Ch = '"' then // always escape quotes by doubling them, since this is standard CSV behaviour
       S := S + '""'
     else
-    if Ord(Ch) >= 32 then // strip any other low-ascii-unprintables
+    if Ch = Tab then
+      S := S + Ch // keep tabs! NEW Sept 2004! WP.
+    else
+    if Ch >= ' ' then // strip any other low-ascii-unprintables!
       S := S + Ch;
   end;
   S := S + '"'; // end quote.
@@ -2297,7 +2321,7 @@ begin
 
   if Length(aCsvFieldDef) > 0 then
   begin
-    StringToCsvRow(aCsvFieldDef, ',', @CsvFieldRec, False, False);
+    StringToCsvRow(aCsvFieldDef, Separator, @CsvFieldRec, False, False);
 
     ColNum := 0;
     while CsvRowGetColumnMarker(@CsvFieldRec, ColNum) <> COLUMN_ENDMARKER do
@@ -2441,6 +2465,12 @@ begin
       end;
     end;
   end;
+  // New:Array of Booleans used for ascending order on primary key sorting!
+  SetLength(FAscending,FCsvKeyCount+1);
+  for I := 0 to Length(FAscending)-1 do begin
+      FAscending[I] := true;
+  end;
+
 end;
 
 { set our position onto the EOF Crack }
@@ -2469,7 +2499,7 @@ begin
       JvCsvBackupPreviousFiles(FOpenFileName, FAutoBackupCount);
     end;
     // Now write new file.
-    ExportCsvFile(FOpenFilename);
+    ExportCsvFile(FOpenFileName);
     FFileDirty := False;
   end;
 end;
@@ -2522,10 +2552,12 @@ end;
 function TJvCustomCsvDataSet.InternalFindByKey(Row: PCsvRow): Integer;
 var
   I: Integer;
+
 begin
   Result := -1;
+
   for I := 0 to FData.Count - 1 do
-    if InternalCompare(FCsvKeyFields, FCsvKeyCount, {Left} Row, {Right} FData.Items[I], True) = 0 then
+    if InternalCompare(FCsvKeyFields, FCsvKeyCount, {Left} Row, {Right} FData.Items[I], FAscending) = 0 then
     begin
       Result := I;
       Break;
@@ -2642,7 +2674,7 @@ end;
 function TJvCustomCsvDataSet.GetFileName: string;
 begin
    // If FTableName is not set, you can't save or load a file, fire an exception:
-   Assert(Length(FTableName) <> 0, 'TJvCustomCsvDataSet.GetFileName - TableName property is not set');
+   Assert(Length(FTableName) <> 0, RsEInvalidTableName);
 
    if (Length(FTableName) > 2) and (FTableName[1] = '.') and
      IsPathDelimiter(FTableName, 2) then // reasonably portable, okay?
@@ -2678,7 +2710,7 @@ begin
     FCsvFileAsStrings := TStringList.Create;
 
     if FLoadsFromFile then // The IF condition here is NEW!
-       FCsvFileAsStrings.LoadFromFile(FOpenFilename);
+       FCsvFileAsStrings.LoadFromFile(FOpenFileName);
 
     if FCsvFileAsStrings.Count > 0 then
       Result := True; // it worked!
@@ -2991,11 +3023,13 @@ end;
 // Returns 0 if Left=Right, 1 if Left>Right, -1 if Left<Right
 
 function TJvCustomCsvDataSet.InternalCompare(SortColumns: TArrayOfPCsvColumn;
-  SortColumnCount: Integer; Left, Right: PCsvRow; Ascending: Boolean): Integer;
+  SortColumnCount: Integer; Left, Right: PCsvRow; SortAscending: Array of Boolean): Integer;
 var
   I: Integer;
 begin
   Result := 0;
+  Assert(Length(SortAscending) >= SortColumnCount);
+  
   // null check, raise exception
   if (not Assigned(Left)) or (not Assigned(Right)) then
     JvCsvDatabaseError(FTableName, RsEInternalCompare);
@@ -3007,7 +3041,7 @@ begin
     Result := InternalFieldCompare(SortColumns[I], Left, Right);
     if Result <> 0 then
     begin
-      if not Ascending then
+      if not SortAscending[I] then // inverts comparison result when Descending!
         Result := -Result;
            // XXX REPEAT Result := InternalFieldCompare( SortColumns[I],Left,Right);
       Exit; // found greater or less than condition
@@ -3018,7 +3052,7 @@ begin
 end;
 
 procedure TJvCustomCsvDataSet.InternalQuickSort(SortList: PPointerList;
-  L, R: Integer; SortColumns: TArrayOfPCsvColumn; ACount: Integer; Ascending: Boolean);
+  L, R: Integer; SortColumns: TArrayOfPCsvColumn; ACount: Integer; SortAscending: Array of Boolean);
 var
   I, J: Integer;
   P, T: Pointer;
@@ -3029,9 +3063,9 @@ begin
     J := R;
     P := SortList^[(L + R) shr 1];
     repeat
-      while InternalCompare(SortColumns, ACount, SortList^[I], P, Ascending) < 0 do
+      while InternalCompare(SortColumns, ACount, SortList^[I], P, SortAscending ) < 0 do
         Inc(I);
-      while InternalCompare(SortColumns, ACount, SortList^[J], P, Ascending) > 0 do
+      while InternalCompare(SortColumns, ACount, SortList^[J], P, SortAscending ) > 0 do
         Dec(J);
       if I <= J then
       begin
@@ -3043,16 +3077,16 @@ begin
       end;
     until I > J;
     if L < J then
-      InternalQuickSort(SortList, L, J, SortColumns, ACount, Ascending);
+      InternalQuickSort(SortList, L, J, SortColumns, ACount, SortAscending);
     L := I;
   until I >= R;
 end;
 
 procedure TJvCustomCsvDataSet.QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn;
-  ACount: Integer; Ascending: Boolean);
+  ACount: Integer; SortAscending: Array of Boolean);
 begin
   if (AList <> nil) and (AList.Count > 1) then
-    InternalQuickSort(AList.List, 0, AList.Count - 1, SortColumns, ACount, Ascending);
+    InternalQuickSort(AList.List, 0, AList.Count - 1, SortColumns, ACount, SortAscending);
 end;
 
 procedure TJvCustomCsvDataSet.Sort(const SortFields: string; Ascending: Boolean);
@@ -3060,6 +3094,7 @@ var
 //  Index: array of Pointer;
 //  swap: Pointer;
   SortFieldNames: array of string;
+  SortAscending:Array of boolean;
   SortColumns: TArrayOfPCsvColumn;
   SortColumnCount: Integer;
 //  comparison, I, U, L: Integer;
@@ -3075,6 +3110,7 @@ begin
 //  end;
 
   SetLength(SortFieldNames, FCsvColumns.Count);
+  SetLength(SortAscending,  FCsvColumns.Count);
   SortColumnCount := StrSplit(SortFields, Separator, {Chr(0)=No Quoting} Chr(0), SortFieldNames, FCsvColumns.Count);
   SetLength(SortColumns, SortColumnCount);
   if (SortFields = '') or (SortColumnCount = 0) then
@@ -3083,13 +3119,19 @@ begin
   // Now check if the fields exist, and find the pointers to the fields
   for I := 0 to SortColumnCount - 1 do
   begin
+    SortAscending[I] := Ascending; 
     if SortFieldNames[I] = '' then
       JvCsvDatabaseError(FTableName, RsESortFailedFieldNames);
+    if SortFieldNames[I][1] = '!' then
+    begin
+      SortAscending[I] := not SortAscending[I];
+      SortFieldNames[I] := Copy(SortFieldNames[I],2,Length(SortFieldNames[I]));
+    end;
     SortColumns[I] := FCsvColumns.FindByName(SortFieldNames[I]);
     if not Assigned(SortColumns[I]) then
       JvCsvDatabaseError(FTableName, Format(RsESortFailedInvalidFieldNameInList, [SortFieldNames[I]]));
   end;
-  QuickSort(FData, SortColumns, SortColumnCount, AScending);
+  QuickSort(FData, SortColumns, SortColumnCount, SortAscending);
 
   //  bubble sort, compare in the middle,
   //  yes I'm feeling lazy today, yes I know a qsort would be better. - WP
@@ -3160,7 +3202,7 @@ begin
       Result := PCsvColumn(Get(I));
       if Assigned(Result.FFieldDef) then
         // Case insensitive field name matching:
-        if CompareText(Result.FFieldDef.Name, FieldName) = 0 then
+        if SameText(Result.FFieldDef.Name, FieldName) then
           Exit; //return that field was found!
     end;
   except
@@ -3194,7 +3236,7 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    FreeMem(Self[I]);
+    FreeMem(Items[I]);
   inherited Clear;
 end;
 
@@ -3311,7 +3353,7 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    FreeMem(Self[I]);
+    FreeMem(Items[I]);
   inherited Clear;
 end;
 
@@ -3580,6 +3622,19 @@ begin
   FData.AddRow(PNewRow);
 end;
 
+procedure TJvCustomCsvDataSet.AutoCreateDir(const FileName: string);
+var
+  Path: string;
+begin
+  if CreatePaths then
+  begin
+    Path := ExtractFilePath(FileName);
+    if Path <> '' then
+      if not DirectoryExists(Path) then
+        ForceDirectories(Path);
+  end;
+end;
+
 { This function is handy to save a portion of a csv table that has
 grown too large into a file, and then DeleteRows can be called to remove
 that section of the file. }
@@ -3594,6 +3649,7 @@ begin
   try
     for I := FromRow to ToRow do
       StrList.Add(FData.GetRowStr(I));
+    AutoCreateDir(FileName);
     StrList.SaveToFile(FileName);
   finally
     StrList.Free;
@@ -3631,6 +3687,7 @@ begin
   Strings := TStringList.Create;
   try
     AssignToStrings(Strings);
+    AutoCreateDir(FileName);
     Strings.SaveToFile(FileName);
   finally
     Strings.Free;
@@ -3654,8 +3711,7 @@ var
   F: Text;
   FirstLine: string;
 begin
-  if (not FLoadsFromFile) or (not FHasHeaderRow)
-     or (not FileExists(FTableName)) then
+  if (not FLoadsFromFile) or (not FHasHeaderRow) or (not FileExists(FTableName)) then
   begin
     Result := '';
     Exit;
@@ -4138,12 +4194,7 @@ begin
   end;
   BackupFolder := BackupFolder + 'Backup'+ PathDelim;
   if not DirectoryExists(BackupFolder) then
-    {$IFDEF MSWINDOWS}
-    CreateDirectory(PChar(BackupFolder), nil);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
     ForceDirectories(BackupFolder);
-    {$ENDIF LINUX}
   Found := False;
   for I := 0 to MaxFiles - 1 do
   begin
@@ -4170,12 +4221,7 @@ begin
   // extension number to use.
   if FileExists(RemoveFile) then
     DeleteFile(RemoveFile);
-  {$IFDEF MSWINDOWS}  
-  Windows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}  
   QWindows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
-  {$ENDIF LINUX}
   Result := True;
 end;
 
@@ -4246,10 +4292,10 @@ end;
 // get contents of one dataset into this dataset. copies only fields that
 // match. Raises an exception if an error occurs. returns # of rows copied.
 
-function TJvCustomCsvDataSet.CopyFromDataset(DataSet: TDataset): Integer;
+function TJvCustomCsvDataSet.CopyFromDataset(DataSet: TDataSet): Integer;
 var
   I, MatchFieldCount: Integer;
-  FieldName: string;
+  StrValue, FieldName: string;
   MatchSourceField: array of TField;
   MatchDestField: array of TField;
 begin
@@ -4273,26 +4319,51 @@ begin
       end;
     end;
   end;
-  {$IFDEF DEBUGINFO_ON}
-  OutputDebugString(PChar('MatchFieldCount=' + IntToStr(MatchFieldCount)));
-  {$ENDIF DEBUGINFO_ON}
+  //{$IFDEF DEBUGINFO_ON}
+  //OutputDebugString(PChar('TJvCustomCsvDataSet.CopyFromDataset: MatchFieldCount=' + IntToStr(MatchFieldCount)));
+  //{$ENDIF DEBUGINFO_ON}
   if MatchFieldCount = 0 then
-    JvCsvDatabaseError(FTableName, RsETimeTConvError);
+    JvCsvDatabaseError(DataSet.Name, RsENoFieldNamesMatch);
   Result := 0;
   DataSet.First;
   if (not Active) and (not LoadsFromFile) then
     Active := True;
 
-  while not Dataset.Eof do
+  while not DataSet.Eof do
   begin
     Append;
     for I := 0 to MatchFieldCount-1 do
-      MatchDestField[I].Value := MatchSourceField[I].Value;
+      if MatchSourceField[I].DataType=ftString then
+      begin
+        if MatchSourceField[I].IsNull then
+          StrValue :=  ''
+        else
+          StrValue :=  MatchSourceField[I].Value;
+        MatchDestField[I].Value := StrValue;
+      end
+      else
+        MatchDestField[I].Value := MatchSourceField[I].Value;
     Post;
     DataSet.Next;
     Inc(Result);
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

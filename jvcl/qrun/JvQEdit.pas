@@ -51,9 +51,9 @@ interface
 
 uses
   QWindows, QMessages, 
-  Qt,  
-  Classes, QGraphics, QControls, QMenus,
-  JvQCaret, JvQMaxPixel, JvQTypes, JvQExStdCtrls;
+  Qt, 
+  QForms, Classes, QGraphics, QControls, QMenus, 
+  JvQMaxPixel, JvQTypes, JvQExStdCtrls;
 
 
 const
@@ -66,8 +66,7 @@ type
     FFlat: Boolean;
     FMaxPixel: TJvMaxPixel;
     FGroupIndex: Integer;
-    FAlignment: TAlignment;
-    FCaret: TJvCaret;
+    FAlignment: TAlignment; 
     FHotTrack: Boolean;
     FDisabledColor: TColor;
     FDisabledTextColor: TColor;
@@ -76,16 +75,15 @@ type
     FStreamedSelStart: Integer;
     FUseFixedPopup: Boolean;
     FAutoHint: Boolean; 
-    FPasswordChar: Char;
-    FNullPixmap: QPixmapH; 
+    FPasswordChar: Char; 
     FEmptyValue: string;
     FIsEmptyValue: Boolean;
     FEmptyFontColor: TColor;
-    FOldFontColor: TColor; 
+    FOldFontColor: TColor;
+    FIsLoaded:boolean; 
     function GetPasswordChar: Char;
     function IsPasswordCharStored: Boolean;
     procedure SetAlignment(Value: TAlignment);
-    procedure SetCaret(const Value: TJvCaret);
     procedure SetDisabledColor(const Value: TColor); virtual;
     procedure SetDisabledTextColor(const Value: TColor); virtual;
     procedure SetPasswordChar(Value: Char);
@@ -98,7 +96,7 @@ type
   protected
     { (rb) renamed from UpdateEdit }
     procedure UpdateGroup; virtual;
-    procedure CaretChanged(Sender: TObject); dynamic;
+//    procedure CaretChanged(Sender: TObject); dynamic;
     procedure Change; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure MaxPixelChanged(Sender: TObject);
@@ -129,8 +127,7 @@ type
     destructor Destroy; override; 
   protected
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property AutoHint: Boolean read FAutoHint write FAutoHint default False;
-    property Caret: TJvCaret read FCaret write SetCaret;
+    property AutoHint: Boolean read FAutoHint write FAutoHint default False; 
     property EmptyValue: string read FEmptyValue write SetEmptyValue;
     property EmptyFontColor: TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
@@ -149,7 +146,7 @@ type
 
   TJvEdit = class(TJvCustomEdit)
   published 
-    property Caret;
+//    property Caret;
     property DisabledTextColor;
     property DisabledColor;
     property HotTrack;
@@ -243,16 +240,13 @@ end;
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner); 
-  FNullPixmap := QPixmap_create(1, 1, 1, QPixmapOptimization_DefaultOptim); 
+  inherited Create(AOwner);
   FAlignment := taLeftJustify;
   // ControlStyle := ControlStyle + [csAcceptsControls];
   ClipboardCommands := [caCopy..caUndo];
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
-  FHotTrack := False;
-  FCaret := TJvCaret.Create(Self);
-  FCaret.OnChanged := CaretChanged;
+  FHotTrack := False; 
   FStreamedSelLength := 0;
   FStreamedSelStart := 0;
   FUseFixedPopup := True; // asn: clx not implemented yet
@@ -264,16 +258,11 @@ end;
 
 destructor TJvCustomEdit.Destroy;
 begin
-  FMaxPixel.Free;
-  FCaret.Free; 
-  QPixmap_destroy(FNullPixmap); 
+  FMaxPixel.Free; 
   inherited Destroy;
 end;
 
-procedure TJvCustomEdit.CaretChanged(Sender: TObject);
-begin
-  FCaret.CreateCaret;
-end;
+
 
 procedure TJvCustomEdit.Change;
 var
@@ -339,6 +328,8 @@ end;
 
 procedure TJvCustomEdit.DoEmptyValueEnter;
 begin
+  if (csDesigning in ComponentState) or not FIsLoaded or (EmptyValue = '') then
+    Exit;
   if EmptyValue <> '' then
   begin
     if (inherited Text) = EmptyValue then
@@ -356,6 +347,8 @@ end;
 
 procedure TJvCustomEdit.DoEmptyValueExit;
 begin
+  if (csDesigning in ComponentState) or not FIsLoaded or (EmptyValue = '') then
+    Exit;
   if EmptyValue <> '' then
   begin
     if Text = '' then
@@ -368,7 +361,10 @@ begin
         Font.Color := FEmptyFontColor;
       end;
     end;
-  end;
+  end
+  else
+    if not (csDesigning in ComponentState) then
+      Font.Color := FOldFontColor;
 end;
 
 procedure TJvCustomEdit.DoEnter;
@@ -379,8 +375,7 @@ end;
 
 procedure TJvCustomEdit.DoExit;
 begin
-  inherited DoExit;
-  FCaret.DestroyCaret;
+  inherited DoExit; 
 end;
 
 function TJvCustomEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
@@ -429,7 +424,7 @@ begin
   Result := inherited GetPopupMenu; 
 end;
 
-
+// (ahuser) ProtectPassword has no function under CLX
 function TJvCustomEdit.GetText: TCaption;
 var
   Tmp: Boolean;
@@ -466,6 +461,7 @@ end;
 procedure TJvCustomEdit.Loaded;
 begin
   inherited Loaded;
+  FIsLoaded := true;
   FOldFontColor := Font.Color;
   SelStart := FStreamedSelStart;
   SelLength := FStreamedSelLength;
@@ -539,6 +535,7 @@ begin
       S := Text
     else
       S := StringOfChar(PasswordChar, Length(Text));
+    Canvas.Font := Font;  
     if not PaintEdit(Self, S, FAlignment, False, {0,} FDisabledTextColor,
       Focused, Flat, Canvas) then
       inherited Paint;
@@ -557,10 +554,7 @@ begin
   end;
 end;
 
-procedure TJvCustomEdit.SetCaret(const Value: TJvCaret);
-begin
-  FCaret.Assign(Value);
-end;
+
 
 procedure TJvCustomEdit.SetDisabledColor(const Value: TColor);
 begin

@@ -43,13 +43,13 @@ type
   TJvEasterEgg = class(TJvComponent)
   private
     FActive: Boolean;
-    FEventHook: QObject_hookH;
+    FEventHook: QApplication_hookH;
     FOnEggFound: TNotifyEvent;
     FControlKeys: TShiftState;
     FEgg: string;
     FForm: TCustomForm;
     FCurString: string;
-    FHook: string;
+//    FHook: string;
     function NewEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   public
     constructor Create(AOwner: TComponent); override;
@@ -85,7 +85,7 @@ end;
 destructor TJvEasterEgg.Destroy;
 begin
   if assigned(FEventHook) then
-    QObject_hook_destroy(FEventHook);
+    QApplication_hook_destroy(FEventHook);
   inherited Destroy;
 end;
 

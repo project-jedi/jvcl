@@ -1105,7 +1105,7 @@ begin
   Msg.Sender := AControl;
   Msg.StyleManager := AStyleManager;
   Msg.Result := 0;
-  AControl.Broadcast(Msg); 
+//  AControl.Broadcast(Msg); 
   with Msg do
     for I := 0 to AControl.ControlCount - 1 do
       if QWindows.Perform(AControl.Controls[I], Msg, Integer(Sender), Integer(StyleManager)) <> 0 then
@@ -4502,7 +4502,8 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
+//      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+      PostMessage(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
 

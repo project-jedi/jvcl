@@ -81,6 +81,9 @@ type
     property ImageRuler: TBitmap read FImageRuler write SetImageRuler;
     property ImageThumb: TBitmap read FImageThumb write SetImageThumb;
     property Align;
+    property Anchors;
+    property Constraints;
+    
     property Visible;
     property Enabled;
     property Cursor;

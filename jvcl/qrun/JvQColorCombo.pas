@@ -76,7 +76,6 @@ type
     procedure SetColWidth(Value: Integer);
     procedure SetColorValue(Value: TColor);
     procedure ResetItemHeight;
-{    procedure SetclBkDesktop(Value : TColor); }
     procedure SetPrefix(const Value: string);
     procedure SetHexPrefix(const Value: string);
     procedure SetColorNameMap(const Value: TStrings);
@@ -212,12 +211,6 @@ begin
   Result := TBitmap.Create;
   Result.LoadFromResourceName(hInstance, ResName);
 end;
-
-function clBkDesktop: TColor;
-begin
-  Result := TColor(QWidget_backgroundColor(Application.DeskTop)) ;
-end;
-
 
 function GetItemHeight(Font: TFont): Integer;
 var
@@ -361,11 +354,9 @@ begin
   if coCustomColors in Options then
   begin
     InsertColor(Items.Count - 1, Value, Format(FPrefix, [FCustCnt]));
-        //      Items.InsertObject(Items.Count, FPrefix + IntToStr(FCustCnt), TObject(Value))
   end
   else
     AddColor(Value, Format(FPrefix, [FCustCnt]));
-    //      Items.AddObject(FPrefix + IntToStr(FCustCnt), TObject(Value));
   ItemIndex := Items.Count - 2;
   FColorValue := Value;
 end;
@@ -390,10 +381,11 @@ var
 begin
   if R.Bottom < 0 then      // CLX bug fix
   begin
-    R.Bottom := ItemHeight-1 ; // when using up/down arrow keys
+                                // when using up/down arrow keys
     R.Right := ClientWidth ;   // then R.Bottom and R.Right have value -2 !
                                // for index > DropDownCount
   end;
+  R.Bottom := R.Top + ItemHeight;
   if (Index >= 0) and (odSelected in State) and DroppedDown then
   begin
     Canvas.Brush.Color := FHiLiteColor;
@@ -506,15 +498,32 @@ end;
 
 procedure TJvColorComboBox.FontChanged;
 begin
-  inherited;
-  ResetItemHeight;
-  RecreateWidget;
+//  inherited;
+  if not (csRecreating in ControlState) then
+    ResetItemHeight;
+  Invalidate;
+//  RecreateWnd;
 end;
 
 procedure TJvColorComboBox.ResetItemHeight;
+(*
+  function GetItemHeight: Integer;
+  var
+    FM: QFontMetricsH;
+  begin
+    FM := QFontMetrics_create(Font.Handle);
+    try
+      QWidget_FontMetrics(Handle, FM);
+      Result := QFontMetrics_height(FM) + 3;
+    finally
+      QFontMetrics_destroy(FM);
+    end;
+  end;
+*)
 begin
   ItemHeight := GetItemHeight(Font);
 end;
+
 
 procedure TJvColorComboBox.SetPrefix(const Value: string);
 begin
@@ -620,11 +629,6 @@ begin
     FColorNameMap.Add('clSkyBlue=Sky Blue');
     FColorNameMap.Add('clCream=Cream');
     FColorNameMap.Add('clMedGray=Medium Gray');
-
-
-//    FColorNameMap.Add('clNone=None');
-//    FColorNameMap.Add('clDefault=Default');
-
     FColorNameMap.Add('clForeground=Foreground');
     FColorNameMap.Add('clButton=Button');
     FColorNameMap.Add('clLight=Light');
@@ -639,9 +643,6 @@ begin
     FColorNameMap.Add('clShadow=Shadow');
     FColorNameMap.Add('clHighlight=Highlight');
     FColorNameMap.Add('clHighlightedText=Highlighted Text');
-
-    FColorNameMap.Add('clInfoText=Info Text');
-    FColorNameMap.Add('clInfoBk=Info Background');
 
     FColorNameMap.Add('clNormalForeground=Normal Foreground');
     FColorNameMap.Add('clNormalButton=Normal Button');
@@ -689,7 +690,6 @@ begin
     FColorNameMap.Add('clActiveHighlightedText=Active Highlighted Text');
     FColorNameMap.Add('clNone=None');
     FColorNameMap.Add('clDefault=Default');
-    AddColor(clBkDeskTop, 'clBkDesktop=Desktop Background');
   finally
     FColorNameMap.EndUpdate;
   end;

@@ -1059,7 +1059,7 @@ begin
         Bmp.Height := Bmp.Width;
         Bmp.Canvas.Start;
         DrawFrameControl(Bmp.Canvas.Handle, Rect(0, 0, Bmp.Width, Bmp.Height),
-          DFC_SCROLL, DFCS_SCROLLDOWN);
+          DFC_SCROLL, DFCS_SCROLLDOWN or DFCS_FLAT);
         Bmp.Canvas.Stop;
       end;
   else
@@ -1109,6 +1109,7 @@ var
   SavedBrush: TBrushRecall;
   Offset: Integer;
   R: TRect;
+  EditHelperIntf: IComboEditHelper;
 begin
   Result := True;
   if csDestroying in Editor.ComponentState then
@@ -1146,8 +1147,16 @@ begin
 
     with ACanvas do
     begin
-      EditRect := Rect(0, 0, 0, 0);
-      SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
+      if Supports(Editor, IComboEditHelper, EditHelperIntf) then
+      begin
+        EditRect := EditHelperIntf.GetEditorRect;
+        EditHelperIntf := nil;
+      end
+      else
+      begin
+        EditRect := Rect(0, 0, 0, 0);
+        SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
+      end;
       if IsRectEmpty(EditRect) then
       begin
         EditRect := ed.ClientRect;
@@ -1178,6 +1187,10 @@ begin
       end;
       if not ed.Enabled then
       begin
+        (*
+        if Supports(ed, IJvWinControlEvents) then
+          (ed as IJvWinControlEvents).DoEraseBackground(ACanvas, 0);
+        *)
         ACanvas.Brush.Style := bsClear;
         ACanvas.Font.Color := DisabledTextColor;
         ACanvas.TextRect(EditRect, X, EditRect.Top + 1, S);
@@ -1195,6 +1208,8 @@ begin
     SavedBrush.Free;
   end;
 end;
+
+
 
 
 //=== { TJvCustomComboEdit } =================================================
@@ -1220,8 +1235,7 @@ begin
   FButton := TJvEditButton.Create(Self);
   FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
   FButton.Visible := True;
-  FButton.Parent := FBtnControl;
-  FButton.Align := alClient;
+  FButton.Parent := FBtnControl; 
   TJvEditButton(FButton).OnClick := EditButtonClick;
   FAlwaysEnableButton := False;
   (* ++ RDB ++ *)
@@ -1822,9 +1836,9 @@ var
   AValue: Variant;
 begin
   if (FPopup <> nil) and FPopupVisible then
-  begin
+  begin  
     if Mouse.Capture <> nil then
-      Mouse.Capture := nil;
+      Mouse.Capture := nil; 
     AValue := GetPopupValue;
     HidePopup;
     try
@@ -1856,7 +1870,7 @@ procedure TJvCustomComboEdit.PopupDropDown(DisableEdit: Boolean);
 var
   P: TPoint;
   Y: Integer;
-  SR: TJvSizeRect;
+  SR: TJvSizeRect; 
 begin
   if not ((ReadOnly and not FAlwaysShowPopup) or FPopupVisible) then
   begin
@@ -1864,11 +1878,11 @@ begin
     if FPopup = nil then
       Exit;
 
-    P := Parent.ClientToScreen(Point(Left, Top));
-    SR.Top := 0;
-    SR.Left := 0;
+    P := Parent.ClientToScreen(Point(Left, Top));  
+    SR.Top := 0; //Screen.Top;
+    SR.Left := 0; //Screen.Left;
     SR.Width := Screen.Width;
-    SR.Height := Screen.Height;
+    SR.Height := Screen.Height; 
     Y := P.Y + Height;
     if Y + FPopup.Height > SR.Top + SR.Height then
       Y := P.Y - FPopup.Height;
