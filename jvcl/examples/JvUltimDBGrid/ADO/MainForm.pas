@@ -14,7 +14,8 @@ type
     DBMemo1: TDBMemo;
     JvDBComboBox1: TJvDBComboBox;
     DBLookupComboBox1: TDBLookupComboBox;
-    Panel1: TPanel;
+    PanelButtons: TPanel;
+    PanelGrid: TPanel;
     B_Connect: TButton;
     B_TitleIndic: TButton;
     B_WordWrap: TButton;
