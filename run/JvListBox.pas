@@ -1722,7 +1722,7 @@ begin
   begin
     if not MultiSelect then
     begin
-      if ItemIndex > 1 then
+      if ItemIndex > 0 then
       begin
         Items.Exchange(ItemIndex, ItemIndex - 1);
         ItemIndex := ItemIndex - 1;
