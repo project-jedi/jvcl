@@ -400,8 +400,7 @@ begin
     RefPath := GetAbsPath(Path);
     if RefPath = '' then
       RefPath := DefaultSection;
-    if AutoReload and not IsUpdating then
-      Reload;
+    ReloadIfNeeded;
     IniFile.ReadSections(Strings);
     I := Strings.Count - 1;
     while I >= 0 do
@@ -435,8 +434,7 @@ begin
     RefPath := GetAbsPath(Path);
     if RefPath = '' then
       RefPath := DefaultSection;
-    if AutoReload and not IsUpdating then
-      Reload;
+    ReloadIfNeeded;
     IniFile.ReadSectionValues(RefPath, Strings);
     for I := Strings.Count - 1 downto 0 do
     begin
@@ -468,8 +466,7 @@ function TJvCustomAppIniStorage.ValueExists(const Section, Key: string): Boolean
 begin
   if IniFile <> nil then
   begin
-    if AutoReload and not IsUpdating then
-      Reload;
+    ReloadIfNeeded;
     Result := IniFile.ValueExists(CalcDefaultSection(Section), Key);
   end
   else
@@ -480,8 +477,7 @@ function TJvCustomAppIniStorage.ReadValue(const Section, Key: string): string;
 begin
   if IniFile <> nil then
   begin
-    if AutoReload and not IsUpdating then
-      Reload;
+    ReloadIfNeeded;
     if TJvAppIniStorageOptions(StorageOptions).ReplaceCRLF then
       Result := ReplaceSlashNToCRLF(IniFile.ReadString(CalcDefaultSection(Section), Key, ''))
     else
@@ -497,8 +493,7 @@ procedure TJvCustomAppIniStorage.WriteValue(const Section, Key, Value: string);
 begin
   if IniFile <> nil then
   begin
-    if AutoReload and not IsUpdating then
-      Reload;
+    ReloadIfNeeded;
     if TJvAppIniStorageOptions(StorageOptions).PreserveLeadingTrailingBlanks then
       if TJvAppIniStorageOptions(StorageOptions).ReplaceCRLF then
         IniFile.WriteString(CalcDefaultSection(Section), Key,
@@ -511,8 +506,7 @@ begin
         IniFile.WriteString(CalcDefaultSection(Section), Key, ReplaceCRLFToSlashN(Value))
       else
         IniFile.WriteString(CalcDefaultSection(Section), Key, Value);
-    if AutoFlush and not IsUpdating then
-      Flush;
+    FlushIfNeeded;
   end;
 end;
 
@@ -537,8 +531,7 @@ begin
         for I := 0 to Sections.Count - 1 do
           if Pos(TopSection, Sections[I]) = 1 then
             IniFile.EraseSection(Sections[I]);
-      if AutoFlush and not IsUpdating then
-        Flush;
+      FlushIfNeeded;
     finally
       Sections.Free;
     end;
@@ -551,21 +544,18 @@ var
 begin
   if IniFile <> nil then
   begin
-    if AutoReload and not IsUpdating then
-      Reload;
+    ReloadIfNeeded;
     LSection := CalcDefaultSection(Section);
     if IniFile.ValueExists(LSection, Key) then
     begin
       IniFile.DeleteKey(LSection, Key);
-      if AutoFlush and not IsUpdating then
-        Flush;
+      FlushIfNeeded;
     end
     else
     if IniFile.SectionExists(LSection + '\' + Key) then
     begin
       IniFile.EraseSection(LSection + '\' + Key);
-      if AutoFlush and not IsUpdating then
-        Flush;
+      FlushIfNeeded;
     end;
   end;
 end;
@@ -575,8 +565,7 @@ var
   Section: string;
   Key: string;
 begin
-  if AutoReload and not IsUpdating then
-    Reload;
+  ReloadIfNeeded;
   SplitKeyPath(Path, Section, Key);
   Result := IniFile.SectionExists(Section + '\' + Key);
 end;
@@ -590,8 +579,7 @@ begin
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
     RefPath := DefaultSection;
-  if AutoReload and not IsUpdating then
-    Reload;
+  ReloadIfNeeded;
   Result := IniFile.SectionExists(RefPath);
   if Result and ListIsValue and IniFile.ValueExists(RefPath, cCount) then
   begin
@@ -651,14 +639,14 @@ end;
 
 procedure TJvAppIniFileStorage.Flush;
 var
- path:String;
+  Path: String;
 begin
   if (FullFileName <> '') and not ReadOnly then
   begin
+    Path := ExtractFilePath(IniFile.FileName);
+    if Path <> '' then
+      ForceDirectories(Path);
     IniFile.Rename(FullFileName, False);
-
-    path := ExtractFilePath(IniFile.FileName);
-    ForceDirectories(path); // NEW! Otherwise it would throw an exception when application is shutting down.
     IniFile.UpdateFile;
   end;
 end;

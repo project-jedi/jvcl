@@ -381,6 +381,11 @@ type
     // doesn't make sense for a specific storage, it shouldn't have to implement them
     procedure Flush; virtual;
     procedure Reload; virtual;
+    // Do a Reload if the function ReloadNeeded returns true
+    procedure ReloadIfNeeded;
+    function ReloadNeeded : Boolean; virtual;
+    procedure FlushIfNeeded;
+    function FlushNeeded : Boolean; virtual;
     procedure BeginUpdate;
     procedure EndUpdate;
     property IsUpdating: Boolean read GetUpdating;
@@ -741,11 +746,13 @@ type
     FLocation: TFileLocation;
     FOnGetFileName: TJvAppStorageGetFileNameEvent;
     FPhysicalReadOnly: Boolean;
+    FFileLoaded: Boolean;
 
     function GetAsString: string; virtual; abstract;
     procedure SetAsString(const Value: string); virtual; abstract;
 
     procedure SetFileName(const Value: TFileName);
+    procedure SetOnGetFileName(Value: TJvAppStorageGetFileNameEvent);
     procedure SetLocation(const Value: TFileLocation);
     function DefaultExtension: string; virtual;
 
@@ -757,7 +764,7 @@ type
     property Location: TFileLocation read FLocation write SetLocation default flExeFile;
 
     property OnGetFileName: TJvAppStorageGetFileNameEvent
-      read FOnGetFileName write FOnGetFileName;
+      read FOnGetFileName write SetOnGetFileName;
       // OnGetFileName triggered on Location = flCustom
 
     function GetPhysicalReadOnly: Boolean; override;
@@ -766,6 +773,8 @@ type
     constructor Create(AOwner: TComponent); override;
 
     procedure Reload; override;
+    function ReloadNeeded : Boolean; override;
+
 
     property FullFileName: TFileName read GetFullFileName;
   published
@@ -1088,6 +1097,28 @@ end;
 procedure TJvCustomAppStorage.Reload;
 begin
   // do nothing
+end;
+
+procedure TJvCustomAppStorage.ReloadIfNeeded;
+begin
+  if ReloadNeeded then
+    Reload;
+end;
+
+function TJvCustomAppStorage.ReloadNeeded : Boolean;
+begin
+  Result := AutoReload and not IsUpdating;
+end;
+
+procedure TJvCustomAppStorage.FlushIfNeeded;
+begin
+  if FlushNeeded then
+    Flush;
+end;
+
+function TJvCustomAppStorage.FlushNeeded : Boolean;
+begin
+  Result := AutoFlush and not IsUpdating;
 end;
 
 procedure TJvCustomAppStorage.Notification(AComponent: TComponent; Operation: TOperation);
@@ -2534,16 +2565,14 @@ end;
 
 procedure TJvCustomAppStorage.BeginUpdate;
 begin
-  if  not IsUpdating and AutoReload then
-    Reload;
+  ReloadIfNeeded;
   Inc(FUpdateCount);
 end;
 
 procedure TJvCustomAppStorage.EndUpdate;
 begin
   Dec(FUpdateCount);
-  if not IsUpdating and AutoFlush then
-    Flush;
+  FlushIfNeeded;
   if FUpdateCount < 0 then
     FUpdateCount := 0;
 end;
@@ -2873,12 +2902,19 @@ begin
   inherited Create(AOwner);
   FLocation := flExeFile;
   FPhysicalReadOnly := False;
+  FFileLoaded := False;
 end;
 
 procedure TJvCustomAppMemoryFileStorage.Reload;
 begin
+  FFileLoaded := True;
   FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
   inherited Reload;
+end;
+
+function TJvCustomAppMemoryFileStorage.ReloadNeeded : Boolean;
+begin
+  Result := (not FFileLoaded or AutoReload) and not IsUpdating;
 end;
 
 function TJvCustomAppMemoryFileStorage.GetPhysicalReadOnly: Boolean;
@@ -2898,7 +2934,7 @@ var
   NameOnly: string;
   RelPathName: string;
 begin
-  if FileName = '' then
+  if (FileName = '') and (Location <> flCustom) then
     Result := ''
   else
   begin
@@ -2934,6 +2970,8 @@ procedure TJvCustomAppMemoryFileStorage.SetFileName(const Value: TFileName);
 begin
   if FFileName <> PathAddExtension(Value, DefaultExtension) then
   begin
+    if not (csLoading in ComponentState) and not IsUpdating then
+      Flush;
     FFileName := PathAddExtension(Value, DefaultExtension);
     FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
     if not (csLoading in ComponentState) and not IsUpdating then
@@ -2941,10 +2979,22 @@ begin
   end;
 end;
 
+procedure TJvCustomAppMemoryFileStorage.SetOnGetFileName(Value: TJvAppStorageGetFileNameEvent);
+begin
+  if not (csLoading in ComponentState) and not IsUpdating then
+    Flush;
+  FOnGetFileName := Value;
+  FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
+  if not (csLoading in ComponentState) and not IsUpdating then
+    Reload;
+end;
+
 procedure TJvCustomAppMemoryFileStorage.SetLocation(const Value: TFileLocation);
 begin
   if FLocation <> Value then
   begin
+    if not (csLoading in ComponentState) and not IsUpdating then
+      Flush;
     FLocation := Value;
     FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
     if not (csLoading in ComponentState) and not IsUpdating then
