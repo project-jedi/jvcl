@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-05-26
+Last Modified: 2003-10-25
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,9 +34,17 @@ unit JvArrowButton;
 
 interface
 
-uses Windows, Messages, Classes, Controls, Forms, Graphics, StdCtrls,
-  ExtCtrls, Buttons, CommCtrl, Menus,
-  JvComponent;
+uses
+  SysUtils, Classes,
+  {$IFDEF COMPLIB_VCL}
+  Windows, Messages, Controls, Forms, Graphics, Buttons, CommCtrl,
+  Menus,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  Types, QControls, QForms, QGraphics, QButtons, QImgList,
+  Menus,
+  {$ENDIF}
+  JvClxUtils, JvComponent;
 
 type
   TJvArrowButton = class(TJvGraphicControl)
@@ -87,7 +95,6 @@ type
     procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure Paint; override;
@@ -129,7 +136,7 @@ type
 implementation
 
 uses
-  Consts, SysUtils, JvThemes;
+  Consts, JvThemes;
 
 type
   TGlyphList = class(TImageList)
@@ -574,7 +581,9 @@ end;
 
 procedure TButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
+var S: string;
 begin
+  S := Caption;
   with Canvas do
   begin
     Brush.Style := bsClear;
@@ -582,13 +591,13 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, 0);
+      ClxDrawText(Canvas, S, TextBounds, 0);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, 0);
+      ClxDrawText(Canvas, S, TextBounds, 0);
     end
     else
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds,
+      ClxDrawText(Canvas, S, TextBounds,
         DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 end;
@@ -600,6 +609,7 @@ var
   TextPos: TPoint;
   ClientSize, GlyphSize, TextSize: TPoint;
   TotalSize: TPoint;
+  S: string;
 begin
   { calculate the item sizes }
   ClientSize := Point(Client.Right - Client.Left, Client.Bottom -
@@ -613,7 +623,8 @@ begin
   if Length(Caption) > 0 then
   begin
     TextBounds := Rect(0, 0, Client.Right - Client.Left, 0);
-    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), TextBounds, DT_CALCRECT);
+    S := Caption;
+    ClxDrawText(Canvas, S, TextBounds, DT_CALCRECT);
     TextSize := Point(TextBounds.Right - TextBounds.Left, TextBounds.Bottom -
       TextBounds.Top);
   end
@@ -951,11 +962,6 @@ begin
       FOnDrop(self);
   FArrowClick := False;
   Repaint;
-end;
-
-procedure TJvArrowButton.MouseMove(Shift: TShiftState; X, Y: Integer);
-begin
-  inherited MouseMove(Shift, X, Y);
 end;
 
 procedure TJvArrowButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
