@@ -70,6 +70,9 @@ resourcestring
   RsESorryForOneDimensionalArraysOnly = 'Sorry. For one-dimensional arrays only.';
   RsELocalDatabase = 'Cannot perform this operation on a local database';
 
+  RsFalse = 'False';
+  RsTrue = 'True';
+
 //=== JvAni.pas ==============================================================
 resourcestring
   RsAniExtension = 'ani';
@@ -276,6 +279,7 @@ resourcestring
 
 //=== JvContextProvider.pas ==================================================
 resourcestring
+  RsContextItemEmptyCaption = '(no context assigned to this item)';
   RsENoContextAssigned = 'No context has been assigned to this item.';
   RsENoContextItem = 'Specified item is not a context item.';
   RsENotSupportedIInterfaceComponentReference = 'Component does not support IInterfaceComponentReference.';
@@ -384,6 +388,7 @@ resourcestring
 
 //=== JvDatePickerEdit.pas ===================================================
 resourcestring
+  RsDefaultNoDateShortcut = 'Alt+Del';
   RsEMustHaveADate = '%s must have a date!';
 
 //=== JvDateTimePicker.pas ===================================================

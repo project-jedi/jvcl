@@ -256,9 +256,6 @@ uses
   JclStrings, JclGraphUtils,
   JvResources;
 
-const
-  DefaultNoDateShortcut = 'Alt+Del';
-
 //=== TJvCustomDatePickerEdit ================================================
 
 constructor TJvCustomDatePickerEdit.Create(AOwner: TComponent);
@@ -274,7 +271,7 @@ begin
   FEnableValidation := True;
 //  FMaxYear := 2900;
 //  FMinYear := 1800;
-  FNoDateShortcut := TextToShortCut(DefaultNoDateShortcut);
+  FNoDateShortcut := TextToShortCut(RsDefaultNoDateShortcut);
   FNoDateText := '';
   FStoreDate := False;
 
@@ -594,7 +591,7 @@ end;
 
 function TJvCustomDatePickerEdit.IsNoDateShortcutStored: Boolean;
 begin
-  Result := (NoDateShortcut <> TextToShortCut(DefaultNoDateShortcut));
+  Result := (NoDateShortcut <> TextToShortCut(RsDefaultNoDateShortcut));
 end;
 
 procedure TJvCustomDatePickerEdit.CalDestroy(Sender: TObject);

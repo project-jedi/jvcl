@@ -71,25 +71,25 @@ type
     property Startup: string index 13 read GetValueAtIndex write FDummy stored False;
     property Templates: string index 14 read GetValueAtIndex write FDummy stored False;
 
-    property CommonAdminTools: string index 0 read GetCommonIndex write FDummy stored false;
-    property CommonAppData: string index 1 read GetCommonIndex write FDummy stored false;
-    property CommonDesktop: string index 2 read GetCommonIndex write FDummy stored false;
-    property CommonDocuments: string index 3 read GetCommonIndex write FDummy stored false;
-    property CommonPrograms: string index 4 read GetCommonIndex write FDummy stored false;
-    property CommonStartMenu: string index 5 read GetCommonIndex write FDummy stored false;
-    property CommonStartup: string index 6 read GetCommonIndex write FDummy stored false;
-    property CommonTemplates: string index 7 read GetCommonIndex write FDummy stored false;
-    property CommonPersonal: string index 8 read GetCommonIndex write FDummy stored false;
+    property CommonAdminTools: string index 0 read GetCommonIndex write FDummy stored False;
+    property CommonAppData: string index 1 read GetCommonIndex write FDummy stored False;
+    property CommonDesktop: string index 2 read GetCommonIndex write FDummy stored False;
+    property CommonDocuments: string index 3 read GetCommonIndex write FDummy stored False;
+    property CommonPrograms: string index 4 read GetCommonIndex write FDummy stored False;
+    property CommonStartMenu: string index 5 read GetCommonIndex write FDummy stored False;
+    property CommonStartup: string index 6 read GetCommonIndex write FDummy stored False;
+    property CommonTemplates: string index 7 read GetCommonIndex write FDummy stored False;
+    property CommonPersonal: string index 8 read GetCommonIndex write FDummy stored False;
 
-//    property AllUsersAdminTools:string index 0 read GetAllUsersIndex write FDummy stored false;
-    property AllUsersAppData: string index 1 read GetAllUsersIndex write FDummy stored false;
-    property AllUsersDesktop: string index 2 read GetAllUsersIndex write FDummy stored false;
-    property AllUsersDocuments: string index 3 read GetAllUsersIndex write FDummy stored false;
-    property AllUsersPrograms: string index 4 read GetAllUsersIndex write FDummy stored false;
-    property AllUsersStartMenu: string index 5 read GetAllUsersIndex write FDummy stored false;
-    property AllUsersStartup: string index 6 read GetAllUsersIndex write FDummy stored false;
-    property AllUsersTemplates: string index 7 read GetAllUsersIndex write FDummy stored false;
-    property AllUsersFavorites: string index 9 read GetAllUsersIndex write FDummy stored false;
+//    property AllUsersAdminTools:string index 0 read GetAllUsersIndex write FDummy stored False;
+    property AllUsersAppData: string index 1 read GetAllUsersIndex write FDummy stored False;
+    property AllUsersDesktop: string index 2 read GetAllUsersIndex write FDummy stored False;
+    property AllUsersDocuments: string index 3 read GetAllUsersIndex write FDummy stored False;
+    property AllUsersPrograms: string index 4 read GetAllUsersIndex write FDummy stored False;
+    property AllUsersStartMenu: string index 5 read GetAllUsersIndex write FDummy stored False;
+    property AllUsersStartup: string index 6 read GetAllUsersIndex write FDummy stored False;
+    property AllUsersTemplates: string index 7 read GetAllUsersIndex write FDummy stored False;
+    property AllUsersFavorites: string index 9 read GetAllUsersIndex write FDummy stored False;
   end;
 
 implementation

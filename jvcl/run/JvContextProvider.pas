@@ -41,7 +41,6 @@ type
     ['{78EB1037-11A5-4871-8115-4AE1AC60B59C}']
     function Get_ClientProvider: IJvDataProvider;
     procedure Set_ClientProvider(Value: IJvDataProvider);
-
     property ClientProvider: IJvDataProvider read Get_ClientProvider write Set_ClientProvider;
   end;
 
@@ -125,7 +124,6 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-
     property ClientProvider: IJvDataProvider read FClientProvider write SetClientProvider;
   end;
 
@@ -157,7 +155,7 @@ type
     procedure Remove(var Item: IJvDataItem); override;
   end;
 
-//===TContextItems==================================================================================
+//=== TContextItems ==========================================================
 
 function TContextItems.GetContexts: IJvDataContexts;
 var
@@ -272,7 +270,21 @@ begin
     Result := TContextItem.CreateCtx(Self, CtxList.GetContext(I));
 end;
 
-//===TContextRootItems==============================================================================
+//=== TContextRootItems ======================================================
+
+constructor TContextRootItems.Create;
+begin
+  inherited Create;
+  FNotifier := TJvProviderNotification.Create;
+  FNotifier.OnChanging := DataProviderChanging;
+  FNotifier.OnChanged := DataProviderChanged;
+end;
+
+destructor TContextRootItems.Destroy;
+begin
+  FreeAndNil(FNotifier);
+  inherited Destroy;
+end;
 
 procedure TContextRootItems.SetClientProvider(Value: IJvDataProvider);
 begin
@@ -374,7 +386,7 @@ function TContextRootItems.GetContexts: IJvDataContexts;
 var
   ParentCtx: IJvDataContext;
 begin
-  if (GetParent <> nil) then
+  if GetParent <> nil then
   begin
     if Supports(GetParent, IJvDataContext, ParentCtx) then
       Supports(ParentCtx, IJvDataContexts, Result);
@@ -383,21 +395,13 @@ begin
     Supports(ClientProvider, IJvDataContexts, Result);
 end;
 
-constructor TContextRootItems.Create;
-begin
-  inherited Create;
-  FNotifier := TJvProviderNotification.Create;
-  FNotifier.OnChanging := DataProviderChanging;
-  FNotifier.OnChanged := DataProviderChanged;
-end;
+//=== TContextItem ===========================================================
 
-destructor TContextRootItems.Destroy;
+constructor TContextItem.CreateCtx(AOwner: IJvDataItems; AContext: IJvDataContext);
 begin
-  FreeAndNil(FNotifier);
-  inherited Destroy;
+  Create(AOwner);
+  FContext := AContext;
 end;
-
-//===TContextItem===================================================================================
 
 function TContextItem.GetContext: IJvDataContext;
 begin
@@ -409,14 +413,14 @@ begin
   if Context <> nil then
     Result := Context.Name
   else
-    Result := '(no context assigned to this item)'
+    Result := RsContextItemEmptyCaption;
 end;
 
 procedure TContextItem.SetCaption(const Value: string);
 var
   CtxMan: IJvDataContextManager;
 begin
-  if (Context <> nil) then
+  if Context <> nil then
   begin
     if Supports(Context, IJvDataContextManager, CtxMan) then
     begin
@@ -444,7 +448,7 @@ var
 begin
   S := GetContext.Name;
   Ctx := GetContext.Contexts.Ancestor;
-  while (Ctx <> nil) do
+  while Ctx <> nil do
   begin
     S := Ctx.Name + '\' + S;
     Ctx := Ctx.Contexts.Ancestor;
@@ -460,13 +464,7 @@ begin
     Result := True;
 end;
 
-constructor TContextItem.CreateCtx(AOwner: IJvDataItems; AContext: IJvDataContext);
-begin
-  Create(AOwner);
-  FContext := AContext;
-end;
-
-//===TContextItemsManager===========================================================================
+//=== TContextItemsManager ===================================================
 
 function TContextItemsManager.GetContexts: IJvDataContexts;
 var
@@ -543,7 +541,7 @@ begin
   end;
 end;
 
-//===TJvContextProvider=============================================================================
+//=== TJvContextProvider =====================================================
 
 function TJvContextProvider.GetProviderIntf: IJvDataProvider;
 begin
@@ -593,7 +591,7 @@ begin
   AddToArray(Result, TJvContextProviderServerNotify);
 end;
 
-//===TJvContextProviderServerNotify=================================================================
+//=== TJvContextProviderServerNotify =========================================
 
 procedure TJvContextProviderServerNotify.ItemSelected(Value: IJvDataItem);
 var
