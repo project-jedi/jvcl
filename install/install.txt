@@ -1,0 +1,3 @@
+Before creating the install, make sure the JCLFOLDER define is correctly set for your current system. Also, 
+make a release checkout from CVS (to leave out all the CVS subfolders) and build th einstall with this script 
+from that folder.
