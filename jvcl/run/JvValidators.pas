@@ -312,7 +312,7 @@ begin
     FValidatorsList := TStringList.Create;
   if FValidatorsList.IndexOfObject(Pointer(AValidatorClass)) < 0 then
   begin
-    RegisterClass(TPersistentClass(AValidatorClass));
+    Classes.RegisterClass(TPersistentClass(AValidatorClass));
     FValidatorsList.AddObject(DisplayName,Pointer(AValidatorClass));
   end;
 end;

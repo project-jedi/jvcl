@@ -33,11 +33,11 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  QGraphics, QForms, QExtCtrls, QControls, Types,
-  {$ENDIF}
-  {$IFDEF VisualCLX}
   Windows, Messages, Graphics, Forms, ExtCtrls, Controls,
-  {$ENDIF}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QForms, QExtCtrls, QControls, Types,
+  {$ENDIF VisualCLX}
   JVCLVer, JvExExtCtrls;
 
 type

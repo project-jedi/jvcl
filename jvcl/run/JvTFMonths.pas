@@ -37,10 +37,10 @@ uses
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   {$ELSE}
   QGraphics, QControls, QForms, QDialogs, Types,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF USEJVCL}
   JvTypes,
-  {$ENDIF};
+  {$ENDIF USEJVCL}
   JvTFGlance, JvTFUtils, JvTFManager;
 
 {$HPPEMIT '#define TDate Controls::TDate'}
