@@ -22,12 +22,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvThemes;
+
 {$I jvcl.inc}
 {$IFDEF JVCLThemesEnabled}
 {$I windowsonly.inc}
 {$ENDIF JVCLThemesEnabled}
-
-unit JvThemes;
 
 interface
 

@@ -25,10 +25,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvToolBar;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvToolBar;
 
 interface
 

@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvTFGlanceTextViewer;
+
+{$I jvcl.inc}
 
 interface
 

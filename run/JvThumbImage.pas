@@ -29,7 +29,7 @@ Converted the rotation Functions to use scanlines for faster results
   without big speed differences and problems pf8bit,pf24bit,pf32bit
   the pf4bit,pf1bit is converted to pf8bit.
   The Pfdevice,pfcustom is converted into pf24bit.
-  all the Color convertion do not revert to the primary state after the
+  all the Color conversions do not revert to the primary state after the
   rotation
 
 Added the Mirror routines
@@ -41,11 +41,12 @@ Removed the 180 degree rotation and replaced by the mirror(mtBoth) call.
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvThumbImage;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   Windows, Classes, Controls, ExtCtrls, SysUtils, Messages, Graphics, Forms,
   jpeg, Dialogs,

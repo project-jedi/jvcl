@@ -24,15 +24,14 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvXPCheckCtrls;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  Classes,
-  Windows, Graphics, Controls,
+  Classes, Windows, Graphics, Controls,
   JvXPCore, JvXPCoreUtils;
 
 type

@@ -674,7 +674,7 @@ end;
 procedure TJvCustomLinkLabel.SetStrings(const Value: TStrings);
 begin
   FText.Assign(Value);
-  {$IFDEF VisualCLX}inherited {$ENDIF}SetText(FText.Text);
+  {$IFDEF VisualCLX} inherited {$ENDIF} SetText(FText.Text);
 end;
 
 // Bianconi

@@ -22,10 +22,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvVersionInfo;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvVersionInfo;
 
 {$WEAKPACKAGEUNIT}
 

@@ -572,7 +572,7 @@ type
     property Font;
     {$IFDEF VCL}
     property Flat;
-    {$ENDIF}
+    {$ENDIF VCL}
     property HideSelection;
     property Anchors;
     property BiDiMode;

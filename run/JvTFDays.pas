@@ -21,30 +21,29 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  This version of the source contains modifications which enable the use
+  of time blocks.  These modifications can be found by doing a search for
+  "DEF Jv_TIMEBLOCKS".  Previously, two versions were released; one which did
+  NOT support timeblocks and one which did support timeblocks.  (Hence the
+  use of the compiler defines.)
+
+  These two versions are in the process of being integrated.  The compiler
+  defines remain as an indicator of exactly what has been changed.  All
+  lines that are NOT compiled ($IFNDEF Jv_TIMEBLOCKS and $ELSE) remain
+  as a reference during the transition, but have been commented out to
+  reduce confusion.  Many of these lines are marked by a "// remove" comment.
+
+  The conditional defines and disabled code will be removed and this file
+  will be cleaned up after the time block code has been fully integrated
+  and tested.
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvTFDays;
 
-interface
+{$I jvcl.inc}
 
-// This version of the source contains modifications which enable the use
-// of time blocks.  These modifications can be found by doing a search for
-// "DEF Jv_TIMEBLOCKS".  Previously, two versions were released; one which did
-// NOT support timeblocks and one which did support timeblocks.  (Hence the
-// use of the compiler defines.)
-//
-// These two versions are in the process of being integrated.  The compiler
-// defines remain as an indicator of exactly what has been changed.  All
-// lines that are NOT compiled ({$IFNDEF Jv_TIMEBLOCKS} and {$ELSE}) remain
-// as a reference during the transition, but have been commented out to
-// reduce confusion.  Many of these lines are marked by a "// remove" comment.
-//
-// The conditional defines and disabled code will be removed and this file
-// will be cleaned up after the time block code has been fully integrated
-// and tested.
+interface
 
 uses
   SysUtils, Classes,

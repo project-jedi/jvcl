@@ -1771,7 +1771,7 @@ begin
       TabPainter.DrawTab(Self, Canvas, Images, Pages[RealIndex].ImageIndex, Pages[RealIndex].Caption, Rect, Active, Pages[RealIndex].Enabled);
   end
   else
-    {$IFDEF VisualCLX}Result := {$ENDIF}inherited DrawTab(TabIndex, Rect, Active);
+    {$IFDEF VisualCLX} Result := {$ENDIF} inherited DrawTab(TabIndex, Rect, Active);
 end;
 
 procedure TJvPageControl.Loaded;

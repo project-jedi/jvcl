@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvThumbViews;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvThumbViews;
 
 interface
 

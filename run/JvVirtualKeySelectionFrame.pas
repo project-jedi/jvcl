@@ -20,17 +20,18 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Description: This unit defines a frame that you can use to select a key code.
-             The primary use for that frame is un conjunction with a TJvAVICapture
-             component
+Description:
+  This unit defines a frame that you can use to select a key code.
+  The primary use for that frame is un conjunction with a TJvAVICapture
+  component.
 
-Known Issues: none known
+Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvVirtualKeySelectionFrame;
+
+{$I jvcl.inc}
 
 interface
 

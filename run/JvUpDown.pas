@@ -30,10 +30,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvUpDown;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvUpDown;
 
 interface
 

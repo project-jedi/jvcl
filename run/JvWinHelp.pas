@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvWinHelp;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvWinHelp;
 
 interface
 

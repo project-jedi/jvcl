@@ -19,15 +19,16 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A component that mimicks the time line in MS Team Manager
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvTMTimeLine;
 
-{ A component that mimicks the time line in MS Team Manager }
+{$I jvcl.inc}
 
 interface
 

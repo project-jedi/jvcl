@@ -28,9 +28,9 @@ This could be rectified by a custom-written formatting routine.
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvValidateEdit;
+
+{$I jvcl.inc}
 
 interface
 

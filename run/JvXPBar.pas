@@ -41,15 +41,16 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvXPBar;
+
 {$I jvcl.inc}
 
+// sorry no theming as standalone
+
 {$IFNDEF USEJVCL}
-// sorry no theming
 {$UNDEF JVCLThemesEnabled}
 {$UNDEF JVCLThemesEnabledD56}
 {$ENDIF USEJVCL}
-
-unit JvXPBar;
 
 interface
 
@@ -65,9 +66,6 @@ uses
   JvXPCore, JvXPCoreUtils;
 
 type
-  { Warning: Never change order of enumeration because of
-             hardcoded type casts!
-             (rom) removed those hardcoded typecasts }
   TJvXPBarRollDirection = (rdExpand, rdCollapse);
 
   TJvXPBarRollMode = (rmFixed, rmShrink); // rmFixed is default
