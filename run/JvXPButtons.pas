@@ -34,7 +34,7 @@ uses
   Classes, TypInfo,
   Windows, Messages, Graphics, Controls, Forms, ActnList, ImgList, Menus,
   {$IFDEF VisualCLX}
-  JvQExControls,
+  JvQExControls, Qt,
   {$ENDIF VisualCLX}
   JvXPCore, JvXPCoreUtils;
 

@@ -29,7 +29,7 @@ interface
 uses
   Windows, 
   {$IFDEF VisualCLX}
-  QTypes, Types,
+  QTypes, QImgList,
   {$ENDIF VisualCLX}
   Classes, Graphics, Controls, ExtCtrls,
   JvComponent;

@@ -1552,10 +1552,12 @@ begin
   begin
     AutoScroll := False;
     BorderStyle := bsNone;
+    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     BevelInner := bvNone;
     BevelOuter := bvNone;
     {$ENDIF COMPILER6_UP}
+    {$ENDIF VCL}
     Align := alClient;
   end;
   RightPanel := TJvPanel.Create(Self);
@@ -1566,7 +1568,12 @@ begin
     BorderStyle := bsNone;
     BevelInner := bvNone;
     BevelOuter := bvNone;
+    {$IFDEF VCL}
     Width := Scrollbox.HorzScrollBar.Size+3;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Width := 23;       // asn: need to check this
+    {$ENDIF VisualCLX}
     Visible := False;
   end;
   FreeAndNil(ArrangePanel);

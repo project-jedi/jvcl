@@ -388,10 +388,6 @@ begin
   finally
     ControlState := ControlState - [csCreating];
   end;
-  {$IFDEF VisualCLX}
-  FCanvas := TControlCanvas.Create;
-  FCanvas.Control := Self;
-  {$ENDIF VisualCLX}
 end;
 
 destructor TJvCustomNumEdit.Destroy;
@@ -895,7 +891,7 @@ begin
   else
     S := GetDisplayText;
   if not PaintComboEdit(Self, S, FAlignment,
-    True, FFocused and not PopupVisible, FCanvas) then
+    True, FFocused and not PopupVisible, Canvas) then
     inherited;
 end;
 {$ENDIF VisualCLX}
