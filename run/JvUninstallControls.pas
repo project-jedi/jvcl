@@ -70,7 +70,6 @@ type
     property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode
       default [hkCurrentUser, hkLocalMachine];
     property Color;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property DropDownCount;
@@ -80,7 +79,6 @@ type
     property ImeName;
     property ItemHeight;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -145,7 +143,6 @@ type
     property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode
       default [hkCurrentUser, hkLocalMachine];
     property Color;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -154,7 +151,6 @@ type
     property ImeName;
     property ItemHeight;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

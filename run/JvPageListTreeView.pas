@@ -82,15 +82,11 @@ type
     FOnAfterPaint: TJvPagePaintEvent;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
     procedure CMShowingChanged(var Message: TMessage); message CM_SHOWINGCHANGED;
-
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-
     function GetPageIndex: Integer;
     procedure SetPageIndex(const Value: Integer);
     procedure SetPageList(const Value: TJvCustomPageList);
@@ -108,11 +104,7 @@ type
     destructor Destroy; override;
     property PageList: TJvCustomPageList read FPageList write SetPageList;
   protected
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-
     property PageIndex: integer read GetPageIndex write SetPageIndex stored False;
-
     property Left stored False;
     property Top stored False;
     property Width stored False;
@@ -122,6 +114,7 @@ type
     property OnBeforePaint: TJvPageCanPaintEvent read FOnBeforePaint write FOnBeforePaint;
     property OnPaint: TJvPagePaintEvent read FOnPaint write FOnPaint;
     property OnAfterPaint: TJvPagePaintEvent read FOnAfterPaint write FOnAfterPaint;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
   TJvCustomPageClass = class of TJvCustomPage;
@@ -140,11 +133,9 @@ type
     FOnChange: TNotifyEvent;
     FOnChanging: TJvPageChangingEvent;
     FShowDesignCaption: TJvShowDesignCaption;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure UpdateEnabled;
     procedure SetActivePage(Page: TJvCustomPage);
@@ -175,7 +166,6 @@ type
 
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging: TJvPageChangingEvent read FOnChanging write FOnChanging;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
@@ -227,7 +217,6 @@ type
     property OnAfterPaint;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnCtl3DChanged;
     property OnParentColorChange;
   {$IFDEF JVCLThemesEnabled}
     property ParentBackground;
@@ -262,7 +251,6 @@ type
     FPageDefault: integer;
     FLinks: TJvPageLinks;
     FAboutJVCL: TJVCLAboutInfo;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
@@ -276,7 +264,6 @@ type
 
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     function GetItems: TJvPageIndexNodes;
     procedure SetItems(const Value: TJvPageIndexNodes);
@@ -307,7 +294,6 @@ type
 
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
 
   published
@@ -406,7 +392,6 @@ type
 
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnCtl3DChanged;
     property OnParentColorChange;
 
     property Align;
@@ -421,7 +406,6 @@ type
     property BorderWidth;
     property ChangeDelay;
     property Color;
-    property Ctl3D;
     property Constraints;
     property DragKind;
     property DragCursor;
@@ -438,7 +422,6 @@ type
     {$ENDIF}
     property ParentBiDiMode;
     property ParentColor default False;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -507,7 +490,6 @@ type
 
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnCtl3DChanged;
     property OnParentColorChange;
 
     property Align;
@@ -522,7 +504,6 @@ type
     property BorderWidth;
     property ChangeDelay;
     property Color;
-    property Ctl3D;
     property Constraints;
     property DragKind;
     property DragCursor;
@@ -538,7 +519,6 @@ type
 //    property MultiSelectStyle;
     property ParentBiDiMode;
     property ParentColor default False;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -620,7 +600,6 @@ type
 
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnCtl3DChanged;
     property OnParentColorChange;
 
     property OnCanResize;
@@ -844,13 +823,6 @@ begin
     ReferenceInterface(FPageList, opInsert);
     {$ENDIF}
   end;
-end;
-
-procedure TJvCustomPageListTreeView.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(self);
 end;
 
 procedure TJvCustomPageListTreeView.CMMouseEnter(var Msg: TMessage);
@@ -1183,13 +1155,6 @@ begin
   end;
 end;
 
-procedure TJvCustomPage.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(self);
-end;
-
 procedure TJvCustomPage.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -1478,13 +1443,6 @@ begin
     if HandleAllocated and (csDesigning in ComponentState) then
       RedrawWindow(Handle, nil, 0, RDW_UPDATENOW or RDW_INVALIDATE or RDW_ALLCHILDREN);
   end;
-end;
-
-procedure TJvCustomPageList.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(self);
 end;
 
 procedure TJvCustomPageList.CMParentColorChanged(var Msg: TMessage);

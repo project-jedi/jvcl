@@ -231,13 +231,11 @@ type
     property BorderWidth;
     property BorderStyle;
     property Color;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
     property Locked;
     property ParentColor;
-    property ParentCtl3D;
     property ParentShowHint default False;
     property PopupMenu;
     property ShowHint default True;

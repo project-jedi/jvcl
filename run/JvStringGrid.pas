@@ -67,7 +67,6 @@ type
     FHintColor: TColor;
     FSaved: TColor;
     FOnMouseLeave: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: boolean;
     FOnExitCell: TExitCellEvent;
@@ -97,7 +96,6 @@ type
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
@@ -178,7 +176,6 @@ type
     property OnCaptionClick: TCaptionClickEvent read FCaptionClick write FCaptionClick;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnLoadProgress: TProgress read FOnLoadProgress write FOnLoadProgress;
     property OnSaveProgress: TProgress read FOnSaveProgress write FOnSaveProgress;
@@ -245,13 +242,6 @@ destructor TJvStringGrid.Destroy;
 begin
   FreeAndNil(FFixedFont);
   inherited;
-end;
-
-procedure TJvStringGrid.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
 end;
 
 procedure TJvStringGrid.CMParentColorChanged(var Msg: TMessage);

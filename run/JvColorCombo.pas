@@ -144,7 +144,6 @@ type
     property OnBeforeCustom: TNotifyEvent read FOnBeforeCustom write FOnBeforeCustom;
 
     property Color;
-    property Ctl3D;
     property DragMode;
     property DragCursor;
     property Enabled;
@@ -152,7 +151,6 @@ type
     property ImeMode;
     property ImeName;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -219,9 +217,9 @@ type
   published
     property Anchors;
     property AutoComplete default False;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property AutoDropDown;
-{$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind;
@@ -229,7 +227,6 @@ type
     property BiDiMode;
     property Constraints;
     property Color;
-    property Ctl3D;
     property DroppedDownWidth: integer read GetDropDownWidth write SetDropDownWidth;
     property FontName: string read GetFontName write SetFontName;
     property Device: TFontDialogDevice read FDevice write SetDevice default fdScreen;
@@ -245,7 +242,6 @@ type
     property ImeMode;
     property ImeName;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

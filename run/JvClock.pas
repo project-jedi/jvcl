@@ -143,14 +143,12 @@ type
     property DragKind;
     property FullRepaint;
     property Color;
-    property Ctl3D;
     property Cursor;
     property DragMode;
     property DragCursor;
     property Enabled;
     property Font;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

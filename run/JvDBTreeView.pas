@@ -217,8 +217,6 @@ type
     property Font;
     property Color;
     property ParentColor default False;
-    property ParentCtl3D;
-    property Ctl3D;
     property SortType;
     property TabOrder;
     property TabStop default True;

@@ -665,8 +665,6 @@ type
     Property Align;
     Property Color default clWindow;
     Property ParentColor default False;
-    Property Ctl3D;
-    Property ParentCtl3D;
     Property TabStop default True;
     Property TabOrder;
     property Anchors;

@@ -156,7 +156,6 @@ type
     property CharCase;
     property Color;
     property Constraints;
-    property Ctl3D;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DragCursor;
@@ -169,7 +168,6 @@ type
     property MaxLength;
     property ParentBiDiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -430,7 +428,6 @@ type
     property CharCase;
     property ClickKey;
     property Color;
-    property Ctl3D;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DirectInput;
@@ -453,7 +450,6 @@ type
     property MaxLength;
     property NumGlyphs;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -553,7 +549,6 @@ type
     property CheckOnExit;
     property ClickKey;
     property Color;
-    property Ctl3D;
     property DefaultToday;
     property DialogTitle;
     property DirectInput;
@@ -576,7 +571,6 @@ type
     property MaxLength;
     property NumGlyphs;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupAlign;
@@ -693,7 +687,6 @@ type
     property CheckOnExit;
     property ClickKey;
     property Color;
-    property Ctl3D;
     property DecimalPlaces;
     property DirectInput;
     property DisplayFormat;
@@ -719,7 +712,6 @@ type
     property MinValue;
     property NumGlyphs;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupAlign;

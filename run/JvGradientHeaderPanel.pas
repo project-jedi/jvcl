@@ -110,7 +110,6 @@ type
     property BiDiMode;
     property BorderWidth;
     property Constraints;
-    property Ctl3D;
     property DockSite;
     property DoubleBuffered;
     property DragCursor;

@@ -63,7 +63,6 @@ type
     property BorderStyle;
     property CharCase;
     property Color;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -71,7 +70,6 @@ type
     property Font;
     property MaxLength;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;

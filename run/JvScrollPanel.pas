@@ -161,7 +161,6 @@ type
 ///    property BevelKind;
 ///    property BevelWidth;
     property Enabled;
-    property Ctl3D;
     property ShowHint;
     property Hint;
     property ParentShowHint;
@@ -170,7 +169,6 @@ type
     property ImeName;
     property Color;
     property ParentColor;
-    property ParentCtl3D;
     property OnEnter;
     property OnExit;
     property OnKeyDown;

@@ -269,14 +269,6 @@ begin
 
   if true then
   begin
-    if Ctl3d then
-    begin
-      //dec(R.Top);
-  ///    dec(R.Right);
-  //      InflateRect(R, -1, -1 );// dec(R.Top); dec(R.Left);
-  //        dec(R.Left);
-        //dec(R.Bottom); //dec(R.Right);
-    end;
     if FHottrackThrought then
       doHottracking := (AHottrackCol = ACol) or (AHottrackRow = ARow)
     else if fsgHottrack in FExtOptions then

@@ -187,7 +187,6 @@ type
     property BorderStyle;
     property Align;
     property Color;
-    property Ctl3D;
     property Cursor;
     property DragCursor;
     property DragMode;

@@ -31,19 +31,22 @@ Description:
 
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
+
 unit JvComboListBox;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Graphics, StdCtrls, ExtCtrls, Menus, JvListBox, JvTypes;
+  Windows, Messages, SysUtils, Classes, Controls, Graphics, StdCtrls,
+  ExtCtrls, Menus,
+  JvListBox, JvTypes;
 
 type
   // (p3) these types should *not* be moved to JvTypes (they are only used here)!
   TJvComboListBoxDrawStyle = (dsOriginal, dsStretch, dsProportional);
   TJvComboListDropDownEvent = procedure(Sender: TObject; Index: integer; X,Y:integer; var AllowDrop:boolean) of object;
-  TJvComboListDrawTextEvent = procedure(Sender: TObject; Index: integer; const AText: string; R: TRect; var DefaultDraw:
-    boolean) of object;
+  TJvComboListDrawTextEvent = procedure(Sender: TObject; Index: integer; const AText: string; R: TRect;
+    var DefaultDraw: boolean) of object;
   TJvComboListDrawImageEvent = procedure(Sender: TObject; Index: integer; const APicture: TPicture; R: TRect; var
     DefaultDraw: boolean) of object;
   TJvComboListBox = class(TJvCustomListBox)
@@ -105,7 +108,6 @@ type
     property Color;
     property Columns;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -121,7 +123,6 @@ type
     property MultiSelect;
     property ParentBiDiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -156,7 +157,6 @@ type
 
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnCtl3DChanged;
     property OnParentColorChange;
     property OnSelectCancel;
     property OnChange;
@@ -165,8 +165,6 @@ type
   end;
 
 implementation
-
-{ TJvComboListBox }
 
 function TJvComboListBox.AddImage(P: TPicture): integer;
 begin

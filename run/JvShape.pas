@@ -47,9 +47,6 @@ type
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    {$IFDEF VCL}
-    FOnCtl3DChanged: TNotifyEvent;
-    {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
@@ -57,7 +54,6 @@ type
     {$IFDEF VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
@@ -75,7 +71,6 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     {$IFDEF VCL}
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnEndDock;
     property OnStartDock;
     {$ENDIF VCL}
@@ -108,15 +103,6 @@ begin
   FHintColor := clInfoBk;
   FOver := False;
 end;
-
-{$IFDEF VCL}
-procedure TJvShape.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
-end;
-{$ENDIF VCL}
 
 {$IFDEF VisualCLX}
 procedure TJvShape.ParentColorChanged;

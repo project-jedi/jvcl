@@ -176,7 +176,6 @@ type
     property WordWrap;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnCtl3DChanged;
     property OnParentColorChange;
     property OwnerDraw;
     property OnButtonDraw;

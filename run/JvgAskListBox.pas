@@ -131,7 +131,6 @@ type
     property IntegralHeight;
     property Items;
     property ParentColor;
-    //    property ParentCtl3D;
     //    property ParentFont;
     property ParentShowHint;
     property PopupMenu;

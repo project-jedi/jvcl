@@ -293,9 +293,6 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FBehavior: TJvLabelBehaviorName;
     FOptions: TJvLabelBehavior;
-    {$IFDEF VCL}
-    FOnCtl3DChanged: TNotifyEvent;
-    {$ENDIF}
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
@@ -309,7 +306,6 @@ type
     {$IFDEF VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     {$ENDIF}
   protected
@@ -330,9 +326,6 @@ type
     property BehaviorOptions: TJvLabelBehavior read GetOptions write SetOptions;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-{$IFDEF VCL}
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
-{$ENDIF}
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnStart:TNotifyEvent read FOnStart write FOnStart;
     property OnStop:TNotifyEvent read FOnStop write FOnStop;
@@ -346,7 +339,6 @@ type
     property BiDiMode;
     property DragCursor;
     property OnEndDock;
-    property OnCtl3DChanged;
     property OnStartDock;
     property ParentBiDiMode;
     {$ENDIF}
@@ -519,13 +511,6 @@ end;
 { TJvCustomBehaviorLabel }
 
 {$IFDEF VCL}
-procedure TJvCustomBehaviorLabel.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
-end;
-
 procedure TJvCustomBehaviorLabel.CMParentColorChanged(var Msg: TMessage);
 {$ENDIF}
 {$IFDEF VisualCLX}

@@ -270,13 +270,11 @@ type
     property BevelWidth;
     property BorderStyle;
     property Color;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
     property Font;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property ShowHint;

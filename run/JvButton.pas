@@ -121,7 +121,6 @@ type
     FOnMouseLeave: TNotifyEvent;
     FColor: TColor;
     FSaved: TColor;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FDropDownMenu: TPopupMenu;
     FHotTrack: Boolean;
@@ -137,7 +136,6 @@ type
     procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
@@ -166,7 +164,6 @@ type
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored false;
@@ -593,13 +590,6 @@ procedure TJvCustomButton.CMFontChanged(var Message: TMessage);
 begin
   inherited;
   FontChanged;
-end;
-
-procedure TJvCustomButton.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
 end;
 
 procedure TJvCustomButton.CMParentColorChanged(var Msg: TMessage);

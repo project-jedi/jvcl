@@ -55,7 +55,6 @@ type
     {$IFDEF VCL}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnSetFocus: TJvFocusChangeEvent;
     FOnKillFocus: TJvFocusChangeEvent;
     {$ENDIF}
@@ -83,7 +82,6 @@ type
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CaretChanged(Sender: TObject); dynamic;
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
@@ -108,7 +106,6 @@ type
     {$ENDIF}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     {$IFDEF VCL}
-    procedure DoCtl3DChanged; virtual;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
     procedure EnabledChanged; virtual;
@@ -161,7 +158,6 @@ type
     {$IFDEF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     {$ENDIF}
     {$IFDEF VisualCLX}
     property OnMouseEnter;
@@ -188,9 +184,6 @@ type
     property HintColor;
     property HotTrack;
     property ProtectPassword;
-    {$IFDEF VCL}
-    property OnCtl3DChanged;
-    {$ENDIF}
     property OnEnabledChanged;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -204,7 +197,6 @@ type
     property CharCase;
     property Color;
     property Constraints;
-    property Ctl3D;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -216,9 +208,6 @@ type
     property MaxLength;
     property ParentBiDiMode;
     property ParentColor;
-    {$IFDEF VCL}
-    property ParentCtl3D;
-    {$ENDIF}
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -254,20 +243,6 @@ type
   end;
 
 implementation
-
-{$IFDEF VCL}
-procedure TJvCustomMaskEdit.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  DoCtl3DChanged;
-end;
-
-procedure TJvCustomMaskEdit.DoCtl3DChanged;
-begin
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
-end;
-{$ENDIF}
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.CMParentColorChanged(var Msg: TMessage);

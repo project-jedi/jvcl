@@ -556,7 +556,6 @@ type
     FHintColor, FSavedHintColor: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
@@ -623,7 +622,6 @@ type
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
     // From JvRichEdit.pas by Sébastien Buysse
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -694,7 +692,6 @@ type
     // From JvRichEdit.pas by Sébastien Buysse
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
@@ -772,7 +769,6 @@ type
     property DragKind;
     property BorderStyle;
     property Color;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -790,7 +786,6 @@ type
     property MaxLength;
     property OLEDragDrop;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PlainText;
@@ -842,7 +837,6 @@ type
     property OnURLClick;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnCtl3DChanged;
     property OnParentColorChange;
     property OnVerticalScroll;
     property OnHorizontalScroll;
@@ -2329,13 +2323,6 @@ begin
 end;
 
 // From JvRichEdit.pas by Sébastien Buysse
-
-procedure TJvCustomRichEdit.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
-end;
 
 procedure TJvCustomRichEdit.CMDocWindowActivate(var Msg: TMessage);
 begin

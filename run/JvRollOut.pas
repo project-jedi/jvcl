@@ -207,7 +207,6 @@ type
     property ChildOffset;
     property Collapsed;
     property Colors;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -215,7 +214,6 @@ type
     property GroupIndex;
     property ImageOptions;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property Placement;

@@ -216,7 +216,6 @@ type
     property Text: string read FText;
   published
     property Color;
-    property Ctl3D;
     property DataField;
     property DataSource;
     property DragCursor;
@@ -241,7 +240,6 @@ type
     property ListFieldIndex;
     property ListSource;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -365,7 +363,6 @@ type
     property Align;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Color;
-    property Ctl3D;
     property DataField;
     property DataSource;
     property DragCursor;
@@ -377,7 +374,6 @@ type
     property ListFieldIndex;
     property ListSource;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

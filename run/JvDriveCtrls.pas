@@ -92,14 +92,12 @@ type
     property ImageSize: TJvImageSize read FImageSize write SetImageSize;
     property DisplayName: string read FDisplayName;
     property Color;
-    property Ctl3D;
     property DragMode;
     property DragCursor;
     property Enabled;
     property Font;
     property ItemHeight;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -177,7 +175,6 @@ type
     property Align;
     property BorderStyle;
     property Color;
-    property Ctl3D;
     property Sorted;
     property Tag;
     property DragMode;
@@ -187,7 +184,6 @@ type
     property IntegralHeight;
     property ItemHeight;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -317,7 +313,6 @@ type
     property BevelKind;
     property BevelWidth;
     property Color;
-    property Ctl3D;
     property Directory: string read FDirectory write SetDirectory;
     property DirLabel: TLabel read FDirLabel write SetDirLabel;
     property DragCursor;
@@ -332,7 +327,6 @@ type
       BuildList anyway }
     property Items stored False;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

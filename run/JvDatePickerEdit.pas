@@ -195,7 +195,6 @@ type
     property Color;
     property Constraints;
     property Cursor;
-    property Ctl3D;
     property Date;
     property DateFormat;
     property DisabledColor;
@@ -214,7 +213,6 @@ type
     property NoDateShortcut;
     property NoDateText;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -227,7 +225,6 @@ type
     property OnChange;
     property OnClick;
     property OnCheckClick;
-    property OnCtl3DChanged;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;

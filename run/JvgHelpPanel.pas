@@ -76,7 +76,6 @@ type
     property Caption;
     property Color;
     property Constraints;
-    property Ctl3D;
     property UseDockManager default True;
     property DockSite;
     property DragCursor;
@@ -88,7 +87,6 @@ type
     property Locked;
     property ParentBiDiMode;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

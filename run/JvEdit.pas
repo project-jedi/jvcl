@@ -76,7 +76,6 @@ type
     FHotTrack: Boolean;
     FDisabledColor: TColor;
     FDisabledTextColor: TColor;
-    FOnCtl3DChanged: TNotifyEvent;
     FProtectPassword: Boolean;
     FStreamedSelLength: Integer;
     FStreamedSelStart: Integer;
@@ -103,7 +102,6 @@ type
     procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
   {$ENDIF}
@@ -139,7 +137,6 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Caret: TJvCaret read FCaret write SetCaret;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property PasswordChar: Char read GetPasswordChar write SetPasswordChar;
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
@@ -171,15 +168,12 @@ type
     {$ENDIF}
     property BiDiMode;
     property Caret;
-    property Ctl3D;
     property DragCursor;
     property DragKind;
     property ImeMode;
     property ImeName;
     property OEMConvert;
-    property OnCtl3DChanged;
     property ParentBiDiMode;
-    property ParentCtl3D;
     property DisabledTextColor;
     property DisabledColor;
     property HotTrack;
@@ -391,15 +385,6 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
-
-{$IFDEF VCL}
-procedure TJvCustomEdit.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
-end;
-{$ENDIF}
 
 {$IFDEF VCL}
 procedure TJvCustomEdit.CMParentColorChanged(var Msg: TMessage);

@@ -94,7 +94,6 @@ type
     property AutoVerbMenu;
     property BorderStyle;
     property Color;
-    property Ctl3D;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -111,7 +110,6 @@ type
     property LangOptions;
     property MaxLength;
     property ParentColor;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PlainText;
