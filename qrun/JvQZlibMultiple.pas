@@ -29,7 +29,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-
 {$I jvcl.inc}
 
 unit JvQZlibMultiple;
@@ -37,11 +36,8 @@ unit JvQZlibMultiple;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QDialogs, Types, 
+  SysUtils, Classes, QGraphics, QControls, QDialogs,
   JclZLib, JvQComponent;
-
-type
 
 // ----------------------------------------------------------------------------}
 // 2004-07-27 *** ALL USERS READ THIS: (wpostma) ***
@@ -61,12 +57,13 @@ type
 //  The new events have an additional parameter each:
 //
 //     OnDecompressingFile -> (Sender: TObject; const FileName: string;
-//                              {NEW!} var WriteFile:Boolean   )
+//                              {NEW!} var WriteFile: Boolean   )
 //       OnDecompressedFile -> (Sender: TObject; const FileName: string;
-//                              {NEW!} const FileSize:LongWord )
+//                              {NEW!} const FileSize: Longword )
 //
 // -----------------------------------------------------------------------------}
 
+type
   {NEW:}
   TFileBeforeWriteEvent = procedure(Sender: TObject; const FileName: string; var WriteFile: Boolean) of object;
   TFileAfterWriteEvent = procedure(Sender: TObject; const FileName: string; const FileSize: Longword) of object;
@@ -217,13 +214,11 @@ begin
         FOnCompressingFile(Self, FilePath);
 
       { (RB) ZStream has an OnProgress event, thus CopyFrom can be used }
-
       repeat
         Count := FileStream.Read(Buffer, SizeOf(Buffer));
         ZStream.Write(Buffer, Count);
         DoProgress(FileStream.Position, FileStream.Size);
       until Count = 0;
-
     finally
       ZStream.Free;
     end;
@@ -310,11 +305,11 @@ var
   B, LastPos: Byte;
   S: string;
   Count, FileSize, I: Integer;
-  Buffer: array[0..1023] of Byte;
-  TotalByteCount:LongWord;
-  WriteMe:Boolean; // Allow skipping of files instead of writing them.
+  Buffer: array [0..1023] of Byte;
+  TotalByteCount: Longword;
+  WriteMe: Boolean; // Allow skipping of files instead of writing them.
 begin
-  if (Length(Directory) > 0) then
+  if Directory <> '' then
     Directory := IncludeTrailingPathDelimiter(Directory);
 
   while Stream.Position < Stream.Size do
@@ -325,7 +320,7 @@ begin
     if B > 0 then
       Stream.Read(S[1], B);
     ForceDirectories(Directory + S);
-    if (Length(S) > 0) then
+    if S <> '' then
       S := IncludeTrailingPathDelimiter(S);
 
     //This make files decompress either on Directory or Directory+SavedRelativePath
@@ -358,9 +353,9 @@ begin
             FOnDecompressingFile(Self, S, WriteMe);
 
         if WriteMe then        
-           FileStream := TFileStream.Create(S, fmCreate or fmShareExclusive)
+          FileStream := TFileStream.Create(S, fmCreate or fmShareExclusive)
         else
-            FileStream := nil; // skip it!
+          FileStream := nil; // skip it!
 
         ZStream := TJclZLibReader.Create(CStream);
         try
@@ -369,17 +364,18 @@ begin
           { (RB) ZStream has an OnProgress event, thus copyfrom can be used }
           repeat
             Count := ZStream.Read(Buffer, SizeOf(Buffer));
-            if Assigned(FileStream) then begin
+            if Assigned(FileStream) then
+            begin
               FileStream.Write(Buffer, Count);
               DoProgress(FileStream.Size, FileSize);
             end;
-            Inc(TotalByteCount,Count);
+            Inc(TotalByteCount, Count);
           until Count = 0;
 
           if Assigned(FOnDecompressedFile) then
             FOnDecompressedFile(Self, S, TotalByteCount);
         finally
-          FreeAndNil( FileStream );
+          FreeAndNil(FileStream);
           ZStream.Free;
         end;
       end;

@@ -37,10 +37,13 @@ uses
   SysUtils, Classes, IniFiles,
   {$IFDEF MSWINDOWS}
   Windows, Messages,
-  {$ENDIF MSWINDOWS}  
-  QMenus, QButtons, QControls, QWindows, QGraphics, Types,
-  QForms, QImgList, QActnList, QExtCtrls, QGrids, QTypes,  
-  RTLConsts, 
+  {$ENDIF MSWINDOWS}
+  QMenus, QButtons, QControls,
+  QGraphics, QForms, QImgList, QActnList, QExtCtrls, QGrids, 
+  QWindows, 
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   JvQSpeedButton, JvQAppStorage, JvQConsts, JvQTypes, JvQFormPlacement,
   JvQComponent, JvQThemes, JvQExControls;
 
@@ -490,8 +493,7 @@ function NewSpeedItem(AOwner: TComponent; ASpeedBar: TJvSpeedBar; Section: Integ
 implementation
 
 uses
-  Math,  
-  QConsts, 
+  Math, QConsts,
   JvQJVCLUtils, JvQJCLUtils, JvQSpeedbarSetupForm, JvQResources;
 
 const

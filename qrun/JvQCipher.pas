@@ -95,7 +95,7 @@ implementation
 uses
   SysUtils;
 
-//=== { TJvCustomCipher } ==========================================================
+//=== { TJvCustomCipher } ====================================================
 
 procedure TJvCustomCipher.DecodeList(const Key: string; List: TStrings);
 var

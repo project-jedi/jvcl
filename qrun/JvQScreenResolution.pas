@@ -59,8 +59,12 @@ type
 
 implementation
 
-uses 
-  RTLConsts, 
+uses
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ELSE}
+  QConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   JvQTypes;
 
 function TJvScreenResolution.GetCount: Integer;

@@ -40,8 +40,8 @@ unit JvQMouseTimer;
 
 interface
 
-uses  
-  Types, QWindows, QControls, QExtCtrls, 
+uses
+  QWindows, QControls, QExtCtrls,
   SysUtils, Classes;
 
 type

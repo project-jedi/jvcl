@@ -60,8 +60,8 @@ unit JvQLinkLabelTextHandler;
 interface
 
 uses
-  Classes, SysUtils,  
-  QGraphics, Types, 
+  Classes, SysUtils,
+  QGraphics, QWindows,
   JvQLinkLabelTree, JvQLinkLabelTools, JvQTypes;
 
 type

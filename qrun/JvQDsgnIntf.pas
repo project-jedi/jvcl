@@ -36,9 +36,8 @@ unit JvQDsgnIntf;
 
 interface
 
-uses  
-  Types, 
-  Classes, QGraphics;
+uses
+  QWindows, Classes, QGraphics;
 
 { DrawDesignFrame draws frame on the rect, Rect.
   JVCL uses this function to drawing frame around controls at design-time }

@@ -16,8 +16,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvDataProviderImpl.pas, released on --.
 
 The Initial Developer of the Original Code is Marcel Bestebroer
-Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
-Bestebroer
+Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel Bestebroer
 All Rights Reserved.
 
 Contributor(s):
@@ -42,14 +41,10 @@ interface
 
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  QWindows,
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF LINUX} 
-  Types, QWindows,
-  QStdCtrls, // type TOwnerDrawState 
+  {$ENDIF HAS_UNIT_LIBC}
   Classes, Contnrs, QGraphics, QControls, QImgList,
   JclBase,
   JvQComponent, JvQDataProviderIntf;
@@ -1188,8 +1183,10 @@ uses
   {$IFDEF MSWINDOWS}
   ActiveX,
   {$ENDIF MSWINDOWS}
-  SysUtils, QConsts, TypInfo, 
-  RTLConsts, 
+  SysUtils, QConsts, TypInfo,
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   JclStrings,
   JvQTypes, JvQConsts, JvQResources;
 
@@ -1264,7 +1261,8 @@ end;
 procedure DisabledTextRect(ACanvas: TCanvas; var ARect: TRect; Left, Top: Integer; Text: string);
 begin
   ACanvas.Font.Color := clGrayText; 
-  ACanvas.Start; 
+  ACanvas.Start;
+  SetPainterFont(ACanvas.Handle, ACanvas.Font); 
   DrawShadowText(ACanvas.Handle, PChar(Text), Length(Text), ARect, 0, 1, ColorToRGB(clBtnHighlight),
     spRightBottom); 
   ACanvas.Stop; 

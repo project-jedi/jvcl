@@ -40,7 +40,7 @@ interface
 
 uses
   SysUtils, Classes,
-  Types, QWindows, QGraphics, QControls, QStdCtrls, QImgList,
+  QWindows, QGraphics, QControls, QStdCtrls, QImgList,
   JvQInspector;
 
 type

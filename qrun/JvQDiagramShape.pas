@@ -32,7 +32,7 @@ unit JvQDiagramShape;
 interface
 
 uses
-  Types, QWindows,  
+  QWindows,  
   QTypes,  
   Classes, QGraphics, QControls, QExtCtrls, QImgList,
   JvQComponent;

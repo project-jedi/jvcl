@@ -38,8 +38,9 @@ unit JvQHint;
 interface
 
 uses
-  SysUtils, Classes,  
-  QWindows, QControls, QForms, QExtCtrls, QGraphics, QTypes, Types, Qt, 
+  SysUtils, Classes,
+  QWindows, QControls, QForms, QExtCtrls, 
+  QGraphics, Qt, 
   JvQHTControls, JvQTypes;
 
 type

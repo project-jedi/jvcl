@@ -33,9 +33,10 @@ unit JvQAppEvent;
 
 interface
 
-uses  
-  Qt, QTypes, {QControls,} 
-  SysUtils, Classes, QControls, Types, QGraphics, QForms, QActnList,
+uses
+  QWindows, QMessages, 
+  Qt, 
+  SysUtils, Classes, QControls, QGraphics, QForms, QActnList,
   JvQTypes, JvQComponent;
 
 const
@@ -547,7 +548,6 @@ end;
 
 //=== { TJvAppEvents } =======================================================
 
-// (rom) changed to var
 var
   AppList: TJvAppEventList = nil;
 

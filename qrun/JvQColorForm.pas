@@ -37,8 +37,9 @@ unit JvQColorForm;
 
 interface
 
-uses  
-  Types, Qt, QWindows, 
+uses 
+  Qt, 
+  QWindows, QMessages,
   Classes, QGraphics, QControls, QForms, QButtons, QDialogs,
   JvQConsts, // missing color constants for D5
   JvQColorBox;

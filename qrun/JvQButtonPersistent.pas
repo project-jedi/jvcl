@@ -35,7 +35,7 @@ unit JvQButtonPersistent;
 interface
 
 uses 
-  Classes, Types, QGraphics, QControls,
+  Classes, QGraphics, QControls,
   JvQTypes;
 
 type

@@ -53,9 +53,8 @@ unit JvQColorBox;
 
 interface
 
-uses  
-  Types, 
-  Classes, QGraphics, QControls, QForms, QMenus,
+uses
+  QWindows, QMessages, Classes, QGraphics, QControls, QForms, QMenus,
   JvQComponent;
 
 type

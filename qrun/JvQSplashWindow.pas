@@ -34,8 +34,8 @@ unit JvQSplashWindow;
 interface
 
 uses
-  SysUtils, Classes,  
-  Qt, Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QWindows, 
+  SysUtils, Classes, QWindows, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, 
+  Qt, 
   JvQAnimatedImage;
 
 type
@@ -87,19 +87,11 @@ begin
       FormStyle := fsNormal;
     ClientHeight := defSplashHeight;
     ClientWidth := defImageLeft + defTextRight + 32;
-    Enabled := False;
-    {$IFDEF MSWINDOWS}
-    Font.Height := -11;
-    Font.Name := 'MS Sans Serif';
-    PixelsPerInch := 96;
-    Scaled := True;
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
+    Enabled := False;  
     Font.Height := 11;
     Font.Name := 'Helvetica';
     PixelsPerInch := 96;
-    Scaled := False;
-    {$ENDIF LINUX}
+    Scaled := False; 
     Font.Style := [];
     Font.Color := clWindowText;
 

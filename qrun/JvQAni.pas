@@ -42,10 +42,11 @@ unit JvQAni;
 interface
 
 uses
-  Classes, 
-  RTLConsts,  
-  QGraphics, QControls, QExtCtrls, QDialogs, 
-  Types, QTypes, QWindows, 
+  Classes,
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
+  QTypes, QWindows, QGraphics, QControls, QExtCtrls, QDialogs,
   JvQTypes;
 
 type
@@ -113,7 +114,7 @@ type
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;  
     procedure LoadFromMimeSource(MimeSource: TMimeSource); override;
-    procedure SaveToMimeSource(MimeSource: TClxMimeSource); override; 
+    procedure SaveToMimeSource(MimeSource: TClxMimeSource); override;
     procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
       DecreaseColors, Vertical: Boolean);
     procedure AssignIconsToBitmap(Bitmap: TBitmap; BackColor: TColor;

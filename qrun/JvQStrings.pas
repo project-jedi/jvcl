@@ -40,10 +40,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF LINUX}
-  Types, QGraphics,
+  {$ENDIF HAS_UNIT_LIBC}
+  QGraphics,
   SysUtils, Classes;
 
 {regular expressions}

@@ -45,7 +45,7 @@ unit JvQComCtrls;
 interface
 
 uses
-  Types, QWindows, QMessages, Contnrs, QGraphics, QControls, QForms,
+  QWindows, QMessages, Contnrs, QGraphics, QControls, QForms,
   Classes, // (ahuser) "Classes" after "Forms" (D5 warning)
   QMenus, QComCtrls, QImgList, QButtons,  
   QExtCtrls, 

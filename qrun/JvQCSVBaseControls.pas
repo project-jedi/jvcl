@@ -34,9 +34,8 @@ unit JvQCSVBaseControls;
 
 interface
 
-uses  
-  Types, 
-  Classes, QControls, QStdCtrls, QButtons,
+uses
+  QWindows, Classes, QControls, QStdCtrls, QButtons,
   JvQComponent;
 
 type

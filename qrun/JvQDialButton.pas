@@ -39,9 +39,7 @@ unit JvQDialButton;
 interface
 
 uses
-  QWindows,  
-  Types, 
-  Classes, QGraphics, QControls, QForms, QExtCtrls, QComCtrls,
+  QWindows, QMessages, Classes, QGraphics, QControls, QForms, QExtCtrls, QComCtrls,
   JvQComponent;
 
 type

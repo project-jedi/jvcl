@@ -32,20 +32,19 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQLED;
+
+{$I jvcl.inc}
 
 interface
 
-uses  
-  QWindows, QControls, QGraphics, Types, QExtCtrls, 
-  Classes, JvQExControls,
+uses
+  QWindows, QMessages, QControls, QGraphics, QExtCtrls,
+  Classes,
   JvQComponent;
 
 type
-//  TJvCustomLED = class(TJvGraphicControl)
-  TJvCustomLED = class(TJvExWinControl)
+  TJvCustomLED = class(TJvGraphicControl)
   private
     FImgPict: TBitmap;
     FImgMask: TBitmap;
@@ -172,10 +171,10 @@ begin
   SrcRect := Rect(0, 0, FImgPict.Width, FImgPict.Height);  
   DestRect := Bounds(Left, Top, Width, Height); 
   OffsetRect(DestRect, (ClientWidth - FImgPict.Width) div 2, (ClientHeight - FImgPict.Height) div 2);
-  Canvas.CopyMode := cmSrcAnd;
-  Canvas.CopyRect(DestRect, FImgMask.Canvas, SrcRect);
-  Canvas.CopyMode := cmSrcPaint;
-  Canvas.CopyRect(DestRect, FImgPict.Canvas, SrcRect);
+  Canvas.CopyMode := cmSrcAnd;  
+  CopyRect(Canvas, DestRect, FImgMask.Canvas, SrcRect); 
+  Canvas.CopyMode := cmSrcPaint;  
+  CopyRect(Canvas, DestRect, FImgPict.Canvas, SrcRect); 
 end;
 
 procedure TJvCustomLED.SetColorOn(Value: TColor);
@@ -217,19 +216,14 @@ end;
 
 procedure TJvCustomLED.SetStatus(Value: Boolean);
 begin
-  if FStatus <> Value then
-  begin
-    FStatus := Value;
-    if Status then
-      Color := ColorOn
-    else
-      Color := ColorOff;
-    if Assigned(FOnChange) then
-      FOnChange(Self);
-    {$IFDEF LINUX}
-    WakeUpGUIThread;
-    {$ENDIF LINUX}
-  end;
+  FStatus := Value;
+  if Status then
+    Color := ColorOn
+  else
+    Color := ColorOff;
+  if Assigned(FOnChange) then
+    FOnChange(Self); 
+  WakeUpGUIThread; 
 end;
 
 function TJvCustomLED.GetStatus: Boolean;

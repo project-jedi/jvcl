@@ -44,7 +44,7 @@ interface
 
 uses
   SysUtils, Classes,
-  QForms, QControls, QDialogs, Types, QGraphics, QStdCtrls, Qt,
+  QForms, QControls, QDialogs, QGraphics, QStdCtrls, Qt,
   QWindows, JvQComboBox;
 
 type

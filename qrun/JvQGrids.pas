@@ -34,8 +34,8 @@ unit JvQGrids;
 interface
 
 uses
-  Classes, QControls, Types, QWindows, QMessages, QGraphics, QStdCtrls, QForms, QGrids, // Windows after Controls 
-  Qt, QTypes, 
+  Classes, QWindows, QMessages, QControls, QGraphics, QStdCtrls, QForms, QGrids, 
+  Qt, 
   JvQConsts, JvQAppStorage, JvQFormPlacement, JvQComponent, JvQExGrids;
 
 type
@@ -340,13 +340,13 @@ begin
     SetWindowPos(FActiveList.Handle, HWND_TOP, P.X, Y, 0, 0,
       SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
     FListVisible := True;
-    Invalidate;  
-    QWindows.SetFocus(Handle); 
+    Invalidate;
+    QWindows.SetFocus(Handle);
   end;
 end;
 
 type
-  TWinControlCracker = class(TWinControl);
+  THackedWinControl = class(TWinControl);
 
 procedure TJvInplaceEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
@@ -386,11 +386,6 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 end;
 
-
-type
-  TWidgetControlAccessProtected = class(TWidgetControl);
-
-
 procedure TJvInplaceEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   ListPos: TPoint;
@@ -406,7 +401,7 @@ begin
       begin
         StopTracking;
         MousePos := PointToSmallPoint(ListPos);  
-        TWidgetControlAccessProtected(FActiveList).MouseDown(mbLeft, Shift, MousePos.X , MousePos.Y); 
+        THackedWinControl(FActiveList).MouseDown(mbLeft, Shift, MousePos.X , MousePos.Y); 
         Exit;
       end;
     end;

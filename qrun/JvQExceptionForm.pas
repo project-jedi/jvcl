@@ -35,10 +35,10 @@ unit JvQExceptionForm;
 interface
 
 uses
+  QWindows,
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}  
-  Types, QWindows, 
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls,
   JvQLabel, JvQComponent, JvQExControls;
 
@@ -67,7 +67,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure DetailsBtnClick(Sender: TObject);
     procedure ErrorInfo(var LogicalAddress: Pointer; var ModuleName: string);
-    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FDetails: Boolean;
     FDetailsHeight: Integer;
@@ -277,13 +276,6 @@ end;
 procedure TJvErrorDialog.DetailsBtnClick(Sender: TObject);
 begin
   SetShowDetails(not FDetails);
-end;
-
-procedure TJvErrorDialog.FormKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-
-begin
-
 end;
 
 end.

@@ -37,7 +37,7 @@ unit JvQEnterTab;
 interface
 
 uses
-  Types, QWindows, QMessages, Classes, QGraphics, QControls, 
+  QWindows, QMessages, Classes, QGraphics, QControls, 
   QForms, Qt, JvQConsts, 
   JvQComponent;
 

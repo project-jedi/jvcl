@@ -41,8 +41,7 @@ unit JvQFindReplace;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QDialogs, QStdCtrls, Types, QWindows, 
+  SysUtils, Classes, QWindows, QMessages, QControls, QDialogs, QStdCtrls,
   JvQComponent;
 
 type
@@ -81,8 +80,8 @@ type
     procedure SetOptions(Value: TFindOptions);
     procedure SetEditControl(Value: TCustomEdit);
     procedure SetHelpContext(Value: THelpContext);
-    procedure SetFindText(Value: string);
-    procedure SetReplaceText(Value: string);
+    procedure SetFindText(const Value: string);
+    procedure SetReplaceText(const Value: string);
     procedure SetShowDialogs(Value: Boolean);
     function GetPosition: TPoint;
     function GetTop: Integer;
@@ -151,28 +150,23 @@ end;
 
 { utility }
 
-function IsValidWholeWord(S: string): Boolean;
+function IsValidWholeWord(const S: string): Boolean;
 begin
   Result := (Length(S) > 0) and not ((S[1] in IdentifierSymbols) or (S[Length(S)] in IdentifierSymbols));
 end;
 
 { invert string }
 
-function StrRev(S: string): string;
+function StrRev(const S: string): string;
 var
-  atEnd, atStart: Integer;
+  I, Len: Integer;
 begin
-  Result := S;
-  atEnd := Length(S);
-  atStart := 1;
-
-  while atEnd >= 1 do
+  Len := Length(S);
+  SetLength(Result, Len);
+  for I := 1 to Len do
   begin
-    S[atStart] := Char(Integer(S[atStart]) xor Integer(Result[atEnd]));
-    Result[atEnd] := Char(Integer(Result[atEnd]) xor Integer(S[atStart]));
-    //      S[atStart] := Char(Integer(S[atStart]) xor Integer(Result[atEnd])); // reset to normal
-    Inc(atStart);
-    Dec(atEnd);
+    Result[I] := S[Len];
+    Dec(Len);
   end;
 end;
 
@@ -249,7 +243,7 @@ end;
 
 { Find text, return a TFoundText }
 
-function FindInText(Text, Search: string; FromPos, ToPos: Integer; Fast: Boolean): TFoundText;
+function FindInText(const Text, Search: string; FromPos, ToPos: Integer; Fast: Boolean): TFoundText;
 var
   Found: Integer;
   S: string;
@@ -276,7 +270,7 @@ end;
 
 { invert and search }
 
-function FindInTextRev(Text, Search: string; FromPos, ToPos: Integer; Fast: Boolean): TFoundText;
+function FindInTextRev(const Text, Search: string; FromPos, ToPos: Integer; Fast: Boolean): TFoundText;
 begin
   Result := FindInText(StrRev(Text), StrRev(Search), FromPos, ToPos, Fast);
   if Result.StartAt > -1 then
@@ -613,7 +607,7 @@ begin
     Value.FreeNotification(Self);
 end;
 
-procedure TJvFindReplace.SetFindText(Value: string);
+procedure TJvFindReplace.SetFindText(const Value: string);
 begin
   FFindText := Value;
   if Assigned(FFindDialog) and Assigned(FReplaceDialog) then
@@ -635,7 +629,7 @@ begin
   end;
 end;
 
-procedure TJvFindReplace.SetReplaceText(Value: string);
+procedure TJvFindReplace.SetReplaceText(const Value: string);
 begin
   FReplaceText := Value;
   if Assigned(FReplaceDialog) then

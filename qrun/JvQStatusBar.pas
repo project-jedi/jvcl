@@ -35,7 +35,7 @@ unit JvQStatusBar;
 interface
 
 uses
-  Types, QWindows, QMessages, 
+  QWindows, QMessages, 
   SysUtils, Classes, Contnrs, QGraphics, QControls, QForms, QComCtrls, QStdActns,
   JVCLXVer, JvQExComCtrls;
 
@@ -88,7 +88,7 @@ implementation
 
 uses
   Math,
-  JvQResources, JvQTypes;
+  JvQThemes, JvQResources, JvQTypes;
 
 //=== { TJvStatusBar } =======================================================
 
@@ -103,7 +103,6 @@ begin
   inherited DoBoundsChanged;
   Realign; 
   MovePanelControls; 
-  Invalidate; //Force full redraw, cause it's a lot buggy on XP without that!!!
 end;
 
 

@@ -35,8 +35,7 @@ unit JvQTurtle;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, Types, QWindows, 
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls,
   Math;
 
 type

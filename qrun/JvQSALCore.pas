@@ -35,9 +35,10 @@ unit JvQSALCore;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs,  
-  Variants, 
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   JvQSAL, JvQTypes;
 
 type

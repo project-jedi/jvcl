@@ -38,10 +38,10 @@ unit JvQImageList;
 interface
 
 uses
+  QWindows,
   {$IFDEF MSWINDOWS}
-  Windows, CommCtrl,
-  {$ENDIF MSWINDOWS} 
-  Types, QWindows, 
+  CommCtrl,
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes, QGraphics, QControls, QImgList;
 
 type
@@ -63,7 +63,7 @@ type
     function GetImageList: TImageList;
     procedure SetBitmap(ABitmap: TBitmap);
     procedure SetKind(AKind: TJvImageListItemKind);
-    procedure SetResourceName(AResourceName: string);
+    procedure SetResourceName(const AResourceName: string);
     procedure SetTransparentColor(AColor: TColor);
     procedure UpdateImageListItem(AImageList: TImageList; AIndex: Integer);
   protected
@@ -219,7 +219,7 @@ resourcestring
 
 {$IFDEF LINUX}
 const
-  RT_RCDATA = PChar(1);
+  RT_RCDATA = PChar(10);
 {$ENDIF LINUX}
 
 
@@ -329,7 +329,7 @@ begin
   end;
 end;
 
-procedure TJvImageListItem.SetResourceName(AResourceName: string);
+procedure TJvImageListItem.SetResourceName(const AResourceName: string);
 begin
   if (FKind in [ikResourceBitmap, ikMappedResourceBitmap]) and
     (FResourceName <> AResourceName) then

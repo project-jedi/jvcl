@@ -149,8 +149,10 @@ function JvGetPerfStatItems(List: TStrings): Boolean;
 
 implementation
 
-uses  
-  RTLConsts, 
+uses 
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   JclSysInfo,
   JvQJCLUtils, JvQJVCLUtils, JvQResources;
 

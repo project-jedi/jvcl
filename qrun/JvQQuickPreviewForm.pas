@@ -35,8 +35,7 @@ unit JvQQuickPreviewForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QWindows, QControls, QForms, QDialogs, QButtons, QExtCtrls, QStdCtrls, 
+  SysUtils, Classes, QWindows, QControls, QForms, QDialogs, QButtons, QExtCtrls, QStdCtrls,
   JvQDrawImage, JvQComponent;
 
 type

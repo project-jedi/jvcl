@@ -35,8 +35,7 @@ unit JvQFormWallpaper;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, Types, 
+  SysUtils, Classes, QGraphics, QControls,
   JvQComponent;
 
 type

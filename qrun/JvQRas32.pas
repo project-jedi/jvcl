@@ -36,14 +36,12 @@ unit JvQRas32;
 interface
 
 uses
-  SysUtils, Classes,
-  QControls, QForms, 
-  Qt, 
-  {$IFDEF MSWINDOWS}
+  SysUtils, Classes, QControls, QForms, 
+  Qt, QRas32,  
+  JvQComponent,
   Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  QRas32, // Messages must be after QControls
-  JvQComponent, JvQTypes;
+   // Messages must be after QControls
+  JvQTypes;
 
 type
   TJvRas32 = class(TJvComponent)

@@ -35,7 +35,7 @@ interface
 
 uses
   SysUtils,  Classes, 
-  Types, QGraphics, QControls, QForms, QStdCtrls, QGrids, QExtCtrls, 
+  QGraphics, QControls, QForms, QStdCtrls, QGrids, QExtCtrls, 
   QWindows, 
   JvQConsts, JvQSpeedBar, JvQSpeedButton, JvQComponent;
 

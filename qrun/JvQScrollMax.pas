@@ -46,7 +46,7 @@ interface
 
 uses
   SysUtils, Classes,
-  Types, QWindows, QMessages, QGraphics, QForms, QExtCtrls, QControls, QButtons,
+  QWindows, QMessages, QGraphics, QForms, QExtCtrls, QControls, QButtons,
   JvQButtons, JvQComponent;
 
 const
@@ -376,7 +376,7 @@ end;
 
 
 
-//=== { TJvPanelScrollBar } =======================================================
+//=== { TJvPanelScrollBar } ==================================================
 
 constructor TJvPanelScrollBar.Create(AOwner: TComponent);
 begin
@@ -847,8 +847,8 @@ const
   Ex: array [Boolean] of Integer = (BF_TOP, BF_RECT);
 var
   R: TRect;
-begin  
-  if Canvas.Handle <> nil then 
+begin
+  if Canvas.Handle <> NullHandle then
   begin
     if csDesigning in ComponentState then
       DrawDesignFrame(Canvas, ClientRect);
@@ -860,7 +860,8 @@ begin
       else
         R.Top := 1;
       R.Right := Width - R.Left;
-      R.Bottom := Height - 1;  QWindows.DrawEdge(Canvas.Handle, R, EDGE_ETCHED, Ex[FExpanded]);
+      R.Bottom := Height - 1;
+      QWindows.DrawEdge(Canvas.Handle, R, EDGE_ETCHED, Ex[FExpanded]);
       if ButtonVisible then
       begin
         Canvas.Brush.Color := Color;

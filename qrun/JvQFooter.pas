@@ -35,8 +35,7 @@ unit JvQFooter;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QStdCtrls, QExtCtrls, 
+  SysUtils, Classes, QMessages, QGraphics, QControls, QStdCtrls, QExtCtrls,
   JvQComponent, JvQBitBtn, JvQTypes;
 
 type

@@ -36,7 +36,7 @@ interface
 
 uses 
   Qt, 
-  Types, QWindows, QMessages, Classes, QGraphics, QControls, QMenus, QButtons,
+  QWindows, QMessages, Classes, QGraphics, QControls, QMenus, QButtons,
   JvQComponent, JvQConsts, JvQTypes, JvQExStdCtrls;
 
 type

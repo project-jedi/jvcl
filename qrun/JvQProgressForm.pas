@@ -38,9 +38,8 @@ unit JvQProgressForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QWindows, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QActnList,
-  QComCtrls, QTypes, 
+  SysUtils, Classes,
+  QWindows, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QComCtrls, QActnList,
   JvQComponent;
 
 type

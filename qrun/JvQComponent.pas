@@ -40,11 +40,12 @@ uses
   {$IFDEF USE_DXGETTEXT}
   JvQGnugettext,
   {$ENDIF USE_DXGETTEXT}
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  Qt, QWindows, QStdCtrls, QGraphics, QControls,
+  QWindows, QMessages, QControls, 
+  Qt, QGraphics, QStdCtrls, // TOwnerDrawState  
   JVCLXVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
+
+
+
 
 const
   NullHandle = nil;
@@ -59,6 +60,7 @@ type
   TBevelKind = JvQExControls.TBevelKind;
   {$NODEFINE TBevelKind}
   function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+
 
 type
   TJvComponent = class(TComponent)
@@ -98,9 +100,9 @@ type
   private
     FSearchText: string;
     FSearchTickCount: Longint;
-  protected
+  protected  
     procedure CreateWidget; override;
-    function WidgetFlags: Integer; override;
+    function WidgetFlags: Integer; override; 
     procedure KeyPress(var Key: Char); override;
   end;
 
@@ -111,10 +113,13 @@ const
   cDomainName = 'jvcl';
 {$ENDIF USE_DXGETTEXT}
 
+
 function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
 begin
   result :=  QWindows.ColorToRGB(Color, Instance);
 end;
+
+
 
 //=== { TJvForm } ============================================================
 

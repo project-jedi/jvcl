@@ -33,9 +33,8 @@ unit JvQBoxProcs;
 
 interface
 
-uses  
-  Types, QWindows, 
-  Classes, QControls;
+uses
+  QWindows, Classes, QControls;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);
 procedure BoxMoveAllItems(SrcList, DstList: TWinControl);

@@ -48,8 +48,8 @@ unit JvQSimLogic;
 
 interface
 
-uses  
-  QGraphics, QControls, QForms, QDialogs, QExtCtrls, Types, QWindows, 
+uses
+  QWindows, QMessages, QGraphics, QControls, QForms, QDialogs, QExtCtrls,
   SysUtils, Classes,
   JvQTypes;
 

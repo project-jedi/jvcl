@@ -51,8 +51,8 @@ interface
 
 {$I jvcl.inc}
 
-uses  
-  Types, QGraphics, QControls, QForms, QExtCtrls, 
+uses
+  QWindows, QMessages, QGraphics, QControls, QForms, QExtCtrls,
   SysUtils, Classes;
 
 type

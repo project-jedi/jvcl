@@ -67,11 +67,7 @@ unit JvQChart;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS} 
-  Types, QWindows, 
-  Classes, QGraphics, QControls,
+  QWindows, QMessages, Classes, QGraphics, QControls,
   JvQComponent;
 
 const

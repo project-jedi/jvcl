@@ -40,7 +40,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  Types, QWindows,
+  QWindows,
   {$ENDIF LINUX}
   JvQTypes, JvQComponent;
 

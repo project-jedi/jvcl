@@ -35,8 +35,7 @@ unit JvQSimIndicator;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, QExtCtrls, 
+  SysUtils, Classes, QWindows, QGraphics, QControls, QExtCtrls,
   JvQComponent;
 
 type

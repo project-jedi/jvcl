@@ -34,9 +34,7 @@ unit JvQDualListForm;
 interface
 
 uses
-  QWindows, 
-  Types, 
-  Classes, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, 
+  QWindows, Classes, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, 
   JvQComponent, JvQExStdCtrls;
 
 type 

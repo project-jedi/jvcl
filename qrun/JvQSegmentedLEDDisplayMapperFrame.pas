@@ -36,7 +36,7 @@ unit JvQSegmentedLEDDisplayMapperFrame;
 interface
 
 uses
-  Types, QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
   QActnList, QMenus,
   {$IFDEF USE_DXGETTEXT}
   JvQGnugettext,

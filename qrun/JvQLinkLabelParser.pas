@@ -19,7 +19,7 @@ The Initial Developer of the Original Code is David Polberger <dpol att swipnet 
 Portions created by David Polberger are Copyright (C) 2002 David Polberger.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
+Contributor(s): Cetkovsky
 
 Current Version: 2.00
 
@@ -45,8 +45,7 @@ unit JvQLinkLabelParser;
 interface
 
 uses
-  Classes, SysUtils,  
-  QGraphics, 
+  Classes, SysUtils, QGraphics,
   JvQLinkLabelTree, JvQLinkLabelTools;
 
 type
@@ -250,13 +249,25 @@ var
   CurrentTag: TTag;
   UnknownTag: Boolean;
 
+  //Cetkovsky -->
+  function GetStringFromTag: string;
+  begin
+    if (Pos('=', Tag) > 0) then
+      Result := Copy(Tag, Pos('=', Tag) + 1, Length(Tag))
+    else
+      Result := '';
+  end;
+  //<-- Cetkovsky
+
   // Bianconi
   function GetColorFromTag: TColor;
   var
     sVar: string;
   begin
     Result := clNone;
-    sVar := Copy(Tag, Pos('=', Tag) + 1, Length(Tag));
+    //Cetkovsky -->
+    sVar := GetStringFromTag;
+    //<-- Cetkovsky
     try
       Result := StringToColor(sVar);
     except // Only to avoid raise an exception on invalid color
@@ -271,20 +282,33 @@ var
       'I',
       'U',
       'COLOR=', // Bianconi
-      'LINK',
+//      'LINK',
+    //Cetkovsky -->
+      'LINK=',
+    //<-- Cetkovsky
       'BR',
       'P',
       'DYNAMIC');
     DontCare = 0;
+  var
+    S: string;
   begin
     UnknownTag := False;
     // Bianconi
     for Result := Low(TTag) to High(TTag) do
-      if (AnsiUpperCase(Tag) = TagStrings[Result]) or
-        (Copy(AnsiUpperCase(Tag), 1, Length(TagStrings[Result])) = 'COLOR=') then
+    begin
+      S := TagStrings[Result];
+      if (AnsiUpperCase(Tag) = S) or
+//        (Copy(AnsiUpperCase(Tag), 1, Length(TagStrings[Result])) = 'COLOR=')
+        //Cetkovsky -->
+        //We allow <url> style tag without "="
+        ((Pos('=', S) > 0) and
+         ((Copy(AnsiUpperCase(Tag), 1, Length(S) - 1) = Copy(S, 1, Length(S) - 1)))) then
+        //<-- Cetkovsky
         Exit;
+    end;
     //End of Bianconi
-    Result := TTag(DontCare); // To get rid of a compiler warning
+    Result := TTag(DontCare);
     UnknownTag := True;
   end;
 
@@ -309,8 +333,10 @@ begin
       ttColor:
         Result := TColorNode.Create(GetColorFromTag);
       // End of Bianconi
+      //Cetkovsky -->
       ttLink:
-        Result := TLinkNode.Create;
+        Result := TLinkNode.Create(GetStringFromTag);
+      //<-- Cetkovsky
       ttLineBreak:
         Result := TActionNode.Create(atLineBreak);
       ttParagraphBreak:

@@ -35,7 +35,7 @@ unit JvQDrawImage;
 interface
 
 uses
-  Types, QWindows,  
+  QWindows,  
   QForms, 
   Classes, QGraphics, QControls, QExtCtrls,
   JvQAirBrush, JvQPaintFX;
@@ -4062,7 +4062,7 @@ end;
 
 procedure TJvDrawImage.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   autosize := True;
   Picture.Bitmap.Height := 256;
   Picture.Bitmap.Width := 256;

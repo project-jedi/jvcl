@@ -35,8 +35,7 @@ unit JvQID3v2;
 interface
 
 uses
-  Classes,  
-  QGraphics, QControls, 
+  Classes, QGraphics, QControls,
   JvQID3v2Types, JvQID3v2Base;
 
 type

@@ -34,10 +34,16 @@ unit JvQFormPlacement;
 
 interface
 
-uses 
-  RTLConsts, Variants, 
-  SysUtils, Classes,  
-  QControls, QForms, Types, QWindows, 
+uses
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
+  SysUtils, Classes,
+  QWindows, QMessages,
+  QControls, QForms, 
   JvQAppStorage, JvQComponent, JvQJVCLUtils, JvQTypes;
 
 type
@@ -880,16 +886,24 @@ begin
 end;
 
 procedure TJvFormStorage.SavePlacement;
+Var
+  JvAppStorageHandler: IJvAppStorageHandler;
 begin
   inherited SavePlacement;
+  if Supports(Owner, IJvAppStorageHandler, JvAppStorageHandler)then
+    JvAppStorageHandler.WriteToAppStorage(AppStorage, AppStoragePath);
   SaveProperties;
   StoredValues.SaveValues;
 end;
 
 procedure TJvFormStorage.RestorePlacement;
+Var
+  JvAppStorageHandler: IJvAppStorageHandler;
 begin
   inherited RestorePlacement;
   FRestored := True;
+  if Supports(Owner, IJvAppStorageHandler, JvAppStorageHandler)then
+    JvAppStorageHandler.ReadFromAppStorage(AppStorage, AppStoragePath);
   RestoreProperties;
   StoredValues.RestoreValues;
 end;

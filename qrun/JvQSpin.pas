@@ -41,9 +41,10 @@ unit JvQSpin;
 interface
 
 uses
-  SysUtils, Classes, 
+  SysUtils, Classes,
+  QWindows, 
   QComCtrls, QControls, QExtCtrls, QGraphics, QForms, 
-  QComboEdits, Types, QWindows, JvQExComboEdits, QComCtrlsEx, 
+  QComboEdits, JvQExComboEdits, QComCtrlsEx, 
   JvQEdit, JvQExMask, JvQMaskEdit, JvQComponent;
 
 type
@@ -1876,8 +1877,8 @@ var
         LColors[2] := clBtnShadow;
         BottomFlags := EDGE_SUNKEN;
       end;
-      DrawEdge(Handle, R, TopFlags, BF_TOPLEFT or BF_SOFT);
-      DrawEdge(Handle, R, BottomFlags, BF_BOTTOMRIGHT or BF_SOFT);
+      QWindows.DrawEdge(Handle, R, TopFlags, BF_TOPLEFT or BF_SOFT);
+      QWindows.DrawEdge(Handle, R, BottomFlags, BF_BOTTOMRIGHT or BF_SOFT);
       InflateRect(R, -1, -1);
 
       Pen.Color := LColors[0];
@@ -1896,8 +1897,10 @@ var
       if not CustomGlyphs then
       begin
         UpArrow.LoadFromResourceName(HInstance, sSpinUpBtn);
+        UpArrow.TransparentColor := clWhite;
         UpArrow.Transparent := True;
         DownArrow.LoadFromResourceName(HInstance, sSpinDownBtn);
+        DownArrow.TransparentColor := clWhite;
         DownArrow.Transparent := True;
         JvDrawArrows(ABitmap.Canvas, ADownState, Enabled, UpArrow, DownArrow);
       end; 
@@ -1928,10 +1931,10 @@ var
       if ADownState = sbBottomDown then
         BottomFlags := EDGE_SUNKEN;
       RSrc := R;
-      DrawEdge(Handle, R, TopFlags, BF_RECT or BF_SOFT or BF_ADJUST);
+      QWindows.DrawEdge(Handle, R, TopFlags, BF_RECT or BF_SOFT or BF_ADJUST);
       R1 := Bounds(0, H, Width, Height);
       R1.Bottom := Height;
-      DrawEdge(Handle, R1, BottomFlags, BF_RECT or BF_SOFT or BF_ADJUST);
+      QWindows.DrawEdge(Handle, R1, BottomFlags, BF_RECT or BF_SOFT or BF_ADJUST);
       if not CustomGlyphs then
       begin
         UpArrow.LoadFromResourceName(HInstance, sSpinUpBtnPole);

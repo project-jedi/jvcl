@@ -34,7 +34,7 @@ unit JvQDynControlEngineIntf;
 interface
 
 uses
-  Classes, QControls, QForms, QStdCtrls, QExtCtrls, Types, QGraphics, QButtons, QDialogs,   
+  Classes, QControls, QForms, QStdCtrls, QExtCtrls, QGraphics, QButtons, QDialogs,   
   QFileCtrls,  
   SysUtils;
 

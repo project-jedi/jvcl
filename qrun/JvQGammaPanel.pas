@@ -39,8 +39,8 @@ unit JvQGammaPanel;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, Types, QWindows, 
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QDialogs,
+  QExtCtrls, QStdCtrls,
   JvQTypes, JvQComponent;
 
 type

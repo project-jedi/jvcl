@@ -33,19 +33,23 @@ unit JvQJVCLUtils;
 
 interface
 
-uses 
-  RTLConsts, Variants, 
+uses
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   {$IFDEF MSWINDOWS}
   Windows, Messages, ShellAPI, Registry,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF LINUX}
+  {$ENDIF HAS_UNIT_LIBC}
   SysUtils, Classes, 
-  Qt, QTypes, QWinCursors, QWindows, 
-  QForms, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QMenus, QDialogs,
-  QComCtrls, QImgList, QGrids,
-  IniFiles,
+  Qt, QWinCursors, QWindows, 
+  QForms, QGraphics, QControls, QStdCtrls, QExtCtrls, QMenus,
+  QDialogs, QComCtrls, QImgList, QGrids, IniFiles,
   {$IFNDEF NO_JCL}
   JclBase,
   {$ENDIF !NO_JCL}
@@ -146,6 +150,8 @@ function Execute(const CommandLine, WorkingDirectory: string): Integer;
 
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint): Boolean;
 function PaletteColor(Color: TColor): Longint;
+procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
+procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
 
 procedure Delay(MSecs: Longint);
 procedure CenterControl(Control: TControl);
@@ -203,17 +209,16 @@ overload;
 procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
   Bmp: TGraphic; Rect: TRect);
 
+
+
 type
-  TJvDesktopCanvas = class(TCanvas)
-  private
-    FDC: HDC;
+  TJvDesktopCanvas = class(TQtCanvas)
   protected
     procedure CreateHandle; override;
   public
-    destructor Destroy; override;
     procedure SetOrigin(X, Y: Integer);
-    procedure FreeHandle;
   end;
+
 
   { end from JvVCLUtils }
 
@@ -522,7 +527,7 @@ procedure DeallocateHWndEx(Wnd: Windows.HWND);
 
 function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
-{$ENDIF MSWINDOWS}
+{$ENDIF  MSWINDOWS}
 
 
 
@@ -1577,40 +1582,54 @@ end;
 type
   TCustomControlAccessProtected = class(TCustomControl);
 
-{$IFDEF MSWINDOWS}
 
-procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
-var
-  DC: Windows.HDC;
-  R: TRect;
-begin
-  DC := Windows.GetDC(0);
-  try
-    R := Rect(RectOrg.X, RectOrg.Y, RectEnd.X, RectEnd.Y);
-    Windows.InvertRect(DC, R);
-  finally
-    Windows.ReleaseDC(0, DC);
-  end;
-end;
+
 
 procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
 var
-  DC: Windows.HDC;
-  I: Integer;
+  Canvas: TJvDeskTopCanvas;
+  I: integer;
 begin
-  DC := Windows.GetDC(0);
-  try
-    for I := 1 to Width do
-    begin
-      Windows.DrawFocusRect(DC, ScreenRect);
-      //InflateRect(ScreenRect, -1, -1);
+  Canvas := TJvDeskTopCanvas.Create;
+  with Canvas do
+    try
+      StartPaint;
+      try
+        for I := 1 to Width do
+        begin
+          DrawFocusRect(ScreenRect);
+          InflateRect(ScreenRect, -1, -1);
+        end;
+      finally
+        StopPaint;
+      end;
+    finally
+      Free;
     end;
-  finally
-    Windows.ReleaseDC(0, DC);
-  end;
 end;
 
-{$ENDIF MSWINDOWS}
+procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
+var
+  Canvas: TJvDeskTopCanvas;
+  I: Integer;
+  R: TRect;
+begin
+  Canvas := TJvDeskTopCanvas.Create;
+  with Canvas do
+    try
+      StartPaint;
+      try
+        R := Rect(RectOrg.X, RectOrg.Y, RectEnd.X, RectEnd.Y);
+        QWindows.InvertRect(Handle, R);
+      finally
+        StopPaint;
+      end;
+    finally
+      Free;
+    end;
+end;
+
+
 
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint):
   Boolean;
@@ -2254,28 +2273,15 @@ end;
 
 //=== { TJvDesktopCanvas } ===================================================
 
-destructor TJvDesktopCanvas.Destroy;
-begin
-  FreeHandle;
-  inherited Destroy;
-end;
 
 procedure TJvDesktopCanvas.CreateHandle;
 begin
-  if FDC = NullHandle then
-    FDC := GetWindowDC(GetDesktopWindow);
-  Handle := FDC;
+  inherited CreateHandle;
+  QtHandle := GetDesktopWindow;
 end;
 
-procedure TJvDesktopCanvas.FreeHandle;
-begin
-  if FDC <> NullHandle then
-  begin
-    Handle := NullHandle;
-    ReleaseDC(GetDesktopWindow, FDC);
-    FDC := NullHandle;
-  end;
-end;
+
+
 
 procedure TJvDesktopCanvas.SetOrigin(X, Y: Integer);
 var
@@ -4382,9 +4388,7 @@ end;
 
 { begin JvCtrlUtils }
 
-//==============================================================================
-// ToolBarMenu
-//==============================================================================
+//=== ToolBarMenu ============================================================
 
 procedure JvCreateToolBarMenu(AForm: TForm; AToolBar: TToolBar;
   AMenu: TMainMenu);
@@ -4433,9 +4437,7 @@ begin
   AForm.Menu := nil;
 end;
 
-//==============================================================================
-// ListView functions
-//==============================================================================
+//=== ListView functions =====================================================
 
 procedure JvListViewToStrings(ListView: TListView; Strings: TStrings;
   SelectedOnly: Boolean; Headers: Boolean);
@@ -4663,9 +4665,7 @@ end;
 
 
 
-//==============================================================================
-// MessageBox
-//==============================================================================
+//== MessageBox ==============================================================
 
 function JvMessageBox(const Text, Caption: string; Flags: DWORD): Integer;
 begin
@@ -4798,7 +4798,7 @@ end;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 begin
   if ObjectInstance <> nil then 
-  Classes.FreeObjectInstance(ObjectInstance); 
+    Classes.FreeObjectInstance(ObjectInstance); 
 end;
 
 {$ENDIF MSWINDOWS}

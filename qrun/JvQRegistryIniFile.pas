@@ -24,7 +24,7 @@ Known Issues:
   TODO: Integrate with Linux *.desktop support or KDE/GNOME integration
 -----------------------------------------------------------------------------}
 // $Id$
-{$I linuxonly.inc}
+//{$I linuxonly.inc}
 
 unit JvQRegistryIniFile;
 

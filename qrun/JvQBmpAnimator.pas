@@ -41,7 +41,7 @@ interface
 uses
   Classes,  
   QWindows, 
-  Types, QGraphics, QControls, QExtCtrls, QImgList,
+  QGraphics, QControls, QExtCtrls, QImgList,
   JvQComponent;
 
 type

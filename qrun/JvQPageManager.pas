@@ -33,8 +33,9 @@ unit JvQPageManager;
 
 interface
 
-uses  
-  QControls, QForms, QStdCtrls, QExtCtrls, QActnList, QNotebook, 
+uses
+  QControls, QForms, QStdCtrls, QExtCtrls, QActnList, 
+  QNotebook, 
   SysUtils, Classes;
 
 type

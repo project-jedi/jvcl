@@ -35,8 +35,7 @@ unit JvQLinkedControls;
 interface
 
 uses
-  SysUtils,  
-  QControls, 
+  SysUtils, QControls,
   Classes;
 
 type

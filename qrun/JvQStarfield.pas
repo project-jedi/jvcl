@@ -34,8 +34,8 @@ unit JvQStarfield;
 
 interface
 
-uses  
-  QGraphics, QControls, Types, QWindows, 
+uses
+  QWindows, QGraphics, QControls,
   SysUtils, Classes,
   JvQTypes, JvQImageDrawThread, JvQComponent;
 

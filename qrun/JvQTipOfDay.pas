@@ -38,8 +38,7 @@ unit JvQTipOfDay;
 interface
 
 uses
-  Classes,  
-  QGraphics, QControls, QForms, QStdCtrls, 
+  Classes, QGraphics, QControls, QMessages, QForms, QStdCtrls,
   JvQAppStorage, JvQBaseDlg, JvQButtonPersistent, JvQSpeedButton, JvQTypes;
   
 type
@@ -290,6 +289,7 @@ begin
       UpdateTip;
   
       OnHide := FormHide ;  // onclose
+      FormStyle := fsStayOnTop;
       Show ;  // Shown non modal
     except
       Free;

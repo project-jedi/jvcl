@@ -37,8 +37,9 @@ unit JvQNetscapeSplitter;
 interface
 
 uses
-  SysUtils, Classes,  
-  QWindows, Qt, QGraphics, QForms, QExtCtrls, QControls, Types, 
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QForms, QExtCtrls, QControls, 
+  Qt, 
   JvQExExtCtrls;
 
 const
@@ -241,18 +242,18 @@ begin
   if Align in [alLeft, alRight] then
   begin
     if (not AllowDrag) or ((Y >= FLastKnownButtonRect.Top) and
-      (Y <= FLastKnownButtonRect.Bottom)) then
-      Cursor := FButtonCursor
+      (Y <= FLastKnownButtonRect.Bottom)) then  
+      QWindows.SetCursor(Screen.Cursors[ButtonCursor])
     else
-      Cursor := crHSplit;
+      QWindows.SetCursor(Screen.Cursors[Cursor]); 
   end
   else
   begin
     if (not AllowDrag) or ((X >= FLastKnownButtonRect.Left) and
-      (X <= FLastKnownButtonRect.Right)) then
-      Cursor := FButtonCursor
+      (X <= FLastKnownButtonRect.Right)) then  
+      QWindows.SetCursor(Screen.Cursors[ButtonCursor])
     else
-      Cursor := crVSplit;
+      QWindows.SetCursor(Screen.Cursors[Cursor]); 
   end;
 end;
 
@@ -751,9 +752,11 @@ end;
 
 procedure TJvCustomNetscapeSplitter.SetAlign(Value: TAlign);
 begin
-  inherited Align := Value;
-
-  Invalidate; // Direction changing, redraw arrows. 
+  if Align <> Value then
+  begin
+    inherited Align := Value;
+    Invalidate; // Direction changing, redraw arrows. 
+  end;
 end;
 
 procedure TJvCustomNetscapeSplitter.SetAllowDrag(const Value: Boolean);

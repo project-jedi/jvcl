@@ -41,8 +41,8 @@ unit JvQDropDownForm;
 interface
 
 uses
-  QWindows,  
-  Qt, Types, 
+  QWindows, QMessages, 
+  Qt, 
   Classes, QControls, QStdCtrls, QForms,
   JvQTypes, JvQExForms;
 

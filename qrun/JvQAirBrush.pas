@@ -35,11 +35,7 @@ unit JvQAirBrush;
 interface
 
 uses
-  Classes,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}  
-  Types, QWindows, QGraphics, 
+  Classes, QWindows, QGraphics,
   JvQComponent;
 
 type

@@ -35,7 +35,7 @@ unit JvQTransparentPanel;
 interface
 
 uses
-  Types, QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QExtCtrls, 
+  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QExtCtrls, 
   Qt, 
   JvQPanel;
 
@@ -59,6 +59,7 @@ constructor TJvTransparentPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csSetCaption];
+  FBackground := TBitmap.Create;
 end;
 
 destructor TJvTransparentPanel.Destroy;
@@ -71,10 +72,6 @@ procedure TJvTransparentPanel.CaptureBackground;
 var 
   SourceRect: TRect;
 begin
-  // (rom) check here to secure against misuse
-  if Assigned(FBackground) then
-    Exit;
-  FBackground := TBitmap.Create;
   with FBackground do
   begin
     Width := ClientWidth;

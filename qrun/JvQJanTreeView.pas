@@ -35,7 +35,7 @@ unit JvQJanTreeView;
 interface
 
 uses
-  Types, QWindows, 
+  QWindows, 
   SysUtils, Classes,
   QGraphics, QControls, QForms, QDialogs, QComCtrls, QMenus;
 

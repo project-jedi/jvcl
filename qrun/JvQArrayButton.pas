@@ -34,9 +34,8 @@ unit JvQArrayButton;
 
 interface
 
-uses  
-  Types, QWindows, 
-  Classes, QGraphics, QControls, QForms, 
+uses
+  QWindows, QMessages, Classes, QGraphics, QControls, QForms,
   JvQComponent, JvQTypes;
 
 type

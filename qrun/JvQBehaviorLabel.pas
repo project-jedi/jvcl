@@ -48,9 +48,7 @@ unit JvQBehaviorLabel;
 interface
 
 uses
-  Classes,  
-  QTypes, Types, 
-  QControls, QExtCtrls,
+  Classes, QWindows, QMessages, QControls, QExtCtrls,
   JvQExStdCtrls;
 
 type
@@ -318,7 +316,7 @@ type
     procedure Resize; override;
     procedure DoStart; dynamic;
     procedure DoStop; dynamic;  
-    function GetLabelText: WideString; override; 
+    function GetText: TCaption; override; 
     property Behavior: TJvLabelBehaviorName read FBehavior write SetBehavior stored BehaviorStored;
     property Caption;
     property BehaviorOptions: TJvLabelBehavior read GetOptions write SetOptions;
@@ -548,14 +546,15 @@ end;
 
 
 
-function TJvCustomBehaviorLabel.GetLabelText: WideString;
 
+function TJvCustomBehaviorLabel.GetText: TCaption;
 begin
   if UseEffectText then
     Result := EffectText
   else
-    Result := inherited GetLabelText;
+    Result := inherited GetText;
 end;
+
 
 function TJvCustomBehaviorLabel.BehaviorStored: Boolean;
 begin

@@ -35,8 +35,9 @@ unit JvQThemes;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QForms, QGraphics, QButtons, Types, QWindows, 
+  SysUtils, Classes, 
+  QControls, QStdCtrls, QGraphics, QButtons, 
+  QWindows, QForms, // Mouse 
   JvQFinalize;
 
 const
@@ -177,7 +178,6 @@ end;
 function GetThemeStyle(Control: TControl): TThemeStyle;
 begin
 end;
-
 
 
 

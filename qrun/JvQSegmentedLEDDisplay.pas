@@ -42,7 +42,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, Types, QGraphics,  
+  Classes, QGraphics,  
   QWindows, 
   JclBase,
   JvQComponent, JvQTypes;

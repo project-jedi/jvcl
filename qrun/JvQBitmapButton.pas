@@ -34,8 +34,8 @@ unit JvQBitmapButton;
 
 interface
 
-uses  
-  Types, QWindows, 
+uses
+  QWindows, QMessages,
   Classes, QGraphics, QControls,
   JvQComponent, JvQTypes;
 

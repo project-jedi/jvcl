@@ -36,8 +36,7 @@ interface
 
 uses
   SysUtils, Classes,
-  Types, QWindows, QMessages, QGraphics, QForms, QControls, QStdCtrls, 
-  QTypes, 
+  QWindows, QMessages, QGraphics, QForms, QControls, QStdCtrls,
   JvQComponent, JvQMarkupCommon;
 
 type
@@ -437,11 +436,8 @@ var
 begin
   ieol := 0; // Not needed but removed Warning
   R := Rect(0, 0, FBmp.Width, FBmp.Height);
-  FBmp.Canvas.Brush.Color := BackColor; 
-  FBmp.Canvas.Brush.Style := bsSolid; 
+  FBmp.Canvas.Brush.Color := BackColor;
   FBmp.Canvas.FillRect(R);
-  FBmp.TransparentColor := BackColor;
-  FBmp.Transparent := True;
   C := FElementStack.Count;
   if C = 0 then
     Exit;
@@ -519,6 +515,9 @@ begin
     else
       isol := ieol + 1;
   until (ieol >= C - 1) and (el.EolText = '');
+  // clxfix: set transparency after bitmap has be drawn
+  FBmp.TransparentColor := BackColor;
+  FBmp.Transparent := True;
   PageBottom := Y;
 end;
 

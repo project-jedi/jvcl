@@ -34,8 +34,7 @@ unit JvQMergeManager;
 interface
 
 uses
-  Classes,  
-  QControls, QForms, 
+  Classes, QControls, QForms,
   JvQJVCLUtils, JvQComponent;
 
 type

@@ -39,8 +39,8 @@ unit JvQValidateEdit;
 
 interface
 
-uses  
-  QTypes, QControls, QGraphics, Types, QWindows, 
+uses
+  QWindows, QMessages, QControls, QGraphics,
   SysUtils, Classes,
   JvQEdit;
 

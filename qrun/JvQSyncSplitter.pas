@@ -35,8 +35,7 @@ unit JvQSyncSplitter;
 interface
 
 uses
-  SysUtils, Classes,  
-  Qt, QControls, QExtCtrls, Types, QWindows, 
+  SysUtils, Classes, QMessages, QControls, QExtCtrls,
   JvQSplitter;
 
 type

@@ -1105,7 +1105,7 @@ begin
   AControl.Broadcast(Msg); 
   with Msg do
     for I := 0 to AControl.ControlCount - 1 do
-      if QMessages.Perform(AControl.Controls[I], Msg, Integer(Sender), Integer(StyleManager)) <> 0 then
+      if QWindows.Perform(AControl.Controls[I], Msg, Integer(Sender), Integer(StyleManager)) <> 0 then
         Exit; 
 end;
 
@@ -1251,7 +1251,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
@@ -1762,7 +1762,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
 
@@ -2171,7 +2171,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
 
@@ -2419,7 +2419,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
@@ -3052,7 +3052,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
@@ -3274,7 +3274,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
   end;
 end;
 
@@ -3511,7 +3511,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
@@ -3679,7 +3679,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
@@ -4465,7 +4465,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QMessages.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 

@@ -35,8 +35,7 @@ unit JvQFormAutoSize;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QStdCtrls, 
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QForms, QStdCtrls,
   JvQComponent;
 
 type

@@ -36,7 +36,7 @@ interface
 
 uses
   SysUtils, Classes,
-  Types, QWindows, QControls, QForms,
+  QWindows, QControls, QForms,
   JvQComponent, JvQErrorIndicator, JvQFinalize;
 
 type
@@ -248,8 +248,10 @@ type
 implementation
 
 uses
-  Masks, 
-  Variants, 
+  Masks,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   TypInfo,  
   JclWideStrings, 
   JvQTypes, JvQResources;

@@ -36,8 +36,8 @@ unit JvQPageList;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, Qt, QWindows, 
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls,
+  Qt,
   JvQComponent, JvQThemes;
 
 type
@@ -250,11 +250,8 @@ type
 
 implementation
 
-
-
-uses
+uses 
   QForms;
-
 
 //=== { TJvCustomPage } ======================================================
 
@@ -341,10 +338,10 @@ begin
         // make some space around the edges
         InflateRect(ARect, -4, -4);
         if not Enabled then
-        begin 
+        begin
+          SetBkMode(Handle, QWindows.TRANSPARENT);
           Canvas.Font.Color := clHighlightText; 
-          SetPainterFont(Handle, Canvas.Font);
-//          SetBkMode(Handle, QWindows.TRANSPARENT); 
+          SetPainterFont(Handle, Canvas.Font); 
           DrawText(Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
           OffsetRect(ARect, -1, -1);
           Canvas.Font.Color := clGrayText;
@@ -548,7 +545,7 @@ end;
 procedure TJvCustomPageList.Loaded;
 begin
   inherited Loaded;
-  if GetPageCount > 0 then
+  if (GetPageCount > 0) and (ActivePage = nil) then
     ActivePage := Pages[0];
 end;
 
@@ -663,9 +660,11 @@ procedure TJvCustomPageList.SetActivePage(Page: TJvCustomPage);
 var
   ParentForm: TCustomForm;
 begin
-  if (csLoading in ComponentState) or ((Page <> nil) and (Page.PageList <> Self)) then
-    Exit;
-  if FActivePage <> Page then
+  if GetPageCount = 0 then
+    FActivePage := nil;
+  if (Page = nil) or (Page.PageList <> Self) then
+    Exit
+  else
   begin
     ParentForm := GetParentForm(Self);
     if (ParentForm <> nil) and (FActivePage <> nil) and
@@ -678,26 +677,26 @@ begin
         Exit;
       end;
     end;
-    if Page <> nil then
+    Page.BringToFront;
+    Page.Visible := True;
+    if (ParentForm <> nil) and (FActivePage <> nil) and (ParentForm.ActiveControl = FActivePage) then
     begin
-      Page.BringToFront;
-      Page.Visible := True;
-      if (ParentForm <> nil) and (FActivePage <> nil) and (ParentForm.ActiveControl = FActivePage) then
-      begin
-        if Page.CanFocus then
-          ParentForm.ActiveControl := Page
-        else
-          ParentForm.ActiveControl := Self;
-      end;
-      Page.Refresh;
+      if Page.CanFocus then
+        ParentForm.ActiveControl := Page
+      else
+        ParentForm.ActiveControl := Self;
     end;
+    Page.Refresh;
 
-    if (Page = nil) or CanChange(FPages.IndexOf(Page)) then
+    if CanChange(FPages.IndexOf(Page)) then
     begin
-      if FActivePage <> nil then
+      if (FActivePage <> nil) and (FActivePage <> Page) then
         FActivePage.Visible := False;
-      FActivePage := Page;
-      Change;
+      if (FActivePage <> Page) then
+      begin
+        FActivePage := Page;
+        Change;
+      end;
       if (ParentForm <> nil) and (FActivePage <> nil) and
         (ParentForm.ActiveControl = FActivePage) then
       begin

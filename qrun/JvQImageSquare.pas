@@ -35,8 +35,7 @@ unit JvQImageSquare;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QImgList, QForms, QWindows, Types, 
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QImgList, QForms,
   JvQComponent;
 
 type

@@ -37,7 +37,7 @@ unit JvQClock;
 interface
 
 uses
-  Types, QWindows, QMessages, Classes, QGraphics, QControls,
+  QWindows, QMessages, Classes, QGraphics, QControls,
   JvQJCLUtils, JvQTimer, JvQComponent, JvQExControls;
 
 type
@@ -605,8 +605,8 @@ begin
       InflateRect(Rect, -InflateWidth, -InflateWidth);
       PaintTimeStr(Rect, False);
     end;
-  finally  
-    Canvas.Handle := nil; 
+  finally
+    Canvas.Handle := NullHandle;
     ReleaseDC(Handle, DC);
   end;
   CheckAlarm;

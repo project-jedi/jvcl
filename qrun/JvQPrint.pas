@@ -35,8 +35,7 @@ unit JvQPrint;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QPrinters, 
+  SysUtils, Classes, QGraphics, QPrinters,
   JvQTypes, JvQComponent;
 
 type

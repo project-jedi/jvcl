@@ -35,8 +35,7 @@ unit JvQImageRotate;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QExtCtrls, QWindows, Types, 
+  SysUtils, Classes, QWindows, QGraphics, QControls, QExtCtrls,
   JvQImageDrawThread, JVCLXVer, JvQExExtCtrls;
 
 type

@@ -290,7 +290,7 @@ begin
     ControlSetOnClick(DialogOnListBoxChange);
   with IListBoxItems as IJvDynControlData do
     ControlSetOnChange(DialogOnListBoxChange);
-  if Supports(ListBox.ClassType, IJvDynControlDblClick) then
+  if Supports(ListBox, IJvDynControlDblClick, ITmpControl) then  // ListBox instead of ListBox.ClassType and ITmpControl are needed here for D5/C5 support (obones)
     with IListBoxItems as IJvDynControlDblClick do
       ControlSetOnDblClick(DialogOnOkButtonClick);
 

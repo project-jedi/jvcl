@@ -35,11 +35,7 @@ unit JvQSAL;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF MSWINDOWS}
-  Windows, 
-  {$ENDIF MSWINDOWS}  
-  QGraphics, QControls, QForms, QDialogs, QWindows, 
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
   JvQSALHashList, JvQStrings, JvQComponent;
 
 const

@@ -37,8 +37,8 @@ unit JvQGridFilter;
 
 interface
 
-uses  
-  QGraphics, QControls, QForms, QGrids, 
+uses
+  QWindows, QMessages, QGraphics, QControls, QForms, QGrids,
   SysUtils, Classes;
 
 type

@@ -34,8 +34,8 @@ unit JvQLogForm;
 
 interface
 
-uses  
-  QControls, QForms, QDialogs, QComCtrls, QActnList, QImgList, 
+uses
+  QControls, QForms, QDialogs, QComCtrls, QActnList, QImgList, QToolWin,
   SysUtils, Classes;
 
 type
@@ -57,13 +57,10 @@ type
 
 implementation
 
-uses  
-  QPrinters; 
-
-
+uses
+  QPrinters;
 
 {$R *.xfm}
-
 
 procedure TFoLog.SaveExecute(Sender: TObject);
 var

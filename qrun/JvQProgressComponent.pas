@@ -39,8 +39,8 @@ unit JvQProgressComponent;
 
 interface
 
-uses  
-  Types, QWindows, QTypes, QControls, QForms, QStdCtrls, QComCtrls, 
+uses
+  QWindows, QMessages, QControls, QForms, QStdCtrls, QComCtrls,
   SysUtils, Classes,
   JvQComponent;
 

@@ -35,8 +35,7 @@ unit JvQGroupHeader;
 interface
 
 uses
-  Classes,  
-  QWindows, QGraphics, QControls, QExtCtrls, Types, 
+  Classes, QWindows, QMessages, QGraphics, QControls, QExtCtrls,
   JvQComponent, JvQTypes;
 
 type

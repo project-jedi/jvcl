@@ -44,8 +44,8 @@ unit JvQErrorIndicator;
 
 interface
 
-uses 
-  Classes, Types, QGraphics, QControls, QImgList,
+uses
+  QWindows, Classes, QGraphics, QControls, QImgList,
   JvQComponent;
 
 type

@@ -35,9 +35,8 @@ unit JvQSpellerForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QWindows, QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QExtCtrls, 
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QExtCtrls,
   JvQComponent;
 
 type

@@ -36,8 +36,9 @@ unit JvQXPContainer;
 interface
 
 uses
-  TypInfo, Classes,  
-  QControls, QGraphics, QStdCtrls, QExtCtrls, Types, QTypes, QWindows, 
+  TypInfo, Classes,
+  QWindows, QControls, QGraphics, QStdCtrls, 
+  QExtCtrls, 
   JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -369,7 +370,7 @@ var
   DrawStyle: LongInt;
   CalcRect: TRect;
   
-  procedure DoDrawText(Handle: HDC; ACaption: TCaption; var ARect: TRect;
+  procedure DoDrawText(Handle: HDC; const ACaption: TCaption; var ARect: TRect;
     Flags: Integer);
   begin
     SetPainterFont(Handle, AFont);

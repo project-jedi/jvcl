@@ -41,8 +41,8 @@ unit JvQOfficeColorButton;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QWindows, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls, 
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls,
   JvQComponent, JvQSpeedButton, JvQOfficeColorForm, JvQOfficeColorPanel;
 
 const
@@ -251,7 +251,8 @@ begin
     DrawThemedFrameControl(Self, Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
   end
   else
-  if MouseOver and Enabled or (csDesigning in ComponentState) then
+  if MouseOver and Enabled or (csDesigning in ComponentState) then 
+    QWindows. 
     DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
       FillStyles[Flat] or BF_RECT);
 

@@ -35,8 +35,7 @@ unit JvQRgbToHtml;
 interface
 
 uses
-  SysUtils, Classes,  
-  QWindows, QGraphics, 
+  SysUtils, Classes, QWindows, QGraphics,
   JvQComponent;
 
 type
