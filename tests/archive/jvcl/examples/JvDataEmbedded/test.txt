@@ -1,9 +1,0 @@
-Hello!
-
-This text has been written and bundled into the executable.
-With a simple call to a function, we can retrieve and
-display it!!! Isn't simple ???
-
-But text is NOT the only possibility! You can embed
-sound, data, images... any file can be embeddeg in
-the application in a few seconds!
