@@ -17,10 +17,13 @@ All Rights Reserved.
 
 Contributor(s):
 Thomas Huber (Thomas_D_huber@t-online.de)
-peter3 (load new image only when needed, center image in control, draw border at designtime)
+peter3
+  (load new image only when needed, center image in control, draw border at designtime,
+  renamed "Blinking" property to "Active", reimplemented using a thread isto timer,
+  Active is false by default, default interval is 1000, if interval is < 1, thread is not activated)
+
 
 Peter Korf (created JvBlinkingLED from JvTransLED)
-
 
 Last Modified: 2003-07-
 
@@ -42,21 +45,21 @@ uses
 type
   TJvBlinkingLED = class(TJvTransLED)
   private
-    FTimer:    TTimer;
+    FThread: TThread;
     FColorOn: TColor;
     FColorOff: TColor;
     FStatus: Boolean;
     FOnChange: TNotifyEvent;
+    FInterval: Cardinal;
     procedure SetColorOn(Value: TColor);
     procedure SetColorOff(Value: TColor);
     procedure SetInterval(Value: Cardinal);
-    function GetInterval:Cardinal;
-    procedure SetBlinking(Value: Boolean);
-    function GetBlinking:Boolean;
+    procedure SetActive(Value: Boolean);
+    function GetActive: Boolean;
     procedure SetStatus(Value: Boolean);
-    function GetStatus:Boolean;
+    function GetStatus: Boolean;
+    procedure DoBlink(Sender: Tobject; BlinkOn: boolean);
   protected
-    procedure TimerEvent(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -67,8 +70,8 @@ type
     property ColorOn: TColor read FColorOn write SetColorOn default clLime;
     property ColorOff: TColor read FColorOff write SetColorOff default clRed;
     property Status: Boolean read GetStatus write SetStatus default True;
-    property Interval: Cardinal read GetInterval write SetInterval;
-    property Blinking: Boolean read GetBlinking write SetBlinking default True;
+    property Interval: Cardinal read FInterval write SetInterval default 1000;
+    property Active: Boolean read GetActive write SetActive default false;
     property Constraints;
     property DragCursor;
     property DragKind;
@@ -95,79 +98,131 @@ type
   end;
 
 implementation
-
 uses
-  Controls;
+  SysUtils, Controls;
+type
+  TBlinkEvent = procedure(Sender: TObject; BlinkOn: boolean) of object;
+  TBlinkThread = class(TThread)
+  private
+    FOnBlink: TBlinkEvent;
+    FBlinkOn: boolean;
+    FInterval: Cardinal;
+    procedure DoBlink;
+  public
+    constructor Create(Interval: Cardinal);
+    procedure Execute; override;
+    property Interval: Cardinal read FInterval;
+    property OnBlink: TBlinkEvent read FOnBlink write FOnBlink;
+  end;
 
 constructor TJvBlinkingLED.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FTimer:=TTimer.Create(self);
-  FTimer.OnTimer:=TimerEvent;
-  ColorOn:=clLime;
-  ColorOff:=clRed;
-  Blinking:=True;
-  Status:=True;
+  FInterval := 1000;
+  ColorOn := clLime;
+  ColorOff := clRed;
+  Active := false;
+  Status := True;
 end;
 
 destructor TJvBlinkingLED.Destroy;
 begin
-  FTimer.Enabled := False;
-  FTimer.Free;
+  if FThread <> nil then
+    FThread.Terminate;
+  FreeAndNil(FThread);
   inherited Destroy;
 end;
 
 procedure TJvBlinkingLED.SetColorOn(Value: TColor);
 begin
-  FColorOn:=Value;
-  Color:=Value;
+  FColorOn := Value;
+  Color := Value;
 end;
 
 procedure TJvBlinkingLED.SetColorOff(Value: TColor);
 begin
-  FColorOff:=Value;
-  Color:=Value;
+  FColorOff := Value;
+  Color := Value;
 end;
 
 procedure TJvBlinkingLED.SetInterval(Value: Cardinal);
 begin
-  FTimer.Interval:=Value;
+  if Value <> FInterval then
+  begin
+    FInterval := Value;
+    if FThread <> nil then
+    begin
+      FreeAndNil(FThread);
+      FThread := TBlinkThread.Create(FInterval);
+      TBlinkThread(FThread).OnBlink := DoBlink;
+      if FInterval > 0 then
+        FThread.Resume;
+    end;
+  end;
 end;
 
-function TJvBlinkingLED.GetInterval:Cardinal;
+procedure TJvBlinkingLED.SetActive(Value: Boolean);
 begin
-  Result:=FTimer.Interval;
+  if Value then
+  begin
+    if (FThread = nil) then
+      FThread := TBlinkThread.Create(Interval);
+    TBlinkThread(FThread).OnBlink := DoBlink;
+    if Interval > 0 then
+      FThread.Resume;
+  end
+  else if FThread <> nil then
+    FThread.Suspend;
 end;
 
-procedure TJvBlinkingLED.TimerEvent(Sender: TObject);
+function TJvBlinkingLED.GetActive: Boolean;
 begin
- Status:=not Status;
-end;
-
-procedure TJvBlinkingLED.SetBlinking(Value: Boolean);
-begin
- FTimer.Enabled:=Value;
-end;
-
-function TJvBlinkingLED.GetBlinking:Boolean;
-begin
-  Result:=FTimer.Enabled;
+  Result := (FThread <> nil) and (FInterval > 0) and not FThread.Suspended;
 end;
 
 procedure TJvBlinkingLED.SetStatus(Value: Boolean);
 begin
- FStatus:=Value;
- if Status then
-   Color:=ColorOn
+  FStatus := Value;
+  if Status then
+    Color := ColorOn
   else
-   Color:=ColorOff;
-
- if Assigned(FOnChange) then FOnChange(Self);
+    Color := ColorOff;
+  if Assigned(FOnChange) then FOnChange(Self);
 end;
 
-function TJvBlinkingLED.GetStatus:Boolean;
+function TJvBlinkingLED.GetStatus: Boolean;
 begin
-  Result:=FStatus;
+  Result := FStatus;
+end;
+
+{ TBlinkThread }
+
+constructor TBlinkThread.Create(Interval: Cardinal);
+begin
+  inherited Create(true);
+  FInterval := Interval;
+end;
+
+procedure TBlinkThread.DoBlink;
+begin
+  if Assigned(FOnBlink) then FOnBlink(self, FBlinkOn);
+  FBlinkOn := not FBlinkOn;
+end;
+
+procedure TBlinkThread.Execute;
+begin
+  FBlinkOn := false;
+  while not Terminated and not Suspended do
+  begin
+    Synchronize(DoBlink);
+    sleep(FInterval);
+  end;
+end;
+
+procedure TJvBlinkingLED.DoBlink(Sender: Tobject; BlinkOn: boolean);
+begin
+  Status := BlinkOn;
 end;
 
 end.
+
