@@ -1,0 +1,213 @@
+================================================================
+@@JvTrayIcon.pas
+Note:
+<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
+
+C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
+
+Conditions:
+The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
+
+Author:
+Sebastien Buysse
+
+Version:
+1.20 Beta
+
+================================================================
+@@TJvTrayIcon
+Description:
+This component is for placing an icon in the TrayIcon. You can also put a small animation...
+
+================================================================
+@@TJvTrayIcon.FActive
+
+================================================================
+@@TJvTrayIcon.FAnimated
+
+================================================================
+@@TJvTrayIcon.FDelay
+
+================================================================
+@@TJvTrayIcon.FDllHandle
+
+================================================================
+@@TJvTrayIcon.FDropDown
+
+================================================================
+@@TJvTrayIcon.FHandle
+
+================================================================
+@@TJvTrayIcon.FHint
+
+================================================================
+@@TJvTrayIcon.FIc
+
+================================================================
+@@TJvTrayIcon.FIcon
+
+================================================================
+@@TJvTrayIcon.FImgList
+
+================================================================
+@@TJvTrayIcon.FNumber
+
+================================================================
+@@TJvTrayIcon.FOnClick
+
+================================================================
+@@TJvTrayIcon.FOnDblClick
+
+================================================================
+@@TJvTrayIcon.FOnMouseDown
+
+================================================================
+@@TJvTrayIcon.FOnMouseMove
+
+================================================================
+@@TJvTrayIcon.FOnMouseUp
+
+================================================================
+@@TJvTrayIcon.FPopupMenu
+
+================================================================
+@@TJvTrayIcon.FRegisterServiceProcess
+
+================================================================
+@@TJvTrayIcon.FTask
+
+================================================================
+@@TJvTrayIcon.FTimer
+
+================================================================
+@@TJvTrayIcon.FVisible
+
+================================================================
+@@TJvTrayIcon.Create@TComponent
+
+================================================================
+@@TJvTrayIcon.Destroy
+
+================================================================
+@@TJvTrayIcon.HideApplication
+Description:
+Call this method to hide your Application in the bar (same as property ApplicationVisible)
+
+================================================================
+@@TJvTrayIcon.IconChanged@TObject
+
+================================================================
+@@TJvTrayIcon.OnAnimate@TObject
+
+================================================================
+@@TJvTrayIcon.SetActive@Boolean
+
+================================================================
+@@TJvTrayIcon.SetAnimated@Boolean
+
+================================================================
+@@TJvTrayIcon.SetDelay@Cardinal
+
+================================================================
+@@TJvTrayIcon.SetHint@string
+
+================================================================
+@@TJvTrayIcon.SetIcon@TIcon
+
+================================================================
+@@TJvTrayIcon.SetImgList@TImageList
+
+================================================================
+@@TJvTrayIcon.SetTask@Boolean
+
+================================================================
+@@TJvTrayIcon.SetVisible@Boolean
+
+================================================================
+@@TJvTrayIcon.ShowApplication
+Description:
+Call this method to show your Application in the bar (same as property ApplicationVisible)
+
+================================================================
+@@TJvTrayIcon.WndProc@TMessage
+
+================================================================
+@@TJvTrayIcon.Active
+Description:
+if active is true, the icon will be visible in the tray icon.
+
+================================================================
+@@TJvTrayIcon.Animated
+Description:
+Set this property to tree if you want to use the ICons. The component will change the icon every X seconds (specified in Delay).
+
+================================================================
+@@TJvTrayIcon.ApplicationVisible
+Description:
+if this property is false, your Application won't be visible in the bar... So, if you want to hide your Application and to put the icon in the tray bar, put this property to false and put Active to true. (don't forget to hide your forms too)
+
+================================================================
+@@TJvTrayIcon.Delay
+Description:
+This is the delay before to change the icon if animated is true.
+
+================================================================
+@@TJvTrayIcon.DropDownMenu
+
+================================================================
+@@TJvTrayIcon.Hint
+Description:
+This is the hint you want to see for your icon in the tray icon
+
+================================================================
+@@TJvTrayIcon.Icon
+Description:
+This is the icon you want to see in the tray Icon (icon MUST BE 16*16)
+
+================================================================
+@@TJvTrayIcon.Icons
+Description:
+This is the icon list used for an animation (if animated is true)
+
+================================================================
+@@TJvTrayIcon.OnClick
+Description:
+This event is called when the user clicks the icon
+
+================================================================
+@@TJvTrayIcon.OnDblClick
+Description:
+This event is called when the user double-clicks the icon
+
+================================================================
+@@TJvTrayIcon.OnMouseDown
+Description:
+This event is called when the user double click with the left button on the icon
+
+================================================================
+@@TJvTrayIcon.OnMouseMove
+Description:
+This event is called when the mouse move over the icon
+
+================================================================
+@@TJvTrayIcon.OnMouseUp
+Description:
+This event is called when the button of the mouse goes up over the icon
+
+================================================================
+@@TJvTrayIcon.PopupMenu
+Description:
+This is the PopupMenu you want to see when the user right click your icon
+
+================================================================
+@@TJvTrayIcon.VisibleInTaskList
+Description:
+This property enables you to hide your Application from the task list (what you see when you press ctrl+alt+del). This may not be available in all oses.
+
+================================================================
+@@TRegisterServiceProcess
+Description:
+
+================================================================
+@@WM_CALLBACKMESSAGE
+

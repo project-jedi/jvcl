@@ -1,0 +1,81 @@
+================================================================
+@@JvThreadTimer.pas
+Note:
+<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
+
+C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
+
+Conditions:
+The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
+
+Author:
+Sebastien Buysse
+
+Version:
+1.20 Beta
+
+================================================================
+@@TJvThreadTimer
+Description:
+This component is a replacement for a classic TTimer, with a better accuracy !. This timer uses a thread in place of the build in timer, and can have an accuracy of a millisecond, but it will consume more CPU than a classic timer.
+
+================================================================
+@@TJvThreadTimer.FActive
+
+================================================================
+@@TJvThreadTimer.FDelay
+
+================================================================
+@@TJvThreadTimer.FOnTimer
+
+================================================================
+@@TJvThreadTimer.FThread
+
+================================================================
+@@TJvThreadTimer.Create@TComponent
+
+================================================================
+@@TJvThreadTimer.Destroy
+
+================================================================
+@@TJvThreadTimer.SetActive@Boolean
+
+================================================================
+@@TJvThreadTimer.SetDelay@Integer
+
+================================================================
+@@TJvThreadTimer.SetOnTimer@TNotifyEvent
+
+================================================================
+@@TJvThreadTimer.Active
+Description:
+Set this property to true to activate the timer. Set this property to false to stop the timer.
+
+================================================================
+@@TJvThreadTimer.Delay
+Description:
+Delay determines how frequently the OnTimer event occurs. Each time the specified delay passes, the OnTimer event occurs.
+
+================================================================
+@@TJvThreadTimer.OnTimer
+Description:
+Occurs when a specified amount of time, determined by the Delay property, has passed.
+
+================================================================
+@@TJvThreadTimerclass
+
+================================================================
+@@TJvThreadTimerclass.FDelay
+
+================================================================
+@@TJvThreadTimerclass.FOnCall
+
+================================================================
+@@TJvThreadTimerclass.FSender
+
+================================================================
+@@TJvThreadTimerclass.Call
+
+================================================================
+@@TJvThreadTimerclass.Execute
+

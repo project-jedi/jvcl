@@ -1,0 +1,104 @@
+================================================================
+@@JvSpecialImage.pas
+Note:
+<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
+
+C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
+
+Conditions:
+The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
+
+Author:
+Sebastien Buysse
+
+Version:
+1.20 Beta
+
+================================================================
+@@TJvSpecialImage
+Description:
+This component is a TImage with some new properties. You can change the Brightness of the image, you can also change some other aspects (invert, flip, mirror). There is also two methods to fadein/fadeout the image. 
+
+================================================================
+@@TJvSpecialImage.FAboutJVCL
+
+================================================================
+@@TJvSpecialImage.FBright
+
+================================================================
+@@TJvSpecialImage.FFlipped
+
+================================================================
+@@TJvSpecialImage.FInverted
+
+================================================================
+@@TJvSpecialImage.FMirrored
+
+================================================================
+@@TJvSpecialImage.FOriginal
+
+================================================================
+@@TJvSpecialImage.FWorking
+
+================================================================
+@@TJvSpecialImage.ApplyChanges
+
+================================================================
+@@TJvSpecialImage.Create@TComponent
+
+================================================================
+@@TJvSpecialImage.Destroy
+
+================================================================
+@@TJvSpecialImage.FadeIn
+Description:
+Use this method to fade in the image. The brightness property will go from 0 to 100. For a better result, don't use image bigger than 320*240, cause it could flicker.
+
+================================================================
+@@TJvSpecialImage.FadeOut
+Description:
+Use this method to fade out the image. The brightness property will go from 100 to 0. For a better result, don't use image bigger than 320*240, cause it could flicker.
+
+================================================================
+@@TJvSpecialImage.PictureChanged@TObject
+
+================================================================
+@@TJvSpecialImage.Reset
+Description:
+Use this method to reset all special properties of the Image. Brightness is set to 100, No Flip, No Mirror, No Invertion.
+
+================================================================
+@@TJvSpecialImage.SetBright@TBright
+
+================================================================
+@@TJvSpecialImage.SetFlipped@Boolean
+
+================================================================
+@@TJvSpecialImage.SetInverted@Boolean
+
+================================================================
+@@TJvSpecialImage.SetMirrored@Boolean
+
+================================================================
+@@TJvSpecialImage.AboutJVCL
+
+================================================================
+@@TJvSpecialImage.Brightness
+Description:
+Use this property to change the brightness of the image (from 0 to 200). 100 means no change, 0 means all colors to minimum and 200 means all colors to maximum.
+
+================================================================
+@@TJvSpecialImage.Flipped
+Description:
+Use this property to flip the image vertically. The first line will become the last one, etc...
+
+================================================================
+@@TJvSpecialImage.Inverted
+Description:
+Use this property to invert the image (All colors are inverted).
+
+================================================================
+@@TJvSpecialImage.Mirrored
+Description:
+Use this property to flip the image horizontally. For each line, the first pixel will become the last one, etc...
+

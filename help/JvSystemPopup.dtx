@@ -1,0 +1,74 @@
+================================================================
+@@JvSystemPopup.pas
+Note:
+<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
+
+C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
+
+Conditions:
+The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
+
+Author:
+Sebastien Buysse
+
+Version:
+1.20 Beta
+
+================================================================
+@@TJvSystemPopup
+Description:
+This component allows you to add a popup menu on the form's system popup or on the Application's popup menu.
+
+================================================================
+@@TJvSystemPopup.FForm
+
+================================================================
+@@TJvSystemPopup.FOldWndProc
+
+================================================================
+@@TJvSystemPopup.FOnRefresh
+
+================================================================
+@@TJvSystemPopup.FPopup
+
+================================================================
+@@TJvSystemPopup.FPos
+
+================================================================
+@@TJvSystemPopup.Create@TComponent
+
+================================================================
+@@TJvSystemPopup.Destroy
+
+================================================================
+@@TJvSystemPopup.MenuChanged@TObject@TMenuItem@Boolean
+
+================================================================
+@@TJvSystemPopup.NewWndProc@TMessage
+
+================================================================
+@@TJvSystemPopup.Refresh
+Description:
+Call this method to force the component to refresh the image of the popup menu in the system popup. As the menu doesn't notify the component when a menu item has been enabled/disabled, you would have to call this method by yourself.
+
+================================================================
+@@TJvSystemPopup.SetPopup@TPopupMenu
+
+================================================================
+@@TJvSystemPopup.SetPos@TPopupPosition
+
+================================================================
+@@TJvSystemPopup.OnRefreshed
+Description:
+This event is called when the popup of the form or of the Application has been updated.
+
+================================================================
+@@TJvSystemPopup.Popup
+Description:
+This property is the popup menu you want to see in the Application or in the form.
+
+================================================================
+@@TJvSystemPopup.Position
+Description:
+This property specifies where you want to see the popup menu. It can be either invisible, on the form's popup menu or on the Application's popup menu.
+

@@ -1,0 +1,169 @@
+================================================================
+@@JvStringGrid.pas
+Note:
+<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
+
+C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
+
+Conditions:
+The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
+
+Author:
+Sebastien Buysse
+
+Version:
+1.20 Beta
+
+================================================================
+@@TJvStringGrid
+Description:
+This is an enhanced version of a TstringGrid with load/save from CSV capacities, load/save from stream capacities and load/save from file capacities. It has also a sort method.
+
+================================================================
+@@TJvStringGrid.FAboutJVCL
+
+================================================================
+@@TJvStringGrid.FColor
+
+================================================================
+@@TJvStringGrid.FOnCtl3DChanged
+
+================================================================
+@@TJvStringGrid.FOnHScroll
+
+================================================================
+@@TJvStringGrid.FOnLoad
+
+================================================================
+@@TJvStringGrid.FOnMouseEnter
+
+================================================================
+@@TJvStringGrid.FOnMouseLeave
+
+================================================================
+@@TJvStringGrid.FOnParentColorChanged
+
+================================================================
+@@TJvStringGrid.FOnSave
+
+================================================================
+@@TJvStringGrid.FOnVScroll
+
+================================================================
+@@TJvStringGrid.FOver
+
+================================================================
+@@TJvStringGrid.FSaved
+
+================================================================
+@@TJvStringGrid.CMCtl3DChanged@TMessage
+
+================================================================
+@@TJvStringGrid.CMMouseEnter@TMessage
+
+================================================================
+@@TJvStringGrid.CMMouseLeave@TMessage
+
+================================================================
+@@TJvStringGrid.CMParentColorChanged@TMessage
+
+================================================================
+@@TJvStringGrid.Create@TComponent
+
+================================================================
+@@TJvStringGrid.LoadFromCSV@string@Char@
+Description:
+This method allows you to load data from a CSV file. The CSV format is a text file will all fields separated by a coma or another character. This format is compatible with Excel, Access and some other programs.
+
+================================================================
+@@TJvStringGrid.LoadFromFile@string
+Description:
+Use this method to load the content of the StringGrid from a file.
+
+================================================================
+@@TJvStringGrid.LoadFromStream@TStream
+Description:
+Use this method to load the content of the StringGrid from a stream.
+
+================================================================
+@@TJvStringGrid.SaveToCSV@string@Char@
+Description:
+This method allows you to save data into CSV format. The CSV format is a text file with all fields separated by a coma or another character. This format allows you to import the file into other programs like Excel, Access, ...
+
+================================================================
+@@TJvStringGrid.SaveToFile@string
+Description:
+Used this method to saving the content of the StringGrid to a file.
+
+================================================================
+@@TJvStringGrid.SaveToStream@TStream
+Description:
+Use this method to save the content of the StringGrid to a stream.
+
+================================================================
+@@TJvStringGrid.SortGrid@Integer@Boolean@Boolean@TJvSortType@Boolean
+Description:
+Call this method to sort the grid.
+
+Parameters:
+Column:
+is the index of the column you want to use for the sort
+Ascending: 
+is the way you want to sort. Ascending or Descending.
+Fixed: 
+is true if you also want to sort fixed rows.
+BlankTop: 
+is true if blank cells are moved to top on ascending and to bottom on descending. This may be usefull if cells may be blank for numerical datas!.
+
+================================================================
+@@TJvStringGrid.WMHScroll@TWMHScroll
+
+================================================================
+@@TJvStringGrid.WMVScroll@TWMVScroll
+
+================================================================
+@@TJvStringGrid.AboutJVCL
+
+================================================================
+@@TJvStringGrid.HintColor
+
+================================================================
+@@TJvStringGrid.OnCtl3DChanged
+
+================================================================
+@@TJvStringGrid.OnHorizontalScroll
+
+================================================================
+@@TJvStringGrid.OnLoadProgress
+Description:
+This event is called when loading the content of the StringGrid from a stream/file or CSV. This method is provided for displaying a progression to the user.
+
+================================================================
+@@TJvStringGrid.OnMouseEnter
+
+================================================================
+@@TJvStringGrid.OnMouseLeave
+
+================================================================
+@@TJvStringGrid.OnParentColorChange
+
+================================================================
+@@TJvStringGrid.OnSaveProgress
+Description:
+This event is called when saving the content of the StringGrid to a stream/file or CSV. This method is provided for displaying a progression to the user.
+
+================================================================
+@@TJvStringGrid.OnVerticalScroll
+
+================================================================
+@@TJvSortType
+Description:
+This is the different types of sorts available in the TJvStringGrid. 
+
+* stAutomatic if you want the component to find the type by himself 
+* stClassic if you want to use a non case sensitive sort 
+* stCaseSensitive if you want to use a case sensitive sort 
+* stNumeric if you want to use a numeric sort 
+* stDate if you want to use a date/time sort 
+* stCurrency if you want to use a currency sort
+

@@ -1,0 +1,38 @@
+================================================================
+@@JvScreenResolution.pas
+Note:
+<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
+
+C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
+
+Conditions:
+The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
+
+Author:
+Sebastien Buysse
+
+Version:
+1.20 Beta
+
+================================================================
+@@TJvScreenResolution
+Description:
+This is the easiest way to change the resolutions of the screen and to list all resolutions supported.
+
+================================================================
+@@TJvScreenResolution.GetSupportedModes@array of TDevMode@Integer
+Description:
+This method list the supported resolutions. 
+
+Parameters:
+Modes - This array will contain the supported modes 
+Count - This variable will countain the number of modes stored in the array
+
+================================================================
+@@TJvScreenResolution.SetMode@TDevMode
+Description:
+This method is for changing the resolution. 
+
+Parameters:
+Value - This is a TDevMode retrieved with the methos GetSuppotedModes.
+
