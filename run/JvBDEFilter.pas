@@ -25,7 +25,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDBFilter;
+unit JvBDEFilter;
 
 interface
 
@@ -149,13 +149,7 @@ function SetLookupFilter(DataSet: TDataSet; Field: TField;
 implementation
 
 uses
-  {$IFNDEF WIN32}
-  DBIErrs, DBIProcs, JvStr16,
-  {$ENDIF}
-  DBConsts, Dialogs,
-  {$IFDEF COMPILER3_UP}
-  DbCommon,
-  {$ENDIF}
+  DBConsts, Dialogs, DbCommon,
   JvConsts, JvJVCLUtils, JvDBUtils, JvBdeUtils;
 
 procedure DropAllFilters(DataSet: TDataSet);

@@ -28,14 +28,13 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDBExceptionForm;
+unit JvBDEExceptionForm;
 
 interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls,
-  DBTables,
+  StdCtrls, ExtCtrls, DBTables,
   JvxCtrls, JvLabel, JvComponent;
 
 type
@@ -93,9 +92,7 @@ procedure DbErrorIntercept;
 implementation
 
 uses
-  Consts,
-  Windows, BDE,
-  JvConsts;
+  Consts, Windows, BDE, JvConsts;
 
 {$R *.DFM}
 

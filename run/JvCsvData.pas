@@ -518,7 +518,8 @@ function JvCsvWildcardMatch(data, pattern: string): Boolean;
 
 implementation
 
-uses BDE, DBTables, DBConsts, Forms, Controls, Dialogs, JvCsvParse;
+uses
+  DBConsts, Forms, Controls, Dialogs, JvCsvParse;
 
 var
   CallCount: Integer;
@@ -580,23 +581,19 @@ var
   t, count: Integer;
 begin
   count := StrSplit(pattern, boolOp, subPattern, 20);
-  if (count > 0) then begin
+  if (count > 0) then
+  begin
     for t := 0 to count - 1 do begin
       Result := JvCsvWildcardMatch(data, subPattern[t]);
           // If ANY OR TRUE return TRUE;
           // if ANY AND FALSE return FALSE;
       if (boolOp = '|') = Result then begin
-        exit;
+        Exit;
       end;
     end;
-  end else begin // split failed...
-    Result := false;
   end;
   // if we get here, no short circuit was possible.
-  if (boolOp = '|') then
-    Result := false // NONE of the OR conditions were met!
-  else
-    Result := true; // ALL of the AND condition were met!
+  Result := (boolOp <> '|');
 end;
 
 procedure TJvCsvCustomInMemoryDataSet.SetAllUserTags(tagValue: Integer);
@@ -660,20 +657,22 @@ var
   datalength, patternlength, dataposition, patternposition: Integer;
   firstBoolCondition: Integer;
 begin
-  datalength := Length(data);
   patternlength := Length(pattern);
+  // no pattern?
+  if (patternlength = 0) then
+  begin
+    Result := true; //everything matches a non-pattern.
+    Exit;
+  end;
+  datalength := Length(data);
   // no data?
   if (datalength = 0) then begin
     if (pattern = '%') or (pattern = '') then begin
       Result := true;
-      exit;
+      Exit;
     end;
     Result := false;
-    exit; // definitely no match.
-  end;
-  // no pattern?
-  if (patternlength = 0) then begin
-    Result := true; //everything matches a non-pattern.
+    Exit; // definitely no match.
   end;
   // replace all '%%' -> '%' (don't put duplicate wildcards in)
   t := 1;
@@ -688,12 +687,12 @@ begin
   firstBoolCondition := Pos('&', pattern);
   if (firstBoolCondition > 0) then begin
     Result := _WildcardsMatchBoolOp(data, pattern, '&');
-    exit;
+    Exit;
   end;
   firstBoolCondition := Pos('|', pattern);
   if (firstBoolCondition > 0) then begin
     Result := _WildcardsMatchBoolOp(data, pattern, '|');
-    exit;
+    Exit;
   end;
 
 
@@ -707,7 +706,7 @@ begin
       Result := true
     else
       Result := false;
-    exit; // simple match returns immediately.
+    Exit; // simple match returns immediately.
   end;
   // wildcard tail?
   if ((firstwildcard = patternlength) and (pattern[1] <> '?')) then begin // prefix match
@@ -715,7 +714,7 @@ begin
       Result := true
     else
       Result := false;
-    exit; // tail case is easy!
+    Exit; // tail case is easy!
   end;
   // match literal characters until we hit wildcards,
   // then search for a wildcard resync, which continues
@@ -731,7 +730,7 @@ begin
     end else if (pattern[patternposition] = '%') then begin
       if (patternposition = patternlength) then begin // last byte!
         Result := true;
-        exit;
+        Exit;
       end;
        // Resync after %:
       t := Pos(pattern[patternposition + 1], data);
@@ -740,23 +739,23 @@ begin
           Copy(pattern, patternposition + 1, patternlength)
           );
         if (Result) then
-          exit; // found a resync, and rest of strings match
+          Exit; // found a resync, and rest of strings match
         data := Copy(data, t + 1, datalength);
         datalength := Length(data);
-        dataposition := 0;
+//        dataposition := 0; // (p3) never used
         if (datalength = 0) then begin
           Result := false;
-          exit;
+          Exit;
         end;
         t := Pos(pattern[patternposition + 1], data);
       end; { end while loop }
        // failed to resync
       Result := false;
-      exit;
+      Exit;
     end else begin // NORMAL CHARACTER
       if (data[dataposition] <> pattern[patternposition]) then begin
         Result := false; // failed.
-        exit;
+        Exit;
       end;
       Inc(dataposition);
       Inc(patternposition);
@@ -789,7 +788,7 @@ var
 begin
 //  fieldIndex := Self.FCsvColumns.
   fieldRec := FCsvColumns.FindByName(fieldname);
-  if not Assigned(fieldRec) then exit;
+  if not Assigned(fieldRec) then Exit;
   fieldIndex := fieldRec^.FPhysical;
   valueLen := Length(pattern); // if valuelen is zero then we are searching for blank or nulls
   pattern := UpperCase(pattern); // make value case insensitive.
@@ -1015,17 +1014,16 @@ var
   LimitReached: Boolean;
   RowPtr: PCsvRow;
 begin
-  if (FRecordPos < 0) then begin
-    Result := defaultResult;
-    exit;
-  end;
+  Result := defaultResult;
+  if (FRecordPos < 0) then
+    Exit;
   LimitReached := false; // hit BOF or EOF?
   while not LimitReached do begin
     { no skippage required }
     RowPtr := PCsvRow(FData.GetRowPtr(FRecordPos));
     if (not RowPtr^.filtered) then begin
       Result := defaultResult;
-      exit;
+      Exit;
     end;
     { skippage ensues }
     if (ForwardBackwardMode) then begin // ForwardSkip mode
@@ -1033,14 +1031,14 @@ begin
       if (FRecordPos >= FData.Count) then begin
         FRecordPos := ON_EOF_CRACK;
         Result := grEOF;
-        exit;
+        Exit;
       end;
     end else begin // BackwardSkip mode
       Dec(FRecordPos);
       if (FRecordPos < 0) then begin // hit BOF_CRACK
         FRecordPos := ON_BOF_CRACK;
         Result := grBOF;
-        exit;
+        Exit;
       end;
     end;
   end;
@@ -1056,7 +1054,7 @@ begin
   Result := grEOF;
   if FData.Count < 1 then begin
     //Trace(' GetRecord - called when data buffer empty.');
-    exit;
+    Exit;
   end;
   case GetMode of
     gmPrior:
@@ -1235,7 +1233,7 @@ begin
     if Boolean(pDestination[0]) then
       CopyMemory(@pDestination[1], Buffer, Field.DataSize);
     //Result := true; {there is no return value, oops}
-    exit;
+    Exit;
   end;
 
  // If we get here, we are dealing with a physical record:
@@ -1244,12 +1242,12 @@ begin
  // account:
   CsvColumnData := FCsvColumns.FindByFieldNo(Field.FieldNo);
   if not Assigned(CsvColumnData) then
-    exit;
+    Exit;
 
   PhysicalLocation := CsvColumnData^.FPhysical;
 
   if PhysicalLocation < 0 then
-    exit;
+    Exit;
 
   if Buffer = nil then
     NewVal := ''
@@ -1355,7 +1353,7 @@ begin
   s := '';
   if Length(StrValue) < 2 then begin
     Result := s;
-    exit;
+    Exit;
   end;
 
   for t := 2 to l - 1 do begin
@@ -1396,7 +1394,7 @@ begin
   if not FCursorOpen then
     Exit;
   if Field = nil then
-    exit;
+    Exit;
 
  // Dynamic CSV Column Ordering: If we didn't start by
  // assigning column orders when we opened the table,
@@ -1425,7 +1423,7 @@ begin
     else // Get the field data from the buffer:
       CopyMemory(Buffer, @pSource[1], Field.DataSize);
     Result := true;
-    exit;
+    Exit;
   end;
 
 
@@ -1438,12 +1436,12 @@ begin
   CsvColumnData := FCsvColumns.FindByFieldNo(Field.FieldNo);
   if not Assigned(CsvColumnData) then begin
     JvCsvDatabaseError('Unable to locate CSV file information for field ' + Field.Name);
-    exit;
+    Exit;
   end;
   PhysicalLocation := CsvColumnData^.FPhysical;
   if PhysicalLocation < 0 then begin // does it really exist in the CSV Row?
     JvCsvDatabaseError('Physical location of CSV field ' + Field.FieldName + ' in table ' + FTableName + 'unknown.');
-    exit;
+    Exit;
   end;
 
   //------------------------------------------------------------------------
@@ -1460,7 +1458,7 @@ begin
   // empty string in the field.
   if (Field.DataType <> ftString) then
     if Length(TempString) = 0 then
-      exit; // NULL field.
+      Exit; // NULL field.
 
   { If buffer is nil, then we are being asked to do a null check only.}
   if (Buffer = nil) then begin
@@ -1468,7 +1466,7 @@ begin
       Result := false
     else
       Result := true;
-    exit; { cannot actually copy data into nil buffer, so returns now. }
+    Exit; { cannot actually copy data into nil buffer, so returns now. }
   end;
 
 
@@ -1525,12 +1523,12 @@ begin
               aDateTime := TimeTAsciiToDateTime(TempString);
               if aDateTime <= 1.0 then begin
                 Result := false; { field is NULL, no date/time value }
-                exit;
+                Exit;
               end;
               Double(Buffer^) := TimeStampToMSecs(
                 DateTimeToTimeStamp(
                 aDateTime));
-              if Double(Buffer^) = 0 then exit;
+              if Double(Buffer^) = 0 then Exit;
             end;
 
              // GMT Times are Stored in HEX:
@@ -1551,7 +1549,7 @@ begin
   except
     on E: EConvertError do begin
       Result := false; // return a NULL.
-      exit;
+      Exit;
     end;
   end;
   // All is Well.
@@ -1904,12 +1902,12 @@ procedure TJvCsvCustomInMemoryDataSet.InternalAddRecord(Buffer: Pointer; Append:
 var
   RecPos: Integer;
   pAddRec: pCsvRow;
-  keyIndex: Integer;
+//  keyIndex: Integer;
 begin
 
   if FInsertBlocked then begin
     JvCsvDatabaseError('TJvCsvCustomInMemoryDataSet.InternalAddRecord: Can''t Add. Insert blocked.');
-    exit;
+    Exit;
   end;
 
   if FRecordPos = ON_BOF_CRACK then
@@ -1935,7 +1933,7 @@ begin
     keyIndex := InternalFindByKey(pAddRec);
     if keyIndex >= 0 then begin
           JvCsvDatabaseError('Key value is not unique. Adding new record failed.');
-          exit; // never get here, since normally JvCsvDatabaseError raises an exception.
+          Exit; // never get here, since normally JvCsvDatabaseError raises an exception.
     end;
  end;
   }
@@ -1963,12 +1961,12 @@ end;
 function TJvCsvCustomInMemoryDataSet.InternalLoadFileStrings: Boolean;
 begin
   Result := false;
-  if not FileExists(FTableName) then exit;
-  if not FLoadsFromFile then exit;
+  if not FileExists(FTableName) then Exit;
+  if not FLoadsFromFile then Exit;
   if Assigned(FCsvFileAsStrings) then begin
     if FCsvFileAsStrings.Count > 0 then
       Result := true; //loaded already
-    exit; // don't repeat!
+    Exit; // don't repeat!
   end;
 
   try // open data file
@@ -1999,7 +1997,7 @@ end;
 
 procedure TJvCsvCustomInMemoryDataSet.InternalOpen;
 var
-  Strings: TStringList;
+//  Strings: TStringList;
   TempBuf: array[0..MAXCOLUMNS] of char;
 begin
   if FCursorOpen then InternalClose; // close first!
@@ -2009,7 +2007,7 @@ begin
   FFileDirty := False;
   if (Length(FTableName) = 0) and FLoadsFromFile then
     JvCsvDatabaseError('LoadFromFile=True, so a TableName is required');
-  Strings := nil;
+//  Strings := nil;
 
 
 
@@ -2071,7 +2069,7 @@ begin
 
   if FPostBlocked then begin
     JvCsvDatabaseError('Posting to this database has been blocked.');
-    exit;
+    Exit;
   end;
 
   { Unique Key Enforcement }
@@ -2082,7 +2080,7 @@ begin
     if keyIndex >= 0 then
       if (state = dsInsert) or ((state = dsEdit) and (keyIndex <> FRecordPos)) then begin
         raise EJvCsvKeyError.Create('Key is not unique.');
-        exit; // never get here, since normally JvCsvDatabaseError raises an exception.
+        Exit; // never get here, since normally JvCsvDatabaseError raises an exception.
       end;
   end;
 
@@ -2096,7 +2094,7 @@ begin
   end else if State = dsInsert then begin
     if FInsertBlocked then begin
       JvCsvDatabaseError('Can''t insert new row. Insert blocked.');
-      exit;
+      Exit;
     end;
     FFileDirty := True;
     pInsertRec := AllocMem(Sizeof(TJvCsvRow));
@@ -2224,7 +2222,7 @@ begin
           Result := 1
         else
           Result := 0;
-        exit;
+        Exit;
       end;
   else
     Result := StrComp(PChar(strLeft), PChar(strRight));
@@ -2240,6 +2238,7 @@ function TJvCsvCustomInMemoryDataSet.InternalCompare(SortColumns: array of PCsvC
 var
   t: Integer;
 begin
+  Result := 0;
   // null check, raise exception
   if (not Assigned(Left)) or (not Assigned(Right)) then begin
     JvCsvDatabaseError('InternalCompare. Nil value detected.');
@@ -2249,7 +2248,7 @@ begin
     if not Assigned(SortColumns[t]) then
       JvCsvDatabaseError('InternalCompare. Nil value detected.'); // raise exception
     Result := InternalFieldCompare(SortColumns[t], Left, Right);
-    if (Result <> 0) then exit; // found greater or less than condition
+    if (Result <> 0) then Exit; // found greater or less than condition
   end;
   // now we have compared all fields, and if we get here, they were all
   // equal, and Result is already set to 0.
@@ -2355,7 +2354,7 @@ begin
       if Assigned(Result.FFieldDef) then
         // Case insensitive field name matching:
         if CompareText(Result.FFieldDef.Name, FieldName) = 0 then
-          exit; //return that field was found!
+          Exit; //return that field was found!
     end;
   except
    // ignore exceptions
@@ -2374,7 +2373,7 @@ begin
       if Assigned(Result) then
         if Assigned(Result^.FFieldDef) then
           if Result^.FFieldDef.FieldNo = FieldNo then
-            exit; //return that field was found!
+            Exit; //return that field was found!
     end;
   except
    // ignore exceptions
@@ -2499,7 +2498,7 @@ begin
 // CheckInactive;
 // if NOT FFieldsInitialized then
 // InternalInitFieldDefs; // must know about field definitions first.
-  if Strings = nil then exit;
+  if Strings = nil then Exit;
   FData.EnquoteBackslash := FEnquoteBackslash;
 
   indexCounter := 0;
@@ -2564,7 +2563,7 @@ begin
   if FCsvColumns.count = 0 then begin
     ResultString := '';
     Result := ResultString;
-    exit;
+    Exit;
   end;
  // Build a list of column names: <item>, <item>,....,<item>
   ResultString := FieldDefs[0].Name;
@@ -2587,7 +2586,7 @@ var
   colnum, t: Integer;
 begin
   if Length(header) = 0 then
-    exit;
+    Exit;
 
  // Initialize all CSV Column locations to a "not found yet" state:
   for t := 0 to FCsvColumns.Count - 1 do
@@ -2606,7 +2605,7 @@ begin
 
     if (ptrCsvColumn = nil) then begin // raise database exception:
       JvCsvDatabaseError('ProcessCsvHeaderRow:Field ' + CsvFieldName + ' found in file, but not in field definitions.');
-      exit;
+      Exit;
     end;
 
     try
@@ -2625,7 +2624,7 @@ begin
     ptrCsvColumn := PCsvColumn(FCsvColumns[t]);
     if ptrCsvColumn^.FPhysical < 0 then begin
       JvCsvDatabaseError('Field ' + ptrCsvColumn^.FFieldDef.Name + ' not found in the data file.');
-      exit;
+      Exit;
     end;
   end;
 end;
@@ -2635,7 +2634,7 @@ var
   pNewRow: PCsvRow;
 begin
   if (Length(DataRow) = 0) then
-    exit;
+    Exit;
   if (Length(DataRow) >= (MAXLINELENGTH - 1)) then begin
     raise Exception.Create('CSV String is too long: ' + Copy(datarow, 1, 40) + '...');
   end;
@@ -2663,7 +2662,7 @@ var
 begin
   if (not FLoadsFromFile) or (not FHasHeaderRow) or not (FileExists(FTableName)) then begin
     Result := '';
-    exit;
+    Exit;
   end;
   { How's this for an ancient Pascal code sequence, AssignFile+Reset is approximately equal to a C fopen() call }
   AssignFile(F, FTableName);
@@ -2744,7 +2743,7 @@ begin
     end;
     if (col >= MAXCOLUMNS) or (t >= MAXLINELENGTH) then begin
       raise ERangeError.Create('JvCsvData - Internal Limit of MAXCOLUMNS (' + IntToStr(MAXCOLUMNS) + ') reached. CSV Data has too many columns');
-      exit;
+      Exit;
     end;
   end; // end of string, new flag:
   Inc(col);
@@ -2785,13 +2784,13 @@ var
 begin
   Dif := 0;
   if (ColumnIndex < 0) or (ColumnIndex > MAXCOLUMNS) then
-    exit;
+    Exit;
   Copy1 := CsvRowGetColumnMarker(pItem, ColumnIndex);
   if (Copy1 = COLUMN_ENDMARKER) then
-    exit;
+    Exit;
 
   if (Copy1 > MAXLINELENGTH) then
-    exit;
+    Exit;
  // copy initial part of the csv row:
   if (Copy1 > 0) then begin
     StrLCopy(TempBuf, pItem.text, Copy1);
@@ -2803,7 +2802,7 @@ begin
   if (Copy2 <> COLUMN_ENDMARKER) then begin
    // difference in length:
     Dec(Copy2); // subtract one.
-    if (Copy2 < 0) then exit;
+    if (Copy2 < 0) then Exit;
     if (Length(NewValue) = Copy2 - Copy1) then
       Dif := 0
     else
@@ -2819,7 +2818,7 @@ begin
   if (Dif <> 0) then
     for t := ColumnIndex + 1 to MAXCOLUMNS do begin
       Old := CsvRowGetColumnMarker(pItem, t);
-      if (Old = COLUMN_ENDMARKER) then exit;
+      if (Old = COLUMN_ENDMARKER) then Exit;
       CsvRowSetColumnMarker(pItem, t, Old + Dif);
     end;
 
@@ -2834,14 +2833,14 @@ var
 begin
   if (ColumnIndex < 0) or (ColumnIndex > MAXCOLUMNS) then begin
     Result := '<ERROR>';
-    exit;
+    Exit;
   end;
 
   Copy1 := CsvRowGetColumnMarker(pItem, ColumnIndex);
   Copy2 := CsvRowGetColumnMarker(pItem, ColumnIndex + 1);
   if (Copy1 = COLUMN_ENDMARKER) then begin
     Result := '';
-    exit;
+    Exit;
   end;
   if (Copy2 = COLUMN_ENDMARKER) then // copy the rest of the line
     Copy2 := MAXLINELENGTH - Copy1 // All the characters left in the buffer
@@ -2850,7 +2849,7 @@ begin
 
   if (Copy1 > MAXLINELENGTH) or (Copy2 > MAXLINELENGTH) then begin
     Result := '';
-    exit;
+    Exit;
   end;
 
  // Copy out just one column from the string:
@@ -2863,25 +2862,25 @@ end;
 
 procedure CsvRowSetDirtyBit(row: pCsvRow; ColumnIndex: Integer);
 begin
-  if ROW = nil then exit;
-  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then exit;
+  if ROW = nil then Exit;
+  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then Exit;
   row^.fdirty := true; // triggers search for 'dirty bit' in columns
   row^.wordfield[ColumnIndex] := (row^.wordfield[ColumnIndex] or $8000);
 end;
 
 procedure CsvRowClearDirtyBit(row: pCsvRow; ColumnIndex: Integer);
 begin
-  if ROW = nil then exit;
-  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then exit;
+  if ROW = nil then Exit;
+  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then Exit;
   row^.wordfield[ColumnIndex] := (row^.wordfield[ColumnIndex] and $7FFF);
 end;
 
 function CsvRowGetDirtyBit(row: pCsvRow; ColumnIndex: Integer): Boolean;
 begin
   Result := false;
-  if ROW = nil then exit;
-  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then exit;
-  if row^.wordfield[ColumnIndex] = COLUMN_ENDMARKER then exit;
+  if ROW = nil then Exit;
+  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then Exit;
+  if row^.wordfield[ColumnIndex] = COLUMN_ENDMARKER then Exit;
   Result := (row^.wordfield[ColumnIndex] and $8000) <> 0;
 end;
 
@@ -2889,9 +2888,9 @@ procedure CsvRowSetColumnMarker(row: pCsvRow; ColumnIndex: Integer; ColumnMarker
 var
   Old: Word;
 begin
-  if ROW = nil then exit;
-  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then exit;
-  if (ColumnMarker < 0) then exit;
+  if ROW = nil then Exit;
+  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then Exit;
+  if (ColumnMarker < 0) then Exit;
 
   if ColumnMarker = COLUMN_ENDMARKER then
     row^.wordfield[ColumnIndex] := COLUMN_ENDMARKER
@@ -2910,8 +2909,8 @@ var
   w: Word;
 begin
   Result := -1;
-  if ROW = nil then exit;
-  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then exit;
+  if ROW = nil then Exit;
+  if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then Exit;
   w := row^.wordfield[ColumnIndex];
   if w = COLUMN_ENDMARKER then
     Result := COLUMN_ENDMARKER
@@ -2945,7 +2944,7 @@ var
 begin
   Result := 0.0;
   SecondsSince1970 := StrToIntDef('$' + HexStr, 0) + TimeZoneCorrection;
-  if (SecondsSince1970 <= 0.0) then exit;
+  if (SecondsSince1970 <= 0.0) then Exit;
   Base := EncodeDate(1970, 1, 1);
   Base := Base + (SecondsSince1970 / 86400.0);
 { DateTimeAsStr := FormatDateTime('yyyy/mm/dd hh:nn:ss',Base);}
@@ -3005,9 +3004,9 @@ begin
       break; // as long as we at least got the date, we can continue.
     for u := 1 to ExpectLengths[t] do begin
       if (index > len) then
-        exit;
+        Exit;
       ch := AsciiDateStr[index];
-      if (ch < '0') or (ch > '9') then exit; // failed:invalid character.
+      if (ch < '0') or (ch > '9') then Exit; // failed:invalid character.
       values[t] := (values[t] * 10) + (Ord(ch) - Ord('0'));
       inc(Index);
 
@@ -3020,11 +3019,11 @@ begin
     if (index < len) then
       if (AsciiDateStr[index] <> Separators[t])
         and (AsciiDateStr[index] <> Separators2[t]) then
-        exit;
+        Exit;
 
    // validate ranges:
     if (Values[t] < MinValue[t]) or (Values[t] > MaxValue[t]) then
-      exit; // a value is out of range.
+      Exit; // a value is out of range.
     Inc(Index);
   end;
 
@@ -3080,7 +3079,7 @@ begin
       filenameonly := Copy(filename, t + 1, len);
       if (Length(filenameonly) > 0) and (Length(path) > 0) and DirectoryExists(Path) then
         Result := true;
-      exit;
+      Exit;
     end;
   end;
 end;
@@ -3100,9 +3099,9 @@ begin
   Result := false;
 
   if not FileExists(filename) then
-    exit; // failed.
+    Exit; // failed.
   if not JvFilePathSplit(filename, BackupFolder, FileNameOnly) then
-    exit; // failed.
+    Exit; // failed.
   BackupFolder := BackupFolder + 'Backup\';
   if not DirectoryExists(BackupFolder) then
     CreateDirectory(PChar(BackupFolder), nil);

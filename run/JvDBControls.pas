@@ -39,9 +39,6 @@ uses
   {$ENDIF}
   Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
   StdCtrls, Mask, IniFiles, DB, DBGrids,
-  {$IFNDEF COMPILER3_UP}
-  DBTables,
-  {$ENDIF}
   JvToolEdit, JvFormPlacement, JvJCLUtils, DBCtrls, JvxCtrls, JvBaseEdits;
 
 { TJvDBGrid }
@@ -864,11 +861,7 @@ implementation
 
 uses
   SysUtils, Dialogs, DbConsts, Math,
-  JvJVCLUtils, JvDBUtils,
-  {$IFNDEF COMPILER3_UP}
-  JvBdeUtils,
-  {$ENDIF}
-  JvCalc, JvConsts;
+  JvDBUtils, JvJVCLUtils, JvCalc, JvConsts;
 
 {$R ..\resources\JvDBCtrl.res}
 
@@ -1563,12 +1556,12 @@ var
   begin
     if SelectedRows.Count > 1 then
       {$IFDEF WIN32}
-      S := ResStr(SDeleteMultipleRecordsQuestion)
+      S := SDeleteMultipleRecordsQuestion
       {$ELSE}
       S := LoadStr(SDeleteMultipleRecords)
       {$ENDIF}
     else
-      S := ResStr(SDeleteRecordQuestion);
+      S := SDeleteRecordQuestion;
     Result := not (dgConfirmDelete in Options) or
       (MessageDlg(S, mtConfirmation, [mbYes, mbNo], 0) = mrYes);
   end;

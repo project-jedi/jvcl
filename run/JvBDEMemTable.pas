@@ -25,18 +25,13 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvMemTable;
+unit JvBDEMemTable;
 
 interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF WIN32}
   Bde,
-  {$ELSE}
-  DbiTypes,
-  DbiProcs, DbiErrs,
-  {$ENDIF}
   DB, DBTables;
 
 type

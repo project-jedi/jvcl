@@ -29,8 +29,8 @@ begin
     TJvMainMenu, TJvPopupMenu, TJvSystemPopup, TJvEdit, TJvCheckedMaskEdit,
     TJvMaskEdit, TJvCalcEdit, TJvCalculator, TJvComboEdit, TJvFileDirEdit,
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvSpinEdit,
-    TJvMemo, TJvPanel, {TJvTransparentPanel, }TJvxSlider, TJvBevel, TJvStringGrid,
-    // TJvTextListBox, TJvxCheckListBox,
+    TJvMemo, TJvPanel, TJvxSlider, TJvBevel, TJvStringGrid,
+    // TJvTextListBox, TJvxCheckListBox, TJvTransparentPanel,
     TJvCheckBox, TJvRadioButton, TJvRadioGroup, TJvCheckListBox, TJvComboBox,
     TJvColorComboBox, TJvFontComboBox, TJvListBox, TJvBitBtn, TJvImgBtn, TJvScrollBox, TJvShape,
 

@@ -25,17 +25,11 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvQueryParamsForm;
+unit JvDBQueryParamsForm;
 
 interface
 
 uses
-  {$IFNDEF WIN32}
-  WinTypes, WinProcs,
-  {$ENDIF}
-  {$IFNDEF COMPILER4_UP}
-  DBTables,
-  {$ENDIF}
   SysUtils, Classes, Controls, Forms, StdCtrls, DB;
 
 type

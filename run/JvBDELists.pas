@@ -25,7 +25,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDBLists;
+unit JvBDELists;
 
 interface
 
@@ -211,11 +211,7 @@ type
 implementation
 
 uses
-  DBConsts,
-  {$IFDEF COMPILER3_UP}
-  BDEConst,
-  {$ENDIF}
-  JvConsts;
+  DBConsts, BDEConst, JvConsts;
 
 { Utility routines }
 

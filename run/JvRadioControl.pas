@@ -227,7 +227,6 @@ type
     property OnStartDrag;
   end;
 
-procedure Register;
 
 implementation
 
@@ -1191,13 +1190,6 @@ end;
 function TJvCustomRadioControl.RadToAngle(const Radian: Double): TJvRadioAngle;
 begin
   Result := Round(dRadianToAngle * Radian);
-end;
-
-// (rom) wrong palette
-
-procedure Register;
-begin
-  RegisterComponents('Samples', [TJvRadioControl]);
 end;
 
 end.

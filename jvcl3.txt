@@ -5,7 +5,7 @@ NAMING CONVENTIONS:
 
 GENERAL
 -------
-All files must have a "Jv" prefix (capital "J", lower case "v") and you should use "Camel Casing" for the file name (LikeThisForExample.pas). All files should have an extension in all lower case letters. All units should be named using the full name of the contained component/control without the leading "T". If the unit contains several classes/components, either name it after the component that will be installed, most "significant" component or use a name that describes th ecomponents in the unit as well as possible. F ex a unit with several database components could be named "JvDBControls.pas" whereas a unit containing a TJvEditor control should be named "JvEditor.pas". Windows supports long filenames, so use them! The goal is to make finding a unit as simple and intuitive as possible based on the name of the component.
+All files must have a "Jv" prefix (capital "J", lower case "v") and you should use "Camel Casing" for the file name (LikeThisForExample.pas). All files should have an extension in all lower case letters. All units should be named using the full name of the contained component/control without the leading "T". If the unit contains several classes/components, either name it after the component that will be installed, most "significant" component or use a name that describes the components in the unit as well as possible. F ex a unit with several database components could be named "JvDBControls.pas" whereas a unit containing a TJvEditor control should be named "JvEditor.pas". Windows supports long filenames, so use them! The goal is to make finding a unit as simple and intuitive as possible based on the name of the component (and viceversa).
 
 
 FORMS
@@ -23,12 +23,12 @@ The words "Const" and "Consts" are only used in units that contains just type, r
 
 UTIL(S)
 -------
-The word "Util" and "Utils" are only used in units that contains support routines and classes of more general use. Classes in util type units should never be installed.
+The word "Util" and "Utils" are only used in units that contains support routines and classes of more general use. Classes in util type units should never be installable.
 
 
 DESIGNTIME EDITORS
 ==================
-Units containing designtime editors should have the same base name as the component they are primarily used to edit and an "Editor" or "Editors" suffix, i.e the property editor for the TJvBehaviorLabel should be called "JvBehaviorLabelEditor". If a unit contains more than one editor, it should have the suffix "Editors". 
+Units containing designtime editors should have the same base name as the component they are primarily used to edit and an "Editor" or "Editors" suffix, i.e a property editor unit for the TJvBehaviorLabel should be called either "JvBehaviorLabelEditor" or "JvBehaviorLabelEditors". 
 
 The base name for the unit is controlled by the name of the component the editor(s) were meant for: if all editors are for the same component, use the same rule as for a single editor (the plural form), if the unit contains generic editors, name the unit either according to the editors "family" ("JvDBEditors" contains design editors for DB related components), or according to it's general data type (i.e "JvDateEditors" contains editors used to edit date related properties). 
 
@@ -78,17 +78,17 @@ TODO:
 * Put packages for each compiler version in it's own folder
   Package folder names should be d5, d6, d7, bcb5, bcb6, k2 and k3
 * Put sources for design and run-time in separate folders
-* Put resources in a common folder. This folder is \resources
-* Put INC and common files (like API translations) in a common folder. This folder is \common.
+* Put resources (res and dcr files mainly) in a common folder. This folder is named \resources
+* Put INC and common files (like API translations) in a common folder. This folder is named \common.
 * Merge/remove remaining duplicates
 * Change palette layout
 * Create one DCR file for each design package
-* Implement IFiller (Marcel?)
+* Implement IFiller (Marcel?). NOTE: IFiller has been renamed to IData.
 * Implement XP theming (Remko?)
 * Remove unnecessary IFDEF's (WIN32, COMPILER3, COMPILER4 etc). We don't support 16-bit and we don't support compilers before COMPILER5.
-* Merge utility units and put component specific routines into separate units
+* Merge utility units into one and put component specific routines into separate units. 
 * Split design units where editors and forms are in the same file (bad!)
-* rename all DB related units to "JvDB", all BDE to "JvBDE" etc
+* Rename all DB related units to "JvDB", all BDE related to "JvBDE" etc
 * Add remaining donations:
 
   Globus (Andrey Chudin) - already compliant

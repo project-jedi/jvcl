@@ -48,6 +48,7 @@ contains
   JvJVCLAbout in '..\..\run\JvJVCLAbout.pas' {JvJVCLAboutForm},
   JvActions in '..\..\run\JvActions.pas',
   JvMouseTimer in '..\..\run\JvMouseTimer.pas',
+  JvDsgnIntf in '..\..\run\JvDsgnIntf.pas',
   JvActnRes in '..\..\design\JvActnRes.pas' {JvStandardActions: TDataModule};
 
 end.

@@ -49,7 +49,7 @@ Known Issues:
   BeforePost = user defined unique generation procedure;
  }
 
-unit JvDBMove;
+unit JvBDEMove;
 
 interface
 
@@ -123,7 +123,7 @@ type
 implementation
 
 uses
-  JvDBUtils, JvJCLUtils;
+  JvBDEUtils;
 
 type
   TFieldRef = class(TObject)
