@@ -20,11 +20,8 @@
   <Contains>
     <File Name="..\..\run\JvUrlListGrabber.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormToHtml.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvFtpGrabber.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvHtmlParser.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvHttpGrabber.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMail.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMultiHttpGrabber.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvRgbToHtml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvRichEditToHtml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvStringListToHtml.pas" Targets="all" Formname="" Condition=""/>
