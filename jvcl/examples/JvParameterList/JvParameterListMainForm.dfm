@@ -2110,6 +2110,9 @@ object Form1: TForm1
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     StorageOptions.WhiteSpaceReplacement = '_'
+    StorageOptions.AutoEncodeValue = False
+    StorageOptions.AutoEncodeEntity = False
+    StorageOptions.AutoIndent = True
     FileName = 'JvParameterListDemo.xml'
     RootNodeName = 'Configuration'
     SubStorages = <>

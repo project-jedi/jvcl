@@ -109,10 +109,6 @@ DebugCWD=
 ActiveLang=
 ProjectLang=
 RootDir=
-[Manifest]
-IdentityName=JvParameterListDemo
-Description=Description of JvParameterListDemo
-Include=1
 [Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0
