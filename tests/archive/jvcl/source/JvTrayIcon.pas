@@ -62,7 +62,7 @@ type
   TRegisterServiceProcess = function(dwProcessID, dwType: Integer): Integer; stdcall;
 
   TTrayVisibility = (tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide, tvVisibleDesign,
-    tvRestoreClick, tvRestoreDbClick);
+    tvRestoreClick, tvRestoreDbClick, tvMinimizeClick, tvMinimizeDbClick);
   TTrayVisibilities = set of TTrayVisibility;
 
   TJvTrayIcon = class(TJvComponent)
@@ -486,7 +486,8 @@ end;
 
 procedure TJvTrayIcon.HideApplication;
 begin
-  Application.Minimize;
+  if (Application.MainForm<>nil) and (Application.MainForm.WindowState<>wsMinimized) then
+    Application.Minimize;
   ShowWindow(Application.Handle, SW_HIDE);
 end;
 
@@ -496,6 +497,7 @@ procedure TJvTrayIcon.ShowApplication;
 begin
   ShowWindow(Application.Handle, SW_SHOW);
   Application.Restore;
+  Application.MainForm.Visible := true;
 end;
 
 {**************************************************}
@@ -645,8 +647,17 @@ begin
     FPopupMenu.Popup(X, Y);
     PostMessage(FHandle, WM_NULL, 0, 0);
   end
-  else if (Button = mbLeft) and (tvRestoreClick in Visibility) then
-    Visibility := Visibility + [tvVisibleTaskBar];
+  else if (Button = mbLeft) then
+    if not (ApplicationVisible) then
+    begin
+      if (tvRestoreClick in Visibility) then
+        Visibility := Visibility + [tvVisibleTaskBar]
+    end
+    else
+    begin
+      if (tvMinimizeClick in Visibility) then
+        Visibility := Visibility - [tvVisibleTaskBar]
+    end;
 
   if Assigned(FOnMouseUp) then
     FOnMouseUp(Self, Button, Shift, X, Y);
@@ -672,8 +683,16 @@ begin
           FPopupMenu.Items[i].Click;
           Break;
         end;
-    if tvRestoreDbClick in Visibility then
-      Visibility := Visibility + [tvVisibleTaskBar];
+    if (ApplicationVisible) then
+    begin
+      if tvMinimizeDbClick in Visibility then
+        Visibility := Visibility - [tvVisibleTaskBar];
+    end
+    else
+    begin
+      if tvRestoreDbClick in Visibility then
+        Visibility := Visibility + [tvVisibleTaskBar];
+    end;
   end;
 end;
 
@@ -715,8 +734,8 @@ end;
 function TJvTrayIcon.ApplicationHook(var Message: TMessage): Boolean;
 begin
   if (Message.Msg = WM_SYSCOMMAND) and (Message.WParam = SC_MINIMIZE) and
-    (tvAutoHide in Visibility) then
-    HideApplication;
+    (tvAutoHide in Visibility) and (Active) then
+    ApplicationVisible := false;
   Result := False;
 end;
 
