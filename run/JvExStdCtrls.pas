@@ -37,6 +37,14 @@ uses
   Classes, SysUtils,
   JvThemes, JvExControls;
 
+{$IFDEF VCL}
+ {$DEFINE NeedMouseEnterLeave}
+{$ELSE}
+ {$IF not declared(PatchedVCLX)}
+  {$DEFINE NeedMouseEnterLeave}
+ {$IFEND}
+{$ENDIF VCL}
+
 type
   TJvExCustomGroupBox = class(TCustomGroupBox, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -52,7 +60,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -76,25 +84,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -122,7 +127,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -146,25 +151,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -193,7 +195,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -204,25 +206,22 @@ type
   {$ENDIF !HASAUTOSIZE}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   {$ENDIF VisualCLX}
   end;
@@ -241,7 +240,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -252,25 +251,22 @@ type
   {$ENDIF !HASAUTOSIZE}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   {$ENDIF VisualCLX}
   end;
@@ -290,7 +286,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -314,25 +310,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -360,7 +353,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -384,25 +377,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -430,7 +420,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -454,25 +444,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -500,7 +487,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -524,25 +511,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -572,7 +556,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -596,25 +580,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -644,7 +625,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -668,25 +649,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -714,7 +692,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -738,25 +716,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -784,7 +759,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -808,25 +783,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -854,7 +826,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -878,25 +850,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -924,7 +893,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -948,25 +917,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -994,7 +960,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -1018,25 +984,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -1064,7 +1027,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -1088,25 +1051,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -1134,7 +1094,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -1158,25 +1118,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -1204,7 +1161,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -1228,25 +1185,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -1274,7 +1228,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -1298,25 +1252,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -1345,7 +1296,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -1369,25 +1320,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -1415,7 +1363,7 @@ type
     procedure ParentShowHintChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; virtual;
-    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -1439,25 +1387,22 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   public
     procedure Dispatch(var Msg); override;
+  {$ENDIF VCL}
+  {$IFDEF NeedMouseEnterLeave}
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF VCL}
+  {$ENDIF NeedMouseEnterLeave}
   protected
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
    {$IF not declared(PatchedVCLX)}
-  private
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
   private
     FCanvas: TCanvas;
@@ -1551,9 +1496,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExCustomGroupBox.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -1568,7 +1513,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomGroupBox.MouseEnter(Control: TControl);
 begin
@@ -1588,21 +1532,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomGroupBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -1624,18 +1557,12 @@ end;
 
 procedure TJvExCustomGroupBox.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExCustomGroupBox.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -1665,15 +1592,8 @@ begin
 end;
 
 procedure TJvExCustomGroupBox.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -1759,9 +1679,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExGroupBox.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -1776,7 +1696,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExGroupBox.MouseEnter(Control: TControl);
 begin
@@ -1796,21 +1715,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExGroupBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -1832,18 +1740,12 @@ end;
 
 procedure TJvExGroupBox.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExGroupBox.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -1873,15 +1775,8 @@ begin
 end;
 
 procedure TJvExGroupBox.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -1968,9 +1863,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExCustomLabel.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -1985,7 +1880,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomLabel.MouseEnter(Control: TControl);
 begin
@@ -2084,9 +1978,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExLabel.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -2101,7 +1995,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExLabel.MouseEnter(Control: TControl);
 begin
@@ -2201,9 +2094,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExCustomEdit.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -2218,7 +2111,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomEdit.MouseEnter(Control: TControl);
 begin
@@ -2238,21 +2130,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -2274,18 +2155,12 @@ end;
 
 procedure TJvExCustomEdit.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExCustomEdit.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -2315,15 +2190,8 @@ begin
 end;
 
 procedure TJvExCustomEdit.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -2409,9 +2277,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExEdit.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -2426,7 +2294,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExEdit.MouseEnter(Control: TControl);
 begin
@@ -2446,21 +2313,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -2482,18 +2338,12 @@ end;
 
 procedure TJvExEdit.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExEdit.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -2523,15 +2373,8 @@ begin
 end;
 
 procedure TJvExEdit.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -2617,9 +2460,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExCustomMemo.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -2634,7 +2477,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomMemo.MouseEnter(Control: TControl);
 begin
@@ -2654,21 +2496,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomMemo.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -2690,18 +2521,12 @@ end;
 
 procedure TJvExCustomMemo.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExCustomMemo.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -2731,15 +2556,8 @@ begin
 end;
 
 procedure TJvExCustomMemo.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -2825,9 +2643,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExMemo.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -2842,7 +2660,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExMemo.MouseEnter(Control: TControl);
 begin
@@ -2862,21 +2679,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExMemo.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -2898,18 +2704,12 @@ end;
 
 procedure TJvExMemo.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExMemo.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -2939,15 +2739,8 @@ begin
 end;
 
 procedure TJvExMemo.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -3035,9 +2828,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExCustomCombo.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -3052,7 +2845,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomCombo.MouseEnter(Control: TControl);
 begin
@@ -3072,21 +2864,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomCombo.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -3108,18 +2889,12 @@ end;
 
 procedure TJvExCustomCombo.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExCustomCombo.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -3149,15 +2924,8 @@ begin
 end;
 
 procedure TJvExCustomCombo.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -3245,9 +3013,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExCustomComboBox.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -3262,7 +3030,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomComboBox.MouseEnter(Control: TControl);
 begin
@@ -3282,21 +3049,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomComboBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -3318,18 +3074,12 @@ end;
 
 procedure TJvExCustomComboBox.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExCustomComboBox.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -3359,15 +3109,8 @@ begin
 end;
 
 procedure TJvExCustomComboBox.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -3453,9 +3196,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExComboBox.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -3470,7 +3213,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExComboBox.MouseEnter(Control: TControl);
 begin
@@ -3490,21 +3232,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExComboBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -3526,18 +3257,12 @@ end;
 
 procedure TJvExComboBox.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExComboBox.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -3567,15 +3292,8 @@ begin
 end;
 
 procedure TJvExComboBox.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -3661,9 +3379,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExButtonControl.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -3678,7 +3396,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExButtonControl.MouseEnter(Control: TControl);
 begin
@@ -3698,21 +3415,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExButtonControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -3734,18 +3440,12 @@ end;
 
 procedure TJvExButtonControl.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExButtonControl.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -3775,15 +3475,8 @@ begin
 end;
 
 procedure TJvExButtonControl.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -3869,9 +3562,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExButton.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -3886,7 +3579,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExButton.MouseEnter(Control: TControl);
 begin
@@ -3906,21 +3598,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExButton.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -3942,18 +3623,12 @@ end;
 
 procedure TJvExButton.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExButton.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -3983,15 +3658,8 @@ begin
 end;
 
 procedure TJvExButton.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -4077,9 +3745,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExCustomCheckBox.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -4094,7 +3762,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomCheckBox.MouseEnter(Control: TControl);
 begin
@@ -4114,21 +3781,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomCheckBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -4150,18 +3806,12 @@ end;
 
 procedure TJvExCustomCheckBox.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExCustomCheckBox.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -4191,15 +3841,8 @@ begin
 end;
 
 procedure TJvExCustomCheckBox.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -4285,9 +3928,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExCheckBox.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -4302,7 +3945,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCheckBox.MouseEnter(Control: TControl);
 begin
@@ -4322,21 +3964,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCheckBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -4358,18 +3989,12 @@ end;
 
 procedure TJvExCheckBox.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExCheckBox.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -4399,15 +4024,8 @@ begin
 end;
 
 procedure TJvExCheckBox.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -4493,9 +4111,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExRadioButton.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -4510,7 +4128,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExRadioButton.MouseEnter(Control: TControl);
 begin
@@ -4530,21 +4147,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExRadioButton.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -4566,18 +4172,12 @@ end;
 
 procedure TJvExRadioButton.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExRadioButton.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -4607,15 +4207,8 @@ begin
 end;
 
 procedure TJvExRadioButton.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -4701,9 +4294,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExCustomListBox.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -4718,7 +4311,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomListBox.MouseEnter(Control: TControl);
 begin
@@ -4738,21 +4330,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomListBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -4774,18 +4355,12 @@ end;
 
 procedure TJvExCustomListBox.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExCustomListBox.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -4815,15 +4390,8 @@ begin
 end;
 
 procedure TJvExCustomListBox.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -4909,9 +4477,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExListBox.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -4926,7 +4494,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExListBox.MouseEnter(Control: TControl);
 begin
@@ -4946,21 +4513,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExListBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -4982,18 +4538,12 @@ end;
 
 procedure TJvExListBox.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExListBox.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -5023,15 +4573,8 @@ begin
 end;
 
 procedure TJvExListBox.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -5117,9 +4660,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExScrollBar.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -5134,7 +4677,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExScrollBar.MouseEnter(Control: TControl);
 begin
@@ -5154,21 +4696,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExScrollBar.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -5190,18 +4721,12 @@ end;
 
 procedure TJvExScrollBar.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExScrollBar.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -5231,15 +4756,8 @@ begin
 end;
 
 procedure TJvExScrollBar.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -5326,9 +4844,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExCustomStaticText.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -5343,7 +4861,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomStaticText.MouseEnter(Control: TControl);
 begin
@@ -5363,21 +4880,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomStaticText.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -5399,18 +4905,12 @@ end;
 
 procedure TJvExCustomStaticText.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExCustomStaticText.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -5440,15 +4940,8 @@ begin
 end;
 
 procedure TJvExCustomStaticText.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -5534,9 +5027,9 @@ end;
  {$IFNDEF COMPILER6_UP}
 procedure TJvExStaticText.SetAutoSize(Value: Boolean);
 begin
-  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+  TOpenControl_SetAutoSize(Self, Value);
 end;
- {$ENDIF COMPILER6_UP}
+ {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 
 {$ENDIF VCL}
@@ -5551,7 +5044,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
  {$IF not declared(PatchedVCLX)}
 procedure TJvExStaticText.MouseEnter(Control: TControl);
 begin
@@ -5571,21 +5063,10 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExStaticText.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if not (csDestroying in ComponentState) then
-  begin
-    ControlState := ControlState + [csWidgetPainting];
-    try
-      TControlCanvas(Canvas).StartPaint;
-      try
-        QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        DoPaintBackground(Canvas, 0);
-        Paint;
-      finally
-        TControlCanvas(Canvas).StopPaint;
-      end;
-    finally
-      ControlState := ControlState - [csWidgetPainting];
-    end;
+  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
+  begin // returns an interface
+    DoPaintBackground(Canvas, 0);
+    Paint;
   end;
 end;
 {$ENDIF VisualCLX}
@@ -5607,18 +5088,12 @@ end;
 
 procedure TJvExStaticText.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
-  if Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanging(Self, Control, Inserting);
 end;
 
 procedure TJvExStaticText.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
-  if not Inserting then
-    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
-  else
-    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+  Control_ControlsListChanged(Self, Control, Inserting);
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
@@ -5648,15 +5123,8 @@ begin
 end;
 
 procedure TJvExStaticText.Paint;
-var
-  Event: QPaintEventH;
 begin
-  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
-  try
-    QObject_event(Handle, Event);
-  finally
-    QPaintEvent_destroy(Event);
-  end;
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
