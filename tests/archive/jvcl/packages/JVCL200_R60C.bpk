@@ -3,8 +3,8 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="jvcl200_R60C.bpl"/>
-    <OBJFILES value="..\lib6\jvcl200_R60C.obj ..\lib6\JvAddPrinter.obj ..\lib6\JvAlarms.obj 
+    <PROJECT value="JVCL200_R60C.bpl"/>
+    <OBJFILES value="..\lib6\JVCL200_R60C.obj ..\lib6\JvAddPrinter.obj ..\lib6\JvAlarms.obj 
       ..\lib6\JvAngleLabel.obj ..\lib6\JvAni.obj ..\lib6\JvAnimate.obj 
       ..\lib6\JvAnimTitle.obj ..\lib6\JvAppAnimatedIcon.obj 
       ..\lib6\JvAppearingLabel.obj ..\lib6\JvApplication.obj 
@@ -203,9 +203,9 @@
     <LINKER value="ilink32"/>
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
-    <MAINSOURCE value="jvcl200_R60C.cpp"/>
+    <MAINSOURCE value="JVCL200_R60C.cpp"/>
     <INCLUDEPATH value="..\source;&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;$(BCB)\include;$(BCB)\include\vcl;..\common"/>
-    <LIBPATH value="..\source;$(BCB)\Projects\Lib;..\lib6;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;&quot;V:\code library\source&quot;;D:\Jedi\jvcl\common;$(BCB)\Lib\Psdk"/>
+    <LIBPATH value="..\source;$(BCB)\Projects\Lib;..\lib6;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;&quot;V:\code library\source&quot;;..\common;$(BCB)\Lib\Psdk"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -229,7 +229,7 @@
   </LINKER>
   <FILELIST>
       <FILE FILENAME="jvcl200_R60C.res" FORMNAME="" UNITNAME="jvcl200_R60C.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="jvcl200_R60C.cpp" FORMNAME="" UNITNAME="jvcl200_R60C" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JVCL200_R60C.cpp" FORMNAME="" UNITNAME="jvcl200_R60C" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAddPrinter.pas" FORMNAME="" UNITNAME="JvAddPrinter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAlarms.pas" FORMNAME="" UNITNAME="JvAlarms" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -680,7 +680,7 @@ Special=0
 Private=0
 DLL=0
 Locale=2052
-CodePage=936
+CodePage=1252
 
 [Version Info Keys]
 CompanyName=
@@ -692,7 +692,6 @@ LegalTrademarks=
 OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
-Comments=
 
 [HistoryLists\hlIncludePath]
 Count=2
@@ -700,15 +699,16 @@ Item0=..\source;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB
 Item1=..\source;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=8
-Item0=..\source;$(BCB)\Projects\Lib;..\lib6;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source;D:\Jedi\jvcl\common;$(BCB)\Lib\Psdk
-Item1=..\source;$(BCB)\Projects\Lib;..\lib6;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source;D:\Jedi\jvcl\common
-Item2=$(BCB)\Projects\Lib;..\lib6;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source;D:\Jedi\jvcl\common;$(BCB)\Lib\PSDK
-Item3=$(BCB)\Projects\Lib;..\source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source;D:\Jedi\jvcl\common
-Item4=$(BCB)\Projects\Lib;..\source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source;V:\code library\dcu
-Item5=$(BCB)\Projects\Lib;..\source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source
-Item6=$(BCB)\Projects\Lib;..\source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib
-Item7=$(BCB)\Projects\Lib;..\source;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Count=9
+Item0=..\source;$(BCB)\Projects\Lib;..\lib6;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source;..\common;$(BCB)\Lib\Psdk
+Item1=..\source;$(BCB)\Projects\Lib;..\lib6;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source;D:\Jedi\jvcl\common;$(BCB)\Lib\Psdk
+Item2=..\source;$(BCB)\Projects\Lib;..\lib6;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source;D:\Jedi\jvcl\common
+Item3=$(BCB)\Projects\Lib;..\lib6;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source;D:\Jedi\jvcl\common;$(BCB)\Lib\PSDK
+Item4=$(BCB)\Projects\Lib;..\source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source;D:\Jedi\jvcl\common
+Item5=$(BCB)\Projects\Lib;..\source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source;V:\code library\dcu
+Item6=$(BCB)\Projects\Lib;..\source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\source
+Item7=$(BCB)\Projects\Lib;..\source;$(BCB)\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Item8=$(BCB)\Projects\Lib;..\source;C:\Program Files\Borland\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
