@@ -980,16 +980,16 @@ procedure TJvCustomComboBox.UpdateItemCount;
 var
   VL: IJvDataConsumerViewList;
   Cnt: Integer;
-  Empty: array [0..0] of Char;
+  EmptyChr: Char;
 begin
   if HandleAllocated and IsProviderSelected and
     Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
   begin
     Cnt := VL.Count - SendMessage(Handle, CB_GETCOUNT, 0, 0);
-    Empty[0] := #0;
+    EmptyChr := #0;
     while Cnt > 0 do
     begin
-      SendMessage(Handle, CB_ADDSTRING, 0, Integer(@Empty[0]));
+      SendMessage(Handle, CB_ADDSTRING, 0, LParam(@EmptyChr));
       Dec(Cnt);
     end;
     while Cnt < 0 do
