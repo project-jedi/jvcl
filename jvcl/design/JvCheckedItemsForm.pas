@@ -30,19 +30,11 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Controls, Forms, Menus, Graphics,
   StdCtrls, CheckLst, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QControls, QForms, QMenus, QGraphics,
-  QStdCtrls, QCheckLst, Types, QExtCtrls, ClxEditors,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors,
-  {$IFDEF VCL}
   VCLEditors,
-  {$ENDIF VCL}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -109,20 +101,10 @@ type
 
 implementation
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 uses
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   JvStringsForm, JvConsts, JvDsgnConsts, JvJVCLUtils, JvBoxProcs;
 
 const
