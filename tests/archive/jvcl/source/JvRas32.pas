@@ -319,7 +319,7 @@ begin
             FPhoneBook.Add(StrPas(RasEntryName[i].szEntryName));
     end;
   finally
-    PhoneBook.Endupdate;
+    FPhoneBook.Endupdate;
   end;
 end;
 
