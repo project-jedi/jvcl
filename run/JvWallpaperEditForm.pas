@@ -24,15 +24,20 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvWallpaperEditForm;
 
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, Buttons, StdCtrls, Mask,
-  JvToolEdit, JvComponent, JvSearchFiles, JvButton;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, Forms, Buttons, StdCtrls, Mask,
+  {$ELSE}
+  QGraphics, QControls, QForms, QButtons, QStdCtrls, QMask,
+  {$ENDIF}
+  JvToolEdit, JvComponent, JvSearchFiles, JvButton, JvQToolEdit;
 
 type
   TFoWallpaperChooser = class(TJvForm)
@@ -62,7 +67,12 @@ type
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 procedure TFoWallpaperChooser.FormCreate(Sender: TObject);
 begin

@@ -24,16 +24,23 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvPainterQBForm;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, Menus, ComCtrls,
-  JvDrawImage, JvComponent;
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls,
+  QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QComCtrls,
+  {$ENDIF}
+  JvDrawImage, JvComponent, QTypes;
 
 type
   TPainterQBForm = class(TJvForm)
@@ -57,8 +64,10 @@ type
     Shape3: TShape;
     procedure QBListClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    {$IFDEF VCL}
     procedure qbpresetsDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
+    {$ENDIF}
     procedure qbpresetsClick(Sender: TObject);
     procedure SetLabels;
     procedure AddBackdrop1Click(Sender: TObject);
@@ -73,6 +82,10 @@ type
     procedure greenradioClick(Sender: TObject);
     procedure blueradioClick(Sender: TObject);
     procedure QuickBack;
+    {$IFDEF VisualCLX}
+    procedure qbpresetsDrawItem(Sender: TObject; Index: Integer;
+      Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
+    {$ENDIF}
   private
     FPainterForm: TJvDrawImage;
   public
@@ -89,7 +102,12 @@ implementation
 uses
   JvConsts, JvResources;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 type
   TColorProc = function(OutLoop, InLoop: Integer): Integer;
@@ -406,8 +424,15 @@ begin
   SetLabels;
 end;
 
+
+{$IFDEF VisualCLX}
+procedure TPainterQBForm.qbpresetsDrawItem(Sender: TObject; Index: Integer;
+  Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
+{$ENDIF}
+{$IFDEF VCL}
 procedure TPainterQBForm.qbpresetsDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
+{$ENDIF}
 var
   S: string;
   P: Integer;
@@ -416,6 +441,9 @@ begin
   P := Pos('=', S);
   S := Copy(S, 1, P - 1);
   qbpresets.Canvas.TextRect(Rect, Rect.Left, Rect.Top, S);
+  {$IFDEF VisualCLX}
+  Handled := true;
+  {$ENDIF}
 end;
 
 procedure TPainterQBForm.qbpresetsClick(Sender: TObject);

@@ -24,14 +24,20 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvParserForm;
 
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Controls, Forms, StdCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QStdCtrls,
+  {$ENDIF}
   JvTypes, JvComponent;
 
 type
@@ -69,7 +75,11 @@ type
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ELSE}
+{$R *.xfm}
+{$ENDIF}
 
 procedure TFormParsers.Edit1Change(Sender: TObject);
 begin

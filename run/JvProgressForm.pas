@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-03-31
+Last Modified: 2004-01-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -27,15 +27,21 @@ Description:
 - This form is used by JvProgressDialog.pas
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvProgressForm;
 
 interface
 
 uses
-  Windows, SysUtils, Forms, Graphics, ExtCtrls, StdCtrls,
-  Controls, ComCtrls, Classes,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Forms, Graphics, ExtCtrls, StdCtrls,
+  Controls, ComCtrls,
+  {$ELSE}
+  QWindows, QForms, QGraphics, QExtCtrls, QStdCtrls,
+  QControls, QComCtrls, QTypes,
+  {$ENDIF}
   JvComponent;
 
 type
@@ -74,10 +80,17 @@ type
 
 implementation
 
+{$IFDEF VCL
 uses
   Consts;
 
 {$R *.dfm}
+{$ELSE}
+uses
+  QConsts;
+
+{$R *.xfm}
+{$ENDIF}
 
 class function TfrmProgress.Execute(Frm: TfrmProgress; const ACaption, ALabel: string;
   AImage: TPicture; ATransparent: Boolean; AMin, AMax, APosition, AInterval: Integer;
@@ -159,6 +172,38 @@ begin
   end;
 end;
 
+{$IFDEF VisualCLX}
+procedure TfrmProgress.AddCaption;
+var
+  cw, ch: integer;
+begin
+  if BorderStyle <> fbsToolWindow then
+  begin
+    cw := ClientWidth;
+    ch := ClientHeight;
+    BorderStyle := fbsToolWindow;
+    Height := Height + ch - ClientHeight;
+    Width := Width + cw - ClientWidth;
+  end
+end;
+
+procedure TfrmProgress.RemoveCaption;
+var
+  cw, ch: integer;
+begin
+  if BorderStyle <> fbsNone then
+  begin
+    cw := ClientWidth;
+    ch := ClientHeight;
+    BorderStyle := fbsNone;
+    Height := Height + ch - ClientHeight;
+    Width := Width + cw - ClientWidth;
+  end
+end;
+
+{$ENDIF}
+
+{$IFDEF VCL}
 procedure TfrmProgress.AddCaption;
 var
   WindowLong: Cardinal;
@@ -188,6 +233,7 @@ begin
     Update;
   end;
 end;
+{$ENDIF}
 
 function TfrmProgress.ShowModal: Integer;
 begin

@@ -24,15 +24,22 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvSpellerForm;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QExtCtrls,
+  {$ENDIF}
   JvComponent;
 
 type
@@ -94,7 +101,12 @@ implementation
 uses
   JvConsts, JvResources, JvTypes;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 function Q_PosStr(const FindString, SourceString: string; StartPos: Integer): Integer;
 asm

@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2004-01-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -24,15 +24,20 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvQuickPreviewForm;
 
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls,
-  Forms, Dialogs, Buttons, ExtCtrls, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Controls, Forms, Dialogs, Buttons, ExtCtrls, StdCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QControls, QForms, QDialogs, QButtons, QExtCtrls, QStdCtrls,
+  {$ENDIF}
   JvDrawImage, JvComponent;
 
 type
@@ -50,7 +55,12 @@ type
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF}
 
 procedure TQuickPreviewForm.BtnUseClick(Sender: TObject);
 
