@@ -39,16 +39,24 @@ unit JvOutlookBar;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls,
-  Buttons, Graphics, ImgList, Forms, StdCtrls, ExtCtrls,
-  JvThemes,
+  SysUtils, Classes,
+
+{$IFDEF VCL}
+  Windows, Messages, Controls, Buttons, Graphics,
+  ImgList, Forms, StdCtrls, ExtCtrls,
 {$IFDEF JVCLThemesEnabled}
   UxTheme,
 {$IFNDEF COMPILER7_UP}
   TmSchema,
 {$ENDIF COMPILER7_UP}
 {$ENDIF JVCLThemesEnabled}
-  JvComponent;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+  Types, QControls, QButtons, QGraphics,
+  QImgList, QForms, QStdCtrls, QExtCtrls, QWindows,
+{$ENDIF VisualCLX}
+  JvThemes, JvComponent, JvExButtons;
 
 const
   CM_CAPTION_EDITING = CM_BASE + 756;
@@ -274,7 +282,7 @@ type
     function DoPageChanging(Index: Integer): Boolean; virtual;
     procedure DoPageChange(Index: Integer); virtual;
     procedure DoButtonClick(Index: Integer); virtual;
-    procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); override;
+    procedure DoContextPopup({$IFDEF VisualCLX}const {$ENDIF}MousePos: TPoint; var Handled: Boolean); override;
     function DoDrawBackGround: boolean;
     function DoDrawPage(ARect: TRect; Index: integer): boolean;
     function DoDrawPageButton(ARect: TRect; Index: integer; Down: boolean): boolean;
@@ -336,14 +344,16 @@ type
     property OnEditPage;
     property Action;
     property Anchors;
+    {$IFDEF VCL}
     property BiDiMode;
     property ParentBiDiMode;
+    property DragCursor;
+    property DragKind;
+    {$ENDIF VCL}
     property BorderStyle;
     property Color;
     property Constraints;
     property Cursor;
-    property DragCursor;
-    property DragKind;
     property DragMode;
     property Font;
     property Height;
@@ -373,12 +383,12 @@ implementation
 uses
   Math;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 {$R ..\Resources\JvOutlookBar.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvOutlookBar.res}
-{$ENDIF LINUX}
+{$ENDIF VisualCLX}
 
 const
   cButtonLeftOffset = 4;
@@ -392,7 +402,9 @@ type
   TJvOutlookBarEdit = class(TCustomEdit)
   private
     FCanvas: TControlCanvas;
+    {$IFDEF VCL}
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
+    {$ENDIF VCL}
     procedure EditAccept;
     procedure EditCancel;
     function GetCanvas: TCanvas;
@@ -514,6 +526,7 @@ begin
   SetFocus;
 end;
 
+{$IFDEF VCL}
 procedure TJvOutlookBarEdit.WMNCPaint(var Msg: TMessage);
 //var
 //  DC: HDC;
@@ -554,17 +567,17 @@ begin
   end;
   *)
 end;
-
+{$ENDIF VCL}
 //=== TJvRepeatButton ========================================================
 
 type
   // auto-repeating button using a timer (stolen from Borland's Spin.pas sample component)
-  TJvRepeatButton = class(TSpeedButton)
+  TJvRepeatButton = class(TJvExSpeedButton)
   private
     FRepeatTimer: TTimer;
     procedure TimerExpired(Sender: TObject);
   protected
-    procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
+    procedure VisibleChanged; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -575,7 +588,7 @@ type
 
 { TJvRepeatButton }
 
-procedure TJvRepeatButton.CMVisibleChanged(var Msg: TMessage);
+procedure TJvRepeatButton.VisibleChanged;
 begin
   inherited;
   if not Visible then
@@ -1225,6 +1238,7 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomOutlookBar.CreateParams(var Params: TCreateParams);
 const
   BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
@@ -1240,6 +1254,7 @@ begin
     end;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomOutlookBar.DoChangeLinkChange(Sender: TObject);
 begin
@@ -2166,7 +2181,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOutlookBar.DoContextPopup(MousePos: TPoint;
+procedure TJvCustomOutlookBar.DoContextPopup({$IFDEF VisualCLX}const {$ENDIF}MousePos: TPoint;
   var Handled: Boolean);
 var
   P: TPersistent;
