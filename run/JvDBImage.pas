@@ -32,17 +32,17 @@ Known Issues:
 Documentation:
 *************
 
-0. WHAT IS:
+WHAT IT IS:
    This component is a TDBImage replacement that supports other image
    formats than bitmap, a limitation of TDBImage since D1.
 
-1. IMAGE FORMATS:
+IMAGE FORMATS:
    The implementation is simple: Just register image signatures with
    RegisterGraphicSignature procedure and the component takes care
    of the correct instantiation of the TGraphic object. The signatures
-   register at unit's initialization are: BMP, WMF, EMF, ICO, JPG and,
-   depending on USE_JV_GIF define, GIF. If you got some other image
-   library (such TIFF or PNG), just register the signature:
+   register at unit's initialization are: BMP, WMF, EMF, ICO, JPG.
+   If you got some other image library (such as GIF, PCX, TIFF, ANI or PNG),
+   just register the signature:
 
      RegisterGraphicSignature(<string value>, <offset>, <class>)
 
@@ -79,25 +79,22 @@ Documentation:
     Stream: TMemoryStream;
     var GraphicClass: TGraphicClass)
 
-   I send the memory stream containing the blob data to allowing the user
-   inspect the contents and figure out which graphic class is.
+   The memory stream containing the blob data is sent in Stream to allow the user
+   to inspect the contents and figure out which graphic class is.
 
    If the component can't find the graphic class and the user doesn't provide it
-   in the OnGetGraphicClass event no graphic object is created then nothing is
-   displayed.
+   in the OnGetGraphicClass event no graphic object is created, the default
+   behavior is used (Picture.Assign(Field)). This might raise an exception
+   ('Bitmap image is not valid').
 
    The graphic class to be used must implement LoadFromStream and SaveToStream
    methods in order to work properly.
 
-2. PROPORTIONAL PROPERTY:
-   The original component has Center and Stretch properties, but lacks the
-   hability to show proportional scaled picture.
-
-3. SUPPORT FOR TDBCtrlGrid:
+SUPPORT FOR TDBCtrlGrid:
    You can safely put an TJvDBImage in TDBCtrlGrid.
 }
 
-{.$DEFINE USE_JV_GIF} // For Testing
+
 unit JvDBImage;
 
 interface
@@ -170,11 +167,6 @@ uses
   Contnrs, // (p3) NB! This might not be available in all SKU's
   DBConsts,
   jpeg,
-{$IFDEF USE_JV_GIF}
-//  JvGIF,
-{$ENDIF}
-//  JvAni,
-//  JvPCX,
   SysUtils;
 
 // Code to manage graphic's signatures. Should be public?
@@ -660,14 +652,17 @@ end;
 initialization
   GraphicSignatures := TObjectList.Create(True);
   RegisterGraphicSignature('BM', 0, TBitMap);
-  RegisterGraphicSignature([0, 0], 0, TIcon);
+  RegisterGraphicSignature([0, 0, 1, 0], 0, TIcon);
   RegisterGraphicSignature([$D7, $CD], 0, TMetaFile); // WMF
   RegisterGraphicSignature([0, 1], 0, TMetaFile); // EMF
   RegisterGraphicSignature('JFIF', 6, TJPEGImage);
   // NB! Registering these will add a requirement on having the JvMM package installed
-  // Let users install these manually
+  // Let users register these manually
 //  RegisterGraphicSignature([$0A], 0, TJvPcx);
-//  RegisterGraphicSignature('RIFF', 0, TJvAni);
+//  RegisterGraphicSignature('ACON', 8, TJvAni);
+  // JvCursorImage cannot be registered because it doesn't support
+  // LoadFromStream/SaveToStream but here's the signature for future reference:
+//  RegisterGraphicSignature([0, 0, 2, 0], 0, TJvCursorImage);
 {$IFDEF USE_JV_GIF}
 //  RegisterGraphicSignature('GIF', 0, TJvGIFImage);
 {$ENDIF}

@@ -6,25 +6,26 @@ interface
 uses
   Windows, Messages, SysUtils, {$IFDEF COMPILER6_UP}Variants, {$ENDIF} Classes, Graphics, Controls, Forms,
   Dialogs, JvDBImage, ExtCtrls, DBCtrls, Grids, DBGrids, DB, DBClient,
-  jpeg, JvGIF, JvPCX, JvAni, ExtDlgs, StdCtrls;
+  jpeg, JvGIF, JvPCX, JvAni, ExtDlgs, StdCtrls, JvExDBGrids, JvDBGrid;
 
 type
   TForm1 = class(TForm)
     DataSource1: TDataSource;
     ClientDataSet1: TClientDataSet;
-    DBGrid1: TDBGrid;
+    DBGrid1: TJvDBGrid;
     ClientDataSet1Filename: TStringField;
     ClientDataSet1Image: TGraphicField;
     btnAdd: TButton;
     OpenPictureDialog1: TOpenPictureDialog;
     ClientDataSet1FileType: TStringField;
-    ScrollBox1: TScrollBox;
     btnClear: TButton;
     chkTransparent: TCheckBox;
     chkStretch: TCheckBox;
     chkProportional: TCheckBox;
     chkAutoDisplay: TCheckBox;
     chkAutoSize: TCheckBox;
+    JvDBImage1: TJvDBImage;
+    ScrollBox1:TScrollBox;
     procedure FormCreate(Sender: TObject);
     procedure btnAddClick(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
@@ -39,7 +40,6 @@ type
     { Private declarations }
   public
     { Public declarations }
-    JDB:TJvDBImage;
   end;
 
 var
@@ -53,27 +53,17 @@ procedure TForm1.FormCreate(Sender: TObject);
 begin
   ClientDataSet1.Open;
   ClientDataSet1.LogChanges := False;
-  JDB := TJvDBImage.Create(Self);
-  with JDB do
-  begin
-    Parent := ScrollBox1;
-    Align := alClient;
-    DataSource := DataSource1;
-    Proportional := True;
-    DataField := 'Image';
-
-    chkProportional.Checked := Proportional;
-    chkStretch.Checked := Stretch;
-    chkTransparent.Checked := Transparent;
-    chkAutoDisplay.Checked := AutoDisplay;
-    chkAutoSize.Checked := AutoSize;
-  end;
+  chkProportional.Checked := JvDBImage1.Proportional;
+  chkStretch.Checked := JvDBImage1.Stretch;
+  chkTransparent.Checked := JvDBImage1.Transparent;
+  chkAutoDisplay.Checked := JvDBImage1.AutoDisplay;
+  chkAutoSize.Checked := JvDBImage1.AutoSize;
 end;
 
 procedure TForm1.AddImage(const Filename:string);
 begin
   ClientDataSet1.Append;
-  JDB.Picture.LoadFromFile(Filename);
+  JvDBImage1.Picture.LoadFromFile(Filename);
   ClientDataSet1.FieldByName('Filename').AsString := ExtractFileName(Filename);
   ClientDataSet1.FieldByName('FileType').AsString := AnsiUpperCase(Copy(ExtractFileExt(Filename), 2, MaxInt));
   ClientDataSet1.Post;
@@ -110,37 +100,38 @@ end;
 
 procedure TForm1.chkTransparentClick(Sender: TObject);
 begin
-  JDB.Transparent := chkTransparent.Checked;
+  JvDBImage1.Transparent := chkTransparent.Checked;
 end;
 
 procedure TForm1.chkStretchClick(Sender: TObject);
 begin
-  JDB.Stretch := chkStretch.Checked;
+  JvDBImage1.Stretch := chkStretch.Checked;
 end;
 
 procedure TForm1.chkProportionalClick(Sender: TObject);
 begin
-  JDB.Proportional := chkProportional.Checked;
+  JvDBImage1.Proportional := chkProportional.Checked;
 end;
 
 procedure TForm1.chkAutoDisplayClick(Sender: TObject);
 begin
-  JDB.AutoDisplay := chkAutoDisplay.Checked;
+  JvDBImage1.AutoDisplay := chkAutoDisplay.Checked;
 end;
 
 procedure TForm1.chkAutoSizeClick(Sender: TObject);
 begin
-  JDB.AutoSize := chkAutoSize.Checked;
-  if not JDB.AutoSize then
-    JDB.Align := alClient
+  JvDBImage1.AutoSize := chkAutoSize.Checked;
+  if not JvDBImage1.AutoSize then
+    JvDBImage1.Align := alClient
   else
-    JDB.Align := alNone;
+    JvDBImage1.Align := alNone;
 end;
 
 initialization
-  // we register the JVCL image support components so we can store them in the database:
+  // we register the JVCL image support components so
+  // we can store them in the database:
   RegisterGraphicSignature([$0A], 0, TJvPcx);
-  RegisterGraphicSignature('RIFF', 0, TJvAni);
+  RegisterGraphicSignature('ACON', 8, TJvAni);
   RegisterGraphicSignature('GIF', 0, TJvGIFImage);
 
 end.
