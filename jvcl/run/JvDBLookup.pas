@@ -2342,6 +2342,7 @@ begin
       Style := Style or WS_BORDER;
 end;
 
+{ (ahuser) not used since the line where it was used is now a comment
 function ParentFormVisible(AControl: TControl): Boolean;
 var
   Form: TCustomForm;
@@ -2349,6 +2350,7 @@ begin
   Form := GetParentForm(AControl);
   Result := Assigned(Form) and Form.Visible;
 end;
+}
 
 procedure TJvDBLookupCombo.CloseUp(Accept: Boolean);
 var
