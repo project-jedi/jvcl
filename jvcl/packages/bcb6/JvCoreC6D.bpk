@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="JvCoreC6D.bpl"/>
+    <OBJFILES value="JvCoreC6D.obj ..\..\design\JvStringsForm.obj 
+      ..\..\design\JvBaseDlgEditor.obj ..\..\design\JvBaseDsgnForm.obj 
+      ..\..\design\JvBaseDsgnFrame.obj ..\..\design\JvBaseDsgnToolbarFrame.obj 
+      ..\..\design\JvColorEditor.obj ..\..\design\JvCoreReg.obj 
+      ..\..\design\JvDataConsumerContextSelectForm.obj 
+      ..\..\design\JvDataConsumerItemSelectForm.obj 
+      ..\..\design\JvDataContextManagerForm.obj 
+      ..\..\design\JvDataProviderDesignerForm.obj 
+      ..\..\design\JvDataProviderEditors.obj 
+      ..\..\design\JvDataProviderItemDesign.obj ..\..\design\JvDateTimeForm.obj 
+      ..\..\design\JvDesignerUtils.obj ..\..\design\JvDsgnConsts.obj 
+      ..\..\design\JvDsgnEditors.obj ..\..\design\JvIDEZoom.obj 
+      ..\..\design\JvJVCLAboutEditor.obj ..\..\design\JvPaintBoxEditor.obj 
+      ..\..\design\JvProviderToolbarFrame.obj 
+      ..\..\design\JvProviderTreeListFrame.obj 
+      ..\..\design\JvStdToolbarDsgnFrame.obj"/>
+    <RESFILES value="JvCoreC6D.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) ..\..\design\JvStringsForm.dfm ..\..\design\JvBaseDsgnForm.dfm 
+      ..\..\design\JvBaseDsgnFrame.dfm ..\..\design\JvBaseDsgnToolbarFrame.dfm 
+      ..\..\design\JvDataConsumerContextSelectForm.dfm 
+      ..\..\design\JvDataConsumerItemSelectForm.dfm 
+      ..\..\design\JvDataProviderDesignerForm.dfm 
+      ..\..\design\JvDateTimeForm.dfm ..\..\design\JvProviderTreeListFrame.dfm 
+      ..\..\design\JvStdToolbarDsgnFrame.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value="bcb2kaxserver.lib indy.lib dbxcds.lib dclocx.lib soaprtl.lib bcbie.lib 
+      nmfast.lib dbexpress.lib inetdbxpress.lib inetdbbde.lib bcbsmp.lib 
+      dsnapcon.lib dsnapcrba.lib visualdbclx.lib teeqr.lib dss.lib tee.lib 
+      teedb.lib teeui.lib qrpt.lib bdecds.lib cds.lib ibxpress.lib vcldbx.lib 
+      bdertl.lib adortl.lib vcldb.lib"/>
+    <SPARELIBS value="vcldb.lib adortl.lib bdertl.lib vcldbx.lib ibxpress.lib cds.lib bdecds.lib 
+      qrpt.lib teeui.lib teedb.lib tee.lib dss.lib teeqr.lib visualdbclx.lib 
+      dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib inetdbxpress.lib 
+      dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib dbxcds.lib 
+      indy.lib bcb2kaxserver.lib rtl.lib"/>
+    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi vclx.bpi JvCoreC6R.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;..\..\design"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="JvCoreC6D.cpp"/>
+    <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib"/>
+    <LIBPATH value="..\..\design;..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\..\design -I..\..\run -I..\..\common -I$(BCB)\include 
+      -I$(BCB)\include\vcl -I$(BCB)\Projects\lib -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+      -tWM"/>
+    <PFLAGS value="-$YD -$W -$O- -$A8 -v -JPHNE -M -LUDesignIde"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-D&quot;JVCL Core Components&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi -v"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="JvCoreC6D.res" FORMNAME="" UNITNAME="JvCoreC6D.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvCoreC6D.cpp" FORMNAME="" UNITNAME="JvCoreC6D" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvStringsForm.pas" FORMNAME="JvStrEditDlg" UNITNAME="JvStringsForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvBaseDlgEditor.pas" FORMNAME="" UNITNAME="JvBaseDlgEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvBaseDsgnForm.pas" FORMNAME="JvBaseDesign" UNITNAME="JvBaseDsgnForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvBaseDsgnFrame.pas" FORMNAME="fmeJvBaseDesign" UNITNAME="JvBaseDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvBaseDsgnToolbarFrame.pas" FORMNAME="fmeJvBaseToolbarDesign" UNITNAME="JvBaseDsgnToolbarFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvColorEditor.pas" FORMNAME="" UNITNAME="JvColorEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvCoreReg.pas" FORMNAME="" UNITNAME="JvCoreReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDataConsumerContextSelectForm.pas" FORMNAME="frmDataConsumerContextSelect" UNITNAME="JvDataConsumerContextSelectForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDataConsumerItemSelectForm.pas" FORMNAME="frmJvDataConsumerItemSelect" UNITNAME="JvDataConsumerItemSelectForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDataContextManagerForm.pas" FORMNAME="" UNITNAME="JvDataContextManagerForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDataProviderDesignerForm.pas" FORMNAME="frmDataProviderDesigner" UNITNAME="JvDataProviderDesignerForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDataProviderEditors.pas" FORMNAME="" UNITNAME="JvDataProviderEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDataProviderItemDesign.pas" FORMNAME="" UNITNAME="JvDataProviderItemDesign" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDateTimeForm.pas" FORMNAME="frmSelectDateTimeDlg" UNITNAME="JvDateTimeForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDesignerUtils.pas" FORMNAME="" UNITNAME="JvDesignerUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDsgnConsts.pas" FORMNAME="" UNITNAME="JvDsgnConsts" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDsgnEditors.pas" FORMNAME="" UNITNAME="JvDsgnEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvIDEZoom.pas" FORMNAME="" UNITNAME="JvIDEZoom" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvJVCLAboutEditor.pas" FORMNAME="" UNITNAME="JvJVCLAboutEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvPaintBoxEditor.pas" FORMNAME="" UNITNAME="JvPaintBoxEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvProviderToolbarFrame.pas" FORMNAME="" UNITNAME="JvProviderToolbarFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvProviderTreeListFrame.pas" FORMNAME="fmeJvProviderTreeList" UNITNAME="JvProviderTreeListFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvStdToolbarDsgnFrame.pas" FORMNAME="fmeJvStdToolbarDesign" UNITNAME="JvStdToolbarDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="c:\prog\cbuilder6\Projects\Lib\JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1036
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=3
+Item0=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib
+Item1=..\..\design;..\..\run;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib
+Item2=..\..\design;C:\Prog\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=3
+Item0=..\..\design;..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib
+Item1=..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib
+Item2=c:\prog\cbuilder6\lib\debug;..\..\design;C:\Prog\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
+  </IDEOPTIONS>
+</PROJECT>
