@@ -34,14 +34,9 @@ unit JvQPictureEditors;
 interface
 
 uses
-  Classes,
+  Windows, Messages, Classes, Graphics, Forms, Controls, Dialogs, Menus,
   
-  
-  Types, QGraphics, QForms, QControls, QDialogs, QMenus,
-  
-  
-  RTLConsts, DesignIntf, DesignEditors,
-  
+  RTLConsts, DesignIntf, DesignEditors, VCLEditors,
   
   JvQPictureEditForm;
 
@@ -94,11 +89,7 @@ function EditGraphic(Graphic: TGraphic; AClass: TGraphicClass;
 implementation
 
 uses
-  SysUtils, TypInfo, LibHelp,
-  
-  
-  QConsts,
-  
+  SysUtils, TypInfo, LibHelp, Consts,
   JvQTypes, JvQJVCLUtils;
 
 //=== Utility routines =======================================================
@@ -193,7 +184,7 @@ begin
         (PictureEditor.Picture.Graphic is PictureEditor.GraphicClass) then
         SetOrdValue(Longint(PictureEditor.Picture.Graphic))
       else
-        raise EJVCLException.Create(SInvalidPropertyValue);
+        raise EJVCLException.CreateRes(@SInvalidPropertyValue);
   finally
     PictureEditor.Free;
   end;

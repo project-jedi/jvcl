@@ -48,7 +48,8 @@ uses
   JvQBaseDsgnForm, JvQProviderTreeListFrame, JvQComponent,
   JvQDataProvider, JvQDataProviderIntf, JvQContextProvider,
   JvQProviderTreeListDsgnFrame, JvQColorProvider, JvQDsgnTypes,
-  JvQColorProviderDsgnTreeFrame;
+  JvQColorProviderDsgnTreeFrame, JvColorProvider, JvComponent,
+  JvDataProvider, JvContextProvider;
 
 type
   TfrmJvColorProviderDesigner = class(TJvBaseDesign)

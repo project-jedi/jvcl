@@ -44,7 +44,6 @@ implementation
 {$R ../Resources/JvHMIReg.dcr}
 {$ENDIF LINUX}
 
-
 uses
   Classes,
   
@@ -52,14 +51,17 @@ uses
   
   ToolsAPI,
   JvQDsgnConsts,
-  
-  JvQLED, JvQDialButton;
+  JvQSegmentedLEDDisplay, JvQLED, JvQDialButton,
+  JvQSegmentedLEDDisplayEditors, JvQSegmentedLEDDisplayMapperFrame;
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteHMIComponents, [
-   TJvLED, TJvDialButton]);
-  
+  RegisterComponents(RsPaletteHMIComponents, [TJvSegmentedLEDDisplay, TJvLED,
+    TJvDialButton]);
+  RegisterPropertyEditor(TypeInfo(TJvSegmentedLEDDigitClassName), TPersistent, '', TJvSegmentedLEDDigitClassProperty);
+  RegisterPropertyEditor(TypeInfo(TUnlitColor), TPersistent, '', TUnlitColorProperty);
+  RegisterComponentEditor(TJvCustomSegmentedLEDDisplay, TJvSegmentedLEDDisplayEditor);
+  RegisterCustomModule(TfmeJvSegmentedLEDDisplayMapper, TCustomModule);
 end;
 
 end.

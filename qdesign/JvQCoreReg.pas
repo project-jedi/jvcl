@@ -49,15 +49,15 @@ uses
   
   JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVQCLVer, JvQComponent,
   JvQActions, JvQActnResForm, JvQJVCLAboutForm, JvQDsgnEditors, JvQIDEZoom,
-  JvQJVCLAboutEditor, JvQBaseDlg, JvQBaseDlgEditor, JvQColorEditor, JvQPaintBoxEditor,
+  JvQJVCLAboutEditor, JvQBaseDlg, JvQBaseDlgEditor, JvQPaintBoxEditor,
   JvQAppIniStorage,
   {$IFDEF MSWINDOWS}
   JvQAppRegistryStorage, 
   {$ENDIF MSWINDOWS}
   JvQContextProvider,
-  JvQColorProviderEditors, JvQDataProviderEditors, JvQDataProvider,
-  JvQDataProviderIntf, JvQColorProvider, 
-  
+  {JvQColorProviderEditors,} JvQDataProviderEditors, JvQDataProvider,
+  JvQDataProviderIntf, JvQColorProvider,
+
   JvQAppStorage, JvQAppStorageSelectList;
 
 {$IFDEF MSWINDOWS}
@@ -71,15 +71,13 @@ procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
-  
-  GroupDescendentsWith(TJvComponent, TControl);
-  
 
-  RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent]);
-  RegisterComponents(RsPaletteNonVisual, [TJvContextProvider,
-    TJvColorProvider, TJvColorMappingProvider
-    
-    ]);
+  GroupDescendentsWith(TJvComponent, TControl);
+
+
+  RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
+
+    TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]);
   {$IFDEF MSWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
   {$ENDIF MSWINDOWS}
@@ -87,20 +85,20 @@ begin
     TJvAppIniFileStorage, TJvAppStorageSelectList]);
 
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil,
-  'AboutJVCL' + 'X' , TJVCLAboutDialogProperty);
+  'AboutJVCL' + 'X', TJVCLAboutDialogProperty);
 
   // The TJvPersistent class needs an editor for D5 and BCB5, but for
   // all other compilers, it doesn't need anything as it is declared as
   // a SubComponent. However, we want to hide the Name and Tag property
   // in this case, thus the registration of 'nil' property editors
-  
+
   RegisterPropertyEditor(TypeInfo(TComponentName), TJvPersistent, 'Name', nil);
   RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil);
-  
+
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
-  
+
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
@@ -122,25 +120,25 @@ begin
   RegisterPropertyEditor(TypeInfo(Currency), BaseClass, '', TJvFloatProperty);
 
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
-  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
+//  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
 
-  
+
 
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
   // DataProvider related editors
-  RegisterPropertyEditor(TypeInfo(TJvColorProviderMapping), TPersistent, '', TJvColorProviderMappingProperty);
+//  RegisterPropertyEditor(TypeInfo(TJvColorProviderMapping), TPersistent, '', TJvColorProviderMappingProperty);
   RegisterPropertyEditor(TypeInfo(TJvDataConsumer), TPersistent, '', TJvDataConsumerProperty);
   RegisterPropertyEditor(TypeInfo(TJvDataItemID), TPersistent, '', TJvDataProviderItemIDProperty);
   RegisterPropertyEditor(TypeInfo(TJvDataContextID), TPersistent, '', TJvDataConsumerContextProperty);
   RegisterPropertyEditor(TypeInfo(TJvDataProviderTree), TComponent, '', TJvDataProviderTreeProperty);
   RegisterPropertyEditor(TypeInfo(TComponent), TJvDataConsumerClientNotifyItem, '', TJvConsumerNotifyComponentProperty);
-  RegisterPropertyEditor(TypeInfo(TJvColorProviderAddColorStyle), nil, '', TJvColorProviderAddColorStyleEditor);
+//  RegisterPropertyEditor(TypeInfo(TJvColorProviderAddColorStyle), nil, '', TJvColorProviderAddColorStyleEditor);
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
-  RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
-  
+//  RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
+
   RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS} TJvSendMailAction, {$ENDIF} TJvWebAction], TJvStandardActions);
   RegisterZoom;
 end;

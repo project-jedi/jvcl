@@ -44,16 +44,13 @@ uses
   RTLConsts, DesignIntf, DesignEditors,
   
   
-  ClxEditors, JvQDsgnEditors,
+  ClxEditors,
   
   
   JvQConsts, JvQJVCLUtils;
 
 type
-  
-  
-  TJvColorProperty = class(TJvQColorProperty)
-  
+  TJvColorProperty = class(TColorProperty)
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
