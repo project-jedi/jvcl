@@ -56,6 +56,10 @@ type
     procedure SetHotTrack(const Value: Boolean);
     function GetTabStop: Boolean;
     procedure SetTabStop(const Value: Boolean);
+    function GetColor: TColor;
+    procedure SetColor(const Value: TColor);
+    function GetFont: TFont;
+    procedure SetFont(const Value: TFont);
   protected
     procedure DoUpClick(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -68,6 +72,8 @@ type
     property Enabled;
     property TabOrder;
     property Anchors;
+    property Color:TColor read GetColor write SetColor;
+    property Font:TFont read GetFont write SetFont;
     property Max:Integer read GetMax write SetMax default 100;
     property Min:Integer read GetMin write SetMin default 0;
     property Value:Integer read GetPosition write SetPosition default 0;
@@ -92,7 +98,7 @@ begin
   BorderStyle := bsSingle;
   BevelInner := bvNone;
   BevelOuter := bvNone;
-  Color := clBtnFace;
+  inherited Color := clBtnFace;
 
   FEdit := TJvEdit.Create(self);
   FEdit.Parent := self;
@@ -150,6 +156,16 @@ begin
   result := FEdit.Alignment;
 end;
 {**************************************************************}
+function TJvSpinEdit.GetColor: TColor;
+begin
+  result := FEdit.Color;
+end;
+{**************************************************************}
+function TJvSpinEdit.GetFont: TFont;
+begin
+  result := FEdit.Font;
+end;
+{**************************************************************}
 function TJvSpinEdit.GetHotTrack: Boolean;
 begin
   result := FUpDown.HotTrack;
@@ -190,11 +206,21 @@ begin
   FEdit.Alignment := Value;
 end;
 {**************************************************************}
+procedure TJvSpinEdit.SetColor(const Value: TColor);
+begin
+  FEdit.Color := Value;
+end;
+{**************************************************************}
 procedure TJvSpinEdit.SetEnabled(Value: Boolean);
 begin
   inherited;
   FEdit.Enabled := Value;
   FUpDown.Enabled := Value;
+end;
+{**************************************************************}
+procedure TJvSpinEdit.SetFont(const Value: TFont);
+begin
+  FEdit.Font.Assign(Value);
 end;
 {**************************************************************}
 procedure TJvSpinEdit.SetHotTrack(const Value: Boolean);
