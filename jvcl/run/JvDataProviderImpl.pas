@@ -1124,6 +1124,22 @@ type
     property Component: TComponent read GetComponent write SetComponent;
   end;
 
+  { TStrings descendant that will use the specified consumer's view list to retrieve the individual
+    items.  }
+  TJvConsumerStrings = class(TStrings)
+  private
+    FConsumer: TJvDataConsumer;
+  protected
+    function Get(Index: Integer): string; override;
+    function GetCount: Integer; override;
+    property Consumer: TJvDataConsumer read FConsumer;
+  public
+    constructor Create(AConsumer: TJvDataConsumer);
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    procedure Insert(Index: Integer; const S: string); override;
+  end;
+
 // Helper routines
 { Locate nearest IJvDataItems* implementation for a specific item. }
 function DP_FindItemsIntf(AItem: IJvDataItem; IID: TGUID; out Obj): Boolean;
@@ -5263,6 +5279,65 @@ begin
   if Notifier <> nil then
     Notifier.LinkRemoved(List.Server);
   inherited Destroy;
+end;
+
+//===TJvConsumerStrings=============================================================================
+
+function TJvConsumerStrings.Get(Index: Integer): string;
+var
+  VL: IJvDataConsumerViewList;
+  ItemText: IJvDataItemText;
+begin
+  if Index < 0 then
+    Error(SListIndexError, Index);
+  Result := '';
+  Consumer.Enter;
+  try
+    if Supports(Consumer as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+    begin
+      if Index >= VL.Count then
+        Error(SListIndexError, Index);
+      if Supports(VL.Item(Index), IJvDataItemText, ItemText) then
+        Result := ItemText.Caption;
+    end;
+  finally
+    Consumer.Leave;
+  end;
+end;
+
+function TJvConsumerStrings.GetCount: Integer;
+var
+  VL: IJvDataConsumerViewList;
+begin
+  Result := 0;
+  Consumer.Enter;
+  try
+    if Supports(Consumer as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+      Result := VL.Count;
+  finally
+    Consumer.Leave;
+  end;
+end;
+
+constructor TJvConsumerStrings.Create(AConsumer: TJvDataConsumer);
+begin
+  inherited Create;
+  FConsumer := AConsumer;
+end;
+
+procedure TJvConsumerStrings.Clear;
+begin
+  // Do not allow the consumer view list to be modified this way.
+end;
+
+procedure TJvConsumerStrings.Delete(Index: Integer);
+begin
+  // Do not allow the consumer view list to be modified this way.
+end;
+
+procedure TJvConsumerStrings.Insert(Index: Integer; const S: string);
+begin
+  // Do not allow the consumer view list to be modified this way.
 end;
 
 initialization
