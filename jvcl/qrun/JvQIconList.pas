@@ -34,10 +34,10 @@ unit JvQIconList;
 interface
 
 uses
-  Windows, SysUtils,
+  SysUtils,
   
   
-  QGraphics,
+  Types, QGraphics,
   
   Classes;
 

@@ -64,7 +64,6 @@ type
     FProtectPassword: Boolean;
     FLastNotifiedText: String;
     procedure SetHotTrack(Value: Boolean);
-    function GetText: TCaption;
     
   protected
     procedure UpdateEdit;
@@ -76,6 +75,7 @@ type
     procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
     procedure DoClipboardPaste; override;
     
+    function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
     procedure Paint; override;
     
@@ -365,7 +365,10 @@ begin
   Tmp := ProtectPassword;
   try
     ProtectPassword := False;
-    Result := inherited Text;
+    
+    
+    Result := inherited GetText;
+    
   finally
     ProtectPassword := Tmp;
   end;

@@ -1765,13 +1765,13 @@ function TMetaDataBase.FindTableName(const TableName: string): TMetaTable;
 var
   I: Integer;
 begin
+  Result := nil;
   for I := 0 to TablesCount - 1 do
     if Tables[I].Name = TableName then
     begin
       Result := Tables[I];
       Exit;
     end;
-  raise Exception.CreateFmt(EUIB_TABLESTRNOTFOUND, [TableName]);
 end;
 
 function TMetaDataBase.FindTableIndex(const TableName: string): Integer;

@@ -605,9 +605,15 @@ end;
 procedure TJvCustomRollOut.RedrawControl(DrawAll: Boolean);
 begin
   if DrawAll then
-    Invalidate
+  begin
+    Canvas.Brush.style := bsSolid;
+    Invalidate;
+  end
   else
+  begin
+    Canvas.Brush.style := bsClear;
     DrawButtonFrame;
+  end;
 end;
 
 procedure TJvCustomRollOut.SetGroupIndex(Value: Integer);
@@ -671,6 +677,7 @@ begin
       UpdateGroup;
     end;
     CheckChildTabStops;
+    invalidate;
   end;
 end;
 
@@ -856,6 +863,7 @@ var
   R: TRect;
   TopC, BottomC: TColor;
   FIndex: Integer;
+  ws : widestring;
 begin
 
   if FPlacement = plTop then
@@ -929,10 +937,11 @@ begin
     SetBkMode(Canvas.Handle, Transparent);
     if FMouseDown and FInsideButton then
       OffsetRect(R, 1, 1);
+    ws := Caption;
     if Placement = plLeft then
-      TextOutAngle(Canvas, 270, R.Left, R.Top, Caption)
+      DrawText(Canvas.Handle, ws , -1, FButtonHeight , BevelWidth + 2, Canvas.Textwidth(ws), FButtonHeight, DT_VCENTER, 270)
     else
-      TextOutAngle(Canvas, 0, R.Left, R.Top, Caption);
+      DrawText(Canvas.Handle, ws , -1, BevelWidth + 2, 0, Canvas.Textwidth(ws), FButtonHeight, DT_VCENTER, 0)
   end;
   if ShowFocus and Focused then
   begin

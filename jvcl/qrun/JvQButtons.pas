@@ -142,10 +142,10 @@ type
 
   TJvaColorButton = class(TJvExBitBtn)
   private
-    FCanvas: TControlCanvas;
+    FCanvas: TCanvas;
     FGlyphDrawer: TJvButtonGlyph;
     FOnPaint: TPaintButtonEvent;
-    function GetCanvas: TCanvas;
+//    function GetCanvas: TCanvas;
     
   protected
     IsFocused: Boolean;
@@ -157,7 +157,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
-    property Canvas: TCanvas read GetCanvas;
+    property Canvas; //: TCanvas read GetCanvas;
   published
     property Color;
     property ParentColor;
@@ -818,22 +818,24 @@ constructor TJvaColorButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FGlyphDrawer := TJvButtonGlyph.Create;
-  FCanvas := TControlCanvas.Create;
+  FCanvas := Canvas;
   // (rom) destroy Canvas AFTER inherited Destroy
-  FCanvas.Control := Self;
+//  FCanvas.Control := Self;
 end;
 
 destructor TJvaColorButton.Destroy;
 begin
   FreeAndNil(FGlyphDrawer);
   inherited Destroy;
-  FreeAndNil(FCanvas);
+//  FreeAndNil(FCanvas);
 end;
 
+(*)
 function TJvaColorButton.GetCanvas: TCanvas;
 begin
   Result := FCanvas;
 end;
+(*)
 
 
 

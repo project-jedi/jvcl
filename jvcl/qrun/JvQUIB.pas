@@ -472,6 +472,7 @@ TJvUIBComponent = class(TComponent)
     FParseParams: boolean;
     FOnClose: TNotifyEvent;
     FStatementType: TUIBStatementType;
+    FUseCursor: boolean;
     function GetPlan: string;
     function GetStatementType: TUIBStatementType;
     procedure SetSQL(const Value: TStrings);
@@ -480,6 +481,7 @@ TJvUIBComponent = class(TComponent)
     function GetEof: boolean;
     function FindDataBase: TJvUIBDataBase;
     function GetRowsAffected: Cardinal;
+    function GetBof: boolean;
   protected
     procedure SetTransaction(const Transaction: TJvUIBTransaction); virtual;
     procedure SetDataBase(ADataBase: TJvUIBDataBase);
@@ -524,6 +526,7 @@ TJvUIBComponent = class(TComponent)
     { Close the statement. You can commit or rollback the transaction when closing. }
     procedure Close(const Mode: TEndTransMode = etmStayIn); virtual;
     { Fetch all records returned by the query. }
+    procedure CloseCursor;
     procedure FetchAll;
     { Open the query and fetch the first record if FetchFirst = true. }
     procedure Open(FetchFirst: boolean = True);
@@ -594,6 +597,7 @@ TJvUIBComponent = class(TComponent)
     property CurrentState: TQueryState read FCurrentState;
     { if true there isn't anymore record to fetch. }
     property Eof: boolean read GetEof;
+    property Bof: boolean read GetBof;
     { @exclude }
     property ParseParams: boolean read FParseParams write FParseParams;
     { The plan used internally by interbase (the query must be prepared). }
@@ -602,6 +606,7 @@ TJvUIBComponent = class(TComponent)
     property StatementType: TUIBStatementType read GetStatementType;
     { Return the number of rows affected by the query (stInsert, stUpdate or stDelete). }
     property RowsAffected: Cardinal read GetRowsAffected;
+    property UseCursor: boolean read FUseCursor write FUseCursor default True;
   published
     { The sql query. }
     property SQL: TStrings read FSQL write SetSQL;
@@ -1243,22 +1248,7 @@ begin
   // execute the query again to save
   // the prepare time !
   if (FCurrentState = qsExecute) then
-  begin
-    Lock;
-    try
-      try
-        FSQLResult.ClearRecords;
-        with FindDataBase.FLibrary do
-          DSQLFreeStatement(FStHandle, DSQL_close);
-      except
-        InternalClose(FOnError, False);
-        raise;
-      end;
-      FCurrentState := qsPrepare; 
-    finally
-      UnLock;
-    end;
-  end else
+    CloseCursor else
     InternalClose(etmStayIn, False);
   if FetchFirst then
     InternalNext else
@@ -1414,7 +1404,8 @@ begin
       FStatementType := DSQLPrepare(FTransaction.FTrHandle, FStHandle,
         FParsedSQL, FTransaction.FSQLDialect, FSQLResult);
       FCursorName := 'C' + inttostr(Integer(FStHandle));
-      DSQLSetCursorName(FStHandle, FCursorName);
+      if FUseCursor then
+        DSQLSetCursorName(FStHandle, FCursorName);
     except
       FSQLResult.free;
       FSQLResult := nil;
@@ -1572,6 +1563,13 @@ begin
     Result := True;
 end;
 
+function TJvUIBStatement.GetBof: boolean;
+begin
+  if Assigned(FSQLResult) then
+    Result := FSQLResult.Bof else
+    Result := True;
+end;
+
 function TJvUIBStatement.FindDataBase: TJvUIBDataBase;
 begin
   if FDataBase <> nil then
@@ -1591,6 +1589,7 @@ end;
 constructor TJvUIBStatement.Create(AOwner: TComponent);
 begin
   inherited;
+  FUseCursor := True;
   FCurrentState := qsDataBase;
   if (AOwner is TJvUIBTransaction) then
     Transaction := TJvUIBTransaction(AOwner) else
@@ -1955,6 +1954,27 @@ begin
       Result := FindDataBase.FLibrary.DSQLInfoRowsAffected(FStHandle, FStatementType);
   finally
     UnLock
+  end;
+end;
+
+procedure TJvUIBStatement.CloseCursor;
+begin
+  if (FCurrentState = qsExecute) then
+  begin
+    Lock;
+    try
+      try
+        FSQLResult.ClearRecords;
+        with FindDataBase.FLibrary do
+          DSQLFreeStatement(FStHandle, DSQL_close);
+      except
+        InternalClose(FOnError, False);
+        raise;
+      end;
+      FCurrentState := qsPrepare;
+    finally
+      UnLock;
+    end;
   end;
 end;
 

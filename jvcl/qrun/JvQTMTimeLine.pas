@@ -38,11 +38,12 @@ interface
 
 uses
   SysUtils, Classes,
-
+  
   
   Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,
   
   JvQComponent, JvQExControls;
+
 
 resourcestring
   SInvalidImage = 'Invalid Image';
@@ -236,7 +237,7 @@ type
     property LeftButton;
     
   published
-//    property AboutJVCL;
+    property AboutJVCLX;
     // gets / sets the borderstyle of the control and the scroll-buttons
     property BorderStyle;
     // gets / sets the width of the buttons
@@ -328,10 +329,18 @@ type
 implementation
 
 uses
+  
+  
   QConsts,
+  
   JvQJVCLUtils, JvQThemes;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvTMTimeLine.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvTMTimeLine.res}
+{$ENDIF LINUX}
 
 const
   cMagic = 'Jv.TMTIMELINE1';
@@ -795,7 +804,7 @@ end;
 
 procedure TJvCustomTMTimeline.Paint;
 begin
-  if not Showing then
+  if not Showing or (csLoading in ComponentState) then
     Exit;
   inherited Canvas.Font := Font;
   DrawDates(inherited Canvas);
@@ -876,7 +885,7 @@ begin
       // draw new selection
       R := GetRectForDate(FSelDate);
       InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);
-       QWindows.InvalidateRect(Handle, @R, True);
+      QWindows.InvalidateRect(Handle, @R, True);
     end;
   end;
 end;
@@ -1026,8 +1035,11 @@ end;
 procedure TJvCustomTMTimeline.EnabledChanged;
 begin
   inherited EnabledChanged;
-  FLeftBtn.Enabled := Enabled;
-  FRightBtn.Enabled := Enabled;
+  if assigned(FLeftBtn) then
+  begin
+    FLeftBtn.Enabled := Enabled;
+    FRightBtn.Enabled := Enabled;
+  end;  
   Invalidate;
 end;
 

@@ -615,7 +615,7 @@ begin
             if not FIcon.Empty then
               Dec(Y, FIcon.Height + 3)
             else
-              Dec(Y)
+              Dec(Y,3)
             
           end;
         dpTop, dpBottom:
@@ -626,7 +626,7 @@ begin
             if not FIcon.Empty then
               Inc(X, FIcon.Width + 3)
             else
-              Inc(X)
+              Inc(X, 3)
             
             
           end;
@@ -638,7 +638,7 @@ begin
             if not FIcon.Empty then
               Inc(Y, FIcon.Height + 3)
             else
-              Inc(Y);
+              Inc(Y,3 );
             
             
           end;

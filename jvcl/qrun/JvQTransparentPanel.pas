@@ -72,8 +72,8 @@ end;
 
 procedure TJvTransparentPanel.CaptureBackground;
 var
-  Canvas: TCanvas;
-  DC: HDC;
+//  Canvas: TCanvas;
+//  DC: HDC;
   SourceRect: TRect;
 begin
   // (rom) check here to secure against misuse

@@ -42,7 +42,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   
-  
+
   Types, QWindows, QControls, QExtCtrls, QForms, QGraphics,
   
   JvQComponent;
@@ -106,12 +106,12 @@ const
 constructor TJvaScrollText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  
-  FForeImage := TImage.Create(nil);
-  FBackImage := TImage.Create(nil);
-  FFontMaskImage := TImage.Create(nil);
-  FFontImage := TImage.Create(nil);
-  FScrollImage := TImage.Create(nil);
+
+  FForeImage := TImage.Create(self);
+  FBackImage := TImage.Create(self);
+  FFontMaskImage := TImage.Create(self);
+  FFontImage := TImage.Create(self);
+  FScrollImage := TImage.Create(self);
   FStrings := TStringList.Create;
   FScrollBottom := -1;
   FScrollTop := -1;
@@ -125,11 +125,6 @@ end;
 
 destructor TJvaScrollText.Destroy;
 begin
-  FForeImage.Free;
-  FBackImage.Free;
-  FFontMaskImage.Free;
-  FFontImage.Free;
-  FScrollImage.Free;
   FStrings.Free;
   inherited Destroy;
 end;

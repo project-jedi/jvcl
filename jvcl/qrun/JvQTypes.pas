@@ -378,6 +378,12 @@ const
     
   );
 
+
+
+type
+  PCaptionChar = PWideChar;
+
+
 implementation
 
 end.

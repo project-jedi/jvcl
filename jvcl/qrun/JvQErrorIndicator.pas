@@ -243,18 +243,18 @@ type
 constructor TJvErrorIndicator.Create(AComponent: TComponent);
 
 var
-  Ico: TIcon;
+  Ico: TBitmap;
 
 begin
   inherited Create(AComponent);
   FDefaultImage := TImageList.CreateSize(16, 16);
-  
-  
-  Ico := TIcon.Create;
-  Ico.LoadFromResourceName(hInstance, 'JVERRORINDICATORICON');
-  FDefaultImage.Assign(Ico);
+
+
+  Ico := TBitmap.Create;
+  Ico.LoadFromResourceName(HInstance, 'JVERRORINDICATORBMP');
+  FDefaultImage.AddMasked(Ico, clFuchsia);
   Ico.Free;
-  
+
   FBlinkStyle := ebsBlinkIfDifferentError;
   FBlinkRate := 250;
   FControls := TList.Create;
