@@ -86,7 +86,7 @@
     |   |- Alarms=Alarms=JVCL provides a number of components to schedule events.
     |   |- Timers=Timers=JVCL provides a number of components to time events.
     |- FilesAndFolders=Files and folders=JVCL provides a number of components to manage files and folders.
-    |- LibProcAndTread=Libraries, processes and threads=JVCL provides a number of components and controls to control/manage libraries, processes and threads.
+    |- LibProcAndThread=Libraries, processes and threads=JVCL provides a number of components and controls to control/manage libraries, processes and threads.
         |- Libraries=Libraries=JVCL provides a number of components to control library files (.DLLs).
         |- Processes=Processes=JVCL provides a number of components and controls to create and/or control processes.
         |- Threads=Threads=JVCL provides a number of components and controls to create and/or control threads.
