@@ -46,10 +46,11 @@ type
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
-    {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
-    procedure SetParentBackground(const Value: Boolean);
-    {$ENDIF JVCLThemesEnabledD56}
+  protected
+    procedure SetParentBackground(Value: Boolean);
+  {$ENDIF JVCLThemesEnabledD56}
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -85,7 +86,7 @@ begin
   Result := JvThemes.GetParentBackground(Self);
 end;
 
-procedure TJvRadioGroup.SetParentBackground(const Value: Boolean);
+procedure TJvRadioGroup.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;

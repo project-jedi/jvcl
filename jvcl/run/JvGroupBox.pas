@@ -55,10 +55,11 @@ type
     procedure CMCtl3DChanged(var Msg: TMsg); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMsg); message CM_PARENTCOLORCHANGED;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
-    {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
-    procedure SetParentBackground(const Value: Boolean);
-    {$ENDIF JVCLThemesEnabledD56}
+  protected
+    procedure SetParentBackground(Value: Boolean); virtual;
+  {$ENDIF JVCLThemesEnabledD56}
   protected
     procedure DoHotKey; dynamic;
     procedure Paint; override;
@@ -178,7 +179,7 @@ begin
   Result := JvThemes.GetParentBackground(Self);
 end;
 
-procedure TJvGroupBox.SetParentBackground(const Value: Boolean);
+procedure TJvGroupBox.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;

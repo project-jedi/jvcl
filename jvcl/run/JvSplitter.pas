@@ -44,10 +44,11 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
-    {$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
     function GetParentBackground: Boolean;
-    procedure SetParentBackground(const Value: Boolean);
-    {$ENDIF JVCLThemesEnabled}
+  protected
+    procedure SetParentBackground(Value: Boolean); virtual;
+  {$ENDIF JVCLThemesEnabled}
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -152,7 +153,7 @@ begin
   Result := csParentBackground in GetThemeStyle(Self);
 end;
 
-procedure TJvSplitter.SetParentBackground(const Value: Boolean);
+procedure TJvSplitter.SetParentBackground(Value: Boolean);
 begin
   if Value <> GetParentBackground then
   begin
