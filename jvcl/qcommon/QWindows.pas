@@ -617,6 +617,10 @@ function SetDCBrushColor(Handle: QPainterH; Color: TColor): TColorRef;
 function SetDCPenColor(Handle: QPainterH; Color: TColor): TColorRef;
 function SetPenColor(Handle: QPainterH; Color: TColor): TColorRef;
 
+//procedure SetPainterFont(Handle: QPainterH; Font: TFont);
+procedure SetPainterFont(Handle: QPainterH; Font: TFont);
+
+
 function CreateCompatibleDC(Handle: QPainterH; Width: Integer = 1; Height: Integer = 1): QPainterH;
 function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPixmapH;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; Bits: Pointer): QPixmapH;
@@ -2398,6 +2402,13 @@ end;
 function SetDCPenColor(Handle: QPainterH; Color: TColor): TColorRef;
 begin
   Result := SetPenColor(Handle, Color);
+end;
+
+//procedure SetQPainterFont(Handle: QPainterH; Font: TFont);
+procedure SetPainterFont(Handle: QPainterH; Font: QGraphics.TFont);
+begin
+  QPainter_setFont(Handle, Font.Handle);
+  QPainter_setPen(Handle, Font.FontPen);
 end;
 
 function GetParent(Handle: QWidgetH): QWidgetH;
