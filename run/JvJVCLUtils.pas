@@ -533,7 +533,7 @@ type
   end;
   { end JvGraph }
 
-  { begin JvFileUtil }
+{ begin JvFileUtil }
 {$IFDEF MSWINDOWS}
 type
   TFileOperation = (foCopy, foDelete, foMove, foRename);
@@ -6128,15 +6128,15 @@ begin
 end;
 
 initialization
-  { begin RxLib }
-  Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
-  Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
-  { end RxLib }
   { begin JvGraph }
   InitTruncTables;
   { end JvGraph }
   if Screen <> nil then
   begin
+    { begin RxLib }
+    Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
+    Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
+    { end RxLib }
     Screen.Cursors[crMultiDragLink] := Screen.Cursors[crMultiDrag];
     Screen.Cursors[crDragAlt] := Screen.Cursors[crDrag];
     Screen.Cursors[crMultiDragAlt] := Screen.Cursors[crMultiDrag];
