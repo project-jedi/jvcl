@@ -60,7 +60,7 @@ cd ..\..\packages
 IF ERRORLEVEL 1 GOTO error
 echo.
 echo Cleaning
-del /f %PACKAGE%.mak
+del /f "%PACKAGE%.mak"
 del /f /q %DIR%\*.mak
 echo.
 echo The JVCL was successfuly built for %2
