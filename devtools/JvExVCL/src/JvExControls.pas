@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-01-04
+Last Modified: 2004-01-12
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,7 +34,8 @@ uses
   {$IFDEF VisualCLX}
   Qt, QGraphics, QControls, QWindows, QForms,  // order: QControls, QWindows
   {$ENDIF VisualCLX}
-  Classes, SysUtils;
+  Classes, SysUtils,
+  JvThemes;
 
 type
   IJvControlEvents = interface
@@ -53,6 +54,7 @@ type
     function HitTest(X, Y: Integer): Boolean;
     procedure MouseEnter(AControl: TControl);
     procedure MouseLeave(AControl: TControl);
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
     {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean);
     {$ENDIF VCL}
@@ -99,6 +101,10 @@ procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
 {$ENDIF !COMPILER6_UP}
 {$ENDIF VCL}
 
+{$IFDEF VisualCLX}
+
+{$ENDIF VisualCLX}
+
 implementation
 
 {$IFDEF VCL}
@@ -141,6 +147,7 @@ var
   IntfWinControl: IJvWinControlEvents;
   PMsg: PMessage;
   CallInherited: Boolean;
+  Canvas: TCanvas;
 begin
   CallInherited := True;
   PMsg := @Msg;
@@ -149,7 +156,7 @@ begin
   begin
     PMsg^.Result := Ord(Instance.GetInterface(IJvDenySubClassing, Temp));
     Temp := nil; // does not destroy the control because it is derived from TComponent
-   // Let the control handle CM_DENYSUBCLASSING the old way, too. 
+   // Let the control handle CM_DENYSUBCLASSING the old way, too.
   end;
 
   { GetInterface is no problem because Instance is a TComponent derived class that
@@ -187,6 +194,18 @@ begin
         CM_DIALOGCHAR:
           with TCMDialogChar(PMsg^) do
             Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
+
+        WM_ERASEBKGND:
+          begin
+            Canvas := TCanvas.Create;
+            try
+              Canvas.Handle := HDC(PMsg^.WParam);
+              PMsg^.Result := Ord(DoPaintBackground(Canvas, PMsg^.LParam));
+            finally
+              Canvas.Handle := 0;
+              Canvas.Free;
+            end;
+          end
       else
         CallInherited := True;
       end;

@@ -39,7 +39,7 @@ uses
   Contnrs,
   {$IFDEF COMPILER7_UP}
   Themes,
-  {$ELSE}      
+  {$ELSE}
   ThemeSrv,
   {$ENDIF COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
@@ -47,7 +47,7 @@ uses
   Controls, StdCtrls, Graphics, Buttons,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QGraphics, QButtons, Types,
+  QControls, QForms, QGraphics, QButtons, Types, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes;
 
@@ -765,7 +765,6 @@ procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; NeedsParentBackground: Boolean = True); overload;
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; Color: TColor; NeedsParentBackground: Boolean = True); overload;
-{$IFDEF VCL}
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
   Brush: HBRUSH; NeedsParentBackground: Boolean = True); overload;
 
@@ -773,6 +772,7 @@ procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
 function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect;
   uType, uState: UINT): BOOL;
 
+{$IFDEF VCL}
 { PerformEraseBackground sends a WM_ERASEBKGND message to the Control's parent. }
 procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint;
   R: PRect = nil); overload;
@@ -841,55 +841,6 @@ begin
     if cl <> Canvas.Brush.Color then
       Canvas.Brush.Color := cl;
   end;
-end;
-
-{$IFDEF VCL}
-
-procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; R: PRect = nil);
-var
-  WindowOrg: TPoint;
-  OrgRgn, Rgn: THandle;
-begin
-  if Control.Parent <> nil then
-  begin
-    if (Offset.X <> 0) and (Offset.Y <> 0) then
-    begin
-      GetWindowOrgEx(DC, WindowOrg);
-      SetWindowOrgEx(DC, WindowOrg.X + Offset.X, WindowOrg.Y + Offset.Y, nil);
-    end;
-
-    OrgRgn := 0;
-    if R <> nil then
-    begin
-      OrgRgn := CreateRectRgn(0, 0, 1, 1);
-      if GetClipRgn(DC, OrgRgn) = 0 then
-      begin
-        DeleteObject(OrgRgn);
-        OrgRgn := 0;
-      end;
-      Rgn := CreateRectRgnIndirect(R^);
-      SelectClipRgn(DC, Rgn);
-      DeleteObject(Rgn);
-    end;
-
-    try
-      Control.Parent.Perform(WM_ERASEBKGND, DC, DC); // force redraw
-    finally
-      if (Offset.X <> 0) and (Offset.Y <> 0) then
-        SetWindowOrgEx(DC, WindowOrg.X, WindowOrg.Y, nil);
-
-      if OrgRgn <> 0 then
-      begin
-        SelectClipRgn(DC, OrgRgn);
-        DeleteObject(OrgRgn);
-      end;
-    end;
-  end;
-end;
-
-procedure PerformEraseBackground(Control: TControl; DC: HDC; R: PRect = nil);
-begin
-  PerformEraseBackground(Control, DC, Point(Control.Left, Control.Top), R);
 end;
 
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
@@ -1032,6 +983,55 @@ begin
 
   if not Result then
     Result := DrawFrameControl(DC, Rect, uType, uState);
+end;
+
+{$IFDEF VCL}
+
+procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; R: PRect = nil);
+var
+  WindowOrg: TPoint;
+  OrgRgn, Rgn: THandle;
+begin
+  if Control.Parent <> nil then
+  begin
+    if (Offset.X <> 0) and (Offset.Y <> 0) then
+    begin
+      GetWindowOrgEx(DC, WindowOrg);
+      SetWindowOrgEx(DC, WindowOrg.X + Offset.X, WindowOrg.Y + Offset.Y, nil);
+    end;
+
+    OrgRgn := 0;
+    if R <> nil then
+    begin
+      OrgRgn := CreateRectRgn(0, 0, 1, 1);
+      if GetClipRgn(DC, OrgRgn) = 0 then
+      begin
+        DeleteObject(OrgRgn);
+        OrgRgn := 0;
+      end;
+      Rgn := CreateRectRgnIndirect(R^);
+      SelectClipRgn(DC, Rgn);
+      DeleteObject(Rgn);
+    end;
+
+    try
+      Control.Parent.Perform(WM_ERASEBKGND, DC, DC); // force redraw
+    finally
+      if (Offset.X <> 0) and (Offset.Y <> 0) then
+        SetWindowOrgEx(DC, WindowOrg.X, WindowOrg.Y, nil);
+
+      if OrgRgn <> 0 then
+      begin
+        SelectClipRgn(DC, OrgRgn);
+        DeleteObject(OrgRgn);
+      end;
+    end;
+  end;
+end;
+
+procedure PerformEraseBackground(Control: TControl; DC: HDC; R: PRect = nil);
+begin
+  PerformEraseBackground(Control, DC, Point(Control.Left, Control.Top), R);
 end;
 
 {$ENDIF VCL}
