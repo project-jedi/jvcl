@@ -39,7 +39,7 @@ type
 
 var
   frmMain: TfrmMain;
-  TheDev: TJvHidDevice;
+  TheDev: TJvHidDevice = nil;
 
 implementation
 

@@ -134,7 +134,7 @@ begin
   // cancel ReadFileEx call or the callback will
   // crash your program
   if SleepRet <> WAIT_IO_COMPLETION then
-    Dev.CancelIO(omRead);
+    Dev.CancelIO(omhRead);
 end;
 
 end.

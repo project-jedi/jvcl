@@ -51,6 +51,7 @@ procedure TInfoForm.FormCreate(Sender: TObject);
 var
   I: Integer;
 begin
+  if TheDev = nil then Exit;
   VendorName.Caption := TheDev.VendorName;
   ProductName.Caption := TheDev.ProductName;
   SerialNo.Caption := TheDev.SerialNumber;
