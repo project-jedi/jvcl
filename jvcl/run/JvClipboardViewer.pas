@@ -117,10 +117,7 @@ implementation
 
 uses
   Grids, Math,
-  JvClipIcon, JvxRConst,
-  {$IFNDEF WIN32}
-  JvStr16,
-  {$ENDIF}
+  JvIconClipboardUtils, JvxRConst,
   JvVCLUtils;
 
 { Utility routines }

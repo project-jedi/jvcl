@@ -32,7 +32,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvRichEd;
+unit JvRichEdit;
 
 {.$DEFINE RICHEDIT_VER_10}
 

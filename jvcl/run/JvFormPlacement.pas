@@ -288,7 +288,7 @@ uses
   {$IFDEF COMPILER3_UP}
   Consts,
   {$ENDIF COMPILER3_UP}
-  JvAppUtils, JvStrUtils, JvProps;
+  JvAppUtils, JvStrUtils, JvPropsStorage;
 
 const
   { The following string should not be localized }

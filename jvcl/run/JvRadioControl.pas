@@ -27,7 +27,7 @@ Known Issues:
 {$I JVCL.INC}
 
 
-unit JvRadioCtl;
+unit JvRadioControl;
 
 { TJvRadioControl component, a button like the dial on a radio. }
 

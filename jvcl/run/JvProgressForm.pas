@@ -31,7 +31,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDlg;
+unit JvProgressForm;
 
 interface
 

@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvOLBar;
+unit JvOutlookbar;
 
 { Outlook style control. Simpler than TJvLookout)
    Hierarchy:
@@ -318,7 +318,7 @@ implementation
 uses
   ExtCtrls;
 
-{$R JvOUTLOOKBARRES.RES}
+{$R ..\resources\JvOutlookBar.res}
 
 const
   cButtonLeftOffset = 4;

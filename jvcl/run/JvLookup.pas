@@ -706,7 +706,7 @@ uses
   {$IFNDEF COMPILER3_UP}
   JvBdeUtils,
   {$ENDIF}
-  JvVCLUtils, JvClipIcon;
+  JvVCLUtils, JvIconClipboardUtils;
 
 procedure CheckLookupFormat(const AFormat: string);
 var

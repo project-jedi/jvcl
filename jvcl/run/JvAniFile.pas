@@ -105,7 +105,7 @@ implementation
 
 uses
   Consts, Math,
-  JvVCLUtils, JvGraph, JvIcoList, JvClipIcon;
+  JvVCLUtils, JvGraph, JvIconList, JvIconClipboardUtils;
 
 const
   FOURCC_ACON = 'ACON';

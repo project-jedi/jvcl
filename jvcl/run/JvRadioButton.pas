@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvPropAutoSave, JVCLVer;
+  JvAutoSave, JVCLVer;
 
 type
   TJvRadioButton = class(TRadioButton)

@@ -25,17 +25,13 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvDbPrgrss;
+unit JvDBProgress;
 
 interface
 
 uses
   Classes,
-  {$IFDEF WIN32}
   Bde,
-  {$ELSE}
-  DbiTypes, DbiProcs,
-  {$ENDIF WIN32}
   Controls, DB, DBTables,
   JvTimer {, JvComponent};
 
@@ -142,13 +138,9 @@ implementation
 
 uses
   Math,
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs, JvStr16,
-  {$ENDIF WIN32}
   Forms, SysUtils, StdCtrls,
-  JvPrgrss;
+  JvProgressUtils;
 
 const
   cbQRYPROGRESS = cbRESERVED4;

@@ -30,7 +30,7 @@ Known Issues:
   the ones used in Office 97: one button and one arrow with
   separate events. }
 
-unit JvArrowBtn;
+unit JvArrowButton;
 
 interface
 

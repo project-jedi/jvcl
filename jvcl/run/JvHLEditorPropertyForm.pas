@@ -30,7 +30,7 @@ Known Issues:
 {$I JVCL.INC}
 {$DEFINE HL_NOT_QUITE_C}
 
-unit JvHLEdPropDlg;
+unit JvHLEditorPropertyForm;
 
 interface
 
