@@ -32,11 +32,11 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, StdCtrls, Menus, Buttons,
+  Windows, Messages,
   {$ENDIF VCL}
+  Graphics, Controls, Forms, StdCtrls, Menus, Buttons,
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus, QButtons, Types,
-  QWindows,
+  Qt, QWindows,
   {$ENDIF VisualCLX}
   JvComponent, JvConsts, JvTypes, JvExStdCtrls, JvThemes, JvFinalize;
 
@@ -336,10 +336,8 @@ procedure TJvCustomGraphicButton.MouseMove(Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
-  {$IFDEF VCL}
   if MouseCapture then
   begin
-  {$ENDIF VCL}
     if not InsideBtn(X, Y) then
     begin
       Exclude(FStates, bsMouseInside);
@@ -350,9 +348,7 @@ begin
       Include(FStates, bsMouseInside);
       RepaintBackground;
     end;
-  {$IFDEF VCL}
   end;
-  {$ENDIF VCL}
 end;
 
 procedure TJvCustomGraphicButton.MouseUp(Button: TMouseButton;
