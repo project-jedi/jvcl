@@ -752,7 +752,8 @@ end;
 procedure TJvgFlyingText.SetActive(Value: boolean);
 begin
   FActive := Value;
-  FTimer.Enabled := FActive;
+  if not (csDesigning in ComponentState) then
+    FTimer.Enabled := FActive;
 end;
 //________________________________________________________
 
