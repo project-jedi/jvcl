@@ -617,6 +617,7 @@ type
     procedure InvalidateSort; virtual;
     procedure InvalidateValue; virtual;
     procedure InvalidateMetaData; virtual;
+    procedure ListExit(Sender: TObject); virtual;
     procedure ListMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -4496,7 +4497,11 @@ end;
 
 procedure TJvCustomInspectorItem.EditMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  InspCoord: TPoint;
 begin
+  InspCoord := Inspector.ScreenToClient(ListBox.ClientToScreen(Point(X, Y)));
+  Inspector.MouseUp(Button, Shift, InspCoord.X, InspCoord.Y);
 end;
 
 procedure TJvCustomInspectorItem.Edit_WndProc(var Message: TMessage);
@@ -4810,6 +4815,12 @@ begin
     each inspector involved once.
   if Inspector <> nil then
     Inspector.DoItemValueChanged(Self); }
+end;
+
+procedure TJvCustomInspectorItem.ListExit(Sender: TObject);
+begin
+  if DroppedDown then
+    CloseUp(False);
 end;
 
 procedure TJvCustomInspectorItem.ListMouseUp(Sender: TObject;
@@ -5534,6 +5545,7 @@ begin
         TListBox(ListBox).Style := lbOwnerDrawVariable;
       TListBox(ListBox).OnDrawItem := DoDrawListItem;
       TListBox(ListBox).OnMeasureItem := DoMeasureListItem;
+      TListBox(ListBox).OnExit := ListExit;
     end;
     TOpenEdit(EditCtrl).Font.Assign(Inspector.Font);
     EditCtrl.BoundsRect := Rects[iprEditValue];
