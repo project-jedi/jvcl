@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I jvcl.inc}
+{$I JVCL.INC}
 
 unit JvBaseDlg;
 
@@ -34,10 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF COMPLIB_VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  {$ENDIF}
+  {$ENDIF COMPLIB_VCL}
   {$IFDEF COMPLIB_CLX}
   QGraphics, QControls, QForms, QDialogs,
-  {$ENDIF}
+  {$ENDIF COMPLIB_CLX}
   JVCLVer, JvComponent;
 
 type

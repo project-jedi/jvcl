@@ -35,10 +35,10 @@ interface
 uses
   {$IFDEF COMPLIB_VCL}
   Windows, Controls, ExtCtrls, Forms, Graphics,
-  {$ENDIF}
+  {$ENDIF COMPLIB_VCL}
   {$IFDEF COMPLIB_CLX}
   Types, QControls, QExtCtrls, QForms, QGraphics,
-  {$ENDIF}
+  {$ENDIF COMPLIB_CLX}
   SysUtils, Classes,
   JvComponent, JvClxUtils;
 
@@ -60,7 +60,6 @@ type
     FMaxFontSize: Integer;
     FSpeed: Integer;
     Pic: Integer;
-
     procedure SetForeImage(Value: TPicture);
     procedure SetBackImage(Value: TPicture);
     function GetForeImage: TPicture;
@@ -96,7 +95,8 @@ uses
 
 const
   cDelayIncrement = 50;
-  cIntToStyle: array [0..3] of TFontStyles = ([], [fsBold], [fsItalic], [fsBold, fsItalic]);
+  cIntToStyle: array [0..3] of TFontStyles =
+    ([], [fsBold], [fsItalic], [fsBold, fsItalic]);
 
 constructor TJvaScrollText.Create(AOwner: TComponent);
 begin
@@ -111,6 +111,7 @@ begin
   FScrollBottom := -1;
   FScrollTop := -1;
   FLeftMargin := -1;
+  FRightMargin := -1;
   FMaxFontSize := 48;
   Speed := 25;
   Width := 150;
@@ -169,7 +170,7 @@ end;
 
 procedure TJvaScrollText.Scroll;
 var
-  j: Integer;
+  J: Integer;
   H: Integer;
   RecTmp: TRect;
   DelayMsec: Longword;
@@ -383,17 +384,17 @@ begin
     {H := Line * FontHeight - Popr;}
     FFontImage.Canvas.TextOut(FLeftMargin, H, FStrings[Line]);
     { To scroll line [translated] }
-    for j := 1 to FontHeight do
+    for J := 1 to FontHeight do
     begin
       Dec(H2);
-      if (j mod Pixels) <> 0 then
+      if (J mod Pixels) <> 0 then
         Continue;
-      Source.Bottom := H+j; {H1}
+      Source.Bottom := H+J; {H1}
       Source.Left := FLeftMargin;
       SourceFon.Left := FLeftMargin;
       Dest.Left := FLeftMargin;
       Dest.Top := H2;
-      Dest.Bottom := H2 + H+j; {H2+H1}
+      Dest.Bottom := H2 + H+J; {H2+H1}
       DelayBegin;
       CopyAll;
       Canvas.Draw(0, 0, FScrollImage.Picture.Graphic);

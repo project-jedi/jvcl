@@ -1,5 +1,9 @@
 TODO for JVCL 3.0
 ======================
+- JvArrowButton.pas move GrayedBitmap function to JCL and file to Archive
+- JvaScrollText change crude Delay function
+- JvAVICapture.pas has some strange boolean expressions which should be fixed
+
 - JvAirBrush.pas has a timing mechanism for spray which has to be reanimated or deleted // (rom)
 - JvAniFile.pas implement write of animated icon // (rom)
 - JvAnimatedImage.pas TJvImageControl.DoPaintControl is not yet CLX compatible // (rom)
