@@ -189,67 +189,33 @@ function RecycleBinSize(RootPath: string): integer;
 function RecycleBinCount(RootPath: string): integer;
 { Runs the Control Panel application given by CPL. CPL can be the name of an existing
   CPL file (must include extension) or one of the following identifiers:
-<br>
-<table>
-<tr>
-<th>DESKTOP</th><td>(desk.cpl)</td>
-</tr>
-<tr>
-<th>COLOR</th><td>(desk.cpl,,2)</td>
-</tr>
-<tr>
-<th>DATE/TIME</th><td>(timedate.cpl)</td>
-</tr>
-<tr>
-<th>PORTS</th><td>(sysdm.cpl,,1)</td>
-</tr>
-<tr>
-<th>INTERNATIONAL</th><td>(intl.cpl)</td>
-</tr>
-<tr>
-<th>MOUSE</th><td>(main.cpl)</td>
-</tr>
-<tr>
-<th>KEYBOARD</th><td>(main.cpl @@1)</td>
-</tr>
-<tr>
-<th>PRINTERS</th><td>(main.cpl @@2)</td>
-</tr>
-<tr>
-<th>FONTS</th><td>(main.cpl @@3)</td>
-</tr>
-</table>
+DESKTOP - (desk.cpl)
+COLOR - (desk.cpl,,2)
+DATE/TIME - (timedate.cpl)
+PORTS - (sysdm.cpl,,1)
+INTERNATIONAL - (intl.cpl)
+MOUSE - (main.cpl)
+KEYBOARD - (main.cpl @@1)
+PRINTERS - (main.cpl @@2)
+FONTS - (main.cpl @@3)
 
-<p>
 In addition any the following might work:
-<table>
-<tr>
-<th>Main.cpl @@4</th><td>Power Management (Win95)</td>
-</tr>
-<tr>
-<th>Main.cpl @@5</th><td>PC Cards (Win95) - (same as devapps.cpl in WinNT)</td>
-</tr>
-<tr>
-<th>desk.cpl,,1</th><td>Screensaver page active</td>
-</tr>
-<tr>
-<th>desk.cpl,,3</th><td>Settings page active</td>
-</tr>
-<tr>
-<th>timedate.cpl,,1</th><td>Timezone page active</td>
-</tr>
-</table>
-<p>
+Main.cpl ,@@4 - Power Management (Win95)
+Main.cpl ,@@5 - PC Cards (Win95) - (same as devapps.cpl in WinNT)
+desk.cpl,,1 - Screensaver page active
+desk.cpl,,3 - Settings page active
+timedate.cpl,,1  - Timezone page active
+
 If CPL is empty, the main Control Panel window is opened. Most CPL files that
 have multiple pages can be called with the following format:
-<br>
-<code>name.cpl,,index_of_page</code>
-<br>
+  name.cpl ,@@n,m
+
+where @@n is the applet index and m is the tab index for that applet
+
 If a CPL file contains the code for more than one dialog (as main.cpl), the
 different dialogs can be called using the following format:
-<br>
-<code>name.cpl @@index_of_dialog</code>
-<br>
+  name.cpl ,@@n
+
 Note that there are differences between WinNT and Win95 and Win98: only
 experimentation can determine if a certain CPL file has the same name and / or
 is available on all systems.
