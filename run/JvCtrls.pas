@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: Jun 18, 2000
+Last Modified: 12-11-2003
 Current Version: 0.50
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -36,93 +36,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ImgList, ActnList,
-  JvButton, JVCLVer, JvListBox;
+  JvButton, JVCLVer;
 
 type
-  TJvListBox = class(TJvCustomListBox)
-  public
-    {$IFDEF COMPILER6_UP}
-    property Count;
-    {$ENDIF COMPILER6_UP}
-  published
-    property Align;
-    property Anchors;
-    property BiDiMode;
-    property BorderStyle;
-    property Color;
-    property Columns;
-    property Constraints;
-    property Ctl3D;
-    property DragCursor;
-    property DragKind;
-    property DragMode;
-    property Enabled;
-    property ExtendedSelect;
-    property Font;
-    property ImeMode;
-    property ImeName;
-    property IntegralHeight;
-    property ItemHeight;
-    property Items;
-
-    property MultiLine;
-    property SelectedColor;
-    property SelectedTextColor;
-    property DisabledTextColor;
-    property ShowFocusRect;
-    property Background;
-
-    property MultiSelect;
-    property ParentBiDiMode;
-    property ParentColor;
-    property ParentCtl3D;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ScrollBars;
-    property ShowHint;
-    property Sorted;
-    property Style;
-    property TabOrder;
-    property TabStop;
-    property TabWidth;
-    property Visible;
-    property OnClick;
-    property OnContextPopup;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnDrawItem;
-    property OnEndDock;
-    property OnEndDrag;
-    property OnEnter;
-    property OnExit;
-    property OnGetText;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyUp;
-    property OnMeasureItem;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnStartDock;
-    property OnStartDrag;
-    property Alignment;
-    property HotTrack;
-    property HintColor;
-
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnCtl3DChanged;
-    property OnParentColorChange;
-    property OnSelectCancel;
-    property OnChange;
-    property OnDeleteString;
-    property OnAddString;
-    property OnVerticalScroll;
-    property OnHorizontalScroll;
-  end;
-
   TJvImgBtnLayout = (blImageLeft, blImageRight);
 
   TJvImgBtnKind = (bkCustom, bkOK, bkCancel, bkHelp, bkYes, bkNo, bkClose,

@@ -55,7 +55,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Controls, Forms,
-  JvItemsSearchs, JVCLVer;
+  JvItemsSearchs, JVCLVer, JvDataProvider, JvDataProviderImpl;
 
 type
   TJvListboxFillMode = (bfmTile, bfmStretch);
@@ -86,6 +86,56 @@ type
     property Visible: Boolean read FVisible write SetVisible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
+
+  TJvCustomListBox = class;
+
+  { This class will be used for the Items property of the list box.
+
+    If a provider is active at the list box, this list will keep the strings stored in an internal
+    list.
+
+    Whenever an item is added to the list the provider will be deactivated and the list will be
+    handled by the list box as usual. }
+  TJvListBoxStrings = class(TStrings)
+  private
+    {$IFNDEF COMPILER6_UP}
+    FListBox: TJvCustomListBox;
+    {$ENDIF COMPILER6_UP}
+    FInternalList: TStrings;
+    FUseInternal: Boolean;
+    FUpdating: Boolean;
+    FDestroyCnt: Integer;
+  protected
+  public
+    function Get(Index: Integer): string; override;
+    function GetCount: Integer; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure Put(Index: Integer; const S: string); override;
+    procedure PutObject(Index: Integer; AObject: TObject); override;
+    procedure SetUpdateState(Updating: Boolean); override;
+    procedure SetWndDestroying(Destroying: Boolean);
+    function GetListBox: TJvCustomListBox;
+    procedure SetListBox(Value: TJvCustomListBox);
+    property ListBox: TJvCustomListBox read GetListBox write SetListBox;
+    property InternalList: TStrings read FInternalList;
+    property UseInternal: Boolean read FUseInternal write FUseInternal;
+    property Updating: Boolean read FUpdating;
+    property DestroyCount: Integer read FDestroyCnt;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Add(const S: string): Integer; override;
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    function IndexOf(const S: string): Integer; override;
+    procedure Insert(Index: Integer; const S: string); override;
+    procedure Move(CurIndex, NewIndex: Integer); override;
+    procedure MakeListInternal; virtual;
+    procedure ActivateInternal; virtual;
+  end;
+  TJvListBoxStringsClass = class of TJvListBoxStrings;
+
+//  TJvListBoxMeasureStyle = (lmsStandard, lmsAfterCreate, lmsBeforeDraw);
 
   TJvCustomListBox = class(TCustomListBox)
   private
@@ -120,6 +170,11 @@ type
     FBackground: TJvListBoxBackground;
     FLeftPosition: Integer;
 
+    FConsumerSvc: TJvDataConsumer;
+    FConsumerStrings: TJvConsumerStrings;
+    FProviderIsActive: Boolean;
+    FProviderToggle: Boolean;
+
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
@@ -150,8 +205,22 @@ type
     procedure SetBackground(const Value: TJvListBoxBackground);
     function GetLimitToClientWidth: Boolean;
   protected
+    function GetItemsClass: TJvListBoxStringsClass; virtual;
     procedure BeginRedraw;
     procedure EndRedraw;
+
+    procedure SetConsumerService(Value: TJvDataConsumer);
+    procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
+    procedure ConsumerSubServiceCreated(Sender: TJvDataConsumer;
+      SubSvc: TJvDataConsumerAggregatedObject);
+    function IsProviderSelected: Boolean;
+    procedure DeselectProvider;
+    procedure UpdateItemCount;
+    property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
+    property ConsumerStrings: TJvConsumerStrings read FConsumerStrings;
+    procedure LBFindString(var Msg: TMessage); message LB_FINDSTRING;
+    procedure LBFindStringExact(var Msg: TMessage); message LB_FINDSTRINGEXACT;
+    procedure LBSelectString(var Msg: TMessage); message LB_SELECTSTRING;
 
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
@@ -193,6 +262,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function ItemRect(Index: Integer): TRect;
+    function ItemsShowing: TStrings; virtual;
 
     procedure MeasureString(const S: string; WidthAvail: Integer; var ASize: TSize);
 
@@ -210,10 +280,14 @@ type
     procedure WndProc(var Msg: TMessage); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+    procedure DestroyWnd; override;
     procedure UpdateHorizontalExtent;
-    function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
-    function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
-    function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
+    function SearchExactString(Value: string; CaseSensitive: Boolean = True;
+      StartIndex: Integer = -1): Integer;
+    function SearchPrefix(Value: string; CaseSensitive: Boolean = True;
+      StartIndex: Integer = -1): Integer;
+    function SearchSubString(Value: string; CaseSensitive: Boolean = True;
+      StartIndex: Integer = -1): Integer;
     function DeleteExactString(Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
     procedure SelectAll; {$IFDEF COMPILER6_UP} override; {$ENDIF}
@@ -236,15 +310,402 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
+  TJvListBox = class(TJvCustomListBox)
+  public
+    {$IFDEF COMPILER6_UP}
+    property Count;
+    {$ENDIF COMPILER6_UP}
+  published
+    property Align;
+    property Anchors;
+    property BiDiMode;
+    property BorderStyle;
+    property Color;
+    property Columns;
+    property Constraints;
+    property Ctl3D;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property ExtendedSelect;
+    property Font;
+    property ImeMode;
+    property ImeName;
+    property IntegralHeight;
+    property ItemHeight;
+    property Items;
+
+    property MultiLine;
+    property SelectedColor;
+    property SelectedTextColor;
+    property DisabledTextColor;
+    property ShowFocusRect;
+    property Background;
+
+    property MultiSelect;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ScrollBars;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property TabWidth;
+    property Visible;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnDrawItem;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnGetText;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMeasureItem;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDock;
+    property OnStartDrag;
+    property Alignment;
+    property HotTrack;
+    property HintColor;
+
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnCtl3DChanged;
+    property OnParentColorChange;
+    property OnSelectCancel;
+    property OnChange;
+    property OnDeleteString;
+    property OnAddString;
+    property OnVerticalScroll;
+    property OnHorizontalScroll;
+  end;
+
 implementation
 
 uses
-  JclBase;
+  Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}TypInfo,
+  JclBase,
+  JvConsts, JvCtrls;
 
 const
   AlignFlags: array [TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);
 
-  { TJvCustomListBox }
+type
+  PStrings = ^TStrings;
+  
+//===TJvListBoxStrings=============================================================================
+
+function TJvListBoxStrings.Get(Index: Integer): string;
+var
+  Len: Integer;
+begin
+  if UseInternal then
+    Result := FInternalList[Index]
+  else
+  {$IFDEF COMPILER6_UP}
+  if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
+    Result := ListBox.DoGetData(Index)
+  else
+  {$ENDIF COMPILER6_UP}
+  begin
+    Len := SendMessage(ListBox.Handle, LB_GETTEXTLEN, Index, 0);
+    if Len = LB_ERR then
+      Error(SListIndexError, Index);
+    SetLength(Result, Len);
+    if Len <> 0 then
+    begin
+      Len := SendMessage(ListBox.Handle, LB_GETTEXT, Index, Longint(PChar(Result)));
+      SetLength(Result, Len);
+    end;
+  end;
+end;
+
+function TJvListBoxStrings.GetCount: Integer;
+begin
+  if (DestroyCount > 0) and UseInternal then
+    Result := 0
+  else
+  begin
+    if UseInternal then
+      Result := FInternalList.Count
+    else
+      Result := SendMessage(ListBox.Handle, LB_GETCOUNT, 0, 0);
+  end;
+end;
+
+function TJvListBoxStrings.GetObject(Index: Integer): TObject;
+begin
+  if UseInternal then
+    Result := FInternalList.Objects[Index]
+  else
+  {$IFDEF COMPILER6_UP}
+  if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
+    Result := ListBox.DoGetDataObject(Index)
+  else
+  {$ENDIF COMPILER6_UP}
+  begin
+    Result := TObject(ListBox.GetItemData(Index));
+    if Longint(Result) = LB_ERR then Error(SListIndexError, Index);
+  end;
+end;
+
+procedure TJvListBoxStrings.Put(Index: Integer; const S: string);
+var
+  I: Integer;
+  TempData: Longint;
+begin
+  if UseInternal then
+    FInternalList[Index] := S
+  else
+  begin
+    ListBox.DeselectProvider;
+    I := ListBox.ItemIndex;
+    TempData := ListBox.InternalGetItemData(Index);
+    // Set the Item to 0 in case it is an object that gets freed during Delete
+    ListBox.InternalSetItemData(Index, 0);
+    Delete(Index);
+    InsertObject(Index, S, nil);
+    ListBox.InternalSetItemData(Index, TempData);
+    ListBox.ItemIndex := I;
+  end;
+end;
+
+procedure TJvListBoxStrings.PutObject(Index: Integer; AObject: TObject);
+begin
+  if UseInternal then
+    FInternalList.Objects[Index] := AObject
+  else
+  begin
+    if (Index <> -1) {$IFDEF COMPILER6_UP}and not (ListBox.Style in [lbVirtual, lbVirtualOwnerDraw]){$ENDIF COMPILER6_UP} then
+    begin
+      ListBox.DeselectProvider;
+      ListBox.SetItemData(Index, LongInt(AObject));
+    end;
+  end;
+end;
+
+procedure TJvListBoxStrings.SetUpdateState(Updating: Boolean);
+begin
+  FUpdating := Updating;
+  SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(not Updating), 0);
+  if not Updating then ListBox.Refresh;
+end;
+
+procedure TJvListBoxStrings.SetWndDestroying(Destroying: Boolean);
+begin
+  if Destroying then
+    Inc(FDestroyCnt)
+  else
+  if FDestroyCnt > 0 then
+    Dec(FDestroyCnt);
+end;
+
+function TJvListBoxStrings.GetListBox: TJvCustomListBox;
+begin
+  Result := FListBox;
+end;
+
+procedure TJvListBoxStrings.SetListBox(Value: TJvCustomListBox);
+begin
+  FListBox := Value;
+end;
+
+constructor TJvListBoxStrings.Create;
+begin
+  inherited Create;
+  FInternalList := TStringList.Create;
+end;
+
+destructor TJvListBoxStrings.Destroy;
+begin
+  FreeAndNil(FInternalList);
+  inherited Destroy;
+end;
+
+function TJvListBoxStrings.Add(const S: string): Integer;
+begin
+  if (csLoading in ListBox.ComponentState) and UseInternal then
+    Result := FInternalList.Add(S)
+  else
+  begin
+    {$IFDEF COMPILER6_UP}
+    Result := -1;
+    if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
+      Exit;
+    {$ENDIF COMPILER6_UP}
+    ListBox.DeselectProvider;
+    Result := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, Longint(PChar(S)));
+    if Result < 0 then
+      raise EOutOfResources.Create(SInsertLineError);
+  end;
+end;
+
+procedure TJvListBoxStrings.Clear;
+begin
+  if (FDestroyCnt <> 0) and UseInternal then
+    Exit;
+  if (csLoading in ListBox.ComponentState) and UseInternal then
+    FInternalList.Clear
+  else
+  begin
+    ListBox.DeselectProvider;
+    ListBox.ResetContent;
+  end;
+end;
+
+procedure TJvListBoxStrings.Delete(Index: Integer);
+begin
+  if (csLoading in ListBox.ComponentState) and UseInternal then
+    FInternalList.Delete(Index)
+  else
+  begin
+    ListBox.DeselectProvider;
+    ListBox.DeleteString(Index);
+  end;
+end;
+
+function TJvListBoxStrings.IndexOf(const S: string): Integer;
+begin
+  if UseInternal then
+    Result := FInternalList.IndexOf(S)
+  else
+  {$IFDEF COMPILER6_UP}
+  if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
+    Result := ListBox.DoFindData(S)
+  else
+  {$ENDIF COMPILER6_UP}
+    Result := SendMessage(ListBox.Handle, LB_FINDSTRINGEXACT, -1, LongInt(PChar(S)));
+end;
+
+procedure TJvListBoxStrings.Insert(Index: Integer; const S: string);
+begin
+  if (csLoading in ListBox.ComponentState) and UseInternal then
+    FInternalList.Insert(Index, S)
+  else
+  begin
+    ListBox.DeselectProvider;
+    {$IFDEF COMPILER6_UP}
+    if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
+      Exit;
+    {$ENDIF COMPILER6_UP}
+    if SendMessage(ListBox.Handle, LB_INSERTSTRING, Index, Longint(PChar(S))) < 0 then
+      raise EOutOfResources.Create(SInsertLineError);
+  end;
+end;
+
+procedure TJvListBoxStrings.Move(CurIndex, NewIndex: Integer);
+var
+  TempData: Longint;
+  TempString: string;
+begin
+  if (csLoading in ListBox.ComponentState) and UseInternal then
+    FInternalList.Move(CurIndex, NewIndex)
+  else
+  begin
+    {$IFDEF COMPILER6_UP}
+    if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
+      Exit;
+    {$ENDIF COMPILER6_UP}
+    BeginUpdate;
+    ListBox.FMoving := True;
+    try
+      if CurIndex <> NewIndex then
+      begin
+        TempString := Get(CurIndex);
+        TempData := ListBox.InternalGetItemData(CurIndex);
+        ListBox.InternalSetItemData(CurIndex, 0);
+        Delete(CurIndex);
+        Insert(NewIndex, TempString);
+        ListBox.InternalSetItemData(NewIndex, TempData);
+      end;
+    finally
+      ListBox.FMoving := False;
+      EndUpdate;
+    end;
+  end;
+end;
+
+{ Copies the strings at the list box to the FInternalList. To minimize the memory usage when a
+  large list is used, each item copied is immediately removed from the list box list. }
+procedure TJvListBoxStrings.MakeListInternal;
+var
+  Cnt: Integer;
+  Text: array[0..4095] of Char;
+  Len: Integer;
+  S: string;
+  Obj: TObject;
+begin
+  SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(False), 0);
+  try
+    FInternalList.Clear;
+    Cnt := SendMessage(ListBox.Handle, LB_GETCOUNT, 0, 0);
+    while Cnt > 0 do
+    begin
+      Len := SendMessage(ListBox.Handle, LB_GETTEXT, 0, Longint(@Text));
+      SetString(S, Text, Len);
+      Obj := TObject(SendMessage(ListBox.Handle, LB_GETITEMDATA, 0, 0));
+      SendMessage(ListBox.Handle, LB_DELETESTRING, 0, 0);
+      FInternalList.AddObject(S, Obj);
+      Dec(Cnt);
+    end;
+  finally
+    UseInternal := True;
+    if not Updating then
+      SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(True), 0);
+  end;
+end;
+
+procedure TJvListBoxStrings.ActivateInternal;
+var
+  S: string;
+  Obj: TObject;
+  Index: Integer;
+begin
+  SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(False), 0);
+  try
+    FInternalList.BeginUpdate;
+    try
+      SendMessage(ListBox.Handle, LB_RESETCONTENT, 0, 0);
+      while FInternalList.Count > 0 do
+      begin
+        S := FInternalList[0];
+        Obj := FInternalList.Objects[0];
+        Index := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, Longint(PChar(S)));
+        if Index < 0 then
+          raise EOutOfResources.Create(SInsertLineError);
+        SendMessage(ListBox.Handle, LB_SETITEMDATA, Index, Longint(Obj));
+        FInternalList.Delete(0);
+      end;
+    finally
+      FInternalList.EndUpdate;
+    end;
+  finally
+    if not Updating then
+      SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(True), 0);
+    UseInternal := False;
+  end;
+end;
+
+//===TJvCustomListBox===============================================================================
+
+function TJvCustomListBox.GetItemsClass: TJvListBoxStringsClass;
+begin
+  Result := TJvListBoxStrings;
+end;
 
 procedure TJvCustomListBox.BeginRedraw;
 begin
@@ -254,6 +715,7 @@ end;
 procedure TJvCustomListBox.Changed;
 begin
   // (rom) TODO?
+  inherited Changed; // (marcelb): I added this, 'caus I assume it needs to be called.
 end;
 
 procedure TJvCustomListBox.CMCtl3DChanged(var Msg: TMessage);
@@ -373,10 +835,31 @@ begin
 end;
 
 constructor TJvCustomListBox.Create(AOwner: TComponent);
+var
+  PI: PPropInfo;
+  PStringsAddr: PStrings;
 begin
   inherited Create(AOwner);
   // JvBMPListBox:
   //  Style := lbOwnerDrawFixed;
+
+  { The following hack assumes that TJvListBox.Items reads directly from the private FItems field
+    of TCustomListBox and that TJvListBox.Items is actually published.
+
+    What we do here is remove the original string list used and place our own version in it's place.
+    This would give us the benefit of keeping the list of strings (and objects) even if a provider
+    is active and the list box windows has no strings at all. }
+  FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RenderDisabledAsGrayed,
+    DPA_ConsumerDisplaysList]);
+  FConsumerSvc.OnChanged := ConsumerServiceChanged;
+  FConsumerSvc.AfterCreateSubSvc := ConsumerSubServiceCreated;
+  FConsumerStrings := TJvConsumerStrings.Create(FConsumerSvc);
+  PI := GetPropInfo(TJvListBox, 'Items');
+  PStringsAddr := Pointer(Integer(PI.GetProc) and $00FFFFFF + Integer(Self));
+  Items.Free;                                 // remove original item list (TListBoxStrings instance)
+  PStringsAddr^ := GetItemsClass.Create;      // create our own implementation and put it in place.
+  TJvListBoxStrings(Items).ListBox := Self;   // link it to the list box.
+
   FBackground := TJvListBoxBackground.Create;
   FBackground.OnChange := DoBackgroundChange;
   FScrollBars := ssBoth;
@@ -461,6 +944,12 @@ begin
     Style := Style and not (WS_HSCROLL or WS_VSCROLL) or ScrollBar[FScrollBars] or
       Sorted[FSorted];
   end;
+  if IsProviderSelected then
+  begin
+    Params.Style := Params.Style and not (LBS_SORT or LBS_HASSTRINGS or LBS_NODATA);
+    if Params.Style and (LBS_OWNERDRAWVARIABLE or LBS_OWNERDRAWFIXED) = 0 then
+      Params.Style := Params.Style or LBS_OWNERDRAWFIXED;
+  end;
 end;
 
 procedure TJvCustomListBox.CreateWnd;
@@ -474,7 +963,20 @@ begin
   end;
   FLeftPosition := 0;
   inherited CreateWnd;
+  UpdateItemCount;
   UpdateHorizontalExtent;
+end;
+
+procedure TJvCustomListBox.DestroyWnd;
+begin
+  if IsProviderSelected then
+    TJvListBoxStrings(Items).SetWndDestroying(True);
+  try
+    inherited DestroyWnd;
+  finally
+    if IsProviderSelected then
+      TJvListBoxStrings(Items).SetWndDestroying(False);
+  end;
 end;
 
 procedure TJvCustomListBox.DefaultDragDrop(Source: TObject;
@@ -654,8 +1156,10 @@ end;
 
 destructor TJvCustomListBox.Destroy;
 begin
-  FItemSearchs.Free;
-  FBackground.Free;
+  FreeAndNil(FItemSearchs);
+  FreeAndNil(FBackground);
+  FreeAndNil(FConsumerStrings);
+  FreeAndNil(FConsumerSvc);
   inherited Destroy;
 end;
 
@@ -757,6 +1261,109 @@ begin
   SendMessage(Handle, WM_SETREDRAW, Ord(True), 0);
   R := Rect(0, 0, Width, Height);
   InvalidateRect(Handle, @R, True);
+end;
+
+procedure TJvCustomListBox.SetConsumerService(Value: TJvDataConsumer);
+begin
+end;
+
+procedure TJvCustomListBox.ConsumerServiceChanged(Sender: TJvDataConsumer;
+  Reason: TJvDataConsumerChangeReason);
+begin
+  if (Reason = ccrProviderSelected) and not IsProviderSelected and not FProviderToggle then
+  begin
+    TJvListBoxStrings(Items).MakeListInternal;
+    FProviderIsActive := True;
+    FProviderToggle := True;
+    RecreateWnd;
+  end
+  else
+  if (Reason = ccrProviderSelected) and IsProviderSelected and not FProviderToggle then
+  begin
+    TJvListBoxStrings(Items).ActivateInternal; // apply internal string list to list box
+    FProviderIsActive := False;
+    FProviderToggle := True;
+    RecreateWnd;
+  end;
+  if not FProviderToggle or (Reason = ccrProviderSelected) then
+  begin
+    UpdateItemCount;
+    Refresh;
+  end;
+  if FProviderToggle and (Reason = ccrProviderSelected) then
+    FProviderToggle := False;
+end;
+
+procedure TJvCustomListBox.ConsumerSubServiceCreated(Sender: TJvDataConsumer;
+  SubSvc: TJvDataConsumerAggregatedObject);
+var
+  VL: IJvDataConsumerViewList;
+begin
+  if SubSvc.GetInterface(IJvDataConsumerViewList, VL) then
+  begin
+    VL.ExpandOnNewItem := True;
+    VL.AutoExpandLevel := -1;
+    VL.RebuildView;
+  end;
+end;
+
+function TJvCustomListBox.IsProviderSelected: Boolean;
+begin
+  Result := FProviderIsActive;
+end;
+
+procedure TJvCustomListBox.DeselectProvider;
+begin
+  Provider.Provider := nil;
+end;
+
+procedure TJvCustomListBox.UpdateItemCount;
+var
+  VL: IJvDataConsumerViewList;
+  Cnt: Integer;
+begin
+  if HandleAllocated and IsProviderSelected and Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+  begin
+    Cnt := VL.Count - SendMessage(Handle, LB_GETCOUNT, 0, 0);
+    while Cnt > 0 do
+    begin
+      SendMessage(Handle, LB_ADDSTRING, 0, Integer(PChar(EmptyStr)));
+      Dec(Cnt);
+    end;
+    while Cnt < 0 do
+    begin
+      SendMessage(Handle, LB_DELETESTRING, 0, 0);
+      Inc(Cnt);
+    end;
+  end;
+end;
+
+procedure TJvCustomListBox.LBFindString(var Msg: TMessage);
+begin
+  if IsProviderSelected then
+    Msg.Result := SearchPrefix(PChar(Msg.LParam), False, Msg.WParam)
+  else
+    inherited;
+end;
+
+procedure TJvCustomListBox.LBFindStringExact(var Msg: TMessage);
+begin
+  if IsProviderSelected then
+    Msg.Result := SearchExactString(PChar(Msg.LParam), False, Msg.WParam)
+  else
+    inherited;
+end;
+
+procedure TJvCustomListBox.LBSelectString(var Msg: TMessage);
+begin
+  if IsProviderSelected then
+  begin
+    Msg.Result := SearchExactString(PChar(Msg.LParam), False, Msg.WParam);
+    if Msg.Result > 0 then
+      Perform(LB_SETCURSEL, Msg.Result, 0);
+  end
+  else
+    inherited;
 end;
 
 function TJvCustomListBox.GetDragImages: TDragImageList;
@@ -979,19 +1586,19 @@ begin
 end;
 
 function TJvCustomListBox.SearchExactString(Value: string;
-  CaseSensitive: Boolean): Integer;
+  CaseSensitive: Boolean; StartIndex: Integer): Integer;
 begin
   Result := FItemSearchs.SearchExactString(Items, Value, CaseSensitive);
 end;
 
 function TJvCustomListBox.SearchPrefix(Value: string;
-  CaseSensitive: Boolean): Integer;
+  CaseSensitive: Boolean; StartIndex: Integer): Integer;
 begin
   Result := FItemSearchs.SearchPrefix(Items, Value, CaseSensitive);
 end;
 
 function TJvCustomListBox.SearchSubString(Value: string;
-  CaseSensitive: Boolean): Integer;
+  CaseSensitive: Boolean; StartIndex: Integer): Integer;
 begin
   Result := FItemSearchs.SearchSubString(Items, Value, CaseSensitive);
 end;
@@ -1278,6 +1885,14 @@ begin
   end
   else
     FillChar(Result, SizeOf(Result), 0);
+end;
+
+function TJvCustomListBox.ItemsShowing: TStrings;
+begin
+  if IsProviderSelected then
+    Result := ConsumerStrings
+  else
+    Result := Items;
 end;
 
 procedure TJvCustomListBox.WndProc(var Msg: TMessage);
