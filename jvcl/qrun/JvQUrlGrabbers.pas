@@ -15,7 +15,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvUrlGrabbers.Pas, released on 2003-08-04.
 
-The Initial Developer of the Original Code is Olivier Sannier [obones@meloo.com]
+The Initial Developer of the Original Code is Olivier Sannier [obones att altern dott org]
 Portions created by Olivier Sannier are Copyright (C) 2003 Olivier Sannier.
 All Rights Reserved.
 

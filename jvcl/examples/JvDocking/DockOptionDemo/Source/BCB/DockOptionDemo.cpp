@@ -4,7 +4,7 @@
 
  Copyright (C) 2004 Project JEDI
 
- Original author: Olivier Sannier (obones@meloo.com)
+ Original author: Olivier Sannier (obones att altern dott org)
 
  You may retrieve the latest version of this file at the JEDI-JVCL
  home page, located at http://jvcl.sourceforge.net

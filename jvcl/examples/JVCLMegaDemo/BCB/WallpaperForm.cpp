@@ -4,7 +4,7 @@
 
  Copyright (C) 2004 Project JEDI
 
- Original author: Olivier Sannier (obones@meloo.com)
+ Original author: Olivier Sannier (obones att altern dott org)
 
  This is a port from the demo written in Delphi by
    Ralf Grenzing [ralfgspam@gmx.de]
