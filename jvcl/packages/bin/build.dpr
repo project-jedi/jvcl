@@ -824,11 +824,53 @@ begin
     SetEnvironmentVariable('HPPDIR', '$(ROOT)\Include\Vcl');
 end;
 
+procedure ClearEnvironment;
+{ ClearEnvironment deletes almost all environment variables }
+var
+  EnvP, P, StartP: PChar;
+  S: string;
+begin
+  EnvP := GetEnvironmentStrings;
+  if EnvP <> nil then
+  begin
+    try
+      P := EnvP;
+      StartP := P;
+      repeat
+        while P^ <> #0 do
+          Inc(P);
+        if P^ = #0 then
+        begin
+          SetString(S, StartP, P - StartP);
+          S := Copy(S, 1, Pos('=', S) - 1);
+          if S <> '' then
+          begin
+            { Delete the environment variable }
+            if (S <> 'TEMP') and (S <> 'ComSpec') and (S <> 'OS') and
+               (S <> 'PATHEXT') and (S <> 'windir') and (S <> 'systemroot') then
+              SetEnvironmentVariable(PChar(S), nil);
+          end;
+
+          Inc(P);
+          if P^ = #0 then
+            Break; // finished
+
+          StartP := P;
+        end;
+      until False;
+    finally
+      FreeEnvironmentStrings(EnvP);
+    end;
+  end;
+end;
+
 var
   i: Integer;
   Path: string;
   ed: TEdition;
 begin
+  ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
+
   JVCLRootDir := ExtractFileDir(ParamStr(0)); // $(JVCL)\Packages\bin
   JVCLRootDir := ExtractFileDir(JVCLRootDir); // $(JVCL)\Packages
   JVCLRootDir := ExtractFileDir(JVCLRootDir); // $(JVCL)
