@@ -513,7 +513,6 @@ type
     procedure SetParentStyleManager(const Value: Boolean);
     function IsColorsStored: Boolean;
   protected
-    procedure Paint; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
@@ -523,6 +522,7 @@ type
     {$ENDIF VisualCLX}
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
+    procedure PaintButton(Canvas: TCanvas); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2501,7 +2501,7 @@ begin
   end;
 end;
 
-procedure TJvNavPanelButton.Paint;
+procedure TJvNavPanelButton.PaintButton(Canvas:TCanvas);
 //const
 //  cAlignment: array [TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
 //  cWordWrap: array [Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
@@ -3405,6 +3405,7 @@ end;
 constructor TJvOutlookSplitter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csOpaque]; 
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
   FColorFrom := TColor($B78676);
@@ -5019,6 +5020,7 @@ end;
 procedure TJvNavPaneToolButton.SetAction(const Value: TBasicAction);
 begin
   FRealButton.Action := Value;
+  FRealButton.ActionChange(Value, false);
 end;
 
 procedure TJvNavPaneToolButton.SetEnabled(const Value: Boolean);
