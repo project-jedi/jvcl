@@ -409,6 +409,9 @@ implementation
 uses
   JclSysUtils, JvFunctions, JvTypes;
 
+const
+  TVIS_CHECKED = $2000;
+
 // === TJvIpAddressRange =====================================================
 
 constructor TJvIpAddressRange.Create(Control: TWinControl);

@@ -42,7 +42,7 @@ type
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
     FImages: TImageList;
-    FOnUrlClick: TOnUrlClick;
+    FOnUrlClick: TOnLinkClick;
     FOnPopup: TNotifyEvent;
     procedure UrlClick(Sender: TObject);
   protected
@@ -56,7 +56,7 @@ type
     destructor Destroy; override;
     procedure Click; override;
   published
-    property OnUrlClick: TOnUrlClick read FOnUrlClick write FOnUrlClick;
+    property OnUrlClick: TOnLinkClick read FOnUrlClick write FOnUrlClick;
     property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
   end;
 

@@ -1008,7 +1008,7 @@ implementation
 
 uses
   Consts, Math,
-  JvCtlConst, JvStrUtil;
+  JvCtlConst, JvStrUtil, JvTypes;
 
 {$IFDEF RAEDITOR_UNDO}
 
@@ -1395,7 +1395,7 @@ begin
       L := Length(Strings[Count - 1]);
     while FRAEditor.FCaretY > Count - 1 do
     begin
-      TJvReLineUndo.Create(FRAEditor, L, FRAEditor.FCaretY, #13#10);
+      TJvReLineUndo.Create(FRAEditor, L, FRAEditor.FCaretY, CrLf);
       L := 0;
       Add('');
     end;
@@ -2682,7 +2682,7 @@ begin
         begin
           DeleteSelected;
           {$IFDEF RAEDITOR_UNDO}
-          TJvInsertUndo.Create(Self, FCaretX, FCaretY, #13#10);
+          TJvInsertUndo.Create(Self, FCaretX, FCaretY, CrLf);
           CaretUndo := False;
           {$ENDIF RAEDITOR_UNDO}
           Inc(FUpdateLock);
@@ -2708,7 +2708,7 @@ begin
             else
               X := 0;
             UpdateEditorSize;
-            TextModified(F, maInsert, #13#10);
+            TextModified(F, maInsert, CrLf);
           finally
             Dec(FUpdateLock);
           end;
@@ -2828,7 +2828,7 @@ begin
           begin
             { on end of line - в конце строки}
             {$IFDEF RAEDITOR_UNDO}
-            TJvDeleteUndo.Create(Self, FCaretX, FCaretY, #13#10);
+            TJvDeleteUndo.Create(Self, FCaretX, FCaretY, CrLf);
             CaretUndo := False;
             {$ENDIF RAEDITOR_UNDO}
             S := FLines.Text[SelStart + 1] + FLines.Text[SelStart + 2];
@@ -2882,7 +2882,7 @@ begin
           F := FindNotBlankCharPos(FLines[FCaretY]);
           S2 := Spaces(GetDefTabStop(F, True) - FCaretX);
           S := SelText;
-          S := ReplaceString(S, #13#10, #13#10 + S2);
+          S := ReplaceString(S, CrLf, CrLf + S2);
           Delete(S, Length(S) - Length(S2) + 1, Length(S2));
           SetSelText1(S2 + S)
         end;
@@ -2893,7 +2893,7 @@ begin
           F := FindNotBlankCharPos(FLines[FCaretY]);
           S2 := Spaces(GetDefTabStop(F, True) - FCaretX);
           S := SelText;
-          S := ReplaceString(S, #13#10 + S2, #13#10);
+          S := ReplaceString(S, CrLf + S2, CrLf);
           for iBeg := 1 to Length(S2) do
             if S[1] = ' ' then
               Delete(S, 1, 1)
@@ -3475,7 +3475,7 @@ begin
     for i := FSelBegY to FSelEndY do
     begin
       S1 := Copy(FLines[i], FSelBegX + 1, FSelEndX - FSelBegX + 1);
-      S1 := S1 + Spaces((FSelEndX - FSelBegX + 1) - Length(S1)) + #13#10;
+      S1 := S1 + Spaces((FSelEndX - FSelBegX + 1) - Length(S1)) + CrLf;
       Result := Result + S1;
     end;
   end
@@ -3488,8 +3488,8 @@ begin
     begin
       Result := Copy(FLines[FSelBegY], FSelBegX + 1, Length(FLines[FSelBegY]));
       for i := FSelBegY + 1 to FSelEndY - 1 do
-        Result := Result + #13#10 + FLines[i];
-      Result := Result + #13#10 + Copy(FLines[FSelEndY], 1, FSelEndX +
+        Result := Result + CrLf + FLines[i];
+      Result := Result + CrLf + Copy(FLines[FSelEndY], 1, FSelEndX +
         Integer(FSelBlockFormat = bfInclusive));
     end;
   end;
@@ -4971,7 +4971,7 @@ begin
     for i := FSelBegY to FSelEndY do
     begin
       S := FRAEditor.FLines[i];
-      Insert(SubStr(FText, i - FSelBegY, #13#10), S, FSelBegX + 1);
+      Insert(SubStr(FText, i - FSelBegY, CrLf), S, FSelBegX + 1);
       FRAEditor.FLines[i] := S;
     end;
   end;
@@ -5126,7 +5126,7 @@ begin
         end;
       cmTemplates:
         begin
-          S1 := ReplaceString(NewString, FCRLF, #13#10 + Spaces(FCaretX -
+          S1 := ReplaceString(NewString, FCRLF, CrLf + Spaces(FCaretX -
             Length(W)));
           S1 := ReplaceString(S1, FCaretChar, '');
           NewCaret := Pos(FCaretChar, NewString) - 1;

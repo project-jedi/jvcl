@@ -89,7 +89,7 @@ procedure PackTable(Table: TTable);
 
 procedure PackEncryptedTable(Table: TTable; pswd: string);
 
-function EncodeQuates(const S: string): string;
+function EncodeQuotes(const S: string): string;
 
 {*********************** from JvStrUtil unit ***********************}
 
@@ -118,6 +118,9 @@ procedure GetXYByPos(const S: string; const Pos: Integer; var X, Y: Integer);
 {####################### from JvStrUtil unit #######################}
 
 implementation
+
+uses
+  JvTypes;
 
 {$IFNDEF COMPILER3_UP}
 
@@ -695,11 +698,11 @@ begin
   Table.Open;
 end;
 
-function EncodeQuates(const S: string): string;
+function EncodeQuotes(const S: string): string;
 begin
   Result := S;
-  Result := ReplaceString(Result, #13#10, #13);
-  Result := ReplaceString(Result, #13, '\#13');
+  Result := ReplaceString(Result, CrLf, Cr);
+  Result := ReplaceString(Result, Cr, '\#13');
   Result := ReplaceString(Result, '"', '\#34');
   Result := ReplaceString(Result, ',', '\#44');
 end;

@@ -35,10 +35,17 @@ uses
   JvImageDrawThread, JVCLVer;
 
 type
+  TJvStars = record
+    X: Integer;
+    Y: Integer;
+    Color: TColor;
+    Speed: Integer;
+  end;
+
   TJvStarfield = class(TGraphicControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FStarfield: array of TStars;
+    FStarfield: array of TJvStars;
     FThread: TJvImageDrawThread;
     FActive: Boolean;
     FDelay: Cardinal;

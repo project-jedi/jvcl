@@ -610,7 +610,8 @@ uses
   {$IFDEF COMPILER3_UP}
   OleCtnrs,
   {$ENDIF}
-  Printers, ComStrs, OleConst, OleDlg, Math;
+  Printers, ComStrs, OleConst, OleDlg, Math,
+  JvTypes;
 
 const
   RTFConversionFormat: TRichConversionFormat =
@@ -3230,9 +3231,9 @@ begin
     if Selection.cpMin >= 0 then
     begin
       if RichEditVersion = 1 then
-        Fmt := '%s'#13#10
+        Fmt := '%s' + CrLf
       else
-        Fmt := '%s'#13;
+        Fmt := '%s' + Cr;
     end
     else
     begin
@@ -3244,9 +3245,9 @@ begin
         Exit;
       Inc(Selection.cpMin, L);
       if RichEditVersion = 1 then
-        Fmt := #13#10'%s'
+        Fmt := CrLf + '%s'
       else
-        Fmt := #13'%s';
+        Fmt := Cr + '%s';
     end;
     Selection.cpMax := Selection.cpMin;
     SendMessage(FRichEdit.Handle, EM_EXSETSEL, 0, Longint(@Selection));

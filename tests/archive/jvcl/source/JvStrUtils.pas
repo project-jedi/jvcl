@@ -181,7 +181,6 @@ function RomanToInt(const S: string): Longint;
   doesn't contain a valid roman numeric value, the 0 value is returned. }
 
 const
-  CRLF = #13#10;
   DigitChars = ['0'..'9'];
   {$IFNDEF CBUILDER}
   Brackets = ['(', ')', '[', ']', '{', '}'];

@@ -222,7 +222,7 @@ implementation
 uses
   Math,
   JclSysUtils,
-  JvFunctions;
+  JvFunctions, JvTypes;
 
 resourcestring
   RsListIndex = 'Process list index error';
@@ -1364,7 +1364,7 @@ end;
 
 function TJvCreateProcess.WriteLn(const S: string): Boolean;
 begin
-  Result := Write(S + #13#10);
+  Result := Write(S + CrLf);
 end;
 
 end.

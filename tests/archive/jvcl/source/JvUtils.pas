@@ -261,7 +261,7 @@ function ReplaceAllSokr(S: string; Words, Frases: TStrings): string;
   and then update NewSelStart variable }
 function ReplaceSokr(S: string; PosBeg, Len: Integer; Words, Frases: TStrings; var NewSelStart: Integer): string;
 { CountOfLines calculates the lines count in a string, S,
-  each line must be separated from another with #13#10 sequence }
+  each line must be separated from another with CrLf sequence }
 function CountOfLines(const S: string): Integer;
 { DeleteEmptyLines deletes all empty lines from strings, Ss.
   Lines contained only spaces also deletes. }

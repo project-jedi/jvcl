@@ -293,7 +293,7 @@ uses
   {$IFNDEF WIN32}
   JvStr16,
   {$ENDIF}
-  JvVCLUtils, JvAniFile, JvxConst;
+  JvVCLUtils, JvAniFile, JvxConst, JvTypes;
 
 {$R-}
 
@@ -2801,7 +2801,7 @@ begin
                 if (Ext <> nil) and (Ext.FExtType = etComment) then
                 begin
                   if FComment.Count > 0 then
-                    FComment.Add(#13#10#13#10);
+                    FComment.Add(CrLf+CrLf);
                   FComment.AddStrings(Ext.FData);
                 end;
               end;

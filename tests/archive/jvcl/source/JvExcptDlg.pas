@@ -100,9 +100,11 @@ uses
   OleAuto,
   {$ENDIF COMPILER3_UP}
   {$ELSE WIN32}
-  WinProcs, WinTypes, ToolHelp, JvStr16,
+  WinProcs, WinTypes, ToolHelp,
+  JvStr16,
   {$ENDIF WIN32}
-  Consts, JvxConst, JvStrUtils, JvVCLUtils;
+  Consts,
+  JvTypes, JvxConst, JvStrUtils, JvVCLUtils;
 
 {$R *.DFM}
 
@@ -113,9 +115,6 @@ const
 {$ENDIF}
   SCodeError = '%s.'#13#10'Error Code: %.8x (%1:d).';
   SModuleError = 'Exception in module %s.'#13#10'%s';
-
-const
-  CRLF = #13#10;
 
 procedure JvErrorIntercept;
 begin
@@ -239,8 +238,8 @@ begin
   ErrorType.Text := ExceptObj.ClassName;
   TypeLabel.Enabled := ErrorType.Text <> '';
   S := Trim(ExceptObj.Message);
-  if Pos(CRLF, S) = 0 then
-    S := ReplaceStr(S, #10, CRLF);
+  if Pos(CrLf, S) = 0 then
+    S := ReplaceStr(S, #10, CrLf);
   if ExceptObj is EInOutError then
     S := Format(SCodeError, [S, EInOutError(ExceptObj).ErrorCode])
   {$IFDEF WIN32}
@@ -249,7 +248,7 @@ begin
   begin
     with EOleException(ExceptObj) do
       if (Source <> '') and (AnsiCompareText(S, Trim(Source)) <> 0) then
-        S := S + CRLF + Trim(Source);
+        S := S + CrLf + Trim(Source);
     S := Format(SCodeError, [S, EOleException(ExceptObj).ErrorCode])
   end
   else
@@ -299,7 +298,7 @@ procedure TJvErrorDialog.GetErrorMsg(var Msg: string);
 var
   I: Integer;
 begin
-  I := Pos(CRLF, Msg);
+  I := Pos(CrLf, Msg);
   if I > 0 then
     System.Delete(Msg, I, MaxInt);
   if Assigned(FOnErrorMsg) then

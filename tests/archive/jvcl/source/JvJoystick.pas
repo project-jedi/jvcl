@@ -37,6 +37,17 @@ uses
 // (rom) in the time of USB this unit may have to support more than 2 joysticks
 
 type
+  TJoyCap = (joHasZCoordinate, joHasRudder, joHasUCoordinate, joHasVCoordinate, joHasPointOfVue,
+    joHasPointOfVDiscrete, joHasPointOfVContinuous);
+  TJoyCaps = set of TJoyCap;
+  TJoyButtonDown = procedure(Sender: TObject; X, Y: Integer; ButtonChanged: Integer; But1Pressed, But2Pressed,
+    But3Pressed, But4Pressed: Boolean) of object;
+  TJoyMove = procedure(Sender: TObject; X, Y: Integer;
+    But1Pressed, But2Pressed, But3Pressed, But4Pressed: Boolean) of object;
+  TJoyZMove = procedure(Sender: TObject; Z: Integer;
+    But1Pressed, But2Pressed, But3Pressed, But4Pressed: Boolean) of object;
+  TJoyErrorMsg = procedure(Sender: TObject; code: Integer; Msg: string) of object;
+
   TJoystick = class(TPersistent)
   private
     FJoyInfo: JOYINFO;
@@ -44,8 +55,8 @@ type
     FDummy: Cardinal;
     FDummyW: Word;
     FDummyS: string;
-    FCap: JvTypes.TJoyCaps;
-    FCaps2: JvTypes.TJoyCaps;
+    FCap: TJoyCaps;
+    FCaps2: TJoyCaps;
     FszRegKey: string;
     FszOEMVxD: string;
     FszPName: string;
@@ -90,7 +101,7 @@ type
     property VMin: Cardinal read FJoy.wVMin write FDummy stored False;
     property VMax: Cardinal read FJoy.wVMax write FDummy stored False;
     { (rb) FCaps2 is also a dummy, weird name }
-    property Capabilities: JvTypes.TJoyCaps read FCap write FCaps2 stored False;
+    property Capabilities: TJoyCaps read FCap write FCaps2 stored False;
     property MaxAxis: Cardinal read FJoy.wMaxAxes write FDummy stored False;
     property NumAxis: Cardinal read FJoy.wNumAxes write FDummy stored False;
     property MaxButtons: Cardinal read FJoy.wMaxButtons write FDummy stored False;

@@ -39,21 +39,13 @@ uses
 
 const
   MaxPixelCount = 32768;
-  SHFMT_ID_DEFAULT = $FFFF;
-  SHFMT_OPT_QUICKFORMAT = $0000;
-  SHFMT_OPT_FULL = $0001;
-  SHFMT_OPT_SYSONLY = $0002;
-  SHFMT_ERROR = -1;
-  SHFMT_CANCEL = -2;
-  SHFMT_NOFORMAT = -3;
-  TVIS_CHECKED = $2000;
+  // (rom) unused
   {$IFDEF COMPILER7_UP}
+  // (rom) is this correct?
   DEFAULT_SYSCOLOR_MASK = $000000FF;
   {$ELSE}
   DEFAULT_SYSCOLOR_MASK = $80000000;
   {$ENDIF}
-  AF_ICON = $00000001;
-  AF_SEQUENCE = $00000002;
 
 type
   {$IFNDEF COMPILER5_UP}
@@ -62,11 +54,8 @@ type
   {$ENDIF}
   // base JVCL Exception class to derive from
   EJVCLException = class(Exception);
-  TOnUrlClick = procedure(Sender: TObject; Url: string) of object;
   TOnLinkClick = procedure(Sender: TObject; Link: string) of object;
-  // the signature of procedures in DLL's that can be called using rundll32.exe
-  TRunDLL32Proc = procedure(Handle: HWnd; hInstance: THandle; CmdLine: PChar; CmdShow: integer); stdcall;
-  TOnChangeKey = procedure(Sender: TObject; Rootkey: HKEY; Path: string) of object;
+  TOnRegistryChangeKey = procedure(Sender: TObject; RootKey: HKEY; Path: string) of object;
   TLabelDirection = (sdLeftToRight, sdRightToLeft);
   TAngle = 0..360;
   TDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom);
@@ -103,23 +92,6 @@ type
     ttTurnLeft, ttTurnRight, ttTurnUp, ttTurnDown,
     ttWipeDownRight, ttWipeDownLeft, ttWipeUpRight, ttWipeUpLeft);
   TJvWaveLocation = (frFile, frResource, frRAM);
-  TStars = record
-    X: Integer;
-    Y: Integer;
-    Color: TColor;
-    Speed: Integer;
-  end;
-  TJoyCap = (joHasZCoordinate, joHasRudder, joHasUCoordinate, joHasVCoordinate, joHasPointOfVue,
-    joHasPointOfVDiscrete, joHasPointOfVContinuous);
-  TJoyCaps = set of TJoyCap;
-  TJoyButtonDown = procedure(Sender: TObject; X, Y: Integer; ButtonChanged: Integer; But1Pressed, But2Pressed,
-    But3Pressed, But4Pressed: Boolean) of object;
-  TJoyMove = procedure(Sender: TObject; X, Y: Integer; But1Pressed, But2Pressed, But3Pressed, But4Pressed: Boolean) of
-    object;
-  TJoyZMove = procedure(Sender: TObject; Z: Integer; But1Pressed, But2Pressed, But3Pressed, But4Pressed: Boolean) of
-    object;
-  TJoyErrorMsg = procedure(Sender: TObject; code: Integer; Msg: string) of object;
-  TBright = 0..200;
 
   TPopupPosition = (ppNone, ppForm, ppApplication);
   TJvDirMask = (dmFileNameChange, dmDirnameChange, dmAttributesChange, dmSizeChange, dmLastWriteChange,
@@ -144,11 +116,12 @@ type
     TakeText: Integer;
   end;
 
-  { (rom) unused and silly
   const
-    cr = #13#10;
-  }
+    CrLf = #13#10;
+    Cr = #13;
+    Lf = #10;
 
+type
   TGradStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
   TOnDelete = procedure(Sender: TObject; Path: string) of object;
   TOnParent = procedure(Sender: TObject; ParentWindow: THandle) of object;

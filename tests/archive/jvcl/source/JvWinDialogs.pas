@@ -316,7 +316,7 @@ type
     property FileName: string read FFileName write FFileName;
   end;
 
-  TJvDiskFullDialog = class(TJvCommonDialog)
+  TJvDiskFullDialog = class(TJvCommonDialogF)
   private
     FDriveChar: Char;
     procedure SetDriveChar(Value: Char);
@@ -410,8 +410,8 @@ var
   SHChangeIconW: SHChangeIconProcW = nil;
 
 resourcestring
-  SDiskFullError =
-    'TJvDiskFullDialog does not support removable media or network drives.';
+  //SDiskFullError =
+  //  'TJvDiskFullDialog does not support removable media or network drives.';
   SNotSupported = 'This function is not supported by your version of Windows';
   SInvalidDriveChar = 'Invalid drive (%s)';
   SUnsupportedDisk =
@@ -1350,9 +1350,10 @@ begin
     raise EWinDialogError.Create(SNotSupported);
   Result := GetDriveType(PChar(DriveChar + ':\')) = 3;
   if Result then
-    SHHandleDiskFull(GetFocus, GetDrive)
-  else
-    raise EWinDialogError.CreateFmt(SUnSupportedDisk, [DriveChar]);
+    SHHandleDiskFull(GetFocus, GetDrive);
+  // (rom) disabled to make Result work
+  //else
+  //  raise EWinDialogError.CreateFmt(SUnSupportedDisk, [DriveChar]);
 end;
 
 procedure TJvDiskFullDialog.SetDriveChar(Value: Char);

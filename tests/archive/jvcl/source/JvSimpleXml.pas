@@ -358,7 +358,6 @@ resourcestring
   RS_INVALID_SimpleXml = 'Invalid XML file';
   {$IFNDEF COMPILER6_UP}
   SInvalidBoolean = '''%s'' is not a valid Boolean value';
-  SLineBreak = #13#10;
   {$ENDIF COMPILER6_UP}
 
 implementation
@@ -1766,17 +1765,17 @@ begin
   if Items.Count = 0 then
   begin
     if Value = '' then
-      St := '/>' + sLineBreak
+      St := '/>' + CrLf
     else
-      St := '>' + SimpleXmlEncode(Value) + '</' + Name + '>' + sLineBreak;
+      St := '>' + SimpleXmlEncode(Value) + '</' + Name + '>' + CrLf;
     Stream.Write(St[1], Length(St));
   end
   else
   begin
-    St := '>' + sLineBreak;
+    St := '>' + CrLf;
     Stream.Write(St[1], Length(St));
     Items.SaveToStream(Stream, Level + ' ', Parent);
-    St := Level + '</' + Name + '>' + sLineBreak;
+    St := Level + '</' + Name + '>' + CrLf;
     Stream.Write(St[1], Length(St));
   end;
   if Parent <> nil then
@@ -1866,7 +1865,7 @@ begin
   Stream.Write(St[1], Length(St));
   if Value <> '' then
     Stream.Write(Value[1], Length(Value));
-  St := '-->' + sLineBreak;
+  St := '-->' + CrLf;
   Stream.Write(St[1], Length(St));
   if Parent <> nil then
     Parent.DoSaveProgress;
@@ -1955,7 +1954,7 @@ begin
   Stream.Write(St[1], Length(St));
   if Value <> '' then
     Stream.Write(Value[1], Length(Value));
-  St := ']]>' + sLineBreak;
+  St := ']]>' + CrLf;
   Stream.Write(St[1], Length(St));
   if Parent <> nil then
     Parent.DoSaveProgress;
@@ -2021,7 +2020,7 @@ var
 begin
   if Value <> '' then
   begin
-    St := Level + SimpleXmlEncode(Value) + sLineBreak;
+    St := Level + SimpleXmlEncode(Value) + CrLf;
     Stream.Write(St[1], Length(St));
   end;
   if Parent <> nil then
@@ -2124,7 +2123,7 @@ begin
     St := St + ' standalone="yes"';
   if Encoding <> '' then
     St := St + ' encoding="' + Encoding + '"';
-  St := St + '?>' + sLineBreak;
+  St := St + '?>' + CrLf;
   Stream.Write(St[1], Length(St));
   if Parent <> nil then
     Parent.DoSaveProgress;
@@ -2216,7 +2215,7 @@ procedure TJvSimpleXmlElemDocType.SaveToStream(const Stream: TStream;
 var
   St: string;
 begin
-  St := '<!DOCTYPE ' + Value + '>' + sLineBreak;
+  St := '<!DOCTYPE ' + Value + '>' + CrLf;
   Stream.Write(St[1], Length(St));
   if Parent <> nil then
     Parent.DoSaveProgress;
@@ -2304,7 +2303,7 @@ begin
   St := Level + '<?xml-stylesheet';
   for I := 0 to Properties.GetCount - 1 do
     St := St + Properties.Item[I].SaveToString;
-  St := St + '?>' + sLineBreak;
+  St := St + '?>' + CrLf;
   Stream.Write(St[1], Length(St));
   if Parent <> nil then
     Parent.DoSaveProgress;

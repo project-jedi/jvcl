@@ -272,6 +272,10 @@ function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer):
  To get more info on what can actually be called using rundll32.exe, take a look at
  http://www.dx21.com/SCRIPTING/RUNDLL32/REFGUIDE.ASP?NTI=4&SI=6
 }
+type
+  // the signature of procedures in DLL's that can be called using rundll32.exe
+  TRunDLL32Proc = procedure(Handle: HWND; hInstance: HMODULE; CmdLine: PChar; CmdShow: Integer); stdcall;
+
 function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion: Boolean; CmdShow: Integer =
   SW_SHOWDEFAULT): Boolean;
 { RunDll32Internal does the same as RunDLL32 but does not use the RunDLL32.exe application to do it.
@@ -282,7 +286,7 @@ function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion
  * You must pass in a valid windows handle in Wnd. Note that if you pass 0, the call might fail, with no indication of why.
  * To simulate WaitForCompletion = False, pass the return value of GetDesktopWindow as the Wnd parameter,
  * To simulate WaitForCompletion = True, pass the handle of the calling window (f ex the form you are calling the procedure from)
- * If you try to call a function in a DLL that doesn't use the TRunDLL32Proc signature (declared in JvTypes), your program
+ * If you try to call a function in a DLL that doesn't use the TRunDLL32Proc signature, your program
    might crash. Using the RunDLL32 function protects you from any problems with calling the wrong functions
    (a dialog is displayed if do something wrong)
  * RunDll32Internal is slightly faster but RunDLL32 is safer
@@ -328,7 +332,7 @@ const
 var
   ShellVersion: Integer;
 
-  {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
 
 procedure RaiseLastOSError;
 begin

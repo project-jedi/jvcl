@@ -232,7 +232,7 @@ var
 implementation
 
 uses
-  JvStrUtil, JvDsgnIntf;
+  JvStrUtil, JvDsgnIntf, JvTypes;
 
 const
   cSlash = '/';
@@ -1001,9 +1001,9 @@ var
   S: string;
 begin
   S := Strings.Text;
-  S := ReplaceString(S, #13#10, '|');
+  S := ReplaceString(S, CrLf, '|');
   S := ReadString(ConcatSep(FSection, Section, cSlash), Ident, S);
-  S := ReplaceString(S, '|', #13#10);
+  S := ReplaceString(S, '|', CrLf);
   Strings.Text := S;
 end;
 
@@ -1012,7 +1012,7 @@ var
   S: string;
 begin
   S := Value.Text;
-  S := ReplaceString(S, #13#10, '|');
+  S := ReplaceString(S, CrLf, '|');
   WriteString(ConcatSep(FSection, Section, cSlash), Ident, S);
 end;
 

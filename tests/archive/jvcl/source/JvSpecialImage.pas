@@ -35,16 +35,18 @@ uses
   JvTypes, JVCLVer;
 
 type
+  TJvBright = 0..200;
+
   TJvSpecialImage = class(TImage)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FInverted: Boolean;
     FFlipped: Boolean;
-    FBrightness: TBright;
+    FBrightness: TJvBright;
     FOriginal: TPicture;
     FMirrored: Boolean;
     FWorking: Boolean;
-    procedure SetBright(Value: TBright);
+    procedure SetBright(Value: TJvBright);
     procedure SetFlipped(const Value: Boolean);
     procedure SetInverted(const Value: Boolean);
     procedure SetMirrored(const Value: Boolean);
@@ -59,7 +61,7 @@ type
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property Brightness: TBright read FBrightness write SetBright default 100;
+    property Brightness: TJvBright read FBrightness write SetBright default 100;
     property Inverted: Boolean read FInverted write SetInverted default False;
     property Flipped: Boolean read FFlipped write SetFlipped default False;
     property Mirrored: Boolean read FMirrored write SetMirrored default False;
@@ -267,7 +269,7 @@ begin
   Picture.Assign(FOriginal);
 end;
 
-procedure TJvSpecialImage.SetBright(Value: TBright);
+procedure TJvSpecialImage.SetBright(Value: TJvBright);
 begin
   FBrightness := Value;
   ApplyChanges;

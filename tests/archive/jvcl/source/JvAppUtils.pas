@@ -134,7 +134,7 @@ implementation
 
 uses
   SysUtils, Messages, Consts,
-  JvStrUtils, JvFileUtil, JvPlacemnt;
+  JvTypes, JvStrUtils, JvFileUtil, JvPlacemnt;
 
 function GetDefaultSection(Component: TComponent): string;
 var
@@ -297,7 +297,7 @@ var
 begin
   Result := Str;
   repeat
-    N := Pos(#13#10, Result);
+    N := Pos(CrLf, Result);
     if N > 0 then
       Result := Copy(Result, 1, N-1) + '\n' + Copy(Result, N+2, Length(Result));
   until N = 0;
@@ -316,7 +316,7 @@ begin
   repeat
     N := Pos('\n', Result);
     if N > 0 then
-      Result := Copy(Result, 1, N-1) + #13#10 + Copy(Result, N+2, Length(Result));
+      Result := Copy(Result, 1, N-1) + CrLf + Copy(Result, N+2, Length(Result));
   until N = 0;
 end;
 

@@ -1378,15 +1378,15 @@ begin
     Done := SIdx = Length(Result);
     if not Done then
     begin
-      while (SIdx < Length(Result)) and (Copy(Result, SIdx, 2) <> #13#10) do
+      while (SIdx < Length(Result)) and (Copy(Result, SIdx, 2) <> CrLf) do
         Inc(SIdx);
-      Done := Copy(Result, SIdx, 2) = #13#10;
+      Done := Copy(Result, SIdx, 2) = CrLf;
       if Done then
         SetLength(Result, SIdx + 1);
     end;
   until Done;
   Stream.Position := OrgPos + Length(Result);
-  if Copy(Result, Length(Result) - 1, 2) = #13#10 then
+  if Copy(Result, Length(Result) - 1, 2) = CrLf then
     SetLength(Result, Length(Result) - 2);
 end;
 
@@ -1419,7 +1419,7 @@ procedure TTxtStore.WriteLn(const S: string);
 var
   S2: string;
 begin
-  S2 := S + #13#10;
+  S2 := S + CrLf;
   Stream.WriteBuffer(S2[1], Length(S2));
 end;
 

@@ -120,6 +120,9 @@ const
   FOURCC_fram = 'fram';
   FOURCC_icon = 'icon';
 
+  AF_ICON     = $00000001;
+  AF_SEQUENCE = $00000002;
+
 function PadUp(Value: Longint): Longint;
 begin
   Result := Value + (Value mod 2); // Up Value to nearest word boundary

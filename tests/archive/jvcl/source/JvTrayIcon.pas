@@ -184,10 +184,6 @@ const
   NIN_BALLOONTIMEOUT = WM_USER + 4;
   NIN_BALLOONUSERCLICK = WM_USER + 5;
 
-  {$IFDEF COMPILER5}
-  sLineBreak = #13#10;
-  {$ENDIF}
-
 {$IFNDEF COMPILER6_UP}
 function SecondsBetween(const Now: TDateTime; const FTime: TDateTime): Integer;
 begin
@@ -388,7 +384,7 @@ begin
   DoCheckCrash;
   //Remove sLineBreak on w98/me as they are not supported
   if not AcceptBalloons then
-    FHint := StringReplace(Value, sLineBreak, ' - ', [rfReplaceAll])
+    FHint := StringReplace(Value, CrLf, ' - ', [rfReplaceAll])
   else
     FHint := Value;
 end;

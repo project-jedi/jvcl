@@ -392,9 +392,6 @@ uses
 {$IFNDEF DELPHI6_UP}
 type
   PBoolean = ^Boolean;
-
-const
-  sLineBreak = #13#10;
 {$ENDIF DELPHI6_UP}
 
 resourcestring
@@ -540,7 +537,7 @@ var
   DividerLine, ButtonCaptions: string;
   I: Integer;
 begin
-  DividerLine := StringOfChar('-', 27) + sLineBreak;
+  DividerLine := StringOfChar('-', 27) + CrLf;
   for I := 0 to ComponentCount - 1 do
     if Components[I] is TButton then
       ButtonCaptions := ButtonCaptions + TButton(Components[I]).Caption +
@@ -549,9 +546,9 @@ begin
   I := ComponentCount - 1;
   while (I > -1) and not (Components[I] is TLabel) do
     Dec(I);
-  Result := Format('%s%s%s%s%s%s%s%s%s%s', [DividerLine, Caption, sLineBreak,
-    DividerLine, TLabel(Components[I]).Caption, sLineBreak, DividerLine, ButtonCaptions,
-    sLineBreak, DividerLine]);
+  Result := Format('%s%s%s%s%s%s%s%s%s%s', [DividerLine, Caption, CrLf,
+    DividerLine, TLabel(Components[I]).Caption, CrLf, DividerLine, ButtonCaptions,
+    CrLf, DividerLine]);
 end;
 
 function TDSAMessageForm.IsDSAChecked: Boolean;
