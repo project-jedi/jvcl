@@ -68,7 +68,6 @@ type
     FOnStopChanged: TNotifyEvent;
     FOnBeginChange: TNotifyEvent;
     FTimer: TTimer;
-    FAutoSize: boolean;
     procedure SetImageThumb(Value: TBitmap);
     procedure SetImageRuler(Value: TBitmap);
     procedure ThumbChanged(Sender: TObject);
@@ -78,7 +77,7 @@ type
     procedure SetPosition(Value: Integer);
     procedure Loading(Sender: TObject);
   protected
-    procedure SetAutoSize(Value: Boolean);
+    procedure SetAutoSize(Value: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -94,12 +93,13 @@ type
     property Enabled;
     property Cursor;
     property DragMode;
+    property DragCursor;
     property ParentShowHint;
     property ShowHint;
     property TabOrder;
     property Width default 191;
     property Height default 11;
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
+    property AutoSize default True;
     property Horizontal: Boolean read FHorizontal write FHorizontal default True;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
     property Position: Integer read FPosition write SetPosition default 0;
@@ -121,12 +121,7 @@ type
 
 implementation
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvSlider.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvSlider.res}
-{$ENDIF LINUX}
 
 constructor TJvSlider.Create(AOwner: TComponent);
 begin
@@ -155,7 +150,7 @@ begin
   FTimer.Interval := 10;
   FTimer.OnTimer := Loading;
   FTimer.Enabled := True;
-  FAutoSize := True;
+  AutoSize := True;
 end;
 
 destructor TJvSlider.Destroy;
@@ -372,8 +367,7 @@ end;
 
 procedure TJvSlider.SetAutoSize(Value: Boolean);
 begin
-//  inherited SetAutoSize(Value);
-  FAutoSize := Value;
+  inherited SetAutoSize(Value);
   if Value then
   begin
     if (FImageRuler.Width > 0) and (FImageRuler.Height > 0) then

@@ -38,8 +38,8 @@ unit JvQTipOfDay;
 interface
 
 uses
-  Classes, Graphics, Controls, Messages, Forms, JvQAppStorage,
-  JvQBaseDlg, JvQButtonPersistent, JvQSpeedButton, JvQTypes, QStdCtrls;
+  Classes, Graphics, Controls, Messages, Forms, StdCtrls,
+  JvQAppStorage, JvQBaseDlg, JvQButtonPersistent, JvQSpeedButton, JvQTypes;
 
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
@@ -158,10 +158,10 @@ type
 implementation
 
 uses
-  Windows, ExtCtrls, JvQButton, QDialogs, SysUtils,
-  JvQWndProcHook, JvQResources;
+  Windows, ExtCtrls, Dialogs, SysUtils,
+  JvQButton, JvQWndProcHook, JvQResources;
 
-{$R ..\Resources\JvTipOfDay.res}
+{$R ../Resources/JvTipOfDay.res}
 
 type
   TControlAccess = class(TControl);

@@ -105,7 +105,7 @@ Maciej Kaczkowski:
 
 {$I jvcl.inc}
 
-unit JvQHTControls;
+unit JvQHtControls;
 
 interface
 
@@ -120,7 +120,7 @@ uses
 type
   THyperLinkClick = procedure (Sender: TObject; LinkName: string) of object;
 
-  TJvCustomHTListBox = class(TJvExCustomListBox)
+  TJvCustomHTListBox = class(TCustomListBox)
   private
     FHyperLinkClick: THyperLinkClick;
     FHideSel: Boolean;
@@ -560,7 +560,6 @@ begin
   RemFontColor := 0;
   RemBrushColor := 0;
   OldAlignment := taLeftJustify;
-  OldFont := TFont.Create;
 
   if Canvas <> nil then
   begin
@@ -570,7 +569,10 @@ begin
     OldAlignment  := Alignment;
     RemFontColor  := Canvas.Font.Color;
     RemBrushColor := Canvas.Brush.Color;
-  end;
+  end
+  else
+    exit;
+  OldFont := TFont.Create;
   try
     Alignment := taLeftJustify;
     IsLink := False;
@@ -818,28 +820,45 @@ function TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
 
 begin
+//  if (csLoading in ComponentState) or not assigned(Canvas) then
+//  begin
+//    Result := false;
+//    exit;
+//  end;
+  if not (csLoading in ComponentState)
+  then
+  begin
+
   if odSelected in State then
   begin
    Canvas.Brush.Color := FSelectedColor;
    Canvas.Font.Color  := FSelectedTextColor;
   end;
+  Canvas.Font := Font;
+  ItemHeight := CanvasMaxTextHeight(Canvas);
   if not Enabled then
     Canvas.Font.Color := FDisabledTextColor;
 
   Canvas.FillRect(Rect);
   ItemHTDraw(Canvas, Rect, State, Items[Index]);
-  
+
   Result := True;
-  
+  end
+  else
+    Result := False;
 end;
 
 
 
 procedure TJvCustomHTListBox.FontChanged;
 begin
-  inherited FontChanged;
+//  inherited FontChanged;
+//  Canvas.Font := Font;
+//  ItemHeight := CanvasMaxTextHeight(Canvas);
   Canvas.Font := Font;
-  ItemHeight := CanvasMaxTextHeight(Canvas);
+  ItemHeight := Canvas.TextHeight('W');
+  Invalidate;
+
 end;
 
 procedure TJvCustomHTListBox.SetHideSel(Value: Boolean);

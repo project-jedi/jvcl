@@ -348,6 +348,8 @@ type
   TExecOpenDialogEvent = procedure(Sender: TObject; var Name: string;
     var Action: Boolean) of object;
 
+  
+
   TJvFileDirEdit = class(TJvCustomComboEdit)
   private
     FErrMode: Cardinal;
@@ -366,6 +368,7 @@ type
     procedure ClearFileList; virtual;
     procedure DisableSysErrors;
     procedure EnableSysErrors;
+    
     property ImageKind default ikDefault;
     property MaxLength;
   public
@@ -813,12 +816,7 @@ uses
 const
   sUnitName = 'JvToolEdit';
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvToolEdit.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvToolEdit.res}
-{$ENDIF LINUX}
 
 type
   TWinControlHack = class(TWinControl);
@@ -3046,6 +3044,8 @@ end;
 constructor TJvFilenameEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FAddQuotes := True;
+  
   CreateEditDialog;
 end;
 
@@ -3399,9 +3399,10 @@ end;
 
 
 
+
+
 initialization
 
 finalization
   FinalizeUnit(sUnitName);
-
 end.

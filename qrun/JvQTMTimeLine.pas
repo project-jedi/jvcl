@@ -39,13 +39,10 @@ interface
 uses
   SysUtils, Classes,
   
-
+  
   Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,
-
+  
   JvQComponent, JvQExControls;
-
-ResourceString
-  SInvalidImage = 'Invalid image format';
 
 type
   TDate = TDateTime;
@@ -235,7 +232,7 @@ type
     property LeftButton;
     
   published
-    property AboutJVCLX;
+    property AboutJVCL;
     // gets / sets the borderstyle of the control and the scroll-buttons
     property BorderStyle;
     // gets / sets the width of the buttons
@@ -324,19 +321,13 @@ type
     
   end;
 
-
 implementation
 
 uses
-  QConsts,
+  Consts,
   JvQJVCLUtils, JvQThemes;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvTMTimeLine.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvTMTimeLine.res}
-{$ENDIF LINUX}
 
 const
   cMagic = 'Jv.TMTIMELINE1';

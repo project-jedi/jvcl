@@ -38,7 +38,7 @@ uses
   SysUtils, Classes,
   
   
-  Types, QGraphics, QControls, QStdCtrls, QTypes, QWindows,
+  Types, QGraphics, QControls, QStdCtrls, QWindows,
   
   JvQExStdCtrls;
 
@@ -66,10 +66,10 @@ type
     FWaiting: Boolean;
     FScale: Real;
     // (p3) renamed
-    FText: TCaption;
+    FText: string;
     FCharHeight: Integer;
     FCharWidth: Integer;
-    function GetCol(Ch: WideChar): Word;
+    function GetCol(Ch: Char): Word;
     function GetScrollBy: Integer;
     procedure SetActive(Value: Boolean);
     procedure SetStretch(Value: Boolean);
@@ -80,9 +80,9 @@ type
     procedure Deactivate;
     procedure UpdatePos;
     procedure DoOnTimer(Sender: TObject);
-    function GetRow(Ch: WideChar): Word;
+    function GetRow(Ch: Char): Word;
+    procedure SetText(Value: string);
   protected
-    procedure SetText(const Value: TCaption); override;
     procedure ColorChanged; override;
     procedure Paint; override;
     // (rom) made protected property
@@ -99,11 +99,11 @@ type
     property WaitOnEnd: Integer read FWait write FWait;
     property Skin: TPicture read FPicture write SetPicture;
     property Color;
-    property Text: TCaption read FText write SetText;
+    property Text: string read FText write SetText;
     property Align;
     property Alignment;
     property FocusControl;
-
+    
     property DragMode;
     property ParentColor;
     property ShowHint;
@@ -135,19 +135,13 @@ implementation
 uses
   JvQTypes, JvQResources;
 
+{$R ../Resources/JvWinampLabel.res}
+
 const
   // (p3) fixed as suggested by Remko Bonte
   Row1: string[31] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ"@ ';
   Row2: string[31] = '0123456789._:()-''!_+\/[]^&%.=$#';
   Row3: string[31] = 'ÂÖÄ?* ';
-
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvWinampLabel.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{$R ../Resources/JvWinampLabel.res}
-{$ENDIF LINUX}
-
 
 //=== TJvWinampThread ========================================================
 
@@ -309,11 +303,11 @@ begin
   Repaint;
 end;
 
-function TJvWinampLabel.GetCol(Ch: WideChar): Word;
+function TJvWinampLabel.GetCol(Ch: Char): Word;
 var
   Index: Integer;
 begin
-//  Ch := UpCase(Ch);
+  Ch := UpCase(Ch);
   Index := Pos(Ch, Row1);
   // (p3) Pos returns 0 on failure, not -1
   if Index = 0 then
@@ -327,8 +321,9 @@ begin
     Result := (Index - 1) * CharWidth;
 end;
 
-function TJvWinampLabel.GetRow(Ch: WideChar): Word;
+function TJvWinampLabel.GetRow(Ch: Char): Word;
 begin
+  Ch := UpCase(Ch);
   Result := 0;
   if Pos(Ch, Row2) <> 0 then
     Result := CharHeight
@@ -440,13 +435,13 @@ begin
   end;
 end;
 
-procedure TJvWinampLabel.SetText(const Value: TCaption);
+procedure TJvWinampLabel.SetText(Value: string);
 var
   Rec: TRect;
 begin
   if Value <> FText then
   begin
-    FText := WideUpperCase(Value);
+    FText := Value;
     FillBitmap;
     Rec.Top := 0;
     Rec.Left := 0;
