@@ -36,14 +36,11 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Menus, ExtCtrls, Buttons, Clipbrd,
-  {$ENDIF VCL}
   SysUtils, // SysUtils after Windows because both define Beep
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QExtCtrls,
-  QButtons, QClipbrd, Types, QImgList, QWindows,
+  QImgList,
   {$ENDIF VisualCLX}
   JvToolEdit, JvSpeedButton, JvBaseDlg, JvExExtCtrls;
 
@@ -133,10 +130,10 @@ uses
   JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
 
 {$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCalc.res}
+{$R ..\Resources\JvCalc.Res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvCalc.res}
+{$R ../Resources/JvCalc.Res}
 {$ENDIF LINUX}
 
 type

@@ -35,13 +35,10 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF VCL}
   Windows, Messages,
   Controls, Graphics, Forms, Buttons, StdCtrls, Grids, ExtCtrls,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QTypes, QControls, QGraphics, QForms, QButtons, QStdCtrls, QGrids, QExtCtrls,
-  Types, QWindows,
+  QTypes,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvTypes, JvExGrids;
@@ -154,21 +151,16 @@ const
 implementation
 
 uses
-  {$IFDEF VCL}
-  Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   Math,
+  Consts,
   JvThemes, JvConsts, JvResources, JvJCLUtils,
   JvToolEdit, JvSpeedButton;
 
 {$IFDEF MSWINDOWS}
-{$R ..\Resources\JvPickDate.res}
+{$R ..\Resources\JvPickDate.Res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvPickDate.res}
+{$R ../Resources/JvPickDate.Res}
 {$ENDIF LINUX}
 
 const
