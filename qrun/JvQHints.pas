@@ -38,7 +38,8 @@ uses
   
   QGraphics, QControls, QForms, Types, QWindows,
   
-  Classes;
+  Classes,
+  JvQTypes;
 
 type
   THintStyle = (hsRectangle, hsRoundRect, hsEllipse);
@@ -64,13 +65,11 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ActivateHint(Rect: TRect;
-      const AHint:  WideString ); override;
+      const AHint: THintString); override;
     procedure ActivateHintData(Rect: TRect;
-      const AHint:  WideString ;
-      AData: Pointer); override;
+      const AHint: THintString; AData: Pointer); override;
     function CalcHintRect(MaxWidth: Integer;
-      const AHint:  WideString ;
-      AData: Pointer): TRect;override;
+      const AHint: THintString; AData: Pointer): TRect;override;
   end;
 
 procedure SetHintStyle(Style: THintStyle; ShadowSize: THintShadowSize;
@@ -298,7 +297,7 @@ begin
 end;
 
 procedure TJvHintWindow.ActivateHint(Rect: TRect;
-  const AHint:  WideString );
+  const AHint: THintString);
 var
   R: TRect;
   ScreenDC: HDC;
@@ -402,7 +401,7 @@ begin
 end;
 
 function TJvHintWindow.CalcHintRect(MaxWidth: Integer;
-  const AHint:  WideString ;
+  const AHint: THintString;
   AData: Pointer): TRect;
 const
   Flag: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -457,8 +456,7 @@ begin
 end;
 
 procedure TJvHintWindow.ActivateHintData(Rect: TRect;
-  const AHint:  WideString ;
-  AData: Pointer);
+  const AHint: THintString; AData: Pointer);
 begin
   ActivateHint(Rect, AHint);
 end;

@@ -43,17 +43,14 @@ uses
   
   QWindows, QControls, QForms, QExtCtrls, QGraphics, QTypes, Types, Qt,
   
-  JvQHtControls;
+  JvQHtControls, JvQTypes;
 
 type
-
-
   TJvHintWindow = class(THintWindow)
   public
     property Caption;
   end;
   TJvHintWindowClass = class of TJvHintWindow;
-
 
   TJvHint = class(TComponent)
   private
@@ -63,21 +60,15 @@ type
     R: TRect;
     Area: TRect;
     State: (tmBeginShow, tmShowing, tmStopped);
-    
-    
-    Txt: Widestring;
+    Txt: THintString;
     HintWindow: TJvHintWindow;
-    
     TimerHint: TTimer;
     FDelay: Integer;
     procedure TimerHintTimer(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    
-    
-    procedure ActivateHint(AArea: TRect; ATxt: widestring);
-    
+    procedure ActivateHint(AArea: TRect; ATxt: THintString);
     procedure CancelHint;
   published
     property AutoHide: Boolean read FAutoHide write FAutoHide default True;
@@ -91,8 +82,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     function CalcHintRect(MaxWidth: Integer;
-               const AHint: WideString;
-               AData: Pointer): TRect;override;
+      const AHint: THintString; AData: Pointer): TRect; override;
   end;
 
 procedure RegisterHtHints;
@@ -112,10 +102,7 @@ begin
   TimerHint.Enabled := False;
   TimerHint.Interval := 50;
   TimerHint.OnTimer := TimerHintTimer;
-  
-  
   HintWindow := TJvHintWindowClass.Create(Self);
-  
   FAutoHide := True;
 end;
 
@@ -126,7 +113,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvHint.ActivateHint(AArea: TRect; ATxt: widestring);
+procedure TJvHint.ActivateHint(AArea: TRect; ATxt: THintString);
 var
   P: TPoint;
 begin
@@ -244,16 +231,15 @@ begin
 end;
 
 function TJvHTHintWindow.CalcHintRect(MaxWidth: Integer;
-                   const AHint: WideString;
-                   AData: Pointer): TRect;
+  const AHint: THintString; AData: Pointer): TRect;
 begin
   HtLabel.Caption := AHint;
   Result := Bounds(0, 0, HtLabel.Width + 6, HtLabel.Height + 2);
   if Application.HintHidePause > 0 then
     Application.HintHidePause :=
-      Max(2500,  // default
-        Length(ItemHtPlain(AHint)) *
-        (1000 div 20)); // 20 symbols per second
+      Max(2500, // default
+      Length(ItemHtPlain(AHint)) *
+      (1000 div 20)); // 20 symbols per second
 end;
 
 procedure RegisterHtHints;

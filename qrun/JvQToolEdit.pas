@@ -56,7 +56,7 @@ uses
   SysUtils, Classes,
 
   RTLConsts, Variants,
-  
+
   JvQComponent, JvQSpeedButton, JvQJCLUtils, JvQTypes, JvQExControls, JvQExMask,
   JvQFinalize;
 
@@ -128,11 +128,7 @@ type
     function IsImageIndexLinked: Boolean; override;
     function IsOnExecuteLinked: Boolean; override;
     function IsShortCutLinked: Boolean; override;
-
-    
-    
-    procedure SetHint(const Value: WideString); override;
-    
+    procedure SetHint(const Value: THintString); override;
     procedure SetImageIndex(Value: Integer); override;
     procedure SetOnExecute(Value: TNotifyEvent); override;
     procedure SetShortCut(Value: TShortCut); override;
@@ -806,13 +802,12 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
-  {$IFDEF MSWINDOWS}
-  ShellAPI,
-  {$ENDIF MSWINDOWS}
-  QConsts,
-  Math,
-  JvQThemes, JvQResources, JvQJVCLUtils, JvQPickDate,
+  ShellAPI, Math,
   
+  
+  QConsts,
+
+  JvQThemes, JvQResources, JvQJVCLUtils, JvQPickDate,
   JvQConsts;
 
 const
@@ -2190,14 +2185,11 @@ begin
     ((FClient as TJvCustomComboEdit).ClickKey = (Action as TCustomAction).ShortCut);
 end;
 
-
-
-procedure TJvCustomComboEditActionLink.SetHint(const Value: WideString);
+procedure TJvCustomComboEditActionLink.SetHint(const Value: THintString);
 begin
   if IsHintLinked then
     (FClient as TJvCustomComboEdit).ButtonHint := Value;
 end;
-
 
 procedure TJvCustomComboEditActionLink.SetImageIndex(Value: Integer);
 begin

@@ -543,9 +543,9 @@ var
   ValueName: string;
   Node: TJvSimpleXmlElem;
 begin
-  SplitKeyPath(Path, SubKey, ValueName);
   Result := False;
-  Node := GetNodeFromPath(Path, FCurrentNode);
+  SplitKeyPath(Path, SubKey, ValueName);
+  Node := GetNodeFromPath(SubKey, FCurrentNode);
   if Assigned(Node) then
     Result := Assigned(Node.Items.ItemNamed[ValueName]);
 end;

@@ -201,11 +201,11 @@ type
     function DoHelp(HelpType: THelpType; HelpContext: THelpContext;
       const HelpKeyword: String; const HelpFile: String;
       var Handled: Boolean): Boolean;
-    procedure DoShowHint(var HintStr: WideString; var CanShow: Boolean;
-      var HintInfo: THintInfo);
     procedure DoShortCut(Key: Integer; Shift: TShiftState; var Handled: Boolean);
     procedure DoEvent(Sender: QObjectH; Event: QEventH; var Handled: Boolean);
     
+    procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
+      var HintInfo: THintInfo);
     procedure DoActiveControlChange(Sender: TObject);
     procedure DoActiveFormChange(Sender: TObject);
     procedure DoActionExecute(Action: TBasicAction; var Handled: Boolean);
@@ -477,11 +477,8 @@ begin
     FOnRestore(Sender);
 end;
 
-
-
-procedure TJvAppEventList.DoShowHint(var HintStr: widestring; var CanShow: Boolean;
+procedure TJvAppEventList.DoShowHint(var HintStr: THintString; var CanShow: Boolean;
   var HintInfo: THintInfo);
-
 var
   I: Integer;
 begin
