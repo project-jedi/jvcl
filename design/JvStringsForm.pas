@@ -33,15 +33,16 @@ unit JvStringsForm;
 interface
 
 uses
-  Windows, Classes, Forms, Controls, Dialogs, StdCtrls,
+  Windows, Classes, Forms, Controls, Dialogs, StdCtrls, ExtCtrls,
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, ExtCtrls;
+  DesignIntf, DesignEditors,
   {$ELSE}
-  DsgnIntf;
+  DsgnIntf,
   {$ENDIF}
+  JvComponent;
 
 type
-  TJvStrEditDlg = class(TForm)
+  TJvStrEditDlg = class(TJvForm)
     Memo: TMemo;
     LineCount: TLabel;
     OpenDialog: TOpenDialog;

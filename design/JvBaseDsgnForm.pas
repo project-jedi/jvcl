@@ -32,10 +32,11 @@ unit JvBaseDsgnForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  JvComponent;
 
 type
-  TJvBaseDesign = class(TForm)
+  TJvBaseDesign = class(TJvForm)
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }

@@ -33,11 +33,7 @@ uses
 {$IFDEF USE_DXGETTEXT}
   gnugettext,
 {$ENDIF}
-  Controls;
-
-//const
-//  RX_VERSION = $0002004B;  { 2.75 }
-
+  SysUtils;
 
 const
   {RegAutoEditor} // designtime
@@ -115,22 +111,6 @@ resourcestring
   SHLEdPropDlg_RegAutoNotAssigned = 'RegAuto property is not assigned';
 
 const
-  { Command message for JvSpeedbar editor }
-  CM_SPEEDBARCHANGED = CM_BASE + 80;
-  { Command message for TJvSpeedButton }
-  CM_JVBUTTONPRESSED = CM_BASE + 81;
-  { Command messages for TJvWindowHook }
-  CM_RECREATEWINDOW  = CM_BASE + 82;
-  CM_DESTROYHOOK     = CM_BASE + 83;
-  { Notify message for TJvxTrayIcon }
-  CM_TRAYICON        = CM_BASE + 84;
-
-  crHand     = TCursor(14000);
-  crDragHand = TCursor(14001);
-
-  { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
-  PaletteMask = $02000000;
-
   {$IFDEF DELPHI2}
   SDelphiKey = 'Software\Borland\Delphi\2.0';
   {$ENDIF}
@@ -174,7 +154,12 @@ const
 resourcestring
   { JvToolEdit }
   SBrowse                = 'Browse';
+{$IFDEF MSWINDOWS}
   SDefaultFilter         = 'All files (*.*)|*.*';
+{$ENDIF}
+{$IFDEF LINUX}
+  SDefaultFilter         = 'All files (*)|*';
+{$ENDIF}
 
   { JvPickDate }
   SDateDlgTitle          = 'Select a Date';
@@ -440,11 +425,6 @@ function _(const Fmt: string; const Args: array of const): string; overload;
 
 implementation
 
-uses
-  Windows,
-  SysUtils,
-  Forms;
-
 {$R ..\resources\JvConsts.res}
 
 {$IFDEF USE_DXGETTEXT}
@@ -492,11 +472,5 @@ begin
 end;
 
 {$ENDIF USE_DXGETTEXT}
-
-
-
-initialization
-  Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
-  Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
 
 end.

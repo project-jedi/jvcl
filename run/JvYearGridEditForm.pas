@@ -30,10 +30,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ExtCtrls;
+  StdCtrls, Buttons, ExtCtrls,
+  JvComponent;
 
 type
-  TYearGridEditF = class(TForm)
+  TYearGridEditF = class(TJvForm)
     Panel1: TPanel;
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;

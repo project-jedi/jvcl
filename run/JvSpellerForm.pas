@@ -30,12 +30,13 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls;
+  StdCtrls, ExtCtrls,
+  JvComponent;
 
 type
   TJvSpeller = class;
 
-  TJvSpellerFrm = class(TForm)
+  TJvSpellerFrm = class(TJvForm)
     Panel1: TPanel;
     lblcontext: TLabel;
     txtspell: TEdit;

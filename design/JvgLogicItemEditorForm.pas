@@ -34,10 +34,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvgLogics,
-  StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, ToolWin;
+  StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, ToolWin,
+  JvComponent;
 
 type
-  TJvgLogicItemEditor = class(TForm)
+  TJvgLogicItemEditor = class(TJvForm)
     Label2: TLabel;
     Label3: TLabel;
     Button1: TButton;

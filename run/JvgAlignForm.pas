@@ -34,11 +34,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
-  JvgTypes;
+  JvgTypes, JvComponent;
 
 type
 
-  TAlignForm = class(TForm)
+  TAlignForm = class(TJvForm)
     g_Horz: TRadioGroup;
     g_Vert: TRadioGroup;
     B_Ok: TButton;

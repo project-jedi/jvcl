@@ -41,7 +41,7 @@ uses
 {$ENDIF COMPILER6_UP}
   JvCompEditorTemplateForm, JvgSpeedButton, JvgPage, JvgTypes,
   JvgSplit, JvgWizardHeader, JvgShadow,
-  JvgGroupBox, JvgLabel, JvgCheckBox,  JvgImage;
+  JvgGroupBox, JvgLabel, JvgCheckBox, JvgImage;
 
 type
   TJvgLabelEditorDlg = class(TJvgCompEditorTemplate)

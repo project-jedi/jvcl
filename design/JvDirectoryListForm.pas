@@ -30,10 +30,11 @@ unit JvDirectoryListForm;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls;
+  Windows, SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls,
+  JvComponent;
 
 type
-  TJvDirectoryListDialog = class(TForm)
+  TJvDirectoryListDialog = class(TJvForm)
     AddBtn: TButton;
     RemoveBtn: TButton;
     ModifyBtn: TButton;

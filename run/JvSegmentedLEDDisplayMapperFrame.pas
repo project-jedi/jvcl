@@ -33,7 +33,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent, JvSegmentedLEDDisplay, ActnList, Menus;
+  ActnList, Menus,
+{$IFDEF USE_DXGETTEXT}
+  gnugettext,
+{$ENDIF}
+  JvComponent, JvSegmentedLEDDisplay;
 
 type
   TfmeJvSegmentedLEDDisplayMapper = class(TFrame)
@@ -286,6 +290,9 @@ end;
 constructor TfmeJvSegmentedLEDDisplayMapper.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+{$IFDEF USE_DXGETTEXT}
+  TranslateComponent(Self);
+{$ENDIF}
   FCopiedValue := -1;
 end;
 

@@ -38,10 +38,10 @@ uses
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF}
-  JvID3v2Base, JvID3v2Types;
+  JvID3v2Base, JvID3v2Types, JvComponent;
 
 type
-  TJvID3DefineDlg = class(TForm)
+  TJvID3DefineDlg = class(TJvForm)
     lblFrames: TLabel;
     cmbFrames: TComboBox;
     OkBtn: TButton;

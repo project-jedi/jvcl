@@ -38,7 +38,7 @@ uses
   {$ENDIF}
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, Grids, Menus,
-  JvxCtrls, JvSpeedBar, JvFormPlacement, JvConsts, JvJVCLUtils, JvComponent,
+  JvxCtrls, JvSpeedBar, JvFormPlacement, JvTypes, JvJVCLUtils, JvComponent,
   JvAppStore, JvAppRegistryStore;
 
 type
@@ -170,7 +170,7 @@ implementation
 
 uses
   TypInfo, Math,
-  JvPropsStorage;
+  JvConsts, JvPropsStorage;
 
 {$R *.DFM}
 

@@ -36,7 +36,7 @@ uses
   JvListView, JvPrint, JvComponent, ToolWin;
 
 type
-  TFoLog = class(TForm)
+  TFoLog = class(TJvForm)
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;

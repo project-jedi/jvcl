@@ -33,10 +33,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, Mask;
+  StdCtrls, Buttons, ExtCtrls, Mask,
+  JvComponent;
 
 type
-  TJvgReportParamEditor = class(TForm)
+  TJvgReportParamEditor = class(TJvForm)
     Panel1: TPanel;
     Panel2: TPanel;
     BitBtn2: TBitBtn;

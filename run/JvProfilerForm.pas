@@ -55,7 +55,7 @@ type
     EntryTime: Longint;
   end;
 
-  TProfReport = class(TForm)
+  TProfReport = class(TJvForm)
     Panel1: TPanel;
     SaveBtn: TButton;
     lvReport: TListView;

@@ -44,7 +44,7 @@ uses
   JvComponent;
 
 type
-  TJvgCompEditorTemplate = class(TForm)
+  TJvgCompEditorTemplate = class(TJvForm)
     pnMain: TPanel;
     pnBottom: TPanel;
     glShadowOK: TJvgShadow;

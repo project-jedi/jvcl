@@ -34,10 +34,10 @@ interface
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, StdCtrls, ExtCtrls,
   Forms,
-  JvTypes;
+  JvTypes, JvComponent;
 
 type
-  TzWizardForm = class(TForm)
+  TzWizardForm = class(TJvForm)
     Button1: TButton;
     Button2: TButton;
     Label1: TLabel;
@@ -61,8 +61,6 @@ implementation
 
 {$R *.DFM}
 
-const
-  CrLf2 = sLineBreak + sLineBreak;
 resourcestring
   cHelpText = sLineBreak +
     'Band Name' + sLineBreak +

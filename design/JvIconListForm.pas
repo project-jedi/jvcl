@@ -37,12 +37,11 @@ uses
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF}
-  StdCtrls, ExtCtrls,
-  ExtDlgs,
-  JvIconList, ImgList, ComCtrls, ToolWin;
+  StdCtrls, ExtCtrls, ExtDlgs,
+  JvIconList, ImgList, ComCtrls, ToolWin, JvComponent;
 
 type
-  TIconListDialog = class(TForm)
+  TIconListDialog = class(TJvForm)
     OK: TButton;
     Cancel: TButton;
     Holder: TPanel;

@@ -25,7 +25,6 @@ Known Issues:
   Should be merged with JCL
 -----------------------------------------------------------------------------}
 {$I JVCL.INC}
-{$I WINDOWSONLY.INC}
 unit JvStrings;
 
 interface
@@ -34,7 +33,13 @@ uses
 {$IFDEF MSWINDOWS}
   Windows,
 {$ENDIF}
-  SysUtils, Classes, Graphics, Dialogs;
+{$IFDEF COMPLIB_VCL}
+  Graphics,
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+  QGraphics,
+{$ENDIF}
+  SysUtils, Classes;
 
 {regular expressions}
 
@@ -212,8 +217,6 @@ resourcestring
   sIncorrectStringFormat = 'Incorrect string format';
 
 const
-  tab = chr(9);
-
   B64Table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
   ValidURLChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$-_@.&+-!*"''(),;/#?:';
 
@@ -926,19 +929,22 @@ var
   sr: TSearchRec;
   FileAttrs: Integer;
 begin
-  FileAttrs := faArchive + faDirectory;
+  FileAttrs := faAnyFile or faDirectory;
+{$IFDEF MSWINDOWS}
   if FindFirst(myDir + '\*.*', FileAttrs, sr) = 0 then
+{$ENDIF}
+{$IFDEF LINUX}
+  if FindFirst(myDir + '/*', FileAttrs, sr) = 0 then
+{$ENDIF}
     while FindNext(sr) = 0 do
     begin
       if (sr.Attr and faDirectory) <> 0 then
       begin
         if (sr.name <> '.') and (sr.name <> '..') then
-          RecurseDirFiles(myDir + '\' + sr.Name, aFileList);
+          RecurseDirFiles(myDir + PathDelim + sr.Name, aFileList);
       end
-      else if (sr.Attr and faArchive) <> 0 then
-      begin
-        aFileList.append(myDir + '\' + sr.Name);
-      end;
+      else
+        aFileList.append(myDir + PathDelim + sr.Name);
     end;
   FindClose(sr);
 end;
@@ -948,27 +954,46 @@ var
   sr: TSearchRec;
   FileAttrs: Integer;
   e: string;
+{$IFDEF LINUX}
+  st: TStatBuf;
+{$ENDIF}  
 begin
-  FileAttrs := faArchive + faDirectory;
+  FileAttrs := faAnyFile or faDirectory;
+{$IFDEF MSWINDOWS}
   if FindFirst(myDir + '\*.*', FileAttrs, sr) = 0 then
+{$ENDIF}
+{$IFDEF LINUX}
+  if FindFirst(myDir + '/*', FileAttrs, sr) = 0 then
+{$ENDIF}
     while FindNext(sr) = 0 do
     begin
       if (sr.Attr and faDirectory) <> 0 then
       begin
         if (sr.name <> '.') and (sr.name <> '..') then
-          RecurseDirProgs(myDir + '\' + sr.Name, aFileList);
+          RecurseDirProgs(myDir + PathDelim + sr.Name, aFileList);
       end
-      else if (sr.Attr and faArchive) <> 0 then
+      {$IFDEF MSWINDOWS}
+      else
       begin
-        e := lowercase(extractfileext(sr.name));
+        e := LowerCase(ExtractFileExt(sr.name));
         if e = '.exe' then
-          aFileList.append(myDir + '\' + sr.Name);
+          aFileList.append(myDir + PathDelim + sr.Name);
       end;
+      {$ENDIF}
+      {$IFDEF LINUX}
+      else
+      begin
+        if stat(PChar(myDir + PathDelim + sr.Name), st) = 0 then
+        begin
+          if st.st_mode and (S_IXUSR or S_IXGRP or S_IXOTH) <> 0 then
+            aFileList.append(myDir + PathDelim + sr.Name);
+        end;
+      end;
+      {$ENDIF}
     end;
   FindClose(sr);
 end;
 
-{$IFDEF MSWINDOWS}
 procedure LoadResourceFile(aFile: string; ms: TMemoryStream);
 var
   HResInfo: HRSRC;
@@ -992,7 +1017,6 @@ begin
   UnlockResource(HGlobal);
   FreeResource(HGlobal);
 end;
-{$ENDIF}
 
 procedure GetNames(aText: string; aList: TStringList);
 var

@@ -31,10 +31,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, Buttons, StdCtrls, JvTypes;
+  Dialogs, ExtCtrls, Buttons, StdCtrls, JvTypes, JvComponent;
 
 type
-  TJvCsvDefStrDialog = class(TForm)
+  TJvCsvDefStrDialog = class(TJvForm)
     EditCsvStr: TEdit;
     Label1: TLabel;
     ButtonOk: TButton;

@@ -36,7 +36,12 @@ interface
 
 uses
   Windows, Forms, Classes, SysUtils, Controls, StdCtrls, ExtCtrls, ComCtrls, ActnList,
-  {$IFDEF COMPILER6_UP}DesignEditors, Variants, DesignIntf, {$ELSE}DsgnIntf,{$ENDIF}JvPageListTreeView, Menus;
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, Variants, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF}
+  JvPageListTreeView, Menus, JvComponent;
 
 type
   { a property editor for the PageLinks property of TJvCustomPageListTreeView}
@@ -46,7 +51,7 @@ type
     procedure Edit; override;
   end;
 
-  TfrmJvTreeViewLinksEditor = class(TForm)
+  TfrmJvTreeViewLinksEditor = class(TJvForm)
     tvItems: TTreeView;
     btnLink: TButton;
     lbPages: TListBox;

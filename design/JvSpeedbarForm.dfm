@@ -1,6 +1,6 @@
 object JvSpeedbarEditor: TJvSpeedbarEditor
-  Left = 676
-  Top = 122
+  Left = 378
+  Top = 221
   ActiveControl = SectionList
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle

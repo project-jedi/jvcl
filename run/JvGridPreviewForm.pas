@@ -30,12 +30,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, grids, JvGridPrinter, StdCtrls, Spin, ComCtrls, Buttons, Printers,
-  ExtDlgs;
+  ExtCtrls, Grids, StdCtrls, Spin, ComCtrls, Buttons, Printers,
+  ExtDlgs,
+  JvGridPrinter, JvComponent;
 
 type
-
-  TJvGridPreviewF = class(TForm)
+  TJvGridPreviewF = class(TJvForm)
     ScrollBox1: TScrollBox;
     PreviewImage: TImage;
     Panel1: TPanel;
@@ -107,7 +107,7 @@ resourcestring
 implementation
 
 uses
-  JvConsts, JvTypes;
+  JvTypes;
 
 {$R *.DFM}
 

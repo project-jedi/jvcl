@@ -39,7 +39,7 @@ interface
 
 uses
 {$IFDEF COMPLIB_VCL}
-  Windows, Messages, Graphics, Controls,
+  Windows, Messages, Controls, Forms, Graphics, 
 {$ENDIF}
 {$IFDEF COMPLIB_CLX}
   Qt, QTypes, Types, QControls, QForms, QGraphics,
@@ -232,14 +232,18 @@ type
     TakeText: Integer;
   end;
 
-  const
-    CrLf = #13#10;
-    Cr = #13;
-    Lf = #10;
-    Tab = #9;
+const
+  CrLf = #13#10;
+  Cr = #13;
+  Lf = #10;
+  Tab = #9;
+  
 {$IFNDEF COMPILER6_UP}
-    SLineBreak = #13#10;
-{$ENDIF}    
+  SLineBreak = #13#10;
+  PathDelim = '\';
+  DriveDelim = ':';
+  PathSep    = ';';
+{$ENDIF}
 
 type
   TJvGradStyle = (grFilled, grEllipse, grHorizontal, grVertical, grPyramid, grMount);
@@ -395,7 +399,31 @@ type
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
   TJvListViewColumnSortEvent = procedure(Sender: TObject; Column: Integer; var AMethod:TJvSortMethod) of object;
 
+
+const
+  { Command message for JvSpeedbar editor }
+  CM_SPEEDBARCHANGED = CM_BASE + 80;
+  { Command message for TJvSpeedButton }
+  CM_JVBUTTONPRESSED = CM_BASE + 81;
+  { Command messages for TJvWindowHook }
+  CM_RECREATEWINDOW  = CM_BASE + 82;
+  CM_DESTROYHOOK     = CM_BASE + 83;
+  { Notify message for TJvxTrayIcon }
+  CM_TRAYICON        = CM_BASE + 84;
+
+  { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
+  PaletteMask = $02000000;
+
+const
+  crHand     = TCursor(14000);
+  crDragHand = TCursor(14001);
+
 implementation
+
+
+initialization
+  Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
+  Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
 
 end.
 

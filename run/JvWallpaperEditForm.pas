@@ -35,7 +35,7 @@ uses
   JvxCtrls, JvToolEdit, JvComponent, JvSearchFiles, JvButton;
 
 type
-  TFoWallpaperChooser = class(TForm)
+  TFoWallpaperChooser = class(TJvForm)
     GroupBox1: TGroupBox;
     Button1: TButton;
     Button2: TButton;

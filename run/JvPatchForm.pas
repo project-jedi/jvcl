@@ -32,10 +32,10 @@ interface
 
 uses
   SysUtils, Classes, Controls, Forms, StdCtrls, Mask,
-  JvToolEdit;
+  JvToolEdit, JvComponent;
 
 type
-  TFoPatch = class(TForm)
+  TFoPatch = class(TJvForm)
     GroupBox1: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;

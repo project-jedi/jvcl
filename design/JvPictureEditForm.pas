@@ -36,7 +36,7 @@ uses
   JvAppStore, JvAppRegistryStore;
 
 type
-  TPictureEditDialog = class(TForm)
+  TPictureEditDialog = class(TJvForm)
     Load: TButton;
     Save: TButton;
     Copy: TButton;

@@ -38,7 +38,7 @@ uses
   JvgBevel, ImgList, JvgLabel, shellApi, StdCtrls, JvComponent;
 
 type
-  TJvgfPrintPreview = class(TForm)
+  TJvgfPrintPreview = class(TJvForm)
     Panel2: TPanel;
     ToolBar1: TToolBar;
     tbPrior: TToolButton;

@@ -32,29 +32,15 @@ unit JvgComponentListEditorForm;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
+  Windows, Messages,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   {$IFDEF COMPILER6_UP}
-  DesignIntf,
-  DesignEditors,
-  PropertyCategories,
+  DesignIntf, DesignEditors, PropertyCategories,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-
-  StdCtrls,
-  JvgPropertyCenter,
-  ComCtrls,
-  ExtCtrls,
-  TypInfo,
-  Buttons,
-  ImgList;
+  StdCtrls, JvgPropertyCenter, ComCtrls, ExtCtrls, TypInfo, Buttons, ImgList,
+  JvComponent;
 
 type
 
@@ -70,7 +56,7 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-  TJvgCompListEditor = class(TForm)
+  TJvgCompListEditor = class(TJvForm)
     lvAll: TListView;
     Label1: TLabel;
     Bevel1: TBevel;

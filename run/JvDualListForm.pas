@@ -32,10 +32,10 @@ interface
 uses
   Windows,
   SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  JvListBox, JvCtrls;
+  JvListBox, JvCtrls, JvComponent;
 
 type
-  TJvDualListForm = class(TForm)
+  TJvDualListForm = class(TJvForm)
     SrcList: TJvListBox;
     DstList: TJvListBox;
     SrcLabel: TLabel;

@@ -648,12 +648,11 @@ procedure SetDefaultMenuFont(AFont: TFont);
 implementation
 
 uses
-  CommCtrl, Forms, ExtCtrls, Consts, JvConsts,
+  CommCtrl, Forms, ExtCtrls, Consts, JvTypes,
   JvJVCLUtils, JvJCLUtils, Math {$IFDEF COMPILER6_UP}, Types{$ENDIF};
 
 const
   DefMarginColor: TColor = clBlue;
-  Tab = #9#9;
   Separator = '-';
 
 function CreateMenuItemPainterFromStyle(Style : TJvMenuStyle; Menu : TMenu) : TJvCustomMenuItemPainter;
@@ -2058,12 +2057,12 @@ begin
     else
     begin
       // find the largest text element
-      MaxWidth := Canvas.TextWidth(DelChars(Item.Caption, '&') + Tab);
+      MaxWidth := Canvas.TextWidth(DelChars(Item.Caption, '&') + Tab + Tab);
       if (Item.Parent <> nil) and (Item.ShortCut <> scNone) then
       begin
         for I := 0 to Item.Parent.Count - 1 do
           MaxWidth := Max(Canvas.TextWidth(DelChars(Item.Parent.Items[I].Caption,
-            '&') + Tab), MaxWidth);
+            '&') + Tab + Tab), MaxWidth);
       end;
 
       // draw the text
@@ -2134,20 +2133,20 @@ var
 begin
   if IsPopup then
   begin
-    Result := Canvas.TextWidth(DelChars(Item.Caption, '&') + Tab);
+    Result := Canvas.TextWidth(DelChars(Item.Caption, '&') + Tab + Tab);
     MaxW := Canvas.TextWidth(ShortCutToText(Item.ShortCut) + ' ');
     if (Item.Parent <> nil) and (Item.ShortCut <> scNone) then
     begin
       for I := 0 to Item.Parent.Count - 1 do
         with Item.Parent.Items[I] do
         begin
-          Result := Max(Result, Canvas.TextWidth(DelChars(Caption, '&') + Tab));
+          Result := Max(Result, Canvas.TextWidth(DelChars(Caption, '&') + Tab + Tab));
           MaxW := Max(MaxW, Canvas.TextWidth(ShortCutToText(ShortCut) + ' '));
         end;
     end;
     Result := Result + MaxW;
     if Item.Count > 0 then
-      Inc(Result, Canvas.TextWidth(Tab));
+      Inc(Result, Canvas.TextWidth(Tab + Tab));
   end
   else
     Result := Canvas.TextWidth(DelChars(Item.Caption, '&'));

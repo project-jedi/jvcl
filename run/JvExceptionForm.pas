@@ -38,7 +38,7 @@ uses
 type
   TErrorEvent = procedure(Error: Exception; var Msg: string) of object;
 
-  TJvErrorDialog = class(TForm)
+  TJvErrorDialog = class(TJvForm)
     BasicPanel: TPanel;
     ErrorText: TLabel;
     IconPanel: TPanel;

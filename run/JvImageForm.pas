@@ -32,10 +32,10 @@ interface
 
 uses
   SysUtils, Classes, Controls, Forms,
-  ExtCtrls, Jpeg;
+  ExtCtrls, Jpeg, JvComponent;
 
 type
-  TFormImg = class(TForm)
+  TFormImg = class(TJvForm)
     Image1: TImage;
   end;
 

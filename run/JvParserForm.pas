@@ -32,10 +32,10 @@ interface
 
 uses
   SysUtils, Classes, Controls, Forms, StdCtrls,
-  JvTypes;
+  JvTypes, JvComponent;
 
 type
-  TFormParsers = class(TForm)
+  TFormParsers = class(TJvForm)
     ListBox1: TListBox;
     GroupBox1: TGroupBox;
     Edit1: TEdit;
