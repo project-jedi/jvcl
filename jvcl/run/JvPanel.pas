@@ -99,7 +99,7 @@ type
 
 implementation
 uses
-  JvMouseTimer;
+  JvThemes, JvMouseTimer;
 
 constructor TJvPanel.Create(AOwner: TComponent);
 begin
@@ -126,6 +126,7 @@ begin
     Params.ExStyle := Params.ExStyle and not WS_EX_TRANSPARENT;
     ControlStyle := ControlStyle + [csOpaque];
   end;
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 
 procedure TJvPanel.Paint;
