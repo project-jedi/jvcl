@@ -38,7 +38,7 @@ uses
   Messages,
   {$ENDIF VCL}
   Classes, Controls, Graphics, Forms,
-  JvComponent;
+  JvComponent, JvJVCLUtils;
 
 type
   {$IFDEF VCL}
@@ -62,6 +62,7 @@ type
     FBorderStyle: TControlBorderStyle;
     FReadOnly: Boolean;
     FIndicators: TJvColorTrackBarIndicators;
+    FFillDirection: TFillDirection;
     procedure SetPosition(const Value: Integer);
     procedure SetMax(const Value: Integer);
     procedure SetMin(const Value: Integer);
@@ -70,6 +71,7 @@ type
     procedure SetArrowColor(const Value: TColor);
     procedure SetBorderStyle(const Value: TControlBorderStyle);
     procedure SetIndicators(const Value: TJvColorTrackBarIndicators);
+    procedure SetFillDirection(const Value: TFillDirection);
   protected
     procedure Changed; virtual;
     procedure MinChanged; virtual;
@@ -84,8 +86,8 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    function XToPos(X: Integer): Integer;
-    function PosToX(APos: Integer): Integer;
+    function WindowToPos(WindowCoord: Integer): Integer;
+    function PosToWindow(APos: Integer): Integer;
   published
     property Indicators: TJvColorTrackBarIndicators read FIndicators write SetIndicators default [tbiArrow, tbiLine];
     property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
@@ -94,6 +96,7 @@ type
 
     property ColorFrom: TColor read FColorFrom write SetColorFrom default clBlack;
     property ColorTo: TColor read FColorTo write SetColorTo default clBlue;
+    property FillDirection: TFillDirection read FFillDirection write SetFillDirection default fdLeftToRight;
     property Min: Integer read FMin write SetMin default 0;
     property Max: Integer read FMax write SetMax default 100;
     property Position: Integer read FPosition write SetPosition default 0;
@@ -151,12 +154,9 @@ const
 
 implementation
 
-uses
-  JvJVCLUtils;
-
 const
-  TopOffset = 8;
-  WidthOffset = 4;
+  ArrowOffset = 8;
+  BitmapOffset = 4;
 
 constructor TJvColorTrackBar.Create(AOwner: TComponent);
 begin
@@ -173,6 +173,7 @@ begin
   FIndicators := [tbiArrow, tbiLine];
   Height := 24;
   Width := 120;
+  FFillDirection := fdLeftToRight;
   UpdateGradient;
 end;
 
@@ -189,14 +190,21 @@ begin
   if Parent = nil then
     Exit;
   FBmpImage.PixelFormat := pf24bit;
-  FBmpImage.Width := Width - WidthOffset;
-  FBmpImage.Height := Height - TopOffset;
+  if (FillDirection=fdTopToBottom) or (FillDirection=fdBottomToTop) then
+  begin
+    FBmpImage.Width := Width - ArrowOffset;
+    FBmpImage.Height := Height - BitmapOffset;
+  end else
+  begin
+    FBmpImage.Width := Width - BitmapOffset;
+    FBmpImage.Height := Height - ArrowOffset;
+  end;
   R := Rect(0, 0, FBmpImage.Width, FBmpImage.Height);
 
   {$IFDEF VisualCLX}
   FBmpImage.Canvas.Start;
   {$ENDIF VisualCLX}
-  GradientFillRect(FBmpImage.Canvas, R, ColorFrom, ColorTo, fdLeftToRight, 255);
+  GradientFillRect(FBmpImage.Canvas, R, ColorFrom, ColorTo, FillDirection, 255);
   if BorderStyle = bsSingle then
     DrawEdge(FBmpImage.Canvas.Handle, R, EDGE_SUNKEN, BF_TOP or BF_RIGHT or BF_BOTTOM or BF_LEFT);
   {$IFDEF VisualCLX}
@@ -209,68 +217,118 @@ begin
   if Button = mbLeft then
   begin
     FButtonDown := not ReadOnly;
-    Position := XToPos(X);
+    if (FillDirection=fdTopToBottom) or (FillDirection=fdBottomToTop) then
+      Position := WindowToPos(Y)
+    else
+      Position := WindowToPos(X);
   end;
 end;
 
 procedure TJvColorTrackBar.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   if FButtonDown then
-    Position := XToPos(X);
+  begin
+    if (FillDirection=fdTopToBottom) or (FillDirection=fdBottomToTop) then
+      Position := WindowToPos(Y)
+    else
+      Position := WindowToPos(X);
+  end;
 end;
 
 procedure TJvColorTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   if (Button = mbLeft) and FButtonDown then
-    Position := XToPos(X);
+  begin
+    if (FillDirection=fdTopToBottom) or (FillDirection=fdBottomToTop) then
+      Position := WindowToPos(Y)
+    else
+      Position := WindowToPos(X);
+  end;
   FButtonDown := False;
 end;
 
 procedure TJvColorTrackBar.Paint;
 var
-  X: Integer;
+  ArrowPosition: Integer;
   N: Integer;
   R: TRect;
-  P: array of TPoint;
+  P: array [0..2] of TPoint;
+  AHorizontalOffset, AVerticalOffset: Integer;
 begin
   if Parent = nil then
     Exit;
-  if (Height - TopOffset <> FBmpImage.Height) or (Width <> FBmpImage.Width - WidthOffset) then
-    UpdateGradient;
+
+  if (FillDirection=fdTopToBottom) or (FillDirection=fdBottomToTop) then
+  begin
+    AVerticalOffset := BitmapOffset;
+    AHorizontalOffset := ArrowOffset;
+  end else
+  begin
+    AVerticalOffset := ArrowOffset;
+    AHorizontalOffset := BitmapOffset;
+  end;
+  if (Width - AHorizontalOffset <> FBmpImage.Width) or (Height <> FBmpImage.Height - AVerticalOffset) then
+      UpdateGradient;
+
   Canvas.Pen.Color := Color;
   Canvas.Brush.Color := Color;
   {$IFDEF VisualCLX}
   FBmpImage.Canvas.Start;
   {$ENDIF VisualCLX}
-  BitBlt(Canvas.Handle, WidthOffset div 2, TopOffset, Width, Height, FBmpImage.Canvas.Handle, 0, 0, SrcCopy);
+  if (FillDirection=fdTopToBottom) or (FillDirection=fdBottomToTop) then
+    BitBlt(Canvas.Handle, ArrowOffset, BitmapOffset div 2, Width, Height, FBmpImage.Canvas.Handle, 0, 0, SrcCopy)
+  else
+    BitBlt(Canvas.Handle, BitmapOffset div 2, ArrowOffset, Width, Height, FBmpImage.Canvas.Handle, 0, 0, SrcCopy);
   {$IFDEF VisualCLX}
   FBmpImage.Canvas.Stop;
   {$ENDIF VisualCLX}
-  R := Rect(0, 0, Width, TopOffset);
+  if (FillDirection=fdTopToBottom) or (FillDirection=fdBottomToTop) then
+    R := Rect(0, 0, ArrowOffset, Height)
+  else
+    R := Rect(0, 0, Width, ArrowOffset);
   Canvas.FillRect(R);
-  X := PosToX(Position);
+  ArrowPosition := PosToWindow(Position);
   if tbiArrow in Indicators then
   begin
     Canvas.Pen.Color := ArrowColor;
     Canvas.Brush.Color := ArrowColor;
-    SetLength(P, 3);
-    P[0] := Point(X - 5, 0);
-    P[1] := Point(X, 5);
-    P[2] := Point(X + 5, 0);
+    if (FillDirection=fdTopToBottom) or (FillDirection=fdBottomToTop) then
+    begin
+      P[0] := Point(0, ArrowPosition - 5);
+      P[1] := Point(5, ArrowPosition);
+      P[2] := Point(0, ArrowPosition + 5);
+    end else
+    begin
+      P[0] := Point(ArrowPosition - 5, 0);
+      P[1] := Point(ArrowPosition, 5);
+      P[2] := Point(ArrowPosition + 5, 0);
+    end;
     Canvas.Polygon(P);
   end;
   if tbiLine in Indicators then
     with Canvas do
     begin
       N := Ord(BorderStyle = bsSingle) * 2;
-      Pen.Color := Pixels[X, TopOffset + 4] xor clWhite;
-      MoveTo(X - 1, TopOffset + N);
-      LineTo(X - 1, Height - N);
-      MoveTo(X, TopOffset + N);
-      LineTo(X, Height - N);
-      MoveTo(X + 1, TopOffset + N);
-      LineTo(X + 1, Height - N);
+      if (FillDirection=fdTopToBottom) or (FillDirection=fdBottomToTop) then
+      begin
+        Pen.Color := Pixels[ArrowOffset + 4, ArrowPosition] xor clWhite;
+        MoveTo(ArrowOffset + N, ArrowPosition - 1);
+        LineTo(Width - N, ArrowPosition - 1);
+        MoveTo(ArrowOffset + N, ArrowPosition);
+        LineTo(Width - N, ArrowPosition);
+        MoveTo(ArrowOffset + N, ArrowPosition + 1);
+        LineTo(Width - N, ArrowPosition + 1);
+      end else
+      begin
+        Pen.Color := Pixels[ArrowPosition, ArrowOffset + 4] xor clWhite;
+        MoveTo(ArrowPosition - 1, ArrowOffset + N);
+        LineTo(ArrowPosition - 1, Height - N);
+        MoveTo(ArrowPosition, ArrowOffset + N);
+        LineTo(ArrowPosition, Height - N);
+        MoveTo(ArrowPosition + 1, ArrowOffset + N);
+        LineTo(ArrowPosition + 1, Height - N);
+      end;
     end;
 end;
 
@@ -340,10 +398,22 @@ begin
   end;
 end;
 
-function TJvColorTrackBar.XToPos(X: Integer): Integer;
+function TJvColorTrackBar.WindowToPos(WindowCoord: Integer): Integer;
+var
+  MaxWindowCoord: Integer;
 begin
-  if (Max - Min > 0) and (Width - WidthOffset > 0) then
-    Result := X * (Max - Min) div (Width - WidthOffset) + Min
+  if (FillDirection=fdTopToBottom) or (FillDirection=fdBottomToTop) then
+    MaxWindowCoord := Height
+  else
+    MaxWindowCoord := Width;
+  if (Max - Min > 0) and (MaxWindowCoord - BitmapOffset > 0) then
+  begin
+    Result := WindowCoord * (Max - Min) div (MaxWindowCoord - BitmapOffset);
+    if (FillDirection=fdRightToLeft) or (FillDirection=fdBottomToTop) then
+      Result := Max - Result
+    else
+      Result := Result + Min;
+  end
   else
     Result := Min;
   if Result < Min then
@@ -352,16 +422,24 @@ begin
     Result := Max;
 end;
 
-function TJvColorTrackBar.PosToX(APos: Integer): Integer;
+function TJvColorTrackBar.PosToWindow(APos: Integer): Integer;
+var
+  MaxWindowCoord: Integer;
 begin
-  if (Max - Min > 0) and (Width > 0) then
-    Result := Width * (APos - Min) div (Max - Min)
+  if (FillDirection=fdTopToBottom) or (FillDirection=fdBottomToTop) then
+    MaxWindowCoord := Height
   else
-    Result := WidthOffset;
-  if Result < WidthOffset * 2 then
-    Result := WidthOffset * 2;
-  if Result > Width - WidthOffset * 2 then
-    Result := Width - WidthOffset * 2;
+    MaxWindowCoord := Width;
+  if (Max - Min > 0) and (MaxWindowCoord > 0) then
+    Result := MaxWindowCoord * (APos - Min) div (Max - Min)
+  else
+    Result := BitmapOffset;
+  if Result < BitmapOffset * 2 then
+    Result := BitmapOffset * 2;
+  if Result > MaxWindowCoord - BitmapOffset * 2 then
+    Result := MaxWindowCoord - BitmapOffset * 2;
+  if (FillDirection=fdRightToLeft) or (FillDirection=fdBottomToTop) then
+    Result := MaxWindowCoord - Result;
 end;
 
 procedure TJvColorTrackBar.SetArrowColor(const Value: TColor);
@@ -403,7 +481,18 @@ begin
   end;
 end;
 
+procedure TJvColorTrackBar.SetFillDirection(const Value: TFillDirection);
+begin
+  if FFillDirection <> Value then
+  begin
+    FFillDirection := Value;
+    UpdateGradient;
+    Invalidate;
+  end;
+end;
+
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
