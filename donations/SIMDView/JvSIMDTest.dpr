@@ -27,6 +27,8 @@ program JvSIMDTest;
 
 {$APPTYPE CONSOLE}
 
+{$I jedi.inc}
+
 uses
   SysUtils,
   Windows,
@@ -34,7 +36,7 @@ uses
 
 var
    Values: array [0..3] of single;
-   Index: Integer;
+   Index, ErrorCode: Integer;
    Number: String;
 begin
   WriteLn('Streaming SIMD Extension of Intel Pentium and AMD Athlon processors');
@@ -48,7 +50,8 @@ begin
       ReadLn(Number);
       if (DecimalSeparator<>'.') then
         Number:=StringReplace(Number,'.',DecimalSeparator,[rfReplaceAll,rfIgnoreCase]);
-    until TryStrToFloat(Number,Values[Index]);
+      Val(Number,Values[Index],ErrorCode);
+    until (ErrorCode=0);
 
   WriteLn;
   WriteLn('Check values :');
@@ -62,9 +65,16 @@ begin
   // hit ctrl+alt+D or go to View/Debug window and open the last item
   // these instructions operate on 4-packed-single-precision floating point values
   // so you should view these registers has single values
-    movups xmm0, Values     // moving Values to xmm0
-    addps  xmm0, xmm0       // xmm0 <- xmm0 + xmm0
-    movups Values, xmm0     // moving xmm0 to Values
+    LEA      EAX,  Values
+{$IFDEF COMPILER6_UP}
+    movups   xmm0, [eax]      // moving Values to xmm0
+    addps    xmm0, xmm0       // xmm0 <- xmm0 + xmm0
+    movups   [eax], xmm0      // moving xmm0 to Values
+{$ELSE}
+    DB       0Fh, 10h, 00h     // movups xmm0, [eax]
+    DB       0Fh, 58h, 0C0h     // addps xmm0, xmm0
+    DB       0Fh, 11h, 00h     // movups [eax], xmm0
+{$ENDIF}
   end;
   WriteLn('Computations ended');
   WriteLn;

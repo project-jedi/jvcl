@@ -25,7 +25,7 @@ Known Issues:
 
 unit JvSIMDUtils;
 
-{$I jvcl.inc}
+{$I jedi.inc}
 
 interface
 
@@ -43,7 +43,7 @@ resourcestring
   RsEx3DNow = 'Extensions to 3DNow!';
   RsLong    = '64-bit Core';
 
-  RsTrademarks = 'MMX is a trademark of Intel Corporation.'+sLineBreak+
+  RsTrademarks = 'MMX is a trademark of Intel Corporation.'+#13+#10+
                  '3DNow! is a registered trademark of Advanced Micro Devices.';
 
   RsNoSIMD    = 'No SIMD registers found';
@@ -406,8 +406,10 @@ end;
 function ParseSigned(StringValue: string; var Value:TJvSIMDValue): Boolean;
 var
   TestValue: Int64;
+  ErrorCode: Integer;
 begin
-  Result := TryStrToInt64(StringValue,TestValue);
+  Val(StringValue,TestValue,ErrorCode);
+  Result := ErrorCode=0;
   if Result then
     case Value.Display of
       xt16Bytes : if (TestValue>=ShortInt($80)) and (TestValue<=ShortInt($7F))
@@ -427,8 +429,10 @@ end;
 function ParseUnsigned(StringValue: string; var Value:TJvSIMDValue): Boolean;
 var
   TestValue: Int64;
+  ErrorCode: Integer;
 begin
-  Result := TryStrToInt64(StringValue,TestValue);
+  Val(StringValue,TestValue,ErrorCode);
+  Result := ErrorCode=0;
   if Result then
     case Value.Display of
       xt16Bytes : if (TestValue>=Byte($00)) and (TestValue<=Byte($FF))
@@ -484,8 +488,10 @@ end;
 function ParseFloat(StringValue: string; var Value:TJvSIMDValue): Boolean;
 var
   TestValue: Extended;
+  ErrorCode: Integer;
 begin
-  Result := TryStrToFloat(StringValue,TestValue);
+  Val(StringValue,TestValue,ErrorCode);
+  Result := ErrorCode=0;
   if (Result) then
     case Value.Display of
       xt4Singles : if (TestValue>=-MaxSingle) and (TestValue<=MaxSingle)

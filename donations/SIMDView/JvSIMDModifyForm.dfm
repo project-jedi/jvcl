@@ -47,9 +47,7 @@ object JvSIMDModifyFrm: TJvSIMDModifyFrm
     Height = 21
     Style = csDropDownList
     ItemHeight = 13
-    ItemIndex = 3
     TabOrder = 0
-    Text = 'QWords'
     OnChange = ComboBoxDisplayChange
     Items.Strings = (
       'Bytes'
@@ -66,9 +64,7 @@ object JvSIMDModifyFrm: TJvSIMDModifyFrm
     Height = 21
     Style = csDropDownList
     ItemHeight = 13
-    ItemIndex = 0
     TabOrder = 1
-    Text = 'Binary'
     OnChange = ComboBoxFormatChange
     Items.Strings = (
       'Binary'

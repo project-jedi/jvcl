@@ -1,9 +1,34 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvSIMDUtils.pas, released on 2004-10-11.
+
+The Initial Developer of the Original Code is Florent Ouchet [ouchet dott florent att laposte dott net]
+Portions created by Florent Ouchet are Copyright (C) 2004 Florent Ouchet.
+All Rights Reserved.
+
+Contributor(s): -
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
 unit JvSIMDModifyForm;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, JclSysInfo, JvSIMDUtils, ToolsApi;
 
 type
@@ -49,6 +74,9 @@ implementation
 {$R *.dfm}
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Registry;
 
 const
@@ -181,7 +209,7 @@ begin
   Registry := TRegistry.Create(KEY_READ);
   try
     Registry.RootKey := HKEY_CURRENT_USER;
-    if Registry.OpenKey(ExcludeTrailingPathDelimiter(Services.GetBaseRegistryKey) + HistoryRegKey, False) then
+    if Registry.OpenKey(Services.GetBaseRegistryKey + HistoryRegKey, False) then
     begin
       Count := Registry.ReadInteger('Count');
       History.Clear;
@@ -202,7 +230,7 @@ begin
   Registry := TRegistry.Create(KEY_ALL_ACCESS);
   try
     Registry.RootKey := HKEY_CURRENT_USER;
-    if Registry.OpenKey(ExcludeTrailingPathDelimiter(Services.GetBaseRegistryKey) + HistoryRegKey, True) then
+    if Registry.OpenKey(Services.GetBaseRegistryKey + HistoryRegKey, True) then
     begin
       Registry.WriteInteger('Count',History.Count);
       for Index := 0 to History.Count-1 do
@@ -278,5 +306,21 @@ begin
   if (ModifyRegister) then
     ModalResult := mrOk;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

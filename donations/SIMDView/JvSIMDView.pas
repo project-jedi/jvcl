@@ -25,7 +25,7 @@ Known Issues:
 
 unit JvSIMDView;
 
-{$I jvcl.inc}
+{$I jedi.inc}
                      
 interface
 
@@ -118,6 +118,9 @@ procedure Register;
 implementation
 
 uses
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
   JvSIMDUtils;
 
 procedure Register;
@@ -271,8 +274,10 @@ begin
   CheckToolBarButton(FNTAServices.ToolBar[sDebugToolBar]);
   CheckToolBarButton(FNTAServices.ToolBar[sViewToolBar]);
   CheckToolBarButton(FNTAServices.ToolBar[sDesktopToolBar]);
+{$IFDEF COMPILER7_UP}
   CheckToolBarButton(FNTAServices.ToolBar[sInternetToolBar]);
   CheckToolBarButton(FNTAServices.ToolBar[sCORBAToolBar]);
+{$ENDIF}
   FViewDebugMenu.Remove(FSSEMenuItem);
   FSSEAction.ActionList:=nil;
 
@@ -514,5 +519,21 @@ procedure TDebuggerNotifier.ThreadNotify(Reason: TOTANotifyReason);
 begin
   if (Reason=nrStopped) then Owner.Refresh;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

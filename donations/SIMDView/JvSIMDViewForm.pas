@@ -25,12 +25,12 @@ Known Issues:
 
 unit JvSIMDViewForm;
 
-{$I jvcl.inc}
+{$I jedi.inc}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ToolsApi, Grids, ExtCtrls, Menus, JclSysInfo, JvSIMDUtils;
 
 type
