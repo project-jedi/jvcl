@@ -1,0 +1,149 @@
+@@$TJvFileInfo
+<TITLE TJvFileInfo overview>
+<GROUP JVCL.System.FilesAndFolders>
+  Provides an interface to most of what is returned by the SHGetFileInfo function
+  to allow easier access to information about a files type, attributes, icon
+  image and icon handle.  
+  
+  To get information on the a file you should:
+
+  * drop a TJvFileInfo on a form or data module.
+  * set the property FileName to an existing file on your computer.
+----------------------------------------------------------------------------------------------------
+@@JvFileInfo.pas
+<GROUP JVCL.FileRef>
+Summary
+  Contains the TJvFileInfo component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Peter Thörnqvist
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo
+<GROUP TJvFileInfo>
+<TITLEIMG TJvFileInfo>
+Summary
+  Retrieve info on a file, such as type, attribute, modifier and icon.
+Description
+  TJvFileInfo is a non-visible component that provides you with information on a particular file. 
+  File information such as type, attribute, modifier, icon can be retrieved with the published 
+  properties.
+-----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.Filename
+Summary
+  The file you want information on.
+Description
+  Filename is the full path and filename.  It has to point to a file that exists, there is no 
+  error message if the Filename is entered erroneously or does not exists.
+See Also
+  DisplayName
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.Modifier
+Summary
+  Retrieves the Icons modifier.
+Description
+  Retrieves the Icons Modifier to indicate the current state.
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.IconIndex
+Summary
+  Retrieve the index of a file's image list icon.
+Description
+  Retrieve the index of a file's image list icon. The return value is a handle to the system image 
+  list. 
+See Also
+  Count
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.DisplayName
+Summary
+  The name that is displayed on the drive.
+Description
+  This Read-Only property returns case-sensitive name that is displayed.  
+See Also
+  FileName
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.ExeType
+Summary
+  Returns the executable type.
+Description
+  ExeType returns the executable type for an executable file (.EXE, .COM) like 16-bit, 32-bit, 
+  MS-DOS, etc.  If the file is not an executable, etNone is returned.
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.AttrString
+Summary
+  Returns the Attributes of a file or directory.
+Description
+  This Read-Only property returns the attributes of a file or directory as one String.  For a file 
+  that has an attribute of Archive the result is "A".  For a combination of attributes such as 
+  (Archive + Hidden + System), the result is "AHS".
+  
+  The possible Attributes are:
+  <TABLE>
+    Attribute     Resulting string
+    ---------     ----------------
+    Normal        (no AttrString)
+    Archive       A
+    Compressed    C
+    Directory     D
+    Hidden        H
+    Readonly      R
+    System        S
+  </TABLE>
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.IconLocation
+Summary
+  Returns the path to the file containing the icon to be used to display the file type. 
+Description
+  IconLocation holds the path to the file containing the icon to be used to display the file type. 
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.TypeString
+Summary
+  Indicates the type of File
+Description
+  TypeString returns a string composed of the extension which has ' file' at the end.  
+  For example for an executable file, the TypeString is 'EXE file'
+See Also
+  FileName
+----------------------------------------------------------------------------------------------------
+@@TJvFileInfo.Icon
+Summary
+  Retries the Icon that represents the file
+Description
+  Returns icon as TIcon that currently is shown.  It 
+See Also
+  FileName
+----------------------------------------------------------------------------------------------------
+@@TJvExeType
+Summary
+  Type used to indicate the type of executable file.
+Description
+  TJvExeType is used in the <LINK TJvFileInfo.ExeType, ExeType> property of the TJvFileInfo 
+  component to indicate the type of executable file.
+@@TJvExeType.etNone
+  The file is not an executable.
+@@TJvExeType.etMSDos
+  The file is a MSDos executable.
+@@TJvExeType.etWin16
+  The file is a Windows 3.x or earlier (16-bit) application.
+@@TJvExeType.etWin32
+  The file is a Windows 95 or later, Windows NT, Windows 2000 or Windows XP application
+@@TJvExeType.etConsole
+  The file is a console application.
+----------------------------------------------------------------------------------------------------
+@@TJvIconModifier
+Summary
+  Type used to indicate the type icon modifier.
+Description
+  TJvIconModifier is the type used in the <LINK TJvFileInfo.Modifier, modifier> property of the
+  TJvFileInfo component to indicate the type of icon to retrieve.
+@@TJvIconModifier.imNormal
+  The normal icon of the file.
+@@TJvIconModifier.imOverlay
+  The icon overlay of the file.
+@@TJvIconModifier.imSelected
+  The icon of the file when it's selected.
+@@TJvIconModifier.imOpen
+  The icon of the file when it's open.
+@@TJvIconModifier.imShellSize
+  The icon of the file using the shell size.
+@@TJvIconModifier.imSmall
+  The icon of the file as a small icon.
+----------------------------------------------------------------------------------------------------
