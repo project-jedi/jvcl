@@ -25,7 +25,7 @@
     <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="JvFullColorDialogDemo.cpp"/>
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH)"/>
-    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)"/>
+    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH);..\..\..\run"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -96,11 +96,12 @@ Item1=C:\Prog\CBuilder6\Projects;C:\Perso\Prog\JVCL from CVS\dev\JVCL3\examples\
 Item2=$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=4
-Item0=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)
-Item1=$(BCB)\Projects\Lib;C:\Prog\CBuilder6\Projects;C:\Perso\Prog\JVCL from CVS\dev\JVCL3\examples\JvFullColorDialog\BCB;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)
-Item2=$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)
-Item3=$(BCB)\lib\obj;$(BCB)\lib
+Count=5
+Item0=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH);..\..\..\run
+Item1=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)
+Item2=$(BCB)\Projects\Lib;C:\Prog\CBuilder6\Projects;C:\Perso\Prog\JVCL from CVS\dev\JVCL3\examples\JvFullColorDialog\BCB;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)
+Item3=$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)
+Item4=$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
@@ -115,8 +116,9 @@ Count=1
 Item0=..\..\..\dcu
 
 [HistoryLists\hlFinalOutputDir]
-Count=1
-Item0=..\..\..\bin
+Count=2
+Item0=..\..\..\bin\
+Item1=..\..\..\bin
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
