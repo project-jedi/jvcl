@@ -30,9 +30,11 @@ unit JvUIBConst;
 interface
 
 {$IFNDEF DELPHI6_UP}
+{$IFNDEF BCB}
 const
   S_OK    = $00000000;
   S_FALSE = $00000001;
+{$ENDIF}
 {$ENDIF}
 
 type
