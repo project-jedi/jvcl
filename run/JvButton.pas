@@ -457,7 +457,7 @@ procedure TJvCustomGraphicButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer
 var
   Form: TCustomForm;
   Msg: TCMForceSize;
-  {$IFDEF VisualClX}
+  {$IFDEF VisualCLX}
   I: Integer;
   {$ENDIF VisualCLX}
 begin
@@ -472,7 +472,7 @@ begin
       Msg.NewSize.X := AWidth;
       Msg.NewSize.Y := AHeight;
       Form.Broadcast(Msg);
-      {$IFDEF VisualClX}
+      {$IFDEF VisualCLX}
       for i := 0 to Form.ControlCount - 1 do
         if Form.Controls[i] is TJvCustomGraphicButton then
           TJvCustomGraphicButton(Form.Controls[i]).ForceSize(Self, AWidth, AHeight);
@@ -737,7 +737,7 @@ procedure TJvCustomButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
   Form: TCustomForm;
   Msg: TCMForceSize;
-  {$IFDEF VisualClX}
+  {$IFDEF VisualCLX}
   I: Integer;
   {$ENDIF VisualCLX}
 begin
@@ -752,7 +752,7 @@ begin
       Msg.NewSize.X := AWidth;
       Msg.NewSize.Y := AHeight;
       Form.Broadcast(Msg);
-      {$IFDEF VisualClX}
+      {$IFDEF VisualCLX}
       for I := 0 to Form.ControlCount - 1 do
         if Form.Controls[I] is TJvCustomButton then
           TJvCustomButton(Form.Controls[I]).ForceSize(Self, AWidth, AHeight);
