@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="Jv3rd" Design="0">
+  <Description>JVCL 3rd party Runtime Package</Description>
+  <ClxDescription>JVCLX 3rd party Runtime Package</ClxDescription>
+  <C5PFlags/>
+  <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
+  <Requires>
+    <Package Name="rtl" Targets="d6,d6p,c6,c6p,d7,d7p,d7clx,Kylix" Condition=""/>
+    <Package Name="vcl50" Targets="d5,d5s,c5,c5s" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\common\JvGnugettext.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\common\JvGnugettextD5.pas" Targets="d5,d5s,c5,c5s" Formname="" Condition=""/>
+  </Contains>
+</Package>
