@@ -48,7 +48,8 @@ uses
   JvQGradient, JvQGradientHeaderPanel, JvQId3v1, JvQId3v2,
   JvQImageRotate, JvQImageTransform, JvQImageSquare, JvQStarfield,
   JvQWaitingGradient, JvQWaitingProgress, JvQWavePlayer, JvQSpecialProgress,
-  JvQSlider, JvQID3v2Base, JvQAnimatedImage, JvQSpecialImage;
+  JvQSlider, JvQID3v2Base, JvQAnimatedImage, JvQSpecialImage,
+  JvQAnimatedEditor,;
 
 {$R ..\Resources\JvMMReg.dcr}
 
@@ -68,7 +69,7 @@ begin
 //  RegisterPropertyEditor(TypeInfo(TJvQtKey), nil, '', TJvQtKeyEditor);
 //  RegisterPropertyEditor(TypeInfo(TJvID3FileInfo), nil, '', TJvID3FileInfoEditor);
 
-//  RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
+  RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
 //  RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
 //  RegisterComponentEditor(TJvID3Controller, TJvID3ControllerEditor);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
