@@ -35,9 +35,14 @@ Summary
 Description
   This value must be calculated according to the provider of the audio format you want to use and
   that you indicated by setting the value of FormatTag.
-  Please not that if FormatTag is equal to WAVE_FORMAT_PCM, the value of AvgBytesPerSec will be 
+  Please not that if FormatTag is equal to WAVE_FORMAT_PCM, the value of AvgBytesPerSec will be
   ignored and will be computed according to the recommandation for this format:
+
+  <AUTOLINK OFF>
+  <CODE>
      AvgBytesPerSec := SamplesPerSec * ((Channels * BitsPerSample) div 8)
+  <AUTOLINK ON>
+  </CODE>
 See Also
   FormatTag, SamplesPerSec, Channels, BitsPerSample, FillWaveFormatEx
 ----------------------------------------------------------------------------------------------------
@@ -55,7 +60,12 @@ Summary
 Description
   This value depends on the value of FormatTag. If it is equal to WAVE_FORMAT_PCM, then the
   value of BlockAlign will be ignored and computed according to
-    BlockAlign := (Channels * BitsPerSample) div 8
+
+  <AUTOLINK OFF>
+  <CODE>
+     BlockAlign := (Channels * BitsPerSample) div 8
+  <AUTOLINK ON>
+  </CODE>
 See Also
   FormatTag, Channels, BitsPerSample, FillWaveFormatEx
 ----------------------------------------------------------------------------------------------------
@@ -124,7 +134,7 @@ See Also
 @@TJvAVICapture
 <TITLEIMG TJvAVICapture>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Multimedia.Video
   FLAG=Component
 Summary
   TJvAVICapture is an encapsulation of the AVICap API allowing to capture live video
@@ -146,25 +156,19 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.ApplyAudioFormat
 Summary
-  Write here a summary (1 line)
+  Applies the audio format settings.
 Description
-  Write here a description
+  Call ApplyAudioFormat to apply the audio format settings.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Returns true if successful, false otherwise.
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.ApplyCaptureSettings
 Summary
-  Write here a summary (1 line)
+  Applies the capture settings.
 Description
-  Write here a description
+  Call ApplyCaptureSettings to apply the capture settings.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Returns true if successful, false otherwise.
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.AudioFormat
 Summary
@@ -640,7 +644,7 @@ See Also
 Summary
   The title of the AVICap window
 Description
-  This is required upon creation of the underlying AVICap window and can be used to 
+  This is required upon creation of the underlying AVICap window and can be used to
   search this window using FindWindow
 See Also
   Hwnd
@@ -765,7 +769,7 @@ Summary
 Description
   Set this value to a virtual key that will cancel the capture session if pressed. This defaults
   to the Esc key. You should use the JvVirtualKey selection frame (in JvVirtualKeySelectionFrame.pas)
-  to allow your user to choose a virtual key, while being sure the value returned is correct  
+  to allow your user to choose a virtual key, while being sure the value returned is correct
 See Also
   AbortLeftMouse, AbortRightMouse, LimitEnabled, TimeLimit
 ----------------------------------------------------------------------------------------------------
@@ -802,8 +806,6 @@ Description
   This has not been tested. You should refer to the Win32 API for more details on the usage
   of MCI Controls with the AVICap API
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
   MCIControl, MCIStartTime, MCIStopTime
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.MCIStopTime
@@ -873,7 +875,7 @@ See Also
 Summary
   Updates the properties of the object according to the values from the TJvAVICapture object
 Description
-  This ensures synchronization between the object and the underlying system object. You 
+  This ensures synchronization between the object and the underlying system object. You
   shouldn't have to call this method directly
 See Also
   Apply
@@ -884,7 +886,7 @@ Summary
 Description
   If set to true, when the capture starts, a separate thread is created allowing the thread
   launching the capture to continue.
-  Reentrance issues must then be considered to avoid the user to launch twice the capture, 
+  Reentrance issues must then be considered to avoid the user to launch twice the capture,
   for instance
 ----------------------------------------------------------------------------------------------------
 @@TJvDriverCaps
@@ -894,13 +896,16 @@ Summary
 Description
   This is a set of the following values. One or more may be present
 
+  <TABLE>
+  Value                  Meaning
+  -----                  -------
   dcOverlay              The driver can do overlay rendering
   dcDlgVideoSource       The driver can display a dialog to choose video source
   dcDlgVideoFormat       The driver can display a dialog to choose video format
   dcDlgVideoDisplay      The driver can display a dialog to choose video display
   dcCaptureInitialized   The capture driver is initialized
   dcSuppliesPalettes     The driver supplies palettes
-(Value = set of ( dcOverlay , dcDlgVideoSource , dcDlgVideoFormat , dcDlgVideoDisplay , dcCaptureInitialized , dcSuppliesPalettes ) ; - for reference)
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvDriverIndex
 <TITLE TJvDriverIndex type>
@@ -909,7 +914,6 @@ Summary
 Description
   As the maximum number of drivers in the system is 10, this type has been created to ensure
   the value is always correct. -1 specifies that no connection is established.
-(Value = -1..9 ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvNumAudioBuffer
 <TITLE TJvNumAudioBuffer type>
@@ -918,7 +922,6 @@ Summary
 Description
   As it is a system restriction to use at most 10 audio buffers, this type has been created
   to ensure the values are always correct
-(Value = 0..10 ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvPalette
 Summary
@@ -999,9 +1002,8 @@ See Also
 Summary
   The number of colors in a palette
 Description
-  This type has been created to enforce the system limitation of at most 256 colours in 
+  This type has been created to enforce the system limitation of at most 256 colours in
   a palette
-(Value = 0..256 ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvPercent
 <TITLE TJvPercent type>
@@ -1010,7 +1012,6 @@ Summary
 Description
   This type is defined to ensure that percentages in TJvCaptureSettings are not set to
   more than 100% or less than 0%
-(Value = 0..100 ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvUsedEvents
 <TITLE TJvUsedEvents type>
@@ -1019,7 +1020,10 @@ Summary
 Description
   You can decide to activate some events at some times. If you don't they won't be triggered
   even if their associated handler exists. The set is made of these possible values:
-  
+
+  <TABLE>
+  Value              Meaning
+  -----              -------
   ueCapControl       the OnCapControl event will be triggered
   ueError            the OnError event will be triggered
   ueFrame            the OnFrame event will be triggered
@@ -1027,7 +1031,7 @@ Description
   ueVideoStream      the OnVideoStream event will be triggered
   ueWaveStream       the OnWaveStream event will be triggered
   ueYield            the OnYield event will be triggered
-(Value = set of ( ueCapControl , ueError , ueFrame , ueStatus , ueVideoStream , ueWaveStream , ueYield ) ; - for reference)
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoDialog
 <TITLE TJvVideoDialog type>
@@ -1072,12 +1076,17 @@ Description
   Each frame may be compressed using the given compression. The value can take the
   values you can get in the biCompression member of a BITMAPINFOHEADER structure.
   At the moment of writing, these values are:
+
+  <TABLE>
+  Value         Meaning
+  -----         -------
   BI_RGB        No compression
   BI_RLE8       Run Length Encoding with a BitDepth equal to 8
   BI_RLE4       Run Length Encoding with a BitDepth equal to 4
   BI_BITFIELDS  No compression with a BitDepth equal to 16 or 32
   BI_JPEG       JPEG compression (Win98/Me/2k/XP only)
   BI_PNG        PNG compression (Win98/Me/2k/XP only)
+  </TABLE>
 See Also
   PixelFormat, BitDepth
 ----------------------------------------------------------------------------------------------------
@@ -1116,7 +1125,6 @@ Summary
   This type is equal to PVIDEOHDR
 Description
   It has been created to ensure better readability
-(Value = PVIDEOHDR ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvVirtualKey
 <TITLE TJvVirtualKey type>
@@ -1125,7 +1133,6 @@ Summary
 Description
   This type is defined to allow to have a custom design editor that will ensure the
   virtual key value is always valid
-(Value = type Integer ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvWaveHdr
 <TITLE TJvWaveHdr type>
@@ -1133,7 +1140,6 @@ Summary
   This type is equal to PWAVEHDR
 Description
   It has been created to ensure better readability
-(Value = PWAVEHDR ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TOnCapControl
 <TITLE TOnCapControl type>
