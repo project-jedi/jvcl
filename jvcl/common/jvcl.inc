@@ -43,10 +43,16 @@ requires node in the affected package(s). }
 translation tool installed and want to use it with the JVCL. }
 {.$DEFINE USE_DXGETTEXT}
 
+{ Enable this define if you use/have QuickReport }
+{$DEFINE JVCL_UseQuickReport}
+
 { Enable this define if you have QReport 4 installed. This will require qr4rund7 instead
-of qrpt. }
+of qrpt. JVCL_UseQuickReport must also be defined}
 {.$DEFINE QREPORT4}
 
+{$IFNDEF JVCL_USEQuickReport}
+{$UNDEF QREPORT4}
+{$ENDIF}
 
 {$IFDEF BCB}
  {$ObjExportAll ON}

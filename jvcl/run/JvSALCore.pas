@@ -37,9 +37,9 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs,
   {$ENDIF VisualCLX}
-  {$IFDEF DELPHI6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF DELPHI6_UP}
+  {$ENDIF COMPILER6_UP}
   JvSAL, JvTypes;
 
 type

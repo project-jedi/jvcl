@@ -44,9 +44,9 @@ uses
   {$IFDEF VisualCLX}
   Types, QWindows, QForms, QDialogs, QFileCtrls,
   {$ENDIF VisualCLX}
-  {$IFDEF DELPHI6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF DELPHI6_UP}
+  {$ENDIF COMPILER6_UP}
   JvXMLTree, JvComponent, JvStrings, JvTypes;
 
 const
@@ -639,7 +639,7 @@ begin
     while gettoken do
       List.append(token);
     //    c:=List.Count;
-    case vartype(AValue) of
+    case VarType(AValue) of
       varString:
         begin
           Result := IndexOfString(List, AValue) > -1;

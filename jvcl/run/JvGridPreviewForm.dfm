@@ -1,6 +1,6 @@
 object JvGridPreviewForm: TJvGridPreviewForm
-  Left = 213
-  Top = 177
+  Left = 268
+  Top = 202
   Width = 603
   Height = 392
   Caption = 'Preview'
@@ -22,7 +22,7 @@ object JvGridPreviewForm: TJvGridPreviewForm
     Left = 157
     Top = 0
     Width = 438
-    Height = 362
+    Height = 365
     Align = alClient
     Ctl3D = True
     ParentCtl3D = False
@@ -40,7 +40,7 @@ object JvGridPreviewForm: TJvGridPreviewForm
     Left = 0
     Top = 0
     Width = 157
-    Height = 362
+    Height = 365
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
@@ -79,8 +79,8 @@ object JvGridPreviewForm: TJvGridPreviewForm
       OnClick = btnshowClick
     end
     object lblpages: TLabel
-      Left = 59
-      Top = 263
+      Left = 69
+      Top = 265
       Width = 39
       Height = 13
       Caption = 'lblpages'
@@ -167,16 +167,18 @@ object JvGridPreviewForm: TJvGridPreviewForm
       TabOrder = 1
       OnClick = HeadersClick
     end
-    object Margin: TSpinEdit
-      Left = 7
-      Top = 101
-      Width = 46
-      Height = 22
-      MaxValue = 400
-      MinValue = 0
+    object Margin: TUpDown
+      Left = 45
+      Top = 102
+      Width = 15
+      Height = 21
+      Associate = Edit1
+      Min = 0
+      Max = 400
+      Position = 0
       TabOrder = 2
-      Value = 0
-      OnChange = MarginChange
+      Wrap = False
+      OnClick = MarginClick
     end
     object ckborders: TCheckBox
       Left = 65
@@ -211,16 +213,18 @@ object JvGridPreviewForm: TJvGridPreviewForm
       TabOrder = 4
       OnClick = MarginsClick
     end
-    object PreviewPage: TSpinEdit
-      Left = 7
+    object PreviewPage: TUpDown
+      Left = 45
       Top = 262
-      Width = 46
-      Height = 22
-      MaxValue = 1
-      MinValue = 1
+      Width = 15
+      Height = 21
+      Associate = Edit2
+      Min = 1
+      Max = 1
+      Position = 1
       TabOrder = 5
-      Value = 1
-      OnChange = PreviewPageChange
+      Wrap = False
+      OnClick = PreviewPageClick
     end
     object cklive: TCheckBox
       Left = 7
@@ -230,6 +234,22 @@ object JvGridPreviewForm: TJvGridPreviewForm
       Caption = 'Live'
       TabOrder = 6
       OnClick = ckliveClick
+    end
+    object Edit1: TEdit
+      Left = 10
+      Top = 102
+      Width = 35
+      Height = 21
+      TabOrder = 7
+      Text = '0'
+    end
+    object Edit2: TEdit
+      Left = 10
+      Top = 262
+      Width = 35
+      Height = 21
+      TabOrder = 8
+      Text = '1'
     end
   end
   object PrinterSetupDialog1: TPrinterSetupDialog

@@ -33,7 +33,7 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, Grids, StdCtrls, Spin, ComCtrls, Buttons, Printers, ExtDlgs,
+  ExtCtrls, Grids, StdCtrls, ComCtrls, Buttons, Printers, ExtDlgs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QGraphics, QControls, QForms, QDialogs, Types,
@@ -48,11 +48,11 @@ type
     Panel1: TPanel;
     Header: TEdit;
     Headers: TListBox;
-    Margin: TSpinEdit;
+    Margin: TUpDown;
     ckborders: TCheckBox;
     Margins: TListBox;
     btnprint: TSpeedButton;
-    PreviewPage: TSpinEdit;
+    PreviewPage: TUpDown;
     btnshow: TSpeedButton;
     lblpages: TLabel;
     cklive: TCheckBox;
@@ -61,14 +61,14 @@ type
     btnpic: TSpeedButton;
     OpenPictureDialog1: TOpenPictureDialog;
     PrinterSetupDialog1: TPrinterSetupDialog;
+    Edit1: TEdit;
+    Edit2: TEdit;
     procedure btnshowClick(Sender: TObject);
     procedure MarginsClick(Sender: TObject);
     procedure btnprintClick(Sender: TObject);
-    procedure MarginChange(Sender: TObject);
     procedure HeaderChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure ckbordersClick(Sender: TObject);
-    procedure PreviewPageChange(Sender: TObject);
     procedure HeadersClick(Sender: TObject);
     procedure ckliveClick(Sender: TObject);
     procedure btnsetupClick(Sender: TObject);
@@ -77,6 +77,8 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure PreviewImageClick(Sender: TObject);
     procedure btnpicClick(Sender: TObject);
+    procedure MarginClick(Sender: TObject; Button: TUDBtnType);
+    procedure PreviewPageClick(Sender: TObject; Button: TUDBtnType);
   private
     FGridPrinter: TJvGridPrinter;
     FPrintImage: TBitmap;
@@ -133,29 +135,29 @@ begin
     -1:
       Exit;
     0:
-      Margin.Value := GridPrinter.PrintOptions.MarginTop;
+      Margin.Position := GridPrinter.PrintOptions.MarginTop;
     1:
-      Margin.Value := GridPrinter.PrintOptions.PageTitleMargin;
+      Margin.Position := GridPrinter.PrintOptions.PageTitleMargin;
     2:
-      Margin.Value := GridPrinter.PrintOptions.MarginLeft;
+      Margin.Position := GridPrinter.PrintOptions.MarginLeft;
     3:
-      Margin.Value := GridPrinter.PrintOptions.MarginRight;
+      Margin.Position := GridPrinter.PrintOptions.MarginRight;
     4:
-      Margin.Value := GridPrinter.PrintOptions.MarginBottom;
+      Margin.Position := GridPrinter.PrintOptions.MarginBottom;
     5:
-      Margin.Value := GridPrinter.PrintOptions.LeftPadding;
+      Margin.Position := GridPrinter.PrintOptions.LeftPadding;
     6:
-      Margin.Value := GridPrinter.PrintOptions.HeaderSize;
+      Margin.Position := GridPrinter.PrintOptions.HeaderSize;
     7:
-      Margin.Value := GridPrinter.PrintOptions.FooterSize;
+      Margin.Position := GridPrinter.PrintOptions.FooterSize;
   else
     Exit;
   end;
   if Margins.ItemIndex > 5 then
   begin
     {$IFDEF VCL}
-    Margin.MinValue := 6;
-    Margin.MaxValue := 72;
+    Margin.Min := 6;
+    Margin.Max := 72;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     Margin.Min := 6;
@@ -165,8 +167,8 @@ begin
   else
   begin
     {$IFDEF VCL}
-    Margin.MinValue := 0;
-    Margin.MaxValue := 400;
+    Margin.Min := 0;
+    Margin.Max := 400;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     Margin.Min := 0;
@@ -178,32 +180,6 @@ end;
 procedure TJvGridPreviewForm.btnprintClick(Sender: TObject);
 begin
   Print;
-end;
-
-procedure TJvGridPreviewForm.MarginChange(Sender: TObject);
-begin
-  case Margins.ItemIndex of
-    -1:
-      Exit;
-    0:
-      GridPrinter.PrintOptions.MarginTop := Margin.Value;
-    1:
-      GridPrinter.PrintOptions.PageTitleMargin := Margin.Value;
-    2:
-      GridPrinter.PrintOptions.MarginLeft := Margin.Value;
-    3:
-      GridPrinter.PrintOptions.MarginRight := Margin.Value;
-    4:
-      GridPrinter.PrintOptions.MarginBottom := Margin.Value;
-    5:
-      GridPrinter.PrintOptions.Leftpadding := Margin.Value;
-    6:
-      GridPrinter.PrintOptions.HeaderSize := Margin.Value;
-    7:
-      GridPrinter.PrintOptions.FooterSize := Margin.Value;
-  end;
-  if cklive.Checked then
-    btnshow.Click;
 end;
 
 procedure TJvGridPreviewForm.HeaderChange(Sender: TObject);
@@ -233,18 +209,18 @@ begin
   DrawToCanvas(FPrintImage.Canvas, pmPreview, 1, Grid.RowCount - 1);
   PreviewImage.Picture.Bitmap.Assign(FPrintImage);
   Header.Text := GridPrinter.PrintOptions.PageTitle;
-  Margin.Value := GridPrinter.PrintOptions.MarginTop;
+  Margin.Position := GridPrinter.PrintOptions.MarginTop;
   Margins.ItemIndex := 0;
   {$IFDEF VCL}
-  PreviewPage.MaxValue := PageCount;
-  lblpages.Caption := Format(RsOfd, [PreviewPage.MaxValue]);
+  PreviewPage.Max := PageCount;
+  lblpages.Caption := Format(RsOfd, [PreviewPage.Max]);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   PreviewPage.Max := PageCount;
   lblpages.Caption := Format(RsOfd, [PreviewPage.Max]);
   {$ENDIF VisualCLX}
   GridPrinter.PrintOptions.PreviewPage := 1;
-  PreviewPage.Value := 1;
+  PreviewPage.Position := 1;
   ckBorders.Checked := (GridPrinter.PrintOptions.BorderStyle = bsSingle);
   Header.Text := GridPrinter.PrintOptions.PageTitle;
   Headers.ItemIndex := 0;
@@ -257,25 +233,6 @@ begin
     GridPrinter.PrintOptions.BorderStyle := bsSingle
   else
     GridPrinter.PrintOptions.BorderStyle := bsNone;
-  if cklive.Checked then
-    btnshow.Click;
-end;
-
-procedure TJvGridPreviewForm.PreviewPageChange(Sender: TObject);
-begin
-  {$IFDEF VCL}
-  if PreviewPage.Value < PreviewPage.MinValue then
-    PreviewPage.Value := PreviewPage.MinValue;
-  if PreviewPage.Value > PreviewPage.MaxValue then
-    PreviewPage.Value := PreviewPage.MaxValue;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if PreviewPage.Value < PreviewPage.Min then
-    PreviewPage.Value := PreviewPage.Min;
-  if PreviewPage.Value > PreviewPage.Max then
-    PreviewPage.Value := PreviewPage.Max;
-  {$ENDIF VisualCLX}
-  GridPrinter.PrintOptions.PreviewPage := PreviewPage.Value;
   if cklive.Checked then
     btnshow.Click;
 end;
@@ -716,6 +673,53 @@ begin
   Printer.BeginDoc;
   DrawToCanvas(Printer.Canvas, pmPrint, 1, Grid.ColCount - 1);
   Printer.EndDoc;
+end;
+
+procedure TJvGridPreviewForm.MarginClick(Sender: TObject;
+  Button: TUDBtnType);
+begin
+  case Margins.ItemIndex of
+    -1:
+      Exit;
+    0:
+      GridPrinter.PrintOptions.MarginTop := Margin.Position;
+    1:
+      GridPrinter.PrintOptions.PageTitleMargin := Margin.Position;
+    2:
+      GridPrinter.PrintOptions.MarginLeft := Margin.Position;
+    3:
+      GridPrinter.PrintOptions.MarginRight := Margin.Position;
+    4:
+      GridPrinter.PrintOptions.MarginBottom := Margin.Position;
+    5:
+      GridPrinter.PrintOptions.Leftpadding := Margin.Position;
+    6:
+      GridPrinter.PrintOptions.HeaderSize := Margin.Position;
+    7:
+      GridPrinter.PrintOptions.FooterSize := Margin.Position;
+  end;
+  if cklive.Checked then
+    btnshow.Click;
+end;
+
+procedure TJvGridPreviewForm.PreviewPageClick(Sender: TObject;
+  Button: TUDBtnType);
+begin
+  {$IFDEF VCL}
+  if PreviewPage.Position < PreviewPage.Min then
+    PreviewPage.Position := PreviewPage.Min;
+  if PreviewPage.Position > PreviewPage.Max then
+    PreviewPage.Position := PreviewPage.Max;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if PreviewPage.Position < PreviewPage.Min then
+    PreviewPage.Position := PreviewPage.Min;
+  if PreviewPage.Position > PreviewPage.Max then
+    PreviewPage.Position := PreviewPage.Max;
+  {$ENDIF VisualCLX}
+  GridPrinter.PrintOptions.PreviewPage := PreviewPage.Position;
+  if cklive.Checked then
+    btnshow.Click;
 end;
 
 end.
