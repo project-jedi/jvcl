@@ -30,7 +30,13 @@ unit JvPageManager;
 interface
 
 uses
-  Classes, Controls, ExtCtrls {, JvComponent};
+  {$IFDEF VCL}
+  Controls, Forms, StdCtrls, ExtCtrls, ActnList,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QStdCtrls, QExtCtrls, QActnList,
+  {$ENDIF}
+  SysUtils, Classes;
 
 type
   TPageNotifyEvent = procedure(Next: Boolean) of object;
@@ -134,7 +140,7 @@ type
     FOnHide: TPageNotifyEvent;
     function GetPageName: string;
     procedure SetPageName(const Value: string);
-    procedure SeTJvPageManager(Value: TJvPageManager);
+    procedure SetJvPageManager(Value: TJvPageManager);
     procedure PageEnter(Next: Boolean);
     procedure PageLeave(Next: Boolean);
     procedure PageShow(Next: Boolean);
@@ -184,9 +190,6 @@ const
 
 implementation
 
-uses
-  SysUtils, Forms, StdCtrls, ActnList;
-
 // (rom) changed to var
 var
   Registered: Boolean = False;
@@ -225,7 +228,7 @@ begin
     FPageName := Value;
 end;
 
-procedure TJvPageProxy.SeTJvPageManager(Value: TJvPageManager);
+procedure TJvPageProxy.SetJvPageManager(Value: TJvPageManager);
 begin
   if FPageManager <> nil then
     FPageManager.RemoveProxy(Self);
