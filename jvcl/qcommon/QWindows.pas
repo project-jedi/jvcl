@@ -486,6 +486,17 @@ type
   TBitmapInfo = tagBITMAPINFO;
   BITMAPINFO = tagBITMAPINFO;
 
+  PBitmapFileHeader = ^TBitmapFileHeader;
+  tagBITMAPFILEHEADER = packed record
+    bfType: Word;
+    bfSize: DWORD;
+    bfReserved1: Word;
+    bfReserved2: Word;
+    bfOffBits: DWORD;
+  end;
+  TBitmapFileHeader = tagBITMAPFILEHEADER;
+  BITMAPFILEHEADER = tagBITMAPFILEHEADER;
+
 { brushes }
 function CreateSolidBrush(Color: TColor): QBrushH;
 function CreateHatchBrush(bStyle: BrushStyle; Color: TColor): QBrushH;
@@ -1361,6 +1372,10 @@ function FileGetAttr(const FileName: string): Integer;
 function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
 function MakeIntResource(Value: Integer): PChar;
+function MakeWord(A, B: Byte): Word;
+function MakeLong(A, B: Word): Longint;
+function HiWord(L: DWORD): Word;
+function HiByte(W: Word): Byte;
 
 type
   TSystemTime = record
@@ -6421,6 +6436,26 @@ end;
 function MakeIntResource(Value: Integer): PChar;
 begin
   Result := PChar(Value and $0000ffff);
+end;
+
+function MakeWord(A, B: Byte): Word;
+begin
+  Result := A or B shl 8;
+end;
+
+function MakeLong(A, B: Word): Longint;
+begin
+  Result := A or B shl 16;
+end;
+
+function HiWord(L: DWORD): Word;
+begin
+  Result := L shr 16;
+end;
+
+function HiByte(W: Word): Byte;
+begin
+  Result := W shr 8;
 end;
 
 procedure MessageBeep(Value: Integer);
