@@ -18,7 +18,7 @@ PROJECTS = bplJvQ3rdK3R.so bplJvQCoreK3R.so bplJvQCoreK3D.so bplJvQSystemK3R.so 
   bplJvQUIBK3R.so bplJvQUIBK3D.so bplJvQHMIK3R.so bplJvQHMIK3D.so bplJvQNetK3R.so \
   bplJvQNetK3D.so bplJvQPageCompsK3R.so bplJvQPageCompsK3D.so bplJvQEDIK3R.so \
   bplJvQEDIK3D.so bplJvQXPCtrlsK3R.so bplJvQXPCtrlsK3D.so bplJvQInspectorK3R.so \
-  bplJvQInspectorK3D.so
+  bplJvQInspectorK3D.so bplJvQDBK3R.so bplJvQDBK3D.so
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -144,6 +144,12 @@ bplJvQInspectorK3R.so: k3/JvQInspectorK3R.dpk
 	$(DCC)
 
 bplJvQInspectorK3D.so: k3/JvQInspectorK3D.dpk
+	$(DCC)
+
+bplJvQDBK3R.so: k3/JvQDBK3R.dpk
+	$(DCC)
+
+bplJvQDBK3D.so: k3/JvQDBK3D.dpk
 	$(DCC)
 
 
