@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvGIF, ExtCtrls, JvCntScr, JvComponent, JvCaptionPanel;
+  Dialogs, StdCtrls, JvGIF, ExtCtrls, JvCntScr, JvComponent, JvCaptionPanel,
+  JvContentScroller;
 
 type
   TContentScrollerMainForm = class(TForm)
