@@ -1,1106 +1,1298 @@
 ##Package: StdCtrls
-##Status: Locked to Olivier
+##Status: Needs layout review
 ----------------------------------------------------------------------------------------------------
 @@JvMenus.pas
 Summary
   Contains the TJvMainMenu, TJvPopupMenu the related painter components.
 <INCLUDE JVCL.UnitText.dtx>
+ 
 Author
-  Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-  Olivier Sannier
+  Fedor Koshevnikov, Igor Pavluk and Serge Korolev. Reworked for JVCL by Olivier Sannier        
+
+
 ----------------------------------------------------------------------------------------------------
 @@SetDefaultMenuFont
 <TITLE SetDefaultMenuFont procedure>
+ 
 Summary
   Assigns the default menu font to the given font
 Description
-  This method reads the system parameters to retrieve the current
-  font used to draw menu items.
-  You shouldn't have to call this function directly, it is called
-  by default before calling any event handler
+  This method reads the system parameters to retrieve the current font used to draw menu items.
+  You shouldn't have to call this function directly, it is called by default before calling any event handler
 Parameters
-  AFont - The font to which the system font will be assigned
+  AFont - The font to which the system font will be assigned            
+
+
 ----------------------------------------------------------------------------------------------------
 @@TDrawMarginEvent
 <TITLE TDrawMarginEvent type>
 <COMBINE TJvPopupMenu.OnDrawMargin>
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TDrawMenuItemEvent
 <TITLE TDrawMenuItemEvent type>
+ 
 Summary
   This event is triggered when a menu item has to be painted by the owner
 Description
-  Access the Canvas property of the Sender to draw the given Item in 
-  the give Rect and respecting the given State.
-  Please note that this event will only be triggered if the Style of
-  the Sender is msOwnerDraw
-  
-  This type is used by (for reference):
-    TJvMainMenu.OnDrawItem
-    TJvPopupMenu.OnDrawItem
+  Access the Canvas property of the Sender to draw the given Item in  the give Rect and respecting    
+  the given State.
+  Please note that this event will only be triggered if the Style of the Sender is msOwnerDraw
+
 Parameters
-  Sender - The Menu to which the Item belongs
-  Item   - The Item that needs to be drawn
-  Rect   - The area in the Canvas from the menu where the item is to be painted
+  Sender - The Menu to which the Item belongs 
+  Item   - The Item that needs to be drawn 
+  Rect   - The area in the Canvas from the menu where the item is to be painted 
   State  - The current state of the menu
+ 
 See Also
-  TJvMainMenu.OnDrawItem, TJvPopupMenu.OnDrawItem, TJvOwnerDrawMenuItemPainter
+  TJvMainMenu.OnDrawItem, TJvPopupMenu.OnDrawItem, TJvOwnerDrawMenuItemPainter            
+
+
 ----------------------------------------------------------------------------------------------------
 @@TItemImageEvent
 <TITLE TItemImageEvent type>
+ 
 Summary
-  This event is triggered whenever a painter needs to know the image index
-  for a menu item about to being paint.
+  This event is triggered whenever a painter needs to know the image index for a menu item about to   
+ being paint.
+ 
 Description
   This event will be triggered if the Images property is set.
-  If you supply a handler, then you can change the image index you set
-  during design time.
-  If you don't, the image index set during design time will be used
-  
-  This type is used by (for reference):
-    TJvMainMenu.OnGetDisabledImageIndex
-    TJvMainMenu.OnGetHotImageIndex
-    TJvMainMenu.OnGetImageIndex
-    TJvPopupMenu.OnGetDisabledImageIndex
-    TJvPopupMenu.OnGetHotImageIndex
-    TJvPopupMenu.OnGetImageIndex
+ If you supply a handler, then you can change the image index you set during design time.
+ If you don't, the image index set during design time will be used  
+
 Parameters
-  Sender     - The menu to which the item belongs
-  Item       - The item to be modified
+  Sender     - The menu to which the item belongs 
+  Item       - The item to be modified 
   State      - The state of the item
   ImageIndex - The image index, you can modify this value
+ 
 See Also
-  TJvMainMenu.ImageIndex, TJvPopupMenu.ImageIndex
+  TJvMainMenu.ImageIndex, TJvPopupMenu.ImageIndex            
+
+
 ----------------------------------------------------------------------------------------------------
 @@TItemParamsEvent
 <TITLE TItemParamsEvent type>
+ 
 Summary
-  This event is triggered just before painting but before the GetxxImageIndex events
-  so that you can change more specific values of the item about to be drawn
+  This event is triggered just before painting but before the GetxxImageIndex events so that you can  
+ change more specific values of the item about to be drawn
 Description
-  If you don't supply a handler for this event, no change will be done to 
-  the menu item and the Item Painter will follow its default behaviour
-  
-  This type is used by (for reference):
-    TJvMainMenu.OnGetItemParams
-    TJvPopupMenu.OnGetItemParams
+  If you don't supply a handler for this event, no change will be done to the menu item and the Item Painter will follow its default behaviour  
+
 Parameters
-  Sender    - The menu to which the item belongs
-  Item      - The item to be modified
+  Sender    - The menu to which the item belongs 
+  Item      - The item to be modified 
   State     - The state of the item
-  AFont     - The current font for the item. Use Assign to change it
-  Color     - The current color of the item
+  AFont     - The current font for the item. Use Assign to change it 
+  Color     - The current color of the item 
   Graphic   - The current graphic for the item. Usually nil.
   NumGlyphs - The number of glyphs in the Graphic object
+  
 See Also
-  TJvCustomMenuItemPainter.PreparePaint, TItemImageEvent
+  TJvCustomMenuItemPainter.PreparePaint, TItemImageEvent            
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBtnMenuItemPainter
 Summary
   This painter draws an item as a raised or lowered button
 Description
-  Set the Style property of TJvMainMenu or TJvPopupMenu to msBtnRaised or msBtnLowered
-  to use this painter.
+  Set the Style property of TJvMainMenu or TJvPopupMenu to msBtnRaised or msBtnLowered to 
+  use this painter.
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter
 Summary
   This painter is the ancestor of all menu item painters
 Description
   Starting with JVCL3, the concept of menu item painters has been introduced.
-  Each JvMainMenu or JvPopupMenu is assigned an item painter according to the
-  Style property. When a menu item is about to be painted, the painter is called
-  and does the painting job.
+  Each JvMainMenu or JvPopupMenu is assigned an item painter according to the Style property. 
+  When a menu item is about to be painted, the painter is called and does the painting job.
   Do not instanciate a TJvCustomMenuItemPainter but use one of its descendents.
-  However, unles you are using the msOwnerDraw style and want to base your drawings
-  on one the available painters, you shouldn't have to instanciate one of the 
+  However, unles you are using the msOwnerDraw style and want to base your drawings on one the
+  available painters, you shouldn't have to instanciate one of the 
   descendants of TJvCustomMenuItemPainter.
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.Canvas
 Summary
   The canvas in which the menu items will be painted
 Description
-  Returns the canvas from the TJvMainMenu or TJvPopupMenu to which this painter
-  is assigned
+  Returns the canvas from the TJvMainMenu or TJvPopupMenu to which this painter is assigned 
 See Also
   Paint
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.CheckMarkHeight
 Summary
   The height of a check mark
+ 
 Description
   Returns the system size for a check mark if ShowCheckMarks is true.
-  Returns 0 otherwize.
-  Some descendants may change the values returned by this method
+Returns 0 otherwize.
+ Some descendants may change the values returned by this method
 See Also
   CheckMarkWidth
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.CheckMarkWidth
 Summary
   The width of a check mark
+ 
 Description
   Returns the system size for a check mark if ShowCheckMarks is true.
-  Returns 0 otherwize.
-  Some descendants may change the values returned by this method
+Returns 0 otherwize.
+ Some descendants may change the values returned by this method
 See Also
   CheckMarkHeight
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.ComponentState
 Summary
-  Write here a summary (1 line)
+  Returns the ComponentState property of the associated menu.
+ 
 Description
-  Write here a description
+  If the painter is associated to a TJvMainMenu, returns FMainMenu.ComponentState.
+  If the painter is associated to a TJvPopupMenu, returns FPopupMenu.ComponentState.
+  This has been done to allow an easy access to that property.
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.DisabledImages
 Summary
-  Write here a summary (1 line)
+  Returns the DisabledImages property of the associated menu 
 Description
-  Write here a description
+  If the painter is associated to a TJvMainMenu, returns FMainMenu.DisabledImages.
+  If the painter is associated to a TJvPopupMenu, returns FPopupMenu.DisabledImages.
+  This has been done to allow an easy access to that property.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HotImages, Images, TJvMainMenu.DisabledImages, TJvPopupMenu.DisabledImages
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.DrawHighlight
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Returns true if we must draw highlight on the current item
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.GrayColor
 Summary
-  Write here a summary (1 line)
+  Returns the Gray color to be used for the current Item
 Description
-  Write here a description
+  Returns clGrayText if the item is selected, returns clBtnShadow otherwise
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.HotImages
 Summary
-  Write here a summary (1 line)
+  Returns the HotImages property of the associated menu
 Description
-  Write here a description
+  If the painter is associated to a TJvMainMenu, returns FMainMenu.HotImages.
+  If the painter is associated to a TJvPopupMenu, returns FPopupMenu.HotImages.
+  This has been done to allow an easy access to that property.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DisabledImages, Images, TJvMainMenu.HotImages, TJvPopupMenu.HotImages
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.ImageBackgroundColor
 Summary
-  Write here a summary (1 line)
+  The color to use to draw the background of an image for all menu items
 Description
-  Write here a description
+  When a menu item has an image associated with it, the area of the image may be filled with 
+  this color before actually rendering the image, this creating a background of that color.
+  By default, this value isn't used, but it can be used by descendents.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DrawImageBackground
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.ImageHeight
 Summary
-  Write here a summary (1 line)
+  Returns the height of the images
+ 
 Description
-  Write here a description
+  If Images is assigned, then returns Images.Height Else, returns ImageSize.Height 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageWidth, ImageSize, Images
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.ImageMargin
 Summary
-  Write here a summary (1 line)
+  Returns the ImageMargin property of the associated menu 
 Description
-  Write here a description
+  If the painter is associated to a TJvMainMenu, returns FMainMenu.ImageMargin.
+  If the painter is associated to a TJvPopupMenu, returns FPopupMenu.ImageMargin.
+  This has been done to allow an easy access to that property.
+ 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvMainMenu.ImageMargin, TJvPopupMenu.ImageMargin     
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.Images
 Summary
-  Write here a summary (1 line)
+  Returns the Images property of the associated menu 
 Description
-  Write here a description
+  If the painter is associated to a TJvMainMenu, returns FMainMenu.Images.
+  If the painter is associated to a TJvPopupMenu, returns FPopupMenu.Images.
+  This has been done to allow an easy access to that property.
+ 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvMainMenu.Images, TJvPopupMenu.Images
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.ImageSize
 Summary
-  Write here a summary (1 line)
+  Returns the ImageSize property of the associated menu 
 Description
-  Write here a description
+  If the painter is associated to a TJvMainMenu, returns FMainMenu.ImageSize.
+  If the painter is associated to a TJvPopupMenu, returns FPopupMenu.ImageSize.
+  This has been done to allow an easy access to that property.
+ 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvMainMenu.ImageSize, TJvPopupMenu.ImageSize     
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.ImageWidth
 Summary
-  Write here a summary (1 line)
+  Returns the width of the images
+ 
 Description
-  Write here a description
+  If Images is assigned, returns Images.Width Else, returns ImageSize.Width 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageHeight, ImageSize, Images
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.IsPopup
 Summary
-  Write here a summary (1 line)
+  Returns true if the current item is from a popup menu
 Description
-  Write here a description
+   
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+       
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.IsRightToLeft
 Summary
-  Write here a summary (1 line)
+  Returns true if the Item is to be shown in RightToLeft mode 
 Description
-  Write here a description
+   
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BiDiMode
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.Measure
 Summary
-  Write here a summary (1 line)
+  Calculates the desired width and height for the given menu item 
 Description
-  Write here a description
+  You have to override this method along with Paint to render a new style 
 Parameters
-  Item   - Description for this parameter
-  Width  - Description for this parameter
-  Height - Description for this parameter
+  Item   - The item for which to calculate the dimensions 
+  Width  - On return, must contain the width of the item 
+  Height - On return, must contain the height of the item
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Paint
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.Paint
 Summary
-  Write here a summary (1 line)
+  Does the painting of the given item
+ 
 Description
-  Write here a description
+  This is the method you want to override along with Measure to create a new rendering style 
 Parameters
-  Item     - Description for this parameter
-  ItemRect - Description for this parameter
-  State    - Description for this parameter
+  Item     - The item to paint
+  ItemRect - The rectangle in which the item is to be drawn. Drawing outside the rectangle
+             isn't forbidden but every drawing done outside isn't considered to be part of 
+             the item and will get discarded sooner or later.
+  State    - The state of the item (selected, active...)
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Measure
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.ShowCheckMarks
 Summary
-  Write here a summary (1 line)
+  Returns the ShowCheckMarks property of the associated menu
 Description
-  Write here a description
+  If the painter is associated to a TJvMainMenu, returns FMainMenu.ShowCheckMarks.
+  If the painter is associated to a TJvPopupMenu, returns FPopupMenu.ShowCheckMarks.
+  This has been done to allow an easy access to that property.
+ 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvMainMenu.ShowCheckMarks, TJvPopupMenu.ShowCheckMarks     
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.TextMargin
 Summary
-  Write here a summary (1 line)
+  Returns the TextMargin property of the associated menu
 Description
-  Write here a description
+  If the painter is associated to a TJvMainMenu, returns FMainMenu.TextMargin.
+  If the painter is associated to a TJvPopupMenu, returns FPopupMenu.TextMargin.
+  This has been done to allow an easy access to that property.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvMainMenu.TextMargin, TJvPopupMenu.TextMargin
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.TextVAlignment
 Summary
-  Write here a summary (1 line)
+  Returns the TextVAlignment property of the associated menu
 Description
-  Write here a description
+  If the painter is associated to a TJvMainMenu, returns FMainMenu.TextVAlignment.
+  If the painter is associated to a TJvPopupMenu, returns FPopupMenu.TextVAlignment.
+  This has been done to allow an easy access to that property.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvMainMenu.TextVAlignment, TJvPopupMenu.TextVAlignment
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageMargin
 Summary
-  Write here a summary (1 line)
+  The margins around an image, as a TPersistent descendent
 Description
-  Write here a description
+  This class is being used instead of TRect so that it can be shown in the property editor and
+  properly streamed in and out of DFMs files.
+  It basically contains the values of the margins to put around an image when rendering it
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageMargin.Assign
 Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
+  Assigns the values of Source to this instance
 Description
-  Write here a description
+
 Parameters
-  Source - Description for this parameter
+  Source - The object to copy
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageMargin.Bottom
 Summary
-  Write here a summary (1 line)
+  The bottom margin, in pixels
+
 Description
-  Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Left, Right, Top
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageMargin.Left
 Summary
-  Write here a summary (1 line)
+  The left margin, in pixels
+
 Description
-  Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Bottom, Right, Top
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageMargin.Right
 Summary
-  Write here a summary (1 line)
+  The right margin, in pixels
+
 Description
-  Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Bottom, Left, Top
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvImageMargin.Top
 Summary
-  Write here a summary (1 line)
+  The top margin, in pixels
+
 Description
-  Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Bottom, Left, Right
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu
 <TITLEIMG TJvMainMenu>
+
 JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
+  GROUP=JVCL.NonVisual
+FLAG=Component
+
 Summary
-  Write here a summary (1 line)
+  This is the main menu from the JVCL
+
 Description
-  Write here a description
+  This component is an intended replacement for the VCL TMainMenu component.
+  It provides more control over the aspect of its items by offering more properties
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.Canvas
 Summary
-  Write here a summary (1 line)
+  The canvas in which to draw the menu items
 Description
-  Write here a description
+  This property should only be used when rendering a menu item
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.Cursor
 Summary
-  Write here a summary (1 line)
+  The cursor to show in the menu
+
 Description
-  Write here a description
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.DefaultDrawItem
 Summary
-  Write here a summary (1 line)
+  Calls the painter's paint function to do the painting for the given menu item
 Description
-  Write here a description
+
 Parameters
-  Item  - Description for this parameter
-  Rect  - Description for this parameter
-  State - Description for this parameter
+  Item  - The item to render
+  Rect  - The area in which to render the item 
+  State - The state of the item
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ItemPainter
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.DisabledImages
 Summary
-  Write here a summary (1 line)
+  The image list for disabled images
+
 Description
-  Write here a description
+  If this property is assigned, a disabled menu item will use the image associated to it from
+  this image list.
+  If not assigned, a default disabled image will be created from the image in the Images 
+  image list.
+  This can change depending on the style being used
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HotImages, Images
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.HotImages
 Summary
-  Write here a summary (1 line)
+  The image list for hot images
+
 Description
-  Write here a description
+  If this property is assigned, an active menu item will use the image associated to it from 
+  this image list.
+  If not assigned, the image in the Images image list will be used.
+  This can change depending on the style being used
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DisabledImages, Images
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.ImageMargin
 Summary
-  Write here a summary (1 line)
+  The margin to put around images
+
 Description
-  Write here a description
+  The margins are expressed in pixels
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Images, DisabledImages, HotImages, ImageSize
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.Images
 Summary
-  Write here a summary (1 line)
+  The image list for normal items
+
 Description
-  Write here a description
+  If this property is assigned and a menu item has an ImageIndex different from -1, then the 
+  image will be rendered from the one in this list.
+  If this property is not assigned, then no image will be drawn. You can however emulate the
+  existence of an image through the use of ImageSize.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HotImages, DisabledImages, ImageMargin, ImageSize
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.ImageSize
 Summary
-  Write here a summary (1 line)
+  Indicates the size of the image, if the Images property is not set.
+
 Description
-  Write here a description
+  This property is ignored if Images is set.
+  When Images is not set, then the item painters will use the values for ImageSize to 
+  calculate the size of menu items. Hence, you can emulate the presence of images without 
+  using any image list.
+  Simply set non zero values to the Width and Height properties.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Images
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.ItemPainter
 Summary
-  Write here a summary (1 line)
+  The item painter associated with the current style
 Description
-  Write here a description
+  This property appears to let you specify default values for the current painter. Some 
+  descendents may add more properties to the default ones to provide a better rendering.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Style, TJvCustomMenuItemPainter
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.OnDrawItem
 Summary
-  Write here a summary (1 line)
+  The event triggered when an item needs painting
 Description
-  Write here a description
+  This event is only triggered is the sytle is msOwnerDraw.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Style, OnMeasureItem
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.OnGetDisabledImageIndex
 Summary
-  Write here a summary (1 line)
+  Use this event to change the image index for a menu item just before rendering
 Description
-  Write here a description
+  If you supply a handler for this event, you can change the image index of the indicated 
+  menu item just before the image is rendered. If you don't supply a handler, the value of 
+  ImageIndex from the Item will be used
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DisabledImages
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.OnGetHotImageIndex
 Summary
-  Write here a summary (1 line)
+  Use this event to change the image index for a menu item just before rendering
 Description
-  Write here a description
+  If you supply a handler for this event, you can change the image index of the indicated 
+  menu item just before the image is rendered. If you don't supply a handler, the value of 
+  ImageIndex from the Item will be used
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  HotImages
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.OnGetImageIndex
 Summary
-  Write here a summary (1 line)
+  Use this event to change the image index for a menu item just before rendering
 Description
-  Write here a description
+  If you supply a handler for this event, you can change the image index of the indicated 
+  menu item just before the image is rendered. If you don't supply a handler, the value of 
+  ImageIndex from the Item will be used
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Images
+
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.OnGetItemParams
 Summary
-  Write here a summary (1 line)
+  Use this event to change rendering parameters for an item just before rendering 
 Description
-  Write here a description
+  You can change the state, the font, the color, and even the graphic associated with the 
+  menu item that is about to be rendered.
+ 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnGetDisabledImageIndex, OnGetHotImageIndex, OnGetImageIndex     
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.OnMeasureItem
 Summary
-  Write here a summary (1 line)
+  This event is triggered when an item needs measuring 
 Description
-  Write here a description
+  This event is only triggered if Style is msOwnerDraw 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnDrawItem
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.OwnerDraw
 Summary
-  Write here a summary (1 line)
+  This property is only used internally and thus, not stored
 Description
-  Write here a description
+   
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+       
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.Refresh
 Summary
-  Write here a summary (1 line)
+  Sets the internal OwnerDraw value
+
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You shouldn't have to call this method from your code
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.RegisterChanges
 Summary
-  Write here a summary (1 line)
+  Registers the given change link object to get notified of changes in the menu 
 Description
-  Write here a description
+  As for an ImageList, you can get notified when a menu gets modified by registering a   
+  TJvMenuChangeLink object with the menu.
+  The OnChange event of the given object will be triggered whenever the menu has changed.
+ 
 Parameters
-  ChangeLink - Description for this parameter
+  ChangeLink - The change link object to register
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UnregisterChanges
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.ShowCheckMarks
 Summary
-  Write here a summary (1 line)
+  If true, the check marks will always be shown 
 Description
-  Write here a description
+  This property is there for compatibility only, it is not recommended to use as the 
+  rendering of items may prove ugly
+ 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+       
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.Style
 Summary
-  Write here a summary (1 line)
+  The style of the current menu
+ 
 Description
-  Write here a description
+  The style property controls which painter is used to render the menu items.
+  The following styles are supported at the moment:
+  
+  msStandard - Only the image is drawn along with the text, no special effect
+  msOwnerDraw - The rendering is done by the owner of the component (you) 
+  msBtnLowered - The item is drawn as a lowered button 
+  msBtnRaised - The item is drawn as a raised button 
+  msOffice - The item is drawn as in MsOffice 97, with raising frames around the images 
+  msXP - The item is drawn as in Windows XP, white background, shadow below selected images, 
+  flat menu borders
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ItemPainter, TJvMenuStyle
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.TextMargin
 Summary
-  Write here a summary (1 line)
+  The margin on the left of the text
+ 
 Description
-  Write here a description
+  Use this value to put some space between the text and the image 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TextVAlignment, ImageMargin
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.TextVAlignment
 Summary
-  Write here a summary (1 line)
+  The vertical alignment of the text
+ 
 Description
-  Write here a description
+  Three alignments are possible:
+  vaTop - The text is aligned at the top of the item 
+  vaMiddle - The text is vertically centered in the item 
+  vaBottom - The text is aligned at the bottom of the item
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TextMargin
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.UnregisterChanges
 Summary
-  Write here a summary (1 line)
+  Unregisters the given change link object to get notified of changes in the menu 
 Description
-  Write here a description
+  As for an ImageList, you can get notified when a menu gets modified by registering a   
+  TJvMenuChangeLink object with the menu. Use this method if you don't want to get 
+  notified anymore for changes in that menu.
+ 
 Parameters
-  ChangeLink - Description for this parameter
+  ChangeLink - The change link object to unregister
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RegisterChanges
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMenuChangeLink
 Summary
-  Write here a summary (1 line)
+  This is the class of the object you need to pass to get notified of changes in the menu 
 Description
-  Write here a description
+  As with ImageLists, and starting with JVCL3, you can now get notified of changes in the menu.   
+  Simply register an object of that type with the menu you are interested in being notified, 
+  and the OnChange event will be triggered whenever needed.
+ 
+See Also
+  OnChange
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMenuChangeLink.OnChange
 Summary
-  Write here a summary (1 line)
+  This event is triggered whenever a change occured in the menu.
+ 
 Description
-  Write here a description
+  Unfortunately, the rebuild parameter cannot be trusted because it is always False, even 
+  when adding or removing elements in the menu. You then must devise your own method to 
+  discover a suitable value for Rebuild
+ 
 Parameters
-  Sender  - Description for this parameter
-  Source  - Description for this parameter
-  Rebuild - Description for this parameter
+  Sender  - The menu that has changed
+  Source  - The item that is the source of the change 
+  Rebuild - True if the menu needs rebuilding
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvMainMenu.RegisterChanges, TJvPopupMenu.RegisterChanges     
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMenuImageSize
 Summary
-  Write here a summary (1 line)
+  A TPersistent descendent to store the image size.
+ 
 Description
-  Write here a description
+  Please see TJvMainMenu.ImageSize or TJvPopupMenu.ImageSize     
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMenuImageSize.Height
 Summary
-  Write here a summary (1 line)
+  The height of the image
+ 
 Description
-  Write here a description
+   
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Width
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMenuImageSize.Width
 Summary
-  Write here a summary (1 line)
+  The width of the image
+ 
 Description
-  Write here a description
+   
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Height
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvMenuStyle
 <TITLE TJvMenuStyle type>
+ 
 Summary
-  Write here a summary (1 line)
+  The style of the menus
+ 
 Description
-  Write here a description
+  Only the styles in this enumeration are supported     
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvMenuStyle.msStandard
-  Description for msStandard
+Only the image is drawn along with the text, no special effect     
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvMenuStyle.msOwnerDraw
-  Description for msOwnerDraw
+The rendering is done by the owner of the component (you)     
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvMenuStyle.msBtnLowered
-  Description for msBtnLowered
+The item is drawn as a lowered button
+   
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvMenuStyle.msBtnRaised
-  Description for msBtnRaised
+The item is drawn as a raised button
+   
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvMenuStyle.msOffice
-  Description for msOffice
+The item is drawn as in MsOffice 97, with raising frames around the images     
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvMenuStyle.msXP
-  Description for msXP
+The item is drawn as in Windows XP, white background, shadow below selected images, flat menu 
+borders
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOfficeMenuItemPainter
 Summary
-  Write here a summary (1 line)
+  The painter for the msOffice style
+ 
 Description
-  Write here a description
+       
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOfficeMenuItemPainter.Paint
 Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
+  Does the rendering for this style
+ 
 Description
-  Write here a description
+   
 Parameters
-  Item     - Description for this parameter
-  ItemRect - Description for this parameter
-  State    - Description for this parameter
+   
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+       
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawMenuItemPainter
 Summary
-  Write here a summary (1 line)
+  This is the painter for the msOwnerDraw style 
 Description
-  Write here a description
+  Simply calls the event handlers when needed   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawMenuItemPainter.Measure
 Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
+  Simply calls the OnMeasureItem event handler
 Description
-  Write here a description
-Parameters
-  Item   - Description for this parameter
-  Width  - Description for this parameter
-  Height - Description for this parameter
+   
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+     
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawMenuItemPainter.Paint
 Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
+  Simply calls the OnDrawItem event handler
 Description
-  Write here a description
+   
 Parameters
-  Item     - Description for this parameter
-  ItemRect - Description for this parameter
-  State    - Description for this parameter
+   
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+     
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu
 <TITLEIMG TJvPopupMenu>
+ 
 JVCLInfo
   GROUP=JVCL.??
-  FLAG=Component
+FLAG=Component
+ 
 Summary
   Write here a summary (1 line)
+ 
 Description
   Write here a description
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+   
+
+
 ----------------------------------------------------------------------------------------------------
-@@TJvPopupMenu.Assign@TJvMainMenu
+@@TJvPopupMenu.Assign
 Summary
-  Write here a summary (1 line)
+  Copies most properties from the given TJvMainMenu into the current object 
 Description
-  Write here a description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  This method doesn't copy the items, but rather all rendering related values. This is done 
+  to allow an easy work for TJvToolbar when setting its MainMenu property
 Parameters
-  JvMainMenu - Description for this parameter
+  JvMainMenu - The TJvMainMenu object to copy the values from
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvMainMenu, TJvToolbar, TJvToolbar.MainMenu   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.Canvas
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.Canvas>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.Cursor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.Cursor>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.DefaultDrawItem
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Item  - Description for this parameter
-  Rect  - Description for this parameter
-  State - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvPopupMenu.DefaultDrawMargin
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ARect      - Description for this parameter
-  StartColor - Description for this parameter
-  EndColor   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.DefaultDrawItem>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.DisabledImages
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.DisabledImages>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.HotImages
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.HotImages>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.ImageMargin
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.ImageMargin>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.Images
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.Images>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.ImageSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.ImageSize>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.ItemPainter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvPopupMenu.LeftMargin
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.ItemPainter>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.OnDrawItem
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvPopupMenu.OnDrawMargin
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender - Description for this parameter
-  Rect   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.OnDrawItem>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.OnGetDisabledImageIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.OnGetDisabledImageIndex>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.OnGetHotImageIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.OnGetHotImageIndex>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.OnGetImageIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.OnGetImageIndex>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.OnGetItemParams
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.OnGetItemParams>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.OnMeasureItem
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.OnMeasureItem>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.OwnerDraw
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.OwnerDraw>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.Popup
 Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
+
 Description
-  Write here a description
-Parameters
-  X - Description for this parameter
-  Y - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.Refresh
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.Refresh>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.ShowCheckMarks
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.ShowCheckMarks>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.Style
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.Style>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.TextMargin
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.TextMargin>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.TextVAlignment
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvMainMenu.TextVAlignment>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardMenuItemPainter
 Summary
-  Write here a summary (1 line)
+  This painter draws the items without any special effects, apart from drawing the image
+ 
 Description
-  Write here a description
+  Set the Style property of TJvMainMenu or TJvPopupMenu to msStandard to use this painter.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvVerticalAlignment
 <TITLE TJvVerticalAlignment type>
+ 
 Summary
-  Write here a summary (1 line)
+  This is the type of the TextVAlignment property
+ 
 Description
-  Write here a description
+  This type indicates how the text will be aligned vertically in a menu item
+   
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvVerticalAlignment.vaTop
-  Description for vaTop
+The text is aligned on the top of the menu item
+   
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvVerticalAlignment.vaMiddle
-  Description for vaMiddle
+The text is vertically centered in the area of the menu item
+   
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvVerticalAlignment.vaBottom
-  Description for vaBottom
+The text is aligned on the bottom of the menu item
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPMenuItemPainter
 Summary
-  Write here a summary (1 line)
+  This painter draws the menu items so that they look like the XP menus without requiring to run 
+  under XP.
 Description
-  Write here a description
+  Set the Style property of TJvMainMenu or TJvPopupMenu to msXP to use this painter.
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPMenuItemPainter.Measure
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
 Description
-  Write here a description
-Parameters
-  Item   - Description for this parameter
-  Width  - Description for this parameter
-  Height - Description for this parameter
+  
+ 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPMenuItemPainter.Paint
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
 Parameters
-  Item     - Description for this parameter
-  ItemRect - Description for this parameter
-  State    - Description for this parameter
+  
+ 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPMenuItemPainter.SelectionFrameBrush
 Summary
-  Write here a summary (1 line)
+  The brush to use to draw the selection frame
+ 
 Description
-  Write here a description
+  This brush will be used to draw the background of the selection frame below the text and 
+  image of a selected menu item
+ 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SelectionFramePen
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPMenuItemPainter.SelectionFramePen
 Summary
-  Write here a summary (1 line)
+  The pen to use to draw the selection frame
+ 
 Description
-  Write here a description
+  This pen will be used to draw the background of the selection frame below the text and 
+  image of a selected menu item
+ 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SelectionFrameBrush
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPMenuItemPainter.SeparatorColor
 Summary
-  Write here a summary (1 line)
+  The color to use to draw the separator
+ 
 Description
-  Write here a description
+  
+ 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ShadowColor
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPMenuItemPainter.ShadowColor
 Summary
-  Write here a summary (1 line)
+  This is the color of the shadow below images
+ 
 Description
-  Write here a description
+  The shadow will be drawn below the images of active items
+ 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SeparatorColor
+   
+
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPMenuItemPainter.CheckedImageBackColor
+Summary
+  This is the color of the background of the image when the item is checked
+
+Description
+  This color will be used to fill the background of the image when the item is
+  checked.
+
+See Also
+  CheckedImageBackColorSelected
+   
+
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPMenuItemPainter.CheckedImageBackColorSelected
+Summary
+  This is the color of the background of the image when the item is checked and selected
+
+Description
+  This color will be used to fill the background of the image when the item is
+  checked and currently active. 
+
+See Also
+  CheckedImageBackColor
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TMeasureMenuItemEvent
 <TITLE TMeasureMenuItemEvent type>
+ 
 Summary
-  Write here a summary (1 line)
+  This is the type of the OnMeasureItem event
+ 
 Description
-  Write here a description
-  This type is used by (for reference):
-    TJvMainMenu.OnMeasureItem
-    TJvPopupMenu.OnMeasureItem
+  This event is triggered when an item neads measuring 
 Parameters
-  Sender - Description for this parameter
-  Item   - Description for this parameter
-  Width  - Description for this parameter
-  Height - Description for this parameter
+  Sender - The menu containing the item
+  Item   - The item to measure
+  Width  - On output, must contain the width of the item
+  Height - On output, must contain the height of the item
+ 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  
+   
+
+
 ----------------------------------------------------------------------------------------------------
 @@TMenuOwnerDrawState
 <TITLE TMenuOwnerDrawState type>
+ 
 Summary
-  Write here a summary (1 line)
+  This is the state of a menu item
+ 
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = set of ( mdSelected , mdGrayed , mdDisabled , mdChecked , mdFocused , mdDefault , mdHotlight , mdInactive ) ; - for reference)
+  A value of that type can contain one or more of the following values:
+
+mdSelected 
+mdGrayed 
+mdDisabled
+mdChecked 
+mdFocused 
+mdDefault 
+mdHotlight 
+mdInactive
+
+
 ----------------------------------------------------------------------------------------------------
 @@TOnJvMenuChange
 <TITLE TOnJvMenuChange type>
 <COMBINE TJvMenuChangeLink.OnChange>
+   
+
+
