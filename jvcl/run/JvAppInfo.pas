@@ -45,11 +45,11 @@ type
   private
     {$IFDEF VCL}
     FUseRegistry: Boolean;
-    FRegKey: DWORD;
+    FRegRootKey: DWORD;
     {$ENDIF VCL}
     FSavePath: string;
     FSection: string;
-    FUnAssigned: string;
+    FUnAssignedValue: string;
     procedure CheckPath;
     function LoadIni: Boolean;
     function SaveIni: Boolean;
@@ -63,13 +63,13 @@ type
     function Save: Boolean; virtual;
     function Load: Boolean; virtual;
     property SavePath: string read FSavePath write FSavePath;
-    //  If set to True, SavePath is interpreted as a registry path
     {$IFDEF VCL}
-    property UseRegistry: Boolean read FUseRegistry write FUseRegistry;
-    property RegRootKey: DWORD read FRegKey write FRegKey;
+    //  If set to True, SavePath is interpreted as a registry path
+    property UseRegistry: Boolean read FUseRegistry write FUseRegistry default False;
+    property RegRootKey: DWORD read FRegRootKey write FRegRootKey default HKEY_CURRENT_USER;
     {$ENDIF VCL}
     property Section: string read FSection write FSection;
-    property UnAssignedValue: string read FUnAssigned write FUnAssigned;
+    property UnAssignedValue: string read FUnAssignedValue write FUnAssignedValue;
   end;
 
 implementation
@@ -81,6 +81,32 @@ uses
 resourcestring
   SInvalidPropertyFmt = 'Invalid property: %s';
   SNoPathSpecified = 'No path specified';
+
+constructor TJvAppInfo.Create;
+begin
+  inherited Create;
+  {$IFDEF VCL}
+  FUseRegistry := False;
+  FRegRootKey := HKEY_CURRENT_USER;
+  {$ENDIF VCL}
+  FUnAssignedValue := '';
+end;
+
+procedure TJvAppInfo.Assign(Source: TPersistent);
+begin
+  if Source is TJvAppInfo then
+  begin
+    SavePath := TJvAppInfo(Source).SavePath;
+    {$IFDEF VCL}
+    UseRegistry := TJvAppInfo(Source).UseRegistry;
+    RegRootKey := TJvAppInfo(Source).RegRootKey;
+    {$ENDIF VCL}
+    Section := TJvAppInfo(Source).Section;
+    UnAssignedValue := TJvAppInfo(Source).UnAssignedValue;
+  end
+  else
+    inherited Assign(Source);
+end;
 
 function TJvAppInfo.LoadIni: Boolean;
 var
@@ -96,14 +122,14 @@ begin
     if GetPropList(ClassInfo, tkProperties, @PropList) > 0 then
       while Assigned(PropList[I]) and (I < High(PropList)) do
       begin
-        Value := Ini.ReadString(Section, PropList[i].Name, FUnAssigned);
-        if Value <> FUnAssigned then
+        Value := Ini.ReadString(Section, PropList[i].Name, FUnAssignedValue);
+        if Value <> FUnAssignedValue then
           case PropList[I].PropType^.Kind of
             tkInteger, tkEnumeration:
               SetOrdProp(Self, PropList[I], StrToInt(Value));
             tkFloat:
               SetFloatProp(Self, PropList[I], StrToFloat(Value));
-            tkString,tkLString:
+            tkString, tkLString:
               SetStrProp(Self, PropList[I], Value);
           else
             raise EJVCLException.CreateFmt(SInvalidPropertyFmt, [PropList[I].Name]);
@@ -137,11 +163,11 @@ begin
             Value := FloatToStr(GetFloatProp(Self, PropList[I]));
           tkString, tkLString:
             Value := GetStrProp(Self, PropList[I]);
-          else
-            raise EJVCLException.CreateFmt(SInvalidPropertyFmt, [PropList[I].Name]);
-          end;
-          Ini.WriteString(Section, PropList[I].Name, Value);
-          Inc(I);
+        else
+          raise EJVCLException.CreateFmt(SInvalidPropertyFmt, [PropList[I].Name]);
+        end;
+        Ini.WriteString(Section, PropList[I].Name, Value);
+        Inc(I);
       end;
   finally
     Ini.Free;
@@ -169,8 +195,8 @@ begin
     if GetPropList(ClassInfo, tkProperties, @PropList) > 0 then
       while Assigned(PropList[I]) and (I < High(PropList)) do
       begin
-        Value := Reg.ReadString(Section, PropList[I].Name, FUnAssigned);
-        if Value <> FUnAssigned then
+        Value := Reg.ReadString(Section, PropList[I].Name, FUnAssignedValue);
+        if Value <> FUnAssignedValue then
           case PropList[I].PropType^.Kind of
             tkInteger, tkEnumeration:
               SetOrdProp(Self, PropList[I], StrToInt(Value));
@@ -251,32 +277,6 @@ procedure TJvAppInfo.CheckPath;
 begin
   if SavePath = '' then
     raise EJVCLException.Create(SNoPathSpecified);
-end;
-
-constructor TJvAppInfo.Create;
-begin
-  inherited Create;
-  {$IFDEF VCL}
-  FRegKey := HKEY_CURRENT_USER;
-  {$ENDIF VCL}
-  FUnAssigned := '';
-end;
-
-procedure TJvAppInfo.Assign(Source: TPersistent);
-begin
-  if Source is TJvAppInfo then
-  begin
-    SavePath := TJvAppInfo(Source).SavePath;
-    {$IFDEF VCL}
-    UseRegistry := TJvAppInfo(Source).UseRegistry;
-    RegRootKey := TJvAppInfo(Source).RegRootKey;
-    {$ENDIF VCL}
-    Section := TJvAppInfo(Source).Section;
-    UnAssignedValue := TJvAppInfo(Source).UnAssignedValue;
-    Exit;
-  end;
-  // (rom) better an else here?
-  inherited Assign(Source);
 end;
 
 end.

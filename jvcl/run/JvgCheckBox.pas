@@ -49,7 +49,7 @@ type
     FGradient: TJvgGradient;
     FGroupIndex: integer;
     FGlyphShift: TJvgPointClass;
-    FOptions: TglCBoxOptions;
+    FOptions: TglCheckBoxOptions;
     FTransparent: boolean;
     FTextStyles: TJvgLabelTextStyles;
     FDisabledMaskColor: TColor;
@@ -82,7 +82,7 @@ type
     procedure SetGlyphDisabled(Value: TBitmap);
     function GetGlyphDisabled: TBitmap;
     procedure SetGroupIndex(Value: integer);
-    procedure SetOptions(Value: TglCBoxOptions);
+    procedure SetOptions(Value: TglCheckBoxOptions);
     procedure SetTransparent(Value: boolean);
     procedure SetDisabledMaskColor(Value: TColor);
     procedure SetInterspace(Value: integer);
@@ -156,7 +156,7 @@ type
     property TextStyles: TJvgLabelTextStyles read FTextStyles write
       FTextStyles;
     property Colors: TJvgLabelColors read FColors write FColors;
-    property Options: TglCBoxOptions read FOptions write SetOptions;
+    property Options: TglCheckBoxOptions read FOptions write SetOptions;
     property Gradient: TJvgGradient read FGradient write FGradient;
     property Illumination: TJvgIllumination read FIllumination write
       FIllumination;
@@ -805,7 +805,7 @@ begin
   end;
 end;
 
-procedure TJvgCheckBox.SetOptions(Value: TglCBoxOptions);
+procedure TJvgCheckBox.SetOptions(Value: TglCheckBoxOptions);
 begin
   if FOptions = Value then
     exit;

@@ -52,7 +52,7 @@ type
     FIllumination: TJvgIllumination;
     FTransparent: boolean;
     FTransparentCaption: boolean;
-    FOptions: TglGrBoxOptions;
+    FOptions: TglGroupBoxOptions;
     FCollapsed: boolean;
     FAfterPaint: TNotifyEvent;
     FOnCollapsed: TNotifyEvent;
@@ -72,7 +72,7 @@ type
     procedure SetCaptionAlignment(Value: TCaptionAlignment);
     procedure SetCaptionTextStyle(Value: TglTextStyle);
     procedure SetCollapsed(Value: boolean);
-    procedure SetOptions(Value: TglGrBoxOptions);
+    procedure SetOptions(Value: TglGroupBoxOptions);
     procedure SetTransparent(Value: boolean);
     procedure SetTransparentCaption(Value: boolean);
     procedure SetGroupIndex(Value: integer);
@@ -155,7 +155,7 @@ type
     property Gradient: TJvgGradient read FGradient write FGradient;
     property Illumination: TJvgIllumination read FIllumination write
       FIllumination stored false;
-    property Options: TglGrBoxOptions read FOptions write SetOptions;
+    property Options: TglGroupBoxOptions read FOptions write SetOptions;
     property Transparent: boolean
       read FTransparent write SetTransparent default false;
     property TransparentCaption: boolean
@@ -625,7 +625,7 @@ begin
   Collapse_(Value);
 end;
 
-procedure TJvgGroupBox.SetOptions(Value: TglGrBoxOptions);
+procedure TJvgGroupBox.SetOptions(Value: TglGroupBoxOptions);
 begin
   if FOptions = Value then
     exit;

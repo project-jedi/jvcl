@@ -2087,7 +2087,7 @@ begin
       if ButtonFlat or not ThemeServices.ThemesEnabled then
       {$ENDIF}
       begin
-        FButton.Glyph.Handle := LoadBitmap(0, PChar(32738));
+        FButton.Glyph.Handle := LoadBitmap(0, PChar(OBM_COMBO));
         NumGlyphs := 1;
       end;
     gkEllipsis:

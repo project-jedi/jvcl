@@ -34,6 +34,8 @@ Description:
         Doc\Readme.txt!
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+
 unit JvLinkLabelRenderer;
 
 interface
@@ -99,8 +101,8 @@ type
 
 implementation
 
-procedure TDefaultRenderer.DoRenderNode( const Node: TAreaNode; Styles: TFontStyles;
-                                         Color: TColor);
+procedure TDefaultRenderer.DoRenderNode(const Node: TAreaNode;
+  Styles: TFontStyles; Color: TColor);
 var
   I: Integer;
   ChildNode: TNode;
@@ -126,19 +128,21 @@ begin
         FTextHandler.TextOut(ChildNode as TStringNode, NewStyles, NewColor);
       ntActionNode:
         case (ChildNode as TActionNode).Action of
-          atLineBreak: FTextHandler.DoLineBreak;
-          atParagraphBreak: FTextHandler.DoParagraphBreak;
+          atLineBreak:
+            FTextHandler.DoLineBreak;
+          atParagraphBreak:
+            FTextHandler.DoParagraphBreak;
         end;
       ntStyleNode:
         NewStyles := Styles + [(ChildNode as TStyleNode).Style];
-// Bianconi
-      ntColorNode :
+      // Bianconi
+      ntColorNode:
         NewColor := (ChildNode as TColorNode).Color;
-// End of Bianconi
+      // End of Bianconi
       ntLinkNode:
         begin
-          NewStyles := Styles + FLinkStyle;
-          NewColor := FLinkColor;
+          NewStyles := Styles + LinkStyle;
+          NewColor := LinkColor;
         end;
     end;
 
@@ -162,12 +166,11 @@ begin
   Result := FLinkStyle;
 end;
 
-procedure TDefaultRenderer.RenderNode(const Canvas: TCanvas; Rect: TRect; const Node: TAreaNode);
+procedure TDefaultRenderer.RenderNode(const Canvas: TCanvas; Rect: TRect;
+  const Node: TAreaNode);
 begin
-  FTextHandler := TTextHandler.Create( Rect,
-                                       Node.StartingPoint.X,
-                                       Node.StartingPoint.Y,
-                                       Canvas);
+  FTextHandler := TTextHandler.Create(Rect,
+    Node.StartingPoint.X, Node.StartingPoint.Y, Canvas);
   // End of Bianconi #2
   try
     DoRenderNode(Node, Node.Styles, Node.Color);

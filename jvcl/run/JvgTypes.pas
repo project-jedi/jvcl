@@ -34,6 +34,43 @@ interface
 uses
   Graphics;
 
+const
+  { OEM Resource Ordinal Numbers }
+  OBM_CLOSE       = 32754;
+  OBM_UPARROW     = 32753;
+  OBM_DNARROW     = 32752;
+  OBM_RGARROW     = 32751;
+  OBM_LFARROW     = 32750;
+  OBM_REDUCE      = 32749;
+  OBM_ZOOM        = 32748;
+  OBM_RESTORE     = 32747;
+  OBM_REDUCED     = 32746;
+  OBM_ZOOMD       = 32745;
+  OBM_RESTORED    = 32744;
+  OBM_UPARROWD    = 32743;
+  OBM_DNARROWD    = 32742;
+  OBM_RGARROWD    = 32741;
+  OBM_LFARROWD    = 32740;
+  OBM_MNARROW     = 32739;
+  OBM_COMBO       = 32738;
+  OBM_UPARROWI    = 32737;
+  OBM_DNARROWI    = 32736;
+  OBM_RGARROWI    = 32735;
+  OBM_LFARROWI    = 32734;
+  OBM_OLD_CLOSE   = 32767;
+  OBM_SIZE        = 32766;
+  OBM_OLD_UPARROW = 32765;
+  OBM_OLD_DNARROW = 32764;
+  OBM_OLD_RGARROW = 32763;
+  OBM_OLD_LFARROW = 32762;
+  OBM_BTSIZE      = 32761;
+  OBM_CHECK       = 32760;
+  OBM_CHECKBOXES  = 32759;
+  OBM_BTNCORNERS  = 32758;
+  OBM_OLD_REDUCE  = 32757;
+  OBM_OLD_ZOOM    = 32756;
+  OBM_OLD_RESTORE = 32755;
+
 type
   TSpPercent = 1..99;
   TglItemsDrawStyle = (idsNone, idsRecessed, idsRaised);
@@ -64,18 +101,18 @@ type
   TglLabelOption = (floActiveWhileControlFocused, floBufferedDraw,
     floDelineatedText, floIgnoreMouse, {floQuality3D,} floTransparentFont);
   TglLabelOptions = set of TglLabelOption;
-  TglStTextOption = (ftoActiveWhileControlFocused, ftoBroadwiseLastLine,
+  TglStaticTextOption = (ftoActiveWhileControlFocused, ftoBroadwiseLastLine,
     ftoIgnoreMouse, ftoUnderlinedActive);
-  TglStTextOptions = set of TglStTextOption;
-  TglCBoxOption = (fcoActiveWhileControlFocused, fcoBoldChecked,
+  TglStaticTextOptions = set of TglStaticTextOption;
+  TglCheckBoxOption = (fcoActiveWhileControlFocused, fcoBoldChecked,
     fcoEnabledFocusControlWhileChecked, fcoIgnoreMouse, fcoDelineatedText,
     {fcoQuality3D,} fcoFastDraw, fcoUnderlinedActive);
-  TglCBoxOptions = set of TglCBoxOption;
-  TglGrBoxOption = (fgoCanCollapse, fgoCollapseOther, fgoFilledCaption,
+  TglCheckBoxOptions = set of TglCheckBoxOption;
+  TglGroupBoxOption = (fgoCanCollapse, fgoCollapseOther, fgoFilledCaption,
     fgoFluentlyCollapse, fgoFluentlyExpand, fgoResizeParent,
     fgoHideChildrenWhenCollapsed, fgoIgnoreMouse, fgoDelineatedText,
     {fgoQuality3D,} fgoBufferedDraw, fgoOneAlwaysExpanded, fgoSaveChildFocus);
-  TglGrBoxOptions = set of TglGrBoxOption;
+  TglGroupBoxOptions = set of TglGroupBoxOption;
   TglListBoxOption = (fboAutoCtl3DColors, fboBufferedDraw,
     fboChangeGlyphColor, fboDelineatedText, fboExcludeGlyphs, fboHideText,
     fboHotTrack, fboHotTrackSelect, fboItemColorAsGradientFrom,
@@ -101,7 +138,7 @@ type
   TglBoxStyle = (fbsFlat, fbsCtl3D, fbsStatusControl, fbsRecessed, fbsRaised,
     fbsRaisedFrame, fbsRecessedFrame);
   TglSide = (fsdLeft, fsdTop, fsdRight, fsdBottom);
-  //  TBorders		  = set of TBorder;
+  //  TBorders = set of TBorder;
   TglSides = set of TglSide;
   TglOrigin = (forLeftTop, forRightBottom);
   TglAlign = record
@@ -123,41 +160,6 @@ type
 
 const
   ALLGLSIDES = [fsdLeft, fsdTop, fsdRight, fsdBottom];
-  { OEM Resource Ordinal Numbers }
-  OBM_CLOSE = 32754;
-  OBM_UPARROW = 32753;
-  OBM_DNARROW = 32752;
-  OBM_RGARROW = 32751;
-  OBM_LFARROW = 32750;
-  OBM_REDUCE = 32749;
-  OBM_ZOOM = 32748;
-  OBM_RESTORE = 32747;
-  OBM_REDUCED = 32746;
-  OBM_ZOOMD = 32745;
-  OBM_RESTORED = 32744;
-  OBM_UPARROWD = 32743;
-  OBM_DNARROWD = 32742;
-  OBM_RGARROWD = 32741;
-  OBM_LFARROWD = 32740;
-  OBM_MNARROW = 32739;
-  OBM_COMBO = 32738;
-  OBM_UPARROWI = 32737;
-  OBM_DNARROWI = 32736;
-  OBM_RGARROWI = 32735;
-  OBM_LFARROWI = 32734;
-  OBM_OLD_CLOSE = 32767;
-  OBM_SIZE = 32766;
-  OBM_OLD_UPARROW = 32765;
-  OBM_OLD_DNARROW = 32764;
-  OBM_OLD_RGARROW = 32763;
-  OBM_OLD_LFARROW = 32762;
-  OBM_BTSIZE = 32761;
-  OBM_CHECK = 32760;
-  OBM_CHECKBOXES = 32759;
-  OBM_BTNCORNERS = 32758;
-  OBM_OLD_REDUCE = 32757;
-  OBM_OLD_ZOOM = 32756;
-  OBM_OLD_RESTORE = 32755;
 
 var //...global variables
   glGlobalData: TglGlobalData;

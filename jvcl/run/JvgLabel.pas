@@ -209,13 +209,13 @@ type
   private
     FActiveColor: TColor;
     FAlignment: TglAlignment;
-    FOptions: TglStTextOptions;
+    FOptions: TglStaticTextOptions;
     FWordWrap: boolean;
 
     procedure DrawTextBroadwise(Canvas: TCanvas);
     procedure AdjustBounds;
     procedure SetAlignment(Value: TglAlignment);
-    procedure SetOptions(Value: TglStTextOptions);
+    procedure SetOptions(Value: TglStaticTextOptions);
     procedure SetWordWrap(Value: boolean);
     function GetAutoSize: boolean;
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
@@ -265,7 +265,7 @@ type
     property Alignment: TglAlignment read FAlignment write SetAlignment
       default ftaBroadwise;
     property AutoSize: boolean read GetAutoSize write SetAutoSize;
-    property Options: TglStTextOptions read FOptions write SetOptions;
+    property Options: TglStaticTextOptions read FOptions write SetOptions;
     property WordWrap: boolean read FWordWrap write SetWordWrap
       default true;
   end;
@@ -1337,7 +1337,7 @@ begin
 end;
 //______
 
-procedure TJvgStaticTextLabel.SetOptions(Value: TglStTextOptions);
+procedure TJvgStaticTextLabel.SetOptions(Value: TglStaticTextOptions);
 begin
   FOptions := Value;
   ActiveWhileControlFocused := ftoActiveWhileControlFocused in Options;
