@@ -31,7 +31,8 @@
       ..\..\dcu\JvStringGrid.obj ..\..\dcu\JvSystemPopup.obj 
       ..\..\dcu\JvTabControl.obj ..\..\dcu\JvToolBar.obj 
       ..\..\dcu\JvToolEdit.obj ..\..\dcu\JvTransparentPanel.obj 
-      ..\..\dcu\JvUpDown.obj ..\..\dcu\JvxCtrls.obj"/>
+      ..\..\dcu\JvUpDown.obj ..\..\dcu\JvxCtrls.obj"
+      ..\..\dcu\JvImageList.obj/>
     <RESFILES value="JvStdCtrlsC6R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -142,6 +143,7 @@
       <FILE FILENAME="..\..\run\JvTransparentPanel.pas" FORMNAME="" UNITNAME="JvTransparentPanel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvUpDown.pas" FORMNAME="" UNITNAME="JvUpDown" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvxCtrls.pas" FORMNAME="" UNITNAME="JvxCtrls" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvImageList.pas" FORMNAME="" UNITNAME="JvImageList" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>

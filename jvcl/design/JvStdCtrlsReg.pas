@@ -24,6 +24,7 @@ uses
   JvScrollBar, JvScrollBox, JvShape, JvStaticText, JvStatusBar, JvGrids, JvStringGrid,
   JvSystemPopup, JvTabControl, JvToolBar, JvUpDown, JvBitBtn, JvPanel, JvMonthCalendar,
   JvControlPanelButton, JvStartMenuButton, JvRecentMenuButton, JvFavoritesButton,
+  JvImageList,
   
   JvBrowseFolder, JvTransparentPanel, JvCheckedItemsForm, JvColorCombo,
 
@@ -59,7 +60,7 @@ begin
     TJvIPAddress]);
 
   RegisterComponents(SPaletteImageAnimator,
-    [TJvImage]);
+    [TJvImage, TJvImageList]);
 
   RegisterComponents(SPaletteBarPanel,[
     TJvPageControl,  TJvProgressBar,
