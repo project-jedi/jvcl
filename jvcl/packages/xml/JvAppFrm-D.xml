@@ -17,6 +17,7 @@
     <Package Name="CJCLVCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
+    <Package Name="JvCore-D" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvGradientCaptionForm.pas" Targets="all" Formname="GradCaptionsEditor" Condition=""/>
