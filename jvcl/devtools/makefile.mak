@@ -7,16 +7,18 @@
 !ifndef ROOT
 ROOT = $(MAKEDIR)\..
 !endif
+
+!ifndef JCLROOT
+JCLROOT = ..\..\..\JCL
+!endif
+
 #---------------------------------------------------------------------------------------------------
 SRC = ..\..\Run
 ARCH = ..\..\Archive
 COM = ..\Common;..\..\Common
 BIN = ..\Bin
 DCU = ..\Dcu
-!ifndef JCLDIR
-JCLDIR = ..\..\..\JCL
-!endif
-JCL = $(JCLDIR)\source;$(JCLDIR)\source\common;$(JCLDIR)\source\windows;$(JCLDIR)\source\vcl;$(JCLDIR)\source\visclx
+JCL = $(JCLROOT)\source;$(JCLROOT)\source\common;$(JCLROOT)\source\windows;$(JCLROOT)\source\vcl;$(JCLROOT)\source\visclx
 DRC = $&.drc
 SRCP = $(SRC);$(COM);$(JCL);$(ARCH);$(DCU)
 SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
