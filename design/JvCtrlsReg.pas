@@ -81,8 +81,8 @@ begin
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(TJvLabelBehaviorName), TJvBehaviorLabel, 'Behavior', TJvLabelBehaviorProperty);
   RegisterPropertyEditor(TypeInfo(TCursor), TJvxSplitter, 'Cursor', nil);
-  RegisterPropertyEditor(TypeInfo(TDateTime),TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
-  RegisterPropertyEditor(TypeInfo(TDateTime),TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
+  //RegisterPropertyEditor(TypeInfo(TDateTime),TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
+  //RegisterPropertyEditor(TypeInfo(TDateTime),TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', TStringProperty);
 
   RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'ActiveIndex', TJvTBImagesProperty);
