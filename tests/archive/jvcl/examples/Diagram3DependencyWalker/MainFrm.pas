@@ -1,5 +1,4 @@
 unit MainFrm;
-
 interface
 
 uses
@@ -21,7 +20,6 @@ type
     Clear1: TMenuItem;
     Splitter1: TSplitter;
     Panel1: TPanel;
-    ScrollBox1: TScrollBox;
     Panel2: TPanel;
     lbSkipList: TListBox;
     Panel3: TPanel;
@@ -41,12 +39,13 @@ type
     procedure Add1Click(Sender: TObject);
     procedure Delete1Click(Sender: TObject);
     procedure Arrange1Click(Sender: TObject);
-    procedure ScrollBox1MouseWheel(Sender: TObject; Shift: TShiftState;
+    procedure SbMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
     { Private declarations }
     FFileShapes: TStringlist;
     FLeft, FTop: integer;
+    sb:TScrollBox;
     procedure Clear;
     function GetFileShape(const Filename: string): TJvBitmapShape;
     procedure ParseUnits(Files, Errors: TStrings);
@@ -57,6 +56,7 @@ type
     procedure SaveSkipList;
     function InSkipList(const Filename: string): boolean;
     procedure DoShapeClick(Sender: TObject);
+    procedure CreateScrollBox(AParent:TWinControl);
   public
     { Public declarations }
   end;
@@ -66,7 +66,7 @@ var
 
 implementation
 uses
-  JCLParseUses;
+  JCLParseUses, Clipbrd;
 
 {$R *.dfm}
 
@@ -130,9 +130,9 @@ begin
     Result.OnClick := DoShapeClick;
     Result.Top := FTop;
     Result.Left := FLeft;
-    Result.Parent := ScrollBox1;
+    Result.Parent := sb;
     Result.Caption := TJvTextShape.Create(self);
-    Result.Caption.Parent := ScrollBox1;
+    Result.Caption.Parent := sb;
     Result.Caption.Enabled := false;
     Result.Caption.OnClick := DoShapeClick;
     Result.Caption.Tag := integer(Result);
@@ -161,7 +161,7 @@ begin
     EndConn.Shape := EndShape;
     // Ensure the size is correct
     SetBoundingRect;
-    Parent := ScrollBox1;
+    Parent := sb;
     SendToBack;
   end;
 end;
@@ -250,9 +250,12 @@ var i: integer;
 begin
   WaitCursor;
   FFileShapes.Clear;
-  for i := ComponentCount - 1 downto 0 do
+  // this is faster than freeing explicitly:
+  CreateScrollBox(Panel1);
+{  for i := ComponentCount - 1 downto 0 do
     if Components[i] is TJvBitmapShape then
       TJvBitmapShape(Components[i]).Free; // this will free both the caption and the connector(s)
+}
   FLeft := 10;
   FTop := 10;
   StatusBar1.Panels[0].Text := '  Ready';
@@ -265,11 +268,11 @@ end;
 
 procedure TfrmMain.About1Click(Sender: TObject);
 begin
-  ShowMessage('Dependency Walker Demo');
+  ShowMessage('Dependency Walker Demo - part of JVCL (http://jvcl.sourceforge.net)');
 end;
 
 procedure TfrmMain.SelectFiles1Click(Sender: TObject);
-var Errors: TStringlist;
+var Errors: TStringlist;S:string;
 begin
   if dlgSelectFiles.Execute then
   begin
@@ -277,7 +280,11 @@ begin
     try
       ParseUnits(dlgSelectFiles.Files, Errors);
       if Errors.Count > 0 then
+      begin
         ShowMessageFmt('Errors were encountered:'#13#10#13#10'%s', [Errors.Text]);
+        // copy to clipboard as well
+        Clipboard.SetTextBuf(PChar(Errors.Text));
+      end;
     finally
       Errors.Free;
     end;
@@ -292,6 +299,7 @@ begin
   FLeft := 10;
   FTop := 10;
   LoadSkipList;
+  CreateScrollBox(Panel1);
 end;
 
 procedure TfrmMain.LoadSkipList;
@@ -354,8 +362,8 @@ procedure TfrmMain.Arrange1Click(Sender: TObject);
 var X, Y, Cols, i: integer; FS: TJvCustomDiagramShape;
 begin
   WaitCursor;
-  ScrollBox1.HorzScrollBar.Position := 0;
-  ScrollBox1.VertScrollBar.Position := 0;
+  sb.HorzScrollBar.Position := 0;
+  sb.VertScrollBar.Position := 0;
   if FFileShapes.Count < 2 then
     Exit;
   Cols := round(sqrt(FFileShapes.Count));
@@ -374,16 +382,30 @@ begin
   end;
 end;
 
-procedure TfrmMain.ScrollBox1MouseWheel(Sender: TObject;
+procedure TfrmMain.SbMouseWheel(Sender: TObject;
   Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
   var Handled: Boolean);
 begin
   Handled := true;
-  with ScrollBox1 do
+  with sb do
     if (ssShift in Shift) and (HorzScrollBar.IsScrollBarVisible) then
-      HorzScrollBar.Position := HorzScrollBar.Position + WheelDelta
+      HorzScrollBar.Position := HorzScrollBar.Position - WheelDelta
     else if (VertScrollBar.IsScrollBarVisible) then
-      VertScrollBar.Position := VertScrollBar.Position + WheelDelta;
+      VertScrollBar.Position := VertScrollBar.Position - WheelDelta;
+end;
+
+procedure TfrmMain.CreateScrollBox(AParent: TWinControl);
+begin
+  sb.Free;
+  sb := TScrollBox.Create(self);
+  sb.HorzScrollBar.Smooth := True;
+  sb.VertScrollBar.Smooth := True;
+  sb.Align := alClient;
+  sb.BorderStyle := bsNone;
+  sb.TabStop := True;
+  sb.OnMouseWheel := SbMouseWheel;
+  sb.Parent := AParent;
+  sb.Color := clWindow;
 end;
 
 end.

@@ -8,6 +8,7 @@ uses
 
 begin
   Application.Initialize;
+  Application.Title := 'Dependency Walker';
   Application.CreateForm(TfrmMain, frmMain);
   Application.Run;
 end.

@@ -4,7 +4,7 @@ object frmMain: TfrmMain
   Width = 603
   Height = 504
   BorderWidth = 2
-  Caption = 'Dependecy Walker'
+  Caption = 'Dependency Walker'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -23,7 +23,6 @@ object frmMain: TfrmMain
     Top = 0
     Width = 5
     Height = 435
-    Cursor = crHSplit
     Align = alRight
   end
   object StatusBar1: TStatusBar
@@ -35,7 +34,6 @@ object frmMain: TfrmMain
       item
         Width = 50
       end>
-    SimplePanel = False
   end
   object Panel1: TPanel
     Left = 0
@@ -45,21 +43,6 @@ object frmMain: TfrmMain
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    object ScrollBox1: TScrollBox
-      Left = 0
-      Top = 21
-      Width = 401
-      Height = 414
-      HorzScrollBar.Smooth = True
-      VertScrollBar.Smooth = True
-      Align = alClient
-      BorderStyle = bsNone
-      Color = clWindow
-      ParentColor = False
-      TabOrder = 0
-      TabStop = True
-      OnMouseWheel = ScrollBox1MouseWheel
-    end
     object Panel3: TPanel
       Left = 0
       Top = 0
@@ -75,7 +58,7 @@ object frmMain: TfrmMain
       Font.Name = 'MS Shell Dlg 2'
       Font.Style = [fsBold]
       ParentFont = False
-      TabOrder = 1
+      TabOrder = 0
     end
   end
   object Panel2: TPanel
@@ -126,6 +109,7 @@ object frmMain: TfrmMain
         'AutoDisp'
         'AxCtrls'
         'BandActn'
+        'BDE'
         'bdeconst'
         'bdemts'
         'BDEReg'
@@ -195,7 +179,10 @@ object frmMain: TfrmMain
         'DbExcept'
         'DBGrids'
         'DbgSiteAS'
+        'DBiErrs'
         'dbinpreq'
+        'DBIProcs'
+        'DbiTypes'
         'DBLocal'
         'DBLocalI'
         'DBLogDlg'
@@ -204,6 +191,7 @@ object frmMain: TfrmMain
         'DBOleEdt'
         'DBPWDlg'
         'DBReg'
+        'DBT'
         'DBTables'
         'DBWeb'
         'DBXpress'
@@ -227,7 +215,11 @@ object frmMain: TfrmMain
         'DSDefine'
         'DSDesign'
         'DsgnCntxt'
+        'DsgnIntf'
+        'DsgnWnds'
         'DSIntf'
+        'DsnConst'
+        'DsnDbCst'
         'DSProd'
         'DTDSchema'
         'EditIntf'
@@ -238,6 +230,7 @@ object frmMain: TfrmMain
         'ExtDlgs'
         'FileCtrl'
         'FileIntf'
+        'FiltEdit'
         'FlatSB'
         'FldLinks'
         'FMTBcd'
@@ -463,6 +456,8 @@ object frmMain: TfrmMain
         'IdWhoIsServer'
         'IdWinSock2'
         'ImageHlp'
+        'ImagPrvw'
+        'ImgEdit'
         'ImgList'
         'Imm'
         'IndySockTransport'
@@ -506,6 +501,23 @@ object frmMain: TfrmMain
         'IWTreeview'
         'IWTypes'
         'Ixedit'
+        'JclBase'
+        'JclDateTime'
+        'JclGraphUtils'
+        'JclLogic'
+        'JclMAPI'
+        'JclRegistry'
+        'JclRTTI'
+        'JclSchedule'
+        'JclStrings'
+        'JclSysInfo'
+        'JclSysUtils'
+        'JclUnicode'
+        'JclWin32'
+        'jpeg'
+        'LibConst'
+        'LibHelp'
+        'LibIntf'
         'ListActns'
         'LZExpand'
         'Mapi'
@@ -756,9 +768,11 @@ object frmMain: TfrmMain
         'winerror'
         'WinHelpViewer'
         'WinInet'
+        'WinProcs'
         'WinSock'
         'WinSpool'
         'WinSvc'
+        'WinTypes'
         'VirtIntf'
         'WSDLBind'
         'WSDLIntf'

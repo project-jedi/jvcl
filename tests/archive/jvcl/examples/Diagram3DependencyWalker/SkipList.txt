@@ -29,6 +29,7 @@ AutoAdapAS
 AutoDisp
 AxCtrls
 BandActn
+BDE
 bdeconst
 bdemts
 BDEReg
@@ -98,7 +99,10 @@ Dbedit
 DbExcept
 DBGrids
 DbgSiteAS
+DBiErrs
 dbinpreq
+DBIProcs
+DbiTypes
 DBLocal
 DBLocalI
 DBLogDlg
@@ -107,6 +111,7 @@ DBOleCtl
 DBOleEdt
 DBPWDlg
 DBReg
+DBT
 DBTables
 DBWeb
 DBXpress
@@ -130,7 +135,11 @@ DSAttrS
 DSDefine
 DSDesign
 DsgnCntxt
+DsgnIntf
+DsgnWnds
 DSIntf
+DsnConst
+DsnDbCst
 DSProd
 DTDSchema
 EditIntf
@@ -141,6 +150,7 @@ ExtCtrls
 ExtDlgs
 FileCtrl
 FileIntf
+FiltEdit
 FlatSB
 FldLinks
 FMTBcd
@@ -366,6 +376,8 @@ IdWhois
 IdWhoIsServer
 IdWinSock2
 ImageHlp
+ImagPrvw
+ImgEdit
 ImgList
 Imm
 IndySockTransport
@@ -409,6 +421,23 @@ IWTemplateProcessorHTML
 IWTreeview
 IWTypes
 Ixedit
+JclBase
+JclDateTime
+JclGraphUtils
+JclLogic
+JclMAPI
+JclRegistry
+JclRTTI
+JclSchedule
+JclStrings
+JclSysInfo
+JclSysUtils
+JclUnicode
+JclWin32
+jpeg
+LibConst
+LibHelp
+LibIntf
 ListActns
 LZExpand
 Mapi
@@ -692,5 +721,5 @@ XPMan
 XPStyleActnCtrls
 XSBuiltIns
 XSLProd
-zlib
-zlibconst
+ZLib
+ZLibConst
