@@ -53,8 +53,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Controls, Forms,
-  JvItemsSearchs, JvDataProvider, JvDataProviderIntf,
-  JvExStdCtrls;
+  JvItemsSearchs, JvDataProvider, JvDataProviderIntf, JvExStdCtrls;
 
 type
   TJvListboxFillMode = (bfmTile, bfmStretch);
@@ -66,7 +65,7 @@ type
   private
     FOnChange: TNotifyEvent;
     FImage: TBitmap;
-    FFillmode: TJvListboxFillMode;
+    FFillMode: TJvListboxFillMode;
     FVisible: Boolean;
     procedure SetFillMode(const Value: TJvListboxFillMode);
     procedure SetImage(const Value: TBitmap);
@@ -391,8 +390,20 @@ const
 
 type
   PStrings = ^TStrings;
-  
-//===TJvListBoxStrings=============================================================================
+
+//=== TJvListBoxStrings ======================================================
+
+constructor TJvListBoxStrings.Create;
+begin
+  inherited Create;
+  FInternalList := TStringList.Create;
+end;
+
+destructor TJvListBoxStrings.Destroy;
+begin
+  FreeAndNil(FInternalList);
+  inherited Destroy;
+end;
 
 function TJvListBoxStrings.Get(Index: Integer): string;
 var
@@ -444,7 +455,8 @@ begin
   {$ENDIF COMPILER6_UP}
   begin
     Result := TObject(ListBox.GetItemData(Index));
-    if Longint(Result) = LB_ERR then Error(SListIndexError, Index);
+    if Longint(Result) = LB_ERR then
+      Error(SListIndexError, Index);
   end;
 end;
 
@@ -475,7 +487,7 @@ begin
     InternalList.Objects[Index] := AObject
   else
   begin
-    if (Index <> -1) {$IFDEF COMPILER6_UP}and not (ListBox.Style in [lbVirtual, lbVirtualOwnerDraw]){$ENDIF COMPILER6_UP} then
+    if (Index <> -1) {$IFDEF COMPILER6_UP} and not (ListBox.Style in [lbVirtual, lbVirtualOwnerDraw]) {$ENDIF} then
     begin
       ListBox.DeselectProvider;
       ListBox.SetItemData(Index, LongInt(AObject));
@@ -489,7 +501,8 @@ begin
   if ListBox.HandleAllocated then
   begin
     SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(not Updating), 0);
-    if not Updating then ListBox.Refresh;
+    if not Updating then
+      ListBox.Refresh;
   end;
 end;
 
@@ -510,18 +523,6 @@ end;
 procedure TJvListBoxStrings.SetListBox(Value: TJvCustomListBox);
 begin
   FListBox := Value;
-end;
-
-constructor TJvListBoxStrings.Create;
-begin
-  inherited Create;
-  FInternalList := TStringList.Create;
-end;
-
-destructor TJvListBoxStrings.Destroy;
-begin
-  FreeAndNil(FInternalList);
-  inherited Destroy;
 end;
 
 function TJvListBoxStrings.GetInternalList: TStrings;
@@ -637,7 +638,7 @@ end;
 procedure TJvListBoxStrings.MakeListInternal;
 var
   Cnt: Integer;
-  Text: array[0..4095] of Char;
+  Text: array [0..4095] of Char;
   Len: Integer;
   S: string;
   Obj: TObject;
@@ -697,7 +698,58 @@ begin
   end;
 end;
 
-//===TJvCustomListBox===============================================================================
+//=== TJvCustomListBox =======================================================
+
+constructor TJvCustomListBox.Create(AOwner: TComponent);
+var
+  PI: PPropInfo;
+  PStringsAddr: PStrings;
+begin
+  inherited Create(AOwner);
+  // JvBMPListBox:
+  //  Style := lbOwnerDrawFixed;
+
+  { The following hack assumes that TJvListBox.Items reads directly from the private FItems field
+    of TCustomListBox and that TJvListBox.Items is actually published.
+
+    What we do here is remove the original string list used and place our own version in it's place.
+    This would give us the benefit of keeping the list of strings (and objects) even if a provider
+    is active and the list box windows has no strings at all. }
+  FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RenderDisabledAsGrayed,
+    DPA_ConsumerDisplaysList]);
+  FConsumerSvc.OnChanging := ConsumerServiceChanging;
+  FConsumerSvc.OnChanged := ConsumerServiceChanged;
+  FConsumerSvc.AfterCreateSubSvc := ConsumerSubServiceCreated;
+  FConsumerStrings := TJvConsumerStrings.Create(FConsumerSvc);
+  PI := GetPropInfo(TJvListBox, 'Items');
+  PStringsAddr := Pointer(Integer(PI.GetProc) and $00FFFFFF + Integer(Self));
+  Items.Free;                                 // remove original item list (TListBoxStrings instance)
+  PStringsAddr^ := GetItemsClass.Create;      // create our own implementation and put it in place.
+  TJvListBoxStrings(Items).ListBox := Self;   // link it to the list box.
+
+  FBackground := TJvListBoxBackground.Create;
+  FBackground.OnChange := DoBackgroundChange;
+  FScrollBars := ssBoth;
+  FAlignment := taLeftJustify;
+  FMultiline := False;
+  FSelectedColor := clHighlight;
+  FSelectedTextColor := clHighlightText;
+  FDisabledTextColor := clGrayText;
+  FShowFocusRect := True;
+  //  Style := lbOwnerDrawVariable;
+
+  FMaxWidth := 0;
+  FHotTrack := False;
+  // ControlStyle := ControlStyle + [csAcceptsControls];
+end;
+
+destructor TJvCustomListBox.Destroy;
+begin
+  FreeAndNil(FBackground);
+  FreeAndNil(FConsumerStrings);
+  FreeAndNil(FConsumerSvc);
+  inherited Destroy;
+end;
 
 function TJvCustomListBox.GetItemsClass: TJvListBoxStringsClass;
 begin
@@ -795,8 +847,8 @@ end;
 
 procedure TJvCustomListBox.CNKeyDown(var Msg: TWMKeyDown);
 begin
-  if Background.DoDraw and
-    (Msg.Result = 0) and (Msg.CharCode in [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN]) then
+  if Background.DoDraw and (Msg.Result = 0) and
+    (Msg.CharCode in [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN]) then
   begin
     BeginRedraw;
     try
@@ -807,49 +859,6 @@ begin
   end
   else
     inherited;
-end;
-
-constructor TJvCustomListBox.Create(AOwner: TComponent);
-var
-  PI: PPropInfo;
-  PStringsAddr: PStrings;
-begin
-  inherited Create(AOwner);
-  // JvBMPListBox:
-  //  Style := lbOwnerDrawFixed;
-
-  { The following hack assumes that TJvListBox.Items reads directly from the private FItems field
-    of TCustomListBox and that TJvListBox.Items is actually published.
-
-    What we do here is remove the original string list used and place our own version in it's place.
-    This would give us the benefit of keeping the list of strings (and objects) even if a provider
-    is active and the list box windows has no strings at all. }
-  FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RenderDisabledAsGrayed,
-    DPA_ConsumerDisplaysList]);
-  FConsumerSvc.OnChanging := ConsumerServiceChanging;
-  FConsumerSvc.OnChanged := ConsumerServiceChanged;
-  FConsumerSvc.AfterCreateSubSvc := ConsumerSubServiceCreated;
-  FConsumerStrings := TJvConsumerStrings.Create(FConsumerSvc);
-  PI := GetPropInfo(TJvListBox, 'Items');
-  PStringsAddr := Pointer(Integer(PI.GetProc) and $00FFFFFF + Integer(Self));
-  Items.Free;                                 // remove original item list (TListBoxStrings instance)
-  PStringsAddr^ := GetItemsClass.Create;      // create our own implementation and put it in place.
-  TJvListBoxStrings(Items).ListBox := Self;   // link it to the list box.
-
-  FBackground := TJvListBoxBackground.Create;
-  FBackground.OnChange := DoBackgroundChange;
-  FScrollBars := ssBoth;
-  FAlignment := taLeftJustify;
-  FMultiline := False;
-  FSelectedColor := clHighlight;
-  FSelectedTextColor := clHighlightText;
-  FDisabledTextColor := clGrayText;
-  FShowFocusRect := True;
-  //  Style := lbOwnerDrawVariable;
-
-  FMaxWidth := 0;
-  FHotTrack := False;
-  // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
 procedure TJvCustomListBox.CreateDragImage(const S: string);
@@ -1018,7 +1027,7 @@ const
 var
   Flags: Longint;
   ActualRect: TRect;
-  AText:string;
+  AText: string;
 begin
    if csDestroying in ComponentState then
     Exit;
@@ -1145,14 +1154,6 @@ begin
     end;
     Changed;
   end;
-end;
-
-destructor TJvCustomListBox.Destroy;
-begin
-  FreeAndNil(FBackground);
-  FreeAndNil(FConsumerStrings);
-  FreeAndNil(FConsumerSvc);
-  inherited Destroy;
 end;
 
 procedure TJvCustomListBox.DoBackgroundChange(Sender: TObject);
@@ -1513,7 +1514,6 @@ end;
 procedure TJvCustomListBox.Loaded;
 begin
   inherited Loaded;
-
   UpdateStyle;
 end;
 
@@ -1541,9 +1541,11 @@ begin
         Inc(Rect.Left, VL.ItemLevel(Index) * VL.LevelIndent);
         if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
           ItemRenderer.Draw(Canvas, Rect, DrawState)
-        else if DP_FindItemsRenderer(Item, ItemsRenderer) then
+        else
+        if DP_FindItemsRenderer(Item, ItemsRenderer) then
           ItemsRenderer.DrawItem(Canvas, Rect, Item, DrawState)
-        else if Supports(Item, IJvDataItemText, ItemText) then
+        else
+        if Supports(Item, IJvDataItemText, ItemText) then
         begin
           AText := ItemText.Caption;
           DoGetText(Index,AText);
@@ -1615,9 +1617,11 @@ begin
       begin
         if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
           ASize := ItemRenderer.Measure(Canvas)
-        else if DP_FindItemsRenderer(Item, ItemsRenderer) then
+        else
+        if DP_FindItemsRenderer(Item, ItemsRenderer) then
           ASize := ItemsRenderer.MeasureItem(Canvas, Item)
-        else if Supports(Item, IJvDataItemText, ItemText) then
+        else
+        if Supports(Item, IJvDataItemText, ItemText) then
           ASize := Canvas.TextExtent(ItemText.Caption)
         else
           ASize := Canvas.TextExtent(RsDataItemRenderHasNoText);
@@ -1799,8 +1803,7 @@ begin
   end;
 end;
 
-procedure TJvCustomListBox.SetBackground(
-  const Value: TJvListBoxBackground);
+procedure TJvCustomListBox.SetBackground(const Value: TJvListBoxBackground);
 begin
   FBackground.Assign(Value);
 end;
@@ -2044,7 +2047,8 @@ begin
   Count := ItemsShowing.Count;
   if (Index >= 0) and (Index < Count) then
     Perform(LB_GETITEMRECT, Index, Longint(@Result))
-  else if Index = Count then
+  else
+  if Index = Count then
   begin
     Perform(LB_GETITEMRECT, Index - 1, Longint(@Result));
     OffsetRect(Result, 0, Result.Bottom - Result.Top);
@@ -2099,14 +2103,26 @@ begin
   inherited WndProc(Msg);
 end;
 
-{ TJvListBoxBackground }
+//=== TJvListBoxBackground ===================================================
+
+constructor TJvListBoxBackground.Create;
+begin
+  inherited Create;
+  FImage := TBitmap.Create;
+end;
+
+destructor TJvListBoxBackground.Destroy;
+begin
+  FImage.Free;
+  inherited Destroy;
+end;
 
 procedure TJvListBoxBackground.Assign(Source: TPersistent);
 begin
   if Source is TJvListBoxBackground then
   begin
     FImage.Assign(TJvListBoxBackground(Source).Image);
-    FFillmode := TJvListBoxBackground(Source).FillMode;
+    FFillMode := TJvListBoxBackground(Source).FillMode;
     FVisible := TJvListBoxBackground(Source).Visible;
   end
   else
@@ -2119,25 +2135,12 @@ begin
     FOnChange(Self);
 end;
 
-constructor TJvListBoxBackground.Create;
-begin
-  inherited Create;
-  FImage := TBitmap.Create;
-end;
-
-destructor TJvListBoxBackground.Destroy;
-begin
-  FImage.Free;
-  inherited;
-end;
-
 function TJvListBoxBackground.GetDoDraw: Boolean;
 begin
   Result := Visible and not Image.Empty;
 end;
 
-procedure TJvListBoxBackground.SetFillMode(
-  const Value: TJvListboxFillMode);
+procedure TJvListBoxBackground.SetFillMode(const Value: TJvListboxFillMode);
 begin
   if FFillMode <> Value then
   begin
@@ -2160,7 +2163,6 @@ begin
     Change;
   end;
 end;
-
 
 end.
 

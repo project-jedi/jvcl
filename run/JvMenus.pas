@@ -422,9 +422,9 @@ type
     FItem: TMenuItem;
     FState: TMenuOwnerDrawState;
 
-    FImageIndex: integer;
+    FImageIndex: Integer;
     FGlyph: TGraphic;
-    FNumGlyphs: integer;
+    FNumGlyphs: Integer;
     FParentMenu: TMenu;
 
     function GetTextWidth(Item: TMenuItem): Integer;
@@ -433,15 +433,15 @@ type
     function GetCheckMarkWidth: Integer; virtual;
     function GetComponentState: TComponentState;
     function GetDisabledImages: TImageList;
-    function GetDrawHighlight: boolean; virtual;
+    function GetDrawHighlight: Boolean; virtual;
     function GetGrayColor: TColor; virtual;
     function GetHotImages: TImageList;
     function GetImageHeight: Integer; virtual;
     function GetImageWidth: Integer; virtual;
     function GetImages: TImageList;
-    function GetIsPopup: boolean;
-    function GetIsRightToLeft: boolean;
-    function GetShowCheckMarks: boolean;
+    function GetIsPopup: Boolean;
+    function GetIsRightToLeft: Boolean;
+    function GetShowCheckMarks: Boolean;
     function GetTextMargin: Integer; virtual;
     function GetTextVAlignment: TJvVerticalAlignment;
 
@@ -502,11 +502,11 @@ type
 
     // Draws a disabled image. This is called when the ImageList property
     // is not empty
-    procedure DrawDisabledImage(X, Y: integer); virtual;
+    procedure DrawDisabledImage(X, Y: Integer); virtual;
 
     // Draws an enabled image. This is called when the ImageList property
     // is not empty
-    procedure DrawEnabledImage(X, Y: integer); virtual;
+    procedure DrawEnabledImage(X, Y: Integer); virtual;
 
     // Draws a check image for the menu item
     // will only be called if the menu item is checked, the menu item is
@@ -593,7 +593,7 @@ type
   protected
     procedure CleanupGlyph(BtnRect: TRect);
     procedure DrawFrame(BtnRect: TRect);
-    function GetDrawHighlight: boolean; override;
+    function GetDrawHighlight: Boolean; override;
     procedure DrawSelectedFrame(ARect: TRect); override;
     procedure DrawCheckedImageBack(ARect: TRect); override;
     procedure DrawNotCheckedImageBack(ARect: TRect); override;
@@ -617,12 +617,12 @@ type
     FLowered: Boolean;
 
     procedure DrawSelectedFrame(ARect: TRect); override;
-    function GetDrawHighlight: boolean; override;
+    function GetDrawHighlight: Boolean; override;
     function GetGrayColor: TColor; override;
     procedure UpdateFieldsFromMenu; override;
   public
     constructor Create(AOwner: TComponent); overload; override;
-    constructor Create(AOwner: TComponent; Lowered: boolean); reintroduce; overload;
+    constructor Create(AOwner: TComponent; Lowered: Boolean); reintroduce; overload;
   published
     property Lowered: Boolean read FLowered write FLowered;
     property LeftMargin;
@@ -641,8 +641,7 @@ type
   TJvOwnerDrawMenuItemPainter = class(TJvCustomMenuItemPainter)
   public
     procedure Measure(Item: TMenuItem; var Width, Height: Integer); override;
-    procedure Paint(Item: TMenuItem;
-      ItemRect: TRect;
+    procedure Paint(Item: TMenuItem; ItemRect: TRect;
       State: TMenuOwnerDrawState); override;
   end;
 
@@ -662,22 +661,20 @@ type
     FSelRect: TRect;
     FCheckedPoint: TPoint;
 
-    procedure DrawBitmapShadow(X, Y: integer; B: TBitmap);
+    procedure DrawBitmapShadow(X, Y: Integer; B: TBitmap);
     procedure DrawImageBackground(ARect: TRect); override;
     procedure DrawCheckMarkBackground(ARect: TRect); override;
-    procedure PreparePaint(Item: TMenuItem;
-      Rect: TRect;
-      State: TMenuOwnerDrawState;
-      Measure: Boolean); override;
+    procedure PreparePaint(Item: TMenuItem; Rect: TRect;
+      State: TMenuOwnerDrawState; Measure: Boolean); override;
     procedure DrawCheckedImageBack(ARect: TRect); override;
-    procedure DrawEnabledImage(X, Y: integer); override;
+    procedure DrawEnabledImage(X, Y: Integer); override;
     procedure DrawItemBackground(ARect: TRect); override;
     procedure DrawMenuBitmap(X, Y: Integer; Bitmap: TBitmap); override;
-    procedure DrawDisabledImage(X, Y: integer); override;
+    procedure DrawDisabledImage(X, Y: Integer); override;
     procedure DrawSelectedFrame(ARect: TRect); override;
     procedure DrawSeparator(ARect: TRect); override;
     procedure DrawText(ARect: TRect; const Text: string; Flags: Longint); override;
-    function GetDrawHighlight: boolean; override;
+    function GetDrawHighlight: Boolean; override;
     procedure UpdateFieldsFromMenu; override;
     function GetTextMargin: Integer; override;
     procedure DrawCheckImage(ARect: TRect); override;
@@ -685,8 +682,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Measure(Item: TMenuItem; var Width, Height: Integer); override;
-    procedure Paint(Item: TMenuItem;
-      ItemRect: TRect;
+    procedure Paint(Item: TMenuItem; ItemRect: TRect;
       State: TMenuOwnerDrawState); override;
   published
     property ImageBackgroundColor default DefaultXPImageBackgroundColor;
@@ -698,10 +694,10 @@ type
     property CheckedImageBackColorSelected: TColor read FCheckedImageBackColorSelected write FCheckedImageBackColorSelected default DefaultXPCheckedImageBackColorSelected;
   end;
 
-  { Utility routines }
+{ Utility routines }
 
 procedure SetDefaultMenuFont(AFont: TFont);
-function UseFlatMenubars: boolean;
+function UseFlatMenubars: Boolean;
 
 implementation
 
@@ -725,11 +721,16 @@ const
 function CreateMenuItemPainterFromStyle(Style: TJvMenuStyle; Menu: TMenu): TJvCustomMenuItemPainter;
 begin
   case Style of
-    msOwnerDraw: Result := TJvOwnerDrawMenuItemPainter.Create(Menu);
-    msBtnLowered: Result := TJvBtnMenuItemPainter.Create(Menu, true);
-    msBtnRaised: Result := TJvBtnMenuItemPainter.Create(Menu, false);
-    msOffice: Result := TJvOfficeMenuItemPainter.Create(Menu);
-    msXP: Result := TJvXPMenuItemPainter.Create(Menu);
+    msOwnerDraw:
+      Result := TJvOwnerDrawMenuItemPainter.Create(Menu);
+    msBtnLowered:
+      Result := TJvBtnMenuItemPainter.Create(Menu, True);
+    msBtnRaised:
+      Result := TJvBtnMenuItemPainter.Create(Menu, False);
+    msOffice:
+      Result := TJvOfficeMenuItemPainter.Create(Menu);
+    msXP:
+      Result := TJvXPMenuItemPainter.Create(Menu);
   else
     Result := TJvStandardMenuItemPainter.Create(Menu);
   end;
@@ -749,11 +750,13 @@ begin
     (Win32MajorVersion = 5) and (Win32MinorVersion >= 1));
 end;
 
-function UseFlatMenubars: boolean;
-const SPI_GETFLATMENU = $1022;
-var b: BOOL;
+function UseFlatMenubars: Boolean;
+const
+  SPI_GETFLATMENU = $1022;
+var
+  B: BOOL;
 begin
-  Result:= IsWinXP_UP and SystemParametersInfo(SPI_GETFLATMENU, 0, @b, 0) and b;
+  Result:= IsWinXP_UP and SystemParametersInfo(SPI_GETFLATMENU, 0, @B, 0) and B;
 end;
 
 procedure MenuWndMessage(Menu: TMenu; var AMsg: TMessage; var Handled: Boolean);
@@ -789,8 +792,10 @@ begin
             Handled := True;
           end;
         end;
-      WM_MENUSELECT: Menu.Dispatch(AMsg);
-      CM_MENUCHANGED: Menu.Dispatch(AMsg);
+      WM_MENUSELECT:
+        Menu.Dispatch(AMsg);
+      CM_MENUCHANGED:
+        Menu.Dispatch(AMsg);
       WM_MENUCHAR:
         begin
           Menu.ProcessMenuChar(TWMMenuChar(AMsg));
@@ -835,17 +840,15 @@ begin
   end;
 end;
 
-{ TJvMenuChangeLink}
+//=== TJvMenuChangeLink ======================================================
 
 procedure TJvMenuChangeLink.Change(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
 begin
-  if assigned(FOnChange) then
-  begin
+  if Assigned(FOnChange) then
     FOnChange(Sender, Source, Rebuild);
-  end;
 end;
 
-{ TJvMainMenu }
+//=== TJvMainMenu ============================================================
 
 constructor TJvMainMenu.Create(AOwner: TComponent);
 begin
@@ -853,7 +856,7 @@ begin
   RegisterWndProcHook(FindForm, NewWndProc, hoAfterMsg);
   FStyle := msStandard;
   FStyleItemPainter := CreateMenuItemPainterFromStyle(FStyle, Self);
-  FChangeLinks := TObjectList.Create(false);
+  FChangeLinks := TObjectList.Create(False);
   FImageMargin := TJvImageMargin.Create;
   FImageSize := TJvMenuImageSize.Create;
   FImageChangeLink := TChangeLink.Create;
@@ -899,13 +902,12 @@ end;
 
 procedure TJvMainMenu.MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
 var
-  i: integer;
+  I: Integer;
 begin
-  if csLoading in ComponentState then Exit;
-  for i := 0 to FChangeLinks.Count - 1 do
-  begin
-    TJvMenuChangeLink(FChangeLinks[i]).Change(Self, Source, Rebuild);
-  end;
+  if csLoading in ComponentState then
+    Exit;
+  for I := 0 to FChangeLinks.Count - 1 do
+    TJvMenuChangeLink(FChangeLinks[I]).Change(Self, Source, Rebuild);
   inherited MenuChanged(Sender, Source, Rebuild);
 end;
 
@@ -914,16 +916,21 @@ begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
   begin
-    if AComponent = FImages then SetImages(nil);
-    if AComponent = FDisabledImages then SetDisabledImages(nil);
-    if AComponent = FHotImages then SetHotImages(nil);
-    if AComponent = FItemPainter then ItemPainter := nil;
+    if AComponent = FImages then
+      SetImages(nil);
+    if AComponent = FDisabledImages then
+      SetDisabledImages(nil);
+    if AComponent = FHotImages then
+      SetHotImages(nil);
+    if AComponent = FItemPainter then
+      ItemPainter := nil;
   end;
 end;
 
 procedure TJvMainMenu.ImageListChange(Sender: TObject);
 begin
-  if Sender = FImages then RefreshMenu(IsOwnerDrawMenu);
+  if Sender = FImages then
+    RefreshMenu(IsOwnerDrawMenu);
 end;
 
 procedure TJvMainMenu.SetImages(Value: TImageList);
@@ -931,21 +938,24 @@ var
   OldOwnerDraw: Boolean;
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
-  if FImages <> nil then FImages.UnregisterChanges(FImageChangeLink);
+  if FImages <> nil then
+    FImages.UnregisterChanges(FImageChangeLink);
   FImages := Value;
   if Value <> nil then
   begin
     FImages.RegisterChanges(FImageChangeLink);
     FImages.FreeNotification(Self);
   end;
-  if IsOwnerDrawMenu <> OldOwnerDraw then RefreshMenu(not OldOwnerDraw);
+  if IsOwnerDrawMenu <> OldOwnerDraw then
+    RefreshMenu(not OldOwnerDraw);
   // to be used in a standard (non JV) toolbar
   inherited Images := Value;
 end;
 
 procedure TJvMainMenu.DisabledImageListChange(Sender: TObject);
 begin
-  if Sender = FDisabledImages then RefreshMenu(IsOwnerDrawMenu);
+  if Sender = FDisabledImages then
+    RefreshMenu(IsOwnerDrawMenu);
 end;
 
 procedure TJvMainMenu.SetDisabledImages(Value: TImageList);
@@ -953,19 +963,22 @@ var
   OldOwnerDraw: Boolean;
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
-  if FDisabledImages <> nil then FDisabledImages.UnregisterChanges(FDisabledImageChangeLink);
+  if FDisabledImages <> nil then
+    FDisabledImages.UnregisterChanges(FDisabledImageChangeLink);
   FDisabledImages := Value;
   if Value <> nil then
   begin
     FDisabledImages.RegisterChanges(FDisabledImageChangeLink);
     FDisabledImages.FreeNotification(Self);
   end;
-  if IsOwnerDrawMenu <> OldOwnerDraw then RefreshMenu(not OldOwnerDraw);
+  if IsOwnerDrawMenu <> OldOwnerDraw then
+    RefreshMenu(not OldOwnerDraw);
 end;
 
 procedure TJvMainMenu.HotImageListChange(Sender: TObject);
 begin
-  if Sender = FHotImages then RefreshMenu(IsOwnerDrawMenu);
+  if Sender = FHotImages then
+    RefreshMenu(IsOwnerDrawMenu);
 end;
 
 procedure TJvMainMenu.SetHotImages(Value: TImageList);
@@ -973,14 +986,16 @@ var
   OldOwnerDraw: Boolean;
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
-  if FHotImages <> nil then FHotImages.UnregisterChanges(FHotImageChangeLink);
+  if FHotImages <> nil then
+    FHotImages.UnregisterChanges(FHotImageChangeLink);
   FHotImages := Value;
   if Value <> nil then
   begin
     FHotImages.RegisterChanges(FHotImageChangeLink);
     FHotImages.FreeNotification(Self);
   end;
-  if IsOwnerDrawMenu <> OldOwnerDraw then RefreshMenu(not OldOwnerDraw);
+  if IsOwnerDrawMenu <> OldOwnerDraw then
+    RefreshMenu(not OldOwnerDraw);
 end;
 
 procedure TJvMainMenu.SetStyle(Value: TJvMenuStyle);
@@ -1017,8 +1032,7 @@ end;
 
 procedure TJvMainMenu.RefreshMenu(AOwnerDraw: Boolean);
 begin
-  Self.OwnerDraw := AOwnerDraw and
-    not (csDesigning in ComponentState);
+  Self.OwnerDraw := AOwnerDraw and not (csDesigning in ComponentState);
 end;
 
 procedure TJvMainMenu.DefaultDrawItem(Item: TMenuItem; Rect: TRect;
@@ -1060,17 +1074,18 @@ end;
 {procedure TJvMainMenu.WndMessage(Sender: TObject; var AMsg: TMessage;
   var Handled: Boolean);
 begin
-  if IsOwnerDrawMenu then MenuWndMessage(Self, AMsg, Handled);
+  if IsOwnerDrawMenu then
+    MenuWndMessage(Self, AMsg, Handled);
 end;}
 
 function TJvMainMenu.NewWndProc(var Msg: TMessage): Boolean;
 var
-  handled: boolean;
+  handled: Boolean;
 begin
   if IsOwnerDrawMenu then
     MenuWndMessage(Self, Msg, handled);
   // let others listen in too...
-  Result := false; //handled;
+  Result := False; //handled;
 end;
 
 procedure TJvMainMenu.GetItemParams(Item: TMenuItem; State: TMenuOwnerDrawState;
@@ -1078,7 +1093,8 @@ procedure TJvMainMenu.GetItemParams(Item: TMenuItem; State: TMenuOwnerDrawState;
 begin
   if Assigned(FOnGetItemParams) then
     FOnGetItemParams(Self, Item, State, AFont, Color, Graphic, NumGlyphs);
-  if (Item <> nil) and (Item.Caption = Separator) then Graphic := nil;
+  if (Item <> nil) and (Item.Caption = Separator) then
+    Graphic := nil;
 end;
 
 procedure TJvMainMenu.GetImageIndex(Item: TMenuItem; State: TMenuOwnerDrawState;
@@ -1103,7 +1119,8 @@ begin
   with Message.DrawItemStruct^ do
   begin
     State := TMenuOwnerDrawState(WordRec(LongRec(itemState).Lo).Lo);
-    {if (mdDisabled in State) then State := State - [mdSelected];}
+    {if (mdDisabled in State) then
+      State := State - [mdSelected];}
     Item := TMenuItem(Pointer(itemData));
     if Assigned(Item) and
       (FindItem(Item.Command, fkCommand) = Item) then
@@ -1202,123 +1219,6 @@ begin
     end;
 end;
 
-{ TJvPopupList }
-
-type
-  TJvPopupList = class(TList)
-  private
-    procedure WndProc(var Message: TMessage);
-  public
-    Window: HWND;
-    procedure Add(Popup: TPopupMenu);
-    procedure Remove(Popup: TPopupMenu);
-  end;
-
-var
-  PopupList: TJvPopupList = nil;
-
-procedure TJvPopupList.WndProc(var Message: TMessage);
-var
-  I: Integer;
-  MenuItem: TMenuItem;
-  FindKind: TFindItemKind;
-  ContextID: Integer;
-  Handled: Boolean;
-begin
-  try
-    case Message.Msg of
-      WM_MEASUREITEM, WM_DRAWITEM:
-        for I := 0 to Count - 1 do
-        begin
-          Handled := False;
-          TJvPopupMenu(Items[I]).WndMessage(nil, Message, Handled);
-          if Handled then Exit;
-        end;
-      WM_COMMAND:
-        for I := 0 to Count - 1 do
-          if TJvPopupMenu(Items[I]).DispatchCommand(Message.wParam) then Exit;
-      WM_INITMENUPOPUP:
-        for I := 0 to Count - 1 do
-          with TWMInitMenuPopup(Message) do
-            if TJvPopupMenu(Items[I]).DispatchPopup(MenuPopup) then Exit;
-      WM_MENUSELECT:
-        with TWMMenuSelect(Message) do
-        begin
-          FindKind := fkCommand;
-          if MenuFlag and MF_POPUP <> 0 then
-          begin
-            FindKind := fkHandle;
-            ContextId := GetSubMenu(Menu, IDItem);
-          end
-          else
-            ContextId := IDItem;
-          for I := 0 to Count - 1 do
-          begin
-            MenuItem := TJvPopupMenu(Items[I]).FindItem(ContextId, FindKind);
-            if MenuItem <> nil then
-            begin
-              Application.Hint := MenuItem.Hint;
-              with TJvPopupMenu(Items[I]) do
-                if FCursor <> crDefault then
-                begin
-                  if (MenuFlag and MF_HILITE <> 0) then
-                    SetCursor(Screen.Cursors[FCursor])
-                  else
-                    SetCursor(Screen.Cursors[crDefault]);
-                end;
-              Exit;
-            end;
-          end;
-          Application.Hint := '';
-        end;
-      WM_MENUCHAR:
-        for I := 0 to Count - 1 do
-          with TJvPopupMenu(Items[I]) do
-            if (Handle = HMenu(Message.LParam)) or
-              (FindItem(Message.LParam, fkHandle) <> nil) then
-            begin
-              ProcessMenuChar(TWMMenuChar(Message));
-              Exit;
-            end;
-      WM_HELP:
-        with PHelpInfo(Message.LParam)^ do
-        begin
-          for I := 0 to Count - 1 do
-            if TJvPopupMenu(Items[I]).Handle = hItemHandle then
-            begin
-              ContextID := TMenu(Items[I]).GetHelpContext(iCtrlID, True);
-              if ContextID = 0 then
-                ContextID := TMenu(Items[I]).GetHelpContext(hItemHandle, False);
-              if Screen.ActiveForm = nil then Exit;
-              if (biHelp in Screen.ActiveForm.BorderIcons) then
-                Application.HelpCommand(HELP_CONTEXTPOPUP, ContextID)
-              else
-                Application.HelpContext(ContextID);
-              Exit;
-            end;
-        end;
-    end;
-    with Message do
-      Result := DefWindowProc(Window, Msg, wParam, lParam);
-  except
-    Application.HandleException(Self);
-  end;
-end;
-
-procedure TJvPopupList.Add(Popup: TPopupMenu);
-begin
-  if Count = 0 then
-    Window := AllocateHWnd(WndProc);
-  inherited Add(Popup);
-end;
-
-procedure TJvPopupList.Remove(Popup: TPopupMenu);
-begin
-  inherited Remove(Popup);
-  if Count = 0 then
-    DeallocateHWnd(Window);
-end;
-
 procedure TJvMainMenu.SetItemPainter(const Value: TJvCustomMenuItemPainter);
 begin
   if Value <> FItemPainter then
@@ -1349,7 +1249,126 @@ begin
     Result := FStyleItemPainter;
 end;
 
-{ TJvPopupMenu }
+//=== TJvPopupList ===========================================================
+
+type
+  TJvPopupList = class(TList)
+  private
+    procedure WndProc(var Message: TMessage);
+  public
+    Window: HWND;
+    procedure Add(Popup: TPopupMenu);
+    procedure Remove(Popup: TPopupMenu);
+  end;
+
+var
+  PopupList: TJvPopupList = nil;
+
+procedure TJvPopupList.WndProc(var Message: TMessage);
+var
+  I: Integer;
+  MenuItem: TMenuItem;
+  FindKind: TFindItemKind;
+  ContextID: Integer;
+  Handled: Boolean;
+begin
+  try
+    case Message.Msg of
+      WM_MEASUREITEM, WM_DRAWITEM:
+        for I := 0 to Count - 1 do
+        begin
+          Handled := False;
+          TJvPopupMenu(Items[I]).WndMessage(nil, Message, Handled);
+          if Handled then
+            Exit;
+        end;
+      WM_COMMAND:
+        for I := 0 to Count - 1 do
+          if TJvPopupMenu(Items[I]).DispatchCommand(Message.wParam) then
+            Exit;
+      WM_INITMENUPOPUP:
+        for I := 0 to Count - 1 do
+          with TWMInitMenuPopup(Message) do
+            if TJvPopupMenu(Items[I]).DispatchPopup(MenuPopup) then
+              Exit;
+      WM_MENUSELECT:
+        with TWMMenuSelect(Message) do
+        begin
+          FindKind := fkCommand;
+          if MenuFlag and MF_POPUP <> 0 then
+          begin
+            FindKind := fkHandle;
+            ContextId := GetSubMenu(Menu, IDItem);
+          end
+          else
+            ContextId := IDItem;
+          for I := 0 to Count - 1 do
+          begin
+            MenuItem := TJvPopupMenu(Items[I]).FindItem(ContextId, FindKind);
+            if MenuItem <> nil then
+            begin
+              Application.Hint := MenuItem.Hint;
+              with TJvPopupMenu(Items[I]) do
+                if FCursor <> crDefault then
+                  if (MenuFlag and MF_HILITE <> 0) then
+                    SetCursor(Screen.Cursors[FCursor])
+                  else
+                    SetCursor(Screen.Cursors[crDefault]);
+              Exit;
+            end;
+          end;
+          Application.Hint := '';
+        end;
+      WM_MENUCHAR:
+        for I := 0 to Count - 1 do
+          with TJvPopupMenu(Items[I]) do
+            if (Handle = HMenu(Message.LParam)) or
+              (FindItem(Message.LParam, fkHandle) <> nil) then
+            begin
+              ProcessMenuChar(TWMMenuChar(Message));
+              Exit;
+            end;
+      WM_HELP:
+        with PHelpInfo(Message.LParam)^ do
+        begin
+          for I := 0 to Count - 1 do
+            if TJvPopupMenu(Items[I]).Handle = hItemHandle then
+            begin
+              ContextID := TMenu(Items[I]).GetHelpContext(iCtrlID, True);
+              if ContextID = 0 then
+                ContextID := TMenu(Items[I]).GetHelpContext(hItemHandle, False);
+              if Screen.ActiveForm = nil then
+                Exit;
+              if (biHelp in Screen.ActiveForm.BorderIcons) then
+                Application.HelpCommand(HELP_CONTEXTPOPUP, ContextID)
+              else
+                Application.HelpContext(ContextID);
+              Exit;
+            end;
+        end;
+    end;
+    with Message do
+      Result := DefWindowProc(Window, Msg, wParam, lParam);
+  except
+    Application.HandleException(Self);
+  end;
+end;
+
+procedure TJvPopupList.Add(Popup: TPopupMenu);
+begin
+  if Count = 0 then
+    Window := AllocateHWnd(WndProc);
+  inherited Add(Popup);
+end;
+
+procedure TJvPopupList.Remove(Popup: TPopupMenu);
+begin
+  inherited Remove(Popup);
+  if Count = 0 then
+    DeallocateHWnd(Window);
+end;
+
+//=== TJvPopupMenu ===========================================================
 
 constructor TJvPopupMenu.Create(AOwner: TComponent);
 begin
@@ -1406,16 +1425,21 @@ begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
   begin
-    if AComponent = FImages then SetImages(nil);
-    if AComponent = FDisabledImages then SetDisabledImages(nil);
-    if AComponent = FHotImages then SetHotImages(nil);
-    if AComponent = FItemPainter then ItemPainter := nil;
+    if AComponent = FImages then
+      SetImages(nil);
+    if AComponent = FDisabledImages then
+      SetDisabledImages(nil);
+    if AComponent = FHotImages then
+      SetHotImages(nil);
+    if AComponent = FItemPainter then
+      ItemPainter := nil;
   end;
 end;
 
 procedure TJvPopupMenu.ImageListChange(Sender: TObject);
 begin
-  if Sender = FImages then RefreshMenu(IsOwnerDrawMenu);
+  if Sender = FImages then
+    RefreshMenu(IsOwnerDrawMenu);
 end;
 
 procedure TJvPopupMenu.SetImages(Value: TImageList);
@@ -1423,19 +1447,22 @@ var
   OldOwnerDraw: Boolean;
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
-  if FImages <> nil then FImages.UnregisterChanges(FImageChangeLink);
+  if FImages <> nil then
+    FImages.UnregisterChanges(FImageChangeLink);
   FImages := Value;
   if Value <> nil then
   begin
     FImages.RegisterChanges(FImageChangeLink);
     FImages.FreeNotification(Self);
   end;
-  if IsOwnerDrawMenu <> OldOwnerDraw then RefreshMenu(not OldOwnerDraw);
+  if IsOwnerDrawMenu <> OldOwnerDraw then
+    RefreshMenu(not OldOwnerDraw);
 end;
 
 procedure TJvPopupMenu.DisabledImageListChange(Sender: TObject);
 begin
-  if Sender = FDisabledImages then RefreshMenu(IsOwnerDrawMenu);
+  if Sender = FDisabledImages then
+    RefreshMenu(IsOwnerDrawMenu);
 end;
 
 procedure TJvPopupMenu.SetDisabledImages(Value: TImageList);
@@ -1443,19 +1470,22 @@ var
   OldOwnerDraw: Boolean;
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
-  if FDisabledImages <> nil then FDisabledImages.UnregisterChanges(FDisabledImageChangeLink);
+  if FDisabledImages <> nil then
+    FDisabledImages.UnregisterChanges(FDisabledImageChangeLink);
   FDisabledImages := Value;
   if Value <> nil then
   begin
     FDisabledImages.RegisterChanges(FDisabledImageChangeLink);
     FDisabledImages.FreeNotification(Self);
   end;
-  if IsOwnerDrawMenu <> OldOwnerDraw then RefreshMenu(not OldOwnerDraw);
+  if IsOwnerDrawMenu <> OldOwnerDraw then
+    RefreshMenu(not OldOwnerDraw);
 end;
 
 procedure TJvPopupMenu.HotImageListChange(Sender: TObject);
 begin
-  if Sender = FHotImages then RefreshMenu(IsOwnerDrawMenu);
+  if Sender = FHotImages then
+    RefreshMenu(IsOwnerDrawMenu);
 end;
 
 procedure TJvPopupMenu.SetHotImages(Value: TImageList);
@@ -1463,14 +1493,16 @@ var
   OldOwnerDraw: Boolean;
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
-  if FHotImages <> nil then FImages.UnregisterChanges(FHotImageChangeLink);
+  if FHotImages <> nil then
+    FImages.UnregisterChanges(FHotImageChangeLink);
   FHotImages := Value;
   if Value <> nil then
   begin
     FHotImages.RegisterChanges(FHotImageChangeLink);
     FHotImages.FreeNotification(Self);
   end;
-  if IsOwnerDrawMenu <> OldOwnerDraw then RefreshMenu(not OldOwnerDraw);
+  if IsOwnerDrawMenu <> OldOwnerDraw then
+    RefreshMenu(not OldOwnerDraw);
 end;
 
 function FindPopupControl(const Pos: TPoint): TControl;
@@ -1482,7 +1514,8 @@ begin
   if Window <> nil then
   begin
     Result := Window.ControlAtPos(Pos, False);
-    if Result = nil then Result := Window;
+    if Result = nil then
+      Result := Window;
   end;
 end;
 
@@ -1490,7 +1523,8 @@ procedure TJvPopupMenu.SetBiDiModeFromPopupControl;
 var
   AControl: TControl;
 begin
-  if not SysLocale.MiddleEast then Exit;
+  if not SysLocale.MiddleEast then
+    Exit;
   if FParentBiDiMode then
   begin
     AControl := FindPopupControl(FPopupPoint);
@@ -1506,7 +1540,8 @@ var
   AControl: TControl;
 begin
   Result := False;
-  if not SysLocale.MiddleEast then Exit;
+  if not SysLocale.MiddleEast then
+    Exit;
   if FParentBiDiMode then
   begin
     AControl := FindPopupControl(FPopupPoint);
@@ -1521,10 +1556,11 @@ end;
 
 procedure TJvPopupMenu.Popup(X, Y: Integer);
 const
-  Flags: array[Boolean, TPopupAlignment] of Word =
-  ((TPM_LEFTALIGN, TPM_RIGHTALIGN, TPM_CENTERALIGN),
+  Flags: array [Boolean, TPopupAlignment] of Word =
+   ((TPM_LEFTALIGN, TPM_RIGHTALIGN, TPM_CENTERALIGN),
     (TPM_RIGHTALIGN, TPM_LEFTALIGN, TPM_CENTERALIGN));
-  Buttons: array[TTrackButton] of Word = (TPM_RIGHTBUTTON, TPM_LEFTBUTTON);
+  Buttons: array [TTrackButton] of Word =
+    (TPM_RIGHTBUTTON, TPM_LEFTBUTTON);
 var
   FOnPopup: TNotifyEvent;
 begin
@@ -1533,8 +1569,10 @@ begin
   try
     SetBiDiModeFromPopupControl;
     FOnPopup := OnPopup;
-    if Assigned(FOnPopup) then FOnPopup(Self);
-    if IsOwnerDrawMenu then RefreshMenu(True);
+    if Assigned(FOnPopup) then
+      FOnPopup(Self);
+    if IsOwnerDrawMenu then
+      RefreshMenu(True);
     AdjustBiDiBehavior;
     TrackPopupMenu(Items.Handle,
       Flags[UseRightToLeftAlignment, Alignment] or Buttons[TrackButton], X, Y,
@@ -1551,8 +1589,7 @@ end;
 
 function TJvPopupMenu.IsOwnerDrawMenu: Boolean;
 begin
-  Result := (FStyle <> msStandard)
-    or (Assigned(FImages) and (FImages.Count > 0));
+  Result := (FStyle <> msStandard) or (Assigned(FImages) and (FImages.Count > 0));
 end;
 
 procedure TJvPopupMenu.RefreshMenu(AOwnerDraw: Boolean);
@@ -1609,7 +1646,8 @@ end;
 procedure TJvPopupMenu.WndMessage(Sender: TObject; var AMsg: TMessage;
   var Handled: Boolean);
 begin
-  if IsOwnerDrawMenu then MenuWndMessage(Self, AMsg, Handled);
+  if IsOwnerDrawMenu then
+    MenuWndMessage(Self, AMsg, Handled);
 end;
 
 procedure TJvPopupMenu.GetItemParams(Item: TMenuItem; State: TMenuOwnerDrawState;
@@ -1617,7 +1655,8 @@ procedure TJvPopupMenu.GetItemParams(Item: TMenuItem; State: TMenuOwnerDrawState
 begin
   if Assigned(FOnGetItemParams) then
     FOnGetItemParams(Self, Item, State, AFont, Color, Graphic, NumGlyphs);
-  if (Item <> nil) and (Item.Caption = Separator) then Graphic := nil;
+  if (Item <> nil) and (Item.Caption = Separator) then
+    Graphic := nil;
 end;
 
 procedure TJvPopupMenu.GetImageIndex(Item: TMenuItem; State: TMenuOwnerDrawState;
@@ -1732,17 +1771,16 @@ end;
 procedure TJvPopupMenu.ReadState(Reader: TReader);
 begin
   //  Reader.ReadComponent(FJvMenuItemPainter);
-  inherited;
+  inherited ReadState(Reader);
 end;
 
 procedure TJvPopupMenu.WriteState(Writer: TWriter);
 begin
-  inherited;
+  inherited WriteState(Writer);
   //  Writer.WriteComponent(FJvMenuItemPainter);
 end;
 
-procedure TJvPopupMenu.SetItemPainter(
-  const Value: TJvCustomMenuItemPainter);
+procedure TJvPopupMenu.SetItemPainter(const Value: TJvCustomMenuItemPainter);
 begin
   if Value <> FItemPainter then
   begin
@@ -1770,7 +1808,7 @@ begin
     Result := FStyleItemPainter;
 end;
 
-{ TJvCustomMenuItemPainter }
+//=== TJvCustomMenuItemPainter ===============================================
 
 constructor TJvCustomMenuItemPainter.Create(AOwner: TComponent);
 begin
@@ -1781,6 +1819,13 @@ begin
 
   FImageMargin := TJvImageMargin.Create;
   FImageSize := TJvMenuImageSize.Create;
+end;
+
+destructor TJvCustomMenuItemPainter.Destroy;
+begin
+  FImageSize.Free;
+  FImageMargin.Free;
+  inherited Destroy;
 end;
 
 procedure TJvCustomMenuItemPainter.DrawDisabledBitmap(X, Y: Integer; Bitmap: TBitmap);
@@ -1831,7 +1876,7 @@ end;
 
 procedure TJvCustomMenuItemPainter.DrawMenuBitmap(X, Y: Integer; Bitmap: TBitmap);
 begin
-  if (mdDisabled in FState) then
+  if mdDisabled in FState then
     DrawDisabledBitmap(X, Y, Bitmap)
   else
   begin
@@ -1855,27 +1900,25 @@ begin
       Height := GetSystemMetrics(SM_CYMENUCHECK);
     end;
     if FItem.RadioItem then
-    begin
       with Bmp do
       begin
         DrawFrameControl(Canvas.Handle, Bounds(0, 0, Width, Height),
           DFC_MENU, DFCS_MENUBULLET);
         Monochrome := True;
         Inc(ARect.Top); // the bullet must be shifted one pixel towards the bottom
-      end;
-    end
+      end
     else
-    begin
       with Bmp do
       begin
         DrawFrameControl(Canvas.Handle, Bounds(0, 0, Width, Height),
           DFC_MENU, DFCS_MENUCHECK);
         Monochrome := True;
       end;
-    end;
     case TextVAlignment of
-      vaMiddle: Inc(ARect.Top, ((ARect.Bottom - ARect.Top + 1) - Bmp.Height) div 2);
-      vaBottom: ARect.Top := ARect.Bottom - Bmp.Height;
+      vaMiddle:
+        Inc(ARect.Top, ((ARect.Bottom - ARect.Top + 1) - Bmp.Height) div 2);
+      vaBottom:
+        ARect.Top := ARect.Bottom - Bmp.Height;
     end;
     // draw the check mark bitmap, always centered horizontally
     DrawMenuBitmap(ARect.Left + (ARect.Right - ARect.Left + 1 - Bmp.Width) div 2,
@@ -1936,7 +1979,7 @@ begin
     Result := FPopupMenu.Images;
 end;
 
-function TJvCustomMenuItemPainter.GetShowCheckMarks: boolean;
+function TJvCustomMenuItemPainter.GetShowCheckMarks: Boolean;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.ShowCheckMarks
@@ -1970,7 +2013,8 @@ begin
   begin
     if Flags and DT_LEFT = DT_LEFT then
       Flags := Flags and (not DT_LEFT) or DT_RIGHT
-    else if Flags and DT_RIGHT = DT_RIGHT then
+    else
+    if Flags and DT_RIGHT = DT_RIGHT then
       Flags := Flags and (not DT_RIGHT) or DT_LEFT;
     Flags := Flags or DT_RTLREADING;
   end;
@@ -1986,7 +2030,7 @@ begin
   if not IsPopup then
     ARect.Left := ARect.Left + ((ARect.Right - ARect.Left) - Canvas.TextWidth(DelChars(Text, '&'))) div 2;
 
-  if (mdDisabled in FState) then
+  if mdDisabled in FState then
   begin
     if DrawHighlight then
     begin
@@ -2001,7 +2045,7 @@ begin
 end;
 
 procedure TJvCustomMenuItemPainter.PreparePaint(Item: TMenuItem;
-  ItemRect: TRect; State: TMenuOwnerDrawState; Measure: boolean);
+  ItemRect: TRect; State: TMenuOwnerDrawState; Measure: Boolean);
 var
   BackColor: TColor;
 begin
@@ -2046,7 +2090,7 @@ var
   CanvasRect: TRect;
 begin
   // prepare the painting
-  PreparePaint(Item, ItemRect, State, false);
+  PreparePaint(Item, ItemRect, State, False);
 
   // calculate areas for the different parts of the item to be drawn
   if IsPopup then
@@ -2140,8 +2184,8 @@ begin
     end
       // else, we may have a valid glyph, but we won't use it if
       // the item is a separator
-    else if Assigned(FGlyph) and
-      not FGlyph.Empty and
+    else
+    if Assigned(FGlyph) and not FGlyph.Empty and
       (Item.Caption <> Separator) then
     begin
       // Draw the corresponding back of an item
@@ -2157,14 +2201,16 @@ begin
         // in the graphic. If so, we draw only the one that corresponds
         // to the current state of the item
         // if not, we simply draw the bitmap
-        if (FNumGlyphs in [2..5]) then
+        if FNumGlyphs in [2..5] then
         begin
           I := 0;
-          if (mdDisabled in State) then
+          if mdDisabled in State then
             I := 1
-          else if (mdChecked in State) then
+          else
+          if mdChecked in State then
             I := 3
-          else if (mdSelected in State) then
+          else
+          if mdSelected in State then
             I := 2;
           if I > FNumGlyphs - 1 then
             I := 0;
@@ -2184,9 +2230,10 @@ begin
         Canvas.Draw(ImageRect.Left, ImageRect.Top, FGlyph);
       end;
     end
-      // at last, if there is no image given by the user, there may
-      // be a check mark to draw instead
-    else if Item.Checked and not ShowCheckMarks then
+    // at last, if there is no image given by the user, there may
+    // be a check mark to draw instead
+    else
+    if Item.Checked and not ShowCheckMarks then
     begin
       DrawCheckedImageBack(ImageAndMarginRect);
       DrawCheckImage(ImageRect);
@@ -2248,7 +2295,7 @@ begin
   // do nothing by default
 end;
 
-function TJvCustomMenuItemPainter.GetDrawHighlight: boolean;
+function TJvCustomMenuItemPainter.GetDrawHighlight: Boolean;
 begin
   Result := NewStyleControls and
     (not (mdSelected in FState) or
@@ -2258,13 +2305,13 @@ end;
 
 function TJvCustomMenuItemPainter.GetGrayColor: TColor;
 begin
-  if (mdSelected in FState) then
+  if mdSelected in FState then
     Result := clGrayText
   else
     Result := clBtnShadow;
 end;
 
-function TJvCustomMenuItemPainter.GetIsPopup: boolean;
+function TJvCustomMenuItemPainter.GetIsPopup: Boolean;
 begin
   Result := (FItem.Parent = nil) or (FItem.Parent.Parent <> nil) or
     not (FItem.Parent.Owner is TMainMenu);
@@ -2300,7 +2347,7 @@ begin
           Result := 0
         else
           Result := MaxWidth;
-        exit;
+        Exit;
       end;
 
       for I := 0 to Item.Parent.Count - 1 do
@@ -2331,17 +2378,18 @@ begin
       Inc(Result, ShortcutWidth);
       Inc(Result, Canvas.TextWidth(ShortcutSpacing));
     end
-    else if OneItemHasChildren then
+    else
+    if OneItemHasChildren then
       Inc(Result, Canvas.TextWidth('  '));
   end
   else
     Result := Canvas.TextWidth(DelChars(Item.Caption, '&'));
 end;
 
-procedure TJvCustomMenuItemPainter.Measure(Item: TMenuItem; var Width,
-  Height: Integer);
+procedure TJvCustomMenuItemPainter.Measure(Item: TMenuItem;
+  var Width, Height: Integer);
 begin
-  PreparePaint(Item, Rect(0, 0, 0, 0), [], true);
+  PreparePaint(Item, Rect(0, 0, 0, 0), [], True);
 
   if IsPopup then
   begin
@@ -2368,32 +2416,24 @@ begin
   // do nothing
 end;
 
-procedure TJvCustomMenuItemPainter.DrawDisabledImage(X, Y: integer);
+procedure TJvCustomMenuItemPainter.DrawDisabledImage(X, Y: Integer);
 begin
   if UseDisabledImages then
-  begin
     ImageList_Draw(DisabledImages.Handle, FImageIndex, Canvas.Handle,
-      X, Y, ILD_NORMAL);
-  end
+      X, Y, ILD_NORMAL)
   else
-  begin
     ImageListDrawDisabled(Images, Canvas, X, Y, FImageIndex, clBtnHighlight, GrayColor,
       DrawHighlight)
-  end;
 end;
 
-procedure TJvCustomMenuItemPainter.DrawEnabledImage(X, Y: integer);
+procedure TJvCustomMenuItemPainter.DrawEnabledImage(X, Y: Integer);
 begin
   if UseHotImages and (mdSelected in FState) then
-  begin
     ImageList_Draw(HotImages.Handle, FImageIndex, Canvas.Handle,
-      X, Y, ILD_NORMAL);
-  end
+      X, Y, ILD_NORMAL)
   else
-  begin
     ImageList_Draw(Images.Handle, FImageIndex, Canvas.Handle,
       X, Y, ILD_NORMAL);
-  end;
 end;
 
 {function TJvCustomMenuItemPainter.GetShadowColor: TColor;
@@ -2427,11 +2467,10 @@ begin
   // do nothing by default
 end;
 
-function TJvCustomMenuItemPainter.GetIsRightToLeft: boolean;
+function TJvCustomMenuItemPainter.GetIsRightToLeft: Boolean;
 begin
   Result := (FItem.GetParentMenu <> nil) and
     (FItem.GetParentMenu.BiDiMode = bdRightToLeft);
-  ;
 end;
 
 function TJvCustomMenuItemPainter.GetCheckMarkHeight: Integer;
@@ -2454,7 +2493,8 @@ function TJvCustomMenuItemPainter.GetImageHeight: Integer;
 begin
   if Assigned(Images) then
     Result := Images.Height
-  else if Assigned(FGlyph) then
+  else
+  if Assigned(FGlyph) then
     Result := FGlyph.Height
   else
     Result := ImageSize.Height;
@@ -2464,7 +2504,8 @@ function TJvCustomMenuItemPainter.GetImageWidth: Integer;
 begin
   if Assigned(Images) then
     Result := Images.Width
-  else if Assigned(FGlyph) then
+  else
+  if Assigned(FGlyph) then
     Result := FGlyph.Width
   else
     Result := ImageSize.Width;
@@ -2512,13 +2553,6 @@ begin
   end;
 end;
 
-destructor TJvCustomMenuItemPainter.Destroy;
-begin
-  FImageSize.Free;
-  FImageMargin.Free;
-  inherited;
-end;
-
 function TJvCustomMenuItemPainter.GetComponentState: TComponentState;
 begin
   if Assigned(FMainMenu) then
@@ -2527,8 +2561,8 @@ begin
     Result := FPopupMenu.ComponentState;
 end;
 
-procedure TJvCustomMenuItemPainter.DefaultDrawLeftMargin(ARect: TRect; StartColor,
-  EndColor: TColor);
+procedure TJvCustomMenuItemPainter.DefaultDrawLeftMargin(ARect: TRect;
+  StartColor, EndColor: TColor);
 var
   R: Integer;
 begin
@@ -2591,7 +2625,8 @@ begin
     FMainMenu := TJvMainMenu(Value);
     FPopupMenu := nil;
   end
-  else if Value is TJvPopupMenu then
+  else
+  if Value is TJvPopupMenu then
   begin
     FMainMenu := nil;
     FPopupMenu := TJvPopupMenu(Value);
@@ -2607,15 +2642,16 @@ function TJvCustomMenuItemPainter.GetCanvas: TCanvas;
 begin
   if Assigned(FMainMenu) then
     Result := FMainMenu.Canvas
-  else if Assigned(FPopupMenu) then
+  else
+  if Assigned(FPopupMenu) then
     Result := FPopupMenu.Canvas
   else
     Result := nil;
 end;
 
-{ TJvBtnMenuItemPainter }
+//=== TJvBtnMenuItemPainter ==================================================
 
-constructor TJvBtnMenuItemPainter.Create(AOwner: TComponent; Lowered: boolean);
+constructor TJvBtnMenuItemPainter.Create(AOwner: TComponent; Lowered: Boolean);
 begin
   inherited Create(AOwner);
   FLowered := Lowered;
@@ -2623,7 +2659,7 @@ end;
 
 constructor TJvBtnMenuItemPainter.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FLowered := True;
 end;
 
@@ -2635,7 +2671,7 @@ begin
     Frame3D(Canvas, ARect, clBtnHighlight, clBtnShadow, 1);
 end;
 
-function TJvBtnMenuItemPainter.GetDrawHighlight: boolean;
+function TJvBtnMenuItemPainter.GetDrawHighlight: Boolean;
 begin
   Result := NewStyleControls;
 end;
@@ -2647,16 +2683,16 @@ end;
 
 procedure TJvBtnMenuItemPainter.UpdateFieldsFromMenu;
 begin
-  inherited;
+  inherited UpdateFieldsFromMenu;
   FImageMargin.Top := FImageMargin.Top + 1;
   FImageMargin.Bottom := FImageMargin.Bottom + 1;
 end;
 
-{ TJvOfficeMenuItemPainter }
+//=== TJvOfficeMenuItemPainter ===============================================
 
 procedure TJvOfficeMenuItemPainter.Paint(Item: TMenuItem; ItemRect: TRect; State: TMenuOwnerDrawState);
 begin
-  inherited;
+  inherited Paint(Item, ItemRect, State);
 end;
 
 procedure TJvOfficeMenuItemPainter.CleanupGlyph(BtnRect: TRect);
@@ -2665,8 +2701,8 @@ var
 begin
   SaveBrush := Canvas.Brush;
   Canvas.Brush.Color := ImageBackgroundColor;
-  inc(BtnRect.Right);
-  dec(BtnRect.Left);
+  Inc(BtnRect.Right);
+  Dec(BtnRect.Left);
   Canvas.FillRect(BtnRect);
   Canvas.Brush := SaveBrush;
 end;
@@ -2698,18 +2734,17 @@ begin
     DrawFrame(ARect);
 end;
 
-function TJvOfficeMenuItemPainter.GetDrawHighlight: boolean;
+function TJvOfficeMenuItemPainter.GetDrawHighlight: Boolean;
 begin
   Result := NewStyleControls and
-    (not (mdSelected in FState) or
-    (not IsPopup) or
+    (not (mdSelected in FState) or (not IsPopup) or
     (GetNearestColor(Canvas.Handle, ColorToRGB(clGrayText)) = GetNearestColor(Canvas.Handle, ColorToRGB(clHighlight)))
     );
 end;
 
 procedure TJvOfficeMenuItemPainter.UpdateFieldsFromMenu;
 begin
-  inherited;
+  inherited UpdateFieldsFromMenu;
   FImageMargin.Left := FImageMargin.Left + 2;
   FImageMargin.Top := FImageMargin.Top + 2;
   FImageMargin.Right := FImageMargin.Right + 3;
@@ -2730,21 +2765,46 @@ procedure TJvOfficeMenuItemPainter.DrawText(ARect: TRect;
   const Text: string; Flags: Integer);
 begin
   if not IsPopup then
-  begin
     Canvas.Font.Color := clMenuText;
-  end;
   inherited DrawText(Rect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom - 1), Text, Flags);
 end;
 
 procedure TJvOfficeMenuItemPainter.DrawItemBackground(ARect: TRect);
 begin
-  inherited;
-  if not IsPopup and
-    (mdHotlight in FState) then
+  inherited DrawItemBackground(ARect);
+  if not IsPopup and (mdHotlight in FState) then
     DrawFrame(ARect);
 end;
 
-{ TJvXPMenuItemPainter }
+//=== TJvXPMenuItemPainter ===================================================
+
+constructor TJvXPMenuItemPainter.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FSelectionFrameBrush := TBrush.Create;
+  FSelectionFramePen := TPen.Create;
+
+  FSelRect := Rect(0, 0, 0, 0);
+  FCheckedPoint := Point(0, 0);
+
+  // affect default values that are not 0
+  FShadowColor := DefaultXPShadowColor;
+  FImageBackgroundColor := DefaultXPImageBackgroundColor;
+  FSelectionFrameBrush.Color := DefaultXPSFBrushColor;
+  FSelectionFrameBrush.Style := bsSolid;
+  FSelectionFramePen.Color := DefaultXPSFPenColor;
+  FSelectionFramePen.Style := psSolid;
+  FSeparatorColor := DefaultXPSeparatorColor;
+  FCheckedImageBackColor := DefaultXPCheckedImageBackColor;
+  FCheckedImageBackColorSelected := DefaultXPCheckedImageBackColorSelected;
+end;
+
+destructor TJvXPMenuItemPainter.Destroy;
+begin
+  FSelectionFrameBrush.Free;
+  FSelectionFramePen.Free;
+  inherited Destroy;
+end;
 
 procedure TJvXPMenuItemPainter.DrawCheckedImageBack(ARect: TRect);
 begin
@@ -2760,22 +2820,19 @@ begin
   end;
 end;
 
-procedure TJvXPMenuItemPainter.DrawBitmapShadow(X, Y: integer; B: TBitmap);
+procedure TJvXPMenuItemPainter.DrawBitmapShadow(X, Y: Integer; B: TBitmap);
 var
-  BX, BY: integer;
+  BX, BY: Integer;
   TransparentColor: TColor;
 begin
-
   TransparentColor := B.Canvas.Pixels[0, B.Height - 1];
   for BY := 0 to B.Height - 1 do
     for BX := 0 to B.Width - 1 do
-    begin
       if B.Canvas.Pixels[BX, BY] <> TransparentColor then
         Canvas.Pixels[X + BX, Y + BY] := ShadowColor;
-    end;
 end;
 
-procedure TJvXPMenuItemPainter.DrawDisabledImage(X, Y: integer);
+procedure TJvXPMenuItemPainter.DrawDisabledImage(X, Y: Integer);
 begin
   // to take the margin into account
   if IsRightToLeft then
@@ -2784,19 +2841,15 @@ begin
     Dec(X, 3);
 
   if UseDisabledImages then
-  begin
     ImageList_Draw(DisabledImages.Handle, FImageIndex, Canvas.Handle,
-      X, Y, ILD_NORMAL);
-  end
+      X, Y, ILD_NORMAL)
   else
-  begin
     //TODO: Change to draw greyscale image
     ImageListDrawDisabled(Images, Canvas, X, Y, FImageIndex, clBtnHighlight, GrayColor,
-      DrawHighlight)
-  end;
+      DrawHighlight);
 end;
 
-procedure TJvXPMenuItemPainter.DrawEnabledImage(X, Y: integer);
+procedure TJvXPMenuItemPainter.DrawEnabledImage(X, Y: Integer);
 var
   tmpBitmap: TBitmap;
 begin
@@ -2845,7 +2898,8 @@ begin
 end;
 
 procedure TJvXPMenuItemPainter.DrawItemBackground(ARect: TRect);
-const COLOR_MENUBAR = 30;
+const
+  COLOR_MENUBAR = 30;
 begin
   with Canvas do
   begin
@@ -2883,10 +2937,9 @@ begin
   end;
 end;
 
-procedure TJvXPMenuItemPainter.DrawMenuBitmap(X, Y: Integer;
-  Bitmap: TBitmap);
+procedure TJvXPMenuItemPainter.DrawMenuBitmap(X, Y: Integer; Bitmap: TBitmap);
 begin
-  if (mdDisabled in FState) then
+  if mdDisabled in FState then
     DrawDisabledBitmap(X, Y, Bitmap)
   else
   begin
@@ -2896,7 +2949,6 @@ begin
     if (mdSelected in FState) and Assigned(FGlyph) then
     begin
       DrawBitmapShadow(X + 1, Y + 1, Bitmap);
-
       Dec(X);
       Dec(Y);
     end;
@@ -2937,10 +2989,10 @@ begin
   end;
 end;
 
-procedure TJvXPMenuItemPainter.Measure(Item: TMenuItem; var Width,
-  Height: Integer);
+procedure TJvXPMenuItemPainter.Measure(Item: TMenuItem;
+  var Width, Height: Integer);
 begin
-  inherited;
+  inherited Measure(Item, Width, Height);
   if Item.Caption = Separator then
     Height := 3
   else
@@ -2960,7 +3012,6 @@ begin
   if IsPopup and
     not (csDesigning in ComponentState) then
   begin
-
     CanvasWindow := WindowFromDC(Canvas.Handle);
 
     if not (Assigned(FMainMenu) and
@@ -3097,7 +3148,7 @@ begin
   end;
 
   // then draw the items
-  inherited;
+  inherited Paint(Item, ItemRect, State);
 end;
 
 procedure TJvXPMenuItemPainter.PreparePaint(Item: TMenuItem;
@@ -3105,12 +3156,12 @@ procedure TJvXPMenuItemPainter.PreparePaint(Item: TMenuItem;
 begin
   // to prevent erasing when the item is selected
   Canvas.Brush.Color := clNone;
-  inherited;
+  inherited PreparePaint(Item, Rect, State, Measure);
 end;
 
 procedure TJvXPMenuItemPainter.DrawSeparator(ARect: TRect);
 begin
-  // draw the seperating line
+  // draw the separating line
   if IsRightToLeft then
     MenuLine(Canvas, SeparatorColor, ARect.Left, ARect.Top + 1, ARect.Right - CheckMarkWidth - ImageMargin.Left - ImageWidth - ImageMargin.Right - TextMargin, ARect.Top + 1)
   else
@@ -3134,39 +3185,17 @@ begin
   DrawImageBackground(ARect);
 end;
 
-function TJvXPMenuItemPainter.GetDrawHighlight: boolean;
+function TJvXPMenuItemPainter.GetDrawHighlight: Boolean;
 begin
   Result := NewStyleControls and
-    (not (mdSelected in FState) or
-    (not IsPopup) or
+    (not (mdSelected in FState) or (not IsPopup) or
     (GetNearestColor(Canvas.Handle, ColorToRGB(clGrayText)) = GetNearestColor(Canvas.Handle, ColorToRGB(clHighlight)))
     );
 end;
 
-constructor TJvXPMenuItemPainter.Create(AOwner: TComponent);
-begin
-  inherited;
-  FSelectionFrameBrush := TBrush.Create;
-  FSelectionFramePen := TPen.Create;
-
-  FSelRect := Rect(0, 0, 0, 0);
-  FCheckedPoint := Point(0, 0);
-
-  // affect default values that are not 0
-  FShadowColor := DefaultXPShadowColor;
-  FImageBackgroundColor := DefaultXPImageBackgroundColor;
-  FSelectionFrameBrush.Color := DefaultXPSFBrushColor;
-  FSelectionFrameBrush.Style := bsSolid;
-  FSelectionFramePen.Color := DefaultXPSFPenColor;
-  FSelectionFramePen.Style := psSolid;
-  FSeparatorColor := DefaultXPSeparatorColor;
-  FCheckedImageBackColor := DefaultXPCheckedImageBackColor;
-  FCheckedImageBackColorSelected := DefaultXPCheckedImageBackColorSelected;
-end;
-
 procedure TJvXPMenuItemPainter.UpdateFieldsFromMenu;
 begin
-  inherited;
+  inherited UpdateFieldsFromMenu;
   FImageMargin.Left := FImageMargin.Left + 6;
   FImageMargin.Top := FImageMargin.Top + 4;
   FImageMargin.Right := FImageMargin.Right + 4;
@@ -3189,14 +3218,7 @@ begin
   inherited DrawCheckImage(Rect(ARect.Left - 2, ARect.Top, ARect.Right - 2, ARect.Bottom - 1));
 end;
 
-destructor TJvXPMenuItemPainter.Destroy;
-begin
-  FSelectionFrameBrush.Free;
-  FSelectionFramePen.Free;
-  inherited;
-end;
-
-{ TJvOwnerDrawMenuItemPainter }
+//=== TJvOwnerDrawMenuItemPainter ============================================
 
 procedure TJvOwnerDrawMenuItemPainter.Measure(Item: TMenuItem; var Width,
   Height: Integer);
@@ -3228,7 +3250,7 @@ begin
   end;
 end;
 
-{ TJvImageMargin }
+//=== TJvImageMargin =========================================================
 
 procedure TJvImageMargin.Assign(Source: TPersistent);
 begin
@@ -3238,7 +3260,7 @@ begin
   Bottom := TJvImageMargin(Source).Bottom;
 end;
 
-{ TJvMenuImageSize }
+//=== TJvMenuImageSize =======================================================
 
 procedure TJvMenuImageSize.Assign(Source: TPersistent);
 begin

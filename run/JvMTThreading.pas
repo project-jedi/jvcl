@@ -223,6 +223,8 @@ begin
   end;
 end;
 
+//=== TIntThread =============================================================
+
 procedure TIntThread.Synchronize(Method: TThreadMethod);
 var
   SyncRequest: TSyncRequest;
@@ -269,7 +271,8 @@ end;
 procedure TMTInternalThread.Execute;
 begin
   RaiseName;
-  if Assigned(FOnExecute) then FOnExecute(Self);
+  if Assigned(FOnExecute) then
+    FOnExecute(Self);
 end;
 
 procedure TMTInternalThread.RaiseName;
@@ -453,7 +456,6 @@ procedure TMTThread.SetName(const Value: string);
 begin
   FStatusChange.Acquire;
   try
-  
     if Status in [tsInitializing, tsFinished] then
       FName := Value
     else

@@ -58,10 +58,10 @@ type
     FImageIndex: Integer;
     FIndent: Integer;
     FListPropertiesUsed: TJvListPropertiesUsed;
-    FFont : TFont;
+    FFont: TFont;
     FColorHighlight: TColor;
     FColorHighlightText: TColor;
-    FGlyph : TBitmap;
+    FGlyph: TBitmap;
     FLinkedObject: TObject;
     procedure SetImageIndex(const Value: Integer);
     procedure SetText(const Value: string);
@@ -84,7 +84,7 @@ type
     procedure SetIndex(Value: Integer); override;
     function GetDisplayName: string; override;
 
-    function IsFontStored : Boolean;
+    function IsFontStored: Boolean;
     procedure FontChange(Sender: TObject);
   public
     constructor Create(Collection: TCollection); override;
@@ -94,15 +94,15 @@ type
     // ListPropertiesUsed must come before properties named the same
     // as in the list or the component will not be created
     // correctly when restored from a DFM stream.
-    property ListPropertiesUsed : TJvListPropertiesUsed read FListPropertiesUsed write FListPropertiesUsed default AllListPropertiesUsed;
+    property ListPropertiesUsed: TJvListPropertiesUsed read FListPropertiesUsed write FListPropertiesUsed default AllListPropertiesUsed;
     property ColorHighlight: TColor read GetColorHighlight write SetColorHighlight stored IsColorHighlightStored default clHighlight ;
     property ColorHighlightText: TColor read GetColorHighlightText write SetColorHighlightText stored IsColorHighlightTextStored default clHighlightText;
-    property Font : TFont read GetFont write SetFont stored IsFontStored;
+    property Font: TFont read GetFont write SetFont stored IsFontStored;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored True;
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
     property Indent: Integer read FIndent write SetIndent default 2;
     property Text: string read GetText write SetText;
-    property LinkedObject : TObject read FLinkedObject write FLinkedObject;
+    property LinkedObject: TObject read FLinkedObject write FLinkedObject;
   end;
 
   TJvImageItems = class(TOwnedCollection)
@@ -116,11 +116,11 @@ type
     procedure Update(Item: TCollectionItem); override;
   public
     function Add: TJvImageItem; overload;
-    function Add(text : string): Integer; overload;
+    function Add(Text: string): Integer; overload;
     procedure Assign(Source: TPersistent); override;
     constructor Create(AOwner: TPersistent);
     property Items[Index: Integer]: TJvImageItem read GetItems write SetItems; default;
-    property Objects[Index : Integer] : TObject read GetObjects write SetObjects;
+    property Objects[Index: Integer]: TObject read GetObjects write SetObjects;
   end;
 
   TJvImageComboBox = class(TJvCustomComboBox)
@@ -165,8 +165,8 @@ type
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
     procedure Change; override;
 
-    function GetImageWidth(Index : Integer) : Integer;
-    function GetImageHeight(Index : Integer) : Integer;
+    function GetImageWidth(Index: Integer): Integer;
+    function GetImageHeight(Index: Integer): Integer;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -178,8 +178,8 @@ type
     property DragMode;
     property DragCursor;
     property DropDownCount;
-    property ImageHeight : Integer read FImageHeight write FImageHeight;
-    property ImageWidth : Integer read FImageWidth write FImageWidth;
+    property ImageHeight: Integer read FImageHeight write FImageHeight;
+    property ImageWidth: Integer read FImageWidth write FImageWidth;
     property Items: TJvImageItems read FItems write SetItems;
     property IndentSelected:boolean read FIndentSelected write SetIndentSelected default false;
     property ItemIndex;
@@ -249,8 +249,8 @@ type
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
     procedure Resize; override;
 
-    function GetImageWidth(Index : Integer) : Integer;
-    function GetImageHeight(Index : Integer) : Integer;
+    function GetImageWidth(Index: Integer): Integer;
+    function GetImageHeight(Index: Integer): Integer;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -268,8 +268,8 @@ type
     property Enabled;
     property Font;
     property Items: TJvImageItems read FItems write SetItems;
-    property ImageHeight : Integer read FImageHeight write FImageHeight;
-    property ImageWidth : Integer read FImageWidth write FImageWidth;
+    property ImageHeight: Integer read FImageHeight write FImageHeight;
+    property ImageWidth: Integer read FImageWidth write FImageWidth;
     property ButtonFrame: Boolean read FButtonFrame write FButtonFrame default False;
     property ButtonStyle: TJvButtonColors read FButtonStyle write FButtonStyle;
     property ColorHighlight: TColor read FColorHighlight write SetColorHighlight default clHighlight;
@@ -308,6 +308,7 @@ implementation
 
 uses
   Math;
+
 type
   TWinControlAccess = class(TWinControl);
 
@@ -344,9 +345,9 @@ const
     (clBtnFace, clBtnShadow, cl3DDkShadow, cl3DDkShadow, cl3DDkShadow);
 begin
   if Default then
-    Frame3d(Canvas, R, DefColor, DefColor, 1)
+    Frame3D(Canvas, R, DefColor, DefColor, 1)
   else
-    Frame3d(Canvas, R, TopStyles[ButtonStyle], BottomStyles[ButtonStyle], 1);
+    Frame3D(Canvas, R, TopStyles[ButtonStyle], BottomStyles[ButtonStyle], 1);
 end;
 
 procedure TJvImageItem.Assign(Source: TPersistent);
@@ -472,7 +473,7 @@ begin
   I := Index;
   inherited SetIndex(Value);
   S := GetOwnerStrings;
-  if (S <> nil) and (i >= 0) and (Value >= 0) and (I <> Value) then
+  if (S <> nil) and (I >= 0) and (Value >= 0) and (I <> Value) then
     S.Exchange(I, Value);
 end;
 
@@ -488,13 +489,13 @@ begin
   Result := TJvImageItem(inherited Add);
 end;
 
-function TJvImageItems.Add(text: string): Integer;
+function TJvImageItems.Add(Text: string): Integer;
 var
-  item : TJvImageItem;
+  Item: TJvImageItem;
 begin
-  item := Add;
-  item.Text := text;
-  Result := item.Index;
+  Item := Add;
+  Item.Text := Text;
+  Result := Item.Index;
 end;
 
 procedure TJvImageItems.Assign(Source: TPersistent);
@@ -670,7 +671,7 @@ var
   Offset, Tmp: Integer;
   TmpCol: TColor;
   TmpR, OrigR: TRect;
-  SavedColor : TColor;
+  SavedColor: TColor;
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -705,7 +706,8 @@ begin
       Inc(R.Left, GetImageWidth(Index) + 8);
       OrigR.Left := R.Left;
     end
-    else if Assigned(FImageList) then
+    else
+    if Assigned(FImageList) then
     begin
       Tmp := Items[Index].ImageIndex;
       //      R.Left := R.Left + Items[Index].Indent;
@@ -796,8 +798,8 @@ end;
 
 procedure TJvImageComboBox.ResetItemHeight;
 var
-  MaxImageHeight : Integer;
-  I : Integer;
+  MaxImageHeight: Integer;
+  I: Integer;
 begin
   MaxImageHeight := 0;
   for I := 0 to FItems.Count-1 do
@@ -872,7 +874,8 @@ function TJvImageComboBox.GetImageWidth(Index: Integer): Integer;
 begin
   if (Index > -1) and not Items[Index].Glyph.Empty then
     Result := Items[Index].Glyph.Width
-  else if Assigned(FImageList) then
+  else
+  if Assigned(FImageList) then
     Result := FImageList.Width
   else
     Result := FImageWidth;
@@ -882,7 +885,8 @@ function TJvImageComboBox.GetImageHeight(Index: Integer): Integer;
 begin
   if (Index > -1) and not Items[Index].Glyph.Empty then
     Result := Items[Index].Glyph.Height
-  else if Assigned(FImageList) then
+  else
+  if Assigned(FImageList) then
     Result := FImageList.Height
   else
     Result := FImageHeight;
@@ -1041,7 +1045,7 @@ end;
 
 procedure TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
-  SavedColor : TColor;
+  SavedColor: TColor;
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -1088,7 +1092,8 @@ begin
       end;
       InflateRect(R, 1, -4);
     end
-    else if Assigned(FImageList) then
+    else
+    if Assigned(FImageList) then
     begin
       Tmp := ((R.Right - R.Left) - GetImageWidth(Index)) div 2;
       Tmp2 := Items[Index].ImageIndex;
@@ -1158,7 +1163,8 @@ begin
       Inc(R.Left, GetImageWidth(Index) + 8);
       OrigR.Left := R.Left;
     end
-    else if Assigned(FImageList) then
+    else
+    if Assigned(FImageList) then
     begin
       Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;
       Tmp := Items[Index].ImageIndex;
@@ -1232,7 +1238,8 @@ begin
       Dec(R.Right, FImageList.Width + 4);
       OrigR.Right := R.Right;
     end
-    else if Assigned(FImageList) then
+    else
+    if Assigned(FImageList) then
     begin
       Tmp := Items[Index].ImageIndex;
 
@@ -1290,8 +1297,8 @@ end;
 
 procedure TJvImageListBox.ResetItemHeight;
 var
-  MaxImageHeight : Integer;
-  I : Integer;
+  MaxImageHeight: Integer;
+  I: Integer;
 begin
   MaxImageHeight := 0;
   for I := 0 to FItems.Count-1 do
@@ -1337,7 +1344,8 @@ function TJvImageListBox.GetImageWidth(Index: Integer): Integer;
 begin
   if (Index > -1) and not Items[Index].Glyph.Empty then
     Result := Items[Index].Glyph.Width
-  else if Assigned(FImageList) then
+  else
+  if Assigned(FImageList) then
     Result := FImageList.Width
   else
     Result := FImageWidth;
@@ -1347,7 +1355,8 @@ function TJvImageListBox.GetImageHeight(Index: Integer): Integer;
 begin
   if (Index > -1) and not Items[Index].Glyph.Empty then
     Result := Items[Index].Glyph.Height
-  else if Assigned(FImageList) then
+  else
+  if Assigned(FImageList) then
     Result := FImageList.Height
   else
     Result := FImageHeight;
@@ -1438,7 +1447,7 @@ end;
 
 procedure TJvImageItem.SetColorHighlight(const Value: TColor);
 begin
-  if (puColorHighlight in FListPropertiesUsed) then
+  if puColorHighlight in FListPropertiesUsed then
   begin
     if GetWinControl is TJvImageListBox then
       TJvImageListBox(GetWinControl).ColorHighlight := Value
@@ -1451,7 +1460,7 @@ end;
 
 procedure TJvImageItem.SetColorHighlightText(const Value: TColor);
 begin
-  if (puColorHighlightText in FListPropertiesUsed) then
+  if puColorHighlightText in FListPropertiesUsed then
   begin
     if GetWinControl is TJvImageListBox then
       TJvImageListBox(GetWinControl).ColorHighlightText := Value
