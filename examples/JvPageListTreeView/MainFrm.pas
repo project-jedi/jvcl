@@ -33,7 +33,7 @@ uses
   Dialogs, ImgList, ComCtrls, JvPageListTreeView, ExtCtrls, StdCtrls, ActnList,
   JvButton, JvFooter, JvComponent, JvGroupHeader, JvCombobox, JvColorCombo,
   Buttons, JvBitBtn, JvExStdCtrls, JvExControls, JvExButtons, JvExExtCtrls,
-  JvExComCtrls;
+  JvExComCtrls, JvPageList, JvCtrls;
 
 type
   TfrmMain = class(TForm)
