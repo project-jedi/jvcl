@@ -84,6 +84,15 @@ type
     Result: Longint;
   end;
 
+  // used in JvButton
+  TCMForceSize = record
+    Msg: Cardinal;
+    Sender: TControl;
+    NewSize: TSmallPoint;
+    Result: Longint;
+  end;
+
+
   {$IFDEF VisualCLX}
   //  HWND = QWidgetH;
   HCURSOR = QCursorH;

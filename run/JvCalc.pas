@@ -36,9 +36,9 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Menus, ExtCtrls, Buttons, Clipbrd,
-  JvSpeedButton, JvBaseDlg;
+  JvToolEdit, JvSpeedButton, JvBaseDlg;
 
 const
   DefCalcPrecision = 15;
@@ -117,7 +117,7 @@ implementation
 
 uses
   Math,
-  JvJVCLUtils, JvJCLUtils, JvToolEdit, JvConsts, JvResources;
+  JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
 
 {$R ..\resources\JvCalc.res}
 
