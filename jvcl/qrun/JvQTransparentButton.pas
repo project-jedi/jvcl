@@ -251,11 +251,6 @@ uses
   JvQConsts;
 
 
-const
-  clBtnHighlight = clNormalLight;
-  clBtnShadow = clNormalDark;
-
-
 { create a grayed version of a color bitmap }
 { SLOW! don't use in realtime! }
 
@@ -716,20 +711,17 @@ end;
 
 { just like DrawText, but draws disabled instead }
 
-
-
-function DrawDisabledText(DC: HDC; lpString: PWideChar;
+function DrawDisabledText(DC: HDC; Caption: TCaption;
   nCount: Integer; var lpRect: TRect; uFormat: Integer): Integer;
-
 var
   OldCol: Integer;
 begin
   OldCol := SetTextColor(DC, ColorToRGB(clBtnHighlight));
   OffsetRect(lpRect, 1, 1);
-  DrawTextW(DC, lpString, nCount, lpRect, uFormat);
+  DrawText(DC, Caption, nCount, lpRect, uFormat);
   OffsetRect(lpRect, -1, -1);
   SetTextColor(DC, ColorToRGB(clBtnShadow));
-  Result := DrawTextW(DC, lpString, nCount, lpRect, uFormat);
+  Result := DrawText(DC, Caption, nCount, lpRect, uFormat);
   SetTextColor(DC, OldCol);
 end;
 
@@ -754,14 +746,14 @@ begin
 
   TmpRect := Rect(0, 0, Width, Height);
 
-  { calculate width and height of text: }  
-  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags or DT_CALCRECT);
+  { calculate width and height of text: }
+  DrawText(DC, Caption, Length(Caption), TmpRect, Flags or DT_CALCRECT);
 {
   if FWordWrap then
     Canvas.TextExtent(Caption, TmpRect, WordBreak)
   else
     Canvas.TextExtent(Caption, TmpRect, 0);
-} 
+}
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
   Flags := DT_CENTER;
@@ -793,17 +785,18 @@ begin
 
   if ((bsMouseDown in MouseStates) or Down) and FShowPressed then
     OffsetRect(TmpRect, FOffset, FOffset);
-  
+
+  SetBkMode(DC, QWindows.TRANSPARENT);
   if not Enabled then
-    DrawDisabledText(DC, PWideChar(Caption), -1, TmpRect, Flags)
+    DrawDisabledText(DC, Caption, -1, TmpRect, Flags)
   else
   begin
     if (bsMouseInside in MouseStates) and HotTrack then
       SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
     else
       SetTextColor(DC, ColorToRGB(Self.Font.Color));
-    DrawTextW(DC, PWideChar(Caption), -1, TmpRect, Flags);
-  end; 
+    DrawText(DC, Caption, -1, TmpRect, Flags);
+  end;
 end;
 
 procedure TJvTransparentButton.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);
@@ -992,6 +985,7 @@ begin
     else
     begin  
       FActiveList.GetBitmap(FActiveIndex, Bmp);
+      GrayBitmap(Bmp, 11, 59, 30);
       FImList.AddMasked(Bmp, Bmp.TransparentColor); 
     end;
   finally
@@ -1402,8 +1396,8 @@ begin
   begin
     SetTextColor(DC, ColorToRGB(clBtnHighlight));
     OffsetRect(TmpRect, 1, 1);
-  
-    DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags);
+
+    DrawText(DC, Caption, Length(Caption), TmpRect, Flags);
     OffsetRect(TmpRect, -1, -1);
     SetTextColor(DC, ColorToRGB(clBtnShadow));
   end
@@ -1412,8 +1406,8 @@ begin
     SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
   else
     SetTextColor(DC, ColorToRGB(Self.Font.Color));
-
-  DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags); 
+  
+  DrawText(DC, Caption, Length(Caption), TmpRect, Flags);
 end;
 
 procedure TJvTransparentButton2.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);

@@ -1611,7 +1611,6 @@ end;
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 var
   Canvas: TJvDeskTopCanvas;
-  I: Integer;
   R: TRect;
 begin
   Canvas := TJvDeskTopCanvas.Create;
@@ -2286,8 +2285,10 @@ end;
 procedure TJvDesktopCanvas.SetOrigin(X, Y: Integer);
 var
   FOrigin: TPoint;
-begin
-  SetWindowOrgEx(Handle, -X, -Y, @FOrigin);
+begin 
+  StartPaint; 
+  SetWindowOrgEx(Handle, -X, -Y, @FOrigin); 
+  StopPaint; 
 end;
 
 // (rom) moved to file end to minimize W- switch impact at end of function
