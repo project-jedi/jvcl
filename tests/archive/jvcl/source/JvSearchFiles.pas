@@ -230,13 +230,24 @@ type
 implementation
 
 uses
-  JclFileUtils, JclStrings, JclDateTime, Math,
-  Forms; // Application.ProcessMessages
+  JclFileUtils, JclStrings, JclDateTime, Math;
+//  Forms; // Application.ProcessMessages
 
 { Maybe TJvSearchFiles should be implemented with FindFirst, FindNext.
   There isn't a good reason to use FindFirstFile, FindNextFile instead of
   FindFirst, FindNext; except to prevent a little overhead perhaps. }
 
+// (p3)  
+procedure ProcessMessages;
+var M: TMsg;
+begin
+  if PeekMessage(M,0,0,0,pm_Remove) then
+  begin
+    TranslateMessage(M);
+    DispatchMessage(M);
+  end;
+end;
+  
 { TJvSearchFiles }
 
 procedure TJvSearchFiles.Abort;
@@ -368,9 +379,11 @@ begin
   try
     while not Finished do
     begin
-      Application.ProcessMessages;
+      // (p3) no need to bring in the Forms unit for this:
+      if not IsConsole then
+        ProcessMessages;
 
-      { After Application.ProcessMessages, the user can have called Abort,
+      { After ProcessMessages, the user can have called Abort,
         so check it }
       if FAborting then
       begin
@@ -499,6 +512,9 @@ begin
     change Options while the component is searching. But because no serious
     harm is caused - by changing Options, while searching - the component
     doen't do that.
+  }
+  { (p3) you could also do:
+    if Searching then Exit;
   }
 
   if FOptions <> Value then
