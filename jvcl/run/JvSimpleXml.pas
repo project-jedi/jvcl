@@ -1569,10 +1569,12 @@ var
   I, lStreamPos, Count, lPos: Integer;
   lBuf: array [0..cBufferSize - 1] of Char;
   St: string;
+  Po: string;
   lElem: TJvSimpleXMLElem;
 begin
   lStreamPos := Stream.Position;
   Result := '';
+  Po := '';
   St := '';
   lPos := 0;
 
@@ -1637,7 +1639,8 @@ begin
                 end;
             else
               begin
-                St := St + lBuf[I];
+                if not (lBuf[i] in [' ', Tab, Cr, Lf]) then
+                  St := St + lBuf[I];
                 if St = '<![CDATA[' then
                   lElem := TJvSimpleXMLElemCData.Create(Parent)
                 else
@@ -1661,14 +1664,24 @@ begin
           end;
 
         2: //This is an end tag
-          if lBuf[I] = '>' then
-          begin
-            Result := St;
-            Count := 0;
-            Break;
-          end
+          case lBuf[I] of
+            '>':
+              begin
+                if Po <> '' then
+                  Result := Po + ':' + St
+                else
+                  Result := St;
+                Count := 0;
+                Break;
+              end;
+            ':':
+              begin
+                Po := St;
+                St := '';
+              end;
           else
             St := St + lBuf[I];
+          end;
       end;
     end;
   until Count = 0;
@@ -2182,8 +2195,14 @@ begin
                   //Load elements
                   Stream.Seek(lStreamPos, soFromBeginning);
                   St := Items.LoadFromStream(Stream, Parent);
-                  if lName <> St then
-                    FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
+                  if lPointer <> '' then
+                  begin
+                    if not AnsiSameText(lPointer + ':' + lName, St) then
+                      FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
+                  end
+                  else
+                    if not AnsiSameText(lName, St) then
+                      FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
                   lStreamPos := Stream.Position;
 
                   //Set value if only one sub element
@@ -2239,7 +2258,15 @@ var
   St, AName, tmp: string;
   LevelAdd: string;
 begin
-  AName := Name;
+  if(Pointer <> '') then
+  begin
+    AName := Pointer + ':' + Name;
+  end
+  else
+  begin
+    AName := Name;
+  end;
+
   if Name <> '' then
   begin
     if GetSimpleXML <> nil then
@@ -2385,7 +2412,7 @@ procedure TJvSimpleXMLElemCData.LoadFromStream(const Stream: TStream; Parent: TJ
 //<![CDATA[<greeting>Hello, world!</greeting>]]>
 const
   CS_START_CDATA = '<![CDATA[';
-  CS_STOP_CDATA = '         ]]>';
+  CS_STOP_CDATA =  '         ]]>';
 var
   I, lStreamPos, Count, lPos: Integer;
   lBuf: array [0..cBufferSize - 1] of Char;
@@ -2901,7 +2928,8 @@ begin
             lElem := nil;
             lEnd := False;
 
-            St := St + lBuf[I];
+            if not (lBuf[i] in [' ', Tab, Cr, Lf]) then
+              St := St + lBuf[I];
             if St = '<![CDATA[' then
               lEnd := True
             else
@@ -3269,6 +3297,9 @@ begin
     Result := nil;
   end;
 end;
+
+
+
 
 initialization
   {$IFDEF UNITVERSIONING}
