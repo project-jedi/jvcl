@@ -10,7 +10,7 @@ DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
 PROJECTS = JVCLConvert.exe MakePNG.exe MakeRC.exe Res2Bmp.exe jconvert.exe \
-  jrename.exe MakeDOF.exe jtouch.exe
+  MakeDOF.exe jtouch.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -29,9 +29,6 @@ jconvert.exe: JConvert\jconvert.dpr
   $(DCC)
 
 JVCLConvert.exe: ..\Convert\JVCLConvert.dpr
-  $(DCC)
-
-jrename.exe: jrename\jrename.dpr
   $(DCC)
 
 MakeDOF.exe: MakeDOF\MakeDOF.dpr

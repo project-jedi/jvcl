@@ -33,24 +33,31 @@ Uses components from Colin Wilson (Resource Utilities and Graphics Utilities). G
 
 NOTE: these components require gifimage from Anders Melander. Even if I don't use it, it is in the uses clause of unitResourceGraphics.pas. Maybe it can be removed, but I doubt it...
 
-MakeImages.bat
+MakeImages.bat:
+===============
 Simple script that extracts all images from RES and DCR files in the current folder, creates an RC script for the BMP files, creates new PNG files in a subfolder called PNG and renames the new.rc file to JVCLReg.rc
 
-MakeDCR.bat
+MakeDCR.bat:
+============
 Calls the Borland resource compiler and creates a new JVCLReg.dcr from the JVCLReg.rc
 
-MakeTextDFM.bat
+MakeTextDFM.bat:
+================
 Script that calls Delphi's convert utility to convert binary DFM's to text
 
-MakeDOF
-=======
+MakeDOF:
+========
 Creates a DOF file from a template. Command line:
 MakeDOF.exe <filemask> <template>
 MakeDOF always scans subdirs and overwrites any existing files.
 
-JTouch
-======
-Touches date / time and (optional) attributes of selected files
+JConvert:
+=========
+JConvert converts DFm files from/to binary format just like the convert.exe supplied with Delphi. The difference is that JConvert only converts DFM's that needs to be converted: if a file is already in text format and that is what you want, the file will not be changed. Another difference is the -c(heck) option: with this set, the program reports how many DFM's would have been converted but doesn't actually convert anything.
+
+JTouch:
+=======
+Sets the date / time and (optional) attributes of selected files
 jtouch.exe [options] <filemask> where options can be:
 /H or /?       shows help screen
 /D:YYYY-MM-DD  set the date (default today)
