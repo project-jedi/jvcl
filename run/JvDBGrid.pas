@@ -186,6 +186,7 @@ type
     procedure SetSelectColumnsDialogStrings(const Value: TJvSelectDialogColumnStrings);
     procedure SetSortedField(const Value: string);
     procedure SetSortMarker(const Value: TSortMarker);
+    procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
 
   protected
     FCurrentDrawRow: integer;
@@ -1354,7 +1355,15 @@ begin
           DataLink.Dataset.MoveBy(Cell.Y - Row);
     end
     else
-      inherited MouseDown(Button, Shift, X, Y);
+    begin
+      //-----------------------------------------------------------------------
+      // FBC: do not move column if RowSelect = true
+      //-----------------------------------------------------------------------
+      if dgRowSelect in Options then
+        inherited MouseDown(Button, Shift, 1, Y)
+      else
+        inherited MouseDown(Button, Shift, X, Y)
+    end;  
     MouseDownEvent := OnMouseDown;
     if Assigned(MouseDownEvent) then
       MouseDownEvent(Self, Button, Shift, X, Y);
@@ -2534,11 +2543,12 @@ var
   TotalWidth, OrigWidth: Integer;
   I: Integer;
   ScaleFactor: double;
-  AWidth, AUsedWidth: Integer;
+  AWidth, AUsedWidth, ALeftCol: Integer;
 begin
   if not AutoSizeColumns or FInAutoSize or (Columns.Count = 0) or (FGridState = gsColSizing) then
     Exit;
   FInAutoSize := True;
+  ALeftCol := LeftCol;
   try
     // get useable width
     TotalWidth := ClientWidth - (Ord(dgIndicator in Options) * IndicatorWidth) - (Ord(dgColLines in Options) *
@@ -2606,6 +2616,7 @@ begin
     end;
   finally
     FInAutoSize := False;
+    LeftCol := ALeftCol;
   end;
 end;
 
@@ -2872,6 +2883,14 @@ begin
     end;
   end;
   inherited;
+end;
+
+procedure TJvDBGrid.WMVScroll(var Msg: TWMVScroll);
+var ALeftCol:integer;
+begin
+  ALeftCol := LeftCol;
+  inherited;
+  LeftCol := ALeftCol;
 end;
 
 initialization
