@@ -515,24 +515,27 @@ type
   end;
 
   // Basic context list
-  TJvBaseDataContexts = class(TExtensibleInterfacedPersistent, IJvDataContexts, IJvDataContext)
+  TJvBaseDataContexts = class(TExtensibleInterfacedPersistent, IJvDataContexts)
   private
     FProvider: IJvDataProvider;
     FDsgnContext: IJvDataContext;
+    FAncestor: IJvDataContext;
   protected
     procedure DoAddContext(Context: IJvDataContext); virtual; abstract;
     procedure DoDeleteContext(Index: Integer); virtual; abstract;
     procedure DoRemoveContext(Context: IJvDataContext); virtual; abstract;
     procedure DoClearContexts; virtual; abstract;
     function Provider: IJvDataProvider;
+    function Ancestor: IJvDataContext;
     function GetCount: Integer; virtual; abstract;
     function GetContext(Index: Integer): IJvDataContext; virtual; abstract;
     function GetContextByName(Name: string): IJvDataContext; virtual;
-    property DsgnContext: IJvDataContext read FDsgnContext write FDsgnContext implements IJvDataContext; 
+    property DsgnContext: IJvDataContext read FDsgnContext write FDsgnContext;
   public
-    constructor Create(AProvider: IJvDataProvider); virtual;
-    constructor CreateManaged(AProvider: IJvDataProvider;
+    constructor Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext); virtual;
+    constructor CreateManaged(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
       ManagerClass: TJvDataContextsManagerClass);
+    function GetInterface(const IID: TGUID; out Obj): Boolean; override;
   end;
 
   // Basic context list manager
@@ -581,7 +584,8 @@ type
     function GetCount: Integer; override;
     function GetContext(Index: Integer): IJvDataContext; override;
   public
-    constructor Create(AProvider: IJvDataProvider); override;
+    constructor Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext); override;
+    destructor Destroy; override;
   end;
 
   // Standard context
@@ -710,6 +714,7 @@ type
     procedure ProviderChanged;
     procedure ContextChanging;
     procedure ContextChanged;
+    procedure AfterSubSvcAdded(ASvc: TJvDataConsumerAggregatedObject); virtual;
     procedure UpdateExtensions; virtual;
     procedure FixupExtensions;
     procedure ViewChanged(AExtension: TJvDataConsumerAggregatedObject);
@@ -1530,6 +1535,8 @@ var
   CurCtx: IJvDataContext;
 begin
   CurCtx := Item.Items.Provider.SelectedContext;
+  while (CurCtx <> nil) and (FContextStrings.IndexOfObject(TObject(CurCtx)) = -1) do
+    CurCtx := CurCtx.Contexts.Ancestor;
   if (CurCtx <> nil) and (FContextStrings.IndexOfObject(TObject(CurCtx)) > -1) then
     Result := FContextStrings[FContextStrings.IndexOfObject(TObject(CurCtx))]
   else
@@ -2938,7 +2945,7 @@ begin
   FConsumerStack := TInterfaceList.Create;
   FContextStack := TInterfaceList.Create;
   if ContextsClass <> nil then
-    FDataContextsImpl := ContextsClass.CreateManaged(Self, ContextsManagerClass);    
+    FDataContextsImpl := ContextsClass.CreateManaged(Self, nil, ContextsManagerClass);    
   if ItemsClass <> nil then
     FDataItemsImpl := ItemsClass.CreateProvider(Self)
   else
@@ -2967,7 +2974,7 @@ function TJvCustomDataProvider.GetInterface(const IID: TGUID; out Obj): Boolean;
 begin
   Result := inherited GetInterface(IID, Obj) or FDataItemsImpl.GetInterface(IID, Obj) or (
     // If we have contexts, check the interface table of that implementation as well.
-    (FDataContextsImpl <> nil) and Supports(Tobject(FDataContextsImpl), IID, Obj)
+    (FDataContextsImpl <> nil) and Supports(TObject(FDataContextsImpl), IID, Obj)
   );
 end;
 
@@ -2976,6 +2983,11 @@ end;
 function TJvBaseDataContexts.Provider: IJvDataProvider;
 begin
   Result := FProvider;
+end;
+
+function TJvBaseDataContexts.Ancestor: IJvDataContext;
+begin
+  Result := FAncestor;
 end;
 
 function TJvBaseDataContexts.GetContextByName(Name: string): IJvDataContext;
@@ -2989,19 +3001,28 @@ begin
     Result := GetContext(Idx);
 end;
 
-constructor TJvBaseDataContexts.Create(AProvider: IJvDataProvider);
+constructor TJvBaseDataContexts.Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext);
 begin
   inherited Create;
   FProvider := AProvider;
-  FDsgnContext := TDesignContext.Create(Self);
+  FAncestor := AAncestor;
+  if Ancestor = nil then
+    FDsgnContext := TDesignContext.Create(Self);
 end;
 
-constructor TJvBaseDataContexts.CreateManaged(AProvider: IJvDataProvider;
+constructor TJvBaseDataContexts.CreateManaged(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
   ManagerClass: TJvDataContextsManagerClass);
 begin
-  Create(AProvider);
+  Create(AProvider, AAncestor);
   if ManagerClass <> nil then
     ManagerClass.Create(Self);
+end;
+
+function TJvBaseDataContexts.GetInterface(const IID: TGUID; out Obj): Boolean;
+begin
+  Result := inherited GetInterface(IID, Obj) or (
+    (FDsgnContext <> nil) and Supports(FDsgnContext, IID, Obj)
+  );
 end;
 
 //===TJvBaseDataContextsManager=====================================================================
@@ -3122,10 +3143,16 @@ begin
   Result := IJvDataContext(FContexts[Index]);
 end;
 
-constructor TJvDataContexts.Create(AProvider: IJvDataProvider);
+constructor TJvDataContexts.Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext);
 begin
-  inherited Create(AProvider);
+  inherited Create(AProvider, AAncestor);
   FContexts := TInterfaceList.Create;
+end;
+
+destructor TJvDataContexts.Destroy;
+begin
+  FreeAndNil(FContexts);
+  inherited Destroy;
 end;
 
 //===TJvDataContext=================================================================================
@@ -3147,7 +3174,6 @@ begin
     FProvider := Value;
     if FProvider <> nil then
       FProvider.RegisterChangeNotify(Self);
-    ProviderChanged;
     if FFixupContext <> '' then
     begin
       Context := FFixupContext;
@@ -3161,6 +3187,7 @@ begin
       FNeedFixups := False;
     end;
     Changed;
+    ProviderChanged;
   end;
 end;
 
@@ -3340,6 +3367,13 @@ begin
   end;
 end;
 
+procedure TJvDataConsumer.AfterSubSvcAdded(ASvc: TJvDataConsumerAggregatedObject);
+begin
+  DoAfterCreateSubSvc(ASvc);
+  if ASvc is TJvCustomDataConsumerViewList then
+    TJvCustomDataConsumerViewList(ASvc).RebuildView
+end;
+
 procedure TJvDataConsumer.UpdateExtensions;
 var
   ImplArray: TClassArray;
@@ -3372,7 +3406,7 @@ begin
       begin
         DoBeforeCreateSubSvc(TmpClass);
         if TmpClass <> nil then
-          DoAfterCreateSubSvc(TmpClass.Create(Self));
+          AfterSubSvcAdded(TmpClass.Create(Self));
       end;
     end;
   end
@@ -3709,17 +3743,17 @@ procedure TJvCustomDataConsumerViewList.ProviderChanged;
 begin
   if ConsumerImpl.ProviderIntf <> nil then
     ConsumerImpl.ProviderIntf.RegisterChangeNotify(FNotifier);
-//  RebuildView;
+  RebuildView;
 end;
 
 procedure TJvCustomDataConsumerViewList.ContextChanged;
 begin
-//  RebuildView;
+  RebuildView;
 end;
 
 procedure TJvCustomDataConsumerViewList.ViewChanged(AExtension: TJvDataConsumerAggregatedObject);
 begin
-//  RebuildView;
+  RebuildView;
 end;
 
 procedure TJvCustomDataConsumerViewList.DataProviderChanging(ADataProvider: IJvDataProvider;
@@ -3735,7 +3769,10 @@ begin
         begin
           ItemIdx := IndexOfItem(IJvDataItem(Source));
           if ItemIdx >= 0 then
+          begin
             DeleteItem(ItemIdx);
+            NotifyViewChanged;
+          end;
         end;
       end;
   end;
@@ -3774,8 +3811,11 @@ begin
             end;
           end
           else
+          begin
             // Item at the root; always add it
             AddChildItem(-1, IJvDataItem(Source));
+            NotifyViewChanged;
+          end;
         end;
       end;
   end;
@@ -3836,14 +3876,20 @@ begin
     Idx := 0;
     AddItems(Idx, RootItems, AutoExpandLevel);
   end;
+  NotifyViewChanged;
 end;
 
 constructor TJvCustomDataConsumerViewList.Create(AOwner: TExtensibleInterfacedPersistent);
 begin
   inherited Create(AOwner);
   FNotifier := TJvProviderNotification.Create;
+  FNotifier.OnChanging := DataProviderChanging;
+  FNotifier.OnChanged := DataProviderChanged;
   if ConsumerImpl.ProviderIntf <> nil then
-    COnsumerImpl.ProviderIntf.RegisterChangeNotify(FNotifier);
+  begin
+    ConsumerImpl.ProviderIntf.RegisterChangeNotify(FNotifier);
+    RebuildView;
+  end;
 end;
 
 destructor TJvCustomDataConsumerViewList.Destroy;
@@ -3958,6 +4004,7 @@ procedure TJvDataConsumerViewList.AddChildItem(ParentIndex: Integer; Item: IJvDa
 var
   InsertIndex: Integer;
 begin
+  InsertIndex := -1;
   if ParentIndex > -1 then
   begin
     if not ItemIsExpanded(ParentIndex) then
@@ -3969,7 +4016,8 @@ begin
   end
   else
     InsertIndex := Count;
-  InsertItem(ParentIndex, InsertIndex, Item);
+  if InsertIndex > -1 then
+    InsertItem(InsertIndex, ParentIndex, Item);
 end;
 
 procedure TJvDataConsumerViewList.AddItems(var Index: Integer; Items: IJvDataItems; ExpandToLevel: Integer);
