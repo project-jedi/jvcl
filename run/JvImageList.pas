@@ -178,20 +178,13 @@ const
 {$ENDIF}
 
 
-{$IFDEF COMPILER6_UP}
-var
-{$ELSE}
-const
-{$ENDIF}
-  FirstJvImageListInstance: Boolean = True;
-
 {$IFDEF COMPLIB_VCL}
 {------------------------------------------------------------------------------}
 { Here we inject a jump to our HandleNeededHook into the static
   TCustomImageList.HandleNeeded method. }
 
 type
-  TCustomImageListAccess = class(TCustomImageList);
+  TOpenCustomImageList = class(TCustomImageList);
 
  // we need direct access to the FHandle field because the Handle property
  // calls the Changed method that calls HandleNeeded to calls SetHandle, ...
@@ -203,10 +196,14 @@ type
     FHandle: HImageList;
   end;
 
-  TRedirectCode = packed record
+  TJumpCode = packed record
     Jump: Byte;
     Offset: Integer;
   end;
+
+var
+  HandleNeededHookInstalled: Boolean;
+  SavedNeededHookCode: TJumpCode;
 
 procedure HandleNeededHook(Self: TImageList);
 begin
@@ -226,21 +223,47 @@ begin
   end;
 end;
 
-procedure Redirect_HandleNeeded;
+procedure InstallHandleNeededHook;
 var
   OrgProc: procedure of object;
   NewProc: Pointer;
-  Code: TRedirectCode;
+  Code: TJumpCode;
   n: Cardinal;
 begin
-  OrgProc := TCustomImageListAccess(TCustomImageList).HandleNeeded;
-  NewProc := @HandleNeededHook;
+  if not HandleNeededHookInstalled then
+  begin
+    OrgProc := TOpenCustomImageList(TCustomImageList).HandleNeeded;
+    NewProc := @HandleNeededHook;
 
-  Code.Jump := $e9;
-  Code.Offset := Integer(NewProc) - Integer(@OrgProc) - SizeOf(Code);
-  WriteProcessMemory(GetCurrentProcess, @OrgProc, @Code, SizeOf(Code), n);
-  FlushInstructionCache(GetCurrentProcess, @OrgProc, SizeOf(Code));
+    Code.Jump := $e9;
+    Code.Offset := Integer(NewProc) - Integer(@OrgProc) - SizeOf(Code);
+
+    if ReadProcessMemory(GetCurrentProcess, @OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), n) then
+      if WriteProcessMemory(GetCurrentProcess, @OrgProc, @Code, SizeOf(Code), n) then
+      begin
+        HandleNeededHookInstalled := True;
+        FlushInstructionCache(GetCurrentProcess, @OrgProc, SizeOf(Code));
+      end;
+  end;
 end;
+
+procedure UninstallHandleNeededHook;
+var
+  OrgProc: procedure of object;
+  n: Cardinal;
+begin
+  if HandleNeededHookInstalled then
+  begin
+    OrgProc := TOpenCustomImageList(TCustomImageList).HandleNeeded;
+
+    if WriteProcessMemory(GetCurrentProcess, @OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), n) then
+    begin
+      HandleNeededHookInstalled := False;
+      FlushInstructionCache(GetCurrentProcess, @OrgProc, SizeOf(SavedNeededHookCode));
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------}
 
 
@@ -422,11 +445,8 @@ begin
   FModified := False;
 
 {$IFDEF COMPLIB_VCL}
-  if FirstJvImageListInstance then
-  begin
-    FirstJvImageListInstance := False;
-    Redirect_HandleNeeded;
-  end;
+  if not (csDesigning in ComponentState) and not HandleNeededHookInstalled then
+    InstallHandleNeededHook;
 {$ENDIF}
 
   FUpdateLock := 0;
@@ -880,5 +900,14 @@ begin
   WriteData(Stream);
 end;
 {$ENDIF COMPLIB_CLX}
+
+{$IFDEF COMPLIB_CLX}
+initialization
+  HandleNeededHookInstaned := False;
+
+finalization
+  if HandleNeededHookInstaned then
+    UninstallHandleNeededHook;
+{$ENDIF}    
 
 end.

@@ -1505,6 +1505,9 @@ var
   P: procedure;
   n: Cardinal;
 begin
+  if WinControlHookInstalled then
+    Exit;
+    
   P := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
   if Assigned(P) then
   begin
