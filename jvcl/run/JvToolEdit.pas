@@ -181,6 +181,9 @@ type
     function GetButtonHint: string;
     function GetButtonWidth: Integer;
     function GetDirectInput: Boolean;
+    {$IFDEF VCL}
+    function GetFlat: Boolean;
+    {$ENDIF VCL}
     function GetGlyph: TBitmap;
     function GetGlyphKind: TGlyphKind;
     function GetMinHeight: Integer;
@@ -192,11 +195,17 @@ type
     function IsCustomGlyph: Boolean;
     procedure EditButtonClick(Sender: TObject);
     procedure ReadGlyphKind(Reader: TReader);
+    {$IFDEF VCL}
+    procedure ReadCtl3D(Reader: TReader);
+    {$ENDIF VCL}
     procedure RecreateGlyph;
     procedure SetAlignment(Value: TAlignment);
     procedure SetButtonFlat(const Value: Boolean);
     procedure SetButtonHint(const Value: string);
     procedure SetButtonWidth(Value: Integer);
+    {$IFDEF VCL}
+    procedure SetFlat(const Value: Boolean);
+    {$ENDIF VCL}
     procedure SetGlyph(Value: TBitmap);
     procedure SetGlyphKind(Value: TGlyphKind);
     procedure SetImageIndex(const Value: TImageIndex);
@@ -306,6 +315,9 @@ type
     property DirectInput: Boolean read GetDirectInput write SetDirectInput default True;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow; // RDB
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText; // RDB
+    {$IFDEF VCL}
+    property Flat: Boolean read GetFlat write SetFlat default False;
+    {$ENDIF VCL}
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex stored IsImageIndexStored default -1;
@@ -329,6 +341,9 @@ type
     procedure SelectAll;
     { Backwards compatibility; moved to public&published; eventually remove }
     property GlyphKind: TGlyphKind read GetGlyphKind write SetGlyphKind;
+    {$IFDEF VCL}
+    property Ctl3D;
+    {$ENDIF VCL}
   end;
 
   TJvComboEdit = class(TJvCustomComboEdit)
@@ -344,9 +359,9 @@ type
     property AutoSize;
     {$IFDEF VCL}
     property BiDiMode;
-    property Ctl3D;
     property DragCursor;
     property DragKind;
+    property Flat;
     property ImeMode;
     property ImeName;
     property OEMConvert;
@@ -540,7 +555,7 @@ type
     {$IFDEF VCL}
     property AutoComplete;
     property AutoCompleteOptions default [acoAutosuggestForceOn, acoFileSystem];
-    property Ctl3D;
+    property Flat;
     { (rb) Obsolete; added 'stored False', eventually remove }
     property FileEditStyle: TFileEditStyle read GetFileEditStyle write SetFileEditStyle stored False;
     {$ENDIF VCL}
@@ -646,7 +661,7 @@ type
     {$IFDEF VCL}
     property AutoComplete;
     property AutoCompleteOptions default [acoAutosuggestForceOn, acoFileSystem, acoFileSysDirs];
-    property Ctl3D;
+    property Flat;
     property DialogOptions: TSelectDirOpts read FOptions write FOptions default [];
     {$ENDIF VCL}
     property InitialDir: string read FInitialDir write FInitialDir;
@@ -870,6 +885,7 @@ type
     property DragCursor;
     property BiDiMode;
     property DragKind;
+    property Flat;
     property ParentBiDiMode;
     property ImeMode;
     property ImeName;
@@ -1951,6 +1967,9 @@ procedure TJvCustomComboEdit.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('GlyphKind', ReadGlyphKind, nil, False);
+  {$IFDEF VCL}
+  Filer.DefineProperty('Ctl3D', ReadCtl3D, nil, False);
+  {$ENDIF VCL}
 end;
 
 destructor TJvCustomComboEdit.Destroy;
@@ -2094,6 +2113,13 @@ function TJvCustomComboEdit.GetDirectInput: Boolean;
 begin
   Result := FDirectInput;
 end;
+
+{$IFDEF VCL}
+function TJvCustomComboEdit.GetFlat: Boolean;
+begin
+  Result := not Ctl3D;
+end;
+{$ENDIF VCL}
 
 function TJvCustomComboEdit.GetGlyph: TBitmap;
 begin
@@ -2434,6 +2460,13 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
+procedure TJvCustomComboEdit.ReadCtl3D(Reader: TReader);
+begin
+  Ctl3D := Reader.ReadBoolean;
+end;
+{$ENDIF VCL}
+
 procedure TJvCustomComboEdit.ReadGlyphKind(Reader: TReader);
 const
   sEnumValues: array [TGlyphKind] of string =
@@ -2659,6 +2692,13 @@ begin
       Invalidate;
   end;
 end;
+
+{$IFDEF VCL}
+procedure TJvCustomComboEdit.SetFlat(const Value: Boolean);
+begin
+  Ctl3D := not Value;
+end;
+{$ENDIF VCL}
 
 procedure TJvCustomComboEdit.SetGlyph(Value: TBitmap);
 begin

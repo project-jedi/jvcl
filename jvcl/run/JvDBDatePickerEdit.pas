@@ -130,7 +130,7 @@ type
     // property MinYear default 1900;
     {$IFDEF VCL}
     {property BiDiMode;}
-    property Ctl3D;
+    property Flat;
     {property ParentBiDiMode;}
     property ImeMode;
     property ImeName;

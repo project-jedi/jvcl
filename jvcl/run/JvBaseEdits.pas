@@ -144,6 +144,7 @@ type
     property BiDiMode;
     property DragCursor;
     property DragKind;
+    property Flat;
     property ImeMode;
     property ImeName;
     property ParentBiDiMode;
@@ -221,6 +222,7 @@ type
     property BiDiMode;
     property DragCursor;
     property DragKind;
+    property Flat;
     property ParentBiDiMode;
     property ImeMode;
     property ImeName;
