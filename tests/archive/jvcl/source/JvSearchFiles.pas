@@ -38,7 +38,7 @@ This unit is only supported on Windows!
 interface
 
 uses
-  Classes, SysUtils, Windows, JvComponent;
+  Classes, SysUtils, Windows, JvComponent,JvFunctions;
 
 const
   { Taken from WinNT.h }
