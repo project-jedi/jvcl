@@ -50,29 +50,29 @@ object frmMain: TfrmMain
     Caption = 'Number of windows to preview:'
   end
   object Label6: TLabel
-    Left = 184
-    Top = 184
+    Left = 176
+    Top = 104
     Width = 87
     Height = 13
     Caption = 'Fade In Time (ms):'
   end
   object Label7: TLabel
-    Left = 184
-    Top = 224
+    Left = 176
+    Top = 144
     Width = 85
     Height = 13
     Caption = 'Display Time (ms):'
   end
   object Label8: TLabel
-    Left = 184
-    Top = 264
+    Left = 176
+    Top = 184
     Width = 95
     Height = 13
     Caption = 'Fade Out Time (ms):'
   end
   object Label9: TLabel
-    Left = 184
-    Top = 304
+    Left = 176
+    Top = 224
     Width = 44
     Height = 13
     Caption = 'Location:'
@@ -1003,16 +1003,16 @@ object frmMain: TfrmMain
     TabOrder = 10
   end
   object Edit3: TEdit
-    Left = 184
-    Top = 200
+    Left = 176
+    Top = 120
     Width = 121
     Height = 21
     TabOrder = 13
     Text = '25'
   end
   object udFadeIn: TUpDown
-    Left = 305
-    Top = 200
+    Left = 297
+    Top = 120
     Width = 15
     Height = 21
     Associate = Edit3
@@ -1023,16 +1023,16 @@ object frmMain: TfrmMain
     Wrap = False
   end
   object Edit4: TEdit
-    Left = 184
-    Top = 240
+    Left = 176
+    Top = 160
     Width = 121
     Height = 21
     TabOrder = 15
     Text = '1'#160'400'
   end
   object udWait: TUpDown
-    Left = 305
-    Top = 240
+    Left = 297
+    Top = 160
     Width = 15
     Height = 21
     Associate = Edit4
@@ -1043,16 +1043,16 @@ object frmMain: TfrmMain
     Wrap = False
   end
   object Edit5: TEdit
-    Left = 184
-    Top = 280
+    Left = 176
+    Top = 200
     Width = 121
     Height = 21
     TabOrder = 17
     Text = '50'
   end
   object udFadeOut: TUpDown
-    Left = 305
-    Top = 280
+    Left = 297
+    Top = 200
     Width = 15
     Height = 21
     Associate = Edit5
@@ -1063,8 +1063,8 @@ object frmMain: TfrmMain
     Wrap = False
   end
   object cbLocation: TComboBox
-    Left = 184
-    Top = 320
+    Left = 176
+    Top = 240
     Width = 145
     Height = 21
     Style = csDropDownList
@@ -1080,6 +1080,44 @@ object frmMain: TfrmMain
       'dapMainFormCenter'
       'dapOwnerFormCenter'
       'dapActiveFormCenter')
+  end
+  object GroupBox1: TGroupBox
+    Left = 176
+    Top = 272
+    Width = 177
+    Height = 105
+    Caption = 'Form Size'
+    TabOrder = 20
+    object Label10: TLabel
+      Left = 8
+      Top = 24
+      Width = 31
+      Height = 13
+      Caption = 'Width:'
+    end
+    object Label11: TLabel
+      Left = 8
+      Top = 59
+      Width = 34
+      Height = 13
+      Caption = 'Height:'
+    end
+    object edWidth: TEdit
+      Left = 48
+      Top = 21
+      Width = 121
+      Height = 21
+      TabOrder = 0
+      Text = '0'
+    end
+    object edHeight: TEdit
+      Left = 48
+      Top = 56
+      Width = 121
+      Height = 21
+      TabOrder = 1
+      Text = '0'
+    end
   end
   object PopupMenu1: TPopupMenu
     Left = 152
@@ -1807,8 +1845,8 @@ object frmMain: TfrmMain
       'udWait.Position'
       'udWindowCount.Position')
     StoredValues = <>
-    Left = 120
-    Top = 120
+    Left = 56
+    Top = 112
   end
   object JvAppIniFileStorage1: TJvAppIniFileStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
@@ -1816,7 +1854,7 @@ object frmMain: TfrmMain
     FileName = 'Settings.ini'
     DefaultSection = 'Settings'
     SubStorages = <>
-    Left = 152
-    Top = 120
+    Left = 88
+    Top = 112
   end
 end

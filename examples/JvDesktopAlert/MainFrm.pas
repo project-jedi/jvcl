@@ -50,6 +50,11 @@ type
     Label9: TLabel;
     JvFormStorage1: TJvFormStorage;
     JvAppIniFileStorage1: TJvAppIniFileStorage;
+    GroupBox1: TGroupBox;
+    edWidth: TEdit;
+    edHeight: TEdit;
+    Label10: TLabel;
+    Label11: TLabel;
     procedure btnPreviewClick(Sender: TObject);
     procedure Clickme1Click(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
@@ -117,6 +122,8 @@ begin
     DA.Options := FOptions;
     DA.Location.AlwaysResetPosition := false;
     DA.Location.Position := TJvDesktopAlertPosition(cbLocation.ItemIndex);
+    DA.Location.Width := StrToIntDef(edWidth.Text,0);
+    DA.Location.Height := StrToIntDef(edHeight.Text,0);
     if DA.Location.Position = dapCustom then
     begin
       DA.Location.Left := Random(Screen.Width - 200);
