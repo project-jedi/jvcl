@@ -1,5 +1,8 @@
 ##Package: MM
-##Status: Partially finished
+##Status: Partially documented
+##Skip: JvGif_Dummy
+##Skip: TGIFData
+##Skip: TGIFItem
 ----------------------------------------------------------------------------------------------------
 @@JvGIF.pas
 Summary
@@ -33,7 +36,6 @@ Description
   returns either '87a' or '89a'. If the requested version is gvUnknown, the string #0#0#0 is returned instead.
 Parameters
   Version - The version to get a string for.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TDisposalMethod
 <TITLE TDisposalMethod type>
@@ -59,6 +61,47 @@ Description
 @@TDisposalMethod.dmReserved7
   Reserved. Do not use.
 ----------------------------------------------------------------------------------------------------
+@@TGIFBits
+<TITLE TGIFBits type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = 1..8; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TGIFColorItem
+<TITLE TGIFColorItem type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TGIFColorItem.Red
+  Description for Red
+@@TGIFColorItem.Green
+  Description for Green
+@@TGIFColorItem.Blue
+  Description for Blue
+----------------------------------------------------------------------------------------------------
+@@TGIFColorTable
+<TITLE TGIFColorTable type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TGIFColorTable.Count
+  Description for Count
+@@TGIFColorTable.Colors
+  Description for Colors
 ----------------------------------------------------------------------------------------------------
 @@TGIFVersion
 <TITLE TGIFVersion type>
@@ -77,26 +120,15 @@ Description
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Object storing a Frame of a GIF image
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFFrame.AnimateInterval
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvGIFFrame.Assign
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Source - Description for this parameter
+  Interval of time for current frame
+
+  Run-time only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -114,7 +146,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Used color count in frame
+
+  Run-time only
+
+  Read-only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -123,7 +159,9 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Frame comment
+
+  Run-time only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -132,7 +170,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  If True, the frame is corrupted
+
+  Run-time only
+
+  Read-only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -141,7 +183,9 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Frame disposal method (leave, restore background, restore previous)
+
+  Run-time only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -150,7 +194,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Draws the frame onto Acanvas in ARect with or w/o transparency
 Parameters
   ACanvas     - Description for this parameter
   ARect       - Description for this parameter
@@ -163,7 +207,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Frame height
+
+  Run-time only
+
+  Read-only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -172,7 +220,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  True if frame format is Interlaced
+
+  Run-time only
+
+  Read-only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -181,7 +233,9 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Frame origin point
+
+  Run-time only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -190,7 +244,9 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Frame transparent color 
+
+  Run-time only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -199,7 +255,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Frame width
+
+  Run-time only
+
+  Read-only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -208,13 +268,39 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  TGIFImage supports reading and writing GIF compressed image data. The GIFImage object uses the
+  data from an instance of a TGIFData object, which contains that actual GIF data source and is
+  never modified. Each GIF image object may share this data source object with other instances of a 
+  GIF image that are copies of it, created by using the Assign method. The GIF data source does 
+  referencing counting for the GIF image objects that are linked to it.
+
+  The properties of TGIFImage indicate the size and characteristics of the GIF image.
+
+  TGIFImage supports up to 256-colors GIF images versions 87a and 89a (you can determine version of 
+  loaded image by Version property), and supports graphic control extensions (multiple images, 
+  transparency) and comment extensions of GIF format. Plain text extensions are not supported.
+
+  Single image from GIF animation sequence can be accessible by the Frames property.
+
+  TGIFImage has an internal bitmaps for each frame that contains the GIF image. These internal images 
+  and the original data source of a GIF image are read only.
+
+  A TGIFImage object:
+
+  * Has no canvas (and thus it cannot draw onto a canvas). A TGIFImage object does implement the 
+    protected Draw method introduced in TGraphic. This means that it can draw itself. When TGIFImage 
+    contains multiple frames (animated GIF) the Draw method will be draw frame specified by FrameIndex 
+    property.
+  * Provides no access to the internal bitmap image that it creates for the GIF image.
+  * TGIFImage and TGIFFrame can be assign to TBitmap object and you can assign TBitmap object 
+    to the TGIFImage or TGIFFrame. So you can create TGIFImage, assign bitmap to it and then store image 
+    as GIF file by using SaveToFile method.
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.AddFrame
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Adds a frame to an animated GIF
 Parameters
   Value - Description for this parameter
 Return value
@@ -223,24 +309,13 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvGIFImage.Assign
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.BackgroundColor
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  The BackgroundColor property determines which background color stored in the GIF file to use when
+  drawing a GIF image. The background color is the color used for those pixels on the screen that
+  are not covered by an image.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -258,7 +333,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Clears the GIF
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -267,7 +342,9 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  GIF image embedded comment
+
+  Run-time only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -285,7 +362,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Number of frames (for animated GIF)
+
+  Run-time only
+
+  Read-only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -294,7 +375,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Decode all frames as a bitmap
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -303,7 +384,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Deletes frames number Index
 Parameters
   Index - Description for this parameter
 See Also
@@ -314,7 +395,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Encodes all frames
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -323,7 +404,10 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Current frame index. When this property is changed, it would change the frame being displayed on
+  the canvas.
+
+  Run-time only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -332,7 +416,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Gives access to each frame of an animated image
+
+  Run-time only
+
+  Read-only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -341,7 +429,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Used color count.
+
+  Run-time only.
+
+  Read-only.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -350,7 +442,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Converts the image into a grayscaled one.
 Parameters
   ForceEncoding - Description for this parameter
 See Also
@@ -415,7 +507,9 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  If True, animation will loop
+
+  Run-time only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -424,7 +518,7 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Moves a frame from one index to another
 Parameters
   CurIndex - Description for this parameter
   NewIndex - Description for this parameter
@@ -436,7 +530,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Pixel format (bit per pixel)
+
+  Run-time only
+
+  Read-only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -445,7 +543,9 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Number of time the animation will loop
+
+  Run-time only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -482,25 +582,35 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Screen height (as Delphi Screen.Height but concerning the screen on which the GIF was created)
+
+  Run-time only
+
+  Read-only
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ScreenWidth
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.ScreenWidth
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Screen Width (as Delphi Screen.Widht but concerning the screen on which the GIF was created)
+
+  Run-time only
+
+  Read-only
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ScreenHeight
 ----------------------------------------------------------------------------------------------------
 @@TJvGIFImage.TransparentColor
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  If GIF is transparent, this is the transparent color
+
+  Run-time only
+
+  Read-only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -509,7 +619,11 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  GIF version of the image
+
+  Run-time only
+
+  Read-only
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

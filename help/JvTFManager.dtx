@@ -1,5 +1,10 @@
 ##Package: TimeFramework
 ##Status: Completed by peter3, review needed
+##Skip: TDynApptArray
+##Skip: TDynSchedArray
+##Skip: TDynTimeRangeArray
+##Skip: TJvTFAppt.Assign
+##Skip: TJvTFMargins
 ----------------------------------------------------------------------------------------------------
 @@JvTFManager.pas
 Summary
@@ -19,7 +24,7 @@ Summary
   Exception class.
 Description
   An EJvTFScheduleManagerError is raised whenever an error condition is encountered which is specific to the server and its relationships and communication with the contained TJvTFSched and TJvTFAppt and connected controls.
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 @@TCNRequestRefresh
 <TITLE TCNRequestRefresh type>
 
@@ -31,7 +36,6 @@ Description
   it needs to refresh a schedule. The message is sent in a
   TCNRequestRefresh record. This message has been superseded by
   the NotifyApptCtrl method.
-
 @@TCNRequestRefresh.Msg
   The message, should be CN_REQUESTREFRESH
 @@TCNRequestRefresh.Schedule
@@ -40,13 +44,6 @@ Description
   Not used
 @@TCNRequestRefresh.Result
   Not used
-----------------------------------------------------------------------------------------------------
-@@TTFDayOfWeek
-<TITLE TTFDayOfWeek type>
-Summary
-  Type describing the days of a week.
-Description
-  Enumerates the days of the week.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt
 Summary
@@ -67,12 +64,10 @@ Description
   An appointment can be added to multiple schedules, which is called "sharing".
 Parameters
   SchedName - Name of the schedule.
-See Also
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.AlarmAdvance
 Summary
-  Indicates when the alarm should be triggered. 
+  Indicates when the alarm should be triggered.
 Description
   Set the AlarmAdvance property to indicate the number of minutes before the appointment is scheduled
   to start that the alarm should fire. Note that currently alarm functionality is not native to the
@@ -81,7 +76,6 @@ Example
  Appointment starts at 10:00am.
  AlarmAdvance is set to 15.
  Alarm should fire at 9:45am.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.AlarmEnabled
 Summary
@@ -89,18 +83,6 @@ Summary
 Description
   Set the AlarmEnabled property to True if an alarm should fire before the appointment is scheduled
   to begin. Note that currently alarm functionality is not included in the JTF suite.
-See Also
-----------------------------------------------------------------------------------------------------
-@@TJvTFAppt.Assign
-Summary
-  Copies one object to another.
-
-Description
-  Use the Assign method to assign one appointment object to another.
-
-Parameters
-  Source :  \Description for this parameter
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.AssignSchedules
 Summary
@@ -111,7 +93,6 @@ Description
   belongs to. AssignSchedules will overwrite the current Schedules list.
 Parameters
   List - List with names of schedules the appointment belongs to.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.BarColor
 Summary
@@ -142,7 +123,6 @@ Summary
   Removes the appointment from all schedules.
 Description
   Call the ClearSchedules method to remove all of the schedules from the appointment.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Color
 Summary
@@ -191,7 +171,6 @@ Description
 
   If you store additional data by using a TObject, you should use the TJvTFScheduleManager.OnCreateAppt
   and the  TJvTFScheduleManager.OnDestroyAppt events to create and destroy your object.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Delete
 Summary
@@ -201,14 +180,13 @@ Description
   TJvTFScheduleManager.dbDeleteAppt, which eventually fires the TJvTFScheduleManager.OnDeleteAppt event.
   (You would implement a handler for the OnDeleteAppt event that would remove the appointment data
   from your physical data storage backend.)
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Description
 Summary
-  
+  Specifies the description of the appointment.
+
 Description
   This property specifies the description of the appointment.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.EndDate
 Summary
@@ -257,7 +235,6 @@ Description
   whether or not they are currently loaded into the server.
 
   The server automatically generates IDs using the TJvTFScheduleManager.GenerateApptID class function.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.ImageMap
 Summary
@@ -268,7 +245,6 @@ Description
 
   Note that the TJvTFCustomImageMap stored in this property refers to images stored in the TImageList
   specified in TJvTFScheduleManager.CustomImages.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.IndexOfSchedule
 Summary
@@ -287,14 +263,12 @@ Summary
   Determines if the appointment has been modified or not.
 Description
   Returns True if the appointment information has changed since it was last posted, false otherwise.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Persistent
 Summary
   Determines whether the appointment is cached or not.
 Description
   The caching mechanism will not flush the appointment from memory if Persistent is set to True.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Post
 Summary
@@ -304,7 +278,6 @@ Description
   This method calls TJvTFScheduleManager.dbPostAppt, which eventually fires the TJvTFScheduleManager.OnPostAppt
   event. (You would implement a handler for the OnPostAppt event that would change the physical data
   stored for the appointment.)
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Refresh
 Summary
@@ -314,7 +287,6 @@ Description
   calls TJvTFScheduleManager.dbRefreshAppt, which eventually fires the TJvTFScheduleManager.OnRefreshAppt
   event. (You would implement a handler for the OnRefreshAppt event to "reload" the appointment data
   in memory from the data stored on disk.)
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.RefreshControls
 Summary
@@ -322,9 +294,7 @@ Summary
 Description
   Call this method to cause all controls that display the appointment to be redrawn to reflect recent
   changes. You should not have to call this method, as the server should refresh its controls as needed.
-See Also
 ----------------------------------------------------------------------------------------------------
-
 @@TJvTFAppt.Refreshed
 Summary
   Determines whether the object has been refreshed.
@@ -333,7 +303,6 @@ Description
   <LINK JVCL.Info.TimeFramework.RefreshReconciliation, "Refresh Reconciliation"> for more information.
 
   Note: This property is ignored if TJvTFScheduleManager.RefreshAutoReconcile is set to False.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.RemoveSchedule
 Summary
@@ -385,21 +354,19 @@ Description
 See Also
   Modified
 ----------------------------------------------------------------------------------------------------
-
 @@TJvTFAppt.SetStartEnd
 Summary
   Sets new start and end values for the appointment.
 Description
   Use the SetStartEnd method to set the start and end information of the appointment. Valid parameters
   are as follows:
-	  1. NewStartDate must fall on or before NewEndDate
-  	2. If NewStartDate = NewEndDate then NewStartTime must be before NewEndTime
+          1. NewStartDate must fall on or before NewEndDate
+        2. If NewStartDate = NewEndDate then NewStartTime must be before NewEndTime
 Parameters
   NewStartDate - The date when the appointment should start.
   NewStartTime - The time when the appointment should start.
   NewEndDate   - The date when the appointment should end.
   NewEndTime   - The time when the appointment should end.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Shared
 Summary
@@ -443,9 +410,12 @@ See Also
   BeginUpdate, EndUpdate
 ----------------------------------------------------------------------------------------------------
 @@TJvTFApptClass
+<TITLE TJvTFApptClass type>
 Summary
-  Specifies an exact class of TJvTFAppt.
+  Defines the metaclass for TJvTFAppt.
 Description
+  TJvTFApptClass is the metaclass for TJvTFAppt. Its value is the class reference for
+  TJvTFAppt or for one of its descendants.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFApptDescEvent
 <TITLE TJvTFApptDescEvent type>
@@ -458,7 +428,6 @@ Parameters
   Sender      - The TJvTFScheduleManager that is firing the event.
   Appt        - Appt is a reference to the appointment whose Description property is being read/written.
   Description - Description is the appointment's description and is modifiable by you.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFApptEvent
 <TITLE TJvTFApptEvent type>
@@ -505,7 +474,6 @@ Parameters
   SchedDate - Date where the schedule appears.
 Return value
   The found TSchedule or nil if not found.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFComponent.ProcessBatches
 Summary
@@ -513,7 +481,6 @@ Summary
 Description
   This method simply calls TJvTFScheduleManager.ProcessBatches if the Server property is assigned and
   the server's SchedLoadMode property is set to slmBatch.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFComponent.ReleaseSchedule
 Summary
@@ -553,7 +520,6 @@ Parameters
   SchedDate - Date where schedule occurs.
 Return value
   The found schedule. If a schedule is not found, an exception is raised.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFComponent.ScheduleCount
 Summary
@@ -617,7 +583,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFControl.DragInfo
 Summary
-  Contains drag information.           
+  Contains drag information.
 Description
   The DragInfo property will contain information about the current drag operation. This property is used
   by the internal drag/drop routines and facilitates moving appointments between different JvTFControls.
@@ -635,7 +601,6 @@ Parameters
   SchedDate - Date where schedule occurs.
 Return value
   The found schedule. If a match is not found FindSchedule will return nil.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFControl.ProcessBatches
 Summary
@@ -643,7 +608,6 @@ Summary
 Description
   This method simply calls TJvTFScheduleManager.ProcessBatches if the Server property is
   assigned and the server's SchedLoadMode property is set to slmBatch.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFControl.ReleaseSchedule
 Summary
@@ -683,7 +647,6 @@ Parameters
   SchedDate - Date where schedule occurs.
 Return value
   Returns the matching schedule. If a match is not found an EJvTFScheduleManagerError will be raised.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFControl.ScheduleCount
 Summary
@@ -695,7 +658,6 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFControl.ScheduleManager
 Summary
-
   Points to the schedule manager for the control.
 Description
   Use ScheduleManager to access the schedule manager for this component.
@@ -737,12 +699,10 @@ Description
 Parameters
   Sender :    The object that called the event.
   aControl :  The control affected.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFCustomImageMap
 Summary
   Provides support for custom images in appointments.
-
 Description
   The TJvTFCustomImageMap is part of the system that allows you
   to attach custom images to specific appointments.
@@ -751,10 +711,8 @@ Description
   TImageList. You can then reference the image by name or by
   its index in the map (which is different than the index in
   the ImageList).
-
 Note
   The TJvTFScheduleManager.CustomImages is the TImageList that is referenced.
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFCustomImageMap.Add
 Summary
@@ -765,7 +723,6 @@ Description
 Parameters
   ImageName  - Image name.
   ImageIndex - Index in imagelist.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFCustomImageMap.Assign
 Summary
@@ -774,21 +731,18 @@ Description
   Use the Assign method to assign the properties of one CustomImageMap to another.
 Parameters
   Source - The object to copy from.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFCustomImageMap.Clear
 Summary
   Removes all entries from the map.
 Description
   Call Clear to remove all image mappings from the list.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFCustomImageMap.Count
 Summary
   Returns the number of entries in the map.
 Description
   Use Count to determine how many entries is in the map list.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFCustomImageMap.Delete
 Summary
@@ -797,7 +751,6 @@ Description
   Removes the map entry at MapIndex.
 Parameters
   MapIndex - The index of the entry to remove.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFCustomImageMap.FindImageIndex
 Summary
@@ -845,13 +798,11 @@ See Also
 @@TJvTFCustomImageMap.Move
 Summary
   Moves an entry.
-
 Description
   Moves the image (entry) found at SrcMapIndex to DestMapIndex.
 Parameters
   SrcMapIndex :   Index of the entry to move.
   DestMapIndex :  Index of the new location.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDateList
 Summary
@@ -862,7 +813,6 @@ Description
 @@TJvTFDateList.Add
 Summary
   Adds a date to the list.
-
 Description
   Call Add to add a new date to the list.
 Parameters
@@ -921,14 +871,12 @@ Parameters
   ADate - The date to find.
 Return value
   The index of the item or -1 if not found.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDateList.OnChange
 Summary
   Occurs when the list changes.
 Description
   Don't' assign a handler to this event. It is for internal use \only.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDragInfo
 Summary
@@ -962,14 +910,12 @@ Summary
   Source schedule of drag.
 Description
   The Schedule property will point to the TJvTFSched where the drag operation originated.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDragInfo.Shift
 Summary
   Contains keyboard information.
 Description
   The Shift property will contain shift information for the drag operation.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDrawDWTitleEvent
 <TITLE TJvTFDrawDWTitleEvent type>
@@ -989,7 +935,6 @@ Parameters
   ARect   - The area to draw in.
   DOW     - The day of the week.
   DWName  - Name of the week day.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNames
 Summary
@@ -1075,13 +1020,11 @@ Returns
 See Also
   Source
 ----------------------------------------------------------------------------------------------------
-
 @@TJvTFDWNames.OnChange
 Summary
   Occurs when any property of the class changes.
 Description
   Do not write a handler for this event. One is assigned internally.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNames.Source
 Summary
@@ -1089,7 +1032,6 @@ Summary
 Description
   Specifies where the display names of the days of the week are retrieved from. See TJvTFDWNameSource
   for more info.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDWNameSource
 <TITLE TJvTFDWNameSource type>
@@ -1155,7 +1097,6 @@ Parameters
   ShowDatesTimes :  Specifies if the appointment's date and time settings are displayed in the hint.
   ShowDesc :        Specifies if the appointment's description is displayed in the hint.
   FormattedDesc :   Specifies if CRLF's are preserved.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.CellHint
 Summary
@@ -1169,7 +1110,6 @@ Parameters
   Col :       The column of the cell.
   HintText :  The hint text.
   CellRect :  Coordinates for the hint window.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.HintType
 Summary
@@ -1190,7 +1130,6 @@ Parameters
   X :      Left edged of hint window.
   Y :      Top edge of hint window
   Hints :  List of hints to display.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.OnShowHint
 Summary
@@ -1205,7 +1144,6 @@ Parameters
   HintRect :  Bounding rect of hint window. Can be modified.
 
   HintText :  Text to display in the hint window. Can be modified.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.Pause
 Summary
@@ -1215,7 +1153,6 @@ Description
   Use Pause to specify a wait time in milliseconds, which is different from the default value of
   2500 ms or 2 1/2 seconds that is set in the constructor. The hint for the control is specified in
   the Hint property.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.RefProps
 Summary
@@ -1224,7 +1161,6 @@ Description
   This property holds a pointer to an instance of a TJvTFHintProps object. If this property is not nil,
   TJvTFHint will reference the TJvTFHintProps object in order to set specific properties of the
   hint window. These properties include HintColor, HintPause, and HintHidePause.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.ReleaseHandle
 Summary
@@ -1244,7 +1180,6 @@ Description
   Use ShortPause to change the default pause time of 500 ms or 1/2 second that is set in the
   constructor. When assigning a value to ShortPause, specify the interval in milliseconds. The
   hint displayed at the end of the pause is specified in the Hint property.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHint.StartEndHint
 Summary
@@ -1261,11 +1196,14 @@ Parameters
   X :          Left edge of hint window.
   Y :          Top edge of hint window.
   ShowDates :  Set to true to display the dates. Times are always displayed.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHintClass
+<TITLE TJvTFHintClass type>
 Summary
-  Specifies the exact class of TJvTFHint.
+  Defines the metaclass for TJvTFHint.
+Description
+  TJvTFHintClass is the metaclass for TJvTFHint. Its value is the class reference for
+  TJvTFHint or for one of its descendants.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHintProps
 Summary
@@ -1281,7 +1219,6 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHintProps.HintHidePause
 Summary
@@ -1291,7 +1228,6 @@ Description
   This property specifies the amount of time, in milliseconds, that the Hint window will be visible
   on the screen. If this property is set to -1, the Hint window will refer to the application's
   HintHidePause property.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHintProps.HintPause
 Summary
@@ -1301,8 +1237,6 @@ Description
   This property specifies the amount of time, in milliseconds, that will elapse before the Hint
   window is shown. If this property is set to -1, the Hint window will refer to the application's
   HintPause property.
-See Also
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFHintType
 <TITLE TJvTFHintType type>
@@ -1316,7 +1250,6 @@ Description
 @@TJvTFHintType.shtStartEnd
   The hint is for a start/end value
 @@TJvTFHintType.shtCell
-
   The hint is for a cell.
 @@TJvTFHintType.shtObj
   The hint is for any object.
@@ -1339,7 +1272,6 @@ Parameters
   aControl :    The control that received the request.
   SchedNames :  Names of affected schedules
   Dates :       List of affected days.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPostApptQueryEvent
 <TITLE TJvTFPostApptQueryEvent type>
@@ -1358,8 +1290,6 @@ Description
   If Aborted is True, the print job was aborted. If it is False, the user did not abort the print job.
 
   The AbortPrint method sets the Aborted property to True.
-See Also
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.AbortPrint
 Summary
@@ -1410,7 +1340,6 @@ Description
   This property will be true if the component is in the process of converting the units of
   measure of various properties due to a change in the Measure property.
 See Also
-
   ConvertMeasure, Measure
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.ConvertMeasure
@@ -1443,7 +1372,6 @@ Summary
   Holds information on the documents creation date.
 Description
   This property will hold the date and time when the document was composed.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.FreeDoc
 Summary
@@ -1463,7 +1391,6 @@ Description
   Use this property to specify which unit of measure you want to work with. You can change this property
   at any time and all measurement related properties will be automatically converted to the new unit
   of measure.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinter.OnAssembleProgress
 Summary
@@ -1583,9 +1510,9 @@ Description
   For example, if there are three pages and you set BaseFileName to "c:\simpl\schedule" the
   following files will be produced:
   <CODE>
-	c:\simpl\schedule_1.emf
-	c:\simpl\schedule_2.emf
-	c:\simpl\schedule_3.emf
+        c:\simpl\schedule_1.emf
+        c:\simpl\schedule_2.emf
+        c:\simpl\schedule_3.emf
   </CODE>
 
   You can access each page as a TMetafile via the Pages property.
@@ -1624,7 +1551,6 @@ Summary
 Description
   This string will be sent to Windows as the title of the document when it is sent to a printer.
   (This is what will display in Print Manager.)
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterDrawEvent
 <TITLE TJvTFPrinterDrawEvent type>
@@ -1638,7 +1564,6 @@ Parameters
   aCanvas - Provides a canvas for you to do any custom drawing on.
   ARect   - Provides a bounding rectangle for your drawing.
   PageNum - The page that the event is being fired for
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterMeasure
 <TITLE TJvTFPrinterMeasure type>
@@ -1710,6 +1635,15 @@ Description
 See Also
   HeaderHeight, FooterHeight, MarginBottom, MarginLeft, MarginRight
 ----------------------------------------------------------------------------------------------------
+@@TJvTFPrinterPageLayout.Printer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvTFPrinterState
 <TITLE TJvTFPrinterState type>
 Summary
@@ -1738,7 +1672,6 @@ Parameters
   Sender  - The object that fired the event.
   Current - The current iteration of the process
   Total   - The total numbers of iterations the process is expected to complete.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched
 Summary
@@ -1760,7 +1693,7 @@ Summary
 Description
   This method will add the given appointment to the schedule.
 Parameters
-  Appt - Description for this parameter
+  Appt - The appointment to add.
 See Also
   RemoveAppt
 ----------------------------------------------------------------------------------------------------
@@ -1774,7 +1707,6 @@ Parameters
   ID - Identifier of the appointment to find.
 Return value
   Returns an appointment object or nil if an appointment could not be found.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.ApptCount
 Summary
@@ -1795,7 +1727,6 @@ Parameters
   anAppt - The appointment to check for conflicts.
 Return value
   True if conflicts were found, false otherwise.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.Appts
 Summary
@@ -1888,14 +1819,12 @@ Description
   If you do use a TObject to store custom data, you probably will want to use the
   TJvTFScheduleManager.OnCreateSchedule and TJvTFScheduleManager.OnDestroySchedule events to create
   and destroy your custom object.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.Destroying
 Summary
   Determines if the object is being destroyed.
 Description
   This property will return True if the schedule object is in the process of being destroyed.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.EnumConflicts@TJvTFAppt
 Summary
@@ -1917,15 +1846,12 @@ Parameters
   RangeEnd   - End of the range to check.
 Return value
   A dynamic array of conflicting appointments.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.EnumConflicts@TJvTFTimeRange
-Summary
-Description
+<COMBINE TJvTFSched.EnumConflicts@TJvTFAppt>
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.EnumConflicts@TTime@TTime
-Summary
-Description
+<COMBINE TJvTFSched.EnumConflicts@TJvTFAppt>
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.GetFirstAppt
 Summary
@@ -2014,7 +1940,6 @@ Summary
   Returns the date of the schedule.
 Description
   \Read SchedDate to determine the date of the schedule.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.SchedDisplayName
 Summary
@@ -2061,16 +1986,17 @@ Parameters
   RangeEnd   - The end of the time range to check.
 Return value
   True if the time is free, false otherwise.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSched.TimeIsFree@TTime@TTime
-Summary
-Description
+<COMBINE TJvTFSched.TimeIsFree@TJvTFTimeRange>
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSchedClass
+<TITLE TJvTFSchedClass type>
 Summary
-  Specifies an exact class of TJvTFSched.
+  Defines the metaclass for TJvTFSched.
 Description
+  TJvTFSchedClass is the metaclass for TJvTFSched. Its value is the class reference for
+  TJvTFSched or for one of its descendants.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSchedEvent
 <TITLE TJvTFSchedEvent type>
@@ -2085,7 +2011,6 @@ Description
 Parameters
   Sender   - The object that fired the event, which is most likely to be a TJvTFScheduleManager.
   Schedule - Contains the schedule object that is being affected.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFSchedLoadMode
 <TITLE TJvTFSchedLoadMode type>
@@ -2101,6 +2026,10 @@ Description
   Load data in batches. A call to ProcessBatches is required to load the data.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager
+<TITLEIMG TJvTFScheduleManager>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Manages multiple schedules, appointments and associated controls and components.
 Description
@@ -2212,7 +2141,6 @@ Summary
 Description
   Use this property to specify a TImageList that contains the images you want to embed into specific
   appointments.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.dbDeleteAppt
 Summary
@@ -2314,7 +2242,6 @@ Note
 Parameters
   Sched - The schedule to update.
 See Also
-
   OnRefreshSched, RefreshConnections
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.FindAppt
@@ -2351,6 +2278,8 @@ Description
   Use this method to manually flush cached objects from memory. If All is True, all cached objects
   will be flushed from memory. If All is False, cached objects are flushed according to the rules
   of the Cache.CacheType property.
+Parameters
+  All - Indicitates whether to flush all cached objects.
 See Also
   Cache
 ----------------------------------------------------------------------------------------------------
@@ -2371,14 +2300,14 @@ Description
   as follows:
   <CODE>
   <AUTOLINK OFF>
-	class function TJvTFScheduleManager.GenerateApptID: String;
-	Var
- 	 I : Integer;
-	begin
-	 Result := FloatToStr(Now);
-	 For I := 1 to 5 do
-	 Result := Result + Chr(Random(25) + 65);
-	end;
+        class function TJvTFScheduleManager.GenerateApptID: String;
+        Var
+         I : Integer;
+        begin
+         Result := FloatToStr(Now);
+         For I := 1 to 5 do
+         Result := Result + Chr(Random(25) + 65);
+        end;
   </CODE>
   <AUTOLINK ON>
   You may override this method in a descendant class if you need to change this algorithm, otherwise
@@ -2394,11 +2323,10 @@ Summary
   Returns the actual appointment class in use.
 Description
   Returns a specific TJvTFAppt class. You can override this method if you would like JTF to use a custom subclass of TJvTFAppt.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.GetApptDisplayText
 Summary
-  Sets the default display text and then call OnGetApptDisplayText.
+  Sets the default display text and then calls OnGetApptDisplayText.
 Description
   This method is for internal use.
 See Also
@@ -2409,7 +2337,6 @@ Summary
   Returns the actual schedule class in use.
 Description
   Returns a specific TJvTFSched class. You can override this method if you would like JTF to use a custom subclass of TJvTFSched.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.GetScheduleID
 Summary
@@ -2425,7 +2352,6 @@ Parameters
   \SchedDate - Date of the schedule.
 Return value
   A string ID built from the input.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.LoadingAppts
 Summary
@@ -2473,7 +2399,6 @@ Summary
 Description
   This event is fired when an appointment is being removed from the system. You need to provide code
   behind this event that will remove the appointment data from your physical storage implementation.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnDestroyAppt
 Summary
@@ -2502,10 +2427,12 @@ Description
   The OnFlush event is fired when the caching system is about to remove an object from memory. You could use this event
   to "filter" which objects are actually removed from memory.
 
-  The TJvTFFlushEvent type is used for the OnFlush event. Sender will be the object that has fired the
-  event and most likely will be a TJvTFScheduleManager. FlushObj will contain the object that is about
-  to be removed from memory and will be either a TJvTFSched or a TJvTFAppt. If you set FlushIt to False,
+  The TJvTFFlushEvent type is used for the OnFlush event. If you set FlushIt to False,
   the FlushObj will not be removed from memory.
+Parameters
+  Sender   - The object that has fired the event and most likely will be a TJvTFScheduleManager.
+  FlushObj - The object that is about to be removed from memory (either a TJvTFSched or a TJvTFAppt).
+  FlushIt  - Specifiy whether to remove the FlushObj object from memory.
 See Also
   TJvTFFlushEvent, Flush, Flushing
 ----------------------------------------------------------------------------------------------------
@@ -2531,9 +2458,13 @@ See Also
 Summary
   Occurs when an appointment's text needs to be displayed.
 Description
-  This event is fired whenever a JvTFComponent or Control needs to display text for an appointment. Source
-  will reference the component that is requesting the display text. Appt references the appointment object
-  in question. DisplayText specifies the text that will be display, and is modifiable by you.
+  This event is fired whenever a JvTFComponent or Control needs to display text for an appointment.
+  DisplayText specifies the text that will be displayed, and is modifiable by you.
+Parameters
+  Sender      - The object that is firing the event.
+  Source      - The component that is requesting the display text.
+  Appt        - The appointment object in question.
+  DisplayText - The text that will be displayed.
 See Also
   OnGetApptDescription, OnSetApptDescription
 ----------------------------------------------------------------------------------------------------
@@ -2541,11 +2472,9 @@ See Also
 Summary
   Occurs when a batch needs to be loaded.
 Description
-  This event will fire once for each batch that must be loaded. BatchName will give you the schedule
-  (resource) name and BatchStartDate and BatchEndDate will give the starting and ending dates of the
-  schedule(s) to be loaded.
+  This event will fire once for each batch that must be loaded.
 
-  Note that BatchStartDate and BatchEndDate define a contiguous set of dates that must be loaded. Therefore,
+  \Note that BatchStartDate and BatchEndDate define a contiguous set of dates that must be loaded. Therefore,
   if BatchName is Mike, BatchStartDate is 1/1/2000, and BatchEndDate is 1/3/2000 you should load the following
   schedules:
     Mike - 1/1/2000
@@ -2553,9 +2482,13 @@ Description
     Mike - 1/3/2000
 
   Please see <LINK JVCL.Info.TimeFramework.BatchLoading, "Batch Loading"> for more information.
+Parameters
+  Sender         - The object that is firing the event.
+  BatchName      - The schedule(resource) name.
+  BatchStartDate - The starting date of the schedule(s) to be loaded.
+  BatchEndDate   - The ending date of the schedule(s) to be loaded.
 Note
   This event will not fire unless SchedLoadMode is set to slmBatch.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnNeedAppts
 Summary
@@ -2564,7 +2497,6 @@ Description
   This event is fired when a schedule needs to be loaded into the server. You need to provide code behind
   this event that will read the appropriate appointment data from your physical storage implementation, request
   an appointment object from the server, set its properties, and then add it to the given schedule.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnPostAppt
 Summary
@@ -2583,6 +2515,10 @@ Description
   This event is fired before an appointment object is posted. By default, CanPost is True which allows
   TJvTFScheduleManager to fire the OnPostAppt event. You can set CanPost to false to prevent TJvTFScheduleManager
   from firing the OnPostAppt.
+Parameters
+  Sender  - The object that is firing the event.
+  Appt    - The appointment object.
+  CanPost - Specifies whether to fire an OnPostAppt event.
 See Also
   OnPostAppt
 ----------------------------------------------------------------------------------------------------
@@ -2596,7 +2532,6 @@ Description
   The Modified property for each of the appointment objects in the server will set to False before the event
   is fired. If, for some reason, the Modified property needs to be set to true simply call TJvTFAppt.SetModified
   for the specific appointment.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnRefreshAppt
 Summary
@@ -2605,7 +2540,6 @@ Description
   This event will be fired when the appointment object in memory needs to have its data updated to
   reflect the data on disk. You need to provide the code that will retrieve the data from physical storage
   and set the appointment object's properties appropriately.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnRefreshSched
 Summary
@@ -2618,7 +2552,6 @@ Description
   The Modified property for each appointment linked to the schedule will be set to False before the event
   is fired. If, for some reason, the Modified property for a particular appointment needs to be set to True,
   simply call the TJvTFAppt.SetModified method.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.OnSetApptDescription
 Summary
@@ -2674,7 +2607,8 @@ Description
 
   Under normal circumstances you will not have to call this method.
   Please see <LINK JVCL.Info.TimeFramework.RefreshReconciliation, "Refresh Reconciliation"> for more information.
-
+Parameters
+  Scope - Specifies the scope for the reconcile.
 Warning
   This method ignores the value of the RefreshAutoReconcile property. Use extreme caution in calling this method,
   especially if RefreshAutoReconcile is set to False!
@@ -2699,7 +2633,6 @@ Description
   Refresh has taken place. You must set the Refreshed property to True for each appointment refreshed
   in one of the Refresh events.
   Please see <LINK JVCL.Info.TimeFramework.RefreshReconciliation, "Refresh Reconciliation"> for more information.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.RefreshConnections
 Summary
@@ -2721,7 +2654,6 @@ Parameters
   Trigger - an object to refresh (or nil).
 Note
   This method was renamed from RefreshControls as of version 1.1 of the server.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.Refreshing
 Summary
@@ -2729,7 +2661,6 @@ Summary
 Description
   This property will be True if the server is currently in the process of refreshing its appointment
   and schedule objects, False otherwise.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ReleaseSchedule@TJvTFComponent@string@TDate
 Summary
@@ -2750,11 +2681,9 @@ Parameters
   ApptCtrl  - The control in question.
   SchedName - Name of the schedule.
   SchedDate - Date of the schedulr.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.ReleaseSchedule@TJvTFControl@string@TDate
-Summary
-Description
+<COMBINE TJvTFScheduleManager.ReleaseSchedule@TJvTFComponent@string@TDate>
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.RequestAppt
 Summary
@@ -2770,7 +2699,6 @@ Parameters
   ID   - The ID of the appointment.
   Appt - The new or found appointment.
   New  - Is Set to true if Appt contains a newly created object.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.RequestSchedule@TJvTFComponent@string@TDate
 Summary
@@ -2803,16 +2731,13 @@ See Also
   ReleaseSchedule
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.RequestSchedule@TJvTFComponent@string@TDate@boolean
-Summary
-Description
+<COMBINE TJvTFScheduleManager.RequestSchedule@TJvTFComponent@string@TDate>
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.RequestSchedule@TJvTFControl@string@TDate
-Summary
-Description
+<COMBINE TJvTFScheduleManager.RequestSchedule@TJvTFComponent@string@TDate>
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.RequestSchedule@TJvTFControl@string@TDate@boolean
-Summary
-Description
+<COMBINE TJvTFScheduleManager.RequestSchedule@TJvTFComponent@string@TDate>
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager.SchedLoadMode
 Summary
@@ -2896,7 +2821,6 @@ Description
   TimedDelay specifies how long cached objects will remain in memory before being flushed. TimedDelay
   is in milliseconds and cached objects are guaranteed to be removed from memory in TimedDelay to
   TimedDelay * 2 milliseconds after being cached.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManagerCacheType
 <TITLE TJvTFScheduleManagerCacheType type>
@@ -2944,59 +2868,11 @@ Summary
 @@TJvTFServNotifyCode.sncDisconnectAppt
 
 @@TJvTFServNotifyCode.sncRefresh
-  
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTFShowHintEvent
 <TITLE TJvTFShowHintEvent type>
 <COMBINE TJvTFHint.OnShowHint>
-----------------------------------------------------------------------------------------------------
-@@TJvTFStatePic
-<TITLE TJvTFStatePic type>
-Summary
-  Represent the different appointment states that may be assign an image.
-Description
-@@TJvTFStatePic.spAlarmEnabled
-  The alarm is enabled for the appointment.
-@@TJvTFStatePic.spAlarmDisabled
-  The alarm is disabled for the appointment.
-@@TJvTFStatePic.spShared
-  The appointment is a shared appointment.
-@@TJvTFStatePic.spRecurring
-  The appointment is a recurring appointment.
-@@TJvTFStatePic.spModified
-  The appointment has been modified
----------------------------------------------------------------------------------------------------
-@@TJvTFTimeRange
-<TITLE TJvTFTimeRange type>
-Summary
-  Defines a time range.
-Description
-
-@@TJvTFTimeRange.StartTime
-  Start time of the range. Must be less than EndTime.
-@@TJvTFTimeRange.EndTime
-  End time of the range. Must be greater than StartTime.
-----------------------------------------------------------------------------------------------------
-@@TJvTFUniversalPrinter
-Summary
-  The TJvTFUniversalPrinter component is a general purpose printing component that allows you to
-  easily produce documents with specific margins, bodies, and headers and footers.
-Description
-  This component is NOT a supported part of JTF. It is included only because it is a natural extension
-  of TJvTFPrinter. This component will NOT be improved or enhanced.
-
-  See <LINK JVCL.Info.TimeFramework.UsingJvTFPrinter, "Using TJvTFPrinter"> for more information.
-----------------------------------------------------------------------------------------------------
-@@TJvTFVarApptEvent
-<TITLE TJvTFVarApptEvent type>
-Summary
-  Event type for events that might need to change an appointment. 
-Description
-  This event type is used when the value of Appt may be changed in an event handler.
-Parameters
-  Sender - The object that called the event.
-  Appt   - The appointment that might be changed.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFStateImageMap
 Summary
@@ -3078,7 +2954,6 @@ Summary
 Description
   Returns the position of the image specified by Index in the ImageList. This is handy if you need
   to loop through the possible states to get image map information.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFStateImageMap.Recurring
 Summary
@@ -3101,4 +2976,62 @@ Description
   Set it to -1 to indicate that no image should be shown for this state.
 See Also
   AlarmDisabled, AlarmEnabled, Modified, Recurring
+----------------------------------------------------------------------------------------------------
+@@TJvTFStatePic
+<TITLE TJvTFStatePic type>
+Summary
+  Represent the different appointment states that may be assign an image.
+Description
+  Represent the different appointment states that may be assign an image.
+@@TJvTFStatePic.spAlarmEnabled
+  The alarm is enabled for the appointment.
+@@TJvTFStatePic.spAlarmDisabled
+  The alarm is disabled for the appointment.
+@@TJvTFStatePic.spShared
+  The appointment is a shared appointment.
+@@TJvTFStatePic.spRecurring
+  The appointment is a recurring appointment.
+@@TJvTFStatePic.spModified
+  The appointment has been modified
+----------------------------------------------------------------------------------------------------
+@@TJvTFTimeRange
+<TITLE TJvTFTimeRange type>
+Summary
+  Defines a time range.
+Description
+  Defines a time range.
+@@TJvTFTimeRange.StartTime
+  Start time of the range. Must be less than EndTime.
+@@TJvTFTimeRange.EndTime
+  End time of the range. Must be greater than StartTime.
+----------------------------------------------------------------------------------------------------
+@@TJvTFUniversalPrinter
+<TITLEIMG TJvTFUniversalPrinter>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  The TJvTFUniversalPrinter component is a general purpose printing component that allows you to
+  easily produce documents with specific margins, bodies, and headers and footers.
+Description
+  This component is NOT a supported part of JTF. It is included only because it is a natural extension
+  of TJvTFPrinter. This component will NOT be improved or enhanced.
 
+  See <LINK JVCL.Info.TimeFramework.UsingJvTFPrinter, "Using TJvTFPrinter"> for more information.
+----------------------------------------------------------------------------------------------------
+@@TJvTFVarApptEvent
+<TITLE TJvTFVarApptEvent type>
+Summary
+  Event type for events that might need to change an appointment.
+Description
+  This event type is used when the value of Appt may be changed in an event handler.
+Parameters
+  Sender - The object that called the event.
+  Appt   - The appointment that might be changed.
+----------------------------------------------------------------------------------------------------
+@@TTFDayOfWeek
+<TITLE TTFDayOfWeek type>
+Summary
+  Type describing the days of a week.
+Description
+  Enumerates the days of the week.

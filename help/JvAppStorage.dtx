@@ -14,6 +14,16 @@ Summary
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
+@@TJvAppStorage
+<TITLEIMG TJvAppStorage>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
 @@TJvAppStorageEnumOption
 <TITLE TJvAppStorageEnumOption type>
 Summary
@@ -68,20 +78,6 @@ Parameters
 See Also
   TJvCustomAppStorage.ReadList, TJvCustomAppStorage.WriteList
 ----------------------------------------------------------------------------------------------------
-@@TJvAppStoragePropTranslateEvent
-<TITLE TJvAppStoragePropTranslateEvent type>
-<COMBINE TJvCustomAppStorage.OnTranslatePropertyName>
-----------------------------------------------------------------------------------------------------
-@@TJvAppStorage
-<TITLEIMG TJvAppStorage>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
 @@TJvAppStorageOptions
 Summary
   Write here a summary (1 line)
@@ -95,6 +91,10 @@ Summary
 Description
   TJvAppStorageOptionsClass is the metaclass for TJvCustomAppStorageOptions. Its value is the class reference for
   TJvCustomAppStorageOptions or for one of its descendants.
+----------------------------------------------------------------------------------------------------
+@@TJvAppStoragePropTranslateEvent
+<TITLE TJvAppStoragePropTranslateEvent type>
+<COMBINE TJvCustomAppStorage.OnTranslatePropertyName>
 ----------------------------------------------------------------------------------------------------
 @@TJvAppSubStorage
 Summary
@@ -404,7 +404,7 @@ Summary
 Description
   GetStoredValue will retrieve a list of values and/or folders in the storage. The scanning will
   start in the specified folder and returned in the TStrings list provided. The Options parameter
-  will determine what will be returned and how, and wether or not sub folders are scanned.
+  will determine what will be returned and how, and whether or not sub folders are scanned.
 Parameters
   Path    - Path (relative to the current path) of the folder to scan.
   Strings - TStrings descendant to receive the list of values and or folders. Each item will refer
@@ -496,32 +496,6 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppStorage.ResolvePath
-Summary
-  Resolves the specified path to a target storage and target path.
-Description
-  ResolvePath will resolve the specified path into a storage backend and path to use. The storage
-  returned might be itself, one of it's sub stores or a sub store at an even deeper level. In any
-  case, the returned store and path will no longer reference to any other sub store.
-
-  ResolvePath will take the specified path, prefixing it with the currently set path and
-  canonicalize it (making it relative to the absolute root of the storage).
-
-  It will then  scan the sub storages to see if the path refers to a linked storage. If it doesn't,
-  this storage will be returned as the target store and the canonicalized path as the target path.
-
-  If it did find a sub store, the link path is removed from the canonical path (making it relative
-  to the absolute root of the sub store) and ResolvePath is executed on the sub store. Eventually
-  the sub store to use and the path relative to the absolute root of that store are returned.
-Parameters
-  InPath    - The path to resolve. This may be any path specification, even one that's relative to
-              the currently selected path.
-  TgtStore  - The target store to use. The returned store is guaranteed to be the store that should
-              contain the specified path (ie. it can not reference any of it's linked sub stores).
-  TgtPath   - The path to use in the target store. The returned path is always canonical and
-              relative to the absolute root of the target store specified by TgtStore and will
-              reference the path specified by InPath.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ReadBinary
 Summary
@@ -718,6 +692,32 @@ Parameters
 See Also
   WriteStringList, ReadBinary, ReadDateTime, ReadFloat, ReadInteger, ReadList, ReadString
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStorage.ResolvePath
+Summary
+  Resolves the specified path to a target storage and target path.
+Description
+  ResolvePath will resolve the specified path into a storage backend and path to use. The storage
+  returned might be itself, one of it's sub stores or a sub store at an even deeper level. In any
+  case, the returned store and path will no longer reference to any other sub store.
+
+  ResolvePath will take the specified path, prefixing it with the currently set path and
+  canonicalize it (making it relative to the absolute root of the storage).
+
+  It will then  scan the sub storages to see if the path refers to a linked storage. If it doesn't,
+  this storage will be returned as the target store and the canonicalized path as the target path.
+
+  If it did find a sub store, the link path is removed from the canonical path (making it relative
+  to the absolute root of the sub store) and ResolvePath is executed on the sub store. Eventually
+  the sub store to use and the path relative to the absolute root of that store are returned.
+Parameters
+  InPath    - The path to resolve. This may be any path specification, even one that's relative to
+              the currently selected path.
+  TgtStore  - The target store to use. The returned store is guaranteed to be the store that should
+              contain the specified path (ie. it can not reference any of it's linked sub stores).
+  TgtPath   - The path to use in the target store. The returned path is always canonical and
+              relative to the absolute root of the target store specified by TgtStore and will
+              reference the path specified by InPath.
+----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.Root
 Summary
   Specifies absolute root.
@@ -731,7 +731,7 @@ Description
 See Also
   Path
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomAppStorage.StoreOptions
+@@TJvCustomAppStorage.StorageOptions
 Summary
   Write here a summary (1 line)
 Description

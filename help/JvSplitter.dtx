@@ -21,6 +21,9 @@ Description
 
   Use property HintColor to change the color of the hint boxes for the scroll box.
 ----------------------------------------------------------------------------------------------------
+@@TJvSplitter.AboutJVCL
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
 @@TJvSplitter.Create
 Summary
   Creates and initializes a new TJvSplitter object.
@@ -35,44 +38,6 @@ Parameters
   AOwner - A component, typically the form, that is responsible for freeing the splitter control.
 See Also
   HintColor
-----------------------------------------------------------------------------------------------------
-@@TJvSplitter.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
-----------------------------------------------------------------------------------------------------
-@@TJvSplitter.CMMouseEnter
-Summary
-  Responds when the mouse pointer moves over the splitter control.
-Description
-  CMMouseEnter is called automatically when the mouse pointer moves over the splitter control. It sets
-  the hint color for the application to the property specified by HintColor, and triggers the
-  OnMouseEnter event.
-Parameters
-  Msg - Represents the parameters of the Windows message that informs the splitter control of the event.
-See Also
-  CMMouseLeave, OnMouseEnter, OnMouseLeave
-----------------------------------------------------------------------------------------------------
-@@TJvSplitter.CMMouseLeave
-Summary
-  Responds when the mouse pointer moves off the splitter control.
-Description
-  CMMouseEnter is called automatically when the mouse pointer moves off the splitter control. It resets the
-  hint color for the application, and triggers the OnMouseLeave event.
-Parameters
-  Msg - Represents the parameters of the Windows message that informs the splitter control of the event.
-See Also
-  CMMouseEnter, OnMouseEnter, OnMouseLeave
-----------------------------------------------------------------------------------------------------
-@@TJvSplitter.CMParentColorChanged
-Summary
-  Responds when the color of the parent of the splitter control changes.
-Description
-  CMParentColorChanged is called automatically when the color of the parent of the splitter control changes.
-  It triggers the OnParentColorChange event.
-Parameters
-  Msg - Represents the parameters of the Windows message that informs the splitter control of the parent
-        color change.
-See Also
-  OnParentColorChange
 ----------------------------------------------------------------------------------------------------
 @@TJvSplitter.HintColor
 Summary
