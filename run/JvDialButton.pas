@@ -504,7 +504,8 @@ begin
   if Value <> FFrequency then
   begin
     FFrequency := Value;
-    if FFrequency < 1 then FFrequency := 1; 
+    if FFrequency < 1 then
+      FFrequency := 1; 
     if FTickStyle = tsAuto then
     begin
       ClearTicks;

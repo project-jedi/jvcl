@@ -1860,7 +1860,8 @@ begin
                 begin
                   if FImage.FColorMap.Colors[TransIndex].Blue = 0 then
                     Offset := 1
-                  else if FImage.FColorMap.Colors[TransIndex].Blue = 255 then
+                  else
+                  if FImage.FColorMap.Colors[TransIndex].Blue = 255 then
                     Offset := -1;
                   Inc(FImage.FColorMap.Colors[TransIndex].Blue, Offset);
                 end;
@@ -1870,10 +1871,8 @@ begin
             end
             else
               FTransparentColor := clNone;
-            FAnimateInterval := Max(FExtRec.GCE.DelayTime * 10,
-              FAnimateInterval);
-            FDisposal := TDisposalMethod((FExtRec.GCE.PackedFields and
-              GCE_DISPOSAL_METHOD) shr 2);
+            FAnimateInterval := Max(FExtRec.GCE.DelayTime * 10, FAnimateInterval);
+            FDisposal := TDisposalMethod((FExtRec.GCE.PackedFields and GCE_DISPOSAL_METHOD) shr 2);
           end;
     end;
   except
@@ -3077,12 +3076,12 @@ initialization
   {$ENDIF USE_JV_GIF}
 
 finalization
-  {$IFDEF UNITVERSIONING}
-  UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
   {$IFDEF USE_JV_GIF}
   TPicture.UnRegisterGraphicClass(TJvGIFImage);
   {$ENDIF USE_JV_GIF}
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.
 

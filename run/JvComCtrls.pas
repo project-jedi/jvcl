@@ -1842,7 +1842,8 @@ begin
     I := 0;
     while I <= TabIndex + RealIndex do
     begin
-      if not Pages[I].TabVisible then Inc(RealIndex);
+      if not Pages[I].TabVisible then
+        Inc(RealIndex);
       Inc(I);
     end;
     RealIndex := RealIndex + TabIndex;
@@ -1925,7 +1926,8 @@ begin
   RealIndex := 0;
   while I <= TabIndex + RealIndex do
   begin
-    if not Pages[I].TabVisible then Inc(RealIndex);
+    if not Pages[I].TabVisible then
+      Inc(RealIndex);
     Inc(I);
   end;
   RealIndex := RealIndex + TabIndex;
@@ -2746,23 +2748,21 @@ begin
               TJvTreeNode(Selected).PopupMenu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
           end;
         TVN_SELCHANGEDA, TVN_SELCHANGEDW:
-          begin
-            if Assigned(FPageControl) then
-              if Selected <> nil then
+          if Assigned(FPageControl) then
+            if Selected <> nil then
+            begin
+              //Search for the correct page
+              J := -1;
+              for I := 0 to FPageControl.PageCount - 1 do
+                if DoComparePage(FPageControl.Pages[I], Selected) then
+                  J := I;
+              if J <> -1 then
               begin
-                //Search for the correct page
-                J := -1;
-                for I := 0 to FPageControl.PageCount - 1 do
-                  if DoComparePage(FPageControl.Pages[I], Selected) then
-                    J := I;
-                if J <> -1 then
-                begin
-                  FPageControl.ActivePage := FPageControl.Pages[J];
-                  if Assigned(FOnPage) then
-                    FOnPage(Self, Selected, FPageControl.Pages[J]);
-                end;
+                FPageControl.ActivePage := FPageControl.Pages[J];
+                if Assigned(FOnPage) then
+                  FOnPage(Self, Selected, FPageControl.Pages[J]);
               end;
-          end;
+            end;
       end;
   end;
 end;

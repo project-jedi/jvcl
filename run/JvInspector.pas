@@ -4418,6 +4418,7 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
 procedure TJvCustomInspector.AdjustClientRect(var Rect: TRect);
 begin
   inherited AdjustClientRect(Rect);
@@ -4429,14 +4430,16 @@ begin
       Dec(Rect.Right, FVertScrollBar.Width);
 end;
 
-function TJvCustomInspector.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; 
+function TJvCustomInspector.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
   Result := False;
   if (Sender <> Handle) and Assigned(Selected) {and (Selected.EditCtrl.Handle = Sender)} then
     Result := Selected.EventFilter(Sender, Event)
-  else if Sender = Handle then
+  else
+  if Sender = Handle then
     Result := inherited EventFilter(Sender, Event);
 end;
+
 {$ENDIF VisualCLX}
 
 //=== { TJvInspectorPainter } ================================================
@@ -12794,7 +12797,6 @@ begin
   RegisterIntegerConsts(TypeInfo(TItemRowSizing), IrsToInt, IntToIrs);
 end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -12809,7 +12811,6 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   RegisterConsts;
 
 finalization

@@ -346,9 +346,9 @@ end;
 procedure TJvChangeNotify.SetActive(const Value: Boolean);
 const
   cActions: array [TJvChangeAction] of Cardinal =
-    (FILE_NOTIFY_CHANGE_FILE_NAME, FILE_NOTIFY_CHANGE_DIR_NAME,
-     FILE_NOTIFY_CHANGE_ATTRIBUTES, FILE_NOTIFY_CHANGE_SIZE,
-     FILE_NOTIFY_CHANGE_LAST_WRITE, FILE_NOTIFY_CHANGE_SECURITY);
+   (FILE_NOTIFY_CHANGE_FILE_NAME, FILE_NOTIFY_CHANGE_DIR_NAME,
+    FILE_NOTIFY_CHANGE_ATTRIBUTES, FILE_NOTIFY_CHANGE_SIZE,
+    FILE_NOTIFY_CHANGE_LAST_WRITE, FILE_NOTIFY_CHANGE_SECURITY);
 var
   cA: TJvChangeAction;
   Flags: Cardinal;
@@ -358,7 +358,8 @@ begin
   if (FActive <> Value) then
   begin
     FActive := Value;
-    if (csDesigning in ComponentState) then Exit;   //active is now published
+    if csDesigning in ComponentState then
+      Exit;   //active is now published
 
     if FActive then
     begin

@@ -1156,19 +1156,20 @@ end;
 
 function TJvFontComboBox.FontSubstitute(const AFontName: string): string;
 var
-  aSize: DWORD;
+  Size: DWORD;
   AKey: HKey;
 begin
   Result := AFontName;
-  if AFontName = '' then Exit;
-  if RegOpenKeyEx(HKEY_LOCAL_MACHINE, PChar('SOFTWARE\Microsoft\Windows NT\CurrentVersion\FontSubstitutes'), 0,
-    KEY_QUERY_VALUE, AKey) = ERROR_SUCCESS then
+  if AFontName = '' then
+    Exit;
+  if RegOpenKeyEx(HKEY_LOCAL_MACHINE, PChar('SOFTWARE\Microsoft\Windows NT\CurrentVersion\FontSubstitutes'),
+    0, KEY_QUERY_VALUE, AKey) = ERROR_SUCCESS then
   try
     if (RegQueryValueEx(AKey, PChar(AFontName),
-      nil, nil, nil, @aSize) = ERROR_SUCCESS) and (aSize > 0) then
+      nil, nil, nil, @Size) = ERROR_SUCCESS) and (Size > 0) then
     begin
-      SetLength(Result, aSize);
-      if RegQueryValueEx(AKey, PChar(AFontName), nil, nil, PByte(@Result[1]), @aSize) = ERROR_SUCCESS then
+      SetLength(Result, Size);
+      if RegQueryValueEx(AKey, PChar(AFontName), nil, nil, PByte(@Result[1]), @Size) = ERROR_SUCCESS then
         Result := string(Result)
       else
         Result := AFontName;
@@ -1207,7 +1208,8 @@ var
   I: Integer;
 begin
   Result := ItemIndex;
-  if (csDesigning in ComponentState) then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if (MaxMRUCount = 0) or (MaxMRUCount > MRUCount) then
   begin
     I := Items.IndexOf(Text);
