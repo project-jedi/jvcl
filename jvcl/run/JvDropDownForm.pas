@@ -42,7 +42,7 @@ uses
   Windows, Messages, Controls, StdCtrls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QStdCtrls, QForms, Types, QWindows,
+  Qt, QControls, QStdCtrls, QForms, Types, QWindows,
   {$ENDIF VisualCLX}
   JvTypes, JvExForms;
 
@@ -65,10 +65,13 @@ type
     {$IFDEF VCL}
     procedure CreateParams(var AParams: TCreateParams); override;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    function WidgetFlags: Integer; override;
+    {$ENDIF VisualCLX}
     property Edit: TCustomEdit read GetEdit;
   public
     constructor Create(AOwner: TComponent); override;
-    property CloseOnLeave: Boolean read FCloseOnLeave write FCloseOnLeave;
+    property CloseOnLeave: Boolean read FCloseOnLeave write FCloseOnLeave; // (ahuser) meight have no function under VisualCLX
     property Entering: Boolean read FEntering;
     property Leaving: Boolean read FLeaving;
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
@@ -99,9 +102,14 @@ begin
  {determines whether a window is the child (or grand^x-child) of another}
   LParent := AChild;
   // (rom) changed to while loop
-  while (LParent <> AParent) and (LParent <> NilHandle) do
-    LParent := GetParent(LParent);
-  Result := (LParent = AParent) and (LParent <> NilHandle);
+  if LParent = AParent then
+    Result := False // (ahuser) a parent is no child of itself
+  else
+  begin
+    while (LParent <> AParent) and (LParent <> NilHandle) do
+      LParent := GetParent(LParent);
+    Result := (LParent = AParent) and (LParent <> NilHandle);
+  end;
 end;
 
 type
@@ -141,6 +149,14 @@ begin
   AParams.Style := AParams.Style or WS_BORDER;
 end;
 {$ENDIF}
+
+{$IFDEF VisualCLX}
+function TJvCustomDropDownForm.WidgetFlags: Integer;
+begin
+  Result := inherited WidgetFlags or Integer(WidgetFlags_WStyle_DialogBorder) or
+    Integer(WidgetFlags_WType_Popup);
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvCustomDropDownForm.DoClose(var Action: TCloseAction);
 begin
