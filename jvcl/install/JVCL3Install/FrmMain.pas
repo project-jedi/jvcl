@@ -37,12 +37,13 @@ command line switches:
 unit FrmMain;
 interface
 {$IFDEF COMPILER6_UP}
-  {$WARN UNIT_PLATFORM OFF}
+ {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, CheckLst, ExtCtrls, ComCtrls, ImgList, CommCtrl, ActnList, Buttons,
-  Menus, ShellAPI, FileCtrl,
+  Menus, ShellAPI, FileCtrl, 
+
   CoreData, BuildHelpers;
 
 type
@@ -557,8 +558,8 @@ begin
   end;
 end;
 
-procedure TFormMain.ListViewTargetsChange(Sender: TObject;
-  Item: TListItem; Change: TItemChange);
+procedure TFormMain.ListViewTargetsChange(Sender: TObject; Item: TListItem;
+  Change: TItemChange);
 var
   Target: TTargetInfo;
   Dir: string;
@@ -591,7 +592,10 @@ begin
                 Item.Checked := True;
               end
               else
+              begin
                 Dir := '';
+                MessageDlg('No \source\common directory found.', mtError, [mbOk], 0);
+              end;
             end
             else
               Dir := '';
