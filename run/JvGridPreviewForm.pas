@@ -36,7 +36,7 @@ uses
   {$IFDEF VisualCLX}
   QComCtrlsEx,
   {$ENDIF VisualCLX}
-  JvGridPrinter, JvComponent, QExtDlgs;
+  JvGridPrinter, JvComponent;
 
 type
   TJvGridPreviewForm = class(TJvForm)
