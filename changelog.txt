@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-10-14:
+- Updated the BCB compatibility guide // olivier
 2003-10-13:
 - moved JvTransparentForm to /archive - duplicate of JvFormTransparent // peter3
 2003-10-11:
