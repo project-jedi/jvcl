@@ -44,7 +44,7 @@ uses
   JvDsgnConsts, JvTypes,
   JvSpin, JvEdit, JvRichEdit, JvProgressBar, JvDateTimePicker, JvDatePickerEdit,
   JvCheckedMaskEdit, JvMaskEdit, JvCalendar, JvBaseEdits, JvCalc, JvToolEdit,
-  JvxSlider, JvBevel, JvCheckBox, JvSpeedButton, JvTextListBox, JvSecretPanel,
+  JvxSlider, JvBevel, JvCheckBox, JvSpeedButton, JvTextListBox, JvSecretPanel, 
   JvxCheckListBox, JvCheckListBox, JvCombobox, JvCheckTreeView, JvComCtrls,
   JvControlBar, JvCoolBar, JvCtrls, JvGroupBox, JvHeaderControl, JvHotKey,
   JvImage, JvLabel, JvListView, JvMemo, JvMenus, JvRadioButton, JvRadioGroup,
@@ -87,7 +87,7 @@ begin
     TJvPageControl, TJvTabControl, TJvTabDefaultPainter,   
     TJvProgressBar, TJvStatusBar, TJvToolBar, TJvControlBar, TJvCoolBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
-    TJvSecretPanel {TJvTransparentPanel}]);
+    TJvSecretPanel {, TJvTransparentPanel}]);
   RegisterComponents(RsPaletteLabel, [TJvLabel, TJvStaticText]);
   RegisterComponents(RsPaletteListComboTree, [TJvComboBox,TJvListBox,
     TJvCheckListBox, TJvTreeView, TJvListView, TJvCheckTreeView,
