@@ -84,7 +84,7 @@ implementation
 
 {$IFDEF USEJVCL}
 uses
-  JvJVCLUtils, JvResources;
+  JvResources;
 {$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
