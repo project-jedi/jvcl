@@ -42,7 +42,7 @@ type
   IJvDesigner = DesignIntf.IDesigner;
   IJvFormDesigner = DesignIntf.IDesigner;
   {$ELSE}
-  IJvDesigner = IDesigner;
+  IJvDesigner = IFormDesigner;
   IJvFormDesigner = IFormDesigner;
   {$ENDIF COMPILER6_UP}
 
