@@ -2,13 +2,13 @@ package JvCoreD5R;
 
 {$R *.RES}
 {$ALIGN ON}
-{$ASSERTIONS OFF}
+{$ASSERTIONS ON}
 {$BOOLEVAL OFF}
-{$DEBUGINFO OFF}
+{$DEBUGINFO ON}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS OFF}
+{$LOCALSYMBOLS ON}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
@@ -48,6 +48,8 @@ contains
   JvActnResForm in '..\..\design\JvActnResForm.pas' {JvStandardActions: TDataModule},
   JvDataProviderImpl in '..\..\run\JvDataProviderImpl.pas',
   JvDataProvider in '..\..\run\JvDataProvider.pas',
-  JvContextProvider in '..\..\run\JvContextProvider.pas';
+  JvContextProvider in '..\..\run\JvContextProvider.pas',
+  JvAppStore in '..\..\run\JvAppStore.pas',
+  JvAppRegistryStore in '..\..\run\JvAppRegistryStore.pas';
 
 end.
