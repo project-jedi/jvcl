@@ -68,8 +68,9 @@ begin
   RegisterComponents(RsPaletteButton, [TJvLookOutButton, TJvExpressButton]);
   RegisterComponents(RsPaletteEdit, [TJvValidateEdit]);
   RegisterComponents(RsPaletteBarPanel, [TJvGammaPanel, TJvOutlookBar,
-    TJvLookout, TJvLookOutPage,  TJvExpress]);
+    TJvLookout, {TJvLookOutPage,}  TJvExpress]);
   RegisterComponents(RsPaletteLabel, [TJvLinkLabel]);
+  RegisterComponents(RsPaletteVisual, [TJvTMTimeLine, TJvChart]);
 
   RegisterPropertyEditor(TypeInfo(Integer), TJvCustomOutlookBar,
     cActivePageIndex, TJvOutlookBarActivePageEditor);

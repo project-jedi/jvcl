@@ -602,7 +602,7 @@ begin
       {$ENDIF MSWINDOWS}
       {$IFDEF LINUX}
        R:= Rect(0,0, Instance.Width, Instance.Height);
-      {$ENDIF LINUX} 
+      {$ENDIF LINUX}
     end;
 
     try
