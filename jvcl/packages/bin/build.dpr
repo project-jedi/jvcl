@@ -949,7 +949,7 @@ begin
 
     FindDxgettext(ed.VersionStr);
 
-   // setup environment and execute build.bat
+    // setup environment and execute make.exe
     Path := GetWindowsDir + ';' + GetSystemDir + ';' + GetWindowsDir + '\Command';
     if LibDir <> BplDir then
       Path := RootDir + ';' + BplDir + ';' + LibDir + ';' + Path
