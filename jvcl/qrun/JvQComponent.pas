@@ -44,7 +44,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}  
   Qt, QWindows, 
-  JVQCLVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
+  JVCLXVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
 
 type
   TJvComponent = class(TComponent)

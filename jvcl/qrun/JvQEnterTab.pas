@@ -37,8 +37,7 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, Types, QGraphics, QControls, QForms, QStdCtrls,
-  {$ENDIF VCL} 
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, QStdCtrls, 
   Qt, JvQConsts, 
   JvQComponent;
 

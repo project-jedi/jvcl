@@ -36,7 +36,7 @@ interface
 
 uses
   SysUtils, Classes,
-  JVQCLVer;
+  JVCLXVer;
 
 type
   TJvDataEmbedded = class(TComponent)

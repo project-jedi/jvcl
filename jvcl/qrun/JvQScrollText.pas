@@ -38,7 +38,7 @@ interface
 uses
   SysUtils, Classes,  
   Types, QGraphics, QControls, QForms, QStdCtrls, QWindows, 
-  JvQTypes, JvQImageDrawThread, JVQCLVer, JvQComponent;
+  JvQTypes, JvQImageDrawThread, JVCLXVer, JvQComponent;
 
 type
   TJvScrollTextDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom); // also in JvMoveableBevel, JvAppearingLabel 

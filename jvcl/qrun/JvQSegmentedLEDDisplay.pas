@@ -39,11 +39,15 @@ unit JvQSegmentedLEDDisplay;
 interface
 
 uses
-  Classes, Types, QGraphics, QWindows,
+  Classes, Types, QGraphics, QWindows, 
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS} 
   JclBase,
   JvQComponent, JvQTypes;
 
 // Additional color values for unlit color settings (TUnlitColor type)
+// asn: does this work with clx/linux?
 const
   clDefaultBackground = TColor($20100001);
   clDefaultLitColor = TColor($20100002);
@@ -93,7 +97,9 @@ type
     FSegmentThickness: Integer;
     FSegmentUnlitColor: TUnlitColor;
     FSlant: TSlantAngle;
-    FText: string;
+    FText: string; 
+    FAutoSize: boolean;
+    procedure SetAutoSize(Value: boolean); 
   protected
     procedure DefineProperties(Filer: TFiler); override;
     procedure Loaded; override;
@@ -123,9 +129,8 @@ type
     procedure InvalidateDigits;
     procedure InvalidateView;
     procedure UpdateText;
-    procedure UpdateBounds;
-
-    property AutoSize default True;
+    procedure UpdateBounds;  
+    property AutoSize: boolean read FAutoSize write SetAutoSize default True; 
     property CharacterMapper: TJvSegmentedLEDCharacterMapper read FCharacterMapper;
     property DigitClass: TJvSegmentedLEDDigitClass read FDigitClass write SetDigitClass;
     // Solely needed for design time support of DigitClass
@@ -382,7 +387,7 @@ implementation
 
 uses
   QControls, SysUtils,
-  JclGraphUtils,
+  JclQGraphUtils,
   JvQThemes, JvQConsts, JvQResources;
 
 {$IFDEF MSWINDOWS}
@@ -439,6 +444,12 @@ begin
 end;
 
 procedure UnregisterModuleSegmentedLEDDigitClasses(Module: HMODULE);
+{$IFDEF LINUX}
+begin
+  // ?
+end;
+{$ENDIF LINUX}
+{$IFDEF MSWINDOWS}
 var
   I: Integer;
   M: TMemoryBasicInformation;
@@ -455,6 +466,8 @@ begin
     DigitClassList.UnlockList;
   end;
 end;
+{$ENDIF MSWINDOWS}
+
 
 //=== Helper routine: AngleAdjustPoint =======================================
 
@@ -469,8 +482,8 @@ end;
 constructor TJvCustomSegmentedLEDDisplay.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  IncludeThemeStyle(Self, [csParentBackground]);
-  AutoSize := True;
+  IncludeThemeStyle(Self, [csParentBackground]);  
+  FAutoSize := True; // asn: prevents redraws 
   FDigitClass := TJv7SegmentedLEDDigit;
   FCharacterMapper := TJvSegmentedLEDCharacterMapper.Create(Self);
   FDigits := TJvSegmentedLEDDigits.Create(Self);
@@ -658,6 +671,15 @@ begin
     UpdateDigitsPositions;
   end;
 end;
+
+
+procedure TJvCustomSegmentedLEDDisplay.SetAutoSize(Value: boolean);
+begin
+  FAutoSize := value;
+  if Value then
+    UpdateBounds;
+end;
+
 
 function TJvCustomSegmentedLEDDisplay.GetDigitClassName: TJvSegmentedLEDDigitClassName;
 begin

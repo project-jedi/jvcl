@@ -287,7 +287,7 @@ type
 implementation
 
 uses
-  Forms, Dialogs, DbConsts, Math,
+  QForms, QDialogs, DbConsts, Math,
   JvQResources;
 
 const

@@ -37,7 +37,7 @@ interface
 uses
   SysUtils, Classes,  
   QDialogs, 
-  JVQCLVer, JvQComponent;
+  JVCLXVer, JvQComponent;
 
 type 
   TCommonDialog = TCustomDialog; 

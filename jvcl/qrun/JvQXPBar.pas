@@ -57,8 +57,8 @@ interface
 
 uses
   Classes, SysUtils,
-  QWindows, QMessages, QControls, Types, QGraphics, QForms, QImgList, QActnList, QExtCtrls, 
-  Qt, JvQTypes, 
+  QControls, QWindows, QMessages, Types, QGraphics, QForms, QImgList, QActnList, QExtCtrls,
+  Qt, JvQTypes, QTypes,
   JvQConsts, JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -812,7 +812,7 @@ begin
  
  
     DrawText(ACanvas, ItemCaption, -1, Rect, DT_SINGLELINE or
-      DT_VCENTER or DT_END_ELLIPSIS); 
+      DT_VCENTER or DT_END_ELLIPSIS);
   end;
 end;
 

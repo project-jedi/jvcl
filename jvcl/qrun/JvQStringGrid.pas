@@ -73,9 +73,7 @@ type
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
     FFixedFont: TFont;
-    procedure GMActivateCell(var Msg: TGMActivateCell); message GM_ACTIVATECELL;
-    procedure SetAlignment(const Value: TAlignment);
-    procedure WMCommand(var Msg: TWMCommand); message WM_COMMAND;
+    procedure SetAlignment(const Value: TAlignment); 
     procedure SetFixedFont(const Value: TFont);
     procedure DoFixedFontChange(Sender: TObject);
   protected
@@ -205,8 +203,7 @@ type
   protected
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
-  public
-    procedure CreateParams(var Params: TCreateParams); override;
+  public 
   end;
 
 
@@ -836,8 +833,8 @@ begin
   begin
     FAlignment := Value;
     Invalidate;
-    if Assigned(InplaceEditor) then
-      TExInplaceEdit(InplaceEditor).RecreateWnd;
+    if Assigned(InplaceEditor) then  
+      TExInplaceEdit(InplaceEditor).RecreateWidget; 
   end;
 end;
 
@@ -984,8 +981,8 @@ begin
     else
       AColWidth := MinWidth;
     for J := 0 to RowCount - 1 do
-    begin
-      if GetTextExtentPoint32(Canvas.Handle, PChar(Cells[Index, J]), Length(Cells[Index, J]), ASize) then
+    begin  
+      if GetTextExtentPoint32W(Canvas.Handle, PWideChar(Cells[Index, J]), Length(Cells[Index, J]), ASize) then 
         AColWidth := Max(AColWidth, ASize.cx + 8);
     end;
     ColWidths[Index] := AColWidth;
@@ -999,8 +996,8 @@ begin
       else
         AColWidth := MinWidth;
       for J := 0 to RowCount - 1 do
-      begin
-        if GetTextExtentPoint32(Canvas.Handle, PChar(Cells[I, J]), Length(Cells[I, J]), ASize) then
+      begin  
+        if GetTextExtentPoint32W(Canvas.Handle, PWideChar(Cells[I, J]), Length(Cells[I, J]), ASize) then 
           AColWidth := Max(AColWidth, ASize.cx + 8);
       end;
       ColWidths[I] := AColWidth;

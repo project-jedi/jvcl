@@ -37,7 +37,7 @@ interface
 uses
   SysUtils, Classes,  
   QGraphics, QControls, QExtCtrls, QWindows, Types, 
-  JvQImageDrawThread, JVQCLVer, JvQExExtCtrls;
+  JvQImageDrawThread, JVCLXVer, JvQExExtCtrls;
 
 type
   TJvImageRotate = class(TJvExImage)
