@@ -18,6 +18,7 @@ Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Peter Thornqvist
 Oliver Giesen
+Gustavo Bianconi
 
 Last Modified: 2000-02-28
 
@@ -177,6 +178,9 @@ type
   end;
 } // JvAlarm
 
+// Bianconi - Moved from JvAlarms.pas
+  TJvTriggerKind = (tkOneShot, tkEachSecond, tkEachMinute, tkEachHour, tkEachDay, tkEachMonth, tkEachYear);
+// End of Bianconi
 
 
   TJvFourCC = array [0..3] of Char;

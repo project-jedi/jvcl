@@ -30,11 +30,7 @@ unit JvIni;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   Classes, IniFiles, Graphics;
 
 type
@@ -98,9 +94,6 @@ implementation
 
 uses
   SysUtils, Forms,
-  {$IFNDEF WIN32}
-  JvStr16,
-  {$ENDIF}
   JvStrUtils;
 
 const

@@ -42,9 +42,6 @@ uses
   Variants, VDBConsts,
   {$ENDIF}
   Messages, Classes, Controls, Forms, Graphics, Menus, DB, Mask, StdCtrls,
-  {$IFNDEF COMPILER3_UP}
-  DBTables,
-  {$ENDIF}
   JvDBUtils, JvToolEdit;
 
 const

@@ -132,10 +132,6 @@ const
 implementation
 
 uses
-  {$IFNDEF WIN32}
-  WinTypes, WinProcs,
-  JvStr16,
-  {$ENDIF}
   JvStrUtils;
 
 const
