@@ -137,6 +137,7 @@ type
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
+    procedure Loaded; override;
     function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override;
     {$ENDIF VisualCLX}
   public
@@ -843,12 +844,22 @@ constructor TJvCustomHTListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   // Kaczkowski
+  {$IFDEF VCL}
   Style := lbOwnerDrawVariable;
+  {$ENDIF VCL}
   ColorHighlight := clHighlight;
   ColorHighlightText := clHighlightText;
   ColorDisabledText := clGrayText;
   // Kaczkowski
 end;
+
+{$IFDEF VisualCLX}
+procedure TJvCustomHTListBox.Loaded;
+begin
+  inherited;
+  Style := lbOwnerDrawVariable;
+end;
+{$ENDIF VisualCLX}
 
 {$IFDEF VCL}
 procedure TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;
@@ -884,6 +895,7 @@ end;
 procedure TJvCustomHTListBox.FontChanged;
 begin
   inherited FontChanged;
+  if not assigned(Canvas) then exit; // VisualCLX needs this 
   Canvas.Font := Font;
   ItemHeight := CanvasMaxTextHeight(Canvas);
 end;
