@@ -250,7 +250,7 @@ implementation
 
 uses
   Consts, Math,
-  JvJCLUtils, JvJVCLUtils, JvAniFile, JvResources, JvTypes;
+  JvJCLUtils, JvJVCLUtils, JvAniFile, JvConsts, JvResources, JvTypes;
 
 {$R-}
 

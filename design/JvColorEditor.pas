@@ -38,7 +38,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvTypes, JvJVCLUtils;
+  JvConsts, JvJVCLUtils;
 
 type
   TJvColorProperty = class(TColorProperty)

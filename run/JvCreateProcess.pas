@@ -220,7 +220,7 @@ implementation
 uses
   Math,
   JclSysUtils,
-  JvJCLUtils, JvResources;
+  JvJCLUtils, JvConsts, JvResources;
 
 const
   CM_READ = WM_USER + 1;

@@ -97,6 +97,9 @@ type
 
 implementation
 
+uses
+  JvConsts; // (rom) for sLineBreak  no dependencies to packages
+
 function SubStr(const Value: string; StartIndex, EndIndex: Integer): string;
 begin
   Result := Copy(Value, StartIndex, EndIndex - StartIndex + 1);

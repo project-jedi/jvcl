@@ -349,7 +349,7 @@ uses
   Variants,
   {$ENDIF}
   {$ENDIF}
-  JvTypes, JvResources;
+  JvConsts, JvResources;
 
   { some utility functions }
 

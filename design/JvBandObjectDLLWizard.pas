@@ -140,7 +140,7 @@ implementation
 
 uses
   SysUtils, Forms, Controls, ComObj,
-  JvBandObjectDLLWizardForm, JvTypes, JvDsgnConsts;
+  JvBandObjectDLLWizardForm, JvConsts, JvDsgnConsts;
 
 const
   CrLf2 = #13#10#13#10;

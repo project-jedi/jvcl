@@ -45,10 +45,9 @@ interface
 {$HPPEMIT '#define CHARFORMAT2A Richedit::CHARFORMAT2A'}
 
 uses
-  Windows,
-  ActiveX, ComObj,
-  CommCtrl, Messages, SysUtils, Classes, Controls, Forms, Graphics, StdCtrls,
-  Dialogs, RichEdit, Menus, ComCtrls, JVCLVer, SyncObjs;
+  Windows, ActiveX, ComObj, CommCtrl, Messages, SysUtils, Classes, Controls,
+  Forms, Graphics, StdCtrls, Dialogs, RichEdit, Menus, ComCtrls, SyncObjs,
+  JVCLVer;
 
 type
   TRichEditVersion = 1..4;
@@ -886,7 +885,7 @@ implementation
 uses
   OleCtnrs,
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
-  JvThemes, JvTypes, JvResources;
+  JvThemes, JvConsts, JvResources;
 
 type
   PENLink = ^TENLink;

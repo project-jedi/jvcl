@@ -116,7 +116,7 @@ uses
   Variants,
   {$ENDIF}
   {$ENDIF}
-  JvResources;
+  JvConsts, JvResources;
 
 procedure TJvSALCore.AddProcedures(aSal: TJvSAL);
 begin

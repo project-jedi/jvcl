@@ -47,7 +47,7 @@ uses
   {$IFDEF COMPILER6_UP}
   DateUtils,
   {$ENDIF}
-  JvTypes, JvComponent;
+  JvConsts, JvTypes, JvComponent;
 
 type
   TBalloonType = (btNone, btError, btInfo, btWarning);

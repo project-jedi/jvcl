@@ -444,7 +444,7 @@ implementation
 uses
   Consts, Math, TypInfo,
   JclRegistry, JclSysUtils,
-  JvResources;
+  JvConsts, JvResources;
 
 {$IFNDEF DELPHI6_UP}
 type

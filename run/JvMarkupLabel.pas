@@ -73,7 +73,7 @@ type
 implementation
 
 uses
-  JvTypes, JvThemes;
+  JvConsts, JvThemes;
 
 
 { TJvMarkupLabel }

@@ -206,10 +206,11 @@ Known Issues:
 unit JvEditor;
 
 interface
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
   ExtCtrls, StdCtrls, Clipbrd, JvJCLUtils, JvFixedEditPopup,
-  JvUnicodeCanvas, JvTypes;
+  JvUnicodeCanvas;
 
 const
   Max_X = 1024; {max symbols per row}
@@ -222,9 +223,6 @@ const
 {$ELSE}
   WM_EDITCOMMAND = CM_BASE + $101;
 {$ENDIF}
-
-const
-  sLineBreakLen = Length(sLineBreak);
 
 type
   TCellRect = record
@@ -268,8 +266,8 @@ type
     property Internal[Index: Integer]: string write SetInternal;
   end;
 
-  TModifiedAction = (maAll, maInsert, maDelete, maInsertColumn, maDeleteColumn,
-                     maReplace);
+  TModifiedAction =
+    (maAll, maInsert, maDelete, maInsertColumn, maDeleteColumn, maReplace);
 
   TBookMark = record
     X: Integer;

@@ -600,13 +600,6 @@ var
   MasterColorConsumer: IJvDataConsumer;
 
 const
-  {$IFNDEF COMPILER6_UP}
-  clMoneyGreen = TColor($C0DCC0);
-  clSkyBlue = TColor($F0CAA6);
-  clCream = TColor($F0FBFF);
-  clMedGray = TColor($A4A0A0);
-  {$ENDIF}
-
   ColCount = 20;
   SysColCount = 25;
   ColorValues: array [0 .. ColCount - 1] of TDefColorItem = (

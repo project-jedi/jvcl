@@ -48,8 +48,7 @@ uses
 {$IFDEF VisualCLX}
   QGraphics,
 {$ENDIF}
-  SysUtils, Classes,
-  JvTypes;
+  SysUtils, Classes;
 
 {regular expressions}
 
@@ -220,7 +219,7 @@ function parseDate(s: string): Integer;
 implementation
 
 uses
-  JvResources;
+  JvConsts, JvResources, JvTypes;
 
 const
   B64Table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -312,7 +311,7 @@ begin
   p2 := PosStr('"', aText, p + L);
   if p2 = 0 then Exit;
   Result := copy(atext, p + L, p2 - (p + L));
-  Result := stringreplace(Result, '~~', cr, [rfreplaceall]);
+  Result := stringreplace(Result, '~~', Cr, [rfreplaceall]);
 end;
 
 function HasStrValue(aText, aName: string; var aValue: string): Boolean;

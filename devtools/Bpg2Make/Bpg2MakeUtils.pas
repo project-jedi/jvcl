@@ -1,3 +1,5 @@
+{$I JVCL.INC}
+
 unit Bpg2MakeUtils;
 
 interface
@@ -5,16 +7,10 @@ interface
 procedure Run;
 
 implementation
-uses
-  Windows, Classes, SysUtils;
 
-{$IFNDEF MSWINDOWS}
- {$IFNDEF LINUX}
-const
-  PathDelim = '\';
-  sLineBreak = #13#10;
- {$ENDIF}
-{$ENDIF}
+uses
+  Windows, Classes, SysUtils,
+  JvConsts; // (rom) for sLineBreak, PathDelim  no dependencies to packages
 
 const
   DefaultMakeFile =

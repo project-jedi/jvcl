@@ -93,7 +93,7 @@ type
 implementation
 
 uses
-  JvTypes, JvResources;
+  JvConsts, JvResources, JvTypes;
 
 {$R *.dfm}
 

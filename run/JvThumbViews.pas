@@ -197,7 +197,7 @@ type
 implementation
 
 uses
-  JvTypes;
+  JvConsts;
   
 {const
   FGraphicExtensions  : array[1..9] of string = ('*.BMP','*.JPG','*.WMF','*.EMF',

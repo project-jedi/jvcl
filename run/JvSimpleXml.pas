@@ -391,7 +391,7 @@ procedure SimpleXMLDecode(var S: string; TrimBlanks:boolean);
 implementation
 
 uses
-  JvTypes, JvResources;
+  JvConsts, JvResources;
 
 const
   cBufferSize = 8192;

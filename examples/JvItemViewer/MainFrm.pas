@@ -110,7 +110,7 @@ var
 
 implementation
 uses
-  JvTypes, // for clMoneyGreen
+  JvConsts, // for clMoneyGreen
   CommCtrl,
   {$IFNDEF COMPILER6_UP}
   FileCtrl,

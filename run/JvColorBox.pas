@@ -171,16 +171,17 @@ implementation
 uses JvThemes;
 
 const
-  clBeige = TColor($C6DEC6);
-  clSky = TColor($F7CEA5);
-  clCream = TColor($F7FFFF);
+  // (rom) nonstandard colors renamed
+  clPrivateBeige = TColor($C6DEC6);
+  clPrivateSky = TColor($F7CEA5);
+  clPrivateCream = TColor($F7FFFF);
 
   Colors: array[1..20] of TColor =
   (clWhite, clBlack, clSilver, clDkGray,
     clRed, clMaroon, clYellow, clOlive,
     clLime, clGreen, clAqua, clTeal,
     clBlue, clNavy, clFuchsia, clPurple,
-    clBeige, clSky, clCream, clGray);
+    clPrivateBeige, clPrivateSky, clPrivateCream, clGray);
 
 procedure DrawLine(Canvas: TCanvas; X, Y, X2, Y2: Integer);
 begin

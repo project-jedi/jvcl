@@ -272,18 +272,11 @@ type
 implementation
 
 uses
-  JvResources;
+  JvConsts, JvResources;
 
 {$R ..\resources\JvColorCombo.res}
 
 const
-{$IFNDEF COMPILER6_UP}
-  clMoneyGreen = TColor($C0DCC0);
-  clSkyBlue = TColor($F0CAA6);
-  clCream = TColor($F0FBFF);
-  clMedGray = TColor($A4A0A0);
-{$ENDIF}
-
   ColCount = 20;
   SysColCount = 25;
   ColorValues: array[1..ColCount] of TColor = (
