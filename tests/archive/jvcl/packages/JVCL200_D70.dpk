@@ -128,6 +128,7 @@ contains
   JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
   JvDialogActns in '..\source\JvDialogActns.pas',
   JvTransLedReg in '..\source\JvTransLEDReg.pas',
+  JvDatePickerReg in '..\source\JvDatePickerReg.pas',
   JvJVCLAboutProperty in '..\source\JvJVCLAboutProperty.pas';
 
 end.
