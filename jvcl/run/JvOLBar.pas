@@ -318,7 +318,7 @@ implementation
 uses
   ExtCtrls;
 
-{$R JvOUTLOOKBARRES.RES}
+{$R ..\resources\JvOlBar.res}
 
 const
   cButtonLeftOffset = 4;
