@@ -1562,55 +1562,58 @@ begin
   // (rom) reimplemented for speed
   // (rom) LongBool added (untested)
   Result := varEmpty;
-  case TypeName[1] of
-    'A', 'a':
-      if Cmp(TypeName, 'AnsiString') then
-        Result := varString;
-    'B', 'b':
-      if Cmp(TypeName, 'boolean') or Cmp(TypeName, 'bool') then
-        Result := varBoolean
-      else
-      if Cmp(TypeName, 'byte') then
-        Result := varByte;
-    'C', 'c':
-      if Cmp(TypeName, 'char') then {+RWare}
-        Result := varString;
-    'D', 'd':
-      if Cmp(TypeName, 'dword') then
-        Result := varInteger
-      else
-      if Cmp(TypeName, 'double') then
-        Result := varDouble;
-    'I', 'i':
-      if Cmp(TypeName, 'integer') then
-        Result := varInteger;
-    'L', 'l':
-      if Cmp(TypeName, 'longint') then
-        Result := varInteger
-      else
-      if Cmp(TypeName, 'longbool') then
-        Result := varBoolean;
-    'P', 'p':
-      if Cmp(TypeName, 'PChar') then
-        Result := varString;
-    'S', 's':
-      if Cmp(TypeName, 'string') or Cmp(TypeName, 'ShortString') then
-        Result := varString
-      else
-      if Cmp(TypeName, 'smallint') then
-        Result := varSmallint;
-    'T', 't':
-      if Cmp(TypeName, 'TObject') then
-        Result := varObject
-      else
-      if Cmp(TypeName, 'tdatetime') then
-        Result := varDate;
-    'W', 'w':
-      if Cmp(TypeName, 'word') then
-        Result := varSmallint
-      else
-      if Cmp(TypeName, 'wordbool') then
-        Result := varBoolean;
+  if TypeName <> '' then
+  begin
+    case TypeName[1] of
+      'A', 'a':
+        if Cmp(TypeName, 'AnsiString') then
+          Result := varString;
+      'B', 'b':
+        if Cmp(TypeName, 'boolean') or Cmp(TypeName, 'bool') then
+          Result := varBoolean
+        else
+        if Cmp(TypeName, 'byte') then
+          Result := varByte;
+      'C', 'c':
+        if Cmp(TypeName, 'char') then {+RWare}
+          Result := varString;
+      'D', 'd':
+        if Cmp(TypeName, 'dword') then
+          Result := varInteger
+        else
+        if Cmp(TypeName, 'double') then
+          Result := varDouble;
+      'I', 'i':
+        if Cmp(TypeName, 'integer') then
+          Result := varInteger;
+      'L', 'l':
+        if Cmp(TypeName, 'longint') then
+          Result := varInteger
+        else
+        if Cmp(TypeName, 'longbool') then
+          Result := varBoolean;
+      'P', 'p':
+        if Cmp(TypeName, 'PChar') then
+          Result := varString;
+      'S', 's':
+        if Cmp(TypeName, 'string') or Cmp(TypeName, 'ShortString') then
+          Result := varString
+        else
+        if Cmp(TypeName, 'smallint') then
+          Result := varSmallint;
+      'T', 't':
+        if Cmp(TypeName, 'TObject') then
+          Result := varObject
+        else
+        if Cmp(TypeName, 'tdatetime') then
+          Result := varDate;
+      'W', 'w':
+        if Cmp(TypeName, 'word') then
+          Result := varSmallint
+        else
+        if Cmp(TypeName, 'wordbool') then
+          Result := varBoolean;
+    end;
   end;
 end;
 
