@@ -329,7 +329,7 @@ function TJvCustomPreviewRenderer.CreatePreview(Append: Boolean): Boolean;
 begin
   Result := False;
   if PrintPreview = nil then
-    raise EPrintPreviewError.Create(RsEAPrintPreviewComponentMustBeAssigne);
+    raise EPrintPreviewError.CreateRes(@RsEAPrintPreviewComponentMustBeAssigne);
   if not Append then
     PrintPreview.Clear;
   FOldAddPage := TOpenPrvwDoc(PrintPreview).OnAddPage;
@@ -376,7 +376,7 @@ end;
 function TJvPreviewRenderRichEdit.CreatePreview(Append: Boolean): Boolean;
 begin
   if RichEdit = nil then
-    raise EPrintPreviewError.Create(RsEARichEditComponentMustBeAssignedInC);
+    raise EPrintPreviewError.CreateRes(@RsEARichEditComponentMustBeAssignedInC);
   Result := RichEdit.Lines.Count > 0;
   FFinished := not Result;
   FLastChar := 0;
@@ -460,7 +460,7 @@ end;
 function TJvPreviewRenderJvRichEdit.CreatePreview(Append: Boolean): Boolean;
 begin
   if RichEdit = nil then
-    raise EPrintPreviewError.Create(RsEARichEditComponentMustBeAssignedInC);
+    raise EPrintPreviewError.CreateRes(@RsEARichEditComponentMustBeAssignedInC);
   Result := RichEdit.Lines.Count > 0;
   FFinished := not Result;
   FLastChar := 0;
@@ -913,13 +913,13 @@ end;
 procedure TJvPreviewPrinter.CheckActive;
 begin
   if (Printer <> nil) and GetPrinting then
-    raise EPrintPreviewError.Create(RsECannotPerfromThisOperationWhilePrin);
+    raise EPrintPreviewError.CreateRes(@RsECannotPerfromThisOperationWhilePrin);
 end;
 
 procedure TJvPreviewPrinter.CheckPrinter;
 begin
   if Printer = nil then
-    raise EPrintPreviewError.Create(RsEPrinterNotAssigned);
+    raise EPrintPreviewError.CreateRes(@RsEPrinterNotAssigned);
 end;
 
 procedure TJvPreviewPrinter.EndDoc;
@@ -988,7 +988,7 @@ var
   AMin, AMax: Integer;
 begin
   if PrintPreview = nil then
-    raise EPrintPreviewError.Create(RsENoPrintPreviewAssigned);
+    raise EPrintPreviewError.CreateRes(@RsENoPrintPreviewAssigned);
   if PrintRange = prAllPages then
   begin
     AMin := 0;

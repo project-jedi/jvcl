@@ -243,7 +243,7 @@ begin
   if FMatrix.Data = 0 then
     FNullValue := Value
   else
-    raise EJvTFSparseMatrixError.Create(RsEMatrixMustBeEmpty);
+    raise EJvTFSparseMatrixError.CreateRes(@RsEMatrixMustBeEmpty);
 end;
 
 procedure TJvTFSparseMatrix.Pack;

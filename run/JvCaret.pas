@@ -102,7 +102,7 @@ uses
 constructor TJvCaret.Create(Owner: TWinControl);
 begin
   if not Assigned(Owner) then
-    raise EJVCLException.CreateFmt(RsEInvalidCaretOwner, [ClassName]);
+    raise EJVCLException.CreateResFmt(@RsEInvalidCaretOwner, [ClassName]);
   inherited Create;
   FCaretOwner := Owner;
   FCaretBitmap := TBitmap.Create;

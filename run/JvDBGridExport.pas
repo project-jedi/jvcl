@@ -302,9 +302,9 @@ end;
 function TJvCustomDBGridExport.ExportGrid: Boolean;
 begin
   if not Assigned(Grid) then
-    raise EJvExportDBGridException.Create(RsGridIsUnassigned);
+    raise EJvExportDBGridException.CreateRes(@RsEGridIsUnassigned);
   if not Assigned(Grid.DataSource) or not Assigned(Grid.DataSource.DataSet) then
-    raise EJvExportDBGridException.Create(RsDataSetIsUnassigned);
+    raise EJvExportDBGridException.CreateRes(@RsEDataSetDataSourceIsUnassigned);
 //  if FileName = '' then
 //    raise EJvExportDBGridException.Create(RsFilenameEmpty);
   CheckVisibleColumn;

@@ -178,7 +178,7 @@ function DeleteObject(P1: HGDIOBJ): BOOL; stdcall;
 begin
   Result := Windows.DeleteObject(P1);
   if not Result then
-    raise Exception.Create(RsEObjectMemoryLeak);
+    raise Exception.CreateRes(@RsEObjectMemoryLeak);
 end;
 {$ENDIF glDEBUG}
 
@@ -1613,7 +1613,7 @@ var
               NextChar;
             if cCurrChar <> ')' then
             begin
-              raise Exception.Create(RsERightBracketsNotFound);
+              raise Exception.CreateRes(@RsERightBracketsNotFound);
               fCalcResult := false;
               Result := 0;
             end
@@ -1628,7 +1628,7 @@ var
     begin
       dec(BracketsCount);
       if BracketsCount < 0 then
-        raise Exception.CreateFmt(RsERightBracketHavntALeftOnePosd, [ExpressionPtr - 1]);
+        raise Exception.CreateResFmt(@RsERightBracketHavntALeftOnePosd, [ExpressionPtr - 1]);
     end;
   end;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1656,7 +1656,7 @@ var
             else
             begin
               fCalcResult := false;
-              raise Exception.Create(RsEDivideBy);
+              raise Exception.CreateRes(@RsEDivideBy);
             end;
           end;
       else //case else
@@ -1677,14 +1677,14 @@ var
           begin
             NextChar;
             if cCurrChar in ['+', '-', '/', '*'] then
-              raise Exception.CreateFmt(RsEDuplicateSignsAtPos , [ExpressionPtr - 1]);
+              raise Exception.CreateResFmt(@RsEDuplicateSignsAtPos , [ExpressionPtr - 1]);
             Result := Result + TestFor_MulDiv;
           end;
         '-':
           begin
             NextChar;
             if cCurrChar in ['+', '-', '/', '*'] then
-              raise Exception.CreateFmt(RsEDuplicateSignsAtPos, [ExpressionPtr - 1]);
+              raise Exception.CreateResFmt(@RsEDuplicateSignsAtPos, [ExpressionPtr - 1]);
             Result := Result - TestFor_MulDiv;
           end;
       else
@@ -1701,7 +1701,7 @@ begin //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MAIN PROC
 
   ExpressionLength := Length(sExpression);
   if ExpressionLength = 0 then
-    raise Exception.Create(RsEExpressionStringIsEmpty);
+    raise Exception.CreateRes(@RsEExpressionStringIsEmpty);
   fCalcResult := true;
   NextChar;
   Result := Expression;

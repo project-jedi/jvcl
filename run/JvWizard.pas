@@ -1584,7 +1584,7 @@ begin
   if Assigned(AParent) then
   begin
     if not ((AParent is TJvWizard) or (AParent is TJvWizardCustomPage)) then
-      raise EJvWizardError.Create(RsEInvalidParentControl);
+      raise EJvWizardError.CreateRes(@RsEInvalidParentControl);
     if AParent is TJvWizardCustomPage then
       AParent := TJvWizardCustomPage(AParent).Wizard;
   end;
@@ -3258,7 +3258,7 @@ function TJvWizard.IsForward(const FromPage, ToPage: TJvWizardCustomPage): Boole
 begin
   if Assigned(FromPage) and Assigned(ToPage) and
     (FromPage.Wizard <> ToPage.Wizard) then
-    raise EJvWizardError.Create(RsEInvalidWizardPage);
+    raise EJvWizardError.CreateRes(@RsEInvalidWizardPage);
   Result := not Assigned(FromPage) or (Assigned(ToPage) and
     (FromPage.PageIndex < ToPage.PageIndex));
 end;

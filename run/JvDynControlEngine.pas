@@ -167,7 +167,7 @@ end;
 function IntfCast(Instance: TObject; const Intf: TGUID): IUnknown;
 begin
   if not Supports(Instance, Intf, Result) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
 end;
 
 constructor TJvDynControlEngine.Create;
@@ -210,7 +210,7 @@ begin
   if Valid then
     FRegisteredControlTypes[ADynControlType] := AControlClass
   else
-    raise EJVCLException.Create(RsEUnsupportedControlClass);
+    raise EJVCLException.CreateRes(@RsEUnsupportedControlClass);
 end;
 
 function TJvDynControlEngine.GetPropCount(Instance: TPersistent): Integer;
@@ -355,7 +355,7 @@ begin
   else
     Result := nil;
   if Result = nil then
-    raise EJVCLException.Create(RsENoRegisteredControlClass);
+    raise EJVCLException.CreateRes(@RsENoRegisteredControlClass);
   AfterCreateControl(Result);
 end;
 
@@ -366,7 +366,7 @@ var
 begin
   Result := TControl(AControlClass.Create(AOwner));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with DynCtrl do
     ControlSetDefaultProperties;
   if Assigned(AParentControl) then
@@ -384,11 +384,11 @@ var
 begin
   Result := CreateControl(jctLabel, AOwner, AParentControl, AControlName);
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with DynCtrl do
     ControlSetCaption(ACaption);
   if not Supports(Result, IJvDynControlLabel, DynCtrlLabel) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with DynCtrlLabel do
     ControlSetFocusControl(AFocusControl);
 end;
@@ -400,7 +400,7 @@ var
 begin
   Result := TWinControl(CreateControl(jctStaticText, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with DynCtrl do
     ControlSetCaption(ACaption);
 end;
@@ -413,7 +413,7 @@ var
 begin
   Result := TWinControl(CreateControl(jctPanel, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with DynCtrl do
     ControlSetCaption(ACaption);
   Result.Align := AAlign;
@@ -432,7 +432,7 @@ var
 begin
   Result := TWinControl(CreateControl(jctEdit, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControlEdit, DynCtrlEdit) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
 end;
 
 function TJvDynControlEngine.CreateCheckboxControl(AOwner: TComponent;
@@ -442,7 +442,7 @@ var
 begin
   Result := TWinControl(CreateControl(jctCheckBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with DynCtrl do
     ControlSetCaption(ACaption);
 end;
@@ -454,7 +454,7 @@ var
 begin
   Result := TWinControl(CreateControl(jctComboBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   DynCtrlItems.ControlSetItems(AItems);
 end;
 
@@ -465,7 +465,7 @@ var
 begin
   Result := TWinControl(CreateControl(jctGroupBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with DynCtrl do
     ControlSetCaption(ACaption);
 end;
@@ -486,15 +486,15 @@ var
 begin
   Result := TWinControl(CreateControl(jctRadioGroup, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with DynCtrl do
     ControlSetCaption(ACaption);
   if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with DynCtrlItems do
     ControlSetItems(AItems);
   if not Supports(Result, IJvDynControlData, DynCtrlData) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with DynCtrlData do
     ControlValue := AItemIndex;
 end;
@@ -517,7 +517,7 @@ var
 begin
   Result := TWinControl(CreateControl(jctListBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControlItems, DynCtrlItems) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   with DynCtrlItems do
     ControlSetItems(AItems);
 end;
@@ -584,7 +584,7 @@ var
 begin
   Result := TWinControl(CreateControl(jctButtonEdit, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControlButtonEdit, DynCtrlButtonEdit) then
-    raise EIntfCastError.Create(RsEIntfCastError);
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
   DynCtrlButtonEdit.ControlSetOnButtonClick(AOnButtonClick);
 end;
 

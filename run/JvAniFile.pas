@@ -271,7 +271,7 @@ end;
 
 procedure TJvAnimatedCursorImage.RiffReadError;
 begin
-  raise EReadError.Create(SReadError);
+  raise EReadError.CreateRes(@SReadError);
 end;
 
 function TJvAnimatedCursorImage.GetIconCount: Integer;
@@ -749,7 +749,7 @@ end;
 procedure TJvAnimatedCursorImage.SaveToStream(Stream: TStream);
 begin
   if IconCount = 0 then
-    raise EInvalidGraphicOperation.Create(SInvalidImage);
+    raise EInvalidGraphicOperation.CreateRes(@SInvalidImage);
   WriteAniStream(Stream);
 end;
 

@@ -1173,7 +1173,7 @@ end;
 procedure TJvEventCollectionItem.Start;
 begin
   if FState in [sesTriggered, sesExecuting] then
-    raise EJVCLException.Create(RsECannotRestart);
+    raise EJVCLException.CreateRes(@RsECannotRestart);
   if State = sesPaused then
   begin
     FScheduleFire := Schedule.NextEventFromNow(CountMissedEvents);

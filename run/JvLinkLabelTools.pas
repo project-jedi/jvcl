@@ -110,7 +110,7 @@ uses
 
 constructor TStaticObject.Create;
 begin
-  raise EGenericToolsError.Create(RsECannotBeInstantiated);
+  raise EGenericToolsError.CreateRes(@RsECannotBeInstantiated);
 end;
 
 //=== TStringTools ===========================================================

@@ -169,7 +169,7 @@ type
   // A grabber for local and UNC files
   TJvLocalFileUrlGrabber = class(TJvCustomUrlGrabber)
   private
-    FPreserveAttributes: boolean;
+    FPreserveAttributes: Boolean;
   protected
     function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; override;
   public
@@ -179,8 +179,7 @@ type
     class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
     class function GetSupportedURLName: string; override;
   published
-    property PreserveAttributes:boolean read FPreserveAttributes write FPreserveAttributes default True;
-
+    property PreserveAttributes: Boolean read FPreserveAttributes write FPreserveAttributes default True;
     property UserName;
     property Password;
     property FileName;
@@ -217,14 +216,14 @@ type
 
   TJvLocalFileUrlGrabberProperties = class(TJvCustomUrlGrabberDefaultProperties)
   private
-    FPreserveAttributes: boolean;
+    FPreserveAttributes: Boolean;
   protected
     function GetSupportedURLName: string; override;
   public
     constructor Create(AOwner: TJvUrlGrabberDefaultPropertiesList); override;
     procedure Assign(Source: TPersistent); override;
   published
-    property PreserveAttributes:boolean read FPreserveAttributes write FPreserveAttributes default True;
+    property PreserveAttributes: Boolean read FPreserveAttributes write FPreserveAttributes default True;
   end;
 
 implementation
@@ -324,24 +323,24 @@ begin
   Result := 'FTP';
 end;
 
-{ TJvFtpUrlGrabberDefaultProperties }
+//=== TJvFtpUrlGrabberDefaultProperties ======================================
+
+constructor TJvFtpUrlGrabberDefaultProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);
+begin
+  inherited Create(AOwner);
+  FPassive := True;
+  FMode := hmBinary;
+end;
 
 procedure TJvFtpUrlGrabberDefaultProperties.Assign(Source: TPersistent);
 begin
-  inherited;
+  inherited Assign(Source);
   if Source is TJvFtpUrlGrabberDefaultProperties then
     with Source as TJvFtpUrlGrabberDefaultProperties do
     begin
       Self.Mode := Mode;
       Self.Passive := Passive;
     end;
-end;
-
-constructor TJvFtpUrlGrabberDefaultProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);
-begin
-  inherited;
-  FPassive := True;
-  FMode := hmBinary;
 end;
 
 function TJvFtpUrlGrabberDefaultProperties.GetSupportedURLName: string;
@@ -359,13 +358,13 @@ end;
 
 procedure TJvFtpUrlGrabberThread.Execute;
 const
-  cPassive: array[Boolean] of DWORD = (0, INTERNET_FLAG_PASSIVE);
+  cPassive: array [Boolean] of DWORD = (0, INTERNET_FLAG_PASSIVE);
 var
   hSession, hHostConnection, hDownload: HINTERNET;
   HostName, FileName: string;
   UserName, Password: PChar;
   LocalBytesRead, TotalBytes: DWORD;
-  Buf: array[0..1023] of Byte;
+  Buf: array [0..1023] of Byte;
   dwFileSizeHigh: DWORD;
   Buffer: Pointer;
   dwBufLen, dwIndex: DWORD;
@@ -494,7 +493,7 @@ var
   Buffer: PChar;
   dwBufLen, dwIndex, dwBytesRead, dwTotalBytes: DWORD;
   HasSize: Boolean;
-  Buf: array[0..1024] of Byte;
+  Buf: array [0..1024] of Byte;
 
 begin
   Buffer := nil;
@@ -630,32 +629,32 @@ begin
   Result := TJvHttpUrlGrabber(FGrabber);
 end;
 
-{ TJvHttpUrlGrabberDefaultProperties }
+//=== TJvHttpUrlGrabberDefaultProperties =====================================
 
 function TJvHttpUrlGrabberDefaultProperties.GetSupportedURLName: string;
 begin
   Result := TJvHttpUrlGrabber.GetSupportedURLName;
 end;
 
-{ TJvLocalFileUrlGrabber }
+//=== TJvLocalFileUrlGrabber =================================================
+
+constructor TJvLocalFileUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
+begin
+  inherited Create(AOwner, AURL, DefaultProperties);
+  FPreserveAttributes := TJvLocalFileUrlGrabberProperties(DefaultProperties).PreserveAttributes;
+end;
+
+constructor TJvLocalFileUrlGrabber.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FPreserveAttributes := True;
+end;
 
 class function TJvLocalFileUrlGrabber.CanGrab(const Url: string): Boolean;
 begin
   // accepts "file://", UNC and local path and existing files
   Result := (LowerCase(Copy(Url, 1, 7)) = 'file://') or (Copy(Url,1,2) = '//') or
     (Copy(Url, 2,2) = ':\') or FileExists(Url);
-end;
-
-constructor TJvLocalFileUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
-begin
-  inherited Create(AOwner, AURL, DefaultProperties);
-  PreserveAttributes := TJvLocalFileUrlGrabberProperties(DefaultProperties).PreserveAttributes;
-end;
-
-constructor TJvLocalFileUrlGrabber.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  PreserveAttributes := True;
 end;
 
 class function TJvLocalFileUrlGrabber.GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass;
@@ -673,15 +672,15 @@ begin
   Result := 'LocalFile';
 end;
 
-{ TJvLocalFileUrlGrabberThread }
+//=== TJvLocalFileUrlGrabberThread ===========================================
 
 procedure TJvLocalFileUrlGrabberThread.Execute;
 var
   FileName: string;
   BytesRead, TotalBytes: DWORD;
-  Buf: array[0..1023] of Byte;
+  Buf: array [0..1023] of Byte;
   AFileStream: TFileStream;
-  Attrs:integer;
+  Attrs: Integer;
 begin
 
   Grabber.FStream := nil;
@@ -693,7 +692,7 @@ begin
     Exit;
   end;
 
-  if Grabber.FPreserveAttributes then
+  if Grabber.PreserveAttributes then
     Attrs := GetFileAttributes(PChar(FileName))
   else
     Attrs := 0;
@@ -720,7 +719,7 @@ begin
       end;
       if not Terminated and FContinue then // acp
         Synchronize(Ended);
-      if Grabber.FPreserveAttributes and FileExists(Grabber.FileName) then
+      if Grabber.PreserveAttributes and FileExists(Grabber.FileName) then
         SetFileAttributes(PChar(Grabber.FileName), Attrs);
     finally
       AFileStream.Free;
@@ -747,22 +746,20 @@ begin
     FileName := ExpandUNCFilename(FileName);
 end;
 
-{ TJvLocalFileUrlGrabberProperties }
-
-procedure TJvLocalFileUrlGrabberProperties.Assign(Source: TPersistent);
-begin
-  inherited;
-  if Source is TJvLocalFileUrlGrabberProperties then
-    with Source as TJvLocalFileUrlGrabberProperties do
-    begin
-      Self.PreserveAttributes := PreserveAttributes;
-    end;
-end;
+//=== TJvLocalFileUrlGrabberProperties =======================================
 
 constructor TJvLocalFileUrlGrabberProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);
 begin
   inherited Create(AOwner);
   FPreserveAttributes := True;
+end;
+
+procedure TJvLocalFileUrlGrabberProperties.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvLocalFileUrlGrabberProperties then
+    with Source as TJvLocalFileUrlGrabberProperties do
+      Self.PreserveAttributes := PreserveAttributes;
 end;
 
 function TJvLocalFileUrlGrabberProperties.GetSupportedURLName: string;

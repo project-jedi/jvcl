@@ -106,7 +106,7 @@ end;
 procedure TJvCursorImage.LoadFromClipboardFormat(AFormat: Word; AData: THandle;
   APalette: HPALETTE);
 begin
-  raise Exception.Create(RsECursorLoadFromClipboardFormat);
+  raise Exception.CreateRes(@RsECursorLoadFromClipboardFormat);
 end;
 
 procedure TJvCursorImage.LoadFromFile(const FileName: string);
@@ -116,28 +116,28 @@ end;
 
 procedure TJvCursorImage.LoadFromStream(Stream: TStream);
 begin
-  raise Exception.Create(RsECursorLoadFromStream);
+  raise Exception.CreateRes(@RsECursorLoadFromStream);
 end;
 
 procedure TJvCursorImage.SaveToClipboardFormat(var AFormat: Word;
   var AData: THandle; var APalette: HPALETTE);
 begin
-  raise Exception.Create(RsECursorSaveToClipboardFormat);
+  raise Exception.CreateRes(@RsECursorSaveToClipboardFormat);
 end;
 
 procedure TJvCursorImage.SaveToStream(Stream: TStream);
 begin
-  raise Exception.Create(RsECursorSaveToStream);
+  raise Exception.CreateRes(@RsECursorSaveToStream);
 end;
 
 procedure TJvCursorImage.SetHeight(Value: Integer);
 begin
-//  raise EInvalidGraphicOperation.Create(SChangeIconSize);
+//  raise EInvalidGraphicOperation.CreateRes(@SChangeIconSize);
 end;
 
 procedure TJvCursorImage.SetWidth(Value: Integer);
 begin
-//  raise EInvalidGraphicOperation.Create(SChangeIconSize);
+//  raise EInvalidGraphicOperation.CreateRes(@SChangeIconSize);
 end;
 
 procedure TJvCursorImage.Assign(Source: TPersistent);

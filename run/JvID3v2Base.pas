@@ -2635,7 +2635,7 @@ end;
 procedure ID3Error(const Msg: string; Component: TComponent = nil);
 begin
   if Assigned(Component) and (Component.Name <> '') then
-    raise EJvID3Error.CreateFmt(RsENameMsgFormat, [Component.Name, Msg])
+    raise EJvID3Error.CreateResFmt(@RsENameMsgFormat, [Component.Name, Msg])
   else
     raise EJvID3Error.Create(Msg);
 end;

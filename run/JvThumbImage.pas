@@ -419,7 +419,7 @@ begin
       FreeAndNil(Wmf);
     end
   else
-    raise EJVCLException.CreateFmt(RsEUnknownFileExtension, [Ext]);
+    raise EJVCLException.CreateResFmt(@RsEUnknownFileExtension, [Ext]);
 end;
 
 procedure TJvThumbImage.Save;

@@ -1416,7 +1416,7 @@ end;
 procedure RaiseReadOnly(AlwaysRaise: Boolean = False);
 begin
   if not IsDesigning or AlwaysRaise then
-    raise EJVCLException.Create(RsEReadOnlyProperty);
+    raise EJVCLException.CreateRes(@RsEReadOnlyProperty);
 end;
 
 function ArrangeToWindowsArrange(Value: DWORD): TJvWindowsArrange;

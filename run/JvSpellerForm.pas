@@ -339,7 +339,7 @@ var
   StartPos, Index: Integer;
 begin
   if FDict = '' then
-    raise EJVCLException.Create(RsENoDictionaryLoaded);
+    raise EJVCLException.CreateRes(@RsENoDictionaryLoaded);
 
   FSourceText := SourceText;
   FWordEnd := 1;

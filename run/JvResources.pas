@@ -353,7 +353,6 @@ resourcestring
 //=== JvCSVBaseControls.pas ==================================================
 resourcestring
   RsReplaceExistingDatabase = 'Replace existing database?';
-  RsNoFieldsDefined = 'No fields defined';
   RsCVSDatabase = 'CSV Database';
   RsFindText = 'Find Text:';
   RsFirstHint = 'First';
@@ -365,6 +364,7 @@ resourcestring
   RsDeleteHint = 'Delete';
   RsPostHint = 'Post';
   RsRefreshHint = 'Refresh';
+  RsENoFieldsDefined = 'No fields defined';
 
 //=== JvCsvData.pas ==========================================================
 resourcestring
@@ -480,14 +480,14 @@ resourcestring
 
 //=== JvDBGridExport.pas =====================================================
 resourcestring
-  RsDataSetIsUnassigned = 'Dataset or DataSource unassigned';
-  RsGridIsUnassigned = 'No grid assigned';
   RsHTMLExportDocTitle = 'Grid to HTML Export';
   RsExportWord = 'Exporting to MS Word...';
   RsExportExcel = 'Exporting to MS Excel...';
   RsExportHTML = 'Exporting to HTML...';
   RsExportFile = 'Exporting to CSV/Text...';
   RsExportClipboard = 'Exporting to Clipboard...';
+  RsEDataSetDataSourceIsUnassigned = 'Dataset or DataSource unassigned';
+  RsEGridIsUnassigned = 'No grid assigned';
 
 //=== JvDBImage.pas ==========================================================
 resourcestring

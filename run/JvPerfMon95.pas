@@ -323,7 +323,7 @@ begin
   if not NoCheckState and FStarted then
     Exit;
   if not InternalStartStop(True) then
-    raise EJvPerfStatException.CreateFmt(RsECantStart, [Key]);
+    raise EJvPerfStatException.CreateResFmt(@RsECantStart, [Key]);
   FStarted := True;
 end;
 
@@ -332,7 +332,7 @@ begin
   if not NoCheckState and not FStarted then
     Exit;
   if not InternalStartStop(False) then
-    raise EJvPerfStatException.CreateFmt(RsECantStop, [Key]);
+    raise EJvPerfStatException.CreateResFmt(@RsECantStop, [Key]);
   FStarted := False;
 end;
 
@@ -342,7 +342,7 @@ function TJvPerfStatItem.GetActiveItem: TJvPerfStatActiveItem;
 begin
   Result := FActiveItem;
   if Result = nil then
-    raise EJvPerfStatException.CreateFmt(RsEKeyNotExist, [FPerfStatKey]);
+    raise EJvPerfStatException.CreateResFmt(@RsEKeyNotExist, [FPerfStatKey]);
   Result.Start;
 end;
 
@@ -520,7 +520,7 @@ begin
         end;
     end
     else
-      raise EJvPerfStatException.Create(RsECantOpenPerfKey);
+      raise EJvPerfStatException.CreateRes(@RsECantOpenPerfKey);
   finally
     List2.Free;
     List1.Free;

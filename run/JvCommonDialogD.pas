@@ -101,7 +101,7 @@ begin
     FOwnerWindow := HWND_DESKTOP;
   LoadSetupApi;
   if not IsSetupApiLoaded then
-    raise EJVCLException.Create(RsEErrorSetupDll);
+    raise EJVCLException.CreateRes(@RsEErrorSetupDll);
 end;
 
 destructor TJvCommonDialogD.Destroy;

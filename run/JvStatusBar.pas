@@ -304,7 +304,7 @@ begin
     if FControl = S then
     begin
       FControl := nil; // discard new control
-      raise EJVCLException.Create(RsEInvalidControlSelection);
+      raise EJVCLException.CreateRes(@RsEInvalidControlSelection);
     end;
     FControl.Parent := S;
     FControl.Height := S.ClientHeight - 4;

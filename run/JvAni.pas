@@ -118,8 +118,8 @@ type
     procedure SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE); override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure LoadFromMimeSource(MimeSource: TMimeSource);override;
-    procedure SaveToMimeSource(MimeSource: TClxMimeSource);override;
+    procedure LoadFromMimeSource(MimeSource: TMimeSource); override;
+    procedure SaveToMimeSource(MimeSource: TClxMimeSource); override;
     {$ENDIF VisualCLX}
     procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
       DecreaseColors, Vertical: Boolean);
@@ -457,12 +457,12 @@ end;
 
 procedure TJvAni.SetHeight(Value: Integer);
 begin
-  raise EInvalidGraphicOperation.Create(SChangeIconSize);
+  raise EInvalidGraphicOperation.CreateRes(@SChangeIconSize);
 end;
 
 procedure TJvAni.SetWidth(Value: Integer);
 begin
-  raise EInvalidGraphicOperation.Create(SChangeIconSize);
+  raise EInvalidGraphicOperation.CreateRes(@SChangeIconSize);
 end;
 
 function TJvAni.GetWidth: Integer;
@@ -479,12 +479,12 @@ end;
 
 procedure TJvAni.LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE);
 begin
-  raise EInvalidGraphicOperation.Create(SIconToClipboard);
+  raise EInvalidGraphicOperation.CreateRes(@SIconToClipboard);
 end;
 
 procedure TJvAni.SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE);
 begin
-  raise EInvalidGraphicOperation.Create(SIconToClipboard);
+  raise EInvalidGraphicOperation.CreateRes(@SIconToClipboard);
 end;
 
 {$ENDIF VCL}
@@ -562,7 +562,7 @@ end;
 
 procedure TJvAni.RiffReadError;
 begin
-  raise EReadError.Create(SReadError);
+  raise EReadError.CreateRes(@SReadError);
 end;
 
 function TJvAni.GetIcons(Index: Integer): TIcon;
@@ -947,7 +947,7 @@ end;
 procedure TJvAni.SaveToStream(Stream: TStream);
 begin
   if IconCount = 0 then
-    raise EInvalidGraphicOperation.Create(SInvalidImage);
+    raise EInvalidGraphicOperation.CreateRes(@SInvalidImage);
   WriteAniStream(Stream);
 end;
 
@@ -1085,15 +1085,17 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
 procedure TJvAni.LoadFromMimeSource(MimeSource: TMimeSource);
 begin
-  raise EInvalidGraphicOperation.Create(RsENotSupported);
+  raise EInvalidGraphicOperation.CreateRes(@RsENotSupported);
 end;
 
 procedure TJvAni.SaveToMimeSource(MimeSource: TClxMimeSource);
 begin
-  raise EInvalidGraphicOperation.Create(RsENotSupported);
+  raise EInvalidGraphicOperation.CreateRes(@RsENotSupported);
 end;
+
 {$ENDIF VisualCLX}
 
 initialization

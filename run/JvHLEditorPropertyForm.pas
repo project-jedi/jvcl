@@ -308,7 +308,7 @@ var
 begin
   if Storage <> nil then
   begin
-//    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
+//    raise Exception.CreateRes(@RsEHLEdPropDlg_RegAutoNotAssigned);
     FJvHLEditor.GetInterface(IJvHLEditor, HLed);
     S := AddSlash2(FStorageSection) + cParams;
     with Storage do
@@ -337,7 +337,7 @@ var
 begin
   if Storage <> nil then
   begin
-//    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
+//    raise Exception.CreateRes(@RsEHLEdPropDlg_RegAutoNotAssigned);
     S := AddSlash2(StorageSection) + cParams;
     FJvHLEditor.GetInterface(IJvHLEditor, HLed);
     with Storage do
@@ -378,7 +378,7 @@ var
 begin
   if Storage <> nil then
   begin
-//    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
+//    raise Exception.CreateRes(@RsEHLEdPropDlg_RegAutoNotAssigned);
     ed := TCustomEditorBaseHack(AJvHLEditor);
     FJvHLEditor.GetInterface(IJvHLEditor, HLed);
     Section := AddSlash2(Storage.AppStoragePath) + AddSlash2(StorageSection) +
@@ -437,7 +437,7 @@ var
 begin
   if Storage <> nil then
   begin
-//    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
+//    raise Exception.CreateRes(@RsEHLEdPropDlg_RegAutoNotAssigned);
     ed := TCustomEditorBaseHack(AJvHLEditor);
     FJvHLEditor.GetInterface(IJvHLEditor, HLed);
     Section := AddSlash2(StorageSection) + Highlighters[AHighlighter];
@@ -477,7 +477,7 @@ var
   HLed: IJvHLEditor;
 begin
   if FJvHLEditor = nil then
-    raise EJVCLException.Create(RsEHLEdPropDlg_RAHLEditorNotAssigned);
+    raise EJVCLException.CreateRes(@RsEHLEdPropDlg_RAHLEditorNotAssigned);
   Form := TJvHLEditorParamsForm.Create(Application);
   Form.ColorSamples.Assign(ColorSamples);
   with Form do
@@ -679,7 +679,7 @@ end;
 procedure TJvHLEditorParamsForm.NotImplemented(Sender: TObject);
 begin
   //(Sender as TCheckBox).Checked := True;
-  //raise Exception.Create(RsEHLEdPropDlg_OptionCantBeChanged);
+  //raise Exception.CreateRes(@RsEHLEdPropDlg_OptionCantBeChanged);
 end;
 
 { Color tab }
@@ -690,7 +690,7 @@ function TJvHLEditorParamsForm.GetCell(const Index: Integer): TPanel;
 begin
   Result := FindComponent('Cell' + IntToStr(Index)) as TPanel;
   if Result = nil then
-    raise EJVCLException.Create(RsEHLEdPropDlg_GridCellNotFound);
+    raise EJVCLException.CreateRes(@RsEHLEdPropDlg_GridCellNotFound);
 end;
 
 function TJvHLEditorParamsForm.ColorToIndex(const AColor: TColor): Integer;

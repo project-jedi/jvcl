@@ -75,7 +75,7 @@ begin
     VerifyPartner;
   end
   else
-    raise EJVCLException.Create(RsEInvalidPartner);
+    raise EJVCLException.CreateRes(@RsEInvalidPartner);
 end;
 
 procedure TJvSyncSplitter.SetResizeStyle(Value: TResizeStyle);

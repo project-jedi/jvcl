@@ -159,7 +159,7 @@ end;
 procedure TJvg3DColors.Notification(Component: TComponent; Operation: TOperation);
 begin
   if (Component <> Self) and (Operation = opInsert) and (Component is TJvg3DLocalColors) then
-    raise Exception.Create(RsEOnlyOneInstanceOfTJvg3DLocalColors);
+    raise Exception.CreateRes(@RsEOnlyOneInstanceOfTJvg3DLocalColors);
 end;
 
 end.

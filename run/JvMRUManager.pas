@@ -347,7 +347,7 @@ begin
   if not (Duplicates = dupAccept) and (Strings.IndexOf(RecentName) > -1) then
   begin
     if Duplicates = dupError then
-      raise EJVCLException.Create(RsEDuplicatesNotAllowedInMRUList);
+      raise EJVCLException.CreateRes(@RsEDuplicatesNotAllowedInMRUList);
   end
   else
   begin

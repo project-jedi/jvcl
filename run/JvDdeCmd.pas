@@ -305,7 +305,7 @@ begin
       if not StartCmd then
       begin
         if S[I] <> '[' then
-          raise EJvADCParserError.Create(RsEErrorCommandStart);
+          raise EJvADCParserError.CreateRes(@RsEErrorCommandStart);
         StartCmd := True;
         StartParams := False;
         StartString := False;
@@ -357,7 +357,7 @@ begin
       Inc(I);
     end;
     if StartCmd or StartParams or StartString then
-      raise EJvADCParserError.CreateFmt(RsEErrorCommandFormat, [S]);
+      raise EJvADCParserError.CreateResFmt(@RsEErrorCommandFormat, [S]);
   finally
     Params.Free;
   end;

@@ -409,7 +409,7 @@ begin
     // and we finally open the clipboard with our window handle
     // to ensure that we can process delayed rendering messages
     if not OpenClipboard(FClipboardWindow) then
-      raise EJVCLException.Create(SCannotOpenClipboard);
+      raise EJVCLException.CreateRes(@SCannotOpenClipboard);
   end;
 end;
 
@@ -455,7 +455,7 @@ begin
   else
     // else, trigger an exception, how could we guess the
     // size and data to put in the buffer ?
-    raise EJVCLException.Create(RsENoRenderFormatEventGiven);
+    raise EJVCLException.CreateRes(@RsENoRenderFormatEventGiven);
 
   // now render the way windows wants it
 

@@ -180,7 +180,7 @@ end;
 procedure TJvCustomAppXMLStorage.SetRootNodeName(const Value: string);
 begin
   if Value = '' then
-    raise EPropertyError.Create(RsENodeCannotBeEmpty)
+    raise EPropertyError.CreateRes(@RsENodeCannotBeEmpty)
   else
   begin
     StringReplace(Value, ' ', '_', [rfReplaceAll]);
@@ -274,7 +274,7 @@ begin
   if StorageOptions.DefaultIfValueNotExists then
     Result := Default
   else
-    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
+    raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [Path]);
 end;
 
 procedure TJvCustomAppXMLStorage.DoWriteInteger(const Path: string; Value: Integer);
@@ -320,7 +320,7 @@ begin
   if StorageOptions.DefaultIfValueNotExists then
     Result := Default
   else
-    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
+    raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [Path]);
 end;
 
 procedure TJvCustomAppXMLStorage.DoWriteFloat(const Path: string; Value: Extended);
@@ -364,7 +364,7 @@ begin
   if StorageOptions.DefaultIfValueNotExists then
     Result := Default
   else
-    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
+    raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [Path]);
 end;
 
 procedure TJvCustomAppXMLStorage.DoWriteString(const Path: string; Value: string);
@@ -424,7 +424,7 @@ begin
     end;
   end
   else
-    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [RefPath]);
+    raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [RefPath]);
 end;
 
 procedure TJvCustomAppXMLStorage.EnumValues(const Path: string;
@@ -461,7 +461,7 @@ begin
     end;
   end
   else
-    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [RefPath]);
+    raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [RefPath]);
 end;
 
 function TJvCustomAppXMLStorage.IsFolderInt(Path: string;
@@ -585,7 +585,7 @@ begin
   if StorageOptions.DefaultIfValueNotExists then
     Result := Default
   else
-    raise EJVCLException.CreateFmt(RsEPathDoesntExists, [Path]);
+    raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [Path]);
 end;
 
 procedure TJvCustomAppXMLStorage.DoWriteBoolean(const Path: string;

@@ -1001,13 +1001,13 @@ end;
 procedure TJvCreateProcess.CheckNotWaiting;
 begin
   if FState = psWaiting then
-    raise EJvProcessError.Create(RsEProcessIsRunning);
+    raise EJvProcessError.CreateRes(@RsEProcessIsRunning);
 end;
 
 procedure TJvCreateProcess.CheckRunning;
 begin
   if FState = psReady then
-    raise EJvProcessError.Create(RsEProcessNotRunning);
+    raise EJvProcessError.CreateRes(@RsEProcessNotRunning);
 end;
 
 function TJvCreateProcess.CloseApplication(SendQuit: Boolean): Boolean;

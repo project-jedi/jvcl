@@ -652,7 +652,7 @@ end;
 
 procedure TJvDBFilter.BeforeDataChange(DataSet: TDataSet);
 begin
-  raise EJVCLFilterError.Create(RsECaptureFilter);
+  raise EJVCLFilterError.CreateRes(@RsECaptureFilter);
 end;
 
 procedure TJvDBFilter.BeforeDataCancel(DataSet: TDataSet);
@@ -713,7 +713,7 @@ begin
         FActivating := True;
         try
           if FCaptured then
-            raise EJVCLFilterError.Create(RsECaptureFilter);
+            raise EJVCLFilterError.CreateRes(@RsECaptureFilter);
           DbiSetToBegin((FDatalink.DataSet as TBDEDataSet).Handle);
           if FExprHandle = nil then
             RecreateExprFilter;
@@ -863,7 +863,7 @@ begin
     end;
   end
   else
-    raise EJVCLFilterError.Create(RsENotCaptureFilter);
+    raise EJVCLFilterError.CreateRes(@RsENotCaptureFilter);
 end;
 
 procedure TJvDBFilter.UpdateFuncFilter;

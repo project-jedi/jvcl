@@ -1150,28 +1150,28 @@ end;
 procedure TDSAStorage.EndCustomRead(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssCustomRead then
-    raise EJvDSADialog.Create(RsECannotEndCustomReadIfNotInCustomRea);
+    raise EJvDSADialog.CreateRes(@RsECannotEndCustomReadIfNotInCustomRea);
   FStates.Pop;
 end;
 
 procedure TDSAStorage.EndCustomWrite(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssCustomWrite then
-    raise EJvDSADialog.Create(RsECannotEndCustomWriteIfNotInCustomWr);
+    raise EJvDSADialog.CreateRes(@RsECannotEndCustomWriteIfNotInCustomWr);
   FStates.Pop;
 end;
 
 procedure TDSAStorage.EndRead(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssRead then
-    raise EJvDSADialog.Create(RsECannotEndReadIfNotInReadMode);
+    raise EJvDSADialog.CreateRes(@RsECannotEndReadIfNotInReadMode);
   FStates.Pop;
 end;
 
 procedure TDSAStorage.EndWrite(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssWrite then
-    raise EJvDSADialog.Create(RsECannotEndWriteIfNotInWriteMode);
+    raise EJvDSADialog.CreateRes(@RsECannotEndWriteIfNotInWriteMode);
   FStates.Pop;
 end;
 
@@ -1247,7 +1247,7 @@ procedure TDSARegStorage.CreateKey(const DSAInfo: TDSARegItem);
 begin
   if not (RegKeyExists(RootKey, Key + '\' + DSAInfo.Name) or
     (RegCreateKey(RootKey, Key + '\' + DSAInfo.Name, '') = ERROR_SUCCESS)) then
-    raise EJvDSADialog.CreateFmt(RsEDSARegKeyCreateError, [Key + '\' + DSAInfo.Name]);
+    raise EJvDSADialog.CreateResFmt(@RsEDSARegKeyCreateError, [Key + '\' + DSAInfo.Name]);
 end;
 
 function TDSARegStorage.GetCheckMarkTextSuffix: string;
@@ -1425,13 +1425,13 @@ var
 begin
   I := FindDSA(DSAInfo);
   if I < 0 then
-    raise EJvDSADialog.CreateFmt(RsEDSADialogIDNotStored, [DSAInfo.ID]);
+    raise EJvDSADialog.CreateResFmt(@RsEDSADialogIDNotStored, [DSAInfo.ID]);
   DSAKeys := TStrings(FList.Objects[I]);
   I := DSAKeys.IndexOfName(Key);
   if I < 0 then
-    raise EJvDSADialog.CreateFmt(RsEDSAKeyNotFound, [Key]);
+    raise EJvDSADialog.CreateResFmt(@RsEDSAKeyNotFound, [Key]);
   if Integer(DSAKeys.Objects[I]) <> Kind then
-    raise EJvDSADialog.CreateFmt(RsEDSAKeyNoAccessAs, [Key, DSAKindTexts[Kind]]);
+    raise EJvDSADialog.CreateResFmt(@RsEDSAKeyNoAccessAs, [Key, DSAKindTexts[Kind]]);
   Result := DSAKeys.Values[Key];
 end;
 
@@ -1464,7 +1464,7 @@ begin
   AddDSA(DSAInfo);
   I := FindDSA(DSAInfo);
   if I < 0 then
-    raise EJvDSADialog.CreateFmt(RsEDSADialogIDNotStored, [DSAInfo.ID]);
+    raise EJvDSADialog.CreateResFmt(@RsEDSADialogIDNotStored, [DSAInfo.ID]);
   DSAKeys := TStrings(FList.Objects[I]);
   I := DSAKeys.IndexOfName(Key);
   if I < 0 then
@@ -1472,7 +1472,7 @@ begin
   else
   begin
     if Integer(DSAKeys.Objects[I]) <> Kind then
-      raise EJvDSADialog.CreateFmt(RsEDSAKeyNoAccessAs, [Key, DSAKindTexts[Kind]]);
+      raise EJvDSADialog.CreateResFmt(@RsEDSAKeyNoAccessAs, [Key, DSAKindTexts[Kind]]);
     DSAKeys.Values[Key] := Value;
   end;
 end;
@@ -1996,9 +1996,9 @@ procedure RegisterDSA(const DlgID: Integer; const Name, Description: string;
 begin
   case DSARegister.Add(DlgID, Name, Description, Storage, CheckTextKind) of
     arDuplicateID:
-      raise EJvDSADialog.CreateFmt(RsEDSADuplicateID, [DlgID]);
+      raise EJvDSADialog.CreateResFmt(@RsEDSADuplicateID, [DlgID]);
     arDuplicateName:
-      raise EJvDSADialog.CreateFmt(RsEDSADuplicateName, [Name]);
+      raise EJvDSADialog.CreateResFmt(@RsEDSADuplicateName, [Name]);
   end;
 end;
 
@@ -2032,7 +2032,7 @@ begin
   if RegItem.ID <> EmptyItem.ID then
     Result := Regitem.Storage.GetState(RegItem, ResCode, OnCustomData)
   else
-    raise EJvDSADialog.CreateFmt(RsEDSADialogIDNotFound, [DlgID]);
+    raise EJvDSADialog.CreateResFmt(@RsEDSADialogIDNotFound, [DlgID]);
 end;
 
 procedure SetDSAState(const DlgID: Integer; const DontShowAgain: Boolean;
@@ -2044,7 +2044,7 @@ begin
   if RegItem.ID <> EmptyItem.ID then
     RegItem.Storage.SetState(RegItem, DontShowAgain, LastResult, OnCustomData)
   else
-    raise EJvDSADialog.CreateFmt(RsEDSADialogIDNotFound, [DlgID]);
+    raise EJvDSADialog.CreateResFmt(@RsEDSADialogIDNotFound, [DlgID]);
 end;
 
 //----------------------------------------------------------------------------
@@ -2070,7 +2070,7 @@ begin
   if CheckMarkTexts.IndexOfObject(TObject(ID)) < 0 then
     CheckMarkTexts.AddObject(Text, TObject(ID))
   else
-    raise EJvDSADialog.CreateFmt(RsEDSADuplicateCTK_ID, [ID]);
+    raise EJvDSADialog.CreateResFmt(@RsEDSADuplicateCTK_ID, [ID]);
 end;
 
 procedure UnregisterDSACheckMarkText(const ID: TDSACheckTextKind);
@@ -2185,7 +2185,7 @@ begin
   while (I > -1) and not (Components[I] is TJvDSADialog) do
     Dec(I);
   if I = -1 then
-    raise EJvDSADialog.Create(RsEJvDSADialogPatchErrorJvDSADialogCom);
+    raise EJvDSADialog.CreateRes(@RsEJvDSADialogPatchErrorJvDSADialogCom);
   JvDSADialog := Components[I] as TJvDSADialog;
 
   // Check the DSA state
@@ -2237,11 +2237,11 @@ begin
     while (I > -1) and not (AOwner.Components[I] is TJvDSADialog) do
       Dec(I);
     if I > -1 then
-      raise EJvDSADialog.Create(RsEAlreadyDSADialog);
+      raise EJvDSADialog.CreateRes(@RsEAlreadyDSADialog);
     inherited Create(AOwner);
   end
   else
-    raise EJvDSADialog.Create(RsEOnlyAllowedOnForms);
+    raise EJvDSADialog.CreateRes(@RsEOnlyAllowedOnForms);
 end;
 
 destructor TJvDSADialog.Destroy;
@@ -2364,9 +2364,9 @@ begin
     if Value <> nil then
     begin
       if GetPropInfo(Value, 'Checked') = nil then
-        raise EJvDSADialog.Create(RsECtrlHasNoCheckedProp);
+        raise EJvDSADialog.CreateRes(@RsECtrlHasNoCheckedProp);
       if GetPropInfo(Value, 'Caption') = nil then
-        raise EJvDSADialog.Create(RsECtrlHasNoCaptionProp);
+        raise EJvDSADialog.CreateRes(@RsECtrlHasNoCaptionProp);
     end;
     FCheckControl := Value;
   end;
@@ -2377,7 +2377,7 @@ begin
   if Value <> DialogID then
   begin
     if not (csDesigning in ComponentState) and not (csLoading in Owner.ComponentState) then
-      raise EJvDSADialog.Create(RsEDialogIDChangeOnlyInDesign);
+      raise EJvDSADialog.CreateRes(@RsEDialogIDChangeOnlyInDesign);
     FDialogID := Value;
   end;
 end;

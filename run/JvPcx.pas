@@ -270,7 +270,7 @@ begin
   // is it a valid header
   if (BytesRead <> SizeOf(Header)) or (Header.Id <> $0A) or
      (Header.BytesPerLine mod 2 = 1) then // BytesPerLine must be even
-    raise EPcxError.Create(RsEPcxInvalid);
+    raise EPcxError.CreateRes(@RsEPcxInvalid);
 
   // set pixel format before resizing the bitmap to reduce bitmap reallocations
   case Header.Bpp of
@@ -287,7 +287,7 @@ begin
         4:
           PixelFormat := pf4bit; // VisualCLX: redirected const
       else
-        raise EPcxError.Create(RsEPcxUnknownFormat);
+        raise EPcxError.CreateRes(@RsEPcxUnknownFormat);
       end;
     8:
       case Header.Planes of
@@ -301,7 +301,7 @@ begin
             {$ENDIF VCL}
           end;
       else
-        raise EPcxError.Create(RsEPcxUnknownFormat);
+        raise EPcxError.CreateRes(@RsEPcxUnknownFormat);
       end;
   end;
 
@@ -355,11 +355,11 @@ begin
     begin
       Decompressed.Seek(-SizeOf(TPcxPalette256), soFromEnd);
       if Decompressed.Read(Palette256, SizeOf(TPcxPalette256)) <> SizeOf(TPcxPalette256) then
-        raise EPcxError.Create(RsEPcxPaletteProblem);
+        raise EPcxError.CreateRes(@RsEPcxPaletteProblem);
       if Palette256.Id = $0C then
         ReadPalette(Self, 256, @Palette256.Items[0])
       else
-        raise EPcxError.Create(RsEPcxPaletteProblem);
+        raise EPcxError.CreateRes(@RsEPcxPaletteProblem);
     end;
 
     Decompressed.Position := 0;
@@ -369,7 +369,7 @@ begin
     begin
       ByteLine := ScanLine[y];
       if Decompressed.Read(Buffer, BytesPerRasterLine) <> BytesPerRasterLine then
-        raise EPcxError.Create(RsEPcxUnknownFormat);
+        raise EPcxError.CreateRes(@RsEPcxUnknownFormat);
 
       // write data to the ScanLine
       if ((Header.Bpp = 1) and (Header.Planes = 1)) or // 1bit

@@ -385,7 +385,7 @@ begin
   if FThread = nil then
   begin
     if FManager = nil then
-      raise EThread.Create(RsENoThreadManager);
+      raise EThread.CreateRes(@RsENoThreadManager);
   
     // get the new thread
     FThread := FManager.AcquireNewThread;
@@ -498,7 +498,7 @@ begin
       FThread := nil;
     end
     else
-      raise EThread.Create(RsEOperatorNotAvailable);
+      raise EThread.CreateRes(@RsEOperatorNotAvailable);
   end;
 end;
 
@@ -547,7 +547,7 @@ end;
 procedure TJvMTSectionBase.CheckInactiveProperty;
 begin
   if Active then
-    raise EThread.Create(RsECannotChangePropertySection);
+    raise EThread.CreateRes(@RsECannotChangePropertySection);
 end;
 
 procedure TJvMTSectionBase.Enter;
@@ -681,7 +681,7 @@ end;
 procedure TJvMTAsyncBufferBase.SetMaxBufferSize(Value: Integer);
 begin
   if FBuffer <> nil then
-    raise EThread.Create(RsECannotChangePropertyBuffer);
+    raise EThread.CreateRes(@RsECannotChangePropertyBuffer);
   FMaxBufferSize := Value;
 end;
 
@@ -772,7 +772,7 @@ end;
 procedure TJvMTThreadToThread.SetMaxBufferSize(Value: Integer);
 begin
   if FQueue <> nil then
-    raise EThread.Create(RsECannotChangePropertyBuffer);
+    raise EThread.CreateRes(@RsECannotChangePropertyBuffer);
   if Value < 1 then
     raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [ClassName]);
   FMaxBufferSize := Value;

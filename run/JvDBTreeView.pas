@@ -400,7 +400,7 @@ end;
 procedure TJvCustomDBTreeView.CheckDataSet;
 begin
   if not ValidDataSet then
-    raise EJvDBTreeViewError.Create(RsEDataSetNotActive);
+    raise EJvDBTreeViewError.CreateRes(@RsEDataSetNotActive);
 end;
 
 procedure TJvCustomDBTreeView.Warning(Msg: string);
@@ -772,7 +772,7 @@ var
     begin
       Result := FGetDetailValue(AMasterValue, DetailValue);
       if DetailValue = FStartMasterValue then
-        raise EJvDBTreeViewError.Create(RsEErrorValueForDetailValue);
+        raise EJvDBTreeViewError.CreateRes(@RsEErrorValueForDetailValue);
     end
     else
     begin
@@ -782,7 +782,7 @@ var
       begin
         DetailValue := V[1];
         if DetailValue = FStartMasterValue then
-          raise EJvDBTreeViewError.Create(RsEInternalError);
+          raise EJvDBTreeViewError.CreateRes(@RsEInternalError);
       end;
     end;
   end;
@@ -1202,7 +1202,7 @@ begin
           naAddChild:
             V := Destination.FMasterValue;
         else
-          raise EJvDBTreeViewError.Create(RsEMoveToModeError);
+          raise EJvDBTreeViewError.CreateRes(@RsEMoveToModeError);
         end;
         FDataLink.DataSet[FDetailField] := V;
       end;

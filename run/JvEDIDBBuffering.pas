@@ -353,7 +353,7 @@ var
   ElementList: TStrings;
 begin
   if (FElementProfiles = nil) or (FSegmentProfiles = nil) or (FLoopProfiles = nil) then
-    raise EJVCLException.Create(RsENoProfileDatasets);
+    raise EJVCLException.CreateRes(@RsENoProfileDatasets);
   FElementProfiles.Filtered := False;
   FSegmentProfiles.Filtered := False;
   FLoopProfiles.Filtered := False;
@@ -412,7 +412,7 @@ var
   ElementList: TObjectList;
 begin
   if (FElementProfiles = nil) or (FSegmentProfiles = nil) or (FLoopProfiles = nil) then
-    raise EJVCLException.Create(RsENoProfileDatasets);
+    raise EJVCLException.CreateRes(@RsENoProfileDatasets);
   FElementProfiles.Filtered := False;
   FSegmentProfiles.Filtered := False;
   FLoopProfiles.Filtered := False;

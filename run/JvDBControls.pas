@@ -1513,15 +1513,15 @@ begin
       begin
         if ((MinDate <> NullDate) and (MaxDate <> NullDate) and
           ((Value < MinDate) or (Value > MaxDate))) then
-          raise EJVCLException.CreateFmt(RsEDateOutOfRange, [FormatDateTime(GetDateFormat, Value),
+          raise EJVCLException.CreateResFmt(@RsEDateOutOfRange, [FormatDateTime(GetDateFormat, Value),
             FormatDateTime(GetDateFormat, MinDate), FormatDateTime(GetDateFormat, MaxDate)])
         else
         if ((MinDate <> NullDate) and (Value < MinDate)) then
-          raise EJVCLException.CreateFmt(RsEDateOutOfMin, [FormatDateTime(GetDateFormat, Value),
+          raise EJVCLException.CreateResFmt(@RsEDateOutOfMin, [FormatDateTime(GetDateFormat, Value),
             FormatDateTime(GetDateFormat, MinDate)])
         else
         if ((MaxDate <> NullDate) and (Value > MaxDate)) then
-          raise EJVCLException.CreateFmt(RsEDateOutOfMax, [FormatDateTime(GetDateFormat, Value),
+          raise EJVCLException.CreateResFmt(@RsEDateOutOfMax, [FormatDateTime(GetDateFormat, Value),
             FormatDateTime(GetDateFormat, MaxDate)]);
       end;
       Result := True;

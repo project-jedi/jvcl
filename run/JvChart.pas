@@ -683,9 +683,9 @@ end;
 procedure TJvChartData.Grow(Pen, ValueIndex: Integer);
 begin
   if (Pen < 0) or (ValueIndex < 0) then
-    raise ERangeError.Create(RsEDataIndexCannotBeNegative);
+    raise ERangeError.CreateRes(@RsEDataIndexCannotBeNegative);
   if (Pen > CHART_SANITY_LIMIT) or (ValueIndex > CHART_SANITY_LIMIT) then
-    raise ERangeError.Create(RsEDataIndexTooLargeProbablyAnInternal);
+    raise ERangeError.CreateRes(@RsEDataIndexTooLargeProbablyAnInternal);
 
   if ValueIndex >= FDataAlloc then
   begin
@@ -1031,7 +1031,7 @@ end;
 procedure TJvChartOptions.SetPenColor(Index: Integer; AColor: TColor);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
-    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
+    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
 
   if Index >= Length(FPenColors) then
     SetLength(FPenColors, Index + 1);
@@ -1041,7 +1041,7 @@ end;
 procedure TJvChartOptions.SetPenStyle(Index: Integer; APenStyle: TPenStyle);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
-    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
+    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
 
   if Index >= Length(FPenStyles) then
     SetLength(FPenStyles, Index + 1);
@@ -1059,7 +1059,7 @@ end;
 function TJvChartOptions.GetAverageValue(Index: Integer): Double;
 begin
   if Index < 0 then
-    raise ERangeError.Create(RsEGetAverageValueIndexNegative);
+    raise ERangeError.CreateRes(@RsEGetAverageValueIndexNegative);
   if Index >= Length(FAverageValue) then
     Result := 0.0
   else
@@ -1069,7 +1069,7 @@ end;
 procedure TJvChartOptions.SetAverageValue(Index: Integer; AValue: Double);
 begin
   if Index < 0 then
-    raise ERangeError.Create(RsESetAverageValueIndexNegative);
+    raise ERangeError.CreateRes(@RsESetAverageValueIndexNegative);
   if Index >= Length(FAverageValue) then
     SetLength(FAverageValue, Index + 1);
   FAverageValue[Index] := AValue;
@@ -1086,7 +1086,7 @@ end;
 procedure TJvChartOptions.SetPenSecondaryAxisFlag(Index: Integer; NewValue: Boolean);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
-    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
+    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
 
   if Index >= Length(FPenSecondaryAxisFlag) then
     SetLength(FPenSecondaryAxisFlag, Index + 1);
@@ -1104,7 +1104,7 @@ end;
 procedure TJvChartOptions.SetPenValueLabels(Index: Integer; NewValue: Boolean);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
-    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
+    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
 
   if Index >= Length(FPenValueLabels) then
     SetLength(FPenValueLabels, Index + 1);
@@ -1114,7 +1114,7 @@ end;
 procedure TJvChartOptions.SetPenCount(Count: Integer);
 begin
   if (Count < 0) or (Count >= MAX_PEN) then
-    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
+    raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
   FPenCount := Count;
   SetLength(FPenSecondaryAxisFlag, FPenCount + 1);
 end;
@@ -1188,7 +1188,7 @@ procedure TJvChartOptions.SetXStartOffset(Offset: Integer);
 begin
 //if (not PrintInSession) then
 //  if (Offset < 10) or (Offset > (FOwner.Width div 2)) then
-  //  raise ERangeError.Create(RsEChartOptionsXStartOffsetValueOutO);
+  //  raise ERangeError.CreateRes(@RsEChartOptionsXStartOffsetValueOutO);
   FXStartOffset := Offset;
 end;
 
@@ -2769,7 +2769,7 @@ begin
   if FPicture.Graphic is TBitmap then
     Result := TBitmap(FPicture.Graphic).Canvas
   else
-    raise EInvalidOperation.Create(RsEUnableToGetCanvas);
+    raise EInvalidOperation.CreateRes(@RsEUnableToGetCanvas);
 end;
 
 procedure TJvChart.CalcYEnd;

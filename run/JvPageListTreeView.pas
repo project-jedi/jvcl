@@ -615,7 +615,7 @@ begin
       Exit;
     end;
     if not Supports(Value, IPageList, obj) then
-      raise EPageListError.CreateFmt(RsEInterfaceNotSupported, [Value.Name, 'IPageList']);
+      raise EPageListError.CreateResFmt(@RsEInterfaceNotSupported, [Value.Name, 'IPageList']);
     SetPageList(obj);
     FPageListComponent := Value;
     FPageListComponent.FreeNotification(Self);

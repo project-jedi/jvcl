@@ -1047,7 +1047,7 @@ var
 begin
   ShellVersion := GetShellVersion;
   if ShellVersion < $00040000 then
-    raise EJVCLException.Create(RsEShellNotCompatible);
+    raise EJVCLException.CreateRes(@RsEShellNotCompatible);
 
   FDialogWindow := 0;
   FOwnerWindow := GetOwnerWindow;

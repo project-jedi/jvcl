@@ -427,7 +427,7 @@ end;
 constructor TJvTimerEvents.Create(AOwner: TPersistent);
 begin
   if not (AOwner is TJvTimerList) then
-    raise EJVCLException.Create(RsEOwnerMustBeTJvTimerList);
+    raise EJVCLException.CreateRes(@RsEOwnerMustBeTJvTimerList);
   inherited Create(AOwner, TJvTimerEvent);
   FParent := TJvTimerList(AOwner);
 end;

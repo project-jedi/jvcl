@@ -209,7 +209,7 @@ begin
     if Length(Trim(FNames[I])) < 1 then
       Continue;                         { skip empty ID's }
     if FLastProc > MaxProfEntries then
-      raise EJVCLException.CreateFmt(RsEMaxNumberOfIDsExceededd, [MaxProfEntries - 1]);
+      raise EJVCLException.CreateResFmt(@RsEMaxNumberOfIDsExceededd, [MaxProfEntries - 1]);
     Inc(FLastProc);
     with FProfileInfo[FLastProc] do
     begin
@@ -228,7 +228,7 @@ begin
   begin
     Snap := GetTickCount;
     if FStackSize > MaxStackSize then
-      raise EJVCLException.CreateFmt(RsEMaxStackSizeExceededd, [MaxStackSize]);
+      raise EJVCLException.CreateResFmt(@RsEMaxStackSizeExceededd, [MaxStackSize]);
     Inc(FStackSize);
 
     with FStack[FStackSize] do

@@ -583,7 +583,7 @@ begin
   if FSpellChecker = nil then
   begin
     if not Assigned(CreateSpellChecker) then
-      raise EJVCLException.Create(RsENoSpellCheckerAvailable);
+      raise EJVCLException.CreateRes(@RsENoSpellCheckerAvailable);
     FSpellChecker := CreateSpellChecker;
   end;
   Result := FSpellChecker;

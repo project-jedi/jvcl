@@ -587,7 +587,7 @@ begin
   else if FInstructionStr = 'DELETE' then
     FInstruction := xiDelete
   else
-    raise TJvXMLDatabaseException.CreateFmt(RsEUnknownInstruction, [FInstructionStr]);
+    raise TJvXMLDatabaseException.CreateResFmt(@RsEUnknownInstruction, [FInstructionStr]);
 end;
 {**********************************************************************}
 procedure TJvXMLQueryParser.DoValidateOrderBy;
@@ -978,7 +978,7 @@ begin
         Break;
       end;
     if j=-1 then
-      raise TJvXMLDatabaseException.CreateFmt(RsEUnexpectedStatement, [st]);
+      raise TJvXMLDatabaseException.CreateResFmt(@RsEUnexpectedStatement, [st]);
 
     if st = 'FROM' then
       st := ReadTables(lStatements)
@@ -1076,7 +1076,7 @@ var
  i: Integer;
 begin
   if FQuery='' then
-    raise TJvXMLDatabaseException.Create(RsEUnexpectedEndOfQuery);
+    raise TJvXMLDatabaseException.CreateRes(@RsEUnexpectedEndOfQuery);
 
   FQuery := TrimLeft(FQuery);
   i := 1;

@@ -690,7 +690,7 @@ begin
   Result := CheckValue(NewValue);
   if (FCheckMinValue or FCheckMaxValue) and
     RaiseOnError and (Result <> NewValue) then
-    raise ERangeError.CreateFmt(RsEOutOfRangeFloat, [FMinValue, FMaxValue]);
+    raise ERangeError.CreateResFmt(@RsEOutOfRangeFloat, [FMinValue, FMaxValue]);
 end;
 
 {$IFDEF VCL}

@@ -223,14 +223,14 @@ begin
         if not Assigned(FOwnerForm) then
           Exit;
         if FIsHooked then
-          raise EJVCLException.Create(RsEAlreadyHooked);
+          raise EJVCLException.CreateRes(@RsEAlreadyHooked);
         RegisterWndProcHook(FOwnerForm, HandleWndProc, hoBeforeMsg);
         FIsHooked := True;
       end;
     ppApplication:
       begin
         if FIsHooked then
-          raise EJVCLException.Create(RsEAlreadyHooked);
+          raise EJVCLException.CreateRes(@RsEAlreadyHooked);
         Application.HookMainWindow(HandleWndProc);
         FIsHooked := True;
       end;

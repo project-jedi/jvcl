@@ -92,7 +92,7 @@ begin
   FFileName := '';
   LoadSetupApi;
   if not IsSetupApiLoaded then
-    raise EJVCLException.Create(RsEErrorSetupDll);
+    raise EJVCLException.CreateRes(@RsEErrorSetupDll);
 end;
 
 destructor TJvCABFile.Destroy;
