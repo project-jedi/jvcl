@@ -88,6 +88,8 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF NeedMouseEnterLeave}
   protected
+    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
+    procedure DoFocusChanged(Control: TWinControl); dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -155,12 +157,16 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF NeedMouseEnterLeave}
   protected
+    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
+    procedure DoFocusChanged(Control: TWinControl); dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
+    procedure DoSetFocus(PreviousControl: TWinControl); dynamic;
+    procedure DoKillFocus(NextControl: TWinControl); dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -275,6 +281,16 @@ begin
 end;
  {$IFEND}
 {$ENDIF VisualCLX}
+procedure TJvExSpeedButton.CMFocusChanged(var Msg: TCMFocusChanged);
+begin
+  inherited;
+  DoFocusChanged(Msg.Sender);
+end;
+
+procedure TJvExSpeedButton.DoFocusChanged(Control: TWinControl);
+begin
+end;
+
 function TJvExSpeedButton.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   {$IFDEF VCL}
@@ -448,6 +464,16 @@ begin
     inherited NeedKey(Key, Shift, KeyText));
 end;
 {$ENDIF VisualCLX}
+procedure TJvExBitBtn.CMFocusChanged(var Msg: TCMFocusChanged);
+begin
+  inherited;
+  DoFocusChanged(Msg.Sender);
+end;
+
+procedure TJvExBitBtn.DoFocusChanged(Control: TWinControl);
+begin
+end;
+
 function TJvExBitBtn.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   {$IFDEF VCL}
@@ -457,6 +483,14 @@ begin
   {$ENDIF VCL}
 end;
 procedure TJvExBitBtn.DoGetDlgCode(var Code: TDlgCodes);
+begin
+end;
+
+procedure TJvExBitBtn.DoSetFocus(PreviousControl: TWinControl);
+begin
+end;
+
+procedure TJvExBitBtn.DoKillFocus(NextControl: TWinControl);
 begin
 end;
 

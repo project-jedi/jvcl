@@ -39,7 +39,7 @@ uses
   Graphics, Controls, Forms, StdCtrls, Menus,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus,
+  Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus, Types, QWindows,
   {$ENDIF VisualCLX}
   JvComponent, JVCLVer, JvConsts, JvTypes, JvExStdCtrls;
 
@@ -303,7 +303,6 @@ begin
     Exit;
 
   inherited MouseDown(Button, Shift, X, Y);
-  //   if Assigned(OnMouseDown) then OnMouseDown(Self,Button,Shift,X,Y);
 
   if InsideBtn(X, Y) then
   begin
@@ -318,7 +317,6 @@ procedure TJvCustomGraphicButton.MouseMove(Shift: TShiftState; X,
   Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
-  //   if Assigned(OnMouseMove) then OnMouseMove(Self,Shift,X,Y);
   if MouseCapture then
   begin
     if not InsideBtn(X, Y) then
@@ -363,8 +361,9 @@ begin
     { wait 'til menu is done }
     while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
       {nothing};
-    {$ELSE}
-    Application.ProcessMessages;
+    {$ENDIF VCL}
+    {$IFDEF VCL}
+    Application.ProcessMessages; // (ahuser) does this really do the job? 
     {$ENDIF VCL}
     { release button }
     MouseUp(Button, Shift, X, Y);
@@ -427,7 +426,7 @@ var
   Form: TCustomForm;
   Msg: TCMForceSize;
 begin
-  inherited;
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if ForceSameSize then
   begin
     Form := GetParentForm(Self);

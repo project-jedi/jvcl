@@ -158,8 +158,6 @@ type
     procedure SetDays(Year, Month: Word; Value: string);
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
-    procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
-    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure ColorChanged; override;
@@ -175,8 +173,11 @@ type
     procedure DoDateSelect(StartDate, EndDate: TDateTime); virtual;
     procedure DoDateSelChange(StartDate, EndDate: TDateTime); virtual;
     procedure DoGetDayState(var DayState: TNMDayState; var StateArray: TMonthDayStateArray); virtual;
-    procedure DoKillFocus(const ANextControl: TWinControl); virtual;
-    procedure DoSetFocus(const APreviousControl: TWinControl); virtual;
+    procedure DoKillFocus(ANextControl: TWinControl); override;
+    procedure DoSetFocus(APreviousControl: TWinControl); override;
+
+    procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
+    procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
 
     property MinSize: TRect read GetMinSize;
     property Bold[Year, Month, Day: Word]: Boolean read IsBold write SetBold;
@@ -1188,8 +1189,7 @@ begin
   inherited ConstrainedResize(MinWidth, MinHeight, MaxWidth, MaxHeight);
 end;
 
-function TJvCustomMonthCalendar.CanAutoSize(var NewWidth,
-  NewHeight: Integer): Boolean;
+function TJvCustomMonthCalendar.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 var
   R: TRect;
 begin
@@ -1248,41 +1248,38 @@ begin
   Result := FAppearance.FirstDayOfWeek;
 end;
 
-procedure TJvCustomMonthCalendar.DoKillFocus(
-  const ANextControl: TWinControl);
-begin
-  if Assigned(OnKillFocus) then
-    OnKillFocus(Self, ANextControl);
-end;
-
-procedure TJvCustomMonthCalendar.DoSetFocus(
-  const APreviousControl: TWinControl);
-begin
-  if Assigned(OnSetFocus) then
-    OnSetFocus(Self, APreviousControl);
-end;
-
-procedure TJvCustomMonthCalendar.WMKillFocus(var Msg: TMessage);
+procedure TJvCustomMonthCalendar.DoKillFocus(ANextControl: TWinControl);
 begin
   FLeaving := True;
   try
-    inherited;
-    DoKillFocus(FindControl(Msg.WParam));
+    inherited DoKillFocus(ANextControl);
+    DoKillFocusEvent(ANextControl);
   finally
     FLeaving := False;
   end;
 end;
 
-procedure TJvCustomMonthCalendar.WMSetFocus(var Msg: TMessage);
+procedure TJvCustomMonthCalendar.DoSetFocus(APreviousControl: TWinControl);
 begin
   FEntering := True;
   try
-    inherited;
-    DoSetFocus(FindControl(Msg.WParam));
+    inherited DoSetFocus(APreviousControl);
+    DoSetFocusEvent(APreviousControl);
   finally
     FEntering := False;
   end;
+end;
 
+procedure TJvCustomMonthCalendar.DoSetFocusEvent(const APreviousControl: TWinControl);
+begin
+  if Assigned(OnSetFocus) then
+    OnSetFocus(Self, APreviousControl);
+end;
+
+procedure TJvCustomMonthCalendar.DoKillFocusEvent(const ANextControl: TWinControl);
+begin
+  if Assigned(OnKillFocus) then
+    OnKillFocus(Self, ANextControl);
 end;
 
 //=== TJvMonthCalAppearance ==================================================

@@ -31,7 +31,13 @@ unit JvCommonExecDlg;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms,
+  {$IFDEF VCL}
+  Windows, Controls, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, Types, QWindows,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JvBaseDlg, JvTypes;
 
 type

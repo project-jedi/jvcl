@@ -52,7 +52,7 @@ type
     procedure DoCheckClick; dynamic;
     procedure DoCtl3DChanged; dynamic;
     procedure EnabledChanged; override;
-    procedure DoKillFocus(const ANextControl: TWinControl); override;
+    procedure DoKillFocusEvent(const ANextControl: TWinControl); override;
 
     function GetChecked: Boolean; virtual;
     procedure SetChecked(const AValue: Boolean); virtual;
@@ -333,13 +333,13 @@ begin
   { propagate to child controls: }
   if ShowCheckBox then
     FCheck.Enabled := Self.Enabled;
-  inherited;
+  inherited EnabledChanged;
 end;
 
-procedure TJvCustomCheckedMaskEdit.DoKillFocus(const ANextControl: TWinControl);
+procedure TJvCustomCheckedMaskEdit.DoKillFocusEvent(const ANextControl: TWinControl);
 begin
   if ANextControl <> FCheck then
-    inherited DoKillFocus(ANextControl);
+    inherited DoKillFocusEvent(ANextControl);
 end;
 
 end.

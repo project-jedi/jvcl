@@ -25,6 +25,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvDeleteError;
 
@@ -40,7 +41,6 @@ type
     FWin32ErrorCode: Integer;
     FFileName: TFileName;
     FStyle: TJvDeleteStyles;
-  protected
   public
     constructor Create(AOwner: TComponent); override;
   published

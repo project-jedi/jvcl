@@ -52,10 +52,8 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FOnEnabledChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    {$IFDEF VCL}
     FOnSetFocus: TJvFocusChangeEvent;
     FOnKillFocus: TJvFocusChangeEvent;
-    {$ENDIF VCL}
     FSaved: TColor;
     FHintColor: TColor;
     FOver: Boolean;
@@ -72,33 +70,32 @@ type
     procedure SetHotTrack(Value: Boolean);
     procedure UpdateEdit;
     function GetPasswordChar: Char;
-    function GetText: string;
+    function GetText: TCaption;
     procedure SetPasswordChar(const Value: Char);
-    procedure SetText(const Value: string);
+    {$IFDEF VCL}
+    procedure SetText(const Value: TCaption);
+    {$ENDIF VCL}
   protected
     procedure CaretChanged(Sender: TObject); dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    procedure DoKillFocus(ANextControl: TWinControl); override;
+    procedure DoSetFocus(APreviousControl: TWinControl); override;
+    procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
+    procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
     {$IFDEF VCL}
-    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
-    procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
     procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
     procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
-    procedure DoKillFocus(const ANextControl: TWinControl); virtual;
-    procedure DoSetFocus(const APreviousControl: TWinControl); virtual;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure SetText(const Value: TCaption); override;
+    {$ENDIF VisualCLX}
     procedure EnabledChanged; override;
     procedure MouseEnter(Control :TControl); override;
     procedure MouseLeave(Control :TControl); override;
     procedure ParentColorChanged; override;
-    {$IFDEF VisualCLX}
-    procedure DoEnter; override;
-    procedure DoExit; override;
-    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure Paint; virtual;
-    {$ENDIF VisualCLX}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure SetCaret(const Value: TJvCaret);
     procedure SetDisabledColor(const Value: TColor); virtual;
@@ -122,7 +119,7 @@ type
     property Entering: Boolean read FEntering;
     property Leaving: Boolean read FLeaving;
   protected
-    property Text: string read GetText write SetText;
+    property Text: TCaption read GetText write SetText;
     property PasswordChar: Char read GetPasswordChar write SetPasswordChar default #0;
     // set to True to disable read/write of PasswordChar and read of Text
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
@@ -139,10 +136,8 @@ type
 
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    {$IFDEF VCL}
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
-    {$ENDIF VCL}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -507,60 +502,6 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomMaskEdit.WMSetFocus(var Msg: TMessage);
-begin
-  FEntering := True;
-  try
-    inherited;
-    FCaret.CreateCaret;
-    DoSetFocus(FindControl(Msg.WParam));
-  finally
-    FEntering := False;
-  end;
-end;
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-procedure TJvCustomMaskEdit.DoEnter;
-begin
-  FEntering := True;
-  try
-    inherited DoEnter;
-    FCaret.CreateCaret;
-  finally
-    FEntering := False;
-  end;
-end;
-{$ENDIF VisualCLX}
-
-{$IFDEF VCL}
-procedure TJvCustomMaskEdit.WMKillFocus(var Msg: TMessage);
-begin
-  FLeaving := True;
-  try
-    FCaret.DestroyCaret;
-    inherited;
-    DoKillFocus(FindControl(Msg.WParam));
-  finally
-    FLeaving := False;
-  end;
-end;
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-procedure TJvCustomMaskEdit.DoExit;
-begin
-  FLeaving := True;
-  try
-    FCaret.DestroyCaret;
-    inherited DoExit;
-  finally
-    FLeaving := False;
-  end;
-end;
-{$ENDIF VisualCLX}
-
 procedure TJvCustomMaskEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   UpdateEdit;
@@ -572,7 +513,7 @@ begin
   Result := inherited PasswordChar;
 end;
 
-function TJvCustomMaskEdit.GetText: string;
+function TJvCustomMaskEdit.GetText: TCaption;
 var
   Tmp: Boolean;
 begin
@@ -598,9 +539,14 @@ begin
   end;
 end;
 
-procedure TJvCustomMaskEdit.SetText(const Value: string);
+procedure TJvCustomMaskEdit.SetText(const Value: TCaption);
 begin
+  {$IFDEF VCL}
   inherited Text := Value;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  inherited SetText(Value);
+  {$ENDIF VisualCLX}
 end;
 
 {$IFDEF VCL}
@@ -616,20 +562,45 @@ begin
   end;
 end;
 
-procedure TJvCustomMaskEdit.DoKillFocus(const ANextControl: TWinControl);
+{$ENDIF VCL}
+
+procedure TJvCustomMaskEdit.DoKillFocus(ANextControl: TWinControl);
+begin
+  FLeaving := True;
+  try
+    FCaret.DestroyCaret;
+    inherited DoKillFocus(ANextControl);
+    DoKillFocusEvent(ANextControl);
+  finally
+    FLeaving := False;
+  end;
+end;
+
+procedure TJvCustomMaskEdit.DoSetFocus(APreviousControl: TWinControl);
+begin
+  FEntering := True;
+  try
+    inherited DoSetFocus(APreviousControl);
+    FCaret.CreateCaret;
+    DoSetFocusEvent(APreviousControl);
+  finally
+    FEntering := False;
+  end;
+end;
+
+procedure TJvCustomMaskEdit.DoKillFocusEvent(const ANextControl: TWinControl);
 begin
   NotifyIfChanged;
   if Assigned(FOnKillFocus) then
     FOnKillFocus(Self, ANextControl);
 end;
 
-procedure TJvCustomMaskEdit.DoSetFocus(const APreviousControl: TWinControl);
+procedure TJvCustomMaskEdit.DoSetFocusEvent(const APreviousControl: TWinControl);
 begin
+  NotifyIfChanged;
   if Assigned(FOnSetFocus) then
     FOnSetFocus(Self, APreviousControl);
 end;
-
-{$ENDIF VCL}
 
 procedure TJvCustomMaskEdit.Change;
 begin
@@ -641,8 +612,9 @@ procedure TJvCustomMaskEdit.NotifyIfChanged;
 begin
   if FLastNotifiedText <> Text then
   begin
-    FLastNotifiedText := Text;
-    inherited Change;
+    {FLastNotifiedText := Text;
+    inherited Change;}
+    Change;
   end;
 end;
 

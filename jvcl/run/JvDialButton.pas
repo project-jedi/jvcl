@@ -35,8 +35,16 @@ unit JvDialButton;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ExtCtrls, ComCtrls,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  Messages, Graphics, Controls, Forms, ExtCtrls, ComCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QExtCtrls, QComCtrls, Types, QWindows,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JvComponent;
 
 type
@@ -117,13 +125,20 @@ type
     procedure Change; dynamic;
     procedure ClearTicks;
     procedure Click; override;
-    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    procedure WMSysColorChange(var Msg: TMessage); message WM_SYSCOLORCHANGE;
+    procedure WndProc(var Msg: TMessage); override;
+    {$ENDIF VCL}
+    procedure DoSetFocus(PreviousControl: TWinControl); override;
+    procedure DoKillFocus(NextControl: TWinControl); override;
+    procedure ColorChanged; override;
+    procedure ParentColorChanged; override;
     procedure DrawBorder; dynamic;
     procedure DrawButton; dynamic;
     procedure DrawPointer; dynamic;
-    procedure DrawTick(ACanvas: TCanvas; var T: TTick); dynamic;
+    procedure DrawTick(ACanvas: TCanvas; var Tick: TTick); dynamic;
     procedure DrawTicks; dynamic;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Loaded; override;
@@ -133,11 +148,7 @@ type
     procedure Paint; override;
     function PosToAngle(Pos: Integer): TJvDialAngle;
     procedure SetTicks(Value: TTickStyle); virtual;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
-    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
-    procedure WMSysColorChange(var Msg: TMessage); message WM_SYSCOLORCHANGE;
-    procedure WndProc(var Msg: TMessage); override;
+
     procedure IncPos(Shift: TShiftState); dynamic;
     procedure DecPos(Shift: TShiftState); dynamic;
     property Ticks: TList read FTicks write FTicks stored True;
@@ -190,7 +201,9 @@ type
     property Color;
     property Cursor;
     property DefaultPos;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Frequency;
@@ -374,7 +387,9 @@ begin
     FBorderStyle := Value;
     if HandleAllocated then
     begin
+      {$IFDEF VCL}
       RecreateWnd;
+      {$ENDIF VCL}
       DrawBorder;
     end;
   end;
@@ -680,18 +695,18 @@ begin
   end;
 end;
 
-procedure TJvCustomDialButton.DrawTick(ACanvas: TCanvas; var T: TTick);
+procedure TJvCustomDialButton.DrawTick(ACanvas: TCanvas; var Tick: TTick);
 var
   Pt: TPoint;
   ValueAngle: Integer;
 begin
-  ValueAngle := PosToAngle(T.Value);
-  ACanvas.Pen.Color := T.Color;
+  ValueAngle := PosToAngle(Tick.Value);
+  ACanvas.Pen.Color := Tick.Color;
   Pt := AngleToPoint(ValueAngle, Center, FRadius);
   ACanvas.MoveTo(Pt.X, Pt.Y);
-  Pt := AngleToPoint(ValueAngle, GetCenter, FRadius + T.Length);
+  Pt := AngleToPoint(ValueAngle, GetCenter, FRadius + Tick.Length);
   ACanvas.LineTo(Pt.X, Pt.Y);
-  T.Changed := False;
+  Tick.Changed := False;
 end;
 
 procedure TJvCustomDialButton.Paint;
@@ -885,56 +900,66 @@ var
   Face, Highlight, Shadow: TColor;
   Size: Integer;
   OldOrg: TPoint;
-  C: TCanvas;
+  Canvas: TCanvas;
   I: Integer;
 begin
   Size := 2 * FRadius + 1;
   ButtonRect := Bounds(0, 0, Size, Size);
-  C := FBitmap.Canvas;
-  C.Brush.Color := Parent.Brush.Color;
-  C.Brush.Style := bsSolid;
-  {$IFDEF JVCLThemesEnabled}
-  if not ThemeServices.ThemesEnabled then
-  {$ENDIF JVCLThemesEnabled}
-  C.FillRect(FBitmapRect);
-  SetViewPortOrgEx(C.Handle, FSize div 2 - FRadius, FSize div 2 - FRadius,
-    @OldOrg);
+  Canvas := FBitmap.Canvas;
+  {$IFDEF VisualCLX}
+  Canvas.Start;
+  try
+  {$ENDIF VisualCLX}
+    Canvas.Brush.Color := Parent.Brush.Color;
+    Canvas.Brush.Style := bsSolid;
+    {$IFDEF JVCLThemesEnabled}
+    if not ThemeServices.ThemesEnabled then
+    {$ENDIF JVCLThemesEnabled}
+      Canvas.FillRect(FBitmapRect);
+    SetViewPortOrgEx(Canvas.Handle, FSize div 2 - FRadius, FSize div 2 - FRadius,
+      @OldOrg);
+    try
+      // Draw edge.
+      Canvas.Pen.Style := psClear;
 
-  // Draw edge.
-  C.Pen.Style := psClear;
+      Highlight := ColorToRGB(clBtnHighlight);
+      Face := ColorToRGB(Color);
+      Shadow := (ColorToRGB(Color) and $00FEFEFE) shr 1;
 
-  Highlight := ColorToRGB(clBtnHighlight);
-  Face := ColorToRGB(Color);
-  Shadow := (ColorToRGB(Color) and $00FEFEFE) shr 1;
+      for I := 0 to Size do
+      begin
+        Canvas.Brush.Color := Blend(Cos(I * HalfPi / Size), Highlight, Face);
+        Canvas.Pie(0, 0, Size, Size, I + 1, 0, I - 1, 0);
+        Canvas.Pie(0, 0, Size, Size, 0, I - 1, 0, I + 1);
+      end;
 
-  for I := 0 to Size do
-  begin
-    C.Brush.Color := Blend(Cos(I * HalfPi / Size), Highlight, Face);
-    C.Pie(0, 0, Size, Size, I + 1, 0, I - 1, 0);
-    C.Pie(0, 0, Size, Size, 0, I - 1, 0, I + 1);
+      for I := 0 to Size do
+      begin
+        Canvas.Brush.Color := Blend(1.0 - Sin(I * HalfPi / Size), Face, Shadow);
+        Canvas.Pie(0, 0, Size, Size, Size, I + 1, Size, I - 1);
+        Canvas.Pie(0, 0, Size, Size, I - 1, Size, I + 1, Size);
+      end;
+
+      // Draw top of disk.
+      Canvas.Pen.Style := psSolid;
+      Canvas.Pen.Color := Color;
+      Canvas.Brush.Color := Color;
+      Edge := FButtonEdge * FRadius div 100 + 1;
+      Canvas.Ellipse(0 + Edge, 0 + Edge, 0 + Size - Edge, 0 + Size - Edge);
+
+      // Draw bounding circle.
+      Canvas.Pen.Color := clBtnText;
+      Canvas.Brush.Style := bsClear;
+      Canvas.Ellipse(0, 0, Size, Size);
+    finally
+      // Reset viewport origin.
+      SetViewportOrgEx(Canvas.Handle, OldOrg.X, OldOrg.Y, nil);
+    end;
+  {$IFDEF VisualCLX}
+  finally
+    Canvas.Stop;
   end;
-
-  for I := 0 to Size do
-  begin
-    C.Brush.Color := Blend(1.0 - Sin(I * HalfPi / Size), Face, Shadow);
-    C.Pie(0, 0, Size, Size, Size, I + 1, Size, I - 1);
-    C.Pie(0, 0, Size, Size, I - 1, Size, I + 1, Size);
-  end;
-
-  // Draw top of disk.
-  C.Pen.Style := psSolid;
-  C.Pen.Color := Color;
-  C.Brush.Color := Color;
-  Edge := FButtonEdge * FRadius div 100 + 1;
-  C.Ellipse(0 + Edge, 0 + Edge, 0 + Size - Edge, 0 + Size - Edge);
-
-  // Draw bounding circle.
-  C.Pen.Color := clBtnText;
-  C.Brush.Style := bsClear;
-  C.Ellipse(0, 0, Size, Size);
-
-  // Reset viewport origin.
-  SetViewportOrgEx(C.Handle, OldOrg.X, OldOrg.Y, nil);
+  {$ENDIF VisualCLX}
   FBitmapInvalid := False;
 end;
 
@@ -992,10 +1017,10 @@ begin
   SetRadius(AWidth + AHeight);
 end;
 
-procedure TJvCustomDialButton.CMParentColorChanged(var Msg: TMessage);
+procedure TJvCustomDialButton.ParentColorChanged;
 begin
   FBitmapInvalid := True;
-  inherited;
+  inherited ParentColorChanged;
 end;
 
 // Set button edge in percent (0 - 100).
@@ -1017,16 +1042,16 @@ begin
   end;
 end;
 
-procedure TJvCustomDialButton.WMKillFocus(var Msg: TWMKillFocus);
+procedure TJvCustomDialButton.DoKillFocus(NextControl: TWinControl);
 begin
-  inherited;
+  inherited DoKillFocus(NextControl);
   if HandleAllocated then
     DrawBorder;
 end;
 
-procedure TJvCustomDialButton.WMSetFocus(var Msg: TWMSetFocus);
+procedure TJvCustomDialButton.DoSetFocus(PreviousControl: TWinControl);
 begin
-  inherited;
+  inherited DoSetFocus(PreviousControl);
   if HandleAllocated then
     DrawBorder;
 end;
@@ -1122,6 +1147,7 @@ begin
   Invalidate;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomDialButton.CreateParams(var Params: TCreateParams);
 const
   BorderStyles: array [TBorderStyle] of Cardinal = (0, WS_BORDER);
@@ -1134,6 +1160,7 @@ begin
     Params.ExStyle := Params.ExStyle or WS_EX_STATICEDGE;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomDialButton.SetPointerColor(Value: TColor);
 begin
@@ -1153,13 +1180,6 @@ begin
     if not State then
       DrawPointer;
   end;
-end;
-
-procedure TJvCustomDialButton.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  FBitmapInvalid := True;
-  RecreateWnd;
 end;
 
 procedure TJvCustomDialButton.IncPos(Shift: TShiftState);
@@ -1207,6 +1227,14 @@ begin
   inherited KeyDown(Key, Shift);
 end;
 
+{$IFDEF VCL}
+procedure TJvCustomDialButton.CMCtl3DChanged(var Msg: TMessage);
+begin
+  inherited;
+  FBitmapInvalid := True;
+  RecreateWnd;
+end;
+
 procedure TJvCustomDialButton.WndProc(var Msg: TMessage);
 begin
   if Msg.Msg = CN_KEYDOWN then
@@ -1219,6 +1247,7 @@ begin
   FBitmapInvalid := True;
   Invalidate;
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomDialButton.SetPointerSize(Value: Integer);
 begin
@@ -1239,10 +1268,10 @@ begin
   Result := dAngleToRadian * AnAngle;
 end;
 
-procedure TJvCustomDialButton.CMColorChanged(var Msg: TMessage);
+procedure TJvCustomDialButton.ColorChanged;
 begin
   FBitmapInvalid := True;
-  inherited;
+  inherited ColorChanged;
 end;
 
 procedure TJvCustomDialButton.Loaded;

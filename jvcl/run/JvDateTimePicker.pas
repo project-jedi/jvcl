@@ -40,31 +40,31 @@ unit JvDateTimePicker;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
-  JVCLVer;
+  Windows, Messages, CommCtrl,
+  SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+  JVCLVer, JvExComCtrls;
 
 type
   {$IFDEF BCB}
   TDate = TDateTime;
   {$ENDIF BCB}
 
-  TJvDateTimePicker = class(TDateTimePicker)
+  TJvDateTimePicker = class(TJvExDateTimePicker)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FNullText: string;
     FNullDate: TDateTime;
     FDropDownDate: TDate;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure SetNullDate(const Value: TDateTime);
   protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
+
     function WithinDelta(Val1, Val2: TDateTime): Boolean; virtual;
     // returns True if NullDate matches Date or Frac(NullDate) matches Frac(Time) depending on Kind
     function CheckNullValue: Boolean; virtual;
@@ -81,15 +81,14 @@ type
     // The text to display when NullDate = Date/Time
     property NullText: string read FNullText write FNullText;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
 implementation
 
 uses
-  CommCtrl,
   JvJVCLUtils, JvResources;
 
 constructor TJvDateTimePicker.Create(AOwner: TComponent);
@@ -100,29 +99,28 @@ begin
   FDropDownDate := SysUtils.Date;
 end;
 
-procedure TJvDateTimePicker.CMParentColorChanged(var Msg: TMessage);
+procedure TJvDateTimePicker.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvDateTimePicker.CMMouseEnter(var Msg: TMessage);
+procedure TJvDateTimePicker.MouseEnter(Control: TControl);
 begin
-  FSaved := Application.HintColor;
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
+  FSaved := Application.HintColor;
   Application.HintColor := FHintColor;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
 
-procedure TJvDateTimePicker.CMMouseLeave(var Msg: TMessage);
+procedure TJvDateTimePicker.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   Application.HintColor := FSaved;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
 function TJvDateTimePicker.WithinDelta(Val1, Val2: TDateTime): Boolean;

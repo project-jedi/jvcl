@@ -110,12 +110,12 @@ type
     function GetValueByOffset(Offset: Integer): Longint;
     function GetOffsetByValue(Value: Longint): Integer;
     function GetRulerLength: Integer;
-    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMTimer(var Msg: TMessage); message WM_TIMER;
   protected
+    procedure Resize; override;
+    procedure DoFocusChanged(Control: TWinControl); override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
@@ -1075,19 +1075,18 @@ begin
   InvalidateThumb;
 end;
 
-procedure TJvCustomSlider.CMFocusChanged(var Msg: TCMFocusChanged);
+procedure TJvCustomSlider.DoFocusChanged(Control: TWinControl);
 var
   Active: Boolean;
 begin
-  with Msg do
-    Active := (Sender = Self);
+  Active := (Control = Self);
   if Active <> FFocused then
   begin
     FFocused := Active;
     if (soShowFocus in Options) then
       Invalidate;
   end;
-  inherited;
+  inherited DoFocusChanged(Control);
 end;
 
 procedure TJvCustomSlider.DoGetDlgCode(var Code: TDlgCodes);
@@ -1095,9 +1094,9 @@ begin
   Code := [dcWantArrows];
 end;
 
-procedure TJvCustomSlider.WMSize(var Msg: TWMSize);
+procedure TJvCustomSlider.Resize;
 begin
-  inherited;
+  inherited Resize;
   if not (csReading in ComponentState) then
     Sized;
 end;

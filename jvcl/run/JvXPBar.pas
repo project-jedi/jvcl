@@ -404,11 +404,11 @@ type
   end;
 
 implementation
+{$IFDEF JVCLThemesEnabled}
 uses
-  {$IFDEF JVCLThemesEnabled}
   UxTheme,
   JvThemes;
-  {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
 
 const
   FC_HEADER_HEIGHT = 34;
@@ -1560,7 +1560,7 @@ end;
 
 procedure TJvXPCustomWinXPBar.SetColors(const Value: TJvXPBarColors);
 begin
->//
+  //
 end;
 
 end.
