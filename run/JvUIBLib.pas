@@ -4234,92 +4234,128 @@ end;
 
 { TSQLParams }
 
-  procedure TSQLParams.EncodeString(Code: Smallint; Index: Word; const str: String);
-  var
-    i: smallint;
-    OldLen: SmallInt;
-    NewLen: Integer;
-  begin
-    OldLen  := FXSQLDA.sqlvar[Index].SqlLen;
-    with FXSQLDA.sqlvar[Index] do
-      case Code of
-        SQL_TEXT :
-          begin
-            NewLen := Length(str);
-            if NewLen = 0 then
-              Inc(NewLen); // empty string not null
-            if sqllen = 0 then
-              getmem(sqldata, NewLen) else
-              ReallocMem(sqldata, NewLen);
-            sqllen := NewLen;
-            Move(PChar(str)^, sqldata^, sqllen);
-          end;
-        SQL_VARYING :
-          begin
-            NewLen := Length(str);
-            if NewLen = 0 then
-              Inc(NewLen); // empty string not null
-            if sqllen = 0 then
-              getmem(sqldata, NewLen+2) else
-
-              ReallocMem(sqldata, NewLen+2);
-            sqllen := NewLen + 2;
-            PVary(sqldata).vary_length := NewLen;
-            Move(PChar(str)^, PVary(sqldata).vary_string, PVary(sqldata).vary_length);
-          end;
+procedure TSQLParams.EncodeString(Code: Smallint; Index: Word; const str: String);
+var
+  i: smallint;
+  OldLen: SmallInt;
+  NewLen: Integer;
+begin
+  OldLen  := FXSQLDA.sqlvar[Index].SqlLen;
+  with FXSQLDA.sqlvar[Index] do
+  case Code of
+    SQL_TEXT :
+      begin
+        NewLen := Length(str);
+        if NewLen = 0 then
+        begin
+          // interbase need a valid pointer
+          if sqldata = nil then
+            getmem(sqldata, 4);
+          sqllen := 0;
+        end else
+        begin
+          if sqldata = nil then
+            getmem(sqldata, NewLen) else
+            ReallocMem(sqldata, NewLen);
+          sqllen := NewLen;
+          Move(PChar(str)^, sqldata^, sqllen);
+        end;
       end;
-
-      // named parametters share the same memory !!
-      with FXSQLDA.sqlvar[Index] do
-        if (ParamNameLength > 0) and (OldLen <> SqlLen) then
-           for i := 0 to FXSQLDA.sqln - 1 do
-             if (FXSQLDA.sqlvar[i].ID = ID) then
-             begin
-               FXSQLDA.sqlvar[i].SqlData := SqlData;
-               FXSQLDA.sqlvar[i].SqlLen  := SqlLen;
-             end;
+    SQL_VARYING :
+      begin
+        NewLen := Length(str);
+        if NewLen = 0 then
+        begin
+          if sqldata = nil then
+          begin
+            // interbase need a valid pointer :(
+            getmem(sqldata, 4);
+            sqllen := 2;
+          end;
+          PVary(sqldata).vary_length := 0;
+        end else
+        begin
+          if sqldata = nil then
+            getmem(sqldata, NewLen+2) else
+            ReallocMem(sqldata, NewLen+2);
+          sqllen := NewLen + 2;
+          PVary(sqldata).vary_length := NewLen;
+          Move(PChar(str)^, PVary(sqldata).vary_string,PVary(sqldata).vary_length);
+        end;
+      end;
   end;
 
-  procedure TSQLParams.EncodeWideString(Code: Smallint; Index: Word; const str: WideString);
-  var
-    i: smallint;
-    OldLen: SmallInt;
-    NewLen: Integer;
-  begin
-    OldLen  := FXSQLDA.sqlvar[Index].SqlLen;
-    with FXSQLDA.sqlvar[Index] do
-      case Code of
-        SQL_TEXT :
-          begin
-            NewLen := Length(str) * 2;
-            if sqllen = 0 then
-              getmem(sqldata, NewLen) else
-              ReallocMem(sqldata, NewLen);
-            sqllen := NewLen;
-            Move(PWideChar(str)^, sqldata^, sqllen);
-          end;
-        SQL_VARYING :
-          begin
-            NewLen := Length(str) * 2;
-            if sqllen = 0 then
-              getmem(sqldata, NewLen+2) else
-              ReallocMem(sqldata, NewLen+2);
-            sqllen := NewLen + 2;
-            PVary(sqldata).vary_length := NewLen;
-            Move(PWideChar(str)^, PVary(sqldata).vary_string, PVary(sqldata).vary_length);
-          end;
-      end;
+  // named parametters share the same memory !!
+  with FXSQLDA.sqlvar[Index] do
+    if (ParamNameLength > 0) and (OldLen <> SqlLen) then
+       for i := 0 to FXSQLDA.sqln - 1 do
+         if (FXSQLDA.sqlvar[i].ID = ID) then
+         begin
+           FXSQLDA.sqlvar[i].SqlData := SqlData;
+           FXSQLDA.sqlvar[i].SqlLen  := SqlLen;
+         end;
+end;
 
-      // named parametters share the same memory !!
-      with FXSQLDA.sqlvar[Index] do
-        if (ParamNameLength > 0) and (OldLen <> SqlLen) then
-           for i := 0 to FXSQLDA.sqln - 1 do
-             if (FXSQLDA.sqlvar[i].ID = ID) then
-             begin
-               FXSQLDA.sqlvar[i].SqlData := SqlData;
-               FXSQLDA.sqlvar[i].SqlLen  := SqlLen;
-             end;
+procedure TSQLParams.EncodeWideString(Code: Smallint; Index: Word; const str: WideString);
+var
+  i: smallint;
+  OldLen: SmallInt;
+  NewLen: Integer;
+begin
+  OldLen  := FXSQLDA.sqlvar[Index].SqlLen;
+  with FXSQLDA.sqlvar[Index] do
+  case Code of
+    SQL_TEXT :
+      begin
+        NewLen := Length(str) * 2;
+        if NewLen = 0 then
+        begin
+          // interbase need a valid pointer :(
+          if sqldata = nil then
+            getmem(sqldata, 4);
+          sqllen := 0;
+        end else
+        begin
+          if sqldata = nil then
+            getmem(sqldata, NewLen) else
+            ReallocMem(sqldata, NewLen);
+          sqllen := NewLen;
+          Move(PWideChar(str)^, sqldata^, sqllen);
+        end;
+      end;
+    SQL_VARYING :
+      begin
+        NewLen := Length(str) * 2;
+        if NewLen = 0 then
+        begin
+          if sqldata = nil then
+          begin
+            getmem(sqldata, 4);
+            sqllen := 2;
+          end;
+          PVary(sqldata).vary_length := 0;
+        end else
+        begin
+          if sqllen = 0 then
+            getmem(sqldata, NewLen+2) else
+            ReallocMem(sqldata, NewLen+2);
+          sqllen := NewLen + 2;
+          PVary(sqldata).vary_length := NewLen;
+          Move(PWideChar(str)^, PVary(sqldata).vary_string, PVary(sqldata).vary_length);
+        end;
+      end;
   end;
+
+  // named parametters share the same memory !!
+  with FXSQLDA.sqlvar[Index] do
+    if (ParamNameLength > 0) and (OldLen <> SqlLen) then
+       for i := 0 to FXSQLDA.sqln - 1 do
+         if (FXSQLDA.sqlvar[i].ID = ID) then
+         begin
+           FXSQLDA.sqlvar[i].SqlData := SqlData;
+           FXSQLDA.sqlvar[i].SqlLen  := SqlLen;
+         end;
+end;
 
   procedure TSQLParams.SetAsQuad(const Index: Word; const Value: TISCQuad);
   begin
