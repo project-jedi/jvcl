@@ -374,6 +374,7 @@ resourcestring
   RsECsvInvalidSeparatorFmt = 'Invalid separator character (%s)'; 
   RsEProblemReadingRow = 'Problem reading row %d';
   RsENoRecord = 'No records';
+  RsENoFieldNamesMatch = 'No field names match in these datasets. CopyFromDataset failed.';
   RsETimeTConvError = 'SetFieldData Error - TimeT-to-DateTime conversion error';
   RsEFieldTypeNotHandled = 'SetFieldData Error - Field type not handled';
   RsEUnableToLocateCSVFileInfo = 'Unable to locate CSV file information for field %s';
