@@ -1357,6 +1357,7 @@ begin
     EndPage := PageCount - 1;
   if Copies < 1 then
     Copies := 1;
+  if (StartPage < 0) or (EndPage < 0) then Exit;
   if Collate then // Range * Copies
   begin
     if StartPage > EndPage then
