@@ -2205,6 +2205,20 @@ resourcestring
   RsDEF_FullName  = 'Delphi predefined colors';
   RsDEF_ShortName = 'DEF';
 
+//=== JvDBActions.pas JvDynControlEngineDBTools =========================================================
+  RsDBPosDialogCaption = 'Change Current Record Position';
+  RsDBPosCurrentPosition = 'Current Position';
+  RsDBPosNewPosition = 'New Position';
+  RsDBPosMovementType = 'Movement Type';
+  RsDBPosAbsolute = 'Absolute';
+  RsDBPosBackward = 'Backward';
+  RsDBPosForward = 'Forward';
+  RsDBPosPercental = 'Percental';
+  RsSRWPostButtonCaption = '&Post';
+  RsSRWCancelButtonCaption = '&Cancel';
+  RsSRWCloseButtonCaption = 'C&lose';
+
+
 //=== not taken into JVCL ====================================================
 {
 resourcestring
