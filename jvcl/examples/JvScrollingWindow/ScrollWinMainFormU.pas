@@ -38,9 +38,6 @@ type
     ExpressButton26: TJvExpressButton;
     ExpressButton27: TJvExpressButton;
     ExpressButton28: TJvExpressButton;
-    Divider1: TJvDivider;
-    Divider2: TJvDivider;
-    Divider3: TJvDivider;
     PopupMenu1: TPopupMenu;
     Move1: TMenuItem;
     Hide1: TMenuItem;
