@@ -29,6 +29,8 @@ unit JvBDEReg;
 
 interface
 
+implementation
+(*
 uses
   Classes,
   {$IFDEF COMPILER6_UP}
@@ -115,6 +117,7 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvDBProgress, cSessionName,
     TJvSessionNameProperty);
 end;
-
+end.
+*)
 end.
 

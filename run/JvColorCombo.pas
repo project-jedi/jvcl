@@ -274,7 +274,7 @@ resourcestring
   SNewColorPrefix = 'Custom';
 
 implementation
-{$R ..\resources\JvCOlorCombo.res}
+{$R ..\resources\JvColorCombo.res}
 
 const
   {$IFNDEF COMPILER6_UP}

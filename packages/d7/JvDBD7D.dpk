@@ -1,19 +1,19 @@
-package JvCoreD7D;
+package JvDBD7D;
 
 {$R *.res}
 {$ALIGN 8}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
+{$RANGECHECKS ON}
 {$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
@@ -22,18 +22,17 @@ package JvCoreD7D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Core Designtime Package'}
+{$DESCRIPTION 'JVCL Database Components Designtime Package'}
 {$DESIGNONLY}
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
-  JvCoreD7R,
+  JvDBD7R,
   designide;
 
 contains
-  JvJVCLAboutEditor in '..\..\design\JvJVCLAboutEditor.pas',
-  JvxDConst in '..\..\design\JvxDConst.pas',
-  JvCoreReg in '..\..\design\JvCoreReg.pas';
+  JvCsvDataForm in '..\..\design\JvCsvDataForm.pas' {JvCsvDefStrDialog},
+  JvCsvDataEditor in '..\..\design\JvCsvDataEditor.pas',
+  JvDBReg in '..\..\design\JvDBReg.pas';
 
 end.

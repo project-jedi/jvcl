@@ -93,6 +93,7 @@ contains
   JvRecentMenuButton in '..\..\run\JvRecentMenuButton.pas',
   JvFavoritesButton in '..\..\run\JvFavoritesButton.pas',
   JvBrowseFolder in '..\..\run\JvBrowseFolder.pas',
-  JvTransparentPanel in '..\..\run\JvTransparentPanel.pas';
+  JvTransparentPanel in '..\..\run\JvTransparentPanel.pas',
+  JvColorCombo in '..\..\run\JvColorCombo.pas';
 
 end.

@@ -27,6 +27,13 @@ Known Issues:
 
 unit JvDBReg;
 
+interface
+
+implementation
+
+
+(*
+
 {$IFDEF DelphiPersonalEdition}
 
 interface
@@ -93,6 +100,7 @@ begin
 end;
 
 {$ENDIF DelphiPersonalEdition}
-
+end.
+*)
 end.
 
