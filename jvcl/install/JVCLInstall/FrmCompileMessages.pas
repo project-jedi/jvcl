@@ -53,12 +53,12 @@ type
     procedure ListBoxMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   private
-    { Private-Deklarationen }
     FList: TObjectList;
+    FPaths: TStrings;
     procedure ExtractText(Typ: TMsgType; const Text: string);
     function GetCount: Integer;
+    procedure SetPaths(const Value: TStrings);
   public
-    { Public-Deklarationen }
     procedure Clear;
 
     procedure AddHint(const Text: string);
@@ -70,6 +70,7 @@ type
     procedure AddText(const Msg: string);
 
     property Count: Integer read GetCount;
+    property Paths: TStrings read FPaths write SetPaths;
   end;
 
 var
@@ -290,20 +291,42 @@ end;
 procedure TFormCompileMessages.ListBoxDblClick(Sender: TObject);
 var
   Item: TMsgItem;
+  Filename: string;
+  I: Integer;
 begin
   if ListBox.ItemIndex <> -1 then
   begin
     Item := TMsgItem(ListBox.Items.Objects[ListBox.ItemIndex]);
-    if (Item.Filename <> '') and FileExists(Item.Filename) then
+    if Item.Filename <> '' then
     begin
-      if Sender = MenuNotepad then
+      // find file
+      Filename := Item.Filename;
+      if Pos(':', Filename) = 0 then
       begin
-        if ShellExecute(Handle, 'open', 'notepad.exe', PChar(Item.Filename), nil, SW_SHOW) < 32 then // do not localize
-          MessageDlg(RsErrorOpeningFile, mtError, [mbOk], 0);
-      end
-      else
-        if ShellExecute(Handle, 'open', PChar(Item.Filename), nil, nil, SW_SHOW) < 32 then // do not localize
-          MessageDlg(RsErrorOpeningFile, mtError, [mbOk], 0);
+        for I := 0 to Paths.Count - 1 do
+        begin
+          if FileExists(Paths[I] + '\' + Filename) then
+          begin
+            Filename := Paths[I] + '\' + Filename;
+            Break;
+          end;
+        end;
+      end;
+
+      if FileExists(Filename) then
+      begin
+        if Sender = MenuNotepad then
+        begin
+          if ShellExecute(Handle, 'open', 'notepad.exe', PChar(Filename), nil, SW_SHOW) < 32 then // do not localize
+            MessageDlg(RsErrorOpeningFile, mtError, [mbOk], 0);
+        end
+        else
+        begin
+          if ShellExecute(Handle, 'open', PChar(Filename), nil, nil, SW_SHOW) < 32 then // do not localize
+            MessageDlg(RsErrorOpeningFile, mtError, [mbOk], 0);
+        end;
+      end;
+      
     end;
   end;
 end;
@@ -318,6 +341,12 @@ end;
 function TFormCompileMessages.GetCount: Integer;
 begin
   Result := ListBox.Items.Count;
+end;
+
+procedure TFormCompileMessages.SetPaths(const Value: TStrings);
+begin
+  if Value <> FPaths then
+    FPaths.Assign(Value);
 end;
 
 end.
