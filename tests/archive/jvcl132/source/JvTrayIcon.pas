@@ -388,12 +388,15 @@ end;
 procedure TJvTrayIcon.SetHint(Value: string);
 begin
   DoCheckCrash;
-  FHint := Value;
-  with FIc do
-    StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
-  Fic.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP; 
-  if FActive then
-    Shell_NotifyIcon(NIM_MODIFY, @fic);
+  if FHint<>Value then
+  begin
+    FHint := Value;
+    with FIc do
+      StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
+    Fic.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP;
+    if FActive then
+      Shell_NotifyIcon(NIM_MODIFY, @fic);
+  end;
 end;
 
 {**************************************************}
