@@ -78,12 +78,17 @@ uses
   SysUtils,
   JclRegistry, JclResources, JclStrings;
 
+const
+  cCount = 'Count';
+
 resourcestring
   SUnableToCreateKey = 'Unable to create key ''%s''';
   SErrorEnumeratingRegistry = 'Error enumerating registry.';
 
+{ (rom) disabled unused
 const
-  HKEY_Names: array[HKEY_CLASSES_ROOT .. HKEY_DYN_DATA, 0 .. 1] of string = (
+  HKEY_Names: array [HKEY_CLASSES_ROOT..HKEY_DYN_DATA, 0..1] of PChar =
+   (
     ('HKEY_CLASSES_ROOT', 'HKCR'),
     ('HKEY_CURRENT_USER', 'HKCU'),
     ('HKEY_LOCAL_MACHINE', 'HKLM'),
@@ -91,9 +96,16 @@ const
     ('HKEY_PERFORMANCE_DATA', 'HKPD'),
     ('HKEY_CURRENT_CONFIG', 'HKCC'),
     ('HKEY_DYN_DATA', 'HKDD')
-  );
+   );
+}
 
-//===TJvAppRegistryStore============================================================================
+//=== TJvAppRegistryStore ====================================================
+
+constructor TJvAppRegistryStore.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FRegHKEY := HKEY_CURRENT_USER;
+end;
 
 function TJvAppRegistryStore.GetRegRoot: TJvRegKey;
 begin
@@ -111,12 +123,10 @@ var
   ResKey: HKEY;
 begin
   if not RegKeyExists(FRegHKEY, Key) then
-  begin
     if Windows.RegCreateKey(FRegHKEY, PChar(Key), ResKey) = ERROR_SUCCESS then
       RegCloseKey(ResKey)
     else
       raise Exception.CreateFmt(SUnableToCreateKey, [Key]);
-  end;
 end;
 
 procedure TJvAppRegistryStore.EnumFolders(const Path: string; const Strings: TStrings;
@@ -125,28 +135,26 @@ var
   Key: string;
   TmpHKEY: HKEY;
   I: Integer;
-  SubKeyName: array[0..255] of Char;
+  SubKeyName: array [0..255] of Char;
   EnumRes: Longint;
 begin
   Key := GetAbsPath(Path);
   if RegKeyExists(FRegHKEY, Key) then
-  begin
     if RegOpenKey(FRegHKEY, PChar(Key), TmpHKEY) = ERROR_SUCCESS then
-    try
-      I := 0;
-      repeat
-        EnumRes := RegEnumKey(TmpHKEY, I, SubKeyName, 255);
-        if (EnumRes = ERROR_SUCCESS) and (not ReportListAsValue or
-            not ListStored(Path + '\' + SubKeyName)) then
-          Strings.Add(SubKeyName);
-        Inc(I);
-      until EnumRes <> ERROR_SUCCESS;
-      if EnumRes <> ERROR_NO_MORE_ITEMS then
-        raise EJclRegistryError.Create(SErrorEnumeratingRegistry);
-    finally
-      RegCloseKey(TmpHKEY);
-    end;
-  end;
+      try
+        I := 0;
+        repeat
+          EnumRes := RegEnumKey(TmpHKEY, I, SubKeyName, 255);
+          if (EnumRes = ERROR_SUCCESS) and (not ReportListAsValue or
+              not ListStored(Path + '\' + SubKeyName)) then
+            Strings.Add(SubKeyName);
+          Inc(I);
+        until EnumRes <> ERROR_SUCCESS;
+        if EnumRes <> ERROR_NO_MORE_ITEMS then
+          raise EJclRegistryError.Create(SErrorEnumeratingRegistry);
+      finally
+        RegCloseKey(TmpHKEY);
+      end;
 end;
 
 procedure TJvAppRegistryStore.EnumValues(const Path: string; const Strings: TStrings;
@@ -156,7 +164,7 @@ var
   Key: string;
   TmpHKEY: HKEY;
   I: Integer;
-  Name: array[0..511] of Char;
+  Name: array [0..511] of Char;
   NameLen: Cardinal;
   EnumRes: Longint;
 begin
@@ -165,24 +173,22 @@ begin
     Strings.Add('');
   Key := GetAbsPath(Path);
   if RegKeyExists(FRegHKEY, Key) then
-  begin
     if RegOpenKey(FRegHKEY, PChar(Key), TmpHKEY) = ERROR_SUCCESS then
-    try
-      I := 0;
-      repeat
-        NameLen := 511;
-        EnumRes := RegEnumValue(TmpHKEY, I, Name, NameLen, nil, nil, nil, nil);
-        if (EnumRes = ERROR_SUCCESS) and (not PathIsList or (not AnsiSameText('Count', Name) and
-            not NameIsListItem(Name))) then
-          Strings.Add(Name);
-        Inc(I);
-      until EnumRes <> ERROR_SUCCESS;
-      if EnumRes <> ERROR_NO_MORE_ITEMS then
-        raise EJclRegistryError.Create(SErrorEnumeratingRegistry);
-    finally
-      RegCloseKey(TmpHKEY);
-    end;
-  end;
+      try
+        I := 0;
+        repeat
+          NameLen := 511;
+          EnumRes := RegEnumValue(TmpHKEY, I, Name, NameLen, nil, nil, nil, nil);
+          if (EnumRes = ERROR_SUCCESS) and (not PathIsList or (not AnsiSameText(cCount, Name) and
+              not NameIsListItem(Name))) then
+            Strings.Add(Name);
+          Inc(I);
+        until EnumRes <> ERROR_SUCCESS;
+        if EnumRes <> ERROR_NO_MORE_ITEMS then
+          raise EJclRegistryError.Create(SErrorEnumeratingRegistry);
+      finally
+        RegCloseKey(TmpHKEY);
+      end;
 end;
 
 function TJvAppRegistryStore.IsFolder(Path: string; ListIsValue: Boolean): Boolean;
@@ -190,32 +196,32 @@ var
   RefPath: string;
   PathHKEY: HKEY;
   I: Integer;
-  Name: array[0..511] of Char;
+  Name: array [0..511] of Char;
   NameLen: Cardinal;
   EnumRes: Longint;
 begin
   Result := False;
   RefPath := GetAbsPath(Path);
   if RegOpenKey(FRegHKEY, PChar(RefPath), PathHKEY) = ERROR_SUCCESS then
-  try
-    Result := True;
-    if ListIsValue and (RegQueryValueEx(PathHKey, 'Count', nil, nil, nil, nil) = ERROR_SUCCESS) then
-    begin
-      Result := False;
-      I := 0;
-      repeat
-        NameLen := 511;
-        EnumRes := RegEnumValue(PathHKEY, I, Name, NameLen, nil, nil, nil, nil);
-        Result := (EnumRes = ERROR_SUCCESS) and not AnsiSameText('Count', Name) and
-          not NameIsListItem(Name);
-        Inc(I);
-      until (EnumRes <> ERROR_SUCCESS) or Result;
-      if EnumRes <> ERROR_NO_MORE_ITEMS then
-        raise EJclRegistryError.Create(SErrorEnumeratingRegistry);
+    try
+      Result := True;
+      if ListIsValue and (RegQueryValueEx(PathHKey, cCount, nil, nil, nil, nil) = ERROR_SUCCESS) then
+      begin
+        Result := False;
+        I := 0;
+        repeat
+          NameLen := 511;
+          EnumRes := RegEnumValue(PathHKEY, I, Name, NameLen, nil, nil, nil, nil);
+          Result := (EnumRes = ERROR_SUCCESS) and not AnsiSameText(cCount, Name) and
+            not NameIsListItem(Name);
+          Inc(I);
+        until (EnumRes <> ERROR_SUCCESS) or Result;
+        if EnumRes <> ERROR_NO_MORE_ITEMS then
+          raise EJclRegistryError.Create(SErrorEnumeratingRegistry);
+      end;
+    finally
+      RegCloseKey(PathHKEY);
     end;
-  finally
-    RegCloseKey(PathHKEY);
-  end;
 end;
 
 function TJvAppRegistryStore.PathExists(const Path: string): boolean;
@@ -236,16 +242,14 @@ begin
   SplitKeyPath(Path, SubKey, ValueName);
   Result := RegKeyExists(FRegHKEY, SubKey);
   if Result then
-  begin
     if RegOpenKey(FRegHKEY, PChar(SubKey), TmpKey) = ERROR_SUCCESS then
-    try
-      Result := RegQueryValueEx(TmpKey, PChar(ValueName), nil, nil, nil, nil) = ERROR_SUCCESS;
-    finally
-      RegCloseKey(TmpKey);
-    end
+      try
+        Result := RegQueryValueEx(TmpKey, PChar(ValueName), nil, nil, nil, nil) = ERROR_SUCCESS;
+      finally
+        RegCloseKey(TmpKey);
+      end
     else
       raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyRead, [SubKey]);
-  end;
 end;
 
 procedure TJvAppRegistryStore.DeleteValue(const Path: string);
@@ -278,7 +282,7 @@ begin
   try
     Result := RegReadIntegerDef(FRegHKEY, SubKey, ValueName, Default);
   except
-    on e:EJclRegistryError do
+    on E: EJclRegistryError do
       if StoreOptions.DefaultIfReadConvertError then
         Result := Default
       else
@@ -305,7 +309,7 @@ begin
   try
     Result := RegReadBoolDef(FRegHKEY, SubKey, ValueName, Default);
   except
-    on e:EJclRegistryError do
+    on E: EJclRegistryError do
       if StoreOptions.DefaultIfReadConvertError then
         Result := Default
       else
@@ -334,7 +338,7 @@ begin
   try
     RegReadBinary(FRegHKEY, SubKey, ValueName, Result, SizeOf(Result));
   except
-    on e:EJclRegistryError do
+    on E: EJclRegistryError do
       if StoreOptions.DefaultIfReadConvertError then
         Result := Default
       else
@@ -361,7 +365,7 @@ begin
   try
     Result := RegReadStringDef(FRegHKEY, SubKey, ValueName, Default);
   except
-    on e:EJclRegistryError do
+    on E: EJclRegistryError do
       if StoreOptions.DefaultIfReadConvertError then
         Result := Default
       else
@@ -398,12 +402,6 @@ begin
   SplitKeyPath(Path, SubKey, ValueName);
   CreateKey(SubKey);
   RegWriteBinary(FRegHKEY, SubKey, ValueName, TmpBuf, BufSize);
-end;
-
-constructor TJvAppRegistryStore.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FRegHKEY := HKEY_CURRENT_USER;
 end;
 
 end.

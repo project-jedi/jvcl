@@ -34,16 +34,16 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc,
-  {$ENDIF}
+  {$ENDIF LINUX}
   SysUtils, Classes, IniFiles, JvAppStore;
 
 type
   TJvAppIniStore = class(TJvCustomAppStore)
   private
-    fBaseSection : String;
+    FBaseSection : string;
   protected
     function ValueExists(const Section, Key: string): Boolean; virtual; abstract;
     function ReadValue(const Section, Key: string): string; virtual; abstract;
@@ -62,7 +62,7 @@ type
     function ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer; override;
     procedure WriteBinaryInt(const Path: string; const Buf; BufSize: Integer); override;
   published
-    property BaseSection : String read fBaseSection write fBaseSection;
+    property BaseSection : string read FBaseSection write FBaseSection;
   end;
 
   { Storage to INI file. Optionally a buffered version (TMemIniFile) is used. IdleDelay will then
@@ -114,10 +114,11 @@ type
   TJvCustomAppINIStringsStore = class(TJvAppIniStore)
   private
     FIsInternalChange: Boolean;
-    FSections: TStrings;
-    FStrings: TStrings;
+    FSections: TStringList;
+    FStrings: TStringList;
+    function GetString(Index: Integer): string;
+    procedure SetString(Index: Integer; const S: string);
   protected
-    procedure SetStrings(Value: TStrings);
     procedure StringsChanged(Sender: TObject);
     procedure RebuildSections;
     function LocateSection(const Section: string; var Index: Integer): Boolean;
@@ -129,7 +130,8 @@ type
     procedure RemoveValue(const Section, Key: string); override;
 
     property IsInternalChange: Boolean read FIsInternalChange;
-    property Strings: TStrings read FStrings write SetStrings;
+    // (rom) changed to indexed property
+    property Strings[Index: Integer]: string read GetString write SetString;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -137,12 +139,19 @@ type
 
 implementation
 
+uses
+  JvTypes;
+
 const
   cNullDigit = '0';
   cCount = 'Count';
   cSectionHeaderStart = '[';
   cSectionHeaderEnd = ']';
   cKeyValueSeparator = '=';
+
+resourcestring
+  SReadValueFailed = 'TJvAppINIFileStore.ReadValue: Section undefined';
+  SWriteValueFailed = 'TJvAppINIFileStore.WriteValue: Section undefined';
 
 {$IFDEF LINUX}
 function GetTickCount: Cardinal;
@@ -254,7 +263,8 @@ begin
   inherited Create(False);
 end;
 *)
-//===TJvAppIniStore=================================================================================
+
+//=== TJvAppIniStore =========================================================
 
 function TJvAppIniStore.ValueStored(const Path: string): Boolean;
 var
@@ -381,7 +391,7 @@ begin
   WriteValue(Section, Key, BufToBinStr(Buf, BufSize));
 end;
 
-//===TJvAppINIFileStore=============================================================================
+//=== TJvAppINIFileStore =====================================================
 
 procedure TJvAppINIFileStore.CreateIniFile(Name: string);
 begin
@@ -466,10 +476,10 @@ begin
   RefPath := GetAbsPath(Path);
   IniFile.ReadSections(Strings);
   I := Strings.Count - 1;
-  while (I >= 0) do
+  while I >= 0 do
   begin
     if (RefPath <> '') and ((Copy(Strings[I], 1, Length(RefPath) + 1) <> RefPath + '\') or
-        (Pos('\', Copy(Strings[I], 2 + Length(RefPath), Length(Strings[I]) - Length(RefPath))) > 0))  then
+      (Pos('\', Copy(Strings[I], 2 + Length(RefPath), Length(Strings[I]) - Length(RefPath))) > 0)) then
       Strings.Delete(I)
     else
     if ReportListAsValue and ValueExists(Strings[I], cCount) then
@@ -513,7 +523,7 @@ end;
 function TJvAppINIFileStore.ReadValue(const Section, Key: string): string;
 begin
   if Section = '' then
-    raise Exception.Create ('TJvAppINIFileStore.ReadValue : Section undefined');
+    raise EJVCLException.Create(SReadValueFailed);
   if IniFile <> nil then
     Result := IniFile.ReadString(Section, Key, '')
   else
@@ -525,7 +535,7 @@ begin
   if IniFile <> nil then
   begin
     if Section = '' then
-      raise Exception.Create ('TJvAppINIFileStore.WriteValue : Section undefined');
+      raise EJVCLException.Create(SWriteValueFailed);
     IniFile.WriteString(Section, Key, Value);
     FLastUserAct := GetTickCount;
     FHasWritten := True;
@@ -612,11 +622,31 @@ begin
   end;
 end;
 
-//===TJvCustomAppINIStringsStore====================================================================
+//=== TJvCustomAppINIStringsStore ============================================
 
-procedure TJvCustomAppINIStringsStore.SetStrings(Value: TStrings);
+constructor TJvCustomAppINIStringsStore.Create(AOwner: TComponent);
 begin
-  FStrings.Assign(Value);
+  inherited Create(AOwner);
+  FStrings := TStringList.Create;
+  FStrings.OnChange := StringsChanged;
+  FSections := TStringList.Create;
+end;
+
+destructor TJvCustomAppINIStringsStore.Destroy;
+begin
+  FreeAndNil(FStrings);
+  FreeAndNil(FSections);
+  inherited Destroy;
+end;
+
+function TJvCustomAppINIStringsStore.GetString(Index: Integer): string;
+begin
+  Result := FStrings[Index];
+end;
+
+procedure TJvCustomAppINIStringsStore.SetString(Index: Integer; const S: string);
+begin
+  FStrings[Index] := S;
 end;
 
 procedure TJvCustomAppINIStringsStore.StringsChanged(Sender: TObject);
@@ -631,16 +661,14 @@ var
 begin
   FSections.Clear;
   for I := 0 to FStrings.Count - 1 do
-  begin
     if Copy(FStrings[I], 1, 1) = cSectionHeaderStart then
       FSections.AddObject(Copy(FStrings[I], 2, Length(FStrings[I]) - 2), TObject(I));
-  end;
-  TStringList(FSections).Sort;
+  FSections.Sort;
 end;
 
 function TJvCustomAppINIStringsStore.LocateSection(const Section: string; var Index: Integer): Boolean;
 begin
-  Result := TStringList(FSections).Find(Section, Index);
+  Result := FSections.Find(Section, Index);
   if not Result then
     Index := FStrings.Count
   else
@@ -687,7 +715,7 @@ begin
     begin
       SectIdx := FStrings.Add(cSectionHeaderStart + Section + cSectionHeaderEnd);
       FSections.AddObject(Section, TObject(SectIdx));
-      TStringList(FSections).Sort;
+      FSections.Sort;
     end;
     KeyIdx := SectIdx + 1;
     if not LocateValueInSection(Key, KeyIdx) then
@@ -719,41 +747,22 @@ begin
       DelCount := 1;
     end
     else
+    if LocateSection(Section + '\' + Key, Idx) then
     begin
-      if LocateSection(Section + '\' + Key, Idx) then
-      begin
-        if TStringList(FSections).Find(Section + '\' + Key, SectIdx) then
-          FSections.Delete(SectIdx);
-        repeat
-          FStrings.Delete(Idx);
-          Inc(DelCount);
-        until (Idx > FStrings.Count) or (Copy(FStrings[Idx], 1, 1) = cSectionHeaderStart);
-      end;
+      if FSections.Find(Section + '\' + Key, SectIdx) then
+        FSections.Delete(SectIdx);
+      repeat
+        FStrings.Delete(Idx);
+        Inc(DelCount);
+      until (Idx > FStrings.Count) or (Copy(FStrings[Idx], 1, 1) = cSectionHeaderStart);
     end;
     if DelCount > 0 then
-    begin
       for SectIdx := 0 to FSections.Count - 1 do
         if Integer(FSections.Objects[SectIdx]) > Idx then
           FSections.Objects[SectIdx] := TObject(Integer(FSections.Objects[SectIdx]) - DelCount);
-    end;
   finally
     FIsInternalChange := False;
   end;
-end;
-
-constructor TJvCustomAppINIStringsStore.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FStrings := TStringList.Create;
-  TStringList(FStrings).OnChange := StringsChanged;
-  FSections := TStringList.Create;
-end;
-
-destructor TJvCustomAppINIStringsStore.Destroy;
-begin
-  FreeAndNil(FStrings);
-  FreeAndNil(FSections);
-  inherited Destroy;
 end;
 
 initialization
@@ -768,4 +777,5 @@ finalization
   FIdleThread.Terminate;
   FIdleThread.WaitFor;
   FreeAndNil(StoresList);*)
+
 end.
