@@ -24,6 +24,8 @@ if not %5!==! SET BPILIBDIR=%5
 if %6!==! SET BPLDIR=%ROOT%\Projects\Bpl
 if not %6!==! SET BPLDIR=%6
 
+SET PATH=%PATH%;%ROOT%\Projects\Bpl;%ROOT%\Projects\Lib;%ROOT\bin
+
 SET MAKE=%ROOT%\bin\make.exe
 
 IF NOT %JCLDIR%!==! SET ADDFLAGS=-U%JCLDIR%\dcu
