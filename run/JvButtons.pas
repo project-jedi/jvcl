@@ -218,11 +218,14 @@ type
 
   TJvaColorButton = class(TJvExBitBtn)
   private
-    FCanvas: TControlCanvas;
+    {$IFDEF VisualCLX}
+    FCanvas: TCanvas;
+    {$ENDIF VisualCLX}
     FGlyphDrawer: TJvButtonGlyph;
     FOnPaint: TPaintButtonEvent;
-    function GetCanvas: TCanvas;
     {$IFDEF VCL}
+    FCanvas: TControlCanvas ;
+    function GetCanvas: TCanvas;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     {$ENDIF VCL}
   protected
@@ -237,7 +240,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
-    property Canvas: TCanvas read GetCanvas;
+    property Canvas {$IFDEF VCL}: TCanvas read GetCanvas {$ENDIF};
   published
     property Color;
     property ParentColor;
@@ -1491,24 +1494,31 @@ constructor TJvaColorButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FGlyphDrawer := TJvButtonGlyph.Create;
+  {$IFDEF VCL}
   FCanvas := TControlCanvas.Create;
   // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Control := Self;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FCanvas := Canvas;
+  {$ENDIF VisualCLX}
 end;
 
 destructor TJvaColorButton.Destroy;
 begin
   FreeAndNil(FGlyphDrawer);
   inherited Destroy;
+  {$IFDEF VCL}
   FreeAndNil(FCanvas);
+  {$ENDIF VCL}
 end;
+
+{$IFDEF VCL}
 
 function TJvaColorButton.GetCanvas: TCanvas;
 begin
   Result := FCanvas;
 end;
-
-{$IFDEF VCL}
 
 procedure TJvaColorButton.SetButtonStyle(ADefault: Boolean);
 begin
