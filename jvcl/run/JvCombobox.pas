@@ -132,7 +132,7 @@ type
     procedure SetItemHeight(Value: Integer); {$IFDEF COMPILER6_UP}override;{$ENDIF}
     function GetMeasureStyle: TJvComboBoxMeasureStyle;
     procedure SetMeasureStyle(Value: TJvComboBoxMeasureStyle);
-    procedure PerfomMeasure;
+    procedure PerformMeasure;
     procedure PerformMeasureItem(Index: Integer; var Height: Integer); virtual;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
@@ -599,7 +599,7 @@ begin
   end;
 end;
 
-procedure TJvCustomComboBox.PerfomMeasure;
+procedure TJvCustomComboBox.PerformMeasure;
 var
   MaxCnt: Integer;
   Index: Integer;
@@ -1195,7 +1195,7 @@ begin
   inherited;
   if (MeasureStyle = cmsAfterCreate) or (IsProviderSelected and
       ((MeasureStyle <> cmsBeforeDraw) or FIsFixedHeight)) then
-    PerfomMeasure;
+    PerformMeasure;
 end;
 
 procedure TJvCustomComboBox.SetReadOnly(const Value: Boolean);
