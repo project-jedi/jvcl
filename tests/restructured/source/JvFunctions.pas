@@ -137,14 +137,14 @@ procedure LaunchCpl(FileName: string);
          tmp.ImageIndex := integer(Strings.Objects[i]);
   The function returns true if any Control Panel Applets were found (i.e Strings.Count is > 0 when returning)
 }
-
+{$IFNDEF D6PersonalEdition}
 function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TImageList = nil): Boolean;
 { GetControlPanelApplet works like GetControlPanelApplets, with the difference that it only loads and searches one cpl file (according to AFilename).
   Note though, that some CPL's contains multiple applets, so the Strings and Images lists can contain multiple return values.
   The function returns true if any Control Panel Applets were found in AFilename (i.e if items were added to Strings)
 }
 function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
-
+{$ENDIF}
 // execute a program without waiting
 procedure Exec(FileName, Parameters, Directory: string);
 // execute a program and wait for it to finish
@@ -300,7 +300,8 @@ implementation
 uses
   Forms, Registry, ExtCtrls,
 {$IFDEF COMPILER6_UP}Types, {$ENDIF}MMSystem,
-  ShlObj, CommCtrl, Cpl,
+  ShlObj, CommCtrl, 
+  {$IFNDEF D6PersonalEdition}Cpl,{$ENDIF}
   { jvcl} JvDirectories,
   { jcl } JCLStrings;
 
@@ -795,6 +796,7 @@ begin
   //  WinExec(PChar(RC_RunCpl + FileName), SW_SHOWNORMAL);
 end;
 
+{$IFNDEF D6PersonalEdition}
 resourcestring
   RC_CplAddress = 'CPlApplet';
 
@@ -896,6 +898,7 @@ begin
   FindClose(F);
   Result := Strings.Count > 0;
 end;
+{$ENDIF}
 
 procedure Exec(FileName, Parameters, Directory: string);
 var

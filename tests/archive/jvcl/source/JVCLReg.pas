@@ -59,7 +59,7 @@ uses
 
   //Controls
   JvPlaylist, JvButtonShaped, JvFavoritesButton, JvClock, JvStartMenuBtn,
-  JvScrollText, JvRecentMenuBtn, JvControlPanel,
+  JvScrollText, JvRecentMenuBtn, {$IFNDEF D6PersonalEdition}JvControlPanel,{$ENDIF}
   JvGradientCaption,
   JvZoom, JvWaitingGradient, JvSpecialProgress, JvWaitingProgress,
   JvGammaPanel, JvSlider, JvSpinEdit,
@@ -535,7 +535,9 @@ begin
     TJvFavoritesButton,
       TJvStartMenuBtn,
       TJvRecentMenuBtn,
+{$IFNDEF D6PersonalEdition}
       TJvControlPanel,
+{$ENDIF}      
 
     TJvSerialMaker,
       TJvTimeLimit,

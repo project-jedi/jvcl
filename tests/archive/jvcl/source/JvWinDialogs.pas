@@ -35,7 +35,7 @@ interface
 
 uses
   ShellAPI, Windows, Classes, Forms, SysUtils, Graphics, Dialogs,
-  Controls, ShlOBJ, ComObj, CPL, ActiveX, CommDlg, JvComponent, JvBaseDlg;
+  Controls, ShlOBJ, ComObj, ActiveX, CommDlg, JvComponent, JvBaseDlg;
 
 type
   EShellOleError = class(Exception);
@@ -417,7 +417,9 @@ resourcestring
     'Unsupported drive (%s): JvDiskFullDialog only supports fixed drives.';
 
 implementation
-
+uses
+  JvTypes;
+  
 const
   shell32 = 'shell32.dll';
 
@@ -603,7 +605,7 @@ end;
 
 function TJvAppletDialog.Execute: boolean;
 var APModule: THandle;
-  Applet: Applet_PROC;
+  Applet: TCplApplet;
 begin
   if FAppletName = EmptyStr then
   begin
@@ -616,7 +618,7 @@ begin
     Result := False;
     Exit;
   end;
-  Applet := Applet_proc(GetProcAddress(APModule, 'CPlApplet'));
+  Applet := TCplApplet(GetProcAddress(APModule, 'CPlApplet'));
   Applet(0, CPL_DBLCLK, 0, 0);
   FreeLibrary(ApModule);
   Result := true;
@@ -1054,12 +1056,12 @@ end;
 
 procedure TJvAddHardwareDialog.Execute;
 var APModule: THandle;
-  Applet: Applet_PROC;
+  Applet: TCplApplet;
 begin
   APModule := LoadLibrary('hdwwiz.cpl');
   if APModule <= HINSTANCE_ERROR then
     Exit;
-  Applet := Applet_proc(GetProcAddress(APModule, 'CPlApplet'));
+  Applet := TCplApplet(GetProcAddress(APModule, 'CPlApplet'));
   Applet(0, CPL_DBLCLK, 0, 0);
   FreeLibrary(ApModule);
 end;
