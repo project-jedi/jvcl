@@ -66,6 +66,7 @@ Known Issues:
 {$ENDIF}
 
 { Activates MIDAS components (DBRemoteLogin)}
+{ NOTE: if you activate this, you must also manually add JvDlgsXXX.dcp to the requires node of JvDBXXX.bpk !!!]
 {.$DEFINE Jv_MIDAS}
 
 { This define enables GIF image support. Deactivate this define
