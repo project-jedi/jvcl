@@ -6331,7 +6331,14 @@ var
   tt: TTextMetric;
 begin
   // (ahuser) Qt returns different values for TextHeight('Ay') and TextHeigth(#1..#255)
+  {$IFDEF VisualCLX}
+  Canvas.Start;  // if it is called outside a paint event
+  RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+  {$ENDIF VisualCLX}
   GetTextMetrics(Canvas.Handle, tt);
+  {$IFDEF VisualCLX}
+  Canvas.Stop;
+  {$ENDIF VisualCLX}
   Result := tt.tmHeight;
 end;
 
