@@ -40,7 +40,7 @@ uses
   Windows, Messages, Graphics, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms,
+  QWindows, QGraphics, QControls, QForms, Types,
   {$ENDIF VisualCLX}
   JvWizard;
 
@@ -83,7 +83,7 @@ type
 implementation
 {$IFDEF USEJVCL}
 uses
-  JvClxUtils, JvJVCLUtils, JvResources;
+  JvJVCLUtils, JvResources;
 {$ENDIF}  
 
 {$IFNDEF USEJVCL}
@@ -204,25 +204,25 @@ begin
   Canvas.Brush.Style:= bsClear;
 
   S := Format(RsActiveStepFormat, [ActivePageIndex, TotalPageCount]);
-  {$IFDEF USEJVCL}
-  StepHeight := ClxDrawText(Canvas, S, TextRect,
-     DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-  {$ELSE}
+//  {$IFDEF USEJVCL}
+//  StepHeight := ClxDrawText(Canvas, S, TextRect,
+//     DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+//  {$ELSE}
   StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-  {$ENDIF}
+//  {$ENDIF}
 
   // Display Active Page Description
   Canvas.Font.Style:= [];
   OffsetRect(TextRect, 0, StepHeight);
   S := Pages[PageIndex].Caption;
-  {$IFDEF USEJVCL}
-  ClxDrawText(Canvas, S, TextRect,
-    DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-  {$ELSE}
+//  {$IFDEF USEJVCL}
+//  ClxDrawText(Canvas, S, TextRect,
+//    DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+//  {$ELSE}
   DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
     DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-  {$ENDIF}
+//  {$ENDIF}
   Canvas.Font.Style:= [];
   if FShowDivider then
   begin
@@ -248,22 +248,22 @@ begin
         DFCS_SCROLLLEFT or DFCS_FLAT);
     end;
     S := FPreviousStepText;
-    {$IFDEF USEJVCL}
-    StepHeight := ClxDrawText(Canvas, S, TextRect,
-      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-    {$ELSE}
+//    {$IFDEF USEJVCL}
+//    StepHeight := ClxDrawText(Canvas, S, TextRect,
+//      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+//    {$ELSE}
     StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-    {$ENDIF}
+//    {$ENDIF}
     OffsetRect(TextRect, 0, StepHeight);
     S := APage.Caption;
-    {$IFDEF USEJVCL}
-    ClxDrawText(Canvas, S, TextRect,
-      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-    {$ELSE}
+//    {$IFDEF USEJVCL}
+//    ClxDrawText(Canvas, S, TextRect,
+//      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+//    {$ELSE}
     DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-    {$ENDIF}
+//    {$ENDIF}
   end;
 
   { do the next step }
@@ -282,22 +282,22 @@ begin
         DFCS_SCROLLRIGHT or DFCS_FLAT);
     end;
     S := FNextStepText;
-    {$IFDEF USEJVCL}
-    StepHeight := ClxDrawText(Canvas, S, TextRect,
-      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-    {$ELSE}
+//    {$IFDEF USEJVCL}
+//    StepHeight := ClxDrawText(Canvas, S, TextRect,
+//      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+//    {$ELSE}
     StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-    {$ENDIF}
+//    {$ENDIF}
     OffsetRect(TextRect, 0, StepHeight);
     S := APage.Caption;
-    {$IFDEF USEJVCL}
-    ClxDrawText(Canvas, S, TextRect,
-      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-    {$ELSE}
+//    {$IFDEF USEJVCL}
+//    ClxDrawText(Canvas, S, TextRect,
+//      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+//    {$ELSE}
     DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
-    {$ENDIF}
+//    {$ENDIF}
   end;
 end;
 

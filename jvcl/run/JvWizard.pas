@@ -334,15 +334,16 @@ interface
 {$I jvcl.inc}
 
 uses
-  Windows, Messages,
-  {$IFDEF COMPILER6_UP}
-  Types,
-  {$ENDIF COMPILER6_UP}
-  SysUtils, Controls, Forms, Graphics, Buttons, ImgList, JvWizardCommon,
-  {$IFDEF USEJVCL}
-  JvComponent,
-  {$ENDIF USEJVCL}
-  Classes;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Forms, Graphics, Buttons, ImgList,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QControls, QForms, QGraphics, QButtons, QImgList,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}Types, {$ENDIF}
+  {$IFDEF USEJVCL} JvComponent, {$ENDIF}
+  JvWizardCommon;
 
 type
   TJvWizardAboutInfoForm = (JvWizardAbout); // Added by <Steve Forbes>
@@ -915,10 +916,16 @@ type
 implementation
 
 uses
+  {$IFDEF VCL}
+  Consts
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QConsts
+  {$ENDIF}
   {$IFDEF USEJVCL}
-  JvResources,
+  , JvResources
   {$ENDIF USEJVCL}
-  Consts;
+  ;
 
 const
   ciButtonWidth = 75;
