@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-07-15
+Last Modified: 2003-11-12
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -277,6 +277,7 @@ end;
 procedure TfmeJvProviderTreeList.UpdateColumnSize;
 begin
   lvProvider.Columns[0].Width := lvProvider.ClientWidth;
+  lvProvider.Invalidate;
 end;
 
 procedure TfmeJvProviderTreeList.NotifyConsumerItemSelect;
@@ -363,10 +364,16 @@ procedure TfmeJvProviderTreeList.SelectItemID(ID: string);
 var
   I: Integer;
 begin
-  I := LocateID(ID);
+  if ID = '' then
+    I := -1
+  else
+    I := LocateID(ID);
   if I > -1 then
     ListView_SetItemState(lvProvider.Handle, I, LVIS_SELECTED or LVIS_FOCUSED,
-      LVIS_SELECTED or LVIS_FOCUSED);
+      LVIS_SELECTED or LVIS_FOCUSED)
+  else
+    lvProvider.Selected := nil;
+  UpdateSelectedItem;
 end;
 
 function TfmeJvProviderTreeList.GetSelectedIndex: Integer;
@@ -454,7 +461,8 @@ var
   DataItem: IJvDataItem;
   ItemText: IJvDataItemText;
 begin
-  if (Provider.ProviderIntf = nil) or (Item.Index > GetViewList.Count) then
+  if (Provider.ProviderIntf = nil) or
+      ((Item.Index - Ord(UsingVirtualRoot)) >= GetViewList.Count) then
     Exit;
   Provider.Enter;
   try

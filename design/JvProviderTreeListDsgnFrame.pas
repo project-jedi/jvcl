@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
+Last Modified: 2003-11-12
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -231,25 +231,38 @@ var
 begin
   if lvProvider.Selected <> nil then
   begin
-    I := lvProvider.Selected.Index;
-    Item := GetDataItem(I);
-    if Item <> nil then
-      Items := Item.GetItems
-    else
-      raise EJVCLException.Create(SDataItemNotFound);
-    if Supports(Items, IJvDataItemsManagement, Mangr) then
-    begin
-      if I > 0 then
-        SelectItemID(GetDataItem(I - 1).GetID)
+    Provider.Enter;
+    try
+      I := lvProvider.Selected.Index;
+      Item := GetDataItem(I);
+      if Item <> nil then
+        Items := Item.GetItems
       else
-        lvProvider.Selected := nil;
-      Mangr.Remove(Item);
-      if Designer <> nil then
-        Designer.Modified;
-    end
-    else
-      raise EJVCLException.CreateFmt(SDataProviderDeleteErrorReason, [SDataProviderNoMan]);
+        raise EJVCLException.Create(SDataItemNotFound);
+      if Supports(Items, IJvDataItemsManagement, Mangr) then
+      begin
+        if I > 0 then
+          SelectItemID(GetDataItem(I - 1).GetID)
+        else
+          SelectItemID('');
+        Mangr.Remove(Item);
+        if Designer <> nil then
+          Designer.Modified;
+        { Temporary fix: for some reason the item is removed from the ViewList at some point during
+          the delete process, but is then added again! This does not happen at run time but I can
+          not find the location where it does gets added again. }
+        if GetViewList <> nil then
+          GetViewList.RebuildView;
+      end
+      else
+        raise EJVCLException.CreateFmt(SDataProviderDeleteErrorReason, [SDataProviderNoMan]);
+    finally
+      Provider.Leave;
+    end;
   end;
+  Items := nil;
+  Mangr := nil;
+  Item := nil;
 end;
 
 procedure TfmeJvProviderTreeListDsgn.aiClearExecute(Sender: TObject);
