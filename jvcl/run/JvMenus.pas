@@ -250,6 +250,7 @@ type
   published
     // Style MUST BE before ItemPainter for the properties of the
     // painter to be correctly read from the DFM file.
+    property Style: TJvMenuStyle read FStyle write SetStyle default msStandard;
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
     property DisabledImages: TImageList read FDisabledImages write SetDisabledImages;
@@ -260,7 +261,6 @@ type
     property ItemPainter: TJvCustomMenuItemPainter read FItemPainter write SetItemPainter;
     property OwnerDraw stored False;
     property ShowCheckMarks: Boolean read FShowCheckMarks write FShowCheckMarks default False;
-    property Style: TJvMenuStyle read FStyle write SetStyle default msStandard;
     property TextMargin: Integer read FTextMargin write FTextMargin default 0;
     property TextVAlignment: TJvVerticalAlignment read FTextVAlignment write FTextVAlignment default vaMiddle;
 
@@ -361,6 +361,7 @@ type
   published
     // Style MUST BE before ItemPainter for the properties of the
     // painter to be correctly read from the DFM file.
+    property Style: TJvMenuStyle read FStyle write SetStyle default msStandard;
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
     property DisabledImages: TImageList read FDisabledImages write SetDisabledImages;
@@ -371,7 +372,6 @@ type
     property ItemPainter: TJvCustomMenuItemPainter read FItemPainter write SetItemPainter;
     property OwnerDraw stored False;
     property ShowCheckMarks: Boolean read FShowCheckMarks write FShowCheckMarks default False;
-    property Style: TJvMenuStyle read FStyle write SetStyle default msStandard;
     property TextMargin: Integer read FTextMargin write FTextMargin default 0;
     property TextVAlignment: TJvVerticalAlignment read FTextVAlignment write FTextVAlignment default vaMiddle;
 
@@ -620,6 +620,13 @@ type
   // this painter is the standard one and as such doesn't do anything
   // more than the ancestor class except publishing properties
   TJvStandardMenuItemPainter = class(TJvCustomMenuItemPainter)
+  protected
+    procedure DrawCheckedImageBack(ARect: TRect); override;
+    procedure UpdateFieldsFromMenu; override;
+    function GetTextMargin: Integer; override;
+    function GetImageWidth: Integer; override;
+  public
+    procedure Paint(Item: TMenuItem; ItemRect: TRect; State: TMenuOwnerDrawState); override;
   published
     property LeftMargin;
     property OnDrawLeftMargin;
@@ -884,7 +891,7 @@ end;
 
 function TJvMainMenu.IsOwnerDrawMenu: Boolean;
 begin
-  Result := (FStyle <> msStandard) or (Assigned(FImages) and (FImages.Count > 0));
+  Result := True; //(FStyle <> msStandard) or (Assigned(FImages) and (FImages.Count > 0));
 end;
 
 procedure TJvMainMenu.MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
@@ -2116,7 +2123,7 @@ var
 begin
   // We must do this to prevent the code in Menus.pas from drawing
   // the item before us, thus trigerring rendering glitches, especially
-  // when a top menuitem has an image index not equal to -1
+  // when a top menuitem that has an image index not equal to -1
   Item.OnDrawItem := EmptyDrawItem;
 
   // prepare the painting
@@ -2537,7 +2544,7 @@ end;
 function TJvCustomMenuItemPainter.GetCheckMarkHeight: Integer;
 begin
   if ShowCheckMarks then
-    Result := GetSystemMetrics(SM_CXMENUCHECK)
+    Result := GetSystemMetrics(SM_CYMENUCHECK)
   else
     Result := 0;
 end;
@@ -2545,7 +2552,7 @@ end;
 function TJvCustomMenuItemPainter.GetCheckMarkWidth: Integer;
 begin
   if ShowCheckMarks then
-    Result := GetSystemMetrics(SM_CYMENUCHECK)
+    Result := GetSystemMetrics(SM_CXMENUCHECK)
   else
     Result := 0;
 end;
@@ -3284,6 +3291,51 @@ end;
 procedure TJvXPMenuItemPainter.DrawCheckImage(ARect: TRect);
 begin
   inherited DrawCheckImage(Rect(ARect.Left - 2, ARect.Top, ARect.Right - 2, ARect.Bottom - 1));
+end;
+
+//=== { TJvStandardMenuItemPainter } ========================================
+
+procedure TJvStandardMenuItemPainter.DrawCheckedImageBack(ARect: TRect);
+begin
+  inherited;
+end;
+
+procedure TJvStandardMenuItemPainter.UpdateFieldsFromMenu;
+begin
+  inherited;
+end;
+
+function TJvStandardMenuItemPainter.GetTextMargin: Integer;
+begin
+  Result := inherited GetTextMargin + 2;
+end;
+
+function TJvStandardMenuItemPainter.GetImageWidth: Integer;
+var
+  I: Integer;
+begin
+  Result := inherited GetImageWidth;
+
+  // If any of the items has a checkmark then we need to
+  // ensure the width of the "image" is enough to display a check
+  // mark, and this for all items
+  if (FItem.Parent <> nil) then
+  begin
+    for I := 0 to FItem.Parent.Count - 1 do
+    begin
+      if FItem.Parent.Items[I].Checked then
+      begin
+        Result := Max(Result, GetSystemMetrics(SM_CXMENUCHECK));
+        Exit;
+      end;
+    end;
+  end;
+end;
+
+procedure TJvStandardMenuItemPainter.Paint(Item: TMenuItem;
+  ItemRect: TRect; State: TMenuOwnerDrawState);
+begin
+  inherited;
 end;
 
 //=== { TJvOwnerDrawMenuItemPainter } ========================================

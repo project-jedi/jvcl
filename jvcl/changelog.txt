@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2004-07-25
+- Bug fix and Mantis 1912: TJvStandardMenuItemPainter now paints correctly its checkmarks if there are
+  no image lists set.
 2004-07-24
 - JvOfficeColorPanel can now select its buttons with a right click. Set RightClickSelect to True if you want that, it
   is False by default to keep the previous behaviour. If there is a popup menu the button will only be selected if
