@@ -68,6 +68,8 @@ type
     procedure OnButtonClickInt(Sender: TObject);
     procedure SetWinControlProperties; override;
   public
+    constructor Create(AParameterList: TJvParameterList); override;
+    destructor Destroy;override;
     procedure Assign(Source: TPersistent); override;
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   published
@@ -599,6 +601,12 @@ begin
   end;
 end;
 
+constructor TJvButtonParameter.Create(AParameterList: TJvParameterList);
+begin
+  inherited Create(AParameterList);
+  FGlyph := TBitmap.Create;
+end;
+
 procedure TJvButtonParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
   WinControl := DynControlEngine.CreateButton(Self, ParameterParent,
@@ -607,6 +615,12 @@ begin
     WinControl.Height := Height;
   if Width > 0 then
     WinControl.Width := Width;
+end;
+
+destructor TJvButtonParameter.Destroy;
+begin
+  FGlyph.Free;
+  inherited Destroy;
 end;
 
 procedure TJvButtonParameter.SetWinControlProperties;
@@ -2253,6 +2267,8 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+
+
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
