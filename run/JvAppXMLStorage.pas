@@ -377,7 +377,9 @@ begin
   begin
     try
       StrValue := Node.Items.ItemNamed[ValueName].Value;
-      Result := StrToFloat(StrValue);
+      // Result := StrToFloat(StrValue);
+      if BinStrToBuf(StrValue, @Result, SizeOf(Result)) <> SizeOf(Result) then
+        Result := Default;
     except
       if StorageOptions.DefaultIfReadConvertError then
         Result := Default
@@ -404,7 +406,8 @@ begin
   SplitKeyPath(Path, ParentPath, ValueName);
   ANode := CreateAndSetNode(ParentPath);
   Xml.Options := [sxoAutoCreate, sxoAutoIndent];
-  ANode.Items.ItemNamed[ValueName].Value := FloatToStr(Value);
+//  ANode.Items.ItemNamed[ValueName].Value := FloatToStr(Value);
+  ANode.Items.ItemNamed[ValueName].Value := BufToBinStr(@Value, SizeOf(Value));
   Xml.Options := [sxoAutoIndent];
   if AutoFlush and not IsUpdating then
     Flush;
