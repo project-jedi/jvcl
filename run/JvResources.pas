@@ -132,6 +132,17 @@ resourcestring
   RsENotAUniqueRootPath = '''%s'' is not a unique root path';
   RsECircularReferenceOfStorages = 'Circular reference of storages';
 
+//=== JvAppStoreSelectList.pas ===============================================
+resourcestring
+  RsLoadSettings = 'Load Settings';
+  RsSaveSettings = 'Save Settings';
+  RsDeleteSettings = 'Delete Settings';
+  RsLoadCaption = '&Load';
+  RsSaveCaption = '&Save';
+  RsDeleteCaption = '&Delete';
+
+  RsEDynControlEngineNotDefined = 'TJvAppStoreSelectList.CreateDialog: DynControlEngine not defined!';
+
 //=== JvAppXmlStore.pas ======================================================
 resourcestring
   RsENodeCannotBeEmpty = 'The node must be given a name';
@@ -527,6 +538,12 @@ resourcestring
   RsDualListSrcCaption = '&Source';
   RsDualListDestCaption = '&Destination';
 
+//=== JvDynControlEngine.pas =================================================
+resourcestring
+  RsEIntfCastError = 'SIntfCastError';
+  RsEUnsupportedControlClass = 'TJvDynControlEngine.RegisterControl: Unsupported ControlClass';
+  RsENoRegisteredControlClass = 'TJvDynControlEngine.CreateControl: No Registered ControlClass';
+
 //=== JvEditor.pas, JvUnicodeEditor.pas ======================================
 resourcestring
   RsERedoNotYetImplemented = 'Redo not yet implemented';
@@ -598,10 +615,10 @@ resourcestring
   RsEDSOUnknownKeys = 'DSO unknown key %s';
 
 //=== Jvg3DColors.pas ========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsEOnlyOneInstanceOfTJvg3DLocalColors = 'Cannot create more than one instance of TJvg3DLocalColors component';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvGammaPanel.pas =======================================================
 resourcestring
@@ -619,32 +636,32 @@ resourcestring
   RsDefaultR = 'R : ---';
 
 //=== JvgAskListBox.pas ======================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsYes = 'yes';
   RsNo = 'no';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgButton.pas ==========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsEErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgCaption.pas =========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsEOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgCheckVersionInfoForm.pas ============================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsNoNewerVersionOfProgramAvailable = 'No newer version of program available';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgConstSysRequirements.pas ============================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   { RUSSIAN
   RsVideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
@@ -661,37 +678,37 @@ resourcestring
     'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
   RsSystemFont = 'In system small fonts should be established. Change to small fonts in Monitor Control Panel.';
   RsOSPlatform = 'The program requires %s or better.';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvGenetic.pas ==========================================================
 resourcestring
   RsENoTest = 'TJvGenetic: OnTestMember must be assigned';
 
 //=== JvgExportComponents.pas ================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsEDataSetIsUnassigned = 'DataSet is unassigned';
   RsESaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgHelpPanel.pas =======================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsHelp = ' help ';
   RsOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgHint.pas ============================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsEOnlyOneInstanceOfTJvgHint = 'Cannot create more than one instance of TJvgHint component';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgHTTPVersionInfo.pas =================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsEUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvGIF.pas ==============================================================
 resourcestring
@@ -707,7 +724,7 @@ resourcestring
   RsEGIFVersion = 'Unknown GIF version';
 
 //=== JvgLogics.pas ==========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsEqualTo = 'equal to';
   RsStartingWith = 'starting with';
@@ -717,39 +734,39 @@ resourcestring
   RsNotEmpty = 'not empty';
   RsStep = 'Step ';
   RsComments = 'Comments';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgMailSlots.pas =======================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsETJvgMailSlotServerErrorCreatingChan = 'TJvgMailSlotServer: Error creating channel!';
   RsETJvgMailSlotServerErrorGatheringInf = 'TJvgMailSlotServer: Error gathering information!';
   RsETJvgMailSlotServerErrorReadingMessa = 'TJvgMailSlotServer: Error reading message!';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgProgress.pas ========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsProgressCaption = 'Progress...[%d%%]';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgQPrintPreviewForm.pas ===============================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsPageOfPages = 'Page %d of %d';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvGradientHeaderPanel.pas ==============================================
 resourcestring
   RsYourTextHereCaption = 'Put your text here ...';
 
 //=== JvgReport.pas ==========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsOLELinkedObjectNotFound = 'OLE: Linked object not found.';
   RsErrorText = 'Error';
   RsErrorReadingComponent = 'Error reading component.';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvGridPreviewForm.pas ==================================================
 resourcestring
@@ -764,21 +781,21 @@ resourcestring
   RsPrintOptionsTimeFormat = 'h:nn am/pm';
 
 //=== JvgSingleInstance.pas ==================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsOneInstanceOfThisProgramIsAlreadyRu =
     'One instance of this program is already running. A second instance launch is not allowed.';
   RsSecondInstanceLaunchOfs = 'Second instance launch of %s';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgSmallFontsDefense.pas ===============================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgUtils.pas ===========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   RsERightBracketsNotFound = 'Right brackets not found';
   RsERightBracketHavntALeftOnePosd = 'Right bracket havn''t a left one. Pos: %d';
@@ -786,10 +803,10 @@ resourcestring
   RsEDuplicateSignsAtPos = 'Duplicate signs at Pos: %d';
   RsEExpressionStringIsEmpty = 'Expression string is empty.';
   RsEObjectMemoryLeak = 'object memory leak';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgXMLSerializer.pas ===================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   { RUSSIAN
   RsOpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
@@ -799,7 +816,7 @@ resourcestring
   RsOpenXMLTagNotFound = 'Open tag not found: <%s>';
   RsCloseXMLTagNotFound = 'Close tag not found: </%s>';
   RsUnknownProperty = 'Unknown property: %s';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvHint.pas =============================================================
 resourcestring
@@ -1118,12 +1135,12 @@ resourcestring
   RsSelectionIndexOutOfBounds = '%d is not a valid selection index';
 
 //=== JvPageListTreeView.pas =================================================
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
 { (ahuser) redefined in JvValidators.pas }
 { resourcestring
   RsEInterfaceNotSupported = '%s does not support the %s interface';
 }
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 
 //=== JvPageSetup.pas ========================================================
 resourcestring
@@ -1143,8 +1160,8 @@ resourcestring
   RsHistorySelectPath = 'History';
 
   RsDialogCaption = '';
-  RsOkButton      = '&Ok';
-  RsCancelButton  = '&Cancel';
+  RsOkButton = '&Ok';
+  RsCancelButton = '&Cancel';
   RsHistoryLoadButton = '&Load';
   RsHistorySaveButton = '&Save';
   RsHistoryClearButton = 'Cl&ear';
@@ -1152,7 +1169,7 @@ resourcestring
   RsHistorySaveCaption = 'Save Parameter Settings';
   RsHistoryClearCaption = 'Manage Parameter Settings';
 
-  RsENoParametersDefined      = 'TJvParameterList.ShowParameterDialog: No Parameters defined';
+  RsENoParametersDefined = 'TJvParameterList.ShowParameterDialog: No Parameters defined';
   RsEAddObjectWrongObjectType = 'TJvParameterList.AddObject: Wrong object type';
   RsEAddObjectSearchNameNotDefined = 'TJvParameterList.AddObject: SearchName not defined';
   RsEAddObjectDuplicateSearchNamesNotAllowed = 'TJvParameterList.AddObject: Duplicate SearchNames ("%s") not allowed';
@@ -1160,11 +1177,11 @@ resourcestring
 //=== JvParameterListParameter.pas ====================================================
 resourcestring
 //  RsErrParameterMustBeEntered      = 'Parameter %s must be entered!';
-  RsErrParameterIsNotAValidNumber  = 'Parameter %s: %s is not a valid number value!';
-  RsErrParameterMustBeBetween      = 'Parameter %s: %s must be between %s and %s!';
-  RsErrParameterFileDoesNotExist   = 'Parameter %s: The file "%s" does not exist!';
+  RsErrParameterIsNotAValidNumber = 'Parameter %s: %s is not a valid number value!';
+  RsErrParameterMustBeBetween = 'Parameter %s: %s must be between %s and %s!';
+  RsErrParameterFileDoesNotExist = 'Parameter %s: The file "%s" does not exist!';
   RsErrParameterFileExistOverwrite = 'Parameter %s: The file "%s" exists! Overwrite?';
-  RsErrParameterDirectoryNotExist  = 'Parameter %s: The directory "%s" does not exist!';
+  RsErrParameterDirectoryNotExist = 'Parameter %s: The directory "%s" does not exist!';
 
 //=== JvPatchForm.pas ========================================================
 resourcestring
