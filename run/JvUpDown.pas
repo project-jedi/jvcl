@@ -328,6 +328,7 @@ const
   cBase: array [TJvUpDownFormat] of Integer = (10, 16);
 var
   OrigWidth: Integer;
+  AccelArray: array [0..0] of TUDAccel;
 begin
   OrigWidth := Width;
   inherited CreateWnd;
@@ -339,9 +340,11 @@ begin
   end;
   SendMessage(Handle, UDM_SETRANGE32, FMin, FMax);
   SendMessage(Handle, UDM_SETBASE, cBase[Format], 0);
+  SendMessage(Handle, UDM_GETACCEL, 1, Longint(@AccelArray));
+  AccelArray[0].nInc := FIncrement;
+  SendMessage(Handle, UDM_SETACCEL, 1, Longint(@AccelArray));
   SetPosition(Position);
   SetAssociate(FAssociate);
-  Increment := 1;
 end;
 
 function TJvCustomUpDown.AcceptPosition(Value: Integer): Boolean;
