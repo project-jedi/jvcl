@@ -33,7 +33,7 @@ unit JvMRUManager;
 interface
 
 uses
-  SysUtils, Classes, Menus,
+  Windows, SysUtils, Classes, Menus, Graphics,
   JvAppStorage, JvComponent, JvFormPlacement;
 
 type
@@ -93,6 +93,9 @@ type
     FOnItemInfo: TGetItemInfoEvent;
     FDuplicates: TDuplicates;
     FMenuLocation: TMenuLocation;
+    FMaxLength: integer;
+    FCanvas:TCanvas;
+    FStartEllipsis: boolean;
     procedure ListChanged(Sender: TObject);
     procedure ClearRecentMenu;
     procedure SetRecentMenu(Value: TMenuItem);
@@ -117,7 +120,11 @@ type
     procedure DoDuplicateFixUp;
     function GetStrings: TStrings;
     procedure SetMenuLocation(const Value: TMenuLocation);
+    procedure SetMaxLength(const Value: integer);
+    procedure SetStartEllipsis(const Value: boolean);
   protected
+    function GetCanvas:TCanvas;
+    function DoMinimizeName(const S:string):string;
     procedure Change; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoReadItem(AppStorage: TJvCustomAppStorage; const Path: string; Index: Integer;
@@ -150,6 +157,8 @@ type
     property AccelDelimiter: TAccelDelimiter read FAccelDelimiter write SetAccelDelimiter default adTab;
     property AutoEnable: Boolean read FAutoEnable write SetAutoEnable default True;
     property AutoUpdate: Boolean read FAutoUpdate write FAutoUpdate default True;
+    property MaxLength:integer read FMaxLength write SetMaxLength default 0;
+    property StartEllipsis:boolean read FStartEllipsis write SetStartEllipsis default False;
     property Capacity: Integer read GetCapacity write SetCapacity default 10;
     property MenuLocation: TMenuLocation read FMenuLocation write SetMenuLocation default mruChild;
     property Mode: TRecentMode read GetMode write SetMode default rmInsert;
@@ -178,8 +187,8 @@ type
 implementation
 
 uses
-  Controls, Math,
-  JvJVCLUtils, JvTypes, JvResources;
+  Forms, Controls, Math,
+  JvJVCLUtils, JvTypes, JvResources, JclFileUtils;
 
 const
   siRecentItem = 'Item_%d';
@@ -209,8 +218,8 @@ begin
   FIniLink.Free;
   FStrings.OnChange := nil;
   FStrings.Free;
-  FItems.Free;
-  FItems := nil;
+  FreeAndNil(FItems);
+  FreeAndNil(FCanvas);
   inherited Destroy;
 end;
 
@@ -441,11 +450,11 @@ begin
           C := '&' + Char(L + Ord('A') - 10)
         else
           C := ' ';
-        Item.Caption := C + AccelDelimChars[FAccelDelimiter] + Item.Caption;
+        Item.Caption := C + AccelDelimChars[FAccelDelimiter] + DoMinimizeName(S);
       end;
       Item.Tag := I;
-      GetItemInfo(Item);
       AddMenuItem(Item);
+      GetItemInfo(Item);
     end;
     DoAfterUpdate;
     if AutoEnable then
@@ -476,6 +485,7 @@ begin
   FRecentMenu := Value;
   if Value <> nil then
     Value.FreeNotification(Self);
+  FreeAndNil(FCanvas);
   UpdateRecentMenu;
 end;
 
@@ -750,6 +760,50 @@ function TJvMRUManager.IsMenuEnabled: boolean;
 begin
   Result := ((MenuLocation = mruChild) and (FRecentMenu.Count > 0)) or
     ((MenuLocation = mruSibling) and (Strings.Count > 0));
+end;
+
+procedure TJvMRUManager.SetMaxLength(const Value: integer);
+begin
+  if FMaxLength <> Value then
+  begin
+    FMaxLength := Value;
+    UpdateRecentMenu;
+  end;
+end;
+
+function TJvMRUManager.GetCanvas: TCanvas;
+begin
+  if FCanvas = nil then
+  begin
+    FCanvas := TCanvas.Create;
+    if RecentMenu <> nil then
+      FCanvas.Handle := GetDC(GetDesktopWindow);
+  end;
+  Result := FCanvas;
+end;
+
+function TJvMRUManager.DoMinimizeName(const S: string): string;
+begin
+  Result := '';
+  if MaxLength > 0 then
+  begin
+    if not StartEllipsis then
+      Result := PathCompactPath(GetCanvas.Handle, S, GetCanvas.TextWidth('n') * MaxLength, cpCenter)
+    else if Length(S) > MaxLength then
+      Result := '...' + Copy(S, Length(S) - MaxLength + 1, MaxInt);
+  end;
+  if (Result = '...') or (Result = '') then
+    Result := S;
+end;
+
+
+procedure TJvMRUManager.SetStartEllipsis(const Value: boolean);
+begin
+  if FStartEllipsis <> Value then
+  begin
+    FStartEllipsis := Value;
+    UpdateRecentMenu;
+  end;
 end;
 
 end.
