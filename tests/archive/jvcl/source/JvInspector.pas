@@ -6947,7 +6947,7 @@ begin
     if Execute then
     begin
       TFont(Data.AsOrdinal).Assign(Font);
-      InvalidateItem;
+      Data.InvalidateData;
     end;
   finally
     Free;
