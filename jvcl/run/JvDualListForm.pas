@@ -36,7 +36,7 @@ uses
   JvListBox, JvCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
+  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QWindows,
   {$ENDIF VisualCLX}
   JvComponent, JvExStdCtrls;
 
