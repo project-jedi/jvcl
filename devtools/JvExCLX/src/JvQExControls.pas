@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvQExControls.pas, released on 2004-09-21
 
-The Initial Developer of the Original Code is André Snepvangers [ASnepvangers att users.sourceforge.net]
+The Initial Developer of the Original Code is André Snepvangers [ASnepvangers att xs4all dor nl]
 Portions created by André Snepvangers are Copyright (C) 2004 André Snepvangers.
 All Rights Reserved.
 
@@ -58,23 +58,6 @@ type
     Scratch: Integer;
   end;
 
-  TDlgCode = (ikAll..ikEsc, ikDefault);
-  TDlgCodes = set of TDlgCode;
-
-  dcButton = ikTabs | ikArrows | ikReturns ;
-
-  { historical names }
-  dcWantAllKeys = ikAll;
-  dcWantArrows = ikArrows;
-  dcWantTab = ikTabs;
-  dcWantChars = ikChars;
-  dcWantReturns = ikReturns;
-  dcWantEdit = ikEdit;
-  dcWantNav = ikNav;
-  dcWantEscape = ikEsc;
-  dcNative = ikDefault;
-  dcWantMessage = dcWantAllKeys;
-
 const
   CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
 
@@ -87,6 +70,7 @@ type
     FText: TCaption; { TControl does not save the Caption property }
   protected
     function GetText: TCaption; override;
+    procedure ColorChanged; override;
     procedure SetText(const Value: TCaption); override;
   public
     function ColorToRGB(Value: TColor): TColor;
@@ -96,7 +80,10 @@ type
   JV_WINCONTROL(FrameControl)
   JV_CUSTOMCONTROL(HintWindow)
 
+function GetCanvas(Instance: TWinControl): TCanvas;
 function GetHintColor(Instance: TWinControl): TColor;
+function IsDoubleBuffered(Instance: TWinControl): Boolean;
+function IsPaintingCopy(Instance: TWinControl): Boolean;
 function SendAppMessage(Msg: Cardinal; WParam, LParam: Integer): Integer;
 procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: Integer);
 
@@ -105,21 +92,46 @@ var
 
 implementation
 
+uses
+  TypInfo;
+
 function SendAppMessage(Msg: Cardinal; WParam, LParam: Integer): Integer;
 begin
   Result := SendMessage(Application.AppWidget, Msg, WParam, LParam);
 end;
 
+function GetCanvas(Instance: TWinControl): TCanvas;
+var
+  PI: PPropInfo;
+begin
+  Result := nil;
+  if Assigned(Instance) do
+  begin
+    PI := GetPropInfo(Instance, 'Canvas');
+    if PI <> nil then
+      Result := TCanvas(GetOrdProp(Instance, PI));
+  end;
+end;
+
+function IsDoubleBuffered(Instance: TWinControl): Boolean;
+var
+  PI: PPropInfo;
+begin
+  Result := True;
+  if Assigned(Instance) do
+  begin
+    PI := GetPropInfo(Instance, 'DoubleBuffered');
+    if PI <> nil then
+      Result := GetOrdProp(Instance, PI) <> 0;
+  end;
+end;
+
 function GetHintColor(Instance: TWinControl): TColor;
-{
-clNone         : Application.HintColor
-clDefaultColor : Parent HintColor
-}
 var
   PI: PPropInfo;
 begin
   Result := clDefaultColor;
-  while (Result = clDefaultColor) and (Instance <> nil) do
+  while (Result = clDefaultColor) and Assigned(Instance) do
   begin
     PI := GetPropInfo(Instance, 'HintColor');
     if PI <> nil then
@@ -128,6 +140,16 @@ begin
   end;
   case Result of
   clNone, clDefaultColor: Result := Application.HintColor;
+  end;
+end;
+
+function IsPaintingCopy(Instance: TWinControl): Boolean;
+begin
+  Result := false ;
+  while not Result and Assigned(Instance) do
+  begin
+    Result := csPaintCopy in Instance.ControlState ;
+    Instance := Instance.Parent;
   end;
 end;
 
@@ -165,7 +187,7 @@ var
   Method: TMethod;
 begin
   inherited Create(AOwner);
-  FHook := QObject_hook_create(FHandle);
+  FHook := QObject_hook_create(Application.Handle);
   TEventFilterMethod(Method) := EventFilter;
   Qt_hook_hook_events(FHook, Method);
 end;
@@ -180,13 +202,10 @@ function TJvCLXFilters.EventFilter(Instance: TWidgetControl; Event: QEventH): Bo
 var
   PixMap: QPixmapH;
   WinTimer: TWinTimer;
-  Mesg: TMsg;
+  Mesg: TMessage;
   R: TRect;
+  Canvas: TCanvas;
 begin
-  { implements doublebuffered paint & WM_ERASEBKGND
-    Handles/implements HintColor
-  }
-
   with Instance do case QEvent_type(Event) of
 
   QEventType_Paint:
@@ -201,7 +220,7 @@ begin
       end;
 
       if not (csWidgetPainting in ControlState) then
-        if not (csPaintCopy in ControlState) then
+        if not IsPaintingCopy(Instance) then
         begin
           QRegion_boundingRect(QPaintEvent_region(Event), @R);
           Pixmap := QPixmap_create ;
@@ -220,12 +239,23 @@ begin
       else
       begin
         { csWidgetPainting / Paintbackground }
-        Mesg.hwnd := Handle;
         Mesg.Msg := WM_ERASEBKGND;
-        Mesg.DC := 0;
-        Mesg.LParam := 0;
-        Mesg.Handled := 0;
-        Dispatch(Mesg);
+        Canvas := GetCanvas(Instance);
+        try
+          if Assigned(Canvas) then
+          begin
+            Canvas.Start;
+            Mesg.DC := Canvas.Handle;
+          end
+          else
+            Mesg.WParam := 0;
+          Mesg.LParam := 0;
+          Mesg.Handled := False;
+          Dispatch(Mesg);
+        finally
+          if Assigned(Canvas) then
+            Canvas.Stop;
+        end;
         Result := Mesg.Handled;
       end;
     end;  // with Event as QPaintEventH
@@ -238,6 +268,12 @@ JV_CUSTOMCONTROL_IMPL(CustomControl)
 JV_WINCONTROL_IMPL(FrameControl)
 JV_CUSTOMCONTROL_IMPL(HintWindow)
 JV_CONTROL_IMPL(GraphicControl)
+
+procedure TJvEx##ClassName.ColorChanged;
+begin
+  inherited ColorChanged;
+  Canvas.Brush.Color := Color;
+end;
 
 function TJvExGraphicControl.GetText: TCaption;
 begin

@@ -73,6 +73,9 @@ EMPTYLINE
     FOnParentColorChanged: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
+    {$IFNDEF COMPILER6_UP}
+    function GetAutoSize: Boolean;
+    {$ENDIF !COMPILER6_UP}
   protected
     procedure WndProc(var Mesg: TMessage); override;
     procedure ColorChanged; dynamic;
@@ -92,6 +95,15 @@ EMPTYLINE
       const KeyText: WideString): Boolean; dynamic;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+  {$IFNDEF COMPILER6_UP}
+  {$IFDEF HASAUTOSIZE}
+    procedure SetAutoSize(Value: Boolean); dynamic
+  {$IFDEF PUBLISHAUTOSIZE}
+  published
+  {$ENDIF PUBLISHAUTOSIZE}
+    property AutoSize: Boolean read GetAutoSize write SetAutoSize;
+  {$ENDIF HASAUTOSIZE}
+  {$ENDIF !COMPILER6_UP}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
@@ -300,6 +312,18 @@ end;
 
 (*$DEFINE JV_IMPL_CONTROL_COMMON(ClassName)
 { Control Common }
+{$IFNDEF COMPILER6_UP}
+procedure TJvEx##ClassName.SetAutoSize(Value: Boolean);
+begin
+  inherited AutoSize := Value;
+end;
+
+function TJvEx##ClassName.GetAutoSize: Boolean;
+begin
+  Result := inherited AutoSize;
+end;
+{$ENDIF !COMPILER6_UP}
+
 procedure TJvEx##ClassName.ColorChanged;
 begin
   { notification }
