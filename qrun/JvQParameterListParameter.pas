@@ -119,12 +119,12 @@ type
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
-    function GetParentControl : TWinControl;
+    function GetParentControl: TWinControl;
   public
     constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
     procedure ArrangeControls;
-    property ParentControl: TWinControl read GetParentControl write fParentControl;
+    property ParentControl: TWinControl read GetParentControl write FParentControl;
   published
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Color;
@@ -191,7 +191,7 @@ type
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   end;
 
-  TJvCheckboxParameter = class(TJvBaseParameter)
+  TJvCheckBoxParameter = class(TJvBaseParameter)
   public
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   end;
@@ -390,17 +390,17 @@ type
     property Sorted: Boolean read FSorted write FSorted;
   end;
 
-  TJvCheckListItemDataWrapper =class
+  TJvCheckListItemDataWrapper = class
   private
     FState: TCheckBoxState;
-    FItemEnabled : Boolean;
+    FItemEnabled: Boolean;
     FHeader: Boolean;
     procedure SetChecked(Check: Boolean);
     function GetChecked: Boolean;
   public
     property Checked: Boolean read GetChecked write SetChecked;
     property State: TCheckBoxState read FState write FState;
-    property ItemEnabled : Boolean read FItemEnabled write FItemEnabled;
+    property ItemEnabled: Boolean read FItemEnabled write FItemEnabled;
     property Header: Boolean read FHeader write FHeader;
   end;
 
@@ -412,8 +412,8 @@ type
     function GetParameterNameExt: string; override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
     procedure SetWinControlProperties; override;
-    function GetItemData (Index : Integer) : TJvCheckListItemDataWrapper;
-    procedure SetItemData (Index : Integer; Value : TJvCheckListItemDataWrapper);
+    function GetItemData(Index: Integer): TJvCheckListItemDataWrapper;
+    procedure SetItemData(Index: Integer; Value: TJvCheckListItemDataWrapper);
     procedure SetItemList(Value: TStrings); override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
@@ -421,8 +421,9 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure GetData; override;
     procedure SetData; override;
-    procedure AddCheckListBoxItem (const aText : String; aState : TCheckBoxState = cbChecked; aItemEnabled : Boolean = True; aHeader : Boolean = False);
-    property ItemData [Index : Integer] : TJvCheckListItemDataWrapper Read GetItemData Write SetItemData;
+    procedure AddCheckListBoxItem(const aText: string; aState: TCheckBoxState = cbChecked; aItemEnabled: Boolean = True;
+      aHeader: Boolean = False);
+    property ItemData[Index: Integer]: TJvCheckListItemDataWrapper read GetItemData write SetItemData;
   published
     property Sorted: Boolean read FSorted write FSorted;
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
@@ -514,7 +515,7 @@ function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; con
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult;
 begin
   Result := JvQDSADialogs.MessageDlg(Msg, DlgType, Buttons, HelpCtx, Center, Timeout, DefaultButton,
-              CancelButton, HelpButton, ADynControlEngine);
+    CancelButton, HelpButton, ADynControlEngine);
 end;
 
 //=== { TJvNoDataParameter } =================================================
@@ -893,7 +894,7 @@ end;
 procedure TJvArrangeParameter.ArrangeControls;
 begin
   if Assigned(FParentControl) and
-     (FParentControl is TJvPanel) then
+    (FParentControl is TJvPanel) then
     TJvPanel(FParentControl).ArrangeControls;
 end;
 
@@ -909,14 +910,13 @@ begin
     FParentControl := nil;
 end;
 
-function TJvArrangeParameter.GetParentControl : TWinControl;
+function TJvArrangeParameter.GetParentControl: TWinControl;
 begin
   if Assigned(FParentControl) then
     Result := FParentControl
   else
     Result := WinControl;
 end;
-
 
 //=== { TJvPanelParameter } ==================================================
 
@@ -977,7 +977,7 @@ begin
   ParentControl := Panel;
   Panel.Name := GetParameterName;
   Panel.ArrangeSettings := ArrangeSettings;
-  Panel.Bevelinner := bvNone;
+  Panel.BevelInner := bvNone;
   Panel.BevelOuter := bvNone;
   Panel.Parent := WinControl;
   Panel.Align := alClient;
@@ -1045,7 +1045,7 @@ begin
   else
     ItemIndex := -1;
   if not VariantAsItemIndex then
-    Inherited SetAsVariant (Value);
+    inherited SetAsVariant(Value);
 end;
 
 function TJvListParameter.GetAsString: string;
@@ -1056,7 +1056,7 @@ begin
     else
       Result := ''
   else
-    Result := Inherited GetAsString;
+    Result := inherited GetAsString;
 end;
 
 procedure TJvListParameter.SetAsInteger(Value: Integer);
@@ -1071,16 +1071,16 @@ end;
 
 procedure TJvListParameter.SetAsVariant(Value: Variant);
 begin
-  if VarIsNull (Value) then
+  if VarIsNull(Value) then
     ItemIndex := -1
   else
-    if VariantAsItemIndex then
-      if VarType(Value) in [varSmallInt, varInteger, varByte , varShortInt, varWord, varLongWord ] then
-        ItemIndex := Value
-      else
-        SetAsString(Value)
+  if VariantAsItemIndex then
+    if VarType(Value) in [varSmallInt, varInteger, varByte , varShortInt, varWord, varLongWord ] then
+      ItemIndex := Value
     else
-      SetAsString(Value);
+      SetAsString(Value)
+  else
+    SetAsString(Value);
 end;
 
 function TJvListParameter.GetAsVariant: Variant;
@@ -1088,7 +1088,7 @@ begin
   Result := inherited GetAsVariant;
   if VariantAsItemIndex then
     if VarToStr(Result) = '-1' then
-      Result := NULL;
+      Result := Null;
 end;
 
 function TJvListParameter.GetItemList: TStrings;
@@ -1317,12 +1317,14 @@ begin
     ITmpItems.ControlSetSorted(Sorted);
 end;
 
-
 //==== TJvCheckListItemDataWrapper ====================================================
 
 procedure TJvCheckListItemDataWrapper.SetChecked(Check: Boolean);
 begin
-  if Check then FState := cbChecked else FState := cbUnchecked;
+  if Check then
+    FState := cbChecked
+  else
+    FState := cbUnchecked;
 end;
 
 function TJvCheckListItemDataWrapper.GetChecked: Boolean;
@@ -1334,67 +1336,72 @@ end;
 
 constructor TJvCheckListBoxParameter.Create(AParameterList: TJvParameterList);
 begin
-  inherited Create (AParameterList);
+  inherited Create(AParameterList);
   FSorted := False;
   FAllowGrayed := False;
 end;
 
 destructor TJvCheckListBoxParameter.Destroy;
-var i : integer;
+var
+  I: Integer;
 begin
-  for i := 0 to ItemList.Count -1 do
-    if Assigned(ItemList.Objects[i]) then
-      ItemList.Objects[i].Free;
+  for I := 0 to ItemList.Count - 1 do
+    if Assigned(ItemList.Objects[I]) then
+      ItemList.Objects[I].Free;
   inherited Destroy;
 end;
 
 procedure TJvCheckListBoxParameter.Assign(Source: TPersistent);
-var i: Integer;
+var
+  I: Integer;
 begin
   inherited Assign(Source);
   if Source is TJvCheckListBoxParameter then
   begin
     Sorted := TJvCheckListBoxParameter(Source).Sorted;
     AllowGrayed := TJvCheckListBoxParameter(Source).AllowGrayed;
-    for i := 0 to ItemList.Count do
-      ItemData[i] := TJvCheckListBoxParameter(Source).ItemData[i];
+    for I := 0 to ItemList.Count do
+      ItemData[I] := TJvCheckListBoxParameter(Source).ItemData[I];
   end;
 end;
 
 procedure TJvCheckListBoxParameter.GetData;
-var ITmpCheckListBox: IJvDynControlCheckListBox;
-    i: Integer;
+var
+  ITmpCheckListBox: IJvDynControlCheckListBox;
+  I: Integer;
 begin
   inherited GetData;
   if Supports(WinControl, IJvDynControlCheckListBox, ITmpCheckListBox) then
-    for i := 0 to ItemList.Count-1 do
-      with ITmpCheckListBox, ItemData[i] do
+    for I := 0 to ItemList.Count - 1 do
+      with ITmpCheckListBox, ItemData[I] do
       begin
-        ItemEnabled := ITmpCheckListBox.ControlGetItemEnabled(i);
-        State := ITmpCheckListBox.ControlGetState(i);
-        Header := ITmpCheckListBox.ControlGetHeader(i);
+        ItemEnabled := ITmpCheckListBox.ControlGetItemEnabled(I);
+        State := ITmpCheckListBox.ControlGetState(I);
+        Header := ITmpCheckListBox.ControlGetHeader(I);
       end;
 end;
 
 procedure TJvCheckListBoxParameter.SetData;
-var ITmpCheckListBox: IJvDynControlCheckListBox;
-    i: Integer;
+var
+  ITmpCheckListBox: IJvDynControlCheckListBox;
+  I: Integer;
 begin
   inherited SetData;
   if Supports(WinControl, IJvDynControlCheckListBox, ITmpCheckListBox) then
-    for i := 0 to ItemList.Count-1 do
-      with ITmpCheckListBox, ItemData[i] do
+    for I := 0 to ItemList.Count - 1 do
+      with ITmpCheckListBox, ItemData[I] do
       begin
-        ITmpCheckListBox.ControlSetItemEnabled(i, ItemEnabled);
-        ITmpCheckListBox.ControlSetState(i, State);
-        ITmpCheckListBox.ControlSetHeader(i, Header);
+        ITmpCheckListBox.ControlSetItemEnabled(I, ItemEnabled);
+        ITmpCheckListBox.ControlSetState(I, State);
+        ITmpCheckListBox.ControlSetHeader(I, Header);
       end;
 end;
 
-procedure TJvCheckListBoxParameter.AddCheckListBoxItem (const aText : String; aState : TCheckBoxState = cbChecked; aItemEnabled : Boolean = True; aHeader : Boolean = False);
+procedure TJvCheckListBoxParameter.AddCheckListBoxItem(const aText: string; aState: TCheckBoxState = cbChecked;
+  aItemEnabled: Boolean = True; aHeader: Boolean = False);
 begin
   ItemList.Add(aText);
-  With ItemData [ItemList.Count-1] do
+  with ItemData[ItemList.Count - 1] do
   begin
     Header := aHeader;
     State := aState;
@@ -1429,7 +1436,7 @@ begin
     ITmpCheckListBox.ControlSetAllowGrayed(AllowGrayed);
 end;
 
-function TJvCheckListBoxParameter.GetItemData (Index : Integer) : TJvCheckListItemDataWrapper;
+function TJvCheckListBoxParameter.GetItemData(Index: Integer): TJvCheckListItemDataWrapper;
 begin
   if (Index >= 0) and (Index < ItemList.Count) then
   begin
@@ -1449,10 +1456,11 @@ begin
     Result := nil;
 end;
 
-procedure TJvCheckListBoxParameter.SetItemData (Index : Integer; Value : TJvCheckListItemDataWrapper);
-var Data : TJvCheckListItemDataWrapper;
+procedure TJvCheckListBoxParameter.SetItemData(Index: Integer; Value: TJvCheckListItemDataWrapper);
+var
+  Data: TJvCheckListItemDataWrapper;
 begin
-  Data := GetItemData (Index);
+  Data := GetItemData(Index);
   if Assigned(Data) then
   begin
     Data.State := Value.State;
@@ -1462,12 +1470,13 @@ begin
 end;
 
 procedure TJvCheckListBoxParameter.SetItemList(Value: TStrings);
-var i : integer;
+var
+  I: Integer;
 begin
-  for i := 0 to ItemList.Count -1 do
-    if Assigned(ItemList.Objects[i]) then
-      ItemList.Objects[i].Free;
-  Inherited SetItemList(Value);
+  for I := 0 to ItemList.Count - 1 do
+    if Assigned(ItemList.Objects[I]) then
+      ItemList.Objects[I].Free;
+  inherited SetItemList(Value);
 end;
 
 //=== { TJvTimeParameter } ===============================================
@@ -1992,7 +2001,7 @@ begin
       ControlSetWantTabs(WantTabs);
       ControlSetWantReturns(WantReturns);
       ControlSetWordWrap(WordWrap);
-      ControlSetScrollbars(Scrollbars);
+      ControlSetScrollbars(ScrollBars);
     end;
 end;
 

@@ -45,7 +45,7 @@ unit JvQErrorIndicator;
 interface
 
 uses 
-  Classes, Types, QGraphics, QControls, QImgList, QComCtrlsEx, 
+  Classes, Types, QGraphics, QControls, QImgList,
   JvQComponent;
 
 type
@@ -240,13 +240,14 @@ constructor TJvErrorIndicator.Create(AComponent: TComponent);
 
 var
   Bmp: TBitmap;
+
 begin
   inherited Create(AComponent);
-  FDefaultImage := TImageList.CreateSize(16, 16);
+  FDefaultImage := TImageList.CreateSize(16, 16);  
   Bmp := TBitmap.Create;
   Bmp.LoadFromResourceName(hInstance, 'TJVERRORINDICATOR');
   FDefaultImage.AddMasked(Bmp, clBlack);
-  Bmp.Free;
+  Bmp.Free; 
   FBlinkStyle := ebsBlinkIfDifferentError;
   FBlinkRate := 250;
   FControls := TList.Create;

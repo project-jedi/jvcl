@@ -35,9 +35,10 @@ unit JvQDrawImage;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, QWindows, 
-  JvQAirBrush, JvQPaintFX, JvQResample;
+  Types, QWindows,  
+  QForms, 
+  Classes, QGraphics, QControls, QExtCtrls,
+  JvQAirBrush, JvQPaintFX;
 
 type
   TSmartResizeMode = (rmWidth, rmHeight, rmSquare);
@@ -237,11 +238,10 @@ type
 
 implementation
 
-uses  
-  QClipbrd, 
-  Math,
-  JvQTypes, JvQPainterEffectsForm, JvQQuickPreviewForm, JvQPainterQBForm,
-  JvQResources;
+uses
+  SysUtils, Math, QDialogs, QClipbrd,
+  JvQResample, JvQPainterEffectsForm, JvQQuickPreviewForm, JvQPainterQBForm,
+  JvQTypes, JvQResources;
 
 const
   // Texture constants
@@ -284,20 +284,20 @@ var
   myslinedir: string;
   myslinetol: Integer;
   myDraw: Boolean;
-  mypen: tpenmode;
-  mypenstyle: tpenstyle;
-  myoldbrushstyle: tbrushstyle;
+  mypen: TPenMode;
+  mypenstyle: TPenStyle;
+  myoldbrushstyle: TBrushStyle;
   myoldpenwidth: Integer;
   myround: Integer;
 
-  clipcm: Tcopymode;
+  clipcm: TCopyMode;
 
-  pointarray: array[0..12] of TPoint;
+  pointarray: array [0..12] of TPoint;
   spiralfactor: Real;
   spiraldir: Integer;
   TargetPoint: TPoint;
   zoomrect: TRect;
-  freepoly: array[0..100] of TPoint;
+  freepoly: array [0..100] of TPoint;
   freepolycount: Integer;
   bezierfix1, bezierfix2: Boolean;
 
@@ -332,11 +332,11 @@ begin
   FZoomClip := TBitmap.Create;
   FAirBrush := TJvAirBrush.Create(Self);
   FX := TJvPaintFX.Create(Self);
-  TargetPoint := point(0, 0);
+  TargetPoint := Point(0, 0);
   NSpiro := 40;
-  RangeTransColor := clwhite;
-  zoomrect := rect(0, 0, 50, 50);
-  mycliprect := rect(0, 0, 256, 256);
+  RangeTransColor := clWhite;
+  zoomrect := Rect(0, 0, 50, 50);
+  mycliprect := Rect(0, 0, 256, 256);
   //spiral number, direction and Factor
   Spirals := 3;
   spiralfactor := 0.99;
@@ -347,7 +347,7 @@ begin
   // tolerance for straight line Drawing
   myslinetol := 5;
 
-  mypenstyle := pssolid;
+  mypenstyle := psSolid;
   // number of Blocks wide and heigh
   Blocks := 32;
   // rounding of roundrect
@@ -423,12 +423,12 @@ begin
   for Y := 0 to h - 1 do
   begin
     p1 := ABitmap.ScanLine[Y];
-    p2 := bm.scanline[Y];
-    dx := round(Amount / 100 * Y);
+    p2 := bm.ScanLine[Y];
+    dx := Round(Amount / 100 * Y);
     for X := 0 to w - 1 do
     begin
       c1 := X * 3;
-      c2 := round(f * (X + dx)) * 3;
+      c2 := Round(f * (X + dx)) * 3;
       p2[c2] := p1[c1];
       p2[c2 + 1] := p1[c1 + 1];
       p2[c2 + 2] := p1[c1 + 2];
@@ -446,7 +446,7 @@ begin
   for i := 1 to Amount do
     for Y := 0 to Clip.Height - 1 do
     begin
-      p1 := Clip.scanline[Y];
+      p1 := Clip.ScanLine[Y];
       for X := 0 to Clip.Width - 1 do
       begin
         p1[X * 3] := FSinPixs[p1[X * 3]];
@@ -462,10 +462,10 @@ var
 begin
   h := clientheight;
   w := clientwidth;
-  Canvas.FillRect(rect(0, 0, w, Y2 - Y1));
-  Canvas.FillRect(rect(0, h - (Y2 - Y1), w, h));
-  Canvas.FillRect(rect(0, 0, X2 - X1, h));
-  Canvas.FillRect(rect(w - (X2 - X1), 0, w, h));
+  Canvas.FillRect(Rect(0, 0, w, Y2 - Y1));
+  Canvas.FillRect(Rect(0, h - (Y2 - Y1), w, h));
+  Canvas.FillRect(Rect(0, 0, X2 - X1, h));
+  Canvas.FillRect(Rect(w - (X2 - X1), 0, w, h));
 end;
 
 procedure TJvDrawImage.DrawBars(X1, Y1, X2, Y2: Integer);
@@ -480,7 +480,7 @@ begin
     Y2 := h;
   X1 := 0;
   X2 := w;
-  Canvas.FillRect(rect(X1, Y1, X2, Y2));
+  Canvas.FillRect(Rect(X1, Y1, X2, Y2));
 end;
 
 procedure TJvDrawImage.DrawSpiro(center, Radius: TPoint);
@@ -493,37 +493,37 @@ begin
   ys := Picture.Bitmap.Height div 2;
   if xs <> ys then
   begin
-    showmessage(RsImageMustBeSquare);
-    exit;
+    ShowMessage(RsImageMustBeSquare);
+    Exit;
   end;
-  r0 := Variant(sqrt(sqr(center.X - xs) + sqr(center.Y - ys)));
-  R1 := Variant(sqrt(sqr(Radius.X - center.X) + sqr(Radius.Y - center.Y)));
+  r0 := Variant(Sqrt(Sqr(center.X - xs) + Sqr(center.Y - ys)));
+  R1 := Variant(Sqrt(Sqr(Radius.X - center.X) + Sqr(Radius.Y - center.Y)));
   if (r0 + R1) > xs then
   begin
-    showmessage(RsSumOfRadiTolarge);
-    exit;
+    ShowMessage(RsSumOfRadiTolarge);
+    Exit;
   end;
   if (r0 < 5) or (R1 < 5) then
   begin
-    showmessage(Format(RsBothRadiMustBeGr, [5]));
-    exit;
+    ShowMessage(Format(RsBothRadiMustBeGr, [5]));
+    Exit;
   end;
   da1 := 2 * pi / 36;
   da0 := R1 / r0 * da1;
   a0 := 0;
   a1 := 0;
-  Canvas.moveto(xs + r0 + R1, ys);
+  Canvas.MoveTo(xs + r0 + R1, ys);
   for i := 1 to 36 * NSpiro do
   begin
-    X1 := R1 * cos(a1);
-    Y1 := R1 * sin(a1);
+    X1 := R1 * Cos(a1);
+    Y1 := R1 * Sin(a1);
     a1 := a1 + da1;
-    X0 := r0 * cos(a0);
-    Y0 := r0 * sin(a0);
+    X0 := r0 * Cos(a0);
+    Y0 := r0 * Sin(a0);
     a0 := a0 + da0;
     X := Variant(xs + X0 + X1);
     Y := Variant(ys + Y0 + Y1);
-    Canvas.lineto(X, Y)
+    Canvas.LineTo(X, Y)
   end;
 end;
 
@@ -535,7 +535,7 @@ var
 begin
   X0 := myorigin.X;
   Y0 := myorigin.Y;
-//777  d := abs(Y - Y0);
+//777  d := Abs(Y - Y0);
   damult := 1;
   if not PolygonChecked then
   begin
@@ -549,20 +549,19 @@ begin
   da := damult * 2 * pi / StarPoints;
   with Canvas do
   begin
-    pointarray[0] := point(X, Y);
-    //   moveto(X,Y);
-    apoint := point(X, Y);
+    pointarray[0] := Point(X, Y);
+    //   MoveTo(X,Y);
+    apoint := Point(X, Y);
     for i := 1 to StarPoints - 1 do
     begin
-      //      apoint:=Rotate(point(X0,Y0),apoint,da);
-      //      lineto(apoint.X,apoint.Y);
-      apoint := Rotate(point(X0, Y0), apoint, da);
+      //      apoint:=Rotate(Point(X0,Y0),apoint,da);
+      //      LineTo(apoint.X,apoint.Y);
+      apoint := Rotate(Point(X0, Y0), apoint, da);
       pointarray[i] := apoint;
     end;
-    //      lineto(X,Y);
+    //      LineTo(X,Y);
     Polygon(Slice(PointArray, StarPoints))
   end;
-
 end;
 
 function TJvDrawImage.ReduceVector(Origin, Endpoint: TPoint;
@@ -570,16 +569,16 @@ function TJvDrawImage.ReduceVector(Origin, Endpoint: TPoint;
 var
   a, d, r: Real;
 begin
-  r := sqrt(sqr(Endpoint.X - Origin.X) + sqr(Endpoint.Y - Origin.Y));
+  r := Sqrt(Sqr(Endpoint.X - Origin.X) + Sqr(Endpoint.Y - Origin.Y));
   d := Endpoint.X - Origin.X;
   if (d >= 0) and (d < 0.001) then
     d := 0.001;
   if (d < 0) and (d > -0.001) then
     d := -0.001;
-  a := arctan2((Endpoint.Y - Origin.Y), d);
+  a := ArcTan2((Endpoint.Y - Origin.Y), d);
   r := r * Factor;
-  result.X := Origin.X + Variant(r * cos(a));
-  result.Y := Origin.Y + Variant(r * sin(a));
+  Result.X := Origin.X + Variant(r * Cos(a));
+  Result.Y := Origin.Y + Variant(r * Sin(a));
 end;
 (*)
 procedure TJvDrawImage.TextRotate(X, Y, Angle: Integer; aText: string;
@@ -607,7 +606,7 @@ begin
   else
     fnt.lfUnderline := 0;
   fnt.lfStrikeOut := 0;
-  fnt.lfHeight := abs(afont.Height);
+  fnt.lfHeight := Abs(afont.Height);
   fname := afont.Name;
   for i := 1 to length(fname) do
     fnt.lffacename[i - 1] := fname[i];
@@ -615,7 +614,7 @@ begin
   hfnt := CreateFontIndirect(fnt);
   dc := Canvas.handle;
   SetBkMode(dc, windows.TRANSPARENT);
-  SetTextColor(dc, afont.color);
+  SetTextColor(dc, afont.Color);
   hfntPrev := SelectObject(dc, hfnt);
   //Textout(dc,X,Y,@aText[1],length(aText));
   Textout(dc, X, Y, @s[1], length(s));
@@ -629,15 +628,15 @@ function TJvDrawImage.GetAngle(Origin, Endpoint: TPoint): Integer;
 var
   a, d: Real;
 begin
-//  r := sqrt(sqr(Endpoint.X - Origin.X) + sqr(Endpoint.Y - Origin.Y));
+//  r := Sqrt(Sqr(Endpoint.X - Origin.X) + Sqr(Endpoint.Y - Origin.Y));
   d := Endpoint.X - Origin.X;
   if (d >= 0) and (d < 0.001) then
     d := 0.001;
   if (d < 0) and (d > -0.001) then
     d := -0.001;
-  a := arctan2((Endpoint.Y - Origin.Y), d);
+  a := ArcTan2((Endpoint.Y - Origin.Y), d);
   a := a * 360 / (2 * pi);
-  result := Variant(-a);
+  Result := Variant(-a);
 end;
 (*)
 procedure TJvDrawImage.DrawRisingWaveSphere(Color1, Color2: TColor; X1, Y1, X2, Y2: Integer);
@@ -685,26 +684,26 @@ begin
     xcenter := X1 + a;
     a := b;
   end;
-  Color1 := colortorgb(Color1);
-  R1 := getrvalue(Color1);
-  G1 := getgvalue(Color1);
-  B1 := getbvalue(Color1);
-  Color2 := colortorgb(Color2);
-  R2 := getrvalue(Color2);
-  G2 := getgvalue(Color2);
-  B2 := getbvalue(Color2);
+  Color1 := ColorToRGB(Color1);
+  R1 := GetRValue(Color1);
+  G1 := GetGValue(Color1);
+  B1 := GetBValue(Color1);
+  Color2 := ColorToRGB(Color2);
+  R2 := GetRValue(Color2);
+  G2 := GetGValue(Color2);
+  B2 := GetBValue(Color2);
   for i := 0 to bl - 1 do
   begin
     if dx > dy then
     begin
       xo := i * dx + a;
-      r := abs(round(a * sin(pi * xo / (X2 - X1))));
+      r := Abs(Round(a * Sin(pi * xo / (X2 - X1))));
       Sphere(Clip, X1 + xo, r, ycenter, r, R1, G1, B1, R2, G2, B2, True);
     end
     else
     begin
       yo := i * dy + b;
-      r := abs(round(b * sin(pi * yo / (Y2 - Y1) - pi / 2)));
+      r := Abs(Round(b * Sin(pi * yo / (Y2 - Y1) - pi / 2)));
       Sphere(Clip, xcenter, r, Y1 + yo, r, R1, G1, B1, R2, G2, B2, True);
     end;
   end;
@@ -756,26 +755,26 @@ begin
     xcenter := X1 + a;
     a := b;
   end;
-  Color1 := colortorgb(Color1);
-  R1 := getrvalue(Color1);
-  G1 := getgvalue(Color1);
-  B1 := getbvalue(Color1);
-  Color2 := colortorgb(Color2);
-  R2 := getrvalue(Color2);
-  G2 := getgvalue(Color2);
-  B2 := getbvalue(Color2);
+  Color1 := ColorToRGB(Color1);
+  R1 := GetRValue(Color1);
+  G1 := GetGValue(Color1);
+  B1 := GetBValue(Color1);
+  Color2 := ColorToRGB(Color2);
+  R2 := GetRValue(Color2);
+  G2 := GetGValue(Color2);
+  B2 := GetBValue(Color2);
   for i := 0 to bl - 1 do
   begin
     if dx > dy then
     begin
       xo := i * dx + a;
-      r := abs(round(a * sin(pi * xo / (X2 - X1) - pi / 2)));
+      r := Abs(Round(a * Sin(pi * xo / (X2 - X1) - pi / 2)));
       Sphere(Clip, X1 + xo, r, ycenter, r, R1, G1, B1, R2, G2, B2, True);
     end
     else
     begin
       yo := i * dy + b;
-      r := abs(round(b * sin(pi * yo / (Y2 - Y1) - pi / 2)));
+      r := Abs(Round(b * Sin(pi * yo / (Y2 - Y1) - pi / 2)));
       Sphere(Clip, xcenter, r, Y1 + yo, r, R1, G1, B1, R2, G2, B2, True);
     end;
   end;
@@ -825,14 +824,14 @@ begin
     b := (dy div 2) * 4 div 5;
     xcenter := X1 + a;
   end;
-  Color1 := colortorgb(Color1);
-  R1 := getrvalue(Color1);
-  G1 := getgvalue(Color1);
-  B1 := getbvalue(Color1);
-  Color2 := colortorgb(Color2);
-  R2 := getrvalue(Color2);
-  G2 := getgvalue(Color2);
-  B2 := getbvalue(Color2);
+  Color1 := ColorToRGB(Color1);
+  R1 := GetRValue(Color1);
+  G1 := GetGValue(Color1);
+  B1 := GetBValue(Color1);
+  Color2 := ColorToRGB(Color2);
+  R2 := GetRValue(Color2);
+  G2 := GetGValue(Color2);
+  B2 := GetBValue(Color2);
   for i := 0 to bl - 1 do
   begin
     if dx > dy then
@@ -884,14 +883,14 @@ begin
     b := dy div 2;
     xcenter := X1 + a;
   end;
-  Color1 := colortorgb(Color1);
-  R1 := getrvalue(Color1);
-  G1 := getgvalue(Color1);
-  B1 := getbvalue(Color1);
-  Color2 := colortorgb(Color2);
-  R2 := getrvalue(Color2);
-  G2 := getgvalue(Color2);
-  B2 := getbvalue(Color2);
+  Color1 := ColorToRGB(Color1);
+  R1 := GetRValue(Color1);
+  G1 := GetGValue(Color1);
+  B1 := GetBValue(Color1);
+  Color2 := ColorToRGB(Color2);
+  R2 := GetRValue(Color2);
+  G2 := GetGValue(Color2);
+  B2 := GetBValue(Color2);
   for i := 0 to bl - 1 do
   begin
     if dx > dy then
@@ -904,7 +903,7 @@ end;
 
 procedure TJvDrawImage.Sphere(Bitmap: TBitmap;
   xcenter, a, ycenter, b: Integer; R1, G1, B1, R2, G2, B2: Byte; Smooth: Boolean);
-var (* Dessine un disque color *)
+var (* Dessine un disque Color *)
   xx, yy: Integer; (* par remplissage avec Couleur1-2 *)
   compt, x_ll, y_ll, x_ray, y_ray: Longint;
 begin
@@ -958,14 +957,14 @@ begin
   xcenter := X1 + a;
   b := ((Y2 - Y1) div 2);
   ycenter := Y1 + b;
-  Color1 := colortorgb(Color1);
-  R1 := getrvalue(Color1);
-  G1 := getgvalue(Color1);
-  B1 := getbvalue(Color1);
-  Color2 := colortorgb(Color2);
-  R2 := getrvalue(Color2);
-  G2 := getgvalue(Color2);
-  B2 := getbvalue(Color2);
+  Color1 := ColorToRGB(Color1);
+  R1 := GetRValue(Color1);
+  G1 := GetGValue(Color1);
+  B1 := GetBValue(Color1);
+  Color2 := ColorToRGB(Color2);
+  R2 := GetRValue(Color2);
+  G2 := GetGValue(Color2);
+  B2 := GetBValue(Color2);
   Sphere(Clip, xcenter, a, ycenter, b, R1, G1, B1, R2, G2, B2, True);
   Picture.Bitmap.Assign(Clip);
 end;
@@ -999,11 +998,11 @@ begin
     Y1 := Y2;
     Y2 := t;
   end;
-  line := Clip.scanline[Y1];
+  line := Clip.ScanLine[Y1];
   R1 := line[0];
   G1 := line[1];
   B1 := line[2];
-  line := Clip.scanline[Y2];
+  line := Clip.ScanLine[Y2];
   R2 := line[X2 * 3];
   G2 := line[X2 * 3 + 1];
   B2 := line[X2 * 3 + 2];
@@ -1012,8 +1011,8 @@ begin
 end;
 
 procedure TJvDrawImage.InterpolateRect(Bmp: TBitmap; X1, Y1, X2, Y2: Integer);
-// Draws rectangle, which will have different color in each corner and
-// will blend from one color to another
+// Draws rectangle, which will have different Color in each corner and
+// will blend from one Color to another
 // ( c[0,0]    c[1,0]
 //   c[0,1]    c[1,1] )
 type
@@ -1051,14 +1050,14 @@ begin
   if Y2 <> Y1 then
     t2 := $100000 div (Y2 - Y1);
 /////  dx := X2 - X1;
-  pb := bmp.scanline[Y1];
+  pb := bmp.ScanLine[Y1];
   c00.r := pb[X1 * 3];
   c00.g := pb[X1 * 3 + 1];
   c00.b := pb[X1 * 3 + 2];
   c01.r := pb[X2 * 3];
   c01.g := pb[X2 * 3 + 1];
   c01.b := pb[X2 * 3 + 2];
-  pb := bmp.scanline[Y2];
+  pb := bmp.ScanLine[Y2];
   c10.r := pb[X1 * 3];
   c10.g := pb[X1 * 3 + 1];
   c10.b := pb[X1 * 3 + 2];
@@ -1076,7 +1075,7 @@ begin
     xx := ((c00.b * iz + c01.b * z) shr 20);
     bp := xx shl 20;
     bp2 := (((c10.b * iz + c11.b * z) shr 20) - xx) * t;
-    pb := bmp.scanline[ycount];
+    pb := bmp.ScanLine[ycount];
     //    pb:=@Bmp.Pixels[yCount,X1];
     for xCount := X1 to X2 do
     begin
@@ -1130,22 +1129,22 @@ var
 begin
   w := Width;
   h := Height;
-  pcolor := Canvas.pen.color;
-  bcolor := Canvas.brush.color;
-  Canvas.brush.color := pcolor;
-  Canvas.brush.Style := bssolid;
+  pcolor := Canvas.Pen.Color;
+  bcolor := Canvas.Brush.Color;
+  Canvas.Brush.Color := pcolor;
+  Canvas.Brush.Style := bssolid;
   hcolor := Texhighlight(pcolor);
   scolor := TexShadow(pcolor);
-  xr := abs(round(sqrt(sqr(X - X0) + sqr(Y - Y0))));
-  dx := abs(X - X0);
-  dy := abs(Y - Y0);
+  xr := Abs(Round(Sqrt(Sqr(X - X0) + Sqr(Y - Y0))));
+  dx := Abs(X - X0);
+  dy := Abs(Y - Y0);
   if dy < 3 then
     dy := 3;
   if dx < 3 then
     dx := 3;
 //  tx := w div dx;
 //  ty := h div dy;
-  yr := round(dy / dx * xr);
+  yr := Round(dy / dx * xr);
   yi := 0;
   repeat
     xi := 0;
@@ -1157,22 +1156,22 @@ begin
           Y1 := yi + random(yr);
           X2 := xi + random(xr);
           Y2 := yi + random(yr);
-          pen.color := scolor;
-          brush.color := scolor;
-          rectangle(X1, Y1, X2 + 2, Y2 + 2);
-          pen.color := hcolor;
-          brush.color := hcolor;
-          rectangle(X1 - 2, Y1 - 2, X2, Y2);
-          pen.color := pcolor;
-          brush.color := pcolor;
-          rectangle(X1, Y1, X2, Y2);
+          Pen.Color := scolor;
+          Brush.Color := scolor;
+          Rectangle(X1, Y1, X2 + 2, Y2 + 2);
+          Pen.Color := hcolor;
+          Brush.Color := hcolor;
+          Rectangle(X1 - 2, Y1 - 2, X2, Y2);
+          Pen.Color := pcolor;
+          Brush.Color := pcolor;
+          Rectangle(X1, Y1, X2, Y2);
         end;
       inc(xi, dx);
     until xi > w - 1;
     inc(yi, dy);
   until yi > h - 1;
-  Canvas.pen.color := pcolor;
-  Canvas.brush.color := bcolor;
+  Canvas.Pen.Color := pcolor;
+  Canvas.Brush.Color := bcolor;
 end;
 
 procedure TJvDrawImage.DrawBlurPoly(X0, Y0, X, Y: Integer);
@@ -1194,19 +1193,19 @@ var
 begin
   w := Width;
   h := Height;
-  pcolor := Canvas.pen.color;
+  pcolor := Canvas.Pen.Color;
 //  hcolor := Texhighlight(pcolor);
 //  scolor := TexShadow(pcolor);
-  xr := abs(round(sqrt(sqr(X - X0) + sqr(Y - Y0))));
-  dx := abs(X - X0);
-  dy := abs(Y - Y0);
+  xr := Abs(Round(Sqrt(Sqr(X - X0) + Sqr(Y - Y0))));
+  dx := Abs(X - X0);
+  dy := Abs(Y - Y0);
   if dy < 3 then
     dy := 3;
   if dx < 3 then
     dx := 3;
 //  tx := w div dx;
 //  ty := h div dy;
-  yr := round(dy / dx * xr);
+  yr := Round(dy / dx * xr);
   yi := 0;
   repeat
     xi := 0;
@@ -1218,22 +1217,22 @@ begin
           Y1 := yi + random(yr);
           X2 := xi + random(xr);
           Y2 := yi + random(yr);
-          points[0] := point(X1, Y1);
-          points[3] := point(X2, Y2);
+          points[0] := Point(X1, Y1);
+          points[3] := Point(X2, Y2);
           X1 := xi + random(xr);
           Y1 := yi + random(yr);
           X2 := xi + random(xr);
           Y2 := yi + random(yr);
-          points[1] := point(X1, Y1);
-          points[2] := point(X2, Y2);
-          pen.color := pcolor;
+          points[1] := Point(X1, Y1);
+          points[2] := Point(X2, Y2);
+          Pen.Color := pcolor;
           polyline(points);
         end;
       inc(xi, dx);
     until xi > w - 1;
     inc(yi, dy);
   until yi > h - 1;
-  Canvas.pen.color := pcolor;
+  Canvas.Pen.Color := pcolor;
 end;
 
 procedure TJvDrawImage.DrawBlurCurves(X0, Y0, X, Y: Integer);
@@ -1255,19 +1254,19 @@ var
 begin
   w := Width;
   h := Height;
-  pcolor := Canvas.pen.color;
+  pcolor := Canvas.Pen.Color;
 //  hcolor := Texhighlight(pcolor);
 //  scolor := TexShadow(pcolor);
-  xr := abs(round(sqrt(sqr(X - X0) + sqr(Y - Y0))));
-  dx := abs(X - X0);
-  dy := abs(Y - Y0);
+  xr := Abs(Round(Sqrt(Sqr(X - X0) + Sqr(Y - Y0))));
+  dx := Abs(X - X0);
+  dy := Abs(Y - Y0);
   if dy < 3 then
     dy := 3;
   if dx < 3 then
     dx := 3;
 //  tx := w div dx;
 //  ty := h div dy;
-  yr := round(dy / dx * xr);
+  yr := Round(dy / dx * xr);
   yi := 0;
   repeat
     xi := 0;
@@ -1279,22 +1278,22 @@ begin
           Y1 := yi + random(yr);
           X2 := xi + random(xr);
           Y2 := yi + random(yr);
-          points[0] := point(X1, Y1);
-          points[3] := point(X2, Y2);
+          points[0] := Point(X1, Y1);
+          points[3] := Point(X2, Y2);
           X1 := xi + random(xr);
           Y1 := yi + random(yr);
           X2 := xi + random(xr);
           Y2 := yi + random(yr);
-          points[1] := point(X1, Y1);
-          points[2] := point(X2, Y2);
-          pen.color := pcolor;
-          polybezier(points);
+          points[1] := Point(X1, Y1);
+          points[2] := Point(X2, Y2);
+          Pen.Color := pcolor;
+          PolyBezier(points);
         end;
       inc(xi, dx);
     until xi > w - 1;
     inc(yi, dy);
   until yi > h - 1;
-  Canvas.pen.color := pcolor;
+  Canvas.Pen.Color := pcolor;
 end;
 
 procedure TJvDrawImage.ApplyFilter(var Dst: TBitmap; DF: TDigitalFilter);
@@ -1314,7 +1313,7 @@ begin
   bm.pixelformat := pf24bit;
   bm.Width := Dst.Width;
   bm.Height := Dst.Height;
-  R := rect(0, 0, bm.Width, bm.Height);
+  R := Rect(0, 0, bm.Width, bm.Height);
   bm.Canvas.CopyRect(R, Dst.Canvas, R);
   sum := 0;
   for Y := 0 to 4 do
@@ -1324,7 +1323,7 @@ begin
     Sum := 1;
   for Y := 0 to Dst.Height - 1 do
   begin
-    Pcolor := Dst.scanline[Y];
+    Pcolor := Dst.ScanLine[Y];
     for X := 0 to bm.Width - 1 do
     begin
       Red := 0;
@@ -1335,7 +1334,7 @@ begin
         begin
           Tmpy := TrimInt(Y + j - 2, 0, bm.Height - 1);
           Tmpx := TrimInt(X + i - 2, 0, bm.Width - 1);
-          ptmp := bm.scanline[Tmpy];
+          ptmp := bm.ScanLine[Tmpy];
           Tmp.r := ptmp[tmpx * 3];
           Tmp.g := ptmp[tmpx * 3 + 1];
           Tmp.b := ptmp[tmpx * 3 + 2];
@@ -1348,9 +1347,9 @@ begin
       Color.b := IntToByte(Blue div Sum);
       Color.g := IntToByte(Green div Sum);
       Color.r := IntToByte(Red div Sum);
-      PColor[X * 3] := color.r;
-      Pcolor[X * 3 + 1] := color.g;
-      Pcolor[X * 3 + 2] := color.b;
+      PColor[X * 3] := Color.r;
+      Pcolor[X * 3 + 1] := Color.g;
+      Pcolor[X * 3 + 2] := Color.b;
     end;
   end;
   bm.Free;
@@ -1375,22 +1374,22 @@ var
 begin
   w := Width;
   h := Height;
-  pcolor := Canvas.pen.color;
-  bcolor := Canvas.brush.color;
-  Canvas.brush.color := pcolor;
-  Canvas.brush.Style := bssolid;
+  pcolor := Canvas.Pen.Color;
+  bcolor := Canvas.Brush.Color;
+  Canvas.Brush.Color := pcolor;
+  Canvas.Brush.Style := bssolid;
   hcolor := Texhighlight(pcolor);
   scolor := TexShadow(pcolor);
-  xr := abs(round(sqrt(sqr(X - X0) + sqr(Y - Y0))));
-  dx := abs(X - X0);
-  dy := abs(Y - Y0);
+  xr := Abs(Round(Sqrt(Sqr(X - X0) + Sqr(Y - Y0))));
+  dx := Abs(X - X0);
+  dy := Abs(Y - Y0);
   if dy < 3 then
     dy := 3;
   if dx < 3 then
     dx := 3;
 //  tx := w div dx;
 //  ty := h div dy;
-  yr := round(dy / dx * xr);
+  yr := Round(dy / dx * xr);
   yi := 0;
   repeat
     xi := 0;
@@ -1402,29 +1401,29 @@ begin
           Y1 := yi + random(yr);
           X2 := xi + random(xr);
           Y2 := yi + random(yr);
-          pen.color := scolor;
-          brush.color := scolor;
-          ellipse(X1, Y1, X2 + 2, Y2 + 2);
-          pen.color := hcolor;
-          brush.color := hcolor;
-          ellipse(X1 - 2, Y1 - 2, X2, Y2);
-          pen.color := pcolor;
-          brush.color := pcolor;
-          ellipse(X1, Y1, X2, Y2);
+          Pen.Color := scolor;
+          Brush.Color := scolor;
+          Ellipse(X1, Y1, X2 + 2, Y2 + 2);
+          Pen.Color := hcolor;
+          Brush.Color := hcolor;
+          Ellipse(X1 - 2, Y1 - 2, X2, Y2);
+          Pen.Color := pcolor;
+          Brush.Color := pcolor;
+          Ellipse(X1, Y1, X2, Y2);
         end;
       inc(xi, dx);
     until xi > w - 1;
     inc(yi, dy);
   until yi > h - 1;
-  Canvas.pen.color := pcolor;
-  Canvas.brush.color := bcolor;
+  Canvas.Pen.Color := pcolor;
+  Canvas.Brush.Color := bcolor;
 end;
 
 function TJvDrawImage.BlendColors(const Color1, Color2: Longint; Opacity: Integer): Longint;
 var
   R, R1, R2, G, G1, G2, B, B1, B2: Integer;
 begin
-  Opacity := abs(Opacity);
+  Opacity := Abs(Opacity);
   if Opacity > 100 then
     Opacity := 100;
   R1 := GetRValue(ColorToRGB(Color1));
@@ -1475,19 +1474,19 @@ var
 begin
   w := Width;
   h := Height;
-  pcolor := Canvas.pen.color;
+  pcolor := Canvas.Pen.Color;
   hcolor := Texhighlight(pcolor);
   scolor := TexShadow(pcolor);
-  xr := abs(round(sqrt(sqr(X - X0) + sqr(Y - Y0))));
-  dx := abs(X - X0);
-  dy := abs(Y - Y0);
+  xr := Abs(Round(Sqrt(Sqr(X - X0) + Sqr(Y - Y0))));
+  dx := Abs(X - X0);
+  dy := Abs(Y - Y0);
   if dy = 0 then
     dy := 1;
   if dx = 0 then
     dx := 1;
 //  tx := w div dx;
 //  ty := h div dy;
-  yr := round(dy / dx * xr);
+  yr := Round(dy / dx * xr);
   yi := 0;
   repeat
     xi := 0;
@@ -1499,21 +1498,21 @@ begin
           Y1 := yi + random(yr);
           X2 := xi + random(xr);
           Y2 := yi + random(yr);
-          pen.color := pcolor;
+          Pen.Color := pcolor;
           MoveTo(X1, Y1);
           LineTo(X2, Y2);
-          pen.color := hcolor;
-          moveto(X1 - 1, Y1 - 1);
-          lineto(X2 - 1, Y2 - 1);
-          pen.color := scolor;
-          moveto(X1 + 1, Y1 + 1);
-          lineto(X2 + 1, Y2 + 1);
+          Pen.Color := hcolor;
+          MoveTo(X1 - 1, Y1 - 1);
+          LineTo(X2 - 1, Y2 - 1);
+          Pen.Color := scolor;
+          MoveTo(X1 + 1, Y1 + 1);
+          LineTo(X2 + 1, Y2 + 1);
         end;
       inc(xi, dx);
     until xi > w - 1;
     inc(yi, dy);
   until yi > h - 1;
-  Canvas.pen.color := pcolor;
+  Canvas.Pen.Color := pcolor;
 end;
 
 procedure TJvDrawImage.DrawSyms(X, Y: Integer);
@@ -1525,15 +1524,15 @@ begin
   X0 := Picture.Bitmap.Width div 2;
   Y0 := Picture.Bitmap.Height div 2;
   da := 2 * pi / StarPoints;
-  apoint := point(X, Y);
+  apoint := Point(X, Y);
   for i := 0 to StarPoints - 1 do
   begin
     with Canvas do
     begin
-      moveto(pointarray[i].X, pointarray[i].Y);
-      lineto(apoint.X, apoint.Y);
+      MoveTo(pointarray[i].X, pointarray[i].Y);
+      LineTo(apoint.X, apoint.Y);
       pointarray[i] := apoint;
-      apoint := Rotate(point(X0, Y0), apoint, da);
+      apoint := Rotate(Point(X0, Y0), apoint, da);
     end;
   end;
 end;
@@ -1542,9 +1541,9 @@ procedure TJvDrawImage.PutClip(M: TRect);
 var
   dest: TRect;
 begin
-  Clip.Width := (m.right - m.left + 1);
-  Clip.Height := (m.bottom - m.top + 1);
-  dest := rect(0, 0, Clip.Width, Clip.Height);
+  Clip.Width := (m.Right - m.Left + 1);
+  Clip.Height := (m.Bottom - m.Top + 1);
+  dest := Rect(0, 0, Clip.Width, Clip.Height);
   Clip.Canvas.CopyMode := cmsrccopy;
   Clip.pixelformat := Picture.Bitmap.pixelformat;
   Clip.Canvas.CopyRect(dest, Canvas, m);
@@ -1554,10 +1553,10 @@ procedure TJvDrawImage.DrawTriangle;
 begin
   with Canvas do
   begin
-    moveto(myskew[0].X, myskew[0].Y);
-    lineto(myskew[1].X, myskew[1].Y);
-    lineto(myskew[2].X, myskew[2].Y);
-    lineto(myskew[0].X, myskew[0].Y);
+    MoveTo(myskew[0].X, myskew[0].Y);
+    LineTo(myskew[1].X, myskew[1].Y);
+    LineTo(myskew[2].X, myskew[2].Y);
+    LineTo(myskew[0].X, myskew[0].Y);
   end;
 end;
 
@@ -1565,11 +1564,11 @@ procedure TJvDrawImage.DrawSkew;
 begin
   with Canvas do
   begin
-    moveto(myskew[0].X, myskew[0].Y);
-    lineto(myskew[1].X, myskew[1].Y);
-    lineto(myskew[2].X, myskew[2].Y);
-    lineto(myskew[3].X, myskew[3].Y);
-    lineto(myskew[0].X, myskew[0].Y);
+    MoveTo(myskew[0].X, myskew[0].Y);
+    LineTo(myskew[1].X, myskew[1].Y);
+    LineTo(myskew[2].X, myskew[2].Y);
+    LineTo(myskew[3].X, myskew[3].Y);
+    LineTo(myskew[0].X, myskew[0].Y);
   end;
 end;
 
@@ -1581,10 +1580,10 @@ begin
   h := Picture.Bitmap.Height;
   xb := w div Blocks;
   yb := h div Blocks;
-  result.left := (X div xb) * xb;
-  result.top := (Y div yb) * yb;
-  result.Right := result.left + xb;
-  result.Bottom := result.top + yb;
+  Result.Left := (X div xb) * xb;
+  Result.Top := (Y div yb) * yb;
+  Result.Right := Result.Left + xb;
+  Result.Bottom := Result.Top + yb;
 end;
 
 procedure TJvDrawImage.DrawCube;
@@ -1595,53 +1594,53 @@ begin
   begin
     dx := myskew[4].X - myskew[2].X;
     dy := myskew[4].Y - myskew[2].Y;
-    moveto(myskew[0].X, myskew[0].Y);
-    lineto(myskew[1].X, myskew[1].Y);
-    lineto(myskew[2].X, myskew[2].Y);
-    lineto(myskew[3].X, myskew[3].Y);
-    lineto(myskew[0].X, myskew[0].Y);
+    MoveTo(myskew[0].X, myskew[0].Y);
+    LineTo(myskew[1].X, myskew[1].Y);
+    LineTo(myskew[2].X, myskew[2].Y);
+    LineTo(myskew[3].X, myskew[3].Y);
+    LineTo(myskew[0].X, myskew[0].Y);
     if (dx >= 0) and (dy <= 0) then
     begin
-      moveto(myskew[0].X, myskew[0].Y);
-      lineto(myskew[0].X + dx, myskew[0].Y + dy);
-      lineto(myskew[1].X + dx, myskew[1].Y + dy);
-      lineto(myskew[2].X + dx, myskew[2].Y + dy);
-      lineto(myskew[2].X, myskew[2].Y);
-      moveto(myskew[1].X, myskew[1].Y);
-      lineto(myskew[1].X + dx, myskew[1].Y + dy);
+      MoveTo(myskew[0].X, myskew[0].Y);
+      LineTo(myskew[0].X + dx, myskew[0].Y + dy);
+      LineTo(myskew[1].X + dx, myskew[1].Y + dy);
+      LineTo(myskew[2].X + dx, myskew[2].Y + dy);
+      LineTo(myskew[2].X, myskew[2].Y);
+      MoveTo(myskew[1].X, myskew[1].Y);
+      LineTo(myskew[1].X + dx, myskew[1].Y + dy);
     end
     else
     if (dx >= 0) and (dy > 0) then
     begin
-      moveto(myskew[1].X, myskew[1].Y);
-      lineto(myskew[1].X + dx, myskew[1].Y + dy);
-      lineto(myskew[2].X + dx, myskew[2].Y + dy);
-      lineto(myskew[3].X + dx, myskew[3].Y + dy);
-      lineto(myskew[3].X, myskew[3].Y);
-      moveto(myskew[2].X, myskew[2].Y);
-      lineto(myskew[2].X + dx, myskew[2].Y + dy);
+      MoveTo(myskew[1].X, myskew[1].Y);
+      LineTo(myskew[1].X + dx, myskew[1].Y + dy);
+      LineTo(myskew[2].X + dx, myskew[2].Y + dy);
+      LineTo(myskew[3].X + dx, myskew[3].Y + dy);
+      LineTo(myskew[3].X, myskew[3].Y);
+      MoveTo(myskew[2].X, myskew[2].Y);
+      LineTo(myskew[2].X + dx, myskew[2].Y + dy);
     end
     else
     if (dx < 0) and (dy > 0) then
     begin
-      moveto(myskew[0].X, myskew[0].Y);
-      lineto(myskew[0].X + dx, myskew[0].Y + dy);
-      lineto(myskew[3].X + dx, myskew[3].Y + dy);
-      lineto(myskew[2].X + dx, myskew[2].Y + dy);
-      lineto(myskew[2].X, myskew[2].Y);
-      moveto(myskew[3].X, myskew[3].Y);
-      lineto(myskew[3].X + dx, myskew[3].Y + dy);
+      MoveTo(myskew[0].X, myskew[0].Y);
+      LineTo(myskew[0].X + dx, myskew[0].Y + dy);
+      LineTo(myskew[3].X + dx, myskew[3].Y + dy);
+      LineTo(myskew[2].X + dx, myskew[2].Y + dy);
+      LineTo(myskew[2].X, myskew[2].Y);
+      MoveTo(myskew[3].X, myskew[3].Y);
+      LineTo(myskew[3].X + dx, myskew[3].Y + dy);
     end
     else
     if (dx < 0) and (dy < 0) then
     begin
-      moveto(myskew[1].X, myskew[1].Y);
-      lineto(myskew[1].X + dx, myskew[1].Y + dy);
-      lineto(myskew[0].X + dx, myskew[0].Y + dy);
-      lineto(myskew[3].X + dx, myskew[3].Y + dy);
-      lineto(myskew[3].X, myskew[3].Y);
-      moveto(myskew[0].X, myskew[0].Y);
-      lineto(myskew[0].X + dx, myskew[0].Y + dy);
+      MoveTo(myskew[1].X, myskew[1].Y);
+      LineTo(myskew[1].X + dx, myskew[1].Y + dy);
+      LineTo(myskew[0].X + dx, myskew[0].Y + dy);
+      LineTo(myskew[3].X + dx, myskew[3].Y + dy);
+      LineTo(myskew[3].X, myskew[3].Y);
+      MoveTo(myskew[0].X, myskew[0].Y);
+      LineTo(myskew[0].X + dx, myskew[0].Y + dy);
     end;
   end;
 end;
@@ -1680,21 +1679,21 @@ begin
 
     for i := YOrigin to YFinal do
     begin
-      Line := Bitmap.scanline[i];
+      Line := Bitmap.ScanLine[i];
       valueR := valueR + advalR;
-      r := round(ValueR);
+      r := Round(ValueR);
       if r > 255 then
         r := 255;
       if r < 0 then
         r := 0;
       valueG := valueG + advalG;
-      g := round(ValueG);
+      g := Round(ValueG);
       if g > 255 then
         g := 255;
       if g < 0 then
         g := 0;
       valueB := valueB + advalB;
-      b := round(ValueB);
+      b := Round(ValueB);
       if b > 255 then
         b := 255;
       if b < 0 then
@@ -1721,14 +1720,14 @@ begin
   Picture.Bitmap.pixelformat := pf24bit;
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
-  Color1 := colortorgb(Color1);
-  R1 := getrvalue(Color1);
-  G1 := getgvalue(Color1);
-  B1 := getbvalue(Color1);
-  Color2 := colortorgb(Color2);
-  R2 := getrvalue(Color2);
-  G2 := getgvalue(Color2);
-  B2 := getbvalue(Color2);
+  Color1 := ColorToRGB(Color1);
+  R1 := GetRValue(Color1);
+  G1 := GetGValue(Color1);
+  B1 := GetBValue(Color1);
+  Color2 := ColorToRGB(Color2);
+  R2 := GetRValue(Color2);
+  G2 := GetGValue(Color2);
+  B2 := GetBValue(Color2);
   vergradientline(Clip, Y1, Y2, X, R1, G1, B1, R2, G2, B2, True);
   Picture.Bitmap.Assign(Clip);
 end;
@@ -1739,50 +1738,50 @@ type
   end;
 var
   Bleu, Vert, Rouge: Integer;
-  color: TFColor;
+  Color: TFColor;
   BB, GG, RR: array[1..5] of Integer;
   Line: pbytearray;
 begin
   if (xk > 0) and (yk > 0) and (xk < Bitmap.Width - 1) and (yk < Bitmap.Height - 1) then
   begin
-    line := Bitmap.scanline[yk - 1];
-    color.r := line[xk * 3];
-    color.g := line[xk * 3 + 1];
-    color.b := line[xk * 3 + 2];
-    RR[1] := color.r;
-    GG[1] := color.g;
-    BB[1] := color.b;
-    line := Bitmap.scanline[yk];
-    color.r := line[(xk + 1) * 3];
-    color.g := line[(xk + 1) * 3 + 1];
-    color.b := line[(xk + 1) * 3 + 2];
-    RR[2] := color.r;
-    GG[2] := color.g;
-    BB[2] := color.b;
-    line := Bitmap.scanline[yk + 1];
-    color.r := line[xk * 3];
-    color.g := line[xk * 3 + 1];
-    color.b := line[xk * 3 + 2];
-    RR[3] := color.r;
-    GG[3] := color.g;
-    BB[3] := color.b;
-    line := Bitmap.scanline[yk];
-    color.r := line[(xk - 1) * 3];
-    color.g := line[(xk - 1) * 3 + 1];
-    color.b := line[(xk - 1) * 3 + 2];
-    RR[4] := color.r;
-    GG[4] := color.g;
-    BB[4] := color.b;
+    line := Bitmap.ScanLine[yk - 1];
+    Color.r := line[xk * 3];
+    Color.g := line[xk * 3 + 1];
+    Color.b := line[xk * 3 + 2];
+    RR[1] := Color.r;
+    GG[1] := Color.g;
+    BB[1] := Color.b;
+    line := Bitmap.ScanLine[yk];
+    Color.r := line[(xk + 1) * 3];
+    Color.g := line[(xk + 1) * 3 + 1];
+    Color.b := line[(xk + 1) * 3 + 2];
+    RR[2] := Color.r;
+    GG[2] := Color.g;
+    BB[2] := Color.b;
+    line := Bitmap.ScanLine[yk + 1];
+    Color.r := line[xk * 3];
+    Color.g := line[xk * 3 + 1];
+    Color.b := line[xk * 3 + 2];
+    RR[3] := Color.r;
+    GG[3] := Color.g;
+    BB[3] := Color.b;
+    line := Bitmap.ScanLine[yk];
+    Color.r := line[(xk - 1) * 3];
+    Color.g := line[(xk - 1) * 3 + 1];
+    Color.b := line[(xk - 1) * 3 + 2];
+    RR[4] := Color.r;
+    GG[4] := Color.g;
+    BB[4] := Color.b;
     Bleu := (BB[1] + (BB[2] + BB[3] + BB[4])) div 4; (* Valeur moyenne *)
     Vert := (GG[1] + (GG[2] + GG[3] + GG[4])) div 4; (* en cours d'‚valuation        *)
     Rouge := (RR[1] + (RR[2] + RR[3] + RR[4])) div 4;
-    color.r := rouge;
-    color.g := vert;
-    color.b := bleu;
-    line := Bitmap.scanline[yk];
-    line[xk * 3] := color.r;
-    line[xk * 3 + 1] := color.g;
-    line[xk * 3 + 2] := color.b;
+    Color.r := rouge;
+    Color.g := vert;
+    Color.b := bleu;
+    line := Bitmap.ScanLine[yk];
+    line[xk * 3] := Color.r;
+    line[xk * 3 + 1] := Color.g;
+    line[xk * 3 + 2] := Color.b;
   end;
 end;
 
@@ -1817,23 +1816,23 @@ begin
     valueR := R1;
     valueG := G1;
     valueB := B1;
-    Line := Bitmap.scanline[Y];
+    Line := Bitmap.ScanLine[Y];
     for i := XOrigin to XFinal do
     begin
       valueR := valueR + advalR;
-      r := round(ValueR);
+      r := Round(ValueR);
       if r > 255 then
         r := 255;
       if r < 0 then
         r := 0;
       valueG := valueG + advalG;
-      g := round(ValueG);
+      g := Round(ValueG);
       if g > 255 then
         g := 255;
       if g < 0 then
         g := 0;
       valueB := valueB + advalB;
-      b := round(ValueB);
+      b := Round(ValueB);
       if b > 255 then
         b := 255;
       if b < 0 then
@@ -1860,14 +1859,14 @@ begin
   Picture.Bitmap.pixelformat := pf24bit;
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
-  Color1 := colortorgb(Color1);
-  R1 := getrvalue(Color1);
-  G1 := getgvalue(Color1);
-  B1 := getbvalue(Color1);
-  Color2 := colortorgb(Color2);
-  R2 := getrvalue(Color2);
-  G2 := getgvalue(Color2);
-  B2 := getbvalue(Color2);
+  Color1 := ColorToRGB(Color1);
+  R1 := GetRValue(Color1);
+  G1 := GetGValue(Color1);
+  B1 := GetBValue(Color1);
+  Color2 := ColorToRGB(Color2);
+  R2 := GetRValue(Color2);
+  G2 := GetGValue(Color2);
+  B2 := GetBValue(Color2);
   horgradientline(Clip, X1, X2, Y, R1, G1, B1, R2, G2, B2, True);
   Picture.Bitmap.Assign(Clip);
 end;
@@ -1876,10 +1875,10 @@ procedure TJvDrawImage.DrawLighterCircle(X, Y, Mode: Integer);
 var
   r: Integer;
 begin
-  r := Canvas.pen.Width;
+  r := Canvas.Pen.Width;
   if r < 5 then
     r := 5;
-  ColorCircle(Clip, point(X, Y), r, Mode);
+  ColorCircle(Clip, Point(X, Y), r, Mode);
   Picture.Bitmap.Assign(Clip);
 end;
 
@@ -1887,10 +1886,10 @@ procedure TJvDrawImage.DrawDarkerCircle(X, Y, Mode: Integer);
 var
   r: Integer;
 begin
-  r := Canvas.pen.Width;
+  r := Canvas.Pen.Width;
   if r < 5 then
     r := 5;
-  ColorCircle(Clip, point(X, Y), r, Mode);
+  ColorCircle(Clip, Point(X, Y), r, Mode);
   Picture.Bitmap.Assign(Clip);
 
 end;
@@ -1914,22 +1913,22 @@ begin
   tm.Width := 2 * Radius;
   tm.Height := 2 * Radius;
   tm.PixelFormat := pf24bit;
-  tm.Canvas.brush.color := clblack;
+  tm.Canvas.Brush.Color := clBlack;
   tm.Canvas.Ellipse(0, 0, tm.Width - 1, tm.Height - 1);
-  tm.transparent := True;
-  tm.TransparentColor := clblack;
-  Rd := rect(0, 0, cm.Width, cm.Height);
-  Rs := rect(X - Radius, Y - Radius, X + Radius, Y + Radius);
+  tm.Transparent := True;
+  tm.TransparentColor := clBlack;
+  Rd := Rect(0, 0, cm.Width, cm.Height);
+  Rs := Rect(X - Radius, Y - Radius, X + Radius, Y + Radius);
   cm.Canvas.CopyRect(Rd, bm.Canvas, RS);
   p0 := nil;
   p1 := nil;
   for j := 0 to cm.Height - 1 do
   begin
-    p := cm.scanline[j];
+    p := cm.ScanLine[j];
     if j > 0 then
-      p0 := cm.scanline[j - 1];
+      p0 := cm.ScanLine[j - 1];
     if j < (h - 1) then
-      p1 := cm.scanline[j + 1];
+      p1 := cm.ScanLine[j + 1];
     for i := 0 to cm.Width - 1 do
     begin
       case Mode of
@@ -1974,19 +1973,19 @@ begin
           end;
         9: // darker
           begin
-            p[i * 3] := round(p[i * 3] * 10 / 11);
-            p[i * 3 + 1] := round(p[i * 3 + 1] * 10 / 11);
-            p[i * 3 + 2] := round(p[i * 3 + 2] * 10 / 11);
+            p[i * 3] := Round(p[i * 3] * 10 / 11);
+            p[i * 3 + 1] := Round(p[i * 3 + 1] * 10 / 11);
+            p[i * 3 + 2] := Round(p[i * 3 + 2] * 10 / 11);
           end;
         10: // lighter
           begin
-            p[i * 3] := round(p[i * 3] * 11 / 10);
-            p[i * 3 + 1] := round(p[i * 3 + 1] * 11 / 10);
-            p[i * 3 + 2] := round(p[i * 3 + 2] * 11 / 10);
+            p[i * 3] := Round(p[i * 3] * 11 / 10);
+            p[i * 3 + 1] := Round(p[i * 3 + 1] * 11 / 10);
+            p[i * 3 + 2] := Round(p[i * 3 + 2] * 11 / 10);
           end;
         11: // gray
           begin
-            sum := round((p[i * 3] + p[i * 3 + 1] + p[i * 3 + 2]) / 3);
+            sum := Round((p[i * 3] + p[i * 3 + 1] + p[i * 3 + 2]) / 3);
             p[i * 3] := sum;
             p[i * 3 + 1] := sum;
             p[i * 3 + 2] := sum;
@@ -2002,17 +2001,17 @@ begin
           begin
             if ((j > 0) and (j < (h - 1)) and (i > 0) and (i < (w - 1))) then
             begin
-              p[i * 3] := round((p[(i - 1) * 3] + p[(i + 1) * 3] + p0[i * 3] + p1[i * 3]) / 4);
-              p[i * 3 + 1] := round((p[(i - 1) * 3 + 1] + p[(i + 1) * 3 + 1] + p0[i * 3 + 1] + p1[i * 3 + 1]) / 4);
-              p[i * 3 + 2] := round((p[(i - 1) * 3 + 2] + p[(i + 1) * 3 + 2] + p0[i * 3 + 2] + p1[i * 3 + 2]) / 4);
+              p[i * 3] := Round((p[(i - 1) * 3] + p[(i + 1) * 3] + p0[i * 3] + p1[i * 3]) / 4);
+              p[i * 3 + 1] := Round((p[(i - 1) * 3 + 1] + p[(i + 1) * 3 + 1] + p0[i * 3 + 1] + p1[i * 3 + 1]) / 4);
+              p[i * 3 + 2] := Round((p[(i - 1) * 3 + 2] + p[(i + 1) * 3 + 2] + p0[i * 3 + 2] + p1[i * 3 + 2]) / 4);
             end;
           end;
       end;
     end;
   end;
   cm.Canvas.Draw(0, 0, tm);
-  cm.transparent := True;
-  cm.transparentcolor := clwhite;
+  cm.Transparent := True;
+  cm.transparentcolor := clWhite;
   bm.Canvas.Draw(X - Radius, Y - Radius, cm);
   cm.Free;
   tm.Free;
@@ -2025,10 +2024,10 @@ begin
   Picture.Bitmap.pixelformat := pf24bit;
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
-  r := Canvas.pen.Width;
+  r := Canvas.Pen.Width;
   if r < 5 then
     r := 5;
-  ColorCircle(Clip, point(X, Y), r, Mode);
+  ColorCircle(Clip, Point(X, Y), r, Mode);
   Picture.Bitmap.Assign(Clip);
 end;
 
@@ -2049,12 +2048,12 @@ begin
   Src.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
   Dst.PixelFormat := pf24bit;
-  Rclip := rect(X - Radius, Y - Radius, X + Radius, Y + Radius);
-  Src.Width := Rclip.right - Rclip.left;
-  Src.Height := RClip.bottom - Rclip.top;
+  Rclip := Rect(X - Radius, Y - Radius, X + Radius, Y + Radius);
+  Src.Width := Rclip.Right - Rclip.Left;
+  Src.Height := RClip.Bottom - Rclip.Top;
   Dst.Width := Src.Width;
   Dst.Height := Src.Height;
-  Rsrc := rect(0, 0, Src.Width, Src.Height);
+  Rsrc := Rect(0, 0, Src.Width, Src.Height);
   Dst.Canvas.CopyRect(Rsrc, Clip.Canvas, Rclip);
   case Style of
     lbBrightness: FX.lightness(Dst, Amount);
@@ -2062,16 +2061,16 @@ begin
     lbContrast: FX.contrast(Dst, Amount);
   end;
   // mask code
-  Src.Canvas.Brush.color := clwhite;
+  Src.Canvas.Brush.Color := clWhite;
   Src.Canvas.FillRect(Rsrc);
-  Src.Canvas.brush.Style := bssolid;
-  Src.Canvas.Brush.color := clblack;
+  Src.Canvas.Brush.Style := bssolid;
+  Src.Canvas.Brush.Color := clBlack;
   Src.Canvas.Ellipse(0, 0, Src.Width - 1, Src.Height - 1);
   Src.Transparent := True;
-  Src.TransparentColor := clblack;
+  Src.TransparentColor := clBlack;
   Dst.Canvas.Draw(0, 0, Src);
-  Dst.transparent := True;
-  Dst.TransparentColor := clwhite;
+  Dst.Transparent := True;
+  Dst.TransparentColor := clWhite;
   Canvas.Draw(0, 0, Clip);
   Canvas.Draw(X - Radius, Y - Radius, Dst);
   Src.Free;
@@ -2103,26 +2102,26 @@ begin
   Src.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
   Dst.PixelFormat := pf24bit;
-  Rclip := rect(X - Radius, Y - Radius, X + Radius, Y + Radius);
-  Dst.Width := Rclip.right - Rclip.left;
-  Dst.Height := RClip.bottom - Rclip.top;
+  Rclip := Rect(X - Radius, Y - Radius, X + Radius, Y + Radius);
+  Dst.Width := Rclip.Right - Rclip.Left;
+  Dst.Height := RClip.Bottom - Rclip.Top;
   // now Change to Reduce
-  Amount := abs(Amount);
+  Amount := Abs(Amount);
   if Amount < 1 then
     Amount := 1;
-  dr := round(Radius * Amount / 180);
+  dr := Round(Radius * Amount / 180);
   if dr < 5 then
     dr := 5;
   if dr > Radius then
     dr := Radius;
   //(mbVerBox,mbHorBox,mbVerOval,mbHorOval);
   case Style of
-    mbVerOval, mbVerbox: Rclip := rect(X - Radius, Y - dr, X + Radius, Y + dr);
-    mbHorOval, mbHorBox: Rclip := rect(X - dr, Y - Radius, X + dr, Y + Radius);
+    mbVerOval, mbVerbox: Rclip := Rect(X - Radius, Y - dr, X + Radius, Y + dr);
+    mbHorOval, mbHorBox: Rclip := Rect(X - dr, Y - Radius, X + dr, Y + Radius);
   end;
-  Src.Width := Rclip.right - Rclip.left;
-  Src.Height := RClip.bottom - Rclip.top;
-  Rsrc := rect(0, 0, Src.Width, Src.Height);
+  Src.Width := Rclip.Right - Rclip.Left;
+  Src.Height := RClip.Bottom - Rclip.Top;
+  Rsrc := Rect(0, 0, Src.Width, Src.Height);
   Src.Canvas.CopyRect(Rsrc, Clip.Canvas, Rclip);
   SampleStretch(Src, Dst);
   // mask code
@@ -2131,16 +2130,16 @@ begin
   begin
     Src.Width := Dst.Width;
     Src.Height := Dst.Height;
-    Src.Canvas.Brush.color := clwhite;
+    Src.Canvas.Brush.Color := clWhite;
     Src.Canvas.FillRect(Rsrc);
-    Src.Canvas.brush.Style := bssolid;
-    Src.Canvas.Brush.color := clblack;
+    Src.Canvas.Brush.Style := bssolid;
+    Src.Canvas.Brush.Color := clBlack;
     Src.Canvas.Ellipse(0, 0, Src.Width - 1, Src.Height - 1);
     Src.Transparent := True;
-    Src.TransparentColor := clblack;
+    Src.TransparentColor := clBlack;
     Dst.Canvas.Draw(0, 0, Src);
-    Dst.transparent := True;
-    Dst.TransparentColor := clwhite;
+    Dst.Transparent := True;
+    Dst.TransparentColor := clWhite;
     Canvas.Draw(0, 0, Clip);
   end;
   Canvas.Draw(X - Radius, Y - Radius, Dst);
@@ -2168,15 +2167,15 @@ begin
     begin
       dx := X - cx;
       dy := -(Y - cx);
-      r := sqrt(sqr(dx) + sqr(dy));
-      sr := fr * sin(r / cx * Amount * 2 * pi);
+      r := Sqrt(Sqr(dx) + Sqr(dy));
+      sr := fr * Sin(r / cx * Amount * 2 * pi);
       if (r + sr < cx) and (r + sr > 0) then
       begin
-        a := arctan2(dy, dx);
+        a := ArcTan2(dy, dx);
         sincos(a, sa, ca);
-        i := cx + round((r + sr) * ca);
-        j := cy + round((r + sr) * sa);
-        p2 := Dst.scanline[j];
+        i := cx + Round((r + sr) * ca);
+        j := cy + Round((r + sr) * sa);
+        p2 := Dst.ScanLine[j];
         c := X * 3;
         ci := i * 3;
         p2[ci] := p1[c];
@@ -2204,34 +2203,34 @@ begin
   Src.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
   Dst.PixelFormat := pf24bit;
-  Rclip := rect(X - Radius, Y - Radius, X + Radius, Y + Radius);
-  Src.Width := Rclip.right - Rclip.left;
-  Src.Height := RClip.bottom - Rclip.top;
+  Rclip := Rect(X - Radius, Y - Radius, X + Radius, Y + Radius);
+  Src.Width := Rclip.Right - Rclip.Left;
+  Src.Height := RClip.Bottom - Rclip.Top;
   Dst.Width := Src.Width;
   Dst.Height := Src.Height;
-  Rsrc := rect(0, 0, Src.Width, Src.Height);
+  Rsrc := Rect(0, 0, Src.Width, Src.Height);
   Src.Canvas.CopyRect(Rsrc, Clip.Canvas, Rclip);
   case Style of
     lbfisheye: FX.fisheye(Src, Dst, Amount);
     lbrotate: FX.smoothrotate(Src, Dst, Src.Width div 2, Src.Height div 2, Amount);
-    lbtwist: FX.twist(Src, Dst, round(Amount));
+    lbtwist: FX.twist(Src, Dst, Round(Amount));
     lbrimple: Rimple(Src, Dst, Amount);
     mbHor, mbTop, mbBottom, mbDiamond, mbWaste, mbRound, mbRound2:
-      FX.SqueezeHor(Src, Dst, round(Amount), Style);
+      FX.SqueezeHor(Src, Dst, Round(Amount), Style);
     mbSplitRound, mbSplitWaste:
-      FX.SplitRound(Src, Dst, round(Amount), Style);
+      FX.SplitRound(Src, Dst, Round(Amount), Style);
   end;
   // mask code
-  Src.Canvas.Brush.color := clwhite;
+  Src.Canvas.Brush.Color := clWhite;
   Src.Canvas.FillRect(Rsrc);
-  Src.Canvas.brush.Style := bssolid;
-  Src.Canvas.Brush.color := clblack;
+  Src.Canvas.Brush.Style := bssolid;
+  Src.Canvas.Brush.Color := clBlack;
   Src.Canvas.Ellipse(0, 0, Src.Width - 1, Src.Height - 1);
   Src.Transparent := True;
-  Src.TransparentColor := clblack;
+  Src.TransparentColor := clBlack;
   Dst.Canvas.Draw(0, 0, Src);
-  Dst.transparent := True;
-  Dst.TransparentColor := clwhite;
+  Dst.Transparent := True;
+  Dst.TransparentColor := clWhite;
   Canvas.Draw(0, 0, Clip);
   Canvas.Draw(X - Radius, Y - Radius, Dst);
   Src.Free;
@@ -2245,24 +2244,24 @@ var
   h, w, ra: Integer;
 begin
   Src := TBitmap.Create;
-  ra := round(Amount);
-  zoomrect := rect(X - ra, Y - ra, X + ra, Y + ra);
-  if zoomrect.left < 0 then
-    zoomrect.left := 0;
-  if zoomrect.top < 0 then
-    zoomrect.top := 0;
-  if zoomrect.right > (FZoomClip.Width - 1) then
-    zoomrect.right := FZoomClip.Width - 1;
-  if zoomrect.bottom > (FZoomClip.Height - 1) then
-    zoomrect.bottom := FZoomClip.Height - 1;
-  w := zoomrect.right - zoomrect.left + 1;
-  h := zoomrect.bottom - zoomrect.top + 1;
+  ra := Round(Amount);
+  zoomrect := Rect(X - ra, Y - ra, X + ra, Y + ra);
+  if zoomrect.Left < 0 then
+    zoomrect.Left := 0;
+  if zoomrect.Top < 0 then
+    zoomrect.Top := 0;
+  if zoomrect.Right > (FZoomClip.Width - 1) then
+    zoomrect.Right := FZoomClip.Width - 1;
+  if zoomrect.Bottom > (FZoomClip.Height - 1) then
+    zoomrect.Bottom := FZoomClip.Height - 1;
+  w := zoomrect.Right - zoomrect.Left + 1;
+  h := zoomrect.Bottom - zoomrect.Top + 1;
   Src.Width := w;
   Src.Height := h;
   Src.PixelFormat := pf24bit;
-  Rs := rect(0, 0, w, h);
+  Rs := Rect(0, 0, w, h);
   Src.Canvas.CopyRect(Rs, FZoomClip.Canvas, zoomrect);
-  Canvas.stretchDraw(rect(0, 0, FZoomClip.Width, FZoomClip.Height), Src);
+  Canvas.stretchDraw(Rect(0, 0, FZoomClip.Width, FZoomClip.Height), Src);
   Src.Free;
 end;
 
@@ -2270,16 +2269,16 @@ function TJvDrawImage.Rotate(Origin, Endpoint: TPoint; Angle: Real): TPoint;
 var
   a, d, r: Real;
 begin
-  r := sqrt(sqr(Endpoint.X - Origin.X) + sqr(Endpoint.Y - Origin.Y));
+  r := Sqrt(Sqr(Endpoint.X - Origin.X) + Sqr(Endpoint.Y - Origin.Y));
   d := Endpoint.X - Origin.X;
   if (d >= 0) and (d < 0.001) then
     d := 0.001;
   if (d < 0) and (d > -0.001) then
     d := -0.001;
-  a := arctan2((Endpoint.Y - Origin.Y), d);
+  a := ArcTan2((Endpoint.Y - Origin.Y), d);
   a := a + Angle;
-  result.X := Origin.X + Variant(r * cos(a));
-  result.Y := Origin.Y + Variant(r * sin(a));
+  Result.X := Origin.X + Variant(r * Cos(a));
+  Result.Y := Origin.Y + Variant(r * Sin(a));
 end;
 
 procedure TJvDrawImage.SetSyms(X, Y: Integer);
@@ -2291,40 +2290,40 @@ begin
   X0 := Picture.Bitmap.Width div 2;
   Y0 := Picture.Bitmap.Height div 2;
   da := 2 * pi / StarPoints;
-  apoint := point(X, Y);
+  apoint := Point(X, Y);
   pointarray[0] := apoint;
   for i := 1 to StarPoints - 1 do
   begin
-    apoint := Rotate(point(X0, Y0), apoint, da);
+    apoint := Rotate(Point(X0, Y0), apoint, da);
     pointarray[i] := apoint;
   end;
 end;
 
 function TJvDrawImage.GetBlue(AColor: TColor): Byte;
 begin
-  result := GetBValue(ColorToRGB(AColor));
+  Result := GetBValue(ColorToRGB(AColor));
 end;
 
 function TJvDrawImage.GetGreen(AColor: TColor): Byte;
 begin
-  result := GetGValue(ColorToRGB(AColor));
+  Result := GetGValue(ColorToRGB(AColor));
 end;
 
 function TJvDrawImage.GetRed(AColor: TColor): Byte;
 begin
-  result := GetRValue(ColorToRGB(AColor));
+  Result := GetRValue(ColorToRGB(AColor));
 end;
 
 function TJvDrawImage.MixColors(Color1, Color2: TColor): TColor;
 var
   R1, G1, B1: Byte;
 begin
-  Color1 := colortorgb(Color1);
-  Color2 := colortorgb(Color2);
-  R1 := (getRed(Color1) + getRed(Color2)) div 2;
-  G1 := (getGreen(Color1) + getGreen(Color2)) div 2;
-  B1 := (getBlue(Color1) + getBlue(Color2)) div 2;
-  result := rgb(R1, G1, B1);
+  Color1 := ColorToRGB(Color1);
+  Color2 := ColorToRGB(Color2);
+  R1 := (GetRed(Color1) + GetRed(Color2)) div 2;
+  G1 := (GetGreen(Color1) + GetGreen(Color2)) div 2;
+  B1 := (GetBlue(Color1) + GetBlue(Color2)) div 2;
+  Result := rgb(R1, G1, B1);
 end;
 
 procedure TJvDrawImage.InitPlasma;
@@ -2347,9 +2346,9 @@ var
   m, dest: TRect;
 begin
   m := mycliprect;
-  Clip.Width := m.right - m.left + 1;
-  Clip.Height := m.bottom - m.top + 1;
-  dest := rect(0, 0, Clip.Width, Clip.Height);
+  Clip.Width := m.Right - m.Left + 1;
+  Clip.Height := m.Bottom - m.Top + 1;
+  dest := Rect(0, 0, Clip.Width, Clip.Height);
   Clip.Canvas.CopyMode := clipcm;
   Clip.Canvas.CopyRect(dest, Canvas, m);
   Clip.pixelformat := pf24bit;
@@ -2357,9 +2356,9 @@ end;
 
 procedure TJvDrawImage.ClipAll;
 begin
-  mycliprect := rect(0, 0, Picture.Bitmap.Width - 1, Picture.Bitmap.Height - 1);
+  mycliprect := Rect(0, 0, Picture.Bitmap.Width - 1, Picture.Bitmap.Height - 1);
   clipcm := cmsrccopy;
-  SetClip(clwhite);
+  SetClip(clWhite);
   CopyClip;
 end;
 
@@ -2368,10 +2367,10 @@ var
   m, dest: TRect;
 begin
   m := mycliprect;
-  Clip.Width := (m.right - m.left) + 1;
-  Clip.Height := (m.bottom - m.top) + 1;
-  dest := rect(0, 0, Clip.Width, Clip.Height);
-  Clip.Canvas.brush.color := AColor;
+  Clip.Width := (m.Right - m.Left) + 1;
+  Clip.Height := (m.Bottom - m.Top) + 1;
+  dest := Rect(0, 0, Clip.Width, Clip.Height);
+  Clip.Canvas.Brush.Color := AColor;
   Clip.Canvas.FillRect(dest);
 end;
 
@@ -2393,34 +2392,34 @@ begin
   begin
     bezierfix1 := False;
     bezierfix2 := False;
-    myorigin := point(X, Y);
+    myorigin := Point(X, Y);
     myprevpoint := myorigin;
-    if ssalt in Shift then
+    if ssAlt in Shift then
       myDraw := False;
   end;
 
-  Canvas.pen.Mode := mypen;
-  TargetPoint := point(X, Y);
+  Canvas.Pen.Mode := mypen;
+  TargetPoint := Point(X, Y);
 end;
 
 procedure TJvDrawImage.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  Wavepen := Canvas.pen.color;
-  Wavebrush := Canvas.brush.color;
+  Wavepen := Canvas.Pen.Color;
+  Wavebrush := Canvas.Brush.Color;
   if button = mbright then
   begin
     EscapePaint(X, Y, Shift);
-    exit;
+    Exit;
   end;
-  if ((ssctrl in Shift) and (ssshift in Shift)) then
+  if ((ssCtrl in Shift) and (ssShift in Shift)) then
   begin
     X := targetpoint.X;
     Y := targetpoint.Y;
-    mouse.CursorPos := clienttoscreen(point(X, Y));
+    mouse.CursorPos := clienttoscreen(Point(X, Y));
   end;
   Canvas.MoveTo(X, Y);
-  myorigin := point(X, Y);
+  myorigin := Point(X, Y);
   myprevpoint := myorigin;
   myslinedir := 'none';
   myDraw := True;
@@ -2428,7 +2427,7 @@ begin
   if (Shape = 'rangemove') or (Shape = 'rangesmear') then
   begin
     clipcm := cmSrcInvert;
-    SetClip(clwhite);
+    SetClip(clWhite);
     CopyClip;
     with Canvas do
     begin
@@ -2502,10 +2501,10 @@ begin
   begin
     with Canvas do
     begin
-      if ssalt in Shift then
-        pen.color := MixColors(pixels[X, Y - pen.Width], pixels[X, Y + pen.Width])
+      if ssAlt in Shift then
+        Pen.Color := MixColors(Pixels[X, Y - Pen.Width], Pixels[X, Y + Pen.Width])
       else
-        pen.color := MixColors(pixels[X - pen.Width, Y], pixels[X + pen.Width, Y]);
+        Pen.Color := MixColors(Pixels[X - Pen.Width, Y], Pixels[X + Pen.Width, Y]);
     end;
   end;
   if Shape = 'sym' then
@@ -2526,28 +2525,28 @@ begin
     Shape := 'cube';
   if (Shape = 'snapshot') then
   begin
-    myoldbrushstyle := Canvas.brush.Style;
-    Canvas.brush.Style := bsclear;
+    myoldbrushstyle := Canvas.Brush.Style;
+    Canvas.Brush.Style := bsClear;
     myoldpenwidth := Canvas.Pen.Width;
     Canvas.Pen.Width := 1;
   end;
   if (Shape = 'bezier1') then
     with Canvas do
     begin
-      pen.Mode := pmnotxor;
-      polybezier(mybezier);
-      mybezier[1] := point(X, Y);
-      polybezier(mybezier);
+      Pen.Mode := pmNotXor;
+      PolyBezier(mybezier);
+      mybezier[1] := Point(X, Y);
+      PolyBezier(mybezier);
     end;
   if (Shape = 'bezier2') then
     with Canvas do
     begin
-      pen.Mode := pmnotxor;
-      polybezier(mybezier);
-      mybezier[2] := point(X, Y);
-      polybezier(mybezier);
+      Pen.Mode := pmNotXor;
+      PolyBezier(mybezier);
+      mybezier[2] := Point(X, Y);
+      PolyBezier(mybezier);
     end;
-  Canvas.pen.Mode := mypen;
+  Canvas.Pen.Mode := mypen;
 end;
 
 procedure TJvDrawImage.MouseMove(Shift: TShiftState;
@@ -2561,27 +2560,28 @@ var
 
   function rr: Integer;
   begin
-    result := round(sqrt(sqr(X - myorigin.X) + sqr(Y - myorigin.Y)));
-    if result < 10 then
-      result := 10;
+    Result := Round(Sqrt(Sqr(X - myorigin.X) + Sqr(Y - myorigin.Y)));
+    if Result < 10 then
+      Result := 10;
   end;
 
-  procedure moveorigin;
+  procedure MoveOrigin;
   begin
     myorigin.X := myorigin.X + movex;
     myorigin.Y := myorigin.Y + movey;
   end;
+
 begin
   decoX := X;
   decoY := Y;
   movex := X - myprevpoint.X;
   movey := Y - myprevpoint.Y;
   // test for scripting
-  if ((ssctrl in Shift) and (ssalt in Shift)) then
-    exit;
-  mypen := Canvas.pen.Mode;
-  h := abs(Y - myorigin.Y);
-//  w := abs(X - myorigin.X);
+  if ((ssCtrl in Shift) and (ssAlt in Shift)) then
+    Exit;
+  mypen := Canvas.Pen.Mode;
+  h := Abs(Y - myorigin.Y);
+//  w := Abs(X - myorigin.X);
   if myDraw then
   begin
     if (Shape = 'rangemove') or (Shape = 'rangesmear') then
@@ -2592,7 +2592,7 @@ begin
         if Shape = 'rangemove' then
           Draw(myprevpoint.X, myprevpoint.Y, Clip);
         Draw(X, Y, Clip);
-        myprevpoint := point(X, Y);
+        myprevpoint := Point(X, Y);
       end;
     end;
     if Shape = 'airbrush' then
@@ -2600,27 +2600,27 @@ begin
         AirBrush.Draw(Canvas, X, Y);
     if (Shape = 'zoombrush') or (Shape = 'zoomkeepbrush') then
     begin
-      w := Canvas.pen.Width;
+      w := Canvas.Pen.Width;
       if w < 5 then
         w := 50;
       DrawPlasma(X, Y, w);
     end;
     if Shape = 'fisheyebrush' then
     begin
-      w := Canvas.pen.Width;
+      w := Canvas.Pen.Width;
       if w < 5 then
         w := 50;
       DrawEffectBrush(X, Y, w, 0.9, lbfisheye);
     end;
     if Shape = 'fisheyefixbrush' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) / pi * 0.5 + 0.5;
+      Angle := ArcTan2(dy, dx) / pi * 0.5 + 0.5;
       if Angle < 0.55 then
         Angle := 0.55;
       if Angle > 0.99 then
@@ -2629,223 +2629,223 @@ begin
     end;
     if Shape = 'twistbrush' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := abs(arctan2(dy, dx) * 25 / pi) + 1;
-      DrawEffectBrush(myorigin.X, myorigin.Y, rr, round(Angle), lbtwist);
+      Angle := Abs(ArcTan2(dy, dx) * 25 / pi) + 1;
+      DrawEffectBrush(myorigin.X, myorigin.Y, rr, Round(Angle), lbtwist);
     end;
     if Shape = 'mbHorOval' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawStretchBrush(myorigin.X, myorigin.Y, rr, Angle, mbHorOval);
     end;
     if Shape = 'mbHorBox' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawStretchBrush(myorigin.X, myorigin.Y, rr, Angle, mbHorBox);
     end;
 
     if Shape = 'mbVerOval' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawStretchBrush(myorigin.X, myorigin.Y, rr, Angle, mbVerOval);
     end;
 
     if Shape = 'mbVerBox' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawStretchBrush(myorigin.X, myorigin.Y, rr, Angle, mbVerBox);
     end;
 
     if Shape = 'mbHor' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbHor);
     end;
 
     if Shape = 'mbTop' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbTop);
     end;
 
     if Shape = 'mbBottom' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbBottom);
     end;
     if Shape = 'mbWaste' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbWaste);
     end;
     if Shape = 'mbRound' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbRound);
     end;
     if Shape = 'mbRound2' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbRound2);
     end;
 
     if Shape = 'mbDiamond' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbDiamond);
     end;
     if Shape = 'mbSplitRound' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbSplitRound);
     end;
     if Shape = 'mbSplitWaste' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, mbSplitWaste);
     end;
 
     if Shape = 'rimplebrush' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 10 / pi + 1;
+      Angle := ArcTan2(dy, dx) * 10 / pi + 1;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, lbrimple);
     end;
 
     if Shape = 'rotatebrush' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 180 / pi;
+      Angle := ArcTan2(dy, dx) * 180 / pi;
       DrawEffectBrush(myorigin.X, myorigin.Y, rr, Angle, lbrotate);
     end;
     if Shape = 'brightnessbrush' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 100 / pi;
+      Angle := ArcTan2(dy, dx) * 100 / pi;
       DrawLightBrush(myorigin.X, myorigin.Y,
-        rr, round(Angle), lbBrightness);
+        rr, Round(Angle), lbBrightness);
     end;
     if Shape = 'contrastbrush' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 100 / pi;
+      Angle := ArcTan2(dy, dx) * 100 / pi;
       DrawLightBrush(myorigin.X, myorigin.Y,
-        rr, round(Angle), lbContrast);
+        rr, Round(Angle), lbContrast);
     end;
     if Shape = 'saturationbrush' then
     begin
-      if ssalt in Shift then
-        moveorigin;
+      if ssAlt in Shift then
+        MoveOrigin;
       dx := X - myorigin.X;
       if dx = 0 then
         dx := 0.01;
       dy := Y - myorigin.Y;
-      Angle := arctan2(dy, dx) * 100 / pi;
+      Angle := ArcTan2(dy, dx) * 100 / pi;
       DrawLightBrush(myorigin.X, myorigin.Y,
-        rr, round(Angle), lbContrast);
+        rr, Round(Angle), lbContrast);
     end;
 
     if Shape = 'Bluebrush' then
@@ -2881,21 +2881,21 @@ begin
     begin
       with Canvas do
       begin
-        if ssalt in Shift then
+        if ssAlt in Shift then
         begin
-          Color1 := pixels[X, Y - pen.Width];
-          Color2 := pixels[X, Y + pen.Width];
-          DrawVGradientBrush(Color1, Color2, Y - pen.Width, Y + pen.Width, X);
-          DrawVGradientBrush(Color1, Color2, Y - pen.Width, Y + pen.Width, X - 1);
-          DrawVGradientBrush(Color1, Color2, Y - pen.Width, Y + pen.Width, X - 2);
+          Color1 := Pixels[X, Y - Pen.Width];
+          Color2 := Pixels[X, Y + Pen.Width];
+          DrawVGradientBrush(Color1, Color2, Y - Pen.Width, Y + Pen.Width, X);
+          DrawVGradientBrush(Color1, Color2, Y - Pen.Width, Y + Pen.Width, X - 1);
+          DrawVGradientBrush(Color1, Color2, Y - Pen.Width, Y + Pen.Width, X - 2);
         end
         else
         begin
-          Color1 := pixels[X - pen.Width, Y];
-          Color2 := pixels[X + pen.Width, Y];
-          DrawGradientBrush(Color1, Color2, X - pen.Width, X + pen.Width, Y);
-          DrawGradientBrush(Color1, Color2, X - pen.Width, X + pen.Width, Y + 1);
-          DrawGradientBrush(Color1, Color2, X - pen.Width, X + pen.Width, Y + 2);
+          Color1 := Pixels[X - Pen.Width, Y];
+          Color2 := Pixels[X + Pen.Width, Y];
+          DrawGradientBrush(Color1, Color2, X - Pen.Width, X + Pen.Width, Y);
+          DrawGradientBrush(Color1, Color2, X - Pen.Width, X + Pen.Width, Y + 1);
+          DrawGradientBrush(Color1, Color2, X - Pen.Width, X + Pen.Width, Y + 2);
         end;
       end;
     end;
@@ -2903,28 +2903,28 @@ begin
     if Shape = 'cube1' then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
+        Pen.Mode := pmNotXor;
         DrawCube;
-        myskew[4] := point(X, Y);
+        myskew[4] := Point(X, Y);
         DrawCube;
       end;
     if (Shape = 'rectangle') or (Shape = 'cube') or (Shape = 'maze')
       or (Shape = 'Interprect') or (Shape = 'interColumn') then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
-        rectangle(myorigin.X, myorigin.Y, myprevpoint.X, myprevpoint.Y);
-        rectangle(myorigin.X, myorigin.Y, X, Y);
-        myprevpoint := point(X, Y);
+        Pen.Mode := pmNotXor;
+        Rectangle(myorigin.X, myorigin.Y, myprevpoint.X, myprevpoint.Y);
+        Rectangle(myorigin.X, myorigin.Y, X, Y);
+        myprevpoint := Point(X, Y);
       end;
 
     if Shape = 'roundrect' then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
-        roundrect(myorigin.X, myorigin.Y, myprevpoint.X, myprevpoint.Y, myround, myround);
-        roundrect(myorigin.X, myorigin.Y, X, Y, myround, myround);
-        myprevpoint := point(X, Y);
+        Pen.Mode := pmNotXor;
+        RoundRect(myorigin.X, myorigin.Y, myprevpoint.X, myprevpoint.Y, myround, myround);
+        RoundRect(myorigin.X, myorigin.Y, X, Y, myround, myround);
+        myprevpoint := Point(X, Y);
       end;
     if Shape = 'Blocks' then
       Canvas.FillRect(PointToBlock(X, Y));
@@ -2935,25 +2935,25 @@ begin
       or (Shape = 'decooval') then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
-        ellipse(myorigin.X, myorigin.Y, myprevpoint.X, myprevpoint.Y);
-        ellipse(myorigin.X, myorigin.Y, X, Y);
-        myprevpoint := point(X, Y);
+        Pen.Mode := pmNotXor;
+        Ellipse(myorigin.X, myorigin.Y, myprevpoint.X, myprevpoint.Y);
+        Ellipse(myorigin.X, myorigin.Y, X, Y);
+        myprevpoint := Point(X, Y);
       end;
     if (Shape = 'chord') or (Shape = 'pie') or (Shape = 'arc') then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
-        ellipse(myorigin.X, myorigin.Y, myprevpoint.X, myprevpoint.Y);
-        ellipse(myorigin.X, myorigin.Y, X, Y);
-        myprevpoint := point(X, Y);
+        Pen.Mode := pmNotXor;
+        Ellipse(myorigin.X, myorigin.Y, myprevpoint.X, myprevpoint.Y);
+        Ellipse(myorigin.X, myorigin.Y, X, Y);
+        myprevpoint := Point(X, Y);
       end;
     if Shape = 'skewrect1' then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
+        Pen.Mode := pmNotXor;
         DrawSkew;
-        myskew[2] := point(X, Y);
+        myskew[2] := Point(X, Y);
         myskew[3].X := myskew[0].X + (myskew[2].X - myskew[1].X);
         myskew[3].Y := myskew[0].Y + (myskew[2].Y - myskew[1].Y);
         DrawSkew;
@@ -2962,28 +2962,28 @@ begin
     if Shape = 'triangle1' then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
+        Pen.Mode := pmNotXor;
         DrawTriangle;
-        myskew[2] := point(X, Y);
+        myskew[2] := Point(X, Y);
         DrawTriangle;
       end;
     if (Shape = 'polyline') or (Shape = 'Polygon') then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
-        penpos := point(myorigin.X, myorigin.Y);
-        lineto(myprevpoint.X, myprevpoint.Y);
-        penpos := point(myorigin.X, myorigin.Y);
-        lineto(X, Y);
-        myprevpoint := point(X, Y);
+        Pen.Mode := pmNotXor;
+        PenPos := Point(myorigin.X, myorigin.Y);
+        LineTo(myprevpoint.X, myprevpoint.Y);
+        PenPos := Point(myorigin.X, myorigin.Y);
+        LineTo(X, Y);
+        myprevpoint := Point(X, Y);
       end;
 
     if Shape = 'polybezier' then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
-        mybezier[0] := point(myorigin.X, myorigin.Y);
-        mybezier[3] := point(myprevpoint.X, myprevpoint.Y);
+        Pen.Mode := pmNotXor;
+        mybezier[0] := Point(myorigin.X, myorigin.Y);
+        mybezier[3] := Point(myprevpoint.X, myprevpoint.Y);
         if not bezierfix1 then
         begin
           mybezier[1].X := mybezier[0].X;
@@ -2994,9 +2994,9 @@ begin
           mybezier[2].X := mybezier[3].X;
           mybezier[2].Y := mybezier[0].Y;
         end;
-        polybezier(mybezier);
-        mybezier[3] := point(X, Y);
-        if (ssctrl in Shift) then
+        PolyBezier(mybezier);
+        mybezier[3] := Point(X, Y);
+        if (ssCtrl in Shift) then
         begin
           bezierfix1 := True;
           mybezier[1] := mybezier[3];
@@ -3006,7 +3006,7 @@ begin
           mybezier[1].X := mybezier[0].X;
           mybezier[1].Y := mybezier[3].Y;
         end;
-        if (ssshift in Shift) then
+        if (ssShift in Shift) then
         begin
           bezierfix2 := True;
           mybezier[2] := mybezier[3];
@@ -3017,8 +3017,8 @@ begin
           mybezier[2].Y := mybezier[0].Y;
         end;
 
-        polybezier(mybezier);
-        myprevpoint := point(X, Y);
+        PolyBezier(mybezier);
+        myprevpoint := Point(X, Y);
       end;
     if (Shape = 'line') or (Shape = 'rotateText') or (Shape = 'Star')
       or (Shape = 'spiral') or (Shape = 'skewrect') or (Shape = 'triangle')
@@ -3026,42 +3026,42 @@ begin
       (Shape = 'decobar') then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
-        penpos := point(myorigin.X, myorigin.Y);
-        lineto(myprevpoint.X, myprevpoint.Y);
-        penpos := point(myorigin.X, myorigin.Y);
-        lineto(X, Y);
-        myprevpoint := point(X, Y);
+        Pen.Mode := pmNotXor;
+        PenPos := Point(myorigin.X, myorigin.Y);
+        LineTo(myprevpoint.X, myprevpoint.Y);
+        PenPos := Point(myorigin.X, myorigin.Y);
+        LineTo(X, Y);
+        myprevpoint := Point(X, Y);
       end;
     if (Shape = 'bezier') then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
-        mybezier[0] := point(myorigin.X, myorigin.Y);
+        Pen.Mode := pmNotXor;
+        mybezier[0] := Point(myorigin.X, myorigin.Y);
         mybezier[1] := mybezier[0];
-        mybezier[3] := point(myprevpoint.X, myprevpoint.Y);
+        mybezier[3] := Point(myprevpoint.X, myprevpoint.Y);
         mybezier[2] := mybezier[3];
-        polybezier(mybezier);
-        mybezier[3] := point(X, Y);
+        PolyBezier(mybezier);
+        mybezier[3] := Point(X, Y);
         mybezier[2] := mybezier[3];
-        polybezier(mybezier);
-        myprevpoint := point(X, Y);
+        PolyBezier(mybezier);
+        myprevpoint := Point(X, Y);
       end;
     if (Shape = 'bezier1') then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
-        polybezier(mybezier);
-        mybezier[1] := point(X, Y);
-        polybezier(mybezier);
+        Pen.Mode := pmNotXor;
+        PolyBezier(mybezier);
+        mybezier[1] := Point(X, Y);
+        PolyBezier(mybezier);
       end;
     if (Shape = 'bezier2') then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
-        polybezier(mybezier);
-        mybezier[2] := point(X, Y);
-        polybezier(mybezier);
+        Pen.Mode := pmNotXor;
+        PolyBezier(mybezier);
+        mybezier[2] := Point(X, Y);
+        PolyBezier(mybezier);
       end;
     if Shape = 'spray' then
       for i := 1 to 10 do
@@ -3075,44 +3075,44 @@ begin
       or (Shape = 'colorWaveline') then
       with Canvas do
       begin
-        Canvas.lineto(X, Y);
-        myprevpoint := point(X, Y);
+        Canvas.LineTo(X, Y);
+        myprevpoint := Point(X, Y);
       end;
 
     if Shape = 'borderWaveline' then
     begin
-      Canvas.moveto(myprevpoint.X, myprevpoint.Y);
-      Canvas.lineto(X, Y);
+      Canvas.MoveTo(myprevpoint.X, myprevpoint.Y);
+      Canvas.LineTo(X, Y);
       Canvas.MoveTo(Width - myprevpoint.X, Height - myprevpoint.Y);
-      Canvas.lineto(Width - X, Height - Y);
-      myprevpoint := point(X, Y);
+      Canvas.LineTo(Width - X, Height - Y);
+      myprevpoint := Point(X, Y);
     end;
 
     if Shape = 'decoline' then
     begin
       with Canvas do
       begin
-        pw := pen.Width;
-        pen.color := Wavepen;
-        pen.Mode := pmcopy;
-        moveto(myprevpoint.X, myprevpoint.Y);
-        lineto(X, Y);
-        pen.Width := pw * 2;
-        pen.Mode := pmmasknotpen;
+        pw := Pen.Width;
+        Pen.Color := Wavepen;
+        Pen.Mode := pmCopy;
         MoveTo(myprevpoint.X, myprevpoint.Y);
-        lineto(X, Y);
-        myprevpoint := point(X, Y);
-        pen.Width := pw;
-        pen.Mode := pmcopy;
-        pen.Mode := mypen;
+        LineTo(X, Y);
+        Pen.Width := pw * 2;
+        Pen.Mode := pmmasknotpen;
+        MoveTo(myprevpoint.X, myprevpoint.Y);
+        LineTo(X, Y);
+        myprevpoint := Point(X, Y);
+        Pen.Width := pw;
+        Pen.Mode := pmCopy;
+        Pen.Mode := mypen;
       end;
     end;
 
     if (Shape = 'freehand') or (Shape = 'mixbrush') then
       with Canvas do
       begin
-        Canvas.lineto(X, Y);
-        myprevpoint := point(X, Y)
+        Canvas.LineTo(X, Y);
+        myprevpoint := Point(X, Y)
       end;
     if Shape = 'cloneall' then
       with Canvas do
@@ -3122,9 +3122,9 @@ begin
         X2 := X - X1;
         Y2 := Y - Y1;
         copymode := cmsrccopy;
-        i := pen.Width;
-        copyrect(rect(X, Y, X + i, Y + i), Canvas,
-          rect(X2, Y2, X2 + i, Y2 + i));
+        i := Pen.Width;
+        copyrect(Rect(X, Y, X + i, Y + i), Canvas,
+          Rect(X2, Y2, X2 + i, Y2 + i));
       end;
 
     if Shape = 'clonenottarget' then
@@ -3134,21 +3134,21 @@ begin
         Y1 := myorigin.Y - Targetpoint.Y;
         X2 := X - X1;
         Y2 := Y - Y1;
-        i := pen.Width;
-        PutClip(rect(X2, Y2, X2 + i, Y2 + i));
-        Clip.transparent := True;
-        Clip.TransparentColor := pixels[Targetpoint.X, Targetpoint.Y];
+        i := Pen.Width;
+        PutClip(Rect(X2, Y2, X2 + i, Y2 + i));
+        Clip.Transparent := True;
+        Clip.TransparentColor := Pixels[Targetpoint.X, Targetpoint.Y];
         Draw(X, Y, Clip);
-        Clip.transparent := False;
+        Clip.Transparent := False;
       end;
 
-    if (Shape = 'paste') and (ssshift in Shift) then
+    if (Shape = 'paste') and (ssShift in Shift) then
     begin
-      myrect := rect(0, 0, 0, 0);
-      myrect.left := X;
-      myrect.top := Y;
-      myrect.right := X + mycliprect.right - mycliprect.left;
-      myrect.bottom := Y + mycliprect.bottom - mycliprect.Top;
+      myrect := Rect(0, 0, 0, 0);
+      myrect.Left := X;
+      myrect.Top := Y;
+      myrect.Right := X + mycliprect.Right - mycliprect.Left;
+      myrect.Bottom := Y + mycliprect.Bottom - mycliprect.Top;
       Canvas.CopyRect(myrect, Canvas, mycliprect);
     end;
     if Shape = 'sym' then
@@ -3156,22 +3156,22 @@ begin
     if Shape = 'sline' then
     begin
       if myslinedir = 'none' then
-        if abs(X - myorigin.X) >= abs(Y - myorigin.Y) then
+        if Abs(X - myorigin.X) >= Abs(Y - myorigin.Y) then
           myslinedir := 'h'
         else
           myslinedir := 'v';
-      if (myslinedir = 'h') and (abs(Y - myprevpoint.Y) > myslinetol) then
+      if (myslinedir = 'h') and (Abs(Y - myprevpoint.Y) > myslinetol) then
         myslinedir := 'v';
-      if (myslinedir = 'v') and (abs(X - myprevpoint.X) > myslinetol) then
+      if (myslinedir = 'v') and (Abs(X - myprevpoint.X) > myslinetol) then
         myslinedir := 'h';
       if myslinedir = 'h' then
       begin
-        Canvas.lineto(X, myprevpoint.Y);
+        Canvas.LineTo(X, myprevpoint.Y);
         myprevpoint.X := X;
       end;
       if myslinedir = 'v' then
       begin
-        Canvas.lineto(myprevpoint.X, Y);
+        Canvas.LineTo(myprevpoint.X, Y);
         myprevpoint.Y := Y;
       end;
     end;
@@ -3182,11 +3182,11 @@ begin
       Y1 := myprevpoint.Y;
       X2 := Width;
 //      Y2 := Height;
-      Canvas.PenPos := point(X2 - X1, Y1);
-      Canvas.lineto(X2 - X, Y);
-      Canvas.penpos := point(X1, Y1);
-      Canvas.lineto(X, Y);
-      myprevpoint := point(X, Y)
+      Canvas.PenPos := Point(X2 - X1, Y1);
+      Canvas.LineTo(X2 - X, Y);
+      Canvas.PenPos := Point(X1, Y1);
+      Canvas.LineTo(X, Y);
+      myprevpoint := Point(X, Y)
     end;
     if Shape = 'cmirror' then
     begin
@@ -3194,11 +3194,11 @@ begin
       Y1 := myprevpoint.Y;
       X2 := Width;
       Y2 := Height;
-      Canvas.PenPos := point(X2 - X1, Y2 - Y1);
-      Canvas.lineto(X2 - X, Y2 - Y);
-      Canvas.penpos := point(X1, Y1);
-      Canvas.lineto(X, Y);
-      myprevpoint := point(X, Y)
+      Canvas.PenPos := Point(X2 - X1, Y2 - Y1);
+      Canvas.LineTo(X2 - X, Y2 - Y);
+      Canvas.PenPos := Point(X1, Y1);
+      Canvas.LineTo(X, Y);
+      myprevpoint := Point(X, Y)
     end;
     if Shape = 'mirror4' then
     begin
@@ -3206,15 +3206,15 @@ begin
       Y1 := myprevpoint.Y;
       X2 := Width;
       Y2 := Height;
-      Canvas.PenPos := point(X2 - X1, Y2 - Y1);
-      Canvas.lineto(X2 - X, Y2 - Y);
-      Canvas.PenPos := point(X2 - X1, Y1);
-      Canvas.lineto(X2 - X, Y);
-      Canvas.PenPos := point(X1, Y2 - Y1);
-      Canvas.lineto(X, Y2 - Y);
-      Canvas.penpos := point(X1, Y1);
-      Canvas.lineto(X, Y);
-      myprevpoint := point(X, Y)
+      Canvas.PenPos := Point(X2 - X1, Y2 - Y1);
+      Canvas.LineTo(X2 - X, Y2 - Y);
+      Canvas.PenPos := Point(X2 - X1, Y1);
+      Canvas.LineTo(X2 - X, Y);
+      Canvas.PenPos := Point(X1, Y2 - Y1);
+      Canvas.LineTo(X, Y2 - Y);
+      Canvas.PenPos := Point(X1, Y1);
+      Canvas.LineTo(X, Y);
+      myprevpoint := Point(X, Y)
     end;
     if Shape = 'hmirror' then
     begin
@@ -3222,25 +3222,25 @@ begin
       Y1 := myprevpoint.Y;
 //      X2 := Width;
       Y2 := Height;
-      Canvas.PenPos := point(X1, Y2 - Y1);
-      Canvas.lineto(X, Y2 - Y);
-      Canvas.penpos := point(X1, Y1);
-      Canvas.lineto(X, Y);
-      myprevpoint := point(X, Y)
+      Canvas.PenPos := Point(X1, Y2 - Y1);
+      Canvas.LineTo(X, Y2 - Y);
+      Canvas.PenPos := Point(X1, Y1);
+      Canvas.LineTo(X, Y);
+      myprevpoint := Point(X, Y)
     end;
     if (Shape = 'snapshot') or (Shape = 'bars') or (Shape = 'border') then
       with Canvas do
       begin
-        pen.Mode := pmnotxor;
-        pen.Style := psdot;
-        rectangle(myorigin.X, myorigin.Y, myprevpoint.X, myprevpoint.Y);
-        rectangle(myorigin.X, myorigin.Y, X, Y);
-        myprevpoint := point(X, Y);
-        pen.Style := pssolid;
+        Pen.Mode := pmNotXor;
+        Pen.Style := psDot;
+        Rectangle(myorigin.X, myorigin.Y, myprevpoint.X, myprevpoint.Y);
+        Rectangle(myorigin.X, myorigin.Y, X, Y);
+        myprevpoint := Point(X, Y);
+        Pen.Style := psSolid;
       end;
   end;
-  Canvas.pen.Mode := mypen;
-  myprevpoint := point(X, Y);
+  Canvas.Pen.Mode := mypen;
+  myprevpoint := Point(X, Y);
 end;
 
 procedure TJvDrawImage.MouseUp(Button: TMouseButton;
@@ -3260,31 +3260,31 @@ var
   AColor, pcolor: TColor;
   pw: Integer;
 begin
-  //Canvas.pen.color:=Wavepen;
-  //Canvas.brush.color:=Wavebrush;
+  //Canvas.Pen.Color:=Wavepen;
+  //Canvas.Brush.Color:=Wavebrush;
 
-  if ((ssctrl in Shift) and (ssalt in Shift)) then
-    exit;
+  if ((ssCtrl in Shift) and (ssAlt in Shift)) then
+    Exit;
   if button = mbright then
-    exit;
-  mypen := Canvas.pen.Mode;
+    Exit;
+  mypen := Canvas.Pen.Mode;
 
   if Shape = 'zoombrush' then
     Canvas.Draw(0, 0, FZoomClip);
   if Shape = 'transcopy' then
   begin
     clipcm := cmSrcCopy;
-    SetClip(clwhite);
+    SetClip(clWhite);
     CopyClip;
-    myrect := rect(X, Y, X + Clip.Width - 1, Y + Clip.Height - 1);  
-    Clip.Transparent := true;
+    myrect := Rect(X, Y, X + Clip.Width - 1, Y + Clip.Height - 1);  
+    Clip.Transparent := True;
     Clip.TransparentColor := RangeTransColor;
     Canvas.Draw(X,Y, Clip); 
     myDraw := False;
   end;
   if Shape = 'cube1' then
   begin
-    if mypen <> pmnotxor then
+    if mypen <> pmNotXor then
       DrawCube;
     Shape := 'cube2';
   end;
@@ -3333,7 +3333,7 @@ begin
   if Shape = 'cube' then
   begin
     myskew[0] := myorigin;
-    myskew[2] := point(X, Y);
+    myskew[2] := Point(X, Y);
     myskew[4] := myskew[2];
     myskew[1].X := myskew[2].X;
     myskew[1].Y := myskew[0].Y;
@@ -3352,23 +3352,23 @@ begin
   if Shape = 'interSphere' then
     if ((myorigin.X <> X) and (myorigin.Y <> Y)) then
     begin
-      if ssalt in Shift then
-        DrawSphere(Canvas.pixels[myorigin.X, myorigin.Y],
-          Canvas.pixels[X, Y], myorigin.X, myorigin.Y, X, Y)
+      if ssAlt in Shift then
+        DrawSphere(Canvas.Pixels[myorigin.X, myorigin.Y],
+          Canvas.Pixels[X, Y], myorigin.X, myorigin.Y, X, Y)
       else
         DrawSphere(Wavepen, Wavebrush, myorigin.X, myorigin.Y, X, Y)
     end;
 
   if Shape = 'MultiSphere' then
   begin
-    Canvas.pen.Mode := pmnotxor;
-    Canvas.ellipse(myorigin.X, myorigin.Y, X, Y);
-    Canvas.pen.Mode := pmcopy;
+    Canvas.Pen.Mode := pmNotXor;
+    Canvas.Ellipse(myorigin.X, myorigin.Y, X, Y);
+    Canvas.Pen.Mode := pmCopy;
     if ((myorigin.X <> X) and (myorigin.Y <> Y)) then
     begin
-      if ssalt in Shift then
-        DrawMultiSphere(Canvas.pixels[myorigin.X, myorigin.Y],
-          Canvas.pixels[X, Y], myorigin.X, myorigin.Y, X, Y)
+      if ssAlt in Shift then
+        DrawMultiSphere(Canvas.Pixels[myorigin.X, myorigin.Y],
+          Canvas.Pixels[X, Y], myorigin.X, myorigin.Y, X, Y)
       else
         DrawMultiSphere(Wavepen, Wavebrush, myorigin.X, myorigin.Y, X, Y)
     end;
@@ -3376,14 +3376,14 @@ begin
 
   if Shape = 'DropletSphere' then
   begin
-    Canvas.pen.Mode := pmnotxor;
-    Canvas.ellipse(myorigin.X, myorigin.Y, X, Y);
-    Canvas.pen.Mode := pmcopy;
+    Canvas.Pen.Mode := pmNotXor;
+    Canvas.Ellipse(myorigin.X, myorigin.Y, X, Y);
+    Canvas.Pen.Mode := pmCopy;
     if ((myorigin.X <> X) and (myorigin.Y <> Y)) then
     begin
-      if ssalt in Shift then
-        DrawDropletSphere(Canvas.pixels[myorigin.X, myorigin.Y],
-          Canvas.pixels[X, Y], myorigin.X, myorigin.Y, X, Y)
+      if ssAlt in Shift then
+        DrawDropletSphere(Canvas.Pixels[myorigin.X, myorigin.Y],
+          Canvas.Pixels[X, Y], myorigin.X, myorigin.Y, X, Y)
       else
         DrawDropletSphere(Wavepen, Wavebrush, myorigin.X, myorigin.Y, X, Y)
     end;
@@ -3391,14 +3391,14 @@ begin
 
   if Shape = 'WaveSphere' then
   begin
-    Canvas.pen.Mode := pmnotxor;
-    Canvas.ellipse(myorigin.X, myorigin.Y, X, Y);
-    Canvas.pen.Mode := pmcopy;
+    Canvas.Pen.Mode := pmNotXor;
+    Canvas.Ellipse(myorigin.X, myorigin.Y, X, Y);
+    Canvas.Pen.Mode := pmCopy;
     if ((myorigin.X <> X) and (myorigin.Y <> Y)) then
     begin
-      if ssalt in Shift then
-        DrawWaveSphere(Canvas.pixels[myorigin.X, myorigin.Y],
-          Canvas.pixels[X, Y], myorigin.X, myorigin.Y, X, Y)
+      if ssAlt in Shift then
+        DrawWaveSphere(Canvas.Pixels[myorigin.X, myorigin.Y],
+          Canvas.Pixels[X, Y], myorigin.X, myorigin.Y, X, Y)
       else
         DrawWaveSphere(Wavepen, Wavebrush, myorigin.X, myorigin.Y, X, Y)
     end;
@@ -3406,14 +3406,14 @@ begin
 
   if Shape = 'RisingWaveSphere' then
   begin
-    Canvas.pen.Mode := pmnotxor;
-    Canvas.ellipse(myorigin.X, myorigin.Y, X, Y);
-    Canvas.pen.Mode := pmcopy;
+    Canvas.Pen.Mode := pmNotXor;
+    Canvas.Ellipse(myorigin.X, myorigin.Y, X, Y);
+    Canvas.Pen.Mode := pmCopy;
     if ((myorigin.X <> X) and (myorigin.Y <> Y)) then
     begin
-      if ssalt in Shift then
-        DrawRisingWaveSphere(Canvas.pixels[myorigin.X, myorigin.Y],
-          Canvas.pixels[X, Y], myorigin.X, myorigin.Y, X, Y)
+      if ssAlt in Shift then
+        DrawRisingWaveSphere(Canvas.Pixels[myorigin.X, myorigin.Y],
+          Canvas.Pixels[X, Y], myorigin.X, myorigin.Y, X, Y)
       else
         DrawRisingWaveSphere(Wavepen, Wavebrush, myorigin.X, myorigin.Y, X, Y)
     end;
@@ -3421,23 +3421,23 @@ begin
 
   if Shape = 'rectangle' then
   begin
-    if mypen <> pmnotxor then
-      Canvas.rectangle(myorigin.X, myorigin.Y, X, Y);
+    if mypen <> pmNotXor then
+      Canvas.Rectangle(myorigin.X, myorigin.Y, X, Y);
     if Stars > 1 then
     begin
       xs := (X - myorigin.X) div 2 div Stars;
       ys := (Y - myorigin.Y) div 2 div Stars;
       for i := 1 to Stars - 1 do
       begin
-        Canvas.rectangle(myorigin.X + i * xs, myorigin.Y + i * ys, X - i * xs, Y - i * ys);
+        Canvas.Rectangle(myorigin.X + i * xs, myorigin.Y + i * ys, X - i * xs, Y - i * ys);
       end;
     end;
   end;
 
   if Shape = 'maze' then
   begin
-    if mypen <> pmnotxor then
-      Canvas.rectangle(myorigin.X, myorigin.Y, X, Y);
+    if mypen <> pmNotXor then
+      Canvas.Rectangle(myorigin.X, myorigin.Y, X, Y);
     xs := (X - myorigin.X) div 10;
     ys := (Y - myorigin.Y) div 10;
     xt := myorigin.X;
@@ -3445,27 +3445,27 @@ begin
     for i := 1 to 10 do
     begin
       Canvas.MoveTo(xt + i * xs, Y);
-      Canvas.lineto(X, Y - i * ys);
+      Canvas.LineTo(X, Y - i * ys);
       Canvas.MoveTo(X, Y - i * ys);
-      Canvas.lineto(X - i * xs, yt);
+      Canvas.LineTo(X - i * xs, yt);
       Canvas.MoveTo(X - i * xs, yt);
-      Canvas.lineto(xt, yt + i * ys);
+      Canvas.LineTo(xt, yt + i * ys);
       Canvas.MoveTo(xt, yt + i * ys);
-      Canvas.lineto(xt + i * xs, Y);
+      Canvas.LineTo(xt + i * xs, Y);
     end;
   end;
 
   if Shape = 'roundrect' then
   begin
-    if mypen <> pmnotxor then
-      Canvas.roundrect(myorigin.X, myorigin.Y, X, Y, myround, myround);
+    if mypen <> pmNotXor then
+      Canvas.RoundRect(myorigin.X, myorigin.Y, X, Y, myround, myround);
     if Stars > 1 then
     begin
       xs := (X - myorigin.X) div 2 div Stars;
       ys := (Y - myorigin.Y) div 2 div Stars;
       for i := 1 to Stars - 1 do
       begin
-        Canvas.roundrect(myorigin.X + i * xs, myorigin.Y + i * ys, X - i * xs, Y - i * ys, myround, myround);
+        Canvas.RoundRect(myorigin.X + i * xs, myorigin.Y + i * ys, X - i * xs, Y - i * ys, myround, myround);
       end;
     end;
   end;
@@ -3477,14 +3477,14 @@ begin
   begin
     with Canvas do
     begin
-      pen.Mode := pmnotxor;
-      penpos := point(myorigin.X, myorigin.Y);
-      lineto(myprevpoint.X, myprevpoint.Y);
+      Pen.Mode := pmNotXor;
+      PenPos := Point(myorigin.X, myorigin.Y);
+      LineTo(myprevpoint.X, myprevpoint.Y);
     end;
-    Canvas.pen.Mode := mypen;
+    Canvas.Pen.Mode := mypen;
     for i := 1 to Stars do
     begin
-      apoint := ReduceVector(myorigin, point(X, Y), i / Stars);
+      apoint := ReduceVector(myorigin, Point(X, Y), i / Stars);
       Star(apoint.X, apoint.Y);
     end;
   end;
@@ -3493,47 +3493,47 @@ begin
   begin
     with Canvas do
     begin
-      pen.Mode := pmnotxor;
-      penpos := point(myorigin.X, myorigin.Y);
-      lineto(myprevpoint.X, myprevpoint.Y);
+      Pen.Mode := pmNotXor;
+      PenPos := Point(myorigin.X, myorigin.Y);
+      LineTo(myprevpoint.X, myprevpoint.Y);
     end;
-    Canvas.pen.Mode := mypen;
-    apoint := point(100 * X, 100 * Y);
+    Canvas.Pen.Mode := mypen;
+    apoint := Point(100 * X, 100 * Y);
     myorigin.X := 100 * myorigin.X;
     myorigin.Y := 100 * myorigin.Y;
     for i := 1 to Variant(Spirals * 36) do
     begin
       apoint := Rotate(myorigin, apoint, spiraldir * pi / 18);
       apoint := ReduceVector(myorigin, apoint, spiralfactor);
-      Canvas.lineto(apoint.X div 100, apoint.Y div 100);
+      Canvas.LineTo(apoint.X div 100, apoint.Y div 100);
     end;
   end;
 
   if Shape = 'ellipse' then
   begin
-    if mypen <> pmnotxor then
-      Canvas.ellipse(myorigin.X, myorigin.Y, X, Y);
+    if mypen <> pmNotXor then
+      Canvas.Ellipse(myorigin.X, myorigin.Y, X, Y);
     if Stars > 1 then
     begin
       xs := (X - myorigin.X) div 2 div Stars;
       ys := (Y - myorigin.Y) div 2 div Stars;
       for i := 1 to Stars - 1 do
       begin
-        Canvas.ellipse(myorigin.X + i * xs, myorigin.Y + i * ys, X - i * xs, Y - i * ys);
+        Canvas.Ellipse(myorigin.X + i * xs, myorigin.Y + i * ys, X - i * xs, Y - i * ys);
       end;
     end;
   end;
 
   if Shape = 'globe' then
   begin
-    if mypen <> pmnotxor then
-      Canvas.ellipse(myorigin.X, myorigin.Y, X, Y);
+    if mypen <> pmNotXor then
+      Canvas.Ellipse(myorigin.X, myorigin.Y, X, Y);
     xs := (X - myorigin.X) div 20;
     ys := (Y - myorigin.Y) div 20;
     for i := 1 to 10 do
     begin
-      Canvas.ellipse(myorigin.X + i * xs, myorigin.Y, X - i * xs, Y);
-      Canvas.ellipse(myorigin.X, myorigin.Y + i * ys, X, Y - i * ys);
+      Canvas.Ellipse(myorigin.X + i * xs, myorigin.Y, X - i * xs, Y);
+      Canvas.Ellipse(myorigin.X, myorigin.Y + i * ys, X, Y - i * ys);
     end;
   end;
 
@@ -3542,9 +3542,9 @@ begin
     mychord[7] := X;
     mychord[8] := Y;
     Shape := 'chord3';
-    Canvas.pen.Mode := pmnotxor;
-    Canvas.ellipse(mychord[1], mychord[2], mychord[3], mychord[4]);
-    Canvas.pen.Mode := mypen;
+    Canvas.Pen.Mode := pmNotXor;
+    Canvas.Ellipse(mychord[1], mychord[2], mychord[3], mychord[4]);
+    Canvas.Pen.Mode := mypen;
     Canvas.Chord(mychord[1], mychord[2], mychord[3], mychord[4], mychord[5], mychord[6], mychord[7], mychord[8]);
   end;
 
@@ -3569,10 +3569,10 @@ begin
     mychord[7] := X;
     mychord[8] := Y;
     Shape := 'arc3';
-    Canvas.pen.Mode := pmnotxor;
-    Canvas.ellipse(mychord[1], mychord[2], mychord[3], mychord[4]);
-    Canvas.pen.Mode := mypen;
-    Canvas.arc(mychord[1], mychord[2], mychord[3], mychord[4], mychord[5], mychord[6], mychord[7], mychord[8]);
+    Canvas.Pen.Mode := pmNotXor;
+    Canvas.Ellipse(mychord[1], mychord[2], mychord[3], mychord[4]);
+    Canvas.Pen.Mode := mypen;
+    Canvas.Arc(mychord[1], mychord[2], mychord[3], mychord[4], mychord[5], mychord[6], mychord[7], mychord[8]);
   end;
 
   if Shape = 'arc1' then
@@ -3596,10 +3596,10 @@ begin
     mychord[7] := X;
     mychord[8] := Y;
     Shape := 'pie3';
-    Canvas.pen.Mode := pmnotxor;
-    Canvas.ellipse(mychord[1], mychord[2], mychord[3], mychord[4]);
-    Canvas.pen.Mode := mypen;
-    Canvas.pie(mychord[1], mychord[2], mychord[3], mychord[4], mychord[5], mychord[6], mychord[7], mychord[8]);
+    Canvas.Pen.Mode := pmNotXor;
+    Canvas.Ellipse(mychord[1], mychord[2], mychord[3], mychord[4]);
+    Canvas.Pen.Mode := mypen;
+    Canvas.Pie(mychord[1], mychord[2], mychord[3], mychord[4], mychord[5], mychord[6], mychord[7], mychord[8]);
   end;
 
   if Shape = 'pie1' then
@@ -3620,18 +3620,18 @@ begin
 
   if Shape = 'skewrect1' then
   begin
-    if mypen <> pmnotxor then
+    if mypen <> pmNotXor then
       DrawSkew;
     Shape := 'skewrect2';
   end;
 
   if Shape = 'skewrect' then
   begin
-    Canvas.penpos := point(myorigin.X, myorigin.Y);
-    if mypen <> pmnotxor then
-      Canvas.lineto(X, Y);
+    Canvas.PenPos := Point(myorigin.X, myorigin.Y);
+    if mypen <> pmNotXor then
+      Canvas.LineTo(X, Y);
     myskew[0] := myorigin;
-    myskew[1] := point(X, Y);
+    myskew[1] := Point(X, Y);
     myskew[2] := myskew[1];
     myskew[3] := myskew[0];
     Shape := 'skewrect1';
@@ -3639,18 +3639,18 @@ begin
 
   if Shape = 'triangle1' then
   begin
-    if mypen <> pmnotxor then
+    if mypen <> pmNotXor then
       DrawTriangle;
     Shape := 'triangle2';
   end;
 
   if Shape = 'triangle' then
   begin
-    Canvas.penpos := point(myorigin.X, myorigin.Y);
-    if mypen <> pmnotxor then
-      Canvas.lineto(X, Y);
+    Canvas.PenPos := Point(myorigin.X, myorigin.Y);
+    if mypen <> pmNotXor then
+      Canvas.LineTo(X, Y);
     myskew[0] := myorigin;
-    myskew[1] := point(X, Y);
+    myskew[1] := Point(X, Y);
     myskew[2] := myskew[1];
     Shape := 'triangle1';
   end;
@@ -3660,36 +3660,36 @@ begin
     Picture.Bitmap.PixelFormat := pf24bit;
     with Canvas do
     begin
-      pw := pen.Width;
-      pcolor := pen.color;
-      AColor := colortoRGB(Wavebrush);
-      R1 := getRed(AColor);
+      pw := Pen.Width;
+      pcolor := Pen.Color;
+      AColor := ColorToRGB(Wavebrush);
+      R1 := GetRed(AColor);
       r := R1;
-      G1 := getGreen(AColor);
+      G1 := GetGreen(AColor);
       g := G1;
-      B1 := getBlue(AColor);
+      B1 := GetBlue(AColor);
       b := B1;
-      AColor := colortoRGB(pen.color);
-      R2 := getred(AColor);
-      G2 := getGreen(AColor);
-      B2 := getBlue(AColor);
+      AColor := ColorToRGB(Pen.Color);
+      R2 := GetRed(AColor);
+      G2 := GetGreen(AColor);
+      B2 := GetBlue(AColor);
       dr := (R1 - R2) / (pw / 3);
       dg := (G1 - G2) / (pw / 3);
       db := (B1 - B2) / (pw / 3);
       if pw < 30 then
-        pen.Width := 30;
-      for i := 1 to pen.Width div 3 do
+        Pen.Width := 30;
+      for i := 1 to Pen.Width div 3 do
       begin
         r := r - dr;
         g := g - dg;
         b := b - db;
-        pen.color := rgb(round(r), round(g), round(b));
-        moveto(myorigin.X, myorigin.Y);
-        lineto(X, Y);
-        pen.Width := pen.Width - 2;
+        Pen.Color := rgb(Round(r), Round(g), Round(b));
+        MoveTo(myorigin.X, myorigin.Y);
+        LineTo(X, Y);
+        Pen.Width := Pen.Width - 2;
       end;
-      pen.Width := pw;
-      pen.color := pcolor;
+      Pen.Width := pw;
+      Pen.Color := pcolor;
     end;
   end;
 
@@ -3698,45 +3698,45 @@ begin
     Picture.Bitmap.PixelFormat := pf24bit;
     with Canvas do
     begin
-      pen.Mode := pmnotxor;
-      ellipse(myorigin.X, myorigin.Y, myprevpoint.X, myprevpoint.Y);
-      pen.Mode := pmcopy;
-      pw := pen.Width;
-      brush.Style := bsclear;
-      AColor := colortoRGB(Wavebrush);
-      R1 := getred(AColor);
+      Pen.Mode := pmNotXor;
+      Ellipse(myorigin.X, myorigin.Y, myprevpoint.X, myprevpoint.Y);
+      Pen.Mode := pmCopy;
+      pw := Pen.Width;
+      Brush.Style := bsClear;
+      AColor := ColorToRGB(Wavebrush);
+      R1 := GetRed(AColor);
       r := R1;
-      G1 := getGreen(AColor);
+      G1 := GetGreen(AColor);
       g := G1;
-      B1 := getBlue(AColor);
+      B1 := GetBlue(AColor);
       b := B1;
-      AColor := colortoRGB(Wavepen);
-      R2 := getred(AColor);
-      G2 := getGreen(AColor);
-      B2 := getBlue(AColor);
+      AColor := ColorToRGB(Wavepen);
+      R2 := GetRed(AColor);
+      G2 := GetGreen(AColor);
+      B2 := GetBlue(AColor);
       dr := (R1 - R2) / (pw / 3);
       dg := (G1 - G2) / (pw / 3);
       db := (B1 - B2) / (pw / 3);
       if pw < 30 then
-        pen.Width := 30;
-      for i := 1 to pen.Width div 3 do
+        Pen.Width := 30;
+      for i := 1 to Pen.Width div 3 do
       begin
-        pen.Width := pen.Width - 2;
+        Pen.Width := Pen.Width - 2;
         r := r - dr;
         g := g - dg;
         b := b - db;
-        pen.color := rgb(round(r), round(g), round(b));
-        ellipse(myorigin.X, myorigin.Y, X, Y);
+        Pen.Color := rgb(Round(r), Round(g), Round(b));
+        Ellipse(myorigin.X, myorigin.Y, X, Y);
       end;
-      pen.Width := pw;
+      Pen.Width := pw;
     end;
   end;
 
   if (Shape = 'polyline') or (Shape = 'Polygon') then
   begin
-    Canvas.penpos := point(myorigin.X, myorigin.Y);
-    if mypen <> pmnotxor then
-      Canvas.lineto(X, Y);
+    Canvas.PenPos := Point(myorigin.X, myorigin.Y);
+    if mypen <> pmNotXor then
+      Canvas.LineTo(X, Y);
     if freepolycount = 0 then
     begin
       freepoly[0] := myorigin;
@@ -3744,7 +3744,7 @@ begin
     end
     else
     begin
-      freepoly[freepolycount] := point(X, Y);
+      freepoly[freepolycount] := Point(X, Y);
       if freepolycount < 100 then
         inc(freepolycount);
     end;
@@ -3752,28 +3752,28 @@ begin
 
   if Shape = 'line' then
   begin
-    Canvas.penpos := point(myorigin.X, myorigin.Y);
-    if mypen <> pmnotxor then
+    Canvas.PenPos := Point(myorigin.X, myorigin.Y);
+    if mypen <> pmNotXor then
     begin
-      Canvas.lineto(X, Y);
+      Canvas.LineTo(X, Y);
     end;
   end;
 
   if Shape = 'Spiro' then
   begin
-    Canvas.penpos := point(myorigin.X, myorigin.Y);
-    Canvas.pen.Mode := pmnotxor;
-    Canvas.lineto(X, Y);
-    Canvas.pen.Mode := mypen;
-    DrawSpiro(myorigin, point(X, Y));
+    Canvas.PenPos := Point(myorigin.X, myorigin.Y);
+    Canvas.Pen.Mode := pmNotXor;
+    Canvas.LineTo(X, Y);
+    Canvas.Pen.Mode := mypen;
+    DrawSpiro(myorigin, Point(X, Y));
   end;
 
   if Shape = 'cone' then
   begin
-    Canvas.penpos := point(myorigin.X, myorigin.Y);
-    Canvas.pen.Mode := pmnotxor;
-    Canvas.lineto(X, Y);
-    Canvas.pen.Mode := mypen;
+    Canvas.PenPos := Point(myorigin.X, myorigin.Y);
+    Canvas.Pen.Mode := pmNotXor;
+    Canvas.LineTo(X, Y);
+    Canvas.Pen.Mode := mypen;
     xt := (Picture.Bitmap.Width - 2 * myorigin.X) div 20;
     xs := (Picture.Bitmap.Width - 2 * X) div 20;
     X := Picture.Bitmap.Width div 2;
@@ -3781,25 +3781,25 @@ begin
     begin
       for i := 0 to 10 do
       begin
-        moveto(X + i * xt, myorigin.Y);
-        lineto(X + i * xs, Y);
-        moveto(X - i * xt, myorigin.Y);
-        lineto(X - i * xs, Y);
+        MoveTo(X + i * xt, myorigin.Y);
+        LineTo(X + i * xs, Y);
+        MoveTo(X - i * xt, myorigin.Y);
+        LineTo(X - i * xs, Y);
       end;
-      moveto(X + 10 * xt, myorigin.Y);
-      lineto(X - 10 * xt, myorigin.Y);
-      moveto(X + 10 * xs, Y);
-      lineto(X - 10 * xs, Y);
+      MoveTo(X + 10 * xt, myorigin.Y);
+      LineTo(X - 10 * xt, myorigin.Y);
+      MoveTo(X + 10 * xs, Y);
+      LineTo(X - 10 * xs, Y);
     end;
   end;
 
   {if Shape='polybezier' then
    begin
-    Canvas.penpos:=point(myorigin.X,myorigin.Y);
-     if mypen<>pmnotxor then
+    Canvas.PenPos:=Point(myorigin.X,myorigin.Y);
+     if mypen<>pmNotXor then
        begin
        mybezier[0]:=myorigin;
-       mybezier[3]:=point(X,Y);
+       mybezier[3]:=Point(X,Y);
        if not bezierfix1 then
        begin
          mybezier[1].X:=mybezier[0].X;
@@ -3810,7 +3810,7 @@ begin
          mybezier[2].X:=mybezier[3].X;
          mybezier[2].Y:=mybezier[0].Y;
          end;
-       Canvas.polybezier(mybezier);
+       Canvas.PolyBezier(mybezier);
        bezierfix1:=False;
        bezierfix2:=False;
        end;
@@ -3818,11 +3818,11 @@ begin
 
   if Shape = 'bezier2' then
   begin
-    Canvas.penpos := point(myorigin.X, myorigin.Y);
-    if mypen <> pmnotxor then
+    Canvas.PenPos := Point(myorigin.X, myorigin.Y);
+    if mypen <> pmNotXor then
     begin
-      mybezier[2] := point(X, Y);
-      Canvas.polybezier(mybezier);
+      mybezier[2] := Point(X, Y);
+      Canvas.PolyBezier(mybezier);
     end;
     Shape := 'bezier3';
   end;
@@ -3837,13 +3837,13 @@ begin
   begin
     with Canvas do
     begin
-      pen.Mode := pmnotxor;
-      pen.Style := psdot;
-      rectangle(myorigin.X, myorigin.Y, X, Y);
-      pen.Style := pssolid;
+      Pen.Mode := pmNotXor;
+      Pen.Style := psDot;
+      Rectangle(myorigin.X, myorigin.Y, X, Y);
+      Pen.Style := psSolid;
     end;
-    mycliprect := rect(myorigin.X, myorigin.Y, X, Y);
-    Canvas.brush.Style := myoldbrushstyle;
+    mycliprect := Rect(myorigin.X, myorigin.Y, X, Y);
+    Canvas.Brush.Style := myoldbrushstyle;
     Canvas.Pen.Width := myoldpenwidth;
     Shape := '';
   end;
@@ -3852,10 +3852,10 @@ begin
   begin
     with Canvas do
     begin
-      pen.Mode := pmnotxor;
-      pen.Style := psdot;
-      rectangle(myorigin.X, myorigin.Y, X, Y);
-      pen.Style := pssolid;
+      Pen.Mode := pmNotXor;
+      Pen.Style := psDot;
+      Rectangle(myorigin.X, myorigin.Y, X, Y);
+      Pen.Style := psSolid;
     end;
     DrawBars(myorigin.X, myorigin.Y, X, Y);
   end;
@@ -3864,62 +3864,62 @@ begin
   begin
     with Canvas do
     begin
-      pen.Mode := pmnotxor;
-      pen.Style := psdot;
-      rectangle(myorigin.X, myorigin.Y, X, Y);
-      pen.Style := pssolid;
+      Pen.Mode := pmNotXor;
+      Pen.Style := psDot;
+      Rectangle(myorigin.X, myorigin.Y, X, Y);
+      Pen.Style := psSolid;
     end;
     Drawborders(myorigin.X, myorigin.Y, X, Y);
   end;
 
   if Shape = 'paste' then
   begin
-    myrect := rect(0, 0, 0, 0);
-    myrect.left := X;
-    myrect.top := Y;
-    myrect.right := X + mycliprect.right - mycliprect.left;
-    myrect.bottom := Y + mycliprect.bottom - mycliprect.Top;
+    myrect := Rect(0, 0, 0, 0);
+    myrect.Left := X;
+    myrect.Top := Y;
+    myrect.Right := X + mycliprect.Right - mycliprect.Left;
+    myrect.Bottom := Y + mycliprect.Bottom - mycliprect.Top;
     Canvas.CopyRect(myrect, Canvas, mycliprect);
   end;
 
   if Shape = 'pastecolor' then
   begin
     clipcm := cmsrccopy;
-    SetClip(clwhite);
+    SetClip(clWhite);
     CopyClip;
-    FX.ExtractColor(Clip, Canvas.brush.color);
+    FX.ExtractColor(Clip, Canvas.Brush.Color);
     Canvas.Draw(X, Y, Clip);
-    Clip.transparent := False;
+    Clip.Transparent := False;
   end;
 
   if Shape = 'pastecolorx' then
   begin
     clipcm := cmsrccopy;
-    SetClip(clwhite);
+    SetClip(clWhite);
     CopyClip;
-    FX.ExcludeColor(Clip, Canvas.brush.color);
+    FX.ExcludeColor(Clip, Canvas.Brush.Color);
     Canvas.Draw(X, Y, Clip);
-    Clip.transparent := False;
+    Clip.Transparent := False;
   end;
 
   if Shape = 'zoomkeepbrush' then
   begin
     Shape := 'freehand';
-    Canvas.pen.Width := 2;
+    Canvas.Pen.Width := 2;
   end;
 
   if Shape = 'paintpick' then
   begin
-    if ssalt in Shift then
-      Canvas.brush.color := MixColors(
-        Canvas.pixels[X - 5, Y],
-        Canvas.pixels[X + 5, Y])
+    if ssAlt in Shift then
+      Canvas.Brush.Color := MixColors(
+        Canvas.Pixels[X - 5, Y],
+        Canvas.Pixels[X + 5, Y])
     else
-      Canvas.brush.color := Canvas.pixels[X, Y];
-    ColorPicked(Canvas.brush.color);
+      Canvas.Brush.Color := Canvas.Pixels[X, Y];
+    ColorPicked(Canvas.Brush.Color);
     Shape := '';
   end;
-  Canvas.pen.Mode := mypen;
+  Canvas.Pen.Mode := mypen;
   if not ((Shape = 'Polygon') or
     (Shape = 'polyline') or
     (Shape = 'polybezier')) then
@@ -4067,13 +4067,13 @@ begin
   autosize := True;
   Picture.Bitmap.Height := 256;
   Picture.Bitmap.Width := 256;
-  Canvas.Brush.color := clwhite;
-  Picture.Bitmap.Canvas.fillrect(rect(0, 0, Picture.Bitmap.Width, Picture.Bitmap.Height));
-  Canvas.brush.Style := bsclear;
-  Canvas.pen.color := clwhite;
-  Canvas.moveto(100, 100);
-  Canvas.lineto(128, 128);
-  Canvas.pen.color := clblack;
+  Canvas.Brush.Color := clWhite;
+  Picture.Bitmap.Canvas.FillRect(Rect(0, 0, Picture.Bitmap.Width, Picture.Bitmap.Height));
+  Canvas.Brush.Style := bsClear;
+  Canvas.Pen.Color := clWhite;
+  Canvas.MoveTo(100, 100);
+  Canvas.LineTo(128, 128);
+  Canvas.Pen.Color := clBlack;
 end;
 
 procedure TJvDrawImage.SetAirBrush(const Value: TJvAirBrush);
@@ -4110,80 +4110,80 @@ procedure TJvDrawImage.contrastBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.contrast(Clip, painterEffectsF.EBar.position);
+  FX.contrast(Clip, painterEffectsF.EBar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.saturationBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.saturation(Clip, painterEffectsF.EBar.position);
+  FX.saturation(Clip, painterEffectsF.EBar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.lightnessBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.lightness(Clip, painterEffectsF.Ebar.position);
+  FX.lightness(Clip, painterEffectsF.Ebar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.BlurBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.GaussianBlur(Clip, painterEffectsF.Ebar.position);
+  FX.GaussianBlur(Clip, painterEffectsF.Ebar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.splitBlurBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.SplitBlur(Clip, painterEffectsF.Ebar.position);
+  FX.SplitBlur(Clip, painterEffectsF.Ebar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.colornoiseBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.AddColorNoise(Clip, painterEffectsF.Ebar.position);
+  FX.AddColorNoise(Clip, painterEffectsF.Ebar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.mononoiseBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.AddmonoNoise(Clip, painterEffectsF.Ebar.position);
+  FX.AddmonoNoise(Clip, painterEffectsF.Ebar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.smoothBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.Smooth(Clip, painterEffectsF.EBar.position);
+  FX.Smooth(Clip, painterEffectsF.EBar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.Effects;
@@ -4191,10 +4191,10 @@ begin
   with PainterEffectsF do
   begin
     cxbar.Max := Width;
-    cybar.max := Height;
-    cxbar.position := cxbar.max div 2;
-    cybar.position := cybar.max div 2;
-    show;
+    cybar.Max := Height;
+    cxbar.Position := cxbar.Max div 2;
+    cybar.Position := cybar.Max div 2;
+    Show;
   end;
 end;
 
@@ -4202,10 +4202,10 @@ procedure TJvDrawImage.seamBarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.MakeSeamlessClip(Clip, painterEffectsF.Ebar.position);
+  FX.MakeSeamlessClip(Clip, painterEffectsF.Ebar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.mosaicBarChange;
@@ -4214,11 +4214,11 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.mosaic(Clip, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.twistBarChange;
@@ -4232,11 +4232,11 @@ begin
   bm2.Width := Clip.Width;
   bm2.Height := Clip.Height;
   bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.twist(Clip, bm2, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   bm2.Free;
 end;
 
@@ -4251,11 +4251,11 @@ begin
   bm2.Width := Clip.Width;
   bm2.Height := Clip.Height;
   bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.position / 100;
+  am := painterEffectsF.Ebar.Position / 100;
   FX.Fisheye(Clip, bm2, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   bm2.Free;
 end;
 
@@ -4265,11 +4265,11 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.Wave(Clip, am, 0, 0);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.WaveExtraChange;
@@ -4278,11 +4278,11 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.EBar.position;
+  am := painterEffectsF.EBar.Position;
   FX.Wave(Clip, am, 0, 1);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.WaveInfChange;
@@ -4291,12 +4291,12 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  inf := painterEffectsF.Ebar.position;
-  wa := paintereffectsF.extraBar.Position;
+  inf := painterEffectsF.Ebar.Position;
+  wa := paintereffectsF.ExtraBar.Position;
   FX.Wave(Clip, wa, inf, 2);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.RotateBar;
@@ -4313,14 +4313,14 @@ begin
   Dst.pixelformat := pf24bit;
   with PainterEffectsF do
   begin
-    am := Ebar.position;
-    dx := cxBar.position;
-    dy := cyBar.position;
+    am := Ebar.Position;
+    dx := cxBar.Position;
+    dy := cyBar.Position;
   end;
   FX.SmoothRotate(Clip, Dst, dx, dy, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   Dst.Free;
 end;
 
@@ -4330,11 +4330,11 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   XFormA(am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.MarbleBarChange;
@@ -4349,12 +4349,12 @@ begin
   Dst.PixelFormat := pf24bit;
   Dst.Width := Clip.Width;
   Dst.Height := Clip.Height;
-  scale := painterEffectsF.extraBar.position;
-  turbulence := painterEffectsF.Ebar.position;
+  scale := painterEffectsF.ExtraBar.Position;
+  turbulence := painterEffectsF.Ebar.Position;
   FX.Marble(Clip, Dst, scale, turbulence);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   Dst.Free;
 end;
 
@@ -4370,12 +4370,12 @@ begin
   Dst.PixelFormat := pf24bit;
   Dst.Width := Clip.Width;
   Dst.Height := Clip.Height;
-  scale := painterEffectsF.extraBar.position;
-  turbulence := painterEffectsF.Ebar.position;
+  scale := painterEffectsF.ExtraBar.Position;
+  turbulence := painterEffectsF.Ebar.Position;
   FX.Marble2(Clip, Dst, scale, turbulence);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   Dst.Free;
 end;
 
@@ -4391,12 +4391,12 @@ begin
   Dst.PixelFormat := pf24bit;
   Dst.Width := Clip.Width;
   Dst.Height := Clip.Height;
-  scale := painterEffectsF.extraBar.position;
-  turbulence := painterEffectsF.Ebar.position;
+  scale := painterEffectsF.ExtraBar.Position;
+  turbulence := painterEffectsF.Ebar.Position;
   FX.Marble3(Clip, Dst, scale, turbulence);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   Dst.Free;
 end;
 
@@ -4412,12 +4412,12 @@ begin
   Dst.PixelFormat := pf24bit;
   Dst.Width := Clip.Width;
   Dst.Height := Clip.Height;
-  scale := painterEffectsF.extraBar.position;
-  turbulence := painterEffectsF.Ebar.position;
+  scale := painterEffectsF.ExtraBar.Position;
+  turbulence := painterEffectsF.Ebar.Position;
   FX.Marble4(Clip, Dst, scale, turbulence);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   Dst.Free;
 end;
 
@@ -4433,12 +4433,12 @@ begin
   Dst.PixelFormat := pf24bit;
   Dst.Width := Clip.Width;
   Dst.Height := Clip.Height;
-  scale := painterEffectsF.extrabar.position;
-  turbulence := painterEffectsF.EBar.position;
+  scale := painterEffectsF.ExtraBar.Position;
+  turbulence := painterEffectsF.EBar.Position;
   FX.Marble5(Clip, Dst, scale, turbulence);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   Dst.Free;
 end;
 
@@ -4454,12 +4454,12 @@ begin
   Dst.PixelFormat := pf24bit;
   Dst.Width := Clip.Width;
   Dst.Height := Clip.Height;
-  scale := painterEffectsF.extrabar.position;
-  turbulence := painterEffectsF.Ebar.position;
+  scale := painterEffectsF.ExtraBar.Position;
+  turbulence := painterEffectsF.Ebar.Position;
   FX.Marble6(Clip, Dst, scale, turbulence);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   Dst.Free;
 end;
 
@@ -4475,12 +4475,12 @@ begin
   Dst.PixelFormat := pf24bit;
   Dst.Width := Clip.Width;
   Dst.Height := Clip.Height;
-  scale := painterEffectsF.extrabar.position;
-  turbulence := painterEffectsF.Ebar.position;
+  scale := painterEffectsF.ExtraBar.Position;
+  turbulence := painterEffectsF.Ebar.Position;
   FX.Marble7(Clip, Dst, scale, turbulence);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   Dst.Free;
 end;
 
@@ -4496,12 +4496,12 @@ begin
   Dst.PixelFormat := pf24bit;
   Dst.Width := Clip.Width;
   Dst.Height := Clip.Height;
-  scale := painterEffectsF.extrabar.position;
-  turbulence := painterEffectsF.Ebar.position;
+  scale := painterEffectsF.ExtraBar.Position;
+  turbulence := painterEffectsF.Ebar.Position;
   FX.Marble8(Clip, Dst, scale, turbulence);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   Dst.Free;
 end;
 
@@ -4512,67 +4512,67 @@ begin
   FX.Emboss(Clip);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.filterRedbarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.filterRed(Clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
+  FX.filterRed(Clip, paintereffectsF.ExtraBar.Position, painterEffectsF.EBar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.filterGreenbarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.filterGreen(Clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
+  FX.filterGreen(Clip, paintereffectsF.ExtraBar.Position, painterEffectsF.EBar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.filterBluebarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.filterBlue(Clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
+  FX.filterBlue(Clip, paintereffectsF.ExtraBar.Position, painterEffectsF.EBar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.FilterXRedbarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.FilterXRed(Clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
+  FX.FilterXRed(Clip, paintereffectsF.ExtraBar.Position, painterEffectsF.EBar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.FilterXGreenbarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.FilterXGreen(Clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
+  FX.FilterXGreen(Clip, paintereffectsF.ExtraBar.Position, painterEffectsF.EBar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.FilterXBluebarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.FilterXBlue(Clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
+  FX.FilterXBlue(Clip, paintereffectsF.ExtraBar.Position, painterEffectsF.EBar.Position);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.SqueezeHorbarChange;
@@ -4586,11 +4586,11 @@ begin
   bm2.Width := Clip.Width;
   bm2.Height := Clip.Height;
   bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.SqueezeHor(Clip, bm2, am, mbHor);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   bm2.Free;
 end;
 
@@ -4605,11 +4605,11 @@ begin
   bm2.Width := Clip.Width;
   bm2.Height := Clip.Height;
   bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.SqueezeHor(Clip, bm2, am, mbTop);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   bm2.Free;
 end;
 
@@ -4624,11 +4624,11 @@ begin
   bm2.Width := Clip.Width;
   bm2.Height := Clip.Height;
   bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.SqueezeHor(Clip, bm2, am, mbBottom);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   bm2.Free;
 end;
 
@@ -4643,11 +4643,11 @@ begin
   bm2.Width := Clip.Width;
   bm2.Height := Clip.Height;
   bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.SqueezeHor(Clip, bm2, am, mbDiamond);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   bm2.Free;
 end;
 
@@ -4662,11 +4662,11 @@ begin
   bm2.Width := Clip.Width;
   bm2.Height := Clip.Height;
   bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.SqueezeHor(Clip, bm2, am, mbwaste);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   bm2.Free;
 end;
 
@@ -4681,11 +4681,11 @@ begin
   bm2.Width := Clip.Width;
   bm2.Height := Clip.Height;
   bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.SqueezeHor(Clip, bm2, am, mbRound);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   bm2.Free;
 end;
 
@@ -4700,11 +4700,11 @@ begin
   bm2.Width := Clip.Width;
   bm2.Height := Clip.Height;
   bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.SqueezeHor(Clip, bm2, am, mbround2);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   bm2.Free;
 end;
 
@@ -4719,11 +4719,11 @@ begin
   bm2.Width := Clip.Width;
   bm2.Height := Clip.Height;
   bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.SplitRound(Clip, bm2, am, mbSplitRound);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   bm2.Free;
 end;
 
@@ -4738,11 +4738,11 @@ begin
   bm2.Width := Clip.Width;
   bm2.Height := Clip.Height;
   bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.SplitRound(Clip, bm2, am, mbSplitWaste);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   bm2.Free;
 end;
 
@@ -4752,11 +4752,11 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   Shear(Clip, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.plasmabarChange;
@@ -4778,17 +4778,17 @@ begin
   src2.Height := h;
   src2.PixelFormat := pf24bit;
   src2.Canvas.Draw(0, 0, Clip);
-  am := painterEffectsF.Ebar.position;
-  turb := painterEffectsF.extrabar.position;
+  am := painterEffectsF.Ebar.Position;
+  turb := painterEffectsF.ExtraBar.Position;
   if turb < 10 then
   begin
-    painterEffectsF.extrabar.position := 10;
+    painterEffectsF.ExtraBar.Position := 10;
     turb := 10;
   end;
   FX.Plasma(src1, src2, Clip, am, turb);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   src2.Free;
   src1.Free;
 end;
@@ -4800,7 +4800,7 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  xr := painterEffectsF.Ebar.position * 0.028;
+  xr := painterEffectsF.Ebar.Position * 0.028;
   yr := painterEffectsF.ExtraBar.Position * 0.009;
   X0 := -2.25 + xr;
   X1 := 0.75;
@@ -4809,7 +4809,7 @@ begin
   FX.DrawMandelJulia(Clip, X0, Y0, X1, Y1, 16, Mandel);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.DrawTriangles;
@@ -4818,11 +4818,11 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.Triangles(Clip, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.RippleTooth;
@@ -4831,11 +4831,11 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.RippleTooth(Clip, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.RippleTriangle;
@@ -4844,11 +4844,11 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.RippleTooth(Clip, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.RippleRandom;
@@ -4857,11 +4857,11 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.RippleRandom(Clip, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.TexturizeTile;
@@ -4870,11 +4870,11 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.TexturizeTile(Clip, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.TexturizeOverlap;
@@ -4883,11 +4883,11 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.TexturizeOverlap(Clip, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.DrawMap;
@@ -4896,11 +4896,11 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   FX.HeightMap(Clip, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.DrawBlend;
@@ -4910,18 +4910,18 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   w := Clip.Width;
   h := Clip.Height;  
-  if not clipboard.Provides('image/delphi.bitmap') then
-    exit; 
+  if not Clipboard.Provides('image/delphi.bitmap') then
+    Exit; 
   src2 := TBitmap.Create;
-  src2.Assign(clipboard);
+  src2.Assign(Clipboard);
   src2.PixelFormat := pf24bit;
   if ((src2.Width <> w) or (src2.Height <> h)) then
   begin
     src2.Free;
-    exit;
+    Exit;
   end;
   Dst := TBitmap.Create;
   Dst.Width := w;
@@ -4930,7 +4930,7 @@ begin
   FX.Blend(Clip, src2, Dst, am / 100);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   src2.Free;
   Dst.Free;
 end;
@@ -4939,11 +4939,10 @@ procedure TJvDrawImage.DrawSolarize;
 var
   am, w, h: Integer;
   Dst: TBitmap;
-
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   w := Clip.Width;
   h := Clip.Height;
   Dst := TBitmap.Create;
@@ -4953,7 +4952,7 @@ begin
   FX.Solarize(Clip, Dst, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   Dst.Free;
 end;
 
@@ -4964,7 +4963,7 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
+  am := painterEffectsF.Ebar.Position;
   w := Clip.Width;
   h := Clip.Height;
   Dst := TBitmap.Create;
@@ -4974,19 +4973,19 @@ begin
   FX.Posterize(Clip, Dst, am);
   QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.update;
+  QuickPreviewF.PreviewImage.Update;
   Dst.Free;
 end;
 
 procedure TJvDrawImage.Backgrounds;
 begin
-  PainterQBF.show;
+  PainterQBF.Show;
   PainterQBF.BringToFront;
 end;
 
 procedure TJvDrawImage.Preview(ABitmap: TBitmap);
 begin
-  QuickPreviewF.show;
+  QuickPreviewF.Show;
   QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(abitmap);
 end;
 

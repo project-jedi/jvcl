@@ -34,7 +34,7 @@ unit JvQGrids;
 interface
 
 uses
-  Classes, QControls, QWindows, QMessages, Types, QGraphics, QStdCtrls, QForms, QGrids, // Windows after Controls 
+  Classes, QControls, Types, QWindows, QMessages, QGraphics, QStdCtrls, QForms, QGrids, // Windows after Controls 
   Qt, QTypes, 
   JvQConsts, JvQAppStorage, JvQFormPlacement, JvQComponent, JvQExGrids;
 

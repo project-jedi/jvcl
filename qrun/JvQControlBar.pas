@@ -35,7 +35,7 @@ unit JvQControlBar;
 interface
 
 uses
-  QWindows, Classes, QGraphics, QControls, QMenus,
+  Types, QWindows, Classes, QGraphics, QControls, QMenus,
   JvQExControls, JvQExExtCtrls;
 
 type

@@ -40,7 +40,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS} 
   QWindows, Qt, QForms, 
-  Classes, QControls, QGraphics;
+  Classes, QControls, Types, QGraphics;
 
 type
   { A caret can be specified either by giving a bitmap that defines its shape

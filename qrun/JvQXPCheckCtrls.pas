@@ -37,7 +37,7 @@ interface
 
 uses
   Classes,
-  QWindows, Types, QGraphics, QControls,
+  Types, QWindows, QGraphics, QControls,
   JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -133,7 +133,7 @@ type
 
 implementation
 
-//=== TJvXPCustomCheckControl ================================================
+//=== { TJvXPCustomCheckControl } ============================================
 
 constructor TJvXPCustomCheckControl.Create(AOwner: TComponent);
 begin
@@ -182,11 +182,11 @@ begin
 
   // clicked.
   JvXPCreateGradientRect(FCheckSize - 2, FCheckSize - 2, dxColor_Btn_Enb_CkFrom_WXP,
-    dxColor_Btn_Enb_CkTo_WXP, 16, gsTop, true, FCkGradient);
+    dxColor_Btn_Enb_CkTo_WXP, 16, gsTop, True, FCkGradient);
 
   // highlight.
   JvXPCreateGradientRect(FCheckSize - 2, FCheckSize - 2, dxColor_Btn_Enb_HlFrom_WXP,
-    dxColor_Btn_Enb_HlTo_WXP, 16, gsTop, true, FHlGradient);
+    dxColor_Btn_Enb_HlTo_WXP, 16, gsTop, True, FHlGradient);
 
   LockedInvalidate;
 end;
@@ -263,7 +263,7 @@ begin
    end;
 end;
 
-//=== TJvXPCheckbox ==========================================================
+//=== { TJvXPCheckbox } ======================================================
 
 procedure TJvXPCheckbox.DrawCheckSymbol(const R: TRect);
 var

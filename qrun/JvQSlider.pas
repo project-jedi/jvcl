@@ -35,7 +35,7 @@ unit JvQSlider;
 interface
 
 uses
-  SysUtils, Classes, QWindows, QMessages, Types, QGraphics, QControls, QExtCtrls,
+  SysUtils, Classes, Types, QWindows, QMessages, QGraphics, QControls, QExtCtrls,
   JvQComponent;
 
 type

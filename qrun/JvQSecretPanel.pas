@@ -42,7 +42,7 @@ unit JvQSecretPanel;
 interface
 
 uses
-  QWindows, QMessages, Classes, Types, QGraphics, QControls, QExtCtrls, QForms,
+  Types, QWindows, QMessages, Classes, QGraphics, QControls, QExtCtrls, QForms,
   JvQTimer, JvQComponent, JvQTypes;
 
 type

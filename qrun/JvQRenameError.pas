@@ -36,7 +36,7 @@ unit JvQRenameError;
 interface
 
 uses
-  Windows, SetupApi, SysUtils, Classes,
+  Windows, QSetUpApi, SysUtils, Classes,
   JvQCommonDialogD, JvQTypes;
 
 type

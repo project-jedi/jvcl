@@ -35,7 +35,7 @@ unit JvQStatusBar;
 interface
 
 uses
-  QWindows, QMessages, 
+  Types, QWindows, QMessages, 
   SysUtils, Classes, Contnrs, QGraphics, QControls, QForms, QComCtrls, QStdActns,
   JVCLXVer, JvQExComCtrls;
 

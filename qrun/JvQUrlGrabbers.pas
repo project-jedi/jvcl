@@ -253,8 +253,8 @@ begin
   JvUrlGrabberClassList.Add(TJvLocalFileUrlGrabber);
 end;
 
-procedure DownloadCallBack(Handle: HInternet; Context: DWord;
-  AStatus: DWord; Info: Pointer; StatLen: DWord); stdcall;
+procedure DownloadCallBack(Handle: HINTERNET; Context: DWORD;
+  AStatus: DWORD; Info: Pointer; StatLen: DWORD); stdcall;
 begin
   with TJvCustomUrlGrabberThread(Context) do
   begin
@@ -263,7 +263,7 @@ begin
   end;
 end;
 
-//=== TJvHttpUrlGrabber ======================================================
+//=== { TJvHttpUrlGrabber } ==================================================
 
 constructor TJvHttpUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
 begin
@@ -290,7 +290,7 @@ begin
   Result := 'HTTP';
 end;
 
-//=== TJvFtpUrlGrabber =======================================================
+//=== { TJvFtpUrlGrabber } ===================================================
 
 constructor TJvFtpUrlGrabber.Create(AOwner: TComponent);
 begin
@@ -326,7 +326,7 @@ begin
   Result := 'FTP';
 end;
 
-//=== TJvFtpUrlGrabberDefaultProperties ======================================
+//=== { TJvFtpUrlGrabberDefaultProperties } ==================================
 
 constructor TJvFtpUrlGrabberDefaultProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);
 begin
@@ -351,7 +351,7 @@ begin
   Result := TJvFtpUrlGrabber.GetSupportedURLName;
 end;
 
-//=== TJvFtpUrlGrabberThread =================================================
+//=== { TJvFtpUrlGrabberThread } =============================================
 
 procedure TJvFtpUrlGrabberThread.Closed;
 begin
@@ -481,7 +481,7 @@ begin
   Result := TJvFtpUrlGrabber(FGrabber);
 end;
 
-//=== TJvHttpUrlGrabberThread ================================================
+//=== { TJvHttpUrlGrabberThread } ============================================
 
 constructor TJvHttpUrlGrabberThread.Create(Grabber: TJvCustomUrlGrabber);
 begin
@@ -492,12 +492,11 @@ procedure TJvHttpUrlGrabberThread.Execute;
 var
   hSession, hHostConnection, hDownload: HINTERNET;
   HostName, FileName: string;
-  Username, Password: PChar;
+  UserName, Password: PChar;
   Buffer: PChar;
   dwBufLen, dwIndex, dwBytesRead, dwTotalBytes: DWORD;
   HasSize: Boolean;
   Buf: array [0..1024] of Byte;
-
 begin
   Buffer := nil;
 
@@ -521,16 +520,16 @@ begin
       end;
 
       // Connect to the hostname
-      if Grabber.FUsername = '' then
-        Username := nil
+      if Grabber.FUserName = '' then
+        UserName := nil
       else
-        Username := PChar(Grabber.FUsername);
+        UserName := PChar(Grabber.FUserName);
       if Grabber.FPassword = '' then
         Password := nil
       else
         Password := PChar(Grabber.FPassword);
       hHostConnection := InternetConnect(hSession, PChar(HostName), INTERNET_DEFAULT_HTTP_PORT,
-        Username, Password, INTERNET_SERVICE_HTTP, 0, DWORD(Self));
+        UserName, Password, INTERNET_SERVICE_HTTP, 0, DWORD(Self));
       if hHostConnection = nil then
       begin
         dwIndex := 0;
@@ -632,18 +631,18 @@ begin
   Result := TJvHttpUrlGrabber(FGrabber);
 end;
 
-//=== TJvHttpUrlGrabberDefaultProperties =====================================
+//=== { TJvHttpUrlGrabberDefaultProperties } =================================
 
 function TJvHttpUrlGrabberDefaultProperties.GetSupportedURLName: string;
 begin
   Result := TJvHttpUrlGrabber.GetSupportedURLName;
 end;
 
-//=== TJvLocalFileUrlGrabber =================================================
+//=== { TJvLocalFileUrlGrabber } =============================================
 
 constructor TJvLocalFileUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
 begin
-  inherited Create(AOwner, AURL, DefaultProperties);
+  inherited Create(AOwner, AUrl, DefaultProperties);
   FPreserveAttributes := TJvLocalFileUrlGrabberProperties(DefaultProperties).PreserveAttributes;
 end;
 
@@ -675,7 +674,7 @@ begin
   Result := 'LocalFile';
 end;
 
-//=== TJvLocalFileUrlGrabberThread ===========================================
+//=== { TJvLocalFileUrlGrabberThread } =======================================
 
 procedure TJvLocalFileUrlGrabberThread.Execute;
 var
@@ -685,7 +684,6 @@ var
   AFileStream: TFileStream;
   Attrs: Integer;
 begin
-
   Grabber.FStream := nil;
   ParseUrl(Grabber.FUrl, FileName);
   if not FileExists(FileName) then
@@ -712,10 +710,10 @@ begin
       BytesRead := 1;
       while (BytesRead <> 0) and not Terminated and FContinue do
       begin
-        BytesRead := AFileStream.Read(Buf, sizeof(Buf));
+        BytesRead := AFileStream.Read(Buf, SizeOf(Buf));
         Inc(TotalBytes, BytesRead);
         Grabber.FBytesRead := TotalBytes;
-        FStatus    := Grabber.FBytesRead;
+        FStatus := Grabber.FBytesRead;
         if BytesRead > 0 then
           Grabber.FStream.Write(Buf, BytesRead);
         Synchronize(Progress);
@@ -749,7 +747,7 @@ begin
     FileName := ExpandUNCFilename(FileName);
 end;
 
-//=== TJvLocalFileUrlGrabberProperties =======================================
+//=== { TJvLocalFileUrlGrabberProperties } ===================================
 
 constructor TJvLocalFileUrlGrabberProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);
 begin

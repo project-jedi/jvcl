@@ -39,7 +39,7 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, Types, QGraphics, QControls, QToolWin, QExtCtrls,
+  Types, QWindows, QMessages, QGraphics, QControls, QToolWin, QExtCtrls,
   JvQComponent, JvQExForms;
 
 type

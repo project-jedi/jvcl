@@ -630,9 +630,9 @@ var
   TmpR, OrigR: TRect;
   SavedColor: TColor;
 begin
-  if csDestroying in ComponentState then
-    Exit; 
   Result := True; // handled
+  if csDestroying in ComponentState then
+    Exit;
   if odSelected in State then
   begin
     Canvas.Brush.Color := FColorHighlight;
@@ -681,7 +681,7 @@ begin
     begin
       Tmp := Items[Index].ImageIndex;
       //      R.Left := R.Left + Items[Index].Indent;
-      Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;  
+      Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
       FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp); 
       if FButtonFrame then
       begin
@@ -968,14 +968,14 @@ function TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDraw
 var
   SavedColor: TColor;
 begin
-  if csDestroying in ComponentState then
-    Exit; 
   Result := True;
+  if csDestroying in ComponentState then
+    Exit;
   if odSelected in State then
   begin
     Canvas.Brush.Color := Items[Index].ColorHighlight;
     Canvas.Font.Color := Items[Index].ColorHighlightText;
-  end; 
+  end;
   SavedColor := Canvas.Font.Color;
   Canvas.Font.Assign(Items[Index].Font);
   if State <> [] then

@@ -88,9 +88,11 @@ begin
       Image1 := TImage.Create(Form);
       Image1.Picture.Assign(Picture);
       Image1.Parent := Form;
-      Form.ClientHeight := Image1.Height;
-      Form.ClientWidth := Image1.Width;
+      Form.ClientHeight := Picture.Height;
+      Form.ClientWidth := Picture.Width;
       Form.Caption := FTitle;
+      Image1.SetBounds(0,0,Picture.Width,Picture.Height);
+      Image1.Anchors := [akTop, akLeft, akRight, akBottom];
       Form.ShowModal;
     finally
       Form.Free;

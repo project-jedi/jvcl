@@ -1979,9 +1979,11 @@ begin
     FStreamedButtonWidth := Value;
     FStreamedFixedWidth := False;
   end
-  else if not ShowButton then
+  else
+  if not ShowButton then
     FSavedButtonWidth := Value
-  else if (ButtonWidth <> Value) {or ((Value > 0) <> ShowButton)} then
+  else
+  if (ButtonWidth <> Value) {or ((Value > 0) <> ShowButton)} then
   begin
     if Value > 1 then
       FBtnControl.Visible := True
@@ -3561,5 +3563,13 @@ begin
     Integer(WidgetFlags_WStyle_NormalBorder) or // WS_BORDER
     Integer(WidgetFlags_WStyle_Tool);  // WS_EX_TOOLWINDOW
 end;
+
+
+
+
+initialization
+
+finalization
+  FinalizeUnit(sUnitName);
 
 end.

@@ -35,8 +35,8 @@ unit JvQColorTrackbar;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QControls, QGraphics, QForms, QWindows, 
+  Types, QWindows, 
+  Classes, QControls, QGraphics, QForms,
   JvQComponent;
 
 type 
@@ -171,7 +171,8 @@ begin
  
   FBmpImage.Canvas.Start; 
   GradientFillRect(FBmpImage.Canvas, R, ColorFrom, ColorTo, fdLeftToRight, 255);
-  if BorderStyle = bsSingle then
+  if BorderStyle = bsSingle then 
+    QWindows. 
     DrawEdge(FBmpImage.Canvas.Handle, R, EDGE_SUNKEN, BF_TOP or BF_RIGHT or BF_BOTTOM or BF_LEFT); 
   FBmpImage.Canvas.Stop; 
 end;
@@ -212,11 +213,8 @@ begin
     UpdateGradient;
   Canvas.Pen.Color := Color;
   Canvas.Brush.Color := Color; 
-//  Canvas.Draw(WidthOffset div 2, TopOffset, FBmpImage);
   FBmpImage.Canvas.Start; 
-//  {$IFDEF VCL}
-  BitBlt(Canvas.Handle, WidthOffset div 2, TopOffset, Width, Height, FBmpImage.Canvas.Handle, 0, 0, SrcCopy);
-//  {$ENDIF VCL} 
+  BitBlt(Canvas.Handle, WidthOffset div 2, TopOffset, Width, Height, FBmpImage.Canvas.Handle, 0, 0, SrcCopy); 
   FBmpImage.Canvas.Stop; 
   R := Rect(0, 0, Width, TopOffset);
   Canvas.FillRect(R);

@@ -40,7 +40,7 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, Types, QGraphics, QControls, QForms, 
+  Types, QWindows, QMessages, QGraphics, QControls, QForms, 
   QImgList,  
   JvQTypes, JvQConsts, JvQJVCLUtils, 
   JvQWizard;
@@ -335,8 +335,8 @@ begin
           if not Pages[PageIndex].Enabled then
           begin
             // (p3) TImageList changes the canvas colors when drawing disabled images, so we reset them explicitly
-            QWindows.SetBkColor(ACanvas.Handle, BkColor);
-            QWindows.SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText));
+            SetBkColor(ACanvas.Handle, BkColor);
+            SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText));
           end;
         end;
       end

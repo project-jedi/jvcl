@@ -36,7 +36,7 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QControls, QForms,
+  Types, QWindows, QControls, QForms,
   JvQComponent, JvQErrorIndicator, JvQFinalize;
 
 type

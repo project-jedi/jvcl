@@ -36,7 +36,7 @@ unit JvQXPCore;
 interface
 
 uses
-  QWindows, QMessages, QControls, Types, QGraphics, QForms, 
+  Types, QWindows, QControls, QGraphics, QForms, QMessages, // asn: messages after controls for clx 
   JvQComponent, 
   Classes;
 
@@ -143,7 +143,8 @@ type
     FIsSibling: Boolean;
     FModalResult: TModalResult;
     FOnMouseLeave: TNotifyEvent;
-    FOnMouseEnter: TNotifyEvent;  
+    FOnMouseEnter: TNotifyEvent; 
+    procedure CMFocusChanged(var Msg: TMessage); message CM_FOCUSCHANGED; 
   protected
     ExControlStyle: TJvXPControlStyle;
     procedure InternalRedraw; dynamic;
@@ -166,7 +167,6 @@ type
     procedure AdjustSize; override;
     procedure BorderChanged; dynamic;
     procedure EnabledChanged; override;
-    procedure FocusChanged; // override;  TODO
     procedure TextChanged; override;
     procedure ParentColorChanged; override;
     procedure ParentFontChanged; override;
@@ -337,7 +337,7 @@ uses
 
 
 
-//=== TJvXPCustomComponent ===================================================
+//=== { TJvXPCustomComponent } ===============================================
 
 constructor TJvXPCustomComponent.Create(AOwner: TComponent);
 begin
@@ -346,7 +346,7 @@ end;
 
 
 
-//=== TJvXPCustomControl =====================================================
+//=== { TJvXPCustomControl } =================================================
 
 constructor TJvXPCustomControl.Create(AOwner: TComponent);
 begin
@@ -390,6 +390,15 @@ end;
 
 
 
+procedure TJvXPCustomControl.CMFocusChanged(var Msg: TMessage);
+begin
+  // delegate message "FocusChanged" to hook.
+  inherited;
+  HookFocusedChanged;
+end;
+
+
+
 
 
 function TJvXPCustomControl.WantKey(Key: Integer; Shift: TShiftState;
@@ -411,7 +420,7 @@ end;
 procedure TJvXPCustomControl.BorderChanged;
 begin
   // delegate message "BorderChanged" to hook.
-  //inherited BorderChanged;
+//  inherited BorderChanged;
   HookBorderChanged;
 end;
 
@@ -420,13 +429,6 @@ begin
   // delegate message "EnabledChanged" to hook.
   inherited EnabledChanged;
   HookEnabledChanged;
-end;
-
-procedure TJvXPCustomControl.FocusChanged;
-begin
-  // delegate message "FocusChanged" to hook.
-//  inherited FocusChanged;
-  HookFocusedChanged;
 end;
 
 procedure TJvXPCustomControl.MouseEnter(AControl: TControl);
@@ -655,7 +657,7 @@ begin
     InternalRedraw;
 end;
 
-//=== TJvXPStyle =============================================================
+//=== { TJvXPStyle } =========================================================
 
 constructor TJvXPStyle.Create(AOwner: TComponent);
 begin
@@ -690,7 +692,7 @@ begin
   end;
 end;
 
-//=== TJvXPStyleManager ======================================================
+//=== { TJvXPStyleManager } ==================================================
 
 constructor TJvXPStyleManager.Create(AOwner: TComponent);
 begin
@@ -744,7 +746,7 @@ begin
     FControls.Delete(FControls.IndexOf(AControls[I]));
 end;
 
-//=== TJvXPCustomStyleControl ================================================
+//=== { TJvXPCustomStyleControl } ============================================
 
 constructor TJvXPCustomStyleControl.Create(AOwner: TComponent);
 begin
@@ -782,7 +784,7 @@ begin
   end;
 end;
 
-//=== TJvXPGradient ==========================================================
+//=== { TJvXPGradient } ======================================================
 
 constructor TJvXPGradient.Create(AOwner: TControl);
 begin

@@ -1977,8 +1977,8 @@ begin
       AUpArrow.Height);
     Source := Bounds(0, 0, AUpArrow.Width, AUpArrow.Height);
 
-    if Enabled then
-      BrushCopy(ACanvas, Dest, AUpArrow, Source, AUpArrow.TransparentColor)
+    if Enabled then  
+      BrushCopy(ACanvas, Dest, AUpArrow, Source, AUpArrow.TransparentColor) 
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);

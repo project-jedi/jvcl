@@ -167,9 +167,7 @@ type
 
   TJvCustomSettingsTreeView = class(TJvCustomPageListTreeView)
   private
-    FNodeImages: TJvSettingsTreeImages;
-    FOnGetImageIndex: TTVExpandedEvent;
-    FOnGetSelectedIndex: TTVExpandedEvent;
+    FNodeImages: TJvSettingsTreeImages; 
     procedure SetImageSelection(const Value: TJvSettingsTreeImages);
   protected
     FLastSelected: TTreeNode;

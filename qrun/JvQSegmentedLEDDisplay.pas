@@ -101,8 +101,8 @@ type
     FSegmentUnlitColor: TUnlitColor;
     FSlant: TSlantAngle;
     FText: string; 
-    FAutoSize: boolean;
-    procedure SetAutoSize(Value: boolean); 
+    FAutoSize: Boolean;
+    procedure SetAutoSize(Value: Boolean); 
   protected
     procedure DefineProperties(Filer: TFiler); override;
     procedure Loaded; override;
@@ -133,7 +133,7 @@ type
     procedure InvalidateView;
     procedure UpdateText;
     procedure UpdateBounds;  
-    property AutoSize: boolean read FAutoSize write SetAutoSize default True; 
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default True; 
     property CharacterMapper: TJvSegmentedLEDCharacterMapper read FCharacterMapper;
     property DigitClass: TJvSegmentedLEDDigitClass read FDigitClass write SetDigitClass;
     // Solely needed for design time support of DigitClass
@@ -328,7 +328,7 @@ type
     procedure ControlItemToSegments(var ControlItem: PChar; var Segments: Int64); virtual;
     procedure MapControlItems(var Text: PChar; var Segments: Int64); virtual;
     procedure MapSimpleText(var Text: PChar; var Segments: Int64); virtual;
-    procedure MapSegNamesToSegments(var Text: Pchar; var Segments: Int64); virtual;
+    procedure MapSegNamesToSegments(var Text: PChar; var Segments: Int64); virtual;
     procedure PrimMapText(var Text: PChar; var Segments: Int64); virtual;
     procedure Modified;
 
@@ -480,7 +480,7 @@ begin
   Result.Y := Y;
 end;
 
-//=== TJvCustomSegmentedLEDDisplay ===========================================
+//=== { TJvCustomSegmentedLEDDisplay } =======================================
 
 constructor TJvCustomSegmentedLEDDisplay.Create(AOwner: TComponent);
 begin
@@ -676,9 +676,9 @@ begin
 end;
 
 
-procedure TJvCustomSegmentedLEDDisplay.SetAutoSize(Value: boolean);
+procedure TJvCustomSegmentedLEDDisplay.SetAutoSize(Value: Boolean);
 begin
-  FAutoSize := value;
+  FAutoSize := Value;
   if Value then
     UpdateBounds;
 end;
@@ -898,7 +898,7 @@ begin
   end;
 end;
 
-//=== TJvSegmentedLEDDigits ==================================================
+//=== { TJvSegmentedLEDDigits } ==============================================
 
 constructor TJvSegmentedLEDDigits.Create(AOwner: TPersistent);
 begin
@@ -926,7 +926,7 @@ begin
   Display.UpdateBounds;
 end;
 
-//=== TJvCustomSegmentedLEDDigit =============================================
+//=== { TJvCustomSegmentedLEDDigit } =========================================
 
 constructor TJvCustomSegmentedLEDDigit.Create(Collection: TCollection);
 begin
@@ -1257,7 +1257,7 @@ begin
   Result := 0;
 end;
 
-//=== TJvBaseSegmentedLEDDigit ===============================================
+//=== { TJvBaseSegmentedLEDDigit } ===========================================
 
 procedure TJvBaseSegmentedLEDDigit.EnableAllSegs;
 begin
@@ -1328,7 +1328,7 @@ begin
   SetSegmentRenderInfo(Index, srtPolygon, [
     AngleAdjustPoint(FRefRight, FRefCenterY + Spacing div 2, SlantAngle),
     AngleAdjustPoint(FRefRight, FRefBottom - Spacing div 2, SlantAngle),
-    AngleAdjustPoint(FRefRight - SegmentWidth, FrefBottom - Spacing div 2 - SegmentWidth, SlantAngle),
+    AngleAdjustPoint(FRefRight - SegmentWidth, FRefBottom - Spacing div 2 - SegmentWidth, SlantAngle),
     AngleAdjustPoint(FRefRight - SegmentWidth, FRefCenterY + Spacing div 2 + SegmentWidth, SlantAngle)
   ]);
 end;
@@ -1468,7 +1468,7 @@ begin
   end;
 end;
 
-//=== TJvSegmentedLEDCharacterMapper =========================================
+//=== { TJvSegmentedLEDCharacterMapper } =====================================
 
 constructor TJvSegmentedLEDCharacterMapper.Create(ADisplay: TJvCustomSegmentedLEDDisplay);
 begin
@@ -1631,7 +1631,7 @@ begin
     HandleDecimalSeparator(Text, Segments);
 end;
 
-procedure TJvSegmentedLEDCharacterMapper.MapSegNamesToSegments(var Text: Pchar;
+procedure TJvSegmentedLEDCharacterMapper.MapSegNamesToSegments(var Text: PChar;
   var Segments: Int64);
 var
   SortedSegNames: TStringList;
@@ -1802,7 +1802,7 @@ begin
   end;
 end;
 
-//=== TJv7SegmentedLEDDigit ==================================================
+//=== { TJv7SegmentedLEDDigit } ==============================================
 
 procedure TJv7SegmentedLEDDigit.EnableAllSegs;
 begin
@@ -1929,7 +1929,7 @@ end;
 
 function StringToUnlitColor(const S: string): TUnlitColor;
 begin
-  if not IdentToUnlitColor(S, LongInt(Result)) then
+  if not IdentToUnlitColor(S, Longint(Result)) then
     Result := StrToInt(S);
 end;
 

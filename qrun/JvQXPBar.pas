@@ -48,21 +48,18 @@ Known Issues:
 
 {$I jvcl.inc}
 
-{$IFNDEF USEJVCL}
-// sorry no theming
-{$UNDEF JVCLThemesEnabled}
-{$UNDEF JVCLThemesEnabledD56}
-{$ENDIF USEJVCL}
+
 
 unit JvQXPBar;
 
 interface
 
 uses
-  Classes, SysUtils,
-  QWindows, QControls, QMessages, Types, QGraphics, QForms, QImgList, QActnList, QExtCtrls, 
-  Qt, JvQTypes, QTypes, 
-  JvQConsts, JvQXPCore, JvQXPCoreUtils, JvQJCLUtils;
+  Types, QWindows, Classes, SysUtils, 
+  QGraphics, QControls, QForms, QExtCtrls, QImgList, QActnList, QMessages, 
+  Qt, QTypes, JvQTypes,  
+  JvQConsts, 
+  JvQXPCore, JvQXPCoreUtils;
 
 type
   { Warning: Never change order of enumeration because of
@@ -95,7 +92,7 @@ const
 
   dxColor_FocusedColorXP = TColor($00D8ACB0);
   dxColor_CheckedColorXP = TColor($00D9C1BB); 
-  clHotLight = clActiveHighlight; 
+  clHotLight = clActiveHighlight;  
 
   dxColor_FocusedFrameColorXP = clHotLight;
   dxColor_CheckedFrameColorXP = clHighlight;
@@ -426,11 +423,7 @@ type
     property OnItemClick: TJvXPBarOnItemClickEvent read FOnItemClick write FOnItemClick;
     procedure AdjustClientRect(var Rect: TRect); override;
     // show hints for individual items in the list
-    function HintShow(var HintInfo: THintInfo): Boolean;
-      {$IFDEF USEJVCL} override; {$ELSE} dynamic; {$ENDIF}
-    {$IFNDEF USEJVCL}
-    procedure CMHintShow(var Msg: TCMHintShow); message CM_HINTSHOW;
-    {$ENDIF USEJVCL}
+    function HintShow(var HintInfo: THintInfo): Boolean;  override;  
     procedure DblClick; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -528,10 +521,8 @@ procedure RoundedFrame(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer
 
 implementation
 
-uses 
-  {$IFDEF USEJVCL}
-  JvQResources,
-  {$ENDIF USEJVCL}
+uses  
+  JvQJCLUtils, JvQResources, 
   QMenus;
 
 {$IFDEF MSWINDOWS}
@@ -541,10 +532,7 @@ uses
 {$R ../Resources/JvXPBar.res}
 {$ENDIF LINUX}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsUntitled = 'untitled';
-{$ENDIF USEJVCL}
+
 
 const
   FC_HEADER_MARGIN = 6;
@@ -821,9 +809,9 @@ begin
     if (ItemCaption = '') and ((csDesigning in lBar.ComponentState) or (lBar.ControlCount = 0)) then
       ItemCaption := Format('(%s %d)', [RsUntitled, Index]);
     Inc(Rect.Left, 20);
-    SetBkMode(Handle, QWindows.TRANSPARENT);
+    SetBkMode(Handle, QWindows.TRANSPARENT); 
     DrawText(ACanvas, ItemCaption, -1, Rect, DT_SINGLELINE or
-      DT_VCENTER or DT_END_ELLIPSIS);
+      DT_VCENTER or DT_END_ELLIPSIS); 
   end;
 end;
 
@@ -1186,7 +1174,7 @@ begin
   FWinXPBar := WinXPBar;
   FRollDirection := RollDirection;
   FreeOnTerminate := True;
-  Suspended := false;
+  Suspended := False;
 end;
 
 procedure TJvXPFadeThread.Execute;
@@ -1409,7 +1397,6 @@ begin
   FShowLinkCursor := True;
   FShowRollButton := True;
   FVisibleItems := TJvXPBarVisibleItems.Create(Self);
-  ParentColor := false; // (asn) suppresses flickering when resizing under clx
 end;
 
 destructor TJvXPCustomWinXPBar.Destroy;
@@ -1869,7 +1856,7 @@ begin
     Rect := GetClientRect;
 
     { fill non-client area } 
-    Brush.Color := TJvXPWinControl(parent).Color;
+    Brush.Color := TJvXPWinControl(Parent).Color;
     with Rect do
       FillRect(Bounds(Left, Top, Right - Left, FTopSpace)); 
     Inc(Rect.Top, FTopSpace + FHeaderHeight);
@@ -1882,7 +1869,7 @@ begin
       32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal); 
 
     { draw frame... }
-    Brush.Color := FColors.fBorderColor;
+    Brush.Color := FColors.FBorderColor;
     FrameRect( Canvas,  Rect);
 
     if FHeaderRounded then
@@ -1891,11 +1878,11 @@ begin
       Pixels[0, Rect.Top] := OwnColor;
       Pixels[0, Rect.Top + 1] := OwnColor;
       Pixels[1, Rect.Top] := OwnColor;
-      Pixels[1, Rect.Top + 1] := FColors.fBorderColor;
+      Pixels[1, Rect.Top + 1] := FColors.FBorderColor;
       Pixels[Width - 1, Rect.Top] := OwnColor;
       Pixels[Width - 2, Rect.Top] := OwnColor;
       Pixels[Width - 1, Rect.Top + 1] := OwnColor;
-      Pixels[Width - 2, Rect.Top + 1] := FColors.fBorderColor;
+      Pixels[Width - 2, Rect.Top + 1] := FColors.FBorderColor;
     end;
 
     { draw Button }
@@ -1962,14 +1949,14 @@ begin
     end;
 
     { draw caption }
-    SetBkMode(Handle, Transparent);
+    SetBkMode(Handle, TRANSPARENT);
     Font.Assign(FHeaderFont);
     if FHotTrack and (dsHighlight in DrawState) and (FHitTest <> htNone) and (FHotTrackColor <> clNone) then
       Font.Color := FHotTrackColor;
     Rect.Bottom := Rect.Top + FHeaderHeight;
-    Dec(Rect.Right, 3);
+    Dec(Rect.Right, 3); 
     DrawText(Canvas, Caption, -1, Rect, DT_SINGLELINE or DT_VCENTER or
-      DT_END_ELLIPSIS or DT_NOPREFIX);
+      DT_END_ELLIPSIS or DT_NOPREFIX); 
     { draw visible items }
     Brush.Color := FColors.BodyColor;
     if not FCollapsed or FRolling then
@@ -2004,7 +1991,7 @@ begin
   if FRollImages <> Value then
   begin
     if FRollImages <> nil then
-      FRollImages.UnregisterChanges(FRollChangeLink);
+      FRollImages.UnRegisterChanges(FRollChangeLink);
     FRollImages := Value;
     if FRollImages <> nil then
     begin
@@ -2087,12 +2074,7 @@ begin
   Result := False; // use default hint window
 end;
 
-{$IFNDEF USEJVCL}
-procedure TJvXPCustomWinXPBar.CMHintShow(var Msg: TCMHintShow);
-begin
-  Msg.Result := Ord(HintShow(Msg.HintInfo^));
-end;
-{$ENDIF USEJVCL}
+
 
 
 
@@ -2135,7 +2117,7 @@ begin
       FHitTest := htHeader;
       FHoverIndex := -1;
       Click;
-      exit;
+      Exit;
     end
     else
       for I := 0 to VisibleItems.Count - 1 do
