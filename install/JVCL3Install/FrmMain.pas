@@ -26,10 +26,10 @@ Known Issues:
 {$I JVCL.INC}
 {
 command line switches:
-  -NoUpdateCheck    Do not check for installed updates
-  -IgnoreDelphi     Do not check for running Delphi/BCB instances
-  -NoDelphi         Ignore Delphi product targets      (see CodeData.TTargetList.GetTargets)
-  -NoBCB            Ignore C++Builder product targets  (see CodeData.TTargetList.GetTargets)
+  -NoUpdateCheck     Do not check for installed updates
+  -IgnoreIDE         Do not check for running Delphi/BCB instances
+  -NoDelphi          Ignore Delphi product targets      (see CodeData.TTargetList.GetTargets)
+  -NoBCB             Ignore C++Builder product targets  (see CodeData.TTargetList.GetTargets)
 }
 
 unit FrmMain;
@@ -337,7 +337,7 @@ end;
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   Application.HintHidePause := 10000;
-  if not FindCmdSwitch('-IgnoreDelphi') then
+  if not FindCmdSwitch('-IgnoreIDE') then
   begin
     if IsDelphiRunning then
     begin
