@@ -30,9 +30,6 @@ unit JvConsts;
 interface
 
 uses
-{$IFDEF USE_DXGETTEXT}
-  gnugettext,
-{$ENDIF}
   SysUtils;
 
 const
@@ -406,23 +403,6 @@ resourcestring
   SDataItemRenderHasNoText = '(item doesn''t support the IJvDataItemText interface)';
   SDataProviderNeedsItemsImpl = 'Can''t create a data provider without an IJvDataItems implementation.';
 
-{$IFDEF USE_DXGETTEXT}
-
-function GetText(const Text: WideString): WideString; overload;
-function _(const Text: WideString): WideString; overload;
-function GetText(const Fmt: WideString; const Args: array of const): WideString; overload;
-function _(const Fmt: WideString; const Args: array of const): WideString; overload;
-
-{$ELSE USE_DXGETTEXT}
-
-// AnsiStrings are faster
-function GetText(const Text: string): string; overload;
-function _(const Text: string): string; overload;
-function GetText(const Fmt: string; const Args: array of const): string; overload;
-function _(const Fmt: string; const Args: array of const): string; overload;
-
-{$ENDIF}
-
 implementation
 
 {$IFDEF WINDOWS}
@@ -431,51 +411,5 @@ implementation
 {$IFDEF LINUX}
 {$R ../Resources/JvConsts.res}
 {$ENDIF}
-
-{$IFDEF USE_DXGETTEXT}
-
-function GetText(const Text: WideString): WideString;
-begin
-  Result := gnugettext.GetText(Text);
-end;
-
-function _(const Text: WideString): WideString;
-begin
-  Result := gnugettext._(Text);
-end;
-
-function GetText(const Fmt: WideString; const Args: array of const): WideString;
-begin
-  Result := Format(GetText(Fmt), Args);
-end;
-
-function _(const Fmt: WideString; const Args: array of const): WideString;
-begin
-  Result := Format(_(Fmt), Args);
-end;
-
-{$ELSE USE_DXGETTEXT}
-
-function GetText(const Text: string): string;
-begin
-  Result := Text;
-end;
-
-function _(const Text: string): string;
-begin
-  Result := Text;
-end;
-
-function GetText(const Fmt: string; const Args: array of const): string;
-begin
-  Result := Format(GetText(Fmt), Args);
-end;
-
-function _(const Fmt: string; const Args: array of const): string;
-begin
-  Result := Format(_(Fmt), Args);
-end;
-
-{$ENDIF USE_DXGETTEXT}
 
 end.
