@@ -76,8 +76,7 @@ begin
   FOwner := AOwner;
   while FOwner.GetParentComponent <> nil do
     FOwner := FOwner.GetParentComponent;
-  // (rom) TForm or TCustomForm?
-  if not (FOwner is TForm) then
+  if not (FOwner is TCustomForm) then
     raise EJVCLException.CreateRes(@RsEOwnerForm);
 end;
 
@@ -108,7 +107,7 @@ begin
     Result := TWinControl(FOwner).Handle
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    Result := QWidget_winID( TWidgetControl(FOwner).Handle)
+    Result := QWidget_winId(TWidgetControl(FOwner).Handle)
     {$ENDIF VisualCLX}
   else
   if Application <> nil then
@@ -118,7 +117,7 @@ begin
       Result := Screen.ActiveForm.Handle
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      Result := QWidget_winID(Screen.ActiveForm.Handle)
+      Result := QWidget_winId(Screen.ActiveForm.Handle)
       {$ENDIF VisualCLX}
     else
     if Application.MainForm <> nil then
@@ -126,7 +125,7 @@ begin
       Result := Application.MainForm.Handle
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      Result := QWidget_winID(Application.MainForm.Handle)
+      Result := QWidget_winId(Application.MainForm.Handle)
       {$ENDIF VisualCLX}
     {$IFDEF VCL}
     else

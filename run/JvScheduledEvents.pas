@@ -42,7 +42,8 @@ uses
   {$IFDEF VisualCLX}
   Qt, QForms, Types, QWindows,
   {$ENDIF VisualCLX}
-  JclSchedule, JvAppStorage, JvFinalize;
+  JclSchedule,
+  JvAppStorage, JvFinalize;
 
 const
   CM_EXECEVENT = WM_USER + $1000;

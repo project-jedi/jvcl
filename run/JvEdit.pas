@@ -59,7 +59,7 @@ uses
 const
   clGrayText = clDark; // (ahuser) This is wrong in QGraphics.
                        //          Since when is clGrayText = clLight = clWhite?
-  {$ENDIF VisualCLX}
+{$ENDIF VisualCLX}
 
 type
   TJvCustomEdit = class(TJvExCustomEdit)

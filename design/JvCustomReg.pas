@@ -62,8 +62,7 @@ uses
   {$ENDIF VCL}
   JvGammaPanel, JvLinkLabel, JvLookOut, JvOutlookBar, JvScheduledEvents,
   JvTimeLine, JvTMTimeLine, JvValidateEdit, JvChart,
-  JvTimeLineEditor,
-  JvOutlookBarEditors, JvLookoutEditor;
+  JvTimeLineEditor, JvOutlookBarEditors, JvLookoutEditor;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCustomReg.dcr}
@@ -125,6 +124,7 @@ begin
   {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem,
     cSchedule, TJvSchedulePropertyEditor); // depends on TDateTimePicker
+  RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventComponentEditor);
   {$ENDIF VCL}
 
   RegisterComponentEditor(TJvCustomOutlookBar, TJvOutlookBarComponentEditor);
@@ -132,7 +132,6 @@ begin
   RegisterComponentEditor(TJvLookOut, TJvLookOutEditor);
   RegisterComponentEditor(TJvLookOutPage, TJvLookOutPageEditor);
   RegisterComponentEditor(TJvExpress, TJvExpressEditor);
-  RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventComponentEditor);
   RegisterClass(TJvLookoutPage);
 end;
 
