@@ -26,7 +26,7 @@ description : Design-time Hint Editor
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvHTHintForm;
 

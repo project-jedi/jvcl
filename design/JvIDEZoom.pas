@@ -26,7 +26,7 @@ description : Dephi IDE enhancement tool
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvIDEZoom;
 

@@ -10,7 +10,7 @@
 
 Unit TUtil;
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 interface
 

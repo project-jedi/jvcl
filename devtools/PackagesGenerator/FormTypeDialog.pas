@@ -1,6 +1,6 @@
 unit FormTypeDialog;
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 interface
 

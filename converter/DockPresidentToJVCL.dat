@@ -1,4 +1,4 @@
-lbDPVer.inc=JVCL.INC
+lbDPVer.inc=jvcl.inc
 lbRegister=JvDockingReg
 lbConjoinDockHost=JvDockConjoinHost
 lbDelphiDockStyle=JvDockDelphiStyle

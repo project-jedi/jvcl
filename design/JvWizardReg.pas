@@ -35,7 +35,7 @@ Known Issues:
   01/25/2002       TJvWizardAboutDialogProperty, Added by <Steve Forbes>
 ******************************************************************************}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvWizardReg;
 

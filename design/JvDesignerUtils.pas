@@ -26,7 +26,7 @@ description : routines for design-time
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvDesignerUtils;
 

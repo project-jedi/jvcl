@@ -39,7 +39,7 @@ Known Issues:
                       TJvWizardPageList dialog form added
 ******************************************************************************}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvWizardEditorForm;
 

@@ -9,7 +9,7 @@
 
 unit EditPict;
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 interface
 

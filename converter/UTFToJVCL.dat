@@ -1,6 +1,6 @@
 VER100=COMPILER3
 VER130=COMPILER5
-utf.inc=JVCL.INC
+utf.inc=jvcl.inc
 UTFAlarm=JvTFAlarm
 TutfAlarm=JvTFAlarm
 TAlarmInfo=TJvTFAlarmInfo

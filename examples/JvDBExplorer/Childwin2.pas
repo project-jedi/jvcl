@@ -7,7 +7,7 @@
 {                                                       }
 {*******************************************************}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 {$IFNDEF COMPILER3_UP}
   { use Visual Query Builder in Delphi 2.x & C++Builder 1.x only }

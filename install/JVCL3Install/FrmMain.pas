@@ -490,7 +490,7 @@ procedure TFormMain.FormShow(Sender: TObject);
 var Index: Integer;
 begin
  // prepare JVCLConfig sub-project
-  FormMainConfig.Filename := JVCLDir + '\common\JVCL.INC';
+  FormMainConfig.Filename := JVCLDir + '\common\jvcl.inc';
   FormMainConfig.BtnQuit.Caption := '&Close';
   FormMainConfig.BtnReload.Click;
   FormMainConfig.BtnSave.Glyph := BtnInstall.Glyph;
@@ -618,7 +618,7 @@ procedure TFormMain.BtnInstallClick(Sender: TObject);
 var
   i: Integer;
 begin
- // save JVCL.INC if modified
+ // save jvcl.inc if modified
   if FormMainConfig.Config.Modified then
     FormMainConfig.BtnSave.Click;
 

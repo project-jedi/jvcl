@@ -1,6 +1,6 @@
 unit KnownTagsForm;
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 interface
 

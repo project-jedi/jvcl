@@ -1,6 +1,6 @@
 // No licence info because this should be merged with other Registration Unit
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvJansReg;
 

@@ -1,5 +1,5 @@
 unit JvRollOutEditor;
-{$I JVCL.INC}
+{$I jvcl.inc}
 interface
 uses
   {$IFDEF COMPILER6_UP}
