@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvBDE" Design="-1">
   <Description>JVCL BDE Components</Description>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUdcldb50</C5PFlags>
-  <C6PFlags>-LUDesignIde -LUdcldb</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUdcldb50  -LUCJcl50</C5PFlags>
+  <C6PFlags>-LUDesignIde -LUdcldb -LUCJcl</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
   <Requires>
     <Package Name="JvBDE-R" Targets="all" Condition=""/>
     <Package Name="JvDB-D" Targets="all" Condition=""/>

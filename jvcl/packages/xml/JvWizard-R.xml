@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvWizard" Design="0">
   <Description>JVCL Wizard Run Time Package</Description>
-  <C5PFlags>-LUvcl50</C5PFlags>
-  <C6PFlags/>
+  <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
+  <C6PFlags>-LUCJcl</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>

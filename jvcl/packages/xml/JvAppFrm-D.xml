@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvAppFrm" Design="-1">
   <Description>JVCL Application and Form Components</Description>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50</C5PFlags>
-  <C6PFlags>-LUDesignIde</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50 -LUCJclVcl50</C5PFlags>
+  <C6PFlags>-LUDesignIde -LUCJcl -LUCJclVcl</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
   <Requires>
     <Package Name="JvAppFrm-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p,D7,D7p" Condition=""/>
@@ -13,6 +15,8 @@
     <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
+    <Package Name="CJCLVCL60" Targets="C6,C6p" Condition=""/>
+    <Package Name="CJCLVCL50" Targets="C5" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvGradientCaptionForm.pas" Targets="all" Formname="GradCaptionsEditor" Condition=""/>

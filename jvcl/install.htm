@@ -10,7 +10,8 @@
 <hr>
 <h2>Current version</h2>
 <p>The current version of JVCL is 3.00 alpha minus, released on
-YYYY-MM-DD</p>
+YYYY-MM-DD<br>
+</p>
 <p>&nbsp;</p>
 <h2>Supported compiler versions</h2>
 <p>&nbsp;</p>
@@ -64,7 +65,13 @@ with numerous bug fixes. For your convenience, these bug fixes are
 included in the distribution file but please note that as soon as the
 JCL group does a new release, we recommend you use it instead as it
 will
-include our fixes plus many others.<br>
+include our fixes plus many others.</p>
+<p align="left">If you are using a daily zip package or a CVS version
+of the JVCL, please ensure that you are also using the very latest
+version of the JCL or you may not be able to install the JVCL,
+especially with C++ Builder. If you do not have access to the JCL CVS
+repository, please ask us and we may be able to provide you with a zip
+file containing a version known to build.<br>
 <br>
 </p>
 <hr style="width: 100%; height: 2px;">
@@ -178,7 +185,19 @@ Open the JCL package specific to your version of C++&nbsp;Builder. It
 is called CJCLxx.bpk where xx is to be replaced by 50 for
 C++&nbsp;Builder&nbsp;5 and 60 for C++&nbsp;Builder&nbsp;6. Click the
 compile button, wait for about 2 minutes and if the compilation went
-well, close the package (File, Close All). Do NOT save it.</p>
+well, close the package (File, Close All). Do NOT save it.<br>
+Because all components are written in pascal, the JVCL requires a dcp
+file from the JCL to correctly build. In order to get such a file, open
+a command window (also called MS-DOS window under Windows 95, 98 and
+Me) and browse to the JVCL\packages then call MakeJCLDcp4BCB. An help
+message will tell you what are the values you need to pass to the batch
+file. A typical call is "MakeJCLDcp4BCB 6" and will generate the dcp
+file for C++ Builder 6, assuming that it is installed in c:\program
+files\cbuilder6, that the JCL is installed in ..\..\jcl and that the
+destination target is Projects\bpl in the directory where C++ Builder
+is installed. Unless you update the JCL, you won't have to regenerate
+the dcp files when you update the JVCL.<br>
+</p>
 <p> Now, open the package group file (bpg) for your version of
 C++&nbsp;Builder that is located in the jvcl\packages folder. Select <b>Project
 - Build All Projects</b> from the C++&nbsp;Builder menu. Because of an
@@ -193,7 +212,7 @@ A second alternative is to use the provided MakeBCB* batch files. Open
 a command line window, change to the directory where the batch files
 are and launch the one appropriate for your version of C++ Builder. By
 default, it considers that C++ Builder is installed in c:\program
-files\cbuilderx, where x is the version number (5 or 6). If it is not
+files\cbuilder?, where ? is the version number (5 or 6). If it is not
 located ther, you must indicate the path to it as the first argument to
 the batch file.<br>
 </p>
@@ -217,42 +236,7 @@ have to go through these steps for each version, the only difference
 being the bpg file you load into the IDE.<br>
 <br>
 </p>
-<p>By respecting the structure we indicate, you shouldn't have any
-trouble compiling and installing the JVCL. However, some users do not
-want to put the JVCL and JCL together and this triggers some problems.
-It is possible to have the JCL and the JVCL in seperate locations but
-you'll have to follow these steps for everything to work:</p>
-<p> Ensure that C++&nbsp;Builder is closed, and add the dcu
-subdirectory
-of JCL to the PATH environment variable. For instance, if you chose
-c:\mypath as the root for the JCL, you must add 'c:\mypath\jcl\dcu' to
-the PATH environment variable. Under Windows 2000 and XP, this is done
-by opening the 'System properties' applet from the 'Control panel'. You
-can either simultaneously press the Windows key and the Pause key or go
-through <span style="font-weight: bold;">Start - Parameters -
-Control&nbsp;panel - System&nbsp;properties</span>. Once in the applet,
-choose the 'Advanced' tab and click on the 'Environment variables'
-button at the bottom. Depending on wether or not you want the changes
-to
-apply to yourself or all users, choose the PATH variable for one of the
-two list and click the related 'Modify' button. Add
-';c:\mypath\jcl\dcu'
-(without the quotes) at the end of the already existing value, and
-click
-on Ok buttons until the 'System properties' applet is closed. This
-modification is required because C++&nbsp;Builder parses this value
-when
-it searches for pascal units and there are no direct way in the
-IDE to specify additional units paths (contrary to Delphi). You may
-also use overrides in the environment options, but this has not been
-tested. If it works this way, please let us know.<br>
-</p>
-<p>You should now be able to compile and install the JCL and the JVCL
-by following the same directives as in a standard installation<br>
-</p>
-<p> <br>
-</p>
-<div class="InfoField"> When closing a package, C++&nbsp;Builder will
+<div class="InfoField">When closing a package, C++&nbsp;Builder will
 prompt you to save the changes to the package. You MUST answer "No" to
 this question since saving will most likely render the packages
 unusable

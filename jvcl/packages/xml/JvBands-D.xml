@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvBands" Design="-1">
   <Description>JVCL Band Objects</Description>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50</C5PFlags>
-  <C6PFlags>-LUDesignIde</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
+  <C6PFlags>-LUDesignIde -LUCJcl</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
   <Requires>
     <Package Name="JvBands-R" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
