@@ -52,8 +52,7 @@ JvgLabelEditorForm.res \
 JvgTreeView.res \
 JvLED.res \
 JvOutlookBar.res \
-JvPageSetupTitledEng.res \
-JvPageSetupTitledRus.res \
+JvPageSetupTitled.res \
 JvPickDate.res \
 JvPluginWiz.res \
 JvRegistryTreeView.res \
@@ -131,8 +130,7 @@ JvgLabelEditorForm.res: JvgLabelEditorForm.rc
 JvgTreeView.res: JvgTreeView.rc
 JvLED.res: JvLED.rc
 JvOutlookBar.res: JvOutlookBar.rc
-JvPageSetupTitledEng.res: JvPageSetupTitledEng.rc
-JvPageSetupTitledRus.res: JvPageSetupTitledRus.rc
+JvPageSetupTitled.res: JvPageSetupTitled.rc
 JvPickDate.res: JvPickDate.rc
 JvPluginWiz.res: JvPluginWiz.rc
 JvRegistryTreeView.res: JvRegistryTreeView.rc

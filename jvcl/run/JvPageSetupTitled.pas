@@ -58,11 +58,11 @@ implementation
 
 {$IFDEF MSWINDOWS}
 {.$R ..\Resources\JvPageSetupTitledRus.res}
-{$R ..\Resources\JvPageSetupTitledEng.res}
+{$R ..\Resources\JvPageSetupTitled.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 {.$R ../Resources/JvPageSetupTitledRus.res}
-{$R ../Resources/JvPageSetupTitledEng.res}
+{$R ../Resources/JvPageSetupTitled.res}
 {$ENDIF LINUX}
 
 uses

@@ -7561,3 +7561,44 @@ msgstr ""
 #: JvgUtils.pas:170
 msgid "Expression string is empty."
 msgstr ""
+
+#. JvPageSetupTitled
+#: JvPageSetupTitled.rc
+msgid "Page Setup with Header & Footer"
+msgstr ""
+
+msgid "Paper"
+msgstr ""
+
+msgid "Si&ze"
+msgstr ""
+
+msgid "P&ortrait"
+msgstr ""
+
+msgid "L&andscape"
+msgstr ""
+
+msgid "&Left:"
+msgstr ""
+
+msgid "&Right:"
+msgstr ""
+
+msgid "&Top:"
+msgstr ""
+
+msgid "&Bottom:"
+msgstr ""
+
+msgid "Page Header:"
+msgstr ""
+
+msgid "Page Footer:"
+msgstr ""
+
+msgid "&Printer..."
+msgstr ""
+
+msgid "Margins"
+msgstr ""
