@@ -235,8 +235,13 @@ end;
 
 procedure TJvListItems.ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
 begin
-  Clear;
-  AppStorage.ReadList(BasePath, Self, ReadListItem, cItem);
+  BeginUpdate;
+  try
+    Clear;
+    AppStorage.ReadList(BasePath, Self, ReadListItem, cItem);
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TJvListItems.WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
@@ -1179,7 +1184,7 @@ begin
   with Message do
   begin
     lv := TListItem(WParam);
-    if (lv <> nil) and (LParam = 1) then
+    if Assigned(lv) and (items.IndexOf(lv) >=0 ) and (LParam = 1) then
     begin
       lv.Selected := True;
       lv.Focused := True;

@@ -1801,12 +1801,14 @@ var
   I: Integer;
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
+  ItemCount: Integer;
 begin
   ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
-  Result := TargetStore.ReadIntegerInt(ConcatPaths([TargetPath, cCount]), 0);
-  for I := 0 to Result - 1 do
+  ItemCount := TargetStore.ReadIntegerInt(ConcatPaths([TargetPath, cCount]), 0);
+  for I := 0 to ItemCount - 1 do
     OnReadItem(TargetStore, TargetPath, List, I, ItemName);
+  Result := ItemCount;
 end;
 
 procedure TJvCustomAppStorage.WriteList(const Path: string; const List: TObject;
