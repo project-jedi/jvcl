@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQBitmapButton;
+
+{$I jvcl.inc}
 
 interface
 

@@ -815,7 +815,6 @@ procedure TJvCustomImageButton.StartAnimate;
 begin
   if ComponentState * [csDesigning, csLoading] = [] then
   begin
-    DoubleBuffered := True;
     FCurrentAnimateFrame := 0;
     ShowNextFrame;
     OSCheck(SetTimer(Handle, 1, FAnimateInterval, nil) <> 0);
@@ -829,7 +828,6 @@ begin
   begin
     KillTimer(Handle, 1);
     FCurrentAnimateFrame := 0;
-    DoubleBuffered := False;
     FAnimating := False;
   end;
 end;

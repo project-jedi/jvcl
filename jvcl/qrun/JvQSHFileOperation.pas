@@ -32,10 +32,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQSHFileOperation;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQSHFileOperation;
 
 interface
 

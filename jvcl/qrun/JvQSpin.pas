@@ -34,9 +34,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQSpin;
+
+{$I jvcl.inc}
 
 interface
 
@@ -121,6 +121,7 @@ type
   
   TJvCustomSpinEdit = class(TJvExCustomComboMaskEdit) 
   private
+    FShowButton : Boolean;
     FCheckMaxValue: Boolean;
     FCheckMinValue: Boolean;
     FCheckOptions: TJvCheckOptions;
@@ -178,7 +179,8 @@ type
     procedure SetDecimal(NewValue: Byte);
     procedure SetEditRect;
     procedure SetThousands(Value: Boolean);
-    procedure UpDownClick(Sender: TObject; Button: TUDBtnType); 
+    procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
+    procedure SetShowButton(Value: Boolean); 
   protected
     FButtonKind: TSpinButtonKind;
     procedure DoClipboardPaste; override;
@@ -234,6 +236,8 @@ type
     property Thousands: Boolean read FThousands write SetThousands default False;
     property OnBottomClick: TNotifyEvent read FOnBottomClick write FOnBottomClick;
     property OnTopClick: TNotifyEvent read FOnTopClick write FOnTopClick;
+
+    property ShowButton : Boolean read FShowButton write SetShowButton default True;
   end;
 
   TJvSpinEdit = class(TJvCustomSpinEdit)
@@ -306,6 +310,8 @@ type
     property OnMouseWheelUp;
     property HideSelection; 
     property ClipboardCommands;
+
+    property ShowButton;
   end;
 
 implementation
@@ -580,7 +586,7 @@ begin
     inherited Change;
     FOldValue := Value;
   end;
-  //  if CompareText(inherited Text, OldText) <> 0 then
+  //  if AnsiCompareText(inherited Text, OldText) <> 0 then
   //    inherited Change;
 
   SelStart := OldSelStart;
@@ -643,6 +649,7 @@ begin
   FEditorEnabled := True;
   FButtonKind := bkDiagonal;
   FArrowKeys := True;
+  FShowButton := True;
   RecreateButton;
 end;
 
@@ -792,7 +799,7 @@ begin
     finally
       FChanging := False;
     end;
-    if CompareText(inherited Text, OldText) <> 0 then
+    if AnsiCompareText(inherited Text, OldText) <> 0 then
     begin
       Modified := True;
       Change;
@@ -865,13 +872,21 @@ end;
 
 function TJvCustomSpinEdit.GetButtonWidth: Integer;
 begin
-  if FUpDown <> nil then
-    Result := FUpDown.Width
+
+  if ShowButton then
+  begin
+    if FUpDown <> nil then
+      Result := FUpDown.Width
+    else
+    if FButton <> nil then
+      Result := FButton.Width
+    else
+      Result := DefBtnWidth;
+  end
   else
-  if FButton <> nil then
-    Result := FButton.Width
-  else
-    Result := DefBtnWidth;
+  begin
+    Result := 0;
+  end;
 end;
 
 function TJvCustomSpinEdit.GetMinHeight: Integer;
@@ -1025,6 +1040,8 @@ begin
   FBtnWindow := nil;
   FUpDown.Free;
   FUpDown := nil;
+  if ShowButton then
+  begin
   if GetButtonKind = bkStandard then
   begin
     FUpDown := TJvUpDown.Create(Self);
@@ -1061,6 +1078,7 @@ begin
     FButton.OnBottomClick := DownClick;
     //Polaris
     FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
+  end;
   end;
 end;
 
@@ -1165,6 +1183,17 @@ begin
   if csLoading in ComponentState then
     FLCheckMinValue := False;
   SetValue(Value);
+end;
+
+procedure TJvCustomSpinEdit.SetShowButton(Value : Boolean);
+begin
+  if FShowButton <> Value then
+  begin
+    FShowButton := Value;
+    RecreateButton;
+    ResizeButton;
+    SetEditRect;
+  end;
 end;
 
 procedure TJvCustomSpinEdit.SetDecimal(NewValue: Byte);
@@ -1299,7 +1328,7 @@ begin
     finally
       FChanging := False;
     end;
-    if CompareText(inherited Text, OldText) <> 0 then
+    if AnsiCompareText(inherited Text, OldText) <> 0 then
     begin
       Modified := True;
       Change;

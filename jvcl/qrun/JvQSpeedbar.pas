@@ -27,9 +27,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQSpeedbar;
+
+{$I jvcl.inc}
 
 interface
 
@@ -2465,10 +2465,10 @@ begin
         if Sect[Idx] <> nil then
         begin
           Item := TJvSpeedItem(Sect[Idx]);
-          if AnsiCompareText(Item.Name, ItemName) = 0 then
+          if AnsiSameText(Item.Name, ItemName) then
           begin
             Result := Item;
-            Exit;
+            Break;
           end;
         end;
     end;
@@ -2539,8 +2539,8 @@ var
       if (Control.Visible) and (Control <> Self) and not
         (Control.Align in [alNone, alClient]) then
       begin
-        if (Control.Align > PosToAlign[Pos]) or ((Control.Align = PosToAlign[Pos])
-          and not InsertBefore(Control, Self, Control.Align)) then
+        if (Control.Align > PosToAlign[Pos]) or ((Control.Align = PosToAlign[Pos]) and
+          not InsertBefore(Control, Self, Control.Align)) then
           Continue;
         case Control.Align of
           alTop:

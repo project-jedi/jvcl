@@ -30,15 +30,16 @@ Olivier Sannier [obones att altern dott org]
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A unit to allow display of bitmaps in TComboboxes and TListboxes
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-{A unit to allow display of bitmaps in TComboboxes and TListboxes }
-
 unit JvQListComb;
+
+{$I jvcl.inc}
 
 interface
 
@@ -629,10 +630,10 @@ var
   TmpCol: TColor;
   TmpR, OrigR: TRect;
   SavedColor: TColor;
-begin
-  Result := True; // handled
+begin 
+  Result := True;  // Handled 
   if csDestroying in ComponentState then
-    Exit;
+    Exit; 
   if odSelected in State then
   begin
     Canvas.Brush.Color := FColorHighlight;
@@ -681,7 +682,7 @@ begin
     begin
       Tmp := Items[Index].ImageIndex;
       //      R.Left := R.Left + Items[Index].Indent;
-      Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
+      Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;  
       FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp); 
       if FButtonFrame then
       begin
@@ -967,15 +968,15 @@ function TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDraw
 
 var
   SavedColor: TColor;
-begin
-  Result := True;
+begin 
+  Result := True; 
   if csDestroying in ComponentState then
-    Exit;
+    Exit; 
   if odSelected in State then
   begin
     Canvas.Brush.Color := Items[Index].ColorHighlight;
     Canvas.Font.Color := Items[Index].ColorHighlightText;
-  end;
+  end; 
   SavedColor := Canvas.Font.Color;
   Canvas.Font.Assign(Items[Index].Font);
   if State <> [] then

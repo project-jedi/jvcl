@@ -27,15 +27,7 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
------------------------------------------------------------------------------}
-// $Id$
-
-{$I jvcl.inc}
-
-unit JvQAppStorage;
-
-{
+Description:
   General storage unit - provides with a basic storage backend component to store application
   specific data. Descendants can provide specific backends for registry, INI-files, DB, XML,
   etc. Should be used to provide a common interface for storing data as is done in some of
@@ -83,8 +75,15 @@ unit JvQAppStorage;
   Because all settings can be read from a single store (from the application's perspective) you have
   created the option to keep your settings storage and retrieval code simple and easy to understand.
   Upon startup you can set asUserIniBackend to the correct INI file for the user that has logged on,
-  and you are ready to read in the settings of that user
-}
+  and you are ready to read in the settings of that user.
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
+unit JvQAppStorage;
+
+{$I jvcl.inc}
 
 interface
 
@@ -448,7 +447,6 @@ type
     { Stores an enumeration }
     procedure WriteEnumeration(const Path: string;  TypeInfo: PTypeInfo;
       const Value);
-    { Retrieves a set. If the value is not found, the Default will be returned. }
     procedure ReadSet(const Path: string;  ATypeInfo: PTypeInfo; const Default; out Value);
     { Stores a set. }
     procedure WriteSet(const Path: string;  ATypeInfo: PTypeInfo; const Value);
@@ -459,6 +457,11 @@ type
     { Stores an Boolean value
       The value is stored as string TRUE/FALSE. }
     procedure WriteBoolean(const Path: string; Value: Boolean);
+    { Retrieves an Property. If the value is not found, the Property is not changed. }
+    procedure ReadProperty(const Path: string; const PersObj: TPersistent; const PropName : string; const Recursive, ClearFirst: Boolean);
+    { Stores an Property }
+    procedure WriteProperty(const Path: string; const PersObj: TPersistent; const PropName : string; const Recursive: Boolean);
+    { Retrieves a set. If the value is not found, the Default will be returned. }
     { Retrieves a TPersistent-Object with all of its published properties }
     procedure ReadPersistent(const Path: string; const PersObj: TPersistent;
       const Recursive: Boolean = True; const ClearFirst: Boolean = True; const IgnoreProperties: TStrings = nil);
@@ -1372,22 +1375,25 @@ begin
     Result := Default
   else
     try
-      try
-        if Default then
-          Value := DecryptPropertyValue(DoReadString(Path, EncryptPropertyValue(StorageOptions.DefaultTrueString)))
-        else
-          Value := DecryptPropertyValue(DoReadString(Path, EncryptPropertyValue(StorageOptions.DefaultFalseString)));
-        if StorageOptions.IsValueTrueString(Value) then
-          Result := True
-        else
-        if StorageOptions.IsValueFalseString(Value) then
-          Result := False
-        else
-          Result := DoReadBoolean(Path, Default);
-      except
-        on E: EConvertError do
-          Result := DoReadBoolean(Path, Default);
-      end;
+      if StorageOptions.BooleanAsString then
+        try
+          if Default then
+            Value := DecryptPropertyValue(DoReadString(Path, EncryptPropertyValue(StorageOptions.DefaultTrueString)))
+          else
+            Value := DecryptPropertyValue(DoReadString(Path, EncryptPropertyValue(StorageOptions.DefaultFalseString)));
+          if StorageOptions.IsValueTrueString(Value) then
+            Result := True
+          else
+            if StorageOptions.IsValueFalseString(Value) then
+              Result := False
+            else
+              Result := DoReadBoolean(Path, Default);
+        except
+          on E: EConvertError do
+            Result := DoReadBoolean(Path, Default);
+        end
+      else
+        Result := DoReadBoolean(Path, Default);
     except
       on E: EConvertError do
         if StorageOptions.DefaultIfReadConvertError then
@@ -1949,6 +1955,105 @@ begin
   TargetStore.WriteSetInt(TargetPath, ATypeInfo, Value);
 end;
 
+
+procedure TJvCustomAppStorage.ReadProperty(const Path: string; const PersObj: TPersistent; const PropName : string; const Recursive, ClearFirst: Boolean);
+var
+  //Index: Integer;
+  TmpValue: Integer;
+  SubObj: TObject;
+begin
+  if not Assigned(PersObj) then
+    Exit;
+  case PropType(PersObj, PropName) of
+    tkLString, tkWString, tkString:
+      SetStrProp(PersObj, PropName, ReadString(Path, GetStrProp(PersObj, PropName)));
+    tkEnumeration:
+      begin
+        TmpValue := GetOrdProp(PersObj, PropName);
+        ReadEnumeration(Path, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
+        SetOrdProp(PersObj, PropName, TmpValue);
+      end;
+    tkSet:
+      begin
+        TmpValue := GetOrdProp(PersObj, PropName);
+        ReadSet(Path, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
+        SetOrdProp(PersObj, PropName, TmpValue);
+      end;
+    tkChar, tkInteger:
+      begin
+        TmpValue := GetOrdProp(PersObj, PropName);
+        ReadEnumeration(Path, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
+        SetOrdProp(PersObj, PropName, TmpValue);
+      end;
+    tkInt64:
+      SetInt64Prop(PersObj, PropName, StrToInt64(ReadString(Path,
+        IntToStr(GetInt64Prop(PersObj, PropName)))));
+    tkFloat:
+      SetFloatProp(PersObj, PropName, ReadFloat(Path, GetFloatProp(PersObj, PropName)));
+    tkClass:
+      begin
+        SubObj := GetObjectProp(PersObj, PropName);
+        if SubObj is TStrings then
+          ReadStringList(Path, TStrings(SubObj), ClearFirst)
+        else
+        if (SubObj is TPersistent) and Recursive then
+          if SubObj is TJvCustomPropertyStore then
+            TJvCustomPropertyStore(SubObj).LoadProperties
+          else
+            ReadPersistent(Path, TPersistent(SubObj), True, ClearFirst);
+      end;
+  end;
+end;
+
+procedure TJvCustomAppStorage.WriteProperty(const Path: string; const PersObj: TPersistent; const PropName : string; const Recursive: Boolean);
+var
+  TmpValue: Integer;
+  SubObj: TObject;
+begin
+  if not Assigned(PersObj) then
+    Exit;
+  case PropType(PersObj, PropName) of
+    tkLString, tkWString, tkString:
+      WriteString(Path, GetStrProp(PersObj, PropName));
+    tkEnumeration:
+      begin
+        TmpValue := GetOrdProp(PersObj, PropName);
+        WriteEnumeration(Path, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
+      end;
+    tkSet:
+      begin
+        TmpValue := GetOrdProp(PersObj, PropName);
+        WriteSet(Path, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
+      end;
+    tkChar, tkInteger:
+      begin
+        if StorageOptions.TypedIntegerAsString then
+        begin
+          TmpValue := GetOrdProp(PersObj, PropName);
+          WriteEnumeration(Path, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
+        end
+        else
+          WriteInteger(Path, GetOrdProp(PersObj, PropName));
+      end;
+    tkInt64:
+      WriteString(Path, IntToStr(GetInt64Prop(PersObj, PropName)));
+    tkFloat:
+      WriteFloat(Path, GetFloatProp(PersObj, PropName));
+    tkClass:
+      begin
+        SubObj := GetObjectProp(PersObj, PropName);
+        if SubObj is TStrings then
+          WriteStringList(Path, TStrings(SubObj))
+        else
+        if (SubObj is TPersistent) and Recursive then
+          if SubObj is TJvCustomPropertyStore then
+            TJvCustomPropertyStore(SubObj).StoreProperties
+          else
+            WritePersistent(Path, TPersistent(SubObj), Recursive, nil);
+      end;
+  end;
+end;
+
 procedure TJvCustomAppStorage.ReadPersistent(const Path: string; const PersObj: TPersistent;
   const Recursive, ClearFirst: Boolean; const IgnoreProperties: TStrings);
 var
@@ -1956,56 +2061,16 @@ var
   PropName: string;
   KeyName: string;
   PropPath: string;
-  TmpValue: Integer;
-  SubObj: TObject;
 begin
   if not Assigned(PersObj) then
     Exit;
   for Index := 0 to GetPropCount(PersObj) - 1 do
   begin
     PropName := GetPropName(PersObj, Index);
-    KeyName := TranslatePropertyName(PersObj, PropName, True);
+    KeyName := TranslatePropertyName(PersObj, PropName, False);
     PropPath := ConcatPaths([Path, KeyName]);
     if (IgnoreProperties = nil) or (IgnoreProperties.IndexOf(PropName) = -1) then
-      case PropType(PersObj, PropName) of
-        tkLString, tkWString, tkString:
-          SetStrProp(PersObj, PropName, ReadString(PropPath, GetStrProp(PersObj, PropName)));
-        tkEnumeration:
-          begin
-            TmpValue := GetOrdProp(PersObj, PropName);
-            ReadEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
-            SetOrdProp(PersObj, PropName, TmpValue);
-          end;
-        tkSet:
-          begin
-            TmpValue := GetOrdProp(PersObj, PropName);
-            ReadSet(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
-            SetOrdProp(PersObj, PropName, TmpValue);
-          end;
-        tkChar, tkInteger:
-          begin
-            TmpValue := GetOrdProp(PersObj, PropName);
-            ReadEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
-            SetOrdProp(PersObj, PropName, TmpValue);
-          end;
-        tkInt64:
-          SetInt64Prop(PersObj, PropName, StrToInt64(ReadString(PropPath,
-            IntToStr(GetInt64Prop(PersObj, PropName)))));
-        tkFloat:
-          SetFloatProp(PersObj, PropName, ReadFloat(PropPath, GetFloatProp(PersObj, PropName)));
-        tkClass:
-          begin
-            SubObj := GetObjectProp(PersObj, PropName);
-            if SubObj is TStrings then
-              ReadStringList(PropPath, TStrings(SubObj), ClearFirst)
-            else
-            if (SubObj is TPersistent) and Recursive then
-              if SubObj is TJvCustomPropertyStore then
-                TJvCustomPropertyStore(SubObj).LoadProperties
-              else
-                ReadPersistent(PropPath, TPersistent(SubObj), True, ClearFirst);
-          end;
-      end;
+      ReadProperty (PropPath, PersObj, PropName, Recursive, ClearFirst);
   end;
 end;
 
@@ -2016,8 +2081,6 @@ var
   PropName: string;
   KeyName: string;
   PropPath: string;
-  TmpValue: Integer;
-  SubObj: TObject;
 begin
   if not Assigned(PersObj) then
     Exit;
@@ -2027,46 +2090,7 @@ begin
     KeyName := TranslatePropertyName(PersObj, PropName, False);
     PropPath := ConcatPaths([Path, KeyName]);
     if (IgnoreProperties = nil) or (IgnoreProperties.IndexOf(PropName) = -1) then
-      case PropType(PersObj, PropName) of
-        tkLString, tkWString, tkString:
-          WriteString(PropPath, GetStrProp(PersObj, PropName));
-        tkEnumeration:
-          begin
-            TmpValue := GetOrdProp(PersObj, PropName);
-            WriteEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
-          end;
-        tkSet:
-          begin
-            TmpValue := GetOrdProp(PersObj, PropName);
-            WriteSet(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
-          end;
-        tkChar, tkInteger:
-          begin
-            if StorageOptions.TypedIntegerAsString then
-            begin
-              TmpValue := GetOrdProp(PersObj, PropName);
-              WriteEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
-            end
-            else
-              WriteInteger(PropPath, GetOrdProp(PersObj, PropName));
-          end;
-        tkInt64:
-          WriteString(PropPath, IntToStr(GetInt64Prop(PersObj, PropName)));
-        tkFloat:
-          WriteFloat(PropPath, GetFloatProp(PersObj, PropName));
-        tkClass:
-          begin
-            SubObj := GetObjectProp(PersObj, PropName);
-            if SubObj is TStrings then
-              WriteStringList(PropPath, TStrings(SubObj))
-            else
-            if (SubObj is TPersistent) and Recursive then
-              if SubObj is TJvCustomPropertyStore then
-                TJvCustomPropertyStore(SubObj).StoreProperties
-              else
-                WritePersistent(PropPath, TPersistent(SubObj), True, IgnoreProperties);
-          end;
-      end;
+      WriteProperty (PropPath, PersObj, PropName, Recursive);
   end;
 end;
 
@@ -2318,9 +2342,9 @@ begin
   try
     Tmp.RootPath := RootPath;
     Tmp.AppStorage := AppStorage;
-  // (rom) leak fixed by changing except to finally
-  finally
+  except
     FreeAndNil(Tmp);
+    raise;
   end;
 end;
 

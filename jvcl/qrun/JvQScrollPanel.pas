@@ -24,16 +24,17 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A scrolling TToolWindow like the ones in IE 4.0 with popup scrollbuttons
+   either on top/bottom or left/right edge.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQScrollPanel;
 
-{ A scrolling TToolWindow like the ones in IE 4.0 with popup scrollbuttons
-   either on top/bottom or left/right edge. }
+{$I jvcl.inc}
 
 interface
 
@@ -46,7 +47,7 @@ type
   TJvCustomScrollPanel = class;
   TJvDivideKind = (dkDivider, dkSeparator);
   TJvScrollKind = (sbUp, sbDown, sbLeft, sbRight);
-  /// (DFCS_SCROLLUP,DFCS_SCROLLDOWN,DFCS_SCROLLLEFT,DFCS_SCROLLRIGHT);
+  /// (DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT);
   TJvScrollDirection = (sdHorizontal, sdVertical);
   TJvScrollingEvent = procedure(Sender: TObject; var AllowChange: Boolean; Kind: TJvScrollKind) of object;
   TJvScrolledEvent = procedure(Sender: TObject; Kind: TJvScrollKind) of object;
@@ -182,7 +183,8 @@ type
 implementation
 
 uses
-  Math, JvQThemes, JvQExControls;
+  Math,
+  JvQThemes, JvQExControls;
 
 const
   cInitTime = 360;
@@ -345,7 +347,7 @@ end;
 
 procedure TJvScrollButton.Paint;
 const
-  aKind: array [TJvScrollKind] of Integer =
+  Kinds: array [TJvScrollKind] of Integer =
     (DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT);
 var
   Flags: Integer;
@@ -354,7 +356,7 @@ begin
   if not Visible then
     Exit;
   R := GetClientRect;
-  Flags := aKind[FKind];
+  Flags := Kinds[FKind];
 
   if not Enabled then
   begin
@@ -378,9 +380,9 @@ begin
   end;
 
   DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, Flags);
-  Frame3d(Canvas, R, clBtnFace, clBtnFace, 1);
+  Frame3D(Canvas, R, clBtnFace, clBtnFace, 1);
   if FDown then
-    Frame3d(Canvas, R, clBtnShadow, clBtnHighLight, 1);
+    Frame3D(Canvas, R, clBtnShadow, clBtnHighLight, 1);
 end;
 
 procedure TJvScrollButton.Click;
@@ -481,6 +483,7 @@ begin
   inherited Create(AOwner);
   // this is very strange: without it I get a "Control '' has no parent window" error
   // when dropping it in design-time. Never seen the need before
+  // (rom) probably assigning Align causes it. That needs a parent.
   if AOwner is TWinControl then
     Parent := TWinControl(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls]; 

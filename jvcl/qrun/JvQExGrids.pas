@@ -28,6 +28,8 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQExGrids;
+
 {$I jvcl.inc}
 {MACROINCLUDE JvExControls.macros}
 
@@ -37,8 +39,6 @@ Known Issues:
  * If you do it despite this warning your changes will be discarded by the next
  * update of this file. Do your changes in the template files.
  ****************************************************************************}
-
-unit JvQExGrids;
 
 interface
 
@@ -65,6 +65,7 @@ type
 
 
   TJvExInplaceEdit = class(TInplaceEdit, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
+  // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -74,22 +75,23 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+  private
+    InternalFontChanged: TNotifyEvent;
+    procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
+    procedure DoFontChanged(Sender: TObject); dynamic;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-    procedure RecreateWnd;
-    procedure CreateWnd; dynamic;
-    procedure CreateWidget; override;	
-  private
-    FDoubleBuffered: Boolean;
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
-  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure ColorChanged; override;
-  published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
+    procedure PaintWindow(PaintDevice: QPaintDeviceH);
+    function WidgetFlags: integer; override;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;
+    procedure RecreateWnd;
+  public
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer); 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -127,10 +129,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
   TJvExPubInplaceEdit = class(TJvExInplaceEdit) 
   end;
   
-  TJvExCustomGrid = class(TCustomGrid,   IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
+  TJvExCustomGrid = class(TCustomGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
+  // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -140,22 +144,23 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+  private
+    InternalFontChanged: TNotifyEvent;
+    procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
+    procedure DoFontChanged(Sender: TObject); dynamic;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-    procedure RecreateWnd;
-    procedure CreateWnd; dynamic;
-    procedure CreateWidget; override;	
-  private
-    FDoubleBuffered: Boolean;
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
-  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure ColorChanged; override;
-  published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
+    procedure PaintWindow(PaintDevice: QPaintDeviceH);
+    function WidgetFlags: integer; override;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;
+    procedure RecreateWnd;
+  public
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer); 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -183,17 +188,27 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
+    procedure ColorChanged; override;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
   TJvExPubCustomGrid = class(TJvExCustomGrid) 
   end;
    
 
-  TJvExDrawGrid = class(TDrawGrid,   IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
+  TJvExDrawGrid = class(TDrawGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
+  // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -203,22 +218,23 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+  private
+    InternalFontChanged: TNotifyEvent;
+    procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
+    procedure DoFontChanged(Sender: TObject); dynamic;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-    procedure RecreateWnd;
-    procedure CreateWnd; dynamic;
-    procedure CreateWidget; override;	
-  private
-    FDoubleBuffered: Boolean;
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
-  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure ColorChanged; override;
-  published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
+    procedure PaintWindow(PaintDevice: QPaintDeviceH);
+    function WidgetFlags: integer; override;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;
+    procedure RecreateWnd;
+  public
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer); 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -246,8 +262,16 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
+    procedure ColorChanged; override;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -256,11 +280,13 @@ type
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
   {$ENDIF !HAS_GRID_EDITSTYLE}
   end;
+
   TJvExPubDrawGrid = class(TJvExDrawGrid) 
   end;
   
 
-  TJvExStringGrid = class(TStringGrid,   IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
+  TJvExStringGrid = class(TStringGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
+  // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -270,22 +296,23 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+  private
+    InternalFontChanged: TNotifyEvent;
+    procedure OnFontChanged(Sender: TObject);
   protected
     procedure BoundsChanged; override;
+    procedure DoFontChanged(Sender: TObject); dynamic;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-    procedure RecreateWnd;
-    procedure CreateWnd; dynamic;
-    procedure CreateWidget; override;	
-  private
-    FDoubleBuffered: Boolean;
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
-  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure ColorChanged; override;
-  published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
+    procedure PaintWindow(PaintDevice: QPaintDeviceH);
+    function WidgetFlags: integer; override;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override;
+    procedure RecreateWnd;
+  public
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer); 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -313,8 +340,16 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
+    procedure ColorChanged; override;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -323,6 +358,7 @@ type
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
   {$ENDIF !HAS_GRID_EDITSTYLE}
   end;
+
   TJvExPubStringGrid = class(TJvExStringGrid) 
   end;
   
@@ -382,11 +418,27 @@ function TJvExInplaceEdit.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+  
 function TJvExInplaceEdit.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
     inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExInplaceEdit.OnFontChanged(Sender: TObject);
+var
+  FontChangedEvent: QEventH;
+begin
+  FontChangedEvent := QEvent_create(QEventType_FontChanged);
+  if FontChangedEvent <> nil then
+    QApplication_postEvent(Handle, FontChangedEvent);
+end;
+
+procedure TJvExInplaceEdit.DoFontChanged(Sender: TObject);
+begin
+  if Assigned(InternalFontChanged) then
+    InternalFontChanged(self);
 end;
 
 procedure TJvExInplaceEdit.BoundsChanged;
@@ -409,34 +461,30 @@ procedure TJvExInplaceEdit.CreateWnd;
 begin
   inherited CreateWidget;
 end;
-procedure TJvExInplaceEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
+
+function TJvExInplaceEdit.WidgetFlags: integer;
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
+  Result := inherited WidgetFlags or
+    integer(WidgetFlags_WRepaintNoErase) or
+    integer(WidgetFlags_WMouseNoMask);
 end;
 
-procedure TJvExInplaceEdit.ColorChanged;
+function TJvExInplaceEdit.EventFilter(Sender: QObjectH; Event: QEventH): boolean;
 begin
-  TWidgetControl_ColorChanged(Self);
+  Result := inherited EventFilter(Sender, Event);
+  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
 end;
 
-function TJvExInplaceEdit.GetDoubleBuffered: Boolean;
+procedure TJvExInplaceEdit.PaintWindow(PaintDevice: QPaintDeviceH);
 begin
-  Result := FDoubleBuffered;
+  WidgetControl_PaintTo(self, PaintDevice, 0, 0);
 end;
 
-procedure TJvExInplaceEdit.SetDoubleBuffered(Value: Boolean);
+procedure TJvExInplaceEdit.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
 begin
-  if Value <> FDoubleBuffered then
-  begin
-    if Value then
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
-    else
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
-    FDoubleBuffered := Value;
-    if not (csCreating in ControlState) then
-      Invalidate;
-  end;
+  WidgetControl_PaintTo(self, PaintDevice, X, Y);
 end;
+  
 
 procedure TJvExInplaceEdit.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -447,6 +495,7 @@ end;
 procedure TJvExInplaceEdit.DoFocusChanged(Control: TWinControl);
 begin
 end;
+  
 procedure TJvExInplaceEdit.DoBoundsChanged;
 begin
 end;
@@ -467,33 +516,35 @@ function TJvExInplaceEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Bo
 asm
   JMP   DefaultDoPaintBackground
 end;
-
-
+  
 constructor TJvExInplaceEdit.Create(AOwner: TComponent);
-begin
-  WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
-  inherited Create(AOwner);
+begin 
+  WindowProc := WndProc; 
+  inherited Create(AOwner); 
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged; 
+  FHintColor := clInfoBk;
 end;
 
-destructor TJvExInplaceEdit.Destroy;
+
+procedure TJvExInplaceEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  
-  FCanvas.Free;
-  inherited Destroy;
+  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 procedure TJvExInplaceEdit.Paint;
 begin
-  WidgetControl_DefaultPaint(Self, Canvas);
+  WidgetControl_DefaultPaint(self, Canvas);
 end;
 
 
+destructor TJvExInplaceEdit.Destroy;
+begin
+  inherited Destroy;
+end;
+  
 
 
 procedure TJvExCustomGrid.MouseEnter(Control: TControl);
@@ -547,11 +598,27 @@ function TJvExCustomGrid.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+  
 function TJvExCustomGrid.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
     inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExCustomGrid.OnFontChanged(Sender: TObject);
+var
+  FontChangedEvent: QEventH;
+begin
+  FontChangedEvent := QEvent_create(QEventType_FontChanged);
+  if FontChangedEvent <> nil then
+    QApplication_postEvent(Handle, FontChangedEvent);
+end;
+
+procedure TJvExCustomGrid.DoFontChanged(Sender: TObject);
+begin
+  if Assigned(InternalFontChanged) then
+    InternalFontChanged(self);
 end;
 
 procedure TJvExCustomGrid.BoundsChanged;
@@ -574,34 +641,30 @@ procedure TJvExCustomGrid.CreateWnd;
 begin
   inherited CreateWidget;
 end;
-procedure TJvExCustomGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+
+function TJvExCustomGrid.WidgetFlags: integer;
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
+  Result := inherited WidgetFlags or
+    integer(WidgetFlags_WRepaintNoErase) or
+    integer(WidgetFlags_WMouseNoMask);
 end;
 
-procedure TJvExCustomGrid.ColorChanged;
+function TJvExCustomGrid.EventFilter(Sender: QObjectH; Event: QEventH): boolean;
 begin
-  TWidgetControl_ColorChanged(Self);
+  Result := inherited EventFilter(Sender, Event);
+  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
 end;
 
-function TJvExCustomGrid.GetDoubleBuffered: Boolean;
+procedure TJvExCustomGrid.PaintWindow(PaintDevice: QPaintDeviceH);
 begin
-  Result := FDoubleBuffered;
+  WidgetControl_PaintTo(self, PaintDevice, 0, 0);
 end;
 
-procedure TJvExCustomGrid.SetDoubleBuffered(Value: Boolean);
+procedure TJvExCustomGrid.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
 begin
-  if Value <> FDoubleBuffered then
-  begin
-    if Value then
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
-    else
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
-    FDoubleBuffered := Value;
-    if not (csCreating in ControlState) then
-      Invalidate;
-  end;
+  WidgetControl_PaintTo(self, PaintDevice, X, Y);
 end;
+  
 
 procedure TJvExCustomGrid.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -612,6 +675,7 @@ end;
 procedure TJvExCustomGrid.DoFocusChanged(Control: TWinControl);
 begin
 end;
+  
 procedure TJvExCustomGrid.DoBoundsChanged;
 begin
 end;
@@ -632,15 +696,15 @@ function TJvExCustomGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boo
 asm
   JMP   DefaultDoPaintBackground
 end;
+  
 
 
 constructor TJvExCustomGrid.Create(AOwner: TComponent);
 begin
   WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
   inherited Create(AOwner);
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged;
   
   DoubleBuffered := True;
 end;
@@ -650,6 +714,35 @@ begin
   
   inherited Destroy;
 end;
+  
+procedure TJvExCustomGrid.ColorChanged;
+begin
+  WidgetControl_ColorChanged(Self);
+end;
+
+function TJvExCustomGrid.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvExCustomGrid.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+  end;
+end;
+
+procedure TJvExCustomGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  CustomControl_Painting(Self, Canvas, EventRegion);
+end;
+ 
+  
 
 
 
@@ -706,11 +799,27 @@ function TJvExDrawGrid.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+  
 function TJvExDrawGrid.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
     inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExDrawGrid.OnFontChanged(Sender: TObject);
+var
+  FontChangedEvent: QEventH;
+begin
+  FontChangedEvent := QEvent_create(QEventType_FontChanged);
+  if FontChangedEvent <> nil then
+    QApplication_postEvent(Handle, FontChangedEvent);
+end;
+
+procedure TJvExDrawGrid.DoFontChanged(Sender: TObject);
+begin
+  if Assigned(InternalFontChanged) then
+    InternalFontChanged(self);
 end;
 
 procedure TJvExDrawGrid.BoundsChanged;
@@ -733,34 +842,30 @@ procedure TJvExDrawGrid.CreateWnd;
 begin
   inherited CreateWidget;
 end;
-procedure TJvExDrawGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+
+function TJvExDrawGrid.WidgetFlags: integer;
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
+  Result := inherited WidgetFlags or
+    integer(WidgetFlags_WRepaintNoErase) or
+    integer(WidgetFlags_WMouseNoMask);
 end;
 
-procedure TJvExDrawGrid.ColorChanged;
+function TJvExDrawGrid.EventFilter(Sender: QObjectH; Event: QEventH): boolean;
 begin
-  TWidgetControl_ColorChanged(Self);
+  Result := inherited EventFilter(Sender, Event);
+  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
 end;
 
-function TJvExDrawGrid.GetDoubleBuffered: Boolean;
+procedure TJvExDrawGrid.PaintWindow(PaintDevice: QPaintDeviceH);
 begin
-  Result := FDoubleBuffered;
+  WidgetControl_PaintTo(self, PaintDevice, 0, 0);
 end;
 
-procedure TJvExDrawGrid.SetDoubleBuffered(Value: Boolean);
+procedure TJvExDrawGrid.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
 begin
-  if Value <> FDoubleBuffered then
-  begin
-    if Value then
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
-    else
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
-    FDoubleBuffered := Value;
-    if not (csCreating in ControlState) then
-      Invalidate;
-  end;
+  WidgetControl_PaintTo(self, PaintDevice, X, Y);
 end;
+  
 
 procedure TJvExDrawGrid.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -771,6 +876,7 @@ end;
 procedure TJvExDrawGrid.DoFocusChanged(Control: TWinControl);
 begin
 end;
+  
 procedure TJvExDrawGrid.DoBoundsChanged;
 begin
 end;
@@ -791,15 +897,15 @@ function TJvExDrawGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boole
 asm
   JMP   DefaultDoPaintBackground
 end;
+  
 
 
 constructor TJvExDrawGrid.Create(AOwner: TComponent);
 begin
   WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
   inherited Create(AOwner);
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged;
   
   DoubleBuffered := True;
 end;
@@ -809,6 +915,35 @@ begin
   
   inherited Destroy;
 end;
+  
+procedure TJvExDrawGrid.ColorChanged;
+begin
+  WidgetControl_ColorChanged(Self);
+end;
+
+function TJvExDrawGrid.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvExDrawGrid.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+  end;
+end;
+
+procedure TJvExDrawGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  CustomControl_Painting(Self, Canvas, EventRegion);
+end;
+ 
+  
 
 {$IFNDEF HAS_GRID_EDITSTYLE}
 function TJvExDrawGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
@@ -871,11 +1006,27 @@ function TJvExStringGrid.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
+  
 function TJvExStringGrid.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+  Result := WidgetControl_NeedKey(Self, Key, Shift, KeyText,
     inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExStringGrid.OnFontChanged(Sender: TObject);
+var
+  FontChangedEvent: QEventH;
+begin
+  FontChangedEvent := QEvent_create(QEventType_FontChanged);
+  if FontChangedEvent <> nil then
+    QApplication_postEvent(Handle, FontChangedEvent);
+end;
+
+procedure TJvExStringGrid.DoFontChanged(Sender: TObject);
+begin
+  if Assigned(InternalFontChanged) then
+    InternalFontChanged(self);
 end;
 
 procedure TJvExStringGrid.BoundsChanged;
@@ -898,34 +1049,30 @@ procedure TJvExStringGrid.CreateWnd;
 begin
   inherited CreateWidget;
 end;
-procedure TJvExStringGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+
+function TJvExStringGrid.WidgetFlags: integer;
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
+  Result := inherited WidgetFlags or
+    integer(WidgetFlags_WRepaintNoErase) or
+    integer(WidgetFlags_WMouseNoMask);
 end;
 
-procedure TJvExStringGrid.ColorChanged;
+function TJvExStringGrid.EventFilter(Sender: QObjectH; Event: QEventH): boolean;
 begin
-  TWidgetControl_ColorChanged(Self);
+  Result := inherited EventFilter(Sender, Event);
+  Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
 end;
 
-function TJvExStringGrid.GetDoubleBuffered: Boolean;
+procedure TJvExStringGrid.PaintWindow(PaintDevice: QPaintDeviceH);
 begin
-  Result := FDoubleBuffered;
+  WidgetControl_PaintTo(self, PaintDevice, 0, 0);
 end;
 
-procedure TJvExStringGrid.SetDoubleBuffered(Value: Boolean);
+procedure TJvExStringGrid.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
 begin
-  if Value <> FDoubleBuffered then
-  begin
-    if Value then
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
-    else
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
-    FDoubleBuffered := Value;
-    if not (csCreating in ControlState) then
-      Invalidate;
-  end;
+  WidgetControl_PaintTo(self, PaintDevice, X, Y);
 end;
+  
 
 procedure TJvExStringGrid.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -936,6 +1083,7 @@ end;
 procedure TJvExStringGrid.DoFocusChanged(Control: TWinControl);
 begin
 end;
+  
 procedure TJvExStringGrid.DoBoundsChanged;
 begin
 end;
@@ -956,15 +1104,15 @@ function TJvExStringGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boo
 asm
   JMP   DefaultDoPaintBackground
 end;
+  
 
 
 constructor TJvExStringGrid.Create(AOwner: TComponent);
 begin
   WindowProc := WndProc;
-  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
-  SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
   inherited Create(AOwner);
+  InternalFontChanged := Font.OnChange;
+  Font.OnChange := OnFontChanged;
   
   DoubleBuffered := True;
 end;
@@ -974,6 +1122,35 @@ begin
   
   inherited Destroy;
 end;
+  
+procedure TJvExStringGrid.ColorChanged;
+begin
+  WidgetControl_ColorChanged(Self);
+end;
+
+function TJvExStringGrid.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvExStringGrid.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+  end;
+end;
+
+procedure TJvExStringGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  CustomControl_Painting(Self, Canvas, EventRegion);
+end;
+ 
+  
 
 {$IFNDEF HAS_GRID_EDITSTYLE}
 function TJvExStringGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;

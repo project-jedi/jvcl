@@ -30,15 +30,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQCalc;
+
+{$I jvcl.inc}
 
 interface
 
 uses
   Types, QWindows, QMessages, Classes, QControls, QForms, QStdCtrls, QMenus, QExtCtrls, 
-  QImgList, 
+  QImgList, JvQExControls, JvQExExtCtrls,
   JvQBaseDlg;
 
 const
@@ -87,9 +87,9 @@ type
 
   TJvCalculatorForm = class(TForm)
   private
-    FMainPanel: TPanel;
-    FCalcPanel: TPanel;
-    FDisplayPanel: TPanel;
+    FMainPanel: TJvExPanel;
+    FCalcPanel: TJvExPanel;
+    FDisplayPanel: TJvExPanel;
     FDisplayLabel: TLabel;
     FPasteItem: TMenuItem;
     procedure FormKeyPress(Sender: TObject; var Key: Char);
@@ -115,7 +115,7 @@ implementation
 uses 
   Variants, 
   SysUtils, Math, QGraphics, QButtons, QClipbrd,
-  JvQToolEdit, JvQSpeedButton, JvQExExtCtrls,
+  JvQToolEdit, JvQSpeedButton, 
   JvQJVCLUtils, JvQJCLUtils, JvQConsts, JvQResources;
 
 {$IFDEF MSWINDOWS}
@@ -318,7 +318,7 @@ type
     FMemory: Double;
     FPrecision: Byte;
     FBeepOnError: Boolean;
-    FMemoryPanel: TPanel;
+    FMemoryPanel: TJvExPanel;
     FMemoryLabel: TLabel;
     FOnError: TNotifyEvent;
     FOnOk: TNotifyEvent;
@@ -440,7 +440,7 @@ begin
     if ALayout = clDialog then
     begin
       { Memory panel }
-      FMemoryPanel := TPanel.Create(Self);
+      FMemoryPanel := TJvExPanel.Create(Self);
       with FMemoryPanel do
       begin
         SetBounds(6, 7, 34, 20);
@@ -1052,7 +1052,7 @@ begin
   Popup := NewPopupMenu(Self, 'PopupMenu', paLeft, True, Items);
   Popup.OnPopup := PopupMenuPopup;
   { MainPanel }
-  FMainPanel := TPanel.Create(Self);
+  FMainPanel := TJvExPanel.Create(Self);
   with FMainPanel do
   begin
     Align := alClient;
@@ -1061,23 +1061,23 @@ begin
     ParentColor := True;
     PopupMenu := Popup;
   end;
-  { DisplayPanel }
-  FDisplayPanel := TPanel.Create(Self);
+  { DisplayPanel }  // TPanel
+  FDisplayPanel := TJvExPanel.Create(Self);
   with FDisplayPanel do
   begin
     SetBounds(6, 6, 230, 23);
     Parent := FMainPanel;
     BevelOuter := bvLowered;
-    Color := clWindow; 
+    Color := clWindow;
   end;
-  Control := TPanel.Create(Self);
-  with TPanel(Control) do
+  Control := TJvExPanel.Create(Self);
+  with TJvExPanel(Control) do
   begin
     SetBounds(1, 1, 228, 21);
     Align := alClient;
     Parent := FDisplayPanel;
     BevelOuter := bvNone;
-    BorderStyle := bsSingle; 
+    BorderStyle := bsSingle;
     ParentColor := True;
   end;
   FDisplayLabel := TLabel.Create(Self);
@@ -1086,7 +1086,7 @@ begin
     AutoSize := False;
     Alignment := taRightJustify;
     SetBounds(5, 2, 217, 15);
-    Parent := TPanel(Control);
+    Parent := Control;
     Caption := '0';
   end;
   { CalcPanel }

@@ -28,22 +28,20 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQFormWallpaper;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes,
-
-
-  QGraphics, QControls, Types,
-
+  SysUtils, Classes,  
+  QGraphics, QControls, Types, 
   JvQComponent;
 
 type
   TJvOffsetMode = (omRows, omColumns);
+
   TJvFormWallpaper = class(TJvGraphicControl)
   private
     FImage: TPicture;
@@ -92,8 +90,12 @@ end;
 procedure TJvFormWallpaper.ValidateOffset;
 begin
   case OffsetMode of
-    omRows: if FOffset > FImage.Width then FOffset := FImage.Width;
-    omColumns: if FOffset > FImage.Height then FOffset := FImage.Height;
+    omRows:
+      if FOffset > FImage.Width then
+        FOffset := FImage.Width;
+    omColumns:
+      if FOffset > FImage.Height then
+        FOffset := FImage.Height;
   end;
 end;
 

@@ -36,9 +36,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQLinkLabelTools;
+
+{$I jvcl.inc}
 
 interface
 
@@ -57,8 +57,7 @@ type
 
   TStringTools = class(TStaticObject)
   private
-    class function RemoveChars(const S: string;
-      const Chars: array of Char): string;
+    class function RemoveChars(const S: string; const Chars: array of Char): string;
   public
     class function RemoveCRLF(const S: string): string;
     class function EndsWith(const S: string; const SubS: string = ' '): Boolean;

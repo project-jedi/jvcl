@@ -31,10 +31,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQBrowseFolder;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQBrowseFolder;
 
 interface
 
@@ -654,6 +654,7 @@ procedure GetCSIDLLocation(const ASpecialDirectory: TFromDirectory;
 { This function is a bit overkill }
 var
   LSpecialDirectory: TFromDirectory;
+  Buffer: PChar;
 
   function IsOk: Boolean;
   begin
@@ -662,12 +663,10 @@ var
         (not OnlyNT or (Win32Platform = VER_PLATFORM_WIN32_NT));
   end;
 
-var
-  Buffer: PChar;
 begin
   LSpecialDirectory := ASpecialDirectory;
-  while (LSpecialDirectory <> fdNoSpecialFolder) and not CSIDLLocations[LSpecialDirectory].CanSimulate
-    and not IsOk do
+  while (LSpecialDirectory <> fdNoSpecialFolder) and
+    not CSIDLLocations[LSpecialDirectory].CanSimulate and not IsOk do
     LSpecialDirectory := CSIDLLocations[LSpecialDirectory].Alternative;
 
   if (LSpecialDirectory = fdNoSpecialFolder) or IsOk then
@@ -851,8 +850,8 @@ begin
       fpDefault:
         Exit;
     end;
-    SetWindowPos(AWndHandle, 0, R.Left, R.Top, 0, 0, SWP_NOACTIVATE or SWP_NOSIZE
-      or SWP_NOZORDER);
+    SetWindowPos(AWndHandle, 0, R.Left, R.Top, 0, 0,
+      SWP_NOACTIVATE or SWP_NOSIZE or SWP_NOZORDER);
   end;
 end;
 

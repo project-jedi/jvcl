@@ -40,11 +40,12 @@ interface
 
 uses  
   QWindows, QControls, QGraphics, Types, QExtCtrls, 
-  Classes,
+  Classes, JvQExControls,
   JvQComponent;
 
 type
-  TJvCustomLED = class(TJvGraphicControl)
+//  TJvCustomLED = class(TJvGraphicControl)
+  TJvCustomLED = class(TJvExWinControl)
   private
     FImgPict: TBitmap;
     FImgMask: TBitmap;
@@ -216,13 +217,19 @@ end;
 
 procedure TJvCustomLED.SetStatus(Value: Boolean);
 begin
-  FStatus := Value;
-  if Status then
-    Color := ColorOn
-  else
-    Color := ColorOff;
-  if Assigned(FOnChange) then
-    FOnChange(Self);
+  if FStatus <> Value then
+  begin
+    FStatus := Value;
+    if Status then
+      Color := ColorOn
+    else
+      Color := ColorOff;
+    if Assigned(FOnChange) then
+      FOnChange(Self);
+    {$IFDEF LINUX}
+    WakeUpGUIThread;
+    {$ENDIF LINUX}
+  end;
 end;
 
 function TJvCustomLED.GetStatus: Boolean;

@@ -86,9 +86,9 @@ NB!
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQProgressDialog;
+
+{$I jvcl.inc}
 
 interface
 

@@ -44,13 +44,10 @@ Description:
   1   D    3
   </TABLE>
 
-
   The asterix is the startpoint for the first vector. E.g. a
   gesture string "LU" means, user has first moved mouse to the
   left side and then up. There's no limit for complexity of a
   gesture ...
-
-
 
   Note
   See demo project for usage ...
@@ -59,9 +56,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQMouseGesture;
+
+{$I jvcl.inc}
 
 interface
 

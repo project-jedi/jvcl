@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQHeaderControl;
+
+{$I jvcl.inc}
 
 interface
 

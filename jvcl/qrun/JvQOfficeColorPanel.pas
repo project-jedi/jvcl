@@ -32,9 +32,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQOfficeColorPanel;
+
+{$I jvcl.inc}
 
 interface
 
@@ -136,6 +136,8 @@ type
     FOnPropertiesChanged: TJvPropertiesChangedEvent;
     FAutoColor: TColor;
     FShowColorHint: Boolean;
+    FRightClickSelect: Boolean;
+    FSelectIfPopup: Boolean;
     procedure SetShowAutoButton(const Value: Boolean);
     procedure SetShowOtherButton(const Value: Boolean);
     procedure SetMeasure(const Index, Value: Integer);
@@ -143,6 +145,8 @@ type
     procedure SetStringValue(const Index: Integer; const Value: string);
     procedure SetAutoColor(const Value: TColor);
     procedure SetShowColorHint(const Value: Boolean);
+    procedure SetRightClickSelect(const Value: Boolean);
+    procedure SetSelectIfPopup(const Value: Boolean);
   protected
     procedure Changed(PropName: string); virtual;
     procedure CreateDefaultText; virtual;
@@ -176,6 +180,9 @@ type
     property OtherCaption: string index Tag_OtherCaption read GetStringValue write SetStringValue;
     property AutoHint: string index Tag_AutoHint read GetStringValue write SetStringValue;
     property OtherHint: string index Tag_OtherHint read GetStringValue write SetStringValue;
+
+    property RightClickSelect: Boolean read FRightClickSelect write SetRightClickSelect default False;
+    property SelectIfPopup: Boolean read FSelectIfPopup write SetSelectIfPopup default False;
   end;
 
   TJvCustomOfficeColorPanel = class(TJvCustomPanel)
@@ -194,6 +201,8 @@ type
     FOnColorButtonClick: TNotifyEvent;
     FClickColorButton: TJvClickColorButtonType; 
     procedure ColorButtonClick(Sender: TObject);
+    procedure RedirectToColorButtonClick(Sender: TObject; Button: TMouseButton;
+    Shift: TShiftState; X, Y: Integer);
     procedure SetFlat(const Value: Boolean);
     procedure SetSelectedColor(const Value: TColor);
     function GetCustomColors: TStrings;
@@ -210,6 +219,7 @@ type
     procedure MakeColorButtons;
     procedure AdjustColorButtons;
     procedure SetEnabled( const  Value: Boolean); override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -288,6 +298,9 @@ begin
   FButtonHeight := MinButtonHeight;
   FColorSpaceBottom := MinColorSpaceBottom;
   FBottomMargin := MinBottomMargin;
+
+  FRightClickSelect := False;
+  FSelectIfPopup := False;
 
   CreateDefaultText;
 end;
@@ -479,6 +492,20 @@ begin
   end;
 end;
 
+procedure TJvOfficeColorPanelProperties.SetRightClickSelect(
+  const Value: Boolean);
+begin
+  FRightClickSelect := Value;
+  Changed('RightClickSelect');
+end;
+
+procedure TJvOfficeColorPanelProperties.SetSelectIfPopup(
+  const Value: Boolean);
+begin
+  FSelectIfPopup := Value;
+  Changed('SelectIfPopup');
+end;
+
 //=== { TJvSubColorButton } ==================================================
 
 constructor TJvSubColorButton.Create(AOwner: TComponent);
@@ -580,6 +607,7 @@ begin
     Hint := ColorToString(ButtonColor);
     Visible := False;
     OnClick := ColorButtonClick;
+    OnMouseUp := RedirectToColorButtonClick;
   end;
 
   FOtherButton := TJvSubColorButton.Create(Self);
@@ -593,6 +621,7 @@ begin
     AllowAllUp := True;
     Visible := False;
     OnClick := ColorButtonClick;
+    OnMouseUp := RedirectToColorButtonClick;
   end;
 
   FColorDialog := TJvOfficeColorDialog.Create(Self); 
@@ -637,6 +666,7 @@ begin
       Flat := True;
       Hint := ColorToString(ButtonColor);
       OnClick := ColorButtonClick;
+      OnMouseUp := RedirectToColorButtonClick;
     end;
   end;
   Invalidate;
@@ -927,6 +957,47 @@ begin
     AdjustColorButtons;
 end;
 
+// This type is used to the PopupMenu property that is protected in
+// TControl. This works because it automatically accesses the correct
+// field in TControl
+type
+  TExposedControl = class(TControl)
+  public
+    property PopupMenu;
+  end;
+
+procedure TJvCustomOfficeColorPanel.RedirectToColorButtonClick(
+  Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+var
+   aParent: TWinControl;
+begin
+  if assigned(OnMouseUp) then
+    OnMouseUp(Sender, Button, Shift, X, Y);
+
+  // If any of the possible parents has a popup menu, we let it
+  // run, and do not select the button (hence the exit), unless
+  // the properties tell us to select anyway
+  aParent := self;
+  while assigned(aParent) do
+    if assigned(TExposedControl(aParent).PopupMenu)then
+    begin
+      if not Properties.SelectIfPopup then
+        Exit;
+    end
+    else
+    begin
+      aParent := aParent.Parent;
+    end;
+
+  // if the user asked not to right click select, we stop here
+  if not Properties.RightClickSelect then
+    Exit;
+
+  if Button = mbRight then
+    ColorButtonClick(Sender);
+end;
+
 //=== { TJvColorSpeedButton } ================================================
 
 constructor TJvColorSpeedButton.Create(AOwner: TComponent);
@@ -943,6 +1014,7 @@ begin
     Invalidate;
   end;
 end;
+
 
 end.
 

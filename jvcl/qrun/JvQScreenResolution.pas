@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQScreenResolution;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQScreenResolution;
 
 interface
 

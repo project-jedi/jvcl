@@ -26,10 +26,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQDynControlEngineVCL;
+
 {$I jvcl.inc}
 {$I crossplatform.inc}
-
-unit JvQDynControlEngineVCL;
 
 interface
 
@@ -1011,6 +1011,7 @@ end;
 
 procedure TJvDynControlVCLRadioGroup.ControlSetCaption(const Value: string);
 begin
+  Caption := Value;
 end;
 
 procedure TJvDynControlVCLRadioGroup.ControlSetTabOrder(Value: Integer);

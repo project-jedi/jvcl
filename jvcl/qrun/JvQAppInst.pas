@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQAppInst;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQAppInst;
 
 interface
 

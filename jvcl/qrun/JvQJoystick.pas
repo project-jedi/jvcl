@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQJoystick;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQJoystick;
 
 interface
 

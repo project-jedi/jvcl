@@ -48,10 +48,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQTimerList;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQTimerList;
 
 interface
 
@@ -168,7 +168,8 @@ type
 implementation
 
 uses
-  QConsts, QForms, // for Application.HandleException
+  QConsts,
+  QForms, // for Application.HandleException
   Math,
   JvQJVCLUtils, JvQResources, JvQTypes;
 
@@ -186,7 +187,14 @@ begin
   FRepeatCount := 0;
   FEnabled := True;
   FExecCount := 0;
-  FInterval := DefaultInterval;
+
+  // Do not set FInterval directly or the timer would never trigger
+  // if its Interval is left to its default value. This is because
+  // the default value for Enabled is True. If it were False, then
+  // the user would have to set Enable to True and thus trigger the
+  // creation of the timer.
+  Interval := DefaultInterval;
+  
   FLastExecute := GetTickCount;
 end;
 

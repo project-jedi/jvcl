@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQAppAnimatedIcon;
+
+{$I jvcl.inc}
 
 interface
 

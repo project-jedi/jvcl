@@ -37,7 +37,7 @@ type
 
   TGaugeKind = (gkText, gkHorizontalBar, gkVerticalBar, gkPie, gkNeedle);
 
-  TJvGauge = class(TJvWinControl)
+  TGauge = class(TJvWinControl)
   private
     FMinValue: Longint;
     FMaxValue: Longint;
@@ -124,7 +124,7 @@ end;
 
 { TGauge }
 
-constructor TJvGauge.Create(AOwner: TComponent);
+constructor TGauge.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csFramed, csOpaque];
@@ -141,12 +141,12 @@ begin
   Height := 100;
 end;
 
-function TJvGauge.GetPercentDone: Longint;
+function TGauge.GetPercentDone: Longint;
 begin
   Result := SolveForY(FCurValue - FMinValue, FMaxValue - FMinValue);
 end;
 
-procedure TJvGauge.Paint;
+procedure TGauge.Paint;
 var
   TheImage: TBitmap;
   OverlayImage: TBltBitmap;
@@ -186,7 +186,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.PaintBackground(AnImage: TBitmap);
+procedure TGauge.PaintBackground(AnImage: TBitmap);
 var
   ARect: TRect;
 begin
@@ -199,7 +199,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.PaintAsText(AnImage: TBitmap; PaintRect: TRect);
+procedure TGauge.PaintAsText(AnImage: TBitmap; PaintRect: TRect);
 var
   S: string;
   X, Y: Integer;
@@ -229,7 +229,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.PaintAsNothing(AnImage: TBitmap; PaintRect: TRect);
+procedure TGauge.PaintAsNothing(AnImage: TBitmap; PaintRect: TRect);
 begin
   with AnImage do
   begin
@@ -238,7 +238,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.PaintAsBar(AnImage: TBitmap; PaintRect: TRect);
+procedure TGauge.PaintAsBar(AnImage: TBitmap; PaintRect: TRect);
 var
   FillSize: Longint;
   W, H: Integer;
@@ -270,7 +270,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.PaintAsPie(AnImage: TBitmap; PaintRect: TRect);
+procedure TGauge.PaintAsPie(AnImage: TBitmap; PaintRect: TRect);
 var
   MiddleX, MiddleY: Integer;
   Angle: Double;
@@ -304,7 +304,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.PaintAsNeedle(AnImage: TBitmap; PaintRect: TRect);
+procedure TGauge.PaintAsNeedle(AnImage: TBitmap; PaintRect: TRect);
 var
   MiddleX: Integer;
   Angle: Double;
@@ -344,7 +344,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.SetGaugeKind(Value: TGaugeKind);
+procedure TGauge.SetGaugeKind(Value: TGaugeKind);
 begin
   if Value <> FKind then
   begin
@@ -353,7 +353,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.SetShowText(Value: Boolean);
+procedure TGauge.SetShowText(Value: Boolean);
 begin
   if Value <> FShowText then
   begin
@@ -362,7 +362,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.SetBorderStyle(Value: TControlBorderStyle);
+procedure TGauge.SetBorderStyle(Value: TControlBorderStyle);
 begin
   if Value <> FBorderStyle then
   begin
@@ -371,7 +371,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.SetForeColor(Value: TColor);
+procedure TGauge.SetForeColor(Value: TColor);
 begin
   if Value <> FForeColor then
   begin
@@ -380,7 +380,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.SetBackColor(Value: TColor);
+procedure TGauge.SetBackColor(Value: TColor);
 begin
   if Value <> FBackColor then
   begin
@@ -389,7 +389,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.SetMinValue(Value: Longint);
+procedure TGauge.SetMinValue(Value: Longint);
 begin
   if Value <> FMinValue then
   begin
@@ -402,7 +402,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.SetMaxValue(Value: Longint);
+procedure TGauge.SetMaxValue(Value: Longint);
 begin
   if Value <> FMaxValue then
   begin
@@ -415,7 +415,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.SetProgress(Value: Longint);
+procedure TGauge.SetProgress(Value: Longint);
 var
   TempPercent: Longint;
 begin
@@ -432,7 +432,7 @@ begin
   end;
 end;
 
-procedure TJvGauge.AddProgress(Value: Longint);
+procedure TGauge.AddProgress(Value: Longint);
 begin
   Progress := FCurValue + Value;
   Refresh;

@@ -37,9 +37,9 @@ Description:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQLinkLabelTree;
+
+{$I jvcl.inc}
 
 interface
 

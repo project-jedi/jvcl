@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQDeleteError;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQDeleteError;
 
 interface
 

@@ -37,17 +37,16 @@ Changes:
   -- Same TJvChangeNotify.CheckActive: Exception not when csDesigning+csloading in ComponentState
   -- added procedure TJvChangeNotify.Loaded; override;
 
-
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-{$I windowsonly.inc}
-
 unit JvQChangeNotify;
 
 interface
+
+{$I jvcl.inc}
+{$I windowsonly.inc}
 
 uses
   Windows, Classes,

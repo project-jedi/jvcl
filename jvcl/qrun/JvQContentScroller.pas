@@ -31,9 +31,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQContentScroller;
+
+{$I jvcl.inc}
 
 interface
 

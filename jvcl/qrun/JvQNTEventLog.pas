@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQNTEventLog;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQNTEventLog;
 
 interface
 

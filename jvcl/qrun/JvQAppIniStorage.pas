@@ -31,9 +31,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQAppIniStorage;
+
+{$I jvcl.inc}
 
 interface
 
@@ -563,7 +563,7 @@ end;
 
 function TJvCustomAppIniStorage.DefaultExtension : string;
 begin
-  Result := 'xml';
+  Result := 'ini';
 end;
 
 

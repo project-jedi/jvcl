@@ -29,9 +29,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQPageList;
+
+{$I jvcl.inc}
 
 interface
 
@@ -55,6 +55,7 @@ type
 
   TJvPagePaintEvent = procedure(Sender: TObject; ACanvas: TCanvas; ARect: TRect) of object;
   TJvPageCanPaintEvent = procedure(Sender: TObject; ACanvas: TCanvas; ARect: TRect; var DefaultDraw: Boolean) of object;
+
   { TJvCustomPage is the base class for pages in a TJvPageList and implements the basic behaviour of such
     a control. It has support for accepting components, propagating it's Enabled state, changing it's order in the
     page list and custom painting }
@@ -108,6 +109,7 @@ type
     It works like TPageControl but does not have any tabs
    }
   TJvShowDesignCaption = (sdcNone, sdcTopLeft, sdcTopCenter, sdcTopRight, sdcLeftCenter, sdcCenter, sdcRightCenter, sdcBottomLeft, sdcBottomCenter, sdcBottomRight, sdcRunTime);
+  
   TJvCustomPageList = class(TJvCustomControl, IUnknown, IPageList)
   private
     FPages: TList;

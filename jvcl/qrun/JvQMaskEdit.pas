@@ -31,9 +31,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQMaskEdit;
+
+{$I jvcl.inc}
 
 interface
 

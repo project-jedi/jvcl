@@ -39,9 +39,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQWizardCommon;
+
+{$I jvcl.inc}
 
 interface
 

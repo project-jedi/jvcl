@@ -31,9 +31,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQXmlDatabase;
+
+{$I jvcl.inc}
 
 interface
 
@@ -691,7 +691,7 @@ var
     if (Result <> '') and (Result[1] in ['''','"']) then
       Result := Copy(Result, 2, Length(Result) - 2);
 
-    if CompareText(Result, 'now') = 0 then
+    if SameText(Result, 'now') then
       Result := DateTimeToStr(Now);
   end;
 
@@ -895,7 +895,7 @@ begin
       //convert to date/int
       case TJvXMLQueryOrder(FOrders[I]).Convertion of
         ocNone:
-          Result := CompareStr(LStr1, LStr2);
+          Result := AnsiCompareStr(LStr1, LStr2);
         ocDate:
           Result := CompareDateTime(StrToDateTimeDef(LStr1, 0), StrToDateTimeDef(LStr2, 0));
         ocInteger:
@@ -1311,7 +1311,7 @@ var
 
   function ParseValue(const AValue: string): string;
   begin
-    if CompareText(AValue, 'now()') = 0 then
+    if SameText(AValue, 'now()') then
       Result := DateTimeToStr(Now)
     else
       Result := AValue;

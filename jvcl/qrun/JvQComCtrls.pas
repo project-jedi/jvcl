@@ -35,15 +35,12 @@ Known Issues:
   TJvTreeView:
     When dragging an item and MultiSelect is True droptarget node is not painted
     correctly.
-  TJvIpAddress:
-    Can't focus next internal edit by TAB key.
-    Changing the color only changes the color of the child edits, not the control background
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQComCtrls;
+
+{$I jvcl.inc}
 
 interface
 
@@ -161,7 +158,7 @@ type
     procedure SetTabPainter(const Value: TJvTabControlPainter); // not WantKeys
   protected 
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     function DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean): Boolean; override;  
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
@@ -191,7 +188,6 @@ type
     procedure SetReduceMemoryUse(const Value: Boolean);
     procedure SetTabPainter(const Value: TJvTabControlPainter);
   protected
-
     function HintShow(var HintInfo: THintInfo): Boolean; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
@@ -201,7 +197,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override; 
     function DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X: Integer; Y: Integer); override;  
+      X, Y: Integer); override;  
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTabImages;
@@ -245,15 +241,14 @@ type
     property OnMouseMove;
     property OnMouseUp; 
   end;
-
-
+ 
 
 implementation
 
 uses
   SysUtils,
   JclStrings,
-  JvQJCLUtils;
+  JvQConsts, JvQJCLUtils;
 
 
 
@@ -571,11 +566,12 @@ end;
 
 
 
+
 procedure TJvTabControl.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if (Key = VK_TAB) and (ssCtrl in Shift) then
+  if (Key = VK_TAB) and (Shift * KeyboardShiftStates >= [ssCtrl]) then
   begin
-    if ssShift in Shift then
+    if (Shift * KeyboardShiftStates >= [ssShift]) then
     begin
       if TabIndex = 0 then
         TabIndex := Tabs.Count - 1
@@ -614,17 +610,18 @@ begin
       end;
     end;
   end;
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
 end;
 
 function TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean): Boolean;
 begin
-  Result := true;
+  Result := True;
   if Assigned(TabPainter) then
     TabPainter.DrawTab(Self, Canvas, Images, TabIndex, Tabs[TabIndex].Caption, Rect, TabIndex = Self.TabIndex, Enabled)
   else
     Result := inherited DrawTab(TabIndex, Rect, Active);
 end;
+
 
 
 
@@ -681,10 +678,11 @@ var
   Forwrd: Boolean;
 begin
   Result := False;
-  if HandleGlobalTab and not FormKeyPreview and (Key = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
+  if HandleGlobalTab and not FormKeyPreview and
+    (Key = VK_TAB) and (Shift * KeyboardShiftStates >= [ssCtrl]) then
   begin
     ThisTab := ActivePage;
-    Forwrd := GetKeyState(VK_SHIFT) >= 0;
+    Forwrd := (Shift * KeyboardShiftStates >= [ssShift]);
     Tab := ThisTab;
     repeat
       Tab := FindNextPage(Tab, Forwrd, True);
@@ -711,7 +709,7 @@ function TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
 var
   I, RealIndex: Integer;
 begin 
-  Result := false; 
+  Result := False; 
   if TabPainter <> nil then
   begin
     RealIndex := 0;
@@ -725,7 +723,7 @@ begin
     if RealIndex < PageCount then
       TabPainter.DrawTab(Self, Canvas, Images, Pages[RealIndex].ImageIndex, Pages[RealIndex].Caption, Rect, Active, Pages[RealIndex].Enabled);
   end
-  else Result := inherited DrawTab(TabIndex, Rect, Active);
+  else  Result :=  inherited DrawTab(TabIndex, Rect, Active);
 end;
 
 procedure TJvPageControl.Loaded;
@@ -873,7 +871,7 @@ begin
       end;
     end;
   end;
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
 end;
 
 
@@ -911,6 +909,7 @@ end;
 
 
 
+
 procedure TJvTabDefaultPainter.SetGlyphLayout(const Value: TButtonLayout);
 begin
   if FGlyphLayout <> Value then
@@ -937,7 +936,6 @@ begin
     Change;
   end;
 end;
-
 
 end.
 

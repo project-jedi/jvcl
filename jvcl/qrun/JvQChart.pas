@@ -60,9 +60,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQChart;
+
+{$I jvcl.inc}
 
 interface
 
@@ -413,7 +413,6 @@ type
     FAutoPlotDone: Boolean; // If Options.AutoUpdateGraph is set, then has paint method called PlotGraph already?
     FPlotGraphCalled: Boolean; // Has bitmap ever been painted?
     FInPlotGraph: Boolean; // recursion blocker.
-    FOnChartClick: TJvChartClickEvent; // mouse click event
 
     // NEW: The component has always had a feature when you click on margin areas
     // that the user can enter a value (Y Axis Scale, title, and X header)
@@ -421,10 +420,11 @@ type
     // event that can be fired. If you don't want the default editor behaviours
     // turn off Options.MouseEdit to make it 100% user-defined what happens when
     // the user clicks on an area of the chart.
-    FOnYAxisClick:TJvChartEvent; // Left margin (Primary Y Axis labels) click
-    FOnXAxisClick:TJvChartEvent; // Bottom margin (X Axis Header) click
-    FOnAltYAxisClick:TJvChartEvent; // Right margin click (Secondary Y Axis labels)
-    FOnTitleClick:TJvChartEvent;   // Title area click (Top margin)
+    FOnYAxisClick: TJvChartEvent; // Left margin (Primary Y Axis labels) click
+    FOnXAxisClick: TJvChartEvent; // Bottom margin (X Axis Header) click
+    FOnAltYAxisClick: TJvChartEvent; // Right margin click (Secondary Y Axis labels)
+    FOnTitleClick: TJvChartEvent; // Title area click (Top margin)
+    FOnChartClick: TJvChartClickEvent; // mouse click event
 
     FMouseDownShowHint: Boolean; // True=showing hint.
     FMouseDownHintBold: Boolean; // True=first line of hint is bold.
@@ -595,11 +595,10 @@ type
         The other 2 margin areas are entirely up to the user to define.
         Clicking bottom or right margins does nothing by default.
       }
-    property OnYAxisClick:TJvChartEvent    read FOnYAxisClick    write FOnYAxisClick; // When user clicks on Y axis, they can enter a new Y Scale value.
-    property OnXAxisClick:TJvChartEvent    read FOnXAxisClick    write FOnXAxisClick; // Also allow user to define some optional action for clicking on the X axis.
-    property OnAltYAxisClick:TJvChartEvent read FOnAltYAxisClick write FOnAltYAxisClick; // Right margin click (Secondary Y Axis labels)
-    property OnTitleClick:TJvChartEvent    read FOnTitleClick    write FOnTitleClick;   // Top margin area (Title area) click.
-
+    property OnYAxisClick: TJvChartEvent read FOnYAxisClick write FOnYAxisClick; // When user clicks on Y axis, they can enter a new Y Scale value.
+    property OnXAxisClick: TJvChartEvent read FOnXAxisClick write FOnXAxisClick; // Also allow user to define some optional action for clicking on the X axis.
+    property OnAltYAxisClick: TJvChartEvent read FOnAltYAxisClick write FOnAltYAxisClick; // Right margin click (Secondary Y Axis labels)
+    property OnTitleClick: TJvChartEvent read FOnTitleClick write FOnTitleClick;   // Top margin area (Title area) click.
   end;
 
 implementation
@@ -2047,9 +2046,7 @@ var
         begin
           // TODO: EVENT FOR END-USER-CUSTOMIZED OR FORMATTED LABELS
           //if Assigned(FOnGetValueLabel) then
-          //begin
           //  FOnGetValueLabel(Sender, {Pen}I, {Sample#}J, {Value}V, {var}Text );
-          //end
           if Length(Text) > 0 then
           begin
             Dec(Y, 2);
@@ -2944,10 +2941,8 @@ begin
     Options.Title := StrString;
   PlotGraph;
   Invalidate;
-  if Assigned(FOnTitleClick) then begin
-          FOnTitleClick(Self);
-  end;
-  
+  if Assigned(FOnTitleClick) then
+    FOnTitleClick(Self);
 end;
 
 {This procedure is called when user clicks on the X-axis header}
@@ -2973,16 +2968,12 @@ begin
   else
     Exit;
 
-  //--------------------------------------------------------------------------------    
   // Fire event so the application can save this new Options.PrimaryYAxis.YMax value
-  //--------------------------------------------------------------------------------
- if Assigned(FOnYAxisClick) then begin
-      FOnYAxisClick(Self);
- end;
+  if Assigned(FOnYAxisClick) then
+    FOnYAxisClick(Self);
 
-//XXX  AutoFormatGraph; BAD CODE REMOVED. Wpostma. Call PlotGraph instead.
+  //XXX  AutoFormatGraph; BAD CODE REMOVED. Wpostma. Call PlotGraph instead.
   PlotGraph;
-
 end;
 
 // NEW: X Axis Header has to move to make room if there is a horizontal
@@ -3138,34 +3129,40 @@ begin
     if Y < Options.YStartOffset then
       EditHeader
     else
-    if Y > (Options.YStartOffset + Options.YEnd) then
+    if Y > Options.YStartOffset + Options.YEnd then
       EditXHeader;
-  end else begin
-      if X< Options.XStartOffset  then begin
-         // Just fire the Y axis clicked event, don't popup the editor
-         if Assigned(FOnYAxisClick) then begin
-               FOnYAxisClick(Self);
-               exit;
-         end;
-      end else if (Y < Options.YStartOffset) then begin
-          if Assigned(FOnTitleClick) then begin
-               FOnTitleClick(Self);
-          end;
+  end
+  else
+  begin
+    if X < Options.XStartOffset then
+    begin
+      // Just fire the Y axis clicked event, don't popup the editor
+      if Assigned(FOnYAxisClick) then
+      begin
+        FOnYAxisClick(Self);
+        Exit;
       end;
+    end
+    else
+    if Y < Options.YStartOffset then
+    begin
+      if Assigned(FOnTitleClick) then
+        FOnTitleClick(Self);
+    end;
   end;
   // New: Click on bottom area of chart (X Axis) can be defined by
   // user of the component to do something.
-  if Assigned(FOnXAxisClick) then begin
-      if (Y > Options.YEnd) and (X>Options.XStartOffset) then begin
-          FOnXAxisClick(Self);
-          exit;
-      end;
+  if Assigned(FOnXAxisClick) then
+  begin
+    if (Y > Options.YEnd) and (X > Options.XStartOffset) then
+    begin
+      FOnXAxisClick(Self);
+      Exit;
+    end;
   end;
-  if Assigned(FOnAltYAxisClick) then begin
-     if (Y < Options.YEnd) and (X>Options.XEnd) then begin
-          FOnAltYAxisClick(Self);
-     end;
-  end;
+  if Assigned(FOnAltYAxisClick) then
+    if (Y < Options.YEnd) and (X > Options.XEnd) then
+      FOnAltYAxisClick(Self);
 
   if Options.MouseInfo then
   begin
@@ -3225,11 +3222,10 @@ begin
           FMouseDownShowHint := False;
           FMouseDownHintBold := False;
           // This event can handle chart clicks on data area only.
-          if (X <= Options.XEnd) then begin
+          if X <= Options.XEnd then
             FOnChartClick(Self, Button, Shift, X, Y, FMouseValue,
-                                FMousePen, FMouseDownShowHint,
-                                FMouseDownHintBold, FMouseDownHintStrs );
-          end;
+              FMousePen, FMouseDownShowHint,
+              FMouseDownHintBold, FMouseDownHintStrs );
         end
         else
         begin

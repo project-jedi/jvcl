@@ -24,16 +24,17 @@ Contributor(s): Michael Beck [mbeck att bigfoot dott com]
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  TJvCaptionPanel is a panel that looks like a form, with a Caption area,
+  system buttons but is derived from a normal panel.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-{ @abstract(TJvCaptionPanel is a panel that looks like a form, with a Caption area,
-  system buttons but is derived from a normal panel.) }
-
 unit JvQCaptionPanel;
+
+{$I jvcl.inc}
 
 interface
 

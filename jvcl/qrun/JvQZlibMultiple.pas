@@ -25,8 +25,10 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+    2004-07-27 - Read the 'ALL USERS READ THIS' section below.
 -----------------------------------------------------------------------------}
 // $Id$
+
 
 {$I jvcl.inc}
 
@@ -40,6 +42,35 @@ uses
   JclZLib, JvQComponent;
 
 type
+
+// ----------------------------------------------------------------------------}
+// 2004-07-27 *** ALL USERS READ THIS: (wpostma) ***
+//
+// I have added support for selective extraction and listing archive contents without
+//  writing any files to disk. To do this we had to add some parameters to the component events.
+//
+//  This will break existing applications that use these events, until they update their
+//  event declarations, to add the new parameters to your events.
+//
+//  This is something the Delphi IDE should do automatically, but does not do. <grin>
+//
+//  The old events for OnDecompressingFile, and OnDecompressedFile
+//  look like this:
+//      procedure <<TMyForm.MyEventHandlerName>>(Sender: TObject; const FileName: string)
+//
+//  The new events have an additional parameter each:
+//
+//     OnDecompressingFile -> (Sender: TObject; const FileName: string;
+//                              {NEW!} var WriteFile:Boolean   )
+//       OnDecompressedFile -> (Sender: TObject; const FileName: string;
+//                              {NEW!} const FileSize:LongWord )
+//
+// -----------------------------------------------------------------------------}
+
+  {NEW:}
+  TFileBeforeWriteEvent = procedure(Sender: TObject; const FileName: string; var WriteFile: Boolean) of object;
+  TFileAfterWriteEvent = procedure(Sender: TObject; const FileName: string; const FileSize: Longword) of object;
+
   TFileEvent = procedure(Sender: TObject; const FileName: string) of object;
   TProgressEvent = procedure(Sender: TObject; Position, Total: Integer) of object;
 
@@ -48,8 +79,12 @@ type
     FOnProgress: TProgressEvent;
     FOnCompressingFile: TFileEvent;
     FOnCompressedFile: TFileEvent;
-    FOnDecompressingFile: TFileEvent;
-    FOnDecompressedFile: TFileEvent;
+    // July 26, 2004: New improved event types for decompression: Allow user to
+    // skip writing of files they want skipped on extraction, and if they
+    // extract nothing, they can use this "nil extraction" to scan the contents
+    // of the file, returning the file names and sizes inside. 
+    FOnDecompressingFile: TFileBeforeWriteEvent;
+    FOnDecompressedFile: TFileAfterWriteEvent;
   protected
     procedure AddFile(FileName, Directory, FilePath: string; DestStream: TStream);
     procedure DoProgress(Position, Total: Integer); virtual;
@@ -74,11 +109,14 @@ type
     // If RelativePaths is true, any paths in the stream are stripped from their drive letter
     procedure DecompressStream(Stream: TStream; Directory: string; Overwrite: Boolean; const RelativePaths: Boolean = True);
   published
-    property OnDecompressingFile: TFileEvent read FOnDecompressingFile write FOnDecompressingFile;
-    property OnDecompressedFile: TFileEvent read FOnDecompressedFile write FOnDecompressedFile;
+     // NOTE: Changed decompression event parameters. July 26 2004. -WPostma.
+    property OnDecompressingFile: TFileBeforeWriteEvent read FOnDecompressingFile write FOnDecompressingFile;
+    property OnDecompressedFile: TFileAfterWriteEvent read FOnDecompressedFile write FOnDecompressedFile;
+    
     property OnProgress: TProgressEvent read FOnProgress write FOnProgress;
+
     property OnCompressingFile: TFileEvent read FOnCompressingFile write FOnCompressingFile;
-    property OnCompressedFile: TFileEvent read FOnCompressedFile write FOnCompressedFile;
+    property OnCompressedFile: TFileEvent  read FOnCompressedFile write FOnCompressedFile;
   end;
 
 implementation
@@ -179,11 +217,13 @@ begin
         FOnCompressingFile(Self, FilePath);
 
       { (RB) ZStream has an OnProgress event, thus CopyFrom can be used }
+
       repeat
         Count := FileStream.Read(Buffer, SizeOf(Buffer));
         ZStream.Write(Buffer, Count);
         DoProgress(FileStream.Position, FileStream.Size);
       until Count = 0;
+
     finally
       ZStream.Free;
     end;
@@ -271,6 +311,8 @@ var
   S: string;
   Count, FileSize, I: Integer;
   Buffer: array[0..1023] of Byte;
+  TotalByteCount:LongWord;
+  WriteMe:Boolean; // Allow skipping of files instead of writing them.
 begin
   if (Length(Directory) > 0) then
     Directory := IncludeTrailingPathDelimiter(Directory);
@@ -311,23 +353,33 @@ begin
       if Overwrite or not FileExists(S) then
       begin
         //This fails if Directory isn't empty
-        FileStream := TFileStream.Create(S, fmCreate or fmShareExclusive);
+        WriteMe := True;
+        if Assigned(FOnDecompressingFile) then
+            FOnDecompressingFile(Self, S, WriteMe);
+
+        if WriteMe then        
+           FileStream := TFileStream.Create(S, fmCreate or fmShareExclusive)
+        else
+            FileStream := nil; // skip it!
+
         ZStream := TJclZLibReader.Create(CStream);
         try
-          if Assigned(FOnDecompressingFile) then
-            FOnDecompressingFile(Self, S);
+          TotalByteCount := 0;
 
           { (RB) ZStream has an OnProgress event, thus copyfrom can be used }
           repeat
             Count := ZStream.Read(Buffer, SizeOf(Buffer));
-            FileStream.Write(Buffer, Count);
-            DoProgress(FileStream.Size, FileSize);
+            if Assigned(FileStream) then begin
+              FileStream.Write(Buffer, Count);
+              DoProgress(FileStream.Size, FileSize);
+            end;
+            Inc(TotalByteCount,Count);
           until Count = 0;
 
           if Assigned(FOnDecompressedFile) then
-            FOnDecompressedFile(Self, S);
+            FOnDecompressedFile(Self, S, TotalByteCount);
         finally
-          FileStream.Free;
+          FreeAndNil( FileStream );
           ZStream.Free;
         end;
       end;

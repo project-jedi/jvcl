@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQGroupHeader;
+
+{$I jvcl.inc}
 
 interface
 
@@ -57,7 +57,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property Brush: TBrush read FBrush write SetBrush;
@@ -95,8 +94,7 @@ type
     property Canvas;
   published
     property Align;
-    property Alignment: TAlignment read FAlignment write SetAlignment default
-      taLeftJustify;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Anchors; 
     property Caption;
     property Color;

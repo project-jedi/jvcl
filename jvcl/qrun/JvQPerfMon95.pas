@@ -29,10 +29,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQPerfMon95;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQPerfMon95;
 
 interface
 

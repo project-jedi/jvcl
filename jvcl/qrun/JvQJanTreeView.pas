@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQJanTreeView;
+
+{$I jvcl.inc}
 
 interface
 

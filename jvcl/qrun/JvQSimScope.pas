@@ -45,11 +45,11 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQSimScope;
 
 interface
+
+{$I jvcl.inc}
 
 uses  
   Types, QGraphics, QControls, QForms, QExtCtrls, 

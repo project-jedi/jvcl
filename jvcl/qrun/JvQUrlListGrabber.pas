@@ -28,11 +28,11 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQUrlListGrabber;
 
 interface
+
+{$I jvcl.inc}
 
 {$HPPEMIT '#pragma link "wininet.lib"'}
 
@@ -52,7 +52,7 @@ type
   TJvUrlGrabberIndex = type Integer;
 
   // The type of the events triggered when one of the grabbers
-  // has triggred its own event to indicate a change in its state
+  // has triggered its own event to indicate a change in its state
   TJvGrabberNotifyEvent = procedure(Sender: TJvUrlListGrabber; Grabber: TJvCustomUrlGrabber) of object;
 
   // The exception raised by TJvUrlListGrabber when no grabber claimed it was capable

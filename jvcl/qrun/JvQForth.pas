@@ -28,13 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-
-{$WARN UNIT_PLATFORM OFF}
-
-
 unit JvQForth;
+
+{$I jvcl.inc}
+{$I crossplatform.inc}
 
 interface
 

@@ -24,6 +24,9 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A timeline component with support for inserting items at selectable dates.
+
 Known Issues:
   Bugs / Limitations:
     * DateAtPos is approximate
@@ -32,11 +35,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQTimeLine;
 
-{A timeline component with support for inserting items at selectable dates. }
+{$I jvcl.inc}
 
 interface
 

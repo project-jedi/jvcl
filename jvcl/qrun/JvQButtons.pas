@@ -64,9 +64,9 @@ Maciej Kaczkowski:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQButtons;
+
+{$I jvcl.inc}
 
 interface
 

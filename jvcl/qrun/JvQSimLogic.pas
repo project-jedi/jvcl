@@ -42,9 +42,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQSimLogic;
+
+{$I jvcl.inc}
 
 interface
 

@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQCABFile;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQCABFile;
 
 interface
 

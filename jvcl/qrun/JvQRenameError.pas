@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQRenameError;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQRenameError;
 
 interface
 

@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQMTThreading;
+
+{$I jvcl.inc}
 
 interface
 
@@ -171,13 +171,11 @@ begin
   ThreadNameInfo.FName := PChar(FName);
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
-  {$IFDEF MSWINDOWS}
   try
     RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(Longword),
       @ThreadNameInfo);
   except
-  end;
-  {$ENDIF MSWINDOWS}
+  end; 
 end;
 
 //=== { TMTThread } ==========================================================

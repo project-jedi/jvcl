@@ -29,9 +29,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQAppXMLStorage;
+
+{$I jvcl.inc}
 
 interface
 

@@ -30,9 +30,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQaScrollText;
+
+{$I jvcl.inc}
 
 interface
 

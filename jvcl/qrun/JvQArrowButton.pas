@@ -30,14 +30,12 @@ Description:
   separate events.
 
 Known Issues:
-
-
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQArrowButton;
+
+{$I jvcl.inc}
 
 interface
 
@@ -1180,7 +1178,7 @@ end;
 function TJvArrowButton.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := IsAccel(Key, Caption) and Enabled and (ssAlt in Shift);
+  Result := IsAccel(Key, Caption) and Enabled and (Shift * KeyboardShiftStates = [ssAlt]);
   if Result then
     Click
   else

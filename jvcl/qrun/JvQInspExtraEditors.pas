@@ -25,17 +25,18 @@ Contributor(s): Michael Beck [mbeck att bigfoot dott com], Markus Spoettl.
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Additional editors for JvInspector.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQInspExtraEditors;
 
-interface
+{$I jvcl.inc}
 
-{ Additional editors for JvInspector. }
+interface
 
 uses
   SysUtils, Classes,

@@ -35,9 +35,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQSpeedButton;
+
+{$I jvcl.inc}
 
 interface
 

@@ -27,10 +27,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQObjectPickerDialog;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQObjectPickerDialog;
 
 interface
 

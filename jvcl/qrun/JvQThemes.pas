@@ -27,10 +27,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQThemes;
+
 {$I jvcl.inc}
 
-
-unit JvQThemes;
 
 interface
 

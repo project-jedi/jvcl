@@ -31,15 +31,16 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQColorForm;
+
+{$I jvcl.inc}
 
 interface
 
 uses  
   Types, Qt, QWindows, 
-  Classes, QGraphics, QControls, QForms, QButtons, QDialogs, 
+  Classes, QGraphics, QControls, QForms, QButtons, QDialogs,
+  JvQConsts, // missing color constants for D5
   JvQColorBox;
 
 const
@@ -88,7 +89,7 @@ type
 implementation
 
 uses
-  QExtCtrls, 
+  QExtCtrls,
   JvQColorButton;
 
 constructor TJvColorForm.CreateNew(AOwner: TComponent; Dummy: Integer);
@@ -214,7 +215,7 @@ end;
 procedure TJvColorForm.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then
+  if (Key = VK_ESCAPE) and (Shift * KeyboardShiftStates = []) then
   begin
     Hide;
     ModalResult := mrCancel;

@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQButton;
+
+{$I jvcl.inc}
 
 interface
 
@@ -234,7 +234,7 @@ end;
 function TJvCustomGraphicButton.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := IsAccel(Key, Caption) and Enabled and (ssAlt in Shift);
+  Result := IsAccel(Key, Caption) and Enabled and (Shift * KeyboardShiftStates = [ssAlt]);
   if Result then
     Click
   else

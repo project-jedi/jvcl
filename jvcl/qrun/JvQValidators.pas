@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQValidators;
+
+{$I jvcl.inc}
 
 interface
 
@@ -41,6 +41,7 @@ uses
 
 type
   EValidatorError = class(Exception);
+
   // Implemented by classes that can return the value to validate against.
   // The validator classes first check if the ControlToValidate supports this interface
   // and if it does, uses the value returned from GetValidationPropertyValue instead of

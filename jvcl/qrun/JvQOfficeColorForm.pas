@@ -32,9 +32,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQOfficeColorForm;
+
+{$I jvcl.inc}
 
 interface
 

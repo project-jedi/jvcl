@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQFormPlacement;
+
+{$I jvcl.inc}
 
 interface
 
@@ -585,7 +585,7 @@ function TJvFormPlacement.ReadFloat(const Ident: string; Default: Double = 0): D
 begin
   if Assigned(AppStorage) then
     with AppStorage do
-      Result := ReadFloat(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Default)
+      Result := ReadFloat(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
   else
     Result := Default;
 end;
@@ -601,7 +601,7 @@ function TJvFormPlacement.ReadInteger(const Ident: string; Default: Longint = 0)
 begin
   if Assigned(AppStorage) then
     with AppStorage do
-      Result := ReadInteger(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Default)
+      Result := ReadInteger(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
   else
     Result := Default;
 end;
@@ -617,7 +617,7 @@ function TJvFormPlacement.ReadDateTime(const Ident: string; Default: TDateTime =
 begin
   if Assigned(AppStorage) then
     with AppStorage do
-      Result := ReadDateTime(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Default)
+      Result := ReadDateTime(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
   else
     Result := Default;
 end;

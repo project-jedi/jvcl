@@ -53,9 +53,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQLabel;
+
+{$I jvcl.inc}
 
 interface
 

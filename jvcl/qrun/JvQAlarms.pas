@@ -30,9 +30,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQAlarms;
+
+{$I jvcl.inc}
 
 interface
 
