@@ -523,7 +523,12 @@ end;
 
 function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
 begin
-  Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'ImageList'));
+  if TypInfo.GetPropInfo(GetComponent(0), 'ImageList') <> nil then
+    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'ImageList'))
+  else if TypInfo.GetPropInfo(GetComponent(0), 'Images') <> nil then
+    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'Images'))
+  else
+    Result := nil;
 end;
 
 function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
@@ -533,7 +538,7 @@ end;
 
 function TJvDefaultImageIndexProperty.GetValue: string;
 begin
-  Result := intToStr(GetOrdValue);
+  Result := IntToStr(GetOrdValue);
 end;
 
 procedure TJvDefaultImageIndexProperty.SetValue(const Value: string);
@@ -541,7 +546,7 @@ var
   XValue: Integer;
 begin
   try
-    XValue := strToInt(Value);
+    XValue := StrToInt(Value);
     SetOrdValue(XValue);
   except
     inherited SetValue(Value);
@@ -556,7 +561,7 @@ begin
   Tmp := ImageList;
   if Assigned(Tmp) then
     for I := 0 to Tmp.Count - 1 do
-      Proc(intToStr(I));
+      Proc(IntToStr(I));
 end;
 
 procedure TJvDefaultImageIndexProperty.ListMeasureWidth(const Value: string; ACanvas: TCanvas; var AWidth: Integer);
@@ -619,7 +624,12 @@ end;
 
 function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
 begin
-  Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'ImageList'));
+  if TypInfo.GetPropInfo(GetComponent(0), 'ImageList') <> nil then
+    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'ImageList'))
+  else if TypInfo.GetPropInfo(GetComponent(0), 'Images') <> nil then
+    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'Images'))
+  else
+    Result := nil;
 end;
 
 function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
