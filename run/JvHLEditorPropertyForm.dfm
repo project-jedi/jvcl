@@ -217,7 +217,6 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
         Top = 48
         Width = 153
         Height = 121
-        Style = lbOwnerDrawFixed
         ExtendedSelect = False
         ItemHeight = 13
         Items.Strings = (
@@ -235,6 +234,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
           'Plain text'
           'Marked block'
           'Right margin')
+        Style = lbOwnerDrawFixed
         TabOrder = 1
         OnClick = lbElementsClick
         OnDrawItem = lbElementsDrawItem
@@ -635,9 +635,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
   end
   object raColorSamples: TJvFormStorage
     Active = False
-    IniFileName = '$HOME/.JvInterpreterTest'
     Options = []
-    UseRegistry = True
     StoredValues = <>
     Left = 36
     Top = 220

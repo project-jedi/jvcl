@@ -37,6 +37,8 @@ type
 
 implementation
 
+uses
+  JvAppINIStore;
 
 //=== TJvHLEdPropDlgEditor ===================================================
 
@@ -65,26 +67,34 @@ procedure TJvHLEdPropDlgEditor.Edit;
 var
   PakName: string;
   NewRegAuto: TJvFormStorage;
+  NewStore: TJvAppINIFileStore;
   OldRegAuto: TJvFormStorage;
 begin
   if (Component as TJvHLEdPropDlg).JvHLEditor <> nil then
     begin
-      NewRegAuto := TJvFormStorage.Create(nil);
+      NewRegAuto := nil;
+      NewStore := nil;
       try
-        NewRegAuto.UseRegistry := false;
+        NewRegAuto := TJvFormStorage.Create(nil);
+        NewStore := TJvAppINIFileStore.Create(nil);
+        NewRegAuto.AppStorage := NewStore;
         SetLength(PakName, MAX_PATH);
         SetLength(PakName, GetModuleFileName(hInstance, PChar(PakName), MAX_PATH));
-        NewRegAuto.IniFileName := ExtractFilePath(PakName) + srJvHLEdPropDlgIni;
+        NewStore.FileName := ExtractFilePath(PakName) + srJvHLEdPropDlgIni;
         with Component as TJvHLEdPropDlg do
         begin
           OldRegAuto := RegAuto;
-          RegAuto := NewRegAuto;
-          if Execute then
-            Designer.Modified;
-          RegAuto := OldRegAuto;
+          try
+            RegAuto := NewRegAuto;
+            if Execute then
+              Designer.Modified;
+          finally
+            RegAuto := OldRegAuto;
+          end;
         end;
       finally
         NewRegAuto.Free;
+        NewStore.Free;
       end;
     end
   else
