@@ -28,7 +28,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvxClock;
+unit JvClock;
 
 interface
 
@@ -55,7 +55,7 @@ type
 
   TJvGetTimeEvent = procedure(Sender: TObject; var ATime: TDateTime) of object;
 
-  TJvxClock = class(TJvCustomPanel)
+  TJvClock = class(TJvCustomPanel)
   private
     FTimer: TJvTimer;
     FAutoSize: Boolean;
@@ -344,7 +344,7 @@ begin
   end;
 end;
 
-constructor TJvxClock.Create(AOwner: TComponent);
+constructor TJvClock.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if not Registered then
@@ -370,7 +370,7 @@ begin
   FAlarm := EncodeTime(0, 0, 0, 0);
 end;
 
-destructor TJvxClock.Destroy;
+destructor TJvClock.Destroy;
 begin
   if FHooked then
   begin
@@ -380,13 +380,13 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvxClock.Loaded;
+procedure TJvClock.Loaded;
 begin
   inherited Loaded;
   ResetAlarm;
 end;
 
-procedure TJvxClock.CreateWnd;
+procedure TJvClock.CreateWnd;
 begin
   inherited CreateWnd;
   if not (csDesigning in ComponentState) and not (IsLibrary or FHooked) then
@@ -396,7 +396,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.DestroyWindowHandle;
+procedure TJvClock.DestroyWindowHandle;
 begin
   if FHooked then
   begin
@@ -406,19 +406,19 @@ begin
   inherited DestroyWindowHandle;
 end;
 
-procedure TJvxClock.CMCtl3DChanged(var Msg: TMessage);
+procedure TJvClock.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
   if ShowMode = scAnalog then
     Invalidate;
 end;
 
-procedure TJvxClock.CMTextChanged(var Msg: TMessage);
+procedure TJvClock.CMTextChanged(var Msg: TMessage);
 begin
   { Skip this message, no repaint }
 end;
 
-procedure TJvxClock.CMFontChanged(var Msg: TMessage);
+procedure TJvClock.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
@@ -426,19 +426,19 @@ begin
     Realign;
 end;
 
-procedure TJvxClock.WMTimeChange(var Msg: TMessage);
+procedure TJvClock.WMTimeChange(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
   CheckAlarm;
 end;
 
-procedure TJvxClock.CMDenySubClassing(var Msg: TMessage);
+procedure TJvClock.CMDenySubClassing(var Msg: TMessage);
 begin
   Msg.Result := 1;
 end;
 
-function TJvxClock.FormatSettingsChange(var Msg: TMessage): Boolean;
+function TJvClock.FormatSettingsChange(var Msg: TMessage): Boolean;
 begin
   Result := False;
   case Msg.Msg of
@@ -451,14 +451,14 @@ begin
   end;
 end;
 
-function TJvxClock.GetSystemTime: TDateTime;
+function TJvClock.GetSystemTime: TDateTime;
 begin
   Result := SysUtils.Time;
   if Assigned(FOnGetTime) then
     FOnGetTime(Self, Result);
 end;
 
-procedure TJvxClock.GetTime(var T: TJvClockTime);
+procedure TJvClock.GetTime(var T: TJvClockTime);
 var
   MSec: Word;
 begin
@@ -466,7 +466,7 @@ begin
     DecodeTime(GetSystemTime, Hour, Minute, Second, MSec);
 end;
 
-procedure TJvxClock.UpdateClock;
+procedure TJvClock.UpdateClock;
 begin
   Invalidate;
   if AutoSize then
@@ -474,12 +474,12 @@ begin
   Update;
 end;
 
-procedure TJvxClock.ResetAlarm;
+procedure TJvClock.ResetAlarm;
 begin
   FAlarmWait := (FAlarm > GetSystemTime) or (FAlarm = 0);
 end;
 
-function TJvxClock.IsAlarmTime(ATime: TDateTime): Boolean;
+function TJvClock.IsAlarmTime(ATime: TDateTime): Boolean;
 var
   Hour, Min, Sec, MSec: Word;
   AHour, AMin, ASec: Word;
@@ -490,7 +490,7 @@ begin
     (ASec >= Sec) and (ASec <= Sec + AlarmSecDelay);
 end;
 
-procedure TJvxClock.ResizeFont(const Rect: TRect);
+procedure TJvClock.ResizeFont(const Rect: TRect);
 var
   H, W: Integer;
   DC: HDC;
@@ -522,7 +522,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.AlignControls(AControl: TControl; var Rect: TRect);
+procedure TJvClock.AlignControls(AControl: TControl; var Rect: TRect);
 var
   InflateWidth: Integer;
 begin
@@ -540,13 +540,13 @@ begin
     ResizeFont(Rect);
 end;
 
-procedure TJvxClock.Alarm;
+procedure TJvClock.Alarm;
 begin
   if Assigned(FOnAlarm) then
     FOnAlarm(Self);
 end;
 
-procedure TJvxClock.SetAutoSize(Value: Boolean);
+procedure TJvClock.SetAutoSize(Value: Boolean);
 begin
   {$IFDEF COMPILER6_UP}
   inherited SetAutoSize(Value);
@@ -559,7 +559,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.SetTwelveHour(Value: Boolean);
+procedure TJvClock.SetTwelveHour(Value: Boolean);
 begin
   if FTwelveHour <> Value then
   begin
@@ -570,7 +570,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.SetLeadingZero(Value: Boolean);
+procedure TJvClock.SetLeadingZero(Value: Boolean);
 begin
   if FLeadingZero <> Value then
   begin
@@ -579,7 +579,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.SetShowSeconds(Value: Boolean);
+procedure TJvClock.SetShowSeconds(Value: Boolean);
 begin
   if FShowSeconds <> Value then
   begin
@@ -592,7 +592,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.SetDotsColor(Value: TColor);
+procedure TJvClock.SetDotsColor(Value: TColor);
 begin
   if Value <> FDotsColor then
   begin
@@ -601,7 +601,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.SetShowMode(Value: TShowClock);
+procedure TJvClock.SetShowMode(Value: TShowClock);
 begin
   if FShowMode <> Value then
   begin
@@ -610,7 +610,7 @@ begin
   end;
 end;
 
-function TJvxClock.GetAlarmElement(Index: Integer): Byte;
+function TJvClock.GetAlarmElement(Index: Integer): Byte;
 var
   Hour, Min, Sec, MSec: Word;
 begin
@@ -627,7 +627,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.SetAlarmElement(Index: Integer; Value: Byte);
+procedure TJvClock.SetAlarmElement(Index: Integer; Value: Byte);
 var
   Hour, Min, Sec, MSec: Word;
 begin
@@ -651,7 +651,7 @@ begin
     InvalidTime(Hour, Min, Sec);
 end;
 
-procedure TJvxClock.SetAlarmTime(AlarmTime: TDateTime);
+procedure TJvClock.SetAlarmTime(AlarmTime: TDateTime);
 var
   Hour, Min, Sec, MSec: Word;
 begin
@@ -665,7 +665,7 @@ begin
     InvalidTime(Hour, Min, Sec);
 end;
 
-procedure TJvxClock.TimerExpired(Sender: TObject);
+procedure TJvClock.TimerExpired(Sender: TObject);
 var
   DC: HDC;
   Rect: TRect;
@@ -697,7 +697,7 @@ begin
   CheckAlarm;
 end;
 
-procedure TJvxClock.CheckAlarm;
+procedure TJvClock.CheckAlarm;
 begin
   if FAlarmEnabled and IsAlarmTime(GetSystemTime) then
   begin
@@ -711,7 +711,7 @@ begin
     ResetAlarm;
 end;
 
-procedure TJvxClock.DrawAnalogFace;
+procedure TJvClock.DrawAnalogFace;
 var
   Pos, DotHeight, DotWidth: Integer;
   DotCenter: TPoint;
@@ -786,7 +786,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.CircleClock(MaxWidth, MaxHeight: Integer);
+procedure TJvClock.CircleClock(MaxWidth, MaxHeight: Integer);
 var
   ClockHeight: Integer;
   ClockWidth: Integer;
@@ -805,7 +805,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.DrawSecondHand(Pos: Integer);
+procedure TJvClock.DrawSecondHand(Pos: Integer);
 var
   Radius: Longint;
   SaveMode: TPenMode;
@@ -823,7 +823,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.DrawFatHand(Pos: Integer; HourHand: Boolean);
+procedure TJvClock.DrawFatHand(Pos: Integer; HourHand: Boolean);
 var
   ptSide, ptTail, ptTip: TPoint;
   Index, Hand: Integer;
@@ -872,7 +872,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.PaintAnalogClock(PaintMode: TPaintMode);
+procedure TJvClock.PaintAnalogClock(PaintMode: TPaintMode);
 var
   NewTime: TJvClockTime;
 begin
@@ -924,7 +924,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.PaintTimeStr(var Rect: TRect; FullTime: Boolean);
+procedure TJvClock.PaintTimeStr(var Rect: TRect; FullTime: Boolean);
 var
   FontHeight, FontWidth, FullWidth, I, L, H: Integer;
   TimeStr, SAmPm: string;
@@ -1032,7 +1032,7 @@ begin
   FDisplayTime := NewTime;
 end;
 
-procedure TJvxClock.Paint3DFrame(var Rect: TRect);
+procedure TJvClock.Paint3DFrame(var Rect: TRect);
 var
   TopColor, BottomColor: TColor;
 
@@ -1066,7 +1066,7 @@ begin
   end;
 end;
 
-procedure TJvxClock.Paint;
+procedure TJvClock.Paint;
 var
   R: TRect;
 begin
