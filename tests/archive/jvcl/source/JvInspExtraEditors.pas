@@ -527,7 +527,7 @@ begin
   GetColorValues(AddStdColor);
   TStringList(FStdColors).Sort;
   IncludeStdColors := True;
-  Flags := [iifValueList, iifAllowNonListValues, iifOwnerDrawListVariable];
+  Flags := [iifVisible, iifValueList, iifAllowNonListValues, iifOwnerDrawListVariable];
 end;
 
 procedure TJvInspectorColorItem.BeforeDestruction;
