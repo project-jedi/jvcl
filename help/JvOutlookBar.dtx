@@ -158,6 +158,23 @@ Parameters
   Sender - The object that triggered the event
   Index  - The index of the button that was clicked. The button is always located on the currently active page.
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomOutlookBar.OnCustomDraw
+Summary
+  Event handler for custom drawing
+Description
+  Write a handler for this event if you want ot custom draw the outlook bar. You can selectively draw
+  only the parts you are interested in and let the control handle the drawing of other elements.
+Parameters
+  Sender      - The TJvOutlookBar that triggered the event.
+  ACanvas     - The Canvas to draw on
+  ARect       - The area to draw in.
+  AStage      - The current draw stage.
+  AIndex      - Depends on the stage. If AStage is odsPage or odsPageButton, AIndex referes to the page index.
+                If AStage is odsButton or odsButtonFrame, AIndex refers to the button's index on the active page.
+  ADown       - Depends on the stage. For pages, indicates wheether the page button is pressed, For buttons, indicates whether the button is down.
+  AInside     - Only used with button stages. Specifies whether the mouse is inside the button.
+  DefaultDraw - Seet to true (the default) if you want the control to perform it's default drawing.
+----------------------------------------------------------------------------------------------------
 @@TJvCustomOutlookBar.OnEditButton
 Summary
   Occurs when the user has changed the text of a button.
@@ -571,3 +588,26 @@ See Also
 @@TOutlookBarPageChanging
 <TITLE TOutlookBarPageChanging type>
 <COMBINE TJvCustomOutlookBar.OnPageChanging>
+----------------------------------------------------------------------------------------------------
+@@TJvOutlookBarCustomDrawEvent
+<TITLE TJvOutlookBarCustomDrawEvent type>
+<COMBINE TJvCustomOutlookBar.OnCustomDraw>
+----------------------------------------------------------------------------------------------------
+@@TJvOutlookBarCustomDrawStage
+<TITLE TJvOutlookBarCustomDrawStage type>
+Summary
+  Enumeration for the various drawing stages in a TJvCustomOutlookBar.
+Description
+  TJvOutlookBarCustomDrawStage is used in the OnCustomDraw event of a TJvCustomOutlookBar
+  or descendant to indicate what part of the control is currently being drawn.
+@@TJvOutlookBarCustomDrawStage.odsBackground
+  The background is drawn. This stage only occurs if there are no pages
+  (pages cover the client area, so the background is only visible when there are no pages).
+@@TJvOutlookBarCustomDrawStage.odsPageButton
+  A page button is drawn.
+@@TJvOutlookBarCustomDrawStage.odsPage
+  A page's client area is drawn.
+@@TJvOutlookBarCustomDrawStage.odsButton
+  A buttons interior is drawn.
+@@TJvOutlookBarCustomDrawStage.odsButtonFrame
+  A buttons frame is drawn.
