@@ -82,7 +82,7 @@ type
     procedure SetOutDirectory(const Value: string);
     procedure WriteFile(Lines: TStrings; const Filename: string; AllowBeforeSave: Boolean);
 
-    procedure CheckDfmLine(var Line: string; const Control: string);
+    procedure CheckDfmLine(var Line: string; const Control: string; Controls: TStrings);
 
     procedure CheckOption(Token: PTokenInfo);
       { Parses the compiler directives and allows the replacement of include
@@ -137,7 +137,7 @@ type
       { BeforeSave() is called before the file is stored. Here you can modify
         the file lines. Time-dependend lines are not allowed. Filename is the
         CLX filename (changed by ChangeFileName). }
-    procedure ChangeDfmLine(var Line: string; const Control: string); virtual;
+    procedure ChangeDfmLine(var Line: string; const Control: string; Controls: TStrings); virtual;
 
     procedure Parse(Parser: TPascalParser); virtual;
 
@@ -1059,7 +1059,7 @@ begin
               else if SameText(TrimS, 'item') then
                 Controls.Add(Controls[Controls.Count - 1] + ':item')
               else
-                CheckDfmLine(S, Controls[Controls.Count - 1]);
+                CheckDfmLine(S, Controls[Controls.Count - 1], Controls);
               Lines[i] := S;
             end;
           end;
@@ -1079,7 +1079,7 @@ begin
   end;
 end;
 
-procedure TVCLConverter.CheckDfmLine(var Line: string; const Control: string);
+procedure TVCLConverter.CheckDfmLine(var Line: string; const Control: string; Controls: TStrings);
 var
   S, OrgS: string;
 begin
@@ -1088,15 +1088,15 @@ begin
   begin
     S := TrimLeft(Line);
     OrgS := S;
-    ChangeDfmLine(S, Control);
+    ChangeDfmLine(S, Control, Controls);
     if S <> OrgS then
       Line := StringReplace(Line, OrgS, S, []);
   end;
 end;
 
-procedure TVCLConverter.ChangeDfmLine(var Line: string; const Control: string);
+procedure TVCLConverter.ChangeDfmLine(var Line: string; const Control: string; Controls: TStrings);
 begin
-  if AnsiStartsText('BorderStyle = ', Line) then
+  if (Controls.Count = 1) and AnsiStartsText('BorderStyle = ', Line) then
     Line := StringReplace(Line, ' bs', ' fbs', [rfIgnoreCase]);
   if AnsiStartsText('Ctl3D = ', Line) or
      AnsiStartsText('ParentCtl3D = ', Line) then
@@ -1107,6 +1107,9 @@ begin
      AnsiStartsText('RightClickSelect = True', Line) then
     Line := '';
   if (Control = 'TProgressBar') and AnsiStartsText('TabOrder = ', Line) then
+    Line := '';
+  if (Control = 'TComboBox') and (AnsiStartsText('AutoDropDown = ', Line) or 
+                                  AnsiStartsText('AutoCloseUp = ', Line)) then
     Line := '';
   if (Control = 'TListView') then
   begin
