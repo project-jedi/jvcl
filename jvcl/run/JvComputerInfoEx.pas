@@ -41,7 +41,7 @@ unit JvComputerInfoEx;
 interface
 uses
   Windows, Messages, Classes, SysUtils, Controls, Graphics, ShlObj,
-  JclWin32, JclSysInfo, JvJCLUtils, JvDataProvider;
+  JclWin32, JclSysInfo, JvJCLUtils, JvDataProvider, JvTypes;
 
 // these are defined here to avoid including DBT.pas
 const
@@ -126,9 +126,51 @@ const
   SPI_SETFOCUSBORDERHEIGHT = $2011;
 {$EXTERNALSYM SPI_SETFOCUSBORDERHEIGHT}
 
+{$IFDEF BCB5} // may need to be COMPILER5 (obones)
+  {$EXTERNALSYM SPI_GETMENUSHOWDELAY}
+  SPI_GETMENUSHOWDELAY = 106;
+  {$EXTERNALSYM SPI_SETMENUSHOWDELAY}
+  SPI_SETMENUSHOWDELAY = 107;
+  {$EXTERNALSYM SPI_GETMENUFADE}
+  SPI_GETMENUFADE = $1012;
+  {$EXTERNALSYM SPI_SETMENUFADE}
+  SPI_SETMENUFADE = $1013;
+  {$EXTERNALSYM SPI_GETSELECTIONFADE}
+  SPI_GETSELECTIONFADE = $1014;
+  {$EXTERNALSYM SPI_SETSELECTIONFADE}
+  SPI_SETSELECTIONFADE = $1015;
+  {$EXTERNALSYM SPI_GETTOOLTIPANIMATION}
+  SPI_GETTOOLTIPANIMATION = $1016;
+  {$EXTERNALSYM SPI_SETTOOLTIPANIMATION}
+  SPI_SETTOOLTIPANIMATION = $1017;
+  {$EXTERNALSYM SPI_GETTOOLTIPFADE}
+  SPI_GETTOOLTIPFADE = $1018;
+  {$EXTERNALSYM SPI_SETTOOLTIPFADE}
+  SPI_SETTOOLTIPFADE = $1019;
+  {$EXTERNALSYM SPI_GETCURSORSHADOW}
+  SPI_GETCURSORSHADOW = $101A;
+  {$EXTERNALSYM SPI_SETCURSORSHADOW}
+  SPI_SETCURSORSHADOW = $101B;
+  {$EXTERNALSYM SPI_GETUIEFFECTS}
+  SPI_GETUIEFFECTS = $103E;
+  {$EXTERNALSYM SPI_SETUIEFFECTS}
+  SPI_SETUIEFFECTS = $103F;
+  {$EXTERNALSYM COLOR_MENUHILIGHT}
+  COLOR_MENUHILIGHT = 29;
+  {$EXTERNALSYM COLOR_MENUBAR}
+  COLOR_MENUBAR = 30;
+  {$EXTERNALSYM SPI_GETKEYBOARDCUES}
+  SPI_GETKEYBOARDCUES = $100A;
+  {$EXTERNALSYM SPI_SETKEYBOARDCUES}
+  SPI_SETKEYBOARDCUES = $100B;
+{$ENDIF BCB5}
+
+
 type
   PDevBroadcastHdr = ^TDevBroadcastHdr;
+{$IFDEF COMPILER6_UP}
 {$EXTERNALSYM DEV_BROADCAST_HDR}
+{$ENDIF COMPILER6_UP}
   DEV_BROADCAST_HDR = packed record
     dbch_size: DWORD;
     dbch_devicetype: DWORD;
@@ -137,7 +179,9 @@ type
   TDevBroadcastHdr = DEV_BROADCAST_HDR;
 
   PDevBroadcastVolume = ^TDevBroadcastVolume;
+{$IFDEF COMPILER6_UP}
 {$EXTERNALSYM DEV_BROADCAST_VOLUME}
+{$ENDIF COMPILER6_UP}
   DEV_BROADCAST_VOLUME = packed record
     dbcv_size: DWORD;
     dbcv_devicetype: DWORD;
@@ -1029,6 +1073,8 @@ type
     FSerialKeys: TJvSerialKeys;
     FSoundSentry: TJvSoundSentry;
     FIconTitleFont: TFont;
+    FWorkArea: TJvRect;
+
     function GetAccessTimeOut: TJvAccessTimeOut;
     function GetFilterKeys: TJvFilterKeys;
     function GetHighContrast: TJvHighContrast;
@@ -1041,7 +1087,7 @@ type
     function GetSoundSentry: TJvSoundSentry;
     function GetStickyKeys: TJvStickyKeysFlags;
     function GetToggleKeys: TJvToggleKeysFlags;
-    function GetWorkArea: TRect;
+    function GetWorkArea: TJvRect;
     function GetIntInfo(const Index: Integer): integer;
     function GetBoolInfo(const Index: Integer): boolean;
     function GetMouseInfo(const Index: Integer): integer;
@@ -1065,7 +1111,7 @@ type
     procedure SetSoundSentry(const Value: TJvSoundSentry);
     procedure SetStickyKeys(const Value: TJvStickyKeysFlags);
     procedure SetToggleKeys(const Value: TJvToggleKeysFlags);
-    procedure SetWorkArea(const Value: TRect);
+    procedure SetWorkArea(const Value: TJvRect);
     procedure SetMouseInfo(const Index, Value: integer);
     procedure SetAnimationInfo(const Value: boolean);
     procedure SetKeyboardLayoutName(const Value: string);
@@ -1073,6 +1119,7 @@ type
     procedure SetFontSmoothingType(const Value: TJvFontSmoothingType);
     procedure SetIconSpacing(const Index, Value: integer);
   public
+    constructor Create;
     destructor Destroy; override;
   published
     property AccessTimeOut: TJvAccessTimeOut read GetAccessTimeOut write SetAccessTimeOut stored False;
@@ -1118,7 +1165,7 @@ type
     property ToggleKeys: TJvToggleKeysFlags read GetToggleKeys write SetToggleKeys stored False;
     property WheelScrollLines: integer index SPI_GETWHEELSCROLLLINES read GetIntInfo write SetIntInfo stored False;
     property WindowsExtensions: boolean index SPI_GETWINDOWSEXTENSION read GetBoolInfo write SetBoolInfo stored False;
-    property WorkArea: TRect read GetWorkArea write SetWorkArea stored False;
+    property WorkArea: TJvRect read GetWorkArea write SetWorkArea stored False;
     property ScreenSaverRunning: boolean index SPI_GETSCREENSAVERRUNNING read GetBoolInfo write SetBoolInfo stored False;
     // New (W2k, XP and up)
     property FocusBorderHeight: integer index SPI_GETFOCUSBORDERHEIGHT read GetIntInfo write SetIntInfo stored False;
@@ -4490,6 +4537,13 @@ begin
   Result := -1;
 end;
 
+constructor TJvSystemParametersInfo.Create;
+begin
+  inherited Create;
+
+  FWorkArea := TJvRect.Create;
+end;
+
 destructor TJvSystemParametersInfo.Destroy;
 begin
   FAccessTimeOut.Free;
@@ -4501,6 +4555,7 @@ begin
   FNonClientMetrics.Free;
   FSerialKeys.Free;
   FSoundSentry.Free;
+  FWorkArea.Create;
   inherited;
 end;
 
@@ -4738,10 +4793,18 @@ begin
     Include(Result, tkfToggleKeysOn);
 end;
 
-function TJvSystemParametersInfo.GetWorkArea: TRect;
+function TJvSystemParametersInfo.GetWorkArea: TJvRect;
+var
+  Value: TRect;
 begin
-  if not SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0) then
-    Result := Rect(0, 0, 0, 0);
+  if not SystemParametersInfo(SPI_GETWORKAREA, 0, @Value, 0) then
+    Value := Rect(0, 0, 0, 0);
+
+  FWorkArea.Top    := Value.Top;
+  FWorkArea.Left   := Value.Left;
+  FWorkArea.Bottom := Value.Bottom;
+  FWorkArea.Right  := Value.Right;
+  Result := FWorkArea;
 end;
 
 procedure TJvSystemParametersInfo.SetAccessTimeOut(const Value: TJvAccessTimeOut);
@@ -5013,7 +5076,7 @@ begin
     RaiseReadOnly;
 end;
 
-procedure TJvSystemParametersInfo.SetWorkArea(const Value: TRect);
+procedure TJvSystemParametersInfo.SetWorkArea(const Value: TJvRect);
 begin
   RaiseReadOnly;
 end;
