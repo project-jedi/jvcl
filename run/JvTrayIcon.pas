@@ -14,15 +14,26 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.c
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s):
+Michael Beck [mbeck@bigfoot.com].
+Feng Mingyu(Winston Feng), [winstonf@tom.com]
 
-Last Modified: 2002-06-03
+Last Modified: 2003-09-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
+{
+History:
+	2003-09-28 by Winston Feng
+		Add WM_SESSIONEND message handler, TaskbarRestart message handler to:
+			Clean the trayicon when session ends.
+			Restore the trayicon when session restart.
+    Remove the old unsuccessful DoCheckCrash method.
+}
 
 {$I JVCL.INC}
 
@@ -64,7 +75,9 @@ type
   TTrayVisibilities = set of TTrayVisibility;
 
   TJvTrayIcon = class(TJvComponent)
-  protected
+  private
+    FTaskbarRestartMsg: Cardinal;
+	protected
     FActive: Boolean;
     FIcon: TIcon;
     FIc: TNotifyIconDataXP;
@@ -73,7 +86,7 @@ type
     FBalloonCloser : TTimer;
     FPopupMenu: TPopupMenu;
     FOnClick: TMouseEvent;
-    FOnDblClick: TMouseEvent;
+		FOnDblClick: TMouseEvent;
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseDown: TMouseEvent;
     FOnMouseUp: TMouseEvent;
@@ -124,9 +137,9 @@ type
     property ApplicationVisible: Boolean read FApplicationVisible write SetApplicationVisible default True;
     property VisibleInTaskList: Boolean read FTask write SetTask default True;
   public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure DoCheckCrash;
+		constructor Create(AOwner: TComponent); override;
+		destructor Destroy; override;
+		procedure DoCheckCrash;
     procedure HideApplication;
     procedure ShowApplication;
     procedure BalloonHint(Title, Value: string; BalloonType:
@@ -204,7 +217,7 @@ end;
 
 constructor TJvTrayIcon.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
+	inherited Create(AOwner);
   FIcon := TIcon.Create;
   FIcon.OnChange := IconChanged;
   FApplicationVisible := True;
@@ -217,7 +230,7 @@ begin
 
   FVisibility := [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide];
   FAnimated := False;
-  FDelay := 100;
+	FDelay := 100;
   FNumber := 0;
   FActive := False;
   FTask := True;
@@ -230,10 +243,12 @@ begin
   begin
     FDllHandle := LoadLibrary('KERNEL32.DLL');
     if FDllHandle <> 0 then
-      @FRegisterServiceProcess := GetProcAddress(FDllHandle, 'RegisterServiceProcess')
-    else
-      @FRegisterServiceProcess := nil;
-  end;
+			@FRegisterServiceProcess := GetProcAddress(FDllHandle, 'RegisterServiceProcess')
+		else
+			@FRegisterServiceProcess := nil;
+	end;
+
+	FTaskbarRestartMsg := RegisterWindowMessage('TaskbarCreated');
 end;
 
 destructor TJvTrayIcon.Destroy;
@@ -261,7 +276,7 @@ end;
 
 function TJvTrayIcon.AcceptBalloons: Boolean;
 begin
-  //Balloons are only accepted with shell32.dll 5.0+
+	//Balloons are only accepted with shell32.dll 5.0+
   Result := GetShellVersion >= $00050000;
 end;
 
@@ -281,109 +296,138 @@ end;
 
 procedure TJvTrayIcon.WndProc(var Mesg: TMessage);
 var
-  I: Integer;
-  Pt: TPoint;
-  ShState: TShiftState;
+	I: Integer;
+	Pt: TPoint;
+	ShState: TShiftState;
 begin
-  try
-    with Mesg do
-      case Msg of
-        WM_CALLBACKMESSAGE :
-          begin
-            GetCursorPos(Pt);
-            ShState := [];
-            if GetKeyState(VK_SHIFT) < 0 then
-              Include(ShState, ssShift);
-            if GetKeyState(VK_CONTROL) < 0 then
-              Include(ShState, ssCtrl);
-            if GetKeyState(VK_LBUTTON) < 0 then
-              Include(ShState, ssLeft);
+	try
+		with Mesg do
+			case Msg of
+				WM_CALLBACKMESSAGE :
+					begin
+						GetCursorPos(Pt);
+						ShState := [];
+						if GetKeyState(VK_SHIFT) < 0 then
+							Include(ShState, ssShift);
+						if GetKeyState(VK_CONTROL) < 0 then
+							Include(ShState, ssCtrl);
+						if GetKeyState(VK_LBUTTON) < 0 then
+							Include(ShState, ssLeft);
             if GetKeyState(VK_RBUTTON) < 0 then
               Include(ShState, ssRight);
             if GetKeyState(VK_MBUTTON) < 0 then
               Include(ShState, ssMiddle);
-            if GetKeyState(VK_MENU) < 0 then
+						if GetKeyState(VK_MENU) < 0 then
               Include(ShState, ssAlt);
             case LParam of
               WM_MOUSEMOVE:
                 DoMouseMove(shState, Pt.X, Pt.Y);
-              WM_LBUTTONDOWN:
+							WM_LBUTTONDOWN:
                 DoMouseDown(mbLeft, ShState, Pt.X, Pt.Y);
               WM_RBUTTONDOWN:
                 DoMouseDown(mbRight, ShState, Pt.X, Pt.Y);
-              WM_MBUTTONDOWN:
-                DoMouseDown(mbMiddle, ShState, Pt.X, Pt.Y);
+							WM_MBUTTONDOWN:
+								DoMouseDown(mbMiddle, ShState, Pt.X, Pt.Y);
               WM_LBUTTONUP:
                 DoMouseUp(mbLeft, ShState, Pt.X, Pt.Y);
               WM_MBUTTONUP:
                 DoMouseUp(mbMiddle, ShState, Pt.X, Pt.Y);
-              WM_RBUTTONUP, NIN_KEYSELECT: //Mimics previous versions of shell32.dll
+							WM_RBUTTONUP, NIN_KEYSELECT: //Mimics previous versions of shell32.dll
                 DoMouseUp(mbRight, ShState, Pt.X, Pt.Y);
               WM_LBUTTONDBLCLK:
-                DoDoubleClick(mbLeft, ShState, Pt.X, Pt.Y);
+								DoDoubleClick(mbLeft, ShState, Pt.X, Pt.Y);
               WM_RBUTTONDBLCLK:
                 DoDoubleClick(mbRight, ShState, Pt.X, Pt.Y);
               WM_MBUTTONDBLCLK:
                 DoDoubleClick(mbMiddle, ShState, Pt.X, Pt.Y);
-              NIN_BALLOONHIDE: //sb
+							NIN_BALLOONHIDE: //sb
                 begin
                   try
                     if Assigned(FOnBalloonHide) then
                       FOnBalloonHide(self);
-                  except
+									except
                   end;
                   Result := Integer(True);
                 end;
-              NIN_BALLOONTIMEOUT: //sb
-                begin
-                  I := SecondsBetween(Now, FTime);
-                  if I > FTimeDelay then
-                    BalloonHint('', '');
-                  Result := Integer(True);
-                end;
-              NIN_BALLOONUSERCLICK: //sb
-                begin
-                  try
-                    if Assigned(FOnBalloonClick) then
-                      FOnBalloonClick(self);
-                  except
-                  end;
-                  Result := Integer(True);
-                  //Result := DefWindowProc(FHandle, Msg, wParam, lParam);
-                  BalloonHint('', '');
-                end;
-            end;
-          end;
-        else
-          Result := DefWindowProc(FHandle, Msg, wParam, lParam);
-      end;
-  except
-    Application.HandleException(Self);
-  end;
+							NIN_BALLOONTIMEOUT: //sb
+								begin
+									I := SecondsBetween(Now, FTime);
+									if I > FTimeDelay then
+										BalloonHint('', '');
+									Result := Integer(True);
+								end;
+							NIN_BALLOONUSERCLICK: //sb
+								begin
+									try
+										if Assigned(FOnBalloonClick) then
+											FOnBalloonClick(self);
+									except
+									end;
+									Result := Integer(True);
+									//Result := DefWindowProc(FHandle, Msg, wParam, lParam);
+									BalloonHint('', '');
+								end;
+						end;
+					end;
+				// Add by Winston Feng 2003-9-28
+				// Handle the QueryEndSesstion and TaskbarCreated message, so trayicon
+        // will be deleted and restored correctly.
+				WM_QUERYENDSESSION:
+					begin
+						Result := 1;
+					end;
+				WM_ENDSESSION:
+					begin
+						if FActive then
+						begin
+							SetActive(False);
+							FActive := True;
+						end
+						else
+						begin
+							SetActive(False);
+							FActive := False;
+						end;
+					end;
+				else
+					begin
+						if Msg = FTaskbarRestartMsg then
+						begin
+							if FActive then
+							begin
+								SetActive(True);
+							end;
+						end;
+						Result := DefWindowProc(FHandle, Msg, wParam, lParam);
+					end;
+			end;
+	except
+		Application.HandleException(Self);
+	end;
 end;
 
 procedure TJvTrayIcon.IconChanged(Sender: TObject);
 begin
-  DoCheckCrash;
-  with FIc do
-    hIcon := FIcon.Handle;
-  if FActive then
-    Shell_NotifyIcon(NIM_MODIFY, PNotifyIconData(@FIc));
+	//DoCheckCrash;
+	with FIc do
+		hIcon := FIcon.Handle;
+	if FActive then
+		Shell_NotifyIcon(NIM_MODIFY, PNotifyIconData(@FIc));
 end;
 
 procedure TJvTrayIcon.SetHint(Value: string);
 begin
-  DoCheckCrash;
-  //Remove sLineBreak on w98/me as they are not supported
-  if not AcceptBalloons then
-    FHint := StringReplace(Value, CrLf, ' - ', [rfReplaceAll])
-  else
-    FHint := Value;
+	//DoCheckCrash;
+	//Remove sLineBreak on w98/me as they are not supported
+	if not AcceptBalloons then
+		FHint := StringReplace(Value, CrLf, ' - ', [rfReplaceAll])
+	else
+		FHint := Value;
 end;
 
 procedure TJvTrayIcon.SetIcon(Icon: TIcon);
 begin
-  DoCheckCrash;
+  //DoCheckCrash;
   FIcon.Assign(ICon);
   with FIc do
     hIcon := FIcon.Handle;
@@ -394,48 +438,48 @@ end;
 procedure TJvTrayIcon.SetActive(Value: Boolean);
 //http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/Shell/Structures/NOTIFYICONDATA.asp
 begin
-  if Value then
-    Hook
-  else
-    UnHook;
+	if Value then
+		Hook
+	else
+		UnHook;
 
-  if Value and ((not (csDesigning in ComponentState)) or (tvVisibleDesign in Visibility)) then
-  begin
-    FOldTray := FindWindow('Shell_TrayWnd', nil);
+	if Value and ((not (csDesigning in ComponentState)) or (tvVisibleDesign in Visibility)) then
+	begin
+		FOldTray := FindWindow('Shell_TrayWnd', nil);
 
-    if (FIcon = nil) or FIcon.Empty then
-      { (rb) This triggers the IconChanged event, note that Active is loaded
-        before Icon from the stream, thus FIcon is always empty at this
-        point when loaded from the dfm stream }
-      FIcon.Assign(Application.Icon);
-    with FIc do
-    begin
-      if AcceptBalloons then
-      begin
-        cbSize := SizeOf(FIc);
-        FIc.uTimeOut := NOTIFYICON_VERSION;
-      end
-      else
-        cbSize := SizeOf(TNotifyIconData);
-      Wnd := FHandle;
-      uId := 1;
-      uCallBackMessage := WM_CALLBACKMESSAGE;
-      if FIcon <> nil then
-        hIcon := FIcon.Handle
-      else
-        FIcon := Application.Icon;
-      StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
-      uFlags := NIF_MESSAGE or NIF_ICON or NIF_INFO or NIF_TIP;
-    end;
-    Shell_NotifyIcon(NIM_ADD, PNotifyIconData(@FIc));
-    if AcceptBalloons then
-      Shell_NotifyIcon(NIM_SETVERSION, PNotifyIconData(@FIc));
+		if (FIcon = nil) or FIcon.Empty then
+			{ (rb) This triggers the IconChanged event, note that Active is loaded
+				before Icon from the stream, thus FIcon is always empty at this
+				point when loaded from the dfm stream }
+			FIcon.Assign(Application.Icon);
+		with FIc do
+		begin
+			if AcceptBalloons then
+			begin
+				cbSize := SizeOf(FIc);
+				FIc.uTimeOut := NOTIFYICON_VERSION;
+			end
+			else
+				cbSize := SizeOf(TNotifyIconData);
+			Wnd := FHandle;
+			uId := 1;
+			uCallBackMessage := WM_CALLBACKMESSAGE;
+			if FIcon <> nil then
+				hIcon := FIcon.Handle
+			else
+				FIcon := Application.Icon;
+			StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
+			uFlags := NIF_MESSAGE or NIF_ICON or NIF_INFO or NIF_TIP;
+		end;
+		Shell_NotifyIcon(NIM_ADD, PNotifyIconData(@FIc));
+		if AcceptBalloons then
+			Shell_NotifyIcon(NIM_SETVERSION, PNotifyIconData(@FIc));
 
-  end
-  else
-    Shell_NotifyIcon(NIM_DELETE, PNotifyIconData(@FIc));
+	end
+	else
+		Shell_NotifyIcon(NIM_DELETE, PNotifyIconData(@FIc));
 
-  FActive := Value;
+	FActive := Value;
 end;
 
 procedure TJvTrayIcon.SetApplicationVisible(Value: Boolean);
@@ -600,23 +644,23 @@ end;
 
 procedure TJvTrayIcon.DoCheckCrash;
 var
-  HWndTray: HWND;
+	HWndTray: HWND;
 begin
-  if Active then
-  begin
-    HWndTray := FindWindow('Shell_TrayWnd', nil);
-    if FOldTray <> HWndTray then
-    begin
-      FOldTray := HWndTray;
-      Active := False;
-      Active := True;
-    end;
-  end;
+	if Active then
+	begin
+		HWndTray := FindWindow('Shell_TrayWnd', nil);
+		if FOldTray <> HWndTray then
+		begin
+			FOldTray := HWndTray;
+			Active := False;
+			Active := True;
+		end;
+	end;
 end;
 
 procedure TJvTrayIcon.DoMouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  if FOldHint <> FHint then
+	if FOldHint <> FHint then
   begin
     FOldHint := FHint;
     with FIc do
