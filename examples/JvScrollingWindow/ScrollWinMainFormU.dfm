@@ -401,24 +401,6 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
       LargeImages = ImageList1
       Spacing = 6
     end
-    object Divider1: TJvDivider
-      Left = 341
-      Top = 4
-      Width = 30
-      Height = 30
-    end
-    object Divider2: TJvDivider
-      Left = 150
-      Top = 4
-      Width = 31
-      Height = 30
-    end
-    object Divider3: TJvDivider
-      Left = 467
-      Top = 4
-      Width = 30
-      Height = 30
-    end
   end
   object ImageList1: TImageList
     Left = 16
