@@ -519,10 +519,7 @@ begin
     R.Right := R.Right - ButtonWidth;
     // don't redraw content, just button
     ExcludeClipRect(Canvas.Handle, R.Left, R.Top, R.Right, R.Bottom);
-    {$IFDEF VisualCLX}
-    QWindows.
-    {$ENDIF VisualCLX}
-    InvalidateRect(Handle, @R2, False);
+    Windows.InvalidateRect(Handle, @R2, False);
   end;
 end;
 
