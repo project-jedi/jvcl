@@ -30,15 +30,28 @@ unit JvBDECheckPasswordForm;
 interface
 
 uses
-  SysUtils,
-  Windows,
-  Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Buttons,
-  DBTables, DB, JvComponent;
+  Windows, SysUtils, Classes, Controls, Forms, StdCtrls, Buttons, DBTables, DB,
+  JvComponent;
 
 type
   TChangePasswordEvent = function(UsersTable: TTable;
     const OldPassword, NewPassword: string): Boolean of object;
 
+function ChangePasswordDialog(Database: TDatabase; AttemptNumber: Integer;
+  const UsersTableName, UserNameField, LoginName: string;
+  MaxPwdLen: Integer; EnableEmptyPassword: Boolean;
+  ChangePasswordEvent: TChangePasswordEvent): Boolean;
+
+implementation
+
+uses
+  Consts,
+  JvConsts, JvJVCLUtils;
+
+{$R *.DFM}
+
+type
+  // (rom) moved to implementation for security reasons
   TJvChPswdForm = class(TJvForm)
     OldPswdLabel: TLabel;
     OldPswd: TEdit;
@@ -57,8 +70,6 @@ type
     FEnableEmpty: Boolean;
     procedure ClearEdits;
     procedure OkEnabled;
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
   public
     Database: TDatabase;
     AttemptNumber: Integer;
@@ -67,19 +78,6 @@ type
     LoginName: string;
     OnChangePassword: TChangePasswordEvent;
   end;
-
-function ChangePasswordDialog(Database: TDatabase; AttemptNumber: Integer;
-  const UsersTableName, UserNameField, LoginName: string;
-  MaxPwdLen: Integer; EnableEmptyPassword: Boolean;
-  ChangePasswordEvent: TChangePasswordEvent): Boolean;
-
-implementation
-
-uses
-  Consts,
-  JvConsts, JvJVCLUtils;
-
-{$R *.DFM}
 
 function ChangePasswordDialog(Database: TDatabase; AttemptNumber: Integer;
   const UsersTableName, UserNameField, LoginName: string;
@@ -111,11 +109,6 @@ begin
   finally
     Screen.Cursor := SaveCursor;
   end;
-end;
-
-procedure TJvChPswdForm.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
 end;
 
 procedure TJvChPswdForm.FormCreate(Sender: TObject);
@@ -153,7 +146,7 @@ begin
   Ok := False;
   Inc(FAttempt);
   try
-    if not (FAttempt > AttemptNumber) then
+    if FAttempt <= AttemptNumber then
     begin
       if UsersTableName <> '' then
         Table := TTable.Create(Self)
@@ -169,13 +162,11 @@ begin
           Table.IndexFieldNames := UserNameField;
           Table.Open;
           if Table.FindKey([LoginName]) then
-          begin
             if NewPswd.Text <> ConfirmNewPswd.Text then
               Error := peMismatch
             else
             if Assigned(OnChangePassword) then
               Ok := OnChangePassword(Table, OldPswd.Text, NewPswd.Text);
-          end;
         end
         else
         begin
@@ -186,12 +177,12 @@ begin
             Ok := OnChangePassword(Table, OldPswd.Text, NewPswd.Text);
         end;
         if Ok then
-          MessageDlg(SPasswordChanged, mtInformation, [mbOk], 0)
+          MessageBox(SPasswordChanged, '', MB_OK or MB_ICONINFORMATION)
         else
         if Error = peMismatch then
-          MessageDlg(SPasswordsMismatch, mtError, [mbOk], 0)
+          MessageBox(SPasswordsMismatch, '', MB_OK or MB_ICONERROR)
         else
-          MessageDlg(SPasswordNotChanged, mtError, [mbOk], 0);
+          MessageBox(SPasswordNotChanged, '', MB_OK or MB_ICONERROR);
       finally
         if Table <> nil then
           Table.Free;

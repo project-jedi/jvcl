@@ -35,25 +35,25 @@ uses
   Classes, Controls, ExtCtrls, Windows, SysUtils, Messages, Forms;
 
 type
-  { The TfileName Object has been created to handle the first field of a Thumb
-    Wich is the Thumbs actual FileName complite with the Path because no
-    duplicates are alowed in the final list.
+  { The TFileName object has been created to handle the first field of a Thumb
+    Which is the Thumbs actual FileName complete with the Path because no
+    duplicates are allowed in the final list.
     It Has the following properties
-      01) Filename : it Keeps the filename as gived by the user
-      02) LongName : It always returns the longName of the file
-      03) ShortName : It always returns the short name of the file
-      04) Size      : It returns the size in Byte that it will occupy if saved in a stream
-      05) Length    : The "Filename" property Length;
-    and the following Methods
-      01) LoadFromStream(AStream:TStream;APos:Integer); It loads a filename from a stream
-          if APos < 0 then don't change the cursors position in the stream
-          else AStream.seek(APos,0);
-      02) SaveToStream(AStream:TStream;APos:Integer); Save the Filename to AStream
-          If APos>-1 then AStream.seek(APos,0);
+      01) FileName : it keeps the filename as given by the user
+      02) LongName : it always returns the LongName of the file
+      03) ShortName: it always returns the short name of the file
+      04) Size     : it returns the size in Bytes that it will occupy if saved in a stream
+      05) Length   : the "FileName" property Length;
+    and the following methods
+      01) LoadFromStream(AStream: TStream; APos: Integer); loads a filename from a stream
+          if APos < 0 then don't change the cursor position in the stream
+          else AStream.Seek(APos, 0);
+      02) SaveToStream(AStream: TStream; APos: Integer); Save the FileName to AStream
+          if APos > -1 then AStream.Seek(APos, 0);
           SaveData;
   }
-  TProgressNotify = procedure(Sender: TObject; Position: Integer; var Break: Boolean) of object;
-  TInvalidImageEvent = procedure(Sender: TObject; const AFilename: string) of object;
+  TProgressNotify = procedure(Sender: TObject; Position: Integer; var Stop: Boolean) of object;
+  TInvalidImageEvent = procedure(Sender: TObject; const AFileName: string) of object;
   // (rom) renamed
   TGRFKind = (grBMP, grJPG, grWMF, grEMF, grICO, {$IFNDEF COMPILER6_UP} grGIF,{$ENDIF} grPNG); //,grPCX,grTGA);
   TPercent = -100..100;
@@ -73,17 +73,15 @@ type
     procedure SetLength(NewLength: Integer);
     procedure Init;
   public
-    constructor Create;
-    destructor Destroy; override;
-    procedure LoadFromStream(AStream: TStream; APos: Integer); //Load From stream;
+    procedure LoadFromStream(AStream: TStream; APos: Integer); //Load From stream
     // both of this routines are inserting extract data to the stream its self
     // like a header and data end string;
-    procedure SaveToStream(AStream: TStream; APos: Integer); // Save to a Stream;
+    procedure SaveToStream(AStream: TStream; APos: Integer); // Save to a Stream
     // (rom) moved to public
-    property LongName: string read FLongName; // The LongName of this filenam;
+    property LongName: string read FLongName; // The LongName of this filename
     property ShortName: string read FShortName; // shortname of this filename
   published
-    property Filename: string read FFileName write SetName; // The Filename as given by the user;
+    property FileName: string read FFileName write SetName; // The FileName as given by the user
     property Length: Integer read GetLength write SetLength;
   end;
 
@@ -110,7 +108,6 @@ type
     procedure KeyPress(var Key: Char); override;
   public
     constructor Create(AOwner: TComponent); override;
-  published
   end;
 
   TJvBaseThumbImage = class(TImage)
@@ -160,14 +157,11 @@ type
     //    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
     constructor Create(AOwner: TComponent); override;
-  published
   end;
 
 function BoundByte(Min, Max, Value: Integer): Byte;
 procedure InsertStr(var Str: string; const NewStr: string; Pos: Longint);
 function ProportionalSize(PhysicalSize, NewSize: TPoint): TPoint;
-function CompletePath(const Path: string): string;
-function IncompletePath(APath: string): string;
 function ReplaceChar(const AStr: string; const CharToFind, NewChar: Char;
   ReplaceNo: Longint; CaseSensitive: Boolean): string;
 function JkCeil(I: Extended): Longint;
@@ -178,14 +172,6 @@ implementation
 
 uses
   JvThemes;
-
-const
-  {$IFDEF COMPILER5_UP}
-  PathEnd = '\';
-  {$ENDIF}
-  {$IFDEF LINUX}
-  PathEnd = '/';
-  {$ENDIF}
 
 function ReplaceAllStr(const Str, SearchFor, ReplaceWith: string;
   CaseSensitive: Boolean): string;
@@ -258,39 +244,6 @@ begin
       Inc(Count, 1);
     until (Count > Length(Res)) or (RepCount >= ReplaceNo);
   Result := Res;
-end;
-
-// add the slash character at the end of the Path.
-
-function CompletePath(const Path: string): string;
-var
-  Res: string;
-begin
-  if Length(Path) > 0 then
-  begin
-    if Path[Length(Path)] <> PathEnd then
-      Res := Path + PathEnd
-    else
-      Res := Path;
-  end
-  else
-    Res := Path;
-  Result := Res;
-end;
-
-// Remove the slash character from the end of the Path.
-
-function IncompletePath(APath: string): string;
-begin
-  if Length(APath) > 0 then
-  begin
-    if APath[Length(APath)] = PathEnd then
-      Result := Copy(APath, 1, Length(APath) - 1)
-    else
-      Result := APath;
-  end
-  else
-    Result := APath;
 end;
 
 function ProportionalSize(PhysicalSize, NewSize: TPoint): TPoint;
@@ -453,10 +406,12 @@ constructor TJvBaseThumbImage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csSetCaption];
-  {  If AOwner is TJvBaseThumbnail then begin
-      ControlStyle := ControlStyle-[csCaptureMouse];
-      FIgnoreMouse := True
-    end Else{}
+  {  If AOwner is TJvBaseThumbnail then
+     begin
+      ControlStyle := ControlStyle - [csCaptureMouse];
+      FIgnoreMouse := True;
+    end
+    else}
   FIgnoreMouse := False;
 end;
 
@@ -509,13 +464,12 @@ begin
 end;
 
 procedure TJvBaseThumbImage.CMHitTest(var Msg: TCMHitTest);
+const
+  Hits: array [Boolean] of Longint = (HTCLIENT, HTNOWHERE);
 begin
   if csDesigning in ComponentState then
     inherited;
-  if FIgnoreMouse then
-    Msg.Result := HTNOWHERE //  0;
-  else
-    Msg.Result := HTCLIENT; // 1;
+  Msg.Result := Hits[IgnoreMouse];
 end;
 
 //=== TJvBaseThumbnail =======================================================
@@ -523,8 +477,8 @@ end;
 constructor TJvBaseThumbnail.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  if AOwner is TJvBaseThumbview then
-    ControlStyle := ControlStyle - [csSetCaption, csCaptureMouse] //,
+  if AOwner is TJvBaseThumbView then
+    ControlStyle := ControlStyle - [csSetCaption, csCaptureMouse]
     //                                csClickEvents,csDoubleClicks]
   else
     ControlStyle := ControlStyle - [csSetCaption];
@@ -533,8 +487,8 @@ end;
 procedure TJvBaseThumbnail.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  if Parent is TJvBaseThumbview then
-    TJvBaseThumbview(Parent).MouseDown(Button, Shift, Left + X, Top + Y)
+  if Parent is TJvBaseThumbView then
+    TJvBaseThumbView(Parent).MouseDown(Button, Shift, Left + X, Top + Y)
   else
     inherited MouseDown(Button, Shift, X, Y);
 end;
@@ -547,8 +501,8 @@ end;
 
 procedure TJvBaseThumbnail.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  if Parent is TJvBaseThumbview then
-    TJvBaseThumbview(Parent).MouseMove(Shift, Left + X, Top + Y)
+  if Parent is TJvBaseThumbView then
+    TJvBaseThumbView(Parent).MouseMove(Shift, Left + X, Top + Y)
   else
     inherited MouseMove(Shift, X, Y);
 end;
@@ -556,48 +510,48 @@ end;
 function TJvBaseThumbnail.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
   MousePos: TPoint): Boolean;
 begin
-  if Parent is TJvBaseThumbview then
-    Result := TJvBaseThumbview(Parent).DoMouseWheel(Shift, WheelDelta, MousePos)
+  if Parent is TJvBaseThumbView then
+    Result := TJvBaseThumbView(Parent).DoMouseWheel(Shift, WheelDelta, MousePos)
   else
     Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
 end;
 
 function TJvBaseThumbnail.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
 begin
-  if Parent is TJvBaseThumbview then
-    Result := TJvBaseThumbview(Parent).DoMouseWheelDown(Shift, MousePos)
+  if Parent is TJvBaseThumbView then
+    Result := TJvBaseThumbView(Parent).DoMouseWheelDown(Shift, MousePos)
   else
     Result := inherited DoMouseWheelDown(Shift, MousePos);
 end;
 
 function TJvBaseThumbnail.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
 begin
-  if Parent is TJvBaseThumbview then
-    Result := TJvBaseThumbview(Parent).DoMouseWheelUp(Shift, MousePos)
+  if Parent is TJvBaseThumbView then
+    Result := TJvBaseThumbView(Parent).DoMouseWheelUp(Shift, MousePos)
   else
     Result := inherited DoMouseWheelUp(Shift, MousePos);
 end;
 
 procedure TJvBaseThumbnail.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if Parent is TJvBaseThumbview then
-    TJvBaseThumbview(Parent).KeyDown(Key, Shift)
+  if Parent is TJvBaseThumbView then
+    TJvBaseThumbView(Parent).KeyDown(Key, Shift)
   else
     inherited KeyDown(Key, Shift);
 end;
 
 procedure TJvBaseThumbnail.KeyUp(var Key: Word; Shift: TShiftState);
 begin
-  if Parent is TJvBaseThumbview then
-    TJvBaseThumbview(Parent).KeyUp(Key, Shift)
+  if Parent is TJvBaseThumbView then
+    TJvBaseThumbView(Parent).KeyUp(Key, Shift)
   else
     inherited KeyUp(Key, Shift);
 end;
 
 procedure TJvBaseThumbnail.KeyPress(var Key: Char);
 begin
-  if Parent is TJvBaseThumbview then
-    TJvBaseThumbview(Parent).KeyPress(Key)
+  if Parent is TJvBaseThumbView then
+    TJvBaseThumbView(Parent).KeyPress(Key)
   else
     inherited KeyPress(Key);
 end;
@@ -605,31 +559,31 @@ end;
 procedure TJvBaseThumbnail.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  if Parent is TJvBaseThumbview then
-    TJvBaseThumbview(Parent).MouseUp(Button, Shift, Left + X, Top + Y)
+  if Parent is TJvBaseThumbView then
+    TJvBaseThumbView(Parent).MouseUp(Button, Shift, Left + X, Top + Y)
   else
     inherited MouseUp(Button, Shift, X, Y);
 end;
 
 procedure TJvBaseThumbnail.Click;
 begin
-  if Parent is TJvBaseThumbview then
-    TJvBaseThumbview(Parent).Click
+  if Parent is TJvBaseThumbView then
+    TJvBaseThumbView(Parent).Click
   else
     inherited Click;
 end;
 
 procedure TJvBaseThumbnail.DblClick;
 begin
-  if Parent is TJvBaseThumbview then
-    TJvBaseThumbview(Parent).DblClick
+  if Parent is TJvBaseThumbView then
+    TJvBaseThumbView(Parent).DblClick
   else
     inherited DblClick;
 end;
 
-//=== TJvBaseThumbview =======================================================
+//=== TJvBaseThumbView =======================================================
 
-constructor TJvBaseThumbview.Create(AOwner: TComponent);
+constructor TJvBaseThumbView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlState := ControlState + [csFocusing];
@@ -637,23 +591,13 @@ begin
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 {
-procedure TJvBaseThumbview.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+procedure TJvBaseThumbView.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   inherited;
   Msg.Result := 0;
 end;}
 
 //=== TFileName ==============================================================
-
-constructor TFileName.Create;
-begin
-  inherited Create;
-end;
-
-destructor TFileName.Destroy;
-begin
-  inherited Destroy;
-end;
 
 procedure TFileName.SetName(NewName: string);
 begin
@@ -700,7 +644,7 @@ end;
 
 procedure TFileName.LoadFromStream(AStream: TStream; APos: Integer);
 begin
-  // Uner Construction;
+  // Under Construction;
 end;
 
 procedure TFileName.SaveToStream(AStream: TStream; APos: Integer);

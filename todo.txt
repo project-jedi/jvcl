@@ -1,5 +1,7 @@
 TODO for JVCL 3.0
 ======================
+- JvBaseEdits.pas, JvToolEdit.pas relies on property order. // (rom)
+
 - JvBandForms.pas, JvBandObject.pas contain T2H IFDEFs. Remove or explain. // (rom)
 
 - JvArrowButton.pas move GrayedBitmap function to JCL and file to Archive // (rom)
