@@ -52,6 +52,6 @@
     <File Name="..\..\run\JvDiskPrompt.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDSADialogs.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDualList.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDialogActns.pas" Targets="C6,C6p,D5,D5s,D6,D6p,D7,D7p" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDialogActns.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
