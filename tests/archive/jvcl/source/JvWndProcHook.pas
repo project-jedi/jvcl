@@ -1,12 +1,30 @@
-unit JvWndProcHook;
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
 
-interface
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
 
-uses
-  SysUtils, Messages, Classes, Controls;
+The Original Code is: JvWndProcHook.PAS, released on 2002-11-01.
 
-type
-  { Changes:
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
+All Rights Reserved.
+
+Contributor(s):
+Remko Bonte <remkobonte@myrealbox.com>
+
+Last Modified: 2002-11-01
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+  { Changes by Remko:
 
     * Renamed local vars that were named i,j to some more meaningfull name :)
     * Added some helper functions
@@ -15,17 +33,27 @@ type
       handling of the message by the original owner
     * Hook can say he has handled the message; thus preventing the original
       control from handling the message
-      - these last 2 seem necessairy for some components
+      - these last 2 seem necessary for some components
     * Added the component TJvWindowHook from JvHook
   }
 
+{.$I JVCL.INC}
+
+unit JvWndProcHook;
+
+interface
+
+uses
+  SysUtils, Messages, Classes, Controls, JvComponent;
+
+type
   TJvControlHook = function(var Message: TMessage): Boolean of object;
   TJvHookMessageEvent = procedure(Sender: TObject; var Msg: TMessage;
     var Handled: Boolean) of object;
 
   TJvHookOrder = (hoBeforeMsg, hoAfterMsg);
 
-  TJvWindowHook = class(TComponent)
+  TJvWindowHook = class(TJvComponent)
   private
     FActive: Boolean;
     FControl: TControl;
@@ -66,7 +94,6 @@ function UnRegisterWndProcHook(AControl: TControl; Hook: TJvControlHook;
   const Order: TJvHookOrder): Boolean;
 
 implementation
-
 uses
   Forms;
 
