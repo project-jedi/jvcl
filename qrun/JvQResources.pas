@@ -259,7 +259,7 @@ resourcestring
 
 //=== JvChart.pas ============================================================
 resourcestring
-  RsNoData = 'No data.';
+  RsNoData = 'No data. (Data.ValueCount=0)';
   RsGraphHeader = 'Graph Header';
   RsCurrentHeaders = 'Current Header: %s';
   RsXAxisHeaders = 'X Axis Header: %s';
@@ -1039,6 +1039,7 @@ resourcestring
 //=== JvInterpreter.pas ======================================================
 resourcestring
   RsNotImplemented = 'Function not yet implemented';
+  RsOleAutomationCall = 'Ole automation call';
 
   RsESorryDynamicArraysSupportIsMadeForO = 'Sorry. Dynamic arrays support is made for one-dimensional arrays only';
   RsEUnknownRecordType = 'Unknown RecordType';
@@ -1107,9 +1108,15 @@ resourcestring
   RsEInterpreter302 = 'Identifier';
   RsEInterpreter303 = 'Declaration';
   RsEInterpreter304 = 'End of File';
-  RsEInterpreter305 = 'Class declaration';
+  RsEInterpreter305 = 'Class Declaration';
+  RsEInterpreter306 = 'Integer Constant''';
+  RsEInterpreter307 = 'Integer Value';
+  RsEInterpreter308 = 'String Constant';
+  RsEInterpreter309 = 'Statement';
 
   RsEInterpreter401 = 'Implementation of unit not found';
+
+  RsEXOrX = ''' or ''';
 
 //=== JvInterpreterFm.pas ====================================================
 resourcestring
@@ -1663,10 +1670,6 @@ resourcestring
   RsTipsHeaderText = 'Did you know...';
   RsTipsCheckBoxText = '&Show Tips on Startup';
   RsStoreShowOnStartUp = 'Show On Startup';
-
-//=== JvTMTimeLine.pas =========================================================
-resourcestring
-  RsInvalidImage = 'Invalid image';
 
 //=== JvToolEdit.pas =========================================================
 resourcestring

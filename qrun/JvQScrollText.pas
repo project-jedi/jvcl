@@ -140,8 +140,9 @@ begin
   FText.OnMouseMove := TextMouseMove;
   FText.OnMouseUp := TextMouseUp;
 
+  // (p3) does this font do anything?
   FFont := TFont.Create;
-  FFont := FText.Font;
+  FFont.Assign(FText.Font);
   FFont.OnChange := FontChange;
 
   FTimerTag := 0;
@@ -163,6 +164,8 @@ begin
   Application.HintPause := FDeja;
   FStrings.Free;
   FText.Free;
+  FFont.OnChange := nil;
+  FFont.Free;
   inherited Destroy;
 end;
 
