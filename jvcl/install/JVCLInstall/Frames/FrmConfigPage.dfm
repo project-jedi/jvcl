@@ -98,9 +98,9 @@ object FrameConfigPage: TFrameConfigPage
       Hint = 
         'Enable this option if you want to use the dxgettext'#13#10'(<c:navy>ht' +
         'tp://dxgettext.sourceforge.net<c:black>) translation tool.'#13#10#13#10'<c' +
-        ':red>The gnugettext.pas unit will be added to the contains list'#13 +
-        #10'of the JvCore-R package. That means that you cannot add'#13#10'it to ' +
-        'another package.'
+        ':red>The JVCL 3 ships it'#39's own gnugettext.pas unit called'#13#10'JvGnu' +
+        'gettext. This prevents package unit conflicts and'#13#10'problems with' +
+        ' wrong versions.'
       Caption = 'dxgettext &support'
       ParentShowHint = False
       ShowHint = True

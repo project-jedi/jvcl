@@ -134,7 +134,7 @@ begin
       StartupInfo.dwFlags := STARTF_USESTDHANDLES or STARTF_USESHOWWINDOW;
 
       if CreateProcess(nil, PChar(App + ' ' + Args), @SecAttrib, nil, True,
-        CREATE_NEW_PROCESS_GROUP, nil, PChar(Dir), StartupInfo, ProcessInfo) then
+        0, nil, PChar(Dir), StartupInfo, ProcessInfo) then
       begin
         CloseHandle(ProcessInfo.hThread);
         try

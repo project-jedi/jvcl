@@ -40,7 +40,7 @@ uses
   Dialogs, JvExControls, JvComponent, jpeg, ExtCtrls, StdCtrls, JvWizard,
   JvWizardRouteMapList,
   {$IFDEF USE_DXGETTEXT}
-  gnugettext,
+  JvGnugettext,
   {$ENDIF USE_DXGETTEXT}
   Core,
   ShellAPI, HtHint;
