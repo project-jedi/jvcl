@@ -51,8 +51,11 @@ interface
 
 uses
   SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows, 
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls,
+  Messages, Graphics, Controls,
   Forms, Dialogs, ExtCtrls, Printers, Clipbrd,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
