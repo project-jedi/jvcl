@@ -85,6 +85,7 @@ type
     {$IFDEF VCL}
     FEmptyValue: string;
     FIsEmptyValue: boolean;
+    FEmptyFontColor, FOldFontColor: TColor;
     {$ENDIF VCL}
     function GetPasswordChar: Char;
     procedure SetAlignment(Value: TAlignment);
@@ -155,6 +156,7 @@ type
     property Caret: TJvCaret read FCaret write SetCaret;
     {$IFDEF VCL}
     property EmptyValue: string read FEmptyValue write SetEmptyValue;
+    property EmptyFontColor:TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
     {$ENDIF}
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property PasswordChar: Char read GetPasswordChar write SetPasswordChar;
@@ -186,6 +188,7 @@ type
     property DragCursor;
     property DragKind;
     property EmptyValue; // p3: clx not implemented yet
+    property EmptyFontColor; // p3: clx not implemented yet
     property ImeMode;
     property ImeName;
     property OEMConvert;
@@ -289,6 +292,7 @@ begin
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
   FGroupIndex := -1;
+  FEmptyFontColor := clGrayText;
 end;
 
 destructor TJvCustomEdit.Destroy;
@@ -616,7 +620,7 @@ var
   Tmp: Boolean;
 begin
   if FIsEmptyValue then
-    Result := EmptyValue
+    Result := ''
   else
   begin
     Tmp := ProtectPassword;
@@ -825,6 +829,8 @@ begin
     begin
       Text := '';
       FIsEmptyValue := false;
+      if not (csDesigning in ComponentState) then
+        Font.Color := FOldFontColor;
     end;
   end;
 end;
@@ -837,6 +843,11 @@ begin
     begin
       Text := EmptyValue;
       FIsEmptyValue := true;
+      if not (csDesigning in ComponentState) then
+      begin
+        FOldFontColor := Font.Color;
+        Font.Color := FEmptyFontColor;
+      end;
     end;
   end;
 end;
@@ -844,7 +855,10 @@ end;
 procedure TJvCustomEdit.CreateHandle;
 begin
   inherited;
-  DoEmptyValueExit;
+  if Focused then
+    DoEmptyValueEnter
+  else
+    DoEmptyValueExit;
 end;
 
 procedure TJvCustomEdit.SetEmptyValue(const Value: string);
@@ -859,6 +873,7 @@ begin
   end;
 end;
 {$ENDIF VCL}
+
 
 end.
 
