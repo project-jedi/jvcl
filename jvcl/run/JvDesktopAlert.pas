@@ -77,15 +77,22 @@ type
     FLeft: integer;
     FPosition: TJvDesktopAlertPosition;
     FAlwaysResetPosition: boolean;
+    FHeight: integer;
+    FWidth: integer;
     procedure SetTop(const Value: integer);
     procedure SetLeft(const Value: integer);
     procedure SetPosition(const Value: TJvDesktopAlertPosition);
+    procedure SetHeight(const Value: integer);
+    procedure SetWidth(const Value: integer);
   public
     constructor Create;
   published
     property Position: TJvDesktopAlertPosition read FPosition write SetPosition default dapBottomRight;
     property Top: integer read FTop write SetTop;
     property Left: integer read FLeft write SetLeft;
+    property Width:integer read FWidth write SetWidth;
+    property Height:integer read FHeight write SetHeight;
+
     property AlwaysResetPosition: boolean read FAlwaysResetPosition write FAlwaysResetPosition default True;
   end;
 
@@ -343,6 +350,15 @@ begin
   FAlwaysResetPosition := true;
 end;
 
+procedure TJvDesktopAlertLocation.SetHeight(const Value: integer);
+begin
+  if FHeight <> Value then
+  begin
+    FHeight := Value;
+    Change;
+  end;
+end;
+
 procedure TJvDesktopAlertLocation.SetLeft(const Value: integer);
 begin
   if FLeft <> Value then
@@ -367,6 +383,15 @@ begin
   if FTop <> Value then
   begin
     FTop := Value;
+    Change;
+  end;
+end;
+
+procedure TJvDesktopAlertLocation.SetWidth(const Value: integer);
+begin
+  if FWidth <> Value then
+  begin
+    FWidth := Value;
     Change;
   end;
 end;
@@ -476,6 +501,14 @@ begin
   Assert(FDesktopForm <> nil);
   if FDesktopForm.Visible then FDesktopForm.Close;
   SystemParametersInfo(SPI_GETWORKAREA, 0, @ARect, 0);
+  if (Location.Width <> 0) then
+    FDesktopForm.Width := Location.Width
+  else
+    FDesktopForm.Width := cDefaultAlertFormWidth;
+  if Location.Height <> 0 then
+    FDesktopForm.Height := Location.Height
+  else
+    FDesktopForm.Height := cDefaultAlertFormHeight;
   case Location.Position of
     dapTopLeft:
       begin

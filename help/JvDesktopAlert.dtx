@@ -389,6 +389,19 @@ Description
 See Also
   Position
 ----------------------------------------------------------------------------------------------------
+@@TJvDesktopAlertLocation.Height
+Summary
+  Specifies the height of the desktop alert window.
+Description
+  Use the Height property to determine the height of the desktop alert window. Set Height to 0 to reset the
+  window to its default height (currently 76 px).
+
+  Height is used for any Position. If you are displaying several desktop alerts at the same time, make sure they
+  have the same width and height.
+
+See Also
+  Top, Width, Position
+----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation.Left
 Summary
   Specifies the value of the Left property of the desktop alert window.
@@ -396,17 +409,22 @@ Description
   Use the Left property to determine where the left side of the desktop alert window begins or to
   reposition the left side of the window. Left is only used when Position is dapCustom.
 See Also
-  Top, Position
+  Top, Width, Height, Position
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation.Position
 Summary
   Specifies where the desktop alert window is located when it is displayed.
 Description
   Use Position to specify where the TJvDesktopAlert window should appear on screen. This setting
-  also controls the stacking of multiple desktop alert windows. If Position is dapCustom, the placement
-  of the window is determined by the Left and Top properties. 
+  also controls the stacking of multiple desktop alert windows.
+
+  If Position is dapCustom, the placement of the window is determined by the Left and Top
+  properties.
+
+  If Position is any of dapDesktopCenter,  dapMainFormCenter, dapOwnerFormCenter or dapActiveFormCenter,
+  the placement of the window is calculated automatically.
 See Also
-  Top, Left
+  Left, Top, Width, Height
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertLocation.Top
 Summary
@@ -416,6 +434,18 @@ Description
   reposition the top of the window. Top is only used when Position is dapCustom.
 See Also
   Top, Position
+----------------------------------------------------------------------------------------------------
+@@TJvDesktopAlertLocation.Width
+Summary
+  Specifies the width of the desktop alert window.
+Description
+  Use the Width property to determine the width of the desktop alert window. Set Width to 0 to reset the
+  window to its default width (currently 329 px).
+
+  Width is used for any Position. If you are displaying several desktop alerts at the same time, make sure they
+  have the same width and height.
+See Also
+  Top, Left, Height, Position
 ----------------------------------------------------------------------------------------------------
 @@TJvDesktopAlertOption
 <TITLE TJvDesktopAlertOption type>
@@ -464,15 +494,15 @@ See Also
   The window is displayed in the bottom right corner of the screen. If multiple alert windows are displayed, 
   they are stacked such that the oldest window is always at the bottom.
 @@TJvDesktopAlertPosition.dapCustom
-  The location of the window is determined by the Left and Top properties of the 
+  The location of the window is determined by the Left and Top properties of the
   <LINK TJvDesktopAlert.Location,TJvDesktopAlert.Location> property. This mode is not stacked.
 @@TJvDesktopAlertPosition.dapDesktopCenter
   The window is centered on the desktop. No adjustment is done for multiple monitors. This mode is not stacked.
 @@TJvDesktopAlertPosition.dapMainFormCenter
-  The window is centered on the application's mainform. If the application doesn't have a main form, 
+  The window is centered on the application's mainform. If the application doesn't have a main form,
   this mode works the same as dapDesktopCenter. This mode is not stacked.
 @@TJvDesktopAlertPosition.dapOwnerFormCenter
-  The window is centered on the owner form if Owner is as TCustomForm. If Owner is not a TCustomForm, 
+  The window is centered on the owner form if Owner is as TCustomForm. If Owner is not a TCustomForm,
   this mode works the same as dapDesktopCenter. This mode is not stacked.
 @@TJvDesktopAlertPosition.dapActiveFormCenter
   The window is centered on the application's active form. If the application doesn't have an active form, 
