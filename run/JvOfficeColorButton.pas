@@ -118,10 +118,10 @@ type
     procedure DoButtonMouseLeave(Sender: TObject);
     procedure DoArrowClick(Sender: TObject);
     procedure DoColorButtonClick(Sender: TObject);
-    procedure DoClick(Sender:TObject);
+    procedure DoClick(Sender: TObject);
   protected
-    procedure AdjustColorForm(X: Integer = 0; Y: Integer = 0); //Screen postion
-    procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen postion
+    procedure AdjustColorForm(X: Integer = 0; Y: Integer = 0); //Screen position
+    procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen position
     {$IFDEF VCL}
     procedure CreateWnd; override;
     {$ENDIF VCL}
@@ -132,8 +132,7 @@ type
     procedure FontChanged; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure PropertiesChanged(Sender: TObject; PropName: string); virtual;
-
-    property ColorsForm :TJvOfficeColorForm read FColorsForm;
+    property ColorsForm: TJvOfficeColorForm read FColorsForm;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -141,7 +140,6 @@ type
     property Flat: Boolean read FFlat write SetFlat default True;
     property Color: TColor read GetColor write SetColor default clBlack;
     property SelectedColor: TColor read GetColor write SetColor default clBlack;
-
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;
     property Properties: TJvOfficeColorButtonProperties read GetProperties write SetProperties;
     {$IFDEF VCL}
@@ -209,7 +207,7 @@ implementation
 
 uses
   TypInfo,
-  JvJCLUtils, JvExExtCtrls, JvThemes;
+  JvJCLUtils, JvExExtCtrls, JvThemes, JvResources;
 
 type
   THackColorSpeedButton = class(TJvColorSpeedButton);
@@ -285,9 +283,7 @@ begin
     Canvas.Brush.Color := clBlack;
   end
   else
-  begin
     Canvas.Pen.Color := clBtnShadow;
-  end;
   Canvas.Brush.Style := bsSolid;
   DrawTriangle(Canvas, (Height div 2) - 2, (Width - FArrowWidth) div 2, FArrowWidth);
 end;
@@ -366,7 +362,6 @@ begin
   {$IFDEF VisualCLX}
   // in CLX and a bug not fix when drag the colors form
   Properties.ShowDragBar := False;
-
   {$ENDIF VisualCLX}
   FMainButton.OnMouseEnter := DoButtonMouseEnter;
   FArrowButton.OnMouseEnter := DoButtonMouseEnter;
@@ -427,7 +422,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvCustomOfficeColorButton.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   AdjustSize;
 end;
 {$ENDIF VisualCLX}
@@ -450,7 +445,7 @@ procedure TJvCustomOfficeColorButton.DoArrowClick(Sender: TObject);
 begin
   if TJvColorSpeedButton(Sender).Tag = FArrowButton.Tag then
   begin
-    if (FColorsForm.Visible) or (FColorFormDropDown) then
+    if FColorsForm.Visible or FColorFormDropDown then
     begin
       FColorsForm.Hide;
       FColorFormDropDown := False;
@@ -475,7 +470,7 @@ end;
 
 procedure TJvCustomOfficeColorButton.DoColorButtonClick(Sender: TObject);
 begin
-  if  not FColorsForm.ToolWindowStyle then
+  if not FColorsForm.ToolWindowStyle then
   begin
     FColorsForm.Hide;
     FColorsForm.ToolWindowStyle := False;
@@ -491,7 +486,6 @@ begin
 
   if Assigned(FOnColorButtonClick) then
     FOnColorButtonClick(Sender);
-
 end;
 
 function TJvCustomOfficeColorButton.GetCustomColors: TStrings;
@@ -508,9 +502,7 @@ procedure TJvCustomOfficeColorButton.DoOnColorChange(Sender: Tobject);
 begin
   FMainButton.Color := FColorsForm.ColorPanel.SelectedColor;
   if FColorsForm.ToolWindowStyle and (FColorsForm.FormStyle<>fsStayOnTop) then
-  begin
     FColorsForm.FormStyle := fsStayOnTop;
-  end;
   if Assigned(FOnColorChange) then
     FOnColorChange(Self);
 end;
@@ -694,9 +686,7 @@ begin
   end
   else
   if Cmp(PropName, 'DragCaption') then
-  begin
-    FColorsForm.Caption := Properties.DragCaption;
-  end
+    FColorsForm.Caption := Properties.DragCaption
   else
   if Cmp(PropName, 'DragBarHeight') then
   begin
@@ -705,9 +695,7 @@ begin
   end
   else
   if Cmp(PropName, 'DragBarHint') then
-  begin
-    FColorsForm.DragBarHint := Properties.DragBarHint;
-  end
+    FColorsForm.DragBarHint := Properties.DragBarHint
   else
   if Cmp(PropName, 'DragBarSpace') then
   begin
@@ -762,7 +750,7 @@ begin
   FArrowWidth := MinArrowWidth;
   FDragBarHeight := MinDragBarHeight;
   FDragBarSpace := MinDragBarSpace;
-  FDragBarHint := 'Drag to floating';
+  FDragBarHint := RsDragToFloating;
 end;
 
 procedure TJvOfficeColorButtonProperties.Assign(Source: TPersistent);
@@ -846,7 +834,8 @@ end;
 
 procedure TJvCustomOfficeColorButton.DoClick(Sender: TObject);
 begin
-  if Assigned(OnClick) then OnClick(Self);
+  if Assigned(OnClick) then
+    OnClick(Self);
 end;
 
 end.

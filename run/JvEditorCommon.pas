@@ -982,7 +982,7 @@ type
     property ListBoxStyle: TListBoxStyle read FListBoxStyle write FListBoxStyle;
   end;
 
-// === Highligther Editor ====================================================
+//=== Highligther Editor =====================================================
 
 const
   { Max_Line - maximum line numbers, scanned by editor for comments }
