@@ -4455,6 +4455,8 @@ begin
     ApplyNameFont;
     RowHeight := CanvasMaxTextHeight(Canvas);
     TmpRect := Rects[iprNameArea];
+    if Item.Level = 0 then
+      Inc(TmpRect.Left, 2);
     if RectHeight(TmpRect) div RowHeight < 2 then
       OffsetRect(TmpRect, 0, (RectHeight(TmpRect) - RowHeight) div 2)
     else
