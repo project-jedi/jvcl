@@ -9,7 +9,7 @@ package %NAME%;
 }
 
 {$R *.RES}
-{$ALIGN 8}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -33,7 +33,6 @@ package %NAME%;
 {$DESCRIPTION '%DESCRIPTION%'}
 {$%TYPE%ONLY}
 {$IMPLICITBUILD OFF}
-{$LIBSUFFIX '50'}
 
 requires
 <%%% START REQUIRES %%%>
