@@ -4,7 +4,10 @@ unit GenerateUtils;
 interface
 
 uses
-  Classes;
+  Classes, StrUtils;
+
+const
+  RemapFile = 'Remap.conf';
 
 type
   TGenerateCallback = procedure (const msg : string);
@@ -148,9 +151,10 @@ type
   private
     FOriginal: string;
     FReplacement: string;
+    FRemapList: TStrings;
   public
     constructor Create(Node : TJvSimpleXmlElem); overload;
-
+    destructor Destroy; override;
     function DoReplacement(const Filename: string): string;
 
     property Original  : string read FOriginal;
@@ -481,7 +485,7 @@ begin
       begin
         Result := False;
         ErrMsg := 'The root node of the xml file must contain '+
-                  'a node called ''models''.'; 
+                  'a node called ''models''.';
         Exit;
       end;
 
@@ -491,7 +495,7 @@ begin
         Result := False;
         Exit;
       end;
-      
+
       for i := 0 to xml.root.Items.itemNamed['models'].items.count - 1 do
         if xml.root.Items.itemNamed['models'].items[i].Properties.ItemNamed['Name'].value = ModelName then
           Node := xml.root.Items.itemNamed['models'].items[i];
@@ -1992,12 +1996,29 @@ begin
   inherited Create;
   FOriginal := Node.Properties.ItemNamed['original'].Value;
   FReplacement := Node.Properties.ItemNamed['replacement'].Value;
+  FRemapList := TStringList.Create;
+  FRemapList.Add('*.dfm=*.xfm'); 
+end;
+
+destructor TClxReplacement.Destroy;
+begin
+  FRemapList.SaveToFile(RemapFile);
+  FRemapList.Free;
+  inherited Destroy;
 end;
 
 function TClxReplacement.DoReplacement(const Filename: string): string;
+var
+  src, dest: String;
 begin
   Result := Filename;
   StrReplace(Result, Original, Replacement, [rfIgnoreCase]);
+  src := ExtractFileName(FileName);
+  src := LeftStr(src, Pos('.',src)-1);
+  dest := ExtractFileName(Result);
+  dest := LeftStr(dest, Pos('.',dest)-1);
+  if src <> dest then
+    FRemapList.Add(src + '=' + dest);
 end;
 
 { TClxReplacementList }
