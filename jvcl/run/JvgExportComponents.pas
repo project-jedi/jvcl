@@ -447,9 +447,8 @@ begin
     InsertStrings(Footer, SubHeaderFont, FOnGetSubHeaderLineFont);
 
     if ExtractFileExt(FSaveToFileName) = '' then
-      FSaveToFileName := DelFileExt(FSaveToFileName) + '.xls';
-    if FileExists(FSaveToFileName) then
-      DeleteFileEx(FSaveToFileName);
+      FSaveToFileName := ChangeFileExt(FSaveToFileName, '.xls');
+    DeleteFileEx(FSaveToFileName);
 
     if FSaveToFileName <> '' then
       XL.WorkBooks[XL.WorkBooks.Count].SaveAs(FSaveToFileName);

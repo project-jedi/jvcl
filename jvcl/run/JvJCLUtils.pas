@@ -646,7 +646,6 @@ function GetTempFileName(const Prefix: string);
 {$ENDIF LINUX}
 
 { begin JvFileUtil }
-function GetFileSize(const FileName: string): Int64;
 function FileDateTime(const FileName: string): TDateTime;
 {$IFDEF MSWINDOWS}
 function HasAttr(const FileName: string; Attr: Integer): Boolean;
@@ -5732,37 +5731,6 @@ function DirExists(Name: string): Boolean;
 begin
   Result := DirectoryExists(Name);
 end;
-
-function GetFileSize(const FileName: string): Int64;
-{$IFDEF MSWINDOWS}
-var
-  Handle: THandle;
-  FindData: TWin32FindData;
-begin
-  Handle := FindFirstFile(PChar(FileName), FindData);
-  if Handle <> INVALID_HANDLE_VALUE then
-  begin
-    Windows.FindClose(Handle);
-    if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) = 0 then
-    begin
-      Int64Rec(Result).Lo := FindData.nFileSizeLow;
-      Int64Rec(Result).Hi := FindData.nFileSizeHigh;
-      Exit;
-    end;
-  end;
-  Result := -1;
-end;
-{$ENDIF}
-{$IFDEF LINUX}
-var
-  st: TStatBuf;
-begin
-  if stat(PChar(FileName), st) = 0 then
-    Result := st.st_size
-  else
-    Result := -1;
-end;
-{$ENDIF}
 
 function FileDateTime(const FileName: string): TDateTime;
 var
