@@ -39,12 +39,24 @@ uses
   JclUnicode,
   JvComponent, JvID3v2Types, JvID3v1;
 
+const
+  { Only v2.2, v2.3 and v2.4 are supported }
+  CSupportedVersions = [ive2_2, ive2_3, ive2_4];
+
 type
   EJvID3Error = class(Exception);
 
   TJvID3ActivateChangeEvent = procedure(Sender: TObject; Activated: Boolean) of object;
 
   TJvID3HandleError = (heAutoCorrect, heRaise, heBoolean);
+
+  TJvMPEGLayer = (mlNotDefined, mlLayerIII, mlLayerII, mlLayerI);
+  TJvMPEGVersion = (mvVersion25, mvReserved, mvVersion2, mvVersion1);
+  TJvMPEGChannelMode = (mcStereo, mcJointStereo, mcDualChannel, mcSingleChannel);
+  TJvMPEGBit = (mbProtection, mbPrivate, mbCopyrighted, mbOriginal);
+  TJvMPEGBits = set of TJvMPEGBit;
+  TJvMPEGEmphasis = (meNone, me5015ms, meReserved, meCCITJ17);
+  TJvMPEGModeExtension = (meModeExt0, meModeExt1, meModeExt2, meModeExt3);
 
   TJvID3ControllerOption = (coAutoCorrect, coRemoveEmptyFrames);
   TJvID3ControllerOptions = set of TJvID3ControllerOption;
@@ -101,7 +113,7 @@ type
     procedure EndWriteFrame;
 
     { Inits FAllowedEncodings depending on the wanted version and encoding }
-    procedure InitAllowedEncodings(const AVersion: TJvID3ForceVersion;
+    procedure InitAllowedEncodings(const AVersion: TJvID3Version;
       const AEncoding: TJvID3ForceEncoding);
 
     { Checks whether ACount bytes can be read }
@@ -116,6 +128,8 @@ type
     function ReadEnc(var AEncoding: TJvID3Encoding): Longint;
     function ReadStringEnc(var S: TJvID3StringPair): Longint;
     function ReadUserString(var S1, S2: TJvID3StringPair): Longint;
+    { Only for v2.2 }
+    function ReadFixedNumber3(var AValue: Cardinal): Longint;
     { Only for v2.3 }
     function ReadFixedNumber(var AValue: Cardinal): Longint;
     { Only for v2.4 }
@@ -134,6 +148,8 @@ type
     function WriteStringEnc(const S: TJvID3StringPair): Longint;
     function WriteUserString(const S1, S2: TJvID3StringPair): Longint;
     function WriteTerminatorEnc: Longint;
+    { Only for v2.2 }
+    function WriteFixedNumber3(AValue: Cardinal): Longint;
     { Only for v2.3 }
     function WriteFixedNumber(AValue: Cardinal): Longint;
     { Only for v2.4 }
@@ -243,6 +259,7 @@ type
     FDataLengthIndicator: Cardinal;
 
     function GetFrameName: string;
+    function GetFrameIDStrForVersion(const Version: TJvID3Version): string;
     function GetIndex: Integer;
     function GetStream: TJvID3Stream;
     procedure SetController(const AController: TJvID3Controller);
@@ -398,6 +415,8 @@ type
   end;
 
   TJvID3SkipFrame = class(TJvID3BinaryFrame)
+  protected
+    procedure ChangeToVersion(const ANewVersion: TJvID3Version); override;
   end;
 
   { IPLS - fiInvolvedPeople - Involved people list
@@ -671,6 +690,7 @@ type
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; override;
     function GetIsEmpty: Boolean; override;
 
+    function SupportsVersion(const AVersion: TJvID3Version): Boolean; override;
     function SameUniqueIDAs(const Frame: TJvID3Frame): Boolean; override;
   public
     class function CanAddFrame(Controller: TJvID3Controller; FrameID: TJvID3FrameID): Boolean; override;
@@ -708,6 +728,7 @@ type
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; override;
     function GetIsEmpty: Boolean; override;
 
+    function SupportsVersion(const AVersion: TJvID3Version): Boolean; override;
     function SameUniqueIDAs(const Frame: TJvID3Frame): Boolean; override;
   public
     class function CanAddFrame(Controller: TJvID3Controller; FrameID: TJvID3FrameID): Boolean; override;
@@ -965,6 +986,51 @@ type
     property URL: string read FURL write SetURL;
   end;
 
+  TJvID3FileInfo = class(TPersistent)
+  private
+    FAudioSize: Int64;
+    FBitrate: Integer;
+    FBits: TJvMPEGBits;
+    FChannelMode: TJvMPEGChannelMode;
+    FEmphasis: TJvMPEGEmphasis;
+    FFileSize: Int64;
+    FFrameCount: Integer;
+    FFrameLengthInBytes: Integer;
+    FHasID3v1Tag: Boolean;
+    FHeaderFoundAt: Int64;
+    FIsVBR: Boolean;
+    FLayer: TJvMPEGLayer;
+    FLengthInSec: Integer;
+    FModeExtension: TJvMPEGModeExtension;
+    FPaddingLength: Integer;
+    FSamplingRateFrequency: Integer;
+    FVersion: TJvMPEGVersion;
+    function GetIsValid: Boolean;
+  protected
+    procedure Calc;
+    procedure ParseMPEGTag(AMPEGTag: PChar);
+    procedure ParseVbrTag(AMPEGTag: PChar);
+    procedure Reset;
+  public
+    procedure Read(AStream: TStream; const Offset: Int64);
+
+    property Bitrate: Integer read FBitrate;
+    property Bits: TJvMPEGBits read FBits;
+    property ChannelMode: TJvMPEGChannelMode read FChannelMode;
+    property Emphasis: TJvMPEGEmphasis read FEmphasis;
+    property FileSize: Int64 read FFileSize;
+    property FrameCount: Integer read FFrameCount;
+    property FrameLengthInBytes: Integer read FFrameLengthInBytes;
+    property HeaderFoundAt: Int64 read FHeaderFoundAt;
+    property IsValid: Boolean read GetIsValid;
+    property IsVbr: Boolean read FIsVbr;
+    property Layer: TJvMPEGLayer read FLayer;
+    property LengthInSec: Integer read FLengthInSec;
+    property ModeExtension: TJvMPEGModeExtension read FModeExtension;
+    property SamplingRateFrequency: Integer read FSamplingRateFrequency;
+    property Version: TJvMPEGVersion read FVersion;
+  end;
+
   TJvID3ControllerDesigner = class(TObject)
   private
     FController: TJvID3Controller;
@@ -989,6 +1055,7 @@ type
     FClients: TList;
     FActivateEvents: TList;
 
+    FFileInfo: TJvID3FileInfo;
     FHeader: TJvID3Header;
     FExtendedHeader: TJvID3ExtendedHeader;
     FActive: Boolean;
@@ -1053,6 +1120,7 @@ type
 
     property Header: TJvID3Header read FHeader write SetHeader stored False;
     property ExtendedHeader: TJvID3ExtendedHeader read FExtendedHeader write SetExtendedHeader stored False;
+    property FileInfo: TJvID3FileInfo read FFileInfo;
     property ReadEncodingAs: TJvID3ForceEncoding read FReadEncodingAs write SetReadEncodingAs default ifeDontCare;
     property WriteEncodingAs: TJvID3ForceEncoding read FWriteEncodingAs write SetWriteEncodingAs default ifeDontCare;
     property ReadVersionAs: TJvID3ForceVersion read FReadVersionAs write SetReadVersionAs default ifvDontCare;
@@ -1088,7 +1156,7 @@ type
 
     function CopyToID3v1(const DoOverwrite: Boolean = True): Boolean;
     procedure CopyToID3v1Ctrl(AID3v1: TJvId3v1; const DoOverwrite: Boolean = True);
-    function CopyFromID3v1(const DoOverwrite: Boolean = True): Boolean; overload;
+    function CopyFromID3v1(const DoOverwrite: Boolean = True): Boolean;
     procedure CopyFromID3v1Ctrl(AID3v1: TJvId3v1; const DoOverwrite: Boolean = True);
 
     procedure EnsureExists(const FrameIDs: TJvID3FrameIDs);
@@ -1125,7 +1193,7 @@ uses
   Forms,
   {$ENDIF}
   JclFileUtils, JclLogic, JclDateTime,
-  JvConsts, JvJVCLUtils;
+  JvConsts;
 
 var
   DefaultFrameClasses: array [TJvID3FrameID] of TJvID3FrameClass = (
@@ -1136,22 +1204,22 @@ var
     TJvID3PictureFrame, { fiPicture }
     nil, { fiAudioSeekPoint (new in 2.4) }
     TJvID3ContentFrame, { fiComment }
-    nil, { fiCommercial }
-    nil, { fiCryptoReg }
+    nil, { fiCommercial (new in 2.3) }
+    nil, { fiCryptoReg (new in 2.3) }
     nil, { fiEqualization2 (new in 2.4) }
     nil, { fiEqualization (deprecated as of 2.4) }
     nil, { fiEventTiming }
     TJvID3GeneralObjFrame, { fiGeneralObject }
-    nil, { fiGroupingReg }
+    nil, { fiGroupingReg (new in 2.3) }
     TJvID3DoubleListFrame, { fiInvolvedPeople (deprecated as of 2.4) }
     nil, { fiLinkedInfo }
     TJvID3BinaryFrame, { fiCDID }
     nil, { fiMPEGLookup }
-    TJvID3OwnershipFrame, { fiOwnership }
-    nil, { fiPrivate }
+    TJvID3OwnershipFrame, { fiOwnership (new in 2.3) }
+    nil, { fiPrivate (new in 2.3) }
     TJvID3PlayCounterFrame, { fiPlayCounter }
     TJvID3PopularimeterFrame, { fiPopularimeter }
-    nil, { fiPositionsync }
+    nil, { fiPositionsync (new in 2.3) }
     nil, { fiBufferSize }
     nil, { fiVolumeAdj2 (new in 2.4) }
     nil, { fiVolumeAdj (deprecated as of 2.4) }
@@ -1191,7 +1259,7 @@ var
     TJvID3SimpleListFrame, { fiOrigLyricist }
     TJvID3SimpleListFrame, { fiOrigArtist }
     TJvID3NumberFrame, { fiOrigYear (deprecated as of 2.4) }
-    TJvID3TextFrame, { fiFileOwner }
+    TJvID3TextFrame, { fiFileOwner (new in 2.3) }
     TJvID3SimpleListFrame, { fiLeadArtist }
     TJvID3TextFrame, { fiBand }
     TJvID3TextFrame, { fiConductor }
@@ -1208,12 +1276,12 @@ var
     TJvID3TextFrame, { fiPerformerSortOrder (new in 2.4) }
     TJvID3TextFrame, { fiTitleSortOrder (new in 2.4) }
     TJvID3TextFrame, { fiISRC }
-    TJvID3TextFrame, { fiEncoderSettings }
+    TJvID3TextFrame, { fiEncoderSettings (new in 2.3) }
     TJvID3TextFrame, { fiSetSubTitle (new in 2.4) }
     TJvID3UserFrame, { fiUserText }
     TJvID3NumberFrame, { fiYear (deprecated as of 2.4) }
     nil, { fiUniqueFileID }
-    TJvID3TermsOfUseFrame, { fiTermsOfUse }
+    TJvID3TermsOfUseFrame, { fiTermsOfUse (new in 2.3) }
     TJvID3ContentFrame, { fiUnsyncedLyrics }
     TJvID3URLFrame, { fiWWWCommercialInfo }
     TJvID3URLFrame, { fiWWWCopyright }
@@ -1224,8 +1292,8 @@ var
     TJvID3URLFrame, { fiWWWPayment }
     TJvID3URLFrame, { fiWWWPublisher }
     TJvID3URLUserFrame, { fiWWWUser }
-    nil, { fiMetaCrypto (2.2) }
-    nil { fiMetaCompressio (2.2) }
+    nil, { fiMetaCrypto (only in 2.2) }
+    nil { fiMetaCompressio (only in 2.2) }
     );
 
 procedure ID3Error(const Msg: string; Component: TComponent = nil);
@@ -1251,13 +1319,14 @@ function GetStringA(const SP: TJvID3StringPair; const Encoding: TJvID3Encoding):
 begin
   { Returns a ansi string from the string holder SP, Encoding specifies
     whether the result string should be from the unicode or ansi part of SP }
+
   case Encoding of
     ienISO_8859_1:
       Result := SP.SA;
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       Result := WideStringToStringEx(SP.SW, CP_ACP);
   else
-    raise Exception.Create(SID3UnknownEncoding);
+    ID3Error(SID3UnknownEncoding);
   end;
 end;
 
@@ -1272,7 +1341,7 @@ begin
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       Result := SP.SW;
   else
-    raise Exception.Create(SID3UnknownEncoding);
+    ID3Error(SID3UnknownEncoding);
   end;
 end;
 
@@ -1300,13 +1369,13 @@ begin
     else
       SW2 := S2.SW;
 
-    Result := jclUnicode.StrICompW(PWideChar(SW1), PWideChar(SW2)) = 0;
+    Result := JclUnicode.StrICompW(PWideChar(SW1), PWideChar(SW2)) = 0;
   end;
 end;
 
 procedure SetStringA(var SP: TJvID3StringPair; const Encoding: TJvID3Encoding; const S: string);
 begin
-  { Inserts the ansi string S into the string holder SP, Encoding specifies
+  { Stores the ansi string S in the string holder SP, Encoding specifies
     whether S should be stored in SP as unicode or ansi }
 
   case Encoding of
@@ -1315,7 +1384,7 @@ begin
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       SP.SW := StringToWideStringEx(S, CP_ACP);
   else
-    raise Exception.Create(SID3UnknownEncoding);
+    ID3Error(SID3UnknownEncoding);
   end;
 end;
 
@@ -1329,7 +1398,8 @@ begin
     ienUTF_16, ienUTF_16BE, ienUTF_8:
       Result := Length(SP.SW);
   else
-    raise Exception.Create(SID3UnknownEncoding);
+    Result := 0;
+    ID3Error(SID3UnknownEncoding);
   end;
 end;
 
@@ -1347,22 +1417,29 @@ begin
     ienUTF_8:
       Result := LengthUTF8Str(GetStringW(SP, Encoding));
   else
-    raise Exception.Create(SID3UnknownEncoding);
+    Result := 0;
+    ID3Error(SID3UnknownEncoding);
   end;
 end;
 
 function LengthEnc(const S: TJvID3StringPair; const FromEnc, ToEnc: TJvID3Encoding): Cardinal;
 begin
   { Calculates the length in bytes needed to store a string in a stream encoded as
-    ToEnc; the string is encoded as FromEnc in the string pair S }
+    ToEnc; the string is encoded as FromEnc in the string pair S;
+    Very similar to GetByteCount }
 
   case ToEnc of
-    ienISO_8859_1: Result := GetCharCount(S, FromEnc);
-    ienUTF_16: Result := 2 + 2 * GetCharCount(S, FromEnc);
-    ienUTF_16BE: Result := 2 * GetCharCount(S, FromEnc);
-    ienUTF_8: Result := LengthUTF8Str(GetStringW(S, FromEnc));
+    ienISO_8859_1:
+      Result := GetCharCount(S, FromEnc);
+    ienUTF_16:
+      Result := 2 + 2 * GetCharCount(S, FromEnc);
+    ienUTF_16BE:
+      Result := 2 * GetCharCount(S, FromEnc);
+    ienUTF_8:
+      Result := LengthUTF8Str(GetStringW(S, FromEnc));
   else
-    raise Exception.Create(SID3UnknownEncoding);
+    Result := 0;
+    ID3Error(SID3UnknownEncoding);
   end;
 end;
 
@@ -1377,7 +1454,8 @@ begin
     ienUTF_16, ienUTF_16BE:
       Result := 2;
   else
-    raise Exception.Create(SID3UnknownEncoding);
+    Result := 0;
+    ID3Error(SID3UnknownEncoding);
   end;
 end;
 
@@ -1419,7 +1497,7 @@ begin
           for I := 0 to SourceA.Count - 1 do
             DestW.Add(StringToWideStringEx(SourceA[I], CP_ACP));
       else
-        raise Exception.Create(SID3UnknownEncoding);
+        ID3Error(SID3UnknownEncoding);
       end;
 
     ienUTF_16, ienUTF_16BE, ienUTF_8:
@@ -1432,11 +1510,11 @@ begin
           for I := 0 to SourceW.Count - 1 do
             DestW.Add(SourceW[I]);
       else
-        raise Exception.Create(SID3UnknownEncoding);
+        ID3Error(SID3UnknownEncoding);
       end;
 
   else
-    raise Exception.Create(SID3UnknownEncoding);
+    ID3Error(SID3UnknownEncoding);
   end;
 end;
 
@@ -1448,7 +1526,8 @@ begin
     ienISO_8859_1: Result := SP.SA = '';
     ienUTF_16, ienUTF_16BE, ienUTF_8: Result := SP.SW = '';
   else
-    raise Exception.Create(SID3UnknownEncoding);
+    Result := False;
+    ID3Error(SID3UnknownEncoding);
   end;
 end;
 
@@ -2150,6 +2229,87 @@ begin
     RaiseLastOSError;
 end;
 
+function SearchSync(AStream: TStream;
+  const BeginOffset: Integer; var Buffer; const BufferSize: Integer): Int64;
+const
+  CBufferSize = $0F00;
+var
+  LBuffer: PChar;
+  I: Integer;
+  LastWasFF: Boolean;
+  BytesRead: Longint;
+begin
+  { Seek sync point 11111111 111 }
+  LastWasFF := False;
+  Result := AStream.Seek(BeginOffset, soFromBeginning);
+
+  GetMem(LBuffer, CBufferSize);
+  try
+    while True do
+    begin
+      BytesRead := AStream.Read(LBuffer^, CBufferSize);
+      if BytesRead = 0 then
+      begin
+        Result := -1;
+        Exit;
+      end;
+
+      for I := 0 to BytesRead - 1 do
+      begin
+        if LastWasFF and (Byte(LBuffer[I]) and $E0 = $E0) then
+        begin
+          Inc(Result, I - 1);
+          if (I + BufferSize - 1 >= BytesRead) or (I = 0) then
+          begin
+            AStream.Seek(Result, soFromBeginning);
+            if not AStream.Read(Buffer, BufferSize) = BufferSize then
+              Result := -1;
+          end
+          else
+            Move((LBuffer + I - 1)^, Buffer, BufferSize);
+
+          Exit;
+        end;
+
+        LastWasFF := LBuffer[I] = #$FF;
+      end;
+      Inc(Result, BytesRead);
+    end;
+  finally
+    FreeMem(LBuffer);
+  end;
+end;
+
+function GetFrameIDLength(const Version: TJvID3Version): Byte;
+begin
+  case Version of
+    ive2_2:
+      Result := 3;
+    ive2_3, ive2_4:
+      Result := 4;
+  else
+    Result := 0;
+    ID3Error(SID3UnknownVersion);
+  end;
+end;
+
+function MajorVersionToVersion(const MajorVersion: Byte): TJvID3Version;
+begin
+  if MajorVersion < 2 then
+    Result := iveLowerThan2_2
+  else
+    if MajorVersion = 2 then
+    Result := ive2_2
+  else
+    if MajorVersion = 3 then
+    Result := ive2_3
+  else
+    if MajorVersion = 4 then
+    Result := ive2_4
+  else
+    Result := iveHigherThan2_4
+end;
+
 procedure GetID3v2Version(const AFileName: string; var HasTag: Boolean;
   var Version: TJvID3Version);
 var
@@ -2162,16 +2322,7 @@ begin
     if not HasTag then
       Exit;
 
-    if Header.MajorVersion < 3 then
-      Version := ive2_2AndLower
-    else
-    if Header.MajorVersion = 3 then
-      Version := ive2_3
-    else
-    if Header.MajorVersion = 4 then
-      Version := ive2_4
-    else
-      Version := ive2_5AndHigher
+    Version := MajorVersionToVersion(Header.MajorVersion);
   finally
     Free;
   end;
@@ -2179,11 +2330,9 @@ end;
 
 function ExtToMIMEType(const Ext: string): string;
 begin
-  if SameText(Ext, '.jpg') or SameText(Ext, '.jpeg') then
+  { Not a very reliable method }
+  if SameText(Ext, '.jpeg') then
     Result := 'image/jpeg'
-  else
-  if SameText(Ext, '.png') then
-    Result := 'image/png'
   else
   if SameText(Ext, '.tiff') then
     Result := 'image/tif'
@@ -2194,6 +2343,7 @@ begin
   if Ext = '' then
     Result := 'image/'
   else
+    { .png, .gif, .jpg etc. }
     Result := 'image/' + Copy(Ext, 2, MaxInt);
 end;
 
@@ -2336,33 +2486,46 @@ begin
         else
           State := -1;
         end;
-      3, 5:
-        if ((State = 3) and (AGenre[I] = 'X')) or
-          ((State = 5) and (AGenre[I] = 'R')) then
-          Inc(State)
+      3:
+        if AGenre[I] = 'X' then
+          State := 4
         else
           State := -1;
-      4, 6:
+      4:
         if AGenre[I] = ')' then
-        begin
-          if State = 4 then
-            AddString('Remix')
-          else
-            AddString('Cover')
-        end
+          AddString('Remix')
+        else
+          State := -1;
+      5:
+        if AGenre[I] = 'R' then
+          State := 6
+        else
+          State := -1;
+      6:
+        if AGenre[I] = ')' then
+          AddString('Cover')
         else
           State := -1;
     end;
     Inc(I);
   end;
 
-  if Start < Length(AGenre) then
+  if Start <= Length(AGenre) then
     AddString(Copy(AGenre, Start, MaxInt));
 end;
 
 function NiceGenreToGenre(const ANiceGenre: string): string;
 var
   S: string;
+
+  function IsPrefix(const APrefix: string): Boolean;
+  var
+    C: Integer;
+  begin
+    C := Length(APrefix);
+    Result := ((C = Length(S)) or ((C < Length(S)) and (S[C + 1] = ' ')))
+      and (AnsiStrLIComp(PChar(S), PChar(APrefix), C) = 0);
+  end;
 
   procedure AddAndDelete(const Add: string; const DelCount: Integer);
   begin
@@ -2383,11 +2546,11 @@ begin
     if GenreID <> 255 then
       AddAndDelete(Format('(%d)', [GenreID]), Length(ID3_IDToGenre(GenreID)))
     else
-    { Specials }
-    if AnsiStrLIComp(PChar(S), 'remix', 5) = 0 then
+      { Specials }
+      if IsPrefix('remix') then
       AddAndDelete('(RX)', 5)
     else
-    if AnsiStrLIComp(PChar(S), 'cover', 5) = 0 then
+      if IsPrefix('cover') then
       AddAndDelete('(CR)', 5)
     else
       Break;
@@ -2632,21 +2795,25 @@ begin
 end;
 
 procedure TJvID3Stream.InitAllowedEncodings(
-  const AVersion: TJvID3ForceVersion;
+  const AVersion: TJvID3Version;
   const AEncoding: TJvID3ForceEncoding);
 begin
   if AEncoding = ifeDontCare then
     case AVersion of
-      ifv2_3:
+      ive2_2, ive2_3:
         FAllowedEncodings := [ienISO_8859_1, ienUTF_16];
-      ifv2_4, ifvDontCare:
+      ive2_4:
         FAllowedEncodings := [ienISO_8859_1, ienUTF_16, ienUTF_16BE, ienUTF_8];
     else
       ID3Error(SID3UnknownVersion);
     end
   else
+  begin
     { Convert force encoding type to encoding type }
     FAllowedEncodings := [CForceEncodingToEncoding[AEncoding]];
+    if (AVersion in [ive2_2, ive2_3]) and (FAllowedEncodings * [ienUTF_16BE, ienUTF_8] <> []) then
+      FAllowedEncodings := [ienUTF_16];
+  end;
 
   UpdateDestEncoding;
 end;
@@ -2730,6 +2897,16 @@ begin
   AValue := ReverseBytes(AValue);
 end;
 
+function TJvID3Stream.ReadFixedNumber3(var AValue: Cardinal): Longint;
+type
+  TBytes = array [0..3] of Byte;
+begin
+  AValue := 0;
+  Result := Read(TBytes(AValue)[1], 3);
+  { Swap byte order from big endian to little endian }
+  AValue := ReverseBytes(AValue);
+end;
+
 procedure TJvID3Stream.ReadFromStream(AStream: TStream;
   const ASize: Integer);
 begin
@@ -2800,7 +2977,6 @@ end;
 
 function TJvID3Stream.ReadStringEnc(var S: TJvID3StringPair): Longint;
 begin
-  Result := 0;
   case SourceEncoding of
     ienISO_8859_1:
       Result := ReadStringA(S.SA);
@@ -2809,6 +2985,7 @@ begin
     ienUTF_8:
       Result := ReadStringUTF8(S.SW);
   else
+    Result := 0;
     ID3Error(SID3UnknownEncoding);
   end;
 
@@ -2916,7 +3093,6 @@ end;
 
 function TJvID3Stream.ReadUserString(var S1, S2: TJvID3StringPair): Longint;
 begin
-  Result := 0;
   case SourceEncoding of
     ienISO_8859_1:
       Result := ReadUserStringA(S1.SA, S2.SA);
@@ -2925,6 +3101,7 @@ begin
     ienUTF_8:
       Result := ReadUserStringUTF8(S1.SW, S2.SW);
   else
+    Result := 0;
     ID3Error(SID3UnknownEncoding);
   end;
 
@@ -2990,6 +3167,8 @@ begin
     written to the stream
     (when writing, symetrically for reading )
   }
+  Assert(FAllowedEncodings <> [], 'FAllowedEncodings is empty');
+
   FDestEncoding := FSourceEncoding;
   if not (FDestEncoding in FAllowedEncodings) then
   begin
@@ -3025,6 +3204,17 @@ begin
   { Swap byte order from little endian to big endian }
   AValue := ReverseBytes(AValue);
   Result := Write(AValue, 4);
+end;
+
+function TJvID3Stream.WriteFixedNumber3(AValue: Cardinal): Longint;
+type
+  TBytes = array [0..3] of Byte;
+begin
+  Assert(AValue <= $00FFFFFF, 'Can''t write value in v2.2; too big');
+
+  { Swap byte order from little endian to big endian }
+  AValue := ReverseBytes(AValue);
+  Result := Write(TBytes(AValue)[1], 3);
 end;
 
 function TJvID3Stream.WriteLanguage(const Language: string): Longint;
@@ -3071,7 +3261,6 @@ end;
 
 function TJvID3Stream.WriteStringEnc(const S: TJvID3StringPair): Longint;
 begin
-  Result := 0;
   case DestEncoding of
     ienISO_8859_1:
       Result := WriteStringA(GetStringA(S, SourceEncoding));
@@ -3080,6 +3269,7 @@ begin
     ienUTF_8:
       Result := WriteStringUTF8(GetStringW(S, SourceEncoding));
   else
+    Result := 0;
     ID3Error(SID3UnknownEncoding);
   end;
 end;
@@ -3153,14 +3343,13 @@ end;
 
 function TJvID3Stream.WriteTerminatorEnc: Longint;
 begin
-  Result := 0;
-
   case DestEncoding of
     ienISO_8859_1, ienUTF_8:
       Result := WriteTerminatorA;
     ienUTF_16, ienUTF_16BE:
       Result := WriteTerminatorW;
   else
+    Result := 0;
     ID3Error(SID3UnknownEncoding);
   end;
 end;
@@ -3175,7 +3364,6 @@ end;
 
 function TJvID3Stream.WriteUserString(const S1, S2: TJvID3StringPair): Longint;
 begin
-  Result := 0;
   case DestEncoding of
     ienISO_8859_1:
       Result := WriteUserStringA(
@@ -3187,6 +3375,7 @@ begin
       Result := WriteUserStringUTF8(
         GetStringW(S1, SourceEncoding), GetStringW(S2, SourceEncoding));
   else
+    Result := 0;
     ID3Error(SID3UnknownEncoding);
   end;
 end;
@@ -3602,6 +3791,7 @@ begin
   FFrames := TJvID3Frames.Create(Self);
   FHeader := TJvID3Header.Create(Self);
   FExtendedHeader := TJvID3ExtendedHeader.Create(Self);
+  FFileInfo := TJvID3FileInfo.Create;
 
   FActivateEvents := TList.Create;
   FClients := TList.Create;
@@ -3630,6 +3820,7 @@ begin
   FreeAndNil(FFrames);
   FHeader.Free;
   FExtendedHeader.Free;
+  FFileInfo.Free;
   FStream.Free;
 end;
 
@@ -3637,6 +3828,7 @@ procedure TJvID3Controller.DoClose;
 begin
   { Note: this will set Modified to True.. }
   Frames.Clear;
+  FFileInfo.Reset;
   FActive := False;
 
   { ..thus we set it now back to false }
@@ -3801,23 +3993,24 @@ begin
     it will be translated to a v2.4 tag, and ReadVersion will return ive2_4 in
     this case }
 
-  Result := ive2_3;
-
   case ReadVersionAs of
     ifvDontCare:
       begin
         Result := Version;
-        if Result < ive2_3 then
-          Result := ive2_3
+        if Result < ive2_2 then
+          Result := ive2_2
         else
-        if Result > ive2_4 then
+          if Result > ive2_4 then
           Result := ive2_4;
       end;
+    ifv2_2:
+      Result := ive2_2;
     ifv2_3:
       Result := ive2_3;
     ifv2_4:
       Result := ive2_4;
   else
+    Result := ive2_3;
     ID3Error(SID3UnknownVersion, Self);
   end;
 end;
@@ -3840,16 +4033,7 @@ end;
 
 function TJvID3Controller.GetVersion: TJvID3Version;
 begin
-  if FHeader.MajorVersion < 2 then
-    Result := ive2_2AndLower
-  else
-  if FHeader.MajorVersion = 3 then
-    Result := ive2_3
-  else
-  if FHeader.MajorVersion = 4 then
-    Result := ive2_4
-  else
-    Result := ive2_5AndHigher
+  Result := MajorVersionToVersion(FHeader.MajorVersion);
 end;
 
 function TJvID3Controller.GetWriteVersion: TJvID3Version;
@@ -3859,23 +4043,22 @@ begin
     be translated to a v2.4 tag, and WriteVersion will return ive2_4 in this
     case }
 
-  Result := ive2_3;
-
   case WriteVersionAs of
     ifvDontCare:
       begin
         Result := Version;
-        if Result < ive2_3 then
-          Result := ive2_3
-        else
-        if Result > ive2_4 then
+        { Default to v2.4; latest version }
+        if (Result < ive2_2) or (Result > ive2_4) then
           Result := ive2_4;
       end;
+    ifv2_2:
+      Result := ive2_2;
     ifv2_3:
       Result := ive2_3;
     ifv2_4:
       Result := ive2_4;
   else
+    Result := ive2_3;
     ID3Error(SID3UnknownVersion, Self);
   end;
 end;
@@ -3933,31 +4116,37 @@ begin
     { Parse the header }
     FHeader.Read;
 
-    { Only v2.3 and v2.4 are supported }
-    if not FHeader.HasTag or not (Version in [ive2_3, ive2_4]) then
-      Exit;
+    if FHeader.HasTag and (Version in CSupportedVersions) then
+    begin
 
-    FStream.InitAllowedEncodings(ReadVersionAs, ReadEncodingAs);
+      { Init encoding after the version is read }
+      FStream.InitAllowedEncodings(ReadVersion, ReadEncodingAs);
 
-    { Note that we will overwrite the header in FStream (first 10 bytes in FStream) }
-    FStream.Position := 0;
+      { Note that we will overwrite the header in FStream (first 10 bytes in FStream) }
+      FStream.Position := 0;
 
-    if hfUnsynchronisation in FHeader.Flags then
-      { Unsynchronisation scheme is applied to the tag, we have to remove it,
-        ie replace $FF $00 with $FF }
-      RemoveUnsynchronisationScheme(AStream, FStream, FHeader.Size)
+      if hfUnsynchronisation in FHeader.Flags then
+        { Unsynchronisation scheme is applied to the tag, we have to remove it,
+          ie replace $FF $00 with $FF }
+        RemoveUnsynchronisationScheme(AStream, FStream, FHeader.Size)
+      else
+        { If not, we just copy the stream to the memory stream }
+        FStream.ReadFromStream(AStream, FHeader.Size);
+
+      FStream.Position := 0;
+
+      if hfExtendedHeader in FHeader.Flags then
+        { Read extended header, note that it's read after the unsynchronisation
+          scheme is removed }
+        FExtendedHeader.Read;
+
+      FFrames.Read;
+    end;
+
+    if Header.HasTag then
+      FFileInfo.Read(AStream, 10 + Header.Size)
     else
-      { If not, we just copy the stream to the memory stream }
-      FStream.ReadFromStream(AStream, FHeader.Size);
-
-    FStream.Position := 0;
-
-    if hfExtendedHeader in FHeader.Flags then
-      { Read extended header, note that it's read after the unsynchronisation
-        scheme is removed }
-      FExtendedHeader.Read;
-
-    FFrames.Read;
+      FFileInfo.Read(AStream, 0);
   finally
     EndReading;
   end;
@@ -4039,7 +4228,7 @@ var
 begin
   BeginWriting;
   try
-    FStream.InitAllowedEncodings(WriteVersionAs, WriteEncodingAs);
+    FStream.InitAllowedEncodings(WriteVersion, WriteEncodingAs);
 
     { Maybe only write header to the filestream? }
     Header.Write;
@@ -4191,7 +4380,7 @@ end;
 procedure TJvID3Controller.SetReadEncodingAs(
   const Value: TJvID3ForceEncoding);
 begin
-  if (FReadVersionAs = ifv2_3) and (Value in [ifeUTF_16BE, ifeUTF_8]) then
+  if (FReadVersionAs in [ifv2_2, ifv2_3]) and (Value in [ifeUTF_16BE, ifeUTF_8]) then
     ID3Error(SID3EncodingNotSupported, Self);
 
   FReadEncodingAs := Value;
@@ -4201,16 +4390,16 @@ procedure TJvID3Controller.SetReadVersionAs(
   const Value: TJvID3ForceVersion);
 begin
   FReadVersionAs := Value;
-  if (FReadVersionAs = ifv2_3) and (FReadEncodingAs in [ifeUTF_16BE, ifeUTF_8]) then
+  if (FReadVersionAs in [ifv2_2, ifv2_3]) and (FReadEncodingAs in [ifeUTF_16BE, ifeUTF_8]) then
     FReadEncodingAs := ifeUTF_16;
 end;
 
 procedure TJvID3Controller.SetVersion(NewVersion: TJvID3Version);
 begin
-  if NewVersion = ive2_2AndLower then
-    NewVersion := ive2_3
+  if NewVersion = iveLowerThan2_2 then
+    NewVersion := ive2_2
   else
-  if NewVersion = ive2_5AndHigher then
+    if NewVersion = iveHigherThan2_4 then
     NewVersion := ive2_4;
 
   if NewVersion = GetVersion then
@@ -4222,7 +4411,7 @@ end;
 procedure TJvID3Controller.SetWriteEncodingAs(
   const Value: TJvID3ForceEncoding);
 begin
-  if (FWriteVersionAs = ifv2_3) and (Value in [ifeUTF_16BE, ifeUTF_8]) then
+  if (FWriteVersionAs in [ifv2_2, ifv2_3]) and (Value in [ifeUTF_16BE, ifeUTF_8]) then
     ID3Error(SID3EncodingNotSupported, Self);
 
   FWriteEncodingAs := Value;
@@ -4232,7 +4421,7 @@ procedure TJvID3Controller.SetWriteVersionAs(
   const Value: TJvID3ForceVersion);
 begin
   FWriteVersionAs := Value;
-  if (FWriteVersionAs = ifv2_3) and (FWriteEncodingAs in [ifeUTF_16BE, ifeUTF_8]) then
+  if (FWriteVersionAs in [ifv2_2, ifv2_3]) and (FWriteEncodingAs in [ifeUTF_16BE, ifeUTF_8]) then
     FWriteEncodingAs := ifeUTF_16;
 end;
 
@@ -4377,12 +4566,25 @@ begin
   Error(Format(Msg, Args));
 end;
 
-function TJvID3Frame.GetFrameName: string;
+function TJvID3Frame.GetFrameIDStrForVersion(
+  const Version: TJvID3Version): string;
 begin
   if FFrameIDStr = '' then
-    Result := ID3_FrameIDToString(FrameID)
+    case Version of
+      ive2_2:
+        Result := ID3_FrameIDToString(FrameID, 3);
+      ive2_3, ive2_4:
+        Result := ID3_FrameIDToString(FrameID, 4);
+    else
+      Error(SID3UnknownVersion);
+    end
   else
     Result := FFrameIDStr;
+end;
+
+function TJvID3Frame.GetFrameName: string;
+begin
+  Result := GetFrameIDStrForVersion(ive2_3);
 end;
 
 function TJvID3Frame.GetIndex: Integer;
@@ -4477,6 +4679,17 @@ var
   Flag0, Flag1: Byte;
 begin
   case Controller.Version of
+    ive2_2:
+      with Stream do
+      begin
+        { Frame ID         $xx xx xx    (three characters)  // read in TJvID3Frames.Read
+          Size             $xx xx xx
+        }
+
+        ReadFixedNumber3(FFrameSize);
+
+        FFlags := [];
+      end;
     ive2_3:
       with Stream do
       begin
@@ -4656,7 +4869,7 @@ end;
 function TJvID3Frame.SupportsVersion(
   const AVersion: TJvID3Version): Boolean;
 begin
-  Result := True;
+  Result := AVersion in CSupportedVersions;
 end;
 
 procedure TJvID3Frame.UpdateFrameSize;
@@ -4733,7 +4946,22 @@ procedure TJvID3Frame.WriteFrameHeader(const AFrameSize: Cardinal);
 var
   Flag0, Flag1: Byte;
 begin
+  { Note: A v2.3 or v2.3 frame size is written as 4 bytes, thus always fits
+          exactly in a Cardinal. A v2.2 frame size is written as 3 bytes }
   case Controller.WriteVersion of
+    ive2_2:
+      if AFrameSize > $00FFFFFF then // = 16 MB
+        { TODO : Resource string }
+        ID3Error('Frame size is too big', Self)
+      else
+        with Stream do
+        begin
+          { Frame ID         $xx xx xx  (three characters)   // Written in TJvID3Frame.Write
+            Size             $xx xx xx
+          }
+
+          WriteFixedNumber3(AFrameSize);
+        end;
     ive2_3:
       with Stream do
       begin
@@ -4842,17 +5070,20 @@ end;
 
 procedure TJvID3Frame.WriteID;
 var
-  ID: array [0..3] of Char;
   LFrameIDStr: string;
+  FrameIDLength: Byte;
 begin
-  LFrameIDStr := FrameName;
-  if Length(LFrameIDStr) <> 4 then
-    FillChar(ID[0], 4, #0)
-  else
-    Move(PChar(LFrameIDStr)^, ID[0], 4);
+  LFrameIDStr := GetFrameIDStrForVersion(Controller.WriteVersion);
+  FrameIDLength := GetFrameIDLength(Controller.WriteVersion);
+
+  if Length(LFrameIDStr) <> FrameIDLength then
+  begin
+    SetLength(LFrameIDStr, FrameIDLength);
+    FillChar(LFrameIDStr, FrameIDLength, #0);
+  end;
 
   with Stream do
-    Write(ID[0], 4);
+    Write(PChar(LFrameIDStr)^, FrameIDLength);
 end;
 
 //=== TJvID3Frames ===========================================================
@@ -4911,7 +5142,7 @@ procedure TJvID3Frames.ChangeToVersion(const ANewVersion: TJvID3Version);
 var
   I: Integer;
 begin
-  if not (ANewVersion in [ive2_3, ive2_4]) then
+  if not (ANewVersion in CSupportedVersions) then
     ID3Error(SID3VersionNotSupported, Controller);
 
   for I := Count - 1 downto 0 do
@@ -5069,15 +5300,27 @@ begin
 end;
 
 procedure TJvID3Frames.Read;
+const
+  { v2.2        : Frame header is 6 bytes
+    v2.3 and up : Frame header is minimal 10 bytes }
+  CMinimalHeaderSize: array [Boolean] of Byte = (6, 10);
 var
   Frame: TJvID3Frame;
-  FrameIDStr: array [0..3] of Char;
+  FrameIDStr: string;
   FrameID: TJvID3FrameID;
+
+  LFrameIDLength: Byte;
+  LMinimalHeaderSize: Byte;
 begin
+  LFrameIDLength := GetFrameIDLength(Controller.Version);
+  LMinimalHeaderSize := CMinimalHeaderSize[Controller.Version > ive2_2];
+  SetLength(FrameIDStr, LFrameIDLength);
+
   with Stream do
-    while BytesTillEndOfTag >= 10 do
+    while BytesTillEndOfTag >= LMinimalHeaderSize do
     begin
-      Read(FrameIDStr, 4);
+      if Read(PChar(FrameIDStr)^, LFrameIDLength) <> LFrameIDLength then
+        Exit;
 
       FrameID := ID3_StringToFrameID(FrameIDStr);
 
@@ -5216,7 +5459,14 @@ function TJvID3CustomTextFrame.SupportsVersion(
   const AVersion: TJvID3Version): Boolean;
 begin
   case FrameID of
-    { Deprecated in 2.4 }
+    { ** Not supported in 2.2 ** }
+
+    fiFileOwner,
+      fiEncoderSettings:
+
+      Result := AVersion in [ive2_3, ive2_4];
+
+    { ** Deprecated in 2.4 ** }
 
       { [TDAT] Replaced by the TDRC frame, 'Recording time' }
     fiDate,
@@ -5227,16 +5477,16 @@ begin
       { [TRDA] Replaced by the TDRC frame, 'Recording time' }
     fiRecordingDates,
       { [TSIZ] The information contained in this frame is in the general case
-               either trivial to calculate for the player or impossible for the
-               tagger to calculate. There is however no good use for such
-               information. The frame is therefore completely deprecated. }
+either trivial to calculate for the player or impossible for the
+tagger to calculate. There is however no good use for such
+information. The frame is therefore completely deprecated. }
     fiSize,
       { [TYER] This frame is replaced by the TDRC frame, 'Recording time' }
     fiYear:
 
-      Result := AVersion = ive2_3;
+      Result := AVersion in [ive2_2, ive2_3];
 
-    { New frames in 2.4 }
+    { ** New frames in 2.4 ** }
 
     fiEncodingTime, { [TDEN] Encoding time }
     fiOrigReleaseTime, { [TDOR] Original release time }
@@ -5568,6 +5818,13 @@ end;
 procedure TJvID3Header.ChangeToVersion(const ANewVersion: TJvID3Version);
 begin
   case ANewVersion of
+    ive2_2:
+      begin
+        FRevisionNumber := 0;
+        FMajorVersion := 2;
+        { Only flag 'hfUnsynchronisation' is allowed }
+        FFlags := FFlags * [hfUnsynchronisation];
+      end;
     ive2_3:
       begin
         FRevisionNumber := 0;
@@ -5605,13 +5862,20 @@ begin
       FMajorVersion := Header.MajorVersion;
       FRevisionNumber := Header.RevisionNumber;
 
-      { v2.3 : %abc00000    a - Unsynchronisation   c - Experimental indicator
-        v2.4 : %abcd0000    b - Extended header     d - Footer present
+      { v2.2 : %ae000000    a - Unsynchronisation       d - Footer present
+        v2.3 : %abc00000    b - Extended header         e - Compression (only v2.2)
+        v2.4 : %abcd0000    c - Experimental indicator
       }
       if Header.Flags and $80 > 0 then
         Include(FFlags, hfUnsynchronisation);
       if Header.Flags and $40 > 0 then
-        Include(FFlags, hfExtendedHeader);
+      begin
+        { v2.2:  Since no compression scheme has been decided yet, the ID3
+                 decoder (for now) should just ignore the entire tag if the
+                 compression bit is set. }
+        if Controller.Version <> ive2_2 then
+          Include(FFlags, hfExtendedHeader);
+      end;
       if Header.Flags and $20 > 0 then
         Include(FFlags, hfExperimentalIndicator);
       if Header.Flags and $10 > 0 then
@@ -5654,12 +5918,17 @@ end;
 
 procedure TJvID3Header.Write;
 const
-  { ive2_2AndLower, ive2_3, ive2_4, ive2_5AndHigher }
-  CMajorVersion: array [TJvID3Version] of Byte = (3, 3, 4, 4);
-  CRevisionNumber: array [TJvID3Version] of Byte = (0, 0, 0, 0);
+  { iveLowerThan2_2, ive2_2, ive2_3, ive2_4, iveHigherThan2_4 }
+  CMajorVersion: array [TJvID3Version] of Byte = (2, 2, 3, 4, 4);
+  CRevisionNumber: array [TJvID3Version] of Byte = (0, 0, 0, 0, 0);
 var
   Header: TID3v2HeaderRec;
 begin
+  { Check max size }
+  if Header.Size > $0FFFFFFF then // 28 bits = 256 MB
+    { TODO : Resource string, betere foutmelding }
+    ID3Error('Tag is too big', Controller);
+
   with Stream do
   begin
     BeginWriteFrame(10);
@@ -5668,19 +5937,22 @@ begin
       Header.MajorVersion := CMajorVersion[Controller.WriteVersion];
       Header.RevisionNumber := CRevisionNumber[Controller.WriteVersion];
 
-      { v2.3 : %abc00000    a - Unsynchronisation   c - Experimental indicator
-        v2.4 : %abcd0000    b - Extended header     d - Footer present
+      { v2.2 : %ae000000    a - Unsynchronisation       d - Footer present
+        v2.3 : %abc00000    b - Extended header         e - Compression (only v2.2)
+        v2.4 : %abcd0000    c - Experimental indicator
       }
       if hfUnsynchronisation in Flags then
         Inc(Header.Flags, $80);
-      if hfExtendedHeader in Flags then
-        Inc(Header.Flags, $40);
-      if hfExperimentalIndicator in Flags then
-        Inc(Header.Flags, $20);
-      { Only for v2.4 }
-      if (Controller.WriteVersion = ive2_4) and (hfFooterPresent in Flags) then
-        Inc(Header.Flags, $20);
-
+      if Controller.WriteVersion > ive2_2 then
+      begin
+        if hfExtendedHeader in Flags then
+          Inc(Header.Flags, $40);
+        if hfExperimentalIndicator in Flags then
+          Inc(Header.Flags, $20);
+        { Only for v2.4 }
+        if (Controller.WriteVersion = ive2_4) and (hfFooterPresent in Flags) then
+          Inc(Header.Flags, $20);
+      end;
       { The ID3v2 tag size is the size of the complete tag after unsychronisation,
         including padding, excluding the header but not excluding the extended
         header }
@@ -5711,11 +5983,10 @@ procedure TJvID3ExtendedHeader.ChangeToVersion(
   const ANewVersion: TJvID3Version);
 begin
   case ANewVersion of
+    ive2_2:
+      FFlags := [];
     ive2_3:
-      begin
-        Exclude(FFlags, hefTagIsAnUpdate);
-        Exclude(FFlags, hefTagRestrictions);
-      end;
+      FFlags := FFlags - [hefTagIsAnUpdate, hefTagRestrictions];
     ive2_4:
       { Nothing }
   else
@@ -5731,9 +6002,9 @@ end;
 function TJvID3ExtendedHeader.GetSizeForVersion(
   const AVersion: TJvID3Version): Cardinal;
 begin
-  Result := 0;
-
   case AVersion of
+    ive2_2:
+      Result := 0;
     ive2_3:
       begin
         { The 'Extended header size', currently 6 or 10 bytes, excludes itself. }
@@ -5752,6 +6023,7 @@ begin
           Inc(Result, 2);
       end;
   else
+    Result := 0;
     ID3Error(SID3UnknownVersion, Controller);
   end;
 end;
@@ -5767,6 +6039,8 @@ begin
   { Controller.Version is the actual version of the stream; Controller.ReadVersion
     is the version it's transformed in _after_ reading the data from the stream }
   case Controller.Version of
+    ive2_2:
+      ; { Do nothing }
     ive2_3:
       with Stream do
       begin
@@ -5900,6 +6174,8 @@ begin
   LExtendedHeaderSize := GetSizeForVersion(Controller.WriteVersion);
 
   case Controller.WriteVersion of
+    ive2_2:
+      ; { Do nothing }
     ive2_3:
       with Stream do
       begin
@@ -6751,7 +7027,7 @@ begin
     Exit;
 
   case ANewVersion of
-    ive2_3:
+    ive2_2, ive2_3:
       if FrameID in [fiInvolvedPeople2, fiMusicianCreditList] then
       begin
         { Change fiInvolvedPeople2, fiMusicianCreditList to fiInvolvedPeople }
@@ -6968,7 +7244,7 @@ begin
 
     fiInvolvedPeople:
 
-      Result := AVersion = ive2_3;
+      Result := AVersion in [ive2_2, ive2_3];
 
     { New frames in 2.4 }
 
@@ -7952,6 +8228,19 @@ begin
   end;
 end;
 
+function TJvID3TermsOfUseFrame.SupportsVersion(
+  const AVersion: TJvID3Version): Boolean;
+begin
+  case FrameID of
+    { ** Not supported in 2.2 ** }
+
+    fiTermsOfUse:
+      Result := AVersion in [ive2_3, ive2_4];
+  else
+    Result := True;
+  end;
+end;
+
 procedure TJvID3TermsOfUseFrame.WriteFrame;
 begin
   { Text encoding          $xx
@@ -8100,6 +8389,19 @@ begin
   begin
     FSeller.SW := Value;
     Changed;
+  end;
+end;
+
+function TJvID3OwnershipFrame.SupportsVersion(
+  const AVersion: TJvID3Version): Boolean;
+begin
+  case FrameID of
+    { ** Not supported in 2.2 ** }
+
+    fiOwnership:
+      Result := AVersion in [ive2_3, ive2_4];
+  else
+    Result := True;
   end;
 end;
 
@@ -8682,7 +8984,7 @@ begin
     * fiRecordingTime into fiYear, fiDate, fiTime, fiRecordingDates
     * fiOrigReleaseTime into fiOrigYear }
 
-  if IsEmpty or (ANewVersion <> ive2_3) then
+  if IsEmpty or not (ANewVersion in [ive2_2, ive2_3]) then
     Exit;
 
   if FrameID = fiRecordingTime then
@@ -8707,7 +9009,7 @@ begin
     end;
   end
   else
-  if FrameID = fiOrigReleaseTime then
+    if FrameID = fiOrigReleaseTime then
   begin
     { Check if frames don't exists already }
     if not (fiOrigYear in FFrames.GetAllFrameIDs) then
@@ -8808,7 +9110,7 @@ begin
   BusyWith := tkYear;
   while I <= Length(S) do
   begin
-    { Use TimeArray[Sec] as temp variable }
+    { Use Timearray [Sec] as temp variable }
 
     if I = SepPos[BusyWith] then
     begin
@@ -8942,6 +9244,366 @@ end;
 procedure TJvID3PlayCounterFrame.WriteFrame;
 begin
   Stream.WriteNumber(FCounter);
+end;
+
+//=== TJvID3SkipFrame ========================================================
+
+procedure TJvID3SkipFrame.ChangeToVersion(
+  const ANewVersion: TJvID3Version);
+var
+  LFrameID: TJvID3FrameID;
+begin
+  case ANewVersion of
+    ive2_2:
+      if Length(FFrameIDStr) = 4 then
+      begin
+        LFrameID := ID3_StringToFrameID(FFrameIDStr);
+        if LFrameID in [fiErrorFrame, fiPaddingFrame] then
+          FFrameIDStr := ''
+        else
+          FFrameIDStr := ID3_FrameIDToString(LFrameID, 3);
+      end;
+    ive2_3, ive2_4:
+      if Length(FFrameIDStr) = 3 then
+      begin
+        LFrameID := ID3_StringToFrameID(FFrameIDStr);
+        if LFrameID in [fiErrorFrame, fiPaddingFrame] then
+          FFrameIDStr := ''
+        else
+          FFrameIDStr := ID3_FrameIDToString(LFrameID, 3);
+      end;
+  end;
+end;
+
+//=== TJvID3FileInfo ========================================================
+
+const
+  CMapBitrate: array [Boolean, TJvMPEGLayer] of Byte = (
+    { ?? - III - II -  I }
+    ( $00, $02, $01, $00), // V1
+    ( $00, $04, $04, $03) // V2/V3
+    );
+
+  CFreeBitrate = -2;
+  CBadBitrate = -1;
+
+  CBitrate: array [$00..$04, $00..$0F] of Integer = (
+    (CFreeBitrate, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, CBadBitrate),
+    (CFreeBitrate, 32, 48, 56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 384, CBadBitrate),
+    (CFreeBitrate, 32, 40, 48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, CBadBitrate),
+    (CFreeBitrate, 32, 48, 56,  64,  80,  96, 112, 128, 144, 160, 176, 192, 224, 256, CBadBitrate),
+    (CFreeBitrate,  8, 16, 24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, CBadBitrate)
+    );
+  CSamplingFrequency: array [TJvMPEGVersion, $00..$03] of Integer = (
+    (11025, 12000,  8000, -1), // mvVersion25,
+    (    0,     0,     0,  0), // mvReserved,
+    (22050, 24000, 16000, -1), // mvVersion2,
+    (44100, 48000, 32000, -1)  // mvVersion1
+    );
+
+  CLayerArray: array [TJvMPEGLayer] of Integer = (
+    1,           // mlNotDefined,
+    144000,      // mlLayerIII,
+    144000,      // mlLayerII,
+    48000        // mlLayerI
+    );
+
+procedure TJvID3FileInfo.Calc;
+const
+  CID3v1Size: array [Boolean] of Integer = (0, 128);
+var
+  Tmp: Extended;
+begin
+  if FAudioSize = 0 then
+    { No vbr tag found, so we calculate the audio size }
+    FAudioSize := FFileSize - FHeaderFoundAt - CID3v1Size[FHasID3v1Tag];
+
+  if (FAudioSize > 0) and (FFrameCount > 0) then
+  begin
+    { We've found a vbr tag (with enough info) }
+    Tmp := FAudioSize / FFrameCount;
+    FFrameLengthInBytes := Round(Tmp);
+
+    { Determine average bitrate }
+    Tmp := FSamplingRateFrequency * Tmp / CLayerArray[Layer];
+    if Version in [mvVersion2, mvVersion25] then
+      Tmp := Tmp / 2;
+
+    FLengthInSec := Round((FAudioSize * 8) / (1000 * Tmp));
+    FBitRate := Round(Tmp);
+  end
+  else
+  if FBitrate > 0 then
+    FLengthInSec := Round((FAudioSize * 8) / (1000 * FBitrate));
+
+  if FFrameLengthInBytes = 0 then
+  begin
+    { Didn't calc the FFrameLengthInBytes yet }
+    Tmp := 0;
+    if (FBitrate <> CFreeBitrate) and (FSamplingRateFrequency > 0) then
+    begin
+      Tmp := CLayerArray[Layer] * FBitRate / FSamplingRateFrequency + FPaddingLength;
+      if Version in [mvVersion2, mvVersion25] then
+        Tmp := Tmp / 2;
+    end;
+
+    if Tmp > 0 then
+    begin
+      FFrameCount := Round(FAudioSize / Tmp);
+      FFrameLengthInBytes := Round(Tmp);
+    end;
+  end;
+end;
+
+function TJvID3FileInfo.GetIsValid: Boolean;
+begin
+  Result := (FHeaderFoundAt >= 0) and (FLayer <> mlNotDefined) and (FVersion <> mvReserved);
+end;
+
+procedure TJvID3FileInfo.ParseMPEGTag(AMPEGTag: PChar);
+var
+  LHasPadding: Boolean;
+  B: Byte;
+begin
+  { Most info from http://www.dv.co.yu/mpgscript/mpeghdr.htm }
+
+  { AAAAAAAA AAABBCCD EEEEFFGH IIJJKLMM     -> bits
+
+  A   11    (31-21)     Frame sync (all bits set)
+  B    2    (20,19)     MPEG Audio version ID
+                          00 - MPEG Version 2.5 (unofficial)
+                          01 - reserved
+                          10 - MPEG Version 2 (ISO/IEC 13818-3)
+                          11 - MPEG Version 1 (ISO/IEC 11172-3)
+  C    2    (18,17)     Layer description
+                          00 - reserved
+                          01 - Layer III
+                          10 - Layer II
+                          11 - Layer I
+  D    1    (16)        Protection bit
+                          0 - Protected by CRC (16bit crc follows header)
+                          1 - Not protected
+  E    4    (15,12)     Bitrate index
+
+                        bits  V1,L1  V1,L2  V1,L3  V2,L1  V2, L2 & L3
+                        0000  free   free   free   free     free
+                        0001   32     32     32     32       8
+                        0010   64     48     40     48       16
+                        0011   96     56     48     56       24
+                        0100   128    64     56     64       32
+                        0101   160    80     64     80       40
+                        0110   192    96     80     96       48
+                        0111   224    112    96     112      56
+                        1000   256    128    112    128      64
+                        1001   288    160    128    144      80
+                        1010   320    192    160    160      96
+                        1011   352    224    192    176      112
+                        1100   384    256    224    192      128
+                        1101   416    320    256    224      144
+                        1110   448    384    320    256      160
+                        1111   bad    bad    bad    bad      bad
+
+                        NOTES: All values are in kbps
+                        V1 - MPEG Version 1
+                        V2 - MPEG Version 2 and Version 2.5
+                        L1 - Layer I
+                        L2 - Layer II
+                        L3 - Layer III
+                        "free" means free format.
+                        "bad" means that this is not an allowed value
+
+  F    2    (11,10)     Sampling rate frequency index (values are in Hz) bits
+                                MPEG1    MPEG2    MPEG2.5
+                          00    44100    22050    11025
+                          01    48000    24000    12000
+                          10    32000    16000    8000
+                          11    reserv.  reserv.  reserv.
+  G    1    (9)         Padding bit
+                          0 - frame is not padded
+                          1 - frame is padded with one extra slot
+  H    1    (8)         Private bit.
+  I    2    (7,6)       Channel Mode
+                          00 - Stereo
+                          01 - Joint stereo (Stereo)
+                          10 - Dual channel (2 mono channels)
+                          11 - Single channel (Mono)
+  J    2    (5,4)       Mode extension (Only if Joint stereo)
+                                 Layer I and II               Layer III
+                          value                  Intensity stereo  MS stereo
+                          00     bands 4 to 31         off           off
+                          01     bands 8 to 31         on            off
+                          10     bands 12 to 31        off           on
+                          11     bands 16 to 31        on            on
+  K    1    (3)         Copyright
+                          0 - Audio is not copyrighted
+                          1 - Audio is copyrighted
+  L    1    (2)         Original
+                          0 - Copy of original media
+                          1 - Original media
+  M    2    (1,0)       Emphasis
+                          00 - none
+                          01 - 50/15 ms
+                          10 - reserved
+                          11 - CCIT J.17
+  }
+
+  { Note: we assume a Reset is done before Parse is called, so we can
+          do quick exits }
+
+  { D }
+  B := PByte(AMPEGTag + 1)^;
+  if B and $1 = 0 then
+    Include(FBits, mbProtection);
+  { C }
+  B := B shr 1;
+  FLayer := TJvMPEGLayer(B and $3);
+  { B }
+  B := B shr 2;
+  FVersion := TJvMPEGVersion(B and $3);
+  if (FLayer = mlNotDefined) or (FVersion = mvReserved) then
+    Exit;
+
+  B := PByte(AMPEGTag + 2)^;
+  { H }
+  if B and $1 > 0 then
+    Include(FBits, mbPrivate);
+  B := B shr 1;
+  { G }
+  LHasPadding := B and $1 > 0;
+  B := B shr 1;
+  { F }
+  FSamplingRateFrequency := CSamplingFrequency[Version, B and $3];
+  B := B shr 2;
+  { E }
+  FBitrate := CBitrate[CMapBitrate[Version in [mvVersion2, mvVersion25], Layer], B and $F];
+  if FBitrate = CBadBitrate then
+    Exit;
+
+  B := PByte(AMPEGTag + 3)^;
+  { M }
+  FEmphasis := TJvMPEGEmphasis(B and $3);
+  B := B shr 2;
+  { L }
+  if B and $1 > 0 then
+    Include(FBits, mbOriginal);
+  B := B shr 1;
+  { K }
+  if B and $1 > 0 then
+    Include(FBits, mbCopyrighted);
+  B := B shr 1;
+  { J }
+  FModeExtension := TJvMPEGModeExtension(B and $3);
+  B := B shr 2;
+  { I }
+  FChannelMode := TJvMPEGChannelMode(B and $3);
+
+  { Calculate some stuff }
+  if LHasPadding then
+  begin
+    if Layer = mlLayerI then
+      FPaddingLength := 4
+    else
+      FPaddingLength := 1;
+  end
+  else
+    FPaddingLength := 0;
+end;
+
+procedure TJvID3FileInfo.ParseVbrTag(AMPEGTag: PChar);
+const
+  VBRTag_Xing: PChar = 'Xing';
+  VBRTag_Info: PChar = 'Info';
+  FRAMES_FLAG = $0001;
+  BYTES_FLAG = $0002;
+  TOC_FLAG = $0004;
+var
+  HeadFlags: Integer;
+begin
+  { Now try to find the Xing or Info tag }
+
+  { maximum bytes needed is currently: 4 + 32 + 4 + 4 + 4 + 4 = 52 }
+  if Version = mvVersion1 then
+    if ChannelMode <> mcSingleChannel then
+      Inc(AMPEGTag, 32 + 4)
+    else
+      Inc(AMPEGTag, 17 + 4)
+  else
+    if ChannelMode <> mcSingleChannel then
+      Inc(AMPegTag, 17 + 4)
+    else
+      Inc(AMPegTag, 9 + 4);
+
+  if (PInteger(AMPEGTag)^ <> PInteger(VBRTag_Xing)^) and
+     (PInteger(AMPEGTag)^ <> PInteger(VBRTag_Info)^) then Exit;
+  Inc(AMPegTag, 4);
+
+  { (rb) Now always true?? }
+  FIsVBR := True;
+
+  HeadFlags := ReverseBytes(PInteger(AMPegTag)^);
+  Inc(AMPegTag, 4);
+
+  if HeadFlags and FRAMES_FLAG > 0 then
+  begin
+    FFrameCount := ReverseBytes(PInteger(AMPegTag)^);
+    Inc(AMPegTag, 4);
+  end;
+
+  if HeadFlags and BYTES_FLAG > 0 then
+    FAudioSize := ReverseBytes(PInteger(AMPegTag)^);
+end;
+
+procedure TJvID3FileInfo.Read(AStream: TStream; const Offset: Int64);
+const
+  CID3v1Tag = 'TAG'; { do not change case }
+  CTagSize = 128;
+  CTagIDSize = 3;
+  CMPEGTagSize = 52;
+var
+  TagID: array [0..CTagIDSize - 1] of Char;
+  MPEGTag: array [0..CMPEGTagSize - 1] of Char;
+begin
+  Reset;
+
+  FHeaderFoundAt := SearchSync(AStream, Offset, MPEGTag, CMPEGTagSize);
+  if FHeaderFoundAt < 0 then
+    Exit;
+
+  ParseMPEGTag(MPEGTag);
+  ParseVbrTag(MPEGTag);
+
+  if FFileSize = 0 then
+    FFileSize := AStream.Size;
+
+  if (FAudioSize = 0) and (FFileSize >= 128) then
+  begin
+    { Need to determine if the file has an ID3v1 tag }
+    AStream.Seek(-CTagSize, soFromEnd);
+    FHasID3v1Tag := (AStream.Read(TagID, CTagIDSize) = CTagIDSize) and (TagID = CID3v1Tag);
+  end;
+
+  { We now know enough to calculate the rest }
+  Calc;
+end;
+
+procedure TJvID3FileInfo.Reset;
+begin
+  FAudioSize := 0;
+  FBitrate := 0;
+  FBits := [];
+  FChannelMode := Low(TJvMPEGChannelMode);
+  FEmphasis := Low(TJvMPEGEmphasis);
+  FFileSize := 0;
+  FFrameCount := 0;
+  FFrameLengthInBytes := 0;
+  FHasID3v1Tag := False;
+  FHeaderFoundAt := -1;
+  FIsVBR := False;
+  FLayer := Low(TJvMPEGLayer);
+  FLengthInSec := 0;
+  FModeExtension := Low(TJvMPEGModeExtension);
+  FSamplingRateFrequency := 0;
+  FVersion := Low(TJvMPEGVersion);
 end;
 
 end.
