@@ -2,6 +2,13 @@
 UnsafeType=0
 UnsafeCode=0
 UnsafeCast=0
+[Linker]
+ExeDescription=JVCLX Core Runtime Package
 [Directories]
 UnitOutputDir=..\..\lib\d7
-SearchPath=..\..\run;..\..\common;..\..\Resources
+SearchPath=..\..\qrun;..\..\qcommon;..\..\Resources;..\..\common
+DebugSourceDirs=
+UsePackages=0
+[Excluded Packages]
+$(DELPHI)\Bin\dclstd70.bpl=Borland Standard Components
+$(DELPHI)\Projects\Bpl\JvCoreD7D.bpl=JVCL Core Components

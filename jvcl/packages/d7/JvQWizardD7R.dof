@@ -4,4 +4,8 @@ UnsafeCode=0
 UnsafeCast=0
 [Directories]
 UnitOutputDir=..\..\lib\d7
-SearchPath=..\..\run;..\..\common;..\..\Resources
+SearchPath=..\..\qrun;..\..\qcommon;..\..\Resources;..\..\common
+[Excluded Packages]
+$(DELPHI)\Bin\dclstd70.bpl=Borland Standard Components
+$(DELPHI)\Projects\Bpl\JvCoreD7D.bpl=JVCL Core Components
+
