@@ -38,12 +38,13 @@ unit JvQDsgnEditors;
 
 interface
 
-uses  
-  QWindows, QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
-  QExtDlgs, QMenus, QStdCtrls, QImgList, Types, 
+uses
+  QWindows, QForms, QControls, Types, QGraphics, QExtCtrls, QDialogs,
+  QExtDlgs, QMenus, QStdCtrls, QImgList,  
+  ClxImgEdit, 
   DsnConst, 
-  RTLConsts, DesignIntf, DesignEditors, DesignMenus,  
-  ClxEditors, ClxImgEdit,  
+  RTLConsts, DesignIntf, DesignEditors, DesignMenus,
+  CLXEditors,  
   Classes, SysUtils;
 
 
@@ -84,7 +85,7 @@ type
       const ARect: TRect; ASelected: Boolean);
   end;
 
-  TJvQColorProperty = class(TIntegerProperty, ICustomPropertyDrawing,
+  TColorPropertyEx = class(TIntegerProperty, ICustomPropertyDrawing,
     ICustomPropertyListDrawing)
   public
     procedure Edit; override;
@@ -844,7 +845,7 @@ end;
 
 
 
-//=== TJvQColorProperty ======================================================
+//=== TColorPropertyEx ======================================================
 
 
 
@@ -852,7 +853,7 @@ const
   { context ids for the Color Editor, from VCLEditors }
   hcDColorEditor      = 25010;
 
-procedure TJvQColorProperty.Edit;
+procedure TColorPropertyEx.Edit;
 var
   ColorDialog: TColorDialog;
 //  IniFile: TRegIniFile;
@@ -909,22 +910,22 @@ begin
   end;
 end;
 
-function TJvQColorProperty.GetAttributes: TPropertyAttributes;
+function TColorPropertyEx.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paValueList, paRevertable];
 end;
 
-function TJvQColorProperty.GetValue: string;
+function TColorPropertyEx.GetValue: string;
 begin
   Result := ColorToString(TColor(GetOrdValue));
 end;
 
-procedure TJvQColorProperty.GetValues(Proc: TGetStrProc);
+procedure TColorPropertyEx.GetValues(Proc: TGetStrProc);
 begin
   GetColorValues(Proc);
 end;
 
-procedure TJvQColorProperty.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+procedure TColorPropertyEx.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
   ASelected: Boolean);
 begin
   if GetVisualValue <> '' then
@@ -933,7 +934,7 @@ begin
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
 
-procedure TJvQColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
+procedure TColorPropertyEx.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
 
   function ColorToBorderColor(AColor: TColor): TColor;
@@ -983,13 +984,13 @@ begin
   end;
 end;
 
-procedure TJvQColorProperty.ListMeasureWidth(const Value: string;
+procedure TColorPropertyEx.ListMeasureWidth(const Value: string;
   ACanvas: TCanvas; var AWidth: Integer);
 begin
   AWidth := AWidth + ACanvas.TextHeight('M') {* 2};
 end;
 
-procedure TJvQColorProperty.SetValue(const Value: string);
+procedure TColorPropertyEx.SetValue(const Value: string);
 var
   NewValue: Longint;
 begin
@@ -999,13 +1000,13 @@ begin
     inherited SetValue(Value);
 end;
 
-procedure TJvQColorProperty.ListMeasureHeight(const Value: string;
+procedure TColorPropertyEx.ListMeasureHeight(const Value: string;
   ACanvas: TCanvas; var AHeight: Integer);
 begin
   // No implemenation necessary
 end;
 
-procedure TJvQColorProperty.PropDrawName(ACanvas: TCanvas; const ARect: TRect;
+procedure TColorPropertyEx.PropDrawName(ACanvas: TCanvas; const ARect: TRect;
   ASelected: Boolean);
 begin
   DefaultPropertyDrawName(Self, ACanvas, ARect);

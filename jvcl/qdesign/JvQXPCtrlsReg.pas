@@ -47,19 +47,13 @@ procedure Register;
 implementation
 
 uses
-  Classes,  
-  QImgList,  
-  DesignIntf, DesignEditors,  
-  {$IFDEF USEJVCL}
-  JvQDsgnConsts,
-  {$ENDIF USEJVCL}
+  Classes, QImgList, 
+  DesignIntf, DesignEditors, CLXEditors,  
+  JvQDsgnConsts, 
   JvQXPCore, JvQXPPropertyEditors, JvQXPBar, JvQXPContainer,
   JvQXPButtons, JvQXPCheckCtrls;
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsPaletteXPControls = 'Jv XP Controls';
-{$ENDIF USEJVCL}
+
 
 procedure Register;
 begin

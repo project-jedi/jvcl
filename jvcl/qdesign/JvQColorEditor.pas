@@ -31,19 +31,18 @@ Known Issues:
 
 unit JvQColorEditor;
 
-{$C PRELOAD}
-
 interface
 
 uses
   SysUtils, Classes,
   QWindows, Types, QGraphics, 
   RTLConsts, DesignIntf, DesignEditors,
-  ClxEditors, 
+  CLXEditors,  
+  JvQDsgnEditors, 
   JvQConsts, JvQJVCLUtils;
 
-type
-  TJvColorProperty = class(TColorProperty)
+type  
+  TJvColorProperty = class(TColorPropertyEx) 
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;

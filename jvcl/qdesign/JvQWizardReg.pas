@@ -49,12 +49,8 @@ implementation
 
 uses
   Classes, 
-  DesignIntf, DesignEditors, 
-  {$IFDEF USEJVCL}
-  JvQDsgnConsts,
-  {$ELSE}
-  JvQWizardAboutInfoForm,
-  {$ENDIF USEJVCL}
+  DesignIntf, DesignEditors,  
+  JvQDsgnConsts, 
   JvQWizard, JvQWizardRouteMapNodes, JvQWizardRouteMapSteps, JvQWizardRouteMapList,
   JvQWizardEditorForm;
 
@@ -65,10 +61,7 @@ uses
 {$R ../Resources/JvWizardReg.dcr}
 {$ENDIF LINUX}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsPaletteWizard = 'Jv Wizard';
-{$ENDIF USEJVCL}
+
 
 procedure Register;
 const
@@ -89,11 +82,7 @@ begin
     TJvWizardActivePageProperty);
   RegisterPropertyEditor(TypeInfo(TJvWizardInteriorPage), TJvWizard, cActivePage,
     TJvWizardActivePageProperty);
-  // Added By Steve Forbes
-  {$IFNDEF USEJVCL}
-  RegisterPropertyEditor(TypeInfo(TJvWizardAboutInfoForm), nil, 'About',
-    TJvWizardAboutDialogProperty);
-  {$ENDIF USEJVCL}
+  // Added By Steve Forbes 
   // JvWizard Page List Editor
   RegisterPropertyEditor(TypeInfo(TJvWizardPageList), TJvWizard, cPages,
     TJvWizardPageListProperty);

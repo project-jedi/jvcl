@@ -32,10 +32,8 @@ unit JvQManagedThreadsReg;
 interface
 
 uses
-  Classes,
-  {$IFDEF USEJVCL}
-  JvQDsgnConsts,
-  {$ENDIF USEJVCL}
+  Classes, 
+  JvQDsgnConsts, 
   JvQMTComponents;
 
 procedure Register;
@@ -49,10 +47,7 @@ implementation
 {$R ../Resources/JvManagedThreadsReg.dcr}
 {$ENDIF LINUX}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsPaletteMTThreads = 'Jv Threading';
-{$ENDIF USEJVCL}
+
 
 procedure Register;
 begin

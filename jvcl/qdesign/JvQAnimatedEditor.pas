@@ -29,16 +29,15 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvQAnimatedEditor;
 
 interface
 
 uses
-  Windows, QForms, Types, QGraphics, QImgList,
+  QWindows, QForms, Types, QGraphics, QImgList,
   SysUtils, Classes, QDialogs, QControls, 
-  DesignIntf, DesignEditors, DesignMenus, ClxEditors, 
+  DesignIntf, DesignEditors, DesignMenus, CLXEditors, 
   JvQAnimatedImage;
 
 type

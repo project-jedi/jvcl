@@ -36,7 +36,7 @@ interface
 
 uses
   SysUtils, 
-  DesignIntf, DesignEditors, DesignMenus, ClxEditors,   
+  DesignIntf, DesignEditors, DesignMenus, CLXEditors,   
   QImgList, 
   JvQDsgnEditors, JvQTransparentButton;
 

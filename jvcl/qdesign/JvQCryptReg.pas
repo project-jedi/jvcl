@@ -41,9 +41,9 @@ implementation
 uses
   Classes,
   JvQZlibMultiple,
-  {$IFDEF MSWINDOWS}
+  {$IFDEF USEWINDOWS}
   JvQCabFile,
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   JvQDsgnConsts,
   JvQVigenereCipher, JvQCaesarCipher, JvQGenetic,
   JvQSerialMaker, JvQXorCipher;
@@ -59,9 +59,9 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteEncryptCompress, [TJvVigenereCipher,
     TJvXORCipher, TJvCaesarCipher, TJvGenetic,
-    {$IFDEF MSWINDOWS}
+    {$IFDEF USEWINDOWS}
     TJvCABFile,
-    {$ENDIF MSWINDOWS}
+    {$ENDIF USEWINDOWS}
     TJvZlibMultiple,
     TJvSerialMaker]);
 end;

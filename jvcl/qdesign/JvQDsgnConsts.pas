@@ -89,8 +89,7 @@ resourcestring
   RsPaletteGlobusComponents1 = 'JVCL Globus 1';
   RsPaletteGlobusComponents2 = 'JVCL Globus 2';
   RsPaletteValidators = 'Jv Validators';
-  RsPaletteEDI = 'Jv EDI';
-  {$IFDEF USEJVCL}
+  RsPaletteEDI = 'Jv EDI'; 
   RsPaletteUIB = 'Jv UIB';
   RsPaletteMTThreads = 'Jv Threading';
   RsPaletteTimeFramework = 'Jv TimeFrameWork';
@@ -98,8 +97,7 @@ resourcestring
   RsPaletteXPControls = 'Jv XP Controls';
   RsPaletteDocking = 'Jv Docking';
   RsPaletteDotNet = 'Jv DotNet';
-  RsPaletteDotNetDB = 'Jv DotNet DB';
-  {$ENDIF USEJVCL}
+  RsPaletteDotNetDB = 'Jv DotNet DB'; 
   RsPalettePlugin = 'Jv Plugin';
 
 //=== JvAnimatedEditor.pas ===================================================
@@ -240,13 +238,13 @@ resourcestring
   RsBorrowStructure = 'Borrow structure...';
 
 //=== JvDockPropertyEditors.pas ==============================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsDockNewPage = 'Ne&w Page';
   RsDockNextPage = 'Ne&xt Page';
   RsDockPreviousPage = '&Previous Page';
   RsDockDeletePage = '&Delete Page';
-{$ENDIF USEJVCL}
+
 
 //=== JvDsgnEditors.pas ======================================================
 resourcestring
@@ -647,21 +645,21 @@ resourcestring
   RsJvValidatorItemsEditorEllipsis = 'JvValidator Items Editor...';
 
 //=== JvWizardEditorForm.pas =================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsPageListEllipsis = 'Page List...';
   RsNewWelcomePage = 'New Welcome Page';
   RsNewInteriorPage = 'New Interior Page';
   RsDeletePage = 'Delete Page';
-{$ENDIF USEJVCL}
+
 
 //=== JvXPPropertyEditors.pas ================================================
-{$IFDEF USEJVCL}
+
 resourcestring
   RsItemEditorEllipsis = 'Item Editor...';
   RsDefaultColorItem = 'Restore Default Colors';
   RsDefaultFontsItem = 'Restore Default Fonts';
-{$ENDIF USEJVCL}
+
 
 //=== DataProvider design time constants =====================================
 resourcestring
