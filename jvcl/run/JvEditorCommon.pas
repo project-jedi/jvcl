@@ -191,6 +191,8 @@ located at http://jvcl.sourceforge.net
     - optimized ExpandTabs
 
   2004-01-25: file split into JvEditor and JvEditorCommon
+
+  Further history: see CVS
 }
 
 unit JvEditorCommon;
@@ -227,10 +229,11 @@ type
     Height: Integer;
   end;
 
-  TLineAttr = record
+  TLineAttr = packed record
     FC: TColor;
     BC: TColor;
     Style: TFontStyles;
+    Border: TColor;
   end;
 
   TLineAttrs = array [0..Max_X] of TLineAttr;
@@ -304,6 +307,7 @@ type
     property OnCommand2: TCommand2Event read FOnCommand2 write FOnCommand2;
   end;
 
+  { TJvSelectionRec contains all text selection information } 
   PJvSelectionRec = ^TJvSelectionRec;
   TJvSelectionRec = record
     IsSelected: Boolean; // maybe a function that checks BegX/Y EndX/Y would be better
@@ -532,6 +536,33 @@ type
     property Editor: TJvCustomEditorBase read FEditor;
   end;
 
+  TJvBracketHighlighting = class(TPersistent)
+  private
+    FStart: TRect;
+    FStop: TRect;
+    
+    FActive: Boolean;
+    FFontColor: TColor;
+    FBorderColor: TColor;
+    FColor: TColor;
+    FWordPairs: TStrings;
+    FCaseSensitiveWordPairs: Boolean;
+    procedure SetWordPairs(Value: TStrings);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+  published
+    property Active: Boolean read FActive write FActive default False;
+    property BorderColor: TColor read FBorderColor write FBorderColor default clSilver;
+    property Color: TColor read FColor write FColor default clNone;
+    property FontColor: TColor read FFontColor write FFontColor default clNone;
+
+    property CaseSensitiveWordPairs: Boolean read FCaseSensitiveWordPairs write FCaseSensitiveWordPairs default True;
+    property WordPairs: TStrings read FWordPairs write SetWordPairs;
+      { example: "begin=end", "repeat=until", "for=do", "asm=end" }
+  end;
+
   TJvCustomEditorBase = class(TJvCustomControl, IFixedPopupIntf)
   private
     { internal objects }
@@ -546,6 +577,7 @@ type
     FUndoBuffer: TJvUndoBuffer;
     FGroupUndo: Boolean;
     FUndoAfterSave: Boolean;
+    FBracketHighlighting: TJvBracketHighlighting;
 
     { internal - Columns and rows attributes }
     FCols: Integer;
@@ -669,6 +701,8 @@ type
     function GetTabStop(X, Y: Integer; Next: Boolean): Integer; virtual; abstract;
     function GetBackStop(X, Y: Integer): Integer; virtual; abstract;
     function GetAutoIndentStop(Y: Integer): Integer; virtual; abstract;
+    function GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean; virtual; abstract;
+    function GetAnsiWordOnCaret: AnsiString; virtual; abstract;
 
     procedure ReLine; virtual; abstract;
     procedure TextAllChangedInternal(Unselect: Boolean); virtual;
@@ -745,6 +779,7 @@ type
     procedure SetRightMarginColor(Value: TColor);
     procedure SetSelBackColor(const Value: TColor);
     procedure SetSelForeColor(const Value: TColor);
+    procedure SetBracketHighlighting(Value: TJvBracketHighlighting);
     function GetPopupMenu: TPopupMenu; override;
 
     function GetLineCount: Integer; virtual; abstract;
@@ -775,9 +810,13 @@ type
     LineAttrs: TLineAttrs;
 
     procedure Paint; override;
-    procedure PaintLine(Line: Integer; ColBeg, ColEnd: Integer);
+    procedure PaintLine(Line: Integer; ColBeg, ColEnd: Integer); overload;
     procedure PaintLineText(Line: Integer; ColBeg, ColEnd: Integer;
       var ColPainted: Integer); virtual; abstract;
+    procedure GetBracketHighlightAttr(Line: Integer; var Attrs: TLineAttrs); virtual;
+    procedure HighlightBrackets; virtual;
+    procedure GetBracketHighlightingWords(var Direction: Integer;
+      var Start, Stop: AnsiString; var CaseSensitive: Boolean); virtual;
     function FontCacheFind(LA: TLineAttr): TFont;
     procedure FontCacheClear;
     procedure InsertChar(const Key: Word); virtual; abstract;
@@ -810,6 +849,7 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure SetLeftTop(ALeftCol, ATopRow: Integer);
+    procedure PaintLine(Line: Integer); overload;
 
     function CanUndo: Boolean; { IFixedPopupIntf }
     function CanRedo: Boolean;
@@ -848,7 +888,7 @@ type
     procedure IndentColumns(X: Integer; BegY, EndY: Integer); virtual; abstract;
     procedure UnIndentColumns(X: Integer; BegY, EndY: Integer); virtual; abstract;
     procedure IndentLines(UnIndent: Boolean; BegY, EndY: Integer);
-    procedure IndentSelLines(UnIndent: Boolean); 
+    procedure IndentSelLines(UnIndent: Boolean);
 
     procedure BeginCompound;
     procedure EndCompound;
@@ -900,6 +940,7 @@ type
     property CursorBeyondEOF: Boolean read FCursorBeyondEOF write FCursorBeyondEOF default False;
     property BlockOverwrite: Boolean read FBlockOverwrite write FBlockOverwrite default True;
     property PersistentBlocks: Boolean read FPersistentBlocks write FPersistentBlocks default False;
+    property BracketHighlighting: TJvBracketHighlighting read FBracketHighlighting write SetBracketHighlighting;
     property SelForeColor: TColor read FSelForeColor write SetSelForeColor;
     property SelBackColor: TColor read FSelBackColor write SetSelBackColor;
     property HideCaret: Boolean read FHideCaret write FHideCaret default False;
@@ -2148,7 +2189,7 @@ function TJvLineInformationList.CreateLineInfo(Index: Integer): TJvLineInformati
 var
   I: Integer;
 begin
-  if Index <= 0 then
+  if Index < 0 then
     raise EListError.CreateResFmt(@SListIndexError, [LineCount]);
   for I := 0 to Count - 1 do
   begin
@@ -2220,6 +2261,52 @@ begin
   end;
 end;
 
+//=== { TJvBracketHighlighting } =============================================
+
+constructor TJvBracketHighlighting.Create;
+begin
+  inherited Create;
+  FStart.Left := -1;
+  FStop.Left := -1;
+
+  FWordPairs := TStringList.Create;
+  FCaseSensitiveWordPairs := True;
+
+  FActive := False;
+  FBorderColor := clSilver;
+  FColor := clNone;
+  FFontColor := clNone;
+end;
+
+destructor TJvBracketHighlighting.Destroy;
+begin
+  FWordPairs.Free;
+  inherited Destroy;
+end;
+
+procedure TJvBracketHighlighting.Assign(Source: TPersistent);
+begin
+  if Source is TJvBracketHighlighting then
+  begin
+    with TJvBracketHighlighting(Source) do
+    begin
+      Self.FActive := FActive;
+      Self.FFontColor := FFontColor;
+      Self.FBorderColor := FBorderColor;
+      Self.FColor := FColor;
+    end;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TJvBracketHighlighting.SetWordPairs(Value: TStrings);
+begin
+  if Value <> FWordPairs then
+    FWordPairs.Assign(Value);
+end;
+
+
 //=== { TJvCustomEditorBase } ================================================
 
 var
@@ -2238,6 +2325,7 @@ begin
   FUndoBuffer := TJvUndoBuffer.Create;
   FUndoBuffer.FJvEditor := Self;
   FGroupUndo := True;
+  FBracketHighlighting := TJvBracketHighlighting.Create;
 
   FRightMarginVisible := True;
   FRightMargin := 80;
@@ -2304,6 +2392,7 @@ end;
 
 destructor TJvCustomEditorBase.Destroy;
 begin
+  FBracketHighlighting.Free;
   FLineInformations.Free;
   FScrollBarHorz.Free;
   FScrollBarVert.Free;
@@ -2648,6 +2737,7 @@ end;
 
 procedure TJvCustomEditorBase.StatusChanged;
 begin
+  HighlightBrackets;
   if Assigned(FOnChangeStatus) then
     FOnChangeStatus(Self);
 end;
@@ -3923,6 +4013,224 @@ begin
   DrawRightMargin;
 end;
 
+procedure TJvCustomEditorBase.PaintLine(Line: Integer);
+begin
+  PaintLine(Line, -1, -1);
+end;
+
+procedure TJvCustomEditorBase.GetBracketHighlightAttr(Line: Integer; var Attrs: TLineAttrs);
+
+  procedure GetHighlightBeginEnd(const R: TRect);
+  var
+    i: Integer;
+  begin
+    if (R.Left >= 0) and // R valid
+       (Line >= R.Top) and (Line <= R.Bottom) and (R.Left >= 0) and (R.Right <= Max_X) then
+      for i := R.Left to R.Right do
+      begin
+        if BracketHighlighting.FontColor <> clNone then
+          Attrs[i].FC := BracketHighlighting.FontColor;
+        if BracketHighlighting.Color <> clNone then
+          Attrs[i].BC := BracketHighlighting.Color;
+        Attrs[i].Border := BracketHighlighting.BorderColor;
+      end;
+  end;
+
+begin
+  if BracketHighlighting.Active then
+  begin
+    GetHighlightBeginEnd(FBracketHighlighting.FStart);
+    GetHighlightBeginEnd(FBracketHighlighting.FStop);
+  end;
+end;
+
+procedure TJvCustomEditorBase.HighlightBrackets;
+const
+  Separators: TSysCharSet = [#0, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
+    ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
+var
+  Text: AnsiString;
+  X, Y: Integer;
+  SearchDir: Integer;
+  SearchStart: AnsiString;
+  SearchEnd: AnsiString;
+  SearchOpen: Integer;
+  CaseSensitive: Boolean;
+  CmpProc: function(const Str1, Str2: PChar; MaxLen: Cardinal): Integer;
+  IsCharCmp: Boolean;
+begin
+  X := CaretX;
+  Y := CaretY;
+
+  { remove last highlighting }
+  if BracketHighlighting.FStart.Left > -1 then
+  begin
+    BracketHighlighting.FStart.Left := -1; // invalidate
+    PaintLine(BracketHighlighting.FStart.Top);
+  end;
+  if FBracketHighlighting.FStop.Left > -1 then
+  begin
+    BracketHighlighting.FStop.Left := -1; // invalidate
+    PaintLine(BracketHighlighting.FStop.Top);
+  end;
+
+  if not BracketHighlighting.Active or not Visible or not Enabled then
+    Exit;
+
+  if (Y >= 0) and GetAnsiTextLine(Y, Text) and (X >= 0) and (X < Length(Text)) then
+  begin
+    SearchDir := 0; // nothing to search
+    CaseSensitive := False;
+    IsCharCmp := True;
+
+    // obtain search direction and end-char
+    if Text[X + 1] in ['(', '{', '[', '<'] then
+    begin
+      SearchDir := +1;
+      SearchStart := Text[X + 1];
+      case Text[X + 1] of
+        '(': SearchEnd := ')';
+        '{': SearchEnd := '}';
+        '[': SearchEnd := ']';
+        '<': SearchEnd := '>';
+      end;
+    end
+    else
+    if Text[X + 1] in [')', '}', ']', '>'] then
+    begin
+      SearchDir := -1;
+      SearchStart := Text[X + 1];
+      case Text[X + 1] of
+        ')': SearchEnd := '(';
+        '}': SearchEnd := '{';
+        ']': SearchEnd := '[';
+        '>': SearchEnd := '<';
+      end;
+    end
+    else
+    begin
+      IsCharCmp := False;
+      // Text search
+      SearchStart := GetAnsiWordOnCaret;
+      while (X >= 0) and not (Text[X + 1] in Separators) do
+        Dec(X);
+      Inc(X);
+
+      GetBracketHighlightingWords(SearchDir, SearchStart, SearchEnd, CaseSensitive);
+    end;
+
+    if SearchDir <> 0 then
+    begin
+      BracketHighlighting.FStart.TopLeft := Point(X + 1, Y);
+      BracketHighlighting.FStart.BottomRight := Point(X + 1 + Length(SearchStart) - 1, Y);
+      PaintLine(Y);
+
+      if CaseSensitive then
+        CmpProc := StrLComp
+      else
+        CmpProc := StrLIComp;
+
+      SearchOpen := 1;
+      repeat
+        Inc(X, SearchDir);
+
+        // -1 direction
+        if X < 0 then
+        begin
+          Dec(Y);
+          if Y < 0 then
+            Break;
+          GetAnsiTextLine(Y, Text);
+          X := Length(Text) - 1;
+          if X < 0 then
+            Continue;
+        end
+        else // +1 direction
+        if X >= Length(Text) then
+        begin
+          Inc(Y);
+          if not GetAnsiTextLine(Y, Text) then
+            Break;
+          X := 0;
+          if X >= Length(Text) then
+            Continue;
+        end;
+
+        if IsCharCmp then // it is faster to compare one char 
+        begin
+          if Text[X + 1] = SearchEnd[1] then 
+          begin
+            Dec(SearchOpen);
+            if SearchOpen = 0 then
+            begin
+              BracketHighlighting.FStop.TopLeft := Point(X + 1, Y);
+              BracketHighlighting.FStop.BottomRight := Point(X + 1, Y);
+              PaintLine(Y);
+              Break;
+            end;
+          end
+          else
+          if Text[X + 1] = SearchStart[1] then
+            Inc(SearchOpen);
+        end
+        else
+        begin
+          // word pairs
+          if CmpProc(PChar(Text) + X, PChar(SearchEnd), Length(SearchEnd)) = 0 then // case sensitive
+          begin
+            Dec(SearchOpen);
+            if SearchOpen = 0 then
+            begin
+              BracketHighlighting.FStop.TopLeft := Point(X + 1, Y);
+              BracketHighlighting.FStop.BottomRight := Point(X + 1 + Length(SearchEnd) - 1, Y);
+              PaintLine(Y);
+              Break;
+            end;
+          end
+          else
+          if CmpProc(PChar(Text) + X, PChar(SearchStart), Length(SearchStart)) = 0 then // case sensitive
+            Inc(SearchOpen);
+        end;
+      until False;
+    end;
+  end;
+end;
+
+procedure TJvCustomEditorBase.GetBracketHighlightingWords(var Direction: Integer;
+  var Start, Stop: AnsiString; var CaseSensitive: Boolean);
+var
+  I, Ps: Integer;
+  S: string;
+  CmpProc: function(const S1, S2: string): Integer; 
+begin
+  CaseSensitive := BracketHighlighting.CaseSensitiveWordPairs;
+  if CaseSensitive then
+    CmpProc := CompareStr
+  else
+    CmpProc := CompareText;
+
+  for I := 0 to BracketHighlighting.WordPairs.Count - 1 do
+  begin
+    S := BracketHighlighting.WordPairs[I];
+    Ps := Pos('=', S);
+    if Ps > 0 then
+    begin
+      if CmpProc(Copy(S, 1, Ps - 1), Start) = 0 then
+      begin
+        Stop := Copy(S, Ps + 1, MaxInt);
+        Direction := +1;
+        Break;
+      end;
+      if CmpProc(Copy(S, Ps + 1, MaxInt), Start) = 0 then
+      begin
+        Stop := Copy(S, 1, Ps - 1);
+        Direction := -1;
+        Break;
+      end;
+    end;
+  end;
+end;
+
 { find the font resource for LA }
 
 function TJvCustomEditorBase.FontCacheFind(LA: TLineAttr): TFont;
@@ -4050,7 +4358,7 @@ begin
   begin
     FCaretX := X;
     FCaretY := Y;
-    FOnChangeStatus(Self);
+    StatusChanged;
   end;
   FCaretX := X;
   FCaretY := Y;
@@ -4844,6 +5152,11 @@ begin
   Dec(FCompound);
 end;
 
+procedure TJvCustomEditorBase.SetBracketHighlighting(Value: TJvBracketHighlighting);
+begin
+  if Value <> BracketHighlighting then
+    BracketHighlighting.Assign(Value);
+end;
 
 //=== { TJvEditorCompletionList } ============================================
 
