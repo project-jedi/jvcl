@@ -1112,19 +1112,28 @@ end;
 procedure AdjustEndingSemicolon(Lines: TStrings);
 var
   S: string;
-  Len: Integer;
+  Len, Index: Integer;
 begin
   if Lines.Count > 0 then
   begin
-    S := Lines[Lines.Count - 1];
+    Index := Lines.Count - 1;
+    S := Lines[Index];
     Len := Length(S);
+
+    { If the last line is a comment then we have a problem. Here we allow the
+      last comment to have no comma } 
+    if (Len > 2) and (S[1] = '{') and (S[2] = '$') and (Index > 0) then
+    begin
+      Dec(Index);
+      S := Lines[Index];
+      Len := Length(S);
+    end;
     if Len > 0 then
     begin
       if S[Len] = ',' then
       begin
         Delete(S, Len, 1);
-        Lines[Lines.Count - 1] := S;
-        //Lines.Add('');
+        Lines[Index] := S;
       end;
     end;
   end;
