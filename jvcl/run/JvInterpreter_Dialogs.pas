@@ -826,13 +826,13 @@ begin
   begin
     { TCommonDialog }
     AddClass(cDialogs, TCommonDialog, 'TCommonDialog');
-    AddGet(TCommonDialog, 'Handle', TCommonDialog_Read_Handle, 0, [0], varEmpty);
+    AddGet(TCommonDialog, 'Handle', TCommonDialog_Read_Handle, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddGet(TCommonDialog, 'Ctl3D', TCommonDialog_Read_Ctl3D, 0, [0], varEmpty);
-    AddSet(TCommonDialog, 'Ctl3D', TCommonDialog_Write_Ctl3D, 0, [0]);
+    AddGet(TCommonDialog, 'Ctl3D', TCommonDialog_Read_Ctl3D, 0, [varEmpty], varEmpty);
+    AddSet(TCommonDialog, 'Ctl3D', TCommonDialog_Write_Ctl3D, 0, [varEmpty]);
     {$ENDIF VCL}
-    AddGet(TCommonDialog, 'HelpContext', TCommonDialog_Read_HelpContext, 0, [0], varEmpty);
-    AddSet(TCommonDialog, 'HelpContext', TCommonDialog_Write_HelpContext, 0, [0]);
+    AddGet(TCommonDialog, 'HelpContext', TCommonDialog_Read_HelpContext, 0, [varEmpty], varEmpty);
+    AddSet(TCommonDialog, 'HelpContext', TCommonDialog_Write_HelpContext, 0, [varEmpty]);
     { TOpenOption }
     {$IFDEF VCL}
     AddConst(cDialogs, 'ofReadOnly', Ord(ofReadOnly));
@@ -864,32 +864,32 @@ begin
     { TOpenDialog }
     AddClass(cDialogs, TOpenDialog, 'TOpenDialog');
     AddGet(TOpenDialog, 'Create', TOpenDialog_Create, 1, [varEmpty], varEmpty);
-    AddGet(TOpenDialog, 'Execute', TOpenDialog_Execute, 0, [0], varEmpty);
+    AddGet(TOpenDialog, 'Execute', TOpenDialog_Execute, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddGet(TOpenDialog, 'FileEditStyle', TOpenDialog_Read_FileEditStyle, 0, [0], varEmpty);
-    AddSet(TOpenDialog, 'FileEditStyle', TOpenDialog_Write_FileEditStyle, 0, [0]);
+    AddGet(TOpenDialog, 'FileEditStyle', TOpenDialog_Read_FileEditStyle, 0, [varEmpty], varEmpty);
+    AddSet(TOpenDialog, 'FileEditStyle', TOpenDialog_Write_FileEditStyle, 0, [varEmpty]);
     {$ENDIF VCL}
-    AddGet(TOpenDialog, 'Files', TOpenDialog_Read_Files, 0, [0], varEmpty);
-    AddGet(TOpenDialog, 'HistoryList', TOpenDialog_Read_HistoryList, 0, [0], varEmpty);
-    AddSet(TOpenDialog, 'HistoryList', TOpenDialog_Write_HistoryList, 0, [0]);
-    AddGet(TOpenDialog, 'DefaultExt', TOpenDialog_Read_DefaultExt, 0, [0], varEmpty);
-    AddSet(TOpenDialog, 'DefaultExt', TOpenDialog_Write_DefaultExt, 0, [0]);
-    AddGet(TOpenDialog, 'FileName', TOpenDialog_Read_FileName, 0, [0], varEmpty);
-    AddSet(TOpenDialog, 'FileName', TOpenDialog_Write_FileName, 0, [0]);
-    AddGet(TOpenDialog, 'Filter', TOpenDialog_Read_Filter, 0, [0], varEmpty);
-    AddSet(TOpenDialog, 'Filter', TOpenDialog_Write_Filter, 0, [0]);
-    AddGet(TOpenDialog, 'FilterIndex', TOpenDialog_Read_FilterIndex, 0, [0], varEmpty);
-    AddSet(TOpenDialog, 'FilterIndex', TOpenDialog_Write_FilterIndex, 0, [0]);
-    AddGet(TOpenDialog, 'InitialDir', TOpenDialog_Read_InitialDir, 0, [0], varEmpty);
-    AddSet(TOpenDialog, 'InitialDir', TOpenDialog_Write_InitialDir, 0, [0]);
-    AddGet(TOpenDialog, 'Options', TOpenDialog_Read_Options, 0, [0], varEmpty);
-    AddSet(TOpenDialog, 'Options', TOpenDialog_Write_Options, 0, [0]);
-    AddGet(TOpenDialog, 'Title', TOpenDialog_Read_Title, 0, [0], varEmpty);
-    AddSet(TOpenDialog, 'Title', TOpenDialog_Write_Title, 0, [0]);
+    AddGet(TOpenDialog, 'Files', TOpenDialog_Read_Files, 0, [varEmpty], varEmpty);
+    AddGet(TOpenDialog, 'HistoryList', TOpenDialog_Read_HistoryList, 0, [varEmpty], varEmpty);
+    AddSet(TOpenDialog, 'HistoryList', TOpenDialog_Write_HistoryList, 0, [varEmpty]);
+    AddGet(TOpenDialog, 'DefaultExt', TOpenDialog_Read_DefaultExt, 0, [varEmpty], varEmpty);
+    AddSet(TOpenDialog, 'DefaultExt', TOpenDialog_Write_DefaultExt, 0, [varEmpty]);
+    AddGet(TOpenDialog, 'FileName', TOpenDialog_Read_FileName, 0, [varEmpty], varEmpty);
+    AddSet(TOpenDialog, 'FileName', TOpenDialog_Write_FileName, 0, [varEmpty]);
+    AddGet(TOpenDialog, 'Filter', TOpenDialog_Read_Filter, 0, [varEmpty], varEmpty);
+    AddSet(TOpenDialog, 'Filter', TOpenDialog_Write_Filter, 0, [varEmpty]);
+    AddGet(TOpenDialog, 'FilterIndex', TOpenDialog_Read_FilterIndex, 0, [varEmpty], varEmpty);
+    AddSet(TOpenDialog, 'FilterIndex', TOpenDialog_Write_FilterIndex, 0, [varEmpty]);
+    AddGet(TOpenDialog, 'InitialDir', TOpenDialog_Read_InitialDir, 0, [varEmpty], varEmpty);
+    AddSet(TOpenDialog, 'InitialDir', TOpenDialog_Write_InitialDir, 0, [varEmpty]);
+    AddGet(TOpenDialog, 'Options', TOpenDialog_Read_Options, 0, [varEmpty], varEmpty);
+    AddSet(TOpenDialog, 'Options', TOpenDialog_Write_Options, 0, [varEmpty]);
+    AddGet(TOpenDialog, 'Title', TOpenDialog_Read_Title, 0, [varEmpty], varEmpty);
+    AddSet(TOpenDialog, 'Title', TOpenDialog_Write_Title, 0, [varEmpty]);
     { TSaveDialog }
     AddClass(cDialogs, TSaveDialog, 'TSaveDialog');
     AddGet(TSaveDialog, 'Create', TSaveDialog_Create, 1, [varEmpty], varEmpty);
-    AddGet(TSaveDialog, 'Execute', TSaveDialog_Execute, 0, [0], varEmpty);
+    AddGet(TSaveDialog, 'Execute', TSaveDialog_Execute, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
     { TColorDialogOption }
     AddConst(cDialogs, 'cdFullOpen', Ord(cdFullOpen));
@@ -901,14 +901,14 @@ begin
     { TColorDialog }
     AddClass(cDialogs, TColorDialog, 'TColorDialog');
     AddGet(TColorDialog, 'Create', TColorDialog_Create, 1, [varEmpty], varEmpty);
-    AddGet(TColorDialog, 'Execute', TColorDialog_Execute, 0, [0], varEmpty);
-    AddGet(TColorDialog, 'Color', TColorDialog_Read_Color, 0, [0], varEmpty);
-    AddSet(TColorDialog, 'Color', TColorDialog_Write_Color, 0, [0]);
-    AddGet(TColorDialog, 'CustomColors', TColorDialog_Read_CustomColors, 0, [0], varEmpty);
-    AddSet(TColorDialog, 'CustomColors', TColorDialog_Write_CustomColors, 0, [0]);
+    AddGet(TColorDialog, 'Execute', TColorDialog_Execute, 0, [varEmpty], varEmpty);
+    AddGet(TColorDialog, 'Color', TColorDialog_Read_Color, 0, [varEmpty], varEmpty);
+    AddSet(TColorDialog, 'Color', TColorDialog_Write_Color, 0, [varEmpty]);
+    AddGet(TColorDialog, 'CustomColors', TColorDialog_Read_CustomColors, 0, [varEmpty], varEmpty);
+    AddSet(TColorDialog, 'CustomColors', TColorDialog_Write_CustomColors, 0, [varEmpty]);
     {$IFDEF VCL}
-    AddGet(TColorDialog, 'Options', TColorDialog_Read_Options, 0, [0], varEmpty);
-    AddSet(TColorDialog, 'Options', TColorDialog_Write_Options, 0, [0]);
+    AddGet(TColorDialog, 'Options', TColorDialog_Read_Options, 0, [varEmpty], varEmpty);
+    AddSet(TColorDialog, 'Options', TColorDialog_Write_Options, 0, [varEmpty]);
     {$ENDIF VCL}
     {$IFDEF VCL}
     { TFontDialogOption }
@@ -936,24 +936,24 @@ begin
     { TFontDialog }
     AddClass(cDialogs, TFontDialog, 'TFontDialog');
     AddGet(TFontDialog, 'Create', TFontDialog_Create, 1, [varEmpty], varEmpty);
-    AddGet(TFontDialog, 'Execute', TFontDialog_Execute, 0, [0], varEmpty);
-    AddGet(TFontDialog, 'Font', TFontDialog_Read_Font, 0, [0], varEmpty);
-    AddSet(TFontDialog, 'Font', TFontDialog_Write_Font, 0, [0]);
+    AddGet(TFontDialog, 'Execute', TFontDialog_Execute, 0, [varEmpty], varEmpty);
+    AddGet(TFontDialog, 'Font', TFontDialog_Read_Font, 0, [varEmpty], varEmpty);
+    AddSet(TFontDialog, 'Font', TFontDialog_Write_Font, 0, [varEmpty]);
     {$IFDEF VCL}
-    AddGet(TFontDialog, 'Device', TFontDialog_Read_Device, 0, [0], varEmpty);
-    AddSet(TFontDialog, 'Device', TFontDialog_Write_Device, 0, [0]);
-    AddGet(TFontDialog, 'MinFontSize', TFontDialog_Read_MinFontSize, 0, [0], varEmpty);
-    AddSet(TFontDialog, 'MinFontSize', TFontDialog_Write_MinFontSize, 0, [0]);
-    AddGet(TFontDialog, 'MaxFontSize', TFontDialog_Read_MaxFontSize, 0, [0], varEmpty);
-    AddSet(TFontDialog, 'MaxFontSize', TFontDialog_Write_MaxFontSize, 0, [0]);
-    AddGet(TFontDialog, 'Options', TFontDialog_Read_Options, 0, [0], varEmpty);
-    AddSet(TFontDialog, 'Options', TFontDialog_Write_Options, 0, [0]);
+    AddGet(TFontDialog, 'Device', TFontDialog_Read_Device, 0, [varEmpty], varEmpty);
+    AddSet(TFontDialog, 'Device', TFontDialog_Write_Device, 0, [varEmpty]);
+    AddGet(TFontDialog, 'MinFontSize', TFontDialog_Read_MinFontSize, 0, [varEmpty], varEmpty);
+    AddSet(TFontDialog, 'MinFontSize', TFontDialog_Write_MinFontSize, 0, [varEmpty]);
+    AddGet(TFontDialog, 'MaxFontSize', TFontDialog_Read_MaxFontSize, 0, [varEmpty], varEmpty);
+    AddSet(TFontDialog, 'MaxFontSize', TFontDialog_Write_MaxFontSize, 0, [varEmpty]);
+    AddGet(TFontDialog, 'Options', TFontDialog_Read_Options, 0, [varEmpty], varEmpty);
+    AddSet(TFontDialog, 'Options', TFontDialog_Write_Options, 0, [varEmpty]);
     {$ENDIF VCL}
     {$IFDEF VCL}
     { TPrinterSetupDialog }
     AddClass(cDialogs, TPrinterSetupDialog, 'TPrinterSetupDialog');
     AddGet(TPrinterSetupDialog, 'Create', TPrinterSetupDialog_Create, 1, [varEmpty], varEmpty);
-    AddGet(TPrinterSetupDialog, 'Execute', TPrinterSetupDialog_Execute, 0, [0], varEmpty);
+    AddGet(TPrinterSetupDialog, 'Execute', TPrinterSetupDialog_Execute, 0, [varEmpty], varEmpty);
     { TPrintRange }
     AddConst(cDialogs, 'prAllPages', Ord(prAllPages));
     AddConst(cDialogs, 'prSelection', Ord(prSelection));
@@ -968,25 +968,25 @@ begin
     { TPrintDialog }
     AddClass(cDialogs, TPrintDialog, 'TPrintDialog');
     AddGet(TPrintDialog, 'Create', TPrintDialog_Create, 1, [varEmpty], varEmpty);
-    AddGet(TPrintDialog, 'Execute', TPrintDialog_Execute, 0, [0], varEmpty);
-    AddGet(TPrintDialog, 'Collate', TPrintDialog_Read_Collate, 0, [0], varEmpty);
-    AddSet(TPrintDialog, 'Collate', TPrintDialog_Write_Collate, 0, [0]);
-    AddGet(TPrintDialog, 'Copies', TPrintDialog_Read_Copies, 0, [0], varEmpty);
-    AddSet(TPrintDialog, 'Copies', TPrintDialog_Write_Copies, 0, [0]);
-    AddGet(TPrintDialog, 'FromPage', TPrintDialog_Read_FromPage, 0, [0], varEmpty);
-    AddSet(TPrintDialog, 'FromPage', TPrintDialog_Write_FromPage, 0, [0]);
-    AddGet(TPrintDialog, 'MinPage', TPrintDialog_Read_MinPage, 0, [0], varEmpty);
-    AddSet(TPrintDialog, 'MinPage', TPrintDialog_Write_MinPage, 0, [0]);
-    AddGet(TPrintDialog, 'MaxPage', TPrintDialog_Read_MaxPage, 0, [0], varEmpty);
-    AddSet(TPrintDialog, 'MaxPage', TPrintDialog_Write_MaxPage, 0, [0]);
-    AddGet(TPrintDialog, 'Options', TPrintDialog_Read_Options, 0, [0], varEmpty);
-    AddSet(TPrintDialog, 'Options', TPrintDialog_Write_Options, 0, [0]);
-    AddGet(TPrintDialog, 'PrintToFile', TPrintDialog_Read_PrintToFile, 0, [0], varEmpty);
-    AddSet(TPrintDialog, 'PrintToFile', TPrintDialog_Write_PrintToFile, 0, [0]);
-    AddGet(TPrintDialog, 'PrintRange', TPrintDialog_Read_PrintRange, 0, [0], varEmpty);
-    AddSet(TPrintDialog, 'PrintRange', TPrintDialog_Write_PrintRange, 0, [0]);
-    AddGet(TPrintDialog, 'ToPage', TPrintDialog_Read_ToPage, 0, [0], varEmpty);
-    AddSet(TPrintDialog, 'ToPage', TPrintDialog_Write_ToPage, 0, [0]);
+    AddGet(TPrintDialog, 'Execute', TPrintDialog_Execute, 0, [varEmpty], varEmpty);
+    AddGet(TPrintDialog, 'Collate', TPrintDialog_Read_Collate, 0, [varEmpty], varEmpty);
+    AddSet(TPrintDialog, 'Collate', TPrintDialog_Write_Collate, 0, [varEmpty]);
+    AddGet(TPrintDialog, 'Copies', TPrintDialog_Read_Copies, 0, [varEmpty], varEmpty);
+    AddSet(TPrintDialog, 'Copies', TPrintDialog_Write_Copies, 0, [varEmpty]);
+    AddGet(TPrintDialog, 'FromPage', TPrintDialog_Read_FromPage, 0, [varEmpty], varEmpty);
+    AddSet(TPrintDialog, 'FromPage', TPrintDialog_Write_FromPage, 0, [varEmpty]);
+    AddGet(TPrintDialog, 'MinPage', TPrintDialog_Read_MinPage, 0, [varEmpty], varEmpty);
+    AddSet(TPrintDialog, 'MinPage', TPrintDialog_Write_MinPage, 0, [varEmpty]);
+    AddGet(TPrintDialog, 'MaxPage', TPrintDialog_Read_MaxPage, 0, [varEmpty], varEmpty);
+    AddSet(TPrintDialog, 'MaxPage', TPrintDialog_Write_MaxPage, 0, [varEmpty]);
+    AddGet(TPrintDialog, 'Options', TPrintDialog_Read_Options, 0, [varEmpty], varEmpty);
+    AddSet(TPrintDialog, 'Options', TPrintDialog_Write_Options, 0, [varEmpty]);
+    AddGet(TPrintDialog, 'PrintToFile', TPrintDialog_Read_PrintToFile, 0, [varEmpty], varEmpty);
+    AddSet(TPrintDialog, 'PrintToFile', TPrintDialog_Write_PrintToFile, 0, [varEmpty]);
+    AddGet(TPrintDialog, 'PrintRange', TPrintDialog_Read_PrintRange, 0, [varEmpty], varEmpty);
+    AddSet(TPrintDialog, 'PrintRange', TPrintDialog_Write_PrintRange, 0, [varEmpty]);
+    AddGet(TPrintDialog, 'ToPage', TPrintDialog_Read_ToPage, 0, [varEmpty], varEmpty);
+    AddSet(TPrintDialog, 'ToPage', TPrintDialog_Write_ToPage, 0, [varEmpty]);
     {$ENDIF VCL}
     { TFindOption }
     AddConst(cDialogs, 'frDown', Ord(frDown));
@@ -1006,28 +1006,28 @@ begin
     AddClass(cDialogs, TFindDialog, 'TFindDialog');
     AddGet(TFindDialog, 'Create', TFindDialog_Create, 1, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddGet(TFindDialog, 'CloseDialog', TFindDialog_CloseDialog, 0, [0], varEmpty);
+    AddGet(TFindDialog, 'CloseDialog', TFindDialog_CloseDialog, 0, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddGet(TFindDialog, 'Execute', TFindDialog_Execute, 0, [0], varEmpty);
+    AddGet(TFindDialog, 'Execute', TFindDialog_Execute, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddGet(TFindDialog, 'Left', TFindDialog_Read_Left, 0, [0], varEmpty);
-    AddSet(TFindDialog, 'Left', TFindDialog_Write_Left, 0, [0]);
+    AddGet(TFindDialog, 'Left', TFindDialog_Read_Left, 0, [varEmpty], varEmpty);
+    AddSet(TFindDialog, 'Left', TFindDialog_Write_Left, 0, [varEmpty]);
     {$ENDIF VCL}
-    AddGet(TFindDialog, 'Position', TFindDialog_Read_Position, 0, [0], varEmpty);
-    AddSet(TFindDialog, 'Position', TFindDialog_Write_Position, 0, [0]);
+    AddGet(TFindDialog, 'Position', TFindDialog_Read_Position, 0, [varEmpty], varEmpty);
+    AddSet(TFindDialog, 'Position', TFindDialog_Write_Position, 0, [varEmpty]);
     {$IFDEF VCL}
-    AddGet(TFindDialog, 'Top', TFindDialog_Read_Top, 0, [0], varEmpty);
-    AddSet(TFindDialog, 'Top', TFindDialog_Write_Top, 0, [0]);
+    AddGet(TFindDialog, 'Top', TFindDialog_Read_Top, 0, [varEmpty], varEmpty);
+    AddSet(TFindDialog, 'Top', TFindDialog_Write_Top, 0, [varEmpty]);
     {$ENDIF VCL}
-    AddGet(TFindDialog, 'FindText', TFindDialog_Read_FindText, 0, [0], varEmpty);
-    AddSet(TFindDialog, 'FindText', TFindDialog_Write_FindText, 0, [0]);
-    AddGet(TFindDialog, 'Options', TFindDialog_Read_Options, 0, [0], varEmpty);
-    AddSet(TFindDialog, 'Options', TFindDialog_Write_Options, 0, [0]);
+    AddGet(TFindDialog, 'FindText', TFindDialog_Read_FindText, 0, [varEmpty], varEmpty);
+    AddSet(TFindDialog, 'FindText', TFindDialog_Write_FindText, 0, [varEmpty]);
+    AddGet(TFindDialog, 'Options', TFindDialog_Read_Options, 0, [varEmpty], varEmpty);
+    AddSet(TFindDialog, 'Options', TFindDialog_Write_Options, 0, [varEmpty]);
     { TReplaceDialog }
     AddClass(cDialogs, TReplaceDialog, 'TReplaceDialog');
     AddGet(TReplaceDialog, 'Create', TReplaceDialog_Create, 1, [varEmpty], varEmpty);
-    AddGet(TReplaceDialog, 'ReplaceText', TReplaceDialog_Read_ReplaceText, 0, [0], varEmpty);
-    AddSet(TReplaceDialog, 'ReplaceText', TReplaceDialog_Write_ReplaceText, 0, [0]);
+    AddGet(TReplaceDialog, 'ReplaceText', TReplaceDialog_Read_ReplaceText, 0, [varEmpty], varEmpty);
+    AddSet(TReplaceDialog, 'ReplaceText', TReplaceDialog_Write_ReplaceText, 0, [varEmpty]);
     { TMsgDlgType }
     AddConst(cDialogs, 'mtWarning', Ord(mtWarning));
     AddConst(cDialogs, 'mtError', Ord(mtError));

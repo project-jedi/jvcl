@@ -1264,30 +1264,30 @@ begin
     { TControlScrollBar }
     AddClass(cForms, TControlScrollBar, 'TControlScrollBar');
     AddGet(TControlScrollBar, 'Assign', TControlScrollBar_Assign, 1, [varEmpty], varEmpty);
-    AddGet(TControlScrollBar, 'Kind', TControlScrollBar_Read_Kind, 0, [0], varEmpty);
-    AddGet(TControlScrollBar, 'ScrollPos', TControlScrollBar_Read_ScrollPos, 0, [0], varEmpty);
-    AddGet(TControlScrollBar, 'Margin', TControlScrollBar_Read_Margin, 0, [0], varEmpty);
-    AddSet(TControlScrollBar, 'Margin', TControlScrollBar_Write_Margin, 0, [0]);
-    AddGet(TControlScrollBar, 'Increment', TControlScrollBar_Read_Increment, 0, [0], varEmpty);
-    AddSet(TControlScrollBar, 'Increment', TControlScrollBar_Write_Increment, 0, [0]);
-    AddGet(TControlScrollBar, 'Range', TControlScrollBar_Read_Range, 0, [0], varEmpty);
-    AddSet(TControlScrollBar, 'Range', TControlScrollBar_Write_Range, 0, [0]);
-    AddGet(TControlScrollBar, 'Position', TControlScrollBar_Read_Position, 0, [0], varEmpty);
-    AddSet(TControlScrollBar, 'Position', TControlScrollBar_Write_Position, 0, [0]);
-    AddGet(TControlScrollBar, 'Tracking', TControlScrollBar_Read_Tracking, 0, [0], varEmpty);
-    AddSet(TControlScrollBar, 'Tracking', TControlScrollBar_Write_Tracking, 0, [0]);
-    AddGet(TControlScrollBar, 'Visible', TControlScrollBar_Read_Visible, 0, [0], varEmpty);
-    AddSet(TControlScrollBar, 'Visible', TControlScrollBar_Write_Visible, 0, [0]);
+    AddGet(TControlScrollBar, 'Kind', TControlScrollBar_Read_Kind, 0, [varEmpty], varEmpty);
+    AddGet(TControlScrollBar, 'ScrollPos', TControlScrollBar_Read_ScrollPos, 0, [varEmpty], varEmpty);
+    AddGet(TControlScrollBar, 'Margin', TControlScrollBar_Read_Margin, 0, [varEmpty], varEmpty);
+    AddSet(TControlScrollBar, 'Margin', TControlScrollBar_Write_Margin, 0, [varEmpty]);
+    AddGet(TControlScrollBar, 'Increment', TControlScrollBar_Read_Increment, 0, [varEmpty], varEmpty);
+    AddSet(TControlScrollBar, 'Increment', TControlScrollBar_Write_Increment, 0, [varEmpty]);
+    AddGet(TControlScrollBar, 'Range', TControlScrollBar_Read_Range, 0, [varEmpty], varEmpty);
+    AddSet(TControlScrollBar, 'Range', TControlScrollBar_Write_Range, 0, [varEmpty]);
+    AddGet(TControlScrollBar, 'Position', TControlScrollBar_Read_Position, 0, [varEmpty], varEmpty);
+    AddSet(TControlScrollBar, 'Position', TControlScrollBar_Write_Position, 0, [varEmpty]);
+    AddGet(TControlScrollBar, 'Tracking', TControlScrollBar_Read_Tracking, 0, [varEmpty], varEmpty);
+    AddSet(TControlScrollBar, 'Tracking', TControlScrollBar_Write_Tracking, 0, [varEmpty]);
+    AddGet(TControlScrollBar, 'Visible', TControlScrollBar_Read_Visible, 0, [varEmpty], varEmpty);
+    AddSet(TControlScrollBar, 'Visible', TControlScrollBar_Write_Visible, 0, [varEmpty]);
     { TScrollingWinControl }
     AddClass(cForms, TScrollingWinControl, 'TScrollingWinControl');
     AddGet(TScrollingWinControl, 'Create', TScrollingWinControl_Create, 1, [varEmpty], varEmpty);
-    AddGet(TScrollingWinControl, 'DisableAutoRange', TScrollingWinControl_DisableAutoRange, 0, [0], varEmpty);
-    AddGet(TScrollingWinControl, 'EnableAutoRange', TScrollingWinControl_EnableAutoRange, 0, [0], varEmpty);
+    AddGet(TScrollingWinControl, 'DisableAutoRange', TScrollingWinControl_DisableAutoRange, 0, [varEmpty], varEmpty);
+    AddGet(TScrollingWinControl, 'EnableAutoRange', TScrollingWinControl_EnableAutoRange, 0, [varEmpty], varEmpty);
     AddGet(TScrollingWinControl, 'ScrollInView', TScrollingWinControl_ScrollInView, 1, [varEmpty], varEmpty);
-    AddGet(TScrollingWinControl, 'HorzScrollBar', TScrollingWinControl_Read_HorzScrollBar, 0, [0], varEmpty);
-    AddSet(TScrollingWinControl, 'HorzScrollBar', TScrollingWinControl_Write_HorzScrollBar, 0, [0]);
-    AddGet(TScrollingWinControl, 'VertScrollBar', TScrollingWinControl_Read_VertScrollBar, 0, [0], varEmpty);
-    AddSet(TScrollingWinControl, 'VertScrollBar', TScrollingWinControl_Write_VertScrollBar, 0, [0]);
+    AddGet(TScrollingWinControl, 'HorzScrollBar', TScrollingWinControl_Read_HorzScrollBar, 0, [varEmpty], varEmpty);
+    AddSet(TScrollingWinControl, 'HorzScrollBar', TScrollingWinControl_Write_HorzScrollBar, 0, [varEmpty]);
+    AddGet(TScrollingWinControl, 'VertScrollBar', TScrollingWinControl_Read_VertScrollBar, 0, [varEmpty], varEmpty);
+    AddSet(TScrollingWinControl, 'VertScrollBar', TScrollingWinControl_Write_VertScrollBar, 0, [varEmpty]);
     {$IFDEF VCL}
     { TFormBorderStyle }
     AddConst(cForms, 'bsNone', Ord(bsNone));
@@ -1309,8 +1309,8 @@ begin
     { TScrollBox }
     AddClass(cForms, TScrollBox, 'TScrollBox');
     AddGet(TScrollBox, 'Create', TScrollBox_Create, 1, [varEmpty], varEmpty);
-    AddGet(TScrollBox, 'BorderStyle', TScrollBox_Read_BorderStyle, 0, [0], varEmpty);
-    AddSet(TScrollBox, 'BorderStyle', TScrollBox_Write_BorderStyle, 0, [0]);
+    AddGet(TScrollBox, 'BorderStyle', TScrollBox_Read_BorderStyle, 0, [varEmpty], varEmpty);
+    AddSet(TScrollBox, 'BorderStyle', TScrollBox_Write_BorderStyle, 0, [varEmpty]);
     { TWindowState }
     AddConst(cForms, 'wsNormal', Ord(wsNormal));
     AddConst(cForms, 'wsMinimized', Ord(wsMinimized));
@@ -1365,45 +1365,45 @@ begin
     {$ENDIF COMPILER5_UP}
     { TCustomForm }
     AddClass(cForms, TCustomForm, 'TCustomForm');
-    AddGet(TCustomForm, 'Close', TCustomForm_Close, 0, [0], varEmpty);
-    AddGet(TCustomForm, 'CloseQuery', TCustomForm_CloseQuery, 0, [0], varEmpty);
+    AddGet(TCustomForm, 'Close', TCustomForm_Close, 0, [varEmpty], varEmpty);
+    AddGet(TCustomForm, 'CloseQuery', TCustomForm_CloseQuery, 0, [varEmpty], varEmpty);
     AddGet(TCustomForm, 'DefocusControl', TCustomForm_DefocusControl, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TCustomForm, 'FocusControl', TCustomForm_FocusControl, 1, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddGet(TCustomForm, 'GetFormImage', TCustomForm_GetFormImage, 0, [0], varEmpty);
+    AddGet(TCustomForm, 'GetFormImage', TCustomForm_GetFormImage, 0, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddGet(TCustomForm, 'Hide', TCustomForm_Hide, 0, [0], varEmpty);
+    AddGet(TCustomForm, 'Hide', TCustomForm_Hide, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddGet(TCustomForm, 'Print', TCustomForm_Print, 0, [0], varEmpty);
+    AddGet(TCustomForm, 'Print', TCustomForm_Print, 0, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddGet(TCustomForm, 'Release', TCustomForm_Release, 0, [0], varEmpty);
+    AddGet(TCustomForm, 'Release', TCustomForm_Release, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
     AddGet(TCustomForm, 'SendCancelMode', TCustomForm_SendCancelMode, 1, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddGet(TCustomForm, 'SetFocus', TCustomForm_SetFocus, 0, [0], varEmpty);
+    AddGet(TCustomForm, 'SetFocus', TCustomForm_SetFocus, 0, [varEmpty], varEmpty);
     AddGet(TCustomForm, 'SetFocusedControl', TCustomForm_SetFocusedControl, 1, [varEmpty], varEmpty);
-    AddGet(TCustomForm, 'Show', TCustomForm_Show, 0, [0], varEmpty);
-    AddGet(TCustomForm, 'ShowModal', TCustomForm_ShowModal, 0, [0], varEmpty);
-    AddGet(TCustomForm, 'Active', TCustomForm_Read_Active, 0, [0], varEmpty);
-    AddGet(TCustomForm, 'ActiveControl', TCustomForm_Read_ActiveControl, 0, [0], varEmpty);
-    AddSet(TCustomForm, 'ActiveControl', TCustomForm_Write_ActiveControl, 0, [0]);
+    AddGet(TCustomForm, 'Show', TCustomForm_Show, 0, [varEmpty], varEmpty);
+    AddGet(TCustomForm, 'ShowModal', TCustomForm_ShowModal, 0, [varEmpty], varEmpty);
+    AddGet(TCustomForm, 'Active', TCustomForm_Read_Active, 0, [varEmpty], varEmpty);
+    AddGet(TCustomForm, 'ActiveControl', TCustomForm_Read_ActiveControl, 0, [varEmpty], varEmpty);
+    AddSet(TCustomForm, 'ActiveControl', TCustomForm_Write_ActiveControl, 0, [varEmpty]);
     {$IFDEF VCL}
-    AddGet(TCustomForm, 'ActiveOleControl', TCustomForm_Read_ActiveOleControl, 0, [0], varEmpty);
-    AddSet(TCustomForm, 'ActiveOleControl', TCustomForm_Write_ActiveOleControl, 0, [0]);
+    AddGet(TCustomForm, 'ActiveOleControl', TCustomForm_Read_ActiveOleControl, 0, [varEmpty], varEmpty);
+    AddSet(TCustomForm, 'ActiveOleControl', TCustomForm_Write_ActiveOleControl, 0, [varEmpty]);
     {$ENDIF VCL}
-    AddGet(TCustomForm, 'Canvas', TCustomForm_Read_Canvas, 0, [0], varEmpty);
-    AddGet(TCustomForm, 'DropTarget', TCustomForm_Read_DropTarget, 0, [0], varEmpty);
-    AddSet(TCustomForm, 'DropTarget', TCustomForm_Write_DropTarget, 0, [0]);
-    AddGet(TCustomForm, 'HelpFile', TCustomForm_Read_HelpFile, 0, [0], varEmpty);
-    AddSet(TCustomForm, 'HelpFile', TCustomForm_Write_HelpFile, 0, [0]);
-    AddGet(TCustomForm, 'KeyPreview', TCustomForm_Read_KeyPreview, 0, [0], varEmpty);
-    AddSet(TCustomForm, 'KeyPreview', TCustomForm_Write_KeyPreview, 0, [0]);
-    AddGet(TCustomForm, 'Menu', TCustomForm_Read_Menu, 0, [0], varEmpty);
-    AddSet(TCustomForm, 'Menu', TCustomForm_Write_Menu, 0, [0]);
-    AddGet(TCustomForm, 'ModalResult', TCustomForm_Read_ModalResult, 0, [0], varEmpty);
-    AddSet(TCustomForm, 'ModalResult', TCustomForm_Write_ModalResult, 0, [0]);
-    AddGet(TCustomForm, 'WindowState', TCustomForm_Read_WindowState, 0, [0], varEmpty);
-    AddSet(TCustomForm, 'WindowState', TCustomForm_Write_WindowState, 0, [0]);
+    AddGet(TCustomForm, 'Canvas', TCustomForm_Read_Canvas, 0, [varEmpty], varEmpty);
+    AddGet(TCustomForm, 'DropTarget', TCustomForm_Read_DropTarget, 0, [varEmpty], varEmpty);
+    AddSet(TCustomForm, 'DropTarget', TCustomForm_Write_DropTarget, 0, [varEmpty]);
+    AddGet(TCustomForm, 'HelpFile', TCustomForm_Read_HelpFile, 0, [varEmpty], varEmpty);
+    AddSet(TCustomForm, 'HelpFile', TCustomForm_Write_HelpFile, 0, [varEmpty]);
+    AddGet(TCustomForm, 'KeyPreview', TCustomForm_Read_KeyPreview, 0, [varEmpty], varEmpty);
+    AddSet(TCustomForm, 'KeyPreview', TCustomForm_Write_KeyPreview, 0, [varEmpty]);
+    AddGet(TCustomForm, 'Menu', TCustomForm_Read_Menu, 0, [varEmpty], varEmpty);
+    AddSet(TCustomForm, 'Menu', TCustomForm_Write_Menu, 0, [varEmpty]);
+    AddGet(TCustomForm, 'ModalResult', TCustomForm_Read_ModalResult, 0, [varEmpty], varEmpty);
+    AddSet(TCustomForm, 'ModalResult', TCustomForm_Write_ModalResult, 0, [varEmpty]);
+    AddGet(TCustomForm, 'WindowState', TCustomForm_Read_WindowState, 0, [varEmpty], varEmpty);
+    AddSet(TCustomForm, 'WindowState', TCustomForm_Write_WindowState, 0, [varEmpty]);
     { TForm }
     AddClass(cForms, TForm, 'TForm');
     AddGet(TForm, 'Create', TForm_Create, 1, [varEmpty], varEmpty);
@@ -1413,12 +1413,12 @@ begin
     AddGet(TForm, 'CreateNew', TForm_CreateNew, 2, [varEmpty, varEmpty], varEmpty);
     {$ENDIF}
     {$IFDEF VCL}
-    AddGet(TForm, 'ArrangeIcons', TForm_ArrangeIcons, 0, [0], varEmpty);
+    AddGet(TForm, 'ArrangeIcons', TForm_ArrangeIcons, 0, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddGet(TForm, 'Cascade', TForm_Cascade, 0, [0], varEmpty);
-    AddGet(TForm, 'Next', TForm_Next, 0, [0], varEmpty);
-    AddGet(TForm, 'Previous', TForm_Previous, 0, [0], varEmpty);
-    AddGet(TForm, 'Tile', TForm_Tile, 0, [0], varEmpty);
+    AddGet(TForm, 'Cascade', TForm_Cascade, 0, [varEmpty], varEmpty);
+    AddGet(TForm, 'Next', TForm_Next, 0, [varEmpty], varEmpty);
+    AddGet(TForm, 'Previous', TForm_Previous, 0, [varEmpty], varEmpty);
+    AddGet(TForm, 'Tile', TForm_Tile, 0, [varEmpty], varEmpty);
     { TDataModule }
     AddClass(cForms, TDataModule, 'TDataModule');
     AddGet(TDataModule, 'Create', TDataModule_Create, 1, [varEmpty], varEmpty);
@@ -1430,103 +1430,103 @@ begin
     { TScreen }
     AddClass(cForms, TScreen, 'TScreen');
     AddGet(TScreen, 'Create', TScreen_Create, 1, [varEmpty], varEmpty);
-    AddGet(TScreen, 'ActiveControl', TScreen_Read_ActiveControl, 0, [0], varEmpty);
-    AddGet(TScreen, 'ActiveCustomForm', TScreen_Read_ActiveCustomForm, 0, [0], varEmpty);
-    AddGet(TScreen, 'ActiveForm', TScreen_Read_ActiveForm, 0, [0], varEmpty);
-    AddGet(TScreen, 'CustomFormCount', TScreen_Read_CustomFormCount, 0, [0], varEmpty);
-    AddGet(TScreen, 'CustomForms', TScreen_Read_CustomForms, 1, [0], varEmpty);
-    AddGet(TScreen, 'Cursor', TScreen_Read_Cursor, 0, [0], varEmpty);
-    AddSet(TScreen, 'Cursor', TScreen_Write_Cursor, 0, [0]);
-    AddGet(TScreen, 'Cursors', TScreen_Read_Cursors, 1, [0], varEmpty);
-    AddSet(TScreen, 'Cursors', TScreen_Write_Cursors, 1, [1]);
-    AddGet(TScreen, 'DataModules', TScreen_Read_DataModules, 1, [0], varEmpty);
-    AddGet(TScreen, 'DataModuleCount', TScreen_Read_DataModuleCount, 0, [0], varEmpty);
+    AddGet(TScreen, 'ActiveControl', TScreen_Read_ActiveControl, 0, [varEmpty], varEmpty);
+    AddGet(TScreen, 'ActiveCustomForm', TScreen_Read_ActiveCustomForm, 0, [varEmpty], varEmpty);
+    AddGet(TScreen, 'ActiveForm', TScreen_Read_ActiveForm, 0, [varEmpty], varEmpty);
+    AddGet(TScreen, 'CustomFormCount', TScreen_Read_CustomFormCount, 0, [varEmpty], varEmpty);
+    AddGet(TScreen, 'CustomForms', TScreen_Read_CustomForms, 1, [varEmpty], varEmpty);
+    AddGet(TScreen, 'Cursor', TScreen_Read_Cursor, 0, [varEmpty], varEmpty);
+    AddSet(TScreen, 'Cursor', TScreen_Write_Cursor, 0, [varEmpty]);
+    AddGet(TScreen, 'Cursors', TScreen_Read_Cursors, 1, [varEmpty], varEmpty);
+    AddSet(TScreen, 'Cursors', TScreen_Write_Cursors, 1, [varNull]);
+    AddGet(TScreen, 'DataModules', TScreen_Read_DataModules, 1, [varEmpty], varEmpty);
+    AddGet(TScreen, 'DataModuleCount', TScreen_Read_DataModuleCount, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddGet(TScreen, 'IconFont', TScreen_Read_IconFont, 0, [0], varEmpty);
-    AddSet(TScreen, 'IconFont', TScreen_Write_IconFont, 0, [0]);
+    AddGet(TScreen, 'IconFont', TScreen_Read_IconFont, 0, [varEmpty], varEmpty);
+    AddSet(TScreen, 'IconFont', TScreen_Write_IconFont, 0, [varEmpty]);
     {$ENDIF VCL}
-    AddGet(TScreen, 'Fonts', TScreen_Read_Fonts, 0, [0], varEmpty);
-    AddGet(TScreen, 'FormCount', TScreen_Read_FormCount, 0, [0], varEmpty);
-    AddIGet(TScreen, cForms, TScreen_Read_Forms, 1, [0], varEmpty); // ivan_ra
+    AddGet(TScreen, 'Fonts', TScreen_Read_Fonts, 0, [varEmpty], varEmpty);
+    AddGet(TScreen, 'FormCount', TScreen_Read_FormCount, 0, [varEmpty], varEmpty);
+    AddIGet(TScreen, cForms, TScreen_Read_Forms, 1, [varEmpty], varEmpty); // ivan_ra
     {$IFDEF VCL}
-    AddGet(TScreen, 'Imes', TScreen_Read_Imes, 0, [0], varEmpty);
-    AddGet(TScreen, 'DefaultIme', TScreen_Read_DefaultIme, 0, [0], varEmpty);
-    AddGet(TScreen, 'DefaultKbLayout', TScreen_Read_DefaultKbLayout, 0, [0], varEmpty);
+    AddGet(TScreen, 'Imes', TScreen_Read_Imes, 0, [varEmpty], varEmpty);
+    AddGet(TScreen, 'DefaultIme', TScreen_Read_DefaultIme, 0, [varEmpty], varEmpty);
+    AddGet(TScreen, 'DefaultKbLayout', TScreen_Read_DefaultKbLayout, 0, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddGet(TScreen, 'Height', TScreen_Read_Height, 0, [0], varEmpty);
-    AddGet(TScreen, 'PixelsPerInch', TScreen_Read_PixelsPerInch, 0, [0], varEmpty);
-    AddGet(TScreen, 'Width', TScreen_Read_Width, 0, [0], varEmpty);
+    AddGet(TScreen, 'Height', TScreen_Read_Height, 0, [varEmpty], varEmpty);
+    AddGet(TScreen, 'PixelsPerInch', TScreen_Read_PixelsPerInch, 0, [varEmpty], varEmpty);
+    AddGet(TScreen, 'Width', TScreen_Read_Width, 0, [varEmpty], varEmpty);
     { TTimerMode }
     AddConst(cForms, 'tmShow', Ord(tmShow));
     AddConst(cForms, 'tmHide', Ord(tmHide));
     { TApplication }
     AddClass(cForms, TApplication, 'TApplication');
     AddGet(TApplication, 'Create', TApplication_Create, 1, [varEmpty], varEmpty);
-    AddGet(TApplication, 'BringToFront', TApplication_BringToFront, 0, [0], varEmpty);
+    AddGet(TApplication, 'BringToFront', TApplication_BringToFront, 0, [varEmpty], varEmpty);
     AddGet(TApplication, 'ControlDestroyed', TApplication_ControlDestroyed, 1, [varEmpty], varEmpty);
-    AddGet(TApplication, 'CancelHint', TApplication_CancelHint, 0, [0], varEmpty);
+    AddGet(TApplication, 'CancelHint', TApplication_CancelHint, 0, [varEmpty], varEmpty);
     AddGet(TApplication, 'CreateForm', TApplication_CreateForm, 2, [varEmpty, varByRef], varEmpty);
     AddGet(TApplication, 'HandleException', TApplication_HandleException, 1, [varEmpty], varEmpty);
-    AddGet(TApplication, 'HandleMessage', TApplication_HandleMessage, 0, [0], varEmpty);
+    AddGet(TApplication, 'HandleMessage', TApplication_HandleMessage, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
     AddGet(TApplication, 'HelpCommand', TApplication_HelpCommand, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TApplication, 'HelpContext', TApplication_HelpContext, 1, [varEmpty], varEmpty);
     AddGet(TApplication, 'HelpJump', TApplication_HelpJump, 1, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddGet(TApplication, 'HideHint', TApplication_HideHint, 0, [0], varEmpty);
-    AddGet(TApplication, 'Initialize', TApplication_Initialize, 0, [0], varEmpty);
+    AddGet(TApplication, 'HideHint', TApplication_HideHint, 0, [varEmpty], varEmpty);
+    AddGet(TApplication, 'Initialize', TApplication_Initialize, 0, [varEmpty], varEmpty);
     AddGet(TApplication, 'MessageBox', TApplication_MessageBox, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddGet(TApplication, 'Minimize', TApplication_Minimize, 0, [0], varEmpty);
+    AddGet(TApplication, 'Minimize', TApplication_Minimize, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddGet(TApplication, 'NormalizeAllTopMosts', TApplication_NormalizeAllTopMosts, 0, [0], varEmpty);
+    AddGet(TApplication, 'NormalizeAllTopMosts', TApplication_NormalizeAllTopMosts, 0, [varEmpty], varEmpty);
     {$ENDIF VCL}
-    AddGet(TApplication, 'NormalizeTopMosts', TApplication_NormalizeTopMosts, 0, [0], varEmpty);
-    AddGet(TApplication, 'ProcessMessages', TApplication_ProcessMessages, 0, [0], varEmpty);
-    AddGet(TApplication, 'Restore', TApplication_Restore, 0, [0], varEmpty);
-    AddGet(TApplication, 'RestoreTopMosts', TApplication_RestoreTopMosts, 0, [0], varEmpty);
-    AddGet(TApplication, 'Run', TApplication_Run, 0, [0], varEmpty);
+    AddGet(TApplication, 'NormalizeTopMosts', TApplication_NormalizeTopMosts, 0, [varEmpty], varEmpty);
+    AddGet(TApplication, 'ProcessMessages', TApplication_ProcessMessages, 0, [varEmpty], varEmpty);
+    AddGet(TApplication, 'Restore', TApplication_Restore, 0, [varEmpty], varEmpty);
+    AddGet(TApplication, 'RestoreTopMosts', TApplication_RestoreTopMosts, 0, [varEmpty], varEmpty);
+    AddGet(TApplication, 'Run', TApplication_Run, 0, [varEmpty], varEmpty);
     AddGet(TApplication, 'ShowException', TApplication_ShowException, 1, [varEmpty], varEmpty);
-    AddGet(TApplication, 'Terminate', TApplication_Terminate, 0, [0], varEmpty);
-    AddGet(TApplication, 'Active', TApplication_Read_Active, 0, [0], varEmpty);
-    AddGet(TApplication, 'CurrentHelpFile', TApplication_Read_CurrentHelpFile, 0, [0], varEmpty);
+    AddGet(TApplication, 'Terminate', TApplication_Terminate, 0, [varEmpty], varEmpty);
+    AddGet(TApplication, 'Active', TApplication_Read_Active, 0, [varEmpty], varEmpty);
+    AddGet(TApplication, 'CurrentHelpFile', TApplication_Read_CurrentHelpFile, 0, [varEmpty], varEmpty);
     {$IFDEF VCL}
-    AddGet(TApplication, 'DialogHandle', TApplication_Read_DialogHandle, 0, [0], varEmpty);
-    AddSet(TApplication, 'DialogHandle', TApplication_Write_DialogHandle, 0, [0]);
+    AddGet(TApplication, 'DialogHandle', TApplication_Read_DialogHandle, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'DialogHandle', TApplication_Write_DialogHandle, 0, [varEmpty]);
     {$ENDIF VCL}
-    AddGet(TApplication, 'ExeName', TApplication_Read_ExeName, 0, [0], varEmpty);
-    AddGet(TApplication, 'Handle', TApplication_Read_Handle, 0, [0], varEmpty);
-    AddSet(TApplication, 'Handle', TApplication_Write_Handle, 0, [0]);
-    AddGet(TApplication, 'HelpFile', TApplication_Read_HelpFile, 0, [0], varEmpty);
-    AddSet(TApplication, 'HelpFile', TApplication_Write_HelpFile, 0, [0]);
-    AddGet(TApplication, 'Hint', TApplication_Read_Hint, 0, [0], varEmpty);
-    AddSet(TApplication, 'Hint', TApplication_Write_Hint, 0, [0]);
-    AddGet(TApplication, 'HintColor', TApplication_Read_HintColor, 0, [0], varEmpty);
-    AddSet(TApplication, 'HintColor', TApplication_Write_HintColor, 0, [0]);
-    AddGet(TApplication, 'HintPause', TApplication_Read_HintPause, 0, [0], varEmpty);
-    AddSet(TApplication, 'HintPause', TApplication_Write_HintPause, 0, [0]);
-    AddGet(TApplication, 'HintShortPause', TApplication_Read_HintShortPause, 0, [0], varEmpty);
-    AddSet(TApplication, 'HintShortPause', TApplication_Write_HintShortPause, 0, [0]);
-    AddGet(TApplication, 'HintHidePause', TApplication_Read_HintHidePause, 0, [0], varEmpty);
-    AddSet(TApplication, 'HintHidePause', TApplication_Write_HintHidePause, 0, [0]);
-    AddGet(TApplication, 'Icon', TApplication_Read_Icon, 0, [0], varEmpty);
-    AddSet(TApplication, 'Icon', TApplication_Write_Icon, 0, [0]);
-    AddGet(TApplication, 'MainForm', TApplication_Read_MainForm, 0, [0], varEmpty);
-    AddGet(TApplication, 'ShowHint', TApplication_Read_ShowHint, 0, [0], varEmpty);
-    AddSet(TApplication, 'ShowHint', TApplication_Write_ShowHint, 0, [0]);
-    AddGet(TApplication, 'ShowMainForm', TApplication_Read_ShowMainForm, 0, [0], varEmpty);
-    AddSet(TApplication, 'ShowMainForm', TApplication_Write_ShowMainForm, 0, [0]);
-    AddGet(TApplication, 'Terminated', TApplication_Read_Terminated, 0, [0], varEmpty);
-    AddGet(TApplication, 'Title', TApplication_Read_Title, 0, [0], varEmpty);
-    AddSet(TApplication, 'Title', TApplication_Write_Title, 0, [0]);
+    AddGet(TApplication, 'ExeName', TApplication_Read_ExeName, 0, [varEmpty], varEmpty);
+    AddGet(TApplication, 'Handle', TApplication_Read_Handle, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'Handle', TApplication_Write_Handle, 0, [varEmpty]);
+    AddGet(TApplication, 'HelpFile', TApplication_Read_HelpFile, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'HelpFile', TApplication_Write_HelpFile, 0, [varEmpty]);
+    AddGet(TApplication, 'Hint', TApplication_Read_Hint, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'Hint', TApplication_Write_Hint, 0, [varEmpty]);
+    AddGet(TApplication, 'HintColor', TApplication_Read_HintColor, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'HintColor', TApplication_Write_HintColor, 0, [varEmpty]);
+    AddGet(TApplication, 'HintPause', TApplication_Read_HintPause, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'HintPause', TApplication_Write_HintPause, 0, [varEmpty]);
+    AddGet(TApplication, 'HintShortPause', TApplication_Read_HintShortPause, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'HintShortPause', TApplication_Write_HintShortPause, 0, [varEmpty]);
+    AddGet(TApplication, 'HintHidePause', TApplication_Read_HintHidePause, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'HintHidePause', TApplication_Write_HintHidePause, 0, [varEmpty]);
+    AddGet(TApplication, 'Icon', TApplication_Read_Icon, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'Icon', TApplication_Write_Icon, 0, [varEmpty]);
+    AddGet(TApplication, 'MainForm', TApplication_Read_MainForm, 0, [varEmpty], varEmpty);
+    AddGet(TApplication, 'ShowHint', TApplication_Read_ShowHint, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'ShowHint', TApplication_Write_ShowHint, 0, [varEmpty]);
+    AddGet(TApplication, 'ShowMainForm', TApplication_Read_ShowMainForm, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'ShowMainForm', TApplication_Write_ShowMainForm, 0, [varEmpty]);
+    AddGet(TApplication, 'Terminated', TApplication_Read_Terminated, 0, [varEmpty], varEmpty);
+    AddGet(TApplication, 'Title', TApplication_Read_Title, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'Title', TApplication_Write_Title, 0, [varEmpty]);
     {$IFDEF VCL}
-    AddGet(TApplication, 'UpdateFormatSettings', TApplication_Read_UpdateFormatSettings, 0, [0], varEmpty);
-    AddSet(TApplication, 'UpdateFormatSettings', TApplication_Write_UpdateFormatSettings, 0, [0]);
-    AddGet(TApplication, 'UpdateMetricSettings', TApplication_Read_UpdateMetricSettings, 0, [0], varEmpty);
-    AddSet(TApplication, 'UpdateMetricSettings', TApplication_Write_UpdateMetricSettings, 0, [0]);
+    AddGet(TApplication, 'UpdateFormatSettings', TApplication_Read_UpdateFormatSettings, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'UpdateFormatSettings', TApplication_Write_UpdateFormatSettings, 0, [varEmpty]);
+    AddGet(TApplication, 'UpdateMetricSettings', TApplication_Read_UpdateMetricSettings, 0, [varEmpty], varEmpty);
+    AddSet(TApplication, 'UpdateMetricSettings', TApplication_Write_UpdateMetricSettings, 0, [varEmpty]);
     {$ENDIF VCL}
 
-    AddFunction(cForms, 'Application', JvInterpreter_Application, 0, [0], varEmpty);
-    AddFunction(cForms, 'Screen', JvInterpreter_Screen, 0, [0], varEmpty);
+    AddFunction(cForms, 'Application', JvInterpreter_Application, 0, [varEmpty], varEmpty);
+    AddFunction(cForms, 'Screen', JvInterpreter_Screen, 0, [varEmpty], varEmpty);
 
     AddFunction(cForms, 'GetParentForm', JvInterpreter_GetParentForm, 1, [varEmpty], varEmpty);
     AddFunction(cForms, 'ValidParentForm', JvInterpreter_ValidParentForm, 1, [varEmpty], varEmpty);
@@ -1538,7 +1538,7 @@ begin
     {$IFDEF VCL}
     AddFunction(cForms, 'KeysToShiftState', JvInterpreter_KeysToShiftState, 1, [varEmpty], varEmpty);
     AddFunction(cForms, 'KeyDataToShiftState', JvInterpreter_KeyDataToShiftState, 1, [varEmpty], varEmpty);
-    AddFunction(cForms, 'ForegroundTask', JvInterpreter_ForegroundTask, 0, [0], varEmpty);
+    AddFunction(cForms, 'ForegroundTask', JvInterpreter_ForegroundTask, 0, [varEmpty], varEmpty);
     {$ENDIF VCL}
 
     AddHandler(cForms, 'TCloseEvent', TJvInterpreterFormsEvent, @TJvInterpreterFormsEvent.CloseEvent);

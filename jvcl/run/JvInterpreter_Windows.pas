@@ -137,10 +137,10 @@ begin
       varInteger), RFD('Bottom', 12, varInteger)], nil, nil, nil);
     AddFunction(cWindows, 'Rect', JvInterpreter_Rect, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
     AddFunction(cWindows, 'Bounds', JvInterpreter_Bounds, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
-    AddRecGet(cWindows, 'TRect', 'TopLeft', TRect_Read_TopLeft, 0, [0], varRecord);
-    AddRecSet(cWindows, 'TRect', 'TopLeft', TRect_Write_TopLeft, 0, [0]);
-    AddRecGet(cWindows, 'TRect', 'BottomRight', TRect_Read_BottomRight, 0, [0], varRecord);
-    AddRecSet(cWindows, 'TRect', 'BottomRight', TRect_Write_BottomRight, 0, [0]);
+    AddRecGet(cWindows, 'TRect', 'TopLeft', TRect_Read_TopLeft, 0, [varEmpty], varRecord);
+    AddRecSet(cWindows, 'TRect', 'TopLeft', TRect_Write_TopLeft, 0, [varEmpty]);
+    AddRecGet(cWindows, 'TRect', 'BottomRight', TRect_Read_BottomRight, 0, [varEmpty], varRecord);
+    AddRecSet(cWindows, 'TRect', 'BottomRight', TRect_Write_BottomRight, 0, [varEmpty]);
 
     AddExtFun(cWindows, 'MessageBox', 0, user32, 'MessageBoxA', -1, 4, [varInteger, varString, varString, varInteger],
       varInteger);

@@ -1762,10 +1762,10 @@ begin
     AddGet(Exception, 'CreateFmtHelp', Exception_CreateFmtHelp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(Exception, 'CreateResHelp', Exception_CreateResHelp, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(Exception, 'CreateResFmtHelp', Exception_CreateResFmtHelp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddGet(Exception, 'HelpContext', Exception_Read_HelpContext, 0, [0], varEmpty);
-    AddSet(Exception, 'HelpContext', Exception_Write_HelpContext, 0, [0]);
-    AddGet(Exception, 'Message', Exception_Read_Message, 0, [0], varEmpty);
-    AddSet(Exception, 'Message', Exception_Write_Message, 0, [0]);
+    AddGet(Exception, 'HelpContext', Exception_Read_HelpContext, 0, [varEmpty], varEmpty);
+    AddSet(Exception, 'HelpContext', Exception_Write_HelpContext, 0, [varEmpty]);
+    AddGet(Exception, 'Message', Exception_Read_Message, 0, [varEmpty], varEmpty);
+    AddSet(Exception, 'Message', Exception_Write_Message, 0, [varEmpty]);
     { EAbort }
     AddClass(cSysUtils, EAbort, 'EAbort');
     { EOutOfMemory }
@@ -1923,7 +1923,7 @@ begin
     {$ENDIF MSWINDOWS}
     AddFunction(cSysUtils, 'FileDateToDateTime', JvInterpreter_FileDateToDateTime, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'DateTimeToFileDate', JvInterpreter_DateTimeToFileDate, 1, [varEmpty], varEmpty);
-    AddFunction(cSysUtils, 'GetCurrentDir', JvInterpreter_GetCurrentDir, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'GetCurrentDir', JvInterpreter_GetCurrentDir, 0, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'SetCurrentDir', JvInterpreter_SetCurrentDir, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'CreateDir', JvInterpreter_CreateDir, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'RemoveDir', JvInterpreter_RemoveDir, 1, [varEmpty], varEmpty);
@@ -1981,9 +1981,9 @@ begin
     { AddFunction(cSysUtils, 'DateTimeToSystemTime', JvInterpreter_DateTimeToSystemTime, 2, [varEmpty, varByRef], varEmpty);
     AddFunction(cSysUtils, 'SystemTimeToDateTime', JvInterpreter_SystemTimeToDateTime, 1, [varEmpty], varEmpty); }
     AddFunction(cSysUtils, 'DayOfWeek', JvInterpreter_DayOfWeek, 1, [varEmpty], varEmpty);
-    AddFunction(cSysUtils, 'Date', JvInterpreter_Date, 0, [0], varEmpty);
-    AddFunction(cSysUtils, 'Time', JvInterpreter_Time, 0, [0], varEmpty);
-    AddFunction(cSysUtils, 'Now', JvInterpreter_Now, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'Date', JvInterpreter_Date, 0, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'Time', JvInterpreter_Time, 0, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'Now', JvInterpreter_Now, 0, [varEmpty], varEmpty);
     
     AddFunction(cSysUtils, 'IncMonth', JvInterpreter_IncMonth, 2, [varEmpty, varEmpty], varEmpty);
     AddFunction(cSysUtils, 'IsLeapYear', JvInterpreter_IsLeapYear, 1, [varEmpty], varEmpty);
@@ -1999,17 +1999,17 @@ begin
     AddFunction(cSysUtils, 'SysErrorMessage', JvInterpreter_SysErrorMessage, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'GetLocaleStr', JvInterpreter_GetLocaleStr, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddFunction(cSysUtils, 'GetLocaleChar', JvInterpreter_GetLocaleChar, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFunction(cSysUtils, 'GetFormatSettings', JvInterpreter_GetFormatSettings, 0, [0], varEmpty);
-    AddFunction(cSysUtils, 'ExceptObject', JvInterpreter_ExceptObject, 0, [0], varEmpty);
-    AddFunction(cSysUtils, 'ExceptAddr', JvInterpreter_ExceptAddr, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'GetFormatSettings', JvInterpreter_GetFormatSettings, 0, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ExceptObject', JvInterpreter_ExceptObject, 0, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'ExceptAddr', JvInterpreter_ExceptAddr, 0, [varEmpty], varEmpty);
     
     AddFunction(cSysUtils, 'ExceptionErrorMessage', JvInterpreter_ExceptionErrorMessage, 4, [varEmpty, varEmpty, varEmpty,
       varEmpty], varEmpty);
     
     AddFunction(cSysUtils, 'ShowException', JvInterpreter_ShowException, 2, [varEmpty, varEmpty], varEmpty);
-    AddFunction(cSysUtils, 'Abort', JvInterpreter_Abort, 0, [0], varEmpty);
-    AddFunction(cSysUtils, 'OutOfMemoryError', JvInterpreter_OutOfMemoryError, 0, [0], varEmpty);
-    AddFunction(cSysUtils, 'Beep', JvInterpreter_Beep, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'Abort', JvInterpreter_Abort, 0, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'OutOfMemoryError', JvInterpreter_OutOfMemoryError, 0, [varEmpty], varEmpty);
+    AddFunction(cSysUtils, 'Beep', JvInterpreter_Beep, 0, [varEmpty], varEmpty);
 
     AddFunction(cSysUtils, 'ByteType', JvInterpreter_ByteType, 2, [varEmpty, varEmpty], varEmpty);
     AddFunction(cSysUtils, 'StrByteType', JvInterpreter_StrByteType, 2, [varEmpty, varEmpty], varEmpty);
@@ -2030,7 +2030,7 @@ begin
     AddFunction(cSysUtils, 'LoadPackage', JvInterpreter_LoadPackage, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'UnloadPackage', JvInterpreter_UnloadPackage, 1, [varEmpty], varEmpty);
     {$IFDEF MSWINDOWS}
-    AddFunction(cSysUtils, 'RaiseLastWin32Error', JvInterpreter_RaiseLastWin32Error, 0, [0], varEmpty);
+    AddFunction(cSysUtils, 'RaiseLastWin32Error', JvInterpreter_RaiseLastWin32Error, 0, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'Win32Check', JvInterpreter_Win32Check, 1, [varEmpty], varEmpty);
     {$ENDIF MSWINDOWS}
     

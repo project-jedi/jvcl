@@ -126,14 +126,14 @@ begin
     AddGet(EJvInterpreterError, 'Create', EJvInterpreterError_Create, 4, [varInteger, varInteger, varString,
       varString], varEmpty);
     AddGet(EJvInterpreterError, 'Assign', EJvInterpreterError_Assign, 1, [varEmpty], varEmpty);
-    AddGet(EJvInterpreterError, 'Clear', EJvInterpreterError_Clear, 0, [0], varEmpty);
-    AddGet(EJvInterpreterError, 'ErrCode', EJvInterpreterError_Read_ErrCode, 0, [0], varEmpty);
-    AddGet(EJvInterpreterError, 'ErrPos', EJvInterpreterError_Read_ErrPos, 0, [0], varEmpty);
-    AddGet(EJvInterpreterError, 'ErrName', EJvInterpreterError_Read_ErrName, 0, [0], varEmpty);
-    AddGet(EJvInterpreterError, 'ErrName2', EJvInterpreterError_Read_ErrName2, 0, [0], varEmpty);
-    AddGet(EJvInterpreterError, 'ErrUnitName', EJvInterpreterError_Read_ErrUnitName, 0, [0], varEmpty);
-    AddGet(EJvInterpreterError, 'ErrLine', EJvInterpreterError_Read_ErrLine, 0, [0], varEmpty);
-    AddGet(EJvInterpreterError, 'ErrMessage', EJvInterpreterError_Read_ErrMessage, 0, [0], varEmpty);
+    AddGet(EJvInterpreterError, 'Clear', EJvInterpreterError_Clear, 0, [varEmpty], varEmpty);
+    AddGet(EJvInterpreterError, 'ErrCode', EJvInterpreterError_Read_ErrCode, 0, [varEmpty], varEmpty);
+    AddGet(EJvInterpreterError, 'ErrPos', EJvInterpreterError_Read_ErrPos, 0, [varEmpty], varEmpty);
+    AddGet(EJvInterpreterError, 'ErrName', EJvInterpreterError_Read_ErrName, 0, [varEmpty], varEmpty);
+    AddGet(EJvInterpreterError, 'ErrName2', EJvInterpreterError_Read_ErrName2, 0, [varEmpty], varEmpty);
+    AddGet(EJvInterpreterError, 'ErrUnitName', EJvInterpreterError_Read_ErrUnitName, 0, [varEmpty], varEmpty);
+    AddGet(EJvInterpreterError, 'ErrLine', EJvInterpreterError_Read_ErrLine, 0, [varEmpty], varEmpty);
+    AddGet(EJvInterpreterError, 'ErrMessage', EJvInterpreterError_Read_ErrMessage, 0, [varEmpty], varEmpty);
   end;
 end;
 

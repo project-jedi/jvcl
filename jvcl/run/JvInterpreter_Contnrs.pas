@@ -304,54 +304,54 @@ begin
   begin
     { TObjectList }
     AddClass(cContnrs, TObjectList, 'TObjectList');
-    AddGet(TObjectList, 'Create', TObjectList_Create, 0, [0], varEmpty);
+    AddGet(TObjectList, 'Create', TObjectList_Create, 0, [varEmpty], varEmpty);
     AddGet(TObjectList, 'CreateOwns', TObjectList_CreateOwns, 1, [varBoolean], varEmpty);
     AddGet(TObjectList, 'Add', TObjectList_Add, 1, [varObject], varEmpty);
     AddGet(TObjectList, 'Remove', TObjectList_Remove, 1, [varObject], varEmpty);
     AddGet(TObjectList, 'IndexOf', TObjectList_IndexOf, 1, [varObject], varEmpty);
     AddGet(TObjectList, 'FindInstanceOf', TObjectList_FindInstanceOf, 3, [varEmpty, varBoolean, varInteger], varEmpty);
     AddGet(TObjectList, 'Insert', TObjectList_Insert, 2, [varInteger, varObject], varEmpty);
-    AddGet(TObjectList, 'OwnsObjects', TObjectList_Read_OwnsObjects, 0, [0], varEmpty);
-    AddSet(TObjectList, 'OwnsObjects', TObjectList_Write_OwnsObjects, 0, [0]);
-    AddGet(TObjectList, 'Items', TObjectList_Read_Items, 1, [0], varEmpty);
-    AddSet(TObjectList, 'Items', TObjectList_Write_Items, 1, [1]);
+    AddGet(TObjectList, 'OwnsObjects', TObjectList_Read_OwnsObjects, 0, [varEmpty], varEmpty);
+    AddSet(TObjectList, 'OwnsObjects', TObjectList_Write_OwnsObjects, 0, [varEmpty]);
+    AddGet(TObjectList, 'Items', TObjectList_Read_Items, 1, [varEmpty], varEmpty);
+    AddSet(TObjectList, 'Items', TObjectList_Write_Items, 1, [varNull]);
     { TComponentList }
     AddClass(cContnrs, TComponentList, 'TComponentList');
     AddGet(TComponentList, 'Add', TComponentList_Add, 1, [varObject], varEmpty);
     AddGet(TComponentList, 'Remove', TComponentList_Remove, 1, [varObject], varEmpty);
     AddGet(TComponentList, 'IndexOf', TComponentList_IndexOf, 1, [varObject], varEmpty);
     AddGet(TComponentList, 'Insert', TComponentList_Insert, 2, [varInteger, varObject], varEmpty);
-    AddGet(TComponentList, 'Items', TComponentList_Read_Items, 1, [0], varEmpty);
-    AddSet(TComponentList, 'Items', TComponentList_Write_Items, 1, [1]);
+    AddGet(TComponentList, 'Items', TComponentList_Read_Items, 1, [varEmpty], varEmpty);
+    AddSet(TComponentList, 'Items', TComponentList_Write_Items, 1, [varNull]);
     { TClassList }
     AddClass(cContnrs, TClassList, 'TClassList');
     AddGet(TClassList, 'Add', TClassList_Add, 1, [varEmpty], varEmpty);
     AddGet(TClassList, 'Remove', TClassList_Remove, 1, [varEmpty], varEmpty);
     AddGet(TClassList, 'IndexOf', TClassList_IndexOf, 1, [varEmpty], varEmpty);
     AddGet(TClassList, 'Insert', TClassList_Insert, 2, [varInteger, varEmpty], varEmpty);
-    AddGet(TClassList, 'Items', TClassList_Read_Items, 1, [0], varEmpty);
-    AddSet(TClassList, 'Items', TClassList_Write_Items, 1, [1]);
+    AddGet(TClassList, 'Items', TClassList_Read_Items, 1, [varEmpty], varEmpty);
+    AddSet(TClassList, 'Items', TClassList_Write_Items, 1, [varNull]);
     { TOrderedList }
     AddClass(cContnrs, TOrderedList, 'TOrderedList');
-    AddGet(TOrderedList, 'Count', TOrderedList_Count, 0, [0], varEmpty);
+    AddGet(TOrderedList, 'Count', TOrderedList_Count, 0, [varEmpty], varEmpty);
     AddGet(TOrderedList, 'AtLeast', TOrderedList_AtLeast, 1, [varInteger], varEmpty);
     AddGet(TOrderedList, 'Push', TOrderedList_Push, 1, [varPointer], varEmpty);
-    AddGet(TOrderedList, 'Pop', TOrderedList_Pop, 0, [0], varEmpty);
-    AddGet(TOrderedList, 'Peek', TOrderedList_Peek, 0, [0], varEmpty);
+    AddGet(TOrderedList, 'Pop', TOrderedList_Pop, 0, [varEmpty], varEmpty);
+    AddGet(TOrderedList, 'Peek', TOrderedList_Peek, 0, [varEmpty], varEmpty);
     { TStack }
     AddClass(cContnrs, TStack, 'TStack');
     { TObjectStack }
     AddClass(cContnrs, TObjectStack, 'TObjectStack');
     AddGet(TObjectStack, 'Push', TObjectStack_Push, 1, [varObject], varEmpty);
-    AddGet(TObjectStack, 'Pop', TObjectStack_Pop, 0, [0], varEmpty);
-    AddGet(TObjectStack, 'Peek', TObjectStack_Peek, 0, [0], varEmpty);
+    AddGet(TObjectStack, 'Pop', TObjectStack_Pop, 0, [varEmpty], varEmpty);
+    AddGet(TObjectStack, 'Peek', TObjectStack_Peek, 0, [varEmpty], varEmpty);
     { TQueue }
     AddClass(cContnrs, TQueue, 'TQueue');
     { TObjectQueue }
     AddClass(cContnrs, TObjectQueue, 'TObjectQueue');
     AddGet(TObjectQueue, 'Push', TObjectQueue_Push, 1, [varObject], varEmpty);
-    AddGet(TObjectQueue, 'Pop', TObjectQueue_Pop, 0, [0], varEmpty);
-    AddGet(TObjectQueue, 'Peek', TObjectQueue_Peek, 0, [0], varEmpty);
+    AddGet(TObjectQueue, 'Pop', TObjectQueue_Pop, 0, [varEmpty], varEmpty);
+    AddGet(TObjectQueue, 'Peek', TObjectQueue_Peek, 0, [varEmpty], varEmpty);
   end;
 end;
 

@@ -596,7 +596,7 @@ begin
     { TCustomLabel }
     AddClass(cStdCtrls, TCustomLabel, 'TCustomLabel');
     AddGet(TCustomLabel, 'Create', TCustomLabel_Create, 1, [varEmpty], varEmpty);
-    AddGet(TCustomLabel, 'Canvas', TCustomLabel_Read_Canvas, 0, [0], varEmpty);
+    AddGet(TCustomLabel, 'Canvas', TCustomLabel_Read_Canvas, 0, [varEmpty], varEmpty);
     { TLabel }
     AddClass(cStdCtrls, TLabel, 'TLabel');
     AddGet(TLabel, 'Create', TLabel_Create, 1, [varEmpty], varEmpty);
@@ -607,22 +607,22 @@ begin
     { TCustomEdit }
     AddClass(cStdCtrls, TCustomEdit, 'TCustomEdit');
     AddGet(TCustomEdit, 'Create', TCustomEdit_Create, 1, [varEmpty], varEmpty);
-    AddGet(TCustomEdit, 'Clear', TCustomEdit_Clear, 0, [0], varEmpty);
-    AddGet(TCustomEdit, 'ClearSelection', TCustomEdit_ClearSelection, 0, [0], varEmpty);
-    AddGet(TCustomEdit, 'CopyToClipboard', TCustomEdit_CopyToClipboard, 0, [0], varEmpty);
-    AddGet(TCustomEdit, 'CutToClipboard', TCustomEdit_CutToClipboard, 0, [0], varEmpty);
-    AddGet(TCustomEdit, 'PasteFromClipboard', TCustomEdit_PasteFromClipboard, 0, [0], varEmpty);
+    AddGet(TCustomEdit, 'Clear', TCustomEdit_Clear, 0, [varEmpty], varEmpty);
+    AddGet(TCustomEdit, 'ClearSelection', TCustomEdit_ClearSelection, 0, [varEmpty], varEmpty);
+    AddGet(TCustomEdit, 'CopyToClipboard', TCustomEdit_CopyToClipboard, 0, [varEmpty], varEmpty);
+    AddGet(TCustomEdit, 'CutToClipboard', TCustomEdit_CutToClipboard, 0, [varEmpty], varEmpty);
+    AddGet(TCustomEdit, 'PasteFromClipboard', TCustomEdit_PasteFromClipboard, 0, [varEmpty], varEmpty);
     AddGet(TCustomEdit, 'GetSelTextBuf', TCustomEdit_GetSelTextBuf, 2, [varEmpty, varEmpty], varEmpty);
-    AddGet(TCustomEdit, 'SelectAll', TCustomEdit_SelectAll, 0, [0], varEmpty);
+    AddGet(TCustomEdit, 'SelectAll', TCustomEdit_SelectAll, 0, [varEmpty], varEmpty);
     AddGet(TCustomEdit, 'SetSelTextBuf', TCustomEdit_SetSelTextBuf, 1, [varEmpty], varEmpty);
-    AddGet(TCustomEdit, 'Modified', TCustomEdit_Read_Modified, 0, [0], varEmpty);
-    AddSet(TCustomEdit, 'Modified', TCustomEdit_Write_Modified, 0, [0]);
-    AddGet(TCustomEdit, 'SelLength', TCustomEdit_Read_SelLength, 0, [0], varEmpty);
-    AddSet(TCustomEdit, 'SelLength', TCustomEdit_Write_SelLength, 0, [0]);
-    AddGet(TCustomEdit, 'SelStart', TCustomEdit_Read_SelStart, 0, [0], varEmpty);
-    AddSet(TCustomEdit, 'SelStart', TCustomEdit_Write_SelStart, 0, [0]);
-    AddGet(TCustomEdit, 'SelText', TCustomEdit_Read_SelText, 0, [0], varEmpty);
-    AddSet(TCustomEdit, 'SelText', TCustomEdit_Write_SelText, 0, [0]);
+    AddGet(TCustomEdit, 'Modified', TCustomEdit_Read_Modified, 0, [varEmpty], varEmpty);
+    AddSet(TCustomEdit, 'Modified', TCustomEdit_Write_Modified, 0, [varEmpty]);
+    AddGet(TCustomEdit, 'SelLength', TCustomEdit_Read_SelLength, 0, [varEmpty], varEmpty);
+    AddSet(TCustomEdit, 'SelLength', TCustomEdit_Write_SelLength, 0, [varEmpty]);
+    AddGet(TCustomEdit, 'SelStart', TCustomEdit_Read_SelStart, 0, [varEmpty], varEmpty);
+    AddSet(TCustomEdit, 'SelStart', TCustomEdit_Write_SelStart, 0, [varEmpty]);
+    AddGet(TCustomEdit, 'SelText', TCustomEdit_Read_SelText, 0, [varEmpty], varEmpty);
+    AddSet(TCustomEdit, 'SelText', TCustomEdit_Write_SelText, 0, [varEmpty]);
     { TEdit }
     AddClass(cStdCtrls, TEdit, 'TEdit');
     AddGet(TEdit, 'Create', TEdit_Create, 1, [varEmpty], varEmpty);
@@ -634,8 +634,8 @@ begin
     { TCustomMemo }
     AddClass(cStdCtrls, TCustomMemo, 'TCustomMemo');
     AddGet(TCustomMemo, 'Create', TCustomMemo_Create, 1, [varEmpty], varEmpty);
-    AddGet(TCustomMemo, 'Lines', TCustomMemo_Read_Lines, 0, [0], varEmpty);
-    AddSet(TCustomMemo, 'Lines', TCustomMemo_Write_Lines, 0, [0]);
+    AddGet(TCustomMemo, 'Lines', TCustomMemo_Read_Lines, 0, [varEmpty], varEmpty);
+    AddSet(TCustomMemo, 'Lines', TCustomMemo_Write_Lines, 0, [varEmpty]);
     { TMemo }
     AddClass(cStdCtrls, TMemo, 'TMemo');
     AddGet(TMemo, 'Create', TMemo_Create, 1, [varEmpty], varEmpty);
@@ -654,28 +654,28 @@ begin
     { TCustomComboBox }
     AddClass(cStdCtrls, TCustomComboBox, 'TCustomComboBox');
     AddGet(TCustomComboBox, 'Create', TCustomComboBox_Create, 1, [varEmpty], varEmpty);
-    AddGet(TCustomComboBox, 'Clear', TCustomComboBox_Clear, 0, [0], varEmpty);
-    AddGet(TCustomComboBox, 'SelectAll', TCustomComboBox_SelectAll, 0, [0], varEmpty);
-    AddGet(TCustomComboBox, 'Canvas', TCustomComboBox_Read_Canvas, 0, [0], varEmpty);
-    AddGet(TCustomComboBox, 'DroppedDown', TCustomComboBox_Read_DroppedDown, 0, [0], varEmpty);
-    AddSet(TCustomComboBox, 'DroppedDown', TCustomComboBox_Write_DroppedDown, 0, [0]);
-    AddGet(TCustomComboBox, 'Items', TCustomComboBox_Read_Items, 0, [0], varEmpty);
-    AddSet(TCustomComboBox, 'Items', TCustomComboBox_Write_Items, 0, [0]);
-    AddGet(TCustomComboBox, 'ItemIndex', TCustomComboBox_Read_ItemIndex, 0, [0], varEmpty);
-    AddSet(TCustomComboBox, 'ItemIndex', TCustomComboBox_Write_ItemIndex, 0, [0]);
-    AddGet(TCustomComboBox, 'SelLength', TCustomComboBox_Read_SelLength, 0, [0], varEmpty);
-    AddSet(TCustomComboBox, 'SelLength', TCustomComboBox_Write_SelLength, 0, [0]);
-    AddGet(TCustomComboBox, 'SelStart', TCustomComboBox_Read_SelStart, 0, [0], varEmpty);
-    AddSet(TCustomComboBox, 'SelStart', TCustomComboBox_Write_SelStart, 0, [0]);
-    AddGet(TCustomComboBox, 'SelText', TCustomComboBox_Read_SelText, 0, [0], varEmpty);
-    AddSet(TCustomComboBox, 'SelText', TCustomComboBox_Write_SelText, 0, [0]);
+    AddGet(TCustomComboBox, 'Clear', TCustomComboBox_Clear, 0, [varEmpty], varEmpty);
+    AddGet(TCustomComboBox, 'SelectAll', TCustomComboBox_SelectAll, 0, [varEmpty], varEmpty);
+    AddGet(TCustomComboBox, 'Canvas', TCustomComboBox_Read_Canvas, 0, [varEmpty], varEmpty);
+    AddGet(TCustomComboBox, 'DroppedDown', TCustomComboBox_Read_DroppedDown, 0, [varEmpty], varEmpty);
+    AddSet(TCustomComboBox, 'DroppedDown', TCustomComboBox_Write_DroppedDown, 0, [varEmpty]);
+    AddGet(TCustomComboBox, 'Items', TCustomComboBox_Read_Items, 0, [varEmpty], varEmpty);
+    AddSet(TCustomComboBox, 'Items', TCustomComboBox_Write_Items, 0, [varEmpty]);
+    AddGet(TCustomComboBox, 'ItemIndex', TCustomComboBox_Read_ItemIndex, 0, [varEmpty], varEmpty);
+    AddSet(TCustomComboBox, 'ItemIndex', TCustomComboBox_Write_ItemIndex, 0, [varEmpty]);
+    AddGet(TCustomComboBox, 'SelLength', TCustomComboBox_Read_SelLength, 0, [varEmpty], varEmpty);
+    AddSet(TCustomComboBox, 'SelLength', TCustomComboBox_Write_SelLength, 0, [varEmpty]);
+    AddGet(TCustomComboBox, 'SelStart', TCustomComboBox_Read_SelStart, 0, [varEmpty], varEmpty);
+    AddSet(TCustomComboBox, 'SelStart', TCustomComboBox_Write_SelStart, 0, [varEmpty]);
+    AddGet(TCustomComboBox, 'SelText', TCustomComboBox_Read_SelText, 0, [varEmpty], varEmpty);
+    AddSet(TCustomComboBox, 'SelText', TCustomComboBox_Write_SelText, 0, [varEmpty]);
     { TComboBox }
     AddClass(cStdCtrls, TComboBox, 'TComboBox');
     AddGet(TComboBox, 'Create', TComboBox_Create, 1, [varEmpty], varEmpty);
     { TButton }
     AddClass(cStdCtrls, TButton, 'TButton');
     AddGet(TButton, 'Create', TButton_Create, 1, [varEmpty], varEmpty);
-    AddGet(TButton, 'Click', TButton_Click, 0, [0], varEmpty);
+    AddGet(TButton, 'Click', TButton_Click, 0, [varEmpty], varEmpty);
     { TCheckBoxState }
     AddConst(cStdCtrls, 'cbUnchecked', Ord(cbUnchecked));
     AddConst(cStdCtrls, 'cbChecked', Ord(cbChecked));
@@ -696,19 +696,19 @@ begin
     { TCustomListBox }
     AddClass(cStdCtrls, TCustomListBox, 'TCustomListBox');
     AddGet(TCustomListBox, 'Create', TCustomListBox_Create, 1, [varEmpty], varEmpty);
-    AddGet(TCustomListBox, 'Clear', TCustomListBox_Clear, 0, [0], varEmpty);
+    AddGet(TCustomListBox, 'Clear', TCustomListBox_Clear, 0, [varEmpty], varEmpty);
     AddGet(TCustomListBox, 'ItemAtPos', TCustomListBox_ItemAtPos, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TCustomListBox, 'ItemRect', TCustomListBox_ItemRect, 1, [varEmpty], varEmpty);
-    AddGet(TCustomListBox, 'Canvas', TCustomListBox_Read_Canvas, 0, [0], varEmpty);
-    AddGet(TCustomListBox, 'Items', TCustomListBox_Read_Items, 0, [0], varEmpty);
-    AddSet(TCustomListBox, 'Items', TCustomListBox_Write_Items, 0, [0]);
-    AddGet(TCustomListBox, 'ItemIndex', TCustomListBox_Read_ItemIndex, 0, [0], varEmpty);
-    AddSet(TCustomListBox, 'ItemIndex', TCustomListBox_Write_ItemIndex, 0, [0]);
-    AddGet(TCustomListBox, 'SelCount', TCustomListBox_Read_SelCount, 0, [0], varEmpty);
-    AddGet(TCustomListBox, 'Selected', TCustomListBox_Read_Selected, 1, [0], varEmpty);
-    AddSet(TCustomListBox, 'Selected', TCustomListBox_Write_Selected, 1, [1]);
-    AddGet(TCustomListBox, 'TopIndex', TCustomListBox_Read_TopIndex, 0, [0], varEmpty);
-    AddSet(TCustomListBox, 'TopIndex', TCustomListBox_Write_TopIndex, 0, [0]);
+    AddGet(TCustomListBox, 'Canvas', TCustomListBox_Read_Canvas, 0, [varEmpty], varEmpty);
+    AddGet(TCustomListBox, 'Items', TCustomListBox_Read_Items, 0, [varEmpty], varEmpty);
+    AddSet(TCustomListBox, 'Items', TCustomListBox_Write_Items, 0, [varEmpty]);
+    AddGet(TCustomListBox, 'ItemIndex', TCustomListBox_Read_ItemIndex, 0, [varEmpty], varEmpty);
+    AddSet(TCustomListBox, 'ItemIndex', TCustomListBox_Write_ItemIndex, 0, [varEmpty]);
+    AddGet(TCustomListBox, 'SelCount', TCustomListBox_Read_SelCount, 0, [varEmpty], varEmpty);
+    AddGet(TCustomListBox, 'Selected', TCustomListBox_Read_Selected, 1, [varEmpty], varEmpty);
+    AddSet(TCustomListBox, 'Selected', TCustomListBox_Write_Selected, 1, [varNull]);
+    AddGet(TCustomListBox, 'TopIndex', TCustomListBox_Read_TopIndex, 0, [varEmpty], varEmpty);
+    AddSet(TCustomListBox, 'TopIndex', TCustomListBox_Write_TopIndex, 0, [varEmpty]);
     { TListBox }
     AddClass(cStdCtrls, TListBox, 'TListBox');
     AddGet(TListBox, 'Create', TListBox_Create, 1, [varEmpty], varEmpty);
