@@ -53,7 +53,7 @@ type
     FChooser: TJvCategoryChooser;
     procedure ChooserCatChange(Sender: TObject);
     function IsWithinBounds(Category: Integer): Boolean;
-    procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
+    procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
   public
     procedure CreateParams(var Params: TCreateParams); override;
   end;
@@ -63,7 +63,7 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 uses
   InfoStrings, JvLinkLabelTools, Play;
@@ -72,10 +72,10 @@ procedure TJvLinkLabelMainForm.ChooserCatChange(Sender: TObject);
 begin
   with FChooser do
     if IsWithinBounds(SelectedCat) then
-  begin
-    lblHeading.Caption := Trim(CatList[SelectedCat]);
-    LinkLabel.Caption  := Info[SelectedCat];
-  end;
+    begin
+      lblHeading.Caption := Trim(CatList[SelectedCat]);
+      LinkLabel.Caption  := Info[SelectedCat];
+    end;
 end;
 
 procedure TJvLinkLabelMainForm.CreateParams(var Params: TCreateParams);
@@ -87,7 +87,7 @@ begin
     wind up with creating everything dynamically. Visual form inheritance could
     probably help us out, but this is just a demo application, and we'd just be
     complicating matters unnecessarily. }
-   inherited;
+   inherited CreateParams(Params);
    with Params do
      Style := (Style or WS_POPUP or WS_BORDER) and not WS_DLGFRAME;
 end;
@@ -115,12 +115,12 @@ begin
   Result := Category in [Low(Info)..High(Info)];
 end;
 
-procedure TJvLinkLabelMainForm.WMNCHitTest(var Message: TWMNCHitTest);
+procedure TJvLinkLabelMainForm.WMNCHitTest(var Msg: TWMNCHitTest);
 begin
   inherited;
   if (ScreenToClient(Mouse.CursorPos).Y < imgLogo.Top + imgLogo.Height) and
     (ScreenToClient(Mouse.CursorPos).X < lblClose.Left) then
-    Message.Result := HTCAPTION;
+    Msg.Result := HTCAPTION;
 end;
 
 procedure TJvLinkLabelMainForm.FormKeyPress(Sender: TObject; var Key: Char);
@@ -167,30 +167,25 @@ begin
         0: TWebTools.OpenWebPage('http://www.mozilla.org/MPL/MPL-1.1.html');
         1: GoToNextCategory;
       end;
-
     1:
       case LinkNumber of
         0: DisplayLink;
         1: GoToNextCategory;
       end;
-
     2:
       case LinkNumber of
         0: GoToNextCategory;
         1: GoToNextCategory(2);
       end;
-
     5:
       begin
         frmPlay := TfrmPlay.Create(nil);
-
         try
           frmPlay.ShowModal;
         finally
           frmPlay.Free;
         end;
       end;
-
     6:
       GoToNextCategory;
   end;

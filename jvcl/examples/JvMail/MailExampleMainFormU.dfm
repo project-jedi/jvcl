@@ -7,12 +7,15 @@ object MailExampleMainForm: TMailExampleMainForm
   Color = clBtnFace
   Constraints.MinHeight = 350
   Constraints.MinWidth = 400
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -199,7 +202,7 @@ object MailExampleMainForm: TMailExampleMainForm
     BlindCopy = <>
     CarbonCopy = <>
     Recipient = <>
-    Left = 192
+    Left = 224
     Top = 372
   end
   object JvOpenDialog1: TJvOpenDialog
@@ -210,7 +213,7 @@ object MailExampleMainForm: TMailExampleMainForm
     DefBtnCaption = 'Add'
     Height = 264
     Width = 426
-    Left = 124
+    Left = 156
     Top = 372
   end
 end

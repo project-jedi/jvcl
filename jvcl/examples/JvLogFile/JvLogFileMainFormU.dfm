@@ -1,16 +1,21 @@
 object JvLogFileMainForm: TJvLogFileMainForm
   Left = 382
   Top = 192
-  Width = 421
-  Height = 300
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'JvLogFile demo'
+  ClientHeight = 270
+  ClientWidth = 413
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   OnMouseMove = FormMouseMove
   PixelsPerInch = 96

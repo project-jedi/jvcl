@@ -8,13 +8,15 @@ object JvLinkLabelMainForm: TJvLinkLabelMainForm
   ClientHeight = 434
   ClientWidth = 531
   Color = clWhite
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Arial'
   Font.Style = []
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
   PixelsPerInch = 96
