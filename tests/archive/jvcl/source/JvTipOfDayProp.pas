@@ -47,8 +47,6 @@ type
 resourcestring
   SEditProperty = 'Preview...';
 
-procedure Register;
-
 implementation
 
 uses
