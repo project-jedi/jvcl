@@ -32,8 +32,9 @@ unit JvSLDMappingEditorDialog;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvBaseDlg, JvSegmentedLEDDisplay, JvSegmentedLEDDisplayMapperFrame;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls,
+  JvBaseDlg, JvSegmentedLEDDisplay, JvSegmentedLEDDisplayMapperFrame;
 
 type
   TfrmSLDMappingEditorDialog = class(TForm)
@@ -50,26 +51,21 @@ type
     lblSegments: TLabel;
     btnOK: TButton;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-  private
-    { Private declarations }
   protected
-    { Protected declarations }
     procedure Loaded; override;
     procedure UpdateDigitClass(Sender: TObject);
     procedure UpdateInfo(Sender: TObject);
-  public
-    { Public declarations }
   end;
 
-procedure SegmentedLEDDisplayMappingEditor(ADisplay: TJvCustomSegmentedLEDDisplay; var OpenFolder,
-  SaveFolder: string);
+procedure SegmentedLEDDisplayMappingEditor(ADisplay: TJvCustomSegmentedLEDDisplay;
+  var OpenFolder, SaveFolder: string);
 
 implementation
 
 {$R *.DFM}
 
-procedure SegmentedLEDDisplayMappingEditor(ADisplay: TJvCustomSegmentedLEDDisplay; var OpenFolder,
-  SaveFolder: string);
+procedure SegmentedLEDDisplayMappingEditor(ADisplay: TJvCustomSegmentedLEDDisplay;
+  var OpenFolder, SaveFolder: string);
 begin
   with TfrmSLDMappingEditorDialog.Create(Application) do
   try
@@ -84,7 +80,7 @@ begin
   end;
 end;
 
-//===TfrmSLDMappingEditorDialog=====================================================================
+//=== TfrmSLDMappingEditorDialog =============================================
 
 procedure TfrmSLDMappingEditorDialog.Loaded;
 begin

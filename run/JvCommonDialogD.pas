@@ -50,10 +50,48 @@ type
     property Title: string read FTitle write FTitle;
   end;
 
+function JvDiskStylesToDWORD(const Style: TJvDiskStyles): DWORD;
+
 implementation
 
 resourcestring
   RC_ErrorSetupDll = 'Unable to find SetupApi.dll';
+
+const
+  IDF_NOBROWSE     = $00000001;
+  IDF_NOSKIP       = $00000002;
+  IDF_NODETAILS    = $00000004;
+  IDF_NOCOMPRESSED = $00000008;
+  IDF_CHECKFIRST   = $00000100;
+  IDF_NOBEEP       = $00000200;
+  IDF_NOFOREGROUND = $00000400;
+  IDF_WARNIFSKIP   = $00000800;
+  IDF_OEMDISK      = DWORD($80000000);
+
+function JvDiskStylesToDWORD(const Style: TJvDiskStyles): DWORD;
+begin
+  Result := 0;
+  if idfCheckFirst in Style then
+    Result := Result or IDF_CHECKFIRST;
+  if idfNoBeep in Style then
+    Result := Result or IDF_NOBEEP;
+  if idfNoBrowse in Style then
+    Result := Result or IDF_NOBROWSE;
+  if idfNoCompressed in Style then
+    Result := Result or IDF_NOCOMPRESSED;
+  if idfNoDetails in Style then
+    Result := Result or IDF_NODETAILS;
+  if idfNoForeground in Style then
+    Result := Result or IDF_NOFOREGROUND;
+  if idfNoSkip in Style then
+    Result := Result or IDF_NOSKIP;
+  if idfOemDisk in Style then
+    Result := Result or IDF_OEMDISK;
+  if idfWarnIfSkip in Style then
+    Result := Result or IDF_WARNIFSKIP;
+end;
+
+//=== TJvCommonDialogD =======================================================
 
 constructor TJvCommonDialogD.Create(AOwner: TComponent);
 begin

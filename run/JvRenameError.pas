@@ -47,7 +47,7 @@ type
     property SourceFile: string read FSourceFile write FSourceFile;
     property DestFile: string read FDestFile write FDestFile;
     property Win32ErrorCode: Integer read FWin32ErrorCode write FWin32ErrorCode default 0;
-    property Style: TJvDeleteStyles read FStyle write FStyle;
+    property Style: TJvDeleteStyles read FStyle write FStyle default [];
     function Execute: TJvDiskRes; override;
   end;
 

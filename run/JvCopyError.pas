@@ -47,6 +47,7 @@ type
   protected
   public
     constructor Create(AOwner: TComponent); override;
+    function Execute: TJvDiskRes; override;
   published
     property DiskName: string read FDiskName write FDiskName;
     property PathToSource: string read FPathToSource write FPathToSource;
@@ -54,8 +55,7 @@ type
     property SourceFile: string read FSourceFile write FSourceFile;
     property TargetFile: string read FTargetFile write FTargetFile;
     property Win32ErrorCode: Integer read FWin32ErrorCode write FWin32ErrorCode default 0;
-    property Style: TJvDiskStyles read FStyle write FStyle;
-    function Execute: TJvDiskRes; override;
+    property Style: TJvDiskStyles read FStyle write FStyle default [];
   end;
 
 implementation
@@ -64,22 +64,12 @@ uses
   JclSysUtils;
 
 const
-  IDF_NOBROWSE     = $00000001;
-  IDF_NOSKIP       = $00000002;
-  IDF_NODETAILS    = $00000004;
-  IDF_NOCOMPRESSED = $00000008;
-  IDF_CHECKFIRST   = $00000100;
-  IDF_NOBEEP       = $00000200;
-  IDF_NOFOREGROUND = $00000400;
-  IDF_WARNIFSKIP   = $00000800;
-  IDF_OEMDISK      = DWORD($80000000);
-
   DPROMPT_SUCCESS        = 0;
   DPROMPT_CANCEL         = 1;
   DPROMPT_SKIPFILE       = 2;
   DPROMPT_BUFFERTOOSMALL = 3;
   DPROMPT_OUTOFMEMORY    = 4;
-
+  
 type
   TSetupCopyError = function(hwndParent: HWND; const DialogTitle, DiskName,
     PathToSource, SourceFile, TargetPathFile: PAnsiChar; Win32ErrorCode: UINT; Style: DWORD;
@@ -99,36 +89,14 @@ end;
 
 function TJvCopyError.Execute: TJvDiskRes;
 var
-  Sty: DWORD;
   Required: DWORD;
   Res: array [0..255] of Char;
   SetupCopyError: TSetupCopyError;
 begin
-  // (rom) simplified/fixed
-  Sty := 0;
-  if idfCheckFirst in FStyle then
-    Sty := Sty or IDF_CHECKFIRST;
-  if idfNoBeep in FStyle then
-    Sty := Sty or IDF_NOBEEP;
-  if idfNoBrowse in FStyle then
-    Sty := Sty or IDF_NOBROWSE;
-  if idfNoCompressed in FStyle then
-    Sty := Sty or IDF_NOCOMPRESSED;
-  if idfNoDetails in FStyle then
-    Sty := Sty or IDF_NODETAILS;
-  if idfNoForeground in FStyle then
-    Sty := Sty or IDF_NOFOREGROUND;
-  if idfNoSkip in FStyle then
-    Sty := Sty or IDF_NOSKIP;
-  if idfOemDisk in FStyle then
-    Sty := Sty or IDF_OEMDISK;
-  if idfWarnIfSkip in FStyle then
-    Sty := Sty or IDF_WARNIFSKIP;
-
   SetupCopyError := GetProcAddress(SetupApiDllHandle, 'SetupCopyErrorA');
   case SetupCopyError(OwnerWindow, PCharOrNil(Title), PCharOrNil(DiskName),
       PChar(PathToSource), PChar(SourceFile), PCharOrNil(TargetFile),
-      FWin32ErrorCode, Sty, Res, SizeOf(Res), @Required) of
+      FWin32ErrorCode, JvDiskStylesToDWORD(Style), Res, SizeOf(Res), @Required) of
     DPROMPT_SUCCESS:
       begin
         FNewPath := Res;
