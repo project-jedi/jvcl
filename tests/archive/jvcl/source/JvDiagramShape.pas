@@ -41,6 +41,7 @@ type
     FSelected: Boolean;
     FWasCovered: Boolean;
     FAlignment: TAlignment;
+    function GetCanProcessMouseMsg: Boolean;
   protected
     procedure SetCaption(Value: TJvTextShape); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -49,7 +50,7 @@ type
       X, Y: Integer); override;
     function GetCustomShapeAtPos(X, Y: Integer): TJvCustomDiagramShape;
 
-    property CanProcessMouseMsg: Boolean read FCanProcessMouseMsg
+    property CanProcessMouseMsg: Boolean read GetCanProcessMouseMsg
       write FCanProcessMouseMsg;
     procedure SetParent(AParent: TWinControl); override;
     procedure SetSelected(Value: Boolean); virtual;
@@ -275,7 +276,9 @@ type
 
   TJvSingleHeadArrow = class(TJvConnector)
   protected
+    procedure FindBestSides;
     procedure DrawArrowHead(ConnPt, TermPt: TPoint);
+    procedure DrawStartTerminator;override;
     procedure DrawEndTerminator; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -547,7 +550,7 @@ var
   TempPt: TPoint;
   CoveredShape: TJvCustomDiagramShape;
 begin {MouseDown}
-  if FCanProcessMouseMsg then
+  if CanProcessMouseMsg then
   begin
     BringToFront;
     MouseCapture := True;
@@ -935,7 +938,7 @@ procedure TJvSizeableShape.SetSelected(Value: Boolean);
 begin {SetSelected}
   if Value <> FSelected then
   begin
-    inherited SetSelected(Value);
+    inherited SetSelected(Value)
     // Force redraw to show sizing rectangles
     Invalidate;
   end;
@@ -989,7 +992,7 @@ var
   OldBrush: TBrush;
   SMode: TJvSizingMode;
 begin {DrawSizingRects}
-  if not FSelected then
+  if not FSelected or not CanProcessMouseMsg then
   begin
     Exit;
   end;
@@ -1978,9 +1981,9 @@ begin {DrawEndTerminator}
 
   if Assigned(FEndConn.Shape) then
   begin
+    FindBestSides;
     ConnPt := Convert(FEndConn.ConnPoint(EndTermRect));
     TermPt := Convert(FEndConn.TermPoint(EndTermRect));
-    ;
     DrawArrowHead(ConnPt, TermPt);
   end;
 end; {DrawEndTerminator}
@@ -2292,6 +2295,50 @@ begin {RegisterStorageClasses}
       TJvBluntSingleHeadOpenDashArrow,
       TJvSubCaseArrow]);
 end; {RegisterStorageClasses}
+
+procedure TJvSingleHeadArrow.DrawStartTerminator;
+begin
+  FindBestSides;
+  inherited;
+end;
+
+procedure TJvSingleHeadArrow.FindBestSides;
+begin
+  if (StartConn = nil) or (EndConn = nil) or (StartConn.Shape = nil)
+    or (EndConn.Shape = nil) then Exit;
+
+  if StartTermRect.Left = EndTermRect.Left then
+  begin
+    StartConn.Side := csLeft;
+    EndConn.Side   := csLeft;
+  end;
+
+  if StartTermRect.Right = EndTermRect.Left then
+  begin
+    StartConn.Side := csRight;
+    EndConn.Side   := csLeft;
+  end;
+  if StartTermRect.Bottom < EndTermRect.Top then
+  begin
+    StartConn.Side := csBottom;
+    EndConn.Side   := csTop;
+  end;
+  if StartTermRect.Left > EndTermRect.Right then
+  begin
+    StartConn.Side := csLeft;
+    EndConn.Side   := csRight;
+  end;
+  if StartTermRect.Top > EndTermRect.Bottom then
+  begin
+    StartConn.Side := csTop;
+    EndConn.Side   := csBottom;
+  end;
+end;
+
+function TJvCustomDiagramShape.GetCanProcessMouseMsg: Boolean;
+begin
+  Result := FCanProcessMouseMsg and Enabled;
+end;
 
 initialization
   RegisterStorageClasses;
