@@ -28,8 +28,10 @@ const
   WM_PREVIEWADDPAGE = WM_USER + 1001;
 
 type
-  TJvDrawPageEvent = procedure(Sender: TObject; PageIndex: integer; Canvas: TCanvas;
+  TJvDrawPreviewEvent = procedure(Sender: TObject; PageIndex: integer; Canvas: TCanvas;
     PageRect, PrintRect: TRect) of object;
+  TJvDrawPageEvent = procedure(Sender: TObject; PageIndex: integer; Canvas: TCanvas;
+    PageRect, PrintRect: TRect; var NeedMorePages:boolean) of object;
   TJvCustomPreviewDoc = class;
 
   IJvPrinter = interface
@@ -152,7 +154,7 @@ type
     FOptions: TJvPreviewPageOptions;
     FPages: TList;
     FScrollPos:TPoint;
-    FOnDrawPreviewPage: TJvDrawPageEvent;
+    FOnDrawPreviewPage: TJvDrawPreviewEvent;
     FBorderStyle: TBorderStyle;
     FDeviceInfo: TJvDeviceInfo;
     FOnAddPage: TJvDrawPageEvent;
@@ -181,13 +183,14 @@ type
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
+    procedure WMGetDlgCode(var Message: TMessage); message WM_GETDLGCODE;
     procedure DoSize;
   protected
 
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
     procedure DoDrawPreviewPage(PageIndex: integer; Canvas: TCanvas; PageRect, PrintRect: TRect); dynamic;
-    procedure DoAddPage(AMetaFile: TMetaFile; PageIndex: integer); dynamic;
+    function DoAddPage(AMetaFile: TMetaFile; PageIndex: integer):boolean; dynamic;
 
     property SelectedPage: integer read FSelectedPage write SetSelectedPage;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
@@ -196,7 +199,7 @@ type
 
     property Options: TJvPreviewPageOptions read FOptions write SetOptions;
     property OnAddPage: TJvDrawPageEvent read FOnAddPage write FOnAddPage;
-    property OnDrawPreviewPage: TJvDrawPageEvent read FOnDrawPreviewPage write FOnDrawPreviewPage;
+    property OnDrawPreviewPage: TJvDrawPreviewEvent read FOnDrawPreviewPage write FOnDrawPreviewPage;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -499,12 +502,17 @@ end;
 
 function TJvCustomPreviewDoc.Add: TMetaFile;
 begin
-  Result := TMetafile.Create;
-  Result.Width := DeviceInfo.PageWidth;
-  Result.Height := DeviceInfo.PageHeight;
+  repeat
+    Result := TMetafile.Create;
+    Result.Width := DeviceInfo.PageWidth;
+    Result.Height := DeviceInfo.PageHeight;
+  // keep adding pages until user says stop
+  until not DoAddPage(Result,FPages.Add(Result));
+  CalcScrollRange;
+  Invalidate;
+
   // post a message to ourself in case the user added the page in the OnAddPage event
-//  DoAddPage(Result,FPages.Add(Result));
-  PostMessage(Handle, WM_PREVIEWADDPAGE, integer(Result), FPages.Add(Result));
+//  PostMessage(Handle, WM_PREVIEWADDPAGE, integer(Result), FPages.Add(Result));
 end;
 
 procedure TJvCustomPreviewDoc.CalcScrollRange;
@@ -599,10 +607,11 @@ begin
   inherited;
 end;
 
-procedure TJvCustomPreviewDoc.DoAddPage(AMetaFile: TMetaFile;
-  PageIndex: integer);
+function TJvCustomPreviewDoc.DoAddPage(AMetaFile: TMetaFile;
+  PageIndex: integer):boolean;
 var ACanvas: TMetaFileCanvas; APageRect, APrintRect: TRect; i: integer;
 begin
+  Result := false;
   ACanvas := TMetaFileCanvas.Create(AMetaFile, DeviceInfo.ReferenceHandle);
   SetMapMode(ACanvas.Handle, MM_ISOTROPIC);
   SetWindowExtEx(ACanvas.Handle, DeviceInfo.PhysicalWidth, DeviceInfo.PhysicalHeight, nil);
@@ -619,7 +628,7 @@ begin
       Inc(APrintRect.Top, OffsetTop);
       Dec(APrintRect.Right, OffsetRight);
       Dec(APrintRect.Bottom, OffsetBottom);
-      FOnAddPage(self, PageIndex, ACanvas, APageRect, APrintRect);
+      FOnAddPage(self, PageIndex, ACanvas, APageRect, APrintRect,Result);
     end;
   ACanvas.Free; // spool canvas to metafile
 end;
@@ -736,60 +745,61 @@ procedure TJvCustomPreviewDoc.Paint;
 var i: integer;
   APageRect, APrintRect: TRect;
 begin
-//  StoreCanvas(FBuffer.Canvas);
+  //  StoreCanvas(FBuffer.Canvas);
   FBuffer.Width := ClientWidth; // GetMaxVirtualWidth;
   FBuffer.Height := ClientHeight; // GetMaxVirtualHeight;
-  FBuffer.Canvas.Brush.Color := Color;
-  FBuffer.Canvas.FillRect(ClientRect);
-  // draw at least one page (even if it's empty)
-  for i := 0 to Max(PageCount, 1) - 1 do
+  with FBuffer.Canvas do
   begin
-    if GetPreviewRects(i, APageRect, APrintRect) then
+    Brush.Color := Color;
+    FillRect(ClientRect);
+    // draw at least one page (even if it's empty)
+    for i := 0 to Max(PageCount, 1) - 1 do
     begin
-      if (APageRect.Right <= 0) or (APageRect.Left >= ClientWidth) or
-        (APageRect.Bottom <= 0) or (APageRect.Top >= ClientHeight) then
+      if GetPreviewRects(i, APageRect, APrintRect) then
+      begin
+        if (APageRect.Right <= 0) or (APageRect.Left >= ClientWidth) or
+          (APageRect.Bottom <= 0) or (APageRect.Top >= ClientHeight) then
           Continue; // outside view
-      // draw shadow
-      if (Options.Shadow.Offset <> 0) then
-      begin
-        OffsetRect(APageRect, Options.Shadow.Offset, Options.Shadow.Offset);
-        FBuffer.Canvas.Brush.Color := Options.Shadow.Color;
-        FBuffer.Canvas.FillRect(APageRect);
-        OffsetRect(APageRect, -Options.Shadow.Offset, -Options.Shadow.Offset);
-      end;
+        // draw shadow
+        if (Options.Shadow.Offset <> 0) then
+        begin
+          OffsetRect(APageRect, Options.Shadow.Offset, Options.Shadow.Offset);
+          Brush.Color := Options.Shadow.Color;
+          FillRect(APageRect);
+          OffsetRect(APageRect, -Options.Shadow.Offset, -Options.Shadow.Offset);
+        end;
 
-      // draw background
-      FBuffer.Canvas.Brush.Color := Options.Color;
-      FBuffer.Canvas.FillRect(APageRect);
-      // draw preview content
-      if i < PageCount then
-        DrawPreview(i, APageRect, APrintRect);
-      // draw frame
-      FBuffer.Canvas.Brush.Style := bsClear;
-      FBuffer.Canvas.Pen.Color := clWindowText;
-      FBuffer.Canvas.Rectangle(APageRect);
-      if i = FSelectedPage then
-      begin
-        FBuffer.Canvas.Pen.Color := clNavy;
-        FBuffer.Canvas.Pen.Width := 2;
-        FBuffer.Canvas.Rectangle(APageRect);
-        FBuffer.Canvas.Pen.Color := clWindowText;
-        FBuffer.Canvas.Pen.Width := 1;
+        // draw background
+        Brush.Color := Options.Color;
+        FillRect(APageRect);
+        // draw preview content
+        if i < PageCount then
+          DrawPreview(i, APageRect, APrintRect);
+        // draw frame
+        Brush.Style := bsClear;
+        Pen.Color := clWindowText;
+        Rectangle(APageRect);
+        if i = FSelectedPage then
+        begin
+          Pen.Color := clNavy;
+          Pen.Width := 2;
+          Rectangle(APageRect);
+          Pen.Color := clWindowText;
+          Pen.Width := 1;
+        end;
+        // draw margins
+        if Options.DrawMargins and not EqualRect(APageRect, APrintRect) then
+        begin
+          Pen.Style := psDot;
+          Rectangle(APrintRect);
+          Pen.Style := psSolid;
+        end;
+        Brush.Style := bsSolid;
       end;
-      // draw margins
-      if Options.DrawMargins and not EqualRect(APageRect, APrintRect) then
-      begin
-        FBuffer.Canvas.Pen.Style := psDot;
-        FBuffer.Canvas.Rectangle(APrintRect);
-        FBuffer.Canvas.Pen.Style := psSolid;
-      end;
-      FBuffer.Canvas.Brush.Style := bsSolid;
     end;
   end;
-//  Canvas.Brush.Color := Color;
-//  Canvas.FillRect(ClientRect);
-  BitBlt(Canvas.Handle,0,0,ClientWidth,ClientHeight,FBuffer.Canvas.Handle,
-    0,0,SRCCOPY);
+  BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight, FBuffer.Canvas.Handle,
+    0, 0, SRCCOPY);
 end;
 
 procedure TJvCustomPreviewDoc.SetBorderStyle(const Value: TBorderStyle);
@@ -942,6 +952,11 @@ begin
   Result := Max(Min(PageCount,Options.Cols),1);
   Result := Result * (GetPreviewPageWidth + Max(Options.HorzSpacing,Options.Shadow.Offset));
   Result := Result + Max(Options.HorzSpacing,Options.Shadow.Offset);
+end;
+
+procedure TJvCustomPreviewDoc.WMGetDlgCode(var Message: TMessage);
+begin
+  Message.Result := DLGC_WANTALLKEYS;
 end;
 
 procedure TJvCustomPreviewDoc.PrintRange(const APrinter: IJvPrinter;
