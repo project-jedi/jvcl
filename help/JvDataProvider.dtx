@@ -1,3 +1,4 @@
+##Package: Core
 ##Locked by: Marcel Bestebroer
 ----------------------------------------------------------------------------------------------------
 @@JvDataProvider.pas
@@ -6,7 +7,7 @@ Summary
   Contains the interface declarations of the DataProvider mechanism.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  Marcel BEstebroer, Remko Bonter, Peter Th'"ornqvist
+  Marcel Bestebroer, Remko Bonte, Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@TClassArray
 <TITLE TClassArray type>
@@ -26,6 +27,8 @@ Description
   The TDataItemState type ise used to specify a specific state for a Data Item. For each setting
   (Enabled, Visible and Checked) this type specifies if that settings is off, on, indetermined or
   not used.
+See Also
+  IJvDataItemStates
 @@TDataItemState.disFalse
   Specifies the setting is False or 'off'.
 @@TDataItemState.disTrue
@@ -42,6 +45,8 @@ Summary
 Description
   The TDataProviderChangeReason type is used to specify the reason why the
   ProviderChanging/ProviderChanged methods are called.
+See Also
+  IJvDataProvider.Changing, IJvDataProvider.Changed, IJvDataProviderNotify
 @@TDataProviderChangeReason.pcrAdd
   An item is about to be added or has just been added. The Source parameter will refer to the
   IJvDataItems where the item is about to be added to (DataProviderChanging) or refers to the
@@ -121,7 +126,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider
 Summary
-  Main Data Provider interface.
+  Data Provider server interface.
 Description
   IJvDataProvider is the main Data Provider interface. A component that is to function as a Data
   Provider should always support this interface.
@@ -1292,4 +1297,83 @@ Description
   to determine if the item is to be added to the tree.
 See Also
   IJvDataConsumerViewList
+----------------------------------------------------------------------------------------------------
+@@IJvDataContextSensitive
+Summary
+  Context sensitive data manager.
+Description
+  IJvDataContextSensitive is a supporting interface for IJvDataItems, IJvDataItem and any other
+  IJvDataItem support interface.
+
+  It provides in methods that allow settings for a context to be reverted back to the ancestor
+  context (or context-less) settings and to determine if the info is specifically set for the
+  currently active context or taken from an ancestor context or context-less state.
+See Also
+  IJvDataItems, IJvDataItem, IJvDataItemText, IJvDataItemImage, IJvDataItemStates, IJvDataContext
+----------------------------------------------------------------------------------------------------
+@@IJvDataContextSensitive.RevertToAncestor
+Summary
+  Reverts the settings back to the ancestor context settings.
+Description
+  RevertToAncestor reverts the settings back to the settings for the ancestor context or
+  context-less state.
+
+  It does this by simply removing any settings for the currently active context. If there were no
+  settings for the currently active context, nothing will happen.
+See Also
+  IsEqualToAncestor
+----------------------------------------------------------------------------------------------------
+@@IJvDataContextSensitive.IsEqualToAncestor
+Summary
+  Determines if the settings are inherited from the ancestor context.
+Description
+  IsEqualToAncestor determines if the settings are inherited from an ancestor context or are
+  specifically set for the currently active context.
+
+  If the settings are set for the currently active context the method will return False, otherwise
+  True will be returned.
+See Also
+  RevertToAncestor
+----------------------------------------------------------------------------------------------------
+@@IJvDataConsumer
+Summary
+  Provider client interface.
+Description
+  IJvDataConsumer is the main provider client interface. It is implemented by all components and
+  controls that are able to obtain there information from a Data Provider.
+
+  The interface only provides two "administrative" methods: retrieve the VCL component the consumer
+  interface belongs to and determine which Data Provider Attributes apply to this consumer.
+
+  Consumer may support additional interfaces (commonly referred to as "Consumer Extensions") to
+  support other settings.
+
+  Data Providers are generally not concerned about the consumer that is using them. The only notable
+  exception is the <LINK IJvDataProvider.ConsumerClasses, ConsumerClasses> method; this method will
+  use the AttributeApplies method to determine which extensions are needed.
+
+  Other cases when Data Providers are interested in the consumer are those providers that allow
+  additional settings for each individual consumer (usually by providing a Provider specific
+  Consumer Extension).
+See Also
+  IJvDataProvider
+----------------------------------------------------------------------------------------------------
+@@IJvDataConsumer.VCLComponent
+Summary
+  Retrieves a reference to the VCL component.
+Description
+  VCLComponent retrieves a reference to the VCL component that functions as a consumer.
+----------------------------------------------------------------------------------------------------
+@@IJvDataConsumer.AttributeApplies
+Summary
+  Determines if a attribute applies to the consumer.
+Description
+  AttributeApplies determines if the specified attribute applies to the consumer. The method is
+  primarily used by the <LINK IJvDataProvider, data provider>'s
+  <LINK IJvDataProvider.ConsumerClasses, ConsumerClasses> method to build the list of consumer
+  extensions.
+
+  If an attribute applies the function should return True, otherwise False should be returned.
+Parameters
+  Attr -  Attribute to check.
 
