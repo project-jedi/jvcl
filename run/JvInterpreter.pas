@@ -5737,7 +5737,7 @@ var
   FunArgs: TJvInterpreterArgs;
   VarNames: PNameArray;
 
-  procedure EnterFunction;    {InFunction local: initialization/entry of function scope}
+  procedure EnterFunction;    {TJvInterpreterFunction.InFunction local: initialization/entry of function scope}
   var
     FC: PFunctionContext;
     I: Integer;
@@ -5783,13 +5783,13 @@ var
     FCurrArgs := TJvInterpreterArgs.Create;
   end;
 
-  procedure LeaveFunction(Ok: Boolean);  {InFunction local: finalization of function scope}
+  procedure LeaveFunction(Ok: Boolean);  {TJvInterpreterFunction.InFunction local: finalization of function scope}
   var
     FC: PFunctionContext;
     C: Integer;
     varlist : TJvInterpreterVarList; //VARLEAKFIX 
 
-    procedure UpdateVarParams;     // InFunction.LeaveFunction local. How bizarre.
+    procedure UpdateVarParams;     // TJvInterpreterFunction.InFunction.LeaveFunction local. How bizarre.
     var
       I, C: Integer;
     begin
