@@ -121,6 +121,8 @@ type
   end;
 
 const
+
+
   CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
 
 type
@@ -410,6 +412,12 @@ type
 
 
 
+// jump targets:
+
+function JvExDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
+
+
+
 
 function WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
   EventRegion: QRegionH): IInterface;
@@ -429,6 +437,15 @@ procedure TCustomEdit_Cut(Instance: TWinControl);
 
 implementation
 
+
+
+function JvExDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  
+  
+  Result := False; // Qt allways paints the background
+  
+end;
 
 
 
@@ -814,11 +831,8 @@ begin
 end;
 
 function TJvExWinControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -1008,11 +1022,8 @@ begin
 end;
 
 function TJvExCustomControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExCustomControl.Create(AOwner: TComponent);
@@ -1113,11 +1124,8 @@ begin
 end;
 
 function TJvExHintWindow.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExHintWindow.Create(AOwner: TComponent);

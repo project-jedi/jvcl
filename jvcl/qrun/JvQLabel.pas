@@ -571,6 +571,7 @@ begin
       Brush.Color := Self.Color;
       DrawFocusRect(Rect);
     end;
+    AdjustBounds;
   end;
 end;
 

@@ -484,7 +484,7 @@ begin
         SetBounds(252, 232, 75, 25);
         Assign(ButtonClose);
         ModalResult := mrOk;
-        OnClick := ButtonClick;
+//        OnClick := ButtonClick;
       end
     else
       { ..so create a TJvButton unless Flat is set to True }
@@ -589,7 +589,7 @@ begin
         Parent := AForm;
         SetBounds(317, 225, 75, 25);
         Assign(ButtonClose);
-        OnClick := ButtonClick;
+//        OnClick := ButtonClick;
         ModalResult := mrOk;
       end
     else

@@ -71,11 +71,11 @@ unit JvQButtons;
 interface
 
 uses
-  SysUtils, Classes,
   
-
+  
   Types, QGraphics, QControls, QForms, QButtons, QImgList, QWindows,
-
+  
+  SysUtils, Classes,
   JvQComponent, JvQExButtons;
 
 type
@@ -142,10 +142,11 @@ type
 
   TJvaColorButton = class(TJvExBitBtn)
   private
+    
     FCanvas: TCanvas;
+    
     FGlyphDrawer: TJvButtonGlyph;
     FOnPaint: TPaintButtonEvent;
-//    function GetCanvas: TCanvas;
     
   protected
     IsFocused: Boolean;
@@ -157,7 +158,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
-    property Canvas; //: TCanvas read GetCanvas;
+    property Canvas ;
   published
     property Color;
     property ParentColor;
@@ -194,7 +195,7 @@ implementation
 
 uses
   Math,
-  JvQHtControls, JvQDsgnIntf, JvQConsts, JvQResources, JvQTypes;
+  JvQHtControls, JvQDsgnIntf, JvQConsts, JvQResources, JvQTypes, JvQThemes;
 
 type
   TJvGlyphList = class(TImageList)
@@ -818,24 +819,18 @@ constructor TJvaColorButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FGlyphDrawer := TJvButtonGlyph.Create;
+  
+  
   FCanvas := Canvas;
-  // (rom) destroy Canvas AFTER inherited Destroy
-//  FCanvas.Control := Self;
+  
 end;
 
 destructor TJvaColorButton.Destroy;
 begin
   FreeAndNil(FGlyphDrawer);
   inherited Destroy;
-//  FreeAndNil(FCanvas);
+  
 end;
-
-(*)
-function TJvaColorButton.GetCanvas: TCanvas;
-begin
-  Result := FCanvas;
-end;
-(*)
 
 
 
@@ -880,36 +875,39 @@ begin
   if State = bsDisabled then
     Flags := Flags or DFCS_INACTIVE;
 
-  { DrawFrameControl doesn't allow for drawing a button as the
-      default button, so it must be done here. }
-  if IsFocused or IsDefault then
+  
   begin
-    FCanvas.Pen.Color := clWindowFrame;
-    FCanvas.Pen.Width := 1;
-    FCanvas.Brush.Style := bsClear;
-    FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+    { DrawFrameControl doesn't allow for drawing a button as the
+        default button, so it must be done here. }
+    if IsFocused or IsDefault then
+    begin
+      FCanvas.Pen.Color := clWindowFrame;
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Style := bsClear;
+      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
 
-    { DrawFrameControl must draw within this border }
-    InflateRect(R, -1, -1);
-  end;
+      { DrawFrameControl must draw within this border }
+      InflateRect(R, -1, -1);
+    end;
 
-  { DrawFrameControl does not draw a pressed button correctly }
-  if IsDown then
-  begin
-    FCanvas.Pen.Color := clBtnShadow;
-    FCanvas.Pen.Width := 1;
-    FCanvas.Brush.Color := Color {clBtnFace};
-    FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-    InflateRect(R, -1, -1);
-  end
-  else
-  begin
-    DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
-    FCanvas.Pen.Style := psSolid;
-    FCanvas.Pen.Color := Color {clBtnShadow};
-    FCanvas.Pen.Width := 1;
-    FCanvas.Brush.Color := Color;
-    FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+    { DrawFrameControl does not draw a pressed button correctly }
+    if IsDown then
+    begin
+      FCanvas.Pen.Color := clBtnShadow;
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Color := Color {clBtnFace};
+      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+      InflateRect(R, -1, -1);
+    end
+    else
+    begin
+      DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
+      FCanvas.Pen.Style := psSolid;
+      FCanvas.Pen.Color := Color {clBtnShadow};
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Color := Color;
+      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+    end;
   end;
 
   if IsFocused then
@@ -925,14 +923,15 @@ begin
   FGlyphDrawer.DrawExternal(Glyph, NumGlyphs, Color, True, FCanvas, R, Point(0, 0), Caption, Layout, Margin,
     Spacing, State, False {True});
 
-  if IsFocused and IsDefault then
-  begin
-    R := ClientRect;
-    InflateRect(R, -4, -4);
-    FCanvas.Pen.Color := clWindowFrame;
-    FCanvas.Brush.Color := Color;  {clBtnFace}
-    DrawFocusRect(FCanvas.Handle, R);
-  end;
+  
+    if IsFocused and IsDefault then
+    begin
+      R := ClientRect;
+      InflateRect(R, -4, -4);
+      FCanvas.Pen.Color := clWindowFrame;
+      FCanvas.Brush.Color := Color;  {clBtnFace}
+      DrawFocusRect(FCanvas.Handle, R);
+    end;
 end;
 
 //=== TJvNoFrameButton =======================================================
