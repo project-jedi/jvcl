@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-07-04
+Last Modified: 2004-02-06
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -71,11 +71,11 @@ uses
   Windows, Messages, Graphics, Controls, Forms, ExtCtrls, CommCtrl, StdCtrls,
   Menus, Buttons, JvWndProcHook,
   {$ENDIF VCL}
-  SysUtils, Classes,
   {$IFDEF VisualCLX}
   Types, QGraphics, QControls, QForms, QExtCtrls, QStdCtrls, QMenus, QButtons,
   QImgList, QWindows,
   {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JvComponent, JvExButtons;
 
 type
@@ -287,6 +287,7 @@ type
     constructor CreateSize(AWidth, AHeight: Integer);
     destructor Destroy; override;
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
+      {$IFDEF VisualCLX} reintroduce; {$ENDIF VisualCLX}
     procedure Delete(Index: Integer);
     property Count: Integer read FCount;
   end;
@@ -466,7 +467,6 @@ begin
 end;
 
 {$IFDEF VCL}
-{O}
 
 procedure TJvButtonGlyph.SetBiDiMode(Value: TBiDiMode);
 begin
@@ -690,6 +690,21 @@ begin
       ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0,
         ColorToRGB(Color {clBtnFace}), clNone, ILD_Normal);
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  with GlyphPos do
+    if Transparent or (State = bsExclusive) then
+    begin
+      FGlyphList.Masked := True;
+      FGlyphList.BkColor := clNone;
+      FGlyphList.Draw(Canvas, X, Y, Index, itImage) // (ahuser) VisualCLX missing Transparent draw method
+    end
+    else
+    begin
+      FGlyphList.Masked := False;
+      FGlyphList.BkColor := Color;
+      FGlyphList.Draw(Canvas, X, Y, Index, itImage);
+    end;
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
@@ -1555,9 +1570,6 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-
-{$O-}
-
 procedure TJvaColorButton.DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
 var
   R: TRect;
@@ -1634,11 +1646,6 @@ begin
 end;
 
 // == TJvNoFrameButton =======================================================
-
-// (rom) seems silly
-{$IFDEF OPTIMIZATION_ON}
-{$O+}
-{$ENDIF OPTIMIZATION_ON}
 
 constructor TJvNoFrameButton.Create(AOwner: TComponent);
 begin
