@@ -79,6 +79,9 @@ type
 
 implementation
 
+uses
+  JvThemes;
+
 constructor TJvScrollBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -86,6 +89,7 @@ begin
   FHotTrack := False;
   FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 
 procedure TJvScrollBox.CMCtl3DChanged(var Msg: TMessage);
