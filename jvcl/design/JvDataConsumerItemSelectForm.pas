@@ -165,9 +165,6 @@ procedure TfrmJvDataConsumerItemSelect.UpdateViewList;
 var
   ViewList: IJvDataConsumerViewList;
   ItemSelect: IJvDataConsumerItemSelect;
-  {$IFDEF VisualCLX}
-  I: Integer;
-  {$ENDIF VisualCLX}
 begin
   if Supports(fmeTreeList.Provider as IJvDataConsumer, IJvDataConsumerViewList, ViewList) then
   begin
