@@ -8,7 +8,7 @@ object FrameConfigPage: TFrameConfigPage
     Left = 272
     Top = 8
     Width = 241
-    Height = 153
+    Height = 137
     Caption = ' Global options for all IDEs '
     TabOrder = 1
     object LblDxgettextHomepage: TLabel
@@ -36,9 +36,10 @@ object FrameConfigPage: TFrameConfigPage
         'Activate this if you have Mike Lischke'#39's Theme Manager'#13#10'(<c:blue' +
         '>http://www.lischke-online.de<c:black>) installed and available ' +
         'and'#13#10'you are using <b>Delphi/BCB 6</b> or below. The ThemeManage' +
-        'r'#13#10'package must be compiled as "<b>never-build package</b>".'#13#10'Fo' +
-        'r more information see readme.htm'#13#10#13#10'<b>For Delphi 7 this option' +
-        ' is allways enabled even if'#13#10'it is not enabled here.</b>'
+        'r'#13#10'package must be compiled as "<b>never-build package</b>". The' +
+        #13#10'ThemeManager package must be in the BPL directory.'#13#10'For more i' +
+        'nformation see <b>readme.htm</b>'#13#10#13#10'<b>For Delphi 7 this option ' +
+        'is allways enabled even if'#13#10'it is not enabled here.</b>'
       Caption = 'XP Theming (not for Delphi 7)'
       ParentShowHint = False
       ShowHint = True
@@ -106,7 +107,7 @@ object FrameConfigPage: TFrameConfigPage
     Left = 8
     Top = 8
     Width = 249
-    Height = 153
+    Height = 321
     Caption = ' Installation options '
     TabOrder = 0
     object Label1: TLabel
@@ -189,19 +190,81 @@ object FrameConfigPage: TFrameConfigPage
       TabOrder = 4
       OnClick = CheckBoxDeveloperInstallClick
     end
-  end
-  object ScrollBoxBCB: TScrollBox
-    Left = 8
-    Top = 168
-    Width = 505
-    Height = 161
-    HorzScrollBar.Tracking = True
-    VertScrollBar.Tracking = True
-    BorderStyle = bsNone
-    TabOrder = 2
+    inline FrameDirEditBrowseBPL: TFrameDirEditBrowse
+      Left = 2
+      Top = 152
+      Width = 239
+      Height = 49
+      TabOrder = 5
+      Visible = False
+      inherited LblCaption: TLabel
+        Left = 7
+        Width = 68
+        Caption = '&BPL Directory:'
+      end
+      inherited Bevel: TBevel
+        Width = 309
+        Visible = False
+      end
+      inherited EditDirectory: TEdit
+        Left = 7
+        Width = 208
+      end
+      inherited BtnJCLDirBrowse: TButton
+        Left = 216
+      end
+    end
+    inline FrameDirEditBrowseDCP: TFrameDirEditBrowse
+      Left = 2
+      Top = 200
+      Width = 239
+      Height = 49
+      TabOrder = 6
+      Visible = False
+      inherited LblCaption: TLabel
+        Left = 7
+        Width = 70
+        Caption = '&DCP Directory:'
+      end
+      inherited Bevel: TBevel
+        Width = 309
+        Visible = False
+      end
+      inherited EditDirectory: TEdit
+        Left = 7
+        Width = 208
+      end
+      inherited BtnJCLDirBrowse: TButton
+        Left = 216
+      end
+    end
+    inline FrameDirEditBrowseHPP: TFrameDirEditBrowse
+      Left = 2
+      Top = 264
+      Width = 239
+      Height = 49
+      TabOrder = 7
+      Visible = False
+      inherited LblCaption: TLabel
+        Left = 7
+        Width = 70
+        Caption = '&HPP Directory:'
+      end
+      inherited Bevel: TBevel
+        Width = 309
+        Visible = False
+      end
+      inherited EditDirectory: TEdit
+        Left = 7
+        Width = 208
+      end
+      inherited BtnJCLDirBrowse: TButton
+        Left = 216
+      end
+    end
   end
   object ImageListTargets: TImageList
-    Left = 224
-    Top = 8
+    Left = 200
+    Top = 16
   end
 end

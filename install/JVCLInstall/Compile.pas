@@ -328,9 +328,9 @@ begin
 
       // Are the .dcp files newer than the .bpk files
       if (not Force) and (not Data.TargetConfig[i].Build) and
-          FileExists(Data.Targets[i].BplDir + '\CJcl.dcp') and
-          FileExists(Data.Targets[i].BplDir + '\CJclVcl.dcp') and
-         (FileAge(Data.Targets[i].BplDir + '\CJcl.dcp') >= FileAge(TargetXmlDir + '\Jcl-R.xml')) then
+          FileExists(Data.TargetConfig[i].BplDir + '\CJcl.dcp') and
+          FileExists(Data.TargetConfig[i].BplDir + '\CJclVcl.dcp') and
+         (FileAge(Data.TargetConfig[i].BplDir + '\CJcl.dcp') >= FileAge(TargetXmlDir + '\Jcl-R.xml')) then
         Continue;
 
       SetEnvironmentVariable('JCLROOT', PChar(Data.TargetConfig[i].JCLDir));
@@ -547,9 +547,9 @@ begin
       SetEnvironmentVariable('UNITOUTDIR', PChar(ProjectGroup.TargetConfig.UnitOutDir + '\debug'))
     else
       SetEnvironmentVariable('UNITOUTDIR', PChar(ProjectGroup.TargetConfig.UnitOutDir));
-    SetEnvironmentVariable('BPLDIR', PChar(ProjectGroup.Target.BplDir));
-    SetEnvironmentVariable('DCPDIR', PChar(ProjectGroup.Target.DcpDir));
-    SetEnvironmentVariable('LIBDIR', PChar(ProjectGroup.Target.DcpDir));
+    SetEnvironmentVariable('BPLDIR', PChar(ProjectGroup.TargetConfig.BplDir));
+    SetEnvironmentVariable('DCPDIR', PChar(ProjectGroup.TargetConfig.DcpDir));
+    SetEnvironmentVariable('LIBDIR', PChar(ProjectGroup.TargetConfig.DcpDir));
     SetEnvironmentVariable('HPPDIR', PChar(ProjectGroup.TargetConfig.HPPDir));
 
 {**}DoProjectProgress(RsGeneratingPackages, GetProjectIndex, ProjectMax);
@@ -674,7 +674,8 @@ begin
         [S, S, S, S]));
       Lines.Add(Format('.path.inc = %s\common', [S]));
       Lines.Add(Format('.path.res = %s\Resources', [S]));
-      Lines.Add(Format('.path.bpl = %s;%s', [ProjectGroup.Target.BplDir, ProjectGroup.Target.DcpDir]));
+      Lines.Add(Format('.path.bpl = %s;%s',
+        [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir]));
       Lines.Add('');
      // add files like jvcl.inc
       Dependencies := '';

@@ -34,7 +34,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls,
   ShellAPI, CommCtrl,
-  JVCL3Install, JvExStdCtrls, JVCLData, ImgList;
+  JVCL3Install, JvExStdCtrls, JVCLData, ImgList, FrmDirEditBrowse;
 
 type
   TFrameConfigPage = class(TFrame)
@@ -48,12 +48,14 @@ type
     GroupBoxInstallOptions: TGroupBox;
     CheckBoxDeveloperInstall: TCheckBox;
     CheckBoxCleanPalettes: TCheckBox;
-    ScrollBoxBCB: TScrollBox;
     Label1: TLabel;
     ComboBoxTargetIDE: TComboBox;
     ImageListTargets: TImageList;
     CheckBoxBuild: TCheckBox;
     CheckBoxCompileOnly: TCheckBox;
+    FrameDirEditBrowseBPL: TFrameDirEditBrowse;
+    FrameDirEditBrowseDCP: TFrameDirEditBrowse;
+    FrameDirEditBrowseHPP: TFrameDirEditBrowse;
     procedure CheckBoxDeveloperInstallClick(Sender: TObject);
     procedure CheckBoxXPThemingClick(Sender: TObject);
     procedure ComboBoxTargetIDEChange(Sender: TObject);
@@ -64,8 +66,10 @@ type
     FInstaller: TInstaller;
     procedure Init;
     function GetSelTargetConfig: TTargetConfig;
-  protected
+    procedure BplDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
+    procedure DcpDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
     procedure HppDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
+  protected
     property Installer: TInstaller read FInstaller;
 
     property SelTargetConfig: TTargetConfig read GetSelTargetConfig;
@@ -76,7 +80,7 @@ type
 implementation
 
 uses
-  Core, FrmDirEditBrowse;
+  Core;
 
 {$R *.dfm}
 
@@ -95,10 +99,22 @@ begin
   Result.Init;
 end;
 
+procedure TFrameConfigPage.BplDirChanged(Sender: TObject; UserData: TObject;
+  var Dir: string);
+begin
+  SelTargetConfig.BplDir := Dir;
+end;
+
+procedure TFrameConfigPage.DcpDirChanged(Sender: TObject; UserData: TObject;
+  var Dir: string);
+begin
+  SelTargetConfig.DcpDir := Dir;
+end;
+
 procedure TFrameConfigPage.HppDirChanged(Sender, UserData: TObject;
   var Dir: string);
 begin
-  TTargetConfig(UserData).HppDir := Dir;
+  SelTargetConfig.HppDir := Dir;
 end;
 
 function TFrameConfigPage.GetSelTargetConfig: TTargetConfig;
@@ -114,11 +130,15 @@ end;
 
 procedure TFrameConfigPage.Init;
 var
-  i, Y, BCBCount, Num: Integer;
+  i{, Y, BCBCount, Num}: Integer;
 begin
   Inc(FInitializing);
   try
     ImageListTargets.Clear;
+
+    FrameDirEditBrowseBPL.OnChange := BplDirChanged;
+    FrameDirEditBrowseDCP.OnChange := DcpDirChanged;
+    FrameDirEditBrowseHPP.OnChange := HppDirChanged;
 
     with ComboBoxTargetIDE do
     begin
@@ -166,39 +186,6 @@ begin
       CheckBoxUseJVCL.Checked := JVCLConfig.Enabled['USEJVCL'];
     end;
 
-
-   // create directory edits for the BCB .hpp directory
-    BCBCount := 0;
-    for I := 0 to Installer.SelTargetCount - 1 do
-      with Installer.SelTargets[i] do
-      begin
-        if Target.IsBCB and InstallJVCL then
-          Inc(BCBCount);
-      end;
-
-    Y := 0;
-    Num := 0;
-    for i := 0 to Installer.SelTargetCount - 1 do
-    begin
-      with Installer.SelTargets[i] do
-      begin
-        if Target.IsBCB and InstallJVCL then
-        begin
-          with TFrameDirEditBrowse.Build(Target.DisplayName + ' .hpp directory:',
-            HppDir, HppDirChanged, Installer.SelTargets[i], ScrollBoxBCB) do
-          begin
-            Top := Y;
-            Left := 0;
-            if (BCBCount > 3) and (Num < 3) then
-              Width := ScrollBoxBCB.ClientWidth - GetSystemMetrics(SM_CXHTHUMB)
-            else
-              Width := ScrollBoxBCB.ClientWidth;
-            Inc(Y, Height + 5);
-            Inc(Num);
-          end;
-        end;
-      end;
-    end;
   finally
     Dec(FInitializing);
   end;
@@ -259,10 +246,13 @@ end;
 procedure TFrameConfigPage.ComboBoxTargetIDEChange(Sender: TObject);
 var
   TargetConfig: TTargetConfig;
+  ItemIndex: Integer;
 begin
   Inc(FInitializing);
   try
-    if ComboBoxTargetIDE.ItemIndex <= 0 then
+    ItemIndex := ComboBoxTargetIDE.ItemIndex;
+
+    if ItemIndex <= 0 then
     begin
       CheckBoxDeveloperInstall.State := TCheckBoxState(Installer.Data.DeveloperInstall);
       CheckBoxCleanPalettes.State := TCheckBoxState(Installer.Data.CleanPalettes);
@@ -277,7 +267,16 @@ begin
       CheckBoxCleanPalettes.Checked := TargetConfig.CleanPalettes;
       CheckBoxBuild.Checked := TargetConfig.Build;
       CheckBoxCompileOnly.Checked := TargetConfig.CompileOnly;
+
+      FrameDirEditBrowseBPL.EditDirectory.Text := TargetConfig.BplDir;
+      FrameDirEditBrowseDCP.EditDirectory.Text := TargetConfig.DcpDir;
+      if TargetConfig.Target.IsBCB then
+        FrameDirEditBrowseHPP.EditDirectory.Text := TargetConfig.HppDir;
     end;
+
+    FrameDirEditBrowseBPL.Visible := ItemIndex > 0;
+    FrameDirEditBrowseDCP.Visible := ItemIndex > 0;
+    FrameDirEditBrowseHPP.Visible := (ItemIndex > 0) and SelTargetConfig.Target.IsBCB;
   finally
     Dec(FInitializing);
   end;

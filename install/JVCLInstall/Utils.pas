@@ -31,7 +31,7 @@ unit Utils;
 interface
 
 uses
-  Windows, SysUtils, Classes, JvConsts;
+  Windows, ShellAPI, SysUtils, Classes, JvConsts;
 
 function GetReturnPath(const Dir: string): string;
 function FileExists(const Filename: string): Boolean;
@@ -47,6 +47,7 @@ function SubStr(const Text: string; StartIndex, EndIndex: Integer): string;
 function HasText(Text: string; const Values: array of string): Boolean; // case insensitive
 procedure AddPaths(List: TStrings; Add: Boolean; const Dir: string;
   const Paths: array of string);
+function OpenAtAnchor(const FileName, Anchor: string): Boolean;
 
 {$IFDEF COMPILER5}
 type
@@ -206,6 +207,18 @@ begin
         List.Add(Dir + '\' + Paths[j])
       else
         List.Add(Paths[j])
+end;
+
+function OpenAtAnchor(const FileName, Anchor: string): Boolean;
+var
+  Cmd: string;
+begin
+  SetLength(Cmd, MAX_PATH);
+  Result := FindExecutable(PChar(FileName), nil, PChar(Cmd)) > 32;
+  SetLength(Cmd, StrLen(PChar(Cmd)));
+  if Result then
+    Result := ShellExecute(0, 'open', PChar(Cmd), PChar(FileName + '#' + Anchor), nil,
+      SW_SHOWNORMAL) > 32;
 end;
 
 {$IFDEF COMPILER5}

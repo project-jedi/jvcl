@@ -66,6 +66,8 @@ type
     function GetUnitOutDir: string;
     function GetJCLDir: string;
     function GetHppDir: string;
+    function GetBplDir: string;
+    function GetDcpDir: string;
 
     property TargetSymbol: string read GetTargetSymbol;
     property Target: TCompileTarget read GetTarget;
@@ -77,6 +79,8 @@ type
     property UnitOutDir: string read GetUnitOutDir;
     property JCLDir: string read GetJCLDir;
     property HppDir: string read GetHppDir;
+    property BplDir: string read GetBplDir;
+    property DcpDir: string read GetDcpDir;
 
     property JVCLPackagesXmlDir: string read GetJVCLPackagesXmlDir;
     property JVCLDir: string read GetJVCLDir;
