@@ -166,12 +166,9 @@ interface
 
 uses
   SysUtils, Classes, Contnrs, TypInfo, IniFiles,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, StdCtrls, ExtCtrls,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QTypes, Types, QGraphics, QControls, QStdCtrls, QExtCtrls,
-  QWindows, QMessages, JvExExtCtrls,
+  Qt, QTypes, JvQExExtCtrls,
   {$ENDIF VisualCLX}
   JvComponent, JvTypes, JvExControls, JvFinalize;
 
@@ -6867,6 +6864,9 @@ begin
         DrawThemedButtonFace(Inspector, ACanvas, R, 0, bsNew, False, Pressed, False, False)
       else
       {$ENDIF JVCLThemesEnabled}
+        {$IFDEF VisualCLX}
+        QWindows.
+        {$ENDIF VisualCLX}
         DrawEdge(ACanvas.Handle, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or BFlags);
       W := 2;
       G := (RectWidth(R) - 2 * Ord(Pressed) - (3 * W)) div 4;
@@ -6944,12 +6944,11 @@ begin
       else
       // (rom) fix added begin end
       begin
-        {$IFDEF VisualCLX}
-        ACanvas.Start;
-        {$ENDIF VisualCLX}
+        {$IFDEF VCL}
         DrawTextEx(ACanvas, PChar(S), Length(S), ARect, DT_EDITCONTROL or DT_WORDBREAK, nil);
+        {$ENDIF VCL}
         {$IFDEF VisualCLX}
-        ACanvas.Stop;
+        DrawText(ACanvas, S, Length(S), ARect, DT_WORDBREAK);
         {$ENDIF VisualCLX}
       end;
     end
@@ -7089,39 +7088,85 @@ end;
 
 
 type
-    TJvInspectorMemo = class(TMemo)
-      private
-        FOnKillFocus: TNotifyEvent;
-      protected
-        procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
-      public
-        property OnKillFocus: TNotifyEvent read FOnKillFocus write FOnKillFocus;
-        end;
+  TJvInspectorMemo = class(TMemo)
+  {$IFDEF VCL}
+  private
+    FOnKillFocus: TNotifyEvent;
+  protected
+    procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
+  public
+    property OnKillFocus: TNotifyEvent read FOnKillFocus write FOnKillFocus;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  private
+    function GetOnKillFocus: TNotifyEvent;
+    procedure SetOnKillFocus(value: TNotifyEvent);
+  public
+    property OnKillFocus: TNotifyEvent read GetOnKillFocus write SetOnKillFocus;
+  {$ENDIF VisualCLX}
+  end;
 
-    TJvInspectorEdit = class(TEdit)
-      private
-        FOnKillFocus: TNotifyEvent;
-      protected
-        procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
-      public
-        property OnKillFocus: TNotifyEvent read FOnKillFocus write FOnKillFocus;
-        end;
+  TJvInspectorEdit = class(TEdit)
+  {$IFDEF VCL}
+  private
+    FOnKillFocus: TNotifyEvent;
+  protected
+    procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
+  public
+    property OnKillFocus: TNotifyEvent read FOnKillFocus write FOnKillFocus;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  private
+    function GetOnKillFocus: TNotifyEvent;
+    procedure SetOnKillFocus(value: TNotifyEvent);
+  public
+    property OnKillFocus: TNotifyEvent read GetOnKillFocus write SetOnKillFocus;
+  {$ENDIF VisualCLX}
+  end;
 
+{$IFDEF VCL}
 procedure TJvInspectorMemo.WMKillFocus(var msg: TWMKillFocus);
 begin
-    inherited;
-    if (Assigned(FOnKillFocus)) then begin
-        FOnKillFocus(Self);
-        end;
+  inherited;
+  if (Assigned(FOnKillFocus)) then begin
+    FOnKillFocus(Self);
+  end;
+end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvInspectorMemo.SetOnKillFocus(Value: TNotifyEvent);
+begin
+  OnExit := Value;
 end;
 
+function TJvInspectorMemo.GetOnKillFocus: TNotifyEvent;
+begin
+  Result := OnExit;
+end;
+{$ENDIF VisualCLX}
+
+{$IFDEF VCL}
 procedure TJvInspectorEdit.WMKillFocus(var msg: TWMKillFocus);
 begin
-    inherited;
-    if (Assigned(FOnKillFocus)) then begin
-        FOnKillFocus(Self);
-        end;
+  inherited;
+  if (Assigned(FOnKillFocus)) then begin
+    FOnKillFocus(Self);
+  end;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvInspectorEdit.SetOnKillFocus(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+function TJvInspectorEdit.GetOnKillFocus: TNotifyEvent;
+begin
+  Result := OnExit;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvCustomInspectorItem.InitEdit;
 var
