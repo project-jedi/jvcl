@@ -8386,7 +8386,7 @@ end;
 
 function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 begin
-  Result := DrawText(Canvas, PChar(Text), Len, R, WinFlags);
+  Result := DrawText(Canvas, PChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified
 end;
 
 function DrawTextEx(Canvas: TCanvas; lpchText: PChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
@@ -8396,24 +8396,24 @@ end;
 
 function DrawTextEx(Canvas: TCanvas; const Text: string; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
 begin
-  Result := Windows.DrawTextEx(Canvas.Handle, PChar(Text), cchText, p4, dwDTFormat, DTParams);
+  Result := Windows.DrawTextEx(Canvas.Handle, PChar(Text), cchText, p4, dwDTFormat and not DT_MODIFYSTRING, DTParams);
 end;
 
 {$IFDEF COMPILER6_UP}
 function DrawText(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 begin
-  Result := DrawTextW(Canvas, Text, Len, R, WinFlags);
+  Result := DrawTextW(Canvas, Text, Len, R, WinFlags and not DT_MODIFYSTRING);
 end;
 
 function DrawTextEx(Canvas: TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
 begin
-  Result := DrawTextExW(Canvas, Text, cchText, p4, dwDTFormat, DTParams);
+  Result := DrawTextExW(Canvas, Text, cchText, p4, dwDTFormat and not DT_MODIFYSTRING, DTParams);
 end;
 {$ENDIF COMPILER6_UP}
 
 function DrawTextW(Canvas :TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 begin
-  Result := DrawTextW(Canvas, PWideChar(Text), Len, R, WinFlags);
+  Result := DrawTextW(Canvas, PWideChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING);
 end;
 
 function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer;
@@ -8428,7 +8428,7 @@ end;
 
 function DrawTextExW(Canvas:TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
 begin
-  Result := Windows.DrawTextExW(Canvas.Handle, PWideChar(Text), cchText, p4, dwDTFormat, DTParams);
+  Result := Windows.DrawTextExW(Canvas.Handle, PWideChar(Text), cchText, p4, dwDTFormat and not DT_MODIFYSTRING, DTParams);
 end;
 
 const
