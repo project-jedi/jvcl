@@ -6094,8 +6094,14 @@ begin
 end;
 
 procedure TJvInspectorEnumItem.SetDisplayValue(const Value: string);
+var
+  OrdVal: Integer;
 begin
-  Data.AsOrdinal := GetEnumValue(Data.TypeInfo, Value);
+  OrdVal := GetEnumValue(Data.TypeInfo, Value);
+  if OrdVal <> -1 then
+    Data.AsOrdinal := GetEnumValue(Data.TypeInfo, Value)
+  else
+    raise EJvInspectorItem.CreateFmt(sJvInspItemInvalidPropValue, [AnsiQuotedStr(Value, '''')]);
 end;
 
 procedure TJvInspectorEnumItem.SetFlags(const Value: TInspectorItemFlags);
@@ -6564,7 +6570,7 @@ begin
         Data.AsOrdinal := Integer(SL.Objects[I])
       else
         raise EJvInspectorItem.CreateFmt(sJvInspItemInvalidPropValue,
-          [AnsiQuotedStr('Value', '''')]);
+          [AnsiQuotedStr(Value, '''')]);
     finally
       SL.Free;
     end;
