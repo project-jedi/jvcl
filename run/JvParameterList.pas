@@ -119,7 +119,8 @@ type
     FSearchName: string;
     FRequired: Boolean;
     FReadOnly: Boolean;
-    FReloadValueFromAppStorage: Boolean;
+    FStoreValueToAppStorage: Boolean;
+    FStoreValueCrypted: Boolean;
     FParentParameterName: string;
     FTabOrder: Integer;
     FParameterList: TJvParameterList;
@@ -194,7 +195,9 @@ type
      this value must be defined before inserting into the parameterlist }
     property SearchName: string read FSearchName write FSearchName;
     {should this value be saved by the parameterlist }
-    property ReloadValueFromAppStorage: Boolean read FReloadValueFromAppStorage write FReloadValueFromAppStorage;
+    property StoreValueToAppStorage: Boolean read FStoreValueToAppStorage write FStoreValueToAppStorage;
+    {should this value be crypted before save }
+    property StoreValueCrypted: Boolean read FStoreValueCrypted write FStoreValueCrypted;
     {the searchname of the parentparameter. The parameter must be a
      descent of TJvPanelParameter or TTabControlParamter. If the
      parent parameter is a TJvTabControlParameter, then the ParentParameterName must be
@@ -655,7 +658,8 @@ end;
 constructor TJvBaseParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
-  FReloadValueFromAppStorage := True;
+  FStoreValueToAppStorage := True;
+  FStoreValueCrypted := False;
   FTabOrder := -1;
   FParameterList := AParameterList;
   FWinControl := nil;
@@ -905,7 +909,8 @@ begin
   Height := TJvBaseParameter(Source).Height;
   Required := TJvBaseParameter(Source).Required;
   ParentParameterName := TJvBaseParameter(Source).ParentParameterName;
-  ReloadValueFromAppStorage := TJvBaseParameter(Source).ReloadValueFromAppStorage;
+  StoreValueToAppStorage := TJvBaseParameter(Source).StoreValueToAppStorage;
+  StoreValueCrypted := TJvBaseParameter(Source).StoreValueCrypted;
   TabOrder := TJvBaseParameter(Source).TabOrder;
   FParameterList := TJvBaseParameter(Source).ParameterList;
   Color := TJvBaseParameter(Source).Color;
@@ -1684,12 +1689,18 @@ begin
     for I := 0 to ParameterList.Count - 1 do
       if not (Parameters[I] is TJvNoDataParameter) then
         with Parameters[I] do
-          if ReloadValueFromAppStorage then
+          if StoreValueToAppStorage then
+          begin
+            if StoreValueCrypted then
+              AppStorage.EnablePropertyValueCrypt;
             if Parameters[I] is TJvListParameter then
               with TJvListParameter(Parameters[I]) do
                 ItemIndex := AppStorage.ReadInteger(AppStorage.ConcatPaths([AppStoragePath, SearchName]), ItemIndex)
             else
               AsString := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, SearchName]), AsString);
+            if StoreValueCrypted then
+              AppStorage.DisablePropertyValueCrypt;
+          end;
 end;
 
 procedure TJvParameterListPropertyStore.StoreData;
@@ -1700,12 +1711,18 @@ begin
     for I := 0 to ParameterList.Count - 1 do
       if not (Parameters[I] is TJvNoDataParameter) then
         with Parameters[I] do
-          if ReloadValueFromAppStorage then
+          if StoreValueToAppStorage then
+          begin
+            if StoreValueCrypted then
+              AppStorage.EnablePropertyValueCrypt;
             if Parameters[I] is TJvListParameter then
               with TJvListParameter(Parameters[I]) do
                 AppStorage.WriteInteger(AppStorage.ConcatPaths([AppStoragePath, SearchName]), ItemIndex)
             else
               AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, SearchName]), AsString);
+            if StoreValueCrypted then
+              AppStorage.DisablePropertyValueCrypt;
+          end;
 end;
 
 //=== TJvParameterListPropertyStore ==========================================

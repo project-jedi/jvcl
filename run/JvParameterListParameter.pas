@@ -47,7 +47,7 @@ type
     property AsBoolean;
     property AsDate;
     property Required;
-    property ReloadValueFromAppStorage;
+    property StoreValueToAppStorage;
     property ReadOnly;
   public
     constructor Create(AParameterList: TJvParameterList); override;
@@ -483,7 +483,7 @@ uses
 constructor TJvNoDataParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
-  ReloadValueFromAppStorage := False;
+  StoreValueToAppStorage := False;
 end;
 
 function TJvNoDataParameter.Validate(var AData: Variant): Boolean;
