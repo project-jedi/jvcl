@@ -15,7 +15,8 @@ PROJECTS = bplJvQCoreK3R.so bplJvQCoreK3D.so bplJvQSystemK3R.so \
   bplJvQCryptK3D.so bplJvQMMK3R.so bplJvQMMK3D.so bplJvQAppFrmK3R.so \
   bplJvQAppFrmK3D.so bplJvQJansK3R.so bplJvQJansK3D.so bplJvQWizardK3R.so \
   bplJvQWizardK3D.so bplJvQManagedThreadsK3R.so bplJvQManagedThreadsK3D.so \
-  bplJvQUIBK3R.so bplJvQUIBK3D.so bplJvQHMIK3R.so bplJvQHMIK3D.so
+  bplJvQUIBK3R.so bplJvQUIBK3D.so bplJvQHMIK3R.so bplJvQHMIK3D.so bplJvQNetK3R.so \
+  bplJvQNetK3D.so
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -108,6 +109,12 @@ bplJvQHMIK3R.so: k3/JvQHMIK3R.dpk
 	$(DCC)
 
 bplJvQHMIK3D.so: k3/JvQHMIK3D.dpk
+	$(DCC)
+
+bplJvQNetK3R.so: k3/JvQNetK3R.dpk
+	$(DCC)
+
+bplJvQNetK3D.so: k3/JvQNetK3D.dpk
 	$(DCC)
 
 
