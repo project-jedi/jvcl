@@ -13,9 +13,9 @@
       ..\..\dcu\JvDataProviderImpl.obj ..\..\dcu\JvContextProvider.obj 
       ..\..\dcu\JvAppStore.obj ..\..\dcu\JvAppRegistryStore.obj 
       ..\..\dcu\JvAppIniStore.obj ..\..\dcu\JvJVCLAboutForm.obj 
-      ..\..\dcu\JvActnResForm.obj ..\..\dcu\JvJVCLUtils.obj
-      ..\..\dcu\JvThemes.obj ..\..\dcu\JvColorProvider.obj
-      ..\..\dcu\JvClxUtils.obj"/>
+      ..\..\dcu\JvActnResForm.obj ..\..\dcu\JvJVCLUtils.obj 
+      ..\..\dcu\JvThemes.obj ..\..\dcu\JvClxUtils.obj 
+      ..\..\dcu\JvColorProvider.obj"/>
     <RESFILES value="JvCoreC6R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -24,7 +24,7 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="vcl.bpi vclx.bpi vcljpg.bpi cjcl60.bpi rtl.bpi bcbsmp.bpi"/>
+    <PACKAGES value="cjcl60.bpi bcbsmp.bpi rtl.bpi vcl.bpi vcljpg.bpi vclx.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\common;..\..\run;..\..\design"/>
     <PATHRC value=".;"/>
@@ -41,14 +41,15 @@
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\design -I..\..\run -I..\..\common -I$(BCB)\include 
-      -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
+    <IDLCFLAGS value="-I..\..\design -I..\..\run -I..\..\common -I..\..\..\JCL\source 
+      -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
     <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Core Runtime Package&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Core Runtime Package&quot; -aa -Tpp
+      -Gpr -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -123,20 +124,22 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=3
-Item0=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl
-Item1=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\include;$(BCB)\include\vcl
-Item2=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\..\JCL\source
+Count=4
+Item0=..\..\design;..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl
+Item1=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl
+Item2=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\include;$(BCB)\include\vcl
+Item3=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\..\JCL\source
 
 [HistoryLists\hlLibraryPath]
-Count=7
-Item0=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
-Item1=C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
-Item2=C:\Prog\delphi6\Lib\JCL\dcu;c:\prog\cbuilder6\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
-Item3=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
-Item4=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common;..\..\..\JCL\dcu;..\..\..\JCL\source
-Item5=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\JCL\dcu;..\..\..\JCL\source
-Item6=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib
+Count=8
+Item0=..\..\design;..\..\run;..\..\common;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+Item1=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+Item2=C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+Item3=C:\Prog\delphi6\Lib\JCL\dcu;c:\prog\cbuilder6\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
+Item4=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
+Item5=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common;..\..\..\JCL\dcu;..\..\..\JCL\source
+Item6=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\JCL\dcu;..\..\..\JCL\source
+Item7=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
@@ -149,6 +152,14 @@ Item0=_DEBUG
 [HistoryLists\hlIntOutputDir]
 Count=1
 Item0=..\..\dcu
+
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=$(BCB)\Projects\bpl
+
+[HistoryLists\hIBPIOutputDir]
+Count=1
+Item0=$(BCB)\Projects\lib
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl

@@ -44,7 +44,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvCoreC6D.cpp"/>
     <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib"/>
-    <LIBPATH value="..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib"/>
+    <LIBPATH value="..\..\design;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
