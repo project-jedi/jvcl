@@ -201,9 +201,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
-  Menus, ExtCtrls, StdCtrls, Clipbrd, Dialogs,
-  JvJCLUtils, JvFixedEditPopup, JvUnicodeCanvas, JvComponent,
-  JvExControls;
+  StdCtrls, ExtCtrls, Menus,
+  JvFixedEditPopup, JvUnicodeCanvas, JvComponent, JvExControls;
 
 const
   Max_X = 1024; {max symbols per row}
@@ -1208,8 +1207,8 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
-  Math,
-  JvThemes, JvConsts, JvResources;
+  Math, Clipbrd,
+  JvJCLUtils, JvThemes, JvConsts, JvResources;
 
 type
   TJvEditorCompletionList = class(TListBox)

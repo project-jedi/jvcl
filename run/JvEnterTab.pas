@@ -31,8 +31,7 @@ unit JvEnterTab;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Messages, Graphics, Controls, Forms, StdCtrls,
+  Windows, Messages, Classes, Graphics, Controls,
   {$IFDEF VisualCLX}
   Qt,
   JvQConsts,
@@ -64,6 +63,11 @@ type
   end;
 
 implementation
+
+{$IFDEF VCL}
+uses
+  Forms, StdCtrls;
+{$ENDIF VCL}
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvEnterTab.res}

@@ -39,9 +39,8 @@ unit JvEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
-  Menus, ExtCtrls, StdCtrls, Clipbrd, JvJCLUtils, JvFixedEditPopup,
-  JvUnicodeCanvas, JvComponent, JvExControls, JvEditorCommon;
+  Windows, Messages, Classes, Controls,
+  JvEditorCommon;
 
 type
   TJvCustomEditor = class;
@@ -260,8 +259,8 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
-  Math,
-  JvThemes, JvConsts, JvResources;
+  SysUtils, Math, Graphics, Clipbrd,
+  JvUnicodeCanvas, JvJCLUtils, JvThemes, JvConsts, JvResources;
 
 type
   TJvInsertUndo = class(TJvCaretUndo)
