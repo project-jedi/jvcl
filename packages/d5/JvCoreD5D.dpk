@@ -45,6 +45,7 @@ contains
   JvDataProviderItemDesign in '..\..\design\JvDataProviderItemDesign.pas',
   JvDataProviderEditors in '..\..\design\JvDataProviderEditors.pas',
   JvDsgnConsts in '..\..\design\JvDsgnConsts.pas',
+  JvDsgnTypes in '..\..\design\JvDsgnTypes.pas',
   JvBaseDsgnForm in '..\..\design\JvBaseDsgnForm.pas' {JvBaseDesign},
   JvDataProviderDesignerForm in '..\..\design\JvDataProviderDesignerForm.pas' {frmDataProviderDesigner},
   JvDataContextManagerForm in '..\..\design\JvDataContextManagerForm.pas' {frmJvDataContextManager},
