@@ -198,6 +198,9 @@ type
     procedure ActivateHintPos(AAnchorWindow: TCustomForm; AAnchorPosition: TPoint;
       const AHeader, AHint: string; const VisibleTime: Integer = 5000;
       const AIconKind: TJvIconKind = ikInformation; const AImageIndex: TImageIndex = -1);
+    procedure ActivateHintRect(ARect: TRect; const AHeader, AHint: string;
+      const VisibleTime: Integer = 5000; const AIconKind: TJvIconKind = ikInformation;
+      const AImageIndex: TImageIndex = -1);
     procedure CancelHint;
   published
     property CustomAnimationStyle: TJvAnimationStyle read FCustomAnimationStyle write
@@ -221,7 +224,7 @@ implementation
 uses
   SysUtils, CommCtrl, Registry, Math, MMSystem, // needed for sndPlaySound
   ComCtrls, // needed for GetComCtlVersion
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF JVCLThemesEnabled}
   Themes,
   {$ENDIF}
   JvWndProcHook;
@@ -348,7 +351,7 @@ begin
     raise EInvalidOperation.CreateFmt(SParentGivenNotAParent, [AControl.Name]);
 end;
 
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 //=== TJvBalloonWindow =======================================================
 
@@ -685,8 +688,7 @@ begin
 
         ptTail[0] := Point(Rect.Right - (FTipDelta + 1), Rect.Bottom + 1);
         ptTail[1] := Point(Rect.Right - (FTipDelta + 1), Rect.Bottom - (FTipHeight + 1));
-        ptTail[2] := Point(Rect.Right - (FTipDelta + FTipWidth + 2), Rect.Bottom - (FTipHeight +
-          1));
+        ptTail[2] := Point(Rect.Right - (FTipDelta + FTipWidth + 2), Rect.Bottom - (FTipHeight + 1));
       end;
     bpRightUp:
       begin
@@ -942,6 +944,27 @@ begin
     RIconKind := AIconKind;
     RImageIndex := AImageIndex;
     RSwitchHeight := 0;
+  end;
+
+  InternalActivateHintPos;
+end;
+
+procedure TJvBalloonHint.ActivateHintRect(ARect: TRect; const AHeader,
+  AHint: string; const VisibleTime: Integer; const AIconKind: TJvIconKind;
+  const AImageIndex: TImageIndex);
+begin
+  CancelHint;
+
+  with FData do
+  begin
+    RAnchorWindow := nil;
+    RAnchorPosition := Point((ARect.Left + ARect.Right) div 2, ARect.Bottom);
+    RHeader := AHeader;
+    RHint := AHint;
+    RVisibleTime := VisibleTime;
+    RIconKind := AIconKind;
+    RImageIndex := AImageIndex;
+    RSwitchHeight := ARect.Bottom - ARect.Top;
   end;
 
   InternalActivateHintPos;
@@ -1243,18 +1266,73 @@ begin
 end;
 
 procedure TGlobalCtrl.GetDefaultImages;
+type
+  TPictureType = (ptXP, ptNormal, ptSimple);
 const
+  { Get the images:
+
+    For        From          ID   TJvIconKind    Spec
+    ---------------------------------------------------------------------------
+    Windows XP User32.dll   100   ikApplication  16x16 32x32 48x48 1,4,8,32 bpp
+                            101   ikWarning
+                            102   ikQuestion
+                            103   ikError
+                            104   ikInformation
+                            105   ikApplication
+    All (?)    comctl32.dll 20480 ikError        16x16 32x32 4 bpp
+                            20481 ikInformation
+                            20482 ikWarning
+  }
+
   { ikApplication, ikError, ikInformation, ikQuestion, ikWarning }
-  CIcons: array [ikApplication..ikWarning] of Integer =
-    (OIC_SAMPLE, OIC_HAND, OIC_NOTE, OIC_QUES, OIC_BANG);
+  CIcons: array [TPictureType, ikApplication..ikWarning] of Integer = (
+    (100, 103, 104, 102, 101),                             // XP
+    (OIC_SAMPLE, 20480, 20481, OIC_QUES, 20482),           // Normal
+    (OIC_SAMPLE, OIC_HAND, OIC_NOTE, OIC_QUES, OIC_BANG)   // Paranoid
+    );
+  CFlags: array [Boolean] of UINT = (0, LR_SHARED);
 var
   IconKind: TJvIconKind;
+  PictureType: TPictureType;
+  IconHandle: THandle;
+  Shared: Boolean;
+  Modules: array [Boolean] of HMODULE;
 begin
-  { MSDN: Do not use DestroyIcon to destroy a shared icon. A shared icon is
-    valid as long as the module from which it was loaded remains in memory }
-  for IconKind := Low(CIcons) to High(CIcons) do
-    ImageList_AddIcon(FDefaultImages.Handle, LoadImage(0, MakeIntResource(CIcons[IconKind]),
-      IMAGE_ICON, 16, 16, LR_SHARED));
+  PictureType := ptNormal;
+  Modules[True] := 0;
+
+  if IsWinXP_UP then
+  begin
+    Modules[False] := GetModuleHandle('user32.dll');
+    if Modules[False] <> 0 then
+      PictureType := ptXP
+  end;
+
+  if PictureType = ptNormal then
+  begin
+    Modules[False] := GetModuleHandle('comctl32.dll');
+    if Modules[False] = 0 then
+      PictureType := ptSimple;
+  end;
+
+  { Now   PictureType = ptXP     -> Modules = (user32.dll handle, 0)
+          PictureType = ptNormal -> Modules = (comctl32.dll handle, 0)
+          PictureType = ptSimple -> Modules = (0, 0)
+  }
+
+  for IconKind := Low(CIcons[PictureType]) to High(CIcons[PictureType]) do
+  begin
+    Shared := (PictureType = ptSimple) or
+      (PictureType = ptNormal) and (IconKind in [ikApplication, ikQuestion]);
+    IconHandle :=
+      LoadImage(Modules[Shared], MakeIntResource(CIcons[PictureType, IconKind]),
+      IMAGE_ICON, 16, 16, CFlags[Shared]);
+    ImageList_AddIcon(FDefaultImages.Handle, IconHandle);
+    { MSDN: Do not use DestroyIcon to destroy a shared icon. A shared icon is
+      valid as long as the module from which it was loaded remains in memory }
+    if not Shared then
+      DestroyIcon(IconHandle);
+  end;
 end;
 
 procedure TGlobalCtrl.GetDefaultSounds;
@@ -1402,7 +1480,7 @@ begin
 end;
 
 procedure TJvBalloonWindowEx.ChangeCloseState(const AState: Cardinal);
-{$IFDEF COMPILER7_UP}
+{$IFDEF JVCLThemesEnabled}
 var
   Details: TThemedElementDetails;
   Button: TThemedToolTip;
@@ -1411,7 +1489,7 @@ begin
   if AState <> FCloseState then
   begin
     FCloseState := AState;
-    {$IFDEF COMPILER7_UP}
+    {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
     begin
       if (AState and DFCS_PUSHED > 0) and (AState and DFCS_HOT = 0) then
@@ -1429,7 +1507,7 @@ begin
       ThemeServices.DrawElement(Canvas.Handle, Details, FCloseBtnRect);
     end
     else
-    {$ENDIF COMPILER7_UP}
+    {$ENDIF JVCLThemesEnabled}
       DrawFrameControl(Canvas.Handle, FCloseBtnRect, DFC_CAPTION, DFCS_TRANSPARENT or
         DFCS_CAPTIONCLOSE or FCloseState);
   end;
@@ -1548,7 +1626,7 @@ begin
   if FShowCloseBtn then
   begin
     FCloseBtnRect := Rect(HintRect.Right - 22, FDeltaY + 5, HintRect.Right - 6, FDeltaY + 21);
-    {$IFDEF COMPILER7_UP}
+    {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
     begin
       Dec(FCloseBtnRect.Left);
