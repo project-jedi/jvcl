@@ -89,6 +89,7 @@ resourcestring
 
   //=== JvCsvDataEditor.pas ==================================================
   SJvCsvDataSetSelectCSVFileToOpen = 'JvCsvDataSet - Select CSV File to Open';
+  SCsvFilter = '*.csv';
 
   //=== JvCsvDataForm.pas ====================================================
   SMustTypeAValidFieldNameAndSelectAFi =
@@ -266,6 +267,46 @@ resourcestring
   SfiWWWUser = 'User defined URL link';
   SfiMetaCrypto = 'Encrypted meta frame';
   SfiMetaCompression = 'Compressed meta frame';
+
+  SMPEG10 = 'MPEG 1.0';
+  SMPEG20 = 'MPEG 2.0';
+  SMPEGUnknown = '??';
+  SMPEG25 = 'MPEG 2.5';
+
+  SLayerUnknown = '??';
+  SLayer1 = 'Layer 1';
+  SLayer2 = 'Layer 2';
+  SLayer3 = 'Layer 3';
+
+  SChannelModeStereo = 'Stereo';
+  SChannelModeJointStereo = 'Joint Stereo';
+  SChannelModeDualChannel = 'Dual Channel';
+  SChannelModeMono = 'Mono';
+
+  SEmphasisNone = 'None';
+  SEmphasisMicrosec = '50/15 microsec';
+  SEmphasisUnknown = '??';
+  SEmphasisCCITTJ17 = 'CCIT J.17';
+
+  SBoolNo = 'No';
+  SBoolYes = 'Yes';
+
+  SVbrNo = '';
+  SVbrVbr = ' (VBR)';
+
+  SIDV2FileInfo =
+    'Size: %d bytes' + sLineBreak +
+    'Header found at: %d bytes' + sLineBreak +
+    'Length: %d seconds' + sLineBreak +
+    '%s %s' + sLineBreak +
+    '%dkbit%s, %d frames' + sLineBreak +
+    '%dHz %s' + sLineBreak +
+    'CRCs: %s' + sLineBreak +
+    'Copyrighted: %s' + sLineBreak +
+    'Original: %s' + sLineBreak +
+    'Emphasis: %s';
+
+  SIDV2FileInfoCaption = 'File info';
 
   //=== JvgLabelEditorForm.pas ===============================================
   SEditLabel = 'Edit &Label...';

@@ -120,25 +120,25 @@ begin
 end;
 
 {
-function TCSVDataSetComponentEditor.GetVerbCount : Integer;
+function TCSVDataSetComponentEditor.GetVerbCount: Integer;
 begin
  Result := 2;  //The number of item in popup-menu
 end;
 
 function TCSVDataSetComponentEditor.GetVerb (Index : Integer) : string;
 begin
- case Index of
-   0 :  Result := _('Edit CSV Field Definitions...'); //Label displayed for each
-   1 :  Result := _('Edit VCL Field Definitions...');
- else
-        result := '';
+  case Index of
+    0:  Result := 'Edit CSV Field Definitions...'; // Label displayed for each
+    1:  Result := 'Edit VCL Field Definitions...';
+  else
+    Result := '';
   end;
 end;
 
 procedure TCSVDataSetComponentEditor.ExecuteVerb(Index : Integer);
 var
-  CsvOwner :   TCSVDataSet;
-  s2 :   String;
+  CsvOwner: TCSVDataSet;
+  s2: string;
 begin
  case Index of
    0 : begin
@@ -174,7 +174,7 @@ begin
   begin
     Title := SJvCsvDataSetSelectCSVFileToOpen;
     FileName := GetValue;
-    Filter := '*.csv';
+    Filter := SCsvFilter;
     Options := Options + [ofPathMustExist];
     try
       if Execute then
@@ -191,10 +191,14 @@ begin
 end;
 
 procedure Register;
+const
+ cCsvFieldDef = 'CsvFieldDef';
+ //cTableName = 'TableName';
+ cFileName = 'FileName';
 begin
-  RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, 'CsvFieldDef', TJvCsvDefStrProperty);
-// RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, 'TableName', TFilenameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, 'FileName', TJvFileNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cCsvFieldDef, TJvCsvDefStrProperty);
+// RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cTableName, TFileNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cFileName, TJvFileNameProperty);
 
  { Component Editor - Verbs for the Right-Clicky-on-ye-component thing
    Requires a working DSDESIGN.pas source that will compile. }

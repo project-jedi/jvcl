@@ -208,6 +208,7 @@ function ClxExtTextOutW(Canvas: TCanvas; X, Y: Integer; Flags: Integer;
 implementation
 
 {$IFDEF COMPLIB_CLX}
+
 function GetSysColor(Color: Integer): TColorRef;
 begin
   Result := TColorRef(Application.Palette.GetColor(Color));
@@ -363,9 +364,10 @@ begin
 end;
 {$ENDIF LINUX}
 
-function TruncatePath(const FilePath: string; Canvas: TCanvas; MaxLen: Integer): string;
 const
-  Ellipses = '...';
+  cEllipsis = '...';
+
+function TruncatePath(const FilePath: string; Canvas: TCanvas; MaxLen: Integer): string;
 var
   Paths: TStrings;
   k, i, start: Integer;
@@ -388,11 +390,11 @@ begin
         CurPath := Paths[k] ;
         if Length(CurPath) > 2 then   // this excludes ~ ..
         begin
-          Paths[k] := Ellipses ; // replace with ellipses
+          Paths[k] := cEllipsis; // replace with ellipsis
           I := 1;
           while Canvas.TextWidth(Paths.DelimitedText) <= MaxLen do
           begin
-            Paths[k] := Copy(CurPath, I, MaxInt) + Ellipses;   // add a character
+            Paths[k] := Copy(CurPath, I, MaxInt) + cEllipsis;   // add a character
             Inc(I);
           end;
           if I <> 1 then
@@ -409,15 +411,15 @@ begin
       // before starting to minimize filename
       for k := Paths.count - 2 downto 1 do
         Paths.Delete(k);
-      Paths[0] := Ellipses;
+      Paths[0] := cEllipsis;
       if Canvas.TextWidth(Paths.DelimitedText) > MaxLen then
       begin
         CurPath := Paths[1];
-        Paths[1] := Ellipses; // replace with ellipses
+        Paths[1] := cEllipsis; // replace with ellipsis
         I := 1 ;
         while Canvas.TextWidth(Paths.DelimitedText) <= MaxLen do
         begin
-          Paths[1] := Copy(CurPath, I, MaxInt) + Ellipses;
+          Paths[1] := Copy(CurPath, I, MaxInt) + cEllipsis;
           Inc(I);
         end;
         if I <> 1 then
@@ -431,8 +433,6 @@ begin
 end;
 
 function TruncateName(const Name: String; Canvas: TCanvas; MaxLen: Integer): string;
-const
-  Ellipses = '...';
 var
   I: Integer;
 begin
@@ -440,11 +440,11 @@ begin
     Result := Name
   else
   begin
-    Result := Ellipses ; // replace with ellipses
+    Result := cEllipsis ; // replace with ellipsis
     I := 1;
     while Canvas.TextWidth(Result) <= MaxLen do
     begin
-      Result := Copy(Name, I, MaxInt) + Ellipses;   // add a character
+      Result := Copy(Name, I, MaxInt) + cEllipsis;   // add a character
       Inc(I);
     end;
     if I <> 1 then

@@ -33,13 +33,6 @@ uses
   SysUtils;
 
 const
-  { RegAutoEditor } // designtime
-  sRegAutoEditorEdtPropHint    = 'You can type property name here';
-  sRegAutoEditorTreeHint       = 'Available properties';
-  sRegAutoEditorListHint       = 'Stored properties';
-  sRegAutoEditorBtnAddPropHint = 'Add/Remove property';
-  sRegAutoEditorSort           = 'Sort';
-
   { JvEditor }
   JvEditorCompletionChars = #8+'0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
 
@@ -69,12 +62,17 @@ const
   SCantGetShortCut      = 'Target FileName for ShortCut %s not available';
 
   { RALib 1.23 }
-  SPropertyNotExists    = 'Property "%s" does not exists';
+  SPropertyNotExists    = 'Property "%s" does not exist';
   SInvalidPropertyType  = 'Property "%s" has invalid type';
 
   { RALib 1.55 }
 
 resourcestring
+  { JvAni.pas, JvAniFile.pas }
+  RC_AniExtension = 'ani';
+  RC_AniFilterName = 'ANI Image';
+  SInvalidAnimatedIconImage = 'Animated icon image is not valid';
+
   { JvHLEdPropDlg }
   SHLEdPropDlg_Caption = 'Editor Properties';
   SHLEdPropDlg_tsEditor = 'Editor';
@@ -102,7 +100,7 @@ resourcestring
   SHLEdPropDlg_cbUnderline = '&Underline';
   SHLEdPropDlg_cbDefForeground = '&Foreground';
   SHLEdPropDlg_cbDefBackground = '&Background';
-  SHLEdPropDlg_OptionCantBeChanged = 'This option can''t be changed. Sorry.';
+  SHLEdPropDlg_OptionCantBeChanged = 'This option cannot be changed. Sorry.';
 
   SHLEdPropDlg_RAHLEditorNotAssigned = 'JvHLEditor property is not assigned';
   SHLEdPropDlg_RegAutoNotAssigned = 'RegAuto property is not assigned';
