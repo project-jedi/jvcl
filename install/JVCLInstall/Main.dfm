@@ -27,20 +27,26 @@ object FormMain: TFormMain
     Width = 683
     Height = 444
     ButtonBarHeight = 42
+    ButtonStart.Caption = 'To &Start Page'
     ButtonStart.NumGlyphs = 1
     ButtonStart.Width = 85
+    ButtonLast.Caption = 'To &Last Page'
     ButtonLast.NumGlyphs = 1
     ButtonLast.Width = 85
+    ButtonBack.Caption = '< &Back'
     ButtonBack.NumGlyphs = 1
     ButtonBack.Width = 75
+    ButtonNext.Caption = '&Next >'
     ButtonNext.NumGlyphs = 1
     ButtonNext.Width = 75
+    ButtonFinish.Caption = '&Finish'
     ButtonFinish.NumGlyphs = 1
     ButtonFinish.Width = 75
     ButtonCancel.Caption = 'Cancel'
     ButtonCancel.NumGlyphs = 1
     ButtonCancel.ModalResult = 2
     ButtonCancel.Width = 75
+    ButtonHelp.Caption = '&Hilfe'
     ButtonHelp.NumGlyphs = 1
     ButtonHelp.Width = 75
     ShowRouteMap = True
@@ -48,6 +54,9 @@ object FormMain: TFormMain
     OnCancelButtonClick = JvWizardCancelButtonClick
     OnActivePageChanged = JvWizardActivePageChanged
     OnActivePageChanging = JvWizardActivePageChanging
+    DesignSize = (
+      683
+      444)
     object LblHomepage: TLabel
       Left = 8
       Top = 424
