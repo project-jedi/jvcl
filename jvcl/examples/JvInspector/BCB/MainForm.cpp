@@ -96,11 +96,9 @@ public:
 
   ~TInitializer()
   {
-    // Can't call this method, as it accepts a 'const PTypeInfo'
-    // parameter and this will not be found by the linker.
-    // We should modify the JCL to remove the const specifier
-    // but the decision has not been taken yet
-    //RemoveTypeInfo(GeneratedTestEnum);
+    // You need the very latest CVS version for this not to provoke
+    // a linker error. (QC 7224)
+    RemoveTypeInfo(GeneratedTestEnum);
   };
 };
 static TInitializer Initializer;
