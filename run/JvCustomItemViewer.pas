@@ -509,7 +509,7 @@ end;
 
 procedure TJvBrushPattern.SetOddColor(const Value: TColor);
 begin
-  if FOddCOlor <> Value then
+  if FOddColor <> Value then
   begin
     if FPattern <> nil then
       ReleasePattern(EvenColor, OddColor);
@@ -1087,7 +1087,7 @@ begin
     Paint;
   end
   else
-    Result := inherited GetDragimages;
+    Result := inherited GetDragImages;
 end;
 
 function TJvCustomItemViewer.GetItemClass: TJvViewerItemClass;
@@ -1258,29 +1258,29 @@ end;
 
 procedure TJvCustomItemViewer.KeyDown(var Key: Word; Shift: TShiftState);
 var
-  aIndex: Integer;
+  LIndex: Integer;
 begin
   inherited KeyDown(Key, Shift);
-  aIndex := -1;
+  LIndex := -1;
   if Focused then
     case Key of
       VK_UP:
-        aIndex := SelectedIndex - FCols;
+        LIndex := SelectedIndex - FCols;
       VK_DOWN:
-        aIndex := SelectedIndex + FCols;
+        LIndex := SelectedIndex + FCols;
       VK_LEFT:
-        aIndex := SelectedIndex - 1;
+        LIndex := SelectedIndex - 1;
       VK_RIGHT:
-        aIndex := SelectedIndex + 1;
+        LIndex := SelectedIndex + 1;
       VK_SPACE:
         Click;
     end;
-  if (aIndex >= 0) and (aIndex < Count) then
+  if (LIndex >= 0) and (LIndex < Count) then
   begin
     if Options.MultiSelect then
-      DoUnSelectItems(aIndex);
-    SelectedIndex := aIndex;
-    ScrollIntoView(aIndex);
+      DoUnSelectItems(LIndex);
+    SelectedIndex := LIndex;
+    ScrollIntoView(LIndex);
   end;
 end;
 
@@ -1590,8 +1590,8 @@ begin
       FCols := 1;
     while (FRows * FCols) < Count do
       Inc(FCols);
-    HorzScrollbar.Visible := True;
-    VertScrollbar.Visible := False;
+    HorzScrollBar.Visible := True;
+    VertScrollBar.Visible := False;
   end
   else
   begin
@@ -1610,11 +1610,11 @@ begin
       FRows := 1;
     while (FRows * FCols) < Count do
       Inc(FRows);
-    HorzScrollbar.Visible := False;
-    VertScrollbar.Visible := True;
+    HorzScrollBar.Visible := False;
+    VertScrollBar.Visible := True;
   end;
-  HorzScrollbar.Range := FCols * FItemSize.cx;
-  VertScrollbar.Range := FRows * FItemSize.cy;
+  HorzScrollBar.Range := FCols * FItemSize.cx;
+  VertScrollBar.Range := FRows * FItemSize.cy;
   UpdateOffset;
   CalcIndices;
   CheckHotTrack;
@@ -1823,7 +1823,7 @@ begin
     if Y <= cEdgeSize then
       ScrollEdge := Ord(seTop)
     else
-    if Y >= CLientHeight - cEdgeSize then
+    if Y >= ClientHeight - cEdgeSize then
       ScrollEdge := Ord(seBottom)
     else
       ScrollEdge := Ord(seNone);
@@ -1877,7 +1877,7 @@ begin
   AIndex := SelectedIndex;
   BeginUpdate;
   if not AppendSelection then
-    DoUnselectItems(-1);
+    DoUnSelectItems(-1);
   try
     for I := Max(StartIndex, 0) to Min(Count - 1, EndIndex) do
       Items[I].FState := Items[I].FState + [cdsSelected];
@@ -1898,7 +1898,7 @@ begin
   try
     for I := Max(0, StartIndex) to Min(EndIndex, Count - 1) do
       Items[I].FState := Items[I].FState - [cdsSelected];
-    if (SelectedIndex >= StartIndex) and (Selectedindex <= EndIndex) then
+    if (SelectedIndex >= StartIndex) and (SelectedIndex <= EndIndex) then
       FSelectedIndex := FindFirstSelected;
   finally
     EndUpdate;

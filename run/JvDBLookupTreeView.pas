@@ -121,7 +121,7 @@ type
     procedure SetListSource(Value: TDataSource);
     procedure SetLookupMode(Value: Boolean);
     procedure SetReadOnly(Value: Boolean);
-    procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
@@ -181,10 +181,10 @@ type
       Shift: TShiftState; X, Y: Integer);}
     procedure StopTracking;
     procedure TrackButton(X, Y: Integer);
-    procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
-    procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
-    procedure WMCancelMode(var Message: TMessage); message WM_CANCELMODE;
-    procedure CMCancelMode(var Message: TCMCancelMode); message CM_CANCELMODE;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
+    procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
+    procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
     procedure PopupCloseUp(Sender: TObject; Accept: Boolean); virtual;
   private
     FAutoExpand: Boolean;
@@ -295,7 +295,7 @@ type
 
   TJvPopupTree = class(TJvDBTreeView)
   private
-    procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
+    procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
   protected
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DblClick; override;
@@ -830,9 +830,9 @@ begin
   Invalidate;
 end;
 
-procedure TJvDBLookupControl.CMGetDataLink(var Message: TMessage);
+procedure TJvDBLookupControl.CMGetDataLink(var Msg: TMessage);
 begin
-  Message.Result := Integer(FDataLink);
+  Msg.Result := Integer(FDataLink);
 end;
 
 //=== { TJvDBLookupTreeViewCombo } ===========================================
@@ -1225,7 +1225,7 @@ begin
   end;
 end;
 
-procedure TJvDBLookupTreeViewCombo.CMCtl3DChanged(var Message: TMessage);
+procedure TJvDBLookupTreeViewCombo.CMCtl3DChanged(var Msg: TMessage);
 begin
   if NewStyleControls then
   begin
@@ -1241,22 +1241,22 @@ begin
   Height := 0;
 end;
 
-procedure TJvDBLookupTreeViewCombo.CMGetDataLink(var Message: TMessage);
+procedure TJvDBLookupTreeViewCombo.CMGetDataLink(var Msg: TMessage);
 begin
-  Message.Result := Integer(FDataLink);
+  Msg.Result := Integer(FDataLink);
 end;
 
-procedure TJvDBLookupTreeViewCombo.WMCancelMode(var Message: TMessage);
+procedure TJvDBLookupTreeViewCombo.WMCancelMode(var Msg: TMessage);
 begin
   StopTracking;
   inherited;
 end;
 
-procedure TJvDBLookupTreeViewCombo.CMCancelMode(var Message: TCMCancelMode);
+procedure TJvDBLookupTreeViewCombo.CMCancelMode(var Msg: TCMCancelMode);
 begin
-  if (Message.Sender <> Self) and (Message.Sender <> FDataList) and
+  if (Msg.Sender <> Self) and (Msg.Sender <> FDataList) and
      ((FDataList <> nil) and
-    not FDataList.ContainsControl(Message.Sender)) then
+    not FDataList.ContainsControl(Msg.Sender)) then
       PopupCloseUp(FDataList, False);
 end;
 
@@ -1345,34 +1345,34 @@ const
 type
   PNMCustomDrawInfo = ^TNMCustomDrawInfo;
   TNMCustomDrawInfo = packed record
-    hdr: TNMHDR;
-    dwDrawStage: LONGINT;
+    hdr: TNMHdr;
+    dwDrawStage: Longint;
     hdc: HDC;
     rc: TRect;
-    dwItemSpec: LONGINT; // this is control specific, but it's how to specify an item.  valid only with CDDS_ITEM bit set
+    dwItemSpec: Longint; // this is control specific, but it's how to specify an item.  valid only with CDDS_ITEM bit set
     uItemState: Cardinal;
     lItemlParam: Longint;
   end;
 {####### from ComCtl98 unit}
 
-procedure TJvPopupTree.CNNotify(var Message: TWMNotify);
+procedure TJvPopupTree.CNNotify(var Msg: TWMNotify);
 begin
-  with Message.NMHdr^ do
+  with Msg.NMHdr^ do
     case code of
       NM_CUSTOMDRAW:
         begin
-          with PNMCustomDrawInfo(Pointer(Message.NMHdr))^ do
+          with PNMCustomDrawInfo(Pointer(Msg.NMHdr))^ do
           begin
             if (dwDrawStage and CDDS_PREPAINT) = CDDS_PREPAINT then
-              Message.Result := CDRF_NOTIFYITEMDRAW;
+              Msg.Result := CDRF_NOTIFYITEMDRAW;
             if (dwDrawStage and CDDS_ITEMPREPAINT) = CDDS_ITEMPREPAINT then
             begin
-              if (uItemstate and CDIS_SELECTED) <> 0 then
+              if (uItemState and CDIS_SELECTED) <> 0 then
               begin
-                SetTextColor(hdc, ColorToRGB(clHighLightText));
-                SetBkColor(hdc, ColorToRGB(clHighLight));
+                SetTextColor(hdc, ColorToRGB(clHighlightText));
+                SetBkColor(hdc, ColorToRGB(clHighlight));
               end;
-              Message.Result := CDRF_NOTIFYITEMDRAW;
+              Msg.Result := CDRF_NOTIFYITEMDRAW;
             end;
           end;
         end;
@@ -1699,8 +1699,8 @@ end;
 procedure TJvDBLookupTreeViewCombo.DoKillFocus(FocusedWnd: HWND);
 begin
   if (Handle <> FocusedWnd) and (FDataList.Handle <> FocusedWnd) and
-     (FDataList.FTree.Handle <> FocusedWnd) then
-    CloseUp(false);
+    (FDataList.FTree.Handle <> FocusedWnd) then
+    CloseUp(False);
 end;
 
 

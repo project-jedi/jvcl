@@ -106,8 +106,9 @@ type
     FLastSetItemHeight: Integer;
     {$IFDEF VCL}
     FEmptyValue: string;
-    FIsEmptyValue: boolean;
-    FEmptyFontColor, FOldFontColor: TColor;
+    FIsEmptyValue: Boolean;
+    FEmptyFontColor: TColor;
+    FOldFontColor: TColor;
     procedure SetEmptyValue(const Value: string);
     {$ENDIF VCL}
     procedure MaxPixelChanged(Sender: TObject);
@@ -427,7 +428,7 @@ begin
   if UseInternal then
     Result := InternalList.IndexOf(S)
   else
-    Result := SendMessage(ComboBox.Handle, CB_FINDSTRINGEXACT, -1, LongInt(PChar(S)));
+    Result := SendMessage(ComboBox.Handle, CB_FINDSTRINGEXACT, -1, Longint(PChar(S)));
 end;
 
 procedure TJvComboBoxStrings.Insert(Index: Integer; const S: string);
@@ -860,7 +861,7 @@ begin
     Change;
     Exit;
   end;
-  Idx := SendMessage(Handle, CB_FINDSTRING, -1, LongInt(PChar(AnItem)));
+  Idx := SendMessage(Handle, CB_FINDSTRING, -1, Longint(PChar(AnItem)));
   Result := (Idx <> CB_ERR);
   if not Result then
     Exit;
@@ -1244,7 +1245,7 @@ begin
     if FIsEmptyValue then
     begin
       Text := '';
-      FIsEmptyValue := false;
+      FIsEmptyValue := False;
       if not (csDesigning in ComponentState) then
         Font.Color := FOldFontColor;
     end;
@@ -1258,7 +1259,7 @@ begin
     if Text = '' then
     begin
       Text := EmptyValue;
-      FIsEmptyValue := true;
+      FIsEmptyValue := True;
       if not (csDesigning in ComponentState) then
       begin
         FOldFontColor := Font.Color;
@@ -1357,14 +1358,14 @@ begin
     case Msg.Msg of
       CB_FINDSTRING:
         begin
-          Msg.Result := HandleFindString(Msg.wParam, PChar(Msg.lParam), False);
+          Msg.Result := HandleFindString(Msg.WParam, PChar(Msg.LParam), False);
           if Msg.Result < 0 then
             Msg.Result := CB_ERR;
           Exit;
         end;
       CB_SELECTSTRING:
         begin
-          Msg.Result := HandleFindString(Msg.wParam, PChar(Msg.lParam), False);
+          Msg.Result := HandleFindString(Msg.WParam, PChar(Msg.LParam), False);
           if Msg.Result < 0 then
             Msg.Result := CB_ERR
           else
@@ -1373,7 +1374,7 @@ begin
         end;
       CB_FINDSTRINGEXACT:
         begin
-          Msg.Result := HandleFindString(Msg.wParam, PChar(Msg.lParam), True);
+          Msg.Result := HandleFindString(Msg.WParam, PChar(Msg.LParam), True);
           if Msg.Result < 0 then
             Msg.Result := CB_ERR;
           Exit;

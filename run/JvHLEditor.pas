@@ -183,16 +183,16 @@ end;
 
 function GetTrimChar(const S: string; Index: Integer): Char;
 var
-  LS, l: Integer;
+  LS, L: Integer;
 begin
   LS := Length(S);
   if LS <> 0 then
   begin
-    l := 1;
-    while (l <= LS) and (s[l] = ' ') do
-      Inc(l);
-    if l <= LS then
-      Result := S[l - 1 + Index]
+    L := 1;
+    while (L <= LS) and (S[L] = ' ') do
+      Inc(L);
+    if L <= LS then
+      Result := S[L - 1 + Index]
     else
       Result := S[Index];
   end
@@ -200,7 +200,7 @@ begin
     Result := #0;
 end;
 
-function HasStringOpenEnd(Lines: Tstrings; iLine: Integer): Boolean;
+function HasStringOpenEnd(Lines: TStrings; iLine: Integer): Boolean;
 { find C/C++ "line breaker" '\' }
 var
   I: Integer;
@@ -210,7 +210,7 @@ var
 begin
   Result := False;
   if (iLine < 0) or (iLine >= Lines.Count) then
-    exit;
+    Exit;
   I := iLine - 1;
   IsOpen := False;
   if (I >= 0) and (LastNonSpaceChar(Lines[I]) = '\') then // check prior lines
@@ -229,11 +229,11 @@ begin
        // count the backslashes
         I := 1;
         while (P-1-I > F) and (P[-1-I] = '\') do
-          inc(I);
+          Inc(I);
         if I mod 2 = 0 then
           IsOpen := not IsOpen;
       end;
-      inc(P);
+      Inc(P);
     end;
   until P = nil;
   Result := IsOpen;
@@ -443,7 +443,7 @@ const
     ' spacer span strike strong style sub sup table tbody td textarea tfoot' +
     ' th thead title tr tt u ul var wbr xmp ';
 
-  HtmlSpecChars =
+  HTMLSpecChars =
     ' Aacute aacute acirc Acirc acute AElig aelig agrave Agrave alefsym ' +
     ' alpha Alpha AMP amp and ang Aring aring asymp atilde Atilde Auml ' +
     ' auml bdquo beta Beta brvbar bull cap Ccedil ccedil cedil cent chi ' +
@@ -576,12 +576,12 @@ const
 
   function IsHtmlTag(const St: string): Boolean;
   begin
-    Result := PosI(St, HtmlTags);
+    Result := PosI(St, HTMLTags);
   end;
 
   function IsHtmlSpecChar(const St: string): Boolean;
   begin
-    Result := PosI(St, HtmlSpecChars);
+    Result := PosI(St, HTMLSpecChars);
   end;
 
   function IsPerlKeyWord(const St: string): Boolean;
@@ -619,7 +619,7 @@ const
         Result := ((LS > 0) and (St[1] = '{')) or
           ((LS > 1) and (((St[1] = '(') and (St[2] = '*')) or
           ((St[1] = '/') and (St[2] = '/'))));
-      hlCBuilder, hlSQL, hlJava, hlPhp, hlNQC, hlCSharp:
+      hlCBuilder, hlSql, hlJava, hlPhp, hlNQC, hlCSharp:
         Result := (LS > 1) and (St[1] = '/') and
           ((St[2] = '*') or (St[2] = '/'));
       hlVB:
@@ -647,7 +647,7 @@ const
       hlPascal:
         Result := ((LS > 0) and ((St[1] = '{') and (St[2] = '$'))) or
           ((LS > 1) and (((St[1] = '(') and (St[2] = '*') and (St[3] = '$'))));
-      {hlCBuilder, hlSQL, hlJava, hlPhp, hlNQC:
+      {hlCBuilder, hlSql, hlJava, hlPhp, hlNQC:
       hlVB:
       hlPython, hlPerl:
       hlIni:
@@ -700,9 +700,9 @@ const
     I: Integer;
   begin
     I := 0;
-    while (Parser.PCPos[I] <> #0) and (Parser.PCPos[I] in [' ', Tab, Cr, Lf]) do
+    while (Parser.pcPos[I] <> #0) and (Parser.pcPos[I] in [' ', Tab, Cr, Lf]) do
       Inc(I);
-    Result := Parser.PCPos[I];
+    Result := Parser.pcPos[I];
   end;
 
   procedure TestHtmlSpecChars(const Token: string);

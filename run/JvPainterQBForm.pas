@@ -324,7 +324,7 @@ end;
 
 function BGDrawXor(Inner, Outer: Integer): Integer;
 begin
-  Result := (Outer - imgDrawFactor) xor (ImgDrawFactor + Inner);
+  Result := (Outer - ImgDrawFactor) xor (ImgDrawFactor + Inner);
 end;
 
 // end of functions used in Quick Background
@@ -354,7 +354,7 @@ begin
   QBFuncs[20] := BGInRed;
   QBFuncs[21] := BGOutGreen;
   QBFuncs[22] := BGInGreen;
-  QBFuncs[23] := BGOutblue;
+  QBFuncs[23] := BGOutBlue;
   QBFuncs[24] := BGInBlue;
   QBFuncs[25] := BGInModOut;
   QBFuncs[26] := BGOutModIn;
@@ -371,7 +371,7 @@ begin
   QBFuncs[37] := BGSubXorSum;
   QBFuncs[38] := BGSubProdSum;
   QBFuncs[39] := BGProdProdSum;
-  QBfuncs[40] := BGDrawXor;
+  QBFuncs[40] := BGDrawXor;
 end;
 
 procedure TPainterQBForm.QuickBack;
@@ -452,9 +452,9 @@ end;
 
 procedure TPainterQBForm.SetLabels;
 begin
-  redradio.Caption := qblist.Items[QBRedFn];
-  greenradio.Caption := qblist.Items[QBGreenFn];
-  blueradio.Caption := qblist.Items[QBBlueFn];
+  redradio.Caption := QBList.Items[QBRedFn];
+  greenradio.Caption := QBList.Items[QBGreenFn];
+  blueradio.Caption := QBList.Items[QBBlueFn];
 end;
 
 procedure TPainterQBForm.AddBackdrop1Click(Sender: TObject);
@@ -502,25 +502,25 @@ end;
 
 procedure TPainterQBForm.trkRedChange(Sender: TObject);
 begin
-  QBDRed := trkRed.Position;
+  QBDRed := trkred.Position;
   QuickBack;
 end;
 
 procedure TPainterQBForm.trkGreenChange(Sender: TObject);
 begin
-  QBDGreen := trkGreen.Position;
+  QBDGreen := trkgreen.Position;
   QuickBack;
 end;
 
 procedure TPainterQBForm.trkBlueChange(Sender: TObject);
 begin
-  QBDBlue := trkBlue.Position;
+  QBDBlue := trkblue.Position;
   QuickBack;
 end;
 
 procedure TPainterQBForm.trkFactorChange(Sender: TObject);
 begin
-  ImgDrawFactor := trkFactor.Position;
+  ImgDrawFactor := trkfactor.Position;
   QuickBack;
 end;
 
@@ -570,13 +570,13 @@ begin
       QBGreenFn := StrToInt(List[1]);
       QBBlueFn := StrToInt(List[2]);
       QBDRed := StrToInt(List[3]);
-      trkRed.Position := QBDRed;
+      trkred.Position := QBDRed;
       QBDGreen := StrToInt(List[4]);
-      trkGreen.Position := QBDGreen;
+      trkgreen.Position := QBDGreen;
       QBDBlue := StrToInt(List[5]);
-      trkBlue.Position := QBDBlue;
+      trkblue.Position := QBDBlue;
       ImgDrawFactor := StrToInt(List[6]);
-      trkFactor.Position := ImgDrawFactor;
+      trkfactor.Position := ImgDrawFactor;
       SetLabels;
       QuickBack;
       Result := True;
