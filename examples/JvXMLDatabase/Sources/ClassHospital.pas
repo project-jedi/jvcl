@@ -60,7 +60,7 @@ constructor THospital.Create;
 begin
   FRequests := TRequestHandler.Create;
   FDatabase := TJvXmlDatabase.Create(nil);
-  FDatabase.TablesPath := ExtractFilePath(Application.ExeName) + 'Data\';
+  FDatabase.TablesPath := GetDataPath;
 end;
 {**********************************************************************}
 destructor THospital.Destroy;

@@ -3,6 +3,6 @@ UnsafeType=0
 UnsafeCode=0
 UnsafeCast=0
 [Directories]
-OutputDir=..\..\..\bin
+OutputDir=..\
 UnitOutputDir=..\..\..\dcu
 SearchPath=..\..\..\run;..\..\..\common
