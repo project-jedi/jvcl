@@ -30,6 +30,9 @@ unit JvConsts;
 interface
 
 uses
+{$IFDEF USE_DXGETTEXT}
+  gnugettext,
+{$ENDIF}
   Controls;
 
 //const
@@ -418,6 +421,19 @@ resourcestring
   SDataItemRenderHasNoText = '(item doesn''t support the IJvDataItemText interface)';
   SDataProviderNeedsItemsImpl = 'Can''t create a data provider without an IJvDataItems implementation.';
 
+{$IFDEF USE_DXGETTEXT}
+
+function GetText(const Text: WideString): WideString;
+function _(const Text: WideString): WideString;
+
+{$ELSE USE_DXGETTEXT}
+
+// AnsiStrings are faster
+function GetText(const Text: string): string;
+function _(const Text: string): string;
+
+{$ENDIF}
+
 implementation
 
 uses
@@ -425,6 +441,34 @@ uses
   Forms;
 
 {$R ..\resources\JvConsts.res}
+
+{$IFDEF USE_DXGETTEXT}
+
+function GetText(const Text: WideString): WideString;
+begin
+  Result := gnugettext.GetText(Text);
+end;
+
+function _(const Text: WideString): WideString;
+begin
+  Result := gnugettext._(Text);
+end;
+
+{$ELSE USE_DXGETTEXT}
+
+function GetText(const Text: string): string;
+begin
+  Result := Text;
+end;
+
+function _(const Text: string): string;
+begin
+  Result := Text;
+end;
+
+{$ENDIF USE_DXGETTEXT}
+
+
 
 initialization
   Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
