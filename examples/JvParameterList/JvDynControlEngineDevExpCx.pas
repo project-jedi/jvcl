@@ -56,7 +56,7 @@ type
   end;
 
   TJvDynControlCxMaskEdit = class (TcxMaskEdit, IUnknown, IJvDynControl, IJvDynControlData,
-    IJvDynControlDevExpCx, IJvDynControlReadOnly)
+    IJvDynControlDevExpCx, IJvDynControlReadOnly, IJvDynControlEdit)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: boolean);
@@ -72,6 +72,48 @@ type
     function ControlGetValue: variant;
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+
+    //IJvDynControlEdit
+    procedure ControlSetPasswordChar(Value: Char);
+    procedure ControlSetEditMask(Value: string);
+  end;
+
+  TJvDynControlCxButtonEdit = class (TcxButtonEdit, IUnknown, IJvDynControl, IJvDynControlData,
+    IJvDynControlDevExpCx, IJvDynControlReadOnly, IJvDynControlEdit, IJvDynControlButtonEdit,
+    IJvDynControlButton)
+  private
+    FIntOnButtonClick: TNotifyEvent;
+  protected
+    procedure IntOnButtonClick(Sender: TObject; AButtonIndex: Integer);
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetCaption(Value: string);
+    procedure ControlSetTabOrder(Value: integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: variant);
+    function ControlGetValue: variant;
+
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+
+    //IJvDynControlEdit
+    procedure ControlSetPasswordChar(Value: Char);
+    procedure ControlSetEditMask(Value: string);
+
+    //IJvDynControlButtonEdit
+    procedure ControlSetOnButtonClick(Value: TNotifyEvent);
+    procedure ControlSetButtonCaption(Value: string);
+
+    //IJvDynControlButton
+    procedure ControlSetGlyph(Value: TBitmap);
+    procedure ControlSetNumGlyphs(Value: integer);
+    procedure ControlSetLayout(Value: TButtonLayout);
+
   end;
 
   TJvDynControlCxCalcEdit = class (TcxCalcEdit, IUnknown, IJvDynControl, IJvDynControlData,
@@ -502,7 +544,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  cxControls;
+  cxTextEdit, cxControls;
 
 var
   IntDynControlEngineDevExpCx: TJvDynControlEngineDevExpCx = nil;
@@ -527,6 +569,7 @@ end;
 
 procedure TJvDynControlCxMaskEdit.ControlSetDefaultProperties;
 begin
+  Properties.MaskKind := emkStandard;
 end;
 
 procedure TJvDynControlCxMaskEdit.ControlSetReadOnly(Value: boolean);
@@ -577,6 +620,121 @@ procedure TJvDynControlCxMaskEdit.ControlSetCxProperties(Value: TCxDynControlWra
 begin
   Style.LookAndFeel.Assign(Value.LookAndFeel);
   Style.StyleController := Value.StyleController;
+end;
+
+procedure TJvDynControlCxMaskEdit.ControlSetPasswordChar(Value: Char);
+begin
+  if Value <> #0 then
+    Properties.EchoMode := eemPassword
+  else
+    Properties.EchoMode := eemNormal;
+end;
+
+procedure TJvDynControlCxMaskEdit.ControlSetEditMask(Value: string);
+begin
+  Properties.EditMask := Value;
+  Properties.MaskKind := emkStandard;
+end;
+
+//=== TJvDynControlCxButtonEdit ================================================
+
+procedure TJvDynControlCxButtonEdit.ControlSetDefaultProperties;
+begin
+  Properties.OnButtonClick := IntOnButtonClick;
+  Properties.MaskKind := emkStandard;
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetReadOnly(Value: boolean);
+begin
+  Properties.ReadOnly := Value;
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetCaption(Value: string);
+begin
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetTabOrder(Value: integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetValue(Value: variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlCxButtonEdit.ControlGetValue: variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetPasswordChar(Value: Char);
+begin
+  if Value <> #0 then
+    Properties.EchoMode := eemPassword
+  else
+    Properties.EchoMode := eemNormal;
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetEditMask(Value: string);
+begin
+  Properties.EditMask := Value;
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetOnButtonClick(Value: TNotifyEvent);
+begin
+  FIntOnButtonClick:= Value;;
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetButtonCaption(Value: string);
+begin
+  Properties.Buttons[0].DisplayName := Value;
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetGlyph(Value: TBitmap);
+begin
+  Properties.Buttons[0].Glyph.Assign(Value);
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetNumGlyphs(Value: integer);
+begin
+end;
+
+procedure TJvDynControlCxButtonEdit.ControlSetLayout(Value: TButtonLayout);
+begin
+end;
+
+procedure TJvDynControlCxButtonEdit.IntOnButtonClick(Sender: TObject;
+  AButtonIndex: Integer);
+begin
+  if Assigned(FIntOnButtonClick) then
+    FIntOnButtonClick(Sender);
 end;
 
 //=== TJvDynControlCxCalcEdit ================================================
@@ -879,7 +1037,6 @@ end;
 procedure TJvDynControlCxDirectoryEdit.DefaultOnButtonClick(Sender: TObject; AButtonIndex: integer);
 var
   Dir: string;
-  Opt: TSelectDirOpts;
 begin
   if not Properties.ReadOnly then
   begin
@@ -1405,6 +1562,7 @@ end;
 function TJvDynControlCxRadioGroup.ControlGetItems: TStrings;
 begin
 //  Result := TStrings(Properties.Items);
+  Result := Nil;
 end;
 
 procedure TJvDynControlCxRadioGroup.ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -1927,6 +2085,7 @@ initialization
   IntDynControlEngineDevExpCx.RegisterControl(jctDirectoryEdit, TJvDynControlCxDirectoryEdit);
   IntDynControlEngineDevExpCx.RegisterControl(jctFileNameEdit, TJvDynControlCxFileNameEdit);
   IntDynControlEngineDevExpCx.RegisterControl(jctMemo, TJvDynControlCxMemo);
+  IntDynControlEngineDevExpCx.RegisterControl(jctButtonEdit, TJvDynControlCxButtonEdit);
   SetDefaultDynControlEngine(IntDynControlEngineDevExpCx);
 
 finalization
