@@ -7,7 +7,7 @@
     <OBJFILES value="..\..\dcu\JvInterpreterC6R.obj ..\..\dcu\JvInterpreter_Windows.obj 
       ..\..\dcu\JvInterpreterConst.obj ..\..\dcu\JvInterpreterFm.obj 
       ..\..\dcu\JvInterpreterParser.obj ..\..\dcu\JvInterpreter.obj 
-      ..\..\dcu\JvInterpreter_all.obj ..\..\dcu\JvInterpreter_Classes.obj 
+      ..\..\dcu\JvInterpreter_all.obj ..\..\dcu\JvInterpreter_Classes.obj
       ..\..\dcu\JvInterpreter_ComCtrls.obj ..\..\dcu\JvInterpreter_Contnrs.obj 
       ..\..\dcu\JvInterpreter_Controls.obj ..\..\dcu\JvInterpreter_Db.obj 
       ..\..\dcu\JvInterpreter_DbCtrls.obj ..\..\dcu\JvInterpreter_DbGrids.obj 
@@ -42,7 +42,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvInterpreterC6R.cpp"/>
     <INCLUDEPATH value="..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\run;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="..\..\run;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;$(PATH)"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>

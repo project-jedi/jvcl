@@ -25,7 +25,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvPrintPreviewC5D.cpp"/>
     <INCLUDEPATH value="..\..\run;..\..\design;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\resources;..\..\dcu;..\..\design;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="..\..\resources;..\..\dcu;..\..\design;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;$(PATH)"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>

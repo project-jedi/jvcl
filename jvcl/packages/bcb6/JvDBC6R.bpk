@@ -35,7 +35,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvDBC6R.cpp"/>
     <INCLUDEPATH value="..\..\common;..\..\run;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\common;..\..\run;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="..\..\common;..\..\run;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;$(PATH)"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -47,7 +47,7 @@
     <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Database Components Runtime Package&quot; -aa -Tpp -Gpr -x 
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Database Components Runtime Package&quot; -aa -Tpp -Gpr -x
       -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
