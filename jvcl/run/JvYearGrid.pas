@@ -767,8 +767,19 @@ begin
   command := afile;
   params := #0;
   workdir := #0;
+{$IFDEF COMPLIB_VCL}
   shellexecute(application.handle, 'open', @command[1],
-    @params[1], @workdir[1], SW_SHOWNORMAL);
+  @params[1], @workdir[1], SW_SHOWNORMAL);
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+{$IFDEF WINDOWS}
+  shellexecute(0, 'open', @command[1],
+  @params[1], @workdir[1], SW_SHOWNORMAL);
+{$ENDIF}
+{$ENDIF}
+{$IFDEF LINUX}
+  libc.system(PChar(AFile + ' &'));
+{$ENDIF}
 end;
 
 procedure TJvYearGrid.SetHTMLFontName(const Value: string);
