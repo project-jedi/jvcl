@@ -256,7 +256,7 @@ type
     procedure OptionsChanged;
     procedure Changed;
 
-    function GetTextRect(const S: string; var ItemRect: TRect): TRect; virtual;
+    function GetTextRect(const S: WideString; var ItemRect: TRect): TRect; virtual;
     function GetTextHeight: Integer; virtual;
     function GetDragImages: TDragImageList; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
@@ -1123,16 +1123,16 @@ end;
 function TJvCustomItemViewer.GetTextHeight: Integer;
 var
   R: TRect;
-  S: string;
+  S: WideString;
 begin
   S := 'Wg';
   R := Rect(0, 0, 100, 100);
-  Result := ViewerDrawText(Canvas, PChar(S), Length(S),
+  Result := ViewerDrawText(Canvas, PWideChar(S), Length(S),
     R, DT_END_ELLIPSIS or DT_CALCRECT, taCenter, tlTop, False) + 4;
   //  Result := Canvas.TextHeight('Wg');
 end;
 
-function TJvCustomItemViewer.GetTextRect(const S: string; var ItemRect: TRect): TRect;
+function TJvCustomItemViewer.GetTextRect(const S: WideString; var ItemRect: TRect): TRect;
 var
   TextHeight: Integer;
 begin

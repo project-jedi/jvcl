@@ -103,6 +103,7 @@ type
     property OnEnter;
     property OnExit;
     property OnGetSiteInfo;
+    property OnItemHint;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;

@@ -62,7 +62,7 @@ type
   end;
 
   TJvImageListViewerCaptionEvent = procedure(Sender: TObject;
-    ImageIndex: Integer; var ACaption: string) of object;
+    ImageIndex: Integer; var ACaption: WideString) of object;
 
   TJvImageListViewer = class(TJvCustomItemViewer)
   private
@@ -78,7 +78,7 @@ type
     procedure DrawItem(Index: Integer; State: TCustomDrawState; Canvas: TCanvas;
       ItemRect, TextRect: TRect); override;
     function GetOptionsClass: TJvItemViewerOptionsClass; override;
-    function GetCaption(ImageIndex: Integer): string; virtual;
+    function GetCaption(ImageIndex: Integer): WideString; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -229,7 +229,7 @@ const
     (ILD_MASK, ILD_NORMAL);
 var
   X, Y: Integer;
-  S: string;             
+  S: WideString;             
   DrawStyle, Flags: Cardinal;
 begin
   Canvas.Brush.Color := Color;
@@ -287,7 +287,7 @@ begin
         Canvas.FillRect(TextRect)
       else
         S := ' ' + S + ' ';
-      ViewerDrawText(Canvas, PChar(S), Length(S), TextRect, Flags, taCenter, tlCenter, True);
+      ViewerDrawText(Canvas, PWideChar(S), Length(S), TextRect, Flags, taCenter, tlCenter, True);
     end;
 //    if not Options.BrushPattern.Active and (cdsSelected in State) then
 //    begin
@@ -296,7 +296,7 @@ begin
   end;
 end;
 
-function TJvImageListViewer.GetCaption(ImageIndex: Integer): string;
+function TJvImageListViewer.GetCaption(ImageIndex: Integer): WideString;
 begin
   Result := '';
   if Assigned(FOnGetCaption) then
