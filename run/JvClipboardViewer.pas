@@ -35,6 +35,9 @@ uses
   StdCtrls, ExtCtrls, Menus, Grids, JvExControls, JvExForms, JvExGrids;
 
 type
+  // To lift the ambiguity in BCB between TBitmap and Windows::TBitmap
+  {$HPPEMIT '#define TBitmap Graphics::TBitmap'}
+
   TClipboardViewFormat = (cvDefault, cvEmpty, cvUnknown, cvText, cvBitmap,
     cvMetafile, cvPalette, cvOemText, cvPicture, cvComponent, cvIcon);
   TJvOnImageEvent = procedure(Sender: TObject; Image: TBitmap) of object;
