@@ -211,7 +211,6 @@ end;
 
 procedure TJvMovableBevel.MouseMove(Shift: TShiftState; X, Y: Integer);
 //const
-//  SC_DRAGMOVE = $F012;
 //  WM_MOVE = $0003;
 begin
   if FMoving then

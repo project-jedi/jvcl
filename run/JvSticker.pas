@@ -30,8 +30,8 @@ unit JvSticker;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
-  Forms, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms,
+  JvComponent;
 
 type
   TJvStickSizer = class(TJvCustomControl)
@@ -45,7 +45,7 @@ type
     procedure DoBoundsChanged; override;
   public
     constructor CreateEx(AOwner: TComponent; AControl: TControl);
-    procedure CreateParams(var Params: TCreateParams);  override;
+    procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateHandle; override;
     procedure Paint; override;
     procedure SizerControlExit(Sender: TObject);
@@ -79,16 +79,14 @@ implementation
 
 uses
   Dialogs,
-  JvResources;
-
-const
-  SC_DRAGMOVE = $F012;
+  JvConsts, JvResources;
 
 //=== TJvStickSizer ==========================================================
 
 const
   cPosList: array [1..8] of Integer =
-    (HTTOPLEFT, HTTOP, HTTOPRIGHT, HTRIGHT, HTBOTTOMRIGHT, HTBOTTOM, HTBOTTOMLEFT, HTLEFT);
+    (HTTOPLEFT, HTTOP, HTTOPRIGHT, HTRIGHT,
+     HTBOTTOMRIGHT, HTBOTTOM, HTBOTTOMLEFT, HTLEFT);
 
 constructor TJvStickSizer.CreateEx(AOwner: TComponent; AControl: TControl);
 var

@@ -402,9 +402,6 @@ begin
     FOnKillFocus(ActiveControl);
 end;
 
-{const
-  sc_DragMove: longint = $F012;}
-
 procedure TJvOfficeColorForm.FormDeactivate(Sender: TObject);
 begin
   MoveStart := False;
