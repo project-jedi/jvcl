@@ -10,7 +10,7 @@ object JvBaseDesign: TJvBaseDesign
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'Helvetica'
   Font.Style = []
   Icon.Data = {
     0000010001001010100001001000280100001600000028000000100000002000

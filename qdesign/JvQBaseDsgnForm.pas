@@ -60,6 +60,7 @@ type
     function GetRegKey: string; dynamic;
     { Editor name. Defaults to 'JEDI-VCL Editor' but should be renamed to an appropiate editor type
       name (e.g. 'Provider Editor' or 'Form Storage Editor'). }
+    { asn: Linux defaults to ~/.borland/.Jvcl3 }
     function DesignerFormName: string; dynamic;
     { Determines if the settings for this class should be automatically stored/restored upon class
       destruction/streaming back in. Defaults to False. }
@@ -87,6 +88,9 @@ uses
   {$IFDEF MSWINDOWS}
   Registry,
   {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  IniFiles,
+  {$ENDIF LINUX}
   JvQBaseDsgnFrame, JvQConsts, JvQDsgnConsts;
 
 
@@ -137,7 +141,7 @@ end;
 
 function TJvBaseDesign.GetRegKey: string;
 begin
-  Result := SDelphiKey + RsPropertyEditors + RegPathDelim + Trim(DesignerFormName) + RegPathDelim + ClassName
+  Result :=  RsPropertyEditors + RegPathDelim + Trim(DesignerFormName) + RegPathDelim + ClassName
 end;
 
 function TJvBaseDesign.DesignerFormName: string;
@@ -154,9 +158,16 @@ procedure TJvBaseDesign.StoreSettings;
 var
   I: Integer;
 begin
+  {$IFDEF LINUX}
+  with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
+  {$ENDIF LINUX}
+  {$IFDEF MSWINDOWS}
   with TRegistry.Create do
+  {$ENDIF MSWINDOWS}
   try
+    {$IFDEF MSWINDOWS}
     LazyWrite := False;
+    {$ENDIF MSWINDOWS}
     if OpenKey(GetRegKey, True) then
     try
       WriteInteger(cLeft, Left);
@@ -178,7 +189,12 @@ procedure TJvBaseDesign.RestoreSettings;
 var
   I: Integer;
 begin
+  {$IFDEF LINUX}
+  with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
+  {$ENDIF LINUX}
+  {$IFDEF MSWINDOWS}
   with TRegistry.Create do
+  {$ENDIF MSWINDOWS}
   try
     if OpenKey(GetRegKey, False) then
     try
@@ -231,4 +247,4 @@ finalization
   FreeAndNil(DsgnFrmList);
 
 end.
- 
+

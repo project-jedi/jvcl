@@ -39,7 +39,7 @@ uses
   SysUtils, Classes,
   
   
-  QGraphics, QControls, QForms, QDialogs, QButtons, QStdCtrls, Types,
+  Types, QGraphics, QControls, QForms, QDialogs, QButtons, QStdCtrls,
   
   JvQColorProvider, JvQDataProvider, JvQDataProviderIntf, JvQTypes;
 

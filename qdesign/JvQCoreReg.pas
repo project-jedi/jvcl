@@ -48,15 +48,18 @@ uses
   DesignEditors, DesignIntf,
 
   JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVQCLVer, JvQComponent,
-  JvQActions, JvQActnResForm, JvQJVCLAboutForm, JvQDsgnEditors, JvQIDEZoom,
-  JvQJVCLAboutEditor, JvQBaseDlgEditor, JvQBaseDlg,
+  JvQActions, JvQActnResForm, JvQJVCLAboutForm,
+  JvQDsgnEditors,
+  JvQIDEZoom,
+  JvQJVCLAboutEditor,
 
-  JvQPaintBoxEditor, JvQContextProvider,
+  JvQPaintBoxEditor,
   {$IFDEF MSWINDOWS}
-  JvQAppRegistryStorage,
+  JvQBaseDlgEditor, JvQBaseDlg,
+  JvQAppRegistryStorage,  JvQContextProvider,
+  JvQColorProvider,JvQColorProviderEditors, JvQDataProviderEditors,
   {$ENDIF MSWINDOWS}
-  JvQAppIniStorage, JvQColorProvider,
-  JvQColorProviderEditors, JvQDataProviderEditors,
+  JvQAppIniStorage,
   JvQAppStorage;
 
 {$IFDEF MSWINDOWS}
@@ -71,8 +74,10 @@ procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
-  RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent  ,
-    TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]);
+  RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent
+   {$IFDEF MSWINDOWS},
+ TJvContextProvider, TJvColorProvider, TJvColorMappingProvider
+   {$ENDIF}]);
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
     {$IFDEF MSWINDOWS}
     TJvAppRegistryStorage,
@@ -108,15 +113,15 @@ begin
   {$IFDEF VCL}
   RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
   RegisterComponentEditor(TImageList, TJvImageListEditor);
-  {$ENDIF VCL}
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
+  RegisterActions(RsJVCLActionsCategory, [TJvSendMailAction, TJvWebAction], TJvStandardActions);
+  {$ENDIF VCL}
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
 
 
-  RegisterActions(RsJVCLActionsCategory, [TJvSendMailAction, TJvWebAction], TJvStandardActions);
   RegisterZoom;
 
 

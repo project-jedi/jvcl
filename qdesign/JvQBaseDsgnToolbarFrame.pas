@@ -45,7 +45,7 @@ uses
   QGraphics, QControls, QForms, QDialogs, QActnList, QMenus, QImgList,
   QComCtrls, QExtCtrls, Types,
   
-  JvQBaseDsgnFrame, QTypes;
+  JvQBaseDsgnFrame;
 
 type
   TfmeJvBaseToolbarDesign = class(TfmeJvBaseDesign)
@@ -77,7 +77,12 @@ implementation
 {$IFDEF MSWINDOWS}
 uses
   Registry;
-{$ENDIF MSWINDOWS}  
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+uses
+  IniFiles;
+{$ENDIF LINUX}
+
 
 
 
@@ -102,9 +107,16 @@ end;
 procedure TfmeJvBaseToolbarDesign.StoreSettings;
 begin
   if RegKey <> '' then
+    {$IFDEF LINUX}
+    with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
+    {$ENDIF LINUX}
+    {$IFDEF MSWINDOWS}
     with TRegistry.Create do
+    {$ENDIF MSWINDOWS}
     try
+      {$IFDEF MSWINDOWS}
       LazyWrite := False;
+      {$ENDIF MSWINDOWS}
       if OpenKey(RegKey, True) then
         try
           WriteBool(cLargeButton, aiTextLabels.Checked);
@@ -120,7 +132,12 @@ end;
 procedure TfmeJvBaseToolbarDesign.RestoreSettings;
 begin
   if RegKey <> '' then
+    {$IFDEF LINUX}
+    with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
+    {$ENDIF LINUX}
+    {$IFDEF MSWINDOWS}
     with TRegistry.Create do
+    {$ENDIF MSWINDOWS}
     try
       if OpenKey(RegKey, False) then
         try
@@ -143,9 +160,9 @@ var
 begin
   LastVisibleSep := -1;
   ButtonSinceLastSep := False;
-  for I := 0 to tbrToolbar.{$IFDEF VCL}ButtonCount{$ELSE}ControlCount{$ENDIF} - 1 do
+  for I := 0 to tbrToolbar.{$IFDEF VLC}ButtonCount{$ELSE}ControlCount{$ENDIF} - 1 do
   begin
-    CurItem := TControl(tbrToolbar.{$IFDEF VCL}Buttons{$ELSE}Controls{$ENDIF}[I]);
+    CurItem := TControl(tbrToolbar.{$IFDEF VLC}Buttons{$ELSE}Controls{$ENDIF}[I]);
     if (CurItem is TToolButton) and (TToolButton(CurItem).Style = tbsSeparator) then
     begin
       CurItem.Visible := ButtonSinceLastSep;
@@ -161,7 +178,7 @@ begin
       ButtonSinceLastSep := ButtonSinceLastSep or CurItem.Visible;
   end;
   if (LastVisibleSep >= 0) and not ButtonSinceLastSep then
-    tbrToolbar.{$IFDEF VCL}Buttons{$ELSE}Controls{$ENDIF}[LastVisibleSep].Visible := False;
+    tbrToolbar.{$IFDEF VLC}Buttons{$ELSE}Controls{$ENDIF}[LastVisibleSep].Visible := False;
   { For some reason a divider may be drawn while it's invisible. Calling Invalidate didn't help but
     changing the ButtonWidth seems to work. Look into this issue; may have a different cause,
     possibly in this method. }
@@ -227,10 +244,10 @@ end;
 procedure TfmeJvBaseToolbarDesign.spToolbarCanResize(Sender: TObject;
   var NewSize: Integer; var Accept: Boolean);
 begin
-
-
+  
+  
   Accept := GetToolBarRowCount(tbrToolbar) = 1;
-
+  
   if Accept then
   begin
     if NewSize > 36 then

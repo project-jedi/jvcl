@@ -3,8 +3,8 @@ object JvStrEditDlg: TJvStrEditDlg
   Top = 76
   Width = 437
   Height = 281
-  VertScrollBar.Range = 28
   HorzScrollBar.Range = 182
+  VertScrollBar.Range = 28
   ActiveControl = Memo
   BorderIcons = [biSystemMenu]
   Caption = 'String list editor'
@@ -32,8 +32,8 @@ object JvStrEditDlg: TJvStrEditDlg
   Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
-  PixelsPerInch = 96
-  object Bevel1: TBevel
+  PixelsPerInch = 75
+  object BevelBorder: TBevel
     Left = 8
     Top = 8
     Width = 424

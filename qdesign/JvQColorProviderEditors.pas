@@ -40,10 +40,7 @@ uses
   DesignIntf, DesignEditors, DesignMenus,
   
   
-  {$IFDEF LINUX}
-  ClxEditors,
-  {$ENDIF LINUX}
-  QConsts,
+  {ClxEditors,} QConsts,
   
   
   Classes,

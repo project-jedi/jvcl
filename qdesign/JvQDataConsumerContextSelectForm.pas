@@ -35,13 +35,13 @@ unit JvQDataConsumerContextSelectForm;
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils,
   
   
   QGraphics, QControls, QForms, QDialogs,
   QExtCtrls, QStdCtrls, Types,
   
-  JvQBaseDsgnForm, JvQProviderTreeListFrame, JvQDataProviderIntf;
+  JvQBaseDsgnForm, JvQProviderTreeListFrame, JvQDataProviderIntf, Classes;
 
 type
   TfrmDataConsumerContextSelect = class(TJvBaseDesign)
