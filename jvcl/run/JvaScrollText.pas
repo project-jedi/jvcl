@@ -241,9 +241,9 @@ var
   begin
     FStop := False;
     Pixels := 1;
-    DelayPause := FSpeed;
+    DelayPause := Speed;
     Pixels2 := 1;
-    DelayPause2 := FSpeed;
+    DelayPause2 := Speed;
    // DrawInfo := False;
     FScrollImage.Picture.Assign(FForeImage.Picture);
     FFontMaskImage.Picture.Assign(FForeImage.Picture);
@@ -277,14 +277,14 @@ var
     FFontImage.Canvas.Font.Color := clWhite;
     FontHeight := FFontImage.Canvas.TextHeight('W') + 3;
 
-    if FScrollTop < 0 then
-      FScrollTop := 2;
-    if FScrollBottom < 0 then
-      FScrollBottom := Height - 2;
-    if FLeftMargin < 0 then
-      FLeftMargin := 2;
-    if FRightMargin < 0 then
-      FRightMargin := Width - 2;
+    if ScrollTop < 0 then
+      ScrollTop := 2;
+    if ScrollBottom < 0 then
+      ScrollBottom := Height - 2;
+    if LeftMargin < 0 then
+      LeftMargin := 2;
+    if RightMargin < 0 then
+      RightMargin := Width - 2;
     H2 := ScrollBottom;
     Popr := 0;
     LastLine := 0;
@@ -320,7 +320,7 @@ var
         Pixels := 3;
       if Pix[4] > Pix[Pixels] then
         Pixels := 4;
-      DelayPause := FSpeed + (Pixels - 1) * cDelayIncrement;
+      DelayPause := Speed + (Pixels - 1) * cDelayIncrement;
       DelayPause2 := DelayPause;
       Pixels2 := Pixels;
       Pix[1] := 0;
@@ -361,11 +361,11 @@ var
     FFontMaskImage.Canvas.CopyRect(Dest, FFontImage.Canvas, Source);
     { Adjustment of a high bound [translated] }
     RecTmp := SourceFon;
-    RecTmp.Bottom := FScrollTop;
+    RecTmp.Bottom := ScrollTop;
     FFontMaskImage.Canvas.FillRect(RecTmp);
     { Adjustment of the right boundary [translated] }
     RecTmp := SourceFon;
-    RecTmp.Left := FRightMargin;
+    RecTmp.Left := RightMargin;
     FFontMaskImage.Canvas.FillRect(RecTmp);
     { To put a mask on a background [translated] }
     FScrollImage.Canvas.CopyMode := cmSrcCopy;
@@ -393,7 +393,7 @@ begin
     H := LastLine - Popr;
     LastLine := LastLine + FontHeight;
     {H := Line * FontHeight - Popr;}
-    FFontImage.Canvas.TextOut(FLeftMargin, H, FStrings[Line]);
+    FFontImage.Canvas.TextOut(LeftMargin, H, FStrings[Line]);
     { To scroll line [translated] }
     for J := 1 to FontHeight do
     begin
@@ -401,9 +401,9 @@ begin
       if (J mod Pixels) <> 0 then
         Continue;
       Source.Bottom := H + J; {H1}
-      Source.Left := FLeftMargin;
-      SourceFon.Left := FLeftMargin;
-      Dest.Left := FLeftMargin;
+      Source.Left := LeftMargin;
+      SourceFon.Left := LeftMargin;
+      Dest.Left := LeftMargin;
       Dest.Top := H2;
       Dest.Bottom := H2 + H + J; {H2+H1}
       DelayBegin;
