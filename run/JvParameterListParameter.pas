@@ -87,7 +87,7 @@ type
     FLabelWidth: Integer;
     FEditWidth: Integer;
     FRightSpace: Integer;
-    FArrangeLabelAndWinControlDisabled : Boolean;
+    FArrangeLabelAndWinControlDisabled: Boolean;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetWinControlProperties; override;

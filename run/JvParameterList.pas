@@ -280,7 +280,10 @@ type
     ArrangePanel: TJvPanel;
     ScrollBox: TScrollBox;
     RightPanel: TJvPanel;
-    MainPanel, HistoryPanel, BottomPanel, ButtonPanel: TWinControl;
+    MainPanel: TWinControl;
+    HistoryPanel: TWinControl;
+    BottomPanel: TWinControl;
+    ButtonPanel: TWinControl;
     OrgButtonPanelWidth,
     OrgHistoryPanelWidth: Integer;
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
@@ -307,20 +310,16 @@ type
     procedure HistoryLoadClick(Sender: TObject);
     procedure HistorySaveClick(Sender: TObject);
     procedure HistoryClearClick(Sender: TObject);
-
-    function GetEnableDisableReasonState(ADisableReasons, AEnableReasons: TJvParameterListEnableDisableReasonList):
-      Integer;
-
+    function GetEnableDisableReasonState(ADisableReasons: TJvParameterListEnableDisableReasonList;
+      AEnableReasons: TJvParameterListEnableDisableReasonList): Integer;
     procedure DialogShow(Sender: TObject);
-
-    property IntParameterList: TStrings read GetIntParameterList;
-
-    property ParameterDialog: TCustomForm read FParameterDialog;
-    property ParameterListSelectList: TJvParameterListSelectList read FParameterListSelectList;
     {this procedure checks the autoscroll-property of the internal
      scrollbox. This function should only be called, after the size of
      the parent-panel has changed}
     procedure CheckScrollBoxAutoScroll;
+    property IntParameterList: TStrings read GetIntParameterList;
+    property ParameterDialog: TCustomForm read FParameterDialog;
+    property ParameterListSelectList: TJvParameterListSelectList read FParameterListSelectList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -432,17 +431,20 @@ type
 implementation
 
 uses
-  JvParameterListParameter, JvResources, JclStrings;
+  JclStrings,
+  JvParameterListParameter, JvResources;
 
 const
   cFalse = 'FALSE';
   cTrue = 'TRUE';
-  cAllowedChars : TSysCharSet =
-    ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-     'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-     '0','1','2','3','4','5','6','7','8','9','_'];
+  cAllowedChars: TSysCharSet =
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+     'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+     'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'];
 
-  //=== { TJvParameterListMessages } ===========================================
+//=== { TJvParameterListMessages } ===========================================
 
 constructor TJvParameterListMessages.Create;
 begin
@@ -568,8 +570,8 @@ begin
   inherited Clear;
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReasonVariant(
-  const RemoteParameterName: string; Value: Variant);
+procedure TJvParameterListEnableDisableReasonList.AddReasonVariant(const RemoteParameterName: string;
+  Value: Variant);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -579,8 +581,8 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReason(
-  const RemoteParameterName: string; Value: Boolean);
+procedure TJvParameterListEnableDisableReasonList.AddReason(const RemoteParameterName: string;
+  Value: Boolean);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -590,8 +592,8 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReason(
-  const RemoteParameterName: string; Value: Integer);
+procedure TJvParameterListEnableDisableReasonList.AddReason(const RemoteParameterName: string;
+  Value: Integer);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -601,8 +603,8 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReason(
-  const RemoteParameterName: string; Value: Double);
+procedure TJvParameterListEnableDisableReasonList.AddReason(const RemoteParameterName: string;
+  Value: Double);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -612,8 +614,8 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReason(
-  const RemoteParameterName: string; const Value: string);
+procedure TJvParameterListEnableDisableReasonList.AddReason(const RemoteParameterName: string;
+  const Value: string);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -623,8 +625,8 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReason(
-  const RemoteParameterName: string; Value: TDateTime);
+procedure TJvParameterListEnableDisableReasonList.AddReason(const RemoteParameterName: string;
+  Value: TDateTime);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -634,8 +636,7 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReasonIsEmpty(
-  const RemoteParameterName: string);
+procedure TJvParameterListEnableDisableReasonList.AddReasonIsEmpty(const RemoteParameterName: string);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -645,8 +646,7 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReasonIsNotEmpty(
-  const RemoteParameterName: string);
+procedure TJvParameterListEnableDisableReasonList.AddReasonIsNotEmpty(const RemoteParameterName: string);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -677,6 +677,7 @@ var
 begin
   for I := 0 to Count - 1 do
     Objects[I].Free;
+  // (rom) inherited Clear seems to be missing
 end;
 
 procedure TJvParameterPropertyValues.AddValue(const AName: string; AValue: Variant);
@@ -686,7 +687,7 @@ begin
   Value := TJvParameterPropertyValue.Create;
   Value.PropertyName := AName;
   Value.PropertyValue := AValue;
-  AddObject(AName, Value)
+  AddObject(AName, Value);
 end;
 
 //=== { TJvBaseParameter } ===================================================
@@ -828,9 +829,11 @@ begin
       JvDynControlData.ControlValue := Value;
     except
       {$IFDEF COMPILER6_UP}
-      on e:EVariantTypeCastError do
+      on E: EVariantTypeCastError do
+        ;
       {$ELSE}
-      on e:EVariantError do
+      on E: EVariantError do
+        ;
       {$ENDIF COMPILER6_UP}
     end;
 end;
@@ -1357,7 +1360,6 @@ begin
 
   with MainPanel do
     ResizeDialogAfterArrange(nil, Left, Top, Width, Height);
-
 end;
 
 procedure TJvParameterList.ResizeDialogAfterArrange(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
@@ -1373,7 +1375,8 @@ begin
   if Assigned(HistoryPanel) and
      (TForm(ParameterDialog).ClientWidth < HistoryPanel.Width) then
     TForm(ParameterDialog).ClientWidth := HistoryPanel.Width
-  else if TForm(ParameterDialog).ClientWidth < ButtonPanel.Width then
+  else
+  if TForm(ParameterDialog).ClientWidth < ButtonPanel.Width then
     TForm(ParameterDialog).ClientWidth := ButtonPanel.Width;
   if (Height <= 0) or (ArrangeSettings.AutoSize in [asHeight, asBoth]) then
     if ArrangePanel.Height + BottomPanel.Height > TForm(ParameterDialog).ClientHeight then
@@ -1386,20 +1389,20 @@ begin
 
   if Assigned(HistoryPanel) then
     if (OrgButtonPanelWidth + OrgHistoryPanelWidth) > BottomPanel.Width then
-      begin
-        ButtonPanel.Align := alBottom;
-        ButtonPanel.Height := OkButton.Height + 6 + 2;
-        BottomPanel.Height := ButtonPanel.Height * 2 + 1;
-        HistoryPanel.Align := alClient;
-      end
+    begin
+      ButtonPanel.Align := alBottom;
+      ButtonPanel.Height := OkButton.Height + 6 + 2;
+      BottomPanel.Height := ButtonPanel.Height * 2 + 1;
+      HistoryPanel.Align := alClient;
+    end
     else
-      begin
-        ButtonPanel.Align := alRight;
-        ButtonPanel.Width := OrgButtonPanelWidth;
-        HistoryPanel.Align := alLeft;
-        HistoryPanel.Width := OrgHistoryPanelWidth;
-        BottomPanel.Height := OkButton.Height + 6 + 2;
-      end;
+    begin
+      ButtonPanel.Align := alRight;
+      ButtonPanel.Width := OrgButtonPanelWidth;
+      HistoryPanel.Align := alLeft;
+      HistoryPanel.Width := OrgHistoryPanelWidth;
+      BottomPanel.Height := OkButton.Height + 6 + 2;
+    end;
   CheckScrollBoxAutoScroll;
 end;
 
@@ -1412,7 +1415,7 @@ begin
   RightPanel.Visible := False;
   ScrollBox.AutoScroll := False;
   if (ArrangePanel.Width >= (TForm(ParameterDialog).ClientWidth)) or
-     (ArrangePanel.Height > (TForm(ParameterDialog).ClientHeight-BottomPanel.Height))then
+    (ArrangePanel.Height > (TForm(ParameterDialog).ClientHeight-BottomPanel.Height))then
   begin
     RightPanel.Visible := True;
     TForm(ParameterDialog).ClientWidth := TForm(ParameterDialog).ClientWidth + RightPanel.Width+4;
@@ -1517,8 +1520,8 @@ begin
         Parameters[0].WinControl.SetFocus;
 end;
 
-function TJvParameterList.GetEnableDisableReasonState(ADisableReasons, AEnableReasons:
-  TJvParameterListEnableDisableReasonList): Integer;
+function TJvParameterList.GetEnableDisableReasonState(ADisableReasons: TJvParameterListEnableDisableReasonList;
+  AEnableReasons: TJvParameterListEnableDisableReasonList): Integer;
 var
   J: Integer;
   IEnable: Integer;

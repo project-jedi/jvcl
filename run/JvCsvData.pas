@@ -3203,7 +3203,7 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    FreeMem(Self[I]);
+    FreeMem(Items[I]);
   inherited Clear;
 end;
 
@@ -3320,7 +3320,7 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    FreeMem(Self[I]);
+    FreeMem(Items[I]);
   inherited Clear;
 end;
 

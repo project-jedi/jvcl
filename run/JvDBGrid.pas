@@ -709,6 +709,12 @@ end;
 
 //=== { TJvDBGridControls } ==========================================================
 
+constructor TJvDBGridControls.Create(ParentDBGrid: TJvDBGrid);
+begin
+  inherited Create(TJvDBGridControl);
+  FParentDBGrid := ParentDBGrid;
+end;
+
 procedure TJvDBGridControl.Assign(Source: TPersistent);
 begin
   if Source is TJvDBGridControl then
@@ -718,12 +724,6 @@ begin
   end
   else
     inherited Assign(Source);
-end;
-
-constructor TJvDBGridControls.Create(ParentDBGrid: TJvDBGrid);
-begin
-  inherited Create(TJvDBGridControl);
-  FParentDBGrid := ParentDBGrid;
 end;
 
 function TJvDBGridControls.GetOwner: TPersistent;
@@ -795,8 +795,9 @@ begin
   FPostOnEnter := False;
   FAutoSizeColumnIndex := JvGridResizeProportionally;
   FSelectColumnsDialogStrings := TJvSelectDialogColumnStrings.Create;
-  FCharList := ['A'..'Z', 'a'..'z', ' ', '-', '+', '0'..'9', '.', ',',
-                'é', 'è', 'ê', 'ë', 'ô', 'û', 'ù', 'â', 'à', 'î', 'ï', 'ç', Backspace];
+  FCharList :=
+    ['A'..'Z', 'a'..'z', ' ', '-', '+', '0'..'9', '.', ',',
+     'é', 'è', 'ê', 'ë', 'ô', 'û', 'ù', 'â', 'à', 'î', 'ï', 'ç', Backspace];
 
   FControls := TJvDBGridControls.Create(Self);
   FCurrentControl := nil;
@@ -1402,7 +1403,7 @@ function TJvDBGrid.UseDefaultEditor: Boolean;
 var
   F: TField;
   Control: TJvDBGridControl;
-  EditControl : TWinControl;
+  EditControl: TWinControl;
 begin
   FBooleanEditor := nil;
 
@@ -1427,10 +1428,9 @@ begin
   Control := FControls.ControlByField(F.FieldName);
   Result := (Control <> nil);
   if not Result then
-    Result := not (F.DataType in [ftUnknown, ftBytes, ftVarBytes, ftAutoInc, ftBlob,
-                                  ftMemo, ftFmtMemo, ftGraphic, ftTypedBinary,
-                                  ftParadoxOle, ftDBaseOle, ftCursor, ftReference,
-                                  ftDataSet, ftOraClob, ftOraBlob]);
+    Result := not (F.DataType in [ftUnknown, ftBytes, ftVarBytes, ftAutoInc,
+      ftBlob, ftMemo, ftFmtMemo, ftGraphic, ftTypedBinary, ftParadoxOle,
+      ftDBaseOle, ftCursor, ftReference, ftDataSet, ftOraClob, ftOraBlob]);
   Result := Result and (not F.ReadOnly) and F.DataSet.CanModify and
     not Columns[SelectedIndex].ReadOnly;
 
@@ -2469,28 +2469,23 @@ end;
 
 procedure TJvDBGrid.DrawColumnCell(const Rect: TRect; DataCol: Integer;
   Column: TColumn; State: TGridDrawState);
-
 const
-  AlignFlags : array [TAlignment] of Integer =
-    ( DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX,
-      DT_RIGHT or DT_EXPANDTABS or DT_NOPREFIX,
-      DT_CENTER or DT_EXPANDTABS or DT_NOPREFIX );
+  AlignFlags: array [TAlignment] of Integer =
+    (DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX,
+     DT_RIGHT or DT_EXPANDTABS or DT_NOPREFIX,
+     DT_CENTER or DT_EXPANDTABS or DT_NOPREFIX);
   RTL: array [Boolean] of Integer = (0, DT_RTLREADING);
-
 var
   I: Integer;
   NewBackgrnd: TColor;
   Highlight: Boolean;
   Bmp: TBitmap;
   Field: TField;
-
   MemoText: string;
   DrawBitmap: TBitmap;
   DrawRect, B, R: TRect;
   Alignment: TAlignment;
-  Hold,
-  DrawOptions: Integer;
-  
+  Hold, DrawOptions: Integer;
 begin
   Field := Column.Field;
   if Assigned(DataSource) and Assigned(DataSource.DataSet) and DataSource.DataSet.Active and
@@ -2503,7 +2498,7 @@ begin
   if DefaultDrawing then
   begin
     I := GetImageIndex(Field);
-    if (I >= 0) then
+    if I >= 0 then
     begin
       Bmp := GetGridBitmap(TGridPicture(I));
       Canvas.FillRect(Rect);
@@ -2539,7 +2534,7 @@ begin
               Brush.Style := bsSolid;
               FillRect(B);
               SetBkMode(Handle, TRANSPARENT);
-              if (Canvas.CanvasOrientation = coRightToLeft) then
+              if Canvas.CanvasOrientation = coRightToLeft then
                 ChangeBiDiModeAlignment(Alignment);
               DrawOptions := AlignFlags[Alignment] or
                 RTL[UseRightToLeftAlignmentForField(Field, Alignment)];
@@ -2547,7 +2542,7 @@ begin
                 DrawOptions := DrawOptions or DT_WORDBREAK;
               Windows.DrawText(Handle, PChar(MemoText), Length(MemoText), R, DrawOptions);
             end;
-            if (Canvas.CanvasOrientation = coRightToLeft) then
+            if Canvas.CanvasOrientation = coRightToLeft then
             begin
               Hold := DrawRect.Left;
               DrawRect.Left := DrawRect.Right;
@@ -3485,42 +3480,6 @@ end;
 
 //=== { TJvSelectDialogColumnStrings } =======================================
 
-procedure TJvDBGrid.ShowColumnsDialog;
-begin
-  ShowSelectColumnClick;
-end;
-
-procedure TJvDBGrid.SetSelectColumnsDialogStrings(
-  const Value: TJvSelectDialogColumnStrings);
-begin
-  // do nothing
-end;
-
-procedure TJvDBGrid.ShowSelectColumnClick;
-var
-  R: TRect;
-  frm: TfrmSelectColumn;
-begin
-  R := CellRect(0, 0);
-  frm := TfrmSelectColumn.Create(Application);
-  try
-    if not IsRectEmpty(R) then
-      with ClientToScreen(Point(R.Left, R.Bottom + 1)) do
-        frm.SetBounds(X, Y, frm.Width, frm.Height);
-    frm.Grid := TJvDBGrid(Self);
-    frm.DataSource := DataLink.DataSource;
-    frm.SelectColumn := FSelectColumn;
-    frm.Caption := SelectColumnsDialogStrings.Caption;
-    frm.cbWithFieldName.Caption := SelectColumnsDialogStrings.RealNamesOption;
-    frm.ButtonOK.Caption := SelectColumnsDialogStrings.OK;
-    frm.NoSelectionWarning := SelectColumnsDialogStrings.NoSelectionWarning;
-    frm.ShowModal;
-  finally
-    frm.Free;
-  end;
-  Invalidate;
-end;
-
 constructor TJvSelectDialogColumnStrings.Create;
 begin
   inherited Create;
@@ -3528,6 +3487,41 @@ begin
   RealNamesOption := RsJvDBGridSelectOption;
   OK := RsJvDBGridSelectOK;
   NoSelectionWarning := RsJvDBGridSelectWarning;
+end;
+
+procedure TJvDBGrid.ShowColumnsDialog;
+begin
+  ShowSelectColumnClick;
+end;
+
+procedure TJvDBGrid.SetSelectColumnsDialogStrings(const Value: TJvSelectDialogColumnStrings);
+begin
+  // do nothing
+end;
+
+procedure TJvDBGrid.ShowSelectColumnClick;
+var
+  R: TRect;
+  Frm: TfrmSelectColumn;
+begin
+  R := CellRect(0, 0);
+  Frm := TfrmSelectColumn.Create(Application);
+  try
+    if not IsRectEmpty(R) then
+      with ClientToScreen(Point(R.Left, R.Bottom + 1)) do
+        Frm.SetBounds(X, Y, Frm.Width, Frm.Height);
+    Frm.Grid := TJvDBGrid(Self);
+    Frm.DataSource := DataLink.DataSource;
+    Frm.SelectColumn := FSelectColumn;
+    Frm.Caption := SelectColumnsDialogStrings.Caption;
+    Frm.cbWithFieldName.Caption := SelectColumnsDialogStrings.RealNamesOption;
+    Frm.ButtonOK.Caption := SelectColumnsDialogStrings.OK;
+    Frm.NoSelectionWarning := SelectColumnsDialogStrings.NoSelectionWarning;
+    Frm.ShowModal;
+  finally
+    Frm.Free;
+  end;
+  Invalidate;
 end;
 
 initialization
