@@ -4,8 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Grids, DBGrids, Db, DBTables, StdCtrls, ComCtrls, JvDBMove, 
-  Buttons, FileCtrl, JvDlg, ExtCtrls, JvSQLS, JvComponent;
+  Grids, DBGrids, JvProgressComponent, DB, DBTables, JvBDESQLScript,
+  JvComponent, JvBDEMove, ExtCtrls, StdCtrls, Buttons, ComCtrls;
 
 type
   TForm1 = class(TForm)
@@ -28,7 +28,7 @@ type
     Label7: TLabel;
     Label9: TLabel;
     RADBMove1: TJvDBMove;
-    RASQLScript1: TJvaSQLScript;
+    RASQLScript1: TJvBDESQLScript;
     DestinationDatabase: TDatabase;
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
@@ -41,7 +41,7 @@ type
     Label8: TLabel;
     TabSheet4: TTabSheet;
     BitBtn3: TBitBtn;
-    RAProgressForm1: TJvProgressForm;
+    RAProgressForm1: TJvProgressComponent;
     Button1: TButton;
     Panel1: TPanel;
     Label10: TLabel;
@@ -75,7 +75,8 @@ var
 
 implementation
 
-uses JvDBUtil;
+uses
+  JvBDEUtils, JvDBUtils;
 
 {$R *.DFM}
 
@@ -87,9 +88,9 @@ begin
   DestinationDatabase.Params.Add('PATH=' + 'C:\TEMP\RALib.DBMoveTest');
   DestinationDatabase.Open;
   try
-    JvDBUtil.ExecuteSQLScript(DestinationDatabase,
+    JvBDEUtils.ExecuteSQLScript(DestinationDatabase,
       'drop table "CUSTOMER.DB";', ctAll, nil, 0);
-    JvDBUtil.ExecuteSQLScript(DestinationDatabase,
+    JvBDEUtils.ExecuteSQLScript(DestinationDatabase,
       'drop table "MYORDERS.DB";', ctAll, nil, 0);
   except
     { All Ok }
@@ -110,9 +111,9 @@ begin
   try
     tDestination1.Close;
     tDestination2.Close;
-    JvDBUtil.ExecuteSQLScript(DestinationDatabase,
+    JvBDEUtils.ExecuteSQLScript(DestinationDatabase,
       'drop table "CUSTOMER.DB";', ctAll, nil, 0);
-    JvDBUtil.ExecuteSQLScript(DestinationDatabase,
+    JvBDEUtils.ExecuteSQLScript(DestinationDatabase,
       'drop table "MYORDERS.DB";', ctAll, nil, 0);
   except
     { All Ok }

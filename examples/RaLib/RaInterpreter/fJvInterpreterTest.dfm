@@ -180,21 +180,13 @@ object Test: TTest
         Left = 0
         Top = 0
         Caption = 'Event'
-        object Button4: TButton
-          Left = 15
-          Top = 56
-          Width = 75
-          Height = 23
-          Caption = 'Button4'
-          TabOrder = 0
-        end
         object Button2: TButton
           Left = 16
           Top = 16
           Width = 75
           Height = 23
           Caption = 'Run'
-          TabOrder = 1
+          TabOrder = 0
           OnClick = Button1Click
         end
       end
@@ -251,17 +243,8 @@ object Test: TTest
       TabOrder = 0
     end
   end
-  object RegAuto1: TJvRegAuto
-    RegPath = 'Software\JVCL\JvInterpreterTest'
-    IniFile = '$HOME/.JvInterpreterTest'
-    Props.Strings = (
-      'Edit1.Text'
-      '.Left'
-      '.Top'
-      'OpenDialog1.FileName')
-    SaveWindowPlace = True
-    AfterLoad = RegAuto1AfterLoad
-    AfterSave = RegAuto1AfterSave
+  object RegAuto1: TJvFormStorage
+    StoredValues = <>
     Left = 248
     Top = 136
   end
@@ -292,11 +275,8 @@ object Test: TTest
     Left = 260
     Top = 89
   end
-  object RegAuto2: TJvRegAuto
-    RegPath = 'Software\JVCL\RAInterTest'
-    Storage = raIniStrings
-    IniFile = '$HOME/.JvInterpreterTest'
-    AutoMode = False
+  object RegAuto2: TJvFormStorage
+    StoredValues = <>
     Left = 248
     Top = 208
   end

@@ -102,7 +102,7 @@ object Form1: TForm1
       ''
       'Table1.OnNewRecord has following code'
       ' (it required for Insert feature):'
-      '  Table1['#39'Uni'#39'] := JvDBUtil.GetQueryResult('
+      '  Table1['#39'Uni'#39'] := JvBDEUtils.GetQueryResult('
       '     Table1.DatabaseName,'
       '     '#39'select max(Uni) from "Tree.dbf"'#39') + 1;'
       '                    ')
@@ -134,7 +134,7 @@ object Form1: TForm1
     Left = 168
     Top = 192
   end
-  object RASQLScript1: TJvaSQLScript
+  object RASQLScript1: TJvBDESQLScript
     Script.Strings = (
       'create table "Tree.dbf"('
       '  Uni       integer,'
@@ -186,9 +186,8 @@ object Form1: TForm1
     Left = 56
     Top = 144
   end
-  object RegAuto1: TJvRegAuto
-    RegPath = 'Software\JVCL\DBTree'
-    IniFile = '$HOME/.DBTree'
+  object RegAuto1: TJvFormStorage
+    StoredValues = <>
     Left = 416
     Top = 104
   end

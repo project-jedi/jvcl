@@ -5,14 +5,12 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, JvButtons, JvEditor, JvHLEditor,
-  fJvHLEdPropDlgTestParams, JvComponent, JvHLEditorPropertyForm,
-  JvFormPlacement;
+  fJvHLEdPropDlgTestParams, JvComponent, JvHLEditorPropertyForm;
 
 type
   TForm1 = class(TForm)
     RAHLEditor1: TJvHLEditor;
     RAhtButton1: TJvHTButton;
-    RegAuto1: TJvFormStorage;
     JvHLEdPropDlg1: TJvHLEdPropDlg;
     procedure RAhtButton1Click(Sender: TObject);
     procedure RAHLEdPropDlg1DialogPopup(Sender: TObject; Form: TForm);
@@ -64,7 +62,7 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  if JvHLEdPropDlg1.RegAuto <> nil then
+  if JvHLEdPropDlg1.Storage <> nil then
   begin
     JvHLEdPropDlg1.Restore;
     JvHLEdPropDlg1.LoadCurrentHighlighterColors;
@@ -81,7 +79,7 @@ end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
-  if JvHLEdPropDlg1.RegAuto <> nil then
+  if JvHLEdPropDlg1.Storage <> nil then
     JvHLEdPropDlg1.Save;
 end;
 

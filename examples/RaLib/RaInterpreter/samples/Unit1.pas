@@ -14,7 +14,7 @@ type
     Memo1: TMemo;
     ComboBox1: TComboBox;
     GroupBox1: TGroupBox;
-    RegAuto1: TJvRegAuto;
+    RegAuto1: TJvFormStorage;
     Label2: TLabel;
     Table1: TTable;
     DataSource1: TDataSource;

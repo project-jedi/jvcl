@@ -7,12 +7,14 @@ uses
   ExtCtrls, JvEditor, JvHLEditor, StdCtrls;
 
 type
-  TJvLineNumbersMain  = class(TForm)
-    RAHLEditor1: TJvEditor;
+  TJvLineNumbersMain = class(TForm)
     Panel1: TPanel;
     GutterFont: TLabel;
-    procedure FormCreate(Sender: TObject);
-    procedure RAHLEditor1PaintGutter(Sender: TObject; Canvas: TCanvas);
+    JvHLEditor1: TJvEditor;
+    Button1: TButton;
+    OpenDialog1: TOpenDialog;
+    procedure JvHLEditor1PaintGutter(Sender: TObject; Canvas: TCanvas);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -20,35 +22,24 @@ type
   end;
 
 var
-  LineNumbersMain: TJvLineNumbersMain ;
+  LineNumbersMain: TJvLineNumbersMain;
 
 implementation
 
 {$R *.DFM}
 
-procedure TJvLineNumbersMain .FormCreate(Sender: TObject);
-var
-  FN: String;
-begin
-  FN := ExtractFilePath(Application.ExeName) + '..\..\README.TXT';
-  if FileExists(FN) then
-    RAHLEditor1.Lines.LoadFromFile(FN)
-  else
-    RAHLEditor1.Lines.Add('          File "' + ExpandFileName(FN) + '" not found !');
-end;
-
-procedure TJvLineNumbersMain .RAHLEditor1PaintGutter(Sender: TObject;
+procedure TJvLineNumbersMain.JvHLEditor1PaintGutter(Sender: TObject;
   Canvas: TCanvas);
 var
-  i: Integer;
+  i: integer;
   Rect: TRect;
-  oldFont: TFont;  
+  oldFont: TFont;
 begin
   oldFont := TFont.Create;
-  try                                            
+  try
     oldFont.Assign(Canvas.Font);
     Canvas.Font := GutterFont.Font;
-    with RAHLEditor1 do
+    with JvHLEditor1 do
       for i := TopRow to TopRow + VisibleRowCount do
       begin
         Rect := Bounds(2, (i - TopRow) * CellRect.Height, GutterWidth - 2 - 5, CellRect.Height);
@@ -60,4 +51,11 @@ begin
   end;
 end;
 
+procedure TJvLineNumbersMain.Button1Click(Sender: TObject);
+begin
+  if OpenDialog1.Execute then
+    JVHLEditor1.Lines.LoadFromFile(OpenDialog1.Filename);
+end;
+
 end.
+

@@ -54,37 +54,13 @@ object Main: TMain
     UseDockManager = False
     Colors.Comment.Style = [fsItalic]
     Colors.Comment.ForeColor = clOlive
-    Colors.Comment.BackColor = clWindow
-    Colors.Number.Style = []
     Colors.Number.ForeColor = clNavy
-    Colors.Number.BackColor = clWindow
-    Colors.Strings.Style = []
     Colors.Strings.ForeColor = clPurple
-    Colors.Strings.BackColor = clWindow
-    Colors.Symbol.Style = []
     Colors.Symbol.ForeColor = clBlue
-    Colors.Symbol.BackColor = clWindow
     Colors.Reserved.Style = [fsBold]
-    Colors.Reserved.ForeColor = clWindowText
-    Colors.Reserved.BackColor = clWindow
-    Colors.Identifer.Style = []
-    Colors.Identifer.ForeColor = clWindowText
-    Colors.Identifer.BackColor = clWindow
-    Colors.Preproc.Style = []
     Colors.Preproc.ForeColor = clGreen
-    Colors.Preproc.BackColor = clWindow
-    Colors.FunctionCall.Style = []
-    Colors.FunctionCall.ForeColor = clWindowText
-    Colors.FunctionCall.BackColor = clWindow
-    Colors.Declaration.Style = []
-    Colors.Declaration.ForeColor = clWindowText
-    Colors.Declaration.BackColor = clWindow
     Colors.Statement.Style = [fsBold]
-    Colors.Statement.ForeColor = clWindowText
-    Colors.Statement.BackColor = clWindow
-    Colors.PlainText.Style = []
-    Colors.PlainText.ForeColor = clWindowText
-    Colors.PlainText.BackColor = clWindow
+    DelphiColors = False
   end
   object StatusBar: TStatusBar
     Left = 0
@@ -107,15 +83,8 @@ object Main: TMain
       end>
     SimplePanel = False
   end
-  object RegAuto1: TJvRegAuto
-    RegPath = 'Software\JVCL\RANotepad'
-    IniFile = '$HOME/.RANotepad'
-    Props.Strings = (
-      'OpenDialog1.FileName'
-      'FindDialog1.FindText'
-      'ReplaceDialog1.FindText'
-      'ReplaceDialog1.ReplaceText')
-    SaveWindowPlace = True
+  object RegAuto1: TJvFormStorage
+    StoredValues = <>
     Left = 80
     Top = 64
   end
@@ -183,13 +152,8 @@ object Main: TMain
       end
     end
   end
-  object raCommon: TJvRegAuto
-    RegPath = 'Software\JVCL\RASQLEd'
-    Storage = raIniFile
-    IniFile = 'RASQLEd.ini'
-    AutoMode = False
-    AfterLoad = raCommonAfterLoad
-    AfterSave = raCommonAfterSave
+  object raCommon: TJvFormStorage
+    StoredValues = <>
     Left = 80
     Top = 132
   end
@@ -482,7 +446,6 @@ object Main: TMain
   end
   object RAHLEdPropDlg1: TJvHLEdPropDlg
     JvHLEditor = RAHLEditor1
-    RegAuto = raCommon
     ColorSamples.Strings = (
       '[Default]'
       'Plain text'

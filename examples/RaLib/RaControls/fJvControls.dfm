@@ -187,7 +187,7 @@ object MainForm: TMainForm
         ParentColor = True
         TabOrder = 0
         object RAScrollMaxBand1: TJvScrollMaxBand
-          Cursor = 11
+          Cursor = 1
           Caption = 'Person'
           ExpandedHeight = 121
           ButtonFont.Charset = DEFAULT_CHARSET
@@ -243,7 +243,7 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand2: TJvScrollMaxBand
-          Cursor = 11
+          Cursor = 1
           Expanded = False
           Caption = 'Contact information'
           ExpandedHeight = 113
@@ -302,7 +302,7 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand3: TJvScrollMaxBand
-          Cursor = 11
+          Cursor = 1
           Expanded = False
           Caption = 'Net (confidential)'
           ExpandedHeight = 84
@@ -360,7 +360,7 @@ object MainForm: TMainForm
         ParentColor = True
         TabOrder = 1
         object RAScrollMaxBand4: TJvScrollMaxBand
-          Cursor = 11
+          Cursor = 1
           Caption = 'Person'
           ExpandedHeight = 113
           ButtonVisible = False
@@ -420,7 +420,7 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand5: TJvScrollMaxBand
-          Cursor = 11
+          Cursor = 1
           Caption = 'Contact information'
           ExpandedHeight = 113
           ButtonVisible = False
@@ -480,7 +480,7 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand6: TJvScrollMaxBand
-          Cursor = 11
+          Cursor = 1
           Caption = 'Net (confidential)'
           ExpandedHeight = 84
           ButtonVisible = False
@@ -612,12 +612,15 @@ object MainForm: TMainForm
             'WindowText tag')
         TabOrder = 0
       end
-      object RAhtListBox1: TJvHtListBox
+      object RAhtListBox1: TJvHTListBox
         Left = 280
         Top = 104
         Width = 281
         Height = 57
         HideSel = False
+        ColorHighlight = clHighlight
+        ColorHighlightText = clHighlightText
+        ColorDisabledText = clGrayText
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -676,6 +679,9 @@ object MainForm: TMainForm
         Height = 22
         HideSel = False
         DropWidth = 193
+        ColorHighlight = clHighlight
+        ColorHighlightText = clHighlightText
+        ColorDisabledText = clGrayText
         Items.Strings = (
           
             'Item 1 <b>bold <i>italic</b>ITALIC <c:Red>red <c:Green>green <c:' +
@@ -6208,341 +6214,47 @@ object MainForm: TMainForm
       Caption = 'Item1'
     end
   end
-  object RegAuto2: TJvRegAuto
-    RegPath = 'Software\JVCL\RAControls'
-    Storage = raIniStrings
-    IniFile = '$HOME/.RAControls'
-    IniStrings.Strings = (
-      '[TJvRegAuto\Descript]'
-      'TJvRegAuto allows you to read and write virtually any'
-      'component published property to an INI file or the'
-      'system Registry with virtually no code.'
-      'Works with 3rd party and your own custom controls'
-      'as well. Don'#39't be stuck with dozens of INI-Aware'
-      'components, use TJvRegAuto and let it manage all'
-      'that for you. Also allows to save and restore'
-      'form size, position and window state.'
-      ''
-      'It also can be used to access to Strings, holding'
-      'values on ini-file manner. See source of this'
-      'example - RegAuto2 contains descriptions for all components.'
-      ''
-      '[TRegAutoGrid\Descript]'
-      'TRegAutoGrid save and restore column widths of'
-      'all grids on the form.'
-      ''
-      '[TRATreeView]'
-      'Page=RATreeView'
-      '[TRATreeView\Descript]'
-      'TRATreeView and TRAComboBox4Tree'
-      'components work together and looks like Tree'
-      'in Windows Explorer. When user select an item in'
-      'TRATreeView, this item is showing in TRAComboBox4Tree.'
-      ''
-      'Sorry for bad component names.'
-      ''
-      '[TRAComboBox4Tree]'
-      'Page=RATreeView'
-      '[TRAComboBox4Tree\Descript]'
-      'TRATreeView and TRAComboBox4Tree'
-      'components work together and looks like Tree'
-      'in Windows Explorer. When user select an item in'
-      'TRATreeView, this item is showing in TRAComboBox4Tree.'
-      ''
-      'Sorry for bad component names.'
-      ''
-      '[TRAImage]'
-      'Page=RAImage'
-      '[TRAImage\Descript]'
-      'TRAImage can receive focus and processing keyboard'
-      'events.'
-      ''
-      '[TJvProgressForm]'
-      'Page=RAProgressForm'
-      '[TJvProgressForm\Descript]'
-      'TJvProgressForm is a "Progress" dialog with'
-      'customizable caption and message label. When'
-      'method Execute called, form will be displayed and'
-      'OnShow events occured. You must write all'
-      'specific code in this event and periodically'
-      'update ProgressPosition property.'
-      ''
-      '[TJvDBTreeView\Descript]'
-      'TJvDBTreeView - data-aware TreeView.'
-      'TJvDBLookupTreeView and TJvDBLookupTreeViewCombo'
-      'are special version of TJvDBTreeView component.'
-      'Compatibility note: Delphi 2, 3, Builder 1, 3.'
-      'Delphi 4.0 has a bug - this is a new line 6042 in ComCtrls.pas:'
-      '  if ParentNode = Node then Exit;'
-      ', that disables TJvDBTreeView Drag'#39'n'#39'Drop features.'
-      'You can delete (or comment) this line and all will works Ok.'
-      ''
-      'See RADBTree demo for more information'
-      ''
-      '[TJvDBLookupTreeView\Descript]'
-      'TJvDBTreeView - data-aware TreeView.'
-      'TJvDBLookupTreeView and TJvDBLookupTreeViewCombo'
-      'are special version of TJvDBTreeView component.'
-      'Compatibility note: Delphi 2, 3, Builder 1, 3.'
-      'Delphi 4.0 build 5.33 has a bug -'
-      'this is a new line 6042 in ComCtrls.pas:'
-      '  if ParentNode = Node then Exit;'
-      ', that disables TJvDBTreeView Drag'#39'n'#39'Drop features.'
-      'You can delete (or comment) this line and all will works Ok.'
-      ''
-      'See RADBTree demo for more information'
-      ''
-      '[TJvDBLookupTreeViewCombo\Descript]'
-      'TJvDBTreeView - data-aware TreeView.'
-      'TJvDBLookupTreeView and TJvDBLookupTreeViewCombo'
-      'are special version of TJvDBTreeView component.'
-      'Compatibility note: Delphi 2, 3, Builder 1, 3.'
-      'Delphi 4.0 has a bug - this is a new line 6042 in ComCtrls.pas:'
-      '  if ParentNode = Node then Exit;'
-      ', that disables TJvDBTreeView Drag'#39'n'#39'Drop features.'
-      'You can delete (or comment) this line and all will works Ok.'
-      ''
-      'See RADBTree demo for more information'
-      ''
-      '[TJvaSQLScript\Descript]'
-      'TJvaSQLScript allows multiple SQL statements in one query.'
-      
-        '"Set term" and "Commit work" statements and comments are respons' +
-        'e.'
-      ''
-      'See RADBTree demo for more information'
-      ''
-      '[TJvEditor\Descript]'
-      'TJvEditor is "Delphi-IDE"-like editor. Single symbol'
-      'can displayed with it own font color, style,'
-      'background color. Customizable keystroke mapping'
-      'scheme. Undo. Bookmarks. Code completion. Gutter.'
-      'None: Column blocks, Redo.'
-      ''
-      'See JvEditor demo for more information.'
-      ''
-      '[TJvHint\Descript]'
-      'TJvHint allows show custom hint at any time and place.'
-      ''
-      'See RADBInter demo for example.'
-      ''
-      '[TRAStatusBar\Descript]'
-      'TRAStatusBar can accept other controls.'
-      ''
-      'You can see ProgressBar on RAStatusBar at bottom'
-      'of this form.'
-      ''
-      '[TJvaCaptionButton\Descript]'
-      'TJvaCaptionButton jumps to the caption of the form.'
-      ''
-      'Look at the caption of this form.'
-      ''
-      '[TJvNoFrameButton]'
-      'Page=JvButtons'
-      '[TJvNoFrameButton\Descript]'
-      
-        'TJvNoFrameButton - TSpeedButton with Color and (optional) withou' +
-        't border.'
-      ''
-      '[TJvaColorButton]'
-      'Page=JvButtons'
-      '[TJvaColorButton\Descript]'
-      'TJvaColorButton - TBitBtn with Color'
-      ''
-      '[TRAIProgram\Descript]'
-      'TRAIProgram - Component, that implements easy'
-      'interface to RAInter classes.'
-      'RAInter is a small pascal-like language interpreter.'
-      'Current version of RAInter includes only some'
-      'string-handling routines and ole automation'
-      'support. But it allows to create plug-in modules,'
-      'such as database routines and classes, files'
-      'management and any other, so you can write and'
-      'use them.'
-      'Compatibility note: Delphi 3, 4.'
-      'Not compatible with Builder any versions.'
-      ''
-      'NOTE: this component includes in this JVCL Library'
-      'version only for backward compatibility.'
-      'New version of JVCL Interpreter - version 2'
-      '- JvI2 - now avalaible and very more new features'
-      'included.'
-      'See JvI2 demos for more information.'
-      'http://www.chat.ru\~blacknbs\ralib'
-      ''
-      '[TJvComponentPanel\Descript]'
-      'TJvComponentPanel - for GUI developers'
-      ''
-      '[TRADBRadioGroupS\Descript]'
-      
-        'TRADBRadioGroupS is a TDBRadioGroup descendant with Beveled prop' +
-        'erty.'
-      'If Beveled set to true, it looks like standard TDBRadioGroup.'
-      'If Beveled set to false, frame not painted.'
-      ''
-      'Authors needs this component because there'
-      'are no easy way to replace TDBRadioGroup with'
-      'several TDBRadioButton, if we won'#39't frame around'
-      'buttons.'
-      ''
-      'Letter '#39'S'#39' in component name means '#39'simple'#39' -'
-      'we do not apply for thanks for this component,'
-      'but we really need this component and you too, we think..'
-      ''
-      '[TJvScrollBar]'
-      'Page=RAScrollBar'
-      '[TJvScrollBar\Descript]'
-      'TJvScrollBar - vertical scrollbar, looks like 3dMax scrollbar.'
-      ''
-      '[TRAScrollBar95]'
-      'Page=RAScrollBar'
-      '[TRAScrollBar95\Descript]'
-      'TRAScrollBar95 implements win 95 scrollbar'
-      'feature - this is TScrollBar with Page property.'
-      ''
-      '[TJvScrollMax]'
-      'Page=JvScrollMax'
-      '[TJvScrollMax\Descript]'
-      'TJvScrollMax work like 3DMax panels. Add some'
-      'TJvScrollMaxBand on it and you can expand or'
-      'collapse bands by click at band caption button.'
-      'If height of all bands is greather than'
-      'TJvScrollMax height, scrolling feature will on'
-      'and you can scroll TJvScrollMax by drag it at'
-      'any point.'
-      'Also you can hide buttons and work with'
-      'TJvScrollMax like with vertical scrollbox.'
-      ''
-      '[TRAIField\Descript]'
-      'TRAIField - Calculated db field with'
-      'ProgramSource property. It must contain any valid'
-      'RAInter program and can be changed at run-time.'
-      'In RAInter program any TDataSet and its fields'
-      'can be used.'
-      'Compatibility note: Delphi 3, 4.'
-      'Not compatible with Builder any versions.'
-      ''
-      'Note: You never see this component in Delphi'
-      'component pallete, but it exists!'
-      'To add it, select any TDataSet in form, double'
-      'clicks and choose "Add RAIField" from field'
-      'editor popup menu.'
-      ''
-      'See RADBInter for more information.'
-      ''
-      '[TRADBTextS\Descript]'
-      
-        'TRADBTextS is a TDBRadioGroup descendant with published Layot pr' +
-        'operty'
-      
-        '(In Delphi 3 Borland add this property to TCustomLabel, but forg' +
-        'et publish'
-      'Layot in it descendants).'
-      'Compatibility note: Delphi 3, 4, Builder 3.'
-      '                 '
-      'Letter '#39'S'#39' in component name means '#39'simple'#39' -'
-      'we do not apply for thanks for this component,'
-      'but we really need this component and you too, we think..'
-      ''
-      '[TRACombo]'
-      'Page=RACombo'
-      '[TRACombo\Descript]'
-      'TRACombo - button with drop down menu - work like combobox, but'
-      'looks differently.'
-      'Compatibility note: Flat property not available in D2 and CB1.'
-      ''
-      '[TRACheckBox]'
-      'Page=RACheckBox'
-      '[TRACheckBox\Descript]'
-      'TRACheckBox disables children then unchecked.'
-      'Very simple, but useful.'
-      'We recomend use it with TCheckBox95 component.'
-      ''
-      '[TJvhtListBox]'
-      'Page=RAht'
-      '[TJvhtListBox\Descript]'
-      'TJvhtListBox can display items with few font styles.'
-      'But only one font size allowed.'
-      ''
-      '[TJvHTComboBox]'
-      'Page=RAht'
-      '[TJvHTComboBox\Descript]'
-      'TJvHTComboBox can display items with few font styles.'
-      'But only one font size allowed.'
-      ''
-      '[TJvHTButton]'
-      'Page=RAht2'
-      '[TJvHTButton\Descript]'
-      'TJvHTButton can display caption with few font styles.'
-      'But only one font size allowed.'
-      ''
-      '[TJvHTLabel]'
-      'Page=RAht2'
-      '[TJvHTLabel\Descript]'
-      'TJvHTLabel can display caption with few font styles.'
-      'But only one font size allowed.'
-      'WordWrap not supported, but multiline text can'
-      'be showed, if caption contains #13 characters.'
-      ''
-      '[TJvDBMove\Descript]'
-      'TJvDBMove - move database in one operation.'
-      'References beetween tables correctly moving'
-      '(only integer references supports).'
-      ''
-      'See demo JvDBMove for more information.'
-      ''
-      '[TJvaScrollText]'
-      'Page=JvaScrollText'
-      'Memo=false'
-      ''
-      ''
-      ''
-      ' ')
-    AutoMode = False
-    GlobalSettings = False
-    Left = 184
-    Top = 112
-  end
-  object RACaptionButton1: TJvaCaptionButton
-    Position = 3
-    Spacing = 0
-    Margin = 0
+  object RACaptionButton1: TJvCaptionButton
     Caption = 'A'
+    Down = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
+    Margin = 0
+    Position = 3
+    Spacing = 0
     OnClick = RACaptionButton1Click
     Left = 440
     Top = 16
   end
-  object RACaptionButton2: TJvaCaptionButton
-    Position = 4
-    Spacing = 0
-    Layout = blGlyphTop
-    Margin = 0
+  object RACaptionButton2: TJvCaptionButton
     Caption = '&&'
+    Down = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
+    Margin = 0
+    Position = 4
+    Spacing = 0
     OnClick = RACaptionButton1Click
     Left = 472
     Top = 16
   end
-  object RACaptionButton3: TJvaCaptionButton
-    Position = 5
-    Spacing = 0
-    Layout = blGlyphTop
-    Margin = 0
+  object RACaptionButton3: TJvCaptionButton
     Caption = 'R'
+    Down = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
+    Margin = 0
+    Position = 5
+    Spacing = 0
     OnClick = RACaptionButton1Click
     Left = 504
     Top = 16
@@ -6551,16 +6263,7 @@ object MainForm: TMainForm
     Left = 56
     Top = 96
   end
-  object RegAuto1: TJvRegAuto
-    RegPath = 'Software\JVCL\RAControls'
-    IniFile = '$HOME/.RAControls'
-    Props.Strings = (
-      '.Top'
-      '.Left')
-    Left = 352
-    Top = 8
-  end
-  object RAProgressForm1: TJvProgressForm
+  object RAProgressForm1: TJvProgressComponent
     Caption = 'Please wait...'
     InfoLabel = 'Long operation in progress'
     ProgressMin = 0

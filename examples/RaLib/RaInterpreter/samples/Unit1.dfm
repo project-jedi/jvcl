@@ -135,7 +135,7 @@ object Form1: TForm1
       TabOrder = 3
     end
   end
-  object RegAuto1: TJvRegAuto
+  object RegAuto1: TJvFormStorage
     RegPath = 'Software\JVCL\JvInterpreterTest'
     IniFile = '$HOME/.JvInterpreterTest'
     SaveWindowPlace = True

@@ -22,6 +22,7 @@ object Form1: TForm1
     Width = 553
     Height = 353
     ActivePage = TabSheet1
+    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Source (DBDEMOS)'
@@ -386,7 +387,7 @@ object Form1: TForm1
     Left = 212
     Top = 192
   end
-  object RASQLScript1: TJvaSQLScript
+  object RASQLScript1: TJvBDESQLScript
     Script.Strings = (
       '/* Creating two destination tables */'
       ''
@@ -450,7 +451,7 @@ object Form1: TForm1
     Left = 288
     Top = 288
   end
-  object RAProgressForm1: TJvProgressForm
+  object RAProgressForm1: TJvProgressComponent
     Caption = 'TJvDBMove in progress'
     ProgressMin = 0
     ProgressMax = 0

@@ -1,22 +1,20 @@
 {$INCLUDE JVCL.INC}
-
+//!!! (p3) NB! All storage commented out using //!!!
 unit fMain;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvRegAuto, ComCtrls, JvEditor, JvHLEditor, Menus,
-  ShellApi, JvInterpreter, {$IFDEF COMPILER5_UP} ImgList, {$ENDIF} JvHLEdPropDlg
-  {$IFDEF COMPILER6_UP}, Variants, JvComponent {$ENDIF}
-  ;
+  Windows, Messages, {$IFDEF COMPILER6_UP} Variants, {$ENDIF} SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ComCtrls, JvEditor, JvHLEditor, Menus,
+  ShellApi, JvInterpreter, ImgList, JvComponent, JvHLEditorPropertyForm, JvFormPlacement;
 
 const
   WM_CHECKFILEMODIFIED = WM_USER + $101;
 
 type
   TMain = class(TForm)
-    RegAuto1: TJvRegAuto;
+    RegAuto1: TJvFormStorage;
     RAHLEditor1: TJvHLEditor;
     StatusBar: TStatusBar;
     MainMenu1: TMainMenu;
@@ -26,7 +24,7 @@ type
     miExit: TMenuItem;
     miFileSave: TMenuItem;
     miFileSaveAs: TMenuItem;
-    raCommon: TJvRegAuto;
+    raCommon: TJvFormStorage;
     N2: TMenuItem;
     miHelpAbout: TMenuItem;
     OpenDialog1: TOpenDialog;
@@ -111,15 +109,14 @@ var
 
 implementation
 
-uses JvStrUtil, JvCtlConst,
-  JvUtils, JvInterpreter_JvUtils,
+uses JvJCLUtils, JvConsts,
+  JvJVCLUtils, JvInterpreter_JvUtils,
   JvInterpreter_System, JvInterpreter_Windows, JvInterpreter_SysUtils,
   JvInterpreter_Graphics, JvInterpreter_Classes, JvInterpreter_Controls,
   JvInterpreter_StdCtrls, JvInterpreter_ComCtrls, JvInterpreter_ExtCtrls, JvInterpreter_Forms,
   JvInterpreter_Menus, JvInterpreter_Dialogs,
   JvInterpreterFm,
-  JvInterpreter_JvEditor, JvInterpreter_JvRegAuto
-  ;
+  JvInterpreter_JvEditor;
 
 {$R *.DFM}
 
@@ -223,7 +220,7 @@ procedure TMain.FormCreate(Sender: TObject);
 begin
   Application.OnActivate := ApplicationActivate;
   Capt := Caption;
-  raCommon.IniFile := ExtractFilePath(ParamStr(0)) + 'ranotepad.ini';
+//!!!  raCommon.IniFile := ExtractFilePath(ParamStr(0)) + 'ranotepad.ini';
   Exts[hlPascal] := '*.pas;*.dpk;*.dpr;*.inc;*.pad';
   Exts[hlCBuilder] := '*.cpp;*.c;*.hpp;*.h';
   Exts[hlSql] := '*.sql';
@@ -234,14 +231,14 @@ begin
   Exts[hlPerl] := '*.pl';
   Exts[hlIni] := '*.ini';
   DragAcceptFiles(Handle, True);
-  raCommon.Load;
+//!!!  raCommon.Load;
   JvInterpreterInitialize;
 end;
 
 procedure TMain.FormDestroy(Sender: TObject);
 begin
   JvInterpreterUnInitialize;
-  raCommon.Save;
+//!!!  raCommon.Save;
 end;
 
 procedure TMain.FormShow(Sender: TObject);
@@ -282,8 +279,8 @@ procedure TMain.raCommonAfterLoad(Sender: TObject);
 var
   i: THighlighter;
 begin
-  for i := Low(THighlighter) to High(THighlighter) do
-    Exts[i] := Trim(raCommon.ReadString('Highlighters', HighLighters[i], Exts[i]));
+//!!!  for i := Low(THighlighter) to High(THighlighter) do
+//!!!    Exts[i] := Trim(raCommon.ReadString('Highlighters', HighLighters[i], Exts[i]));
   RAHLEdPropDlg1.Restore;
   UpdateEditorSettings;
 end;
@@ -465,10 +462,9 @@ begin
   JvInterpreterFm.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
   JvInterpreter_JvEditor.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
-  JvInterpreter_JvRegAuto.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_JvUtils.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
-  JvInterpreterFileName := raCommon.ReadString('Params', 'JvInterpreterFile', '');
+//!!!  JvInterpreterFileName := raCommon.ReadString('Params', 'JvInterpreterFile', '');
   if JvInterpreterFileName = '' then Exit;
   JvInterpreterFileName := AddPath(JvInterpreterFileName, ExePath);
   if not FileExists(JvInterpreterFileName) then

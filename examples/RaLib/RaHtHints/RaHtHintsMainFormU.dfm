@@ -42,11 +42,8 @@ object RaHtHintsMainForm: TRaHtHintsMainForm
       'Color red = <b><c:Red>Red')
     TabOrder = 1
   end
-  object RegAuto1: TJvRegAuto
-    RegPath = 'Software\JVCL\ColorHintsTest'
-    IniFile = '$HOME/.ColorHintsTest'
-    Props.Strings = (
-      'Button1.Hint')
+  object RegAuto1: TJvFormStorage
+    StoredValues = <>
     Left = 248
     Top = 96
   end

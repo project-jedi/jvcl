@@ -25,12 +25,15 @@ object Reports: TReports
     AutoSize = False
     Caption = 'Select report from list and click button <b>Create report</b>'
   end
-  object lbReports: TJvhtListBox
+  object lbReports: TJvHTListBox
     Left = 16
     Top = 32
     Width = 433
     Height = 169
     HideSel = False
+    ColorHighlight = clHighlight
+    ColorHighlightText = clHighlightText
+    ColorDisabledText = clGrayText
     TabOrder = 0
     OnDblClick = bReportClick
   end
@@ -59,11 +62,8 @@ object Reports: TReports
     ModalResult = 2
     TabOrder = 2
   end
-  object RegAuto2: TJvRegAuto
-    RegPath = 'Software\nbs\JvInterpreterPresent'
-    Storage = raIniStrings
-    IniFile = 'reports.ini'
-    AutoMode = False
+  object RegAuto2: TJvFormStorage
+    StoredValues = <>
     Left = 88
     Top = 200
   end

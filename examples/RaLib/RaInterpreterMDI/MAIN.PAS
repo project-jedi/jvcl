@@ -1,12 +1,12 @@
 unit Main;
-
+// (p3) NB! The exe must be saved in the same folder as the source files since they are accessed from the progam directly!
 interface
 
-uses Sysutils, Forms, Controls, Menus, Classes, ComCtrls,
-     JvInterpreter, JvInterpreterFm, JvInterpreter_all, JvComponent;
+uses SysUtils, Forms, Controls, Menus, Classes, ComCtrls,
+  JvInterpreter, JvInterpreterFm, JvInterpreter_all, JvComponent;
 
 type
-  TMainForm   = class(TForm)
+  TMainForm = class(TForm)
     MainMenu1: TMainMenu;
     File1: TMenuItem;
     FileNewItem: TMenuItem;
@@ -28,7 +28,7 @@ type
   end;
 
 var
-  MainForm: TMainForm  ;
+  MainForm: TMainForm;
 
 implementation
 
@@ -36,19 +36,20 @@ implementation
 
 uses ChildWin, aboutRaInterpreter;
 
-procedure TMainForm  .FileNew1Execute(Sender: TObject);
+procedure TMainForm.FileNew1Execute(Sender: TObject);
 begin
-  JvInterpreterFm1.RunForm(ExtractFilePath(paramstr(0))+'childwin.pas');
+  JvInterpreterFm1.RunForm(ExtractFilePath(paramstr(0)) + 'childwin.pas');
 end;
 
-procedure TMainForm  .HelpAbout1Execute(Sender: TObject);
+procedure TMainForm.HelpAbout1Execute(Sender: TObject);
 begin
-  JvInterpreterRunFormModal(ExtractFilePath(paramstr(0))+'aboutRAInterpreter.pas');
+  JvInterpreterRunFormModal(ExtractFilePath(paramstr(0)) + 'aboutRAInterpreter.pas');
 end;
 
-procedure TMainForm  .FileExit1Execute(Sender: TObject);
+procedure TMainForm.FileExit1Execute(Sender: TObject);
 begin
   Close;
 end;
 
 end.
+

@@ -3,79 +3,74 @@ unit fReports;
 
 interface
 
-{$IFDEF COMPILER3_UP}
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvHtControls, Buttons, JvButtons, JvRegAuto, JvInterpreter, JvInterpreterFm,
-  QuickRpt {$IFDEF COMPILER6_UP}, Variants, JvComponent {$ENDIF};
-{$ELSE}
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvHtControls, Buttons, JvButtons, JvRegAuto, JvInterpreter, JvInterpreterFm,
-  QuickRep;
-{$ENDIF}
-
+  Windows, Messages, SysUtils, Forms, Classes, Controls, JvInterpreter, JvInterpreterFm, JvComponent,
+  JvFormPlacement, StdCtrls, JvHTControls;
 
 type
   TReports = class(TForm)
     RAhtLabel1: TJvHTLabel;
-    lbReports: TJvhtListBox;
+    lbReports: TJvHtListBox;
     bReport: TButton;
-    RegAuto2: TJvRegAuto;
+    RegAuto2: TJvFormStorage;
     JvInterpreterFm1: TJvInterpreterFm;
     bCancel: TButton;
     procedure FormCreate(Sender: TObject);
     procedure bReportClick(Sender: TObject);
-    procedure JvInterpreterFm1GetValue(Sender: TObject; Identifer: String;
-      var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);
+    procedure JvInterpreterFm1GetValue(Sender: TObject; Identifer: string;
+      var Value: Variant; Args: TJvInterpreterArgs; var Done: boolean);
   private
     { Private declarations }
   public
     { Public declarations }
   end;
 
-  procedure Show;
+procedure Show;
 
 implementation
 
-uses JvUtils, JvInterpreter_all, JvInterpreter_Quickrpt;
+uses
+  {$IFDEF COMPILER6_UP} Variants, {$ENDIF}
+  JvJVCLUtils, JvJCLUtils, JvInterpreter_all, JvInterpreter_Quickrpt;
 
 {$R *.DFM}
 
 procedure Show;
 begin
   with TReports.Create(Application) do
-    try
-      ShowModal;
-    finally { wrap up }
-      Free;
-    end;    { try/finally }
+  try
+    ShowModal;
+  finally { wrap up }
+    Free;
+  end; { try/finally }
 end;
 
 procedure TReports.FormCreate(Sender: TObject);
 var
-  Ss, Ss2: TStringList;
-  i: Integer;
+  Ss, Ss2: TStringlist;
+  i: integer;
 begin
-  RegAuto2.IniStrings.Clear;
-  Ss := TStringList.Create;
-  Ss2 := TStringList.Create;
+(*
+//!!!  RegAuto2.IniStrings.Clear;
+  Ss := TStringlist.Create;
+  Ss2 := TStringlist.Create;
   try
     ReadFolder(ExePath + 'Reports', '*.ini', Ss);
     Ss.Sort;
-    for i := 0 to Ss.Count - 1 do    { Iterate }
+    for i := 0 to Ss.Count - 1 do { Iterate }
     begin
       Ss2.LoadFromFile(ExePath + 'Reports\' + Ss[i]);
       RegAuto2.IniStrings.AddStrings(Ss2);
-    end;    { for }
+    end; { for }
   finally { wrap up }
     Ss.Free;
     Ss2.Free;
-  end;    { try/finally }
+  end; { try/finally }
 
   RegAuto2.ReadSection('Reports', lbReports.Items);
   if lbReports.Items.Count = 0 then
     RAhtLabel1.Caption := 'There are no reports';
+  *)
 //  RAhtLabel1.Caption := '<b><c:Red>ERROR:<c:WindowText></b> Fail reading file <b>' + RegAuto2.IniFile;
 end;
 
@@ -85,36 +80,38 @@ var
 begin
   F1 := ChangeFileExt(AddPath(FileName, ExePath + 'Reports\'), '.pas');
   if not FileExists(F1) then
-		raise Exception.Create('Can''t load report. '#13+
-			'File "' + F1 + '" not found.');
+    raise Exception.Create('Can''t load report. '#13 +
+      'File "' + F1 + '" not found.');
   JvInterpreterRunReportPreview(F1);
-end;    { RunReport }
+end; { RunReport }
 
 procedure TReports.bReportClick(Sender: TObject);
 var
   F1: TFileName;
   T1: string;
 begin
+(*
+//!!!
   if lbReports.ItemIndex < 0 then Exit;
   F1 := Trim(RegAuto2.ReadString(lbReports.Items[lbReports.ItemIndex], 'File', ''));
   T1 := Trim(RegAuto2.ReadString(lbReports.Items[lbReports.ItemIndex], 'Type', 'Report'));
   F1 := ChangeFileExt(AddPath(F1, ExePath + 'Reports\'), '.pas');
   if not FileExists(F1) then
-		raise Exception.Create('Can''t load report. '#13+
-			'File "' + F1 + '" not found.');
+    raise Exception.Create('Can''t load report. '#13 +
+      'File "' + F1 + '" not found.');
   if Cmp(T1, 'report') then
   begin
     RunReport(JvInterpreterFm1, F1);
   end
-  else
-  if Cmp(T1, 'formmodal') then
+  else if Cmp(T1, 'formmodal') then
     JvInterpreterFm1.RunFormModal(F1)
   else
-		raise Exception.Create('Unknown report type.');
+    raise Exception.Create('Unknown report type.');
+*)    
 end;
 
-procedure TReports.JvInterpreterFm1GetValue(Sender: TObject; Identifer: String;
-  var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);
+procedure TReports.JvInterpreterFm1GetValue(Sender: TObject; Identifer: string;
+  var Value: Variant; Args: TJvInterpreterArgs; var Done: boolean);
 var
   JvInterpreterFmRunner: TJvInterpreterFm;
 begin
@@ -125,10 +122,11 @@ begin
       RunReport(JvInterpreterFmRunner, Args.Values[0]);
     finally { wrap up }
       JvInterpreterFmRunner.Free;
-    end;    { try/finally }
-    Value := Null;
-    Done := True;
+    end; { try/finally }
+    Value := NULL;
+    Done := true;
   end;
 end;
 
 end.
+
