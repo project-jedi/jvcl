@@ -361,10 +361,10 @@ end;
 
 {$IFDEF COMPLIB_VCL}
 procedure TJvCustomEdit.CMMouseLeave(var Msg: TMessage);
+var I, J: Integer;
 {$ENDIF}
 {$IFDEF COMPLIB_CLX}
 procedure TJvCustomEdit.MouseLeave(AControl: TControl);
-var I, J: Integer;
 {$ENDIF}
 begin
   {$IFDEF COMPLIB_CLX}
