@@ -459,7 +459,6 @@ begin
       FDesktopForm.FadeClose;
   end;
 end;
-
 constructor TJvDesktopAlert.Create(AOwner: TComponent);
 begin
   inherited;
@@ -1004,12 +1003,24 @@ begin
   begin
     SystemParametersInfo(SPI_GETWORKAREA, 0, @R, 0);
     case Position of
-      dapBottomRight, dapBottomLeft:
+      dapBottomRight:
       begin
-        if Position = dapBottomRight then
-          X := R.Right - Items[0].Width // assume all forms have the same width
-        else
-          X := R.Left;
+        Y := R.Bottom;
+        for I := 0 to Pred(C) do
+        begin
+          Form := Items[i];
+          if Assigned(Form) and Form.Visible then
+          begin
+            X := R.Right - Form.Width;
+            Dec(Y, Form.Height);
+            Form.SetNewOrigin(X, Y);
+          end;
+        end;
+      end;
+
+      dapBottomLeft:
+      begin
+        X := R.Left;
         Y := R.Bottom;
         for I := 0 to Pred(C) do
         begin
@@ -1017,24 +1028,36 @@ begin
           if Assigned(Form) and Form.Visible then
           begin
             Dec(Y, Form.Height);
-            Form.SetNewOrigin(X,Y);
+            Form.SetNewOrigin(X, Y);
           end;
         end;
       end;
 
-      dapTopRight, dapTopLeft:
+      dapTopRight:
       begin
         Y := R.Top;
-        if Position = dapTopRight then
-          X := R.Right - Items[0].Width // assume all forms have the same width
-        else
-          X := R.Left;
         for I := 0 to Pred(C) do
         begin
           Form := Items[i];
           if Assigned(Form) and Form.Visible then
           begin
-            Form.SetNewOrigin(X,Y);
+            X := R.Right - Form.Width;
+            Form.SetNewOrigin(X, Y);
+            Inc(Y, Form.Height);
+          end;
+        end;
+      end;
+
+      dapTopLeft:
+      begin
+        Y := R.Top;
+        X := R.Left;
+        for I := 0 to Pred(C) do
+        begin
+          Form := Items[i];
+          if Assigned(Form) and Form.Visible then
+          begin
+            Form.SetNewOrigin(X, Y);
             Inc(Y, Form.Height);
           end;
         end;
