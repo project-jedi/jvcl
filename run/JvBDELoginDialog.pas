@@ -42,6 +42,7 @@ type
     const UserName, Password: string): Boolean of object;
 
   TDialogMode = (dmAppLogin, dmDBLogin, dmUnlock);
+  TJvDBLoginEvent = procedure (Sender:TObject; const UserName, Password:string) of object;
 
   TJvDBLoginDialog = class(TObject)
   private
@@ -61,6 +62,7 @@ type
     FLoginName: string;
     FAppStorage: TJvCustomAppStorage;
     FAppStoragePath: string;
+    FOnLoginFailure: TJvDBLoginEvent;
     procedure Login(Database: TDatabase; LoginParams: TStrings);
     function GetUserInfo: Boolean;
     function CheckUser(Table: TTable): Boolean;
@@ -79,6 +81,7 @@ type
     procedure FillParams(LoginParams: TStrings);
     property Mode: TDialogMode read FMode;
     property SelectDatabase: Boolean read FSelectDatabase;
+    property OnLoginFailure:TJvDBLoginEvent read FOnLoginFailure write FOnLoginFailure;
     property OnCheckUnlock: TCheckUnlockEvent read FCheckUnlock write FCheckUnlock;
     property OnCheckUserEvent: TCheckUserNameEvent read FCheckUserEvent write FCheckUserEvent;
     property OnIconDblClick: TNotifyEvent read FIconDblClick write FIconDblClick;
@@ -387,10 +390,20 @@ begin
         begin
           Result := CheckUser(Table);
           if not Result then
-            raise EDatabaseError.Create(RsEInvalidUserName);
+          begin
+            if Assigned(FOnLoginFailure) then
+              FOnLoginFailure(Self, GetUserName, FDialog.PasswordEdit.Text)
+            else
+              raise EDatabaseError.Create(RsEInvalidUserName);
+          end;
         end
         else
-          raise EDatabaseError.Create(RsEInvalidUserName);
+        begin
+          if Assigned(FOnLoginFailure) then
+            FOnLoginFailure(Self, GetUserName, FDialog.PasswordEdit.Text)
+          else
+            raise EDatabaseError.Create(RsEInvalidUserName);
+        end;
       except
         Application.HandleException(Self);
       end;
