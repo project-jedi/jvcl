@@ -283,10 +283,10 @@ var
       Application.ProcessMessages;
       if FStop then exit;
     until GetTickCount - DelayMsec > DelayPause;
-   {************* Коррекция скорости *************}
+//    {************* Коррекция скорости *************}
     inc(Pic);
     if Pic > 11 then begin
-        {Подкорректировать скорость - сделать рывками}
+//         {Подкорректировать скорость - сделать рывками}
         Pixels := 1;
         if Pix[2] > Pix[Pixels] then Pixels := 2;
         if Pix[3] > Pix[Pixels] then Pixels := 3;
@@ -301,11 +301,11 @@ var
       Pic    := 0;
     end else begin
       if (DelayFact > DelayPause2) and (Pixels2 < 4) then begin
-        {Подкорректировать скорость - сделать рывками}
+//         {Подкорректировать скорость - сделать рывками}
         inc(Pixels2);
         inc(DelayPause2, constDelayIncrement);
       end else if Pixels2 > 1 then begin
-        {Подкорректировать скорость - сделать плавнее - машина успевает}
+//         {Подкорректировать скорость - сделать плавнее - машина успевает}
         dec(Pixels2);
         dec(DelayPause2, constDelayIncrement);
       end;
@@ -315,32 +315,32 @@ var
       lblInfo.Caption := 'P='+IntToStr(Pixels)
        +' P2='+IntToStr(Pixels2)+' D='+IntToStr(DelayFact)
        +' DP='+IntToStr(DelayPause)+' DP2='+IntToStr(DelayPause2); }
-   {############# Коррекция скорости #############}
+//    {############# Коррекция скорости #############}
   end;
 
   procedure CopyAll;
   begin
     imageFontMask.Canvas.FillRect(SourceFon);
-    {перенести текст}
+//     {перенести текст}
     imageFontMask.Canvas.CopyMode := cmNotSrcCopy;
     imageFontMask.Canvas.CopyRect(Dest, imageFont.Canvas, Source);
-    {Корректировка верхней границы}
+//     {Корректировка верхней границы}
     RecTmp := SourceFon;
     RecTmp.Bottom := FScrollTop;
     imageFontMask.Canvas.FillRect(RecTmp);
-    {Корректировка правой границы}
+//     {Корректировка правой границы}
     RecTmp := SourceFon;
     RecTmp.Left := FRightMargin;
     imageFontMask.Canvas.FillRect(RecTmp);
-    {наложить маску на фон}
+//     {наложить маску на фон}
     imageScroll.Canvas.CopyMode := cmSrcCopy;
     imageScroll.Canvas.CopyRect(SourceFon, imageFon.Canvas, SourceFon);
     imageScroll.Canvas.CopyMode := cmSrcAnd;
     imageScroll.Canvas.CopyRect(SourceFon, imageFontMask.Canvas, SourceFon);
-    {наложить маску}
+//     {наложить маску}
     imageFontMask.Canvas.CopyMode := cmSrcErase;
     imageFontMask.Canvas.CopyRect(SourceFon, imagePattern.Canvas, SourceFon);
-    {наложить текст на фон}
+//     {наложить текст на фон}
     imageScroll.Canvas.CopyMode := cmSrcPaint;
     imageScroll.Canvas.CopyRect(SourceFon, imageFontMask.Canvas, SourceFon);
   end;
@@ -351,13 +351,13 @@ begin
   begin
   	inc(Line);
   	if Line = FStrings.Count then Line := 0;
-  	{Вывести строку}
+//   	{Вывести строку}
   	if ChangeFont(FStrings[Line]) then continue;
   	H := LastLine - Popr;
   	LastLine := LastLine + FontHeight;
   	{H := Line * FontHeight - Popr;}
   	imageFont.Canvas.TextOut(FLeftMargin, H, FStrings[Line]);
-  	{Прокрутить строку}
+//   	{Прокрутить строку}
   	for j := 1 to FontHeight do
     begin
   		dec(H2);

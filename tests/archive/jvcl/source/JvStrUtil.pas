@@ -252,7 +252,7 @@ end;
 { SubStr returns substring from string, S,
   separated with Separator string}
 function SubStr(const S : string; const index : integer; const Separator : string) : string;
- {Вырезает подстроку. Подстроки разделяются символом Sep}
+// Вырезает подстроку. Подстроки разделяются символом Sep
 var
   i : integer;
   pB, pE : PChar;
@@ -274,12 +274,12 @@ begin
 end;
 
 function SubStrEnd(const S : string; const index : integer; const Separator : string) : string;
- {то же что и SubStr, но подстроки нумеруются с конца}
+// то же что и SubStr, но подстроки нумеруются с конца
 var
   MaxIndex : integer;
   pB : PChar;
 begin
- {неоптимальная реализация}
+// неоптимальная реализация
   MaxIndex := 0;
   pB := StrPos(PChar(S), PChar(Separator));
   while pB <> nil do begin

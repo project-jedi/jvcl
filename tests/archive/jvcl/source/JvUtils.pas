@@ -155,7 +155,7 @@ type
   function AddSpaces(const S : string; const N : integer) : string;
 
   { function LastDate for russian users only }
-  { returns date relative to current date: 'два дня назад' }
+//  { returns date relative to current date: 'два дня назад' }
 
   function LastDate(const Dat : TDateTime) : string;
 
@@ -370,7 +370,6 @@ type
 
   { GetSubStr is full equal to SubStr function
     - only for compatibility - don't use }
-  { GetSubStr - устаревшая, используйте SubStr }
 
   function GetSubStr(const S : string; const index : integer; const Separator : Char) : string;
 
@@ -418,10 +417,10 @@ type
 
   procedure SQLAddWhere(SQL : TStrings; const where : string);
 
- {#### string routines - строковые функции}
+ {#### string routines - }
 
 
- {**** files routines - файловые функции}
+ {**** files routines - }
 
   { ResSaveToFile save resource named as Name with Typ type into file FileName.
     Resource can be compressed using MS Compress program}
@@ -458,7 +457,7 @@ type
   function ReadFolder(const Folder, Mask : TFileName; FileList : TStrings) : integer;
 
   function ReadFolders(const Folder : TFileName; FolderList : TStrings) : integer;
- {#### files routines - файловые функции}
+// {#### files routines - файловые функции}
 
  {$IFDEF COMPILER3_UP}
   { TargetFileName - if FileName is ShortCut returns filename ShortCut linked to }
@@ -469,7 +468,7 @@ type
     var FileName: TFileName): HRESULT;
  {$ENDIF COMPILER3_UP}
 
- {**** Graphic routines - графические функции}
+ {**** Graphic routines - }
 
   { LoadIcoToImage loads two icons from resource named NameRes,
     into two image lists ALarge and ASmall}
@@ -515,11 +514,11 @@ type
 
   function DefineCursor(Identifer : PChar) : TCursor;
 
- {#### Graphic routines - графические функции}
+ {#### Graphic routines - }
 
 
 
- {**** other routines - прочие функции}
+ {**** other routines - }
 
   { FindFormByClass returns first form with specified
     class, FormClass, owned by Application global variable }
@@ -541,7 +540,6 @@ type
 
   { RBTag searches WinControl.Controls for checked
     RadioButton and returns its Tag property value }
-   {Возвращает Tag выбранного TRadioButton для заданного Parent}
 
   function RBTag(Parent : TWinControl) : integer;
 
@@ -587,7 +585,8 @@ type
     const State: TOwnerDrawState; const Text : string;
     const HideSelColor: Boolean; var PlainItem: string;
     var Width: Integer; CalcWidth: Boolean);
-  { example for Text parameter : 'Item 1 <b>bold</b> <i>italic ITALIC <c:Red>red <c:Green>green <c:blue>blue </i>' }
+  { example for Text parameter :
+    'Item 1 <b>bold</b> <i>italic ITALIC <c:Red>red <c:Green>green <c:blue>blue </i>' }
 
   function ItemHtDraw(Canvas : TCanvas; Rect: TRect;
     const State: TOwnerDrawState; const Text : string;
@@ -602,7 +601,7 @@ type
  { ClearList - clears list of TObject }
   procedure ClearList(List: TList);
 
- {#### other routines - прочие функции}
+ {#### other routines - }
 
   procedure MemStreamToClipBoard(MemStream : TMemoryStream; const Format : word);
 
@@ -835,7 +834,7 @@ begin
       end;
       Result := FN;
     end;
-  end else Result := Copy(CmdLine, Length(ParamStr(0))+1, 260);{Не работает для длинных имен с пробелами}
+  end else Result := Copy(CmdLine, Length(ParamStr(0))+1, 260);
   while (Length(Result)>0) and (Result[1] = ' ') do Delete(Result, 1, 1);
   Result := ReplaceString(Result, '"', '');
   if FileExists(Result) then
@@ -904,15 +903,15 @@ end;
 
 function NumberByWord(const N : longint): string;
 const
-  Ten : array[0..9] of string = ('ноль',  'один',  'два',    'три', 'четыре',
-                                 'пять', 'шесть', 'семь', 'восемь', 'девять');
-  Hun : array[1..9] of string = ('сто', 'двести', 'триста', 'четыреста', 'пятьсот',
-                                 'шестьсот', 'семьсот', 'восемьсот', 'девятьсот');
-  OnTen : array[10..19] of string = ('десять', 'одиннадцать', 'двенадцать', 'тринадцать',
-                                     'четырнадцать', 'пятнадцать', 'шестнадцать',
-                                     'семнадцать', 'восемнадцать', 'девятнадцать');
-  HunIn : array[2..9] of string = ('двадцать', 'тридцать', 'сорок', 'пятьдесят',
-                                   'шестьдесят', 'семьдесят', 'восемьдесят', 'девяносто');
+  Ten : array[0..9] of string = ('zero', 'one',  'two',  'three',    'four', 'five',
+                                 'six', 'seven', 'eight', 'nine');
+  Hun : array[1..9] of string = ('onehundred', 'twohundred', 'threehundred', 'fourhundred', 'fivehundred',
+                                 'sixhundred', 'sevenhundred', 'eighthundred', 'ninehundred');
+  OnTen : array[10..19] of string = ('ten', 'eleven', 'twelve', 'thirteen',
+                                     'fourteen', 'fifteen', 'sixteen',
+                                     'seventeen', 'eighteen', 'nineteen');
+  HunIn : array[2..9] of string = ('twohousand', 'threethousand', 'fourthousand', 'fivethousand',
+                                   'sixthousand', 'seventhousand', 'eightthousand', 'ninethousand');
 
 var
   StrVsp  : string;
@@ -1041,7 +1040,7 @@ begin
 end;
 
 function SubStr(const S : string; const index : integer; const Separator : string) : string;
- {Вырезает подстроку. Подстроки разделяются символом Sep}
+// {Вырезает подстроку. Подстроки разделяются символом Sep}
 var
   i : integer;
   pB, pE : PChar;
@@ -1063,12 +1062,12 @@ begin
 end;
 
 function SubStrEnd(const S : string; const index : integer; const Separator : string) : string;
- {то же что и SubStr, но подстроки нумеруются с конца}
+// {то же что и SubStr, но подстроки нумеруются с конца}
 var
   MaxIndex : integer;
   pB : PChar;
 begin
- {неоптимальная реализация}
+// {неоптимальная реализация}
   MaxIndex := 0;
   pB := StrPos(PChar(S), PChar(Separator));
   while pB <> nil do begin
@@ -2145,7 +2144,7 @@ end;
 {$ENDIF COMPILER3_UP}
 
 
-{ Функция 'Словарь Сокращений', пример вызова:
+{ 
     with memEdit do begin
       Text := ReplaceSokr(Text, SelStart+1, SelLength, memWords.Lines, memFrases.Lines, NewSelStart);
       SelStart := NewSelStart-1;
@@ -2181,7 +2180,7 @@ begin
   end;
 end;
 
-{ Функция 'Словарь Сокращений для всего текста', пример вызова:
+{ 
     with memEdit do
       Text := ReplaceAllSokr(Text, memWords.Lines, memFrases.Lines);
 }
@@ -2395,7 +2394,7 @@ begin
     Rhrsrc  // resource handle
    );
   if RLen = 0 then exit;
-  {А вот теперь можно копировать}
+//  {А вот теперь можно копировать}
   Stream := nil;{для Free}
   if Compressed then
     FileDest := GenTempFileName(FileName) else
@@ -2450,7 +2449,7 @@ begin
     Rhrsrc  // resource handle
    );
   if RLen = 0 then exit;
-  {А вот теперь можно копировать}
+//  {А вот теперь можно копировать}
   SetString(S, PChar(RAddr), RLen);
 end;
 

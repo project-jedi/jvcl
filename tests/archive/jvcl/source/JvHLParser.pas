@@ -62,11 +62,11 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    {возвращает следующую лексему сдвигает текущую позицию}
+    // {возвращает следующую лексему сдвигает текущую позицию}
     function Token: string;
-    {возвращает следующую лексему слева от текущей позиции сдвигает текущую позицию влево}
+    // {возвращает следующую лексему слева от текущей позиции сдвигает текущую позицию влево}
     // function TokenL : string; - чертовски трудно это сделать #;-(
-    {откат назад на указанное количество лексем}
+    // {откат назад на указанное количество лексем}
     procedure RollBack(index: integer);
     property History[index: integer]: string read GetHistory;
     property PosBeg[index: integer]: integer read GetPosBeg;
@@ -249,7 +249,7 @@ var
   F1: PChar;
   i: integer;
 begin
-  { New Token - начать чтение новой лексемы }
+//   { New Token - начать чтение новой лексемы }
   F := FpcPos;
   P := FpcPos;
   { Firstly skip spaces and remarks }

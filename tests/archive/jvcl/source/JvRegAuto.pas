@@ -100,7 +100,7 @@ type
     procedure SetStrPrp(Value : string);
     function GetFloatPrp : extended;
     procedure SetFloatPrp(Value : extended);
-    {************ Äëÿ Property ************}
+    // {************ Äëÿ Property ************}
     procedure SetFProps(lProps : TStrings);
    {$IFDEF COMPLIB_VCL}
     procedure SetSaveWindowPlace(F : boolean);
@@ -113,7 +113,7 @@ type
     function GetUse(Index: Integer): Boolean;
     procedure SetUse(Index: Integer; Value: Boolean);
    {$ENDIF COMPILER4_UP}
-    {############ Äëÿ Property ############}
+    // {############ Äëÿ Property ############}
     procedure NewFormOnCreate(Sender : TObject);
     procedure NewFormOnDestroy(Sender : TObject);
     procedure GenerateRegistryName;
@@ -345,7 +345,7 @@ procedure TJvRegAuto.Loaded;
   begin
     Result := CompareMem(@TMethod(Addr1), @TMethod(Addr2), 8);
   end;
-             
+
 begin
   inherited Loaded;
   if not (csDesigning in ComponentState) and FAutoMode then
