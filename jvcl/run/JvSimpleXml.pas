@@ -1639,7 +1639,7 @@ begin
                 end;
             else
               begin
-                if not (lBuf[i] in [' ', Tab, Cr, Lf]) then
+                if (St <> '<![CDATA') or not (lBuf[i] in [' ', Tab, Cr, Lf]) then
                   St := St + lBuf[I];
                 if St = '<![CDATA[' then
                   lElem := TJvSimpleXMLElemCData.Create(Parent)
@@ -2928,7 +2928,7 @@ begin
             lElem := nil;
             lEnd := False;
 
-            if not (lBuf[i] in [' ', Tab, Cr, Lf]) then
+            if (St <> '<![CDATA') or not (lBuf[i] in [' ', Tab, Cr, Lf]) then
               St := St + lBuf[I];
             if St = '<![CDATA[' then
               lEnd := True
