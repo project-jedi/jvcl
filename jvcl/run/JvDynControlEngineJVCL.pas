@@ -14,7 +14,7 @@ All Rights Reserved.
 Contributor(s):
 Jens Fudickar [jens.fudickar@oratool.de]
 
-Last Modified: 2003-11-03
+Last Modified: 2003-12-17
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -23,6 +23,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 
 unit JvDynControlEngineJVCL;
 
@@ -803,10 +804,9 @@ end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlResize(Sender: TObject);
 begin
-  // (rom) how about div 2 ?
-  FDatePicker.Height := Round(Height / 2);
+  FDatePicker.Height := Height div 2;
   FTimePicker.Height := Height;
-  FDatePicker.Width := Round(Width / 2);
+  FDatePicker.Width := Width div 2;
 end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetDefaultProperties;
@@ -1326,7 +1326,10 @@ end;
 
 procedure TJvDynControlJVCLComboBox.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  if Style = csDropDownList then
+    ItemIndex := Items.IndexOf(Value)
+  else
+    Text := Value;
 end;
 
 function TJvDynControlJVCLComboBox.ControlGetValue: Variant;
