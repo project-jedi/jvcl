@@ -1327,6 +1327,7 @@ type
     property Address: Pointer read GetAddress write SetAddress;
   end;
 
+  // Inspector Data Object that Enumerates the Properties of a TPersistent/TComponent/TControl, etc:
   TJvInspectorPropData = class(TJvCustomInspectorData)
   private
     FInstance: TObject;
@@ -9502,7 +9503,7 @@ begin
   GetMem(PropList, PropCount * SizeOf(PPropInfo));
   try
     GetPropList(AInstance.ClassInfo, TypeKinds, PropList);
-    Result := New(AParent, AInstance, PropList, PropCount);
+    Result := New(AParent, AInstance, PropList, PropCount); // Generate Items for each Property element.
   finally
     FreeMem(PropList);
   end;
@@ -10848,11 +10849,12 @@ end;
 procedure TJvCustomInspector.AddComponent(const aComponent: TComponent; DisplayName:String; expanded:Boolean);
 var
   InspCat: TJvInspectorCustomCategoryItem;
+  Inst : TJvInspectorItemInstances;
 begin
   BeginUpdate;
   InspCat := TJvInspectorCustomCategoryItem.Create( Self.Root, nil);
   InspCat.DisplayName := DisplayName;
-  TJvInspectorPropData.New(InspCat, aComponent);
+  Inst := TJvInspectorPropData.New(InspCat, aComponent);
   InspCat.Expanded := expanded;
   EndUpdate;
 end;
