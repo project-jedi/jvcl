@@ -81,6 +81,8 @@ type
     FStreamedSelLength: Integer;
     FStreamedSelStart: Integer;
     FUseFixedPopup: Boolean;
+    FAutoHint: boolean;
+    FOldHint:string;
     {$IFDEF VisualCLX}
     FPasswordChar: Char;
     FNullPixmap: QPixmapH;
@@ -99,6 +101,7 @@ type
     {$ENDIF VCL}
     procedure SetGroupIndex(const Value: Integer);
     function GetFlat: Boolean;
+    procedure SetAutoHint(const Value: boolean);
   protected
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
@@ -128,6 +131,8 @@ type
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure SetFlat(Value: Boolean); virtual;
+    procedure UpdateAutoHint;dynamic;
+    procedure Resize; override;
   public
     function IsEmpty: Boolean;
     constructor Create(AOwner: TComponent); override;
@@ -139,9 +144,11 @@ type
     procedure Loaded; override;
   protected
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property AutoHint:boolean read FAutoHint write SetAutoHint default false; 
     property Caret: TJvCaret read FCaret write SetCaret;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property PasswordChar: Char read GetPasswordChar write SetPasswordChar;
+    // set to True to disable read/write of PasswordChar and read of Text
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow;
@@ -149,7 +156,6 @@ type
     property Text: TCaption read GetText write SetText;
     {$ENDIF VCL}
     property UseFixedPopup: Boolean read FUseFixedPopup write FUseFixedPopup default True;
-    // set to True to disable read/write of PasswordChar and read of Text
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex;
@@ -203,6 +209,7 @@ type
     property Anchors;
     property AutoSelect;
     property AutoSize;
+    property AutoHint;
     property BorderStyle;
     property CharCase;
     property Color;
@@ -340,6 +347,7 @@ begin
       SelLength := J;
     end;
     FOver := True;
+//    UpdateAutoHint;
   end;
   inherited MouseEnter(AControl);
 end;
@@ -516,6 +524,7 @@ procedure TJvCustomEdit.TextChanged;
 begin
   //Update;
   inherited TextChanged;
+  UpdateAutoHint;
 end;
 
 procedure TJvCustomEdit.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -601,6 +610,7 @@ end;
 procedure TJvCustomEdit.SetText(const Value: TCaption);
 begin
   inherited Text := Value;
+  UpdateAutoHint;
 end;
 
 function TJvCustomEdit.GetText: TCaption;
@@ -731,6 +741,56 @@ begin
     inherited SetClipboardCommands(Value);
     ReadOnly := ClipboardCommands <= [caCopy];
   end;
+end;
+
+procedure TJvCustomEdit.UpdateAutoHint;
+var
+  C:TControlCanvas;
+  Size:TSize;
+begin
+  if AutoHint and HandleAllocated then
+  begin
+    // (p3) empty original Hint indicates that we always want to replace Hint with Text
+    if FOldHint = '' then
+    begin
+      Hint := Text;
+      Exit;
+    end;
+    C := TControlCanvas.Create;
+    try
+      C.Control := self;
+      if GetTextExtentPoint32(C.Handle, PChar(Text), Length(Text),Size) then
+      begin
+        if (ClientWidth <= Size.cx) then
+          Hint := Text
+        else 
+          Hint := FOldHint;
+      end
+      else
+        Hint := FOldHint;
+    finally
+      C.Free;
+    end;
+  end;
+end;
+
+procedure TJvCustomEdit.SetAutoHint(const Value: boolean);
+begin
+  if FAutoHint <> Value then
+  begin
+    if Value then
+      FOldHint := Hint
+    else
+      Hint := FOldHint;
+    FAutoHint := Value;
+    UpdateAutoHint;
+  end;
+end;
+
+procedure TJvCustomEdit.Resize;
+begin
+  inherited;
+  UpdateAutoHint;
 end;
 
 end.
