@@ -42,8 +42,10 @@ contains
   JvBaseDlgEditor in '..\..\design\JvBaseDlgEditor.pas',
   JvDesignerUtils in '..\..\design\JvDesignerUtils.pas',
   JvDataProviderItemDesign in '..\..\design\JvDataProviderItemDesign.pas',
-  JvDataProviderDesignerForm in '..\..\design\JvDataProviderDesignerForm.pas' {frmDataProviderDesigner},
   JvDataProviderEditors in '..\..\design\JvDataProviderEditors.pas',
-  JvDsgnConsts in '..\..\design\JvDsgnConsts.pas';
+  JvDsgnConsts in '..\..\design\JvDsgnConsts.pas',
+  JvBaseDsgnForm in '..\..\design\JvBaseDsgnForm.pas' {JvBaseDesign},
+  JvBaseDsgnToolbarForm in '..\..\design\JvBaseDsgnToolbarForm.pas' {JvBaseDesignToolbar},
+  JvDataProviderDesignerForm in '..\..\design\JvDataProviderDesignerForm.pas' {frmDataProviderDesigner};
 
 end.

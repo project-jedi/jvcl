@@ -1,6 +1,6 @@
 object JvStrEditDlg: TJvStrEditDlg
-  Left = 439
-  Top = 330
+  Left = 381
+  Top = 76
   Width = 438
   Height = 308
   ActiveControl = Memo
