@@ -13,6 +13,19 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
+  object lblExplanations: TLabel
+    Left = 24
+    Top = 16
+    Width = 496
+    Height = 65
+    Caption = 
+      'This is the TJvAviCapture demo.'#13#10'First, press connect, which wil' +
+      'l connect to the first driver available.'#13#10'Then use the preview b' +
+      'uttons to see live video in the window.'#13#10'You can then capture th' +
+      'ree seconds of video, using the values set during design time.'#13#10 +
+      'The four remaining buttons are there to allow you to call the dr' +
+      'iver'#39's dialog boxes to set up capture details.'
+  end
   object btnConnect: TButton
     Left = 16
     Top = 104
@@ -104,29 +117,5 @@ object frmMain: TfrmMain
     Caption = 'Select display'
     TabOrder = 8
     OnClick = btnDisplayClick
-  end
-  object memExplanations: TMemo
-    Left = 16
-    Top = 8
-    Width = 629
-    Height = 85
-    Cursor = crArrow
-    TabStop = False
-    BorderStyle = bsNone
-    Color = clBtnFace
-    Lines.Strings = (
-      'This is the TJvAviCapture demo. '
-      
-        'First, press connect, which will connect to the first driver ava' +
-        'ilable. '
-      'Then use the preview buttons to see live video in the window. '
-      
-        'You can then capture three seconds of video, using the values se' +
-        't during design time. '
-      
-        'The four remaining buttons are there to allow you to call the dr' +
-        'iver'#39's dialog boxes to set up capture detalis')
-    ReadOnly = True
-    TabOrder = 9
   end
 end

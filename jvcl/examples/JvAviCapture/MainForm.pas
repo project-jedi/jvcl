@@ -41,7 +41,7 @@ type
     btnFormat: TButton;
     btnCompression: TButton;
     btnDisplay: TButton;
-    memExplanations: TMemo;
+    lblExplanations: TLabel;
     procedure btnConnectClick(Sender: TObject);
     procedure btnStartPreviewClick(Sender: TObject);
     procedure btnStopPreviewClick(Sender: TObject);
@@ -50,7 +50,6 @@ type
     procedure btnFormatClick(Sender: TObject);
     procedure btnDisplayClick(Sender: TObject);
     procedure btnCompressionClick(Sender: TObject);
-  private
   public
   end;
 

@@ -2,7 +2,6 @@ TODO for JVCL 3.0
 ======================
 - Add TJvAppStorage support to TJvMRUList // (obones)
 
-- add BeginUpdate and EndUpdate to all TStrings parameters // (rom)
 - Separate out a TJvRecentPopupMenu from JvRecentMenuButton.pas // (rom)
 
 - get rid of JvgCheckVersionInfoForm.pas // (rom)
@@ -22,7 +21,6 @@ TODO for JVCL 3.0
 - JvAVICapture.pas has some strange boolean expressions which should be fixed // (rom)
 
 - JvAirBrush.pas has a timing mechanism for spray which has to be reanimated or deleted // (rom)
-- JvAnimatedImage.pas TJvImageControl.DoPaintControl is not yet CLX compatible // (rom)
 - JvAnimateTitle.pas TJvAnimTitle.AnimateTitle implementation of blinking title is problematic. // (rom)
   Better try to manipulate the WM_GETTEXT and WM_SETTEXT to the Form window. // (rom)
 - JvAppHotKey.pas better catch WM_HOTKEY with Application.HookMainWindow? // (rom)

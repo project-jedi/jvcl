@@ -91,8 +91,8 @@ procedure MoveHPPFiles(const Paths, StartDir: string; Target: TTargetInfo);
 procedure DeleteJclDcuFiles(const Directory, StartDir: string);
 
 const
-  JclIncludePaths = '..\..\source\common';
-  JclSourcePaths = '..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx';
+  JclIncludePaths = '..\..\source;..\..\source\common';
+  JclSourcePaths = '..\..\source;..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx';
   JclLibDir = '..\..\lib';
   JVCLIncludePaths = '..\..\common';
   JVCLSourcePaths = '..\..\common;..\..\run;..\..\design';
