@@ -11,7 +11,7 @@
  the specific language governing rights and limitations under the License.
 
  The Initial Developer of the Original Code is Marcel Bestebroer
-  <marcelb@zeelandnet.nl>.
+  <jedi_mbe (at) users (dot) sf (dot) net>.
  Portions created by Marcel Bestebroer are Copyright (C) 2000 - 2002 mbeSoft.
  All Rights Reserved.
 
@@ -25,9 +25,12 @@
  page, located at http://www.delphi-jedi.org
 
  RECENT CHANGES:
-   Mar 16, 2004, anonymous:
-    - (Line 7976) do not show own class for TControl selection in property.
-                  make sure that you set ComponentIndex to DisplayIndex
+    Apr 8, 2004, Marcel Bestebroer:
+      - trigger the AfterDataCreate event in TJvCustomInspectorData.NewItem.
+
+    Mar 16, 2004, anonymous:
+      - do not show own class for TControl selection in property.
+        make sure that you set ComponentIndex to DisplayIndex
 
     Feb 8, 2004, Olivier Sannier obones@meloo.com
       - Introduced the TJvTypeInfoHelper class to help C++ Builder
@@ -9652,6 +9655,7 @@ var
   RegItem: TJvCustomInspectorRegItem;
 begin
   Result := nil;
+  AParent.Inspector.DoAfterDataCreate(Self);
   RegItem := ItemRegister.FindMatch(Self);
   if RegItem <> nil then
   begin
