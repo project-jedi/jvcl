@@ -31,7 +31,8 @@ program dxgettextResStr;
 uses
   Forms,
   Main in 'Main.pas' {FormMain},
-  Parser in 'Parser.pas';
+  Parser in 'Parser.pas',
+  dpp_PascalParser in '..\common\dpp_PascalParser.pas';
 
 {$R *.res}
 
