@@ -41,6 +41,9 @@ object frmMain: TfrmMain
     TitleArrow = True
     AutoSizeColumns = True
     AutoSizeColumnIndex = -2
+    SelectColumnsDialogStrings.Caption = 'V'#228'lj kolumner'
+    SelectColumnsDialogStrings.OK = '&OK'
+    SelectColumnsDialogStrings.NoSelectionWarning = #197'tminstone en kolumn m'#229'ste vara synlig'
     Columns = <
       item
         Expanded = False
