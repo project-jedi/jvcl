@@ -19,7 +19,7 @@
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p,allclx" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
@@ -30,7 +30,7 @@
     <File Name="..\..\design\JvOutlookBarForm.pas" Targets="all" Formname="FrmOLBEditor" Condition=""/>
     <File Name="..\..\design\JvScheduleEditorForm.pas" Targets="allbutclx" Formname="FrmScheduleEditor" Condition=""/>
     <File Name="..\..\design\JvScheduleEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvTimeLineEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvTimeLineEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvCustomReg.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\qdesign\JvQCustomReg.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvHLEditEditor.pas" Targets="allbutclx" Formname="" Condition=""/>

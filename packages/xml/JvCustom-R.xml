@@ -28,8 +28,11 @@
   <Contains>
     <File Name="..\..\run\JvChart.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDiagramShape.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvGammaPanel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvEditorCommon.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUnicodeEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUnicodeHLEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvHLEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvHLEditorPropertyForm.pas" Targets="allbutclx" Formname="JvHLEditorParamsForm" Condition=""/>
     <File Name="..\..\run\JvHLParser.pas" Targets="all" Formname="" Condition=""/>
@@ -42,8 +45,8 @@
     <File Name="..\..\run\JvLinkLabelTree.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLookOut.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvOutlookBar.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSchedEvtStore.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvScheduledEvents.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSchedEvtStore.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScheduledEvents.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvThumbImage.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvThumbnails.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvThumbViews.pas" Targets="allbutclx" Formname="" Condition=""/>
@@ -53,13 +56,10 @@
     <File Name="..\..\run\JvValidateEdit.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBalloonHint.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseThumbnail.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTimeLine.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTimeLine.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCustomItemViewer.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvImagesViewer.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvImagelistViewer.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvOwnerDrawViewer.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvEditorCommon.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvUnicodeEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvUnicodeHLEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>
