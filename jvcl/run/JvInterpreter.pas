@@ -532,6 +532,7 @@ type
     FIDSetList: TJvInterpreterIdentifierList; // write default indexed properties
     FIntfGetList: TJvInterpreterIdentifierList;  // interface methods
     FDirectGetList: TJvInterpreterIdentifierList; // direct get list
+    FDisableExternalFunctions: Boolean;      
     FClassList: TJvInterpreterIdentifierList; // delphi classes
     FConstList: TJvInterpreterIdentifierList; // delphi consts
     FFunctionList: TJvInterpreterIdentifierList; // functions, procedures
@@ -705,8 +706,9 @@ type
       const Value: Variant; DataType: IJvInterpreterDataType); dynamic;
     procedure AddOnGet(Method: TJvInterpreterGetValue); dynamic;
     procedure AddOnSet(Method: TJvInterpreterSetValue); dynamic;
-  //dejoy added begin
   public
+    property DisableExternalFunctions: Boolean read FDisableExternalFunctions write FDisableExternalFunctions;
+  //dejoy added begin
     property GetList: TJvInterpreterIdentifierList read FGetList;
     property SetList: TJvInterpreterIdentifierList read FSetList;
     property SrcFunctionList: TJvInterpreterIdentifierList read FSrcFunctionList;
@@ -748,6 +750,7 @@ type
     FOnGetValue: TJvInterpreterGetValue;
     FOnSetValue: TJvInterpreterSetValue;
     FLastError: EJvInterpreterError;
+    FDisableExternalFunctions : Boolean; 
     function GetSource: string;
     procedure SetSource(Value: string);
     procedure SetCurPos(Value: Integer);
@@ -759,6 +762,7 @@ type
       Args: TJvInterpreterArgs; Params: array of Variant): Variant; virtual; abstract;
     function CallFunctionEx(Instance: TObject; const UnitName: string;
       const FunctionName: string; Args: TJvInterpreterArgs; Params: array of Variant): Variant; virtual; abstract;
+    procedure SetDisableExternalFunctions(const Value: Boolean);
   protected
     procedure UpdateExceptionPos(E: Exception; const UnitName: string);
     procedure Init; dynamic;
@@ -803,6 +807,7 @@ type
     property SharedAdapter: TJvInterpreterAdapter read FSharedAdapter;
     property BaseErrLine: Integer read FBaseErrLine write FBaseErrLine;
     property LastError: EJvInterpreterError read FLastError;
+    property DisableExternalFunctions: Boolean read FDisableExternalFunctions write SetDisableExternalFunctions;
   end;
 
   TParserState = record
@@ -3914,6 +3919,11 @@ var
     I: Integer;
     JvInterpreterExtFun: TJvInterpreterExtFunction;
   begin
+    if FDisableExternalFunctions then
+    begin
+      Result := False;
+      Exit;
+    end;
     for I := 0 to FExtFunctionList.Count - 1 do
     begin
       JvInterpreterExtFun := TJvInterpreterExtFunction(FExtFunctionList[I]);
@@ -4707,6 +4717,7 @@ begin
   FPStream := TStringStream.Create('');
   FArgs := TJvInterpreterArgs.Create;
   FAdapter := CreateAdapter;
+  FAdapter.DisableExternalFunctions := FDisableExternalFunctions; 
   FSharedAdapter := GlobalJvInterpreterAdapter;
   FLastError := EJvInterpreterError.Create(-1, -1, '', '');
   FAllowAssignment := True;
@@ -5658,6 +5669,12 @@ begin
   Init;
   NextToken;
   FVResult := Expression1;
+end;
+
+procedure TJvInterpreterExpression.SetDisableExternalFunctions(const Value: Boolean);
+begin
+  FDisableExternalFunctions := Value;
+  FAdapter.DisableExternalFunctions := Value;
 end;
 
 //=== TJvInterpreterFunction =================================================
