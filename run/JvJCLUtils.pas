@@ -2244,17 +2244,9 @@ begin
   end
   else
   if Exponent < 0 then
-  begin
-    Result := 1;
-    Inc(Exponent);
-    while Exponent < 0 do
-    begin
-      Result := Result div Base;
-      Inc(Exponent);
-    end;
-  end
+    Result := 0
   else
-    Result := Base;
+    Result := 1;
 end;
 
 function ChangeTopException(E: TObject): TObject;
