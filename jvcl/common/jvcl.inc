@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JVCL.INC, released on 2002-07-04.
 
-Last Modified: 2003-08-01
+Last Modified: 2003-09-25
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -20,18 +20,22 @@ Known Issues:
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 
 {$I JEDI.INC}
-// Enable this define if you want to register property and component editors included in
-// JVCL for non-JVCL components as well
+
+{*CONFIGSTART*}
+
+{ Enable this define if you want to register property and component editors included in
+ JVCL for non-JVCL components as well }
 {.$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
-// Some new libraries and packages (currently JvUIB, JvWizard and JvTimeFrameWork) can be
-// installed either in "stand-alone" mode or in "JVCL" mode. These packages use the
-// USEJVCL define to determine whether they are installed in JVCL mode or not.
-// By default, this define is enabled.
-// NOTE: if you undefine USEJVCL, you can/should remove JvCoreXXX.dcp from the
-// requires node in the affected package(s)
+{ Some new libraries and packages (currently JvUIB, JvWizard and JvTimeFrameWork) can be
+  installed either in "stand-alone" mode or in "JVCL" mode. These packages use the
+  USEJVCL define to determine whether they are installed in JVCL mode or not.
+  By default, this define is enabled.
+  NOTE: if you undefine USEJVCL, you can/should remove JvCoreXXX.dcp from the
+  requires node in the affected package(s) }
 {$DEFINE USEJVCL}
 
+{*AUTOCONFIG*}
 {$IFDEF BCB}
   {$ObjExportAll ON}
 {$ENDIF}
@@ -43,9 +47,11 @@ Known Issues:
   (http:// www.lischke-online.de) installed and available and
   you are using D6/BCB6 or below }
 {.$DEFINE JVCLThemesEnabled}
+
 { D7 has theme support built in...}
+{*AUTOCONFIG*}
 {$IFDEF COMPILER7_UP}
-{$DEFINE JVCLThemesEnabled}
+ {$DEFINE JVCLThemesEnabled}
 {$ENDIF}
 
 { Activates MIDAS components (DBRemoteLogin)}
@@ -73,29 +79,33 @@ Known Issues:
   instead of a modal dialog in TDateEdit, TDBDateEdit components }
 {$DEFINE DEFAULT_POPUP_CALENDAR}
 
-// Automatic defines for entry level Delphi's: 
+// Automatic defines for entry level Delphi's:
+{*AUTOCONFIG*}
 {$IFDEF D5Standard}
-{$DEFINE DelphiPersonalEdition}
+ {$DEFINE DelphiPersonalEdition}
 {$ENDIF}
 
+{*AUTOCONFIG*}
 {$IFDEF D6PersonalEdition}
-{$DEFINE DelphiPersonalEdition}
+ {$DEFINE DelphiPersonalEdition}
 {$ENDIF}
 
+{*AUTOCONFIG*}
 {$IFDEF D7PersonalEdition}
-{$DEFINE DelphiPersonalEdition}
+ {$DEFINE DelphiPersonalEdition}
 {$ENDIF}
 
 // Reduces warnings on D7:
+{*AUTOCONFIG*}
 {$IFDEF COMPILER7_UP}
   {$WARN UNSAFE_TYPE OFF}
   {$WARN UNSAFE_CODE OFF}
   {$WARN UNSAFE_CAST OFF}
 {$ENDIF}
 
-// Used by JvTimeFrameWork, see JvTFDays.pas for more info on time blocks:
+{ Used by JvTimeFrameWork, see JvTFDays.pas for more info on time blocks }
 {$DEFINE TIMEBLOCKS}
 
-// Used by JvEditor
+{ Used by JvEditor }
 {$DEFINE HL_NOT_QUITE_C}
 
