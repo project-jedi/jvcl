@@ -36,7 +36,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  JVCLVer, JvThemes;
+  JVCLVer, JvThemes, JvComponent;
 
 type
   TJvPanelResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;
@@ -79,9 +79,8 @@ type
     property AutoArrange: Boolean read FAutoArrange write SetAutoArrange default False;
   end;
 
-  TJvPanel = class(TPanel)
+  TJvPanel = class(TJvCustomPanel)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
@@ -120,10 +119,6 @@ type
     procedure SetMultiLine(const Value: Boolean);
     procedure SetHotColor(const Value: TColor);
     procedure SetSizeable(const Value: Boolean);
-{$IFDEF JVCLThemesEnabledD56}
-    function GetParentBackground: Boolean;
-    procedure SetParentBackground(const Value: Boolean);
-{$ENDIF}
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -156,6 +151,8 @@ type
     function ArrangeEnabled: Boolean;
     property ArrangeWidth: Integer read FArrangeWidth;
     property ArrangeHeight: Integer read FArrangeHeight;
+
+    property DockManager;
   published
     property Sizeable: Boolean read FSizeable write SetSizeable default False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
@@ -174,10 +171,64 @@ type
     property Height: Integer read GetHeight write SetHeight;
     property OnResizeParent: TJvPanelResizeParentEvent read FOnResizeParent write FOnResizeParent;
 
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-{$IFDEF JVCLThemesEnabledD56}
-    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
-{$ENDIF}
+    property Align;
+    property Alignment;
+    property Anchors;
+    property AutoSize;
+    property BevelInner;
+    property BevelOuter;
+    property BevelWidth;
+    property BiDiMode;
+    property BorderWidth;
+    property BorderStyle;
+    property Caption;
+    property Color;
+    property Constraints;
+    property Ctl3D;
+    property UseDockManager default True;
+    property DockSite;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property FullRepaint;
+    property Font;
+    property Locked;
+    property ParentBiDiMode;
+    {$IFDEF COMPILER7_UP}
+    property ParentBackground;
+    {$ENDIF}
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property OnCanResize;
+    property OnClick;
+    property OnConstrainedResize;
+    property OnContextPopup;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnGetSiteInfo;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDock;
+    property OnStartDrag;
+    property OnUnDock;
+
   end;
 
 implementation
@@ -328,20 +379,6 @@ begin
     ControlStyle := ControlStyle + [csOpaque];
   end;
 end;
-
-{$IFDEF JVCLThemesEnabledD56}
-
-function TJvPanel.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
-end;
-
-procedure TJvPanel.SetParentBackground(const Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
-end;
-
-{$ENDIF}
 
 procedure TJvPanel.Paint;
 var
@@ -764,7 +801,7 @@ begin
           TJvPanel(Controls[i]).ArrangeSettings.Rearrange;
         if Controls[i].Width + 2 * FArrangeSettings.BorderLeft > Width then
           Width := Controls[i].Width + 2 * FArrangeSettings.BorderLeft;
-      end;
+      end;    {*** if Controls[i] is TWinControl then ***}
 
     while CurrControlCount < ControlCount do
     begin
@@ -791,7 +828,7 @@ begin
                 MaxY := -1;
                 NewX := AktX;
                 NewY := AktY;
-              end;
+              end;   {*** if ... ***}
               AktX := AktX + CurrControl.Width;
               if AktX > ControlMaxX then
                 ControlMaxX := AktX;
@@ -801,14 +838,14 @@ begin
               if CurrControl.Height > MaxY then
                 MaxY := CurrControl.Height;
               ControlMaxY := AktY + MaxY;
-            end;
-          end;
-        end;
-      end;
+            end;   {*** if CurrControl.Visible then ***}
+          end;   {*** if CurrControl.TabOrder > LastTabOrder then ***}
+        end;   {*** if Controls[i] is TWinControl then ***}
+      end;   {*** for i := 0 to ControlCount do ***}
       if CurrControlCount = LastControlCOunt then
         Break;
       LastControlCount := CurrControlCount;
-    end; 
+    end;  {*** while CurrControlCount < ControlCount do ***}
 
     if not (csLoading in ComponentState) then
     begin
@@ -822,7 +859,7 @@ begin
           Height := ControlMaxY + FArrangeSettings.BorderTop
         else
           Height := 0;
-    end;
+    end;   {*** if not (csLoading in ComponentState) then ***}
     FArrangeWidth := ControlMaxX + 2 * FArrangeSettings.BorderLeft;
     FArrangeHeight := ControlMaxY + 2 * FArrangeSettings.BorderTop;
     if OldHeight <> Height then
