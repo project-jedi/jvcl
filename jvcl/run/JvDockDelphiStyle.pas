@@ -22,26 +22,28 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-}
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvDockDelphiStyle;
 
 interface
 
-uses Windows, Classes, Controls, Math, Messages, JvDockControlForm, JvDockSupportControl,
-  JvDockTree, Graphics;
+uses
+  Windows, Messages, Classes, Controls, Graphics,
+  JvDockControlForm, JvDockSupportControl, JvDockTree;
 
 type
-
   TJvDockDelphiStyle = class(TJvDockBasicStyle)
   protected
     procedure FormDockDrop(DockClient: TJvDockClient;
       Source: TJvDockDragDockObject; X, Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
-{$IFNDEF USEJVCL}
+    {$IFNDEF USEJVCL}
     function GetControlName: string; override;
-{$ENDIF}
+    {$ENDIF USEJVCL}
   published
     property ConjoinServerOption;
     property TabServerOption;
@@ -55,7 +57,7 @@ type
 
   TJvDockDelphiTabPageControl = class(TJvDockTabPageControl)
   protected
-    procedure CMDockClient(var Message: TCMDockClient); message CM_DOCKCLIENT;
+    procedure CMDockClient(var Msg: TCMDockClient); message CM_DOCKCLIENT;
   end;
 
   TJvDockDelphiZone = class(TJvDockZone);
@@ -66,7 +68,9 @@ type
 
 implementation
 
-uses Forms, SysUtils, JvDockSupportProc, JvDockGlobals;
+uses
+  Forms, SysUtils, Math,
+  JvDockSupportProc, JvDockGlobals;
 
 constructor TJvDockDelphiStyle.Create(AOwner: TComponent);
 begin
@@ -92,7 +96,6 @@ var
 begin
   if IsDockable(DockClient.ParentForm, Source.Control, Source.DropOnControl, Source.DropAlign) then
   begin
-
     Host := nil;
 
     if not JvGlobalDockIsLoading then
@@ -101,15 +104,12 @@ begin
       with DockClient do
       begin
         DockType := ComputeDockingRect(DockClient.ParentForm, ARect, Point(X, Y));
-        if (ParentForm.HostDockSite is TJvDockPanel) then
+        if ParentForm.HostDockSite is TJvDockPanel then
         begin
-
           if DockType = alClient then
           begin
-
             if Source.Control is TJvDockTabHostForm then
             begin
-
               APanelDock := ParentForm.HostDockSite;
               ARect := ParentForm.BoundsRect;
               ParentForm.ManualDock(TJvDockTabHostForm(Source.Control).PageControl, nil, alClient);
@@ -121,7 +121,6 @@ begin
             end
             else
             begin
-
               APanelDock := ParentForm.HostDockSite;
               DRect.TopLeft := ParentForm.HostDockSite.ClientToScreen(Point(0, 0));
               Host := CreateTabHostAndDockControl(ParentForm, Source.Control);
@@ -135,7 +134,6 @@ begin
           end
           else
           begin
-
             DRect := ParentForm.HostDockSite.BoundsRect;
             Source.Control.ManualDock(ParentForm.HostDockSite, nil, DockType);
             ParentForm.HostDockSite.BoundsRect := DRect;
@@ -161,8 +159,8 @@ begin
             Host.Visible := True;
           end;
         end
-
-        else if DockType <> alNone then
+        else
+        if DockType <> alNone then
         begin
           Host := CreateConjoinHostAndDockControl(ParentForm, Source.Control, DockType);
           ADockClient := FindDockClient(Host);
@@ -180,34 +178,33 @@ begin
         end;
       end;
     finally
-
       if not JvGlobalDockIsLoading then
         JvDockUnLockWindow;
     end;
   end;
 end;
-{$IFNDEF USEJVCL}
 
+{$IFNDEF USEJVCL}
 function TJvDockDelphiStyle.GetControlName: string;
 begin
   Result := Format(RsDockLikeDelphiStyle, [inherited GetControlName]);
 end;
-{$ENDIF}
+{$ENDIF USEJVCL}
 
-procedure TJvDockDelphiTabPageControl.CMDockClient(var Message: TCMDockClient);
+procedure TJvDockDelphiTabPageControl.CMDockClient(var Msg: TCMDockClient);
 var
-  i: Integer;
+  I: Integer;
   AControl: TControl;
   APageCount: Integer;
 begin
-  if Message.DockSource.Control is TJvDockTabHostForm then
+  if Msg.DockSource.Control is TJvDockTabHostForm then
   begin
-    with TJvDockTabHostForm(Message.DockSource.Control) do
+    with TJvDockTabHostForm(Msg.DockSource.Control) do
     begin
       APageCount := Self.PageCount;
-      for i := PageControl.DockClientCount - 1 downto 0 do
+      for I := PageControl.DockClientCount - 1 downto 0 do
       begin
-        AControl := PageControl.DockClients[i];
+        AControl := PageControl.DockClients[I];
         DoFloat(PageControl, AControl);
         AControl.ManualDock(Self, nil, alClient);
         Self.ActivePage.PageIndex := APageCount;

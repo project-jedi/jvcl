@@ -70,15 +70,21 @@ implementation
 
 uses
   Classes, SysUtils, Dialogs,
+  {$IFDEF USEJVCL}
+  // JvDsgnConsts,
+  {$ENDIF USEJVCL}
   JvDockGlobals;
 
+{ IFNDEF USEJVCL}
 resourcestring
   RsDockNewPage = 'Ne&w Page';
   RsDockNextPage = 'Ne&xt Page';
   RsDockPreviousPage = '&Previous Page';
   RsDockDeletePage = '&Delete Page';
+{ ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
+
 //=== TJvDockControlEditor ===================================================
 
 procedure TJvDockControlEditor.ExecuteVerb(Index: Integer);
@@ -201,13 +207,13 @@ function TJvDockVIDTabPageControlEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := RsNewPage;
+      Result := RsDockNewPage;
     1:
-      Result := RsNextPage;
+      Result := RsDockNextPage;
     2:
-      Result := RsPrevPage;
+      Result := RsDockPreviousPage;
     3:
-      Result := RsDelPage;
+      Result := RsDockDeletePage;
   end;
 end;
 
