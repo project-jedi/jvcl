@@ -2507,6 +2507,8 @@ begin
   Canvas.Start;
   try
   {$ENDIF VisualCLX}
+    if (StartColor = clNone) and (EndColor = clNone) then
+      Exit;
     if Not (IsRectEmpty(ARect) and
            (GetMapMode(Canvas.Handle) = MM_TEXT) ) then
     begin
