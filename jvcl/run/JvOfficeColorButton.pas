@@ -323,7 +323,7 @@ begin
   begin
     Parent := Self;
     NumGlyphs := 2;
-    Color := clDefault;
+    ButtonColor := clDefault;
     Tag := MaxColorButtonNumber + 3;
     OnClick := DoClick;
   end;
@@ -462,7 +462,7 @@ begin
   else
   begin
     TJvSubColorButton(Sender).Down := True;
-    SetColor(TJvSubColorButton(Sender).Color);
+    SetColor(TJvSubColorButton(Sender).ButtonColor);
   end;
   if Assigned(FOnArrowClick) then
     FOnArrowClick(Self);
@@ -500,7 +500,7 @@ end;
 
 procedure TJvCustomOfficeColorButton.DoOnColorChange(Sender: Tobject);
 begin
-  FMainButton.Color := FColorsForm.ColorPanel.SelectedColor;
+  FMainButton.ButtonColor := FColorsForm.ColorPanel.SelectedColor;
   if FColorsForm.ToolWindowStyle and (FColorsForm.FormStyle<>fsStayOnTop) then
     FColorsForm.FormStyle := fsStayOnTop;
   if Assigned(FOnColorChange) then
@@ -528,7 +528,7 @@ begin
   if FColorsForm.ColorPanel.SelectedColor <> Value then
   begin
     FColorsForm.ColorPanel.SelectedColor := Value;
-    FMainButton.Color := Value;
+    FMainButton.ButtonColor := Value;
   end;
 end;
 
