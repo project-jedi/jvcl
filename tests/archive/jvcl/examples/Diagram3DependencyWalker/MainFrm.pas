@@ -133,9 +133,11 @@ begin
     Result.Parent := ScrollBox1;
     Result.Caption := TJvTextShape.Create(self);
     Result.Caption.Parent := ScrollBox1;
+    Result.Caption.Enabled := false;
     Result.Caption.OnClick := DoShapeClick;
     Result.Caption.Tag := integer(Result);
     Result.Caption.Text := AFilename;
+    Result.Caption.AlignCaption(taLeftJustify);
     Result.BringToFront;
     i := FFileShapes.AddObject(AFilename,Result);
   end;
@@ -148,7 +150,7 @@ begin
   arr := TJvSingleHeadArrow.Create(self);
   with arr do
   begin
-    LineColour := clBtnFace;
+    LineColour := clBtnShadow;
     // Set the start connection
     StartConn.Side := csRight;
     StartConn.Offset := StartShape.Height div 2;
