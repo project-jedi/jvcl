@@ -31,38 +31,37 @@ unit JvBMPListBox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
+  JVCLVer;
 
 type
-  TBackgroundFillmode = (bfm_Tile, bfm_Stretch);
+  TBackgroundFillmode = (bfmTile, bfmStretch);
+
   TJvBMPListBox = class(TCustomListBox)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FBackground: TBitmap;
     FFillmode: TBackgroundFillmode;
-    FAboutJVCL: TJVCLAboutInfo;
     { Private declarations }
-    procedure WMEraseBkGnd(var msg: TWMEraseBkGnd); message WM_ERASEBKGND;
-    procedure WMVScroll(var msg: TWMVScroll); message WM_VSCROLL;
-    procedure WMHScroll(var msg: TWMHScroll); message WM_HSCROLL;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
+    procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
 
     procedure SetBackground(const Value: TBitmap);
     procedure SetFillmode(const Value: TBackgroundFillmode);
-    procedure DrawBackGround(aDC: HDC);
+    procedure DrawBackGround(ADC: HDC);
 
   protected
-    { Protected declarations }
     procedure DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
   public
-    { Public declarations }
-    constructor Create(aOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Background: TBitmap read FBackground write SetBackground;
     property BackgroundFillmode: TBackgroundFillmode
-      read FFillmode write SetFillmode default bfm_Tile;
+      read FFillmode write SetFillmode default bfmTile;
 
     property Align;
     property Anchors;
@@ -116,19 +115,17 @@ type
 
 implementation
 
-{ TJvBMPListBox }
-
-constructor TJvBMPListBox.Create(aOwner: TComponent);
+constructor TJvBMPListBox.Create(AOwner: TComponent);
 begin
-  inherited;
-  Style := lbOwnerdrawFixed;
-  FBackground := Tbitmap.Create;
+  inherited Create(AOwner);
+  Style := lbOwnerDrawFixed;
+  FBackground := TBitmap.Create;
 end;
 
 destructor TJvBMPListBox.Destroy;
 begin
   FBackground.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvBMPListBox.DrawItem(Index: Integer; Rect: TRect;
@@ -142,13 +139,13 @@ begin
 
   // The listbox does not erase the background for the item before
   // sending the WM_DRAWITEM message! We have to do that here manually.
-  SaveDC(Canvas.handle);
-  IntersectClipRect(canvas.handle, rect.left, rect.top, rect.right, rect.bottom);
-  perform(WM_ERASEBKGND, canvas.handle, 0);
+  SaveDC(Canvas.Handle);
+  IntersectClipRect(Canvas.Handle, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
+  Perform(WM_ERASEBKGND, Canvas.Handle, 0);
   RestoreDC(Canvas.Handle, -1);
 
   if (Index >= 0) and (Index < Items.Count) then
-    Canvas.TextOut(Rect.left + 2, Rect.top, Items[Index]);
+    Canvas.TextOut(Rect.Left + 2, Rect.Top, Items[Index]);
 
   // invert the item if selected
   if odSelected in State then
@@ -171,72 +168,74 @@ begin
   end;
 end;
 
-procedure TJvBMPListBox.WMEraseBkGnd(var msg: TWMEraseBkGnd);
+procedure TJvBMPListBox.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   if FBackground.Empty then
     inherited
   else
   begin
-//    msg.result := 1;
+//    Msg.Result := 1;
     DrawBackGround(Msg.DC);
   end;
 end;
 
-procedure TJvBMPListBox.WMHScroll(var msg: TWMHScroll);
+procedure TJvBMPListBox.WMHScroll(var Msg: TWMHScroll);
 begin
-  items.BeginUpdate;
+  Items.BeginUpdate;
   inherited;
   Invalidate;
-  items.EndUpdate;
+  Items.EndUpdate;
 end;
 
-procedure TJvBMPListBox.DrawBackGround(aDC: HDC);
+procedure TJvBMPListBox.DrawBackGround(ADC: HDC);
 var
-  imagerect, clipbox, clientrect, temp: TRect;
-  cv: TCanvas;
-  clipComplexity: Integer;
+  ImageRect, ClipBox, ClientRect, Temp: TRect;
+  Cv: TCanvas;
+  ClipComplexity: Integer;
 begin
-  if aDC = 0 then Exit;
-  clientrect := Self.Clientrect;
-  clipComplexity := GetClipBox(aDC, clipbox);
-  if clipComplexity = NULLREGION then
+  if ADC = 0 then
+    Exit;
+  ClientRect := Self.ClientRect;
+  ClipComplexity := GetClipBox(ADC, ClipBox);
+  if ClipComplexity = NULLREGION then
     Exit; // nothing to paint
   if ClipComplexity = ERROR then
-    clipbox := clientRect;
+    ClipBox := ClientRect;
 
-  cv := TCanvas.Create;
+  Cv := TCanvas.Create;
   try
-    cv.Handle := aDC;
-    if cv.Handle = 0 then Exit;
-    if FFillmode = bfm_Stretch then
-      cv.StretchDraw(ClientRect, FBackground)
+    Cv.Handle := ADC;
+    if Cv.Handle = 0 then
+      Exit;
+    if FFillmode = bfmStretch then
+      Cv.StretchDraw(ClientRect, FBackground)
     else
     begin
-      imagerect := FBackground.canvas.Cliprect;
-      while imagerect.top < clientrect.bottom do
+      ImageRect := FBackground.Canvas.ClipRect;
+      while ImageRect.top < ClientRect.bottom do
       begin
-        while imagerect.left < clientrect.right do
+        while ImageRect.Left < ClientRect.Right do
         begin
-          if IntersectRect(temp, clipbox, imagerect) then
-            cv.Draw(imagerect.left, imagerect.top, FBackground);
-          OffsetRect(imagerect, imagerect.right - imagerect.left, 0);
-        end; { While }
-        OffsetRect(imagerect, -imagerect.left,
-          imagerect.bottom - imagerect.top);
-      end; { while }
-    end; { else }
+          if IntersectRect(Temp, ClipBox, ImageRect) then
+            Cv.Draw(ImageRect.Left, ImageRect.Top, FBackground);
+          OffsetRect(ImageRect, ImageRect.Right - ImageRect.Left, 0);
+        end;
+        OffsetRect(ImageRect, -ImageRect.Left,
+          ImageRect.Bottom - ImageRect.Top);
+      end;
+    end;
   finally
-    cv.Handle := 0;
-    cv.free;
-  end; { finally }
-end; { else }
+    Cv.Handle := 0;
+    Cv.Free;
+  end;
+end;
 
-procedure TJvBMPListBox.WMVScroll(var msg: TWMVScroll);
+procedure TJvBMPListBox.WMVScroll(var Msg: TWMVScroll);
 begin
-  items.BeginUpdate;
+  Items.BeginUpdate;
   inherited;
   Invalidate;
-  items.EndUpdate;
+  Items.EndUpdate;
 end;
 
 end.

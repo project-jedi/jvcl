@@ -12,7 +12,7 @@ The Original Code is: JvBdeUtils.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,35 +25,34 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvBdeUtils;
-
 
 interface
 
-uses SysUtils, Windows, Bde, Registry,
-{$IFDEF COMPILER6_UP}
-RTLConsts,
-{$ENDIF}
-Classes, DB, DBTables,
-  IniFiles, JvDBUtils;
+uses
+  Windows, SysUtils, Bde, Registry,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF}
+  Classes, DB, DBTables, IniFiles,
+  JvDBUtils;
 
 type
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   TLocateFilter = (lfTree, lfCallback);
-{$ENDIF}
+  {$ENDIF}
 
-{$IFNDEF COMPILER3_UP}
+  {$IFNDEF COMPILER3_UP}
   TBDEDataSet = TDataSet;
-{$ENDIF}
+  {$ENDIF}
 
-{$IFNDEF COMPILER5_UP}
+  {$IFNDEF COMPILER5_UP}
   TDatabaseLoginEvent = TLoginEvent;
-{$ENDIF}
+  {$ENDIF}
 
   TJvDBLocate = class(TJvLocateObject)
   private
-{$IFNDEF WIN32}
+    {$IFNDEF WIN32}
     FFilterHandle: HDBIFilter;
     FTree: PChar;
     FTreeSize: Integer;
@@ -67,18 +66,19 @@ type
     procedure BuildFilterTree;
     procedure FreeTree;
     function RecordFilter(RecBuf: Pointer; RecNo: Longint): Smallint;
-      {$IFDEF WIN32} stdcall; {$ENDIF}
-{$ELSE}
+    {$IFDEF WIN32} stdcall;
+    {$ENDIF}
+    {$ELSE}
     function LocateCallback: Boolean;
     procedure RecordFilter(DataSet: TDataSet; var Accept: Boolean);
-{$ENDIF WIN32}
+    {$ENDIF WIN32}
   protected
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     function LocateFilter: Boolean; override;
-{$ELSE}
+    {$ELSE}
     procedure ActiveChanged; override;
     function LocateFilter: Boolean; override;
-{$ENDIF WIN32}
+    {$ENDIF WIN32}
     procedure CheckFieldType(Field: TField); override;
     function LocateKey: Boolean; override;
     function UseKey: Boolean; override;
@@ -86,8 +86,6 @@ type
   public
     destructor Destroy; override;
   end;
-
-{ TJvCloneDataset }
 
   TJvCloneDataset = class(TBDEDataSet)
   private
@@ -103,8 +101,6 @@ type
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False;
   end;
 
-{ TJvCloneDbDataset }
-
   TJvCloneDbDataset = class(TDBDataSet)
   private
     FSourceHandle: HDBICur;
@@ -119,8 +115,6 @@ type
   published
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False;
   end;
-
-{ TJvCloneTable }
 
   TJvCloneTable = class(TTable)
   private
@@ -205,13 +199,21 @@ procedure InitRSRUN(Database: TDatabase; const ConName: string;
 
 implementation
 
-uses Forms, Controls, Dialogs, Consts, DBConsts, JvxConst, JvVCLUtils,
-  JvFileUtil, JvAppUtils, JvStrUtils, JvMaxMin, {$IFNDEF WIN32} JvStr16, {$ENDIF}
-  {$IFDEF COMPILER3_UP} BDEConst, DBCommon, {$ENDIF} JvDateUtil;
+uses
+  Forms, Controls, Dialogs, Consts, DBConsts,
+  {$IFDEF COMPILER3_UP}
+  BDEConst, DBCommon,
+  {$ENDIF}
+  JvxConst, JvVCLUtils, JvFileUtil, JvAppUtils, JvStrUtils, JvMaxMin,
+  {$IFNDEF WIN32}
+  JvStr16,
+  {$ENDIF}
+  JvDateUtil;
 
 { Utility routines }
 
 {$IFDEF COMPILER5_UP}
+
 procedure DBError(const Ident: string);
 begin
   DatabaseError(Ident);
@@ -230,7 +232,7 @@ end;
 function SetToBookmark(ADataSet: TDataSet; ABookmark: TBookmark): Boolean;
 begin
   Result := False;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   with ADataSet do
     if Active and (ABookmark <> nil) and not (Bof and Eof) and
       BookmarkValid(ABookmark) then
@@ -239,7 +241,7 @@ begin
       Result := True;
     except
     end;
-{$ELSE}
+  {$ELSE}
   with TBDEDataSet(ADataSet) do
     if Active and (ABookmark <> nil) and not (Bof and Eof) then
       if DbiSetToBookmark(Handle, ABookmark) = DBIERR_NONE then
@@ -248,19 +250,26 @@ begin
         Result := True;
       except
       end;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 function BookmarksCompare(DataSet: TBDEDataSet; Bookmark1, Bookmark2: TBookmark): Integer;
 const
   RetCodes: array[Boolean, Boolean] of ShortInt =
-    ((2, CMPLess), (CMPGtr, CMPEql));
+  ((2, CMPLess), (CMPGtr, CMPEql));
 begin
   Result := RetCodes[Bookmark1 = nil, Bookmark2 = nil];
-  if Result = 2 then begin
-    Check(DbiCompareBookmarks(DataSet.Handle, Bookmark1, Bookmark2, 
-      {$IFDEF WIN32} Result)); {$ELSE} Word(Result))); {$ENDIF}
-    if Result = CMPKeyEql then Result := CMPEql;
+  if Result = 2 then
+  begin
+    {$IFDEF WIN32}
+    Check(DbiCompareBookmarks(DataSet.Handle, Bookmark1, Bookmark2,
+      Result));
+    {$ELSE}
+    Check(DbiCompareBookmarks(DataSet.Handle, Bookmark1, Bookmark2,
+      Word(Result)));
+    {$ENDIF}
+    if Result = CMPKeyEql then
+      Result := CMPEql;
   end;
 end;
 
@@ -275,22 +284,26 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 function GetQuoteChar(Database: TDatabase): string;
 {$IFNDEF COMPILER3_UP}
 const
   dbQUOTECHAR = $0404000A;
-{$ENDIF}
+  {$ENDIF}
 var
   Q: Char;
   Len: Word;
 begin
   Result := '';
-  if Database.IsSQLBased then begin
+  if Database.IsSQLBased then
+  begin
     Q := #0;
     DbiGetProp(HDBIObj(Database.Handle), dbQUOTECHAR, @Q, SizeOf(Q), Len);
-    if Q <> #0 then Result := Q;
+    if Q <> #0 then
+      Result := Q;
   end
-  else Result := '"';
+  else
+    Result := '"';
 end;
 {$ENDIF}
 
@@ -299,11 +312,16 @@ begin
   Result := False;
   if Database.Connected then
     if Database.IsSQLBased then
-      try
-        Result := BOOL(DBGetIntProp(Database.Handle, dbASYNCSUPPORT));
-      except
-      end
-    else Result := {$IFDEF WIN32} True {$ELSE} False {$ENDIF};
+    try
+      Result := BOOL(DBGetIntProp(Database.Handle, dbASYNCSUPPORT));
+    except
+    end
+    else
+      {$IFDEF WIN32}
+      Result := True;
+  {$ELSE}
+      Result := False;
+  {$ENDIF}
 end;
 
 function FieldLogicMap(FldType: TFieldType): Integer;
@@ -314,15 +332,15 @@ const
     fldUNKNOWN, fldZSTRING, fldINT16, fldINT32, fldUINT16, fldBOOL,
     fldFLOAT, fldFLOAT, fldBCD, fldDATE, fldTIME, fldTIMESTAMP, fldBYTES,
     fldVARBYTES, fldBLOB, fldBLOB, fldBLOB);
-{$ELSE}
+  {$ELSE}
 const
   FldTypeMap: array[TFieldType] of Integer = (
     fldUNKNOWN, fldZSTRING, fldINT16, fldINT32, fldUINT16, fldBOOL,
     fldFLOAT, fldFLOAT, fldBCD, fldDATE, fldTIME, fldTIMESTAMP, fldBYTES,
     fldVARBYTES, fldINT32, fldBLOB, fldBLOB, fldBLOB, fldBLOB, fldBLOB,
     fldBLOB, fldBLOB);
-{$ENDIF}
-{$ENDIF}
+  {$ENDIF}
+  {$ENDIF}
 begin
   Result := FldTypeMap[FldType];
 end;
@@ -334,19 +352,20 @@ const
   FldSubtypeMap: array[TFieldType] of Integer = (
     0, 0, 0, 0, 0, 0, 0, fldstMONEY, 0, 0, 0, 0, 0, 0, fldstBINARY,
     fldstMEMO, fldstGRAPHIC);
-{$ELSE}
+  {$ELSE}
 const
   FldSubtypeMap: array[TFieldType] of Integer = (
     0, 0, 0, 0, 0, 0, 0, fldstMONEY, 0, 0, 0, 0, 0, 0, fldstAUTOINC,
     fldstBINARY, fldstMEMO, fldstGRAPHIC, fldstFMTMEMO, fldstOLEOBJ,
     fldstDBSOLEOBJ, fldstTYPEDBINARY);
-{$ENDIF}
-{$ENDIF}
+  {$ENDIF}
+  {$ENDIF}
 begin
   Result := FldSubtypeMap[FldType];
 end;
 
 {$IFNDEF WIN32}
+
 function CheckOpen(Status: DBIResult): Boolean;
 begin
   case Status of
@@ -354,7 +373,8 @@ begin
       Result := True;
     DBIERR_NOTSUFFTABLERIGHTS:
       begin
-        if not Session.GetPassword then DbiError(Status);
+        if not Session.GetPassword then
+          DbiError(Status);
         Result := False;
       end;
   else
@@ -377,56 +397,59 @@ var
   DtData: TDateTime;
   D: Double absolute DtData;
   Data: Longint absolute DtData;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   TimeStamp: TTimeStamp;
-{$ENDIF}
+  {$ENDIF}
 begin
-  if Buffer = nil then begin
+  if Buffer = nil then
+  begin
     Buffer := AllocMem(FldSize);
     Allocate := Buffer <> nil;
   end
-  else Allocate := False;
+  else
+    Allocate := False;
   try
     case FldLogicType of
       fldZSTRING:
-        begin
-          AnsiToNative(Locale, Value, PChar(Buffer), FldSize);
-        end;
+        AnsiToNative(Locale, Value, PChar(Buffer), FldSize);
       fldBYTES, fldVARBYTES:
-        begin
-          Move(Value[1], Buffer^, Min(Length(Value), FldSize));
-        end;
+        Move(Value[1], Buffer^, Min(Length(Value), FldSize));
       fldINT16, fldINT32, fldUINT16:
         begin
-          if Value = '' then FillChar(Buffer^, FldSize, 0)
-          else begin
+          if Value = '' then
+            FillChar(Buffer^, FldSize, 0)
+          else
+          begin
             Val(Value, L, E);
             if E <> 0 then
-{$IFDEF COMPILER3_UP}
+              {$IFDEF COMPILER3_UP}
               DatabaseErrorFmt(SInvalidIntegerValue, [Value, FldName]);
-{$ELSE}
+              {$ELSE}
               DBErrorFmt(SInvalidIntegerValue, [Value, FldName]);
-{$ENDIF}
+              {$ENDIF}
             Move(L, Buffer^, FldSize);
           end;
         end;
       fldBOOL:
         begin
           L := Length(Value);
-          if L = 0 then B := False
-          else begin
-            if Value[1] in ['Y', 'y', 'T', 't', '1'] then B := True
-            else B := False;
-          end;
+          if L = 0 then
+            B := False
+          else
+            B := Value[1] in ['Y', 'y', 'T', 't', '1'];
           Move(B, Buffer^, SizeOf(WordBool));
         end;
       fldFLOAT, fldBCD:
         begin
-          if Value = '' then FillChar(Buffer^, FldSize, 0)
-          else begin
+          if Value = '' then
+            FillChar(Buffer^, FldSize, 0)
+          else
+          begin
             D := StrToFloat(Value);
-            if FldLogicType <> fldBCD then Move(D, Buffer^, SizeOf(Double))
-            else begin
+            if FldLogicType <> fldBCD then
+              Move(D, Buffer^, SizeOf(Double))
+            else
+            begin
               DbiBcdFromFloat(D, 32, FldSize, BCD);
               Move(BCD, Buffer^, SizeOf(BCD));
             end;
@@ -434,47 +457,51 @@ begin
         end;
       fldDATE, fldTIME, fldTIMESTAMP:
         begin
-          if Value = '' then Data := Trunc(NullDate)
-          else begin
+          if Value = '' then
+            Data := Trunc(NullDate)
+          else
+          begin
             case FldLogicType of
               fldDATE:
                 begin
                   DateTime := StrToDate(Value);
-{$IFDEF WIN32}
+                  {$IFDEF WIN32}
                   TimeStamp := DateTimeToTimeStamp(DateTime);
                   Data := TimeStamp.Date;
-{$ELSE}
+                  {$ELSE}
                   Data := Trunc(DateTime);
-{$ENDIF}
+                  {$ENDIF}
                 end;
               fldTIME:
                 begin
                   DateTime := StrToTime(Value);
-{$IFDEF WIN32}
+                  {$IFDEF WIN32}
                   TimeStamp := DateTimeToTimeStamp(DateTime);
                   Data := TimeStamp.Time;
-{$ELSE}
+                  {$ELSE}
                   Data := Round(Frac(DateTime) * MSecsPerDay);
-{$ENDIF}
+                  {$ENDIF}
                 end;
               fldTIMESTAMP:
                 begin
                   DateTime := StrToDateTime(Value);
-{$IFDEF WIN32}
+                  {$IFDEF WIN32}
                   TimeStamp := DateTimeToTimeStamp(DateTime);
                   D := TimeStampToMSecs(DateTimeToTimeStamp(DateTime));
-{$ELSE}
+                  {$ELSE}
                   DtData := DateTime * MSecsPerDay;
-{$ENDIF}
+                  {$ENDIF}
                 end;
             end;
           end;
           Move(D, Buffer^, FldSize);
         end;
-      else DbiError(DBIERR_INVALIDFLDTYPE);
+    else
+      DbiError(DBIERR_INVALIDFLDTYPE);
     end;
   finally
-    if Allocate then FreeMem(Buffer, FldSize);
+    if Allocate then
+      FreeMem(Buffer, FldSize);
   end;
 end;
 
@@ -485,9 +512,9 @@ begin
   with TQuery.Create(Application) do
   try
     DatabaseName := DbName;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     SessionName := SessName;
-{$ENDIF}
+    {$ENDIF}
     SQL.Add(QueryText);
     ExecSQL;
   finally
@@ -507,7 +534,8 @@ var
   EndLogin: Boolean;
 begin
   Result := Database.Connected;
-  if Result then Exit;
+  if Result then
+    Exit;
   Database.OnLogin := OnLogin;
   EndLogin := True;
   repeat
@@ -515,15 +543,18 @@ begin
       Database.Connected := True;
       EndLogin := True;
     except
-      on E: EDbEngineError do begin
+      on E: EDbEngineError do
+      begin
         EndLogin := (MessageDlg(E.Message + '. ' + SRetryLogin,
           mtConfirmation, [mbYes, mbNo], 0) <> mrYes);
       end;
-      on E: EDatabaseError do begin
+      on E: EDatabaseError do
+      begin
         { User select "Cancel" in login dialog }
         MessageDlg(E.Message, mtError, [mbOk], 0);
       end;
-      else raise;
+    else
+      raise;
     end;
   until EndLogin;
   Result := Database.Connected;
@@ -552,36 +583,43 @@ var
 begin
   ParamList := TStringList.Create;
   try
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     Database.Session.GetAliasParams(Database.AliasName, ParamList);
-{$ELSE}
+    {$ELSE}
     Session.GetAliasParams(Database.AliasName, ParamList);
-{$ENDIF}
-    if Database.IsSQLBased then DBPath := ParamList.Values['SERVER NAME']
-    else DBPath := ParamList.Values['PATH'];
+    {$ENDIF}
+    if Database.IsSQLBased then
+      DBPath := ParamList.Values['SERVER NAME']
+    else
+      DBPath := ParamList.Values['PATH'];
     UserName := ParamList.Values['USER NAME'];
   finally
     ParamList.Free;
   end;
   AppConName := ConName;
-  if AppConName = '' then begin
+  if AppConName = '' then
+  begin
     ExeName := ExtractFileName(Application.ExeName);
     AppConName := Copy(ExeName, 1, Pos('.', ExeName) - 1);
   end;
   IniFile := TIniFile.Create(IniFileName);
   try
     TempStr := IniFile.ReadString(scConNames, idConNames, '');
-    if Pos(AppConName, TempStr) = 0 then begin
-      if TempStr <> '' then TempStr := TempStr + ',';
+    if Pos(AppConName, TempStr) = 0 then
+    begin
+      if TempStr <> '' then
+        TempStr := TempStr + ',';
       IniFile.WriteString(scConNames, idConNames, TempStr + AppConName);
     end;
     IniFile.WriteInteger(AppConName, idType, ConType);
     IniFile.WriteString(AppConName, idServer, ConServer);
-    if Database.IsSQLBased then begin
+    if Database.IsSQLBased then
+    begin
       IniFile.WriteString(AppConName, idSQLDataFilePath, DBPath);
       IniFile.WriteString(AppConName, idSQLUserID, UserName);
     end
-    else IniFile.WriteString(AppConName, idDataFilePath, DBPath);
+    else
+      IniFile.WriteString(AppConName, idDataFilePath, DBPath);
   finally
     IniFile.Free;
   end;
@@ -594,13 +632,18 @@ var
   I: Integer;
 begin
   Result := True;
-  if (DatabaseName = '') then Exit;
+  if (DatabaseName = '') then
+    Exit;
   I := 1;
-  while I <= Length(DatabaseName) do begin
-{$IFDEF COMPILER3_UP}
-    if DatabaseName[I] in LeadBytes then Inc(I) else
-{$ENDIF COMPILER3_UP}
-    if DatabaseName[I] in [':','\'] then Exit;
+  while I <= Length(DatabaseName) do
+  begin
+    {$IFDEF COMPILER3_UP}
+    if DatabaseName[I] in LeadBytes then
+      Inc(I)
+    else
+      {$ENDIF COMPILER3_UP}
+      if DatabaseName[I] in [':', '\'] then
+      Exit;
     Inc(I);
   end;
   Result := False;
@@ -616,16 +659,18 @@ begin
   StrPLCopy(SAlias, AliasName, SizeOf(SAlias) - 1);
   AnsiToOem(SAlias, SAlias);
   Check(DbiGetDatabaseDesc(SAlias, @Desc));
-  if StrIComp(Desc.szDbType, szCFGDBSTANDARD) = 0 then begin
+  if StrIComp(Desc.szDbType, szCFGDBSTANDARD) = 0 then
+  begin
     OemToAnsi(Desc.szPhyName, Desc.szPhyName);
     Result := StrPas(Desc.szPhyName);
   end
-  else begin
+  else
+  begin
     Params := TStringList.Create;
     try
-{$IFDEF WIN32}
+      {$IFDEF WIN32}
       Session.Active := True;
-{$ENDIF}
+      {$ENDIF}
       Session.GetAliasParams(AliasName, Params);
       Result := Params.Values['SERVER NAME'];
     finally
@@ -638,10 +683,12 @@ end;
 
 procedure TJvCloneDataset.SetSourceHandle(ASourceHandle: HDBICur);
 begin
-  if ASourceHandle <> FSourceHandle then begin
+  if ASourceHandle <> FSourceHandle then
+  begin
     Close;
     FSourceHandle := ASourceHandle;
-    if FSourceHandle <> nil then Open;
+    if FSourceHandle <> nil then
+      Open;
   end;
 end;
 
@@ -660,32 +707,37 @@ end;
 
 procedure TJvCloneDbDataset.InitFromDataSet(Source: TDBDataSet; Reset: Boolean);
 begin
-  with Source do begin
-{$IFDEF WIN32}
+  with Source do
+  begin
+    {$IFDEF WIN32}
     Self.SessionName := SessionName;
-{$ENDIF}
+    {$ENDIF}
     Self.DatabaseName := DatabaseName;
     SetSourceHandle(Handle);
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     Self.Filter := Filter;
     Self.OnFilterRecord := OnFilterRecord;
-    if not Reset then Self.Filtered := Filtered;
-{$ENDIF}
+    if not Reset then
+      Self.Filtered := Filtered;
+    {$ENDIF}
   end;
-  if Reset then begin
-{$IFDEF WIN32}
+  if Reset then
+  begin
+    {$IFDEF WIN32}
     Filtered := False;
-{$ENDIF}
+    {$ENDIF}
     First;
   end;
 end;
 
 procedure TJvCloneDbDataset.SetSourceHandle(ASourceHandle: HDBICur);
 begin
-  if ASourceHandle <> FSourceHandle then begin
+  if ASourceHandle <> FSourceHandle then
+  begin
     Close;
     FSourceHandle := ASourceHandle;
-    if FSourceHandle <> nil then Open;
+    if FSourceHandle <> nil then
+      Open;
   end;
 end;
 
@@ -704,30 +756,35 @@ end;
 
 procedure TJvCloneTable.InitFromTable(SourceTable: TTable; Reset: Boolean);
 begin
-  with SourceTable do begin
+  with SourceTable do
+  begin
     Self.TableType := TableType;
     Self.TableName := TableName;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     Self.SessionName := SessionName;
-{$ENDIF}
+    {$ENDIF}
     Self.DatabaseName := DatabaseName;
-    if not Reset then begin
+    if not Reset then
+    begin
       if IndexName <> '' then
         Self.IndexName := IndexName
-      else if IndexFieldNames <> '' then
+      else
+        if IndexFieldNames <> '' then
         Self.IndexFieldNames := IndexFieldNames;
     end;
     SetSourceHandle(Handle);
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     Self.Filter := Filter;
     Self.OnFilterRecord := OnFilterRecord;
-    if not Reset then Self.Filtered := Filtered;
-{$ENDIF}
+    if not Reset then
+      Self.Filtered := Filtered;
+    {$ENDIF}
   end;
-  if Reset then begin
-{$IFDEF WIN32}
+  if Reset then
+  begin
+    {$IFDEF WIN32}
     Filtered := False;
-{$ENDIF}
+    {$ENDIF}
     DbiResetRange(Handle);
     IndexName := '';
     IndexFieldNames := '';
@@ -737,10 +794,12 @@ end;
 
 procedure TJvCloneTable.SetSourceHandle(ASourceHandle: HDBICur);
 begin
-  if ASourceHandle <> FSourceHandle then begin
+  if ASourceHandle <> FSourceHandle then
+  begin
     Close;
     FSourceHandle := ASourceHandle;
-    if FSourceHandle <> nil then Open;
+    if FSourceHandle <> nil then
+      Open;
   end;
 end;
 
@@ -763,9 +822,12 @@ begin
 end;
 
 {$IFNDEF WIN32}
+
 function CallbackFilter(pDBLocate: Longint; RecBuf: Pointer;
   RecNo: Longint): Smallint;
-  {$IFDEF WIN32} stdcall; {$ELSE} export; {$ENDIF WIN32}
+  {$IFDEF WIN32} stdcall;
+  {$ELSE} export;
+  {$ENDIF WIN32}
 begin
   Result := TJvDBLocate(pDBLocate).RecordFilter(RecBuf, RecNo);
 end;
@@ -773,9 +835,9 @@ end;
 
 destructor TJvDBLocate.Destroy;
 begin
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   DropFilter;
-{$ENDIF}
+  {$ENDIF}
   inherited Destroy;
 end;
 
@@ -783,9 +845,12 @@ procedure TJvDBLocate.CheckFieldType(Field: TField);
 var
   Locale: TLocale;
 begin
-  if not (Field.DataType in [ftDate, ftTime, ftDateTime]) then begin
-    if DataSet is TBDEDataSet then Locale := TBDEDataSet(DataSet).Locale
-    else Locale := Session.Locale;
+  if not (Field.DataType in [ftDate, ftTime, ftDateTime]) then
+  begin
+    if DataSet is TBDEDataSet then
+      Locale := TBDEDataSet(DataSet).Locale
+    else
+      Locale := Session.Locale;
     ConvertStringToLogicType(Locale, FieldLogicMap(Field.DataType),
       Field.DataSize, Field.FieldName, LookupValue, nil);
   end;
@@ -797,10 +862,13 @@ var
 begin
   Result := False;
   if DataSet is TTable then
-    with DataSet as TTable do begin
+    with DataSet as TTable do
+    begin
       if (not Self.LookupField.IsIndexField) and (not IndexSwitch or
-        (not CaseSensitive and Database.IsSQLBased)) then Exit;
-      if (not LookupExact) and (Self.LookupField.DataType <> ftString) then Exit;
+        (not CaseSensitive and Database.IsSQLBased)) then
+        Exit;
+      if (not LookupExact) and (Self.LookupField.DataType <> ftString) then
+        Exit;
       IndexDefs.Update;
       for I := 0 to IndexDefs.Count - 1 do
         with IndexDefs[I] do
@@ -820,11 +888,14 @@ var
 
   function LocateIndex(Table: TTable): Boolean;
   begin
-    with Table do begin
+    with Table do
+    begin
       SetKey;
       FieldByName(Self.LookupField.FieldName).AsString := LookupValue;
-      if LookupExact then Result := GotoKey
-      else begin
+      if LookupExact then
+        Result := GotoKey
+      else
+      begin
         GotoNearest;
         Result := MatchesLookup(FieldByName(Self.LookupField.FieldName));
       end;
@@ -836,7 +907,8 @@ begin
     TTable(DataSet).CheckBrowseMode;
     if TTable(DataSet).IndexFieldNames = LookupField.FieldName then
       Result := LocateIndex(TTable(DataSet))
-    else begin
+    else
+    begin
       Clone := TJvCloneTable.Create(DataSet);
       with Clone do
       try
@@ -844,7 +916,8 @@ begin
         InitFromTable(TTable(DataSet), True);
         IndexFieldNames := Self.LookupField.FieldName;
         Result := LocateIndex(Clone);
-        if Result then begin
+        if Result then
+        begin
           Check(DbiSetToCursor(TTable(DataSet).Handle, Handle));
           DataSet.Resync([rmExact, rmCenter]);
         end;
@@ -878,11 +951,13 @@ begin
       InitFromDataset(TDBDataSet(DataSet), True);
       OnFilterRecord := RecordFilter;
       Filtered := True;
-      if not (BOF and EOF) then begin
+      if not (BOF and EOF) then
+      begin
         First;
         Result := True;
       end;
-      if Result then begin
+      if Result then
+      begin
         Check(DbiSetToCursor(TBDEDataSet(DataSet).Handle, Handle));
         DataSet.Resync([rmExact, rmCenter]);
       end;
@@ -906,7 +981,8 @@ begin
   if LookupExact or (LookupField.DataType = ftString) or
     not (DataSet is TDBDataSet) then
     Result := inherited LocateFilter
-  else begin
+  else
+  begin
     SaveCursor := Screen.Cursor;
     Screen.Cursor := crHourGlass;
     try
@@ -940,15 +1016,18 @@ begin
       Check(DbiSetToBegin(TBDEDataSet(DataSet).Handle));
       Status := DbiGetNextRecord(TBDEDataSet(DataSet).Handle, dbiNoLock,
         nil, nil);
-      if Status = DBIERR_NONE then begin
+      if Status = DBIERR_NONE then
+      begin
         DataSet.Resync([rmExact, rmCenter]);
         ChangeBookmark;
         Result := True;
       end
-      else Result := False;
+      else
+        Result := False;
     finally
       DeactivateFilter;
-      if Result then SetToBookmark(DataSet, Bookmark);
+      if Result then
+        SetToBookmark(DataSet, Bookmark);
     end;
   finally
     Screen.Cursor := SaveCursor;
@@ -957,30 +1036,35 @@ end;
 
 procedure TJvDBLocate.BuildFilterHeader(var Rec);
 const
-  FCondition: array[Boolean] of CANOp = (canGE, canEQ);
+  FCondition: array [Boolean] of CANOp = (canGE, canEQ);
   FilterHeaderSize = SizeOf(CANExpr) + SizeOf(CANBinary) +
     SizeOf(CANField) + SizeOf(CANConst);
 begin
-  with TFilterRec(Rec) do begin
-    with Header do begin
+  with TFilterRec(Rec) do
+  begin
+    with Header do
+    begin
       iVer := CANEXPRVERSION;
       iNodes := 3;
       iNodeStart := SizeOf(CANExpr);
       iLiteralStart := FilterHeaderSize;
     end;
-    with Condition do begin
+    with Condition do
+    begin
       nodeClass := nodeBINARY;
       canOp := FCondition[LookupExact];
       iOperand1 := SizeOf(CANBinary);
       iOperand2 := iOperand1 + SizeOf(CANField);
     end;
-    with FieldNode do begin
+    with FieldNode do
+    begin
       nodeClass := nodeFIELD;
       canOp := canFIELD2;
       iFieldNum := LookupField.FieldNo;
       iNameOffset := 0;
     end;
-    with ConstNode do begin
+    with ConstNode do
+    begin
       canOp := canCONST2;
       iType := FieldLogicMap(LookupField.DataType);
       iSize := LookupField.DataSize;
@@ -996,7 +1080,8 @@ var
   Temp: PChar;
   Rec: TFilterRec;
 begin
-  if FTree <> nil then FreeMem(FTree, FTreeSize);
+  if FTree <> nil then
+    FreeMem(FTree, FTreeSize);
   FTree := nil;
   BuildFilterHeader(Rec);
   FTreeSize := Rec.Header.iTotalSize;
@@ -1018,7 +1103,8 @@ end;
 
 procedure TJvDBLocate.FreeTree;
 begin
-  if FTree <> nil then FreeMem(FTree, FTreeSize);
+  if FTree <> nil then
+    FreeMem(FTree, FTreeSize);
   FTree := nil;
   FTreeSize := 0;
 end;
@@ -1027,9 +1113,12 @@ procedure TJvDBLocate.CheckFilterKind;
 var
   NewKind: TLocateFilter;
 begin
-  if CaseSensitive and LookupExact then NewKind := lfTree
-  else NewKind := lfCallback;
-  if (FFilterKind <> NewKind) or (NewKind = lfTree) then begin
+  if CaseSensitive and LookupExact then
+    NewKind := lfTree
+  else
+    NewKind := lfCallback;
+  if (FFilterKind <> NewKind) or (NewKind = lfTree) then
+  begin
     DropFilter;
     FFilterKind := NewKind;
   end;
@@ -1038,12 +1127,15 @@ end;
 procedure TJvDBLocate.ActivateFilter;
 begin
   CheckFilterKind;
-  if FFilterHandle = nil then begin
-    if FFilterKind = lfCallback then begin
+  if FFilterHandle = nil then
+  begin
+    if FFilterKind = lfCallback then
+    begin
       Check(DbiAddFilter(DataSet.Handle, Longint(Self), 0, True, nil,
         CallbackFilter, FFilterHandle));
     end
-    else { lfTree } begin
+    else { lfTree }
+    begin
       BuildFilterTree;
       Check(DbiAddFilter(DataSet.Handle, 0, 1, False,
         pCANExpr(FTree), nil, FFilterHandle));
@@ -1071,8 +1163,10 @@ var
 begin
   try
     Move(RecBuf^, DataSet.ActiveBuffer^, DataSet.RecordSize);
-    if LookupField <> nil then Accept := MatchesLookup(LookupField)
-    else Accept := True;
+    if LookupField <> nil then
+      Accept := MatchesLookup(LookupField)
+    else
+      Accept := True;
     Result := Ord(Accept);
   except
     Application.HandleException(Self);
@@ -1082,7 +1176,8 @@ end;
 
 procedure TJvDBLocate.ChangeBookmark;
 begin
-  if Bookmark <> nil then DataSet.FreeBookmark(Bookmark);
+  if Bookmark <> nil then
+    DataSet.FreeBookmark(Bookmark);
   Bookmark := DataSet.GetBookmark;
 end;
 
@@ -1100,13 +1195,16 @@ var
   Status: DBIResult;
   Filter: hDBIFilter;
 begin
-  if DataSet is TBDEDataSet then begin
+  if DataSet is TBDEDataSet then
+  begin
     Status := DbiAddFilter(TBDEDataSet(DataSet).Handle, 0, 0, False, nil,
       nil, Filter);
     Result := (Status = DBIERR_NONE) or (Status = DBIERR_INVALIDFILTER);
-    if Result then DbiDropFilter(TBDEDataSet(DataSet).Handle, Filter);
+    if Result then
+      DbiDropFilter(TBDEDataSet(DataSet).Handle, Filter);
   end
-  else Result := True;
+  else
+    Result := True;
 end;
 
 function DataSetFindValue(ADataSet: TBDEDataSet; const Value,
@@ -1148,7 +1246,8 @@ end;
 
 procedure ReleaseSaveIndexies; far;
 begin
-  if SaveIndexFieldNames <> nil then begin
+  if SaveIndexFieldNames <> nil then
+  begin
     SaveIndexFieldNames.Free;
     SaveIndexFieldNames := nil;
   end;
@@ -1188,7 +1287,8 @@ var
   NewIndex: string;
 begin
   NewIndex := '';
-  for I := Low(IndexFields) to High(IndexFields) do begin
+  for I := Low(IndexFields) to High(IndexFields) do
+  begin
     NewIndex := NewIndex + TVarRec(IndexFields[I]).VString^;
     if I <> High(IndexFields) then
       NewIndex := NewIndex + ';';
@@ -1197,7 +1297,8 @@ begin
   try
     Table.SetRange(FieldValues, FieldValues);
     try
-      while not Table.EOF do Table.Delete;
+      while not Table.EOF do
+        Table.Delete;
     finally
       Table.CancelRange;
     end;
@@ -1211,18 +1312,21 @@ var
   WasActive: Boolean;
   WasExclusive: Boolean;
 begin
-  with Table do begin
+  with Table do
+  begin
     WasActive := Active;
     WasExclusive := Exclusive;
     DisableControls;
     try
-      if not (WasActive and WasExclusive) then Close;
+      if not (WasActive and WasExclusive) then
+        Close;
       try
         Exclusive := True;
         Open;
         Check(dbiRegenIndexes(Handle));
       finally
-        if not (WasActive and WasExclusive) then begin
+        if not (WasActive and WasExclusive) then
+        begin
           Close;
           Exclusive := WasExclusive;
           Active := WasActive;
@@ -1248,14 +1352,17 @@ var
   TablePath: array[0..dbiMaxPathLen] of Char;
   Exclusive: Boolean;
 begin
-  if not Table.Active then _DBError(SDataSetClosed);
+  if not Table.Active then
+    _DBError(SDataSetClosed);
   Check(DbiGetCursorProps(Table.Handle, FCurProp));
-  if StrComp(FCurProp.szTableType, szParadox) = 0 then begin
+  if StrComp(FCurProp.szTableType, szParadox) = 0 then
+  begin
     { Call DbiDoRestructure procedure if PARADOX table }
     hDb := nil;
     { Initialize the table descriptor }
     FillChar(TblDesc, SizeOf(CRTblDesc), 0);
-    with TblDesc do begin
+    with TblDesc do
+    begin
       { Place the table name in descriptor }
       StrPCopy(szTblName, Table.TableName);
       { Place the table type in descriptor }
@@ -1285,7 +1392,9 @@ begin
       Table.Open;
     end;
   end
-  else if StrComp(FCurProp.szTableType, szDBase) = 0 then begin
+  else
+    if StrComp(FCurProp.szTableType, szDBase) = 0 then
+  begin
     { Call DbiPackTable procedure if dBase table }
     Exclusive := Table.Exclusive;
     Table.Close;
@@ -1302,13 +1411,15 @@ begin
       Table.Open;
     end;
   end
-  else DbiError(DBIERR_WRONGDRVTYPE);
+  else
+    DbiError(DBIERR_WRONGDRVTYPE);
 end;
 
 procedure FetchAllRecords(DataSet: TBDEDataSet);
 begin
   with DataSet do
-    if not EOF then begin
+    if not EOF then
+    begin
       CheckBrowseMode;
       Check(DbiSetToEnd(Handle));
       Check(DbiGetPriorRecord(Handle, dbiNoLock, nil, nil));
@@ -1320,33 +1431,38 @@ end;
 procedure BdeFlushBuffers;
 var
   I, L: Integer;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Session: TSession;
   J: Integer;
-{$ENDIF}
+  {$ENDIF}
 begin
-{$IFDEF WIN32}
-  for J := 0 to Sessions.Count - 1 do begin
+  {$IFDEF WIN32}
+  for J := 0 to Sessions.Count - 1 do
+  begin
     Session := Sessions[J];
-    if not Session.Active then Continue;
-{$ENDIF}
-    for I := 0 to Session.DatabaseCount - 1 do begin
+    if not Session.Active then
+      Continue;
+    {$ENDIF}
+    for I := 0 to Session.DatabaseCount - 1 do
+    begin
       with Session.Databases[I] do
-        if Connected and not IsSQLBased then begin
-          for L := 0 to DataSetCount - 1 do begin
+        if Connected and not IsSQLBased then
+        begin
+          for L := 0 to DataSetCount - 1 do
+          begin
             if DataSets[L].Active then
               DbiSaveChanges(DataSets[L].Handle);
           end;
         end;
     end;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
   end;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 {$IFNDEF WIN32}
 type
-  TDbiGetExactRecordCount = function (hCursor: hDBICur;
+  TDbiGetExactRecordCount = function(hCursor: hDBICur;
     var iRecCount: Longint): DbiResult;
 
 const
@@ -1358,18 +1474,21 @@ var
   HModule: THandle;
   ErrMode: Cardinal;
 begin
-  if not Assigned(DbiGetExactRecCnt) then begin
+  if not Assigned(DbiGetExactRecCnt) then
+  begin
     ErrMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
     HModule := LoadLibrary('IDAPI01.DLL');
     SetErrorMode(ErrMode);
-    if HModule >= HINSTANCE_ERROR then begin
+    if HModule >= HINSTANCE_ERROR then
+    begin
       @DbiGetExactRecCnt := GetProcAddress(HModule, 'DBIGETEXACTRECORDCOUNT');
       FreeLibrary(HModule);
     end;
   end;
   if Assigned(DbiGetExactRecCnt) then
     Result := DbiGetExactRecCnt(hCursor, iRecCount)
-  else Result := DbiGetRecordCount(hCursor, iRecCount);
+  else
+    Result := DbiGetRecordCount(hCursor, iRecCount);
 end;
 {$ENDIF}
 
@@ -1377,23 +1496,25 @@ function DataSetRecordCount(DataSet: TDataSet): Longint;
 var
   IsCount: Boolean;
 begin
-{$IFDEF COMPILER3_UP}
-  if DataSet is TBDEDataSet then begin
-{$ENDIF}
+  {$IFDEF COMPILER3_UP}
+  if DataSet is TBDEDataSet then
+  begin
+  {$ENDIF}
     IsCount := (DbiGetExactRecordCount(TBDEDataSet(DataSet).Handle,
       Result) = DBIERR_NONE) or (DbiGetRecordCount(TBDEDataSet(DataSet).Handle,
       Result) = DBIERR_NONE);
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   end
   else
-    try
-      Result := DataSet.RecordCount;
-      IsCount := True;
-    except
-      IsCount := False;
-    end;
-{$ENDIF}
-  if not IsCount then Result := -1;
+  try
+    Result := DataSet.RecordCount;
+    IsCount := True;
+  except
+    IsCount := False;
+  end;
+  {$ENDIF}
+  if not IsCount then
+    Result := -1;
 end;
 
 function DataSetRecNo(DataSet: TDataSet): Longint;
@@ -1405,12 +1526,13 @@ begin
   if (DataSet <> nil) and DataSet.Active and (DataSet.State in [dsBrowse,
     dsEdit]) then
   begin
-{$IFDEF COMPILER3_UP}
-    if not (DataSet is TBDEDataSet) then begin
+    {$IFDEF COMPILER3_UP}
+    if not (DataSet is TBDEDataSet) then
+    begin
       Result := DataSet.RecNo;
       Exit;
     end;
-{$ENDIF}
+    {$ENDIF}
     if DbiGetCursorProps(TBDEDataSet(DataSet).Handle, FCurProp) <> DBIERR_NONE then
       Exit;
     if (StrComp(FCurProp.szTableType, szParadox) = 0) or
@@ -1420,10 +1542,13 @@ begin
       if DbiGetSeqNo(TBDEDataSet(DataSet).Handle, Result) <> DBIERR_NONE then
         Result := -1;
     end
-    else if StrComp(FCurProp.szTableType, szDBase) = 0 then begin
+    else
+      if StrComp(FCurProp.szTableType, szDBase) = 0 then
+    begin
       DataSet.GetCurrentRecord(nil);
       if DbiGetRecord(TBDEDataSet(DataSet).Handle, dbiNOLOCK, nil, @FRecProp) = DBIERR_NONE
-        then Result := FRecProp.iPhyRecNum;
+        then
+        Result := FRecProp.iPhyRecNum;
     end;
   end;
 end;
@@ -1437,61 +1562,68 @@ begin
   except
     RecNo := -1;
   end;
-  if RecNo >= 0 then begin
+  if RecNo >= 0 then
+  begin
     RecCount := DataSetRecordCount(DataSet);
-    if RecCount >= 0 then Result := Format('%d:%d', [RecNo, RecCount])
-    else Result := IntToStr(RecNo);
+    if RecCount >= 0 then
+      Result := Format('%d:%d', [RecNo, RecCount])
+    else
+      Result := IntToStr(RecNo);
   end
-  else Result := '';
+  else
+    Result := '';
 end;
 
 function TransActive(Database: TDatabase): Boolean;
 var
   Info: XInfo;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   S: hDBISes;
-{$ENDIF}
+  {$ENDIF}
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Result := False;
-  if DbiGetCurrSession(S) <> DBIERR_NONE then Exit;
-{$ENDIF}
+  if DbiGetCurrSession(S) <> DBIERR_NONE then
+    Exit;
+  {$ENDIF}
   Result := (Database.Handle <> nil) and
     (DbiGetTranInfo(Database.Handle, nil, @Info) = DBIERR_NONE) and
     (Info.exState = xsActive);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   DbiSetCurrSession(S);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 function GetBdeDirectory: string;
 const
   Ident = 'DLLPATH';
 var
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Ini: TRegistry;
 const
   BdeKey = 'SOFTWARE\Borland\Database Engine';
-{$ELSE}
+  {$ELSE}
   Ini: TIniFile;
-{$ENDIF}
+  {$ENDIF}
 begin
   Result := '';
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Ini := TRegistry.Create;
   try
     Ini.RootKey := HKEY_LOCAL_MACHINE;
     if Ini.OpenKey(BdeKey, False) then
-      if Ini.ValueExists(Ident) then Result := Ini.ReadString(Ident);
-{$ELSE}
+      if Ini.ValueExists(Ident) then
+        Result := Ini.ReadString(Ident);
+  {$ELSE}
   Ini := TIniFile.Create('WIN.INI');
   try
     Result := Ini.ReadString('IDAPI', Ident, '');
-{$ENDIF}
+  {$ENDIF}
   { Check for multiple directories, use only the first one }
-  if Pos(';', Result) > 0 then Delete(Result, Pos(';', Result), MaxInt);
-  if (Length(Result) > 2) and (Result[Length(Result)] <> '\') then
-    Result := Result + '\';
+    if Pos(';', Result) > 0 then
+      Delete(Result, Pos(';', Result), MaxInt);
+    if (Length(Result) > 2) and (Result[Length(Result)] <> '\') then
+      Result := Result + '\';
   finally
     Ini.Free;
   end;
@@ -1518,16 +1650,20 @@ var
   BatchMove: TBatchMove;
   TablePath: array[0..dbiMaxPathLen] of Char;
 begin
-  if Source = nil then _DBError(SDataSetEmpty);
-  if DestTable.Active then DestTable.Close;
-{$IFDEF WIN32}
+  if Source = nil then
+    _DBError(SDataSetEmpty);
+  if DestTable.Active then
+    DestTable.Close;
+  {$IFDEF WIN32}
   if Source is TDBDataSet then
     DestTable.SessionName := TDBDataSet(Source).SessionName;
-{$ENDIF}
-  if (TableType = ttDefault) then begin
+  {$ENDIF}
+  if (TableType = ttDefault) then
+  begin
     if DestTable.TableType <> ttDefault then
       TableType := DestTable.TableType
-    else if (CompareText(ExtractFileExt(DestTable.TableName), TextExt) = 0) then
+    else
+      if (CompareText(ExtractFileExt(DestTable.TableName), TextExt) = 0) then
       TableType := ttASCII;
   end;
   BatchMove := TBatchMove.Create(Application);
@@ -1539,29 +1675,35 @@ begin
       BatchMove.Destination := DestTable;
       DestTable.TableType := TableType;
       BatchMove.Mappings.Clear;
-      if (DestTable.TableType = ttASCII) then begin
+      if (DestTable.TableType = ttASCII) then
+      begin
         if CompareText(ExtractFileExt(DestTable.TableName), SchemaExt) = 0 then
           DestTable.TableName := ChangeFileExt(DestTable.TableName, TextExt);
         with Source do
-          for I := 0 to FieldCount - 1 do begin
+          for I := 0 to FieldCount - 1 do
+          begin
             if ExportAsciiField(Fields[I]) then
               BatchMove.Mappings.Add(Format('%s=%0:s',
                 [Fields[I].FieldName]));
           end;
         BatchMove.RecordCount := 1;
       end
-      else BatchMove.RecordCount := MaxRecordCount;
+      else
+        BatchMove.RecordCount := MaxRecordCount;
       BatchMove.Execute;
-      if (DestTable.TableType = ttASCII) then begin
+      if (DestTable.TableType = ttASCII) then
+      begin
         { ASCII table always created in "fixed" format with "ascii"
           character set }
-        with BatchMove do begin
+        with BatchMove do
+        begin
           Mode := batAppend;
           RecordCount := MaxRecordCount;
         end;
         S := ChangeFileExt(ExtractFileName(DestTable.TableName), '');
         Path := NormalDir(ExtractFilePath(DestTable.TableName));
-        if Path = '' then begin
+        if Path = '' then
+        begin
           DestTable.Open;
           try
             Check(DbiGetDirectory(DestTable.DBHandle, False, TablePath));
@@ -1574,8 +1716,10 @@ begin
         try
           if AsciiCharSet <> '' then
             WriteString(S, 'CharSet', AsciiCharSet)
-          else WriteString(S, 'CharSet', 'ascii');
-          if AsciiDelimited then begin { change ASCII-file format to CSV }
+          else
+            WriteString(S, 'CharSet', 'ascii');
+          if AsciiDelimited then
+          begin { change ASCII-file format to CSV }
             WriteString(S, 'Filetype', 'VARYING');
             WriteString(S, 'Delimiter', AsciiDelimiter);
             WriteString(S, 'Separator', AsciiSeparator);
@@ -1614,11 +1758,12 @@ procedure ImportDataSet(Source: TBDEDataSet; DestTable: TTable;
 var
   BatchMove: TBatchMove;
 begin
-  if Source = nil then _DBError(SDataSetEmpty);
-{$IFDEF WIN32}
+  if Source = nil then
+    _DBError(SDataSetEmpty);
+  {$IFDEF WIN32}
   if (Source is TDBDataSet) and not Source.Active then
     TDBDataSet(Source).SessionName := DestTable.SessionName;
-{$ENDIF}
+  {$ENDIF}
   BatchMove := TBatchMove.Create(Application);
   try
     StartWait;
@@ -1644,15 +1789,19 @@ var
   Len: Word;
 begin
   Result := nil;
-  if Assigned(Database) and Database.Connected then begin
-    if Database.IsSQLBased then begin
+  if Assigned(Database) and Database.Connected then
+  begin
+    if Database.IsSQLBased then
+    begin
       Check(DbiGetProp(HDBIOBJ(Database.Handle), dbNATIVEHNDL,
         Buffer, BufSize, Len));
       Result := Buffer;
     end
-    else DBError(SLocalDatabase);
+    else
+      DBError(SLocalDatabase);
   end
-  else _DBError(SDatabaseClosed);
+  else
+    _DBError(SDatabaseClosed);
 end;
 
 procedure BdeTranslate(Locale: TLocale; Source, Dest: PChar; ToOem: Boolean);
@@ -1660,9 +1809,12 @@ var
   Len: Cardinal;
 begin
   Len := StrLen(Source);
-  if ToOem then AnsiToNativeBuf(Locale, Source, Dest, Len)
-  else NativeToAnsiBuf(Locale, Source, Dest, Len);
-  if Source <> Dest then Dest[Len] := #0;
+  if ToOem then
+    AnsiToNativeBuf(Locale, Source, Dest, Len)
+  else
+    NativeToAnsiBuf(Locale, Source, Dest, Len);
+  if Source <> Dest then
+    Dest[Len] := #0;
 end;
 
 function TrimMessage(Msg: PChar): PChar;
@@ -1673,10 +1825,14 @@ begin
   Source := Msg;
   Dest := Msg;
   Blank := False;
-  while Source^ <> #0 do begin
-    if Source^ <= ' ' then Blank := True
-    else begin
-      if Blank then begin
+  while Source^ <> #0 do
+  begin
+    if Source^ <= ' ' then
+      Blank := True
+    else
+    begin
+      if Blank then
+      begin
         Dest^ := ' ';
         Inc(Dest);
         Blank := False;
@@ -1686,7 +1842,8 @@ begin
     end;
     Inc(Source);
   end;
-  if (Dest > Msg) and ((Dest - 1)^ = '.') then Dec(Dest);
+  if (Dest > Msg) and ((Dest - 1)^ = '.') then
+    Dec(Dest);
   Dest^ := #0;
   Result := Msg;
 end;
@@ -1700,25 +1857,31 @@ begin
   I := 1;
   DbiGetErrorString(ErrorCode, Msg);
   TrimMessage(Msg);
-  if Msg[0] = #0 then Result := Format(ResStr(SBDEError), [ErrorCode])
-  else Result := StrPas(Msg);
-  while True do begin
+  if Msg[0] = #0 then
+    Result := Format(ResStr(SBDEError), [ErrorCode])
+  else
+    Result := StrPas(Msg);
+  while True do
+  begin
     StrCopy(LastMsg, Msg);
     ErrorCode := DbiGetErrorEntry(I, NativeError, Msg);
     if (ErrorCode = DBIERR_NONE) or
-      (ErrorCode = DBIERR_NOTINITIALIZED) then Break;
+      (ErrorCode = DBIERR_NOTINITIALIZED) then
+      Break;
     TrimMessage(Msg);
     if (Msg[0] <> #0) and (StrComp(Msg, LastMsg) <> 0) then
       Result := Format('%s. %s', [Result, Msg]);
     Inc(I);
   end;
   for I := 1 to Length(Result) do
-    if Result[I] < ' ' then Result[I] := ' ';
+    if Result[I] < ' ' then
+      Result[I] := ' ';
 end;
 
 procedure DataSetShowDeleted(DataSet: TBDEDataSet; Show: Boolean);
 begin
-  with DataSet do begin
+  with DataSet do
+  begin
     CheckBrowseMode;
     Check(DbiValidateProp(hDBIObj(Handle), curSOFTDELETEON, True));
     DisableControls;
@@ -1727,8 +1890,10 @@ begin
     finally
       EnableControls;
     end;
-    if DataSet is TTable then TTable(DataSet).Refresh
-    else begin
+    if DataSet is TTable then
+      TTable(DataSet).Refresh
+    else
+    begin
       CursorPosChanged;
       First;
     end;
@@ -1740,10 +1905,12 @@ var
   FRecProp: RECProps;
 begin
   Result := False;
-  if (DataSet <> nil) and DataSet.Active then begin
+  if (DataSet <> nil) and DataSet.Active then
+  begin
     DataSet.GetCurrentRecord(nil);
     if DbiGetRecord(DataSet.Handle, dbiNOLOCK, nil, @FRecProp) = DBIERR_NONE
-      then Result := FRecProp.bDeleteFlag;
+      then
+      Result := FRecProp.bDeleteFlag;
   end;
 end;
 
@@ -1772,3 +1939,4 @@ finalization
   AddExitProc(ReleaseSaveIndexies);
 {$ENDIF}
 end.
+

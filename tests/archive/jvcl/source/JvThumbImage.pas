@@ -24,13 +24,13 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 
-Changes form the previus Version:
+Changes form the previous Version:
 
 Converted the rotation Functions to use scanlines for faster results
   I have converted the movement from an array of TrgbTriple to an
   an array of bytes. Right now it must rotate the following formats
-  with out big speed differrences and problems pf8bit,pf24bit,pf32bit
-  the pf4bit,pf1bit is been converted to pf8bit.
+  without big speed differences and problems pf8bit,pf24bit,pf32bit
+  the pf4bit,pf1bit is converted to pf8bit.
   The Pfdevice,pfcustom is converted into pf24bit.
   all the color convertion do not revert to the primary state after the
   rotation
@@ -815,9 +815,7 @@ var
   rotatebmp: graphics.Tbitmap;
   i, j: longint;
 begin
-  {
-  Procedure to rotate the image at 180d cw or ccw is the same
-  }
+  //Procedure to rotate the image at 180d cw or ccw is the same
 
   { TODO : Removed the 180 degree rotation and replaced by the mirror(mtBoth) call.
  this let the GDI engine to make the rotation and it is faster than any

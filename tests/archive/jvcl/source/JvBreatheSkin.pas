@@ -28,13 +28,11 @@ Known Issues:
 
 unit JvBreatheSkin;
 
-
-
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Registry, inifiles, jpeg, Menus,
+  StdCtrls, ExtCtrls, Registry, IniFiles, jpeg, Menus,
   JvSlider, JvLabel, JvPcx, JvImage, JvScrollingLabel, JvTypes, JVCLVer;
 
 type
@@ -63,7 +61,6 @@ type
     procedure SetShowHint(const Value: Boolean);
     function GetPopupMenu: TPopupMenu;
     procedure SetPopupMenu(const Value: TPopupMenu);
-  protected
   public
     constructor Create(AOwner: TComponent);
   published
@@ -111,7 +108,6 @@ type
     procedure SetTop(const Value: Integer);
     procedure SetTransparent(const Value: Boolean);
     procedure SetWidth(const Value: Integer);
-  protected
   public
     constructor Create(AOwner: TComponent);
   published
@@ -154,7 +150,6 @@ type
     procedure SetVisible(const Value: Boolean);
     function GetMouseUp: TMouseEvent;
     procedure SetMouseUp(const Value: TMouseEvent);
-  protected
   public
     constructor Create(AOwner: TComponent);
   published
@@ -186,7 +181,6 @@ type
     FRewind: TJvBreatheButton;
     FStop: TJvBreatheButton;
     FMinimize: TJvBreatheButton;
-  protected
   public
     constructor Create(AOwner: TComponent);
     destructor Destroy; override;
@@ -219,7 +213,6 @@ type
     FTotalTime: TJvBreatheLabel;
     FLayer: TJvBreatheLabel;
     FVersion: TJvBreatheLabel;
-  protected
   public
     constructor Create(AOwner: TComponent);
     destructor Destroy; override;
@@ -268,7 +261,6 @@ type
     function GetShow: Boolean;
     procedure SetHint(const Value: string);
     procedure SetShow(const Value: Boolean);
-  protected
   public
     constructor Create(AOwner: TComponent);
     destructor Destroy; override;
@@ -290,7 +282,6 @@ type
     procedure SetHint(const Value: string);
     function GetShow: Boolean;
     procedure SetShow(const Value: Boolean);
-  protected
   public
     constructor Create(AOwner: TComponent);
     destructor Destroy; override;
@@ -303,7 +294,7 @@ type
 
   TJvBreatheSkin = class(TWinControl)
   private
-    //Internal datas
+    // Internal data
     FImg: TImage;
     FSkin: TFileName;
     FBOptions: TJvBreatheOption;
@@ -312,11 +303,11 @@ type
     FLastX: Integer;
     FLastY: Integer;
 
-    //Sliders
+    // Sliders
     FVolume: TJvBreatheVolume;
     FPosition: TJvBreathePosition;
 
-    //Images
+    // Images
     FBack: TBitmap;
     FDeact: TBitmap;
     FInfo: TBItmap;
@@ -332,7 +323,7 @@ type
     FOnSkinLoaded: TNotifyEvent;
     FAboutJVCL: TJVCLAboutInfo;
 
-    //Methods
+    // Methods
     procedure LoadDefault;
     procedure InitBtn(Value: TJvImage);
     procedure SetSkin(const Value: TFileName);
@@ -340,10 +331,10 @@ type
     procedure InitAllBtn;
     procedure DecoupeOver(Value: TJvImage);
     procedure DecoupeOverAll;
-    procedure LoadBtn(ini: TIniFile; Value: TJvImage; prefix: string);
-    procedure LoadSlider(ini: TIniFile; Value: TJvSlider; prefix: string);
-    procedure LoadLabel(ini: TIniFile; Value: TJvBreatheLabel; prefix: string); overload;
-    procedure LoadLabel(ini: TIniFile; Value: TJvBreatheScrollLabel; prefix: string); overload;
+    procedure LoadBtn(Ini: TIniFile; Value: TJvImage; Prefix: string);
+    procedure LoadSlider(Ini: TIniFile; Value: TJvSlider; Prefix: string);
+    procedure LoadLabel(Ini: TIniFile; Value: TJvBreatheLabel; Prefix: string); overload;
+    procedure LoadLabel(Ini: TIniFile; Value: TJvBreatheScrollLabel; Prefix: string); overload;
     procedure OptionsChanged(Sender: TObject);
     function GetOnExit: TNotifyEvent;
     function GetOnForward: TNotifyEvent;
@@ -403,7 +394,6 @@ type
     procedure MoveFormMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure EasyFormDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure EasyFormMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -516,14 +506,14 @@ resourcestring
   RC_DefNothing = '-';
   RC_DefStatus = 'Status';
 
-  ///////////////////////////////////////////////////////////
-  // TJvBreatheSkin
-  ///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+// TJvBreatheSkin
+///////////////////////////////////////////////////////////
 
 procedure TJvBreatheSkin.LoadDefault;
 var
   res: TResourceStream;
-  buf: array[0..255] of Char;
+  buf: array [0..255] of Char;
   st: string;
 
   procedure LoadFromRes(bmp: TBitmap; Value: string);
@@ -557,7 +547,7 @@ var
   end;
 
 begin
-  //Load About text
+  // Load About text
   res := TResourceStream.Create(hInstance, 'infot', RT_RCDATA);
   FTAbout.LoadFromStream(res);
   res.Free;
@@ -573,34 +563,34 @@ begin
   LoadFromResPcx(FOver, 'over');
   LoadFromResPcx(FMask, 'mask');
 
-  //assign back picture
+  // assign back picture
   FImg.Picture.Assign(FBack);
   Width := FImg.Width;
   Height := FImg.Height;
 
-  //load default skin
+  // load default skin
   GetTempPath(255, buf);
   st := buf;
   if st[Length(st)] <> '\' then
     st := st + '\';
 
   res := TResourceStream.Create(hInstance, 'main', RT_RCDATA);
-  res.SaveToFile(st + '1.ini');
-  LoadSkin(st + '1.ini');
-  DeleteFile(st + '1.ini');
+  res.SaveToFile(st + '1.Ini');
+  LoadSkin(st + '1.Ini');
+  DeleteFile(st + '1.Ini');
 end;
 
 {************************************************************}
 
 constructor TJvBreatheSkin.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FSkin := '';
   FBOptions := TJvBreatheOption.Create(Self);
   FBOptions.OnChange := OptionsChanged;
   FTAbout := TStringList.Create;
 
-  //enable painting ;)
+  // enable painting ;)
 
   Parent := TWinControl(AOwner);
 
@@ -617,7 +607,7 @@ begin
   FButtons.Move.OnMouseMove := MoveFormMove;
   FButtons.Move.OnMouseDown := MoveFormDown;
 
-  //Sliders
+  // Sliders
   FVolume := TJvBreatheVolume.Create(Self);
   FVolume.FSlider.Left := 0;
   FVolume.FSlider.Top := 0;
@@ -633,7 +623,7 @@ begin
   FPosition.FSlider.Height := 0;
   FPosition.FSlider.Parent := Self;
 
-  //Images
+  // Images
   FBack := TBitmap.Create;
   FDeact := TBitmap.Create;
   FInfo := TBitmap.Create;
@@ -644,7 +634,7 @@ begin
   FVolRuler := TBitmap.Create;
   FVolThumb := TBitmap.Create;
 
-  //Labels
+  // Labels
   FLabels.Status.Caption := RC_DefStatus;
   FLabels.CurrentTime.Caption := RC_DefTotalTime;
   FLabels.Layer.Caption := RC_DefNothing;
@@ -655,7 +645,7 @@ begin
   FLabels.TotalTime.Caption := RC_DefTotalTime;
   FLabels.TotalInfo.Caption := RC_DefTotalInfo;
 
-  //Load default design
+  // Load default design
   InitAllBtn;
   LoadDefault;
 end;
@@ -667,14 +657,14 @@ var
   h: THandle;
 begin
   try
-    //Reset the region of the window if not destroying
+    // Reset the region of the window if not destroying
     if not (csDestroying in GetParentForm(TControl(Self)).ComponentState) then
     begin
-      //Enable Caption
+      // Enable Caption
       h := GetParentForm(TControl(Self)).Handle;
       SetWindowLong(h, GWL_STYLE, GetWindowLong(h, GWL_STYLE) or WS_CAPTION);
 
-      //Use form region
+      // Use form region
       SetWindowRgn(h, 0, True);
     end;
   except
@@ -698,7 +688,7 @@ begin
   FTAbout.Free;
   FButtons.Free;
 
-  inherited;
+  inherited Destroy;
 end;
 
 {************************************************************}
@@ -735,7 +725,7 @@ end;
 
 procedure TJvBreatheSkin.SetSkin(const Value: TFileName);
 var
-  path: string;
+  Path: string;
 
   procedure LoadFromRes(bmp: TBitmap; Value: string);
   var
@@ -756,62 +746,62 @@ begin
   FSkin := Value;
   if FSkin <> '' then
   begin
-    //Load images
-    path := ExtractFilePath(Value);
-    if FileExists(path + RC_BmpBack) then
-      FBack.LoadFromFile(path + RC_BmpBack)
+    // Load images
+    Path := ExtractFilePath(Value);
+    if FileExists(Path + RC_BmpBack) then
+      FBack.LoadFromFile(Path + RC_BmpBack)
     else
       FBack.Assign(nil);
-    if FileExists(path + RC_BmpDeact) then
-      FDeact.LoadFromFile(path + RC_BmpDeact)
+    if FileExists(Path + RC_BmpDeact) then
+      FDeact.LoadFromFile(Path + RC_BmpDeact)
     else
       FDeact.Assign(nil);
-    if FileExists(path + RC_BmpInfo) then
-      FInfo.LoadFromFile(path + RC_BmpInfo)
+    if FileExists(Path + RC_BmpInfo) then
+      FInfo.LoadFromFile(Path + RC_BmpInfo)
     else
       FInfo.Assign(nil);
-    if FileExists(path + RC_BmpMask) then
-      FMask.LoadFromFile(path + RC_BmpMask)
+    if FileExists(Path + RC_BmpMask) then
+      FMask.LoadFromFile(Path + RC_BmpMask)
     else
       FMask.Assign(nil);
-    if FileExists(path + RC_BmpOver) then
-      FOver.LoadFromFile(path + RC_BmpOver)
+    if FileExists(Path + RC_BmpOver) then
+      FOver.LoadFromFile(Path + RC_BmpOver)
     else
       FOver.Assign(nil);
 
-    if FileExists(path + RC_BmpPosRuler) then
-      FPosRuler.LoadFromFile(path + RC_BmpPosRuler)
+    if FileExists(Path + RC_BmpPosRuler) then
+      FPosRuler.LoadFromFile(Path + RC_BmpPosRuler)
     else
       LoadFromRes(FPosRuler, 'posruler');
-    if FileExists(path + RC_BmpPosThumb) then
-      FPosThumb.LoadFromFile(path + RC_BmpPosThumb)
+    if FileExists(Path + RC_BmpPosThumb) then
+      FPosThumb.LoadFromFile(Path + RC_BmpPosThumb)
     else
       LoadFromRes(FPosThumb, 'posthumb');
-    if FileExists(path + RC_BmpVolRuler) then
-      FVolRuler.LoadFromFile(path + RC_BmpVolRuler)
+    if FileExists(Path + RC_BmpVolRuler) then
+      FVolRuler.LoadFromFile(Path + RC_BmpVolRuler)
     else
       LoadFromRes(FVolRuler, 'volruler');
-    if FileExists(path + RC_BmpThumb) then
-      FVolThumb.LoadFromFile(path + RC_BmpThumb)
+    if FileExists(Path + RC_BmpThumb) then
+      FVolThumb.LoadFromFile(Path + RC_BmpThumb)
     else
       LoadFromRes(FVolThumb, 'volthumb');
 
-    //Assign background
+    // Assign background
     FImg.Picture.Bitmap.Assign(FBack);
 
-    if FileExists(path + RC_InfoFile) then
-      FTAbout.LoadFromFile(path + RC_InfoFile)
+    if FileExists(Path + RC_InfoFile) then
+      FTAbout.LoadFromFile(Path + RC_InfoFile)
     else
       FTAbout.Clear;
 
-    //if AutoSize
+    // if AutoSize
     if FBOptions.AutoSize then
     begin
       Self.Width := FImg.Width;
       Self.Height := FImg.Height;
     end;
 
-    //Load ini file
+    // Load Ini file
     LoadSkin(FSkin);
   end
   else
@@ -822,8 +812,8 @@ end;
 
 procedure TJvBreatheSkin.DecoupeOver(Value: TJvImage);
 var
-  src: Trect;
-  bmp: TBItmap;
+  src: TRect;
+  bmp: TBitmap;
 begin
   src.Left := Value.Left;
   src.Top := Value.Top;
@@ -862,39 +852,39 @@ end;
 
 {************************************************************}
 
-procedure TJvBreatheSkin.LoadBtn(ini: TIniFile; Value: TJvImage; prefix: string);
+procedure TJvBreatheSkin.LoadBtn(Ini: TIniFile; Value: TJvImage; Prefix: string);
 begin
-  Value.Top := ini.ReadInteger(RC_Section, prefix + RC_SufixTop, 0);
-  Value.Left := ini.ReadInteger(RC_Section, prefix + RC_SufixLeft, 0);
-  Value.Width := ini.ReadInteger(RC_Section, prefix + RC_SufixWidth, 0);
-  Value.Height := ini.ReadInteger(RC_Section, prefix + RC_SufixHeight, 0);
+  Value.Top := Ini.ReadInteger(RC_Section, Prefix + RC_SufixTop, 0);
+  Value.Left := Ini.ReadInteger(RC_Section, Prefix + RC_SufixLeft, 0);
+  Value.Width := Ini.ReadInteger(RC_Section, Prefix + RC_SufixWidth, 0);
+  Value.Height := Ini.ReadInteger(RC_Section, Prefix + RC_SufixHeight, 0);
 end;
 
 {************************************************************}
 
-procedure TJvBreatheSkin.LoadSlider(ini: TIniFile; Value: TJvSlider; prefix: string);
+procedure TJvBreatheSkin.LoadSlider(Ini: TIniFile; Value: TJvSlider; Prefix: string);
 begin
-  Value.Horizontal := not (ini.ReadBool(RC_Section, prefix + RC_SufixVertical, False));
-  Value.Top := ini.ReadInteger(RC_Section, prefix + RC_SufixTop, 0);
-  Value.Left := ini.ReadInteger(RC_Section, prefix + RC_SufixLeft, 0);
-  Value.Width := ini.ReadInteger(RC_Section, prefix + RC_SufixWidth, 0);
-  Value.Height := ini.ReadInteger(RC_Section, prefix + RC_SufixHeight, 0);
+  Value.Horizontal := not (Ini.ReadBool(RC_Section, Prefix + RC_SufixVertical, False));
+  Value.Top := Ini.ReadInteger(RC_Section, Prefix + RC_SufixTop, 0);
+  Value.Left := Ini.ReadInteger(RC_Section, Prefix + RC_SufixLeft, 0);
+  Value.Width := Ini.ReadInteger(RC_Section, Prefix + RC_SufixWidth, 0);
+  Value.Height := Ini.ReadInteger(RC_Section, Prefix + RC_SufixHeight, 0);
 end;
 
 {************************************************************}
 
-procedure TJvBreatheSkin.LoadLabel(ini: TIniFile; Value: TJvBreatheLabel; prefix: string);
+procedure TJvBreatheSkin.LoadLabel(Ini: TIniFile; Value: TJvBreatheLabel; Prefix: string);
 var
   i: Integer;
 begin
-  Value.Transparent := ini.ReadBool(RC_Section, prefix + RC_SufixTransp, False);
-  Value.Top := ini.ReadInteger(RC_Section, prefix + RC_SufixTop, 0);
-  Value.Left := ini.ReadInteger(RC_Section, prefix + RC_SufixLeft, 0);
-  Value.Width := ini.ReadInteger(RC_Section, prefix + RC_SufixWidth, 0);
-  Value.Height := ini.ReadInteger(RC_Section, prefix + RC_SufixHeight, 0);
-  Value.Font.Name := ini.ReadString(RC_Section, prefix + RC_SufixFont, 'arial');
+  Value.Transparent := Ini.ReadBool(RC_Section, Prefix + RC_SufixTransp, False);
+  Value.Top := Ini.ReadInteger(RC_Section, Prefix + RC_SufixTop, 0);
+  Value.Left := Ini.ReadInteger(RC_Section, Prefix + RC_SufixLeft, 0);
+  Value.Width := Ini.ReadInteger(RC_Section, Prefix + RC_SufixWidth, 0);
+  Value.Height := Ini.ReadInteger(RC_Section, Prefix + RC_SufixHeight, 0);
+  Value.Font.Name := Ini.ReadString(RC_Section, Prefix + RC_SufixFont, 'arial');
 
-  i := ini.ReadInteger(RC_Section, prefix + RC_SufixFontSize, 8);
+  i := Ini.ReadInteger(RC_Section, Prefix + RC_SufixFontSize, 8);
   with TControlCanvas.Create do
   begin
     Control := Value.FLabel;
@@ -909,24 +899,24 @@ begin
     Free;
   end;
   Value.Font.Size := i;
-  Value.Font.Color := ini.ReadInteger(RC_Section, prefix + RC_SufixColor, clBlack);
-  Value.Color := ini.ReadInteger(RC_Section, prefix + RC_SufixBKColor, clBlack);
+  Value.Font.Color := Ini.ReadInteger(RC_Section, Prefix + RC_SufixColor, clBlack);
+  Value.Color := Ini.ReadInteger(RC_Section, Prefix + RC_SufixBKColor, clBlack);
 end;
 
 {************************************************************}
 
-procedure TJvBreatheSkin.LoadLabel(ini: TIniFile; Value: TJvBreatheScrollLabel; prefix: string);
+procedure TJvBreatheSkin.LoadLabel(Ini: TIniFile; Value: TJvBreatheScrollLabel; Prefix: string);
 var
   i: Integer;
 begin
-  Value.Transparent := ini.ReadBool(RC_Section, prefix + RC_SufixTransp, False);
-  Value.Top := ini.ReadInteger(RC_Section, prefix + RC_SufixTop, 0);
-  Value.Left := ini.ReadInteger(RC_Section, prefix + RC_SufixLeft, 0);
-  Value.Width := ini.ReadInteger(RC_Section, prefix + RC_SufixWidth, 0);
-  Value.Height := ini.ReadInteger(RC_Section, prefix + RC_SufixHeight, 0);
-  Value.Font.Name := ini.ReadString(RC_Section, prefix + RC_SufixFont, 'arial');
+  Value.Transparent := Ini.ReadBool(RC_Section, Prefix + RC_SufixTransp, False);
+  Value.Top := Ini.ReadInteger(RC_Section, Prefix + RC_SufixTop, 0);
+  Value.Left := Ini.ReadInteger(RC_Section, Prefix + RC_SufixLeft, 0);
+  Value.Width := Ini.ReadInteger(RC_Section, Prefix + RC_SufixWidth, 0);
+  Value.Height := Ini.ReadInteger(RC_Section, Prefix + RC_SufixHeight, 0);
+  Value.Font.Name := Ini.ReadString(RC_Section, Prefix + RC_SufixFont, 'arial');
 
-  i := ini.ReadInteger(RC_Section, prefix + RC_SufixFontSize, 8);
+  i := Ini.ReadInteger(RC_Section, Prefix + RC_SufixFontSize, 8);
   with TControlCanvas.Create do
   begin
     Control := Value.FLabel;
@@ -941,56 +931,56 @@ begin
     Free;
   end;
   Value.Font.Size := i;
-  Value.Font.Color := ini.ReadInteger(RC_Section, prefix + RC_SufixColor, clBlack);
-  Value.Color := ini.ReadInteger(RC_Section, prefix + RC_SufixBKColor, clBlack);
+  Value.Font.Color := Ini.ReadInteger(RC_Section, Prefix + RC_SufixColor, clBlack);
+  Value.Color := Ini.ReadInteger(RC_Section, Prefix + RC_SufixBKColor, clBlack);
 end;
 
 {************************************************************}
 
 procedure TJvBreatheSkin.LoadSkin(Value: string);
 var
-  ini: TIniFile;
+  Ini: TIniFile;
 begin
-  ini := TIniFile.Create(Value);
+  Ini := TIniFile.Create(Value);
 
   InitAllBtn;
 
-  LoadBtn(ini, FButtons.FPrev.FButton, RC_PrefixPrevious);
-  LoadBtn(ini, FButtons.FRewind.FButton, RC_PrefixRewind);
-  LoadBtn(ini, FButtons.FStop.FButton, RC_PrefixStop);
-  LoadBtn(ini, FButtons.FPause.FButton, RC_PrefixPause);
-  LoadBtn(ini, FButtons.FPlay.FButton, RC_PrefixPlay);
-  LoadBtn(ini, FButtons.FForward.FButton, RC_PrefixForward);
-  LoadBtn(ini, FButtons.FNext.FButton, RC_PrefixNext);
-  LoadBtn(ini, FButtons.FPlaylist.FButton, RC_PrefixPlaylist);
-  LoadBtn(ini, FButtons.FId3.FButton, RC_PrefixId3);
-  LoadBtn(ini, FButtons.FOpen.FButton, RC_PrefixOpen);
-  LoadBtn(ini, FButtons.FOptions.FButton, RC_PrefixOption);
-  LoadBtn(ini, FButtons.FMinimize.FButton, RC_PrefixMinimize);
-  LoadBtn(ini, FButtons.FMove.FButton, RC_PrefixMove);
-  LoadBtn(ini, FButtons.FExit.FButton, RC_PrefixExit);
+  LoadBtn(Ini, FButtons.FPrev.FButton, RC_PrefixPrevious);
+  LoadBtn(Ini, FButtons.FRewind.FButton, RC_PrefixRewind);
+  LoadBtn(Ini, FButtons.FStop.FButton, RC_PrefixStop);
+  LoadBtn(Ini, FButtons.FPause.FButton, RC_PrefixPause);
+  LoadBtn(Ini, FButtons.FPlay.FButton, RC_PrefixPlay);
+  LoadBtn(Ini, FButtons.FForward.FButton, RC_PrefixForward);
+  LoadBtn(Ini, FButtons.FNext.FButton, RC_PrefixNext);
+  LoadBtn(Ini, FButtons.FPlaylist.FButton, RC_PrefixPlaylist);
+  LoadBtn(Ini, FButtons.FId3.FButton, RC_PrefixId3);
+  LoadBtn(Ini, FButtons.FOpen.FButton, RC_PrefixOpen);
+  LoadBtn(Ini, FButtons.FOptions.FButton, RC_PrefixOption);
+  LoadBtn(Ini, FButtons.FMinimize.FButton, RC_PrefixMinimize);
+  LoadBtn(Ini, FButtons.FMove.FButton, RC_PrefixMove);
+  LoadBtn(Ini, FButtons.FExit.FButton, RC_PrefixExit);
 
   FPosition.FSlider.ImageRuler.Assign(FPosRuler);
   FPosition.FSlider.ImageThumb.Assign(FPosThumb);
   FVolume.FSlider.ImageRuler.Assign(FVolRuler);
   FVolume.FSlider.ImageThumb.Assign(FVolThumb);
-  LoadSlider(ini, FPosition.FSlider, RC_PrefixTbbar);
-  LoadSlider(ini, FVolume.FSlider, RC_PrefixVolbar);
+  LoadSlider(Ini, FPosition.FSlider, RC_PrefixTbbar);
+  LoadSlider(Ini, FVolume.FSlider, RC_PrefixVolbar);
 
-  LoadLabel(ini, FLabels.Version, RC_PrefixVersion);
-  LoadLabel(ini, FLabels.Frequency, RC_PrefixFrequency);
-  LoadLabel(ini, FLabels.BitRate, RC_PrefixBitRate);
-  LoadLabel(ini, FLabels.Layer, RC_PrefixLayer);
-  LoadLabel(ini, FLabels.Status, RC_PrefixInfo);
-  LoadLabel(ini, FLabels.CurrentTime, RC_PrefixTime);
-  LoadLabel(ini, FLabels.TotalTime, RC_PrefixTotalTime);
-  LoadLabel(ini, FLabels.TotalInfo, RC_PrefixTotalInfo);
-  LoadLabel(ini, FLabels.SongName, RC_PrefixSongtitle);
+  LoadLabel(Ini, FLabels.Version, RC_PrefixVersion);
+  LoadLabel(Ini, FLabels.Frequency, RC_PrefixFrequency);
+  LoadLabel(Ini, FLabels.BitRate, RC_PrefixBitRate);
+  LoadLabel(Ini, FLabels.Layer, RC_PrefixLayer);
+  LoadLabel(Ini, FLabels.Status, RC_PrefixInfo);
+  LoadLabel(Ini, FLabels.CurrentTime, RC_PrefixTime);
+  LoadLabel(Ini, FLabels.TotalTime, RC_PrefixTotalTime);
+  LoadLabel(Ini, FLabels.TotalInfo, RC_PrefixTotalInfo);
+  LoadLabel(Ini, FLabels.SongName, RC_PrefixSongtitle);
 
   if not FOver.Empty then
     DecoupeOverAll;
 
-  ini.Free;
+  Ini.Free;
 
   OptionsChanged(Self);
   if Assigned(FOnSkinLoaded) then
@@ -999,7 +989,7 @@ end;
 
 {*******************************************************}
 
-function RegionFromBitmap(image: TBitmap): hrgn;
+function RegionFromBitmap(Image: TBitmap): HRGN;
 var
   rgn1, rgn2: HRGN;
   startx, endx, x, y: Integer;
@@ -1010,7 +1000,7 @@ begin
   rgn1 := 0;
 
   bmp := TBitmap.Create;
-  bmp.Assign(image);
+  bmp.Assign(Image);
   bmp.PixelFormat := pf24Bit;
 
   if (bmp.Height > 0) and (bmp.Width > 0) then
@@ -1046,7 +1036,7 @@ begin
           DeleteObject(rgn2);
         end;
       end;
-    until x >= image.Width;
+    until x >= Image.Width;
   end;
 
   bmp.Free;
@@ -1069,24 +1059,24 @@ begin
     Left := -3;
     Top := -3;
 
-    //Remove Caption
+    // Remove Caption
     h := GetParentForm(TControl(Self)).Handle;
     SetWindowLong(h, GWL_STYLE, GetWindowLong(h, GWL_STYLE) and not WS_CAPTION);
     GetParentForm(Self).ClientWidth := Width;
     GetParentForm(Self).ClientHeight := Height;
     GetParentForm(Self).Invalidate;
 
-    //Use region
+    // Use region
     SetWindowRgn(h, RegionFromBitmap(FMask), True);
   end
   else
   begin
-    //Enable Caption
+    // Enable Caption
     h := GetParentForm(TControl(Self)).Handle;
     SetWindowLong(h, GWL_STYLE, GetWindowLong(h, GWL_STYLE) or WS_CAPTION);
     GetParentForm(Self).Invalidate;
 
-    //Use form region
+    // Use form region
     SetWindowRgn(h, 0, True);
   end;
 end;
@@ -1594,6 +1584,7 @@ end;
 
 constructor TJvBreatheOption.Create(AOwner: TComponent);
 begin
+  inherited Create;
   FAutoSize := True;
   FAutoMove := True;
   FAutoRegion := False;
@@ -1642,6 +1633,7 @@ end;
 
 constructor TJvBreatheLabels.Create(AOwner: TComponent);
 begin
+  inherited Create;
   FStatus := TJvBreatheLabel.Create(AOwner);
   FBitRate := TJvBreatheLabel.Create(AOwner);
   FTime := TJvBreatheLabel.Create(AOwner);
@@ -1666,7 +1658,7 @@ begin
   FTotalTime.Free;
   FLayer.Free;
   FVersion.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 ///////////////////////////////////////////////////////////
@@ -1675,8 +1667,9 @@ end;
 
 constructor TJvBreatheLabel.Create(AOwner: TComponent);
 begin
+  inherited Create;
   FLabel := TJvLabel.Create(AOwner);
-  FLabel.Parent := TwinControl(AOwner);
+  FLabel.Parent := TWinControl(AOwner);
   FLabel.AutoSize := False;
   FLabel.HotTrack := False;
   FLabel.ParentColor := False;
@@ -1813,6 +1806,7 @@ end;
 
 constructor TJvBreatheVolume.Create(AOwner: TComponent);
 begin
+  inherited Create;
   FSlider := TJvSlider.Create(AOwner);
   FSlider.Parent := TWinControl(AOwner);
 end;
@@ -1822,7 +1816,7 @@ end;
 destructor TJvBreatheVolume.Destroy;
 begin
   FSlider.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {************************************************************}
@@ -1887,6 +1881,7 @@ end;
 
 constructor TJvBreathePosition.Create(AOwner: TComponent);
 begin
+  inherited Create;
   FSlider := TJvSlider.Create(AOwner);
   FSlider.Parent := TWinControl(AOwner);
 end;
@@ -1896,7 +1891,7 @@ end;
 destructor TJvBreathePosition.Destroy;
 begin
   FSlider.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {************************************************************}
@@ -1961,6 +1956,7 @@ end;
 
 constructor TJvBreatheButtons.Create(AOwner: TComponent);
 begin
+  inherited Create;
   FPlaylist := TJvBreatheButton.Create(AOwner);
   FPrev := TJvBreatheButton.Create(AOwner);
   FMove := TJvBreatheButton.Create(AOwner);
@@ -1995,7 +1991,7 @@ begin
   FRewind.Free;
   FStop.Free;
   FMinimize.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 ///////////////////////////////////////////////////////////
@@ -2004,6 +2000,7 @@ end;
 
 constructor TJvBreatheButton.Create(AOwner: TComponent);
 begin
+  inherited Create;
   FButton := TJvImage.Create(AOwner);
   FButton.Parent := TWinControl(AOwner);
 end;
@@ -2154,6 +2151,7 @@ end;
 
 constructor TJvBreatheScrollLabel.Create(AOwner: TComponent);
 begin
+  inherited Create;
   FLabel := TJvScrollingLabel.Create(AOwner);
   FLabel.Parent := TWinControl(AOwner);
   FLabel.AutoSize := False;
@@ -2328,3 +2326,4 @@ begin
 end;
 
 end.
+

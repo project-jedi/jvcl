@@ -29,12 +29,13 @@ unit JvBDEReg;
 
 interface
 
-uses Classes,
-{$IFDEF COMPILER6_UP}
+uses
+  Classes,
+  {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
-{$ELSE}
+  {$ELSE}
   LibIntf, DsgnIntf,
-{$ENDIF}
+  {$ENDIF}
   SysUtils, DB, DBTables;
 
 { Register data aware custom controls }
@@ -49,12 +50,30 @@ implementation
 {.$R *.D16}
 {.$ENDIF}
 
-uses TypInfo, JvDBLists, JvxConst, JvDBQBE, JvDBFilter, JvDBIndex, JvDBPrgrss,
+uses
+  TypInfo,
+  JvDBLists, JvxConst, JvDBQBE, JvDBFilter, JvDBIndex, JvDBPrgrss,
   JvxLogin, JvDBSecur, JvQuery, JvVCLUtils, JvDbExcpt, JvDsgn,
-{$IFNDEF DelphiPersonalEdition}JvSelDSFrm, {$ENDIF}{$IFDEF Jv_MIDAS}JvRemLog, {$ENDIF}
-{$IFDEF COMPILER3_UP}JvQBndDlg, {$ELSE}
-{$IFNDEF WIN32}JvQBndDlg, {$ELSE}JvQBindDlg, {$ENDIF}{$ENDIF}
+  {$IFNDEF DelphiPersonalEdition}
+  JvSelDSFrm,
+  {$ENDIF}
+  {$IFDEF Jv_MIDAS}
+  JvRemLog,
+  {$ENDIF}
+  {$IFDEF COMPILER3_UP}
+  JvQBndDlg,
+  {$ELSE}
+  {$IFNDEF WIN32}
+  JvQBndDlg,
+  {$ELSE}
+  JvQBindDlg,
+  {$ENDIF}
+  {$ENDIF}
   Consts, LibHelp, JvMemTable;
+
+const
+  cJvDataControlsPallette = 'Jv Data Controls';
+  cJvDataAccessPallette = 'Jv Data Access';
 
 {$IFDEF WIN32}
 
@@ -87,19 +106,20 @@ var
   S: TSession;
 {$ENDIF}
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if (GetComponent(0) is TDBDataSet) then
     (GetComponent(0) as TDBDataSet).DBSession.GetDatabaseNames(List)
-  else if (GetComponent(0) is TJvSQLScript) then
+  else
+  if (GetComponent(0) is TJvSQLScript) then
   begin
     S := Sessions.FindSession((GetComponent(0) as TJvSQLScript).SessionName);
     if S = nil then
       S := Session;
     S.GetDatabaseNames(List);
   end;
-{$ELSE}
+  {$ELSE}
   Session.GetDatabaseNames(List);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 { TJvTableNameProperty }
@@ -113,20 +133,19 @@ type
 
 procedure TJvTableNameProperty.GetValueList(List: TStrings);
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   (GetComponent(0) as TJvCustomTableItems).DBSession.GetTableNames((GetComponent(0)
     as TJvCustomTableItems).DatabaseName, '', True, False, List);
-{$ELSE}
+  {$ELSE}
   Session.GetTableNames((GetComponent(0) as TJvCustomTableItems).DatabaseName,
     '', True, False, List);
-{$ENDIF WIN32}
+  {$ENDIF WIN32}
 end;
 
 {$IFNDEF COMPILER4_UP}
 
 {$IFNDEF VER90}
 {$IFNDEF VER93}
-
 function EditQueryParams(DataSet: TDataSet; List: TParams): Boolean;
 begin
   Result := JvQBndDlg.EditQueryParams(DataSet, List, hcDQuery);
@@ -150,11 +169,11 @@ var
 begin
   Params := TParams(Pointer(GetOrdValue));
   if Params.Count > 0 then
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     Result := Format('(%s)', [GetPropInfo.Name])
-{$ELSE}
+    {$ELSE}
     Result := Format('(%s)', [GetPropInfo^.Name])
-{$ENDIF}
+    {$ENDIF}
   else
     Result := ResStr(srNone);
 end;
@@ -186,25 +205,25 @@ begin
     List := TParams.Create;
     try
       List.Assign(Params);
-      if EditQueryParams(Query, List){$IFDEF WIN32} and not
-      List.IsEqual(Params){$ENDIF} then
+      if EditQueryParams(Query, List) {$IFDEF WIN32} and
+        not List.IsEqual(Params) {$ENDIF} then
       begin
-{$IFDEF WIN32}
+        {$IFDEF WIN32}
         Modified;
-{$ELSE}
+        {$ELSE}
         if Designer <> nil then
           Designer.Modified;
-{$ENDIF}
+        {$ENDIF}
         Query.Close;
         for I := 0 to PropCount - 1 do
         begin
           Params := TParams(GetOrdProp(GetComponent(I),
             TypInfo.GetPropInfo(GetComponent(I).ClassInfo,
-{$IFDEF WIN32}
+            {$IFDEF WIN32}
             GetPropInfo.Name)));
-{$ELSE}
+           {$ELSE}
             GetPropInfo^.Name)));
-{$ENDIF}
+           {$ENDIF}
           Params.AssignValues(List);
         end;
       end;
@@ -234,13 +253,13 @@ begin
   Security := GetComponent(0) as TJvDBSecurity;
   if Security.Database <> nil then
   begin
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     Security.Database.Session.GetTableNames(Security.Database.DatabaseName,
       '*.*', True, False, List);
-{$ELSE}
+    {$ELSE}
     Session.GetTableNames(Security.Database.DatabaseName, '*.*',
       True, False, List);
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
 
@@ -294,38 +313,38 @@ end;
 
 procedure Register;
 begin
-{$IFDEF COMPILER4_UP}
+  {$IFDEF COMPILER4_UP}
   { Database Components are excluded from the STD SKU }
   if GDAL = LongWord(-16) then
     Exit;
-{$ENDIF}
+  {$ENDIF}
 
   { Data aware components and controls }
-  RegisterComponents('Jv Data Access', [TJvQuery, TJvSQLScript,
+  RegisterComponents(cJvDataAccessPallette, [TJvQuery, TJvSQLScript,
     TJvMemoryTable, TJvQBEQuery, TJvDBFilter, 
       TJvDBSecurity]);
       
-   RegisterComponents('Jv Data Controls', [TJvDBIndexCombo, TJvDBProgress]);
-{$IFDEF Jv_MIDAS}
+  RegisterComponents(cJvDataControlsPallette, [TJvDBIndexCombo, TJvDBProgress]);
+  {$IFDEF Jv_MIDAS}
   { MIDAS components }
-  RegisterComponents('Jv Data Access', [TJvRemoteLogin]);
+  RegisterComponents(cJvDataAccessPallette, [TJvRemoteLogin]);
   RegisterNonActiveX([TJvRemoteLogin], axrComponentOnly);
-{$ENDIF}
+  {$ENDIF}
   { Database lists }
-  RegisterComponents('Jv Data Access', [TJvBDEItems, TJvDatabaseItems,
+  RegisterComponents(cJvDataAccessPallette, [TJvBDEItems, TJvDatabaseItems,
     TJvTableItems]);
-{$IFNDEF CBUILDER}
-{$IFDEF USE_OLD_DBLISTS}
-  RegisterComponents('Jv Data Access', [TJvDatabaseList, TJvLangDrivList,
+  {$IFNDEF CBUILDER}
+  {$IFDEF USE_OLD_DBLISTS}
+  RegisterComponents(cJvDataAccessPallette, [TJvDatabaseList, TJvLangDrivList,
     TJvTableList, TJvStoredProcList, TJvFieldList, TJvIndexList]);
-{$ENDIF USE_OLD_DBLISTS}
-{$ENDIF CBUILDER}
+  {$ENDIF USE_OLD_DBLISTS}
+  {$ENDIF CBUILDER}
 
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   RegisterNonActiveX([TJvQuery, TJvSQLScript, TJvMemoryTable, TJvQBEQuery,
     TJvDBFilter, TJvDBIndexCombo, TJvDBProgress, TJvDBSecurity, TJvBDEItems,
       TJvDatabaseItems, TJvTableItems], axrComponentOnly);
-{$ENDIF COMPILER3_UP}
+  {$ENDIF COMPILER3_UP}
 
   { Property and component editors for data aware controls }
 
@@ -336,32 +355,31 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvDBSecurity,
     'LoginNameField', TLoginNameFieldProperty);
 
-{$IFNDEF DelphiPersonalEdition}
+  {$IFNDEF DelphiPersonalEdition}
   RegisterComponentEditor(TJvMemoryTable, TJvMemoryTableEditor);
-{$ENDIF}
+  {$ENDIF}
 
-{$IFNDEF COMPILER4_UP}
+  {$IFNDEF COMPILER4_UP}
   RegisterPropertyEditor(TypeInfo(TParams), TJvQBEQuery, 'Params',
     TJvParamsProperty);
   RegisterPropertyEditor(TypeInfo(TParams), TJvQuery, 'Macros',
     TJvParamsProperty);
   RegisterPropertyEditor(TypeInfo(TParams), TJvSQLScript, 'Params',
     TJvParamsProperty);
-{$ENDIF}
+  {$ENDIF}
 
   RegisterPropertyEditor(TypeInfo(string), TJvSQLScript, 'DatabaseName',
     TJvDatabaseNameProperty);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   RegisterPropertyEditor(TypeInfo(string), TJvCustomBDEItems, 'SessionName',
     TJvSessionNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvSQLScript, 'SessionName',
     TJvSessionNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBProgress, 'SessionName',
     TJvSessionNameProperty);
-{$ELSE}
+  {$ELSE}
   DbErrorIntercept;
-{$ENDIF WIN32}
-
+  {$ENDIF WIN32}
 end;
 
 end.

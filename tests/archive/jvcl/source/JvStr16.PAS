@@ -54,7 +54,8 @@ implementation
 
 {$IFNDEF WIN32}
 
-uses SysUtils;
+uses
+  SysUtils;
 
 procedure SetLength(var S: string; NewLength: Byte);
 begin
@@ -64,8 +65,10 @@ end;
 procedure SetString(var S: string; Buffer: PChar; Len: Byte);
 begin
   S[0] := Char(Len);
-  if Buffer <> nil then begin
-    if StrLen(Buffer) < Len then Len := StrLen(Buffer);
+  if Buffer <> nil then
+  begin
+    if StrLen(Buffer) < Len then
+      Len := StrLen(Buffer);
     Move(Buffer^, S[1], Len);
   end;
 end;
@@ -80,10 +83,14 @@ var
 begin
   L := Length(S);
   I := 1;
-  while (I <= L) and (S[I] <= ' ') do Inc(I);
-  if I > L then Result := ''
-  else begin
-    while S[L] <= ' ' do Dec(L);
+  while (I <= L) and (S[I] <= ' ') do
+    Inc(I);
+  if I > L then
+    Result := ''
+  else
+  begin
+    while S[L] <= ' ' do
+      Dec(L);
     Result := Copy(S, I, L - I + 1);
   end;
 end;
@@ -94,7 +101,8 @@ var
 begin
   L := Length(S);
   I := 1;
-  while (I <= L) and (S[I] <= ' ') do Inc(I);
+  while (I <= L) and (S[I] <= ' ') do
+    Inc(I);
   Result := Copy(S, I, 255);
 end;
 
@@ -103,7 +111,8 @@ var
   I: Byte;
 begin
   I := Length(S);
-  while (I > 0) and (S[I] <= ' ') do Dec(I);
+  while (I > 0) and (S[I] <= ' ') do
+    Dec(I);
   Result := Copy(S, 1, I);
 end;
 
@@ -113,7 +122,8 @@ var
 begin
   Result := S;
   for I := Length(Result) downto 1 do
-    if Result[I] = '''' then Insert('''', Result, I);
+    if Result[I] = '''' then
+      Insert('''', Result, I);
   Result := '''' + Result + '''';
 end;
 

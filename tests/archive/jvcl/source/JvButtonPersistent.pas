@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvButtonPersistent;
 
-
-
 interface
 
 uses
@@ -63,6 +61,8 @@ type
     procedure AssignTo(Sender: TPersistent); override;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
     constructor Create;
+    // (rom) added because FFont has to be freed
+    destructor Destroy; override;
   published
     property Enabled: Boolean read FEnabled write SetEnabled default True;
     property Visible: Boolean read FVisible write SetVisible default True;
@@ -75,6 +75,26 @@ type
   end;
 
 implementation
+
+{***********************************************}
+
+constructor TJvButtonPersistent.Create;
+begin
+  inherited Create;
+  FFont := TFont.Create;
+  FEnabled := True;
+  FFlat := True;
+  FVisible := True;
+  FFontEffect := True;
+end;
+
+{***********************************************}
+
+destructor TJvButtonPersistent.Destroy;
+begin
+  FFont.Free;
+  inherited Destroy;
+end;
 
 {***********************************************}
 
@@ -93,7 +113,8 @@ begin
       TJvButton(Sender).HotTrackFont.Assign(FFont);
     end;
   end
-  else if Sender is TSpeedButton then
+  else
+  if Sender is TSpeedButton then
   begin
     TSpeedButton(Sender).Enabled := Enabled;
     TSpeedButton(Sender).Visible := Visible;
@@ -119,78 +140,91 @@ end;
 
 {***********************************************}
 
-constructor TJvButtonPersistent.Create;
-begin
-  FFont := TFont.Create;
-  FEnabled := True;
-  FFlat := True;
-  FVisible := True;
-  FFontEffect := True;
-end;
-
-{***********************************************}
-
 procedure TJvButtonPersistent.SetCaption(const Value: string);
 begin
-  // (rom) needs better handling with "if FCaption <> Value then"
-  FCaption := Value;
-  Changed;
+  if FCaption <> Value then
+  begin
+    FCaption := Value;
+    Changed;
+  end;
 end;
 
 {***********************************************}
 
 procedure TJvButtonPersistent.SetEnabled(const Value: Boolean);
 begin
-  FEnabled := Value;
-  Changed;
+  if FEnabled <> Value then
+  begin
+    FEnabled := Value;
+    Changed;
+  end;
 end;
 
 {***********************************************}
 
 procedure TJvButtonPersistent.SetFlat(const Value: Boolean);
 begin
-  FFlat := Value;
-  Changed;
+  if FFlat <> Value then
+  begin
+    FFlat := Value;
+    Changed;
+  end;
 end;
 
 {***********************************************}
 
 procedure TJvButtonPersistent.SetFont(const Value: TFont);
 begin
-  FFont.Assign(Value);
-  Changed;
+  if FFont <> Value then
+  begin
+    FFont.Assign(Value);
+    Changed;
+  end;
 end;
 
 {***********************************************}
 
 procedure TJvButtonPersistent.SetFontEffect(const Value: Boolean);
 begin
-  FFontEffect := Value;
-  Changed;
+  if FFontEffect <> Value then
+  begin
+    FFontEffect := Value;
+    Changed;
+  end;
 end;
 
 {***********************************************}
 
 procedure TJvButtonPersistent.SetHint(const Value: string);
 begin
-  FHint := Value;
-  Changed;
+  if FHint <> Value then
+  begin
+    FHint := Value;
+    Changed;
+  end;
 end;
 
 {***********************************************}
 
 procedure TJvButtonPersistent.SetShowHint(const Value: Boolean);
 begin
-  FShowHint := Value;
-  Changed;
+  if FShowHint <> Value then
+  begin
+    FShowHint := Value;
+    Changed;
+  end;
 end;
 
 {***********************************************}
 
 procedure TJvButtonPersistent.SetVisible(const Value: Boolean);
 begin
-  FVisible := Value;
-  Changed;
+  if FVisible <> Value then
+  begin
+    FVisible := Value;
+    Changed;
+  end;
 end;
 
 end.
+

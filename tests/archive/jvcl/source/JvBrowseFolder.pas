@@ -32,7 +32,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ShellAPI, Shlobj, Activex, JvBaseDlg, JvFunctions;
+  ShellAPI, ShlObj, ActiveX,
+  JvBaseDlg, JvFunctions;
 
 type
   TJvBrowseAcceptChange = procedure(Sender: TObject; const NewFolder: string; var
@@ -84,17 +85,17 @@ type
     // (p3) updates the status text. NOTE: doesn't work if odNewDialogStyle is true (MS limitation)!!!
     procedure UpdateStatusText(const HWND: THandle; const Text: string);
     procedure SetPath(const HWND: THandle; const Path: string);
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
-    procedure WMShowWindow(var Message: TMessage); message WM_SHOWWINDOW;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure WMShowWindow(var Msg: TMessage); message WM_SHOWWINDOW;
   protected
     function GetOwnerHandle: THandle;
-    procedure MainWndProc(var Message: TMessage);
+    procedure MainWndProc(var Msg: TMessage);
     procedure HookDialog;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure DefaultHandler(var Message); override;
+    procedure DefaultHandler(var Msg); override;
     procedure SetStatusText(Value: string);
     procedure SetOkEnabled(Value: Boolean);
     property LastPidl: TItemIDList read FPidl write FPidl;
@@ -120,26 +121,31 @@ type
   end;
 
 implementation
+
 uses
   JvTypes;
 
 const
-  BIF_BROWSEINCLUDEURLS = $0080;
+  BIF_BROWSEINCLUDEURLS  = $0080;
   BIF_BROWSEINCLUDEFILES = $4000;
-  BIF_SHAREABLE = $8000;
-  BIF_RETURNFSANCESTORS = $0008;
-  BIF_EDITBOX = $0010;
-  BIF_VALIDATE = $0020;
-  BIF_NEWDIALOGSTYLE = $0040;
+  BIF_SHAREABLE          = $8000;
+  BIF_RETURNFSANCESTORS  = $0008;
+  BIF_EDITBOX            = $0010;
+  BIF_VALIDATE           = $0020;
+  BIF_NEWDIALOGSTYLE     = $0040;
 
-  {**************************************************}
+{**************************************************}
 
 constructor TJvBrowseFolder.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOptions := [odStatusAvailable, odNewDialogStyle];
   FOwnerHandle := GetOwnerHandle;
-  FObjectInstance := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(MainWndProc);
+  {$IFDEF COMPILER6_UP}
+  FObjectInstance := Classes.MakeObjectInstance(MainWndProc);
+  {$ELSE}
+  FObjectInstance := MakeObjectInstance(MainWndProc);
+  {$ENDIF}
 end;
 
 procedure SetDialogPos(AParentHandle, AWndHandle: THandle;
@@ -205,19 +211,19 @@ var
   S: string;
   Hnd: THandle;
 begin
-  if (odStatusAvailable in FOptions) then
+  if odStatusAvailable in FOptions then
   begin
     if StatusText <> '' then
       S := StatusText
     else
       S := Text;
-    hnd := GetDlgItem(HWND, cStatusLabel);
-    if (hnd <> 0) then
+    Hnd := GetDlgItem(HWND, cStatusLabel);
+    if Hnd <> 0 then
     begin
       if StatusText = '' then
       begin
         GetWindowRect(HWND, R);
-        GetWindowRect(hnd, R2);
+        GetWindowRect(Hnd, R2);
         S := MinimizeName(S, Application.MainForm.Canvas, (R.Right - R.Left) -
           (R2.Left - R.Left) * 2 - 8);
       end;
@@ -229,12 +235,12 @@ end;
 {**************************************************}
 // (p3) incorrectly declared as a function before
 
-procedure lpfnBrowseProc(HWND: THandle; uMsg: Integer; lParam: LPARAM;
+procedure lpfnBrowseProc(hWnd: THandle; uMsg: Integer; lParam: LPARAM;
   lpData: LPARAM); stdcall;
 var
   Accept: Boolean;
   FBrowser: TJvBrowseFolder;
-  FBuff: array[0..MAX_PATH] of Char;
+  FBuff: array [0..MAX_PATH] of Char;
   APath: string;
 begin
   { TODO : Need to react on BFFM_IUNKNOWN (for custom filtering) and
@@ -243,7 +249,7 @@ begin
   FBrowser := TJvBrowseFolder(lpData);
   with FBrowser do
   begin
-    FDialogHandle := HWND;
+    FDialogHandle := hWnd;
     case uMsg of
       BFFM_INITIALIZED:
         begin
@@ -302,18 +308,18 @@ end;
 
 function TJvBrowseFolder.Execute: Boolean;
 const
-  CSIDLLocations: array[TFromDirectory] of Cardinal =
+  CSIDLLocations: array [TFromDirectory] of Cardinal =
   (0, CSIDL_BITBUCKET, CSIDL_CONTROLS, CSIDL_DESKTOP,
     CSIDL_DESKTOPDIRECTORY, CSIDL_DRIVES, CSIDL_FONTS, CSIDL_NETHOOD,
     CSIDL_NETWORK, CSIDL_PERSONAL,
     CSIDL_PRINTERS, CSIDL_PROGRAMS, CSIDL_RECENT, CSIDL_SENDTO, CSIDL_STARTMENU,
     CSIDL_STARTUP, CSIDL_TEMPLATES);
 var
-  Path: array[0..MAX_PATH] of Char;
-  dspName: array[0..MAX_PATH] of Char;
+  Path: array [0..MAX_PATH] of Char;
+  dspName: array [0..MAX_PATH] of Char;
   BrowseInfo: TBrowseInfo;
   pidl: PItemIDList;
-  ShellVersion: Integer;
+  ShellVersion: Cardinal;
 begin
   FDialogHandle := 0;
   FSizeInitialized := False;
@@ -323,7 +329,7 @@ begin
   if ShellVersion < $00040000 then
     raise EJVCLException.Create('Shell not compatible with BrowseForFolder');
 
-  ZeroMemory(@BrowseInfo, SizeOf(BrowseInfo));
+  FillChar(BrowseInfo, SizeOf(BrowseInfo), #0);
 
   if odBrowseForComputer in FOptions then
     BrowseInfo.ulFlags := BIF_BROWSEFORCOMPUTER;
@@ -396,9 +402,11 @@ begin
     F := nil;
   if F <> nil then
     Result := F.Handle
-  else if Assigned(Owner) and (Owner is TWinControl) then
+  else
+  if Assigned(Owner) and (Owner is TWinControl) then
     Result := (Owner as TWinControl).Handle
-  else if (Screen <> nil) and (Screen.ActiveCustomForm <> nil) then
+  else
+  if (Screen <> nil) and (Screen.ActiveCustomForm <> nil) then
     Result := Screen.ActiveCustomForm.Handle
   else
     Result := GetFocus;
@@ -412,29 +420,33 @@ end;
 destructor TJvBrowseFolder.Destroy;
 begin
   if FObjectInstance <> nil then
-    {$IFDEF COMPILER6_UP}Classes.{$ENDIF}FreeObjectInstance(FObjectInstance);
+    {$IFDEF COMPILER6_UP}
+    Classes.FreeObjectInstance(FObjectInstance);
+    {$ELSE}
+    FreeObjectInstance(FObjectInstance);
+    {$ENDIF}
   inherited Destroy;
 end;
 
-procedure TJvBrowseFolder.MainWndProc(var Message: TMessage);
+procedure TJvBrowseFolder.MainWndProc(var Msg: TMessage);
 begin
   try
-    Dispatch(Message);
+    Dispatch(Msg);
   except
     Application.HandleException(Self);
   end;
 end;
 
-procedure TJvBrowseFolder.DefaultHandler(var Message);
+procedure TJvBrowseFolder.DefaultHandler(var Msg);
 begin
   if FDialogHandle <> 0 then
-    with TMessage(Message) do
+    with TMessage(Msg) do
       Result := CallWindowProc(FDefWndProc, FDialogHandle, Msg, WParam, LParam)
   else
-    inherited DefaultHandler(Message);
+    inherited DefaultHandler(Msg);
 end;
 
-procedure TJvBrowseFolder.WMSize(var Message: TWMSize);
+procedure TJvBrowseFolder.WMSize(var Msg: TWMSize);
 begin
   inherited;
   if FSizeInitialized then
@@ -452,7 +464,7 @@ begin
       Longint(FObjectInstance)));
 end;
 
-procedure TJvBrowseFolder.WMShowWindow(var Message: TMessage);
+procedure TJvBrowseFolder.WMShowWindow(var Msg: TMessage);
 begin
   { If the dialog isn't resized, we won't get a WM_SIZE message. Thus we
     respond to the WM_SHOWWINDOW message

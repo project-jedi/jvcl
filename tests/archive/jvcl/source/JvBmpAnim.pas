@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -33,74 +33,70 @@ unit JvBmpAnim;
 
 interface
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls,  CommCtrl,
-  ExtCtrls,ImgList, JvComponent;
+  SysUtils, Windows, Messages, Classes, Graphics, Controls, CommCtrl,
+  ExtCtrls, ImgList,
+  JvComponent;
 
 type
-  TJvAnimateDirection=(tdForward,tdBack,tdFwdBack,tdBackFwd);
+  TJvAnimateDirection = (tdForward, tdBack, tdFwdBack, tdBackFwd);
+
   TJvCustomBmpAnimator = class(TJvGraphicControl)
   private
     { Private declarations }
-    FImageList:TImageList;
-    FTimer:TTimer;
-    FIndex:integer;
-    FActive:boolean;
-    FWidth,FHeight:integer;
-    FNumGlyphs:integer;
-    FSpeed:integer;
-    FTransparent:boolean;
-    FAutoSize:boolean;
-    FStart,FStop:integer;
-    FPosition:integer;
-    FColor:TColor;
-    FDirection:TJvAnimateDirection;
-    FGoingUp:boolean;
-    FCenter:boolean;
-    FImageChangeLink:TChangeLink;
-    procedure SetCenter(Value:boolean);
-    procedure SeTJvAnimateDirection(Value:TJvAnimateDirection);
-    procedure SetColor(Value:TColor);
-    procedure SetPosition(Value:integer);
-    procedure SetStart(Value:integer);
-    procedure SetStop(Value:integer);
-    procedure SetTransparent(Value:boolean);
-    procedure SetImage(Value:TImagelist);
-    procedure SetActive(Value:boolean);
-    procedure SetNumGlyphs(Value:integer);
-    procedure SetSpeed(Value:integer);
-    procedure TimerEvent(Sender:TObject);
-    procedure DoChange(Sender:TObject);
+    FImageList: TImageList;
+    FTimer: TTimer;
+    FIndex: Integer;
+    FActive: Boolean;
+    FWidth: Integer;
+    FHeight: Integer;
+    FNumGlyphs: Integer;
+    FSpeed: Integer;
+    FTransparent: Boolean;
+    FAutoSize: Boolean;
+    FStart, FStop: Integer;
+    FPosition: Integer;
+    FColor: TColor;
+    FDirection: TJvAnimateDirection;
+    FGoingUp: Boolean;
+    FCenter: Boolean;
+    FImageChangeLink: TChangeLink;
+    procedure SetCenter(Value: Boolean);
+    procedure SeTJvAnimateDirection(Value: TJvAnimateDirection);
+    procedure SetColor(Value: TColor);
+    procedure SetPosition(Value: Integer);
+    procedure SetStart(Value: Integer);
+    procedure SetStop(Value: Integer);
+    procedure SetTransparent(Value: Boolean);
+    procedure SetImage(Value: TImagelist);
+    procedure SetActive(Value: Boolean);
+    procedure SetNumGlyphs(Value: Integer);
+    procedure SetSpeed(Value: Integer);
+    procedure TimerEvent(Sender: TObject);
+    procedure DoChange(Sender: TObject);
   protected
-    { Protected declarations }
     procedure Paint; override;
-{$IFDEF COMPILER6_UP}
-    procedure SetAutoSize(Value:boolean);override;
-    property  AutoSize:boolean read FAutoSize write SetAutoSize default False;
-{$ENDIF}
-    procedure Notification(AComponent:TComponent;aOperation:TOperation);override;
-    property  Centered:boolean read FCenter write SetCenter;
-    property  Color:TColor read FColor write SetColor default clBtnFace;
-    property  Direction: TJvAnimateDirection read FDirection write SeTJvAnimateDirection;
-    property  Active:boolean read FActive write SetActive default False;
-    property  ImageList:TImagelist read FImageList write SetImage;
-    property  NumFrames:integer read FNumGlyphs write SetNumGlyphs default 0;
-    property  Position:integer read FPosition write SetPosition default 0;
-    property  Speed:integer read FSpeed write SetSpeed default 100;
-    property  Min:integer read FStart write SetStart default 0;
-    property  Max:integer read FStop write SetStop default 0;
-    property  Transparent:boolean read FTransparent write SetTransparent default False;
+    {$IFDEF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean); override;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
+    {$ENDIF}
+    procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
+    property Centered: Boolean read FCenter write SetCenter;
+    property Color: TColor read FColor write SetColor default clBtnFace;
+    property Direction: TJvAnimateDirection read FDirection write SeTJvAnimateDirection;
+    property Active: Boolean read FActive write SetActive default False;
+    property ImageList: TImagelist read FImageList write SetImage;
+    property NumFrames: Integer read FNumGlyphs write SetNumGlyphs default 0;
+    property Position: Integer read FPosition write SetPosition default 0;
+    property Speed: Integer read FSpeed write SetSpeed default 100;
+    property Min: Integer read FStart write SetStart default 0;
+    property Max: Integer read FStop write SetStop default 0;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
   public
-    { Public declarations }
-    constructor Create(AOwner:TComponent);override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    { Published declarations }
   end;
 
-  TJvBmpAnimator=class(TJvCustomBmpAnimator)
-  private
-  protected
-  public
+  TJvBmpAnimator = class(TJvCustomBmpAnimator)
   published
     property Active;
     property Align;
@@ -131,10 +127,9 @@ type
     property OnDragOver;
   end;
 
-
 implementation
 
-constructor TJvCustomBmpAnimator.Create(AOwner:TComponent);
+constructor TJvCustomBmpAnimator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FImageChangeLink := TChangeLink.Create;
@@ -161,7 +156,7 @@ begin
   FGoingUp := True;
 end;
 
-procedure TJvCustomBmpAnimator.DoChange(Sender:TObject);
+procedure TJvCustomBmpAnimator.DoChange(Sender: TObject);
 begin
   Invalidate;
 end;
@@ -174,51 +169,53 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomBmpAnimator.TimerEvent(Sender:TObject);
-var dX,dY:integer;
+procedure TJvCustomBmpAnimator.TimerEvent(Sender: TObject);
+var
+  dX, dY: Integer;
 begin
-  if not Assigned(FImageList) then Exit;
-    
+  if not Assigned(FImageList) then
+    Exit;
+
   if not Active then
     FIndex := FPosition
   else
     case FDirection of
       tdForward:
-      begin
-        Inc(FIndex);
-        if (FIndex > FNumGlyphs) or (FIndex > FStop) then
-          FIndex := FStart;
-      end;
-      tdBack:
-      begin
-        Dec(FIndex);
-        if (FIndex < 0) or (FIndex < FStart) then
-          FIndex := FStop;
-      end;
-
-      tdFwdBack,tdBackFwd:
-      begin
-        if FGoingUp then
         begin
-          if (FIndex >= FStop) then
-          begin
-            FGoingUp := False;
-            Dec(FIndex);
-          end
-          else
-            Inc(FIndex);
-        end
-        else
-        begin
-          if (FIndex <= FStart) then
-          begin
-            FGoingUp := True;
-            Inc(FIndex);
-          end
-          else
-            Dec(Findex);
+          Inc(FIndex);
+          if (FIndex > FNumGlyphs) or (FIndex > FStop) then
+            FIndex := FStart;
         end;
-      end;
+      tdBack:
+        begin
+          Dec(FIndex);
+          if (FIndex < 0) or (FIndex < FStart) then
+            FIndex := FStop;
+        end;
+
+      tdFwdBack, tdBackFwd:
+        begin
+          if FGoingUp then
+          begin
+            if (FIndex >= FStop) then
+            begin
+              FGoingUp := False;
+              Dec(FIndex);
+            end
+            else
+              Inc(FIndex);
+          end
+          else
+          begin
+            if FIndex <= FStart then
+            begin
+              FGoingUp := True;
+              Inc(FIndex);
+            end
+            else
+              Dec(FIndex);
+          end;
+        end;
     end;
 
   if FCenter then
@@ -237,48 +234,54 @@ begin
     Canvas.Brush.Color := FColor;
     Canvas.FillRect(ClientRect);
   end;
-  FImageList.Draw(Canvas,dX,dY,FIndex);
+  FImageList.Draw(Canvas, dX, dY, FIndex);
 end;
 
-
-procedure TJvCustomBmpAnimator.SetStart(Value:integer);
+procedure TJvCustomBmpAnimator.SetStart(Value: Integer);
 begin
   if FStart <> Value then
   begin
     FStart := Value;
-    if FStart > FStop then FStart := FStop;
-    if FStart >= FNumGlyphs then FStart := FNumGlyphs-1;
-    if FStart < 0 then FStart := 0;
+    if FStart > FStop then
+      FStart := FStop;
+    if FStart >= FNumGlyphs then
+      FStart := FNumGlyphs - 1;
+    if FStart < 0 then
+      FStart := 0;
   end;
 end;
 
-procedure TJvCustomBmpAnimator.SetStop(Value:integer);
+procedure TJvCustomBmpAnimator.SetStop(Value: Integer);
 begin
   if FStop <> Value then
   begin
     FStop := Value;
-    if FStop < FStart then FStop := FStart;
-    if FStop >= FNumGlyphs then FStop := FNumGlyphs-1;
-    if FStop < 0 then FStop := 0;
+    if FStop < FStart then
+      FStop := FStart;
+    if FStop >= FNumGlyphs then
+      FStop := FNumGlyphs - 1;
+    if FStop < 0 then
+      FStop := 0;
   end;
 end;
 
 {$IFDEF COMPILER6_UP}
-procedure TJvCustomBmpAnimator.SetAutoSize(Value:boolean);
+
+procedure TJvCustomBmpAnimator.SetAutoSize(Value: Boolean);
 begin
   if FAutoSize <> Value then
   begin
     FAutoSize := Value;
     if FAutoSize and Assigned(FImageList) then
     begin
-      Width := FimageList.Width;
+      Width := FImageList.Width;
       Height := FImageList.Height;
     end;
   end;
 end;
 {$ENDIF}
 
-procedure TJvCustomBmpAnimator.SetTransparent(Value:boolean);
+procedure TJvCustomBmpAnimator.SetTransparent(Value: Boolean);
 begin
   if FTransparent <> Value then
   begin
@@ -287,18 +290,17 @@ begin
   end;
 end;
 
-
-procedure TJvCustomBmpAnimator.Notification(AComponent:TComponent;aOperation:TOperation);
+procedure TJvCustomBmpAnimator.Notification(AComponent: TComponent; AOperation: TOperation);
 begin
-  inherited Notification(AComponent,AOperation);
+  inherited Notification(AComponent, AOperation);
   if (AOperation = opRemove) and (AComponent = FImageList) then
   begin
     SetImage(nil);
-    Active := false;
+    Active := False;
   end;
 end;
 
-procedure TJvCustomBmpAnimator.SetImage(Value:TImagelist);
+procedure TJvCustomBmpAnimator.SetImage(Value: TImagelist);
 begin
   if FImagelist <> nil then
   begin
@@ -313,11 +315,11 @@ begin
     SetNumGlyphs(FImageList.Count);
   end
   else
-    Active := false;
+    Active := False;
   Repaint;
 end;
 
-procedure TJvCustomBmpAnimator.SetActive(Value:boolean);
+procedure TJvCustomBmpAnimator.SetActive(Value: Boolean);
 begin
 {  if not Assigned(FImageList) then
     Value := False;}
@@ -330,18 +332,16 @@ begin
   Repaint;
 end;
 
-
-procedure TJvCustomBmpAnimator.SetNumGlyphs(Value:integer);
+procedure TJvCustomBmpAnimator.SetNumGlyphs(Value: Integer);
 begin
   if FNumGlyphs <> Value then
   begin
     FNumGlyphs := Value;
-    SetStop(FNumGlyphs-1);
+    SetStop(FNumGlyphs - 1);
   end;
 end;
 
-
-procedure TJvCustomBmpAnimator.SetSpeed(Value:integer);
+procedure TJvCustomBmpAnimator.SetSpeed(Value: Integer);
 begin
   if FSpeed <> Value then
   begin
@@ -350,7 +350,7 @@ begin
   end;
 end;
 
-procedure TJvCustomBmpAnimator.SetCenter(Value:boolean);
+procedure TJvCustomBmpAnimator.SetCenter(Value: Boolean);
 begin
   if FCenter <> value then
   begin
@@ -359,26 +359,27 @@ begin
   end;
 end;
 
-procedure TJvCustomBmpAnimator.SeTJvAnimateDirection(Value:TJvAnimateDirection);
+procedure TJvCustomBmpAnimator.SeTJvAnimateDirection(Value: TJvAnimateDirection);
 begin
   if FDirection <> Value then
   begin
     FDirection := Value;
     case FDirection of
-      tdForward,tdFwdBack: begin
-        FGoingUp := True;
-        FIndex := FStart;
-      end;
-      tdBack,tdBackFwd:
-      begin
-        FGoingUp := False;
-        FIndex := FStop;
-      end;
+      tdForward, tdFwdBack:
+        begin
+          FGoingUp := True;
+          FIndex := FStart;
+        end;
+      tdBack, tdBackFwd:
+        begin
+          FGoingUp := False;
+          FIndex := FStop;
+        end;
     end;
   end;
 end;
 
-procedure TJvCustomBmpAnimator.SetColor(Value:TColor);
+procedure TJvCustomBmpAnimator.SetColor(Value: TColor);
 begin
   if FColor <> Value then
   begin
@@ -387,16 +388,17 @@ begin
   end;
 end;
 
-procedure TJvCustomBmpAnimator.SetPosition(Value:integer);
+procedure TJvCustomBmpAnimator.SetPosition(Value: Integer);
 begin
   FPosition := Value;
-  if FPosition > FNumGlyphs-1 then
-    FPosition := FNumGlyphs-1;
+  if FPosition > FNumGlyphs - 1 then
+    FPosition := FNumGlyphs - 1;
   Invalidate;
 end;
 
 procedure TJvCustomBmpAnimator.Paint;
-var dX,dY:integer;
+var
+  dX, dY: Integer;
 begin
   if Assigned(FImagelist) then
   begin
@@ -415,10 +417,11 @@ begin
       Canvas.Brush.Color := FColor;
       Canvas.FillRect(ClientRect);
     end;
-    if not Active then FIndex := FPosition;
-    FImageList.Draw(Canvas,dX,dY,FIndex)
+    if not Active then
+      FIndex := FPosition;
+    FImageList.Draw(Canvas, dX, dY, FIndex)
   end;
-  if (csDesigning in ComponentState) then
+  if csDesigning in ComponentState then
     with Canvas do
     begin
       Brush.Color := clBlack;
@@ -427,3 +430,4 @@ begin
 end;
 
 end.
+

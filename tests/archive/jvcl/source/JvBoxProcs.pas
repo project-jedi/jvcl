@@ -12,7 +12,7 @@ The Original Code is: JvJvBoxProcs.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,14 +25,12 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
-
 unit JvBoxProcs;
-
 
 interface
 
-uses Classes, Controls, StdCtrls, JvxCtrls;
+uses
+  Classes, Controls, StdCtrls, JvxCtrls;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);
 procedure BoxMoveAllItems(SrcList, DstList: TWinControl);
@@ -48,31 +46,42 @@ function BoxCanDropItem(List: TWinControl; X, Y: Integer;
 
 implementation
 
-uses {$IFDEF WIN32} Windows {$ELSE} WinTypes, WinProcs {$ENDIF}, Graphics;
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  Graphics;
 
 function BoxItems(List: TWinControl): TStrings;
 begin
   if List is TCustomListBox then
     Result := TCustomListBox(List).Items
-  else if List is TJvxCustomListBox then
+  else
+  if List is TJvxCustomListBox then
     Result := TJvxCustomListBox(List).Items
-  else Result := nil;
+  else
+    Result := nil;
 end;
 
 function BoxGetSelected(List: TWinControl; Index: Integer): Boolean;
 begin
   if List is TCustomListBox then
     Result := TCustomListBox(List).Selected[Index]
-  else if List is TJvxCustomListBox then
+  else
+  if List is TJvxCustomListBox then
     Result := TJvxCustomListBox(List).Selected[Index]
-  else Result := False;
+  else
+    Result := False;
 end;
 
 procedure BoxSetSelected(List: TWinControl; Index: Integer; Value: Boolean);
 begin
   if List is TCustomListBox then
     TCustomListBox(List).Selected[Index] := Value
-  else if List is TJvxCustomListBox then
+  else
+  if List is TJvxCustomListBox then
     TJvxCustomListBox(List).Selected[Index] := Value;
 end;
 
@@ -80,9 +89,11 @@ function BoxGetItemIndex(List: TWinControl): Integer;
 begin
   if List is TCustomListBox then
     Result := TCustomListBox(List).ItemIndex
-  else if List is TJvxCustomListBox then
+  else
+  if List is TJvxCustomListBox then
     Result := TJvxCustomListBox(List).ItemIndex
-  else Result := LB_ERR;
+  else
+    Result := LB_ERR;
 end;
 
 {$IFNDEF WIN32}
@@ -90,9 +101,11 @@ function BoxGetCanvas(List: TWinControl): TCanvas;
 begin
   if List is TCustomListBox then
     Result := TCustomListBox(List).Canvas
-  else if List is TJvxCustomListBox then
+  else
+  if List is TJvxCustomListBox then
     Result := TJvxCustomListBox(List).Canvas
-  else Result := nil;
+  else
+    Result := nil;
 end;
 {$ENDIF}
 
@@ -100,7 +113,8 @@ procedure BoxSetItemIndex(List: TWinControl; Index: Integer);
 begin
   if List is TCustomListBox then
     TCustomListBox(List).ItemIndex := Index
-  else if List is TJvxCustomListBox then
+  else
+  if List is TJvxCustomListBox then
     TJvxCustomListBox(List).ItemIndex := Index;
 end;
 
@@ -108,18 +122,22 @@ function BoxMultiSelect(List: TWinControl): Boolean;
 begin
   if List is TCustomListBox then
     Result := TListBox(List).MultiSelect
-  else if List is TJvxCustomListBox then
+  else
+  if List is TJvxCustomListBox then
     Result := TJvxCheckListBox(List).MultiSelect
-  else Result := False;
+  else
+    Result := False;
 end;
 
 function BoxSelCount(List: TWinControl): Integer;
 begin
   if List is TCustomListBox then
     Result := TCustomListBox(List).SelCount
-  else if List is TJvxCustomListBox then
+  else
+  if List is TJvxCustomListBox then
     Result := TJvxCustomListBox(List).SelCount
-  else Result := 0;
+  else
+    Result := 0;
 end;
 
 function BoxItemAtPos(List: TWinControl; Pos: TPoint;
@@ -127,32 +145,40 @@ function BoxItemAtPos(List: TWinControl; Pos: TPoint;
 begin
   if List is TCustomListBox then
     Result := TCustomListBox(List).ItemAtPos(Pos, Existing)
-  else if List is TJvxCustomListBox then
+  else
+  if List is TJvxCustomListBox then
     Result := TJvxCustomListBox(List).ItemAtPos(Pos, Existing)
-  else Result := LB_ERR;
+  else
+    Result := LB_ERR;
 end;
 
 function BoxItemRect(List: TWinControl; Index: Integer): TRect;
 begin
   if List is TCustomListBox then
     Result := TCustomListBox(List).ItemRect(Index)
-  else if List is TJvxCustomListBox then
+  else
+  if List is TJvxCustomListBox then
     Result := TJvxCustomListBox(List).ItemRect(Index)
-  else FillChar(Result, SizeOf(Result), 0);
+  else
+    FillChar(Result, SizeOf(Result), 0);
 end;
 
 procedure BoxMoveSelected(List: TWinControl; Items: TStrings);
 var
   I: Integer;
 begin
-  if BoxItems(List) = nil then Exit;
+  if BoxItems(List) = nil then
+    Exit;
   I := 0;
-  while I < BoxItems(List).Count do begin
-    if BoxGetSelected(List, I) then begin
+  while I < BoxItems(List).Count do
+  begin
+    if BoxGetSelected(List, I) then
+    begin
       Items.AddObject(BoxItems(List).Strings[I], BoxItems(List).Objects[I]);
       BoxItems(List).Delete(I);
     end
-    else Inc(I);
+    else
+      Inc(I);
   end;
 end;
 
@@ -161,9 +187,12 @@ var
   I: Integer;
 begin
   Result := LB_ERR;
-  if BoxItems(List) = nil then Exit;
-  for I := 0 to BoxItems(List).Count - 1 do begin
-    if BoxGetSelected(List, I) then begin
+  if BoxItems(List) = nil then
+    Exit;
+  for I := 0 to BoxItems(List).Count - 1 do
+  begin
+    if BoxGetSelected(List, I) then
+    begin
       Result := I;
       Exit;
     end;
@@ -175,16 +204,23 @@ procedure BoxSetItem(List: TWinControl; Index: Integer);
 var
   MaxIndex: Integer;
 begin
-  if BoxItems(List) = nil then Exit;
-  with List do begin
-    if CanFocus then SetFocus;
+  if BoxItems(List) = nil then
+    Exit;
+  with List do
+  begin
+    if CanFocus then
+      SetFocus;
     MaxIndex := BoxItems(List).Count - 1;
-    if Index = LB_ERR then Index := 0
-    else if Index > MaxIndex then Index := MaxIndex;
-    if Index >= 0 then begin
-      if BoxMultiSelect(List) then BoxSetSelected(List, Index, True)
-      else BoxSetItemIndex(List, Index);
-    end;
+    if Index = LB_ERR then
+      Index := 0
+    else
+    if Index > MaxIndex then
+      Index := MaxIndex;
+    if Index >= 0 then
+      if BoxMultiSelect(List) then
+        BoxSetSelected(List, Index, True)
+      else
+        BoxSetItemIndex(List, Index);
   end;
 end;
 
@@ -193,24 +229,24 @@ var
   Index, I, NewIndex: Integer;
 begin
   Index := BoxGetFirstSelection(SrcList);
-  if Index <> LB_ERR then begin
+  if Index <> LB_ERR then
+  begin
     BoxItems(SrcList).BeginUpdate;
     BoxItems(DstList).BeginUpdate;
     try
       I := 0;
-      while I < BoxItems(SrcList).Count do begin
-        if BoxGetSelected(SrcList, I) then begin
+      while I < BoxItems(SrcList).Count do
+        if BoxGetSelected(SrcList, I) then
+        begin
           NewIndex := BoxItems(DstList).AddObject(BoxItems(SrcList).Strings[I],
             BoxItems(SrcList).Objects[I]);
           if (SrcList is TJvxCheckListBox) and (DstList is TJvxCheckListBox) then
-          begin
             TJvxCheckListBox(DstList).State[NewIndex] :=
               TJvxCheckListBox(SrcList).State[I];
-          end;
           BoxItems(SrcList).Delete(I);
         end
-        else Inc(I);
-      end;
+        else
+          Inc(I);
       BoxSetItem(SrcList, Index);
     finally
       BoxItems(SrcList).EndUpdate;
@@ -223,14 +259,13 @@ procedure BoxMoveAllItems(SrcList, DstList: TWinControl);
 var
   I, NewIndex: Integer;
 begin
-  for I := 0 to BoxItems(SrcList).Count - 1 do begin
+  for I := 0 to BoxItems(SrcList).Count - 1 do
+  begin
     NewIndex := BoxItems(DstList).AddObject(BoxItems(SrcList)[I],
       BoxItems(SrcList).Objects[I]);
     if (SrcList is TJvxCheckListBox) and (DstList is TJvxCheckListBox) then
-    begin
       TJvxCheckListBox(DstList).State[NewIndex] :=
         TJvxCheckListBox(SrcList).State[I];
-    end;
   end;
   BoxItems(SrcList).Clear;
   BoxSetItem(SrcList, 0);
@@ -242,13 +277,14 @@ var
   Focused: Integer;
 begin
   Result := False;
-  if (BoxSelCount(List) = 1) or (not BoxMultiSelect(List)) then begin
+  if (BoxSelCount(List) = 1) or (not BoxMultiSelect(List)) then
+  begin
     Focused := BoxGetItemIndex(List);
-    if Focused <> LB_ERR then begin
+    if Focused <> LB_ERR then
+    begin
       DragIndex := BoxItemAtPos(List, Point(X, Y), True);
-      if (DragIndex >= 0) and (DragIndex <> Focused) then begin
+      if (DragIndex >= 0) and (DragIndex <> Focused) then
         Result := True;
-      end;
     end;
   end;
 end;
@@ -260,40 +296,48 @@ var
   R: TRect;
 
   procedure DrawItemFocusRect(Idx: Integer);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   var
     P: TPoint;
     DC: HDC;
-{$ENDIF}
+  {$ENDIF}
   begin
     R := BoxItemRect(List, Idx);
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     P := List.ClientToScreen(R.TopLeft);
     R := Bounds(P.X, P.Y, R.Right - R.Left, R.Bottom - R.Top);
     DC := GetDC(0);
     DrawFocusRect(DC, R);
     ReleaseDC(0, DC);
-{$ELSE}
+    {$ELSE}
     BoxGetCanvas(List).DrawFocusRect(R);
-{$ENDIF}
+    {$ENDIF}
   end;
 
 begin
   if Source <> List then
     Accept := (Source is TWinControl) or (Source is TJvxCustomListBox)
-  else begin
-    if Sorted then Accept := False
-    else begin
+  else
+  begin
+    if Sorted then
+      Accept := False
+    else
+    begin
       Accept := BoxCanDropItem(List, X, Y, DragIndex);
-      if ((List.Tag - 1) = DragIndex) and (DragIndex >= 0) then begin
-        if State = dsDragLeave then begin
+      if ((List.Tag - 1) = DragIndex) and (DragIndex >= 0) then
+      begin
+        if State = dsDragLeave then
+        begin
           DrawItemFocusRect(List.Tag - 1);
           List.Tag := 0;
         end;
       end
-      else begin
-        if List.Tag > 0 then DrawItemFocusRect(List.Tag - 1);
-        if DragIndex >= 0 then DrawItemFocusRect(DragIndex);
+      else
+      begin
+        if List.Tag > 0 then
+          DrawItemFocusRect(List.Tag - 1);
+        if DragIndex >= 0 then
+          DrawItemFocusRect(DragIndex);
         List.Tag := DragIndex + 1;
       end;
     end;
@@ -303,10 +347,12 @@ end;
 procedure BoxMoveFocusedItem(List: TWinControl; DstIndex: Integer);
 begin
   if (DstIndex >= 0) and (DstIndex < BoxItems(List).Count) then
-    if (DstIndex <> BoxGetItemIndex(List)) then begin
+    if (DstIndex <> BoxGetItemIndex(List)) then
+    begin
       BoxItems(List).Move(BoxGetItemIndex(List), DstIndex);
       BoxSetItem(List, DstIndex);
     end;
 end;
 
 end.
+

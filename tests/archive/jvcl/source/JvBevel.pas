@@ -30,10 +30,9 @@ unit JvBevel;
 
 interface
 
-
-
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, ExtCtrls, Controls, Forms, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, ExtCtrls, Controls, Forms,
+  JVCLVer;
 
 type
   TJvBevel = class(TBevel)
@@ -87,7 +86,8 @@ begin
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
+    if csDesigning in ComponentState then
+      Exit;
     Application.HintColor := FColor;
     FOver := True;
   end;
@@ -109,3 +109,4 @@ begin
 end;
 
 end.
+

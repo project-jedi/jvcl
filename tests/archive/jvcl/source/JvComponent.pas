@@ -32,88 +32,52 @@ unit JvComponent;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Controls, ExtCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Controls, ExtCtrls,
+  JVCLVer;
 
 type
-  TJvClipBoardCommand = (caCopy,caCut,caPaste,caUndo);
+  TJvClipBoardCommand = (caCopy, caCut, caPaste, caUndo);
   TJvClipBoardCommands = set of TJvClipBoardCommand;
 
   TJvComponent = class(TComponent)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
-  
 
   TJvGraphicControl = class(TGraphicControl)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvCustomPanel = class(TCustomPanel)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvCustomControl = class(TCustomControl)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvWinControl = class(TWinControl)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvCustomMemo = class(TCustomMemo)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
@@ -143,7 +107,7 @@ type
     property CaretOwner: TCustomEdit read FCaretOwner;
     property Updatecount: Integer read FUpdatecount;
   public
-    constructor Create(owner: TCustomEdit);
+    constructor Create(Owner: TCustomEdit);
     destructor Destroy; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure CreateCaret;
@@ -162,14 +126,15 @@ type
   end;
 
 implementation
+
 uses
-  jvFunctions;
+  JvFunctions;
 
 { TJvCaret }
 
 procedure TJvCaret.Assign(Source: TPersistent);
 begin
-  if source is TJvCaret then
+  if Source is TJvCaret then
   begin
     BeginUpdate;
     try
@@ -192,44 +157,45 @@ end;
 
 procedure TJvCaret.Changed;
 begin
-  if Assigned(OnChanged) and (FUpdatecount = 0) then
-    OnChanged(self);
+  if Assigned(OnChanged) and (FUpdateCount = 0) then
+    OnChanged(Self);
 end;
 
-constructor TJvCaret.Create(owner: TCustomEdit);
+constructor TJvCaret.Create(Owner: TCustomEdit);
 begin
-  Assert(Assigned(owner));
+  Assert(Assigned(Owner));
   inherited Create;
-  FCaretOwner := owner;
+  FCaretOwner := Owner;
   FCaretBitmap := TBitmap.Create;
 end;
 
 procedure TJvCaret.CreateCaret;
-  function UsingBitmap: Boolean;
-  begin
-    result := (Width = 0) and (Height = 0) and not Gray
-      and not Bitmap.Empty;
-  end;
-  function IsDefaultCaret: Boolean;
-  begin
-    Result := (Width = 0) and (Height = 0) and not Gray
-      and Bitmap.Empty;
-  end;
 const
   GrayHandles: array[Boolean] of THandle = (0, THandle(-1));
+
+  function UsingBitmap: Boolean;
+  begin
+    Result := (Width = 0) and (Height = 0) and not Gray and not Bitmap.Empty;
+  end;
+
+  function IsDefaultCaret: Boolean;
+  begin
+    Result := (Width = 0) and (Height = 0) and not Gray and Bitmap.Empty;
+  end;
+
 begin
-  if FCaretOwner.Focused
-    and not (csDesigning in FCaretOwner.ComponentState)
-    and not IsDefaultCaret then
+  if FCaretOwner.Focused and
+    not (csDesigning in FCaretOwner.ComponentState) and
+    not IsDefaultCaret then
   begin
     if UsingBitmap then
       OSCheck(Windows.CreateCaret(FCaretOwner.handle, Bitmap.Handle, 0, 0))
-    else if not Windows.CreateCaret(FCaretOwner.handle, GrayHandles[Gray],
+    else
+    if not Windows.CreateCaret(FCaretOwner.handle, GrayHandles[Gray],
       Width, Height) then
       Windows.CreateCaret(FCaretOwner.handle, 0, Width, Height);
     { Gray carets seem to be unsupported on Win95 at least, so if the create
       failed for the gray caret, try again with a standard black caret }
-
     ShowCaret(FCaretOwner.handle);
   end;
 end;
@@ -253,21 +219,21 @@ end;
 destructor TJvCaret.Destroy;
 begin
   FCaretBitmap.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvCaret.EndUpdate;
 begin
-  Dec(FUpdatecount);
+  Dec(FUpdateCount);
   Changed;
 end;
 
 procedure TJvCaret.SetCaretBitmap(const Value: TBitmap);
 begin
-  FCaretBitmap.Assign(value);
+  FCaretBitmap.Assign(Value);
   FCaretWidth := 0;
   FCaretHeight := 0;
-  FGrayCaret := false;
+  FGrayCaret := False;
   Changed;
 end;
 

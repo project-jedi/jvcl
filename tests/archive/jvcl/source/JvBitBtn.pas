@@ -30,14 +30,14 @@ unit JvBitBtn;
 
 interface
 
-
-
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Buttons, Menus, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Buttons, Menus,
+  JVCLVer;
 
 type
   TJvBitBtn = class(TBitBtn)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
@@ -50,7 +50,6 @@ type
     FHotTrack: Boolean;
     FHotFont: TFont;
     FFontSave: TFont;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetGlyph(Value: TBitmap);
     procedure SetHotFont(const Value: TFont);
   protected
@@ -80,7 +79,7 @@ implementation
 
 constructor TJvBitBtn.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FHotTrack := False;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
@@ -95,7 +94,7 @@ end;
 
 procedure TJvBitBtn.Click;
 begin
-  inherited;
+  inherited Click;
   if FDropDown <> nil then
   begin
     FDropDown.Popup(GetClientOrigin.x, GetClientOrigin.y + Height);
@@ -111,7 +110,7 @@ begin
   FFontSave.Free;
   FGlyph.Free;
   FOldGlyph.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {**************************************************}
@@ -135,7 +134,8 @@ end;
 procedure TJvBitBtn.CMMouseEnter(var Msg: TMessage);
 begin
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
@@ -161,7 +161,8 @@ end;
 procedure TJvBitBtn.CMMouseLeave(var Msg: TMessage);
 begin
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
@@ -183,3 +184,4 @@ begin
 end;
 
 end.
+

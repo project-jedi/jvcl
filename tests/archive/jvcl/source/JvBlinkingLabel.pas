@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvBlinkingLabel;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, JvLabel;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  JvLabel;
 
 type
   TJvBlinkingLabel = class(TJvLabel)
@@ -61,10 +60,10 @@ implementation
 
 constructor TJvBlinkingLabel.Create(AOwner: TComponent);
 begin
+  inherited Create(AOwner);
   FBlinking := True;
   FDelay := 400;
   FBlink := 200;
-  inherited;
   FTimer := TTimer.Create(Self);
   FTimer.OnTimer := OnBlink;
   FTimer.Interval := FDelay;
@@ -77,7 +76,7 @@ destructor TJvBlinkingLabel.Destroy;
 begin
   FTimer.Enabled := False;
   FTimer.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {**************************************************}
@@ -104,9 +103,10 @@ procedure TJvBlinkingLabel.OnBlink(Sender: TObject);
 begin
   Visible := not Visible;
   if not Visible then
-    Ftimer.Interval := FDelay
+    FTimer.Interval := FDelay
   else
     FTimer.Interval := FBlink;
 end;
 
 end.
+

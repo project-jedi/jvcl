@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvBouncingLabel;
 
-
-
 interface
 
 uses
@@ -48,7 +46,6 @@ type
     procedure Bounce(Sender: TObject);
     procedure SetBouncing(const Value: Boolean);
     procedure SetInterval(const Value: Cardinal);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -58,13 +55,42 @@ type
   end;
 
 implementation
+
 uses
   JvTypes;
-  
+
 resourcestring
   RC_MustBeWinControl = 'Owner must be of type TWinControl';
 
-  {**************************************************}
+{**************************************************}
+
+constructor TJvBouncingLabel.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Randomize;
+  FTimer := TTimer.Create(nil);
+  FTimer.Interval := 20;
+  FInterval := 20;
+  FTimer.OnTimer := Bounce;
+  FBouncing := True;
+  FDirection := Random(4);
+  FSpeed := Random(8);
+  FTimer.Enabled := True;
+  if AOwner is TWinControl then
+    FForm := AOwner as TWinControl
+  else
+    raise EJVCLException.Create(RC_MustBeWinControl);
+end;
+
+{**************************************************}
+
+destructor TJvBouncingLabel.Destroy;
+begin
+  FTimer.Free;
+  inherited Destroy;
+end;
+
+{**************************************************}
 
 procedure TJvBouncingLabel.Bounce(Sender: TObject);
 begin
@@ -129,34 +155,6 @@ end;
 
 {**************************************************}
 
-constructor TJvBouncingLabel.Create(AOwner: TComponent);
-begin
-  inherited;
-  Randomize;
-  FTimer := TTimer.Create(nil);
-  FTimer.Interval := 20;
-  FInterval := 20;
-  FTimer.OnTimer := Bounce;
-  FBouncing := True;
-  FDirection := Random(4);
-  FSpeed := Random(8);
-  FTimer.Enabled := True;
-  if AOwner is TWinControl then
-    FForm := AOwner as TWinControl
-  else
-    raise EJVCLException.Create(RC_MustBeWinControl);
-end;
-
-{**************************************************}
-
-destructor TJvBouncingLabel.Destroy;
-begin
-  FTimer.Free;
-  inherited;
-end;
-
-{**************************************************}
-
 procedure TJvBouncingLabel.SetBouncing(const Value: Boolean);
 begin
   FBouncing := Value;
@@ -172,3 +170,4 @@ begin
 end;
 
 end.
+

@@ -28,21 +28,21 @@ Known Issues:
 
 unit JvButton;
 
-
-
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Menus, Controls,
-  Forms, JVCLVer;
+  Forms,
+  JVCLVer;
 
 type
   TJvButton = class(TButton)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
     FColor: TColor;
     FSaved: TColor;
-    FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FDropMenu: TPopupMenu;
@@ -50,7 +50,6 @@ type
     FHotFont: TFont;
     FFontSave: TFont;
     FOver: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetHotFont(const Value: TFont);
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -69,10 +68,10 @@ type
     property HotTrackFont: TFont read FHotFont write SetHotFont;
 
     property HintColor: TColor read FColor write FColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FonMouseEnter write FonMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FonMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FonCtl3DChanged write FonCtl3DChanged;
-    property OnParentColorChange: TNotifyEvent read FonParentColorChanged write FonParentColorChanged;
+    property OnMouseEnter: TNotifyEvent read FonMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
 implementation
@@ -81,7 +80,7 @@ implementation
 
 constructor TJvButton.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FColor := clInfoBk;
   FHotTrack := False;
   FHotFont := TFont.Create;
@@ -96,14 +95,14 @@ destructor TJvButton.Destroy;
 begin
   FHotFont.Free;
   FFontSave.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {**************************************************}
 
 procedure TJvButton.Click;
 begin
-  inherited;
+  inherited Click;
   if FDropMenu <> nil then
   begin
     FDropMenu.Popup(GetClientOrigin.x, GetClientOrigin.y + Height);
@@ -125,7 +124,7 @@ procedure TJvButton.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FonCtl3DChanged) then
-    FonCtl3DChanged(Self);
+    FOnCtl3DChanged(Self);
 end;
 
 {**************************************************}
@@ -145,7 +144,8 @@ begin
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
+    if csDesigning in ComponentState then
+      Exit;
     Application.HintColor := FColor;
     if FHotTrack then
     begin
@@ -182,3 +182,4 @@ begin
 end;
 
 end.
+

@@ -31,33 +31,31 @@ unit JvButtonDrawGrid;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Grids, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Grids,
+  JVCLVer;
 
 type
   TJvButtonDrawGrid = class(TDrawGrid)
   private
-    FCellDown: TGridCoord;
     FAboutJVCL: TJVCLAboutInfo;
+    FCellDown: TGridCoord;
   protected
-    { Protected declarations }
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     function SelectCell(ACol, ARow: Longint): Boolean; override;
   public
-    constructor Create(aOwner: Tcomponent); override;
+    constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation
 
-{ TButtonDrawGrid }
-
-constructor TJvButtonDrawGrid.Create(aOwner: Tcomponent);
+constructor TJvButtonDrawGrid.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FCellDown.X := -1;
   FCellDown.Y := -1;
 end;
@@ -66,34 +64,34 @@ procedure TJvButtonDrawGrid.DrawCell(ACol, ARow: Integer; ARect: TRect;
   AState: TGridDrawState);
 var
   r: TRect;
-  style: DWORD;
+  Style: DWORD;
 begin
   r := ARect;
   if not (gdFixed in aState) then
   begin
     Canvas.Brush.Color := clBtnFace;
     Canvas.Font.Color := clBtnText;
-    style := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
+    Style := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
     if (FCellDown.X = aCol) and (FCellDown.Y = aRow) then
-      style := style or DFCS_PUSHED;
-    DrawFrameControl(Canvas.Handle, r, DFC_BUTTON, style);
+      Style := Style or DFCS_PUSHED;
+    DrawFrameControl(Canvas.Handle, r, DFC_BUTTON, Style);
   end;
 
-  inherited DrawCell(ACol, aRow, r, aState);
+  inherited DrawCell(ACol, ARow, r, AState);
 end;
 
 procedure TJvButtonDrawGrid.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
-  cell: TGridCoord;
+  Cell: TGridCoord;
 begin
   if (Button = mbLeft) and ((Shift - [ssLeft]) = []) then
   begin
-    MousetoCell(X, Y, cell.X, cell.Y);
-    if (cell.X >= FixedCols) and (cell.Y >= FixedRows) then
+    MouseToCell(X, Y, Cell.X, Cell.Y);
+    if (Cell.X >= FixedCols) and (Cell.Y >= FixedRows) then
     begin
-      FCellDown := cell;
-      InvalidateCell(cell.X, cell.Y);
+      FCellDown := Cell;
+      InvalidateCell(Cell.X, Cell.Y);
     end;
   end;
   inherited;
@@ -101,17 +99,17 @@ end;
 
 procedure TJvButtonDrawGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-  cell: TGridCoord;
+  Cell: TGridCoord;
 begin
   if Shift = [ssLeft] then
   begin
-    MousetoCell(X, Y, cell.X, cell.Y);
-    if not CompareMem(@cell, @FCellDown, Sizeof(cell)) then
+    MousetoCell(X, Y, Cell.X, Cell.Y);
+    if not CompareMem(@Cell, @FCellDown, SizeOf(Cell)) then
     begin
       if (FCellDown.X >= 0) and (FCellDown.Y >= 0) then
         InvalidateCell(FCellDown.X, FCellDown.Y);
-      FCellDown := cell;
-      InvalidateCell(cell.X, cell.Y);
+      FCellDown := Cell;
+      InvalidateCell(Cell.X, Cell.Y);
     end;
   end;
   inherited;
@@ -131,7 +129,8 @@ end;
 
 function TJvButtonDrawGrid.SelectCell(ACol, ARow: Integer): Boolean;
 begin
-  result := false;
+  Result := False;
 end;
 
 end.
+
