@@ -7,7 +7,7 @@
 :
 : ---------------------------------------------------------------------
 SET DELDIR=%1
-if %DELDIR%!=="!" SET DELDIR=C:\Program Files\Delphi7
+if %DELDIR%!==! SET DELDIR=C:\PROGRA~1\Delphi7
 
 call MakeDelphi d7
 SET DELDIR=
