@@ -6,9 +6,6 @@ interface
 uses
   Classes, StrUtils;
 
-const
-  RemapFile = 'Remap.conf';
-
 type
   TGenerateCallback = procedure (const msg : string);
 
@@ -151,12 +148,9 @@ type
   private
     FOriginal: string;
     FReplacement: string;
-    FRemapList: TStrings;
   public
     constructor Create(Node : TJvSimpleXmlElem); overload;
-    destructor Destroy; override;
     function DoReplacement(const Filename: string): string;
-
     property Original  : string read FOriginal;
     property Replacement : string read FReplacement;
   end;
@@ -1996,32 +1990,12 @@ begin
   inherited Create;
   FOriginal := Node.Properties.ItemNamed['original'].Value;
   FReplacement := Node.Properties.ItemNamed['replacement'].Value;
-  FRemapList := TStringList.Create;
-end;
-
-destructor TClxReplacement.Destroy;
-begin
-  if FRemapList.Count > 0 then
-  begin
-    FRemapList.Add('*.dfm=*.xfm');
-    FRemapList.SaveToFile(RemapFile);
-  end;  
-  FRemapList.Free;
-  inherited Destroy;
 end;
 
 function TClxReplacement.DoReplacement(const Filename: string): string;
-var
-  src, dest: String;
 begin
   Result := Filename;
   StrReplace(Result, Original, Replacement, [rfIgnoreCase]);
-  src := ExtractFileName(FileName);
-  src := LeftStr(src, Pos('.',src)-1);
-  dest := ExtractFileName(Result);
-  dest := LeftStr(dest, Pos('.',dest)-1);
-  if src <> dest then
-    FRemapList.Add(src + '=' + dest);
 end;
 
 { TClxReplacementList }
