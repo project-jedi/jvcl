@@ -32,7 +32,7 @@ unit JvCaret;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, StdCtrls,
+  Windows, SysUtils, Classes, Graphics, Controls,
   JVCLVer, JvTypes;
 
 type
@@ -48,9 +48,10 @@ type
     FCaretWidth: Integer;
     FCaretHeight: Integer;
     FGrayCaret: Boolean;
-    FCaretOwner: TCustomEdit;
+    FCaretOwner: TWinControl;
     FUpdatecount: Integer;
     FChangedEvent: TNotifyEvent;
+    FCaretCreated: Boolean;
     procedure SetCaretBitmap(const Value: TBitmap);
     procedure SetCaretHeight(const Value: Integer);
     procedure SetCaretWidth(const Value: Integer);
@@ -59,13 +60,17 @@ type
     procedure WriteBitmap(Stream: TStream);
   protected
     procedure Changed; dynamic;
-    property CaretOwner: TCustomEdit read FCaretOwner;
+    function UsingBitmap: Boolean;
+    function IsDefaultCaret: Boolean;
+    property CaretOwner: TWinControl read FCaretOwner;
     property Updatecount: Integer read FUpdatecount;
+    property CaretCreated: Boolean read FCaretCreated;
   public
-    constructor Create(Owner: TCustomEdit);
+    constructor Create(Owner: TWinControl);
     destructor Destroy; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure CreateCaret;
+    procedure DestroyCaret;
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -85,7 +90,7 @@ implementation
 uses
   JvFunctions;
 
-constructor TJvCaret.Create(Owner: TCustomEdit);
+constructor TJvCaret.Create(Owner: TWinControl);
 begin
   if not Assigned(Owner) then
     raise EJVCLException.Create('TJvCaret.Create: cannot be created without valid Owner');
@@ -96,6 +101,7 @@ end;
 
 destructor TJvCaret.Destroy;
 begin
+  DestroyCaret;
   FCaretBitmap.Free;
   inherited Destroy;
 end;
@@ -129,20 +135,19 @@ begin
     OnChanged(Self);
 end;
 
+function TJvCaret.UsingBitmap: Boolean;
+begin
+  Result := (Width = 0) and (Height = 0) and not Gray and not Bitmap.Empty;
+end;
+
+function TJvCaret.IsDefaultCaret: Boolean;
+begin
+  Result := (Width = 0) and (Height = 0) and not Gray and Bitmap.Empty;
+end;
+
 procedure TJvCaret.CreateCaret;
 const
-  GrayHandles: array [Boolean] of THandle = (0, THandle(-1));
-
-  function UsingBitmap: Boolean;
-  begin
-    Result := (Width = 0) and (Height = 0) and not Gray and not Bitmap.Empty;
-  end;
-
-  function IsDefaultCaret: Boolean;
-  begin
-    Result := (Width = 0) and (Height = 0) and not Gray and Bitmap.Empty;
-  end;
-
+  GrayHandles: array [Boolean] of THandle = (0, THandle(1));
 begin
   if FCaretOwner.Focused and
     not (csDesigning in FCaretOwner.ComponentState) and not IsDefaultCaret then
@@ -150,12 +155,22 @@ begin
     if UsingBitmap then
       OSCheck(Windows.CreateCaret(FCaretOwner.handle, Bitmap.Handle, 0, 0))
     else
-    if not Windows.CreateCaret(FCaretOwner.handle, GrayHandles[Gray],
-      Width, Height) then
-      Windows.CreateCaret(FCaretOwner.handle, 0, Width, Height);
     { Gray carets seem to be unsupported on Win95 at least, so if the create
       failed for the gray caret, try again with a standard black caret }
+    if not Windows.CreateCaret(FCaretOwner.handle, GrayHandles[Gray], Width, Height) then
+      OSCheck(Windows.CreateCaret(FCaretOwner.handle, 0, Width, Height));
+    FCaretCreated := True;
     ShowCaret(FCaretOwner.handle);
+  end;
+end;
+
+procedure TJvCaret.DestroyCaret;
+begin
+  if CaretCreated and FCaretOwner.Focused and not (csDesigning in FCaretOwner.ComponentState) and
+    not IsDefaultCaret then
+  begin
+    if Windows.DestroyCaret then
+      FCaretCreated := False;
   end;
 end;
 
