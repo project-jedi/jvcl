@@ -223,9 +223,6 @@ uses
   JvResources,
   {$ENDIF USEJVCL}
   JvConsts, JvSimpleXML,
-  {$IFDEF DEBUG}
-  JvDebug,
-  {$ENDIF DEBUG}
   JvgUtils, JvgFileUtils;
 
 {$IFNDEF USEJVCL}
@@ -670,7 +667,7 @@ begin
   RecCount := DataSet.RecordCount;
   {$IFDEF DEBUG}
   dbg.LogInteger('FieldCount', DataSet.FieldCount);
-  {$ENDIF}
+  {$ENDIF DEBUG}
   for i := 0 to DataSet.FieldCount - 1 do
   begin
     Field := CreateNode('Field', Table);
@@ -681,7 +678,7 @@ begin
     Field.Properties.Add('Required', BoolToStr(DataSet.Fields[i].Required));
     {$IFDEF DEBUG}
     dbg.LogObject('Properties', Field.Properties);
-    {$ENDIF}
+    {$ENDIF DEBUG}
   end;
   Records := CreateNode('Records', XML.Root);
   XMLRecord := CreateNode('Record', Records);

@@ -30,8 +30,6 @@ unit JvPaintFX;
 
 interface
 
-{$DEFINE USE_SCANLINE}
-
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
@@ -1702,11 +1700,9 @@ var
   contrib: PCListList;
   rgb: TRGB;
   color: TColorRGB;
-  {$IFDEF USE_SCANLINE}
   SourceLine, DestLine: PRGBList;
   SourcePixel, DestPixel: PColorRGB;
   Delta, DestDelta: Integer;
-  {$ENDIF USE_SCANLINE}
   SrcWidth, SrcHeight, DstWidth, DstHeight: Integer;
 
   function Color2RGB(Color: TColor): TColorRGB;
@@ -1747,11 +1743,9 @@ begin
       yscale := (DstHeight - 1) / (SrcHeight - 1);
     // This implementation only works on 24-bit images because it uses
     // TBitmap.ScanLine
-    {$IFDEF USE_SCANLINE}
     Src.PixelFormat := pf24bit;
     Dst.PixelFormat := Src.PixelFormat;
     Work.PixelFormat := Src.PixelFormat;
-    {$ENDIF USE_SCANLINE}
 
     // --------------------------------------------
     // Pre-calculate filter contributions for a row
@@ -1831,10 +1825,8 @@ begin
     // ----------------------------------------------------
     for k := 0 to SrcHeight - 1 do
     begin
-      {$IFDEF USE_SCANLINE}
       SourceLine := Src.ScanLine[k];
       DestPixel := Work.ScanLine[k];
-      {$ENDIF USE_SCANLINE}
       for i := 0 to DstWidth - 1 do
       begin
         rgb.R := 0.0;
@@ -1842,11 +1834,7 @@ begin
         rgb.B := 0.0;
         for j := 0 to contrib^[i].n - 1 do
         begin
-          {$IFDEF USE_SCANLINE}
           color := SourceLine^[contrib^[i].p^[j].pixel];
-          {$ELSE}
-          color := Color2RGB(Src.Canvas.Pixels[contrib^[i].p^[j].pixel, k]);
-          {$ENDIF USE_SCANLINE}
           weight := contrib^[i].p^[j].weight;
           if (weight = 0.0) then
             Continue;
@@ -1875,14 +1863,10 @@ begin
           color.B := 0
         else
           color.B := Round(rgb.B);
-        {$IFDEF USE_SCANLINE}
         // Set new pixel value
         DestPixel^ := color;
         // Move on to next column
         Inc(DestPixel);
-        {$ELSE}
-        Work.Canvas.Pixels[i, k] := RGB2Color(color);
-        {$ENDIF USE_SCANLINE}
       end;
     end;
 
@@ -1968,17 +1952,13 @@ begin
     // --------------------------------------------------
     // Apply filter to sample vertically from Work to Dst
     // --------------------------------------------------
-    {$IFDEF USE_SCANLINE}
     SourceLine := Work.ScanLine[0];
     Delta := Integer(Work.ScanLine[1]) - Integer(SourceLine);
     DestLine := Dst.ScanLine[0];
     DestDelta := Integer(Dst.ScanLine[1]) - Integer(DestLine);
-    {$ENDIF USE_SCANLINE}
     for k := 0 to DstWidth - 1 do
     begin
-      {$IFDEF USE_SCANLINE}
       DestPixel := pointer(DestLine);
-      {$ENDIF USE_SCANLINE}
       for i := 0 to DstHeight - 1 do
       begin
         rgb.R := 0;
@@ -1987,11 +1967,7 @@ begin
         // weight := 0.0;
         for j := 0 to contrib^[i].n - 1 do
         begin
-          {$IFDEF USE_SCANLINE}
           color := PColorRGB(Integer(SourceLine) + contrib^[i].p^[j].pixel * Delta)^;
-          {$ELSE}
-          color := Color2RGB(Work.Canvas.Pixels[k, contrib^[i].p^[j].pixel]);
-          {$ENDIF USE_SCANLINE}
           weight := contrib^[i].p^[j].weight;
           if (weight = 0.0) then
             Continue;
@@ -2020,17 +1996,11 @@ begin
           color.B := 0
         else
           color.B := Round(rgb.B);
-        {$IFDEF USE_SCANLINE}
         DestPixel^ := color;
         Inc(Integer(DestPixel), DestDelta);
-        {$ELSE}
-        Dst.Canvas.Pixels[k, i] := RGB2Color(color);
-        {$ENDIF USE_SCANLINE}
       end;
-      {$IFDEF USE_SCANLINE}
       Inc(SourceLine, 1);
       Inc(DestLine, 1);
-      {$ENDIF USE_SCANLINE}
     end;
 
     // Free the memory allocated for vertical filter weights

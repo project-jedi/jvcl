@@ -625,7 +625,9 @@ begin
     begin
       {$R-}
       Selection := @FSelections^.aDsSelection[I];
+      {$IFDEF RANGECHECKS_ON}
       {$R+}
+      {$ENDIF RANGECHECKS_ON}
       FItems[I] := TObjectPickerSelection.Create(Selection,
         FSelections^.cFetchedAttributes);
     end;
