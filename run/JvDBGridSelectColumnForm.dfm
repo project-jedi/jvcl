@@ -2,7 +2,7 @@ object frmSelectColumn: TfrmSelectColumn
   Left = 445
   Top = 244
   Width = 197
-  Height = 197
+  Height = 248
   BorderIcons = []
   BorderStyle = bsSizeToolWin
   BorderWidth = 2
@@ -28,29 +28,39 @@ object frmSelectColumn: TfrmSelectColumn
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 122
+    Top = 163
     Width = 185
-    Height = 41
+    Height = 50
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    object cbWithFieldName: TCheckBox
+      Left = 18
+      Top = -2
+      Width = 165
+      Height = 25
+      Anchors = [akLeft, akRight]
+      TabOrder = 0
+      Visible = False
+      OnClick = cbClick
+    end
     object ButtonOK: TButton
       Left = 56
-      Top = 8
+      Top = 19
       Width = 75
       Height = 25
       Anchors = []
       Caption = '&OK'
       Default = True
       ModalResult = 1
-      TabOrder = 0
+      TabOrder = 1
     end
   end
   object clbList: TCheckListBox
     Left = 0
     Top = 0
     Width = 185
-    Height = 122
+    Height = 163
     OnClickCheck = clbListClickCheck
     Align = alClient
     ItemHeight = 13
