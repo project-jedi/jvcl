@@ -305,6 +305,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnResize; 
     {$IFDEF COMPILER4_UP}
     property OnMouseWheelDown;
     property OnMouseWheelUp;
