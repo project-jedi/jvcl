@@ -452,19 +452,21 @@ begin
       Inc(P, lstrlen(P) + 1);
       Inc(PArgs);
     end;
-
     with TRegistry.Create do
     begin
       RootKey := HKEY_LOCAL_MACHINE;
-      OpenKey(Format('SYSTEM\CurrentControlSet\Services\EventLog\%s\%s', [FEventLog.Log, FEventLog.Source]), False);
+      OpenKey(Format('SYSTEM\CurrentControlSet\Services\EventLog\%s\%s', [FEventLog.Log, Source]), False); {rw}
+//      OpenKey(Format('SYSTEM\CurrentControlSet\Services\EventLog\%s\%s', [FEventLog.Log, FEventLog.Source]), False);
       MessagePath := ReadString('EventMessageFile');
       repeat
         I := Pos(';', MessagePath);
         if I <> 0 then
         begin
-          if FormatMessageFrom(Copy(MessagePath, 1, I)) then
+          if FormatMessageFrom(Copy(MessagePath, 1, I - 1 )) then {rw}
+//          if FormatMessageFrom(Copy(MessagePath, 1, I)) then
             Break;
-          MessagePath := Copy(MessagePath, I, MaxInt);
+          MessagePath := Copy(MessagePath, I + 1, MaxInt); {rw}
+//          MessagePath := Copy(MessagePath, I, MaxInt);
         end
         else
           FormatMessageFrom(MessagePath);
