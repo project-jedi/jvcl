@@ -690,14 +690,17 @@ end;
 
 procedure TJvFullColorListEditor.Edit;
 var
-  AFullColorListForm: TJvFullColorListForm;
+  FullColorListForm: TJvFullColorListForm;
 begin
-  AFullColorListForm := TJvFullColorListForm.Create(Application);
-  AFullColorListForm.OnApply := FormApply;
-  AFullColorListForm.ColorList := TJvFullColorList(GetOrdValueAt(0));
-  if AFullColorListForm.Execute then
-    FormApply(AFullColorListForm);
-  AFullColorListForm.Free;
+  FullColorListForm := TJvFullColorListForm.Create(Application);
+  try
+    FullColorListForm.OnApply := FormApply;
+    FullColorListForm.ColorList := TJvFullColorList(GetOrdValueAt(0));
+    if FullColorListForm.Execute then
+      FormApply(FullColorListForm);
+  finally
+    FullColorListForm.Free;
+  end;
 end;
 
 procedure TJvFullColorListEditor.FormApply(Sender: TObject);

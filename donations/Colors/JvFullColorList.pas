@@ -25,6 +25,8 @@ Known Issues:
 
 unit JvFullColorList;
 
+{$I jvcl.inc}
+
 interface
 
 uses
@@ -88,6 +90,22 @@ begin
   (Sender as TAction).Enabled := (ListBoxColors.SelCount = 1) and
     not ListBoxColors.Selected[ListBoxColors.Count - 1];
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\design'
+    );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 
