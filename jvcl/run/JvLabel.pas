@@ -198,6 +198,7 @@ type
 
   TJvLabel = class(TJvCustomLabel)
   published
+    property Action;
     property Align;
     property Alignment;
     property AutoSize;
