@@ -201,9 +201,10 @@ end;
 
 destructor TJvAppearingLabel.Destroy;
 begin
+  FThread.OnDraw := nil;
   FThread.Terminate;
-  FThread.WaitFor;
-  FThread.Free;
+//  FThread.WaitFor;
+  FreeAndNil(FThread);
   inherited;
 end;
 

@@ -246,9 +246,10 @@ end;
 
 destructor TJvScrollText.Destroy;
 begin
+  FScroll.OnDraw := nil;
   FScroll.Terminate;
-  FScroll.WaitFor;
-  FScroll.Free;
+//  FScroll.WaitFor;
+  FreeAndnil(FScroll);
   Application.HintPause := FDeja;
   FStrings.Free;
   FMemo.Free;

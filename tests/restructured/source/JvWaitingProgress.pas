@@ -111,9 +111,10 @@ end;
 
 destructor TJvWaitingProgress.Destroy;
 begin
+  FWait.OnDraw := nil;
   FWait.Terminate;
-  FWait.WaitFor;
-  FWait.Free;
+//  FWait.WaitFor;
+  FreeAndNil(FWait);
   FProgress.Free;
   inherited;
 end;

@@ -125,9 +125,10 @@ end;
 destructor TJvStarfield.Destroy;
 begin
   SetLength(FStarfield, 0);
+  FThread.OnDraw := nil;
   FThread.Terminate;
-  FThread.WaitFor;
-  FThread.Free;
+//  FThread.WaitFor;
+  FreeAndnil(FThread);
   FBmp.Free;
   inherited;
 end;
