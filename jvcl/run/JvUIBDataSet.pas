@@ -234,7 +234,7 @@ end;
 procedure TJvUIBCustomDataSet.InternalFirst;
 begin
   FStatement.First;
-  FIsFirst := True;
+  FIsFirst := not FStatement.Eof;
   FCurrentRecord := 0;
 end;
 
