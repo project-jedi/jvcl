@@ -384,7 +384,7 @@ const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
 var
-  DrawStyle: LongInt;
+  DrawStyle: Longint;
   CalcRect: TRect;
 
   procedure DoDrawText(Canvas: TCanvas; const ACaption: TCaption; var ARect: TRect;

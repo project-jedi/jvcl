@@ -1857,28 +1857,28 @@ begin
   TParam(Args.Obj).AsFloat := Value;
 end;
 
-{ property Read AsInteger: LongInt }
+{ property Read AsInteger: Longint }
 
 procedure TParam_Read_AsInteger(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TParam(Args.Obj).AsInteger;
 end;
 
-{ property Write AsInteger(Value: LongInt) }
+{ property Write AsInteger(Value: Longint) }
 
 procedure TParam_Write_AsInteger(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TParam(Args.Obj).AsInteger := Value;
 end;
 
-{ property Read AsSmallInt: LongInt }
+{ property Read AsSmallInt: Longint }
 
 procedure TParam_Read_AsSmallInt(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TParam(Args.Obj).AsSmallInt;
 end;
 
-{ property Write AsSmallInt(Value: LongInt) }
+{ property Write AsSmallInt(Value: Longint) }
 
 procedure TParam_Write_AsSmallInt(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -1927,14 +1927,14 @@ begin
   TParam(Args.Obj).AsTime := Value;
 end;
 
-{ property Read AsWord: LongInt }
+{ property Read AsWord: Longint }
 
 procedure TParam_Read_AsWord(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TParam(Args.Obj).AsWord;
 end;
 
-{ property Write AsWord(Value: LongInt) }
+{ property Write AsWord(Value: Longint) }
 
 procedure TParam_Write_AsWord(const Value: Variant; Args: TJvInterpreterArgs);
 begin

@@ -954,49 +954,49 @@ end;
 
 procedure TJvExControl.Dispatch(var Msg);
 asm
-    JMP   DispatchMsg
+        JMP     DispatchMsg
 end;
 
 procedure TJvExControl.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_VISIBLECHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExControl.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_ENABLEDCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExControl.TextChanged;
 asm
-    MOV  EDX, CM_TEXTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_TEXTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExControl.FontChanged;
 asm
-    MOV  EDX, CM_FONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_FONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExControl.ColorChanged;
 asm
-    MOV  EDX, CM_COLORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_COLORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExControl.ParentFontChanged;
 asm
-    MOV  EDX, CM_PARENTFONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTFONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExControl.ParentShowHintChanged;
 asm
-    MOV  EDX, CM_PARENTSHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTSHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 function TJvExControl.WantKey(Key: Integer; Shift: TShiftState;
@@ -1067,49 +1067,49 @@ end;
 
 procedure TJvExWinControl.Dispatch(var Msg);
 asm
-    JMP   DispatchMsg
+        JMP     DispatchMsg
 end;
 
 procedure TJvExWinControl.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_VISIBLECHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExWinControl.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_ENABLEDCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExWinControl.TextChanged;
 asm
-    MOV  EDX, CM_TEXTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_TEXTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExWinControl.FontChanged;
 asm
-    MOV  EDX, CM_FONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_FONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExWinControl.ColorChanged;
 asm
-    MOV  EDX, CM_COLORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_COLORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExWinControl.ParentFontChanged;
 asm
-    MOV  EDX, CM_PARENTFONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTFONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExWinControl.ParentShowHintChanged;
 asm
-    MOV  EDX, CM_PARENTSHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTSHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 function TJvExWinControl.WantKey(Key: Integer; Shift: TShiftState;
@@ -1156,41 +1156,41 @@ end;
 {$ENDIF !HASAUTOSIZE}
 procedure TJvExWinControl.CursorChanged;
 asm
-    MOV  EDX, CM_CURSORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_CURSORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExWinControl.ShowHintChanged;
 asm
-    MOV  EDX, CM_SHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExWinControl.ShowingChanged;
 asm
-    MOV  EDX, CM_SHOWINGCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWINGCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExWinControl.ControlsListChanging(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanging
+        JMP     Control_ControlsListChanging
 end;
 
 procedure TJvExWinControl.ControlsListChanged(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanged
+        JMP     Control_ControlsListChanged
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
 function TJvExWinControl.GetParentBackground: Boolean;
 asm
-    JMP   JvThemes.GetParentBackground
+        JMP     JvThemes.GetParentBackground
 end;
 
 procedure TJvExWinControl.SetParentBackground(Value: Boolean);
 asm
-    JMP   JvThemes.SetParentBackground
+        JMP     JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
   
@@ -1222,7 +1222,7 @@ end;
 
 function TJvExWinControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-  JMP   DefaultDoPaintBackground
+        JMP     DefaultDoPaintBackground
 end;
   
 constructor TJvExWinControl.Create(AOwner: TComponent);
@@ -1240,49 +1240,49 @@ end;
 
 procedure TJvExGraphicControl.Dispatch(var Msg);
 asm
-    JMP   DispatchMsg
+        JMP     DispatchMsg
 end;
 
 procedure TJvExGraphicControl.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_VISIBLECHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExGraphicControl.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_ENABLEDCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExGraphicControl.TextChanged;
 asm
-    MOV  EDX, CM_TEXTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_TEXTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExGraphicControl.FontChanged;
 asm
-    MOV  EDX, CM_FONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_FONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExGraphicControl.ColorChanged;
 asm
-    MOV  EDX, CM_COLORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_COLORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExGraphicControl.ParentFontChanged;
 asm
-    MOV  EDX, CM_PARENTFONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTFONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExGraphicControl.ParentShowHintChanged;
 asm
-    MOV  EDX, CM_PARENTSHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTSHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 function TJvExGraphicControl.WantKey(Key: Integer; Shift: TShiftState;
@@ -1354,49 +1354,49 @@ end;
 
 procedure TJvExCustomControl.Dispatch(var Msg);
 asm
-    JMP   DispatchMsg
+        JMP     DispatchMsg
 end;
 
 procedure TJvExCustomControl.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_VISIBLECHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomControl.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_ENABLEDCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomControl.TextChanged;
 asm
-    MOV  EDX, CM_TEXTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_TEXTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomControl.FontChanged;
 asm
-    MOV  EDX, CM_FONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_FONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomControl.ColorChanged;
 asm
-    MOV  EDX, CM_COLORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_COLORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomControl.ParentFontChanged;
 asm
-    MOV  EDX, CM_PARENTFONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTFONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomControl.ParentShowHintChanged;
 asm
-    MOV  EDX, CM_PARENTSHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTSHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 function TJvExCustomControl.WantKey(Key: Integer; Shift: TShiftState;
@@ -1443,41 +1443,41 @@ end;
 {$ENDIF !HASAUTOSIZE}
 procedure TJvExCustomControl.CursorChanged;
 asm
-    MOV  EDX, CM_CURSORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_CURSORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomControl.ShowHintChanged;
 asm
-    MOV  EDX, CM_SHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomControl.ShowingChanged;
 asm
-    MOV  EDX, CM_SHOWINGCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWINGCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomControl.ControlsListChanging(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanging
+        JMP     Control_ControlsListChanging
 end;
 
 procedure TJvExCustomControl.ControlsListChanged(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanged
+        JMP     Control_ControlsListChanged
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
 function TJvExCustomControl.GetParentBackground: Boolean;
 asm
-    JMP   JvThemes.GetParentBackground
+        JMP     JvThemes.GetParentBackground
 end;
 
 procedure TJvExCustomControl.SetParentBackground(Value: Boolean);
 asm
-    JMP   JvThemes.SetParentBackground
+        JMP     JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
   
@@ -1509,7 +1509,7 @@ end;
 
 function TJvExCustomControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-  JMP   DefaultDoPaintBackground
+        JMP     DefaultDoPaintBackground
 end;
   
 constructor TJvExCustomControl.Create(AOwner: TComponent);
@@ -1527,49 +1527,49 @@ end;
  
 procedure TJvExHintWindow.Dispatch(var Msg);
 asm
-    JMP   DispatchMsg
+        JMP     DispatchMsg
 end;
 
 procedure TJvExHintWindow.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_VISIBLECHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExHintWindow.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_ENABLEDCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExHintWindow.TextChanged;
 asm
-    MOV  EDX, CM_TEXTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_TEXTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExHintWindow.FontChanged;
 asm
-    MOV  EDX, CM_FONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_FONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExHintWindow.ColorChanged;
 asm
-    MOV  EDX, CM_COLORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_COLORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExHintWindow.ParentFontChanged;
 asm
-    MOV  EDX, CM_PARENTFONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTFONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExHintWindow.ParentShowHintChanged;
 asm
-    MOV  EDX, CM_PARENTSHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTSHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 function TJvExHintWindow.WantKey(Key: Integer; Shift: TShiftState;
@@ -1616,41 +1616,41 @@ end;
 {$ENDIF !HASAUTOSIZE}
 procedure TJvExHintWindow.CursorChanged;
 asm
-    MOV  EDX, CM_CURSORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_CURSORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExHintWindow.ShowHintChanged;
 asm
-    MOV  EDX, CM_SHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExHintWindow.ShowingChanged;
 asm
-    MOV  EDX, CM_SHOWINGCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWINGCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExHintWindow.ControlsListChanging(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanging
+        JMP     Control_ControlsListChanging
 end;
 
 procedure TJvExHintWindow.ControlsListChanged(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanged
+        JMP     Control_ControlsListChanged
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
 function TJvExHintWindow.GetParentBackground: Boolean;
 asm
-    JMP   JvThemes.GetParentBackground
+        JMP     JvThemes.GetParentBackground
 end;
 
 procedure TJvExHintWindow.SetParentBackground(Value: Boolean);
 asm
-    JMP   JvThemes.SetParentBackground
+        JMP     JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
   
@@ -1682,7 +1682,7 @@ end;
 
 function TJvExHintWindow.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-  JMP   DefaultDoPaintBackground
+        JMP     DefaultDoPaintBackground
 end;
   
 constructor TJvExHintWindow.Create(AOwner: TComponent);

@@ -215,49 +215,49 @@ implementation
 
 procedure TJvExCustomDBGrid.Dispatch(var Msg);
 asm
-    JMP   DispatchMsg
+        JMP     DispatchMsg
 end;
 
 procedure TJvExCustomDBGrid.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_VISIBLECHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomDBGrid.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_ENABLEDCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomDBGrid.TextChanged;
 asm
-    MOV  EDX, CM_TEXTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_TEXTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomDBGrid.FontChanged;
 asm
-    MOV  EDX, CM_FONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_FONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomDBGrid.ColorChanged;
 asm
-    MOV  EDX, CM_COLORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_COLORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomDBGrid.ParentFontChanged;
 asm
-    MOV  EDX, CM_PARENTFONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTFONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomDBGrid.ParentShowHintChanged;
 asm
-    MOV  EDX, CM_PARENTSHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTSHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 function TJvExCustomDBGrid.WantKey(Key: Integer; Shift: TShiftState;
@@ -304,41 +304,41 @@ end;
 {$ENDIF !HASAUTOSIZE}
 procedure TJvExCustomDBGrid.CursorChanged;
 asm
-    MOV  EDX, CM_CURSORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_CURSORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomDBGrid.ShowHintChanged;
 asm
-    MOV  EDX, CM_SHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomDBGrid.ShowingChanged;
 asm
-    MOV  EDX, CM_SHOWINGCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWINGCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomDBGrid.ControlsListChanging(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanging
+        JMP     Control_ControlsListChanging
 end;
 
 procedure TJvExCustomDBGrid.ControlsListChanged(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanged
+        JMP     Control_ControlsListChanged
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
 function TJvExCustomDBGrid.GetParentBackground: Boolean;
 asm
-    JMP   JvThemes.GetParentBackground
+        JMP     JvThemes.GetParentBackground
 end;
 
 procedure TJvExCustomDBGrid.SetParentBackground(Value: Boolean);
 asm
-    JMP   JvThemes.SetParentBackground
+        JMP     JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
   
@@ -370,7 +370,7 @@ end;
 
 function TJvExCustomDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-  JMP   DefaultDoPaintBackground
+        JMP     DefaultDoPaintBackground
 end;
   
 constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
@@ -388,49 +388,49 @@ end;
  
 procedure TJvExDBGrid.Dispatch(var Msg);
 asm
-    JMP   DispatchMsg
+        JMP     DispatchMsg
 end;
 
 procedure TJvExDBGrid.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_VISIBLECHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExDBGrid.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_ENABLEDCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExDBGrid.TextChanged;
 asm
-    MOV  EDX, CM_TEXTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_TEXTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExDBGrid.FontChanged;
 asm
-    MOV  EDX, CM_FONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_FONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExDBGrid.ColorChanged;
 asm
-    MOV  EDX, CM_COLORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_COLORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExDBGrid.ParentFontChanged;
 asm
-    MOV  EDX, CM_PARENTFONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTFONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExDBGrid.ParentShowHintChanged;
 asm
-    MOV  EDX, CM_PARENTSHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTSHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 function TJvExDBGrid.WantKey(Key: Integer; Shift: TShiftState;
@@ -477,41 +477,41 @@ end;
 {$ENDIF !HASAUTOSIZE}
 procedure TJvExDBGrid.CursorChanged;
 asm
-    MOV  EDX, CM_CURSORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_CURSORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExDBGrid.ShowHintChanged;
 asm
-    MOV  EDX, CM_SHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExDBGrid.ShowingChanged;
 asm
-    MOV  EDX, CM_SHOWINGCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWINGCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExDBGrid.ControlsListChanging(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanging
+        JMP     Control_ControlsListChanging
 end;
 
 procedure TJvExDBGrid.ControlsListChanged(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanged
+        JMP     Control_ControlsListChanged
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
 function TJvExDBGrid.GetParentBackground: Boolean;
 asm
-    JMP   JvThemes.GetParentBackground
+        JMP     JvThemes.GetParentBackground
 end;
 
 procedure TJvExDBGrid.SetParentBackground(Value: Boolean);
 asm
-    JMP   JvThemes.SetParentBackground
+        JMP     JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
   
@@ -543,7 +543,7 @@ end;
 
 function TJvExDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-  JMP   DefaultDoPaintBackground
+        JMP     DefaultDoPaintBackground
 end;
   
 constructor TJvExDBGrid.Create(AOwner: TComponent);

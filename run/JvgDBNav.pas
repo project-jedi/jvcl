@@ -128,26 +128,26 @@ end;
 {
 procedure TJvgDBNavigator.HookFocusControlWndProc;
 begin
-     P := Pointer(GetWindowLong( FocusControl.Handle, GWL_WNDPROC));
-     if (P <> FNewWndProc) then
-     begin
-       FPrevWndProc := P;
-       FNewWndProc := MakeObjectInstance( FocusControlWndHookProc );
-       SetWindowLong( FocusControl.Handle, GWL_WNDPROC, LongInt(FNewWndProc));
-     end;
+  P := Pointer(GetWindowLong( FocusControl.Handle, GWL_WNDPROC));
+  if (P <> FNewWndProc) then
+  begin
+    FPrevWndProc := P;
+    FNewWndProc := MakeObjectInstance( FocusControlWndHookProc );
+    SetWindowLong( FocusControl.Handle, GWL_WNDPROC, Longint(FNewWndProc));
+  end;
 end;
 }
 //______
 {
 procedure TJvgDBNavigator.UnhookFocusControlWndProc;
 begin
-   //  if not(csDesigning in ComponentState) then exit;
-     if (FNewWndProc<>nil)and(FPrevWndProc<>nil)
-       and(Pointer(GetWindowLong( FocusControl.Handle, GWL_WNDPROC)) = FNewWndProc) then
-     begin
-       SetWindowLong( FocusControl.Handle, GWL_WNDPROC, LongInt(FPrevWndProc));
-       FNewWndProc:=nil;
-     end;
+  //  if not(csDesigning in ComponentState) then exit;
+    if (FNewWndProc<>nil)and(FPrevWndProc<>nil)
+      and(Pointer(GetWindowLong( FocusControl.Handle, GWL_WNDPROC)) = FNewWndProc) then
+    begin
+      SetWindowLong( FocusControl.Handle, GWL_WNDPROC, Longint(FPrevWndProc));
+      FNewWndProc:=nil;
+    end;
 end;
 //______
 }

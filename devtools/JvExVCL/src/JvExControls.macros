@@ -149,12 +149,12 @@
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
-    function WidgetFlags: integer; override;
+    function WidgetFlags: Integer; override;
     procedure CreateWnd; dynamic;
     procedure CreateWidget; override;
     procedure RecreateWnd;
   public
-    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
   published
     property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
 *)
@@ -400,49 +400,49 @@
 (*$DEFINE JV_CONTROL_EVENTS_IMPL_VCL(ClassName)
 procedure TJvEx##ClassName.Dispatch(var Msg);
 asm
-    JMP   DispatchMsg
+        JMP     DispatchMsg
 end;
 
 procedure TJvEx##ClassName.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_VISIBLECHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvEx##ClassName.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_ENABLEDCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvEx##ClassName.TextChanged;
 asm
-    MOV  EDX, CM_TEXTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_TEXTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvEx##ClassName.FontChanged;
 asm
-    MOV  EDX, CM_FONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_FONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvEx##ClassName.ColorChanged;
 asm
-    MOV  EDX, CM_COLORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_COLORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvEx##ClassName.ParentFontChanged;
 asm
-    MOV  EDX, CM_PARENTFONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTFONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvEx##ClassName.ParentShowHintChanged;
 asm
-    MOV  EDX, CM_PARENTSHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTSHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 function TJvEx##ClassName.WantKey(Key: Integer; Shift: TShiftState;
@@ -563,41 +563,41 @@ end;
 (*$DEFINE JV_WINCONTROL_EVENTS_IMPL_VCL(ClassName)
 procedure TJvEx##ClassName.CursorChanged;
 asm
-    MOV  EDX, CM_CURSORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_CURSORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvEx##ClassName.ShowHintChanged;
 asm
-    MOV  EDX, CM_SHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvEx##ClassName.ShowingChanged;
 asm
-    MOV  EDX, CM_SHOWINGCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWINGCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvEx##ClassName.ControlsListChanging(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanging
+        JMP     Control_ControlsListChanging
 end;
 
 procedure TJvEx##ClassName.ControlsListChanged(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanged
+        JMP     Control_ControlsListChanged
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
 function TJvEx##ClassName.GetParentBackground: Boolean;
 asm
-    JMP   JvThemes.GetParentBackground
+        JMP     JvThemes.GetParentBackground
 end;
 
 procedure TJvEx##ClassName.SetParentBackground(Value: Boolean);
 asm
-    JMP   JvThemes.SetParentBackground
+        JMP     JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
   EMPTYLINE
@@ -623,7 +623,7 @@ end;
 procedure TJvEx##ClassName.DoFontChanged(Sender: TObject);
 begin
   if Assigned(InternalFontChanged) then
-    InternalFontChanged(self);
+    InternalFontChanged(Self);
 end;
 
 procedure TJvEx##ClassName.BoundsChanged;
@@ -647,14 +647,14 @@ begin
   inherited CreateWidget;
 end;
 
-function TJvEx##ClassName.WidgetFlags: integer;
+function TJvEx##ClassName.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
-    integer(WidgetFlags_WRepaintNoErase) or
-    integer(WidgetFlags_WMouseNoMask);
+    Integer(WidgetFlags_WRepaintNoErase) or
+    Integer(WidgetFlags_WMouseNoMask);
 end;
 
-function TJvEx##ClassName.EventFilter(Sender: QObjectH; Event: QEventH): boolean;
+function TJvEx##ClassName.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
   Result := inherited EventFilter(Sender, Event);
   Result := Result or WidgetControl_EventFilter(Self, Sender, Event);
@@ -662,12 +662,12 @@ end;
 
 procedure TJvEx##ClassName.PaintWindow(PaintDevice: QPaintDeviceH);
 begin
-  WidgetControl_PaintTo(self, PaintDevice, 0, 0);
+  WidgetControl_PaintTo(Self, PaintDevice, 0, 0);
 end;
 
-procedure TJvEx##ClassName.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
+procedure TJvEx##ClassName.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
 begin
-  WidgetControl_PaintTo(self, PaintDevice, X, Y);
+  WidgetControl_PaintTo(Self, PaintDevice, X, Y);
 end;
   EMPTYLINE
 *) // MACRO END WINCONTROL_VISUALCLX
@@ -691,7 +691,7 @@ end;
 
 function TJvEx##ClassName.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-  JMP   DefaultDoPaintBackground
+        JMP     DefaultDoPaintBackground
 end;
   EMPTYLINE
 *) // MACRO END WINCONTROL_COMMON
@@ -743,7 +743,7 @@ end;
 
 procedure TJvEx##ClassName.Paint;
 begin
-  WidgetControl_DefaultPaint(self, Canvas);
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 
@@ -838,7 +838,7 @@ end;
 
 procedure TJvEx##ClassName.Paint;
 begin
-  WidgetControl_DefaultPaint(self, Canvas);
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
   EMPTYLINE
 JV_EVENTS_IMPL_DOUBLEBUFFERED(ClassName)
@@ -985,7 +985,7 @@ JV_DIFF_EVENTS_IMPL_CUSTOMFORM(ClassName)
 (*$DEFINE JV_EDITCONTROL_EVENTS_COMMON_IMPL_BEGIN(ClassName)
 procedure TJvEx##ClassName.DoClearText;
 begin
- // (ahuser) there is no caClear so we restrict it to caCut
+  // (ahuser) there is no caClear so we restrict it to caCut
   if caCut in ClipboardCommands then
     {$IFDEF VCL}
     InheritMsg(Self, WM_CLEAR);
@@ -1034,7 +1034,6 @@ end;
 procedure TJvEx##ClassName.EMGetRect(var Msg: TMessage);
 begin
   if Msg.LParam <> 0 then
-  begin
     if IsRectEmpty(FEditRect) then
     begin
       PRect(Msg.LParam)^ := ClientRect;
@@ -1043,7 +1042,6 @@ begin
     end
     else
       PRect(Msg.LParam)^ := FEditRect;
-  end;
 end;
 
 procedure TJvEx##ClassName.EMSetRect(var Msg: TMessage);

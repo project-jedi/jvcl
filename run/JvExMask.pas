@@ -250,49 +250,49 @@ implementation
   content. }
 procedure TJvExCustomMaskEdit.Dispatch(var Msg);
 asm
-    JMP   DispatchMsg
+        JMP     DispatchMsg
 end;
 
 procedure TJvExCustomMaskEdit.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_VISIBLECHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomMaskEdit.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_ENABLEDCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomMaskEdit.TextChanged;
 asm
-    MOV  EDX, CM_TEXTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_TEXTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomMaskEdit.FontChanged;
 asm
-    MOV  EDX, CM_FONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_FONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomMaskEdit.ColorChanged;
 asm
-    MOV  EDX, CM_COLORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_COLORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomMaskEdit.ParentFontChanged;
 asm
-    MOV  EDX, CM_PARENTFONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTFONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomMaskEdit.ParentShowHintChanged;
 asm
-    MOV  EDX, CM_PARENTSHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTSHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 function TJvExCustomMaskEdit.WantKey(Key: Integer; Shift: TShiftState;
@@ -339,41 +339,41 @@ end;
 {$ENDIF !HASAUTOSIZE}
 procedure TJvExCustomMaskEdit.CursorChanged;
 asm
-    MOV  EDX, CM_CURSORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_CURSORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomMaskEdit.ShowHintChanged;
 asm
-    MOV  EDX, CM_SHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomMaskEdit.ShowingChanged;
 asm
-    MOV  EDX, CM_SHOWINGCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWINGCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExCustomMaskEdit.ControlsListChanging(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanging
+        JMP     Control_ControlsListChanging
 end;
 
 procedure TJvExCustomMaskEdit.ControlsListChanged(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanged
+        JMP     Control_ControlsListChanged
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
 function TJvExCustomMaskEdit.GetParentBackground: Boolean;
 asm
-    JMP   JvThemes.GetParentBackground
+        JMP     JvThemes.GetParentBackground
 end;
 
 procedure TJvExCustomMaskEdit.SetParentBackground(Value: Boolean);
 asm
-    JMP   JvThemes.SetParentBackground
+        JMP     JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
   
@@ -405,7 +405,7 @@ end;
 
 function TJvExCustomMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-  JMP   DefaultDoPaintBackground
+        JMP     DefaultDoPaintBackground
 end;
   
 constructor TJvExCustomMaskEdit.Create(AOwner: TComponent);
@@ -422,7 +422,7 @@ end;
   
 procedure TJvExCustomMaskEdit.DoClearText;
 begin
- // (ahuser) there is no caClear so we restrict it to caCut
+  // (ahuser) there is no caClear so we restrict it to caCut
   if caCut in ClipboardCommands then
     InheritMsg(Self, WM_CLEAR);
 end;
@@ -472,49 +472,49 @@ end;
 
 procedure TJvExMaskEdit.Dispatch(var Msg);
 asm
-    JMP   DispatchMsg
+        JMP     DispatchMsg
 end;
 
 procedure TJvExMaskEdit.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_VISIBLECHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExMaskEdit.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_ENABLEDCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExMaskEdit.TextChanged;
 asm
-    MOV  EDX, CM_TEXTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_TEXTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExMaskEdit.FontChanged;
 asm
-    MOV  EDX, CM_FONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_FONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExMaskEdit.ColorChanged;
 asm
-    MOV  EDX, CM_COLORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_COLORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExMaskEdit.ParentFontChanged;
 asm
-    MOV  EDX, CM_PARENTFONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTFONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExMaskEdit.ParentShowHintChanged;
 asm
-    MOV  EDX, CM_PARENTSHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTSHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 function TJvExMaskEdit.WantKey(Key: Integer; Shift: TShiftState;
@@ -561,41 +561,41 @@ end;
 {$ENDIF !HASAUTOSIZE}
 procedure TJvExMaskEdit.CursorChanged;
 asm
-    MOV  EDX, CM_CURSORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_CURSORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExMaskEdit.ShowHintChanged;
 asm
-    MOV  EDX, CM_SHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExMaskEdit.ShowingChanged;
 asm
-    MOV  EDX, CM_SHOWINGCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWINGCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExMaskEdit.ControlsListChanging(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanging
+        JMP     Control_ControlsListChanging
 end;
 
 procedure TJvExMaskEdit.ControlsListChanged(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanged
+        JMP     Control_ControlsListChanged
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
 function TJvExMaskEdit.GetParentBackground: Boolean;
 asm
-    JMP   JvThemes.GetParentBackground
+        JMP     JvThemes.GetParentBackground
 end;
 
 procedure TJvExMaskEdit.SetParentBackground(Value: Boolean);
 asm
-    JMP   JvThemes.SetParentBackground
+        JMP     JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
   
@@ -627,7 +627,7 @@ end;
 
 function TJvExMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-  JMP   DefaultDoPaintBackground
+        JMP     DefaultDoPaintBackground
 end;
   
 constructor TJvExMaskEdit.Create(AOwner: TComponent);
@@ -644,7 +644,7 @@ end;
   
 procedure TJvExMaskEdit.DoClearText;
 begin
- // (ahuser) there is no caClear so we restrict it to caCut
+  // (ahuser) there is no caClear so we restrict it to caCut
   if caCut in ClipboardCommands then
     InheritMsg(Self, WM_CLEAR);
 end;

@@ -195,49 +195,49 @@ implementation
 
 procedure TJvExSpeedButton.Dispatch(var Msg);
 asm
-    JMP   DispatchMsg
+        JMP     DispatchMsg
 end;
 
 procedure TJvExSpeedButton.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_VISIBLECHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExSpeedButton.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_ENABLEDCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExSpeedButton.TextChanged;
 asm
-    MOV  EDX, CM_TEXTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_TEXTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExSpeedButton.FontChanged;
 asm
-    MOV  EDX, CM_FONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_FONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExSpeedButton.ColorChanged;
 asm
-    MOV  EDX, CM_COLORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_COLORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExSpeedButton.ParentFontChanged;
 asm
-    MOV  EDX, CM_PARENTFONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTFONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExSpeedButton.ParentShowHintChanged;
 asm
-    MOV  EDX, CM_PARENTSHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTSHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 function TJvExSpeedButton.WantKey(Key: Integer; Shift: TShiftState;
@@ -307,49 +307,49 @@ end;
  
 procedure TJvExBitBtn.Dispatch(var Msg);
 asm
-    JMP   DispatchMsg
+        JMP     DispatchMsg
 end;
 
 procedure TJvExBitBtn.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_VISIBLECHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExBitBtn.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_ENABLEDCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExBitBtn.TextChanged;
 asm
-    MOV  EDX, CM_TEXTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_TEXTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExBitBtn.FontChanged;
 asm
-    MOV  EDX, CM_FONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_FONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExBitBtn.ColorChanged;
 asm
-    MOV  EDX, CM_COLORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_COLORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExBitBtn.ParentFontChanged;
 asm
-    MOV  EDX, CM_PARENTFONTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTFONTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExBitBtn.ParentShowHintChanged;
 asm
-    MOV  EDX, CM_PARENTSHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_PARENTSHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 function TJvExBitBtn.WantKey(Key: Integer; Shift: TShiftState;
@@ -396,41 +396,41 @@ end;
 {$ENDIF !HASAUTOSIZE}
 procedure TJvExBitBtn.CursorChanged;
 asm
-    MOV  EDX, CM_CURSORCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_CURSORCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExBitBtn.ShowHintChanged;
 asm
-    MOV  EDX, CM_SHOWHINTCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWHINTCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExBitBtn.ShowingChanged;
 asm
-    MOV  EDX, CM_SHOWINGCHANGED
-    JMP  InheritMsg
+        MOV     EDX, CM_SHOWINGCHANGED
+        JMP     InheritMsg
 end;
 
 procedure TJvExBitBtn.ControlsListChanging(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanging
+        JMP     Control_ControlsListChanging
 end;
 
 procedure TJvExBitBtn.ControlsListChanged(Control: TControl; Inserting: Boolean);
 asm
-    JMP   Control_ControlsListChanged
+        JMP     Control_ControlsListChanged
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
 function TJvExBitBtn.GetParentBackground: Boolean;
 asm
-    JMP   JvThemes.GetParentBackground
+        JMP     JvThemes.GetParentBackground
 end;
 
 procedure TJvExBitBtn.SetParentBackground(Value: Boolean);
 asm
-    JMP   JvThemes.SetParentBackground
+        JMP     JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
   
@@ -462,7 +462,7 @@ end;
 
 function TJvExBitBtn.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-  JMP   DefaultDoPaintBackground
+        JMP     DefaultDoPaintBackground
 end;
   
 constructor TJvExBitBtn.Create(AOwner: TComponent);
