@@ -1170,10 +1170,10 @@ begin
   {$ENDIF VisualCLX}
 end;
 
-{$IFDEF VisualCLX}
 
 type
   TOpenControl = class(TControl);
+{$IFDEF VisualCLX}
   TOpenWidgetControl = class(TWidgetControl);
   TOpenCustomEdit = class(TCustomEdit);
   TOpenCustomMaskEdit = class(TCustomMaskEdit);
