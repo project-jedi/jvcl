@@ -15,9 +15,6 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   OnResize = FormResize
-  DesignSize = (
-    432
-    343)
   PixelsPerInch = 96
   TextHeight = 13
   object JvUninstallComboBox1: TJvUninstallComboBox
@@ -28,6 +25,7 @@ object Form1: TForm1
     ShowAll = False
     DropDownCount = 25
     ItemHeight = 13
+    Style = csDropDownList
     TabOrder = 0
     OnClick = JvUninstallComboBox1Click
   end
