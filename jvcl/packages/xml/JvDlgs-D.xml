@@ -24,7 +24,7 @@
   <Contains>
     <File Name="..\..\design\JvTipOfDayEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvAppletEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCommonDialogDEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCommonDialogDEditor.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\design\JvDlgsReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDialogActnResForm.pas" Targets="allbutclx" Formname="JvDialogActions: TDataModule" Condition=""/>
   </Contains>
