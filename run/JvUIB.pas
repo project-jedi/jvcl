@@ -1,4 +1,5 @@
 {******************************************************************************}
+{                                                                              }
 {                        UNIFIED INTERBASE (UIB)                               }
 {                                                                              }
 { Project JEDI Code Library (JCL)                                              }
@@ -21,13 +22,13 @@
 {   TUIBSQL, TUIBQuery.                                                        }
 {                                                                              }
 { Unit owner:    Henri Gourvest                                                }
-{ Last modified: Jun 08, 2003                                                  }
+{ Last modified: September 21, 2003                                            }
 {                                                                              }
 {******************************************************************************}
 
 unit JvUIB;
 
-{$I JVCL.INC}
+{$I JCL.INC}
 {$I JvUIB.inc}
 
 (*------------------------------------------------------------------------------
@@ -64,16 +65,16 @@ interface
 uses
   {$IFDEF MSWINDOWS} Windows, {$ENDIF}
   {$IFDEF USEJVCL} JvComponent, {$ENDIF}
-  Classes, SysUtils, JvUIBLib, JvUIBase, SyncObjs;
+  Classes, SysUtils, SyncObjs, JvUIBLib, JvUIBase, JvUIBSQLParser;
 
 type
 
  {Oo.........................................................................oO
-                              TUIBComponent
+                              TJvUIBComponent
 
       Synchronise Databases, Transactions and Queries.
 
-    Library        | TUIBDatabase     | TUIBTransaction  | TUIBQuery
+    TUIBLibrary    | TUIBDatabase     | TUIBTransaction  | TUIBQuery
    ==========================================================================
     Lock <---------|------------------|------------------|-----------------o
                    | Lock <-----------|------------------|---------------o
@@ -122,7 +123,7 @@ type
   // Forward declarations
   TJvUIBTransaction = class;
   TJvUIBQuery = class;
-  TJvUIBSQL = class;
+  TJvUIBStatement = class;
 
 {-----------------------------------------------------------------------------
   Class: TJvUIBDataBase
@@ -130,6 +131,8 @@ type
 -----------------------------------------------------------------------------}
   TJvUIBDataBase = class(TJvUIBComponent)
   private
+    FLibrary: TUIBLibrary;
+    FLiBraryName: string;
     FDbHandle: IscDbHandle;
     FHandleShared: boolean;
     FParams: TStrings;
@@ -160,6 +163,9 @@ type
     procedure ClearTransactions;
     procedure CloseTransactions;
     procedure SetHandle(const Value: IscDbHandle);
+    procedure SetLibraryName(const Lib: string);
+    function GetTransactions(const Index: Cardinal): TJvUIBTransaction;
+    function GetTransactionsCount: Cardinal;
   public
 {$IFDEF UIBNOCOMPONENT}
     constructor Create; override;
@@ -167,8 +173,13 @@ type
     constructor Create(AOwner: TComponent); override;
 {$ENDIF}
     destructor Destroy; override;
+    procedure ExecuteImmediate(const Statement: string);
+    procedure CreateDatabase(PageSize: Integer = 4096);
     property Handle: IscDbHandle read FDbHandle write SetHandle;
     property IsHandleShared : Boolean read FHandleShared;
+    property Transactions[const Index: Cardinal]: TJvUIBTransaction read GetTransactions;
+    property TransactionsCount: Cardinal read GetTransactionsCount;
+    property Lib: TUIBLibrary read FLibrary;
   published
     { DataBase connection parametters. }
     property Params: TStrings read FParams write SetParams;
@@ -185,6 +196,8 @@ type
     property UserName: string read GetUserName write SetUserName;
     { Set the Password. Default = masterkey. }
     property PassWord: string read GetPassWord write SetPassWord;
+    { Define wich library the connection use.}
+    property LibraryName: string read FLiBraryName write SetLibraryName;
     { This event occur after the component is connected to database. }
     property AfterConnect: TNotifyEvent read FAfterConnect write FAfterConnect;
     { This event occur before the component is connected to database. }
@@ -209,10 +222,10 @@ type
   TQueryState = (
     qsDataBase,    // have a database handle
     qsTransaction, // have a transaction handle
+    qsExecImme,    // Query executed immediately without the need of statement handle
     qsStatement,   // have a statement handle
-    qsExecImme,    // Query executed
     qsPrepare,     // Query prepared
-    qsExecute      // Query opened
+    qsExecute      // Query executed 
   );
 
   {Oo.......................................................................oO
@@ -245,6 +258,7 @@ type
 
   // Set of transaction parameters
   TTransParams = set of TTransParam;
+  TOnEndTransaction = procedure(Sender: TObject; var Mode: TEndTransMode) of object;
 
   TJvUIBTransaction = class(TJvUIBComponent)
   private
@@ -256,6 +270,8 @@ type
     FLockRead  : string;
     FLockWrite : string;
     FSQLDialect: Integer;
+    FOnStartTransaction: TNotifyEvent;
+    FOnEndTransaction: TOnEndTransaction;
     function GetInTransaction: Boolean;
     function TPB: string;
     function GetOptions: TTransParams;
@@ -268,10 +284,12 @@ type
     procedure BeginDataBase;
     procedure BeginTransaction;
     procedure EndTransaction(ETM: TEndTransMode);
-    procedure AddSQLComponent(Component: TJvUIBSQL);
-    procedure RemoveSQLComponent(Component: TJvUIBSQL);
+    procedure AddSQLComponent(Component: TJvUIBStatement);
+    procedure RemoveSQLComponent(Component: TJvUIBStatement);
     procedure ClearSQLComponents;
     procedure Close(const Mode: TEndTransMode = etmStayIn);
+    function GetStatements(const Index: Cardinal): TJvUIBStatement;
+    function GetStatementsCount: Cardinal;
   protected
 {$IFNDEF UIBNOCOMPONENT}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -286,36 +304,94 @@ type
     destructor Destroy; override;
     procedure Lock; override;
     procedure UnLock; override;
-
+    {Commit transaction.}
     procedure Commit;
+    {Commit transaction but keep transaction handle.}
     procedure CommitRetaining;
+    {Rollback transaction.}
     procedure RollBack;
+    {Rollback transaction but keep transaction handle.}
     procedure RollBackRetaining;
-
+    {Indicate if the transaction is active.}
+{$IFDEF IB71_UP}
+    procedure SavepointRelease(const Name: string);
+    procedure SavepointRollback(const Name: string; Option: Word = 0);
+    procedure SavepointStart(const Name: string);
+{$ENDIF}
     property InTransaction: Boolean read GetInTransaction;
+    {Transaction handle.}
     property Handle: IscTrHandle read FTransaction;
-
+    property Statements[const Index: Cardinal]: TJvUIBStatement read GetStatements;
+    property StatementsCount: Cardinal read GetStatementsCount;
   published
-
+    {Database connection.}
     property DataBase  : TJvUIBDataBase read GetDataBase write SetDataBase;
+    {Transaction parametters.}
     property Options   : TTransParams   read GetOptions    write SetOptions default [tpConcurrency,tpWait,tpWrite];
+    {List of the tables to lock for read, tpLockRead option must set. ex: 'Table1;Table2'}
     property LockRead  : string         read GetLockRead   write SetLockRead;
+    {List of the tables to lock for write, tpLockWrite option must set. ex: 'Table1;Table2'}
     property LockWrite : string         read GetLockWrite  write SetLockWrite;
+    {This event occur after a transaction is started.}
+    property OnStartTransaction: TNotifyEvent read FOnStartTransaction write FOnStartTransaction;
+    {This evenet occur before to end the transaction, you can change the ETM parametter.}
+    property OnEndTransaction: TOnEndTransaction read FOnEndTransaction write FOnEndTransaction;
   end;
 
-  TJvUIBSQL = class(TJvUIBComponent)
+  TJvUIBStatement = class(TJvUIBComponent)
   private
     FCurrentState: TQueryState;
     FTransaction: TJvUIBTransaction;
-    procedure BeginTransaction;
-    procedure EndTransaction(const ETM: TEndTransMode);
+    FStatement: IscStmtHandle;
+    FOnError: TEndTransMode;
+    FCursorName: string;
+    FSQLResult: TSQLResult;
+    FCachedFetch: boolean;
+    FFetchBlobs: boolean;
+    FBufferChunks: Cardinal;
+    FQuickScript: boolean;
+    FSQL: TStrings;
+    FParsedSQL: string;
+    FParameter: TSQLParams;
+    FParseParams: boolean;
+    FOnClose: TNotifyEvent;
+    function GetPlan: string;
+    function GetStatementType: TUIBStatementType;
+    procedure SetSQL(const Value: TStrings);
+    procedure DoSQLChange(Sender: TObject);
+    function GetFields: TSQLResult;
+    function GetEof: boolean;
   protected
     procedure SetTransaction(const Transaction: TJvUIBTransaction); virtual;
 {$IFNDEF UIBNOCOMPONENT}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 {$ENDIF}
+
+    procedure BeginTransaction; virtual;
+    procedure BeginStatement; virtual;
+    procedure BeginPrepare; virtual;
+    procedure BeginExecute; virtual;
+    procedure BeginExecImme; virtual;
+
+    procedure EndTransaction(const ETM: TEndTransMode); virtual;
+    procedure EndStatement(const ETM: TEndTransMode); virtual;
+    procedure EndPrepare(const ETM: TEndTransMode); virtual;
+    procedure EndExecute(const ETM: TEndTransMode); virtual;
+    procedure EndExecImme(const ETM: TEndTransMode); virtual;
+
+    procedure InternalNext; virtual;
+    procedure InternalPrior; virtual;
+
+    function  ParamsClass: TSQLParamsClass; virtual;
+    function  ResultClass: TSQLResultClass; virtual;
+
+    procedure InternalReadBlob(sqlda: TSQLDA; const Index: Word; Stream: TStream); overload;
+    procedure InternalReadBlob(sqlda: TSQLDA; const Index: Word; var str: string); overload;
+    procedure InternalReadBlob(sqlda: TSQLDA; const Index: Word; var Value: Variant); overload;
+
+    property QuickScript: boolean read FQuickScript write FQuickScript  default False;
+
   public
-    procedure Close(const Mode: TEndTransMode = etmStayIn); virtual;
 {$IFDEF UIBNOCOMPONENT}
     constructor Create; override;
 {$ELSE}
@@ -324,61 +400,17 @@ type
     destructor Destroy; override;
     procedure Lock; override;
     procedure UnLock; override;
-    property CurrentState: TQueryState read FCurrentState;
-  published
-    property Transaction: TJvUIBTransaction read FTransaction write SetTransaction;
-  end;
 
-  {Oo.......................................................................oO
-                                  TUIBQuery
-   Oo.......................................................................oO}
-  TJvUIBQuery = class(TJvUIBSQL)
-  private
-    FStatement: IscStmtHandle;
-    FQuickScript: boolean;
-    FSQL: TStrings;
-    FSQLResult: TSQLResult;
-    FCachedFetch: boolean;
-    FFetchBlobs: boolean;
-    FParameter: TSQLParams;
-    FEOF: boolean;
-    FBufferChunks: Cardinal;
-    FOnError: TEndTransMode;
-    FCursorName: string;
-    FUseCursor: boolean;
-    function GetFields: TSQLResult;
-    procedure BeginStatement;
-    procedure EndStatement(const ETM: TEndTransMode);
-    procedure EndExecImme(const ETM: TEndTransMode);
-    procedure OnSQLChange(Sender: TObject);
-    procedure SetSQL(const Value: TStrings);
-    procedure EndPrepare(const ETM: TEndTransMode);
-    procedure EndExecute(const ETM: TEndTransMode);
-
-    procedure InternalReadBlob(sqlda: TSQLDA; const Index: Word; Stream: TStream); overload;
-    procedure InternalReadBlob(sqlda: TSQLDA; const Index: Word; var str: string); overload;
-    procedure InternalReadBlob(sqlda: TSQLDA; const Index: Word; var Value: Variant); overload;
-
-  protected
-    procedure BeginPrepare;
-    procedure BeginExecute;
-    procedure BeginExecImme;
-    function  ParamsClass: TSQLParamsClass; virtual;
-    function  ResultClass: TSQLResultClass; virtual;
-  public
-{$IFDEF UIBNOCOMPONENT}
-    constructor Create; override;
-{$ELSE}
-    constructor Create(AOwner: TComponent); override;
-{$ENDIF}
-    destructor Destroy; override;
-
-    procedure Open;
-    procedure ExecSQL;
-    procedure Execute;
-    procedure Close(const Mode: TEndTransMode = etmStayIn); override;
-    procedure Next;
+    procedure Close(const Mode: TEndTransMode = etmStayIn); virtual;
     procedure FetchAll;
+    procedure Open;
+    procedure Prepare;
+    procedure Execute;
+    procedure ExecSQL;
+    procedure Next;
+    procedure Prior;
+    procedure Last;
+    procedure First;
 
     procedure ReadBlob(const Index: Word; Stream: TStream); overload;
     procedure ReadBlob(const Index: Word; var str: string); overload;
@@ -387,30 +419,70 @@ type
     procedure ReadBlob(const name: string; var str: string); overload;
     procedure ReadBlob(const name: string; var Value: Variant); overload;
 
-    function ParamsAddBlob(Stream: TStream): Word; overload;
-    function ParamsAddBlob(var Str: String): Word; overload;
-    function ParamsAddBlob(Buffer: Pointer; Size: Word): Word; overload;
-
-    procedure ParamsReadBlob(const Index: Word; Stream: TStream); overload;
-    procedure ParamsReadBlob(const Index: Word; var str: string); overload;
-    procedure ParamsReadBlob(const Index: Word; var Value: Variant); overload;
-
     procedure ParamsSetBlob(const Index: Word; Stream: TStream); overload;
     procedure ParamsSetBlob(const Index: Word; var str: string); overload;
     procedure ParamsSetBlob(const Index: Word; Buffer: Pointer; Size: Word); overload;
 
-    property Eof: boolean read FEOF;
+    procedure ParamsSetBlob(const Name: string; Stream: TStream); overload;
+    procedure ParamsSetBlob(const Name: string; var str: string); overload;
+    procedure ParamsSetBlob(const Name: string; Buffer: Pointer; Size: Word); overload;
+
     property Fields: TSQLResult read GetFields;
     property Params: TSQLParams read FParameter;
     property CursorName: string read FCursorName;
+    property CurrentState: TQueryState read FCurrentState;
+    property Eof: boolean read GetEof;
+    property ParseParams: boolean read FParseParams write FParseParams;
+
+    property Plan: string read GetPlan;
+    property StatementType: TUIBStatementType read GetStatementType;
+
   published
     property SQL: TStrings read FSQL write SetSQL;
+    property Transaction: TJvUIBTransaction read FTransaction write SetTransaction;
+    property OnError: TEndTransMode read FOnError write FOnError default etmRollback;
     property CachedFetch: boolean read FCachedFetch write FCachedFetch default True;
     property FetchBlobs: boolean read FFetchBlobs write FFetchBlobs default False;
-    property QuickScript: boolean read FQuickScript write FQuickScript  default False;
     property BufferChunks: Cardinal read FBufferChunks write FBufferChunks default 1000;
-    property OnError: TEndTransMode read FOnError write FOnError default etmRollback;
-    property UseCursor: boolean read FUseCursor write FUseCursor default False;
+
+    property OnClose: TNotifyEvent read FOnClose write FOnClose;
+  end;
+
+  {Oo.......................................................................oO
+                                  TUIBQuery
+   Oo.......................................................................oO}
+  TJvUIBQuery = class(TJvUIBStatement)
+  public
+    procedure BuildStoredProc(const StoredProc: string);
+  published
+    property QuickScript;
+  end;
+
+  TOnParse = procedure(Sender: TObject; NodeType: TSQLNodeType;
+    const Statement: string; Position, Count: Integer) of object;
+
+  TJvUIBScript = class(TJvUIBComponent)
+  private
+    FQuery: TJvUIBQuery;
+    FScript: TStrings;
+    FAutoDDL: boolean;
+    FOnParse: TOnParse;
+    procedure SetTransaction(const Value: TJvUIBTransaction);
+    function GetTransaction: TJvUIBTransaction;
+    procedure SetScript(const Value: TStrings);
+  public
+  {$IFDEF UIBNOCOMPONENT}
+    constructor Create; override;
+  {$ELSE}
+    constructor Create(AOwner: TComponent); override;
+  {$ENDIF}
+    destructor Destroy; override;
+    procedure ExecuteScript;
+  published
+    property Transaction: TJvUIBTransaction read GetTransaction write SetTransaction;
+    property Script: TStrings read FScript write SetScript;
+    property AutoDDL: boolean read FAutoDDL write FAutoDDL default True;
+    property OnParse: TOnParse read FOnParse write FOnParse;
   end;
 
   TUIBProtocol = (
@@ -421,6 +493,8 @@ type
 
   TJvUIBService = class(TJvUIBComponent)
   private
+    FLibrary: TUIBLibrary;
+    FLiBraryName: string;
     FUserName: string;
     FPassWord: string;
     FHost    : string;
@@ -429,17 +503,21 @@ type
     procedure BeginService;
     procedure EndService;
     function CreateSPB: string; virtual;
+    procedure SetLibraryName(const Lib: String);
   public
 {$IFDEF UIBNOCOMPONENT}
     constructor Create; override;
 {$ELSE}
     constructor Create(AOwner: TComponent); override;
 {$ENDIF}
+    destructor Destroy; override;
   published
     property UserName: string read FUserName write FUserName;
     property PassWord: string read FPassWord write FPassWord;
     property Host: string read FHost write FHost;
     property Protocol: TUIBProtocol read FProtocol write FProtocol default proLocalHost;
+    { Define wich library the connection use.}
+    property LibraryName: string read FLiBraryName write SetLibraryName;
   end;
 
   TVerboseEvent = procedure(Sender: TObject; Message: string) of object;
@@ -480,7 +558,9 @@ type
   end;
 
   TRestoreOption = (roDeactivateIndexes, roNoShadow, roNoValidityCheck,
-    roOneRelationAtATime, roReplace, roCreateNewDB, roUseAllSpace);
+    roOneRelationAtATime, roReplace, roCreateNewDB, roUseAllSpace
+    {$IFDEF IB71_UP},roValidate{$ENDIF});
+
   TRestoreOptions = set of TRestoreOption;
 
   TJvUIBRestore = class(TJvUIBBackupRestore)
@@ -499,6 +579,7 @@ type
     property PageSize: Cardinal read FPageSize write FPageSize default 0;
   end;
 
+
 implementation
 uses JvUIBConst;
 
@@ -515,6 +596,10 @@ const
     'WIN1255', 'WIN1256', 'WIN1257', 'ISO8859_3', 'ISO8859_4', 'ISO8859_5',
     'ISO8859_6', 'ISO8859_7', 'ISO8859_8', 'ISO8859_9', 'ISO8859_13'
 {$ENDIF}
+{$IFDEF IB71_UP}
+    ,'ISO8859_15', 'KOI8R'
+{$ENDIF}
+
     );
 
 procedure TJvUIBDataBase.AddTransaction(Transaction: TJvUIBTransaction);
@@ -544,6 +629,8 @@ end;
 {$ENDIF}
 begin
   inherited;
+  FLibrary := TUIBLibrary.Create;
+  FLiBraryName := GDS32DLL;
   FDbHandle := nil;
   FHandleShared := False;
   FParams := TStringList.Create;
@@ -560,6 +647,7 @@ begin
     TStringList(FParams).Free;
   finally
     UnLock;
+    FLibrary.Free;
   end;
   inherited;
 end;
@@ -604,6 +692,26 @@ begin
   end;
 end;
 
+procedure TJvUIBDataBase.ExecuteImmediate(const Statement: string);
+begin
+  FLibrary.Load(FLiBraryName);
+  FLibrary.DSQLExecuteImmediate(Statement, SQLDialect);
+end;
+
+procedure TJvUIBDataBase.CreateDatabase(PageSize: Integer = 4096);
+var TrHandle: IscTrHandle;
+const
+  CreateDb = 'CREATE DATABASE ''%s'' USER ''%s'' PASSWORD ''%s'' '+
+    'PAGE_SIZE %d DEFAULT CHARACTER SET %s';
+begin
+  TrHandle := nil;
+  Connected := False;
+  FLibrary.Load(FLiBraryName);
+  FLibrary.DSQLExecuteImmediate(FDbHandle, TrHandle,
+    Format(CreateDb, [DatabaseName, UserName, PassWord, PageSize,
+    CharacterSetStr[CharacterSet]]), SQLDialect);
+end;
+
 function TJvUIBDataBase.GetUserName: string;
 begin
   result := ReadParamString('user_name');
@@ -622,7 +730,7 @@ begin
   Lock;
   try
     I := FParams.IndexOfName(Param);
-    if I >= 0 then             
+    if I >= 0 then
     begin
       Result := Copy(FParams[I], Length(Param) + 2, Maxint);
       Exit;
@@ -653,10 +761,12 @@ begin
   if (Value = Connected) then Exit;
   Lock;
   try
+    with FLibrary do
     case Value of
       True  :
         begin
           if Assigned(BeforeConnect) then BeforeConnect(Self);
+          FLibrary.Load(FLiBraryName);
           if not FHandleShared then
             AttachDatabase(FDatabaseName, FDbHandle, FParams.Text, #13);
           if Assigned(AfterConnect) then AfterConnect(Self);
@@ -686,12 +796,34 @@ end;
 
 procedure TJvUIBDataBase.SetHandle(const Value: IscDbHandle);
 begin
-  if FDbHandle = nil then
+  if (FDbHandle = nil) or ((FDbHandle <> nil) and FHandleShared) then
   begin
+    FLibrary.Load(FLiBraryName);
     FDbHandle := Value;
     FHandleShared := (FDbHandle <> nil);
   end else
     raise Exception.Create(EUIB_DBHANDLEALLREADYSET);
+end;
+
+procedure TJvUIBDataBase.SetLibraryName(const Lib: string);
+begin
+  SetConnected(False);
+  FLibrary.UnLoad;
+  FLiBraryName := Lib;
+end;
+
+function TJvUIBDataBase.GetTransactions(const Index: Cardinal): TJvUIBTransaction;
+begin
+  if FTransactions <> nil then
+    Result := FTransactions.Items[Index] else
+    raise EListError.CreateFmt(EUIB_INDEXERROR,[Index]);
+end;
+
+function TJvUIBDataBase.GetTransactionsCount: Cardinal;
+begin
+  if FTransactions <> nil then
+    Result := FTransactions.Count else
+    Result := 0;
 end;
 
 procedure TJvUIBDataBase.SetParams(const Value: TStrings);
@@ -737,9 +869,9 @@ begin
   end;
 end;
 
-{ TJvUIBSQL }
+{ TJvUIBStatement }
 
-procedure TJvUIBSQL.SetTransaction(const Transaction: TJvUIBTransaction);
+procedure TJvUIBStatement.SetTransaction(const Transaction: TJvUIBTransaction);
 begin
   if (FTransaction <> Transaction) then
   begin
@@ -754,7 +886,7 @@ begin
   end;
 end;
 
-procedure TJvUIBSQL.BeginTransaction;
+procedure TJvUIBStatement.BeginTransaction;
 begin
   if FTransaction <> nil then
     FTransaction.BeginTransaction else
@@ -762,12 +894,129 @@ begin
   FCurrentState := qsTransaction;
 end;
 
-procedure TJvUIBSQL.Close(const Mode: TEndTransMode);
+procedure TJvUIBStatement.Close(const Mode: TEndTransMode);
 begin
-
+  case FCurrentState of
+    qsStatement   : EndStatement(Mode);
+    qsExecImme    : EndExecImme(Mode);
+    qsPrepare     : EndPrepare(Mode);
+    qsExecute     : EndExecute(Mode);
+  end;
 end;
 
-procedure TJvUIBSQL.EndTransaction(const ETM: TEndTransMode);
+procedure TJvUIBStatement.Open;
+begin
+  // if you reopen the same query I Close
+  // the cursor, clean sql result and
+  // execute the query again to save
+  // the prepare time !
+  if (FCurrentState = qsExecute) then
+  begin
+    Lock;
+    try
+      try
+        FSQLResult.ClearRecords;
+        with FTransaction.FDataBase.FLibrary do
+          DSQLFreeStatement(FStatement, DSQL_close);
+      except
+        Close(FOnError);
+        raise;
+      end;
+      BeginExecute;
+    finally
+      UnLock;
+    end;
+  end else
+    Close(etmStayIn);
+  InternalNext;
+end;
+
+procedure TJvUIBStatement.Next;
+begin
+  InternalNext;
+end;
+
+procedure TJvUIBStatement.Prior;
+begin
+  InternalPrior;
+end;
+
+procedure TJvUIBStatement.Last;
+begin
+
+  FetchAll;
+end;
+
+procedure TJvUIBStatement.First;
+begin
+  if (FSQLResult <> nil) and
+   (FSQLResult.RecordCount > 0) and
+    (FSQLResult.CurrentRecord <> 0) then
+   FSQLResult.CurrentRecord := 0;
+end;
+
+procedure TJvUIBStatement.FetchAll;
+begin
+  while not Eof do Next;
+end;
+
+procedure TJvUIBStatement.Execute;
+begin
+  BeginExecute;
+end;
+
+procedure TJvUIBStatement.ExecSQL;
+begin
+  BeginExecImme;
+end;
+
+procedure TJvUIBStatement.Prepare;
+begin
+  if (FCurrentState < qsPrepare) then
+  BeginPrepare
+end;
+
+procedure TJvUIBStatement.InternalNext;
+begin
+  if (FCurrentState < qsExecute) then
+    BeginExecute;
+  if ((Fields.CurrentRecord + 1) < Fields.RecordCount) then
+  begin
+    Fields.CurrentRecord := Fields.CurrentRecord + 1;
+  end else
+  begin
+    Lock;
+    try
+      with FTransaction.FDataBase.FLibrary do
+      try
+        if FSQLResult.FetchBlobs then
+          DSQLFetchWithBlobs(FTransaction.FDataBase.FDbHandle,
+            FTransaction.FTransaction, FStatement, FTransaction.FSQLDialect, FSQLResult) else
+          DSQLFetch(FStatement, FTransaction.FSQLDialect, FSQLResult);
+      except
+        if FOnError <> etmStayIn then
+          EndExecute(FOnError);
+        raise;
+      end;
+    finally
+      UnLock;
+    end;
+  end;
+  if eof then
+    beep;
+end;
+
+procedure TJvUIBStatement.InternalPrior;
+begin
+  if Fields.CachedFetch then
+  begin
+    if Fields.CurrentRecord > 0 then
+      Fields.CurrentRecord := Fields.CurrentRecord - 1;
+  end else
+    raise EUIBError.Create('CachedFetch property not set to True.');
+end;
+
+procedure TJvUIBStatement.EndTransaction(const ETM: TEndTransMode);
 begin
   if FTransaction <> nil then
     FTransaction.EndTransaction(ETM) else
@@ -776,103 +1025,12 @@ begin
      FCurrentState := qsDataBase;
 end;
 
-procedure TJvUIBSQL.Lock;
-begin
-  inherited;
-    Ftransaction.Lock;
-end;
-
-procedure TJvUIBSQL.UnLock;
-begin
-    Ftransaction.UnLock;
-  inherited;
-end;
-
-{$IFNDEF UIBNOCOMPONENT}
-procedure TJvUIBSQL.Notification(AComponent: TComponent; Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if ((AComponent = FTransaction) and (Operation = opRemove)) then
-    SetTransaction(nil);
-end;
-{$ENDIF}
-
-{$IFDEF UIBNOCOMPONENT}
-constructor TJvUIBSQL.Create;
-{$ELSE}
-constructor TJvUIBSQL.Create(AOwner: TComponent);
-{$ENDIF}
-begin
-  inherited;
-  FCurrentState := qsDataBase;
-{$IFNDEF UIBNOCOMPONENT}
-  if (AOwner is TJvUIBTransaction) then
-    Transaction := TJvUIBTransaction(AOwner) else
-{$ENDIF}
-    FTransaction := nil;
-end;
-
-destructor TJvUIBSQL.Destroy;
-begin
-  SetTransaction(nil);
-  inherited;
-end;
-
-{ TJvUIBQuery }
-
-//******************************************************************************
-// Constructor Destructor                                                      *
-//******************************************************************************
-{$IFDEF UIBNOCOMPONENT}
-constructor TJvUIBQuery.Create;
-{$ELSE}
-constructor TJvUIBQuery.Create(AOwner: TComponent);
-{$ENDIF}
-begin
-  inherited;
-  FSQL         := TStringList.Create;
-  TStringList(FSQL).OnChange := OnSQLChange;
-  FEOF         := True;
-  FCachedFetch := True;
-  FetchBlobs   := False;
-  FQuickScript := False;
-  FOnError     := etmRollback;
-  FParameter   := ParamsClass.Create;
-  FCursorName  := '';
-  FUseCursor   := False;
-  FBufferChunks := 1000;
-end;
-
-destructor TJvUIBQuery.Destroy;
-begin
-  FSQL.Free;
-  FreeAndNil(FParameter);
-  inherited Destroy;
-end;
-
-//******************************************************************************
-// Component features
-//******************************************************************************
-
-procedure TJvUIBQuery.OnSQLChange(Sender: TObject);
-begin
-  Close(etmStayIn);
-end;
-
-procedure TJvUIBQuery.SetSQL(const Value: TStrings);
-begin
-  FSQL.Assign(Value);
-end;
-
-//******************************************************************************
-// Statement
-//******************************************************************************
-
-procedure TJvUIBQuery.BeginStatement;
+procedure TJvUIBStatement.BeginStatement;
 begin
   BeginTransaction;
   Lock;
   try
+    with FTransaction.FDataBase.FLibrary do
     try
       FStatement := nil;
       DSQLAllocateStatement(FTransaction.FDataBase.FDbHandle, FStatement);
@@ -887,16 +1045,13 @@ begin
   FCurrentState := qsStatement;
 end;
 
-procedure TJvUIBQuery.EndStatement(const ETM: TEndTransMode);
+procedure TJvUIBStatement.EndStatement(const ETM: TEndTransMode);
 begin
   Lock;
   try
-    if FCursorName <> '' then
-    begin
-      FCursorName := '';
-      DSQLFreeStatement(FStatement, DSQL_drop); 
-    end else
-      DSQLFreeStatement(FStatement, 0);
+    with FTransaction.FDataBase.FLibrary do
+      DSQLFreeStatement(FStatement, DSQL_drop);
+
     FStatement := nil;
     Dec(FTransaction.FStatements);
   finally
@@ -905,20 +1060,71 @@ begin
   FCurrentState := qsTransaction;
   if (ETM <> etmStayIn) then
     EndTransaction(ETM);
+
+  if Assigned(FOnClose) then
+    FOnClose(Self);    
 end;
 
-function TJvUIBQuery.GetFields: TSQLResult;
+procedure TJvUIBStatement.BeginPrepare;
 begin
-  if (FSQLResult = nil) then
-    raise EUIBError.Create(EUIB_QUERYNOTOPEN);
-  Result := FSQLResult;
+  if (FStatement = nil) then BeginStatement;
+  FSQLResult := ResultClass.Create(0, FCachedFetch, FFetchBlobs, FBufferChunks);
+  Lock;
+  try
+    with FTransaction.FDataBase.FLibrary do
+    try
+    if (FQuickScript or (not FParseParams)) then
+      DSQLPrepare(FTransaction.FTransaction, FStatement, FSQL.Text,
+        FTransaction.FSQLDialect, FSQLResult) else
+      DSQLPrepare(FTransaction.FTransaction, FStatement, FParsedSQL,
+        FTransaction.FSQLDialect, FSQLResult);
+      FCursorName := 'C'+inttostr(Integer(FStatement));
+      DSQLSetCursorName(FStatement, FCursorName);
+    except
+      FreeAndNil(FSQLResult);
+      EndStatement(FOnError);
+      raise;
+    end;
+  finally
+    UnLock;
+  end;
+  FCurrentState := qsPrepare;
 end;
 
-//******************************************************************************
-// ExecImme                                                                      *
-//******************************************************************************
+procedure TJvUIBStatement.EndPrepare(const ETM: TEndTransMode);
+begin
+  FreeAndNil(FSQLResult);
+  FCurrentState := qsStatement;
+  EndStatement(ETM);
+end;
 
-procedure TJvUIBQuery.BeginExecImme;
+procedure TJvUIBStatement.BeginExecute;
+begin
+  if (FSQLResult = nil) then BeginPrepare;
+  Lock;
+  try
+    with FTransaction.FDataBase.FLibrary do
+    try
+      DSQLExecute(FTransaction.FTransaction, FStatement,
+        FTransaction.FSQLDialect, FParameter);
+    except
+      if (FOnError <> etmStayIn) then
+        EndPrepare(FOnError);
+      raise;
+    end;
+  finally
+    UnLock;
+  end;
+  FCurrentState := qsExecute;
+end;
+
+procedure TJvUIBStatement.EndExecute(const ETM: TEndTransMode);
+begin
+  FCurrentState := qsPrepare;
+  EndPrepare(ETM);
+end;
+
+procedure TJvUIBStatement.BeginExecImme;
 var
   I: Integer;
   procedure ExecuteQuery(const AQuery: String; Params: TSQLParams);
@@ -926,6 +1132,7 @@ var
     if (Trim(AQuery) = '') then exit;
     Lock;
     try
+      with FTransaction.FDataBase.FLibrary do
       try
         DSQLExecuteImmediate(FTransaction.FDataBase.FDbHandle, FTransaction.FTransaction,
           AQuery, FTransaction.FSQLDialect, Params);
@@ -941,176 +1148,184 @@ var
 begin
   BeginTransaction;
   if FQuickScript then
-    for i := 0 to SQL.Count - 1 do
+    for i := 0 to FSQL.Count - 1 do
     begin
-      ExecuteQuery(SQL.Strings[i], nil);
+      ExecuteQuery(FSQL.Strings[i], nil);
     end else
-      ExecuteQuery(SQL.Text, FParameter);
+      if FParseParams then
+        ExecuteQuery(FParsedSQL, FParameter) else
+        ExecuteQuery(FSQL.Text, FParameter);
   FCurrentState := qsExecImme;
 end;
 
-procedure TJvUIBQuery.EndExecImme(const ETM: TEndTransMode);
+procedure TJvUIBStatement.EndExecImme(const ETM: TEndTransMode);
 begin
   FCurrentState := qsTransaction;
   if (ETM <> etmStayIn) then
     EndTransaction(ETM);
 end;
 
-//******************************************************************************
-// Prepare                                                                   *
-//******************************************************************************
-
-procedure TJvUIBQuery.BeginPrepare;
+function TJvUIBStatement.ParamsClass: TSQLParamsClass;
 begin
-  if (FStatement = nil) then BeginStatement;
-  FSQLResult := ResultClass.Create(0, FCachedFetch, FFetchBlobs, FBufferChunks);
+  Result := TSQLParams;
+end;
+
+function TJvUIBStatement.ResultClass: TSQLResultClass;
+begin
+  Result := TSQLResult;
+end;
+
+procedure TJvUIBStatement.Lock;
+begin
+  inherited;
+    Ftransaction.Lock;
+end;
+
+procedure TJvUIBStatement.UnLock;
+begin
+    Ftransaction.UnLock;
+  inherited;
+end;
+
+procedure TJvUIBStatement.SetSQL(const Value: TStrings);
+begin
+  FSQL.Assign(Value);
+end;
+
+function TJvUIBStatement.GetPlan: string;
+begin
   Lock;
   try
-    try
-      DSQLPrepare(FTransaction.FTransaction, FStatement, FSQL.Text,
-        FTransaction.FSQLDialect, FSQLResult);
-      if FUseCursor then
-      begin
-        FCursorName := 'CURSOR'+inttostr(Integer(Self));
-        DSQLSetCursorName(FStatement, FCursorName);
-      end;
-    except
-      FreeAndNil(FSQLResult);
-      EndStatement(FOnError);
-      raise;
-    end;
+    if (FCurrentState < qsPrepare) then
+      Raise EUIBError.Create(EUIB_MUSTBEPREPARED)else
+      Result := FTransaction.FDataBase.FLibrary.DSQLInfoPlan(FStatement);
   finally
-    UnLock;
+    UnLock
   end;
-  FCurrentState := qsPrepare;
 end;
 
-procedure TJvUIBQuery.EndPrepare(const ETM: TEndTransMode);
+function TJvUIBStatement.GetStatementType: TUIBStatementType;
 begin
-  FreeAndNil(FSQLResult);
-  FCurrentState := qsStatement;
-  EndStatement(ETM);
-end;
-
-//******************************************************************************
-// Execute
-//******************************************************************************
-
-procedure TJvUIBQuery.BeginExecute;
-begin
-  if (FSQLResult = nil) then BeginPrepare;
+  Result := TUIBStatementType(-1); // invalid
   Lock;
   try
-    try
-      DSQLExecute(FTransaction.FTransaction, FStatement,
-        FTransaction.FSQLDialect, FParameter);
-    except
-      if (FOnError <> etmStayIn) then
-        EndPrepare(FOnError);
-      raise;
-    end;
+    if (FCurrentState < qsPrepare) then
+      Raise EUIBError.Create(EUIB_MUSTBEPREPARED)else
+      Result := FTransaction.FDataBase.FLibrary.DSQLInfoStatementType(FStatement);
   finally
-    UnLock;
+    UnLock
   end;
-  FCurrentState := qsExecute;
 end;
 
-procedure TJvUIBQuery.EndExecute(const ETM: TEndTransMode);
-begin
-  FEOF := True;
-  FCurrentState := qsPrepare;
-  EndPrepare(ETM);
-end;
-
-//******************************************************************************
-// Other
-//******************************************************************************
-
-procedure TJvUIBQuery.Open;
+procedure TJvUIBStatement.DoSQLChange(Sender: TObject);
 begin
   Close(etmStayIn);
-  Next;
+  if (not FQuickScript or FParseParams) then
+    FParsedSQL := FParameter.Parse(FSQL.Text);
 end;
 
-procedure TJvUIBQuery.Close(const Mode: TEndTransMode = etmStayIn);
+function TJvUIBStatement.GetFields: TSQLResult;
 begin
-  case FCurrentState of
-    qsStatement   : EndStatement(Mode);
-    qsExecImme    : EndExecImme(Mode);
-    qsPrepare     : EndPrepare(Mode);
-    qsExecute     : EndExecute(Mode);
-  end;
+  if (FSQLResult = nil) then
+    raise EUIBError.Create(EUIB_QUERYNOTOPEN);
+  Result := FSQLResult;
 end;
 
-procedure TJvUIBQuery.Next;
+function TJvUIBStatement.GetEof: boolean;
 begin
-  if (FCurrentState <> qsExecute) then
-  begin
-    Close;
-    BeginExecute;
-  end;
-  Lock;
-  try
-    try
-      if FSQLResult.FetchBlobs then
-        FEOF := not DSQLFetchWithBlobs(FTransaction.FDataBase.FDbHandle,
-          FTransaction.FTransaction, FStatement, FTransaction.FSQLDialect, FSQLResult) else
-        FEOF := not DSQLFetch(FStatement, FTransaction.FSQLDialect, FSQLResult);
-    except
-      EndExecute(FOnError);
-      raise;
-    end;
-  finally
-    UnLock;
-  end;
+  if Assigned(FSQLResult) then
+    Result := FSQLResult.Eof else
+    Result := True;
 end;
 
-procedure TJvUIBQuery.FetchAll;
+{$IFNDEF UIBNOCOMPONENT}
+procedure TJvUIBStatement.Notification(AComponent: TComponent; Operation: TOperation);
 begin
-  while not Eof do Next;
+  inherited Notification(AComponent, Operation);
+  if ((AComponent = FTransaction) and (Operation = opRemove)) then
+    SetTransaction(nil);
 end;
+{$ENDIF}
 
-procedure TJvUIBQuery.ExecSQL;
+{$IFDEF UIBNOCOMPONENT}
+constructor TJvUIBStatement.Create;
+{$ELSE}
+constructor TJvUIBStatement.Create(AOwner: TComponent);
+{$ENDIF}
 begin
-  BeginExecImme;
+  inherited;
+  FCurrentState := qsDataBase;
+{$IFNDEF UIBNOCOMPONENT}
+  if (AOwner is TJvUIBTransaction) then
+    Transaction := TJvUIBTransaction(AOwner) else
+{$ENDIF}
+    FTransaction := nil;
+  FSQL         := TStringList.Create;
+  TStringList(FSQL).OnChange := DoSQLChange;
+  FCachedFetch := True;
+  FetchBlobs   := False;
+  FQuickScript := False;
+  FOnError     := etmRollback;
+  FParameter   := ParamsClass.Create;
+  FCursorName  := '';
+  FBufferChunks := 1000;
+  FParseParams := True;
 end;
 
-procedure TJvUIBQuery.Execute;
+destructor TJvUIBStatement.Destroy;
 begin
-  BeginExecute;
+  FSQL.Free;
+  FreeAndNil(FParameter);
+  SetTransaction(nil);
+  inherited;
 end;
 
-function TJvUIBQuery.ParamsAddBlob(var Str: String): Word;
+procedure TJvUIBStatement.ReadBlob(const Index: Word; var Str: string);
+begin
+  if Fields.FetchBlobs then
+    Fields.ReadBlob(Index, Str) else
+    InternalReadBlob(Fields, Index, str);
+end;
+
+procedure TJvUIBStatement.ReadBlob(const Index: Word; Stream: TStream);
+begin
+  if Fields.FetchBlobs then
+    Fields.ReadBlob(Index, Stream) else
+    InternalReadBlob(Fields, Index, Stream);
+end;
+
+procedure TJvUIBStatement.ReadBlob(const Index: Word; var Value: Variant);
+begin
+  if Fields.FetchBlobs then
+    Fields.ReadBlob(Index, Value) else
+    InternalReadBlob(Fields, Index, Value);
+end;
+
+procedure TJvUIBStatement.ReadBlob(const name: string; Stream: TStream);
+begin
+  ReadBlob(Fields.GetFieldIndex(name), Stream);
+end;
+
+procedure TJvUIBStatement.ReadBlob(const name: string; var str: string);
+begin
+  ReadBlob(Fields.GetFieldIndex(name), str);
+end;
+
+procedure TJvUIBStatement.ReadBlob(const name: string; var Value: Variant);
+begin
+  ReadBlob(Fields.GetFieldIndex(name), Value);
+end;
+
+procedure TJvUIBStatement.ParamsSetBlob(const Index: Word; Stream: TStream);
 var BlobHandle: IscBlobHandle;
 begin
   if (FCurrentState < qsTransaction) then
     BeginTransaction;
-  Result := Params.AddBlob;
   BlobHandle := nil;
   Lock;
+  with FTransaction.FDataBase.FLibrary do
   try
-    Params.AsQuad[Result] := BlobCreate(FTransaction.FDataBase.FDbHandle,
-      FTransaction.FTransaction, BlobHandle);
-    try
-      BlobWriteString(BlobHandle, Str);
-    finally
-      BlobClose(BlobHandle);
-    end;
-  finally
-    UnLock;
-  end;
-end;
-
-function TJvUIBQuery.ParamsAddBlob(Stream: TStream): Word;
-var BlobHandle: IscBlobHandle;
-begin
-  if (FCurrentState < qsTransaction) then
-    BeginTransaction;
-  Result := Params.AddBlob;
-  BlobHandle := nil;
-  Lock;
-  try
-    Params.AsQuad[Result] := BlobCreate(FTransaction.FDataBase.FDbHandle,
+    Params.AsQuad[Index] := BlobCreate(FTransaction.FDataBase.FDbHandle,
       FTransaction.FTransaction, BlobHandle);
     try
       BlobWriteStream(BlobHandle, Stream);
@@ -1122,16 +1337,38 @@ begin
   end;
 end;
 
-function TJvUIBQuery.ParamsAddBlob(Buffer: Pointer; Size: Word): Word;
+procedure TJvUIBStatement.ParamsSetBlob(const Index: Word; var str: string);
 var BlobHandle: IscBlobHandle;
 begin
   if (FCurrentState < qsTransaction) then
     BeginTransaction;
-  Result := Params.AddBlob;
   BlobHandle := nil;
   Lock;
+  with FTransaction.FDataBase.FLibrary do
   try
-    Params.AsQuad[Result] := BlobCreate(FTransaction.FDataBase.FDbHandle,
+    Params.AsQuad[Index] := BlobCreate(FTransaction.FDataBase.FDbHandle,
+      FTransaction.FTransaction, BlobHandle);
+    try
+      BlobWriteString(BlobHandle, str);
+    finally
+      BlobClose(BlobHandle);
+    end;
+  finally
+    UnLock;
+  end;
+end;
+
+procedure TJvUIBStatement.ParamsSetBlob(const Index: Word; Buffer: Pointer;
+  Size: Word);
+var BlobHandle: IscBlobHandle;
+begin
+  if (FCurrentState < qsTransaction) then
+    BeginTransaction;
+  BlobHandle := nil;
+  Lock;
+  with FTransaction.FDataBase.FLibrary do
+  try
+    Params.AsQuad[Index] := BlobCreate(FTransaction.FDataBase.FDbHandle,
       FTransaction.FTransaction, BlobHandle);
     try
       BlobWriteSegment(BlobHandle, Size, Buffer);
@@ -1143,8 +1380,70 @@ begin
   end;
 end;
 
+procedure TJvUIBStatement.ParamsSetBlob(const Name: string; Stream: TStream);
+var BlobHandle: IscBlobHandle;
+begin
+  if (FCurrentState < qsTransaction) then
+    BeginTransaction;
+  BlobHandle := nil;
+  Lock;
+  with FTransaction.FDataBase.FLibrary do
+  try
+    Params.ByNameAsQuad[Name] := BlobCreate(FTransaction.FDataBase.FDbHandle,
+      FTransaction.FTransaction, BlobHandle);
+    try
+      BlobWriteStream(BlobHandle, Stream);
+    finally
+      BlobClose(BlobHandle);
+    end;
+  finally
+    UnLock;
+  end;
+end;
 
-procedure TJvUIBQuery.InternalReadBlob(sqlda: TSQLDA; const Index: Word;
+procedure TJvUIBStatement.ParamsSetBlob(const Name: string; var str: string);
+var BlobHandle: IscBlobHandle;
+begin
+  if (FCurrentState < qsTransaction) then
+    BeginTransaction;
+  BlobHandle := nil;
+  Lock;
+  with FTransaction.FDataBase.FLibrary do
+  try
+    Params.ByNameAsQuad[Name] := BlobCreate(FTransaction.FDataBase.FDbHandle,
+      FTransaction.FTransaction, BlobHandle);
+    try
+      BlobWriteString(BlobHandle, str);
+    finally
+      BlobClose(BlobHandle);
+    end;
+  finally
+    UnLock;
+  end;
+end;
+
+procedure TJvUIBStatement.ParamsSetBlob(const Name: string; Buffer: Pointer; Size: Word);
+var BlobHandle: IscBlobHandle;
+begin
+  if (FCurrentState < qsTransaction) then
+    BeginTransaction;
+  BlobHandle := nil;
+  Lock;
+  with FTransaction.FDataBase.FLibrary do
+  try
+    Params.ByNameAsQuad[Name] := BlobCreate(FTransaction.FDataBase.FDbHandle,
+      FTransaction.FTransaction, BlobHandle);
+    try
+      BlobWriteSegment(BlobHandle, Size, Buffer);
+    finally
+      BlobClose(BlobHandle);
+    end;
+  finally
+    UnLock;
+  end;
+end;
+
+procedure TJvUIBStatement.InternalReadBlob(sqlda: TSQLDA; const Index: Word;
   Stream: TStream);
 var
   BlobHandle: IscBlobHandle;
@@ -1154,6 +1453,7 @@ begin
   if (not sqlda.IsNull[Index]) then
   begin
     Lock;
+    with FTransaction.FDataBase.FLibrary do
     try
       BlobHandle := nil;
       BlobOpen(FTransaction.FDataBase.FDbHandle, FTransaction.FTransaction,
@@ -1169,7 +1469,7 @@ begin
   end;
 end;
 
-procedure TJvUIBQuery.InternalReadBlob(sqlda: TSQLDA; const Index: Word;
+procedure TJvUIBStatement.InternalReadBlob(sqlda: TSQLDA; const Index: Word;
   var str: string);
 var
   BlobHandle: IscBlobHandle;
@@ -1180,6 +1480,7 @@ begin
      str := '' else
   begin
     Lock;
+    with FTransaction.FDataBase.FLibrary do
     try
       BlobHandle := nil;
       BlobOpen(FTransaction.FDataBase.FDbHandle, FTransaction.FTransaction,
@@ -1195,7 +1496,7 @@ begin
   end;
 end;
 
-procedure TJvUIBQuery.InternalReadBlob(sqlda: TSQLDA; const Index: Word;
+procedure TJvUIBStatement.InternalReadBlob(sqlda: TSQLDA; const Index: Word;
   var Value: Variant);
 var
   BlobHandle: IscBlobHandle;
@@ -1205,6 +1506,7 @@ begin
   if (not sqlda.IsNull[Index]) then
   begin
     Lock;
+    with FTransaction.FDataBase.FLibrary do
     try
       BlobHandle := nil;
       BlobOpen(FTransaction.FDataBase.FDbHandle, FTransaction.FTransaction,
@@ -1220,144 +1522,111 @@ begin
   end;
 end;
 
-procedure TJvUIBQuery.ReadBlob(const Index: Word; var Str: string);
-begin
-  if Fields.FetchBlobs then
-    Fields.ReadBlob(Index, Str) else
-    InternalReadBlob(Fields, Index, str);
-end;
+{ TJvUIBQuery }
 
-procedure TJvUIBQuery.ReadBlob(const Index: Word; Stream: TStream);
+procedure TJvUIBQuery.BuildStoredProc(const StoredProc: string);
+var
+  i, r: Integer;
+  Str: string;
 begin
-  if Fields.FetchBlobs then
-    Fields.ReadBlob(Index, Stream) else
-    InternalReadBlob(Fields, Index, Stream);
-end;
-
-procedure TJvUIBQuery.ReadBlob(const Index: Word; var Value: Variant);
-begin
-  if Fields.FetchBlobs then
-    Fields.ReadBlob(Index, Value) else
-    InternalReadBlob(Fields, Index, Value);
-end;
-
-procedure TJvUIBQuery.ReadBlob(const name: string; Stream: TStream);
-begin
-  ReadBlob(Fields.GetFieldIndex(name), Stream);
-end;
-
-procedure TJvUIBQuery.ReadBlob(const name: string; var str: string);
-begin
-  ReadBlob(Fields.GetFieldIndex(name), str);
-end;
-
-procedure TJvUIBQuery.ReadBlob(const name: string; var Value: Variant);
-begin
-  ReadBlob(Fields.GetFieldIndex(name), Value);
-end;
-
-procedure TJvUIBQuery.ParamsReadBlob(const Index: Word; var Value: Variant);
-begin
-  InternalReadBlob(Params, Index, Value);
-end;
-
-procedure TJvUIBQuery.ParamsReadBlob(const Index: Word; var str: string);
-begin
-  InternalReadBlob(Params, Index, str);
-end;
-
-procedure TJvUIBQuery.ParamsReadBlob(const Index: Word; Stream: TStream);
-begin
-  InternalReadBlob(Params, Index, Stream);
-end;
-
-procedure TJvUIBQuery.ParamsSetBlob(const Index: Word; Stream: TStream);
-var BlobHandle: IscBlobHandle;
-begin
-  if (Params.FieldCount = Index) then
-    ParamsAddBlob(Stream) else
-  begin
-    if (FCurrentState < qsTransaction) then
-      BeginTransaction;
-    BlobHandle := nil;
-    Lock;
+  Close;
+  r := 0;
+  TStringList(FSQL).OnChange := nil;
+  try
+    Params.Clear;
+    FParsedSQL :=
+      'SELECT RDB$FIELD_TYPE, RDB$PARAMETER_NAME, RDB$FIELD_SCALE, RDB$PARAMETER_TYPE '+
+       'FROM RDB$PROCEDURE_PARAMETERS PRM JOIN RDB$FIELDS FLD ON '+
+       'PRM.RDB$FIELD_SOURCE = FLD.RDB$FIELD_NAME '+
+      'WHERE '+
+          'PRM.RDB$PROCEDURE_NAME = ''' + UpperCase(StoredProc) + ''' '+
+      'ORDER BY RDB$PARAMETER_TYPE, PRM.RDB$PARAMETER_NUMBER';
+    Open;
     try
-      if Params.IsNull[Index] then
-        Params.AsQuad[Index] := BlobCreate(FTransaction.FDataBase.FDbHandle,
-          FTransaction.FTransaction, BlobHandle) else
-        BlobOpen(FTransaction.FDataBase.FDbHandle, FTransaction.FTransaction,
-          BlobHandle, Params.AsQuad[Index]);
-      try
-        BlobWriteStream(BlobHandle, Stream);
-      finally
-        BlobClose(BlobHandle);
+      while not Eof do
+      begin
+        with Fields do
+        if AsSmallint[3] = 0 then
+        begin
+          if AsSmallint[2] < 0 then
+          begin
+            case Fields.AsSmallint[0] of
+              blr_short:  Params.AddFieldType(Trim(AsString[1]), uftNumeric, - AsSmallint[2], 4);
+              blr_long :  Params.AddFieldType(Trim(AsString[1]), uftNumeric, - AsSmallint[2], 7);
+              blr_int64,
+              blr_quad,
+              blr_double: Params.AddFieldType(Trim(AsString[1]), uftNumeric, - AsSmallint[2], 15);
+            else
+              Raise EUIBError.Create(EUIB_UNEXPECTEDERROR);
+            end;
+          end else
+          case Fields.AsSmallint[0] of
+            blr_text,
+            blr_text2,
+            blr_varying,
+            blr_varying2,
+            blr_cstring,
+            blr_cstring2  : Params.AddFieldType(Trim(AsString[1]), uftChar);
+            blr_float,
+            blr_d_float   : Params.AddFieldType(Trim(AsString[1]), uftFloat);
+            blr_short     : Params.AddFieldType(Trim(AsString[1]), uftSmallint);
+            blr_long      : Params.AddFieldType(Trim(AsString[1]), uftInteger);
+            blr_quad      : Params.AddFieldType(Trim(AsString[1]), uftQuad);
+            blr_double    : Params.AddFieldType(Trim(AsString[1]), uftDoublePrecision);
+            blr_timestamp : Params.AddFieldType(Trim(AsString[1]), uftTimestamp);
+            blr_blob,
+            blr_blob_id   : Params.AddFieldType(Trim(AsString[1]), uftBlob);
+            blr_sql_date  : Params.AddFieldType(Trim(AsString[1]), uftDate);
+            blr_sql_time  : Params.AddFieldType(Trim(AsString[1]), uftTime);
+            blr_int64     : Params.AddFieldType(Trim(AsString[1]), uftInt64);
+          {$IFDEF IB7_UP}
+            blr_boolean_dtype : Params.AddFieldType(Trim(AsString[1]), uftBoolean);
+          {$ENDIF}
+          else
+            // shouldn't occur but ...
+            raise EUIBError.Create('Unknow field type.');
+          end
+        end else
+          inc(r);
+        Next;
       end;
-    finally
-      UnLock;
+      if (Params.FieldCount > 0) then
+      begin
+        FParsedSQL := ' (';
+        Str        := ' (';
+        for i := 0 to Params.FieldCount - 1 do
+        begin
+          FParsedSQL := FParsedSQL + '?,';
+          Str        := Str        + ':'+ Params.FieldName[i] +','
+        end;
+        FParsedSQL[Length(FParsedSQL)] := ')';
+        Str[Length(Str)] := ')';
+        if r > 0 then
+          begin
+            FParsedSQL := 'SELECT * FROM ' + StoredProc + FParsedSQL;
+            FSQL.Text  := 'SELECT * FROM ' + StoredProc + Str;
+          end else
+          begin
+            FParsedSQL := 'EXECUTE PROCEDURE ' + StoredProc + FParsedSQL;
+            FSQL.Text  := 'EXECUTE PROCEDURE ' + StoredProc + Str;
+          end;
+      end else
+        begin
+          if r > 0 then
+            FParsedSQL := 'SELECT * FROM ' + StoredProc else
+            FParsedSQL := 'EXECUTE PROCEDURE ' + StoredProc;
+          FSQL.Text := FParsedSQL;
+        end;
+    except
+      FParsedSQL := '';
+      Params.Clear;
+      Close(FOnError);
+      raise;
     end;
+  finally
+    Close;
+    TStringList(FSQL).OnChange := DoSQLChange;
   end;
-end;
-
-procedure TJvUIBQuery.ParamsSetBlob(const Index: Word; var str: string);
-var BlobHandle: IscBlobHandle;
-begin
-  if (Params.FieldCount = Index) then
-    ParamsAddBlob(str) else
-  begin
-    if (FCurrentState < qsTransaction) then
-      BeginTransaction;
-    BlobHandle := nil;
-    Lock;
-    try
-      Params.AsQuad[Index] := BlobCreate(FTransaction.FDataBase.FDbHandle,
-        FTransaction.FTransaction, BlobHandle);
-      try
-        BlobWriteString(BlobHandle, str);
-      finally
-        BlobClose(BlobHandle);
-      end;
-    finally
-      UnLock;
-    end;
-  end;
-end;
-
-procedure TJvUIBQuery.ParamsSetBlob(const Index: Word; Buffer: Pointer;
-  Size: Word);
-var BlobHandle: IscBlobHandle;
-begin
-  if (Params.FieldCount = Index) then
-    ParamsAddBlob(Buffer, Size) else
-  begin
-    if (FCurrentState < qsTransaction) then
-      BeginTransaction;
-    BlobHandle := nil;
-    Lock;
-    try
-      if Params.IsNull[Index] then
-        Params.AsQuad[Index] := BlobCreate(FTransaction.FDataBase.FDbHandle,
-          FTransaction.FTransaction, BlobHandle) else
-        BlobOpen(FTransaction.FDataBase.FDbHandle, FTransaction.FTransaction,
-          BlobHandle, Params.AsQuad[Index]);
-      try
-        BlobWriteSegment(BlobHandle, Size, Buffer);
-      finally
-        BlobClose(BlobHandle);
-      end;
-    finally
-      UnLock;
-    end;
-  end;
-end;
-
-function TJvUIBQuery.ParamsClass: TSQLParamsClass;
-begin
-  Result := TSQLParams;
-end;
-
-function TJvUIBQuery.ResultClass: TSQLResultClass;
-begin
-  Result := TSQLResult;
 end;
 
 { TJvUIBTransaction }
@@ -1369,9 +1638,9 @@ constructor TJvUIBTransaction.Create(AOwner: TComponent);
 {$ENDIF}
 begin
   inherited;
-  FOptions := [tpConcurrency,tpWait,tpWrite];
-  FTransaction := nil;
-  FStatements  := 0;
+  FOptions       := [tpConcurrency,tpWait,tpWrite];
+  FTransaction   := nil;
+  FStatements    := 0;
 end;
 
 destructor TJvUIBTransaction.Destroy;
@@ -1417,6 +1686,20 @@ begin
   EndTransaction(Mode);
 end;
 
+function TJvUIBTransaction.GetStatements(const Index: Cardinal): TJvUIBStatement;
+begin
+  if FSQLComponent <> nil then
+    Result := FSQLComponent.Items[Index] else
+    raise EListError.CreateFmt(EUIB_INDEXERROR,[Index]);
+end;
+
+function TJvUIBTransaction.GetStatementsCount: Cardinal;
+begin
+  if FSQLComponent <> nil then
+    Result := FSQLComponent.Count else
+    Result := 0;
+end;
+
 procedure TJvUIBTransaction.BeginDataBase;
 begin
   if (FDataBase = nil) then raise Exception.Create(EUIB_DATABASENOTDEF);
@@ -1428,8 +1711,13 @@ begin
   if not FDataBase.Connected then BeginDataBase;
   Lock;
   try
+    with FDataBase.FLibrary do
     if (FTransaction = nil) then
-      TransactionStart(FTransaction, FDataBase.FDbHandle, TPB) else
+    begin
+      TransactionStart(FTransaction, FDataBase.FDbHandle, TPB);
+      if Assigned(FOnStartTransaction) then
+        FOnStartTransaction(Self);
+    end;
   finally
     UnLock;
   end;
@@ -1440,19 +1728,22 @@ begin
   Lock;
   try
     if (FTransaction <> nil) then
+      with FDataBase.FLibrary do
       try
-         { If there is Statements alive I must keep handle.}
-          if FStatements > 0 then
-            case ETM of
-              etmCommit   : ETM := etmCommitRetaining;
-              etmRollback : ETM := etmRollbackRetaining;
-            end;
+        if Assigned(FOnEndTransaction) then
+          FOnEndTransaction(Self, ETM);
+       { If there is Statements alive I must keep handle.}
+        if FStatements > 0 then
           case ETM of
-            etmCommit            : TransactionCommit(FTransaction);
-            etmCommitRetaining   : TransactionCommitRetaining(FTransaction);
-            etmRollback          : TransactionRollback(FTransaction);
-            etmRollbackRetaining : TransactionRollbackRetaining(FTransaction);
+            etmCommit   : ETM := etmCommitRetaining;
+            etmRollback : ETM := etmRollbackRetaining;
           end;
+        case ETM of
+          etmCommit            : TransactionCommit(FTransaction);
+          etmCommitRetaining   : TransactionCommitRetaining(FTransaction);
+          etmRollback          : TransactionRollback(FTransaction);
+          etmRollbackRetaining : TransactionRollbackRetaining(FTransaction);
+        end;
       except
         case ETM of
           etmCommit          : TransactionRollback(FTransaction);
@@ -1465,7 +1756,7 @@ begin
   end;
 end;
 
-procedure TJvUIBTransaction.AddSQLComponent(Component: TJvUIBSQL);
+procedure TJvUIBTransaction.AddSQLComponent(Component: TJvUIBStatement);
 begin
   if (FSQLComponent = nil) then FSQLComponent := TList.Create;
   FSQLComponent.Add(Component);
@@ -1477,7 +1768,7 @@ begin
     TJvUIBQuery(FSQLComponent.Last).SetTransaction(nil);
 end;
 
-procedure TJvUIBTransaction.RemoveSQLComponent(Component: TJvUIBSQL);
+procedure TJvUIBTransaction.RemoveSQLComponent(Component: TJvUIBStatement);
 begin
   if (FSQLComponent <> nil) then
   begin
@@ -1521,6 +1812,26 @@ begin
   EndTransaction(etmRollbackRetaining);
 end;
 
+{$IFDEF IB71_UP}
+procedure TJvUIBTransaction.SavepointRelease(const Name: string);
+begin
+  BeginTransaction;
+  FDataBase.FLibrary.SavepointRelease(FTransaction, Name);
+end;
+
+procedure TJvUIBTransaction.SavepointRollback(const Name: string; Option: Word = 0);
+begin
+  BeginTransaction;
+  FDataBase.FLibrary.SavepointRollback(FTransaction, Name, Option);
+end;
+
+procedure TJvUIBTransaction.SavepointStart(const Name: string);
+begin
+  BeginTransaction;
+  FDataBase.FLibrary.SavepointStart(FTransaction, Name);
+end;
+{$ENDIF}
+
 function TJvUIBTransaction.GetInTransaction: Boolean;
 begin
   Lock;
@@ -1530,27 +1841,6 @@ begin
     UnLock;
   end;
 end;
-
-//function TJvUIBTransaction.TPB: string;
-//var
-//  tp: TTransParam;
-//begin
-//  if FOptions = [tpConcurrency,tpWait,tpWrite] then
-//    result := ''
-//  else
-//    begin
-//      Result := isc_tpb_version3;
-//      for tp := low(TTransParam) to High(TTransParam) do
-//        if (tp in FOptions) then
-//        begin
-//          Result := Result + Char(Ord(tp)+1);
-//          case tp of
-//            tpLockRead : Result := Result + Char(Length(FLockRead)) + FLockRead;
-//            tpLockWrite: Result := Result + Char(Length(FLockWrite)) + FLockWrite;
-//          end;
-//        end;
-//    end;
-//end;
 
 function TJvUIBTransaction.TPB: string;
 var
@@ -1592,7 +1882,6 @@ begin
         end;
     end;
 end;
-
 
 function TJvUIBTransaction.GetOptions: TTransParams;
 begin
@@ -1701,10 +1990,11 @@ end;
 
 procedure TJvUIBService.BeginService;
 begin
+  FLibrary.Load(FLiBraryName);
   case FProtocol of
-    proLocalHost : ServiceAttach('service_mgr', FHandle, CreateSPB);
-    proTCPIP     : ServiceAttach(Fhost + ':service_mgr', FHandle, CreateSPB);
-    proNetBUI    : ServiceAttach('\\'+ Fhost + '\service_mgr', FHandle, CreateSPB);
+    proLocalHost : FLibrary.ServiceAttach('service_mgr', FHandle, CreateSPB);
+    proTCPIP     : FLibrary.ServiceAttach(Fhost + ':service_mgr', FHandle, CreateSPB);
+    proNetBUI    : FLibrary.ServiceAttach('\\'+ Fhost + '\service_mgr', FHandle, CreateSPB);
   end;
 end;
 
@@ -1715,8 +2005,16 @@ constructor TJvUIBService.Create(AOwner: TComponent);
 {$ENDIF}
 begin
   inherited;
+  FLibrary := TUIBLibrary.Create;
+  FLiBraryName := GDS32DLL;
   FProtocol := proLocalHost;
   FHandle := nil;
+end;
+
+destructor TJvUIBService.Destroy;
+begin
+  inherited;
+  FLibrary.Free;
 end;
 
 function TJvUIBService.CreateSPB: string;
@@ -1731,9 +2029,15 @@ begin
   AddString(isc_spb_password, FPassWord);
 end;
 
+procedure TJvUIBService.SetLibraryName(const Lib: String);
+begin
+  FLibrary.UnLoad;
+  FLiBraryName := Lib;
+end;
+
 procedure TJvUIBService.EndService;
 begin
-  ServiceDetach(FHandle);
+  FLibrary.ServiceDetach(FHandle);
 end;
 
 { TJvUIBBackupRestore }
@@ -1766,13 +2070,13 @@ var
 begin
   BeginService;
   try
-    ServiceStart(FHandle, CreateStartSPB);
+    FLibrary.ServiceStart(FHandle, CreateStartSPB);
     if Assigned(FOnVerbose) then
     begin
       SetLength(Buffer, 1024);
       while true do
       begin
-        ServiceQuery(FHandle, '', isc_info_svc_line, Buffer);
+        FLibrary.ServiceQuery(FHandle, '', isc_info_svc_line, Buffer);
         if (Buffer[1] <> isc_info_svc_line) then
           raise EUIBError.Create(EUIB_UNEXPECTEDERROR);
         Len := PWord(@Buffer[2])^;
@@ -1894,6 +2198,201 @@ begin
   if FPageSize > 0 then
     Result := Result + isc_spb_res_page_size + PChar(@FPageSize)[0] +
       PChar(@FPageSize)[1] + PChar(@FPageSize)[2] + PChar(@FPageSize)[3];
+end;
+
+
+{ TJvUIBScript }
+{$IFDEF UIBNOCOMPONENT}
+constructor TJvUIBScript.Create;
+{$ELSE}
+constructor TJvUIBScript.Create(AOwner: TComponent);
+{$ENDIF}
+begin
+  inherited;
+  FQuery := TJvUIBQuery.Create(nil);
+  FQuery.ParseParams := False;
+  FScript := TStringList.Create;
+  FAutoDDL := True;
+end;
+
+destructor TJvUIBScript.Destroy;
+begin
+  FQuery.Free;
+  FScript.Free;
+  inherited;
+end;
+
+procedure TJvUIBScript.ExecuteScript;
+var
+  FStream: TStringStream;
+  Lexer: TUIBLexer;
+  Grammar: TUIBGrammar;
+  i, k: Integer;
+  j: TCharacterSet;
+  Dialect: Integer;
+  TrHandle: IscTrHandle;
+
+  procedure CheckDatabase;
+  begin
+    if (Transaction = nil) then
+       raise EUIBError.Create(EUIB_TRANSACTIONNOTDEF);
+    if (Transaction.DataBase = nil) then
+       raise EUIBError.Create(EUIB_DATABASENOTDEF);
+  end;
+
+  function Statement: string;
+  var p: Integer;
+  begin
+    with Grammar.RootNode.Nodes[i] do
+    begin
+      p := PosFrom.Pos;
+      FStream.Seek(p, soFromBeginning);
+      Result := FStream.ReadString(PosTo.Pos - p);
+    end;
+  end;
+
+begin
+  FStream := TStringStream.Create(FScript.Text);
+  Lexer := TUIBLexer.Create(FStream);
+  Grammar := TUIBGrammar.Create(Lexer);
+  try
+    if (Grammar.yyparse = 0) and (Grammar.RootNode <> nil) then
+    begin
+      for i := 0 to Grammar.RootNode.NodesCount - 1 do
+      begin
+        if Assigned(FOnParse) then
+          FOnParse(self, Grammar.RootNode.Nodes[i].NodeType, Statement, i,
+            Grammar.RootNode.NodesCount);
+        case Grammar.RootNode.Nodes[i].NodeType of
+          NodeSetSqlDialect:
+            begin
+              CheckDatabase;
+              if TryStrToInt(Grammar.RootNode.Nodes[i].Value, Dialect) then
+                Transaction.DataBase.SQLDialect := Dialect else
+                raise EUIBError.Create('Parse error: SET SQL DIALECT');
+            end;
+          NodeSetNames:
+            begin
+              CheckDatabase;
+              for j := low(TCharacterSet) to high(TCharacterSet) do
+              begin
+                if (CompareText(CharacterSetStr[j], Grammar.RootNode.Nodes[i].Value) = 0) then
+                begin
+                  Transaction.DataBase.CharacterSet := j;
+                  Break;
+                end;
+                raise EUIBError.Create('Parse error: SET NAMES');
+              end;
+            end;
+          NodeCreateDatabase:
+            begin
+              CheckDatabase;
+              Transaction.DataBase.Connected := False;
+              TrHandle := nil;
+              with Transaction.DataBase do
+              begin
+                FLibrary.Load(FLiBraryName);
+                // I MUST provide the real DB Handle (not nil)
+                // because altering forein key can fail otherwise.
+                Transaction.DataBase.Lock;
+                try
+                  FLibrary.DSQLExecuteImmediate(
+                    FDbHandle, TrHandle, Statement, SQLDialect);
+                finally
+                  Transaction.DataBase.UnLock;
+                end;
+              end;
+              with Grammar.RootNode.Nodes[i].Nodes[0] do
+              for k := 0 to NodesCount - 1 do
+              case Nodes[k].NodeType of
+                NodeName     : Transaction.DataBase.DatabaseName :=
+                  copy(Nodes[k].Value ,2, Length(Nodes[k].Value) - 2);
+                NodeUsername : Transaction.DataBase.UserName :=
+                  copy(Nodes[k].Value ,2, Length(Nodes[k].Value) - 2);
+                NodePassWord : Transaction.DataBase.PassWord :=
+                  copy(Nodes[k].Value ,2, Length(Nodes[k].Value) - 2);
+              end;
+            end;
+          NodeConnect:
+            with Transaction.DataBase do
+            begin
+              Connected := False;
+              with Grammar.RootNode.Nodes[i] do
+              begin
+                DatabaseName := copy(Nodes[0].Value ,2, Length(Nodes[0].Value) - 2);
+                UserName     := copy(Nodes[1].Value ,2, Length(Nodes[1].Value) - 2);
+                PassWord     := copy(Nodes[2].Value ,2, Length(Nodes[2].Value) - 2);
+              end;
+              Connected := True;
+            end;
+          NodeSetAutoDDL:
+            begin
+              if UpperCase(Grammar.RootNode.Nodes[i].Value) = 'ON' then  FAutoDDL := True else
+              if UpperCase(Grammar.RootNode.Nodes[i].Value) = 'OFF' then FAutoDDL := False else
+              raise EUIBError.Create('"SET AUTODDL" must be "ON" or "OFF"');
+            end;
+          NodeCommit:
+            begin
+              Transaction.Commit;
+            end;
+          NodeRollback:
+            begin
+              Transaction.RollBack;
+            end;
+        {$IFDEF IB71_UP}
+          NodeSavepointSet:
+            Transaction.SavepointStart(Grammar.RootNode.Nodes[i].Nodes[0].Value);
+          NodeSavepointRelease:
+            Transaction.SavepointRelease(Grammar.RootNode.Nodes[i].Nodes[0].Value);
+          NodeSavepointUndo:
+            Transaction.SavepointRollback(Grammar.RootNode.Nodes[i].Nodes[0].Value);
+        {$ENDIF}
+          NodeSelect, // perhaps a select statement execute a procedure ...
+          NodeInsert,
+          NodeDeleteSearched,
+          NodeDeletePositioned,
+          NodeUpdateSearched,
+          NodeUpdatePositioned:
+            begin
+              FQuery.SQL.Text := trim(Statement);
+              FQuery.ExecSQL;
+              FQuery.Close(etmStayIn);
+            end;
+        else
+          // DDL ...
+          FQuery.SQL.Text := trim(Statement);
+          FQuery.ExecSQL; // faster for ddl
+          if FAutoDDL then
+            FQuery.Close(etmCommit) else
+            FQuery.Close(etmStayIn);
+
+        end;
+      end;
+    end else
+      raise EUIBParser.Create(Lexer.yylineno, Lexer.yycolno);
+  finally
+    FQuery.Close(etmCommit);
+    Transaction.Commit;
+    Grammar.Free;
+    Lexer.yyinput := nil;
+    FStream.Free;
+    Lexer.Free;
+  end;
+end;
+
+function TJvUIBScript.GetTransaction: TJvUIBTransaction;
+begin
+  Result := FQuery.Transaction;
+end;
+
+procedure TJvUIBScript.SetScript(const Value: TStrings);
+begin
+  FScript.Assign(Value);
+end;
+
+procedure TJvUIBScript.SetTransaction(const Value: TJvUIBTransaction);
+begin
+  FQuery.Transaction := Value;
 end;
 
 end.

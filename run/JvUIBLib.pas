@@ -24,25 +24,32 @@
 { The Initial Developer of TMemoryPool is TurboPower FlashFiler.               }
 {                                                                              }
 { Unit owner:    Henri Gourvest                                                }
-{ Last modified: Jun 14, 2003                                                  }
+{ Last modified: September 21, 2003                                            }
 {                                                                              }
 {******************************************************************************}
 
 unit JvUIBLib;
 
-{$IFNDEF BCB}
 {$I JCL.INC}
-{$ENDIF}
 {$I JvUIB.inc}
+
+{$ALIGN ON}
+{$MINENUMSIZE 4}
 
 interface
 uses
-{$IFDEF COMPILER6_UP}
-  Variants,
-{$ENDIF}
+{$IFDEF MSWINDOWS}Windows, {$ENDIF}
+{$IFDEF COMPILER6_UP} Variants, {$ENDIF}
+{$IFDEF FPC} Variants, {$ENDIF}
   JvUIBase, JvUIBError, Classes, SysUtils;
 
 type
+
+  TUIBFieldType = (uftUnKnown, uftNumeric, uftChar, uftVarchar, uftCstring, uftSmallint,
+    uftInteger, uftQuad, uftFloat, uftDoublePrecision, uftTimestamp, uftBlob, uftBlobId,
+    uftDate, uftTime, uftInt64 {$IFDEF IB7_UP}, uftBoolean{$ENDIF});
+
+  TScale = 1..15;
 
 //******************************************************************************
 // Errors handling
@@ -67,30 +74,23 @@ type
   EUIBLicenseError = class(EUIBError);
   EUIBGStatError   = class(EUIBError);
 
+  EUIBParser = class(Exception)
+  private
+    FLine: Integer;
+    FCharacter: Integer;
+  public
+    constructor Create(Line, Character: Integer);
+    property Line: Integer read FLine;
+    property Character: Integer read FCharacter;
+  end;
+
 const
   QuadNull: TISCQuad = (gds_quad_high: 0; gds_quad_low: 0);
 
 //******************************************************************************
 // Database
 //******************************************************************************
-  // API
 
-  {Attaches to an existing database.
-   Ex: AttachDatabase('c:\DataBase.gdb', DBHandle, 'user_name=SYSDBA; password=masterkey'); }
-  procedure AttachDatabase(FileName: String; var DbHandle: IscDbHandle; Params: String; Sep: Char = ';');
-
-  {Detaches from a database previously connected with AttachDatabase.}
-  procedure DetachDatabase(var DBHandle: IscDbHandle);
-
-// TODO
-// function  isc_create_database
-// function  isc_database_info
-// function  isc_drop_database
-// function  isc_version
-// procedure isc_expand_dpb
-// function  isc_modify_dpb
-
-  // Utility
 type
   TCharacterSet = (csNONE, csASCII, csBIG_5, csCYRL, csDOS437, csDOS850,
   csDOS852, csDOS857, csDOS860, csDOS861, csDOS863, csDOS865, csEUCJ_0208,
@@ -100,6 +100,9 @@ type
   ,csDOS737, csDOS775, csDOS858, csDOS862, csDOS864, csDOS866, csDOS869, csWIN1255,
   csWIN1256, csWIN1257, csISO8859_3, csISO8859_4, csISO8859_5, csISO8859_6, csISO8859_7,
   csISO8859_8, csISO8859_9, csISO8859_13
+{$ENDIF}
+{$IFDEF IB71_UP}
+  ,csISO8859_15 ,csKOI8R
 {$ENDIF}
   );
 
@@ -113,19 +116,6 @@ const
   // Default Transaction Parameter
   TPBDefault = isc_tpb_version3 + isc_tpb_write + isc_tpb_concurrency + isc_tpb_wait;
 
-  // API
-  procedure TransactionStart(var TraHandle: IscTrHandle; var DbHandle: IscDbHandle; const TPB: string = '');
-  procedure TransactionStartMultiple(var TraHandle: IscTrHandle; DBCount: Smallint; Vector: PISCTEB);
-  procedure TransactionCommit(var TraHandle: IscTrHandle);
-  procedure TransactionRollback(var TraHandle: IscTrHandle);
-  procedure TransactionCommitRetaining(var TraHandle: IscTrHandle);
-  procedure TransactionPrepare(var TraHandle: IscTrHandle);
-  procedure TransactionRollbackRetaining(var TraHandle: IscTrHandle);
-
-// TODO
-// function isc_prepare_transaction2
-// function isc_transaction_info
-
 //******************************************************************************
 //  DSQL
 //******************************************************************************
@@ -134,16 +124,50 @@ const
   // TSQLDA
   //****************************************
 
+const
+{$IFDEF IB7_UP}
+  MaxParamLength = 274;
+{$ELSE}
+  MaxParamLength = 125;
+{$ENDIF}
+
 type
+  PUIBSQLVar = ^TUIBSQLVar;
+  TUIBSQLVar = record
+    SqlType      : Smallint;
+    SqlScale     : Smallint;
+{$IFDEF IB7_UP}
+    SqlPrecision : Smallint;
+{$ENDIF}
+    SqlSubType   : Smallint;
+    SqlLen       : Smallint;
+    SqlData      : Pchar;
+    SqlInd       : PSmallint;
+    case byte of
+    0 : ( SqlNameLength   : Smallint;
+          SqlName         : array[0..METADATALENGTH-1] of char;
+          RelNameLength   : Smallint;
+          RelName         : array[0..METADATALENGTH-1] of char;
+          OwnNameLength   : Smallint;
+          OwnName         : array[0..METADATALENGTH-1] of char;
+          AliasNameLength : Smallint;
+          AliasName       : array[0..METADATALENGTH-1] of char;
+          );
+    1 : ( Init            : boolean;
+          ID              : Word;
+          ParamNameLength : Smallint;
+          ParamName       : array[0..MaxParamLength-1] of char;
+          );
+  end;
 
   PUIBSQLDa = ^TUIBSQLDa;
   TUIBSQLDa = record
-    version : Smallint;              // version of this XSQLDA
-    sqldaid : array[0..7] of char;   // XSQLDA name field          ->  RESERVED
-    sqldabc : ISCLong;               // length in bytes of SQLDA   ->  RESERVED
-    sqln    : Smallint;              // number of fields allocated
-    sqld    : Smallint;              // actual number of fields
-    sqlvar: array[Word] of TXSQLVar; // first field address
+    version : Smallint;                // version of this XSQLDA
+    sqldaid : array[0..7] of char;     // XSQLDA name field          ->  RESERVED
+    sqldabc : ISCLong;                 // length in bytes of SQLDA   ->  RESERVED
+    sqln    : Smallint;                // number of fields allocated
+    sqld    : Smallint;                // actual number of fields
+    sqlvar: array[Word] of TUIBSQLVar; // first field address
   end;
 
   TUIBStatementType = (
@@ -196,6 +220,7 @@ type
     function GetSQLLen(const Index: Word): Smallint;
     function DecodeString(const Code: Smallint; Index: Word): String; overload;
     procedure DecodeString(const Code: Smallint; Index: Word; out Str: String); overload;
+    procedure DecodeWideString(const Code: Smallint; Index: Word; out Str: WideString);
   protected
     procedure CheckRange(const Index: Word);
     function GetSqlName(const Index: Word): string;
@@ -203,6 +228,7 @@ type
     function GetOwnName(const Index: Word): string;
     function GetAliasName(const Index: Word): string;
 
+    function GetIsNumeric(const Index: Word): boolean;
     function GetIsBlob(const Index: Word): boolean;
     function GetIsNull(const Index: Word): boolean;
     function GetIsNullable(const Index: Word): boolean;
@@ -213,11 +239,13 @@ type
     function GetAsSingle(const Index: Word): Single;
     function GetAsSmallint(const Index: Word): Smallint;
     function GetAsString(const Index: Word): String; virtual;
+    function GetAsWideString(const Index: Word): WideString; virtual;
     function GetAsQuad(const Index: Word): TISCQuad;
     function GetAsVariant(const Index: Word): Variant; virtual;
     function GetAsDateTime(const Index: Word): TDateTime;
     function GetAsBoolean(const Index: Word): boolean;
 
+    function GetByNameIsNumeric(const Name: String): boolean;
     function GetByNameIsBlob(const Name: String): boolean;
     function GetByNameIsNull(const Name: String): boolean;
     function GetByNameIsNullable(const Name: String): boolean;
@@ -228,21 +256,26 @@ type
     function GetByNameAsSingle(const Name: String): Single;
     function GetByNameAsSmallint(const Name: String): Smallint;
     function GetByNameAsString(const Name: String): String;
+    function GetByNameAsWideString(const Name: String): WideString;
     function GetByNameAsQuad(const Name: String): TISCQuad;
     function GetByNameAsVariant(const Name: String): Variant;
     function GetByNameAsDateTime(const Name: String): TDateTime;
     function GetByNameAsBoolean(const Name: String): boolean;
+
+    function GetFieldType(const Index: Word): TUIBFieldType; virtual;
   public
-    function GetFieldIndex(const name: String): Word;
+    function GetFieldIndex(const name: String): Word; virtual;
     property Data: PUIBSQLDa read FXSQLDA;
     property IsBlob[const Index: Word]: boolean read GetIsBlob;
     property IsNull[const Index: Word]: boolean read GetIsNull;
     property IsNullable[const Index: Word]: boolean read GetIsNullable;
+    property IsNumeric[const Index: Word]: boolean read GetIsNumeric;
     property AsQuad     [const Index: Word]: TISCQuad  read GetAsQuad;
     property XSQLDA: PUIBSQLDa read GetPointer;
     property FieldCount: Integer read GetFieldCount;
     property SQLType[const Index: Word]: Smallint read GetSQLType;
     property SQLLen[const Index: Word]: Smallint read GetSQLLen;
+    property FieldType[const Index: Word]: TUIBFieldType read GetFieldType;
   end;
 
   PPageInfo = ^TPageInfo;
@@ -285,8 +318,8 @@ type
     Size: Integer;
     Buffer: Pointer;
   end;
-  BlobDataArray = array[Word] of TBlobData;
-  PBlobDataArray = ^BlobDataArray;
+  TBlobDataArray = array[Word] of TBlobData;
+  PBlobDataArray = ^TBlobDataArray;
 
   TSQLResult = class(TSQLDA)
   private
@@ -299,15 +332,17 @@ type
     FBlobsIndex: array of Word;
     FCurrentRecord: Integer;
     FBufferChunks: Cardinal;
+    FScrollEOF: boolean;
     procedure AddCurrentRecord;
-    procedure ClearRecords;
     procedure FreeBlobs(Buffer: Pointer);
     function GetRecordCount: Integer;
     function GetCurrentRecord: Integer;
     procedure AllocateDataBuffer;
     function GetBlobIndex(const Index: Word): Word;
+    function GetEof: boolean;
   protected
     function GetAsString(const Index: Word): String; override;
+    function GetAsWideString(const Index: Word): WideString; override;
     function GetAsVariant(const Index: Word): Variant; override;
   public
     constructor Create(Fields: SmallInt = 0;
@@ -315,21 +350,26 @@ type
       FetchBlobs: boolean = false;
       BufferChunks: Cardinal = 1000);
     destructor Destroy; override;
+    procedure ClearRecords;
     procedure GetRecord(const Index: Integer);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
 
     procedure ReadBlob(const Index: Word; Stream: TStream); overload;
     procedure ReadBlob(const Index: Word; var str: string); overload;
+    procedure ReadBlob(const Index: Word; var str: WideString); overload;
     procedure ReadBlob(const Index: Word; var Value: Variant); overload;
     procedure ReadBlob(const name: string; Stream: TStream); overload;
     procedure ReadBlob(const name: string; var str: string); overload;
+    procedure ReadBlob(const name: string; var str: WideString); overload;
     procedure ReadBlob(const name: string; var Value: Variant); overload;
+
+    property Eof: boolean read GetEof;
 
     property CachedFetch: boolean read FCachedFetch;
     property FetchBlobs: boolean read FFetchBlobs;
     property RecordCount: Integer read GetRecordCount;
-    property CurrentRecord: Integer read GetCurrentRecord;
+    property CurrentRecord: Integer read GetCurrentRecord write GetRecord;
     property BufferChunks: Cardinal read FBufferChunks;
 
     property SqlName[const Index: Word]: string read GetSqlName;
@@ -337,32 +377,34 @@ type
     property OwnName[const Index: Word]: string read GetOwnName;
     property AliasName[const Index: Word]: string read GetAliasName;
 
-    property AsSmallint [const Index: Word]: Smallint  read GetAsSmallint;
-    property AsInteger  [const Index: Word]: Integer   read GetAsInteger;
-    property AsSingle   [const Index: Word]: Single    read GetAsSingle;
-    property AsDouble   [const Index: Word]: Double    read GetAsDouble;
-    property AsCurrency [const Index: Word]: Currency  read GetAsCurrency;
-    property AsInt64    [const Index: Word]: Int64     read GetAsInt64;
-    property AsString   [const Index: Word]: String    read GetAsString;
-    property AsVariant  [const Index: Word]: Variant   read GetAsVariant;
-    property AsDateTime [const Index: Word]: TDateTime read GetAsDateTime;
-    property AsDate     [const Index: Word]: Integer   read GetAsInteger;
-    property AsBoolean  [const Index: Word]: Boolean   read GetAsBoolean;
+    property AsSmallint   [const Index: Word]: Smallint   read GetAsSmallint;
+    property AsInteger    [const Index: Word]: Integer    read GetAsInteger;
+    property AsSingle     [const Index: Word]: Single     read GetAsSingle;
+    property AsDouble     [const Index: Word]: Double     read GetAsDouble;
+    property AsCurrency   [const Index: Word]: Currency   read GetAsCurrency;
+    property AsInt64      [const Index: Word]: Int64      read GetAsInt64;
+    property AsString     [const Index: Word]: String     read GetAsString;
+    property AsWideString [const Index: Word]: WideString read GetAsWideString;
+    property AsVariant    [const Index: Word]: Variant    read GetAsVariant;
+    property AsDateTime   [const Index: Word]: TDateTime  read GetAsDateTime;
+    property AsDate       [const Index: Word]: Integer    read GetAsInteger;
+    property AsBoolean    [const Index: Word]: Boolean    read GetAsBoolean;
 
     property ByNameIsNull[const name: String]: boolean read GetByNameIsNull;
     property ByNameIsNullable[const name: String]: boolean read GetByNameIsNullable;
 
-    property ByNameAsSmallint [const name: String]: Smallint  read GetByNameAsSmallint;
-    property ByNameAsInteger  [const name: String]: Integer   read GetByNameAsInteger;
-    property ByNameAsSingle   [const name: String]: Single    read GetByNameAsSingle;
-    property ByNameAsDouble   [const name: String]: Double    read GetByNameAsDouble;
-    property ByNameAsCurrency [const name: String]: Currency  read GetByNameAsCurrency;
-    property ByNameAsInt64    [const name: String]: Int64     read GetByNameAsInt64;
-    property ByNameAsString   [const name: String]: String    read GetByNameAsString;
-    property ByNameAsQuad     [const name: String]: TISCQuad  read GetByNameAsQuad;
-    property ByNameAsVariant  [const name: String]: Variant   read GetByNameAsVariant;
-    property ByNameAsDateTime [const name: String]: TDateTime read GetByNameAsDateTime;
-    property ByNameAsBoolean  [const name: String]: Boolean   read GetByNameAsBoolean;
+    property ByNameAsSmallint   [const name: String]: Smallint   read GetByNameAsSmallint;
+    property ByNameAsInteger    [const name: String]: Integer    read GetByNameAsInteger;
+    property ByNameAsSingle     [const name: String]: Single     read GetByNameAsSingle;
+    property ByNameAsDouble     [const name: String]: Double     read GetByNameAsDouble;
+    property ByNameAsCurrency   [const name: String]: Currency   read GetByNameAsCurrency;
+    property ByNameAsInt64      [const name: String]: Int64      read GetByNameAsInt64;
+    property ByNameAsString     [const name: String]: String     read GetByNameAsString;
+    property ByNameAsWideString [const name: String]: WideString read GetByNameAsWideString;
+    property ByNameAsQuad       [const name: String]: TISCQuad   read GetByNameAsQuad;
+    property ByNameAsVariant    [const name: String]: Variant    read GetByNameAsVariant;
+    property ByNameAsDateTime   [const name: String]: TDateTime  read GetByNameAsDateTime;
+    property ByNameAsBoolean    [const name: String]: Boolean    read GetByNameAsBoolean;
 
     property Values[const name: String]: Variant read GetByNameAsVariant; default;
   end;
@@ -370,10 +412,16 @@ type
   TSQLResultClass = class of TSQLResult;
 
   TSQLParams = class(TSQLDA)
+  private
+    FParamCount: Word;
+    procedure EncodeString(Code: Smallint; Index: Word; const str: String);
+    procedure EncodeWideString(Code: Smallint; Index: Word; const str: WideString);
+    function FindParam(const name: string; out Index: Word): boolean;
+    function GetFieldName(const Index: Word): string;
   protected
-    function EncodeString(Code: Smallint; Index: Word; const str: String): Cardinal;
-    function AddField(Size: Integer; Code: SmallInt; Scale: Smallint = 0): Word;
-
+    function AddField(const name: string): Word;
+    procedure SetFieldType(const Index: Word; Size: Integer; Code: SmallInt;
+      Scale: Smallint = 0);
     procedure SetIsNull(const Index: Word; const Value: boolean);
 
     procedure SetAsDouble(const Index: Word; const Value: Double);
@@ -383,156 +431,178 @@ type
     procedure SetAsSingle(const Index: Word; const Value: Single);
     procedure SetAsSmallint(const Index: Word; const Value: Smallint);
     procedure SetAsString(const Index: Word; const Value: String);
+    procedure SetAsWideString(const Index: Word; const Value: WideString);
     procedure SetAsQuad(const Index: Word; const Value: TISCQuad);
     procedure SetAsDateTime(const Index: Word; const Value: TDateTime);
     procedure SetAsBoolean(const Index: Word; const Value: Boolean);
 
+    procedure SetByNameIsNull(const Name: String; const Value: boolean);
+    procedure SetByNameAsDouble(const Name: String; const Value: Double);
+    procedure SetByNameAsCurrency(const Name: String; const Value: Currency);
+    procedure SetByNameAsInt64(const Name: String; const Value: Int64);
+    procedure SetByNameAsInteger(const Name: String; const Value: Integer);
+    procedure SetByNameAsSingle(const Name: String; const Value: Single);
+    procedure SetByNameAsSmallint(const Name: String; const Value: Smallint);
+    procedure SetByNameAsString(const Name: String; const Value: String);
+    procedure SetByNameAsWideString(const Name: String; const Value: WideString);
+    procedure SetByNameAsQuad(const Name: String; const Value: TISCQuad);
+    procedure SetByNameAsDateTime(const Name: String; const Value: TDateTime);
+    procedure SetByNameAsBoolean(const Name: String; const Value: boolean);
+
+    function GetFieldType(const Index: Word): TUIBFieldType; override;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Delete(Index: Word);
     procedure Clear;
+    function Parse(const SQL: string): string;
+    function GetFieldIndex(const name: String): Word; override;
 
-    function AddSmallInt(Value: Smallint = 0): Word;
-    function AddInteger(Value: Integer = 0): Word;
-    function AddSingle(Value: Single = 0.0): Word;
-    function AddDouble(Value: Double = 0.0): Word;
-    function AddInt64(Value: Int64 = 0): Word;
-    function AddString(Value: String = ''): Word;
-    function AddDate(Value: TDateTime = 0.0): Word;
-    function AddTime(Value: TDateTime = 0.0): Word;
-    function AddDateTime(Value: TDateTime = 0.0): Word;
-    function AddCurrency(Value: Currency = 0.0): Word;
-    function AddBoolean(Value: Boolean = False): Word;
-    function AddBlob: Word;
-    function AddArray: Word;
+    procedure AddFieldType(const Name: string; FieldType: TUIBFieldType;
+      Scale: TScale = 1; Precision: byte = 0);
 
     property IsNull[const Index: Word]: boolean read GetIsNull write SetIsNull;
 
-    property AsSmallint [const Index: Word]: Smallint  read GetAsSmallint write SetAsSmallint;
-    property AsInteger  [const Index: Word]: Integer   read GetAsInteger  write SetAsInteger;
-    property AsSingle   [const Index: Word]: Single    read GetAsSingle   write SetAsSingle;
-    property AsDouble   [const Index: Word]: Double    read GetAsDouble   write SetAsDouble;
-    property AsCurrency [const Index: Word]: Currency  read GetAsCurrency write SetAsCurrency;
-    property AsInt64    [const Index: Word]: Int64     read GetAsInt64    write SetAsInt64;
-    property AsString   [const Index: Word]: String    read GetAsString   write SetAsString;
-    property AsQuad     [const Index: Word]: TISCQuad  read GetAsQuad     write SetAsQuad;
-    property AsDateTime [const Index: Word]: TDateTime read GetAsDateTime write SetAsDateTime;
-    property AsBoolean  [const Index: Word]: Boolean   read GetAsBoolean  write SetAsBoolean;
+    property AsSmallint   [const Index: Word]: Smallint   read GetAsSmallint   write SetAsSmallint;
+    property AsInteger    [const Index: Word]: Integer    read GetAsInteger    write SetAsInteger;
+    property AsSingle     [const Index: Word]: Single     read GetAsSingle     write SetAsSingle;
+    property AsDouble     [const Index: Word]: Double     read GetAsDouble     write SetAsDouble;
+    property AsCurrency   [const Index: Word]: Currency   read GetAsCurrency   write SetAsCurrency;
+    property AsInt64      [const Index: Word]: Int64      read GetAsInt64      write SetAsInt64;
+    property AsString     [const Index: Word]: String     read GetAsString     write SetAsString;
+    property AsWideString [const Index: Word]: WideString read GetAsWideString write SetAsWideString;
+    property AsQuad       [const Index: Word]: TISCQuad   read GetAsQuad       write SetAsQuad;
+    property AsDateTime   [const Index: Word]: TDateTime  read GetAsDateTime   write SetAsDateTime;
+    property AsBoolean    [const Index: Word]: Boolean    read GetAsBoolean    write SetAsBoolean;
+
+    property ByNameIsNull[const name: String]: boolean read GetByNameIsNull write SetByNameIsNull;
+
+    property ByNameAsSmallint   [const name: String]: Smallint   read GetByNameAsSmallint   write SetByNameAsSmallint;
+    property ByNameAsInteger    [const name: String]: Integer    read GetByNameAsInteger    write SetByNameAsInteger;
+    property ByNameAsSingle     [const name: String]: Single     read GetByNameAsSingle     write SetByNameAsSingle;
+    property ByNameAsDouble     [const name: String]: Double     read GetByNameAsDouble     write SetByNameAsDouble;
+    property ByNameAsCurrency   [const name: String]: Currency   read GetByNameAsCurrency   write SetByNameAsCurrency;
+    property ByNameAsInt64      [const name: String]: Int64      read GetByNameAsInt64      write SetByNameAsInt64;
+    property ByNameAsString     [const name: String]: String     read GetByNameAsString     write SetByNameAsString;
+    property ByNameAsWideString [const name: String]: WideString read GetByNameAsWideString write SetByNameAsWideString;
+    property ByNameAsQuad       [const name: String]: TISCQuad   read GetByNameAsQuad       write SetByNameAsQuad;
+    property ByNameAsVariant    [const name: String]: Variant    read GetByNameAsVariant;
+    property ByNameAsDateTime   [const name: String]: TDateTime  read GetByNameAsDateTime   write SetByNameAsDateTime;
+    property ByNameAsBoolean    [const name: String]: Boolean    read GetByNameAsBoolean    write SetByNameAsBoolean;
+
+    property Values[const name: String]: Variant read GetByNameAsVariant; default;
+    property FieldName[const Index: Word]: string read GetFieldName;
+
   end;
 
   TSQLParamsClass = class of TSQLParams;
 
-
-  procedure DSQLExecuteImmediate(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle;
-    Statement: string; Dialect: Word; Sqlda: TSQLDA = nil);
-  procedure DSQLAllocateStatement(var DBHandle: IscDbHandle; var StmtHandle: IscStmtHandle);
-  procedure DSQLPrepare(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
-    Statement: string; Dialect: Word; Sqlda: TSQLResult = nil);
-  procedure DSQLExecute(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
-    Dialect: Word; Sqlda: TSQLParams = nil);
-  procedure DSQLExecute2(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
-    Dialect: Word; InSqlda: TSQLParams; OutSqlda: TSQLResult);
-  procedure DSQLFreeStatement(var StmtHandle: IscStmtHandle; Option: Word);
-  function  DSQLFetch(var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLResult): boolean;
-  function  DSQLFetchWithBlobs(var DBHhandle: IscDbHandle; var TraHandle: IscTrHandle;
-    var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLResult): boolean;
-  procedure DSQLDescribe(var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLResult);
-  procedure DSQLDescribeBind(var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLDA);
-  procedure DSQLSetCursorName(var StmtHandle: IscStmtHandle; const cursor: string);
-  procedure DSQLExecImmed2(var DBHhandle: IscDbHandle; var TraHandle: IscTrHandle;
-    const Statement: string; dialect: Word; InSqlda, OutSqlda: TSQLDA);
-
-  procedure DSQLInfo(var StmtHandle: IscStmtHandle; const Items: array of byte; var buffer: String);
-  function  DSQLInfoPlan(var StmtHandle: IscStmtHandle): string;
-  function  DSQLInfoStatementType(var StmtHandle: IscStmtHandle): TUIBStatementType;
-
-// function isc_dsql_xml_buffer_fetch
-// function isc_dsql_xml_fetch
-// function isc_dsql_xml_fetch_all
-
-// USELESS if UIB is Well done
-// function isc_dsql_alloc_statement2
-
-// What is it ???
-// function isc_dsql_finish
-// function isc_dsql_insert
-// function isc_dsql_release
-
-//******************************************************************************
-//  Array
-//******************************************************************************
 type
+  TDSQLInfoData = packed record
+    InfoCode: byte;
+    InfoLen : Word; // isc_portable_integer convert a SmallInt to Word ??? so just say it is a word
+    case byte of
+      isc_info_sql_stmt_type: (StatementType: TUIBStatementType);
+      isc_info_sql_get_plan : (PlanDesc     : array[0..255] of Char);
+  end;
+
 {$IFDEF IB7_UP}
   TArrayDesc = TISCArrayDescV2;
+  TBlobDesc = TISCBlobDescV2;
 {$ELSE}
   TArrayDesc = TISCArrayDesc;
+  TBlobDesc = TISCBlobDesc;
 {$ENDIF}
 
-  function ArrayLookupBounds(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle;
-    const RelationName, FieldName: String): TArrayDesc;
-  procedure ArrayGetSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle; ArrayId: TISCQuad;
-    var desc: TArrayDesc; DestArray: PPointer; var SliceLength: Integer);
-  procedure ArrayPutSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle; ArrayId: TISCQuad;
-    var desc: TArrayDesc; DestArray: PPointer; var SliceLength: Integer);
+  TStatusVector = array[0..19] of ISCStatus;
+  PStatusVector = ^TStatusVector;
 
-//    function isc_array_lookup_desc
-//    function isc_array_set_desc
-//    function isc_array_gen_sdl
-//    function isc_get_slice
-//    function isc_put_slice
-//  {$IFDEF IB7_UP}
-//    function isc_array_gen_sdl2
-//    function isc_array_get_slice2
-//    function isc_array_lookup_bounds2
-//    function isc_array_lookup_desc2
-//    function isc_array_put_slice2
-//    function isc_array_set_desc2
-//  {$ENDIF}
+  TUIBLibrary = class(TUIBaseLibrary)
+  private
+    FStatusVector: TStatusVector;
+    procedure GetDSQLInfoData(var StmtHandle: IscStmtHandle;
+      var DSQLInfoData: TDSQLInfoData; InfoCode: Byte);
+    procedure CheckUIBApiCall(Status: ISCStatus);
+  public
+    {Attaches to an existing database.
+     Ex: AttachDatabase('c:\DataBase.gdb', DBHandle, 'user_name=SYSDBA; password=masterkey'); }
+    procedure AttachDatabase(FileName: String; var DbHandle: IscDbHandle; Params: String; Sep: Char = ';');
+    {Detaches from a database previously connected with AttachDatabase.}
+    procedure DetachDatabase(var DBHandle: IscDbHandle);
 
-//******************************************************************************
-//  Blob
-//******************************************************************************
-type
-  {$IFDEF IB7_UP}
-    TBlobDesc = TISCBlobDescV2;
-  {$ELSE}
-    TBlobDesc = TISCBlobDesc;
-  {$ENDIF}
+    procedure TransactionStart(var TraHandle: IscTrHandle; var DbHandle: IscDbHandle; const TPB: string = '');
+    procedure TransactionStartMultiple(var TraHandle: IscTrHandle; DBCount: Smallint; Vector: PISCTEB);
+    procedure TransactionCommit(var TraHandle: IscTrHandle);
+    procedure TransactionRollback(var TraHandle: IscTrHandle);
+    procedure TransactionCommitRetaining(var TraHandle: IscTrHandle);
+    procedure TransactionPrepare(var TraHandle: IscTrHandle);
+    procedure TransactionRollbackRetaining(var TraHandle: IscTrHandle);
+    procedure DSQLExecuteImmediate(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle;
+      const Statement: string; Dialect: Word; Sqlda: TSQLDA = nil); overload;
+    procedure DSQLExecuteImmediate(const Statement: string; Dialect: Word; Sqlda: TSQLDA = nil); overload;
+    procedure DSQLAllocateStatement(var DBHandle: IscDbHandle; var StmtHandle: IscStmtHandle);
+    procedure DSQLPrepare(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
+      Statement: string; Dialect: Word; Sqlda: TSQLResult = nil);
+    procedure DSQLExecute(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
+      Dialect: Word; Sqlda: TSQLParams = nil);
+    procedure DSQLExecute2(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
+      Dialect: Word; InSqlda: TSQLParams; OutSqlda: TSQLResult);
+    procedure DSQLFreeStatement(var StmtHandle: IscStmtHandle; Option: Word);
+    function  DSQLFetch(var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLResult): boolean;
+    function  DSQLFetchWithBlobs(var DBHhandle: IscDbHandle; var TraHandle: IscTrHandle;
+      var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLResult): boolean;
+    procedure DSQLDescribe(var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLResult);
+    procedure DSQLDescribeBind(var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLDA);
+    procedure DSQLSetCursorName(var StmtHandle: IscStmtHandle; const cursor: string);
+    procedure DSQLExecImmed2(var DBHhandle: IscDbHandle; var TraHandle: IscTrHandle;
+      const Statement: string; dialect: Word; InSqlda, OutSqlda: TSQLDA);
 
-  procedure BlobOpen(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle; var BlobHandle: IscBlobHandle; BlobId: TISCQuad; BPB: string = '');
-  function  BlobGetSegment(var BlobHandle: IscBlobHandle; out length: Word; BufferLength: Word; Buffer: PChar): boolean;
-  procedure BlobClose(var BlobHandle: IscBlobHandle);
-  procedure BlobInfo(var BlobHandle: IscBlobHandle; out NumSegments, MaxSegment, TotalLength: Cardinal; out btype : byte);
-  procedure BlobSize(var BlobHandle: IscBlobHandle; out Size: Cardinal);
-  procedure BlobMaxSegment(var BlobHandle: IscBlobHandle; out Size: Cardinal);
-  procedure BlobDefaultDesc(var Desc: TBlobDesc; const RelationName, FieldName: string);
+    procedure DSQLInfo(var StmtHandle: IscStmtHandle; const Items: array of byte; var buffer: String);
+    function  DSQLInfoPlan(var StmtHandle: IscStmtHandle): string;
+    function  DSQLInfoStatementType(var StmtHandle: IscStmtHandle): TUIBStatementType;
 
-  procedure BlobSaveToStream(var BlobHandle: IscBlobHandle; Stream: TStream);
-  function  BlobReadString(var BlobHandle: IscBlobHandle): string; overload;
-  procedure BlobReadString(var BlobHandle: IscBlobHandle; var Str: String); overload;
+    procedure DDLExecute(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle; const ddl: string);
 
-  procedure BlobReadVariant(var BlobHandle: IscBlobHandle; var Value: Variant);
+    function ArrayLookupBounds(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle;
+      const RelationName, FieldName: String): TArrayDesc;
+    procedure ArrayGetSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle; ArrayId: TISCQuad;
+      var desc: TArrayDesc; DestArray: PPointer; var SliceLength: Integer);
+    procedure ArrayPutSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle; ArrayId: TISCQuad;
+      var desc: TArrayDesc; DestArray: PPointer; var SliceLength: Integer);
 
-  // you must free memory allocated by this method !!
-  procedure BlobReadBuffer(var BlobHandle: IscBlobHandle; var Size: Integer; var Buffer: Pointer);
+    procedure ServiceAttach(const ServiceName: string; var SvcHandle: IscSvcHandle; const Spb: string);
+    procedure ServiceDetach(var SvcHandle: IscSvcHandle);
+    procedure ServiceQuery(var SvcHandle: IscSvcHandle; const SendSpb, RequestSpb: string; var Buffer: string);
+    procedure ServiceStart(var SvcHandle: IscSvcHandle; const Spb: string);
 
-  function  BlobCreate(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle; var BlobHandle: IscBlobHandle): TISCQuad;
+    function ErrSqlcode: ISCLong;
+    function ErrInterprete: String;
+    function ErrSQLInterprete(SQLCODE: Smallint): String;
 
-  procedure BlobWriteSegment(var BlobHandle: IscBlobHandle; BufferLength: Word; Buffer: PChar);
-  procedure BlobWriteString(var BlobHandle: IscBlobHandle; var Str: String);
-  procedure BlobWriteStream(var BlobHandle: IscBlobHandle; Stream: TStream);
+    procedure BlobOpen(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle; var BlobHandle: IscBlobHandle; BlobId: TISCQuad; BPB: string = '');
+    function  BlobGetSegment(var BlobHandle: IscBlobHandle; out length: Word; BufferLength: Word; Buffer: PChar): boolean;
+    procedure BlobClose(var BlobHandle: IscBlobHandle);
+    procedure BlobInfo(var BlobHandle: IscBlobHandle; out NumSegments, MaxSegment, TotalLength: Cardinal; out btype : byte);
+    procedure BlobSize(var BlobHandle: IscBlobHandle; out Size: Cardinal);
+    procedure BlobMaxSegment(var BlobHandle: IscBlobHandle; out Size: Cardinal);
+    procedure BlobDefaultDesc(var Desc: TBlobDesc; const RelationName, FieldName: string);
+    procedure BlobSaveToStream(var BlobHandle: IscBlobHandle; Stream: TStream);
+    function  BlobReadString(var BlobHandle: IscBlobHandle): string; overload;
+    procedure BlobReadString(var BlobHandle: IscBlobHandle; var Str: String); overload;
+    procedure BlobReadVariant(var BlobHandle: IscBlobHandle; var Value: Variant);
+    // you must free memory allocated by this method !!
+    procedure BlobReadBuffer(var BlobHandle: IscBlobHandle; var Size: Integer; var Buffer: Pointer);
+    function  BlobCreate(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle; var BlobHandle: IscBlobHandle): TISCQuad;
+    procedure BlobWriteSegment(var BlobHandle: IscBlobHandle; BufferLength: Word; Buffer: PChar);
+    procedure BlobWriteString(var BlobHandle: IscBlobHandle; var Str: String);
+    procedure BlobWriteStream(var BlobHandle: IscBlobHandle; Stream: TStream);
 
-//    function isc_blob_gen_bpb
-//    function isc_blob_lookup_desc
-//    function isc_blob_set_desc
-//    function isc_cancel_blob
-//    function isc_create_blob2
-//  {$IFDEF IB7_UP}
-//    function isc_blob_gen_bpb2
-//    function isc_blob_lookup_desc2
-//    function isc_blob_set_desc2
-//  {$ENDIF}
+{$IFDEF IB71_UP}
+    procedure SavepointRelease(var TrHandle: IscTrHandle; const Name: string);
+    procedure SavepointRollback(var TrHandle: IscTrHandle; const Name: string; Option: Word);
+    procedure SavepointStart(var TrHandle: IscTrHandle; const Name: string);
+{$ENDIF}
+
+  end;
 
 //******************************************************************************
 // Conversion
@@ -541,7 +611,7 @@ type
    procedure DecodeTimeStamp(v: PISCTimeStamp; out DateTime: Double); overload;
    procedure DecodeTimeStamp(v: PISCTimeStamp; out TimeStamp: TTimeStamp); overload;
 
-   function  DecodeTimeStamp(v: PISCTimeStamp): Double; overload
+   function  DecodeTimeStamp(v: PISCTimeStamp): Double; overload;
    procedure EncodeTimeStamp(const DateTime: TDateTime; v: PISCTimeStamp);
    procedure DecodeSQLDate(v: Integer; out Year: SmallInt; out Month, Day: Word); overload;
    procedure DecodeSQLDate(const v: Integer; out Date: Double); overload;
@@ -552,13 +622,6 @@ type
    procedure DecodeSQLTime(v: Cardinal; out Hour, Minute, Second: Word; out Fractions: LongWord);
    procedure EncodeSQLTime(const Hour, Minute, Second: Word; const Fractions: LongWord; out v: Cardinal);
 
-//******************************************************************************
-//  Error-handling
-//******************************************************************************
-
-  function ErrSqlcode: ISCLong;
-  function ErrInterprete: String;
-  function ErrSQLInterprete(SQLCODE: Smallint): String;
 
 //******************************************************************************
 // Event functions
@@ -576,14 +639,6 @@ type
 //    function isc_delete_user
 //    function isc_modify_user
 
-//******************************************************************************
-// Services
-//******************************************************************************
-
-  procedure ServiceAttach(const ServiceName: string; var SvcHandle: IscSvcHandle; const Spb: string);
-  procedure ServiceDetach(var SvcHandle: IscSvcHandle);
-  procedure ServiceQuery(var SvcHandle: IscSvcHandle; const SendSpb, RequestSpb: string; var Buffer: string);
-  procedure ServiceStart(var SvcHandle: IscSvcHandle; const Spb: string);
 
 //******************************************************************************
 // Other
@@ -622,31 +677,29 @@ type
 //    function isc_get_client_minor_version
 //  {$ENDIF}
 
-// Lock/Unlock Client DLL Access
-// Only one method must be called at the same time
-// Could be used during backup or restore
-procedure LockLibrary;
-procedure UnLockLibrary;
 
 {$IFNDEF DELPHI6_UP}
 function TryStrToInt(const S: string; out Value: Integer): Boolean;
 {$ENDIF}
 
 implementation
-uses JvUIBConst
-{$IFDEF BCB}
-, Variants
-{$ENDIF}
-;
+uses JvUIBConst;
+{ EUIBParser }
+
+constructor EUIBParser.Create(Line, Character: Integer);
+begin
+  FLine := Line;
+  FCharacter := Character;
+  Message := format('Parse error Line %d, Char %d', [FLine, FCharacter]);
+end;
 
 //******************************************************************************
 // Errors handling
 //******************************************************************************
 
-type
-  TStatusVector = array[0..19] of ISCStatus;
-  PStatusVector = ^TStatusVector;
 {$IFNDEF DELPHI6_UP}
+{$IFNDEF FPC}
+type
   PWord = ^Word;
   PCardinal = ^Cardinal;
   PSmallInt = ^SmallInt;
@@ -654,7 +707,7 @@ type
   PDouble = ^Double;
   PSingle = ^Single;
   PInt64 = ^Int64;
-
+{$ENDIF}
 function TryStrToInt(const S: string; out Value: Integer): Boolean;
 var
   E: Integer;
@@ -665,23 +718,6 @@ end;
 
 {$ENDIF}
 
-threadvar
-  FStatusVector: TStatusVector;
-
-
-procedure LockLibrary;
-begin
-{$IFDEF UIBTHREADSAFE}
-  LIBCritSec.Enter;
-{$ENDIF}
-end;
-procedure UnLockLibrary;
-begin
-{$IFDEF UIBTHREADSAFE}
-  LIBCritSec.Leave;
-{$ENDIF}
-end;
-
 const
   ISC_MASK   = $14000000; // Defines the code as a valid ISC code
   FAC_MASK   = $00FF0000; // Specifies the facility where the code is located
@@ -689,33 +725,33 @@ const
   CLASS_MASK = $F0000000; // Defines the code as warning, error, info, or other
 
   // Note: Perhaps a debug level could be interesting !!!
-  CLASS_ERROR	= 0; // Code represents an error
-  CLASS_WARNING	= 1; // Code represents a warning
-  CLASS_INFO	= 2; // Code represents an information msg
+  CLASS_ERROR   = 0; // Code represents an error
+  CLASS_WARNING = 1; // Code represents a warning
+  CLASS_INFO    = 2; // Code represents an information msg
 
-//FACILITY	  FAC_CODE    MAX_NUMBER    LAST_CHANGE
-  FAC_JRD	 =      0;  //         501   26/10/2002 17:02:13   <- In Use
-  FAC_QLI	 =      1;  //         509   07/11/1996 13:38:37
-  FAC_GDEF       =	2;  //         345   07/11/1996 13:38:37
-  FAC_GFIX       =	3;  //         114   25/12/2001 02:59:17   <- In Use
-  FAC_GPRE       =	4;  //           1   07/11/1996 13:39:40
-  FAC_GLTJ       =	5;  //           1   07/11/1996 13:39:40
-  FAC_GRST       =	6;  //           1   07/11/1996 13:39:40
-  FAC_DSQL       =	7;  //          15   22/07/2001 23:26:58   <- In Use
-  FAC_DYN	 =      8;  //         215   01/07/2001 17:43:07   <- In Use
-  FAC_FRED       =	9;  //           1   07/11/1996 13:39:40
-  FAC_INSTALL	 =      10; //           1   07/11/1996 13:39:40
-  FAC_TEST	 =      11; //           4   07/11/1996 13:38:41
-  FAC_GBAK	 =      12; //         283   05/03/2002 02:38:49   <- In Use
-  FAC_SQLERR	 =      13; //         917   05/03/2002 02:55:22
-  FAC_SQLWARN	 =      14; //         102   07/11/1996 13:38:42
-  FAC_JRD_BUGCHK =      15; //         305   05/03/2002 02:29:03
-  FAC_GJRN	 =      16; //         241   07/11/1996 13:38:43
-  FAC_ISQL	 =      17; //         109   10/10/2001 03:27:43
-  FAC_GSEC	 =      18; //          91   04/11/1998 11:06:15   <- In Use
-  FAC_LICENSE	 =      19; //          60   05/03/2002 02:30:12   <- In Use
-  FAC_DOS	 =      20; //          74   05/03/2002 02:31:54
-  FAC_GSTAT	 =      21; //          36   10/10/2001 18:05:16   <- In Use
+//FACILITY   FAC_CODE    MAX_NUMBER    LAST_CHANGE
+  FAC_JRD        =  0;  //         501   26/10/2002 17:02:13   <- In Use
+  FAC_QLI        =  1;  //         509   07/11/1996 13:38:37
+  FAC_GDEF       =  2;  //         345   07/11/1996 13:38:37
+  FAC_GFIX       =  3;  //         114   25/12/2001 02:59:17   <- In Use
+  FAC_GPRE       =  4;  //           1   07/11/1996 13:39:40
+  FAC_GLTJ       =  5;  //           1   07/11/1996 13:39:40
+  FAC_GRST       =  6;  //           1   07/11/1996 13:39:40
+  FAC_DSQL       =  7;  //          15   22/07/2001 23:26:58   <- In Use
+  FAC_DYN        =  8;  //         215   01/07/2001 17:43:07   <- In Use
+  FAC_FRED       =  9;  //           1   07/11/1996 13:39:40
+  FAC_INSTALL    = 10;  //           1   07/11/1996 13:39:40
+  FAC_TEST       = 11;  //           4   07/11/1996 13:38:41
+  FAC_GBAK       = 12;  //         283   05/03/2002 02:38:49   <- In Use
+  FAC_SQLERR     = 13;  //         917   05/03/2002 02:55:22
+  FAC_SQLWARN    = 14;  //         102   07/11/1996 13:38:42
+  FAC_JRD_BUGCHK = 15;  //         305   05/03/2002 02:29:03
+  FAC_GJRN       = 16;  //         241   07/11/1996 13:38:43
+  FAC_ISQL       = 17;  //         109   10/10/2001 03:27:43
+  FAC_GSEC       = 18;  //          91   04/11/1998 11:06:15   <- In Use
+  FAC_LICENSE    = 19;  //          60   05/03/2002 02:30:12   <- In Use
+  FAC_DOS        = 20;  //          74   05/03/2002 02:31:54
+  FAC_GSTAT      = 21;  //          36   10/10/2001 18:05:16   <- In Use
 
 
   function GetFacility(code: ISCStatus): Word;
@@ -733,7 +769,7 @@ const
     Result := (code and CODE_MASK) shr 0;
   end;
 
-  procedure CheckUIBApiCall(Status: ISCStatus);
+  procedure TUIBLibrary.CheckUIBApiCall(Status: ISCStatus);
   var
     Exception: EUIBError;
   begin
@@ -781,9 +817,7 @@ type
     ParamType : TParamType;
   end;
 
-  TByteDynArray = array of Byte;
-
-const
+var
   
   DPBInfos : array[1..isc_dpb_Max_Value] of TDPBInfo =
    ((Name: 'cdd_pathname';           ParamType: prIgno), // not implemented
@@ -870,6 +904,9 @@ const
 
 {$IFDEF IB7_UP}
    ,(Name: 'set_group_commit';       ParamType: prNone) // ??
+{$ENDIF}
+{$IFDEF IB71_UP}
+   ,(Name: 'gbak_validate';          ParamType: prNone) // ??
 {$ENDIF}
 {$IFDEF FB103_UP}
    ,(Name: 'set_db_charset';         ParamType: prStrg) // ok
@@ -999,26 +1036,26 @@ const
     SetLength(Result, FinalSize);
   end;
 
-  procedure AttachDatabase(FileName: String; var DbHandle: IscDbHandle;
+  procedure TUIBLibrary.AttachDatabase(FileName: String; var DbHandle: IscDbHandle;
     Params: String; Sep: Char = ';');
   begin
     Params := CreateDBParams(Params, Sep);
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_attach_database(@FStatusVector, Length(FileName), Pointer(FileName),
         @DBHandle, Length(Params), PChar(Params)));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure DetachDatabase(var DBHandle: IscDbHandle);
+  procedure TUIBLibrary.DetachDatabase(var DBHandle: IscDbHandle);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_detach_database(@FStatusVector, @DBHandle));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
@@ -1026,7 +1063,7 @@ const
 // Transaction
 //******************************************************************************
 
-  procedure TransactionStart(var TraHandle: IscTrHandle; var DbHandle: IscDbHandle;
+  procedure TUIBLibrary.TransactionStart(var TraHandle: IscTrHandle; var DbHandle: IscDbHandle;
     const TPB: string = '');
   var Vector: TISCTEB;
   begin
@@ -1036,63 +1073,63 @@ const
     TransactionStartMultiple(TraHandle, 1, @Vector);
   end;
 
-  procedure TransactionStartMultiple(var TraHandle: IscTrHandle; DBCount: Smallint; Vector: PISCTEB);
+  procedure TUIBLibrary.TransactionStartMultiple(var TraHandle: IscTrHandle; DBCount: Smallint; Vector: PISCTEB);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_start_multiple(@FStatusVector, @TraHandle, DBCount, Vector));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure TransactionCommit(var TraHandle: IscTrHandle);
+  procedure TUIBLibrary.TransactionCommit(var TraHandle: IscTrHandle);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_commit_transaction(@FStatusVector, @TraHandle));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure TransactionRollback(var TraHandle: IscTrHandle);
+  procedure TUIBLibrary.TransactionRollback(var TraHandle: IscTrHandle);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_rollback_transaction(@FStatusVector, @TraHandle));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure TransactionCommitRetaining(var TraHandle: IscTrHandle);
+  procedure TUIBLibrary.TransactionCommitRetaining(var TraHandle: IscTrHandle);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_commit_retaining(@FStatusVector, @TraHandle));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure TransactionPrepare(var TraHandle: IscTrHandle);
+  procedure TUIBLibrary.TransactionPrepare(var TraHandle: IscTrHandle);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_prepare_transaction(@FStatusVector, @TraHandle));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure TransactionRollbackRetaining(var TraHandle: IscTrHandle);
+  procedure TUIBLibrary.TransactionRollbackRetaining(var TraHandle: IscTrHandle);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_rollback_retaining(@FStatusVector, @TraHandle));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
@@ -1111,37 +1148,50 @@ const
   // API CALLS
   //****************************************
 
-  procedure DSQLExecuteImmediate(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle;
-    Statement: string; Dialect: Word; Sqlda: TSQLDA = nil);
+  procedure TUIBLibrary.DSQLExecuteImmediate(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle;
+    const Statement: string; Dialect: Word; Sqlda: TSQLDA = nil);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_dsql_execute_immediate(@FStatusVector, @DBHandle, @TraHandle,
         length(Statement), Pointer(Statement), Dialect, GetSQLDAData(Sqlda)));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure DSQLAllocateStatement(var DBHandle: IscDbHandle; var StmtHandle: IscStmtHandle);
+  procedure TUIBLibrary.DSQLExecuteImmediate(const Statement: string; Dialect: Word; Sqlda: TSQLDA = nil);
+  var p: pointer;
   begin
-    LockLibrary;
+    Lock;
+    try
+      p := nil;
+      CheckUIBApiCall(isc_dsql_execute_immediate(@FStatusVector, @p, @p,
+        length(Statement), Pointer(Statement), Dialect, GetSQLDAData(Sqlda)));
+    finally
+      UnLock;
+    end;
+  end;
+
+  procedure TUIBLibrary.DSQLAllocateStatement(var DBHandle: IscDbHandle; var StmtHandle: IscStmtHandle);
+  begin
+    Lock;
     try
       CheckUIBApiCall(isc_dsql_allocate_statement(@FStatusVector, @DBHandle, @StmtHandle));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure DSQLPrepare(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
+  procedure TUIBLibrary.DSQLPrepare(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
     Statement: string; Dialect: Word; Sqlda: TSQLResult = nil);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_dsql_prepare(@FStatusVector, @TraHandle, @StmtHandle, Length(Statement),
         PChar(Statement), Dialect, GetSQLDAData(Sqlda)));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
     if (Sqlda <> nil) then
     begin
@@ -1155,61 +1205,70 @@ const
     end;
   end;
 
-  procedure DSQLExecute(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
+  procedure TUIBLibrary.DSQLExecute(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle;
     Dialect: Word; Sqlda: TSQLParams = nil);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_dsql_execute(@FStatusVector, @TraHandle, @StmtHandle,
         Dialect, GetSQLDAData(Sqlda)));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure DSQLExecute2(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle; Dialect: Word;
+  procedure TUIBLibrary.DSQLExecute2(var TraHandle: IscTrHandle; var StmtHandle: IscStmtHandle; Dialect: Word;
     InSqlda: TSQLParams; OutSqlda: TSQLResult);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_dsql_execute2(@FStatusVector, @TraHandle, @StmtHandle, Dialect,
         GetSQLDAData(InSqlda), GetSQLDAData(OutSqlda)));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure DSQLFreeStatement(var StmtHandle: IscStmtHandle; Option: Word);
+  procedure TUIBLibrary.DSQLFreeStatement(var StmtHandle: IscStmtHandle; Option: Word);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_dsql_free_statement(@FStatusVector, @StmtHandle, Option));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  function DSQLFetch(var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLResult): boolean;
+  function TUIBLibrary.DSQLFetch(var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLResult): boolean;
   var Status: ISCStatus;
   begin
     Result := True;
-    LockLibrary;
+    if (Sqlda <> nil) then
+      Sqlda.FScrollEOF := False;
+    Lock;
     try
       Status := isc_dsql_fetch(@FStatusVector, @StmtHandle, Dialect, GetSQLDAData(Sqlda));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
     case Status of
       0   : if (Sqlda <> nil) then
               if Sqlda.FCachedFetch then
                 Sqlda.AddCurrentRecord;
-      100 : Result := False; // end of fetch
+      100 :
+        begin
+          Result := False; // end of fetch
+          if (Sqlda <> nil) then
+          begin
+            Sqlda.FScrollEOF := True;
+          end;
+        end;
     else
       CheckUIBApiCall(Status);
     end;
   end;
 
-  function  DSQLFetchWithBlobs(var DBHhandle: IscDbHandle; var TraHandle: IscTrHandle;
+  function  TUIBLibrary.DSQLFetchWithBlobs(var DBHhandle: IscDbHandle; var TraHandle: IscTrHandle;
     var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLResult): boolean;
   var
     Status: ISCStatus;
@@ -1217,11 +1276,13 @@ const
     i: Integer;
   begin
     Result := True;
-    LockLibrary;
+    if (Sqlda <> nil) then
+      sqlda.FScrollEOF := False;
+    Lock;
     try
       Status := isc_dsql_fetch(@FStatusVector, @StmtHandle, Dialect, GetSQLDAData(Sqlda));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
 
     case Status of
@@ -1256,86 +1317,83 @@ const
                 if Sqlda.FCachedFetch then Sqlda.AddCurrentRecord;
               end;
             end;
-      100 : Result := False; // end of fetch
+      100 :
+        begin
+          Result := False; // end of fetch
+          if (Sqlda <> nil) then
+            Sqlda.FScrollEOF := True;
+        end;
     else
       CheckUIBApiCall(Status);
     end;
   end;
 
-  procedure DSQLDescribe(var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLResult);
+  procedure TUIBLibrary.DSQLDescribe(var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLResult);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_dsql_describe(@FStatusVector, @StmtHandle, Dialect, GetSQLDAData(Sqlda)));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
     if (Sqlda <> nil) then
       Sqlda.AllocateDataBuffer;
   end;
 
-  procedure DSQLDescribeBind(var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLDA);
+  procedure TUIBLibrary.DSQLDescribeBind(var StmtHandle: IscStmtHandle; Dialect: Word; Sqlda: TSQLDA);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_dsql_describe_bind(@FStatusVector, @StmtHandle, Dialect,
         GetSQLDAData(Sqlda)));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure  DSQLSetCursorName(var StmtHandle: IscStmtHandle; const cursor: string);
+  procedure  TUIBLibrary.DSQLSetCursorName(var StmtHandle: IscStmtHandle; const cursor: string);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_dsql_set_cursor_name(@FStatusVector, @StmtHandle, PChar(cursor), 0));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure DSQLExecImmed2(var DBHhandle: IscDbHandle; var TraHandle: IscTrHandle;
+  procedure TUIBLibrary.DSQLExecImmed2(var DBHhandle: IscDbHandle; var TraHandle: IscTrHandle;
     const Statement: string; dialect: Word; InSqlda, OutSqlda: TSQLDA);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_dsql_exec_immed2(@FStatusVector, @DBHhandle, @TraHandle, Length(Statement),
         PChar(Statement), dialect, GetSQLDAData(InSqlda), GetSQLDAData(OutSqlda)));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure DSQLInfo(var StmtHandle: IscStmtHandle; const Items: array of byte; var buffer: String);
+  procedure TUIBLibrary.DSQLInfo(var StmtHandle: IscStmtHandle; const Items: array of byte; var buffer: String);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_dsql_sql_info(@FStatusVector, @StmtHandle, Length(Items), @Items[0],
         Length(buffer), PChar(buffer)));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-type
-  TDSQLInfoData = Packed record
-    InfoCode: byte;
-    InfoLen : Word; // isc_portable_integer convert a SmallInt to Word ??? so just say it is a word
-    case byte of
-      isc_info_sql_stmt_type: (StatementType: TUIBStatementType);
-      isc_info_sql_get_plan : (PlanDesc     : array[0..255] of Char);
-  end;
 
-  procedure GetDSQLInfoData(var StmtHandle: IscStmtHandle; var DSQLInfoData: TDSQLInfoData;
+  procedure TUIBLibrary.GetDSQLInfoData(var StmtHandle: IscStmtHandle; var DSQLInfoData: TDSQLInfoData;
     InfoCode: Byte);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_dsql_sql_info(@FStatusVector, @StmtHandle, 1, @InfoCode,
         SizeOf(TDSQLInfoData), @DSQLInfoData));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
     if (DSQLInfoData.InfoCode <> InfoCode) then
     begin
@@ -1346,14 +1404,14 @@ type
     end;
   end;
 
-  function  DSQLInfoPlan(var StmtHandle: IscStmtHandle): string;
+  function TUIBLibrary.DSQLInfoPlan(var StmtHandle: IscStmtHandle): string;
   var DSQLInfoData: TDSQLInfoData;
   begin
     GetDSQLInfoData(StmtHandle, DSQLInfoData, isc_info_sql_get_plan);
-    SetString(Result, DSQLInfoData.PlanDesc, DSQLInfoData.InfoLen);
+    SetString(Result, PChar(@DSQLInfoData.PlanDesc[1]), DSQLInfoData.InfoLen - 1);
   end;
 
-  function  DSQLInfoStatementType(var StmtHandle: IscStmtHandle): TUIBStatementType;
+  function TUIBLibrary.DSQLInfoStatementType(var StmtHandle: IscStmtHandle): TUIBStatementType;
   var DSQLInfoData: TDSQLInfoData;
   begin
     GetDSQLInfoData(StmtHandle, DSQLInfoData, isc_info_sql_stmt_type);
@@ -1361,13 +1419,25 @@ type
     Result := DSQLInfoData.StatementType;
   end;
 
+  procedure TUIBLibrary.DDLExecute(var DBHandle: IscDbHandle;
+    var TraHandle: IscTrHandle; const ddl: string);
+  begin
+    Lock;
+    try
+      CheckUIBApiCall(isc_ddl(@FStatusVector, @DBHandle, @TraHandle,
+        length(ddl), Pointer(ddl)));
+    finally
+      UnLock;
+    end;
+  end;
+
 //******************************************************************************
 //  Array
 //******************************************************************************
-  function ArrayLookupBounds(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle;
+  function TUIBLibrary.ArrayLookupBounds(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle;
     const RelationName, FieldName: String): TArrayDesc;
   begin
-    LockLibrary;
+    Lock;
     try
       {$IFDEF IB7_UP}
         CheckUIBApiCall(isc_array_lookup_bounds2(@FStatusVector, @DBHandle, @TransHandle,
@@ -1377,14 +1447,14 @@ type
           PChar(RelationName), PChar(FieldName), @Result));
       {$ENDIF}
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure ArrayGetSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle; ArrayId: TISCQuad;
+  procedure TUIBLibrary.ArrayGetSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle; ArrayId: TISCQuad;
     var desc: TArrayDesc; DestArray: PPointer; var SliceLength: Integer);
   begin
-    LockLibrary;
+    Lock;
     try
       {$IFDEF IB7_UP}
         CheckUIBApiCall(isc_array_get_slice2(@FStatusVector, @DBHandle, @TransHandle, @ArrayId,
@@ -1394,14 +1464,14 @@ type
           @desc, DestArray, @SliceLength));
       {$ENDIF}
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure ArrayPutSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle; ArrayId: TISCQuad;
+  procedure TUIBLibrary.ArrayPutSlice(var DBHandle: IscDbHandle; var TransHandle: IscTrHandle; ArrayId: TISCQuad;
     var desc: TArrayDesc; DestArray: PPointer; var SliceLength: Integer);
   begin
-    LockLibrary;
+    Lock;
     try
       {$IFDEF IB7_UP}
         CheckUIBApiCall(isc_array_put_slice2(@FStatusVector, @DBHandle, @TransHandle, @ArrayId,
@@ -1411,7 +1481,7 @@ type
           @desc, DestArray, @SliceLength));
       {$ENDIF}
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
@@ -1419,43 +1489,45 @@ type
 //  Error-handling
 //******************************************************************************
 
-  function  ErrSqlcode: ISCLong;
+  function  TUIBLibrary.ErrSqlcode: ISCLong;
   begin
-    LockLibrary;
+    Lock;
     try
       Result := isc_sqlcode(@FStatusVector);
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  function ErrInterprete: String;
+  function TUIBLibrary.ErrInterprete: String;
   var
     StatusVector: PStatusVector;
     i : Integer;
+    buffer: array[0..512] of char;
   begin
     StatusVector := @FStatusVector;
-    SetLength(Result, 255);
-    LockLibrary;
+    Lock;
     try
-      isc_interprete(PChar(Result), @StatusVector);
+      if isc_interprete(buffer, @StatusVector) > 0 then
+        Result := Result + Trim(buffer);
+
     finally
-      UnLockLibrary;
+      UnLock;
     end;
     for i := 1 to 255 do if Result[i] = #0 then Break; // Quick trim
     SetLength(Result, i-1);
   end;
 
-  function ErrSQLInterprete(SQLCODE: Smallint): String;
+  function TUIBLibrary.ErrSQLInterprete(SQLCODE: Smallint): String;
   var
     i : Integer;
   begin
     SetLength(Result, 255);
-    LockLibrary;
+    Lock;
     try
       isc_sql_interprete(SQLCODE, PChar(Result), 255);
     finally
-      UnLockLibrary;
+      UnLock;
     end;
     for i := 1 to 255 do if Result[i] = #0 then Break; // Quick trim
     SetLength(Result, i-1);
@@ -1465,46 +1537,46 @@ type
 // Services
 //******************************************************************************
 
-  procedure ServiceAttach(const ServiceName: string; var SvcHandle: IscSvcHandle; const Spb: string);
+  procedure TUIBLibrary.ServiceAttach(const ServiceName: string; var SvcHandle: IscSvcHandle; const Spb: string);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_service_attach(@FStatusVector, Length(ServiceName),
         PChar(ServiceName), @SvcHandle, Length(Spb), PChar(Spb)));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure ServiceDetach(var SvcHandle: IscSvcHandle);
+  procedure TUIBLibrary.ServiceDetach(var SvcHandle: IscSvcHandle);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_service_detach(@FStatusVector, @SvcHandle));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure ServiceQuery(var SvcHandle: IscSvcHandle; const SendSpb, RequestSpb: string; var Buffer: string);
+  procedure TUIBLibrary.ServiceQuery(var SvcHandle: IscSvcHandle; const SendSpb, RequestSpb: string; var Buffer: string);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_service_query(@FStatusVector, @SvcHandle, nil,
         Length(SendSpb), PChar(SendSpb), Length(RequestSpb), PChar(RequestSpb),
         Length(Buffer), PChar(Buffer)));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure ServiceStart(var SvcHandle: IscSvcHandle; const Spb: string);
+  procedure TUIBLibrary.ServiceStart(var SvcHandle: IscSvcHandle; const Spb: string);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_service_start(@FStatusVector, @SvcHandle, nil, Length(Spb), PChar(Spb)));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
@@ -1512,27 +1584,27 @@ type
 //  Blob
 //******************************************************************************
 
-  procedure BlobOpen(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle;
+  procedure TUIBLibrary.BlobOpen(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle;
     var BlobHandle: IscBlobHandle; BlobId: TISCQuad; BPB: string = '');
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_open_blob2(@FStatusVector, @DBHandle, @TraHandle, @BlobHandle,
         @BlobId, Length(BPB), PChar(BPB)));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  function BlobGetSegment(var BlobHandle: IscBlobHandle; out length: Word;
+  function TUIBLibrary.BlobGetSegment(var BlobHandle: IscBlobHandle; out length: Word;
     BufferLength: Word; Buffer: PChar): boolean;
   var AStatus: ISCStatus;
   begin
-    LockLibrary;
+    Lock;
     try
       AStatus := isc_get_segment(@FStatusVector, @BlobHandle, @length, BufferLength, Buffer);
     finally
-      UnLockLibrary;
+      UnLock;
     end;
     Result := (AStatus = 0) or (FStatusVector[1] = isc_segment);
     if not Result then
@@ -1540,13 +1612,13 @@ type
         CheckUIBApiCall(AStatus);
   end;
 
-  procedure BlobClose(var BlobHandle: IscBlobHandle);
+  procedure TUIBLibrary.BlobClose(var BlobHandle: IscBlobHandle);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_close_blob(@FStatusVector, @BlobHandle));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
@@ -1559,43 +1631,43 @@ type
       1: (ByteType: Byte);
   end;
 
-  procedure BlobSize(var BlobHandle: IscBlobHandle; out Size: Cardinal);
+  procedure TUIBLibrary.BlobSize(var BlobHandle: IscBlobHandle; out Size: Cardinal);
   var BlobInfo: array[0..1] of TBlobInfo;
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_blob_info(@FStatusVector, @BlobHandle, 1,
         isc_info_blob_total_length, SizeOf(BlobInfo), @BlobInfo));
       Size := BlobInfo[0].CardType;
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure BlobMaxSegment(var BlobHandle: IscBlobHandle; out Size: Cardinal);
+  procedure TUIBLibrary.BlobMaxSegment(var BlobHandle: IscBlobHandle; out Size: Cardinal);
   var BlobInfo: array[0..1] of TBlobInfo;
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_blob_info(@FStatusVector, @BlobHandle, 1,
         isc_info_blob_max_segment, SizeOf(BlobInfo), @BlobInfo));
       Size := BlobInfo[0].CardType;
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure BlobInfo(var BlobHandle: IscBlobHandle; out NumSegments, MaxSegment,
+  procedure TUIBLibrary.BlobInfo(var BlobHandle: IscBlobHandle; out NumSegments, MaxSegment,
     TotalLength: Cardinal; out btype : byte);
   var BlobInfos: array[0..3] of TBlobInfo;
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_blob_info(@FStatusVector, @BlobHandle, 4,
         isc_info_blob_num_segments + isc_info_blob_max_segment +
         isc_info_blob_total_length + isc_info_blob_type, SizeOf(BlobInfos), @BlobInfos));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
     NumSegments := BlobInfos[0].CardType;
     MaxSegment  := BlobInfos[1].CardType;
@@ -1603,9 +1675,9 @@ type
     btype       := BlobInfos[3].ByteType;
   end;
 
-  procedure BlobDefaultDesc(var Desc: TBlobDesc; const RelationName, FieldName: string);
+  procedure TUIBLibrary.BlobDefaultDesc(var Desc: TBlobDesc; const RelationName, FieldName: string);
   begin
-    LockLibrary;
+    Lock;
     try
       {$IFDEF IB7_UP}
         isc_blob_default_desc2(@Desc, PChar(RelationName), PChar(FieldName));
@@ -1613,23 +1685,23 @@ type
         isc_blob_default_desc(@Desc, PChar(RelationName), PChar(FieldName));
       {$ENDIF}
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure BlobSaveToStream(var BlobHandle: IscBlobHandle; Stream: TStream);
+  procedure TUIBLibrary.BlobSaveToStream(var BlobHandle: IscBlobHandle; Stream: TStream);
   var
     BlobInfos: array[0..2] of TBlobInfo;
     Buffer: Pointer;
     CurrentLength: Word;
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_blob_info(@FStatusVector, @BlobHandle, 2,
         isc_info_blob_max_segment + isc_info_blob_total_length,
         SizeOf(BlobInfos), @BlobInfos));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
 
     Stream.Size := BlobInfos[1].CardType; // don't realloc mem too many time
@@ -1644,25 +1716,25 @@ type
     Stream.Seek(0, soFromBeginning);
   end;
 
-  function  BlobReadString(var BlobHandle: IscBlobHandle): string;
+  function TUIBLibrary.BlobReadString(var BlobHandle: IscBlobHandle): string;
   begin
     BlobReadString(BlobHandle, Result);
   end;
 
-  procedure BlobReadString(var BlobHandle: IscBlobHandle; var Str: String);
+  procedure TUIBLibrary.BlobReadString(var BlobHandle: IscBlobHandle; var Str: String);
   var
     BlobInfos: array[0..2] of TBlobInfo;
     CurrentLength: Word;
     Buffer: PChar;
     Pos: Integer;
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_blob_info(@FStatusVector, @BlobHandle, 2,
         isc_info_blob_max_segment + isc_info_blob_total_length,
         SizeOf(BlobInfos), @BlobInfos));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
     SetLength(Str, BlobInfos[1].CardType);
     Pos := 1;
@@ -1678,20 +1750,20 @@ type
     end;
   end;
 
-  procedure BlobReadBuffer(var BlobHandle: IscBlobHandle; var Size: Integer; var Buffer: Pointer);
+  procedure TUIBLibrary.BlobReadBuffer(var BlobHandle: IscBlobHandle; var Size: Integer; var Buffer: Pointer);
   var
     BlobInfos: array[0..2] of TBlobInfo;
     CurrentLength: Word;
     TMP: PChar;
     Pos: Integer;
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_blob_info(@FStatusVector, @BlobHandle, 2,
         isc_info_blob_max_segment + isc_info_blob_total_length,
         SizeOf(BlobInfos), @BlobInfos));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
     Size := BlobInfos[1].CardType;
     GetMem(Buffer, Size);
@@ -1708,7 +1780,7 @@ type
     end;
   end;
 
-  procedure BlobReadVariant(var BlobHandle: IscBlobHandle; var Value: Variant);
+  procedure TUIBLibrary.BlobReadVariant(var BlobHandle: IscBlobHandle; var Value: Variant);
   var
     BlobInfos: array[0..2] of TBlobInfo;
     CurrentLength: Word;
@@ -1716,13 +1788,13 @@ type
     Pos: Integer;
     Buffer: Pointer;
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_blob_info(@FStatusVector, @BlobHandle, 2,
         isc_info_blob_max_segment + isc_info_blob_total_length,
         SizeOf(BlobInfos), @BlobInfos));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
     Value := VarArrayCreate([0, BlobInfos[1].CardType - 1], varByte);
     Pos := 0;
@@ -1740,33 +1812,33 @@ type
     end;
   end;
 
-  function BlobCreate(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle;
+  function TUIBLibrary.BlobCreate(var DBHandle: IscDbHandle; var TraHandle: IscTrHandle;
     var BlobHandle: IscBlobHandle): TISCQuad;
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_create_blob(@FStatusVector, @DBHandle, @TraHandle, @BlobHandle, @Result));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure BlobWriteSegment(var BlobHandle: IscBlobHandle; BufferLength: Word; Buffer: PChar);
+  procedure TUIBLibrary.BlobWriteSegment(var BlobHandle: IscBlobHandle; BufferLength: Word; Buffer: PChar);
   begin
-    LockLibrary;
+    Lock;
     try
       CheckUIBApiCall(isc_put_segment(@FStatusVector, @BlobHandle, BufferLength, Buffer));
     finally
-      UnLockLibrary;
+      UnLock;
     end;
   end;
 
-  procedure BlobWriteString(var BlobHandle: IscBlobHandle; var Str: String);
+  procedure TUIBLibrary.BlobWriteString(var BlobHandle: IscBlobHandle; var Str: String);
   begin
     BlobWriteSegment(BlobHandle, Length(Str), PChar(Str));
   end;
 
-  procedure BlobWriteStream(var BlobHandle: IscBlobHandle; Stream: TStream);
+  procedure TUIBLibrary.BlobWriteStream(var BlobHandle: IscBlobHandle; Stream: TStream);
   var
     Buffer: array[0..255] of Char;
     count: Integer;
@@ -1780,6 +1852,41 @@ type
     end;
     Stream.Seek(0, soFromBeginning);
   end;
+
+{$IFDEF IB71_UP}
+  procedure TUIBLibrary.SavepointRelease(var TrHandle: IscTrHandle;
+    const Name: string);
+  begin
+    Lock;
+    try
+      CheckUIBApiCall(isc_release_savepoint(@FStatusVector, @TrHandle, PChar(Name)));
+    finally
+      UnLock;
+    end;
+  end;
+
+  procedure TUIBLibrary.SavepointRollback(var TrHandle: IscTrHandle;
+    const Name: string; Option: Word);
+  begin
+    Lock;
+    try
+      CheckUIBApiCall(isc_rollback_savepoint(@FStatusVector, @TrHandle, PChar(Name), Option));
+    finally
+      UnLock;
+    end;
+  end;
+
+  procedure TUIBLibrary.SavepointStart(var TrHandle: IscTrHandle;
+    const Name: string);
+  begin
+    Lock;
+    try
+      CheckUIBApiCall(isc_start_savepoint(@FStatusVector, @TrHandle, PChar(Name)));
+    finally
+      UnLock;
+    end;
+  end;
+{$ENDIF}
 
 //******************************************************************************
 // Conversion
@@ -1816,6 +1923,19 @@ type
         inc(year, 1);
       end;
   end;
+
+{$IFDEF FPC}
+{$IFDEF LINUX}
+type
+  PDayTable = ^TDayTable;
+  TDayTable = array[1..12] of Word;
+  
+const
+  MonthDays: array [Boolean] of TDayTable =
+    ((31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
+     (31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31));
+{$ENDIF}
+{$ENDIF}
 
   procedure EncodeDate(const Year: Smallint; const Month: Word; Day: Word; out Date: Integer);
   var
@@ -1895,7 +2015,7 @@ type
   procedure EncodeTimeStamp(const DateTime: TDateTime; v: PISCTimeStamp);
   begin
     EncodeSQLDate(DateTime, v.timestamp_date);
-    v.timestamp_time := Trunc(Frac(DateTime) * 864000000);
+    v.timestamp_time := Round(Frac(DateTime) * 864000000);
   end;
 
   procedure DecodeSQLTime(v: Cardinal; out Hour, Minute, Second: Word;
@@ -1961,29 +2081,29 @@ type
   function TSQLDA.GetSqlName(const Index: Word): string;
   begin
     CheckRange(Index);
-    SetString(Result, FXSQLDA.sqlvar[Index].sqlname,
-      FXSQLDA.sqlvar[Index].sqlname_length);
+    SetString(Result, FXSQLDA.sqlvar[Index].SqlName,
+      FXSQLDA.sqlvar[Index].SqlNameLength);
   end;
 
   function TSQLDA.GetAliasName(const Index: Word): string;
   begin
     CheckRange(Index);
-    SetString(Result, FXSQLDA.sqlvar[Index].aliasname,
-      FXSQLDA.sqlvar[Index].aliasname_length);
+    SetString(Result, FXSQLDA.sqlvar[Index].AliasName,
+      FXSQLDA.sqlvar[Index].AliasNameLength);
   end;
 
   function TSQLDA.GetOwnName(const Index: Word): string;
   begin
     CheckRange(Index);
     SetString(Result, FXSQLDA.sqlvar[Index].OwnName,
-      FXSQLDA.sqlvar[Index].OwnName_length);
+      FXSQLDA.sqlvar[Index].OwnNameLength);
   end;
 
   function TSQLDA.GetRelName(const Index: Word): string;
   begin
     CheckRange(Index);
     SetString(Result, FXSQLDA.sqlvar[Index].RelName,
-      FXSQLDA.sqlvar[Index].RelName_length);
+      FXSQLDA.sqlvar[Index].RelNameLength);
   end;
 
   function TSQLDA.GetIsNull(const Index: Word): boolean;
@@ -2014,6 +2134,20 @@ type
     case Code of
       SQL_TEXT    : SetString(Str, sqldata, sqllen);
       SQL_VARYING : SetString(Str, PVary(sqldata).vary_string, PVary(sqldata).vary_length);
+    end;
+  end;
+
+  procedure TSQLDA.DecodeWideString(const Code: Smallint; Index: Word; out Str: WideString);
+    procedure SetWideString(var s: WideString; buffer: PChar; len: Integer);
+    begin
+      SetLength(s, len div 2);
+      move(buffer^, PWideChar(s)^, len);
+    end;
+  begin
+    with FXSQLDA.sqlvar[Index] do
+    case Code of
+      SQL_TEXT    : SetWideString(Str, sqldata, sqllen);
+      SQL_VARYING : SetWideString(Str, PVary(sqldata).vary_string, PVary(sqldata).vary_length);
     end;
   end;
 
@@ -2234,7 +2368,7 @@ type
 
   function TSQLDA.GetAsString(const Index: Word): String;
     function BoolToStr(const Value: boolean): string;
-    begin if Value then result := sUIBTrue else result := sUIBFalse; end;  
+    begin if Value then result := sUIBTrue else result := sUIBFalse; end;
   var ASQLCode: SmallInt;
   begin
     CheckRange(Index);
@@ -2318,9 +2452,9 @@ type
   function TSQLDA.GetFieldIndex(const name: String): Word;
   begin
     for Result := 0 to GetAllocatedFields - 1 do
-      if FXSQLDA.sqlvar[Result].aliasname_length = Length(name) then
+      if FXSQLDA.sqlvar[Result].AliasNameLength = Length(name) then
         if StrLIComp(@FXSQLDA.sqlvar[Result].aliasname, PChar(Name),
-          FXSQLDA.sqlvar[Result].aliasname_length) = 0 then Exit;
+          FXSQLDA.sqlvar[Result].AliasNameLength) = 0 then Exit;
     raise EUIBError.CreateFmt(EUIB_FIELDSTRNOTFOUND, [name]);
   end;
 
@@ -2367,7 +2501,7 @@ type
     CheckRange(Index);
     with FXSQLDA.sqlvar[Index] do
     begin
-      VarClear(Result);
+      Result := NULL;
       if (sqlind <> nil) and (sqlind^ = -1) then Exit;
       ASQLCode := (sqltype and not(1));
       // Is Numeric ?
@@ -2461,6 +2595,7 @@ type
   var
     i: Integer;
   begin
+    FScrollEOF := False;
     if Assigned(FRecords) then
     begin
       if FFetchBlobs then
@@ -2472,8 +2607,11 @@ type
 
   procedure TSQLResult.GetRecord(const Index: Integer);
   begin
-    Move(FRecords.Items[Index]^, FDataBuffer^, FDataBufferLength);
-    FCurrentRecord := Index;
+    if (Index <> FCurrentRecord) then
+    begin
+      Move(FRecords.Items[Index]^, FDataBuffer^, FDataBufferLength);
+      FCurrentRecord := Index;
+    end;
   end;
 
   function TSQLResult.GetRecordCount: Integer;
@@ -2516,14 +2654,15 @@ type
       end;
     end;
     Inc(FDataBufferLength, LastLen);
-    Inc(FDataBufferLength, BlobCount * 8); // Size + Pointer
+    Inc(FDataBufferLength, BlobCount * SizeOf(TBlobData)); // Size + Pointer
 
     // Now we have the total length needed
     if (FDataBuffer = nil) then
       GetMem(FDataBuffer, FDataBufferLength {+ (FXSQLDA.sqln * 2)}) else
       ReallocMem(FDataBuffer, FDataBufferLength {+ (FXSQLDA.sqln * 2)});
     FillChar(FDataBuffer^, FDataBufferLength, 0);
-    FBlobArray := Pointer(Integer(FDataBuffer) + FDataBufferLength - BlobCount * 8);
+    FBlobArray := FDataBuffer;
+    Inc(Integer(FBlobArray), FDataBufferLength - BlobCount * SizeOf(TBlobData));
 
     // increment Offsets with the buffer
     for i := 0 to FXSQLDA.sqln - 1 do
@@ -2568,7 +2707,6 @@ type
     if (not FCachedFetch) and FFetchBlobs then
       FreeBlobs(FDataBuffer);
 
-    Stream.Seek(0, soFromBeginning);
     Stream.Read(FCachedFetch, SizeOf(FCachedFetch));
     Stream.Read(FFetchBlobs, SizeOf(FFetchBlobs));
 
@@ -2595,6 +2733,8 @@ type
       end;
       AddCurrentRecord;
     end;
+
+    FScrollEOF := True;
   end;
 
   function TSQLResult.GetCurrentRecord: Integer;
@@ -2624,6 +2764,11 @@ type
       raise Exception.CreateFmt(EUIB_BLOBFIELDNOTFOUND, [Index]);
     end else
       raise Exception.Create(EUIB_FETCHBLOBNOTSET);
+  end;
+
+  function TSQLResult.GetEof: boolean;
+  begin
+    Result := FScrollEOF;
   end;
 
   procedure TSQLResult.ReadBlob(const Index: Word; var str: string);
@@ -2661,6 +2806,21 @@ type
         VarArrayUnlock(Value);
       end;
     end;
+  end;
+
+  procedure TSQLResult.ReadBlob(const Index: Word; var str: WideString);
+  begin
+    CheckRange(Index);
+    with FBlobArray[GetBlobIndex(Index)] do
+    begin
+      SetLength(str, Size);
+      Move(Buffer^, PWideChar(Str)^, Size);
+    end;
+  end;
+
+  procedure TSQLResult.ReadBlob(const name: string; var str: WideString);
+  begin
+    ReadBlob(GetFieldIndex(name), str);
   end;
 
   procedure TSQLResult.ReadBlob(const name: string; var str: string);
@@ -2724,6 +2884,52 @@ type
     end;
   end;
 
+  function TSQLResult.GetAsWideString(const Index: Word): WideString;
+    function BoolToStr(const Value: boolean): string;
+    begin if Value then result := sUIBTrue else result := sUIBFalse; end;
+  var ASQLCode: SmallInt;
+  begin
+    CheckRange(Index);
+    Result := '';
+    with FXSQLDA.sqlvar[Index] do
+    begin
+      if (sqlind <> nil) and (sqlind^ = -1) then Exit;
+      ASQLCode := (sqltype and not(1));
+      // Is Numeric ?
+      if (sqlscale < 0)  then
+      begin
+        case ASQLCode of
+          SQL_SHORT  : Result := FloatToStr(PSmallInt(sqldata)^ / ScaleDivisor[sqlscale]);
+          SQL_LONG   : Result := FloatToStr(PInteger(sqldata)^  / ScaleDivisor[sqlscale]);
+          SQL_INT64,
+          SQL_QUAD   : Result := FloatToStr(PInt64(sqldata)^    / ScaleDivisor[sqlscale]);
+          SQL_DOUBLE : Result := FloatToStr(PDouble(sqldata)^);
+        else
+          raise EUIBConvertError.Create(EUIB_UNEXPECTEDERROR + ': ' + EUIB_CASTERROR);
+        end;
+      end else
+        case ASQLCode of
+          SQL_DOUBLE    : Result := FloatToStr(PDouble(sqldata)^);
+          SQL_TIMESTAMP : Result := DateTimeToStr(DecodeTimeStamp(PISCTimeStamp(sqldata)));
+          SQL_TYPE_DATE : Result := DateToStr(DecodeSQLDate(PInteger(sqldata)^));
+          SQL_TYPE_TIME : Result := TimeToStr(PCardinal(sqldata)^ / 864000000);
+          SQL_LONG      : Result := IntToStr(PInteger(sqldata)^);
+          SQL_D_FLOAT,
+          SQL_FLOAT     : Result := FloatToStr(PSingle(sqldata)^);
+{$IFDEF IB7_UP}
+          SQL_BOOLEAN   : Result := BoolToStr(PSmallint(sqldata)^ = 1);
+{$ENDIF}
+          SQL_SHORT     : Result := IntToStr(PSmallint(sqldata)^);
+          SQL_INT64     : Result := IntToStr(PInt64(sqldata)^);
+          SQL_TEXT      : DecodeWideString(SQL_TEXT, Index, Result);
+          SQL_VARYING   : DecodeWideString(SQL_VARYING, Index, Result);
+          SQL_BLOB      : ReadBlob(Index, Result);
+        else
+          raise EUIBConvertError.Create(EUIB_CASTERROR);
+        end;
+    end;
+  end;
+
   function TSQLResult.GetAsVariant(const Index: Word): Variant;
   var
     ASQLCode: SmallInt;
@@ -2732,7 +2938,7 @@ type
     CheckRange(Index);
     with FXSQLDA.sqlvar[Index] do
     begin
-      VarClear(Result);
+      Result := NULL;
       if (sqlind <> nil) and (sqlind^ = -1) then Exit;
       ASQLCode := (sqltype and not(1));
       // Is Numeric ?
@@ -2902,6 +3108,95 @@ begin
   Result := GetAsBoolean(GetFieldIndex(Name));
 end;
 
+function TSQLDA.GetByNameIsNumeric(const Name: String): boolean;
+begin
+  result := GetIsNumeric(GetFieldIndex(Name));
+end;
+
+function TSQLDA.GetIsNumeric(const Index: Word): boolean;
+begin
+  CheckRange(Index);
+  result := (FXSQLDA.sqlvar[Index].SqlScale < 0);
+end;
+
+function TSQLDA.GetAsWideString(const Index: Word): WideString;
+    function BoolToStr(const Value: boolean): string;
+    begin if Value then result := sUIBTrue else result := sUIBFalse; end;
+  var ASQLCode: SmallInt;
+  begin
+    CheckRange(Index);
+    Result := '';
+    with FXSQLDA.sqlvar[Index] do
+    begin
+      if (sqlind <> nil) and (sqlind^ = -1) then Exit;
+      ASQLCode := (sqltype and not(1));
+      // Is Numeric ?
+      if (sqlscale < 0)  then
+      begin
+        case ASQLCode of
+          SQL_SHORT  : Result := FloatToStr(PSmallInt(sqldata)^ / ScaleDivisor[sqlscale]);
+          SQL_LONG   : Result := FloatToStr(PInteger(sqldata)^  / ScaleDivisor[sqlscale]);
+          SQL_INT64,
+          SQL_QUAD   : Result := FloatToStr(PInt64(sqldata)^    / ScaleDivisor[sqlscale]);
+          SQL_DOUBLE : Result := FloatToStr(PDouble(sqldata)^);
+        else
+          raise EUIBConvertError.Create(EUIB_UNEXPECTEDERROR + ': ' + EUIB_CASTERROR);
+        end;
+      end else
+        case ASQLCode of
+          SQL_DOUBLE    : Result := FloatToStr(PDouble(sqldata)^);
+          SQL_TIMESTAMP : Result := DateTimeToStr(DecodeTimeStamp(PISCTimeStamp(sqldata)));
+          SQL_TYPE_DATE : Result := DateToStr(DecodeSQLDate(PInteger(sqldata)^));
+          SQL_TYPE_TIME : Result := TimeToStr(PCardinal(sqldata)^ / 864000000);
+          SQL_LONG      : Result := IntToStr(PInteger(sqldata)^);
+          SQL_D_FLOAT,
+          SQL_FLOAT     : Result := FloatToStr(PSingle(sqldata)^);
+{$IFDEF IB7_UP}
+          SQL_BOOLEAN   : Result := BoolToStr(PSmallint(sqldata)^ = 1);
+{$ENDIF}
+          SQL_SHORT     : Result := IntToStr(PSmallint(sqldata)^);
+          SQL_INT64     : Result := IntToStr(PInt64(sqldata)^);
+          SQL_TEXT      : DecodeWideString(SQL_TEXT, Index, Result);
+          SQL_VARYING   : DecodeWideString(SQL_VARYING, Index, Result);
+        else
+          raise EUIBConvertError.Create(EUIB_CASTERROR);
+        end;
+    end;
+  end;
+
+function TSQLDA.GetByNameAsWideString(const Name: String): WideString;
+begin
+  Result := GetAsWideString(GetFieldIndex(Name));
+end;
+
+function TSQLDA.GetFieldType(const Index: Word): TUIBFieldType;
+begin
+  CheckRange(Index);
+  if FXSQLDA.sqlvar[Index].SqlScale < 0 then
+    Result := uftNumeric else
+  case FXSQLDA.sqlvar[Index].sqltype and not (1) of
+    SQL_TEXT        : Result := uftChar;
+    SQL_VARYING     : Result := uftVarchar;
+    SQL_SHORT       : Result := uftSmallint;
+    SQL_LONG        : Result := uftInteger;
+    SQL_FLOAT,
+    SQL_D_FLOAT     : Result := uftFloat;
+    SQL_DOUBLE      : Result := uftDoublePrecision;
+    SQL_TIMESTAMP   : Result := uftTimestamp;
+    SQL_BLOB        : Result := uftBlob;
+    SQL_ARRAY,
+    SQL_QUAD        : Result := uftQuad;
+    SQL_TYPE_TIME   : Result := uftTime;
+    SQL_TYPE_DATE   : Result := uftDate;
+    SQL_INT64       : Result := uftInt64;
+  {$IFDEF IB7_UP}
+    SQL_BOOLEAN     : Result := uftBoolean;
+  {$ENDIF}
+  else
+    Result := uftUnKnown;
+  end;
+end;
+
 { TMemoryPool }
 
 constructor TMemoryPool.Create(ItemSize, ItemsInPage: Integer);
@@ -2913,12 +3208,16 @@ var
 const
   MinItemSize = SizeOf(Word) + SizeOf(Pointer);
   function Max(a, b : Integer) : Integer;
+{$IFDEF FPC}
+  begin if a > b then Result := a else Result := b; end;
+{$ELSE}
   asm
     cmp eax, edx
     jge @@Exit
     mov eax, edx
   @@Exit:
   end;
+{$ENDIF}
 begin
   FList := TList.Create;
   FItemSize := Max(ItemSize, MinItemSize);
@@ -2931,6 +3230,301 @@ begin
     TestSize := (RealItemSize * FItemsInPage) + PageSizeAdjustment;
   end;
   FPageSize := TestSize;
+end;
+
+function TSQLParams.GetFieldName(const Index: Word): string;
+begin
+  CheckRange(Index);
+  SetString(Result, FXSQLDA.sqlvar[Index].ParamName,
+    FXSQLDA.sqlvar[Index].ParamNameLength);
+end;
+
+procedure TSQLParams.AddFieldType(const Name: string; FieldType: TUIBFieldType;
+  Scale: TScale = 1; Precision: byte = 0);
+begin
+  case FieldType of
+    uftNumeric   :
+      begin
+        case Precision of
+          0..4: SetFieldType(AddField(name), SizeOf(Smallint), SQL_SHORT + 1, -scale);
+          5..7: SetFieldType(AddField(name), SizeOf(Integer) , SQL_LONG + 1 , -scale);
+        else
+          SetFieldType(AddField(name), SizeOf(Int64), SQL_INT64 + 1, -scale);
+        end;
+      end;
+    uftChar,
+    uftVarchar,
+    uftCstring         : SetFieldType(AddField(name), 0                    , SQL_TEXT      + 1, 0);
+    uftSmallint        : SetFieldType(AddField(name), SizeOf(Smallint)     , SQL_SHORT     + 1, 0);
+    uftInteger         : SetFieldType(AddField(name), SizeOf(Integer)      , SQL_LONG      + 1, 0);
+    uftQuad            : SetFieldType(AddField(name), SizeOf(TISCQuad)     , SQL_QUAD      + 1, 0);
+    uftFloat           : SetFieldType(AddField(name), SizeOf(Single)       , SQL_FLOAT     + 1, 0);
+    uftDoublePrecision : SetFieldType(AddField(name), SizeOf(Double)       , SQL_DOUBLE    + 1, 0);
+    uftTimestamp       : SetFieldType(AddField(name), SizeOf(TISCTimeStamp), SQL_TIMESTAMP + 1, 0);
+    uftBlob,
+    uftBlobId          : SetFieldType(AddField(name), SizeOf(TISCQuad)     , SQL_BLOB      + 1, 0);
+    uftDate            : SetFieldType(AddField(name), SizeOf(Integer)      , SQL_TYPE_DATE + 1, 0);
+    uftTime            : SetFieldType(AddField(name), SizeOf(Cardinal)     , SQL_TYPE_TIME + 1, 0);
+    uftInt64           : SetFieldType(AddField(name), SizeOf(Int64)        , SQL_INT64     + 1, 0);
+{$IFDEF IB7_UP}
+    uftBoolean         : SetFieldType(AddField(name), SizeOf(Smallint)     , SQL_BOOLEAN   + 1, 0);
+{$ENDIF}
+  end;
+end;
+
+procedure TSQLParams.SetFieldType(const Index: Word; Size: Integer; Code,
+  Scale: Smallint);
+var i: Word;
+begin
+  CheckRange(Index);
+  with FXSQLDA.sqlvar[Index] do
+    if Init then  // need to be set, cf addfield
+    begin
+      Init := False; // don't need to be set
+      sqltype := Code;
+      sqlscale := Scale;
+      sqllen := Size;
+      if (Size > 0) then
+        GetMem(sqldata, Size) else
+        sqldata := nil;
+      if ParamNameLength > 0 then
+        for i := 0 to GetAllocatedFields - 1 do
+          if (i <> Index) and (ID = FXSQLDA.sqlvar[i].ID) then
+            move(FXSQLDA.sqlvar[Index], FXSQLDA.sqlvar[i], SizeOf(TUIBSQLVar)-MaxParamLength-2);
+    end;
+end;
+
+function TSQLParams.Parse(const SQL: string): string;
+const
+  Identifiers: set of char = ['a'..'z', 'A'..'Z', '0'..'9', '_'];
+var
+  Src: PChar;
+  Dest, idlen: Word;
+
+  procedure next;
+  begin
+    inc(dest);
+    Result[dest] := Src^;
+    inc(Src);
+  end;
+
+  procedure Skip(c: char);
+  begin
+    repeat
+      next;
+      if Src^ = c then
+      begin
+        Next;
+        Break;
+      end;
+    until (Src^ = #0);
+  end;
+
+  {$IFDEF FPC}
+  function PrevChar(c: pchar): char;
+  begin
+    dec(c);
+    result := c^;
+  end;
+  {$ENDIF}
+begin
+  Clear;
+  Src := PChar(SQL);
+  Dest := 0;
+  SetLength(Result, Length(SQL));
+  while true do
+    case Src^ of
+      // eof
+      #0 :  begin
+              SetLength(Result, Dest);
+              Exit;
+            end;
+      // normal comments
+      '/' : if Src[1] = '*' then
+            begin
+              inc(Src, 2);
+              while (Src^ <> #0) do
+                if (Src^ = '*') and (Src[1] = '/') then
+                begin
+                  inc(Src, 2);
+                  Break;
+                end else
+                  inc(Src);
+            end else
+              next;
+      // Firebird comments -- My comment + (eol or eof)
+      {.$IFDEF FB15_UP}
+      '-' : if Src[1] = '-' then
+            begin
+              inc(Src, 2);
+              while not(Src^ in [#0, #13, #10]) do
+                inc(Src);
+            end else
+              next;
+      {.$ENDIF}
+      // text ''
+      '''': Skip('''');
+      // text ""
+      '"' : Skip('"');
+      // Unnamed Input
+      '?' : begin
+              AddField('');
+              Next;
+            end;
+      // Named Input
+      ':' : begin
+              inc(dest);
+              Result[dest] := '?';
+              inc(Src);
+              idlen := 0;
+              while Src[idlen] in Identifiers do
+                inc(idlen);
+              AddField(copy(Src, 0, idlen));
+              inc(Src, idlen);
+            end;
+      // skip everything when begin identifier found !
+      // in procedures
+      'b','B':
+        begin
+          if not ((dest > 0) and ({$IFDEF FPC}PrevChar(src){$ELSE}src[-1]{$ENDIF}
+            in Identifiers)) and (CompareText(copy(Src, 0, 5), 'begin') = 0) and
+             not (Src[5] in Identifiers) then
+               while (Src^ <> #0) do Next else next;
+        end;
+    else
+      next;
+    end;
+end;
+
+function TSQLParams.GetFieldType(const Index: Word): TUIBFieldType;
+begin
+  if IsNull[Index] and FXSQLDA.sqlvar[Index].Init then
+    Result := uftUnKnown else
+    Result := inherited GetFieldType(Index);
+end;
+
+function TSQLParams.GetFieldIndex(const name: String): Word;
+begin
+  if not FindParam(name, Result) then
+    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+end;
+
+procedure TSQLParams.SetByNameAsBoolean(const Name: String;
+  const Value: boolean);
+var
+  Field: Word;
+begin
+  if (Length(Name) > 0) and FindParam(Name, Field) then
+    SetAsBoolean(Field, Value) else
+    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+end;
+
+procedure TSQLParams.SetByNameAsCurrency(const Name: String;
+  const Value: Currency);
+var
+  Field: Word;
+begin
+  if (Length(Name) > 0) and FindParam(Name, Field) then
+    SetAsCurrency(Field, Value) else
+    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+end;
+
+procedure TSQLParams.SetByNameAsDateTime(const Name: String;
+  const Value: TDateTime);
+var
+  Field: Word;
+begin
+  if (Length(Name) > 0) and FindParam(Name, Field) then
+    SetAsDateTime(Field, Value) else
+    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+end;
+
+procedure TSQLParams.SetByNameAsDouble(const Name: String;
+  const Value: Double);
+var
+  Field: Word;
+begin
+  if (Length(Name) > 0) and FindParam(Name, Field) then
+    SetAsDouble(Field, Value) else
+    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+end;
+
+procedure TSQLParams.SetByNameAsInt64(const Name: String;
+  const Value: Int64);
+var
+  Field: Word;
+begin
+  if (Length(Name) > 0) and FindParam(Name, Field) then
+    SetAsInt64(Field, Value) else
+    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+end;
+
+procedure TSQLParams.SetByNameAsInteger(const Name: String;
+  const Value: Integer);
+var
+  Field: Word;
+begin
+  if (Length(Name) > 0) and FindParam(Name, Field) then
+    SetAsInteger(Field, Value) else
+    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+end;
+
+procedure TSQLParams.SetByNameAsQuad(const Name: String;
+  const Value: TISCQuad);
+var
+  Field: Word;
+begin
+  if (Length(Name) > 0) and FindParam(Name, Field) then
+    SetAsQuad(Field, Value) else
+    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+end;
+
+procedure TSQLParams.SetByNameAsSingle(const Name: String;
+  const Value: Single);
+var
+  Field: Word;
+begin
+  if (Length(Name) > 0) and FindParam(Name, Field) then
+    SetAsSingle(Field, Value) else
+    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+end;
+
+procedure TSQLParams.SetByNameAsSmallint(const Name: String;
+  const Value: Smallint);
+var
+  Field: Word;
+begin
+  if (Length(Name) > 0) and FindParam(Name, Field) then
+    SetAsSmallint(Field, Value) else
+    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+end;
+
+procedure TSQLParams.SetByNameAsString(const Name, Value: String);
+var
+  Field: Word;
+begin
+  if (Length(Name) > 0) and FindParam(Name, Field) then
+    SetAsString(Field, Value) else
+    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+end;
+
+procedure TSQLParams.SetByNameAsWideString(const Name: String; const Value: WideString);
+var
+  Field: Word;
+begin
+  if (Length(Name) > 0) and FindParam(Name, Field) then
+    SetAsWideString(Field, Value) else
+    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+end;
+
+procedure TSQLParams.SetByNameIsNull(const Name: String;
+  const Value: boolean);
+var
+  Field: Word;
+begin
+  if (Length(Name) > 0) and FindParam(Name, Field) then
+    SetIsNull(Field, Value) else
+    raise EUIBError.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
 destructor TMemoryPool.Destroy;
@@ -3059,7 +3653,7 @@ begin
       if Temp = FFreeList then
         FFreeList := PPointer(Temp)^
       else
-        PPointer(Prev^) := PPointer(Temp^);
+        PPointer(Prev)^ := PPointer(Temp)^;
       Temp := PPointer(Temp)^;
     end else
     begin
@@ -3107,39 +3701,95 @@ end;
 
 { TSQLParams }
 
-  function TSQLParams.EncodeString(Code: Smallint; Index: Word; const str: String): Cardinal;
+  procedure TSQLParams.EncodeString(Code: Smallint; Index: Word; const str: String);
+  var
+    i: smallint;
+    OldLen: SmallInt;
+    NewLen: Integer;
   begin
+    OldLen  := FXSQLDA.sqlvar[Index].SqlLen;
     with FXSQLDA.sqlvar[Index] do
       case Code of
         SQL_TEXT :
           begin
-            Result := Length(str);
+            NewLen := Length(str);
+            if NewLen = 0 then
+              Inc(NewLen); // empty string not null
             if sqllen = 0 then
-              getmem(sqldata, Result) else
-              ReallocMem(sqldata, Result);
-            sqllen := Result;
+              getmem(sqldata, NewLen) else
+              ReallocMem(sqldata, NewLen);
+            sqllen := NewLen;
             Move(PChar(str)^, sqldata^, sqllen);
           end;
         SQL_VARYING :
           begin
-            Result := Length(str);
+            NewLen := Length(str);
+            if NewLen = 0 then
+              Inc(NewLen); // empty string not null
             if sqllen = 0 then
-              getmem(sqldata, Result+2) else
-              ReallocMem(sqldata, Result+2);
-            sqllen := Result + 2;
-            PVary(sqldata).vary_length := Result;
+              getmem(sqldata, NewLen+2) else
+              ReallocMem(sqldata, NewLen+2);
+            sqllen := NewLen + 2;
+            PVary(sqldata).vary_length := NewLen;
             Move(PChar(str)^, PVary(sqldata).vary_string, PVary(sqldata).vary_length);
           end;
-        else
-          Result := 0;
       end;
+
+      // named parametters share the same memory !!
+      with FXSQLDA.sqlvar[Index] do
+        if (ParamNameLength > 0) and (OldLen <> SqlLen) then
+           for i := 0 to FXSQLDA.sqln - 1 do
+             if (FXSQLDA.sqlvar[i].ID = ID) then
+             begin
+               FXSQLDA.sqlvar[i].SqlData := SqlData;
+               FXSQLDA.sqlvar[i].SqlLen  := SqlLen;
+             end;
+  end;
+
+  procedure TSQLParams.EncodeWideString(Code: Smallint; Index: Word; const str: WideString);
+  var
+    i: smallint;
+    OldLen: SmallInt;
+    NewLen: Integer;
+  begin
+    OldLen  := FXSQLDA.sqlvar[Index].SqlLen;
+    with FXSQLDA.sqlvar[Index] do
+      case Code of
+        SQL_TEXT :
+          begin
+            NewLen := Length(str) * 2;
+            if sqllen = 0 then
+              getmem(sqldata, NewLen) else
+              ReallocMem(sqldata, NewLen);
+            sqllen := NewLen;
+            Move(PWideChar(str)^, sqldata^, sqllen);
+          end;
+        SQL_VARYING :
+          begin
+            NewLen := Length(str) * 2;
+            if sqllen = 0 then
+              getmem(sqldata, NewLen+2) else
+              ReallocMem(sqldata, NewLen+2);
+            sqllen := NewLen + 2;
+            PVary(sqldata).vary_length := NewLen;
+            Move(PWideChar(str)^, PVary(sqldata).vary_string, PVary(sqldata).vary_length);
+          end;
+      end;
+
+      // named parametters share the same memory !!
+      with FXSQLDA.sqlvar[Index] do
+        if (ParamNameLength > 0) and (OldLen <> SqlLen) then
+           for i := 0 to FXSQLDA.sqln - 1 do
+             if (FXSQLDA.sqlvar[i].ID = ID) then
+             begin
+               FXSQLDA.sqlvar[i].SqlData := SqlData;
+               FXSQLDA.sqlvar[i].SqlLen  := SqlLen;
+             end;
   end;
 
   procedure TSQLParams.SetAsQuad(const Index: Word; const Value: TISCQuad);
   begin
-    if (FieldCount = Index) then
-      AddField(sizeof(TISCQuad), SQL_QUAD + 1) else
-      CheckRange(Index);
+    SetFieldType(Index, sizeof(TISCQuad), SQL_QUAD + 1);
     with FXSQLDA.sqlvar[Index] do
       begin
         case (sqltype and not(1)) of
@@ -3157,21 +3807,18 @@ end;
   procedure TSQLParams.SetAsDateTime(const Index: Word;
     const Value: TDateTime);
   begin
-    if (FieldCount = Index) then
-      AddField(sizeof(TISCQuad), SQL_TIMESTAMP + 1);
+    SetFieldType(Index, sizeof(TISCQuad), SQL_TIMESTAMP + 1);
     SetAsDouble(Index, Value);
   end;
 
   procedure TSQLParams.SetAsBoolean(const Index: Word; const Value: Boolean);
   var ASQLCode: SmallInt;
   begin
-    if (FieldCount = Index) then
 {$IFDEF IB7_UP}
-      AddField(sizeof(Smallint), SQL_BOOLEAN + 1) else
+    SetFieldType(Index, sizeof(Smallint), SQL_BOOLEAN + 1);
 {$ELSE}
-      AddField(sizeof(Smallint), SQL_SHORT + 1) else
+    SetFieldType(Index, sizeof(Smallint), SQL_SHORT + 1);
 {$ENDIF}
-      CheckRange(Index);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -3210,9 +3857,7 @@ end;
   procedure TSQLParams.SetAsInteger(const Index: Word; const Value: Integer);
   var ASQLCode: SmallInt;
   begin
-    if (FieldCount = Index) then
-      AddField(sizeof(Integer), SQL_LONG + 1) else
-      CheckRange(Index);
+    SetFieldType(Index, sizeof(Integer), SQL_LONG + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -3254,9 +3899,7 @@ end;
   procedure TSQLParams.SetAsSingle(const Index: Word; const Value: Single);
   var ASQLCode: SmallInt;
   begin
-    if (FieldCount = Index) then
-      AddField(sizeof(Single), SQL_FLOAT + 1) else
-      CheckRange(Index);
+    SetFieldType(Index, sizeof(Single), SQL_FLOAT + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -3277,7 +3920,7 @@ end;
           SQL_DOUBLE    : PDouble(sqldata)^   := Value;
           SQL_TIMESTAMP : EncodeTimeStamp(Value, PISCTimeStamp(sqldata));
           SQL_TYPE_DATE : EncodeSQLDate(Value, PInteger(sqldata)^);
-          SQL_TYPE_TIME : PCardinal(sqldata)^ := Trunc(Frac(Value) * 864000000);
+          SQL_TYPE_TIME : PCardinal(sqldata)^ := Round(Frac(Value) * 864000000);
           SQL_LONG      : PInteger(sqldata)^ := Trunc(Value);
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := Value;
@@ -3298,9 +3941,7 @@ end;
   procedure TSQLParams.SetAsSmallint(const Index: Word; const Value: Smallint);
   var ASQLCode: SmallInt;
   begin
-    if (FieldCount = Index) then
-      AddField(sizeof(Smallint), SQL_SHORT + 1) else
-      CheckRange(Index);
+    SetFieldType(Index, sizeof(Smallint), SQL_SHORT + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -3342,12 +3983,8 @@ end;
   procedure TSQLParams.SetAsString(const Index: Word; const Value: String);
   var
     ASQLCode: SmallInt;
-    SetNull: boolean;
   begin
-    if (FieldCount = Index) then
-      AddField(Length(Value), SQL_TEXT + 1) else
-      CheckRange(Index);
-    SetNull := False;
+    SetFieldType(Index, Length(Value), SQL_TEXT + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -3368,7 +4005,7 @@ end;
           SQL_DOUBLE    : PDouble(sqldata)^   := StrToFloat(Value);
           SQL_TIMESTAMP : EncodeTimeStamp(StrToDateTime(Value), PISCTimeStamp(sqldata));
           SQL_TYPE_DATE : EncodeSQLDate(StrToDate(Value), PInteger(sqldata)^);
-          SQL_TYPE_TIME : PCardinal(sqldata)^ := Trunc(Frac(StrToTime(Value)) * 864000000);
+          SQL_TYPE_TIME : PCardinal(sqldata)^ := Round(Frac(StrToTime(Value)) * 864000000);
           SQL_LONG      : PInteger(sqldata)^ := Trunc(StrToFloat(Value));
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := StrToFloat(Value);
@@ -3377,24 +4014,65 @@ end;
 {$ENDIF}
           SQL_SHORT     : PSmallint(sqldata)^ := Trunc(StrToFloat(Value));
           SQL_INT64     : PInt64(sqldata)^ := Trunc(StrToFloat(Value));
-          SQL_TEXT      : SetNull := EncodeString(SQL_TEXT, Index, Value) = 0;
-          SQL_VARYING   : SetNull := EncodeString(SQL_VARYING, Index, Value) = 0;
+          SQL_TEXT      : EncodeString(SQL_TEXT, Index, Value);
+          SQL_VARYING   : EncodeString(SQL_VARYING, Index, Value);
         else
           raise EUIBConvertError.Create(EUIB_CASTERROR);
         end;
         if (sqlind <> nil) then
-          if SetNull then
-            sqlind^ := -1 else
-            sqlind^ := 0;
+          sqlind^ := 0;
+    end;
+  end;
+
+  procedure TSQLParams.SetAsWideString(const Index: Word;
+    const Value: WideString);
+  var
+    ASQLCode: SmallInt;
+  begin
+    SetFieldType(Index, Length(Value), SQL_TEXT + 1);
+    with FXSQLDA.sqlvar[Index] do
+    begin
+      ASQLCode := (sqltype and not(1));
+      // Is Numeric ?
+      if (sqlscale < 0)  then
+      begin
+        case ASQLCode of
+          SQL_SHORT  : PSmallInt(sqldata)^ := Trunc(StrToFloat(Value) * ScaleDivisor[sqlscale]);
+          SQL_LONG   : PInteger(sqldata)^  := Trunc(StrToFloat(Value) * ScaleDivisor[sqlscale]);
+          SQL_INT64,
+          SQL_QUAD   : PInt64(sqldata)^    := Trunc(StrToFloat(Value) * ScaleDivisor[sqlscale]);
+          SQL_DOUBLE : PDouble(sqldata)^   := StrToFloat(Value);
+        else
+          raise EUIBConvertError.Create(EUIB_UNEXPECTEDERROR + ': ' + EUIB_CASTERROR);
+        end;
+      end else
+        case ASQLCode of
+          SQL_DOUBLE    : PDouble(sqldata)^   := StrToFloat(Value);
+          SQL_TIMESTAMP : EncodeTimeStamp(StrToDateTime(Value), PISCTimeStamp(sqldata));
+          SQL_TYPE_DATE : EncodeSQLDate(StrToDate(Value), PInteger(sqldata)^);
+          SQL_TYPE_TIME : PCardinal(sqldata)^ := Round(Frac(StrToTime(Value)) * 864000000);
+          SQL_LONG      : PInteger(sqldata)^ := Trunc(StrToFloat(Value));
+          SQL_D_FLOAT,
+          SQL_FLOAT     : PSingle(sqldata)^ := StrToFloat(Value);
+{$IFDEF IB7_UP}
+          SQL_BOOLEAN,
+{$ENDIF}
+          SQL_SHORT     : PSmallint(sqldata)^ := Trunc(StrToFloat(Value));
+          SQL_INT64     : PInt64(sqldata)^ := Trunc(StrToFloat(Value));
+          SQL_TEXT      : EncodeWideString(SQL_TEXT, Index, Value);
+          SQL_VARYING   : EncodeWideString(SQL_VARYING, Index, Value);
+        else
+          raise EUIBConvertError.Create(EUIB_CASTERROR);
+        end;
+        if (sqlind <> nil) then
+          sqlind^ := 0;
     end;
   end;
 
   procedure TSQLParams.SetAsInt64(const Index: Word; const Value: Int64);
   var ASQLCode: SmallInt;
   begin
-    if (FieldCount = Index) then
-      AddField(sizeof(Int64), SQL_INT64 + 1) else
-      CheckRange(Index);
+    SetFieldType(Index, sizeof(Int64), SQL_INT64 + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -3436,9 +4114,7 @@ end;
   procedure TSQLParams.SetAsDouble(const Index: Word; const Value: Double);
   var ASQLCode: SmallInt;
   begin
-    if (FieldCount = Index) then
-      AddField(sizeof(double), SQL_DOUBLE + 1) else
-      CheckRange(Index);
+    SetFieldType(Index, sizeof(double), SQL_DOUBLE + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -3459,7 +4135,7 @@ end;
           SQL_DOUBLE    : PDouble(sqldata)^   := Value;
           SQL_TIMESTAMP : EncodeTimeStamp(Value, PISCTimeStamp(sqldata));
           SQL_TYPE_DATE : EncodeSQLDate(Value, PInteger(sqldata)^);
-          SQL_TYPE_TIME : PCardinal(sqldata)^ := Trunc(Frac(Value) * 864000000);
+          SQL_TYPE_TIME : PCardinal(sqldata)^ := Round(Frac(Value) * 864000000);
           SQL_LONG      : PInteger(sqldata)^ := Trunc(Value);
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := Value;
@@ -3481,9 +4157,7 @@ end;
     const Value: Currency);
   var ASQLCode: SmallInt;
   begin
-    if (FieldCount = Index) then
-      AddField(sizeof(Int64), SQL_INT64 + 1, -4) else
-      CheckRange(Index);
+    SetFieldType(Index, sizeof(Int64), SQL_INT64 + 1, -4);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -3504,7 +4178,7 @@ end;
           SQL_DOUBLE    : PDouble(sqldata)^   := Value;
           SQL_TIMESTAMP : EncodeTimeStamp(Value, PISCTimeStamp(sqldata));
           SQL_TYPE_DATE : EncodeSQLDate(Value, PInteger(sqldata)^);
-          SQL_TYPE_TIME : PCardinal(sqldata)^ := Trunc(Frac(Value) * 864000000);
+          SQL_TYPE_TIME : PCardinal(sqldata)^ := Round(Frac(Value) * 864000000);
           SQL_LONG      : PInteger(sqldata)^ := Trunc(Value);
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := Value;
@@ -3534,88 +4208,59 @@ end;
         end;
   end;
 
-  function TSQLParams.AddString(Value: String): Word;
+  function TSQLParams.FindParam(const name: string; out Index: Word): boolean;
+  var Field: Smallint;
   begin
-    Result := AddField(Length(Value), SQL_TEXT + 1);
-    SetAsString(Result, Value);
+    for Field := 0 to FXSQLDA.sqln - 1 do
+      if FXSQLDA.sqlvar[Field].ParamNameLength = Length(name) then
+        if StrLIComp(@FXSQLDA.sqlvar[Field].ParamName, PChar(Name),
+          FXSQLDA.sqlvar[Field].ParamNameLength) = 0 then
+          begin
+            Result := true;
+            Index  := Field;
+            Exit;
+          end;
+    Result := False;
   end;
 
-  function TSQLParams.AddDate(Value: TDateTime): Word;
+  function TSQLParams.AddField(const Name: string): Word;
+  var
+    num: Word;
+    len: Cardinal;
   begin
-    Result := AddField(4, SQL_TYPE_DATE + 1);
-    SetAsDouble(Result, Value);
-  end;
+    len := Length(Name);
+    if len > MaxParamLength then
+      raise EUIBError.CreateFmt(EUIB_SIZENAME, [Name]);
 
-  function TSQLParams.AddDateTime(Value: TDateTime): Word;
-  begin
-    Result := AddField(8, SQL_TIMESTAMP + 1);
-    SetAsDouble(Result, Value);
-  end;
-
-  function TSQLParams.AddTime(Value: TDateTime): Word;
-  begin
-    Result := AddField(4, SQL_TYPE_TIME + 1);
-    SetAsDouble(Result, Value);
-  end;
-
-  function TSQLParams.AddDouble(Value: Double): Word;
-  begin
-    Result := AddField(8, SQL_DOUBLE + 1);
-    SetAsDouble(Result, Value);
-  end;
-
-  function TSQLParams.AddBlob: Word;
-  begin
-    Result := AddField(8, SQL_BLOB + 1);
-    IsNull[Result] := True;
-  end;
-
-  function TSQLParams.AddArray: Word;
-  begin
-    Result := AddField(8, SQL_ARRAY + 1);
-  end;
-
-  function TSQLParams.AddField(Size: Integer; Code: SmallInt; Scale: Smallint = 0): Word;
-  begin
     Result := FXSQLDA.sqln;
-    inc(FXSQLDA.sqln);
-    inc(FXSQLDA.sqld);
-    ReallocMem(FXSQLDA, XSQLDA_LENGTH(FXSQLDA.sqln));
-    with FXSQLDA.sqlvar[Result] do
+    if (len > 0) and FindParam(Name, num) then
     begin
-      sqltype := Code;
-      sqlscale := Scale;
-      sqlsubtype := 0;
-      sqllen := Size;
-      if (Size > 0) then
-        GetMem(sqldata, Size) else
-        sqldata := nil;
-      GetMem(sqlind, 2);
+      inc(FXSQLDA.sqln);
+      inc(FXSQLDA.sqld);
+      ReallocMem(FXSQLDA, XSQLDA_LENGTH(FXSQLDA.sqln));
+      move(FXSQLDA.sqlvar[num], FXSQLDA.sqlvar[Result], SizeOf(TUIBSQLVar));
+    end else
+    begin
+      inc(FXSQLDA.sqln);
+      inc(FXSQLDA.sqld);
+      ReallocMem(FXSQLDA, XSQLDA_LENGTH(FXSQLDA.sqln));
+      inc(FParamCount);
+      with FXSQLDA.sqlvar[Result] do
+      begin
+        Init := True;
+        ID := FParamCount;
+        ParamNameLength := len;
+        if ParamNameLength > 0 then
+          move(Pointer(Name)^, ParamName[0], ParamNameLength);
+        sqltype    := SQL_TEXT + 1; // tip: don't allocate memory if not defined
+        sqlscale   := 0;
+        sqlsubtype := 0;
+        sqllen     := 0;
+        sqldata    := nil;
+        GetMem(sqlind, 2); // Can be NULL
+        sqlind^ := -1; // NULL
+      end;
     end;
-  end;
-
-  function TSQLParams.AddInt64(Value: Int64): Word;
-  begin
-    Result := AddField(8, SQL_INT64 + 1);
-    SetAsInt64(Result, Value);
-  end;
-
-  function TSQLParams.AddInteger(Value: Integer): Word;
-  begin
-    Result := AddField(4, SQL_LONG + 1);
-    SetAsInteger(Result, Value);
-  end;
-
-  function TSQLParams.AddSingle(Value: Single): Word;
-  begin
-    Result := AddField(4, SQL_FLOAT + 1);
-    SetAsSingle(Result, Value);
-  end;
-
-  function TSQLParams.AddSmallInt(Value: Smallint): Word;
-  begin
-    Result := AddField(2, SQL_SHORT + 1);
-    SetAsSmallint(Result, Value);
   end;
 
   constructor TSQLParams.Create;
@@ -3625,64 +4270,38 @@ end;
     FXSQLDA.sqln := 0;
     FXSQLDA.sqld := 0;
     FXSQLDA.version := SQLDA_CURRENT_VERSION;
+    FParamCount := 0;
   end;
 
   destructor TSQLParams.Destroy;
-  var i: Integer;
   begin
-    for i := 0 to FXSQLDA.sqln - 1 do
-    with FXSQLDA.sqlvar[i] do
-    begin
-      if (sqldata <> nil) then
-        freemem(sqldata);
-      freemem(sqlind);
-    end;
+    Clear;
     FreeMem(FXSQLDA);
     inherited;
   end;
 
-  procedure TSQLParams.Delete(Index: Word);
-  begin
-    CheckRange(Index);
-    if (FXSQLDA.sqlvar[Index].sqldata <> nil) then
-      freemem(FXSQLDA.sqlvar[Index].sqldata);
-    freemem(FXSQLDA.sqlvar[Index].sqlind);
-    if ((Index + 1) <> FXSQLDA.sqln) then
-      move(FXSQLDA.sqlvar[Index+1], FXSQLDA.sqlvar[Index],
-        SizeOf(TXSQLVar) * (FXSQLDA.sqln - Index - 1));
-    dec(FXSQLDA.sqln);
-    dec(FXSQLDA.sqld);
-    ReallocMem(FXSQLDA, XSQLDA_LENGTH(FXSQLDA.sqld));
-  end;
-
   procedure TSQLParams.Clear;
-  var i: Integer;
+  var i, j: Smallint;
   begin
     for i := 0 to FXSQLDA.sqln - 1 do
     begin
-      if (FXSQLDA.sqlvar[i].sqldata <> nil) then
+      if (FXSQLDA.sqlvar[i].sqlind <> nil) then
+      begin
         freemem(FXSQLDA.sqlvar[i].sqldata);
-      freemem(FXSQLDA.sqlvar[i].sqlind);
+        freemem(FXSQLDA.sqlvar[i].sqlind);
+        // don't free shared pointers
+        for j := i + 1 to FXSQLDA.sqln - 1 do
+          if (FXSQLDA.sqlvar[i].ID = FXSQLDA.sqlvar[j].ID) then
+            begin
+              FXSQLDA.sqlvar[j].sqldata := nil;
+              FXSQLDA.sqlvar[j].sqlind  := nil;
+            end;
+      end;
     end;
     FXSQLDA.sqln := 0;
     FXSQLDA.sqld := 0;
     ReallocMem(FXSQLDA, XSQLDA_LENGTH(0));
-  end;
-
-  function TSQLParams.AddCurrency(Value: Currency): Word;
-  begin
-    Result := AddField(sizeof(Int64), SQL_INT64 + 1, -4);
-    SetAsCurrency(Result, Value);
-  end;
-
-  function TSQLParams.AddBoolean(Value: Boolean): Word;
-  begin
-{$IFDEF IB7_UP}
-    Result := AddField(sizeof(Smallint), SQL_BOOLEAN + 1);
-{$ELSE}
-    Result := AddField(sizeof(Smallint), SQL_SHORT + 1);
-{$ENDIF}
-    SetAsBoolean(Result, Value);
+    FParamCount := 0;
   end;
 
 end.
