@@ -116,7 +116,11 @@ type
   end;
 
   TJvDynControlEngine = class(TJvCustomDynControlEngine)
+  private
+    FDistanceBetweenLabelAndControlHorz: Integer;
+    FDistanceBetweenLabelAndControlVert: Integer;
   public
+    constructor Create; override;
     function CreateLabelControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName, ACaption: string; AFocusControl: TWinControl): TControl; virtual;
     function CreateStaticTextControl(AOwner: TComponent; AParentControl: TWinControl;
@@ -173,6 +177,9 @@ type
     function CreateLabelControlPanel(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName, ACaption: string; AFocusControl: TWinControl;
       ALabelOnTop: Boolean = True; ALabelDefaultWidth: Integer = 0): TWinControl; virtual;
+  published
+    property DistanceBetweenLabelAndControlHorz: Integer read FDistanceBetweenLabelAndControlHorz write FDistanceBetweenLabelAndControlHorz default 4;
+    property DistanceBetweenLabelAndControlVert: Integer read FDistanceBetweenLabelAndControlVert write FDistanceBetweenLabelAndControlVert default 1;
   end;
 
 {$IFNDEF COMPILER6_UP}
@@ -531,6 +538,13 @@ end;
 
 //=== { TJvDynControlEngine } ================================================
 
+constructor TJvDynControlEngine.Create;
+begin
+  inherited Create;
+  FDistanceBetweenLabelAndControlHorz:= 4;
+  FDistanceBetweenLabelAndControlVert:= 1;
+end;
+
 function TJvDynControlEngine.CreateLabelControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName, ACaption: string;
   AFocusControl: TWinControl): TControl;
@@ -780,7 +794,7 @@ begin
   LabelControl.Left := 1;
   if ALabelOnTop then
   begin
-    AFocusControl.Top := LabelControl.Height + 1;
+    AFocusControl.Top := LabelControl.Height + DistanceBetweenLabelAndControlVert;
     AFocusControl.Left := 1;
     if LabelControl.Width > AFocusControl.Width then
       Panel.Width := LabelControl.Width
@@ -792,7 +806,7 @@ begin
   begin
     if ALabelDefaultWidth > 0 then
       LabelControl.Width := ALabelDefaultWidth;
-    AFocusControl.Left := LabelControl.Width + 4;
+    AFocusControl.Left := LabelControl.Width + DistanceBetweenLabelAndControlHorz;
     AFocusControl.Top := 1;
     if LabelControl.Height > AFocusControl.Height then
       Panel.Height := LabelControl.Height
