@@ -1046,14 +1046,14 @@ begin
   if not FMouseInControl and Enabled then
   begin
     FMouseInControl := True;
-    Repaint;
+    Invalidate {Repaint};
   end;
   if (Button = mbLeft) and Enabled {and not (ssDouble in Shift)} then
   begin
     if not FDown then
     begin
       FState := rbsDown;
-      Repaint;
+      Invalidate {Repaint};
     end;
     FDragging := True;
     FMenuTracking := True;
