@@ -83,7 +83,7 @@ type
   published
     property ButtonBottom: TColor read FButtonBottom write SetButtonBottom default clBtnShadow;
     property ButtonTop: TColor read FButtonTop write SetButtonTop default clBtnHighlight;
-    property ButtonColor:TColor read FButtonColor write SetButtonColor default clBtnFace;
+    property ButtonColor: TColor read FButtonColor write SetButtonColor default clBtnFace;
     property HotTrackText: TColor read FHotTrackText write SetHotTrackText default clWindowText;
     property Color: TColor read FColor write SetColor default clBtnFace;
     property FrameBottom: TColor read FFrameBottom write SetFrameBottom default clBtnHighlight;
@@ -98,21 +98,21 @@ type
     FIndexCollapsed: TImageIndex;
     FIndexExpanded: TImageIndex;
     FOnChange: TNotifyEvent;
-    FChangeLink:TChangeLink;
-    FOwner:TComponent;
+    FChangeLink: TChangeLink;
+    FOwner: TComponent;
     procedure SetImages(const Value: TCustomImageList);
     procedure SetIndexCollapsed(const Value: TImageIndex);
     procedure SetIndexExpanded(const Value: TImageIndex);
     procedure SetOffset(const Value: integer);
   protected
     procedure Change;
-    procedure DoChangeLink(Sender:TObject);
+    procedure DoChangeLink(Sender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
   published
     property IndexCollapsed: TImageIndex read FIndexCollapsed write SetIndexCollapsed default 1;
-    property IndexExpanded: TImageIndex read FIndexExpanded write SetIndexExpanded  default 0;
+    property IndexExpanded: TImageIndex read FIndexExpanded write SetIndexExpanded default 0;
     property Images: TCustomImageList read FImages write SetImages;
     property Offset: integer read FOffset write SetOffset default 5;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -138,6 +138,7 @@ type
     FColors: TJvRollOutColors;
     FImageOptions: TJvRollOutImageOptions;
     FToggleAnywhere: boolean;
+    FShowFocus: boolean;
 
     procedure SetGroupIndex(Value: Integer);
     procedure SetPlacement(Value: TJvPlacement);
@@ -158,11 +159,15 @@ type
     procedure UpdateGroup;
     procedure CMExpanded(var Msg: TMessage); message CM_EXPANDED;
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
+    procedure WmSetFocus(var Msg:TMessage); message WM_SETFOCUS;
+    procedure WmKillFocus(var Msg:TMessage);  message WM_KILLFOCUS;
+    procedure ChangeHeight(NewHeight, Increment: Integer);
+    procedure ChangeWidth(NewWidth, Increment: Integer);
+    procedure SetShowFocus(const Value: boolean);
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
+    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
     procedure ParentColorChanged; override;
     procedure CreateWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -172,15 +177,16 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure DefineProperties(Filer: TFiler); override;
-    procedure Expanding; virtual;
-    procedure Collapsing; virtual;
+    procedure DoExpand; dynamic;
+    procedure DoCollapse; dynamic;
     procedure Paint; override;
     procedure Click; override;
-    procedure DoImageOptionsChange(Sender:TObject);
-    procedure DoColorsChange(Sender:TObject);
-    function MouseIsOnButton:boolean;
+    procedure DoImageOptionsChange(Sender: TObject);
+    procedure DoColorsChange(Sender: TObject);
+    function MouseIsOnButton: boolean;
 
-    property ToggleAnywhere:boolean read FToggleAnywhere write FToggleAnywhere default true;
+    property ShowFocus:boolean read FShowFocus write SetShowFocus default true;
+    property ToggleAnywhere: boolean read FToggleAnywhere write FToggleAnywhere default true;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 20;
     property ChildOffset: Integer read FChildOffset write SetChildOffset default 0;
     property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
@@ -219,6 +225,7 @@ type
     property ParentShowHint;
     property Placement;
     property PopupMenu;
+    property ShowFocus;
     property ShowHint;
     property TabOrder;
     property TabStop;
@@ -238,16 +245,18 @@ type
     property OnExpand;
     property OnCollapse;
 
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
     property ParentBackground;
-  {$ENDIF}
+{$ENDIF}
   end;
 
 implementation
-
+uses
+  Forms; // for IsAccel()
+  
 const
-  cIncrement = 24;
-  cSmooth = False;
+//  cIncrement = 24;
+//  cSmooth = False; // (p3) not used
 
 procedure SetTextAngle(Cnv: TCanvas; Angle: Integer);
 var
@@ -257,53 +266,6 @@ begin
   FntLogRec.lfEscapement := Angle * 10;
   FntLogRec.lfOutPrecision := OUT_TT_ONLY_PRECIS;
   Cnv.Font.Handle := CreateFontIndirect(FntLogRec);
-end;
-
-procedure SmoothHeight(Instance: TWinControl; NewHeight, Increment: Integer; Smooth: Boolean);
-var
-  OldHeight: Integer;
-begin
-  Instance.Parent.DisableAlign;
-  Instance.DisableAlign;
-  if Smooth then
-  begin
-    OldHeight := Instance.Height;
-    if OldHeight < NewHeight then
-      while OldHeight < NewHeight do
-      begin
-        OldHeight := OldHeight + Increment;
-        Instance.Height := OldHeight;
-        Instance.Invalidate;
-      end
-    else if OldHeight > NewHeight then
-      while OldHeight > NewHeight do
-      begin
-        OldHeight := OldHeight - Increment;
-        Instance.Height := OldHeight;
-        Instance.Invalidate;
-      end;
-  end;
-  Instance.Height := NewHeight;
-  Instance.EnableAlign;
-  Instance.Parent.EnableAlign;
-end;
-
-procedure SmoothWidth(Instance: TWinControl; NewWidth, Increment: Integer; Smooth: Boolean);
-begin
-  Instance.Parent.DisableAlign;
-  Instance.DisableAlign;
-  if Smooth then
-  begin
-    if Instance.Width < NewWidth then
-      while Instance.Width < NewWidth do
-        Instance.Width := Instance.Width + Increment
-    else if Instance.Width > NewWidth then
-      while Instance.Width > NewWidth do
-        Instance.Width := Instance.Width - Increment;
-  end;
-  Instance.Width := NewWidth;
-  Instance.EnableAlign;
-  Instance.Parent.EnableAlign;
 end;
 
 { TJvRollOutImageOptions }
@@ -483,6 +445,7 @@ begin
   FAHeight := 170;
   FCWidth := 22;
   FCHeight := 22;
+  FShowFocus := true;
 end;
 
 procedure TJvCustomRollOut.Click;
@@ -517,6 +480,7 @@ begin
   begin
     FMouseDown := True;
     RedrawControl(False);
+    if CanFocus then SetFocus;
   end;
 end;
 
@@ -587,7 +551,6 @@ begin
   end;
 end;
 
-
 procedure TJvCustomRollOut.SetCollapsed(Value: Boolean);
 begin
   if FCollapsed <> Value then
@@ -596,31 +559,64 @@ begin
     if Value then
     begin
       if FPlacement = plTop then
-        SmoothHeight(Self, FCHeight, cIncrement, cSmooth)
+        ChangeHeight(FCHeight)
       else
-        SmoothWidth(Self, FCWidth, cIncrement, cSmooth);
-      Collapsing;
+        ChangeWidth(FCWidth);
+      DoCollapse;
     end
     else
     begin
       if FPlacement = plTop then
-        SmoothHeight(Self, FAHeight, cIncrement, cSmooth)
+        ChangeHeight(FAHeight)
       else
-        SmoothWidth(Self, FAWidth, cIncrement, cSmooth);
-      Expanding;
-    end;
-    if not Value then
+        ChangeWidth(FAWidth);
+      DoExpand;
       UpdateGroup;
+    end;
   end;
 end;
 
-procedure TJvCustomRollOut.Expanding;
+procedure TJvCustomRollOut.ChangeHeight(NewHeight, Increment: Integer);
+var
+  OldHeight: Integer;
+begin
+  OldHeight := Height;
+  Parent.DisableAlign;
+  DisableAlign;
+  try
+    Height := NewHeight;
+    if Align = alBottom then
+      Top := Top + (OldHeight - NewHeight);
+  finally
+    EnableAlign;
+    Parent.EnableAlign;
+  end;
+end;
+
+procedure TJvCustomRollOut.ChangeWidth(NewWidth, Increment: Integer);
+var
+  OldWidth: integer;
+begin
+  Parent.DisableAlign;
+  DisableAlign;
+  try
+    OldWidth := Width;
+    Width := NewWidth;
+    if Align  = alRight then
+      Left := Left + (OldWidth - NewWidth);
+  finally
+    EnableAlign;
+    Parent.EnableAlign;
+  end;
+end;
+
+procedure TJvCustomRollOut.DoExpand;
 begin
   if Assigned(FOnExpand) then
     FOnExpand(Self);
 end;
 
-procedure TJvCustomRollOut.Collapsing;
+procedure TJvCustomRollOut.DoCollapse;
 begin
   if Assigned(FOnCollapse) then
     FOnCollapse(Self);
@@ -725,8 +721,8 @@ begin
   begin
     FChildOffset := Value;
     ReAlign;
-//    R := ClientRect;
-//    AlignControls(nil,R);
+    //    R := ClientRect;
+    //    AlignControls(nil,R);
   end;
 end;
 
@@ -759,7 +755,7 @@ end;
 
 procedure TJvCustomRollOut.WMEraseBkgnd(var Msg: TMessage);
 begin
-//  inherited;
+  //  inherited;
   Msg.Result := 0;
 end;
 
@@ -788,6 +784,11 @@ begin
     TopC := Colors.ButtonTop;
     BottomC := Colors.ButtonBottom;
   end
+{  else if Focused then
+  begin
+    TopC := clHighlight;
+    BottomC := clHighlight;
+  end}
   else
   begin
     TopC := Colors.Color;
@@ -840,6 +841,12 @@ begin
     if Placement = plLeft then
       SetTextAngle(Canvas, 0);
   end;
+  if ShowFocus and Focused then
+  begin
+    R := FButtonRect;
+    InflateRect(R,-2,-2);
+    Canvas.DrawFocusRect(R);
+  end;
 end;
 
 procedure TJvCustomRollOut.Paint;
@@ -884,14 +891,22 @@ begin
   if Msg.WParam = FGroupIndex then
   begin
     Sender := TJvCustomRollOut(Msg.LParam);
-    if Sender <> Self then
+    if (Sender <> Self) then
     begin
+{      if Msg.Result <> 0 then
+      begin
+        if (Align = alRight) then
+          Left := Left - Msg.Result
+        else if (Align = alBottom) and (Top > Sender.Top) then
+          Top := Top + Msg.Result;
+      end;}
       SetCollapsed(True);
       Invalidate;
     end;
   end;
 end;
 
+(*
 function IsAccel(VK: Word; const Str: string): Boolean;
 var
   P: Integer;
@@ -900,13 +915,14 @@ begin
   Result := (P <> 0) and (P < Length(Str)) and
     (AnsiCompareText(Str[P + 1], Char(VK)) = 0);
 end;
+*)
 
 function TJvCustomRollOut.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := IsAccel(Key, FCaption) and Enabled and (ssAlt in Shift);
+  Result := Enabled and (IsAccel(Key, FCaption) and (ssAlt in Shift)) or ((Key = VK_SPACE) and Focused);
   if Result then
-    Click
+    SetCollapsed(not FCollapsed)
   else
     Result := inherited WantKey(Key, Shift, KeyText);
 end;
@@ -936,11 +952,38 @@ begin
 end;
 
 function TJvCustomRollOut.MouseIsOnButton: boolean;
-var p:TPoint;
+var
+  P: TPoint;
+  R:TRect;
 begin
   GetCursorPos(P);
   P := ScreenToClient(P);
-  Result := PtInRect(FButtonRect, P);
+  R := FButtonRect;
+  // (p3) include edges in hit test
+  InflateRect(R,1,1);
+  Result := PtInRect(R, P);
+end;
+
+procedure TJvCustomRollOut.WmKillFocus(var Msg: TMessage);
+begin
+  inherited;
+  Invalidate;
+end;
+
+procedure TJvCustomRollOut.WmSetFocus(var Msg: TMessage);
+begin
+  inherited;
+  Invalidate;
+end;
+
+procedure TJvCustomRollOut.SetShowFocus(const Value: boolean);
+begin
+  if FShowFocus <> Value then
+  begin
+    FShowFocus := Value;
+    if Focused then
+      Invalidate;
+  end;
 end;
 
 end.
