@@ -371,14 +371,18 @@ begin
           {$IFDEF VCL}
           SetBkMode(Handle, Windows.TRANSPARENT);
           {$ENDIF VCL}
-          {$IFDEF VisualCLX}
-          SetBkMode(Handle, QWindows.TRANSPARENT);
-          {$ENDIF VisualCLX}
           Canvas.Font.Color := clHighlightText;
+          {$IFDEF VisualCLX}
+          SetPainterFont(Handle, Canvas.Font);
+//          SetBkMode(Handle, QWindows.TRANSPARENT);
+          {$ENDIF VisualCLX}
           DrawText(Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
           OffsetRect(ARect, -1, -1);
           Canvas.Font.Color := clGrayText;
         end;
+        {$IFDEF VisualCLX}
+        SetPainterFont(Handle, Canvas.Font);
+        {$ENDIF VisualCLX}
         DrawText(Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
         InflateRect(ARect, 4, 4);
       end;

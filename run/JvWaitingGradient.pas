@@ -260,7 +260,13 @@ begin
   if not Assigned(FBitmap) then
     Exit;
   Canvas.FillRect(Rect(FLeftOffset + FBitmap.Width, 0, Width, Height));
+  {$IFDEF VisualCLX}
+  OffsetRect(FDestRect, left, top);
+  {$ENDIF VisualCLX}
   Canvas.CopyRect(FDestRect, FBitmap.Canvas, FSourceRect);
+  {$IFDEF VisualCLX}
+  OffsetRect(FDestRect, -left, -top);
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvWaitingGradient.Resize;

@@ -36,7 +36,7 @@ uses
   Windows, Controls, Graphics, StdCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QGraphics, QStdCtrls, QExtCtrls, Types, QWindows,
+  QControls, QGraphics, QStdCtrls, QExtCtrls, Types, QTypes, QWindows,
   {$ENDIF VisualCLX}
   JvXPCore, JvXPCoreUtils;
 
@@ -378,7 +378,7 @@ begin
   end;
 end;
 
-procedure DxDrawText(AParent: TJvXPCustomControl; ACaption: string; AFont: TFont;
+procedure DxDrawText(AParent: TJvXPCustomControl; ACaption: TCaption; AFont: TFont;
   AAlignment: TAlignment; ALayout: TTextLayout; AWordWrap: Boolean; var ARect: TRect);
 const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -387,11 +387,21 @@ var
   DrawStyle: LongInt;
   CalcRect: TRect;
 
+  {$IFDEF VCL}
   procedure DoDrawText(Handle: HDC; ACaption: string; var ARect: TRect;
     Flags: Integer);
   begin
     DrawText(Handle, PChar(ACaption), -1, ARect, Flags);
   end;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  procedure DoDrawText(Handle: HDC; ACaption: TCaption; var ARect: TRect;
+    Flags: Integer);
+  begin
+    SetPainterFont(Handle, AFont);
+    DrawTextW(Handle, PWideChar(ACaption), -1, ARect, Flags);
+  end;
+  {$ENDIF VisualCLX}
 
 begin
   with AParent, Canvas do
@@ -454,6 +464,10 @@ begin
         MoveTo(Rect.Right, Rect.Top);
         LineTo(Rect.Right, Rect.Bottom);
       end;
+      {$IFDEF VisualCLX}
+      Inc(Rect.Left, 4);
+      Dec(Rect.Right, 4);
+      {$ENDIF VisualCLX}
       DxDrawText(Self, Caption, Font, FAlignment, FLayout, FWordWrap, Rect);
       //JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, False, FAlignment,
       //  FWordWrap, Rect);
