@@ -2015,7 +2015,7 @@ begin
   begin
     if AEncoder <> nil then
       AEncoder.DoEncodeValue(FValue);
-    Result := Format(' %s:%s="%s"', [Pointer, FValue]);
+    Result := Format(' %s:%s="%s"', [Pointer, Name, FValue]);
   end
   else
   begin
