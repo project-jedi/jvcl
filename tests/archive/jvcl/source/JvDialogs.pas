@@ -55,7 +55,9 @@ type
     FOriginalRect: TRect;
     FParentWndInstance, FOldParentWndInstance: Pointer;
     FParentWnd: HWND;
+    {$IFNDEF COMPILER6_UP}
     FShowPlacesBar: Boolean;
+  {$ENDIF}
     FOnShareViolation: TCloseQueryEvent;
     FHeight: Integer;
     FWidth: Integer;
@@ -90,7 +92,9 @@ type
     property DefBtnCaption: string read FDefBtnCaption write SetDefBtnCaption;
     property FilterLabelCaption: string read FFilterLabelCaption write SetFilterLabelCaption;
     property Height: Integer read FHeight write FHeight;
+    {$IFNDEF COMPILER6_UP}
     property ShowPlacesBar: Boolean read FShowPlacesBar write FShowPlacesBar default True;
+    {$ENDIF}
     property UseUserSize: Boolean read FUseUserSize write FUseUserSize default False;
     property Width: Integer read FWidth write FWidth;
     property OnShareViolation: TCloseQueryEvent read FOnShareViolation write FOnShareViolation;
@@ -171,11 +175,11 @@ begin
   inherited Create(AOwner);
   FActiveControl := acEdit;
   FActiveStyle := asSmallIcon;
-  FShowPlacesBar := True;
   FMakeResizeable := GetWindowsVersion in [wvWin95, wvWin95OSR2, wvWinNT4];
   {$IFDEF COMPILER6_UP}
   FParentWndInstance := Classes.MakeObjectInstance(ParentWndProc);
   {$ELSE}
+  FShowPlacesBar := True;
   FParentWndInstance := MakeObjectInstance(ParentWndProc);
   {$ENDIF}
 end;
@@ -394,24 +398,30 @@ begin
 end;
 
 function TJvOpenDialog.TaskModalDialog(DialogFunc: Pointer; var DialogData): Bool;
+{$IFNDEF COMPILER6_UP}
 const
   PlacesBar: array [Boolean] of DWORD = (OFN_EX_NOPLACESBAR, 0);
-//var
-//  DialogData2000: TOpenFileName2000;
+var
+  DialogData2000: TOpenFileName2000;
+{$ENDIF}
 begin
   TOpenFileName(DialogData).hInstance := FindClassHInstance(Self.ClassType);
   FActiveSettingDone := False;
-{  if IsWin2K then
+  if IsWin2K then
   begin
     if ActiveStyle = asReport then
       InstallW2kFix;
+   {$IFNDEF COMPILER6_UP}
     FillChar(DialogData2000, Sizeof(DialogData2000), #0);
     DialogData2000.OpenFileName := TOpenFileName(DialogData);
     DialogData2000.OpenFileName.lStructSize := Sizeof(DialogData2000);
     DialogData2000.FlagsEx := PlacesBar[FShowPlacesBar];
     Result := inherited TaskModalDialog(DialogFunc, DialogData2000);
+    {$ELSE}
+    Result := inherited TaskModalDialog(DialogFunc, DialogData);
+    {$ENDIF}
   end
-  else}
+  else
     Result := inherited TaskModalDialog(DialogFunc, DialogData);
 end;
 
