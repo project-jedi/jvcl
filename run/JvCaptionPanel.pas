@@ -612,8 +612,14 @@ begin
       end;
       {$ENDIF VCL}
       R := FCaptionRect;
+      {$IFDEF VCL}
       tH := ((R.Bottom - R.Top) - Canvas.TextHeight(FCaption)) div 2;
       tW := ((R.Right - R.Left) - Canvas.TextHeight(FCaption)) div 2;
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      tH := Canvas.TextHeight(FCaption);
+      tW := Canvas.TextHeight(FCaption);
+      {$ENDIF VisualCLX}
       if FOutlookLook then
       begin
         Dec(th);
