@@ -32,12 +32,15 @@ interface
 
 uses
   Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls,
-  JvTypes, JVCLVer;
+  JvComponent;
 
 type
-  TJvImageTransform = class(TGraphicControl)
+  TJvTransformationKind = (ttWipeLeft, ttWipeRight, ttWipeUp, ttWipeDown,
+    ttTurnLeft, ttTurnRight, ttTurnUp, ttTurnDown,
+    ttWipeDownRight, ttWipeDownLeft, ttWipeUpRight, ttWipeUpLeft);
+
+  TJvImageTransform = class(TJvGraphicControl)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FPicture1: TPicture;
     FPicture2: TPicture;
     FAutoSize: Boolean;
@@ -63,7 +66,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     property DragCursor;
     property DragMode;

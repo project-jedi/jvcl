@@ -156,9 +156,6 @@ type
   }
 
   TJvErrorEvent = procedure(Sender: TObject; ErrorMsg: string) of object;
-  TJvTransformationKind = (ttWipeLeft, ttWipeRight, ttWipeUp, ttWipeDown,
-    ttTurnLeft, ttTurnRight, ttTurnUp, ttTurnDown,
-    ttWipeDownRight, ttWipeDownLeft, ttWipeUpRight, ttWipeUpLeft);
   TJvWaveLocation = (frFile, frResource, frRAM);
 
   TJvPopupPosition = (ppNone, ppForm, ppApplication);
