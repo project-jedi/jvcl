@@ -553,8 +553,6 @@ type
     FOnCloseFindDialog: TRichEditFindCloseEvent;
     // From JvRichEdit.pas by Sébastien Buysse
     FHintColor, FSavedHintColor: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
@@ -689,8 +687,6 @@ type
       write FOnCloseFindDialog;
     property OnConversionProgress: TRichEditProgressEvent read FOnConversionProgress write FOnConversionProgress;
     // From JvRichEdit.pas by Sébastien Buysse
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
