@@ -423,17 +423,20 @@ begin
     SourceName := 'nil'
   else
     SourceName := Source.ClassName;
-  if (Source is TJvMonthCalColors) and (Source <> Self)then
+  if Source is TJvMonthCalColors then
   begin
-    FBackColor := TJvMonthCalColors(Source).BackColor;
-    FTextColor := TJvMonthCalColors(Source).TextColor;
-    FTitleBackColor := TJvMonthCalColors(Source).TitleBackColor;
-    FTitleTextColor := TJvMonthCalColors(Source).TitleTextColor;
-    FMonthBackColor := TJvMonthCalColors(Source).MonthBackColor;
-    FTrailingTextColor := TJvMonthCalColors(Source).TrailingTextColor;
-    Exit;
-  end;
-  inherited Assign(SOurce);
+    if Source <> Self then
+    begin
+      FBackColor := TJvMonthCalColors(Source).BackColor;
+      FTextColor := TJvMonthCalColors(Source).TextColor;
+      FTitleBackColor := TJvMonthCalColors(Source).TitleBackColor;
+      FTitleTextColor := TJvMonthCalColors(Source).TitleTextColor;
+      FMonthBackColor := TJvMonthCalColors(Source).MonthBackColor;
+      FTrailingTextColor := TJvMonthCalColors(Source).TrailingTextColor;
+    end;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvMonthCalColors.SetColor(Index: Integer; Value: TColor);

@@ -1767,9 +1767,9 @@ begin
     Tag := TJvPopupMenu(Source).Tag;
     TextMargin := TJvPopupMenu(Source).TextMargin;
     TextVAlignment := TJvPopupMenu(Source).TextVAlignment;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvPopupMenu.ReadState(Reader: TReader);
@@ -3253,9 +3253,9 @@ begin
     Right := TJvImageMargin(Source).Right;
     Top := TJvImageMargin(Source).Top;
     Bottom := TJvImageMargin(Source).Bottom;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 //=== TJvMenuImageSize =======================================================
@@ -3266,9 +3266,9 @@ begin
   begin
     Height := TJvMenuImageSize(Source).Height;
     Width := TJvMenuImageSize(Source).Width;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 initialization

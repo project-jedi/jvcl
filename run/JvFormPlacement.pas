@@ -1035,7 +1035,7 @@ end;
 
 procedure TJvStoredValue.Assign(Source: TPersistent);
 begin
-  if (Source is TJvStoredValue) and (Source <> nil) then
+  if Source is TJvStoredValue then
   begin
     if VarIsEmpty(TJvStoredValue(Source).FValue) then
       Clear
@@ -1043,9 +1043,9 @@ begin
       Value := TJvStoredValue(Source).FValue;
     Name := TJvStoredValue(Source).Name;
     KeyString := TJvStoredValue(Source).KeyString;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 function TJvStoredValue.GetDisplayName: string;

@@ -2163,10 +2163,9 @@ begin
     ParentColor := TJvDockSplitterStyle(Source).ParentColor;
     ResizeStyle := TJvDockSplitterStyle(Source).ResizeStyle;
     Size := TJvDockSplitterStyle(Source).Size;
-    Exit;
-  end;
-  // (rom) else missing? This should trigger AssignTo.
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvDockSplitterStyle.AssignTo(Dest: TPersistent);
@@ -2359,9 +2358,9 @@ begin
     FDockStyle := TJvDockBaseControl(Source).DockStyle;
     if FDockStyle <> nil then
       FDockStyle.AddDockBaseControl(Self);
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvDockBaseControl.SetDockStyle(const Value: TJvDockBasicStyle);
@@ -2872,9 +2871,9 @@ begin
     FCanFloat := TJvDockClient(Source).FCanFloat;
     FRelativeServer := TJvDockClient(Source).FRelativeServer;
     FDockLevel := TJvDockClient(Source).DockLevel;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvDockClient.WindowProc(var Msg: TMessage);
@@ -4573,10 +4572,9 @@ begin
   if Source is TJvDockBasicServerOption then
   begin
     // TODO
-    Exit;
-  end;
-  // (rom) else missing?
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvDockBasicServerOption.ResetDockClientOption(ADockClient: TJvDockClient);
@@ -4600,12 +4598,11 @@ procedure TJvDockBasicTabServerOption.Assign(Source: TPersistent);
 begin
   if Source is TJvDockBasicTabServerOption then
   begin
-    FTabPosition := TJvDockBasicTabServerOption(Source).FTabPosition;
-    FHotTrack := TJvDockBasicTabServerOption(Source).FHotTrack;
-    Exit;
-  end;
-  // (rom) else missing?
-  inherited Assign(Source);
+    FTabPosition := TJvDockBasicTabServerOption(Source).TabPosition;
+    FHotTrack := TJvDockBasicTabServerOption(Source).HotTrack;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvDockBasicTabServerOption.ResetDockClientOption(ADockClient: TJvDockClient);
@@ -4681,10 +4678,9 @@ begin
   begin
     FGrabbersSize := TJvDockBasicConjoinServerOption(Source).FGrabbersSize;
     FSplitterWidth := TJvDockBasicConjoinServerOption(Source).FSplitterWidth;
-    Exit;
-  end;
-  // (rom) else missing?
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvDockBasicConjoinServerOption.ResetConjoinPanel(APanel: TJvDockConjoinPanel);

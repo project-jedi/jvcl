@@ -532,10 +532,9 @@ begin
     IsEmpty := TJvParameterListEnableDisableReason(Source).IsEmpty;
     IsNotEmpty := TJvParameterListEnableDisableReason(Source).IsNotEmpty;
     RemoteParameterName := TJvParameterListEnableDisableReason(Source).RemoteParameterName;
-    Exit;
-  end;
-  inherited Assign(Source);
-
+  end
+  else
+    inherited Assign(Source);
 end;
 
 //=== TJvParameterListEnableDisableReasonList ================================
@@ -928,9 +927,9 @@ begin
     Enabled := TJvBaseParameter(Source).Enabled;
     FEnableReasons.Assign(TJvBaseParameter(Source).FEnableReasons);
     FDisableReasons.Assign(TJvBaseParameter(Source).FDisableReasons);
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 function TJvBaseParameter.Validate(var AData: Variant): Boolean;
@@ -1051,9 +1050,9 @@ begin
     FIntParameterList.Assign(TJvParameterList(Source).FIntParameterList);
     HistoryEnabled := TJvParameterList(Source).HistoryEnabled;
     AppStoragePath := TJvParameterList(Source).AppStoragePath;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvParameterList.SetAppStoragePath(Value: string);
