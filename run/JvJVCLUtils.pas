@@ -34,15 +34,11 @@ uses
   RTLConsts, Variants,
   {$ENDIF COMPILER6_UP}
   {$IFDEF MSWINDOWS}
-  Windows, Messages, ShellAPI, Registry,
+  Windows, ShellAPI, Registry,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  JvLinux,
-  {$ENDIF LINUX}
   SysUtils, Classes,
-  JvClxUtils,
   {$IFDEF VCL}
-  Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus, Dialogs,
+  Messages, Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus, Dialogs,
   ComCtrls, ImgList, Grids,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
@@ -613,15 +609,15 @@ function GetDefaultCheckBoxSize: TSize;
 
 function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 // AllocateHWndEx works like Classes.AllocateHWnd but does not use any virtual memory pages
 function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): Windows.HWND;
 // DeallocateHWndEx works like Classes.DeallocateHWnd but does not use any virtual memory pages
 procedure DeallocateHWndEx(Wnd: Windows.HWND);
+{$ENDIF MSWINDOWS}
 
 function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
-{$ENDIF MSWINDOWS}
 
 {$IFNDEF COMPILER6_UP}
 function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
@@ -6042,7 +6038,7 @@ begin
   Result := Canvas.TextHeight(S);
 end;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 //=== AllocateHWndEx =========================================================
 
 const
@@ -6114,6 +6110,7 @@ procedure DeallocateHWndEx(Wnd: Windows.HWND);
 begin
   Windows.DestroyWindow(Wnd);
 end;
+{$ENDIF}
 
 function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 begin
@@ -6132,7 +6129,6 @@ begin
   FreeObjectInstance(ObjectInstance);
   {$ENDIF}
 end;
-{$ENDIF MSWINDOWS}
 
 {$IFNDEF COMPILER6_UP}
 function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
