@@ -52,7 +52,7 @@ type
     FFlatBorder: Boolean;
     FFlatBorderColor: TColor;
     FMultiLine: Boolean;
-    FOldColor:TColor;
+    FOldColor: TColor;
     FHotColor: TColor;
     FSizeable: boolean;
     FDragging: Boolean;
@@ -82,9 +82,9 @@ type
     procedure Invalidate; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property Sizeable:boolean read FSizeable write SetSizeable default false;
+    property Sizeable: boolean read FSizeable write SetSizeable default false;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property HotColor:TColor read FHotColor write SetHotColor default clBtnFace;
+    property HotColor: TColor read FHotColor write SetHotColor default clBtnFace;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
     property MultiLine: Boolean read FMultiLine write SetMultiLine;
     property FlatBorder: Boolean read FFlatBorder write SetFlatBorder default False;
@@ -113,13 +113,22 @@ end;
 procedure TJvPanel.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  Params.ExStyle := Params.ExStyle + WS_EX_TRANSPARENT;
+  ControlStyle := ControlStyle + [csOpaque];
   if Transparent then
+  begin
+    Params.ExStyle := Params.ExStyle or WS_EX_TRANSPARENT;
     ControlStyle := ControlStyle - [csOpaque];
+  end
+  else
+  begin
+    Params.ExStyle := Params.ExStyle and not WS_EX_TRANSPARENT;
+    ControlStyle := ControlStyle + [csOpaque];
+  end;
 end;
 
 procedure TJvPanel.Paint;
-var X,Y:integer;
+var
+  X, Y: integer;
 begin
   Canvas.Brush.Color := Color;
   if not Transparent then
@@ -137,19 +146,20 @@ begin
     DrawBorders;
   Self.DrawCaption;
   if Sizeable then
-  with Canvas do
-  begin
-    Font.Name := 'Marlett';
-    Font.Charset := DEFAULT_CHARSET;
-    Font.Size := 12;
-    Canvas.Font.Style := [];
-    Canvas.Font.Color := clBtnShadow;
-    Brush.Style := bsClear;
-    X := ClientWidth - Canvas.TextWidth('o') - BevelWidth - 2;
-    Y := ClientHeight - Canvas.TextWidth('o') - BevelWidth - 2;
-    SetBkMode(Handle,Windows.TRANSPARENT);
-    TextOut(X, Y, 'o');
-  end;
+    with Canvas do
+    begin
+      Font.Name := 'Marlett';
+      Font.Charset := DEFAULT_CHARSET;
+      Font.Size := 12;
+      Canvas.Font.Style := [];
+      Canvas.Font.Color := clBtnShadow;
+//      Brush.Style := bsClear;
+      X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
+      Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
+      if Transparent then
+        SetBkMode(Handle, Windows.TRANSPARENT);
+      TextOut(X, Y, 'o');
+    end;
 end;
 
 procedure TJvPanel.DrawBorders;
@@ -184,10 +194,10 @@ end;
 
 procedure TJvPanel.DrawCaption;
 const
-  Alignments: array [TAlignment] of Longint =
-    (DT_LEFT, DT_RIGHT, DT_CENTER);
-  WordWrap: array [Boolean] of Longint =
-    (DT_SINGLELINE, DT_WORDBREAK);
+  Alignments: array[TAlignment] of Longint =
+  (DT_LEFT, DT_RIGHT, DT_CENTER);
+  WordWrap: array[Boolean] of Longint =
+  (DT_SINGLELINE, DT_WORDBREAK);
 var
   ATextRect: TRect;
   BevelSize: Integer;
@@ -311,7 +321,10 @@ end;
 
 procedure TJvPanel.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-//  Msg.Result := 1;
+  if Transparent then
+    Msg.Result := 1
+  else
+    inherited;
 end;
 
 procedure TJvPanel.SetMultiLine(const Value: Boolean);
@@ -331,10 +344,11 @@ end;
 
 procedure TJvPanel.Invalidate;
 begin
-  if Transparent and Assigned(Parent) and Parent.HandleAllocated and HandleAllocated then
+  if Transparent and Visible and Assigned(Parent) and Parent.HandleAllocated and HandleAllocated then
     RedrawWindow(Parent.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or RDW_INVALIDATE
-      or RDW_ERASENOW or RDW_UPDATENOW or RDW_ALLCHILDREN);
-  inherited Invalidate;
+      or RDW_ERASENOW or RDW_UPDATENOW or RDW_ALLCHILDREN)
+  else
+    inherited Invalidate;
 end;
 
 procedure TJvPanel.SetHotColor(const Value: TColor);
@@ -373,14 +387,19 @@ end;
 procedure TJvPanel.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   R: TRect;
+  X1,Y1:integer;
 begin
   if FDragging and Sizeable then
   begin
     R := BoundsRect;
-    SetBounds(R.Left, R.Top,
-      R.Right - R.Left + X - FLastPos.X,
-      R.Bottom - R.Top + Y - FLastPos.Y);
-    FLastPos := Point(X, Y);
+    X1 := R.Right - R.Left + X - FLastPos.X;
+    Y1 := R.Bottom - R.Top + Y - FLastPos.Y;
+    if (X1 >= 0) then
+      FLastPos.X := X;
+    if (Y1 >= 0) then
+      FLastPos.Y := Y;
+    SetBounds(Left,Top,X1,Y1);
+    Refresh;
   end
   else
   begin
@@ -400,10 +419,12 @@ begin
     FDragging := False;
     MouseCapture := False;
     Screen.Cursor := crDefault;
+    Refresh;
   end
   else
     inherited MouseUp(Button, Shift, X, Y);
 end;
+
 
 end.
 
