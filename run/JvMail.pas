@@ -176,7 +176,7 @@ type
 implementation
 
 uses
-  JvResources;
+  JvConsts, JvResources;
 
 function PExtractFileName(const AFileName: string): PChar;
 // Same as ExtractFileName, except it returns a pointer to a position in AFileName.
