@@ -465,9 +465,17 @@ type
   private
     FY: Longint;
     FX: Longint;
+    FOnChange: TNotifyEvent;
+    procedure SetX(const Value: Longint);
+    procedure SetY(const Value: Longint);
+  protected
+    procedure DoChange;
+  public
+    procedure Assign(Source: TPersistent); override;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property X: Longint read FX write FX;
-    property Y: Longint read FY write FY;
+    property X: Longint read FX write SetX;
+    property Y: Longint read FY write SetY;
   end;
 
   // equivalent of TRect, but that can be a published property for BCB
@@ -475,6 +483,7 @@ type
   private
     FTopLeft: TJvPoint;
     FBottomRight: TJvPoint;
+    FOnChange: TNotifyEvent;
     function GetBottom: Integer;
     function GetLeft: Integer;
     function GetRight: Integer;
@@ -483,12 +492,19 @@ type
     procedure SetLeft(const Value: Integer);
     procedure SetRight(const Value: Integer);
     procedure SetTop(const Value: Integer);
+    procedure SetBottomRight(const Value: TJvPoint);
+    procedure SetTopLeft(const Value: TJvPoint);
+    procedure PointChange(Sender: TObject);
+  protected
+    procedure DoChange;
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
 
-    property TopLeft    : TJvPoint read FTopLeft     write FTopLeft;
-    property BottomRight: TJvPoint read FBottomRight write FBottomRight;
+    property TopLeft    : TJvPoint     read FTopLeft     write SetTopLeft;
+    property BottomRight: TJvPoint     read FBottomRight write SetBottomRight;
+    property OnChange   : TNotifyEvent read FOnChange    write FOnChange;
   published
     property Left  : Integer read GetLeft   write SetLeft;
     property Top   : Integer read GetTop    write SetTop;
@@ -510,11 +526,26 @@ end;
 
 { TJvRect }
 
+procedure TJvRect.Assign(Source: TPersistent);
+begin
+  if Source is TJvRect then
+  begin
+    TopLeft := (Source as TJvRect).TopLeft;
+    BottomRight := (Source as TJvRect).BottomRight;
+    DoChange;
+  end
+  else
+    inherited;
+end;
+
 constructor TJvRect.Create;
 begin
   inherited;
   FTopLeft     := TJvPoint.Create;
   FBottomRight := TJvPoint.Create;
+  
+  FTopLeft.OnChange     := PointChange;
+  FBottomRight.OnChange := PointChange;
 end;
 
 destructor TJvRect.Destroy;
@@ -522,6 +553,12 @@ begin
   FTopLeft.Free;
   FBottomRight.Free;
   inherited;
+end;
+
+procedure TJvRect.DoChange;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 function TJvRect.GetBottom: Integer;
@@ -544,9 +581,19 @@ begin
   Result := FTopLeft.Y;
 end;
 
+procedure TJvRect.PointChange(Sender: TObject);
+begin
+  DoChange;
+end;
+
 procedure TJvRect.SetBottom(const Value: Integer);
 begin
   FBottomRight.Y := Value;
+end;
+
+procedure TJvRect.SetBottomRight(const Value: TJvPoint);
+begin
+  FBottomRight.Assign(Value);
 end;
 
 procedure TJvRect.SetLeft(const Value: Integer);
@@ -562,6 +609,43 @@ end;
 procedure TJvRect.SetTop(const Value: Integer);
 begin
   FTopLeft.Y := Value;
+end;
+
+procedure TJvRect.SetTopLeft(const Value: TJvPoint);
+begin
+  FTopLeft.Assign(Value);
+end;
+
+{ TJvPoint }
+
+procedure TJvPoint.Assign(Source: TPersistent);
+begin
+  if Source is TJvPoint then
+  begin
+    FX := (Source as TJvPoint).X;
+    FY := (Source as TJvPoint).Y;
+    DoChange;
+  end
+  else
+    inherited;
+end;
+
+procedure TJvPoint.DoChange;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+procedure TJvPoint.SetX(const Value: Longint);
+begin
+  FX := Value;
+  DoChange;
+end;
+
+procedure TJvPoint.SetY(const Value: Longint);
+begin
+  FY := Value;
+  DoChange;
 end;
 
 end.
