@@ -1,0 +1,9 @@
+object fmeJvBaseDesign: TfmeJvBaseDesign
+  Left = 0
+  Top = 0
+  Width = 454
+  Height = 69
+  AutoScroll = False
+  Scaled = false
+  TabOrder = 0
+end

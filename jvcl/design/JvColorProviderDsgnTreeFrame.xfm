@@ -1,0 +1,2 @@
+inherited fmeJvColorProviderDsgnTree: TfmeJvColorProviderDsgnTree
+end
