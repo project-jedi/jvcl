@@ -11108,7 +11108,7 @@ begin
     begin
       PropInfo := PropList[I];
       NameIdx := High(NameList);
-      while (NameIdx >= 0) and not SameText(NameList[NameIdx], PropInfo.Name) do
+      while (NameIdx >= 0) and not AnsiSameText(NameList[NameIdx], PropInfo.Name) do
         Dec(NameIdx);
       if ((NameIdx < 0) and ExcludeList) or ((NameIdx > -1) and not ExcludeList) then
       begin
@@ -12302,7 +12302,7 @@ begin
 
   if GoOn and (Name <> '') then
   begin
-    if SameText(Name, ADataObj.Name) then
+    if AnsiSameText(Name, ADataObj.Name) then
       Result := Result or 8
       { Match by mask }
     else

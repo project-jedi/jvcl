@@ -721,7 +721,7 @@ var
 begin
   Result := nil;
   for Ctrl_Idx := 0 to Count - 1 do
-    if SameText(Items[Ctrl_Idx].FieldName, FieldName) then
+    if AnsiSameText(Items[Ctrl_Idx].FieldName, FieldName) then
     begin
       Result := Items[Ctrl_Idx];
       Break;

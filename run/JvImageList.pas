@@ -824,12 +824,7 @@ end;
 
 procedure TJvImageList.SetFileName(const Value: TFileName);
 begin
-  {$IFDEF MSWINDOWS}
-  if not SameText(Value, FFileName) then
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  if Value <> FFileName then
-  {$ENDIF LINUX}
+  if not SameFileName(Value, FFileName) then
   begin
     FFileName := Value;
     DoLoadFromFile;
