@@ -347,8 +347,8 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  SCopyright = 'Design eXperience. © 2002 M. Hoffmann Version ';
-  SCopyright2 = 'Design eXperience II - © 2002 M. Hoffmann Version ';
+  SCopyright = 'Design eXperience. (c) 2002 M. Hoffmann Version ';
+  SCopyright2 = 'Design eXperience II - (c) 2002 M. Hoffmann Version ';
   SVersion = '2.0.1'; // always increase version number on new releases!
 {$ENDIF USEJVCL}
 
