@@ -1,3 +1,6 @@
+2002-07-11
+- TJvTranslator: Added a method to retrieve a string value directly from the translation file //Sebastien Buysse
+
 2002-07-10
 - TJvTranslator: Added support for descendant classes translated inside DLL's //Sebastien Buysse
 
