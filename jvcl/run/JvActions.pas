@@ -33,10 +33,16 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   JclMapi,
-  Windows, ShellAPI, ActnList,
+  Windows, ShellAPI,
   {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  ActnList,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QActnList,
+  {$ENDIF VisualCLX}
   {$IFDEF LINUX}
-  QWindows, QActnList,
+  QWindows,
   {$ENDIF LINUX}
   Classes;
 
