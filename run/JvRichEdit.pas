@@ -763,6 +763,7 @@ type
     property BorderWidth;
     property DragKind;
     property BorderStyle;
+    property ClipboardCommands;
     property Color;
     property DragCursor;
     property DragMode;
@@ -879,7 +880,7 @@ uses
   {$ENDIF UNITVERSIONING}
   OleCtnrs,
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
-  JvThemes, JvConsts, JvResources, JvFixedEditPopUp;
+  JvThemes, JvConsts, JvResources, JvTypes, JvFixedEditPopUp;
 
 type
   PENLink = ^TENLink;
@@ -2251,6 +2252,8 @@ var
   DC: HDC;
 begin
   inherited Create(AOwner);
+  // this is a temporary fix until thisproperty is correctly set in the ancestor
+  inherited ClipboardCommands := [caCopy..caUndo];
   // ControlStyle := ControlStyle + [csAcceptsControls] - [csSetCaption];
   ControlStyle := ControlStyle - [csSetCaption];
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
