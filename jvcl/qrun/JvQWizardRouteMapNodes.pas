@@ -342,7 +342,7 @@ begin
                 PChar((Pages[I] as TJvWizardCustomPage).Header.Title.Text), -1,
                 ATextRect, DT_LEFT or DT_SINGLELINE or DT_VCENTER)
             else
-              DrawText(Canvas.Handle, PChar(Pages[I].Caption), -1, ATextRect,
+              DrawTextW(Canvas.Handle, PWideChar(Pages[I].Caption), -1, ATextRect,
                 DT_LEFT or DT_SINGLELINE or DT_VCENTER);
           finally
             OffsetRect(ARect, 0, FItemHeight);

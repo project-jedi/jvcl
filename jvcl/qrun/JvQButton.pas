@@ -57,7 +57,6 @@ type
     FFlat: Boolean;
     FDropDownMenu: TPopupMenu;
     FDown: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
     FForceSameSize: Boolean;
     FAllowAllUp: Boolean;
     FGroupIndex: Integer;
@@ -94,9 +93,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
-    procedure ParentColorChanged; override;
-    procedure RepaintBackground;virtual;
-
+    procedure RepaintBackground; virtual;
 
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
@@ -111,8 +108,6 @@ type
       DefaultTrackFontOptions;
     property Down: Boolean read FDown write SetDown default False;
     property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
-
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
@@ -121,14 +116,10 @@ type
 
   TJvCustomButton = class(TJvExButton)
   private
-    FColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
     FDropDownMenu: TPopupMenu;
     FHotTrack: Boolean;
     FHotFont: TFont;
     FFontSave: TFont;
-    FOver: Boolean;
     FWordWrap: Boolean;
     FForceSameSize: Boolean;
     FHotTrackFontOptions: TJvTrackFontOptions;
@@ -141,7 +132,6 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure FontChanged; override;
-    procedure ParentColorChanged; override;
     
     function GetRealCaption: string; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -152,8 +142,8 @@ type
     property HotTrackFont: TFont read FHotFont write SetHotFont;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property HintColor;
+    property OnParentColorChange;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -260,7 +250,7 @@ procedure TJvCustomGraphicButton.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if Enabled then
+  if Enabled and not MouseOver then
   begin
     Include(FStates, bsMouseInside);
     inherited MouseEnter(Control);
@@ -271,12 +261,10 @@ end;
 
 procedure TJvCustomGraphicButton.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  if Enabled then
+  if Enabled and MouseOver then
   begin
     Exclude(FStates, bsMouseInside);
-    inherited MouseLeave(Control); // trigger event
+    inherited MouseLeave(Control);
     if Flat then
       RepaintBackground;
   end;
@@ -540,24 +528,15 @@ begin
   UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
-procedure TJvCustomGraphicButton.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
 // == TJvCustomButton ==========================================================
 
 constructor TJvCustomButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FColor := clInfoBk;
   FHotTrack := False;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
   // ControlStyle := ControlStyle + [csAcceptsControls];
-  FOver := False;
   FWordWrap := True;
   FForceSameSize := False;
   FHotTrackFontOptions := DefaultTrackFontOptions;
@@ -602,30 +581,23 @@ end;
 
 procedure TJvCustomButton.MouseEnter(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FColor;
     if FHotTrack then
     begin
       FFontSave.Assign(Font);
       Font.Assign(FHotFont);
     end;
-    FOver := True;
     inherited MouseEnter(Control);
   end;
 end;
 
 procedure TJvCustomButton.MouseLeave(Control: TControl);
 begin
-  if FOver then
+  if MouseOver then
   begin
-    Application.HintColor := FSaved;
     if FHotTrack then
       Font.Assign(FFontSave);
-    FOver := False;
     inherited MouseLeave(Control);
   end;
 end;
@@ -634,13 +606,6 @@ procedure TJvCustomButton.FontChanged;
 begin
   inherited FontChanged;
   UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
-end;
-
-procedure TJvCustomButton.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 function TJvCustomButton.GetRealCaption: string;

@@ -48,10 +48,6 @@ uses
 type
   TJvRadioButton = class(TJvExRadioButton)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
     FFontSave: TFont;
@@ -74,17 +70,15 @@ type
     procedure SetLeftText(const Value: Boolean);
     function GetLinkedControls: TJvLinkedControls;
     procedure SetLinkedControls(const Value: TJvLinkedControls);
-
-//    procedure BMSetCheck(var Msg:TMessage); message BM_SETCHECK;
+    procedure BMSetCheck(var Msg:TMessage); message BM_SETCHECK;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure EnabledChanged;override;
-    procedure SetAutoSize(Value: Boolean); //override;
+    procedure SetAutoSize(Value: Boolean); override;
     
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
@@ -98,7 +92,7 @@ type
   published
     property Alignment: TAlignment read FAlignment write SetAlignment;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
     property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions
@@ -112,7 +106,7 @@ type
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
   end;
 
 implementation
@@ -128,8 +122,6 @@ begin
   FHotTrack := False;
   FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
-  FHintColor := clInfoBk;
-  FOver := False;
   FHotTrackFontOptions := DefaultTrackFontOptions;
   FAutoSize := True;
   FWordWrap := False;
@@ -163,37 +155,25 @@ procedure TJvRadioButton.MouseEnter(AControl: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
     if FHotTrack then
     begin
       FFontSave.Assign(Font);
       Font.Assign(FHotTrackFont);
     end;
-    FOver := True;
     inherited MouseEnter(AControl);
   end;
 end;
 
 procedure TJvRadioButton.MouseLeave(AControl: TControl);
 begin
-  if FOver then
+  if MouseOver then
   begin
-    FOver := False;
-    Application.HintColor := FSaved;
     if FHotTrack then
       Font.Assign(FFontSave);
     inherited MouseLeave(AControl);
   end;
-end;
-
-procedure TJvRadioButton.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvRadioButton.FontChanged;
@@ -228,7 +208,7 @@ begin
   // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
   begin
-    DrawTextW(FCanvas.Handle, PWideChar(Caption), Length(Caption), R,
+    DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
@@ -284,7 +264,7 @@ begin
     FWordWrap := Value;
     if Value then
       AutoSize := False;
-    RecreateWidget;
+    RecreateWnd;
   end;
 end;
 
@@ -293,7 +273,7 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
-    RecreateWidget;
+    RecreateWnd;
   end;
 end;
 
@@ -302,7 +282,7 @@ begin
   if FLayout <> Value then
   begin
     FLayout := Value;
-    RecreateWidget;
+    RecreateWnd;
   end;
 end;
 
@@ -316,7 +296,7 @@ begin
   if FLeftText <> Value then
   begin
     FLeftText := Value;
-    RecreateWidget;
+    RecreateWnd;
   end;
 end;
 
@@ -354,13 +334,11 @@ begin
   FLinkedControls.Assign(Value);
 end;
 
-{$IFDEF VCL}
 procedure TJvRadioButton.BMSetCheck(var Msg: TMessage);
 begin
   inherited;
   CheckLinkedControls;
 end;
-{$ENDIF VCL}
 
 procedure TJvRadioButton.EnabledChanged;
 begin

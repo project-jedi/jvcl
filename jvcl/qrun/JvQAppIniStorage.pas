@@ -67,8 +67,8 @@ type
     function ValueExists(const Section, Key: string): Boolean;
     function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
     function ReadValue(const Section, Key: string): string;
-    procedure WriteValue(const Section, Key, Value: string);
-    procedure RemoveValue(const Section, Key: string);
+    procedure WriteValue(const Section, Key, Value: string); virtual;
+    procedure RemoveValue(const Section, Key: string); virtual;
     procedure DeleteSubTreeInt(const Path: string); override;
 
     procedure SplitKeyPath(const Path: string; out Key, ValueName: string); override;
@@ -95,12 +95,17 @@ type
   // and publishes a few properties for them to be
   // used by the user in the IDE
   TJvAppIniFileStorage = class (TJvCustomAppIniStorage)
+  protected
+    procedure WriteValue(const Section, Key, Value: string); override;
+    procedure RemoveValue(const Section, Key: string); override;
   public
     procedure Flush; override;
     procedure Reload; override;
 
     property AsString;
+    property IniFile;
   published
+    property AutoFlush;
     property FileName;
     property Location;
     property DefaultSection;
@@ -514,4 +519,18 @@ begin
     IniFile.Rename(FullFileName, True);
 end;
 
+procedure TJvAppIniFileStorage.RemoveValue(const Section, Key: string);
+begin
+  inherited;
+  if AutoFlush then Flush;
+end;
+
+procedure TJvAppIniFileStorage.WriteValue(const Section, Key,
+  Value: string);
+begin
+  inherited;
+  if AutoFlush then Flush;
+end;
+
 end.
+

@@ -51,7 +51,6 @@ type
   private
     FBorderStyle: TBorderStyle;
     FEndColor: TColor;
-    FHintColor: TColor;
     FGradientBlocks: Boolean;
     FMaximum: Integer;
     FMinimum: Integer;
@@ -61,9 +60,7 @@ type
     FStep: Integer;
     FTextCentered: Boolean;
     FTextOption: TJvTextOption;
-    FOnParentColorChange: TNotifyEvent;
     FBuffer: TBitmap;
-    FSavedHintColor: TColor;
     FTaille: Integer;
     { FIsChanged indicates if the buffer needs to be redrawn }
     FIsChanged: Boolean;
@@ -102,9 +99,6 @@ type
   protected
     procedure Paint; override;
     procedure Loaded; override;
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
     procedure ColorChanged; override;
     procedure FontChanged; override;
     procedure TextChanged; override;
@@ -124,7 +118,7 @@ type
     property EndColor: TColor read FEndColor write SetEndColor default clBlack;
     property Font;
     property GradientBlocks: Boolean read FGradientBlocks write SetGradientBlocks default False;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
     property Minimum: Integer read FMinimum write SetMinimum default 0;
     property ParentColor;
@@ -150,7 +144,7 @@ type
     property OnStartDrag;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChange write FOnParentColorChange;
+    property OnParentColorChange;
   end;
 
 implementation
@@ -162,7 +156,6 @@ begin
 
   ControlStyle := ControlStyle + [csOpaque]; // SMM 20020604
   FBorderStyle := bsNone;
-  FHintColor := clInfoBk;
   FMaximum := 100;
   FMinimum := 0;
   FStartColor := clWhite;
@@ -209,13 +202,6 @@ begin
   UpdateBuffer;
 end;
 
-procedure TJvSpecialProgress.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChange) then
-    FOnParentColorChange(Self);
-end;
-
 procedure TJvSpecialProgress.TextChanged;
 begin
   if TextOption in [toCaption, toFormat] then
@@ -239,23 +225,6 @@ begin
   inherited Loaded;
   UpdateTaille;
   UpdateBuffer;
-end;
-
-procedure TJvSpecialProgress.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  FSavedHintColor := Application.HintColor;
-  Application.HintColor := FHintColor;
-  inherited MouseEnter(Control);
-end;
-
-procedure TJvSpecialProgress.MouseLeave(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  Application.HintColor := FSavedHintColor;
-  inherited MouseLeave(Control);
 end;
 
 procedure TJvSpecialProgress.Paint;

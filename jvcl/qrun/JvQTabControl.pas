@@ -47,24 +47,18 @@ uses
 type
   TJvTabControl = class(TJvExTabControl)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
     
   protected
     
     procedure KeyDown(var Key: Word; Shift: TShiftState); override ;
     
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
     property Color;
   end;
 
@@ -73,34 +67,9 @@ implementation
 constructor TJvTabControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
   
   InputKeys := [ikTabs];
   
-end;
-
-procedure TJvTabControl.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-procedure TJvTabControl.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  FSaved := Application.HintColor;
-  Application.HintColor := FHintColor;
-  inherited MouseEnter(Control);
-end;
-
-procedure TJvTabControl.MouseLeave(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  Application.HintColor := FSaved;
-  inherited MouseLeave(Control);
 end;
 
 

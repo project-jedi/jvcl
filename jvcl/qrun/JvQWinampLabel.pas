@@ -81,8 +81,8 @@ type
     procedure UpdatePos;
     procedure DoOnTimer(Sender: TObject);
     function GetRow(Ch: WideChar): Word;
-    procedure SetText(const Value: TCaption); override;
   protected
+    procedure SetText(const Value: TCaption); override;
     procedure ColorChanged; override;
     procedure Paint; override;
     // (rom) made protected property

@@ -21,7 +21,7 @@ All Rights Reserved.
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
                 André Snepvangers [asn@xs4all.nl] (VisualCLX compatible version)
 
-Last Modified: 2004-01-03
+Last Modified: 2004-02-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -51,59 +51,59 @@ type
   published
     
     
-    Property NormalForeground: TColor index 0 read GetColor write SetColor stored False;
-    Property NormalButton: TColor index 1 read GetColor write SetColor stored False;
-    Property NormalLight: TColor index 2 read GetColor write SetColor stored False;
-    Property NormalMidlight: TColor index 3 read GetColor write SetColor stored False;
-    Property NormalDark: TColor index 4 read GetColor write SetColor stored False;
-    Property NormalMid: TColor index 5 read GetColor write SetColor stored False;
-    Property NormalText: TColor index 6 read GetColor write SetColor stored False;
-    Property NormalBrightText: TColor index 7 read GetColor write SetColor stored False;
-    Property NormalButtonText: TColor index 8 read GetColor write SetColor stored False;
-    Property NormalBase: TColor index 9 read GetColor write SetColor stored False;
-    Property NormalBackground: TColor index 10 read GetColor write SetColor stored False;
-    Property NormalShadow: TColor index 11 read GetColor write SetColor stored False;
-    Property NormalHighlight: TColor index 12 read GetColor write SetColor stored False;
-    Property NormalHighlightedText: TColor index 13 read GetColor write SetColor stored False;
-    Property DisabledForeground: TColor index 14 read GetColor write SetColor stored False;
-    Property DisabledButton: TColor index 15 read GetColor write SetColor stored False;
-    Property DisabledLight: TColor index 16 read GetColor write SetColor stored False;
-    Property DisabledMidlight: TColor index 17 read GetColor write SetColor stored False;
-    Property DisabledDark: TColor index 18 read GetColor write SetColor stored False;
-    Property DisabledMid: TColor index 19 read GetColor write SetColor stored False;
-    Property DisabledText: TColor index 20 read GetColor write SetColor stored False;
-    Property DisabledBrightText: TColor index 21 read GetColor write SetColor stored False;
-    Property DisabledButtonText: TColor index 22 read GetColor write SetColor stored False;
-    Property DisabledBase: TColor index 23 read GetColor write SetColor stored False;
-    Property DisabledBackground: TColor index 24 read GetColor write SetColor stored False;
-    Property DisabledShadow: TColor index 25 read GetColor write SetColor stored False;
-    Property DisabledHighlight: TColor index 26 read GetColor write SetColor stored False;
-    Property DisabledHighlightedText: TColor index 27 read GetColor write SetColor stored False;
-    Property ActiveForeground: TColor index 28 read GetColor write SetColor stored False;
-    Property ActiveButton: TColor index 29 read GetColor write SetColor stored False;
-    Property ActiveLight: TColor index 30 read GetColor write SetColor stored False;
-    Property ActiveMidlight: TColor index 31 read GetColor write SetColor stored False;
-    Property ActiveDark: TColor index 32 read GetColor write SetColor stored False;
-    Property ActiveMid: TColor index 33 read GetColor write SetColor stored False;
-    Property ActiveText: TColor index 34 read GetColor write SetColor stored False;
-    Property ActiveBrightText: TColor index 35 read GetColor write SetColor stored False;
-    Property ActiveButtonText: TColor index 36 read GetColor write SetColor stored False;
-    Property ActiveBase: TColor index 37 read GetColor write SetColor stored False;
-    Property ActiveBackground: TColor index 38 read GetColor write SetColor stored False;
-    Property ActiveShadow: TColor index 39 read GetColor write SetColor stored False;
-    Property ActiveHighlight: TColor index 40 read GetColor write SetColor stored False;
-    Property ActiveHighlightedText: TColor index 41 read GetColor write SetColor stored False;
-//    Property HintColor: TColor index 42 read GetColor write SetColor stored False;
-//    Property DeskTopBackgroundColor:  TColor index 43 read GetColor write SetColor stored False;
-
+    property NormalForeground: TColor index 0 read GetColor write SetColor stored False;
+    property NormalButton: TColor index 1 read GetColor write SetColor stored False;
+    property NormalLight: TColor index 2 read GetColor write SetColor stored False;
+    property NormalMidlight: TColor index 3 read GetColor write SetColor stored False;
+    property NormalDark: TColor index 4 read GetColor write SetColor stored False;
+    property NormalMid: TColor index 5 read GetColor write SetColor stored False;
+    property NormalText: TColor index 6 read GetColor write SetColor stored False;
+    property NormalBrightText: TColor index 7 read GetColor write SetColor stored False;
+    property NormalButtonText: TColor index 8 read GetColor write SetColor stored False;
+    property NormalBase: TColor index 9 read GetColor write SetColor stored False;
+    property NormalBackground: TColor index 10 read GetColor write SetColor stored False;
+    property NormalShadow: TColor index 11 read GetColor write SetColor stored False;
+    property NormalHighlight: TColor index 12 read GetColor write SetColor stored False;
+    property NormalHighlightedText: TColor index 13 read GetColor write SetColor stored False;
+    property DisabledForeground: TColor index 14 read GetColor write SetColor stored False;
+    property DisabledButton: TColor index 15 read GetColor write SetColor stored False;
+    property DisabledLight: TColor index 16 read GetColor write SetColor stored False;
+    property DisabledMidlight: TColor index 17 read GetColor write SetColor stored False;
+    property DisabledDark: TColor index 18 read GetColor write SetColor stored False;
+    property DisabledMid: TColor index 19 read GetColor write SetColor stored False;
+    property DisabledText: TColor index 20 read GetColor write SetColor stored False;
+    property DisabledBrightText: TColor index 21 read GetColor write SetColor stored False;
+    property DisabledButtonText: TColor index 22 read GetColor write SetColor stored False;
+    property DisabledBase: TColor index 23 read GetColor write SetColor stored False;
+    property DisabledBackground: TColor index 24 read GetColor write SetColor stored False;
+    property DisabledShadow: TColor index 25 read GetColor write SetColor stored False;
+    property DisabledHighlight: TColor index 26 read GetColor write SetColor stored False;
+    property DisabledHighlightedText: TColor index 27 read GetColor write SetColor stored False;
+    property ActiveForeground: TColor index 28 read GetColor write SetColor stored False;
+    property ActiveButton: TColor index 29 read GetColor write SetColor stored False;
+    property ActiveLight: TColor index 30 read GetColor write SetColor stored False;
+    property ActiveMidlight: TColor index 31 read GetColor write SetColor stored False;
+    property ActiveDark: TColor index 32 read GetColor write SetColor stored False;
+    property ActiveMid: TColor index 33 read GetColor write SetColor stored False;
+    property ActiveText: TColor index 34 read GetColor write SetColor stored False;
+    property ActiveBrightText: TColor index 35 read GetColor write SetColor stored False;
+    property ActiveButtonText: TColor index 36 read GetColor write SetColor stored False;
+    property ActiveBase: TColor index 37 read GetColor write SetColor stored False;
+    property ActiveBackground: TColor index 38 read GetColor write SetColor stored False;
+    property ActiveShadow: TColor index 39 read GetColor write SetColor stored False;
+    property ActiveHighlight: TColor index 40 read GetColor write SetColor stored False;
+    property ActiveHighlightedText: TColor index 41 read GetColor write SetColor stored False;
+//    property HintColor: TColor index 42 read GetColor write SetColor stored False;
+//    property DeskTopBackgroundColor:  TColor index 43 read GetColor write SetColor stored False;
+    
   end;
 
 implementation
 
 const
-
-
-  ColorArray: array[0..43] of TColor = (
+  
+  
+  ColorArray: array[0..41] of TColor = (
     clNormalForeground, clNormalButton, clNormalLight, clNormalMidlight, clNormalDark, clNormalMid,
     clNormalText, clNormalBrightText, clNormalButtonText, clNormalBase, clNormalBackground,
     clNormalShadow, clNormalHighlight, clNormalHighlightedText,
@@ -114,9 +114,9 @@ const
 
     clActiveForeground, clActiveButton, clActiveLight, clActiveMidlight, clActiveDark, clActiveMid,
     clActiveText, clActiveBrightText, clActiveButtonText, clActiveBase, clActiveBackground,
-    clActiveShadow, clActiveHighlight, clActiveHighlightedText,
-    clInfoBk, clDesktop );
-
+    clActiveShadow, clActiveHighlight, clActiveHighlightedText
+    {, clInfoBk, clDesktop} );
+  
 
 procedure TJvSystemColors.SetColor(Index: Integer; Value: TColor);
 var
