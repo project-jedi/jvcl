@@ -60,7 +60,7 @@ object frmMain: TfrmMain
       Indent = 19
       TabOrder = 0
       Items.Data = {
-        0A00000024000000010000000100000000000000FFFFFFFF000000000A000000
+        0A00000024000000000000000000000000000000FFFFFFFF000000000A000000
         0B456E7669726F6E6D656E7420000000FFFFFFFFFFFFFFFF01000000FFFFFFFF
         01000000000000000747656E6572616C22000000FFFFFFFFFFFFFFFF01000000
         FFFFFFFF020000000000000009446F63756D656E747325000000FFFFFFFFFFFF
@@ -74,13 +74,13 @@ object frmMain: TfrmMain
         001650726F6A6563747320616E6420536F6C7574696F6E7322000000FFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFF0900000000000000095461736B204C6973742400
         0000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF09000000000000000B5765622042
-        726F77736572270000000100000001000000FFFFFFFFFFFFFFFF000000000200
+        726F77736572270000000000000000000000FFFFFFFFFFFFFFFF000000000200
         00000E536F7572636520436F6E74726F6C20000000FFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFF00000000000000000747656E6572616C25000000FFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFF00000000000000000C5343432050726F76696465722400
-        00000100000001000000FFFFFFFFFFFFFFFF00000000090000000B5465787420
+        00000000000000000000FFFFFFFFFFFFFFFF00000000090000000B5465787420
         456469746F7220000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000000000
-        00000747656E6572616C260000000100000001000000FFFFFFFFFFFFFFFF0000
+        00000747656E6572616C260000000000000000000000FFFFFFFFFFFFFFFF0000
         0000020000000D416C6C204C616E67756167657320000000FFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFF00000000000000000747656E6572616C1D000000FFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFF000000000000000004546162731E000000000000
@@ -157,7 +157,6 @@ object frmMain: TfrmMain
     Width = 410
     Height = 322
     Caption = 'JvStandardPage2'
-    Color = clBtnFace
   end
   object JvStandardPage4: TJvStandardPage
     Left = 172
@@ -165,7 +164,6 @@ object frmMain: TfrmMain
     Width = 410
     Height = 322
     Caption = 'JvStandardPage4'
-    Color = clBtnFace
   end
   object JvStandardPage1: TJvStandardPage
     Left = 172
@@ -173,7 +171,6 @@ object frmMain: TfrmMain
     Width = 410
     Height = 322
     Caption = 'JvStandardPage1'
-    Color = clBtnFace
   end
   object JvStandardPage5: TJvStandardPage
     Left = 172
@@ -181,7 +178,6 @@ object frmMain: TfrmMain
     Width = 410
     Height = 322
     Caption = 'JvStandardPage5'
-    Color = clBtnFace
   end
   object JvFooter1: TJvFooter
     Left = 0
@@ -189,7 +185,9 @@ object frmMain: TfrmMain
     Width = 582
     Height = 34
     Align = alBottom
-    ParentBackground = False
+    DesignSize = (
+      582
+      34)
     object JvFooterBtn2: TJvFooterBtn
       Left = 339
       Top = 5
@@ -227,7 +225,7 @@ object frmMain: TfrmMain
       SpaceInterval = 6
     end
     object JvFooterBtn1: TJvFooterBtn
-      Left = 502
+      Left = 499
       Top = 5
       Width = 75
       Height = 23
@@ -257,7 +255,9 @@ object frmMain: TfrmMain
       Width = 410
       Height = 303
       Caption = 'Environment - General'
-      Color = clBtnFace
+      DesignSize = (
+        410
+        303)
       object Label1: TLabel
         Left = 248
         Top = 8
@@ -438,7 +438,9 @@ object frmMain: TfrmMain
       Width = 410
       Height = 303
       Caption = 'Environment - Documents'
-      Color = clBtnFace
+      DesignSize = (
+        410
+        303)
       object Label7: TLabel
         Left = 32
         Top = 112
@@ -565,7 +567,6 @@ object frmMain: TfrmMain
       Width = 410
       Height = 303
       Caption = 'Environment - Dynamic Help'
-      Color = clBtnFace
       object Label9: TLabel
         Left = 8
         Top = 8
@@ -687,7 +688,6 @@ object frmMain: TfrmMain
       Width = 410
       Height = 303
       Caption = 'Environment - Fonts and Colors'
-      Color = clBtnFace
       object Label12: TLabel
         Left = 8
         Top = 8
@@ -981,7 +981,6 @@ object frmMain: TfrmMain
       Width = 410
       Height = 303
       Caption = 'Environment - Help'
-      Color = clBtnFace
     end
     object pgInternational: TJvStandardPage
       Left = 0
@@ -989,7 +988,6 @@ object frmMain: TfrmMain
       Width = 410
       Height = 303
       Caption = 'Environment - International Settings'
-      Color = clBtnFace
     end
     object pgKeyboard: TJvStandardPage
       Left = 0
@@ -997,7 +995,6 @@ object frmMain: TfrmMain
       Width = 410
       Height = 303
       Caption = 'Environment - Keyboard'
-      Color = clBtnFace
     end
     object pgProjSolutions: TJvStandardPage
       Left = 0
@@ -1005,7 +1002,6 @@ object frmMain: TfrmMain
       Width = 410
       Height = 303
       Caption = 'Environment - Projects and Solutions'
-      Color = clBtnFace
     end
     object pgTaskList: TJvStandardPage
       Left = 0
@@ -1013,7 +1009,6 @@ object frmMain: TfrmMain
       Width = 410
       Height = 303
       Caption = 'Environment - Task List'
-      Color = clBtnFace
     end
     object pgWebBrowser: TJvStandardPage
       Left = 0
@@ -1021,7 +1016,6 @@ object frmMain: TfrmMain
       Width = 410
       Height = 303
       Caption = 'Environment - Web Browser'
-      Color = clBtnFace
     end
     object JvGroupHeader1: TJvGroupHeader
       Left = 0
