@@ -30,10 +30,10 @@ unit JvStrHlder;
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes
   {$IFDEF COMPILER6_UP}
-  Variants, RTLConsts;
-  {$ENDIF}
+  Variants, RTLConsts
+  {$ENDIF};
   {JvComponent}
 
 type

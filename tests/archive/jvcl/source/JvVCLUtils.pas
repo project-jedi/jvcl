@@ -2840,7 +2840,7 @@ end;
 procedure RaiseWin32Error(ErrorCode: DWORD);
 {$IFDEF COMPILER3_UP}
 var
-  Error: {$IFDEF COMPILER6_UP} EOSError {$ELSE}E Win32Error {$ENDIF};
+  Error: {$IFDEF COMPILER6_UP} EOSError {$ELSE}EWin32Error {$ENDIF};
 {$ENDIF}
 begin
   if ErrorCode <> ERROR_SUCCESS then

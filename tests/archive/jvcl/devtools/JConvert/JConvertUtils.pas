@@ -53,16 +53,16 @@ var
 begin
   Result := 0;
   ShortFilename := ExtractRelativePath(IncludeTrailingPathDelimiter(GetCurrentDir), Filename);
-  if GetFileAttributes(PChar(Filename)) and FILE_ATTRIBUTE_READONLY <> 0 then
+  if (GetFileAttributes(PChar(Filename)) and FILE_ATTRIBUTE_READONLY <> 0) and not Simulate then
   begin
-    writeln('WARNING: ', ShortFilename, ' is read-only.');
+    writeln('WARNING: ', ShortFilename, ' is read-only (NOT converted).');
     Exit;
   end;
   if Verbose then
     writeln('Reading ', ShortFilename);
   AFormat := sofUnknown;
   try
-    InFile := TFileStream.Create(Filename, fmOpenRead);
+    InFile := TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
     TmpStream := TMemoryStream.Create;
     try
       if BinToTxt then
@@ -75,7 +75,12 @@ begin
           FreeAndNil(InFile);
           TmpStream.Seek(0, soFromBeginning);
           if Verbose then
-            writeln('Writing ', GetOutName(ShortFileName, InPlace));
+          begin
+            if not Simulate then
+              writeln('Writing ', GetOutName(ShortFileName, InPlace))
+            else
+              writeln('Is Binary: ', ShortFileName)
+          end;
           if not Simulate then
           begin
             OutFile := TFileStream.Create(getOutName(Filename, InPlace), fmCreate);
@@ -97,8 +102,13 @@ begin
         begin
           FreeAndNil(InFile);
           TmpStream.Seek(0, soFromBeginning);
-          if Verbose then
-            writeln('Writing ', GetOutName(ShortFileName, InPlace));
+          if Verbose and not Simulate then
+          begin
+            if not Simulate then
+              writeln('Writing ', GetOutName(ShortFileName, InPlace))
+            else
+              writeln('Is Text: ', ShortFileName)
+          end;
           if not Simulate then
           begin
             OutFile := TFileStream.Create(GetOutName(Filename, InPlace), fmCreate);
@@ -122,7 +132,7 @@ begin
 end;
 
 function ConvertDFM(SubDirs, Inplace, BinToTxt, Simulate, Verbose: boolean; FileSpecs:
-  TStringlist): integer;
+  TStringlist; var TotalCount:integer): integer;
 var F: TJvSearchFiles;
   i, j: integer;
 begin
@@ -134,6 +144,8 @@ begin
     else
       F.DirOption := doExcludeSubDirs;
     F.Options := F.Options - [soStripDirs];
+    if Verbose then
+      writeln('Building file list, please wait...');
     for i := 0 to FileSpecs.Count - 1 do
     begin
       F.RootDirectory := ExtractFilePath(FileSpecs[i]);
@@ -146,6 +158,7 @@ begin
       if F.FileParams.FileMask = '' then
         F.FileParams.FileMask := '*.dfm';
       F.Search;
+      TotalCount := F.Files.Count;
       for j := 0 to F.Files.Count - 1 do
         Inc(Result, InternalConvertDFM(Inplace, BinToTxt, Simulate, Verbose, F.Files[j]));
     end;
@@ -159,7 +172,7 @@ procedure Run;
 var
   DoSubDirs, DoInplace, DoBinToTxt, DoSimulate, DoVerbose: boolean;
   Path: string;
-  i: integer;
+  i,TotalCount: integer;
   FileSpecs: TStringlist;
 
 
@@ -203,11 +216,11 @@ begin
           writeln('ERROR: no files specified')
         else
         begin
-          i := ConvertDFM(DoSubDirs, DoInplace, DoBinToTxt, DoSimulate, DoVerbose, FileSpecs);
+          i := ConvertDFM(DoSubDirs, DoInplace, DoBinToTxt, DoSimulate, DoVerbose, FileSpecs,TotalCount);
           if DoSimulate then
-            writeln(i, ' file(s) should have been converted')
+            writeln(TotalCount,' file(s) found, ',i, ' file(s) should have been converted')
           else
-            writeln(i, ' file(s) converted');
+            writeln(TotalCount,' file(s) found, ',i, ' file(s) converted');
         end;
       finally
         FileSpecs.Free;

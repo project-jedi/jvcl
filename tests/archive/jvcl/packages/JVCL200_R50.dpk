@@ -84,7 +84,6 @@ contains
   JvDeleteError in '..\source\JvDeleteError.pas',
   JvDeviceChanged in '..\source\JvDeviceChanged.pas',
   JvDirectories in '..\source\JvDirectories.pas',
-  JvDisconnectNetwork in '..\source\JvDisconnectNetwork.pas',
   JvDiskPrompt in '..\source\JvDiskPrompt.pas',
   JvDragDrop in '..\source\JvDragDrop.pas',
   JvDrawGrid in '..\source\JvDrawGrid.pas',
@@ -114,10 +113,8 @@ contains
   JvHeaderControl in '..\source\JvHeaderControl.pas',
   JvHotKey in '..\source\JvHotKey.pas',
   JvHotLink in '..\source\JvHotLink.pas',
-  JvHRas32 in '..\source\JvHRas32.pas',
   JvHtmlParser in '..\source\JvHtmlParser.pas',
   JvHttpGrabber in '..\source\JvHttpGrabber.pas',
-  JvHWinamp in '..\source\JvHWinamp.pas',
   JvId3v1 in '..\source\JvId3v1.pas',
   JvId3v2 in '..\source\JvId3v2.pas',
   JvId3v2Types in '..\source\JvId3v2Types.pas',
@@ -454,6 +451,9 @@ contains
   JvSchedEvtStore in '..\source\JvSchedEvtStore.pas',
   JvWndProcHook in '..\source\JvWndProcHook.pas',
   JvTransLED in '..\source\JvTransLED.pas',
-  JvJVCLAbout in '..\source\JvJVCLAbout.pas' {JvJVCLAboutForm};
+  JvJVCLAbout in '..\source\JvJVCLAbout.pas' {JvJVCLAboutForm},
+  JvCaret in '..\source\JvCaret.pas',
+  Winamp in '..\common\Winamp.pas',
+  Ras32 in '..\common\Ras32.pas';
 
 end.

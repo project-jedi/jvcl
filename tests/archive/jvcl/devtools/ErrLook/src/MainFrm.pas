@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, ActnList;
 
 type
-  // anmed list of TStrings
+  // a list of TStrings
   TStringsList = class(TObject)
   private
     FNames: TStrings;

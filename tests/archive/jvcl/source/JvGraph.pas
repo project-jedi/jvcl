@@ -63,8 +63,8 @@ function ScreenColorCount: Integer;
 procedure TileImage(Canvas: TCanvas; Rect: TRect; Image: TGraphic);
 function ZoomImage(ImageW, ImageH, MaxW, MaxH: Integer; Stretch: Boolean): TPoint;
 
-const
-  DefaultMappingMethod = mmHistogram;
+var
+  DefaultMappingMethod:TMappingMethod = mmHistogram;
 
 type
   TJvGradient = class(TPersistent)

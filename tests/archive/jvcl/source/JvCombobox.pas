@@ -73,7 +73,7 @@ type
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
     procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK; // ain
     {$IFNDEF COMPILER6_UP}
-    function SelectItem(const AItem: string): Boolean;  // SPM - Ported from D7
+    function SelectItem(const AnItem: string): Boolean;  // SPM - Ported from D7
     {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;

@@ -754,13 +754,6 @@ begin
   N.Expand(True);
 end;
 
-function Max(Val1, Val2: Integer): Integer;
-begin
-  Result := Val1;
-  if Val2 > Val1 then
-    Result := Val2;
-end;
-
 procedure TFrmOLBEditor.acShowTextLabelsExecute(Sender: TObject);
 begin
   acShowTextLabels.Checked := not acShowTextLabels.Checked;

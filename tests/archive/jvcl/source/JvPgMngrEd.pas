@@ -343,7 +343,7 @@ begin
   {$IFDEF COMPILER6_UP}
   if ADesigner.Root = OwnerForm then
   {$ELSE}
-  if ADesigner.Form = OwnerForm then
+  if Form = OwnerForm then
   {$ENDIF}
     Free;
 end;

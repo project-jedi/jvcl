@@ -32,8 +32,7 @@ interface
 
 uses
   Windows, ActiveX, Classes, ComObj, SysUtils,
-  ObjSel,
-  JvBaseDlg, JvTypes;
+  ObjSel, JvBaseDlg, JvTypes;
 
 // (rom) Jv the type names?
 type
