@@ -32,25 +32,50 @@ unit JvColorProvider;
 interface
 
 uses
-  Classes, Graphics, Windows,
+  Classes, Contnrs, Graphics, Windows,
   JclBase,
   JvDataProvider, JvDataProviderImpl;
 
 type
   TColorType = (ctStandard, ctSystem, ctCustom);
+  TDefColorItem = record
+    Value: TColor;
+    Constant: string;
+    English: string;
+  end;
   TColorItem = record
     Value: TColor;
     Names: TDynStringArray;
   end;
   TColorItems = array of TColorItem;
 
-  TJvColorProvider = class(TJvCustomDataProvider)
+  TJvColorProviderNameMappings = class;
+  TJvColorProviderNameMapping = class;
+
+  IJvColorProvider = interface
+    ['{3DF32721-553B-4759-A628-35F5CA62F3D5}']
+    function IndexOfMapping(Mapping: TJvColorProviderNameMapping): Integer;
+    function Get_MappingCount: Integer;
+    function Get_Mapping(Index: Integer): TJvColorProviderNameMapping;
+    function GetStandardCount: Integer;
+    function GetSystemCount: Integer;
+    function GetCustomCount: Integer;
+    function GetStandardColor(Index: Integer; out Value: TColor; out Name: string): Boolean;
+    function GetSystemColor(Index: Integer; out Value: TColor; out Name: string): Boolean;
+    function GetCustomColor(Index: Integer; out Value: TColor; out Name: string): Boolean;
+    function FindColor(Value: TColor; out ColorType: TColorType; out Index: Integer): Boolean;
+
+    property MappingCount: Integer read Get_MappingCount;
+    property Mappings[Index: Integer]: TJvColorProviderNameMapping read Get_Mapping;
+  end;
+
+  TJvColorProvider = class(TJvCustomDataProvider, IJvColorProvider)
   private
     FStdColors: TColorItems;
     FSysColors: TColorItems;
     FCstColors: TColorItems;
     FCtxList: TDynIntegerArray;
-    procedure AddColorStr(const S: string);
+    FMappings: TJvColorProviderNameMappings;
   protected
     procedure AddColor(var List: TColorItems; Color: TColor);
     procedure DeleteColor(var List: TColorItems; Index: Integer);
@@ -58,17 +83,37 @@ type
     class function ItemsClass: TJvDataItemsClass; override;
     function ConsumerClasses: TClassArray; override;
     procedure ContextDestroying(Context: IJvDataContext); override;
+    procedure InsertMapping(var Strings: TDynStringArray; Index: Integer);
+    procedure DeleteMapping(var Strings: TDynStringArray; Index: Integer);
+    procedure MappingAdded(Index: Integer);
+    procedure MappingDestroying(Index: Integer);
     function GetColor(List, Index: Integer; out Value: TColor; out Name: string): Boolean;
+    function GetColorCount(List: Integer): Integer;
+    procedure GenDelphiConstantMapping;
+    procedure GenEnglishMapping;
+    procedure InitColorList(var List: TColorItems; const Definitions: array of TDefColorItem);
+    procedure InitColors;
+    function GetMappings: TJvColorProviderNameMappings;
+    procedure SetMappings(Value: TJvColorProviderNameMappings);
 
     property StdColors: TColorItems read FStdColors write FStdColors;
     property SysColors: TColorItems read FSysColors write FSysColors;
     property CstColors: TColorItems read FCstColors write FCstColors;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function IndexOfMapping(Mapping: TJvColorProviderNameMapping): Integer;
+    function Get_MappingCount: Integer;
+    function Get_Mapping(Index: Integer): TJvColorProviderNameMapping;
+    function GetStandardCount: Integer;
+    function GetSystemCount: Integer;
+    function GetCustomCount: Integer;
     function GetStandardColor(Index: Integer; out Value: TColor; out Name: string): Boolean;
     function GetSystemColor(Index: Integer; out Value: TColor; out Name: string): Boolean;
     function GetCustomColor(Index: Integer; out Value: TColor; out Name: string): Boolean;
     function FindColor(Value: TColor; out ColorType: TColorType; out Index: Integer): Boolean;
+  published
+    property Mappings: TJvColorProviderNameMappings read GetMappings write SetMappings;
   end;
 
   TJvColorProviderAddItemLocation = (ailUseHeader, ailTop, ailBottom);
@@ -77,6 +122,34 @@ type
   TColorGroupHeaderStyle = (ghsBoldFont, ghsSingleCenterLine, ghsDoubleCenterLine);
   TColorGroupHeaderStyles = set of TColorGroupHeaderStyle;
 
+  TJvColorProviderNameMappings = class(TObjectList)
+  private
+    FProvider: TJvColorProvider;
+  protected
+    function GetItem(Index: Integer): TJvColorProviderNameMapping;
+    procedure SetItem(Index: Integer; AObject: TJvColorProviderNameMapping);
+
+    property Provider: TJvColorProvider read FProvider;
+  public
+    constructor Create(AProvider: TJvColorProvider);
+    function Add(Item: TJvColorProviderNameMapping): Integer;
+    procedure Clear; override;
+    procedure Delete(Index: Integer);
+    property Items[Index: Integer]: TJvColorProviderNameMapping read GetItem write SetItem; default;
+  end;
+
+  TJvColorProviderNameMapping = class(TPersistent)
+  private
+    FName: string;
+    FOwner: TJvColorProviderNameMappings;
+  protected
+    property Owner: TJvColorProviderNameMappings read FOwner;
+  public
+    constructor Create(AOwner: TJvColorProviderNameMappings; AName: string);
+  published
+    property Name: string read FName write FName;
+  end;
+  
   TJvColorProviderSubSettings = class(TPersistent)
   private
     FActive: Boolean;
@@ -208,14 +281,22 @@ type
     function Get_ColorBoxSettings: TJvColorProviderColorBoxSettings;
     function Get_CustomColorSettings: TJvColorProviderCustomColorGroupSettings;
     function Get_GroupingSettings: TJvColorProviderGroupingSettings;
+    function Get_NameMapping: TJvColorProviderNameMapping;
+    function Get_NameMappingIndex: Integer;
     function Get_StandardColorSettings: TJvColorProviderColorGroupSettings;
     function Get_SystemColorSettings: TJvColorProviderColorGroupSettings;
     function Get_TextSettings: TJvColorProviderTextSettings;
+    procedure Set_NameMapping(Value: TJvColorProviderNameMapping);
+    procedure Set_NameMappingIndex(Value: Integer);
+    procedure MappingAdded(Index: Integer; Mapping: TJvColorProviderNameMapping);
+    procedure MappingDestroying(Index: Integer; Mapping: TJvColorProviderNameMapping);
 
     property ColorBoxSettings: TJvColorProviderColorBoxSettings read Get_ColorBoxSettings;
     property CustomColorSettings: TJvColorProviderCustomColorGroupSettings
       read Get_CustomColorSettings;
     property GroupingSettings: TJvColorProviderGroupingSettings read Get_GroupingSettings;
+    property NameMapping: TJvColorProviderNameMapping read Get_NameMapping write Set_NameMapping;
+    property NameMappingIndex: Integer read Get_NameMappingIndex write Set_NameMappingIndex;
     property StandardColorSettings: TJvColorProviderColorGroupSettings
       read Get_StandardColorSettings;
     property SystemColorSettings: TJvColorProviderColorGroupSettings read Get_SystemColorSettings;
@@ -241,17 +322,78 @@ begin
     Color := StrToInt('$0' + Copy(S, 8, 8));
 end;
 
+const
+  {$IFNDEF COMPILER6_UP}
+  clMoneyGreen = TColor($C0DCC0);
+  clSkyBlue = TColor($F0CAA6);
+  clCream = TColor($F0FBFF);
+  clMedGray = TColor($A4A0A0);
+  {$ENDIF}
+
+  ColCount = 20;
+  SysColCount = 25;
+  ColorValues: array [0 .. ColCount - 1] of TDefColorItem = (
+    (Value: clBlack;                Constant: 'clBlack';                English: 'Black'),
+    (Value: clMaroon;               Constant: 'clMaroon';               English: 'Maroon'),
+    (Value: clGreen;                Constant: 'clGreen';                English: 'Green'),
+    (Value: clOlive;                Constant: 'clOlive';                English: 'Olive green'),
+    (Value: clNavy;                 Constant: 'clNavy';                 English: 'Navy blue'),
+    (Value: clPurple;               Constant: 'clPurple';               English: 'Purple'),
+    (Value: clTeal;                 Constant: 'clTeal';                 English: 'Teal'),
+    (Value: clGray;                 Constant: 'clGray';                 English: 'Gray'),
+    (Value: clSilver;               Constant: 'clSilver';               English: 'Silver'),
+    (Value: clRed;                  Constant: 'clRed';                  English: 'Red'),
+    (Value: clLime;                 Constant: 'clLime';                 English: 'Lime'),
+    (Value: clYellow;               Constant: 'clYellow';               English: 'Yellow'),
+    (Value: clBlue;                 Constant: 'clBLue';                 English: 'Blue'),
+    (Value: clFuchsia;              Constant: 'clFuchsia';              English: 'Fuchsia'),
+    (Value: clAqua;                 Constant: 'clAqua';                 English: 'Aqua'),
+    (Value: clWhite;                Constant: 'clWhite';                English: 'White'),
+    (Value: clMoneyGreen;           Constant: 'clMoneyGreen';           English: 'Money green'),
+    (Value: clSkyBlue;              Constant: 'clSkyBlue';              English: 'Sky blue'),
+    (Value: clCream;                Constant: 'clCream';                English: 'Cream'),
+    (Value: clMedGray;              Constant: 'clMedGray';              English: 'Medium gray')
+  );
+
+  SysColorValues: array [0 .. SysColCount - 1] of TDefColorItem = (
+    (Value: clScrollBar;            Constant: 'clScrollBar';            English: 'Scrollbar'),
+    (Value: clBackground;           Constant: 'clBackground';           English: 'Desktop background'),
+    (Value: clActiveCaption;        Constant: 'clActiveCaption';        English: 'Active window title bar'),
+    (Value: clInactiveCaption;      Constant: 'clInactiveCaption';      English: 'Inactive window title bar'),
+    (Value: clMenu;                 Constant: 'clMenu';                 English: 'Menu background'),
+    (Value: clWindow;               Constant: 'clWindow';               English: 'Window background'),
+    (Value: clWindowFrame;          Constant: 'clWindowFrame';          English: 'Window frame'),
+    (Value: clMenuText;             Constant: 'clMenuText';             English: 'Menu text'),
+    (Value: clWindowText;           Constant: 'clWindowText';           English: 'Window text'),
+    (Value: clCaptionText;          Constant: 'clCaptionText';          English: 'Active window title bar text'),
+    (Value: clActiveBorder;         Constant: 'clActiveBorder';         English: 'Active window border'),
+    (Value: clInactiveBorder;       Constant: 'clInactiveBorder';       English: 'Inactive window border'),
+    (Value: clAppWorkSpace;         Constant: 'clAppWorkSpace';         English: 'Application workspace'),
+    (Value: clHighlight;            Constant: 'clHighlight';            English: 'Selection background'),
+    (Value: clHighlightText;        Constant: 'clHighlightText';        English: 'Selection text'),
+    (Value: clBtnFace;              Constant: 'clBtnFace';              English: 'Button face'),
+    (Value: clBtnShadow;            Constant: 'clBtnShadow';            English: 'Button shadow'),
+    (Value: clGrayText;             Constant: 'clGrayText';             English: 'Dimmed text'),
+    (Value: clBtnText;              Constant: 'clBtnText';              English: 'Button text'),
+    (Value: clInactiveCaptionText;  Constant: 'clInactiveCaptionText';  English: 'Inactive window title bar text'),
+    (Value: clBtnHighlight;         Constant: 'clBtnHighlight';         English: 'Button highlight'),
+    (Value: cl3DDkShadow;           Constant: 'cl3DDkShadow';           English: 'Dark shadow three-dimensional elements'),
+    (Value: cl3DLight;              Constant: 'cl3DLight';              English: 'Highlight three-dimensional elements'),
+    (Value: clInfoText;             Constant: 'clInfoText';             English: 'Tooltip text'),
+    (Value: clInfoBk;               Constant: 'clInfoBk';               English: 'Tooltip background')
+  );
+
 type
   TJvColorItems = class(TJvBaseDataItems)
   private
-    FProviderComp: TJvColorProvider;
+    FColorProvider: IJvColorProvider;
   protected
     function GetColorSettings: IJvColorProviderSettings;
     function GetCount: Integer; override;
     function GetItem(I: Integer): IJvDataItem; override;
     procedure InitImplementers; override;
 
-    property ProviderComp: TJvColorProvider read FProviderComp write FProviderComp;
+    property ColorProvider: IJvColorProvider read FColorProvider write FColorProvider;
   public
     procedure AfterConstruction; override;
   end;
@@ -274,9 +416,8 @@ type
     FListIndex: Integer;  // Index in color list
   protected
     function GetCaption: string;
-    procedure SetCaption(const Value: string); 
+    procedure SetCaption(const Value: string);
     procedure InitID; override;
-    function List: TColorItems;
     property ListNumber: Integer read FListNumber;
     property ListIndex: Integer read FListIndex;
   public
@@ -328,19 +469,26 @@ type
     FStandardColorSettings: TJvColorProviderColorGroupSettings;
     FSystemColorSettings: TJvColorProviderColorGroupSettings;
     FTextSettings: TJvColorProviderTextSettings;
+    FMapping: Integer;
   protected
     function Get_ColorBoxSettings: TJvColorProviderColorBoxSettings;
     function Get_CustomColorSettings: TJvColorProviderCustomColorGroupSettings;
     function Get_GroupingSettings: TJvColorProviderGroupingSettings;
+    function Get_NameMapping: TJvColorProviderNameMapping;
+    function Get_NameMappingIndex: Integer;
     function Get_StandardColorSettings: TJvColorProviderColorGroupSettings;
     function Get_SystemColorSettings: TJvColorProviderColorGroupSettings;
     function Get_TextSettings: TJvColorProviderTextSettings;
     procedure Set_ColorBoxSettings(Value: TJvColorProviderColorBoxSettings);
     procedure Set_CustomColorSettings(Value: TJvColorProviderCustomColorGroupSettings);
     procedure Set_GroupingSettings(Value: TJvColorProviderGroupingSettings);
+    procedure Set_NameMapping(Value: TJvColorProviderNameMapping);
+    procedure Set_NameMappingIndex(Value: Integer);
     procedure Set_StandardColorSettings(Value: TJvColorProviderColorGroupSettings);
     procedure Set_SystemColorSettings(Value: TJvColorProviderColorGroupSettings);
     procedure Set_TextSettings(Value: TJvColorProviderTextSettings);
+    procedure MappingAdded(Index: Integer; Mapping: TJvColorProviderNameMapping);
+    procedure MappingDestroying(Index: Integer; Mapping: TJvColorProviderNameMapping);
   public
     constructor Create(AOwner: TExtensibleInterfacedPersistent); override;
     destructor Destroy; override;
@@ -358,6 +506,15 @@ type
     property GroupingSettings: TJvColorProviderGroupingSettings read Get_GroupingSettings
       write Set_GroupingSettings;
   end;
+
+//===TJvColorProviderNameMapping====================================================================
+
+constructor TJvColorProviderNameMapping.Create(AOwner: TJvColorProviderNameMappings; AName: string);
+begin
+  inherited Create;
+  FOwner := AOwner;
+  FName := AName;
+end;
 
 //===TJvColorProviderSubSettings====================================================================
 
@@ -658,10 +815,10 @@ begin
   else
   begin
     if Settings.StandardColorSettings.Active then
-      Inc(Result, Length(ProviderComp.StdColors) +
+      Inc(Result, ColorProvider.GetStandardCount +
         Ord(Settings.StandardColorSettings.ShowHeader and Settings.GroupingSettings.Active));
     if Settings.SystemColorSettings.Active then
-      Inc(Result, Length(ProviderComp.SysColors) +
+      Inc(Result, ColorProvider.GetSystemCount +
         Ord(Settings.SystemColorSettings.ShowHeader and Settings.GroupingSettings.Active));
   end;
 end;
@@ -704,19 +861,19 @@ begin
     begin
       if Settings.StandardColorSettings.ShowHeader and Settings.GroupingSettings.Active then
         Dec(I);
-      if I < Length(ProviderComp.StdColors) then
+      if I < ColorProvider.GetStandardCount then
         ListNum := 0
       else
-        Dec(I, Length(ProviderComp.StdColors));
+        Dec(I, ColorProvider.GetStandardCount);
     end;
     if (ListNum < 0) and Settings.SystemColorSettings.Active then
     begin
       if Settings.SystemColorSettings.ShowHeader and Settings.GroupingSettings.Active then
         Dec(I);
-      if I < Length(ProviderComp.SysColors) then
+      if I < ColorProvider.GetSystemCount then
         ListNum := 1
       else
-        Dec(I, Length(ProviderComp.SysColors));
+        Dec(I, ColorProvider.GetSystemCount);
     end;
   end;
   if ListNum < 0 then
@@ -735,12 +892,9 @@ begin
 end;
 
 procedure TJvColorItems.AfterConstruction;
-var
-  ICR: IInterfaceComponentReference;
 begin
   inherited AfterConstruction;
-  if Supports(GetProvider, IInterfaceComponentReference, ICR) then
-    FProviderComp := ICR.GetComponent as TJvColorProvider;
+  Supports(GetProvider, IJvColorProvider, FColorProvider);
 end;
 
 //===TJvColorItemsList==============================================================================
@@ -749,11 +903,11 @@ function TJvColorItemsList.GetCount: Integer;
 begin
   case ListNum of
     0:
-      Result := Length(ProviderComp.StdColors);
+      Result := ColorProvider.GetStandardCount;
     1:
-      Result := Length(ProviderComp.SysColors);
+      Result := ColorProvider.GetSystemCount;
     2:
-      Result := 0;
+      Result := ColorProvider.GetCustomCount;
     else
       Result := 0;
   end;
@@ -766,20 +920,25 @@ begin
   case ListNum of
     0:
       begin
-        if I > Length(ProviderComp.StdColors) then
+        if I >= ColorProvider.GetStandardCount then
           TList.Error(SListIndexError, I)
         else
           Result := TJvColorItem.Create(Self, 0, I);
       end;
     1:
       begin
-        if I > Length(ProviderComp.SysColors) then
+        if I >= ColorProvider.GetSystemCount then
           TList.Error(SListIndexError, I)
         else
           Result := TJvColorItem.Create(Self, 1, I);
       end;
     2:
-      TList.Error(SListIndexError, I);
+      begin
+        if I >= ColorProvider.GetCustomCount then
+          TList.Error(SListIndexError, I)
+        else
+          Result := TJvColorItem.Create(Self, 1, I);
+      end;
     else
       TList.Error(SListIndexError, I);
   end;
@@ -794,8 +953,25 @@ end;
 //===TJvColorItem===================================================================================
 
 function TJvColorItem.GetCaption: string;
+var
+  ColorFound: Boolean;
+  ColorValue: TColor;
 begin
-  ColorToIdent(List[ListIndex].Value, Result);
+  case ListNumber of
+    0:
+      ColorFound := (GetItems.GetProvider as IJvColorProvider).GetStandardColor(ListIndex, ColorValue, Result);
+    1:
+      ColorFound := (GetItems.GetProvider as IJvColorProvider).GetSystemColor(ListIndex, ColorValue, Result);
+    2:
+      ColorFound := (GetItems.GetProvider as IJvColorProvider).GetCustomColor(ListIndex, ColorValue, Result);
+    else
+    begin
+      ColorFound := False;
+      Result := '';
+    end;
+  end;
+  if (Result = '') and ColorFound then
+    ColorToIdent(ColorValue, Result);
 end;
 
 procedure TJvColorItem.SetCaption(const Value: string);
@@ -803,25 +979,28 @@ begin
 end;
 
 procedure TJvColorItem.InitID;
+var
+  ColorFound: Boolean;
+  ColorValue: TColor;
+  ColorName: string;
 begin
-  SetID('TCOLOR=' + IntToHex(List[ListIndex].Value, 8));
-end;
-
-function TJvColorItem.List: TColorItems;
-begin
-  with (GetItems.GetImplementer as TJvColorItems).ProviderComp do
-  begin
-    case ListNumber of
-      0:
-        Result := StdColors;
-      1:
-        Result := SysColors;
-      2:
-        Result := CstColors;
-      else
-        Result := nil;
+  case ListNumber of
+    0:
+      ColorFound := (GetItems.GetProvider as IJvColorProvider).GetStandardColor(ListIndex, ColorValue, ColorName);
+    1:
+      ColorFound := (GetItems.GetProvider as IJvColorProvider).GetSystemColor(ListIndex, ColorValue, ColorName);
+    2:
+      ColorFound := (GetItems.GetProvider as IJvColorProvider).GetCustomColor(ListIndex, ColorValue, ColorName);
+    else
+    begin
+      ColorFound := False;
+      ColorValue := -1;
     end;
   end;
+  if ColorFound then
+    SetID('TCOLOR=' + IntToHex(ColorValue, 8))
+  else
+    SetID('Item' + IntToStr(ListNumber) + '.' + IntToStr(ListIndex));
 end;
 
 constructor TJvColorItem.Create(AOwner: IJvDataItems; AListNumber, AListIndex: Integer);
@@ -861,11 +1040,17 @@ begin
 end;
 
 procedure TJvColorHeaderItem.InitImplementers;
+var
+  Settings: IJvColorProviderSettings;
 begin
   inherited InitImplementers;
-  {$WARNINGS OFF}
-  TJvColorItemsList.Create(Self);
-  {$WARNINGS ON}
+  if Supports(GetItems.GetProvider.SelectedConsumer, IJvColorProviderSettings, Settings) and
+    not Settings.GroupingSettings.FlatList then
+  begin
+    {$WARNINGS OFF}
+    TJvColorItemsList.Create(Self);
+    {$WARNINGS ON}
+  end;
 end;
 
 constructor TJvColorHeaderItem.Create(AOwner: IJvDataItems; AListNumber: Integer);
@@ -876,27 +1061,16 @@ end;
 
 //===TJvColorProvider===============================================================================
 
-procedure TJvColorProvider.AddColorStr(const S: string);
-var
-  Col: TColor;
-begin
-  if IdentToColor(S, Integer(Col)) then
-  begin
-    if (Col >= 0) and (Col < clNone) then
-      AddColor(FStdColors, Col)
-    else
-      AddColor(FSysColors, Col);
-  end;
-end;
-
 procedure TJvColorProvider.AddColor(var List: TColorItems; Color: TColor);
 begin
   SetLength(List, Length(List) + 1);
   List[High(List)].Value := Color;
+  SetLength(List[High(List)].Names, Mappings.Count);
 end;
 
 procedure TJvColorProvider.DeleteColor(var List: TColorItems; Index: Integer);
 begin
+  SetLength(List[Index].Names, 0);
   if (Index < High(List)) then
   begin
     Move(List[Index + 1], List[Index], SizeOf(List[0]) * (High(List) - Index));
@@ -935,11 +1109,76 @@ begin
     RemoveContextList(CtxIdx);
 end;
 
+procedure TJvColorProvider.InsertMapping(var Strings: TDynStringArray; Index: Integer);
+begin
+  SetLength(Strings, Length(Strings) + 1);
+  if Index < High(Strings) then
+  begin
+    Move(Strings[Index], Strings[Index + 1], (High(Strings) - Index) * SizeOf(string));
+    FillChar(Strings[Index], 0, SizeOf(string));;
+  end;
+end;
+
+procedure TJvColorProvider.DeleteMapping(var Strings: TDynStringArray; Index: Integer);
+begin
+  Strings[Index] := '';
+  if Index < High(Strings) then
+  begin
+    Move(Strings[Index + 1], Strings[Index], (High(Strings) - Index) * SizeOf(string));
+    FillChar(Strings[High(Strings)], 0, SizeOf(string));
+  end;
+  SetLength(Strings, High(Strings));
+end;
+
+procedure TJvColorProvider.MappingAdded(Index: Integer);
+var
+  Instance: TJvColorProviderNameMapping;
+  I: Integer;
+  ColorSettings: IJvColorProviderSettings;
+begin
+  Instance := Mappings[Index];
+  { Iterate all consumers and notify them of the addition. }
+  for I := GetNotifierCount - 1 downto 0 do
+    if Supports(GetNotifier(I).Consumer, IJvColorProviderSettings, ColorSettings) then
+      ColorSettings.MappingAdded(Index, Instance);
+  { Iterate the colors lists and insert the new mapping. }
+  for I := 0 to High(FStdColors) do
+    InsertMapping(FStdColors[I].Names, Index);
+  for I := 0 to High(FSysColors) do
+    InsertMapping(FSysColors[I].Names, Index);
+  for I := 0 to High(FCstColors) do
+    InsertMapping(FCstColors[I].Names, Index);
+end;
+
+procedure TJvColorProvider.MappingDestroying(Index: Integer);
+var
+  Instance: TJvColorProviderNameMapping;
+  I: Integer;
+  ColorSettings: IJvColorProviderSettings;
+begin
+  if not (csDestroying in ComponentState) then
+  begin
+    Instance := Mappings[Index];
+    { Iterate all consumers and notify them of the removal of that mapping. }
+    for I := GetNotifierCount - 1 downto 0 do
+      if Supports(GetNotifier(I).Consumer, IJvColorProviderSettings, ColorSettings) then
+        ColorSettings.MappingDestroying(Index, Instance);
+    { Iterate the colors lists and delete the mapping. }
+    for I := 0 to High(FStdColors) do
+      DeleteMapping(FStdColors[I].Names, Index);
+    for I := 0 to High(FSysColors) do
+      DeleteMapping(FSysColors[I].Names, Index);
+    for I := 0 to High(FCstColors) do
+      DeleteMapping(FCstColors[I].Names, Index);
+  end;
+end;
+
 function TJvColorProvider.GetColor(List, Index: Integer; out Value: TColor;
   out Name: string): Boolean;
 var
   ColorArray: TColorItems;
-  CtxIdx: Integer;
+  ColorSettings: IJvColorProviderSettings;
+  MapIdx: Integer;
 begin
   case List of
     0:
@@ -958,18 +1197,119 @@ begin
   if Result then
   begin
     Value := ColorArray[Index].Value;
-    CtxIdx := (DataContextsImpl as IJvDataContexts).IndexOf(SelectedContext);
-    if CtxIdx >= 0 then
-      Name := ColorArray[Index].Names[CtxIdx]
-    else
-      Name := '';
+    Name := '';
+    if Mappings.Count > 0 then
+    begin
+      if Supports(SelectedConsumer, IJvColorProviderSettings, ColorSettings) then
+        MapIdx := ColorSettings.NameMappingIndex
+      else
+        MapIdx := 0;
+      if MapIdx = -1 then
+        MapIdx := 0;
+      Name := ColorArray[Index].Names[MapIdx];
+      if (Name = '') and (MapIdx <> 0) then
+        Name := ColorArray[Index].Names[MapIdx];
+    end;
   end;
+end;
+
+function TJvColorProvider.GetColorCount(List: Integer): Integer;
+begin
+  case List of
+    0:
+      Result := Length(FStdColors);
+    1:
+      Result := Length(FSysColors);
+    2:
+      Result := Length(FCstColors);
+    else
+      Result := 0;
+  end;
+end;
+
+procedure TJvColorProvider.GenDelphiConstantMapping;
+begin
+  Mappings.Add(TJvColorProviderNameMapping.Create(Mappings, 'Delphi constant names'));
+end;
+
+procedure TJvColorProvider.GenEnglishMapping;
+begin
+  Mappings.Add(TJvColorProviderNameMapping.Create(Mappings, 'English names'));
+end;
+
+procedure TJvColorProvider.InitColorList(var List: TColorItems;
+  const Definitions: array of TDefColorItem);
+var
+  I: Integer;
+begin
+  SetLength(List, Length(Definitions));
+  for I := 0 to High(List) do
+  begin
+    List[I].Value := Definitions[I].Value;
+    SetLength(List[I].Names, Mappings.Count);
+    List[I].Names[0] := Definitions[I].Constant;
+    List[I].Names[1] := Definitions[I].English;
+  end;
+end;
+
+procedure TJvColorProvider.InitColors;
+begin
+  InitColorList(FStdColors, ColorValues);
+  InitColorList(FSysColors, SysColorValues);
+end;
+
+function TJvColorProvider.GetMappings: TJvColorProviderNameMappings;
+begin
+  Result := FMappings;
+end;
+
+procedure TJvColorProvider.SetMappings(Value: TJvColorProviderNameMappings);
+begin
 end;
 
 constructor TJvColorProvider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  GetColorValues(AddColorStr);
+  FMappings := TJvColorProviderNameMappings.Create(Self);
+  GenDelphiConstantMapping;
+  GenEnglishMapping;
+  InitColors;
+end;
+
+destructor TJvColorProvider.Destroy;
+begin
+  FreeAndNil(FMappings);
+  inherited Destroy;
+end;
+
+function TJvColorProvider.IndexOfMapping(Mapping: TJvColorProviderNameMapping): Integer;
+begin
+  Result := Mappings.IndexOf(Mapping);
+end;
+
+function TJvColorProvider.Get_MappingCount: Integer;
+begin
+  Result := Mappings.Count;
+end;
+
+function TJvColorProvider.Get_Mapping(Index: Integer): TJvColorProviderNameMapping;
+begin
+  Result := TJvColorProviderNameMapping(Mappings[Index]);
+end;
+
+function TJvColorProvider.GetStandardCount: Integer;
+begin
+  Result := GetColorCount(0);
+end;
+
+function TJvColorProvider.GetSystemCount: Integer;
+begin
+  Result := GetColorCount(1);
+end;
+
+function TJvColorProvider.GetCustomCount: Integer;
+begin
+  Result := GetColorCount(2);
 end;
 
 function TJvColorProvider.GetStandardColor(Index: Integer; out Value: TColor; out Name: string): Boolean;
@@ -1011,6 +1351,50 @@ begin
     end;
   end;
   Result := Index >= 0;
+end;
+
+//===TJvColorProviderNameMappings===================================================================
+
+function TJvColorProviderNameMappings.GetItem(Index: Integer): TJvColorProviderNameMapping;
+begin
+  Result := TJvColorProviderNameMapping(inherited GetItem(Index));
+end;
+
+procedure TJvColorProviderNameMappings.SetItem(Index: Integer;
+  AObject: TJvColorProviderNameMapping);
+begin
+  inherited SetItem(Index, AObject);
+end;
+
+constructor TJvColorProviderNameMappings.Create(AProvider: TJvColorProvider);
+begin
+  inherited Create(True);
+  FProvider := AProvider;
+end;
+
+function TJvColorProviderNameMappings.Add(Item: TJvColorProviderNameMapping): Integer;
+begin
+  Result := inherited Add(Item);
+  Provider.MappingAdded(Result);
+end;
+
+procedure TJvColorProviderNameMappings.Clear;
+var
+  I: Integer;
+begin
+  I := Count - 1;
+  while I >= 0 do
+  begin
+    Delete(I);
+    Dec(I);
+  end;
+end;
+
+procedure TJvColorProviderNameMappings.Delete(Index: Integer);
+begin
+  if (Index >= 0) and (Index < Count) then
+    Provider.MappingDestroying(Index);
+  inherited Delete(Index);
 end;
 
 //===TJvColorItemsRenderer==========================================================================
@@ -1404,6 +1788,21 @@ begin
   Result := FGroupingSettings;
 end;
 
+function TJvColorProviderSettings.Get_NameMapping: TJvColorProviderNameMapping;
+var
+  ColorProvider: IJvColorProvider;
+begin
+  if (FMapping > -1) and Supports(ConsumerImpl.ProviderIntf, IJvColorProvider, ColorProvider) then
+    Result := ColorProvider.Mappings[FMapping]
+  else
+    Result := nil;
+end;
+
+function TJvColorProviderSettings.Get_NameMappingIndex: Integer;
+begin
+  Result := FMapping;
+end;
+
 function TJvColorProviderSettings.Get_StandardColorSettings: TJvColorProviderColorGroupSettings;
 begin
   Result := FStandardColorSettings;
@@ -1432,6 +1831,39 @@ procedure TJvColorProviderSettings.Set_GroupingSettings(Value: TJvColorProviderG
 begin
 end;
 
+procedure TJvColorProviderSettings.Set_NameMapping(Value: TJvColorProviderNameMapping);
+var
+  Idx: Integer;
+  ColorProvider: IJvColorProvider;
+begin
+  if Value = nil then
+    Idx := -2
+  else
+  begin
+    if Supports(ConsumerImpl.ProviderIntf, IJvColorProvider, ColorProvider) then
+      Idx := ColorProvider.IndexOfMapping(Value)
+    else
+      Idx := -1;
+  end;
+  if Idx <> -1 then
+  begin
+    if Idx < 0 then
+      Idx := -1;
+    Set_NameMappingIndex(Idx);
+  end
+  else
+    raise EJVCLDataConsumer.Create('Specified mapping does not belong to the current provider.');
+end;
+
+procedure TJvColorProviderSettings.Set_NameMappingIndex(Value: Integer);
+begin
+  if FMapping <> Value then
+  begin
+    FMapping := Value;
+    Changed(ccrOther);
+  end;
+end;
+
 procedure TJvColorProviderSettings.Set_StandardColorSettings(
   Value: TJvColorProviderColorGroupSettings);
 begin
@@ -1446,6 +1878,31 @@ procedure TJvColorProviderSettings.Set_TextSettings(Value: TJvColorProviderTextS
 begin
 end;
 
+procedure TJvColorProviderSettings.MappingAdded(Index: Integer; Mapping: TJvColorProviderNameMapping);
+begin
+  if FMapping >= Index then
+  begin
+    Inc(FMapping);
+    Changed(ccrOther);
+  end;
+end;
+
+procedure TJvColorProviderSettings.MappingDestroying(Index: Integer;
+  Mapping: TJvColorProviderNameMapping);
+begin
+  if FMapping = Index then
+  begin
+    FMapping := -1;
+    Changed(ccrOther);
+  end
+  else
+  if FMapping > Index then
+  begin
+    Dec(FMapping);
+    Changed(ccrOther);
+  end;
+end;
+
 constructor TJvColorProviderSettings.Create(AOwner: TExtensibleInterfacedPersistent);
 begin
   inherited Create(AOwner);
@@ -1455,6 +1912,7 @@ begin
   FTextSettings := TJvColorProviderTextSettings.Create(Self);
   FStandardColorSettings := TJvColorProviderColorGroupSettings.Create(Self, 'Standard colors');
   FSystemColorSettings := TJvColorProviderColorGroupSettings.Create(Self, 'System colors');
+  FMapping := -1;
 end;
 
 destructor TJvColorProviderSettings.Destroy;
