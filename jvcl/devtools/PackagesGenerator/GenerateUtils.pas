@@ -19,7 +19,7 @@ var
 implementation
 
 uses Windows, SysUtils, JclSysUtils, JclStrings, JclFileUtils, JvSimpleXml,
-    ShellApi;
+    ShellApi, JclDateTime;
 
 var GCallBack : TGenerateCallBack;
 
@@ -75,6 +75,22 @@ begin
   else if target = 'D7PER' then Result := ''
   else if target = 'K2' then Result := ''
   else if target = 'K3' then Result := '';
+end;
+
+function GetNonPersoTarget(target : string) : string;
+begin
+  target := StrUpper(target);
+  if target = 'BCB6' then Result := 'bcb6'
+  else if target = 'BCB6PER' then Result := 'bcb6'
+  else if target = 'BCB5' then Result := 'bcb5'
+  else if target = 'D5' then Result := 'd5'
+  else if target = 'D5STD' then Result := 'd5'
+  else if target = 'D6' then Result := 'd6'
+  else if target = 'D6PER' then Result := 'd6'
+  else if target = 'D7' then Result := 'd7'
+  else if target = 'D7PER' then Result := 'd7'
+  else if target = 'K2' then Result := 'k2'
+  else if target = 'K3' then Result := 'k3';
 end;
 
 function BuildPackageName(packageNode : TJvSimpleXmlElem; target : string) : string;
@@ -225,7 +241,17 @@ begin
   end;
 end;
 
-procedure ApplyTemplateAndSave(path, target, package, extension : string; template : TStrings; xml : TJvSimpleXml; templateDate, xmlDate : TDateTime);
+function NowUTC : TDateTime;
+var
+  sysTime : TSystemTime;
+  fileTime : TFileTime;
+begin
+  GetSystemTime(sysTime);
+  SystemTimeToFileTime(sysTime, fileTime);
+  Result := FileTimeToDateTime(fileTime);
+end;
+
+function ApplyTemplateAndSave(path, target, package, extension : string; template : TStrings; xml : TJvSimpleXml; templateDate, xmlDate : TDateTime) : string;
 var
   OutFileName : string;
   packSuffix : string;
@@ -246,6 +272,7 @@ var
 begin
   packSuffix := targetToSuffix(target);
   outFile := TStringList.Create;
+  Result := '';
 
   SendMsg(#9#9'Applying to ' + package);
 
@@ -292,12 +319,12 @@ begin
           end;
 
           // if this required package is not in the associated 'perso'
-          // target or only in the 'perso' target then build again
-          // for this 'perso' target. 'perso' either means 'per' or
+          // target or only in the 'perso' target then return the
+          // 'perso' target name. 'perso' either means 'per' or
           // 'std'
           if IsNotInPerso(packageNode, target) or
              IsOnlyInPerso(packageNode, target) then
-            ApplyTemplateAndSave(path, GetPersoTarget(target), package, extension, template, xml, templateDate, xmlDate);
+            Result := GetPersoTarget(target);
         end;
         // if the last character in the output file is
         // a comma, then remove it. This possible comma will
@@ -330,13 +357,13 @@ begin
                             EnsureCondition(tmpStr, fileNode, target);
           end;
 
-          // if this included file is not in the associated 'perso'
-          // target or only in the 'perso' target then build again
-          // for this 'perso' target. 'perso' either means 'per' or
+          // if this include file is not in the associated 'perso'
+          // target or only in the 'perso' target then return the
+          // 'perso' target name. 'perso' either means 'per' or
           // 'std'
           if IsNotInPerso(fileNode, target) or
              IsOnlyInPerso(fileNode, target) then
-            ApplyTemplateAndSave(path, GetPersoTarget(target), package, extension, template, xml, templateDate, xmlDate); 
+            Result := GetPersoTarget(target);
         end;
         // if the last character in the output file is
         // a comma, then remove it. This possible comma will
@@ -390,6 +417,9 @@ begin
                    Iff(rootNode.Properties.ItemNamed['Design'].BoolValue,
                       'DESIGN', 'RUN'),
                    [rfReplaceAll]);
+        StrReplace(curLine, '%DATETIME%',
+                    FormatDateTime('dd-mm-yyyy  hh:nn:ss UTC', NowUTC),
+                    [rfReplaceAll]);
         StrReplace(curLine, '%type%', StrLower(NameSuffix), [rfReplaceAll]);
         outFile.Add(curLine);
       end;
@@ -416,11 +446,13 @@ var
   templateFileName : string;
   xml : TJvSimpleXml;
   template : TStringList;
+  persoTarget : string;
 begin
   GCallBack := CallBack;
   path := StrEnsureSuffix('\', path);
   // for all targets
-  for i := 0 to targets.Count - 1 do
+  i := 0;
+  while i < targets.Count do
   begin
     SendMsg('Generating packages for ' + targets[i]);
     // find all template files for that target
@@ -431,21 +463,46 @@ begin
         try
           SendMsg(#9'Loaded '+rec.Name);
           // apply the template for all packages
-          for j := 0 to packages.Count -1 do
+          for j := 0 to packages.Count-1 do
           begin
             templateFileName := path+targets[i]+'\'+rec.Name;
             template.LoadFromFile(templateFileName);
             xml := TJvSimpleXml.Create(nil);
             try
               xml.LoadFromFile(path+'xml\'+packages[j]+'.xml');
-              ApplyTemplateAndSave(path,
+              persoTarget := ApplyTemplateAndSave(
+                                   path,
                                    targets[i],
                                    packages[j],
                                    ExtractFileExt(rec.Name),
                                    template,
                                    xml,
                                    FileDateToDateTime(rec.Time),
-                                   FileDateToDateTime(FileAge(path+'xml\'+packages[j]+'.xml'))); 
+                                   FileDateToDateTime(FileAge(path+'xml\'+packages[j]+'.xml')));
+
+              // if the generation requested a perso target to be done
+              // then generate it now. If we find a template file
+              // named the same as the current one in the perso
+              // directory then use it instead
+              if persoTarget <> '' then
+              begin
+                SendMsg(#9'Regenerating for '+persoTarget);
+                if FileExists(path+persoTarget+'\'+rec.Name) then
+                begin
+                  SendMsg(#9+persoTarget+ ' template used instead');
+                  template.LoadFromFile(path+persoTarget+'\'+rec.Name);
+                end;
+
+                ApplyTemplateAndSave(
+                   path,
+                   persoTarget,
+                   packages[j],
+                   ExtractFileExt(rec.Name),
+                   template,
+                   xml,
+                   FileDateToDateTime(rec.Time),
+                   FileDateToDateTime(FileAge(path+'xml\'+packages[j]+'.xml')));
+              end;
             finally
               xml.Free;
             end;
@@ -456,6 +513,7 @@ begin
       until FindNext(rec) <> 0;
     end;
     FindClose(rec);
+    Inc(i);
   end;
 
   if makeDof then

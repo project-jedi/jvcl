@@ -57,6 +57,7 @@ object frmMain: TfrmMain
       ItemHeight = 13
       Background.FillMode = bfmTile
       Background.Visible = False
+      ScrollBars = ssVertical
       TabOrder = 0
       OnClick = jlbListClick
       OnMouseDown = jlbListMouseDown
