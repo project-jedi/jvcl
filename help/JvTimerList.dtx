@@ -84,13 +84,13 @@ See Also
 Summary
   Contains a number that uniquely identifies each timer in a timer list.
 Description
-  Use this property to reference the timer when calling for example <LINK TJvTimerList.ItemByHandle,
+  Use this property to reference the timer when calling for example <LINK TJvTimerEvents.ItemByHandle,
   ItemByHandle>.
 Note
   Handle is <i>not</i> a windows handle. You can not use it in calls to windows API's. It is just
   a number that identifies a timer uniquely in a timer list.
 See Also
-  <LINK TJvTimerList.Delete>, <LINK TJvTimerList.ItemByHandle>, <LINK TJvTimerList.ItemIndexByHandle>
+  <LINK TJvTimerEvents.DeleteByHandle>, <LINK TJvTimerEvents.ItemByHandle>, <LINK TJvTimerEvents.ItemIndexByHandle>
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerEvent.Interval
 Summary
@@ -159,7 +159,7 @@ Description
   Call Activate to activate the timer list. Activate sets the Active property to true. Calling Activate
   will resume the timers whose <LINK TJvTimerEvent.Enabled,Enabled> property are set to true.
 See Also
-  Active, Deactivate
+  TJvTimerList.Active, Deactivate
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerEvents.Add
 Summary
@@ -180,13 +180,13 @@ Description
   Call Deactivate to deactivate the timer list. Deactivate sets the Active property to false. It will
   pause all enabled timer.
 See Also
-  Activate, Active
+  Activate, TJvTimerList.Active
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerEvents.DeleteByHandle
 Summary
   Deletes the timer event with the specified handle.
 Description
-  Use \Delete to delete a timer event and remove it from the Events list.
+  Use DeleteByHandle to delete a timer event and remove it from the Events list.
 Parameters
   AHandle - Specifies the value of the timer event's Handle property.
 See Also
@@ -300,7 +300,7 @@ Description
   property are set to true. Changing Active will not change any <LINK TJvTimerEvent.Enabled,Enabled>
   property of the timer events.
 See Also
-  Activate, Deactivate
+  TJvTimerEvents.Activate, TJvTimerEvents.Deactivate
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.Add
 Summary
@@ -326,10 +326,11 @@ Description
   Use Items to access the properties of the TJvTimerEvent objects maintained by TJvTimerList.
 Note
   At run-time the timer list ensures that this list is sorted based on the Interval property of the
-  timer events. Thus direct access to Events is not recommended, better use ItemByHandle for access to
+  timer events. Thus direct access to Events is not recommended, better use 
+  <LINK TJvTimerEvents.ItemByHandle,ItemByHandle> for access to
   timer events and Add for adding a new timer event.
 See Also
-  <LINK Add>, <LINK ItemByHandle>, <LINK ItemIndexByHandle>
+  <LINK Add>, TJvTimerEvents.ItemByHandle, TJvTimerEvents.ItemIndexByHandle
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.OnFinish
 Summary

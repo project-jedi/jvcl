@@ -18,7 +18,7 @@ Summary
 Description
   Use TJvStringListToHtml to simplify the creation of a \HTML document from a string list. At design-time, 
   use the property editor from Strings to change the content of the string list. You can then read the formatted strings
-  from the HTML property. At run-time you can call the ConvertToHTML and the ConvertToHTMLStrings methods to perform
+  from the HTML property. At run-time you can call the ConvertToHtml and the ConvertToHTMLStrings methods to perform
   the conversion on any arbitrary TStrings instance. Use HTMLTitle, HTMLLineBreak and IncludeHeader to modify
   the \HTML inserted into the string list.
 
@@ -44,7 +44,7 @@ Summary
   Inserts HTML formatted text into a string list and saves the
   result to a file.
 Description
-  Call ConvertToHTML to format a string list with HTML codes
+  Call ConvertToHtml to format a string list with HTML codes
   and save the result to a file.
 Parameters
   Source :    The string list to read from. This list is unaffected
@@ -64,7 +64,7 @@ Parameters
   Source  - The original, unformatted string list.
   Destination - The string list to put the \HTML formatted strings into. Destination is not cleared before adding the HTML strings.
 See Also
-  ConvertToHTML
+  ConvertToHtml
 ----------------------------------------------------------------------------------------------------
 @@TJvStringListToHtml.HTML
 Summary
@@ -102,7 +102,7 @@ Description
 Note
   When calling ConvertToHtml, this property is ignored and the file is always written as a complete \HTML document.
 See Also
-  ConvertToHtml, ConvertToHtmlStrings, HTMLTitle, HTMLLineBreak
+  ConvertToHtml, ConvertToHTMLStrings, HTMLTitle, HTMLLineBreak
 ----------------------------------------------------------------------------------------------------
 @@TJvStringListToHtml.Strings
 Summary
@@ -111,7 +111,7 @@ Description
   Strings contains the plain text strings that should be converted to \HTML. Read the \HTML from the HTML property.
   Assign a TStrings instance to the Strings property or use the methods of the TStrings class to modify the content of Strings.
 Note
-  You can use either the Strings and HTML properties or the ConvertToHTML and ConvertToHTMLStrings methods to perform
+  You can use either the Strings and HTML properties or the ConvertToHtml and ConvertToHTMLStrings methods to perform
   the conversion.
 See Also
-  HTML, ConvertToHTML, ConvertToHTMLStrings
+  HTML, ConvertToHtml, ConvertToHTMLStrings
