@@ -516,6 +516,7 @@ function FormatLongDate(Value: TDateTime): string;
 function FormatLongDateTime(Value: TDateTime): string;
 { end JvDateUtil }
 function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
+function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
 
 
 { begin JvStrUtils }
@@ -4947,10 +4948,8 @@ var
   P: PByteArray;
 begin
   P := Buf;
-  for I := 0 to pred(BufSize) do
-  begin
+  for I := 0 to Pred(BufSize) do
     Result := Result + IntToHex(P[I] , 2);
-  end;
 end;
 
 function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
@@ -4963,10 +4962,8 @@ begin
   if (Length(Value) div 2) < BufSize then
     BufSize := Length(Value) div 2;
   P := Buf;
-  For I := 0 to pred(BufSize) do
-  begin
+  for I := 0 to Pred(BufSize) do
     P[I] := StrToInt('$' + Value[2 * I + 1] + Value[2 * I + 2]);
-  end;
   Result := BufSize;
 end;
 

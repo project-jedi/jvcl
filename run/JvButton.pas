@@ -172,10 +172,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Forms,
-  JvJVCLUtils, JvThemes, JvFinalize;
-
-const
-  sUnitName = 'JvButton';
+  JvJVCLUtils, JvThemes;
 
 const
   JvBtnLineSeparator = '|';
@@ -203,8 +200,6 @@ begin
             if (Y mod 2) = (X mod 2) then { toggles between even/odd pixels }
               Pixels[X, Y] := clWhite; { on even/odd rows }
       end;
-
-      AddFinalizeObjectNil(sUnitName, TObject(GlobalPattern)); // finalize code
     except
       FreeAndNil(GlobalPattern);
     end;
@@ -857,12 +852,11 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(GlobalPattern);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

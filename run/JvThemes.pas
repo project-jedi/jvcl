@@ -44,11 +44,11 @@ uses
   {$ENDIF COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
   {$ENDIF VCL}
-  Controls, StdCtrls, Graphics, Buttons,
+  Controls, StdCtrls, Graphics,
   {$IFDEF VisualCLX}
   QWindows, QForms, // Mouse
   {$ENDIF VisualCLX}
-  JvFinalize;
+  Buttons;
 
 const
  // Add a message handler to a component that is themed by the ThemeManager but
@@ -56,9 +56,9 @@ const
   CM_DENYSUBCLASSING = CM_BASE + 2000; // from ThemeMgr.pas
 
 type
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   PPointer = ^Pointer;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   {$IFDEF VCL}
   TCMDenySubClassing = TMessage;
   {$ENDIF VCL}
@@ -814,13 +814,6 @@ uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
 
-{$IFDEF JVCLThemesEnabled}
-{$IFNDEF COMPILER7_UP}
-const
-  sUnitName = 'JvThemes';
-{$ENDIF !COMPILER7_UP}
-{$ENDIF JVCLThemesEnabled}
-
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; NeedsParentBackground: Boolean = True);
 begin
@@ -1364,10 +1357,7 @@ procedure UninstallWinControlHook; forward;
 function ThemeHooks: TThemeHookList;
 begin
   if not Assigned(GlobalThemeHooks) then
-  begin
     GlobalThemeHooks := TThemeHookList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalThemeHooks));
-  end;
   Result := GlobalThemeHooks;
 end;
 
@@ -1747,7 +1737,6 @@ begin
         WinControlHookInstalled := True;
         ThemeHooks.FEraseBkgndHooked := True;
         FlushInstructionCache(GetCurrentProcess, @P, SizeOf(Code));
-        AddFinalizeProc(sUnitName, UninstallWinControlHook);
       end;
     end;
   end;
@@ -1911,15 +1900,17 @@ initialization
   {$ENDIF JVCLThemesEnabled}
 
 finalization
-  {$IFDEF UNITVERSIONING}
-  UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
   {$IFDEF JVCLThemesEnabled}
   FinalizeWMPrintClientFix;
   {$IFNDEF COMPILER7_UP}
-  FinalizeUnit(sUnitName);
+  FreeAndNil(GlobalThemeHooks);
+  UninstallWinControlHook
   {$ENDIF !COMPILER7UP}
   {$ENDIF JVCLThemesEnabled}
+
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.
 

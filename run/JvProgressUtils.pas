@@ -29,8 +29,7 @@ unit JvProgressUtils;
 interface
 
 uses
-  Controls, ComCtrls, SysUtils, Classes,
-  JvFinalize;
+  Controls, ComCtrls, SysUtils, Classes;
 
 {$IFDEF VisualCLX}
 type
@@ -53,9 +52,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   TypInfo;
-
-const
-  sUnitName = 'JvProgressUtils';
 
 type
   TProgressProp = (ppMax, ppMin, ppProgress);
@@ -179,10 +175,7 @@ var
 function GetProgressList: TJvProgressList;
 begin
   if ProgressList = nil then
-  begin
     ProgressList := TJvProgressList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(ProgressList));
-  end;
   Result := ProgressList;
 end;
 
@@ -235,12 +228,11 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(ProgressList);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

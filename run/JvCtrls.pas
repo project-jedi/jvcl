@@ -208,7 +208,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Consts, SysUtils, Forms, ActnList,
-  JvJCLUtils, JvThemes, JvFinalize;
+  JvJCLUtils, JvThemes;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCtrls.res}
@@ -216,9 +216,6 @@ uses
 {$IFDEF UNIX}
 {$R ../Resources/JvCtrls.res}
 {$ENDIF UNIX}
-
-const
-  sUnitName = 'JvCtrls';
 
 const
   JvImgBtnModalResults: array [TJvImgBtnKind] of TModalResult =
@@ -734,7 +731,6 @@ begin
   if not Assigned(DefaultImgBtnImagesList) then
   begin
     DefaultImgBtnImagesList := TImageList.CreateSize(18, 18);
-    AddFinalizeObjectNil(sUnitName, TObject(DefaultImgBtnImagesList));
     {$IFDEF VCL}
     DefaultImgBtnImagesList.ResourceLoad(rtBitmap, 'JVIMGBTNDEFAULT', clOlive);
     {$ENDIF VCL}
@@ -1000,12 +996,11 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(DefaultImgBtnImagesList);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

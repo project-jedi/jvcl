@@ -152,7 +152,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvResources, JvFinalize;
+  JvResources;
 {$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
@@ -175,9 +175,6 @@ end;
 
 {$IFDEF COMPILER5}
 
-const
-  sUnitName = 'JvMTThreading';
-
 type
   PSyncRequest = ^TSyncRequest;
   TSyncRequest = record
@@ -190,9 +187,6 @@ var
   SyncRequestAvailable: Boolean;
   ThreadSyncLock: TRTLCriticalSection;
   SyncRequestList: TList = nil;
-  {$IFDEF USEJVCL}
-  FirstSyncRequestList: Boolean = True;
-  {$ENDIF USEJVCL}
   SyncWindow: HWND;
 
 function CheckSynchronize: Boolean;
@@ -263,13 +257,7 @@ begin
       EnterCriticalSection(ThreadSyncLock);
       try
         if SyncRequestList = nil then
-        begin
           SyncRequestList := TList.Create;
-          {$IFDEF USEJVCL}
-          if FirstSyncRequestList then
-            AddFinalizeProc(sUnitName, FinalizeSyncRequestList);
-          {$ENDIF USEJVCL}
-        end;
 
         SyncRequest.ExceptionObject := nil;
         SyncRequest.Method := Method;
@@ -843,17 +831,14 @@ initialization
   {$ENDIF COMPILER5}
 
 finalization
-  {$IFDEF UNITVERSIONING}
-  UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
   {$IFDEF COMPILER5}
-  {$IFDEF USEJVCL}
-  FinalizeUnit(sUnitName);
-  {$ELSE}
   FinalizeSyncRequestList;
-  {$ENDIF USEJVCL}
   DeleteCriticalSection(ThreadSyncLock);
   DestroyWindow(SyncWindow);
   {$ENDIF COMPILER5}
+
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.

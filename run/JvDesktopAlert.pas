@@ -429,10 +429,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils,
-  JvJVCLUtils, JvTypes, JvFinalize;
-
-const
-  sUnitName = 'JvDesktopAlert';
+  JvJVCLUtils, JvTypes;
 
 var
   FGlobalStacker: TJvDesktopAlertStack = nil;
@@ -452,10 +449,7 @@ end;
 function GlobalStacker: TJvDesktopAlertStack;
 begin
   if FGlobalStacker = nil then
-  begin
     FGlobalStacker := TJvDesktopAlertStack.Create(nil);
-    AddFinalizeObjectNil(sUnitName, TObject(FGlobalStacker));
-  end;
   Result := FGlobalStacker;
 end;
 
@@ -1579,12 +1573,11 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(FGlobalStacker);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

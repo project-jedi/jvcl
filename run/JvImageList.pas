@@ -250,10 +250,7 @@ uses
   {$IFDEF COMPILER5}
   JvJclUtils, // SameFileName() for Delphi 5
   {$ENDIF COMPILER5}
-  JvJVCLUtils, JvResources, JvFinalize;
-
-const
-  sUnitName = 'JvImageList';
+  JvJVCLUtils, JvResources;
 
 resourcestring
   // (usc) there is no real need to move this string to JvResource.pas because
@@ -348,7 +345,6 @@ begin
       begin
         HandleNeededHookInstalled := True;
         FlushInstructionCache(GetCurrentProcess, OrgProc, SizeOf(Code));
-        AddFinalizeProc(sUnitName, UninstallHandleNeededHook);
       end;
   end;
 end;
@@ -1273,14 +1269,13 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  {$IFDEF VCL}
+  UninstallHandleNeededHook;
+  {$ENDIF VCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
-  FinalizeUnit(sUnitName);
-  {$ENDIF VCL}
 
 end.
 

@@ -1087,10 +1087,7 @@ uses
   JvBrowseFolder,
   {$ENDIF VCL}
   JvPickDate, JvJCLUtils, JvJVCLUtils,
-  JvThemes, JvResources, JvConsts, JvFinalize;
-
-const
-  sUnitName = 'JvToolEdit';
+  JvThemes, JvResources, JvConsts;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvToolEdit.res}
@@ -1240,10 +1237,7 @@ var
 function DateHook: TDateHook;
 begin
   if GDateHook = nil then
-  begin
     GDateHook := TDateHook.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GDateHook));
-  end;
   Result := GDateHook;
 end;
 {$ENDIF VCL}
@@ -2211,10 +2205,7 @@ end;
 class function TJvCustomComboEdit.DefaultImages: TCustomImageList;
 begin
   if GDefaultComboEditImagesList = nil then
-  begin
     GDefaultComboEditImagesList := TImageList.CreateSize(14, 12);
-    AddFinalizeObjectNil(sUnitName, TObject(GDefaultComboEditImagesList));
-  end;
   Result := GDefaultComboEditImagesList;
 end;
 
@@ -5061,9 +5052,13 @@ initialization
 
 
 finalization
+  {$IFDEF VCL}
+  FreeAndNil(GDateHook);
+  {$ENDIF VCL}
+  FreeAndNil(GDefaultComboEditImagesList);
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.

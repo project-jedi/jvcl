@@ -61,7 +61,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
-  JvComponent, JvTypes, JvFinalize;
+  JvComponent, JvTypes;
 
 type
   TJvDataType = (dtString, dtBinary);
@@ -176,9 +176,6 @@ uses
   {$ENDIF UNITVERSIONING}
   Registry,
   JvResources;
-
-const
-  sUnitName = 'JvMRUList';  
 
 var
   hComCtlDll: HMODULE = 0;
@@ -752,8 +749,6 @@ begin
       {$ELSE}
       RaiseLastWin32Error;
       {$ENDIF COMPILER6_UP}
-    if hComCtlDll > 0 then
-      AddFinalizeProc(sUnitName, FinalizeDLL);
   end;
 end;
 
@@ -773,10 +768,10 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
+  FinalizeDLL;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

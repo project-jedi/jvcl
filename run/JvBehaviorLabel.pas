@@ -401,10 +401,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Forms,
-  JvTypes, JvResources, JvFinalize;
-
-const
-  sUnitName = 'JvBehaviorLabel';
+  JvTypes, JvResources;
 
 var
   AllBehaviorOptions: TStringList = nil;
@@ -447,7 +444,6 @@ begin
   if AllBehaviorOptions = nil then
   begin
     AllBehaviorOptions := TStringList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(AllBehaviorOptions));
     AllBehaviorOptions.Sorted := True;
   end;
   if AllBehaviorOptions.IndexOf(Name) >= 0 then
@@ -1315,10 +1311,10 @@ initialization
  // (ahuser) registration is done in the constructor the first time it is called
 
 finalization
+  FreeAndNil(AllBehaviorOptions);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

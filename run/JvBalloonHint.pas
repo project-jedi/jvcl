@@ -272,10 +272,7 @@ uses
   SysUtils, Math,
   Registry, CommCtrl, MMSystem,
   Graphics, ComCtrls, // needed for GetComCtlVersion
-  JvJVCLUtils, JvThemes, JvWndProcHook, JvResources, JvFinalize;
-
-const
-  sUnitName = 'JvBalloonHint';
+  JvJVCLUtils, JvThemes, JvWndProcHook, JvResources;
 
 const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);
@@ -1569,10 +1566,7 @@ end;
 class function TGlobalCtrl.Instance: TGlobalCtrl;
 begin
   if not Assigned(GGlobalCtrl) then
-  begin
     GGlobalCtrl := TGlobalCtrl.Create(nil);
-    AddFinalizeObjectNil(sUnitName, TObject(GGlobalCtrl));
-  end;
   Result := GGlobalCtrl;
 end;
 
@@ -1968,12 +1962,11 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(GGlobalCtrl);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

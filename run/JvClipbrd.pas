@@ -246,10 +246,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Consts,
-  JvTypes, JvJVCLUtils, JvResources, JvFinalize;
-
-const
-  sUnitName = 'JvClipbrd';
+  JvTypes, JvJVCLUtils, JvResources;
 
 {$IFNDEF COMPILER6_UP}
 
@@ -678,10 +675,7 @@ var
 function JvClipboard: TJvClipboard;
 begin
   if GlobalClipboard = nil then
-  begin
     GlobalClipboard := TJvClipboard.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalClipboard));
-  end;
   Result := GlobalClipboard;
 end;
 
@@ -700,12 +694,11 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(GlobalClipboard);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

@@ -43,7 +43,7 @@ uses
   Qt, QForms, Types, QWindows,
   {$ENDIF VisualCLX}
   JclSchedule,
-  JvAppStorage, JvFinalize;
+  JvAppStorage;
 
 const
   CM_EXECEVENT = WM_USER + $1000;
@@ -234,7 +234,6 @@ uses
   JvJVCLUtils, JvResources, JvTypes;
 
 const
-  sUnitName = 'JvScheduledEvents';
   cEventPrefix = 'Event ';
 
 //=== { TScheduleThread } ====================================================
@@ -395,10 +394,7 @@ end;
 function ScheduleThread: TScheduleThread;
 begin
   if GScheduleThread = nil then
-  begin
     GScheduleThread := TScheduleThread.Create;
-    AddFinalizeProc(sUnitName, FinalizeScheduleThread);
-  end;
   Result := GScheduleThread;
 end;
 
@@ -1262,12 +1258,11 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FinalizeScheduleThread;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

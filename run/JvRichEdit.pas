@@ -45,7 +45,7 @@ interface
 uses
   Windows, ActiveX, ComObj, CommCtrl, Messages, SysUtils, Classes, Controls,
   Forms, Graphics, StdCtrls, Dialogs, RichEdit, Menus, ComCtrls, SyncObjs,
-  JVCLVer, JvExStdCtrls, JvFinalize;
+  JVCLVer, JvExStdCtrls;
 
 type
   TRichEditVersion = 1..4;
@@ -878,9 +878,6 @@ uses
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
   JvThemes, JvConsts, JvResources;
 
-const
-  sUnitName = 'JvRichEdit';
-
 type
   PENLink = ^TENLink;
   PENOleOpFailed = ^TENOleOpFailed;
@@ -1346,10 +1343,7 @@ var
 function GConversionFormatList: TConversionFormatList;
 begin
   if not Assigned(GlobalConversionFormatList) then
-  begin
     GlobalConversionFormatList := TConversionFormatList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalConversionFormatList));
-  end;
   Result := GlobalConversionFormatList;
 end;
 
@@ -7189,10 +7183,12 @@ initialization
   CFRtfNoObjs := RegisterClipboardFormat(CF_RTFNOOBJS);
 
 finalization
+  FreeAndNil(GlobalConversionFormatList);
+  FinalRichEditDll;
+  
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
-  FinalRichEditDll;
+
 end.
 

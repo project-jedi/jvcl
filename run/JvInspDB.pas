@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils, Classes, DB, TypInfo, DBCtrls,
-  JvInspector, JvFinalize;
+  JvInspector;
 
 type
   TJvInspectorDBData = class(TJvCustomInspectorData)
@@ -109,9 +109,6 @@ uses
   {$ENDIF UNITVERSIONING}
   Consts,
   JvResources;
-
-const
-  sUnitName = 'JvInspDB';
 
 var
   GlobalDBReg: TJvInspectorRegister = nil;
@@ -454,7 +451,6 @@ begin
   if GlobalMapReg = nil then
   begin
     GlobalMapReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalMapReg));
     RegisterDBTypes; // register
   end;
   Result := GlobalMapReg;
@@ -500,10 +496,7 @@ end;
 class function TJvInspectorDBData.ItemRegister: TJvInspectorRegister;
 begin
   if GlobalDBReg = nil then
-  begin
     GlobalDBReg := TJvInspectorRegister.Create(TJvInspectorDBData);
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalDBReg));
-  end;
   Result := GlobalDBReg;
 end;
 
@@ -710,10 +703,11 @@ initialization
 
 
 finalization
+  FreeAndNil(GlobalDBReg);
+  FreeAndNil(GlobalMapReg);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

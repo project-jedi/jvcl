@@ -37,7 +37,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Controls, Forms, Classes,
-  JvComponent, JvFinalize;
+  JvComponent;
 
 type
   TJvControlHook = function(var Msg: TMessage): Boolean of object;
@@ -93,9 +93,6 @@ implementation
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
-
-const
-  sUnitName = 'JvWndProcHook';
 
 type
   PJvHookInfo = ^TJvHookInfo;
@@ -203,10 +200,7 @@ var
 function WndProcHook: TJvWndProcHook;
 begin
   if GJvWndProcHook = nil then
-  begin
     GJvWndProcHook := TJvWndProcHook.Create(nil);
-    AddFinalizeObjectNil(sUnitName, TObject(GJvWndProcHook));
-  end;
   Result := GJvWndProcHook;
 end;
 
@@ -969,13 +963,7 @@ end;
 class function TJvReleaser.Instance: TJvReleaser;
 begin
   if GReleaser = nil then
-  begin
     GReleaser := TJvReleaser.Create;
-  { Don't call FreeAndNil for GReleaser, it's (hypothetically) possible that
-    objects need access to the GReleaser var (via call to ReleaseObj) during
-    GReleaser.Destroy }
-    AddFinalizeObjectNil(sUnitName, TObject(GReleaser));
-  end;
   Result := GReleaser;
 end;
 
@@ -1018,12 +1006,16 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  { Don't call FreeAndNil for GReleaser, it's (hypothetically) possible that
+    objects need access to the GReleaser var (via call to ReleaseObj) during
+    GReleaser.Destroy }
+  GReleaser.Free;
+  FreeAndNil(GJvWndProcHook);
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
-  
+
 end.
 
