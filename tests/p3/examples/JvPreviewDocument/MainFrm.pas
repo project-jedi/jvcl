@@ -90,6 +90,7 @@ type
     procedure OpenImage(const Filename: string);
     procedure DoChange(Sender: TObject);
     procedure DoAfterScroll(Sender: TObject);
+    procedure DoScrollHint(Sender: TObject; AScrollPos: integer; var AHint: string);
     procedure BuildRTFPreview;
     procedure BuildTXTPreview;
     procedure BuildImagePreview;
@@ -169,6 +170,7 @@ begin
     pd.Options.Shadow.Offset := udShadowWidth.Position;
     pd.Options.Scale := udZoom.Position;
     pd.OnAfterScroll := DoAfterScroll;
+    pd.OnScrollHint := DoScrollHint;
 
     cbPreview.ItemIndex := 1; // printer
     cbPreviewChange(nil);
@@ -444,6 +446,12 @@ procedure TfrmMain.udHorzSpacingClick(Sender: TObject; Button: TUDBtnType);
 begin
   pd.Options.HorzSpacing := udHorzSpacing.Position;
   udHorzSpacing.Position := pd.Options.HorzSpacing;
+end;
+
+procedure TfrmMain.DoScrollHint(Sender: TObject; AScrollPos: integer;
+  var AHint: string);
+begin
+  AHint := Format('Page %d',[pd.TopRow * pd.Options.Cols + 1]);
 end;
 
 end.

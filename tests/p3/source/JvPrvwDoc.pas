@@ -25,7 +25,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$I JVCL.INC}
 {$IFOPT D+}
-{$DEFINE DEBUG}
+{.$DEFINE DEBUG}
 {$ENDIF}
 unit JvPrvwDoc;
 { TODO :
@@ -59,8 +59,8 @@ unit JvPrvwDoc;
 
 interface
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms, Dialogs,
-  JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
+  Forms, Dialogs, JvComponent;
 
 const
   WM_PREVIEWADDPAGE = WM_USER + 1001;
@@ -280,6 +280,7 @@ type
 
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DrawPages(ACanvas: TCanvas; Offset: TPoint);
+    procedure DrawShadow(ACanvas: TCanvas; APageRect: TRect);
     procedure Paint; override;
     procedure DoDrawPreviewPage(PageIndex: integer; Canvas: TCanvas; PageRect, PrintRect: TRect); dynamic;
     function DoAddPage(AMetaFile: TMetaFile; PageIndex: integer): boolean; dynamic;
@@ -347,6 +348,7 @@ type
     property OnVertScroll;
     property OnHorzScroll;
     property OnAfterScroll;
+    property OnScrollHint;
 
     property OnAddPage;
     property OnDrawPreviewPage;
@@ -420,7 +422,16 @@ begin
   Result := HintWindow;
 end;
 
-
+type
+  TDeactiveHintThread = class(TThread)
+  private
+    FHintWindow:ThintWindow;
+    FDelay:integer;
+  protected
+    procedure Execute; override;
+  public
+    constructor Create(Delay:integer; HintWindow:THintWindow);
+  end;
 // returns Value rounded up to nearest integer
 
 function ceil(Value: double): integer;
@@ -871,7 +882,6 @@ end;
 procedure TJvCustomPreviewControl.CalcScrollRange;
 var
   si: TScrollInfo;
-  factor: double;
 begin
   // HORIZONTAL SCROLLBAR
   FillChar(si, sizeof(TScrollInfo), 0);
@@ -1115,13 +1125,7 @@ begin
         tmp := CanDrawPage(APageIndex, APageRect);
         if tmp then
         begin
-          if (Options.Shadow.Offset <> 0) then
-          begin
-            OffsetRect(APageRect, Options.Shadow.Offset, Options.Shadow.Offset);
-            Brush.Color := Options.Shadow.Color;
-            FillRect(APageRect);
-            OffsetRect(APageRect, -Options.Shadow.Offset, -Options.Shadow.Offset);
-          end;
+          DrawShadow(ACanvas, APageRect);
           // draw background
           Brush.Color := Options.Color;
           FillRect(APageRect);
@@ -1319,9 +1323,12 @@ begin
           Exit;
       end;
     SB_ENDSCROLL:
+    begin
+      TDeactiveHintThread.Create(500,HintWindow);
+      HintWindow := nil;
       Exit;
+    end;
   end;
-
   NewPos := EnsureRange(NewPos, si.nMin, si.nMax);
   if Assigned(FOnVertScroll) then
     FOnVertScroll(self, TScrollCode(Msg.ScrollCode), NewPos);
@@ -1587,7 +1594,8 @@ end;
 function TJvCustomPreviewControl.GetTopRow: integer;
 begin
   Result := FScrollPos.Y div (FPageHeight + Options.VertSpacing);
-//  Inc(Result, Ord(FScrollPos.Y mod (FPageHeight + Options.VertSpacing) <> 0));
+  Inc(Result, Ord(FScrollPos.Y mod (FPageHeight + Options.VertSpacing) <> 0));
+  Result := Min(Result,TotalRows-1);
 end;
 
 procedure TJvCustomPreviewControl.First;
@@ -1707,7 +1715,7 @@ procedure TJvCustomPreviewControl.DoScrollHint(NewPos: integer);
 var S: string;
   HW: THintWindow;
   pt: TPoint;
-  rc:TRect;
+  rc: TRect;
 begin
   // stolen from SynEdit, thanks guys!
   if Assigned(FOnScrollHint) then
@@ -1724,13 +1732,92 @@ begin
       end;
       rc := Rect(0, 0, HW.Canvas.TextWidth(S) + 6,
         HW.Canvas.TextHeight(S) + 4);
-      pt := ClientToScreen(Point(ClientWidth - rc.Right - 4, 10));
-      OffsetRect(rc, pt.x, pt.y);
+      GetCursorPos(pt);
+      pt := ScreenToClient(pt);
+      pt.X := ClientWidth - HW.Canvas.TextWidth(S) - 12;
+      pt := ClientToScreen(pt);
+      OffsetRect(rc,pt.x,pt.y - 4);
       HW.ActivateHint(rc, s);
       HW.Invalidate;
       HW.Update;
     end;
   end;
+end;
+
+procedure TJvCustomPreviewControl.DrawShadow(ACanvas: TCanvas;
+  APageRect: TRect);
+var tmpRect: TRect; tmpColor: TColor;
+begin
+  tmpColor := ACanvas.Brush.Color;
+  try
+    ACanvas.Brush.Color := Options.Shadow.Color;
+    if (Options.Shadow.Offset <> 0) then
+    begin
+      // draw full background shadow if necessary
+      if (Abs(Options.Shadow.Offset) >= (APageRect.Left - ApAgeRect.Right))
+        or (Abs(Options.Shadow.Offset) >= (APageRect.Bottom - ApAgeRect.Top)) then
+      begin
+        tmpRect := APageRect;
+        OffsetRect(tmpRect, Options.Shadow.Offset, Options.Shadow.Offset);
+        ACanvas.FillRect(tmpRect);
+      end
+      // draw two smaller rects (does this *really* reduce flicker?)
+      else if Options.Shadow.Offset < 0 then
+      begin
+        // left side
+        tmpRect := APageRect;
+        tmpRect.Right := tmpRect.Left - Options.Shadow.Offset;
+        OffsetRect(tmpRect, Options.Shadow.Offset, Options.Shadow.Offset);
+        ACanvas.FillRect(tmpRect);
+        // top side
+        tmpRect := APageRect;
+        tmpRect.Bottom := tmpRect.Top - Options.Shadow.Offset;
+        OffsetRect(tmpRect, Options.Shadow.Offset, Options.Shadow.Offset);
+        ACanvas.FillRect(tmpRect);
+      end
+      else
+      begin
+        // right side
+        tmpRect := APageRect;
+        tmpRect.Left := tmpRect.Right - Options.Shadow.Offset;
+        OffsetRect(tmpRect, Options.Shadow.Offset, Options.Shadow.Offset);
+        ACanvas.FillRect(tmpRect);
+        // bottom side
+        tmpRect := APageRect;
+        tmpRect.Top := tmpRect.Bottom - Options.Shadow.Offset;
+        OffsetRect(tmpRect, Options.Shadow.Offset, Options.Shadow.Offset);
+        ACanvas.FillRect(tmpRect);
+      end;
+    end;
+  finally
+    ACanvas.Brush.Color := tmpColor;
+  end;
+
+end;
+
+{ TDeactiveHintThread }
+
+constructor TDeactiveHintThread.Create(Delay: integer; HintWindow: THintWindow);
+begin
+  inherited Create(true);
+  FreeOnTerminate := true;
+  FHintWindow := HintWindow;
+  FDelay := Delay;
+  if FDelay = 0 then
+    FDelay := Application.HintHidePause; 
+  Resume;
+end;
+
+procedure TDeactiveHintThread.Execute;
+begin
+  sleep(FDelay);
+  if FHintWindow <> nil then
+  begin
+    FHintWindow.Visible := false;
+    FHintWindow.ActivateHint(Rect(0,0,0,0),'');
+    FHintWindow := nil;
+  end;
+  Terminate;
 end;
 
 end.
