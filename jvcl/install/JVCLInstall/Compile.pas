@@ -836,23 +836,27 @@ begin
     Lines.Add('MAKE = "$(ROOT)\bin\make" -l+'{-$(MAKEFLAGS)'});
     Lines.Add('DCC = "$(ROOT)\bin\dcc32.exe" $(DCCOPT)');
     Lines.Add('');
+
+   // for JCL .dcp files
+    Lines.Add(Format('.path.dcp = "%s";"%s";"%s";"%s"',
+      [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir,
+       ProjectGroup.Target.BplDir, ProjectGroup.Target.DcpDir]));
     if AutoDepend then
     begin
       S := ProjectGroup.TargetConfig.JVCLDir;
-      Lines.Add(Format('.path.pas = %s\common;%s\run;%s\design;%s\qcommon;%s\qrun;%s\qdesign;%s',
+      Lines.Add(Format('.path.pas = "%s\common";"%s\run";"%s\design";"%s\qcommon";"%s\qrun";"%s\qdesign";"%s"',
         [S, S, S, S, S, S,
          ProjectGroup.TargetConfig.DxgettextDir]));
-      Lines.Add(Format('.path.dfm = %s\run;%s\design;%s\qrun;%s\qdesign',
+      Lines.Add(Format('.path.dfm = "%s\run";"%s\design";"%s\qrun";"%s\qdesign"',
         [S, S, S, S]));
-      Lines.Add(Format('.path.inc = %s\common', [S]));
-      Lines.Add(Format('.path.res = %s\Resources', [S]));
-      Lines.Add(Format('.path.bpl = %s;%s',
+      Lines.Add(Format('.path.xfm = "%s\run";"%s\design";"%s\qrun";"%s\qdesign"',
+        [S, S, S, S]));
+      Lines.Add(Format('.path.inc = "%s\common"', [S]));
+      Lines.Add(Format('.path.res = "%s\Resources"', [S]));
+      Lines.Add(Format('.path.bpl = "%s";"%s"',
         [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir]));
-      Lines.Add(Format('.path.dcp = %s;%s;%s;%s;%s',
-        [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir,
-         ProjectGroup.Target.BplDir, ProjectGroup.Target.DcpDir,
-         ProjectGroup.Target.ExpandDirMacros(ConvertPathList(ProjectGroup.Target.BrowsingPaths))]));
       Lines.Add('');
+      
      // add files like jvcl.inc
       Dependencies := '';
       for depI := 0 to High(CommonDependencyFiles) do
@@ -861,8 +865,8 @@ begin
 
       Lines.Add('CommonDependencies = ' + Dependencies);
       Lines.Add('');
-      Lines.Add('');
     end;
+    Lines.Add('');
 
     Lines.Add('default: \');
     for i := 0 to ProjectGroup.Count - 1 do
@@ -894,8 +898,18 @@ begin
        // Add all contained files and test for their condition.
         for depI := 0 to Pkg.Info.ContainCount - 1 do
           if IsCondition(Pkg.Info.Contains[depI].Condition) then
+          begin
             Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
               ExtractFileName(Pkg.Info.Contains[depI].Name);
+            {if Pkg.Info.Contains[depI].FormName <> '' then
+            begin
+              if ProjectGroup.IsVCLX then
+                S := ChangeFileExt(ExtractFileName(Pkg.Info.Contains[depI].Name), '.xfm')
+              else
+                S := ChangeFileExt(ExtractFileName(Pkg.Info.Contains[depI].Name), '.dfm');
+              Dependencies := Dependencies + '\' + sLineBreak + #9#9 + S;
+            end;}
+          end;
         Dependencies := Dependencies + '\' + sLineBreak + #9#9'$(CommonDependencies)';
       end;
 
@@ -942,7 +956,7 @@ begin
               begin
                 S := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(S, '.obj');
                 if FileExists(S) then
-                  Lines.Add(#9'-@del /f /q "' + S + '" 2>NUL');
+                  Lines.Add(#9'-@del "' + S + '" >NUL');
               end;
             end;
           end;

@@ -116,6 +116,7 @@ begin
   Result := TFramePackageSelection.Create(Client);
   Installer.PackageInstaller.Translate(Result);
   Result.FInstaller := Installer;
+  Result.ComboBoxDisplayMode.ItemIndex := 0;
   Result.Parent := Client;
   Result.Align := alClient;
   Result.Init;
@@ -614,7 +615,6 @@ begin
   inherited Create(AOwner);
   FOrgWndProc := CheckListBoxPackages.WindowProc;
   CheckListBoxPackages.WindowProc := HookWndProc;
-  ComboBoxDisplayMode.ItemIndex := 0;
 end;
 
 end.

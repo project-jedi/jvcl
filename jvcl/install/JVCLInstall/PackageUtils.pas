@@ -141,6 +141,7 @@ type
     function GetPackages(Index: Integer): TPackageTarget;
     function GetBpgName: string;
     function GetTarget: TCompileTarget;
+    function GetIsVCLX: Boolean;
   protected
     function Add(const TargetName, SourceName: string): TPackageTarget;
     procedure LoadFile;
@@ -161,6 +162,7 @@ type
     property Filename: string read FFilename;
     property TargetConfig: ITargetConfig read FTargetConfig;
     property Target: TCompileTarget read GetTarget;
+    property IsVCLX: Boolean read GetIsVCLX;
 
     property OnCompileChange: TNotifyEvent read FOnCompileChange;
   end;
@@ -408,6 +410,11 @@ end;
 function TProjectGroup.GetCount: Integer;
 begin
   Result := FPackages.Count;
+end;
+
+function TProjectGroup.GetIsVCLX: Boolean;
+begin
+  Result := Pos('clx', LowerCase(BpgName)) > 0; 
 end;
 
 function TProjectGroup.GetPackages(Index: Integer): TPackageTarget;
