@@ -1307,7 +1307,7 @@ begin
   AppStorage.DeleteSubTree(Path);
   AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sCount]), Items.Count);
   for I := 0 to Items.Count - 1 do
-    AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sItem + IntToStr(I)]), Integer(State[I]));
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sItem + IntToStr(I)]), Ord(State[I]));
 end;
 
 procedure TJvxCheckListBox.Load;
@@ -1383,7 +1383,7 @@ begin
     for I := 0 to Items.Count - 1 do
     begin
       WriteString(Items[I]);
-      WriteInteger(Integer(Self.State[I]));
+      WriteInteger(Ord(Self.State[I]));
       WriteBoolean(EnabledItem[I]);
     end;
     WriteListEnd;

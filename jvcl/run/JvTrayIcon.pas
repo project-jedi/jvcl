@@ -342,14 +342,14 @@ begin
                       FOnBalloonHide(self);
                   except
                   end;
-                  Result := Integer(True);
+                  Result := Ord(True);
                 end;
               NIN_BALLOONTIMEOUT: //sb
                 begin
                   I := SecondsBetween(Now, FTime);
                   if I > FTimeDelay then
                     BalloonHint('', '');
-                  Result := Integer(True);
+                  Result := Ord(True);
                 end;
               NIN_BALLOONUSERCLICK: //sb
                 begin
@@ -358,7 +358,7 @@ begin
                       FOnBalloonClick(self);
                   except
                   end;
-                  Result := Integer(True);
+                  Result := Ord(True);
                   //Result := DefWindowProc(FHandle, Msg, wParam, lParam);
                   BalloonHint('', '');
                 end;

@@ -3979,9 +3979,9 @@ function ScreenPixelFormat: TPixelFormat;
 var
   DC: HDC;
 begin
-  DC := GetDC(0);
+  DC := CreateIC('DISPLAY', nil, nil, nil);
   try
-    case (GetDeviceCaps(DC, Planes) * GetDeviceCaps(DC, BITSPIXEL)) of
+    case GetDeviceCaps(DC, PLANES) * GetDeviceCaps(DC, BITSPIXEL) of
       1:
         Result := pf1bit;
       4:
@@ -4000,7 +4000,7 @@ begin
       Result := pfDevice;
     end;
   finally
-    ReleaseDC(0, DC);
+    DeleteDC(DC);
   end;
 end;
 

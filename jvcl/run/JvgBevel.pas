@@ -187,13 +187,13 @@ var
         fldVertical:
           begin
             R_.Left := MulDiv(I, Width, Lines.Count + 1);
-            R_.Right := R_.Left + Lines.Thickness + Integer(Lines.Bold);
+            R_.Right := R_.Left + Lines.Thickness + Ord(Lines.Bold);
           end;
       else {fldHorizontal:}
         begin
           R_.Top := MulDiv(I, Height, Lines.Count + 1);
           //	  if I = 1 then Dec( R_.Top, Lines.Thickness );
-          R_.Bottom := R_.Top + Lines.Thickness + Integer(Lines.Bold);
+          R_.Bottom := R_.Top + Lines.Thickness + Ord(Lines.Bold);
         end;
       end;
       if Lines.Style = bvSpace then
@@ -212,7 +212,7 @@ begin
   R := ClientRect;
   InflateRect(R, -FInteriorOffset, -FInteriorOffset);
   GradientBox(TargetCanvas.Handle, R, Gradient,
-    Integer(FBevelPenStyle), FBevelPenWidth);
+    Ord(FBevelPenStyle), FBevelPenWidth);
 
   R := ClientRect;
   Dec(R.Right);

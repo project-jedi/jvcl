@@ -2310,12 +2310,12 @@ var
       if SelBlockFormat = bfColumn then
       begin
         if (Line >= SelBegY) and (Line <= SelEndY) then
-          DoChange(SelBegX, SelEndX - 1 + Integer(1 {always Inclusive}))
+          DoChange(SelBegX, SelEndX - 1 + Ord(True)); {always Inclusive}
       end
       else
       begin
         if (Line = SelBegY) and (Line = SelEndY) then
-          DoChange(SelBegX, SelEndX - 1 + Integer(SelBlockFormat = bfInclusive))
+          DoChange(SelBegX, SelEndX - 1 + Ord(SelBlockFormat = bfInclusive))
         else
         begin
           if Line = SelBegY then
@@ -2323,7 +2323,7 @@ var
           if (Line > SelBegY) and (Line < SelEndY) then
             DoChange(ColBeg, ColEnd);
           if Line = SelEndY then
-            DoChange(ColBeg, SelEndX - 1 + Integer(SelBlockFormat = bfInclusive));
+            DoChange(ColBeg, SelEndX - 1 + Ord(SelBlockFormat = bfInclusive));
         end;
       end;
     end;
@@ -3872,7 +3872,7 @@ end;
 
 procedure TJvCustomEditor.SetSelBlockFormat(Value: TSelBlockFormat);
 begin
-  Command(ecInclusiveBlock + Integer(Value));
+  Command(ecInclusiveBlock + Ord(Value));
 end;
 
 function TJvCustomEditor.GetSelBlockFormat: TSelBlockFormat;
@@ -4208,7 +4208,7 @@ begin
 
        // last line
         S := FLines[SelEndY];
-        CLen := SelEndX + Integer(SelBlockFormat = bfInclusive);
+        CLen := SelEndX + Ord(SelBlockFormat = bfInclusive);
         if CLen > Length(S) then CLen := Length(S);
         if CLen > 0 then
           Move(S[1], P^, CLen);
@@ -4685,7 +4685,7 @@ begin
         Selecting := False;
         if SelBlockFormat in [bfInclusive, bfNonInclusive, bfLine] then
         begin
-          FLines.DeleteText(X, Y, SelEndX - 1 + Integer(SelBlockFormat = bfInclusive), SelEndY);
+          FLines.DeleteText(X, Y, SelEndX - 1 + Ord(SelBlockFormat = bfInclusive), SelEndY);
           TextModified(SelBegX, SelBegY, maDelete, S);
         end
         else
@@ -5148,7 +5148,7 @@ begin
     begin
       if SelBegY = SelEndY then
       begin
-        Result := SelEndX - SelBegX + Integer(SelBlockFormat = bfInclusive);
+        Result := SelEndX - SelBegX + Ord(SelBlockFormat = bfInclusive);
         if SelBegX + Result > Length(FLines[SelEndY]) then
           Result := Length(FLines[SelEndY]) - SelBegX;
         if Result < 0 then Result := 0;
@@ -5160,7 +5160,7 @@ begin
         for i := SelBegY + 1 to SelEndY - 1 do
           Inc(Result, sLineBreakLen + Length(FLines[i]));
 
-        Len := SelEndX + Integer(SelBlockFormat = bfInclusive);
+        Len := SelEndX + Ord(SelBlockFormat = bfInclusive);
         if Len > Length(FLines[SelEndY]) then Len := Length(FLines[SelEndY]);
         Result := Result + sLineBreakLen + Len;
       end;

@@ -1121,17 +1121,17 @@ begin
   with JvInterpreterAdapter do
   begin
     { TAlignment }
-    AddConst('Classes', 'taLeftJustify', Integer(taLeftJustify));
-    AddConst('Classes', 'taRightJustify', Integer(taRightJustify));
-    AddConst('Classes', 'taCenter', Integer(taCenter));
+    AddConst('Classes', 'taLeftJustify', Ord(taLeftJustify));
+    AddConst('Classes', 'taRightJustify', Ord(taRightJustify));
+    AddConst('Classes', 'taCenter', Ord(taCenter));
     { TShiftState }
-    AddConst('Classes', 'ssShift', Integer(ssShift));
-    AddConst('Classes', 'ssAlt', Integer(ssAlt));
-    AddConst('Classes', 'ssCtrl', Integer(ssCtrl));
-    AddConst('Classes', 'ssLeft', Integer(ssLeft));
-    AddConst('Classes', 'ssRight', Integer(ssRight));
-    AddConst('Classes', 'ssMiddle', Integer(ssMiddle));
-    AddConst('Classes', 'ssDouble', Integer(ssDouble));
+    AddConst('Classes', 'ssShift', Ord(ssShift));
+    AddConst('Classes', 'ssAlt', Ord(ssAlt));
+    AddConst('Classes', 'ssCtrl', Ord(ssCtrl));
+    AddConst('Classes', 'ssLeft', Ord(ssLeft));
+    AddConst('Classes', 'ssRight', Ord(ssRight));
+    AddConst('Classes', 'ssMiddle', Ord(ssMiddle));
+    AddConst('Classes', 'ssDouble', Ord(ssDouble));
     { TList }
     AddClass('Classes', TList, 'TList');
     AddGet(TList, 'Create', TList_Create, 0, [varEmpty], varEmpty);
@@ -1228,9 +1228,9 @@ begin
     AddGet(TStrings, 'StringsAdapter', TStrings_Read_StringsAdapter, 0, [0], varEmpty);
     AddSet(TStrings, 'StringsAdapter', TStrings_Write_StringsAdapter, 0, [0]);
     { TDuplicates }
-    AddConst('Classes', 'dupIgnore', Integer(dupIgnore));
-    AddConst('Classes', 'dupAccept', Integer(dupAccept));
-    AddConst('Classes', 'dupError', Integer(dupError));
+    AddConst('Classes', 'dupIgnore', Ord(dupIgnore));
+    AddConst('Classes', 'dupAccept', Ord(dupAccept));
+    AddConst('Classes', 'dupError', Ord(dupError));
     { TStringList }
     AddClass('Classes', TStringList, 'TStringList');
     AddGet(TStringList, 'Create', TStringList_Create, 0, [varEmpty], varEmpty);
@@ -1281,17 +1281,17 @@ begin
     AddGet(TStringStream, 'WriteString', TStringStream_WriteString, 1, [varEmpty], varEmpty);
     AddGet(TStringStream, 'DataString', TStringStream_Read_DataString, 0, [0], varEmpty);
     { TComponentState }
-    AddConst('Classes', 'csLoading', Integer(csLoading));
-    AddConst('Classes', 'csReading', Integer(csReading));
-    AddConst('Classes', 'csWriting', Integer(csWriting));
-    AddConst('Classes', 'csDestroying', Integer(csDestroying));
-    AddConst('Classes', 'csDesigning', Integer(csDesigning));
-    AddConst('Classes', 'csAncestor', Integer(csAncestor));
-    AddConst('Classes', 'csUpdating', Integer(csUpdating));
-    AddConst('Classes', 'csFixups', Integer(csFixups));
+    AddConst('Classes', 'csLoading', Ord(csLoading));
+    AddConst('Classes', 'csReading', Ord(csReading));
+    AddConst('Classes', 'csWriting', Ord(csWriting));
+    AddConst('Classes', 'csDestroying', Ord(csDestroying));
+    AddConst('Classes', 'csDesigning', Ord(csDesigning));
+    AddConst('Classes', 'csAncestor', Ord(csAncestor));
+    AddConst('Classes', 'csUpdating', Ord(csUpdating));
+    AddConst('Classes', 'csFixups', Ord(csFixups));
     { TComponentStyle }
-    AddConst('Classes', 'csInheritable', Integer(csInheritable));
-    AddConst('Classes', 'csCheckPropAvail', Integer(csCheckPropAvail));
+    AddConst('Classes', 'csInheritable', Ord(csInheritable));
+    AddConst('Classes', 'csCheckPropAvail', Ord(csCheckPropAvail));
     { TComponent }
     AddClass('Classes', TComponent, 'TComponent');
     AddGet(TComponent, 'Create', TComponent_Create, 1, [varEmpty], varEmpty);

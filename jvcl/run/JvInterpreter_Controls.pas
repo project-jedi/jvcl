@@ -1641,66 +1641,66 @@ begin
   begin
     {$IFDEF VCL}
     { TDragMessage }
-    AddConst(cControls, 'dmDragEnter', Integer(dmDragEnter));
-    AddConst(cControls, 'dmDragLeave', Integer(dmDragLeave));
-    AddConst(cControls, 'dmDragMove', Integer(dmDragMove));
-    AddConst(cControls, 'dmDragDrop', Integer(dmDragDrop));
-    AddConst(cControls, 'dmDragCancel', Integer(dmDragCancel));
-    AddConst(cControls, 'dmFindTarget', Integer(dmFindTarget));
+    AddConst(cControls, 'dmDragEnter', Ord(dmDragEnter));
+    AddConst(cControls, 'dmDragLeave', Ord(dmDragLeave));
+    AddConst(cControls, 'dmDragMove', Ord(dmDragMove));
+    AddConst(cControls, 'dmDragDrop', Ord(dmDragDrop));
+    AddConst(cControls, 'dmDragCancel', Ord(dmDragCancel));
+    AddConst(cControls, 'dmFindTarget', Ord(dmFindTarget));
     {$ENDIF VCL}
     { TAlign }
-    AddConst(cControls, 'alNone', Integer(alNone));
-    AddConst(cControls, 'alTop', Integer(alTop));
-    AddConst(cControls, 'alBottom', Integer(alBottom));
-    AddConst(cControls, 'alLeft', Integer(alLeft));
-    AddConst(cControls, 'alRight', Integer(alRight));
-    AddConst(cControls, 'alClient', Integer(alClient));
+    AddConst(cControls, 'alNone', Ord(alNone));
+    AddConst(cControls, 'alTop', Ord(alTop));
+    AddConst(cControls, 'alBottom', Ord(alBottom));
+    AddConst(cControls, 'alLeft', Ord(alLeft));
+    AddConst(cControls, 'alRight', Ord(alRight));
+    AddConst(cControls, 'alClient', Ord(alClient));
     { TControlState }
-    AddConst(cControls, 'csLButtonDown', Integer(csLButtonDown));
-    AddConst(cControls, 'csClicked', Integer(csClicked));
-    AddConst(cControls, 'csPalette', Integer(csPalette));
-    AddConst(cControls, 'csReadingState', Integer(csReadingState));
-    AddConst(cControls, 'csAlignmentNeeded', Integer(csAlignmentNeeded));
-    AddConst(cControls, 'csFocusing', Integer(csFocusing));
-    AddConst(cControls, 'csCreating', Integer(csCreating));
-    AddConst(cControls, 'csPaintCopy', Integer(csPaintCopy));
-   { TControlStyle }
-    AddConst(cControls, 'csAcceptsControls', Integer(csAcceptsControls));
-    AddConst(cControls, 'csCaptureMouse', Integer(csCaptureMouse));
-    AddConst(cControls, 'csDesignInteractive', Integer(csDesignInteractive));
-    AddConst(cControls, 'csClickEvents', Integer(csClickEvents));
-    AddConst(cControls, 'csFramed', Integer(csFramed));
-    AddConst(cControls, 'csSetCaption', Integer(csSetCaption));
-    AddConst(cControls, 'csOpaque', Integer(csOpaque));
-    AddConst(cControls, 'csDoubleClicks', Integer(csDoubleClicks));
-    AddConst(cControls, 'csFixedWidth', Integer(csFixedWidth));
-    AddConst(cControls, 'csFixedHeight', Integer(csFixedHeight));
-    AddConst(cControls, 'csNoDesignVisible', Integer(csNoDesignVisible));
-    AddConst(cControls, 'csReplicatable', Integer(csReplicatable));
-    AddConst(cControls, 'csNoStdEvents', Integer(csNoStdEvents));
-    AddConst(cControls, 'csDisplayDragImage', Integer(csDisplayDragImage));
+    AddConst(cControls, 'csLButtonDown', Ord(csLButtonDown));
+    AddConst(cControls, 'csClicked', Ord(csClicked));
+    AddConst(cControls, 'csPalette', Ord(csPalette));
+    AddConst(cControls, 'csReadingState', Ord(csReadingState));
+    AddConst(cControls, 'csAlignmentNeeded', Ord(csAlignmentNeeded));
+    AddConst(cControls, 'csFocusing', Ord(csFocusing));
+    AddConst(cControls, 'csCreating', Ord(csCreating));
+    AddConst(cControls, 'csPaintCopy', Ord(csPaintCopy));
+    { TControlStyle }
+    AddConst(cControls, 'csAcceptsControls', Ord(csAcceptsControls));
+    AddConst(cControls, 'csCaptureMouse', Ord(csCaptureMouse));
+    AddConst(cControls, 'csDesignInteractive', Ord(csDesignInteractive));
+    AddConst(cControls, 'csClickEvents', Ord(csClickEvents));
+    AddConst(cControls, 'csFramed', Ord(csFramed));
+    AddConst(cControls, 'csSetCaption', Ord(csSetCaption));
+    AddConst(cControls, 'csOpaque', Ord(csOpaque));
+    AddConst(cControls, 'csDoubleClicks', Ord(csDoubleClicks));
+    AddConst(cControls, 'csFixedWidth', Ord(csFixedWidth));
+    AddConst(cControls, 'csFixedHeight', Ord(csFixedHeight));
+    AddConst(cControls, 'csNoDesignVisible', Ord(csNoDesignVisible));
+    AddConst(cControls, 'csReplicatable', Ord(csReplicatable));
+    AddConst(cControls, 'csNoStdEvents', Ord(csNoStdEvents));
+    AddConst(cControls, 'csDisplayDragImage', Ord(csDisplayDragImage));
     {$IFDEF VCL}
-    AddConst(cControls, 'csReflector', Integer(csReflector));
+    AddConst(cControls, 'csReflector', Ord(csReflector));
     {$ENDIF VCL}
-    AddConst(cControls, 'csActionClient', Integer(csActionClient));
-    AddConst(cControls, 'csMenuEvents', Integer(csMenuEvents));
+    AddConst(cControls, 'csActionClient', Ord(csActionClient));
+    AddConst(cControls, 'csMenuEvents', Ord(csMenuEvents));
     { TMouseButton }
-    AddConst(cControls, 'mbLeft', Integer(mbLeft));
-    AddConst(cControls, 'mbRight', Integer(mbRight));
-    AddConst(cControls, 'mbMiddle', Integer(mbMiddle));
+    AddConst(cControls, 'mbLeft', Ord(mbLeft));
+    AddConst(cControls, 'mbRight', Ord(mbRight));
+    AddConst(cControls, 'mbMiddle', Ord(mbMiddle));
     { TDragMode }
-    AddConst(cControls, 'dmManual', Integer(dmManual));
-    AddConst(cControls, 'dmAutomatic', Integer(dmAutomatic));
+    AddConst(cControls, 'dmManual', Ord(dmManual));
+    AddConst(cControls, 'dmAutomatic', Ord(dmAutomatic));
     { TDragState }
-    AddConst(cControls, 'dsDragEnter', Integer(dsDragEnter));
-    AddConst(cControls, 'dsDragLeave', Integer(dsDragLeave));
-    AddConst(cControls, 'dsDragMove', Integer(dsDragMove));
+    AddConst(cControls, 'dsDragEnter', Ord(dsDragEnter));
+    AddConst(cControls, 'dsDragLeave', Ord(dsDragLeave));
+    AddConst(cControls, 'dsDragMove', Ord(dsDragMove));
     { TScalingFlags }
-    AddConst(cControls, 'sfLeft', Integer(sfLeft));
-    AddConst(cControls, 'sfTop', Integer(sfTop));
-    AddConst(cControls, 'sfWidth', Integer(sfWidth));
-    AddConst(cControls, 'sfHeight', Integer(sfHeight));
-    AddConst(cControls, 'sfFont', Integer(sfFont));
+    AddConst(cControls, 'sfLeft', Ord(sfLeft));
+    AddConst(cControls, 'sfTop', Ord(sfTop));
+    AddConst(cControls, 'sfWidth', Ord(sfWidth));
+    AddConst(cControls, 'sfHeight', Ord(sfHeight));
+    AddConst(cControls, 'sfFont', Ord(sfFont));
     { TControl }
     AddClass(cControls, TControl, 'TControl');
     AddGet(TControl, 'Create', TControl_Create, 1, [varEmpty], varEmpty);
@@ -1767,18 +1767,18 @@ begin
     AddSet(TControl, 'Hint', TControl_Write_Hint, 0, [0]);
     {$IFDEF VCL}
     { TImeMode }
-    AddConst(cControls, 'imDisable', Integer(imDisable));
-    AddConst(cControls, 'imClose', Integer(imClose));
-    AddConst(cControls, 'imOpen', Integer(imOpen));
-    AddConst(cControls, 'imDontCare', Integer(imDontCare));
-    AddConst(cControls, 'imSAlpha', Integer(imSAlpha));
-    AddConst(cControls, 'imAlpha', Integer(imAlpha));
-    AddConst(cControls, 'imHira', Integer(imHira));
-    AddConst(cControls, 'imSKata', Integer(imSKata));
-    AddConst(cControls, 'imKata', Integer(imKata));
-    AddConst(cControls, 'imChinese', Integer(imChinese));
-    AddConst(cControls, 'imSHanguel', Integer(imSHanguel));
-    AddConst(cControls, 'imHanguel', Integer(imHanguel));
+    AddConst(cControls, 'imDisable', Ord(imDisable));
+    AddConst(cControls, 'imClose', Ord(imClose));
+    AddConst(cControls, 'imOpen', Ord(imOpen));
+    AddConst(cControls, 'imDontCare', Ord(imDontCare));
+    AddConst(cControls, 'imSAlpha', Ord(imSAlpha));
+    AddConst(cControls, 'imAlpha', Ord(imAlpha));
+    AddConst(cControls, 'imHira', Ord(imHira));
+    AddConst(cControls, 'imSKata', Ord(imSKata));
+    AddConst(cControls, 'imKata', Ord(imKata));
+    AddConst(cControls, 'imChinese', Ord(imChinese));
+    AddConst(cControls, 'imSHanguel', Ord(imSHanguel));
+    AddConst(cControls, 'imHanguel', Ord(imHanguel));
     {$ENDIF VCL}
     { TWinControl }
     AddClass(cControls, TWinControl, 'TWinControl');
@@ -1886,26 +1886,26 @@ begin
 
     {$IFDEF VCL}
     { TDrawingStyle }
-    AddConst(cControls, 'dsFocus', Integer(dsFocus));
-    AddConst(cControls, 'dsSelected', Integer(dsSelected));
-    AddConst(cControls, 'dsNormal', Integer(dsNormal));
-    AddConst(cControls, 'dsTransparent', Integer(dsTransparent));
+    AddConst(cControls, 'dsFocus', Ord(dsFocus));
+    AddConst(cControls, 'dsSelected', Ord(dsSelected));
+    AddConst(cControls, 'dsNormal', Ord(dsNormal));
+    AddConst(cControls, 'dsTransparent', Ord(dsTransparent));
     {$ENDIF VCL}
     { TImageType }
-    AddConst(cControls, 'itImage', Integer(itImage));
-    AddConst(cControls, 'itMask', Integer(itMask));
+    AddConst(cControls, 'itImage', Ord(itImage));
+    AddConst(cControls, 'itMask', Ord(itMask));
     {$IFDEF VCL}
     { TResType }
-    AddConst(cControls, 'rtBitmap', Integer(rtBitmap));
-    AddConst(cControls, 'rtCursor', Integer(rtCursor));
-    AddConst(cControls, 'rtIcon', Integer(rtIcon));
+    AddConst(cControls, 'rtBitmap', Ord(rtBitmap));
+    AddConst(cControls, 'rtCursor', Ord(rtCursor));
+    AddConst(cControls, 'rtIcon', Ord(rtIcon));
     { TLoadResource }
-    AddConst(cControls, 'lrDefaultColor', Integer(lrDefaultColor));
-    AddConst(cControls, 'lrDefaultSize', Integer(lrDefaultSize));
-    AddConst(cControls, 'lrFromFile', Integer(lrFromFile));
-    AddConst(cControls, 'lrMap3DColors', Integer(lrMap3DColors));
-    AddConst(cControls, 'lrTransparent', Integer(lrTransparent));
-    AddConst(cControls, 'lrMonoChrome', Integer(lrMonoChrome));
+    AddConst(cControls, 'lrDefaultColor', Ord(lrDefaultColor));
+    AddConst(cControls, 'lrDefaultSize', Ord(lrDefaultSize));
+    AddConst(cControls, 'lrFromFile', Ord(lrFromFile));
+    AddConst(cControls, 'lrMap3DColors', Ord(lrMap3DColors));
+    AddConst(cControls, 'lrTransparent', Ord(lrTransparent));
+    AddConst(cControls, 'lrMonoChrome', Ord(lrMonoChrome));
     {$ENDIF VCL}
     { TCustomImageList }
     AddClass(cControls, TCustomImageList, 'TCustomImageList');

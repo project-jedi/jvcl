@@ -2073,7 +2073,7 @@ begin
       if blLeft in FBoundLines then
       begin
         BevelLine(C1, Rect.Left, Rect.Top, Rect.Left, Rect.Bottom);
-        BevelLine(C2, Rect.Left + 1, Rect.Top + Integer(blTop in FBoundLines), Rect.Left + 1, Rect.Bottom);
+        BevelLine(C2, Rect.Left + 1, Rect.Top + Ord(blTop in FBoundLines), Rect.Left + 1, Rect.Bottom);
       end;
       if blBottom in FBoundLines then
       begin
@@ -2082,7 +2082,7 @@ begin
       end;
       if blRight in FBoundLines then
       begin
-        BevelLine(C1, Rect.Right - 2, Rect.Top, Rect.Right - 2, Rect.Bottom - Integer(blBottom in FBoundLines));
+        BevelLine(C1, Rect.Right - 2, Rect.Top, Rect.Right - 2, Rect.Bottom - Ord(blBottom in FBoundLines));
         BevelLine(C2, Rect.Right - 1, Rect.Top, Rect.Right - 1, Rect.Bottom);
       end;
     end;
@@ -2516,6 +2516,7 @@ end;
 
 type
   TJvSpeedBarPos = (bpTop, bpBottom, bpLeft, bpRight);
+
 const
   PosToAlign: array [TJvSpeedBarPos] of TAlign = (alTop, alBottom, alLeft, alRight);
 
@@ -2530,16 +2531,16 @@ begin
   if P.Y <= P.X * (H / W) then
   begin { top or right }
     if P.Y >= H * (1 - P.X / W) then
-      Result := Integer(bpRight)
+      Result := Ord(bpRight)
     else
-      Result := Integer(bpTop);
+      Result := Ord(bpTop);
   end
   else
   begin { left or bottom }
     if P.Y >= H * (1 - P.X / W) then
-      Result := Integer(bpBottom)
+      Result := Ord(bpBottom)
     else
-      Result := Integer(bpLeft);
+      Result := Ord(bpLeft);
   end;
   if Assigned(FOnApplyAlign) then
     FOnApplyAlign(Self, PosToAlign[TJvSpeedBarPos(Result)], Apply);

@@ -835,31 +835,31 @@ begin
     AddSet(TCommonDialog, 'HelpContext', TCommonDialog_Write_HelpContext, 0, [0]);
     { TOpenOption }
     {$IFDEF VCL}
-    AddConst(cDialogs, 'ofReadOnly', Integer(ofReadOnly));
+    AddConst(cDialogs, 'ofReadOnly', Ord(ofReadOnly));
     {$ENDIF VCL}
-    AddConst(cDialogs, 'ofOverwritePrompt', Integer(ofOverwritePrompt));
+    AddConst(cDialogs, 'ofOverwritePrompt', Ord(ofOverwritePrompt));
     {$IFDEF VCL}
-    AddConst(cDialogs, 'ofHideReadOnly', Integer(ofHideReadOnly));
-    AddConst(cDialogs, 'ofNoChangeDir', Integer(ofNoChangeDir));
-    AddConst(cDialogs, 'ofShowHelp', Integer(ofShowHelp));
-    AddConst(cDialogs, 'ofNoValidate', Integer(ofNoValidate));
+    AddConst(cDialogs, 'ofHideReadOnly', Ord(ofHideReadOnly));
+    AddConst(cDialogs, 'ofNoChangeDir', Ord(ofNoChangeDir));
+    AddConst(cDialogs, 'ofShowHelp', Ord(ofShowHelp));
+    AddConst(cDialogs, 'ofNoValidate', Ord(ofNoValidate));
     {$ENDIF VCL}
-    AddConst(cDialogs, 'ofAllowMultiSelect', Integer(ofAllowMultiSelect));
-    AddConst(cDialogs, 'ofExtensionDifferent', Integer(ofExtensionDifferent));
-    AddConst(cDialogs, 'ofPathMustExist', Integer(ofPathMustExist));
-    AddConst(cDialogs, 'ofFileMustExist', Integer(ofFileMustExist));
+    AddConst(cDialogs, 'ofAllowMultiSelect', Ord(ofAllowMultiSelect));
+    AddConst(cDialogs, 'ofExtensionDifferent', Ord(ofExtensionDifferent));
+    AddConst(cDialogs, 'ofPathMustExist', Ord(ofPathMustExist));
+    AddConst(cDialogs, 'ofFileMustExist', Ord(ofFileMustExist));
     {$IFDEF VCL}
-    AddConst(cDialogs, 'ofCreatePrompt', Integer(ofCreatePrompt));
-    AddConst(cDialogs, 'ofShareAware', Integer(ofShareAware));
-    AddConst(cDialogs, 'ofNoReadOnlyReturn', Integer(ofNoReadOnlyReturn));
-    AddConst(cDialogs, 'ofNoTestFileCreate', Integer(ofNoTestFileCreate));
-    AddConst(cDialogs, 'ofNoNetworkButton', Integer(ofNoNetworkButton));
-    AddConst(cDialogs, 'ofNoLongNames', Integer(ofNoLongNames));
-    AddConst(cDialogs, 'ofOldStyleDialog', Integer(ofOldStyleDialog));
-    AddConst(cDialogs, 'ofNoDereferenceLinks', Integer(ofNoDereferenceLinks));
+    AddConst(cDialogs, 'ofCreatePrompt', Ord(ofCreatePrompt));
+    AddConst(cDialogs, 'ofShareAware', Ord(ofShareAware));
+    AddConst(cDialogs, 'ofNoReadOnlyReturn', Ord(ofNoReadOnlyReturn));
+    AddConst(cDialogs, 'ofNoTestFileCreate', Ord(ofNoTestFileCreate));
+    AddConst(cDialogs, 'ofNoNetworkButton', Ord(ofNoNetworkButton));
+    AddConst(cDialogs, 'ofNoLongNames', Ord(ofNoLongNames));
+    AddConst(cDialogs, 'ofOldStyleDialog', Ord(ofOldStyleDialog));
+    AddConst(cDialogs, 'ofNoDereferenceLinks', Ord(ofNoDereferenceLinks));
     { TFileEditStyle }
-    AddConst(cDialogs, 'fsEdit', Integer(fsEdit));
-    AddConst(cDialogs, 'fsComboBox', Integer(fsComboBox));
+    AddConst(cDialogs, 'fsEdit', Ord(fsEdit));
+    AddConst(cDialogs, 'fsComboBox', Ord(fsComboBox));
     {$ENDIF VCL}
     { TOpenDialog }
     AddClass(cDialogs, TOpenDialog, 'TOpenDialog');
@@ -892,11 +892,11 @@ begin
     AddGet(TSaveDialog, 'Execute', TSaveDialog_Execute, 0, [0], varEmpty);
     {$IFDEF VCL}
     { TColorDialogOption }
-    AddConst(cDialogs, 'cdFullOpen', Integer(cdFullOpen));
-    AddConst(cDialogs, 'cdPreventFullOpen', Integer(cdPreventFullOpen));
-    AddConst(cDialogs, 'cdShowHelp', Integer(cdShowHelp));
-    AddConst(cDialogs, 'cdSolidColor', Integer(cdSolidColor));
-    AddConst(cDialogs, 'cdAnyColor', Integer(cdAnyColor));
+    AddConst(cDialogs, 'cdFullOpen', Ord(cdFullOpen));
+    AddConst(cDialogs, 'cdPreventFullOpen', Ord(cdPreventFullOpen));
+    AddConst(cDialogs, 'cdShowHelp', Ord(cdShowHelp));
+    AddConst(cDialogs, 'cdSolidColor', Ord(cdSolidColor));
+    AddConst(cDialogs, 'cdAnyColor', Ord(cdAnyColor));
     {$ENDIF VCL}
     { TColorDialog }
     AddClass(cDialogs, TColorDialog, 'TColorDialog');
@@ -912,26 +912,26 @@ begin
     {$ENDIF VCL}
     {$IFDEF VCL}
     { TFontDialogOption }
-    AddConst(cDialogs, 'fdAnsiOnly', Integer(fdAnsiOnly));
-    AddConst(cDialogs, 'fdTrueTypeOnly', Integer(fdTrueTypeOnly));
-    AddConst(cDialogs, 'fdEffects', Integer(fdEffects));
-    AddConst(cDialogs, 'fdFixedPitchOnly', Integer(fdFixedPitchOnly));
-    AddConst(cDialogs, 'fdForceFontExist', Integer(fdForceFontExist));
-    AddConst(cDialogs, 'fdNoFaceSel', Integer(fdNoFaceSel));
-    AddConst(cDialogs, 'fdNoOEMFonts', Integer(fdNoOEMFonts));
-    AddConst(cDialogs, 'fdNoSimulations', Integer(fdNoSimulations));
-    AddConst(cDialogs, 'fdNoSizeSel', Integer(fdNoSizeSel));
-    AddConst(cDialogs, 'fdNoStyleSel', Integer(fdNoStyleSel));
-    AddConst(cDialogs, 'fdNoVectorFonts', Integer(fdNoVectorFonts));
-    AddConst(cDialogs, 'fdShowHelp', Integer(fdShowHelp));
-    AddConst(cDialogs, 'fdWysiwyg', Integer(fdWysiwyg));
-    AddConst(cDialogs, 'fdLimitSize', Integer(fdLimitSize));
-    AddConst(cDialogs, 'fdScalableOnly', Integer(fdScalableOnly));
-    AddConst(cDialogs, 'fdApplyButton', Integer(fdApplyButton));
+    AddConst(cDialogs, 'fdAnsiOnly', Ord(fdAnsiOnly));
+    AddConst(cDialogs, 'fdTrueTypeOnly', Ord(fdTrueTypeOnly));
+    AddConst(cDialogs, 'fdEffects', Ord(fdEffects));
+    AddConst(cDialogs, 'fdFixedPitchOnly', Ord(fdFixedPitchOnly));
+    AddConst(cDialogs, 'fdForceFontExist', Ord(fdForceFontExist));
+    AddConst(cDialogs, 'fdNoFaceSel', Ord(fdNoFaceSel));
+    AddConst(cDialogs, 'fdNoOEMFonts', Ord(fdNoOEMFonts));
+    AddConst(cDialogs, 'fdNoSimulations', Ord(fdNoSimulations));
+    AddConst(cDialogs, 'fdNoSizeSel', Ord(fdNoSizeSel));
+    AddConst(cDialogs, 'fdNoStyleSel', Ord(fdNoStyleSel));
+    AddConst(cDialogs, 'fdNoVectorFonts', Ord(fdNoVectorFonts));
+    AddConst(cDialogs, 'fdShowHelp', Ord(fdShowHelp));
+    AddConst(cDialogs, 'fdWysiwyg', Ord(fdWysiwyg));
+    AddConst(cDialogs, 'fdLimitSize', Ord(fdLimitSize));
+    AddConst(cDialogs, 'fdScalableOnly', Ord(fdScalableOnly));
+    AddConst(cDialogs, 'fdApplyButton', Ord(fdApplyButton));
     { TFontDialogDevice }
-    AddConst(cDialogs, 'fdScreen', Integer(fdScreen));
-    AddConst(cDialogs, 'fdPrinter', Integer(fdPrinter));
-    AddConst(cDialogs, 'fdBoth', Integer(fdBoth));
+    AddConst(cDialogs, 'fdScreen', Ord(fdScreen));
+    AddConst(cDialogs, 'fdPrinter', Ord(fdPrinter));
+    AddConst(cDialogs, 'fdBoth', Ord(fdBoth));
     {$ENDIF VCL}
     { TFontDialog }
     AddClass(cDialogs, TFontDialog, 'TFontDialog');
@@ -955,16 +955,16 @@ begin
     AddGet(TPrinterSetupDialog, 'Create', TPrinterSetupDialog_Create, 1, [varEmpty], varEmpty);
     AddGet(TPrinterSetupDialog, 'Execute', TPrinterSetupDialog_Execute, 0, [0], varEmpty);
     { TPrintRange }
-    AddConst(cDialogs, 'prAllPages', Integer(prAllPages));
-    AddConst(cDialogs, 'prSelection', Integer(prSelection));
-    AddConst(cDialogs, 'prPageNums', Integer(prPageNums));
+    AddConst(cDialogs, 'prAllPages', Ord(prAllPages));
+    AddConst(cDialogs, 'prSelection', Ord(prSelection));
+    AddConst(cDialogs, 'prPageNums', Ord(prPageNums));
     { TPrintDialogOption }
-    AddConst(cDialogs, 'poPrintToFile', Integer(poPrintToFile));
-    AddConst(cDialogs, 'poPageNums', Integer(poPageNums));
-    AddConst(cDialogs, 'poSelection', Integer(poSelection));
-    AddConst(cDialogs, 'poWarning', Integer(poWarning));
-    AddConst(cDialogs, 'poHelp', Integer(poHelp));
-    AddConst(cDialogs, 'poDisablePrintToFile', Integer(poDisablePrintToFile));
+    AddConst(cDialogs, 'poPrintToFile', Ord(poPrintToFile));
+    AddConst(cDialogs, 'poPageNums', Ord(poPageNums));
+    AddConst(cDialogs, 'poSelection', Ord(poSelection));
+    AddConst(cDialogs, 'poWarning', Ord(poWarning));
+    AddConst(cDialogs, 'poHelp', Ord(poHelp));
+    AddConst(cDialogs, 'poDisablePrintToFile', Ord(poDisablePrintToFile));
     { TPrintDialog }
     AddClass(cDialogs, TPrintDialog, 'TPrintDialog');
     AddGet(TPrintDialog, 'Create', TPrintDialog_Create, 1, [varEmpty], varEmpty);
@@ -989,19 +989,19 @@ begin
     AddSet(TPrintDialog, 'ToPage', TPrintDialog_Write_ToPage, 0, [0]);
     {$ENDIF VCL}
     { TFindOption }
-    AddConst(cDialogs, 'frDown', Integer(frDown));
-    AddConst(cDialogs, 'frFindNext', Integer(frFindNext));
-    AddConst(cDialogs, 'frHideMatchCase', Integer(frHideMatchCase));
-    AddConst(cDialogs, 'frHideWholeWord', Integer(frHideWholeWord));
-    AddConst(cDialogs, 'frHideUpDown', Integer(frHideUpDown));
-    AddConst(cDialogs, 'frMatchCase', Integer(frMatchCase));
-    AddConst(cDialogs, 'frDisableMatchCase', Integer(frDisableMatchCase));
-    AddConst(cDialogs, 'frDisableUpDown', Integer(frDisableUpDown));
-    AddConst(cDialogs, 'frDisableWholeWord', Integer(frDisableWholeWord));
-    AddConst(cDialogs, 'frReplace', Integer(frReplace));
-    AddConst(cDialogs, 'frReplaceAll', Integer(frReplaceAll));
-    AddConst(cDialogs, 'frWholeWord', Integer(frWholeWord));
-    AddConst(cDialogs, 'frShowHelp', Integer(frShowHelp));
+    AddConst(cDialogs, 'frDown', Ord(frDown));
+    AddConst(cDialogs, 'frFindNext', Ord(frFindNext));
+    AddConst(cDialogs, 'frHideMatchCase', Ord(frHideMatchCase));
+    AddConst(cDialogs, 'frHideWholeWord', Ord(frHideWholeWord));
+    AddConst(cDialogs, 'frHideUpDown', Ord(frHideUpDown));
+    AddConst(cDialogs, 'frMatchCase', Ord(frMatchCase));
+    AddConst(cDialogs, 'frDisableMatchCase', Ord(frDisableMatchCase));
+    AddConst(cDialogs, 'frDisableUpDown', Ord(frDisableUpDown));
+    AddConst(cDialogs, 'frDisableWholeWord', Ord(frDisableWholeWord));
+    AddConst(cDialogs, 'frReplace', Ord(frReplace));
+    AddConst(cDialogs, 'frReplaceAll', Ord(frReplaceAll));
+    AddConst(cDialogs, 'frWholeWord', Ord(frWholeWord));
+    AddConst(cDialogs, 'frShowHelp', Ord(frShowHelp));
     { TFindDialog }
     AddClass(cDialogs, TFindDialog, 'TFindDialog');
     AddGet(TFindDialog, 'Create', TFindDialog_Create, 1, [varEmpty], varEmpty);
@@ -1029,36 +1029,36 @@ begin
     AddGet(TReplaceDialog, 'ReplaceText', TReplaceDialog_Read_ReplaceText, 0, [0], varEmpty);
     AddSet(TReplaceDialog, 'ReplaceText', TReplaceDialog_Write_ReplaceText, 0, [0]);
     { TMsgDlgType }
-    AddConst(cDialogs, 'mtWarning', Integer(mtWarning));
-    AddConst(cDialogs, 'mtError', Integer(mtError));
-    AddConst(cDialogs, 'mtInformation', Integer(mtInformation));
-    AddConst(cDialogs, 'mtConfirmation', Integer(mtConfirmation));
-    AddConst(cDialogs, 'mtCustom', Integer(mtCustom));
+    AddConst(cDialogs, 'mtWarning', Ord(mtWarning));
+    AddConst(cDialogs, 'mtError', Ord(mtError));
+    AddConst(cDialogs, 'mtInformation', Ord(mtInformation));
+    AddConst(cDialogs, 'mtConfirmation', Ord(mtConfirmation));
+    AddConst(cDialogs, 'mtCustom', Ord(mtCustom));
     { TMsgDlgBtn }
-    AddConst(cDialogs, 'mbYes', Integer(mbYes));
-    AddConst(cDialogs, 'mbNo', Integer(mbNo));
-    AddConst(cDialogs, 'mbOK', Integer(mbOK));
-    AddConst(cDialogs, 'mbCancel', Integer(mbCancel));
-    AddConst(cDialogs, 'mbAbort', Integer(mbAbort));
-    AddConst(cDialogs, 'mbRetry', Integer(mbRetry));
-    AddConst(cDialogs, 'mbIgnore', Integer(mbIgnore));
+    AddConst(cDialogs, 'mbYes', Ord(mbYes));
+    AddConst(cDialogs, 'mbNo', Ord(mbNo));
+    AddConst(cDialogs, 'mbOK', Ord(mbOK));
+    AddConst(cDialogs, 'mbCancel', Ord(mbCancel));
+    AddConst(cDialogs, 'mbAbort', Ord(mbAbort));
+    AddConst(cDialogs, 'mbRetry', Ord(mbRetry));
+    AddConst(cDialogs, 'mbIgnore', Ord(mbIgnore));
     {$IFDEF VCL}
-    AddConst(cDialogs, 'mbAll', Integer(mbAll));
-    AddConst(cDialogs, 'mbNoToAll', Integer(mbNoToAll));
-    AddConst(cDialogs, 'mbYesToAll', Integer(mbYesToAll));
-    AddConst(cDialogs, 'mbHelp', Integer(mbHelp));
+    AddConst(cDialogs, 'mbAll', Ord(mbAll));
+    AddConst(cDialogs, 'mbNoToAll', Ord(mbNoToAll));
+    AddConst(cDialogs, 'mbYesToAll', Ord(mbYesToAll));
+    AddConst(cDialogs, 'mbHelp', Ord(mbHelp));
     {$ENDIF VCL}
-    AddConst(cDialogs, 'mrNone', Integer(mrNone));
-    AddConst(cDialogs, 'mrOk', Integer(mrOk));
-    AddConst(cDialogs, 'mrCancel', Integer(mrCancel));
-    AddConst(cDialogs, 'mrAbort', Integer(mrAbort));
-    AddConst(cDialogs, 'mrRetry', Integer(mrRetry));
-    AddConst(cDialogs, 'mrIgnore', Integer(mrIgnore));
-    AddConst(cDialogs, 'mrYes', Integer(mrYes));
-    AddConst(cDialogs, 'mrNo', Integer(mrNo));
-    AddConst(cDialogs, 'mrAll', Integer(mrAll));
-    AddConst(cDialogs, 'mrNoToAll', Integer(mrNoToAll));
-    AddConst(cDialogs, 'mrYesToAll', Integer(mrYesToAll));
+    AddConst(cDialogs, 'mrNone', Ord(mrNone));
+    AddConst(cDialogs, 'mrOk', Ord(mrOk));
+    AddConst(cDialogs, 'mrCancel', Ord(mrCancel));
+    AddConst(cDialogs, 'mrAbort', Ord(mrAbort));
+    AddConst(cDialogs, 'mrRetry', Ord(mrRetry));
+    AddConst(cDialogs, 'mrIgnore', Ord(mrIgnore));
+    AddConst(cDialogs, 'mrYes', Ord(mrYes));
+    AddConst(cDialogs, 'mrNo', Ord(mrNo));
+    AddConst(cDialogs, 'mrAll', Ord(mrAll));
+    AddConst(cDialogs, 'mrNoToAll', Ord(mrNoToAll));
+    AddConst(cDialogs, 'mrYesToAll', Ord(mrYesToAll));
     {$IFDEF VCL}
     AddFun(cDialogs, 'CreateMessageDialog', JvInterpreter_CreateMessageDialog, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
