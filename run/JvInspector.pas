@@ -25,6 +25,14 @@
  page, located at http://www.delphi-jedi.org
 
  RECENT CHANGES:
+    May 3, 2004, Marcel Bestebroer:
+      - Additional checks for value list location and size.
+      - Correction list width calculation for non-ownerdrawn value lists.
+    May 3, 2004, Markus Spoettl:
+      - Right align value list instead of left align (compatible with both
+        Borland inspector and VS.NET property grid).
+      - Fixed width measurement for font name item (used empty font name if
+        fonts where not displayed in the actual font).
     May 2, 2004, Markus Spoettl:
       - Added iifOwnerDrawListMaxHeight flag; using this flag will result in
         a fixed height owner draw list; the item height used will be that of
@@ -5508,13 +5516,18 @@ begin
     if ListCount = 0 then
       ListCount := 1;
     TListBox(ListBox).Height := ListCount * TListBox(ListBox).ItemHeight + 4;
+    if ListBox.Height > Screen.Height then
+    begin
+      ListCount := (Screen.Height - 4) div TListBox(ListBox).ItemHeight;
+      TListBox(ListBox).Height := ListCount * TListBox(ListBox).ItemHeight + 4;
+    end;
     ListBox.ItemIndex := ListBox.Items.IndexOf(EditCtrl.Text);
     J := ListBox.ClientWidth;
     if ListBox.Items.Count > ListCount then
       Dec(J, GetSystemMetrics(SM_CXVSCROLL));
     for I := 0 to ListBox.Items.Count - 1 do
     begin
-      Y := ListBox.Canvas.TextWidth(ListBox.Items[I]);
+      Y := ListBox.Canvas.TextWidth(ListBox.Items[I]) + 4;
       if TListBox(ListBox).Style <> lbStandard then
         DoMeasureListItemWidth(ListBox, I, Y);
       if Y > J then
@@ -5523,7 +5536,11 @@ begin
     if ListBox.Items.Count > ListCount then
       Inc(J, GetSystemMetrics(SM_CXVSCROLL));
     ListBox.ClientWidth := J;
-    P := Inspector.ClientToScreen(Point(Rects[iprValueArea].Left, EditCtrl.Top));
+    if ListBox.Width > Screen.Width then
+      ListBox.Width := Screen.Width;
+    P := Inspector.ClientToScreen(Point(Rects[iprValueArea].Right - ListBox.Width, EditCtrl.Top));
+    if P.X < 0 then
+      P := Inspector.ClientToScreen(Point(Rects[iprValueArea].Left, EditCtrl.Top));
     Y := P.Y + RectHeight(Rects[iprValueArea]);
     if Y + ListBox.Height > Screen.Height then
       Y := P.Y - TListBox(ListBox).Height;
@@ -8679,12 +8696,9 @@ procedure TJvInspectorFontNameItem.DoMeasureListItemWidth(Control: TWinControl;
 var
   FontName: string;
 begin
+  FontName := TListBox(Control).Items[Index];
   if UseFont then
-    with TListBox(Control) do
-    begin
-      FontName := Items[Index];
-      Canvas.Font.Name := FontName;
-    end;
+    TListBox(Control).Canvas.Font.Name := FontName;
   Width := TListBox(Control).Canvas.TextWidth(FontName);
 end;
 
