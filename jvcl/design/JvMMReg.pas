@@ -31,7 +31,7 @@ begin
   RegisterComponents('Jv Multimedia',[
     TJvAnimate, TJvBmpAnimator, TJvPicClip,
     TJvGradient, TJvGradientCaption,
-    TJvId3v1, TJvId3v2, TJvVisualId3v1, TJvVisualId3v2, TJvID3Controller,
+    TJvId3v1, TJvId3v2, 
     TJvImageRotate, TJvImageTransform, TJvImageWindow,
     TJvStarfield, TJvWaitingGradient, TJvWaitingProgress, TJvWavePlayer,
     TJvSpecialProgress, TJvSlider, {$IFDEF USE_JV_GIF}TJvGIFAnimator, {$ENDIF} TJvAnimatedImage,
