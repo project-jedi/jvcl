@@ -6,8 +6,9 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvWizard-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="C5,C6,C6p" Condition="USEJVCL"/>
+    <Package Name="JvCore-D" Targets="all" Condition="USEJVCL"/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
