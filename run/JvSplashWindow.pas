@@ -35,7 +35,7 @@ uses
   Windows, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QWindows,
+  Qt, Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QWindows,
   {$ENDIF VisualCLX}
   JvAnimatedImage;
 
@@ -49,6 +49,9 @@ type
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    function WidgetFlags: Integer; override;
+    {$ENDIF VisualCLX}
   public
     Image: TImage;
     Animation: TJvAnimatedImage;
@@ -78,11 +81,7 @@ const
 
 function CreateSplashWindow: TJvSplashWindow;
 begin
-  {$IFDEF BCB}
   Result := TJvSplashWindow.CreateNew(Application, 0);
-  {$ELSE}
-  Result := TJvSplashWindow.CreateNew(Application);
-  {$ENDIF BCB}
   with Result do
   begin
     BorderIcons := [];
@@ -91,6 +90,7 @@ begin
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     BorderStyle := fbsNone;
+    AutoScroll := False;
     {$ENDIF VisualCLX}
     if SplashStayOnTop then
       FormStyle := fsStayOnTop
@@ -105,12 +105,12 @@ begin
     PixelsPerInch := 96;
     Scaled := True;
     {$ENDIF MSWINDOWS}
-    {$IFDEF VCL}
+    {$IFDEF LINUX}
     Font.Height := 11;
     Font.Name := 'Helvetica';
     PixelsPerInch := 96;
     Scaled := False;
-    {$ENDIF VCL}
+    {$ENDIF LINUX}
     Font.Style := [];
     Font.Color := clWindowText;
 
@@ -184,6 +184,14 @@ begin
 end;
 {$ENDIF VCL}
 
+{$IFDEF VisualCLX}
+function TJvSplashWindow.WidgetFlags: Integer;
+begin
+  Result := inherited WidgetFlags or Integer(WidgetFlags_WStyle_DialogBorder) or
+    Integer(WidgetFlags_WStyle_Tool); 
+end;
+{$ENDIF VisualCLX}
+
 function TJvSplashWindow.GetMessageText: string;
 begin
   Result := FTextMessage.Caption;
@@ -195,9 +203,18 @@ var
   VertOff: Integer;
 begin
   TextRect := Rect(FTextMessage.Left, 0, Max(Screen.Width div 2 - 64,
-    defTextWidth), 0);
-  DrawText(Canvas.Handle,
-    PChar(Value), - 1, TextRect, DT_CALCRECT or DT_WORDBREAK);
+    defTextWidth), 0);             
+  {$IFDEF VisualCLX}
+  Canvas.Start;
+  try
+  {$ENDIF VisualCLX}
+    DrawText(Canvas.Handle,
+      PChar(Value), - 1, TextRect, DT_CALCRECT or DT_WORDBREAK);
+  {$IFDEF VisualCLX}
+  finally
+    Canvas.Stop;
+  end;
+  {$ENDIF VisualCLX}
   VertOff := (ClientHeight div 2) - ((TextRect.Bottom - TextRect.Top) div 2);
   if VertOff < 0 then
     VertOff := 10;
