@@ -81,7 +81,9 @@ begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   FOver := False;
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF VCL}
 end;
 
 procedure TJvBevel.MouseEnter(AControl: TControl);
