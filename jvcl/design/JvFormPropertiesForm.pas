@@ -36,7 +36,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvJVCLUtils, JvFormPlacement, JvPropsStorage, JvComponent;
+  JvJVCLUtils, JvFormPlacement, JvPropertyStorage, JvComponent;
 
 { TODO -oJVCL -cREIMPLEMENT :
   Add support for "Box" style procedures again but remove dependency on

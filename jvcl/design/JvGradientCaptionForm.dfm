@@ -208,14 +208,14 @@ object GradCaptionsEditor: TGradCaptionsEditor
     Top = 24
   end
   object FormStorage: TJvFormStorage
-    AppStorage = AppStore
+    AppStorage = AppStorage
     StoredValues = <
       item
       end>
     Left = 80
     Top = 24
   end
-  object AppStore: TJvAppRegistryStore
+  object AppStorage: TJvAppRegistryStorage
     RegRoot = hkCurrentUser
     Left = 133
     Top = 24

@@ -43,9 +43,9 @@ uses
   JvTypes, JvDsgnConsts, JvJCLUtils, JVCLVer, JvComponent,
   JvActions, JvActnResForm, JvJVCLAboutForm, JvDsgnEditors, JvIDEZoom,
   JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor,
-  JvContextProvider, JvAppRegistryStore, JvAppIniStore, JvColorProvider,
+  JvContextProvider, JvAppRegistryStorage, JvAppIniStorage, JvColorProvider,
   JvColorProviderEditors, JvDataProviderEditors, JvDataProvider,
-  JvDataProviderIntf, JvAppStore;
+  JvDataProviderIntf, JvAppStorage;
 
 {$R ..\resources\JvCoreReg.dcr}
 
@@ -55,7 +55,7 @@ const
 begin
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
     TJvContextProvider, TJvColorProvider, TJvColorMappingProvider,
-    TJvAppStore, TJvAppRegistryStore, TJvAppINIFileStore]);
+    TJvAppStorage, TJvAppRegistryStorage, TJvAppIniFileStorage]);
 
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}

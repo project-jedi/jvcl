@@ -269,7 +269,7 @@ object ImageForm: TImageForm
     Top = 6
   end
   object FormStorage: TJvFormStorage
-    AppStorage = AppStore
+    AppStorage = AppStorage
     AppStoragePath = 'RX.ImagePreview\'
     StoredProps.Strings = (
       'StretchCheck.Checked')
@@ -277,7 +277,7 @@ object ImageForm: TImageForm
     Left = 272
     Top = 6
   end
-  object AppStore: TJvAppRegistryStore
+  object AppStorage: TJvAppRegistryStorage
     RegRoot = hkCurrentUser
     Left = 215
     Top = 5
