@@ -358,8 +358,10 @@ begin
                   result := result + '<'
                 else if st = 'gt' then
                   result := result + '>'
+                else if j>=0 then
+                  result := result + '&' + st + ';'
                 else
-                  result := result + '&' + st + ';';
+                  result := result + ';';
               end;
             0..100:
               result := result + Char(j);
