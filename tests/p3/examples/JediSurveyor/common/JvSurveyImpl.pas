@@ -12,6 +12,7 @@ type
     FChoices: WideString;
     FResponses: WideString;
     FDescription: WideString;
+    FComments:WideString;
     FID: integer;
     FRequired: WordBool;
     FSurveyType: TJvSurveyType;
@@ -30,6 +31,8 @@ type
     procedure SetTitle(const Value: WideString);
     procedure SetChoices(const Value: WideString);
     procedure SetResponses(const Value: WideString);
+    function GetComments: WideString;
+    procedure SetComments(const Value: WideString);
   public
     constructor Create;
     destructor Destroy; override;
@@ -43,6 +46,8 @@ type
     property Choices: WideString read GetChoices write SetChoices;
     property Responses: WideString read GetResponses write SetResponses;
     property Required: WordBool read GetRequired write SetRequired;
+    property Comments:WideString read GetComments write SetComments;
+
   end;
 
   TJvSurveyItems = class(TInterfacedObject, IUnknown, IJvSurveyItems)
@@ -142,7 +147,7 @@ type
 
 implementation
 uses
-  JclSysInfo, JvFunctions, JvSurveyUtils, zlib;
+  JclSysInfo, JvFunctions, JvSurveyUtils, ComObj, zlib;
 
 resourcestring
   SErrUnknownFormatFmt = 'Unknown survey format in "%s"!';
@@ -277,6 +282,16 @@ begin
   end;
 end;
 
+function TJvSurveyItem.GetComments: WideString;
+begin
+  Result := FComments;
+end;
+
+procedure TJvSurveyItem.SetComments(const Value: WideString);
+begin
+  FComments := Value;
+end;
+
 { TJvSurveyItems }
 
 function TJvSurveyItems.Add: IJvSurveyItem;
@@ -365,14 +380,9 @@ end;
 { TJvSurveyTaker }
 
 function TJvSurveyTaker.GetID: WideString;
-var
-  GUID: TGUID;
 begin
   if FID = '' then
-  begin
-    CreateGUID(GUID);
-    FID := GuidToString(GUID);
-  end;
+    FID := CreateClassID;
   Result := FID;
 end;
 
@@ -539,11 +549,13 @@ begin
     if FLastItem = nil then
       raise EJvSurveyError.CreateFmt(SErrInvalidFileFormatFmt, [Filename]);
     FLastItem.Responses := Node.Value;
+  end
+  else if AnsiSameText(Node.Name, 'COMMENTS') then
+  begin
+    if FLastItem = nil then
+      raise EJvSurveyError.CreateFmt(SErrInvalidFileFormatFmt, [Filename]);
+    FLastItem.Comments := Node.Value;
   end;
-  // set up defaults
-  SurveyTaker.UserName := GetLocalUserName;
-  SurveyTaker.MailAddress := Format('%s@%s.com', [GetLocalUserName, GetLocalComputerName]);
-
   for i := 0 to Node.Items.Count - 1 do
     ParseXML(Node.Items[i]);
 end;
@@ -575,7 +587,7 @@ begin
       N := Source.Read(Buffer^,BufSize);
     end;
     if N > 0 then
-      N := Dest.Write(Buffer^,N);
+      Dest.Write(Buffer^,N);
   finally
     FreeMem(Buffer, BufSize);
   end;
@@ -628,6 +640,9 @@ begin
       X.LoadFromStream(Stream);
       if not AnsiSameText(X.Root.Name, 'JEDISURVEY') then
         raise EJvSurveyError.CreateFmt(SErrUnknownFormatFmt, [Filename]);
+      // set up defaults
+      SurveyTaker.UserName := GetLocalUserName;
+      SurveyTaker.MailAddress := Format('%s@%s.com', [GetLocalUserName, GetLocalComputerName]);
       ParseXML(X.Root);
     finally
       X.Free;
@@ -705,6 +720,8 @@ begin
         Value := EncodeChoice(self.Items[i].Choices, self.Items[i].SurveyType);
       with item2.Items.Add('RESPONSES') do
         Value := EncodeResponse(self.Items[i].Responses, self.Items[i].SurveyType);
+      with item2.Items.Add('COMMENTS') do
+        Value := EncodeResponse(self.Items[i].Comments,stFreeForm);
     end;
     X.SaveToStream(Stream);
     if Format = ffBinary then

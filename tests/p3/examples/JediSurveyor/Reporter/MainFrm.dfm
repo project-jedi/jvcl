@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 277
-  Top = 170
+  Left = 377
+  Top = 198
   Width = 650
   Height = 400
   BorderWidth = 1
@@ -15,6 +15,7 @@ object frmMain: TfrmMain
   Font.Style = []
   Menu = mmMain
   OldCreateOrder = False
+  Position = poScreenCenter
   Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -40,11 +41,11 @@ object frmMain: TfrmMain
     TabOrder = 2
     object nbDetails: TNotebook
       Left = 0
-      Top = 41
+      Top = 0
       Width = 488
-      Height = 292
+      Height = 333
       Align = alClient
-      PageIndex = 1
+      PageIndex = 2
       TabOrder = 0
       object TPage
         Left = 0
@@ -54,7 +55,7 @@ object frmMain: TfrmMain
           Left = 0
           Top = 0
           Width = 488
-          Height = 292
+          Height = 333
           Align = alClient
           Columns = <
             item
@@ -89,10 +90,8 @@ object frmMain: TfrmMain
           Left = 0
           Top = 0
           Width = 488
-          Height = 292
+          Height = 333
           Align = alClient
-          BevelInner = bvNone
-          BevelOuter = bvNone
           BorderStyle = bsNone
           Columns = <
             item
@@ -120,44 +119,14 @@ object frmMain: TfrmMain
           Left = 0
           Top = 0
           Width = 488
-          Height = 292
+          Height = 333
           Align = alClient
           PlainText = True
           ReadOnly = True
           ScrollBars = ssBoth
           TabOrder = 0
+          WordWrap = False
         end
-      end
-    end
-    object pnlTop: TPanel
-      Left = 0
-      Top = 0
-      Width = 488
-      Height = 41
-      Align = alTop
-      Alignment = taLeftJustify
-      BevelInner = bvLowered
-      BevelOuter = bvNone
-      Color = clBtnShadow
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clHighlightText
-      Font.Height = -13
-      Font.Name = 'MS Shell Dlg 2'
-      Font.Style = [fsBold]
-      ParentFont = False
-      TabOrder = 1
-      Visible = False
-      object isSurveyType: TJvImageSquare
-        Left = 448
-        Top = 4
-        Width = 34
-        Height = 32
-        HiColor = clBtnShadow
-        BackColor = clBtnShadow
-        BorderStyle = bsNone
-        ImageList = il24
-        ImageIndex = -1
-        Text = 'isSurveyType'
       end
     end
   end
@@ -187,12 +156,18 @@ object frmMain: TfrmMain
         06537572766579}
     end
   end
-  object JvStatusBar1: TJvStatusBar
+  object sbStatus: TJvStatusBar
     Left = 0
     Top = 333
     Width = 640
     Height = 19
     Panels = <
+      item
+        Width = 250
+      end
+      item
+        Width = 110
+      end
       item
         Width = 50
       end>
@@ -200,8 +175,8 @@ object frmMain: TfrmMain
   end
   object mmMain: TMainMenu
     Images = il16
-    Left = 96
-    Top = 108
+    Left = 90
+    Top = 78
     object File1: TMenuItem
       Caption = 'File'
       ShortCut = 16462
@@ -236,28 +211,10 @@ object frmMain: TfrmMain
         Action = acExit
       end
     end
-    object Edit7: TMenuItem
-      Caption = 'Edit'
-      object Undo1: TMenuItem
-        Action = acUndo
-      end
-      object N2: TMenuItem
-        Caption = '-'
-      end
-      object Cut1: TMenuItem
-        Action = acCut
-      end
-      object Copy1: TMenuItem
-        Action = acCopy
-      end
-      object Paste1: TMenuItem
-        Action = acPaste
-      end
-      object N3: TMenuItem
-        Caption = '-'
-      end
-      object SelectAll1: TMenuItem
-        Action = acSelectAll
+    object View1: TMenuItem
+      Caption = 'View'
+      object Comments1: TMenuItem
+        Action = acComments
       end
     end
     object Help1: TMenuItem
@@ -275,8 +232,9 @@ object frmMain: TfrmMain
   end
   object alMain: TActionList
     Images = il16
+    OnUpdate = alMainUpdate
     Left = 36
-    Top = 108
+    Top = 78
     object acOpen: TAction
       Category = 'File'
       Caption = 'Open Survey...'
@@ -302,38 +260,6 @@ object frmMain: TfrmMain
       ShortCut = 24655
       OnExecute = acAddResponseExecute
     end
-    object acCut: TEditCut
-      Category = 'Edit'
-      Caption = 'Cu&t'
-      Hint = 'Cut'
-      ImageIndex = 4
-      ShortCut = 16472
-    end
-    object acCopy: TEditCopy
-      Category = 'Edit'
-      Caption = '&Copy'
-      Hint = 'Copy'
-      ImageIndex = 5
-      ShortCut = 16451
-    end
-    object acPaste: TEditPaste
-      Category = 'Edit'
-      Caption = '&Paste'
-      Hint = 'Paste'
-      ImageIndex = 6
-      ShortCut = 16470
-    end
-    object acSelectAll: TEditSelectAll
-      Category = 'Edit'
-      Caption = 'Select &All'
-      ShortCut = 16449
-    end
-    object acUndo: TEditUndo
-      Category = 'Edit'
-      Caption = '&Undo'
-      ImageIndex = 7
-      ShortCut = 16474
-    end
     object acAbout: TAction
       Category = 'Help'
       Caption = 'About...'
@@ -356,6 +282,12 @@ object frmMain: TfrmMain
       Caption = 'Load Report...'
       ShortCut = 16460
       OnExecute = acLoadReportExecute
+    end
+    object acComments: TAction
+      Category = 'View'
+      Caption = 'Comments'
+      ShortCut = 16416
+      OnExecute = acCommentsExecute
     end
   end
   object il16: TImageList
@@ -936,6 +868,7 @@ object frmMain: TfrmMain
       'es|*.*'
     InitialDir = '.'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
+    Title = 'Save Survey Report...'
     Height = 0
     Width = 0
     Left = 432

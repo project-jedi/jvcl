@@ -174,6 +174,8 @@ resourcestring
   SNewItemTitle = 'New item';
   SItemCopy     = ' (copy)';
   SSurveyorNotFoundFmt = 'Unable to find JEDI Surveyor (%s). Please fix and try again.';
+  SAboutText = 'JEDI Surveyor Builder, version 1.0';
+  SAboutTitle = 'About...';
 
 const
   cSurveyItemImageIndex = 22;
@@ -573,7 +575,7 @@ end;
 
 procedure TfrmMain.acAboutExecute(Sender: TObject);
 begin
-  MessageBox(GetFocus,PChar('JEDI Surveyor Builder, version 1.0'),PChar('About...'),MB_OK or MB_ICONINFORMATION); 
+  MessageBox(GetFocus,PChar(SAboutText),PChar(SAboutTitle),MB_OK or MB_ICONINFORMATION);
 end;
 
 procedure TfrmMain.acCopyItemExecute(Sender: TObject);

@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 250
-  Top = 112
+  Left = 264
+  Top = 191
   BorderStyle = bsDialog
   Caption = 'JEDI Surveyor - [%s]'
   ClientHeight = 403
@@ -12,6 +12,7 @@ object frmMain: TfrmMain
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -27,9 +28,6 @@ object frmMain: TfrmMain
     BevelOuter = bvLowered
     Color = clWindow
     TabOrder = 0
-    DesignSize = (
-      604
-      87)
     object lblTitle: TLabel
       Left = 12
       Top = 7
@@ -90,9 +88,6 @@ object frmMain: TfrmMain
     Width = 604
     Height = 46
     Align = alBottom
-    DesignSize = (
-      604
-      46)
     object JvBevel1: TJvBevel
       Left = 0
       Top = 0
@@ -102,11 +97,27 @@ object frmMain: TfrmMain
       Shape = bsTopLine
     end
     object lblSurveyTitle: TLabel
-      Left = 18
-      Top = 18
+      Left = 103
+      Top = 16
       Width = 3
       Height = 13
       Enabled = False
+    end
+    object btnOpen: TButton
+      Left = 14
+      Top = 10
+      Width = 80
+      Height = 25
+      Action = acLoadSurvey
+      TabOrder = 3
+    end
+    object btnComment: TButton
+      Left = 14
+      Top = 10
+      Width = 80
+      Height = 25
+      Action = acComment
+      TabOrder = 4
     end
     object btnPrev: TJvFooterBtn
       Left = 352
@@ -122,7 +133,7 @@ object frmMain: TfrmMain
       HotTrackFont.Height = -11
       HotTrackFont.Name = 'MS Sans Serif'
       HotTrackFont.Style = []
-      ButtonIndex = 2
+      ButtonIndex = 4
       SpaceInterval = 0
     end
     object btnNext: TJvFooterBtn
@@ -140,7 +151,7 @@ object frmMain: TfrmMain
       HotTrackFont.Height = -11
       HotTrackFont.Name = 'MS Sans Serif'
       HotTrackFont.Style = []
-      ButtonIndex = 3
+      ButtonIndex = 5
       SpaceInterval = 6
     end
     object btnClose: TJvFooterBtn
@@ -157,16 +168,8 @@ object frmMain: TfrmMain
       HotTrackFont.Height = -11
       HotTrackFont.Name = 'MS Sans Serif'
       HotTrackFont.Style = []
-      ButtonIndex = 4
+      ButtonIndex = 6
       SpaceInterval = 6
-    end
-    object btnOpen: TButton
-      Left = 14
-      Top = 10
-      Width = 80
-      Height = 25
-      Action = acLoadSurvey
-      TabOrder = 3
     end
   end
   object sbSurvey: TJvScrollBox
@@ -883,6 +886,10 @@ object frmMain: TfrmMain
       Category = 'Exclusive'
       Caption = 'Check Last'
       OnExecute = acCheckLastExecute
+    end
+    object acComment: TAction
+      Caption = '&Comment...'
+      OnExecute = acCommentExecute
     end
   end
   object popMultiple: TPopupMenu

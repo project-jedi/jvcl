@@ -25,6 +25,8 @@ type
     procedure SetChoices(const Value:WideString);
     function GetResponses:WideString;
     procedure SetResponses(const Value:WideString);
+    function GetComments:WideString;
+    procedure SetComments(const Value:WideString);
     function GetRequired:WordBool;
     procedure SetRequired(const Value:WordBool);
 
@@ -37,6 +39,7 @@ type
     property SurveyType:TJvSurveyType read GetSurveyType write SetSurveyType;
     property Choices:WideString read GetChoices write SetChoices;
     property Responses:WideString read GetResponses write SetResponses;
+    property Comments:WideString read GetComments write SetComments;
   end;
 
   // a list of survey items

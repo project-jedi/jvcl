@@ -48,6 +48,8 @@ type
     popExclusive: TPopupMenu;
     Checkfirst1: TMenuItem;
     CheckLast1: TMenuItem;
+    btnComment: TButton;
+    acComment: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure acStartPageExecute(Sender: TObject);
@@ -64,6 +66,7 @@ type
     procedure acInvertExecute(Sender: TObject);
     procedure acCheckFirstExecute(Sender: TObject);
     procedure acCheckLastExecute(Sender: TObject);
+    procedure acCommentExecute(Sender: TObject);
   private
     FFilename,FTempSurveyFilename: string;
     FCompletedSurvey:boolean;
@@ -128,7 +131,7 @@ const
 
 implementation
 uses
-  JclStrings, JclSysInfo, JvFunctions, JvSurveyUtils, Math;
+  JclStrings, JclSysInfo, JvFunctions, JvSurveyUtils, Math, CommentFrm;
 
 {$R *.dfm}
 
@@ -377,11 +380,12 @@ procedure TfrmMain.alMainUpdate(Action: TBasicAction;
   var Handled: Boolean);
 begin
   acPrevPage.Enabled := (FPageIndex >= 0);
-  acNextPage.Enabled := (Filename <> '') and (FSurvey.Items.Count > 0) 
+  acNextPage.Enabled := (Filename <> '') and (FSurvey.Items.Count > 0)
     and (FPageIndex < FSurvey.Items.Count) and CheckPage(FPageIndex);
   lblProgress.Visible := (FPageIndex >= 0) and (FPageIndex <= FSurvey.Items.Count);
 
   acLoadSurvey.Visible := FPageIndex = -1;
+  acComment.Visible := (FPageIndex >= 0) and (FPageIndex < FSurvey.Items.Count);
   acLoadSurvey.Enabled := acLoadSurvey.Visible;
   lblSurveyTitle.Visible := not acLoadSurvey.Visible;
 end;
@@ -640,8 +644,11 @@ end;
 
 procedure TfrmMain.DoExclusiveClick(Sender:TObject);
 begin
-  with TRadioButton((Sender as TMenuItem).Tag) do
+  with (Sender as TMenuItem) do
+  begin
+    TRadioButton(Tag).Checked := true;
     Checked := true;
+  end;
 end;
 
 procedure TfrmMain.BuildExclusivePopUpMenu;
@@ -655,7 +662,7 @@ begin
       m := TMenuItem.Create(popExclusive);
       m.AutoHotkeys := maManual;
       m.Checked := R.Checked;
-      m.AutoCheck := true;
+//      m.AutoCheck := true;  // only availale in D6+
       m.RadioItem := true;
       m.GroupIndex := 1;
       m.Caption := R.Caption;
@@ -668,8 +675,11 @@ end;
 
 procedure TfrmMain.DoMultipleClick(Sender:TObject);
 begin
-  with TCheckBox((Sender as TMenuItem).Tag) do
+  with (Sender as TMenuItem) do
+  begin
+    TCheckBox(Tag).Checked := not TCheckBox(Tag).Checked;
     Checked := not Checked;
+  end;
 end;
 
 procedure TfrmMain.BuildMultiplePopUpMenu;
@@ -683,13 +693,21 @@ begin
       m := TMenuItem.Create(popMultiple);
       m.AutoHotkeys := maManual;
       m.Checked := C.Checked;
-      m.AutoCheck := true;
+//      m.AutoCheck := true;
       m.Caption := C.Caption;
       m.Tag     := integer(C);
       m.OnClick := DoMultipleClick;
       popMultiple.Items.Add(m);
       m.ShortCut := ShortCut(Ord('A') + popMultiple.Items.Count - 1,[ssCtrl])
     end;
+end;
+
+procedure TfrmMain.acCommentExecute(Sender: TObject);
+var S:string;
+begin
+  S := FSurvey.Items[FPageIndex].Comments;
+  if TfrmComment.Comment(FSurvey.Items[FPageIndex].Title,S) then
+      FSurvey.Items[FPageIndex].Comments := S;
 end;
 
 end.

@@ -15,6 +15,7 @@ object frmMain: TfrmMain
   Font.Style = []
   Menu = mmMain
   OldCreateOrder = False
+  Position = poScreenCenter
   Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -88,9 +89,6 @@ object frmMain: TfrmMain
       Left = 0
       Top = 0
       Caption = 'GlobalPage'
-      DesignSize = (
-        425
-        316)
       object Label1: TLabel
         Left = 8
         Top = 12
@@ -265,9 +263,6 @@ object frmMain: TfrmMain
       Left = 0
       Top = 0
       Caption = 'ItemEdit'
-      DesignSize = (
-        425
-        316)
       object Label8: TLabel
         Left = 8
         Top = 12
@@ -380,9 +375,6 @@ object frmMain: TfrmMain
     BevelOuter = bvLowered
     Color = clWindow
     TabOrder = 3
-    DesignSize = (
-      600
-      32)
     object lblPage: TLabel
       Left = 10
       Top = 8
