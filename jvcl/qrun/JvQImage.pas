@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -80,6 +79,7 @@ type
     procedure SetState(Value: TPicState);
     procedure PicturesChanged(Sender: TObject);
     procedure DoPictureChange(Sender: TObject);
+    procedure DoOwnPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
     procedure ApplyClick;
     function UsesPictures: Boolean;
@@ -95,7 +95,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Loaded; override;
   published
     property HintColor;
     property Pictures: TJvPictures read FPictures write FPictures;
@@ -117,6 +116,7 @@ begin
   FPictures := TJvPictures.Create;
   FPictures.OnChanged := PicturesChanged;
   FPicture := TPicture.Create;
+  FPicture.OnChange := DoOwnPictureChange;
   FPictureChange := inherited Picture.OnChange;
   inherited Picture.OnChange := DoPictureChange;
 end;
@@ -128,13 +128,6 @@ begin
   FPictures.Free;
   FPicture.Free;
   inherited Destroy;
-end;
-
-procedure TJvImage.Loaded;
-begin
-  // (rom) added inherited Loaded
-  inherited Loaded;
-  inherited Picture.Assign(FPicture);
 end;
 
 procedure TJvImage.ApplyClick;
@@ -241,6 +234,11 @@ begin
     Result := False;
 end;
 
+procedure TJvImage.DoOwnPictureChange(Sender: TObject);
+begin
+  inherited Picture.Assign(FPicture);
+end;
+
 procedure TJvImage.PicturesChanged(Sender: TObject);
 begin
   if UsesPictures then
@@ -250,7 +248,6 @@ end;
 procedure TJvImage.SetPicture(const Value: TPicture);
 begin
   FPicture.Assign(Value);
-  inherited Picture.Assign(Value);
 end;
 
 procedure TJvImage.SetState(Value: TPicState);
