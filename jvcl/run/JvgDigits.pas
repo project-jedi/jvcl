@@ -33,7 +33,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, ExtCtrls,
-  JvgTypes, JvComponent, JvgUtils, JvgCommClasses;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgUtils, JvgCommClasses;
 
 const
   JvDefaultPassiveColor = TColor($00202020);
@@ -41,7 +44,11 @@ const
 type
   TJvgSpecialSymbol = (ssyNone, ssyColon, ssySlash, ssyBackslash);
 
+  {$IFDEF USEJVCL}
   TJvgDigits = class(TJvGraphicControl)
+  {$ELSE}
+  TJvgDigits = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   private
     FValue: Double;
     FDSize: TJvgPointClass;

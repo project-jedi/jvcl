@@ -187,7 +187,10 @@ interface
 uses
   Windows, Messages, Classes, Controls, Graphics, Buttons, Dialogs,
   StdCtrls, ExtCtrls, SysUtils, Forms, DB, DBCtrls, Menus, DBTables, Printers,
-  JvComponent, JvgTypes, JvgCommClasses, JvgUtils, JvgBevel;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses, JvgUtils, JvgBevel;
 
 const
   JvDefaultCaptionsColor = TColor($00FFF2D2);
@@ -198,30 +201,19 @@ type
   TglPrintingStatus = (fpsContinue, fpsResume, fpsAbort);
 
   TPrintQueryEvent = procedure(Sender: TObject;
-    ColPageCount, RowPageCount: cardinal;
-    var CanPrint: Boolean) of object;
+    ColPageCount, RowPageCount: Cardinal; var CanPrint: Boolean) of object;
 
-  TPrintNewPageEvent = procedure(Sender: TObject;
-    ColPageNo, RowPageNo: cardinal;
+  TPrintNewPageEvent = procedure(Sender: TObject; ColPageNo, RowPageNo: Cardinal;
     var PrintingStatus: TglPrintingStatus) of object;
 
-  TDrawCellEvent = procedure(Sender: TObject;
-    ColNo, RowNo: cardinal;
-    Value: string;
-    var CanPrint: Boolean) of object;
+  TDrawCellEvent = procedure(Sender: TObject; ColNo, RowNo: Cardinal;
+    Value: string; var CanPrint: Boolean) of object;
 
-  TCalcResultEvent = procedure(Sender: TObject;
-    ColNo, RowNo: cardinal;
-    CellValue: string;
-    IntermediateColResult,
-    IntermediateRowResult,
-    ColResult,
-    RowResult: Single) of object;
+  TCalcResultEvent = procedure(Sender: TObject; ColNo, RowNo: Cardinal; CellValue: string;
+    IntermediateColResult, IntermediateRowResult, ColResult, RowResult: Single) of object;
 
-  TDuplicateCellValueEvent = procedure(Sender: TObject;
-    ColNo, RowNo: cardinal;
-    Value: string;
-    var UseDuplicateValue: Boolean) of object;
+  TDuplicateCellValueEvent = procedure(Sender: TObject; ColNo, RowNo: Cardinal;
+    Value: string; var UseDuplicateValue: Boolean) of object;
 
   TPCTOptions = set of (fcoIntermediateColResults, fcoIntermediateRowResults,
     fcoColResults, fcoRowResults,
@@ -233,18 +225,17 @@ type
   TPCTableElement = (teTitle, teCell, teColCapt, teRowCapt, teColIRes,
     teRowIRes, teColRes, teRowRes);
 
-  TPrintTableElement = procedure(Sender: TObject;
-    var Text: string;
-    ColNo, RowNo: Integer;
-    TableElement: TPCTableElement;
-    var Font: TFont;
-    var Color: TColor;
-    var AlignFlags: Word;
+  TPrintTableElement = procedure(Sender: TObject;  var Text: string;
+    ColNo, RowNo: Integer; TableElement: TPCTableElement;
+    var Font: TFont; var Color: TColor; var AlignFlags: Word;
     var CanPrint: Boolean) of object;
 
   TJvgPrintCrossTableColors = class(TPersistent)
   private
-    FCaptions, FCells, FResults, FIntermediateResults: TColor;
+    FCaptions: TColor;
+    FCells: TColor;
+    FResults: TColor;
+    FIntermediateResults: TColor;
   published
     property Captions: TColor read FCaptions write FCaptions;
     property Cells: TColor read FCells write FCells;
@@ -255,8 +246,12 @@ type
 
   TJvgPrintCrossTableFonts = class(TPersistent)
   private
-    FColCaptions, FRowCaptions, FCells, FResults, FIntermediateResults,
-      FTitles: TFont;
+    FColCaptions: TFont;
+    FRowCaptions: TFont;
+    FCells: TFont;
+    FResults: TFont;
+    FIntermediateResults: TFont;
+    FTitles: TFont;
     procedure SetColCaptions(Value: TFont);
     procedure SetRowCaptions(Value: TFont);
     procedure SetCells(Value: TFont);
@@ -278,8 +273,10 @@ type
 
   TJvgPrintCrossTableIndents = class(TPersistent)
   private
-    FLeft, FTop,
-      FRight, FBottom: Single;
+    FLeft: Single;
+    FTop: Single;
+    FRight: Single;
+    FBottom: Single;
   public
     //    constructor Create;
     //    destructor Destroy; override;
@@ -290,7 +287,11 @@ type
     property _Bottom: Single read FBottom write FBottom;
   end;
 
+  {$IFDEF USEJVCL}
   TJvgPrintCrossTable = class(TJvComponent)
+  {$ELSE}
+  TJvgPrintCrossTable = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FDataSet: TDataSet;
     FColumnFieldName: string;
@@ -356,17 +357,16 @@ type
     procedure SetDataSet(Value: TDataSet);
     procedure SetOptions(Value: TPCTOptions);
 
-    procedure DrawGrid(Canvas: TCanvas; ColPageNo, RowPageNo, ColsOnThisPage,
-      RowsOnThisPage: Integer);
-    procedure DrawCell(Canvas: TCanvas; ColPageNo, RowPageNo, ColNo, RowNo:
-      Integer; Str: string; Element: TPCTableElement);
+    procedure DrawGrid(Canvas: TCanvas;
+      ColPageNo, RowPageNo, ColsOnThisPage, RowsOnThisPage: Integer);
+    procedure DrawCell(Canvas: TCanvas;
+      ColPageNo, RowPageNo, ColNo, RowNo: Integer; Str: string; Element: TPCTableElement);
     procedure DrawTitle(Canvas: TCanvas; RowPageNo: Integer);
     function CalcColNo(ColPageNo: Integer): Integer;
     function CalcRowNo(RowPageNo: Integer): Integer;
   protected
     procedure Loaded; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -374,40 +374,29 @@ type
     procedure PreviewTo(Canvas: TCanvas; PageWidth, PageHeight: Integer);
   published
     property DataSet: TDataSet read FDataSet write SetDataSet;
-    property ColumnFieldName: string read FColumnFieldName write
-      SetColumnFieldName;
+    property ColumnFieldName: string read FColumnFieldName write SetColumnFieldName;
     property RowFieldName: string read FRowFieldName write SetRowFieldName;
-    property ValueFieldName: string read FValueFieldName write
-      SetValueFieldName;
+    property ValueFieldName: string read FValueFieldName write SetValueFieldName;
     property Options: TPCTOptions read FOptions write SetOptions;
     property PageWidth: Integer read FPageWidth write FPageWidth;
     property PageHeight: Integer read FPageHeight write FPageHeight;
-    property ColWidthInSantim: Single read FColWidthInSantim write
-      FColWidthInSantim;
-    property RowHeightInSantim: Single read FRowHeightInSantim write
-      FRowHeightInSantim;
+    property ColWidthInSantim: Single read FColWidthInSantim write FColWidthInSantim;
+    property RowHeightInSantim: Single read FRowHeightInSantim write FRowHeightInSantim;
     property IndentsInSantim: TJvgPrintCrossTableIndents read FIndentsInSantim
       write FIndentsInSantim;
-    property CaptColWidthInSantim: Single read FCaptColWidthInSantim write
-      FCaptColWidthInSantim;
-    property CaptRowHeightInSantim: Single read FCaptRowHeightInSantim write
-      FCaptRowHeightInSantim;
+    property CaptColWidthInSantim: Single read FCaptColWidthInSantim write FCaptColWidthInSantim;
+    property CaptRowHeightInSantim: Single read FCaptRowHeightInSantim write FCaptRowHeightInSantim;
     property Fonts: TJvgPrintCrossTableFonts read FFonts write FFonts;
     property Colors: TJvgPrintCrossTableColors read FColors write FColors;
-
-    property OnPrintQuery: TPrintQueryEvent read FOnPrintQuery write
-      FOnPrintQuery;
-    property OnPrintNewPage: TPrintNewPageEvent read FOnPrintNewPage write
-      FOnPrintNewPage;
+    property OnPrintQuery: TPrintQueryEvent read FOnPrintQuery write FOnPrintQuery;
+    property OnPrintNewPage: TPrintNewPageEvent read FOnPrintNewPage write FOnPrintNewPage;
     property OnPrintTableElement: TPrintTableElement read FOnPrintTableElement
       write FOnPrintTableElement;
-    property OnCalcResult: TCalcResultEvent read FOnCalcResult write
-      FOnCalcResult;
+    property OnCalcResult: TCalcResultEvent read FOnCalcResult write FOnCalcResult;
     property OnDuplicateCellValue: TDuplicateCellValueEvent read
       FOnDuplicateCellValue write FOnDuplicateCellValue;
     property Title: string read FTitle write FTitle;
-    property TitleAlignment: TAlignment read FTitleAlignment write
-      FTitleAlignment;
+    property TitleAlignment: TAlignment read FTitleAlignment write FTitleAlignment;
   end;
 
 implementation
@@ -418,6 +407,8 @@ uses
 const
   MAX_COLS = 1024;
   MAX_ROWS = 1024;
+
+//=== { TJvgPrintCrossTableFonts } ===========================================
 
 constructor TJvgPrintCrossTableFonts.Create;
 begin
@@ -471,6 +462,8 @@ begin
   FIntermediateResults.Assign(Value);
 end;
 
+//=== { TJvgPrintCrossTable } ================================================
+
 constructor TJvgPrintCrossTable.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -517,8 +510,7 @@ begin
   Colors.IntermediateResults := JvDefaultIntermediateResultsColor;
 
   Options := [fcoIntermediateColResults, fcoIntermediateRowResults,
-    fcoColResults, fcoRowResults,
-    fcoShowPageNumbers];
+    fcoColResults, fcoRowResults, fcoShowPageNumbers];
 end;
 
 destructor TJvgPrintCrossTable.Destroy;
@@ -536,9 +528,7 @@ procedure TJvgPrintCrossTable.Loaded;
 begin
   inherited Loaded;
   if fcoVertColCaptionsFont in Options then
-  begin
-    FFonts.ColCaptions.Handle := CreateRotatedFont(Fonts.ColCaptions, 900);
-  end
+    FFonts.ColCaptions.Handle := CreateRotatedFont(Fonts.ColCaptions, 900)
   else
     FFonts.ColCaptions.Handle := CreateRotatedFont(Fonts.ColCaptions, 0);
 end;
@@ -551,12 +541,13 @@ begin
     DataSet := nil;
 end;
 
-procedure TJvgPrintCrossTable.DrawGrid(Canvas: TCanvas; ColPageNo, RowPageNo,
-  ColsOnThisPage, RowsOnThisPage: Integer);
+procedure TJvgPrintCrossTable.DrawGrid(Canvas: TCanvas;
+  ColPageNo, RowPageNo, ColsOnThisPage, RowsOnThisPage: Integer);
 var
   Col, Row: Integer;
 begin
-  exit;
+  // (rom) Huh?
+  Exit;
   if ColPageNo = ColPageCount - 1 then
     Inc(ColsOnThisPage);
   if RowPageNo = RowPageCount - 1 then
@@ -607,17 +598,16 @@ var
   R, R_: TRect;
   I, J: Integer;
   AlignFlags: Word;
-  fCanPrint: Boolean;
+  CanPrint: Boolean;
 const
-  SingleLine: array[Boolean] of Integer = (DT_WORDBREAK,
-    DT_SINGLELINE);
+  SingleLine: array [Boolean] of Integer = (DT_WORDBREAK, DT_SINGLELINE);
 begin
   with Canvas do
   begin
     if (ColNo = -1) or (RowNo = -1) then //...Draw Caption
     begin
-      I := max(0, ColNo);
-      J := max(0, RowNo);
+      I := Max(0, ColNo);
+      J := Max(0, RowNo);
       if (RowNo = -1) then
       begin
         R.Left := I * ColWidth;
@@ -702,21 +692,21 @@ begin
           end;
       end;
 
-    AlignFlags := SingleLine[(ColNo <> -1) and (RowNo <> -1)] or DT_CENTER or
-      DT_VCENTER;
+    AlignFlags := SingleLine[(ColNo <> -1) and (RowNo <> -1)] or
+      DT_CENTER or DT_VCENTER;
 
-    fCanPrint := True;
+    CanPrint := True;
     if Assigned(FOnPrintTableElement) then
     begin
       Color_ := Brush.Color;
       Font_.Assign(Font);
       FOnPrintTableElement(Self, Str, I + 1, J + 1, Element, Font_, Color_,
-        AlignFlags, fCanPrint);
+        AlignFlags, CanPrint);
       Font.Assign(Font_);
     end;
 
-    if not fCanPrint then
-      exit;
+    if not CanPrint then
+      Exit;
 
     Canvas.FillRect(R);
     Brush.Color := 0;
@@ -732,7 +722,7 @@ begin
       R_ := R;
       Windows.DrawText(Handle, PChar(Str), -1, R_, DT_CENTER or DT_WORDBREAK or
         DT_CALCRECT);
-      R.Top := R.Top + max(0, (R.Bottom - R_.Bottom) div 2);
+      R.Top := R.Top + Max(0, (R.Bottom - R_.Bottom) div 2);
       Windows.DrawText(Handle, PChar(Str), -1, R, DT_CENTER or DT_WORDBREAK);
     end;
   end;
@@ -740,23 +730,22 @@ end;
 
 procedure TJvgPrintCrossTable.DrawTitle(Canvas: TCanvas; RowPageNo: Integer);
 var
-  fCanPrint: Boolean;
+  CanPrint: Boolean;
   Str: string;
   AlignFlags: Word;
   R: TRect;
 const
-  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT,
-    DT_CENTER);
+  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
 begin
   with Canvas do
   begin
     Font.Assign(Fonts.Titles);
     if TopIndent < TextHeight('ky') then
-      exit;
+      Exit;
     if not ((RowPageNo = 0) or (fcoIntermediateTopIndent in Options)) then
-      exit;
+      Exit;
 
-    fCanPrint := True;
+    CanPrint := True;
     AlignFlags := (DT_SINGLELINE or DT_EXPANDTABS) or
       Alignments[FTitleAlignment];
     Str := FTitle;
@@ -765,10 +754,10 @@ begin
       Color_ := Brush.Color;
       Font_.Assign(Font);
       FOnPrintTableElement(Self, Str, -1, -1, teTitle, Font_, Color_,
-        AlignFlags, fCanPrint);
+        AlignFlags, CanPrint);
       Font.Assign(Font_);
     end;
-    if not fCanPrint then
+    if not CanPrint then
       Exit;
     R := Rect(LeftIndent, 10, PageWidth - RightIndent, PageHeight -
       BottomIndent);
@@ -782,8 +771,8 @@ begin
   PrintTable(nil);
 end;
 
-procedure TJvgPrintCrossTable.PreviewTo(Canvas: TCanvas; PageWidth, PageHeight:
-  Integer);
+procedure TJvgPrintCrossTable.PreviewTo(Canvas: TCanvas;
+  PageWidth, PageHeight: Integer);
 begin
   Self.PageWidth := PageWidth;
   Self.PageHeight := PageHeight;
@@ -793,7 +782,7 @@ end;
 procedure TJvgPrintCrossTable.PrintTable(Canvas: TCanvas);
 var
   I, J: Integer;
-  fPrint, fCanPrint, fUseDuplicateValue: Boolean;
+  fPrint, CanPrint, fUseDuplicateValue: Boolean;
   ClientSize: TSize;
   PrintingStatus: TglPrintingStatus;
   Str: string;
@@ -806,7 +795,7 @@ var
   OldFiltered: Boolean;
 begin
   if not Assigned(FDataSet) then
-    exit;
+    Exit;
   FillChar(FinalColsSum, SizeOf(FinalColsSum), 0);
   FillChar(FinalRowsSum, SizeOf(FinalRowsSum), 0);
   OldFiltered := False;
@@ -912,18 +901,18 @@ begin
     RowsOnPageX := (ClientSize.cy) div RowHeight -
       Integer(fcoIntermediateRowResults in Options);
 
-    RowPageCount := max(trunc(TotalRows / (RowsOnPageX + 1)), 1);
-    ColPageCount := max(trunc(TotalCols / (ColsOnPageX + 1)), 1);
+    RowPageCount := Max(Trunc(TotalRows / (RowsOnPageX + 1)), 1);
+    ColPageCount := Max(Trunc(TotalCols / (ColsOnPageX + 1)), 1);
 
     //...EVENT OnPrintQuery
-    fCanPrint := True;
+    CanPrint := True;
     if Assigned(FOnPrintQuery) then
-      FOnPrintQuery(Self, ColPageCount, RowPageCount, fCanPrint);
-    if not fCanPrint then
+      FOnPrintQuery(Self, ColPageCount, RowPageCount, CanPrint);
+    if not CanPrint then
     begin
       if fPrint then
         Printer.Abort;
-      exit;
+      Exit;
     end;
     //...
     TargetCanvas.Font := Fonts.Cells;
@@ -966,13 +955,13 @@ begin
           begin
             if fPrint then
               Printer.Abort;
-            exit;
+            Exit;
           end;
           if PrintingStatus = fpsResume then
           begin
             if fPrint then
               Printer.EndDoc;
-            exit;
+            Exit;
           end;
           //...
           ClientR := Rect(0, 0, PageWidth, PageHeight);
@@ -1134,10 +1123,9 @@ end;}
 procedure TJvgPrintCrossTable.CalcResults(const Str: string; ColNo, RowNo: Integer);
 begin
   //...if event is assigned then user should calculates results himself
-  if Assigned(OnCalcResult) then
+  if Assigned(FOnCalcResult) then
   begin
-    OnCalcResult(Self,
-      ColNo, RowNo,
+    FOnCalcResult(Self, ColNo, RowNo,
       Str, {CellValue}
       ColsSum[ColNo], {IntermediateColResult}
       RowsSum[RowNo], {IntermediateRowResult}
