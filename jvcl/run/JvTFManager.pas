@@ -148,7 +148,7 @@ type
   TJvTFStatePic = (spAlarmEnabled, spAlarmDisabled, spShared, spRecurring,
     spModified);
 
-  TStateImageMap = class(TPersistent)
+  TJvTFStateImageMap = class(TPersistent)
   private
 {$IFDEF COMPILER3}
     FPics: array[Ord(Low(TJvTFStatePic))..Ord(High(TJvTFStatePic))] of integer;
@@ -481,7 +481,7 @@ type
     FStateImages: TCustomImageList;
     FCustomImages: TCustomImageList;
 {$ENDIF}
-    FStateImageMap: TStateImageMap;
+    FStateImageMap: TJvTFStateImageMap;
     FCache: TJvTFScheduleManagerCache;
 
     // implicit post fix
@@ -669,7 +669,7 @@ type
     property StateImages: TCustomImageList read FStateImages write SetStateImages;
     property CustomImages: TCustomImageList read FCustomImages write SetCustomImages;
 {$ENDIF}
-    property StateImageMap: TStateImageMap read FStateImageMap write FStateImageMap;
+    property StateImageMap: TJvTFStateImageMap read FStateImageMap write FStateImageMap;
     property Cache: TJvTFScheduleManagerCache read FCache write SetCache;
     // implicit post fix
     property OnPostApptQuery: TJvTFPostApptQueryEvent read FOnPostApptQuery
@@ -1261,10 +1261,10 @@ begin
   Change;
 end;
 
-{ TStateImageMap }
+{ TJvTFStateImageMap }
 {$IFDEF COMPILER3}
 
-constructor TStateImageMap.Create(Serv: TJvTFScheduleManager);
+constructor TJvTFStateImageMap.Create(Serv: TJvTFScheduleManager);
 var
   I: integer;
 begin
@@ -1277,7 +1277,7 @@ begin
 end;
 {$ELSE}
 
-constructor TStateImageMap.Create(Serv: TJvTFScheduleManager);
+constructor TJvTFStateImageMap.Create(Serv: TJvTFScheduleManager);
 var
   I: TJvTFStatePic;
 begin
@@ -1292,7 +1292,7 @@ end;
 
 {$IFDEF COMPILER3}
 
-procedure TStateImageMap.SetImage(Index, Value: integer);
+procedure TJvTFStateImageMap.SetImage(Index, Value: integer);
 begin
   if Value < -1 then
     Value := -1;
@@ -1304,7 +1304,7 @@ begin
 end;
 {$ELSE}
 
-procedure TStateImageMap.SetImage(StatePicID: TJvTFStatePic; Value: integer);
+procedure TJvTFStateImageMap.SetImage(StatePicID: TJvTFStatePic; Value: integer);
 begin
   if Value < -1 then
     Value := -1;
@@ -1318,31 +1318,31 @@ end;
 
 {$IFDEF COMPILER3}
 
-function TStateImageMap.GetImage(Index: integer): integer;
+function TJvTFStateImageMap.GetImage(Index: integer): integer;
 begin
   Result := FPics[Index];
 end;
 {$ELSE}
 
-function TStateImageMap.GetImage(StatePicID: TJvTFStatePic): integer;
+function TJvTFStateImageMap.GetImage(StatePicID: TJvTFStatePic): integer;
 begin
   Result := FPics[StatePicID];
 end;
 {$ENDIF}
 
-procedure TStateImageMap.Change;
+procedure TJvTFStateImageMap.Change;
 begin
   if Assigned(FScheduleManager) and not (csLoading in FScheduleManager.ComponentState) and
     not (csDesigning in FScheduleManager.ComponentState) and not FUpdating then
     FScheduleManager.RefreshConnections(nil);
 end;
 
-procedure TStateImageMap.BeginUpdate;
+procedure TJvTFStateImageMap.BeginUpdate;
 begin
   FUpdating := true;
 end;
 
-procedure TStateImageMap.EndUpdate;
+procedure TJvTFStateImageMap.EndUpdate;
 begin
   if FUpdating then
   begin
@@ -1353,7 +1353,7 @@ end;
 
 {$IFDEF COMPILER3}
 
-procedure TStateImageMap.Clear;
+procedure TJvTFStateImageMap.Clear;
 var
   I: integer;
 begin
@@ -1363,7 +1363,7 @@ begin
 end;
 {$ELSE}
 
-procedure TStateImageMap.Clear;
+procedure TJvTFStateImageMap.Clear;
 var
   I: TJvTFStatePic;
 begin
@@ -1375,14 +1375,14 @@ end;
 
 {$IFDEF COMPILER3}
 
-procedure TStateImageMap.Assign(Source: TPersistent);
+procedure TJvTFStateImageMap.Assign(Source: TPersistent);
 var
   Pic: integer;
 begin
-  if Source is TStateImageMap then
+  if Source is TJvTFStateImageMap then
   begin
     for Pic := Ord(Low(TJvTFStatePic)) to Ord(High(TJvTFStatePic)) do
-      FPics[Pic] := TStateImageMap(Source).Pics[Pic];
+      FPics[Pic] := TJvTFStateImageMap(Source).Pics[Pic];
     Change;
   end
   else
@@ -1390,14 +1390,14 @@ begin
 end;
 {$ELSE}
 
-procedure TStateImageMap.Assign(Source: TPersistent);
+procedure TJvTFStateImageMap.Assign(Source: TPersistent);
 var
   Pic: TJvTFStatePic;
 begin
-  if Source is TStateImageMap then
+  if Source is TJvTFStateImageMap then
   begin
     for Pic := Low(TJvTFStatePic) to High(TJvTFStatePic) do
-      FPics[Pic] := TStateImageMap(Source).Pics[Pic];
+      FPics[Pic] := TJvTFStateImageMap(Source).Pics[Pic];
     Change;
   end
   else
@@ -2668,7 +2668,7 @@ begin
   FConControls := TStringlist.Create;
   FConComponents := TStringlist.Create;
 
-  FStateImageMap := TStateImageMap.Create(Self);
+  FStateImageMap := TJvTFStateImageMap.Create(Self);
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
 
