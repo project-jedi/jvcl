@@ -10,8 +10,9 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: QToolWin.pas, released on 2004-01-12
 
-The Initial Developer of the Original Code is André Snepvangers [asn@xs4all.nl]
-Copyright (C) 2003 André Snepvangers.
+The Initial Developer of the Original Code is Andreas Hausladen
+                                              [Andreas.Hausladen@gmx.de]
+Copyright (C) 2004 Andreas Hausladen.
 All Rights Reserved.
 
 Contributor(s):
