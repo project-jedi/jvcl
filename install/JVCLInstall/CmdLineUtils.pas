@@ -89,7 +89,7 @@ begin
   AddBool('--keep-files', 'Do not call "clean".', FKeepFiles);
   AddBool('--autoupdate', 'Updates all IDEs where JVCL 3 is installed.', FAutoUpdate);
   AddSpace;
-  AddString('-rDelphi=', 'Sets the Registry path for the Delphi IDEs. (-rDelphi=Barebones)', FRegistryKeyDelphi);
+  AddString('-rDelphi=', 'Sets the Registry path for the Delphi IDEs.', FRegistryKeyDelphi);
   AddString('-rBCB=', 'Sets the Registry path for the BCB IDEs.', FRegistryKeyBCB);
   AddString('-rBDS=', 'Sets the Registry path for the BDS IDEs. (-rBDS=Win32Only)', FRegistryKeyBDS);
   AddString('--lang=', 'Sets the Installer''s language to X.', FLang);
