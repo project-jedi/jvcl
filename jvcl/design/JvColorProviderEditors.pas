@@ -33,11 +33,20 @@ interface
 
 uses
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, DesignMenus, VCLEditors,
+  DesignIntf, DesignEditors, DesignMenus,
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  ClxEditors, QConsts,
+  {$ENDIF VisualCLX}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  Classes, Consts,
+  Classes,
+  {$IFDEF VCL}
+  Consts,
+  {$ENDIF VCL}
   JvColorProvider, JvDataProviderEditors;
 
 type

@@ -33,7 +33,13 @@ unit JvIDEZoom;
 interface
 
 uses
-  Classes, SysUtils, Forms, Menus;
+  {$IFDEF VCL}
+  Forms, Menus,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms, QMenus,
+  {$ENDIF}
+  Classes, SysUtils;
 
 procedure RegisterZoom;
 

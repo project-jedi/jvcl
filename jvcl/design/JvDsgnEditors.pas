@@ -34,15 +34,22 @@ unit JvDsgnEditors;
 
 interface
 uses
-  Windows, Forms, Classes, SysUtils,
-  Controls, Graphics, ExtCtrls, Tabs, Dialogs, 
-  ExtDlgs, Menus, StdCtrls, DsnConst,
+  {$IFDEF VCL}
+  Windows, Forms, Controls, Graphics, ExtCtrls, Tabs, Dialogs,
+  ExtDlgs, Menus, StdCtrls, ImgEdit, ImgList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
+  QExtDlgs, QMenus, QStdCtrls, QImgList,
+
+  {$ENDIF VisualCLX}
+  DsnConst,
   {$IFDEF COMPILER6_UP}
   FiltEdit, RTLConsts, DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  ImgEdit, ImgList;
+  Classes, SysUtils;
 
 type
   TJvHintProperty = class(TStringProperty)
@@ -203,7 +210,13 @@ type
 implementation
 
 uses
-  FileCtrl, TypInfo, Math, Dlgs, Consts,
+  TypInfo, Math,
+  {$IFDEF VCL}
+  FileCtrl, Dlgs, Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QFileCtrls, QConsts,
+  {$ENDIF VisualCLX}
   JvTypes, JvStringsForm, JvDateTimeForm, JvDsgnConsts;
 
 function ValueName(E: Extended): string;

@@ -37,11 +37,14 @@ uses
   Dialogs, ComCtrls, ToolWin, StdCtrls, Menus, ActnList, ImgList,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QTypes, QExtCtrls,
-  QDialogs, QComCtrls, QToolWin, QStdCtrls, QMenus, QActnList, QImgList,
+  QGraphics, QControls, QForms, QTypes, QExtCtrls, QDialogs, QComCtrls,
+  QToolWin, QStdCtrls, QMenus, QActnList, QImgList, ClxDesignWindows,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf, DesignWindows,
+  DesignEditors, DesignIntf,
+  {$IFDEF VCL}
+  DesignWindows,
+  {$ENDIF}
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}

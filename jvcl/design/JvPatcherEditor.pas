@@ -31,7 +31,13 @@ unit JvPatcherEditor;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Controls, Forms,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QControls, QForms,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}

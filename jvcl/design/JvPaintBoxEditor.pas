@@ -25,16 +25,21 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvPaintBoxEditor;
 
 interface
 uses
-  Windows, Forms, Graphics, ImgList,
-  SysUtils, Classes, Dialogs, Controls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Forms, Graphics, ImgList, Dialogs, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms, QGraphics, QImgList, QDialogs, QControls, Types, ClxEditors,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, DesignMenus, VCLEditors;
+  DesignIntf, DesignEditors, DesignMenus
+  {$IFDEF VCL}, VCLEditors {$ENDIF VCL};
   {$ELSE}
   DsgnIntf;
   {$ENDIF COMPILER6_UP}

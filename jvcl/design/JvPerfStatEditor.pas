@@ -25,14 +25,19 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvPerfStatEditor;
 
 interface
 
 uses
-  Windows, SysUtils, Classes, Dlgs, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Dlgs, Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QDialogs,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}

@@ -25,17 +25,25 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
+
 
 unit JvFooterEditor;
 
 interface
 
 uses
-  Windows, Forms, Graphics, ImgList,
-  SysUtils, Classes, Dialogs, Controls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Forms, Graphics, ImgList, Dialogs, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms, QGraphics, QImgList, QDialogs, QControls, ClxEditors,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, DesignMenus, VCLEditors;
+  DesignIntf, DesignEditors, DesignMenus,
+  {$IFDEF VCL}
+  VCLEditors;
+  {$ENDIF VCL}
   {$ELSE}
   DsgnIntf;
   {$ENDIF COMPILER6_UP}
@@ -52,7 +60,12 @@ type
 implementation
 
 uses
+  {$IFDEF VCL}
   Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF}
   JvTypes, JvFooter, JvDsgnConsts;
 
 //=== TJvFooterEditor ========================================================

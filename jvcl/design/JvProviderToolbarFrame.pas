@@ -37,8 +37,8 @@ uses
   StdCtrls, ActnList, Menus, ImgList, ComCtrls, ToolWin, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, Types,
-  QStdCtrls, QActnList, QMenus, QImgList, QComCtrls, QToolWin, QExtCtrls,
+  QGraphics, QControls, QForms, QDialogs, Types, QStdCtrls, QActnList,
+  QMenus, QImgList, QComCtrls, QToolWin, QExtCtrls,
   {$ENDIF VisualCLX}
   JvStdToolbarDsgnFrame;
 

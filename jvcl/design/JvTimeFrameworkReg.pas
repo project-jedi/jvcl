@@ -37,8 +37,12 @@ unit JvTimeFrameworkReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvTimeFrameworkReg.dcr}
-
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvTimeFrameworkReg.dcr}
+{$ENDIF LINUX}
 uses
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,

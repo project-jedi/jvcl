@@ -37,16 +37,13 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QForms, QMenus, QGraphics,
-  QStdCtrls, QCheckLst, QWindows, Types,
+  QStdCtrls, QCheckLst, QWindows, Types, ClxEditors,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors,
   {$IFDEF VCL}
   VCLEditors,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  CLXEditors,
-  {$ENDIF VisualCLX}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -177,7 +174,12 @@ begin
   { Form definitions }
   {Left := 354;
   Top := 338;}
+  {$IFDEF VCL}
   BorderStyle := bsDialog;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  BorderStyle := fbsDialog;
+  {$ENDIF VisualCLX}
   Caption := RsItemEditor;
   ClientHeight := 92;
   ClientWidth := 330;
@@ -278,6 +280,7 @@ begin
   if I >= 0 then
     with TJvCheckItemEditor.Create(Application) do
     try
+      {$IFDEF VCL}
       if Screen.PixelsPerInch <> 96 then
       begin { scale to screen res }
         ScaleBy(Screen.PixelsPerInch, 96);
@@ -288,6 +291,7 @@ begin
         Left := (Screen.Width div 2) - (Width div 2);
         Top := (Screen.Height div 2) - (Height div 2);
       end;
+      {$ENDIF VCL}
       FEdit.Text := CheckList.Items[I];
       FComboBox.ItemIndex := Integer(CheckList.State[I]);
       FEnableBox.Checked := CheckList.ItemEnabled[I];
@@ -474,11 +478,13 @@ procedure TJvCheckItemsEditor.CheckListDragOver(Sender, Source: TObject;
   X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   BoxDragOver(CheckList, Source, X, Y, State, Accept, CheckList.Sorted);
+  {$IFDEF VCL}
   if State = dsDragLeave then
     CheckList.DragCursor := crDrag
   else
   if (State = dsDragEnter) and (CheckList.SelCount > 1) then
     CheckList.DragCursor := crMultiDrag;
+  {$ENDIF VCL}
 end;
 
 end.

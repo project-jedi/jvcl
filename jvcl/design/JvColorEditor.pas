@@ -32,9 +32,21 @@ unit JvColorEditor;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, Types,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, VCLEditors, DesignEditors,
+  RTLConsts, DesignIntf, DesignEditors,
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  ClxEditors,
+  {$ENDIF VisualCLX}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}

@@ -35,7 +35,13 @@ unit JvCsvDataEditor;
 interface
 
 uses
-  Windows, Messages, Db, SysUtils, Classes, Forms, Dialogs, Graphics,
+  SysUtils, Classes, Db,
+  {$IFDEF VCL}
+  Windows, Messages, Forms, Dialogs, Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms, QDialogs, QGraphics, Types,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
