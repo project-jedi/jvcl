@@ -162,7 +162,7 @@ procedure HookBitmap;
 implementation
 
 uses
-  JvHook,
+  JclSysUtils,
   JvTypes, JvJVCLUtils;
 
 
@@ -200,13 +200,13 @@ var
 begin
   if Hooked then
     Exit;
-  Index := FindVirtualMethodIndex(TJvHack, @TJvHack.Draw);
-  // (rom) using secured FindVirtualMethodIndex result
-  if Index >= 0 then
-  begin
-    SetVirtualMethodAddress(TBitmap, Index, @TJvHackBitmap.Draw);
-    Hooked := True;
-  end;
+  for Index := 0 to GetVirtualMethodCount(TJvHack) - 1 do
+    if GetVirtualMethod(TJvHack, Index) = @TJvHack.Draw then
+    begin
+      SetVirtualMethod(TBitmap, Index, @TJvHackBitmap.Draw);
+      Hooked := True;
+      Break;
+    end;
 end;
 
 //=== TJvImageControl ========================================================

@@ -34,7 +34,7 @@ interface
 uses
   Windows, SysUtils,
   Classes, Controls, Messages, Graphics, ImgList,
-  Menus, JvHook, JvWndProcHook, JVCLVer, Contnrs;
+  Menus, JvWndProcHook, JVCLVer, Contnrs;
 
 const
   // custom painter constants
