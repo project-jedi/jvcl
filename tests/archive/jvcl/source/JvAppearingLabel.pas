@@ -202,8 +202,7 @@ end;
 destructor TJvAppearingLabel.Destroy;
 begin
   FThread.Terminate;
-  while (not FThread.Terminated) do
-    Application.ProcessMessages;
+  FThread.WaitFor;
   FThread.Free;
   inherited;
 end;

@@ -211,12 +211,11 @@ end;
 
 destructor TJvWaitingGradient.Destroy;
 begin
+  FScroll.Terminate;
+  FScroll.WaitFor;
+  FScroll.Free;
   FBitmap.Free;
   FBitmap := nil;
-  FScroll.Terminate;
-  while not FScroll.Terminated do
-    Application.ProcessMessages;
-  FScroll.Free;
   inherited;
 end;
 

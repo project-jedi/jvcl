@@ -247,8 +247,7 @@ end;
 destructor TJvScrollText.Destroy;
 begin
   FScroll.Terminate;
-  while not FScroll.Terminated do
-    Application.ProcessMessages;
+  FScroll.WaitFor;
   FScroll.Free;
   Application.HintPause := FDeja;
   FStrings.Free;

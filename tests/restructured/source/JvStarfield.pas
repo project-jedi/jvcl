@@ -126,8 +126,8 @@ destructor TJvStarfield.Destroy;
 begin
   SetLength(FStarfield, 0);
   FThread.Terminate;
-  while not FThread.Terminated do
-    Application.ProcessMessages;
+  FThread.WaitFor;
+  FThread.Free;
   FBmp.Free;
   inherited;
 end;

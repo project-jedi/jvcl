@@ -112,8 +112,7 @@ end;
 destructor TJvWaitingProgress.Destroy;
 begin
   FWait.Terminate;
-  while not FWait.Terminated do
-    Application.ProcessMessages;
+  FWait.WaitFor;
   FWait.Free;
   FProgress.Free;
   inherited;

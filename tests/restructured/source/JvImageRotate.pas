@@ -92,8 +92,7 @@ begin
   FOriginal.Free;
   FRotated.Free;
   FTimer.Terminate;
-  while not FTimer.Terminated do
-    Application.ProcessMessages;
+  FTimer.WaitFor;
   FTimer.Free;
   inherited;
 end;
