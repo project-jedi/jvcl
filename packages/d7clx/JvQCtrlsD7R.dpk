@@ -54,7 +54,6 @@ contains
   JvQSpacer in '..\..\qrun\JvQSpacer.pas',
   JvQSwitch in '..\..\qrun\JvQSwitch.pas',
   JvQWinampLabel in '..\..\qrun\JvQWinampLabel.pas',
-  JvQZoom in '..\..\qrun\JvQZoom.pas',
   JvQArrowButton in '..\..\qrun\JvQArrowButton.pas',
   JvQBehaviorLabel in '..\..\qrun\JvQBehaviorLabel.pas',
   JvQButtons in '..\..\qrun\JvQButtons.pas',
@@ -66,6 +65,7 @@ contains
   JvQOfficeColorForm in '..\..\qrun\JvQOfficeColorForm.pas',
   JvQOfficeColorPanel in '..\..\qrun\JvQOfficeColorPanel.pas',
   JvQSplitter in '..\..\qrun\JvQSplitter.pas',
-  JvQTransparentButton in '..\..\qrun\JvQTransparentButton.pas';
+  JvQTransparentButton in '..\..\qrun\JvQTransparentButton.pas',
+  JvQScrollPanel in '..\..\qrun\JvQScrollPanel.pas';
 
 end.

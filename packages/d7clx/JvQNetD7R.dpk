@@ -27,7 +27,11 @@ package JvQNetD7R;
 {$DEFINE VisualCLX}
 
 requires
-  JvQCoreD7R;
+  JvQCoreD7R,
+  vcl,
+  rtl,
+  DJcl,
+  visualclx;
 
 contains
   JvQUrlListGrabber in '..\..\qrun\JvQUrlListGrabber.pas',
@@ -39,6 +43,7 @@ contains
   JvQRgbToHtml in '..\..\qrun\JvQRgbToHtml.pas',
   JvQStringListToHtml in '..\..\qrun\JvQStringListToHtml.pas',
   JvQStrToHtml in '..\..\qrun\JvQStrToHtml.pas',
-  JvQUrlGrabbers in '..\..\qrun\JvQUrlGrabbers.pas';
+  JvQUrlGrabbers in '..\..\qrun\JvQUrlGrabbers.pas',
+  JvQMail in '..\..\qrun\JvQMail.pas';
 
 end.
