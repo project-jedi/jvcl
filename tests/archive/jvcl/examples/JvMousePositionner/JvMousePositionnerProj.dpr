@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvMousePositionnerMainForm, JvMousePositionnerMainForm);
-  Application.CreateForm(TJvMousePositionnerMainForm, JvMousePositionnerMainForm);
   Application.Run;
 end.

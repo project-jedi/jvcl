@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvWindowsTitleMainForm, JvWindowsTitleMainForm);
-  Application.CreateForm(TJvWindowsTitleMainForm, JvWindowsTitleMainForm);
   Application.Run;
 end.

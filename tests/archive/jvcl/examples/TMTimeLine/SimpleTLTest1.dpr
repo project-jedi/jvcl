@@ -10,6 +10,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TTMTimeLineMainForm, TMTimeLineMainForm);
-  Application.CreateForm(TTMTimeLineMainForm, TMTimeLineMainForm);
   Application.Run;
 end.

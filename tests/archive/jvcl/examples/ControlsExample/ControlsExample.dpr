@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TControlsExampleMainForm, ControlsExampleMainForm);
-  Application.CreateForm(TControlsExampleMainForm, ControlsExampleMainForm);
   Application.Run;
 end.

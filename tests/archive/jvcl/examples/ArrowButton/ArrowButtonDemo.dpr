@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TArrowButtonMainForm, ArrowButtonMainForm);
-  Application.CreateForm(TArrowButtonMainForm, ArrowButtonMainForm);
   Application.Run;
 end.

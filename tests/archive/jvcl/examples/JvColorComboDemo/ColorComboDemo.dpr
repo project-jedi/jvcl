@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvColorComboDemoMainForm, JvColorComboDemoMainForm);
-  Application.CreateForm(TJvColorComboDemoMainForm, JvColorComboDemoMainForm);
   Application.Run;
 end.

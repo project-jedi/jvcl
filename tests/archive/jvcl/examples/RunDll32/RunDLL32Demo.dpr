@@ -10,6 +10,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TRunDll32MainForm, RunDll32MainForm);
-  Application.CreateForm(TRunDll32MainForm, RunDll32MainForm);
   Application.Run;
 end.

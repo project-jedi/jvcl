@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvScreenCaptureMainForm, JvScreenCaptureMainForm);
-  Application.CreateForm(TJvScreenCaptureMainForm, JvScreenCaptureMainForm);
   Application.Run;
 end.

@@ -11,6 +11,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TRegTVMainForm, RegTVMainForm);
-  Application.CreateForm(TRegTVMainForm, RegTVMainForm);
   Application.Run;
 end.

@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TMonthCalendarMainForm, MonthCalendarMainForm);
-  Application.CreateForm(TMonthCalendarMainForm, MonthCalendarMainForm);
   Application.Run;
 end.

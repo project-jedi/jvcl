@@ -10,7 +10,6 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvThumbnailMainForm, JvThumbnailMainForm);
-  Application.CreateForm(TJvThumbnailMainForm, JvThumbnailMainForm);
   Application.CreateForm(TJvThumbnailChildForm, JvThumbnailChildForm);
   Application.Run;
 end.

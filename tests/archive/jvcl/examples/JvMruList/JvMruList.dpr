@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TJvMruListMainForm, JvMruListMainForm);
-  Application.CreateForm(TJvMruListMainForm, JvMruListMainForm);
   Application.Run;
 end.

@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TTransBtnFormMain, TransBtnFormMain);
-  Application.CreateForm(TTransBtnFormMain, TransBtnFormMain);
   Application.Run;
 end.

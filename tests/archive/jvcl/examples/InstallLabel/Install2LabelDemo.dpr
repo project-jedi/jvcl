@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TInstallLabelMainForm, InstallLabelMainForm);
-  Application.CreateForm(TInstallLabelMainForm, InstallLabelMainForm);
   Application.Run;
 end.

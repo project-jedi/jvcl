@@ -13,6 +13,5 @@ begin
   Application.Initialize;
   Application.Title := 'Don''t Show Again (DSA) Examples and tests';
   Application.CreateForm(TDSADialogsMainForm, DSADialogsMainForm);
-  Application.CreateForm(TDSADialogsMainForm, DSADialogsMainForm);
   Application.Run;
 end.
