@@ -8,15 +8,15 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvCombobox.PAS, released on 2001-02-28.
+The Original Code is: JvActions.Pas, released on 2002-10-04.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
-Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
+Portions created by Sébastien Buysse are Copyright (C) 2002 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s): -
 
-Last Modified: 2000-02-28
+Last Modified: 2000-10-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -58,7 +58,7 @@ type
   public
     constructor Create;
     destructor Destroy;override;
-    procedure Execute;
+    function Execute: Boolean;
     property MapiComponent:TJclEmail read FMail write FMail;
   published
     property ShowDialogs: Boolean read FShowDialogs write FShowDialogs default true;
@@ -117,7 +117,7 @@ end;
 {**************************************************}
 function TJvSendMail.Execute: Boolean;
 begin
-  FMail.Execute;
+  result := FMail.Execute;
 end;
 {**************************************************}
 
@@ -137,9 +137,9 @@ begin
   inherited;
 end;
 {**************************************************}
-procedure TJvSendMailOptions.Execute;
+function TJvSendMailOptions.Execute: Boolean;
 begin
-  Fmail.Send(FShowDialogs);
+  result := Fmail.Send(FShowDialogs);
 end;
 {**************************************************}
 function TJvSendMailOptions.GetAttachments: TStrings;
