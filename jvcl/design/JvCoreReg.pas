@@ -8,15 +8,15 @@ implementation
 uses
   // About JVCL
   Classes, ActnList, DesignIntf,
-  JvxDConst,
-  JvActions, JvActnRes, JvJVCLAbout, JvJVCLAboutProperty, JVCLVer;
-  // JvWndProcHook
+  JvxDConst, JVCLVer,
+  JvActions, JvActnRes, JvJVCLAbout, 
+  JvJVCLAboutProperty;
 
 {.$R ..\resources\JvCoreReg.dcr}
 
 procedure Register;
 begin
-  RegisterComponents('Jv Core',[TJvJVCLAboutComponent {,TJvWindowHook}]);
+  RegisterComponents('Jv Standard',[TJvJVCLAboutComponent]);
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
   RegisterActions(srJVCLActions, [TJvSendMail, TJvWebAction], TJvStandardActions);
 end;
