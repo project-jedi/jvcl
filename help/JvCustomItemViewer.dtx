@@ -1,15 +1,15 @@
 ##Package: Custom
-##Status: Complete (peter3), Review
-##Skip: ViewerDrawText
-##Skip: TJvViewerItem.Owner
+##Status: Completed,Checked (peter3)
 ##Skip: TJvCustomItemViewerOptions.Owner
-##Skip: TJvViewerDrawStage
 ##Skip: TJvViewerAdvancedDrawEvent
 ##Skip: TJvViewerAdvancedItemDrawEvent
+##Skip: TJvViewerDrawStage
+##Skip: TJvViewerItem.Owner
+##Skip: ViewerDrawText
 ----------------------------------------------------------------------------------------------------
 @@JvCustomItemViewer.pas
 Summary
-  Contains the TJvCustomItemViewer component.
+  Contains base components and code for viewers that represent information in a grid like format.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
@@ -29,8 +29,8 @@ Parameters
 Summary
   Clears the internal list of brush patterns.
 Description
- ClearBrushPatterns removes all brush patterns created by CreateBrushPattern from the internal list.
- Normally, you should not need to call this function.
+  ClearBrushPatterns removes all brush patterns created by CreateBrushPattern from the internal list.
+  Normally, you should not need to call this function.
 See Also
   CreateBrushPattern, ReleasePattern
 ----------------------------------------------------------------------------------------------------
@@ -272,7 +272,7 @@ Summary
 Description
   DrawItem is called for each item when it needs to be redrawn. Override this method
   in a descendant class to change the way items are drawn. Depending on the value of Options.LazyRead, DrawItem
-  is called differently. If LazyRead is true, DrawITem is called fo each visible item. If LazyRead is false,
+  is called differently. If LazyRead is true, DrawItem is called fo each visible item. If LazyRead is false,
   DrawItem is called for all items.
 Parameters
   Index    - The index of the item in the Items array.
@@ -293,7 +293,7 @@ See Also
 Summary
   Finds and returns the index of the first selected item.
 Description
-  Call FindFirstSlected to find and return the first selected item in the control. If Options.MultiSelect
+  Call FindFirstSelected to find and return the first selected item in the control. If Options.MultiSelect
   is false, this is the same as SelectedIndex.
 See Also
   SelectedIndex, FindLastSelected
@@ -302,7 +302,7 @@ See Also
 Summary
   Finds and returns the index of the last selected item.
 Description
-  Call FIndFirstSlected to find and return the last selected item in the control. If Options.MultiSelect
+  Call FindLastSelected to find and return the last selected item in the control. If Options.MultiSelect
   is false, this is the same as SelectedIndex.
 See Also
   SelectedIndex, FindFirstSelected
@@ -365,7 +365,7 @@ Parameters
   S        - The string to calculate the rect for.
   ItemRect - The rect to adjust.
 Return value
-  A TRect adjusted according to the value of OptionsLayout.
+  A TRect adjusted according to the value of Options.Layout.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.IndexOf
 Summary
@@ -423,9 +423,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.ItemChanged
 Summary
-  Called whenever an item property has changed.
+  Called whenever an item property has \changed.
 Description
-  ItemChanged is called whenever an item (or one of its properties) in the Items array has changed. ItemCHanged
+  ItemChanged is called whenever an item (or one of its properties) in the Items array has changed. ItemChanged
   calls the OnItemChanged event.
 Parameters
   Item - The item that has changed. This parameter can be nil.
@@ -448,7 +448,7 @@ See Also
 Summary
   Calculates the bounding rect of an item.
 Description
-  ItemRect calculates the boudning rect of an item and return the result. If IncludeSpacing is true, the values of
+  ItemRect calculates the bounding rect of an item and return the result. If IncludeSpacing is true, the values of
   Options.VertSpacing and Options.HorzSpacing is included in the result.
 Parameters
   Index          - Index of the item to calculate.
@@ -487,13 +487,13 @@ Parameters
   State    - The state of the item to draw.
   Canvas   - The control's canvas to draw on.
   ItemRect - The bounding rect of the item to draw, excluding the text area.
-  TextRect - The boudning rect of the text area for the item.
+  TextRect - The bounding rect of the text area for the item.
 See Also
   DrawItem
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OnItemChanged
 Summary
-  Called when an item has changed.
+  Called when an item has \changed.
 Description
   Write an event handler for the OnItemChanged event to take specific action when an item in the Items array has changed.
   For example, you might want to update a status display whenever a property of an item has been modified.
@@ -520,7 +520,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.OnOptionsChanged
 Summary
-  Called when an option has chnaged.
+  Called when an option has changed.
 Description
   Write an event handler for the OnOptionsChanged event to take specific action whenever an option has changed.
 See Also
@@ -682,7 +682,7 @@ See Also
 Summary
   Specifies the background brush pattern to use for a selected item.
 Description
-  BrushPattern provides access to properties that control the appearance of the bacckground pattern used
+  BrushPattern provides access to properties that control the appearance of the background pattern used
   for selected items in a TJvCustomItemViewer.
 See Also
   TJvBrushPattern
@@ -743,7 +743,7 @@ Description
   true, items are created and initialized when needed. If LazyRead is false, items are created as soon
   as they are added to the Items array.
 See Also
-  TJvCustomItemViewer.Add, TJvCustomItemViewer.Insert, 
+  TJvCustomItemViewer.Add, TJvCustomItemViewer.Insert,
   TJvCustomItemViewer.Items, TJvCustomItemViewer.Count
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewerOptions.MultiSelect
@@ -856,24 +856,24 @@ Description
 @@TJvViewerAdvancedDrawEvent
 <TITLE TJvViewerAdvancedDrawEvent type>
 Summary
-  Event type for advanced drawing. 
+  Event type for advanced drawing.
 Description
-  Not used at the moment.  
+  Not used at the moment.
 Parameters
   Sender      - The control that triggered the event.
   Stage       - The current draw stage.
   Canvas      - The canvas to draw on. You can modify the properties of anvs (like Color and FOnt) to affect the default drawing.
   R           - The rect area to draw in.
-  DefaultDraw - Set this to true to have th econtrol perform default drawing.
+  DefaultDraw - Set this to true to have the control perform default drawing.
 See Also
   TJvViewerAdvancedItemDrawEvent
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerAdvancedItemDrawEvent
 <TITLE TJvViewerAdvancedItemDrawEvent type>
 Summary
-  Event type for advanced item drawing. 
+  Event type for advanced item drawing.
 Description
-  Not used at the moment.  
+  Not used at the moment.
 Parameters
   Sender      - The control that triggered the event.
   Stage       - The current draw stage.
@@ -882,7 +882,7 @@ Parameters
   Canvas      - The canvas to draw on. You can modify the properties of anvs (like Color and FOnt) to affect the default drawing.
   ItemRect    - The rect area of the item excluding the text area.
   TextRect    - The text area of the control.
-  DefaultDraw - Set this to true to have th econtrol perform default drawing.
+  DefaultDraw - Set this to true to have the control perform default drawing.
 See Also
   TJvViewerAdvancedDrawEvent
 ----------------------------------------------------------------------------------------------------
@@ -930,7 +930,7 @@ Description
   Use the State property to read and change the current state of an item. State indicates state
   information that can affect how an item is drawn.
 Note
-  All possible states might not apply to all item types. 
+  All possible states might not apply to all item types.
 ----------------------------------------------------------------------------------------------------
 @@TJvViewerItemChangedEvent
 <TITLE TJvViewerItemChangedEvent type>

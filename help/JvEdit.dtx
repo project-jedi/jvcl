@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Completed (II)
+##Status: Completed,Checked
 ##Skip: TJvCustomEdit.PasswordChar
 ##Skip: TJvCustomEdit.Text
 ----------------------------------------------------------------------------------------------------
@@ -64,9 +64,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.DisabledColor
 Summary
-  Specifies the background color of the control displayed when the control isn't enabled.
+  Specifies the background color of the control displayed when the control is not enabled.
 Description
-  Use DisabledColor to read or change the background color displayed when the control isn't enabled.
+  Use DisabledColor to read or change the background color displayed when the control is not enabled.
 
   Set Enabled to false to disable the control.
 See Also
@@ -74,10 +74,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.DisabledTextColor
 Summary
-  Specifies the color of the text when the control isn't enabled.
+  Specifies the color of the text when the control is not enabled.
 Description
   Use DisabledTextColor to specify the color of the text characters (as opposed to the background color),
-  when the control isn't enabled.
+  when the control is not enabled.
 
   Set Enabled to false to disable the control.
 See Also
@@ -88,7 +88,7 @@ Summary
   Determines whether the control appears flat.
 Description
   When Flat is false, the control has raised borders, which create a three-dimensional look.
-  Setting Flat to true gives the control flat borders. 
+  Setting Flat to true gives the control flat borders.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.GroupIndex
 Summary
@@ -144,7 +144,7 @@ Description
   Setting ProtectPassword to true will prevent other programs from access to the text of this edit
   control, and disable altering the PasswordChar.
 
-  This is usefull if you want the user to type enter a password in this edit control, and want to
+  This is useful if you want the user to enter a password in this edit control, but want to
   prevent possible trojans from retrieving the typed password.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.UseFixedPopup
@@ -152,13 +152,14 @@ Summary
   Specifies whether to replace the default system popup menu.
 Description
   Use the UseFixedPopup property to specify whether to replace the default system popup menu with a
-  fixed popup menu. 
+  fixed popup menu.
 
-  The fixed popup menu fixes problems such as incorrectly displaying the Paste command as enabled even 
-  when the edit is set to read-only, and works in combination with the ClipboardCommands property.
-  
+  The fixed popup menu fixes problems such as incorrectly displaying the Paste command as enabled even
+  when the edit is set to read-only, and works in combination with the
+  <LINK TJvExCustomEdit.ClipboardCommands,ClipboardCommands> property.
+
   Set UseFixedPopup to true (the default) to use the fixed popup menu, or set it to false to use
-  the defualt implementation.
+  the default implementation.
 ----------------------------------------------------------------------------------------------------
 @@TJvEdit
 <TITLEIMG TJvEdit>
@@ -166,7 +167,8 @@ JVCLInfo
   GROUP=JVCL.EditsMemosAndCombos.Edits
   FLAG=Component
 Summary
-  Supports extended features such as alignment, auto-save, custom caret and disabling clipboard commands.
+  Supports extended features such as alignment, password protection, custom caret and disabling
+  clipboard commands.
 Description
   TJvEdit implements the generic behavior introduced in TJvCustomEdit:
 

@@ -1,6 +1,6 @@
 ##Package: Custom
+##Status: Completed,Checked (peter3)
 ##Skip: TJvImageLoadEvent
-##Status: Complete (peter3), Review
 ----------------------------------------------------------------------------------------------------
 @@JvImagesViewer.pas
 Summary
@@ -13,7 +13,7 @@ Author
 Summary
   Defines an item in the Items array of a TJvImagesViewer control.
 Description
-  The TJvImagesViewer displays images either from isk or from other sources. Each item in its Items
+  The TJvImagesViewer displays images either from disk or from other sources. Each item in its Items
   array is of type TJvImageItem. Use the properties and methods of TJvImageItem to modify how the
   image is displayed in the TJvImagesViewer control.
 ----------------------------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvImageItem.Filename
 Summary
-  Specifies the filename of the file on disk the item is displaying.
+  Specifies the file name of the file on disk the item is displaying.
 Description
   Use Filename to set the file on disk the item should be displaying. When changing Filename, the item
   is not updated directly. Instead, Picture is set to nil and the next time the TJvImagesViewer control
@@ -61,16 +61,6 @@ See Also
 <TITLE TJvImageLoadErrorEvent type>
 <COMBINE TJvImagesViewer.OnLoadError>
 ----------------------------------------------------------------------------------------------------
-@@TJvImageLoadEvent
-<TITLE TJvImageLoadEvent type>
-Summary
-  Occurs when an image is loaded,
-Description
-  Not used.
-Parameters
-  Sender - The control that triggered the event.
-  Item   - The item that has loaded an image.
-----------------------------------------------------------------------------------------------------
 @@TJvImagesViewer
 <TITLEIMG TJvImagesViewer>
 JVCLInfo
@@ -88,7 +78,7 @@ Description
 Summary
   Specifies the directory to search for files.
 Description
-  Use the Dirrectory property to specify the directory to search for image files. Directory in combination
+  Use the Directory property to specify the directory to search for image files. Directory in combination
   with FileMask defines the file types to find.
 
   If you set Directory to an empty string, it will be expanded to the current directory (as returned
@@ -108,9 +98,11 @@ Description
 
   The following examples are all valid file masks:
 <EXAMPLE>
+<C>
   *.gif
   *.bmp;*.jpg;*.jpeg
   Jv*.bm?,*.g*,*.ico,*.ani,*.cur
+</C>
 </EXAMPLE>
 Note
   Changing FileMask triggers the LoadImages method.
@@ -121,7 +113,7 @@ See Also
 Summary
   Provides indexed access to the items in the control.
 Description
-  Use Items to access the items in the control. 
+  Use Items to access the items in the control.
 Parameters
   Index - The index of the item. Valid indices is in the range 0 to Count - 1.
 See Also
@@ -134,9 +126,6 @@ Description
   Call LoadImages to reread and display the content of a specific directory.
 Return value
   LoadImages returns true if it found at least one matching image.
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvImagesViewer.OnLoadBegin
 Summary
@@ -162,18 +151,18 @@ See Also
 Summary
   Occurs when an error occurs while loading an image.
 Description
-  Write a handler for the OnLoadError event to take spcific actions when an error occurs while loading an
+  Write a handler for the OnLoadError event to take specific actions when an error occurs while loading an
   image from file. For example, if the image file is corrupted or the file does not contain a recognized
   image format, this event is triggered.
 Parameters
   Sender   - The object that triggered the event.
   E        - The Exception object that was triggered.
   Filename - The file that triggered the event. This is empty if the image is loaded from some other
-  source than a file on disk (like the clipboard or a TPicture object).
+              source than a file on disk (like the clipboard or a TPicture object).
   Handled  - Set this parameter to true if you want to handle the error yourself. If Handled is false
-            (the default), no error is reported and the item is removed from the Items property. If
-            Handled is set to true, the image is cleared and the exception is raised but the item is
-            left in the Items property.
+              (the default), no error is reported and the item is removed from the Items property. If
+              Handled is set to true, the image is cleared and the exception is raised but the item is
+              left in the Items property.
 ----------------------------------------------------------------------------------------------------
 @@TJvImagesViewer.OnLoadProgress
 Summary
@@ -185,7 +174,6 @@ Description
 
   Write an OnLoadProgress event handler to provide the user with feedback during slow operations such
   as loading large compressed images.
-
 Parameters
   Sender      - The object that triggered the event.
   Item        - The item that is being loaded.
@@ -194,10 +182,10 @@ Parameters
                 when Stage is psStarting, updated while Stage is psRunning, and removed when Stage is psEnding.
   PercentDone - An approximation of how much of the operation has completed. Use PercentDone to update
                 the position of a progress bar or other indicator.
-  RedrawNow   - True if the control should be redrawn
-  R           - indicates whether the image can safely be drawn on screen at this point.
+  RedrawNow   - True if the control should be redrawn.
+  R           - Indicates whether the image can safely be drawn on screen at this point.
                 The R parameter specifies the portion of the image that has changed and needs to be redrawn.
-  Msg         - contains one or two words that describe what operation is occurring. For example, the value
+  Msg         - Contains one or two words that describe what operation is occurring. For example, the value
                 of Msg could be a string such as Loading, Storing, or Reducing colors. The Msg string can also be empty.
 Note
   The PercentDone parameter is only an approximation. With some image formats, the value of
@@ -206,12 +194,9 @@ Note
 ----------------------------------------------------------------------------------------------------
 @@TJvImagesViewer.Options
 Summary
-  Write here a summary (1 line)
+  Specifies options and default appearance for the images viewer.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use the Options property to customize the appearance and functionality of the images viewer.
 ----------------------------------------------------------------------------------------------------
 @@TJvImageViewerLoadProgress
 <TITLE TJvImageViewerLoadProgress type>
