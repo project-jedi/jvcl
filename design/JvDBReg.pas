@@ -34,7 +34,7 @@ procedure Register;
 implementation
 
 uses
-  Classes, ComCtrls,
+  Classes, ComCtrls, ActnList,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -49,7 +49,8 @@ uses
   JvCsvData, JvDBCombobox, JvDBControls, JvDBGrid, JvDBUltimGrid, JvDBGridFooter, JvDBRadioPanel,
   JvDBGridExport, JvDBLookupComboEdit, JvDBHTLabel, JvDBSearchEdit,
   JvDBSearchComboBox, JvAppDBStorage, JvDBFindEdit, JvDBImage, JvDBEditors,
-  JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridEditors, JvCsvDataEditor;
+  JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridEditors, JvCsvDataEditor,
+  JvDBActions, JvDBActnResForm;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBReg.dcr}
@@ -77,7 +78,7 @@ begin
   RegisterComponents(RsPaletteDBNonVisual, [TJvMemoryData,
     TJvCSVDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF},
     TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport,
-    TJvDBGridCSVExport, TJvDBGridXMLExport]);
+    TJvDBGridCSVExport, TJvDBGridXMLExport, TJvDatabaseActionList]);
   RegisterComponents(RsPaletteDBVisual, [TJvDBDatePickerEdit,
     TJvDBDateTimePicker, TJvDBProgressBar, TJvDBRichEdit, TJvDBSpinEdit,
     TJvDBLookupList, TJvDBLookupCombo, TJvDBLookupEdit, TJvDBRadioPanel,
@@ -115,6 +116,16 @@ begin
   RegisterPropertyEditor(TypeInfo(TStatusPanels), TJvDBGridFooter, cPanels, nil);
 
   RegisterComponentEditor(TJvMemoryData, TJvMemDataSetEditor);
+
+  RegisterActions (RsJVCLDBActionsCategory, [TJvDatabaseFirstAction,
+      TJvDatabaseLastAction, TJvDatabaseNextAction, TJvDatabasePriorAction,
+      TJvDatabaseNextBlockAction, TJvDatabasePriorBlockAction,
+      TJvDatabasePositionAction, TJvDatabaseRefreshAction,
+      TJvDatabaseInsertAction, TJvDatabaseCopyAction, TJvDatabaseEditAction,
+      TJvDatabaseDeleteAction, TJvDatabasePostAction, TJvDatabaseCancelAction,
+      TJvDatabaseSingleRecordWindowAction, TJvDatabaseSimpleAction,
+      TJvDatabaseOpenAction, TJvDatabaseCloseAction], TJvDialogActions);
+
 end;
 
 end.
