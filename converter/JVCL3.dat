@@ -232,3 +232,7 @@ InsertSpSymbolAt=InsertSpecialSymbolAt
 TCustomJvDBTreeView=TJvCustomDBTreeView
 LeftMargin=ItemPainter.LeftMargin
 OnDrawMargin=ItemPainter.OnDrawLeftMargin
+TglExportCaptions=TJvExportCaptions
+TExportRecordEvent=TJvExportRecordEvent
+TExportFieldEvent=TJvExportFieldEvent
+TGetLineFontEvent=TJvGetLineFontEvent
