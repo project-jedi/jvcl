@@ -21,7 +21,7 @@ Portions created by XXXX Corp. are Copyright (C) 2002, 2003 XXXX Corp.
 All Rights Reserved.
 
 Contributor(s):
-  Thomas Huber (Thomas_D_huber@t-online.de)
+  Thomas Huber (Thomas_D_huber att t-online dott de)
   peter3 (load new image only when needed, center image in control, draw border at designtime)
   marcelb (merging of JvTransLED and JvBlinkingLED)
 

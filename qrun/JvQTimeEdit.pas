@@ -46,8 +46,9 @@ type
   protected
     function GetValue: Extended; override;
     procedure SetValue(NewValue: Extended); override;
-    procedure IncrementValue ; //override;
-    procedure DecrementValue ; //override;
+    procedure UpClick(Sender: TObject); override;
+    procedure DownClick(Sender: TObject); override;
+    procedure DoEnter; override;
   public
     Constructor Create( AOwner: TComponent); override;
   published
@@ -147,11 +148,13 @@ implementation
 Constructor TJvTimeSpin.create(AOwner: TComponent);
 begin
   inherited;
-  EditMask := '!90:00:00;1; ';
   ValueType := vtFloat;
-  Text := FormatDateTime(LongTimeFormat, 0.5);
+  EditText := FormatDateTime(LongTimeFormat, 0.5);;
+  EditMask := '!90:00:00;1;';
   MinValue := 0.0;
   MaxValue := 1.0;
+  AutoSelect := false;
+  ButtonKind := bkClassic;
 end;
 
 procedure TJvTimeSpin.setTime(value :TTime);
@@ -161,7 +164,7 @@ end;
 
 function TJvTimeSpin.getTime: TTime;
 begin
-  if Text <> '' then
+  if (parent <> nil) and (Text <> '') then
     result := StrToTime( EditText )
   else
     Result := 0.5 ;
@@ -177,30 +180,31 @@ begin
   setTime(NewValue);
 end;
 
-procedure TJvTimeSpin.IncrementValue ;
+procedure TJvTimeSpin.UpClick(Sender: TObject) ;
 var
   delta : TDateTime;
   tf : TTimeField;
+  cp : integer;
 begin
   tf := GetTimeField;
-  delta := GetDelta(tf);
-  Time := self.Time + delta ;
-  if self.Time >= 1.0 then
-    Time := IncDay(self.Time, -1);
+  Increment := GetDelta(tf);
+  cp := CursorPos;
+  inherited;
+  CursorPos := cp;
   SetSelection(tf);
 end;
 
-procedure TJvTimeSpin.DecrementValue ;
+procedure TJvTimeSpin.DownClick(Sender: TObject);
 var
   delta : TDateTime;
   tf : TTimeField;
+  cp : integer;
 begin
   tf := GetTimeField;
-  delta := GetDelta(tf);
-  if delta > Time then
-    Time := self.Time + 1 - delta
-  else
-    Time := self.Time - delta ;
+  Increment := GetDelta(tf);
+  cp := CursorPos;
+  inherited;
+  CursorPos := cp;
   SetSelection(tf);
 end;
 
@@ -228,9 +232,16 @@ begin
   Increment := Result;
 end;
 
+procedure TJvTimeSpin.DoEnter;
+begin
+//  inherited DoEnter;
+  SetSelection(GetTimeField);
+end;
+
+
 procedure TJvTimeSpin.SetSelection(value: TTimeField);
 begin
-  SetFocus;
+//  SetFocus;
   case Value of
   teHours :
   begin

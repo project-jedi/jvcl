@@ -1820,9 +1820,9 @@ end;
 
 
 
-{ Gradient fill procedure - displays a gradient beginning with a chosen    }
-{ color and ending with another chosen color. Based on TGradientFill       }
-{ component source code written by Curtis White, cwhite@teleport.com.      }
+{ Gradient fill procedure - displays a gradient beginning with a chosen        }
+{ color and ending with another chosen color. Based on TGradientFill           }
+{ component source code written by Curtis White, cwhite att teleport dott com. }
 
 procedure GradientFillRect(Canvas: TCanvas; ARect: TRect; StartColor,
   EndColor: TColor; Direction: TFillDirection; Colors: Byte);
@@ -3252,7 +3252,7 @@ end;
 
 { Quantizing }
 { Quantizing procedures based on free C source code written by
-  Joe C. Oliphant, CompuServe 71742, 1451, joe_oliphant@csufresno.edu }
+  Joe C. Oliphant, CompuServe 71742, 1451, joe_oliphant att csufresno dott edu }
 
 const
   MAX_COLORS = 4096;
@@ -3601,8 +3601,8 @@ end;
 {
   Procedures to truncate to lower bits-per-pixel, grayscale, tripel and
   histogram conversion based on freeware C source code of GBM package by
-  Andy Key (nyangau@interalpha.co.uk). The home page of GBM author is
-  at http://www.interalpha.net/customer/nyangau/.
+  Andy Key (nyangau att interalpha dott co dott uk). The home page of GBM
+  author is at http://www.interalpha.net/customer/nyangau/.
 }
 
 { Truncate to lower bits per pixel }

@@ -15,7 +15,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDSADialogs.PAS, released on 2002-08-23.
 
-The Initial Developer of the Original Code is Marcel Bestebroer [marcelb@zeelandnet.nl]
+The Initial Developer of the Original Code is Marcel Bestebroer [marcelb att zeelandnet dott nl]
 Portions created by Marcel Bestebroer are Copyright (C) 2002 Marcel Bestebroer.
 All Rights Reserved.
 
@@ -40,8 +40,11 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  QControls, QStdCtrls, QDialogs, QExtCtrls, QForms, Types, QGraphics, 
-  QWindows, QClipbrd, 
+  {$IFDEF LINUX}
+  Qt,
+  {$ENDIF LINUX}
+  QControls, QStdCtrls, QDialogs, QExtCtrls, QForms, Types, QGraphics,
+  QWindows, QClipbrd,
   JclBase,
   JvQConsts, JvQComponent, JvQTypes, JvQDynControlEngine, JvQFinalize;
 
@@ -216,16 +219,16 @@ const
 //--------------------------------------------------------------------------------------------------
 
 // Additional values for DefaultButton, CancelButton and HelpButton parameters
+
 type
   TMsgDlgBtn =
-    (mbHelp, mbOk, mbCancel, mbYes, mbNo, mbAbort, mbRetry, mbIgnore,
-     mbAll, mbNoToAll, mbYesToAll);
+    (mbNone, mbOk, mbCancel, mbYes, mbNo, mbAbort, mbRetry, mbIgnore,
+     mbAll, mbNoToAll, mbYesToAll, mbHelp);
   TMsgDlgButtons = set of TMsgDlgBtn;
-const
-  mbNone = TMsgDlgBtn(-1);
+
+
+const 
   mbDefault = TMsgDlgBtn(-2);
-
-
 
 procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const ADynControlEngine: TJvDynControlEngine = nil);
@@ -270,38 +273,46 @@ function MessageDlgEx(const Caption, Msg: string; const Picture: TGraphic; const
 
 procedure DSAShowMessage(const DlgID: Integer; const Msg: string; const Center: TDlgCenterKind = dckScreen;
   const Timeout: Integer = 0; const ADynControlEngine: TJvDynControlEngine = nil);
+
 procedure DSAShowMessageFmt(const DlgID: Integer; const Msg: string; const Params: array of const;
   const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const ADynControlEngine: TJvDynControlEngine = nil);
+
 function DSAMessageDlg(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
   const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
   const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
   const CancelButton: TMsgDlgBtn = mbDefault; const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
+
 function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string; const DlgType: TMsgDlgType;
   const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
   const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
   const CancelButton: TMsgDlgBtn = mbDefault; const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
+
 function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
   const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
   const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
   const CancelButton: TMsgDlgBtn = mbDefault; const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
+
 function DSAMessageDlgEx(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
   const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
-  const DefaultButton: Integer = 0; const CancelButton: Integer = 1; const HelpButton: Integer = -1;
+  const DefaultButton: Integer = integer(mbYes); const CancelButton: Integer = integer(mbNo); const HelpButton: Integer = -1;
   const ADynControlEngine: TJvDynControlEngine = nil): Integer; overload;
+
 function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string; const DlgType: TMsgDlgType;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0; const DefaultButton: Integer = 0;
-  const CancelButton: Integer = 1; const HelpButton: Integer = -1;
-  const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
+  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
+  const DefaultButton: Integer = integer(mbYes);  const CancelButton: Integer = integer(mbNo);
+  const HelpButton: Integer = integer(mbHelp); const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
+
 function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0; const DefaultButton: Integer = 0;
-  const CancelButton: Integer = 1; const HelpButton: Integer = -1;
+  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
+  const DefaultButton: Integer = integer(mbYes); const CancelButton: Integer = integer(mbNo);
+  const HelpButton: Integer = integer(mbHelp);
   const ADynControlEngine: TJvDynControlEngine = nil): Integer; overload;
 
 //----------------------------------------------------------------------------
@@ -311,8 +322,9 @@ function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string; const
 function CreateDSAMessageForm(const ACaption, Msg: string; const APicture: TGraphic;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Integer;
   const CheckCaption: string; const Center: TDlgCenterKind = dckScreen;
-  const ATimeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  HelpButton: Integer = -1; const ADynControlEngine: TJvDynControlEngine = nil): TDSAMessageForm;
+  const ATimeout: Integer = 0; const DefaultButton: Integer = integer(mbYes);
+  const CancelButton: Integer = integer(mbNo);  HelpButton: Integer = integer(mbHelp);
+  const ADynControlEngine: TJvDynControlEngine = nil): TDSAMessageForm;
 
 //----------------------------------------------------------------------------
 // DSA registration
@@ -427,8 +439,7 @@ type
 implementation
 
 uses
-  Math, TypInfo,  
-  QConsts, 
+  Math, TypInfo, QConsts,
   {$IFDEF MSWINDOWS}
   JclRegistry,
   {$ENDIF MSWINDOWS}
@@ -619,8 +630,8 @@ end;
 function CreateDSAMessageForm(const ACaption, Msg: string; const APicture: TGraphic;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Integer;
   const CheckCaption: string; const Center: TDlgCenterKind = dckScreen;
-  const ATimeout: Integer = 0; const DefaultButton: Integer = 0;
-  const CancelButton: Integer = 1; HelpButton: Integer = -1;
+  const ATimeout: Integer = 0; const DefaultButton: Integer = integer(mbYes);
+  const CancelButton: Integer = integer(mbNo); HelpButton: Integer = integer(mbHelp);
   const ADynControlEngine: TJvDynControlEngine = nil): TDSAMessageForm;
 const
   mcHorzMargin = 8;
@@ -1521,15 +1532,15 @@ const
     (QMessageBoxIcon_Warning,  QMessageBoxIcon_Critical, QMessageBoxIcon_Information,
      QMessageBoxIcon_NoIcon, QMessageBoxIcon_NoIcon);
   {$ENDIF LINUX}
-  
+
   // TMsgDlgType = (mtCustom, mtInformation, mtWarning, mtError, mtConfirmation);
   ButtonCaptions: array [TMsgDlgBtn] of string =
-   (SMsgDlgHelp, SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
+   ('', SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
     SMsgDlgNo, SMsgDlgAbort, SMsgDlgRetry, SMsgDlgIgnore,
-    SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll);
+    SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll, SMsgDlgHelp);
   ModalResults: array [TMsgDlgBtn] of Integer =
    (0, mrOk, mrCancel, mrYes, mrNo, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
-    mrYesToAll); 
+    mrYesToAll, mrOK);
 
 function DlgCaption(const DlgType: TMsgDlgType): string;
 begin
@@ -1542,12 +1553,12 @@ begin
   if IconIDs[DlgType] <> nil then
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  if IconIDs[DlgType] <> nil then
+  if IconIDs[DlgType] <> QMessageBoxIcon_NoIcon then
   {$ENDIF LINUX}
   begin
     Result := TIcon.Create;
-    try  
-      // TODO 
+    try
+      // TODO
     except
       Result.Free;
       raise;

@@ -36,7 +36,7 @@ uses
   Classes, SysUtils,
   QStdCtrls, QExtCtrls, Types, QGraphics, QForms, QControls, QDialogs, QComCtrls, 
   Variants, 
-  JvQTypes, JvQDynControlEngine, JvQDynControlEngineIntf, JvQDsaDialogs,
+  JvQTypes, JvQDynControlEngine, JvQDynControlEngineIntf, JvQDSADialogs,
   JvQComponent, JvQPanel, JvQPropertyStore, JvQAppStorage, JvQAppStorageSelectList;
 
 type

@@ -52,29 +52,29 @@ type
     FCaret: TJvCaret;
     FEntering: Boolean;
     FLeaving: Boolean;
-    FGroupIndex: Integer;
+    //FGroupIndex: Integer;
     FProtectPassword: Boolean;
     FLastNotifiedText: String;
     FOnSetFocus: TJvFocusChangeEvent;
     FOnKillFocus: TJvFocusChangeEvent;
     procedure SetHotTrack(Value: Boolean); 
   protected
-    procedure UpdateEdit;
+    //procedure UpdateEdit;
     procedure CaretChanged(Sender: TObject); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    //function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
     procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
-    procedure DoClipboardPaste; override; 
+    //procedure DoClipboardPaste; override; 
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override; 
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    //procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure SetCaret(const Value: TJvCaret);
-    procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
-    procedure SetGroupIndex(const Value: Integer);
+    //procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
+    //procedure SetGroupIndex(const Value: Integer);
     procedure NotifyIfChanged;
     procedure Change; override;
   public 
@@ -89,7 +89,7 @@ type
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property Caret: TJvCaret read FCaret write SetCaret;
-    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
+    //property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
 
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
@@ -101,7 +101,6 @@ type
     property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
-    property GroupIndex;
     property HintColor;
     property HotTrack;
     property ProtectPassword;
@@ -158,7 +157,7 @@ begin
   FHotTrack := False;
   FCaret := TJvCaret.Create(Self);
   FCaret.OnChanged := CaretChanged;
-  FGroupIndex := -1;
+  //FGroupIndex := -1;
   FEntering := False;
   FLeaving := False;
 end;
@@ -215,63 +214,63 @@ begin
   FCaret.Assign(Value);
 end;
 
-procedure TJvCustomMaskEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
-begin
-  if ClipboardCommands <> Value then
-  begin
-    inherited SetClipboardCommands(Value);
-    ReadOnly := ClipboardCommands <= [caCopy];
-  end;
-end;
+//procedure TJvCustomMaskEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
+//begin
+//  if ClipboardCommands <> Value then
+//  begin
+//    inherited SetClipboardCommands(Value);
+//    ReadOnly := ClipboardCommands <= [caCopy];
+//  end;
+//end;
 
-procedure TJvCustomMaskEdit.SetGroupIndex(const Value: Integer);
-begin
-  FGroupIndex := Value;
-  UpdateEdit;
-end;
+//procedure TJvCustomMaskEdit.SetGroupIndex(const Value: Integer);
+//begin
+//  FGroupIndex := Value;
+//  UpdateEdit;
+//end;
 
-procedure TJvCustomMaskEdit.UpdateEdit;
-var
-  I: Integer;
-begin
-  if Assigned(Owner) then
-    for I := 0 to Owner.ComponentCount - 1 do
-      if (Owner.Components[i] is TJvCustomMaskEdit) then
-        with TJvCustomMaskEdit(Owner.Components[i]) do
-          if (Name <> Self.Name) and (GroupIndex <> -1) and
-            (GroupIndex = Self.GroupIndex) then
-            Clear;
-end;
+//procedure TJvCustomMaskEdit.UpdateEdit;
+//var
+//  I: Integer;
+//begin
+//  if Assigned(Owner) then
+//    for I := 0 to Owner.ComponentCount - 1 do
+//      if (Owner.Components[i] is TJvCustomMaskEdit) then
+//        with TJvCustomMaskEdit(Owner.Components[i]) do
+//          if (Name <> Self.Name) and (GroupIndex <> -1) and
+//            (GroupIndex = Self.GroupIndex) then
+//            Clear;
+//end;
 
-procedure TJvCustomMaskEdit.DoClipboardPaste;
-begin
-  inherited DoClipboardPaste;
-  UpdateEdit;
-end;
+//procedure TJvCustomMaskEdit.DoClipboardPaste;
+//begin
+//  inherited DoClipboardPaste;
+//  UpdateEdit;
+//end;
 
 
 
-function TJvCustomMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  Result := False;
-  if csDestroying in ComponentState then
-    Exit;
-  if Enabled then
-    Result := inherited DoPaintBackground(Canvas, Param)
-  else
-  begin
-    Canvas.Brush.Color := DisabledColor;
-    Canvas.Brush.Style := bsSolid;
-    Canvas.FillRect(ClientRect);
-    Result := True;
-  end;
-end;
+//function TJvCustomMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+//begin
+//  Result := False;
+//  if csDestroying in ComponentState then
+//    Exit;
+//  if Enabled then
+//    Result := inherited DoPaintBackground(Canvas, Param)
+//  else
+//  begin
+//    Canvas.Brush.Color := DisabledColor;
+//    Canvas.Brush.Style := bsSolid;
+//    Canvas.FillRect(ClientRect);
+//    Result := True;
+//  end;
+//end;
 
-procedure TJvCustomMaskEdit.KeyDown(var Key: Word; Shift: TShiftState);
-begin
-  UpdateEdit;
-  inherited KeyDown(Key, Shift);
-end;
+//procedure TJvCustomMaskEdit.KeyDown(var Key: Word; Shift: TShiftState);
+//begin
+//  UpdateEdit;
+//  inherited KeyDown(Key, Shift);
+//end;
 
 
 

@@ -15,8 +15,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDiagramShape.PAS, released on 2002-03-22.
 
-Original Developer: Jim Cooper <jcooper@tabdee.ltd.uk>
-Contributor(s): Michael Beck <mbeck1@compuserve.com>
+Original Developer: Jim Cooper <jcooper att tabdee dott ltd dott uk>
+Contributor(s): Michael Beck <mbeck1 att compuserve dott com>
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

@@ -39,10 +39,11 @@ unit JvQSegmentedLEDDisplay;
 interface
 
 uses
-  Classes, Types, QGraphics, QWindows, 
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS} 
+  {$ENDIF MSWINDOWS}
+  Classes, Types, QGraphics,  
+  QWindows, 
   JclBase,
   JvQComponent, JvQTypes;
 
@@ -50,7 +51,9 @@ uses
 // asn: does this work with clx/linux?
 const
   clDefaultBackground = TColor($20100001);
-  clDefaultLitColor = TColor($20100002);
+  clDefaultLitColor = TColor($20100002);  
+  NullHandle = nil; 
+  
 
 type
   TJvCustomSegmentedLEDDisplay = class;
@@ -1186,7 +1189,7 @@ begin
         begin
           Rgn := CreatePolygonRgn(SegPts[0], Length(SegPts), WINDING);
           try
-            if Rgn <> 0 then
+            if Rgn <> NullHandle then
               Result := PtInRegion(Rgn, Pt.X, Pt.Y)
             else
               Result := False;
@@ -1200,7 +1203,7 @@ begin
         begin
           Rgn := CreateEllipticRgn(SegPts[0].X, SegPts[0].Y, SegPts[1].X, SegPts[1].Y);
           try
-            if Rgn <> 0 then
+            if Rgn <> NullHandle then
               Result := PtInRegion(Rgn, Pt.X, Pt.Y)
             else
               Result := False;

@@ -47,7 +47,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS} 
   Types, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
-  QFileCtrls, QMask, QImgList, QActnList, QExtDlgs, 
+  QFileCtrls, QMask, QImgList, QActnList, QExtDlgs,
   RTLConsts, Variants,  
   Qt, QComboEdits, QWindows, JvQExComboEdits, 
   JvQSpeedButton, JvQTypes, JvQExMask, JvQExForms;
@@ -127,7 +127,7 @@ type
 
   TJvCustomComboEditActionLinkClass = class of TJvCustomComboEditActionLink;
   
-  TJvCustomComboEdit = class(TJvExCustomComboMaskEdit) 
+  TJvCustomComboEdit = class(TJvExCustomComboMaskEdit)
   private
     FOnButtonClick: TNotifyEvent;
     FClickKey: TShortCut;
@@ -145,7 +145,10 @@ type
     FImageKind: TJvImageKind;
     FNumGlyphs: Integer;
     FStreamedButtonWidth: Integer;
+    FStreamedFixedWidth: Boolean;
     FOnEnabledChanged: TNotifyEvent;
+    { Check still necessary }
+    FHold: Boolean;
     function BtnWidthStored: Boolean;
     function GetButtonFlat: Boolean;
     function GetButtonHint: string;
@@ -166,32 +169,39 @@ type
     procedure SetButtonFlat(const Value: Boolean);
     procedure SetButtonHint(const Value: string);
     procedure SetButtonWidth(Value: Integer);
-    procedure SetEditRect;
     procedure SetGlyph(Value: TBitmap);
     procedure SetGlyphKind(Value: TGlyphKind);
     procedure SetImageIndex(const Value: TImageIndex);
     procedure SetImageKind(const Value: TJvImageKind);
     procedure SetImages(const Value: TCustomImageList);
     procedure SetNumGlyphs(const Value: TNumGlyphs);
-    procedure UpdateBtnBounds;
-    procedure UpdateEdit; // RDB
+    procedure UpdateBtnBounds(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
+    { (rb) renamed from UpdateEdit }
+    procedure UpdateGroup; // RDB
  
   protected
     FButton: TJvEditButton; // Polaris
     FBtnControl: TWinControl;
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
-    FPopup: TWinControl;
+    FPopup: TWinControl; 
     procedure DoClearText; override;
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
-    procedure DoBoundsChanged; override;
+    procedure AdjustSize; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
+    procedure DoCtl3DChanged; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    { Repositions the child controls; checkbox }
+    procedure UpdateControls; virtual;
+    { Updates the margins of the edit box }
+    procedure UpdateMargins; dynamic;
+    { Returns the margins of the edit box }
+    procedure GetInternalMargins(var ALeft, ARight: Integer); virtual; 
     procedure DoFlatChanged; override;
     procedure Paint; override; 
     class function DefaultImageIndex: TImageIndex; virtual;
@@ -241,6 +251,7 @@ type
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow; // RDB
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText; // RDB
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
+    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex stored IsImageIndexStored default -1;
     property ImageKind: TJvImageKind read FImageKind write SetImageKind default ikCustom;
     property Images: TCustomImageList read FImages write SetImages;
@@ -253,8 +264,6 @@ type
 
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
   public
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoClick;
@@ -321,6 +330,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
@@ -358,7 +369,6 @@ type
     property LongName: string read GetLongName;
     property ShortName: string read GetShortName;
   published 
-    property AutoSize;
     property OnBeforeDialog: TExecOpenDialogEvent read FOnBeforeDialog
       write FOnBeforeDialog;
     property OnAfterDialog: TExecOpenDialogEvent read FOnAfterDialog
@@ -368,7 +378,6 @@ type
     property ClipboardCommands; // RDB
     property DisabledTextColor; // RDB
     property DisabledColor; // RDB
-    property OnKeyDown; // RDB
   end;
 
   TFileDialogKind = (dkOpen, dkSave, dkOpenPicture, dkSavePicture);
@@ -436,12 +445,13 @@ type
     property CharCase;
     property ClickKey;
     property Color;
-    property DirectInput; 
+    property DirectInput;
     property DragMode;
     property EditMask;
     property Enabled;
     property Font;
     property Glyph;
+    property GroupIndex;
     property ImageIndex;
     property Images;
     property ImageKind;
@@ -472,6 +482,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
@@ -516,6 +528,7 @@ type
     property Enabled;
     property Font;
     property Glyph;
+    property GroupIndex;
     property ImageIndex;
     property Images;
     property ImageKind;
@@ -546,6 +559,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
@@ -576,7 +591,6 @@ type
     FOnAcceptDate: TExecDateDialog;
     FOnInvalidDate: TJvInvalidDateEvent;
     FDefaultToday: Boolean;
-    //    FHooked: Boolean;
     FPopupColor: TColor;
     FCheckOnExit: Boolean;
     FBlanksChar: Char;
@@ -592,7 +606,6 @@ type
     procedure SetMaxDate(Value: TDateTime);
     // Polaris
     function GetDate: TDateTime;
-    //    procedure SetDate(Value: TDateTime);
     procedure SetYearDigits(Value: TYearDigits);
     function GetPopupColor: TColor;
     procedure SetPopupColor(Value: TColor);
@@ -613,8 +626,7 @@ type
     function StoreMinDate: Boolean;
     function StoreMaxDate: Boolean;
     // Polaris
-    function FourDigitYear: Boolean;
-    //    function FormatSettingsChange(var Msg: TMessage): Boolean; 
+    function FourDigitYear: Boolean; 
   protected
     // Polaris
     FDateAutoBetween: Boolean;
@@ -703,6 +715,7 @@ type
     property Enabled;
     property Font;
     property Glyph;
+    property GroupIndex;
     property ImageIndex;
     property Images;
     property ImageKind;
@@ -743,6 +756,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
@@ -770,7 +785,7 @@ function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
   the class is derived from another class, it uses the ClientRect of the edit
   control. }
 function PaintEdit(Editor: TCustomEdit; const AText: WideString;
-  AAlignment: TAlignment; PopupVisible: Boolean; 
+  AAlignment: TAlignment; PopupVisible: Boolean;
   DisabledTextColor: TColor; StandardPaint: Boolean; Flat: Boolean;
   ACanvas: TCanvas): Boolean;
 
@@ -1065,7 +1080,7 @@ begin
   try
     ACanvas.Font := ed.Font;
 
-   // paint Border
+    // paint Border
     R := ed.ClientRect;
     Offset := 0;
     if (ed.BorderStyle = bsSingle) then
@@ -1224,6 +1239,30 @@ begin
     Height := Metrics.tmHeight + I;
 end;
 
+procedure TJvCustomComboEdit.AdjustSize;
+var
+  MinHeight: Integer;
+begin
+  inherited AdjustSize;
+  if not (csLoading in ComponentState) then
+  begin
+    MinHeight := GetMinHeight;
+    { text edit bug: if size to less than MinHeight, then edit ctrl does
+      not display the text }
+    if Height < MinHeight then
+    begin
+      Height := MinHeight;
+      Exit;
+    end;
+  end
+  else
+  begin
+    if (FPopup <> nil) and (csDesigning in ComponentState) then
+      FPopup.SetBounds(0, Height + 1, 10, 10);
+  end;
+  UpdateMargins;
+end;
+
 function TJvCustomComboEdit.BtnWidthStored: Boolean;
 begin
   if (FImageKind = ikDefault) and (DefaultImages <> nil) and (DefaultImageIndex >= 0) then
@@ -1272,11 +1311,13 @@ begin
   FBtnControl.Width := DefEditBtnWidth;
   FBtnControl.Height := 17;
   FBtnControl.Visible := True;  
-  FBtnControl.Parent := Self.ClientArea; 
+  FBtnControl.Parent := Self.ClientArea;  
+  FBtnControl.Align := alCustom; 
   FButton := TJvEditButton.Create(Self);
   FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
   FButton.Visible := True;
   FButton.Parent := FBtnControl;
+  FButton.Align := alClient;
   TJvEditButton(FButton).OnClick := EditButtonClick;
   Height := 21;
   (* ++ RDB ++ *)
@@ -1297,8 +1338,12 @@ end;
 procedure TJvCustomComboEdit.CreateWidget;
 begin
   inherited CreateWidget;
-  SetEditRect;
+  UpdateControls;
+  UpdateMargins;
 end;
+
+
+
 
 
 
@@ -1329,30 +1374,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomComboEdit.DoBoundsChanged;
-var
-  MinHeight: Integer;
-begin
-  inherited DoBoundsChanged;
-  if not (csLoading in ComponentState) then
-  begin
-    MinHeight := GetMinHeight;
-    { text edit bug: if size to less than MinHeight, then edit ctrl does
-      not display the text }
-    if Height < MinHeight then
-    begin
-      Height := MinHeight;
-      Exit;
-    end;
-  end
-  else
-  begin
-    if (FPopup <> nil) and (csDesigning in ComponentState) then
-      FPopup.SetBounds(0, Height + 1, 10, 10);
-  end;
-  UpdateBtnBounds;
-end;
-
 procedure TJvCustomComboEdit.DoChange;
 begin
   inherited Change;
@@ -1378,7 +1399,13 @@ procedure TJvCustomComboEdit.DoClipboardPaste;
 begin
   if FDirectInput and not ReadOnly then
     inherited DoClipboardPaste;
-  UpdateEdit;
+  UpdateGroup;
+end;
+
+procedure TJvCustomComboEdit.DoCtl3DChanged;
+begin
+  UpdateMargins;
+  UpdateControls;
 end;
 
 procedure TJvCustomComboEdit.DoEnter;
@@ -1392,7 +1419,8 @@ end;
 procedure TJvCustomComboEdit.DoFlatChanged;
 begin
   inherited DoFlatChanged;
-  UpdateBtnBounds;
+  UpdateControls;
+  UpdateMargins;
 end;
 
 
@@ -1407,6 +1435,7 @@ function TJvCustomComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): 
 begin
   Result := True;
   if csDestroying in ComponentState then
+    { (rb) Implementation diffs; some return True other False }
     Exit;
   if Enabled then
     Result := inherited DoPaintBackground(Canvas, Param)
@@ -1449,7 +1478,7 @@ procedure TJvCustomComboEdit.FontChanged;
 begin
   inherited FontChanged;
   if HandleAllocated then
-    SetEditRect;
+    UpdateMargins;
 end;
 
 function TJvCustomComboEdit.GetActionLinkClass: TControlActionLinkClass;
@@ -1485,6 +1514,14 @@ end;
 function TJvCustomComboEdit.GetGlyphKind: TGlyphKind;
 begin
   Result := TGlyphKind(FImageKind);
+end;
+
+procedure TJvCustomComboEdit.GetInternalMargins(var ALeft,
+  ARight: Integer);
+const
+  CPixelsBetweenEditAndButton = 2;
+begin
+  ARight := ARight + FBtnControl.Width + CPixelsBetweenEditAndButton;
 end;
 
 function TJvCustomComboEdit.GetMinHeight: Integer;
@@ -1564,6 +1601,8 @@ procedure TJvCustomComboEdit.KeyDown(var Key: Word; Shift: TShiftState);
 var
   Form: TCustomForm;
 begin
+  UpdateGroup;
+
   //Polaris
   Form := GetParentForm(Self);
   if (ssCtrl in Shift) then
@@ -1633,14 +1672,21 @@ procedure TJvCustomComboEdit.Loaded;
 begin
   inherited Loaded;
   if FStreamedButtonWidth >= 0 then
+  begin
     SetButtonWidth(FStreamedButtonWidth);
-  DoBoundsChanged;
+    if FStreamedFixedWidth then
+      with FButton do
+        ControlStyle := ControlStyle + [csFixedWidth];
+  end;
+
+  UpdateControls;
+  UpdateMargins;
 end;
 
 procedure TJvCustomComboEdit.LocalKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  UpdateEdit;
+  UpdateGroup;
   if Assigned(FOnKeyDown) then
     FOnKeyDown(Sender, Key, Shift);
 end;
@@ -1672,6 +1718,7 @@ begin
 end;
 
 
+
 procedure TJvCustomComboEdit.Paint;
 begin
   if Enabled then
@@ -1683,6 +1730,7 @@ begin
       inherited Paint;
   end;
 end;
+
 
 
 procedure TJvCustomComboEdit.PopupChange;
@@ -1822,7 +1870,7 @@ begin
   begin
     FButton.ImageIndex := -1;
     FButton.NumGlyphs := 1;
-  end;
+  end; 
 
   case FImageKind of
     ikDropDown:
@@ -1863,14 +1911,6 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.SetBounds(ALeft, ATop, AWidth,
-  AHeight: Integer);
-begin
-  inherited SetBounds(ALeft, ATop, AWidth, AHeight); 
-  if HandleAllocated then
-    SetEditRect;
-end;
-
 procedure TJvCustomComboEdit.SetButtonFlat(const Value: Boolean);
 begin
   FButton.Flat := Value; 
@@ -1884,7 +1924,10 @@ end;
 procedure TJvCustomComboEdit.SetButtonWidth(Value: Integer);
 begin
   if csLoading in ComponentState then
-    FStreamedButtonWidth := Value
+  begin
+    FStreamedButtonWidth := Value;
+    FStreamedFixedWidth := False;
+  end
   else
   if ButtonWidth <> Value then
   begin
@@ -1905,6 +1948,8 @@ begin
       ((Assigned(Parent) and (Value < ClientWidth)) or
       (not Assigned(Parent) and (Value < Width))) then
     begin
+      FBtnControl.SetBounds(FBtnControl.Left + FBtnControl.Width - Value,
+        FBtnControl.Top, Value, FBtnControl.Height);
       FButton.Width := Value;
       with FButton do
         ControlStyle := ControlStyle - [csFixedWidth];
@@ -1950,37 +1995,6 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.SetEditRect;
-const
-  CPixelsBetweenEditAndButton = 2;
-var
-  Loc: TRect;
-  LLeft: Integer;
-  LTop: Integer;
-  LRight: Integer;
-begin
-  AdjustHeight;
-
-  LTop := 0;
-  LLeft := 0;
-  LRight := 0;
- 
-
-  if NewStyleControls and (BorderStyle = bsSingle) then
-  begin  
-    if not Flat then 
-      LRight := 1
-    else
-      LRight := 2;
-  end;
-
-  SetRect(Loc, LLeft, LTop, FBtnControl.Left + LRight - CPixelsBetweenEditAndButton, ClientHeight - 1);  
-  SetEditorRect(@Loc); 
-
-  //Polaris
-  //  SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN, MakeLong(0, FBtnControl.Width));
-end;
-
 procedure TJvCustomComboEdit.SetGlyph(Value: TBitmap);
 begin
   ImageKind := ikCustom;
@@ -1996,7 +2010,7 @@ end;
 procedure TJvCustomComboEdit.SetGroupIndex(const Value: Integer);
 begin
   FGroupIndex := Value;
-  UpdateEdit;
+  UpdateGroup;
 end;
 
 procedure TJvCustomComboEdit.SetImageIndex(const Value: TImageIndex);
@@ -2031,9 +2045,21 @@ begin
             ButtonWidth := Max(FButton.Images.Width + 6, FButton.Width)
         end;
       ikDropDown:
+        if csLoading in ComponentState then
         begin
-          { Dropdown has a default width }
+          if (FStreamedButtonWidth < 0) or FStreamedFixedWidth then
+          begin
+            ButtonWidth := GetSystemMetrics(SM_CXVSCROLL);
+            { Setting ButtonWidth will set FStreamedFixedWidth to False, thus
+              reapply it. }
+            FStreamedFixedWidth := True;
+          end;
+        end
+        else
+        begin
           ButtonWidth := GetSystemMetrics(SM_CXVSCROLL);
+          { Setting ButtonWidth will remove the csFixedWidth flag, thus
+            reapply it. }
           with FButton do
             ControlStyle := ControlStyle + [csFixedWidth];
         end;
@@ -2097,7 +2123,7 @@ begin
   TJvPopupWindow(FPopup).Show(Origin);
 end;
 
-procedure TJvCustomComboEdit.UpdateBtnBounds;
+procedure TJvCustomComboEdit.UpdateBtnBounds(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
 var
   BtnRect: TRect;
 begin
@@ -2118,23 +2144,58 @@ begin
     end
   else
     BtnRect := Bounds(Width - FButton.Width, 0, FButton.Width, Height);
-  with BtnRect do
-    FBtnControl.SetBounds(Left, Top, Right - Left, Bottom - Top);
-  FButton.Height := FBtnControl.Height;
-  SetEditRect;
+
+  NewLeft := BtnRect.Left;
+  NewTop := BtnRect.Top;
+  NewWidth := BtnRect.Right - BtnRect.Left;
+  NewHeight := BtnRect.Bottom - BtnRect.Top;
 end;
 
-procedure TJvCustomComboEdit.UpdateEdit;
+procedure TJvCustomComboEdit.UpdateControls;
+begin
+  { Notification }
+end;
+
+procedure TJvCustomComboEdit.UpdateGroup;
 var
   I: Integer;
 begin
-  if Owner <> nil then
+  if (FGroupIndex <> -1) and (Owner <> nil) then
     for I := 0 to Owner.ComponentCount - 1 do
       if Owner.Components[I] is TJvCustomComboEdit then
-        if ((Owner.Components[I].Name <> Self.Name) and
-          ((Owner.Components[I] as TJvCustomComboEdit).FGroupIndex <> -1) and
-          ((Owner.Components[I] as TJvCustomComboEdit).FGroupIndex = Self.FGroupIndex)) then
-          (Owner.Components[I] as TJvCustomComboEdit).Caption := '';
+        with TJvCustomComboEdit(Owner.Components[I]) do
+          if (Name <> Self.Name) and (FGroupIndex = Self.FGroupIndex) then
+            Clear;
+end;
+
+procedure TJvCustomComboEdit.UpdateMargins;
+var
+  LLeft, LRight, LTop: Integer;
+  Loc: TRect;
+begin
+  { delay until Loaded }
+  if csLoading in ComponentState then
+    Exit;
+
+  {UpdateMargins gets called whenever the layout of child controls changes.
+   It uses GetInternalMargins to determine the left and right margins of the
+   actual text area.}
+
+  AdjustHeight;
+
+  LTop := 0;
+  LLeft := 0;
+  LRight := 0;
+  
+  begin
+    if (BorderStyle = bsSingle) {and Ctl3D} then
+      LRight := 3
+  end;
+
+  GetInternalMargins(LLeft, LRight);
+
+  SetRect(Loc, LLeft, LTop, Width - LRight, ClientHeight - 1);  
+  SetEditorRect(@Loc); 
 end;
 
 procedure TJvCustomComboEdit.UpdatePopupVisible;

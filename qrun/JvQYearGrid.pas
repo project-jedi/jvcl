@@ -42,8 +42,7 @@ uses
   {$ENDIF MSWINDOWS}
   QWindows, QMessages, Types, QGraphics, QControls, QForms, QDialogs, QGrids, QMenus, QClipbrd,
   {$IFDEF USEJVCL}
-  JvQTypes,
-  JvQJVCLUtils,
+  JvQJVCLUtils, JvQTypes,
   {$ENDIF USEJVCL}
   SysUtils, QStdCtrls, Classes;
 
@@ -63,12 +62,12 @@ type
 
   TYearData = record
     DisplayText : string;
-    InfoText    : string;
-    DayInMonth  : Integer;
+    InfoText: string;
+    DayInMonth: Integer;
     DefaultColor: TColor;
-    CustomColor : TColor;
-    Custom      : Boolean;
-    BookMark    : Boolean; // this is not saved
+    CustomColor: TColor;
+    Custom: Boolean;
+    BookMark: Boolean; // this is not saved
   end;
 
   TJvYearGridOrientation = (yoHorizontal, yoVertical);
