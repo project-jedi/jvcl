@@ -9,7 +9,7 @@
 cls
 if %1!==! goto help
 
-if NOT %DELDIR%!=="!" goto next
+if NOT %DELDIR%!==! goto next
 if %2!==! goto help
 SET DELDIR=%2
 :next
@@ -49,6 +49,14 @@ echo.
 cd ..\..\packages
 
 ..\devtools\bin\Bpg2Make.exe "%PACKAGE%.bpg"
+
+REM
+REM This will go wrong if %MAKE% is something like:
+REM   "C:\Program Files\Borland\Delphi7"\bin\make.exe
+REM
+REM It will work if %MAKE% is something like:
+REM   C:\PROGRA~1\Borland\Delphi7\bin\make.exe
+REM   "C:\Program Files\Borland\Delphi7\bin\make.exe"
 
 %MAKE% -f "%PACKAGE%.mak" %4 %5 %6 %7 %8 %9
 
