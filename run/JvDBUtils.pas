@@ -42,7 +42,7 @@ type
 
   EJvScriptError = class(Exception)
   private
-    FErrPos: Intzeger;
+    FErrPos: Integer;
   public
     // The dummy parameter is only there fore BCB compatibility so that
     // when the hpp file gets generated, this constructor generates
@@ -190,7 +190,7 @@ end;
 constructor EJvScriptError.Create(AMessage: string; AErrPos: Integer; DummyForBCB: Integer);
 begin
   inherited Create(AMessage);
-  ErrPos := AErrPos;
+  FErrPos := AErrPos;
 end;
 
 // (rom) better use Windows dialogs which are localized
