@@ -38,7 +38,6 @@ uses
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer;
 
-
 const
   CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
 
@@ -54,13 +53,14 @@ type
   JV_CONTROL(Control)
   JV_WINCONTROL(WinControl)
   JV_CONTROL(GraphicControl)
-  JV_WINCONTROL(CustomControl)
-  JV_WINCONTROL(HintWindow)
+  JV_CUSTOMCONTROL(CustomControl)
+  JV_CUSTOMCONTROL(HintWindow)
 
+function DlgCodesToInputKeys(DlgCodes: Integer): TJvInputKeys;
 function GetCanvas(Instance: TWinControl): TControlCanvas;
 function GetFocusedControl(Instance: TControl): TWinControl;
 function GetHintColor(Instance: TWinControl): TColor;
-function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
+function InputKeysToDlgCodes(InputKeys: TJvInputKeys): Integer;
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
 
@@ -118,7 +118,7 @@ begin
     Result := Form.ActiveControl;
 end;
 
-function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
+function InputKeysToDlgCodes(InputKeys: TJvInputKeys): Integer;
 begin
   Result := 0;
   if ikAll in InputKeys then
@@ -135,7 +135,7 @@ begin
     inc(Result, DLGC_BUTTON);
 end;
 
-function DlgCodesToInputKeys(DlgCodes: Integer): TInputKeys;
+function DlgCodesToInputKeys(DlgCodes: Integer): TJvInputKeys;
 begin
   Result := [];
   if DlgCodes and DLGC_WANTALLKEYS <> 0 then
@@ -164,12 +164,11 @@ begin
   end;
 end;
 
-
 JV_CONTROL_IMPL(Control)
 JV_WINCONTROL_IMPL(WinControl)
 JV_CONTROL_IMPL(GraphicControl)
-JV_WINCONTROL_IMPL(CustomControl)
-JV_WINCONTROL_IMPL(HintWindow)
+JV_CUSTOMCONTROL_IMPL(CustomControl)
+JV_CUSTOMCONTROL_IMPL(HintWindow)
 
 end.
 

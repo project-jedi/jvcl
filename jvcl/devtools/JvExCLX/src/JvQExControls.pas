@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is André Snepvangers [ASnepvangers at
 Portions created by André Snepvangers are Copyright (C) 2004 André Snepvangers.
 All Rights Reserved.
 
-Contributor(s):
+Contributor(s): Marcel Besteboer
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http:{jvcl.sourceforge.net
