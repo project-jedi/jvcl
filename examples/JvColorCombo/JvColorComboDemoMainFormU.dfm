@@ -40,7 +40,7 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
     Left = 16
     Top = 24
     Width = 145
-    Height = 20
+    Height = 22
     ColorNameMap.Strings = (
       'clBlack=Black'
       'clMaroon=Maroon'
@@ -96,13 +96,13 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
       'clMenuBar=MenuBar'
       'clNone=None'
       'clDefault=Default')
-    ColorValue = clNavy
     ColorDialogText = '(Other...)'
     DroppedDownWidth = 145
     NewColorText = 'Custom Color %d'
     Options = [coText, coSysColors, coCustomColors]
     OnNewColor = JvColorComboBox1NewColor
     TabOrder = 0
+    OnChange = JvColorComboBox1Change
   end
   object memInfo: TMemo
     Left = 24

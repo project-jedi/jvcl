@@ -483,12 +483,9 @@ end;
 
 function TJvColorComboBox.DoNewColor(Color: TColor; var DisplayName: string): Boolean;
 begin
+  Result := FindColor(Color) = -1;
   if Assigned(FNewColor) then
-    FNewColor(Self, Color, DisplayName, Result)
-  else
-    Result := FindColor(Color) = -1;
-  if Result then
-    Inc(FCustCnt);
+    FNewColor(Self, Color, DisplayName, Result);
 end;
 
 procedure TJvColorComboBox.CNDrawItem(var Msg: TWMDrawItem);
@@ -606,20 +603,20 @@ begin
       CD.Color := ColorValue;
       Options := Options + [cdFullOpen, cdPreventFullOpen];
       S := FPrefix;
-      if Execute and DoNewColor(CD.Color, S) then
+      if Execute then
       begin
-        InternalInsertColor(Items.Count - 1, CD.Color, S);
-        ItemIndex := Items.Count - 2;
+        if DoNewColor(CD.Color, S) then
+          Inc(FCustCnt);
+        ColorValue := CD.Color;
         Change;
       end
       else
-        ColorValue := CD.Color;
+        ItemIndex := Items.Count - 2;
     finally
       Free;
     end // with
   end
-  else
-  if ItemIndex >= 0 then
+  else if ItemIndex >= 0 then
     ColorValue := TColor(Items.Objects[ItemIndex]);
   inherited Click;
   FExecutingDialog := False;
@@ -649,7 +646,11 @@ var
 begin
   S := DisplayName;
   if DoNewColor(AColor, S) then
+  begin
+    if coCustomColors in Options then
+      Inc(FCustCnt);
     InternalInsertColor(Items.Count - Ord(coCustomColors in Options), AColor, S);
+  end;
 end;
 
 procedure TJvColorComboBox.DoGetDisplayName(Index: Integer; AColor: TColor;

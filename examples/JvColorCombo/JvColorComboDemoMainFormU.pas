@@ -51,6 +51,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure btnCustColorsClick(Sender: TObject);
     procedure cbDisplayStyleChange(Sender: TObject);
+    procedure JvColorComboBox1Change(Sender: TObject);
   private
     procedure LoadSettings;
     procedure SaveSettings;
@@ -68,8 +69,6 @@ uses
 
 procedure TJvColorComboDemoMainForm.FormCreate(Sender: TObject);
 begin
-  JvColorComboBox1.Options := [coText, coSysColors, coCustomColors];
-  JvColorComboBox1.GetColors;
   LoadSettings;
   cbDisplayStyle.ItemIndex := 1;
   cbDisplayStyleChange(nil);
@@ -101,7 +100,6 @@ var CurColor: TColor;
 begin
   // load color name map and saved custom colors
   CurColor := JvColorComboBox1.ColorValue;
-  JvColorComboBox1.Options := JvColorComboBox1.Options - [coCustomColors];
   try
     S := ChangeFileExt(Application.ExeName, '.ini');
     if FileExists(S) then
@@ -197,6 +195,12 @@ begin
       Include(O, coRGB);
   end;
   JvColorComboBox1.Options := O;
+end;
+
+procedure TJvColorComboDemoMainForm.JvColorComboBox1Change(
+  Sender: TObject);
+begin
+  Caption := Format('Color: %s',[ColorToString(JvColorComboBox1.ColorValue)]);
 end;
 
 end.
