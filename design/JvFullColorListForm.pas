@@ -127,8 +127,10 @@ begin
 end;
 
 procedure TJvFullColorListFrm.ActionDeleteExecute(Sender: TObject);
+{$IFNDEF COMPILER6_UP}
 var
   I: Integer;
+{$ENDIF !COMPILER6_UP}
 begin
   {$IFDEF COMPILER6_UP}
   ListBoxColors.DeleteSelected;
