@@ -7120,8 +7120,8 @@ var
 
 {$IFNDEF SETUPAPI_LINKONREQUEST}
 type
-  TModuleHandle = HINST;  // This is missing if SETUPAPI_LINKONREQUEST is not defined
-{$ENDIF SETUPAPI_LINKONREQUEST}
+  TModuleHandle = HINST;
+{$ENDIF !SETUPAPI_LINKONREQUEST}
 
 function IsSetupApiLoaded: Boolean;
 function GetSetupApiModuleHandle: TModuleHandle;
@@ -7158,7 +7158,7 @@ begin
   {$IFDEF SETUPAPI_LINKONREQUEST}
   Result := SetupApiLib;
   {$ELSE}
-  Result := 0;
+  Result := TModuleHandle(0);
   {$ENDIF SETUPAPI_LINKONREQUEST}
 end;
 
