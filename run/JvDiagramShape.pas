@@ -88,7 +88,6 @@ type
     property Selected: Boolean read FSelected write SetSelected;
     property Caption: TJvTextShape read FCaption write SetCaption;
     property RightClickSelect: Boolean read FRightClickSelect write FRightClickSelect default True;
-    
     property OnDblClick;
   end;
 
@@ -562,7 +561,7 @@ begin
     CoveredShape.FWasCovered := True;
   end
   else
-    if Assigned(Parent) then
+  if Assigned(Parent) then
   begin
     // Send mouse down message to Parent. The typecast is purely to gain access
     // to the Parent.MouseDown method. Need to convert coordinates to parent's
@@ -759,12 +758,9 @@ begin
     Exit;
 
   if Selected then
-    Result := (Left + DeltaX >= 0) and
-      (Top + DeltaY >= 0) and
-      (Left + DeltaX + Width - 1 <
-      Parent.ClientRect.Right - Parent.ClientRect.Left) and
-      (Top + DeltaY + Height - 1 <
-      Parent.ClientRect.Bottom - Parent.ClientRect.Top);
+    Result := (Left + DeltaX >= 0) and (Top + DeltaY >= 0) and
+      (Left + DeltaX + Width - 1 < Parent.ClientRect.Right - Parent.ClientRect.Left) and
+      (Top + DeltaY + Height - 1 < Parent.ClientRect.Bottom - Parent.ClientRect.Top);
 end;
 
 procedure TJvMoveableShape.MoveShapes(DeltaX, DeltaY: Integer);
@@ -1168,7 +1164,7 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-procedure TJvTextShape.SetText(Value: TCaption);
+procedure TJvTextShape.SetText(const Value: TCaption);
 begin
   if FText <> Value then
   begin
@@ -1893,10 +1889,10 @@ begin
       Inc(Corner2Pt.X, RectHeight(EndTermRect) div 2);
     end;
     //    Polyline([Corner1Pt,PointPt,Corner2Pt]);
-    MoveTo(PointPt.x, PointPt.y);
-    LineTo(Corner1Pt.x, Corner1Pt.y);
-    MoveTo(PointPt.x, PointPt.y);
-    LineTo(Corner2Pt.x, Corner2Pt.y);
+    MoveTo(PointPt.X, PointPt.Y);
+    LineTo(Corner1Pt.X, Corner1Pt.Y);
+    MoveTo(PointPt.X, PointPt.Y);
+    LineTo(Corner2Pt.X, Corner2Pt.Y);
   end;
 end;
 
