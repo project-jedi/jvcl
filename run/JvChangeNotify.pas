@@ -279,6 +279,7 @@ end;
 destructor TJvChangeNotify.Destroy;
 begin
   Active := False;
+  FCollection.Free;
   inherited Destroy;
 end;
 
