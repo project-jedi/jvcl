@@ -25,8 +25,8 @@
   <Contains>
     <File Name="..\..\run\JvDynControlEngineJVCL.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvImageList.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvItemsSearchs.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvLabel.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvItemsSearchs.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLabel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvListBox.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvListView.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvMaskEdit.pas" Targets="all" Formname="" Condition=""/>
@@ -92,5 +92,7 @@
     <File Name="..\..\run\JvRadioGroup.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLinkedControls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\qcommon\QComboEdits.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQTimeEdit.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSpinButton.pas" Targets="allclx" Formname="" Condition=""/>
   </Contains>
 </Package>
