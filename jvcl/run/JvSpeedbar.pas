@@ -687,8 +687,8 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure PaintGlyph(Canvas: TCanvas; ARect: TRect; AState: TJvButtonState;
-      DrawMark: Boolean); override;
+    procedure PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
+      AState: TJvButtonState; DrawMark: Boolean); override;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -853,17 +853,17 @@ begin
   TJvxButtonGlyph(ButtonGlyph).Invalidate;
 end;
 
-procedure TJvSpeedBarButton.PaintGlyph(Canvas: TCanvas; ARect: TRect;
+procedure TJvSpeedBarButton.PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
   AState: TJvButtonState; DrawMark: Boolean);
 begin
   if FItem.SpeedBar <> nil then
   begin
-    TJvxButtonGlyph(ButtonGlyph).DrawEx(Canvas, ARect, Caption, Layout,
+    TJvxButtonGlyph(ButtonGlyph).DrawEx(Canvas, ARect, Offset, Caption, Layout,
       Margin, Spacing, DrawMark, FItem.SpeedBar.Images, FItem.FImageIndex,
       AState, DrawTextBiDiModeFlags(Alignments[Alignment]));
   end
   else
-    inherited PaintGlyph(Canvas, ARect, AState, DrawMark);
+    inherited PaintImage(Canvas, ARect, Offset, AState, DrawMark);
 end;
 
 procedure TJvSpeedBarButton.Paint;
