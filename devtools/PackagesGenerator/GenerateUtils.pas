@@ -341,7 +341,7 @@ begin
   if (Condition <> '') then
   begin
     // Only Delphi targets directly support conditions
-    if (TargetList[GetNonPersoTarget(target)].Env = 'd') then
+    if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'D')) then
     begin
       Result := '{$IFDEF ' + Condition + '}'#13#10 +
               line + '{$ENDIF}';
