@@ -58,9 +58,11 @@ object frmMain: TfrmMain
       ItemHeight = 13
       Background.FillMode = bfmTile
       Background.Visible = False
+      PopupMenu = jpmList
       ScrollBars = ssVertical
       TabOrder = 0
       OnClick = jlbListClick
+      OnKeyDown = jlbListKeyDown
       OnMouseDown = jlbListMouseDown
     end
   end
@@ -515,7 +517,7 @@ object frmMain: TfrmMain
     end
     object mnuHelp: TMenuItem
       Caption = '&Help'
-      object Knownreplacementtags1: TMenuItem
+      object mnuKnown: TMenuItem
         Action = actKnown
       end
       object mnuAbout: TMenuItem
@@ -630,6 +632,11 @@ object frmMain: TfrmMain
       ImageIndex = 1
       OnExecute = actDownExecute
       OnUpdate = actDownUpdate
+    end
+    object actDelete: TAction
+      Category = 'File'
+      Caption = '&Delete package'
+      OnExecute = actDeleteExecute
     end
   end
   object imlActive: TImageList
@@ -1496,7 +1503,9 @@ object frmMain: TfrmMain
       'pnlEdit.Width'
       'jsgFiles.Height'
       'cmbPrefix.Text'
-      'cmbFormat.Text')
+      'cmbFormat.Text'
+      'jdePackagesLocation.Text'
+      'odlAddFiles.InitialDir')
     StoredValues = <>
     Left = 704
     Top = 172
@@ -1530,6 +1539,19 @@ object frmMain: TfrmMain
     end
     object mnuAddFilesP: TMenuItem
       Action = actAddFiles
+    end
+  end
+  object jpmList: TJvPopupMenu
+    ImageMargin.Left = 0
+    ImageMargin.Top = 0
+    ImageMargin.Right = 0
+    ImageMargin.Bottom = 0
+    ImageSize.Height = 0
+    ImageSize.Width = 0
+    Left = 676
+    Top = 172
+    object Deletepackage1: TMenuItem
+      Action = actDelete
     end
   end
 end
