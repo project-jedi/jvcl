@@ -45,6 +45,8 @@ implementation
 
 JV_WINCONTROL_IMPL(CheckListBox)
 
+{$DEFINE UnitName 'JvQExCheckLst.pas'}
+
 UNITVERSION
 
 end.

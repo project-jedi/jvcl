@@ -41,6 +41,7 @@ uses
 
 type
   JV_EDITCONTROL(CustomComboEdit)
+  JV_EDITCONTROL(ComboEdit)
 
   JV_EDITCONTROL_BEGIN(CustomComboMaskEdit)
   private
@@ -51,131 +52,25 @@ type
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
   JV_EDITCONTROL_END(CustomComboMaskEdit)
 
-  TJvExComboEdit = class(TJvExCustomComboEdit)
-  published
-    property Flat default False;
-    property BevelInner;
-    property BevelOuter;
-    property BevelWidth;
-    property ClientColor default clBase;
-    property EditClientColor default True;
-  public
-    property CursorPos;
-  published
-    property Anchors;
-    property AutoSelect;
-    property AutoSize;
-    property Alignment;
-    property BorderStyle;
-    property CharCase;
-    property Color;
-    property Constraints;
-    property DragMode;
-    property EchoMode;
-    property Enabled;
-    property Font;
-    property HideSelection;
-    property MaxLength;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Text;
-    property Visible;
-    property OnChange;
-    property OnClick;
-    property OnContextPopup;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDrag;
-    property OnEnter;
-    property OnExit;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyString;
-    property OnKeyUp;
-    property OnMouseDown;
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnReturnPressed;
-    property OnStartDrag;
-  end;
-
-  TJvExComboMaskEdit = class(TJvExCustomComboMaskEdit)
-  published
-    property Flat default False;
-    property BevelInner;
-    property BevelOuter;
-    property BevelWidth;
-    property ClientColor default clBase;
-    property EditClientColor default True;
-  published
-    property Anchors;
-    property AutoSelect;
-    property AutoSize;
-    property BeepOnError;
-    property BorderStyle;
-    property CharCase;
-    property Color;
-    property Constraints;
-    property DragMode;
-    property Enabled;
-    property EditMask;
-    property Font;
-    property MaxLength;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Text;
-    property Visible;
-    property OnChange;
-    property OnClick;
-    property OnContextPopup;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDrag;
-    property OnEnter;
-    property OnExit;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyString;
-    property OnKeyUp;
-    property OnMouseDown;
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnStartDrag;
-  end;
-
+  JV_EDITCONTROL_BEGIN(ComboMaskEdit)
+  private
+    FBeepOnError: Boolean;
+  protected
+    procedure DoBeepOnError; dynamic;
+    procedure SetBeepOnError(Value: Boolean); virtual;
+    property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
+  JV_EDITCONTROL_END(ComboMaskEdit)
 
 implementation
 
-{$UNDEF CREATE_CUSTOMCODE}
-{$DEFINE CREATE_CUSTOMCODE
-  FClipboardCommands := [caCopy..caUndo];
-}
 JV_EDITCONTROL_IMPL(CustomComboEdit)
+JV_EDITCONTROL_IMPL(ComboEdit)
 
 { The CREATE_CUSTOMCODE macro is used to extend the constructor by the macro
   content. }
 {$UNDEF CREATE_CUSTOMCODE}
 {$DEFINE CREATE_CUSTOMCODE
   FBeepOnError := True;
-  FClipboardCommands := [caCopy..caUndo];
 }
 procedure TJvExCustomComboMaskEdit.DoBeepOnError;
 begin
@@ -189,6 +84,19 @@ begin
 end;
 
 JV_EDITCONTROL_IMPL(CustomComboMaskEdit)
+
+procedure TJvExComboMaskEdit.DoBeepOnError;
+begin
+  if BeepOnError then
+    SysUtils.Beep;
+end;
+
+procedure TJvExComboMaskEdit.SetBeepOnError(Value: Boolean);
+begin
+  FBeepOnError := Value;
+end;
+
+JV_EDITCONTROL_IMPL(ComboMaskEdit)
 
 {$UNDEF CREATE_CUSTOMCODE} // undefine at file end
 end.

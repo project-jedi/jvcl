@@ -65,6 +65,8 @@ JV_WINCONTROL_IMPL(ScrollBox)
 JV_WINCONTROL_IMPL(ScrollingWidget)
 JV_CUSTOMCONTROL_IMPL(ToolWindow)
 
+{$DEFINE UnitName 'JvQExForms.pas'}
+
 UNITVERSION
 
 end.
