@@ -37,8 +37,9 @@ uses
   {$ENDIF USE_DXGETTEXT}
   Windows, Messages, Controls,
   {$IFDEF VisualCLX}
-  Qt, QStdCtrls, // TOwnerDrawState
+  Qt, QGraphics, QStdCtrls, // TOwnerDrawState 
   {$ENDIF VisualCLX}
+  JvConsts,
   JVCLVer, JvExControls, JvExExtCtrls, JvExComCtrls, JvExForms, JvExStdCtrls;
 
 {$IFDEF VCL}
@@ -51,6 +52,8 @@ const
   NullHandle = nil;
 
 type
+  HDC = QWindows.HDC;
+  {$NODEFINE HDC}
   TMessage = QWindows.TMessage;
   {$NODEFINE TMessage}
   TMsg = QWindows.TMsg;
@@ -129,14 +132,6 @@ const
   cDomainName = 'jvcl';
 {$ENDIF USE_DXGETTEXT}
 
-{$IFDEF VisualCLX}
-function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
-begin
-  result :=  QWindows.ColorToRGB(Color, Instance);
-end;
-{$ENDIF VisualCLX}
-
-
 //=== { TJvForm } ============================================================
 
 {$IFDEF USE_DXGETTEXT}
@@ -181,6 +176,11 @@ end;
 
 {$IFDEF VisualCLX}
 
+function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+begin
+  result :=  QWindows.ColorToRGB(Color, Instance);
+end;
+
 procedure TJvPopupListBox.CreateWidget;
 begin
   inherited CreateWidget;
@@ -202,10 +202,10 @@ procedure TJvPopupListBox.KeyPress(var Key: Char);
 var
   TickCount: Int64;
 begin
-  case Word(Key) of
-    VK_BACK, VK_ESCAPE:
+  case Key of
+    BackSpace, Esc:
       FSearchText := '';
-    32..255:
+    #32..#255:
       begin
         TickCount := GetTickCount;
         if TickCount < FSearchTickCount then
