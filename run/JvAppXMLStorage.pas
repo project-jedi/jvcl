@@ -182,6 +182,7 @@ begin
   begin
     StringReplace(Value, ' ', '_', [rfReplaceAll]);
     Xml.Root.Name := Value;
+    Root := Value;
   end;
 end;
 
