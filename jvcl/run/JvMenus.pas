@@ -953,9 +953,11 @@ procedure TJvMainMenu.DrawItem(Item: TMenuItem; Rect: TRect;
 begin
   if Canvas.Handle <> 0 then
   begin
-    if Assigned(FOnDrawItem) then
+// the code below has been removed because the only way to do
+// custom painting is by using the msOwnerDraw style
+{    if Assigned(FOnDrawItem) then
       FOnDrawItem(Self, Item, Rect, State)
-    else
+    else}
       FJvMenuItemPainter.Paint(Item, Rect, State);
   end;
 end;
@@ -1466,9 +1468,11 @@ procedure TJvPopupMenu.DrawItem(Item: TMenuItem; Rect: TRect;
 begin
   if Canvas.Handle <> 0 then
   begin
-    if Assigned(FOnDrawItem) then
+// the code below has been removed because the only way to do
+// custom painting is by using the msOwnerDraw style
+{    if Assigned(FOnDrawItem) then
       FOnDrawItem(Self, Item, Rect, State)
-    else
+    else}
       FJvMenuItemPainter.Paint(Item, Rect, State);
   end;
 end;
