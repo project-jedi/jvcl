@@ -86,14 +86,14 @@ type
     procedure SetFocused(Value: Boolean);
     procedure SetReadOnly(Value: Boolean);
     procedure UpdateData(Sender: TObject);
-    procedure WMCut(var Message: TMessage); message WM_CUT;
-    procedure WMPaste(var Message: TMessage); message WM_PASTE;
-    procedure WMUndo(var Message: TMessage); message WM_UNDO;
-    procedure CMEnter(var Message: TCMEnter); message CM_ENTER;
-    procedure CMExit(var Message: TCMExit); message CM_EXIT;
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT; 
+    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
   protected
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure DoClipboardCut; override;
+    procedure DoClipboardPaste; override;
+    procedure DoUndo; override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -195,13 +195,13 @@ type
     procedure SetDataSource(Value: TDataSource);
     procedure SetFocused(Value: Boolean);
     procedure UpdateData(Sender: TObject);
-    procedure WMCut(var Msg: TMessage); message WM_CUT;
-    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
-    procedure CMEnter(var Msg: TCMEnter); message CM_ENTER;
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
   protected
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure DoClipboardCut; override;
+    procedure DoClipboardPaste; override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
     function GetReadOnly: Boolean; override;
@@ -302,13 +302,12 @@ type
     procedure SetDataSource(Value: TDataSource);
     procedure UpdateData(Sender: TObject);
     procedure AfterPopup(Sender: TObject; var Date: TDateTime; var Action: Boolean);
-    procedure WMCut(var Msg: TMessage); message WM_CUT;
-    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
-    procedure CMEnter(var Msg: TCMEnter); message CM_ENTER;
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
   protected
+    procedure DoExit; override;
+    procedure DoClipboardCut; override;
+    procedure DoClipboardPaste; override;
     procedure AcceptValue(const Value: Variant); override;
     procedure ApplyDate(Value: TDateTime); override;
     function GetReadOnly: Boolean; override;
@@ -439,12 +438,11 @@ type
     procedure SetDataSource(Value: TDataSource);
     procedure SetDefaultParams(Value: Boolean);
     procedure UpdateFieldData(Sender: TObject);
-    procedure WMCut(var Msg: TMessage); message WM_CUT;
-    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
-    //Polaris procedure CMEnter(var Message: TCMEnter); message CM_ENTER;
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
+    procedure DoExit; override;
+    procedure DoClipboardCut; override;
+    procedure DoClipboardPaste; override;
     procedure AcceptValue(const Value: Variant); override;
     function GetDisplayText: string; override;
     function GetReadOnly: Boolean; override;
@@ -858,12 +856,14 @@ begin
       if FDataLink.Editing {and FDataLink.FModified XXX } then
         Modified := True;
     end;
-  end else
+  end
+  else
   begin
     FAlignment := taLeftJustify;
     EditMask := '';
     if csDesigning in ComponentState then
-      EditText := Name else
+      EditText := Name
+    else
       EditText := '';
   end;
 end;
@@ -879,55 +879,53 @@ begin
   FDataLink.Field.Text := Text;
 end;
 
-procedure TJvDBMaskEdit.WMUndo(var Message: TMessage);
+procedure TJvDBMaskEdit.DoUndo;
 begin
   FDataLink.Edit;
-  inherited;
+  inherited DoUndo;
 end;
 
-procedure TJvDBMaskEdit.WMPaste(var Message: TMessage);
+procedure TJvDBMaskEdit.DoClipboardPaste;
 begin
   FDataLink.Edit;
-  inherited;
+  inherited DoClipboardPaste;
 end;
 
-procedure TJvDBMaskEdit.WMCut(var Message: TMessage);
+procedure TJvDBMaskEdit.DoClipboardCut;
 begin
   FDataLink.Edit;
-  inherited;
+  inherited DoClipboardCut;
 end;
 
-procedure TJvDBMaskEdit.CMEnter(var Message: TCMEnter);
+procedure TJvDBMaskEdit.DoEnter;
 begin
   FOriginalValue := Self.Text;
   SetFocused(True);
-  inherited;
+  inherited DoEnter;
   if SysLocale.FarEast and FDataLink.CanModify then
     inherited ReadOnly := False;
 end;
 
-procedure TJvDBMaskEdit.CMExit(var Message: TCMExit);
+procedure TJvDBMaskEdit.DoExit;
 var
- newValue:String;
- Accept,Post:Boolean;
+  newValue: string;
+  Accept, Post: Boolean;
 begin
-  Accept := true;
-  Post := false;
+  Accept := True;
+  Post := False;
   newValue := Text;
   // When we hit enter, check if there was a change, and if so,
   // we can fire the confirmation event.
   if (FOriginalValue<>newValue) then
-      if Assigned(FOnAcceptNewValue) then begin
-
-
-          FOnAcceptNewValue(Self,FOriginalValue,newValue,Accept,Post);
-          if not Accept then begin
-              Text := FOriginalValue;
-          end;
-      end;
+    if Assigned(FOnAcceptNewValue) then
+    begin
+      FOnAcceptNewValue(Self,FOriginalValue,newValue,Accept,Post);
+      if not Accept then
+        Text := FOriginalValue;
+    end;
   try
-     if Accept then
-        FDataLink.UpdateRecord;
+   if Accept then
+      FDataLink.UpdateRecord;
   except
     SelectAll;
     SetFocus;
@@ -936,18 +934,17 @@ begin
   SetFocused(False);
   CheckCursor;
   if Accept then
-      DoExit;
+    inherited DoExit;
 
   { A nifty little way to keep simple database applications happy.
     Just set POST flag in your validation, and the dataset is updated.
     If you don't like this feature, just DON'T set Post to true, it
     defaults to false.
   }
-    if (Accept and Post) and (Assigned(DataSource)) then
-       if Assigned(DataSource.DataSet) and (DataSource.DataSet.Active) then
-          if DataSource.DataSet.State = dsEdit then
-              DataSource.DataSet.Post;
-
+  if (Accept and Post) and (Assigned(DataSource)) then
+    if Assigned(DataSource.DataSet) and (DataSource.DataSet.Active) then
+      if DataSource.DataSet.State = dsEdit then
+        DataSource.DataSet.Post;
 end;
 
 procedure TJvDBMaskEdit.WMPaint(var Message: TWMPaint);
@@ -1298,27 +1295,27 @@ begin
   FDataLink.Field.Text := Text;
 end;
 
-procedure TJvDBComboEdit.WMPaste(var Msg: TMessage);
+procedure TJvDBComboEdit.DoClipboardPaste;
 begin
   FDataLink.Edit;
-  inherited;
+  inherited DoClipboardPaste;
 end;
 
-procedure TJvDBComboEdit.WMCut(var Msg: TMessage);
+procedure TJvDBComboEdit.DoClipboardCut;
 begin
   FDataLink.Edit;
-  inherited;
+  inherited DoClipboardCut;
 end;
 
-procedure TJvDBComboEdit.CMEnter(var Msg: TCMEnter);
+procedure TJvDBComboEdit.DoEnter;
 begin
   SetFocused(True);
-  inherited;
+  inherited DoEnter;
   if SysLocale.FarEast and FDataLink.CanModify then
     inherited SetReadOnly(False);
 end;
 
-procedure TJvDBComboEdit.CMExit(var Msg: TCMExit);
+procedure TJvDBComboEdit.DoExit;
 begin
   try
     FDataLink.UpdateRecord;
@@ -1330,7 +1327,7 @@ begin
   end;
   SetFocused(False);
   CheckCursor;
-  DoExit;
+  inherited DoExit;
 end;
 
 procedure TJvDBComboEdit.WMPaint(var Msg: TWMPaint);
@@ -1659,24 +1656,19 @@ begin
   inherited ApplyDate(Value);
 end;
 
-procedure TJvDBDateEdit.WMPaste(var Msg: TMessage);
+procedure TJvDBDateEdit.DoClipboardPaste;
 begin
   FDataLink.Edit;
-  inherited;
+  inherited DoClipboardPaste;
 end;
 
-procedure TJvDBDateEdit.WMCut(var Msg: TMessage);
+procedure TJvDBDateEdit.DoClipboardCut;
 begin
   FDataLink.Edit;
-  inherited;
+  inherited DoClipboardCut;
 end;
 
-procedure TJvDBDateEdit.CMEnter(var Msg: TCMEnter);
-begin
-  inherited;
-end;
-
-procedure TJvDBDateEdit.CMExit(var Msg: TCMExit);
+procedure TJvDBDateEdit.DoExit;
 begin
   try
     if not (csDesigning in ComponentState) and CheckOnExit then
@@ -1689,7 +1681,7 @@ begin
     raise;
   end;
   CheckCursor;
-  DoExit;
+  inherited DoExit;
 end;
 
 function TJvDBDateEdit.UseRightToLeftAlignment: Boolean;
@@ -2085,25 +2077,20 @@ begin
   DoChange;
 end;
 
-procedure TJvDBCalcEdit.WMPaste(var Msg: TMessage);
+procedure TJvDBCalcEdit.DoClipboardPaste;
 begin
   FDataLink.Edit;
-  inherited;
+  inherited DoClipboardPaste;
 end;
 
-procedure TJvDBCalcEdit.WMCut(var Msg: TMessage);
+procedure TJvDBCalcEdit.DoClipboardCut;
 begin
   FDataLink.Edit;
-  inherited;
+  inherited DoClipboardCut;
 end;
 
 // Polaris
-{procedure TJvDBCalcEdit.CMEnter(var Msg: TCMEnter);
-begin
-  inherited;
-end;}
-
-procedure TJvDBCalcEdit.CMExit(var Msg: TCMExit);
+procedure TJvDBCalcEdit.DoExit;
 begin
   try
     CheckRange;
@@ -2114,7 +2101,7 @@ begin
       SetFocus;
     raise;
   end;
-  inherited;
+  inherited DoExit;
 end;
 
 function TJvDBCalcEdit.UseRightToLeftAlignment: Boolean;

@@ -532,12 +532,13 @@ const
 type
   TJvLookOutEdit = class(TEdit)
   private
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
+    procedure DoExit; override;
   end;
 
-procedure TJvLookOutEdit.CMExit(var Msg: TCMExit);
+procedure TJvLookOutEdit.DoExit;
 begin
   Visible := False;
+  // (ahuser) What is with OnExit() ?
 end;
 
 //=== TJvLookOutButtonActionLink =============================================

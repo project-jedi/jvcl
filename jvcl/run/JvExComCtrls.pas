@@ -139,6 +139,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubProgressBar = class(TJvExProgressBar)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExCustomTabControl = class(TCustomTabControl, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -221,6 +233,18 @@ type
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubCustomTabControl = class(TJvExCustomTabControl)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExTabControl = class(TTabControl, IJvWinControlEvents, IJvControlEvents)
@@ -305,6 +329,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubTabControl = class(TJvExTabControl)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExTabSheet = class(TTabSheet, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -387,6 +423,18 @@ type
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubTabSheet = class(TJvExTabSheet)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExPageControl = class(TPageControl, IJvWinControlEvents, IJvControlEvents)
@@ -471,6 +519,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubPageControl = class(TJvExPageControl)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExStatusBar = class(TStatusBar, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -553,6 +613,18 @@ type
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubStatusBar = class(TJvExStatusBar)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExToolBar = class(TToolBar, IJvWinControlEvents, IJvControlEvents)
@@ -637,6 +709,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubToolBar = class(TJvExToolBar)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExToolButton = class(TToolButton, IJvControlEvents)
   {$IFDEF VCL}
@@ -691,6 +775,18 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   
+  end;
+  TJvExPubToolButton = class(TJvExToolButton)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
 {$ELSE}
@@ -747,6 +843,18 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   
+  end;
+  TJvExPubProgressBar = class(TJvExProgressBar)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExCustomTabControl = class(TCustomTabControl,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
@@ -825,6 +933,18 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
   end;
+  TJvExPubCustomTabControl = class(TJvExCustomTabControl)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExTabControl = class(TTabControl,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -901,6 +1021,18 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
+  end;
+  TJvExPubTabControl = class(TJvExTabControl)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExTabSheet = class(TTabSheet,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
@@ -979,6 +1111,18 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
   end;
+  TJvExPubTabSheet = class(TJvExTabSheet)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExPageControl = class(TPageControl,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -1056,6 +1200,18 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
   end;
+  TJvExPubPageControl = class(TJvExPageControl)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExStatusBar = class(TStatusBar,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -1132,6 +1288,18 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
+  end;
+  TJvExPubStatusBar = class(TJvExStatusBar)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExCustomViewControl = class(TCustomViewControl, IJvWinControlEvents, IJvControlEvents)
@@ -1216,6 +1384,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubCustomViewControl = class(TJvExCustomViewControl)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExToolBar = class(TToolBar,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -1293,6 +1473,18 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
   end;
+  TJvExPubToolBar = class(TJvExToolBar)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExToolButton = class(TToolButton,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -1369,6 +1561,18 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
+  end;
+  TJvExPubToolButton = class(TJvExToolButton)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
 {$ENDIF VCL}
@@ -1455,6 +1659,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubCustomHeaderControl = class(TJvExCustomHeaderControl)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
  {$IFDEF VCL}
   TJvExCustomStatusBar = class(TCustomStatusBar, IJvWinControlEvents, IJvControlEvents)
@@ -1538,6 +1754,18 @@ type
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubCustomStatusBar = class(TJvExCustomStatusBar)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
  {$ENDIF VCL}
@@ -1624,6 +1852,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubHeaderControl = class(TJvExHeaderControl)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExCustomTreeView = class(TCustomTreeView, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -1706,6 +1946,18 @@ type
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubCustomTreeView = class(TJvExCustomTreeView)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExTreeView = class(TTreeView, IJvWinControlEvents, IJvControlEvents)
@@ -1790,6 +2042,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubTreeView = class(TJvExTreeView)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExCustomListView = class(TCustomListView, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -1873,6 +2137,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubCustomListView = class(TJvExCustomListView)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExListView = class(TListView, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -1955,6 +2231,18 @@ type
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubListView = class(TJvExListView)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
 {$IFDEF ANIMATE}
@@ -2041,6 +2329,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubAnimate = class(TJvExAnimate)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   {$ELSE}
   TJvExAnimate = class(TAnimate,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
@@ -2118,6 +2418,18 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
+  end;
+  TJvExPubAnimate = class(TJvExAnimate)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   {$ENDIF VCL}
@@ -2205,6 +2517,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubCustomHotKey = class(TJvExCustomHotKey)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExCustomUpDown = class(TCustomUpDown, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -2287,6 +2611,18 @@ type
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubCustomUpDown = class(TJvExCustomUpDown)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExCoolBar = class(TCoolBar, IJvWinControlEvents, IJvControlEvents)
@@ -2371,6 +2707,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubCoolBar = class(TJvExCoolBar)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExMonthCalendar = class(TMonthCalendar, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -2453,6 +2801,18 @@ type
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubMonthCalendar = class(TJvExMonthCalendar)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExHotKey = class(THotKey, IJvWinControlEvents, IJvControlEvents)
@@ -2537,6 +2897,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubHotKey = class(TJvExHotKey)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExUpDown = class(TUpDown, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -2619,6 +2991,18 @@ type
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubUpDown = class(TJvExUpDown)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExCommonCalendar = class(TCommonCalendar, IJvWinControlEvents, IJvControlEvents)
@@ -2703,6 +3087,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubCommonCalendar = class(TJvExCommonCalendar)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExDateTimePicker = class(TDateTimePicker, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -2785,6 +3181,18 @@ type
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubDateTimePicker = class(TJvExDateTimePicker)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExPageScroller = class(TPageScroller, IJvWinControlEvents, IJvControlEvents)
@@ -2869,6 +3277,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubPageScroller = class(TJvExPageScroller)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExTrackBar = class(TTrackBar, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -2951,6 +3371,18 @@ type
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubTrackBar = class(TJvExTrackBar)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
  {$IFDEF COMPILER6_UP}
@@ -3036,6 +3468,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubCustomComboBoxEx = class(TJvExCustomComboBoxEx)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExComboBoxEx = class(TComboBoxEx, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -3118,6 +3562,18 @@ type
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubComboBoxEx = class(TJvExComboBoxEx)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
  {$ENDIF COMPILER6_UP}

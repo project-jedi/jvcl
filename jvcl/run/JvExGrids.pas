@@ -131,6 +131,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubInplaceEdit = class(TJvExInplaceEdit)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExCustomGrid = class(TCustomGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -207,6 +219,18 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
+  end;
+  TJvExPubCustomGrid = class(TJvExCustomGrid)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
 {$IFDEF VCL}
@@ -286,6 +310,18 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
+  end;
+  TJvExPubCustomDrawGrid = class(TJvExCustomDrawGrid)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExInplaceEditList = class(TInplaceEditList, IJvWinControlEvents, IJvControlEvents)
@@ -370,6 +406,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubInplaceEditList = class(TJvExInplaceEditList)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
  {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
@@ -449,6 +497,18 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
   end;
+  TJvExPubDrawGrid = class(TJvExDrawGrid)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExStringGrid = class(TStringGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -525,6 +585,18 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
+  end;
+  TJvExPubStringGrid = class(TJvExStringGrid)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
 

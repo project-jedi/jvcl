@@ -71,14 +71,15 @@ type
     procedure SetDataSource(Value: TDataSource);
     procedure SetFocused(Value: Boolean);
     procedure UpdateData(Sender: TObject);
-    procedure WMCut(var Msg: TMessage); message WM_CUT;
-    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
-    procedure WMUndo(var Msg: TMessage); message WM_UNDO;
-    procedure CMEnter(var Msg: TCMEnter); message CM_ENTER;
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
+    procedure DoClipboardCut; override;
+    procedure DoClipboardPaste; override;
+    procedure DoUndo; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+
     function GetReadOnly: Boolean; override; // suppress the warning
     procedure SetReadOnly(Value: Boolean); override;
     procedure Change; override;
@@ -364,33 +365,33 @@ begin
   FDataLink.Field.Text := Text;
 end;
 
-procedure TJvDBLookupComboEdit.WMUndo(var Msg: TMessage);
+procedure TJvDBLookupComboEdit.DoUndo;
 begin
   FDataLink.Edit;
-  inherited;
+  inherited DoUndo;
 end;
 
-procedure TJvDBLookupComboEdit.WMPaste(var Msg: TMessage);
+procedure TJvDBLookupComboEdit.DoClipboardPaste;
 begin
   FDataLink.Edit;
-  inherited;
+  inherited DoClipboardPaste;
 end;
 
-procedure TJvDBLookupComboEdit.WMCut(var Msg: TMessage);
+procedure TJvDBLookupComboEdit.DoClipboardCut;
 begin
   FDataLink.Edit;
-  inherited;
+  inherited DoClipboardCut;
 end;
 
-procedure TJvDBLookupComboEdit.CMEnter(var Msg: TCMEnter);
+procedure TJvDBLookupComboEdit.DoEnter;
 begin
   SetFocused(True);
-  inherited;
+  inherited DoEnter;
   if SysLocale.FarEast and FDataLink.CanModify then
     inherited ReadOnly := False;
 end;
 
-procedure TJvDBLookupComboEdit.CMExit(var Msg: TCMExit);
+procedure TJvDBLookupComboEdit.DoExit;
 begin
   try
     FDataLink.UpdateRecord;
@@ -401,7 +402,7 @@ begin
   end;
   SetFocused(False);
   CheckCursor;
-  DoExit;
+  inherited DoExit;
 end;
 
 procedure TJvDBLookupComboEdit.WMPaint(var Msg: TWMPaint);

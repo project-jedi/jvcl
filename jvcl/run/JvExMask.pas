@@ -155,6 +155,18 @@ type
     procedure SetBeepOnError(Value: Boolean); virtual;
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
   end;
+  TJvExPubCustomMaskEdit = class(TJvExCustomMaskEdit)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
 
   TJvExMaskEdit = class(TMaskEdit,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents)
@@ -265,6 +277,18 @@ type
     procedure DoBeepOnError; dynamic;
     procedure SetBeepOnError(Value: Boolean); virtual;
     property BeepOnError: Boolean read FBeepOnError write SetBeepOnError default True;
+  end;
+  TJvExPubMaskEdit = class(TJvExMaskEdit)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
 

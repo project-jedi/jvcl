@@ -58,11 +58,11 @@ type
     procedure SetDataField(const AValue: string);
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetEnforceRequired(const AValue: Boolean);
-    procedure WMCut(var Msg: TMessage); message WM_CUT;
-    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
-    procedure WMUndo(var Msg: TMessage); message WM_UNDO;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
+    procedure DoClipboardCut; override;
+    procedure DoClipboardPaste; override;
+    procedure DoUndo; override;
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     function IsLinked: Boolean;
@@ -351,22 +351,22 @@ begin
   end;
 end;
 
-procedure TJvCustomDBDatePickerEdit.WMCut(var Msg: TMessage);
+procedure TJvCustomDBDatePickerEdit.DoClipboardCut;
 begin
   if EditCanModify then
-    inherited;
+    inherited DoClipboardCut;
 end;
 
-procedure TJvCustomDBDatePickerEdit.WMPaste(var Msg: TMessage);
+procedure TJvCustomDBDatePickerEdit.DoClipboardPaste;
 begin
   if EditCanModify then
-    inherited;
+    inherited DoClipboardPaste;
 end;
 
-procedure TJvCustomDBDatePickerEdit.WMUndo(var Msg: TMessage);
+procedure TJvCustomDBDatePickerEdit.DoUndo;
 begin
   if EditCanModify then
-    inherited;
+    inherited DoUndo;
 end;
 
 end.

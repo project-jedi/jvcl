@@ -59,9 +59,9 @@ type
     function GetDataSource: TDataSource;
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
-    // Adding capability to edit
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
   protected
+    // Adding capability to edit
+    procedure DoExit; override;
     procedure DataChange(Sender: TObject);
     // Adding capability to edit
     procedure KeyPress(var Key: Char); override;
@@ -282,7 +282,7 @@ begin
 end;
 
 ///////////////////////////////////////////////////////////////////////////
-//procedure TJvDBDateTimePicker.CMExit
+//procedure TJvDBDateTimePicker.DoExit
 //Description : User action , She/He leave the control.......
 //              We should tell to database that is leave and database
 //             should be updated using datalink value
@@ -290,7 +290,7 @@ end;
 //Author      : -ekosbg-
 ///////////////////////////////////////////////////////////////////////////
 
-procedure TJvDBDateTimePicker.CMExit(var Msg: TCMExit);
+procedure TJvDBDateTimePicker.DoExit;
 begin
   // trapping in exception
   try
@@ -300,8 +300,8 @@ begin
     // Only got an error the focus will not leave the control
     SetFocus;
   end;
-  // We needs the method behavior from parents of CMExit;
-  inherited;
+  // We needs the method behavior from parents of DoExit;
+  inherited DoExit;
 end;
 
 ///////////////////////////////////////////////////////////////////////////

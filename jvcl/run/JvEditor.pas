@@ -552,6 +552,7 @@ type
     FOnCompletionApply: TOnCompletionApply;
     FUseFixedPopup: boolean;
 
+    {$IFDEF VCL}
     { internal message processing }
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
@@ -563,7 +564,6 @@ type
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure WMUndo(var Msg: TMessage); message WM_UNDO;
 
-    {$IFDEF VCL}
     // (p3) added to be compatible with JvFixedEditPopup
     procedure WMClear(var Msg: TMessage); message WM_CLEAR;
     procedure EMSetReadOnly(var Msg: TMessage); message EM_SETREADONLY;

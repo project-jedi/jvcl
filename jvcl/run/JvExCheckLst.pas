@@ -131,6 +131,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubCheckListBox = class(TJvExCheckListBox)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
 
 implementation
