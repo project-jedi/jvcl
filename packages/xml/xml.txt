@@ -1,0 +1,1 @@
+This directory contains the source xml for the packages. These files are processed by pg.exe (the package generator) to create all the packages for all the builds that the JVCL supports
