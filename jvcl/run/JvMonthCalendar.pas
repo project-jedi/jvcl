@@ -32,11 +32,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ComCtrls,
-  {$ELSE}
-  QGraphics, QControls, QForms, QComCtrls,
-  {$ENDIF VCL}
   JVCLVer;
 
 type
@@ -49,22 +45,13 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    {$IFDEF VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    {$ENDIF VCL}
   protected
-    {$IFDEF VCL}
     procedure MouseEnter(AControl: TControl); dynamic;
     procedure MouseLeave(AControl: TControl); dynamic;
     procedure ParentColorChanged; dynamic;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -87,19 +74,14 @@ begin
   FOver := False;
 end;
 
-{$IFDEF VCL}
 procedure TJvMonthCalendar.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
   MouseEnter(Self);
 end;
-{$ENDIF VCL}
 
 procedure TJvMonthCalendar.MouseEnter(AControl: TControl);
 begin
-  {$IFDEF VisualCLX}
-  inherited MouseEnter(AControl);
-  {$ENDIF VisualCLX}
   // for D7...
   if csDesigning in ComponentState then
     Exit;
@@ -113,19 +95,14 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{$IFDEF VCL}
 procedure TJvMonthCalendar.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   MouseLeave(Self);
 end;
-{$ENDIF VCL}
 
 procedure TJvMonthCalendar.MouseLeave(AControl: TControl);
 begin
-  {$IFDEF VisualCLX}
-  inherited MouseLeave(AControl);
-  {$ENDIF VisualCLX}
   // for D7...
   if csDesigning in ComponentState then
     Exit;
@@ -138,19 +115,14 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{$IFDEF VCL}
 procedure TJvMonthCalendar.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
   ParentColorChanged;
 end;
-{$ENDIF VCL}
 
 procedure TJvMonthCalendar.ParentColorChanged;
 begin
-  {$IFDEF VisualCLX}
-  inherited ParentColorChanged;
-  {$ENDIF VisualCLX}
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
