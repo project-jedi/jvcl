@@ -820,12 +820,12 @@ begin
   FBuffer.PixelFormat := pf32Bit;
   FAutoMouse := True;
   FAxisConfig := acXYZ;
-
   FFullColor := fclRGBWhite;
 
   TabStop := True;
-
   ControlStyle := [csSetCaption, csOpaque];
+  Width := 100;
+  Height := 100;
 end;
 
 destructor TJvFullColorComponent.Destroy;
@@ -3406,6 +3406,8 @@ begin
   FSelectedIndex := -1;
   FMouseIndex := -1;
   BevelKind := bkTile;
+  Width := 100;
+  Height := 100;
 end;
 
 destructor TJvFullColorGroup.Destroy;
