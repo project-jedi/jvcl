@@ -4,7 +4,7 @@ object frmModels: TfrmModels
   BorderStyle = bsDialog
   Caption = 'Models'
   ClientHeight = 469
-  ClientWidth = 743
+  ClientWidth = 783
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object frmModels: TfrmModels
   PixelsPerInch = 96
   TextHeight = 13
   object lblSelectModel: TLabel
-    Left = 222
+    Left = 242
     Top = 12
     Width = 141
     Height = 13
@@ -27,7 +27,7 @@ object frmModels: TfrmModels
     Caption = 'Please select a model to edit:'
   end
   object btnOk: TBitBtn
-    Left = 285
+    Left = 305
     Top = 431
     Width = 81
     Height = 29
@@ -92,7 +92,7 @@ object frmModels: TfrmModels
     NumGlyphs = 2
   end
   object bttCancel: TBitBtn
-    Left = 377
+    Left = 397
     Top = 431
     Width = 81
     Height = 29
@@ -155,7 +155,7 @@ object frmModels: TfrmModels
     NumGlyphs = 2
   end
   object cmbModels: TComboBox
-    Left = 377
+    Left = 397
     Top = 8
     Width = 97
     Height = 21
@@ -167,7 +167,7 @@ object frmModels: TfrmModels
   object grpProperties: TGroupBox
     Left = 8
     Top = 44
-    Width = 723
+    Width = 763
     Height = 379
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = ' Properties '
@@ -225,7 +225,7 @@ object frmModels: TfrmModels
       Caption = 'Targets'
     end
     object lblAliases: TLabel
-      Left = 264
+      Left = 316
       Top = 124
       Width = 229
       Height = 13
@@ -252,7 +252,7 @@ object frmModels: TfrmModels
       Caption = 'No LibSuffix'
     end
     object Label1: TLabel
-      Left = 496
+      Left = 548
       Top = 124
       Width = 213
       Height = 13
@@ -302,10 +302,10 @@ object frmModels: TfrmModels
     object stgTargets: TJvStringGrid
       Left = 12
       Top = 144
-      Width = 249
+      Width = 301
       Height = 222
       Anchors = [akLeft, akTop, akBottom]
-      ColCount = 7
+      ColCount = 8
       DefaultColWidth = 30
       DefaultRowHeight = 18
       FixedCols = 0
@@ -322,7 +322,7 @@ object frmModels: TfrmModels
       OnGetCellAlignment = stgTargetsGetCellAlignment
     end
     object stgAliases: TJvStringGrid
-      Left = 264
+      Left = 316
       Top = 144
       Width = 229
       Height = 222
@@ -371,9 +371,9 @@ object frmModels: TfrmModels
       TabOrder = 10
     end
     object stgClxRepl: TJvStringGrid
-      Left = 496
+      Left = 548
       Top = 144
-      Width = 213
+      Width = 201
       Height = 222
       Anchors = [akLeft, akTop, akBottom]
       ColCount = 2
@@ -393,7 +393,7 @@ object frmModels: TfrmModels
     end
   end
   object btnAdd: TButton
-    Left = 477
+    Left = 497
     Top = 8
     Width = 21
     Height = 21
@@ -405,7 +405,7 @@ object frmModels: TfrmModels
     OnClick = btnAddClick
   end
   object btnDelete: TButton
-    Left = 501
+    Left = 521
     Top = 8
     Width = 21
     Height = 21
