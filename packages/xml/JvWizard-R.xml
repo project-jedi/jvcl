@@ -22,6 +22,7 @@
     <File Name="..\..\run\JvWizardCommon.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWizardRouteMapNodes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWizardRouteMapSteps.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWizardRouteMapList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWizard.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
