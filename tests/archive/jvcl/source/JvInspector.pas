@@ -658,7 +658,6 @@ type
     constructor Create(const AParent: TJvCustomInspectorItem; const AData: TJvCustomInspectorData); virtual;
     destructor Destroy; override;
     function Add(const Item: TJvCustomInspectorItem): Integer; 
-    procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
     procedure Clear;
     procedure Delete(const Index: Integer); overload; virtual;
@@ -5423,13 +5422,6 @@ begin
   Insert(Result, Item);
 end;
 
-procedure TJvCustomInspectorItem.AfterConstruction;
-begin
-  inherited AfterConstruction;
-  InvalidateMetaData;
-  DoAfterItemCreate;
-end;
-
 procedure TJvCustomInspectorItem.BeforeDestruction;
 begin
   inherited BeforeDestruction;
@@ -8701,6 +8693,8 @@ begin
         RegItem.ApplyDefaults(Result);
         SetLength(FItems, Length(FItems) + 1);
         FItems[High(FItems)] := Result;
+        Result.InvalidateMetaData;
+        Result.DoAfterItemCreate;
       end;
     end;
   end;
