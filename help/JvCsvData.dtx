@@ -132,6 +132,18 @@ Parameters
 See Also
   DateTimeToTimeTHex
 ----------------------------------------------------------------------------------------------------
+@@EJvCsvDataSetError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@EJvCsvKeyError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
 @@GetCsvRowItem
 <TITLE GetCsvRowItem function>
 Summary
@@ -143,6 +155,32 @@ Parameters
   ColumnIndex - Which column to read.
 See Also
   SetCsvRowItem
+----------------------------------------------------------------------------------------------------
+@@JvCsvBackupPreviousFiles
+<TITLE JvCsvBackupPreviousFiles function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  filename - Description for this parameter
+  MaxFiles - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@JvCsvWildcardMatch
+<TITLE JvCsvWildcardMatch function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  data    - Description for this parameter
+  pattern - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@PCsvColumn
 <TITLE PCsvColumn type>
@@ -233,17 +271,17 @@ Summary
   Enumerated Values for TJvCsvColumn.FFlag
 Description
   Enumerated List of column types used in TJvCsvColumn.FFlag
-@@TJvCsvColumnFlag.zcsvNull
+@@TJvCsvColumnFlag.jcsvNull
   A NULL column descriptor (not yet initialized, or invalid).
-@@TJvCsvColumnFlag.zcsvString
+@@TJvCsvColumnFlag.jcsvString
   A string field.
-@@TJvCsvColumnFlag.zcsvNumeric
+@@TJvCsvColumnFlag.jcsvNumeric
   A numeric field (integer or float)
-@@TJvCsvColumnFlag.zcsvAsciiDateTime
+@@TJvCsvColumnFlag.jcsvAsciiDateTime
   A datetime field with the date/time stored as an ISO string
-@@TJvCsvColumnFlag.zcsvGMTDateTime
+@@TJvCsvColumnFlag.jcsvGMTDateTime
   A datetime field with the date/time stored as a HEX encoded UTC TIME_T timestamp.
-@@TJvCsvColumnFlag.zcsvTZDateTime
+@@TJvCsvColumnFlag.jcsvTZDateTime
   A datetime field with the date/time stored as a HEX encoded TIME_T timestamp in a local timezone.
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvColumns
@@ -338,6 +376,15 @@ Parameters
 See Also
   TJvCsvCustomInMemoryDataSet.AssignFromStrings 
 ----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.ClearFilter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCsvCustomInMemoryDataSet.EmptyTable
 Summary
   Clear everything from the table.
@@ -402,6 +449,30 @@ See Also
  TJvCsvCustomInMemoryDataSet.GetCsvHeader, TJvCsvCustomInMemoryDataSet.GetColumnsAsString
   
 ----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.GetUserTag
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  recno - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.IsKeyUnique
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCsvCustomInMemoryDataSet.OpenWith
 Summary
   Open up any TStrings list of strings as a CSV data set.
@@ -413,6 +484,64 @@ Parameters
 See Also
   TJvCsvCustomInMemoryDataSet.AssignFromStrings
 
+----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.SetAllUserData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  data - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.SetAllUserTags
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  tagValue - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.SetFilter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  fieldname - Description for this parameter
+  pattern   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.SetUserTag
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  recno    - Description for this parameter
+  newValue - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvCustomInMemoryDataSet.Sort
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  SortFields - Description for this parameter
+  Ascending  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvDataSet
 Summary
@@ -440,6 +569,24 @@ Object Inspector.
 
 See Also
   TJvCsvDataSet.CsvFieldDef
+----------------------------------------------------------------------------------------------------
+@@TJvCsvDataSet.AutoBackupCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvDataSet.CaseInsensitive
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvDataSet.Changed
 Summary
@@ -488,11 +635,23 @@ CsvFieldDef String Example:
 
  NOTE: YOU CAN USE THE BUILT-IN PROPERTY EDITOR (CLICK ...) INSTEAD OF MANUALLY TYPING THE CsvFieldDef!
 ----------------------------------------------------------------------------------------------------
-@@TJvCsvDataSet.DataFileSize
+@@TJvCsvDataSet.CsvKeyDef
 Summary
-  Returns size of the CSV File (TJvCsvDataSet.Filename) as it exists on disk.
+  Write here a summary (1 line)
 Description
-  Returns size of the CSV File (TJvCsvDataSet.Filename) as it exists on disk.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvDataSet.CsvUniqueKeys
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvDataSet.EnquoteBackslash
 Summary
@@ -605,6 +764,24 @@ Description
   (Greenwich Mean Time), then  you should leave this property set to zero. This property has NO effect
   on ASCII datetime fields, which are assumed to be using the local timezone (as set up in your operating
   system's timezone configuration). 
+----------------------------------------------------------------------------------------------------
+@@TJvCsvDataSet.UserData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCsvDataSet.UserTag
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 --------------------------------------------------------------------------------------------------
 @@TJvCsvRow
 <TITLE TJvCsvRow type>
@@ -616,12 +793,20 @@ Description
   The row object's dirty bits.  True means row been modified and not yet saved to disk.
 @@TJvCsvRow.columns
   Number of columns in this row.
+@@TJvCsvRow.index
+  Description for index
 @@TJvCsvRow.wordfield
   Array of indexes to the beginning of each csv column.
 @@TJvCsvRow.text
   The raw CSV row text.
 @@TJvCsvRow.bookmark
   The bookmark object for this row.
+@@TJvCsvRow.filtered
+  Description for filtered
+@@TJvCsvRow.userdatapointer
+  Description for userdatapointer
+@@TJvCsvRow.usertag
+  Description for usertag
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows
 Summary
