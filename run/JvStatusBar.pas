@@ -107,7 +107,7 @@ implementation
 
 uses
   Math,
-  JvResources, JvTypes;
+  JvThemes, JvResources, JvTypes;
 
 //=== { TJvStatusBar } =======================================================
 
@@ -124,7 +124,6 @@ begin
   {$IFDEF COMPILER6_UP}
   MovePanelControls;
   {$ENDIF COMPILER6_UP}
-  Invalidate; //Force full redraw, cause it's a lot buggy on XP without that!!!
 end;
 
 {$IFDEF VCL}
@@ -132,8 +131,11 @@ end;
 procedure TJvStatusBar.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  with Params do
-    WindowClass.Style := WindowClass.Style and not CS_HREDRAW;
+  {$IFDEF JVCLThemesEnabled}
+  if not ThemeServices.ThemesEnabled then
+  {$ENDIF JVCLThemesEnabled}
+    with Params do
+      WindowClass.Style := WindowClass.Style and not CS_HREDRAW; 
 end;
 
 procedure TJvStatusBar.WMPaint(var Msg: TWMPaint);
