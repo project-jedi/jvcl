@@ -35,7 +35,7 @@ Known Issues:
 
 { Enable this define if you want to use the dxgettext (http://dxgettext.sourceforge.net) 
   translation tool. }
-{$DEFINE USE_DXGETTEXT}
+{.$DEFINE USE_DXGETTEXT}
 
 
 {$IFDEF BCB}
