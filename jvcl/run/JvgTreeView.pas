@@ -34,7 +34,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, ComCtrls, CommCtrl, Imglist, FlatSB,
-  JvgTypes, JvclVer, JvgCommClasses;
+  JvComponent,
+  JvgTypes, JvgCommClasses;
 
 const
   ITEM_ENABLED = integer(true);
@@ -72,7 +73,6 @@ type
     fPaintingNow: boolean;
     FOptions: TglTreeViewOptions;
     isEditing_: boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure Paint(var Message: TWMPaint); message WM_PAINT;
     procedure SetWallpaper(Value: TBitmap);
     function GetWallpaper: TBitmap;
@@ -106,9 +106,6 @@ type
     property ToolTips: Boolean read FToolTips write SetToolTips default True;
     property OnDraw: FOnTNDrawEvent read FOnDraw write FOnDraw;
     property OnEndEdit: TNotifyEvent read FOnEndEdit write FOnEndEdit;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-
   end;
 
   TJvgTreeView = class(TJvgCustomTreeView)

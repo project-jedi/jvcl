@@ -30,10 +30,6 @@ unit JvDBSpinEdit;
 
 interface
 
-{$DEFINE READONLY}
-
-//  RegisterComponents(cJvDataControlsPalette, [TJvDBSpinEdit]);
-
 uses
   Windows, Messages, SysUtils, Classes, Controls, StdCtrls, DB, DBCtrls,
   JvSpin;
@@ -41,9 +37,6 @@ uses
 type
   TJvDBSpinEdit = class(TJvSpinEdit)
   private
-    {$IFDEF READONLY}
-    FReadOnly: Boolean;
-    {$ENDIF}
     FFieldDataLink: TFieldDataLink;
     FOnChange: TNotifyEvent;
     procedure DataChange(Sender: TObject); { Triggered when data changes in DataSource. }
@@ -54,7 +47,8 @@ type
     procedure SetDataSource(NewSource: TDataSource); { Assigns new data source. }
     procedure CMExit(var Msg: TCMExit); message CM_EXIT; { called to update data }
     procedure CMGetDataLink(var Msg: TMessage); message CM_GetDataLink;
-    procedure SetReadOnly(Value: Boolean);
+    function GetReadOnlyField: Boolean;
+    procedure SetReadOnlyField(Value: Boolean);
     procedure SetOnChange(const Value: TNotifyEvent);
   protected
     procedure DoChange(Sender: TObject);
@@ -66,9 +60,7 @@ type
   published
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-    {$IFDEF READONLY}
-    property ReadOnly: Boolean read FReadOnly write SetReadOnly;
-    {$ENDIF}
+    property ReadOnlyField: Boolean read GetReadOnlyField write SetReadOnlyField;
     property OnChange: TNotifyEvent read FOnChange write SetOnChange;
   end;
 
@@ -90,14 +82,15 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDBSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
 { Only process the keyboard input if it is cursor motion or if the data
   link can edit the data. Otherwise, call the OnKeyDown event handler
   (if it's assigned). }
+
+procedure TJvDBSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
 var
   KeyDownEventHandler: TKeyEvent;
 begin
-  if ((not ReadOnly) and FFieldDataLink.Edit) or (Key in [VK_UP, VK_DOWN, VK_LEFT,
+  if ((not ReadOnlyField) and FFieldDataLink.Edit) or (Key in [VK_UP, VK_DOWN, VK_LEFT,
     VK_RIGHT, VK_END, VK_HOME, VK_PRIOR, VK_NEXT]) then
     inherited KeyDown(Key, Shift)
   else
@@ -108,13 +101,14 @@ begin
   end;
 end;
 
-procedure TJvDBSpinEdit.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 { Only process mouse messages if the data link can edit the data. Otherwise,
   call the OnMouseDown event handler (if it's assigned). }
+
+procedure TJvDBSpinEdit.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   MouseDownEventHandler: TMouseEvent;
 begin
-  if (not ReadOnly) and FFieldDataLink.Edit then { OK to edit. }
+  if (not ReadOnlyField) and FFieldDataLink.Edit then { OK to edit. }
     inherited MouseDown(Button, Shift, X, Y)
   else
   begin { Our responsibility to call OnMouseDown if it's assigned, as we're skipping inherited method. }
@@ -130,7 +124,7 @@ begin
   begin
     FFieldDataLink.Modified; { Data has changed. }
     if Assigned(FOnChange) then
-      FOnChange(self);
+      FOnChange(Self);
   end;
 end;
 
@@ -145,11 +139,12 @@ begin
   inherited;
 end;
 
-procedure TJvDBSpinEdit.UpdateData(Sender: TObject);
 { UpdateData is only called after calls to both FFieldDataLink.Modified and
   FFieldDataLink.UpdateRecord. }
+
+procedure TJvDBSpinEdit.UpdateData(Sender: TObject);
 begin
-  if not ReadOnly then
+  if not ReadOnlyField then
     FFieldDataLink.Field.AsString := Self.Text;
 end;
 
@@ -175,7 +170,7 @@ end;
 
 procedure TJvDBSpinEdit.SetDataField(const NewFieldName: string); { Assigns new field. }
 begin
-    { FFieldDataLink is built in TJvDBSpinEdit.Create; there's no need to check to see if it's assigned. }
+  { FFieldDataLink is built in TJvDBSpinEdit.Create; there's no need to check to see if it's assigned. }
   FFieldDataLink.FieldName := NewFieldName;
 end;
 
@@ -195,17 +190,15 @@ begin
     NewSource.FreeNotification(Self);
 end;
 
-{$IFDEF READONLY}
-procedure TJvDBSpinEdit.SetReadOnly(Value: Boolean);
+function TJvDBSpinEdit.GetReadOnlyField: Boolean;
 begin
-  if FReadOnly <> Value then
-  begin
-    FReadOnly := Value;
-    FFieldDataLink.ReadOnly := Value;
-  end;
-
+  Result := FFieldDataLink.ReadOnly;
 end;
-{$ENDIF}
+
+procedure TJvDBSpinEdit.SetReadOnlyField(Value: Boolean);
+begin
+  FFieldDataLink.ReadOnly := Value;
+end;
 
 procedure TJvDBSpinEdit.SetOnChange(const Value: TNotifyEvent);
 begin

@@ -84,7 +84,7 @@ type
 
     procedure SmthChanged(Sender: TObject);
     procedure FontsChanged(Sender: TObject);
-    procedure DrawItem(lpDrawItemStr: PDRAWITEMSTRUCT);
+    procedure DrawItem(lpDrawItemStr: PDrawItemStruct);
     procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
   protected
@@ -285,7 +285,7 @@ begin
       Longint(TImageList(Sender).Handle));
 end;
 
-procedure TJvgTabControl.DrawItem(lpDrawItemStr: PDRAWITEMSTRUCT);
+procedure TJvgTabControl.DrawItem(lpDrawItemStr: PDrawItemStruct);
 //var lpTabBoxStyle:^TTabBoxStyle;
 var
   FontColor: TColor;
