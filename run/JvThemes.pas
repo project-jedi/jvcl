@@ -32,8 +32,8 @@ uses
 {$IFDEF MSWINDOWS}
   Windows, Messages,
 {$ENDIF}
-{$IFDEF JVCLThemesEnabled}
   SysUtils, Classes,
+{$IFDEF JVCLThemesEnabled}
  {$IFDEF COMPILER7_UP}Themes,{$ELSE}ThemeSrv,{$ENDIF}
 {$ENDIF}
 {$IFDEF COMPLIB_VCL}
@@ -714,6 +714,8 @@ type
 
 function ThemeServices: TThemeServicesEx;
 
+procedure PaintControlBorder(Control: TControl);
+
 {$ENDIF JVCLThemesEnabled}
 
 type
@@ -751,8 +753,6 @@ function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect; u
 { PerformEraseBackground sends a WM_ERASEBKGND message to the Control's parent. }
 procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint); overload;
 procedure PerformEraseBackground(Control: TControl; DC: HDC); overload;
-
-procedure PaintControlBorder(Control: TControl);
 {$ENDIF MSWINDOWS}
 
 function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: TRect;
@@ -885,30 +885,6 @@ begin
   PerformEraseBackground(Control, DC, Point(Control.Left, Control.Top));
 end;
 
-procedure PaintControlBorder(Control: TControl);
-var
-  DrawRect: TRect;
-  DC: HDC;
-  Details: TThemedElementDetails;
-begin
-  if Control is TWinControl then
-    ThemeServices.PaintBorder(TWinControl(Control), False)
-  else
-  begin
-    if Control.Parent = nil then Exit;
-    DrawRect := Control.BoundsRect;
-    DC := GetDC(Control.Parent.Handle);
-    try
-      with DrawRect do
-        ExcludeClipRect(DC, Left + 2, Top + 2, Right - 2, Bottom - 2);
-      Details := ThemeServices.GetElementDetails(teEditTextNormal);
-      ThemeServices.DrawElement(DC, Details, DrawRect);
-    finally
-      ReleaseDC(Control.Parent.Handle, DC);
-    end;
-  end;
-end;
-
 {$ENDIF MSWINDOWS}
 
 function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: TRect;
@@ -966,6 +942,30 @@ begin
   Result := TThemeServicesEx(
     {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ThemeServices
   );
+end;
+
+procedure PaintControlBorder(Control: TControl);
+var
+  DrawRect: TRect;
+  DC: HDC;
+  Details: TThemedElementDetails;
+begin
+  if Control is TWinControl then
+    ThemeServices.PaintBorder(TWinControl(Control), False)
+  else
+  begin
+    if Control.Parent = nil then Exit;
+    DrawRect := Control.BoundsRect;
+    DC := GetDC(Control.Parent.Handle);
+    try
+      with DrawRect do
+        ExcludeClipRect(DC, Left + 2, Top + 2, Right - 2, Bottom - 2);
+      Details := ThemeServices.GetElementDetails(teEditTextNormal);
+      ThemeServices.DrawElement(DC, Details, DrawRect);
+    finally
+      ReleaseDC(Control.Parent.Handle, DC);
+    end;
+  end;
 end;
 
 {$IFDEF COMPILER7_UP}
