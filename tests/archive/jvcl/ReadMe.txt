@@ -1,0 +1,105 @@
+JEDI VCL for D6 (alpha 2.00)
+(http://jvcl.sourceforge.net)
+
+The JEDI VCL  (JVCL) for D6 consists of a set of visual components which can be instantly reused in your Delphi 6 projects.
+
+The library is built upon code donated from the JEDI community. Please note that this is an alpha release, and as such, there is still a lot of work to do. There has been a significant merging/refactoring since version 1.3 and this means, among other things, that some components have disappeared and others have been equipped with new capabilities. Please read restruct_changelog.txt and restruct_demochanges.txt for details on what has changed since 1.3 and to give you a hint on how to move your code from 1.3 to 2.0. Your involvement and help in improving JVCL and finding bugs would be very much appreciated.
+
+JVCL is released to the public under the terms of the Mozilla Public License (MPL) and as such can be freely used in both freeware/shareware, opensource and commercial projects. The MPL does have a few restrictions and we urge you to read the MPL (at http://www.mozilla.org/MPL/MPL-1.1.html) and MPL FAQ documents available in the JCL-Help.chm file.
+
+- Contents of the JEDI Code Library
+
+\Source
+
+This directory contains all the source code units for the JEDI VCL.
+
+\ Packages
+
+Contains the package files needed for JVCL installation
+
+\Help
+
+Contains the JVCL Helpfile. This helpfile is currently incomplete. 
+
+\Examples
+
+Contains example projects demonstrating some of the components in the JVCL. 
+
+NOTE: to compile all examples at once, just run the "CompileExamples.bat" batch file. The JVCL has to be a SIBLING subdirectory to JCL for this to succeed. 
+
+
+INSTALLATION
+=============
+
+Please see the file "Install.txt"
+
+
+CONTRIBUTORS:
+==============
+
+We would like to thank following people, who made JEDI-VCL possible by helping to write JEDI-VCL Guidelines, and by contributing components (listed alphabetically): 
+
+   • Michael Beck
+   • Peter Below
+   • Alec Bergamini
+   • Helen Borrie
+   • Marcel van Brakel
+   • Sebastien Buysse
+   • Chiang Seng Chang
+   • Pavel Císar
+   • Jim Cooper
+   • Gustavo Daud
+   • Rodney Delanty
+   • Alex Denissov
+   • Oliver George
+   • Yakup Gezdirici
+   • Ralf Grenzing
+   • Matt Hamilton
+   • Shiv Kumar
+   • Mike Lischke
+   • Allan G. Lloyd
+   • Robert Love
+   • Robert Marquardt
+   • Anders Melander
+   • Alan C. Moore
+   • Pete Morris
+   • Francois Piette
+   • Sergey Perevoznyk
+   • David Polberger
+   • Andrey Prygounkov
+   • Hagen Reddmann
+   • Uwe Rupprecht
+   • Michael Rynn
+   • Alexander Samusenko
+   • Andreas Schmidt
+   • Rob Schoenaker
+   • Phil Shrimpton
+   • Pasha Sivtsov
+   • Anthony Steele
+   • Eko Subagio
+   • Oleg Sych
+   • Matthias Thoma
+   • Peter Thörnqvist
+   • Danny Thorpe
+   • Petr Vones
+
+PARTICIPATION
+=============
+
+If you would like to participate in JVCL development (donate new components, refactor existing ones, write help files and documentation, develop examples), please join us at:
+
+http://groups.yahoo.com/group/JVCL-Developers/
+
+BUGS / WISHES
+=============
+
+To report Bugs or Feature Requests, please follow the "Bugs/Wishes" link at: 
+
+http://jvcl.sourceforge.net/
+
+We hope that you'll find JVCL useful.
+
+May the Source be with you!
+
+Team JVCL
+(http://jvcl.sourceforge.net)

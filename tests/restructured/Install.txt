@@ -1,0 +1,42 @@
+Install notes for JEDI-VCL (JVCL) Version 2.00 ALPHA for Delphi 6
+=================================================================
+
+(NOTE: this release does NOT support Delphi 5 or Delphi 6 Personal. Any help to make it D5 and D6Personal-compatible will be appreciated)
+
+
+1) IMPORTANT - in order to use JVCL, you need to have the latest JCL (JEDI Code Library) INSTALLED on your computer. JCL is available from http://sourceforge.net/projects/jcl/
+
+2) Unzip the JVCL files to a subdirectory of your choice (IMPORTANT: it should be a sibling to the JCL subdirectory)
+
+3) In Delphi open the appropriate design package that is in the "Packages" subdirectory. 
+    a) for Delphi 6 it's "JVCL200_D6.dpk" 
+    b) for Delphi 6 Personal it's "JVCL200_D60Personal.dpk" - NOTE: Delphi 6 Personal is not supported in this release
+    c) for Delphi 5 it's "JVCL200_R50.dpk - NOTE: Delphi 5 is not supported in this release
+
+
+4) Click on the "Install" button
+
+ If you get compile error stating that zlib.pas, or some *.obj files are missing, please make sure that in your packages following paths:
+
+$(DELPHI)\source\extras\zlib\
+$(DELPHI)\source\extras\zlib\obj
+
+are in your Search path ( click on package Options, and then on "Directories" tab)
+
+Of course, you need to install those files from Delphi first. If these files doesn't exist, please install them from your Delphi CD.
+
+5) The window showing all the components that have been installed will be very big, and most probably you won't see the "OK" button, so just close the window (or hit ENTER). You should now have JVCL installed on your PC. 
+
+
+If there are installation problems, please contact us via: 
+
+http://groups.yahoo.com/group/JEDI-VCL/
+
+or via newsgroups:
+
+news://forums.talkto.net/jedi.vcl 
+
+May the Source be with you!
+
+Team JVCL
+(http://jvcl.sourceforge.net)
