@@ -192,6 +192,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function ItemRect(Index: Integer): TRect;
 
     procedure MeasureString(const S: string; WidthAvail: Integer; var ASize: TSize);
 
@@ -1264,6 +1265,22 @@ begin
     if DoUpdate then
       EndRedraw;
   end;
+end;
+
+function TJvCustomListBox.ItemRect(Index: Integer): TRect;
+var
+  Count: Integer;
+begin
+  Count := Items.Count;
+  if (Index >= 0) and (Index < Count) then
+    Perform(LB_GETITEMRECT, Index, Longint(@Result))
+  else if Index = Count then
+  begin
+    Perform(LB_GETITEMRECT, Index - 1, Longint(@Result));
+    OffsetRect(Result, 0, Result.Bottom - Result.Top);
+  end
+  else
+    FillChar(Result, SizeOf(Result), 0);
 end;
 
 procedure TJvCustomListBox.WndProc(var Msg: TMessage);
