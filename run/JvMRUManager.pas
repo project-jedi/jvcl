@@ -31,18 +31,18 @@ interface
 
 uses
   SysUtils, Classes, Menus, IniFiles, Registry,
-  JvFormPlacement {, JvComponent};
+  JvAppStore, JvComponent, JvFormPlacement;
 
 type
   TJvRecentStrings = class;
 
   TGetItemEvent = procedure(Sender: TObject; var Caption: string;
     var ShortCut: TShortCut; UserData: Longint) of object;
-  TReadItemEvent = procedure(Sender: TObject; IniFile: TObject;
-    const Section: string; Index: Integer; var RecentName: string;
+  TReadItemEvent = procedure(Sender: TObject; AppStorage: TJvCustomAppStore;
+    const Path: string; Index: Integer; var RecentName: string;
     var UserData: Longint) of object;
-  TWriteItemEvent = procedure(Sender: TObject; IniFile: TObject;
-    const Section: string; Index: Integer; const RecentName: string;
+  TWriteItemEvent = procedure(Sender: TObject; AppStorage: TJvCustomAppStore;
+    const Path: string; Index: Integer; const RecentName: string;
     UserData: Longint) of object;
   TClickMenuEvent = procedure(Sender: TObject; const RecentName,
     Caption: string; UserData: Longint) of object;
@@ -51,7 +51,7 @@ type
   TAccelDelimiter = (adTab, adSpace);
   TRecentMode = (rmInsert, rmAppend);
 
-  TJvMRUManager = class(TComponent)
+  TJvMRUManager = class(TJvComponent)
   private
     FList: TStrings;
     FItems: TList;
@@ -91,16 +91,16 @@ type
     procedure MenuItemClick(Sender: TObject);
     procedure IniSave(Sender: TObject);
     procedure IniLoad(Sender: TObject);
-    procedure InternalLoad(Ini: TObject; const Section: string);
-    procedure InternalSave(Ini: TObject; const Section: string);
+    procedure InternalLoad(const Section: string);
+    procedure InternalSave(const Section: string);
     procedure SetDuplicates(const Value: TDuplicates);
     procedure DoDuplicateFixUp;
   protected
     procedure Change; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure DoReadItem(Ini: TObject; const Section: string;
-      Index: Integer; var RecentName: string; var UserData: Longint); dynamic;
-    procedure DoWriteItem(Ini: TObject; const Section: string; Index: Integer;
+    procedure DoReadItem(AppStorage: TJvCustomAppStore; const Path: string; Index: Integer;
+      var RecentName: string; var UserData: Longint); dynamic;
+    procedure DoWriteItem(AppStorage: TJvCustomAppStore; const Path: string; Index: Integer;
       const RecentName: string; UserData: Longint); dynamic;
     procedure GetItemData(var Caption: string; var ShortCut: TShortCut;
       UserData: Longint); dynamic;
@@ -116,10 +116,10 @@ type
     procedure Remove(const RecentName: string);
     procedure UpdateRecentMenu;
     procedure RemoveInvalid;
-    procedure LoadFromRegistry(Ini: TRegIniFile; const Section: string);
-    procedure SaveToRegistry(Ini: TRegIniFile; const Section: string);
-    procedure LoadFromIni(Ini: TIniFile; const Section: string);
-    procedure SaveToIni(Ini: TIniFile; const Section: string);
+    procedure LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    procedure SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    procedure Load;
+    procedure Save;
     property Strings: TStrings read FList;
   published
     // Duplicates works just as for TStrings, but the list doesn't need to be sorted
@@ -467,16 +467,14 @@ end;
 
 procedure TJvMRUManager.IniSave(Sender: TObject);
 begin
-  if (Name <> '') and (FIniLink.IniObject <> nil) then
-    InternalSave(FIniLink.IniObject, FIniLink.RootSection +
-      GetDefaultSection(Self));
+  if (Name <> '') and (IniStorage.IsActive) then
+    InternalSave(GetDefaultSection(Self));
 end;
 
 procedure TJvMRUManager.IniLoad(Sender: TObject);
 begin
-  if (Name <> '') and (FIniLink.IniObject <> nil) then
-    InternalLoad(FIniLink.IniObject, FIniLink.RootSection +
-      GetDefaultSection(Self));
+  if (Name <> '') and (IniStorage.IsActive) then
+    InternalLoad(GetDefaultSection(Self));
 end;
 
 procedure TJvMRUManager.Change;
@@ -485,34 +483,53 @@ begin
     FOnChange(Self);
 end;
 
-procedure TJvMRUManager.DoReadItem(Ini: TObject; const Section: string;
+procedure TJvMRUManager.DoReadItem(AppStorage: TJvCustomAppStore; const Path: string;
   Index: Integer; var RecentName: string; var UserData: Longint);
 begin
   if Assigned(FOnReadItem) then
-    FOnReadItem(Self, Ini, Section, Index, RecentName, UserData)
+    FOnReadItem(Self, AppStorage, Path, Index, RecentName, UserData)
   else
   begin
-    RecentName := IniReadString(Ini, Section, Format(siRecentItem, [Index]), RecentName);
-    UserData := IniReadInteger(Ini, Section, Format(siRecentData, [Index]), UserData);
+    RecentName := AppStorage.ReadString(AppStorage.ConcatPaths(
+      [Path, Format(siRecentItem, [Index])]), RecentName);
+    UserData := AppStorage.ReadInteger(AppStorage.ConcatPaths(
+      [Path, Format(siRecentData, [Index])]), UserData);
   end;
 end;
 
-procedure TJvMRUManager.DoWriteItem(Ini: TObject; const Section: string;
+procedure TJvMRUManager.DoWriteItem(AppStorage: TJvCustomAppStore; const Path: string;
   Index: Integer; const RecentName: string; UserData: Longint);
 begin
   if Assigned(FOnWriteItem) then
-    FOnWriteItem(Self, Ini, Section, Index, RecentName, UserData)
+    FOnWriteItem(Self, AppStorage, Path, Index, RecentName, UserData)
   else
   begin
-    IniWriteString(Ini, Section, Format(siRecentItem, [Index]), RecentName);
+    AppStorage.WriteString(AppStorage.ConcatPaths(
+      [Path, Format(siRecentItem, [Index])]), RecentName);
     if UserData = 0 then
-      IniDeleteKey(Ini, Section, Format(siRecentData, [Index]))
+      AppStorage.DeleteValue(AppStorage.ConcatPaths(
+      [Path, Format(siRecentData, [Index])]))
     else
-      IniWriteInteger(Ini, Section, Format(siRecentData, [Index]), UserData);
+      AppStorage.WriteInteger(AppStorage.ConcatPaths(
+      [Path, Format(siRecentData, [Index])]), UserData);
   end;
 end;
 
-procedure TJvMRUManager.InternalLoad(Ini: TObject; const Section: string);
+procedure TJvMRUManager.InternalLoad(const Section: string);
+begin
+  if IniStorage.IsActive then
+    with IniStorage do
+      LoadFromAppStore(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
+end;
+
+procedure TJvMRUManager.InternalSave(const Section: string);
+begin
+  if IniStorage.IsActive then
+    with IniStorage do
+      SaveToAppStore(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
+end;
+
+procedure TJvMRUManager.LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
 var
   I: Integer;
   S: string;
@@ -528,7 +545,7 @@ begin
     begin
       S := '';
       UserData := 0;
-      DoReadItem(Ini, Section, I, S, UserData);
+      DoReadItem(AppStorage, Path, I, S, UserData);
       if S <> '' then
         Add(S, UserData);
     end;
@@ -538,33 +555,23 @@ begin
   end;
 end;
 
-procedure TJvMRUManager.InternalSave(Ini: TObject; const Section: string);
+procedure TJvMRUManager.SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
 var
   I: Integer;
 begin
-  IniEraseSection(Ini, Section);
+  AppStorage.DeleteSubTree(Path);
   for I := 0 to FList.Count - 1 do
-    DoWriteItem(Ini, Section, I, FList[I], Longint(FList.Objects[I]));
+    DoWriteItem(AppStorage, Path, I, FList[I], Longint(FList.Objects[I]));
 end;
 
-procedure TJvMRUManager.LoadFromRegistry(Ini: TRegIniFile; const Section: string);
+procedure TJvMRUManager.Load;
 begin
-  InternalLoad(Ini, Section);
+  IniLoad(nil);
 end;
 
-procedure TJvMRUManager.SaveToRegistry(Ini: TRegIniFile; const Section: string);
+procedure TJvMRUManager.Save;
 begin
-  InternalSave(Ini, Section);
-end;
-
-procedure TJvMRUManager.LoadFromIni(Ini: TIniFile; const Section: string);
-begin
-  InternalLoad(Ini, Section);
-end;
-
-procedure TJvMRUManager.SaveToIni(Ini: TIniFile; const Section: string);
-begin
-  InternalSave(Ini, Section);
+  IniSave(nil);
 end;
 
 procedure TJvMRUManager.DoAfterUpdate;

@@ -33,8 +33,8 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
   {$ENDIF}
-  Windows, Registry, Controls, Messages, Classes, Forms, IniFiles,
-  JvComponent, JvWndProcHook {, JvComponent}, JvTypes;
+  Classes, Controls, Forms, Messages, Windows,  
+  JvAppStore, JvComponent, JvWndProcHook, JvTypes;
 
 type
   TPlacementOption = (fpState, fpPosition, fpActiveControl);
@@ -68,12 +68,8 @@ type
   TJvFormPlacement = class(TJvComponent)
   private
     FActive: Boolean;
-    FIniFileName: string;
-    FIniSection: string;
-    FIniFile: TIniFile;
-    FUseRegistry: Boolean;
-    FRegIniFile: TRegIniFile;
-    FRegistryRoot: TJvRegKey;
+    FAppStorage: TJvCustomAppStore;
+    FAppStoragePath: string;
     FLinks: TList;
     FOptions: TPlacementOptions;
     FVersion: Integer;
@@ -89,6 +85,7 @@ type
     FSaveFormCloseQuery: TCloseQueryEvent;
     FOnSavePlacement: TNotifyEvent;
     FOnRestorePlacement: TNotifyEvent;
+    procedure SetAppStoragePath(Value: string);
     procedure SetEvents;
     procedure RestoreEvents;
     procedure SetHook;
@@ -97,16 +94,9 @@ type
     function CheckMinMaxInfo: Boolean;
     procedure MinMaxInfoModified;
     procedure SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
-    function GetIniSection: string;
-    procedure SetIniSection(const Value: string);
-    function GetIniFileName: string;
-    procedure SetIniFileName(const Value: string);
-    function GetIniFile: TObject;
     procedure SetPreventResize(Value: Boolean);
     procedure UpdatePreventResize;
     procedure UpdatePlacement;
-    procedure IniNeeded(ReadOnly: Boolean);
-    procedure IniFree;
     procedure AddLink(ALink: TJvIniLink);
     procedure NotifyLinks(Operation: TPlacementOperation);
     procedure RemoveLink(ALink: TJvIniLink);
@@ -121,12 +111,11 @@ type
     procedure Restore; dynamic;
     procedure SavePlacement; virtual;
     procedure RestorePlacement; virtual;
-    function DoReadString(const Section, Ident, Default: string): string; virtual;
-    procedure DoWriteString(const Section, Ident, Value: string); virtual;
     property Form: TForm read GetForm;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function IsActive: Boolean;
     procedure SaveFormPlacement;
     procedure RestoreFormPlacement;
     function ReadString(const Ident, Default: string): string;
@@ -134,18 +123,13 @@ type
     function ReadInteger(const Ident: string; Default: Longint): Longint;
     procedure WriteInteger(const Ident: string; Value: Longint);
     procedure EraseSections;
-    property IniFileObject: TObject read GetIniFile;
-    property IniFile: TIniFile read FIniFile;
-    property RegIniFile: TRegIniFile read FRegIniFile;
   published
     property Active: Boolean read FActive write FActive default True;
-    property IniFileName: string read GetIniFileName write SetIniFileName;
-    property IniSection: string read GetIniSection write SetIniSection;
+    property AppStorage: TJvCustomAppStore read FAppStorage write FAppStorage;
+    property AppStoragePath: string read FAppStoragePath write SetAppStoragePath;
     property MinMaxInfo: TJvWinMinMaxInfo read FWinMinMaxInfo write SetWinMinMaxInfo;
     property Options: TPlacementOptions read FOptions write FOptions default [fpState, fpPosition];
     property PreventResize: Boolean read FPreventResize write SetPreventResize default False;
-    property RegistryRoot: TJvRegKey read FRegistryRoot write FRegistryRoot default hkCurrentUser;
-    property UseRegistry: Boolean read FUseRegistry write FUseRegistry default False;
     property Version: Integer read FVersion write FVersion default 0;
     property OnSavePlacement: TNotifyEvent read FOnSavePlacement
       write FOnSavePlacement;
@@ -192,17 +176,13 @@ type
     FStorage: TJvFormPlacement;
     FOnSave: TNotifyEvent;
     FOnLoad: TNotifyEvent;
-    function GetIniObject: TObject;
-    function GetRootSection: string;
     procedure SetStorage(Value: TJvFormPlacement);
   protected
     procedure SaveToIni; virtual;
     procedure LoadFromIni; virtual;
   public
     destructor Destroy; override;
-    property IniObject: TObject read GetIniObject;
     property Storage: TJvFormPlacement read FStorage write SetStorage;
-    property RootSection: string read GetRootSection;
     property OnSave: TNotifyEvent read FOnSave write FOnSave;
     property OnLoad: TNotifyEvent read FOnLoad write FOnLoad;
   end;
@@ -256,10 +236,6 @@ type
     property StoredValue[const Name: string]: Variant read GetStoredValue write SetStoredValue;
   end;
 
-
-procedure GetDefaultIniData(Control: TControl; var IniFileName,
-  Section: string; UseRegistry: Boolean);
-
 implementation
 
 uses
@@ -273,35 +249,11 @@ const
   siVisible = 'Visible';
   siVersion = 'FormVersion';
 
-procedure GetDefaultIniData(Control: TControl; var IniFileName,
-  Section: string; UseRegistry: Boolean);
-var
-  I: Integer;
-begin
-  IniFileName := '';
-  with Control do
-    if Owner is TCustomForm then
-      for I := 0 to Owner.ComponentCount - 1 do
-        if Owner.Components[I] is TJvFormPlacement then
-        begin
-          IniFileName := TJvFormPlacement(Owner.Components[I]).IniFileName;
-          Break;
-        end;
-  Section := GetDefaultSection(Control);
-  if IniFileName = '' then
-    if UseRegistry then
-      IniFileName := GetDefaultIniRegKey
-    else
-      IniFileName := GetDefaultIniName;
-end;
-  
 //=== TJvFormPlacement =======================================================
 
 constructor TJvFormPlacement.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FIniFileName := EmptyStr;
-  FIniSection := EmptyStr;
   FActive := True;
   if AOwner is TForm then
     FOptions := [fpState, fpPosition]
@@ -316,7 +268,6 @@ end;
 
 destructor TJvFormPlacement.Destroy;
 begin
-  IniFree;
   while FLinks.Count > 0 do
     RemoveLink(FLinks.Last);
   FLinks.Free;
@@ -325,8 +276,6 @@ begin
     ReleaseHook;
     RestoreEvents;
   end;
-  //DisposeStr(FIniFileName);
-  //DisposeStr(FIniSection);
   FWinMinMaxInfo.Free;
   inherited Destroy;
 end;
@@ -377,6 +326,14 @@ begin
     Result := TForm(Owner as TCustomForm)
   else
     Result := nil;
+end;
+
+procedure TJvFormPlacement.SetAppStoragePath(Value: string);
+begin
+  if (Value <> '') and (AnsiLastChar(Value) <> '\') then
+    Value := Value + '\';
+  if Value <> AppStoragePath then
+    FAppStoragePath := Value;
 end;
 
 procedure TJvFormPlacement.SetEvents;
@@ -518,7 +475,7 @@ end;
 
 procedure TJvFormPlacement.FormShow(Sender: TObject);
 begin
-  if Active then
+  if IsActive then
   try
     RestoreFormPlacement;
   except
@@ -532,7 +489,7 @@ procedure TJvFormPlacement.FormCloseQuery(Sender: TObject; var CanClose: Boolean
 begin
   if Assigned(FSaveFormCloseQuery) then
     FSaveFormCloseQuery(Sender, CanClose);
-  if CanClose and Active and (Owner is TCustomForm) and (Form.Handle <> 0) then
+  if CanClose and IsActive and (Owner is TCustomForm) and (Form.Handle <> 0) then
   try
     SaveFormPlacement;
   except
@@ -542,7 +499,7 @@ end;
 
 procedure TJvFormPlacement.FormDestroy(Sender: TObject);
 begin
-  if Active and not FSaved then
+  if IsActive and not FSaved then
   begin
     FDestroying := True;
     try
@@ -616,43 +573,6 @@ begin
   end;
 end;
 
-function TJvFormPlacement.GetIniFile: TObject;
-begin
-  if UseRegistry then
-    Result := FRegIniFile
-  else
-    Result := FIniFile;
-end;
-
-function TJvFormPlacement.GetIniFileName: string;
-begin
-  Result := FIniFileName;
-  if (Result = '') and not (csDesigning in ComponentState) then
-  begin
-    if UseRegistry then
-      Result := GetDefaultIniRegKey
-    else
-      Result := GetDefaultIniName;
-  end;
-end;
-
-procedure TJvFormPlacement.SetIniFileName(const Value: string);
-begin
-  FIniFileName := Value;
-end;
-
-function TJvFormPlacement.GetIniSection: string;
-begin
-  Result := FIniSection;
-  if (Result = '') and not (csDesigning in ComponentState) then
-    Result := GetDefaultSection(Owner);
-end;
-
-procedure TJvFormPlacement.SetIniSection(const Value: string);
-begin
-  FIniSection := Value;
-end;
-
 procedure TJvFormPlacement.Save;
 begin
   if Assigned(FOnSavePlacement) then
@@ -669,25 +589,12 @@ procedure TJvFormPlacement.SavePlacement;
 begin
   if Owner is TCustomForm then
   begin
-    if UseRegistry then
+    if Options * [fpState, fpPosition] <> [] then
     begin
-      if Options * [fpState, fpPosition] <> [] then
-      begin
-        WriteFormPlacementReg(Form, FRegIniFile, IniSection);
-        FRegIniFile.WriteBool(IniSection, siVisible, FDestroying);
-      end;
+      JvJVCLUtils.SaveFormPlacement(Form, AppStorage, AppStoragePath);
+      AppStorage.WriteInteger(AppStoragePath + siVisible, Ord(FDestroying));
       if (fpActiveControl in Options) and (Form.ActiveControl <> nil) then
-        FRegIniFile.WriteString(IniSection, siActiveCtrl, Form.ActiveControl.Name);
-    end
-    else
-    begin
-      if Options * [fpState, fpPosition] <> [] then
-      begin
-        WriteFormPlacement(Form, FIniFile, IniSection);
-        FIniFile.WriteBool(IniSection, siVisible, FDestroying);
-      end;
-      if (fpActiveControl in Options) and (Form.ActiveControl <> nil) then
-        FIniFile.WriteString(IniSection, siActiveCtrl, Form.ActiveControl.Name);
+        AppStorage.WriteString(AppStoragePath + siActiveCtrl, Form.ActiveControl.Name);
     end;
   end;
   NotifyLinks(poSave);
@@ -697,167 +604,61 @@ procedure TJvFormPlacement.RestorePlacement;
 begin
   if Owner is TCustomForm then
   begin
-    if UseRegistry then
-      ReadFormPlacementReg(Form, FRegIniFile, IniSection, fpState in Options,
-        fpPosition in Options)
-    else
-      ReadFormPlacement(Form, FIniFile, IniSection, fpState in Options,
+    JvJVCLUtils.RestoreFormPlacement(Form, AppStorage, AppStoragePath, fpState in Options,
         fpPosition in Options);
   end;
   NotifyLinks(poRestore);
 end;
 
-procedure TJvFormPlacement.IniNeeded(ReadOnly: Boolean);
-begin
-  if IniFileObject = nil then
-  begin
-    if UseRegistry then
-    begin
-      FRegIniFile := TRegIniFile.Create(IniFileName);
-      if ReadOnly then
-        FRegIniFile.Access := KEY_READ;
-      case FRegistryRoot of
-        hkLocalMachine:
-          FRegIniFile.RootKey := HKEY_LOCAL_MACHINE;
-        hkClassesRoot:
-          FRegIniFile.RootKey := HKEY_CLASSES_ROOT;
-        hkCurrentConfig:
-          FRegIniFile.RootKey := HKEY_CURRENT_CONFIG;
-        hkUsers:
-          FRegIniFile.RootKey := HKEY_USERS;
-        hkDynData:
-          FRegIniFile.RootKey := HKEY_DYN_DATA;
-      end;
-      if FRegIniFile.RootKey <> HKEY_CURRENT_USER then
-        FRegIniFile.OpenKey(FRegIniFile.FileName, not ReadOnly);
-    end
-    else
-      FIniFile := TIniFile.Create(IniFileName);
-  end;
-end;
-
-procedure TJvFormPlacement.IniFree;
-begin
-  if IniFileObject <> nil then
-  begin
-    IniFileObject.Free;
-    FIniFile := nil;
-    FRegIniFile := nil;
-  end;
-end;
-
-function TJvFormPlacement.DoReadString(const Section, Ident,
-  Default: string): string;
-begin
-  if IniFileObject <> nil then
-    Result := IniReadString(IniFileObject, Section, Ident, Default)
-  else
-  begin
-    IniNeeded(True);
-    try
-      Result := IniReadString(IniFileObject, Section, Ident, Default);
-    finally
-      IniFree;
-    end;
-  end;
-end;
-
 function TJvFormPlacement.ReadString(const Ident, Default: string): string;
 begin
-  Result := DoReadString(IniSection, Ident, Default);
-end;
-
-procedure TJvFormPlacement.DoWriteString(const Section, Ident, Value: string);
-begin
-  if IniFileObject <> nil then
-    IniWriteString(IniFileObject, Section, Ident, Value)
+  if IsActive then
+    Result := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, Ident]), Default)
   else
-  begin
-    IniNeeded(False);
-    try
-      IniWriteString(IniFileObject, Section, Ident, Value);
-    finally
-      IniFree;
-    end;
-  end;
+    Result := '';
 end;
 
 procedure TJvFormPlacement.WriteString(const Ident, Value: string);
 begin
-  DoWriteString(IniSection, Ident, Value);
+  if IsActive then
+    AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, Ident]), Value);
 end;
 
 function TJvFormPlacement.ReadInteger(const Ident: string; Default: Longint): Longint;
 begin
-  if IniFileObject <> nil then
-    Result := IniReadInteger(IniFileObject, IniSection, Ident, Default)
+  if IsActive then
+    Result := AppStorage.ReadInteger(AppStoragePath + Ident, Default)
   else
-  begin
-    IniNeeded(True);
-    try
-      Result := IniReadInteger(IniFileObject, IniSection, Ident, Default);
-    finally
-      IniFree;
-    end;
-  end;
+    Result := Default;
 end;
 
 procedure TJvFormPlacement.WriteInteger(const Ident: string; Value: Longint);
 begin
-  if IniFileObject <> nil then
-    IniWriteInteger(IniFileObject, IniSection, Ident, Value)
-  else
-  begin
-    IniNeeded(False);
-    try
-      IniWriteInteger(IniFileObject, IniSection, Ident, Value);
-    finally
-      IniFree;
-    end;
-  end;
+  if IsActive then
+    AppStorage.WriteInteger(AppStoragePath + Ident, Value);
 end;
 
 procedure TJvFormPlacement.EraseSections;
-var
-  Lines: TStrings;
-  I: Integer;
 begin
-  if IniFileObject = nil then
-  begin
-    IniNeeded(False);
-    try
-      Lines := TStringList.Create;
-      try
-        IniReadSections(IniFileObject, Lines);
-        for I := 0 to Lines.Count - 1 do
-        begin
-          if (Lines[I] = IniSection) or
-            (IsWild(Lines[I], IniSection + '.*', False) or
-            IsWild(Lines[I], IniSection + '\*', False)) then
-            IniEraseSection(IniFileObject, Lines[I]);
-        end;
-      finally
-        Lines.Free;
-      end;
-    finally
-      IniFree;
-    end;
-  end;
+  AppStorage.DeleteSubTree(AppStoragePath);
+end;
+
+function TJvFormPlacement.IsActive: Boolean;
+begin
+  Result := Active and (AppStorage <> nil);
 end;
 
 procedure TJvFormPlacement.SaveFormPlacement;
 begin
-  if FRestored or not Active then
+  { (marcelb) say what? Store when the component has done a restore previously or if it's inactive?
+    I think it should only store if Active is set to True. Changed accordingly }
+//  if FRestored or not Active then
+  if IsActive then
   begin
-    IniNeeded(False);
-    try
-      WriteInteger(siVersion, FVersion);
-      SavePlacement;
-      Save;
-      FSaved := True;
-    finally
-      IniFree;
-    end;
+    WriteInteger(siVersion, FVersion);
+    SavePlacement;
+    Save;
+    FSaved := True;
   end;
 end;
 
@@ -866,26 +667,20 @@ var
   cActive: TComponent;
 begin
   FSaved := False;
-  IniNeeded(True);
-  try
-    if ReadInteger(siVersion, 0) >= FVersion then
-    begin
-      RestorePlacement;
-      FRestored := True;
-      Restore;
-      if (fpActiveControl in Options) and (Owner is TCustomForm) then
-      begin
-        cActive := Form.FindComponent(IniReadString(IniFileObject,
-          IniSection, siActiveCtrl, ''));
-        if (cActive <> nil) and (cActive is TWinControl) and
-          TWinControl(cActive).CanFocus then
-          Form.ActiveControl := TWinControl(cActive);
-      end;
-    end;
+  if IsActive and (ReadInteger(siVersion, 0) >= FVersion) then
+  begin
+    RestorePlacement;
     FRestored := True;
-  finally
-    IniFree;
+    Restore;
+    if (fpActiveControl in Options) and (Owner is TCustomForm) then
+    begin
+      cActive := Form.FindComponent(AppStorage.ReadString(AppStoragePath + siActiveCtrl, ''));
+      if (cActive <> nil) and (cActive is TWinControl) and
+        TWinControl(cActive).CanFocus then
+        Form.ActiveControl := TWinControl(cActive);
+    end;
   end;
+  FRestored := True;
   UpdatePlacement;
 end;
 
@@ -1056,12 +851,9 @@ procedure TJvFormStorage.SaveProperties;
 begin
   with TJvPropsStorage.Create do
   try
-    Section := IniSection;
-    OnWriteString := DoWriteString;
-    if UseRegistry then
-      OnEraseSection := FRegIniFile.EraseSection
-    else
-      OnEraseSection := FIniFile.EraseSection;
+    Section := '';
+    OnWriteString := WriteString;
+    OnEraseSection := AppStorage.DeleteSubTree;
     StoreObjectsProps(Owner, FStoredProps);
   finally
     Free;
@@ -1072,8 +864,8 @@ procedure TJvFormStorage.RestoreProperties;
 begin
   with TJvPropsStorage.Create do
   try
-    Section := IniSection;
-    OnReadString := DoReadString;
+    Section := '';
+    OnReadString := ReadString;
     try
       LoadObjectsProps(Owner, FStoredProps);
     except
@@ -1107,24 +899,6 @@ begin
   FOnLoad := nil;
   SetStorage(nil);
   inherited Destroy;
-end;
-
-function TJvIniLink.GetIniObject: TObject;
-begin
-  if Assigned(FStorage) then
-    Result := FStorage.IniFileObject
-  else
-    Result := nil;
-end;
-
-function TJvIniLink.GetRootSection: string;
-begin
-  if Assigned(FStorage) then
-    Result := FStorage.FIniSection
-  else
-    Result := '';
-  if Result <> '' then
-    Result := Result + '\';
 end;
 
 procedure TJvIniLink.SetStorage(Value: TJvFormPlacement);

@@ -124,6 +124,7 @@ type
       storages not specific to an application (such as the registry). }
     property Root: string read GetRoot write SetRoot;
   public
+    class function ConcatPaths(const Paths: array of string): string;
     { Determines if the path represents a folder }
     function IsFolder(Path: string; ListIsValue: Boolean = True): Boolean; virtual; abstract;
     { Determines if the specified value is stored }
@@ -384,6 +385,19 @@ begin
   if NameStart = nil then
     NameStart := PChar(Name);
   Result := (AnsiStrLIComp(NameStart, 'Item', 4) = 0) and (NameStart[4] in ['0' .. '9']);
+end;
+
+class function TJvCustomAppStore.ConcatPaths(const Paths: array of string): string;
+begin
+  Result := OptimizePaths(Paths);
+{  Result := '';
+  for I := Low(Paths) to High(Paths) do
+    if (Paths[I] <> '') then
+    begin
+      if (AnsiLastChar(Result) <> '\') and (Paths[I][1] <> '\') then
+        Result := Result + '\';
+      Result := Result + Paths[I];
+    end;}
 end;
 
 function TJvCustomAppStore.ListStored(const Path: string): Boolean;
