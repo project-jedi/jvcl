@@ -5,7 +5,8 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JvCustomC6R.bpl"/>
     <OBJFILES value="..\..\dcu\JvCustomC6R.obj ..\..\dcu\JvValidateEdit.obj 
-      ..\..\dcu\JvBalloonHint.obj ..\..\dcu\JvBaseThumbnail.obj 
+      ..\..\dcu\JvBalloonHint.obj ..\..\dcu\JvBaseThumbnail.obj
+      ..\..\dcu\JvChart.obj
       ..\..\dcu\JvDiagramShape.obj ..\..\dcu\JvEditor.obj 
       ..\..\dcu\JvGammaPanel.obj ..\..\dcu\JvHLEditor.obj 
       ..\..\dcu\JvHLEditorPropertyForm.obj ..\..\dcu\JvHLParser.obj 
@@ -17,7 +18,8 @@
       ..\..\dcu\JvOutlookBar.obj ..\..\dcu\JvSchedEvtStore.obj 
       ..\..\dcu\JvScheduledEvents.obj ..\..\dcu\JvThumbImage.obj 
       ..\..\dcu\JvThumbnails.obj ..\..\dcu\JvThumbViews.obj 
-      ..\..\dcu\JvTimeLine.obj ..\..\dcu\JvTMTimeLine.obj ..\..\dcu\JvTrayIcon.obj"/>
+      ..\..\dcu\JvTimeLine.obj ..\..\dcu\JvTMTimeLine.obj
+      ..\..\dcu\JvTrayIcon.obj ..\..\JvUnicodeCanvas.obj"/>
     <RESFILES value="JvCustomC6R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -64,9 +66,9 @@
   <FILELIST>
       <FILE FILENAME="JvCustomC6R.res" FORMNAME="" UNITNAME="JvCustomC6R.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCustomC6R.cpp" FORMNAME="" UNITNAME="JvCustomC6R" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvValidateEdit.pas" FORMNAME="" UNITNAME="JvValidateEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvBalloonHint.pas" FORMNAME="" UNITNAME="JvBalloonHint" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvBaseThumbnail.pas" FORMNAME="" UNITNAME="JvBaseThumbnail" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvChart.pas" FORMNAME="" UNITNAME="JvChart" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvDiagramShape.pas" FORMNAME="" UNITNAME="JvDiagramShape" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvEditor.pas" FORMNAME="" UNITNAME="JvEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvGammaPanel.pas" FORMNAME="" UNITNAME="JvGammaPanel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -92,6 +94,8 @@
       <FILE FILENAME="..\..\run\JvTimeLine.pas" FORMNAME="" UNITNAME="JvTimeLine" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvTMTimeLine.pas" FORMNAME="" UNITNAME="JvTMTimeLine" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvTrayIcon.pas" FORMNAME="" UNITNAME="JvTrayIcon" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvUnicodeCanvas.pas" FORMNAME="" UNITNAME="JvUnicodeCanvas" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvValidateEdit.pas" FORMNAME="" UNITNAME="JvValidateEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
