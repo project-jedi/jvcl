@@ -52,7 +52,6 @@ contains
   JvQMovableBevel in '..\..\qrun\JvQMovableBevel.pas',
   JvQScrollText in '..\..\qrun\JvQScrollText.pas',
   JvQSpacer in '..\..\qrun\JvQSpacer.pas',
-  JvQSplitter in '..\..\qrun\JvQSplitter.pas',
   JvQSwitch in '..\..\qrun\JvQSwitch.pas',
   JvQWinampLabel in '..\..\qrun\JvQWinampLabel.pas',
   JvQZoom in '..\..\qrun\JvQZoom.pas',
@@ -65,6 +64,7 @@ contains
   JvQOfficeColorPanel in '..\..\qrun\JvQOfficeColorPanel.pas',
   JvQOfficeColorButton in '..\..\qrun\JvQOfficeColorButton.pas',
   JvQOfficeColorForm in '..\..\qrun\JvQOfficeColorForm.pas',
-  JvQObjectPickerDialog in '..\..\qrun\JvQObjectPickerDialog.pas';
+  JvQObjectPickerDialog in '..\..\qrun\JvQObjectPickerDialog.pas',
+  JvQSplitter in '..\..\qrun\JvQSplitter.pas';
 
 end.
