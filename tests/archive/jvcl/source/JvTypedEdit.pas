@@ -311,6 +311,11 @@ type
     property MinValue;
     property HasMaxValue;
     property HasMinValue;
+    (* ++ RDB ++ *)
+    property ClipBoardCommands;
+    property DisabledTextColor;
+    property DisabledColor;
+    (* -- RDB -- *)
 
   end;
 
@@ -379,6 +384,11 @@ type
 
     property HasMaxValue;
     property HasMinValue;
+    (* ++ RDB ++ *)
+    property ClipBoardCommands;
+    property DisabledTextColor;
+    property DisabledColor;
+    (* -- RDB -- *)
 
   end;
 
@@ -445,6 +455,11 @@ type
     property HasMaxValue;
     property HasMinValue;
     property WindowsillYear;
+    (* ++ RDB ++ *)
+    property ClipBoardCommands;
+    property DisabledTextColor;
+    property DisabledColor;
+    (* -- RDB -- *)
 
   end;
 
@@ -512,6 +527,11 @@ type
 
     property HasMaxValue;
     property HasMinValue;
+    (* ++ RDB ++ *)
+    property ClipBoardCommands;
+    property DisabledTextColor;
+    property DisabledColor;
+    (* -- RDB -- *)
   end;
 
 implementation

@@ -17,6 +17,11 @@ All Rights Reserved.
 
 Last Modified: 2002-07-04
 
+Contributers:
+
+  Rob den Braasem [rbraasem@xs4all.nl]
+
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -42,7 +47,7 @@ uses Windows,
 {$IFDEF COMPILER6_UP}
 RTLConsts, Variants,
 {$ENDIF}
-Classes,
+Classes,  JvComponent,
   StdCtrls, Controls, Messages, SysUtils, Forms, Graphics, Menus, Buttons,
   Dialogs, JvxCtrls, FileCtrl, Mask, JvDateUtil, JvTypes;
 
@@ -119,6 +124,14 @@ type
     FFocused: Boolean;
     FPopupAlign: TPopupAlign;
     FGlyphKind: TGlyphKind;
+    (* ++ RDB ++ *)
+      FClipBoardCommands: TJvClipboardCommands;
+      FGroupIndex: Integer;
+      FDisabledColor: TColor;
+      FDisabledTextColor: TColor;
+    FOnKeyDown: TKeyEvent;
+    (* -- RDB -- *)
+
     procedure SetEditRect;
     procedure RecreateGlyph;
     procedure UpdateBtnBounds;
@@ -161,6 +174,9 @@ type
 {$IFDEF COMPILER4_UP}
     procedure CMBiDiModeChanged(var Message: TMessage); message CM_BIDIMODECHANGED;
 {$ENDIF}
+  (* ++ RDB ++ *)
+      procedure UpdateEdit;
+  (* -- RDB -- *)
   protected
     FPopup: TCustomControl;
     FDefNumGlyphs: TNumGlyphs;
@@ -194,6 +210,21 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure ButtonClick; dynamic;
+
+    (* ++ RDB ++ *)
+      procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
+      procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
+      procedure WMPaint(var msg: TWMPaint); message WM_PAINT;
+      procedure WMEraseBkGnd(var msg: TWMEraseBkGnd); message WM_ERASEBKGND;
+    procedure LocalKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+
+      procedure SetDisabledColor(const Value: TColor); virtual;
+      procedure SetDisabledTextColor(const Value: TColor); virtual;
+      procedure SetClipBoardCommands(const Value: TJvClipboardCommands);
+      procedure SetGroupIndex(const Value: Integer);
+    (* -- RDB -- *)
+
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AlwaysEnable: Boolean read FAlwaysEnable write FAlwaysEnable default False;
     property Button: TJvEditButton read FButton;
@@ -211,6 +242,17 @@ type
     property PopupVisible: Boolean read GetPopupVisible;
     property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
     property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat;
+    (* ++ RDB ++ *)
+      property ClipBoardCommands: TJvClipboardCommands read FClipBoardCommands
+         write SetClipBoardCommands default [caCopy..caUndo];
+      property DisabledTextColor: TColor read FDisabledTextColor write
+         SetDisabledTextColor default clGrayText;
+      property DisabledColor: TColor read FDisabledColor write SetDisabledColor
+         default clWindow;
+(*      property GroupIndex: Integer read FGroupIndex write SetGroupIndex; *)
+      property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
+
+(* -- RDB -- *)
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -280,7 +322,6 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
@@ -296,6 +337,14 @@ type
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
+  (* ++ RDB ++ *)
+      property ClipBoardCommands;
+      property DisabledTextColor;
+      property DisabledColor;
+(*      property GroupIndex; *)
+      property OnKeyDown;
+  (* -- RDB -- *)
+
   end;
 
 { TJvFileDirEdit }
@@ -352,6 +401,13 @@ type
       write FOnAfterDialog;
     property OnDropFiles: TNotifyEvent read FOnDropFiles write FOnDropFiles;
     property OnButtonClick;
+  (* ++ RDB ++ *)
+      property ClipBoardCommands;
+      property DisabledTextColor;
+      property DisabledColor;
+(*      property GroupIndex; *)
+      property OnKeyDown;
+  (* -- RDB -- *)
   end;
 
 { TJvFilenameEdit }
@@ -759,7 +815,6 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
@@ -775,6 +830,13 @@ type
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
+  (* ++ RDB ++ *)
+      property ClipBoardCommands;
+      property DisabledTextColor;
+      property DisabledColor;
+(*      property GroupIndex; *)
+      property OnKeyDown;
+  (* -- RDB -- *)
   end;
 
   EComboEditError = class(EJVCLException);
@@ -1108,6 +1170,13 @@ begin
   Height := 21;
   FDefNumGlyphs := 1;
   FGlyphKind := gkCustom;
+  (* ++ RDB ++ *)
+   FDisabledColor := clWindow;
+   FDisabledTextColor := clGrayText;
+   FClipBoardCommands := [caCopy..caUndo];
+   FGroupIndex := -1;
+  inherited OnKeyDown := LocalKeyDown;
+  (* -- RDB -- *)
 end;
 
 destructor TJvCustomComboEdit.Destroy;
@@ -1115,6 +1184,158 @@ begin
   FButton.OnClick := nil;
   inherited Destroy;
 end;
+
+(* ++ RDB ++ *)
+procedure TJvCustomComboEdit.LocalKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  UpdateEdit;
+  if Assigned(fOnkeyDown) then fOnkeyDown(Sender, Key, Shift);
+end;
+
+procedure TJvCustomComboEdit.WMEraseBkGnd(var msg: TWMEraseBkGnd);
+var
+   canvas           : TCanvas;
+begin
+   if Enabled then
+      inherited
+   else
+   begin
+      Canvas := TCanvas.Create;
+      try
+         Canvas.Handle := msg.DC;
+         SaveDC(msg.DC);
+         try
+            Canvas.Brush.Color := FDisabledColor;
+            Canvas.Brush.Style := bsSolid;
+            Canvas.Fillrect(clientrect);
+            Msg.result := 1;
+         finally
+            RestoreDC(msg.DC, -1);
+         end;
+      finally
+         canvas.free
+      end;
+   end;                                 { Else }
+end;
+
+
+procedure TJvCustomComboEdit.SetClipBoardCommands(
+   const Value: TJvClipboardCommands);
+begin
+   if FClipBoardCommands <> Value then
+   begin
+      FClipBoardCommands := Value;
+      ReadOnly := FClipBoardCommands <= [caCopy];
+   end;
+end;
+
+procedure TJvCustomComboEdit.SetGroupIndex(const Value: Integer);
+begin
+   FGroupIndex := Value;
+   UpdateEdit;
+end;
+
+procedure TJvCustomComboEdit.UpdateEdit;
+var
+   i                : Integer;
+begin
+   for I := 0 to self.Owner.ComponentCount - 1 do
+   begin
+      if (Self.Owner.Components[i] is TJvCustomComboEdit) then
+      begin
+         if
+            ((Self.Owner.Components[i].Name <> Self.Name)
+            and
+            ((Self.Owner.Components[i] as TJvCustomComboEdit).fGroupIndex <> -1)
+            and
+            ((Self.Owner.Components[i] as TJvCustomComboEdit).fGroupIndex =
+               Self.fGroupIndex)
+            ) then
+            (Self.Owner.Components[i] as TJvCustomComboEdit).Caption := '';
+      end;
+   end;
+end;
+
+procedure TJvCustomComboEdit.SetDisabledColor(const Value: TColor);
+begin
+   if FDisabledColor <> Value then
+   begin
+      FDisabledColor := Value;
+      if not Enabled then
+         Invalidate;
+   end;
+end;
+
+procedure TJvCustomComboEdit.SetDisabledTextColor(const Value: TColor);
+begin
+   if FDisabledTextColor <> Value then
+   begin
+      FDisabledTextColor := Value;
+      if not Enabled then
+         Invalidate;
+   end;
+end;
+
+procedure TJvCustomComboEdit.WMCopy(var Msg: TWMCopy);
+begin
+   if caCopy in ClipBoardCommands then
+      inherited;
+end;
+
+procedure TJvCustomComboEdit.WMUndo(var Msg: TWMUndo);
+begin
+   if caUndo in ClipBoardCommands then
+      inherited;
+end;
+
+
+procedure TJvCustomComboEdit.WMPaint(var msg: TWMPaint);
+var
+   canvas           : TCanvas;
+   ps               : TPaintStruct;
+   callEndPaint     : Boolean;
+begin
+   if Enabled then
+      inherited
+   else
+   begin
+      callEndPaint := False;
+      canvas := TCanvas.Create;
+      try
+         if msg.DC <> 0 then
+         begin
+            canvas.Handle := msg.DC;
+            ps.fErase := true;
+         end
+         else
+         begin
+            BeginPaint(handle, ps);
+            callEndPaint := true;
+            canvas.handle := ps.hdc;
+         end;
+
+         if ps.fErase then
+            Perform(WM_ERASEBKGND, canvas.handle, 0);
+
+         SaveDC(canvas.handle);
+         try
+            canvas.Brush.Style := bsClear;
+            canvas.Font := Font;
+            canvas.Font.Color := FDisabledTextColor;
+            canvas.TextOut(1, 1, Text);
+         finally
+            RestoreDC(canvas.handle, -1);
+         end;
+      finally
+         if callEndPaint then
+            EndPaint(handle, ps);
+         canvas.free
+      end;
+   end;
+end;
+
+(* -- RDB -- *)
 
 procedure TJvCustomComboEdit.CreateParams(var Params: TCreateParams);
 const
@@ -1530,6 +1751,7 @@ end;
 procedure TJvCustomComboEdit.CMEnabledChanged(var Message: TMessage);
 begin
   inherited;
+  (* ++ RDB ++ *) Invalidate; (* -- RDB -- *)
   FButton.Enabled := Enabled;
 end;
 
@@ -1627,6 +1849,7 @@ end;
 procedure TJvCustomComboEdit.WMPaste(var Message: TWMPaste);
 begin
   if not FDirectInput or ReadOnly then Exit;
+   UpdateEdit;
   inherited;
 end;
 

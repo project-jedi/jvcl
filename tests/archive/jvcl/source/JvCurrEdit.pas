@@ -202,6 +202,11 @@ type
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
+    (* ++ RDB ++ *)
+    property ClipBoardCommands;
+    property DisabledTextColor;
+    property DisabledColor;
+    (* -- RDB -- *)
   end;
 
 { TJvCustomCalcEdit }
@@ -294,6 +299,11 @@ type
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
+    (* ++ RDB ++ *)
+    property ClipBoardCommands;
+    property DisabledTextColor;
+    property DisabledColor;
+    (* -- RDB -- *)
   end;
 
 implementation
@@ -769,10 +779,11 @@ procedure TJvCustomNumEdit.WMPaint(var Message: TWMPaint);
 var
   S: string;
 begin
+  inherited;
   if PopupVisible then S := TJvPopupWindow(FPopup).GetPopupText
   else S := GetDisplayText;
-  if not PaintComboEdit(Self, S, FAlignment, FFocused and not PopupVisible,
-    FCanvas, Message) then inherited;
+{  if not PaintComboEdit(Self, S, FAlignment, FFocused and not PopupVisible,
+    FCanvas, Message) then inherited;}
 end;
 
 procedure TJvCustomNumEdit.CMFontChanged(var Message: TMessage);

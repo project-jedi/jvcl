@@ -55,13 +55,19 @@ type
       FEffect: Boolean;
       FAboutJVCL: TJVCLAboutInfo;
       FCaret: TJvCaret;
+
+      (* ++ RDB ++ *)
       FClipBoardCommands: TJvClipboardCommands;
       FGroupIndex: Integer;
       FDisabledColor: TColor;
       FDisabledTextColor: TColor;
+      FOnKeyDown: TKeyEvent;
+      (* -- RDB -- *)
 
       procedure SetCtl3d(Value: Boolean);
+(* ++ RDB ++ *)
       procedure UpdateEdit;
+(* -- RDB -- *)
    protected
       procedure CMEnabledchanged(var Message: TMessage); message CM_ENABLEDCHANGED;
       procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -70,18 +76,24 @@ type
       procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
       procedure CaretChanged(sender: TObject); dynamic;
       procedure WMSetFocus(var msg: TMessage); message WM_SETFOCUS;
+(* ++ RDB ++ *)
       procedure WMPaint(var msg: TWMPaint); message WM_PAINT;
       procedure WMEraseBkGnd(var msg: TWMEraseBkGnd); message WM_ERASEBKGND;
       procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
       procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
       procedure WMCut(var Msg: TWMCut); message WM_CUT;
       procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
+      procedure LocalKeyDown(Sender: TObject; var Key: Word;
+        Shift: TShiftState);
+(* -- RDB -- *)
 
       procedure SetCaret(const Value: TJvCaret);
+(* ++ RDB ++ *)
       procedure SetDisabledColor(const Value: TColor); virtual;
       procedure SetDisabledTextColor(const Value: TColor); virtual;
       procedure SetClipBoardCommands(const Value: TJvClipboardCommands);
       procedure SetGroupIndex(const Value: Integer);
+(* -- RDB -- *)
 
    public
       constructor Create(AOwner: TComponent); override;
@@ -91,14 +103,17 @@ type
       property HotTrack: Boolean read FEffect write SetCtl3d default False;
       property HintColor: TColor read FColor write FColor default clInfoBk;
       property Caret: TJvCaret read FCaret write SetCaret;
+(* ++ RDB ++ *)
       property ClipBoardCommands: TJvClipboardCommands read FClipBoardCommands
          write SetClipBoardCommands default [caCopy..caUndo];
       property DisabledTextColor: TColor read FDisabledTextColor write
          SetDisabledTextColor default clGrayText;
       property DisabledColor: TColor read FDisabledColor write SetDisabledColor
          default clWindow;
+      property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
 
       property GroupIndex: Integer read FGroupIndex write SetGroupIndex;
+(* -- RDB -- *)
 
       property OnMouseEnter: TNotifyEvent read FOnMouseEnter write
          FOnMouseEnter;
@@ -138,13 +153,17 @@ begin
    FEffect := False;
    FColor := clInfoBk;
    FOver := False;
+   FCaret := TJvCaret.Create(self);
+   FCaret.OnChanged := CaretChanged;
+   ControlStyle := ControlStyle + [csAcceptsControls];
+(* ++ RDB ++ *)
    FDisabledColor := clWindow;
    FDisabledTextColor := clGrayText;
    FClipBoardCommands := [caCopy..caUndo];
-   FCaret := TJvCaret.Create(self);
-   FCaret.OnChanged := CaretChanged;
    FGroupIndex := -1;
-   ControlStyle := ControlStyle + [csAcceptsControls];
+  inherited OnKeyDown := LocalKeyDown;
+(* -- RDB -- *)
+
 end;
 {**************************************************}
 procedure TJvMaskEdit.CMEnabledchanged(var Message: TMessage);
@@ -360,6 +379,13 @@ procedure TJvMaskEdit.WMSetFocus(var msg: TMessage);
 begin
    inherited;
    FCaret.CreateCaret;
+end;
+
+procedure TJvMaskEdit.LocalKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  UpdateEdit;
+  if Assigned(fOnkeyDown) then fOnkeyDown(Sender, Key, Shift);
 end;
 
 end.

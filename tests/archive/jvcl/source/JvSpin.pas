@@ -281,6 +281,12 @@ type
     property BevelOuter;
   {$ENDIF}
 {$ENDIF}
+    (* ++ RDB ++ *)
+    property ClipBoardCommands;
+    property DisabledTextColor;
+    property DisabledColor;
+    (* -- RDB -- *)
+
   end;
 
 implementation

@@ -410,6 +410,11 @@ type
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
+    (* ++ RDB ++ *)
+    property ClipBoardCommands;
+    property DisabledTextColor;
+    property DisabledColor;
+    (* -- RDB -- *)
   end;
 
 { TJvDBDateEdit }
@@ -542,6 +547,12 @@ type
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
+    (* ++ RDB ++ *)
+    property ClipBoardCommands;
+    property DisabledTextColor;
+    property DisabledColor;
+    (* -- RDB -- *)
+
   end;
 
 { TJvDBCalcEdit }
@@ -673,6 +684,11 @@ type
     property OnEndDock;
     property OnStartDock;
 {$ENDIF}
+    (* ++ RDB ++ *)
+    property ClipBoardCommands;
+    property DisabledTextColor;
+    property DisabledColor;
+    (* -- RDB -- *)
   end;
 
 { TJvDBStatusLabel }
