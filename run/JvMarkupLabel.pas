@@ -45,10 +45,10 @@ type
     FMarginRight: Integer;
     FMarginTop: Integer;
     FAlignment: TAlignment;
-    {$IFDEF VCL}
-    FText: string;
-    procedure SetText(const Value: string);
-    {$ENDIF VCL}
+    FText: TCaption;
+    {$IFDEF VisualCLX}
+    FAutoSize: Boolean;
+    {$ENDIF VisualCLX}
     procedure Refresh;
     procedure ParseHTML(S: string);
     procedure RenderHTML;
@@ -61,9 +61,9 @@ type
     procedure DoReadBackColor(Reader: TReader);
   protected
     procedure FontChanged; override;
-    {$IFDEF VCL}
-    procedure SetAutoSize(Value: Boolean); override;
-    {$ENDIF VCL}
+    procedure SetText(const Value: TCaption); {$IFDEF VisualCLX} override;{$ENDIF}
+
+    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override;{$ENDIF VCL}
     procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -76,12 +76,12 @@ type
     property MarginRight: Integer read FMarginRight write SetMarginRight default 5;
     property MarginTop: Integer read FMarginTop write SetMarginTop default 5;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property Text: TCaption read FText write SetText;
     {$IFDEF VCL}
-    property Text: string read FText write SetText;
     property AutoSize;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    property Text: TCaption read GetText write SetText;
+    property AutoSize: boolean read FAutoSize write SetAutoSize default false;
     {$ENDIF VisualCLX}
     property Align;
     property Font;
@@ -422,13 +422,11 @@ var
   I, C, X, Y: Integer;
   ATotalWidth, AClientWidth, ATextWidth, BaseLine: Integer;
   iSol, iEol, PendingCount, MaxHeight, MaxAscent: Integer;
-  {$IFDEF VCL}
-  MaxWidth: Integer;
-  {$ENDIF VCL}
   El: TJvHTMLElement;
   Eol: Boolean;
   PendingBreak: Boolean;
   lSolText: string;
+  MaxWidth: Integer;
 
   procedure SetFont(EE: TJvHTMLElement);
   begin
@@ -466,11 +464,9 @@ begin
   if C = 0 then
     Exit;
   HTMLClearBreaks;
-  {$IFDEF VCL}
   if AutoSize then
     AClientWidth := 10000
   else
-  {$ENDIF VCL}
     AClientWidth := ClientWidth - MarginLeft - MarginRight;
 
   Canvas.Brush.Style := bsClear;
@@ -478,9 +474,7 @@ begin
   iSol := 0;
   PendingBreak := False;
   PendingCount := -1;
-  {$IFDEF VCL}
   MaxWidth := 0;
-  {$ENDIF VCL}
   repeat
     I := iSol;
     ATotalWidth := AClientWidth;
@@ -546,7 +540,6 @@ begin
     // render line
     BaseLine := MaxAscent;
 
-    {$IFDEF VCL}
     if AutoSize then
     begin
       X := MarginLeft;
@@ -554,7 +547,6 @@ begin
         MaxWidth := (ATextWidth + MarginLeft + MarginRight);
     end
     else
-    {$ENDIF VCL}
       case Alignment of
         taLeftJustify:
           X := MarginLeft;
@@ -573,13 +565,11 @@ begin
     Y := Y + MaxHeight;
     iSol := iEol;
   until (iEol >= C - 1) and (El.EolText = '');
-  {$IFDEF VCL}
   if AutoSize then
   begin
     Width := MaxWidth;
     Height := Y + 5;
   end;
-  {$ENDIF VCL}
 end;
 
 procedure TJvMarkupLabel.SetAlignment(const Value: TAlignment);
@@ -591,13 +581,16 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
 procedure TJvMarkupLabel.SetAutoSize(Value: Boolean);
 begin
+  {$IFDEF VCL}
   inherited SetAutoSize(Value);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FAutoSize := Value;
+  {$ENDIF VisualCLX}
   Invalidate;
 end;
-{$ENDIF VCL}
 
 procedure TJvMarkupLabel.SetMarginLeft(const Value: Integer);
 begin
@@ -617,7 +610,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvMarkupLabel.SetText(const Value: string);
+procedure TJvMarkupLabel.SetText(const Value: TCaption);
 var
   S: string;
 begin
@@ -627,6 +620,9 @@ begin
   S := StringReplace(S, SLineBreak, ' ', [rfReplaceAll]);
   S := TrimRight(S);
   FText := S;
+  {$IFDEF VisualCLX}
+  inherited SetText(FText);
+  {$ENDIF VisualCLX}
   Refresh;
 end;
 
