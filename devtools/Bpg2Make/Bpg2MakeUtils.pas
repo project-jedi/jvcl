@@ -5,6 +5,7 @@ unit Bpg2MakeUtils;
 interface
 
 procedure Run;
+function CreateMakeFile(const Filename: string): Boolean;
 
 implementation
 
@@ -101,8 +102,7 @@ begin
       end; 
       StartIndex := Index + LenSearchText; 
 
-     // Ersetzungstext einfügen 
-      if LenReplaceText > 0 then 
+      if LenReplaceText > 0 then
       begin 
         Move(ReplaceText[1], Result[Len + 1], LenReplaceText); 
         Inc(Len, LenReplaceText); 
