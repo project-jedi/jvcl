@@ -702,7 +702,7 @@ type
     procedure Clear; override;
     procedure SaveToImage(Picture: TPicture);
 
-    procedure InsertBitmap(ABitmap: TBitmap; const Sizeable: Boolean);
+    procedure InsertGraphic(AGraphic: TGraphic; const Sizeable: Boolean);
     // InsertFormatText inserts formatted text at the cursor position given by Index.
     // If Index < 0, the text is inserted at the current SelStart position.
     // S is the string to insert
@@ -875,10 +875,10 @@ var
     But:
 
     * if you stream out the RTF content of the rich edit control, the bitmaps
-      are *not* included. Use TJvRichEdit.InsertBitmap if you want the bitmaps
+      are *not* included. Use TJvRichEdit.InsertGraphic if you want the bitmaps
       to be included in the RTF.
     * TJvRichEdit.AllowObjects must be set to True.
-    * BitmapToRTF is the fastest, TJvRichEdit.InsertBitmap the slowest.
+    * BitmapToRTF is the fastest, TJvRichEdit.InsertGraphic the slowest.
   }
 
 { uses the \dibitmap identifier }
@@ -1037,10 +1037,9 @@ type
 
   TImageDataObject = class(TInterfacedObject, IDataObject)
   private
-    FBitmap: TBitmap;
-    function GetExtent(dwDrawAspect: Longint; out Size: TPoint): HRESULT; stdcall;
+    FGraphic: TGraphic;
   public
-    constructor Create(ABitmap: TBitmap); virtual;
+    constructor Create(AGraphic: TGraphic); virtual;
     { IDataObject }
     function GetData(const FormatEtcIn: TFormatEtc; out Medium: TStgMedium):
       HRESULT; stdcall;
@@ -2041,10 +2040,10 @@ end;
 
 //=== { TImageDataObject } ===================================================
 
-constructor TImageDataObject.Create(ABitmap: TBitmap);
+constructor TImageDataObject.Create(AGraphic: TGraphic);
 begin
   inherited Create;
-  FBitmap := ABitmap;
+  FGraphic := AGraphic;
 end;
 
 function TImageDataObject.DAdvise(const FormatEtc: TFormatEtc;
@@ -2083,29 +2082,65 @@ function TImageDataObject.GetData(const FormatEtcIn: TFormatEtc;
   out Medium: TStgMedium): HRESULT;
 var
   SizeMetric: TPoint;
+  Buffer: Pointer;
+  Length: UINT;
   DC: HDC;
   hMF: HMETAFILE;
   hMem: THandle;
   pMFP: PMetafilePict;
 begin
-  { Basically the code from AxCtrls.pas TActiveXControl.GetData }
-
   // Handle only MetaFile
   if (FormatEtcIn.tymed and TYMED_MFPICT) = 0 then
   begin
     Result := DV_E_FORMATETC;
     Exit;
   end;
-  // Retrieve Extent
-  GetExtent(DVASPECT_CONTENT, SizeMetric);
-  // Create Metafile DC and set it up
-  DC := CreateMetafile(nil);
-  SetWindowOrgEx(DC, 0, 0, nil);
-  SetWindowExtEx(DC, SizeMetric.X, SizeMetric.Y, nil);
+  if FGraphic is TMetafile then //Get a Win3x-style HMETAFILE handle
+    with TMetafile(FGraphic) do //from a HENHMETAFILE one.
+    begin
+      SizeMetric.X := MMWidth;
+      SizeMetric.Y := MMHeight;
+      Buffer := nil;
+      Length := 0;
+      DC := GetDC(0);
+      try
+        Length := GetWinMetaFileBits(Handle, 0, nil, MM_ANISOTROPIC, DC);
+        GetMem(Buffer, Length);
+        if GetWinMetaFileBits(Handle, Length, Buffer,
+             MM_ANISOTROPIC, DC) = Length then
+          hMF := SetMetaFileBitsEx(Length, Buffer)
+        else
+          hMF := 0;
+      finally
+        if Buffer <> nil then FreeMem(Buffer, Length);
+        ReleaseDC(0, DC);
+      end;
+    end
+  else
+  begin
+    // convert pixels to mm
+    SizeMetric.X := MulDiv(FGraphic.Width,
+      cHundredthMMPerInch, Screen.PixelsPerInch);
+    SizeMetric.Y := MulDiv(FGraphic.Height,
+      cHundredthMMPerInch, Screen.PixelsPerInch);
+    // Create Metafile DC and set it up
+    DC := CreateMetafile(nil);
+    SetWindowOrgEx(DC, 0, 0, nil);
+    SetWindowExtEx(DC, SizeMetric.X, SizeMetric.Y, nil);
 
-  StretchBlt(DC, 0, 0, SizeMetric.X, SizeMetric.Y,
-    FBitmap.Canvas.Handle, 0, 0, FBitmap.Width, FBitmap.Height, SRCCOPY);
-  hMF := CloseMetaFile(DC);
+    if FGraphic.ClassType = TIcon then
+      DrawIconEx(DC, 0, 0, TIcon(FGraphic).Handle, SizeMetric.X, SizeMetric.Y,
+        0, 0, DI_NORMAL)
+    else
+      with TCanvas.Create do
+      try
+        Handle := DC;
+        StretchDraw(Rect(0, 0, SizeMetric.X, SizeMetric.Y), FGraphic);
+      finally
+        Free;
+      end;
+    hMF := CloseMetaFile(DC);
+  end;
   if hMF = 0 then
   begin
     Result := E_UNEXPECTED;
@@ -2138,19 +2173,6 @@ function TImageDataObject.GetDataHere(const FormatEtc: TFormatEtc;
   out Medium: TStgMedium): HRESULT;
 begin
   Result := E_NOTIMPL;
-end;
-
-function TImageDataObject.GetExtent(dwDrawAspect: Integer;
-  out Size: TPoint): HRESULT;
-begin
-  if dwDrawAspect <> DVASPECT_CONTENT then
-  begin
-    Result := DV_E_DVASPECT;
-    Exit;
-  end;
-  Size.X := MulDiv(FBitmap.Width, CHundredthMMPerInch, Screen.PixelsPerInch);
-  Size.Y := MulDiv(FBitmap.Height, CHundredthMMPerInch, Screen.PixelsPerInch);
-  Result := S_OK;
 end;
 
 function TImageDataObject.QueryGetData(const FormatEtc: TFormatEtc): HRESULT;
@@ -3107,7 +3129,7 @@ begin
   end;
 end;
 
-procedure TJvCustomRichEdit.InsertBitmap(ABitmap: TBitmap; const Sizeable: Boolean);
+procedure TJvCustomRichEdit.InsertGraphic(AGraphic: TGraphic; const Sizeable: Boolean);
 var
   OleClientSite: IOleClientSite;
   Storage: IStorage;
@@ -3119,7 +3141,7 @@ var
 begin
   if HandleAllocated and Assigned(FRichEditOle) then
   begin
-    DataObject := TImageDataObject.Create(ABitmap);
+    DataObject := TImageDataObject.Create(AGraphic);
 
     FillChar(ReObject, SizeOf(TReObject), 0);
     IRichEditOle(FRichEditOle).GetClientSite(OleClientSite);

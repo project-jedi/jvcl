@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2005-03-01:
+- TJvRichEdit: Renamed TJvCustomRichEdit.InsertBitmap to TJvCustomRichEdit.InsertGraphic; allows now to insert TGraphic objects, not just TBitmap objects. //remkobonte
 2005-02-01:
 - ThemeManager packages have changed their names and JvCore has been updated. 
   Use latest versions from Mike's website.
