@@ -221,6 +221,7 @@ begin
     RegisterGraphicSignature([$D7, $CD], 0, TMetafile); // WMF
     RegisterGraphicSignature([0, 1], 0, TMetafile); // EMF
     RegisterGraphicSignature('JFIF', 6, TJPEGImage);
+    RegisterGraphicSignature('Exif', 6 , TJPEGImage);
     // NB! Registering these will add a requirement on having the JvMM package installed
     // Let users register these manually
     // RegisterGraphicSignature([$0A], 0, TJvPcx);
