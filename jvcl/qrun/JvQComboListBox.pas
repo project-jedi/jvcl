@@ -40,9 +40,9 @@ unit JvQComboListBox;
 interface
 
 uses
-  SysUtils, Classes,  
-  Qt, QControls, QGraphics, QStdCtrls, QExtCtrls, QMenus, Types, QWindows,
-  JvQExStdCtrls, 
+  SysUtils, Classes,
+  QWindows, QMessages, QControls, Types, QGraphics, QStdCtrls, QExtCtrls, QMenus,  
+  Qt, JvQExStdCtrls, 
   JvQTypes;
 
 type

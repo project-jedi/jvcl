@@ -47,7 +47,7 @@ Known Issues:
 
 -----------------------------------------------------------------------------}
 // $Id$
-
+{$I windowsonly.inc}
 {$I jvcl.inc}
 
 unit JvQTimerList;

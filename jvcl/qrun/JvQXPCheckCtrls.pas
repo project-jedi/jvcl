@@ -36,8 +36,8 @@ unit JvQXPCheckCtrls;
 interface
 
 uses
-  Classes,  
-  Types, QGraphics, QControls, QWindows, 
+  Classes,
+  QWindows, Types, QGraphics, QControls,
   JvQXPCore, JvQXPCoreUtils;
 
 type

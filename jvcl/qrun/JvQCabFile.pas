@@ -66,8 +66,9 @@ type
     FOnExtractFile: TOnExtractFile;
     FOnNeed: TOnNeedNewCabinet;
     FTmpString: string;
+    function GetFiles: TStrings;
     procedure SetFileName(const Value: TFileName);
-    procedure SetFiles(const Value: TStringList);
+    procedure SetFiles(const Value: TStrings);
     procedure RefreshFiles;
   public
     constructor Create(AOwner: TComponent); override;
@@ -76,7 +77,7 @@ type
     function ExtractFile(FileName: string; DestPath: string): Boolean;
   published
     property FileName: TFileName read FFileName write SetFileName;
-    property Files: TStringList read FFiles write SetFiles;
+    property Files: TStrings read GetFiles write SetFiles;
     property OnCABInfo: TOnCABInfo read FOnCABInfo write FOnCABInfo;
     property OnFilesListed: TNotifyEvent read FOnFiles write FonFiles;
     property OnFileExtracted: TOnExtracted read FOnExtracted write FOnExtracted;
@@ -113,7 +114,12 @@ begin
   RefreshFiles;
 end;
 
-procedure TJvCABFile.SetFiles(const Value: TStringList);
+function TJvCABFile.GetFiles: TStrings;
+begin
+  Result := FFiles;
+end;
+
+procedure TJvCABFile.SetFiles(const Value: TStrings);
 begin
   //do nothing !!!!
 end;
@@ -136,7 +142,7 @@ begin
   begin
     Result := FILEOP_SKIP;
     CAB := PFileInCabinetInfo(Param1);
-    Sender.FFiles.Add(StrPas(CAB^.NameInCabinet));
+    Sender.Files.Add(StrPas(CAB^.NameInCabinet));
   end
   else
   if Notification = SPFILENOTIFY_CABINETINFO then // give Cabinet info
@@ -253,7 +259,7 @@ end;
 
 procedure TJvCABFile.RefreshFiles;
 begin
-  FFiles.Clear;
+  Files.Clear;
   if SetupIterateCabinet(PChar(FFileName), 0, CBack, @Self) then
     if Assigned(FOnFiles) then
       FOnFiles(Self);

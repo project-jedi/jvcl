@@ -128,7 +128,7 @@ begin
   // works only by calling this funtion directly !
   if (ATime >= Now) or (AKind <> tkOneShot) then
   begin
-    with FAlarms.Add do
+    with Alarms.Add do
     begin
       Name := AName;
       Time := ATime;
@@ -141,9 +141,9 @@ end;
 
 procedure TJvAlarms.Delete(const Idx: Cardinal);
 begin
-  FAlarms.Delete(Idx);
+  Alarms.Delete(Idx);
   // (p3)
-  FRunning := Active and (FAlarms.Count > 0);
+  FRunning := Active and (Alarms.Count > 0);
   FTimer.Enabled := Running;
 end;
 
@@ -170,7 +170,7 @@ begin
   begin
     FBusy := True;
     try
-      if FAlarms.Count >= 0 then
+      if Alarms.Count >= 0 then
       begin
         Current := Now;
         Stamp := DateTimeToTimeStamp(Now);
@@ -178,7 +178,7 @@ begin
         if ((Stamp.Time - FLast.Time) >= 1000) or (Stamp.Date > FLast.Date) then
         begin
           FLast := Stamp;
-          for I := FAlarms.Count - 1 downto 0 do
+          for I := Alarms.Count - 1 downto 0 do
           begin
             Alarm := Alarms[I];
             if Current >= Alarm.Time then
@@ -232,7 +232,7 @@ end;
 procedure TJvAlarms.SetActive(const Value: Boolean);
 begin
   FActive := Value;
-  FRunning := FActive and (FAlarms.Count > 0);
+  FRunning := FActive and (Alarms.Count > 0);
   FTimer.Enabled := Running;
 end;
 

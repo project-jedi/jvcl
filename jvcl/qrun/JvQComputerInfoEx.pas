@@ -2940,7 +2940,7 @@ end;
 
 function TJvMetricsInfo.GetACP: Integer;
 begin
-  Result := Windows.GetACP;
+  Result := QWindows.GetACP;
 end;
 
 function TJvMetricsInfo.GetArrange: TJvWindowsArrange;
@@ -2955,7 +2955,7 @@ end;
 
 function TJvMetricsInfo.GetCaretBlinkTime: DWORD;
 begin
-  Result := Windows.GetCaretBlinkTime;
+  Result := QWindows.GetCaretBlinkTime;
 end;
 
 function TJvMetricsInfo.GetCaretPos(const Index: Integer): Integer;
@@ -2995,12 +2995,12 @@ end;
 
 function TJvMetricsInfo.GetDialogBaseUnits: Integer;
 begin
-  Result := Windows.GetDialogBaseUnits;
+  Result := QWindows.GetDialogBaseUnits;
 end;
 
 function TJvMetricsInfo.GetDoubleClickTime: Integer;
 begin
-  REsult := Windows.GetDoubleClickTime;
+  REsult := QWindows.GetDoubleClickTime;
 end;
 
 function TJvMetricsInfo.GetMetrics(const Index: Integer): Integer;
@@ -3010,7 +3010,7 @@ end;
 
 function TJvMetricsInfo.GetOEMCP: Integer;
 begin
-  Result := Windows.GetOEMCP;
+  Result := QWindows.GetOEMCP;
 end;
 
 procedure TJvMetricsInfo.SetACP(const Value: Integer);
@@ -3050,7 +3050,7 @@ begin
       1:
         P.Y := Value;
     end;
-    Windows.SetCaretPos(P.X, P.Y);
+    QWindows.SetCaretPos(P.X, P.Y);
   end
   else
     RaiseReadOnly;
@@ -3074,7 +3074,7 @@ begin
       1:
         P.Y := Value;
     end;
-    Windows.SetCursorPos(P.x, P.Y);
+    QWindows.SetCursorPos(P.x, P.Y);
   end
   else
     RaiseReadOnly;

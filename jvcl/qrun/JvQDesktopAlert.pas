@@ -36,8 +36,8 @@ unit JvQDesktopAlert;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QGraphics, QForms, QMenus, QImgList, Types, QWindows, 
+  SysUtils, Classes,
+  QWindows, QControls, Types, QGraphics, QForms, QMenus, QImgList,
   JvQComponent, JvQBaseDlg, JvQDesktopAlertForm, JvQTypes;
 
 type

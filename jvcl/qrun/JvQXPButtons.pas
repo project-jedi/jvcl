@@ -36,9 +36,9 @@ unit JvQXPButtons;
 interface
 
 uses
-  Classes, TypInfo,  
-  Types, QGraphics, QControls, QForms, QActnList, QImgList, QMenus,
-  QWindows, JvQExControls, 
+  Classes, TypInfo,
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, QActnList, QImgList, QMenus, 
+  JvQExControls, 
   JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -392,7 +392,7 @@ begin
   if Value <> FDefault then
   begin
     FDefault := Value;  
-//    QWindows.Perform(GetParentForm(Self), CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl)); 
+    QWindows.Perform(GetParentForm(Self), CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl)); 
   end;
 end;
 

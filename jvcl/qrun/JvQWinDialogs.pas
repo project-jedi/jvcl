@@ -36,7 +36,7 @@ unit JvQWinDialogs;
 interface
 
 uses 
-  Qt,  
+  Qt, QWindows, 
   Windows, ShellAPI, ShlObj, ComObj, ActiveX, CommDlg, UrlMon,
   SysUtils, Classes,
   Types, QGraphics, QControls, QForms, QDialogs,

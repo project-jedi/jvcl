@@ -1191,7 +1191,7 @@ begin
           P^ := #32;
           Inc(P);
         end;
-      #8: // back space
+      Backspace:
         begin
           DoOutput;
           Dec(FCursorPosition);
@@ -1200,22 +1200,22 @@ begin
           Inc(P);
           Q := P;
         end;
-      #9: // tab
+      Tab:
         begin
-          // Replace with 8 spaces 
+          // Replace with 8 spaces
           DoOutput;
           DoTab;
           Inc(P);
           Q := P;
         end;
-      #10: // line feed
+      Lf:
         begin
           DoOutput;
           DoReadEvent(True);
           Inc(P);
           Q := P;
         end;
-      #13: // cariage return
+      Cr:
         begin
           DoOutput;
           FCursorPosition := 0;

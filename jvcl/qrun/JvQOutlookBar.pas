@@ -352,7 +352,8 @@ type
 implementation
 
 uses
-  Math;
+  Math,
+  JvQConsts;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvOutlookBar.res}
@@ -455,7 +456,7 @@ end;
 
 procedure TJvOutlookBarEdit.KeyPress(var Key: Char);
 begin
-  if Key = #13 then
+  if Key = Cr then
     Key := #0; // remove beep
   inherited KeyPress(Key);
 end;
@@ -773,7 +774,7 @@ begin
     ParentButtonSize := TJvOutlookBarPage(Source).ParentButtonSize;
     ParentColor := TJvOutlookBarPage(Source).ParentColor;
     Enabled := TJvOutlookBarPage(Source).Enabled;
-    Buttons.Clear;
+    QButtons.Clear;
     for I := 0 to TJvOutlookBarPage(Source).Buttons.Count - 1 do
       Buttons.Add.Assign(TJvOutlookBarPage(Source).Buttons[I]);
     Change;
@@ -790,7 +791,7 @@ end;
 
 procedure TJvOutlookBarPage.SetTopButtonIndex(const Value: Integer);
 begin
-  if (FTopButtonIndex <> Value) and (Value >= 0) and (Value < Buttons.Count) then
+  if (FTopButtonIndex <> Value) and (Value >= 0) and (Value < QButtons.Count) then
   begin
     FTopButtonIndex := Value;
     Change;
@@ -962,7 +963,7 @@ end;
 
 procedure TJvOutlookBarPage.SetDownIndex(Value: Integer);
 begin
-  if (Value >= 0) and (Value < Buttons.Count) then
+  if (Value >= 0) and (Value < QButtons.Count) then
     Buttons[Value].Down := True;
 end;
 
@@ -1105,7 +1106,7 @@ procedure TJvCustomOutlookBar.DoDwnClick(Sender: TObject);
 begin
   if FBtmButton.Visible then
     with Pages[ActivePageIndex] do
-      if TopButtonIndex < Buttons.Count then
+      if TopButtonIndex < QButtons.Count then
         TopButtonIndex := TopButtonIndex + 1;
 end;
 

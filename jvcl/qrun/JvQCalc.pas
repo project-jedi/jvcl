@@ -38,10 +38,11 @@ interface
 
 uses 
   Variants, 
-  Classes, 
+  Classes,
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QMenus, QExtCtrls, QButtons, QClipbrd,
   SysUtils, // SysUtils after Windows because both define Beep 
-  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QExtCtrls,
-  QButtons, QClipbrd, Types, QImgList, QWindows, 
+  QImgList, 
   JvQToolEdit, JvQSpeedButton, JvQBaseDlg, JvQExExtCtrls;
 
 const
@@ -120,10 +121,10 @@ uses
   JvQJVCLUtils, JvQJCLUtils, JvQConsts, JvQResources;
 
 {$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCalc.res}
+{$R ..\Resources\JvCalc.Res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvCalc.res}
+{$R ../Resources/JvCalc.Res}
 {$ENDIF LINUX}
 
 type
@@ -196,6 +197,7 @@ end;
 
 
 procedure TJvCalcButton.ParentFontChanged;
+
 
 
   function BtnColor(Kind: TCalcBtnKind): TColor;
@@ -716,7 +718,7 @@ begin
     cbEql:
       CalcKey('=');
     cbBck:
-      CalcKey(#8);
+      CalcKey(Backspace);
     cbClr:
       CalcKey('C');
     cbMP:

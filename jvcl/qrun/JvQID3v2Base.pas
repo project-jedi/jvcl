@@ -31,7 +31,7 @@ Known Issues:
     list indicate not supported frames.
 -----------------------------------------------------------------------------}
 // $Id$
-{$I windowsonly.inc}
+
 {$I jvcl.inc}
 
 unit JvQID3v2Base;
@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils,  
-  JclUnicode,
+  JvWStrUtils, 
   JvQComponent, JvQID3v2Types, JvQID3v1;
 
 const
@@ -1197,7 +1197,7 @@ function NiceGenreToGenre(const ANiceGenre: string): string;
 implementation
 
 uses
-  Types, QGraphics, Windows, 
+  Types, QGraphics, QWindows, 
   JclBase, JclFileUtils, JclLogic, JclDateTime,
   JvQConsts, JvQResources;
 

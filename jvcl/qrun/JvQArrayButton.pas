@@ -53,10 +53,12 @@ type
     FCaptions: TStringList;
     FColors: TStringList;
     FHints: THintStringList; 
+    function GetCaptions: TStrings;
+    function GetColors: TStrings;
     procedure SetCols(const Value: Integer);
     procedure SetRows(const Value: Integer);
-    procedure SetCaptions(const Value: TStringList);
-    procedure SetColors(const Value: TStringList);
+    procedure SetCaptions(const Value: TStrings);
+    procedure SetColors(const Value: TStrings);
     procedure MouseToCell(const X, Y: Integer; var ACol, ARow: Integer);
     function CellRect(ACol, ARow: Integer): TRect;
     procedure SetHints(const Value: THintStringList);
@@ -93,12 +95,12 @@ type
     property Rows: Integer read FRows write SetRows;
     property Cols: Integer read FCols write SetCols;
     property Font;
-    property Captions: TStringList read FCaptions write SetCaptions;
+    property Captions: TStrings read GetCaptions write SetCaptions;
     property Height default 35;
     {A List of button captions from the top-left to the bottom-right button}
     property Hints: THintStringList read FHints write SetHints;
     {A List of button hints from the top-left to the bottom-right button}
-    property Colors: TStringList read FColors write SetColors;
+    property Colors: TStrings read GetColors write SetColors;
     {A List of button Colors from the top-left to the bottom-right button
      values must standard Delphi Color names like clRed, clBlue or hex Color strings like $0000ff for red.
      please note the hex order in Delphi is BGR i.s.o. the RGB order you may know from HTML hex Color triplets}
@@ -213,23 +215,23 @@ var
   end;
 
 begin
-  DH := (Height - 2) div FRows;
-  DW := (Width - 2) div FCols;
-  for Row := 0 to FRows - 1 do
+  DH := (Height - 2) div Rows;
+  DW := (Width - 2) div Cols;
+  for Row := 0 to Rows - 1 do
   begin
     Y0 := 1 + Row * DH;
-    for Col := 0 to FCols - 1 do
+    for Col := 0 to Cols - 1 do
     begin
       X0 := 1 + Col * DW;
       R := Rect(X0, Y0, X0 + DW, Y0 + DH);
-      Index := Row * FCols + Col;
-      if Index < FCaptions.Count then
-        Cap := FCaptions[Index]
+      Index := Row * Cols + Col;
+      if Index < Captions.Count then
+        Cap := Captions[Index]
       else
         Cap := '';
-      if Index < FColors.Count then
+      if Index < Colors.Count then
         try
-          BackColor := StringToColor(FColors[Index]);
+          BackColor := StringToColor(Colors[Index]);
         except
           BackColor := clSilver;
         end
@@ -273,7 +275,12 @@ end;
 
 
 
-procedure TJvArrayButton.SetCaptions(const Value: TStringList);
+function TJvArrayButton.GetCaptions: TStrings;
+begin
+  Result := FCaptions;
+end;
+
+procedure TJvArrayButton.SetCaptions(const Value: TStrings);
 begin
   FCaptions.Assign(Value);
   Invalidate;
@@ -286,7 +293,12 @@ begin
   Invalidate;
 end;
 
-procedure TJvArrayButton.SetColors(const Value: TStringList);
+function TJvArrayButton.GetColors: TStrings;
+begin
+  Result := FColors;
+end;
+
+procedure TJvArrayButton.SetColors(const Value: TStrings);
 begin
   FColors.Assign(Value);
   Invalidate;
@@ -296,8 +308,8 @@ function TJvArrayButton.CellRect(ACol, ARow: Integer): TRect;
 var
   DH, DW, X0, Y0: Integer;
 begin
-  DH := (Height - 2) div FRows;
-  DW := (Width - 2) div FCols;
+  DH := (Height - 2) div Rows;
+  DW := (Width - 2) div Cols;
   Y0 := 1 + ARow * DH;
   X0 := 1 + ACol * DW;
   //  pt1:=clienttoscreen(point(X0,Y0));
@@ -319,8 +331,8 @@ begin
     MouseToCell(X, Y, ACol, ARow);
     if (ACol < 0) or (ARow < 0) then
       Exit;
-    Index := ARow * FCols + ACol;
-    if Index < FHints.Count then
+    Index := ARow * Cols + ACol;
+    if Index < Hints.Count then
       HintStr := Hints[Index]
     else
       HintStr := Hint;

@@ -126,6 +126,8 @@ type
     procedure SetFrameColor(const Value: TColor);
     procedure SetRoundedFrame(const Value: Integer);
   protected
+    procedure DoDrawCaption(var Rect: TRect; Flags: Integer);virtual;
+    procedure DoProviderDraw(var Rect: TRect; Flags: Integer);virtual;
     procedure DoFocusChanged(Control: TWinControl); override;
     procedure TextChanged; override;
     procedure FontChanged; override;
@@ -134,7 +136,6 @@ type
     procedure EnabledChanged; override;
     procedure VisibleChanged; override;
 
-    procedure DoDrawCaption(var Rect: TRect; Flags: Integer); virtual;
     procedure DoDrawText(var Rect: TRect; Flags: Integer); virtual;
     procedure AdjustBounds;  
     procedure SetAutoSize(Value: Boolean); virtual; 
@@ -266,8 +267,8 @@ uses
   JvQThemes, JvQJCLUtils, JvQJVCLUtils;
 
 const
-  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
+  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
 
 //=== TJvCustomLabel =========================================================
 
@@ -364,16 +365,60 @@ begin
   Result := Font.Color;
 end;
 
+procedure TJvCustomLabel.DoProviderDraw(var Rect: TRect; Flags: Integer);
+var
+  Tmp: TSize;
+  TmpItem: IJvDataItem;
+  ItemsRenderer: IJvDataItemsRenderer;
+  ItemRenderer: IJvDataItemRenderer;
+  DrawState: TProviderDrawStates;
+begin
+  Provider.Enter;
+  try
+    if not Enabled then
+      DrawState := [pdsDisabled]
+    else
+      DrawState := [];
+    TmpItem := (Provider as IJvDataConsumerItemSelect).GetItem;
+    if (TmpItem <> nil) and (Supports(TmpItem.GetItems, IJvDataItemsRenderer, ItemsRenderer) or
+      Supports(TmpItem, IJvDataItemRenderer, ItemRenderer)) then
+    begin
+      Canvas.Brush.Color := Color;
+      Canvas.Font := Font;
+      if (Flags and DT_CALCRECT <> 0) then
+      begin
+        if ItemsRenderer <> nil then
+          Tmp := ItemsRenderer.MeasureItem(Canvas, TmpItem)
+        else
+          Tmp := ItemRenderer.Measure(Canvas);
+        Rect.Right := Tmp.cx;
+        Rect.Bottom := Tmp.cy;
+      end
+      else
+      begin
+        if ItemsRenderer <> nil then
+          ItemsRenderer.DrawItem(Canvas, Rect, TmpItem, DrawState)
+        else
+          ItemRenderer.Draw(Canvas, Rect, DrawState);
+      end;
+    end
+    else
+      DoDrawCaption(Rect, Flags);
+  finally
+    Provider.Leave;
+  end;
+end;
+
 procedure TJvCustomLabel.DoDrawCaption(var Rect: TRect; Flags: Integer);
 const
-  EllipsisFlags: array [TJvTextEllipsis] of Integer =
-    (0, DT_WORD_ELLIPSIS, DT_PATH_ELLIPSIS, DT_END_ELLIPSIS);
+  EllipsisFlags: array[TJvTextEllipsis] of Integer =
+  (0, DT_WORD_ELLIPSIS, DT_PATH_ELLIPSIS, DT_END_ELLIPSIS);
 var
   Text: string;
   PosShadow: TShadowPosition;
   SizeShadow: Byte;
   ColorShadow: TColor;
-  X,Y:Integer;
+  X, Y: Integer;
 begin
   Text := GetLabelCaption;
   if (Flags and DT_CALCRECT <> 0) and ((Text = '') or FShowAccelChar and
@@ -420,8 +465,8 @@ begin
         Y := Margin;
       tlBottom:
         Y := Height - Images.Height - Margin;
-      else
-        Y := (Height - Images.Height) div 2;
+    else
+      Y := (Height - Images.Height) div 2;
     end;
     if Y < Margin then
       Y := Margin;  
@@ -430,53 +475,13 @@ begin
 end;
 
 procedure TJvCustomLabel.DoDrawText(var Rect: TRect; Flags: Integer);
-var
-  Tmp: TSize;
-  TmpItem: IJvDataItem;
-  ItemsRenderer: IJvDataItemsRenderer;
-  ItemRenderer: IJvDataItemRenderer;
-  DrawState: TProviderDrawStates;
 begin
   if ProviderActive then
-  begin
-    Provider.Enter;
-    try
-      if not Enabled then
-        DrawState := [pdsDisabled]
-      else
-        DrawState := [];
-      TmpItem := (Provider as IJvDataConsumerItemSelect).GetItem;
-      if (TmpItem <> nil) and (Supports(TmpItem.GetItems, IJvDataItemsRenderer, ItemsRenderer) or
-        Supports(TmpItem, IJvDataItemRenderer, ItemRenderer)) then
-      begin
-        Canvas.Brush.Color := Color;
-        Canvas.Font := Font;
-        if (Flags and DT_CALCRECT <> 0) then
-        begin
-          if ItemsRenderer <> nil then
-            Tmp := ItemsRenderer.MeasureItem(Canvas, TmpItem)
-          else
-            Tmp := ItemRenderer.Measure(Canvas);
-          Rect.Right := Tmp.cx;
-          Rect.Bottom := Tmp.cy;
-        end
-        else
-        begin
-          if ItemsRenderer <> nil then
-            ItemsRenderer.DrawItem(Canvas, Rect, TmpItem, DrawState)
-          else
-            ItemRenderer.Draw(Canvas, Rect, DrawState);
-        end;
-      end
-      else
-        DoDrawCaption(Rect, Flags);
-    finally
-      Provider.Leave;
-    end;
-  end
+    DoProviderDraw(Rect, Flags)
   else
     DoDrawCaption(Rect, Flags);
 end;
+
 
 
 
@@ -487,7 +492,7 @@ const // (ahuser) no function known for these
   XOffsetFrame = 0;
   YOffsetFrame = 0;
 var
-  Text: array [0..4096] of Char;
+  Text: array[0..4096] of Char;
   TextX, TextY: Integer;
   Phi: Real;
   w, h: Integer;
@@ -525,11 +530,9 @@ begin
         TextX := TextX + Trunc(Canvas.TextHeight(Text) * Sin(Phi) / 2);
         TextY := TextY + Trunc(Canvas.TextWidth(Text) * Sin(Phi) + Canvas.TextHeight(Text) * Cos(Phi) / 2);
       end
-      else
-      if Angle >= 270 then
+      else if Angle >= 270 then
         TextX := 3 - Trunc(Canvas.TextHeight(Text) * Sin(Phi) / 2)
-      else
-      if Angle <= 180 then
+      else if Angle <= 180 then
       begin
         TextX := ClientWidth - 3 - Trunc(Canvas.TextHeight(Text) * Sin(Phi) / 2);
         TextY := ClientHeight - 3 + Ceil(Canvas.TextHeight(Text) * Cos(Phi));
@@ -577,7 +580,7 @@ end;
 
 procedure TJvCustomLabel.Paint;
 var
-  Rect: TRect;
+  Rect,CalcRect: TRect;
   DrawStyle: Integer;
   InteriorMargin: Integer;
 begin
@@ -590,15 +593,14 @@ begin
     Canvas.Brush.Style := bsSolid;
     if not Transparent and ((RoundedFrame = 0) or (FrameColor = clNone)) then
       DrawThemedBackground(Self, Canvas, ClientRect)
-    else
-    if Transparent then
+    else if Transparent then
       Canvas.Brush.Style := bsClear;
     if FrameColor <> clNone then
     begin
       if RoundedFrame = 0 then
       begin
         Brush.Color := FrameColor;
-        FrameRect( Canvas,  ClientRect);
+        FrameRect(Canvas, ClientRect);
       end
       else
       begin
@@ -617,18 +619,12 @@ begin
     { Calculate vertical layout }
     if FLayout <> tlTop then
     begin
-      DoDrawText(Rect, DrawStyle or DT_CALCRECT);
+      CalcRect := Rect;
+      DoDrawText(CalcRect, DrawStyle or DT_CALCRECT);
+      if FLayout = tlBottom then OffsetRect(Rect, 0, Height - CalcRect.Bottom)
+      else OffsetRect(Rect, 0, (Height - CalcRect.Bottom) div 2);
       Rect.Left := Margin;
-      Rect.Right := Width - Margin;
-      if Layout <> tlCenter then
-      begin
-        Rect.Top := Max(Rect.Top, Margin);
-        Rect.Bottom := Min(Rect.Bottom, Height - Margin);
-      end;
-      if FLayout = tlBottom then
-        OffsetRect(Rect, 0, (Height - Rect.Bottom) div 2)
-      else
-        OffsetRect(Rect, 0, (Height - Rect.Bottom) div 2 - Margin div 2);
+      Rect.Right := Rect.Right - Rect.Left - Margin;
     end;
     DoDrawText(Rect, DrawStyle);
     if FShowFocus and Assigned(FFocusControl) and FFocused and
@@ -638,8 +634,8 @@ begin
       Brush.Color := Self.Color;
       DrawFocusRect(Rect);
     end;
-    if Angle = 0 then
-      AdjustBounds;
+//    if Angle = 0 then
+//      AdjustBounds;
   end;
 end;
 
@@ -653,7 +649,7 @@ end;
 
 procedure TJvCustomLabel.AdjustBounds;
 var
-//  DC: HDC;
+  DC: HDC;
   X: Integer;
   Rect: TRect;
   AAlignment: TAlignment;
@@ -661,9 +657,9 @@ begin
   if not (csReading in ComponentState) and AutoSize and FNeedsResize then
   begin
     Rect := ClientRect;
-//    InflateRect(Rect, -1, 0);
-//    DC := GetDC(NullHandle);
-//    Canvas.Handle := DC; 
+    InflateRect(Rect, -1, 0);
+    DC := GetDC(NullHandle);
+    Canvas.Handle := DC; 
     Canvas.Start(False);
     try 
       if Angle = 0 then
@@ -678,9 +674,9 @@ begin
     finally
       Canvas.Stop;
     end; 
-//    Canvas.Handle := NullHandle;
-//    ReleaseDC(NullHandle, DC);
-//    InflateRect(Rect, 1, 0);
+    Canvas.Handle := NullHandle;
+    ReleaseDC(NullHandle, DC);
+    InflateRect(Rect, 1, 0);
     X := Left;
     AAlignment := FAlignment;
     if UseRightToLeftAlignment then
@@ -688,10 +684,10 @@ begin
     if IsValidImage then
     begin
       Rect.Bottom := Max(Rect.Bottom, Rect.Top + GetImageHeight);
-      Inc(Rect.Right, GetImageWidth + Spacing);
+//      Inc(Rect.Right, Spacing);
     end;
-//    if (AAlignment = taRightJustify) and not IsValidImage then
-//      Inc(X, Width - Rect.Right);
+    if (AAlignment = taRightJustify) and not IsValidImage then
+      Inc(X, Width - Rect.Right);
     SetBounds(X, Top, Rect.Right, Rect.Bottom);
   end;
   FNeedsResize := False;

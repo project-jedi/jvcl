@@ -41,28 +41,15 @@ uses
   ShellAPI,
   {$ENDIF MSWINDOWS}
   QWindows, QMessages, Types, QGraphics, QControls, QForms,
-  QDialogs, QGrids, QMenus, QClipbrd,
-  {$IFDEF USEJVCL}
-  JvQTypes,
-  {$ENDIF USEJVCL}
+  QDialogs, QGrids, QMenus, QClipbrd, 
+  JvQTypes, 
   SysUtils, QStdCtrls, Classes;
 
 
 
 
 type
-{$IFNDEF USEJVCL}
 
-  THintString = string;
-{$HPPEMIT '#ifndef TDate'}
-
-
-{$HPPEMIT '#define TDate TDateTime'}
-{$HPPEMIT '#define TTime TDateTime'}
-
-{$HPPEMIT '#endif'}
-
-{$ENDIF USEJVCL}
 
 
 
@@ -161,10 +148,8 @@ type
     FFirstDayOfWeek: TJvWeekDay;
     FWeekendDays: TJvWeekDaySet;
     FAutoSizeOptions: TJvAutoSizeOptions;
-
-    {$IFDEF USEJVCL}
-    FCellMargins: TJvRect;
-    {$ENDIF USEJVCL}
+ 
+    FCellMargins: TJvRect; 
     {$IFNDEF USECUSTOMGRID}
     FOnSelectCell: TSelectCellEvent;
     FOnDrawCell: TDrawCellEvent;
@@ -174,10 +159,8 @@ type
     FMonthNamesAlignment: TAlignment;
     FYearAlignment: TAlignment;
     FYear: Integer;
-
-    {$IFDEF USEJVCL}
-    procedure CellMarginsChange(Sender: TObject);
-    {$ENDIF USEJVCL}
+ 
+    procedure CellMarginsChange(Sender: TObject); 
 
     procedure SetFirstDayOfWeek(const Value: TJvWeekDay);
     function GetDefaultColWidth: Integer;
@@ -187,10 +170,8 @@ type
     procedure SetFirstColWidth(const Value: Integer);
     procedure SetFirstRowHeight(const Value: Integer);
     procedure SetWeekendDays(const Value: TJvWeekDaySet);
-    procedure SetAutoSizeOptions(const Value: TJvAutoSizeOptions);
-    {$IFDEF USEJVCL}
-    procedure SetCellMargins(const Value: TJvRect);
-    {$ENDIF USEJVCL}
+    procedure SetAutoSizeOptions(const Value: TJvAutoSizeOptions); 
+    procedure SetCellMargins(const Value: TJvRect); 
     procedure SetDayNamesAlignment(const Value: TAlignment);
     procedure SetDaysAlignment(const Value: TAlignment);
     procedure SetMonthNamesAlignment(const Value: TAlignment);
@@ -261,10 +242,8 @@ type
 
     property FirstColWidth : Integer read GetFirstColWidth  write SetFirstColWidth;
     property FirstRowHeight: Integer read GetFirstRowHeight write SetFirstRowHeight;
-
-    {$IFDEF USEJVCL}
-    property CellMargins: TJvRect read FCellMargins write SetCellMargins;
-    {$ENDIF USEJVCL}
+ 
+    property CellMargins: TJvRect read FCellMargins write SetCellMargins; 
 
     property WeekendDays : TJvWeekDaySet read FWeekendDays write SetWeekendDays;
 
@@ -297,42 +276,14 @@ type
 
 implementation
 
-uses
-  {$IFDEF USEJVCL}
+uses 
   JvQConsts,
-  JvQResources,
-  {$ENDIF USEJVCL}
+  JvQResources, 
   JvQYearGridEditForm;
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsYearGrid = 'YearGrid';
-  RsEnterYear = 'Enter year (1999-2050):';
-  RsInvalidYear = 'invalid year';
-  RsYear = '&Year...';
-  RsEdit = '&Edit';
-  RsColor = '&Color...';
-  RsNoColor = '&No Color';
-  RsSaveAllInfo = '&Save All Info';
-  RsSaveFoundInfo = 'Save Found Info';
-  RsBorderColor = '&Border Color...';
-  RsBookMarkColor = 'Book&Mark Color...';
-  RsFindItem = '&Find...';
-  RsClearFind = 'Clear Find';
-  RsYearGridFind = 'YearGrid Find';
-  RsEnterSeachText = 'Enter seach text:';
-  RsFounds = 'Found %s';
-  RsToday = 'Today ';
-  RsCutItem = 'Cu&t';
-  RsCopyItem = '&Copy';
-  RsPasteItem = '&Paste';
-  RsDeleteItem = '&Delete';
-{$ENDIF USEJVCL}
 
-{$IFNDEF USEJVCL}
-const
-  Cr = #13;
-{$ENDIF USEJVCL}
+
+
 
 const
   TodayFontColor = clWhite;
@@ -343,15 +294,13 @@ var
   AYear, AMonth, ADay: Word;
 begin
   inherited Create(AOwner);
-
-  {$IFDEF USEJVCL}
+ 
   FCellMargins := TJvRect.Create;
   FCellMargins.Top    := 1;
   FCellMargins.Left   := 1;
   FCellMargins.Bottom := 1;
   FCellMargins.Right  := 1;
-  FCellMargins.OnChange := CellMarginsChange; // Must be set last
-  {$ENDIF USEJVCL}
+  FCellMargins.OnChange := CellMarginsChange; // Must be set last 
 
   FOrientation := yoHorizontal;
 
@@ -399,10 +348,8 @@ end;
 destructor TJvYearGrid.Destroy;
 begin
 //  SaveYear;
-  FGridPop.Free;
-  {$IFDEF USEJVCL}
-  FCellMargins.Free;
-  {$ENDIF USEJVCL}
+  FGridPop.Free; 
+  FCellMargins.Free; 
   inherited destroy;
 end;
 
@@ -1323,12 +1270,12 @@ begin
   begin
     if aoFirstRow in AutoSizeOptions then
     begin
-      RowHeights[0] := GetHighestTextInRow(0) {$IFDEF USEJVCL}+ CellMargins.Top + CellMargins.Bottom{$ENDIF USEJVCL};
+      RowHeights[0] := GetHighestTextInRow(0) + CellMargins.Top + CellMargins.Bottom;
     end;
     
     if aoFirstColumn in AutoSizeOptions then
     begin
-      ColWidths[0] := GetLargestTextInColumn(0) {$IFDEF USEJVCL}+ CellMargins.Left + CellMargins.Right{$ENDIF USEJVCL}; 
+      ColWidths[0] := GetLargestTextInColumn(0) + CellMargins.Left + CellMargins.Right; 
     end;
 
     if aoRows in AutoSizeOptions then
@@ -1344,7 +1291,7 @@ begin
       end;
         
       for I := 1 to RowCount-1 do
-        RowHeights[I] := MaxValue {$IFDEF USEJVCL}+ CellMargins.Top + CellMargins.Bottom{$ENDIF USEJVCL};
+        RowHeights[I] := MaxValue + CellMargins.Top + CellMargins.Bottom;
     end;
 
     if aoColumns in AutoSizeOptions then
@@ -1360,18 +1307,18 @@ begin
       end;
 
       for I := 1 to ColCount-1 do
-        ColWidths[I] := MaxValue {$IFDEF USEJVCL}+ CellMargins.Left + CellMargins.Top{$ENDIF USEJVCL};
+        ColWidths[I] := MaxValue + CellMargins.Left + CellMargins.Top;
     end;
   end;
 end;
 
-{$IFDEF USEJVCL}
+
 procedure TJvYearGrid.SetCellMargins(const Value: TJvRect);
 begin
   FCellMargins.Assign(Value);
   AdjustBounds;
 end;
-{$ENDIF USEJVCL}
+
 
 procedure TJvYearGrid.AdjustBounds;
 var
@@ -1407,12 +1354,12 @@ begin
     AdjustBounds;
 end;
 
-{$IFDEF USEJVCL}
+
 procedure TJvYearGrid.CellMarginsChange(Sender: TObject);
 begin
   AdjustBounds;
 end;
-{$ENDIF USEJVCL}
+
 
 procedure TJvYearGrid.SetDayNamesAlignment(const Value: TAlignment);
 begin
@@ -1550,9 +1497,9 @@ var
   function GetTextLeft(Alignment: TAlignment): Integer;
   begin
     case Alignment of
-      taRightJustify: Result := Rect.Right - SWidth {$IFDEF USEJVCL}- CellMargins.Right{$ENDIF USEJVCL};
-      taCenter      : Result := Rect.Left + (Rect.Right-Rect.Left - SWidth{$IFDEF USEJVCL}- CellMargins.Left - CellMargins.Right{$ENDIF USEJVCL} + 2) div 2;
-      else            Result := Rect.Left{$IFDEF USEJVCL}+ CellMargins.Left{$ENDIF USEJVCL};
+      taRightJustify: Result := Rect.Right - SWidth - CellMargins.Right;
+      taCenter      : Result := Rect.Left + (Rect.Right-Rect.Left - SWidth- CellMargins.Left - CellMargins.Right + 2) div 2;
+      else            Result := Rect.Left+ CellMargins.Left;
     end;
   end;
 begin

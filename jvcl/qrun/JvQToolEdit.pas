@@ -129,7 +129,6 @@ type
   
   TJvCustomComboEdit = class(TJvExCustomComboMaskEdit) 
   private
-    FBtnControl: TWinControl;
     FOnButtonClick: TNotifyEvent;
     FClickKey: TShortCut;
     FReadOnly: Boolean;
@@ -179,6 +178,7 @@ type
  
   protected
     FButton: TJvEditButton; // Polaris
+    FBtnControl: TWinControl;
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
     FPopup: TWinControl;
@@ -1595,19 +1595,19 @@ begin
 
   //Polaris  if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) then
 //  if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) or ((Key = #10) and PopupVisible) then
-  if (Key = #13) or (Key = #27) or ((Key = #10) and PopupVisible) then
+  if (Key = Cr) or (Key = Esc) or ((Key = Lf) and PopupVisible) then
   begin
     if PopupVisible then
     begin
       //Polaris      PopupCloseUp(FPopup, Key = Char(VK_RETURN));
-      PopupCloseUp(FPopup, Key <> #27);
+      PopupCloseUp(FPopup, Key <> Esc);
       Key := #0;
     end
     else
     begin
       { must catch and remove this, since is actually multi-line }  
       TCustomFormHack(GetParentForm(Self)).NeedKey(Integer(Key), [], WideChar(Key)); 
-      if Key = #13 then
+      if Key = Cr then
       begin
         inherited KeyPress(Key);
         Key := #0;
@@ -1616,7 +1616,7 @@ begin
     end;
   end;
   //Polaris
-  if Key in [#10, #9] then
+  if Key in [Tab, Lf] then
   begin
     Key := #0;
     if (Form <> nil) {and Form.KeyPreview} then
@@ -2454,7 +2454,7 @@ end;
 function TJvCustomDateEdit.IsCustomTitle: Boolean;
 begin
   Result := (CompareStr(RsDateDlgCaption, DialogTitle) <> 0) and
-    (DialogTitle <> EmptyStr); // Polaris
+    (DialogTitle <> ''); // Polaris
 end;
 
 procedure TJvCustomDateEdit.KeyDown(var Key: Word; Shift: TShiftState);

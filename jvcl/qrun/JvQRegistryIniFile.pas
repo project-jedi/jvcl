@@ -63,11 +63,13 @@ type
     function Key2IniSection(const Key: string; out ininame: string;
       out section: string; AllowCreate: boolean = false): boolean; dynamic;
   public
-//    constructor Create; override;
+    LazyWrite: boolean;
+  //    constructor Create; override;
     constructor Create(const Root: string); overload;
     destructor Destroy; override;
     function OpenKey(const Key: string; AllowCreate: boolean): boolean;
     function CloseKey: boolean;
+
 
     function KeyExists(const Key: String): Boolean;
     function ValueExists(const Ident: string): boolean;
@@ -76,21 +78,21 @@ type
 
     procedure GetValueNames(Strings: TStrings);
 
-    function ReadString(const Ident: string): string;
-    procedure WriteString(const Ident, Value: String);
-    function ReadInteger(const Ident: string): Longint;
-    procedure WriteInteger(const Ident: string; Value: Longint);
     function ReadBool(const Ident: string): Boolean;
-    procedure WriteBool(const Ident: string; Value: Boolean);
     function ReadBinaryStream(const Ident: string; Value: TStream): Integer;
     function ReadDate(const Ident: string): TDateTime;
     function ReadDateTime(const Ident: string): TDateTime;
     function ReadFloat(const Ident: string): Double;
+    function ReadInteger(const Ident: string): Longint;
+    function ReadString(const Ident: string): string;
     function ReadTime(const Ident: string): TDateTime;
     procedure WriteBinaryStream(const Ident: string; Value: TStream);
+    procedure WriteBool(const Ident: string; Value: Boolean);
     procedure WriteDate(const Ident: string; Value: TDateTime);
     procedure WriteDateTime(const Ident: string; Value: TDateTime);
     procedure WriteFloat(const Ident: string; Value: Double);
+    procedure WriteInteger(const Ident: string; Value: Longint);
+    procedure WriteString(const Ident, Value: String);
     procedure WriteTime(const Ident: string; Value: TDateTime);
     property CurrentKey: string read FSection;
     property CurrentRoot: string read GetFilename;

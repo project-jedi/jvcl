@@ -87,12 +87,12 @@ var
   TmpBmp: TBitmap;
 
 begin
-  if (FIcons <> nil) and (FIcons.Count <> 0) then
+  if (Icons <> nil) and (Icons.Count <> 0) then
   begin
-    FNumber := (FNumber + 1) mod FIcons.Count;  
+    FNumber := (FNumber + 1) mod Icons.Count;  
     TmpBmp := TBitmap.Create;
     try
-      FIcons.GetBitmap(FNumber, TmpBmp);
+      Icons.GetBitmap(FNumber, TmpBmp);
       Application.Icon.Assign(TmpBmp);
     finally
       TmpBmp.Free;

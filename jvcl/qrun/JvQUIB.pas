@@ -66,8 +66,7 @@ unit JvQUIB;
 
 interface
 uses
-  {$IFDEF MSWINDOWS} Windows, {$ENDIF}
-  {$IFDEF USEJVCL} JvQComponent, {$ENDIF}
+  {$IFDEF MSWINDOWS} Windows, {$ENDIF}  JvQComponent, 
   Classes, SysUtils, SyncObjs, JvQUIBLib, JvQUIBase, JvQUIBSQLParser, JvQUIBConst;
 
 type
@@ -96,11 +95,9 @@ type
 
 { All UIB components inherith from this class to encapsulate Critical Sections.
   Critical Sections make UIB THread Safe. }
-{$IFDEF USEJVCL}
+
 TJvUIBComponent = class(TJvComponent)
-{$ELSE}
-TJvUIBComponent = class(TComponent)
-{$ENDIF}
+
   private
     FCriticalsection: TCriticalSection;
   public

@@ -42,12 +42,12 @@ unit JvQExDBGrids;
 interface
 
 uses
-  
-  
+
+
   Types, Qt, QGraphics, QControls, QForms, QDBGrids, QWindows,
-  
+
   Classes, SysUtils,
-  JvQTypes, JvQThemes, JVQCLVer, JvQExControls;
+  JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
 
 

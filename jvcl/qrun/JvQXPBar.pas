@@ -37,6 +37,7 @@ Contributors(s):matej golob
   //matej 2004-5-3
   --add property BorderColor in TJvXPBarColors.
   --add property HeaderRounded
+  --add property TopSpace
 
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -48,21 +49,16 @@ Known Issues:
 
 {$I jvcl.inc}
 
-{$IFNDEF USEJVCL}
-// sorry no theming
-{$UNDEF JVCLThemesEnabled}
-{$UNDEF JVCLThemesEnabledD56}
-{$ENDIF USEJVCL}
+
 
 unit JvQXPBar;
 
 interface
 
 uses
-  Classes, SysUtils,  
-  Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList,
-  QWindows, QTypes, QExtCtrls,
-  JvQTypes, 
+  Classes, SysUtils,
+  QWindows, QMessages, QControls, Types, QGraphics, QForms, QImgList, QActnList, QExtCtrls, 
+  Qt, JvQTypes, 
   JvQConsts, JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -347,6 +343,7 @@ type
     FStoredHint: string;
     FShowItemFrame: Boolean;
     FRoundedItemFrame: Integer;  // DS
+    FTopSpace: Integer;
     function IsFontStored: Boolean;
     procedure FontChange(Sender: TObject);
     procedure SetCollapsed(Value: Boolean);
@@ -369,6 +366,7 @@ type
     function GetRollHeight: Integer;
     function GetRollWidth: Integer;
     procedure SetHeaderRounded(const Value: Boolean);
+    procedure SetTopSpace(const Value: Integer);
   protected  
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override; 
@@ -413,6 +411,7 @@ type
     property ShowRollButton: Boolean read FShowRollButton write SetShowRollButton default True;
     property ShowItemFrame: Boolean read FShowItemFrame write FShowItemFrame;
     property RoundedItemFrame: Integer read FRoundedItemFrame write FRoundedItemFrame default 1; //DS
+    property TopSpace: Integer read FTopSpace write SetTopSpace default 5;
 
     property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange write
       FAfterCollapsedChange;
@@ -424,11 +423,7 @@ type
     property OnItemClick: TJvXPBarOnItemClickEvent read FOnItemClick write FOnItemClick;
     procedure AdjustClientRect(var Rect: TRect); override;
     // show hints for individual items in the list
-    function HintShow(var HintInfo: THintInfo): Boolean;
-      {$IFDEF USEJVCL} override; {$ELSE} dynamic; {$ENDIF}
-    {$IFNDEF USEJVCL}
-    procedure CMHintShow(var Msg: TCMHintShow); message CM_HINTSHOW;
-    {$ENDIF USEJVCL}
+    function HintShow(var HintInfo: THintInfo): Boolean;  override;  
     procedure DblClick; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -465,6 +460,7 @@ type
     property ShowRollButton;
     property ShowItemFrame;
     property RoundedItemFrame;
+    property TopSpace;
 
     property AfterCollapsedChange;
     property BeforeCollapsedChange;
@@ -525,13 +521,9 @@ procedure RoundedFrame(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer
 
 implementation
 
-
-
-
-uses
-  QMenus,
-  JvQResources;
-
+uses  
+  JvQResources, 
+  QMenus;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvXPBar.res}
@@ -540,10 +532,7 @@ uses
 {$R ../Resources/JvXPBar.res}
 {$ENDIF LINUX}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsUntitled = 'untitled';
-{$ENDIF USEJVCL}
+
 
 const
   FC_HEADER_MARGIN = 6;
@@ -1377,6 +1366,7 @@ begin
   FImageChangeLink.OnChange := DoColorsChange;
   FRollChangeLink := TChangeLink.Create;
   FRollChangeLink.OnChange := DoColorsChange;
+  FTopSpace := 5;
 
   FFont := TFont.Create;
   FFont.Color := $00840000;
@@ -1406,10 +1396,7 @@ begin
   FRollStep := 3;
   FShowLinkCursor := True;
   FShowRollButton := True;
-  FVisibleItems := TJvXPBarVisibleItems.Create(Self); 
-  // asn: TODO: implement doublebuffering
-  //      For now prevent background drawing, to reduce flickering
-  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground); 
+  FVisibleItems := TJvXPBarVisibleItems.Create(Self);
 end;
 
 destructor TJvXPCustomWinXPBar.Destroy;
@@ -1468,7 +1455,7 @@ begin
     (FVisibleItems.Count = 0)) then
     Dec(NewHeight, FC_ITEM_MARGIN);
 //  if Height <> NewHeight then
-  Height := NewHeight;
+  Height := NewHeight - 5 + FTopSpace;
 end;
 
 function TJvXPCustomWinXPBar.GetHitTestAt(X, Y: Integer): TJvXPBarHitTest;
@@ -1485,9 +1472,9 @@ begin
   Result.Left := 3;
   Result.Right := Width - 3;
   if FRollMode = rmShrink then
-    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 + Index * FRollOffset + 1
+    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 + Index * FRollOffset - 4 + FTopSpace
   else
-    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 + Index * FItemHeight + 1;
+    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 + Index * FItemHeight - 4 + FTopSpace;
   Result.Bottom := Result.Top + FItemHeight;
 end;
 
@@ -1871,8 +1858,8 @@ begin
     { fill non-client area } 
     Brush.Color := TJvXPWinControl(parent).Color;
     with Rect do
-      FillRect(Bounds(Left, Top, Right - Left, 5)); 
-    Inc(Rect.Top, 5 + FHeaderHeight);
+      FillRect(Bounds(Left, Top, Right - Left, FTopSpace)); 
+    Inc(Rect.Top, FTopSpace + FHeaderHeight);
     Brush.Color := FColors.BodyColor; //$00F7DFD6;
     FillRect(Rect);
     Dec(Rect.Top, FHeaderHeight);
@@ -2087,12 +2074,7 @@ begin
   Result := False; // use default hint window
 end;
 
-{$IFNDEF USEJVCL}
-procedure TJvXPCustomWinXPBar.CMHintShow(var Msg: TCMHintShow);
-begin
-  Msg.Result := Ord(HintShow(Msg.HintInfo^));
-end;
-{$ENDIF USEJVCL}
+
 
 
 
@@ -2200,6 +2182,19 @@ begin
     InternalRedraw;
   end;
 end;
+
+procedure TJvXPCustomWinXPBar.SetTopSpace(const Value: Integer);
+begin
+  if Value <> FTopSpace then
+  begin
+    FTopSpace := Value;
+    if FTopSpace < 0 then
+      FTopSpace := 0;
+    ResizeToMaxHeight;
+    InternalRedraw;
+  end;
+end;
+
 
 end.
 

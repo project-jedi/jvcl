@@ -36,10 +36,8 @@ unit JvQXPCore;
 interface
 
 uses
-  QWindows, QMessages, QControls, Types, QGraphics, QForms,
-  {$IFDEF USEJVCL}
-  JvQComponent,
-  {$ENDIF USEJVCL}
+  QWindows, QMessages, QControls, Types, QGraphics, QForms, 
+  JvQComponent, 
   Classes;
 
 const
@@ -125,39 +123,19 @@ type
     OfficeXP                            // OfficeXP theme
    );
 
-  { baseclass for non-focusable component descendants. }
-  {$IFDEF USEJVCL}
+  { baseclass for non-focusable component descendants. } 
   TJvXPCustomComponent = class(TJvComponent)
   public
     constructor Create(AOwner: TComponent); override;
-  end;
-  {$ELSE}
-  TJvXPCustomComponent = class(TComponent)
-  private
-    FVersion: string;
-    procedure SetVersion(Value: string);
-  public
-    constructor Create(AOwner: TComponent); override;
-  published
-    property Version: string read FVersion write SetVersion stored False;
-  end;
-  {$ENDIF USEJVCL}
-
-  {$IFDEF USEJVCL}
-  TJvXPWinControl = class(TJvWinControl)
-  {$ELSE}
-  TJvXPWinControl = class(TWinControl)
-  {$ENDIF USEJVCL}
+  end; 
+ 
+  TJvXPWinControl = class(TJvWinControl) 
   published
     property Color;
   end;
   { baseclass for focusable control descendants. }
-
-  {$IFDEF USEJVCL}
-  TJvXPCustomControl = class(TJvCustomControl)
-  {$ELSE}
-  TJvXPCustomControl = class(TCustomControl)
-  {$ENDIF USEJVCL}
+ 
+  TJvXPCustomControl = class(TJvCustomControl) 
   private
     FClicking: Boolean;
     FDrawState: TJvXPDrawState;
@@ -165,11 +143,7 @@ type
     FIsSibling: Boolean;
     FModalResult: TModalResult;
     FOnMouseLeave: TNotifyEvent;
-    FOnMouseEnter: TNotifyEvent;
-    {$IFNDEF USEJVCL}
-    FVersion: string;
-    procedure SetVersion(Value: string);
-    {$ENDIF USEJVCL} 
+    FOnMouseEnter: TNotifyEvent;  
   protected
     ExControlStyle: TJvXPControlStyle;
     procedure InternalRedraw; dynamic;
@@ -213,10 +187,7 @@ type
     property DrawState: TJvXPDrawState read FDrawState write FDrawState;
     property IsLocked: Boolean read FIsLocked write FIsLocked;
     property IsSibling: Boolean read FIsSibling write FIsSibling;
-  published
-    {$IFNDEF USEJVCL}
-    property Version: string read FVersion write SetVersion stored False;
-    {$ENDIF USEJVCL}
+  published 
   end;
 
   TJvXPUnlimitedControl = class(TJvXPCustomControl)
@@ -353,10 +324,8 @@ type
 
 implementation
 
-uses
-  {$IFDEF USEJVCL}
-  JvQResources,
-  {$ENDIF USEJVCL}
+uses 
+  JvQResources, 
   JvQXPCoreUtils;
 
 {$IFDEF MSWINDOWS}
@@ -366,29 +335,16 @@ uses
 {$R ../Resources/JvXPCore.res}
 {$ENDIF LINUX}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsCopyright = 'Design eXperience. (c) 2002 M. Hoffmann Version ';
-  RsCopyright2 = 'Design eXperience II - (c) 2002 M. Hoffmann Version ';
-  RsVersion = '2.0.1'; // always increase version number on new releases!
-{$ENDIF USEJVCL}
+
 
 //=== TJvXPCustomComponent ===================================================
 
 constructor TJvXPCustomComponent.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  {$IFNDEF USEJVCL}
-  FVersion := RsCopyright + RsVersion;
-  {$ENDIF USEJVCL}
+  inherited Create(AOwner); 
 end;
 
-{$IFNDEF USEJVCL}
-procedure TJvXPCustomComponent.SetVersion(Value: string);
-begin
-  // do not enable overwriting this constant.
-end;
-{$ENDIF USEJVCL}
+
 
 //=== TJvXPCustomControl =====================================================
 
@@ -404,18 +360,10 @@ begin
   FDrawState := [dsDefault];
   FIsLocked := False;
   FIsSibling := False;
-  FModalResult := 0;
-  {$IFNDEF USEJVCL}
-  FVersion := RsCopyright2 + RsVersion;
-  {$ENDIF USEJVCL}
+  FModalResult := 0; 
 end;
 
-{$IFNDEF USEJVCL}
-procedure TJvXPCustomControl.SetVersion(Value: string);
-begin
-  // disallow changing this property.
-end;
-{$ENDIF USEJVCL}
+
 
 procedure TJvXPCustomControl.BeginUpdate;
 begin
@@ -463,7 +411,7 @@ end;
 procedure TJvXPCustomControl.BorderChanged;
 begin
   // delegate message "BorderChanged" to hook.
-  // inherited BorderChanged;
+  inherited BorderChanged;
   HookBorderChanged;
 end;
 
@@ -477,7 +425,7 @@ end;
 procedure TJvXPCustomControl.FocusChanged;
 begin
   // delegate message "FocusChanged" to hook.
-  //inherited FocusChanged;
+  inherited FocusChanged;
   HookFocusedChanged;
 end;
 
