@@ -41,7 +41,7 @@ interface
 
 uses
   Types, StrUtils, SysUtils, Classes, Math,
-  QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls;
+  QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QButtons;
 
 const
   { Windows VK_ keycodes to Qt key }
@@ -194,6 +194,7 @@ type
 }
 function DrawTextBiDiModeFlagsReadingOnly: Longint;
 function DrawTextBiDiModeFlags(Flags: Longint): Longint;
+function UseRightToLeftAlignment: Boolean;
 { colors }
 function GetSysColor(Color: Integer): TColorRef;
 function RGB(Red, Green, Blue: Integer): TColorRef;
@@ -448,7 +449,7 @@ const
   ETO_CLIPPED    = 4;
   ETO_RTLREADING = $80; // ignored
 
-function FillRect(Handle: QPainterH; R: TRect; Brush: QBrushH): LongBool;
+function FillRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool;
 function GetCurrentPositionEx(Handle: QPainterH; pos: PPoint): LongBool;
 function GetTextExtentPoint32(Handle: QPainterH; const Text: WideString; Len: Integer;
   var Size: TSize): LongBool; overload;
@@ -460,6 +461,7 @@ function GetTextExtentPoint32W(Handle: QPainterH; pText: PWideChar; Len: Integer
 function FrameRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool; overload;
 procedure FrameRect(Canvas: TCanvas; const R: TRect); overload;
 function DrawFocusRect(Handle: QPainterH; const R: TRect): LongBool;
+function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType, uState: LongWord): LongBool;
 function InvertRect(Handle: QPainterH; const R: TRect): LongBool;
 function RoundRect(Handle: QPainterH; Left, Top, Right, Bottom, X3, Y3: Integer): LongBool;
 function Ellipse(Handle: QPainterH; Left, Top, Right, Bottom: Integer): LongBool;
@@ -477,6 +479,50 @@ const
   DI_NORMAL      = 3;
 //  DI_COMPAT    = 4;   not supported
   DI_DEFAULTSIZE = 8;
+
+
+const
+  { flags for DrawFrameControl }
+  DFC_CAPTION = 1;
+  DFC_MENU = 2;
+  DFC_SCROLL = 3;
+  DFC_BUTTON = 4;
+  DFC_POPUPMENU = 5;
+
+  DFCS_CAPTIONCLOSE = 0;
+  DFCS_CAPTIONMIN = 1;
+  DFCS_CAPTIONMAX = 2;
+  DFCS_CAPTIONRESTORE = 3;
+  DFCS_CAPTIONHELP = 4;
+
+  DFCS_MENUARROW = 0;
+  DFCS_MENUCHECK = 1;
+  DFCS_MENUBULLET = 2;
+  DFCS_MENUARROWRIGHT = 4;
+
+  DFCS_SCROLLUP = 0;
+  DFCS_SCROLLDOWN = 1;
+  DFCS_SCROLLLEFT = 2;
+  DFCS_SCROLLRIGHT = 3;
+  DFCS_SCROLLCOMBOBOX = 5;
+  DFCS_SCROLLSIZEGRIP = 8;
+  DFCS_SCROLLSIZEGRIPRIGHT = $10;
+
+  DFCS_BUTTONCHECK = 0;
+  DFCS_BUTTONRADIOIMAGE = 1;
+  DFCS_BUTTONRADIOMASK = 2;
+  DFCS_BUTTONRADIO = 4;
+  DFCS_BUTTON3STATE = 8;
+  DFCS_BUTTONPUSH = $10;
+
+  DFCS_INACTIVE = $100;
+  DFCS_PUSHED = $200;
+  DFCS_CHECKED = $400;
+  DFCS_TRANSPARENT = $800;
+  DFCS_HOT = $1000;
+  DFCS_ADJUSTRECT = $2000;
+  DFCS_FLAT = $4000;
+  DFCS_MONO = $8000;
 
 
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
@@ -526,7 +572,8 @@ type
     SM_CXSMICON,  SM_CYSMICON,
     SM_CXICON,    SM_CYICON,
     SM_CXBORDER,  SM_CYBORDER,
-    SM_CXFRAME,   SM_CYFRAME
+    SM_CXFRAME,   SM_CYFRAME,
+    SM_CYCAPTION
   );
 
 { limited implementation of }
@@ -1010,6 +1057,11 @@ begin
   Result := Flags;
 end;
 
+function UseRightToLeftAlignment: Boolean;
+begin
+  Result := False;
+end;
+
 function GetSysColor(Color: Integer): TColorRef;
 begin
   Result := TColorRef(Application.Palette.GetColor(Color));
@@ -1432,7 +1484,7 @@ var
   d_dx, d_dy, d_dw, d_dh: Integer;
 begin
   Result := False;
-  if dst = nil then
+  if (dst = nil) and (QPainter_isActive(dst)) then
     Exit;
 
  // Windows's StretchBlt uses logical units
@@ -1447,6 +1499,8 @@ begin
     Result := BitBlt(dst, dx, dy, dw, dh, src, sx, sy, winrop)
   else
   begin
+    if not QPainter_isActive(src) then
+      Exit;
     // written by André Snepvangers
     // - supports same winrop as bitblt(..., winrop)
     // - destination and source don't have to be compatible with one and another
@@ -1457,7 +1511,7 @@ begin
        // temporary bitmaps are in device units
         bmp1 := CreateCompatibleBitmap(src, d_sw, d_sh);
         bmp2 := CreateCompatibleBitmap(dst, d_dw, d_dh);
-        Qt.bitBlt(bmp1, 0, 0, QPainter_device(Src), d_sx, d_sy, d_sw, d_sh,
+        Qt.bitBlt(bmp1, 0, 0, QPainter_device(src), d_sx, d_sy, d_sw, d_sh,
           RasterOp_CopyROP, True); // use device units
         painter := QPainter_create(bmp2);
         QPainter_save(painter);
@@ -1949,6 +2003,7 @@ begin
   try
     Rgn := QPainter_clipRegion(Handle);
     QRegion_subtract(Rgn, Rgn, ExcludeRgn);
+    QPainter_setClipRegion(Handle, Rgn); // otherwide the new clip region is not accepter
     QPainter_setClipping(Handle, True);
     Result := GetRegionType(Rgn);
   except
@@ -1966,11 +2021,9 @@ end;
 function IntersectClipRect(Handle: QPainterH; X1, Y1, X2, Y2: Integer): Integer;
 var
   IntersectRgn, Rgn: QRegionH;
-  ClipRect: TRect;
 begin
-  SetRect(ClipRect, X1, Y2, X2, Y2);
-  MapPainterLP(Handle, ClipRect);
-  IntersectRgn := QRegion_create(@ClipRect, QRegionRegionType_Rectangle);
+  MapPainterLP(Handle, X1, Y1, X2, Y2);
+  IntersectRgn := QRegion_create(X1, Y1, X2 - X1, Y2 - Y1, QRegionRegionType_Rectangle);
   try
     Rgn := QPainter_clipRegion(Handle);
     if QRegion_isNull(Rgn) then
@@ -2382,6 +2435,8 @@ begin
       Result := QStyle_DefaultFrameWidth(QApplication_style); // (probably) wrong ?
     SM_CXFRAME, SM_CYFRAME:
       Result := QStyle_DefaultFrameWidth(QApplication_style); // or this one
+    SM_CYCAPTION:
+      Result := 24;
   else
     raise Exception.Create('GetSystemMetrics: unsupported property')
   end;
@@ -2861,6 +2916,8 @@ begin
       Caption := WordEllipsis(Text, Handle, R, flags)
     else
       Caption := Text;
+{    if QBrush_style(QPainter_brush(Handle)) <> BrushStyle_NoBrush then
+      FillRect(Handle, R, QPainter_brush(Handle));}
     QPainter_DrawText(Handle, @R, Flags, PWideString(@Caption), Len, @R2, nil);
     if ModifyString and Flags <> 0 then
       Text := Caption;
@@ -2868,7 +2925,10 @@ begin
   end
   else
   begin
+    R2.Left := R.Left;
+    R2.Top := R.Top;
     QPainter_boundingRect(Handle, @R, @R, Flags and not $3F{Alignment}, PWideString(@Text), -1, nil);
+    OffsetRect(R, R2.Left, R2.Top);
     Result := R.Bottom - R.Top;
   end;
   if WinFlags and DT_INTERNAL <> 0 then
@@ -3037,7 +3097,7 @@ begin
     SetPainterInfo(Handle).TextAlignment := Mode;
 end;
 
-function FillRect(Handle: QPainterH; R: TRect; Brush: QBrushH): LongBool;
+function FillRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool;
 begin
   try
     QPainter_fillRect(Handle, @R, Brush);
@@ -3216,6 +3276,223 @@ begin
   except
     Result := False;
   end;
+end;
+
+function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType, uState: LongWord): LongBool;
+const
+  Mask = $00FF;
+var
+  Canvas: TCanvas;
+  R: TRect;
+begin
+  Result := False;
+  if (Handle = nil) or (not QPainter_isActive(Handle)) then
+    Exit;
+  try
+    Canvas := TCanvas.Create;
+    try
+      QPainter_save(Handle);
+      Canvas.Handle := Handle;
+      Canvas.Start(False);
+      case uType of
+        DFC_CAPTION:
+          begin
+           // draw button
+            Result := DrawFrameControl(Handle, Rect, DFC_BUTTON, DFCS_BUTTONPUSH or (uState and not Mask));
+            if Result then
+            begin
+              R := Rect;
+              Dec(R.Right);
+              Dec(R.Bottom);
+
+              Canvas.Pen.Style := psSolid;
+              Canvas.Pen.Color := clBlack;
+              Canvas.Pen.Width := 1;
+              Canvas.Brush.Style := bsClear;
+              // draw image
+              case uState and Mask of
+                DFCS_CAPTIONCLOSE:
+                  begin
+                    Canvas.Pen.Width := 2;
+                    Dec(R.Right);
+                    Dec(R.Bottom);
+                    Canvas.MoveTo(R.Left + 4, R.Top + 4);
+                    Canvas.LineTo(R.Right - 4, R.Bottom - 4);
+                    Canvas.MoveTo(R.Left + 4, R.Bottom - 4);
+                    Canvas.LineTo(R.Right - 4, R.Top + 4);
+                  end;
+                DFCS_CAPTIONMIN:
+                  begin
+                    Canvas.MoveTo(R.Left + 4, R.Bottom - 4);
+                    Canvas.LineTo(R.Right - 4 - 5, R.Bottom - 4);
+                    Canvas.MoveTo(R.Left + 4, R.Bottom - 5);
+                    Canvas.LineTo(R.Right - 4 - 5, R.Bottom - 5);
+                  end;
+                DFCS_CAPTIONMAX:
+                  begin
+                    Canvas.Rectangle(R.Left + 4, R.Top + 4, R.Right - 4, R.Bottom - 4);
+                    Canvas.MoveTo(R.Left + 5, R.Top + 5);
+                    Canvas.LineTo(R.Right - 5, R.Top + 5);
+                  end;
+                DFCS_CAPTIONRESTORE:
+                  begin
+                    QPainter_save(Handle);
+                    ExcludeClipRect(Handle, R.Left + 4, R.Top + 8, R.Right - 8, R.Bottom - 4);
+
+                    Canvas.Rectangle(R.Left + 8, R.Top + 4, R.Right - 4, R.Bottom - 8);
+                    Canvas.MoveTo(R.Left + 9, R.Top + 5);
+                    Canvas.LineTo(R.Right - 5, R.Top + 5);
+
+                    QPainter_restore(Handle);
+
+                    Canvas.Rectangle(R.Left + 4, R.Top + 8, R.Right - 8, R.Bottom - 4);
+                    Canvas.MoveTo(R.Left + 5, R.Top + 9);
+                    Canvas.LineTo(R.Right - 9, R.Top + 9);
+                  end;
+                DFCS_CAPTIONHELP:
+                  begin
+                    Canvas.Font.Style := [fsBold];
+                    QPainter_setFont(Handle, Canvas.Font.Handle);
+                    DrawText(Handle, '?', 1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+                  end;
+              end;
+            end;
+          end;
+        DFC_MENU:
+          begin
+            // not implemented
+          end;
+        DFC_SCROLL:
+          begin
+            case uState and Mask of
+              DFCS_SCROLLCOMBOBOX:
+                begin
+                  {if uState and DFCS_INACTIVE <> 0 then
+                    ComboBox := tcDropDownButtonDisabled
+                  else
+                  if uState and DFCS_PUSHED <> 0 then
+                    ComboBox := tcDropDownButtonPressed
+                  else
+                  if uState and DFCS_HOT <> 0 then
+                    ComboBox := tcDropDownButtonHot
+                  else
+                    ComboBox := tcDropDownButtonNormal;
+
+                  Details := ThemeServices.GetElementDetails(ComboBox);
+                  ThemeServices.DrawElement(DC, Details, R);}
+                  Result := True;
+                end;
+              DFCS_SCROLLUP:
+                if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
+                begin
+                  {if uState and DFCS_INACTIVE <> 0 then
+                    ScrollBar := tsArrowBtnUpDisabled
+                  else
+                  if uState and DFCS_PUSHED <> 0 then
+                    ScrollBar := tsArrowBtnUpPressed
+                  else
+                  if uState and DFCS_HOT <> 0 then
+                    ScrollBar := tsArrowBtnUpHot
+                  else
+                    ScrollBar := tsArrowBtnUpNormal;
+
+                  Details := ThemeServices.GetElementDetails(ScrollBar);
+                  ThemeServices.DrawElement(DC, Details, R);}
+                  Result := True;
+                end;
+              DFCS_SCROLLDOWN:
+                if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
+                begin
+                  {if uState and DFCS_INACTIVE <> 0 then
+                    ScrollBar := tsArrowBtnDownDisabled
+                  else
+                  if uState and DFCS_PUSHED <> 0 then
+                    ScrollBar := tsArrowBtnDownPressed
+                  else
+                  if uState and DFCS_HOT <> 0 then
+                    ScrollBar := tsArrowBtnDownHot
+                  else
+                    ScrollBar := tsArrowBtnDownNormal;
+
+                  Details := ThemeServices.GetElementDetails(ScrollBar);
+                  ThemeServices.DrawElement(DC, Details, R);}
+                  Result := True;
+                end;
+            end;
+          end; // DFC_SCROLL
+
+        DFC_BUTTON:
+          case uState and Mask of
+            DFCS_BUTTONPUSH:
+              begin
+                if uState and (DFCS_TRANSPARENT) = 0 then
+                begin
+                  if uState and DFCS_INACTIVE <> 0 then
+                    DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0)
+                  else
+                  if uState and DFCS_PUSHED <> 0 then
+                    DrawButtonFace(Canvas, Rect, 1, True, False, uState and DFCS_FLAT <> 0)
+                  else
+                  if uState and DFCS_HOT <> 0 then
+                    DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0, clHighlight)
+                  else
+                  if uState and DFCS_MONO <> 0 then
+                    DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0, clBackground)
+                  else
+                    DrawButtonFace(Canvas, Rect, 1, False, False, uState and DFCS_FLAT <> 0);
+                  Result := True;
+                end;
+              end;
+          else
+            // not implemented
+          end;
+        DFC_POPUPMENU:
+          begin
+            // not implemented
+          end;
+      end;
+    finally
+      QPainter_restore(Handle);
+      Canvas.Free;
+    end;
+  except
+    Result := False;
+  end;
+(*  DFC_CAPTION = 1;
+  DFC_MENU = 2;
+  DFC_SCROLL = 3;
+  DFC_BUTTON = 4;
+  DFC_POPUPMENU = 5;
+
+  DFCS_MENUARROW = 0;
+  DFCS_MENUCHECK = 1;
+  DFCS_MENUBULLET = 2;
+  DFCS_MENUARROWRIGHT = 4;
+
+  DFCS_SCROLLUP = 0;
+  DFCS_SCROLLDOWN = 1;
+  DFCS_SCROLLLEFT = 2;
+  DFCS_SCROLLRIGHT = 3;
+  DFCS_SCROLLCOMBOBOX = 5;
+  DFCS_SCROLLSIZEGRIP = 8;
+  DFCS_SCROLLSIZEGRIPRIGHT = $10;
+
+  DFCS_BUTTONCHECK = 0;
+  DFCS_BUTTONRADIOIMAGE = 1;
+  DFCS_BUTTONRADIOMASK = 2;
+  DFCS_BUTTONRADIO = 4;
+  DFCS_BUTTON3STATE = 8;
+  DFCS_BUTTONPUSH = $10;
+
+  DFCS_INACTIVE = $100;
+  DFCS_PUSHED = $200;
+  DFCS_CHECKED = $400;
+  DFCS_TRANSPARENT = $800;
+  DFCS_HOT = $1000;
+  DFCS_ADJUSTRECT = $2000;
+  DFCS_FLAT = $4000;
+  DFCS_MONO = $8000;
+*)
 end;
 
 function GetCurrentPositionEx(Handle: QPainterH; pos: PPoint): LongBool;
