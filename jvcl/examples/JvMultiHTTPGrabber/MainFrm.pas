@@ -38,6 +38,10 @@ type
     N2: TMenuItem;
     Clearcontent1: TMenuItem;
     Clearlog1: TMenuItem;
+    acSaveToFile: TAction;
+    N3: TMenuItem;
+    acSaveToFile1: TMenuItem;
+    Options1: TMenuItem;
     procedure JvMultiHttpGrabber1ClosedConnection(Sender: TObject;
       UserData: Integer; Url: String);
     procedure JvMultiHttpGrabber1ClosingConnection(Sender: TObject;
@@ -80,11 +84,15 @@ type
     procedure acURLDeleteExecute(Sender: TObject);
     procedure acClearLogExecute(Sender: TObject);
     procedure acClearContentExecute(Sender: TObject);
+    procedure JvMultiHttpGrabber1DoneFile(Sender: TObject;
+      UserData: Integer; FileName: String; FileSize: Integer; Url: String);
+    procedure acSaveToFileExecute(Sender: TObject);
   private
     { Private declarations }
     procedure LoadSettings;
     procedure SaveSettings;
     function GetColor(UserData:integer):TColor;
+    function MakeFileName(URL:string):string;
   public
     { Public declarations }
   end;
@@ -94,7 +102,7 @@ var
 
 implementation
 uses
-  IniFiles;
+  IniFiles, JvTypes;
 {$R *.dfm}
 
 procedure TForm1.JvMultiHttpGrabber1ClosedConnection(Sender: TObject;
@@ -249,6 +257,7 @@ begin
     begin
       ReadSection('URL History',cbURL.Items);
       cbURL.ItemIndex := 0;
+      acSaveToFile.Checked := ReadBool('Settings','Save To File',acSaveToFile.Checked);
     end;
   finally
     Free;
@@ -264,6 +273,7 @@ begin
     EraseSection('URL History');
     for i := 0 to cbURL.Items.Count - 1 do
       WriteString('URL History',cbURL.Items[i],'');
+    WriteBool('Settings','Save To File',acSaveToFile.Checked);
   finally
     Free;
   end;
@@ -274,8 +284,12 @@ begin
   pbProgress.Position := 0;
   sbMain.Panels[1].Text := '';
   acURLAdd.Execute;
+  if acSaveToFile.Checked then
+    JvMultiHttpGrabber1.OutputMode := omFile
+  else
+    JvMultiHttpGrabber1.OutputMode := omStream;
   JvMultiHttpGrabber1.Url := cbURL.Text;
-  JvMultiHttpGrabber1.GetFileAge(-1);
+  JvMultiHttpGrabber1.Filename := MakeFileName(cbURL.Text);
   JvMultiHttpGrabber1.Download(-1);
 end;
 
@@ -284,9 +298,14 @@ var i:integer;
 begin
   acClearContent.Execute;
   acURLAdd.Execute;
+  if acSaveToFile.Checked then
+    JvMultiHttpGrabber1.OutputMode := omFile
+  else
+    JvMultiHttpGrabber1.OutputMode := omStream;
   for i := 0 to cbURL.Items.Count - 1 do
   begin
     JvMultiHttpGrabber1.Url := cbURL.Items[i];
+    JvMultiHttpGrabber1.Filename := MakeFileName(cbURL.Items[i]);
     JvMultiHttpGrabber1.Download(i);
   end;
 end;
@@ -330,6 +349,39 @@ end;
 procedure TForm1.acClearContentExecute(Sender: TObject);
 begin
   reContent.Clear;
+end;
+
+procedure TForm1.JvMultiHttpGrabber1DoneFile(Sender: TObject;
+  UserData: Integer; FileName: String; FileSize: Integer; Url: String);
+begin
+  reLog.Lines.Add(Format('%s was saved to file %s',[Url, Filename]));
+  pbProgress.Position := 0;
+end;
+
+function TForm1.MakeFileName(URL: string): string;
+var i:integer;
+begin
+  if Pos('http://',AnsiLowerCase(URL)) = 1 then
+    i := Length('http://') + 1
+  else
+    i := 1;
+  Result := '';
+  while i <= Length(URL) do
+  begin
+    if URL[i] in [':','/','.'] then
+      Result := Result + '_'
+    else
+      Result := Result + URL[i];
+    Inc(i);
+  end;
+  if Result = '' then
+    Result := 'default.htm';
+  Result := ExtractFilePath(Application.ExeName) + ChangeFileExt(Result,'.htm');
+end;
+
+procedure TForm1.acSaveToFileExecute(Sender: TObject);
+begin
+//
 end;
 
 end.
