@@ -7,32 +7,8 @@
 ----------------------------------------------------------------------------------------------------
 @@JvCsvData.pas
 Summary
-  The TJvCsvData component is a data aware component that can read and write Comma Separated Variable files (CSV).
-  These are a simple flat Ascii text file that can be used to build simple data-driven applications. CSV files
-  are a bit of a "poor man's database" as well as a common interchange file format used by many different applications,
-  including Microsoft Excel, and most database systems can import/export CSV files.
-
-  The unit JvCsvData contains two components:
-
-  <b>TJvCSVDataSet</b>
-
-  An in-memory TDataSet component similar to TTable but with optional
-  saving to CSV file, and which, unlike using TTable in CSV mode, does not
-  utilize the BDE, or any external database access layers to do its work.
-
-  Since this component inherits from TDataSource, you can use it with any
-  standard VCL data aware components. Remember to link to a DataSource,
-  before you can link this to any data aware controls!
-
-  <b>TJvCustomCsvDataSet</b>
-
-  All the functionalty of TJvCsvDataSet is inherited from
-  TJvCustomCsvDataSet.
-
-  We do this so you can easily create a class which inherits from
-  TJvCustomCsvDataSet, and then create your own 'publish'
-  section in the class definition, so you can publish only the
-  properties and methods you wish to expose.
+  The unit JvCsvData contains TJvCSVDataSet (and its ancestor TJvCustomCsvDataSet), an in-memory
+  TDataSet component similar to TTable.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Warren Postma
