@@ -1631,8 +1631,9 @@ var
 begin
   inherited;
 
-  Point := Mouse.CursorPos;
-  Point := ScreenToClient(point);
+  if not Windows.GetCursorPos(Point) then
+    Exit;
+  Point := ScreenToClient(Point);
   with Msg, Point do
     case NMHdr^.code of
       NM_CLICK, NM_RCLICK:
