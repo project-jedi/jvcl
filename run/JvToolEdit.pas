@@ -1080,6 +1080,7 @@ const
 
 {$IFDEF VCL}
 
+{$IFDEF COMPILER7_UP}
 const
   ACLO_NONE            = 0;  // don't enumerate anything
   ACLO_CURRENTDIR      = 1;  // enumerate current directory
@@ -1127,7 +1128,6 @@ type
     function Remove(punk: IUnknown): HRESULT; stdcall;
   end;
 
-  {$IFDEF COMPILER7_UP}
   TAutoCompleteSource = class(TInterfacedObject, IEnumString)
   private
     FComboEdit: TJvCustomComboEdit;
@@ -1142,7 +1142,7 @@ type
   public
     constructor Create(AComboEdit: TJvCustomComboEdit; const StartIndex: Integer); virtual;
   end;
-  {$ENDIF COMPILER7_UP}
+{$ENDIF COMPILER7_UP}
 
 type
   { TDateHook is used to only have 1 hook per application for monitoring
