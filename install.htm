@@ -169,24 +169,32 @@ compile button, wait for about 2 minutes and if the compilation went
 well, close the package (File, Close All). Do NOT save it.</p>
 <p> Now, open the package group file (bpg) for your version of
 C++&nbsp;Builder that is located in the jvcl\packages folder. Select <b>Project
-- Build All Projects</b> from the C++&nbsp;Builder menu. Go get a cup of
-coffee (this takes a long while, about 10 minutes). For some annoying
-reason it is possible that C++&nbsp;Builder will complain about .bpi
-files. This is because the last packages in the list require the first
-ones to be compiled and of course they are not at the beginning. If you
-know a way to turn that off, please let us know. An alternative solution
-is to right-click in the <span style="font-weight: bold;">Project
-Manager</span> and select 'Build' for each package in turn. After all
-packages are compiled, open the <b>Project Manager</b> (Ctrl+Alt+F11)
-and right-click each of the packages ending with C?D (where ? is the
-version number, "5" for C++&nbsp;Builder&nbsp;5, "6" for
-C++&nbsp;Builder&nbsp;6) and select "<b>Install</b>" from the pop-up
-menu. You must start from the beginning of the list or some packages
-may not be able to get installed. Although you can skip installing some
-of the packages, we still recommend that you install all of them the
-first time. You can later remove some of them on a project by project
-basis or permanently if you never use the components in the package and
-the package isn't required by another installed package.<br>
+- Build All Projects</b> from the C++&nbsp;Builder menu. Because of an
+annoying bug, C++&nbsp;Builder will complain about a lot of .bpi files.
+This is because the last packages in the list require the first ones to
+be compiled and of course they are not at the beginning. If you know a
+way to turn that off, please let us know. An alternative solution is to
+right-click in the <span style="font-weight: bold;">Project Manager</span>
+and select 'Build' for each package in turn. <br>
+A second alternative is to use the provided MakeBCB* batch files. Open
+a command line window, change to the directory where the batch files
+are and launch the one appropriate for your version of C++ Builder. The
+help message should help you find out what are the values to give as
+compulsory parameters.<br>
+</p>
+<p>After all packages are compiled, open the <b>Project Manager</b>
+(Ctrl+Alt+F11) and right-click each of the packages ending with C?D
+(where ? is the version number, "5" for C++&nbsp;Builder&nbsp;5, "6"
+for C++&nbsp;Builder&nbsp;6) and select "<b>Install</b>" from the
+pop-up menu. You must start from the beginning of the list or some
+packages may not be able to get installed. Although you can skip
+installing some of the packages, we still recommend that you install
+all of them the first time. You can later remove some of them on a
+project by project basis or permanently if you never use the components
+in the package and the package isn't required by another installed
+package. Due to another bug in C++ Builder, the packages will be
+recompiled and relinked before being installed. There is nothing to
+change to stop this from happening.<br>
 </p>
 <p><br>
 If you have several versions of C++&nbsp;Builder installed, you will
@@ -210,14 +218,14 @@ Control&nbsp;panel - System&nbsp;properties</span>. Once in the applet,
 choose the 'Advanced' tab and click on the 'Environment variables'
 button at the bottom. Depending on wether or not you want the changes to
 apply to yourself or all users, choose the PATH variable for one of the
-two list and click the related 'Modify' button. Add ';c:\jedi\jcl\dcu'
+two list and click the related 'Modify' button. Add ';c:\mypath\jcl\dcu'
 (without the quotes) at the end of the already existing value, and click
 on Ok buttons until the 'System properties' applet is closed. This
-modification is required because C++&nbsp;Builder parses this value
-when it searches for libraries and there are no direct way in the IDE
-to specify additional library paths (contrary to Delphi). You may also
-use overrides in the environment options, but this has not been tested.
-If doing so works, please let us know.<br>
+modification is required because C++&nbsp;Builder parses this value when
+it searches for pascal units untis and there are no direct way in the
+IDE to specify additional units paths (contrary to Delphi). You may
+also use overrides in the environment options, but this has not been
+tested. If it works this way, please let us know.<br>
 </p>
 <p> Start C++&nbsp;Builder, go to <b>Tools - Environment Options -
 Library - Library Path</b> and add the paths to JCL\source, JCL\dcu,
