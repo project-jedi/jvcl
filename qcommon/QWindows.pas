@@ -46,6 +46,12 @@ uses
   Types, StrUtils, SysUtils, Classes, Math, Contnrs, SyncObjs, QDialogs,
   QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QButtons;
 
+type
+  IPerformControl = interface
+    ['{B11AA73D-D7C2-43E5-BED8-8F82DE6152AB}']
+    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+  end;
+
 const
   { Windows VK_ keycodes to Qt key }
   VK_BACK     = Key_Backspace;
@@ -7547,13 +7553,19 @@ end;
 function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
 var
   M: TMessage;
+  P: IPerformControl;
 begin
-  M.Msg := Msg;
-  M.WParam := WParam;
-  M.LParam := LParam;
-  M.Result := 0;
-  Control.Dispatch(M);
-  Result := M.Result;
+  if Supports(Control, IPerformControl, P) then
+    Result := P.Perform(Msg, WParam, LParam)
+  else
+  begin
+    M.Msg := Msg;
+    M.WParam := WParam;
+    M.LParam := LParam;
+    M.Result := 0;
+    Control.Dispatch(M);
+    Result := M.Result;
+  end;
 end;
 
 function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
