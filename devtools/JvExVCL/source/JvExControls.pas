@@ -106,11 +106,8 @@ begin
   Message.WParam := WParam;
   Message.LParam := LParam;
   Message.Result := 0;
-  Proc := GetDynamicMethod(Self.ClassType, Msg);
-  if Assigned(Proc) then
-    Proc(Self, Message)
-  else
-    Self.DefaultHandler(Message);
+  Proc := @TObject.Dispatch;
+  Proc(Self, Message);
   Result := Message.Result;
 end;
 
