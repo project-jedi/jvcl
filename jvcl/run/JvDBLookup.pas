@@ -121,7 +121,6 @@ type
     function GetDataSource: TDataSource;
     function GetLookupField: string;
     function GetLookupSource: TDataSource;
-    function GetReadOnly: Boolean;
     function GetTextHeight: Integer;
     function DefaultTextHeight: Integer;
     function GetItemHeight: Integer;
@@ -147,7 +146,6 @@ type
     procedure SetLookupDisplay(const Value: string);
     procedure SetLookupFormat(const Value: string);
     procedure SetLookupSource(Value: TDataSource);
-    procedure SetReadOnly(Value: Boolean);
     procedure SetItemHeight(Value: Integer);
     function ItemHeightStored: Boolean;
     procedure DrawPicture(Canvas: TCanvas; Rect: TRect; Image: TGraphic);
@@ -157,6 +155,8 @@ type
     procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
   protected
+    function GetReadOnly: Boolean;virtual;
+    procedure SetReadOnly(Value: Boolean);virtual;
     procedure Change; dynamic;
     procedure KeyValueChanged; virtual;
     procedure DisplayValueChanged; virtual;
