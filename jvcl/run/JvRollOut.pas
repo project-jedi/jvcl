@@ -249,6 +249,7 @@ type
     property Align;
     property BevelWidth;
     property BorderWidth;
+    property ButtonHeight;
     property Caption;
     property ChildOffset;
     property Collapsed;
