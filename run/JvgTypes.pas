@@ -162,7 +162,6 @@ type
 
   TglCheckKind = (fckCheckBoxes, fckRadioButtons);
 
-  PglGlobalData = ^TglGlobalData;
   TglGlobalData = record
     fSuppressGradient: Boolean;
     lp3DColors: Pointer;
@@ -174,7 +173,7 @@ const
 // (rom) not very elegant should be removed
 
 var //...global variables
-  GlobalglGlobalData: TglGlobalData = (
+  glGlobalData: TglGlobalData = (
     fSuppressGradient: False;
     lp3DColors: nil
   );
