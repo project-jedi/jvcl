@@ -55,5 +55,9 @@
     <File Name="..\..\run\JvBalloonHint.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseThumbnail.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTimeLine.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCustomItemViewer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvImagesViewer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvImagelistViewer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvOwnerDrawViewer.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
