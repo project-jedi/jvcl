@@ -100,6 +100,11 @@ type
 
 
 
+
+resourcestring
+  sLoadPicture = 'Load picture';
+  sSavePictureAs = 'Save picture as';
+
 implementation
 
 uses
@@ -204,8 +209,8 @@ begin
   Pic := TPicture.Create;
   FileDialog := TOpenDialog.Create(Self);
   SaveDialog := TSaveDialog.Create(Self);
-  FileDialog.Title := _('Load picture');
-  SaveDialog.Title := _('Save picture as');
+  FileDialog.Title := sLoadPicture;
+  SaveDialog.Title := sSavePictureAs;
   Bevel.Visible := False;
   Font.Style := [];
   AppStore.Root := SDelphiKey;

@@ -47,6 +47,12 @@ type
     function GetVerbCount: Integer; override;
   end;
 
+
+resourcestring
+  sRTFAndTextFilesrtftxtrtftxt = 'RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt';
+  sLoadRTFFile = 'Load RTF file';
+  sPreviewRTFText = 'Preview RTF text';
+
 implementation
 uses JvgHelpPanel, JvgRTFPreviewForm;
 { TJvgHelpPanelEditor }
@@ -61,7 +67,7 @@ begin
     0:
       begin
         OpenDialog := TOpenDialog.Create(nil);
-        OpenDialog.Filter := _('RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt');
+        OpenDialog.Filter := sRTFAndTextFilesrtftxtrtftxt;
         if OpenDialog.Execute then
         begin
           (Component as TJvgHelpPanel).Strings.LoadFromFile(OpenDialog.FileName);
@@ -91,8 +97,8 @@ end;
 function TJvgHelpPanelEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := _('Load RTF file');
-    1: Result := _('Preview RTF text');
+    0: Result := sLoadRTFFile;
+    1: Result := sPreviewRTFText;
   end;
 end;
 

@@ -116,6 +116,10 @@ type
 var
   glCompListEditor: TJvgCompListEditor;
 
+
+resourcestring
+  sEditComponentList = 'Edit component list...';
+
 implementation
 {$R *.DFM}
 //----------- common proc
@@ -160,7 +164,7 @@ end;
 function TJvgComponentListEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := _('Edit component list...');
+    0: Result := sEditComponentList;
   end;
 end;
 

@@ -135,6 +135,11 @@ type
 
 
 
+
+resourcestring
+  sJvValidatorsItemsEditor = 'JvValidators Items Editor...';
+  sJvValidatorItemsEditor = 'JvValidator Items Editor';
+
 implementation
 uses
   JvErrorIndicator, TypInfo;
@@ -202,7 +207,7 @@ end;
 
 function TJvValidatorComponent.GetVerb(Index: Integer): string;
 begin
-  Result := _('JvValidators Items Editor...');
+  Result := sJvValidatorsItemsEditor;
 end;
 
 function TJvValidatorComponent.GetVerbCount: Integer;
@@ -407,7 +412,7 @@ end;
 
 procedure TfrmValidatorsEditor.UpdateCaption;
 begin
-  Caption := _('JvValidator Items Editor');
+  Caption := sJvValidatorItemsEditor;
 end;
 
 procedure TfrmValidatorsEditor.FormClose(Sender: TObject;

@@ -56,6 +56,10 @@ type
 procedure ManageProviderContexts(AProvider: IJvDataProvider;
   ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF}; PropName: string);
 
+
+resourcestring
+  sDataProviderContextManager = 'DataProvider Context Manager';
+
 implementation
 
 uses
@@ -182,7 +186,7 @@ end;
 
 function TfrmJvDataContextManager.DesignerFormName: string;
 begin
-  Result := _('DataProvider Context Manager');
+  Result := sDataProviderContextManager;
 end;
 
 procedure TfrmJvDataContextManager.FormDestroy(Sender: TObject);

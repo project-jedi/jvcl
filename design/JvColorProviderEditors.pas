@@ -49,6 +49,10 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
+
+resourcestring
+  sMappingDoesNotExistForThisColorProv = 'Mapping does not exist for this color provider.';
+
 implementation
 
 uses
@@ -85,7 +89,7 @@ begin
     begin
       I := IndexOfMappingName(Value);
       if I < 0 then
-        raise EPropertyError.Create(_('Mapping does not exist for this color provider.'));
+        raise EPropertyError.Create(sMappingDoesNotExistForThisColorProv);
       SetOrdValue(I);
     end;
   end;

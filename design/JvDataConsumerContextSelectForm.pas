@@ -24,6 +24,11 @@ type
 
 function ConsumerSelectContext(AConsumer: IJvDataConsumer): Boolean;
 
+
+resourcestring
+  sConsumerDoesNotSupportContextSelect = 'Consumer does not support context selection.';
+  sIJvDataConsumerProviderIsNotSupport = 'IJvDataConsumerProvider is not supported by the specified consumer.';
+
 implementation
 
 uses
@@ -60,10 +65,10 @@ begin
         Result := SelectForm.ShowModal = mrOk;
       end
       else
-        raise EJVCLException.Create(_('Consumer does not support context selection.'));
+        raise EJVCLException.Create(sConsumerDoesNotSupportContextSelect);
     end
     else
-      raise EJVCLException.Create(_('IJvDataConsumerProvider is not supported by the specified consumer.'));
+      raise EJVCLException.Create(sIJvDataConsumerProviderIsNotSupport);
   except
     SelectForm.Free;
     raise;

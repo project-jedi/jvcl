@@ -72,6 +72,10 @@ type
 procedure DataConsumerSelectItem(AConsumer: TJvDataConsumer;
   ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF});
 
+
+resourcestring
+  sDataProviderItemSelector = 'DataProvider Item Selector';
+
 implementation
 
 {$R *.DFM}
@@ -218,7 +222,7 @@ end;
 
 function TfrmJvDataConsumerItemSelect.DesignerFormName: string;
 begin
-  Result := _('DataProvider Item Selector');
+  Result := sDataProviderItemSelector;
 end;
 
 function TfrmJvDataConsumerItemSelect.AutoStoreSettings: Boolean;

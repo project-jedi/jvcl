@@ -143,6 +143,11 @@ type
 
 procedure ShowTreeNodeEditor(TreeView:TCustomTreeView);
 
+
+resourcestring
+  sItemsEditor = 'Items Editor...';
+  sLinksEditor = 'Links Editor...';
+
 implementation
 uses
   JvPageListTreeView, JvPageLinkEditorForm, ImgList;
@@ -426,7 +431,7 @@ end;
 function TJvTreeViewComponentEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := _('Items Editor...')
+    Result := sItemsEditor
   else
     Result := '';
 end;
@@ -539,7 +544,7 @@ end;
 function TJvPageTreeViewComponentEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 1 then
-    Result := _('Links Editor...')
+    Result := sLinksEditor
   else
     Result := inherited GetVerb(Index);
 end;

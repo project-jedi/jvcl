@@ -58,6 +58,12 @@ type
     {$ENDIF COMPILER6_UP}
   end;
 
+
+resourcestring
+  sAddDigit = 'Add digit';
+  sRemoveDigit = 'Remove digit';
+  sEditMapping = 'Edit mapping...';
+
 implementation
 
 uses
@@ -133,10 +139,10 @@ end;
 function TJvSegmentedLEDDisplayEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := _('Add digit');
-    1: Result := _('Remove digit');
+    0: Result := sAddDigit;
+    1: Result := sRemoveDigit;
     2: Result := '-'; // do not localize
-    3: Result := _('Edit mapping...');
+    3: Result := sEditMapping;
   end;
 end;
 

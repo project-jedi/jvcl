@@ -35,6 +35,10 @@ type
     procedure Edit; override;
   end;
 
+
+resourcestring
+  sExecute = 'Execute';
+
 implementation
 
 uses
@@ -50,7 +54,7 @@ end;
 function TJvHLEdPropDlgEditor.GetVerb(Index: Integer): string;
 begin
   if Index = GetVerbCount - 1 then
-    Result := _('Execute')
+    Result := sExecute
   else
     Result := inherited GetVerb(Index);
 end;

@@ -191,6 +191,10 @@ type
 var
   JvgLabelEditorDlg: TJvgLabelEditorDlg;
 
+
+resourcestring
+  sEditLabel = 'Edit &Label...';
+
 implementation
 
 {$R *.dfm}
@@ -222,7 +226,7 @@ end;
 function TJvgLabelEditor.GetVerb(Index: integer): string;
 begin
   case Index of
-    0: Result := _('Edit &Label...');
+    0: Result := sEditLabel;
   end;
 end;
 

@@ -201,6 +201,12 @@ type
     procedure SetValue(const Value: string); override;
   end;
 
+
+resourcestring
+  sAllFiles = 'All files (*.*)|*.*';
+  sStripFilePath = '&Strip file path';
+  sExecutableFilesexeexeAllFiles = 'Executable files (*.exe)|*.exe|All files (*.*)|*.*';
+
 implementation
 uses
   FileCtrl, TypInfo, Math, Dlgs, Consts, 
@@ -286,7 +292,7 @@ end;
 
 function TJvFilenameProperty.GetFilter: string;
 begin
-  Result := _('All files (*.*)|*.*');
+  Result := sAllFiles;
 end;
 
 function TJvFilenameProperty.GetOptions: TOpenOptions;
@@ -801,14 +807,14 @@ end;
 
 procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
 begin
-  SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(_('&Strip file path')));
+  SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(sStripFilePath));
 end;
 
 //=== TJvExeNameProperty =====================================================
 
 function TJvExeNameProperty.GetFilter: string;
 begin
-  Result := _('Executable files (*.exe)|*.exe|All files (*.*)|*.*');
+  Result := sExecutableFilesexeexeAllFiles;
 end;
 
 //=== TJvIntegerProperty =====================================================

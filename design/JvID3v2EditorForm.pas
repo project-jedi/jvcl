@@ -148,6 +148,10 @@ function CreateFramesEditor(
   AController: TJvID3Controller; var Shared: Boolean): TJvID3FramesEditor;
 procedure ShowFileInfo(AController: TJvID3Controller);
 
+
+resourcestring
+  sCommit = 'Commit?';
+
 implementation
 
 uses
@@ -788,7 +792,7 @@ end;
 
 procedure TJvID3ControllerEditor.Commit;
 begin
-  if MessageDlg(_('Commit?'), mtConfirmation, mbOKCancel, 0) = mrOk then
+  if MessageDlg(sCommit, mtConfirmation, mbOKCancel, 0) = mrOk then
     TJvID3Controller(Component).Commit;
 end;
 

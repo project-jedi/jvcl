@@ -46,6 +46,10 @@ type
     function GetValue: string; override;
   end;
 
+
+resourcestring
+  sVersions = 'Version %s';
+
 implementation
 
 uses
@@ -63,7 +67,7 @@ end;
 
 function TJVCLAboutDialogProperty.GetValue: string;
 begin
-  Result := _('Version %s', [JVCL_VERSIONSTRING]);
+  Result := Format(sVersions, [JVCL_VERSIONSTRING]);
 end;
 
 end.

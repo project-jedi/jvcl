@@ -22,6 +22,11 @@ type
   end;
 
 
+
+resourcestring
+  sStandardFlat = 'Standard/Flat';
+  sWeb = 'Web';
+
 implementation
 uses
   JvTypes, JvGroupHeader;
@@ -37,9 +42,9 @@ function TJvGroupHeaderEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := _('Standard/Flat');
+      Result := sStandardFlat;
     1:
-      Result := _('Web');
+      Result := sWeb;
   end;
 end;
 

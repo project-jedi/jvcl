@@ -263,6 +263,14 @@ var
   glRepEditor: TJvgReportEditorForm;
   Form2: TComponent;
 
+
+resourcestring
+  sEditReport = 'Edit report...';
+  sPreviewReport = 'Preview report...';
+  sDeleteObject = 'Delete object?';
+  sConfirm = 'Confirm';
+  sPagePreview = 'Page Preview';
+
 implementation
 uses JvgTypes,
   JvgUtils, {PrintR,} { ConfirmF, AboutF,}
@@ -319,8 +327,8 @@ end;
 function TJvgReportCompEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := _('Edit report...');
-    1: Result := _('Preview report...');
+    0: Result := sEditReport;
+    1: Result := sPreviewReport;
   end;
 end;
 
@@ -834,7 +842,7 @@ procedure TJvgReportEditorForm.N_DeleteObjectClick(Sender: TObject);
 begin
   if Assigned(SelectedControl) then
   begin
-    if Windows.MessageBox(0, PChar(_('Delete object?')), PChar(_('Confirm')), MB_OKCANCEL) <> IDOK then
+    if Windows.MessageBox(0, PChar(sDeleteObject), PChar(sConfirm), MB_OKCANCEL) <> IDOK then
       exit;
 
     if SelectedControl.ContainOLE then
@@ -1197,7 +1205,7 @@ begin
   if not Assigned(Component) then
     exit;
   Form := TForm.Create(nil);
-  Form.Caption := _('Page Preview');
+  Form.Caption := sPagePreview;
   Image := TImage.Create(Form);
   bmp := TBitmap.Create;
   Image.Parent := Form;

@@ -78,6 +78,10 @@ type
 var
   ReportParamsForm: TJvgReportParamsForm;
 
+
+resourcestring
+  sEditParams = 'Edit params...';
+
 implementation
 uses
   JvgReportParamsEditor;
@@ -96,7 +100,7 @@ end;
 function TJvgRepParamsEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := _('Edit params...');
+    0: Result := sEditParams;
   end;
 end;
 

@@ -45,6 +45,11 @@ type
 
 procedure Register;
 
+
+resourcestring
+  sCreatePreview = 'Create Preview';
+  sClearPreview = 'Clear Preview';
+
 implementation
 uses
   Classes, JvPrvwDoc, JvPrvwRender;
@@ -82,9 +87,9 @@ function TJvPreviewerEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := _('Create Preview');
+      Result := sCreatePreview;
     1:
-      Result := _('Clear Preview');
+      Result := sClearPreview;
   end;
 end;
 

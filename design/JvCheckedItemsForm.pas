@@ -97,6 +97,11 @@ type
     procedure Edit; override;
   end;
 
+
+resourcestring
+  sItemEditor = 'Item editor';
+  sEnabled = 'Enabled';
+
 implementation
 
 {$R *.DFM}
@@ -153,7 +158,7 @@ begin
   {Left := 354;
   Top := 338;}
   BorderStyle := bsDialog;
-  Caption := _('Item editor');
+  Caption := sItemEditor;
   ClientHeight := 92;
   ClientWidth := 330;
   Font.Color := clWindowText;
@@ -224,7 +229,7 @@ begin
     Top := 40;
     Width := 70;
     Height := 17;
-    Caption := _('Enabled');
+    Caption := sEnabled;
     State := cbChecked;
     TabOrder := 4;
   end;

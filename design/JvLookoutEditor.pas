@@ -98,6 +98,17 @@ type
     function GetButton: TJvCustomLookOutButton;
   end;
 
+
+resourcestring
+  sAddPage = 'Add page';
+  sActivate = 'Activate';
+  sAddButton = 'Add Button';
+  sScrollUp = 'Scroll Up';
+  sScrollDown = 'Scroll Down';
+  sAddPage_ = 'Add Page';
+  sNextPage = 'Next Page';
+  sPreviousPage = 'Previous Page';
+
 implementation
 
 //=== TJvLookOutPageEditor =====================================================
@@ -155,17 +166,17 @@ begin
     Exit;
   case Index of
     0:
-      Result := _('Add page');
+      Result := sAddPage;
     1:
-      Result := _('Activate');
+      Result := sActivate;
     2:
-      Result := _('Add Button');
+      Result := sAddButton;
     3:
       Result := '-'; // do not localize
     4:
-      Result := _('Scroll Up');
+      Result := sScrollUp;
     5:
-      Result := _('Scroll Down');
+      Result := sScrollDown;
   end;
 end;
 
@@ -276,11 +287,11 @@ function TJvLookOutEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := _('Add Page');
+      Result := sAddPage_;
     1:
-      Result := _('Next Page');
+      Result := sNextPage;
     2:
-      Result := _('Previous Page');
+      Result := sPreviousPage;
   end;
 end;
 
@@ -340,7 +351,7 @@ function TJvExpressEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := _('Add Button');
+      Result := sAddButton;
 //    1: Result := _('About...');
   end;
 end;
