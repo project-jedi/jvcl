@@ -15,6 +15,9 @@ object frmModels: TfrmModels
   Position = poMainFormCenter
   Scaled = False
   OnShow = FormShow
+  DesignSize = (
+    525
+    473)
   PixelsPerInch = 96
   TextHeight = 13
   object lblSelectModel: TLabel
@@ -172,6 +175,9 @@ object frmModels: TfrmModels
     Anchors = [akLeft, akTop, akBottom]
     Caption = ' Properties '
     TabOrder = 3
+    DesignSize = (
+      509
+      383)
     object lblName: TLabel
       Left = 160
       Top = 24

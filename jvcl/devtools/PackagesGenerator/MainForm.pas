@@ -156,6 +156,9 @@ type
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
+
+    ConfigLoadedOk : Boolean; // true if the config loaded ok
+
     FOrgValueDep: string; // original value of current column (dependencies list)
     FOrgValueFiles: string; // original value of current column (files list)
     FValidOrgDep: Boolean; // True if FOrgValueDep is officially set
@@ -199,21 +202,25 @@ end;
 
 constructor TfrmMain.Create(AOwner: TComponent);
 var
-  Success : Boolean;
   ErrMsg : string;
 begin
   inherited;
 
   jaxStore.FileName := StrEnsureSuffix(PathSeparator, ExtractFilePath(Application.exename)) + 'pgEdit.xml';
   if cmbModel.ItemIndex >-1 then
-    Success := LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg)
+    ConfigLoadedOk := LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg)
   else
-    Success := LoadConfig(jaxStore.FileName, '', ErrMsg);
+    ConfigLoadedOk := LoadConfig(jaxStore.FileName, '', ErrMsg);
 
-  if not Success then
+  if not ConfigLoadedOk then
   begin
-    Application.MessageBox(PChar(ErrMsg), 'Error loading configuration', MB_ICONERROR);
+    Application.MessageBox(PChar('Error loading configuration:'#13#10+
+                                 #13#10+
+                                 ErrMsg),
+                           'Error loading configuration',
+                           MB_ICONERROR);
     Application.Terminate;
+    Exit;
   end;
 
   with jsgDependencies do
@@ -759,15 +766,18 @@ end;
 
 procedure TfrmMain.FormShow(Sender: TObject);
 begin
-  // Load the list of packages
-  LoadPackagesList;
+  if not Application.Terminated then
+  begin
+    // Load the list of packages
+    LoadPackagesList;
 
-  // force the models to be loaded in appropriate form and
-  // load the names in the combo box
-  frmModels.LoadModels(jaxStore.FileName);
-  cmbModel.Items.Assign(frmModels.cmbModels.Items);
+    // force the models to be loaded in appropriate form and
+    // load the names in the combo box
+    frmModels.LoadModels(jaxStore.FileName, ConfigLoadedOk);
+    cmbModel.Items.Assign(frmModels.cmbModels.Items);
 
-  jfsStore.RestoreFormPlacement;
+    jfsStore.RestoreFormPlacement;
+  end;
 end;
 
 procedure TfrmMain.MoveLine(sg : TStringGrid; direction : Integer);
