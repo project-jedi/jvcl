@@ -468,6 +468,14 @@ type
   PCaptionChar = PWideChar;
 {$ENDIF VisualCLX}
 
+type
+  TJvSizeRect = packed record
+    Top: Integer;
+    Left: Integer;
+    Width: Integer;
+    Height: Integer;
+  end;
+
 implementation
 
 {$IFDEF UNITVERSIONING}
