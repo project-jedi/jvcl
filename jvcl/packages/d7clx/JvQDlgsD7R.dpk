@@ -32,7 +32,8 @@ requires
   JvQSystemD7R,
   rtl,
   visualclx,
-  DJcl;
+  DJcl,
+  DJclVClx;
 
 contains
   JvQDualListForm in '..\..\qrun\JvQDualListForm.pas' {JvDualListForm},
@@ -42,6 +43,8 @@ contains
   JvQProgressForm in '..\..\qrun\JvQProgressForm.pas' {frmProgress},
   JvQDualList in '..\..\qrun\JvQDualList.pas',
   JvQCommonExecDlg in '..\..\qrun\JvQCommonExecDlg.pas',
-  JvQTipOfDay in '..\..\qrun\JvQTipOfDay.pas';
+  JvQTipOfDay in '..\..\qrun\JvQTipOfDay.pas',
+  JvQDSADialogs in '..\..\qrun\JvQDSADialogs.pas',
+  JvQFindReplace in '..\..\qrun\JvQFindReplace.pas';
 
 end.

@@ -27,11 +27,7 @@ package JvQUIBD7D;
 
 requires
   JvQUIBD7R,
-  JvQCoreD7R,
-  JvQCoreD7D,
-  rtl,
-  designide,
-  visualclx;
+  JvQCoreD7D;
 
 contains
   JvQUIBReg in '..\..\qdesign\JvQUIBReg.pas';

@@ -37,7 +37,10 @@ requires
   visualclx,
   clxdesigner,
   DJclVClx,
-  DJcl;
+  DJcl,
+  vclactnband,
+  vclx,
+  vcl;
 
 contains
   JvQHTHintForm in '..\..\qdesign\JvQHTHintForm.pas' {JvHintEditor},
@@ -46,6 +49,7 @@ contains
   JvQFooterEditor in '..\..\qdesign\JvQFooterEditor.pas',
   JvQGroupHeaderEditor in '..\..\qdesign\JvQGroupHeaderEditor.pas',
   JvQRollOutEditor in '..\..\qdesign\JvQRollOutEditor.pas',
-  JvQSpeedbarForm in '..\..\qdesign\JvQSpeedbarForm.pas' {JvSpeedbarEditor};
+  JvQSpeedbarForm in '..\..\qdesign\JvQSpeedbarForm.pas' {JvSpeedbarEditor},
+  JvQScrollMaxEditor in '..\..\qdesign\JvQScrollMaxEditor.pas';
 
 end.

@@ -27,9 +27,7 @@ package JvQXPCtrlsD7R;
 {$DEFINE USEJVCL}
 
 requires
-  JvQCoreD7R,
-  rtl,
-  visualclx;
+  JvQCoreD7R;
 
 contains
   JvQXPBar in '..\..\qrun\JvQXPBar.pas',

@@ -28,11 +28,7 @@ package JvQCtrlsD7R;
 requires
   JvQCoreD7R,
   JvQStdCtrlsD7R,
-  JvQSystemD7R,
-  rtl,
-  visualclx,
-  DJcl,
-  DJclVClx;
+  JvQSystemD7R;
 
 contains
   JvQClock in '..\..\qrun\JvQClock.pas',
@@ -69,6 +65,7 @@ contains
   JvQTransparentButton in '..\..\qrun\JvQTransparentButton.pas',
   JvQScrollPanel in '..\..\qrun\JvQScrollPanel.pas',
   JvQSpeedbar in '..\..\qrun\JvQSpeedbar.pas',
-  JvQSpeedbarSetupForm in '..\..\qrun\JvQSpeedbarSetupForm.pas' {JvSpeedbarSetupWindow};
+  JvQSpeedbarSetupForm in '..\..\qrun\JvQSpeedbarSetupForm.pas' {JvSpeedbarSetupWindow},
+  JvQScrollMax in '..\..\qrun\JvQScrollMax.pas';
 
 end.

@@ -28,9 +28,8 @@ package JvQCoreD7D;
 
 requires
   JvQCoreD7R,
-  rtl,
-  visualclx,
-  designide;
+  designide,
+  clxdesigner;
 
 contains
   JvQProviderTreeListDsgnFrame in '..\..\qdesign\JvQProviderTreeListDsgnFrame.pas' {fmeJvProviderTreeListDsgn: TFrame},
@@ -50,7 +49,6 @@ contains
   JvQDataProviderDesignerForm in '..\..\qdesign\JvQDataProviderDesignerForm.pas' {frmDataProviderDesigner},
   JvQDataProviderEditors in '..\..\qdesign\JvQDataProviderEditors.pas',
   JvQDataProviderItemDesign in '..\..\qdesign\JvQDataProviderItemDesign.pas',
-  JvQDateTimeForm in '..\..\qdesign\JvQDateTimeForm.pas' {frmSelectDateTimeDlg},
   JvQDesignerUtils in '..\..\qdesign\JvQDesignerUtils.pas',
   JvQDsgnConsts in '..\..\qdesign\JvQDsgnConsts.pas',
   JvQDsgnEditors in '..\..\qdesign\JvQDsgnEditors.pas',
