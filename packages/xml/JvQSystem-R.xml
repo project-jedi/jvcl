@@ -25,5 +25,6 @@
     <File Name="..\..\qrun\JvQTimer.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQFormPlacement.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQFormPlacementSelectList.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQAppXMLStorage.pas" Targets="allclx" Formname="" Condition=""/>
   </Contains>
 </Package>
