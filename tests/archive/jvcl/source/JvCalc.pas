@@ -501,12 +501,15 @@ begin
   end;
 end;
 
+type
+  TAccessLabel = class(TCustomLabel);
+
 procedure TJvCalculatorPanel.TextChanged;
 begin
   if Assigned(FControl) then
   begin
     if FControl is TCustomLabel then
-      TCustomLabel(FControl).Caption := FText
+      TAccessLabel(FControl).Caption := FText
     else
     { (rb) Fix to update the text of a TJvCalcEdit }
     if FControl is TCustomEdit then
