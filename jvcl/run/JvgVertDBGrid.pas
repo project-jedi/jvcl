@@ -44,7 +44,7 @@ type
     FIgnoreSetText: Boolean;
     FLastEditTextRow: Integer;
     FLastEditValue: string;
-    procedure SetDataToField(Field: TField; Str: string);
+    procedure SetDataToField(Field: TField; const Str: string);
     function GetDataFromField(Field: TField): string;
     procedure SetDataSource(Value: TDataSource);
     procedure SetDataSet(Value: TDataSet);
@@ -184,7 +184,7 @@ begin
 end;
 }
 
-procedure TJvgCustomVertDBSGrid.SetDataToField(Field: TField; Str: string);
+procedure TJvgCustomVertDBSGrid.SetDataToField(Field: TField; const Str: string);
 begin
   case Field.DataType of
     ftString:

@@ -103,7 +103,8 @@ begin
   end;
 end;
 
-procedure TJvgTagParser.OnHTMLTag(Sender: TObject; Tag: TTag; const TagString: string; TagParams: TStrings; var ReplaceText: string);
+procedure TJvgTagParser.OnHTMLTag(Sender: TObject; Tag: TTag;
+  const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   I: Integer;
 begin

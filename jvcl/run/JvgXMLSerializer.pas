@@ -113,12 +113,13 @@ type
     FBeforeParsing: TBeforeParsingEvent;
     FWrapCollections: Boolean;
     FIgnoreUnknownTags: Boolean;
-    procedure check(Expr: Boolean; const Message: string; E: TJvgXMLSerializerException);
+
+    procedure Check(Expr: Boolean; const Message: string; E: TJvgXMLSerializerException);
 
     procedure WriteOutStream(const Value: string);
   protected
     procedure SerializeInternal(Component: TObject; Level: integer = 1);
-    procedure DeSerializeInternal(Component: TObject; {const}
+    procedure DeSerializeInternal(Component: TObject;
       ComponentTagName: string; ParentBlockEnd: PChar = nil);
     procedure GenerateDTDInternal(Component: TObject; DTDList: TStrings;
       Stream: TStream; const ComponentTagName: string);
@@ -478,7 +479,7 @@ end;
     ParentBlockEnd   - Pointer to the end of XML-description of the parent tag.
 }
 
-procedure TJvgXMLSerializer.DeSerializeInternal(Component: TObject; {const}
+procedure TJvgXMLSerializer.DeSerializeInternal(Component: TObject;
   ComponentTagName: string; ParentBlockEnd: PChar = nil);
 var
   BlockStart, BlockEnd, TagStart, TagEnd: PChar;
@@ -502,7 +503,7 @@ var
       if CompareStr(PropList^[i]^.Name, TagName) = 0 then
       begin
         Result := i;
-        break;
+        Break;
       end;
   end;
 
@@ -515,8 +516,7 @@ var
   //  StrPosExt - ищет позицию одной строки в другой с заданной длиной.
   //  На длинных строках превосходит StrPos.
 
-  function StrPosExt(const Str1, Str2: PChar; Str1Len: DWORD): PChar;
-    assembler;
+  function StrPosExt(const Str1, Str2: PChar; Str1Len: DWORD): PChar; assembler;
   asm
         PUSH    EDI
         PUSH    ESI
@@ -571,11 +571,10 @@ begin
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
-  GetMem(PropList, NumProps * sizeof(pointer));
-
   if not WrapCollections and (Component is TCollection) then
     ComponentTagName := TCollection(Component).ItemClass.ClassName;
 
+  GetMem(PropList, NumProps * SizeOf(Pointer));
   try
     GetPropInfos(TypeInf, PropList);
 
@@ -590,8 +589,8 @@ begin
       exit;
 
     //{ иначе проверяем его присутствие }
-    { Otherwise check its presence  [translated] }
-    check(BlockStart <> nil, Format(RsOpenXMLTagNotFound,
+    { Otherwise Check its presence  [translated] }
+    Check(BlockStart <> nil, Format(RsOpenXMLTagNotFound,
       [ComponentTagName]), EJvgXMLOpenTagNotFoundException);
     Inc(BlockStart, Length(ComponentTagName) + 2);
 
@@ -599,12 +598,12 @@ begin
     { Looking for closing tag  [translated] }
     BlockEnd := StrPosExt(BlockStart, PChar('</' + ComponentTagName + '>'),
       BufferEnd - BlockStart + 3 + Length(ComponentTagName) {BufferLength});
-    check(BlockEnd <> nil, Format(RsCloseXMLTagNotFound,
+    Check(BlockEnd <> nil, Format(RsCloseXMLTagNotFound,
       [ComponentTagName]), EJvgXMLCloseTagNotFoundException);
 
     //{ проверка на вхождение закр. тега в родительский тег }
     { Checking the closing tag to be nested within parent tag  [translated] }
-    check((ParentBlockEnd = nil) or (BlockEnd < ParentBlockEnd),
+    Check((ParentBlockEnd = nil) or (BlockEnd < ParentBlockEnd),
       Format(RsCloseXMLTagNotFound, [ComponentTagName]),
       EJvgXMLCloseTagNotFoundException);
 
@@ -618,21 +617,21 @@ begin
       //{ быстрый поиск угловых скобок }
       { fast search for "<" and ">"  [translated] }
       asm
-      mov CL, '<'
-      mov EDX, Pointer(TagEnd)
-      dec EDX
-@@1:  inc EDX
-      mov AL, byte[EDX]
-      cmp AL, CL
-      jne @@1
-      mov TagStart, EDX
+        mov CL, '<'
+        mov EDX, Pointer(TagEnd)
+        dec EDX
+@@1:    inc EDX
+        mov AL, byte[EDX]
+        cmp AL, CL
+        jne @@1
+        mov TagStart, EDX
 
-      mov CL, '>'
-@@2:  inc EDX
-      mov AL, byte[EDX]
-      cmp AL, CL
-      jne @@2
-      mov TagEnd, EDX
+        mov CL, '>'
+@@2:    inc EDX
+        mov AL, byte[EDX]
+        cmp AL, CL
+        jne @@2
+        mov TagEnd, EDX
       end;
 
       GetMem(TagName, TagEnd - TagStart + 1);
@@ -661,13 +660,12 @@ begin
         if not WrapCollections and (PropIndex = -1) then
         begin
           PropIndex := FindProperty(PChar(TagName + 's'));
-
         end
         else
           TokenPtr := TagStart;
 
         if not IgnoreUnknownTags then
-          check(PropIndex <> -1, Format(RsUnknownProperty, [TagName]),
+          Check(PropIndex <> -1, Format(RsUnknownProperty, [TagName]),
             EJvgXMLUncknownPropertyException);
 
         if PropIndex <> -1 then
@@ -676,13 +674,12 @@ begin
 
         Inc(TagEnd, Length('</' + TagName + '>'));
         SkipSpaces(TagEnd);
-
       finally
         FreeMem(TagName);
       end;
     end;
   finally
-    FreeMem(PropList, NumProps * sizeof(pointer));
+    FreeMem(PropList);//, NumProps * SizeOf(pointer));
   end;
 end;
 
@@ -795,7 +792,7 @@ begin
                   // Application.MessageBox(PChar(E.Message), '', MB_OK); - debug string
                   CollectionItem.Free;
                   // raise;  - debug string
-                  break;
+                  Break;
                 end;
               end;
             end;
@@ -973,7 +970,7 @@ begin
   end;
 end;
 
-procedure TJvgXMLSerializer.check(Expr: Boolean; const Message: string;
+procedure TJvgXMLSerializer.Check(Expr: Boolean; const Message: string;
   E: TJvgXMLSerializerException);
 begin
   if not Expr then
