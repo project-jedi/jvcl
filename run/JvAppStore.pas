@@ -65,11 +65,11 @@ uses
 type
   TJvCustomAppStore = class;
 
-  TAppStoreListItem = procedure(Sender: TJvCustomAppStore; const Path: string;
+  TAppStoreListItemEvent = procedure(Sender: TJvCustomAppStore; const Path: string;
     const Index: Integer) of object;
-  TAppStoreListDelete = procedure(Sender: TJvCustomAppStore; const Path: string;
+  TAppStoreListDeleteEvent = procedure(Sender: TJvCustomAppStore; const Path: string;
     const First, Last: Integer) of object;
-  TAppStorePropTranslate = procedure(Sender: TJvCustomAppStore; Instance: TPersistent;
+  TAppStorePropTranslateEvent = procedure(Sender: TJvCustomAppStore; Instance: TPersistent;
     var Name: string; const Reading: Boolean) of object;
 
   TJvCustomAppStoreOptions = class(TPersistent)
@@ -148,6 +148,7 @@ type
     FCurPath: string;
     FStoreSL: TStrings;
     FStoreOptions: TJvCustomAppStoreOptions;
+    FOnTranslatePropertyName: TAppStorePropTranslateEvent;
   protected
     //Returns the property count of an instance
     function GetPropCount(Instance: TPersistent): Integer;
@@ -200,6 +201,9 @@ type
     property Root: string Read GetRoot Write SetRoot;
     { Set the StoreOptions Property }
     procedure SetStoreOptions(Value: TJvCustomAppStoreOptions);
+    { Invokes the OnTranslatePropertyName event if one is assigned. }
+    procedure DoTranslatePropertyName(Instance: TPersistent; var Name: string;
+      const Reading: Boolean);
 
     { Retrieves the specified Integer value. If the value is not found, the Default will be
       returned. If the value is not an Integer (or can't be converted to an Integer an EConvertError
@@ -286,13 +290,14 @@ type
     { Retrieves the specified list. Caller provides a callback method that will read the individual
       items. ReadList will first determine the number of items to read and calls the specified
       method for each item. }
-    function ReadList(const Path: string; const OnReadItem: TAppStoreListItem): Integer; virtual;
+    function ReadList(const Path: string;
+      const OnReadItem: TAppStoreListItemEvent): Integer; virtual;
     { Stores a list of items. The number of items is stored first. For each item the provided
       item write method is called. Any additional items in the list (from a previous write) will be
       removed by the optionally provided delete method. }
     procedure WriteList(const Path: string; const ItemCount: Integer;
-      const OnWriteItem: TAppStoreListItem;
-      const OnDeleteItems: TAppStoreListDelete = nil); virtual;
+      const OnWriteItem: TAppStoreListItemEvent;
+      const OnDeleteItems: TAppStoreListDeleteEvent = nil); virtual;
     { Retrieves a string list. The string list is optionally cleared before reading starts. The
       result value is the number of items read. Uses ReadList with internally provided methods to
       do the actual reading. }
@@ -321,17 +326,21 @@ type
     procedure WriteBoolean(const Path: string; Value: Boolean); virtual;
     { Retrieves a TPersistent-Object with all of its published properties }
     procedure ReadPersistent(const Path: string; const PersObj: TPersistent;
-      const Recursive: Boolean = True; const ClearFirst: Boolean = True;
-      const PropNameTranslator: TAppStorePropTranslate = nil);
+      const Recursive: Boolean = True; const ClearFirst: Boolean = True);
     { Stores a TPersistent-Object with all of its published properties}
     procedure WritePersistent(const Path: string; const PersObj: TPersistent;
-      const Recursive: Boolean = True; const IgnoreProperties: TStrings = nil;
-      const PropNameTranslator: TAppStorePropTranslate = nil);
+      const Recursive: Boolean = True; const IgnoreProperties: TStrings = nil);
 
     { Translates a Char value to a (valid) key name. Used by the set storage methods. }
     function GetCharName(Ch: Char): string; virtual;
     { Translates an Integer value to a key name. Used by the set storage methods. }
     function GetIntName(Value: Integer): string; virtual;
+    { Translates between a property name and it's storage name. If Reading is True, AName is
+      interpreted as a storage name to be translated to a real property name. If Reading is False,
+      AName is interpreted as a property name to be translated to a storage name. Will invoke the
+      OnTranslatePropertyName event if one is assigned, or return AName if no handler is assigned. }
+    function TranslatePropertyName(Instance: TPersistent; const AName: string;
+      const Reading: Boolean): string;
     { Enumerate a list of stored values and/or folder below the specified path, optionally scanning
       sub folders as well. The associated object is an integer specifying what the string
       represents: 1: Folder; 2: Value; 3: Both }
@@ -343,6 +352,8 @@ type
     property Path: string Read GetPath Write SetPath;
   published
     property StoreOptions: TJvCustomAppStoreOptions read FStoreOptions write SetStoreOptions;
+    property OnTranslatePropertyName: TAppStorePropTranslateEvent read FOnTranslatePropertyName
+      write FOnTranslatePropertyName;
   end;
 
 const
@@ -444,7 +455,7 @@ begin
   end;
 end;
 
-//===TJvCustomAppStoreOptions=============================================================================
+//===TJvCustomAppStoreOptions=======================================================================
 
 constructor TJvCustomAppStoreOptions.Create;
 begin
@@ -701,6 +712,13 @@ begin
     FStoreOptions.Assign(Value);
 end;
 
+procedure TJvCustomAppStore.DoTranslatePropertyName(Instance: TPersistent; var Name: string;
+  const Reading: Boolean);
+begin
+  if Assigned(FOnTranslatePropertyName) then
+    OnTranslatePropertyName(Self, Instance, Name, Reading);
+end;
+
 class function TJvCustomAppStore.NameIsListItem(Name: string): Boolean;
 var
   NameStart: PChar;
@@ -927,7 +945,7 @@ begin
 end;
 
 function TJvCustomAppStore.ReadList(const Path: string;
-  const OnReadItem: TAppStoreListItem): Integer;
+  const OnReadItem: TAppStoreListItemEvent): Integer;
 var
   I: Integer;
 begin
@@ -937,7 +955,7 @@ begin
 end;
 
 procedure TJvCustomAppStore.WriteList(const Path: string; const ItemCount: Integer;
-  const OnWriteItem: TAppStoreListItem; const OnDeleteItems: TAppStoreListDelete);
+  const OnWriteItem: TAppStoreListItemEvent; const OnDeleteItems: TAppStoreListDeleteEvent);
 var
   PrevListCount: Integer;
   I: Integer;
@@ -1184,7 +1202,7 @@ begin
 end;
 
 procedure TJvCustomAppStore.ReadPersistent(const Path: string; const PersObj: TPersistent;
-  const Recursive, ClearFirst: Boolean; const PropNameTranslator: TAppStorePropTranslate);
+  const Recursive, ClearFirst: Boolean);
 var
   Index: Integer;
   PropName: string;
@@ -1199,8 +1217,7 @@ begin
   begin
     PropName := GetPropName(PersObj, Index);
     KeyName := PropName;
-    if @PropNameTranslator <> nil then
-      PropNameTranslator(Self, PersObj, KeyName, True);
+    DoTranslatePropertyName(PersObj, KeyName, True);
     PropPath := ConcatPaths([Path, KeyName]);
     case PropType(PersObj, PropName) of
       tkLString,
@@ -1242,7 +1259,7 @@ begin
             if SubObj is TJvCustomPropertyStore then
               TJvCustomPropertyStore(SubObj).LoadProperties
             else
-              ReadPersistent(PropPath, TPersistent(SubObj), True, ClearFirst, PropNameTranslator);
+              ReadPersistent(PropPath, TPersistent(SubObj), True, ClearFirst);
           end;
         end;
     end;
@@ -1250,8 +1267,7 @@ begin
 end;
 
 procedure TJvCustomAppStore.WritePersistent(const Path: string; const PersObj: TPersistent;
-  const Recursive: Boolean; const IgnoreProperties: TStrings;
-  const PropNameTranslator: TAppStorePropTranslate);
+  const Recursive: Boolean; const IgnoreProperties: TStrings);
 var
   Index: Integer;
   PropName: string;
@@ -1266,8 +1282,7 @@ begin
   begin
     PropName := GetPropName(PersObj, Index);
     KeyName := PropName;
-    if @PropNameTranslator <> nil then
-      PropNameTranslator(Self, PersObj, KeyName, False);
+    DoTranslatePropertyName(PersObj, KeyName, False);
     PropPath := ConcatPaths([Path, KeyName]);
     if (IgnoreProperties = nil) or (IgnoreProperties.IndexOf(PropName) = -1) then
       case PropType(PersObj, PropName) of
@@ -1311,8 +1326,7 @@ begin
             if SubObj is TJvCustomPropertyStore then
               TJvCustomPropertyStore(SubObj).StoreProperties
             else
-              WritePersistent(PropPath, TPersistent(SubObj), True, IgnoreProperties,
-                PropNameTranslator);
+              WritePersistent(PropPath, TPersistent(SubObj), True, IgnoreProperties);
           end;
         end;
       end;
@@ -1330,6 +1344,13 @@ end;
 function TJvCustomAppStore.GetIntName(Value: Integer): string;
 begin
   Result := 'Int_' + IntToStr(Value);
+end;
+
+function TJvCustomAppStore.TranslatePropertyName(Instance: TPersistent; const AName: string;
+  const Reading: Boolean): string;
+begin
+  Result := AName;
+  DoTranslatePropertyName(Instance, Result, Reading);
 end;
 
 procedure TJvCustomAppStore.GetStoredValues(const Path: string;
