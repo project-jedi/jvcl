@@ -917,8 +917,8 @@ type
       procedure SeTJvTFVisibleScrollBars(Value : TJvTFVisibleScrollBars);
       procedure AlignScrollBars;
       function CheckSBVis : Boolean;
-      procedure SetOnShowutfHint(Value : TJvTFShowutfHintEvent);
-      function GetOnShowutfHint : TJvTFShowutfHintEvent;
+      procedure SetOnShowutfHint(Value : TJvTFShowHintEvent);
+      function GetOnShowutfHint : TJvTFShowHintEvent;
 {$IFDEF TIMEBLOCKS}
     // ok
       procedure UpdateWeekendFillPic;
@@ -1453,7 +1453,7 @@ type
       property OnBeginEdit : TJvTFBeginEditEvent read FOnBeginEdit write FOnBeginEdit;
 
     // Help and Hint events
-      property OnShowutfHint : TJvTFShowutfHintEvent read GetOnShowutfHint
+      property OnShowutfHint : TJvTFShowHintEvent read GetOnShowutfHint
          write SetOnShowutfHint;
 
     // Misc events
@@ -4557,12 +4557,12 @@ begin
    CheckSBParams;
 end;
 
-procedure TJvTFDays.SetOnShowutfHint(Value : TJvTFShowutfHintEvent);
+procedure TJvTFDays.SetOnShowutfHint(Value : TJvTFShowHintEvent);
 begin
    FutfHint.OnShowHint := Value;
 end;
 
-function TJvTFDays.GetOnShowutfHint : TJvTFShowutfHintEvent;
+function TJvTFDays.GetOnShowutfHint : TJvTFShowHintEvent;
 begin
    Result := FutfHint.OnShowHint;
 end;
