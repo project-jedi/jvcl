@@ -118,9 +118,7 @@ type
     procedure LoadOtherProperties(Reader: TReader); dynamic;
     procedure StoreOtherProperties(Writer: TWriter); dynamic;
     procedure DefineProperties(Filer: TFiler); override;
-    {$IFDEF COMPILER4_UP}
     function DoCanResize(var NewSize: Integer): Boolean; override;
-    {$ENDIF COMPILER4_UP}
     procedure Loaded; override;
     procedure PaintButton(Highlight: Boolean); dynamic;
     function DrawArrow(ACanvas: TCanvas; AvailableRect: TRect; Offset: Integer;
@@ -378,7 +376,6 @@ begin
     Minimized or Maximized);
 end;
 
-{$IFDEF COMPILER4_UP}
 function TJvCustomNetscapeSplitter.DoCanResize(var NewSize: Integer): Boolean;
 begin
   Result := inherited DoCanResize(NewSize);
@@ -387,7 +384,6 @@ begin
   if Result and (NewSize < MinSize) then
     NewSize := MinSize;
 end;
-{$ENDIF COMPILER4_UP}
 
 procedure TJvCustomNetscapeSplitter.DoClose;
 begin
@@ -875,15 +871,6 @@ begin
   begin
     inherited Align := Value;
     Invalidate; // Direction changing, redraw arrows.
-    {$IFNDEF COMPILER4_UP}
-    // D4 does this already
-    if (Cursor <> crVSplit) and (Cursor <> crHSplit) then
-      Exit;
-    if Align in [alBottom, alTop] then
-      Cursor := crVSplit
-    else
-      Cursor := crHSplit;
-    {$ENDIF !COMPILER4_UP}
   end;
 end;
 
