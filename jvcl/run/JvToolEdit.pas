@@ -1974,7 +1974,7 @@ begin
     Text := Value;
     Modified := True;
     UpdatePopupVisible;
-    DoChange;
+    //DoChange; (ahuser) Text := Value trifferes Change;
   end;
 end;
 

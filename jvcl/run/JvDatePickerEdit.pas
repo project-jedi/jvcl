@@ -448,7 +448,7 @@ begin
     begin
       BeginInternalChange;
       try
-        Self.Date := lDate
+        Self.Date := lDate;
       finally
         EndInternalChange;
       end;
@@ -458,7 +458,7 @@ begin
     begin
       lActFig := ActiveFigure;
 
-       if lActFig.Figure <> dfNone then
+      if lActFig.Figure <> dfNone then
       begin
         lFigVal := StrToIntDef(Trim(Copy(Text, lActFig.Start, lActFig.Length)), 0);
         //only enforce range if the cursor is at the end of the current figure:
@@ -1010,7 +1010,9 @@ end;
 procedure TJvCustomDatePickerEdit.ShowPopup(Origin: TPoint);
 begin
   if FPopup is TJvDropCalendar then
+  begin
     TJvDropCalendar(FPopup).Show;
+  end;
 end;
 
 procedure TJvCustomDatePickerEdit.UpdateDisplay;
