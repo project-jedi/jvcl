@@ -1457,7 +1457,7 @@ begin
   LastSelected := FSelectedItem;
   ShiftState := Shift * [ssCtrl, ssShift];
   ShiftEmpty := ShiftState = [];
-  AutoDrag := (DragMode = dmAutomatic) or Dragging;
+  FAutoDrag := (DragMode = dmAutomatic) or Dragging;
   LSelectedItem := ItemAtPos(X, Y);
   IsHit := Assigned(LSelectedItem);
   ItemSelected := IsHit; // and LSelectedItem.Selected;
