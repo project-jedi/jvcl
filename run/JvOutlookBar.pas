@@ -899,6 +899,9 @@ begin
     ActionChange(Sender, False);
 end;
 
+type
+  THackOwnedCollection = class(TOwnedCollection);
+
 procedure TJvOutlookBarButton.SetAction(Value: TBasicAction);
 begin
   if Value = nil then
@@ -913,7 +916,11 @@ begin
     FActionLink.Action := Value;
     FActionLink.OnChange := DoActionChange;
     ActionChange(Value, csLoading in Value.ComponentState);
-    Value.FreeNotification(Collection.Owner as TJvCustomOutlookBar); // deligates notification to owner!
+    {$IFDEF COMPILER6_UP}
+    Value.FreeNotification(Collection.Owner as TJvCustomOutlookBar); // delegates notification to owner!
+    {$ELSE}
+    Value.FreeNotification(THackOwnedCollection(Collection).GetOwner as TJvCustomOutlookBar); 
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 
