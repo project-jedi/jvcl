@@ -44,10 +44,14 @@ uses
   {$ELSE}
   Contnrs, DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvDsgnConsts, JvXPCore, JvXPPropertyEditors, JvXPBar, JvXPContainer,
+  JvXPCore, JvXPPropertyEditors, JvXPBar, JvXPContainer,
   JvXPButtons, JvXPCheckCtrls;
+  
+resourcestring
+  RsPaletteXPControls = 'Jv XP Controls';
 
 procedure Register;
+
 begin
   RegisterComponents(RsPaletteXPControls, [TJvXPStyleManager, TJvXPBar, TJvXPContainer,
     TJvXPButton, TJvXPToolButton, TJvXPCheckBox]);

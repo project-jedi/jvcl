@@ -36,8 +36,7 @@ package JvXPCtrlsD6R;
 
 requires
   rtl,
-  vcl,
-  JvCoreD6R
+  vcl
   ;
 
 contains

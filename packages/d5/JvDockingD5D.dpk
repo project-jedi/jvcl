@@ -35,14 +35,11 @@ package JvDockingD5D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCoreD5D,
-  JvCoreD5R,
   JvDockingD5R
   ;
 
 contains
-  JvDockingReg in '..\..\design\JvDockingReg.pas' ,
-  JvDockPropertyEditors in '..\..\design\JvDockPropertyEditors.pas' 
-  ;
+  JvDockingReg in '..\..\design\JvDockingReg.pas',
+  JvDockPropertyEditors in '..\..\design\JvDockPropertyEditors.pas';
 
 end.

@@ -36,8 +36,8 @@ package JvDotNetCtrlsD6D;
 
 requires
   rtl,
-  JvDotNetCtrlsD6R,
-  vcl50
+  vcl,
+  JvDotNetCtrlsD6R
   ;
 
 contains

@@ -39,6 +39,11 @@ resourcestring
   RsDockClientName = 'JVCL Dock Client Component';
   RsDockStyleName = 'JVCL Dock Style Component';
 
+  RsNewPage = 'New Page';
+  RsNextPage = 'Next Page';
+  RsPrevPage = 'Previous Page';
+  RsDelPage = 'Delete Page';
+  
   RsDockManagerVersion = '1.0.0.0';
   RsDockStyleVersion   = '1.0.0.0';
 
@@ -50,7 +55,7 @@ resourcestring
   RsDockAuthorName = 'zhouyibo';
   RsDockCompanyName = '';
   RsDockHomePage = 'http://jvcl.sourceforge.net';
-  RsDockEmail = 'jvcl@jvcl.net';
+  RsDockEmail = 'jvcl@jvcl.sf.net';
 
   RsDockAbout = 'About';
   RsDockManagerAbout = 'This is a %s, Version is %s,' + #13#10 +

@@ -36,8 +36,7 @@ package JvXPCtrlsD7R;
 
 requires
   rtl,
-  vcl,
-  JvCoreD7R
+  vcl
   ;
 
 contains
