@@ -213,7 +213,7 @@ type
     property OnMouseLeave;
     property OnParentColorChange;
     {$IFDEF JVCLThemesEnabled}
-    property ParentBackground default True;
+    property ParentBackground default False;
     {$ENDIF JVCLThemesEnabled}
   end;
 
@@ -273,7 +273,7 @@ type
     property OnResize;
     property OnStartDrag;
     {$IFDEF JVCLThemesEnabled}
-    property ParentBackground default True;
+    property ParentBackground default False;
     {$ENDIF JVCLThemesEnabled}
   end;
 
@@ -299,7 +299,7 @@ begin
   FPageIndex := -1;
   Align := alClient;
   ControlStyle := ControlStyle + [csOpaque, csAcceptsControls, csNoDesignVisible];
-  IncludeThemeStyle(Self, [csParentBackground]);
+//  IncludeThemeStyle(Self, [csParentBackground]);
   Visible := False;
   {$IFDEF VCL}
   DoubleBuffered := True;
@@ -528,7 +528,7 @@ constructor TJvCustomPageList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls];
-  IncludeThemeStyle(Self, [csParentBackground]);
+//  IncludeThemeStyle(Self, [csParentBackground]);
   FPages := TList.Create;
   FHiddenPages := TList.Create;
   Height := 200;
