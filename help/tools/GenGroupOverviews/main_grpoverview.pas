@@ -197,14 +197,14 @@ begin
     AddLog(Format('Building overview for "%s"...', [Grp]));
     IndentLog;
     try
-      SL.Add(StringOfChar('#', 100));
+(*      SL.Add(StringOfChar('#', 100));
       S := '## Overview for ' + Copy(Grp, 10, Length(Grp) - 10);
       S := S + StringOfChar(' ', 100 - 2 - Length(S)) + '##';
       SL.Add(S);
       S := '## Generated ' + FormatDateTime('mm-dd-yyyy, hh:nn:ss', Now);
       S := S + StringOfChar(' ', 100 - 2 - Length(S)) + '##';
       SL.Add(S);
-      SL.Add(StringOfChar('#', 100));
+      SL.Add(StringOfChar('-', 100)); *)
       MaxNameLen := Length('Component');
       for I := 0 to TopicList.Count - 1 do
       begin
