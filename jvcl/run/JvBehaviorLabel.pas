@@ -284,13 +284,13 @@ type
 
   TJvCustomBehaviorLabel = class(TCustomLabel)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FBehavior: TJvLabelBehaviorName;
     FOptions: TJvLabelBehavior;
     FOnCtl3DChanged: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
     function GetOptions: TJvLabelBehavior;

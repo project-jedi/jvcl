@@ -62,14 +62,12 @@ type
     function CheckBounds(INdex: Integer): Boolean;
   protected
     procedure Paint; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetStyle(LineIndex, ImageIndex: Integer; LineStyle: TFontStyles);
-    procedure SetExclusive(LineIndex, ImageIndex: Integer; LineStyle:
-      TFontStyles);
+    procedure SetExclusive(LineIndex, ImageIndex: Integer; LineStyle: TFontStyles);
     procedure SetImage(LineIndex, ImageIndex: Integer);
     property Styles[Index: Integer]: TFontStyles read GetStyles write SetStyles;
   published
@@ -256,12 +254,7 @@ var
   aRect: TRect;
   aHandle: THandle;
 begin
-  inherited Paint;
-  with inherited Canvas do
-  begin
-    Brush.Color := Color;
-    DrawThemedBackground(Self, inherited Canvas, ClientRect);
-  end;
+  DrawThemedBackground(Self, Canvas, ClientRect, Self.Color);
 
   if csDesigning in ComponentState then
     with Canvas do

@@ -43,7 +43,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms,
-  JVCLVer, JvTypes;
+  JVCLVer, JvTypes, JvComponent;
 
 type
   TJvTextMargins = class(TPersistent)
@@ -61,7 +61,7 @@ type
     property Y: Word read FY write SetY;
   end;
 
-  TJvCustomStaticText = class(TWinControl)
+  TJvCustomStaticText = class(TJvWinControl)
   private
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -73,7 +73,6 @@ type
     FFontSave: TFont;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
-    FAboutJVCL: TJVCLAboutInfo;
     FLayout: TTextLayout;
     FAlignment: TAlignment;
     FAutoSize: Boolean;
@@ -131,7 +130,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property TextMargins: TJvTextMargins read FTextMargins write SetTextMargins;
   end;
 
