@@ -102,7 +102,7 @@ uses
   {$IFDEF VisualCLX}
   QConsts,
   {$ENDIF VisualCLX}
-  JvJVCLUtils, JvResources;
+  JvJVCLUtils, JvTypes, JvResources;
 
 {$IFDEF VCL}
 {$R *.dfm}
@@ -226,7 +226,7 @@ begin
   if FSpeedbar <> Value then
   begin
     if FSpeedbar <> nil then
-      FSpeedbar.SetEditing(0);
+      FSpeedbar.SetEditing(NullHandle);
     FSpeedbar := Value;
     if FSpeedbar <> nil then
     begin
@@ -273,7 +273,7 @@ begin
   FButton.Free;
   FButton := nil;
   if FSpeedbar <> nil then
-    FSpeedbar.SetEditing(0);
+    FSpeedbar.SetEditing(NullHandle);
   FSpeedbar := nil;
 end;
 
@@ -292,7 +292,13 @@ begin
     if Row < FSpeedbar.SectionCount then
       DrawCellText(Sender as TDrawGrid, Col, Row,
         FSpeedbar.Sections[Row].Caption, Rect, taLeftJustify, vaCenterJustify,
-        TDrawGrid(Sender).IsRightToLeft);
+          {$IFDEF VCL}
+          TDrawGrid(Sender).IsRightToLeft
+          {$ENDIF}
+          {$IFDEF VisualCLX}
+          False
+          {$ENDIF VisualCLX}
+        );
 end;
 
 procedure TJvSpeedbarSetupWindow.ButtonsListMouseDown(Sender: TObject;
@@ -404,7 +410,14 @@ var
 begin
   I := CurrentSection;
   if (I >= 0) and (Row < FSpeedbar.ItemsCount(I)) then
-    DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage, TDrawGrid(Sender).IsRightToLeft);
+    DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage,
+      {$IFDEF VCL}
+      TDrawGrid(Sender).IsRightToLeft
+      {$ENDIF}
+      {$IFDEF VisualCLX}
+      False
+      {$ENDIF VisualCLX}
+    );
 end;
 
 procedure TJvSpeedbarSetupWindow.CloseBtnClick(Sender: TObject);
@@ -414,7 +427,12 @@ end;
 
 procedure TJvSpeedbarSetupWindow.HelpBtnClick(Sender: TObject);
 begin
+  {$IFDEF VCL}
   Application.HelpContext(HelpContext);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Application.HelpSystem.ShowContextHelp(HelpContext, Application.HelpFile);
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvSpeedbarSetupWindow.FormShow(Sender: TObject);
