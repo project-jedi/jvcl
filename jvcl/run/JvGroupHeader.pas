@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-09-01
+Last Modified: 2004-01-06
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,7 +31,13 @@ unit JvGroupHeader;
 interface
 
 uses
-  Windows, Messages, Classes, Graphics, Controls, ExtCtrls,
+  Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QGraphics, QControls, QExtCtrls,
+  {$ENDIF}
   JvComponent, JvTypes;
 
 type
@@ -74,14 +80,20 @@ type
     procedure SetBevelOptions(Value: TJvGroupHeaderOptions);
     procedure SetBevelSpace(Value: Integer);
     procedure SetLabelOptions(Value: TJvGroupHeaderOptions);
+    {$IFDEF VCL}
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    {$ENDIF}
     procedure StyleChanged(Sender: TObject);
     procedure BevelLine(C: TColor; X, Y, Width: Integer);
     procedure DoDrawText(var Rect: TRect; Flags: Longint);
     function GetLabelText: string;
   protected
     procedure Paint; override;
+    {$IFDEF VisualCLX}
+    procedure TextChanged; override;
+    procedure FontChanged; override;
+    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     property Canvas;
@@ -90,16 +102,18 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment default
       taLeftJustify;
     property Anchors;
+    {$IFDEF VCL}
     property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property ParentBiDiMode;
+    {$ENDIF}
     property Caption;
     property Color;
     property Constraints;
-    property DragCursor;
-    property DragKind;
     property DragMode;
     property Enabled;
     property Font;
-    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -116,12 +130,14 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    {$IFDEF VCL}
     property OnEndDock;
+    property OnStartDock;
+    {$ENDIF}
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -196,7 +212,9 @@ begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$IFDEF VCL}
   Font.Name := 'Tahoma';
+  {$ENDIF}
   Width := 200;
   Height := 17;
 
@@ -428,13 +446,23 @@ begin
   end;
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvGroupHeader.TextChanged;
+{$ENDIF}
+{$IFDEF VCL}
 procedure TJvGroupHeader.CMTextChanged(var Msg: TMessage);
+{$ENDIF}
 begin
   inherited;
   Invalidate;
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvGroupHeader.FontChanged;
+{$ENDIF}
+{$IFDEF VCL}
 procedure TJvGroupHeader.CMFontChanged(var Msg: TMessage);
+{$ENDIF}
 begin
   inherited;
   Invalidate;
