@@ -46,7 +46,7 @@ uses
   
   Qt, QWindows,
   
-  JVQCLVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
+  JvQCLVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
 
 type
   TJvComponent = class(TComponent)

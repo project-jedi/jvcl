@@ -131,7 +131,7 @@ uses
 {$R ..\Resources\JvCalc.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvCalc.res}
+{$R ../Resources/JvCalc.Res}
 {$ENDIF LINUX}
 
 type

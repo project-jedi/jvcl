@@ -771,7 +771,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6}
+{$IFDEF _COMPILER6}
 
 // redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
 {$IF not declared(PatchedVCLX)}
