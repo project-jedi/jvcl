@@ -1764,7 +1764,7 @@ begin
   Sect := Sections[Section];
   if Sect <> nil then
   begin
-    for I := 0 to Sect.Count - 1 do
+    for I := Sect.Count - 1 downto 0 do
       RemoveItem(TJvSpeedItem(Sect[I]));
     Sect.FParent := nil;
     FSections[Section] := nil;
