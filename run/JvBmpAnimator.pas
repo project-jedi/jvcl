@@ -43,7 +43,7 @@ type
 
   TJvCustomBmpAnimator = class(TJvGraphicControl)
   private
-    FImageList: TImageList;
+    FImageList: TCustomImageList;
     FTimer: TTimer;
     FIndex: Integer;
     FActive: Boolean;
@@ -65,7 +65,7 @@ type
     procedure SetStart(Value: Integer);
     procedure SetStop(Value: Integer);
     procedure SetTransparent(Value: Boolean);
-    procedure SetImage(Value: TImagelist);
+    procedure SetImage(Value: TCustomImageList);
     procedure SetActive(Value: Boolean);
     procedure SetNumGlyphs(Value: Integer);
     procedure SetSpeed(Value: Integer);
@@ -82,7 +82,7 @@ type
     property Color default clBtnFace;
     property Direction: TJvAnimateDirection read FDirection write SetDirection;
     property Active: Boolean read FActive write SetActive default False;
-    property ImageList: TImagelist read FImageList write SetImage;
+    property Images: TCustomImageList read FImageList write SetImage;
     property NumFrames: Integer read FNumGlyphs write SetNumGlyphs default 0;
     property Position: Integer read FPosition write SetPosition default 0;
     property Speed: Integer read FSpeed write SetSpeed default 100;
@@ -103,7 +103,7 @@ type
     property Color;
     property Direction;
     property Height;
-    property ImageList;
+    property Images;
     property Left;
     property Name;
     property NumFrames;
@@ -279,7 +279,7 @@ begin
   end;
 end;
 
-procedure TJvCustomBmpAnimator.SetImage(Value: TImagelist);
+procedure TJvCustomBmpAnimator.SetImage(Value: TCustomImageList);
 begin
   if FImagelist <> nil then
   begin

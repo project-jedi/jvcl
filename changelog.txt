@@ -1,9 +1,15 @@
 Changelog for JVCL 3.0
 ======================
 2003-09-25:
-- Added JvThemes.pas unit for theme aware components
+- JvInstallLabel: ImageList renamed to Images, changed TImagelist to TCustomImagelist // peter3
+- JvListComb: Imagelist renamed to Images, changed TImagelist to TCustomImagelist // peter3
+- JvExtraInspEditors: Imagelist renamed to Images, changed TImagelist to TCustomImagelist // peter3
+- JvBmpAnimator: Imagelist renamed to Images, changed TImagelist to TCustomImagelist // peter3
+- JvImageWindow: renamed Imagelist to Images, changed TImagelist to TCustomImagelist // peter3
+- JvErrorProvider: renamed to JvErrorIndicator, Imagelist renamed to Images // peter3
+- Added JvThemes.pas unit for theme aware components // andreas
 2003-09-24:
-- Added updated Unicode JvEditor
+- Added updated Unicode JvEditor // andreas
 2003-09-23:
 - Added updates to JvHTControls from Maciej Kaczkowski // peter3
 - NB! BCB packages not updated!

@@ -88,7 +88,7 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
     FItems: TJvImageItems;
-    FImageList: TImageList;
+    FImageList: TCustomImageList;
     FDefaultIndent: Integer;
     FChangeLink: TChangeLink;
     FCanvas: TCanvas;
@@ -104,7 +104,7 @@ type
     FIndentSelected: boolean;
     procedure SetColorHighlight(Value: TColor);
     procedure SetColorHighlightText(Value: TColor);
-    procedure SetImageList(Value: TImageList);
+    procedure SetImageList(Value: TCustomImageList);
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -149,7 +149,7 @@ type
     property ColorHighlight: TColor read FColorHighlight write SetColorHighlight default clHighlight;
     property ColorHighlightText: TColor read FColorHighlightText write SetColorHighlightText default clHighlightText;
     property Font;
-    property ImageList: TImageList read FImageList write SetImageList;
+    property Images: TCustomImageList read FImageList write SetImageList;
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -178,7 +178,7 @@ type
   TJvImageListBox = class(TCustomListBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FImageList: TImageList;
+    FImageList: TCustomImageList;
     FItems: TJvImageItems;
     FChangeLink: TChangeLink;
     FCanvas: TCanvas;
@@ -192,7 +192,7 @@ type
     procedure SetColorHighlightText(Value: TColor);
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure ResetItemHeight;
-    procedure SetImageList(Value: TImageList);
+    procedure SetImageList(Value: TCustomImageList);
     procedure SetAlignment(Value: TAlignment);
     procedure DrawLeftGlyph(Index: Integer; R: TRect; State: TOwnerDrawState);
     procedure DrawRightGlyph(Index: Integer; R: TRect; State: TOwnerDrawState);
@@ -227,7 +227,7 @@ type
     property ButtonStyle: TJvButtonColors read FButtonStyle write FButtonStyle;
     property ColorHighlight: TColor read FColorHighlight write SetColorHighlight default clHighlight;
     property ColorHighlightText: TColor read FColorHighlightText write SetColorHighlightText default clHighlightText;
-    property ImageList: TImageList read FImageList write SetImageList;
+    property Images: TCustomImageList read FImageList write SetImageList;
     property MultiSelect;
     property IntegralHeight;
     property ItemHeight;
@@ -512,7 +512,7 @@ begin
   //  Invalidate;
 end;
 
-procedure TJvImageComboBox.SetImageList(Value: TImageList);
+procedure TJvImageComboBox.SetImageList(Value: TCustomImageList);
 begin
   if FImageList <> Value then
   begin
@@ -802,7 +802,7 @@ begin
   //  Invalidate;
 end;
 
-procedure TJvImageListBox.SetImageList(Value: TImageList);
+procedure TJvImageListBox.SetImageList(Value: TCustomImageList);
 begin
   if FImageList <> Value then
   begin
