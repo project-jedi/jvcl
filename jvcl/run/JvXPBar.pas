@@ -582,6 +582,7 @@ begin
   FWinXPBar.ItemVisibilityChanged(Self);
   FActionLink.Free;
   FActionLink := nil;
+
   inherited Destroy;
   FWinXPBar.ResizeToMaxHeight;
 end;
@@ -1133,6 +1134,8 @@ begin
   FItems.Free;
   FVisibleItems.Free;
   FColors.Free;
+  FImageChangeLink.Free;
+  FRollChangeLink.Free;
   inherited Destroy;
 end;
 
