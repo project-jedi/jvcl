@@ -7,13 +7,15 @@
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="rtl" Targets="D6, D7" Condition=""/>
-    <Package Name="vcl" Targets="D6, D7" Condition=""/>
-    <Package Name="vcldb50" Targets="D5" Condition=""/>
-    <Package Name="vcl50" Targets="D5" Condition=""/>
-    <Package Name="dbrtl" Targets="D6, D7" Condition=""/>
+    <Package Name="rtl" Targets="C6,D6,D7" Condition=""/>
+    <Package Name="vcl" Targets="D6,D7" Condition=""/>
+    <Package Name="CJCL50" Targets="C5" Condition=""/>
+    <Package Name="CJCL" Targets="C6" Condition=""/>
+    <Package Name="vcldb50" Targets="C5,D5" Condition=""/>
+    <Package Name="vcl50" Targets="C5,D5" Condition=""/>
+    <Package Name="dbrtl" Targets="C6,D6,D7" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvEDIDBBuffering.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvEDIDBBuffering.pas" Targets="allbutperso" Formname="" Condition=""/>
   </Contains>
 </Package>

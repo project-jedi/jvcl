@@ -8,8 +8,9 @@
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvEDI-R" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C6" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvEDIDBBufferingReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvEDIDBBufferingReg.pas" Targets="allbutperso" Formname="" Condition=""/>
   </Contains>
 </Package>
