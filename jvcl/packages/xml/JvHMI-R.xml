@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvHMI" Design="0">
+  <Description>JVCL HMI Controls runtime package</Description>
+  <C5PFlags>-LUvcl50</C5PFlags>
+  <C6PFlags/>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
+    <Package Name="CJCL50" Targets="C5" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
+    <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
+    <Package Name="vclx50" Targets="D5,D5s" Condition=""/>
+    <Package Name="DJCL60" Targets="D6,D6p" Condition=""/>
+    <Package Name="DJCL70" Targets="D7,D7p" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvSLDMappingEditorDialog.pas" Targets="all" Formname="frmSLDMappingEditorDialog" Condition=""/>
+    <File Name="..\..\run\JvDialButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLED.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSegmentedLEDDisplay.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSegmentedLEDDisplayMapperFrame.pas" Targets="all" Formname="fmeJvSegmentedLEDDisplayMapper: TFrame" Condition=""/>
+  </Contains>
+</Package>
