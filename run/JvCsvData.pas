@@ -1003,7 +1003,7 @@ begin
   // FRecordSize = size of a csv text buffer and the indexes pointing
   //               into that buffer:
 
-  FRecordSize := sizeof(TJvCsvRow) - sizeof(TJvCsvBookmark);
+  FRecordSize := SizeOf(TJvCsvRow) - SizeOf(TJvCsvBookmark);
 
   // FBuffer size includes CSV Text buffer, and the bookmark data, followed
   // by space for storing the binary form of a calculated-field:
@@ -1011,7 +1011,7 @@ begin
   // initial FBufferSize size: My theory is that we should pick a conservative
   // estimate plus a margin for error:
 
-  FBufferSize := sizeof(TJvCsvRow) + MaxCalcDataOffset; //;128; {CalcFieldsSize}
+  FBufferSize := SizeOf(TJvCsvRow) + MaxCalcDataOffset; //;128; {CalcFieldsSize}
   //; // our regular record + calculated field data.
 
   FReadOnly := false;
@@ -1056,7 +1056,7 @@ function TJvCsvCustomInMemoryDataSet.AllocRecordBuffer: PChar;
 var
   RowPtr: PCsvRow;
 begin
-  RowPtr := AllocMem(FBufferSize {Sizeof(TJvCsvRow)});
+  RowPtr := AllocMem(FBufferSize {SizeOf(TJvCsvRow)});
 //  Trace('AllocRecordBuffer result=$'+IntToHex(Integer(Pointer(RowPtr)),8));
   Result := PChar(RowPtr);
 end;
@@ -1068,7 +1068,7 @@ begin
      // Assumes that our buffer is a TJvCsvRow followed by
      // a dynamically resized buffer used for calculated field
      // storage:
-  FillChar(Buffer[sizeof(TJvCsvRow)], CalcFieldsSize, 0);
+  FillChar(Buffer[SizeOf(TJvCsvRow)], CalcFieldsSize, 0);
 end;
 
 { calc fields support and buffer support }
@@ -1383,7 +1383,7 @@ begin
     try
         { get a record into a buffer }
       RowPtr := PCsvRow(Buffer); // Cast to a Row Data Structure to our own type.
-      Move({source:}FData.GetRowPtr(FRecordPos)^, {dest:} RowPtr^, sizeof(TJvCsvRow));
+      Move({source:}FData.GetRowPtr(FRecordPos)^, {dest:} RowPtr^, SizeOf(TJvCsvRow));
       RowPtr^.Bookmark.flag := bfCurrent;
       RowPtr^.Bookmark.data := FRecordPos;
 
@@ -1455,7 +1455,7 @@ end;
 function TJvCsvCustomInMemoryDataSet.GetRecordSize: Word;
 begin
  // In create:
- //    FRecordSize := Sizeof(TJvCsvRow) - Sizeof(TJvCsvBookmark);
+ //    FRecordSize := SizeOf(TJvCsvRow) - SizeOf(TJvCsvBookmark);
   Result := FRecordSize;
 end;
 
@@ -1493,7 +1493,7 @@ begin
       {$ENDIF DEBUGINFO_ON}
       Exit;
     end;
-    Inc(pDestination, sizeof(TJvCsvRow) + Field.Offset);
+    Inc(pDestination, SizeOf(TJvCsvRow) + Field.Offset);
     boolean(pDestination[0]) := (Buffer <> nil);
     if boolean(pDestination[0]) then
       CopyMemory(@pDestination[1], Buffer, Field.DataSize);
@@ -1733,7 +1733,7 @@ begin
       {$ENDIF DEBUGINFO_ON}
        Exit;
     end;
-    Inc(pSource, sizeof(TJvCsvRow) + Field.Offset);
+    Inc(pSource, SizeOf(TJvCsvRow) + Field.Offset);
     if (pSource[0] = #0) or (Buffer = nil) then
       Exit
     else // Get the field data from the buffer:
@@ -2136,7 +2136,7 @@ begin
       FieldDefs.Add(CsvFieldName, VclFieldType, FieldLen, false);
 
       // Now create our internal field data structure:
-      pCsvFieldDef := AllocMem(sizeof(TJvCsvColumn) {+ 8 BIGFudge});
+      pCsvFieldDef := AllocMem(SizeOf(TJvCsvColumn) {+ 8 BIGFudge});
       pCsvFieldDef^.FFlag := FieldType; {jcsvString}
       pCsvFieldDef^.FFieldDef := FieldDefs.Find(CsvFieldName);
 
@@ -2306,7 +2306,7 @@ end;
 //var
 //  pAddRec : pCsvRow;
 begin
-// pAddRec := AllocMem(Sizeof(TJvCsvRow));
+// pAddRec := AllocMem(SizeOf(TJvCsvRow));
 // StringToCsvRow( FEmptyRowStr, pAddRec, false ); // initialize row.
 // FData.AddRow(pAddRec);
 // FCurrentRecord := -1;
@@ -2333,9 +2333,9 @@ begin
   if FRecordPos = ON_EOF_CRACK then
     FRecordPos := FData.Count;
 
-  pAddRec := AllocMem(sizeof(TJvCsvRow));
+  pAddRec := AllocMem(SizeOf(TJvCsvRow));
   if (Buffer <> nil) then
-    Move(PCsvRow(Buffer)^, pAddRec^, sizeof(TJvCsvRow));
+    Move(PCsvRow(Buffer)^, pAddRec^, SizeOf(TJvCsvRow));
 
   if (StrLen(pAddRec.Text) = 0) then
     StringToCsvRow(FEmptyRowStr, pAddRec, false, false); // initialize row.
@@ -2487,11 +2487,11 @@ begin
     FEmptyRowStr := ''; // nothing.
   end;
 
-  FBufferSize := sizeof(TJvCsvRow) + CalcFieldsSize; // our regular record + calculated field data.
+  FBufferSize := SizeOf(TJvCsvRow) + CalcFieldsSize; // our regular record + calculated field data.
 //  if CalcFieldsSize>0 then
 //      OutputDebugString('Calculated Fields Debug');
   FRecordPos := ON_BOF_CRACK; // initial record pos before BOF
-  BookmarkSize := sizeof(integer); // initialize bookmark size for VCL (Integer uses 4 bytes on 32 bit operating systems)
+  BookmarkSize := SizeOf(integer); // initialize bookmark size for VCL (Integer uses 4 bytes on 32 bit operating systems)
 
   //Trace( 'InternalOpen: FBufferSize='+IntToStr(FBufferSize) );
   //Trace( 'InternalOpen: CalcFieldsSize='+IntToStr(CalcFieldsSize) );
@@ -2552,10 +2552,11 @@ begin
   begin
     FFileDirty := true;
     RecPos := FRecordPos;
-    Move(PCsvRow(ActiveBuffer)^, FData.GetRowPtr(RecPos)^, sizeof(TJvCsvRow));
+    Move(PCsvRow(ActiveBuffer)^, FData.GetRowPtr(RecPos)^, SizeOf(TJvCsvRow));
     FData.GetRowPtr(RecPos)^.fdirty := true;
   end
-  else if State = dsInsert then
+  else
+  if State = dsInsert then
   begin
     if FInsertBlocked then
     begin
@@ -2563,8 +2564,8 @@ begin
       Exit;
     end;
     FFileDirty := true;
-    pInsertRec := AllocMem(sizeof(TJvCsvRow));
-    Move(PCsvRow(ActiveBuffer)^, pInsertRec^, sizeof(TJvCsvRow));
+    pInsertRec := AllocMem(SizeOf(TJvCsvRow));
+    Move(PCsvRow(ActiveBuffer)^, pInsertRec^, SizeOf(TJvCsvRow));
     pInsertRec^.fdirty := true;
     FData.Insert(FRecordPos, Pointer(pInsertRec));
     FRecordPos := FData.IndexOf(Pointer(pInsertRec));
@@ -2931,7 +2932,7 @@ procedure TJvCsvRows.AddRowStr(const Item: string); // convert String->TJvCsvRow
 var
   pNewItem: PCsvRow;
 begin
-  pNewItem := AllocMem(sizeof(TJvCsvRow));
+  pNewItem := AllocMem(SizeOf(TJvCsvRow));
   StringToCsvRow(Item, pNewItem, true, FEnquoteBackslash); // decode a csv line that can contain escape sequences
   AddRow(pNewItem);
 end;
@@ -3222,7 +3223,7 @@ begin
   begin
     raise EJvCsvDataSetError.Create(Format(RsECsvStringTooLong, [Copy(datarow, 1, 40)]));
   end;
-  pNewRow := AllocMem(sizeof(TJvCsvRow));
+  pNewRow := AllocMem(SizeOf(TJvCsvRow));
   StringToCsvRow(datarow, pNewRow, true, FEnquoteBackslash);
   pNewRow^.Index := Index;
   FData.AddRow(pNewRow);

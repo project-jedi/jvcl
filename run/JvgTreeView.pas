@@ -522,7 +522,7 @@ procedure TJvgCustomTreeView.SetNodeState_(ItemID: HTreeItem; stateMask, State:
 var
   tvi: TTVItem;
 begin
-  FillChar(tvi, Sizeof(tvi), 0);
+  FillChar(tvi, SizeOf(tvi), 0);
   tvi.hItem := ItemID;
   tvi.mask := TVIF_STATE;
   tvi.stateMask := stateMask; //TVIS_DROPHILITED, TVIS_BOLD;

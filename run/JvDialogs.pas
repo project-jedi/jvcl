@@ -408,10 +408,10 @@ begin
   begin
     if ActiveStyle = asReport then
       InstallW2kFix;
-   {$IFNDEF COMPILER6_UP}
-    FillChar(DialogData2000, Sizeof(DialogData2000), #0);
+    {$IFNDEF COMPILER6_UP}
+    FillChar(DialogData2000, SizeOf(DialogData2000), #0);
     DialogData2000.OpenFileName := TOpenFileName(DialogData);
-    DialogData2000.OpenFileName.lStructSize := Sizeof(DialogData2000);
+    DialogData2000.OpenFileName.lStructSize := SizeOf(DialogData2000);
     DialogData2000.FlagsEx := PlacesBar[FShowPlacesBar];
     Result := inherited TaskModalDialog(DialogFunc, DialogData2000);
     {$ELSE}

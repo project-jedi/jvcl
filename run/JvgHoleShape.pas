@@ -364,7 +364,7 @@ begin
   begin
     {if fNeedRebuildBitmapShape then} with FShapeBitmap do
     begin
-      GetObject(FShapeBitmap.Handle, sizeof(Windows.TBitmap), @BmpInfo);
+      GetObject(FShapeBitmap.Handle, SizeOf(Windows.TBitmap), @BmpInfo);
       DeleteObject(RGNOuter);
       DeleteObject(RGNInner);
       RGNInner := CreateRectRgn(0, 0, 0, 0);

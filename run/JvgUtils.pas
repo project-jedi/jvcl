@@ -994,8 +994,8 @@ begin //_________________________________________MAIN_
   OldPen := SelectObject(DC, LPen); //..
   DeleteObject(SelectObject(DC, OldPen)); //...get OldPen
 
-  FillChar(LOGOLDPEN, sizeof(LOGOLDPEN), 0);
-  GetObject(OldPen, sizeof(LOGOLDPEN), @LOGOLDPEN);
+  FillChar(LOGOLDPEN, SizeOf(LOGOLDPEN), 0);
+  GetObject(OldPen, SizeOf(LOGOLDPEN), @LOGOLDPEN);
   if LOGOLDPEN.lopnWidth.x = 0 then
     PenWidth := 1
   else
@@ -1300,7 +1300,7 @@ begin
     if OldBMP <> 0 then
     begin
       SetMapMode(ImageDC, GetMapMode(DC));
-      GetObject(TmpImage.Handle, sizeof(Windows.TBitmap), @BmpInfo);
+      GetObject(TmpImage.Handle, SizeOf(Windows.TBitmap), @BmpInfo);
       ptSize.x := BmpInfo.bmWidth;
       ptOrg.x := 0;
       ptSize.y := BmpInfo.bmHeight;

@@ -833,7 +833,7 @@ var
 begin
   if Button = mbLeft then
     MouseToCell(X, Y, Cell.X, Cell.Y);
-  if CompareMem(@Cell, @FCellOnMouseDown, sizeof(Cell)) and
+  if CompareMem(@Cell, @FCellOnMouseDown, SizeOf(Cell)) and
     ((Cell.X < FixedCols) or (Cell.Y < FixedRows)) then
     CaptionClick(Cell.X, Cell.Y);
   FCellOnMouseDown := TGridCoord(Point(-1, -1));

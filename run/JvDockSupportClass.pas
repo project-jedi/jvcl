@@ -22,24 +22,24 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-}
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvDockSupportClass;
 
 interface
 
 uses
-  Classes, Windows, SysUtils, Messages, Controls, Forms;
+  Windows, Messages, SysUtils, Classes, Controls, Forms;
 
 type
-
   TJvDockBaseTree = class;
 
-  
-  TJvDockBaseZone = class
+  TJvDockBaseZone = class(TObject)
   private
     FBaseTree: TJvDockBaseTree;      
-    FChildZone: TJvDockBaseZone;     
+    FChildZone: TJvDockBaseZone;
     FNextSibling: TJvDockBaseZone;   
     FPrevSibling: TJvDockBaseZone;   
     FParentZone: TJvDockBaseZone;    
@@ -52,12 +52,11 @@ type
     function GetParentZone: TJvDockBaseZone; virtual;
     function GetChildCount: Integer;      
     function GetChildZone(Index: Word): TJvDockBaseZone;
-                                          
+    property BaseTree: TJvDockBaseTree read FBaseTree write FBaseTree;
     property ChildZone: TJvDockBaseZone read FChildZone write FChildZone;
     property NextSibling: TJvDockBaseZone read FNextSibling write FNextSibling;
     property PrevSibling: TJvDockBaseZone read FPrevSibling write FPrevSibling;
     property ParentZone: TJvDockBaseZone read FParentZone write FParentZone;
-    property BaseTree: TJvDockBaseTree read FBaseTree write FBaseTree;
   end;
 
   TJvDockScanZoneNotification = (snNone, snAdded, snExtracted, snDeleted);
@@ -65,9 +64,8 @@ type
   TJvDockTreeZoneClass = class of TJvDockBaseZone;
 
   TJvDockScanTreeZoneProc = procedure(TreeZone: TJvDockBaseZone);
-
   
-  TJvDockBaseTree = class
+  TJvDockBaseTree = class(TObject)
   private
     FScanAction: TJvDockScanZoneNotification;
     FTreeZoneClass: TJvDockTreeZoneClass;
@@ -98,7 +96,6 @@ type
 
   TJvDockBaseGetFormEventComponent = class(TComponent)
   private
-    
     FOldOnActivate: TNotifyEvent;
     FOldOnClose: TCloseEvent;
     FOldOnCloseQuery: TCloseQueryEvent;
@@ -110,7 +107,6 @@ type
     FOldOnPaint: TNotifyEvent;
     FOldOnShortCut: TShortCutEvent;
     FOldOnShow: TNotifyEvent;
-    
     FOldOnDockDrop: TDockDropEvent;
     FOldOnDockOver: TDockOverEvent;
     FOldOnExit: TNotifyEvent;
@@ -122,7 +118,6 @@ type
     FOldOnMouseWheelDown: TMouseWheelUpDownEvent;
     FOldOnMouseWheelUp: TMouseWheelUpDownEvent;
     FOldOnUndock: TUnDockEvent;
-    
     FOldOnCanResize: TCanResizeEvent;
     FOldOnClick: TNotifyEvent;
     FOldOnConstrainedResize: TConstrainedResizeEvent;
@@ -137,28 +132,22 @@ type
     FOldOnMouseUp: TMouseEvent;
     FOldOnResize: TNotifyEvent;
     FOldOnStartDock: TStartDockEvent;
-
     FParentForm: TForm;
-
     FOldWindowProc: TWndMethod;
   protected
-    
     procedure DoFormOnActivate(Sender: TObject); virtual;
     procedure DoFormOnClose(Sender: TObject; var Action: TCloseAction); virtual;
-    procedure DoFormOnCloseQuery(Sender: TObject;
-      var CanClose: Boolean); virtual;
+    procedure DoFormOnCloseQuery(Sender: TObject; var CanClose: Boolean); virtual;
     procedure DoFormOnCreate(Sender: TObject); virtual;
     procedure DoFormOnDeactivate(Sender: TObject); virtual;
     procedure DoFormOnDestroy(Sender: TObject); virtual;
-    function DoFormOnHelp(Command: Word; Data: Longint;
-      var CallHelp: Boolean): Boolean;
+    function DoFormOnHelp(Command: Word; Data: Longint; var CallHelp: Boolean): Boolean;
     procedure DoFormOnHide(Sender: TObject); virtual;
     procedure DoFormOnPaint(Sender: TObject); virtual;
     procedure DoFormOnShortCut(var Msg: TWMKey; var Handled: Boolean); virtual;
     procedure DoFormOnShow(Sender: TObject); virtual;
     procedure DoFormOnDockDrop(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer); virtual;
-    
     procedure DoFormOnDockOver(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer; State: TDragState; var Accept: Boolean); virtual;
     procedure DoFormOnExit(Sender: TObject); virtual;
@@ -177,7 +166,6 @@ type
       MousePos: TPoint; var Handled: Boolean); virtual;
     procedure DoFormOnUndock(Sender: TObject; Client: TControl;
       NewTarget: TWinControl; var Allow: Boolean); virtual;
-    
     procedure DoFormOnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
       var Resize: Boolean); virtual;
     procedure DoFormOnClick(Sender: TObject); virtual;
@@ -203,9 +191,7 @@ type
     procedure DoFormOnResize(Sender: TObject); virtual;
     procedure DoFormOnStartDock(Sender: TObject;
       var DragObject: TDragDockObject); virtual;
-
-    
-    procedure WindowProc(var Message: TMessage); virtual;
+    procedure WindowProc(var Msg: TMessage); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -214,10 +200,12 @@ type
 
 implementation
 
-
+//=== TJvDockBaseZone ========================================================
 
 constructor TJvDockBaseZone.Create(BaseTree: TJvDockBaseTree);
 begin
+  // (rom) added inherited Create
+  inherited Create;
   FBaseTree := BaseTree;
   ChildZone := nil;
   NextSibling := nil;
@@ -231,16 +219,17 @@ begin
 end;
 
 function TJvDockBaseZone.GetChildCount: Integer;
-var AZone: TJvDockBaseZone;
+var
+  Zone: TJvDockBaseZone;
 begin
   Result := 0;
   if FChildZone <> nil then
   begin
     Inc(Result);
-    AZone := FChildZone;
-    while AZone.NextSibling <> nil do
+    Zone := FChildZone;
+    while Zone.NextSibling <> nil do
     begin
-      AZone := AZone.NextSibling;
+      Zone := Zone.NextSibling;
       Inc(Result);
     end;
   end;
@@ -257,52 +246,55 @@ begin
 end;
 
 function TJvDockBaseZone.GetNextSibingCount: Integer;
-var AZone: TJvDockBaseZone;
+var
+  Zone: TJvDockBaseZone;
 begin
   Result := 0;
-  AZone := Self;
-  while AZone.NextSibling <> nil do
+  Zone := Self;
+  while Zone.NextSibling <> nil do
   begin
-    AZone := AZone.NextSibling;
+    Zone := Zone.NextSibling;
     Inc(Result);
   end;
 end;
 
 function TJvDockBaseZone.GetParentZone: TJvDockBaseZone;
-var TreeZone: TJvDockBaseZone;
+var
+  TreeZone: TJvDockBaseZone;
 begin
   TreeZone := Self;
-  while (TreeZone <> nil) and (TreeZone.ParentZone = nil)
-    and (TreeZone.PrevSibling <> nil) do
+  while (TreeZone <> nil) and (TreeZone.ParentZone = nil) and
+    (TreeZone.PrevSibling <> nil) do
     TreeZone := TreeZone.PrevSibling;
-  if TreeZone <> nil then Result := TreeZone.ParentZone
-  else Result := nil;
+  if TreeZone <> nil then
+    Result := TreeZone.ParentZone
+  else
+    Result := nil;
 end;
 
 function TJvDockBaseZone.GetPrevSibingCount: Integer;
-var AZone: TJvDockBaseZone;
+var
+  Zone: TJvDockBaseZone;
 begin
   Result := 0;
-  AZone := Self;
-  while AZone.PrevSibling <> nil do
+  Zone := Self;
+  while Zone.PrevSibling <> nil do
   begin
-    AZone := AZone.PrevSibling;
+    Zone := Zone.PrevSibling;
     Inc(Result);
   end;
 end;
 
-
-
 function TJvDockBaseTree.AddChildZone(TreeZone, NewZone: TJvDockBaseZone): TJvDockBaseZone;
 begin
   if TreeZone.ChildZone <> nil then
-  begin
-    Result := AddNextSibling(TreeZone.ChildZone, NewZone);
-  end else
+    Result := AddNextSibling(TreeZone.ChildZone, NewZone)
+  else
   begin
     if NewZone = nil then
       Result := FTreeZoneClass.Create(Self)
-    else Result := NewZone;
+    else
+      Result := NewZone;
     TreeZone.ChildZone := Result;
     Result.ParentZone := TreeZone;
   end;
@@ -314,7 +306,8 @@ begin
     TreeZone := TreeZone.NextSibling;
   if NewZone = nil then
     Result := FTreeZoneClass.Create(Self)
-  else Result := NewZone;
+  else
+    Result := NewZone;
   TreeZone.NextSibling := Result;
   Result.PrevSibling := TreeZone;
   Result.ParentZone := TreeZone.ParentZone;
@@ -324,16 +317,14 @@ function TJvDockBaseTree.AddParentZone(TreeZone, NewZone: TJvDockBaseZone): TJvD
 begin
   if NewZone = nil then
     Result := FTreeZoneClass.Create(Self)
-  else Result := NewZone;
+  else
+    Result := NewZone;
   while TreeZone.PrevSibling <> nil do
     TreeZone := TreeZone.PrevSibling;
   if TreeZone.ParentZone <> nil then
-  begin
-    TreeZone.ParentZone.ChildZone := Result;
-  end else
-  begin
+    TreeZone.ParentZone.ChildZone := Result
+  else
     TopTreeZone := Result;
-  end;
   Result.ParentZone := TreeZone.ParentZone;
   TreeZone.ParentZone := Result;
 end;
@@ -342,7 +333,8 @@ function TJvDockBaseTree.AddPrevSibling(TreeZone, NewZone: TJvDockBaseZone): TJv
 begin
   if NewZone = nil then
     Result := FTreeZoneClass.Create(Self)
-  else Result := NewZone;
+  else
+    Result := NewZone;
   if TreeZone.PrevSibling <> nil then
   begin
     TreeZone.PrevSibling.NextSibling := Result;
@@ -350,24 +342,25 @@ begin
     TreeZone.PrevSibling := Result;
     Result.NextSibling := TreeZone;
     Result.ParentZone := TreeZone.ParentZone;
-  end else
+  end
+  else
   begin
     if TreeZone.ParentZone <> nil then
-    begin
-      TreeZone.ParentZone.ChildZone := Result;
-    end else
-    begin
+      TreeZone.ParentZone.ChildZone := Result
+    else
       TopTreeZone := Result;
-    end;
     Result.ParentZone := TreeZone.ParentZone;
     Result.NextSibling := TreeZone;
     TreeZone.PrevSibling := Result;
-
   end;
 end;
 
+//=== TJvDockBaseTree ========================================================
+
 constructor TJvDockBaseTree.Create(TreeZone: TJvDockTreeZoneClass);
 begin
+  // (rom) added inherited Create
+  inherited Create;
   FTreeZoneClass := TreeZone;
   FTopTreeZone := FTreeZoneClass.Create(Self);
   FCurrTreeZone := FTopTreeZone;
@@ -455,7 +448,7 @@ begin
   end;
 end;
 
-
+//=== TJvDockBaseGetFormEventComponent =======================================
 
 constructor TJvDockBaseGetFormEventComponent.Create(AOwner: TComponent);
 begin
@@ -463,7 +456,6 @@ begin
   FParentForm := TForm(AOwner);
   if not (csDesigning in ComponentState) then
   begin
-    
     FOldOnActivate := FParentForm.OnActivate;
     FParentForm.OnActivate := DoFormOnActivate;
     FOldOnClose := FParentForm.OnClose;
@@ -486,12 +478,10 @@ begin
     FParentForm.OnShortCut := DoFormOnShortCut;
     FOldOnShow := FParentForm.OnShow;
     FParentForm.OnShow := DoFormOnShow;
-    
     FOldOnDockDrop := FParentForm.OnDockDrop;
     FParentForm.OnDockDrop := DoFormOnDockDrop;
     FOldOnDockOver := FParentForm.OnDockOver;
     FParentForm.OnDockOver := DoFormOnDockOver;
-  
     FOldOnGetSiteInfo := FParentForm.OnGetSiteInfo;
     FParentForm.OnGetSiteInfo := DoFormOnGetSiteInfo;
     FOldOnKeyDown := FParentForm.OnKeyDown;
@@ -508,7 +498,6 @@ begin
     FParentForm.OnMouseWheelUp := DoFormOnMouseWheelUp;
     FOldOnUndock := FParentForm.OnUnDock;
     FParentForm.OnUnDock := DoFormOnUnDock;
-    
     FOldOnCanResize := FParentForm.OnCanResize;
     FParentForm.OnCanResize := DoFormOnCanResize;
     FOldOnClick := FParentForm.OnClick;
@@ -525,7 +514,6 @@ begin
     FParentForm.OnDragOver := DoFormOnDragOver;
     FOldOnEndDock := FParentForm.OnEndDock;
     FParentForm.OnEndDock := DoFormOnEndDock;
-  
     FOldOnMouseDown := FParentForm.OnMouseDown;
     FParentForm.OnMouseDown := DoFormOnMouseDown;
     FOldOnMouseMove := FParentForm.OnMouseMove;
@@ -536,10 +524,7 @@ begin
     FParentForm.OnResize := DoFormOnResize;
     FOldOnStartDock := FParentForm.OnStartDock;
     FParentForm.OnStartDock := DoFormOnStartDock;
-
-    
     FOldWindowProc := FParentForm.WindowProc;
-    
     FParentForm.WindowProc := WindowProc;
   end;
 end;
@@ -548,10 +533,10 @@ destructor TJvDockBaseGetFormEventComponent.Destroy;
 begin
   if not (csDesigning in ComponentState) then
   begin
-    if @FOldWindowProc <> nil then
+    if Assigned(FOldWindowProc) then
       FParentForm.WindowProc := FOldWindowProc;
     FOldWindowProc := nil;
-    
+
     FParentForm.OnActivate := FOldOnActivate;
     FOldOnActivate := nil;
     FParentForm.OnClose := FOldOnClose;
@@ -574,13 +559,10 @@ begin
     FOldOnShortCut := nil;
     FParentForm.OnShow := FOldOnShow;
     FOldOnShow := nil;
-    
     FParentForm.OnDockDrop := FOldOnDockDrop;
     FOldOnDockDrop := nil;
     FParentForm.OnDockOver := FOldOnDockOver;
     FOldOnDockOver := nil;
-
-
     FParentForm.OnGetSiteInfo := FOldOnGetSiteInfo;
     FOldOnGetSiteInfo := nil;
     FParentForm.OnKeyDown := FOldOnKeyDown;
@@ -597,7 +579,6 @@ begin
     FOldOnMouseWheelUp := nil;
     FParentForm.OnUndock := FOldOnUndock;
     FOldOnUndock := nil;
-    
     FParentForm.OnCanResize := FOldOnCanResize;
     FOldOnCanResize := nil;
     FParentForm.OnClick := FOldOnClick;
@@ -614,8 +595,6 @@ begin
     FOldOnDragOver := nil;
     FParentForm.OnEndDock := FOldOnEndDock;
     FOldOnEndDock := nil;
-
-
     FParentForm.OnMouseDown := FOldOnMouseDown;
     FOldOnMouseDown := nil;
     FParentForm.OnMouseMove := FOldOnMouseMove;
@@ -626,11 +605,9 @@ begin
     FOldOnResize := nil;
     FParentForm.OnStartDock := FOldOnStartDock;
     FOldOnStartDock := nil;
-
     FParentForm := nil;
-
   end;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvDockBaseGetFormEventComponent.DoFormOnActivate(Sender: TObject);
@@ -879,10 +856,10 @@ begin
     FOldOnUndock(Sender, Client, NewTarget, Allow);
 end;
 
-procedure TJvDockBaseGetFormEventComponent.WindowProc(var Message: TMessage);
+procedure TJvDockBaseGetFormEventComponent.WindowProc(var Msg: TMessage);
 begin
   if Assigned(FOldWindowProc) then
-    FOldWindowProc(Message);
+    FOldWindowProc(Msg);
 end;
 
 end.

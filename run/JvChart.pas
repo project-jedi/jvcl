@@ -2328,7 +2328,7 @@ begin
   if Ord(FYFontHandle) <> 0 then
     DeleteObject(FYFontHandle); // delete old object
   // Clear the contents of FLogFont
-  FillChar(FYLogFont, sizeof(TLogFont), 0);
+  FillChar(FYLogFont, SizeOf(TLogFont), 0);
   // Set the TLOGFONT's fields
   with FYLogFont do
   begin

@@ -82,7 +82,7 @@ type
     procedure UpdateCaption;
     procedure UpdateFrameList;
     procedure UpdateSelection;
-    procedure WMGetMinMaxInfo(var Message: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
+    procedure WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
   protected
     procedure Activated; override;
     function UniqueName(Component: TComponent): string; override;
@@ -739,10 +739,10 @@ begin
   end;
 end;
 
-procedure TJvID3FramesEditor.WMGetMinMaxInfo(var Message: TWMGetMinMaxInfo);
+procedure TJvID3FramesEditor.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
 begin
   inherited;
-  with Message.MinMaxInfo^.ptMinTrackSize do
+  with Msg.MinMaxInfo^.ptMinTrackSize do
   begin
     X := FMinWidth;
     Y := FMinHeight;

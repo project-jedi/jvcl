@@ -917,13 +917,13 @@ begin
   if LHandleAllocated then
     BeginUpdate;
   try
-    Stream.Read(ACount, sizeof(ACount));
+    Stream.Read(ACount, SizeOf(ACount));
     if ACount > 0 then
     begin
       LNode := GetFirstNode;
       while Assigned(LNode) and (ACount > 0) do
       begin
-        Stream.Read(APageIndex, sizeof(APageIndex));
+        Stream.Read(APageIndex, SizeOf(APageIndex));
         TJvPageIndexNode(LNode).PageIndex := APageIndex;
         LNode := LNode.GetNext;
         Dec(ACount);
@@ -931,7 +931,7 @@ begin
       // read any "left-overs" (should never happen)
       while ACount > 0 do
       begin
-        Stream.Read(APageIndex, sizeof(APageIndex));
+        Stream.Read(APageIndex, SizeOf(APageIndex));
         Dec(ACount);
       end;
     end;
@@ -948,14 +948,14 @@ var
   ACount: integer;
 begin
   ACount := Count;
-  Stream.Write(ACount, sizeof(Count));
+  Stream.Write(ACount, SizeOf(Count));
   if ACount > 0 then
   begin
     Node := GetFirstNode;
     while (Node <> nil) do
     begin
       APageIndex := TJvPageIndexNode(Node).PageIndex;
-      Stream.Write(APageIndex, sizeof(APageIndex));
+      Stream.Write(APageIndex, SizeOf(APageIndex));
       Node := Node.GetNext;
     end;
   end;

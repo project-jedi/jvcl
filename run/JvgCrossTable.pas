@@ -1020,7 +1020,7 @@ begin
               Filtered := true;
               First;
 
-              FillChar(FilledRowNo, sizeof(FilledRowNo), 0);
+              FillChar(FilledRowNo, SizeOf(FilledRowNo), 0);
               for i := 0 to RecordCount - 1 do
               begin
 

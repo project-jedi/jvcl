@@ -533,7 +533,7 @@ begin
     tf := TFont.Create;
     try
       tf.Assign(CaptionFont);
-      GetObject(tf.Handle, sizeof(lf), @lf);
+      GetObject(tf.Handle, SizeOf(lf), @lf);
       lf.lfEscapement := Rotation * 10;
       lf.lfOrientation := Rotation * 10;
       lf.lfOutPrecision := OUT_TT_PRECIS;

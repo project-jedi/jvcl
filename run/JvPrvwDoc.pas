@@ -896,8 +896,8 @@ var
   si: TScrollInfo;
 begin
   // HORIZONTAL SCROLLBAR
-  FillChar(si, sizeof(TScrollInfo), 0);
-  si.cbSize := sizeof(TScrollInfo);
+  FillChar(si, SizeOf(TScrollInfo), 0);
+  si.cbSize := SizeOf(TScrollInfo);
   si.fMask := SIF_ALL;
   if not HideScrollBars then
     Inc(si.fMask, SIF_DISABLENOSCROLL);
@@ -916,8 +916,8 @@ begin
   end;
 
   // VERTICAL SCROLLBAR
-  FillChar(si, sizeof(TScrollInfo), 0);
-  si.cbSize := sizeof(TScrollInfo);
+  FillChar(si, SizeOf(TScrollInfo), 0);
+  si.cbSize := SizeOf(TScrollInfo);
   si.fMask := SIF_ALL;
   if not HideScrollBars then
     Inc(si.fMask, SIF_DISABLENOSCROLL);
@@ -1258,8 +1258,8 @@ begin
   if IsPageMode then
     Exit;
   AIncrement := FPageWidth div 3;
-  FillChar(si, sizeof(TScrollInfo), 0);
-  si.cbSize := sizeof(TScrollInfo);
+  FillChar(si, SizeOf(TScrollInfo), 0);
+  si.cbSize := SizeOf(TScrollInfo);
   si.fMask := SIF_ALL;
   GetScrollInfo(Handle, SB_HORZ, si);
   case Msg.ScrollCode of
@@ -1303,8 +1303,8 @@ begin
   if AIncrement < 1 then
     AIncrement := 1;
 
-  FillChar(si, sizeof(TScrollInfo), 0);
-  si.cbSize := sizeof(TScrollInfo);
+  FillChar(si, SizeOf(TScrollInfo), 0);
+  si.cbSize := SizeOf(TScrollInfo);
   si.fMask := SIF_ALL;
   GetScrollInfo(Handle, SB_VERT, si);
   case Msg.ScrollCode of

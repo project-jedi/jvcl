@@ -187,8 +187,8 @@ begin
   FStatement.Execute;
   FCurrentRecord := -1;
   FComplete := False;
-  FRecordBufferSize := FRecordSize + sizeof (TUIBBookMark);
-  BookmarkSize := sizeOf (Integer);
+  FRecordBufferSize := FRecordSize + SizeOf(TUIBBookMark);
+  BookmarkSize := SizeOf(Integer);
   FIsOpen := True;
 end;
 

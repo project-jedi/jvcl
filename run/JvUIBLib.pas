@@ -3699,7 +3699,7 @@ begin
   FList := TList.Create;
   FItemSize := Max(ItemSize, MinItemSize);
   FItemsInPage := ItemsInPage;
-  RealItemSize := FItemSize + sizeof(Word);
+  RealItemSize := FItemSize + SizeOf(Word);
   TestSize := (RealItemSize * FItemsInPage) + PageSizeAdjustment;
   if (TestSize > MaxPageSize) then
   begin
@@ -4054,12 +4054,12 @@ begin
   Page^.UsageCounter := 0;
   FFirstPage := Page;
   Temp := PAnsiChar(Page);
-  inc(Temp, sizeof(Pointer) + sizeOf(Integer));
+  inc(Temp, SizeOf(Pointer) + SizeOf(Integer));
   Prev := nil;
   for i := 0 to pred(FItemsInPage) do
   begin
     PWord(Temp)^ := Temp - PAnsiChar(Page);
-    inc(Temp, sizeOf(Word));
+    inc(Temp, SizeOf(Word));
     PPointer(Temp)^ := Prev;
     Prev := Temp;
     inc(Temp, FItemSize);
@@ -4077,7 +4077,7 @@ begin
   Result := FFreeList;
   FFreeList := PPointer(Result)^;
   Temp := Result;
-  dec(Temp, sizeOf(Word));
+  dec(Temp, SizeOf(Word));
   dec(Temp, PWord(Temp)^);
   Page := PPageInfo(Temp);
   inc(Page^.UsageCounter);
@@ -4127,7 +4127,7 @@ begin
   PPointer(P)^ := FFreeList;
   FFreeList := P;
   Temp := FFreeList;
-  dec(Temp, sizeOf(Word));
+  dec(Temp, SizeOf(Word));
   dec(Temp, PWord(Temp)^);
   Page := PPageInfo(Temp);
   dec(Page^.UsageCounter);
@@ -4290,7 +4290,7 @@ end;
 
   procedure TSQLParams.SetAsQuad(const Index: Word; const Value: TISCQuad);
   begin
-    SetFieldType(Index, sizeof(TISCQuad), SQL_QUAD + 1);
+    SetFieldType(Index, SizeOf(TISCQuad), SQL_QUAD + 1);
     with FXSQLDA.sqlvar[Index] do
       begin
         case (sqltype and not(1)) of
@@ -4309,7 +4309,7 @@ end;
     const Value: TDateTime);
   var ASQLCode: SmallInt;
   begin
-    SetFieldType(Index, sizeof(TISCQuad), SQL_TIMESTAMP + 1);
+    SetFieldType(Index, SizeOf(TISCQuad), SQL_TIMESTAMP + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -4351,7 +4351,7 @@ end;
   procedure TSQLParams.SetAsDate(const Index: Word; const Value: Integer);
   var ASQLCode: SmallInt;
   begin
-    SetFieldType(Index, sizeof(Integer), SQL_TYPE_DATE + 1);
+    SetFieldType(Index, SizeOf(Integer), SQL_TYPE_DATE + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -4393,7 +4393,7 @@ end;
   procedure TSQLParams.SetAsTime(const Index: Word; const Value: Cardinal);
   var ASQLCode: SmallInt;
   begin
-    SetFieldType(Index, sizeof(Cardinal), SQL_TYPE_TIME + 1);
+    SetFieldType(Index, SizeOf(Cardinal), SQL_TYPE_TIME + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -4437,9 +4437,9 @@ end;
   var ASQLCode: SmallInt;
   begin
 {$IFDEF IB7_UP}
-    SetFieldType(Index, sizeof(Smallint), SQL_BOOLEAN + 1);
+    SetFieldType(Index, SizeOf(Smallint), SQL_BOOLEAN + 1);
 {$ELSE}
-    SetFieldType(Index, sizeof(Smallint), SQL_SHORT + 1);
+    SetFieldType(Index, SizeOf(Smallint), SQL_SHORT + 1);
 {$ENDIF}
     with FXSQLDA.sqlvar[Index] do
     begin
@@ -4479,7 +4479,7 @@ end;
   procedure TSQLParams.SetAsInteger(const Index: Word; const Value: Integer);
   var ASQLCode: SmallInt;
   begin
-    SetFieldType(Index, sizeof(Integer), SQL_LONG + 1);
+    SetFieldType(Index, SizeOf(Integer), SQL_LONG + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -4521,7 +4521,7 @@ end;
   procedure TSQLParams.SetAsSingle(const Index: Word; const Value: Single);
   var ASQLCode: SmallInt;
   begin
-    SetFieldType(Index, sizeof(Single), SQL_FLOAT + 1);
+    SetFieldType(Index, SizeOf(Single), SQL_FLOAT + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -4563,7 +4563,7 @@ end;
   procedure TSQLParams.SetAsSmallint(const Index: Word; const Value: Smallint);
   var ASQLCode: SmallInt;
   begin
-    SetFieldType(Index, sizeof(Smallint), SQL_SHORT + 1);
+    SetFieldType(Index, SizeOf(Smallint), SQL_SHORT + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -4694,7 +4694,7 @@ end;
   procedure TSQLParams.SetAsInt64(const Index: Word; const Value: Int64);
   var ASQLCode: SmallInt;
   begin
-    SetFieldType(Index, sizeof(Int64), SQL_INT64 + 1);
+    SetFieldType(Index, SizeOf(Int64), SQL_INT64 + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -4736,7 +4736,7 @@ end;
   procedure TSQLParams.SetAsDouble(const Index: Word; const Value: Double);
   var ASQLCode: SmallInt;
   begin
-    SetFieldType(Index, sizeof(double), SQL_DOUBLE + 1);
+    SetFieldType(Index, SizeOf(double), SQL_DOUBLE + 1);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -4779,7 +4779,7 @@ end;
     const Value: Currency);
   var ASQLCode: SmallInt;
   begin
-    SetFieldType(Index, sizeof(Int64), SQL_INT64 + 1, -4);
+    SetFieldType(Index, SizeOf(Int64), SQL_INT64 + 1, -4);
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));

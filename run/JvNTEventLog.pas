@@ -432,7 +432,7 @@ var
 begin
   St := '';
   Count := StringCount;
-  GetMem(Args, Count * sizeof(PChar));
+  GetMem(Args, Count * SizeOf(PChar));
   try
     pArgs := Args;
     p := PEventLogRecord(fCurrentRecord)^.StringOffset + PChar(fCurrentRecord);
@@ -476,8 +476,8 @@ var
 
 begin
   Result := '';
-  UserNameLen := sizeof(UserName);
-  DomainNameLen := sizeof(DomainName);
+  UserNameLen := SizeOf(UserName);
+  DomainNameLen := SizeOf(DomainName);
   if LookupAccountSID(nil, SID, UserName, UserNameLen, DomainName, DomainNameLen, Use) then
     Result := string(DomainName) + '\' + string(UserName);
 end;
@@ -502,7 +502,7 @@ end;
 
 function TJvNTEventLogRecord.GetSource: string;
 begin
-  Result := PChar(fCurrentRecord) + sizeof(TEventLogRecord);
+  Result := PChar(fCurrentRecord) + SizeOf(TEventLogRecord);
 end;
 
 function TJvNTEventLogRecord.GetComputer: string;

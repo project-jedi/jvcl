@@ -96,6 +96,8 @@ resourcestring
 
   RsDockCannotFindWindow = 'Cannot find window';
 
+  RsEInvalidDockSiteOrientValue = 'invalid DockSiteOrient value doNoOrient';
+
 const
   RsDockBaseDockTreeVersion = $00040000;
 

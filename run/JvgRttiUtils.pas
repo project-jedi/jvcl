@@ -62,7 +62,7 @@ begin
   NumProps := TypeData^.PropCount;
 
   Result := '';
-  GetMem(PropList, NumProps * sizeof(pointer));
+  GetMem(PropList, NumProps * SizeOf(Pointer));
   try
     //{ Получаем список свойств }
     { Retrieving list of properties [translated] }

@@ -372,7 +372,7 @@ begin
     // --------------------------------------------
     // Pre-calculate filter contributions for a row
     // -----------------------------------------------
-    GetMem(contrib, DstWidth * sizeof(TCList));
+    GetMem(contrib, DstWidth * SizeOf(TCList));
     // Horizontal sub-sampling
     // Scales from bigger to smaller width
     if (xscale < 1.0) then
@@ -382,7 +382,7 @@ begin
       for i := 0 to DstWidth - 1 do
       begin
         contrib^[i].n := 0;
-        GetMem(contrib^[i].p, trunc(width * 2.0 + 1) * sizeof(TContributor));
+        GetMem(contrib^[i].p, trunc(width * 2.0 + 1) * SizeOf(TContributor));
         center := i / xscale;
         // Original code:
         // left := ceil(center - width);
@@ -414,7 +414,7 @@ begin
       for i := 0 to DstWidth - 1 do
       begin
         contrib^[i].n := 0;
-        GetMem(contrib^[i].p, trunc(fwidth * 2.0 + 1) * sizeof(TContributor));
+        GetMem(contrib^[i].p, trunc(fwidth * 2.0 + 1) * SizeOf(TContributor));
         center := i / xscale;
         // Original code:
         // left := ceil(center - fwidth);
@@ -506,7 +506,7 @@ begin
     // -----------------------------------------------
     // Pre-calculate filter contributions for a column
     // -----------------------------------------------
-    GetMem(contrib, DstHeight * sizeof(TCList));
+    GetMem(contrib, DstHeight * SizeOf(TCList));
     // Vertical sub-sampling
     // Scales from bigger to smaller height
     if (yscale < 1.0) then
@@ -516,7 +516,7 @@ begin
       for i := 0 to DstHeight - 1 do
       begin
         contrib^[i].n := 0;
-        GetMem(contrib^[i].p, trunc(width * 2.0 + 1) * sizeof(TContributor));
+        GetMem(contrib^[i].p, trunc(width * 2.0 + 1) * SizeOf(TContributor));
         center := i / yscale;
         // Original code:
         // left := ceil(center - width);
@@ -548,7 +548,7 @@ begin
       for i := 0 to DstHeight - 1 do
       begin
         contrib^[i].n := 0;
-        GetMem(contrib^[i].p, trunc(fwidth * 2.0 + 1) * sizeof(TContributor));
+        GetMem(contrib^[i].p, trunc(fwidth * 2.0 + 1) * SizeOf(TContributor));
         center := i / yscale;
         // Original code:
         // left := ceil(center - fwidth);

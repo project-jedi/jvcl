@@ -1188,7 +1188,7 @@ begin
   Stream := TStringStream.Create('');
   repeat
     St := '';
-    Count := Value.Read(Buf, sizeof(Buf));
+    Count := Value.Read(Buf, SizeOf(Buf));
     for i := 0 to Count - 1 do
       St := St + IntToHex(Buf[i], 2);
     Stream.WriteString(St);
@@ -1396,7 +1396,7 @@ begin
   lPos := 0;
 
   repeat
-    Count := Stream.Read(lBuf, sizeof(lBuf));
+    Count := Stream.Read(lBuf, SizeOf(lBuf));
     if AParent <> nil then
       AParent.DoLoadProgress(Stream.Position, Stream.Size);
     for i := 0 to Count - 1 do
@@ -1727,7 +1727,7 @@ begin
   lPos := ptWaiting;
 
   repeat
-    Count := Stream.Read(lBuf, sizeof(lBuf));
+    Count := Stream.Read(lBuf, SizeOf(lBuf));
     for i := 0 to Count - 1 do
     begin
       //Increment Stream pos for after comment
@@ -1896,7 +1896,7 @@ begin
   lPos := 1;
 
   repeat
-    Count := Stream.Read(lBuf, sizeof(lBuf));
+    Count := Stream.Read(lBuf, SizeOf(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
     for i := 0 to Count - 1 do
@@ -2054,7 +2054,7 @@ begin
   lOk := false;
 
   repeat
-    Count := Stream.Read(lBuf, sizeof(lBuf));
+    Count := Stream.Read(lBuf, SizeOf(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
     for i := 0 to Count - 1 do
@@ -2144,7 +2144,7 @@ begin
   lOk := false;
 
   repeat
-    Count := Stream.Read(lBuf, sizeof(lBuf));
+    Count := Stream.Read(lBuf, SizeOf(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
     for i := 0 to Count - 1 do
@@ -2226,7 +2226,7 @@ begin
   lPos := 0;
 
   repeat
-    Count := Stream.Read(lBuf, sizeof(lBuf));
+    Count := Stream.Read(lBuf, SizeOf(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
     for i := 0 to Count - 1 do
@@ -2305,7 +2305,7 @@ begin
   lOk := false;
 
   repeat
-    Count := Stream.Read(lBuf, sizeof(lBuf));
+    Count := Stream.Read(lBuf, SizeOf(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
     for i := 0 to Count - 1 do
@@ -2408,7 +2408,7 @@ begin
   St := '';
 
   repeat
-    Count := Stream.Read(lBuf, sizeof(lBuf));
+    Count := Stream.Read(lBuf, SizeOf(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
     for i := 0 to Count - 1 do
@@ -2488,7 +2488,7 @@ begin
   lOk := false;
 
   repeat
-    Count := Stream.Read(lBuf, sizeof(lBuf));
+    Count := Stream.Read(lBuf, SizeOf(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
     for i := 0 to Count - 1 do
@@ -2615,7 +2615,7 @@ begin
   lPos := 0;
 
   repeat
-    Count := Stream.Read(lBuf, sizeof(lBuf));
+    Count := Stream.Read(lBuf, SizeOf(lBuf));
     if Parent <> nil then
       Parent.DoLoadProgress(Stream.Position, Stream.Size);
     for i := 0 to Count - 1 do

@@ -130,10 +130,10 @@ begin
   begin
     AddExtUnit(cWindows);
     { TPoint }
-    AddRec(cWindows, 'TPoint', sizeof(TPoint), [RFD('X', 0, varInteger), RFD('Y', 4, varInteger)], nil, nil, nil);
+    AddRec(cWindows, 'TPoint', SizeOf(TPoint), [RFD('X', 0, varInteger), RFD('Y', 4, varInteger)], nil, nil, nil);
     AddFunction(cWindows, 'Point', JvInterpreter_Point, 2, [varInteger, varInteger], varRecord);
     { TRect }
-    AddRec(cWindows, 'TRect', sizeof(TRect), [RFD('Left', 0, varInteger), RFD('Top', 4, varInteger), RFD('Right', 8,
+    AddRec(cWindows, 'TRect', SizeOf(TRect), [RFD('Left', 0, varInteger), RFD('Top', 4, varInteger), RFD('Right', 8,
       varInteger), RFD('Bottom', 12, varInteger)], nil, nil, nil);
     AddFunction(cWindows, 'Rect', JvInterpreter_Rect, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
     AddFunction(cWindows, 'Bounds', JvInterpreter_Bounds, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);

@@ -422,7 +422,7 @@ begin
       if I = FLines.Count then
         StrCopy(STmp, ' ')
       else
-        StrPLCopy(STmp, FLines[I], sizeof(STmp) - 1);
+        StrPLCopy(STmp, FLines[I], SizeOf(STmp) - 1);
       if R.Top >= RectHeight(FTxtRect) then
         break
       else if R.Bottom > 0 then
