@@ -73,18 +73,16 @@ object Form1: TForm1
   object JvProgramVersionNetworkLocation1: TJvProgramVersionNetworkLocation
     VersionInfoLocationPathList.Strings = (
       'Version Check\Remote')
-    VersionInfoFilename = 'ProjektVersions.ini'
+    VersionInfoFileName = 'ProjektVersions.ini'
     Left = 105
     Top = 200
   end
   object JvProgramVersionHTTPLocation1: TJvProgramVersionHTTPLocation
-    VersionInfoFilename = 'ProjektVersions_http.ini'
-    OnLoadFileFromRemote = JvProgramVersionHTTPLocation1LoadFileFromRemote
+    VersionInfoFileName = 'ProjektVersions_http.ini'
     Left = 105
     Top = 240
   end
   object JvProgramVersionFTPLocation1: TJvProgramVersionFTPLocation
-    OnLoadFileFromRemote = JvProgramVersionFTPLocation1LoadFileFromRemote
     Left = 105
     Top = 280
   end
@@ -96,7 +94,7 @@ object Form1: TForm1
     VersionInfoLocationPathList.Strings = (
       'htasdasd'
       'http://www.oratool.de/test/')
-    VersionInfoFilename = 'ProjektVersions_http.ini'
+    VersionInfoFileName = 'ProjektVersions_http.ini'
     Left = 300
     Top = 320
   end
@@ -104,7 +102,7 @@ object Form1: TForm1
     VersionInfoLocationPathList.Strings = (
       'asdas'
       'ftp://www.oratool.de/test/')
-    VersionInfoFilename = 'ProjektVersions_http.ini'
+    VersionInfoFileName = 'ProjektVersions_http.ini'
     Left = 300
     Top = 270
   end
