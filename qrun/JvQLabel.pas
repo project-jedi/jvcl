@@ -42,6 +42,11 @@ Changes:
     To simulate JvHotlink, set AutoOpenURL to True, modify HotTrackFont to fit and assign
     a URL (or file-path) to the URL property.
   * JvAngleLabel merged into JvLabel: set Angle > 0 and font to a TrueTrype font to rotate the text // peter3
+
+  Contributor(s):dierk schmid
+  //dierk 2004-5-04
+  --add property RoundedFrame in TJvCustomLabel (Integer>0 is the radius corner)
+
 Known Issues:
 * Images are only displayed in TJvCustomLabel if Angle = 0.
 -----------------------------------------------------------------------------}
@@ -63,7 +68,7 @@ uses
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
-  TJvLabelRotateAngle = 0..360;
+  TJvLabelRotateAngle = -360..360;
   TJvTextEllipsis = (teNone, teWordEllipsis, tePathEllipsis, teEndEllipsis);
 
   TJvCustomLabel = class(TJvGraphicControl)
@@ -84,7 +89,7 @@ type
     FRightMargin: Integer;
     FImageIndex: TImageIndex;
     FImages: TCustomImageList;
-    FChangeLink:TChangeLink;
+    FChangeLink: TChangeLink;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
     FFontSave: TFont;
@@ -94,8 +99,10 @@ type
     FSpacing: Integer;
     FHotTrackFontOptions: TJvTrackFontOptions;
     FConsumerSvc: TJvDataConsumer;
-    FNeedsResize:boolean;
+    FNeedsResize: boolean;
     FTextEllipsis: TJvTextEllipsis;
+    FFrameColor: TColor;
+    FRoundedFrame: Integer;  // DS    
     function GetTransparent: Boolean;
     procedure UpdateTracking;
     procedure SetAlignment(Value: TAlignment);
@@ -112,13 +119,16 @@ type
     procedure SetShowFocus(Value: Boolean);
     procedure SetImageIndex(Value: TImageIndex);
     procedure SetImages(Value: TCustomImageList);
-    procedure DoImagesChange(Sender:TObject);
-    procedure DrawAngleText(var Rect: TRect {HEG}; Flags: Word);
+    procedure DoImagesChange(Sender: TObject);
+    procedure DrawAngleText(var Rect: TRect; Flags: Word; HasImage:boolean;
+    ShadowSize: Byte; ShadowColor: TColorRef; ShadowPos: TShadowPosition);
     procedure SetAngle(Value: TJvLabelRotateAngle);
     procedure SetHotTrackFont(Value: TFont);
     procedure SetSpacing(Value: Integer);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetTextEllipsis(Value: TJvTextEllipsis);
+    procedure SetFrameColor(const Value: TColor);
+    procedure SetRoundedFrame(const Value: Integer);
   protected
     procedure DoFocusChanged(Control: TWinControl); override;
     procedure TextChanged; override;
@@ -135,7 +145,7 @@ type
     
     procedure SetAutoSize(Value: Boolean); virtual;
     
-    
+
     function GetDefaultFontColor: TColor; virtual;
     function GetLabelCaption: string; virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -148,8 +158,8 @@ type
     procedure Loaded; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    function GetImageWidth:Integer;virtual;
-    function GetImageHeight:Integer;virtual;
+    function GetImageWidth: Integer; virtual;
+    function GetImageHeight: Integer; virtual;
     procedure SetConsumerService(Value: TJvDataConsumer);
     function ProviderActive: Boolean;
     procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
@@ -158,23 +168,25 @@ type
     property AutoOpenURL: Boolean read FAutoOpenURL write FAutoOpenURL;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
-    property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
-    property NeedsResize:boolean read FNeedsResize write FNeedsResize; 
+    property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
+    property NeedsResize: boolean read FNeedsResize write FNeedsResize;
 
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
-    property Images:TCustomImageList read FImages write SetImages;
+    property FrameColor:TColor read FFrameColor write SetFrameColor default clNone;
+    property Images: TCustomImageList read FImages write SetImages;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property TextEllipsis: TJvTextEllipsis read FTextEllipsis write SetTextEllipsis default teNone;
     // specifies the offset between the right edge of the image and the left edge of the text (in pixels)
-    property Spacing:Integer read FSpacing write SetSpacing default 4;
+    property Spacing: Integer read FSpacing write SetSpacing default 4;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
     property LeftMargin: Integer read FLeftMargin write SetLeftMargin default 0;
     property RightMargin: Integer read FRightMargin write SetRightMargin default 0;
+    property RoundedFrame: Integer read FRoundedFrame write SetRoundedFrame default 0; //DS
     property ShadowColor: TColor read FShadowColor write SetShadowColor default clBtnHighlight;
     property ShadowSize: Byte read FShadowSize write SetShadowSize default 0;
-    property ShadowPos: TShadowPosition read FShadowPos write SetShadowPos default spLeftTop;
+    property ShadowPos: TShadowPosition read FShadowPos write SetShadowPos default spRightBottom;
     property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
     property ShowFocus: Boolean read FShowFocus write SetShowFocus default False;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
@@ -201,6 +213,7 @@ type
     property DragMode;
     property Enabled;
     property FocusControl;
+    property FrameColor;
     property Font;
     property Anchors;
     property Constraints;
@@ -209,6 +222,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property RoundedFrame;    
     property ShadowColor;
     property ShadowSize;
     property ShadowPos;
@@ -250,7 +264,10 @@ function DrawShadowText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect;
   Format: Word; ShadowSize: Byte; ShadowColor: TColorRef;
   ShadowPos: TShadowPosition): Integer;
 
+procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
+
 implementation
+
 uses
   Math,
   JvQThemes, JvQJCLUtils, JvQJVCLUtils;
@@ -259,7 +276,7 @@ const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
 
-//=== TJvCustomLabel =========================================================
+  //=== TJvCustomLabel =========================================================
 
 function DrawShadowText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect;
   Format: Word; ShadowSize: Byte; ShadowColor: TColorRef;
@@ -298,6 +315,7 @@ end;
 constructor TJvCustomLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FFrameColor := clNone;
   FImageIndex := -1;
   FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RendersSingleItem]);
   FConsumerSvc.OnChanged := ConsumerServiceChanged;
@@ -316,7 +334,7 @@ begin
   FShowAccelChar := True;
   FShadowColor := clBtnHighlight;
   FShadowSize := 0;
-  FShadowPos := spLeftTop;
+  FShadowPos := spRightBottom;
   FHotTrackFontOptions := DefaultTrackFontOptions;
 end;
 
@@ -358,17 +376,17 @@ procedure TJvCustomLabel.DoDrawCaption(var Rect: TRect; Flags: Integer);
 const
   EllipsisFlags: array[TJvTextEllipsis] of Integer = (
     0, DT_WORD_ELLIPSIS, DT_PATH_ELLIPSIS, DT_END_ELLIPSIS
-  );
+    );
 var
   Text: string;
   PosShadow: TShadowPosition;
   SizeShadow: Byte;
   ColorShadow: TColor;
 
-  function IsValidImage:boolean;
+  function IsValidImage: boolean;
   begin
     Result := (Images <> nil) and (ImageIndex >= 0);
-      // and (ImageIndex < Images.Count);
+    // and (ImageIndex < Images.Count);
   end;
 
 begin
@@ -402,8 +420,11 @@ begin
   RequiredState(Canvas, [csHandleValid, csFontValid]);
   try
   
-    DrawShadowText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags,
-      SizeShadow, ColorToRGB(ColorShadow), PosShadow);
+    if Angle <> 0 then
+      DrawAngleText(Rect, Flags, IsValidImage, SizeShadow, ColorToRGB(ColorShadow), PosShadow)
+    else
+      DrawShadowText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags,
+        SizeShadow, ColorToRGB(ColorShadow), PosShadow);
   
   finally
     Canvas.Stop;
@@ -412,9 +433,9 @@ begin
   // (p3) draw image here since it can potentionally change background and font color
   if IsValidImage and (Flags and DT_CALCRECT = 0) then
     
-    
-    Images.Draw(Canvas, 0, 0, ImageIndex, itImage, Enabled);
-    
+  
+  Images.Draw(Canvas, 0, (Height - Images.Height) div 2, ImageIndex, itImage, Enabled);
+  
 end;
 
 procedure TJvCustomLabel.DoDrawText(var Rect: TRect; Flags: Integer);
@@ -469,83 +490,86 @@ end;
 
 
 
-procedure TJvCustomLabel.DrawAngleText(var Rect: TRect {HEG}; Flags: Word);
+
+procedure TJvCustomLabel.DrawAngleText(var Rect: TRect; Flags: Word;HasImage:boolean;
+    ShadowSize: Byte; ShadowColor: TColorRef; ShadowPos: TShadowPosition);
 var
   Text: array[0..4096] of Char;
-  //HEG: MRect: TRect;
   TextX, TextY: Integer;
   Phi: Real;
-  w, h: Integer; //HEG
-  CalcRect: Boolean; //HEG
+  w, h: Integer;
+  CalcRect: Boolean;
 begin
-  CalcRect := (Flags and DT_CALCRECT <> 0); //HEG
+  CalcRect := (Flags and DT_CALCRECT <> 0);
   StrLCopy(@Text, PChar(GetLabelCaption), SizeOf(Text) - 1);
-  if {HEG: (Flags and DT_CALCRECT <> 0)}CalcRect and ((Text[0] = #0) or ShowAccelChar and
+  if CalcRect and ((Text[0] = #0) or ShowAccelChar and
     (Text[0] = '&') and (Text[1] = #0)) then
     StrCopy(Text, ' ');
-  //HEG: MRect := ClientRect;
 
   Canvas.Start;
-//  QPainter_save(Canvas.Handle);
+  //  QPainter_save(Canvas.Handle);
   try
-//    QPainter_rotate(Canvas.Handle, -(Angle div 2));
+    //    QPainter_rotate(Canvas.Handle, -(Angle div 2));
 
     Phi := Angle * Pi / 180;
     if not AutoSize then
     begin
-      w := Rect.Right - Rect.Left; // HEG
-      h := Rect.Bottom - Rect.Top; // HEG
-      TextX := Trunc(0.5 * {HEG: ClientWidth}w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) - 0.5 * Canvas.TextHeight(Text) *
+      w := Rect.Right - Rect.Left; 
+      h := Rect.Bottom - Rect.Top; 
+      TextX := Trunc(0.5 * w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) - 0.5 * Canvas.TextHeight(Text) *
         Sin(Phi));
-      TextY := Trunc(0.5 * {HEG: ClientHeight}h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) + 0.5 * Canvas.TextWidth(Text) *
+      TextY := Trunc(0.5 * h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) + 0.5 * Canvas.TextWidth(Text) *
         Sin(Phi));
     end
     else
     begin
-      //HEG: ClientWidth := 6 + Ceil(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
-      //HEG: ClientHeight := 6 + Ceil(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
       TextX := 3;
       TextY := 3;
       if Angle <= 90 then
       begin
-        TextX := TextX + Trunc(Canvas.TextHeight(Text) * Sin(Phi)/2);
-        TextY := TextY + Trunc(Canvas.TextWidth(Text) * Sin(Phi) + Canvas.TextHeight(Text) * Cos(Phi)/2);
+        TextX := TextX + Trunc(Canvas.TextHeight(Text) * Sin(Phi) / 2);
+        TextY := TextY + Trunc(Canvas.TextWidth(Text) * Sin(Phi) + Canvas.TextHeight(Text) * Cos(Phi) / 2);
       end
       else if Angle >= 270 then
-        TextX := 3 - Trunc(Canvas.TextHeight(Text) * sin(Phi)/2)
+        TextX := 3 - Trunc(Canvas.TextHeight(Text) * sin(Phi) / 2)
       else if Angle <= 180 then
       begin
-        TextX := ClientWidth - 3  - Trunc(Canvas.TextHeight(Text) * Sin(Phi)/2);;
-        TextY := ClientHeight - 3  + Ceil(Canvas.TextHeight(Text) * Cos(Phi));
+        TextX := ClientWidth - 3 - Trunc(Canvas.TextHeight(Text) * Sin(Phi) / 2);
+        ;
+        TextY := ClientHeight - 3 + Ceil(Canvas.TextHeight(Text) * Cos(Phi));
       end
-      else  // (180 - 270)
+      else // (180 - 270)
       begin
-        TextX := ClientWidth - 3 + Ceil(Canvas.TextHeight(Text) * Sin(Phi)/2);
-        TextY := TextY + Ceil(Canvas.TextHeight(Text)* Cos(Phi));
+        TextX := ClientWidth - 3 + Ceil(Canvas.TextHeight(Text) * Sin(Phi) / 2);
+        TextY := TextY + Ceil(Canvas.TextHeight(Text) * Cos(Phi));
       end;
     end;
 
-//    QPainter_translate(Canvas.Handle, TextX, TextY);
-//    QPainter_rotate(Canvas.Handle, -(Angle {div 2}));
-    if CalcRect then               // HEG
-    begin                          // HEG
-      Rect.Right := Rect.Left + w; // HEG
-      Rect.Bottom := Rect.Top + h; // HEG
-    end                            // HEG
-    else                           // HEG
-    begin                          // HEG
+    //    QPainter_translate(Canvas.Handle, TextX, TextY);
+    //    QPainter_rotate(Canvas.Handle, -(Angle {div 2}));
+    if CalcRect then 
+    begin 
+      Rect.Right := Rect.Left + w; 
+      Rect.Bottom := Rect.Top + h;
+      if HasImage then
+        Inc(Rect.Right, Images.Width);
+    end
+    else
+    begin
+      if HasImage then
+        Inc(TextX, Images.Width);
       if not Enabled then
       begin
         Canvas.Font.Color := clBtnHighlight;
-        TextOutAngle( Canvas, Angle, TextX+1, TextY+1, Text);
+        TextOutAngle(Canvas, Angle, TextX + 1, TextY + 1, Text);
         Canvas.Font.Color := clBtnShadow;
         TextOutAngle(Canvas, Angle, TextX, TextY, Text);
       end
       else
         TextOutAngle(Canvas, Angle, TextX, TextY, Text);
-    end;                           // HEG
+    end; 
   finally
-//    QPainter_restore(Canvas.Handle);
+    //    QPainter_restore(Canvas.Handle);
     Canvas.Stop;
   end;
 end;
@@ -563,15 +587,33 @@ begin
     
     Brush.Style := bsSolid;
     
-    if not Transparent then
-     // only FillRect mode because Transparent is always True on JVCLThemesEnabled
+
+    if not ((RoundedFrame > 0) and (FrameColor <> clNone)) then
+      // if RoundedFrame then Floodfill background
+      // only FillRect mode because Transparent is always True on JVCLThemesEnabled
       DrawThemedBackground(Self, Canvas, ClientRect, Self.Color);
-    Brush.Style := bsClear;
-    if Angle <> 0 then
-      DrawAngleText(Rect{HEG}, DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment])
-    else
+    if FrameColor <> clNone then
     begin
-      Rect := ClientRect;
+      if RoundedFrame=0 then
+      begin
+        Brush.Color := FrameColor;
+        FrameRect(Canvas, ClientRect);
+      end
+      else
+      begin
+        Brush.Color := Color;
+        FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame);
+//        if not Transparent then
+//          FloodFill(ClientRect.Left + 1, ClientRect.Top + RoundedFrame, FrameColor, fsBorder);
+      end;
+    end;
+    Brush.Style := bsClear;
+    Rect := ClientRect;
+//    if Angle <> 0 then
+//      DrawAngleText(Rect, DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment])
+//    else
+    begin
+      //      Rect := ClientRect;
       Inc(Rect.Left, FLeftMargin);
       Dec(Rect.Right, FRightMargin);
       InflateRect(Rect, -1, 0);
@@ -582,8 +624,8 @@ begin
         DoDrawText(Rect, DrawStyle or DT_CALCRECT);
         Rect.Left := ClientRect.Left + FLeftMargin;
         Rect.Right := ClientRect.Right - FRightMargin;
-//        if Images <> nil then
-//          Inc(Rect.Left,GetImageWidth + 4);
+        //        if Images <> nil then
+        //          Inc(Rect.Left,GetImageWidth + 4);
         if FLayout = tlBottom then
           OffsetRect(Rect, 0, Height - Rect.Bottom)
         else
@@ -598,7 +640,8 @@ begin
       Brush.Color := Self.Color;
       DrawFocusRect(Rect);
     end;
-    //HEG: AdjustBounds;
+    if Angle = 0 then
+      AdjustBounds;
   end;
 end;
 
@@ -628,18 +671,18 @@ begin
     
     Canvas.Start(False);
     try
-    
-      if Angle = 0 then // HEG
-      begin             // HEG
+      
+      if Angle = 0 then
+      begin
         DoDrawText(Rect, DT_EXPANDTABS or DT_CALCRECT or WordWraps[FWordWrap]);
         Dec(Rect.Left, FLeftMargin);
         Inc(Rect.Right, FRightMargin);
-      end               // HEG
-      else              // HEG
-      begin             // HEG
-        DrawAngleText(Rect, DT_CALCRECT or DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment]); // HEG
-      end;              // HEG
-    
+      end
+      else
+      begin
+        DrawAngleText(Rect, DT_CALCRECT or DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment], (Images <> nil) and (ImageIndex >= 0),0, 0, spLeftTop);
+      end; 
+      
     finally
       Canvas.Stop;
     end;
@@ -656,7 +699,7 @@ begin
     if (AAlignment = taRightJustify) and (Images = nil) then
       Inc(X, Width - Rect.Right);
     if Images <> nil then
-      Dec(Rect.Left,GetImageWidth + Spacing);
+      Dec(Rect.Left, GetImageWidth + Spacing);
     SetBounds(X, Top, Rect.Right, Rect.Bottom);
   end;
   FNeedsResize := false;
@@ -926,12 +969,11 @@ begin
   if FImageIndex <> Value then
   begin
     if Images <> nil then
-    begin
-      FNeedsResize := true;
       NonProviderChange;
-    end;
+    FNeedsResize := true;
     FImageIndex := Value;
-    if FNeedsResize then AdjustBounds else Invalidate;
+    AdjustBounds;
+    Invalidate;
   end;
 end;
 
@@ -989,7 +1031,7 @@ end;
 
 procedure TJvCustomLabel.NonProviderChange;
 begin
-{ TODO 3 -oJVCL -cPROVIDER : Causes AV at designtime when trying to change Images property }
+  { TODO 3 -oJVCL -cPROVIDER : Causes AV at designtime when trying to change Images property }
   if ProviderActive then
     Provider.Provider := nil;
 end;
@@ -1037,10 +1079,10 @@ begin
   if FAngle <> Value then
   begin
     FAngle := Value;
-    
+    if FAngle < 0 then
+      Inc(FAngle,360);
     FNeedsResize := Autosize;
     AdjustBounds;
-    
     Invalidate;
   end;
 end;
@@ -1088,6 +1130,54 @@ begin
     Invalidate;
   end;
 end;
+
+procedure TJvCustomLabel.SetFrameColor(const Value: TColor);
+begin
+  if FFrameColor <> Value then
+  begin
+    FFrameColor := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvCustomLabel.SetRoundedFrame(const Value: Integer);
+begin
+  if FRoundedFrame <> Value then
+  begin
+    // limit range to reasonable values
+    if (Value < Height div 2) and (Value >= 0) then
+    begin
+      FRoundedFrame := Value;
+      Invalidate;
+    end;
+  end;
+end;
+
+
+procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
+begin
+  // draw frame with rounded corners
+  with Canvas, ARect do
+  begin
+    Pen.Color := AColor;
+    Dec(Right);
+    Dec(Bottom);
+    Polygon([
+      Point(Left + R, Top),
+      Point(Right - R, Top),
+      Point(Right, Top + R),
+      Point(Right, Bottom - R),
+      Point(Right - R, Bottom),
+      Point(Left + R, Bottom),
+      Point(Left, Bottom - R),
+      Point(Left, Top + R),
+      Point(Left + R, Top)
+    ]);
+    Inc(Right);
+    Inc(Bottom);
+  end;
+end;
+
 
 end.
 

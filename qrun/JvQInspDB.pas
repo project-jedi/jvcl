@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {******************************************************************************
@@ -35,7 +35,11 @@ unit JvQInspDB;
 interface
 
 uses
-  SysUtils, Classes, DB, DBCtrls, TypInfo,
+  SysUtils, Classes, DB, TypInfo, 
+  
+  
+  QDBCtrls,
+  
   JvQInspector, JvQFinalize;
 
 type
@@ -108,7 +112,10 @@ function GetFieldName(const AField: TField): string;
 implementation
 
 uses
-  Consts,
+  
+  
+  QConsts,
+  
   JvQResources;
 
 const
@@ -454,10 +461,9 @@ class function TJvInspectorDBData.FieldTypeMapping: TJvInspectorRegister;
 begin
   if GlobalMapReg = nil then
   begin
-    RegisterDBTypes; // register
-
     GlobalMapReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
     AddFinalizeObjectNil(sUnitName, TObject(GlobalMapReg));
+    RegisterDBTypes; // register
   end;
   Result := GlobalMapReg;
 end;

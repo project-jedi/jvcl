@@ -317,6 +317,10 @@ resourcestring
   RsEInvalidColor = 'Invalid color (%d)';
   RsEItemNotForList = 'Item does not belong to this list';
 
+//=== JvComputerInfoEx.pas ===================================================
+resourcestring
+  RsEReadOnlyProperty = 'This value is read-only and cannot be changed.';
+
 //=== JvContextProvider.pas ==================================================
 resourcestring
   RsContextItemEmptyCaption = '(no context assigned to this item)';
@@ -567,6 +571,10 @@ resourcestring
   RsEIntfCastError = 'SIntfCastError';
   RsEUnsupportedControlClass = 'TJvDynControlEngine.RegisterControl: Unsupported ControlClass';
   RsENoRegisteredControlClass = 'TJvDynControlEngine.CreateControl: No Registered ControlClass';
+
+//=== JvEDIDBBuffering.pas ===================================================
+resourcestring
+  RsENoProfileDatasets = 'Not all profile datasets have been assigned.';
 
 //=== JvEditor.pas, JvUnicodeEditor.pas ======================================
 resourcestring
@@ -1320,6 +1328,7 @@ resourcestring
 resourcestring
   RsJvPatcherEditorComparingFilesd = 'Jv - Patcher Editor: Comparing files %d%%';
   RsJvPatcherEditorEndStep = 'Jv - Patcher Editor: end step ...';
+  RsErrJvPatcherEditorInvalidFilename = 'Invalid filename(s). Please specify valid filenames for both source and destination and try again.';
 
 //=== JvPcx.pas ==============================================================
 resourcestring

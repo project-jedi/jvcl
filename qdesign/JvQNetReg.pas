@@ -46,8 +46,8 @@ uses
   {$IFDEF MSWINDOWS}
   {JvQMail,  JvQMailEditor,} JvQUrlGrabbers,
   JvQUrlListGrabber, JvQUrlListGrabberEditors,
-  {$ENDIF MSWINDOWS}
   JvQHtmlParser,  JvQHtmlParserEditor,
+  {$ENDIF MSWINDOWS}
   JvQTypes, JvQDsgnConsts,
   JvQStringListToHtml, JvQFormToHtml, JvQRgbToHtml,  JvQStrToHtml;
 
@@ -66,16 +66,16 @@ begin
   RegisterComponents(RsPaletteInterNetWork, [
     {$IFDEF MSWINDOWS}
     TJvFTPURLGrabber, TJvHTTPURLGrabber,
-    TJvLocalFileURLGrabber, {TJvMail,}
+    TJvLocalFileURLGrabber, {TJvMail,} TJvHTMLParser,
     {$ENDIF MSWINDOWS}
-    TJvHTMLParser, TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML
+    TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML
     {$IFDEF MSWINDOWS}
     ,TJvUrlListGrabber
     {$ENDIF MSWINDOWS}
     ]);
+  {$IFDEF MSWINDOWS}
   RegisterPropertyEditor(TypeInfo(TJvParserInfoList),
     TJvHTMLParser, 'Parser', TJvHTMLParserEditor);
-  {$IFDEF MSWINDOWS}
   RegisterPropertyEditor(TypeInfo(TJvUrlGrabberIndex),
     TJvUrlListGrabber, '', TJvUrlGrabberIndexProperty);
   RegisterPropertyEditor(TypeInfo(TJvUrlGrabberDefaultPropertiesList),
