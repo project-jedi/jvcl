@@ -1037,6 +1037,12 @@ begin
     Result := ExtractFileDir(Result);
 end;
 {******************************************************************************}
+function ExtractShortPathName(const Path: string): string;
+begin
+  SetLength(Result, MAX_PATH);
+  SetLength(Result, GetShortPathName(PChar(Path), PChar(Result), Length(Result)));
+end;
+{******************************************************************************}
 
 var
   I: Integer;
@@ -1113,13 +1119,13 @@ begin
     // setup environment and execute make.exe
     Path := GetWindowsDir + ';' + GetSystemDir + ';' + GetWindowsDir + '\Command';
     if UserLibDir <> UserBplDir then
-      Path := Edition.RootDir + '\bin;' + UserBplDir + ';' + UserLibDir + ';' + Path
+      Path := ExtractShortPathName(Edition.RootDir) + '\bin;' + ExtractShortPathName(UserBplDir) + ';' + ExtractShortPathName(UserLibDir) + ';' + Path
     else
-      Path := Edition.RootDir + '\bin;' + UserBplDir + ';' + Path;
+      Path := ExtractShortPathName(Edition.RootDir) + '\bin;' + ExtractShortPathName(UserBplDir) + ';' + Path;
     SetEnvironmentVariable('PATH', Pointer(Path));
 
-    //SetEnvironmentVariable('MAINBPLDIR', Pointer(Edition.BplDir));
-    //SetEnvironmentVariable('MAINDCPDIR', Pointer(Edition.DcpDir));
+    SetEnvironmentVariable('MAINBPLDIR', Pointer(Edition.BplDir));
+    SetEnvironmentVariable('MAINDCPDIR', Pointer(Edition.DcpDir));
     SetEnvironmentVariable('BPLDIR', Pointer(UserBplDir));
     SetEnvironmentVariable('DCPDIR', Pointer(UserDcpDir));
     SetEnvironmentVariable('LIBDIR', Pointer(UserLibDir));
