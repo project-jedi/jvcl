@@ -46,9 +46,9 @@ type
   TJvCalcState = (csFirst, csValid, csError);
   TJvCalculatorForm = class;
 
-{ TJvxCalculator }
+{ TJvCalculator }
 
-  TJvxCalculator = class(TComponent)
+  TJvCalculator = class(TComponent)
   private
     FValue: Double;
     FMemory: Double;
@@ -874,9 +874,9 @@ begin
   InvalidateEditor;
 end;
 
-{ TJvxCalculator }
+{ TJvCalculator }
 
-constructor TJvxCalculator.Create(AOwner: TComponent);
+constructor TJvCalculator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTitle := SCalculator;
@@ -885,51 +885,51 @@ begin
   FBeepOnError := True;
 end;
 
-destructor TJvxCalculator.Destroy;
+destructor TJvCalculator.Destroy;
 begin
   FOnChange := nil;
   FOnDisplayChange := nil;
   inherited Destroy;
 end;
 
-function TJvxCalculator.GetTitle: string;
+function TJvCalculator.GetTitle: string;
 begin
   Result := FTitle;
 end;
 
-procedure TJvxCalculator.SetTitle(const Value: string);
+procedure TJvCalculator.SetTitle(const Value: string);
 begin
   FTitle := Value;
 end;
 
-function TJvxCalculator.TitleStored: Boolean;
+function TJvCalculator.TitleStored: Boolean;
 begin
   Result := Title <> SCalculator;
 end;
 
-function TJvxCalculator.GetDisplay: Double;
+function TJvCalculator.GetDisplay: Double;
 begin
   if Assigned(FCalc) then
     Result := TJvCalculatorPanel(FCalc.FCalcPanel).GetDisplay
   else Result := FValue;
 end;
 
-procedure TJvxCalculator.CalcKey(var Key: Char);
+procedure TJvCalculator.CalcKey(var Key: Char);
 begin
   if Assigned(FOnCalcKey) then FOnCalcKey(Self, Key);
 end;
 
-procedure TJvxCalculator.DisplayChange;
+procedure TJvCalculator.DisplayChange;
 begin
   if Assigned(FOnDisplayChange) then FOnDisplayChange(Self);
 end;
 
-procedure TJvxCalculator.Change;
+procedure TJvCalculator.Change;
 begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
-function TJvxCalculator.Execute: Boolean;
+function TJvCalculator.Execute: Boolean;
 begin
   FCalc := CreateCalculatorForm(Self, HelpContext);
   with FCalc do
@@ -1073,14 +1073,14 @@ end;
 
 procedure TJvCalculatorForm.CalcKey(Sender: TObject; var Key: Char);
 begin
-  if (Owner <> nil) and (Owner is TJvxCalculator) then
-    TJvxCalculator(Owner).CalcKey(Key);
+  if (Owner <> nil) and (Owner is TJvCalculator) then
+    TJvCalculator(Owner).CalcKey(Key);
 end;
 
 procedure TJvCalculatorForm.DisplayChange(Sender: TObject);
 begin
-  if (Owner <> nil) and (Owner is TJvxCalculator) then
-    TJvxCalculator(Owner).DisplayChange;
+  if (Owner <> nil) and (Owner is TJvCalculator) then
+    TJvCalculator(Owner).DisplayChange;
 end;
 
 procedure TJvCalculatorForm.PopupMenuPopup(Sender: TObject);
