@@ -96,8 +96,8 @@
 (*$DEFINE JV_WINCONTROL_EVENTS_DECL_COMMON
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(PreviousControl: TWinControl); dynamic;
-    procedure DoKillFocus(NextControl: TWinControl); dynamic;
+    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
+    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
 *)
 
 // ********************************************************
@@ -455,11 +455,11 @@ procedure TJvEx##ClassName.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvEx##ClassName.DoSetFocus(PreviousControl: TWinControl);
+procedure TJvEx##ClassName.DoSetFocus(FocusedWnd: HWND);
 begin
 end;
 
-procedure TJvEx##ClassName.DoKillFocus(NextControl: TWinControl);
+procedure TJvEx##ClassName.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 *) // MACRO END WINCONTROL_COMMON

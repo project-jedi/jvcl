@@ -3,7 +3,7 @@ interface
 uses
   JvExControls, JvExButtons, JvExCheckLst, JvExComCtrls, 
   JvExExtCtrls, JvExForms, JvExGrids, JvExMask, 
-  {JvExDBCtrls, JvExDBGrids,}
+  {JvExDBCtrls, } JvExDBGrids,
   JvExStdCtrls;
 
 implementation
