@@ -65,11 +65,7 @@ const
 type
   TJvCustomEdit = class(TJvExCustomEdit)
   private
-    FOver: Boolean;
-    FColor: TColor;
-    FSaved: TColor;
     FFlat: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
     FMaxPixel: TJvMaxPixel;
     FGroupIndex: Integer;
     FAlignment: TAlignment;
@@ -127,12 +123,11 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure EnabledChanged; override;
-    procedure ParentColorChanged; override;
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
     procedure SetFlat(Value: Boolean); virtual;
     procedure UpdateAutoHint; dynamic;
     procedure Resize; override;
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
   public
     function IsEmpty: Boolean;
     constructor Create(AOwner: TComponent); override;
@@ -144,7 +139,7 @@ type
     procedure Loaded; override;
   protected
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property AutoHint: Boolean read FAutoHint write SetAutoHint default False; 
+    property AutoHint: Boolean read FAutoHint write SetAutoHint default False;
     property Caret: TJvCaret read FCaret write SetCaret;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property PasswordChar: Char read GetPasswordChar write SetPasswordChar;
@@ -156,10 +151,10 @@ type
     property Text: TCaption read GetText write SetText;
     {$ENDIF VCL}
     property UseFixedPopup: Boolean read FUseFixedPopup write FUseFixedPopup default True;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
     property Flat: Boolean read GetFlat write SetFlat;
   end;
 
@@ -264,8 +259,6 @@ begin
   {$IFDEF VisualCLX}
   FNullPixmap := QPixmap_create(1, 1, 1, QPixmapOptimization_DefaultOptim);
   {$ENDIF VisualCLX}
-  FColor := clInfoBk;
-  FOver := False;
   FAlignment := taLeftJustify;
   // ControlStyle := ControlStyle + [csAcceptsControls];
   ClipboardCommands := [caCopy..caUndo];
@@ -335,10 +328,8 @@ var
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FColor;
     if FHotTrack then
     begin
       I := SelStart;
@@ -347,21 +338,17 @@ begin
       SelStart := I;
       SelLength := J;
     end;
-    FOver := True;
 //    UpdateAutoHint;
+    inherited MouseEnter(AControl);
   end;
-  inherited MouseEnter(AControl);
 end;
 
 procedure TJvCustomEdit.MouseLeave(AControl: TControl);
 var
   I, J: Integer;
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  if FOver then
+  if MouseOver then
   begin
-    Application.HintColor := FSaved;
     if FHotTrack then
     begin
       I := SelStart;
@@ -370,16 +357,8 @@ begin
       SelStart := I;
       SelLength := J;
     end;
-    FOver := False;
+    inherited MouseLeave(AControl);
   end;
-  inherited MouseLeave(AControl);
-end;
-
-procedure TJvCustomEdit.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvCustomEdit.SetHotTrack(const Value: Boolean);

@@ -45,9 +45,6 @@ uses
 type
   TJvTabControl = class(TJvExTabControl)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
     {$IFDEF VCL}
     procedure CMDialogKey(var Msg: TWMKey); message CM_DIALOGKEY; // not WantKeys
     {$ENDIF VCL}
@@ -55,16 +52,13 @@ type
     {$IFDEF VisualCLX}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override ;
     {$ENDIF VisualCLX}
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
     property Color;
   end;
 
@@ -73,34 +67,9 @@ implementation
 constructor TJvTabControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
   {$IFDEF VisualCLX}
   InputKeys := [ikTabs];
   {$ENDIF VisualCLX}
-end;
-
-procedure TJvTabControl.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-procedure TJvTabControl.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  FSaved := Application.HintColor;
-  Application.HintColor := FHintColor;
-  inherited MouseEnter(Control);
-end;
-
-procedure TJvTabControl.MouseLeave(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  Application.HintColor := FSaved;
-  inherited MouseLeave(Control);
 end;
 
 {$IFDEF VCL}

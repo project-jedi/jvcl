@@ -31,39 +31,21 @@ unit JvShape;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Messages, Graphics, Controls, ExtCtrls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QExtCtrls, QForms,
-  {$ENDIF VisualCLX}
   JvExExtCtrls;
 
 type
   TJvShape = class(TJvExShape)
-  private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
-  protected
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
-  public
-    constructor Create(AOwner: TComponent); override;
   published
     property Anchors;
     property Constraints;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
     {$IFDEF VCL}
     property OnEndDock;
     property OnStartDock;
     {$ENDIF VCL}
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
 
     property OnClick;
     property OnConstrainedResize;
@@ -85,42 +67,5 @@ type
   end;
 
 implementation
-
-constructor TJvShape.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  FOver := False;
-end;
-
-procedure TJvShape.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-procedure TJvShape.MouseEnter(AControl: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    FOver := True;
-    inherited MouseEnter(AControl);
-  end;
-end;
-
-procedure TJvShape.MouseLeave(AControl: TControl);
-begin
-  if FOver then
-  begin
-    Application.HintColor := FSaved;
-    FOver := False;
-    inherited MouseLeave(AControl);
-  end;
-end;
 
 end.

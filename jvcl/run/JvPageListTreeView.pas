@@ -83,7 +83,6 @@ type
     FOnAfterPaint: TJvPagePaintEvent;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
-    FOnParentColorChanged: TNotifyEvent;
     function GetPageIndex: Integer;
     procedure SetPageIndex(const Value: Integer);
     procedure SetPageList(const Value: TJvCustomPageList);
@@ -91,7 +90,6 @@ type
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure TextChanged; override;
     procedure ShowingChanged; override;
-    procedure ParentColorChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
     procedure ReadState(Reader: TReader); override;
@@ -115,7 +113,6 @@ type
     property OnBeforePaint: TJvPageCanPaintEvent read FOnBeforePaint write FOnBeforePaint;
     property OnPaint: TJvPagePaintEvent read FOnPaint write FOnPaint;
     property OnAfterPaint: TJvPagePaintEvent read FOnAfterPaint write FOnAfterPaint;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
   TJvCustomPageClass = class of TJvCustomPage;
@@ -134,7 +131,6 @@ type
     FOnChange: TNotifyEvent;
     FOnChanging: TJvPageChangingEvent;
     FShowDesignCaption: TJvShowDesignCaption;
-    FOnParentColorChanged: TNotifyEvent;
     procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
     procedure UpdateEnabled;
     procedure SetActivePage(Page: TJvCustomPage);
@@ -143,7 +139,6 @@ type
     function GetPage(Index: Integer): TJvCustomPage;
   protected
     procedure EnabledChanged; override;
-    procedure ParentColorChanged; override;
     { IPageList }
     function CanChange(AIndex: Integer): Boolean;
     function GetActivePageIndex: Integer;
@@ -167,7 +162,6 @@ type
 
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging: TJvPageChangingEvent read FOnChanging write FOnChanging;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -251,7 +245,6 @@ type
     FPageList: IPageList;
     FPageDefault: Integer;
     FLinks: TJvPageLinks;
-    FOnParentColorChanged: TNotifyEvent;
     {$IFNDEF COMPILER6_UP}
     FPageListComponent: TComponent;
     procedure SetPageListComponent(const Value: TComponent);
@@ -263,8 +256,6 @@ type
     function GetItems: TJvPageIndexNodes;
     procedure SetItems(const Value: TJvPageIndexNodes);
   protected
-    procedure ParentColorChanged; override;
-
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function CreateNode: TTreeNode; override;
     function CreateNodes: TTreeNodes; {$IFDEF COMPILER6_UP} override; {$ENDIF}
@@ -288,8 +279,6 @@ type
     property ShowLines default False;
     property ReadOnly default True;
     property Items:TJvPageIndexNodes read GetItems write SetItems;
-
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
   { TJvSettingsTreeImages is a property class that describes the images used in a
@@ -814,13 +803,6 @@ begin
   end;
 end;
 
-procedure TJvCustomPageListTreeView.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
 {$IFNDEF COMPILER6_UP}
 procedure TJvCustomPageListTreeView.SetPageListComponent(const Value: TComponent);
 var obj: IPageList;
@@ -1130,13 +1112,6 @@ begin
   end;
 end;
 
-procedure TJvCustomPage.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
 { TJvCustomPageList }
 
 function TJvCustomPageList.CanChange(AIndex: Integer): Boolean;
@@ -1420,13 +1395,6 @@ begin
     if HandleAllocated and (csDesigning in ComponentState) then
       RedrawWindow(Handle, nil, 0, RDW_UPDATENOW or RDW_INVALIDATE or RDW_ALLCHILDREN);
   end;
-end;
-
-procedure TJvCustomPageList.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvCustomPageList.UpdateEnabled;

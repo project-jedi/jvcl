@@ -355,9 +355,6 @@ type
     FSelMargin: Integer;
     FDisplayValues: TStringList;
     FDisplayAllFields: Boolean;
-    {$IFDEF JVCLThemesEnabled}
-    FOver: Boolean;
-    {$ENDIF JVCLThemesEnabled}
     FOnDropDown: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
     procedure ListMouseUp(Sender: TObject; Button: TMouseButton;
@@ -3078,7 +3075,7 @@ begin
     if FPressed then
       State := tcDropDownButtonPressed
     else
-    if FOver and not FListVisible then
+    if MouseOver and not FListVisible then
       State := tcDropDownButtonHot
     else
       State := tcDropDownButtonNormal;
@@ -3186,23 +3183,19 @@ procedure TJvDBLookupCombo.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  inherited MouseEnter(Control);
   {Windows XP themes use hot track states, hence we have to update the drop down button.}
-  if ThemeServices.ThemesEnabled and not FOver and not (csDesigning in ComponentState) then
+  if ThemeServices.ThemesEnabled and not MouseOver then
   begin
-    FOver := True;
+    inherited MouseEnter(Control);
     Invalidate;
   end;
 end;
 
 procedure TJvDBLookupCombo.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  inherited MouseLeave(Control);
-  if ThemeServices.ThemesEnabled and FOver then
+  if MouseOver then
   begin
-    FOver := False;
+    inherited MouseLeave(Control);
     Invalidate;
   end;
 end;

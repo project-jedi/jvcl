@@ -20,8 +20,9 @@ Peter Below [100113.1101@compuserve.com] - alternate TJvPageControl.OwnerDraw ro
 Peter Thörnqvist [peter3@peter3.com] added TJvIPAddress.AddressValues and TJvPageControl.ReduceMemoryUse
 Alfi [alioscia_alessi@onde.net] alternate TJvPageControl.OwnerDraw routine
 Rudy Velthuis - ShowRange in TJvTrackBar
+Andreas Hausladen - TJvIPAddress designtime bug, components changed to JvExVCL 
 
-Last Modified: 2004-02-27
+Last Modified: 2004-02-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -230,9 +231,6 @@ type
   private
     FClientBorderWidth: TBorderWidth;
     FHideAllTabs: Boolean;
-    FColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
     FDrawTabShadow: Boolean;
     FHandleGlobalTab: Boolean;
     FHintSource: TJvHintSource;
@@ -245,9 +243,6 @@ type
     function FormKeyPreview: Boolean;
     procedure SetReduceMemoryUse(const Value: Boolean);
   protected
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
     function HintShow(var HintInfo: THintInfo): Boolean; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
@@ -268,10 +263,10 @@ type
     property ReduceMemoryUse: Boolean read FReduceMemoryUse write SetReduceMemoryUse default False;
     property DrawTabShadow: Boolean read FDrawTabShadow write SetDrawTabShadow default False;
     property HideAllTabs: Boolean read FHideAllTabs write SetHideAllTabs default False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
     property Color;
   end;
 
@@ -284,9 +279,6 @@ type
     FToolTipSide: TJvTrackToolTipSide;
     FToolTipText: WideString;
     FOnToolTip: TJvTrackToolTipEvent;
-    FColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
     FOnChanged: TNotifyEvent;
     FShowRange: Boolean;
     procedure SetToolTips(const Value: Boolean);
@@ -296,9 +288,6 @@ type
     procedure CNVScroll(var Msg: TWMVScroll); message CN_VSCROLL;
     procedure SetShowRange(const Value: Boolean);
   protected
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
@@ -309,10 +298,10 @@ type
     property ShowRange: Boolean read FShowRange write SetShowRange default True;
     property ToolTips: Boolean read FToolTips write SetToolTips default False;
     property ToolTipSide: TJvTrackToolTipSide read FToolTipSide write SetToolTipSide default tsLeft;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
     property Color;
     property OnMouseDown;
@@ -353,10 +342,6 @@ type
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
     FOnEditCancelled: TNotifyEvent;
     FOnSelectionChange: TNotifyEvent;
-    FColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
     FCheckBoxes: Boolean;
     FOnHScroll: TNotifyEvent;
     FOnVScroll: TNotifyEvent;
@@ -387,9 +372,6 @@ type
     function GetUseUnicode: Boolean;
     procedure SetUseUnicode(const Value: Boolean);
   protected
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
     function DoComparePage(Page: TTabSheet; Node: TTreeNode): Boolean; virtual;
     function CreateNode: TTreeNode; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -437,7 +419,7 @@ type
     property LineColor: TColor read GetLineColor write SetLineColor default clDefault;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight default 16;
 
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor;
 
     property Checkboxes: Boolean read FCheckBoxes write SetCheckBoxes default False;
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
@@ -452,7 +434,7 @@ type
     property OnComparePage: TJvTreeViewComparePageEvent read FOnComparePage write FOnComparePage;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
     property OnCustomDrawItem: TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
     property OnEditCancelled: TNotifyEvent read FOnEditCancelled write FOnEditCancelled;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
@@ -923,7 +905,6 @@ end;
 constructor TJvPageControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FColor := clInfoBk;
   FClientBorderWidth := JvDefPageControlBorder;
   FHintSource := hsDefault;
 end;
@@ -966,13 +947,6 @@ begin
     end;
   end;
   Result := inherited WantKey(Key, Shift, KeyText);
-end;
-
-procedure TJvPageControl.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvPageControl.DrawDefaultTab(TabIndex: Integer;
@@ -1068,23 +1042,6 @@ begin
   HideAllTabs := FHideAllTabs;
 end;
 
-procedure TJvPageControl.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  FSaved := Application.HintColor;
-  Application.HintColor := FColor;
-  inherited MouseEnter(Control);
-end;
-
-procedure TJvPageControl.MouseLeave(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  Application.HintColor := FSaved;
-  inherited MouseLeave(Control);
-end;
-
 procedure TJvPageControl.SetClientBorderWidth(const Value: TBorderWidth);
 begin
   if FClientBorderWidth <> Value then
@@ -1167,17 +1124,9 @@ end;
 constructor TJvTrackBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FColor := clInfoBk;
   // ControlStyle := ControlStyle + [csAcceptsControls];
   FToolTipSide := tsLeft;
   FShowRange := True;
-end;
-
-procedure TJvTrackBar.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvTrackBar.CNHScroll(var Msg: TWMHScroll);
@@ -1218,23 +1167,6 @@ const
 begin
   if HandleAllocated and (GetComCtlVersion >= ComCtlVersionIE3) then
     SendMessage(Handle, TBM_SETTIPSIDE, ToolTipSides[FToolTipSide], 0);
-end;
-
-procedure TJvTrackBar.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  FSaved := Application.HintColor;
-  Application.HintColor := FColor;
-  inherited MouseEnter(Control);
-end;
-
-procedure TJvTrackBar.MouseLeave(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  Application.HintColor := FSaved;
-  inherited MouseLeave(Control);
 end;
 
 procedure TJvTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -1382,8 +1314,6 @@ const
 constructor TJvTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FColor := clInfoBk;
-  FOver := False;
   FCheckBoxes := False;
   // ControlStyle := ControlStyle + [csAcceptsControls];
   FSelectedList := TObjectList.Create(False);
@@ -1429,13 +1359,6 @@ begin
   FSelectedList.Clear;
   for I := 0 to Length(NeedInvalidate) - 1 do
     InvalidateNode(NeedInvalidate[I]);
-end;
-
-procedure TJvTreeView.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 function TJvTreeView.CreateNode: TTreeNode;
@@ -1642,29 +1565,6 @@ begin
     Key := #0
   else
     inherited KeyPress(Key);
-end;
-
-procedure TJvTreeView.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FOver := True;
-    FSaved := Application.HintColor;
-    Application.HintColor := FColor;
-    inherited MouseEnter(Control);
-  end;
-end;
-
-procedure TJvTreeView.MouseLeave(Control: TControl);
-begin
-  if FOver then
-  begin
-    FOver := False;
-    Application.HintColor := FSaved;
-    inherited MouseLeave(Control);
-  end;
 end;
 
 procedure TJvTreeView.ResetPostOperationFlags;

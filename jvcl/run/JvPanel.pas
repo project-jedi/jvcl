@@ -87,10 +87,6 @@ type
 
   TJvPanel = class(TJvCustomPanel, IJvDenySubClassing)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
     FTransparent: Boolean;
     FFlatBorder: Boolean;
     FFlatBorderColor: TColor;
@@ -165,7 +161,7 @@ type
     property Movable:boolean read FMovable write FMovable default false;
     {$ENDIF VCL}
     property Sizeable: Boolean read FSizeable write SetSizeable default False;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property HotColor: TColor read FHotColor write SetHotColor default clBtnFace;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
     property MultiLine: Boolean read FMultiLine write SetMultiLine;
@@ -173,7 +169,7 @@ type
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor default clBtnShadow;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
 
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Width: Integer read GetWidth write SetWidth;
@@ -359,8 +355,6 @@ begin
   {$IFDEF VCL}
   IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
   {$ENDIF VCL}
-  FHintColor := clInfoBk;
-  FOver := False;
   FTransparent := False;
   FFlatBorder := False;
   FFlatBorderColor := clBtnShadow;
@@ -554,22 +548,17 @@ end;
 
 procedure TJvPanel.ParentColorChanged;
 begin
-  inherited ParentColorChanged;
   Invalidate;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
+  inherited ParentColorChanged;
 end;
 
 procedure TJvPanel.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
     FOldColor := Color;
-    Application.HintColor := FHintColor;
-    FOver := True;
     if not Transparent then
     begin
       Color := HotColor;
@@ -581,10 +570,8 @@ end;
 
 procedure TJvPanel.MouseLeave(Control: TControl);
 begin
-  if FOver then
+  if MouseOver then
   begin
-    Application.HintColor := FSaved;
-    FOver := False;
     if not Transparent then
     begin
       Color := FOldColor;

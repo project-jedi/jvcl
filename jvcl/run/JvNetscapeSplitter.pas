@@ -26,7 +26,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I jvcl.inc}
+{$I jvcl.Inc}
 
 
 unit JvNetscapeSplitter;
@@ -44,37 +44,27 @@ uses
   JvExExtCtrls;
 
 const
-
   MOVEMENT_TOLERANCE = 5; // See WMLButtonUp message handler.
   DEF_BUTTON_HIGHLIGHT_COLOR = $00FFCFCF; // RGB(207,207,255)
 
 
 type
-
   TJvButtonWidthType = (btwPixels, btwPercentage);
   TJvButtonStyle = (bsNetscape, bsWindows);
   TJvWindowsButton = (wbMin, wbMax, wbClose);
   TJvWindowsButtons = set of TJvWindowsButton;
 
-
   TJvCustomNetscapeSplitter = class(TJvExSplitter)
-  private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
   protected
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure Paint; override;
-  {$ENDIF VCL}
-    procedure ParentColorChanged; override;
+    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
 
   protected
-
   {$IFDEF VCL}
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMLButtonUp(var Msg: TWMLButtonUp); message WM_LBUTTONUP;
@@ -241,8 +231,8 @@ type
        write FOnMinimize;
     property OnRestore: TNotifyEvent read FOnRestore  write FOnRestore;
 
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property HintColor;
+    property OnParentColorChange;
   end;
 
   TJvNetscapeSplitter=class(TJvCustomNetscapeSplitter)
@@ -298,8 +288,6 @@ constructor TJvCustomNetscapeSplitter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   IncludeThemeStyle(Self, [csParentBackground]);
-  FHintColor := clInfoBk;
-  FOver := False;
 
   Beveled := FALSE;
   FAllowDrag := TRUE;
@@ -311,7 +299,7 @@ begin
   SetRectEmpty(FLastKnownButtonRect);
   FIsHighlighted := FALSE;
   FGotMouseDown := FALSE;
-  FControl := NIL;
+  FControl := nil;
   FDownPos := Point(0,0);
   FMaximized := FALSE;
   FMinimized := FALSE;
@@ -323,14 +311,6 @@ begin
   FAutoHighLightColor := FALSE;
   FTextureColor1 := clWhite;
   FTextureColor2 := clNavy;
-  
-end;
-
-procedure TJvCustomNetscapeSplitter.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 {$IFDEF VCL}
@@ -341,11 +321,8 @@ begin
   if csDesigning in ComponentState then
     Exit;
 
-  if not FOver then
+  if not MouseOver then
   begin
-    FOver := True;
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
     inherited MouseEnter(Control);
 
     //from dfs
@@ -360,19 +337,17 @@ begin
     begin
       if not FIsHighlighted then
         PaintButton(TRUE)
-    end else
+    end
+    else
       if FIsHighlighted then
         PaintButton(FALSE);
-  
   end;
 end;
 
 procedure TJvCustomNetscapeSplitter.MouseLeave(Control: TControl);
 begin
-  if FOver then
+  if MouseOver then
   begin
-    Application.HintColor := FSaved;
-    FOver := False;
     inherited MouseLeave(Control);
 
     //from dfs
@@ -391,46 +366,46 @@ var
   DC: THandle;
 {$ENDIF JVCLThemesEnabled}
 begin
-  if FBusy then Exit;
-  FBusy:=True;
+  if FBusy then
+    Exit;
+  FBusy := True;
+  try
+  // Exclude button rect from update region here for less flicker.
 
-// Exclude button rect from update region here for less flicker.
-
-{$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
-  begin
-//    DrawThemedBackground(Self, Canvas, ClientRect, Parent.Brush.Color);
-    DC := Canvas.Handle;
-    Bmp := TBitmap.Create;
-    try
-      Bmp.Width := ClientWidth;
-      Bmp.Height := ClientHeight;
-      Canvas.Handle := Bmp.Canvas.Handle;
+    {$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesEnabled then
+    begin
+      // DrawThemedBackground(Self, Canvas, ClientRect, Parent.Brush.Color);
+      DC := Canvas.Handle;
+      Bmp := TBitmap.Create;
       try
-        inherited Paint;
+        Bmp.Width := ClientWidth;
+        Bmp.Height := ClientHeight;
+        Canvas.Handle := Bmp.Canvas.Handle;
+        try
+          inherited Paint;
+        finally
+          Canvas.Handle := DC;
+        end;
+        Bmp.Transparent := True;
+        Bmp.TransparentColor := Color;
+        Canvas.Draw(0, 0, Bmp);
       finally
-        Canvas.Handle := DC;
+        Bmp.Free;
       end;
-      Bmp.Transparent := True;
-      Bmp.TransparentColor := Color;
-      Canvas.Draw(0, 0, Bmp);
-    finally
-      Bmp.Free;
     end;
-  end;
-{$ELSE }
-    inherited Paint;
-{$ENDIF JVCLThemesEnabled}
+    {$ELSE}
+      inherited Paint;
+    {$ENDIF JVCLThemesEnabled}
 
-// Don't paint while being moved unless ResizeStyle = rsUpdate!!!
-// Make rect smaller if Beveled is true.
+    // Don't paint while being moved unless ResizeStyle = rsUpdate!!!
+    // Make rect smaller if Beveled is true.
     PaintButton(FIsHighlighted);
-  FBusy:=False;
-
+  finally
+    FBusy := False;
+  end;
 end;
 {$ENDIF VCL}
-
-
 
 //dfs
 function TJvCustomNetscapeSplitter.ButtonHitTest(X, Y: integer): boolean;
@@ -446,7 +421,9 @@ begin
       Cursor := FButtonCursor
     else
       Cursor := crHSplit;
-  end else begin
+  end
+  else
+  begin
     if (not AllowDrag) or ((X >= FLastKnownButtonRect.Left) and
       (X <= FLastKnownButtonRect.Right)) then
       Cursor := FButtonCursor
@@ -457,7 +434,7 @@ end;
 
 procedure TJvCustomNetscapeSplitter.DefineProperties(Filer: TFiler);
 begin
-  inherited;
+  inherited DefineProperties(Filer);
   Filer.DefineProperty('RestorePos', LoadOtherProperties, StoreOtherProperties,
     Minimized or Maximized);
 end;
@@ -481,19 +458,19 @@ end;
 
 procedure TJvCustomNetscapeSplitter.DoMaximize;
 begin
-  if assigned(FOnMaximize) then
+  if Assigned(FOnMaximize) then
     FOnMaximize(Self);
 end;
 
 procedure TJvCustomNetscapeSplitter.DoMinimize;
 begin
-  if assigned(FOnMinimize) then
+  if Assigned(FOnMinimize) then
     FOnMinimize(Self);
 end;
 
 procedure TJvCustomNetscapeSplitter.DoRestore;
 begin
-  if assigned(FOnRestore) then
+  if Assigned(FOnRestore) then
     FOnRestore(Self);
 end;
 
@@ -520,9 +497,10 @@ begin
     else //alBottom
       ArrowAlign := alTop;
     end;
-  end else
+  end
+  else
     ArrowAlign := Align;
-  q := ArrowSize * 2 - 1 ;
+  q := ArrowSize * 2 - 1;
   Result := q;
   ACanvas.Pen.Color := Color;
   with AvailableRect do
@@ -539,8 +517,8 @@ begin
           begin
             for i := y to y + q - 1 do
               ACanvas.Pixels[j, i] := Color;
-            inc(y);
-            dec(q,2);
+            Inc(y);
+            Dec(q,2);
           end;
         end;
       alRight:
@@ -554,8 +532,8 @@ begin
           begin
             for i := y to y + q - 1 do
               ACanvas.Pixels[j, i] := Color;
-            inc(y);
-            dec(q,2);
+            Inc(y);
+            Dec(q,2);
           end;
         end;
       alTop:
@@ -569,8 +547,8 @@ begin
           begin
             for j := x to x + q - 1 do
               ACanvas.Pixels[j, i] := Color;
-            inc(x);
-            dec(q,2);
+            Inc(x);
+            Dec(q,2);
           end;
         end;
     else // alBottom
@@ -583,8 +561,8 @@ begin
       begin
         for j := x to x + q - 1 do
           ACanvas.Pixels[j, i] := Color;
-        inc(x);
-        dec(q,2);
+        Inc(x);
+        Dec(q,2);
       end;
     end;
   end;
@@ -596,9 +574,9 @@ var
   I: Integer;
   R: TRect;
 begin
-  if Parent = NIL then
-    exit;
-  FControl := NIL;
+  if Parent = nil then
+    Exit;
+  FControl := nil;
   P := Point(Left, Top);
   case Align of
     alLeft: Dec(P.X);
@@ -622,7 +600,7 @@ begin
         Exit;
     end;
   end;
-  FControl := NIL;
+  FControl := nil;
 end;
 
 function TJvCustomNetscapeSplitter.GetAlign: TAlign;
@@ -742,7 +720,7 @@ begin
   if FRestorePos = -1 then
   begin
     FindControl;
-    if FControl <> NIL then
+    if FControl <> nil then
       case Align of
         alLeft,
         alRight:  FRestorePos := FControl.Width;
@@ -772,15 +750,15 @@ var
   b: TJvWindowsButton;
   BtnFlag: UINT;
 begin
-  if (not FShowButton) or (not Enabled) or (GetParentForm(Self) = NIL) then
-    exit;
+  if (not FShowButton) or (not Enabled) or (GetParentForm(Self) = nil) then
+    Exit;
 
   if FAutoHighLightColor then
     FButtonHighlightColor := GrabBarColor;
 
   BtnRect := ButtonRect; // So we don't repeatedly call GetButtonRect
   if IsRectEmpty(BtnRect) then
-    exit; // nothing to draw
+    Exit; // nothing to draw
 
   OffscreenBmp := TBitmap.Create;
   try
@@ -804,7 +782,7 @@ begin
           if b in WindowsButtons then
           begin
             WinButton[x] := b;
-            inc(x);
+            Inc(x);
           end;
       end
       else
@@ -813,7 +791,7 @@ begin
           if b in WindowsButtons then
           begin
             WinButton[x] := b;
-            inc(x);
+            Inc(x);
           end;
       end;
       for x := 0 to VisibleWinButtons - 1 do
@@ -961,12 +939,13 @@ begin
   Invalidate; // Direction changing, redraw arrows.
   {$IFNDEF COMPILER4_UP}
   // D4 does this already
-  if (Cursor <> crVSplit) and (Cursor <> crHSplit) then Exit;
+  if (Cursor <> crVSplit) and (Cursor <> crHSplit) then
+    Exit;
   if Align in [alBottom, alTop] then
     Cursor := crVSplit
   else
     Cursor := crHSplit;
-  {$ENDIF}
+  {$ENDIF COMPILER4_UP}
 end;
 
 procedure TJvCustomNetscapeSplitter.SetAllowDrag(const Value: boolean);
@@ -1030,7 +1009,6 @@ begin
     if (ButtonStyle = bsNetscape) and ShowButton then
       Invalidate;
   end;
-
 end;
 
 procedure TJvCustomNetscapeSplitter.SetButtonStyle(const Value: TJvButtonStyle);
@@ -1070,16 +1048,15 @@ procedure TJvCustomNetscapeSplitter.SetMaximized(const Value: boolean);
 begin
   if Value <> FMaximized then
   begin
-
     if csLoading in ComponentState then
     begin
       FMaximized := Value;
-      exit;
+      Exit;
     end;
 
     FindControl;
-    if FControl = NIL then
-      exit;
+    if FControl = nil then
+      Exit;
 
     if Value then
     begin
@@ -1093,7 +1070,7 @@ begin
           alTop,
           alBottom: FRestorePos := FControl.Height;
         else
-          exit;
+          Exit;
         end;
       end;
       if ButtonStyle = bsNetscape then
@@ -1105,7 +1082,7 @@ begin
           alRight,
           alTop: UpdateControlSize(-3000);
         else
-          exit;
+          Exit;
         end;
       FMaximized := Value;
       DoMaximize;
@@ -1127,12 +1104,12 @@ begin
     if csLoading in ComponentState then
     begin
       FMinimized := Value;
-      exit;
+      Exit;
     end;
 
     FindControl;
-    if FControl = NIL then
-      exit;
+    if FControl = nil then
+      Exit;
 
     if Value then
     begin
@@ -1141,23 +1118,23 @@ begin
       else
       begin
         case Align of
-          alLeft,
-          alRight:  FRestorePos := FControl.Width;
-          alTop,
-          alBottom: FRestorePos := FControl.Height;
+          alLeft, alRight:
+            FRestorePos := FControl.Width;
+          alTop, alBottom:
+            FRestorePos := FControl.Height;
         else
-          exit;
+          Exit;
         end;
       end;
       FMinimized := Value;
       // Just use something insanely large to get it to move to the other extreme
       case Align of
-        alLeft,
-        alBottom: UpdateControlSize(-3000);
-        alRight,
-        alTop: UpdateControlSize(3000);
+        alLeft, alBottom:
+          UpdateControlSize(-3000);
+        alRight, alTop:
+          UpdateControlSize(3000);
       else
-        exit;
+        Exit;
       end;
       DoMinimize;
     end
@@ -1229,7 +1206,7 @@ procedure TJvCustomNetscapeSplitter.UpdateControlSize(NewSize: integer);
     end;
   end;
 begin
-  if (FControl <> NIL) then
+  if (FControl <> nil) then
   begin
     { You'd think that using FControl directly would be the way to change it's
       position (and thus the splitter's position), wouldn't you?  But, TSplitter
@@ -1244,11 +1221,14 @@ begin
       becomes quite likely:  i.e. they drag it back all the way to the min
       position.  What a pain. }
     case Align of
-      alLeft: MoveViaMouse(Left, FControl.Left + NewSize, TRUE);
+      alLeft:
+        MoveViaMouse(Left, FControl.Left + NewSize, TRUE);
               // alLeft: FControl.Width := NewSize;
-      alTop: MoveViaMouse(Top, FControl.Top + NewSize, FALSE);
+      alTop:
+        MoveViaMouse(Top, FControl.Top + NewSize, FALSE);
              // FControl.Height := NewSize;
-      alRight: MoveViaMouse(Left, (FControl.Left + FControl.Width - Width) - NewSize, TRUE);
+      alRight:
+        MoveViaMouse(Left, (FControl.Left + FControl.Width - Width) - NewSize, TRUE);
         {begin
           Parent.DisableAlign;
           try
@@ -1258,7 +1238,8 @@ begin
             Parent.EnableAlign;
           end;
         end;}
-      alBottom: MoveViaMouse(Top, (FControl.Top + FControl.Height - Height) - NewSize, FALSE);
+      alBottom:
+        MoveViaMouse(Top, (FControl.Top + FControl.Height - Height) - NewSize, FALSE);
         {begin
           Parent.DisableAlign;
           try
@@ -1280,7 +1261,7 @@ begin
   Result := 0;
   for x := Low(TJvWindowsButton) to High(TJvWindowsButton) do
     if x in WindowsButtons then
-      inc(Result);
+      Inc(Result);
 end;
 
 function TJvCustomNetscapeSplitter.WindowButtonHitTest(X, Y: integer): TJvWindowsButton;
@@ -1303,7 +1284,7 @@ begin
       if b in WindowsButtons then
       begin
         WinButton[i] := b;
-        inc(i);
+        Inc(i);
       end;
   end
   else
@@ -1311,7 +1292,7 @@ begin
       if b in WindowsButtons then
       begin
         WinButton[i] := b;
-        inc(i);
+        Inc(i);
       end;
 
   if Align in [alLeft, alRight] then
@@ -1336,7 +1317,7 @@ begin
   if FRestorePos < 0 then
   begin
     FindControl;
-    if FControl <> NIL then
+    if FControl <> nil then
       case Align of
         alLeft,
         alRight:  FRestorePos := FControl.Width;
@@ -1399,8 +1380,8 @@ begin
   else if AllowDrag then
   begin
     FindControl;
-    if FControl = NIL then
-      exit;
+    if FControl = nil then
+      Exit;
 
     OldMax := FMaximized;
     case Align of
@@ -1416,10 +1397,10 @@ begin
     else
     begin
       case Align of
-        alLeft,
-        alRight:  FRestorePos := FControl.Width;
-        alTop,
-        alBottom: FRestorePos := FControl.Height;
+        alLeft, alRight:
+          FRestorePos := FControl.Width;
+        alTop, alBottom:
+          FRestorePos := FControl.Height;
       end;
       if OldMax then
         DoRestore;
@@ -1443,10 +1424,12 @@ begin
     begin
       if not FIsHighlighted then
         PaintButton(TRUE)
-    end else
+    end
+    else
       if FIsHighlighted then
         PaintButton(FALSE);
-  end else
+  end
+  else
     DefaultHandler(Msg); // Bypass TSplitter and just let normal handling occur.
 end;
 {$ENDIF VCL}

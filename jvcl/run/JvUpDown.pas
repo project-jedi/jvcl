@@ -48,12 +48,6 @@ type
 
   TJvCustomUpDown = class(TJvExCustomUpDown)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
-//    FOnMouseEnter: TNotifyEvent;
-//    FOnMouseLeave: TNotifyEvent;
-    FOnParentColorChanged: TNotifyEvent;
     FIncrement: Integer;
     FMin: Integer;
     FMax: Integer;
@@ -76,9 +70,6 @@ type
     procedure SetFormat(const Value: TJvUpDownFormat);
     procedure UndoAutoResizing(Value: TWinControl);
   protected
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
     procedure UpdateAssociate; virtual;
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -88,15 +79,11 @@ type
     property AlignButton: TJvAlignButton read FAlignButton write SetAlignButton default abRight;
     property Associate: TWinControl read FAssociate write SetAssociate;
     property Format: TJvUpDownFormat read FFormat write SetFormat default ufInt;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property Increment: Integer read FIncrement write SetIncrement default 1;
     property Max: Integer read FMax write SetMax default 100;
     property Min: Integer read FMin write SetMin default 0;
     property Position: Integer read GetPosition write SetPosition default 0;
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
     function AcceptInteger: Boolean;
@@ -214,8 +201,6 @@ const
 constructor TJvCustomUpDown.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  FOver := False;
   FMin := 0;
   FMax := 100;
   FPosition := 0;
@@ -224,36 +209,6 @@ begin
   FAlignButton := abRight;
   FFormat := ufInt;
   FFirstTime := True;
-end;
-
-procedure TJvCustomUpDown.MouseEnter(AControl: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    FOver := True;
-    inherited MouseEnter(AControl);
-  end;
-end;
-
-procedure TJvCustomUpDown.MouseLeave(AControl: TControl);
-begin
-  if FOver then
-  begin
-    FOver := False;
-    Application.HintColor := FSaved;
-    inherited MouseLeave(AControl);
-  end;
-end;
-
-procedure TJvCustomUpDown.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 function TJvCustomUpDown.GetPosition: Integer;

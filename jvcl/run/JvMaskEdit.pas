@@ -50,12 +50,8 @@ type
   TJvCustomMaskEdit = class(TJvExPubCustomMaskEdit)
   private
     FOnEnabledChanged: TNotifyEvent;
-    FOnParentColorChanged: TNotifyEvent;
     FOnSetFocus: TJvFocusChangeEvent;
     FOnKillFocus: TJvFocusChangeEvent;
-    FSaved: TColor;
-    FHintColor: TColor;
-    FOver: Boolean;
     FHotTrack: Boolean;
     FCaret: TJvCaret;
     FEntering: Boolean;
@@ -89,7 +85,6 @@ type
     procedure EnabledChanged; override;
     procedure MouseEnter(Control :TControl); override;
     procedure MouseLeave(Control :TControl); override;
-    procedure ParentColorChanged; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure SetCaret(const Value: TJvCaret);
     procedure SetDisabledColor(const Value: TColor); virtual;
@@ -115,7 +110,6 @@ type
     // set to True to disable read/write of PasswordChar and read of Text
     property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Caret: TJvCaret read FCaret write SetCaret;
 
     property DisabledTextColor: TColor read FDisabledTextColor write
@@ -124,7 +118,6 @@ type
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
 
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
   end;
@@ -201,8 +194,6 @@ constructor TJvCustomMaskEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHotTrack := False;
-  FHintColor := clInfoBk;
-  FOver := False;
   FCaret := TJvCaret.Create(Self);
   FCaret.OnChanged := CaretChanged;
   FDisabledColor := clWindow;
@@ -219,13 +210,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomMaskEdit.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
 procedure TJvCustomMaskEdit.EnabledChanged;
 begin
   inherited EnabledChanged;
@@ -238,10 +222,8 @@ procedure TJvCustomMaskEdit.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
     if HotTrack then
       {$IFDEF VCL}
       Ctl3D := True;
@@ -249,18 +231,14 @@ begin
       {$IFDEF VisualCLX}
       BorderStyle := bsSingle;
       {$ENDIF VisualCLX}
-    FOver := True;
+    inherited MouseEnter(Control);
   end;
-  inherited MouseEnter(Control);
 end;
 
 procedure TJvCustomMaskEdit.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  if FOver then
+  if MouseOver then
   begin
-    Application.HintColor := FSaved;
     if FHotTrack then
       {$IFDEF VCL}
       Ctl3D := False;
@@ -268,9 +246,8 @@ begin
       {$IFDEF VisualCLX}
       BorderStyle := bsSingle; // maybe bsNone
       {$ENDIF VisualCLX}
-    FOver := False;
+    inherited MouseLeave(Control);
   end;
-  inherited MouseLeave(Control);
 end;
 
 procedure TJvCustomMaskEdit.SetHotTrack(Value: Boolean);

@@ -552,8 +552,6 @@ type
     FOnTextNotFound: TRichEditFindErrorEvent;
     FOnCloseFindDialog: TRichEditFindCloseEvent;
     // From JvRichEdit.pas by Sébastien Buysse
-    FHintColor, FSavedHintColor: TColor;
-    FOnParentColorChanged: TNotifyEvent;
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
     FOnConversionProgress: TRichEditProgressEvent;
@@ -621,11 +619,8 @@ type
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
   protected
-    procedure ParentColorChanged; override;
     procedure ColorChanged; override;
     procedure FontChanged; override;
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
 
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWindowHandle(const Params: TCreateParams); override;
@@ -657,7 +652,6 @@ type
     property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
     property HideScrollBars: Boolean read FHideScrollBars
       write SetHideScrollBars default True;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Title: string read FTitle write SetTitle;
     property LangOptions: TRichLangOptions read GetLangOptions write SetLangOptions default [rlAutoFont];
     property Lines: TStrings read FLines write SetRichEditStrings;
@@ -688,7 +682,6 @@ type
       write FOnCloseFindDialog;
     property OnConversionProgress: TRichEditProgressEvent read FOnConversionProgress write FOnConversionProgress;
     // From JvRichEdit.pas by Sébastien Buysse
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
     property ForceUndo:boolean read FForceUndo write FForceUndo default True;
@@ -2355,13 +2348,6 @@ begin
   FDefAttributes.Assign(Font);
 end;
 
-procedure TJvCustomRichEdit.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
 procedure TJvCustomRichEdit.CMUIDeactivate(var Msg: TMessage);
 begin
   if (GetParentForm(Self) <> nil) and Assigned(FRichEditOle) and
@@ -2446,7 +2432,6 @@ begin
   // ControlStyle := ControlStyle + [csAcceptsControls] - [csSetCaption];
   ControlStyle := ControlStyle - [csSetCaption];
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
-  FHintColor := clInfoBk;
   FSelAttributes := TJvTextAttributes.Create(Self, atSelected);
   FDefAttributes := TJvTextAttributes.Create(Self, atDefaultText);
   FWordAttributes := TJvTextAttributes.Create(Self, atWord);
@@ -3212,23 +3197,6 @@ end;
 function TJvCustomRichEdit.LineFromChar(CharIndex: Integer): Integer;
 begin
   Result := SendMessage(Handle, EM_EXLINEFROMCHAR, 0, CharIndex);
-end;
-
-procedure TJvCustomRichEdit.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  FSavedHintColor := Application.HintColor;
-  Application.HintColor := FHintColor;
-  inherited MouseEnter(Control);
-end;
-
-procedure TJvCustomRichEdit.MouseLeave(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  Application.HintColor := FSavedHintColor;
-  inherited MouseLeave(Control);
 end;
 
 procedure TJvCustomRichEdit.NeedAdvancedTypography;

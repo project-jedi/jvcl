@@ -87,10 +87,6 @@ type
 
   TJvCustomComboBox = class(TJvExCustomComboBox)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
     {$IFNDEF COMPILER6_UP}
     FAutoComplete: Boolean;
     FLastTime: Cardinal;      // SPM - Ported backward from Delphi 7
@@ -116,9 +112,6 @@ type
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK; // ain
   protected
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
     procedure CreateWnd; override; // ain
     {$IFDEF COMPILER6_UP}
     function GetItemsClass: TCustomComboBoxStringsClass; override;
@@ -158,10 +151,8 @@ type
     property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
     property AutoComplete: Boolean read FAutoComplete write FAutoComplete default True;
     {$ENDIF COMPILER6_UP}
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -521,13 +512,11 @@ begin
   PStringsAddr^ := TJvComboBoxStrings.Create; // create our own implementation and put it in place.
   TJvComboBoxStrings(Items).ComboBox := Self; // link it to the combo box.
   {.$ENDIF COMPILER7_UP}
-  FHintColor := clInfoBk;
   {$IFNDEF COMPILER6_UP}
   FAutoComplete := True;
   FLastTime := 0;           // SPM - Ported backward from Delphi 7
   {$ENDIF COMPILER6_UP}
   FSearching := False;
-  FOver := False;
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
   FReadOnly := False; // ain
@@ -1064,38 +1053,6 @@ begin
   end
   else
     Result := Items[Index];
-end;
-
-procedure TJvCustomComboBox.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-procedure TJvCustomComboBox.MouseEnter(AControl: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    FOver := True;
-  end;
-  inherited MouseEnter(AControl);
-end;
-
-procedure TJvCustomComboBox.MouseLeave(AControl: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if FOver then
-  begin
-    FOver := False;
-    Application.HintColor := FSaved;
-  end;
-  inherited MouseLeave(AControl);
 end;
 
 function TJvCustomComboBox.SearchSubString(Value: string;

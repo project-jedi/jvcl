@@ -62,10 +62,6 @@ type
 
   TJvCustomStaticText = class(TJvWinControl)
   private
-    FOnParentColorChanged: TNotifyEvent;
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
     FFontSave: TFont;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
@@ -98,13 +94,13 @@ type
       const KeyText: WideString): Boolean; override;
     procedure FontChanged; override;
     procedure TextChanged; override;
-    procedure ParentColorChanged; override;
     procedure AdjustBounds; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAutoSize(Value: Boolean); override;
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct); virtual;
     function GetTextDisplayInfo(aDC: HDC; var ARect: TRect): Cardinal;
     procedure CreateParams(var Params: TCreateParams); override;
+
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property BorderStyle: TStaticBorderStyle read FBorderStyle write SetBorderStyle default sbsNone;
@@ -113,13 +109,9 @@ type
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
     property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Layout: TTextLayout read FLayout write SetLayout;
     property TextMargins: TJvTextMargins read FTextMargins write SetTextMargins;
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -193,10 +185,8 @@ begin
   FTextMargins := TJvTextMargins.Create;
   FTextMargins.OnChange := DoMarginsChange;
 
-  FHintColor := clInfoBk;
   FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
-  FOver := False;
   FLayout := tlTop;
   ControlStyle := [csCaptureMouse, csClickEvents, csSetCaption,
     csOpaque, csReplicatable, csDoubleClicks];
@@ -217,39 +207,27 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomStaticText.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
 procedure TJvCustomStaticText.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
     if FHotTrack then
     begin
       FFontSave.Assign(Font);
       Font.Assign(FHotTrackFont);
     end;
-    FOver := True;
     inherited MouseEnter(Control);
   end;
 end;
 
 procedure TJvCustomStaticText.MouseLeave(Control: TControl);
 begin
-  if FOver then
+  if MouseOver then
   begin
-    Application.HintColor := FSaved;
     if FHotTrack then
       Font.Assign(FFontSave);
-    FOver := False;
     inherited MouseLeave(Control);
   end;
 end;

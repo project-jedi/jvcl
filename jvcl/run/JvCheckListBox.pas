@@ -43,11 +43,7 @@ type
   TJvCheckListBox = class(TJvExCheckListBox)
   private
     FHotTrack: Boolean;
-    FColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChanged: TNotifyEvent;
     FOnSelectCancel: TNotifyEvent;
-    FOver: Boolean;
     FMaxWidth: Integer;
     FScroll: Boolean;
     FOnHScroll: TNotifyEvent;
@@ -63,10 +59,8 @@ type
     procedure WndProc(var Msg: TMessage); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure ParentColorChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
@@ -89,10 +83,10 @@ type
     property MultiSelect;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property HorScrollbar: Boolean read FScroll write SetHScroll default True;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
     property OnSelectCancel: TNotifyEvent read FOnSelectCancel write FOnSelectCancel;
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
@@ -112,15 +106,8 @@ begin
   inherited Create(AOwner);
   FMaxWidth := 0;
   FHotTrack := False;
-  FColor := clInfoBk;
-  FOver := False;
   FScroll := True;
   // ControlStyle := ControlStyle + [csAcceptsControls];
-end;
-
-destructor TJvCheckListBox.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvCheckListBox.CreateParams(var Params: TCreateParams);
@@ -193,26 +180,16 @@ begin
     SendMessage(Handle, LB_SETHORIZONTALEXTENT, FMaxWidth, 0);
 end;
 
-procedure TJvCheckListBox.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
 procedure TJvCheckListBox.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FColor;
     if HotTrack then
       Ctl3D := True;
-    FOver := True;
+    inherited MouseEnter(Control);
   end;
-  inherited MouseEnter(Control);
 end;
 
 procedure TJvCheckListBox.WMHScroll(var Msg: TWMHScroll);
@@ -245,16 +222,12 @@ end;
 
 procedure TJvCheckListBox.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  if FOver then
+  if MouseOver then
   begin
-    Application.HintColor := FSaved;
     if HotTrack then
       Ctl3D := False;
-    FOver := False;
+    inherited MouseLeave(Control);
   end;
-  inherited MouseLeave(Control);
 end;
 
 function TJvCheckListBox.SearchExactString(Value: string;
