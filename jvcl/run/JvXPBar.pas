@@ -1658,7 +1658,7 @@ end;
 procedure TJvXPCustomWinXPBar.HookMouseLeave;
 begin
   inherited HookMouseLeave;
-  if (FHoverIndex <> -1) and (not FVisibleItems[FHoverIndex].Checked) then
+  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and (not FVisibleItems[FHoverIndex].Checked) then
     DoDrawItem(FHoverIndex, []);
 end;
 
@@ -1705,13 +1705,13 @@ begin
 
   if NewIndex <> FHoverIndex then
   begin
-    if FHoverIndex <> -1 then
+    if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) then
       if FVisibleItems[FHoverIndex].Checked then
         DoDrawItem(FHoverIndex, [dsClicked])
       else
         DoDrawItem(FHoverIndex, []);
     FHoverIndex := NewIndex;
-    if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex].Enabled) then
+    if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and (FVisibleItems[FHoverIndex].Enabled) then
     begin
       DoDrawItem(FHoverIndex, [dsFocused]);
       if FShowLinkCursor then
@@ -1903,7 +1903,7 @@ begin
   CallInherited := True;
   if (FShowRollButton) and (FHitTest <> htNone) then
     Collapsed := not Collapsed;
-  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex].Enabled) then
+  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and (FVisibleItems[FHoverIndex].Enabled) then
   begin
     AllowChange := True;
     if Assigned(FOnCanChange) then
@@ -2206,7 +2206,7 @@ end;
 function TJvXPCustomWinXPBar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   // draw the item hint (if available)
-  if FHoverIndex > -1 then
+  if (FHoverIndex > -1) and (FVisibleItems[FHoverIndex] <> nil) then
   begin
     HintInfo.CursorRect := GetItemRect(FHoverIndex);
     with VisibleItems[FHoverIndex] do
@@ -2328,7 +2328,7 @@ procedure TJvXPCustomWinXPBar.DblClick;
 var
   lItem: TJvXPBarItem;
 begin
-  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex].Enabled) then
+  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and (FVisibleItems[FHoverIndex].Enabled) then
   begin
     lItem := FVisibleItems[FHoverIndex];
     if Assigned(lItem.FOnDblClick) then
