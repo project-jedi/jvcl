@@ -280,9 +280,10 @@ begin
               tmp := FFolders[i];
             S.AddObject(tmp, TObject(i + j));
           end;
-        end
-        else
-          raise Exception.CreateFmt('Unable to open key %s', [cUninstallPath]);
+        end;
+        // peter3: this shouldn't be called
+//        else
+//          raise Exception.CreateFmt('Unable to open key %s', [cUninstallPath]);
         Items.AddStrings(S);
         S.Clear;
       end;
@@ -413,9 +414,10 @@ begin
           end;
           Items.AddStrings(S);
           S.Clear;
-        end
-        else
-          raise Exception.CreateFmt('Unable to open key %s', [cUninstallPath]);
+        end;
+        // peter3: this shouldn't be called
+//        else
+//          raise Exception.CreateFmt('Unable to open key %s', [cUninstallPath]);
       end;
   finally
     FFolders.Assign(FTmpFolders);
