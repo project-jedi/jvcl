@@ -162,6 +162,13 @@ type
     procedure RequiresUnits(Proc: TGetStrProc); override;
   end;
 
+  TJvFullColorListEditor=class (TClassProperty)
+  public
+    function GetAttributes:TPropertyAttributes; override;
+    procedure Edit; override;
+    procedure FormApply(Sender:TObject);
+  end;
+
 procedure Register;
 
 implementation
@@ -171,7 +178,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Math, SysUtils, GraphUtil, DesignConst, TypInfo,
-  ColorDialogs, ColorCtrls;
+  ColorDialogs, ColorCtrls, Forms, JvFullColorListFrm;
 
 const
   COLOR_PREVIEW_RECT = 16;
@@ -678,6 +685,31 @@ begin
     RequireClass(Proc, ColorCircleBaseFormClass);
 end;
 
+//=== { TJvFullColorListEditor } =============================================
+
+procedure TJvFullColorListEditor.Edit;
+var
+  AFullColorListForm:TJvFullColorListForm;
+begin
+  AFullColorListForm:=TJvFullColorListForm.Create(Application);
+  AFullColorListForm.OnApply:=FormApply;
+  AFullColorListForm.ColorList:=TJvFullColorList(GetOrdValueAt(0));
+  if (AFullColorListForm.Execute)
+    then FormApply(AFullColorListForm);
+  AFullColorListForm.Free;
+end;
+
+procedure TJvFullColorListEditor.FormApply(Sender: TObject);
+begin
+  SetOrdValue(Integer((Sender as TJvFullColorListForm).ColorList));
+end;
+
+function TJvFullColorListEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:=[paDialog, paVCL];
+end;
+
+
 procedure Register;
 begin
   RegisterPropertyEditor(TypeInfo(TColor), nil, '', TJvFullColorProperty);
@@ -690,6 +722,7 @@ begin
   RegisterSelectionEditor(TJvColorLabel, TJvColorSelection);
   RegisterSelectionEditor(TJvColorSpaceCombo, TJvColorSelection);
   RegisterSelectionEditor(TJvColorAxisConfigCombo, TJvColorSelection);
+  RegisterPropertyEditor(TypeInfo(TJvFullColorList), nil, '', TJvFullColorListEditor);
 end;
 
 {$IFDEF UNITVERSIONING}
@@ -706,7 +739,7 @@ initialization
 
 finalization
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -529,8 +529,10 @@ type
   TJvFullColorArray = array [0..MaxListSize - 1] of TJvFullColor;
   PJvFullColorArray = ^TJvFullColorArray;
 
-  TJvFullColorListEvent = procedure(Sender: TObject; Item: TJvFullColor;
-                                    Position: Integer) of object;
+  TJvFullColorListOperation = (foAllChanged, foDeleted, foAdded, foChanged);
+
+  TJvFullColorListEvent = procedure(Sender: TObject; Index:Integer;
+                          Operation: TJvFullColorListOperation) of object;
 
   EJvFullColorListError = class(Exception);
 
@@ -541,8 +543,10 @@ type
     FList: PJvFullColorArray;
     FOnChange: TJvFullColorListEvent;
     FUpdateCount: Integer;
+    FAllocBy: Integer;
     procedure SetCapacity(const Value: Integer);
     procedure SetCount(const Value: Integer);
+    procedure SetAllocBy(const Value: Integer);
   protected
     procedure Grow;
     function GetItem(Index: Integer): TJvFullColor;
@@ -550,12 +554,13 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure WriteItems(Writer: TWriter);
     procedure ReadItems(Reader: TReader);
-    procedure Change(AColor: TJvFullColor; AIndex: Integer);
+    procedure Change(AIndex: Integer; AOperation:TJvFullColorListOperation);
   public
     constructor Create;
     destructor Destroy; override;
 
     function Add(AColor: TJvFullColor): Integer;
+    procedure Assign(Source: TPersistent); override;
     procedure Clear;
     function Remove(AColor: TJvFullColor): Integer;
     procedure Delete(Index: Integer);
@@ -566,6 +571,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
 
+    property AllocBy:Integer read FAllocBy write SetAllocBy;
     property Items[Index: Integer]: TJvFullColor read GetItem write SetItem; default;
     property List: PJvFullColorArray read FList;
     property Capacity: Integer read FCapacity write SetCapacity;
@@ -600,7 +606,8 @@ type
     procedure SetBrush(const Value: TBrush);
   protected
     procedure Paint; override;
-    procedure ItemsChange(Sender: TObject; Item: TJvFullColor; Position: Integer);
+    procedure ItemsChange(Sender: TObject; Index:Integer;
+                          Operation: TJvFullColorListOperation);
     procedure BrushChange(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -3118,6 +3125,7 @@ begin
   FList:=nil;
   FCount:=0;
   FCapacity:=0;
+  FAllocBy:=2;
 end;
 
 destructor TJvFullColorList.Destroy;
@@ -3133,18 +3141,37 @@ begin
     Grow;
   FList^[Result] := AColor;
   Inc(FCount);
-  Change(AColor, Result);
+  Change(Result, foAdded);
 end;
 
-procedure TJvFullColorList.Change(AColor: TJvFullColor; AIndex: Integer);
+procedure TJvFullColorList.Assign(Source: TPersistent);
+var
+  Index:Integer;
+begin
+  if (Source is TJvFullColorList) then
+    with TJvFullColorList(Source) do
+  begin
+    Self.BeginUpdate;
+    Self.Count:=Count;
+    for Index:=0 to Self.Count-1 do
+      Self.Items[Index]:=Items[Index];
+    Self.EndUpdate;
+    Self.Change(-1,foAllChanged);
+  end
+  else inherited Assign(Source);
+end;
+
+procedure TJvFullColorList.Change(AIndex: Integer;
+  AOperation:TJvFullColorListOperation);
 begin
   if (UpdateCount = 0) and Assigned(FOnChange) then
-    FOnChange(Self, AColor, AIndex);
+    FOnChange(Self, AIndex, AOperation);
 end;
 
 procedure TJvFullColorList.Clear;
 begin
   Capacity := 0;
+  Change(-1,foAllChanged);
 end;
 
 procedure TJvFullColorList.DefineProperties(Filer: TFiler);
@@ -3154,19 +3181,15 @@ begin
 end;
 
 procedure TJvFullColorList.Delete(Index: Integer);
-var
-  Color: TJvFullColor;
 begin
   if (Index < 0) or (Index >= FCount) then
     EJvFullColorListError.CreateFmt(SListIndexError, [Index]);
-
-  Color := FList^[Index];
 
   Dec(FCount);
   if Index < Count then
     Move(FList^[Index + 1], FList^[Index], (Count - Index) * SizeOf(TJvFullColor));
 
-  Change(Color, -1);
+  Change(Index, foDeleted);
 end;
 
 procedure TJvFullColorList.DeleteRedundant;
@@ -3186,6 +3209,9 @@ begin
   Tmp := FList^[Index1];
   FList^[Index1] := FList^[Index2];
   FList^[Index2] := Tmp;
+
+  Change(Index1,foChanged);
+  Change(Index2,foChanged);
 end;
 
 function TJvFullColorList.GetItem(Index: Integer): TJvFullColor;
@@ -3198,10 +3224,7 @@ end;
 
 procedure TJvFullColorList.Grow;
 begin
-  if Capacity = 0 then
-    Capacity := 16
-  else
-    Capacity := 2 * Capacity;
+  Capacity:=Capacity+AllocBy;
 end;
 
 function TJvFullColorList.IndexOf(AColor: TJvFullColor): Integer;
@@ -3214,19 +3237,19 @@ end;
 
 procedure TJvFullColorList.Insert(Index: Integer; AColor: TJvFullColor);
 begin
-  if (Index >= Count) or (Index < 0) then
+  if (Index > Count) or (Index < 0) then
     EJvFullColorListError.CreateFmt(sListIndexError, [Index]);
 
-  if Count = Capacity then
+  if (Count = Capacity) then
     Grow;
 
-  if Index < Count then
+  if (Index < Count) then
     Move(FList^[Index], FList^[Index + 1], (FCount - Index) * SizeOf(TJvFullColor));
 
   FList^[Index] := AColor;
   Inc(FCount);
 
-  Change(AColor, Index);
+  Change(Index, foAdded);
 end;
 
 procedure TJvFullColorList.BeginUpdate;
@@ -3236,16 +3259,16 @@ end;
 
 procedure TJvFullColorList.ReadItems(Reader: TReader);
 begin
-  Reader.ReadListBegin;
-  BeginUpdate;
   try
+    Reader.ReadListBegin;
+    BeginUpdate;
     Clear;
     while not Reader.EndOfList do
       Add(Reader.ReadInteger);
   finally
     EndUpdate;
+    Reader.ReadListEnd;
   end;
-  Reader.ReadListEnd;
 end;
 
 function TJvFullColorList.Remove(AColor: TJvFullColor): Integer;
@@ -3255,6 +3278,11 @@ begin
     Delete(Result);
 end;
 
+procedure TJvFullColorList.SetAllocBy(const Value: Integer);
+begin
+  FAllocBy := Max(Value,1);
+end;
+
 procedure TJvFullColorList.SetCapacity(const Value: Integer);
 begin
   ReallocMem(FList, Value * SizeOf(TJvFullColor));
@@ -3262,16 +3290,16 @@ begin
   if FCount > FCapacity then
   begin
     FCount := FCapacity;
-    // (rom) this needs a comment to explain the special parameters
-    Change(0, -2);
+    Change(-1, foAllChanged);
   end;
 end;
 
 procedure TJvFullColorList.SetCount(const Value: Integer);
 begin
   FCount := Value;
-  if FCount > FCapacity then
+  if (FCount > FCapacity) then
     Capacity := FCount;
+  Change(-1, foAllChanged);
 end;
 
 procedure TJvFullColorList.SetItem(Index: Integer; const Value: TJvFullColor);
@@ -3280,14 +3308,14 @@ begin
     EJvFullColorListError.CreateFmt(sListIndexError, [Index]);
 
   FList^[Index] := Value;
+  Change(Index,foChanged);
 end;
 
 procedure TJvFullColorList.EndUpdate;
 begin
-  if FUpdateCount > 0 then
-    Dec(FUpdateCount);
-  // (rom) this needs a comment to explain the special parameters
-  Change(0, -2);
+  if FUpdateCount > 0
+    then Dec(FUpdateCount)
+    else Change(-1,foAllChanged);
 end;
 
 procedure TJvFullColorList.WriteItems(Writer: TWriter);
@@ -3333,25 +3361,38 @@ var
    RowCount:Integer;
 begin
   XOffset:=Width - (FSquareSize*ColCount) - 2;
-  XInc:=XOffset div (ColCount+1);
-  XOffset:=((XOffset-(XInc*(ColCount-1))) div 2) + 1;
-  XPos:=XOffset;
+  XInc:=XOffset div ColCount;
+  XPos:=((XOffset-(XInc*(ColCount-1))) div 2) + 1;
 
   RowCount:=(Items.Count div ColCount)+1;
   YOffset:=Height - (FSquareSize*RowCount) - 2;
   if (RowCount=1)
     then YInc:=0
-    else YInc:=YOffset div (RowCount+1);
-  YOffset:=((YOffset-(YInc*(RowCount-1))) div 2) + 1;
-  YPos:=YOffset;
+    else YInc:=YOffset div RowCount;
+  YPos:=YOffset-((YInc*(RowCount+1)) div 2) + 1;
 end;
 
-procedure TJvFullColorGroup.ItemsChange(Sender: TObject; Item: TJvFullColor;
-  Position: Integer);
+procedure TJvFullColorGroup.ItemsChange(Sender: TObject; Index:Integer;
+                          Operation: TJvFullColorListOperation);
 begin
-  FMouseIndex:=-1;
-  FSelectedIndex:=EnsureRange(FSelectedIndex,-1,Items.Count-1);
-  Refresh;
+  case Operation of
+    foAllChanged :
+      begin
+        FMouseIndex:=-1;
+        FSelectedIndex:=-1;
+        Invalidate;
+      end;
+    foDeleted :
+      begin
+        FMouseIndex:=-1;
+        FSelectedIndex:=EnsureRange(FSelectedIndex,-1,Items.Count-1);
+        Invalidate;
+      end;
+    foAdded :
+      Invalidate;
+    foChanged :
+      InvalidateIndex(Index);
+  end;
 end;
 
 procedure TJvFullColorGroup.BrushChange(Sender: TObject);
@@ -3453,7 +3494,9 @@ begin
   end;
 
   InvalidateIndex(MouseIndex);
-  FMouseIndex:=EnsureRange((RowIndex*ColCount)+ColIndex,0,Items.Count-1);
+  FMouseIndex:=(RowIndex*ColCount)+ColIndex;
+  if (MouseIndex>(Items.Count-1))
+    then FMouseIndex:=-1;
   InvalidateIndex(MouseIndex);
 end;
 
@@ -3505,36 +3548,62 @@ procedure TJvFullColorGroup.Paint;
     end;
   end;
 var
-  Index:Integer;
+  Index, IndexX, IndexY, XMaj:Integer;
   XOffset, YOffset, XInc, YInc:Integer;
   X, Y:Integer;
   AEdge:TJvFullColorEdge;
+  ClipRect:TRect;
 begin
-   BevelRect(Rect(0, 0, Width - 1, Height - 1),FEdge,bsSolid, Color);
+  CalcRects(XOffset,YOffset,XInc,YInc);
+  BevelRect(Rect(0, 0, Width - 1, Height - 1),FEdge,bsClear, Color);
 
-   CalcRects(XOffset,YOffset,XInc,YInc);
+  Y:=YOffset;
+  X:=XOffset;
+  ClipRect:=Canvas.ClipRect;
 
-   Y:=YOffset;
-   X:=XOffset;
+  Index:=0;
+  while (Index<Items.Count) do
+  begin
+    if (Index=SelectedIndex)
+      then AEdge:=SelectedEdge
+      else if (Index=MouseIndex)
+             then AEdge:=MouseEdge
+             else AEdge:=feFlat;
 
-   Index:=0;
-   while (Index<Items.Count) do
-   begin
-     if (Index=SelectedIndex)
-       then AEdge:=SelectedEdge
-       else if (Index=MouseIndex)
-              then AEdge:=MouseEdge
-              else AEdge:=feFlat;
-     BevelRect(Rect(X,Y,X+FSquareSize,Y+FSquareSize),AEdge,Brush.Style,
-       ColorSpaceManager.ConvertToID(Items[Index],csRGB));
-     Inc(Index);
-     if ((Index mod ColCount)=0) then
-     begin
-          X:=XOffset;
-          Inc(Y,YInc+FSquareSize);
-     end
-     else Inc(X,XInc+FSquareSize);
-   end;
+    BevelRect(Rect(X,Y,X+FSquareSize,Y+FSquareSize),AEdge,Brush.Style,
+      ColorSpaceManager.ConvertToID(Items[Index],csRGB));
+    Inc(Index);
+    if ((Index mod ColCount)=0) then
+    begin
+      X:=XOffset;
+      Inc(Y,YInc+FSquareSize);
+    end
+    else Inc(X,XInc+FSquareSize);
+  end;
+
+  with Canvas do
+  begin
+    Brush.Style:=bsSolid;
+    Brush.Color:=Color;
+    Pen.Color:=Color;
+    Y:=YOffset;
+    for IndexY:=0 to (Items.Count div ColCount)+1 do
+    begin
+      Rectangle(Max(ClipRect.Left,1),Max(Y-YInc+1,1),
+                Min(ClipRect.Right,Width-2),Min(Y,Height-2));
+      X:=XOffset;
+      for IndexX:=0 to ColCount do
+      begin
+        if ((IndexX+(IndexY*ColCount))>=Items.Count)
+          then XMaj:=FSquareSize+1
+          else XMaj:=0;
+        Rectangle(Max(X-XInc+1,1),Min(Max(Y,1),Height-2),
+                  Min(X+XMaj,Width-2),Min(Y+FSquareSize+1,Height-2));
+        Inc(X,XInc+FSquareSize);
+      end;
+      Inc(Y,YInc+FSquareSize);
+    end;
+  end;
 end;
 
 procedure TJvFullColorGroup.SetEdge(const Value: TJvFullColorEdge);

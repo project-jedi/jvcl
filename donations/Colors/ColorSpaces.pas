@@ -72,7 +72,7 @@ const
   XYZ_MIN = 0;
   XYZ_MAX = 255;
   LAB_MIN = 0;
-  LAB_MAX = 100;
+  LAB_MAX = 255;
   DEF_MIN = 0;
   DEF_MAX = 255;
 
