@@ -51,7 +51,7 @@ type
   TJvTimeLineState = (tlDragPending, tlDragging, tlMouseDown, tlClearPending);
   TJvTimeLineStates = set of TJvTimeLineState;
 
-  {$IFDEF BCB}
+{$IFDEF BCB}
   TDate = TDateTime;
   {$ENDIF BCB}
 
@@ -238,7 +238,6 @@ type
     FStates: TJvTimeLineStates;
     FRangeAnchor: TJvTimeItem;
     FDragItem: TJvTimeItem;
-    function GetCanvas: TCanvas;
     procedure SetHelperYears(Value: Boolean);
     procedure SetFlat(Value: Boolean);
     procedure SetScrollArrows(Value: TJvScrollArrows);
@@ -308,7 +307,8 @@ type
     procedure ItemMoved(Item: TJvTimeItem; var NewDate: TDateTime; var NewLevel: Integer); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+      override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure DblClick; override;
     procedure Click; override;
@@ -328,12 +328,12 @@ type
     procedure UpdateItems; virtual;
     procedure UpdateItemHint(X,Y:integer);
     procedure CreateWnd; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
     function GetDragImages: TDragImageList; override;
     property Align default alTop;
     property Color default clWindow;
     { new properties }
-    property Canvas: TCanvas read GetCanvas;
     property Year: Word read GetYear write SetYear;
     property Month: Word read GetMonth write SetMonth;
     property Selected: TJvTimeItem read FSelectedItem write SetSelectedItem;
@@ -342,14 +342,18 @@ type
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
       default bsSingle;
     property DragLine: Boolean read FDragLine write FDragLine default True;
-    property ShowItemHint: Boolean read FShowItemHint write FShowItemHint default False;
+    property ShowItemHint: Boolean read FShowItemHint write FShowItemHint default
+      False;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
-    property HelperYears: Boolean read FHelperYears write SetHelperYears default True;
-    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
+    property HelperYears: Boolean read FHelperYears write SetHelperYears default
+      True;
+    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default
+      False;
     property Flat: Boolean read FFlat write SetFlat default False;
-    property Hint: string read GetHint write SetHint;
+    property Hint:string read GetHint write SetHint; 
     property YearFont: TFont read FYearFont write SetYearFont;
-    property YearWidth: TJvYearWidth read FYearWidth write SetYearWidth default 140;
+    property YearWidth: TJvYearWidth read FYearWidth write SetYearWidth default
+      140;
     property TopOffset: Integer read FTopOffset write SetTopOffset default 21;
     property ShowMonthNames: Boolean read FShowMonths write SetShowMonths;
     property ShowDays: Boolean read FShowDays write SetShowDays default False;
@@ -358,23 +362,31 @@ type
     property Items: TJvTimeItems read FTimeItems write SetTimeItems;
     property ItemHeight: Integer read FItemHeight write SetItemHeight default 12;
     //    property ItemAlign:TItemAlign read FItemAlign write SetItemAlign default tiCenter;
-    property VertSupports: Boolean read FSupportLines write SetSupportLines default False;
+    property VertSupports: Boolean read FSupportLines write SetSupportLines
+      default False;
     property HorzSupports: Boolean read FHorzSupport write SetHorzSupport;
-    property Style: TJvTimeLineStyle read FStyle write SetStyle default tlDefault;
+    property Style: TJvTimeLineStyle read FStyle write SetStyle default
+      tlDefault;
     property TopLevel: Integer read FTopLevel write SetTopLevel default 0;
     property ScrollArrows: TJvScrollArrows read FScrollArrows write
       SetScrollArrows default [scrollLeft..scrollDown];
-    property OnItemClick: TJvTimeItemClickEvent read FOnItemClick write FOnItemClick;
-    property OnItemDblClick: TJvTimeItemClickEvent read FOnItemDblClick write FOnItemDblClick;
+    property OnItemClick: TJvTimeItemClickEvent read FOnItemClick write
+      FOnItemClick;
+    property OnItemDblClick: TJvTimeItemClickEvent read FOnItemDblClick write
+      FOnItemDblClick;
     property OnSize: TNotifyEvent read FOnSize write FOnSize;
     property OnHorzScroll: TScrollEvent read FOnHorzScroll write FOnHorzScroll;
     property OnVertScroll: TScrollEvent read FOnVertScroll write FOnVertScroll;
-    property OnDrawItem: TJvDrawTimeItemEvent read FOnDrawItem write FOnDrawItem;
-    property OnMeasureItem: TJvMeasureTimeItemEvent read FOnMeasureItem write FOnMeasureItem;
+    property OnDrawItem: TJvDrawTimeItemEvent read FOnDrawItem write
+      FOnDrawItem;
+    property OnMeasureItem: TJvMeasureTimeItemEvent read FOnMeasureItem write
+      FOnMeasureItem;
     property OnSaveItem: TJvStreamItemEvent read FOnSaveItem write FOnSaveItem;
     property OnLoadItem: TJvStreamItemEvent read FOnLoadItem write FOnLoadItem;
-    property OnItemMoved: TJvItemMovedEvent read FOnItemMoved write FOnItemMoved;
-    property OnItemMoving: TJvItemMovingEvent read FOnItemMoving write FOnItemMoving;
+    property OnItemMoved: TJvItemMovedEvent read FOnItemMoved write
+      FOnItemMoved;
+    property OnItemMoving: TJvItemMovingEvent read FOnItemMoving write
+      FOnItemMoving;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -786,7 +798,6 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
-
 procedure TJvTLScrollBtn.MouseEnter(Control: TControl);
 begin
   if ThemeServices.ThemesEnabled and not (FMouseInControl) and not (csDesigning in ComponentState) then
@@ -806,7 +817,6 @@ begin
     Invalidate;
   end;
 end;
-
 {$ENDIF JVCLThemesEnabled}
 
 procedure TJvTLScrollBtn.Paint;
@@ -1052,6 +1062,9 @@ begin
 
   FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self;
+  FCanvas.Pen.Color := clBlack;
+  FCanvas.Pen.Mode := pmNotXor;
+  FCanvas.Pen.Style := psDot;
 
   Bmp := TBitmap.Create;
   FItemHintImageList := TImageList.CreateSize(14, 6);
@@ -1106,6 +1119,7 @@ end;
 destructor TJvCustomTimeLine.Destroy;
 begin
   FDragImages.Free;
+  FCanvas.Free;
   FYearList.Free;
   FBmp.Free;
   FList.Free;
@@ -1114,15 +1128,7 @@ begin
   FYearFont.Free;
   FItemHintImageList.Free;
   inherited Destroy;
-  // (rom) destroy Canvas AFTER inherited Destroy
-  FCanvas.Free;
 end;
-
-function TJvCustomTimeLine.GetCanvas: TCanvas;
-begin
-  Result := FCanvas;
-end;
-
 procedure TJvCustomTimeLine.DoYearFontChange(Sender: TObject);
 begin
   Invalidate;
@@ -1149,6 +1155,7 @@ begin
       FArrows[I].UpdatePlacement;
   end;
 end;
+
 
 procedure TJvCustomTimeLine.UpdateOffset;
 begin
@@ -1521,16 +1528,10 @@ end;
 
 procedure TJvCustomTimeLine.DrawDragLine(X: Integer);
 begin
-  if not DragLine or (csDestroying in ComponentState) then
+  if not DragLine then
     Exit;
-  with FCanvas do
-  begin
-    Pen.Color := clBlack;
-    Pen.Mode := pmNotXor;
-    Pen.Style := psDot;
-    MoveTo(X, 0);
-    LineTo(X, ClientHeight);
-  end;
+  FCanvas.MoveTo(X, 0);
+  FCanvas.LineTo(X, ClientHeight);
 end;
 
 procedure TJvCustomTimeLine.MoveDragLine(ANewX: Integer);
@@ -1577,7 +1578,7 @@ begin
       if ResetLevels then
       begin
         Items[I].Level := 0;
-        UpdateItem(Items[I].Index, FCanvas);
+        UpdateItem(Items[I].Index, Canvas);
       end;
       FList.Add(Items[I]);
     end;
@@ -1596,7 +1597,7 @@ begin
           (FList[I] <> FList[J]) then
         begin
           TJvTimeItem(FList[J]).Level := TJvTimeItem(FList[J]).Level + 1;
-          UpdateItem(TJvTimeItem(FList[J]).Index, FCanvas);
+          UpdateItem(TJvTimeItem(FList[J]).Index, Canvas);
         end;
     end;
   finally
@@ -1609,7 +1610,7 @@ begin
   if Assigned(Item) and not (csDestroying in ComponentState) then
   begin
     Item.Selected := True;
-    UpdateItem(Item.Index, FCanvas);
+    UpdateItem(Item.Index, Canvas);
   end;
 end;
 
@@ -1835,7 +1836,7 @@ begin
   FYearList.Clear;
   UpdateOffset;
   { draw the top horizontal line }
-  with FCanvas do
+  with Canvas do
   begin
     Font := Self.Font;
     Brush.Color := Color;
@@ -1854,7 +1855,7 @@ begin
   fYr := Y;
   DecodeDate(GetLastDate, Y, M, D);
   aShadowRight := IntToStr(Y);
-  SetBkMode(FCanvas.Handle, Windows.Transparent);
+  SetBkMode(Canvas.Handle, Windows.Transparent);
   LastDate := FFirstDate;
   FirstYear := True;
   while LastDate <= (GetLastDate + 5) do
@@ -1862,13 +1863,13 @@ begin
     DecodeDate(LastDate, Y, M, D);
     if M <> 1 then
     begin { not a new year, so it's a month }
-      DrawMonth(FCanvas, I, M);
+      DrawMonth(Canvas, I, M);
       if FSupportLines and ((FYearWidth >= 140) or (M mod 3 = 1)) then
-        DrawVertSupport(FCanvas, I);
+        DrawVertSupport(Canvas, I);
       if FShowMonths and (FYearWidth >= 140) then
-        DrawMonthName(FCanvas, M, I);
+        DrawMonthName(Canvas, M, I);
       if FShowDays and (FYearWidth >= 1200) then
-        DrawDays(FCanvas, MonthDays[IsLeapYear(Y), M], I);
+        DrawDays(Canvas, MonthDays[IsLeapYear(Y), M], I);
     end
     else
     begin { this is a new year }
@@ -1879,12 +1880,12 @@ begin
         FirstYear := False;
       end;
       if FSupportLines then
-        DrawVertSupport(FCanvas, I);
+        DrawVertSupport(Canvas, I);
       { draw text for january here }
       if FShowMonths and (FYearWidth >= 144) then
-        DrawMonthName(FCanvas, M, I);
+        DrawMonthName(Canvas, M, I);
       if FShowDays and (FYearWidth >= 1200) then
-        DrawDays(FCanvas, MonthDays[IsLeapYear(Y), M], I);
+        DrawDays(Canvas, MonthDays[IsLeapYear(Y), M], I);
     end;
     Inc(I, Trunc(FMonthWidth));
 
@@ -1908,17 +1909,17 @@ begin
   end;
   for I := 0 to FYearList.Count - 1 do
   begin
-    DrawYear(FCanvas, Integer(FYearList[I]), IntToStr(fYr));
+    DrawYear(Canvas, Integer(FYearList[I]), IntToStr(fYr));
     Inc(fYr);
   end;
   if HorzSupports then
-    DrawHorzSupports(FCanvas);
+    DrawHorzSupports(Canvas);
   UpdateItems;
   DrawScrollButtons;
   if FShowHiddenItemHints then
   begin
-    DrawLeftItemHint(FCanvas);
-    DrawRightItemHint(FCanvas);
+    DrawLeftItemHint(Canvas);
+    DrawRightItemHint(Canvas);
   end;
 end;
 
@@ -1969,7 +1970,7 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
-  with FCanvas do
+  with Canvas do
   begin
     Tmp := Pen.Color;
     Pen.Color := clNavy;
@@ -1985,7 +1986,7 @@ procedure TJvCustomTimeLine.Paint;
 begin
   if (FUpdate <> 0) or (csDestroying in ComponentState) then
     Exit;
-  DrawTimeLine(FCanvas);
+  DrawTimeLine(Canvas);
   if Focused then
     DrawFocus;
 end;
@@ -2054,7 +2055,7 @@ begin
       end
       else
       begin
-        R.Bottom := Min(R.Top + CanvasMaxTextHeight(ACanvas), R.Bottom);
+        R.Bottom := Min(R.Top + ACanvas.TextHeight('Wq'), R.Bottom);
         ACanvas.Rectangle(R);
         if Item.Selected and Item.Enabled then
           ACanvas.DrawFocusRect(R);
@@ -2138,8 +2139,8 @@ begin
     Exit;
   FNewHeight := 0;
   for I := 0 to FTimeItems.Count - 1 do
-    UpdateItem(I, FCanvas);
-  if AutoSize and (Align in [alTop, alBottom, alNone]) and
+    UpdateItem(I, Canvas);
+  if FAutoSize and (Align in [alTop, alBottom, alNone]) and
     (Height <> FNewHeight + FScrollHeight + 2) and (Items.Count > 0) then
   begin
     Height := FNewHeight + FScrollHeight + 2;
@@ -2383,6 +2384,7 @@ begin
   inherited;
 end;
 
+
 procedure TJvCustomTimeLine.CMEnter(var Msg: TWMNoParams);
 begin
   if CanFocus then
@@ -2400,6 +2402,7 @@ begin
   inherited;
   Invalidate;
 end;
+
 
 procedure TJvCustomTimeLine.ItemMoved(Item: TJvTimeItem; var NewDate: TDateTime; var NewLevel: Integer);
 begin
