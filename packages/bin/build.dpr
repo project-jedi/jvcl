@@ -46,6 +46,7 @@ var
   UnitOutDir: string;
   MakeOptions: string = '';
   Verbose: Boolean = False;
+  Force: Boolean = False; // force even if the target is not installed
 
   DccOpt: string = '-Q -M';
   LibDir, DcpDir, BplDir: string;
@@ -447,27 +448,21 @@ begin
   end;
 end;
 
-procedure AddNewestEdition;
+function GetNewestEditionName: string;
 var
   i: Integer;
-  Tg: string;
+begin
+  Result := 'd5';
+  for i := High(Targets) downto 0 do
+    if (Length(Targets[i].Name) >= 2) and (Result[2] <= Targets[i].Name[2]) then
+      if GetRootDirOf(Copy(Targets[i].Name, 1, 2)) <> '' then
+        Result := Targets[i].Name;
+end;
+
+procedure AddNewestEdition;
 begin
   Editions := nil;
-  Tg := 'd5';
-  for i := High(Targets) downto 0 do
-  begin
-    if Length(Targets[i].Name) = 2 then
-    begin
-      if Tg[2] <= Targets[i].Name[2] then
-      begin
-        if GetRootDirOf(Targets[i].Name) <> '' then
-        begin
-          Tg := Targets[i].Name;
-        end;
-      end;
-    end;
-  end;
-  AddEdition(Tg);
+  AddEdition(GetNewestEditionName);
 end;
 
 procedure Help;
@@ -505,6 +500,7 @@ begin
   WriteLn('                    (Example:');
   WriteLn('                      buildtarget "--targets=JvCoreD7R.bpl JvCoreD7R.bpl" )');
   WriteLn('    --verbose       Show all commands that are executed.');
+  WriteLn('    --force         Compile/Generate even if the target is not installed.');
   WriteLn;
 end;
 
@@ -567,6 +563,10 @@ begin
       else if SameText('--verbose', S) then
       begin
         Verbose := True;
+      end
+      else if SameText('--force', S) then
+      begin
+        Force := True;
       end;
     end
     else
@@ -665,10 +665,23 @@ begin
       WriteLn('################################ ' + Edition + ' #########################################');
 
     Root := GetRootDirOf(Edition);
-    if Root = '' then
+    if not Force then
     begin
-      WriteLn('Delphi/BCB version not installed.');
-      Continue;
+      if Root = '' then
+      begin
+        WriteLn('Delphi/BCB version not installed.');
+        Continue;
+      end;
+    end
+    else
+    begin
+      if Root = '' then
+        Root := GetRootDirOf(GetNewestEditionName);
+      if Root = '' then
+      begin
+        WriteLn('No Delphi/BCB version installed.');
+        Continue;
+      end;
     end;
     Version := Edition[2];
     PkgDir := Edition;
@@ -727,6 +740,8 @@ begin
     ExitCode := Execute('"' + Root + '\bin\make.exe" -l+ -f makefile.mak' + MakeOptions);
     if ExitCode <> 0 then
     begin
+      if ExitCode < 0 then
+        WriteLn('Failed: ', '"' + Root + '\bin\make.exe" -l+ -f makefile.mak' + MakeOptions);
       WriteLn('Press ENTER to continue');
       ReadLn;
     end;

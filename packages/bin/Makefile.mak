@@ -128,13 +128,19 @@ Bpg2Make.exe:
 	$(DEVTOOLS)\bin\Bpg2Make.exe "..\$(PKGDIR) Packages.bpg"
 
 ################################################################################
+GenerateAllPackages:
+	@echo [Compiling: pg.exe]
+	@cd $(DEVTOOLS)
+	$(MAKE) $(QUIET) -f makefile.mak pg.exe
+	@cd $(DEVTOOLS_BACK)
+	echo [Generating: JVCL Packages]
+	$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -x=$(DEVTOOLS)\bin\pgEdit.xml
+
+################################################################################
 GeneratePackages:
 	@echo [Compiling: pg.exe]
 	@cd $(DEVTOOLS)
-	#-SET C5PFLAGS=
-	#if $(VERSION)==5 SET C5PFLAGS=-LUvcl50
 	$(MAKE) $(QUIET) -f makefile.mak pg.exe
-	#-SET C5PFLAGS=
 	@cd $(DEVTOOLS_BACK)
 	echo [Generating: JVCL Packages]
 	$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(EDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml

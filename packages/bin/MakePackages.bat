@@ -1,3 +1,3 @@
 @echo off
 
-build.exe all c6p d6p d7p --make=GeneratePackages "%1" "%2" "%3" "%4" "%5" "%6" "%7" "%8" "%9"
+build.exe newest --make=GenerateAllPackages "%1" "%2" "%3" "%4" "%5" "%6" "%7" "%8" "%9"
