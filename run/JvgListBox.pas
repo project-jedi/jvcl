@@ -49,12 +49,12 @@ const
 type
   TglLBWallpaperOption = (fwlNone, fwlStretch, fwlTile, fwlGlobal);
   TglLBChangeEvent = procedure(Sender: TObject; OldSelItemIndex, SelItemIndex:
-    integer) of object;
+    Integer) of object;
   TglLBOnDrawEvent = procedure(Sender: TObject; Message: TWMDrawItem) of
     object;
   TglOnGetDragImageEvent = procedure(Sender: TObject; Bitmap: TBitmap; var
     TransparentColor: TColor;
-    var HotSpotX, HotSpotY: integer) of object;
+    var HotSpotX, HotSpotY: Integer) of object;
 
   TJvgListBox = class(TCustomListBox)
   private
@@ -72,7 +72,7 @@ type
     FGlyphs: TImageList;
     FItemHeight: word;
     FTextAlign_: UINT;
-    HotTrackingItemIndex: integer;
+    HotTrackingItemIndex: Integer;
     FOptions: TglListBoxOptions;
     FChangeGlyphColor: TJvgTwainColors;
     FDragImage: TImageList;
@@ -86,8 +86,8 @@ type
     WallpaperBmp: TBitmap;
     TmpBitmap: TBitmap;
     OldSelItemIndex,
-      SelItemIndex: integer;
-    fUseWallpaper: boolean;
+      SelItemIndex: Integer;
+    fUseWallpaper: Boolean;
     fAboutJVCL: TJVCLAboutInfo;
     procedure SetAutoTrColor(Value: TglAutoTransparentColor);
     procedure SetWallpaper(Value: TBitmap);
@@ -111,9 +111,7 @@ type
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure WMMouseMove(var Message: TMessage); message WM_MOUSEMOVE;
   protected
-    function GetSelCount: integer;
-    {$IFDEF COMPILER6_UP} override;
-    {$ENDIF}
+    function GetSelCount: Integer; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
@@ -122,19 +120,16 @@ type
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure InitState(var State: TOwnerDrawState; ByteState: Byte);
   public
-    FLeftIndent: integer;
-    FreeObjectsOnDestroy: boolean;
-    IndentLeft,
-      IndentRight,
-      TextIndent: integer;
+    FLeftIndent: Integer;
+    FreeObjectsOnDestroy: Boolean;
+    IndentLeft, IndentRight, TextIndent: Integer;
     property SelectedObject: Pointer read GetSelectedObject;
-    property SelCount: integer read GetSelCount;
+    property SelCount: Integer read GetSelCount;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetDragImages: TDragImageList; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
-      False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
 
     property Anchors;
     property Align;
@@ -172,40 +167,31 @@ type
     property AutoTransparentColor: TglAutoTransparentColor
       read FAutoTrColor write SetAutoTrColor default ftcLeftBottomPixel;
     property Wallpaper: TBitmap read GetWallpaper write SetWallpaper;
-    property WallpaperImage: TImage read FWallpaperImage write
-      SetWallpaperImage;
-    property WallpaperOption: TglLBWallpaperOption read FWallpaperOption write
-      SetWOpt default fwlNone;
+    property WallpaperImage: TImage read FWallpaperImage write SetWallpaperImage;
+    property WallpaperOption: TglLBWallpaperOption read FWallpaperOption write SetWOpt default fwlNone;
     property NumGlyphs: word read FNumGlyphs write SetNumGlyphs default 1;
     property GlyphsAlign: TJvg2DAlign read FGlyphsAlign write FGlyphsAlign;
     property ItemStyle: TJvgListBoxItemStyle read FItemStyle write FItemStyle;
-    property ItemSelStyle: TJvgListBoxItemStyle read FItemSelStyle write
-      FItemSelStyle;
+    property ItemSelStyle: TJvgListBoxItemStyle read FItemSelStyle write FItemSelStyle;
     property Glyphs: TImageList read FGlyphs write SetGlyphs;
     property TextAlign: TJvg2DAlign read FTextAlign write FTextAlign;
     property ItemHeight: word read FItemHeight write SetItemHeight default 0;
-    property TransparentColor: TColor read FTransparentColor write
-      SetTransparentColor;
-    property HotTrackColor: TColor read FHotTrackColor write SetHotTrackColor
-      default clBlue;
+    property TransparentColor: TColor read FTransparentColor write SetTransparentColor;
+    property HotTrackColor: TColor read FHotTrackColor write SetHotTrackColor default clBlue;
     property Options: TglListBoxOptions read FOptions write SetOptions;
-    property ChangeGlyphColor: TJvgTwainColors read FChangeGlyphColor write
-      FChangeGlyphColor;
+    property ChangeGlyphColor: TJvgTwainColors read FChangeGlyphColor write FChangeGlyphColor;
     property OnDrawItem: TglLBOnDrawEvent read FOnDrawItem write FOnDrawItem;
     property OnChange: TglLBChangeEvent read FOnChange write FOnChange;
-    property OnGetItemColor: TglOnGetItemColorEvent read FOnGetItemColor write
-      FOnGetItemColor;
-    property OnGetItemFontColor: TglOnGetItemColorEvent read
-      FOnGetItemFontColor write FOnGetItemFontColor;
-    property OnGetDragImage: TglOnGetDragImageEvent read FOnGetDragImage write
-      FOnGetDragImage;
-
+    property OnGetItemColor: TglOnGetItemColorEvent read FOnGetItemColor write FOnGetItemColor;
+    property OnGetItemFontColor: TglOnGetItemColorEvent read FOnGetItemFontColor
+       write FOnGetItemFontColor;
+    property OnGetDragImage: TglOnGetDragImageEvent read FOnGetDragImage write FOnGetDragImage;
   end;
 
   TJvgCheckListBox = class(TJvgListBox)
   private
-    FCheckWidth, FCheckHeight: integer;
-    function GetState(Index: integer): TCheckBoxState;
+    FCheckWidth, FCheckHeight: Integer;
+    function GetState(Index: Integer): TCheckBoxState;
     procedure SetChecked(Index: Integer; State: TCheckBoxState);
     function GetChecked(Index: Integer): TCheckBoxState;
     //    procedure ToggleClickCheck( Index: Integer );
@@ -213,15 +199,12 @@ type
     procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
     procedure DrawCheck(R: TRect; AState: TCheckBoxState);
   protected
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
-      Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
   public
-    property Checked[Index: Integer]: TCheckBoxState read GetChecked write
-    SetChecked;
+    property Checked[Index: Integer]: TCheckBoxState read GetChecked write SetChecked;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-
   end;
 
 implementation
@@ -307,7 +290,7 @@ begin
     GetParentImageRect(self, Bounds(Left, Top, Width, Height),
       FWallpaper.Canvas.Handle);
     WallpaperBmp := FWallpaper;
-    fUseWallpaper := true;
+    fUseWallpaper := True;
   end
   else
   begin
@@ -330,7 +313,7 @@ end;
 
 procedure TJvgListBox.DestroyWnd;
 var
-  i: integer;
+  i: Integer;
 begin //...free all objects is assotiated with items
   if FreeObjectsOnDestroy then
     for i := 0 to Items.Count do
@@ -346,9 +329,9 @@ end;
 procedure TJvgListBox.CNMeasureItem(var Message: TWMMeasureItem);
 var
   r: TRect;
-  Shift: integer;
+  Shift: Integer;
 const
-  WordBreak: array[boolean] of integer = (0, DT_WORDBREAK);
+  WordBreak: array[Boolean] of Integer = (0, DT_WORDBREAK);
 begin
   if csReading in ComponentState then
     exit;
@@ -381,7 +364,7 @@ begin
         inc(Shift);
     if (ItemStyle.TextStyle <> fstNone) or (ItemSelStyle.TextStyle <> fstNone) then
       inc(Shift, 2);
-    if Assigned(FGlyphs) and (FGlyphs.Height > integer(itemHeight)) then
+    if Assigned(FGlyphs) and (FGlyphs.Height > Integer(itemHeight)) then
       itemHeight := FGlyphs.Height;
     inc(Message.MeasureItemStruct^.itemHeight, Shift);
     if (FItemHeight > 0)
@@ -398,7 +381,7 @@ var
   R, TxtRect: TRect;
   State: TOwnerDrawState;
   ItemStyle: TJvgListBoxItemStyle;
-  fSelected, fDrawWallpapper: boolean;
+  fSelected, fDrawWallpapper: Boolean;
   DC: HDC;
   Image: TBitmap;
   TargetCanvas: TCanvas;
@@ -406,7 +389,7 @@ var
 
   procedure DrawGlyph(r: TRect);
   var
-    i, FTranspColor: integer;
+    i, FTranspColor: Integer;
     OldRect: TRect;
   begin
     if (FGlyphs = nil) or (FGlyphs.Count = 0) then
@@ -444,7 +427,7 @@ var
 
       //      if fDrawWallpapper then
       CreateBitmapExt(DC, TmpBitmap, Rect(0, 0, 100, 100), r.left, r.top,
-        fwoNone, fdsDefault, true, FTranspColor, clBlack)
+        fwoNone, fdsDefault, True, FTranspColor, clBlack)
         //      else begin
  //        ChangeBitmapColor( TmpBitmap, FTranspColor, ItemStyle.Color );
  //        BitBlt( DC, r.left, r.top, TmpBitmap.Width, TmpBitmap.Height, TmpBitmap.Canvas.handle,
@@ -455,9 +438,9 @@ var
 
   procedure DrawWallpaper; //( DC: HDC; r:TRect );
 
-    procedure FillTiled(R: TRect; yOffset: integer);
+    procedure FillTiled(R: TRect; yOffset: Integer);
     var
-      Y, x_, y_, IWidth, IHeight: integer;
+      Y, x_, y_, IWidth, IHeight: Integer;
     begin
       IWidth := min(r.right - r.left + 1, WallpaperBmp.Width);
       IHeight := min(r.bottom - r.top, WallpaperBmp.Height);
@@ -606,18 +589,18 @@ begin
   if ItemStyle.Gradient.Active then
     with ItemStyle do
     begin
-      GrFromColor := Gradient.FRGBFromColor;
-      GrToColor := Gradient.FRGBToColor;
+      GrFromColor := Gradient.RGBFromColor;
+      GrToColor := Gradient.RGBToColor;
       if ItemColor > 0 then
       begin
         if fboItemColorAsGradientFrom in Options then
-          Gradient.FRGBFromColor := ItemColor;
+          Gradient.RGBFromColor := ItemColor;
         if fboItemColorAsGradientTo in Options then
-          Gradient.FRGBToColor := ItemColor;
+          Gradient.RGBToColor := ItemColor;
       end;
-      GradientBox(DC, R, Gradient, integer(psSolid), 1);
-      Gradient.FRGBFromColor := GrFromColor;
-      Gradient.FRGBToColor := GrToColor;
+      GradientBox(DC, R, Gradient, Integer(psSolid), 1);
+      Gradient.RGBFromColor := GrFromColor;
+      Gradient.RGBToColor := GrToColor;
     end;
 
   if fDrawWallpapper then
@@ -688,7 +671,7 @@ begin
   begin
     R := ItemRect(HotTrackingItemIndex);
     HotTrackingItemIndex := -1;
-    InvalidateRect(Handle, @R, false);
+    InvalidateRect(Handle, @R, False);
   end;
 end;
 
@@ -696,14 +679,14 @@ procedure TJvgListBox.WMMouseMove(var Message: TMessage);
 var
   pt: Tpoint;
   R: TRect;
-  itemIndex: integer;
+  itemIndex: Integer;
 begin
   inherited;
   if not (fboHotTrack in Options) and not (fboHotTrackSelect in Options) then
     exit;
   pt.x := LOWORD(Message.lParam);
   pt.y := HIWORD(Message.lParam);
-  itemIndex := ItemAtPos(pt, true);
+  itemIndex := ItemAtPos(pt, True);
 
   if itemIndex = HotTrackingItemIndex then
     exit;
@@ -711,20 +694,20 @@ begin
   if fboHotTrackSelect in Options then
   begin
     self.ItemIndex := itemIndex;
-    InvalidateRect(Handle, nil, false);
+    InvalidateRect(Handle, nil, False);
     exit;
   end;
 
   if HotTrackingItemIndex <> -1 then
   begin
     R := ItemRect(HotTrackingItemIndex);
-    InvalidateRect(Handle, @R, false);
+    InvalidateRect(Handle, @R, False);
   end;
   HotTrackingItemIndex := itemIndex;
   if HotTrackingItemIndex <> -1 then
   begin
     R := ItemRect(HotTrackingItemIndex);
-    InvalidateRect(Handle, @R, false);
+    InvalidateRect(Handle, @R, False);
   end;
 end;
 
@@ -738,7 +721,7 @@ end;
 
 procedure TJvgListBox.CreateDragImage;
 var
-  HotSpotX, HotSpotY: integer;
+  HotSpotX, HotSpotY: Integer;
   TranspColor: TColor;
   Bmp: TBitmap;
   pt: TPoint;
@@ -877,7 +860,7 @@ begin
   if HotTrackingItemIndex <> -1 then //...user can programm hottrack blinking effect!
   begin
     R := ItemRect(HotTrackingItemIndex);
-    InvalidateRect(Handle, @R, false);
+    InvalidateRect(Handle, @R, False);
   end;
 end;
 
@@ -892,7 +875,7 @@ begin
         GetParentImageRect( self, Bounds(Left,Top,Width,Height),
                      FWallpaper.Canvas.Handle );
         WallpaperBmp := FWallpaper;
-        fUseWallpaper := true;
+        fUseWallpaper := True;
       end;  }
     FOptions := Value;
   SetAlign;
@@ -908,9 +891,9 @@ begin
     Result := nil;
 end;
 
-function TJvgListBox.GetSelCount: integer;
+function TJvgListBox.GetSelCount: Integer;
 var
-  i: integer;
+  i: Integer;
 begin
   Result := 0;
   for i := 0 to Items.Count - 1 do
@@ -921,7 +904,7 @@ end;
 
 procedure TJvgListBox.RecalcHeights;
 var
-  i: integer;
+  i: Integer;
 begin
   Items.BeginUpdate;
   for i := 0 to Items.Count - 1 do
@@ -981,7 +964,7 @@ begin
   end;
 end;
 
-function TJvgCheckListBox.GetState(Index: integer): TCheckBoxState;
+function TJvgCheckListBox.GetState(Index: Integer): TCheckBoxState;
 begin
   if Index > -1 then
     Result := TCheckBoxState(Items.Objects[Index])
@@ -1043,7 +1026,7 @@ procedure TJvgCheckListBox.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   APoint: TPoint;
-  Index: integer;
+  Index: Integer;
 begin
   inherited;
   if Button = mbLeft then

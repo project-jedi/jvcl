@@ -38,28 +38,28 @@ uses
 
 const
   FTextAlign = DT_LEFT or DT_SINGLELINE;
-  RadianEscapments: array[TgllabelDir] of integer = (0, -1800, -900,
+  RadianEscapments: array[TgllabelDir] of Integer = (0, -1800, -900,
     900);
 type
 
   TJvgCustomLabel = class(TJvGraphicControl)
   private
-    FAutoSize: boolean;
+    FAutoSize: Boolean;
     FFocusControl: TWinControl;
     FFocusControlMethod: TFocusControlMethod;
-    FTransparent: boolean;
+    FTransparent: Boolean;
     FPrevWndProc: Pointer;
     FNewWndProc: Pointer;
     procedure SetFocusControl(Value: TWinControl);
-    procedure SetTransparent(Value: boolean);
+    procedure SetTransparent(Value: Boolean);
     procedure WMLMouseUP(var Message: TMessage); message WM_LBUTTONUP;
     procedure WMLMouseDown(var Message: TMessage); message WM_LBUTTONDOWN;
     procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
   protected
-    fActiveNow: boolean;
-    fShowAsActiveWhileControlFocused: boolean;
-    ActiveWhileControlFocused: boolean;
-    fNeedRehookFocusControl: boolean;
+    FActiveNow: Boolean;
+    FShowAsActiveWhileControlFocused: Boolean;
+    ActiveWhileControlFocused: Boolean;
+    FNeedRehookFocusControl: Boolean;
     FExternalCanvas: TCanvas;
     procedure HookFocusControlWndProc;
     procedure UnhookFocusControlWndProc;
@@ -67,16 +67,12 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MouseEnter(Control: TControl); override;
 
-    property AutoSize: boolean read FAutoSize write FAutoSize default true;
-    property FocusControl: TWinControl read FFocusControl write
-      SetFocusControl;
+    property AutoSize: Boolean read FAutoSize write FAutoSize default True;
+    property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property FocusControlMethod: TFocusControlMethod read FFocusControlMethod
-      write FFocusControlMethod
-      default fcmOnMouseDown;
-    property Transparent: boolean read FTransparent write SetTransparent
-      default true;
-    property ExternalCanvas: TCanvas read FExternalCanvas write
-      FExternalCanvas;
+      write FFocusControlMethod default fcmOnMouseDown;
+    property Transparent: Boolean read FTransparent write SetTransparent default True;
+    property ExternalCanvas: TCanvas read FExternalCanvas write FExternalCanvas;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -91,7 +87,7 @@ type
     FFontWeight: TFontWeight;
     //    FActiveTextColor	  :TColor;
     FOptions: TglLabelOptions;
-    FSupressPaint: boolean;
+    FSupressPaint: Boolean;
     FGradient: TJvgGradient;
     FIllumination: TJvgIllumination;
     FTexture: TBitmap;
@@ -100,10 +96,10 @@ type
     FBackgroundImage: TImage;
     FAlignment: TAlignment;
     uFontWeight: word;
-    fRunOnce: boolean;
-    bFirstCreate: boolean;
-    fNeedUpdateOnlyMainText: boolean;
-    fNeedRemakeTextureMask: boolean;
+    fRunOnce: Boolean;
+    bFirstCreate: Boolean;
+    FNeedUpdateOnlyMainText: Boolean;
+    fNeedRemakeTextureMask: Boolean;
     Img: TBitmap;
     TextureMask: TBitmap;
     BackgroundBmp: TBitmap;
@@ -124,10 +120,8 @@ type
     procedure OnGradientChanged(Sender: TObject);
     procedure OnIlluminationChanged(Sender: TObject);
     procedure CreateLabelFont;
-    procedure InvalidateLabel(UpdateBackgr: boolean);
+    procedure InvalidateLabel(UpdateBackgr: Boolean);
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    //    procedure WMLMouseUP(var Message: TMessage); message WM_LBUTTONUP;
-    //    procedure WMLMouseDown(var Message: TMessage); message WM_LBUTTONDOWN;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -140,7 +134,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
-    property SupressPaint: boolean read FSupressPaint write FSupressPaint;
+    property SupressPaint: Boolean read FSupressPaint write FSupressPaint;
   published
     property Anchors;
     property Align;
@@ -188,7 +182,6 @@ type
     property BackgroundImage: TImage read FBackgroundImage write
       SetBackgroundImage;
     property Alignment: TAlignment read FAlignment write SetAlignment;
-
   end;
 
   TJvgStaticTextLabel = class(TJvgCustomLabel)
@@ -196,16 +189,16 @@ type
     FActiveColor: TColor;
     FAlignment: TglAlignment;
     FOptions: TglStaticTextOptions;
-    FWordWrap: boolean;
+    FWordWrap: Boolean;
 
     procedure DrawTextBroadwise(Canvas: TCanvas);
     procedure AdjustBounds;
     procedure SetAlignment(Value: TglAlignment);
     procedure SetOptions(Value: TglStaticTextOptions);
-    procedure SetWordWrap(Value: boolean);
-    function GetAutoSize: boolean;
+    procedure SetWordWrap(Value: Boolean);
+    function GetAutoSize: Boolean;
   protected
-    procedure SetAutoSize(Value: boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
   public
@@ -246,10 +239,10 @@ type
       default clWhite;
     property Alignment: TglAlignment read FAlignment write SetAlignment
       default ftaBroadwise;
-    property AutoSize: boolean read GetAutoSize write SetAutoSize;
+    property AutoSize: Boolean read GetAutoSize write SetAutoSize;
     property Options: TglStaticTextOptions read FOptions write SetOptions;
-    property WordWrap: boolean read FWordWrap write SetWordWrap
-      default true;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap
+      default True;
   end;
 
   TJvgGlyphLabel = class(TJvgLabel)
@@ -273,8 +266,8 @@ type
   published
     property GlyphKind: TglGlyphKind read FGlyphKind write SetGlyphKind default
       fgkDefault;
-    property GlyphOn: TBitmap read GetGlyphOn write SetGlyphOn stored true;
-    property GlyphOff: TBitmap read GetGlyphOff write SetGlyphOff stored true;
+    property GlyphOn: TBitmap read GetGlyphOn write SetGlyphOn stored True;
+    property GlyphOff: TBitmap read GetGlyphOff write SetGlyphOff stored True;
     property GlyphDisabled: TBitmap read GetGlyphDisabled write
       SetGlyphDisabled stored IsCustomGlyph;
   end;
@@ -287,9 +280,9 @@ uses
 constructor TJvgCustomLabel.Create(AOwner: TComponent);
 begin
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
-  ActiveWhileControlFocused := true;
-  FAutoSize := true;
-  FTransparent := true;
+  ActiveWhileControlFocused := True;
+  FAutoSize := True;
+  FTransparent := True;
   FFocusControlMethod := fcmOnMouseDown;
   inherited Create(AOwner);
 end;
@@ -304,7 +297,7 @@ end;
 
 procedure TJvgCustomLabel.Paint;
 begin //...if FocusControl have changed his parent in Run-Time...
-  if fNeedRehookFocusControl then
+  if FNeedRehookFocusControl then
     HookFocusControlWndProc;
   //don't inherited;
 end;
@@ -322,7 +315,7 @@ end;
 
 procedure TJvgCustomLabel.MouseEnter(Control: TControl);
 begin
-  inherited;
+  inherited MouseEnter(Control);
   if Assigned(FocusControl) and (FocusControlMethod = fcmOnMouseEnter) then
     FocusControl.SetFocus;
 end;
@@ -389,14 +382,14 @@ begin
     WM_SETFOCUS:
       begin
         MouseEnter(Self);
-        fShowAsActiveWhileControlFocused := true;
+        FShowAsActiveWhileControlFocused := True;
       end;
     WM_KILLFOCUS:
       begin
-        fShowAsActiveWhileControlFocused := false;
+        FShowAsActiveWhileControlFocused := False;
         MouseLeave(Self);
       end;
-    WM_DESTROY: fNeedRehookFocusControl := true;
+    WM_DESTROY: FNeedRehookFocusControl := True;
   end;
   with Msg_ do
     Result := CallWindowProc(FPrevWndProc, TForm(Owner).Handle, Msg, WParam,
@@ -416,7 +409,7 @@ begin
 end;
 //______
 
-procedure TJvgCustomLabel.SetTransparent(Value: boolean);
+procedure TJvgCustomLabel.SetTransparent(Value: Boolean);
 begin
   FTransparent := Value;
   Invalidate;
@@ -434,26 +427,26 @@ begin
   FIllumination := TJvgIllumination.Create;
   Img := TBitmap.Create;
 
-  bFirstCreate := true;
+  bFirstCreate := True;
   FreeFont := TFont.Create;
   if csDesigning in ComponentState then
     Self.Font.Name := 'Arial';
-  AutoSize := true;
-  //  fRunOnce:=false;
-  //  fActiveNow := false;
+  AutoSize := True;
+  //  fRunOnce:=False;
+  //  FActiveNow := False;
 
   FDirection := fldLeftRight;
   FFontWeight := fwDONTCARE;
-  //  FSupressPaint := false;
+  //  FSupressPaint := False;
   uFontWeight := word(fwDONTCARE);
-  //  fNeedUpdateOnlyMainText:=false;
+  //  FNeedUpdateOnlyMainText:=False;
   FGradient.OnChanged := OnGradientChanged;
   FIllumination.OnChanged := OnIlluminationChanged;
   TextStyles.OnChanged := OnIlluminationChanged;
   Colors.OnChanged := OnIlluminationChanged;
   FOptions := [floActiveWhileControlFocused];
   TargetCanvas := Canvas;
-  FTransparent := true;
+  FTransparent := True;
   Width := 100;
   Height := 16;
 end;
@@ -499,10 +492,10 @@ end;
 procedure TJvgLabel.MouseEnter(Control: TControl);
 begin
   if not Enabled or (floIgnoreMouse in Options) or
-     fShowAsActiveWhileControlFocused then
+     FShowAsActiveWhileControlFocused then
     Exit;
   //inherited;
-  fActiveNow := true;
+  FActiveNow := True;
   with TextStyles, Colors do
     if (Passive <> Active) or ((Background <> BackgroundActive) and not
       Transparent) then
@@ -516,7 +509,7 @@ begin
       Paint
     else if TextActive <> Text then
     begin
-      fNeedUpdateOnlyMainText := true;
+      FNeedUpdateOnlyMainText := True;
       Paint;
     end;
   inherited;
@@ -526,10 +519,10 @@ end;
 procedure TJvgLabel.MouseLeave(Control: TControl);
 begin
   if not Enabled or (floIgnoreMouse in Options) or
-     fShowAsActiveWhileControlFocused then
+     FShowAsActiveWhileControlFocused then
     Exit;
   //inherited;
-  fActiveNow := false;
+  FActiveNow := False;
   with TextStyles, Colors do
     if (Passive <> Active) or ((Background <> BackgroundActive) and not
       Transparent) then
@@ -543,7 +536,7 @@ begin
       Paint
     else if TextActive <> Text then
     begin
-      fNeedUpdateOnlyMainText := true;
+      FNeedUpdateOnlyMainText := True;
       Paint;
     end;
   inherited;
@@ -571,19 +564,19 @@ end;
 procedure TJvgLabel.Paint;
 var
   R: TRect;
-  x, y, x_, y_, Tx, Ty: integer;
+  x, y, x_, y_, Tx, Ty: Integer;
   Size, TextSize: TSIZE;
   FontColor: TColor;
   CurrTextStyle: TglTextStyle;
   {ShadowColor_, HighlightColor_,CurrTextColor,} CurrDelinColor: TColor;
   OldGradientFActive, fUseBackgroundBmp, fUseTextureBmp, fBufferedDraw:
-  boolean;
+  Boolean;
 begin
   inherited;
   if FSupressPaint or (length(Caption) = 0) then
     exit;
   if floTransparentFont in Options then
-    fBufferedDraw := true
+    fBufferedDraw := True
   else
     fBufferedDraw := (floBufferedDraw in Options) and not (csDesigning in
       ComponentState);
@@ -593,19 +586,19 @@ begin
     TargetCanvas := ExternalCanvas
   else
     TargetCanvas := Canvas;
-  fNeedUpdateOnlyMainText := fNeedUpdateOnlyMainText and not (fBufferedDraw)
+  FNeedUpdateOnlyMainText := FNeedUpdateOnlyMainText and not (fBufferedDraw)
     and (not IsItAFilledBitmap(BackgroundBmp));
   if not fRunOnce then
   begin
-    fNeedUpdateOnlyMainText := false;
-    fRunOnce := true;
+    FNeedUpdateOnlyMainText := False;
+    fRunOnce := True;
   end;
   TargetCanvas.Font := FreeFont;
   //...CALC POSITION
   GetTextExtentPoint32(TargetCanvas.handle, PChar(Caption),
     length(Caption), Size);
   with TextStyles, Colors do
-    if fActiveNow then
+    if FActiveNow then
     begin
       CurrTextStyle := Active;
       CurrDelinColor := DelineateActive;
@@ -711,7 +704,7 @@ begin
   if not Transparent then
   begin
     TargetCanvas.Brush.Style := bsSolid;
-    if fActiveNow then
+    if FActiveNow then
       TargetCanvas.Brush.Color := Colors.BackgroundActive
     else
       TargetCanvas.Brush.Color := Colors.Background;
@@ -722,7 +715,7 @@ begin
     fUseBackgroundBmp := IsItAFilledBitmap(BackgroundBmp);
   except
     //  raise;
-    fUseBackgroundBmp := false;
+    fUseBackgroundBmp := False;
     BackgroundBmp := nil;
     FBackgroundImage := nil;
   end;
@@ -730,7 +723,7 @@ begin
   try
     fUseTextureBmp := IsItAFilledBitmap(TextureBmp);
   except
-    fUseTextureBmp := false;
+    fUseTextureBmp := False;
     TextureBmp := nil;
     FTextureImage := nil;
   end;
@@ -769,11 +762,11 @@ begin
       end;
     end;
 
-  OldGradientFActive := Gradient.FActive;
+  OldGradientFActive := Gradient.Active;
   //...Supress Gradient if needed
   with Colors do
-    if (fActiveNow and (TextActive <> Text)) or not Enabled then
-      Gradient.FActive := false;
+    if (FActiveNow and (TextActive <> Text)) or not Enabled then
+      Gradient.Active := False;
   if floDelineatedText in Options then
   begin
     x_ := 4;
@@ -820,7 +813,7 @@ begin
       begin
         BitBlt(Canvas.Handle, Tx, Ty, Width, Height, TargetCanvas.Handle, 0,
           0, SRCAND);
-        if fActiveNow then
+        if FActiveNow then
           ChangeBitmapColor(TextureMask, clBlack, Colors.BackgroundActive)
         else
           ChangeBitmapColor(TextureMask, clBlack, Colors.Background);
@@ -851,13 +844,13 @@ begin
     FontColor := 0;
   ExtTextOutExt(TargetCanvas.Handle, x, y, GetClientRect, Caption,
     CurrTextStyle, floDelineatedText in Options,
-    fNeedUpdateOnlyMainText, FontColor, CurrDelinColor,
+    FNeedUpdateOnlyMainText, FontColor, CurrDelinColor,
     Colors.Highlight, Colors.Shadow,
     Illumination, Gradient, FreeFont);
 
   //  SetBkMode( TargetCanvas.handle, iOldBkMode );
-  fNeedUpdateOnlyMainText := false;
-  Gradient.FActive := OldGradientFActive;
+  FNeedUpdateOnlyMainText := False;
+  Gradient.Active := OldGradientFActive;
 
   if (Assigned(TextureBmp) or (floTransparentFont in Options)) and
     (CurrTextStyle <> fstPushed) then
@@ -880,11 +873,11 @@ begin
   if not (bFirstCreate) then
     DeleteObject(FreeFont.Handle);
   FreeFont.Handle := CreateRotatedFont(Font, RadianEscapments[FDirection]);
-  bFirstCreate := false;
+  bFirstCreate := False;
 end;
 //______
 
-procedure TJvgLabel.InvalidateLabel(UpdateBackgr: boolean);
+procedure TJvgLabel.InvalidateLabel(UpdateBackgr: Boolean);
 var
   r: TRect;
 begin
@@ -896,16 +889,16 @@ end;
 
 procedure TJvgLabel.OnGradientChanged(Sender: TObject);
 begin
-  fNeedUpdateOnlyMainText := true;
+  FNeedUpdateOnlyMainText := True;
   Paint;
-  //InvalidateLabel(false);
+  //InvalidateLabel(False);
 end;
 //______
 
 procedure TJvgLabel.OnIlluminationChanged(Sender: TObject);
 begin
   CalcShadowAndHighlightColors((Parent as TWinControl).Brush.Color, Colors);
-  InvalidateLabel(true);
+  InvalidateLabel(True);
 end;
 //____________________________________________________Properties
 
@@ -913,8 +906,8 @@ procedure TJvgLabel.SetDirection(Value: TglLabelDir);
 begin
   FDirection := Value;
   CreateLabelFont;
-  fNeedRemakeTextureMask := true;
-  InvalidateLabel(true);
+  fNeedRemakeTextureMask := True;
+  InvalidateLabel(True);
 end;
 //______________________________________________________________
 
@@ -925,8 +918,8 @@ begin
   FFontWeight := Value;
   uFontWeight := word(Value) * 100;
   CreateLabelFont;
-  fNeedRemakeTextureMask := true;
-  InvalidateLabel(true);
+  fNeedRemakeTextureMask := True;
+  InvalidateLabel(True);
 end;
 //______________________________________________________________
 
@@ -939,8 +932,8 @@ begin
   if floTransparentFont in Options then
     Options := Options + [floBufferedDraw];
   CalcShadowAndHighlightColors((Parent as TWinControl).Brush.Color, Colors);
-  fNeedRemakeTextureMask := true;
-  InvalidateLabel(true);
+  fNeedRemakeTextureMask := True;
+  InvalidateLabel(True);
 end;
 
 procedure TJvgLabel.SetTexture(Value: TBitmap);
@@ -958,8 +951,8 @@ begin
     TextureBmp := FTextureImage.Picture.Bitmap
   else
     TextureBmp := nil;
-  fNeedRemakeTextureMask := true;
-  InvalidateLabel(true);
+  fNeedRemakeTextureMask := True;
+  InvalidateLabel(True);
 end;
 
 procedure TJvgLabel.SetBackground(Value: TBitmap);
@@ -977,7 +970,7 @@ begin
     BackgroundBmp := FBackgroundImage.Picture.Bitmap
   else
     BackgroundBmp := nil;
-  InvalidateLabel(true);
+  InvalidateLabel(True);
 end;
 
 function TJvgLabel.GetTexture: TBitmap;
@@ -1006,7 +999,7 @@ begin
     TextureBmp := FTexture
   else
     TextureBmp := nil;
-  InvalidateLabel(true);
+  InvalidateLabel(True);
 end;
 
 procedure TJvgLabel.SetBackgroundImage(Value: TImage);
@@ -1016,13 +1009,13 @@ begin
   if Value <> nil then
   begin
     BackgroundBmp := FBackgroundImage.Picture.Bitmap;
-    InvalidateLabel(true);
+    InvalidateLabel(True);
   end
   else if FBackground <> nil then
     BackgroundBmp := FBackground
   else
     BackgroundBmp := nil;
-  InvalidateLabel(true);
+  InvalidateLabel(True);
 end;
 
 procedure TJvgLabel.SetAlignment(Value: TAlignment);
@@ -1039,7 +1032,7 @@ begin
   FActiveColor := clWhite;
   FAlignment := ftaBroadwise;
   FOptions := [ftoActiveWhileControlFocused];
-  FWordWrap := true;
+  FWordWrap := True;
   Width := 100;
   Height := 16;
 end;
@@ -1048,9 +1041,9 @@ end;
 
 procedure TJvgStaticTextLabel.MouseEnter(Control: TControl);
 begin
-  if (ftoIgnoreMouse in Options) or fShowAsActiveWhileControlFocused then
+  if (ftoIgnoreMouse in Options) or FShowAsActiveWhileControlFocused then
     Exit;
-  fActiveNow := true;
+  FActiveNow := True;
   Paint;
   inherited;
 end;
@@ -1058,9 +1051,9 @@ end;
 
 procedure TJvgStaticTextLabel.MouseLeave(Control: TControl);
 begin
-  if (ftoIgnoreMouse in Options) or fShowAsActiveWhileControlFocused then
+  if (ftoIgnoreMouse in Options) or FShowAsActiveWhileControlFocused then
     Exit;
-  fActiveNow := false;
+  FActiveNow := False;
   if ftoUnderlinedActive in Options then
     Invalidate
   else
@@ -1090,14 +1083,14 @@ begin
     TargetCanvas := Canvas;
   TargetCanvas.Font.Assign(Font);
   Alignment_ := FAlignment;
-  SetBkMode(TargetCanvas.Handle, integer(FTransparent));
+  SetBkMode(TargetCanvas.Handle, Integer(FTransparent));
 
-  {  if fActiveNow and(ftoUnderlinedActive in Options) then
+  {  if FActiveNow and(ftoUnderlinedActive in Options) then
       TargetCanvas.Font.Style := Font.Style + [fsUnderline]
     else
       TargetCanvas.Font.Style := Font.Style - [fsUnderline];
   }
-  if fActiveNow then
+  if FActiveNow then
     SetTextColor(TargetCanvas.Handle, ColorToRGB(ActiveColor))
   else
     SetTextColor(TargetCanvas.Handle, ColorToRGB(Font.Color));
@@ -1123,14 +1116,14 @@ end;
 procedure TJvgStaticTextLabel.DrawTextBroadwise(Canvas: TCanvas);
 var
   DrawPos, Pos1, Pos2, LineWidth,
-    LineNo, LexemCount, TextHeight: integer;
+    LineNo, LexemCount, TextHeight: Integer;
   Lexem: string;
   Size: TSIZE;
-  fStop, fBroadwiseLine: boolean;
+  fStop, fBroadwiseLine: Boolean;
 
-  function GetNextLexem(var Pos1, Pos2: integer; fTrimleft: boolean): string;
+  function GetNextLexem(var Pos1, Pos2: Integer; fTrimleft: Boolean): string;
   var
-    Pos: integer;
+    Pos: Integer;
   begin
     pos := pos1;
     if Caption[Pos] = ' ' then
@@ -1147,7 +1140,7 @@ var
 
   procedure DrawLine(AdditSpace: cardinal);
   var
-    i, DrawPos1, DrawPos2: integer;
+    i, DrawPos1, DrawPos2: Integer;
     Lexem: string;
     Size: TSIZE;
     X, X_: single;
@@ -1185,8 +1178,8 @@ begin
   Pos2 := 1;
   LexemCount := 0;
   TextHeight := 0;
-  fStop := false;
-  fBroadwiseLine := true;
+  fStop := False;
+  fBroadwiseLine := True;
   repeat
     Lexem := GetNextLexem(Pos1, Pos2, LexemCount = 0);
     //    if LexemCount=0 then Lexem:=Lexem+' ';
@@ -1215,7 +1208,7 @@ begin
         fBroadwiseLine := ftoBroadwiseLastLine in Options;
         DrawLine(Width - LineWidth);
         inc(LineNo);
-        fStop := true;
+        fStop := True;
       end;
     end
     else
@@ -1266,21 +1259,21 @@ begin
 end;
 //______
 
-procedure TJvgStaticTextLabel.SetWordWrap(Value: boolean);
+procedure TJvgStaticTextLabel.SetWordWrap(Value: Boolean);
 begin
   FWordWrap := Value;
   Invalidate;
 end;
 //______
 
-procedure TJvgStaticTextLabel.SetAutoSize(Value: boolean);
+procedure TJvgStaticTextLabel.SetAutoSize(Value: Boolean);
 begin
   inherited AutoSize := Value;
   AdjustBounds;
 end;
 //______
 
-function TJvgStaticTextLabel.GetAutoSize: boolean;
+function TJvgStaticTextLabel.GetAutoSize: Boolean;
 begin
   Result := inherited AutoSize;
 end;
@@ -1296,12 +1289,9 @@ end;
 
 destructor TJvgGlyphLabel.Destroy;
 begin
-  if Assigned(FGlyphOn) then
-    FGlyphOn.Free;
-  if Assigned(FGlyphOff) then
-    FGlyphOff.Free;
-  if Assigned(FGlyphDisabled) then
-    FGlyphDisabled.Free;
+  FGlyphOn.Free;
+  FGlyphOff.Free;
+  FGlyphDisabled.Free;
   inherited;
 end;
 
