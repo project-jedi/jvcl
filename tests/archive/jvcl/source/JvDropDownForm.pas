@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2002-10-04
+Last Modified: 2002-12-09
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -51,18 +51,15 @@ type
     FEntering: Boolean;
     FCloseOnLeave: Boolean;
     FLeaving: Boolean;
-    FOnLoseFocus: TJvFocusChangeEvent;
-    FOnGetFocus: TJvFocusChangeEvent;
+    FOnKillFocus: TJvFocusChangeEvent;
+    FOnSetFocus: TJvFocusChangeEvent;
     procedure WMKillFocus(var AMessage: TMessage); message WM_KILLFOCUS;
     procedure WMSetFocus(var AMessage: TMessage); message WM_SETFOCUS;
   protected
     function GetEdit: TCustomEdit;
 
-    function Entering: Boolean;
-    function Leaving: Boolean;
-
-    procedure GetFocus(const APreviousControl: TWinControl);dynamic;
-    procedure LoseFocus(const AFocusControl: TWinControl); virtual;
+    procedure DoSetFocus(const APreviousControl: TWinControl);dynamic;
+    procedure DoKillFocus(const ANextControl: TWinControl); virtual;
 
     procedure DoClose(var AAction: TCloseAction); override;
     procedure DoShow; override;
@@ -74,9 +71,11 @@ type
 
     property CloseOnLeave: Boolean read FCloseOnLeave write FCloseOnLeave;
 
-    property OnGetFocus: TJvFocusChangeEvent read FOnGetFocus write FOnGetFocus;
-    property OnLoseFocus: TJvFocusChangeEvent read FOnLoseFocus
-      write FOnLoseFocus;
+    property Entering: Boolean read FEntering;
+    property Leaving: Boolean read FLeaving;
+
+    property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
+    property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
   end;
 
 {TODO : IsChildOf should probably better be moved somewhere into the JCL}
@@ -169,22 +168,17 @@ begin
     FLeaving := True;
     try
       inherited;
-      LoseFocus(FindControl(AMessage.WParam));
+      DoKillFocus(FindControl(AMessage.WParam));
     finally
       FLeaving := False;
     end;
   end;
 end;
 
-function TJvCustomDropDownForm.Leaving: Boolean;
+procedure TJvCustomDropDownForm.DoKillFocus(const ANextControl: TWinControl);
 begin
-  result := FLeaving;
-end;
-
-procedure TJvCustomDropDownForm.LoseFocus(const AFocusControl: TWinControl);
-begin
-  if(Assigned(OnLoseFocus)) then
-    OnLoseFocus(Self, AFocusControl);
+  if(Assigned(OnKillFocus)) then
+    OnKillFocus(Self, ANextControl);
 
   if(CloseOnLeave) then
     Close;
@@ -199,23 +193,18 @@ begin
     FEntering := True;
     try
       inherited;
-      GetFocus(FindControl(AMessage.WParam));
+      DoSetFocus(FindControl(AMessage.WParam));
     finally
       FEntering := False;
     end;
   end;
 end;
 
-function TJvCustomDropDownForm.Entering: Boolean;
-begin
-  result := FEntering;
-end;
-
-procedure TJvCustomDropDownForm.GetFocus(
+procedure TJvCustomDropDownForm.DoSetFocus(
   const APreviousControl: TWinControl);
 begin
-  if(Assigned(OnGetFocus)) then
-    OnGetFocus(Self, APreviousControl);
+  if(Assigned(OnSetFocus)) then
+    OnSetFocus(Self, APreviousControl);
 end;
 
 end.
