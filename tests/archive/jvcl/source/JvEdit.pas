@@ -427,7 +427,7 @@ end;
 
 procedure TJvCustomEdit.WMEraseBkGnd(var msg: TWMEraseBkGnd);
 var
-  canvas: TCanvas;
+  Canvas: TCanvas;
 begin
   if Enabled then
     inherited
@@ -440,20 +440,27 @@ begin
       try
         Canvas.Brush.Color := FDisabledColor;
         Canvas.Brush.Style := bsSolid;
-        Canvas.Fillrect(clientrect);
+        Canvas.FillRect(clientrect);
         Msg.result := 1;
       finally
         RestoreDC(msg.DC, -1);
       end;
     finally
-      canvas.free
+      Canvas.Free
     end;
   end; { Else }
 end;
 
+function StrFillChar(Ch:char;Length:Cardinal):string;
+begin
+  SetLength(Result,Length);
+  if Length > 0 then
+    FillChar(Result[1],Length,Ch);
+end;
+
 procedure TJvCustomEdit.WMPaint(var msg: TWMPaint);
 var
-  canvas: TCanvas;
+  Canvas: TCanvas;
   ps: TPaintStruct;
   callEndPaint: Boolean;
 begin
@@ -462,36 +469,39 @@ begin
   else
   begin
     callEndPaint := False;
-    canvas := TCanvas.Create;
+    Canvas := TCanvas.Create;
     try
       if msg.DC <> 0 then
       begin
-        canvas.Handle := msg.DC;
+        Canvas.Handle := msg.DC;
         ps.fErase := true;
       end
       else
       begin
         BeginPaint(handle, ps);
         callEndPaint := true;
-        canvas.handle := ps.hdc;
+        Canvas.handle := ps.hdc;
       end;
 
       if ps.fErase then
-        Perform(WM_ERASEBKGND, canvas.handle, 0);
+        Perform(WM_ERASEBKGND, Canvas.handle, 0);
 
-      SaveDC(canvas.handle);
+      SaveDC(Canvas.handle);
       try
-        canvas.Brush.Style := bsClear;
-        canvas.Font := Font;
-        canvas.Font.Color := FDisabledTextColor;
-        canvas.TextOut(1, 1, Text);
+        Canvas.Brush.Style := bsClear;
+        Canvas.Font := Font;
+        Canvas.Font.Color := FDisabledTextColor;
+        if PasswordChar = #0 then
+          Canvas.TextOut(1, 1, Text)
+        else
+          Canvas.TextOut(1, 1, StrFillChar(PasswordChar, Length(Text)))
       finally
-        RestoreDC(canvas.handle, -1);
+        RestoreDC(Canvas.handle, -1);
       end;
     finally
       if callEndPaint then
         EndPaint(handle, ps);
-      canvas.free
+      Canvas.Free
     end;
   end;
 end;
@@ -616,11 +626,14 @@ begin
 end;
 
 procedure TJvCustomEdit.SetPasswordChar(Value:char);
-var tmp:boolean;
+var
+  tmp:boolean;
 begin
   tmp := ProtectPassword;
   try
     ProtectPassword := false;
+    if HandleAllocated then
+      inherited PasswordChar := Char(SendMessage(Handle, EM_GETPASSWORDCHAR, 0, 0));
     inherited PasswordChar := Value;
   finally
     ProtectPassword := tmp;
@@ -629,18 +642,24 @@ end;
 
 procedure TJvCustomEdit.DefaultHandler(var Msg);
 begin
-  case TMessage(Msg).Msg of
-    WM_CUT,WM_PASTE,EM_SETPASSWORDCHAR,WM_GETTEXT,WM_GETTEXTLENGTH:
-      if not ProtectPassword then
-        inherited;
+  if (ProtectPassword) then
+    with TMessage(Msg) do
+      case Msg of
+        WM_CUT,WM_COPY,WM_GETTEXT, WM_GETTEXTLENGTH, EM_SETPASSWORDCHAR:
+          Result := 0;
+      else
+        inherited
+      end
   else
     inherited;
-  end;
 end;
 
 function TJvCustomEdit.GetPasswordChar: char;
 begin
-  Result := inherited PasswordChar;
+  if HandleAllocated then
+    Result := Char(Sendmessage(Handle, EM_GETPASSWORDCHAR, 0, 0))
+  else
+    Result := inherited PasswordChar;
 end;
 
 end.
