@@ -144,7 +144,7 @@ type
     property OnBeforeCustom: TNotifyEvent read FOnBeforeCustom write FOnBeforeCustom;
 
     property Color;
-    property DropDownWidth;
+//    property DropDownWidth;
     property DragMode;
     property Enabled;
     property Font;
