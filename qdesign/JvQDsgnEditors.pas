@@ -38,20 +38,20 @@ unit JvQDsgnEditors;
 interface
 
 uses
-  
-  
-  QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
+
+
+  QWindows, QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
   QExtDlgs, QMenus, QStdCtrls, QImgList,
-  
+
   DsnConst,
-  
-  FiltEdit, RTLConsts, DesignIntf, DesignEditors, DesignMenus,
-  
-  
+
+  {FiltEdit, }RTLConsts, DesignIntf, DesignEditors, DesignMenus,
+
+
   ClxEditors,
-  
-  
-  Classes, SysUtils;
+
+
+  Types, Classes, SysUtils;
 
 
 //

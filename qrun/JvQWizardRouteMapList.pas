@@ -39,9 +39,9 @@ interface
 
 uses
   SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, Types, QWindows,
+
+
+  QGraphics, QControls, QForms, Types, QWindows, QImgList,
   
   
   JvQTypes, JvQConsts, JvQJVCLUtils,
@@ -107,8 +107,9 @@ type
     function PageAtPos(Pt: TPoint): TJvWizardCustomPage; override;
     procedure Paint; override;
     procedure Loaded; override;
-    procedure CMCursorChanged(var Msg: TMessage); message CM_CURSORCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CursorChanged; override;
+    procedure FontChanged; override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -325,13 +326,13 @@ begin
             taLeftJustify:
               begin
                 Wizard.HeaderImages.Draw(ACanvas, ARect.Left + 4, ARect.Top + ATop, Pages[PageIndex].Header.ImageIndex,
-                  Pages[PageIndex].Enabled);
+                  itImage, Pages[PageIndex].Enabled);
                 Inc(ARect.Left, Wizard.HeaderImages.Width + 4);
               end;
             taRightJustify:
               begin
                 Wizard.HeaderImages.Draw(ACanvas, ARect.Right - Wizard.HeaderImages.Width - 4, ARect.Top + ATop,
-                  Pages[PageIndex].Header.ImageIndex, Pages[PageIndex].Enabled);
+                  Pages[PageIndex].Header.ImageIndex, itImage, Pages[PageIndex].Enabled);
                 Dec(ARect.Right, Wizard.HeaderImages.Width + 4);
               end;
             taCenter:
@@ -339,7 +340,7 @@ begin
                 ALeft := ((ARect.Right - ARect.Left) - Wizard.HeaderImages.Width) div 2;
                 Inc(ARect.Top, 4);
                 Wizard.HeaderImages.Draw(ACanvas, ARect.Left + ALeft, ARect.Top + 8,
-                  Pages[PageIndex].Header.ImageIndex, Pages[PageIndex].Enabled);
+                  Pages[PageIndex].Header.ImageIndex, itImage, Pages[PageIndex].Enabled);
                 Inc(ARect.Top, Wizard.HeaderImages.Height);
   //              if ItemText = itSubtitle then
   //                Inc(ARect.Top, 16);
@@ -374,7 +375,7 @@ begin
       if (ItemText <> itNone) and ((ARect.Bottom - ARect.Top) > abs(ACanvas.Font.Height)) then
         DrawText(ACanvas.Handle, PChar(S), Length(S), ARect,
           cAlignment[Alignment] or cWordWrap[ItemText = itSubtitle] or DT_VCENTER or DT_EDITCONTROL or
-          DT_EXTERNALLEADING or DT_END_ELLIPSIS);
+          DT_END_ELLIPSIS);
       if not TextOnly and HotTrack and (HotTrackBorder > 0) and PtInRect(AOrigRect, MousePos) then
       begin
         ACanvas.Brush.Style := bsClear;
@@ -443,22 +444,6 @@ end;
 procedure TJvWizardRouteMapList.DoFontChange(Sender: TObject);
 begin
   Invalidate;
-end;
-
-procedure TJvWizardRouteMapList.CMCursorChanged(var Msg: TMessage);
-begin
-  inherited;
-  if (Cursor <> FHotTrackCursor) and (Cursor <> FOldCursor) then
-    FOldCursor := Cursor;
-end;
-
-procedure TJvWizardRouteMapList.CMFontChanged(var Msg: TMessage);
-begin
-  inherited;
-  
-  UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
-  UpdateTrackFont(ActiveFont, Font, FActiveFontOptions);
-  
 end;
 
 procedure TJvWizardRouteMapList.SetAlignment(const Value: TAlignment);
@@ -562,6 +547,20 @@ begin
     FTextOnly := Value;
     Invalidate;
   end;
+end;
+
+procedure TJvWizardRouteMapList.CursorChanged;
+begin
+  inherited;
+  if (Cursor <> FHotTrackCursor) and (Cursor <> FOldCursor) then
+    FOldCursor := Cursor;
+end;
+
+procedure TJvWizardRouteMapList.FontChanged;
+begin
+  inherited;
+  UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
+  UpdateTrackFont(ActiveFont, Font, FActiveFontOptions);
 end;
 
 end.
