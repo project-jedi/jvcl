@@ -31,11 +31,11 @@ interface
 
 uses
   Classes,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF RTL140_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
+  {$ELSE !RTL140_UP}
   DsgnIntf,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !RTL140_UP}
   JvBackgrounds, JvBackgroundEditForm;
 
 type
@@ -82,11 +82,11 @@ begin
   Editor := TJvBackgroundClientsEditor.Create(nil);
   try
     Clients := TJvBackgroundClients(GetOrdValue);
-    {$IFDEF COMPILER6_UP}
+    {$IFDEF RTL140_UP}
     EditorAddControl(Designer.Root.Name);
-    {$ELSE}
+    {$ELSE !RTL140_UP}
     EditorAddControl(Designer.GetRoot.Name);
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !RTL140_UP}
     Proc := EditorAddControl;
     Designer.GetComponentNames(GetTypeData(TWinControl.ClassInfo), Proc);
     Editor.SetButtons;
