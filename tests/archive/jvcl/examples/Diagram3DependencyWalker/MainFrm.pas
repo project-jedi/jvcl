@@ -106,6 +106,7 @@ type
     { Private declarations }
     FPrintFormat:TPrintFormat;
     FFileShapes: TStringlist;
+    FInitialDir:string;
     FLeft, FTop: integer;
     sb: TScrollBox;
 
@@ -627,8 +628,10 @@ var
   Errors: TStringlist; // S: string;
 begin
   ForceCurrentDirectory := true;
+  dlgSelectFiles.InitialDir := FInitialDir;
   if dlgSelectFiles.Execute then
   begin
+    FInitialDir := ExtractFilePath(dlgSelectFiles.Filename);
     Errors := TStringlist.Create;
     try
       ParseUnits(dlgSelectFiles.Files, Errors);
@@ -847,6 +850,7 @@ begin
   Height := Storage.ReadInteger(ClassName, 'Height', Height);
   acInvertSort.Checked := Storage.ReadBool(ClassName, 'InvertSort', false);
   FPrintFormat := TPrintFormat(Storage.ReadInteger(ClassName,'Print Format',0));
+  FInitialDir  := Storage.ReadString(ClassName,'InitialDir','');
 end;
 
 procedure TfrmMain.Save(Storage: TCustomIniFile);
@@ -860,6 +864,7 @@ begin
   end;
   Storage.WriteBool(ClassName, 'InvertSort', acInvertSort.Checked);
   Storage.WriteInteger(ClassName,'Print Format',Ord(FPrintFormat));
+  Storage.WriteString(ClassName,'InitialDir',FInitialDir);
 end;
 
 procedure TfrmMain.LoadSettings;
