@@ -65,6 +65,7 @@ resourcestring
   RsPaletteImageAnimator = 'Jv Images and Animators';
   RsPaletteVisual = 'Jv Visual';
   RsPaletteNonVisual = 'Jv Non-Visual';
+  RsPalettePersistence = 'Jv Persistence';
   RsPaletteAppForm = 'Jv Application and Forms';
   RsPaletteInterNetWork = 'Jv Internet and Network';
   RsPaletteEncryptCompress = 'Jv Encrypt and Compress';
