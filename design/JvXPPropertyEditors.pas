@@ -84,7 +84,12 @@ type
 implementation
 
 uses
-  JvDsgnConsts, JvXPBar;
+  JvXPBar;
+
+resourcestring
+  RsItemEditorEllipsis = 'Item Editor...';
+  RsDefaultColorItem = 'Restore Default Colors';
+  RsDefaultFontsItem = 'Restore Default Fonts';
 
 type
   TCustomWinXPBar = class(TJvXPCustomWinXPBar)
