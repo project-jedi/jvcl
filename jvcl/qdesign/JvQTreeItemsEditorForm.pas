@@ -39,10 +39,10 @@ unit JvQTreeItemsEditorForm;
 interface
 
 uses
-  SysUtils, Classes,  
+  SysUtils, Classes,
   QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls,
-  QActnList, QComCtrls, QMenus, QStdActns, QWindows, Types, QTypes,  
-  DesignEditors, DesignIntf; 
+  QActnList, QComCtrls, QMenus, QStdActns, QWindows, Types, QTypes,
+  DesignEditors, DesignIntf;
 
 type
   TJvTreeItemsProperty = class(TClassProperty)
@@ -144,15 +144,15 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property PropagateEnabled: Boolean read FPropagateEnabled write FPropagateEnabled default True;
-  end; 
+  end;
 
 
 procedure ShowTreeNodeEditor(TreeView:TCustomTreeView);
 
 implementation
 
-uses  
-  QImgList, 
+uses
+  QImgList,
   JvQPageListTreeView, JvQPageLinkEditorForm, JvQDsgnConsts;
 
 
@@ -176,11 +176,10 @@ begin
   PropagateEnabled := True;
 end;
 
-procedure TGroupBox.CMEnabledChanged(var Msg: TMessage);
+procedure TGroupBox.EnabledChanged;
 begin
-  inherited;
   if PropagateEnabled then
-    Broadcast(Msg);
+    inherited;
 end;
 
 //=== TfrmTreeViewItems ======================================================
@@ -194,8 +193,11 @@ begin
       tvItems.Selected.ImageIndex);
     tvItems.Selected.SelectedIndex := StrToIntDef(cbSelected.Text,
       tvItems.Selected.SelectedIndex);
+    (*
+
     tvItems.Selected.StateIndex := StrToIntDef(cbState.Text,
       tvItems.Selected.StateIndex);
+    *)  
   end;
 end;
 
@@ -256,7 +258,7 @@ begin
     edNodeText.Text := Node.Text;
     cbImage.ItemIndex := AddCB(cbImage, Node.ImageIndex);
     cbSelected.ItemIndex := AddCB(cbSelected, Node.SelectedIndex);
-    cbState.ItemIndex := AddCB(cbState, Node.StateIndex);
+    //cbState.ItemIndex := AddCB(cbState, Node.StateIndex);
     edNodeText.OnChange := edNodeTextChange;
   end;
   gbProperties.Enabled := tvItems.Selected <> nil;
@@ -342,6 +344,7 @@ begin
       f.cbImage.Tag := Integer(il);
       f.cbSelected.Tag := Integer(il);
     end;
+    (*
     il := THackTreeView(Treeview).StateImages;
     if il <> nil then
     begin
@@ -352,6 +355,7 @@ begin
         f.cbState.Items.Add(IntToStr(i));
       f.cbState.Tag := Integer(il);
     end;
+    *)
     f.cbSelected.ItemIndex := 0;
     f.cbSelected.ItemIndex := 0;
     f.cbState.ItemIndex := 0;
@@ -384,7 +388,7 @@ begin
     DrawOffset := il.Width + 2;
   end;
   Rect.Left := Rect.Left + DrawOffset;
-  DrawText(CB.Canvas.Handle, PChar(Format('%d', [DrawIndex])), -1, Rect,
+  DrawText(CB.Canvas, Format('%d', [DrawIndex]), -1, Rect,
     DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
 end;
 
@@ -409,7 +413,7 @@ begin
     DrawOffset := il.Width + 2;
   end;
   Rect.Left := Rect.Left + DrawOffset;
-  DrawText(CB.Canvas.Handle, PChar(Format('%d', [DrawIndex])), -1, Rect,
+  DrawText(CB.Canvas, Format('%d', [DrawIndex]), -1, Rect,
     DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
 end;
 

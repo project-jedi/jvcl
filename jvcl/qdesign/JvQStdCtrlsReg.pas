@@ -1,8 +1,3 @@
-{******************************************************************************}
-{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
-{*           Manual modifications will be lost on next release.               *}
-{******************************************************************************}
-
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -21,12 +16,13 @@ All Rights Reserved.
 
 Contributor(s):
 
+Last Modified: 2004-03-22
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
 
 {$I jvcl.inc}
 
@@ -39,30 +35,30 @@ procedure Register;
 implementation
 
 uses
-  Classes, QControls,
-  FiltEdit, QImgList,  
-  DesignEditors, DesignIntf,  
-  JvQCheckedMaskEdit, 
-  JvQDsgnConsts, JvQTypes,
-  JvQSpin, JvQEdit, JvQProgressBar, JvQDateTimePicker, JvQDatePickerEdit,
-  JvQMaskEdit, JvQCalendar, JvQBaseEdits, JvQCalc, JvQToolEdit,
-  JvQxSlider, JvQBevel, JvQCheckBox, JvQSpeedButton, JvQTextListBox, JvQSecretPanel,
-  JvQxCheckListBox, JvQCheckListBox, JvQCombobox, JvQCheckTreeView, JvQComCtrls,
-  JvQControlBar, JvQCoolBar, JvQCtrls, JvQGroupBox, JvQHeaderControl, JvQHotKey,
-  JvQImage, JvQLabel, JvQListView, JvQMemo, JvQMenus, JvQRadioButton, JvQRadioGroup,
-  JvQScrollBar, JvQScrollBox, JvQShape, JvQStatusBar, JvQGrids,
-  JvQStringGrid, JvQSystemPopup, JvQToolBar, JvQUpDown, JvQBitBtn,
-  JvQPanel, JvQMonthCalendar, JvQControlPanelButton, JvQStartMenuButton,
-  JvQRecentMenuButton, JvQFavoritesButton, JvQImageList, JvQListBox, JvQBrowseFolder,
-  JvQTransparentPanel, JvQCheckedItemsForm, JvQColorCombo,
-  JvQProgressEditor, JvQDsgnEditors;
+  Classes,
+  QControls, QImgList, QTypes,
 
-{$IFDEF MSWINDOWS}
+  DesignEditors, DesignIntf,
+
+  JvQDsgnConsts, JvQTypes, JvQWStrUtils,
+  JvQEdit, JvQProgressBar, JvQTransparentPanel,
+  
+  JvQMaskEdit, JvQBaseEdits, JvQCalc, JvQToolEdit,
+  JvQBevel, JvQCheckBox, JvQSpeedButton,
+  JvQCtrls, JvQGroupBox, JvQHeaderControl,
+  JvQImage, JvQRadioButton, JvQRadioGroup,
+  JvQLabel, JvQStatusBar, JvQSpin, JvQCheckedMaskEdit,
+  JvQGauges, JvQTimeEdit, JvQStdDsgnEditors, JvQJCLUtils,
+  JvQScrollBar, JvQShape, JvQControlBar, JvQGrids,
+  JvQBitBtn, JvQPickDate, JvQStringGrid,
+  JvQPanel, JvQImageList, JvQProgressEditor, JvQDsgnEditors;
+
+{$IFDEF VCL}
 {$R ..\Resources\JvStdCtrlsReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvStdCtrlsReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF VisualCLX}
 
 procedure Register;
 const
@@ -70,51 +66,41 @@ const
   cText = 'Text';
   cOwnerDraw = 'OwnerDraw';
 begin
-  RegisterComponents(RsPaletteVisual, [TJvShape]);
-  RegisterComponents(RsPaletteNonVisual, [TJvMainMenu, TJvPopupMenu,
-    TJvOfficeMenuItemPainter,TJvBtnMenuItemPainter, TJvStandardMenuItemPainter,
-    TJvOwnerDrawMenuItemPainter, TJvXPMenuItemPainter,
-    TJvSystemPopup, TJvCalculator]);
-  RegisterComponents(RsPaletteDialog, [TJvBrowseForFolderDialog]);
+  RegisterComponents(RsPaletteVisual, [TJvShape, TJvCalendar]);
+  RegisterComponents(RsPaletteNonVisual, [TJvCalculator]);
   RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
-    TJvCheckBox, TJvRadioButton, TJvRadioGroup, TJvUpDown, TJvDomainUpDown,
-    TJvControlPanelButton, TJvStartMenuButton, TJvRecentMenuButton,
-    TJvFavoritesButton, TJvSpinButton]);
-  RegisterComponents(RsPaletteEdit, [TJvEdit, TJvMemo, 
-    TJvCheckedMaskEdit, TJvMaskEdit, TJvHotKey, TJvCalcEdit, TJvComboEdit,
-    TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvDatePickerEdit,
-    TJvSpinEdit, TJvIPAddress]);
+    TJvCheckBox, TJvRadioButton, TJvRadioGroup, {TJvUpDown,} TJvSpinButton]);
+  RegisterComponents(RsPaletteEdit, [TJvEdit,
+    TJvMaskEdit, TJvCheckedMaskEdit, TJvCalcEdit, TJvComboEdit,
+    TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvSpinEdit, TJvTimeSpin]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
-  RegisterComponents(RsPaletteBarPanel, [
-    TJvPageControl, TJvTabControl, TJvTabDefaultPainter,
-    TJvProgressBar, TJvStatusBar, TJvToolBar, TJvControlBar, TJvCoolBar,
-    TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
-    TJvSecretPanel {, TJvTransparentPanel}]);
-  RegisterComponents(RsPaletteLabel, [TJvLabel 
-    ]);
-  RegisterComponents(RsPaletteListComboTree, [TJvComboBox,TJvListBox,
-    TJvCheckListBox, TJvTreeView, TJvListView, TJvCheckTreeView,
-    TJvColorComboBox, TJvFontComboBox, TJvTextListBox, TJvxCheckListBox,
-    TJvDateTimePicker, TJvMonthCalendar, {TJvMonthCalendar2,}
-    TJvDrawGrid, TJvStringGrid]);
-  RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar, TJvScrollBox]);
-  RegisterComponents(RsPaletteSliderSplitter, [TJvTrackBar,TJvxSlider]);
+  RegisterComponents(RsPaletteBarPanel, [TJvGauge, TJvControlBar,
+    TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel, TJvStatusBar,
+    TJvTransparentPanel]);
+  RegisterComponents(RsPaletteLabel, [TJvLabel]);
+//  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
+  RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar]);
+  RegisterComponents(RsPaletteListComboTree, [TJvDrawGrid, TJvStringGrid]);
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, nil);
-  RegisterPropertyEditor(TypeInfo(string), TJvFileDirEdit, cText, TStringProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCustomDateEdit, cText, TStringProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'Filter', TFilterProperty);
+//  RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'Filter', TFilterProperty);
+//  RegisterPropertyEditor(TypeInfo(TWideStringList), TJvArrayButton ,'Hints', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'FileName', TJvFilenameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDirectoryEdit, cText, TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomComboEdit, 'ButtonHint', TJvHintProperty);
-  RegisterPropertyEditor(TypeInfo(TStrings), TJvxCheckListBox, 'Items', TJvCheckItemsProperty);
+//  RegisterPropertyEditor(TypeInfo(TStrings), TJvxCheckListBox, 'Items', TJvCheckItemsProperty);
   RegisterPropertyEditor(TypeInfo(TJvImgBtnKind), TJvImgBtn, 'Kind', TJvNosortEnumProperty);
-  RegisterPropertyEditor(TypeInfo(Boolean), TJvMainMenu, cOwnerDraw, nil);
-  RegisterPropertyEditor(TypeInfo(Boolean), TJvPopupMenu, cOwnerDraw, nil);
+//  RegisterPropertyEditor(TypeInfo(Boolean), TJvMainMenu, cOwnerDraw, nil);
+//  RegisterPropertyEditor(TypeInfo(Boolean), TJvPopupMenu, cOwnerDraw, nil);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedButton, 'Caption', TJvHintProperty);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
+//  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
+  RegisterPropertyEditor(TypeInfo(TDate), nil, '', TJvDateExProperty);
+  RegisterPropertyEditor(TypeInfo(TTime), nil, '', TJvTimeExProperty);
+  RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TJvDateTimeExProperty);
+
+
 end;
 
 end.

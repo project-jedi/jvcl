@@ -34,10 +34,11 @@ unit JvQCheckedItemsForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QWindows, QControls, QForms, QMenus, QGraphics,
-  QStdCtrls, QCheckLst, Types, QExtCtrls, ClxEditors,  
-  RTLConsts, DesignIntf, DesignEditors,  
+  SysUtils, Classes,
+  QWindows, QControls, QForms, QMenus, Types, QGraphics,
+  QStdCtrls, QCheckLst, QExtCtrls, 
+  RTLConsts, DesignIntf, DesignEditors,
+  CLXEditors, 
   JvQComponent;
 
 type
@@ -101,13 +102,10 @@ type
 
 implementation
 
-
-
 {$R *.xfm}
 
-
-uses  
-  QConsts, 
+uses
+  QConsts,
   JvQStringsForm, JvQConsts, JvQDsgnConsts, JvQJVCLUtils, JvQBoxProcs;
 
 const

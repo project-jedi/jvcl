@@ -47,7 +47,7 @@ uses
   QControls, QStdCtrls, QExtCtrls, Types, QGraphics, QActnList, QImgList, QDialogs, 
   QTypes,  
   DesignEditors, DesignIntf, 
-  JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVCLVer, JvQComponent, JvQActions,
+  JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVCLXVer, JvQComponent, JvQActions,
   JvQActnResForm, JvQJVCLAboutForm, JvQIDEZoom, JvQBaseDlg,
   JvQDataProvider, JvQDataProviderIntf, JvQColorProvider, JvQContextProvider,
   JvQDsgnEditors, JvQJVCLAboutEditor, JvQBaseDlgEditor, JvQColorEditor,
