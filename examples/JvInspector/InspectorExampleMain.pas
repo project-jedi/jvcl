@@ -249,6 +249,11 @@ begin
     with Item as TJvInspectorComponentItem do
     begin
       AddOwner(Self);
+    end
+  else if Item is TJvInspectorComponentItem then
+    with Item as TJvInspectorComponentItem do
+    begin
+      AddOwner(frmTest);
     end;
 end;
 
