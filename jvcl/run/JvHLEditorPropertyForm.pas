@@ -180,7 +180,11 @@ type
 const
   Highlighters: array[TJvHighlighter] of string =
   ('None', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'VB', 'Html',
-    'Perl', 'Ini', 'CocoR', 'Php', 'NQC', 'User Defined');
+    'Perl', 'Ini', 'CocoR', 'PHP', 'NQC', 'C#', 'User Defined');
+
+  HighlighterNames: array[TJvHighlighter] of string =
+  ('Default', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'VB', 'Html',
+    'Perl', 'Ini', 'Coco/R', 'PHP', 'NQC', 'C#', 'Custom');
 
 implementation
 
@@ -286,7 +290,7 @@ begin
   FHighlighterCombo := true;
   FColorSamples := TStringList.Create;
   FColorSamples.Text := GetHardCodedExamples;
-  FPages := [epEditor, epColors];
+  FPages := [epColors];
 end;
 
 destructor TJvHLEdPropDlg.Destroy;
@@ -377,7 +381,8 @@ begin
 //    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
     ed := TCustomEditorBaseHack(AJvHLEditor);
     FJvHLEditor.GetInterface(IJvHLEditor, HLed);
-    Section := AddSlash2(StorageSection) + Highlighters[AHighlighter];
+    Section := AddSlash2(Storage.AppStoragePath) + AddSlash2(StorageSection) +
+      Highlighters[AHighlighter];
     Storage.StoredValue[Section + 'BackColor'] := ColorToString(ed.Color);
     Storage.StoredValue[Section + 'FontName'] := ed.Font.Name;
     Storage.StoredValue[Section + 'Charset'] := IntToStr(ed.Font.CharSet);
@@ -546,15 +551,20 @@ end;
 
 function TJvHLEdPropDlg.IsPagesStored: boolean;
 begin
-  Result := FPages = [epEditor, epColors];
+  Result := FPages <> [epColors];
 end;
 
 //=== TJvHLEditorParamsForm ==================================================
 
 constructor TJvHLEditorParamsForm.Create(AOwner: TComponent);
+var
+  hl: TJvHighlighter;
 begin
   inherited Create(AOwner);
   FColorSamples := TStringList.Create;
+  cbColorSettings.Clear;
+  for hl:=Low(TJvHighlighter) to Pred(High(TJvHighLighter)) do
+    cbColorSettings.AddItem(HighlighterNames[hl], nil);
 end;
 
 destructor TJvHLEditorParamsForm.Destroy;
@@ -938,7 +948,10 @@ begin
   if (Sender <> nil) and (Params.Storage <> nil) then
     Params.SaveHighlighterColors(JvHLEditorPreview, JvHLEditorPreview.Highlighter);
 
-  ReadColorSampleSection(ColorSamples, cbColorSettings.Text, JvHLEditorPreview.Lines);
+  if cbColorSettings.Visible then
+    ReadColorSampleSection(ColorSamples, cbColorSettings.Text, JvHLEditorPreview.Lines)
+  else
+    ReadColorSampleSection(ColorSamples, HighlighterNames[FHighlighter], JvHLEditorPreview.Lines);
 
   JvHLEditorPreview.Highlighter := TJvHighlighter(cbColorSettings.ItemIndex);
   if JvHLEditorPreview.Highlighter = hlIni then
