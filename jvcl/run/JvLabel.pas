@@ -55,12 +55,7 @@ unit JvLabel;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, StdCtrls, ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QStdCtrls, QImgList, Types, QWindows,
-  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvTypes, JvComponent, JvConsts, JvExControls, JvDataProvider, JvDataProviderIntf;
 
@@ -623,7 +618,9 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
+//
+// TODO: replace TextOutAngle by DrawText(...., Angle) (asn)
+//
 procedure TJvCustomLabel.DrawAngleText(var Rect: TRect; Flags: Word; HasImage: Boolean;
   ShadowSize: Byte; ShadowColor: TColorRef; ShadowPos: TShadowPosition);
 const // (ahuser) no function known for these
@@ -643,10 +640,7 @@ begin
     StrCopy(Text, ' ');
 
   Canvas.Start;
-  //  QPainter_save(Canvas.Handle);
   try
-    //    QPainter_rotate(Canvas.Handle, -(Angle div 2));
-
     Phi := Angle * Pi / 180;
     if not AutoSize then
     begin
@@ -684,8 +678,6 @@ begin
       end;
     end;
 
-    //    QPainter_translate(Canvas.Handle, TextX, TextY);
-    //    QPainter_rotate(Canvas.Handle, -(Angle {div 2}));
     if CalcRect then
     begin
       Rect.Right := Rect.Left + w;
@@ -712,7 +704,6 @@ begin
         TextOutAngle(Canvas, Angle, TextX, TextY, Text);
     end;
   finally
-    //    QPainter_restore(Canvas.Handle);
     Canvas.Stop;
   end;
 end;

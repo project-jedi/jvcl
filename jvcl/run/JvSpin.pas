@@ -1237,7 +1237,6 @@ begin
       FBtnWindow.SetBounds(Left, Top, Right - Left, Bottom - Top);
     {$IFDEF VisualCLX}
     if BiDiMode = bdRightToLeft then
-    begin
       FBtnWindow.Align := alLeft
     else
       FBtnWindow.Align := alRight;

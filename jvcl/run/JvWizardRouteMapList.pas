@@ -35,11 +35,9 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, Types, QWindows, QImgList,
+  QImgList,
   {$ENDIF VisualCLX}
   {$IFDEF USEJVCL}
   JvTypes, JvConsts, JvJVCLUtils,
@@ -357,15 +355,9 @@ begin
           end;
           if not Pages[PageIndex].Enabled then
           begin
-            {$IFDEF VCL}
             // (p3) TImageList changes the canvas colors when drawing disabled images, so we reset them explicitly
             Windows.SetBkColor(ACanvas.Handle, BkColor);
             Windows.SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText));
-            {$ENDIF VCL}
-            {$IFDEF VisualCLX}
-            QWindows.SetBkColor(ACanvas.Handle, BkColor);
-            QWindows.SetTextColor(ACanvas.Handle, ColorToRGB(clGrayText));
-            {$ENDIF VisualCLX}
           end;
         end;
       end

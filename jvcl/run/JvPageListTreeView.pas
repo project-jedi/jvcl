@@ -232,39 +232,39 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF VCL}
-    property BorderStyle;
     property BorderWidth;
     property ChangeDelay;
+    property HideSelection;
+    property HotTrack;
+    {$IFDEF COMPILER6_UP}
+    property MultiSelect;
+    property MultiSelectStyle;
+    {$ENDIF COMPILER6_UP}
+    property StateImages;
+    property ToolTips;
+    property OnAdvancedCustomDraw;
+    property OnAdvancedCustomDrawItem;
+    property ShowRoot;
+    property RightClickSelect;
+    {$ENDIF VCL}
+    property BorderStyle;
     property Color;
     property Constraints;
     property DragMode;
     property Enabled;
     property Font;
-    property HideSelection;
-    property HotTrack;
     property Images;
     property Indent;
-    {$IFDEF COMPILER6_UP}
-    property MultiSelect;
-    property MultiSelectStyle;
-    {$ENDIF COMPILER6_UP}
     property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property RightClickSelect;
     property RowSelect;
     property ShowHint;
-    property ShowRoot;
     property SortType;
-    property StateImages;
     property TabOrder;
     property TabStop default True;
-    property ToolTips;
     property Visible;
-    property OnAdvancedCustomDraw;
-    property OnAdvancedCustomDrawItem;
     property OnChange;
     property OnChanging;
     property OnClick;
@@ -272,10 +272,12 @@ type
     property OnCollapsing;
     property OnCompare;
     property OnContextPopup;
+    {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     property OnAddition;
     property OnCreateNodeClass;
     {$ENDIF COMPILER6_UP}
+    {$ENDIF VCL}
     property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
@@ -825,7 +827,10 @@ begin
       ResetPreviousNode(N);
       N.ImageIndex := FNodeImages.SelectedIndex;
       N.SelectedIndex := FNodeImages.SelectedIndex;
-      R := N.DisplayRect(False);
+      R := N.DisplayRect{$IFDEF VCL}(False){$ENDIF};
+      {$IFDEF VisualCLX}
+      QWindows.
+      {$ENDIF VisualCLX}
       InvalidateRect(Handle, @R, True);
       SetPreviousNode(N);
     end;
@@ -880,7 +885,10 @@ begin
   begin
     FLastSelected.ImageIndex := FNodeImages.ImageIndex;
     FLastSelected.SelectedIndex := FNodeImages.ImageIndex;
-    R := FLastSelected.DisplayRect(False);
+    R := FLastSelected.DisplayRect{$IFDEF VCL}(False){$ENDIF};
+    {$IFDEF VisualCLX}
+    QWindows.
+    {$ENDIF VisualCLX}
     InvalidateRect(Handle, @R, True);
   end;
 end;

@@ -29,17 +29,14 @@ unit JvDynControlEngineIntf;
 interface
 
 uses
-  Classes,
+  Classes, Controls, Forms, StdCtrls, ExtCtrls, Graphics, Buttons, Dialogs,
   {$IFDEF VCL}
-  Controls, Forms, StdCtrls, ExtCtrls, Graphics, Buttons, FileCtrl,
-  Dialogs,
+	FileCtrl,  
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QExtCtrls, QGraphics, QButtons,
   {$IFDEF COMPILER7_UP}
   QFileCtrls,
   {$ENDIF COMPILER7_UP}
-  QDialogs,
   {$ENDIF VisualCLX}
   SysUtils;
 

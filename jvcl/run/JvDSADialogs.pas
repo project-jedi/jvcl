@@ -35,12 +35,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
   Controls, StdCtrls, Dialogs, ExtCtrls, Forms, Graphics,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QStdCtrls, QDialogs, QExtCtrls, QForms, QGraphics, QWindows, Types,
-  QClipbrd,
+  QWindows, QClipbrd,
   {$ENDIF VisualCLX}
   JclBase,
   JvConsts, JvComponent, JvTypes, JvDynControlEngine, JvFinalize;
@@ -216,13 +213,6 @@ const
 //--------------------------------------------------------------------------------------------------
 
 // Additional values for DefaultButton, CancelButton and HelpButton parameters
-{$IFDEF VisualCLX}
-type
-  TMsgDlgBtn =
-    (mbHelp, mbOk, mbCancel, mbYes, mbNo, mbAbort, mbRetry, mbIgnore,
-     mbAll, mbNoToAll, mbYesToAll);
-  TMsgDlgButtons = set of TMsgDlgBtn;
-{$ENDIF VisualCLX}
 
 const
   mbNone = TMsgDlgBtn(-1);
@@ -1597,8 +1587,15 @@ end;
 const
   Captions: array [TMsgDlgType] of string =
     (SMsgDlgWarning, SMsgDlgError, SMsgDlgInformation, SMsgDlgConfirm, '');
+  {$IFDEF MSWINDOWS}
   IconIDs: array [TMsgDlgType] of PChar =
     (IDI_EXCLAMATION, IDI_HAND, IDI_ASTERISK, IDI_QUESTION, nil);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  IconIDs: array [TMsgDlgType] of QMessageBoxIcon =
+    (QMessageBoxIcon_Warning,  QMessageBoxIcon_Critical, QMessageBoxIcon_Information,
+     QMessageBoxIcon_NoIcon, QMessageBoxIcon_NoIcon);
+  {$ENDIF LINUX}
 
   {$IFDEF VCL}
   ButtonCaptions: array [TMsgDlgBtn] of string =
@@ -1627,7 +1624,12 @@ end;
 
 function DlgPic(const DlgType: TMsgDlgType): TGraphic;
 begin
+  {$IFDEF MSWINDOWS}
   if IconIDs[DlgType] <> nil then
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  if IconIDs[DlgType] <> nil then
+  {$ENDIF LINUX}
   begin
     Result := TIcon.Create;
     try

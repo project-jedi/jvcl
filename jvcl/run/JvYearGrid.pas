@@ -989,7 +989,6 @@ begin
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  // (rom) i doubt that ShellExecute is a Linux function
   ShellExecute(HWND_DESKTOP, 'open', PChar(Command),
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
   {$ENDIF VisualCLX}
