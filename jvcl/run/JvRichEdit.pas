@@ -3749,6 +3749,8 @@ begin
 end;
 
 procedure TJvCustomRichEdit.SaveToImage(Picture: TPicture);
+const
+  cSelectionBarWidth = 9;
 var
   ABmp: TBitmap;
   Range: TFormatRange;
@@ -3763,12 +3765,20 @@ begin
       FImageRect.Right := ClientWidth;
       FImageRect.Bottom := ClientHeight;
     end;
-    ABmp.Width := FImageRect.Right;
+    // Determine draw width ("formatting rectangle"), FImageRect is control width
+    SendMessage(Handle, EM_GETRECT, 0, Integer(@R));
+    // According to MSDN the selection bar is not included in the formatting
+    // rectangle, but this seems to be NOT true
+    if SelectionBar then
+      Dec(R.Right, cSelectionBarWidth);
+    ABmp.Width := R.Right - R.Left;
     ABmp.Height := FImageRect.Bottom;
     R.Top := 0;
     R.Left := 0;
-    R.Right := FImageRect.Right * Screen.PixelsPerInch;
-    R.Bottom := FImageRect.Bottom * Screen.PixelsPerInch;
+    // R must be in twips:
+    // pixels * (twips/inch) / (pixels/inch) = twips
+    R.Right := MulDiv(ABmp.Width, cTwipsPerInch, Screen.PixelsPerInch);
+    R.Bottom := MulDiv(ABmp.Height, cTwipsPerInch, Screen.PixelsPerInch);
     Range.hdc := ABmp.Canvas.Handle;
     Range.hdcTarget := ABmp.Canvas.Handle;
     Range.rc := R;
@@ -3776,6 +3786,7 @@ begin
     Range.chrg.cpMin := 0;
     Range.chrg.cpMax := -1;
     SendMessage(Handle, EM_FORMATRANGE, 1, Integer(@Range));
+    SendMessage(Handle, EM_FORMATRANGE, 0, 0); { flush buffer }
     Picture.Assign(ABmp);
   finally
     ABmp.Free;
