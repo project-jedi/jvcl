@@ -226,6 +226,7 @@ end;
 
 procedure TJvCustomGraphicButton.CMMouseEnter(var Msg: TMessage);
 begin
+  inherited;
   MouseEnter;
 end;
 
