@@ -948,13 +948,13 @@ end;
 
 procedure TJvExScrollingWinControl.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExScrollingWinControl.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -1260,13 +1260,13 @@ end;
 
 procedure TJvExScrollBox.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExScrollBox.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -1572,13 +1572,13 @@ end;
 
 procedure TJvExCustomFrame.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomFrame.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -1884,13 +1884,13 @@ end;
 
 procedure TJvExFrame.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExFrame.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -2196,13 +2196,13 @@ end;
 
 procedure TJvExCustomForm.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomForm.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -2501,13 +2501,13 @@ end;
 
 procedure TJvExForm.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExForm.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -2806,13 +2806,13 @@ end;
 
 procedure TJvExToolWindow.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExToolWindow.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 

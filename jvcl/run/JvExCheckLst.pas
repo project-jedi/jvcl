@@ -193,13 +193,13 @@ end;
 
 procedure TJvExCheckListBox.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCheckListBox.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 

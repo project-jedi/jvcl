@@ -820,13 +820,13 @@ end;
 
 procedure TJvExInplaceEdit.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExInplaceEdit.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -1132,13 +1132,13 @@ end;
 
 procedure TJvExCustomGrid.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomGrid.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -1439,13 +1439,13 @@ end;
 
 procedure TJvExCustomDrawGrid.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomDrawGrid.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -1744,13 +1744,13 @@ end;
 
 procedure TJvExInplaceEditList.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExInplaceEditList.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -2059,13 +2059,13 @@ end;
 
 procedure TJvExDrawGrid.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExDrawGrid.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -2372,13 +2372,13 @@ end;
 
 procedure TJvExStringGrid.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExStringGrid.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 

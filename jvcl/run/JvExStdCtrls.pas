@@ -2953,13 +2953,13 @@ end;
 
 procedure TJvExCustomGroupBox.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomGroupBox.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -3265,13 +3265,13 @@ end;
 
 procedure TJvExGroupBox.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExGroupBox.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -3579,13 +3579,13 @@ end;
 
 procedure TJvExCustomLabel.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomLabel.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -3751,13 +3751,13 @@ end;
 
 procedure TJvExLabel.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExLabel.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -3925,13 +3925,13 @@ end;
 
 procedure TJvExCustomLabel.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomLabel.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -4237,13 +4237,13 @@ end;
 
 procedure TJvExLabel.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExLabel.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -4556,13 +4556,13 @@ end;
 
 procedure TJvExCustomEdit.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomEdit.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -4945,13 +4945,13 @@ end;
 
 procedure TJvExEdit.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExEdit.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -5334,13 +5334,13 @@ end;
 
 procedure TJvExCustomMemo.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomMemo.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -5723,13 +5723,13 @@ end;
 
 procedure TJvExMemo.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExMemo.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -6117,13 +6117,13 @@ end;
 
 procedure TJvExCustomCombo.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomCombo.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -6431,13 +6431,13 @@ end;
 
 procedure TJvExCustomComboBox.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboBox.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -6743,13 +6743,13 @@ end;
 
 procedure TJvExComboBox.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExComboBox.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -7055,13 +7055,13 @@ end;
 
 procedure TJvExButtonControl.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExButtonControl.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -7367,13 +7367,13 @@ end;
 
 procedure TJvExButton.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExButton.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -7679,13 +7679,13 @@ end;
 
 procedure TJvExCustomCheckBox.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomCheckBox.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -7991,13 +7991,13 @@ end;
 
 procedure TJvExCheckBox.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCheckBox.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -8303,13 +8303,13 @@ end;
 
 procedure TJvExRadioButton.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExRadioButton.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -8615,13 +8615,13 @@ end;
 
 procedure TJvExCustomListBox.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomListBox.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -8927,13 +8927,13 @@ end;
 
 procedure TJvExListBox.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExListBox.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -9239,13 +9239,13 @@ end;
 
 procedure TJvExScrollBar.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExScrollBar.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -9552,13 +9552,13 @@ end;
 
 procedure TJvExCustomStaticText.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomStaticText.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -9864,13 +9864,13 @@ end;
 
 procedure TJvExStaticText.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExStaticText.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 

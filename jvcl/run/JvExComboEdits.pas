@@ -665,13 +665,13 @@ end;
 
 procedure TJvExCustomComboEdit.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboEdit.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -1054,13 +1054,13 @@ end;
 
 procedure TJvExComboEdit.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExComboEdit.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -1451,13 +1451,13 @@ end;
 
 procedure TJvExCustomComboMaskEdit.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboMaskEdit.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
@@ -1854,13 +1854,13 @@ end;
 
 procedure TJvExComboMaskEdit.VisibleChanged;
 asm
-    MOV  EDX, CM_VISIBLECHANGED 
+    MOV  EDX, CM_VISIBLECHANGED
     JMP  InheritMsg
 end;
 
 procedure TJvExComboMaskEdit.EnabledChanged;
 asm
-    MOV  EDX, CM_ENABLEDCHANGED 
+    MOV  EDX, CM_ENABLEDCHANGED
     JMP  InheritMsg
 end;
 
