@@ -53,13 +53,15 @@ you plan to use or that you would like to use.
    <CHOICES>TJvBitBtn;TJvImgBtn;TJvSpeedButton;TJvMultilineButton;TJvOneSizeFitsAllButton;TJvButtonShaped;TJvArrowButton;TJvTransparentButton;TJvTransparentButton2;TJvPopupMemo;TJvStringgrid;TJvDrawGrid;TJvButtonDrawGrid;TJvMultilineListbox;TJvReorderListBox;TJvBMPListBox;TJvCheckListBox;TJvImageListBox;TJvFontComboBox;TJvColorComboBox;TJvImageComboBox;TJvScrollBox;TJvImage;TJvImageWindow;TJvImageSquare;TJvShape;TJvBevel;TJvSplitter;TJvSyncSplitter;TJvControlBar;TJvStaticText;TJvScrollText;TJvContentScroller;TJvZoom;TJvMaskEdit;TJvCommandEdit;TJvCoupler;TJvInstallLabel;TJvObserverLabel;TJvObservibleCheckBox;TJvMousePanel;TJvSizeablePanel;TJvTransparentPanel;TJvCaptionPanel;TJvItemsPanel;TJvRollout;TJvSpacer;TJvDivider;TJvArrow;TJvHighlighter;TJvRadioControl;TJvaScrollText;TJvhtListBox;TJvHTComboBox;TJvHTLabel;TJvHTButton;TJvGroupHeader;TJvFooter;TJvSpinEdit;TJvScheduledEvents;TJvSpinEdit</CHOICES>
    <RESPONSES/>
   </ITEM>
-  <ITEM ID="10" Title="Components you use - Jv Win32" Type="multiple" Required="0" Description="Please place a checkmark next to each item that you use on a regular basis, that you plan to use or 
+  <ITEM ID="10" Title="Components you use - Jv Win32" Type="multiple" Required="0" Description="Please place a checkmark next to each item that you use on a 
+regular basis, that you plan to use or 
 that you would like to use.
 ">
    <CHOICES>TJvTabControl;TJvPageControl;TJvRichEdit;TJvTrackBar;TJvProgressBar;TJvUpDown;TJvHotKey;TJvHotKeyEx;TJvApplicationHotKey;TJvAnimate;TJvDateTimePicker;TJvMonthCalendar;TJvMonthCalendar2;TJvTreeView;TJvListView;TJvHeaderControl;TJvStatusBar;TJvToolBar;TJvCoolBar;TJvPageScroller;TJvScrollingWindow;TJvIpAddress;TJvSHFileOperation;TJvTrayIcon;TJvHidDeviceController</CHOICES>
    <RESPONSES/>
   </ITEM>
-  <ITEM ID="11" Title="Components you use - Jv System" Type="multiple" Required="0" Description="Please place a checkmark next to each item that you use on a regular basis, that you plan to use or 
+  <ITEM ID="11" Title="Components you use - Jv System" Type="multiple" Required="0" Description="Please place a checkmark next to each item that you use on a 
+regular basis, that you plan to use or 
 that you would like to use.
 ">
    <CHOICES>TJvDriveCombo;TJvDriveList;TJvDirectoryListBox;TJvFileListBox;TJvCaptionButton;TJvColorButton;TJvColorBox;TJvColorSquare;TJvRegistryTreeView;TJvUninstallListBox;TJvUninstallComboBox;TJvDragDrop;TJvAppDdeCmd;TJvPerfStat95;TJvCreateProcess;TJvChangeNotify;TJvFileInfo;TJvComputerInfo;TJvDirectories;TJvSystemColors;TJvClipboardViewer;TJvSystemPopup;TJvaCaptionButton;TJvNTEventLog</CHOICES>
@@ -159,8 +161,7 @@ style.
    <RESPONSES/>
   </ITEM>
   <ITEM ID="27" Title="User feedback" Type="freeform" Required="0" Description="Please provide additional feedback on your feelings about JVCL. This can include 
-suggestions, problems you've encountered and things that makes your use of JVCL 
-harder. Even praise would be alright!
+suggestions, problems you've encountered and things that makes your use of JVCL harder. Even praise would be alright!
 ">
    <CHOICES/>
    <RESPONSES/>
