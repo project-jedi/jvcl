@@ -1,71 +1,92 @@
 object frmPluginParams: TfrmPluginParams
-  Left = 222
-  Top = 120
-  Width = 335
-  Height = 266
+  Left = 424
+  Top = 232
+  Width = 343
+  Height = 247
+  BorderIcons = [biSystemMenu]
   Caption = 'Setup Plugin Parameters'
   Color = clBtnFace
+  Constraints.MaxHeight = 247
+  Constraints.MinHeight = 247
+  Constraints.MinWidth = 343
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Label1: TLabel
-    Left = 16
-    Top = 19
-    Width = 72
-    Height = 13
-    Caption = 'Name of Plugin'
-  end
-  object Label2: TLabel
-    Left = 16
-    Top = 48
-    Width = 291
-    Height = 52
-    Caption = 
-      'A Plugin named Test would have '#13#10#13#10'*) a Project-file called PlgT' +
-      'est.dpk'#13#10'*) a Unit called PluginTest.pas containing the Object T' +
-      'plgTest'
-  end
-  object radPluginType: TRadioGroup
-    Left = 48
-    Top = 120
-    Width = 201
-    Height = 57
-    Caption = 'Plugin-Type'
-    ItemIndex = 1
-    Items.Strings = (
-      'DLL-Plugin (old style)'
-      'Package-Plugin')
-    TabOrder = 0
-  end
-  object ediPluginName: TEdit
-    Left = 96
-    Top = 16
-    Width = 121
-    Height = 21
-    TabOrder = 1
-    Text = 'PluginName'
+  object lblCreateInfo: TLabel
+    Left = 5
+    Top = 110
+    Width = 325
+    Height = 71
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    AutoSize = False
+    WordWrap = True
   end
   object butOK: TButton
-    Left = 80
-    Top = 200
+    Left = 175
+    Top = 190
     Width = 75
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'OK'
+    Default = True
     ModalResult = 1
-    TabOrder = 2
+    TabOrder = 0
   end
   object butCancel: TButton
-    Left = 168
-    Top = 200
+    Left = 255
+    Top = 190
     Width = 75
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 3
+    TabOrder = 1
+  end
+  object gbPluginSettings: TGroupBox
+    Left = 5
+    Top = 5
+    Width = 325
+    Height = 96
+    Anchors = [akLeft, akTop, akRight]
+    Caption = ' Plugin settings '
+    TabOrder = 2
+    object edName: TEdit
+      Left = 10
+      Top = 20
+      Width = 305
+      Height = 21
+      Anchors = [akLeft, akTop, akRight]
+      TabOrder = 0
+      Text = 'PluginName'
+      OnChange = SettingsChanged
+    end
+    object rbPackage: TRadioButton
+      Left = 10
+      Top = 50
+      Width = 305
+      Height = 17
+      Anchors = [akLeft, akTop, akRight]
+      Caption = 'Package plugin'
+      Checked = True
+      TabOrder = 1
+      TabStop = True
+      OnClick = SettingsChanged
+    end
+    object rbDLL: TRadioButton
+      Left = 10
+      Top = 70
+      Width = 305
+      Height = 17
+      Anchors = [akLeft, akTop, akRight]
+      Caption = 'DLL plugin (old style)'
+      TabOrder = 2
+      OnClick = SettingsChanged
+    end
   end
 end

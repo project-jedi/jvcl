@@ -196,8 +196,8 @@ begin
         begin
           ProjectCreator := TJvPluginProjectCreator.Create;
 
-          ProjectCreator.PlugType := radPluginType.ItemIndex;
-          ProjectCreator.PlugName := ediPluginName.Text;
+          ProjectCreator.PlugType := 1 - Ord(rbPackage.Checked);//  radPluginType.ItemIndex;
+          ProjectCreator.PlugName := Trim(edName.Text);
 
           ModuleServices.CreateModule(ProjectCreator);
         end;

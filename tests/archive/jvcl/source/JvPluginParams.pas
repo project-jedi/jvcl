@@ -36,12 +36,15 @@ uses
 
 type
   TfrmPluginParams = class(TForm)
-    radPluginType: TRadioGroup;
-    Label1: TLabel;
-    ediPluginName: TEdit;
     butOK: TButton;
     butCancel: TButton;
-    Label2: TLabel;
+    gbPluginSettings: TGroupBox;
+    edName: TEdit;
+    rbPackage: TRadioButton;
+    rbDLL: TRadioButton;
+    lblCreateInfo: TLabel;
+    procedure SettingsChanged(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -53,6 +56,30 @@ var
 
 implementation
 
+const
+  SInfoText = 'The settings above will create the following project:' + #13#10#13#10 +
+    '* A project called plg%0:s.%1:s' + #13#10 +
+    '* A unit called Plugin%0:s, containing the data module T%0:s.';
+
 {$R *.DFM}
+
+procedure TfrmPluginParams.SettingsChanged(Sender: TObject);
+
+  function RbToPrjExt: string;
+  begin
+    Result := 'dpk';
+    if rbDLL.Checked then
+      Result := 'dpr';
+  end;
+
+begin
+  lblCreateInfo.Caption := Format(SInfoText, [edName.Text, RbToPrjExt]);
+  butOK.Enabled := Trim(edName.Text) <> '';
+end;
+
+procedure TfrmPluginParams.FormShow(Sender: TObject);
+begin
+  SettingsChanged(Sender);
+end;
 
 end.

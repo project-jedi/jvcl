@@ -290,10 +290,33 @@ begin
 end;
 
 procedure TJvPluginCommands.SetItemName(AItem: TCollectionItem);
+var
+  I: Integer;
+  J: Integer;
+
+  function NameUsed: Boolean;
+  begin
+    J := AItem.Collection.Count - 1;
+    while (J > -1) and (TJvPluginCommand(AItem.Collection.Items[J]).Name <> ('Command' +
+        IntToStr(I))) do
+      Dec(J);
+    Result := J > -1;
+  end;
+  
+  procedure FindCmdIdx;
+  begin
+    I := 1;
+    while (I < MaxInt) and NameUsed do
+      Inc(I);
+  end;
+
 begin
   with TJvPluginCommand(AItem) do
     if Name = '' then
-      Name := TJvPlugin(Self.GetOwner).Name + 'Command' + IntToStr(ID+1);
+    begin
+      FindCmdIdx;
+      Name := 'Command' + IntToStr(I);
+    end;
 end;
 
 end.
