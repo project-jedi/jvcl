@@ -500,7 +500,7 @@ type
     property TopSplitterStyle: TJvDockSplitterStyle read FTopSplitterStyle write SetTopSplitterStyle;
     property RightSplitterStyle: TJvDockSplitterStyle read FRightSplitterStyle write SetRightSplitterStyle;
     property BottomSplitterStyle: TJvDockSplitterStyle read FBottomSplitterStyle write SetBottomSplitterStyle;
-    property AutoFocusDockedForm:boolean read FAutoFocusDockedForm write FAutoFocusDockedForm default True;
+    property AutoFocusDockedForm: boolean read FAutoFocusDockedForm write FAutoFocusDockedForm default True;
 
     property OnGetClientAlignSize: TJvDockGetClientAlignSizeEvent
       read FOnGetClientAlignSize write FOnGetClientAlignSize;
@@ -1076,8 +1076,7 @@ begin
       DockRect := DockLeftRect;
       DockRect.Right := ClientWidth div 2;
     end
-    else
-    if PtInRect(DockTopRect, MousePos) then
+    else if PtInRect(DockTopRect, MousePos) then
     begin
       Result := alTop;
       DockRect := DockTopRect;
@@ -1085,15 +1084,13 @@ begin
       DockRect.Right := ClientWidth;
       DockRect.Bottom := ClientHeight div 2;
     end
-    else
-    if PtInRect(DockRightRect, MousePos) then
+    else if PtInRect(DockRightRect, MousePos) then
     begin
       Result := alRight;
       DockRect := DockRightRect;
       DockRect.Left := ClientWidth div 2;
     end
-    else
-    if PtInRect(DockBottomRect, MousePos) then
+    else if PtInRect(DockBottomRect, MousePos) then
     begin
       Result := alBottom;
       DockRect := DockBottomRect;
@@ -1101,8 +1098,7 @@ begin
       DockRect.Right := ClientWidth;
       DockRect.Top := ClientHeight div 2;
     end
-    else
-    if PtInRect(DockCenterRect, MousePos) then
+    else if PtInRect(DockCenterRect, MousePos) then
     begin
       Result := alClient;
       DockRect := DockCenterRect;
@@ -1209,13 +1205,11 @@ var
   begin
     if Client.HostDockSite is TJvDockVSPopupPanel then
       TJvDockVSPopupPanel(Client.HostDockSite).VSChannel.PopupDockForm(Client)
-    else
-    if (Client.HostDockSite <> nil) and (Client.HostDockSite.Parent <> nil) then
+    else if (Client.HostDockSite <> nil) and (Client.HostDockSite.Parent <> nil) then
     begin
       if (Client.HostDockSite.Parent.HostDockSite is TJvDockVSPopupPanel) then
         TJvDockVSPopupPanel(Client.HostDockSite.Parent.HostDockSite).VSChannel.PopupDockForm(Client)
-      else
-      if Client.HostDockSite.Parent.HostDockSite is TJvDockPanel then
+      else if Client.HostDockSite.Parent.HostDockSite is TJvDockPanel then
         Client.HostDockSite.Parent.HostDockSite.Invalidate;
     end;
   end;
@@ -1277,13 +1271,11 @@ var
   begin
     if Client.HostDockSite is TJvDockVSPopupPanel then
       TJvDockVSPopupPanel(Client.HostDockSite).VSChannel.HidePopupPanel(Client)
-    else
-    if (Client.HostDockSite <> nil) and (Client.HostDockSite.Parent <> nil) then
+    else if (Client.HostDockSite <> nil) and (Client.HostDockSite.Parent <> nil) then
     begin
       if (Client.HostDockSite.Parent.HostDockSite is TJvDockVSPopupPanel) then
         TJvDockVSPopupPanel(Client.HostDockSite.Parent.HostDockSite).VSChannel.HidePopupPanel(Client)
-      else
-      if (Client.HostDockSite.Parent.HostDockSite is TJvDockPanel) then
+      else if (Client.HostDockSite.Parent.HostDockSite is TJvDockPanel) then
         Client.HostDockSite.Parent.HostDockSite.Invalidate
     end;
   end;
@@ -1385,23 +1377,27 @@ var
   JvDockInfoTree: TJvDockInfoTree;
   I: Integer;
 begin
-  HideAllPopupPanel(nil);
-
-  JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
+  AppStorage.BeginUpdate;
   try
-    for I := 0 to Screen.CustomFormCount - 1 do
-      if (Screen.CustomForms[I].Parent = nil) and
-        ((FindDockClient(Screen.CustomForms[I]) <> nil) or (FindDockServer(Screen.CustomForms[I]) <> nil)) then
-        JvDockInfoTree.CreateZoneAndAddInfoFromApp(Screen.CustomForms[I]);
+    HideAllPopupPanel(nil);
+    JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
+    try
+      for I := 0 to Screen.CustomFormCount - 1 do
+        if (Screen.CustomForms[I].Parent = nil) and
+          ((FindDockClient(Screen.CustomForms[I]) <> nil) or (FindDockServer(Screen.CustomForms[I]) <> nil)) then
+          JvDockInfoTree.CreateZoneAndAddInfoFromApp(Screen.CustomForms[I]);
 
-    JvDockInfoTree.AppStorage := AppStorage;
-    if AppStoragePath <> '' then
-      JvDockInfoTree.AppStoragePath := AppStoragePath
-    else
-      JvDockInfoTree.AppStoragePath := AppStorage.Path;
-    JvDockInfoTree.WriteInfoToAppStorage;
+      JvDockInfoTree.AppStorage := AppStorage;
+      if AppStoragePath <> '' then
+        JvDockInfoTree.AppStoragePath := AppStoragePath
+      else
+        JvDockInfoTree.AppStoragePath := AppStorage.Path;
+      JvDockInfoTree.WriteInfoToAppStorage;
+    finally
+      JvDockInfoTree.Free;
+    end;
   finally
-    JvDockInfoTree.Free;
+    AppStorage.EndUpdate;
   end;
 end;
 
@@ -1410,35 +1406,40 @@ var
   JvDockInfoTree: TJvDockInfoTree;
   Form: TForm;
 begin
-  HideAllPopupPanel(nil);
-
-  Form := TForm.CreateNew(nil);
-  Form.BorderStyle := bsNone;
-  Form.BoundsRect := Rect(0, 0, 0, 0);
-  Form.Visible := True;
-  Form.Name := cDefaultFormName;
-
-  JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
-
-  JvDockLockWindow(nil);
+  AppStorage.BeginUpdate;
   try
-    JvDockInfoTree.AppStorage := AppStorage;
-    if AppStoragePath <> '' then
-      JvDockInfoTree.AppStoragePath := AppStoragePath
-    else
-      JvDockInfoTree.AppStoragePath := AppStorage.Path;
+    HideAllPopupPanel(nil);
+
+    Form := TForm.CreateNew(nil);
+    Form.BorderStyle := bsNone;
+    Form.BoundsRect := Rect(0, 0, 0, 0);
+    Form.Visible := True;
+    Form.Name := cDefaultFormName;
+
+    JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
+
+    JvDockLockWindow(nil);
     try
-      JvGlobalDockIsLoading := True;
-      JvDockInfoTree.ReadInfoFromAppStorage;
+      JvDockInfoTree.AppStorage := AppStorage;
+      if AppStoragePath <> '' then
+        JvDockInfoTree.AppStoragePath := AppStoragePath
+      else
+        JvDockInfoTree.AppStoragePath := AppStorage.Path;
+      try
+        JvGlobalDockIsLoading := True;
+        JvDockInfoTree.ReadInfoFromAppStorage;
+      finally
+        JvGlobalDockIsLoading := False;
+      end;
     finally
-      JvGlobalDockIsLoading := False;
+      Form.Release;
+      JvDockUnLockWindow;
+      JvDockInfoTree.Free;
     end;
+    ReshowAllVisibleWindow;
   finally
-    Form.Release;
-    JvDockUnLockWindow;
-    JvDockInfoTree.Free;
+    AppStorage.EndUpdate;
   end;
-  ReshowAllVisibleWindow;
 end;
 
 procedure SaveDockTreeToFile(FileName: string);
@@ -2396,6 +2397,7 @@ begin
 end;
 
 {$IFNDEF USEJVCL}
+
 function TJvDockBaseControl.GetDockStyleVersion: string;
 begin
   Result := RsDockManagerVersion;
@@ -2408,8 +2410,7 @@ begin
   if (Action = caFree) and (JvGlobalDockManager <> nil) then
     if Self is TJvDockServer then
       JvGlobalDockManager.RemoveDockServerFromDockManager(ParentForm)
-    else
-    if Self is TJvDockClient then
+    else if Self is TJvDockClient then
       JvGlobalDockManager.RemoveDockClientFromDockManager(ParentForm);
   if Assigned(FOldOnClose) then
     FOldOnClose(Sender, Action);
@@ -2420,8 +2421,7 @@ begin
   if JvGlobalDockManager <> nil then
     if Self is TJvDockServer then
       JvGlobalDockManager.AddDockServerToDockManager(ParentForm)
-    else
-    if Self is TJvDockClient then
+    else if Self is TJvDockClient then
       JvGlobalDockManager.AddDockClientToDockManager(ParentForm);
   if Assigned(FOldOnCreate) then
     FOldOnCreate(Sender);
@@ -2744,8 +2744,7 @@ begin
   if Msg.Active = WA_INACTIVE then
     for I := alTop to alRight do
       DockPanelWithAlign[I].JvDockManager.ActiveControl := nil
-  else
-  if AutoFocusDockedForm then
+  else if AutoFocusDockedForm then
   begin
     Control := GetActiveControl(ParentForm);
     for I := alTop to alRight do
@@ -3514,8 +3513,7 @@ begin
     DoFloat(Self, DockableControl.DockClients[0]);
     Action := caFree;
   end
-  else
-  if DockableControl.DockClientCount = 0 then
+  else if DockableControl.DockClientCount = 0 then
     Action := caFree
   else
   begin
@@ -4083,8 +4081,7 @@ begin
           SetDockSite(TWinControl(Source.Control), False);
           Host.Visible := True;
         end
-        else
-        if DockType <> alNone then
+        else if DockType <> alNone then
         begin
           Host := CreateConjoinHostAndDockControl(ParentForm, Source.Control, DockType);
           SetDockSite(ParentForm, False);
@@ -4361,8 +4358,7 @@ procedure TJvDockBasicStyle.ResetCursor(Source: TJvDockDragDockObject);
 begin
   if (Source.TargetControl = nil) and (Source.Control <> nil) and (Source.Control.Floating) then
     Windows.SetCursor(Screen.Cursors[crDefault])
-  else
-  if (Source.TargetControl = nil) and (not JvGlobalDockClient.CanFloat) then
+  else if (Source.TargetControl = nil) and (not JvGlobalDockClient.CanFloat) then
     Windows.SetCursor(Screen.Cursors[crNo])
   else
     Windows.SetCursor(Screen.Cursors[crDefault]);
@@ -4716,8 +4712,7 @@ begin
       ADockServer := TJvDockServer(DockStyle.DockBaseControlLists[I]);
       ResetDockServerOption(ADockServer);
     end
-    else
-    if DockStyle.DockBaseControlLists[I] is TJvDockClient then
+    else if DockStyle.DockBaseControlLists[I] is TJvDockClient then
     begin
       ADockClient := TJvDockClient(DockStyle.DockBaseControlLists[I]);
       if ADockClient.ParentForm.HostDockSite is TJvDockConjoinPanel then
