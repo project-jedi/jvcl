@@ -1,6 +1,9 @@
 Changelog for JVCL 3.0
 ======================
 2003-09-25:
+- Updated JvCsvData, JvDBLookup, JvBalloonHint, JvTimeLine, JvOutlookBar, 
+  JvCaptionButton, JvSpin, JvCtrls, JvRichEdit, JvEditor, JvPickDate, JvxCtrls,
+  JvToolEdit to JvThemes
 - JvInstallLabel: ImageList renamed to Images, changed TImagelist to TCustomImagelist // peter3
 - JvListComb: Imagelist renamed to Images, changed TImagelist to TCustomImagelist // peter3
 - JvExtraInspEditors: Imagelist renamed to Images, changed TImagelist to TCustomImagelist // peter3
