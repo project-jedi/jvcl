@@ -31,9 +31,7 @@ interface
 {$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
-  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
   Dialogs, JvDsaDialogs, JvParameterList, StdCtrls, JvParameterListParameter, Mask,
   JvToolEdit, JvPanel,
@@ -181,7 +179,6 @@ type
 var
   Form1: TForm1;
 
-{$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$RCSfile$';
@@ -189,7 +186,6 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\examples\JvParameterList'
   );
-{$ENDIF UNITVERSIONING}
 
 
 implementation
@@ -205,7 +201,7 @@ uses JvDynControlEngineVCL,
   , JvDynControlEngineDevExpCx
   , cxLookAndFeels
   {$ENDIF}
-  , JvDynControlEngineIntf, JclUnitVersioning, JclStrings;
+  , JvDynControlEngineIntf, JclStrings;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -1171,7 +1167,7 @@ begin
     DynEngine := aDynControlEngine
   else
     DynEngine := DefaultDynControlEngine;
-  UnitVersionForm := DynEngine.CreateForm ('Unit Versioning Sample', '');
+  UnitVersionForm := DynEngine.CreateForm ('Unit Versioning', '');
   try
     if UnitVersionForm is TForm then
       TForm(UnitVersionForm).Position := poDesktopCenter;
@@ -1401,5 +1397,11 @@ begin
     FreeAndNil(ParameterList);
   END;
 end;
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
 
 end.
