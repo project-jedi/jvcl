@@ -84,6 +84,7 @@ type
     FOrigin: TPoint;
     FMoving: Boolean;
   protected
+
     procedure StartMove(X, Y: Integer);
     procedure Move(DeltaX, DeltaY: Integer);
     procedure EndMove;
@@ -319,7 +320,7 @@ type
 implementation
 
 uses
-  SysUtils, ImgList;
+  Messages, SysUtils, ImgList;
 
 type
   // This type is solely for the acccess to the protected MouseDown method
@@ -486,6 +487,7 @@ begin
       if TJvConnector(Parent.Controls[I]).IsConnected(Self) then
         // Resize the connector, but don't draw it yet
         TJvConnector(Parent.Controls[I]).SetBoundingRect;
+  AlignCaption(FAlignment);
 end;
 
 procedure TJvCustomDiagramShape.Notification(AComponent: TComponent; Operation: TOperation);
