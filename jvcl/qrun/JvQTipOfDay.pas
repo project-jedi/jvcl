@@ -158,7 +158,7 @@ type
 implementation
 
 uses
-  Windows, ExtCtrls, JvQButton, QDialogs, QSysUtils,
+  Windows, ExtCtrls, JvQButton, QDialogs, SysUtils,
   JvQWndProcHook, JvQResources;
 
 {$R ..\Resources\JvTipOfDay.res}

@@ -38,7 +38,7 @@ uses
   SysUtils, Classes,
   
   
-  Types, QGraphics, QControls, QStdCtrls, QWindows,
+  Types, QGraphics, QControls, QStdCtrls, QTypes, QWindows,
   
   JvQExStdCtrls;
 
@@ -66,10 +66,10 @@ type
     FWaiting: Boolean;
     FScale: Real;
     // (p3) renamed
-    FText: string;
+    FText: TCaption;
     FCharHeight: Integer;
     FCharWidth: Integer;
-    function GetCol(Ch: Char): Word;
+    function GetCol(Ch: WideChar): Word;
     function GetScrollBy: Integer;
     procedure SetActive(Value: Boolean);
     procedure SetStretch(Value: Boolean);
@@ -80,8 +80,8 @@ type
     procedure Deactivate;
     procedure UpdatePos;
     procedure DoOnTimer(Sender: TObject);
-    function GetRow(Ch: Char): Word;
-    procedure SetText(Value: string);
+    function GetRow(Ch: WideChar): Word;
+    procedure SetText(const Value: TCaption); override;
   protected
     procedure ColorChanged; override;
     procedure Paint; override;
@@ -99,11 +99,11 @@ type
     property WaitOnEnd: Integer read FWait write FWait;
     property Skin: TPicture read FPicture write SetPicture;
     property Color;
-    property Text: string read FText write SetText;
+    property Text: TCaption read FText write SetText;
     property Align;
     property Alignment;
     property FocusControl;
-    
+
     property DragMode;
     property ParentColor;
     property ShowHint;
@@ -309,11 +309,11 @@ begin
   Repaint;
 end;
 
-function TJvWinampLabel.GetCol(Ch: Char): Word;
+function TJvWinampLabel.GetCol(Ch: WideChar): Word;
 var
   Index: Integer;
 begin
-  Ch := UpCase(Ch);
+//  Ch := UpCase(Ch);
   Index := Pos(Ch, Row1);
   // (p3) Pos returns 0 on failure, not -1
   if Index = 0 then
@@ -327,9 +327,8 @@ begin
     Result := (Index - 1) * CharWidth;
 end;
 
-function TJvWinampLabel.GetRow(Ch: Char): Word;
+function TJvWinampLabel.GetRow(Ch: WideChar): Word;
 begin
-  Ch := UpCase(Ch);
   Result := 0;
   if Pos(Ch, Row2) <> 0 then
     Result := CharHeight
@@ -441,13 +440,13 @@ begin
   end;
 end;
 
-procedure TJvWinampLabel.SetText(Value: string);
+procedure TJvWinampLabel.SetText(const Value: TCaption);
 var
   Rec: TRect;
 begin
   if Value <> FText then
   begin
-    FText := Value;
+    FText := WideUpperCase(Value);
     FillBitmap;
     Rec.Top := 0;
     Rec.Left := 0;
