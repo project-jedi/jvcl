@@ -40,9 +40,7 @@ uses
   Types, Qt, QWindows,
   {$ENDIF VisualCLX}
   Classes, Graphics, Controls, Forms, Buttons, Dialogs,
-  {$IFDEF COMPILER5}
-  JvConsts, // missing color constants
-  {$ENDIF COMPILER5}
+  JvConsts, // missing color constants for D5
   JvColorBox;
 
 const
@@ -100,7 +98,7 @@ implementation
 
 uses
   ExtCtrls,
-  JvConsts, JvColorButton;
+  JvColorButton;
 
 constructor TJvColorForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
