@@ -93,8 +93,7 @@ var
   I: Integer;
 begin
   Result := nil;
-  // (rom) seems a capital bug calling CompareFunc which is explicitly nil
-  if (DsgnFrmList <> nil) and (@CompareFunc = nil) then
+  if (DsgnFrmList <> nil) and (@CompareFunc <> nil) then
   begin
     I := DsgnFrmList.Count - 1;
     while (I >= 0) and not CompareFunc(TJvBaseDesign(DsgnFrmList[I]), Args) do
