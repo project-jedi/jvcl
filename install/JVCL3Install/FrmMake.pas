@@ -298,9 +298,9 @@ begin
 
 
   if FTarget.IsDelphi then
-    SetEnvironmentVariable('DCCOPT', Pointer(Options))
+    SetEnvironmentVariable('DCCOPT', PChar('-M ' + Options))
   else
-    SetEnvironmentVariable('DCC32', PChar('dcc32 -Q ' + Options));
+    SetEnvironmentVariable('DCC32', PChar('dcc32 -Q -M ' + Options));
 
  // create make file
   PrepareBpgData := PrepareBpg(BpgFilename, FTarget);
@@ -311,7 +311,7 @@ begin
 
    // compile
     Result := CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
-      Build + '-f"' + ChangeFileExt(BpgFilename, '.mak') + '"', StartDir,
+      '-B -f"' + ChangeFileExt(BpgFilename, '.mak') + '"', StartDir,
       CaptureLine) = 0;
     if FTarget.IsBCB then
     begin
