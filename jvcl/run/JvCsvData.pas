@@ -4147,7 +4147,7 @@ begin
     CreateDirectory(PChar(BackupFolder), nil);
     {$ENDIF MSWINDOWS}
     {$IFDEF LINUX}
-    ForceDirectories(BackupFolder};
+    ForceDirectories(BackupFolder);
     {$ENDIF LINUX}
   Found := False;
   for I := 0 to MaxFiles - 1 do
