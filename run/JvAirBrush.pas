@@ -31,34 +31,34 @@ unit JvAirBrush;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, JvJVCLUtils, Types,
+  QGraphics, Types,
+  JvJVCLUtils,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
   JvTypes, JvComponent;
 
 type
-  TAirBrushShape = (absRound, absSquare, absLeftSlash, absRightSlash,
+  TJvAirBrushShape = (absRound, absSquare, absLeftSlash, absRightSlash,
     absHorizontal, absVertical, absSpray);
 
   TJvAirBrush = class(TJvComponent)
   private
-    Bitmap: TBitmap;
+    FBitmap: TBitmap;
     FIntensity: Integer;
     FSize: Integer;
     FColor: TColor;
-    FShape: TAirBrushShape;
+    FShape: TJvAirBrushShape;
     FInterval: Integer;
-    FCounter: LongWord;
+    FCounter: Longword;
     procedure SetColor(const Value: TColor);
     procedure SetIntensity(const Value: Integer);
     procedure SetSize(const Value: Integer);
     procedure MakeBrush;
-    procedure Blend(Src1, Src2, Dst: TBitmap; Amount: Extended);
-    procedure SetShape(const Value: TAirBrushShape);
+    procedure SetShape(const Value: TJvAirBrushShape);
     function GetAir: Boolean;
     procedure SetInterval(const Value: Integer);
     procedure MakeSpray;
@@ -68,17 +68,18 @@ type
     procedure Draw(ACanvas: TCanvas; X, Y: Integer);
     property Air: Boolean read GetAir;
   published
-    property Size: Integer read FSize write SetSize;
-    property Color: TColor read FColor write SetColor;
-    property Intensity: Integer read FIntensity write SetIntensity;
-    property Shape: TAirBrushShape read FShape write SetShape;
+    property Size: Integer read FSize write SetSize default 40;
+    property Color: TColor read FColor write SetColor default clBlack;
+    property Intensity: Integer read FIntensity write SetIntensity default 10;
+    property Shape: TJvAirBrushShape read FShape write SetShape default absRound;
     // (rom) Interval seems nonfunctional. Delete or reactivate for spray?
-    property Interval: Integer read FInterval write SetInterval;
+    property Interval: Integer read FInterval write SetInterval default 100;
   end;
 
 implementation
 
-//=== TJvAirBrush ============================================================
+uses
+  JvPaintFX;
 
 constructor TJvAirBrush.Create(AOwner: TComponent);
 begin
@@ -88,13 +89,13 @@ begin
   FInterval := 100;
   FIntensity := 10;
   FColor := clBlack;
-  Bitmap := TBitmap.Create;
+  FBitmap := TBitmap.Create;
   FShape := absRound;
 end;
 
 destructor TJvAirBrush.Destroy;
 begin
-  Bitmap.Free;
+  FBitmap.Free;
   inherited Destroy;
 end;
 
@@ -125,7 +126,7 @@ procedure TJvAirBrush.MakeBrush;
 var
   Pts: array [0..3] of TPoint;
 begin
-  with Bitmap do
+  with FBitmap do
   begin
     Width := FSize;
     Height := FSize;
@@ -166,17 +167,17 @@ begin
   end;
 end;
 
-// (rom) better make Bitmap pf24bit here and use Scanline to speed this up
+// (rom) better make FBitmap pf24bit here and use Scanline to speed this up
 
 procedure TJvAirBrush.MakeSpray;
 var
   X, Y, X2, Y2: Integer;
 begin
-  X2 := Bitmap.Width div 2;
-  Y2 := Bitmap.Height div 2;
-  with Bitmap.Canvas do
-    for Y := 0 to Bitmap.Height - 1 do
-      for X := 0 to Bitmap.Width - 1 do
+  X2 := FBitmap.Width div 2;
+  Y2 := FBitmap.Height div 2;
+  with FBitmap.Canvas do
+    for Y := 0 to FBitmap.Height - 1 do
+      for X := 0 to FBitmap.Width - 1 do
         if (Sqr(X - X2) + Sqr(Y - Y2)) < Sqr(X2) then
           if ((X mod 3) = 0) and ((Y mod 3) = 0) then
             Pixels[X, Y] := FColor;
@@ -193,18 +194,18 @@ begin
   CTop := Y - (FSize div 2);
   RPaint := Rect(CLeft, CTop, CLeft + FSize, CTop + FSize);
   Bmp := TBitmap.Create;
-  Bmp.Width := Bitmap.Width;
-  Bmp.Height := Bitmap.Height;
+  Bmp.Width := FBitmap.Width;
+  Bmp.Height := FBitmap.Height;
   Dst := TBitmap.Create;
-  Dst.Width := Bitmap.Width;
-  Dst.Height := Bitmap.Height;
+  Dst.Width := FBitmap.Width;
+  Dst.Height := FBitmap.Height;
   try
     Rt := Rect(0, 0, Bmp.Width, Bmp.Height);
     Bmp.Canvas.CopyRect(Rt, ACanvas, RPaint);
     Bmp.PixelFormat := pf24bit;
-    Bitmap.PixelFormat := pf24bit;
+    FBitmap.PixelFormat := pf24bit;
     Dst.PixelFormat := pf24bit;
-    Blend(Bmp, Bitmap, Dst, FIntensity / 100);
+    TJvPaintFX.Blend2(Bmp, FBitmap, Dst, FIntensity / 100);
     Dst.TransparentColor := clWhite;
     Dst.Transparent := True;
     ACanvas.Draw(CLeft, CTop, Dst);
@@ -214,40 +215,7 @@ begin
   end;
 end;
 
-procedure TJvAirBrush.Blend(Src1, Src2, Dst: TBitmap; Amount: Extended);
-var
-  W, H, X, Y: Integer;
-  Ps1, Ps2, Pd: PByteArray;
-begin
-  W := Src1.Width;
-  H := Src1.Height;
-  Dst.Width := W;
-  Dst.Height := H;
-  Src1.PixelFormat := pf24bit;
-  Src2.PixelFormat := pf24bit;
-  Dst.PixelFormat := pf24bit;
-  for Y := 0 to H - 1 do
-  begin
-    Ps1 := Src1.ScanLine[Y];
-    Ps2 := Src2.ScanLine[Y];
-    Pd := Dst.ScanLine[Y];
-    for X := 0 to W - 1 do
-      if ((Ps2[X * 3] = $FF) and (Ps2[X * 3 + 1] = $FF) and (Ps2[X * 3 + 2] = $FF)) then
-      begin
-        Pd[X * 3] := $FF;
-        Pd[X * 3 + 2] := $FF;
-        Pd[X * 3 + 2] := $FF;
-      end
-      else
-      begin
-        Pd[X * 3] := Round((1 - Amount) * Ps1[X * 3] + Amount * Ps2[X * 3]);
-        Pd[X * 3 + 1] := Round((1 - Amount) * Ps1[X * 3 + 1] + Amount * Ps2[X * 3 + 1]);
-        Pd[X * 3 + 2] := Round((1 - Amount) * Ps1[X * 3 + 2] + Amount * Ps2[X * 3 + 2]);
-      end;
-  end;
-end;
-
-procedure TJvAirBrush.SetShape(const Value: TAirBrushShape);
+procedure TJvAirBrush.SetShape(const Value: TJvAirBrushShape);
 begin
   FShape := Value;
   MakeBrush;

@@ -48,6 +48,7 @@ type
     class procedure Solarize(const Src: TBitmap; var Dst: TBitmap; Amount: Integer);
     class procedure Posterize(const Src: TBitmap; var Dst: TBitmap; Amount: Integer);
     class procedure Blend(const Src1, Src2: TBitmap; var Dst: TBitmap; Amount: Single);
+    class procedure Blend2(const Src1, Src2: TBitmap; var Dst: TBitmap; Amount: Single);
     class procedure ExtractColor(const Dst: TBitmap; AColor: TColor);
     class procedure ExcludeColor(const Dst: TBitmap; AColor: TColor);
     class procedure Turn(Src, Dst: TBitmap);
@@ -3451,6 +3452,39 @@ begin
       pd[X * 3 + 1] := Round((1 - Amount) * ps1[X * 3 + 1] + Amount * ps2[X * 3 + 1]);
       pd[X * 3 + 2] := Round((1 - Amount) * ps1[X * 3 + 2] + Amount * ps2[X * 3 + 2]);
     end;
+  end;
+end;
+
+class procedure TJvPaintFX.Blend2(const Src1, Src2: TBitmap; var Dst: TBitmap; Amount: Single);
+var
+  W, H, X, Y: Integer;
+  Ps1, Ps2, Pd: PByteArray;
+begin
+  W := Src1.Width;
+  H := Src1.Height;
+  Dst.Width := W;
+  Dst.Height := H;
+  Src1.PixelFormat := pf24bit;
+  Src2.PixelFormat := pf24bit;
+  Dst.PixelFormat := pf24bit;
+  for Y := 0 to H - 1 do
+  begin
+    Ps1 := Src1.ScanLine[Y];
+    Ps2 := Src2.ScanLine[Y];
+    Pd := Dst.ScanLine[Y];
+    for X := 0 to W - 1 do
+      if ((Ps2[X * 3] = $FF) and (Ps2[X * 3 + 1] = $FF) and (Ps2[X * 3 + 2] = $FF)) then
+      begin
+        Pd[X * 3] := $FF;
+        Pd[X * 3 + 2] := $FF;
+        Pd[X * 3 + 2] := $FF;
+      end
+      else
+      begin
+        Pd[X * 3] := Round((1 - Amount) * Ps1[X * 3] + Amount * Ps2[X * 3]);
+        Pd[X * 3 + 1] := Round((1 - Amount) * Ps1[X * 3 + 1] + Amount * Ps2[X * 3 + 1]);
+        Pd[X * 3 + 2] := Round((1 - Amount) * Ps1[X * 3 + 2] + Amount * Ps2[X * 3 + 2]);
+      end;
   end;
 end;
 

@@ -112,7 +112,8 @@ function TruncatePath(const FilePath: string; Canvas: TCanvas; MaxLen: Integer):
 function TruncateName(const Name: String; Canvas: TCanvas; MaxLen: Integer): string;
 
 const
-// constants for Canvas.TextRect
+  // constants for Canvas.TextRect
+  { (rom) disabled  seem unused
   AlignLeft    = 1;      // $0001
   AlignRight   = 2;      // $0002
   AlignHCenter = 4;      // $0004
@@ -128,8 +129,10 @@ const
   ModifyString = 2048;   // $0800
   DontPrint    = 4096;   // $1000
   ClipPath     = 8192;   // $2000
+  // (rom) WARNING values seem wrong
   ClipName     = 16382;  // $4000
   CalcRect     = 32764;  // $8000
+  }
   pf24bit      = pf32bit;
 
 {$ENDIF VisualCLX}

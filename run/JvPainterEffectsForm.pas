@@ -67,121 +67,80 @@ begin
 end;
 
 procedure TPainterEffectsForm.ETreeClick(Sender: TObject);
+type
+  TBarParams = record
+    Max: Integer;
+    Min: Integer;
+    Pos: Integer;
+  end;
+const
+  cEffects: array [0..54] of TBarParams =
+   (
+    (Max: 100; Min: 0;  Pos: 0),    // contrast
+    (Max: 255; Min: 0;  Pos: 0),    // saturation
+    (Max: 100; Min: 0;  Pos: 0),    // brightness
+    (Max: 20;  Min: 0;  Pos: 0),    // gaussian blur
+    (Max: 30;  Min: 0;  Pos: 0),    // split blur
+    (Max: 200; Min: 0;  Pos: 0),    // color noise
+    (Max: 200; Min: 0;  Pos: 0),    // mono noise
+    (Max: 20;  Min: 0;  Pos: 0),    // smooth
+    (Max: 15;  Min: 3;  Pos: 5),    // seamless
+    (Max: 30;  Min: 2;  Pos: 15),   // mosaic
+    (Max: 50;  Min: 1;  Pos: 10),   // twist
+    (Max: 100; Min: 55; Pos: 60),   // fisheye
+    (Max: 200; Min: 1;  Pos: 15),   // wave
+    (Max: 200; Min: 1;  Pos: 15),   // wave extra
+    (Max: 10;  Min: 1;  Pos: 1),    // wave inference
+    (Max: 360; Min: 0;  Pos: 0),    // smooth rotate
+    (Max: 10;  Min: 1;  Pos: 1),    // split light
+    (Max: 400; Min: 1;  Pos: 1),    // wings
+    (Max: 400; Min: 1;  Pos: 1),    // wings down
+    (Max: 400; Min: 1;  Pos: 1),    // wings up
+    (Max: 400; Min: 1;  Pos: 1),    // wings fold
+    (Max: 400; Min: 1;  Pos: 1),    // wings touche
+    (Max: 400; Min: 1;  Pos: 1),    // wings flyer
+    (Max: 400; Min: 1;  Pos: 1),    // wings flipover
+    (Max: 400; Min: 1;  Pos: 1),    // wings wavy
+    (Max: 100; Min: 0;  Pos: 0),    // emboss
+    (Max: 255; Min: 0;  Pos: 128),  // filter red
+    (Max: 255; Min: 0;  Pos: 128),  // filter green
+    (Max: 255; Min: 0;  Pos: 128),  // filter blue
+    (Max: 255; Min: 0;  Pos: 128),  // filter Xred
+    (Max: 255; Min: 0;  Pos: 128),  // filter Xgreen
+    (Max: 255; Min: 0;  Pos: 128),  // filter xblue
+    (Max: 255; Min: 0;  Pos: 0),    // squeezehor
+    (Max: 255; Min: 0;  Pos: 0),    // squeezetop
+    (Max: 255; Min: 0;  Pos: 0),    // squeezebottom
+    (Max: 255; Min: 0;  Pos: 0),    // squeezediamond
+    (Max: 255; Min: 0;  Pos: 0),    // squeezewaste
+    (Max: 255; Min: 0;  Pos: 0),    // squeezeround
+    (Max: 255; Min: 0;  Pos: 0),    // squeezeround2
+    (Max: 255; Min: 0;  Pos: 0),    // splitround
+    (Max: 255; Min: 0;  Pos: 0),    // splitwaste
+    (Max: 100; Min: 0;  Pos: 0),    // shear
+    (Max: 100; Min: 1;  Pos: 1),    // plasma
+    (Max: 100; Min: 0;  Pos: 0),    // mandelbrot
+    (Max: 100; Min: 0;  Pos: 0),    // julia
+    (Max: 127; Min: 5;  Pos: 19),   // triangles
+    (Max: 100; Min: 3;  Pos: 3),    // ripple tooth
+    (Max: 100; Min: 3;  Pos: 3),    // ripple triangle
+    (Max: 100; Min: 3;  Pos: 3),    // ripple random
+    (Max: 100; Min: 3;  Pos: 3),    // texturize tile
+    (Max: 100; Min: 3;  Pos: 3),    // texturize overlap
+    (Max: 100; Min: 1;  Pos: 1),    // map
+    (Max: 100; Min: 0;  Pos: 0),    // blend;
+    (Max: 255; Min: 0;  Pos: 1),    // solarize
+    (Max: 255; Min: 1;  Pos: 1)     // posterize
+   );
+var
+  N: Integer;
 begin
-  // (rom) better change to a const array to index
   if ETree.Selected <> nil then
-    case ETree.Selected.ImageIndex of
-      0:
-        Bar(100, 0, 0); // contrast
-      1:
-        Bar(255, 0, 0); // saturation
-      2:
-        Bar(100, 0, 0); // brightness
-      3:
-        Bar(20, 0, 0); // gaussian blur
-      4:
-        Bar(30, 0, 0); // split blur
-      5:
-        Bar(200, 0, 0); // color noise
-      6:
-        Bar(200, 0, 0); // mono noise
-      7:
-        Bar(20, 0, 0); // smooth
-      8:
-        Bar(15, 3, 5); // seamless
-      9:
-        Bar(30, 2, 15); // mosaic
-      10:
-        Bar(50, 1, 10); // twist
-      11:
-        Bar(100, 55, 60); //f isheye
-      12:
-        Bar(200, 1, 15); // wave
-      13:
-        Bar(200, 1, 15); // wave extra
-      14:
-        Bar(10, 1, 1); // wave inference
-      15:
-        Bar(360, 0, 0); // smooth rotate
-      16:
-        Bar(10, 1, 1); // split light
-      17:
-        Bar(400, 1, 1); // wings
-      18:
-        Bar(400, 1, 1); // wings down
-      19:
-        Bar(400, 1, 1); // wings up
-      20:
-        Bar(400, 1, 1); // wings fold
-      21:
-        Bar(400, 1, 1); // wings touche
-      22:
-        Bar(400, 1, 1); // wings flyer
-      23:
-        Bar(400, 1, 1); // wings flipover
-      24:
-        Bar(400, 1, 1); // wings wavy
-      25:
-        Bar(100, 0, 0); // emboss
-      26:
-        Bar(255, 0, 128); // filter red
-      27:
-        Bar(255, 0, 128); // filter green
-      28:
-        Bar(255, 0, 128); // filter blue
-      29:
-        Bar(255, 0, 128); // filter Xred
-      30:
-        Bar(255, 0, 128); // filter Xgreen
-      31:
-        Bar(255, 0, 128); // filter xblue
-      32:
-        Bar(255, 0, 0); // squeezehor
-      33:
-        Bar(255, 0, 0); // squeezetop
-      34:
-        Bar(255, 0, 0); // squeezebottom
-      35:
-        Bar(255, 0, 0); // squeezediamond
-      36:
-        Bar(255, 0, 0); // squeezewaste
-      37:
-        Bar(255, 0, 0); // squeezeround
-      38:
-        Bar(255, 0, 0); // squeezeround2
-      39:
-        Bar(255, 0, 0); // splitround
-      40:
-        Bar(255, 0, 0); // splitwaste
-      41:
-        Bar(100, 0, 0); // shear
-      42:
-        Bar(100, 1, 1); // plasma
-      43:
-        Bar(100, 0, 0); // mandelbrot
-      44:
-        Bar(100, 0, 0); // julia
-      45:
-        Bar(127, 5, 19); // triangles
-      46:
-        Bar(100, 3, 3); // ripple tooth
-      47:
-        Bar(100, 3, 3); // ripple triangle
-      48:
-        Bar(100, 3, 3); // ripple random
-      49:
-        Bar(100, 3, 3); // texturize tile
-      50:
-        Bar(100, 3, 3); // texturize overlap
-      51:
-        Bar(100, 1, 1); // map
-      52:
-        Bar(100, 0, 0); // blend;
-      53:
-        Bar(255, 0, 1); // solarize
-      54:
-        Bar(255, 1, 1); // posterize
-    end;
+  begin
+    N := ETree.Selected.ImageIndex;
+    if (N >= Low(cEffects)) and (N >= Low(cEffects)) then
+      Bar(cEffects[N].Max, cEffects[N].Min, cEffects[N].Pos);
+  end;
 end;
 
 procedure TPainterEffectsForm.EBarChange(Sender: TObject);

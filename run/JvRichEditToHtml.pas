@@ -53,7 +53,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ConvertToHtml(Value: TRichEdit; const FileName: string);
-    procedure ConvertToHtmlStringList(Value: TRichEdit; Strings: TStringList);
+    procedure ConvertToHtmlStrings(Value: TRichEdit; Strings: TStrings);
   published
     property Title: string read FTitle write FTitle;
   end;
@@ -115,7 +115,7 @@ var
 begin
   S := TStringList.Create;
   try
-    ConvertToHtmlStringList(Value, S);
+    ConvertToHtmlStrings(Value, S);
     S.SaveToFile(FileName);
   finally
     S.Free;
@@ -179,7 +179,7 @@ begin
   Result := (One.Alignment <> Two.Alignment) or (One.Numbering <> Two.Numbering);
 end;
 
-procedure TJvRichEditToHtml.ConvertToHtmlStringList(Value: TRichEdit; Strings: TStringList);
+procedure TJvRichEditToHtml.ConvertToHtmlStrings(Value: TRichEdit; Strings: TStrings);
 var
   I, J, K: Integer;
   Datt, Att, CurrAt: TFont;

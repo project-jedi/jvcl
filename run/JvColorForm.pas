@@ -34,8 +34,8 @@ unit JvColorForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Buttons, ExtCtrls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Buttons, ExtCtrls, Dialogs,
   JvColorBox;
 
 const
@@ -212,7 +212,7 @@ end;
 
 procedure TJvClrFrm.MakeColorButtons;
 const
-  cColorArray: array[0..19] of TColor =
+  cColorArray: array [0..19] of TColor =
    (clWhite, clBlack, clSilver, clGray,
     clRed, clMaroon, clYellow, clOlive,
     clLime, clGreen, clAqua, clTeal,

@@ -109,6 +109,7 @@ type
 
   TJvForm = class(TForm)
   private
+    FAboutJVCL: TJVCLAboutInfo;
   {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
     procedure SetParentBackground(const Value: Boolean);
@@ -120,6 +121,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   {$ENDIF USE_DXGETTEXT}
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation

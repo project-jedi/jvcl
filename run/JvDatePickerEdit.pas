@@ -283,7 +283,7 @@ begin
     Cursor := crArrow;
     Flat := True;
     Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
-    Glyph.Handle := LoadBitmap(0, PChar(OBM_COMBO)); // PChar(32738));
+    Glyph.Handle := LoadBitmap(0, PChar(OBM_COMBO));
     OnClick := ButClick;
     Visible := True;
   end;
