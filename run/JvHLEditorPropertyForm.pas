@@ -28,14 +28,13 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
 unit JvHLEditorPropertyForm;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  Forms, ComCtrls, StdCtrls, ExtCtrls,
+  Windows, Messages, SysUtils, ComCtrls, Classes, Graphics, Controls,
+  Forms, StdCtrls, ExtCtrls,
   JvEditor, JvHLEditor, JvComponent, JvFormPlacement;
 
 type
