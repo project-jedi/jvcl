@@ -34,13 +34,11 @@ uses JclStrings, GenerateUtils;
 
 procedure TfrmTargets.FormShow(Sender: TObject);
 var
-  wasEmpty : Boolean;
   i : Integer;
 begin
-  wasEmpty := clbBuilds.Count = 0;
-  EnumerateTargets(Path, clbBuilds.Items);
-  if wasEmpty then
+  if clbBuilds.Count = 0 then
   begin
+    EnumerateTargets(Path, clbBuilds.Items);
     for i := 0 to clbBuilds.Count - 1 do
       clbBuilds.Checked[i] := True;
   end;
