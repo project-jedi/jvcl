@@ -32,9 +32,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, StdCtrls,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, JvQConsts,
   {$ENDIF VisualCLX}
