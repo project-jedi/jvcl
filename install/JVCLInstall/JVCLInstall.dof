@@ -1,4 +1,4 @@
-y[FileVersion]
+[FileVersion]
 Version=7.0
 [Compiler]
 A=8
@@ -95,7 +95,7 @@ UnitOutputDir=..\..\dcu
 PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=
-Conditionals=NO_JCL;USE_DXGETTEXT;DEFAULT_JVCL_INC
+Conditionals=NO_JCL;USE_DXGETTEXT;DEFAULT_JVCL_INC;DEBUG
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
@@ -122,4 +122,3 @@ Private=0
 DLL=0
 Locale=1031
 CodePage=1252
-
