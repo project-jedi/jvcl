@@ -5987,8 +5987,10 @@ end;
 
 function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
 var
+  {$IFDEF VCL}
   I: Integer;
   S: string;
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   tt: TTextMetric;
   {$ENDIF VisualCLX}
