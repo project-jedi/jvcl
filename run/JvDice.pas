@@ -18,7 +18,7 @@ All Rights Reserved.
 Contributor(s):
   Polaris Software
 
-Last Modified: 2002-07-04
+Last Modified: 2004-02-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -33,7 +33,16 @@ unit JvDice;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Messages, Controls, Forms, Menus,
+  SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  Graphics, Messages, Controls, Forms, Menus,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QMenus, Types, QWindows,
+  {$ENDIF VisualCLX}
   JvTimer, JvComponent, JvThemes, JvExControls;
 
 type
@@ -53,6 +62,9 @@ type
     FValue: TJvDiceValue;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
+    {$IFDEF VisualCLX}
+    FAutoSize: boolean;
+    {$ENDIF VisualCLX}
     procedure SetInterval(Value: Cardinal);
     procedure SetRotate(Value: Boolean);
     procedure SetShowFocus(Value: Boolean);
@@ -62,8 +74,11 @@ type
   protected
     procedure DoFocusChanged(Control: TWinControl); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    procedure SetAutoSize(Value: Boolean); override;
+    procedure SetAutoSize(Value: Boolean);
+    {$IFDEF VCL}
+      override;
     function GetPalette: HPALETTE; override;
+    {$ENDIF VCL}
     procedure AdjustSize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
@@ -79,12 +94,20 @@ type
     property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
     property Align;
+    {$IFDEF VCL}
     property AutoSize default True;
+    property DragCursor;
+    property DragKind;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    property AutoSize: boolean read FAutoSize write SetAutosize default True;
+    {$ENDIF VisualCLX}
     property AutoStopInterval: Cardinal read FAutoStopInterval write FAutoStopInterval default 0;
     property Color;
     property Cursor;
     property DragMode;
-    property DragCursor;
     property Enabled;
     property Interval: Cardinal read FInterval write SetInterval default 60;
     property ParentColor;
@@ -95,7 +118,6 @@ type
     property ShowHint;
     property Anchors;
     property Constraints;
-    property DragKind;
     property TabOrder;
     property TabStop;
     property Value: TJvDiceValue read FValue write SetValue default Low(TJvDiceValue);
@@ -118,16 +140,26 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
     property OnStop: TNotifyEvent read FOnStop write FOnStop;
-    property OnEndDock;
-    property OnStartDock;
   end;
 
 implementation
 
+{$IFDEF VCL}
 uses
   ImgList;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+uses
+  QImgList;
+{$ENDIF VisualCLX}
 
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDice.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvDice.res}
+{$ENDIF LINUX}
+
 
 constructor TJvDice.Create(AOwner: TComponent);
 var
@@ -137,15 +169,24 @@ begin
   Randomize;
   ControlStyle := [csClickEvents, csSetCaption, csCaptureMouse,
     csOpaque, csDoubleClicks];
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF VCL}
   FInterval := 60;
   FValue := Low(TJvDiceValue);
   for I := Low(TJvDiceValue) to High(TJvDiceValue) do
   begin
     FBitmap[I] := TBitmap.Create;
+    {$IFDEF VCL}
     FBitmap[I].Handle := LoadBitmap(HInstance, PChar(Format('JV_DICE%d', [Ord(I)])));
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FBitmap[I].LoadFromResourceName(HInstance, Format('JV_DICE%d', [Ord(I)]));
+    {$ENDIF VisualCLX}
   end;
+  {$IFDEF VCL}
   AutoSize := True;
+  {$ENDIF VCL}
   Width := FBitmap[Value].Width + 2;
   Height := FBitmap[Value].Height + 2;
 end;
@@ -175,10 +216,12 @@ begin
   Value := TJvDiceValue(Val);
 end;
 
+{$IFDEF VCL}
 function TJvDice.GetPalette: HPALETTE;
 begin
   Result := FBitmap[Value].Palette;
 end;
+{$ENDIF VCL}
 
 procedure TJvDice.DoStart;
 begin
@@ -319,7 +362,9 @@ end;
 
 procedure TJvDice.SetAutoSize(Value: Boolean);
 begin
+  {$IFDEF VCL}
   inherited SetAutoSize(Value);
+  {$ENDIF VCL}
   AdjustSize;
   Invalidate;
 end;

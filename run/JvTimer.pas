@@ -15,7 +15,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
+Last Modified: 2004-02-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,7 +30,10 @@ unit JvTimer;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes;
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  SysUtils, Classes;
 
 type
   TJvTimer = class(TComponent)
@@ -41,9 +44,11 @@ type
     FSyncEvent: Boolean;
     FThreaded: Boolean;
     FTimerThread: TThread;
+    {$IFDEF MSWINDOWS}
     FThreadPriority: TThreadPriority;
-    procedure SetThreaded(Value: Boolean);
     procedure SetThreadPriority(Value: TThreadPriority);
+    {$ENDIF MSWINDOWS}
+    procedure SetThreaded(Value: Boolean);
     procedure SetEnabled(Value: Boolean);
     procedure SetInterval(Value: Cardinal);
     procedure SetOnTimer(Value: TNotifyEvent);
@@ -59,14 +64,22 @@ type
     property Interval: Cardinal read FInterval write SetInterval default 1000;
     property SyncEvent: Boolean read FSyncEvent write FSyncEvent default True;
     property Threaded: Boolean read FThreaded write SetThreaded default True;
+    {$IFDEF MSWINDOWS}
     property ThreadPriority: TThreadPriority read FThreadPriority write SetThreadPriority default tpNormal;
+    {$ENDIF MSWINDOWS}
     property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
   end;
 
 implementation
 
 uses
-  Forms, Consts, JvJVCLUtils;
+  {$IFDEF VCL}
+  Forms, Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms, QConsts,
+  {$ENDIF VisualCLX}
+  JvJVCLUtils;
 
 //=== TJvTimerThread =========================================================
 

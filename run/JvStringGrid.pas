@@ -31,13 +31,20 @@ unit JvStringGrid;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Grids,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QGrids,
+  {$ENDIF VisualCLX}
   JvTypes, JvJCLUtils, JvExGrids;
 
 const
   GM_ACTIVATECELL = WM_USER + 123;
 
 type
+
   // (rom) renamed elements made packed
   TGMActivateCell = packed record
     Msg: Cardinal;
@@ -94,6 +101,9 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+    {$IFDEF VisualCLX}
+    procedure SelectCell(ACol, ARow: Longint): Boolean; override;
+    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -201,6 +211,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
   end;
 
+{$IFDEF VCL}
 procedure TExInplaceEdit.CreateParams(var Params: TCreateParams);
 const
   Flags: array[TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
@@ -208,6 +219,7 @@ begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or Flags[TJvStringGrid(Grid).Alignment];
 end;
+{$ENDIF VCL}
 
 procedure TExInplaceEdit.DoKillFocus(FocusedWnd: HWND);
 begin
@@ -787,6 +799,21 @@ begin
     FGetCellAlignment(Self, AColumn, ARow, State, Result);
 end;
 
+{$IFDEF VisualCLX}
+function TJvStringGrid.SelectCell(ACol, ARow: Longint): Boolean;
+begin
+  Result := inherited SelectCell(ACol, ARow) then
+  if Result then
+  begin
+    Col := ACol;
+    Row := ARow;
+    EditorMode := true;
+    InplaceEditor.SelectAll;
+  end;
+end;
+{$ENDIF VisualCLX}
+
+{$IFDEF VCL}
 procedure TJvStringGrid.GMActivateCell(var Msg: TGMActivateCell);
 begin
   Col := Msg.Column;
@@ -794,6 +821,7 @@ begin
   EditorMode := true;
   InplaceEditor.SelectAll;
 end;
+{$ENDIF VCL}
 
 procedure TJvStringGrid.InvalidateCell(AColumn, ARow: integer);
 begin
@@ -852,6 +880,7 @@ begin
     FSetCanvasProperties(Self, AColumn, ARow, Rect, State);
 end;
 
+{$IFDEF VCL}
 procedure TJvStringGrid.WMCommand(var Msg: TWMCommand);
 begin
   if EditorMode and (Msg.Ctl = InplaceEditor.Handle) then
@@ -859,6 +888,7 @@ begin
   else if Msg.Ctl <> 0 then
     Msg.Result := SendMessage(Msg.Ctl, CN_COMMAND, TMessage(Msg).wParam, TMessage(Msg).lParam);
 end;
+{$ENDIF VCL}
 
 function TJvStringGrid.InsertCol(Index: integer): TStrings;
 var
