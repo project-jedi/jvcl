@@ -88,7 +88,7 @@ type
     procedure SetPageIndex(const Value: Integer);
     procedure SetPageList(const Value: TJvCustomPageList);
   protected
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Booleam; override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure TextChanged; override;
     procedure ShowingChanged; override;
     procedure ParentColorChanged; override;
@@ -1083,7 +1083,7 @@ begin
     FPageList.PageList.Move(OldIndex, Value);
 end;
 
-function TJvCustomPage.DoPaintBackground(Canvas: TCanvas; Param: Integer): Booleam;
+function TJvCustomPage.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and ParentBackground then

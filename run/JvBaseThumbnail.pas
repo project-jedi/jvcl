@@ -27,6 +27,10 @@ Known Issues:
 
 {$I jvcl.inc}
 
+{$IFDEF COMPILER6_UP}
+{$WARN SYMBOL_PLATFORM OFF} // TSearchRec.FindData
+{$ENDIF COMPILER6_UP}
+
 unit JvBaseThumbnail;
 
 interface
@@ -35,6 +39,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, // TWin32FindData
   {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Libc, // stat()
+  {$ENDIF LINUX}
   {$IFDEF VCL}
   Messages, Graphics, Controls, Forms, ExtCtrls,
   {$ENDIF VCL}
