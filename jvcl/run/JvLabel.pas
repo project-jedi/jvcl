@@ -548,9 +548,9 @@ begin
   MRect := ClientRect;
 
   Canvas.Start;
-  QPainter_save(Canvas.Handle);
+//  QPainter_save(Canvas.Handle);
   try
-    QPainter_rotate(Canvas.Handle, -(Angle div 2));
+//    QPainter_rotate(Canvas.Handle, -(Angle div 2));
 
     Phi := Angle10 * Pi / 1800;
     if not AutoSize then
@@ -576,18 +576,27 @@ begin
         TextY := TextY + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)));
     end;
 
-    QPainter_translate(Canvas.Handle, TextX, TextY);
+//    QPainter_translate(Canvas.Handle, TextX, TextY);
+//    QPainter_rotate(Canvas.Handle, -(Angle {div 2}));
     if not Enabled then
     begin
-      Canvas.Font.Color := clBtnHighlight;
-      Canvas.TextOut(1, 1, Text);
-      Canvas.Font.Color := clBtnShadow;
-      Canvas.TextOut(0, 0, Text);
+//      Canvas.Font.Color := clBtnHighlight;
+//      Canvas.TextOut(1, 1, Text);
+//      Canvas.Font.Color := clBtnShadow;
+//      Canvas.TextOut(0, 0, Text);
+      SetTextColor(Canvas.handle , clBtnHighlight);
+      TextOutAngle( Canvas.handle, Angle, TextX+1, TextY+1, Text);
+      SetTextColor(Canvas.handle , clBtnShadow);
+      TextOutAngle(Canvas.handle, Angle, TextX, TextY, Text);
     end
     else
-      Canvas.TextOut(0, 0, Text);
+      //Canvas.TextOut(0, 0, Text);
+    begin
+      SetTextColor(Canvas.handle , Canvas.Font.Color);
+      TextOutAngle(Canvas.handle, Angle, TextX, TextY, Text);
+    end;
   finally
-    QPainter_restore(Canvas.Handle);
+//    QPainter_restore(Canvas.Handle);
     Canvas.Stop;
   end;
 end;
