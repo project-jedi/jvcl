@@ -35,9 +35,9 @@ unit JvSpeedButton;
 
 interface
 uses
-  Windows,
-  Messages, Classes, Controls, Graphics, ExtCtrls,
-  Buttons, Menus, ImgList,
+  Windows, Messages,
+  SysUtils, Classes, Controls, Graphics, Forms, ExtCtrls, Buttons, Menus,
+  ImgList,
   JvComponent, JvTypes;
 
 type
@@ -306,7 +306,7 @@ type
 implementation
 
 uses
-  Forms, SysUtils, Math, ActnList, CommCtrl, JvJVCLUtils;
+  Math, ActnList, CommCtrl, JvJVCLUtils, JvThemes;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
