@@ -563,6 +563,7 @@ end;
 
 destructor TJvCustomMonthCalendar.Destroy;
 begin
+  FColors.Free;
   FBoldDays.Free;
   inherited Destroy;
 end;
