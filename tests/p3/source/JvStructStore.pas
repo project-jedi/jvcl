@@ -122,8 +122,9 @@ type
     // (f ex the GUID or the date values)
     //
     // NOTE: if you call this function with IncludeName = true, you *must*
-    // free the returned Stat.pwcsName by calling CoMallocFree(Stat.pwcsName);
+    // free the returned Stat by calling FreeStats;
     function GetStats(out Stat: TStatStg; IncludeName: boolean): boolean;
+    procedure FreeStats(var Stat:TStatStg);
     // Gets the names of all subitems (files or folders depending on the Folders flag) of this storage
     // and puts it in Strings. Strings is cleared before adding the items
     function GetSubItems(Strings: TStrings; Folders: boolean):boolean;
@@ -160,7 +161,7 @@ type
     property LastError: HResult read FLastError;
   end;
 
-  // NOTE: you cannot create instances of this class: an instance is created by
+  // NOTE: you should not create instances of this class: an instance is created by
   // TJvStorageFolder when you call GetFileStream
   TJvStorageStream = class(TStream)
   private
@@ -180,13 +181,19 @@ type
     // several other values
     //
     // NOTE: if you call this function with IncludeName = true, you *must*
-    // free the returned Stat.pwcsName by using this type of code:
+    // free the returned Stat by calling FreStats or using this type of code:
     //    CoGetMalloc(1,AMalloc);
     //    AMalloc.Free(Stat.pwcsName)
     // where AMalloc is declared as an IMalloc type
     // see also example in TJvStorageFolder.GetSubItems above
     function GetStats(out Stat: TStatStg; IncludeName: boolean): boolean;
-
+    procedure FreeStats(var Stat:TStatStg);
+    // Create a new stream that points to this stream.
+    // Returns nil on failure
+    // NB! Caller is responsible for freeing this object!
+    // To create a copy of a stream, call CopyTo instead
+    function Clone:TJvStorageStream;
+    function CopyTo(Stream:TJvStorageStream; Size:Int64):boolean;
     function Read(var Buffer; Count: Longint): Longint; override;
     function Write(const Buffer; Count: Longint): Longint; override;
     function Seek(Offset: Longint; Origin: Word): Longint; override;
@@ -199,6 +206,10 @@ type
   end;
 
   TJvStructuredStorage = class(TComponent)
+//  public
+//    property Root:TJvStorageFolder read GetRoot;
+//  published
+//    property Filename:string;
   end;
 
 procedure CoMallocFree(P:Pointer);
@@ -336,7 +347,7 @@ begin
   FAccessMode := AccessMode;
   FConvertedMode := AccessToMode(FAccessMode);
   if FFilename = '' then
-    FConvertedMode := FConvertedMode or STGM_DELETEONRELEASE; 
+    FConvertedMode := FConvertedMode or STGM_DELETEONRELEASE;
   if OpenDirect then Check;
 end;
 
@@ -608,6 +619,12 @@ begin
     Result := FFilename;
 end;
 
+procedure TJvStorageFolder.FreeStats(var Stat: TStatStg);
+begin
+  if Stat.pwcsName <> nil then
+    CoMallocFree(Stat.pwcsName);
+end;
+
 { TJvStorageStream }
 
 procedure TJvStorageStream.Check;
@@ -622,10 +639,37 @@ begin
   FlastError := HR;
 end;
 
+function TJvStorageStream.Clone: TJvStorageStream;
+var stm:IStream;
+begin
+  if Succeeded(FStream.Clone(stm)) then
+  begin
+    Result := TJvStorageStream.Create;
+    Result.FStream := stm;
+  end
+  else
+    Result := nil;
+end;
+
+function TJvStorageStream.CopyTo(Stream: TJvStorageStream;
+  Size: Int64): boolean;
+var DidRead, DidWrite:Int64;
+begin
+  DidRead := 0;
+  DidWrite := 0;
+  Result := Succeeded(FStream.CopyTo(Stream.FStream, Size, DidRead, DidWrite));
+end;
+
 destructor TJvStorageStream.Destroy;
 begin
   FStream := nil;
   inherited;
+end;
+
+procedure TJvStorageStream.FreeStats(var Stat: TStatStg);
+begin
+  if Stat.pwcsName <> nil then
+    CoMallocFree(Stat.pwcsName);
 end;
 
 function TJvStorageStream.GetName: string;
