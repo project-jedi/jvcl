@@ -228,13 +228,7 @@ begin
     dX := 0;
     dY := 0;
   end;
-
-  if not FTransparent then
-  begin
-    Canvas.Brush.Color := FColor;
-    Canvas.FillRect(ClientRect);
-  end;
-  FImageList.Draw(Canvas, dX, dY, FIndex);
+  Update;
 end;
 
 procedure TJvCustomBmpAnimator.SetStart(Value: Integer);
@@ -416,7 +410,11 @@ begin
     begin
       Canvas.Brush.Color := FColor;
       Canvas.FillRect(ClientRect);
-    end;
+    end
+    else
+      Canvas.Brush.Style := bsClear;
+    FImageList.Draw(Canvas, dX, dY, FIndex);
+
     if not Active then
       FIndex := FPosition;
     FImageList.Draw(Canvas, dX, dY, FIndex)
