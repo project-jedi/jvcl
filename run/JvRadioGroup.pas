@@ -79,7 +79,8 @@ type
 implementation
 
 uses
-  Math;
+  Math,
+  JvJCLUtils;
 
 constructor TJvRadioGroup.Create(AOwner: TComponent);
 begin
@@ -161,17 +162,12 @@ begin
       else
         R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
       Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
-      {$IFDEF VCL}
-      DrawText(Handle, PChar(Text), Length(Text), R, Flags or DT_CALCRECT);
-      Brush.Color := Color;
-      DrawText(Handle, PChar(Text), Length(Text), R, Flags);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
+
+      // (rom) unified VCL/VisualCLX version
       DrawText(Canvas, Text, Length(Text), R, Flags or DT_CALCRECT);
       Brush.Color := Color;
       SetBkMode(Handle, OPAQUE);
       DrawText(Canvas, Text, Length(Text), R, Flags);
-      {$ENDIF VisualCLX}
     end;
   end;
 end;

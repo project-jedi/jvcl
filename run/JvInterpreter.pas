@@ -212,9 +212,9 @@ type
   TNameArray = array [0..cJvInterpreterMaxArgs] of string;
 
 
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   TVarType = Word;
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 
   TJvInterpreterArgs = class;
   IJvInterpreterDataType = interface;

@@ -49,7 +49,7 @@ type
     procedure SetGlyphPushed(Value: TPicture);
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-       X, Y: Integer); override;
+      X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     //    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;

@@ -26,6 +26,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvgExport;
 
@@ -47,6 +48,10 @@ implementation
 
 uses
   ComObj, JvgUtils;
+
+const
+  cExcelApplication = 'Excel.Application';
+  cReport = 'Report';
 
 procedure ExportToExcel(QuickRep: TCustomQuickRep);
 var
@@ -71,9 +76,9 @@ var
 begin
 
   try
-    XL := GetActiveOleObject('Excel.Application');
+    XL := GetActiveOleObject(cExcelApplication);
   except
-    XL := CreateOleObject('Excel.Application');
+    XL := CreateOleObject(cExcelApplication);
   end;
 
   GetTempPath(SizeOf(Buffer), Buffer);
@@ -87,8 +92,8 @@ begin
 
   XL.Visible := True;
   XL.WorkBooks.Add;
-  XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[1].Name := 'Report';
-  Sheet := XL.WorkBooks[XL.WorkBooks.Count].WorkSheets['Report'];
+  XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[1].Name := cReport;
+  Sheet := XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[cReport];
 
   SL1 := TStringList.Create;
   SL2 := TStringList.Create;
@@ -143,15 +148,15 @@ var
   I, RecNo, ColIndex: Integer;
 begin
   try
-    XL := GetActiveOleObject('Excel.Application');
+    XL := GetActiveOleObject(cExcelApplication);
   except
-    XL := CreateOleObject('Excel.Application');
+    XL := CreateOleObject(cExcelApplication);
   end;
 
   XL.Visible := True;
   XL.WorkBooks.Add;
-  XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[1].Name := 'Report';
-  Sheet := XL.WorkBooks[XL.WorkBooks.Count].WorkSheets['Report'];
+  XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[1].Name := cReport;
+  Sheet := XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[cReport];
   //  Sheet.SetBackgroundPicture(FileName:=ExtractFilePath(ParamStr(0))+'bg.JPG');
 
   //  Sheet.Cells[1, 1] := 'Biblio'; Sheet.Cells[1, 1].Font.Bold := True; Sheet.Cells[1, 1].Font.Color := clWhite;

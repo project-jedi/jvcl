@@ -114,7 +114,7 @@ begin
 
   FPCurrentItem^.Path := ExtractFilePath(FilePath);
   try
-    FLastSearchResult := sysUtils.FindFirst(FPath + '*.*', FileAttr, FPCurrentItem^.sr);
+    FLastSearchResult := SysUtils.FindFirst(FPath + '*.*', FileAttr, FPCurrentItem^.sr);
     FFindOpened := CheckResult(FLastSearchResult);
     if not FFindOpened then
       FindClose
@@ -165,8 +165,9 @@ begin
     if not CheckFileExt(FPCurrentItem^.sr.Name) then
       Next;
 
-  end; // else
-  //    raise Exception.Create('Call Next method after First method');
+  end;
+  // else
+  //   raise Exception.Create('Call Next method after First method');
 end;
 
 function TJvgFileIterator.CheckFileExt(const FileName: string): Boolean;
