@@ -52,13 +52,13 @@ procedure TJvAniMainForm.FileListBox1Click(Sender: TObject);
 begin
   Self.Image1.Picture.LoadFromFile(Self.FileListBox1.FileName);
 
-  with TJvAni(TJvAni(self.Image1.Picture.Graphic)) do
+  with TJvAni(Image1.Picture.Graphic) do
   begin
-    Animated:=true;
-    Self.Memo1.Clear;
-    Self.Memo1.Lines.Add('Author : '+Author);
-    Self.Memo1.Lines.Add('Title : '+Title);
-    Self.Memo1.Lines.Add('Frames : '+IntToStr(FramesCount));
+    Animated := True;
+    Memo1.Clear;
+    Memo1.Lines.Add('Author: ' + Author);
+    Memo1.Lines.Add('Title: ' + Title);
+    Memo1.Lines.Add('Frames: ' + IntToStr(FramesCount));
   end;
 end;
 
