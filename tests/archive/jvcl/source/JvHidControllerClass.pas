@@ -1201,7 +1201,7 @@ begin
 
     FillInList(FList);
     FNumCheckedInDevices := FList.Count;
-    if IsHidLoaded and not (csDesigning in ComponentState) then
+    if IsHidLoaded then
       // only hook messages if there is a HID DLL
       Application.HookMainWindow(EventPipe);
   end;
@@ -1234,7 +1234,7 @@ begin
   // unhook event pipe
   if not (csDesigning in ComponentState) then
   begin
-    if IsHidLoaded and not (csDesigning in ComponentState) then
+    if IsHidLoaded then
       Application.UnhookMainWindow(EventPipe);
 
     if Assigned(FList) then
