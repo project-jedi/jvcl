@@ -117,7 +117,7 @@ procedure TJvPageSetupTitledDialog.WMHelp(var Msg: TWMHelp);
     Pt: TSmallPoint;
   begin
     Pt := PointToSmallPoint(Msg.HelpInfo^.MousePos);
-    Application.HelpCommand(HELP_SETPOPUP_POS, LongInt(Pt));
+    Application.HelpCommand(HELP_SETPOPUP_POS, Longint(Pt));
     Application.HelpCommand(HELP_CONTEXTPOPUP, ContextID);
   end;
 

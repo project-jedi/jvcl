@@ -585,7 +585,7 @@ begin
   begin
     FPrevWndProc := P;
     FNewWndProc := JvMakeObjectInstance(FocusControlWndHookProc);
-    SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FNewWndProc));
+    SetWindowLong(FocusControl.Handle, GWL_WNDPROC, Longint(FNewWndProc));
   end;
 end;
 
@@ -595,7 +595,7 @@ begin
   if (FNewWndProc <> nil) and (FPrevWndProc <> nil) and
     (Pointer(GetWindowLong(FocusControl.Handle, GWL_WNDPROC)) = FNewWndProc) then
   begin
-    SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FPrevWndProc));
+    SetWindowLong(FocusControl.Handle, GWL_WNDPROC, Longint(FPrevWndProc));
     // (rom) JvFreeObjectInstance call added
     JvFreeObjectInstance(FNewWndProc);
     FNewWndProc := nil;
