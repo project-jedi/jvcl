@@ -30,34 +30,47 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, Types,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors,
-  {$IFDEF VCL}
   VCLEditors,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  ClxEditors,
-  {$ENDIF VisualCLX}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
+{$IFDEF VisualCLX}
+  QDialogs,
+  {$IFDEF MSWINDOWS}
+  Registry,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  JvQRegistryIniFile,
+  {$ENDIF LINUX}
+{$ENDIF VisualCLX}
   JvConsts, JvJVCLUtils;
+
+{$IFDEF VisualCLX}
+const
+  SCustomColors = 'JVCLX Custom Colors';
+{$ENDIF VisualCLX}
 
 type
   TJvColorProperty = class(TColorProperty)
+  {$IFDEF VisualCLX}
+  protected
+    function GetRegKey: string; dynamic;
+  {$ENDIF VisualCLX}
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
+    {$IFDEF VCL}
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
       const ARect: TRect; ASelected: Boolean);
       {$IFDEF COMPILER5} override {$ELSE} virtual {$ENDIF};
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure Edit; override;
+    {$ENDIF VisualCLX}
   end;
 
 function JvIdentToColor(const Ident: string; var Color: Longint): Boolean;
@@ -178,6 +191,7 @@ begin
   SetOrdValue(JvStringToColor(Value));
 end;
 
+{$IFDEF VCL}
 procedure TJvColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
 var
@@ -201,6 +215,97 @@ begin
       Rght + 1, ARect.Top + 1, Value);
   end;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+//
+// Edit uses TColorDialog, but that does not store the
+// customcolors. For design time non volatile customcolors are
+// implemented stored in the Registry under windows and in
+// Linux in an IniFile.
+//
+function TJvColorProperty.GetRegKey: String;
+begin
+  Result := SDelphiKey + PathDelim + SCustomColors;
+end;
+
+procedure TJvColorProperty.Edit;
+var
+  ColorDialog: TColorDialog;
+
+  procedure GetCustomColors;
+  var
+    KeyName: string;
+    KeyValue: string;
+    Suffix: Char;
+  begin
+    with TRegistry.Create do
+    try
+      LazyWrite := False;
+      if OpenKey(GetRegKey, True) then
+      try
+        with ColorDialog.CustomColors do
+        begin
+          Clear;
+          for Suffix := 'A' to 'P' do
+          begin
+            KeyName := 'Color' + Suffix;
+            KeyValue := ReadString(KeyName);
+            Add(KeyName + '=' + KeyValue);
+          end;
+        end;
+      finally
+        CloseKey;
+      end;
+    finally
+      Free;
+    end;
+  end;
+
+  procedure SaveCustomColors;
+  var
+    I: Integer;
+    KeyName: string;
+    KeyValue: string;
+    Suffix: Char;
+  begin
+    with TRegistry.Create do
+    try
+      LazyWrite := False;
+      if OpenKey(GetRegKey, True) then
+      try
+        I := 0;
+        with ColorDialog.CustomColors do
+          for Suffix := 'A' to 'P' do
+          begin
+            KeyName := 'Color' + Suffix;
+            KeyValue := StringReplace(Strings[I], Keyname + '=', '', []);
+            WriteString(KeyName, KeyValue);
+            inc(I);
+          end;
+      finally
+        CloseKey;
+      end;
+    finally
+      Free;
+    end;
+  end;
+
+begin
+  ColorDialog := TColorDialog.Create(nil);
+  try
+    ColorDialog.Color := ColorFromColormap(GetOrdValue);
+    GetCustomColors;
+    if ColorDialog.Execute then
+    begin
+      SetOrdValue(ColorDialog.Color);
+      SaveCustomColors;
+    end;
+  finally
+    ColorDialog.Free;
+  end;
+{$ENDIF VisualCLX}
+
 
 end.
 
