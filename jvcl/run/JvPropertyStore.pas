@@ -419,8 +419,7 @@ begin
   for Index := 0 to GetPropCount(Self) - 1 do
   begin
     PropName := GetPropName(Self, Index);
-    VisPropName := PropName;
-    AppStore.TranslatePropertyName(Self, visPropName, False);
+    VisPropName := AppStore.TranslatePropertyName(Self, PropName, False);
     if (FIgnoreProperties.Indexof(PropName) >= 0) then
       Continue;
     if (FIntIgnoreProperties.Indexof(PropName) >= 0) then
