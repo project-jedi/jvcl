@@ -31,9 +31,9 @@ unit JvRadioGroup;
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls,
-  JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  StdCtrls, ExtCtrls, Types,
+  JVCLVer, JvThemes;
 
 type
   TJvRadioGroup = class(TRadioGroup)
@@ -46,13 +46,21 @@ type
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
+{$IFDEF JVCLThemesEnabledD56}
+    function GetParentBackground: Boolean;
+    procedure SetParentBackground(const Value: Boolean);
+{$ENDIF}
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
+{$IFDEF JVCLThemesEnabledD56}
+    procedure Paint; override;
+    procedure CMControlChange(var Msg: TCMControlChange); message CM_CONTROLCHANGE;
+{$ENDIF}
   public
-    destructor Destroy; override;
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
@@ -61,21 +69,37 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+{$IFDEF JVCLThemesEnabledD56}
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
+{$ENDIF}
   end;
 
 implementation
+
+uses
+  Math;
+
+{$IFDEF JVCLThemesEnabledD56}
+
+function TJvRadioGroup.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvRadioGroup.SetParentBackground(const Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+
+{$ENDIF}
 
 constructor TJvRadioGroup.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  IncludeThemeStyle(Self, [csParentBackground]);
   FOver := False;
-end;
-
-destructor TJvRadioGroup.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvRadioGroup.CMCtl3DChanged(var Msg: TMessage);
@@ -90,6 +114,11 @@ begin
   inherited;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
+end;
+
+procedure TJvRadioGroup.CMDenySubClassing(var Msg: TMessage);
+begin
+  Msg.Result := 1;
 end;
 
 procedure TJvRadioGroup.CMMouseEnter(var Msg: TMessage);
@@ -117,6 +146,40 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
+
+{$IFDEF JVCLThemesEnabledD56}
+
+procedure TJvRadioGroup.Paint;
+var
+  Details: TThemedElementDetails;
+  R, CaptionRect: TRect;
+begin
+  if ThemeServices.ThemesEnabled then
+  begin
+    if Enabled then
+      Details := ThemeServices.GetElementDetails(tbGroupBoxNormal)
+    else
+      Details := ThemeServices.GetElementDetails(tbGroupBoxDisabled);
+    R := ClientRect;
+    Inc(R.Top, Canvas.TextHeight('0') div 2);
+    ThemeServices.DrawElement(Canvas.Handle, Details, R);
+
+    CaptionRect := Rect(8, 0, Min(Canvas.TextWidth(Caption) + 8, ClientWidth - 8), Canvas.TextHeight(Caption));
+
+    Canvas.Brush.Color := Self.Color;
+    DrawThemedBackground(Self, Canvas, CaptionRect);
+    ThemeServices.DrawText(Canvas.Handle, Details, Caption, CaptionRect, DT_LEFT, 0);
+  end
+  else
+    inherited Paint;
+end;
+
+procedure TJvRadioGroup.CMControlChange(var Msg: TCMControlChange);
+begin
+  inherited;
+end;
+
+{$ENDIF}
 
 end.
 

@@ -56,6 +56,12 @@ type
   TJvCustomPanel = class(TCustomPanel)
   private
     FAboutJVCL: TJVCLAboutInfo;
+{$IFDEF JVCLThemesEnabledD56}
+    function GetParentBackground: Boolean;
+    procedure SetParentBackground(const Value: Boolean);
+  protected
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
+{$ENDIF}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -63,6 +69,12 @@ type
   TJvCustomControl = class(TCustomControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
+{$IFDEF JVCLThemesEnabledD56}
+    function GetParentBackground: Boolean;
+    procedure SetParentBackground(const Value: Boolean);
+  protected
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
+{$ENDIF}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -70,6 +82,12 @@ type
   TJvWinControl = class(TWinControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
+{$IFDEF JVCLThemesEnabledD56}
+    function GetParentBackground: Boolean;
+    procedure SetParentBackground(const Value: Boolean);
+  protected
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
+{$ENDIF}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -77,6 +95,12 @@ type
   TJvForm = class(TForm)
   private
     FAboutJVCL: TJVCLAboutInfo;
+{$IFDEF JVCLThemesEnabledD56}
+    function GetParentBackground: Boolean;
+    procedure SetParentBackground(const Value: Boolean);
+  protected
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
+{$ENDIF}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -91,5 +115,53 @@ type
   end;
 
 implementation
+
+{$IFDEF JVCLThemesEnabledD56}
+
+uses
+  JvThemes;
+
+function TJvCustomPanel.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvCustomPanel.SetParentBackground(const Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+
+function TJvCustomControl.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvCustomControl.SetParentBackground(const Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+
+function TJvWinControl.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvWinControl.SetParentBackground(const Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+
+function TJvForm.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvForm.SetParentBackground(const Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+
+{$ENDIF}
+
 
 end.

@@ -33,7 +33,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Extctrls, Controls, Forms,
   Menus,
-  JVCLVer;
+  JVCLVer, JvThemes;
 
 type
   TPopupNames = (pnHint, pnName);
@@ -50,11 +50,16 @@ type
     FPopup: TPopupMenu;
     FPopupNames: TPopupNames;
     FList: TList;
+{$IFDEF JVCLThemesEnabledD56}
+    function GetParentBackground: Boolean;
+    procedure SetParentBackground(const Value: Boolean);
+{$ENDIF}
   protected
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure PopupMenuClick(Sender: TObject);
@@ -72,9 +77,26 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+{$IFDEF JVCLThemesEnabledD56}
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default False;
+{$ENDIF}
   end;
 
 implementation
+
+{$IFDEF JVCLThemesEnabledD56}
+
+function TJvControlBar.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvControlBar.SetParentBackground(const Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+
+{$ENDIF}
 
 constructor TJvControlBar.Create(AOwner: TComponent);
 begin
@@ -85,6 +107,7 @@ begin
   FPopupControl := True;
   FPopupNames := pnHint;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  IncludeThemeStyle(Self, [csParentBackground]);
 end;
 
 destructor TJvControlBar.Destroy;
@@ -100,6 +123,11 @@ begin
   inherited;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
+end;
+
+procedure TJvControlBar.CMDenySubClassing(var Msg: TMessage);
+begin
+  Msg.Result := 1;
 end;
 
 procedure TJvControlBar.CMMouseEnter(var Msg: TMessage);
