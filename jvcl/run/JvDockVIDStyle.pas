@@ -40,8 +40,11 @@ type
     FTextAlignment: TAlignment;
     FInactiveTitleEndColor: TColor;
     FInactiveTitleStartColor: TColor;
+    FInactiveTitleVerticalGradient: Boolean;
     FActiveTitleEndColor: TColor;
     FActiveTitleStartColor: TColor;
+    FActiveTitleVerticalGradient: Boolean;
+    FActiveDockGrabber: Boolean;
     FSystemInfo: Boolean;
     FActiveFont: TFont;
     FInactiveFont: TFont;
@@ -55,6 +58,9 @@ type
     procedure SetSystemInfo(const Value: Boolean);
     procedure SetActiveFont(const Value: TFont);
     procedure SetInactiveFont(const Value: TFont);
+    procedure SetActiveTitleVerticalGradient(const Value: Boolean);
+    procedure SetInactiveTitleVerticalGradient(const Value: Boolean);
+    procedure SetActiveDockGrabber(const Value: Boolean);
   protected
     procedure ResetDockControlOption; override;
     procedure SetDefaultSystemCaptionInfo; virtual;
@@ -73,12 +79,14 @@ type
   published
     property ActiveFont: TFont read FActiveFont write SetActiveFont;
     property InactiveFont: TFont read FInactiveFont write SetInactiveFont;
-    property TextAlignment: TAlignment read FTextAlignment
-      write SetTextAlignment;
+    property TextAlignment: TAlignment read FTextAlignment write SetTextAlignment;
     property ActiveTitleStartColor: TColor read FActiveTitleStartColor write SetActiveTitleStartColor;
     property ActiveTitleEndColor: TColor read FActiveTitleEndColor write SetActiveTitleEndColor;
+    property ActiveTitleVerticalGradient: Boolean read FActiveTitleVerticalGradient write SetActiveTitleVerticalGradient default False;
+    property ActiveDockGrabber: Boolean read FActiveDockGrabber write SetActiveDockGrabber default False;
     property InactiveTitleStartColor: TColor read FInactiveTitleStartColor write SetInactiveTitleStartColor;
     property InactiveTitleEndColor: TColor read FInactiveTitleEndColor write SetInactiveTitleEndColor;
+    property InactiveTitleVerticalGradient: Boolean read FInactiveTitleVerticalGradient write SetInactiveTitleVerticalGradient default False;
     property TextEllipsis: Boolean read FTextEllipsis write SetTextEllipsis;
     property SystemInfo: Boolean read FSystemInfo write SetSystemInfo;
   end;
@@ -232,7 +240,7 @@ type
     procedure DrawDockGrabber(Control: TControl; const ARect: TRect); override;
     procedure DrawSplitterRect(const ARect: TRect); override;
     procedure PaintDockGrabberRect(Canvas: TCanvas; Control: TControl;
-      const ARect: TRect); virtual;
+      const ARect: TRect; PaintAlways: Boolean = False); virtual;
     procedure DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone;
       Left, Top: Integer); virtual;
     procedure ResetBounds(Force: Boolean); override;
@@ -543,7 +551,7 @@ type
     property OldState: TDragState read FOldState write SetOldState;
   end;
 
-procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect; StartColor, EndColor: TColor);
+procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect; StartColor, EndColor: TColor; Vertical: Boolean = False);
 
 implementation
 
@@ -564,12 +572,12 @@ var
   gi_DockRect: TRect;
 
 procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect;
-  StartColor, EndColor: TColor);
+  StartColor, EndColor: TColor; Vertical: Boolean = False);
 const
   D = 256;
 var
-  X, C1, C2, R1, G1, B1, W: Integer;
-  DR, DG, DB, DH: Real;
+  X, Y, C1, C2, R1, G1, B1, W, H: Integer;
+  DR, DG, DB, DH, DW: Real;
 
   procedure InitRGBValues(C1, C2: Integer);
   begin
@@ -595,18 +603,38 @@ begin
 
         InitRGBValues(C1, C2);
 
-        DH := (ARect.Right - ARect.Left) / D;
-        for X := 0 to 255 do
+        if not Vertical then
         begin
-          Brush.Color := RGB(R1 + Round(DR * X), G1 + Round(DG * X),
-            B1 + Round(DB * X));
-          with ARect do
+          DH := (ARect.Right - ARect.Left) / D;
+          for X := 0 to 255 do
           begin
-            if Right <= Left + Round((X + 1) * DH) then
-              W := Right
-            else
-              W := Left + Round((X + 1) * DH);
-            FillRect(Rect(Left + Round(X * DH), Top, W, Bottom))
+            Brush.Color := RGB(R1 + Round(DR * X), G1 + Round(DG * X),
+              B1 + Round(DB * X));
+            with ARect do
+            begin
+              if Right <= Left + Round((X + 1) * DH) then
+                W := Right
+              else
+                W := Left + Round((X + 1) * DH);
+              FillRect(Rect(Left + Round(X * DH), Top, W, Bottom));
+            end;
+          end;
+        end
+        else
+        begin
+          DW := (ARect.Bottom - ARect.Top) / D;
+          for Y := 0 to 255 do
+          begin
+            Brush.Color := RGB(R1 + Round(DR * Y), G1 + Round(DG * Y),
+              B1 + Round(DB * Y));
+            with ARect do
+            begin
+              if Bottom <= Top + Round((Y + 1) * DW) then
+                H := Bottom
+              else
+                H := Top + Round((Y + 1) * DW);
+              FillRect(Rect(Left, Top + Round(Y * DW), Right, H));
+            end;
           end;
         end;
       end
@@ -1700,11 +1728,12 @@ begin
       if Option <> nil then
       begin
         if ActiveControl = Control then
-          PaintGradientBackground(Canvas, DrawRect, Option.ActiveTitleStartColor, Option.ActiveTitleEndColor)
+          PaintGradientBackground(Canvas, DrawRect, Option.ActiveTitleStartColor, Option.ActiveTitleEndColor, Option.ActiveTitleVerticalGradient)
         else
-          PaintGradientBackground(Canvas, DrawRect, Option.InactiveTitleStartColor, Option.InactiveTitleEndColor);
+          PaintGradientBackground(Canvas, DrawRect, Option.InactiveTitleStartColor, Option.InactiveTitleEndColor, Option.InactiveTitleVerticalGradient);
+        Canvas.Brush.Style := bsClear; // body alrey painted
       end;
-      PaintDockGrabberRect(Canvas, Control, DrawRect);
+      PaintDockGrabberRect(Canvas, Control, DrawRect, (Option <> nil) and (Option.ActiveDockGrabber));
 
       if ActiveControl = Control then
         Canvas.Font.Assign(Option.ActiveFont)
@@ -2233,7 +2262,7 @@ begin
 end;
 
 procedure TJvDockVIDTree.PaintDockGrabberRect(Canvas: TCanvas;
-  Control: TControl; const ARect: TRect);
+  Control: TControl; const ARect: TRect; PaintAlways: Boolean = False);
 begin
 end;
 
@@ -4307,8 +4336,11 @@ begin
     FTextAlignment := TJvDockVIDConjoinServerOption(Source).FTextAlignment;
     FInactiveTitleEndColor := TJvDockVIDConjoinServerOption(Source).FInactiveTitleEndColor;
     FInactiveTitleStartColor := TJvDockVIDConjoinServerOption(Source).FInactiveTitleStartColor;
+    FInactiveTitleVerticalGradient := TJvDockVIDConjoinServerOption(Source).FInactiveTitleVerticalGradient;
     FActiveTitleEndColor := TJvDockVIDConjoinServerOption(Source).FActiveTitleEndColor;
     FActiveTitleStartColor := TJvDockVIDConjoinServerOption(Source).FActiveTitleStartColor;
+    FActiveTitleVerticalGradient := TJvDockVIDConjoinServerOption(Source).FActiveTitleVerticalGradient;
+    FActiveDockGrabber := TJvDockVIDConjoinServerOption(Source).FActiveDockGrabber;
     FActiveFont.Assign(TJvDockVIDConjoinServerOption(Source).FActiveFont);
     FInactiveFont.Assign(TJvDockVIDConjoinServerOption(Source).FInactiveFont);
     FSystemInfo := TJvDockVIDConjoinServerOption(Source).FSystemInfo;
@@ -4319,7 +4351,7 @@ end;
 
 procedure TJvDockVIDConjoinServerOption.SetActiveTitleEndColor(const Value: TColor);
 begin
-  if FActiveTitleEndColor <> Value then
+  if Value <> FActiveTitleEndColor then
   begin
     FActiveTitleEndColor := Value;
     FSystemInfo := False;
@@ -4329,7 +4361,7 @@ end;
 
 procedure TJvDockVIDConjoinServerOption.SetActiveTitleStartColor(const Value: TColor);
 begin
-  if FActiveTitleStartColor <> Value then
+  if Value <> FActiveTitleStartColor then
   begin
     FActiveTitleStartColor := Value;
     FSystemInfo := False;
@@ -4337,9 +4369,30 @@ begin
   end;
 end;
 
+procedure TJvDockVIDConjoinServerOption.SetActiveTitleVerticalGradient(const Value: Boolean);
+begin
+  if Value <> FActiveTitleVerticalGradient then
+  begin
+    FActiveTitleVerticalGradient := Value;
+    FSystemInfo := False;
+    ResetDockControlOption;
+  end;
+end;
+
+procedure TJvDockVIDConjoinServerOption.SetActiveDockGrabber(
+  const Value: Boolean);
+begin
+  if Value <> FActiveDockGrabber then
+  begin
+    FActiveDockGrabber := Value;
+    FSystemInfo := False;
+    ResetDockControlOption;
+  end;
+end;
+
 procedure TJvDockVIDConjoinServerOption.SetInactiveTitleEndColor(const Value: TColor);
 begin
-  if FInactiveTitleEndColor <> Value then
+  if Value <> FInactiveTitleEndColor then
   begin
     FInactiveTitleEndColor := Value;
     FSystemInfo := False;
@@ -4349,7 +4402,7 @@ end;
 
 procedure TJvDockVIDConjoinServerOption.SetInactiveTitleStartColor(const Value: TColor);
 begin
-  if FInactiveTitleStartColor <> Value then
+  if Value <> FInactiveTitleStartColor then
   begin
     FInactiveTitleStartColor := Value;
     FSystemInfo := False;
@@ -4357,9 +4410,19 @@ begin
   end;
 end;
 
+procedure TJvDockVIDConjoinServerOption.SetInactiveTitleVerticalGradient(const Value: Boolean);
+begin
+  if Value <> FInactiveTitleVerticalGradient then
+  begin
+    FInactiveTitleVerticalGradient := Value;
+    FSystemInfo := False;
+    ResetDockControlOption;
+  end;
+end;
+
 procedure TJvDockVIDConjoinServerOption.SetSystemInfo(const Value: Boolean);
 begin
-  if FSystemInfo <> Value then
+  if Value <> FSystemInfo then
   begin
     FSystemInfo := Value;
     if FSystemInfo then
@@ -4371,7 +4434,7 @@ end;
 procedure TJvDockVIDConjoinServerOption.SetTextAlignment(
   const Value: TAlignment);
 begin
-  if FTextAlignment <> Value then
+  if Value <> FTextAlignment then
   begin
     FTextAlignment := Value;
     FSystemInfo := False;
@@ -4381,7 +4444,7 @@ end;
 
 procedure TJvDockVIDConjoinServerOption.SetTextEllipsis(const Value: Boolean);
 begin
-  if FTextEllipsis <> Value then
+  if Value <> FTextEllipsis then
   begin
     FTextEllipsis := Value;
     FSystemInfo := False;
@@ -4393,8 +4456,11 @@ procedure TJvDockVIDConjoinServerOption.SetDefaultSystemCaptionInfo;
 begin
   FActiveTitleStartColor := JvDockGetActiveTitleBeginColor;
   FActiveTitleEndColor := JvDockGetActiveTitleEndColor;
+  FActiveTitleVerticalGradient := False;
   FInactiveTitleStartColor := JvDockGetInactiveTitleBeginColor;
   FInactiveTitleEndColor := JvDockGetInactiveTitleEndColor;
+  FActiveTitleVerticalGradient := False;
+  FActiveDockGrabber := False;
   FTextAlignment := taLeftJustify;
   FTextEllipsis := True;
   FActiveFont.Assign(JvDockGetTitleFont);
