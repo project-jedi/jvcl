@@ -44,7 +44,7 @@ type
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure WndProc(var Msg: TMessage); override;
@@ -124,7 +124,7 @@ begin
     Ctl3D := False;
 end;
 
-procedure TJvScrollBox.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvScrollBox.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcWantAllKeys, dcWantArrows];
 end;

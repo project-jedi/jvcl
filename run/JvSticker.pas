@@ -42,7 +42,7 @@ type
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMMove(var Msg: TWMMove); message WM_MOVE;
   protected
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
   public
     constructor CreateEx(AOwner: TComponent; AControl: TControl);
     procedure CreateParams(var Params: TCreateParams); override;
@@ -146,7 +146,7 @@ begin
     inherited;
 end;
 
-procedure TJvStickSizer.DoBoundsChanged;
+procedure TJvStickSizer.BoundsChanged;
 var
   R: TRect;
 begin

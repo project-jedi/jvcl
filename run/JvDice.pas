@@ -62,8 +62,8 @@ type
     procedure TimerFires(Sender: TObject);
     procedure NewRandomValue;
   protected
-    procedure DoFocusChanged(Control: TWinControl); override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    procedure FocusChanged(Control: TWinControl); override;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
     {$IFDEF VCL}
     function GetPalette: HPALETTE; override;
@@ -214,7 +214,7 @@ begin
     FOnStop(Self);
 end;
 
-procedure TJvDice.DoFocusChanged(Control: TWinControl);
+procedure TJvDice.FocusChanged(Control: TWinControl);
 var
   Active: Boolean;
 begin
@@ -225,10 +225,10 @@ begin
     if FShowFocus then
       Invalidate;
   end;
-  inherited DoFocusChanged(Control);
+  inherited FocusChanged(Control);
 end;
 
-function TJvDice.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvDice.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := True; // Paint clears the background
 end;

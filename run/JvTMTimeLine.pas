@@ -150,7 +150,7 @@ type
     function DateHasImage(ADate: TDateTime): Boolean;
     procedure SetShowTodayIcon(const Value: Boolean);
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure CursorChanged; override;
     procedure EnabledChanged; override;
     procedure Paint; override;
@@ -1048,7 +1048,7 @@ begin
   FSelection.Assign(Value);
 end;
 
-procedure TJvCustomTMTimeline.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvCustomTMTimeline.GetDlgCode(var Code: TDlgCodes);
 begin
   Include(Code, dcWantArrows);
   Exclude(Code, dcNative);

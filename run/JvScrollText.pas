@@ -71,7 +71,7 @@ type
     procedure TextMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure TextMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   protected
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -485,7 +485,7 @@ begin
   end;
 end;
 
-procedure TJvScrollText.DoBoundsChanged;
+procedure TJvScrollText.BoundsChanged;
 begin
   if FText <> nil then
   begin
@@ -493,7 +493,7 @@ begin
     if FText.Height < Height then
       FText.Height := Height;
   end;    
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
 end;
 
 function TJvScrollText.GetAlignment: TAlignment;

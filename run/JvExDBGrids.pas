@@ -75,6 +75,7 @@ type
     procedure Dispatch(var Msg); override;
   protected
    // IJvWinControlEvents
+    procedure BoundsChanged; reintroduce; dynamic; 
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -104,7 +105,6 @@ type
     InternalFontChanged: TNotifyEvent;
     procedure OnFontChanged(Sender: TObject);
   protected
-    procedure BoundsChanged; override;
     procedure DoFontChanged(Sender: TObject); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
@@ -133,7 +133,7 @@ type
   {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure DoFocusChanged(Control: TWinControl); dynamic;
+    procedure FocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -149,11 +149,10 @@ type
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
   {$ENDIF VisualCLX}
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
+    procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -206,6 +205,7 @@ type
     procedure Dispatch(var Msg); override;
   protected
    // IJvWinControlEvents
+    procedure BoundsChanged; reintroduce; dynamic; 
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -235,7 +235,6 @@ type
     InternalFontChanged: TNotifyEvent;
     procedure OnFontChanged(Sender: TObject);
   protected
-    procedure BoundsChanged; override;
     procedure DoFontChanged(Sender: TObject); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
@@ -264,7 +263,7 @@ type
   {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure DoFocusChanged(Control: TWinControl); dynamic;
+    procedure FocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -280,11 +279,10 @@ type
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
   {$ENDIF VisualCLX}
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
+    procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -409,6 +407,10 @@ begin
 end;
  {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
+procedure TJvExCustomDBGrid.BoundsChanged;
+begin
+end;
+
 procedure TJvExCustomDBGrid.CursorChanged;
 asm
         MOV     EDX, CM_CURSORCHANGED
@@ -525,12 +527,6 @@ begin
     InternalFontChanged(Self);
 end;
 
-procedure TJvExCustomDBGrid.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  DoBoundsChanged;
-end;
-
 procedure TJvExCustomDBGrid.RecreateWnd;
 begin
   RecreateWidget;
@@ -573,18 +569,14 @@ end;
 procedure TJvExCustomDBGrid.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
-  DoFocusChanged(Msg.Sender);
+  FocusChanged(Msg.Sender);
 end;
 
-procedure TJvExCustomDBGrid.DoFocusChanged(Control: TWinControl);
+procedure TJvExCustomDBGrid.FocusChanged(Control: TWinControl);
 begin
 end;
   
-procedure TJvExCustomDBGrid.DoBoundsChanged;
-begin
-end;
-
-procedure TJvExCustomDBGrid.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvExCustomDBGrid.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
@@ -596,9 +588,9 @@ procedure TJvExCustomDBGrid.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
-function TJvExCustomDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomDBGrid.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-        JMP     DefaultDoPaintBackground
+        JMP     DefaultPaintBackground
 end;
   
 constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
@@ -725,6 +717,10 @@ begin
 end;
  {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
+procedure TJvExDBGrid.BoundsChanged;
+begin
+end;
+
 procedure TJvExDBGrid.CursorChanged;
 asm
         MOV     EDX, CM_CURSORCHANGED
@@ -841,12 +837,6 @@ begin
     InternalFontChanged(Self);
 end;
 
-procedure TJvExDBGrid.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  DoBoundsChanged;
-end;
-
 procedure TJvExDBGrid.RecreateWnd;
 begin
   RecreateWidget;
@@ -889,18 +879,14 @@ end;
 procedure TJvExDBGrid.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
-  DoFocusChanged(Msg.Sender);
+  FocusChanged(Msg.Sender);
 end;
 
-procedure TJvExDBGrid.DoFocusChanged(Control: TWinControl);
+procedure TJvExDBGrid.FocusChanged(Control: TWinControl);
 begin
 end;
   
-procedure TJvExDBGrid.DoBoundsChanged;
-begin
-end;
-
-procedure TJvExDBGrid.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvExDBGrid.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
@@ -912,9 +898,9 @@ procedure TJvExDBGrid.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
-function TJvExDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExDBGrid.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-        JMP     DefaultDoPaintBackground
+        JMP     DefaultPaintBackground
 end;
   
 constructor TJvExDBGrid.Create(AOwner: TComponent);

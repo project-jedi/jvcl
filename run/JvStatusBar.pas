@@ -78,7 +78,7 @@ type
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     {$ENDIF VCL}
   protected
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
     {$IFDEF VisualCLX}
     procedure Paint; override;
     {$ENDIF VisualCLX}
@@ -120,9 +120,9 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
-procedure TJvStatusBar.DoBoundsChanged;
+procedure TJvStatusBar.BoundsChanged;
 begin
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
   Realign;
   {$IFDEF COMPILER6_UP}
   MovePanelControls;

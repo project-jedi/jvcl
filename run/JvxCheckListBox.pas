@@ -110,7 +110,7 @@ type
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
   protected
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -1038,9 +1038,9 @@ begin
     inherited;
 end;
 
-procedure TJvxCustomListBox.DoBoundsChanged;
+procedure TJvxCustomListBox.BoundsChanged;
 begin
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
   SetColumnWidth;
 end;
 

@@ -87,6 +87,7 @@ type
     procedure Dispatch(var Msg); override;
   protected
    // IJvWinControlEvents
+    procedure BoundsChanged; reintroduce; dynamic; 
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -116,7 +117,6 @@ type
     InternalFontChanged: TNotifyEvent;
     procedure OnFontChanged(Sender: TObject);
   protected
-    procedure BoundsChanged; override;
     procedure DoFontChanged(Sender: TObject); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
@@ -145,7 +145,7 @@ type
   {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure DoFocusChanged(Control: TWinControl); dynamic;
+    procedure FocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -161,11 +161,10 @@ type
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
   {$ENDIF VisualCLX}
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
+    procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -245,6 +244,7 @@ type
     procedure Dispatch(var Msg); override;
   protected
    // IJvWinControlEvents
+    procedure BoundsChanged; reintroduce; dynamic; 
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -274,7 +274,6 @@ type
     InternalFontChanged: TNotifyEvent;
     procedure OnFontChanged(Sender: TObject);
   protected
-    procedure BoundsChanged; override;
     procedure DoFontChanged(Sender: TObject); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
@@ -303,7 +302,7 @@ type
   {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure DoFocusChanged(Control: TWinControl); dynamic;
+    procedure FocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -319,11 +318,10 @@ type
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
   {$ENDIF VisualCLX}
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
+    procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -481,6 +479,10 @@ begin
 end;
  {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
+procedure TJvExCustomMaskEdit.BoundsChanged;
+begin
+end;
+
 procedure TJvExCustomMaskEdit.CursorChanged;
 asm
         MOV     EDX, CM_CURSORCHANGED
@@ -597,12 +599,6 @@ begin
     InternalFontChanged(Self);
 end;
 
-procedure TJvExCustomMaskEdit.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  DoBoundsChanged;
-end;
-
 procedure TJvExCustomMaskEdit.RecreateWnd;
 begin
   RecreateWidget;
@@ -645,18 +641,14 @@ end;
 procedure TJvExCustomMaskEdit.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
-  DoFocusChanged(Msg.Sender);
+  FocusChanged(Msg.Sender);
 end;
 
-procedure TJvExCustomMaskEdit.DoFocusChanged(Control: TWinControl);
+procedure TJvExCustomMaskEdit.FocusChanged(Control: TWinControl);
 begin
 end;
   
-procedure TJvExCustomMaskEdit.DoBoundsChanged;
-begin
-end;
-
-procedure TJvExCustomMaskEdit.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvExCustomMaskEdit.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
@@ -668,9 +660,9 @@ procedure TJvExCustomMaskEdit.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
-function TJvExCustomMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomMaskEdit.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-        JMP     DefaultDoPaintBackground
+        JMP     DefaultPaintBackground
 end;
   
 constructor TJvExCustomMaskEdit.Create(AOwner: TComponent);
@@ -883,6 +875,10 @@ begin
 end;
  {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
+procedure TJvExMaskEdit.BoundsChanged;
+begin
+end;
+
 procedure TJvExMaskEdit.CursorChanged;
 asm
         MOV     EDX, CM_CURSORCHANGED
@@ -999,12 +995,6 @@ begin
     InternalFontChanged(Self);
 end;
 
-procedure TJvExMaskEdit.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  DoBoundsChanged;
-end;
-
 procedure TJvExMaskEdit.RecreateWnd;
 begin
   RecreateWidget;
@@ -1047,18 +1037,14 @@ end;
 procedure TJvExMaskEdit.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
-  DoFocusChanged(Msg.Sender);
+  FocusChanged(Msg.Sender);
 end;
 
-procedure TJvExMaskEdit.DoFocusChanged(Control: TWinControl);
+procedure TJvExMaskEdit.FocusChanged(Control: TWinControl);
 begin
 end;
   
-procedure TJvExMaskEdit.DoBoundsChanged;
-begin
-end;
-
-procedure TJvExMaskEdit.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvExMaskEdit.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
@@ -1070,9 +1056,9 @@ procedure TJvExMaskEdit.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
-function TJvExMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExMaskEdit.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-        JMP     DefaultDoPaintBackground
+        JMP     DefaultPaintBackground
 end;
   
 constructor TJvExMaskEdit.Create(AOwner: TComponent);

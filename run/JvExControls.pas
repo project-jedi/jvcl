@@ -56,7 +56,7 @@ type
   TDlgCode = (
     dcWantAllKeys, dcWantArrows, dcWantTab, dcWantChars,
     dcButton,
-    dcNative // if dcNative is in the set the native functions are used and DoGetDlgCode is ignored
+    dcNative // if dcNative is in the set the native functions are used and GetDlgCode is ignored
   );
   TDlgCodes = set of TDlgCode;
 
@@ -85,7 +85,7 @@ type
     function HitTest(X, Y: Integer): Boolean; // CM_HITTEST
     procedure MouseEnter(AControl: TControl);
     procedure MouseLeave(AControl: TControl);
-    procedure DoFocusChanged(Control: TWinControl);
+    procedure FocusChanged(Control: TWinControl);
     procedure SetAutoSize(Value: Boolean);
   end;
 
@@ -97,16 +97,16 @@ type
     {$ENDIF BCB}
     )
     ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
-    procedure DoBoundsChanged;
+    procedure BoundsChanged;
     procedure CursorChanged;
     procedure ShowingChanged;
     procedure ShowHintChanged;
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean);
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean);
-    procedure DoGetDlgCode(var Code: TDlgCodes); // WM_GETDLGCODE
+    procedure GetDlgCode(var Code: TDlgCodes); // WM_GETDLGCODE
     procedure DoSetFocus(FocusedWnd: HWND);  // WM_SETFOCUS
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
   end;
 
   IJvEditControlEvents = interface(IPerformControl)
@@ -181,7 +181,7 @@ type
   {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure DoFocusChanged(Control: TWinControl); dynamic;
+    procedure FocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -242,6 +242,7 @@ type
     procedure Dispatch(var Msg); override;
   protected
    // IJvWinControlEvents
+    procedure BoundsChanged; reintroduce; dynamic; 
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -271,7 +272,6 @@ type
     InternalFontChanged: TNotifyEvent;
     procedure OnFontChanged(Sender: TObject);
   protected
-    procedure BoundsChanged; override;
     procedure DoFontChanged(Sender: TObject); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
@@ -300,7 +300,7 @@ type
   {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure DoFocusChanged(Control: TWinControl); dynamic;
+    procedure FocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -316,11 +316,10 @@ type
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
   {$ENDIF VisualCLX}
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
+    procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -397,7 +396,7 @@ type
   {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure DoFocusChanged(Control: TWinControl); dynamic;
+    procedure FocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -458,6 +457,7 @@ type
     procedure Dispatch(var Msg); override;
   protected
    // IJvWinControlEvents
+    procedure BoundsChanged; reintroduce; dynamic; 
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -487,7 +487,6 @@ type
     InternalFontChanged: TNotifyEvent;
     procedure OnFontChanged(Sender: TObject);
   protected
-    procedure BoundsChanged; override;
     procedure DoFontChanged(Sender: TObject); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
@@ -516,7 +515,7 @@ type
   {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure DoFocusChanged(Control: TWinControl); dynamic;
+    procedure FocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -532,11 +531,10 @@ type
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
   {$ENDIF VisualCLX}
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
+    procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -589,6 +587,7 @@ type
     procedure Dispatch(var Msg); override;
   protected
    // IJvWinControlEvents
+    procedure BoundsChanged; reintroduce; dynamic; 
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -618,7 +617,6 @@ type
     InternalFontChanged: TNotifyEvent;
     procedure OnFontChanged(Sender: TObject);
   protected
-    procedure BoundsChanged; override;
     procedure DoFontChanged(Sender: TObject); dynamic;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
@@ -647,7 +645,7 @@ type
   {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure DoFocusChanged(Control: TWinControl); dynamic;
+    procedure FocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -663,11 +661,10 @@ type
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
   {$ENDIF VisualCLX}
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
+    procedure GetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -716,7 +713,7 @@ procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolea
 
 procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; var Event: TNotifyEvent);
 
-function DefaultDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
+function DefaultPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
 
 procedure TCustomEdit_Undo(Instance: TWinControl);
 procedure TCustomEdit_Copy(Instance: TWinControl);
@@ -932,7 +929,7 @@ begin
 
                   if Helper.IsValid then
                   begin
-                    DoGetDlgCode(DlgCodes);
+                    GetDlgCode(DlgCodes);
 
                     if not (dcNative in DlgCodes) then
                     begin
@@ -977,7 +974,7 @@ begin
               end;
             WM_SIZE:
               begin
-                DoBoundsChanged;
+                BoundsChanged;
                 IntfWinControl := nil;
                 InheritMessage(Instance, PMsg^);
               end;
@@ -987,7 +984,7 @@ begin
                 Canvas := TCanvas.Create;
                 try
                   Canvas.Handle := HDC(PMsg^.WParam);
-                  PMsg^.Result := Ord(DoPaintBackground(Canvas, PMsg^.LParam));
+                  PMsg^.Result := Ord(PaintBackground(Canvas, PMsg^.LParam));
                 finally
                   Canvas.Handle := 0;
                   Canvas.Free;
@@ -1100,7 +1097,7 @@ end;
 
 procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; var Event: TNotifyEvent);
 begin
-  // (HEG) Control is nil iff Instance is the control that the mouse has left.
+  // (HEG) Control is nil if Instance is the control that the mouse has left.
   // Otherwise this is just a notification that the mouse left
   // one of its child controls
   if (Control = nil) and FMouseOver and not (csDesigning in Instance.ComponentState) then
@@ -1112,7 +1109,7 @@ begin
   InheritMsgEx(Instance, CM_MOUSELEAVE, 0, Integer(Control));
 end;
 
-function DefaultDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
+function DefaultPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := InheritMsgEx(Instance, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
@@ -1291,10 +1288,10 @@ end;
 procedure TJvExControl.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
-  DoFocusChanged(Msg.Sender);
+  FocusChanged(Msg.Sender);
 end;
 
-procedure TJvExControl.DoFocusChanged(Control: TWinControl);
+procedure TJvExControl.FocusChanged(Control: TWinControl);
 begin
 end;
   
@@ -1405,6 +1402,10 @@ begin
 end;
  {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
+procedure TJvExWinControl.BoundsChanged;
+begin
+end;
+
 procedure TJvExWinControl.CursorChanged;
 asm
         MOV     EDX, CM_CURSORCHANGED
@@ -1521,12 +1522,6 @@ begin
     InternalFontChanged(Self);
 end;
 
-procedure TJvExWinControl.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  DoBoundsChanged;
-end;
-
 procedure TJvExWinControl.RecreateWnd;
 begin
   RecreateWidget;
@@ -1569,18 +1564,14 @@ end;
 procedure TJvExWinControl.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
-  DoFocusChanged(Msg.Sender);
+  FocusChanged(Msg.Sender);
 end;
 
-procedure TJvExWinControl.DoFocusChanged(Control: TWinControl);
+procedure TJvExWinControl.FocusChanged(Control: TWinControl);
 begin
 end;
   
-procedure TJvExWinControl.DoBoundsChanged;
-begin
-end;
-
-procedure TJvExWinControl.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvExWinControl.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
@@ -1592,9 +1583,9 @@ procedure TJvExWinControl.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
-function TJvExWinControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExWinControl.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-        JMP     DefaultDoPaintBackground
+        JMP     DefaultPaintBackground
 end;
   
 constructor TJvExWinControl.Create(AOwner: TComponent);
@@ -1779,10 +1770,10 @@ end;
 procedure TJvExGraphicControl.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
-  DoFocusChanged(Msg.Sender);
+  FocusChanged(Msg.Sender);
 end;
 
-procedure TJvExGraphicControl.DoFocusChanged(Control: TWinControl);
+procedure TJvExGraphicControl.FocusChanged(Control: TWinControl);
 begin
 end;
   
@@ -1893,6 +1884,10 @@ begin
 end;
  {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
+procedure TJvExCustomControl.BoundsChanged;
+begin
+end;
+
 procedure TJvExCustomControl.CursorChanged;
 asm
         MOV     EDX, CM_CURSORCHANGED
@@ -2009,12 +2004,6 @@ begin
     InternalFontChanged(Self);
 end;
 
-procedure TJvExCustomControl.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  DoBoundsChanged;
-end;
-
 procedure TJvExCustomControl.RecreateWnd;
 begin
   RecreateWidget;
@@ -2057,18 +2046,14 @@ end;
 procedure TJvExCustomControl.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
-  DoFocusChanged(Msg.Sender);
+  FocusChanged(Msg.Sender);
 end;
 
-procedure TJvExCustomControl.DoFocusChanged(Control: TWinControl);
+procedure TJvExCustomControl.FocusChanged(Control: TWinControl);
 begin
 end;
   
-procedure TJvExCustomControl.DoBoundsChanged;
-begin
-end;
-
-procedure TJvExCustomControl.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvExCustomControl.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
@@ -2080,9 +2065,9 @@ procedure TJvExCustomControl.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
-function TJvExCustomControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomControl.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-        JMP     DefaultDoPaintBackground
+        JMP     DefaultPaintBackground
 end;
   
 constructor TJvExCustomControl.Create(AOwner: TComponent);
@@ -2209,6 +2194,10 @@ begin
 end;
  {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
+procedure TJvExHintWindow.BoundsChanged;
+begin
+end;
+
 procedure TJvExHintWindow.CursorChanged;
 asm
         MOV     EDX, CM_CURSORCHANGED
@@ -2325,12 +2314,6 @@ begin
     InternalFontChanged(Self);
 end;
 
-procedure TJvExHintWindow.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  DoBoundsChanged;
-end;
-
 procedure TJvExHintWindow.RecreateWnd;
 begin
   RecreateWidget;
@@ -2373,18 +2356,14 @@ end;
 procedure TJvExHintWindow.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
-  DoFocusChanged(Msg.Sender);
+  FocusChanged(Msg.Sender);
 end;
 
-procedure TJvExHintWindow.DoFocusChanged(Control: TWinControl);
+procedure TJvExHintWindow.FocusChanged(Control: TWinControl);
 begin
 end;
   
-procedure TJvExHintWindow.DoBoundsChanged;
-begin
-end;
-
-procedure TJvExHintWindow.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvExHintWindow.GetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
@@ -2396,9 +2375,9 @@ procedure TJvExHintWindow.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
-function TJvExHintWindow.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExHintWindow.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-        JMP     DefaultDoPaintBackground
+        JMP     DefaultPaintBackground
 end;
   
 constructor TJvExHintWindow.Create(AOwner: TComponent);

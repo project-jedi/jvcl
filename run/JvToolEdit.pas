@@ -310,7 +310,7 @@ type
     procedure FontChanged; override;
     procedure DoEnter; override;
     procedure DoCtl3DChanged; virtual;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     { Repositions the child controls; checkbox }
     procedure UpdateControls; virtual;
     { Updates the margins of the edit box }
@@ -1736,7 +1736,7 @@ begin
       if not ed.Enabled then
       begin
         if Supports(ed, IJvWinControlEvents) then
-          (ed as IJvWinControlEvents).DoPaintBackground(ACanvas, 0);
+          (ed as IJvWinControlEvents).PaintBackground(ACanvas, 0);
         ACanvas.Brush.Style := bsClear;
         ACanvas.Font.Color := DisabledTextColor;
         ACanvas.TextRect(EditRect, X, EditRect.Top + 1, S);
@@ -2307,14 +2307,14 @@ begin
   end;
 end;
 
-function TJvCustomComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomComboEdit.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := True;
   if csDestroying in ComponentState then
     { (rb) Implementation diffs; some return True other False }
     Exit;
   if Enabled then
-    Result := inherited DoPaintBackground(Canvas, Param)
+    Result := inherited PaintBackground(Canvas, Param)
   else
   begin
     Canvas.Brush.Color := FDisabledColor;

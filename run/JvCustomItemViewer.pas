@@ -231,8 +231,8 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
 
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
-    procedure DoBoundsChanged; override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
+    procedure BoundsChanged; override;
     procedure DoSetFocus(Focuseded: HWND); override;
 
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
@@ -1641,7 +1641,7 @@ begin
     Dec(FTopLeft.Y, VertScrollBar.Position);
 end;
 
-procedure TJvCustomItemViewer.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvCustomItemViewer.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcWantArrows];
 end;
@@ -1756,12 +1756,12 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.DoBoundsChanged;
+procedure TJvCustomItemViewer.BoundsChanged;
 begin
   UpdateAll;
   if HandleAllocated then
     InvalidateClipRect(ClientRect);
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
 end;
 
 procedure TJvCustomItemViewer.Changed;

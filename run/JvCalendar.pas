@@ -159,7 +159,7 @@ type
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure ColorChanged; override;
     procedure FontChanged; override;
     procedure ConstrainedResize(var MinWidth: Integer;
@@ -1219,7 +1219,7 @@ begin
     Result := False;
 end;
 
-procedure TJvCustomMonthCalendar.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvCustomMonthCalendar.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcWantArrows];
 end;

@@ -152,7 +152,7 @@ type
   protected
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
     function GetReadOnly: Boolean;virtual;
     procedure SetReadOnly(Value: Boolean);virtual;
     procedure Change; dynamic;
@@ -378,8 +378,8 @@ type
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
   protected
     procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoBoundsChanged; override;
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure BoundsChanged; override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     {$IFDEF JVCLThemesEnabled}
@@ -1441,7 +1441,7 @@ begin
     FOnGetImage(Self, Empty, Result, TextMargin);
 end;
 
-procedure TJvLookupControl.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvLookupControl.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcWantArrows, dcWantChars];
 end;
@@ -3230,7 +3230,7 @@ begin
   inherited;
 end;
 
-procedure TJvDBLookupCombo.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvDBLookupCombo.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcButton, dcWantAllKeys, dcWantArrows, dcWantChars];
 end;
@@ -3254,9 +3254,9 @@ begin
       inherited;
 end;
 
-procedure TJvDBLookupCombo.DoBoundsChanged;
+procedure TJvDBLookupCombo.BoundsChanged;
 begin
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
   if not (csReading in ComponentState) and (Height < GetMinHeight) then
     Height := GetMinHeight
   else

@@ -300,9 +300,9 @@ type
   protected
     procedure Change; dynamic;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure DoBoundsChanged; override;
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    procedure BoundsChanged; override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     procedure DoScrollHint(NewPos: Integer);
     procedure CreateParams(var Params: TCreateParams); override;
@@ -1253,17 +1253,17 @@ begin
   FOptions.Assign(Value);
 end;
 
-function TJvCustomPreviewControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomPreviewControl.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  //  inherited DoPaintBackground(Canvas, Param);
+  //  inherited PaintBackground(Canvas, Param);
   Result := True;
 end;
 
-procedure TJvCustomPreviewControl.DoBoundsChanged;
+procedure TJvCustomPreviewControl.BoundsChanged;
 var
   TmpRow: Integer;
 begin
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
   TmpRow := TopRow; // workaround...
   Change;
   if IsPageMode then
@@ -1366,7 +1366,7 @@ begin
   Refresh;
 end;
 
-procedure TJvCustomPreviewControl.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvCustomPreviewControl.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcWantAllKeys];
 end;

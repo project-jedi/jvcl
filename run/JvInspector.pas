@@ -458,7 +458,7 @@ type
     procedure RebuildVisible; virtual;
     procedure RemoveNotifySort(const Item: TJvCustomInspectorItem); virtual;
     procedure RemoveVisible(const Item: TJvCustomInspectorItem); virtual;
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
     function ScrollFactorV: Extended; virtual;
     procedure SetAfterDataCreate(const Value: TInspectorDataEvent); virtual;
     procedure SetAfterItemCreate(const Value: TInspectorItemEvent); virtual;
@@ -486,7 +486,7 @@ type
     function ViewWidth: Integer;
     procedure WMHScroll(var Msg: TWMScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure DoSetFocus(Focused: HWND); override;
     procedure DoKillFocus(Focused: HWND); override;
     {$IFDEF VisualCLX}
@@ -3656,9 +3656,9 @@ begin
   end;
 end;
 
-procedure TJvCustomInspector.DoBoundsChanged;
+procedure TJvCustomInspector.BoundsChanged;
 begin
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
   if csCreating in ControlState then
     Exit;
   if not BandSizing then
@@ -4084,7 +4084,7 @@ begin
   Result := RectWidth(ViewRect);
 end;
 
-procedure TJvCustomInspector.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvCustomInspector.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcWantArrows];
   if WantTabs then

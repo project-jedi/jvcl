@@ -748,7 +748,7 @@ type
       {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
     procedure DblClick; override;
 
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoPaste; dynamic;
@@ -756,7 +756,7 @@ type
     procedure DoCut; dynamic;
     procedure CursorChanged; override;
     procedure FontChanged; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
 
     { IFixedPopupIntf method assignment }
     procedure IFixedPopupIntf.Cut = ClipboardCut;
@@ -3236,7 +3236,7 @@ begin
     SelectWordOnCaret;
 end;
 
-procedure TJvCustomEditorBase.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvCustomEditorBase.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcWantArrows, dcWantTab, dcWantChars, dcWantMessage];
 end;
@@ -3293,7 +3293,7 @@ begin
     UpdateEditorSize;
 end;
 
-function TJvCustomEditorBase.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomEditorBase.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := False; // no background erase
 end;
