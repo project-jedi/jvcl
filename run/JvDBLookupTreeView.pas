@@ -179,7 +179,8 @@ type
     FMasterField: string;      {new}
     FDetailField: string;      {new}
     FIconField: string;        {new}
-    FStartMasterValue: string; {new}
+    FStartMasterValue: string;
+    FFullExpand: Boolean; {new}
     procedure KeyValueChanged; override;
     procedure ListLinkActiveChanged; override;
 {    procedure ListMouseUp(Sender: TObject; Button: TMouseButton;
@@ -295,6 +296,7 @@ type
     property OnCustomDraw: TTVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
     property OnCustomDrawItem: TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
     property OnGetImageIndex: TTVExpandedEvent read FOnGetImageIndex write FOnGetImageIndex;
+    property FullExpand: Boolean read FFullExpand write FFullExpand default False;
   end;
 
 {###################### Borland ######################}
@@ -853,6 +855,7 @@ begin
 //  FDataList.Parent := Self;
   FButtonWidth := GetSystemMetrics(SM_CXVSCROLL);
   FDropDownHeight := 100;
+  FFullExpand := False;
 end;
 
 procedure TJvDBLookupTreeViewCombo.CreateParams(var Params: TCreateParams);
@@ -1108,6 +1111,10 @@ begin
 //    FDataList.Visible := True;
 //    SetWindowPos(FDataList.Handle, HWND_TOP, P.X, Y, 0, 0,
 //      SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
+
+    if FullExpand then
+      FDataList.FTree.FullExpand; 
+
     Repaint;
   end;
 end;
