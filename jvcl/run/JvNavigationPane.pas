@@ -1441,9 +1441,18 @@ end;
 
 //=== { TJvCustomNavigationPane } ============================================
 
+var
+  GlobalNavPanelPageRegistered: Boolean = False;
+
 constructor TJvCustomNavigationPane.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  if not GlobalNavPanelPageRegistered then
+  begin
+    GlobalNavPanelPageRegistered := True;
+    RegisterClasses([TJvNavPanelPage]);
+  end;
+
   FBackground := TJvNavPaneBackgroundImage.Create;
   FBackground.OnChange := DoColorsChange;
   ControlStyle := ControlStyle - [csAcceptsControls];
@@ -5411,8 +5420,8 @@ begin
   inherited AdjustClientRect(Rect);
 end;
 
-initialization
-  RegisterClasses([TJvNavPanelPage]);
+{initialization
+  RegisterClasses([TJvNavPanelPage]);} // ahuser: moved to TJvCustomNavigationPane.Create
 
 end.
 
