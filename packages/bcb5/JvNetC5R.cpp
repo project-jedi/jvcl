@@ -13,6 +13,8 @@ USEUNIT("..\..\run\JvMultiHttpGrabber.pas");
 USEUNIT("..\..\run\JvRgbToHtml.pas");
 USEUNIT("..\..\run\JvRichEditToHtml.pas");
 USEUNIT("..\..\run\JvStringListToHtml.pas");
+USEUNIT("..\..\run\JvUrlListGrabber.pas");
+USEUNIT("..\..\run\JvUrlGrabbers.pas");
 USEPACKAGE("vcl50.bpi");
 USEPACKAGE("CJCL50.bpi");
 USEPACKAGE("bcbsmp50.bpi");

@@ -17,7 +17,7 @@ uses
   JvTypes, JvConsts,
   JvStringListToHTML, JvFormToHTML, JvFTPGrabber, JvHTMLParser, JvHTTPGrabber,
   JvMultiHTTPGrabber, JvRGBToHTML, JvRichEditToHTML, JvStrToHTML, JvMail,
-  JvMailEditor, JvHTMLParserEditor;
+  JvMailEditor, JvHTMLParserEditor, JvUrlListGrabber, JvUrlGrabbers, JvUrlListGrabberEditors;
 
 {$R ..\resources\JvNetReg.dcr}
 
@@ -27,11 +27,22 @@ begin
     TJvFTPGrabber, TJvHTTPGrabber, TJvMultiHTTPGrabber,
     TJvMail, TJvHTMLParser,
     TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML,
-    TJvRichEditToHTML, TJvRGBToHTML
+    TJvRichEditToHTML, TJvRGBToHTML , TJvUrlListGrabber
     ]);
 
-  RegisterPropertyEditor(TypeInfo(TJvParserInfoList), TJvHTMLParser, 'Parser', TJvHTMLParserEditor);
-  
+  RegisterPropertyEditor( TypeInfo(TJvParserInfoList),
+                          TJvHTMLParser,
+                          'Parser',
+                          TJvHTMLParserEditor);
+  RegisterPropertyEditor( TypeInfo(TJvUrlGrabberDefaultPropertiesList),
+                          TJvUrlListGrabber,
+                          '',
+                          TJvUrlGrabberDefaultPropertiesListEditor);
+  RegisterPropertyEditor( TypeInfo(TJvUrlGrabberDefaultProperties),
+                          TJvUrlGrabberDefPropEdTrick,
+                          '',
+                          TJvUrlGrabberDefaultPropertiesEditor);
+
   RegisterComponentEditor(TJvMail, TJvMailEditor);
 end;
 

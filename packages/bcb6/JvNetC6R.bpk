@@ -9,7 +9,8 @@
       ..\..\dcu\JvHtmlParser.obj ..\..\dcu\JvHttpGrabber.obj 
       ..\..\dcu\JvMail.obj ..\..\dcu\JvMultiHttpGrabber.obj 
       ..\..\dcu\JvRgbToHtml.obj ..\..\dcu\JvRichEditToHtml.obj 
-      ..\..\dcu\JvStringListToHtml.obj"/>
+      ..\..\dcu\JvStringListToHtml.obj ..\..\dcu\JvUrlListGrabber.obj
+      ..\..\dcu\JvUrlGrabbers.obj"/>
     <RESFILES value="JvNetC6R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -66,6 +67,8 @@
       <FILE FILENAME="..\..\run\JvRgbToHtml.pas" FORMNAME="" UNITNAME="JvRGBToHTML" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvRichEditToHtml.pas" FORMNAME="" UNITNAME="JvRichEditToHtml" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvStringListToHtml.pas" FORMNAME="" UNITNAME="JvStringListToHtml" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvUrlListGrabber.pas" FORMNAME="" UNITNAME="JvUrlListGrabber" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvUrlGrabbers.pas" FORMNAME="" UNITNAME="JvUrlGrabbers" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="w32inet.lib" FORMNAME="" UNITNAME="w32inet" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>

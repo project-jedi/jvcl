@@ -35,6 +35,7 @@ contains
   JvNetReg in '..\..\design\JvNetReg.pas',
   JvMailEditor in '..\..\design\JvMailEditor.pas',
   JvHtmlParserEditor in '..\..\design\JvHTMLParserEditor.pas',
-  JvParserForm in '..\..\run\JvParserForm.pas' {FormParsers};
+  JvParserForm in '..\..\run\JvParserForm.pas' {FormParsers},
+  JvUrlListGrabberEditors in '..\..\design\JvUrlListGrabberEditors.pas';
 
 end.

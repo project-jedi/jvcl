@@ -5,7 +5,8 @@
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JvNetC5D.bpl"/>
     <OBJFILES value="..\..\dcu\JvNetReg.obj ..\..\dcu\JvHtmlParserEditor.obj 
-      ..\..\dcu\JvMailEditor.obj ..\..\dcu\JvParserForm.obj ..\..\dcu\JvNetC5D.obj"/>
+      ..\..\dcu\JvMailEditor.obj ..\..\dcu\JvParserForm.obj ..\..\dcu\JvNetC5D.obj
+      ..\..\dcu\JvUrlListGrabberEditors.obj"/>
     <RESFILES value="JvNetC5D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>

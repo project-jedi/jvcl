@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvActions.Pas, released on 2002-10-04.
+The Original Code is: JvUrlListGrabber.Pas, released on 2003-08-04.
 
 The Initial Developer of the Original Code is Olivier Sannier [obones@meloo.com]
 Portions created by Olivier Sannier are Copyright (C) 2003 Olivier Sannier.
@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-08-31
+Last Modified: 2003-11-02
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,7 +30,7 @@ unit JvUrlListGrabber;
 
 interface
 
-uses Classes, JvComponent, JvUrlGrabbers;
+uses Windows, Classes, SysUtils, JvComponent, JvUrlGrabbers;
 
 type
   // early declarations
@@ -44,12 +44,14 @@ type
   // has triggred its own event to indicate a change in its state
   TJvGrabberNotifyEvent = procedure (Sender : TJvUrlListGrabber; Grabber : TJvUrlGrabber) of object;
 
+  ENoGrabberForUrl = class (Exception);
+
   // This component allows the user to specify a list of URLs to be
-  // grabbed and then start grabbing. All the grab operations will be down
+  // grabbed and then start grabbing. All the grab operations will be done
   // in parallel in the background, leaving the user's application free
   // to continue its operations
   TJvUrlListGrabber = class (TJvComponent)
-  private
+  protected
     FOnClosed: TJvGrabberNotifyEvent;
     FOnReceiving: TJvGrabberNotifyEvent;
     FOnResolving: TJvGrabberNotifyEvent;
@@ -61,17 +63,19 @@ type
     FOnSent: TJvGrabberNotifyEvent;
     FOnClosing: TJvGrabberNotifyEvent;
     FOnSending: TJvGrabberNotifyEvent;
-  protected
+
+    FCleanupThreshold: Cardinal;
     FGrabbers : TJvUrlGrabberList;
     FURLs : TStrings;
-    FDefaultGrabber: TJvUrlGrabberIndex;
+    FDefaultGrabberIndex: TJvUrlGrabberIndex;
+    FDefaultGrabbersProperties : TJvUrlGrabberDefaultPropertiesList;
 
     // sets the Default Grabber value, ensuring that it doesn't go
     // below -1 or above the number of registered grabber classes
     // if you try to set the value above the last index in the
     // JvUrlGrabberClassList, then the value will be set to -1.
     // The same goes if you set a value below -1.
-    procedure SetDefaultGrabber(const Value: TJvUrlGrabberIndex);
+    procedure SetDefaultGrabberIndex(const Value: TJvUrlGrabberIndex);
 
     // returns the grabber associated with the given index
     function GetGrabbers(const Index: Integer): TJvUrlGrabber;
@@ -82,14 +86,25 @@ type
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
 
+    procedure Cleanup;
+
     // the Grabber objects associated with the Urls
     property Grabbers[const Index : Integer]: TJvUrlGrabber read GetGrabbers;
   published
-    // the default grabber to use, if any
-    property DefaultGrabber : TJvUrlGrabberIndex read FDefaultGrabber write SetDefaultGrabber;
+    // the index of the default grabber to use, if any
+    property DefaultGrabberIndex : TJvUrlGrabberIndex read FDefaultGrabberIndex write SetDefaultGrabberIndex default -1;
+
+    // the cleanup threshold. When the difference between Urls.Count
+    // and the internal Grabber count is greater than this value
+    // the process of cleaning if launched. This can take some time
+    // and this is why it's done every time
+    property CleanupThreshold : Cardinal read FCleanupThreshold write FCleanupThreshold default 10;
 
     // The Urls to grab
     property URLs : TStrings read FURLs;
+
+    // The default properties for each family of grabber
+    property DefaultGrabbersProperties : TJvUrlGrabberDefaultPropertiesList read FDefaultGrabbersProperties;
 
     // Events
     property OnResolvingName      : TJvGrabberNotifyEvent read FOnResolving  write FOnResolving;
@@ -109,42 +124,87 @@ type
 
 implementation
 
+uses JvConsts;
+
 { TJvUrlListGrabber }
+
+procedure TJvUrlListGrabber.Cleanup;
+var
+  i : Integer;
+begin
+  // try to find each created grabber in the string list
+  // if not found, mark the object as nil which in turn
+  // will delete it
+  for i := 0 to FGrabbers.Count - 1 do
+  begin
+    if FUrls.IndexOfObject(FGrabbers[i]) = -1 then
+    begin
+      FGrabbers[i] := nil;
+    end;
+  end;
+
+  // pack the list
+  FGrabbers.Pack;
+end;
 
 constructor TJvUrlListGrabber.Create(AOwner: TComponent);
 begin
   inherited;
+  FDefaultGrabbersProperties := TJvUrlGrabberDefaultPropertiesList.Create;
   FGrabbers := TJvUrlGrabberList.Create(True);
   FURLs := TStringList.Create;
   TStringList(FURLs).OnChange := URLsChange;
+  FDefaultGrabberIndex := -1;
+  FCleanupThreshold := 10;
 end;
 
 destructor TJvUrlListGrabber.Destroy;
 begin
   FURLs.Free;
   FGrabbers.Free;
+  FDefaultGrabbersProperties.Free;
   inherited;
 end;
 
 function TJvUrlListGrabber.GetGrabbers(const Index: Integer): TJvUrlGrabber;
 begin
-  Result := FGrabbers[Index];
+  Result := TJvUrlGrabber(FURLs.Objects[Index]);
 end;
 
-procedure TJvUrlListGrabber.SetDefaultGrabber(
+procedure TJvUrlListGrabber.SetDefaultGrabberIndex(
   const Value: TJvUrlGrabberIndex);
 begin
   if Value < -1 then
-    FDefaultGrabber := -1
+    FDefaultGrabberIndex := -1
   else if Value > JvUrlGrabberClassList.Count - 1 then
-    FDefaultGrabber := -1
+    FDefaultGrabberIndex := -1
   else
-    FDefaultGrabber := Value;
+    FDefaultGrabberIndex := Value;
 end;
 
 procedure TJvUrlListGrabber.URLsChange(Sender: TObject);
+var
+  i : Integer;
+  tmpGrabber : TJvUrlGrabber;
 begin
-  
+  for i := 0 to FUrls.Count - 1 do
+  begin
+    if not Assigned(FUrls.Objects[i]) then
+    begin
+      tmpGrabber := JvUrlGrabberClassList.CreateFor(FUrls[i], FDefaultGrabbersProperties);
+      if Assigned(tmpGrabber) then
+        FUrls.Objects[i] := tmpGrabber
+      else if DefaultGrabberIndex > -1 then
+        FUrls.Objects[i] := JvUrlGrabberClassList[DefaultGrabberIndex].Create(FUrls[i], FDefaultGrabbersProperties.Items[DefaultGrabberIndex])
+      else
+        raise ENoGrabberForUrl.CreateFmt(sENoGrabberForUrl, [FUrls[i]]);
+
+      // add in the list of owned objects
+      FGrabbers.Add(TJvUrlGrabber(FUrls.Objects[i]));
+      if Cardinal(FGrabbers.Count - FUrls.Count) > FCleanupThreshold then
+        Cleanup;
+    end;
+  end;
 end;
 
 end.
