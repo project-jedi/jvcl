@@ -46,6 +46,7 @@ type
     FLeaving: Boolean;
     FProtectPassword: Boolean;
     FLastNotifiedText: string;
+    FHasLastNotifiedText: Boolean;
     FOnSetFocus: TJvFocusChangeEvent;
     FOnKillFocus: TJvFocusChangeEvent;
     procedure SetHotTrack(Value: Boolean);
@@ -177,6 +178,7 @@ end;
 procedure TJvCustomMaskEdit.Change;
 begin
   FLastNotifiedText := Text;
+  FHasLastNotifiedText := True;
   inherited Change;
 end;
 
@@ -313,7 +315,7 @@ end;
 
 procedure TJvCustomMaskEdit.NotifyIfChanged;
 begin
-  if FLastNotifiedText <> Text then
+  if FHasLastNotifiedText and (FLastNotifiedText <> Text) then
     Change;
 end;
 

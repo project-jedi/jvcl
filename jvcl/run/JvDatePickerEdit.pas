@@ -744,9 +744,10 @@ end;
 
 procedure TJvCustomDatePickerEdit.HidePopup;
 begin
-  if (FPopup is TJvDropCalendar) and not (csDestroying in FPopup.ComponentState) then
-    TJvDropCalendar(FPopup).Release;
-  FPopup := nil;
+  inherited;
+{  if (FPopup is TJvDropCalendar) and not (csDestroying in FPopup.ComponentState) then
+    TJvDropCalendar(FPopup).Release;}
+  //FPopup := nil;
 end;
 
 function TJvCustomDatePickerEdit.IsEmpty: Boolean;
