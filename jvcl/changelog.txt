@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2004-01-05:
+- Most components that used CM_MOUSEENTER/LEAVE have now a MouseEnter/Leave method // (ahuser)
+- Added JvExVCL units. (ahuser)
 2003-12-28:
 - removed now unused {$DEFINE HL_NOT_QUITE_C} from JVCL.INC // (rom)
 - removed now unused {$DEFINE USE_OLD_DBLISTS} from JVCL.INC // (rom)
