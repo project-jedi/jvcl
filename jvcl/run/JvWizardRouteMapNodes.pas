@@ -250,6 +250,11 @@ begin
             AFont.Color := clBtnShadow;
             AFont.Style := AFont.Style - [fsBold];
           end
+          else if not Pages[i].EnableJumpToPage then  // Nonn...
+          begin
+            AFont.Color := NodeColors.Disabled;
+            AFont.Style := AFont.Style - [fsBold];    // ... Nonn
+          end
           else
           begin
             AFont.Color := Self.Font.Color;
@@ -276,6 +281,8 @@ begin
             Pen.Color := FNodeColors.Line;
             if i = PageIndex then
               Brush.Color := FNodeColors.Selected
+            else if not Pages[i].EnableJumpToPage then  // Nonn
+              Brush.Color := FNodeColors.Disabled       // Nonn
             else if Pages[i].Enabled then
               Brush.Color := FNodeColors.Unselected
             else

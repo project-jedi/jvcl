@@ -634,6 +634,7 @@ type
     FEnabledButtons: TJvWizardButtonSet;
     FVisibleButtons: TJvWizardButtonSet;
     FDrawing: Boolean;
+    FEnableJumpToPage: Boolean;    // Nonn
     FOnPaintPage: TJvWizardPaintPageEvent;
     FOnEnterPage: TJvWizardChangePageEvent;
     FOnPage: TNotifyEvent;
@@ -691,6 +692,8 @@ type
     property VisibleButtons: TJvWizardButtonSet
       read FVisibleButtons write SetVisibleButtons
       default [bkBack, bkNext, bkCancel];
+    property EnableJumpToPage: Boolean
+      read FEnableJumpToPage write FEnableJumpToPage default true;  // Nonn
     property Color default clBtnFace;
     property Caption;
     property Enabled;
@@ -799,6 +802,8 @@ type
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMGetDlgCode(var Message: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    function FindNextEnabledPage(PageIndex: Integer; const Step: Integer = 1;
+      CheckDisable: Boolean = True): TJvWizardCustomPage;  // Nonn
     function GetBackButtonClick: TNotifyEvent;
     function GetCancelButtonClick: TNotifyEvent;
     function GetFinishButtonClick: TNotifyEvent;
@@ -1485,7 +1490,8 @@ begin
   if Button = mbLeft then
   begin
     APage := PageAtPos(Point(X, Y));
-    if Assigned(APage) and ((csDesigning in ComponentState) or APage.Enabled) then
+    if Assigned(APage) and ((csDesigning in ComponentState) or
+      (APage.Enabled and APage.EnableJumpToPage)) then  // Nonn
     begin
       PageIndex := APage.PageIndex;
     end;
@@ -2232,6 +2238,7 @@ begin
   FEnabledButtons := bkAllButtons;
   FVisibleButtons := [bkBack, bkNext, bkCancel];
   DoubleBuffered := True;
+  FEnableJumpToPage := True; // Nonn
 end;
 
 destructor TJvWizardCustomPage.Destroy;
@@ -2673,11 +2680,25 @@ begin
     Result := TJvWizardCustomPage(FPages[PageIndex]);
 end;
 
+// Nonn ...
+function TJvWizard.FindNextEnabledPage(PageIndex: Integer; const Step: Integer = 1;
+  CheckDisable: Boolean = True): TJvWizardCustomPage;
+var
+  APage: TJvWizardCustomPage;
+begin
+  APage := FindNextPage(PageIndex, Step, CheckDisable);
+  if Assigned(APage) and not APage.EnableJumpToPage then
+    APage := FindNextPage(APage.PageIndex, Step, CheckDisable);
+  Result := APage;
+end;
+// ...Nonn
+
 procedure TJvWizard.SelectFirstPage;
 var
   AFirstPage: TJvWizardCustomPage;
 begin
-  AFirstPage := FindNextPage(-1, 1, not (csDesigning in ComponentState));
+  // Nonn AFirstPage := FindNextPage(-1, 1, not (csDesigning in ComponentState));
+  AFirstPage := FindNextEnabledPage(-1, 1, not (csDesigning in ComponentState));  // Nonn
   if Assigned(AFirstPage) then
   begin
     if not (csDesigning in ComponentState) and Assigned(FOnSelectFirstPage) then
@@ -2691,7 +2712,8 @@ procedure TJvWizard.SelectLastPage;
 var
   ALastPage: TJvWizardCustomPage;
 begin
-  ALastPage := FindNextPage(FPages.Count, -1,
+// Nonn ALastPage := FindNextPage(FPages.Count, -1,
+  ALastPage := FindNextEnabledPage(FPages.Count, -1,    // Nonn
     not (csDesigning in ComponentState));
   if Assigned(ALastPage) then
   begin
@@ -2706,7 +2728,8 @@ procedure TJvWizard.SelectNextPage;
 var
   ANextPage: TJvWizardCustomPage;
 begin
-  ANextPage := FindNextPage(GetActivePageIndex, 1,
+// Nonn  ANextPage := FindNextPage(GetActivePageIndex, 1,
+  ANextPage := FindNextEnabledPage(GetActivePageIndex, 1,  // Nonn
     not (csDesigning in ComponentState));
   if Assigned(ANextPage) then
   begin
@@ -2721,7 +2744,8 @@ procedure TJvWizard.SelectPriorPage;
 var
   APriorPage: TJvWizardCustomPage;
 begin
-  APriorPage := FindNextPage(GetActivePageIndex, -1,
+// Nonn  APriorPage := FindNextPage(GetActivePageIndex, -1,
+  APriorPage := FindNextEnabledPage(GetActivePageIndex, -1,  // Nonn
     not (csDesigning in ComponentState));
   if Assigned(APriorPage) then
   begin
