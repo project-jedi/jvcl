@@ -933,6 +933,83 @@ begin
                 Result := True;
               end;
             end;
+          DFCS_BUTTONCHECK:
+            begin
+              if uState and DFCS_CHECKED <> 0 then
+              begin
+                if uState and DFCS_INACTIVE <> 0 then
+                  Btn := tbCheckBoxCheckedDisabled
+                else
+                if uState and DFCS_PUSHED <> 0 then
+                  Btn := tbCheckBoxCheckedPressed
+                else
+                if uState and DFCS_HOT <> 0 then
+                  Btn := tbCheckBoxCheckedHot
+                else
+                  Btn := tbCheckBoxCheckedNormal;
+              end
+              else if uState and DFCS_MONO <> 0 then
+              begin
+                if uState and DFCS_INACTIVE <> 0 then
+                  Btn := tbCheckBoxMixedDisabled
+                else
+                if uState and DFCS_PUSHED <> 0 then
+                  Btn := tbCheckBoxMixedPressed
+                else
+                if uState and DFCS_HOT <> 0 then
+                  Btn := tbCheckBoxMixedHot
+                else
+                  Btn := tbCheckBoxMixedNormal;
+              end
+              else
+              begin
+                if uState and DFCS_INACTIVE <> 0 then
+                  Btn := tbCheckBoxUncheckedDisabled
+                else
+                if uState and DFCS_PUSHED <> 0 then
+                  Btn := tbCheckBoxUncheckedPressed
+                else
+                if uState and DFCS_HOT <> 0 then
+                  Btn := tbCheckBoxUncheckedHot
+                else
+                  Btn := tbCheckBoxUncheckedNormal;
+              end;
+              Details := ThemeServices.GetElementDetails(Btn);
+              ThemeServices.DrawElement(DC, Details, R);
+              Result := True;
+            end;
+          DFCS_BUTTONRADIO:
+            begin
+              if uState and DFCS_CHECKED <> 0 then
+              begin
+                if uState and DFCS_INACTIVE <> 0 then
+                  Btn := tbRadioButtonCheckedDisabled
+                else
+                if uState and DFCS_PUSHED <> 0 then
+                  Btn := tbRadioButtonCheckedPressed
+                else
+                if uState and DFCS_HOT <> 0 then
+                  Btn := tbRadioButtonCheckedHot
+                else
+                  Btn := tbRadioButtonCheckedNormal;
+              end
+              else
+              begin
+                if uState and DFCS_INACTIVE <> 0 then
+                  Btn := tbRadioButtonUncheckedDisabled
+                else
+                if uState and DFCS_PUSHED <> 0 then
+                  Btn := tbRadioButtonUncheckedPressed
+                else
+                if uState and DFCS_HOT <> 0 then
+                  Btn := tbRadioButtonUncheckedHot
+                else
+                  Btn := tbRadioButtonUncheckedNormal;
+              end;
+              Details := ThemeServices.GetElementDetails(Btn);
+              ThemeServices.DrawElement(DC, Details, R);
+              Result := True;
+            end;
         end;
       DFC_SCROLL:
         begin

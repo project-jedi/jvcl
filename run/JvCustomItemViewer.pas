@@ -203,6 +203,7 @@ type
 
     procedure WMHScroll(var Message: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
+    procedure WMNCPaint(var Messages: TWMNCPaint); message WM_NCPAINT;
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     procedure WMNCHitTest(var Message: TMessage); message WM_NCHITTEST;
     procedure WMCancelMode(var Message: TWMCancelMode); message WM_CANCELMODE;
@@ -326,7 +327,7 @@ implementation
 
 uses
   Math,
-  JvJCLUtils, JvJVCLUtils;
+  JvJCLUtils, JvJVCLUtils, JvThemes;
 
 const
   sUnitName = 'JvCustomItemViewer';
@@ -1858,6 +1859,16 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+procedure TJvCustomItemViewer.WMNCPaint(var Messages: TWMNCPaint);
+begin
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+    ThemeServices.PaintBorder(TWinControl(Self), False)
+  else
+  {$ENDIF JVCLThemesEnabled}
+    inherited;
 end;
 
 { TViewerDrawImageList }

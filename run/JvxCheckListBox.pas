@@ -18,8 +18,9 @@ All Rights Reserved.
 Contributor(s):
   Polaris Software
   Peter Thornqvist [peter3@peter3.com]
+  Andreas Hausladen (XP theming, JvFinalize)
 
-Last Modified: 2004-02-02
+Last Modified: 2004-03-08
 
 Changes:
 2003-10-19:
@@ -314,7 +315,7 @@ implementation
 
 uses
   SysUtils, Consts, Math,
-  JvConsts, JvJVCLUtils;
+  JvConsts, JvJVCLUtils, JvThemes;
 
 const
   sUnitName = 'JvxCheckListBox';
@@ -1641,6 +1642,9 @@ const
 var
   DrawRect: TRect;
   SaveColor: TColor;
+  {$IFDEF JVCLThemesEnabled}
+  Flags: Cardinal;
+  {$ENDIF JVCLThemesEnabled}
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -1649,14 +1653,35 @@ begin
   DrawRect.Right := DrawRect.Left + FCheckWidth;
   DrawRect.Bottom := DrawRect.Top + FCheckHeight;
   SaveColor := FCanvas.Brush.Color;
-  AssignBitmapCell(CheckBitmap, FDrawBitmap, 6, 3,
-    CheckImages[AState, FCheckKind, Enabled]);
-  FCanvas.Brush.Color := Self.Color;
-  try
-    FCanvas.BrushCopy(DrawRect, FDrawBitmap, Bounds(0, 0, FCheckWidth,
-      FCheckHeight), CheckBitmap.TransparentColor and not PaletteMask);
-  finally
-    FCanvas.Brush.Color := SaveColor;
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled and (CheckKind in [ckCheckBoxes, ckRadioButtons]) then
+  begin
+    Flags := 0;
+    if not Enabled then
+      Flags := Flags or DFCS_INACTIVE;
+    if AState = cbChecked then
+      Flags := Flags or DFCS_CHECKED
+    else if AState = cbGrayed then
+      Flags := Flags or DFCS_MONO;
+    if CheckKind = ckCheckBoxes then
+      DrawThemedFrameControl(Self, Canvas.Handle, DrawRect, DFC_BUTTON,
+        DFCS_BUTTONCHECK or Flags)
+    else if CheckKind = ckRadioButtons then
+      DrawThemedFrameControl(Self, Canvas.Handle, DrawRect, DFC_BUTTON,
+        DFCS_BUTTONRADIO or Flags);
+  end
+  else
+  {$ENDIF JVCLThemesEnabled}
+  begin
+    AssignBitmapCell(CheckBitmap, FDrawBitmap, 6, 3,
+      CheckImages[AState, CheckKind, Enabled]);
+    FCanvas.Brush.Color := Self.Color;
+    try
+      FCanvas.BrushCopy(DrawRect, FDrawBitmap, Bounds(0, 0, FCheckWidth,
+        FCheckHeight), CheckBitmap.TransparentColor and not PaletteMask);
+    finally
+      FCanvas.Brush.Color := SaveColor;
+    end;
   end;
 end;
 

@@ -2803,12 +2803,22 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+var
+  OLEDragCursorsLoaded: Boolean = False;
+
 function LoadOLEDragCursors: Boolean;
 const
   cOle32DLL: PChar = 'ole32.dll';
 var
   Handle: Cardinal;
 begin
+  if OLEDragCursorsLoaded then
+  begin
+    Result := True;
+    Exit;
+  end;
+  OLEDragCursorsLoaded := True;
+
   Result := False;
   if Screen <> nil then
   begin
