@@ -36,9 +36,9 @@ implementation
 
 uses
   Classes,
-  {$IFNDEF CBUILDER}
+  {$IFNDEF BCB}
   JvZlibMultiple,
-  {$ENDIF CBUILDER}
+  {$ENDIF BCB}
   JvConsts, JvVigenereCipher, JvCabFile, JvCaesarCipher, JvGenetic,
   JvSerialMaker, JvXorCipher;
 
@@ -48,9 +48,9 @@ procedure Register;
 begin
   RegisterComponents(SPaletteEncryptCompress, [TJvVigenereCipher,
     TJvXORCipher, TJvCaesarCipher, TJvGenetic, TJvCABFile,
-    {$IFNDEF CBUILDER}
+    {$IFNDEF BCB}
     TJvZlibMultiple,
-    {$ENDIF CBUILDER}
+    {$ENDIF BCB}
     TJvSerialMaker]);
 end;
 
