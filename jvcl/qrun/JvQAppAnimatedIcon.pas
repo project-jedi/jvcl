@@ -35,9 +35,7 @@ unit JvQAppAnimatedIcon;
 interface
 
 uses
-  Classes,
-  QControls, QExtCtrls, 
-  Types, QGraphics, QImgList, 
+  Classes, QControls, QExtCtrls, QGraphics, QImgList,
   JvQComponent;
 
 type

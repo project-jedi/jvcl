@@ -35,7 +35,7 @@ unit JvQImageDlg;
 interface
 
 uses
-  SysUtils, Classes,  
+  SysUtils, Classes,
   QGraphics, QControls, QForms, QExtCtrls, 
   JvQBaseDlg, JvQComponent, JvQTypes;
 

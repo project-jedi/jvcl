@@ -34,9 +34,11 @@ unit JvQParameterListParameter;
 interface
 
 uses
-  Classes, SysUtils, QStdCtrls, QExtCtrls, Types, QGraphics, QForms,
-  QControls, QFileCtrls, QDialogs, QComCtrls, QButtons, 
-  Variants,  
+  Classes, SysUtils, QStdCtrls, QExtCtrls, QGraphics, QForms,
+  QControls, QFileCtrls, QDialogs, QComCtrls, QButtons,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS} 
   JvQTypes, 
   JvQPanel, JvQPropertyStore, JvQParameterList, JvQDynControlEngine, JvQDSADialogs,
   JvQDynControlEngineIntf;
@@ -88,12 +90,16 @@ type
     FLabelWidth: Integer;
     FEditWidth: Integer;
     FRightSpace: Integer;
+    FArrangeLabelAndWinControlDisabled: Boolean;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure SetWinControlProperties; override;
     procedure ArrangeLabelAndWinControlOnPanel; virtual;
     procedure CreateLabelControl(AParameterParent: TWinControl); virtual;
     procedure CreateFramePanel(AParameterParent: TWinControl); virtual;
     procedure CreateWinControl(AParameterParent: TWinControl); virtual; abstract;
+    function  GetLabelWidth: Integer; virtual;
+    procedure SetLabelWidth(Value: Integer); virtual;
     property LabelControl: TControl read FLabelControl write FLabelControl;
     property FramePanel: TWinControl read FFramePanel write FFramePanel;
   public
@@ -108,7 +114,7 @@ type
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   published
     property LabelArrangeMode: TJvParameterLabelArrangeMode read FLabelArrangeMode write SetLabelArrangeMode;
-    property LabelWidth: Integer read FLabelWidth write FLabelWidth;
+    property LabelWidth: Integer read GetLabelWidth write SetLabelWidth;
     property EditWidth: Integer read FEditWidth write FEditWidth;
     property RightSpace: Integer read FRightSpace write FRightSpace;
   end;
@@ -157,7 +163,9 @@ type
   private
   protected
     function GetParameterNameExt: string; override;
+    procedure ReArrangeGroupbox(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
   public
+    constructor Create(AParameterList: TJvParameterList); override;
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   end;
 
@@ -324,8 +332,8 @@ type
     FSorted: Boolean;
     FVariantAsItemIndex: Boolean;
   protected
-    function GetItemList: TStrings; virtual;
-    procedure SetItemList(Value: TStrings); virtual;
+    function GetItemList: TStringList; virtual;
+    procedure SetItemList(Value: TStringList); virtual;
     procedure SetItemIndex(Value: Integer); virtual;
     procedure SetAsString(const Value: string); override;
     function GetAsString: string; override;
@@ -343,7 +351,7 @@ type
     procedure GetData; override;
     procedure SetData; override;
   published
-    property ItemList: TStrings read GetItemList write SetItemList;
+    property ItemList: TStringList read GetItemList write SetItemList;
     property ItemIndex: Integer read FItemIndex write SetItemIndex;
     property Sorted: Boolean read FSorted write FSorted;
     property VariantAsItemIndex: Boolean read FVariantAsItemIndex write FVariantAsItemIndex default False;
@@ -357,6 +365,7 @@ type
   public
     procedure Assign(Source: TPersistent); override;
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
+    procedure CreateWinControl(AParameterParent: TWinControl); override;
   published
     property Columns: Integer read FColumns write FColumns;
   end;
@@ -420,15 +429,15 @@ type
     procedure SetWinControlProperties; override;
     function GetItemData(Index: Integer): TJvCheckListItemDataWrapper;
     procedure SetItemData(Index: Integer; Value: TJvCheckListItemDataWrapper);
-    procedure SetItemList(Value: TStrings); override;
+    procedure SetItemList(Value: TStringList); override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure GetData; override;
     procedure SetData; override;
-    procedure AddCheckListBoxItem(const aText: string; aState: TCheckBoxState = cbChecked; aItemEnabled: Boolean = True;
-      aHeader: Boolean = False);
+    procedure AddCheckListBoxItem(const AText: string; AState: TCheckBoxState = cbChecked;
+      AItemEnabled: Boolean = True; AHeader: Boolean = False);
     property ItemData[Index: Integer]: TJvCheckListItemDataWrapper read GetItemData write SetItemData;
   published
     property Sorted: Boolean read FSorted write FSorted;
@@ -443,6 +452,7 @@ type
     procedure CreateWinControl(AParameterParent: TWinControl); override;
     procedure SetWinControlProperties; override;
   public
+    constructor Create(AParameterList: TJvParameterList); override;
     procedure Assign(Source: TPersistent); override;
   published
     property Format: string read FFormat write FFormat;
@@ -458,6 +468,7 @@ type
     procedure CreateWinControl(AParameterParent: TWinControl); override;
     procedure SetWinControlProperties; override;
   public
+    constructor Create(AParameterList: TJvParameterList); override;
     procedure Assign(Source: TPersistent); override;
   published
     property Format: string read FFormat write FFormat;
@@ -475,6 +486,7 @@ type
     procedure CreateWinControl(AParameterParent: TWinControl); override;
     procedure SetWinControlProperties; override;
   public
+    constructor Create(AParameterList: TJvParameterList); override;
     procedure Assign(Source: TPersistent); override;
   published
     property Format: string read FFormat write FFormat;
@@ -570,6 +582,10 @@ procedure TJvButtonParameter.CreateWinControlOnParent(ParameterParent: TWinContr
 begin
   WinControl := DynControlEngine.CreateButton(Self, ParameterParent,
     GetParameterName, Caption, Hint, OnButtonClickInt, False, False);
+  if Height > 0 then
+    WinControl.Height := Height;
+  if Width > 0 then
+    WinControl.Width := Width;
 end;
 
 procedure TJvButtonParameter.SetWinControlProperties;
@@ -595,6 +611,7 @@ begin
   FLabelWidth := 0;
   FEditWidth := 0;
   FRightSpace := 0;
+  FArrangeLabelAndWinControlDisabled := False;
 end;
 
 procedure TJvBasePanelEditParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
@@ -614,10 +631,22 @@ begin
     FLabelControl := nil;
 end;
 
+procedure TJvBasePanelEditParameter.SetWinControlProperties;
+begin
+  try
+    FArrangeLabelAndWinControlDisabled := True;
+    inherited SetWinControlProperties;
+  finally
+    FArrangeLabelAndWinControlDisabled := False;
+  end;
+end;
+
 procedure TJvBasePanelEditParameter.CreateFramePanel(AParameterParent: TWinControl);
 begin
   FramePanel := DynControlEngine.CreatePanelControl(Self, AParameterParent,
     GetParameterName + 'Panel', '', alNone);
+  FramePanel.Height := Height;
+  FramePanel.Width := Width;
   if FramePanel is TPanel then
     with TPanel(FramePanel) do
     begin
@@ -637,15 +666,34 @@ begin
   LabelControl.Parent := AParameterParent;
 end;
 
-procedure TJvBasePanelEditParameter.ArrangeLabelAndWinControlOnPanel;
-Var tmpLabelArrangeMode : TJvParameterLabelArrangeMode;
+function TJvBasePanelEditParameter.GetLabelWidth: Integer;
 begin
-  if not Assigned(FramePanel) or not Assigned(WinControl) then
+  if Assigned(ParameterList) and (FLabelWidth <= 0) then
+    Result := ParameterList.DefaultParameterLabelWidth
+  else
+    Result := FLabelWidth;
+end;
+
+procedure TJvBasePanelEditParameter.SetLabelWidth(Value: Integer);
+begin
+  FLabelWidth := Value;
+  if Assigned(WinControl) then
+    ArrangeLabelAndWinControlOnPanel;
+end;
+
+type
+  TAccessCustomControl = class(TCustomControl);
+
+procedure TJvBasePanelEditParameter.ArrangeLabelAndWinControlOnPanel;
+var
+  TmpLabelArrangeMode: TJvParameterLabelArrangeMode;
+begin
+  if not Assigned(FramePanel) or not Assigned(WinControl) or FArrangeLabelAndWinControlDisabled then
     Exit;
   if (LabelArrangeMode = lamBefore) and not Assigned(LabelControl) then
-    tmpLabelArrangeMode := lamAbove
+    TmpLabelArrangeMode := lamAbove
   else
-    tmpLabelArrangeMode := LabelArrangeMode;
+    TmpLabelArrangeMode := LabelArrangeMode;
 
   if not Assigned(LabelControl) then
   begin
@@ -682,7 +730,7 @@ begin
     LabelControl.Top := 0;
     LabelControl.Left := 0;
   end;
-  if (tmpLabelArrangeMode = lamAbove) or not Assigned(LabelControl) then
+  if (TmpLabelArrangeMode = lamAbove) or not Assigned(LabelControl) then
   begin
     if Assigned(LabelControl) then
       WinControl.Top := LabelControl.Height + 2
@@ -719,17 +767,18 @@ begin
       else
         WinControl.Height := Height
     else
-    if Assigned(LabelControl) then
-      FramePanel.Height := WinControl.Height + LabelControl.Height + 3
-    else
-      FramePanel.Height := WinControl.Height;
+      if Assigned(LabelControl) then
+        FramePanel.Height := WinControl.Height + LabelControl.Height + 3
+      else
+        FramePanel.Height := WinControl.Height;
   end
   else
   begin
     if LabelWidth > 0 then
-      LabelControl.Width := LabelWidth;
-    //    ELSE
-    //      LabelControl.Width :=
+      LabelControl.Width := LabelWidth
+    else
+      if FramePanel is TCustomControl then
+        TAccessCustomControl(FramePanel).Canvas.TextWidth(Caption);
     WinControl.Top := LabelControl.Top;
     WinControl.Left := LabelControl.Left + LabelControl.Width + 4;
     if FramePanel.Height > 0 then
@@ -746,7 +795,10 @@ begin
     else
     begin
       if FramePanel.Width > 0 then
-        WinControl.Width := FramePanel.Width - (WinControl.Left + 1)
+        if RightSpace > 0 then
+          WinControl.Width := FramePanel.Width - (WinControl.Left + 1) - RightSpace
+        else
+          WinControl.Width := FramePanel.Width - (WinControl.Left + 1)
       else
         FramePanel.Width := WinControl.Width + WinControl.Left + 1;
     end;
@@ -908,8 +960,7 @@ end;
 
 procedure TJvArrangeParameter.ArrangeControls;
 begin
-  if Assigned(FParentControl) and
-    (FParentControl is TJvPanel) then
+  if FParentControl is TJvPanel then
     TJvPanel(FParentControl).ArrangeControls;
 end;
 
@@ -964,6 +1015,10 @@ procedure TJvPanelParameter.CreateWinControlOnParent(ParameterParent: TWinContro
 begin
   WinControl := DynControlEngine.CreatePanelControl(Self, ParameterParent,
     GetParameterName, Caption, alNone);
+  if Height > 0 then
+    WinControl.Height := Height;
+  if Width > 0 then
+    WinControl.Width := Width;
 end;
 
 procedure TJvPanelParameter.SetWinControlProperties;
@@ -976,6 +1031,12 @@ begin
 end;
 
 //=== { TJvGroupBoxParameter } ===============================================
+
+constructor TJvGroupBoxParameter.Create(AParameterList: TJvParameterList);
+begin
+  inherited Create(AParameterList);
+  ArrangeSettings.AutoSize := asHeight;
+end;
 
 function TJvGroupBoxParameter.GetParameterNameExt: string;
 begin
@@ -999,6 +1060,15 @@ begin
   Panel.Visible := True;
   Panel.Caption := '';
   Panel.Color := Color;
+  Panel.OnResizeParent := ReArrangeGroupbox;
+end;
+
+procedure TJvGroupBoxParameter.ReArrangeGroupbox(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
+begin
+  if ArrangeSettings.AutoSize in [asWidth, asBoth] then
+    WinControl.Width := nWidth + 5;
+  if ArrangeSettings.AutoSize in [asHeight , asBoth] then
+    WinControl.Height := nHeight + 18;
 end;
 
 //procedure TJvGroupBoxParameter.SetEnabled(Value: Boolean);
@@ -1106,12 +1176,12 @@ begin
       Result := Null;
 end;
 
-function TJvListParameter.GetItemList: TStrings;
+function TJvListParameter.GetItemList: TStringList;
 begin
   Result := FItemList;
 end;
 
-procedure TJvListParameter.SetItemList(Value: TStrings);
+procedure TJvListParameter.SetItemList(Value: TStringList);
 begin
   FItemList.Assign(Value);
   if Assigned(Value) then
@@ -1232,6 +1302,14 @@ procedure TJvRadioGroupParameter.CreateWinControlOnParent(ParameterParent: TWinC
 begin
   WinControl := DynControlEngine.CreateRadioGroupControl(Self, ParameterParent,
     GetParameterName, Caption, ItemList);
+  if Height > 0 then
+    WinControl.Height := Height;
+  if Width > 0 then
+    WinControl.Width := Width;
+end;
+
+procedure TJvRadioGroupParameter.CreateWinControl(AParameterParent: TWinControl);
+begin
 end;
 
 procedure TJvRadioGroupParameter.SetWinControlProperties;
@@ -1249,6 +1327,10 @@ procedure TJvCheckBoxParameter.CreateWinControlOnParent(ParameterParent: TWinCon
 begin
   WinControl := DynControlEngine.CreateCheckBoxControl(Self, ParameterParent,
     GetParameterName, Caption);
+  if Height > 0 then
+    WinControl.Height := Height;
+  if Width > 0 then
+    WinControl.Width := Width;
 end;
 
 //=== { TJvComboBoxParameter } ===============================================
@@ -1355,6 +1437,10 @@ begin
     GetParameterName, ItemList);
   if Supports(WinControl, IJvDynControlItems, ITmpItems) then
     ITmpItems.ControlSetSorted(Sorted);
+  if Height > 0 then
+    WinControl.Height := Height;
+  if Width > 0 then
+    WinControl.Width := Width;
 end;
 
 procedure TJvListBoxParameter.SetWinControlProperties;
@@ -1366,7 +1452,7 @@ begin
     ITmpItems.ControlSetSorted(Sorted);
 end;
 
-//==== TJvCheckListItemDataWrapper ====================================================
+//==== TJvCheckListItemDataWrapper ===========================================
 
 procedure TJvCheckListItemDataWrapper.SetChecked(Check: Boolean);
 begin
@@ -1381,7 +1467,7 @@ begin
   Result := FState = cbChecked;
 end;
 
-//=== { TJvCheckListBoxParameter } ================================================
+//=== { TJvCheckListBoxParameter } ===========================================
 
 constructor TJvCheckListBoxParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -1395,8 +1481,7 @@ var
   I: Integer;
 begin
   for I := 0 to ItemList.Count - 1 do
-    if Assigned(ItemList.Objects[I]) then
-      ItemList.Objects[I].Free;
+    ItemList.Objects[I].Free;
   inherited Destroy;
 end;
 
@@ -1446,15 +1531,16 @@ begin
       end;
 end;
 
-procedure TJvCheckListBoxParameter.AddCheckListBoxItem(const aText: string; aState: TCheckBoxState = cbChecked;
-  aItemEnabled: Boolean = True; aHeader: Boolean = False);
+procedure TJvCheckListBoxParameter.AddCheckListBoxItem(const AText: string;
+  AState: TCheckBoxState = cbChecked; AItemEnabled: Boolean = True;
+  AHeader: Boolean = False);
 begin
-  ItemList.Add(aText);
+  ItemList.Add(AText);
   with ItemData[ItemList.Count - 1] do
   begin
-    Header := aHeader;
-    State := aState;
-    ItemEnabled := aItemEnabled;
+    Header := AHeader;
+    State := AState;
+    ItemEnabled := AItemEnabled;
   end;
 end;
 
@@ -1471,6 +1557,10 @@ begin
     GetParameterName, ItemList);
   if Supports(WinControl, IJvDynControlItems, ITmpItems) then
     ITmpItems.ControlSetSorted(Sorted);
+  if Height > 0 then
+    WinControl.Height := Height;
+  if Width > 0 then
+    WinControl.Width := Width;
 end;
 
 procedure TJvCheckListBoxParameter.SetWinControlProperties;
@@ -1518,7 +1608,7 @@ begin
   end;
 end;
 
-procedure TJvCheckListBoxParameter.SetItemList(Value: TStrings);
+procedure TJvCheckListBoxParameter.SetItemList(Value: TStringList);
 var
   I: Integer;
 begin
@@ -1528,7 +1618,13 @@ begin
   inherited SetItemList(Value);
 end;
 
-//=== { TJvTimeParameter } ===============================================
+//=== { TJvTimeParameter } ===================================================
+
+constructor TJvTimeParameter.Create(AParameterList: TJvParameterList);
+begin
+  inherited Create(AParameterList);
+  LabelArrangeMode := lamBefore;
+end;
 
 procedure TJvTimeParameter.Assign(Source: TPersistent);
 begin
@@ -1557,6 +1653,12 @@ begin
 end;
 
 //=== { TJvDateTimeParameter } ===============================================
+
+constructor TJvDateTimeParameter.Create(AParameterList: TJvParameterList);
+begin
+  inherited Create(AParameterList);
+  LabelArrangeMode := lamBefore;
+end;
 
 procedure TJvDateTimeParameter.Assign(Source: TPersistent);
 begin
@@ -1593,7 +1695,13 @@ begin
     end;
 end;
 
-//=== { TJvDateParameter } ===============================================
+//=== { TJvDateParameter } ===================================================
+
+constructor TJvDateParameter.Create(AParameterList: TJvParameterList);
+begin
+  inherited Create(AParameterList);
+  LabelArrangeMode := lamBefore;
+end;
 
 procedure TJvDateParameter.Assign(Source: TPersistent);
 begin
@@ -1673,7 +1781,7 @@ begin
   end;
 end;
 
-//=== { TJvButtonEditParameter } ============================================
+//=== { TJvButtonEditParameter } =============================================
 
 function TJvButtonEditParameter.GetParameterNameExt: string;
 begin
@@ -1699,7 +1807,7 @@ begin
     OnButtonClick := TJvButtonEditParameter(Source).OnButtonClick;
 end;
 
-//=== { TJvNumberEditParameter } ============================================
+//=== { TJvNumberEditParameter } =============================================
 
 procedure TJvNumberEditParameter.Assign(Source: TPersistent);
 begin
@@ -1885,6 +1993,7 @@ constructor TJvFileNameParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   LabelArrangeMode := lamBefore;
+  FDialogOptions := [ofHideReadOnly,ofEnableSizing];
 end;
 
 procedure TJvFileNameParameter.Assign(Source: TPersistent);
@@ -2066,4 +2175,5 @@ begin
 end;
 
 end.
+
 

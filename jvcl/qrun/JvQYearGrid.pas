@@ -40,7 +40,7 @@ uses
   {$IFDEF MSWINDOWS}
   ShellAPI,
   {$ENDIF MSWINDOWS}
-  Types, QWindows, QMessages, QGraphics, QControls, QForms, QDialogs, QGrids, QMenus, QClipbrd, 
+  QWindows, QMessages, QGraphics, QControls, QForms, QDialogs, QGrids, QMenus, QClipbrd, 
   JvQJVCLUtils, JvQTypes, 
   SysUtils, QStdCtrls, Classes;
 

@@ -37,10 +37,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF LINUX}
-  Types, QGraphics, QControls, 
+  {$ENDIF HAS_UNIT_LIBC}
+  QGraphics, QControls, 
   Qt, QWindows, 
   Classes,
   JvQTimer, JvQComponent;
@@ -86,12 +86,11 @@ type
     FCenter: Boolean;
     FStretch: Boolean;
     FTransparentColor: TColor;
-    FOpaque: Boolean;
     FTimerRepaint: Boolean;
     FOnFrameChanged: TNotifyEvent;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
-    FAsyncDrawing: Boolean;
+    FAsyncDrawing: Boolean; 
     procedure DefineBitmapSize;
     procedure ResetImageBounds;
     function GetInterval: Cardinal;
@@ -117,7 +116,7 @@ type
     procedure DoPaintImage; override;
     procedure FrameChanged; dynamic;
     procedure Start; dynamic;
-    procedure Stop; dynamic;
+    procedure Stop; dynamic; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -177,7 +176,7 @@ uses
   JvQConsts, JvQJVCLUtils;
 
 
-//=== { TJvLockedBitmap } ======================================================
+//=== { TJvLockedBitmap } ====================================================
 
 // (rom) do we really need this ugly hack?
 // (ahuser) lets try without the hook by using TJvLockedBitmap directly
@@ -361,8 +360,7 @@ end;
 
 constructor TJvAnimatedImage.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner); 
-  FOpaque := True; 
+  inherited Create(AOwner);
   FTimer := TJvTimer.Create(Self);
   FTimer.Enabled := False;
   FTimer.Interval := 100; 
@@ -600,8 +598,7 @@ begin
 end;
 
 procedure TJvAnimatedImage.AdjustSize;
-begin
-
+begin 
 end;
 
 procedure TJvAnimatedImage.DoPaintImage;
@@ -647,7 +644,7 @@ end;
 procedure TJvAnimatedImage.BufferedPaint;
 begin
   PaintImage;
-  if (not FOpaque) or FGlyph.Empty then
+  if  FGlyph.Empty then
     PaintDesignRect;
 end;
 
@@ -759,6 +756,8 @@ begin
     end;
   end;
 end;
+
+
 
 end.
 

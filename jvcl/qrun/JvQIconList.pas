@@ -34,7 +34,7 @@ unit JvQIconList;
 interface
 
 uses
-  Types, QWindows, SysUtils, QGraphics, Classes;
+  QWindows, SysUtils, QGraphics, Classes;
 
 type
   TJvIconList = class(TPersistent)

@@ -40,7 +40,7 @@ unit JvQCheckedMaskEdit;
 interface
 
 uses
-  Types, QWindows, QMessages, Classes, QControls, QStdCtrls,
+  QWindows, QMessages, Classes, QControls, QStdCtrls,
   JvQMaskEdit;
 
 type

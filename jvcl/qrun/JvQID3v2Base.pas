@@ -32,17 +32,14 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQID3v2Base;
+
+{$I jvcl.inc}
 
 interface
 
 uses
   Classes, SysUtils,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
   JclUnicode,
   JvQComponent, JvQID3v2Types, JvQID3v1;
 
@@ -1200,7 +1197,10 @@ function NiceGenreToGenre(const ANiceGenre: string): string;
 implementation
 
 uses
-  QGraphics, QWindows, 
+  QGraphics,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS} 
   JclBase, JclFileUtils, JclLogic, JclDateTime,
   JvQConsts, JvQResources;
 
@@ -2458,13 +2458,13 @@ end;
 function ExtToMIMEType(const Ext: string): string;
 begin
   { Not a very reliable method }
-  if SameText(Ext, '.jpeg') then
+  if SameFileName(Ext, '.jpeg') or AnsiSameText(Ext, '.jpg') then
     Result := 'image/jpeg'
   else
-  if SameText(Ext, '.tiff') then
+  if SameFileName(Ext, '.tiff') or AnsiSameText(Ext, '.tif') then
     Result := 'image/tif'
   else
-  if SameText(Ext, '.bmp') then
+  if SameFileName(Ext, '.bmp') then
     Result := 'image/bitmap'
   else
   if Ext = '' then

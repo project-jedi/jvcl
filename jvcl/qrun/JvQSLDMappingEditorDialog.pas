@@ -37,7 +37,7 @@ unit JvQSLDMappingEditorDialog;
 interface
 
 uses
-  Types, QWindows, QMessages, SysUtils, Classes, QGraphics, QControls,
+  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls,
   QForms, QDialogs, QStdCtrls, QActnList, QMenus,
   JvQBaseDlg, JvQSegmentedLEDDisplay, JvQSegmentedLEDDisplayMapperFrame,
   JvQExControls, JvQComponent;

@@ -44,7 +44,7 @@ unit JvQListComb;
 interface
 
 uses 
-  SysUtils, Classes, Types, QGraphics, QControls, QExtCtrls, QStdCtrls, QImgList, 
+  SysUtils, Classes, QGraphics, QControls, QExtCtrls, QStdCtrls, QImgList, 
   Qt, QWindows,   
   JvQComponent, JvQExControls, JvQExStdCtrls;
 
@@ -360,7 +360,7 @@ begin
     inherited Assign(Source);
 end;
 
-//=== { TJvImageItem } ========================================================
+//=== { TJvImageItem } =======================================================
 
 constructor TJvImageItem.Create(Collection: TCollection);
 begin
@@ -474,7 +474,7 @@ begin
     S.Exchange(I, Value);
 end;
 
-//=== { TJvImageItems } =======================================================
+//=== { TJvImageItems } ======================================================
 
 constructor TJvImageItems.Create(AOwner: TPersistent);
 begin

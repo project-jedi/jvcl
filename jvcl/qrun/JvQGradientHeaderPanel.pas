@@ -35,8 +35,8 @@ unit JvQGradientHeaderPanel;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, QStdCtrls, 
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QStdCtrls,
   JvQGradient, JvQTypes, JvQComponent;
 
 type
@@ -50,7 +50,7 @@ type
     function GetGradientCursor: TCursor;
     procedure SetGradientCursor(Value: TCursor);
     function GetGradientHint: string;
-    procedure SetGradientHint(Value: string);
+    procedure SetGradientHint(const Value: string);
     function GetGradientStartColor: TColor;
     procedure SetGradientStartColor(Value: TColor);
     function GetGradientEndColor: TColor;
@@ -64,9 +64,9 @@ type
     function GetLabelCursor: TCursor;
     procedure SetLabelCursor(Value: TCursor);
     function GetLabelHint: string;
-    procedure SetLabelHint(Value: string);
+    procedure SetLabelHint(const Value: string);
     function GetLabelCaption: string;
-    procedure SetLabelCaption(Value: string);
+    procedure SetLabelCaption(const Value: string);
     function GetLabelColor: TColor;
     procedure SetLabelColor(Value: TColor);
     procedure SetShowHint(const Value: Boolean);
@@ -202,7 +202,7 @@ begin
   Result := FGradient.Hint;
 end;
 
-procedure TJvGradientHeaderPanel.SetGradientHint(Value: string);
+procedure TJvGradientHeaderPanel.SetGradientHint(const Value: string);
 begin
   FGradient.Hint := Value;
 end;
@@ -281,7 +281,7 @@ begin
   Result := FLabel.Hint;
 end;
 
-procedure TJvGradientHeaderPanel.SetLabelHint(Value: string);
+procedure TJvGradientHeaderPanel.SetLabelHint(const Value: string);
 begin
   FLabel.Hint := Value;
 end;
@@ -291,7 +291,7 @@ begin
   Result := FLabel.Caption;
 end;
 
-procedure TJvGradientHeaderPanel.SetLabelCaption(Value: string);
+procedure TJvGradientHeaderPanel.SetLabelCaption(const Value: string);
 begin
   FLabel.Caption := Value;
   AdjustLabelWidth;

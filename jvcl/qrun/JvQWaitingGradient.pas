@@ -35,8 +35,8 @@ unit JvQWaitingGradient;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, QWindows, 
+  SysUtils, Classes,
+  QWindows, QGraphics, QControls,
   JvQImageDrawThread, JvQComponent;
 
 type

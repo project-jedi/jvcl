@@ -38,8 +38,8 @@ unit JvQTMTimeLine;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,  
+  SysUtils, Classes,
+  QWindows, QMessages, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, 
   JvQComponent, JvQExControls;
 
 type
@@ -316,8 +316,8 @@ type
 
 implementation
 
-uses  
-  QConsts, 
+uses
+  QConsts,
   JvQJVCLUtils, JvQThemes;
 
 {$IFDEF MSWINDOWS}
@@ -854,13 +854,15 @@ begin
   begin
     // erase old selection
     R := GetRectForDate(FSelDate);
-    InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);  QWindows.InvalidateRect(Handle, @R, True);
+    InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);
+    QWindows.InvalidateRect(Handle, @R, True);
     FSelDate := Value;
     if Enabled then
     begin
       // draw new selection
       R := GetRectForDate(FSelDate);
-      InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);  QWindows.InvalidateRect(Handle, @R, True);
+      InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);
+      QWindows.InvalidateRect(Handle, @R, True);
     end;
   end;
 end;

@@ -93,8 +93,7 @@ unit JvQProgressDialog;
 interface
 
 uses
-  Classes, SysUtils,  
-  Types, QGraphics, QForms, 
+  Classes, SysUtils, QGraphics, QForms,
   JvQBaseDlg;
 
 type
@@ -177,8 +176,8 @@ type
 
 implementation
 
-uses  
-  QControls, 
+uses
+  QControls,
   JvQProgressForm, JvQJVCLUtils;
 
 constructor TJvProgressDialog.Create(AOwner: TComponent);

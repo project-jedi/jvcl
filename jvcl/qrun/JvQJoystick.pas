@@ -37,8 +37,9 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  Windows, Messages,
+  Windows,
   {$ENDIF MSWINDOWS}
+  QMessages,
   SysUtils, Classes, MMSystem,  
   QForms, 
   JvQTypes, JvQComponent;

@@ -35,7 +35,7 @@ unit JvQColorTrackbar;
 interface
 
 uses
-  Types, QWindows, 
+  QWindows, 
   Classes, QControls, QGraphics, QForms,
   JvQComponent;
 

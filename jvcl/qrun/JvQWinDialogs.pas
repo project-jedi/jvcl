@@ -39,7 +39,7 @@ uses
   Qt, QWindows, 
   Windows, ShellAPI, ShlObj, ComObj, ActiveX, CommDlg, UrlMon,
   SysUtils, Classes,
-  Types, QGraphics, QControls, QForms, QDialogs,
+  QGraphics, QControls, QForms, QDialogs,
   JvQBaseDlg, JvQTypes, JvQComponent, JvQJCLUtils; // For OSCheck
 
 {$HPPEMIT '#include "dbt.h"'}

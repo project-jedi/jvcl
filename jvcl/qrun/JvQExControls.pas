@@ -53,13 +53,6 @@ uses
   Classes, SysUtils,
   JvQTypes, JvQThemes, JVCLXVer;
 
-
-
- {$IF not declared(PatchedVCLX)}
-  {$DEFINE NeedMouseEnterLeave}
- {$IFEND}
-
-
 type
   TDlgCode = (
     dcWantAllKeys, dcWantArrows, dcWantTab, dcWantChars,
@@ -144,13 +137,16 @@ type
     procedure DoClearText;
   end;
 
-//  IJvEdit = interface
-
-
+  IEditControlEvents = interface
+    procedure PasteFromClipboard;
+    procedure CopyToClipboardCopy;
+    procedure CutToClipboard;
+    procedure Undo;
+    procedure Clear;
+  end;
 
 const
   CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
-
 
 type
   { Add IJvDenySubClassing to the base class list if the control should not
@@ -159,20 +155,6 @@ type
   IJvDenySubClassing = interface
     ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
   end;
-
-(*
-const
-  CM_FOCUSCHANGED = CM_BASE + 17; // VCL Controls: CM_BASE + 7
-
-type
-  TCMFocusChanged = record
-    Msg: Cardinal;
-    Unused: Integer;
-    Sender: TWinControl;
-    Result: Longint;
-  end;
-*)
-
 
   TJvExControl = class(TControl, IJvControlEvents, IPerformControl)
   // IJvControlEvents
@@ -190,20 +172,13 @@ type
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  {$IFDEF NeedMouseEnterLeave}
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
-  protected
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private  
+  private
     FAboutJVCLX: TJVCLAboutInfo;
   published
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
@@ -231,15 +206,16 @@ type
     procedure SetBorderWidth(Value: TBorderWidth);
   protected
     procedure AdjustClientRect(var Rect: TRect); override;
-    function ColorToRGB(AColor: TColor): TColor;
+    procedure BorderStyleChanged; dynamic;
     property BevelEdges: TBevelEdges read FBevelEdges write SetBevelEdges default [beLeft, beTop, beRight, beBottom];
     property BevelInner: TBevelCut index 0 read FBevelInner write SetBevelCut default bvRaised;
     property BevelOuter: TBevelCut index 1 read FBevelOuter write SetBevelCut default bvLowered;
     property BevelKind: TBevelKind read FBevelKind write SetBevelKind default bkNone;
     property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
-  // IJvControlEvents
   public
+    function ColorToRGB(AColor: TColor): TColor;
+  // IJvControlEvents
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
   protected
@@ -271,13 +247,6 @@ type
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  {$IFDEF NeedMouseEnterLeave}
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
-  protected
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
@@ -293,7 +262,7 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -314,6 +283,9 @@ type
   end;
 
   TJvExPubWinControl = class(TJvExWinControl)
+  published
+    Property Bitmap;
+    property InputKeys;
   end;
    
   TJvExGraphicControl = class(TGraphicControl, IJvControlEvents, IPerformControl)  
@@ -332,13 +304,6 @@ type
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  {$IFDEF NeedMouseEnterLeave}
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
-  protected
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
@@ -358,7 +323,7 @@ type
   protected
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
-    procedure PaintRequest; override; 
+    procedure PaintRequest; override;
   end;
 
   TJvExPubGraphicControl = class(TJvExGraphicControl) 
@@ -395,19 +360,12 @@ type
     procedure CreateWidget; override;
     procedure RecreateWnd;
   public
-    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer); 
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  {$IFDEF NeedMouseEnterLeave}
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
-  protected
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
@@ -438,13 +396,16 @@ type
     destructor Destroy; override;
   end;
 
-  TJvExPubCustomControl = class(TJvExCustomControl) 
+  TJvExPubCustomControl = class(TJvExCustomControl)
+  published
+    Property Bitmap;
+    Property InputKeys;
   end;
   
   {$UNDEF CONSTRUCTORCODE}
   {$DEFINE CONSTRUCTORCODE}
 
-  TJvExHintWindow = class(THintWindow,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
+  TJvExHintWindow = class(THintWindow,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
   // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -478,20 +439,13 @@ type
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  {$IFDEF NeedMouseEnterLeave}
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
-  protected
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private  
+  private
     FAboutJVCLX: TJVCLAboutInfo;
   published
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
@@ -515,10 +469,10 @@ type
     destructor Destroy; override;
   end;
 
-  TJvExPubHintWindow = class(TJvExHintWindow) 
+  TJvExPubHintWindow = class(TJvExHintWindow)
   end;
-   
-  TJvExFrameControl = class(TFrameControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
+
+  TJvExFrameControl = class(TFrameControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   // IJvControlEvents
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -546,19 +500,12 @@ type
     procedure CreateWidget; override;
     procedure RecreateWnd;
   public
-    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer); 
+    procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  {$IFDEF NeedMouseEnterLeave}
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
-  protected
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
@@ -568,13 +515,13 @@ type
   private
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   private
     FCanvas: TCanvas;
   protected
@@ -586,25 +533,19 @@ type
   end;
 
   TJvExPubFrameControl = class(TJvExFrameControl)
-  end;
-
+  published
+    Property Bitmap;
+    Property InputKeys;
+end;
 
 function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
-
-
-
 
 procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolean;
   var FSavedHintColor: TColor; FHintColor: TColor);
 
-
-
-
 procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; FSavedHintColor: TColor);
 
-
 function DefaultDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
-
 
 // handles fontchanged & focuschanged
 function WidgetControl_EventFilter(Instance: TWidgetControl; Sender: QObjectH; Event: QEventH): Boolean;
@@ -622,11 +563,10 @@ procedure WidgetControl_ColorChanged(Instance: TWidgetControl);
 
 // support for PaintTo & PaintWindow
 procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: integer);
+procedure Control_PaintTo(Instance: TControl; PaintDevice: QPaintDeviceH; X, Y: integer);
 
 function WidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
   Shift: TShiftState; const KeyText: WideString; InheritedValue: Boolean): Boolean;
-
-
 
 procedure TCustomEdit_Undo(Instance: TWinControl);
 procedure TCustomEdit_Copy(Instance: TWinControl);
@@ -636,8 +576,12 @@ procedure TCustomEdit_Cut(Instance: TWinControl);
 implementation
 
 type
-  THackedWidgetControl = class(TWidgetControl);
+  THackedControl = class(TControl);
 
+  THackedWidgetControl = class(TWidgetControl);
+  THackedCustomControl = class(TCustomControl);
+  THackedCustomEdit = class(TCustomEdit);
+  THackedCustomMaskEdit = class(TCustomMaskEdit);
 
 function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
 begin
@@ -656,14 +600,11 @@ begin
     FMouseOver := True;
     FSavedHintColor := Application.HintColor;
     if FHintColor <> clNone then
-      Application.HintColor := FHintColor; 
-  end; 
+      Application.HintColor := FHintColor;
+  end;
 end;
 
-
-
 procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; FSavedHintColor: TColor);
-
 begin
   // (HEG) Control is nil iff Instance is the control that the mouse has left.
   // Otherwise this is just a notification that the mouse left
@@ -672,7 +613,7 @@ begin
   begin
     FMouseOver := False;
     Application.HintColor := FSavedHintColor;
-  end; 
+  end;
 end;
 
 function DefaultDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
@@ -680,27 +621,47 @@ begin
   Result := false; //QWidget_BackgroundMode(Instance.Handle) = QWidgetBackgroundMode_NoBackground;
 end;
 
-type
-  TControlAccessProtected = class(TControl);
-
-  TWidgetControlAccessProtected = class(TWidgetControl);
-  TCustomControlAccessProtected = class(TCustomControl);
-  TCustomEditAccessProtected = class(TCustomEdit);
-  TCustomMaskEditAccessProtected = class(TCustomMaskEdit);
-
 procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: integer);
 var
   PixMap: QPixmapH;
 begin
   PixMap := QPixmap_create;
-  try
-    with Instance do
-    begin
+  with Instance do
+    try
+      ControlState := ControlState + [csPaintCopy];
       QPixmap_grabWidget(PixMap, Handle, 0, 0, Width, Height);
       Qt.BitBlt(PaintDevice, X, Y, PixMap, 0, 0, Width, Height, RasterOp_CopyROP, True);
+    finally
+      ControlState := ControlState - [csPaintCopy];
+      QPixMap_destroy(PixMap);
     end;
-  finally
-    QPixMap_destroy(PixMap);
+end;
+
+procedure Control_PaintTo(Instance: TControl; PaintDevice: QPaintDeviceH;
+  X, Y: integer);
+var
+  PixMap: QPixmapH;
+begin
+  if Instance is TWidgetControl then
+    WidgetControl_PaintTo(TWidgetControl(Instance), PaintDevice, X, Y)
+  else
+  if Assigned(Instance.Parent) then
+  begin
+    PixMap := QPixmap_create;
+    try
+      with Instance do
+      begin
+        Parent.ControlState := Parent.ControlState + [csPaintCopy];
+        try
+          QPixmap_grabWidget(PixMap, Parent.Handle, Left, Top, Width, Height);
+          Qt.BitBlt(PaintDevice, X, Y, PixMap, 0, 0, Width, Height, RasterOp_CopyROP, True);
+        finally
+          Parent.ControlState := Parent.ControlState - [csPaintCopy];
+        end;
+      end;
+    finally
+      QPixMap_destroy(PixMap);
+    end;
   end;
 end;
 
@@ -767,11 +728,9 @@ begin
   Pixmap := nil;
   OriginalPainter := nil;
 
-  with TWidgetControlAccessProtected(Instance) do
+  with THackedWidgetControl(Instance) do
   begin
-
     TControlCanvas(Canvas).StartPaint;
-
     if IsDoubleBuffered then
     begin
       Pixmap := QPixmap_create(Instance.Width, Instance.Height, -1, QPixmapOptimization_DefaultOptim);
@@ -811,7 +770,7 @@ begin
         // TCustomForm calls Paint in it's EventFilter
       else
       if Instance is TCustomControl then
-        TCustomControlAccessProtected(Instance).Paint
+        THackedCustomControl(Instance).Paint
       else
         (Instance as IJvWinControlEvents).Paint;
     finally
@@ -843,7 +802,7 @@ begin
   QRegion_boundingRect(EventRegion, @R);
   if IsRectEmpty(R) then
     exit;
-  with TWidgetControlAccessProtected(Instance) do
+  with THackedWidgetControl(Instance) do
   begin
     TControlCanvas(Canvas).StartPaint;
     try
@@ -879,7 +838,7 @@ begin
   with Canvas, THackedExWinControl(Instance) do
   begin
     if BevelKind = bkNone then Exit;
-    R := ClientRect;
+    R := Bounds(0, 0, Width, Height);
     Canvas.Brush.Color := Color;
     QWindows.FrameRect(Canvas, R);
     InflateRect(R,-1,-1);
@@ -897,8 +856,8 @@ begin
         InflateRect(R, -1, -1);
         QWindows.FrameRect(Canvas, R);
       end;
-      R := ClientRect;
-      with BoundsRect do
+      R := Bounds(0, 0, Width, Height);
+      with R do
       begin
         if beLeft in BevelEdges then Dec(Left, FEdgeSize);
         if beTop in BevelEdges then Dec(Top, FEdgeSize);
@@ -906,7 +865,7 @@ begin
         if beBottom in BevelEdges then Inc(Bottom, FEdgeSize);
       end;
       DrawEdge(Canvas.Handle, R, InnerStyles[BevelInner] or OuterStyles[BevelOuter],
-        Byte(BevelEdges) or EdgeStyles[BevelKind] or BF_ADJUST);
+        Byte(BevelEdges) or EdgeStyles[BevelKind]);
     end;
   end;
 end;
@@ -932,7 +891,7 @@ begin
       QPainter_end(Painter);
     end;
     try
-      Painting := @TWidgetControlAccessProtected.Painting;
+      Painting := @THackedWidgetControl.Painting;
      // default painting
       Painting(Instance, Instance.Handle, QPainter_clipRegion(Painter));
     finally
@@ -961,7 +920,7 @@ var
   Value: TInputKeys;
 begin
   Result := InheritedValue;
-  Value := TWidgetControlAccessProtected(Instance).InputKeys;
+  Value := THackedWidgetControl(Instance).InputKeys;
 
   DlgCodes := [dcNative];
   if ikAll in Value then
@@ -996,7 +955,7 @@ var
   TC: QColorH;
   Intf: IJvCustomControlEvents;
 begin
-  with TWidgetControlAccessProtected(Instance) do
+  with THackedWidgetControl(Instance) do
   begin
     HandleNeeded;
     Instance.GetInterface(IJvCustomControlEvents, Intf);
@@ -1030,24 +989,22 @@ begin
   end;
 end;
 
-
-
 procedure TCustomEdit_Undo(Instance: TWinControl);
-begin  
+begin
   if Instance is TCustomMemo then
     QMultiLineEdit_undo(QMultiLineEditH(Instance.Handle))
   else
   if Instance is TCustomEdit then
-    QClxLineEdit_undo(QClxLineEditH(Instance.Handle)); 
+    QClxLineEdit_undo(QClxLineEditH(Instance.Handle));
 end;
 
 procedure TCustomEdit_Copy(Instance: TWinControl);
-begin  
+begin
   if Instance is TCustomMemo then
     QMultiLineEdit_copy(QMultiLineEditH(Instance.Handle))
   else
   if Instance is TCustomEdit then
-    QClxLineEdit_copy(QClxLineEditH(Instance.Handle)); 
+    QClxLineEdit_copy(QClxLineEditH(Instance.Handle));
 end;
 
 procedure TCustomEdit_Cut(Instance: TWinControl);
@@ -1064,16 +1021,16 @@ begin
   end
   else
   if Instance is TCustomEdit then
-    QClxLineEdit_cut(QClxLineEditH(Instance.Handle)); 
+    QClxLineEdit_cut(QClxLineEditH(Instance.Handle));
 end;
 
-procedure TCustomEdit_Paste(Instance: TWinControl); 
+procedure TCustomEdit_Paste(Instance: TWinControl);
   procedure LineEditPaste;
   var
     WValue: WideString;
   begin
     WValue := Clipboard.AsText;
-    case TCustomEditAccessProtected(Instance).CharCase of
+    case THackedCustomEdit(Instance).CharCase of
       ecUpperCase:
         WValue := WideUpperCase(WValue);
       ecLowerCase:
@@ -1081,46 +1038,36 @@ procedure TCustomEdit_Paste(Instance: TWinControl);
     end;
     QClxLineEdit_insert(QClxLineEditH(Instance.Handle), PWideString(@WValue));
     QClxLineEdit_resetSelection(QClxLineEditH(Instance.Handle));
-  end; 
-begin  
+  end;
+begin
   if Instance is TCustomMemo then
     QMultiLineEdit_paste(QMultiLineEditH(Instance.Handle))
   else
   if Instance is TCustomMaskEdit then
   begin
-    if not TCustomMaskEdit(Instance).IsMasked or
-       TCustomMaskEditAccessProtected(Instance).ReadOnly then  // PasteFromClipboard would call "inherited"
+    if not (TCustomMaskEdit(Instance).IsMasked or
+       THackedCustomMaskEdit(Instance).ReadOnly) then  // PasteFromClipboard would call "inherited"
       QClxLineEdit_cut(QClxLineEditH(Instance.Handle))
     else
       TCustomMaskEdit(Instance).CutToClipboard;
   end
   else
   if Instance is TCustomEdit then
-    LineEditPaste; 
+    LineEditPaste;
 end;
 
 // *****************************************************************************
-
-
 
 procedure TJvExControl.MouseEnter(Control: TControl);
 begin
   Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
 end;
 
 procedure TJvExControl.MouseLeave(Control: TControl);
 begin
   Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
 end;
 
 procedure TJvExControl.ParentColorChanged;
@@ -1154,7 +1101,6 @@ function TJvExControl.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-  
 
 procedure TJvExControl.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -1165,13 +1111,12 @@ end;
 procedure TJvExControl.DoFocusChanged(Control: TWinControl);
 begin
 end;
-  
+
 constructor TJvExControl.Create(AOwner: TComponent);
-begin 
-  WindowProc := WndProc; 
+begin
+  WindowProc := WndProc;
   inherited Create(AOwner);
   FHintColor := Application.HintColor;
-  
 end;
 
 destructor TJvExControl.Destroy;
@@ -1179,28 +1124,17 @@ begin
   
   inherited Destroy;
 end;
- 
-
-
 
 procedure TJvExWinControl.MouseEnter(Control: TControl);
 begin
   Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
 end;
 
 procedure TJvExWinControl.MouseLeave(Control: TControl);
 begin
   Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
 end;
 
 procedure TJvExWinControl.ParentColorChanged;
@@ -1234,7 +1168,7 @@ function TJvExWinControl.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-  
+
 function TJvExWinControl.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -1308,7 +1242,6 @@ begin
   WidgetControl_PaintTo(self, PaintDevice, X, Y);
 end;
 
-
 procedure TJvExWinControl.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -1339,8 +1272,6 @@ function TJvExWinControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boo
 asm
   JMP   DefaultDoPaintBackground
 end;
-
-
 
 constructor TJvExWinControl.Create(AOwner: TComponent);
 begin
@@ -1374,15 +1305,20 @@ begin
       if Value <> FBevelInner then
       begin
         FBevelInner := Value;
-        Invalidate; //Perform(CM_BORDERCHANGED, 0, 0);
+        BorderStyleChanged;
       end;
     1: { BevelOuter }
       if Value <> FBevelOuter then
       begin
         FBevelOuter := Value;
-        Invalidate; //Perform(CM_BORDERCHANGED, 0, 0);
+        BorderStyleChanged;
       end;
   end;
+end;
+
+procedure TJvExWinControl.BorderStyleChanged;
+begin
+  Invalidate;
 end;
 
 procedure TJvExWinControl.SetBevelEdges(Value: TBevelEdges);
@@ -1390,7 +1326,7 @@ begin
   if Value <> FBevelEdges then
   begin
     FBevelEdges := Value;
-    Invalidate; //Perform(CM_BORDERCHANGED, 0, 0);
+    BorderStyleChanged;
   end;
 end;
 
@@ -1399,7 +1335,7 @@ begin
   if Value <> FBevelKind then
   begin
     FBevelKind := Value;
-    Invalidate; //Perform(CM_BORDERCHANGED, 0, 0);
+    BorderStyleChanged;
   end;
 end;
 
@@ -1408,7 +1344,7 @@ begin
   if Value <> FBevelWidth then
   begin
     FBevelWidth := Value;
-    Invalidate; // Perform(CM_BORDERCHANGED, 0, 0);
+    BorderStyleChanged;
   end;
 end;
 
@@ -1417,7 +1353,7 @@ begin
   if Value <> FBorderWidth then
   begin
     FBorderWidth := Value;
-    Invalidate; // Perform(CM_BORDERCHANGED, 0, 0);
+    BorderStyleChanged;
   end;
 end;
 
@@ -1465,29 +1401,16 @@ begin
   CustomControl_Painting(Self, Canvas, EventRegion);
 end;
 
-
-
-
-
-
 procedure TJvExGraphicControl.MouseEnter(Control: TControl);
 begin
   Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
 end;
 
 procedure TJvExGraphicControl.MouseLeave(Control: TControl);
 begin
   Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
 end;
 
 procedure TJvExGraphicControl.ParentColorChanged;
@@ -1535,7 +1458,7 @@ end;
   
 constructor TJvExGraphicControl.Create(AOwner: TComponent);
 begin 
-  WindowProc := WndProc; 
+  WindowProc := WndProc;
   inherited Create(AOwner);
   FHintColor := Application.HintColor;
   
@@ -1580,28 +1503,16 @@ begin
   end;
 end;
 
-
-
-
-
 procedure TJvExCustomControl.MouseEnter(Control: TControl);
 begin
   Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
 end;
 
 procedure TJvExCustomControl.MouseLeave(Control: TControl);
 begin
   Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
 end;
 
 procedure TJvExCustomControl.ParentColorChanged;
@@ -1708,7 +1619,6 @@ procedure TJvExCustomControl.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
 begin
   WidgetControl_PaintTo(self, PaintDevice, X, Y);
 end;
-  
 
 procedure TJvExCustomControl.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -1740,8 +1650,6 @@ function TJvExCustomControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): 
 asm
   JMP   DefaultDoPaintBackground
 end;
-  
-
 
 constructor TJvExCustomControl.Create(AOwner: TComponent);
 begin
@@ -1759,7 +1667,7 @@ begin
   
   inherited Destroy;
 end;
-  
+
 procedure TJvExCustomControl.ColorChanged;
 begin
   WidgetControl_ColorChanged(Self);
@@ -1786,29 +1694,17 @@ procedure TJvExCustomControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   CustomControl_Painting(Self, Canvas, EventRegion);
 end;
- 
-  
-
-
 
 procedure TJvExHintWindow.MouseEnter(Control: TControl);
 begin
   Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
 end;
 
 procedure TJvExHintWindow.MouseLeave(Control: TControl);
 begin
   Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
 end;
 
 procedure TJvExHintWindow.ParentColorChanged;
@@ -1915,7 +1811,6 @@ procedure TJvExHintWindow.PaintTo(PaintDevice: QPaintDeviceH; X, Y: integer);
 begin
   WidgetControl_PaintTo(self, PaintDevice, X, Y);
 end;
-  
 
 procedure TJvExHintWindow.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -1948,8 +1843,6 @@ asm
   JMP   DefaultDoPaintBackground
 end;
   
-
-
 constructor TJvExHintWindow.Create(AOwner: TComponent);
 begin
   WindowProc := WndProc;
@@ -1993,30 +1886,17 @@ procedure TJvExHintWindow.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   CustomControl_Painting(Self, Canvas, EventRegion);
 end;
- 
-  
-
-
-
 
 procedure TJvExFrameControl.MouseEnter(Control: TControl);
 begin
   Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-  {$IFEND}
 end;
 
 procedure TJvExFrameControl.MouseLeave(Control: TControl);
 begin
   Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
-  {$IF not declared(PatchedVCLX)}
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-  {$IFEND}
 end;
 
 procedure TJvExFrameControl.ParentColorChanged;
@@ -2163,10 +2043,9 @@ begin
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
 //  InternalFontChanged := Font.OnChange;
-  Font.OnChange := OnFontChanged; 
+  Font.OnChange := OnFontChanged;
   FHintColor := Application.HintColor;
 end;
-
 
 procedure TJvExFrameControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -2183,9 +2062,6 @@ destructor TJvExFrameControl.Destroy;
 begin
   inherited Destroy;
 end;
-  
-
-
 
 // *****************************************************************************
 
@@ -2309,10 +2185,6 @@ begin
   end;
 end;
 
-
-
-
-
 function CallSetFocusedControl(Instance: TCustomForm; Control: TWidgetControl): Boolean;
 asm
   dd    0, 0, 0, 0  // 16 Bytes
@@ -2388,24 +2260,19 @@ var
     CallCopyToClipboard, CallUndo: TOrgCallCode;
 
 initialization
-//  InstallProcHook(@TCustomForm.SetFocusedControl, @SetFocusedControlHook,
-//    @CallSetFocusedControl);
   InstallProcHook(@TCustomEdit.CutToClipboard, @CutToClipboardHook,
     @CallCutToClipboard);
   InstallProcHook(@TCustomEdit.CopyToClipboard, @CopyToClipboardHook,
     @CallCopyToClipboard);
   InstallProcHook(@TCustomEdit.PasteFromClipboard, @PasteFromClipboardHook,
-    @CallPasteFromClipboard); 
+    @CallPasteFromClipboard);
   InstallProcHook(@TCustomEdit.Undo, @UndoHook,
-    @CallUndo); 
+    @CallUndo);
 
 finalization
   UninstallProcHook(@CallCutToClipboard);
   UninstallProcHook(@CallCopyToClipboard);
-  UninstallProcHook(@CallPasteFromClipboard); 
-  UninstallProcHook(@CallUndo); 
-//  UninstallProcHook(@CallSetFocusedControl);
-
-
+  UninstallProcHook(@CallPasteFromClipboard);
+  UninstallProcHook(@CallUndo);
 end.
 

@@ -107,9 +107,8 @@ unit JvQResample;
 
 interface
 
-uses  
-  QGraphics, QWindows, 
-  SysUtils, Classes;
+uses
+  QGraphics, SysUtils, Classes;
 
 type
   // Type of a filter for use with Stretch()
@@ -149,6 +148,11 @@ const
     (Name: 'Lanczos3'; Filter: Lanczos3Filter; Width: 3.0),
     (Name: 'Mitchell'; Filter: MitchellFilter; Width: 2.0)
     );
+
+  pf24bit = pf32bit;
+
+
+
 
 implementation
 

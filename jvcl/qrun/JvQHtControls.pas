@@ -115,7 +115,7 @@ uses
   ShellAPI,
   {$ENDIF MSWINDOWS} 
   Qt, 
-  Types, QWindows, QMessages, QGraphics, QControls, QStdCtrls, QDialogs,
+  QWindows, QMessages, QGraphics, QControls, QStdCtrls, QDialogs,
   JvQExStdCtrls;
 
 type
@@ -335,7 +335,7 @@ function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string): Integer;
 function ItemHTPlain(const Text: string): string;
 function ItemHTHeight(Canvas: TCanvas; const Text: string): Integer;
-function PrepareText(A: string): string;
+function PrepareText(const A: string): string;
 
 implementation
 
@@ -361,7 +361,7 @@ const
   cURLTYPE = '://';
 
 // Kaczkowski - begin
-function PrepareText(A: string): string;
+function PrepareText(const A: string): string;
 type
   THtmlCode = packed record
     Html: PChar;
@@ -406,7 +406,7 @@ begin
   end;
 end;
 
-function GetChar(Str: string; Pos: Word; Up: Boolean = False): Char;
+function GetChar(const Str: string; Pos: Word; Up: Boolean = False): Char;
 begin
   if Length(Str) >= Pos then
     Result := Str[Pos]
@@ -416,11 +416,11 @@ begin
     Result := UpCase(Result);
 end;
 
-function DeleteTag(Str: string): string;
+function DeleteTag(const Str: string): string;
 begin
-  if (GetChar(Str, 1) = cTagBegin) and (Pos(cTagEnd, Str) > 1) then
-    Delete(Str, 1, Pos(cTagEnd, Str));
   Result := Str;
+  if (GetChar(Result, 1) = cTagBegin) and (Pos(cTagEnd, Result) > 1) then
+    Delete(Result, 1, Pos(cTagEnd, Result));
 end;
 
 procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
@@ -751,14 +751,14 @@ begin
 end;
 
 function IsHyperLink(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  Text: string; MouseX, MouseY: Integer; var HyperLink: string): Boolean; overload;
+  const Text: string; MouseX, MouseY: Integer; var HyperLink: string): Boolean; overload;
 var
   W: Integer;
 begin
   ItemHTDrawEx(Canvas, Rect, State, Text, W, False, MouseX, MouseY, Result, HyperLink);
 end;
 
-function IsHyperLink(Canvas: TCanvas; Rect: TRect; Text: string;
+function IsHyperLink(Canvas: TCanvas; Rect: TRect; const Text: string;
   MouseX, MouseY: Integer; var HyperLink: string): Boolean; overload;
 var
   W: Integer;

@@ -45,7 +45,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS} 
-  SysUtils, Classes, Types, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus,
+  SysUtils, Classes, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus,
   QButtons, QFileCtrls, QMask, QImgList, QActnList, QExtDlgs, 
   Qt, QComboEdits, JvQExComboEdits, QWindows, 
   JvQSpeedButton, JvQTypes, JvQExMask, JvQExForms, JvQButton;
@@ -219,8 +219,8 @@ type
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure AdjustHeight;
     procedure ButtonClick; dynamic;
-    procedure Change; override;  
-    procedure CreateWidget; override; 
+    procedure Change; override;
+    procedure CreateWnd; override; 
     procedure DefineProperties(Filer: TFiler); override;
     procedure DoChange; virtual; //virtual Polaris
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -245,7 +245,7 @@ type
     property AlwaysEnableButton: Boolean read FAlwaysEnableButton write FAlwaysEnableButton default False;
     property AlwaysShowPopup: Boolean read FAlwaysShowPopup write FAlwaysShowPopup default False; 
     property Button: TJvEditButton read FButton;
-    property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat;
+    property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat default False;
     property ButtonHint: string read GetButtonHint write SetButtonHint;
     property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth stored BtnWidthStored;
     property ClickKey: TShortCut read FClickKey write FClickKey default scAltDown;
@@ -367,6 +367,7 @@ type
     procedure DoBeforeDialog(var FileName: string; var Action: Boolean); dynamic;
     procedure ReceptFileDir(const AFileName: string); virtual; abstract;
     procedure ClearFileList; virtual;
+    procedure Change; override;
     procedure DisableSysErrors;
     procedure EnableSysErrors; 
     property ImageKind default ikDefault;
@@ -813,8 +814,13 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 
 implementation
 
-uses 
-  RTLConsts, Variants, 
+uses
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   Math, QConsts,
   {$IFDEF MSWINDOWS}
   ShellAPI,
@@ -1194,7 +1200,7 @@ begin
   FBtnControl.Visible := True;  
   FBtnControl.Parent := Self.ClientArea;
   FBtnControl.Left := Self.ClientArea.Width - DefEditBtnWidth;
-  Anchors := [akRight, akTop, akBottom]; 
+  FBtnControl.Anchors := [akRight, akTop, akBottom]; 
   FButton := TJvEditButton.Create(Self);
   FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
   FButton.Visible := True;
@@ -1358,15 +1364,12 @@ begin
   { Notification }
 end;
 
-
-procedure TJvCustomComboEdit.CreateWidget;
+procedure TJvCustomComboEdit.CreateWnd;
 begin
-  inherited CreateWidget;
+  inherited CreateWnd;
   UpdateControls;
-  UpdateMargins;
+  UpdateMargins; 
 end;
-
-
 
 
 
@@ -3185,6 +3188,21 @@ end;
 procedure TJvFileDirEdit.ClearFileList;
 begin
 end;
+
+procedure TJvFileDirEdit.Change;
+var
+  Ps: Integer;
+begin
+  // The control becomes confused when the Text property has a #10 or #13 in it.
+  Ps := Pos(#10, Text);
+  if Ps = 0 then
+    Ps := Pos(#13, Text);
+  if Ps > 0 then
+    Text := Copy(Text, 1, Ps - 1)
+  else
+    inherited Change;
+end;
+
 
 
 

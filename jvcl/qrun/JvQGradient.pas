@@ -34,9 +34,9 @@ unit JvQGradient;
 
 interface
 
-uses 
-  SysUtils, Classes, 
-  Types, QWindows, QGraphics, QControls, 
+uses
+  QWindows, QMessages, QGraphics, QControls,
+  SysUtils, Classes,
   JvQTypes, JvQComponent;
 
 type

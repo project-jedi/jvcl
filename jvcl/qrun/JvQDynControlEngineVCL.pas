@@ -35,7 +35,7 @@ interface
 
 uses
   Classes,
-  QControls, QStdCtrls, QExtCtrls, QComCtrls, QMask, QForms, Types, QGraphics,
+  QControls, QStdCtrls, QExtCtrls, QComCtrls, QMask, QForms, QGraphics,
   QButtons, QDialogs, QFileCtrls, QExtDlgs, QCheckLst,
   JvQDynControlEngine, JvQDynControlEngineIntf;
 
@@ -403,10 +403,12 @@ function DynControlEngineVCL: TJvDynControlEngine;
 
 implementation
 
-uses 
-  Variants, 
+uses
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils,
-  JvQJCLUtils;
+  JvQConsts, JvQJCLUtils;
 
 var
   IntDynControlEngineVCL: TJvDynControlEngine = nil;
@@ -473,7 +475,7 @@ begin
   EditMask := Value;
 end;
 
-//=== { TJvDynControlVCLButtonEdit } ============================================
+//=== { TJvDynControlVCLButtonEdit } =========================================
 
 constructor TJvDynControlVCLButtonEdit.Create(AOwner: TComponent);
 begin
@@ -500,6 +502,7 @@ end;
 
 procedure TJvDynControlVCLButtonEdit.ControlSetDefaultProperties;
 begin
+  Self.Caption := ' ';
 end;
 
 procedure TJvDynControlVCLButtonEdit.ControlSetReadOnly(Value: Boolean);
@@ -604,6 +607,7 @@ begin
   Height      := FEditControl.Height;
   FButton.Width := Height;
   FEditControl.Align := alClient;
+  FDialogOptions := [ofHideReadOnly,ofEnableSizing];
   BevelInner  := bvNone;
   BevelOuter  := bvNone;
   FDialogKind := jdkOpen;
@@ -680,10 +684,13 @@ begin
           Free;
         end;
   end;
+  if FEditControl.CanFocus then
+    FEditControl.SetFocus;
 end;
 
 procedure TJvDynControlVCLFileNameEdit.ControlSetDefaultProperties;
 begin
+  Caption := ' ';
 end;
 
 procedure TJvDynControlVCLFileNameEdit.ControlSetReadOnly(Value: Boolean);
@@ -773,12 +780,12 @@ begin
   inherited Create(AOwner);
   FEditControl := TMaskEdit.Create(AOwner);
   FEditControl.Parent := Self;
-  FButton    := TBitBtn.Create(AOwner);
+  FButton := TBitBtn.Create(AOwner);
   FButton.Parent := Self;
   FButton.Align := alRight;
   FButton.OnClick := DefaultOnButtonClick;
   FButton.Caption := '...';
-  Height     := FEditControl.Height;
+  Height := FEditControl.Height;
   FButton.Width := Height;
   FEditControl.Align := alClient;
   BevelInner := bvNone;
@@ -796,7 +803,14 @@ procedure TJvDynControlVCLDirectoryEdit.DefaultOnButtonClick(Sender: TObject);
 var  
   Dir: WideString; 
 begin
-  Dir := ControlGetValue;  
+  Dir := ControlGetValue;
+  if Dir = '' then
+    if FInitialDir <> '' then
+      Dir := FInitialDir
+    else
+      Dir := PathDelim;
+  if not DirectoryExists(Dir) then
+    Dir := PathDelim;  
   {$IFDEF MSWINDOWS}
   if SelectDirectory('', '', Dir) then
   {$ENDIF MSWINDOWS}
@@ -804,10 +818,13 @@ begin
   if SelectDirectory('', '/', Dir, False) then
   {$ENDIF LINUX} 
     ControlSetValue(Dir);
+  if FEditControl.CanFocus then
+    FEditControl.SetFocus;
 end;
 
 procedure TJvDynControlVCLDirectoryEdit.ControlSetDefaultProperties;
 begin
+  Self.Caption := ' ';
 end;
 
 procedure TJvDynControlVCLDirectoryEdit.ControlSetReadOnly(Value: Boolean);
@@ -910,7 +927,7 @@ begin
   if VarType(Value) = varBoolean then
     Checked := Value
   else
-    Checked := Uppercase(Value) = 'TRUE';
+    Checked := UpperCase(Value) = 'TRUE';
 end;
 
 function TJvDynControlVCLCheckBox.ControlGetValue: Variant;
@@ -1139,7 +1156,7 @@ begin
   OnDblClick := Value;
 end;
 
-//=== { TJvDynControlVCLCheckListBox } ============================================
+//=== { TJvDynControlVCLCheckListBox } =======================================
 
 procedure TJvDynControlVCLCheckListBox.ControlSetDefaultProperties;
 begin
@@ -1319,12 +1336,12 @@ end;
 procedure TJvDynControlVCLComboBox.ControlSetNewEntriesAllowed(Value: Boolean);
 const
   Styles: array [Boolean] of TComboBoxStyle =
-    (csDropDown, csDropDownList);
+    (csDropDownList, csDropDown);
 begin
   Style := Styles[Value];
 end;
 
-//=== { TJvDynControlVCLGroupBox } ==============================================
+//=== { TJvDynControlVCLGroupBox } ===========================================
 
 procedure TJvDynControlVCLGroupBox.ControlSetDefaultProperties;
 begin
@@ -1535,6 +1552,8 @@ begin
   WordWrap := Value;
 end;
 
+//=== { TJvDynControlVCLStaticText } =========================================
+
 
 
 //=== { TJvDynControlVCLButton } =============================================
@@ -1580,6 +1599,8 @@ begin
   Layout := Value;
 end;
 
+//=== { TJvDynControlEngineVCL } =============================================
+
 function DynControlEngineVCL: TJvDynControlEngine;
 begin
   Result := IntDynControlEngineVCL;
@@ -1587,6 +1608,7 @@ end;
 
 type
   TJvDynControlEngineVCL = class(TJvDynControlEngine)
+  public
     procedure RegisterControls; override;
   end;
 

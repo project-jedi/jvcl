@@ -34,10 +34,9 @@ unit JvQEasterEgg;
 
 interface
 
-uses
-  QWindows,  
-  Qt, Types, 
-  SysUtils, Classes, QControls, QForms,
+uses 
+  Qt, 
+  QWindows, QMessages, SysUtils, Classes, QControls, QForms,
   JvQComponent;
 
 type

@@ -36,8 +36,7 @@ unit JvQXPCoreUtils;
 interface
 
 uses
-  SysUtils, Classes, TypInfo,  
-  Types, QGraphics, QControls, QTypes, QWindows, 
+  SysUtils, Classes, TypInfo, QWindows, QGraphics, QControls,
   JvQXPCore;
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;

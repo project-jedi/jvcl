@@ -38,10 +38,12 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
-  Windows, ShellAPI,
-  {$ENDIF MSWINDOWS}  
-  Types, QWindows, QForms, QDialogs, QFileCtrls,  
-  Variants, 
+  ShellAPI,
+  {$ENDIF MSWINDOWS}
+  QWindows, QMessages, QForms, QDialogs, QFileCtrls,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   JvQXMLTree, JvQComponent, JvQStrings, JvQTypes;
 
 const
@@ -102,26 +104,26 @@ type
 
   TJvJanDSO = class(TStringList)
   private
-    function InternalGetValue(Index: Integer; AField: string): string;
-    procedure InternalSetValue(Index: Integer; AField, AValue: string);
+    function InternalGetValue(Index: Integer; const AField: string): string;
+    procedure InternalSetValue(Index: Integer; const AField, AValue: string);
   public
     // when a key is not found it will be added
-    procedure SetValue(AKey: Variant; AField, AValue: string);
-    function GetValue(AKey: Variant; AField: string): string;
+    procedure SetValue(AKey: Variant; const AField, AValue: string);
+    function GetValue(AKey: Variant; const AField: string): string;
   end;
 
   TJvJanDSOList = class(TStringList)
   public
     destructor Destroy; override;
     procedure ClearTables;
-    function Table(AName: string): TJvJanDSO;
+    function Table(const AName: string): TJvJanDSO;
   end;
 
   TJvJanXMLList = class(TStringList)
   public
     destructor Destroy; override;
     procedure ClearXMLS;
-    function Xml(AName: string): TJvXMLTree;
+    function Xml(const AName: string): TJvXMLTree;
   end;
 
   TVariantObject = class(TObject)
@@ -136,9 +138,9 @@ type
   public
     destructor Destroy; override;
     procedure ClearObjects;
-    procedure SetVariable(Symbol: string; AValue: Variant);
-    function GetVariable(Symbol: string): Variant;
-    function GetObject(Symbol: string): TVariantObject; reintroduce;
+    procedure SetVariable(const Symbol: string; AValue: Variant);
+    function GetVariable(const Symbol: string): Variant;
+    function GetObject(const Symbol: string): TVariantObject; reintroduce;
   end;
 
   TAtom = class(TObject)
@@ -356,7 +358,7 @@ begin
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL); 
 end;
 
-procedure GlobalSetValue(var aText: string; AName, AValue: string);
+procedure GlobalSetValue(var aText: string; const AName, AValue: string);
 var
   p, p2, L: Integer;
 begin
@@ -383,7 +385,7 @@ begin
   end;
 end;
 
-function GlobalGetValue(aText, AName: string): string;
+function GlobalGetValue(const aText, AName: string): string;
 var
   p, p2, L: Integer;
 begin
@@ -420,7 +422,7 @@ begin
       p := Pos('..', s);
       if p = 0 then
       begin
-        if strtoint(aList[Index]) = i then
+        if StrToInt(aList[Index]) = i then
         begin
           Result := Index;
           Exit;
@@ -430,7 +432,7 @@ begin
       begin // have range
         s1 := trim(Copy(s, 1, p - 1));
         s2 := trim(Copy(s, p + 2, Length(s)));
-        if (i >= strtoint(s1)) and (i <= strtoint(s2)) then
+        if (i >= StrToInt(s1)) and (i <= StrToInt(s2)) then
         begin
           Result := Index;
           Exit;
@@ -491,7 +493,6 @@ var
   c, Index, p: Integer;
   d: TDatetime;
   s, s1, s2: string;
-
 begin
   Result := -1;
   d := v;
@@ -661,7 +662,7 @@ begin
   FXMLList := TJvJanXMLList.Create;
   FXMLSelect := TList.Create;
   FDSOBase := ExtractFilePath(paramstr(0));
-  if FDSOBase[Length(FDSOBase)] = '\' then
+  if FDSOBase[Length(FDSOBase)] = PathDelim then
     Delete(FDSOBase, Length(FDSOBase), 1);
   FVSP := 0;
   // osp := 0;
@@ -752,7 +753,6 @@ begin
     FScript := Value;
     ParseScript;
   end;
-
 end;
 
 procedure TJvForthScript.ParseScript;
@@ -1161,7 +1161,7 @@ begin
     else
     begin
       try // Integer
-        vinteger := strtoint(token);
+        vinteger := StrToInt(token);
         atomsymbol := token;
         atomValue := vinteger;
         pushatom(dfoInteger);
@@ -2398,7 +2398,7 @@ begin
       raise EJvJanScriptError.CreateResFmt(@RsEIncrementIndexExpectedIns_, [s]);
     sidx := Copy(s, pb + 1, pe - pb - 1);
     try
-      Index := strtoint(sidx);
+      Index := StrToInt(sidx);
       Inc(Index);
       s := Copy(s, 1, pb - 1) + '[' + inttostr(Index) + ']';
       vo.Value := s;
@@ -2492,7 +2492,7 @@ end;
 destructor TAtomList.Destroy;
 begin
   ClearObjects;
-  inherited;
+  inherited Destroy;
 end;
 
 //=== { TVariantObject } =====================================================
@@ -2522,7 +2522,7 @@ begin
   inherited Destroy;
 end;
 
-function TVariantList.GetObject(Symbol: string): TVariantObject;
+function TVariantList.GetObject(const Symbol: string): TVariantObject;
 var
   Index: Integer;
 begin
@@ -2535,7 +2535,7 @@ begin
   Result := TVariantObject(Objects[Index]);
 end;
 
-function TVariantList.GetVariable(Symbol: string): Variant;
+function TVariantList.GetVariable(const Symbol: string): Variant;
 var
   Index: Integer;
 begin
@@ -2548,7 +2548,7 @@ begin
   Result := TVariantObject(Objects[Index]).Value;
 end;
 
-procedure TVariantList.SetVariable(Symbol: string; AValue: Variant);
+procedure TVariantList.SetVariable(const Symbol: string; AValue: Variant);
 var
   Index: Integer;
   obj: TVariantObject;
@@ -2558,7 +2558,7 @@ begin
   begin
     obj := TVariantObject.Create;
     obj.Value := AValue;
-    addobject(Symbol, obj);
+    AddObject(Symbol, obj);
   end
   else
   begin
@@ -2585,7 +2585,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvJanDSOList.Table(AName: string): TJvJanDSO;
+function TJvJanDSOList.Table(const AName: string): TJvJanDSO;
 var
   Index: Integer;
   dso: TJvJanDSO;
@@ -2594,7 +2594,7 @@ begin
   if Index = -1 then
   begin
     dso := TJvJanDSO.Create;
-    addobject(AName, dso);
+    AddObject(AName, dso);
     Result := dso;
   end
   else
@@ -2603,7 +2603,7 @@ end;
 
 //=== { TJvJanDSO } ==========================================================
 
-function TJvJanDSO.GetValue(AKey: Variant; AField: string): string;
+function TJvJanDSO.GetValue(AKey: Variant; const AField: string): string;
 var
   Index: Integer;
   key: string;
@@ -2633,7 +2633,7 @@ begin
   end
 end;
 
-function TJvJanDSO.InternalGetValue(Index: Integer; AField: string): string;
+function TJvJanDSO.InternalGetValue(Index: Integer; const AField: string): string;
 var
   key, s: string;
   p: Integer;
@@ -2645,7 +2645,7 @@ begin
   Result := GlobalGetValue(s, AField);
 end;
 
-procedure TJvJanDSO.InternalSetValue(Index: Integer; AField, AValue: string);
+procedure TJvJanDSO.InternalSetValue(Index: Integer; const AField, AValue: string);
 var
   key, s: string;
   p: Integer;
@@ -2658,7 +2658,7 @@ begin
   Strings[Index] := key + '=' + s;
 end;
 
-procedure TJvJanDSO.SetValue(AKey: Variant; AField, AValue: string);
+procedure TJvJanDSO.SetValue(AKey: Variant; const AField, AValue: string);
 var
   Index: Integer;
   key: string;
@@ -2668,7 +2668,7 @@ begin
   strkey := False;
   Index := 0;
   try
-    Index := strtoint(key)
+    Index := StrToInt(key)
   except
     strkey := True;
   end;
@@ -2707,7 +2707,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvJanXMLList.Xml(AName: string): TJvXMLTree;
+function TJvJanXMLList.Xml(const AName: string): TJvXMLTree;
 var
   Index: Integer;
   xmldso: TJvXMLTree;
@@ -2716,7 +2716,7 @@ begin
   if Index = -1 then
   begin
     xmldso := TJvXMLTree.Create(AName, '', nil);
-    addobject(AName, xmldso);
+    AddObject(AName, xmldso);
     Result := xmldso;
   end
   else

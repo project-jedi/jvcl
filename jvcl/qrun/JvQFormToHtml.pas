@@ -35,8 +35,7 @@ unit JvQFormToHtml;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QStdCtrls, 
+  SysUtils, Classes, QGraphics, QControls, QForms, QStdCtrls,
   JvQComponent;
 
 type

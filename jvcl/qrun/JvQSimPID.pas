@@ -35,8 +35,7 @@ unit JvQSimPID;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, 
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls,
   JvQComponent;
 
 type

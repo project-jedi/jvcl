@@ -35,8 +35,8 @@ unit JvQMovableBevel;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QForms, QExtCtrls, Types, 
+  SysUtils, Classes,
+  QWindows, QMessages, QControls, QForms, QExtCtrls,
   JvQExExtCtrls;
 
 type

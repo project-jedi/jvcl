@@ -35,8 +35,7 @@ unit JvQSpecialImage;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, QExtCtrls, QForms, QWindows, 
+  SysUtils, Classes, QWindows, QGraphics, QControls, QExtCtrls, QForms,
   JvQTypes, JvQExExtCtrls;
 
 type

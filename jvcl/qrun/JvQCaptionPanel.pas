@@ -48,8 +48,9 @@ interface
  {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
 
 
-uses  
-  Types, Qt, QWindows, 
+uses
+  QWindows, QMessages, 
+  Qt, 
   Classes, QGraphics, QControls, QForms,
   JvQComponent, JvQExControls;
 

@@ -35,8 +35,7 @@ unit JvQParserForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QForms, QStdCtrls, 
+  SysUtils, Classes, QControls, QForms, QStdCtrls,
   JvQTypes, JvQComponent;
 
 type

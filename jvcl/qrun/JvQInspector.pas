@@ -171,8 +171,8 @@ interface
 
 uses
   SysUtils, Classes, Contnrs, TypInfo, IniFiles,
-  Types, QWindows, QMessages, QGraphics, QControls, QStdCtrls, QExtCtrls, 
-  Qt, QTypes, JvQExExtCtrls, 
+  QWindows, QMessages, QGraphics, QControls, QStdCtrls, QExtCtrls, 
+  Qt, JvQExExtCtrls, 
   JvQComponent, JvQTypes, JvQExControls, JvQFinalize;
 
 const
@@ -526,7 +526,7 @@ type
     function VisibleIndex(const AItem: TJvCustomInspectorItem): Integer; virtual;
     procedure RefreshValues;
     procedure SaveValues;
-    procedure AddComponent(Instance: TObject; CategoryName: string = ''; Expanded: Boolean = True);
+    procedure AddComponent(Instance: TObject; const CategoryName: string = ''; Expanded: Boolean = True);
     procedure Clear;
   end;
 
@@ -807,7 +807,7 @@ type
     procedure Deactivate; dynamic;
     procedure DoAfterItemCreate; virtual;
     function DoCompare(const Item: TJvCustomInspectorItem): Integer; virtual;
-    procedure DoDefaultDrawListItem(ACanvas: TCanvas; Rect: TRect; AText: string); virtual;  
+    procedure DoDefaultDrawListItem(ACanvas: TCanvas; Rect: TRect; const AText: string); virtual;  
     procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
       State: TOwnerDrawState; var Handled: Boolean); virtual; 
     procedure DoDropDownKeys(var Key: Word; Shift: TShiftState); virtual;
@@ -984,7 +984,6 @@ type
     function IsCategory: Boolean; override;
     procedure SetFlags(const Value: TInspectorItemFlags); override;
   public
-    // (rom) a write only property?
     property Name write FName;
   end;
 
@@ -1281,7 +1280,7 @@ type
   protected
     function GetDisplayValue: string; override;
     procedure SetDisplayValue(const Value: string); override;
-    procedure SetFormat(Value: string);
+    procedure SetFormat(const Value: string);
   public
     constructor Create(const AParent: TJvCustomInspectorItem;
       const AData: TJvCustomInspectorData); override;
@@ -1316,7 +1315,7 @@ type
     function GetDateFormat: string;
     function GetTimeShowAMPM: Boolean;
     function GetTimeShowSeconds: Boolean;
-    procedure SetDateFormat(Value: string);
+    procedure SetDateFormat(const Value: string);
     procedure SetTimeShowAMPM(Value: Boolean);
     procedure SetTimeShowSeconds(Value: Boolean);
   public
@@ -1440,7 +1439,7 @@ type
     // be output as 'const TForm*' by both the Linker and HPP generator,
     // thus not triggering any error, even if this doesn't respect the
     // meaning of the Delphi construct which is 'TForm const *'
-    constructor CreatePrim(AName: string; ATypeInfo: PTypeInfo);
+    constructor CreatePrim(const AName: string; ATypeInfo: PTypeInfo);
     procedure CheckReadAccess; virtual;
     procedure CheckWriteAccess; virtual;
     procedure DoDataChanged;
@@ -1589,7 +1588,7 @@ type
     class function ItemRegister: TJvInspectorRegister; override;
     class function TypeInfoMapRegister: TJvInspectorRegister;
     class procedure AddTypeMapping(Target, Source: PTypeInfo; ObjectClass: TClass = nil;
-      PropertyName: string = '');
+      const PropertyName: string = '');
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
        PropInfo: PPropInfo): TJvCustomInspectorItem; reintroduce; overload;
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
@@ -1691,7 +1690,7 @@ type
     FKey: string;
     FSection: string;
   protected
-    constructor CreatePrim(AName, ASection, AKey: string;  ATypeInfo: PTypeInfo);
+    constructor CreatePrim(const AName, ASection, AKey: string;  ATypeInfo: PTypeInfo);
     function ExistingValue: Boolean; virtual; abstract;
     function GetAsFloat: Extended; override;
     function GetAsInt64: Int64; override;
@@ -1706,9 +1705,9 @@ type
     procedure SetAsMethod(const Value: TMethod); override;
     procedure SetAsOrdinal(const Value: Int64); override;
     procedure SetAsString(const Value: string); override;
-    procedure SetKey(Value: string);
-    procedure SetSection(Value: string);
-    procedure WriteValue(Value: string); virtual; abstract;
+    procedure SetKey(const Value: string);
+    procedure SetSection(const Value: string);
+    procedure WriteValue(const Value: string); virtual; abstract;
   public
     function ReadValue: string; virtual; abstract; // made public to help fix a bug. WAP.
     procedure GetAsSet(var Buf); override;
@@ -1726,7 +1725,7 @@ type
   protected
     function ExistingValue: Boolean; override;
     function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
-    procedure WriteValue(Value: string); override;
+    procedure WriteValue(const Value: string); override;
   public
     function ReadValue: string; override;
     class function New(const AParent: TJvCustomInspectorItem;
@@ -1844,8 +1843,8 @@ type
     FPropertyType: PTypeInfo;
     FNewTypeInfo: PTypeInfo;
   public
-    constructor Create(AObjectClass: TClass; APropertyName: string; APropertyType: PTypeInfo;
-      ANewTypeInfo: PTypeInfo);
+    constructor Create(AObjectClass: TClass; const APropertyName: string;
+      APropertyType: PTypeInfo; ANewTypeInfo: PTypeInfo);
     function Compare(const ADataObj: TJvCustomInspectorData;
       const Item: TJvCustomInspectorRegItem): Integer; override;
     function MatchValue(const ADataObj: TJvCustomInspectorData): Integer; override;
@@ -1990,8 +1989,10 @@ procedure RegisterTypeInfoHelper(AClass: TJvTypeInfoHelperClass);
 
 implementation
 
-uses 
-  RTLConsts,   
+uses
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}  
   QDialogs, QForms, QButtons, QConsts, 
   JclRTTI, JclLogic, JclStrings,
   JvQJCLUtils, JvQJVCLUtils, JvQThemes, JvQResources;
@@ -2003,7 +2004,7 @@ const
 var
   GlobalTypeInfoHelpersList: TClassList;
 
-//=== { TOpenEdit } ==========================================================#
+//=== { TOpenEdit } ==========================================================
 
 
 
@@ -2256,7 +2257,6 @@ begin
   FFont.Free;
   FPen.Free;
   FBrush.Free;
-  // (rom) added inherited Destroy
   inherited Destroy;
 end;
 
@@ -5423,7 +5423,7 @@ begin
     Result := 0;
 end;
 
-procedure TJvCustomInspectorItem.DoDefaultDrawListItem(ACanvas: TCanvas; Rect: TRect; AText: string);
+procedure TJvCustomInspectorItem.DoDefaultDrawListItem(ACanvas: TCanvas; Rect: TRect; const AText: string);
 var
   h: Integer;
 begin
@@ -6658,7 +6658,6 @@ begin
       if not (iifMultiLine in Flags) then
         ACanvas.TextRect(ARect, ARect.Left, ARect.Top, S)
       else
-      // (rom) fix added begin end
       begin  
         DrawText(ACanvas, S, Length(S), ARect, DT_WORDBREAK); 
       end;
@@ -7747,7 +7746,7 @@ constructor TJvInspectorFloatItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
 begin
   inherited Create(AParent, AData);
-  FFormat := '%.4f';
+  FFormat := '';
 end;
 
 function TJvInspectorFloatItem.GetDisplayValue: string;
@@ -7757,7 +7756,7 @@ begin
   // attribute that doesn't convert nicely to a float causes
   // GUI Exception hell.
   try
-    Result := FloatToStr(Data.AsFloat);
+    Result := FormatFloat(FFormat, Data.AsFloat);
   except
     on E: EConvertError do
       if Data is TJvInspectorCustomConfData then
@@ -8775,7 +8774,7 @@ begin
     Data.AsFloat := Trunc(StrToDate(Value));
 end;
 
-procedure TJvInspectorDateItem.SetFormat(Value: string);
+procedure TJvInspectorDateItem.SetFormat(const Value: string);
 var
   I: Integer;
   MCount: Integer;
@@ -8948,7 +8947,7 @@ begin
   Result := FTime.ShowSeconds;
 end;
 
-procedure TJvInspectorDateTimeItem.SetDateFormat(Value: string);
+procedure TJvInspectorDateTimeItem.SetDateFormat(const Value: string);
 begin
   FDate.Format := Value;
 end;
@@ -9793,7 +9792,7 @@ begin
   raise EJvInspectorData.CreateResFmt(@RsENotSeparately, [ClassName]);
 end;
 
-constructor TJvCustomInspectorData.CreatePrim(AName: string;
+constructor TJvCustomInspectorData.CreatePrim(const AName: string;
   ATypeInfo: PTypeInfo);
 begin
   inherited Create;
@@ -10326,8 +10325,8 @@ begin
   Result := GlobalVarItemReg;
 end;
 
-class function TJvInspectorVarData.New(const AParent: TJvCustomInspectorItem; const AName: string;  ATypeInfo:
-  PTypeInfo; const AAddress: Pointer): TJvCustomInspectorItem;
+class function TJvInspectorVarData.New(const AParent: TJvCustomInspectorItem;
+  const AName: string; ATypeInfo: PTypeInfo; const AAddress: Pointer): TJvCustomInspectorItem;
 var
   Data: TJvInspectorVarData;
 begin
@@ -10586,7 +10585,7 @@ begin
 end;
 
 class procedure TJvInspectorPropData.AddTypeMapping(Target, Source: PTypeInfo;
-  ObjectClass: TClass; PropertyName: string);
+  ObjectClass: TClass; const PropertyName: string);
 begin
   TypeInfoMapRegister.Add(TJvInspectorTypeInfoMapperRegItem.Create(ObjectClass,
     PropertyName, Source, Target));
@@ -11172,7 +11171,7 @@ end;
 
 //=== { TJvInspectorCustomConfData } =========================================
 
-constructor TJvInspectorCustomConfData.CreatePrim(AName, ASection, AKey: string;
+constructor TJvInspectorCustomConfData.CreatePrim(const AName, ASection, AKey: string;
   ATypeInfo: PTypeInfo);
 begin
   inherited CreatePrim(AName, ATypeInfo);
@@ -11340,7 +11339,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvInspectorCustomConfData.SetKey(Value: string);
+procedure TJvInspectorCustomConfData.SetKey(const Value: string);
 begin
   if Value <> Key then
   begin
@@ -11349,7 +11348,7 @@ begin
   end;
 end;
 
-procedure TJvInspectorCustomConfData.SetSection(Value: string);
+procedure TJvInspectorCustomConfData.SetSection(const Value: string);
 begin
   if Value <> Section then
   begin
@@ -11411,7 +11410,7 @@ begin
   Result := INIFile.ReadString(Section, Key, '');
 end;
 
-procedure TJvInspectorINIFileData.WriteValue(Value: string);
+procedure TJvInspectorINIFileData.WriteValue(const Value: string);
 begin
   INIFile.WriteString(Section, Key, Value);
 end;
@@ -11921,8 +11920,8 @@ end;
 
 //=== { TJvInspectorTypeInfoMapperRegItem } ==================================
 
-constructor TJvInspectorTypeInfoMapperRegItem.Create(AObjectClass: TClass; APropertyName: string;
-  APropertyType: PTypeInfo; ANewTypeInfo: PTypeInfo);
+constructor TJvInspectorTypeInfoMapperRegItem.Create(AObjectClass: TClass;
+  const APropertyName: string; APropertyType: PTypeInfo; ANewTypeInfo: PTypeInfo);
 begin
   inherited Create(nil);
   FObjectClass := AObjectClass;
@@ -12099,7 +12098,7 @@ begin
   FInspectObject := Value;
 end;
 
-procedure TJvCustomInspector.AddComponent(Instance: TObject; CategoryName: string;
+procedure TJvCustomInspector.AddComponent(Instance: TObject; const CategoryName: string;
   Expanded: Boolean);
 var
   InspCat: TJvCustomInspectorItem;

@@ -33,7 +33,7 @@ unit JvQDynControlEngine;
 interface
 
 uses
-  Classes, QControls, QForms, QStdCtrls, Types, QGraphics, QButtons,
+  Classes, QControls, QForms, QStdCtrls, QGraphics, QButtons,
   JvQDynControlEngineIntf;
 
 type
@@ -141,8 +141,10 @@ function DefaultDynControlEngine: TJvDynControlEngine;
 
 implementation
 
-uses 
-  Variants, 
+uses
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, TypInfo, 
   JvQResources, JvQTypes, JvQDynControlEngineVCL;
 

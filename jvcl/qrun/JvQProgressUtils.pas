@@ -33,9 +33,8 @@ unit JvQProgressUtils;
 
 interface
 
-uses  
-  QControls, QComCtrls, 
-  SysUtils, Classes,
+uses
+  QControls, QComCtrls, SysUtils, Classes,
   JvQFinalize;
 
 

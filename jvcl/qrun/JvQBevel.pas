@@ -35,7 +35,7 @@ unit JvQBevel;
 interface
 
 uses
-  Types, QWindows, QMessages, Classes, QControls,
+  QWindows, QMessages, Classes, QControls,
   JvQThemes, JvQExExtCtrls;
 
 type

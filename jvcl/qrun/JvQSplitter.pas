@@ -35,8 +35,8 @@ unit JvQSplitter;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QForms, QExtCtrls, QControls, Types, 
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QForms, QExtCtrls, QControls,
   JvQExExtCtrls;
 
 type

@@ -36,7 +36,7 @@ unit JvQXPCore;
 interface
 
 uses
-  Types, QWindows, QControls, QGraphics, QForms, QMessages, // asn: messages after controls for clx 
+  QWindows, QControls, QGraphics, QForms, QMessages, // asn: messages after controls for clx 
   JvQComponent, 
   Classes;
 

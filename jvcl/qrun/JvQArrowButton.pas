@@ -40,9 +40,8 @@ unit JvQArrowButton;
 interface
 
 uses
-  Classes,  
-  QTypes, QImgList, QWindows, 
-  QControls, Types, QGraphics, QButtons, QMenus,
+  Classes, QWindows, QMessages, QControls, QGraphics, QButtons, QMenus,  
+  QImgList, 
   JvQComponent, JvQTypes;
 
 type
@@ -853,7 +852,7 @@ begin
   end
   else
   if FMouseInControl and Enabled or (csDesigning in ComponentState) then 
-    QWindows.   
+    QWindows. 
     DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
       FillStyles[Flat] or BF_RECT);
   { find middle pixel }

@@ -35,7 +35,7 @@ unit JvQRadioGroup;
 interface
 
 uses
-  Types, QWindows, QMessages,
+  QWindows, QMessages,
   SysUtils, Classes, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QToolWin, 
   QTypes, 
   JvQJCLUtils, JvQThemes, JvQExControls, JvQExExtCtrls;
@@ -107,9 +107,8 @@ begin
   begin
     Font := Self.Font;
     H := TextHeight('0');
-    R := Rect(0, H div 2 - 1, Width, Height); 
-    QWindows. 
-    DrawEdge(Handle, R, InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],
+    R := Rect(0, H div 2 - 1, Width, Height);
+    QWindows.DrawEdge(Handle, R, InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],
       Byte(FEdgeBorders)  or BF_ADJUST);
     if (Text <> '') and CaptionVisible then
     begin

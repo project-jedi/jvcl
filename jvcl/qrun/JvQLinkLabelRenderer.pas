@@ -19,7 +19,7 @@ The Initial Developer of the Original Code is David Polberger <dpol att swipnet 
 Portions created by David Polberger are Copyright (C) 2002 David Polberger.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
+Contributor(s): Cetkvosky
 
 Current Version: 2.00
 
@@ -46,8 +46,7 @@ unit JvQLinkLabelRenderer;
 interface
 
 uses
-  Classes, SysUtils,  
-  QGraphics, Types, 
+  Classes, SysUtils, QWindows, QGraphics,
   JvQLinkLabelTree, JvQLinkLabelTextHandler, JvQTypes;
 
 type

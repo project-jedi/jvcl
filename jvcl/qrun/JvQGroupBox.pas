@@ -35,12 +35,7 @@ unit JvQGroupBox;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}  
-  Types, Qt, QWindows, 
-  QGraphics, QControls, QForms, QStdCtrls,
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QForms, QStdCtrls,
   JvQThemes, JvQExControls, JvQExStdCtrls;
 
 type

@@ -35,8 +35,10 @@ unit JvQSimpleXml;
 interface
 
 uses
-  SysUtils, Classes, IniFiles, 
-  Variants, 
+  SysUtils, Classes, IniFiles,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   JvQFinalize;
 
 type 
@@ -185,6 +187,14 @@ type
   public
     constructor Create(const AOwner: TJvSimpleXMLElem);
     destructor Destroy; override;
+
+    // Use notify to indicate to a list that the given element is removed
+    // from the list so that it doesn't delete it as well as the one
+    // that insert it in itself. This method is automatically called
+    // by AddChild and AddChildFirst if the Container property of the
+    // given element is set.
+    procedure Notify(Value: TJvSimpleXMLElem; Operation: TOperation);
+
     function Add(const Name: string): TJvSimpleXMLElemClassic; overload;
     function Add(const Name, Value: string): TJvSimpleXMLElemClassic; overload;
     function Add(const Name: string; const Value: Int64): TJvSimpleXMLElemClassic; overload;
@@ -223,6 +233,7 @@ type
     FPointer: string;
     FData: Pointer;
     FSimpleXML: TJvSimpleXML;
+    FContainer: TJvSimpleXMLElems;
   protected
     function GetSimpleXML: TJvSimpleXML;
     function GetIntValue: Int64;
@@ -250,6 +261,7 @@ type
     function GetChildIndex(const AChild: TJvSimpleXMLElem): Integer;
 
     property SimpleXML: TJvSimpleXML read GetSimpleXML;
+    property Container: TJvSimpleXMLElems read FContainer write FContainer;
   published
     property Name: string read FName write SetName;
     property Parent: TJvSimpleXMLElem read FParent write FParent;
@@ -1026,6 +1038,7 @@ begin
   inherited Create;
   FName := '';
   FParent := TJvSimpleXMLElem(AOwner);
+  FContainer := nil;
 end;
 
 destructor TJvSimpleXMLElem.Destroy;
@@ -1225,13 +1238,27 @@ end;
 procedure TJvSimpleXMLElems.AddChild(const Value: TJvSimpleXMLElem);
 begin
   CreateElems;
+
+  // If there already is a container, notify it to remove the element
+  if Assigned(Value.Container) then
+    Value.Container.Notify(Value, opRemove);
+
   FElems.AddObject(Value.Name, Value);
+
+  Notify(Value, opInsert);
 end;
 
 procedure TJvSimpleXMLElems.AddChildFirst(const Value: TJvSimpleXMLElem);
 begin
   CreateElems;
-  FElems.InsertObject(0, Value.Name, Value)
+
+  // If there already is a container, notify it to remove the element
+  if Assigned(Value.Container) then
+    Value.Container.Notify(Value, opRemove);
+
+  FElems.InsertObject(0, Value.Name, Value);
+
+  Notify(Value, opInsert);
 end;
 
 function TJvSimpleXMLElems.AddFirst(const Name: string): TJvSimpleXMLElemClassic;
@@ -1522,6 +1549,18 @@ begin
   Stream.Seek(lStreamPos, soFromBeginning);
 end;
 
+procedure TJvSimpleXMLElems.Notify(Value: TJvSimpleXMLElem;
+  Operation: TOperation);
+begin
+  case Operation of
+    opRemove:
+      if Value.Container = Self then  // Only remove if we have it
+        FElems.Delete(FElems.IndexOf(Value.Name));
+    opInsert:
+      Value.Container := Self;
+  end;
+end;
+
 procedure TJvSimpleXMLElems.SaveToStream(const Stream: TStream;
   const Level: string; Parent: TJvSimpleXML);
 var
@@ -1543,7 +1582,7 @@ begin
     Result := Elem.Value;
 end;
 
-function SortItems(List: TStringlist; Index1, Index2: Integer): Integer;
+function SortItems(List: TStringList; Index1, Index2: Integer): Integer;
 var
   I: Integer;
 begin
@@ -1552,12 +1591,11 @@ begin
     if TJvSimpleXMLElems(GSorts[I]).FElems = List then
     begin
       Result := TJvSimpleXMLElems(GSorts[I]).FCompare(TJvSimpleXMLElems(GSorts[I]), Index1, Index2);
-      Exit;
+      Break;
     end;
 end;
 
-procedure TJvSimpleXMLElems.CustomSort(
-  AFunction: TJvSimpleXMLElemCompare);
+procedure TJvSimpleXMLElems.CustomSort(AFunction: TJvSimpleXMLElemCompare);
 begin
   if FElems <> nil then
   begin

@@ -29,15 +29,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQZoom;
+
+{$I jvcl.inc}
 
 interface
 
 uses
   SysUtils, Classes,
-  Types, QWindows, QMessages, QGraphics, QControls, QForms, QExtCtrls,
+  QWindows, QMessages, QGraphics, QControls, QForms, QExtCtrls,
   JvQComponent;
 
 type
@@ -93,7 +93,8 @@ type
 
 implementation
 
-uses
+uses 
+  Qt, 
   JvQJVCLUtils;
 
 constructor TJvZoom.Create(AOwner: TComponent);
@@ -107,7 +108,6 @@ begin
   FCrosshairColor := clBlack;
   FCacheOnDeactivate := True;
   FActive := True;
-
   FTimer := TTimer.Create(Self);
   FTimer.OnTimer := PaintMe;
   FTimer.Interval := 100;
@@ -125,6 +125,7 @@ procedure TJvZoom.Cache;
 begin
   if not Assigned(FCacheBitmap) then
     FCacheBitmap := TBitmap.Create;
+
   FCacheBitmap.Width := Width;
   FCacheBitmap.Height := Height;
   FCacheBitmap.Canvas.CopyRect(ClientRect, Canvas, ClientRect);
@@ -166,20 +167,23 @@ begin
 end;
 
 procedure TJvZoom.PaintMe(Sender: TObject);
-begin
-  { Reading Canvas.Handle will implicitly set the canvas handle to the
-    control's device context
-    Calling PaintWindow will lock the canvas and call Paint
-  }  
-  PaintRequest; 
+
+var
+  P: TPoint;
+
+begin  
+  GetCursorPos(P);
+  //Only draw if on a different position
+  if (P.X <> FLastPoint.X) or (P.Y <> FLastPoint.Y) then
+    Invalidate; 
 end;
 
 procedure TJvZoom.PaintZoom;
 var
   P: TPoint;
   X, Y, Dx, Dy: Integer;
-  SourceRect: TRect;
-  DesktopCanvas: TJvDesktopCanvas;
+  SourceRect: TRect;  
+  Bmp: TBitmap; 
 begin
   GetCursorPos(P);
 
@@ -211,7 +215,7 @@ begin
   if P.Y < Y then
   begin
     Dy := (P.Y - Y - 1) * 100 div FZoomLevel;
-    P.Y := Y
+    P.Y := Y;
   end
   else
   if P.Y + Y > Screen.Height then
@@ -224,11 +228,16 @@ begin
   SourceRect.Top := P.Y - Y;
   SourceRect.Right := P.X + X;
   SourceRect.Bottom := P.Y + Y;
-
-  //Draw the area around the mouse
-  DesktopCanvas := TJvDesktopCanvas.Create;
-  Canvas.CopyRect(Rect(0, 0, Width, Height), DesktopCanvas, SourceRect);
-  DesktopCanvas.Free;
+  
+  Bmp := TBitmap.Create;
+  Bmp.Handle := QPixmap_create;
+  try
+    with SourceRect do
+      QPixmap_grabWindow(Bmp.Handle, QWidget_winID(GetDesktopWindow), Left, Top, 2 * X, 2 * Y);
+    CopyRect(Canvas, Rect(0, 0, Width, Height), Bmp.Canvas, Rect(0,0, Bmp.Width, Bmp.Height));
+  finally
+    Bmp.Free;
+  end; 
 
   if FCrosshair then
     with Canvas do
@@ -266,16 +275,16 @@ end;
 
 procedure TJvZoom.SetCacheOnDeactivate(const Value: Boolean);
 begin
-  if Value = FCacheOnDeactivate then
-    Exit;
-
-  FCacheOnDeactivate := Value;
-
-  if not FCacheOnDeactivate then
+  if Value <> FCacheOnDeactivate then
   begin
-    FlushCache;
-    if not Active then
-      Invalidate;
+    FCacheOnDeactivate := Value;
+
+    if not Value then
+    begin
+      FlushCache;
+      if not Active then
+        Invalidate;
+    end;
   end;
 end;
 

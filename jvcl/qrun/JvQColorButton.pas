@@ -39,9 +39,8 @@ unit JvQColorButton;
 
 interface
 
-uses  
-  Types, QWindows, 
-  Classes, QGraphics, QControls, QForms, QDialogs,
+uses
+  QWindows, QMessages, Classes, QGraphics, QControls, QForms, QDialogs,
   JvQColorBox;
 
 type

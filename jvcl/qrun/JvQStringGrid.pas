@@ -35,7 +35,7 @@ unit JvQStringGrid;
 interface
 
 uses
-  Types, QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms, QGrids, 
+  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms, QGrids, 
   QStdCtrls, 
   JvQTypes, JvQJCLUtils, JvQExGrids;
 

@@ -37,9 +37,7 @@ unit JvQDice;
 interface
 
 uses
-  QWindows,  
-  Types, 
-  Classes, QGraphics, QControls,
+  QWindows, QMessages, Classes, QGraphics, QControls,
   JvQTimer, JvQComponent, JvQExControls;
 
 type

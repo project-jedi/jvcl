@@ -35,9 +35,8 @@ unit JvQPainterEffectsForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QExtCtrls, QComCtrls, 
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QExtCtrls, QComCtrls,
   JvQDrawImage, JvQComponent;
 
 type

@@ -41,7 +41,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes, Types, QGraphics, QControls, QMask, QForms, 
+  SysUtils, Classes, QGraphics, QControls, QMask, QForms, 
   QWindows, QTypes, 
   JvQComponent, JvQTypes, JvQCaret, JvQToolEdit, JvQExMask;
 

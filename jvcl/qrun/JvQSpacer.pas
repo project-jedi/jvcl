@@ -35,8 +35,7 @@ unit JvQSpacer;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, QForms, QExtCtrls, 
+  SysUtils, Classes, QGraphics, QControls, QForms, QExtCtrls,
   JvQComponent;
 
 type

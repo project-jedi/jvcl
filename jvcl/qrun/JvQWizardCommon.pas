@@ -45,8 +45,8 @@ unit JvQWizardCommon;
 
 interface
 
-uses  
-  QControls, QGraphics, QWindows,  
+uses
+  QWindows, QControls, QGraphics, 
   Types, 
   Classes, SysUtils;
 

@@ -39,7 +39,7 @@ interface
 
 uses
   Windows, Contnrs, Classes, SysUtils,
-  JvQUrlListGrabber, JvQTypes, JvQFinalize;
+  JvQUrlListGrabber, JvQTypes;
 
 type
   // A grabber for FTP URLs
@@ -57,31 +57,34 @@ type
     property Agent;
     property UserName;
     property Password;
+    property Port default 21;
     property Passive: Boolean read FPassive write FPassive default True;
     property Mode: TJvFtpDownloadMode read FMode write FMode default hmBinary;
   end;
 
   TJvFtpUrlGrabber = class(TJvCustomUrlGrabber)
   protected
-    FPassiveFTP: Boolean;
+    FPassive: Boolean;
     FMode: TJvFtpDownloadMode;
     function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; override;
+    procedure DoStatus; override;
   public
     constructor Create(AOwner: TComponent); overload; override;
-    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); overload; override;
+    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); overload;
     class function CanGrab(const Url: string): Boolean; override;
     class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
+    class function GetSupportedProtocolMarker: string; override;
     class function GetSupportedURLName: string; override;
   published
-    property Passive: Boolean read FPassiveFTP write FPassiveFTP default True;
+    property Passive: Boolean read FPassive write FPassive default True;
     property Mode: TJvFtpDownloadMode read FMode write FMode default hmBinary;
-
     property UserName;
     property Password;
     property FileName;
     property OutputMode;
     property Agent;
     property Url;
+    property Port default 21;
     property OnDoneFile;
     property OnDoneStream;
     property OnError;
@@ -98,7 +101,7 @@ type
     property OnClosingConnection;
     property OnConnectionClosed;
     property OnRedirect;
-    property OnStateChange;
+    property OnStatusChange;
   end;
 
   TJvFtpUrlGrabberThread = class(TJvCustomUrlGrabberThread)
@@ -116,20 +119,22 @@ type
     FReferer: string;
   protected
     function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; override;
+    procedure DoStatus; override;
   public
-    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); override;
+    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); 
     class function CanGrab(const Url: string): Boolean; override;
     class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
+    class function GetSupportedProtocolMarker: string; override;
     class function GetSupportedURLName: string; override;
   published
     property Referer: string read FReferer write FReferer;
-
     property UserName;
     property Password;
     property FileName;
     property OutputMode;
     property Agent;
     property Url;
+    property Port default 80;
     property OnDoneFile;
     property OnDoneStream;
     property OnError;
@@ -146,7 +151,7 @@ type
     property OnClosingConnection;
     property OnConnectionClosed;
     property OnRedirect;
-    property OnStateChange;
+    property OnStatusChange;
   end;
 
   TJvHttpUrlGrabberDefaultProperties = class(TJvCustomUrlGrabberDefaultProperties)
@@ -154,12 +159,14 @@ type
     FReferer: string;
   protected
     function GetSupportedURLName: string; override;
+  public
+    constructor Create(AOwner: TJvUrlGrabberDefaultPropertiesList); override;
   published
     property Referer: string read FReferer write FReferer;
-
     property Agent;
     property UserName;
     property Password;
+    property Port default 80;
   end;
 
   TJvHttpUrlGrabberThread = class(TJvCustomUrlGrabberThread)
@@ -180,10 +187,14 @@ type
     function GetGrabberThreadClass: TJvCustomUrlGrabberThreadClass; override;
   public
     constructor Create(AOwner: TComponent); overload; override;
-    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); overload; override;
+    constructor Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties); overload; 
     class function CanGrab(const Url: string): Boolean; override;
     class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
+    class function GetSupportedProtocolMarker: string; override;
     class function GetSupportedURLName: string; override;
+    procedure ParseUrl(Url: string; Protocol: string; var Host: string; var FileName: string;
+      var UserName: string; var Password: string; var Port: Cardinal); overload; override;
+    procedure ParseUrl(const Url: string; var FileName: string); reintroduce; overload;
   published
     property PreserveAttributes: Boolean read FPreserveAttributes write FPreserveAttributes default True;
     property UserName;
@@ -208,13 +219,12 @@ type
     property OnClosingConnection;
     property OnConnectionClosed;
     property OnRedirect;
-    property OnStateChange;
+    property OnStatusChange;
   end;
 
   TJvLocalFileUrlGrabberThread = class(TJvCustomUrlGrabberThread)
   protected
     function GetGrabber: TJvLocalFileUrlGrabber;
-    procedure ParseUrl(const Url: string; var FileName: string);
     procedure Execute; override;
   public
     property Grabber: TJvLocalFileUrlGrabber read GetGrabber;
@@ -236,10 +246,13 @@ implementation
 
 uses
   WinInet,
-  JvQResources;
+  JvQFinalize, JvQResources;
 
 const
   sUnitName = 'JvUrlGrabbers';
+  cFilePrefix = 'file://';
+  cHTTPPrefix = 'http://';
+  cFTPPrefix = 'ftp://';
 
 
 
@@ -260,19 +273,87 @@ begin
   begin
     Status := AStatus;
     DoProgress;
+    DoStatus;
   end;
+end;
+
+// helper function to get the last error message from the internet functions
+
+function GetLastInternetError: string;
+var
+  dwIndex: DWORD;
+  dwBufLen: DWORD;
+  Buffer: PChar;
+begin
+  dwIndex := 0;
+  dwBufLen := 1024;
+  GetMem(Buffer, dwBufLen);
+  InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
+  Result := StrPas(Buffer);
+  FreeMem(Buffer);
+end;
+
+// helper procedure to trigger various events depending on the
+// value of the given status.
+
+procedure TriggerEventsFromStatus(Grabber: TJvCustomUrlGrabber; InternetStatusValue: DWORD);
+begin
+ with Grabber do
+   case InternetStatusValue of
+     INTERNET_STATUS_RESOLVING_NAME:
+       if Assigned(OnResolvingName) then
+         OnResolvingName(Grabber);
+     INTERNET_STATUS_NAME_RESOLVED:
+       if Assigned(OnNameResolved) then
+         OnNameResolved(Grabber);
+     INTERNET_STATUS_CONNECTING_TO_SERVER:
+       if Assigned(OnConnectingToServer) then
+         OnConnectingToServer(Grabber);
+     INTERNET_STATUS_CONNECTED_TO_SERVER:
+       if Assigned(OnConnectedToServer) then
+         OnConnectedToServer(Grabber);
+     INTERNET_STATUS_SENDING_REQUEST:
+       if Assigned(OnSendingRequest) then
+         OnSendingRequest(Grabber);
+     INTERNET_STATUS_REQUEST_SENT:
+       if Assigned(OnRequestSent) then
+         OnRequestSent(Grabber);
+     INTERNET_STATUS_RECEIVING_RESPONSE:
+       if Assigned(OnReceivingResponse) then
+         OnReceivingResponse(Grabber);
+     INTERNET_STATUS_RESPONSE_RECEIVED:
+       if Assigned(OnResponseReceived) then
+         OnResponseReceived(Grabber);
+     INTERNET_STATUS_CLOSING_CONNECTION:
+       if Assigned(OnClosingConnection) then
+         OnClosingConnection(Grabber);
+     INTERNET_STATUS_CONNECTION_CLOSED:
+       if Assigned(OnConnectionClosed) then
+         OnConnectionClosed(Grabber);
+     INTERNET_STATUS_REQUEST_COMPLETE:
+       if Assigned(OnRequestComplete) then
+         OnRequestComplete(Grabber);
+     INTERNET_STATUS_REDIRECT:
+       if Assigned(OnRedirect) then
+         OnRedirect(Grabber);
+     INTERNET_STATUS_STATE_CHANGE:
+       if Assigned(OnStatusChange) then
+         OnStatusChange(Grabber);
+   end;
 end;
 
 //=== { TJvHttpUrlGrabber } ==================================================
 
-constructor TJvHttpUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
+constructor TJvHttpUrlGrabber.Create(AOwner: TComponent; AUrl: string;
+  DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
 begin
   inherited Create(AOwner, AUrl, DefaultProperties);
+  Port := 80;
 end;
 
 class function TJvHttpUrlGrabber.CanGrab(const Url: string): Boolean;
 begin
-  Result := LowerCase(Copy(Url, 1, 7)) = 'http://';
+  Result := LowerCase(Copy(Url, 1, 7)) = cHTTPPrefix;
 end;
 
 class function TJvHttpUrlGrabber.GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass;
@@ -285,9 +366,20 @@ begin
   Result := TJvHttpUrlGrabberThread;
 end;
 
+class function TJvHttpUrlGrabber.GetSupportedProtocolMarker: string;
+begin
+  Result := cHTTPPrefix;
+end;
+
 class function TJvHttpUrlGrabber.GetSupportedURLName: string;
 begin
   Result := 'HTTP';
+end;
+
+procedure TJvHttpUrlGrabber.DoStatus;
+begin
+  inherited DoStatus;
+  TriggerEventsFromStatus(Self, UrlGrabberThread.Status);
 end;
 
 //=== { TJvFtpUrlGrabber } ===================================================
@@ -295,20 +387,26 @@ end;
 constructor TJvFtpUrlGrabber.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  Port := 21;
   Passive := True;
   Mode := hmBinary;
 end;
 
-constructor TJvFtpUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
+constructor TJvFtpUrlGrabber.Create(AOwner: TComponent; AUrl: string;
+  DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
 begin
   inherited Create(AOwner, AUrl, DefaultProperties);
-  Passive := TJvFtpUrlGrabberDefaultProperties(DefaultProperties).Passive;
-  Mode := TJvFtpUrlGrabberDefaultProperties(DefaultProperties).Mode;
+  // (rom) added check. TODO add else (probably exception).
+  if DefaultProperties is TJvFtpUrlGrabberDefaultProperties then
+  begin
+    Passive := TJvFtpUrlGrabberDefaultProperties(DefaultProperties).Passive;
+    Mode := TJvFtpUrlGrabberDefaultProperties(DefaultProperties).Mode;
+  end;
 end;
 
 class function TJvFtpUrlGrabber.CanGrab(const Url: string): Boolean;
 begin
-  Result := LowerCase(Copy(Url, 1, 6)) = 'ftp://';
+  Result := LowerCase(Copy(Url, 1, 6)) = cFTPPrefix;
 end;
 
 class function TJvFtpUrlGrabber.GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass;
@@ -321,9 +419,20 @@ begin
   Result := TJvFtpUrlGrabberThread;
 end;
 
+class function TJvFtpUrlGrabber.GetSupportedProtocolMarker: string;
+begin
+  Result := cFTPPrefix;
+end;
+
 class function TJvFtpUrlGrabber.GetSupportedURLName: string;
 begin
   Result := 'FTP';
+end;
+
+procedure TJvFtpUrlGrabber.DoStatus;
+begin
+  inherited DoStatus;
+  TriggerEventsFromStatus(Self, UrlGrabberThread.Status);
 end;
 
 //=== { TJvFtpUrlGrabberDefaultProperties } ==================================
@@ -333,6 +442,7 @@ begin
   inherited Create(AOwner);
   FPassive := True;
   FMode := hmBinary;
+  Port := 21;
 end;
 
 procedure TJvFtpUrlGrabberDefaultProperties.Assign(Source: TPersistent);
@@ -358,57 +468,60 @@ begin
   Grabber.DoClosed;
 end;
 
-
 procedure TJvFtpUrlGrabberThread.Execute;
 const
   cPassive: array [Boolean] of DWORD = (0, INTERNET_FLAG_PASSIVE);
 var
   hSession, hHostConnection, hDownload: HINTERNET;
-  HostName, FileName: string;
+  HostName, FileName, strUserName, strPassword: string;
   UserName, Password: PChar;
+  Port: Cardinal;
   LocalBytesRead, TotalBytes: DWORD;
   Buf: array [0..1023] of Byte;
   dwFileSizeHigh: DWORD;
-  Buffer: Pointer;
-  dwBufLen, dwIndex: DWORD;
 begin
-  Grabber.FStream := nil;
+  Grabber.Stream := nil;
   hSession := nil;
   hHostConnection := nil;
   hDownload := nil;
   try
     try
-      FErrorText := '';
-      ParseUrl(Grabber.FUrl, 'ftp://', HostName, FileName);
+      ErrorText := '';
+      Grabber.ParseUrl(Grabber.Url, Grabber.GetSupportedProtocolMarker,
+        HostName, FileName, strUserName, strPassword, Port);
+      if strUserName = '' then
+        strUserName := Grabber.UserName;
+      if strPassword = '' then
+        strPassword := Grabber.Password;
+      if Port = 0 then
+        Port := Grabber.Port;
+        
+      // Setup the PChars for the call to InternetConnect
+      if strUserName = '' then
+        UserName := nil
+      else
+        UserName := PChar(strUserName);
+      if strPassword = '' then
+        Password := nil
+      else
+        Password := PChar(strPassword);
 
       // Connect to the web
-      hSession := InternetOpen(PChar(Grabber.FAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+      hSession := InternetOpen(PChar(Grabber.Agent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
       if hSession = nil then
       begin
-        FErrorText := SysErrorMessage(GetLastError);
+        ErrorText := GetLastInternetError;
         Synchronize(Error);
         Exit;
       end;
+//      InternetSetStatusCallback(hSession, PFNInternetStatusCallback(@DownloadCallBack));
 
       // Connect to the hostname
-      if Grabber.FUserName = '' then
-        UserName := nil
-      else
-        UserName := PChar(Grabber.FUserName);
-      if Grabber.FPassword = '' then
-        Password := nil
-      else
-        Password := PChar(Grabber.FPassword);
-      hHostConnection := InternetConnect(hSession, PChar(HostName), INTERNET_DEFAULT_FTP_PORT,
-        UserName, Password, INTERNET_SERVICE_FTP, cPassive[Grabber.FPassiveFTP], 0);
+      hHostConnection := InternetConnect(hSession, PChar(HostName), Port,
+        UserName, Password, INTERNET_SERVICE_FTP, cPassive[Grabber.Passive], 0);
       if hHostConnection = nil then
       begin
-        dwIndex := 0;
-        dwBufLen := 1024;
-        GetMem(Buffer, dwBufLen);
-        InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
-        FErrorText := StrPas(Buffer);
-        FreeMem(Buffer);
+        ErrorText := GetLastInternetError;
         Synchronize(Error);
         Exit;
       end;
@@ -417,59 +530,64 @@ begin
 
       // Request the file
       if Grabber.FMode = hmBinary then
-        hDownload := FtpOpenFile(hHostConnection, PChar(FileName), GENERIC_READ, FTP_TRANSFER_TYPE_BINARY or
-          INTERNET_FLAG_DONT_CACHE, 0)
+        hDownload := FtpOpenFile(hHostConnection, PChar(FileName), GENERIC_READ,
+          FTP_TRANSFER_TYPE_BINARY or INTERNET_FLAG_DONT_CACHE or INTERNET_FLAG_RELOAD, 0)
       else
-        hDownload := FtpOpenFile(hHostConnection, PChar(FileName), GENERIC_READ, FTP_TRANSFER_TYPE_ASCII or
-          INTERNET_FLAG_DONT_CACHE, 0);
+        hDownload := FtpOpenFile(hHostConnection, PChar(FileName), GENERIC_READ,
+          FTP_TRANSFER_TYPE_ASCII or INTERNET_FLAG_DONT_CACHE or INTERNET_FLAG_RELOAD, 0);
+
+      if Terminated then
+        Exit;
 
       if hDownload = nil then
       begin
-        FErrorText := SysErrorMessage(GetLastError);
+        ErrorText := GetLastInternetError;
         Synchronize(Error);
         Exit;
       end;
-      Grabber.FSize := FtpGetFileSize(hDownload, @dwFileSizeHigh); // acp
+      Grabber.SetSize(FtpGetFileSize(hDownload, @dwFileSizeHigh)); // acp
 
-      Grabber.FStream := TMemoryStream.Create;
+      if Terminated then
+        Exit;
+
+      Grabber.Stream := TMemoryStream.Create;
 
       TotalBytes := 0;
       LocalBytesRead := 1;
-      while (LocalBytesRead <> 0) and not Terminated and FContinue do // acp
-      begin
+      while (LocalBytesRead <> 0) and not Terminated and Continue do // acp
         if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), LocalBytesRead) then
           LocalBytesRead := 0
         else
         begin
           Inc(TotalBytes, LocalBytesRead);
-          Grabber.FBytesRead := TotalBytes;
-          Grabber.FStream.Write(Buf, LocalBytesRead);
-          Synchronize(Progress);
+          Grabber.SetBytesRead(TotalBytes);
+          Grabber.Stream.Write(Buf, LocalBytesRead);
+          DoProgress;
         end;
-      end;
-      if not Terminated and FContinue then // acp
+      if not Terminated and Continue then // acp
         Synchronize(Ended);
     except
     end;
   finally
     //Free all stuff's
-    Grabber.FStream.Free;
+    Grabber.Stream.Free;
+    Grabber.Stream := nil;
 
     //Release all handles
     // (rom) now all connections get closed and Closed is always signalled
     if (hDownload <> nil) and not InternetCloseHandle(hDownload) then
     begin
-      FErrorText := SysErrorMessage(GetLastError);
+      ErrorText := GetLastInternetError;
       Synchronize(Error);
     end;
     if (hHostConnection <> nil) and not InternetCloseHandle(hHostConnection) then
     begin
-      FErrorText := SysErrorMessage(GetLastError);
+      ErrorText := GetLastInternetError;
       Synchronize(Error);
     end;
     if (hSession <> nil) and not InternetCloseHandle(hSession) then
     begin
-      FErrorText := SysErrorMessage(GetLastError);
+      ErrorText := GetLastInternetError;
       Synchronize(Error);
     end;
     Synchronize(Closed);
@@ -491,8 +609,9 @@ end;
 procedure TJvHttpUrlGrabberThread.Execute;
 var
   hSession, hHostConnection, hDownload: HINTERNET;
-  HostName, FileName: string;
+  HostName, FileName, strUserName, strPassword: string;
   UserName, Password: PChar;
+  Port : Cardinal;
   Buffer: PChar;
   dwBufLen, dwIndex, dwBytesRead, dwTotalBytes: DWORD;
   HasSize: Boolean;
@@ -501,112 +620,120 @@ begin
   Buffer := nil;
 
   FContinue := True;
-  Grabber.FStream := nil;
+  Grabber.Stream := nil;
   hSession := nil;
   hHostConnection := nil;
   hDownload := nil;
   try
     try
-      ParseUrl(Grabber.FUrl, 'http://', HostName, FileName);
-      FErrorText := '';
+      Grabber.ParseUrl(Grabber.Url, Grabber.GetSupportedProtocolMarker,
+        HostName, FileName, strUserName, strPassword, Port);
+      if strUserName = '' then
+        strUserName := Grabber.UserName;
+      if strPassword = '' then
+        strPassword := Grabber.Password;
+      if Port = 0 then
+        Port := Grabber.Port;
+        
+      // Setup the PChars for the call to InternetConnect
+      if strUserName = '' then
+        UserName := nil
+      else
+        UserName := PChar(strUserName);
+      if strPassword = '' then
+        Password := nil
+      else
+        Password := PChar(strPassword);
+      
+      ErrorText := '';
 
       //Connect to the web
-      hSession := InternetOpen(PChar(Grabber.FAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+      hSession := InternetOpen(PChar(Grabber.Agent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
       if hSession = nil then
       begin
-        FErrorText := SysErrorMessage(GetLastError);
+        ErrorText := SysErrorMessage(GetLastError);
         Synchronize(Error);
         Exit;
       end;
+      InternetSetStatusCallback(hSession, PFNInternetStatusCallback(@DownloadCallBack));
 
-      // Connect to the hostname
-      if Grabber.FUserName = '' then
-        UserName := nil
-      else
-        UserName := PChar(Grabber.FUserName);
-      if Grabber.FPassword = '' then
-        Password := nil
-      else
-        Password := PChar(Grabber.FPassword);
-      hHostConnection := InternetConnect(hSession, PChar(HostName), INTERNET_DEFAULT_HTTP_PORT,
+
+      // Connect to the host
+      hHostConnection := InternetConnect(hSession, PChar(HostName), Port,
         UserName, Password, INTERNET_SERVICE_HTTP, 0, DWORD(Self));
+
+      if Terminated then
+        Exit;
+
       if hHostConnection = nil then
       begin
-        dwIndex := 0;
-        dwBufLen := 1024;
-        GetMem(Buffer, dwBufLen);
-        InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
-        FErrorText := Buffer;
-        FreeMem(Buffer);
+        ErrorText := GetLastInternetError;
         Buffer := nil;
         Synchronize(Error);
         Exit;
       end;
 
-      //      FCriticalSection.Enter;
-      InternetSetStatusCallback(hHostConnection, PFNInternetStatusCallback(@DownloadCallBack));
+//      InternetSetStatusCallback(hHostConnection, PFNInternetStatusCallback(@DownloadCallBack));
       //Request the file
-      // (rom) any difference here?
-      hDownload := HttpOpenRequest(hHostConnection, 'GET', PChar(FileName), 'HTTP/1.0', PChar(Grabber.Referer),
-        nil, INTERNET_FLAG_RELOAD, 0);
-      //      FCriticalSection.Leave;
+      hDownload := HttpOpenRequest(hHostConnection, 'GET', PChar(FileName), 'HTTP/1.0',
+        PChar(Grabber.Referer), nil, INTERNET_FLAG_RELOAD or INTERNET_FLAG_PRAGMA_NOCACHE, 0);
 
       if hDownload = nil then
       begin
-        FErrorText := SysErrorMessage(GetLastError);
+        ErrorText := GetLastInternetError;
         Synchronize(Error);
         Exit;
       end;
+//      InternetSetStatusCallback(hDownload, PFNInternetStatusCallback(@DownloadCallBack));
 
-      //      FCriticalSection.Enter;
-            //Send the request
+      //Send the request
       HttpSendRequest(hDownload, nil, 0, nil, 0);
 
-      Grabber.FStream := TMemoryStream.Create;
+      if Terminated then
+        Exit;
+
+      Grabber.Stream := TMemoryStream.Create;
 
       dwIndex := 0;
       dwBufLen := 1024;
       GetMem(Buffer, dwBufLen);
       HasSize := HttpQueryInfo(hDownload, HTTP_QUERY_CONTENT_LENGTH, Buffer, dwBufLen, dwIndex);
+      if Terminated then
+        Exit;
+
       if HasSize then
-        Grabber.FSize := StrToInt(StrPas(Buffer))
+        Grabber.SetSize(StrToInt(StrPas(Buffer)))
       else
-        Grabber.FSize := 0;
+        Grabber.SetSize(0);
 
       dwTotalBytes := 0;
       if HasSize then
       begin
         dwBytesRead := 1;
         while (dwBytesRead > 0) and not Terminated and FContinue do
-        begin
           if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), dwBytesRead) then
             dwBytesRead := 0
           else
           begin
             Inc(dwTotalBytes, dwBytesRead);
-            Grabber.FBytesRead := dwTotalBytes;
-            Grabber.FStream.Write(Buf, dwBytesRead);
-            Synchronize(Progress);
+            Grabber.SetBytesRead(dwTotalBytes);
+            Grabber.Stream.Write(Buf, dwBytesRead);
+            DoProgress;
           end;
-        end;
         if FContinue and not Terminated then
           Synchronize(Ended);
-        //        FCriticalSection.Leave;
       end
       else
       begin
-        //        FCriticalSection.Enter;
         while InternetReadFile(hDownload, @Buf, SizeOf(Buf), dwBytesRead) and not Terminated do
         begin
           if dwBytesRead = 0 then
             Break;
-          //          Inc(dwTotalBytes,dwBytesRead);
-          Grabber.FStream.Write(Buf, dwBytesRead);
-          Synchronize(Progress);
+          Grabber.Stream.Write(Buf, dwBytesRead);
+          Synchronize(UpdateGrabberProgress);
         end;
         if FContinue and not Terminated then
           Synchronize(Ended);
-        //        FCriticalSection.Leave;
       end;
     except
     end;
@@ -614,15 +741,25 @@ begin
     // Free all stuff's
     if Buffer <> nil then
       FreeMem(Buffer);
-    Grabber.FStream.Free;
+    Grabber.Stream.Free;
+    Grabber.Stream := nil;
 
     // Release all handles
-    if hDownload <> nil then
-      InternetCloseHandle(hDownload);
-    if hHostConnection <> nil then
-      InternetCloseHandle(hHostConnection);
-    if hSession <> nil then
-      InternetCloseHandle(hSession);
+    if (hDownload <> nil) and not InternetCloseHandle(hDownload) then
+    begin
+      ErrorText := GetLastInternetError;
+      Synchronize(Error);
+    end;
+    if (hHostConnection <> nil) and not InternetCloseHandle(hHostConnection) then
+    begin
+      ErrorText := GetLastInternetError;
+      Synchronize(Error);
+    end;
+    if (hSession <> nil) and not InternetCloseHandle(hSession) then
+    begin
+      ErrorText := GetLastInternetError;
+      Synchronize(Error);
+    end;
   end;
 end;
 
@@ -633,6 +770,12 @@ end;
 
 //=== { TJvHttpUrlGrabberDefaultProperties } =================================
 
+constructor TJvHttpUrlGrabberDefaultProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);
+begin
+  inherited Create(AOwner);
+  Port := 80;
+end;
+
 function TJvHttpUrlGrabberDefaultProperties.GetSupportedURLName: string;
 begin
   Result := TJvHttpUrlGrabber.GetSupportedURLName;
@@ -640,7 +783,8 @@ end;
 
 //=== { TJvLocalFileUrlGrabber } =============================================
 
-constructor TJvLocalFileUrlGrabber.Create(AOwner: TComponent; AUrl: string; DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
+constructor TJvLocalFileUrlGrabber.Create(AOwner: TComponent; AUrl: string;
+  DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
 begin
   inherited Create(AOwner, AUrl, DefaultProperties);
   FPreserveAttributes := TJvLocalFileUrlGrabberProperties(DefaultProperties).PreserveAttributes;
@@ -655,7 +799,7 @@ end;
 class function TJvLocalFileUrlGrabber.CanGrab(const Url: string): Boolean;
 begin
   // accepts "file://", UNC and local path and existing files
-  Result := (LowerCase(Copy(Url, 1, 7)) = 'file://') or (Copy(Url,1,2) = '//') or
+  Result := (LowerCase(Copy(Url, 1, 7)) = cFilePrefix) or (Copy(Url,1,2) = '//') or
     (Copy(Url, 2,2) = ':\') or FileExists(Url);
 end;
 
@@ -669,9 +813,30 @@ begin
   Result := TJvLocalFileUrlGrabberThread;
 end;
 
+class function TJvLocalFileUrlGrabber.GetSupportedProtocolMarker: string;
+begin
+  Result := cFilePrefix;
+end;
+
 class function TJvLocalFileUrlGrabber.GetSupportedURLName: string;
 begin
   Result := 'LocalFile';
+end;
+
+procedure TJvLocalFileUrlGrabber.ParseUrl(Url, Protocol: string;
+  var Host, FileName, UserName, Password: string; var Port: Cardinal);
+begin
+  ParseUrl(Url, FileName);
+end;
+
+procedure TJvLocalFileUrlGrabber.ParseUrl(const Url: string;
+  var FileName: string);
+begin
+  FileName := StringReplace(Url, '/', '\', [rfReplaceAll]);
+  if AnsiSameText(Copy(Url, 1, 7), cFilePrefix) then
+    FileName := Copy(FileName, 8, MaxInt)
+  else
+    FileName := ExpandUNCFilename(FileName);
 end;
 
 //=== { TJvLocalFileUrlGrabberThread } =======================================
@@ -684,11 +849,11 @@ var
   AFileStream: TFileStream;
   Attrs: Integer;
 begin
-  Grabber.FStream := nil;
-  ParseUrl(Grabber.FUrl, FileName);
+  Grabber.Stream := nil;
+  Grabber.ParseUrl(Grabber.Url, FileName);
   if not FileExists(FileName) then
   begin
-    FErrorText := Format(RsFileNotFoundFmt, [FileName]);
+    ErrorText := Format(RsFileNotFoundFmt, [FileName]);
     Synchronize(Error);
     Exit;
   end;
@@ -698,34 +863,34 @@ begin
   else
     Attrs := 0;
   try
-    FErrorText := '';
-    Grabber.FStream := TMemoryStream.Create;
+    ErrorText := '';
+    Grabber.Stream := TMemoryStream.Create;
     AFileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
     try
-      Grabber.FSize := AFileStream.Size;
-      Grabber.FBytesRead := 0;
-      FStatus    := 0;
-      Synchronize(Progress);
+      Grabber.SetSize(AFileStream.Size);
+      Grabber.SetBytesRead(0);
+      Status := 0;
+      DoProgress;
       TotalBytes := 0;
       BytesRead := 1;
-      while (BytesRead <> 0) and not Terminated and FContinue do
+      while (BytesRead <> 0) and not Terminated and Continue do
       begin
         BytesRead := AFileStream.Read(Buf, SizeOf(Buf));
         Inc(TotalBytes, BytesRead);
-        Grabber.FBytesRead := TotalBytes;
-        FStatus := Grabber.FBytesRead;
+        Grabber.SetBytesRead(TotalBytes);
+        Status := Grabber.BytesRead;
         if BytesRead > 0 then
-          Grabber.FStream.Write(Buf, BytesRead);
-        Synchronize(Progress);
+          Grabber.Stream.Write(Buf, BytesRead);
+        DoProgress;
       end;
-      if not Terminated and FContinue then // acp
+      if not Terminated and Continue then // acp
         Synchronize(Ended);
       if Grabber.PreserveAttributes and FileExists(Grabber.FileName) then
         SetFileAttributes(PChar(Grabber.FileName), Attrs);
     finally
       AFileStream.Free;
-      Grabber.FStream.Free;
-      Grabber.FStream := nil;
+      Grabber.Stream.Free;
+      Grabber.Stream := nil;
     end;
   except
 //    Application.HandleException(Self);
@@ -735,16 +900,6 @@ end;
 function TJvLocalFileUrlGrabberThread.GetGrabber: TJvLocalFileUrlGrabber;
 begin
   Result := TJvLocalFileUrlGrabber(FGrabber);
-end;
-
-procedure TJvLocalFileUrlGrabberThread.ParseUrl(const Url: string;
-  var FileName: string);
-begin
-  FileName := StringReplace(Url, '/', '\', [rfReplaceAll]);
-  if AnsiSameText(Copy(Url, 1, 7), 'file://') then
-    FileName := Copy(FileName, 8, MaxInt)
-  else
-    FileName := ExpandUNCFilename(FileName);
 end;
 
 //=== { TJvLocalFileUrlGrabberProperties } ===================================

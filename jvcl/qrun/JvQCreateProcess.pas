@@ -39,9 +39,10 @@ unit JvQCreateProcess;
 interface
 
 uses
+  JvQComponent,
   Windows, Messages, SysUtils, Classes, 
   ShellAPI, SyncObjs,
-  JvQComponent, JvQTypes;
+  JvQTypes;
 
 const
   CCPS_BufferSize = 1024;

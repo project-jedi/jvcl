@@ -47,8 +47,7 @@ unit JvQWizardRouteMapNodes;
 interface
 
 uses
-  Classes,  
-  QWindows, QGraphics, QStdCtrls, Types, 
+  Classes, QWindows, QMessages, QGraphics, QStdCtrls,
   JvQWizard;
 
 type

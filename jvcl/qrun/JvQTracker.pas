@@ -37,8 +37,8 @@ unit JvQTracker;
 
 interface
 
-uses  
-  QGraphics, QControls, QForms, QExtCtrls, Types, QWindows, 
+uses
+  QWindows, QMessages, QGraphics, QControls, QExtCtrls,
   SysUtils, Classes,
   JvQComponent;
 

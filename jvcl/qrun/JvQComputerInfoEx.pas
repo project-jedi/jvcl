@@ -49,10 +49,11 @@ interface
 
 uses
   Classes, SysUtils,  
-  Qt, QControls, QGraphics, 
+  Qt, QControls, QGraphics,
+  JvQComponent, 
   Windows, Messages, ShlObj,
   JclWin32, JclSysInfo,
-  JvQJCLUtils, JvQJVCLUtils, JvQDataProvider, JvQComponent, JvQTypes;
+  JvQJCLUtils, JvQJVCLUtils, JvQDataProvider, JvQTypes;
 
 {$HPPEMIT '#include <dbt.h>'}
 // these are defined here to avoid including DBT.pas

@@ -39,9 +39,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF LINUX}
+  {$ENDIF HAS_UNIT_LIBC}
   Classes,
   JvQAppStorage, JvQSimpleXml;
 
@@ -343,6 +343,7 @@ var
   ParentPath: string;
   ValueName: string;
   ANode: TJvSimpleXmlElem;
+  Buffer: Extended;
 begin
   if AutoReload and not IsUpdating then
     Reload;

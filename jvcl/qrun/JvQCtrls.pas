@@ -31,27 +31,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQCtrls;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  Types, QWindows, QMessages, Classes, QGraphics, QControls, QStdCtrls, QImgList,
+  QWindows, QMessages, Classes, QGraphics, QControls, QStdCtrls, QImgList,
   JvQButton;
-
-
-const
-  ODS_DISABLED = 1;
-  ODS_SELECTED = 2;
-  ODS_FOCUS    = 4;
-  
-type
-  TDrawItemStruct = record
-    itemState: Integer;
-  end;
-
 
 type
   TJvImgBtnLayout = (blImageLeft, blImageRight);
@@ -111,10 +99,10 @@ type
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
   protected 
     procedure DestroyWidget; override;
-    procedure Paint; override; 
+    procedure Paint; override;  
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
-    procedure CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect); 
+    procedure CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect);
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct); dynamic;
     function GetActionLinkClass: TControlActionLinkClass; override;
     function GetCustomCaption: string; dynamic;
@@ -194,7 +182,7 @@ type
 implementation
 
 uses
-  QConsts, SysUtils, QForms, QActnList, 
+  QConsts, SysUtils, QForms, QActnList,
   JvQJCLUtils, JvQThemes, JvQFinalize;
 
 {$IFDEF MSWINDOWS}
@@ -237,7 +225,7 @@ begin
     FClient.ImageIndex := Value;
 end;
 
-//=== { TJvCustomImageButton } ==========================================================
+//=== { TJvCustomImageButton } ===============================================
 
 constructor TJvCustomImageButton.Create(AOwner: TComponent);
 begin
@@ -305,6 +293,11 @@ begin
   begin
     SetRect(RectImage, 0, 0, 0, 0);
     InternalSpacing := 0;
+  end;
+  if FAlignment <> taCenter then
+  begin
+    if RectText.Right < Width - RectImage.Right - 18 then
+      RectText.Right := Width - RectImage.Right - 18;
   end;
   BlockWidth := RectImage.Right + InternalSpacing + RectText.Right;
   ButtonWidth := ButtonRect.Right - ButtonRect.Left;
@@ -815,6 +808,7 @@ procedure TJvCustomImageButton.StartAnimate;
 begin
   if ComponentState * [csDesigning, csLoading] = [] then
   begin
+//    DoubleBuffered := True;
     FCurrentAnimateFrame := 0;
     ShowNextFrame;
     OSCheck(SetTimer(Handle, 1, FAnimateInterval, nil) <> 0);
@@ -828,6 +822,7 @@ begin
   begin
     KillTimer(Handle, 1);
     FCurrentAnimateFrame := 0;
+//    DoubleBuffered := False;
     FAnimating := False;
   end;
 end;

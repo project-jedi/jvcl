@@ -35,8 +35,8 @@ unit JvQWaitingProgress;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, QForms, 
+  SysUtils, Classes,
+  QMessages, QGraphics, QControls, QForms,
   JvQSpecialProgress, JvQImageDrawThread, JvQComponent;
 
 type

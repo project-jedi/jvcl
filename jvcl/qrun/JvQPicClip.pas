@@ -34,9 +34,11 @@ unit JvQPicClip;
 interface
 
 uses
-  Classes,  
-  QWindows, QGraphics, QControls, Types, QImgList,  
-  RTLConsts, 
+  Classes, QWindows, QGraphics, QControls, 
+  QImgList, 
+  {$IFDEF HAS_UNIT_RTLCONSTS}
+  RTLConsts,
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   JvQComponent;
 
 type

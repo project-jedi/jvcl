@@ -44,9 +44,8 @@ unit JvQOutlookBar;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QButtons, QGraphics, QTypes, QImgList, QForms, QStdCtrls,
-  QExtCtrls, Types, QWindows, 
+  SysUtils, Classes, QActnList,
+  QWindows, QMessages, QButtons, QControls, QGraphics, QImgList, QForms, QStdCtrls, QExtCtrls, 
   JvQThemes, JvQComponent, JvQExButtons;
 
 const
@@ -56,34 +55,62 @@ const
 
 type
   TJvBarButtonSize = (olbsLarge, olbsSmall);
+  TJvOutlookBarButton = class;
 
+  TJvOutlookBarButtonActionLink = class(TActionLink)
+  private
+    FClient: TJvOutlookBarButton;
+  protected
+    procedure AssignClient(AClient: TObject); override;
+    function IsCaptionLinked: Boolean; override;
+    function IsImageIndexLinked: Boolean; override;
+    function IsOnExecuteLinked: Boolean; override;
+    function IsEnabledLinked: Boolean;override;  
+    procedure SetCaption(const Value: TCaption); override; 
+    procedure SetEnabled(Value: Boolean); override;
+    procedure SetImageIndex(Value: Integer); override;
+    procedure SetOnExecute(Value: TNotifyEvent); override;
+    property Client: TJvOutlookBarButton read FClient write FClient;
+  end;
+
+  TJvOutlookBarButtonActionLinkClass = class of TJvOutlookBarButtonActionLink;
   TJvOutlookBarButton = class(TCollectionItem)
   private
+    FActionLink: TJvOutlookBarButtonActionLink;
     FImageIndex: TImageIndex;
     FCaption: TCaption;
     FTag: Integer;
     FDown: Boolean;
     FEnabled: Boolean;
     FAutoToggle: Boolean;
+    FOnClick: TNotifyEvent;
     procedure SetCaption(const Value: TCaption);
     procedure SetImageIndex(const Value: TImageIndex);
     procedure SetDown(const Value: Boolean);
     procedure Change;
     procedure SetEnabled(const Value: Boolean);
+    procedure SetAction(Value: TBasicAction);
   protected
     function GetDisplayName: string; override;
+    function GetActionLinkClass: TJvOutlookBarButtonActionLinkClass; dynamic;
+    function GetAction: TBasicAction; virtual;
+    procedure DoActionChange(Sender: TObject);
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
   public
+    procedure Click; dynamic;
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure EditCaption;
   published
+    property Action:TBasicAction read GetAction write SetAction;
     property Caption: TCaption read FCaption write SetCaption;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
     property Tag: Integer read FTag write FTag;
     property Down: Boolean read FDown write SetDown default False;
     property AutoToggle: Boolean read FAutoToggle write FAutoToggle;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
+    property OnClick:TNotifyEvent read FOnClick write FOnClick; 
   end;
 
   TJvOutlookBarButtons = class(TOwnedCollection)
@@ -275,6 +302,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure InitiateAction; override;
     function GetButtonAtPos(P: TPoint): TJvOutlookBarButton;
     function GetPageButtonAtPos(P: TPoint): TJvOutlookBarPage;
   protected
@@ -367,6 +395,11 @@ const
   cButtonTopOffset = 2;
   cInitRepeatPause = 400;
   cRepeatPause = 100;
+
+function MethodsEqual(const Method1, Method2: TMethod): Boolean;
+begin
+  Result := (Method1.Code = Method2.Code) and (Method1.Data = Method2.Data);
+end;
 
 //=== { TJvOutlookBarEdit } ==================================================
 
@@ -557,6 +590,64 @@ begin
     end;
 end;
 
+//=== { TJvOutlookBarButtonActionLink } ======================================
+
+procedure TJvOutlookBarButtonActionLink.AssignClient(AClient: TObject);
+begin
+  Client := AClient as TJvOutlookBarButton;
+end;
+
+function TJvOutlookBarButtonActionLink.IsCaptionLinked: Boolean;
+begin
+  Result := inherited IsCaptionLinked and
+    (Client.Caption = (Action as TCustomAction).Caption);
+end;
+
+function TJvOutlookBarButtonActionLink.IsEnabledLinked: Boolean;
+begin
+  Result := inherited IsEnabledLinked and
+    (Client.Enabled = (Action as TCustomAction).Enabled);
+end;
+
+function TJvOutlookBarButtonActionLink.IsImageIndexLinked: Boolean;
+begin
+  Result := inherited IsImageIndexLinked and
+    (Client.ImageIndex = (Action as TCustomAction).ImageIndex);
+end;
+
+function TJvOutlookBarButtonActionLink.IsOnExecuteLinked: Boolean;
+begin
+  Result := inherited IsOnExecuteLinked and
+    MethodsEqual(TMethod(Client.OnClick), TMethod(Action.OnExecute));
+end;
+
+
+
+procedure TJvOutlookBarButtonActionLink.SetCaption(const Value: TCaption);
+
+begin
+  if IsCaptionLinked then
+    Client.Caption := Value;
+end;
+
+procedure TJvOutlookBarButtonActionLink.SetEnabled(Value: Boolean);
+begin
+  if IsEnabledLinked then
+    Client.Enabled := Value;
+end;
+
+procedure TJvOutlookBarButtonActionLink.SetImageIndex(Value: Integer);
+begin
+  if IsImageIndexLinked then
+    Client.ImageIndex := Value;
+end;
+
+procedure TJvOutlookBarButtonActionLink.SetOnExecute(Value: TNotifyEvent);
+begin
+  if IsOnExecuteLinked then
+    Client.OnClick := Value;
+end;
+
 //=== { TJvOutlookBarButton } ================================================
 
 constructor TJvOutlookBarButton.Create(Collection: TCollection);
@@ -660,6 +751,69 @@ begin
   begin
     FEnabled := Value;
     Change;
+  end;
+end;
+
+procedure TJvOutlookBarButton.Click;
+begin
+  if Assigned(FOnClick) then
+    FOnClick(Self);
+end;
+
+function TJvOutlookBarButton.GetAction: TBasicAction;
+begin
+  if FActionLink <> nil then
+    Result := FActionLink.Action
+  else
+    Result := nil;
+end;
+
+function TJvOutlookBarButton.GetActionLinkClass: TJvOutlookBarButtonActionLinkClass;
+begin
+  Result := TJvOutlookBarButtonActionLink;
+end;
+
+procedure TJvOutlookBarButton.ActionChange(Sender: TObject;
+  CheckDefaults: Boolean);
+begin
+  if Sender is TCustomAction then
+    with TCustomAction(Sender) do
+    begin
+      if not CheckDefaults or (Self.Caption = '') then
+        Self.Caption := Caption;
+      if not CheckDefaults or Self.Enabled then
+        Self.Enabled := Enabled;
+      if not CheckDefaults or (Self.ImageIndex = -1) then
+        Self.ImageIndex := ImageIndex;
+      if not CheckDefaults or not Assigned(Self.OnClick) then
+        Self.OnClick := OnExecute;
+    end;
+end;
+
+procedure TJvOutlookBarButton.DoActionChange(Sender: TObject);
+begin
+  if Sender = Action then
+    ActionChange(Sender, False);
+end;
+
+type
+  THackOwnedCollection = class(TOwnedCollection);
+
+procedure TJvOutlookBarButton.SetAction(Value: TBasicAction);
+begin
+  if Value = nil then
+  begin
+    FActionLink.Free;
+    FActionLink := nil;
+  end
+  else
+  begin
+    if FActionLink = nil then
+      FActionLink := GetActionLinkClass.Create(Self);
+    FActionLink.Action := Value;
+    FActionLink.OnChange := DoActionChange;
+    ActionChange(Value, csLoading in Value.ComponentState); 
+    Value.FreeNotification(Collection.Owner as TJvCustomOutlookBar); // delegates notification to owner! 
   end;
 end;
 
@@ -1023,7 +1177,7 @@ begin
     TJvCustomOutlookBar(Owner).Repaint;
 end;
 
-//=== { TJvThemedTopBottomButton } =============================================
+//=== { TJvThemedTopBottomButton } ===========================================
 
 
 
@@ -1127,6 +1281,7 @@ end;
 
 procedure TJvCustomOutlookBar.Notification(AComponent: TComponent;
   Operation: TOperation);
+var I, J:Integer;
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
@@ -1139,6 +1294,13 @@ begin
     else
     if AComponent = FPageImages then
       PageImages := nil;
+    if (AComponent is TBasicAction) and not (csDestroying in ComponentState) then
+    begin
+      for I := 0 to Pages.Count - 1 do
+        for J := 0 to Pages[I].Buttons.Count - 1 do
+          if AComponent = Pages[I].Buttons[J].Action then
+            Pages[I].Buttons[J].Action := nil;
+    end;
   end;
 end;
 
@@ -1366,15 +1528,17 @@ begin
   begin
     TopButton.Visible := False;
     BtmButton.Visible := False;
-    Exit;
-  end;
-  R := GetPageRect(Index);
-  H := GetButtonHeight(Index);
-  TopButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and (Pages[Index].TopButtonIndex > 0);
-  BtmButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and
-    (R.Bottom - R.Top < (Pages[Index].Buttons.Count - Pages[Index].TopButtonIndex) * H);
+  end
+  else
+  begin
+    R := GetPageRect(Index);
+    H := GetButtonHeight(Index);
+    TopButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and (Pages[Index].TopButtonIndex > 0);
+    BtmButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and
+      (R.Bottom - R.Top < (Pages[Index].Buttons.Count - Pages[Index].TopButtonIndex) * H);
   // remove the last - H to show arrow
   // button when the bottom of the last button is beneath the edge
+  end;
   if TopButton.Visible then
     TopButton.SetBounds(ClientWidth - 20, R.Top + 4, 16, 16)
   else
@@ -1616,15 +1780,15 @@ begin
     olbsLarge:
       if LargeImages <> nil then
       begin
-        Result.Top := Result.Bottom - abs(Pages[PageIndex].Font.Height) - 2;
+        Result.Top := Result.Bottom - Abs(Pages[PageIndex].Font.Height) - 2;
         OffsetRect(Result, 0, -4);
       end;
     olbsSmall:
       if SmallImages <> nil then
       begin
         Result.Left := SmallImages.Width + 10;
-        Result.Top := Result.Top + (GetButtonHeight(PageIndex) - abs(Pages[PageIndex].Font.Height)) div 2;
-        Result.Bottom := Result.Top + abs(Pages[PageIndex].Font.Height) + 2;
+        Result.Top := Result.Top + (GetButtonHeight(PageIndex) - Abs(Pages[PageIndex].Font.Height)) div 2;
+        Result.Bottom := Result.Top + Abs(Pages[PageIndex].Font.Height) + 2;
         Result.Right := Result.Left + Canvas.TextWidth(Pages[PageIndex].Buttons[ButtonIndex].Caption) + 4;
         OffsetRect(Result, 0, -(H - (Result.Bottom - Result.Top)) div 4);
       end;
@@ -1671,10 +1835,14 @@ begin
   if (Index > -1) then
   begin
     with ActivePage.Buttons[Index] do
+    begin
       if AutoToggle then
         Down := not Down;
+      Click;
+    end;
     if Assigned(FOnButtonClick) then
       FOnButtonClick(Self, Index);
+
   end;
 end;
 
@@ -1944,12 +2112,12 @@ begin
     case Pages[PageIndex].ButtonSize of
       olbsLarge:
         if LargeImages <> nil then
-          Result := Max(Result, LargeImages.Height + abs(Pages[PageIndex].Font.Height) + cLargeOffset)
+          Result := Max(Result, LargeImages.Height + Abs(Pages[PageIndex].Font.Height) + cLargeOffset)
         else
           Result := Abs(Pages[PageIndex].Font.Height) + cLargeOffset;
       olbsSmall:
         if SmallImages <> nil then
-          Result := Max(SmallImages.Height, abs(Pages[PageIndex].Font.Height)) + cSmallOffset
+          Result := Max(SmallImages.Height, Abs(Pages[PageIndex].Font.Height)) + cSmallOffset
         else
           Result := Abs(Pages[PageIndex].Font.Height) + cSmallOffset;
     end;
@@ -2106,7 +2274,6 @@ end;
 
 
 
-
 function TJvCustomOutlookBar.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 var
@@ -2176,6 +2343,16 @@ begin
       FPageImages.RegisterChanges(FPageChangeLink);
     Invalidate;
   end;
+end;
+
+procedure TJvCustomOutlookBar.InitiateAction;
+var
+  I, J: Integer;
+begin
+  inherited InitiateAction;
+  for I := 0 to Pages.Count - 1 do
+    for J := 0 to Pages[I].Buttons.Count - 1 do
+      Pages[I].Buttons[J].ActionChange(Pages[I].Buttons[J].Action, csLoading in ComponentState);
 end;
 
 end.

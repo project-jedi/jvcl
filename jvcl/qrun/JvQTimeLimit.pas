@@ -35,8 +35,7 @@ unit JvQTimeLimit;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QDialogs, QForms, QWindows, 
+  SysUtils, Classes, QControls, QDialogs, QForms,
   JvQComponent, JvQTypes;
 
 type

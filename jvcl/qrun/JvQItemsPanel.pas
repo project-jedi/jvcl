@@ -38,8 +38,8 @@ unit JvQItemsPanel;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QWindows, QTypes, QGraphics, QControls, QExtCtrls, 
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QExtCtrls,
   JvQComponent, JvQThemes, JvQJCLUtils, JvQExControls;
 
 type

@@ -38,8 +38,9 @@ unit JvQMRUManager;
 interface
 
 uses
-  SysUtils, Classes,  
-  Qt, QMenus, QGraphics, QControls, QForms, Types, QWindows, 
+  SysUtils, Classes, 
+  Qt, 
+  QWindows, QMenus, QGraphics, QControls, QForms,
   JvQFormPlacement, JvQAppStorage, JvQComponent;
 
 type

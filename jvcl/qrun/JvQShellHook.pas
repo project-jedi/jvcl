@@ -41,8 +41,10 @@ unit JvQShellHook;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes,
-  JvQComponent, JvQFinalize;
+  SysUtils, Classes,
+  JvQComponent,
+  Windows, Messages, 
+  JvQFinalize;
 
 const
   HSHELL_WINDOWCREATED = 1;

@@ -63,8 +63,8 @@ unit JvQMouseGesture;
 interface
 
 uses
-  SysUtils, Classes,  
-  Qt, QControls, QForms, Types, QWindows, 
+  SysUtils, Classes, QWindows, QMessages, 
+  Qt, QControls, QForms, 
   JvQComponent;
 
 type

@@ -42,9 +42,8 @@ unit JvQTimeLine;
 interface
 
 uses
-  SysUtils, Classes, 
-  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QImgList, 
-  QWindows,   
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QImgList, 
   JvQComponent;
 
 const

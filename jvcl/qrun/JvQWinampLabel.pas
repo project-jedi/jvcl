@@ -35,8 +35,7 @@ unit JvQWinampLabel;
 interface
 
 uses
-  SysUtils, Classes,  
-  QTypes, Types, QGraphics, QControls, QStdCtrls, QWindows, 
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QStdCtrls,
   JvQExStdCtrls;
 
 type

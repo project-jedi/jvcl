@@ -30,27 +30,28 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQMarkupLabel;
+
+{$I jvcl.inc}
 
 interface
 
-uses  
-  Types, QGraphics, QControls, QWindows, 
+uses
+  QWindows, QMessages, QGraphics, QControls,
   SysUtils, Classes,
-  QTypes,
-  JvQComponent, JvQMarkupCommon, JvQExControls;
+  JvQComponent, JvQMarkupCommon;
 
 type
-  TJvMarkupLabel = class(TJvExWinControl)
+  TJvMarkupLabel = class(TJvPubGraphicControl)
   private
     FElementStack: TJvHTMLElementStack;
     FTagStack: TJvHTMLElementStack;
     FMarginLeft: Integer;
     FMarginRight: Integer;
     FMarginTop: Integer;
-    FAlignment: TAlignment; 
+    FAlignment: TAlignment;
+    FText: TCaption; 
+    FAutoSize: Boolean; 
     procedure Refresh;
     procedure ParseHTML(S: string);
     procedure RenderHTML;
@@ -62,9 +63,11 @@ type
     procedure SetAlignment(const Value: TAlignment);
     procedure DoReadBackColor(Reader: TReader);
   protected
-    procedure FontChanged; override; 
+    procedure FontChanged; override;
+    procedure SetText(const Value: TCaption);  override;
+
+    procedure SetAutoSize(Value: Boolean); 
     procedure DefineProperties(Filer: TFiler); override;
-    procedure SetText(const Value: TCaption); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -75,8 +78,9 @@ type
     property MarginLeft: Integer read FMarginLeft write SetMarginLeft default 5;
     property MarginRight: Integer read FMarginRight write SetMarginRight default 5;
     property MarginTop: Integer read FMarginTop write SetMarginTop default 5;
-    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;  
-    property Text: TCaption read GetText write SetText; 
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property Text: TCaption read FText write SetText;  
+    property AutoSize: boolean read FAutoSize write SetAutoSize default false; 
     property Align;
     property Font;
     property Anchors;
@@ -177,7 +181,7 @@ end;
 
 procedure TJvMarkupLabel.Refresh;
 begin
-  ParseHTML(Text);
+  ParseHTML(FText);
   HTMLElementDimensions;
   Invalidate;
 end;
@@ -214,7 +218,7 @@ var
       Exit;
     if not (V[1] in ['#','$']) then
     begin
-      // allow the use of both "clBlack" and "Black"
+      // allow the use of both "clBlack" and "Black" 
       if Pos('cl',AnsiLowerCase(V)) = 1 then
         VV := V
       else
@@ -412,11 +416,12 @@ var
   R: TRect;
   I, C, X, Y: Integer;
   ATotalWidth, AClientWidth, ATextWidth, BaseLine: Integer;
-  iSol, iEol, PendingCount, MaxHeight, MaxAscent: Integer; 
+  iSol, iEol, PendingCount, MaxHeight, MaxAscent: Integer;
   El: TJvHTMLElement;
   Eol: Boolean;
   PendingBreak: Boolean;
   lSolText: string;
+  MaxWidth: Integer;
 
   procedure SetFont(EE: TJvHTMLElement);
   begin
@@ -454,6 +459,9 @@ begin
   if C = 0 then
     Exit;
   HTMLClearBreaks;
+  if AutoSize then
+    AClientWidth := 10000
+  else
     AClientWidth := ClientWidth - MarginLeft - MarginRight;
 
   Canvas.Brush.Style := bsClear;
@@ -461,6 +469,7 @@ begin
   iSol := 0;
   PendingBreak := False;
   PendingCount := -1;
+  MaxWidth := 0;
   repeat
     I := iSol;
     ATotalWidth := AClientWidth;
@@ -525,7 +534,14 @@ begin
 
     // render line
     BaseLine := MaxAscent;
- 
+
+    if AutoSize then
+    begin
+      X := MarginLeft;
+      if (ATextWidth + MarginLeft + MarginRight) > MaxWidth then
+        MaxWidth := (ATextWidth + MarginLeft + MarginRight);
+    end
+    else
       case Alignment of
         taLeftJustify:
           X := MarginLeft;
@@ -543,7 +559,12 @@ begin
 
     Y := Y + MaxHeight;
     iSol := iEol;
-  until (iEol >= C - 1) and (El.EolText = ''); 
+  until (iEol >= C - 1) and (El.EolText = '');
+  if AutoSize then
+  begin
+    Width := MaxWidth;
+    Height := Y + 5;
+  end;
 end;
 
 procedure TJvMarkupLabel.SetAlignment(const Value: TAlignment);
@@ -555,7 +576,11 @@ begin
   end;
 end;
 
-
+procedure TJvMarkupLabel.SetAutoSize(Value: Boolean);
+begin  
+  FAutoSize := Value; 
+  Invalidate;
+end;
 
 procedure TJvMarkupLabel.SetMarginLeft(const Value: Integer);
 begin
@@ -577,14 +602,15 @@ end;
 
 procedure TJvMarkupLabel.SetText(const Value: TCaption);
 var
-  S: TCaption;
+  S: string;
 begin
-  if Value = GetText then
+  if Value = FText then
     Exit;
   S := Value;
   S := StringReplace(S, SLineBreak, ' ', [rfReplaceAll]);
   S := TrimRight(S);
-  inherited SetText(S);
+  FText := S; 
+  inherited SetText(FText); 
   Refresh;
 end;
 

@@ -19,7 +19,7 @@ The Initial Developer of the Original Code is David Polberger <dpol att swipnet 
 Portions created by David Polberger are Copyright (C) 2002 David Polberger.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
+Contributor(s): Bianconi, Cetkovsky
 
 Current Version: 2.00
 
@@ -38,16 +38,15 @@ Description:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQLinkLabel;
+
+{$I jvcl.inc}
 
 interface
 
 uses
   SysUtils, Classes, 
-  Types, QGraphics, QControls, QForms, QStdCtrls, 
-  QTypes, 
+  QWindows, QGraphics, QControls, QForms, QStdCtrls,
   JvQLinkLabelParser, JvQLinkLabelRenderer, JvQLinkLabelTree,
   JvQTypes, JvQComponent;
 
@@ -55,13 +54,13 @@ type
   ELinkLabelError = class(EJVCLException);
 
   TLinkClickEvent = procedure(Sender: TObject; LinkNumber: Integer;
-    LinkText: string) of object;
+    LinkText, LinkParam: string) of object;  // added LinkParam by Cetkovsky
   TDynamicTagInitEvent = procedure(Sender: TObject; out Source: string;
     Number: Integer) of object;
 
   TJvCustomLinkLabel = class(TJvGraphicControl, IDynamicNodeHandler)
   private
-    FLines: TStringList;
+    FText: TStringList;
     FRenderer: IRenderer;
     FActiveLinkNode: TLinkNode;
     FHotLinks: Boolean;
@@ -75,7 +74,8 @@ type
     FOnLinkClick: TLinkClickEvent;
     FOnDynamicTagInit: TDynamicTagInitEvent;
     FParser: IParser;
-    FLayout: TTextLayout;  // Bianconi 
+    FLayout: TTextLayout;  // Bianconi
+    FCaption: TCaption; 
     procedure SetTransparent(const Value: Boolean);
     function GetLinkColor: TColor;
     function GetLinkStyle: TFontStyles;
@@ -115,12 +115,12 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure Resize; override;
     procedure DoCaptionChanged; virtual;
-    procedure DoLinkClicked(LinkNumber: Integer; LinkText: string); virtual;
+    procedure DoLinkClicked(LinkNumber: Integer; LinkText, LinkParam: string); virtual;  // added LinkParam by Cetkovsky
     procedure DoDynamicTagInit(out Source: string; Number: Integer); virtual;
     property Parser: IParser read FParser;
-    property Renderer: IRenderer read FRenderer;  
-    property Caption: TCaption read GetText write SetText; 
-    property Lines: TStrings read GetStrings write SetStrings;
+    property Renderer: IRenderer read FRenderer;
+    property Caption: TCaption read FCaption write SetText;
+    property Text: TStrings read GetStrings write SetStrings;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;                // Bianconi
     property LinkColor: TColor read GetLinkColor write SetLinkColor default clBlue;
@@ -146,7 +146,7 @@ type
   TJvLinkLabel = class(TJvCustomLinkLabel)
   published
     property Caption;
-    property Lines;
+    property Text;
     property Anchors;
     property Transparent;
     property Layout;                   // Bianconi
@@ -163,6 +163,8 @@ type
     property OnDynamicTagInit;
     property OnCaptionChanged;
     property OnLinkClick;
+
+    property Enabled;                 // Cetkovsky
 
     property Align;
     property Color;
@@ -203,7 +205,7 @@ constructor TJvCustomLinkLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLinkCursor := crHandPoint;
-  FLines := TStringList.Create;
+  FText := TStringList.Create;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable]; 
   Width := 160;
   Height := 17;
@@ -228,7 +230,7 @@ end;
 destructor TJvCustomLinkLabel.Destroy;
 begin
   FNodeTree.Free;
-  FLines.Free;
+  FText.Free;
   inherited Destroy;
 end;
 
@@ -270,7 +272,7 @@ end;
 
 procedure TJvCustomLinkLabel.DeactivateActiveLinkNode;
 var
-  TmpRect : TRect;
+  TmpRect: TRect;
 begin
   if Assigned(FActiveLinkNode) then
   try
@@ -341,17 +343,17 @@ begin
     FOnCaptionChanged(Self);
 end;
 
-procedure TJvCustomLinkLabel.DoDynamicTagInit(out Source: string;
-  Number: Integer);
+procedure TJvCustomLinkLabel.DoDynamicTagInit(out Source: string; Number: Integer);
 begin
   if Assigned(FOnDynamicTagInit) then
     FOnDynamicTagInit(Self, Source, Number);
 end;
 
-procedure TJvCustomLinkLabel.DoLinkClicked(LinkNumber: Integer; LinkText: string);
+ // added LinkParam by Cetkovsky
+procedure TJvCustomLinkLabel.DoLinkClicked(LinkNumber: Integer; LinkText, LinkParam: string);
 begin
   if Assigned(FOnLinkClick) then
-    FOnLinkClick(Self, LinkNumber, LinkText);
+    FOnLinkClick(Self, LinkNumber, LinkText, LinkParam);
 end;
 
 function TJvCustomLinkLabel.GetDynamicTagContents(Number: Integer): string;
@@ -393,8 +395,7 @@ begin
   Result := not (csOpaque in ControlStyle);
 end;
 
-procedure TJvCustomLinkLabel.HandleDynamicNode(out Source: string;
-  const Node: TDynamicNode);
+procedure TJvCustomLinkLabel.HandleDynamicNode(out Source: string; const Node: TDynamicNode);
 begin
   if Assigned(Node) then
     DoDynamicTagInit(Source, Node.Number);
@@ -458,7 +459,7 @@ begin
   begin
     NodeAtPoint := FNodeTree.GetNodeAtPointOfClass(Pt, TLinkNode) as TLinkNode;
     if Assigned(NodeAtPoint) then
-      DoLinkClicked(NodeAtPoint.Number, NodeAtPoint.Text);
+      DoLinkClicked(NodeAtPoint.Number, NodeAtPoint.Text, NodeAtPoint.Param);  // added LinkParam by Cetkovsky
   end;
 
   DeactivateActiveLinkNode;
@@ -494,10 +495,6 @@ begin
       TmpBmp.Canvas.Brush.Color := Color;
       TmpBmp.Canvas.Brush.Style := bsSolid;
       TmpBmp.Canvas.FillRect(Rect(0,0,TmpBmp.Width - 1,TmpBmp.Height - 1));
-
-      TmpBmp.Transparent := True;
-      TmpBmp.TransparentMode := tmFixed;
-      TmpBmp.TransparentColor := Color;
 
       // Set new start point
       // The new start point is relative to temporary canvas, Left & Top Corner
@@ -537,6 +534,11 @@ begin
         end;
         // Adjust Root start point relative to control's canvas.
         FNodeTree.Root.StartingPoint := Point(TmpRect.Left, TmpRect.Top);  // Bianconi #2
+        // VisualCLX: most be done after the bitmap is drawn.  
+        TmpBmp.Transparent := True;
+        TmpBmp.TransparentMode := tmFixed;
+        TmpBmp.TransparentColor := Color;
+
         Canvas.Draw(TmpRect.Left,TmpRect.Top,TmpBmp);
       end;
     finally
@@ -568,9 +570,10 @@ procedure TJvCustomLinkLabel.SetText(const Value: TCaption);
 begin
   if Value <> Caption then
   begin
-    Lines.Clear;
-    inherited SetText(Value);
-    Lines.Add(Caption);
+    Text.Clear; 
+    inherited SetText(Value); 
+    FCaption := Value;
+    Text.Add(Caption);
     FActiveLinkNode := nil; // We're about to free the tree containing the node it's pointing to
     FNodeTree.Free;
     ResetNodeCount;
@@ -579,8 +582,6 @@ begin
     Invalidate;
     DoCaptionChanged;
   end;
-
-
 end;
 
 procedure TJvCustomLinkLabel.SetLinkColor(const Value: TColor);
@@ -638,21 +639,20 @@ procedure TJvCustomLinkLabel.SetMarginWidth(const Value: Integer);
 begin
   if FMarginWidth <> Value then
   begin
-  FMarginWidth := Value;
-  Resize;
-  Invalidate;
+    FMarginWidth := Value;
+    Resize;
+    Invalidate;
   end;
 end;
 
 function TJvCustomLinkLabel.GetStrings: TStrings;
 begin
-  Result := FLines;
+  Result := FText;
 end;
 
 procedure TJvCustomLinkLabel.SetStrings(const Value: TStrings);
 begin
-  FLines.Assign(Value);
-  inherited SetText(FLines.Text);
+  FText.Assign(Value);  inherited  SetText(FText.Text);
 end;
 
 // Bianconi
@@ -692,8 +692,7 @@ begin
     end;
 end;
 
-procedure TJvCustomLinkLabel.UpdateDynamicTag(Number: Integer;
-  const Source: string);
+procedure TJvCustomLinkLabel.UpdateDynamicTag(Number: Integer; const Source: string);
 var
   NodeEnum: INodeEnumerator;
   Parser: IParser;

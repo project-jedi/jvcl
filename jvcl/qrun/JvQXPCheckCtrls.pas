@@ -36,7 +36,7 @@ unit JvQXPCheckCtrls;
 interface
 
 uses
-  Classes, Types, QWindows, QGraphics, QControls,
+  Classes, QWindows, QGraphics, QControls,
   JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -130,43 +130,7 @@ type
     property OnStartDrag;
   end;
 
-(*
-  TJvXPCheckBoxPainter = class(TJvComponent)
-  private
-    FCheckSize: Byte;
-
-    FCkGradient: TBitmap;
-    FHlGradient: TBitmap;
-    FBgGradient: TBitmap;
-    procedure DrawCheck(Sender: TObject; Canvas: TCanvas;
-      const Rect: TRect; Checked, Grayed, Down, Enabled: Boolean;
-      var DefaultDraw: Boolean);
-    procedure DrawCheckMask(Sender: TObject; Canvas: TCanvas;
-      const Rect: TRect; Checked, Grayed: Boolean);
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  end;
-*)
-
-
-
 implementation
-
-(*
-//
-constructor TJvXPCheckBoxPainter.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FChecked := False;
-  FCheckSize := 13;
-  FBgGradient := TBitmap.Create; // background gradient
-  FCkGradient := TBitmap.Create; // clicked gradient
-  FHlGradient := TBitmap.Create; // Highlight gradient
-end;
-*)
-
-
 
 //=== { TJvXPCustomCheckControl } ============================================
 

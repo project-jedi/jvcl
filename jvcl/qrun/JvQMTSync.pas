@@ -39,8 +39,11 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  {$IFDEF HAS_UNIT_LIBC}
+  Libc,
+  {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF LINUX}
-  Libc, QWindows,
+  QWindows,
   {$ENDIF LINUX}
   JvQMTConsts;
 

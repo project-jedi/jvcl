@@ -34,9 +34,8 @@ unit JvQCommonExecDlg;
 
 interface
 
-uses  
-  Types, QWindows, 
-  Classes,
+uses
+  QWindows, Classes,
   JvQBaseDlg;
 
 type

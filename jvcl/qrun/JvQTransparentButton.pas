@@ -36,7 +36,7 @@ interface
 
 uses
   SysUtils, Classes,
-  Types, QWindows, QMessages, QGraphics, QControls,
+  QWindows, QMessages, QGraphics, QControls,
   QExtCtrls, QMenus, QForms, QImgList, QActnList, QButtons, 
   JvQComponent, JvQButton;
 
@@ -249,6 +249,12 @@ implementation
 
 uses
   JvQConsts;
+
+
+const
+  clBtnHighlight = clNormalLight;
+  clBtnShadow = clNormalDark;
+
 
 { create a grayed version of a color bitmap }
 { SLOW! don't use in realtime! }
@@ -719,11 +725,11 @@ var
   OldCol: Integer;
 begin
   OldCol := SetTextColor(DC, ColorToRGB(clBtnHighlight));
-  OffsetRect(lpRect, 1, 1);  
-  DrawTextW(DC, lpString, nCount, lpRect, uFormat); 
+  OffsetRect(lpRect, 1, 1);
+  DrawTextW(DC, lpString, nCount, lpRect, uFormat);
   OffsetRect(lpRect, -1, -1);
-  SetTextColor(DC, ColorToRGB(clBtnShadow));  
-  Result := DrawTextW(DC, lpString, nCount, lpRect, uFormat); 
+  SetTextColor(DC, ColorToRGB(clBtnShadow));
+  Result := DrawTextW(DC, lpString, nCount, lpRect, uFormat);
   SetTextColor(DC, OldCol);
 end;
 
@@ -1391,14 +1397,13 @@ begin
   if ((bsMouseDown in MouseStates)) and FShowPressed then
     OffsetRect(TmpRect, 1, 1);
 
-  
-  SetBkMode(DC, QWindows.TRANSPARENT); 
+  SetBkMode(DC, QWindows.TRANSPARENT);
   if not Enabled then
   begin
     SetTextColor(DC, ColorToRGB(clBtnHighlight));
     OffsetRect(TmpRect, 1, 1);
   
-    DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags); 
+    DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags);
     OffsetRect(TmpRect, -1, -1);
     SetTextColor(DC, ColorToRGB(clBtnShadow));
   end
@@ -1407,8 +1412,8 @@ begin
     SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
   else
     SetTextColor(DC, ColorToRGB(Self.Font.Color));
-  
-  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags); 
+
+  DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags); 
 end;
 
 procedure TJvTransparentButton2.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);

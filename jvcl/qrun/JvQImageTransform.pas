@@ -35,8 +35,8 @@ unit JvQImageTransform;
 interface
 
 uses
-  SysUtils, Classes,  
-  QWindows, QGraphics, QControls, QExtCtrls, Types, 
+  SysUtils, Classes,
+  QWindows, QGraphics, QControls, QExtCtrls,
   JvQComponent;
 
 type

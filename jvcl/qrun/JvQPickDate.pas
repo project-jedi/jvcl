@@ -36,9 +36,11 @@ unit JvQPickDate;
 
 interface
 
-uses 
-  Variants, 
-  Types, QWindows, QMessages,
+uses
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  QWindows, QMessages,
   QControls, QGraphics, QForms, QButtons, QStdCtrls, QGrids, QExtCtrls, 
   QTypes, 
   SysUtils, Classes,

@@ -52,7 +52,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  Types, QWindows,
+  QWindows,
   {$ENDIF LINUX}
   SysUtils, Classes,
   JvQTypes, JvQComponent;

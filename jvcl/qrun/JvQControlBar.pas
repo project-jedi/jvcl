@@ -35,18 +35,22 @@ unit JvQControlBar;
 interface
 
 uses
-  Types, QWindows, Classes, QGraphics, QControls, QMenus,
-  JvQExControls, JvQExExtCtrls;
+  QWindows, Classes, QGraphics, QControls, QMenus,
+  JvQExControls, JvQExExtCtrls, JvQAppStorage;
 
 type
   TPopupNames = (pnHint, pnName);
-  TJvControlBar = class(TJvExControlBar, IJvDenySubClassing)
+
+  TJvControlBar = class(TJvExControlBar, IJvDenySubClassing,
+    IJvAppStorageHandler, IJvAppStoragePublishedProps)
   private
     FPopupControl: Boolean;
     FPopup: TPopupMenu;
     FPopupNames: TPopupNames;
     FList: TList;
   protected
+    procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); virtual;
+    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); virtual;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure PopupMenuClick(Sender: TObject);
@@ -54,8 +58,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function SavePositions: string;
     procedure LoadPositions(const Value: string);
+    function SavePositions: string;
   published
     property HintColor; 
     property PopupControl: Boolean read FPopupControl write FPopupControl default True;
@@ -231,6 +235,16 @@ begin
 end;
 
 
+
+procedure TJvControlBar.ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
+begin
+  LoadPositions(AppStorage.ReadString(BasePath));
+end;
+
+procedure TJvControlBar.WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
+begin
+  AppStorage.WriteString(BasePath, SavePositions);
+end;
 
 end.
 

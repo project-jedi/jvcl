@@ -50,7 +50,7 @@ unit JvQEdit;
 interface
 
 uses
-  Types, QWindows, QMessages, 
+  QWindows, QMessages, 
   qt, QTypes, 
   Classes, QGraphics, QControls, QMenus,
   JvQCaret, JvQMaxPixel, JvQTypes, JvQExStdCtrls;
@@ -112,17 +112,16 @@ type
     procedure SetSelStart(Value: Integer); override;
     function GetPopupMenu: TPopupMenu; override;
   
-    function GetText: TCaption; override;
-
+    function GetText: TCaption; override; 
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure DoEmptyValueEnter; virtual;
-    procedure DoEmptyValueExit; virtual;
+    procedure DoEmptyValueExit; virtual; 
     procedure InitWidget; override;
     procedure Paint; override;
-    function HintShow(var HintInfo : THintInfo): Boolean; override;
 //    procedure TextChanged; override;
-//    procedure KeyPress(var Key: Char); override; 
+//    procedure KeyPress(var Key: Char); override;
+    function HintShow(var HintInfo : THintInfo): Boolean; override; 
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;

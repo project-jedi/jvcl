@@ -47,7 +47,7 @@ interface
 
 uses
   QWindows, QMessages,
-  Classes, Types, QGraphics, QControls, QForms, QStdCtrls, QButtons,  
+  Classes, QGraphics, QControls, QForms, QStdCtrls, QButtons,  
   Qt, JvQExStdCtrls, 
   QMenus;
 
@@ -476,9 +476,8 @@ begin
   begin
     R.Right := R.Right - ButtonWidth;
     // don't redraw content, just button
-    ExcludeClipRect(Canvas.Handle, R.Left, R.Top, R.Right, R.Bottom); 
-    QWindows. 
-    InvalidateRect(Handle, @R2, False);
+    ExcludeClipRect(Canvas.Handle, R.Left, R.Top, R.Right, R.Bottom);
+    QWindows.InvalidateRect(Handle, @R2, False);
   end;
 end;
 

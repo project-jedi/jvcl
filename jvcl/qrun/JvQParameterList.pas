@@ -33,9 +33,11 @@ unit JvQParameterList;
 interface
 
 uses
-  Classes, SysUtils,
-  QStdCtrls, QExtCtrls, Types, QGraphics, QForms, QControls, QDialogs, QComCtrls, 
-  Variants, 
+  Classes, SysUtils, QWindows, QMessages,
+  QStdCtrls, QExtCtrls, QGraphics, QForms, QControls, QDialogs, QComCtrls,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   JvQTypes, JvQDynControlEngine, JvQDynControlEngineIntf, JvQDSADialogs,
   JvQComponent, JvQPanel, JvQPropertyStore, JvQAppStorage, JvQAppStorageSelectList;
 
@@ -158,11 +160,13 @@ type
     function GetWinControl: TWinControl;
     function GetWinControlData: Variant; virtual;
     procedure SetWinControlData(Value: Variant); virtual;
-    procedure SetSearchName (Value : string);
+    procedure SetSearchName(Value: string);
 
     procedure SetEnabled(Value: Boolean); virtual;
     procedure SetVisible(Value: Boolean); virtual;
+    function  GetHeight: Integer; virtual;
     procedure SetHeight(Value: Integer); virtual;
+    function  GetWidth: Integer; virtual;
     procedure SetWidth(Value: Integer); virtual;
     procedure SetTabOrder(Value: Integer); virtual;
 
@@ -213,8 +217,8 @@ type
     property Visible: Boolean read FVisible write SetVisible;
     {the next properties find their expressions in the same properties of TWinControl }
     property Caption: string read FCaption write FCaption;
-    property Width: Integer read FWidth write SetWidth;
-    property Height: Integer read FHeight write SetHeight;
+    property Width: Integer read GetWidth write SetWidth;
+    property Height: Integer read GetHeight write SetHeight;
     property Hint: string read FHint write FHint;
     property HelpContext: THelpContext read FHelpContext write FHelpContext;
     property TabOrder: Integer read FTabOrder write SetTabOrder;
@@ -260,6 +264,9 @@ type
     FHeight: Integer;
     FMaxWidth: Integer;
     FMaxHeight: Integer;
+    FDefaultParameterHeight: Integer;
+    FDefaultParameterWidth: Integer;
+    FDefaultParameterLabelWidth: Integer;
     FOkButtonVisible: Boolean;
     FCancelButtonVisible: Boolean;
     FParameterListPropertyStore: TJvParameterListPropertyStore;
@@ -278,11 +285,19 @@ type
     ArrangePanel: TJvPanel;
     ScrollBox: TScrollBox;
     RightPanel: TJvPanel;
+    MainPanel: TWinControl;
+    HistoryPanel: TWinControl;
+    BottomPanel: TWinControl;
+    ButtonPanel: TWinControl;
+    OrgButtonPanelWidth,
+    OrgHistoryPanelWidth: Integer;
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
     procedure SetAppStoragePath(const Value: string);
     function GetAppStoragePath: string;
     function GetJvAppStorage: TJvCustomAppStorage;
     procedure SetJvAppStorage(Value: TJvCustomAppStorage);
+
+    procedure ResizeDialogAfterArrange(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
 
     procedure SetDynControlEngine(Value: TJvDynControlEngine);
 
@@ -300,20 +315,16 @@ type
     procedure HistoryLoadClick(Sender: TObject);
     procedure HistorySaveClick(Sender: TObject);
     procedure HistoryClearClick(Sender: TObject);
-
-    function GetEnableDisableReasonState(ADisableReasons, AEnableReasons: TJvParameterListEnableDisableReasonList):
-      Integer;
-
+    function GetEnableDisableReasonState(ADisableReasons: TJvParameterListEnableDisableReasonList;
+      AEnableReasons: TJvParameterListEnableDisableReasonList): Integer;
     procedure DialogShow(Sender: TObject);
-
-    property IntParameterList: TStrings read GetIntParameterList;
-
-    property ParameterDialog: TCustomForm read FParameterDialog;
-    property ParameterListSelectList: TJvParameterListSelectList read FParameterListSelectList;
     {this procedure checks the autoscroll-property of the internal
      scrollbox. This function should only be called, after the size of
      the parent-panel has changed}
     procedure CheckScrollBoxAutoScroll;
+    property IntParameterList: TStrings read GetIntParameterList;
+    property ParameterDialog: TCustomForm read FParameterDialog;
+    property ParameterListSelectList: TJvParameterListSelectList read FParameterListSelectList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -337,7 +348,7 @@ type
      returns True when ok-button pressed
      This function can be called inside a running thread. It will synchromized
      with the main thread using SynchronizeThread.Synchronize}
-    function ShowParameterDialog(SynchronizeThread: tThread) : Boolean; overload;
+    function ShowParameterDialog(SynchronizeThread: TThread): Boolean; overload;
     { Creates the ParameterDialog }
     procedure CreateParameterDialog;
     { Checks the Disable/Enable-Reason of all Parameters }
@@ -385,6 +396,9 @@ type
     property MaxWidth: Integer read FMaxWidth write FMaxWidth default 400;
     {Maximum ClientHeight of the Dialog}
     property MaxHeight: Integer read FMaxHeight write FMaxHeight default 600;
+    property DefaultParameterHeight: Integer read FDefaultParameterHeight write FDefaultParameterHeight default 0;
+    property DefaultParameterWidth: Integer read FDefaultParameterWidth write FDefaultParameterWidth default 0;
+    property DefaultParameterLabelWidth: Integer read FDefaultParameterLabelWidth write FDefaultParameterLabelWidth default 0;
     property OkButtonVisible: Boolean read FOkButtonVisible write FOkButtonVisible;
     property CancelButtonVisible: Boolean read FCancelButtonVisible write FCancelButtonVisible;
     property HistoryEnabled: Boolean read FHistoryEnabled write FHistoryEnabled;
@@ -422,13 +436,20 @@ type
 implementation
 
 uses
+  JclStrings,
   JvQParameterListParameter, JvQResources;
 
 const
   cFalse = 'FALSE';
   cTrue = 'TRUE';
+  cAllowedChars: TSysCharSet =
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+     'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+     'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'];
 
-  //=== { TJvParameterListMessages } ===========================================
+//=== { TJvParameterListMessages } ===========================================
 
 constructor TJvParameterListMessages.Create;
 begin
@@ -554,8 +575,8 @@ begin
   inherited Clear;
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReasonVariant(
-  const RemoteParameterName: string; Value: Variant);
+procedure TJvParameterListEnableDisableReasonList.AddReasonVariant(const RemoteParameterName: string;
+  Value: Variant);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -565,8 +586,8 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReason(
-  const RemoteParameterName: string; Value: Boolean);
+procedure TJvParameterListEnableDisableReasonList.AddReason(const RemoteParameterName: string;
+  Value: Boolean);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -576,8 +597,8 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReason(
-  const RemoteParameterName: string; Value: Integer);
+procedure TJvParameterListEnableDisableReasonList.AddReason(const RemoteParameterName: string;
+  Value: Integer);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -587,8 +608,8 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReason(
-  const RemoteParameterName: string; Value: Double);
+procedure TJvParameterListEnableDisableReasonList.AddReason(const RemoteParameterName: string;
+  Value: Double);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -598,8 +619,8 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReason(
-  const RemoteParameterName: string; const Value: string);
+procedure TJvParameterListEnableDisableReasonList.AddReason(const RemoteParameterName: string;
+  const Value: string);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -609,8 +630,8 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReason(
-  const RemoteParameterName: string; Value: TDateTime);
+procedure TJvParameterListEnableDisableReasonList.AddReason(const RemoteParameterName: string;
+  Value: TDateTime);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -620,8 +641,7 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReasonIsEmpty(
-  const RemoteParameterName: string);
+procedure TJvParameterListEnableDisableReasonList.AddReasonIsEmpty(const RemoteParameterName: string);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -631,8 +651,7 @@ begin
   AddObject(RemoteParameterName, Reason);
 end;
 
-procedure TJvParameterListEnableDisableReasonList.AddReasonIsNotEmpty(
-  const RemoteParameterName: string);
+procedure TJvParameterListEnableDisableReasonList.AddReasonIsNotEmpty(const RemoteParameterName: string);
 var
   Reason: TJvParameterListEnableDisableReason;
 begin
@@ -663,6 +682,7 @@ var
 begin
   for I := 0 to Count - 1 do
     Objects[I].Free;
+  Inherited Clear;
 end;
 
 procedure TJvParameterPropertyValues.AddValue(const AName: string; AValue: Variant);
@@ -672,7 +692,7 @@ begin
   Value := TJvParameterPropertyValue.Create;
   Value.PropertyName := AName;
   Value.PropertyValue := AValue;
-  AddObject(AName, Value)
+  AddObject(AName, Value);
 end;
 
 //=== { TJvBaseParameter } ===================================================
@@ -813,11 +833,12 @@ begin
     try
       JvDynControlData.ControlValue := Value;
     except 
-      on e:EVariantTypeCastError do 
+      on E: EVariantTypeCastError do
+        ; 
     end;
 end;
 
-procedure TJvBaseParameter.SetSearchName (Value : string);
+procedure TJvBaseParameter.SetSearchName(Value: string);
 begin
   FSearchName := Trim(Value);
 end;
@@ -893,11 +914,27 @@ begin
     WinControl.Visible := Value;
 end;
 
+function TJvBaseParameter.GetHeight: Integer;
+begin
+  if Assigned(ParameterList) and (FHeight <= 0) then
+    Result := ParameterList.DefaultParameterHeight
+  else
+    Result := FHeight;
+end;
+
 procedure TJvBaseParameter.SetHeight(Value: Integer);
 begin
   FHeight := Value;
   if Assigned(WinControl) then
     WinControl.Height := Value;
+end;
+
+function TJvBaseParameter.GetWidth: Integer;
+begin
+  if Assigned(ParameterList) and (FWidth <= 0) then
+    Result := ParameterList.DefaultParameterWidth
+  else
+    Result := FWidth;
 end;
 
 procedure TJvBaseParameter.SetWidth(Value: Integer);
@@ -971,7 +1008,7 @@ end;
 
 function TJvBaseParameter.GetParameterNameBase: string;
 begin
-  Result := 'ParameterItem' + SearchName;
+  Result := 'ParameterItem' + StrReplaceButChars(SearchName, cAllowedChars, '_');
 end;
 
 function TJvBaseParameter.GetParameterName: string;
@@ -1005,6 +1042,9 @@ begin
   ArrangePanel := nil;
   FMaxWidth := 600;
   FMaxHeight := 400;
+  FDefaultParameterHeight := 0;
+  FDefaultParameterWidth := 0;
+  FDefaultParameterLabelWidth := 0;
   FOkButtonVisible := True;
   FCancelButtonVisible := True;
   FHistoryEnabled := False;
@@ -1195,7 +1235,6 @@ type
 
 procedure TJvParameterList.CreateParameterDialog;
 var
-  MainPanel, BottomPanel, HistoryPanel, ButtonPanel: TWinControl;
   CancelButton: TWinControl;
   LoadButton, SaveButton, ClearButton: TWinControl;
   ButtonLeft: Integer;
@@ -1261,6 +1300,7 @@ begin
     ButtonLeft := ButtonLeft + 3 + CancelButton.Width + 3;
 
   ButtonPanel.Width := ButtonLeft + 3;
+  OrgButtonPanelWidth := ButtonLeft + 3;
 
   OkButton.Anchors := [akTop, akRight];
   CancelButton.Anchors := [akTop, akRight];
@@ -1305,40 +1345,79 @@ begin
       ButtonLeft := Left + Width + 5;
     end;
     HistoryPanel.Width := ButtonLeft;
+    OrgHistoryPanelWidth := ButtonLeft;
   end
   else
     HistoryPanel := nil;
 
   CreateWinControlsOnParent(MainPanel);
 
-  if Width <= 0 then
-    if ArrangeSettings.AutoSize in [asWidth, asBoth] then
-      if ArrangePanel.Width > TForm(ParameterDialog).ClientWidth then
-        if ArrangePanel.Width + RightPanel.Width > MaxWidth then
-          TForm(ParameterDialog).ClientWidth := MaxWidth
-        else
-          TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+5
+  with MainPanel do
+    ResizeDialogAfterArrange(nil, Left, Top, Width, Height);
+end;
+
+procedure TJvParameterList.ResizeDialogAfterArrange(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
+begin
+  if (Width <= 0) or (ArrangeSettings.AutoSize in [asWidth, asBoth]) then
+    if ArrangePanel.Width > TForm(ParameterDialog).ClientWidth then
+      if ArrangePanel.Width > MaxWidth then
+        TForm(ParameterDialog).ClientWidth := MaxWidth
       else
-        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+5;
-  if Height <= 0 then
-    if ArrangeSettings.AutoSize in [asHeight, asBoth] then
-      if ArrangePanel.Height + BottomPanel.Height > TForm(ParameterDialog).ClientHeight then
-        if ArrangePanel.Height + BottomPanel.Height > MaxHeight then
-          TForm(ParameterDialog).ClientHeight := MaxHeight + 5
-        else
-          TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 5
+        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+5
+    else
+      TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+5;
+  if Assigned(HistoryPanel) and
+     (TForm(ParameterDialog).ClientWidth < HistoryPanel.Width) then
+    TForm(ParameterDialog).ClientWidth := HistoryPanel.Width
+  else
+  if TForm(ParameterDialog).ClientWidth < ButtonPanel.Width then
+    TForm(ParameterDialog).ClientWidth := ButtonPanel.Width;
+  if (Height <= 0) or (ArrangeSettings.AutoSize in [asHeight, asBoth]) then
+    if ArrangePanel.Height + BottomPanel.Height > TForm(ParameterDialog).ClientHeight then
+      if ArrangePanel.Height + BottomPanel.Height > MaxHeight then
+        TForm(ParameterDialog).ClientHeight := MaxHeight + 10
       else
-        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 5;
+        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 10
+    else
+      TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 10;
 
   if Assigned(HistoryPanel) then
-    if (ButtonPanel.Width + HistoryPanel.Width) > BottomPanel.Width then
+    if (OrgButtonPanelWidth + OrgHistoryPanelWidth) > BottomPanel.Width then
     begin
       ButtonPanel.Align := alBottom;
-      ButtonPanel.Height := BottomPanel.Height;
-      BottomPanel.Height := BottomPanel.Height * 2 + 1;
+      ButtonPanel.Height := OkButton.Height + 6 + 2;
+      BottomPanel.Height := ButtonPanel.Height * 2 + 1;
       HistoryPanel.Align := alClient;
+    end
+    else
+    begin
+      ButtonPanel.Align := alRight;
+      ButtonPanel.Width := OrgButtonPanelWidth;
+      HistoryPanel.Align := alLeft;
+      HistoryPanel.Width := OrgHistoryPanelWidth;
+      BottomPanel.Height := OkButton.Height + 6 + 2;
     end;
   CheckScrollBoxAutoScroll;
+end;
+
+procedure TJvParameterList.CheckScrollBoxAutoScroll;
+begin
+  if not Assigned(ScrollBox) then
+    Exit;
+  if not Assigned(ArrangePanel) then
+    Exit;
+  RightPanel.Visible := False;
+  ScrollBox.AutoScroll := False;
+  if (ArrangePanel.Width >= (TForm(ParameterDialog).ClientWidth)) or
+    (ArrangePanel.Height > (TForm(ParameterDialog).ClientHeight-BottomPanel.Height))then
+  begin
+    RightPanel.Visible := True;
+    TForm(ParameterDialog).ClientWidth := TForm(ParameterDialog).ClientWidth + RightPanel.Width+4;
+    ScrollBox.AutoScroll := True;
+  end;
+//  if (ArrangePanel.Height > (ScrollBox.Height+3)) {OR
+///  (ArrangePanel.Height > MaxHeight) }then
+//    ScrollBox.AutoScroll := True;
 end;
 
 function TJvParameterList.ShowParameterDialog: Boolean;
@@ -1363,9 +1442,9 @@ begin
 end;
 
 type
-  TAccessThread = class(tThread);
+  TAccessThread = class(TThread);
 
-function TJvParameterList.ShowParameterDialog(SynchronizeThread: tThread) : Boolean;
+function TJvParameterList.ShowParameterDialog(SynchronizeThread: TThread): Boolean;
 begin
   if Count = 0 then
     EJVCLException.CreateRes(@RsENoParametersDefined);
@@ -1373,7 +1452,7 @@ begin
   try
     SetDataToWinControls;
     if Assigned(SynchronizeThread) then
-      TAccessThread(SynchronizeThread).Synchronize (ShowParameterDialogThread)
+      TAccessThread(SynchronizeThread).Synchronize(ShowParameterDialogThread)
     else
       ParameterDialog.ShowModal;
     Result := ParameterDialog.ModalResult = mrOk;
@@ -1428,15 +1507,20 @@ begin
 end;
 
 procedure TJvParameterList.DialogShow(Sender: TObject);
+var i : Integer;
 begin
-  if Count > 0 then
-    if Parameters[0].Visible then
-      if Assigned(Parameters[0].WinControl) then
-        Parameters[0].WinControl.SetFocus;
+  for i := 0 to Count-1 do
+    if Parameters[i].Visible then
+      if Assigned(Parameters[i].WinControl) then
+        if Parameters[i].WinControl.CanFocus then
+        begin
+          Parameters[i].WinControl.SetFocus;
+          break;
+        end;
 end;
 
-function TJvParameterList.GetEnableDisableReasonState(ADisableReasons, AEnableReasons:
-  TJvParameterListEnableDisableReasonList): Integer;
+function TJvParameterList.GetEnableDisableReasonState(ADisableReasons: TJvParameterListEnableDisableReasonList;
+  AEnableReasons: TJvParameterListEnableDisableReasonList): Integer;
 var
   J: Integer;
   IEnable: Integer;
@@ -1546,6 +1630,7 @@ begin
     AutoScroll := False;
     BorderStyle := bsNone; 
     Align := alClient;
+    Width := ParameterParent.Width;
   end;
   RightPanel := TJvPanel.Create(Self);
   RightPanel.Parent := ScrollBox;
@@ -1554,8 +1639,8 @@ begin
     Align := alRight;
     BorderStyle := bsNone;
     BevelInner := bvNone;
-    BevelOuter := bvNone;  
-    Width := 23;       // asn: need to check this 
+    BevelOuter := bvNone;
+    Width := 22;       // asn: need to check this
     Visible := False;
   end;
   FreeAndNil(ArrangePanel);
@@ -1572,14 +1657,19 @@ begin
     Caption := '';
     Left := 0;
     Top := 0;
+    OnResizeParent := ResizeDialogAfterArrange;
   end;
   ArrangePanel.ArrangeSettings := ArrangeSettings;
-  case ArrangeSettings.AutoSize of
+  case ArrangePanel.ArrangeSettings.AutoSize of
     asNone:
       ArrangePanel.ArrangeSettings.AutoSize := asHeight;
     asWidth:
       ArrangePanel.ArrangeSettings.AutoSize := asBoth;
   end;
+  if (Width > 0) and (ArrangePanel.ArrangeSettings.AutoSize = asHeight) then
+    ArrangePanel.Width := Scrollbox.Width-RightPanel.Width;
+  if MaxWidth > 0 then
+    ArrangePanel.ArrangeSettings.MaxWidth := MaxWidth-RightPanel.Width-2;
   try
     ArrangePanel.DisableArrange;
     for I := 0 to Count - 1 do
@@ -1594,36 +1684,12 @@ begin
          (Parameters[I] is TJvArrangeParameter) then
         TJvArrangeParameter(Parameters[I]).ArrangeControls;
     HandleEnableDisable;
-    //    for I := 0 to Count - 1 do
-    //      if Parameters[I].Visible then
-    //        if Assigned(Parameters[I].WinControl) then
-    //          if Assigned(TWinControlAccessProtected(Parameters[I].WinControl).OnExit) then
-    //            TWinControlAccessProtected(Parameters[I].WinControl).OnExit(Parameters[I].WinControl);
   finally
     ArrangePanel.EnableArrange;
   end;
   ArrangePanel.ArrangeControls;
 end;
 
-procedure TJvParameterList.CheckScrollBoxAutoScroll;
-begin
-  if not Assigned(ScrollBox) then
-    Exit;
-  if not Assigned(ArrangePanel) then
-    Exit;
-  RightPanel.Visible := False;
-  ScrollBox.AutoScroll := False;
-  if ArrangePanel.Width > (ScrollBox.Width+3) then
-  begin
-    ArrangePanel.Align := alTop;
-    RightPanel.Visible := True;
-    TForm(ParameterDialog).ClientWidth := TForm(ParameterDialog).ClientWidth + RightPanel.Width;
-    ScrollBox.AutoScroll := True;
-  end;
-  if (ArrangePanel.Height > (ScrollBox.Height+3)) {OR
-  (ArrangePanel.Height > MaxHeight) }then
-    ScrollBox.AutoScroll := True;
-end;
 
 procedure TJvParameterList.DestroyWinControls;
 begin

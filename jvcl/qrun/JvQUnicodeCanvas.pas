@@ -34,9 +34,9 @@ unit JvQUnicodeCanvas;
 
 interface
 
-uses
-  SysUtils, Classes,  
-  Qt, Types, QGraphics, QWindows, 
+uses 
+  Qt, 
+  SysUtils, Classes, QWindows, QGraphics,
   JvQJCLUtils;
 
 type

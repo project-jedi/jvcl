@@ -36,9 +36,8 @@ unit JvQMarkupCommon;
 
 interface
 
-uses  
-  Types, QControls, QGraphics, 
-  SysUtils, Classes;
+uses
+  QWindows, QControls, QGraphics, SysUtils, Classes;
   
 type
   TJvHTMLElement = class(TObject)

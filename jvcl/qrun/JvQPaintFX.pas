@@ -34,8 +34,8 @@ unit JvQPaintFX;
 
 interface
 
-uses  
-  Types, QWindows, QGraphics, QControls, QForms, 
+uses
+  QWindows, QMessages, QGraphics, QControls, QForms,
   SysUtils, Classes;
 
 type

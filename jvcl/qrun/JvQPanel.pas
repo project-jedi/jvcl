@@ -39,8 +39,9 @@ unit JvQPanel;
 interface
 
 uses
-  Types, QWindows, QMessages,
-  SysUtils, Classes, QGraphics, QControls, QForms, QExtCtrls,
+  QWindows, QMessages,
+  SysUtils, Classes, QGraphics, QControls, QForms, QExtCtrls, 
+  Qt,  
   JvQThemes, JvQComponent, JvQExControls;
 
 type
@@ -60,6 +61,7 @@ type
     FDistanceVertical: Integer;
     FDistanceHorizontal: Integer;
     FShowNotVisibleAtDesignTime: Boolean;
+    FMaxWidth: Integer;
     procedure SetWrapControls(Value: Boolean);
     procedure SetAutoArrange(Value: Boolean);
     procedure SetAutoSize(Value: TJvAutoSizePanel);
@@ -67,6 +69,7 @@ type
     procedure SetBorderTop(Value: Integer);
     procedure SetDistanceVertical(Value: Integer);
     procedure SetDistanceHorizontal(Value: Integer);
+    procedure SetMaxWidth(Value: Integer);
     procedure Rearrange;
   public
     constructor Create(APanel: TJvPanel);
@@ -80,6 +83,7 @@ type
     property ShowNotVisibleAtDesignTime: Boolean read FShowNotVisibleAtDesignTime write FShowNotVisibleAtDesignTime default True;
     property AutoSize: TJvAutoSizePanel read FAutoSize write SetAutoSize default asNone;
     property AutoArrange: Boolean read FAutoArrange write SetAutoArrange default False;
+    property MaxWidth: Integer read FMaxWidth write SetMaxWidth default 0;
   end;
  
 
@@ -99,8 +103,10 @@ type
     FArrangeControlActive: Boolean;
     FArrangeWidth: Integer;
     FArrangeHeight: Integer;
-    FOnResizeParent: TJvPanelResizeParentEvent; 
-    FOnPaint: TNotifyEvent;
+    FOnResizeParent: TJvPanelResizeParentEvent;
+    FOnPaint: TNotifyEvent;  
+    FGripBmp: TBitmap;
+    procedure CreateSizeGrip; 
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
     function GetWidth: Integer;
@@ -110,6 +116,7 @@ type
     procedure SetFlatBorder(const Value: Boolean);
     procedure SetFlatBorderColor(const Value: TColor);
     procedure DrawCaption;
+    procedure DrawCaptionTo(ACanvas: TCanvas ; DrawingMask: Boolean = false);
     procedure DrawBorders;
     procedure SetMultiLine(const Value: Boolean);
     procedure SetHotColor(const Value: TColor);
@@ -123,17 +130,17 @@ type
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure Paint; override;
-    procedure AdjustSize; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;  
+    procedure DrawMask(ACanvas: TCanvas); override; 
     procedure Loaded; override;
     procedure Resize; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
+    function GetNextControlByTabOrder(ATabOrder: Integer): TWinControl;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Invalidate; override;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure ArrangeControls;
     procedure EnableArrange;
     procedure DisableArrange;
@@ -198,7 +205,8 @@ type
 
 implementation
 
-uses
+uses 
+  Types, 
   JvQMouseTimer;
 
 const
@@ -215,6 +223,11 @@ constructor TJvArrangeSettings.Create(APanel: TJvPanel);
 begin
   inherited Create;
   FPanel := APanel;
+  FMaxWidth := 0;
+  FBorderLeft := 0;
+  FBorderTop := 0;
+  FDistanceVertical:= 0;
+  FDistanceHorizontal:= 0;
   WrapControls := True;
   ShowNotVisibleAtDesignTime := True;
   FAutoSize := asNone;
@@ -286,6 +299,15 @@ begin
   end;
 end;
 
+procedure TJvArrangeSettings.SetMaxWidth(Value: Integer);
+begin
+  if Value <> FMaxWidth then
+  begin
+    FMaxWidth := Value;
+    Rearrange;
+  end;
+end;
+
 procedure TJvArrangeSettings.Assign(Source: TPersistent);
 var
   A: TJvArrangeSettings;
@@ -301,6 +323,7 @@ begin
     FDistanceVertical := A.DistanceVertical;
     FDistanceHorizontal := A.DistanceHorizontal;
     FShowNotVisibleAtDesignTime := A.ShowNotVisibleAtDesignTime;
+    FMaxWidth := A.MaxWidth;
 
     Rearrange;
   end
@@ -310,7 +333,7 @@ end;
 
 procedure TJvArrangeSettings.Rearrange;
 begin
-  if (FPanel <> nil) and (AutoArrange) and
+  if (FPanel <> nil) and AutoArrange and
     not (csLoading in FPanel.ComponentState) then
     FPanel.ArrangeControls;
 end;
@@ -330,15 +353,51 @@ end;
 
 destructor TJvPanel.Destroy;
 begin
-  FArrangeSettings.Free;
+  FArrangeSettings.Free; 
+  FreeAndNil(FGripBmp); 
   inherited Destroy;
 end;
 
 
 
+
+procedure TJvPanel.DrawMask(ACanvas: TCanvas);
+var
+  R: TRect;
+  I, J, X, Y: Integer;
+begin
+  inherited DrawMask(ACanvas);
+  ACanvas.Brush.Style := bsClear;
+  ACanvas.Pen.Color := clDontMask;
+  I := 0 ; //BorderWidth;
+  if BevelOuter <> bvNone then
+    Inc(I, BevelWidth);
+  if BevelInner <> bvNone then
+    Inc(I, BevelWidth);
+  ACanvas.Pen.Width := I;
+  R := ClientRect;
+  ACanvas.Rectangle(R);
+  DrawCaptionTo(ACanvas, true);
+  if Sizeable then
+  begin
+    X := ClientWidth - FGripBmp.Width - I;
+    Y := ClientHeight - FGripBmp.Height - I;
+    for I := 0 to 2 do
+    begin
+      for J := 0 to 2 do
+      begin
+        ACanvas.MoveTo(X + 4 * I + J, Y + FGripBmp.Height);
+        ACanvas.LineTo(X + FGripBmp.Width, Y + 4 * I + J);
+      end
+    end;
+  end;
+end;
+
+
 procedure TJvPanel.Paint;
 var
-  X, Y: Integer;
+  X, Y: Integer; 
+  I: Integer; 
 begin
   if Assigned(FOnPaint) then
   begin
@@ -362,31 +421,19 @@ begin
   Self.DrawCaption;
   if Sizeable then 
       with Canvas do
-      begin
-        Font.Name := 'Marlett';
-        Font.Charset := DEFAULT_CHARSET;
-        Font.Size := 12;
-        Canvas.Font.Style := [];
-        Canvas.Font.Color := clBtnShadow;
-        Brush.Style := bsClear;
-        X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
-        Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
-        if Transparent and not IsThemed then
-          SetBkMode(Handle, BkModeTransparent);
-        TextOut(X, Y, 'o');
+      begin 
+        I := 0 ; //BorderWidth;
+        if BevelOuter <> bvNone then
+          Inc(I, BevelWidth);
+        if BevelInner <> bvNone then
+          Inc(I, BevelWidth);
+        X := ClientWidth - FGripBmp.Width - I;
+        Y := ClientHeight - FGripBmp.Height - I;
+        Draw(X, Y, FGripBmp);  
       end;
 end;
 
-procedure TJvPanel.AdjustSize;
-begin
-  inherited AdjustSize;
-  if Transparent and not IsThemed then
-  begin
-   // (ahuser) That is the only way to draw the border of the contained controls.
-    Width := Width + 1;
-    Width := Width - 1;
-  end;
-end;
+
 
 procedure TJvPanel.DrawBorders;
 var
@@ -419,6 +466,11 @@ begin
 end;
 
 procedure TJvPanel.DrawCaption;
+begin
+  DrawCaptionTo(self.Canvas);
+end;
+
+procedure TJvPanel.DrawCaptionTo(ACanvas: TCanvas ; DrawingMask: Boolean = false);
 const
   Alignments: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWrap: array [Boolean] of Longint = (DT_SINGLELINE, DT_WORDBREAK);
@@ -427,7 +479,7 @@ var
   BevelSize: Integer;
   Flags: Longint;
 begin
-  with Self.Canvas do
+  with ACanvas do
   begin
     if Caption <> '' then
     begin
@@ -444,7 +496,7 @@ begin
       Flags := DT_EXPANDTABS or WordWrap[MultiLine] or Alignments[Alignment];
       Flags := DrawTextBiDiModeFlags(Flags);
       //calculate required rectangle size  
-      DrawText(Canvas, Caption, -1, ATextRect, Flags or DT_CALCRECT); 
+      DrawText(ACanvas, Caption, -1, ATextRect, Flags or DT_CALCRECT); 
       // adjust the rectangle placement
       OffsetRect(ATextRect, 0, -ATextRect.Top + (Height - (ATextRect.Bottom - ATextRect.Top)) div 2);
       case Alignment of
@@ -453,13 +505,16 @@ begin
             BevelSize), 0);
         taCenter:
           OffsetRect(ATextRect, -ATextRect.Left + (Width - (ATextRect.Right - ATextRect.Left)) div 2, 0);
-      end;
-      if not Enabled then
-        Font.Color := clGrayText;
+      end; 
+      if DrawingMask then
+        Font.Color := clDontMask
+      else 
+        if not Enabled then
+          Font.Color := clGrayText;
       //draw text
       if Transparent and not IsThemed then
-        SetBkMode(Canvas.Handle, BkModeTransparent);  
-      DrawText(Canvas, Caption, -1, ATextRect, Flags); 
+        SetBkMode(ACanvas.Handle, BkModeTransparent);  
+      DrawText(ACanvas, Caption, -1, ATextRect, Flags); 
     end;
   end;
 end;
@@ -576,7 +631,11 @@ procedure TJvPanel.SetSizeable(const Value: Boolean);
 begin
   if FSizeable <> Value then
   begin
-    FSizeable := Value;
+    FSizeable := Value; 
+    if Value then
+      CreateSizeGrip
+    else
+      FreeAndNil(FGripBmp); 
     Invalidate;
   end;
 end;
@@ -686,15 +745,29 @@ begin
     ArrangeControls;
 end;
 
+function TJvPanel.GetNextControlByTabOrder(ATabOrder: Integer): TWinControl;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to ControlCount - 1 do
+    if Controls[I] is TWinControl then
+      if TWinControl(Controls[I]).TabOrder = ATabOrder then
+      begin
+        Result := TWinControl(Controls[I]);
+        Break;
+      end;
+end;
+
 procedure TJvPanel.ArrangeControls;
 var
-  AktX, AktY, NewX, NewY, MaxY: Integer;
+  AktX, AktY, NewX, NewY, MaxY, NewMaxX: Integer;
   ControlMaxX, ControlMaxY: Integer;
+  TmpWidth, TmpHeight: Integer;
   LastTabOrder: Integer;
-  LastControlCount, CurrControlCount: Integer;
   CurrControl: TWinControl;
   I: Integer;
-  OldHeight: Integer;
+  OldHeight, OldWidth: Integer;
 begin
   if (not ArrangeEnabled) or FArrangeControlActive or (ControlCount = 0) then
     Exit;
@@ -705,18 +778,19 @@ begin
   FArrangeControlActive := True;
   try
     OldHeight := Height;
-    LastControlCount := 0;
-    CurrControlCount := 0;
+    OldWidth := Width;
+    TmpHeight := Height;
+    TmpWidth := Width;
     AktY := FArrangeSettings.BorderTop;
     AktX := FArrangeSettings.BorderLeft;
     LastTabOrder := -1;
     MaxY := -1;
-    if (FArrangeSettings.AutoSize in [asWidth, asBoth]) and (Align in [alLeft, alRight]) then
-      ControlMaxX := Width - 2 * FArrangeSettings.BorderLeft
+    if (FArrangeSettings.AutoSize in [asWidth, asBoth]) then
+      ControlMaxX := TmpWidth - 2 * FArrangeSettings.BorderLeft
     else
       ControlMaxX := -1;
-    if (FArrangeSettings.AutoSize in [asHeight, asBoth]) and (Align in [alTop, alBottom]) then
-      ControlMaxY := Height - 2 * FArrangeSettings.BorderTop
+    if (FArrangeSettings.AutoSize in [asHeight, asBoth]) then
+      ControlMaxY := TmpHeight - 2 * FArrangeSettings.BorderTop
     else
       ControlMaxY := -1;
 
@@ -725,70 +799,71 @@ begin
       begin
         if Controls[I] is TJvPanel then
           TJvPanel(Controls[I]).ArrangeSettings.Rearrange;
-        if Controls[I].Width + 2 * FArrangeSettings.BorderLeft > Width then
-          Width := Controls[I].Width + 2 * FArrangeSettings.BorderLeft;
+        if (Controls[I].Width + 2 * FArrangeSettings.BorderLeft > TmpWidth) then
+          TmpWidth := Controls[I].Width + 2 * FArrangeSettings.BorderLeft;
       end;
 
-    while CurrControlCount < ControlCount do
+    if (TmpWidth > FArrangeSettings.MaxWidth) and (FArrangeSettings.MaxWidth > 0) then
+      TmpWidth := FArrangeSettings.MaxWidth ;
+    CurrControl := GetNextControlByTabOrder(LastTabOrder+1);
+    while Assigned(CurrControl) do
     begin
-      for I := 0 to ControlCount - 1 do
+      LastTabOrder := CurrControl.TabOrder;
+      if CurrControl.Visible or
+        ((csDesigning in ComponentState) and FArrangeSettings.ShowNotVisibleAtDesignTime) then
       begin
-        if Controls[I] is TWinControl then
+        NewMaxX := AktX + CurrControl.Width + FArrangeSettings.DistanceHorizontal +
+          FArrangeSettings.BorderLeft;
+        if (((NewMaxX > TmpWidth) and not (FArrangeSettings.AutoSize in [asWidth, asBoth])) or
+            ((NewMaxX > FArrangeSettings.MaxWidth) and (FArrangeSettings.MaxWidth > 0))) and
+           (AktX > FArrangeSettings.BorderLeft) and // Only Valid if there is one control in the current line
+           FArrangeSettings.WrapControls then
         begin
-          CurrControl := TWinControl(Controls[I]);
-          if CurrControl.TabOrder = (LastTabOrder + 1) then
-          begin
-            LastTabOrder := CurrControl.TabOrder;
-            Inc(CurrControlCount);
-            if CurrControl.Visible or
-              ((csDesigning in ComponentState) and FArrangeSettings.ShowNotVisibleAtDesignTime) then
-            begin
-              NewX := AktX;
-              NewY := AktY;
-              if ((AktX + CurrControl.Width + FArrangeSettings.DistanceHorizontal + FArrangeSettings.BorderLeft) > Width) and
-                 (AktX > FArrangeSettings.BorderLeft) and
-                 FArrangeSettings.WrapControls then
-              begin
-                AktX := FArrangeSettings.BorderLeft;
-                AktY := AktY + MaxY + FArrangeSettings.DistanceVertical;
-                MaxY := -1;
-                NewX := AktX;
-                NewY := AktY;
-              end;
-              AktX := AktX + CurrControl.Width;
-              if AktX > ControlMaxX then
-                ControlMaxX := AktX;
-              AktX := AktX + FArrangeSettings.DistanceHorizontal;
-              CurrControl.Left := NewX;
-              CurrControl.Top := NewY;
-              if CurrControl.Height > MaxY then
-                MaxY := CurrControl.Height;
-              ControlMaxY := AktY + MaxY;
-            end;
-          end;
+          AktX := FArrangeSettings.BorderLeft;
+          AktY := AktY + MaxY + FArrangeSettings.DistanceVertical;
+          MaxY := -1;
+          NewX := AktX;
+          NewY := AktY;
+        end
+        else
+        begin
+          NewX := AktX;
+          NewY := AktY;
         end;
+        AktX := AktX + CurrControl.Width;
+        if AktX > ControlMaxX then
+          ControlMaxX := AktX;
+        AktX := AktX + FArrangeSettings.DistanceHorizontal;
+        CurrControl.Left := NewX;
+        CurrControl.Top := NewY;
+        if CurrControl.Height > MaxY then
+          MaxY := CurrControl.Height;
+        ControlMaxY := AktY + MaxY;
       end;
-      if CurrControlCount = LastControlCount then
-        Break;
-      LastControlCount := CurrControlCount;
+      CurrControl := GetNextControlByTabOrder(LastTabOrder+1);
     end;
 
     if not (csLoading in ComponentState) then
     begin
-      if FArrangeSettings.AutoSize in [asWidth, asBoth] then
+      if (FArrangeSettings.AutoSize in [asWidth, asBoth]) then
         if ControlMaxX >= 0 then
-          Width := ControlMaxX + FArrangeSettings.BorderLeft
+          if (FArrangeSettings.MaxWidth > 0) and (ControlMaxX >= FArrangeSettings.MaxWidth) then
+            TmpWidth := FArrangeSettings.MaxWidth
+          else
+            TmpWidth := ControlMaxX + FArrangeSettings.BorderLeft
         else
-          Width := 0;
-      if FArrangeSettings.AutoSize in [asHeight, asBoth] then
-        if ControlMaxY >=0  then
-          Height := ControlMaxY + FArrangeSettings.BorderTop
+          TmpWidth := 0;
+      if (FArrangeSettings.AutoSize in [asHeight, asBoth]) then
+        if ControlMaxY >= 0 then
+          TmpHeight := ControlMaxY + FArrangeSettings.BorderTop
         else
-          Height := 0;
+          TmpHeight := 0;
+      Width := TmpWidth;
+      Height := TmpHeight;
     end;
     FArrangeWidth := ControlMaxX + 2 * FArrangeSettings.BorderLeft;
     FArrangeHeight := ControlMaxY + 2 * FArrangeSettings.BorderTop;
-    if OldHeight <> Height then  
+    if (OldWidth <> TmpWidth) or (OldHeight <> Height) then  
       UpdateWindow(GetFocus); 
   finally
     FArrangeControlActive := False;
@@ -796,14 +871,17 @@ begin
 end;
 
 procedure TJvPanel.SetWidth(Value: Integer);
+var
+  Changed: Boolean;
 begin
-  if inherited Width <> Value then
+  Changed := inherited Width <> Value;
+  inherited Width := Value;
+  if Changed then
     if Assigned(FOnResizeParent) then
       FOnResizeParent(Self, Left, Top, Value, Height)
     else
     if Parent is TJvPanel then
-       TJvPanel(Parent).ArrangeSettings.Rearrange;
-  inherited Width := Value;
+      TJvPanel(Parent).ArrangeSettings.Rearrange;
 end;
 
 function TJvPanel.GetWidth: Integer;
@@ -812,14 +890,17 @@ begin
 end;
 
 procedure TJvPanel.SetHeight(Value: Integer);
+var
+  Changed: Boolean;
 begin
-  if inherited Height <> Value then
+  Changed := inherited Height <> Value;
+  inherited Height := Value;
+  if Changed then
     if Assigned(FOnResizeParent) then
       FOnResizeParent(Self, Left, Top, Width, Value)
     else
     if Parent is TJvPanel then
-       TJvPanel(Parent).ArrangeSettings.Rearrange;
-  inherited Height := Value;
+      TJvPanel(Parent).ArrangeSettings.Rearrange;
 end;
 
 function TJvPanel.GetHeight: Integer;
@@ -832,6 +913,38 @@ begin
   if (Value <> nil) and (Value <> FArrangeSettings) then
     FArrangeSettings.Assign(Value);
 end;
+
+
+procedure TJvPanel.CreateSizeGrip;
+var
+  I: Integer;
+begin
+  FGripBmp := TBitmap.Create;
+  FGripBmp.Width := 13; //GetSystemMetrics(SM_CXVSCROLL);
+  FGripBmp.Height := 13; //GetSystemMetrics(SM_CXYSCROLL);
+  with FGripBmp.Canvas do
+  begin
+    Brush.Color := clBackground;
+    FillRect(Bounds(0, 0, Width, Height));
+    Pen.Width := 1;
+    for I := 0 to 2 do
+    begin
+      Pen.Color := clLight;
+      MoveTo(3 * I, FGripBmp.Height);
+      LineTo(FGripBmp.Width, 3 * I);
+      Pen.Color := clDark;
+      MoveTo(3 * I + 1, FGripBmp.Height);
+      LineTo(FGripBmp.Width, 3 * I + 1);
+//      Pen.Color := clMid;
+      MoveTo(3 * I + 2, FGripBmp.Height);
+      LineTo(FGripBmp.Width, 3 * I + 2);
+    end;
+  end;
+  FGripBmp.TransparentColor := clBackground;
+  FGripBmp.TransparentMode := tmFixed;
+  FGripBmp.Transparent := True;
+end;
+
 
 end.
 

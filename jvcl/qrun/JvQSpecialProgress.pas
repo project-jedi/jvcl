@@ -37,8 +37,8 @@ unit JvQSpecialProgress;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QExtCtrls, QWindows, Types, 
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, QExtCtrls, // for Frame3D
   JvQComponent;
 
 type

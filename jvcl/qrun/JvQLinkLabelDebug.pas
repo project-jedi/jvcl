@@ -40,8 +40,9 @@ unit JvQLinkLabelDebug;
 interface
 
 uses
-  TypInfo, SysUtils,  
-  QComCtrls, QGraphics, Types, 
+  TypInfo, SysUtils,
+  QComCtrls, QGraphics, 
+  Types, 
   JvQLinkLabelTree, JvQLinkLabelTools, JvQLinkLabel;
 
 type

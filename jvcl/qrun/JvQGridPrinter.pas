@@ -34,9 +34,8 @@ unit JvQGridPrinter;
 
 interface
 
-uses  
-  QControls, QForms, QGrids, QPrinters, 
-  SysUtils, Classes;
+uses
+  QWindows, QControls, QForms, QGrids, QPrinters, SysUtils, Classes;
 
 type
   TJvPrintMode = (pmPrint, pmPreview, pmPageCount);

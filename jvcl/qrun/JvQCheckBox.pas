@@ -39,7 +39,7 @@ unit JvQCheckBox;
 interface
 
 uses
-  Types, QWindows, QMessages, Classes, QGraphics, QControls, QStdCtrls,
+  QWindows, QMessages, Classes, QGraphics, QControls, QStdCtrls,
   JvQTypes, JvQExStdCtrls, JvQLinkedControls;
 
 type

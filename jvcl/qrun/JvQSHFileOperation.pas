@@ -43,8 +43,8 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, ShellAPI,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes,  
-  Qt, QControls, 
+  SysUtils, Classes, QControls, 
+  Qt, 
   JvQBaseDlg;
 
 const

@@ -35,8 +35,8 @@ unit JvQFormAnimatedIcon;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QForms, QExtCtrls, QImgList, QGraphics, 
+  SysUtils, Classes, QControls, QForms, QExtCtrls,
+  QImgList, QGraphics,   // clx required
   JvQComponent;
 
 type

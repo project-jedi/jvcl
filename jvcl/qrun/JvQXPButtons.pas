@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, TypInfo,
-  Types, QWindows, QMessages, QGraphics, QControls, QForms, QActnList, QImgList, QMenus, 
+  QWindows, QMessages, QGraphics, QControls, QForms, QActnList, QImgList, QMenus, 
   JvQExControls, Qt, 
   JvQXPCore, JvQXPCoreUtils;
 

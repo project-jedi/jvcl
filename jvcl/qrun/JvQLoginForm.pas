@@ -38,10 +38,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, // GetCurrentThreadID => Linux: System.pas
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc, // GetCurrentThreadID Linux
-  {$ENDIF LINUX}
-  QMessages, Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
+  {$ENDIF HAS_UNIT_LIBC}
+  QMessages, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
   JvQComponent, JvQBaseDlg, JvQAppStorage;
 
 type

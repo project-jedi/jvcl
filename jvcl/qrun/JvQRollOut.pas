@@ -56,8 +56,8 @@ unit JvQRollOut;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QImgList, QControls, QExtCtrls,  QActnList, Types, QWindows, 
+  SysUtils, Classes,
+  QWindows, QMessages, QControls, QGraphics, QImgList, QExtCtrls, QActnList,
   JvQComponent, JvQThemes;
 
 const

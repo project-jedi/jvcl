@@ -35,7 +35,7 @@ unit JvQProgressBar;
 interface
 
 uses
-  Types, QWindows, QMessages, 
+  QWindows, QMessages, 
   SysUtils, Classes, QGraphics, QControls, QForms, QComCtrls,
   JvQExComCtrls;
 
