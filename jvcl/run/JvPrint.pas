@@ -58,6 +58,9 @@ type
 
 implementation
 
+uses
+  JvJCLUtils;
+
 procedure TJvPrint.Abort;
 begin
   Printer.Abort;
@@ -124,7 +127,13 @@ begin
         with Printer do
         begin
           BeginDoc;
+          {$IFDEF VCL}
+          CopyRectDIBits(Canvas, Rect(0, 0, PageWidth, PageHeight),
+            Value, Rect(0, 0, Value.Width, Value.Height));
+          {$ENDIF VCL}
+          {$IFDEF VisualCLX}
           Canvas.StretchDraw(Rect(0, 0, PageWidth, PageHeight), Value);
+          {$ENDIF VisualCLX}
           EndDoc;
         end;
       end;
