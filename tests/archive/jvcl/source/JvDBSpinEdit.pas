@@ -34,15 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, StdCtrls,
-  JvSpinEdit,
-  Graphics,
-  Forms,
-  Dialogs,
-  Menus,
-  ExtCtrls,
-  DBTables,
-  DB,
-  DBCtrls;
+  JvSpin,Graphics,Forms,Dialogs,Menus,ExtCtrls,DBTables, DB,DBCtrls;
 
 type
   TJvDBSpinEdit = class(TJvSpinEdit)
@@ -66,7 +58,7 @@ type
 {$ENDIF}
   protected
     { Protected declarations }
-    procedure Change(Sender: TObject);
+    procedure DoChange(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   public
@@ -120,7 +112,7 @@ begin
 end;                                    { MouseDown }
 
 
-procedure TJvDBSpinEdit.Change(Sender: TObject);
+procedure TJvDBSpinEdit.DoChange(Sender: TObject);
 begin
   if FFieldDataLink.Edit then
   begin
@@ -210,7 +202,7 @@ begin
   FFieldDataLink.Control := Self;
   FFieldDataLink.OnDataChange := DataChange; { So we can respond to changes in data. }
   FFieldDataLink.OnUpdateData := UpdateData; { So data in linked table is updated when user edits control. }
-  inherited onChange := self.change;
+  inherited OnChange := self.DoChange;
 end;                                    { Create }
 
 destructor TJvDBSpinEdit.Destroy;

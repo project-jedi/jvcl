@@ -526,7 +526,7 @@ begin
     TJvxCheckListBox, TJvxSplitter, TJvxSlider,
       TJvxLabel, {$IFDEF WIN32}TJvxRichEdit, {$ENDIF}
     TJvxClock, TJvAnimatedImage, TJvxDrawGrid, TJvxSpeedButton,
-{$IFDEF USE_Jv_GIF}TJvGIFAnimator, {$ENDIF}TJvSpinButton, TJvxSpinEdit,
+{$IFDEF USE_Jv_GIF}TJvGIFAnimator, {$ENDIF}TJvSpinButton, 
     TJvSwitch, TJvDice]);
 {$IFDEF CBUILDER}
 {$IFNDEF COMPILER35_UP} { C++Builder 1.0 }

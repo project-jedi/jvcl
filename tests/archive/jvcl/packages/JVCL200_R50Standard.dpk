@@ -289,7 +289,6 @@ contains
   JvColorForm in '..\source\JvColorForm.pas' {JvClrFrm},
   JvArrow in '..\source\JvArrow.pas',
   JvTypedEdit in '..\source\JvTypedEdit.pas',
-  JvSpinEdit in '..\source\JvSpinEdit.pas',
   JvTranslator in '..\source\JvTranslator.pas',
   JvSimpleXml in '..\source\JvSimpleXml.pas',
   JvHotkeyEx in '..\source\JvHotkeyEx.pas',
