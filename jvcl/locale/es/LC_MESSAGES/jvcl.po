@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
-"POT-Creation-Date: 2004-02-01 13:40\n"
+"POT-Creation-Date: 2004-02-01 14:00\n"
 "PO-Revision-Date: 2004-02-01 13:36\n"
 "Last-Translator: Olivier Sannier <obones@meloo.com>\n"
 "MIME-Version: 1.0\n"
@@ -67,13 +67,7 @@ msgid "\"MasterField\" property must be filled"
 msgstr ""
 
 #. Programmer's name for it: EUIB_BADAUTODLL
-#. Programmer's name for it: EUIB_BADAUTODLL
-#. Programmer's name for it: EUIB_BADAUTODLL
-#. Programmer's name for it: EUIB_BADAUTODLL
-#. Programmer's name for it: EUIB_BADAUTODLL
-#. Programmer's name for it: EUIB_BADAUTODLL
-#: JvUIBConst.pas:113 JvUIBConst.pas:157 JvUIBConst.pas:201 JvUIBConst.pas:245
-#: JvUIBConst.pas:289 JvUIBConst.pas:333
+#: JvUIBConst.pas:112
 msgid "\"SET AUTODDL\" must be \"ON\" or \"OFF\""
 msgstr ""
 
@@ -1075,11 +1069,6 @@ msgstr ""
 msgid "Animated Cursors (*.ani)|*.ani|Any files (*.*)|*.*"
 msgstr ""
 
-#. Programmer's name for it: sUIBTrue
-#: JvUIBConst.pas:168
-msgid "Ano"
-msgstr ""
-
 #. Programmer's name for it: RsEAnotherTimeBlockWithTheName
 #. Programmer's name for it: RsEAnotherTimeBlockWithTheName
 #: JvResources.pas:1497 JvTFDays.pas:1797
@@ -1138,16 +1127,6 @@ msgstr ""
 #. Programmer's name for it: RsAttributesChange
 #: JvResources.pas:244
 msgid "Attributes Change"
-msgstr ""
-
-#. Programmer's name for it: EUIB_EXCEPTIONNOTFOUND
-#: JvUIBConst.pas:234
-msgid "Ausnahme \"%s\" nicht gefunden."
-msgstr ""
-
-#. Programmer's name for it: EUIB_EXPTIONREGISTERED
-#: JvUIBConst.pas:235
-msgid "Ausnahme %d bereits registriert."
 msgstr ""
 
 #. Programmer's name for it: RsDockVSNETDockTreeAutoHideBtnHint
@@ -1234,13 +1213,8 @@ msgid "Black"
 msgstr ""
 
 #. Programmer's name for it: EUIB_BLOBFIELDNOTFOUND
-#: JvUIBConst.pas:95
+#: JvUIBConst.pas:94
 msgid "Blob field num: %d not found."
-msgstr ""
-
-#. Programmer's name for it: EUIB_BLOBFIELDNOTFOUND
-#: JvUIBConst.pas:227
-msgid "Blob-Feld Nummer: %d nicht gefunden."
 msgstr ""
 
 #. Programmer's name for it: RsClBlue
@@ -1325,13 +1299,7 @@ msgid "CSV string is too long: %s..."
 msgstr ""
 
 #. Programmer's name for it: EUIB_CACHEDFETCHNOTSET
-#. Programmer's name for it: EUIB_CACHEDFETCHNOTSET
-#. Programmer's name for it: EUIB_CACHEDFETCHNOTSET
-#. Programmer's name for it: EUIB_CACHEDFETCHNOTSET
-#. Programmer's name for it: EUIB_CACHEDFETCHNOTSET
-#. Programmer's name for it: EUIB_CACHEDFETCHNOTSET
-#: JvUIBConst.pas:110 JvUIBConst.pas:154 JvUIBConst.pas:198 JvUIBConst.pas:242
-#: JvUIBConst.pas:286 JvUIBConst.pas:330
+#: JvUIBConst.pas:109
 msgid "CachedFetch property not set to True."
 msgstr ""
 
@@ -1357,11 +1325,6 @@ msgstr ""
 msgid "Calls"
 msgstr ""
 
-#. Programmer's name for it: EUIB_FIELDSTRNOTFOUND
-#: JvUIBConst.pas:313
-msgid "Campo \"%s\" no encontrado."
-msgstr ""
-
 #. Programmer's name for it: RsECanNotFindIncludeFiles
 #: JvResources.pas:591
 msgid "Can not find include file: %s"
@@ -1379,12 +1342,12 @@ msgstr ""
 
 #. ORB Errors
 #. Programmer's name for it: EJvUIB_CantConnect
-#: JvUIBConst.pas:118
+#: JvUIBConst.pas:117
 msgid "Can't connect to server."
 msgstr ""
 
 #. Programmer's name for it: EUIB_CANTLOADLIB
-#: JvUIBConst.pas:85
+#: JvUIBConst.pas:84
 msgid "Can't load library: %s."
 msgstr ""
 
@@ -1644,7 +1607,7 @@ msgid "Caption"
 msgstr ""
 
 #. Programmer's name for it: EUIB_CASTERROR
-#: JvUIBConst.pas:90
+#: JvUIBConst.pas:89
 msgid "Cast error."
 msgstr ""
 
@@ -1706,13 +1669,7 @@ msgid "Character:"
 msgstr ""
 
 #. Programmer's name for it: EUIB_CHARSETNOTFOUND
-#. Programmer's name for it: EUIB_CHARSETNOTFOUND
-#. Programmer's name for it: EUIB_CHARSETNOTFOUND
-#. Programmer's name for it: EUIB_CHARSETNOTFOUND
-#. Programmer's name for it: EUIB_CHARSETNOTFOUND
-#. Programmer's name for it: EUIB_CHARSETNOTFOUND
-#: JvUIBConst.pas:114 JvUIBConst.pas:158 JvUIBConst.pas:202 JvUIBConst.pas:246
-#: JvUIBConst.pas:290 JvUIBConst.pas:334
+#: JvUIBConst.pas:113
 msgid "CharacterSet %s not found."
 msgstr ""
 
@@ -1758,12 +1715,7 @@ msgid "Cl&ose"
 msgstr ""
 
 #. Programmer's name for it: EJvUIB_ClassNotFound
-#: JvUIBConst.pas:339
-msgid "Clase no encontrada."
-msgstr ""
-
-#. Programmer's name for it: EJvUIB_ClassNotFound
-#: JvUIBConst.pas:119
+#: JvUIBConst.pas:118
 msgid "Class not found."
 msgstr ""
 
@@ -2187,7 +2139,7 @@ msgid "Data not initialized"
 msgstr ""
 
 #. Programmer's name for it: EJvUIB_DataType
-#: JvUIBConst.pas:120
+#: JvUIBConst.pas:119
 msgid "Data type error."
 msgstr ""
 
@@ -2220,7 +2172,7 @@ msgid "Database Engine Error"
 msgstr ""
 
 #. Programmer's name for it: EUIB_DBHANDLEALLREADYSET
-#: JvUIBConst.pas:86
+#: JvUIBConst.pas:85
 msgid "Database handle allready assigned, first disconnect database."
 msgstr ""
 
@@ -2230,30 +2182,13 @@ msgid "Database name: %s"
 msgstr ""
 
 #. Programmer's name for it: EUIB_DATABASENOTDEF
-#: JvUIBConst.pas:88
+#: JvUIBConst.pas:87
 msgid "Database not assigned."
 msgstr ""
 
 #. Programmer's name for it: RsDataSetIsUnassigned
 #: JvDBGridExport.pas:252
 msgid "Dataset or DataSource unassigned"
-msgstr ""
-
-#. Programmer's name for it: EUIB_DATABASENOTDEF
-#: JvUIBConst.pas:220
-msgid "Datenbank nicht zugewiesen."
-msgstr ""
-
-#. Programmer's name for it: EUIB_DBHANDLEALLREADYSET
-#: JvUIBConst.pas:218
-msgid ""
-"Datenbank-Handle bereits zugewiesen. Bitte erst Verbindung zur Datenbank "
-"trennen."
-msgstr ""
-
-#. Programmer's name for it: EJvUIB_DataType
-#: JvUIBConst.pas:252
-msgid "Datentypfehler."
 msgstr ""
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
@@ -2349,26 +2284,6 @@ msgstr ""
 #. Programmer's name for it: RsTipsHeaderText
 #: JvResources.pas:1599
 msgid "Did you know..."
-msgstr ""
-
-#. Programmer's name for it: EUIB_MUSTBEPREPARED
-#: JvUIBConst.pas:231
-msgid "Die Abfrage muss erst vorbereitet werden."
-msgstr ""
-
-#. Programmer's name for it: EUIB_FETCHBLOBNOTSET
-#: JvUIBConst.pas:228
-msgid "Die Eigenschaft FetchBlob muss gesetzt sein um diese Methode zu nutzen."
-msgstr ""
-
-#. Programmer's name for it: EUIB_NOAUTOSTOP
-#: JvUIBConst.pas:236
-msgid "Die Transaktion muss explizit beendet werden."
-msgstr ""
-
-#. Programmer's name for it: EUIB_EXPLICITTRANS
-#: JvUIBConst.pas:233
-msgid "Die Transaktion muss explizit gestartet werden."
 msgstr ""
 
 #. frmSLDMappingEditorDialog..lblDigitClassCaption..Caption
@@ -2526,12 +2441,7 @@ msgid "Document pages cannot be accessed if printing directly to the printer"
 msgstr ""
 
 #. Programmer's name for it: EUIB_DOMAINSTRNOTFOUND
-#. Programmer's name for it: EUIB_DOMAINSTRNOTFOUND
-#. Programmer's name for it: EUIB_DOMAINSTRNOTFOUND
-#. Programmer's name for it: EUIB_DOMAINSTRNOTFOUND
-#. Programmer's name for it: EUIB_DOMAINSTRNOTFOUND
-#: JvUIBConst.pas:108 JvUIBConst.pas:152 JvUIBConst.pas:196 JvUIBConst.pas:284
-#: JvUIBConst.pas:328
+#: JvUIBConst.pas:107
 msgid "Domain %s not found."
 msgstr ""
 
@@ -2609,16 +2519,6 @@ msgstr ""
 msgid "Editor options:"
 msgstr ""
 
-#. Programmer's name for it: EUIB_MUSTBEPREPARED
-#: JvUIBConst.pas:319
-msgid "El query debe prepararse primero."
-msgstr ""
-
-#. Programmer's name for it: EUIB_MUSTBEOPEN
-#: JvUIBConst.pas:320
-msgid "El query debe ser abierto primero."
-msgstr ""
-
 #. Programmer's name for it: RsEID3EncodingNotSupported
 #: JvResources.pas:938
 msgid "Encoding not supported in this version"
@@ -2660,11 +2560,6 @@ msgstr ""
 msgid "Enter year (1999-2050):"
 msgstr ""
 
-#. Programmer's name for it: EUIB_UNEXPECTEDERROR
-#: JvUIBConst.pas:135
-msgid "Erreur innatendue."
-msgstr ""
-
 #. Programmer's name for it: RsErrorText
 #. Programmer's name for it: RsError
 #. Programmer's name for it: RsErrorText
@@ -2688,11 +2583,6 @@ msgstr ""
 #. JvErrorDialog..DetailsPanel..AddrLabel..Caption
 #: JvExceptionForm.dfm:99
 msgid "Error address: "
-msgstr ""
-
-#. Programmer's name for it: EJvUIB_DataType
-#: JvUIBConst.pas:340
-msgid "Error de tipo de dato."
 msgstr ""
 
 #. Programmer's name for it: RsEErrorDuringAccessGlyphsListOrGlyphP
@@ -2725,11 +2615,6 @@ msgstr ""
 #. Programmer's name for it: RsEErrorInFrame
 #: JvResources.pas:919
 msgid "Error in frame %s (%s), %s"
-msgstr ""
-
-#. Programmer's name for it: EUIB_UNEXPECTEDERROR
-#: JvUIBConst.pas:311
-msgid "Error inesperado."
 msgstr ""
 
 #. Programmer's name for it: RsErrorMsgLabel
@@ -2777,16 +2662,6 @@ msgstr ""
 msgid "Error writing file"
 msgstr ""
 
-#. Programmer's name for it: EUIB_EXCEPTIONNOTFOUND
-#: JvUIBConst.pas:322
-msgid "Excepcion con nombre %s, no fue encontrada."
-msgstr ""
-
-#. Programmer's name for it: EUIB_EXPTIONREGISTERED
-#: JvUIBConst.pas:323
-msgid "Excepcion: %d ya esta registrada."
-msgstr ""
-
 #. === JvInspector.pas ========================================================
 #. Programmer's name for it: RsJvInspItemValueException
 #: JvResources.pas:965
@@ -2801,19 +2676,13 @@ msgid ""
 msgstr ""
 
 #. Programmer's name for it: EUIB_EXCEPTIONNOTFOUND
-#. Programmer's name for it: EUIB_EXCEPTIONNOTFOUND
-#: JvUIBConst.pas:102 JvUIBConst.pas:190
+#: JvUIBConst.pas:101
 msgid "Exception name %s, not found."
 msgstr ""
 
 #. Programmer's name for it: EUIB_EXPTIONREGISTERED
-#: JvUIBConst.pas:103
+#: JvUIBConst.pas:102
 msgid "Exception: %d allready registered"
-msgstr ""
-
-#. Programmer's name for it: EUIB_EXPTIONREGISTERED
-#: JvUIBConst.pas:191
-msgid "Exception: %d already registered"
 msgstr ""
 
 #. Programmer's name for it: RsLabelHint
@@ -2897,49 +2766,19 @@ msgstr ""
 msgid "Failure Audit"
 msgstr ""
 
-#. Programmer's name for it: sUIBFalse
-#: JvUIBConst.pas:213
-msgid "Falsch"
-msgstr ""
-
 #. Programmer's name for it: RsFalse
 #. Programmer's name for it: sUIBFalse
-#: JvResources.pas:87 JvUIBConst.pas:81
+#: JvResources.pas:87 JvUIBConst.pas:80
 msgid "False"
 msgstr ""
 
-#. Programmer's name for it: sUIBFalse
-#: JvUIBConst.pas:125
-msgid "Faux"
-msgstr ""
-
-#. Programmer's name for it: EUIB_CASTERROR
-#: JvUIBConst.pas:222
-msgid "Fehler bei Typumwandlung."
-msgstr ""
-
-#. Programmer's name for it: EUIB_FIELDSTRNOTFOUND
-#: JvUIBConst.pas:225
-msgid "Feld \"%s\" nicht gefunden."
-msgstr ""
-
-#. Programmer's name for it: EUIB_FIELDNUMNOTFOUND
-#: JvUIBConst.pas:224
-msgid "Feld Nummer %d nicht gefunden."
-msgstr ""
-
-#. Programmer's name for it: EUIB_NOFIELD
-#: JvUIBConst.pas:238
-msgid "Feld nicht gefunden."
-msgstr ""
-
 #. Programmer's name for it: EUIB_FETCHBLOBNOTSET
-#: JvUIBConst.pas:96
+#: JvUIBConst.pas:95
 msgid "FetchBlob property must be set to use this method."
 msgstr ""
 
 #. Programmer's name for it: EUIB_FIELDSTRNOTFOUND
-#: JvUIBConst.pas:93
+#: JvUIBConst.pas:92
 msgid "Field \"%s\" not found."
 msgstr ""
 
@@ -2955,17 +2794,12 @@ msgid ""
 msgstr ""
 
 #. Programmer's name for it: EUIB_NOFIELD
-#. Programmer's name for it: EUIB_NOFIELD
-#. Programmer's name for it: EUIB_NOFIELD
-#. Programmer's name for it: EUIB_NOFIELD
-#. Programmer's name for it: EUIB_NOFIELD
-#: JvUIBConst.pas:106 JvUIBConst.pas:150 JvUIBConst.pas:194 JvUIBConst.pas:282
-#: JvUIBConst.pas:326
+#: JvUIBConst.pas:105
 msgid "Field not found."
 msgstr ""
 
 #. Programmer's name for it: EUIB_FIELDNUMNOTFOUND
-#: JvUIBConst.pas:92
+#: JvUIBConst.pas:91
 msgid "Field num: %d not found."
 msgstr ""
 
@@ -3117,17 +2951,7 @@ msgid "GIF image encoding error"
 msgstr ""
 
 #. Programmer's name for it: EUIB_NOGENERATOR
-#: JvUIBConst.pas:237
-msgid "Generator %s nicht gefunden."
-msgstr ""
-
-#. Programmer's name for it: EUIB_NOGENERATOR
-#. Programmer's name for it: EUIB_NOGENERATOR
-#. Programmer's name for it: EUIB_NOGENERATOR
-#. Programmer's name for it: EUIB_NOGENERATOR
-#. Programmer's name for it: EUIB_NOGENERATOR
-#: JvUIBConst.pas:105 JvUIBConst.pas:149 JvUIBConst.pas:193 JvUIBConst.pas:281
-#: JvUIBConst.pas:325
+#: JvUIBConst.pas:104
 msgid "Generator %s not found."
 msgstr ""
 
@@ -3302,28 +3126,6 @@ msgstr ""
 msgid "Implementation of that class already exists"
 msgstr ""
 
-#. Programmer's name for it: EUIB_CANTLOADLIB
-#: JvUIBConst.pas:305
-msgid "Imposible cargar la DLL: %s."
-msgstr ""
-
-#. ORB Errors
-#. Programmer's name for it: EJvUIB_CantConnect
-#: JvUIBConst.pas:338
-msgid "Imposible conectar con el servidor."
-msgstr ""
-
-#. Programmer's name for it: EUIB_CANTLOADLIB
-#: JvUIBConst.pas:129
-msgid "Impossible de charger la DLL: %s."
-msgstr ""
-
-#. ORB Errors
-#. Programmer's name for it: EJvUIB_CantConnect
-#: JvUIBConst.pas:162
-msgid "Impossible de se connecter au serveur."
-msgstr ""
-
 #. Programmer's name for it: RsSystemFont
 #: JvResources.pas:684
 msgid ""
@@ -3355,7 +3157,7 @@ msgstr ""
 
 #. UIB Errors
 #. Programmer's name for it: EUIB_INVALIDEIBVERSION
-#: JvUIBConst.pas:84
+#: JvUIBConst.pas:83
 msgid "Incorrect Database Server version, check compiler options."
 msgstr ""
 
@@ -3385,18 +3187,8 @@ msgid "Increment Index: expected integer between \"[..]\" in %s"
 msgstr ""
 
 #. Programmer's name for it: EUIB_INDEXERROR
-#: JvUIBConst.pas:185
-msgid "Index je mimo rozsah (%d)"
-msgstr ""
-
-#. Programmer's name for it: EUIB_INDEXERROR
-#: JvUIBConst.pas:97
+#: JvUIBConst.pas:96
 msgid "Index out of bound (%d)"
-msgstr ""
-
-#. Programmer's name for it: EUIB_INDEXERROR
-#: JvUIBConst.pas:141
-msgid "Indice de liste hors limites (%d)"
 msgstr ""
 
 #. Programmer's name for it: RsLogInformation
@@ -3930,11 +3722,6 @@ msgstr ""
 msgid "JvMouseGesture Fatal: You cannot hook this event twice"
 msgstr ""
 
-#. Programmer's name for it: EUIB_CANTLOADLIB
-#: JvUIBConst.pas:217
-msgid "Kann Bibliothek %s nicht laden."
-msgstr ""
-
 #. Programmer's name for it: RsEDSAKeyNoAccessAs
 #: JvResources.pas:526
 msgid "Key %s cannot be accessed as %s"
@@ -3949,31 +3736,6 @@ msgstr ""
 #. FormParsers..GroupBox1..Label1..Caption
 #: JvParserForm.dfm:54 JvParserForm.xfm:57
 msgid "Keyword"
-msgstr ""
-
-#. Programmer's name for it: EJvUIB_ClassNotFound
-#: JvUIBConst.pas:251
-msgid "Klasse nicht gefunden."
-msgstr ""
-
-#. Programmer's name for it: EUIB_EXCEPTIONNOTFOUND
-#: JvUIBConst.pas:146
-msgid "L'exception %s, n'existe pas."
-msgstr ""
-
-#. Programmer's name for it: EUIB_SIZENAME
-#: JvUIBConst.pas:142
-msgid "La taille du nom est trop grande (%s)"
-msgstr ""
-
-#. Programmer's name for it: EUIB_NOAUTOSTOP
-#: JvUIBConst.pas:324
-msgid "La transaccisn debe ser cerrada explmcitamente."
-msgstr ""
-
-#. Programmer's name for it: EUIB_EXPLICITTRANS
-#: JvUIBConst.pas:321
-msgid "La transaccisn debe ser iniciada explmcitamente."
 msgstr ""
 
 #. frmProgress..Label1..Caption
@@ -4021,16 +3783,6 @@ msgstr ""
 #. Programmer's name for it: RsLastAliasName
 #: JvResources.pas:193
 msgid "LastAlias"
-msgstr ""
-
-#. Programmer's name for it: EUIB_PARAMSTRNOTFOUND
-#: JvUIBConst.pas:138
-msgid "Le Parametre \"%s\" n'existe pas."
-msgstr ""
-
-#. Programmer's name for it: EUIB_FIELDSTRNOTFOUND
-#: JvUIBConst.pas:137
-msgid "Le champ \"%s\" n'existe pas."
 msgstr ""
 
 #. Programmer's name for it: RsClLight
@@ -4239,19 +3991,9 @@ msgstr ""
 msgid "Name already exists for another method"
 msgstr ""
 
-#. Programmer's name for it: EUIB_SIZENAME
-#: JvUIBConst.pas:230
-msgid "Name ist zu lang (%s)."
-msgstr ""
-
 #. Programmer's name for it: RsClNavy
 #: JvResources.pas:1654
 msgid "Navy blue"
-msgstr ""
-
-#. Programmer's name for it: sUIBFalse
-#: JvUIBConst.pas:169
-msgid "Ne"
 msgstr ""
 
 #. Programmer's name for it: RsNextHint
@@ -4279,11 +4021,6 @@ msgstr ""
 #. JvgfPrintPreview..Panel2..ToolBar1..tbNext..Hint
 #: JvgQPrintPreviewForm.dfm:110
 msgid "Next page"
-msgstr ""
-
-#. Programmer's name for it: sUIBFalse
-#: JvUIBConst.pas:301
-msgid "No"
 msgstr ""
 
 #. Programmer's name for it: RsENoGIFData
@@ -4420,11 +4157,6 @@ msgstr ""
 #. Programmer's name for it: RsDockNodeExistedError
 #: JvDockGlobals.pas:78
 msgid "Node already exist"
-msgstr ""
-
-#. Programmer's name for it: EUIB_SIZENAME
-#: JvUIBConst.pas:318
-msgid "Nombre demasiado largo (%s)"
 msgstr ""
 
 #. Programmer's name for it: RsNormal
@@ -4766,12 +4498,7 @@ msgid "Parameter \"%s\" must be entered!"
 msgstr ""
 
 #. Programmer's name for it: EUIB_PARAMSTRNOTFOUND
-#: JvUIBConst.pas:226
-msgid "Parameter \"%s\" nicht gefunden."
-msgstr ""
-
-#. Programmer's name for it: EUIB_PARAMSTRNOTFOUND
-#: JvUIBConst.pas:94
+#: JvUIBConst.pas:93
 msgid "Parameter \"%s\" not found."
 msgstr ""
 
@@ -4806,40 +4533,18 @@ msgstr ""
 msgid "Parameter Control can not be nil"
 msgstr ""
 
-#. Programmer's name for it: EUIB_PARAMSTRNOTFOUND
-#: JvUIBConst.pas:182
-msgid "Parametr \"%s\" neexistuje."
-msgstr ""
-
-#. Programmer's name for it: EUIB_PARAMSTRNOTFOUND
-#: JvUIBConst.pas:314
-msgid "Parametro \"%s\" no  encontrado."
-msgstr ""
-
 #. Programmer's name for it: RsEParentGivenNotAParent
 #: JvResources.pas:160
 msgid "Parent given is not a parent of '%s'"
 msgstr ""
 
 #. Programmer's name for it: EUIB_PARSESETNAMES
-#. Programmer's name for it: EUIB_PARSESETNAMES
-#. Programmer's name for it: EUIB_PARSESETNAMES
-#. Programmer's name for it: EUIB_PARSESETNAMES
-#. Programmer's name for it: EUIB_PARSESETNAMES
-#. Programmer's name for it: EUIB_PARSESETNAMES
-#: JvUIBConst.pas:112 JvUIBConst.pas:156 JvUIBConst.pas:200 JvUIBConst.pas:244
-#: JvUIBConst.pas:288 JvUIBConst.pas:332
+#: JvUIBConst.pas:111
 msgid "Parse error: SET NAMES"
 msgstr ""
 
 #. Programmer's name for it: EUIB_PARSESQLDIALECT
-#. Programmer's name for it: EUIB_PARSESQLDIALECT
-#. Programmer's name for it: EUIB_PARSESQLDIALECT
-#. Programmer's name for it: EUIB_PARSESQLDIALECT
-#. Programmer's name for it: EUIB_PARSESQLDIALECT
-#. Programmer's name for it: EUIB_PARSESQLDIALECT
-#: JvUIBConst.pas:111 JvUIBConst.pas:155 JvUIBConst.pas:199 JvUIBConst.pas:243
-#: JvUIBConst.pas:287 JvUIBConst.pas:331
+#: JvUIBConst.pas:110
 msgid "Parse error: SET SQL DIALECT"
 msgstr ""
 
@@ -5016,12 +4721,7 @@ msgid "Procedure \"JvInterpreterRunReportPreview2\" not found"
 msgstr ""
 
 #. Programmer's name for it: EUIB_PROCSTRNOTFOUND
-#. Programmer's name for it: EUIB_PROCSTRNOTFOUND
-#. Programmer's name for it: EUIB_PROCSTRNOTFOUND
-#. Programmer's name for it: EUIB_PROCSTRNOTFOUND
-#. Programmer's name for it: EUIB_PROCSTRNOTFOUND
-#: JvUIBConst.pas:109 JvUIBConst.pas:153 JvUIBConst.pas:197 JvUIBConst.pas:285
-#: JvUIBConst.pas:329
+#: JvUIBConst.pas:108
 msgid "Procedure %s not found."
 msgstr ""
 
@@ -5091,11 +4791,6 @@ msgstr ""
 msgid "Provider property of '%s' does not point to a IJvDataConsumer"
 msgstr ""
 
-#. Programmer's name for it: EUIB_PROCSTRNOTFOUND
-#: JvUIBConst.pas:241
-msgid "Prozedur %s nicht gefunden."
-msgstr ""
-
 #. Programmer's name for it: RsClPurple
 #: JvResources.pas:1655
 msgid "Purple"
@@ -5152,7 +4847,7 @@ msgid "Qt Key"
 msgstr ""
 
 #. Programmer's name for it: EUIB_QUERYNOTOPEN
-#: JvUIBConst.pas:89
+#: JvUIBConst.pas:88
 msgid "Query not open."
 msgstr ""
 
@@ -5565,11 +5260,6 @@ msgstr ""
 msgid "Show On Startup"
 msgstr ""
 
-#. Programmer's name for it: sUIBTrue
-#: JvUIBConst.pas:300
-msgid "Si"
-msgstr ""
-
 #. Programmer's name for it: RsClSilver
 #: JvResources.pas:1658
 msgid "Silver"
@@ -5611,7 +5301,7 @@ msgid "Size Change"
 msgstr ""
 
 #. Programmer's name for it: EUIB_SIZENAME
-#: JvUIBConst.pas:98
+#: JvUIBConst.pas:97
 msgid "Size name too big (%s)"
 msgstr ""
 
@@ -6058,17 +5748,7 @@ msgid "TabPosition property must be tpBottom"
 msgstr ""
 
 #. Programmer's name for it: EUIB_TABLESTRNOTFOUND
-#: JvUIBConst.pas:239
-msgid "Tabelle \"%s\" nicht gefunden."
-msgstr ""
-
-#. Programmer's name for it: EUIB_TABLESTRNOTFOUND
-#. Programmer's name for it: EUIB_TABLESTRNOTFOUND
-#. Programmer's name for it: EUIB_TABLESTRNOTFOUND
-#. Programmer's name for it: EUIB_TABLESTRNOTFOUND
-#. Programmer's name for it: EUIB_TABLESTRNOTFOUND
-#: JvUIBConst.pas:107 JvUIBConst.pas:151 JvUIBConst.pas:195 JvUIBConst.pas:283
-#: JvUIBConst.pas:327
+#: JvUIBConst.pas:106
 msgid "Table \"%s\" not found."
 msgstr ""
 
@@ -6236,13 +5916,12 @@ msgid "The program requires %s or better."
 msgstr ""
 
 #. Programmer's name for it: EUIB_MUSTBEOPEN
-#. Programmer's name for it: EUIB_MUSTBEOPEN
-#: JvUIBConst.pas:100 JvUIBConst.pas:188
+#: JvUIBConst.pas:99
 msgid "The query must be opened first."
 msgstr ""
 
 #. Programmer's name for it: EUIB_MUSTBEPREPARED
-#: JvUIBConst.pas:99
+#: JvUIBConst.pas:98
 msgid "The query must be prepared first."
 msgstr ""
 
@@ -6477,31 +6156,18 @@ msgid "Total time (ms)"
 msgstr ""
 
 #. Programmer's name for it: EUIB_NOAUTOSTOP
-#. Programmer's name for it: EUIB_NOAUTOSTOP
-#. Programmer's name for it: EUIB_NOAUTOSTOP
-#: JvUIBConst.pas:104 JvUIBConst.pas:192 JvUIBConst.pas:280
+#: JvUIBConst.pas:103
 msgid "Transaction must be closed explicitly."
 msgstr ""
 
 #. Programmer's name for it: EUIB_EXPLICITTRANS
-#. Programmer's name for it: EUIB_EXPLICITTRANS
-#: JvUIBConst.pas:101 JvUIBConst.pas:189
+#: JvUIBConst.pas:100
 msgid "Transaction must be started explicitly."
 msgstr ""
 
 #. Programmer's name for it: EUIB_TRANSACTIONNOTDEF
-#: JvUIBConst.pas:87
+#: JvUIBConst.pas:86
 msgid "Transaction not assigned."
-msgstr ""
-
-#. Programmer's name for it: EUIB_TRANSACTIONNOTDEF
-#: JvUIBConst.pas:219
-msgid "Transaktion nicht zugewiesen."
-msgstr ""
-
-#. Programmer's name for it: EUIB_CASTERROR
-#: JvUIBConst.pas:134
-msgid "Transtypage incorrect."
 msgstr ""
 
 #. Programmer's name for it: RsTreeViewFiles
@@ -6511,7 +6177,7 @@ msgstr ""
 
 #. Programmer's name for it: RsTrue
 #. Programmer's name for it: sUIBTrue
-#: JvResources.pas:88 JvUIBConst.pas:80
+#: JvResources.pas:88 JvUIBConst.pas:79
 msgid "True"
 msgstr ""
 
@@ -6604,19 +6270,8 @@ msgstr ""
 msgid "Unable to open file %s"
 msgstr ""
 
-#. Programmer's name for it: EUIB_UNEXPECTEDERROR
-#: JvUIBConst.pas:223
-msgid "Unerwarteter Fehler."
-msgstr ""
-
 #. Programmer's name for it: EUIB_UNEXPECTEDCASTERROR
-#. Programmer's name for it: EUIB_UNEXPECTEDCASTERROR
-#. Programmer's name for it: EUIB_UNEXPECTEDCASTERROR
-#. Programmer's name for it: EUIB_UNEXPECTEDCASTERROR
-#. Programmer's name for it: EUIB_UNEXPECTEDCASTERROR
-#. Programmer's name for it: EUIB_UNEXPECTEDCASTERROR
-#: JvUIBConst.pas:115 JvUIBConst.pas:159 JvUIBConst.pas:203 JvUIBConst.pas:247
-#: JvUIBConst.pas:291 JvUIBConst.pas:335
+#: JvUIBConst.pas:114
 msgid "Unexpected cast error."
 msgstr ""
 
@@ -6631,7 +6286,7 @@ msgid "Unexpected error parsing CSV Field Definitions"
 msgstr ""
 
 #. Programmer's name for it: EUIB_UNEXPECTEDERROR
-#: JvUIBConst.pas:91
+#: JvUIBConst.pas:90
 msgid "Unexpected error."
 msgstr ""
 
@@ -6777,12 +6432,6 @@ msgstr ""
 msgid "Variable %s not defined"
 msgstr ""
 
-#. ORB Errors
-#. Programmer's name for it: EJvUIB_CantConnect
-#: JvUIBConst.pas:250
-msgid "Verbindung zum Server kann nicht aufgebaut werden."
-msgstr ""
-
 #. Programmer's name for it: RsEID3VersionNotSupported
 #: JvResources.pas:939
 msgid "Version not supported"
@@ -6812,16 +6461,6 @@ msgstr ""
 #. JvJVCLAboutForm..MainPanel..lblVisitJedi..Caption
 #: JvJVCLAboutForm.dfm:80 JvJVCLAboutForm.xfm:181
 msgid "Visit JEDI-VCL on the Web:"
-msgstr ""
-
-#. Programmer's name for it: sUIBTrue
-#: JvUIBConst.pas:124
-msgid "Vrai"
-msgstr ""
-
-#. Programmer's name for it: sUIBTrue
-#: JvUIBConst.pas:212
-msgid "Wahr"
 msgstr ""
 
 #. FoWallpaperChooser..Caption
