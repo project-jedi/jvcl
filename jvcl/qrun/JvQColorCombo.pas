@@ -33,7 +33,7 @@ set to default to False. (p3)
 
 
 -----------------------------------------------------------------------------}
-// $Id = $
+// $Id$
 {$I jvcl.inc}
 
 unit JvQColorCombo;
@@ -44,8 +44,11 @@ interface
 
 uses
   SysUtils, Classes,
-  QForms, QControls, QDialogs, QGraphics, QStdCtrls, Qt,
-  QWindows, JvQCombobox;
+  {$IFDEF MSWINDOWS}
+  Windows, // FontSubstitute
+  {$ENDIF MSWINDOWS}
+  QForms, QControls, QDialogs, QGraphics, QStdCtrls, Qt, QTypes,
+  QWindows, JvQCombobox, JvQConsts;
 
 type
   TJvNewColorEvent = procedure(Sender: TObject; Color: TColor; var DisplayName: string; var AllowAdd: Boolean) of
@@ -80,24 +83,23 @@ type
     procedure SetHexPrefix(const Value: string);
     procedure SetColorNameMap(const Value: TStrings);
     procedure InitColorNames;
+    function GetColor(Index: Integer): TColor;
   protected
     procedure FontChanged; override ;
     procedure ItemDraw(Sender: TObject;Index: Integer; R: TRect;
        State: TOwnerDrawState; var Handled: Boolean ) ;
     procedure Click; override;
-
+    procedure Loaded; override;
     function GetColorName(AColor: TColor; const Default: string): string;
     function DoNewColor(Color: TColor; var DisplayName: string): Boolean; virtual;
     procedure DoGetDisplayName(Index: Integer; AColor: TColor; var DisplayName: string); virtual;
     function DoInsertColor(AIndex: Integer; AColor: TColor; var DisplayName: string): Boolean; virtual;
     procedure DoBeforeCustom;
-    procedure Change; override;
     procedure InternalInsertColor(AIndex: Integer; AColor: TColor; const DisplayName: string); virtual;
     procedure DoNameMapChange(Sender:TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Loaded; override;
     procedure GetColors; virtual;
     procedure GetCustomColors(AList: TList);
     // Returns the current name for AColor. Note that this implicitly might call the
@@ -111,7 +113,7 @@ type
     procedure InsertColor(AIndex: Integer; AColor: TColor; const DisplayName: string);
     property Text;
     property CustomColorCount: Integer read FCustCnt;
-
+    property Colors[Index: Integer]: TColor read GetColor;
   published
     property Anchors;
     property AutoComplete default False;
@@ -129,7 +131,7 @@ type
     property ColorWidth: Integer read FColWidth write SetColWidth default 21;
     property HexPrefix: string read FHexPrefix  write SetHexPrefix;
     property NewColorText: string read FPrefix write SetPrefix;
-    property Options: TJvColorComboOptions read FOptions write SetOptions default [coText];
+    property Options: TJvColorComboOptions read FOptions write SetOptions;
     property HiliteColor: TColor read FHiliteColor write FHiLiteColor default clHighLight;
     property HiliteText: TColor read FHiliteText write FHiLiteText default clHighLightText;
     // called before a new color is inserted as a result of displaying the Custom Colors dialog
@@ -142,6 +144,7 @@ type
     property OnBeforeCustom: TNotifyEvent read FOnBeforeCustom write FOnBeforeCustom;
 
     property Color;
+    property DropDownWidth;
     property DragMode;
     property Enabled;
     property Font;
@@ -169,12 +172,115 @@ type
     property OnStartDrag;
   end;
 
+  TJvFontComboOption = (foTrueTypeOnly, foFixedPitchOnly,
+    foScalableOnly, foWysiWyg, foDisableVerify, foPreviewFont, foMRU);
+  // foDisableVerify: if True, allows you to insert a font name that doesn't exist (by assigning to FontName)
+  TJvFontComboOptions = set of TJvFontComboOption;
+  TJvDrawPreviewEvent = procedure(Sender: TObject; const AFontName: string;
+    var APreviewText: string; ATextWidth: Integer; var DrawPreview: Boolean) of object;
+
+  TJvFontComboBox = class(TJvCustomComboBox)
+  private
+    FTrueTypeBmp: TBitmap;
+    FFixBmp: TBitmap;
+    FHiliteColor: TColor;
+    FHiliteText: TColor;
+    FUseImages: Boolean;
+    FOptions: TJvFontComboOptions;
+    FMRUCount: Integer;
+    FWasMouse: Boolean;
+    FShowMRU: Boolean;
+    FMaxMRUCount: Integer;
+    FOnDrawPreviewEvent: TJvDrawPreviewEvent;
+    procedure SetUseImages(Value: Boolean);
+    procedure SetOptions(Value: TJvFontComboOptions);
+    procedure ResetItemHeight;
+    procedure Reset;
+    function GetFontName: string;
+    procedure SetFontName(const Value: string);
+    function GetSorted: Boolean;
+    procedure SetSorted(const Value: Boolean);
+    procedure SetShowMRU(const Value: Boolean);
+    procedure SetMaxMRUCount(const Value: Integer);
+  protected
+    procedure FontChanged; override;
+    procedure Loaded; override;
+    procedure GetFonts; virtual;
+    function DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState): Boolean; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X: Integer; Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X: Integer;
+      Y: Integer); override;
+    procedure CloseUp; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure SetParent(const AParent: TWinControl); override;
+    function DoDrawPreview(const AFontName: string; var APreviewText: string;
+      ATextWidth: Integer): Boolean;virtual;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function AddToMRU: Integer;
+    procedure ClearMRU;
+    procedure Click; override;
+    {$IFDEF MSWINDOWS}
+    function FontSubstitute(const AFontName: string): string;
+    {$ENDIF MSWINDOWS}
+    property Text;
+    property MRUCount: Integer read FMRUCount;
+  published
+    property Anchors;
+    property AutoComplete default False;
+    property Constraints;
+    property Color;
+    property MaxMRUCount: Integer read FMaxMRUCount write SetMaxMRUCount;
+    property FontName: string read GetFontName write SetFontName;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property ItemIndex;
+    property HiliteColor: TColor read FHiliteColor write FHiliteColor default clHighlight;
+    property HiliteText: TColor read FHiliteText write FHiliteText default clHighlightText;
+    property Options: TJvFontComboOptions read FOptions write SetOptions default [];
+    property UseImages: Boolean read FUseImages write SetUseImages default True;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Sorted: Boolean read GetSorted write SetSorted;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property OnChange;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnDropDown;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnStartDrag;
+    property OnDrawPreviewEvent: TJvDrawPreviewEvent read FOnDrawPreviewEvent write FOnDrawPreviewEvent;
+  end;
+
 
 resourcestring
   SOtherCaption = 'Custom...';
   SNewColorPrefix = 'Custom';
 
 implementation
+
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvColorCombo.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+{$R ../Resources/JvColorCombo.res}
+{$ENDIF UNIX}
+
 
 const
   ColCount = 20;
@@ -210,6 +316,7 @@ function LoadInternalBitmap(ResName: string): TBitmap;
 begin
   Result := TBitmap.Create;
   Result.LoadFromResourceName(hInstance, ResName);
+  Result.Transparent := True;
 end;
 
 function GetItemHeight(Font: TFont): Integer;
@@ -236,6 +343,103 @@ begin
     Result := Val2;
 end;
 
+const
+  { EnumFonts Masks }
+  {$EXTERNALSYM RASTER_FONTTYPE}
+  RASTER_FONTTYPE = 1;
+//  {$EXTERNALSYM DEVICE_FONTTYPE}
+//  DEVICE_FONTTYPE = 2;
+  {$EXTERNALSYM TRUETYPE_FONTTYPE}
+  TRUETYPE_FONTTYPE = 4;
+
+
+function GetFontType(FontFamily: widestring): integer;
+var
+  FontDatabase: QFontDatabaseH;
+begin
+  FontDatabase := QFontDatabase_create;
+  try
+    if QFontDatabase_isBitmapScalable(FontDatabase, @FontFamily, nil, nil) then
+      Result := RASTER_FONTTYPE
+    else
+      Result := TRUETYPE_FONTTYPE;
+  finally
+    QFontDatabase_destroy(FontDatabase);
+  end;
+end;
+
+function GetPitch(FontFamily: string): integer;
+var
+  fi: QFontInfoH;
+  f: TFont;
+begin
+  f := TFont.Create;
+  f.Name := FontFamily;
+  try
+    fi := QFontInfo_create(f.Handle);
+    try
+      if QFontInfo_fixedPitch(fi) then
+        Result := FIXED_PITCH
+      else
+        Result := VARIABLE_PITCH;
+    finally
+      QFontInfo_destroy(fi);
+    end;
+  finally
+    f.Free;
+  end;
+end;
+
+function GetCharSets(FontFamily: WideString): TStringList;
+var
+  FontDatabase: QFontDatabaseH;
+  CharSets: QStringListH;
+begin
+  Charsets := QStringList_create;
+  try
+    FontDatabase := QFontDatabase_create;
+    try
+      QFontDatabase_charSets(FontDatabase, CharSets, @FontFamily, true);
+      Result := QStringListToTStringList(CharSets);
+    finally
+      QFontDatabase_destroy(FontDatabase);
+    end;
+  finally
+    QStringList_destroy(Charsets);
+  end;
+end;
+
+function IncludeFont(Options: TJvFontComboOptions; FontFamily: string; FontType: integer): boolean;
+begin
+  Result := True;
+  if foTrueTypeOnly in Options then
+    Result := Result and (FontType and TRUETYPE_FONTTYPE > 0);
+  if foFixedPitchOnly in Options then
+    Result := Result and (GetPitch(FontFamily) and FIXED_PITCH > 0);
+  if foScalableOnly in Options then
+    Result := Result and (FontType and RASTER_FONTTYPE = 0);
+end;
+
+
+function CreateFontList: TStringList;
+var
+  FontFamilies: QStringListH;
+  FontDatabase: QFontDatabaseH;
+begin
+  FontFamilies := QStringList_create();
+  try
+    FontDatabase := QFontDatabase_create();
+    try
+      QFontDatabase_families(FontDatabase, FontFamilies, True);
+      Result := QStringListToTStringList(FontFamilies);
+    finally
+      QFontDatabase_destroy(FontDatabase);
+    end;
+  finally
+    QStringList_destroy(FontFamilies);
+  end;
+end;
+
 
 // === TJvColorComboBox ======================================================
 
@@ -249,7 +453,7 @@ begin
   FPrefix := SNewColorPrefix;
   FHexPrefix := '$';
   FOther := SOtherCaption;
-  FOptions := [coText];
+  FOptions := [coText,coSysColors];
   Duplicates := dupAccept;
   FHiLiteColor := clHighLight;
   FHiLiteText := clHighLightText;
@@ -273,7 +477,7 @@ var
   I: Integer;
   ColorName: string;
 begin
-  Clear;
+//  Clear;
   FCustCnt := 0;
   for I := 1 to ColCount do
   begin
@@ -500,31 +704,15 @@ end;
 procedure TJvColorComboBox.FontChanged;
 begin
 //  inherited;
-  if not (csRecreating in ControlState) then
-    ResetItemHeight;
+  ResetItemHeight;
   Invalidate;
-//  RecreateWnd;
 end;
 
 procedure TJvColorComboBox.ResetItemHeight;
-(*
-  function GetItemHeight: Integer;
-  var
-    FM: QFontMetricsH;
-  begin
-    FM := QFontMetrics_create(Font.Handle);
-    try
-      QWidget_FontMetrics(Handle, FM);
-      Result := QFontMetrics_height(FM) + 3;
-    finally
-      QFontMetrics_destroy(FM);
-    end;
-  end;
-*)
 begin
-  ItemHeight := GetItemHeight(Font);
+  if not (csRecreating in ControlState) then
+    ItemHeight := GetItemHeight(Font);
 end;
-
 
 procedure TJvColorComboBox.SetPrefix(const Value: string);
 begin
@@ -567,6 +755,11 @@ begin
   S := DisplayName;
   if DoInsertColor(AIndex, AColor, S) then
     InternalInsertColor(AIndex, AColor, S);
+end;
+
+function TJvColorComboBox.GetColor(Index: Integer): TColor;
+begin
+  Result := TColor(Items.Objects[Index]);
 end;
 
 procedure TJvColorComboBox.SetColorNameMap(const Value: TStrings);
@@ -698,13 +891,8 @@ end;
 
 procedure TJvColorComboBox.Loaded;
 begin
-  inherited;
-  HandleNeeded;
-  if HandleAllocated then
-  begin
-//    AutoSave.LoadValue(Integer(FColorValue));
-    GetColors;
-  end;
+  inherited Loaded;
+  GetColors;
 end;
 
 function TJvColorComboBox.DoInsertColor(AIndex: Integer; AColor: TColor;
@@ -732,14 +920,6 @@ begin
   end;
 end;
 
-procedure TJvColorComboBox.Change;
-begin
-  if HandleAllocated then
-  begin
-    inherited;
-//    AutoSave.SaveValue(ColorValue);
-  end;
-end;
 
 function TJvColorComboBox.ColorName(AColor: TColor): string;
 begin
@@ -777,6 +957,437 @@ begin
   Invalidate;
 end;
 
+//=== { TJvFontComboBox } ====================================================
+
+constructor TJvFontComboBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FTrueTypeBmp := LoadInternalBitmap('TTF_FONT');
+  FFixBmp := LoadInternalBitmap('FIX_FONT');
+  FHiliteColor := clHighlight;
+  FHiliteText := clHighlightText;
+  FUseImages := True;
+  Style := csOwnerDrawFixed;
+  AutoComplete := False;
+  ResetItemHeight;
+end;
+
+destructor TJvFontComboBox.Destroy;
+begin
+  FTrueTypeBmp.Free;
+  FFixBmp.Free;
+  inherited Destroy;
+end;
+
+procedure TJvFontComboBox.GetFonts;
+var
+  MRUItems: TStringList;
+  I: Integer;
+  FontType: integer;
+begin
+  HandleNeeded;
+  if not HandleAllocated then
+    Exit;
+  MRUItems := TStringList.Create;
+  try
+    if FShowMRU then
+      for I := 0 to MRUCount - 1 do
+        MRUItems.AddObject(Items[I], Items.Objects[I]);
+    Clear;
+    For I:= 0 to Screen.Fonts.Count - 1 do
+    begin
+      FontType := GetFontType(Screen.Fonts[I]);
+      if IncludeFont(Options, Screen.Fonts[I], FontType) then
+        Items.AddObject(Screen.Fonts[I], TObject(FontType));
+    end;
+    if FShowMRU then
+      for I := MRUCount - 1 downto 0 do
+      begin
+        Items.InsertObject(0, MRUItems[I], MRUItems.Objects[I]);
+      end;
+  finally
+    MRUItems.Free;
+  end;
+end;
+
+procedure TJvFontComboBox.SetOptions(Value: TJvFontComboOptions);
+begin
+  if Value <> Options then
+  begin
+    FOptions := Value;
+    if (foPreviewFont in FOptions) then
+      Exclude(FOptions, foWysiWyg);
+    SetShowMRU(foMRU in FOptions);
+    Reset;
+  end;
+end;
+
+procedure TJvFontComboBox.SetUseImages(Value: Boolean);
+begin
+  if FUseImages <> Value then
+  begin
+    FUseImages := Value;
+    Invalidate;
+  end;
+end;
+
+function TJvFontComboBox.DoDrawPreview(const AFontName: string;
+  var APreviewText: string; ATextWidth: Integer): Boolean;
+begin
+  Result := ATextWidth < ClientWidth;
+  if Assigned(FOnDrawPreviewEvent) then
+    FOnDrawPreviewEvent(Self, AFontName, APreviewText, ATextWidth, Result);
+end;
+
+function TJvFontComboBox.DrawItem(Index: Integer; R: TRect;
+  State: TOwnerDrawState): boolean;
+var
+  ABmp: TBitmap;
+  AColor: TColor;
+  AWidth: Integer;
+  TmpRect: TRect;
+  S, AName: string;
+begin
+  Result := True;
+  if (Index >= 0) and (odSelected in State) then
+  begin
+    Canvas.Brush.Color := FHiliteColor;
+    Canvas.Font.Color := FHiliteText;
+  end;
+  R.Bottom := R.Top + ItemHeight;
+  if Index < 0 then
+    Canvas.FillRect(R)
+  else
+  with Canvas do
+  begin
+    AColor := Brush.Color;
+    Brush.Color := Color;
+    Pen.Color := Font.Color;
+    FillRect(R);
+    Inc(R.Top);
+    //    AWidth  := 20;
+    if (Integer(Items.Objects[Index]) and TRUETYPE_FONTTYPE) <> 0 then
+      ABmp := FTrueTypeBmp
+    else
+      ABmp := FFixBmp;
+    if not FUseImages then
+      ABmp := nil;
+
+    if ABmp <> nil then
+    begin
+      AWidth := ABmp.Width;
+      Draw(R.Left + 2, (R.Top + R.Bottom - ABmp.Height) div 2, ABmp);
+      R.Left := R.Left + AWidth + 6;
+    end
+    else
+      AWidth := 4;
+    Brush.Color := AColor;
+    AName := Canvas.Font.Name;
+    if foWysiWyg in FOptions then
+    begin
+      if (foPreviewFont in Options) then
+        Canvas.Font.Name := Self.Font.Name
+      else
+        Canvas.Font.Name := Items[Index];
+    end;
+    if not (foPreviewFont in Options) then
+      R.Right := R.Left + TextWidth(Items[Index]) + 6;
+    FillRect(R);
+    OffsetRect(R, 2, 0);
+    DrawText(Canvas, Items[Index], -1, R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+    if (foPreviewFont in Options) then
+    begin
+      Inc(AWidth, TextWidth(Items[Index]) + 36);
+      Canvas.Font.Name := Items[Index];
+      S := 'AbCdEfGhIj';
+      Inc(AWidth, TextWidth(S));
+      if DoDrawPreview(Items[Index], S, AWidth) then
+      begin
+        TmpRect := R;
+        TmpRect.Left := 0;
+        TmpRect.Right := ClientWidth - (GetSystemMetrics(SM_CXVSCROLL) + 8);
+        R.Right := ClientWidth;
+        DrawText(Canvas, S, -1, TmpRect, DT_SINGLELINE or DT_VCENTER or DT_RIGHT or DT_NOPREFIX);
+      end;
+    end;
+    Canvas.Font.Name := AName;
+    OffsetRect(R, -2, 0);
+    if odSelected in State then
+      DrawFocusRect(R);
+    if FShowMRU and not (odComboBoxEdit in State) then
+    begin
+      // draw MRU separator
+      Dec(R.Top);
+      if (Index = MRUCount - 1) then
+      begin
+        Canvas.Pen.Color := clGray;
+        Canvas.Pen.Width := 1;
+        Canvas.MoveTo(0, R.Bottom - 1);
+        Canvas.LineTo(ClientWidth, R.Bottom - 1);
+      end
+      else
+      if (Index = MRUCount) and (Index > 0) then
+      begin
+        Canvas.Pen.Color := clGray;
+        Canvas.Pen.Width := 1;
+        Canvas.MoveTo(0, R.Top + 1);
+        Canvas.LineTo(ClientWidth, R.Top + 1);
+      end;
+    end;
+  end;
+end;
+
+procedure TJvFontComboBox.FontChanged;
+begin
+  ResetItemHeight;
+  inherited FontChanged;
+end;
+
+procedure TJvFontComboBox.ResetItemHeight;
+begin
+  if not (csRecreating in ControlState) then
+    ItemHeight := Max(GetItemHeight(Font), FTrueTypeBmp.Height + 2);
+end;
+
+procedure TJvFontComboBox.Click;
+begin
+  inherited Click;
+  Change;
+  if FShowMRU and FWasMouse and not DroppedDown then
+  begin
+    ItemIndex := AddToMRU;
+    FWasMouse := False;
+  end;
+end;
+
+procedure TJvFontComboBox.Reset;
+var
+  S: string;
+begin
+  HandleNeeded;
+  if HandleAllocated then
+  begin
+    S := FontName;
+    GetFonts;
+    ResetItemHeight;
+    if S <> '' then
+      FontName := S
+    else
+      FontName := Font.Name;
+  end;
+end;
+
+function TJvFontComboBox.GetFontName: string;
+begin
+  Result := inherited Text;
+end;
+
+procedure TJvFontComboBox.SetFontName(const Value: string);
+begin
+  HandleNeeded;
+  if HandleAllocated and (Value <> '') then
+  begin
+    if Items.Count = 0 then
+      GetFonts;
+    ItemIndex := Items.IndexOf(Value);
+    {$IFDEF MSWINDOWS}
+    if ItemIndex = -1 then // try to find the font substitute name
+      ItemIndex := Items.IndexOf(FontSubstitute(Value));
+    {$ENDIF MSWINDOWS}
+    if (ItemIndex = -1) and (foDisableVerify in Options) then // add if allowed to
+      ItemIndex := Items.AddObject(Value, TObject(TRUETYPE_FONTTYPE));
+  end;
+end;
+
+procedure TJvFontComboBox.Loaded;
+begin
+  inherited Loaded;
+//  HandleNeeded;
+  Reset;
+//  FontChanged;
+end;
+
+function TJvFontComboBox.GetSorted: Boolean;
+begin
+  Result := inherited Sorted;
+end;
+
+procedure TJvFontComboBox.SetSorted(const Value: Boolean);
+var
+  S: string;
+begin
+  if Value <> inherited Sorted then
+  begin
+    S := FontName;
+    if not FShowMRU then
+      inherited Sorted := Value
+    else
+      inherited Sorted := False;
+    FontName := S;
+  end;
+end;
+
+{$IFDEF MSWINDOWS}
+function TJvFontComboBox.FontSubstitute(const AFontName: string): string;
+var
+  aSize: DWORD;
+  AKey: HKey;
+begin
+  Result := AFontName;
+  if AFontName = '' then Exit;
+  if RegOpenKeyEx(HKEY_LOCAL_MACHINE, PChar('SOFTWARE\Microsoft\Windows NT\CurrentVersion\FontSubstitutes'), 0,
+    KEY_QUERY_VALUE, AKey) = ERROR_SUCCESS then
+  try
+    if (RegQueryValueEx(AKey, PChar(AFontName),
+      nil, nil, nil, @aSize) = ERROR_SUCCESS) and (aSize > 0) then
+    begin
+      SetLength(Result, aSize);
+      if RegQueryValueEx(AKey, PChar(AFontName), nil, nil, PByte(@Result[1]), @aSize) = ERROR_SUCCESS then
+        Result := string(Result)
+      else
+        Result := AFontName;
+    end;
+  finally
+    RegCloseKey(AKey);
+  end
+  else
+    Result := AFontName;
+end;
+{$ENDIF MSWINDOWS}
+
+procedure TJvFontComboBox.SetShowMRU(const Value: Boolean);
+begin
+  if FShowMRU <> Value then
+  begin
+    if FShowMRU then
+      ClearMRU;
+    FShowMRU := Value;
+    if FShowMRU and Sorted then
+      Sorted := False;
+  end;
+end;
+
+function TJvFontComboBox.AddToMRU: Integer;
+var
+  I: Integer;
+begin
+  Result := ItemIndex;
+  if (csDesigning in ComponentState) then Exit;
+  if (MaxMRUCount = 0) or (MaxMRUCount > MRUCount) then
+  begin
+    I := Items.IndexOf(Text);
+    if (I > MRUCount - 1) and (I >= 0) then
+    begin
+      Items.InsertObject(0, Items[I], Items.Objects[I]);
+      Inc(FMRUCount);
+    end
+    else
+    if I < 0 then
+    begin
+      Items.InsertObject(0, Text, TObject(TRUETYPE_FONTTYPE));
+      Inc(FMRUCount);
+    end;
+    Result := 0;
+  end
+  else
+  if (MRUCount > 0) and (ItemIndex > 0) then
+  begin
+    Items[0] := Items[ItemIndex];
+    Items.Objects[0] := Items.Objects[ItemIndex];
+    Result := 0;
+  end;
+end;
+
+procedure TJvFontComboBox.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  FWasMouse := False;
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TJvFontComboBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  FWasMouse := True;
+  inherited  MouseUp(Button, Shift, X, Y);;
+end;
+
+procedure TJvFontComboBox.CloseUp;
+begin
+  inherited CloseUp;
+  if FShowMRU then
+  begin
+    AddToMRU;
+    ItemIndex := Items.IndexOf(Text);
+    FWasMouse := False;
+  end;
+end;
+
+procedure TJvFontComboBox.ClearMRU;
+begin
+  while FMRUCount > 0 do
+  begin
+    Items.Delete(0);
+    Dec(FMRUCount);
+  end;
+end;
+
+procedure TJvFontComboBox.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  // (rom) only accept without Shift, Alt or Ctrl down
+  if (Shift * KeyboardShiftStates = []) and
+    (Key = VK_RETURN) and FShowMRU then
+    ItemIndex := AddToMRU;
+  inherited KeyDown(Key, Shift);
+end;
+
+procedure TJvFontComboBox.SetMaxMRUCount(const Value: Integer);
+var
+  S: string;
+begin
+  if FMaxMRUCount <> Value then
+  begin
+    FMaxMRUCount := Value;
+    if (FMaxMRUCount > 0) and (FMRUCount > 0) then
+    begin
+      S := Text;
+      while FMRUCount > FMaxMRUCount do
+      begin
+        Items.Delete(0);
+        Dec(FMRUCount);
+      end;
+      ItemIndex := Items.IndexOf(S);
+      if ItemIndex < 0 then
+        ItemIndex := 0;
+    end;
+  end;
+end;
+
+procedure TJvFontComboBox.SetParent(const AParent: TWinControl);
+begin
+  inherited SetParent(AParent);
+  if Parent <> nil then
+  begin
+    Reset;
+    FontName := Font.Name;
+  end;
+end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\qrun'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 
