@@ -488,7 +488,7 @@ uses
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, Math, TypInfo, Forms, StdCtrls, Dialogs, DBConsts,
   {$IFDEF COMPILER6_UP}
-  JvDBLookup,
+  StrUtils, JvDBLookup, 
   {$ENDIF COMPILER6_UP}
   JvConsts, JvResources, JvDBUtils, JvJCLUtils, JvJVCLUtils,
   JvAppStoragePropertyEngineDB,
@@ -2233,7 +2233,7 @@ begin
           with Columns[SelectedIndex].PickList do
             for I := 0 to Count - 1 do
             begin
-              if StringStartsWith(Strings[I], lWord) then
+              if AnsiStartsText(lWord, Strings[I]) then
               begin
                 DataSet.Edit;
 
