@@ -47,7 +47,7 @@
     <File Name="..\..\qrun\JvQExExtCtrls.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQExForms.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQExGrids.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qun\JvQExMask.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQExMask.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQExStdCtrls.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQJVCLAboutForm.pas" Targets="allclx" Formname="JvJVCLAboutForm" Condition=""/>
     <File Name="..\..\qrun\JVCLXVer.pas" Targets="allclx" Formname="" Condition=""/>
