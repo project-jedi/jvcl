@@ -96,6 +96,7 @@ type
     FRasCreatePhonebookEntry: TRasCreatePhonebookEntry;
     FRasEditPhonebookEntry: TRasEditPhonebookEntry;
     FKeepConnected: Boolean;
+    FAvailable: boolean;
     //    function GetPhoneBook: TStringList;
     procedure WndProc(var Msg: TMessage);
     procedure SetEntryIndex(const Value: Integer);
@@ -116,6 +117,7 @@ type
     property PhoneNumber: string read FPhoneNumber write FPhoneNumber;
     property Domain: string read FDomain write FDomain;
     property PhoneBook: TStrings read GetPhoneBook;
+    property RasAvailable:boolean read FAvailable;
   published
     property KeepConnected: Boolean read FKeepConnected write FKeepConnected default False;
     //    property PhoneBook: TStringList read GetPhoneBook;
@@ -175,10 +177,6 @@ begin
   FCallBackNumber := '';
   FDomain := '';
   FConnection := 0;
-  FHandle := AllocateHWndEx(WndProc);
-  RASEvent := RegisterWindowMessage(RASDialEvent);
-  if RASEvent = 0 then
-    RASEvent := WM_RASDialEvent;
   if AOwner is TWinControl then
     {$IFDEF VCL}
     FPHandle := (AOwner as TWinControl).Handle
@@ -204,15 +202,18 @@ begin
     FRasValidateEntryName := GetProcAddress(FDll, 'RasValidateEntryNameA');
     FRasCreatePhonebookEntry := GetProcAddress(FDll, 'RasCreatePhonebookEntryA');
     FRasEditPhonebookEntry := GetProcAddress(FDll, 'RasEditPhonebookEntryA');
-  end
-  else
-    raise EJvRasError.CreateRes(@RsERasError);
+    FHandle := AllocateHWndEx(WndProc);
+    RASEvent := RegisterWindowMessage(RASDialEvent);
+    if RASEvent = 0 then
+      RASEvent := WM_RASDialEvent;
+  end;
+  FAvailable := (FDLL <> 0) and Assigned(FRasDial);
 end;
 
 destructor TJvRas32.Destroy;
 begin
   FPhoneBook.Free;
-  if FDll <> 0 then
+  if RasAvailable then
   begin
     try
       if not KeepConnected then
@@ -220,8 +221,9 @@ begin
     except
     end;
     FreeLibrary(FDll);
+    DeallocateHWndEx(FHandle);
   end;
-  DeallocateHWndEx(FHandle);
+  FDll := 0;
   inherited Destroy;
 end;
 
@@ -235,27 +237,30 @@ var
 begin
   Result := '';
 
-  RasConn[0].dwSize := SizeOf(TRASCONN);
-  nCB := SizeOf(RasConn);
-  Ret := FRasEnumConnections(@RasConn, nCB, nRasConnCount);
+  if RasAvailable then
+  begin
+    RasConn[0].dwSize := SizeOf(TRASCONN);
+    nCB := SizeOf(RasConn);
+    Ret := FRasEnumConnections(@RasConn, nCB, nRasConnCount);
 
-  if (Ret <> Success) or (nRasConnCount = 0) then
-    Exit;
+    if (Ret <> Success) or (nRasConnCount = 0) then
+      Exit;
 
-  if not Assigned(FPhoneBook) then
-    RefreshPhoneBook;
-  for I := 0 to FPhoneBook.Count - 1 do
-   if FPhoneBook[I] = RasConn[0].szEntryName then
-   begin
-     FConnection := RasConn[0].rasConn;
-     Result := FPhoneBook[I];
-     Break;
-   end;
+    if not Assigned(FPhoneBook) then
+      RefreshPhoneBook;
+    for I := 0 to FPhoneBook.Count - 1 do
+     if FPhoneBook[I] = RasConn[0].szEntryName then
+     begin
+       FConnection := RasConn[0].rasConn;
+       Result := FPhoneBook[I];
+       Break;
+     end;
+  end;
 end;
 
 function TJvRas32.CreateNewConnection: Boolean;
 begin
-  if Assigned(FRasCreatePhonebookEntry) then
+  if RasAvailable then
     Result := FRasCreatePhonebookEntry(FPHandle, nil) = 0
   else
     Result := False;
@@ -267,7 +272,7 @@ var
   R: DWORD;
   X: Integer;
 begin
-  if FConnection <> 0 then
+  if not RasAvailable or (FConnection <> 0) then
     Result := False
   else
   begin
@@ -302,7 +307,7 @@ end;
 function TJvRas32.EditConnection(Index: Integer): Boolean;
 begin
   Result := False;
-  if Assigned(FRasEditPhonebookEntry) then
+  if RasAvailable then
   begin
     RefreshPhoneBook;
     if Index < PhoneBook.Count then
@@ -314,7 +319,7 @@ function TJvRas32.GetConnected: Boolean;
 var
   Status: TRASConnStatus;
 begin
-  if (FConnection <> 0) and Assigned(FRasGetConnectStatus) then
+  if RasAvailable and (FConnection <> 0) then
   begin
     Status.dwSize := SizeOf(TRASConnStatus);
     FRasGetConnectStatus(FConnection, @Status);
@@ -332,25 +337,28 @@ begin
   { Build internal copy. }
   if FPhoneBook = nil then
     FPhoneBook := TStringList.Create;
-  FPhoneBook.BeginUpdate;
-  try
-    FPhoneBook.Clear;
-    RASEntryName[1].dwSize := SizeOf(RASEntryName[1]);
-    BufSize := SizeOf(RASEntryName);
+  if RasAvailable then
+  begin
+    FPhoneBook.BeginUpdate;
+    try
+      FPhoneBook.Clear;
+      RASEntryName[1].dwSize := SizeOf(RASEntryName[1]);
+      BufSize := SizeOf(RASEntryName);
 
-    if Assigned(FRasEnumEntries) then
-    begin
-      if FPhoneBookPath <> '' then
-        I := FRasEnumEntries(nil, PChar(FPhoneBookPath), @RASEntryName[1], BufSize, Entries)
-      else
-        I := FRasEnumEntries(nil, nil, @RASEntryName[1], BufSize, Entries);
-      if (I = 0) or (I = ERROR_BUFFER_TOO_SMALL) then
-        for I := 1 to Entries do
-          if (I < 51) and (RASEntryName[I].szEntryName[0] <> #0) then
-            FPhoneBook.Add(StrPas(RASEntryName[I].szEntryName));
+      if Assigned(FRasEnumEntries) then
+      begin
+        if FPhoneBookPath <> '' then
+          I := FRasEnumEntries(nil, PChar(FPhoneBookPath), @RASEntryName[1], BufSize, Entries)
+        else
+          I := FRasEnumEntries(nil, nil, @RASEntryName[1], BufSize, Entries);
+        if (I = 0) or (I = ERROR_BUFFER_TOO_SMALL) then
+          for I := 1 to Entries do
+            if (I < 51) and (RASEntryName[I].szEntryName[0] <> #0) then
+              FPhoneBook.Add(StrPas(RASEntryName[I].szEntryName));
+      end;
+    finally
+      FPhoneBook.EndUpdate;
     end;
-  finally
-    FPhoneBook.EndUpdate;
   end;
 end;
 
@@ -361,7 +369,7 @@ var
   RasConnStatus: TRASConnStatus;
 begin
   Result := False;
-  if (FConnection <> 0) and Assigned(FRasHangUp) then
+  if RasAvailable and (FConnection <> 0) then
   begin
     Rc := FRasHangUp(FConnection);
     if Rc <> 0 then
@@ -392,41 +400,44 @@ var
   RasDial: TRASDialParams;
   Res: LongBool;
 begin
-  FEntryIndex := Value;
-
-  FEntry := '';
-  FUsername := '';
-  FPhoneNumber := '';
-  FDomain := '';
-  FCallBackNumber := '';
-  FPassword := '';
-
-  if FEntryIndex >= PhoneBook.Count then
+  if RasAvailable then
   begin
-    if PhoneBook.Count > 0 then
-      FEntryIndex := 0
-    else
-      FEntryIndex := -1;
-  end;
+    FEntryIndex := Value;
 
-  if FEntryIndex <> -1 then
-  begin
-    FEntry := PhoneBook[FEntryIndex];
+    FEntry := '';
+    FUsername := '';
+    FPhoneNumber := '';
+    FDomain := '';
+    FCallBackNumber := '';
+    FPassword := '';
 
-    FillChar(RasDial, SizeOf(TRASDialParams), #0);
-    StrLCopy(RasDial.szEntryName, PChar(PhoneBook[FEntryIndex]), RAS_MAXENTRYNAME);
-    RasDial.dwSize := SizeOf(TRASDialParams);
+    if FEntryIndex >= PhoneBook.Count then
+    begin
+      if PhoneBook.Count > 0 then
+        FEntryIndex := 0
+      else
+        FEntryIndex := -1;
+    end;
 
-    if Assigned(FRasGetEntryDialParams) then
-      if FRasGetEntryDialParams(nil, RasDial, Res) = 0 then
-        with RasDial do
-        begin
-          FUsername := StrPas(szUserName);
-          FPassword := StrPas(szPassword);
-          FDomain := StrPas(szDomain);
-          FCallBackNumber := StrPas(szCallbackNumber);
-          FPhoneNumber := StrPas(szPhoneNumber);
-        end;
+    if FEntryIndex <> -1 then
+    begin
+      FEntry := PhoneBook[FEntryIndex];
+
+      FillChar(RasDial, SizeOf(TRASDialParams), #0);
+      StrLCopy(RasDial.szEntryName, PChar(PhoneBook[FEntryIndex]), RAS_MAXENTRYNAME);
+      RasDial.dwSize := SizeOf(TRASDialParams);
+
+      if Assigned(FRasGetEntryDialParams) then
+        if FRasGetEntryDialParams(nil, RasDial, Res) = 0 then
+          with RasDial do
+          begin
+            FUsername := StrPas(szUserName);
+            FPassword := StrPas(szPassword);
+            FDomain := StrPas(szDomain);
+            FCallBackNumber := StrPas(szCallbackNumber);
+            FPhoneNumber := StrPas(szPhoneNumber);
+          end;
+    end;
   end;
 end;
 
