@@ -24,6 +24,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvVersionInfo;
 
@@ -406,12 +407,12 @@ function OkToWriteModule(ModuleName: string; NewVer: Longint): Boolean;
 { Return True if it's ok to overwrite ModuleName with NewVer }
 begin
   {Assume we should overwrite}
-  OkToWriteModule := True;
+  Result := True;
   with TJvVersionInfo.Create(ModuleName) do
   begin
     try
       if Valid then {Should we overwrite?}
-        OkToWriteModule := NewVer > VersionNum;
+        Result := NewVer > VersionNum;
     finally
       Free;
     end;

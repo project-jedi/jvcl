@@ -36,7 +36,10 @@ uses
   Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QExtCtrls, QGraphics, QButtons, QFileCtrl,
+  QControls, QForms, QStdCtrls, QExtCtrls, QGraphics, QButtons,
+  {$IFDEF COMPILER7_UP}
+  QFileCtrls,
+  {$ENDIF COMPILER7_UP}
   QDialogs,
   {$ENDIF VisualCLX}
   SysUtils;
@@ -102,7 +105,9 @@ type
     ['{1EAC8D4D-F839-43FD-B859-627874E41874}']
     procedure ControlSetInitialDir(Value: string);
     procedure ControlSetDialogTitle(Value: string);
+    {$IFDEF VCL}
     procedure ControlSetDialogOptions(Value: TSelectDirOpts);
+    {$ENDIF VCL}
   end;
 
   IJvDynControlComboBox = interface
@@ -147,7 +152,9 @@ type
     procedure ControlSetAutoSize(Value: Boolean);
     procedure ControlSetIncrementalDisplay(Value: Boolean);
     procedure ControlSetCenter(Value: Boolean);
+    {$IFDEF VCL}
     procedure ControlSetProportional(Value: Boolean);
+    {$ENDIF VCL}
     procedure ControlSetStretch(Value: Boolean);
     procedure ControlSetTransparent(Value: Boolean);
     procedure ControlSetPicture(Value: TPicture);

@@ -34,7 +34,7 @@ uses
   Controls, Forms, StdCtrls, Graphics, Buttons,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Controls, Forms, StdCtrls, Graphics, Buttons, 
+  QControls, QForms, QStdCtrls, QGraphics, QButtons, 
   {$ENDIF VisualCLX}
   JvDynControlEngineIntf;
 
@@ -45,6 +45,8 @@ type
     jctMemo, jctListBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit,
     jctCalculateEdit, jctSpinEdit, jctDirectoryEdit, jctFileNameEdit,
     jctButton, jctButtonEdit, jctForm);
+
+  TControlClass = class of TControl;
 
   TJvAfterCreateControl = procedure(AControl: TControl) of object;
 

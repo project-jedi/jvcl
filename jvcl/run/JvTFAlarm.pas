@@ -69,7 +69,7 @@ type
   public
     procedure Clear; override;
     function GetAlarmForAppt(AAppt: TJvTFAppt): TJvTFAlarmInfo;
-    function GetAlarmForApptID(ID: string): TJvTFAlarmInfo;
+    function GetAlarmForApptID(const ID: string): TJvTFAlarmInfo;
     function IndexOfAppt(AAppt: TJvTFAppt): Integer;
     procedure AddAppt(AAppt: TJvTFAppt);
     procedure DeleteAppt(AAppt: TJvTFAppt);
@@ -333,7 +333,7 @@ begin
   Result := GetAlarmForApptID(AAppt.ID);
 end;
 
-function TJvTFAlarmList.GetAlarmForApptID(ID: string): TJvTFAlarmInfo;
+function TJvTFAlarmList.GetAlarmForApptID(const ID: string): TJvTFAlarmInfo;
 var
   I: Integer;
 begin

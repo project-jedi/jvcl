@@ -30,7 +30,14 @@ unit JvPropertyStorage;
 interface
 
 uses
-  SysUtils, Classes, Forms, TypInfo;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms,
+  {$ENDIF VisualCLX}
+  TypInfo;
 
 type
   TJvPropInfoList = class(TObject)

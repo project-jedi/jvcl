@@ -138,7 +138,7 @@ implementation
 uses
   {$IFDEF COMPILER6_UP}
   RTLConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Consts, SysUtils, Typinfo;
 
 const

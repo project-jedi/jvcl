@@ -32,16 +32,16 @@ interface
 uses
   {$IFDEF VCL}
   Controls, ComCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QComCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 {$IFDEF VisualCLX}
 type
   TControlClass = class of TControl;
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure RegisterProgressControl(AClass: TControlClass;
   const MaxPropName, MinPropName, ProgressPropName: string);

@@ -110,12 +110,12 @@ implementation
 {$IFDEF USEJVCL}
 uses
   JvResources;
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
   RsWeekOf = 'Week of %s';
-{$ENDIF}  
+{$ENDIF USEJVCL}  
 
 procedure TJvTFWeeks.ConfigCells;
 var
@@ -204,7 +204,7 @@ begin
   FSplitDay := dowSunday;
   FIgnoreSplit := false;
 
-  inherited;
+  inherited Create(AOwner);
 
   GapSize := 4;
   CellAttr.TitleAttr.Color := clWhite;
@@ -233,7 +233,7 @@ begin
   FDWTitleAttr.OnChange := nil;
   FDWTitleAttr.Free;
 
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvTFWeeks.DisplayDayCount: integer;

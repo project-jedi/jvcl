@@ -81,10 +81,8 @@ type
     procedure DoChange(Sender: TObject);
   protected
     procedure Paint; override;
-    {$IFDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
-    {$ENDIF COMPILER6_UP}
     procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
     property Centered: Boolean read FCenter write SetCenter;
     property Color default clBtnFace;
@@ -251,7 +249,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvCustomBmpAnimator.SetAutoSize(Value: Boolean);
 begin
   if FAutoSize <> Value then
@@ -264,7 +261,6 @@ begin
     end;
   end;
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvCustomBmpAnimator.SetTransparent(Value: Boolean);
 begin

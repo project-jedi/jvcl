@@ -53,7 +53,7 @@ type
 
 {$IFDEF BCB}
   TDate = TDateTime;
-{$ENDIF}
+{$ENDIF BCB}
 
   TJvTimeItem = class(TCollectionItem)
   private
@@ -153,7 +153,7 @@ type
     FTimer: TTimer;
     {$IFDEF JVCLThemesEnabled}
     FMouseInControl: Boolean;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     procedure SetDirection(const Value: TJvScrollArrow);
     procedure SetFlat(const Value: Boolean);
     procedure SeTJvTimeLine(const Value: TJvCustomTimeLine);
@@ -163,7 +163,7 @@ type
     {$IFDEF JVCLThemesEnabled}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -308,8 +308,7 @@ type
     procedure ItemMoved(Item: TJvTimeItem; var NewDate: TDateTime; var NewLevel: Integer); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-      override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure DblClick; override;
     procedure Click; override;
@@ -794,7 +793,7 @@ begin
     FMouseInControl := True;
     Invalidate;
   end;
-  inherited;
+  inherited MouseEnter(Control);
 end;
 
 procedure TJvTLScrollBtn.MouseLeave(Control: TControl);
@@ -818,7 +817,7 @@ const
 var
   Button: TThemedScrollBar;
   Details: TThemedElementDetails;
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
 begin
   if TimeLine = nil then
     Exit;
@@ -848,7 +847,7 @@ begin
     ThemeServices.DrawElement(Canvas.Handle, Details, Rect(0, 0, Width, Height));
   end
   else
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
     //  TimeLine.FSelectedItem := nil; { fixes begindrag bug ? }
     DrawFrameControl(Canvas.Handle, Rect(0, 0, Width, Height), DFC_SCROLL,
       CFlat[Flat] or CPushed[FPushed] or Directions[Direction]);

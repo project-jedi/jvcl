@@ -84,7 +84,7 @@ unit JvAppStorage;
 interface
 
 uses
-  Classes, TypInfo,
+  SysUtils, Classes, TypInfo,
   JvComponent, JvTypes;
 
 type
@@ -564,7 +564,6 @@ const
 implementation
 
 uses
-  SysUtils,
   JclStrings, JclRTTI,
   JvPropertyStore, JvConsts, JvResources;
 
