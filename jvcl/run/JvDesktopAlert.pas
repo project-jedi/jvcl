@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDesktopAlert.PAS, released on 2004-03-23.
 
-The Initial Developer of the Original Code is Peter Thornqvist <peter3 at peter3 dot com>
+The Initial Developer of the Original Code is Peter Thornqvist <peter3 at sourceforge dot net>
 Portions created by Peter Thornqvist are Copyright (C) 2004 Peter Thornqvist.
 All Rights Reserved.
 
@@ -26,7 +26,8 @@ Known Issues:
 * When stacking several alert forms on top of each other, they don't always move
   down in the list as they should when another alert form is closed. This is controlled
   by the code in RegisterStackedForm and UnregisterStackedForm.
-
+  
+$Id$
 -----------------------------------------------------------------------------}
 unit JvDesktopAlert;
 
@@ -89,7 +90,7 @@ type
     property AlwaysResetPosition: boolean read FAlwaysResetPosition write FAlwaysResetPosition default True;
   end;
 
-  TJvDesktopAlertItem = class(TCollectionItem)
+  TJvDesktopAlertButtonItem = class(TCollectionItem)
   private
     FImageIndex: integer;
     FOnClick: TNotifyEvent;
@@ -105,13 +106,13 @@ type
 
   TJvDesktopAlertButtons = class(TOwnedCollection)
   private
-    function GetItem(Index: integer): TJvDesktopAlertItem;
-    procedure SetItem(Index: integer; const Value: TJvDesktopAlertItem);
+    function GetItem(Index: integer): TJvDesktopAlertButtonItem;
+    procedure SetItem(Index: integer; const Value: TJvDesktopAlertButtonItem);
   public
     constructor Create(AOwner: TPersistent);
-    function Add: TJvDesktopAlertItem;
+    function Add: TJvDesktopAlertButtonItem;
 
-    property Items[Index: integer]: TJvDesktopAlertItem read GetItem write SetItem; default;
+    property Items[Index: integer]: TJvDesktopAlertButtonItem read GetItem write SetItem; default;
     procedure Assign(Source: TPersistent); override;
   end;
 
@@ -353,15 +354,15 @@ begin
   end;
 end;
 
-{ TJvDesktopAlertItem }
+{ TJvDesktopAlertButtonItem }
 
-procedure TJvDesktopAlertItem.Assign(Source: TPersistent);
+procedure TJvDesktopAlertButtonItem.Assign(Source: TPersistent);
 begin
-  if (Source is TJvDesktopAlertItem) and (Source <> Self) then
+  if (Source is TJvDesktopAlertButtonItem) and (Source <> Self) then
   begin
-    ImageIndex := TJvDesktopAlertItem(Source).ImageIndex;
-    OnClick := TJvDesktopAlertItem(Source).OnClick;
-    Tag := TJvDesktopAlertItem(Source).Tag;
+    ImageIndex := TJvDesktopAlertButtonItem(Source).ImageIndex;
+    OnClick := TJvDesktopAlertButtonItem(Source).OnClick;
+    Tag := TJvDesktopAlertButtonItem(Source).Tag;
     Exit;
   end;
   inherited;
@@ -369,9 +370,9 @@ end;
 
 { TJvDesktopAlertButtons }
 
-function TJvDesktopAlertButtons.Add: TJvDesktopAlertItem;
+function TJvDesktopAlertButtons.Add: TJvDesktopAlertButtonItem;
 begin
-  Result := TJvDesktopAlertItem(inherited Add);
+  Result := TJvDesktopAlertButtonItem(inherited Add);
 end;
 
 procedure TJvDesktopAlertButtons.Assign(Source: TPersistent);
@@ -390,15 +391,15 @@ end;
 
 constructor TJvDesktopAlertButtons.Create(AOwner: TPersistent);
 begin
-  inherited Create(AOwner, TJvDesktopAlertItem);
+  inherited Create(AOwner, TJvDesktopAlertButtonItem);
 end;
 
-function TJvDesktopAlertButtons.GetItem(Index: integer): TJvDesktopAlertItem;
+function TJvDesktopAlertButtons.GetItem(Index: integer): TJvDesktopAlertButtonItem;
 begin
-  Result := TJvDesktopAlertItem(inherited Items[Index]);
+  Result := TJvDesktopAlertButtonItem(inherited Items[Index]);
 end;
 
-procedure TJvDesktopAlertButtons.SetItem(Index: integer; const Value: TJvDesktopAlertItem);
+procedure TJvDesktopAlertButtons.SetItem(Index: integer; const Value: TJvDesktopAlertButtonItem);
 begin
   inherited Items[Index] := Value;
 end;
