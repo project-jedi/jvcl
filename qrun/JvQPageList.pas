@@ -270,13 +270,6 @@ end;
 
 
 
-
-function TJvCustomPage.WidgetFlags: integer;
-begin
-  Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
-end;
-
-
 destructor TJvCustomPage.Destroy;
 begin
   PageList := nil;
@@ -339,7 +332,7 @@ begin
         InflateRect(ARect, -4, -4);
         if not Enabled then
         begin
-
+          
           
           SetBkMode(Handle, QWindows.TRANSPARENT);
           
@@ -448,6 +441,14 @@ begin
       Application.HandleException(Self);
     end;
   end;
+end;
+
+
+
+
+function TJvCustomPage.WidgetFlags: integer;
+begin
+  Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
 end;
 
 
@@ -737,8 +738,10 @@ begin
   begin
     FShowDesignCaption := Value;
     if HandleAllocated and (csDesigning in ComponentState) then
+    
+    
       Invalidate;
-      //RedrawWindow(Handle, nil, 0, RDW_UPDATENOW or RDW_INVALIDATE or RDW_ALLCHILDREN);
+    
   end;
 end;
 

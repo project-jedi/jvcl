@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -61,7 +60,7 @@ type
 implementation
 
 uses
-  JvQResources;
+  JvQResources, JvQExForms;
 
 constructor TJvImageDialog.Create(AOwner: TComponent);
 begin
@@ -83,7 +82,7 @@ var
 begin
   if (FPicture.Height <> 0) and (FPicture.Width <> 0) then
   begin
-    Form := TJvForm.Create(Self);
+    Form := TJvForm.CreateNew(Self);
     try
       
       
