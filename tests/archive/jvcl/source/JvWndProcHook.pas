@@ -365,7 +365,7 @@ end;
 
 procedure TJvHookInfos.WindowProc(var Message: TMessage);
 var
-  HookInfo: PJvHookInfo;
+  HookInfo, NextHookInfo: PJvHookInfo;
 begin
   { An object can now report for every possible message that he has
     handled that message, thus preventing the original control from
@@ -378,9 +378,13 @@ begin
   HookInfo := FFirst[hoBeforeMsg];
   while HookInfo <> nil do
   begin
+    { UnRegisterWndProc may be called from inside a hook procedure; if so
+      HookInfo is no longer valid after calling HookInfo.Hook(Message).
+      Thus we need an auxiliary var. NextHookInfo }
+    NextHookInfo := HookInfo.Next;
     if HookInfo.Hook(Message) then
       Exit;
-    HookInfo := HookInfo.Next;
+    HookInfo := NextHookInfo;
   end;
 
   { Maybe only exit here (before the original control handles the message),
@@ -393,9 +397,10 @@ begin
   HookInfo := FFirst[hoAfterMsg];
   while HookInfo <> nil do
   begin
+    NextHookInfo := HookInfo.Next;
     if HookInfo.Hook(Message) then
       Exit;
-    HookInfo := HookInfo.Next;
+    HookInfo := NextHookInfo;
   end;
 end;
 
