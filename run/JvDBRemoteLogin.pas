@@ -35,7 +35,7 @@ uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms,
   Dialogs, DBClient,
   JvLoginForm;
-x
+
 type
   TJvDBRemoteLogin = class(TJvCustomLogin)
   private
