@@ -25,7 +25,7 @@ Known Issues:
 // because the including unit inherently has to handle
 // platform specifics already.
 
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
+{$IFDEF SUPPORTS_PLATFORM_WARNINGS}
+  {$WARN UNIT_PLATFORM OFF}
+  {$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF SUPPORTS_PLATFORM_WARNINGS}

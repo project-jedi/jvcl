@@ -481,7 +481,7 @@
 {$ENDIF}
 
 {------------------------------------------------------------------------------}
-{ KYLIXX_UP from DELPHIX mappings                                              }
+{ KYLIXX_UP from KYLIXX mappings                                               }
 {------------------------------------------------------------------------------}
 
 {$IFDEF KYLIX3}
@@ -912,8 +912,11 @@
 // History:
 
 // $Log$
-// Revision 1.6  2004/07/29 15:20:47  marquardt
-// replaced by JCL file
+// Revision 1.7  2004/07/30 07:33:34  marquardt
+// inc files on JCL level, minor cleanings
+//
+// Revision 1.16  2004/07/29 17:12:28  rrossmair
+// fixed comment ("KYLIXX_UP from KYLIXX mappings")
 //
 // Revision 1.15  2004/07/29 07:58:21  marquardt
 // inc files updated

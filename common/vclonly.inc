@@ -25,17 +25,17 @@ Known Issues:
 // because the including unit can only be compiled
 // with the VCL which implies Windows platform.
 
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
+{$IFDEF SUPPORTS_PLATFORM_WARNINGS}
+  {$WARN UNIT_PLATFORM OFF}
+  {$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF SUPPORTS_PLATFORM_WARNINGS}
 
 // Cause a compilation error for any component library except the VCL.
 
 {$IFNDEF VCL}
-{$IFDEF COMPILER6_UP}
-{$MESSAGE FATAL 'This unit is only supported for VCL!'}
-{$ELSE}
-This unit is only supported for VCL!
-{$ENDIF COMPILER6_UP}
+  {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
+    {$MESSAGE FATAL 'This unit is only supported for VCL!'}
+  {$ELSE}
+    'This unit is only supported for VCL!'
+  {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
 {$ENDIF !VCL}
