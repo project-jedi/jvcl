@@ -31,7 +31,7 @@ unit JvCaesarCipher;
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  SysUtils, Classes,
   JvComponent;
 
 type

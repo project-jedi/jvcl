@@ -52,7 +52,7 @@ uses
   QGraphics, QControls, QForms, QDialogs, QExtCtrls, Types,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JvClxUtils, JvTypes;
+  JvTypes;
 
 type
   TJvLogic = class;
@@ -1731,7 +1731,7 @@ begin
         S := 'NOT'; // do not localize
     end;
     Brush.Style := bsClear;
-    ClxDrawText(Canvas, S, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+    DrawText(Canvas.handle, PChar(S), -1, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
   end;
 end;
 

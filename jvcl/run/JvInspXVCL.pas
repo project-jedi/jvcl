@@ -69,7 +69,12 @@ type
 implementation
 
 uses
-  Consts, SysUtils, TypInfo,
+  {$IFDEF VCL}
+  Consts,
+  {$ELSE}
+  QConsts,
+  {$ENDIF}
+  SysUtils, TypInfo,
   JvTypes, JvResources;
 
 function TJvInspectorxNodeData.GetAsFloat: Extended;

@@ -31,7 +31,7 @@ unit JvGenetic;
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  SysUtils, Classes,
   JvTypes, JvComponent;
 
 type

@@ -31,8 +31,13 @@ unit JvImageDlg;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms,
-  ExtCtrls, jpeg,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, Forms, ExtCtrls, jpeg,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QExtCtrls,
+  {$ENDIF}
   JvBaseDlg, JvComponent, JvTypes;
 
 type
@@ -78,7 +83,12 @@ begin
   begin
     Form := TJvForm.Create(Self);
     try
+      {$IFDEF VCL}
       Form.BorderStyle := bsDialog;
+      {$ENDIF}
+      {$IFDEF VisualCLX}
+      Form.BorderStyle := fbsDialog;
+      {$ENDIF}
       Form.BorderIcons := [biSystemMenu];
       Form.Position := poScreenCenter;
       Image1 := TImage.Create(Form);
