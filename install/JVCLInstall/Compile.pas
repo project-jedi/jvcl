@@ -82,6 +82,7 @@ type
       CaptureLine: TCaptureLine; StartDir: string = ''): Integer;
 
     procedure CaptureLine(const Line: string; var Aborted: Boolean); virtual;
+    procedure CaptureLineClean(const Line: string; var Aborted: Boolean); virtual;
     procedure CaptureLineGetCompileCount(const Line: string; var Aborted: Boolean);
     procedure CaptureLinePackageCompilation(const Line: string; var Aborted: Boolean);
     procedure CaptureLineResourceCompilation(const Line: string; var Aborted: Boolean);
@@ -222,6 +223,12 @@ begin
   if Assigned(FOnCaptureLine) then
     FOnCaptureLine(Line, FAborted);
   Aborted := FAborted;
+end;
+
+procedure TJVCLCompiler.CaptureLineClean(const Line: string; var Aborted: Boolean);
+begin
+  if StartsWith('[', Line) then
+    CaptureLine(Line, Aborted);
 end;
 
 procedure TJVCLCompiler.CaptureLineGetCompileCount(const Line: string; var Aborted: Boolean);
@@ -560,7 +567,7 @@ begin
         TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], False);
 
     if Result or not CmdOptions.KeepFiles then
-      Make(TargetConfig, FQuiet + ' Clean', CaptureLine);
+      Make(TargetConfig, FQuiet + ' Clean', CaptureLineClean);
     if Result then
       CaptureLine('[Finished JVCL for VCL installation]', Aborted);
   end;
@@ -579,7 +586,7 @@ begin
         TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], False);
 
     if Result or not CmdOptions.KeepFiles then
-      Make(TargetConfig, FQuiet + ' Clean', CaptureLine);
+      Make(TargetConfig, FQuiet + ' Clean', CaptureLineClean);
     if Result then
       CaptureLine('[Finished JVCL for CLX installation]', Aborted);
   end;
@@ -839,6 +846,8 @@ begin
       Lines.Add(Format('.path.res = %s\Resources', [S]));
       Lines.Add(Format('.path.bpl = %s;%s',
         [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir]));
+      Lines.Add(Format('.path.dcp = %s;%s',
+        [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir]));
       Lines.Add('');
      // add files like jvcl.inc
       Dependencies := '';
@@ -870,6 +879,12 @@ begin
         Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
            ProjectGroup.FindPackagebyXmlName(Pkg.JvDependencies[depI]).TargetName;
 
+     // add JCL dependencies
+      for depI := 0 to Pkg.JclDependencies.Count - 1 do
+        Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
+           Pkg.JclDependencies[depI] + '.dcp';
+
+        
       if AutoDepend then
       begin
        // Add all contained files even if the condition and target is not
