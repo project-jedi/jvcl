@@ -33,9 +33,13 @@ requires
   rtl,
   visualclx,
   JvQCoreD7R,
-  DJcl;
+  DJcl,
+  vclactnband,
+  vclx,
+  vcl;
 
 contains
-  JvQDlgsReg in '..\..\qdesign\JvQDlgsReg.pas';
+  JvQDlgsReg in '..\..\qdesign\JvQDlgsReg.pas',
+  JvQTipOfDayEditor in '..\..\qdesign\JvQTipOfDayEditor.pas';
 
 end.
