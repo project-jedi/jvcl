@@ -49,9 +49,6 @@ type
     Vert: TglVComponentAlign;
   end;
 
-var
-  AlignForm: TAlignForm;
-
 implementation
 
 {$R *.DFM}

@@ -164,7 +164,7 @@ var
   WaitFor()
   
   Wait for the semaphore to become signalled or the for the timeout time to pass.
-  If the Thread is terminated before or during the waiting, an EMTTerminate
+  If the Thread is terminated before or during the waiting, an EMTTerminateError
   exception will be raised.
   The exception will only be raised if the semaphore was not signalled
   during the wait. This will ensure that the caller can take appropriate
@@ -186,7 +186,7 @@ begin
   
     // setup the handle array.
     //   the semphore has priority over the terminate signal
-    //   because if we get the semaphore we must not raise an EMTTerminate
+    //   because if we get the semaphore we must not raise an EMTTerminateError
     HandleArray[0] := FHandle;
     HandleArray[1] := CurrentMTThread.TerminateSignal;
   
@@ -195,13 +195,13 @@ begin
       WAIT_FAILED:
       begin
         FLastError := GetLastError;
-        raise EMTThread.Create('Semaphore failure ('+IntToStr(FLastError)+')');
+        raise EMTThreadError.Create('Semaphore failure ('+IntToStr(FLastError)+')');
       end;
       WAIT_TIMEOUT: Result := False;
       WAIT_OBJECT_0: Result := True;
-      WAIT_OBJECT_0+1: CurrentMTThread.CheckTerminate; // do raise EMTTerminate
-      WAIT_ABANDONED: raise EMTTerminate.Create('Semphore was abandoned');
-      WAIT_ABANDONED+1: raise EMTTerminate.Create('Thread was abandoned');
+      WAIT_OBJECT_0+1: CurrentMTThread.CheckTerminate; // do raise EMTTerminateError
+      WAIT_ABANDONED: raise EMTTerminateError.Create('Semphore was abandoned');
+      WAIT_ABANDONED+1: raise EMTTerminateError.Create('Thread was abandoned');
     end;
   
   end
@@ -210,12 +210,12 @@ begin
     // main VCL thread does not have such a signal
     case WaitForSingleObject(FHandle, Timeout) of
       WAIT_OBJECT_0: Result := True;
-      WAIT_ABANDONED: raise EMTTerminate.Create('Semphore was abandoned');
+      WAIT_ABANDONED: raise EMTTerminateError.Create('Semphore was abandoned');
       WAIT_TIMEOUT: Result := False;
       WAIT_FAILED:
       begin
         FLastError := GetLastError;
-        raise EMTThread.Create('Semaphore failure');
+        raise EMTThreadError.Create('Semaphore failure');
       end;
     end;
   end;
