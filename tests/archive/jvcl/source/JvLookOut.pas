@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -127,12 +127,12 @@ type
     procedure SetHiFont(Value: TFont);
     procedure SetSpacing(Value: integer);
     procedure SetPImSize(Value: boolean);
-    procedure SeTJvButtonBorder(Value: TJvButtonBorder);
+    procedure SetButtonBorder(Value: TJvButtonBorder);
     procedure SetCaption(Value: TCaption);
     procedure SetSmallImages(Value: TImageList);
     procedure SetLargeImages(Value: TImageList);
     procedure SetImageIndex(Value: TImageIndex);
-    procedure SeTJvImageSize(Value: TJvImageSize);
+    procedure SetImageSize(Value: TJvImageSize);
     procedure DrawSmallImages;
     procedure DrawLargeImages;
     procedure ImageListChange(Sender: TObject);
@@ -140,7 +140,7 @@ type
     procedure CMButtonPressed(var Message: TMessage); message CM_LOOKOUTBUTTONPRESSED;
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure CMParenTJvImageSizeChanged(var Message: TMessage); message CM_IMAGESIZECHANGED;
+    procedure CMParentImageSizeChanged(var Message: TMessage); message CM_IMAGESIZECHANGED;
     procedure CMLeaveButton(var Msg: TMessage); message CM_LEAVEBUTTON;
     procedure WMEraseBkgnd(var M: TWMEraseBkgnd); message WM_ERASEBKGND;
     function ParentVisible: boolean;
@@ -163,14 +163,14 @@ type
       X, Y: Integer); override;
     property FillColor: TColor read FFillColor write SetFillColor default clNone;
     property Offset: integer read FOffset write SetOffset default 0;
-    property ButtonBorder: TJvButtonBorder read FButtonBorder write SeTJvButtonBorder default bbDark;
+    property ButtonBorder: TJvButtonBorder read FButtonBorder write SetButtonBorder default bbDark;
     property Caption: TCaption read FCaption write SetCaption;
     property Centered: boolean read FCentered write SetCentered;
     property Down: boolean read FStayDown write SetDown default False;
     property HiLiteFont: TFont read FHiFont write SetHiFont;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
-    property ImageSize: TJvImageSize read FImageSize write SeTJvImageSize default isLarge;
-    property ParenTJvImageSize: boolean read FPImSize write SetPImSize default True;
+    property ImageSize: TJvImageSize read FImageSize write SetImageSize default isLarge;
+    property ParentImageSize: boolean read FPImSize write SetPImSize default True;
     property PopUpMenu: TPopUpMenu read FPopUpMenu write FPopUpMenu;
     property LargeImages: TImageList read FLargeImages write SetLargeImages;
     property Spacing: integer read FSpacing write SetSpacing default 4; { border offset from bitmap }
@@ -186,6 +186,8 @@ type
     procedure EditCaption;
   published
     property Align;
+    property Anchors;
+    property Constraints;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -222,7 +224,7 @@ type
     property HiLiteFont;
     property ImageIndex;
     property ImageSize;
-    property ParenTJvImageSize;
+    property ParentImageSize;
     property PopUpMenu;
     property LargeImages;
     property Spacing;
@@ -245,7 +247,7 @@ type
     property HiLiteFont;
     property ImageIndex;
     property ImageSize;
-    property ParenTJvImageSize;
+    property ParentImageSize;
     property PopUpMenu;
     property LargeImages;
     property Spacing;
@@ -259,7 +261,8 @@ type
     { Private declarations }
     FEdit: TEdit;
     FInScroll: boolean;
-    FAutoRepeat, FAutoCenter, FPImSize, FInsideButton, FDown, FShowPressed: boolean;
+    FAutoRepeat, FAutoCenter, FPImSize,
+      FInsideButton, FDown, FShowPressed: boolean;
     FMargin, FTopControl: integer;
     FPopUpMenu: TPopUpMenu;
     FOnClick: TNotifyEvent;
@@ -281,7 +284,7 @@ type
     procedure EditKeyDown(Sender: TObject; var Key: Char);
     procedure SetAutoRepeat(Value: boolean);
     procedure SetHiFont(Value: TFont);
-    procedure SeTJvImageSize(Value: TJvImageSize);
+    procedure SetImageSize(Value: TJvImageSize);
     procedure SetPImSize(Value: boolean);
     procedure SetBitmap(Value: TBitmap);
     procedure SetCaption(Value: TCaption);
@@ -294,7 +297,7 @@ type
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMParenTJvImageSizeChanged(var Message: TMessage); message CM_IMAGESIZECHANGED;
+    procedure CMParentImageSizeChanged(var Message: TMessage); message CM_IMAGESIZECHANGED;
     procedure TileBitmap;
     procedure WMEraseBkgnd(var M: TWMEraseBkgnd); message WM_ERASEBKGND;
   protected
@@ -326,6 +329,7 @@ type
     procedure EditCaption; virtual;
     procedure DisableAdjust;
     procedure EnableAdjust;
+
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Buttons[Index: integer]: TJvLookOutButton read GetButton write SetButton;
@@ -336,9 +340,9 @@ type
     property Align;
     property AutoRepeat: boolean read FAutoRepeat write SetAutoRepeat default False;
     property Bitmap: TBitmap read FBitmap write SetBitmap;
-    property ImageSize: TJvImageSize read FImageSize write SeTJvImageSize default isLarge;
+    property ImageSize: TJvImageSize read FImageSize write SetImageSize default isLarge;
     property HiLiteFont: TFont read FHiFont write SetHiFont;
-    property ParenTJvImageSize: boolean read FPImSize write SetPImSize default True;
+    property ParentImageSize: boolean read FPImSize write SetPImSize default True;
     property ShowPressed: boolean read FShowPressed write FShowPressed default False;
     property Caption: TCaption read FCaption write SetCaption;
     property Color;
@@ -378,7 +382,7 @@ type
     FPages: TList;
     FImageSize: TJvImageSize;
     FFlatButtons: boolean;
-    procedure SeTJvImageSize(Value: TJvImageSize);
+    procedure SetImageSize(Value: TJvImageSize);
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure UpdateControls;
     procedure DoCollapse(Sender: TObject);
@@ -392,11 +396,11 @@ type
     procedure WMNCPaint(var Message: TMessage); message WM_NCPAINT;
   protected
     //PRY 2002.06.04
-    {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
     procedure SetAutoSize(Value: boolean); override;
-    {$ELSE}
+{$ELSE}
     procedure SetAutoSize(Value: boolean);
-    {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
     // PRY END
     procedure SmoothScroll(aControl: TControl; NewTop, Intervall: integer; Smooth: boolean); virtual;
     procedure Paint; override;
@@ -410,13 +414,15 @@ type
   published
     property ActivePage: TJvLookOutPage read GetActiveOutlook write SetActiveOutlook;
     property Align;
+    property Anchors;
+    property Constraints;
     property AutoSize: boolean read FAutoSize write SetAutoSize default false;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Color default clBtnShadow;
     property FlatButtons: boolean read FFlatButtons write SetFlatButtons default false;
     property DragCursor;
     property DragMode;
-    property ImageSize: TJvImageSize read FImageSize write SeTJvImageSize default isLarge;
+    property ImageSize: TJvImageSize read FImageSize write SetImageSize default isLarge;
     property ShowHint;
     property Smooth: boolean read FScroll write FScroll default False;
     property Visible;
@@ -451,7 +457,8 @@ type
     constructor Create(AOwner: TComponent); override;
     function AddButton: TJvExpressButton;
   published
-    property AutoCenter;
+    property Anchors;
+    property Constraints;
     property ButtonHeight: integer read FButtonHeight write SetButtonHeight default 60;
     property ImageSize default isLarge;
   end;
@@ -617,7 +624,8 @@ begin
 end;
 
 procedure TJvUpArrowBtn.Paint;
-var Flags: integer; R: TRect;
+var Flags: integer;
+  R: TRect;
 begin
   //  if not Visible then Exit;
   R := GetClientRect;
@@ -725,7 +733,8 @@ begin
 end;
 
 procedure TJvDwnArrowBtn.Paint;
-var Flags: integer; R: TRect;
+var Flags: integer;
+  R: TRect;
 begin
   //  if not Visible then Exit;
   R := GetClientRect;
@@ -887,7 +896,8 @@ begin
 end;
 
 procedure TJvCustomLookOutButton.EditKeyDown(Sender: TObject; var Key: Char);
-var aCaption: string; Modify: boolean;
+var aCaption: string;
+  Modify: boolean;
 begin
   Modify := False;
   if (Sender = FEdit) then
@@ -916,7 +926,7 @@ begin
           FEdit := nil;
           Screen.Cursor := crDefault;
         end;
-    end; { case }
+    end;                                { case }
   if Modify then
     FCaption := aCaption;
 end;
@@ -957,7 +967,7 @@ begin
     Down := TJvCustomLookOutButton(Source).Down;
     Font := TJvCustomLookOutButton(Source).Font;
     HiLiteFont := TJvCustomLookOutButton(Source).HiLiteFont;
-    ParenTJvImageSize := TJvCustomLookOutButton(Source).ParenTJvImageSize;
+    ParentImageSize := TJvCustomLookOutButton(Source).ParentImageSize;
     ImageSize := TJvCustomLookOutButton(Source).ImageSize;
     ImageIndex := TJvCustomLookOutButton(Source).ImageIndex;
     LargeImages := TJvCustomLookOutButton(Source).LargeImages;
@@ -1019,7 +1029,7 @@ begin
   if FCentered <> Value then
   begin
     FCentered := Value;
-    Repaint;
+    Invalidate;
   end;
 end;
 
@@ -1056,7 +1066,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLookOutButton.SeTJvButtonBorder(Value: TJvButtonBorder);
+procedure TJvCustomLookOutButton.SetButtonBorder(Value: TJvButtonBorder);
 begin
   if FButtonBorder <> Value then
   begin
@@ -1073,7 +1083,7 @@ begin
 
   if FSmallImages <> nil then
     FSmallImages.RegisterChanges(FSmallImageChangeLink);
-  Repaint;
+  Invalidate;
 end;
 
 procedure TJvCustomLookOutButton.SetLargeImages(Value: TImageList);
@@ -1084,7 +1094,7 @@ begin
 
   if Assigned(FLargeImages) then
     FLargeImages.RegisterChanges(FLargeImageChangeLink);
-  Repaint;
+  Invalidate;
 end;
 
 procedure TJvCustomLookOutButton.SetImageIndex(Value: TImageIndex);
@@ -1096,7 +1106,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLookOutButton.SeTJvImageSize(Value: TJvImageSize);
+procedure TJvCustomLookOutButton.SetImageSize(Value: TJvImageSize);
 begin
   if FImageSize <> Value then
   begin
@@ -1112,7 +1122,7 @@ begin
   if FFillColor <> Value then
   begin
     FFillColor := Value;
-    Repaint;
+    Invalidate;
   end;
 end;
 
@@ -1136,11 +1146,12 @@ procedure TJvCustomLookOutButton.SetPImSize(Value: boolean);
 begin
   FPImSize := Value;
   if FPImSize and (Parent is TJvLookOutPage) then
-    SeTJvImageSize((Parent as TJvLookOutPage).ImageSize);
+    SetImageSize(TJvLookOutPage(Parent).ImageSize);
 end;
 
 procedure TJvCustomLookOutButton.Paint;
-var R: TRect; Flags, h: integer;
+var R: TRect;
+  Flags, h: integer;
 begin
   R := GetClientRect;
 
@@ -1262,7 +1273,7 @@ begin
       InflateRect(R, Spacing, Spacing);
     end
     else
-    begin { fill it up! }
+    begin                               { fill it up! }
       Canvas.Brush.Color := FFillColor;
       Windows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
     end;
@@ -1296,13 +1307,13 @@ begin
   inherited;
 end;
 
-procedure TJvCustomLookOutButton.CMParenTJvImageSizeChanged(var Message: TMessage);
+procedure TJvCustomLookOutButton.CMParentImageSizeChanged(var Message: TMessage);
 var FTmp: boolean;
 begin
   if (Message.LParam <> Longint(self)) and FPImSize then
   begin
     FTmp := FPImSize;
-    SeTJvImageSize(TJvImageSize(Message.WParam));
+    SetImageSize(TJvImageSize(Message.WParam));
     FPImSize := FTmp;
   end;
 end;
@@ -1362,7 +1373,8 @@ begin
 end;
 
 procedure TJvCustomLookOutButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var tmp: TPoint; Msg: TMsg;
+var tmp: TPoint;
+  Msg: TMsg;
 begin
   if Parent is TJvLookOutPage then
     TJvLookOutPage(Parent).ActiveButton := self;
@@ -1472,14 +1484,14 @@ begin
       FLargeImages := nil;
     if AComponent = FPopUpMenu then
       FPopUpMenu := nil;
+    Invalidate;
   end;
-  Invalidate;
 end;
 
 procedure TJvCustomLookOutButton.ActionChange(Sender: TObject;
   CheckDefaults: Boolean);
 begin
-  inherited ActionChange(Sender,CheckDefaults);
+  inherited ActionChange(Sender, CheckDefaults);
   if Sender is TCustomAction then
     with TCustomAction(Sender) do
     begin
@@ -1519,7 +1531,9 @@ begin
   FButtons := TList.Create;
   FDown := False;
   FShowPressed := False;
-  SetBounds(0, 0, 92, 100);
+  Width := 92;
+  Height := 100;
+//  SetBounds(0, 0, 92, 100);
   FInsideButton := False;
   FHiFont := TFont.Create;
   FHiFont.Assign(Font);
@@ -1527,6 +1541,7 @@ begin
   FTopControl := 0;
   FPImSize := True;
   FAutoRepeat := False;
+  FAutoCenter := true;
   FBitmap := TBitmap.Create;
 end;
 
@@ -1648,7 +1663,8 @@ begin
 end;
 
 procedure TJvLookOutPage.EditKeyDown(Sender: TObject; var Key: Char);
-var aCaption: string; Modify: boolean;
+var aCaption: string;
+  Modify: boolean;
 begin
   Modify := False;
   if (Sender = FEdit) then
@@ -1677,7 +1693,7 @@ begin
           FEdit := nil;
           Screen.Cursor := crDefault;
         end;
-    end; { case }
+    end;                                { case }
   if Modify then
     FCaption := aCaption;
 end;
@@ -1787,7 +1803,9 @@ begin
 end;
 
 procedure TJvLookOutPage.ScrollChildren(Start: word);
-var R: TRect; i, x, aCount: integer; {AList:TList;} aControl: TControl;
+var R: TRect;
+  i, x, aCount: integer;                {AList:TList;}
+  aControl: TControl;
 begin
   if FScrolling <> 0 then
     Exit;
@@ -1831,7 +1849,8 @@ begin
       Inc(Start, (aControl.Height + FMargin));
     end;
 
-    if FAutoCenter then
+    if FAutoCenter and (aControl is TJvCustomLookOutButton)
+      and (TJvCustomLookOutButton(aControl).ImageSize = isLarge) then
       aControl.Left := (x - aControl.Width) div 2;
   end;
   FInScroll := false;
@@ -1964,11 +1983,11 @@ begin
   if FMargin <> Value then
   begin
     FMargin := Value;
-    Repaint;
+    Invalidate;
   end;
 end;
 
-procedure TJvLookOutPage.SeTJvImageSize(Value: TJvImageSize);
+procedure TJvLookOutPage.SetImageSize(Value: TJvImageSize);
 var Message: TMessage;
 begin
   if FImageSize <> Value then
@@ -1991,16 +2010,16 @@ procedure TJvLookOutPage.SetPImSize(Value: boolean);
 begin
   FPImSize := Value;
   if FPImSize and (FManager <> nil) then
-    SeTJvImageSize(FManager.ImageSize);
+    SetImageSize(FManager.ImageSize);
 end;
 
-procedure TJvLookOutPage.CMParenTJvImageSizeChanged(var Message: TMessage);
+procedure TJvLookOutPage.CMParentImageSizeChanged(var Message: TMessage);
 var FTmp: boolean;
 begin
   if (Message.LParam <> Longint(self)) and FPImSize then
   begin
     FTmp := FPImSize;
-    SeTJvImageSize(TJvImageSize(Message.WParam));
+    SetImageSize(TJvImageSize(Message.WParam));
     FPImSize := FTmp;
   end;
 end;
@@ -2018,14 +2037,19 @@ end;
 
 procedure TJvLookOutPage.SetCaption(Value: TCaption);
 begin
-  FCaption := Value;
-  Invalidate;
+  if FCaption <> Value then
+  begin
+    FCaption := Value;
+    Invalidate;
+  end;
 end;
 
 { determine if arrows should be visible }
 
 procedure TJvLookOutPage.CalcArrows;
-var i: integer; R: TRect; AList: TList;
+var i: integer;
+  R: TRect;
+  AList: TList;
 begin
   if Assigned(FUpArrow) and Assigned(FDwnArrow) then
   begin
@@ -2092,7 +2116,9 @@ begin
 end;
 
 procedure TJvLookOutPage.DrawTopButton;
-var R, R2: TRect; DC: hDC; FFlat, FPush: boolean;
+var R, R2: TRect;
+  DC: hDC;
+  FFlat, FPush: boolean;
 begin
   if FInsideButton then
     Canvas.Font := FHiFont
@@ -2201,7 +2227,9 @@ begin
 end;
 
 procedure TJvLookOutPage.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var R: TRect; tmp: TPoint; Msg: TMsg;
+var R: TRect;
+  tmp: TPoint;
+  Msg: TMsg;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if Assigned(FPopUpMenu) and (Button = mbRight) then
@@ -2344,11 +2372,11 @@ begin
         FPages.Delete(i);
     end;
   end
-  else {// insertion} if (AComponent is TJvLookOutPage) and (TJvLookOutPage(AComponent).Parent = self) then
-    begin
-      if FPages.IndexOf(AComponent) = -1 then
-        FPages.Add(AComponent);
-    end;
+  else {// insertion}  if (AComponent is TJvLookOutPage) and (TJvLookOutPage(AComponent).Parent = self) then
+  begin
+    if FPages.IndexOf(AComponent) = -1 then
+      FPages.Add(AComponent);
+  end;
 
   if Canvas <> nil then
     Invalidate;
@@ -2374,7 +2402,7 @@ begin
   end;
 end;
 
-procedure TJvLookOut.SeTJvImageSize(Value: TJvImageSize);
+procedure TJvLookOut.SetImageSize(Value: TJvImageSize);
 var Message: TMessage;
 begin
   if FImageSize <> Value then
@@ -2453,11 +2481,11 @@ begin
     if (C = Sender) then
       done := true;
 
-    if (C = Sender) or (i = 0) then { first or caller }
+    if (C = Sender) or (i = 0) then     { first or caller }
       SmoothScroll(C, (i - ofs) * bh, cSpeed, FScroll)
     else if done and (C <> Sender) then { place at bottom }
       SmoothScroll(C, ht - (vis - i + ofs) * bh - flt + 1, cSpeed, FScroll)
-    else { place at top }
+    else                                { place at top }
       SmoothScroll(C, (i - ofs) * bh, cSpeed, FScroll);
   end;
 end;
@@ -2576,6 +2604,7 @@ end;
 constructor TJvExpress.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  AutoCenter := false;
   ImageSize := isLarge;
   FBorderStyle := bsSingle;
   FTopControl := 0;
@@ -2631,7 +2660,9 @@ end;
 }
 
 procedure TJvExpress.CalcArrows;
-var i: integer; R: TRect; AList: TList;
+var i: integer;
+  R: TRect;
+  AList: TList;
 begin
   if Assigned(FUpArrow) and Assigned(FDwnArrow) then
   begin
@@ -2669,11 +2700,10 @@ procedure TJvExpress.ScrollChildren(Start: word);
 var i: integer;
 begin
   { size all children to width of TJvExpress }
-  for i := 0 to ControlCount - 1 do
-    if (Controls[i] = FDwnArrow) or (Controls[i] = FUpArrow) or (Controls[i] is TJvLookOutEdit) then
-      Continue
-    else
-      Controls[i].SetBounds(0, Controls[i].Top, Width - 4, FButtonHeight);
+  if not AutoCenter then
+    for i := 0 to ControlCount - 1 do
+      if (Controls[i] is TJvExpressButton) then
+        Controls[i].SetBounds(0, Controls[i].Top, Width - 4, FButtonHeight);
 
   if Assigned(FUpArrow) then
     Start := 12 * Ord(FUpArrow.Visible)
@@ -2693,7 +2723,7 @@ begin
   if FButtonHeight <> Value then
   begin
     FButtonHeight := Value;
-    for i := 0 to ButtonCount - 1 do // Iterate
+    for i := 0 to ButtonCount - 1 do    // Iterate
       Buttons[i].Height := FButtonHeight;
   end;
 end;
