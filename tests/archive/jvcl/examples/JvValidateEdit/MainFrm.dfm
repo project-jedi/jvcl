@@ -90,7 +90,6 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Caption = '...'
       TabOrder = 1
       Visible = False
-      OnClick = Button2Click
     end
     object chkHasMaxValue: TCheckBox
       Left = 216

@@ -54,7 +54,6 @@ type
     cbCPCheckPoints: TComboBox;
     chkAsVariant: TCheckBox;
     procedure FormCreate(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
     procedure cbDisplayFormatKeyPress(Sender: TObject; var Key: Char);
     procedure cbDisplayFormatChange(Sender: TObject);
     procedure seDecimalPlacesChange(Sender: TObject);
@@ -73,8 +72,8 @@ type
     procedure edMaxValueExit(Sender: TObject);
     procedure edMinValueExit(Sender: TObject);
   private
-    procedure DoCustomValidate(Sender: TObject; Key: char;
-      const AText: string; var IsValid: boolean);
+    procedure DoCustomValidate(Sender: TObject; Key: Char;
+      const AText: string; const Pos: Integer; var IsValid: boolean);
     procedure ShowValueChange(Sender: TObject);
     { Private declarations }
   public
@@ -86,13 +85,13 @@ var
   frmValidateEditDemo: TfrmValidateEditDemo;
 
 implementation
-
 uses
-  TypInfo, JvCharStrEditor;
-
+  TypInfo;
+  
 {$R *.DFM}
 
-procedure TfrmValidateEditDemo.DoCustomValidate(Sender:TObject;Key:char;const AText:string; var IsValid:boolean);
+procedure TfrmValidateEditDemo.DoCustomValidate(Sender: TObject; Key: Char;
+      const AText: string; const Pos: Integer; var IsValid: boolean);
 function KeyOrAscii(Key: Char): string;
 begin
   if Key < #32 then
@@ -129,19 +128,6 @@ begin
   colCPBelow.ColorValue := FValidateEdit.CriticalPoints.ColorBelow;
   colCPAbove.OnChange := colCPAboveChange;
   colCPBelow.OnChange := colCPBelowChange;
-end;
-
-
-procedure TfrmValidateEditDemo.Button2Click(Sender: TObject);
-var
-  S: string;
-begin
-  S := FValidateEdit.CheckChars;
-  if TfrmJvCharEditDlg.Edit(S) then
-  begin
-    FValidateEdit.CheckChars := S;
-    edCheckChars.Text := SysCharSetToString(StringToSysCharSet(FValidateEdit.CheckChars), True);
-  end;
 end;
 
 procedure TfrmValidateEditDemo.cbDisplayFormatKeyPress(Sender: TObject; var Key: Char);
