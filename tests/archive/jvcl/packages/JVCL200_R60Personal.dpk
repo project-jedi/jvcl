@@ -1,3 +1,25 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JVCL200_R60.dpk, released on 2002-08-01.
+
+
+Last Modified: 2002-08-01
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+{$I JVCL.INC}
+
 package JVCL200_R60Personal;
 
 {$R *.res}
@@ -8,13 +30,13 @@ package JVCL200_R60Personal;
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
 {$RANGECHECKS ON}
-{$REFERENCEINFO ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
@@ -72,6 +94,7 @@ contains
   JvComputerInfo in '..\source\JvComputerInfo.pas',
   JvConnectNetwork in '..\source\JvConnectNetwork.pas',
   JvControlBar in '..\source\JvControlBar.pas',
+  JvControlPanel in '..\source\JvControlPanel.pas',
   JvCoolBar in '..\source\JvCoolBar.pas',
   JvCopyError in '..\source\JvCopyError.pas',
   JvCpuUsage in '..\source\JvCpuUsage.pas',
@@ -394,6 +417,7 @@ contains
   JvInterpreter_StdCtrls in '..\Source\JvInterpreter_StdCtrls.pas',
   JvInterpreter_System in '..\Source\JvInterpreter_System.pas',
   JvInterpreter_SysUtils in '..\Source\JvInterpreter_SysUtils.pas',
+  JvInterpreter_all in '..\Source\JvInterpreter_all.pas',
   JvInterpreter_Contnrs in '..\Source\JvInterpreter_Contnrs.pas',
   JvInterpreter_JvUtils in '..\Source\JvInterpreter_JvUtils.pas',
   JvUtils in '..\Source\JvUtils.pas',
@@ -403,6 +427,9 @@ contains
   JvFooter in '..\source\JvFooter.pas',
   JvPlugin in '..\source\JvPlugin.pas',
   JvPluginMan in '..\source\JvPluginMan.pas',
+  JvDatePickerEdit in '..\source\JvDatePickerEdit.pas',
+  JvCheckedMaskEdit in '..\source\JvCheckedMaskEdit.pas',
+  JvDropDownForm in '..\source\JvDropDownForm.pas',
   JvScheduledEvents in '..\source\JvScheduledEvents.pas',
   JvSchedEvtStore in '..\source\JvSchedEvtStore.pas',
   JvShellHook in '..\source\JvShellHook.pas',
@@ -411,6 +438,7 @@ contains
   JvJVCLAbout in '..\source\JvJVCLAbout.pas' {JvJVCLAboutForm},
   JvCaret in '..\source\JvCaret.pas',
   Winamp in '..\common\Winamp.pas',
-  Ras32 in '..\common\Ras32.pas';
+  Ras32 in '..\common\Ras32.pas',
+  ObjSel in '..\common\ObjSel.pas';
 
 end.
