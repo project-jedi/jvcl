@@ -110,8 +110,8 @@ Unfortunately, there is no easy way to do that in the IDE, so you will
 have to close the package from BCB and reopen it with a text editor.
 This is an XML file and the node you're looking for is called PFLAGS.
 This contains the flags passed to the pascal compiler. At the end, just
-before the closing quote, add the recommended flag (preceded by a
-space) as indicated in the table below:<br>
+before the closing quote, add the recommended flag (preceded by a space)
+as indicated in the table below:<br>
 </p>
 <table cellpadding="1" cellspacing="1" border="1"
  style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;">
@@ -166,11 +166,53 @@ us.<br>
 support for BCB prior to version 5. As these versions did not support
 sets, they were replaced by other constructs, most often strings. But
 because JVCL doesn't support anything below BCB5, all conditional
-compilation directives defining Delphi sets as string must be removed
-to only leave Delphi style sets definitions and as such remove this
-error.<br>
-&nbsp;</p>
-<h5>[Linker Error] Fatal: Access violation. Link Terminated.</h5>
+compilation directives defining Delphi sets as string must be removed to
+only leave Delphi style sets definitions and as such remove this error.<br>
+&nbsp; </p>
+<h5>Incompatible types</h5>
+<p>Usually an error that has to do with record constructs being used to
+perform automatic casting. This a language feature to avoid as it is not
+supported by BCB.<br>
+<br>
+</p>
+<h5>[Linker Fatal Error] Fatal: Unable to open file 'SOMEFILE.OBJ'</h5>
+This is because a bpi file is missing from the requires node of the
+package your are trying to build. The table below indicates the name of
+the bpi files you need to add for different missing obj files<br>
+<table cellpadding="1" cellspacing="1" border="1"
+ style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; width: 50%; font-weight: bold; text-align: center;">Missing
+file<br>
+      </td>
+      <td
+ style="vertical-align: top; font-weight: bold; text-align: center;">Missing
+bpi file<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 50%;">CHECKLST.OBJ<br>
+      </td>
+      <td style="vertical-align: top;">vclx.bpi<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Note that for BCB5, vcl.bpi and rtl.bpi are merged into vcl50.bpi<br>
+<br>
+<h5>[Linker Fatal Error] Fatal: Cannot find CJCL60.bpl</h5>
+<p>You must add CJCL60.bpi to the requires list of your package. The
+directory to both CJCL60.bpi and CJCL60.bpl MUST be in the PATH
+environment variable. If you don't have these files, you need to compile
+the JCL first, with the BCB6 specific package. This package was not in
+the version 2 release, you may obtain it from us or the JCL team upon
+request on the newsgroup mentionned earlier in this document.<br>
+<br>
+</p>
+<h5>[Linker Fatal Error] Fatal: Access violation. Link Terminated.</h5>
 <p>See "Do not use WEAKPACKAGEUNIT" above. These errors should have
 been all removed from the JVCL following the discovery of a useless
 WEAKPACKAGEUNIT directive in the file JclResources.pas from the
@@ -188,21 +230,8 @@ the result of the linker crashing, it is very hard to track down.
 Borland has been told about this problem, we are yet to receive any
 answer from them.</p>
 <p>Please not that sometimes, the linker decides to crash on its own,
-giving you two linker errors. If this happens, close BCB and reopen it.<br>
-<br>
+giving you two linker errors. If this happens, close BCB and reopen it. <br>
 </p>
-<h5>Cannot find CJCL60.bpl</h5>
-<p>You must add CJCL60.bpi to the requires list of your package. The
-directory to both CJCL60.bpi and CJCL60.bpl MUST be in the PATH
-environment variable. If you don't have these files, you need to compile
-the JCL first, with the BCB6 specific package. This package was not in
-the version 2 release, you may obtain it from us or the JCL team upon
-request on the newsgroup mentionned earlier in this document.<br>
-&nbsp;</p>
-<h5>Incompatible types</h5>
-<p>Usually an error that has to do with record constructs being used to
-perform automatic casting. This a language feature to avoid as it is not
-supported by BCB.</p>
 <p><br>
 </p>
 <h3>Encountered errors and possible solutions when compiling an
@@ -281,8 +310,8 @@ directive. The problem in this case comes from the fact that a function
 defined in the .pas file is named exactly as a macro in the windows
 header an gets replaced by its value. For instance in the given example,
 LANGFROMLCID was replaced by its value which is WORD and that lead to
-the declaration of LANGFROMLCID(const unsigned int) from the pascal
-code to be replaced by WORD(const unsigned int).<br>
+the declaration of LANGFROMLCID(const unsigned int) from the pascal code
+to be replaced by WORD(const unsigned int).<br>
 </p>
 <p>However, if this error is generated in an hpp file not from the JVCL
 (filename not starting with Jv), such as Controls.hpp, you can't change

@@ -1,5 +1,11 @@
 Changelog for JVCL 3.0
 ======================
+2003-10-19:
+- Updated JvMenus and started documenting it //olivier
+- Updated the JvRichEdit demo // olivier
+2003-10-18:
+- Updated the BCB compatibility guide // olivier
+- Updated the installation guide for BCB // olivier
 2003-10-17:
 - JvStrToHtml.pas StringToHtml and HtmlToString had done the opposite // andreas
 2003-10-14:
