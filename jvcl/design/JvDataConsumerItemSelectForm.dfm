@@ -13,9 +13,6 @@ inherited frmJvDataConsumerItemSelect: TfrmJvDataConsumerItemSelect
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      564
-      33)
     object btnOK: TButton
       Left = 405
       Top = 5
@@ -42,12 +39,8 @@ inherited frmJvDataConsumerItemSelect: TfrmJvDataConsumerItemSelect
     end
   end
   inline fmeTreeList: TfmeJvProviderTreeList
-    Left = 0
-    Top = 0
     Width = 564
     Height = 310
-    Align = alClient
-    AutoScroll = False
     TabOrder = 1
     inherited lvProvider: TListView
       Width = 564

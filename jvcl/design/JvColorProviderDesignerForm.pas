@@ -40,7 +40,7 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvBaseDsgnForm, JvProviderTreeListFrame, JvComponent,
-  JvDataProvider, JvDataProviderImpl, JvContextProvider,
+  JvDataProvider, JvDataProviderIntf, JvContextProvider,
   JvProviderTreeListDsgnFrame, JvColorProvider, JvDsgnTypes,
   JvColorProviderDsgnTreeFrame;
 

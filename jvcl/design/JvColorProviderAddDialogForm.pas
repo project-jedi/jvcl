@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Buttons, StdCtrls,
-  JvColorProvider, JvDataProvider, JvDataProviderImpl;
+  JvColorProvider, JvDataProvider, JvDataProviderIntf;
 
 type
   TfrmAddColor = class(TForm)
@@ -149,9 +149,9 @@ procedure TfrmAddColor.ConsumerChanged(Sender: TJvDataConsumer;
   Reason: TJvDataConsumerChangeReason);
 begin
   case Reason of
-    ccrProviderSelected:
+    ccrProviderSelect:
       UpdateConsumerSettings;
-    ccrViewChanged:
+    ccrViewChange:
       UpdateComboList;
   end;
 end;

@@ -34,7 +34,7 @@ interface
 uses
   Classes, Contnrs, Graphics, Windows,
   JclBase,
-  JvDataProvider, JvDataProviderImpl, JvTypes;
+  JvDataProvider, JvDataProviderIntf, JvTypes;
 
 type
   TJvColorProvider = class;
@@ -3404,6 +3404,7 @@ end;
 constructor TJvColorProviderSettings.Create(AOwner: TExtensibleInterfacedPersistent);
 begin
   inherited Create(AOwner);
+  Changing(ccrViewChange);
   FColorBoxSettings := TJvColorProviderColorBoxSettings.Create(Self);
   FCustomColorSettings := TJvColorProviderCustomColorGroupSettings.Create(Self, RsCustomColors);
   FGroupingSettings := TJvColorProviderGroupingSettings.Create(Self);
@@ -3411,7 +3412,7 @@ begin
   FStandardColorSettings := TJvColorProviderColorGroupSettings.Create(Self, RsStandardColors);
   FSystemColorSettings := TJvColorProviderColorGroupSettings.Create(Self, RsSystemColors);
   FMapping := -1;
-  Changed(ccrViewChanged);
+  Changed(ccrViewChange);
 end;
 
 destructor TJvColorProviderSettings.Destroy;

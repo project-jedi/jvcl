@@ -32,7 +32,7 @@ interface
 
 uses
   Classes,
-  JvDataProvider;
+  JvDataProviderIntf;
 
 type
   { An instance of this class is created when an item is selected in the ProviderEditor. The class

@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Dialogs, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvDataProvider, JvDataProviderImpl, JvMaxPixel, JvItemsSearchs, JVCLVer;
+  JvDataProvider, JvDataProviderIntf, JvMaxPixel, JvItemsSearchs, JVCLVer;
 
 type
   TJvCustomComboBox = class;
@@ -909,7 +909,7 @@ end;
 procedure TJvCustomComboBox.ConsumerServiceChanged(Sender: TJvDataConsumer;
   Reason: TJvDataConsumerChangeReason);
 begin
-  if (Reason = ccrProviderSelected) and not IsProviderSelected and not FProviderToggle then
+  if (Reason = ccrProviderSelect) and not IsProviderSelected and not FProviderToggle then
   begin
     TJvComboBoxStrings(Items).MakeListInternal;
     FProviderIsActive := True;
@@ -917,19 +917,19 @@ begin
     RecreateWnd;
   end
   else
-  if (Reason = ccrProviderSelected) and IsProviderSelected and not FProviderToggle then
+  if (Reason = ccrProviderSelect) and IsProviderSelected and not FProviderToggle then
   begin
     TJvComboBoxStrings(Items).ActivateInternal; // apply internal string list to combo box
     FProviderIsActive := False;
     FProviderToggle := True;
     RecreateWnd;
   end;
-  if not FProviderToggle or (Reason = ccrProviderSelected) then
+  if not FProviderToggle or (Reason = ccrProviderSelect) then
   begin
     UpdateItemCount;
     Refresh;
   end;
-  if FProviderToggle and (Reason = ccrProviderSelected) then
+  if FProviderToggle and (Reason = ccrProviderSelect) then
     FProviderToggle := False;
 end;
 

@@ -40,7 +40,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvDataProviderDesignerForm, Menus, ActnList,
   JvProviderTreeListFrame, JvBaseDsgnFrame, JvBaseDsgnToolbarFrame,
-  JvStdToolbarDsgnFrame, JvProviderToolbarFrame, JvDataProvider,
+  JvStdToolbarDsgnFrame, JvProviderToolbarFrame, JvDataProviderIntf,
   JvDsgnTypes;
 
 type
@@ -61,7 +61,7 @@ procedure ManageProviderContexts(AProvider: IJvDataProvider;
 implementation
 
 uses
-  JvContextProvider, JvBaseDsgnForm, JvDataProviderImpl, JvDsgnConsts;
+  JvContextProvider, JvBaseDsgnForm, JvDataProvider, JvDsgnConsts;
 
 {$R *.dfm}
 

@@ -53,7 +53,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   ImgList,
-  JVCLVer, JvTypes, JvComponent, JvConsts, JvDataProvider, JvDataProviderImpl;
+  JVCLVer, JvTypes, JvComponent, JvConsts, JvDataProvider, JvDataProviderIntf;
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
@@ -946,7 +946,7 @@ end;
 procedure TJvCustomLabel.ConsumerServiceChanged(Sender: TJvDataConsumer;
   Reason: TJvDataConsumerChangeReason);
 begin
-  if ProviderActive or (Reason = ccrProviderSelected) then
+  if ProviderActive or (Reason = ccrProviderSelect) then
     AdjustBounds;
 end;
 

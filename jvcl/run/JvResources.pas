@@ -380,7 +380,7 @@ resourcestring
 resourcestring
   RsEInvalidHexLiteral = 'HexStrToInt: Invalid hex literal';
 
-//=== JvDataProviderImpl.pas =================================================
+//=== JvDataProvider.pas =====================================================
 resourcestring
   RsEItemsMayNotBeMovedInTheMainTree = 'Items may not be moved in the main tree.';
   RsEInvalidIndex = 'Invalid index';

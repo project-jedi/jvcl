@@ -54,7 +54,7 @@ implementation
 {$R *.dfm}
 
 uses
-  JvColorProvider, JvDataProvider, JvColorProviderAddDialogForm,
+  JvColorProvider, JvDataProviderIntf, JvColorProviderAddDialogForm,
   JclStrings;
 
 //=== TfmeJvColorProviderDsgnTree =============================================

@@ -39,7 +39,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvBaseDsgnForm, JvProviderTreeListFrame, JvDataProvider, JvDataProviderImpl,
+  JvBaseDsgnForm, JvProviderTreeListFrame, JvDataProvider, JvDataProviderIntf,
   JvDsgnTypes;
 
 type

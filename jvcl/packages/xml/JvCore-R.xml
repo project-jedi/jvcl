@@ -26,7 +26,7 @@
     <File Name="..\..\run\JvComponent.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvContextProvider.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDataProvider.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDataProviderImpl.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDataProviderIntf.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDynControlEngine.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDynControlEngineIntf.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDynControlEngineVCL.pas" Targets="all" Formname="" Condition=""/>
