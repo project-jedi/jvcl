@@ -2200,7 +2200,7 @@ begin
       flWindows:
         Result := PathAddSeparator(GetWindowsFolder) + NameOnly;
       flExeFile:
-        Result := PathAddSeparator(ExtractFilePath(GetModuleName(0))) + NameOnly;
+        Result := PathAddSeparator(ExtractFilePath(ParamStr(0))) + NameOnly;
       flUserFolder:
         Result := PathAddSeparator(GetAppdataFolder) + RelPathName;
     end;
