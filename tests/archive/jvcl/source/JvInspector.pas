@@ -1203,7 +1203,7 @@ type
       const PropInfo: PPropInfo): TJvCustomInspectorItem; overload;
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
       const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances; overload;
-    class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
+    class function NewByNames(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
       const NameList: array of string; const ExcludeList: Boolean = False;
       const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances; overload;
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
@@ -6950,7 +6950,8 @@ begin
   begin
     if (ssDouble in Shift) and ShowAsCheckbox then
       Shift := Shift - [ssDouble];
-    inherited MouseDown(Button, Shift, X, Y);
+    if not ShowAsCheckBox then
+      inherited MouseDown(Button, Shift, X, Y);
   end;
 end;
 
@@ -7959,7 +7960,7 @@ begin
   end;
 end;
 
-class function TJvInspectorPropData.New(const AParent: TJvCustomInspectorItem;
+class function TJvInspectorPropData.NewByNames(const AParent: TJvCustomInspectorItem;
   const AInstance: TObject; const NameList: array of string;
   const ExcludeList: Boolean = False;
   const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances;
@@ -7981,7 +7982,7 @@ begin
       NameIdx := High(NameList);
       while (NameIdx >= 0) and not SameText(NameList[NameIdx], PropInfo.Name) do
         Dec(NameIdx);
-      if (NameIdx < 0) or not ExcludeList then
+      if ((NameIdx < 0) and ExcludeList) or ((NameIdx > -1) and not ExcludeList) then
       begin
         SetLength(Result, Length(Result) + 1);
         Result[High(Result)] := New(AParent, AInstance, PropInfo);
