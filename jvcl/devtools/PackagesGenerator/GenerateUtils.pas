@@ -108,6 +108,7 @@ type
   TDefinesList = class (TStringList)
   public
     constructor Create(incfile : TStringList); overload;
+    function IsDefined(const Condition, Target: string): Boolean;
   end;
 
 var
@@ -351,10 +352,10 @@ begin
     // if we have a C++ Builder target, the only way to enforce the
     // condition is by looking for it in the DefinesList. If it
     // is there, the line is left untouched. If not, the line
-    // is emptied, thus enforcing the absence of the condition 
+    // is emptied, thus enforcing the absence of the condition
     else if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'C')) then
     begin
-      if DefinesList.IndexOf(Condition) > -1 then
+      if DefinesList.IsDefined(Condition, target) then
         Result := line
       else
         Result := '';
@@ -368,7 +369,7 @@ begin
     Result := line;
 end;
 
-function EnsurePFlagsCondition(pflags : string) : string;
+function EnsurePFlagsCondition(const pflags, Target: string): string;
 var
   PFlagsList : TStringList;
   I : Integer;
@@ -393,7 +394,7 @@ begin
       if ParensPos <> 0 then
       begin
         Condition := Copy(CurPFlag, ParensPos+1, Length(CurPFlag) - ParensPos -1);
-        if DefinesList.IndexOf(Condition) < 0 then
+        if not DefinesList.IsDefined(Condition, Target)  then
           PFlagsList[I] := ''
         else
           PFlagsList[I] := Copy(CurPFlag, 1, ParensPos-1);
@@ -842,7 +843,7 @@ begin
       end
       else
       begin
-        if Pos(curLine, '%DATETIME%') > 0 then
+        if Pos('%DATETIME%', curLine) > 0 then
           TimeStampLine := I;
 
         StrReplace(curLine, '%NAME%',
@@ -856,12 +857,12 @@ begin
                    [rfReplaceAll]);
         StrReplace(curLine, '%C5PFLAGS%',
                    EnsurePFlagsCondition(
-                     rootNode.Items.ItemNamed['C5PFlags'].Value
+                     rootNode.Items.ItemNamed['C5PFlags'].Value, target
                      ),
                    [rfReplaceAll]);
         StrReplace(curLine, '%C6PFLAGS%',
                    EnsurePFlagsCondition(
-                     rootNode.Items.ItemNamed['C6PFlags'].Value
+                     rootNode.Items.ItemNamed['C6PFlags'].Value, target
                      ),
                    [rfReplaceAll]);
         StrReplace(curLine, '%TYPE%',
@@ -1303,20 +1304,45 @@ end;
 
 constructor TDefinesList.Create(incfile: TStringList);
 var
-  i : integer;
-  curLine : string;
+  i: Integer;
+  curLine: string;
+  Line: string;
+  NoThemes: Boolean;
 begin
   inherited Create;
+  NoThemes := False;
 
   if Assigned(incfile) then
-    for i := 0 to incfile.Count-1 do
+    for i := 0 to incfile.Count - 1 do
     begin
       curLine := incfile[i];
       if Copy(curLine, 1, 8) = '{$DEFINE' then
       begin
-        Add(Copy(curLine, 10, Length(curLine)-10));
+        Line := Copy(curLine, 10, Length(curLine) - 10);
+        if (Line = 'JVCLThemesEnabled') and (NoThemes) then
+          Continue;
+        Add(Line);
+      end;
+      if Copy(curLine, 1, 9) = '{.$DEFINE' then
+      begin
+        Line := Copy(curLine, 11, Length(curLine) - 11);
+        if Line = 'JVCLThemesEnabled' then
+          NoThemes := True;
       end;
     end;
+end;
+
+function TDefinesList.IsDefined(const Condition, Target: string): Boolean;
+begin
+  if (Copy(Target, 1, 2) = 'd7') and (CompareText(Condition, 'JVCLThemesEnabled') = 0) then
+    Result := True
+  else
+  begin
+    Result := False;
+    if CompareText(Condition, 'DelphiPersonalEdition') = 0 then
+      Result := (Target[Length(Target)] in ['p', 's']);
+    Result := Result or (IndexOf(Condition) >= 0);
+  end;
 end;
 
 initialization
