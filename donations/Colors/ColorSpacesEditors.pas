@@ -276,7 +276,7 @@ begin
     for Index := 0 to ColorSpaceCount - 1 do
     begin
       AColorSpace := ColorSpaceIndex[Index];
-      if AColorSpace.ID <> csPredefined then
+      if AColorSpace.ID <> csDEF then
         Proc(TJvFullColorSpace.Create(Self, AColorSpace, IsColorProperty));
     end;
   Proc(TJvPredefinedColorSpace.Create(Self, IsColorProperty));
@@ -294,7 +294,7 @@ begin
   begin
     AColorID := GetColorID(AValue);
 
-    if IsColorProperty and not (AColorID in [csRGB, csPredefined]) then
+    if IsColorProperty and not (AColorID in [csRGB, csDEF]) then
       ColorStr := SInvalidFormat
     else
       ColorStr := ColorSpace[GetColorID(AValue)].ShortName;
@@ -350,7 +350,7 @@ begin
   with ColorSpaceManager do
   begin
     AColorID := GetColorID(AFullColor);
-    if (not (AColorID in [csRGB, csPredefined])) and IsColorProperty then
+    if (not (AColorID in [csRGB, csDEF])) and IsColorProperty then
       AFullColor := ConvertToID(AFullColor, csRGB);
   end;
   SetOrdValue(AFullColor);
@@ -498,7 +498,7 @@ constructor TJvPredefinedColorSpace.Create(AParent: TJvFullColorProperty; AIsCol
 begin
   inherited Create(AParent);
   FParent := AParent;
-  FColorSpace := ColorSpaceManager.ColorSpace[csPredefined];
+  FColorSpace := ColorSpaceManager.ColorSpace[csDEF];
   FIsColorProperty := AIsColorProperty;
 end;
 

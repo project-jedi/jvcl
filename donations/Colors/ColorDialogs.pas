@@ -290,7 +290,7 @@ begin
   with ColorSpaceManager do
   begin
     ColorID := GetColorID(FullColor);
-    if ColorID in [csRGB, csPredefined] then
+    if ColorID in [csRGB, csDEF] then
       Result := FullColor
     else
       Result := ConvertToID(FullColor, csRGB);

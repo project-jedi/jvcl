@@ -32,7 +32,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   ExtCtrls, StdCtrls, Spin,
-  ColorDialogs, ColorCtrls, ColorSpaces, ColorRotate, ColorSpacesStd;
+  ColorDialogs, ColorCtrls, ColorSpaces, ColorRotate;
 
 type
   TJvColorCircleForm = class(TJvBaseColorCircleForm)

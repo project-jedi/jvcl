@@ -40,7 +40,6 @@ contains
   ColorRotate in 'ColorRotate.pas',
   ColorSpaces in 'ColorSpaces.pas',
   ColorSpacesEditors in 'ColorSpacesEditors.pas',
-  ColorSpacesStd in 'ColorSpacesStd.pas',
   ColorCtrls in 'ColorCtrls.pas',
   FullColorFrm in 'FullColorFrm.pas' {FullColorForm},
   ColorCircleFrm in 'ColorCircleFrm.pas' {ColorCircleForm};

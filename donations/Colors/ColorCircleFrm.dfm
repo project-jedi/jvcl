@@ -44,7 +44,6 @@ object JvColorCircleForm: TJvColorCircleForm
     Width = 61
     Height = 13
     Caption = '&Color Space:'
-    FocusControl = ColorSpaceCombo
   end
   object ImageNew: TImage
     Left = 200
@@ -84,7 +83,7 @@ object JvColorCircleForm: TJvColorCircleForm
     object JvColorCircle: TJvColorCircle
       Left = 96
       Top = 80
-      Width = 497
+      Width = 501
       Height = 501
       FullColor = 16808352
       AxisConfig = acYZX
@@ -110,66 +109,53 @@ object JvColorCircleForm: TJvColorCircleForm
     object JvFullColorTrackBarCommon: TJvFullColorTrackBar
       Left = 40
       Top = 72
-      Width = 20
+      Width = 21
       Height = 261
       FullColor = 16808352
       AxisConfig = acYZX
       TabOrder = 2
-      ArrowColor = clBlack
       ArrowWidth = 10
-      ArrowPosition = 0
       ColorOrientation = 1
       Orientation = trVertical
-      BarWidth = 10
-      FullColorDrawing = True
     end
     object JvFullColorTrackBarBlue: TJvFullColorTrackBar
       Left = 72
       Top = 352
-      Width = 20
+      Width = 21
       Height = 261
       FullColor = 32536736
       AxisConfig = acYZX
       TabOrder = 5
       ArrowColor = clBlue
       ArrowWidth = 10
-      ArrowPosition = 0
       ColorOrientation = 1
       Orientation = trVertical
-      BarWidth = 10
-      FullColorDrawing = True
     end
     object JvFullColorTrackBarGreen: TJvFullColorTrackBar
       Left = 40
       Top = 352
-      Width = 20
+      Width = 21
       Height = 261
       FullColor = 32536656
       AxisConfig = acYZX
       TabOrder = 4
       ArrowColor = clLime
       ArrowWidth = 10
-      ArrowPosition = 0
       ColorOrientation = 1
       Orientation = trVertical
-      BarWidth = 10
-      FullColorDrawing = True
     end
     object JvFullColorTrackBarRed: TJvFullColorTrackBar
       Left = 8
       Top = 352
-      Width = 20
+      Width = 21
       Height = 261
       FullColor = 32536576
       AxisConfig = acYZX
       TabOrder = 3
       ArrowColor = clRed
       ArrowWidth = 10
-      ArrowPosition = 0
       ColorOrientation = 1
       Orientation = trVertical
-      BarWidth = 10
-      FullColorDrawing = True
     end
     object JvColorAxisConfigCombo: TJvColorAxisConfigCombo
       Left = 232

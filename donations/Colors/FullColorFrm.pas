@@ -32,7 +32,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Graphics,
   Dialogs, StdCtrls, Spin, ExtCtrls,
-  ColorCtrls, ColorSpaces, ColorDialogs, ColorSpacesStd;
+  ColorCtrls, ColorSpaces, ColorDialogs;
 
 type
   TJvFullColorForm = class(TJvBaseFullColorForm)
@@ -216,7 +216,7 @@ begin
   with Sender as TColorBox, ColorSpaceManager do
   begin
     LColorID := GetColorID(FullColor);
-    if LColorID in [csRGB, csPredefined] then
+    if LColorID in [csRGB, csDEF] then
       FullColor := Colors[ItemIndex]
     else
       FullColor := ConvertToID(Colors[ItemIndex], LColorID);
@@ -249,7 +249,7 @@ begin
 
   LColorID := ColorSpaceManager.GetColorID(FullColor);
 
-  if LColorID = csPredefined then
+  if LColorID = csDEF then
   begin
     JvColorPanel.FullColor := TJvFullColor(clWindowText);
     JvFullColorTrackBar.Visible := False;

@@ -1,4 +1,4 @@
-object FullColorForm: TJvFullColorForm
+object JvFullColorForm: TJvFullColorForm
   Left = 255
   Top = 232
   BorderIcons = [biSystemMenu]
@@ -215,17 +215,11 @@ object FullColorForm: TJvFullColorForm
       Left = 8
       Top = 320
       Width = 261
-      Height = 20
+      Height = 21
       FullColor = 16777376
       AxisConfig = acXZY
       TabOrder = 2
-      ArrowColor = clBlack
       ArrowWidth = 10
-      ArrowPosition = 0
-      ColorOrientation = 0
-      Orientation = trHorizontal
-      BarWidth = 10
-      FullColorDrawing = True
     end
     object JvColorAxisConfigCombo: TJvColorAxisConfigCombo
       Left = 48

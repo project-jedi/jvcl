@@ -596,8 +596,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  Math, TypInfo, GraphUtil,
-  ColorSpacesStd;
+  Math, TypInfo, GraphUtil;
 
 resourcestring
   RsEDuplicateTrackBar = 'TrackBar already used by component "%s"';
@@ -992,7 +991,7 @@ begin
   AxisX := GetIndexAxisX(AxisConfig);
   AxisY := GetIndexAxisY(AxisConfig);
 
-  if ColorSpace.ID = csPredefined then
+  if ColorSpace.ID = csDEF then
     with FBuffer.Canvas do
     begin
       Brush.Color := Color;
@@ -1228,7 +1227,7 @@ begin
   if not (ssLeft in Shift) then
     Exit;
 
-  if ColorSpace.ID = csPredefined then
+  if ColorSpace.ID = csDEF then
   begin
     Dec(X, CrossSize);
     Dec(Y, CrossSize);
@@ -3058,7 +3057,7 @@ begin
     for Index := 0 to ColorSpaceCount - 1 do
     begin
       LColorSpace := ColorSpaceIndex[Index];
-      if (LColorSpace.ID <> csPredefined) or AllowVariable then
+      if (LColorSpace.ID <> csDEF) or AllowVariable then
         AddObject(ColorSpaceToString(LColorSpace, ItemFormat), LColorSpace);
     end;
   end;
