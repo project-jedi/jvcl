@@ -31,15 +31,9 @@ unit JvTFManager;
 
 interface
 
-{$IFDEF COMPILER3}
-uses Windows, Classes, Controls, SysUtils, Messages, Graphics, ExtCtrls,
-  Printers, JvTFUtils
-{$IFDEF USEJVCL}, JvComponent{$ENDIF};
-{$ELSE}
 uses Windows, Classes, Controls, SysUtils, Messages, Graphics, ImgList,
   ExtCtrls, Printers, JvTFUtils
 {$IFDEF USEJVCL}, JvComponent{$ENDIF};
-{$ENDIF}
 
 const
   CN_REQUESTREFRESH = $BD01;
@@ -52,6 +46,11 @@ type
   TTFDayOfWeek = JvTFUtils.TTFDayOfWeek;
 
   EJvTFScheduleManagerError = class(Exception);
+
+  TJvTFTimeRange = record
+    StartTime: TTime;
+    EndTime: TTime;
+  end;
 
   TJvTFServNotifyCode = (sncDestroyAppt,
     sncDestroySchedule,
@@ -150,19 +149,20 @@ type
 
   TJvTFStateImageMap = class(TPersistent)
   private
-{$IFDEF COMPILER3}
-    FPics: array[Ord(Low(TJvTFStatePic))..Ord(High(TJvTFStatePic))] of integer;
-{$ELSE}
     FPics: array[Low(TJvTFStatePic)..High(TJvTFStatePic)] of integer;
-{$ENDIF}
 
-{$IFDEF COMPILER3}
-    procedure SetImage(Index, Value: integer);
-    function GetImage(Index: integer): integer;
-{$ELSE}
     procedure SetImage(StatePicID: TJvTFStatePic; Value: integer);
     function GetImage(StatePicID: TJvTFStatePic): integer;
-{$ENDIF}
+    function GetAlarmDisabled: integer;
+    function GetAlarmEnabled: integer;
+    function GetModified: integer;
+    function GetRecurring: integer;
+    function GetShared: integer;
+    procedure SetAlarmDisabled(const Value: integer);
+    procedure SetAlarmEnabled(const Value: integer);
+    procedure SetModified(const Value: integer);
+    procedure SetRecurring(const Value: integer);
+    procedure SetShared(const Value: integer);
   protected
     FScheduleManager: TJvTFScheduleManager;
     FUpdating: boolean;
@@ -173,43 +173,26 @@ type
     procedure EndUpdate;
     procedure Clear;
     procedure Assign(Source: TPersistent); override;
-{$IFDEF COMPILER3}
-    property Pics[Index: integer]: integer read GetImage write SetImage;
-{$ELSE}
     property Pics[Index: TJvTFStatePic]: integer read GetImage write SetImage;
-{$ENDIF}
   published
-{$IFDEF COMPILER3}
-    property AlarmEnabled: integer index Ord(spAlarmEnabled) read GetImage write SetImage;
-    property AlarmDisabled: integer index Ord(spAlarmDisabled) read GetImage write SetImage;
-    property Shared: integer index Ord(spShared) read GetImage write SetImage;
-    property Recurring: integer index Ord(spRecurring) read GetImage write SetImage;
-    property Modified: integer index Ord(spModified) read GetImage write SetImage;
-{$ELSE}
-    property AlarmEnabled: integer index spAlarmEnabled read GetImage write SetImage;
-    property AlarmDisabled: integer index spAlarmDisabled read GetImage write SetImage;
-    property Shared: integer index spShared read GetImage write SetImage;
-    property Recurring: integer index spRecurring read GetImage write SetImage;
-    property Modified: integer index spModified read GetImage write SetImage;
-{$ENDIF}
+    property AlarmEnabled: integer {index spAlarmEnabled}
+          read GetAlarmEnabled write SetAlarmEnabled;
+    property AlarmDisabled: integer {index spAlarmDisabled}
+          read GetAlarmDisabled write SetAlarmDisabled;
+    property Shared: integer {index spShared}
+          read GetShared write SetShared;
+    property Recurring: integer {index spRecurring}
+          read GetRecurring write SetRecurring;
+          //read GetImage write SetImage;
+    property Modified: integer {index spModified}
+          read GetModified write SetModified;
   end;
 
-  TJvTFTimeRange = record
-    StartTime: TTime;
-    EndTime: TTime;
-  end;
-
-{$IFNDEF COMPILER3}
   TDynTimeRangeArray = array of TJvTFTimeRange;
-{$ENDIF}
 
-{$IFNDEF COMPILER3}
   TDynApptArray = array of TJvTFAppt;
-{$ENDIF}
 
-{$IFNDEF COMPILER3}
   TDynSchedArray = array of TJvTFSched;
-{$ENDIF}
 
   TJvTFAppt = class(TObject)
   private
@@ -350,9 +333,7 @@ type
     procedure DisconnectAppt(Appt: TJvTFAppt);
     procedure ConnectionsOnChange(Sender: TObject);
     procedure CheckConnections;
-{$IFNDEF COMPILER3}
     function GetFreeUsedTime(FreeTime: boolean): TDynTimeRangeArray; dynamic;
-{$ENDIF}
   public
     constructor Create(Serv: TJvTFScheduleManager; AName: string; ADate: TDate); virtual;
     destructor Destroy; override;
@@ -375,7 +356,6 @@ type
     procedure PostAppts;
 
     // Conflict and free time methods
-{$IFNDEF COMPILER3}
     function GetFreeTime: TDynTimeRangeArray; dynamic;
     function GetUsedTime: TDynTimeRangeArray; dynamic;
     function TimeIsFree(TimeRange: TJvTFTimeRange): boolean; overload; dynamic;
@@ -391,7 +371,6 @@ type
     //  ONLY THIS SCHEDULE!!
     function EnumConflicts(anAppt: TJvTFAppt): TDynApptArray;
       overload; dynamic;
-{$ENDIF}
 
     property Cached: boolean read FCached;
     property CachedTime: DWORD read FCachedTime;
@@ -474,13 +453,8 @@ type
 
     FRefreshAutoReconcile: boolean;
 
-{$IFDEF COMPILER3}
-    FStateImages: TImageList;
-    FCustomImages: TImageList;
-{$ELSE}
     FStateImages: TCustomImageList;
     FCustomImages: TCustomImageList;
-{$ENDIF}
     FStateImageMap: TJvTFStateImageMap;
     FCache: TJvTFScheduleManagerCache;
 
@@ -491,13 +465,8 @@ type
     function GetSchedule(Index: integer): TJvTFSched;
     function GetConControl(Index: integer): TJvTFControl;
     function GetConComponent(Index: integer): TJvTFComponent;
-{$IFDEF COMPILER3}
-    procedure SetStateImages(Value: TImageList);
-    procedure SetCustomImages(Value: TImageList);
-{$ELSE}
     procedure SetStateImages(Value: TCustomImageList);
     procedure SetCustomImages(Value: TCustomImageList);
-{$ENDIF}
     procedure SetCache(Value: TJvTFScheduleManagerCache);
 
     procedure SeTJvTFSchedLoadMode(Value: TJvTFSchedLoadMode);
@@ -547,17 +516,10 @@ type
     procedure LoadBatch(BatchName: string; BatchStartDate,
       BatchEndDate: TDate); virtual;
 
-{$IFDEF COMPILER3}
-    procedure RequestRefresh(ApptCtrl: TJvTFControl;
-      Schedule: TJvTFSched); dynamic;
-    procedure ComponentRequestRefresh(Comp: TJvTFComponent;
-      Schedule: TJvTFSched); dynamic;
-{$ELSE}
     procedure RequestRefresh(ApptCtrl: TJvTFControl;
       Schedule: TJvTFSched); overload; dynamic;
     procedure RequestRefresh(Comp: TJvTFComponent;
       Schedule: TJvTFSched); overload; dynamic;
-{$ENDIF}
 
     procedure ImageListChange(Sender: TObject);
     procedure FlushAppts;
@@ -593,12 +555,6 @@ type
     function ConComponentCount: integer;
     property ConComponents[Index: integer]: TJvTFComponent read GetConComponent;
 
-{$IFDEF COMPILER3}
-    function RequestSchedule(ApptCtrl: TJvTFControl; SchedName: string;
-      SchedDate: TDate): TJvTFSched;
-    function ComponentRequestSchedule(Comp: TJvTFComponent;
-      SchedName: string; SchedDate: TDate): TJvTFSched;
-{$ELSE}
     function RequestSchedule(ApptCtrl: TJvTFControl; SchedName: string;
       SchedDate: TDate): TJvTFSched; overload;
     function RequestSchedule(ApptCtrl: TJvTFControl; SchedName: string;
@@ -608,19 +564,11 @@ type
       SchedDate: TDate): TJvTFSched; overload;
     function RequestSchedule(Comp: TJvTFComponent; SchedName: string;
       SchedDate: TDate; var LoadedNow: boolean): TJvTFSched; overload;
-{$ENDIF}
 
-{$IFDEF COMPILER3}
-    procedure ReleaseSchedule(ApptCtrl: TJvTFControl; SchedName: string;
-      SchedDate: TDate);
-    procedure ComponentReleaseSchedule(Comp: TJvTFComponent;
-      SchedName: string; SchedDate: TDate);
-{$ELSE}
     procedure ReleaseSchedule(ApptCtrl: TJvTFControl; SchedName: string;
       SchedDate: TDate); overload;
     procedure ReleaseSchedule(Comp: TJvTFComponent; SchedName: string;
       SchedDate: TDate); overload;
-{$ENDIF}
 
     procedure ProcessBatches;
 
@@ -643,11 +591,7 @@ type
 
     procedure RefreshConnections(Trigger: TObject); virtual;
     property Flushing: boolean read FFlushing;
-{$IFDEF COMPILER3}
-    procedure Flush(All: boolean); virtual;
-{$ELSE}
     procedure Flush(All: boolean = false); virtual;
-{$ENDIF}
 
     function GetApptDisplayText(AComponent: TComponent;
       Appt: TJvTFAppt): string; virtual;
@@ -660,13 +604,8 @@ type
     property OnRefreshAll: TNotifyEvent read FOnRefreshAll write FOnRefreshAll;
     property OnPostAppt: TJvTFApptEvent read FOnPostAppt write FOnPostAppt;
     property OnDeleteAppt: TJvTFApptEvent read FOnDeleteAppt write FOnDeleteAppt;
-{$IFDEF COMPILER3}
-    property StateImages: TImageList read FStateImages write SetStateImages;
-    property CustomImages: TImageList read FCustomImages write SetCustomImages;
-{$ELSE}
     property StateImages: TCustomImageList read FStateImages write SetStateImages;
     property CustomImages: TCustomImageList read FCustomImages write SetCustomImages;
-{$ENDIF}
     property StateImageMap: TJvTFStateImageMap read FStateImageMap write FStateImageMap;
     property Cache: TJvTFScheduleManagerCache read FCache write SetCache;
     // implicit post fix
@@ -753,11 +692,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure PropertyCheck; dynamic;
   public
-{$IFDEF COMPILER3}
-    constructor Create(anApptCtrl: TJvTFControl);
-{$ELSE}
     constructor Create(anApptCtrl: TJvTFControl); reintroduce;
-{$ENDIF}
     destructor Destroy; override;
     procedure ActivateHint(Rect: TRect; const AHint: string); override;
     procedure ApptHint(Appt: TJvTFAppt; X, Y: integer;
@@ -1258,20 +1193,6 @@ begin
 end;
 
 { TJvTFStateImageMap }
-{$IFDEF COMPILER3}
-
-constructor TJvTFStateImageMap.Create(Serv: TJvTFScheduleManager);
-var
-  I: integer;
-begin
-  inherited Create;
-
-  for I := Ord(Low(TJvTFStatePic)) to Ord(High(TJvTFStatePic)) do
-    FPics[I] := -1;
-
-  FUpdating := false;
-end;
-{$ELSE}
 
 constructor TJvTFStateImageMap.Create(Serv: TJvTFScheduleManager);
 var
@@ -1284,21 +1205,6 @@ begin
 
   FUpdating := false;
 end;
-{$ENDIF}
-
-{$IFDEF COMPILER3}
-
-procedure TJvTFStateImageMap.SetImage(Index, Value: integer);
-begin
-  if Value < -1 then
-    Value := -1;
-  if FPics[Index] <> Value then
-  begin
-    FPics[Index] := Value;
-    Change;
-  end;
-end;
-{$ELSE}
 
 procedure TJvTFStateImageMap.SetImage(StatePicID: TJvTFStatePic; Value: integer);
 begin
@@ -1310,21 +1216,61 @@ begin
     Change;
   end;
 end;
-{$ENDIF}
-
-{$IFDEF COMPILER3}
-
-function TJvTFStateImageMap.GetImage(Index: integer): integer;
-begin
-  Result := FPics[Index];
-end;
-{$ELSE}
 
 function TJvTFStateImageMap.GetImage(StatePicID: TJvTFStatePic): integer;
 begin
   Result := FPics[StatePicID];
 end;
-{$ENDIF}
+
+function TJvTFStateImageMap.GetAlarmDisabled: integer;
+begin
+  Result := GetImage(spAlarmDisabled);
+end;
+
+function TJvTFStateImageMap.GetAlarmEnabled: integer;
+begin
+  Result := GetImage(spAlarmEnabled);
+end;
+
+function TJvTFStateImageMap.GetModified: integer;
+begin
+  Result := GetImage(spModified);
+end;
+
+function TJvTFStateImageMap.GetRecurring: integer;
+begin
+  Result := GetImage(spRecurring);
+end;
+
+function TJvTFStateImageMap.GetShared: integer;
+begin
+  Result := GetImage(spShared);
+end;
+
+procedure TJvTFStateImageMap.SetAlarmDisabled(const Value: integer);
+begin
+  SetImage(spAlarmDisabled, Value);
+end;
+
+procedure TJvTFStateImageMap.SetAlarmEnabled(const Value: integer);
+begin
+  SetImage(spAlarmEnabled, Value);
+end;
+
+procedure TJvTFStateImageMap.SetModified(const Value: integer);
+begin
+  SetImage(spModified, Value);
+end;
+
+procedure TJvTFStateImageMap.SetRecurring(const Value: integer);
+begin
+  SetImage(spRecurring, Value);
+end;
+
+procedure TJvTFStateImageMap.SetShared(const Value: integer);
+begin
+  SetImage(spShared, Value);
+end;
 
 procedure TJvTFStateImageMap.Change;
 begin
@@ -1347,18 +1293,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER3}
-
-procedure TJvTFStateImageMap.Clear;
-var
-  I: integer;
-begin
-  for I := Ord(Low(TJvTFStatePic)) to Ord(High(TJvTFStatePic)) do
-    FPics[I] := -1;
-  Change;
-end;
-{$ELSE}
-
 procedure TJvTFStateImageMap.Clear;
 var
   I: TJvTFStatePic;
@@ -1367,24 +1301,6 @@ begin
     FPics[I] := -1;
   Change;
 end;
-{$ENDIF}
-
-{$IFDEF COMPILER3}
-
-procedure TJvTFStateImageMap.Assign(Source: TPersistent);
-var
-  Pic: integer;
-begin
-  if Source is TJvTFStateImageMap then
-  begin
-    for Pic := Ord(Low(TJvTFStatePic)) to Ord(High(TJvTFStatePic)) do
-      FPics[Pic] := TJvTFStateImageMap(Source).Pics[Pic];
-    Change;
-  end
-  else
-    inherited Assign(Source);
-end;
-{$ELSE}
 
 procedure TJvTFStateImageMap.Assign(Source: TPersistent);
 var
@@ -1399,7 +1315,6 @@ begin
   else
     inherited Assign(Source);
 end;
-{$ENDIF}
 
 { TJvTFAppt }
 
@@ -1976,11 +1891,7 @@ begin
   while ConComponentCount > 0 do
   begin
     Comp := TJvTFComponent(FConComponents.Objects[0]);
-{$IFDEF COMPILER3}
-    ScheduleManager.ComponentReleaseSchedule(Comp, SchedName, SchedDate);
-{$ELSE}
     ScheduleManager.ReleaseSchedule(Comp, SchedName, SchedDate);
-{$ENDIF}
   end;
 
   while ApptCount > 0 do
@@ -2111,8 +2022,6 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER3}
-
 function TJvTFSched.GetFreeUsedTime(FreeTime: boolean): TDynTimeRangeArray;
 var
   // 60 mins X 24 hrs = 1440 ==> minutes in a day
@@ -2223,7 +2132,6 @@ begin
     EndRange;
   end;
 end;
-{$ENDIF}
 
 function TJvTFSched.ApptCount: integer;
 begin
@@ -2328,23 +2236,16 @@ begin
     ScheduleManager.dbPostAppt(Appts[I]);
 end;
 
-{$IFNDEF COMPILER3}
 
 function TJvTFSched.GetFreeTime: TDynTimeRangeArray;
 begin
   Result := GetFreeUsedTime(true);
 end;
-{$ENDIF}
-
-{$IFNDEF COMPILER3}
 
 function TJvTFSched.GetUsedTime: TDynTimeRangeArray;
 begin
   Result := GetFreeUsedTime(false);
 end;
-{$ENDIF}
-
-{$IFNDEF COMPILER3}
 
 function TJvTFSched.TimeIsFree(TimeRange: TJvTFTimeRange): boolean;
 var
@@ -2364,9 +2265,6 @@ begin
       Inc(I);
   end;
 end;
-{$ENDIF}
-
-{$IFNDEF COMPILER3}
 
 function TJvTFSched.TimeIsFree(RangeStart, RangeEnd: TTime): boolean;
 var
@@ -2376,9 +2274,6 @@ begin
   TimeRange.EndTime := RangeEnd;
   Result := TimeIsFree(TimeRange);
 end;
-{$ENDIF}
-
-{$IFNDEF COMPILER3}
 
 function TJvTFSched.ApptHasConflicts(anAppt: TJvTFAppt): boolean;
 var
@@ -2399,9 +2294,6 @@ begin
       Inc(I);
   end;
 end;
-{$ENDIF}
-
-{$IFNDEF COMPILER3}
 
 function TJvTFSched.EnumConflicts(TimeRange: TJvTFTimeRange): TDynApptArray;
 var
@@ -2420,9 +2312,6 @@ begin
     end;
   end;
 end;
-{$ENDIF}
-
-{$IFNDEF COMPILER3}
 
 function TJvTFSched.EnumConflicts(RangeStart, RangeEnd: TTime): TDynApptArray;
 var
@@ -2432,9 +2321,6 @@ begin
   TimeRange.EndTime := RangeEnd;
   Result := EnumConflicts(TimeRange);
 end;
-{$ENDIF}
-
-{$IFNDEF COMPILER3}
 
 function TJvTFSched.EnumConflicts(anAppt: TJvTFAppt): TDynApptArray;
 var
@@ -2454,7 +2340,6 @@ begin
     end;
   end;
 end;
-{$ENDIF}
 
 function TJvTFSched.GetFirstAppt: TJvTFAppt;
 var
@@ -2702,22 +2587,6 @@ begin
   Result := TJvTFComponent(FConComponents.Objects[Index]);
 end;
 
-{$IFDEF COMPILER3}
-
-procedure TJvTFScheduleManager.SetStateImages(Value: TImageList);
-begin
-  if Assigned(FStateImages) then
-    FStateImages.UnRegisterChanges(FImageChangeLink);
-
-  FStateImages := Value;
-
-  if Assigned(FStateImages) then
-  begin
-    FStateImages.RegisterChanges(FImageChangeLink);
-    FStateImages.FreeNotification(Self);
-  end;
-end;
-{$ELSE}
 
 procedure TJvTFScheduleManager.SetStateImages(Value: TCustomImageList);
 begin
@@ -2732,24 +2601,6 @@ begin
     FStateImages.FreeNotification(Self);
   end;
 end;
-{$ENDIF}
-
-{$IFDEF COMPILER3}
-
-procedure TJvTFScheduleManager.SetCustomImages(Value: TImageList);
-begin
-  if Assigned(FCustomImages) then
-    FCustomImages.UnRegisterChanges(FImageChangeLink);
-
-  FCustomImages := Value;
-
-  if Assigned(FCustomImages) then
-  begin
-    FCustomImages.RegisterChanges(FImageChangeLink);
-    FCustomImages.FreeNotification(Self);
-  end;
-end;
-{$ELSE}
 
 procedure TJvTFScheduleManager.SetCustomImages(Value: TCustomImageList);
 begin
@@ -2764,7 +2615,6 @@ begin
     FCustomImages.FreeNotification(Self);
   end;
 end;
-{$ENDIF}
 
 procedure TJvTFScheduleManager.SetCache(Value: TJvTFScheduleManagerCache);
 begin
@@ -2984,15 +2834,6 @@ begin
     FOnPostAppt(Self, Appt);
 end;
 
-{$IFDEF COMPILER3}
-
-procedure TJvTFScheduleManager.ComponentRequestRefresh(Comp: TJvTFComponent;
-  Schedule: TJvTFSched);
-begin
-  NotifyComp(Comp, Self, sncRefresh);
-end;
-{$ENDIF}
-
 procedure TJvTFScheduleManager.RequestRefresh(ApptCtrl: TJvTFControl;
   Schedule: TJvTFSched);
 begin
@@ -3006,14 +2847,11 @@ begin
 }
 end;
 
-{$IFNDEF COMPILER3}
-
 procedure TJvTFScheduleManager.RequestRefresh(Comp: TJvTFComponent;
   Schedule: TJvTFSched);
 begin
   NotifyComp(Comp, Self, sncRefresh);
 end;
-{$ENDIF}
 
 procedure TJvTFScheduleManager.ImageListChange(Sender: TObject);
 begin
@@ -3117,26 +2955,6 @@ begin
   Result := FConComponents.Count;
 end;
 
-{$IFDEF COMPILER3}
-
-function TJvTFScheduleManager.ComponentRequestSchedule(Comp: TJvTFComponent;
-  SchedName: string; SchedDate: TDate): TJvTFSched;
-var
-  ApptsNeeded: boolean;
-begin
-  RetrieveSchedule(SchedName, SchedDate, Result, ApptsNeeded);
-
-  if Assigned(Comp) then
-  begin
-    Result.Notify(Comp, sncRequestSchedule);
-    Comp.Notify(Result, sncRequestSchedule);
-  end;
-
-  if ApptsNeeded then
-    NeedAppts(Result);
-end;
-{$ENDIF}
-
 function TJvTFScheduleManager.RequestSchedule(ApptCtrl: TJvTFControl;
   SchedName: string; SchedDate: TDate): TJvTFSched;
 var
@@ -3159,7 +2977,6 @@ begin
     end;
 end;
 
-{$IFNDEF COMPILER3}
 
 function TJvTFScheduleManager.RequestSchedule(ApptCtrl: TJvTFControl;
   SchedName: string; SchedDate: TDate; var LoadedNow: boolean): TJvTFSched;
@@ -3175,9 +2992,6 @@ begin
   if LoadedNow then
     NeedAppts(Result);
 end;
-{$ENDIF}
-
-{$IFNDEF COMPILER3}
 
 function TJvTFScheduleManager.RequestSchedule(Comp: TJvTFComponent;
   SchedName: string; SchedDate: TDate): TJvTFSched;
@@ -3195,9 +3009,6 @@ begin
   if ApptsNeeded then
     NeedAppts(Result);
 end;
-{$ENDIF}
-
-{$IFNDEF COMPILER3}
 
 function TJvTFScheduleManager.RequestSchedule(Comp: TJvTFComponent;
   SchedName: string; SchedDate: TDate; var LoadedNow: boolean): TJvTFSched;
@@ -3213,36 +3024,6 @@ begin
   if LoadedNow then
     NeedAppts(Result);
 end;
-{$ENDIF}
-
-{$IFDEF COMPILER3}
-
-procedure TJvTFScheduleManager.ComponentReleaseSchedule(Comp: TJvTFComponent;
-  SchedName: string; SchedDate: TDate);
-var
-  SchedID: string;
-  I: integer;
-  Schedule: TJvTFSched;
-begin
-  SchedID := GetScheduleID(SchedName, SchedDate);
-  I := FSchedules.IndexOf(SchedID);
-
-  if I > -1 then
-  begin
-    Schedule := TJvTFSched(FSchedules.Objects[I]);
-
-    if Assigned(Comp) then
-    begin
-      Schedule.Notify(Comp, sncReleaseSchedule);
-      Comp.Notify(Schedule, sncReleaseSchedule);
-    end;
-
-    if Cache.CacheType = ctBuffer then
-      Flush(false);
-  end;
-end;
-{$ENDIF}
-
 procedure TJvTFScheduleManager.ReleaseSchedule(ApptCtrl: TJvTFControl;
   SchedName: string; SchedDate: TDate);
 var
@@ -3268,7 +3049,6 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER3}
 
 procedure TJvTFScheduleManager.ReleaseSchedule(Comp: TJvTFComponent;
   SchedName: string; SchedDate: TDate);
@@ -3294,7 +3074,6 @@ begin
       Flush(false);
   end;
 end;
-{$ENDIF}
 
 procedure TJvTFScheduleManager.RequestAppt(ID: string; var Appt: TJvTFAppt;
   var New: boolean);
@@ -3442,20 +3221,12 @@ begin
       RequestRefresh(ConControls[I], nil);
       // refresh all schedules for all components connected to the ScheduleManager
     for I := 0 to ConComponentCount - 1 do
-{$IFDEF COMPILER3}
-      ComponentRequestRefresh(ConComponents[I], nil);
-{$ELSE}
       RequestRefresh(ConComponents[I], nil);
-{$ENDIF}
   end
   else if Trigger is TJvTFComponent then
   begin
       // refresh all schedules for given component
-{$IFDEF COMPILER3}
-    ComponentRequestRefresh(TJvTFComponent(Trigger), nil);
-{$ELSE}
     RequestRefresh(TJvTFComponent(Trigger), nil);
-{$ENDIF}
   end
   else if Trigger is TJvTFControl then
   begin
@@ -3470,11 +3241,7 @@ begin
       RequestRefresh(Sched.ConControls[I], Sched);
       // refresh all utf components connected to schedule
     for I := 0 to Sched.ConComponentCount - 1 do
-{$IFDEF COMPILER3}
-      ComponentRequestRefresh(Sched.ConComponents[I], Sched);
-{$ELSE}
       RequestRefresh(Sched.ConComponents[I], Sched);
-{$ENDIF}
   end
   else if Trigger is TJvTFAppt then
   begin
@@ -4407,11 +4174,7 @@ begin
   SchedID := TJvTFScheduleManager.GetScheduleID(SchedName, SchedDate);
   if FSchedules.IndexOf(SchedID) > -1 then
     if Assigned(ScheduleManager) then
-{$IFDEF COMPILER3}
-      ScheduleManager.ComponentReleaseSchedule(Self, SchedName, SchedDate)
-{$ELSE}
       ScheduleManager.ReleaseSchedule(Self, SchedName, SchedDate)
-{$ENDIF}
     else
       raise EJvTFScheduleManagerError.Create('Could not release schedule.  ' +
         'ScheduleManager not assigned');
@@ -4448,11 +4211,7 @@ begin
 
   if not Assigned(Result) then
     if Assigned(ScheduleManager) then
-{$IFDEF COMPILER3}
-      Result := ScheduleManager.ComponentRequestSchedule(Self, SchedName, SchedDate)
-{$ELSE}
       Result := ScheduleManager.RequestSchedule(Self, SchedName, SchedDate)
-{$ENDIF}
     else
       raise EJvTFScheduleManagerError.Create('Could not retrieve schedule.  ' +
         'ScheduleManager not assigned');
