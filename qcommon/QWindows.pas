@@ -4264,16 +4264,31 @@ var
 
   FColorRole: QColorGroupColorRole;
   FPalette: QPaletteH;
+
+  function GetPaletteHandle(Widget: TWidgetControl): QPaletteH;
+  begin
+    if Widget = nil then
+      Result := Application.Palette.Handle
+    else
+    begin
+      Result := THackedWidgetControl(Widget).Palette.Handle;
+      while (Result = nil) and (Widget.Parent <> nil) do
+      begin
+        Widget := Widget.Parent;
+        Result := THackedWidgetControl(Widget).Palette.Handle;
+      end;
+      if Result = nil then
+        Result := Application.Palette.Handle;
+    end;
+  end;
+
 begin
-  if not Assigned(Instance) or
-       ([csCreating, csDestroyingHandle] * Instance.ControlState <> []) then
-    Instance := Application.MainForm; // try using MainForm
   case Color of
   clColorTo..clForeground:
     begin
-      if assigned(Instance) and Instance.HasParent then
+      if assigned(Instance) then
         if not Instance.Enabled then
-          FColorGroup := QPaletteColorGroup_InActive
+          FColorGroup := QPaletteColorGroup_Disabled
         else
           if Instance.Focused then
             FColorGroup := QPaletteColorGroup_Active
@@ -4299,9 +4314,7 @@ begin
     Exit;
   end;
   FColorRole := QColorGroupColorRole( $000000f and (-Integer(Color) )); {1..15}
-  FPalette := THackedWidgetControl(Instance).Palette.Handle;
-  if not assigned(FPalette) then
-    FPalette := Application.Palette.Handle;
+  FPalette := GetPaletteHandle(Instance);
   FColor := QPalette_color(FPalette, FColorGroup, FColorRole);
   Result := QColorColor(FColor);
 //  QColor_destroy(FColor);
