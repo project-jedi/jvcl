@@ -159,9 +159,15 @@ begin
   begin
     Top := 2;
     Left := 5;
-    Font.Size := 8;
     AutoSize := True;
+    {$IFDEF MSWINDOWS}
+    Font.Size := 8;
     Font.Name := 'Arial';
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
+    Font.Height := 13;
+    Font.Name := 'Helvetica';
+    {$ENDIF LINUX}
     Caption := RsDefaultR;
     Transparent := True;
     Parent := FPanel4;
@@ -384,6 +390,7 @@ procedure TJvGammaPanel.DoBoundsChanged;
 begin
   Width := 65;
   Height := 250;
+  if Assigned( FForegroundColorImg ) then
   FForegroundColorImg.BringToFront;
 end;
 
