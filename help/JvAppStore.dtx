@@ -1,5 +1,5 @@
 ##Package: Core
-##Status: Incompleted
+##Status: Incomplete
 ----------------------------------------------------------------------------------------------------
 @@JvAppStore.pas
 Summary
@@ -7,6 +7,12 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Marcel Bestebroer
+----------------------------------------------------------------------------------------------------
+@@EJVCLAppStoreError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TAppStoreEnumOption
 <TITLE TAppStoreEnumOption type>
@@ -35,7 +41,7 @@ See Also
 <TITLE TAppStoreEnumOptions type>
 <COMBINE TAppStoreEnumOption>
 ----------------------------------------------------------------------------------------------------
-@@TAppStoreListDelete
+@@TAppStoreListDeleteEvent
 <TITLE TAppStoreListDelete type>
 Summary
   Event type used to delete (part of) a list.
@@ -49,7 +55,7 @@ Parameters
 See Also
   TJvCustomAppStore.WriteList
 ----------------------------------------------------------------------------------------------------
-@@TAppStoreListItem
+@@TAppStoreListItemEvent
 <TITLE TAppStoreListItem type>
 Summary
   Event type used to read or write a list item.
@@ -61,6 +67,230 @@ Parameters
   Index  - Index of the item to read or write.
 See Also
   TJvCustomAppStore.ReadList, TJvCustomAppStore.WriteList
+----------------------------------------------------------------------------------------------------
+@@TAppStorePropTranslateEvent
+<TITLE TAppStorePropTranslateEvent type>
+<COMBINE TJvCustomAppStore.OnTranslatePropertyName>
+----------------------------------------------------------------------------------------------------
+@@TJvAppStore
+<TITLEIMG TJvAppStore>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvAppStoreOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvAppStoreOptionsClass
+<TITLE TJvAppStoreOptionsClass type>
+Summary
+  Defines the metaclass for TJvCustomAppStoreOptions.
+Description
+  TJvAppStoreOptionsClass is the metaclass for TJvCustomAppStoreOptions. Its value is the class reference for
+  TJvCustomAppStoreOptions or for one of its descendants.
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStore
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStore.AppStore
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStore.GetDisplayName
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is a protected member, you don't have to describe these
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStore.GetOwnerStore
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStore.OwnerStore
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStore.RootPath
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStore.SetAppStore
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStore.SetRootPath
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStores
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStores.Add
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  RootPath - Description for this parameter
+  AppStore - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStores.CheckUniqueBase
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  APath       - Description for this parameter
+  IgnoreIndex - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStores.Delete@Integer
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStores.Delete@string@Boolean
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  RootPath        - Description for this parameter
+  IncludeSubPaths - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStores.Delete@TJvCustomAppStore
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  AppStore - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStores.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  I - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStores.MatchFor
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  APath       - Description for this parameter
+  IgnoreIndex - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStores.RootOptionsChanged
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppSubStores.RootStorage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStore
 Summary
@@ -142,6 +372,32 @@ Parameters
 See Also
   DeleteSubTree
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.GetCharName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ch - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.GetIntName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStore.GetStoredValues
 Summary
   Retrieves a list of values and folders in the storage.
@@ -188,6 +444,20 @@ Parameters
 See Also
   IsFolder, ValueStored
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.OnTranslatePropertyName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender   - Description for this parameter
+  Instance - Description for this parameter
+  Name     - Description for this parameter
+  Reading  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStore.Path
 Summary
   Specifies the current path.
@@ -200,6 +470,32 @@ Description
   Note that this path is relative to the absolute storage root specified by the Root property.
 See Also
   Root
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.PathExists
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Path - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.PathExistsInt
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Path - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStore.ResolvePath
 Summary
@@ -241,6 +537,34 @@ Parameters
 See Also
   WriteBinary, ReadDateTime, ReadFloat, ReadInteger, ReadList, ReadString, ReadStringList
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.ReadBoolean
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Path    - Description for this parameter
+  Default - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.ReadBooleanInt
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Path    - Description for this parameter
+  Default - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStore.ReadDateTime
 Summary
   Reads a TDateTime value.
@@ -252,6 +576,34 @@ Parameters
   Default - Value to return if the specified path does not exist.
 See Also
   WriteDateTime, ReadBinary, ReadFloat, ReadInteger, ReadList, ReadString, ReadStringList
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.ReadEnumeration
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Path     - Description for this parameter
+  TypeInfo - Description for this parameter
+  Default  - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.ReadEnumerationInt
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Path     - Description for this parameter
+  TypeInfo - Description for this parameter
+  Default  - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStore.ReadFloat
 Summary
@@ -295,6 +647,48 @@ Parameters
 See Also
   WriteList, ReadBinary, ReadDateTime, ReadFloat, ReadInteger, ReadString, ReadStringList
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.ReadPersistent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Path       - Description for this parameter
+  PersObj    - Description for this parameter
+  Recursive  - Description for this parameter
+  ClearFirst - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.ReadSet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Path      - Description for this parameter
+  ATypeInfo - Description for this parameter
+  Default   - Description for this parameter
+  Value     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.ReadSetInt
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Path      - Description for this parameter
+  ATypeInfo - Description for this parameter
+  Default   - Description for this parameter
+  Value     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStore.ReadString
 Summary
   Reads a string value.
@@ -337,6 +731,39 @@ Description
 See Also
   Path
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.StoreOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.SubStores
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.TranslatePropertyName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Instance - Description for this parameter
+  AName    - Description for this parameter
+  Reading  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStore.ValueStored
 Summary
   Determines if the specified path is a value.
@@ -361,6 +788,30 @@ Parameters
 See Also
   ReadBinary, WriteDateTime, WriteFloat, WriteInteger, WriteList, WriteString, WriteStringList
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.WriteBoolean
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Path  - Description for this parameter
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.WriteBooleanInt
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Path  - Description for this parameter
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStore.WriteDateTime
 Summary
   Stores a date and time value.
@@ -371,6 +822,32 @@ Parameters
   Value - Value to store.
 See Also
   ReadDateTime, WriteBinary, WriteFloat, WriteInteger, WriteList, WriteString, WriteStringList
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.WriteEnumeration
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Path     - Description for this parameter
+  TypeInfo - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.WriteEnumerationInt
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Path     - Description for this parameter
+  TypeInfo - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStore.WriteFloat
 Summary
@@ -417,6 +894,46 @@ Parameters
 See Also
   ReadList, WriteBinary, WriteDateTime, WriteFloat, WriteInteger, WriteString, WriteStringList
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.WritePersistent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Path             - Description for this parameter
+  PersObj          - Description for this parameter
+  Recursive        - Description for this parameter
+  IgnoreProperties - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.WriteSet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Path      - Description for this parameter
+  ATypeInfo - Description for this parameter
+  Value     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStore.WriteSetInt
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Path      - Description for this parameter
+  ATypeInfo - Description for this parameter
+  Value     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStore.WriteString
 Summary
   Stores a string value.
@@ -440,3 +957,271 @@ Parameters
   SL   - \String list to store.
 See Also
   ReadStringList, WriteBinary, WriteDateTime, WriteFloat, WriteInteger, WriteList, WriteString
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.BooleanAsString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.BooleanStringFalseValues
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.BooleanStringTrueValues
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.DateTimeAsString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.DefaultFalseString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.DefaultIfReadConvertError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.DefaultIfValueNotExists
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.DefaultTrueString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.EnumerationAsString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.FloatAsString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.IsValueFalseString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.IsValueListString
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  AValue - Description for this parameter
+  AList  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.IsValueTrueString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.SetAsString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.SetBooleanAsString
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.SetBooleanStringFalseValues
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.SetBooleanStringTrueValues
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.SetDateTimeAsStr
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.SetDefaultIfReadConvertError
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.SetDefaultIfValueNotExists
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.SetEnumAsStr
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.SetFloatAsStr
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.SetIntAsStr
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.SetSetAsStr
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomAppStoreOptions.TypedIntegerAsString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references

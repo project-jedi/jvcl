@@ -44,11 +44,11 @@ Description
   Add adds a new alarm to the component. To add an alarm you need to provide a name (the alarm's
   ID), a date/time when the alarm should fire and the kind of alarm (default's to one-shot).
 Parameters
-  Name -  Name of the alarm. The name is the only way you can identify an alarm during an OnAlarm
-          event.
-  Time -  Date and time at which the alarm should go off.
-  Kind -  The kind of alarm to be added. Kind will default to tkOneShot, meaning that the alarm will
-          fire only once and at the specified time.
+  AName -  Name of the alarm. The name is the only way you can identify an alarm during an OnAlarm
+           event.
+  ATime -  Date and time at which the alarm should go off.
+  AKind -  The kind of alarm to be added. Kind will default to tkOneShot, meaning that the alarm
+           will fire only once and at the specified time.
 See Also
   Alarms, Delete, OnAlarm, TJvTriggerKind
 ----------------------------------------------------------------------------------------------------
@@ -101,8 +101,6 @@ See Also
   Active
 ----------------------------------------------------------------------------------------------------
 @@TJvAlarmItem
-JVCLInfo
-  GROUP=TJvAlarms
 Summary
   Represents a single alarm event.
 Description
@@ -131,27 +129,3 @@ Description
   Use Time to specify the date and time at which the alarm is to be triggered.
 See Also
   Kind, Name 
-----------------------------------------------------------------------------------------------------
-@@TJvTriggerKind
-JVCLInfo
-  GROUP=TJvAlarms
-Summary
-  Alarm kind.
-Description
-  The TJvTriggerKind type are the kind of alarms that can be added to the TJvAlarms.
-@@TJvTriggerKind.tkOneShot
-  The alarm is a one shot, ie. fires only once at the specified time.
-@@TJvTriggerKind.tkEachSecond
-  The alarm will fire at the specified time and each second after that.
-@@TJvTriggerKind.tkEachMinute
-  The alarm will fire at the specified time and each minute after that.
-@@TJvTriggerKind.tkEachHour
-  The alarm will fire at the specified time and each hour after that.
-@@TJvTriggerKind.tkEachDay
-  The alarm will fire at the specified time and each day after that.
-@@TJvTriggerKind.tkEachMonth
-  The alarm will fire at the specified time and each month after that.
-@@TJvTriggerKind.tkEachYear
-  The alarm will fire at the specified time and each year after that.
-----------------------------------------------------------------------------------------------------
-

@@ -108,7 +108,7 @@ Description
   LastUserAct contains the timestamp of the last user activity. This can be the last time a keyboard
   or mouse message was detected or the last time the storage was accessed.
 ----------------------------------------------------------------------------------------------------
-@@TJvAppINIStore
+@@TJvAppIniStore
 Summary
   Abstract base class for application data storage in INI-file format.
 Description
@@ -126,7 +126,16 @@ Description
 
   All the abstract access methods are implemented to convert from/to one of the 4 new methods.
 ----------------------------------------------------------------------------------------------------
-@@TJvAppINIStore.ReadValue
+@@TJvAppIniStore.DefaultSection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvAppIniStore.ReadValue
 Summary
   Retrieves a value.
 Description
@@ -137,7 +146,7 @@ Parameters
 See Also
   RemoveValue, WriteValue
 ----------------------------------------------------------------------------------------------------
-@@TJvAppINIStore.RemoveValue
+@@TJvAppIniStore.RemoveValue
 Summary
   Deletes a value.
 Description
@@ -148,7 +157,7 @@ Parameters
 See Also
   ReadValue, WriteValue
 ----------------------------------------------------------------------------------------------------
-@@TJvAppINIStore.ValueExists
+@@TJvAppIniStore.ValueExists
 Summary
   Determines if a value exists.
 Description
@@ -158,7 +167,7 @@ Parameters
   Section - Section of the value to check.
   Key     - Key of the value to check.
 ----------------------------------------------------------------------------------------------------
-@@TJvAppINIStore.WriteValue
+@@TJvAppIniStore.WriteValue
 Summary
   Stores a value.
 Description
