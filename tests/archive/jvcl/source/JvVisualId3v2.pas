@@ -32,8 +32,8 @@ interface
 
 uses
   Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls,
-  Dialogs, ShellApi, ComCtrls, StdCtrls, Menus, ExtDlgs,
-  JvId3v2, JVCLVer;
+  Dialogs, ShellAPI, ComCtrls, StdCtrls, Menus, ExtDlgs,
+  JvId3v2, JvID3v2Base, JVCLVer;
 
 type
   TJvPInformation = class(TPersistent)
@@ -460,6 +460,9 @@ type
   end;
 
 implementation
+
+uses
+  JvID3v2Types, JvxRConst;
 
 //=== TJvVisualId3v2 =========================================================
 
@@ -1242,9 +1245,9 @@ begin
         1:
           SetIt(Pictures.Band, Infos.Band);
         2:
-          SetIt(Pictures.BandLogo, Infos.BandLogo);
+          SetIt(Pictures.BandLogotype, Infos.BandLogotype);
         3:
-          SetIt(Pictures.ColouredFish, Infos.ColouredFish);
+          SetIt(Pictures.BrightColouredFish, Infos.BrightColouredFish);
         4:
           SetIt(Pictures.Composer, Infos.Composer);
         5:
@@ -1264,19 +1267,19 @@ begin
         12:
           SetIt(Pictures.LeadArtist, Infos.LeadArtist);
         13:
-          SetIt(Pictures.Leaflet, Infos.Leaflet);
+          SetIt(Pictures.LeafletPage, Infos.LeafletPage);
         14:
           SetIt(Pictures.Lyricist, Infos.Lyricist);
         15:
           SetIt(Pictures.Media, Infos.Media);
         16:
-          SetIt(Pictures.MovieCapture, Infos.MovieCapture);
+          SetIt(Pictures.MovieVideoScreenCapture, Infos.MovieVideoScreenCapture);
         17:
           SetIt(Pictures.Other, Infos.Other);
         18:
-          SetIt(Pictures.OtherIcon, Infos.OtherIcon);
+          SetIt(Pictures.OtherFileIcon, Infos.OtherFileIcon);
         19:
-          SetIt(Pictures.PublisherLogo, Infos.PublisherLogo);
+          SetIt(Pictures.PublisherLogotype, Infos.PublisherLogotype);
         20:
           SetIt(Pictures.RecordingLocation, Infos.RecordingLocation);
       end;
@@ -1290,11 +1293,13 @@ begin
     Beep;
     Exit;
   end;
+
   with TSavePictureDialog.Create(Self) do
-  begin
+  try
     if Execute then
       with FImagePopup.PopupComponent as TImage do
         Picture.SaveToFile(FileName);
+  finally
     Free;
   end;
 end;
@@ -1303,7 +1308,7 @@ procedure TJvVisualId3v2.SetFileName(const Value: TFileName);
 var
   I: Integer;
 
-  function MediaTypeToStr(Value: TJvID3MediaType): string;
+  (*function MediaTypeToStr(Value: TJvID3MediaType): string;
   begin
     case Value of
       mtUNKNOWN:
@@ -1467,7 +1472,7 @@ var
       ftPCM:
         Result := 'Pulse Code Modulated audio';
     end;
-  end;
+  end;*)
 
   procedure SetBoolean(FLabel: TLabel; Value: Boolean);
   begin
@@ -1507,11 +1512,23 @@ begin
   //General page
   FFileName.Caption := ExtractFileName(Value);
   FTagSize.Caption := IntToStr(FId3v2.TagSize) + ' Byte(s)';
-  FTagVersion.Caption := Format('%2.2F', [FId3v2.Version]);
-  SetBoolean(FUnsynchro, FId3v2.Unsynchronisation);
-  SetBoolean(FExperimental, FId3v2.Experimental);
-  SetBoolean(FExtended, FId3v2.ExtendedHeader);
-  SetBoolean(FPresent, FId3v2.TagPresent);
+  case FID3v2.Version of
+    ive2_2AndLower:
+      FTagVersion.Caption := '<2.3';
+    ive2_3:
+      FTagVersion.Caption := '2.3';
+    ive2_4:
+      FTagVersion.Caption := '2.4';
+    ive2_5AndHigher:
+      FTagVersion.Caption := '>2.4';
+  else
+    ID3Error(SID3UnknownVersion, Self);
+  end;
+
+  SetBoolean(FUnsynchro, hfUnsynchronisation in FId3v2.Header.Flags);
+  SetBoolean(FExperimental, hfExtendedHeader in FId3v2.Header.Flags);
+  SetBoolean(FExtended, hfExperimentalIndicator in FId3v2.Header.Flags);
+  SetBoolean(FPresent, FId3v2.Header.HasTag);
 
   //Photos
   FPhotoTypes.Items.Clear;
@@ -1521,8 +1538,8 @@ begin
   begin
     AddPhoto(Artist, 'Artist');
     AddPhoto(Band, 'Band');
-    AddPhoto(BandLogo, 'Band Logo');
-    AddPhoto(ColouredFish, 'Coloured Fish');
+    AddPhoto(BandLogotype, 'Band Logo');
+    AddPhoto(BrightColouredFish, 'Coloured Fish');
     AddPhoto(Composer, 'Composer');
     AddPhoto(Conductor, 'Conductor');
     AddPhoto(CoverBack, 'Cover Back');
@@ -1532,13 +1549,13 @@ begin
     AddPhoto(FileIcon, 'File Icon');
     AddPhoto(Illustration, 'Illustration');
     AddPhoto(LeadArtist, 'Lead Artist');
-    AddPhoto(Leaflet, 'Leaflet');
+    AddPhoto(LeafletPage, 'Leaflet');
     AddPhoto(Lyricist, 'Lyricist');
     AddPhoto(Media, 'Media');
-    AddPhoto(MovieCapture, 'Movie Capture');
+    AddPhoto(MovieVideoScreenCapture, 'Movie Capture');
     AddPhoto(Other, 'Other');
-    AddPhoto(OtherIcon, 'Other Icon');
-    AddPhoto(PublisherLogo, 'Publisher Logo');
+    AddPhoto(OtherFileIcon, 'Other Icon');
+    AddPhoto(PublisherLogotype, 'Publisher Logo');
     AddPhoto(RecordingLocation, 'Recording Location');
   end;
   if FPhototypes.Items.Count > 0 then
@@ -1550,20 +1567,20 @@ begin
 
   //Urls
   SetUrl(FCommercial, FId3v2.Web.CommercialInfo);
-  SetUrl(FCopyright, FId3v2.Web.LegalInfo);
-  SetUrl(FAudioFile, FId3v2.Web.OfficialAudio);
-  SetUrl(FArtistPage, FId3v2.Web.OfficialArtist);
-  SetUrl(FAudioSource, FId3v2.Web.OfficialAudioSource);
-  SetUrl(FRadioStation, FId3v2.Web.InternetRadioStation);
+  SetUrl(FCopyright, FId3v2.Web.Copyright);
+  SetUrl(FAudioFile, FId3v2.Web.AudioFile);
+  SetUrl(FArtistPage, FId3v2.Web.Artist);
+  SetUrl(FAudioSource, FId3v2.Web.AudioSource);
+  SetUrl(FRadioStation, FId3v2.Web.RadioPage);
   SetUrl(FPayment, FId3v2.Web.Payment);
-  SetUrl(FPublishers, FId3v2.Web.Publishers);
+  SetUrl(FPublishers, FId3v2.Web.Publisher);
   FUserD.Items.Clear;
   for I := 0 to FId3v2.UserDefinedWeb.ItemCount - 1 do
   begin
     FId3v2.UserDefinedWeb.ItemIndex := I;
     FUserD.Items.Add(FId3v2.UserDefinedWeb.URL);
   end;
-  if FUserD.items.Count > 0 then
+  if FUserD.Items.Count > 0 then
     FUserD.ItemIndex := 0;
 
   //Involved
@@ -1585,57 +1602,57 @@ begin
   FSubTitle.Caption := FId3v2.Texts.SubTitle;
   FBand.Caption := FId3v2.Texts.Band;
   FConductor.Caption := FId3v2.Texts.Conductor;
-  FRemixed.Caption := FId3v2.Texts.ModifiedBy;
-  FArtists.Text := FId3v2.Texts.Performers.Text;
+  FRemixed.Caption := FId3v2.Texts.MixArtist;
+  FArtists.Text := FId3v2.Texts.OrigArtist.Text;
   if FArtists.Items.Count > 0 then
     FArtists.ItemIndex := 0;
   FPublishersLst.Text := FId3v2.Texts.Composer.Text;
   if FPublishersLst.Items.Count > 0 then
     FPublishersLst.ItemIndex := 0;
-  FLanguages.Text := FId3v2.Texts.Languages.Text;
+  FLanguages.Text := FId3v2.Texts.Language.Text;
   if FLanguages.Items.Count > 0 then
     FLanguages.ItemIndex := 0;
-  FLyricists.Text := FId3v2.Texts.Lyricists.Text;
+  FLyricists.Text := FId3v2.Texts.Lyricist.Text;
   if FLyricists.Items.Count > 0 then
     FLyricists.ItemIndex := 0;
 
   //Text part 2
-  FContent.Caption := FId3v2.Texts.Content;
+  FContent.Caption := FId3v2.Texts.ContentType;
   FAlbum.Caption := FId3v2.Texts.Album;
-  FPart.Caption := FId3v2.Texts.PartOf;
-  FTrack.Caption := FId3v2.Texts.TrackNumber;
+  FPart.Caption := FId3v2.Texts.PartInSet;
+  FTrack.Caption := FId3v2.Texts.TrackNum;
   FISRC.Caption := FId3v2.Texts.ISRC;
-  FYear.Caption := FId3v2.Texts.Year;
+  FYear.Caption := IntToStr(FId3v2.Texts.Year);
   FDate.Caption := FId3v2.Texts.Date;
   FTime.Caption := FId3v2.Texts.Time;
-  FRecordedAt.Caption := FId3v2.Texts.RecordingDate;
-  FMediaType.Caption := MediaTypeToStr(FId3v2.Texts.MediaType);
+  FRecordedAt.Caption := FId3v2.Texts.RecordingDates;
+  FMediaType.Caption := FId3v2.Texts.MediaType;
 
   //Text part 3
   FBPM.Caption := IntToStr(FId3v2.Texts.BPM);
   FCopyrightTxt.Caption := FId3v2.Texts.Copyright;
   FPublisher.Caption := FId3v2.Texts.Publisher;
   FEncoded.Caption := FId3v2.Texts.EncodedBy;
-  FEncoder.Caption := FId3v2.Texts.EncodingSoftware;
-  FOFileName.Caption := FId3v2.Texts.OriginalFileName;
-  FLength.Caption := FId3v2.Texts.Length;
+  FEncoder.Caption := FId3v2.Texts.EncoderSettings;
+  FOFileName.Caption := FId3v2.Texts.OrigFileName;
+  FLength.Caption := IntToStr(FId3v2.Texts.SongLen);
   FSize.Caption := IntToStr(FId3v2.Texts.Size) + ' Byte(s)';
   FDelay.Caption := IntToStr(FId3v2.Texts.PlaylistDelay) + ' millisecond(s)';
   FInitialKey.Caption := FId3v2.Texts.InitialKey;
 
   //Text part 4
-  FOAlbum.Caption := FId3v2.Texts.OriginalTitle;
-  FOArtists.Text := FId3v2.Texts.OriginalArtists.Text;
+  FOAlbum.Caption := FId3v2.Texts.OrigAlbum;
+  FOArtists.Text := FId3v2.Texts.OrigArtist.Text;
   if FOArtists.Items.Count > 0 then
     FOArtists.ItemIndex := 0;
-  FOLyricists.Text := FId3v2.Texts.OriginalLyricists.Text;
+  FOLyricists.Text := FId3v2.Texts.OrigLyricist.Text;
   if FOLyricists.Items.Count > 0 then
     FOLyricists.ItemIndex := 0;
-  FOYear.Caption := FId3v2.Texts.OriginalReleaseYear;
+  FOYear.Caption := IntToStr(FId3v2.Texts.OrigYear);
   FFileOwner.Caption := FId3v2.Texts.FileOwner;
-  FFileType.Caption := FileTypeToStr(FId3v2.Texts.FileType);
-  FRadioName.Caption := FId3v2.Texts.InternetRadioName;
-  FRadioOwner.Caption := FId3v2.Texts.InternetRadioOwner;
+  FFileType.Caption := FId3v2.Texts.FileType;
+  FRadioName.Caption := FId3v2.Texts.NetRadioStation;
+  FRadioOwner.Caption := FId3v2.Texts.NetRadioOwner;
 
   FUserTexts.Clear;
   for I := 0 to FId3v2.UserDefinedText.ItemCount - 1 do
@@ -1649,7 +1666,7 @@ begin
   //Popularimeter
   FCounter.Caption := IntToStr(FId3v2.Popularimeter.Counter);
   FRating.Caption := IntToStr(FId3v2.Popularimeter.Rating div 255) + '%';
-  FUserMail.Caption := FId3v2.Popularimeter.UserEmail;
+  FUserMail.Caption := FId3v2.Popularimeter.EmailAddress;
 end;
 
 procedure TJvVisualId3v2.StretchImage(Sender: TObject);
