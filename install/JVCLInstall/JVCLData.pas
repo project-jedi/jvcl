@@ -504,15 +504,34 @@ begin
   if TargetConfig.InstalledJVCLVersion < 3 then
     TargetConfig.DeinstallJVCL(nil);
 
-  AddPaths(TargetConfig.Target.BrowsingPaths, True, ExtractFileDir(JVCLDir),
+ // remove old
+  AddPaths(TargetConfig.Target.BrowsingPaths, False, ExtractFileDir(JVCLDir),
+    ['jvcl3\common', 'jvcl3\run', 'jvcl3\qcommon', 'jvcl3\qrun']);
+  AddPaths(TargetConfig.Target.SearchPaths, False, ExtractFileDir(JVCLDir),
     ['jvcl3\common', 'jvcl3\run', 'jvcl3\qcommon', 'jvcl3\qrun']);
 
+
+ // common
+  AddPaths(TargetConfig.Target.BrowsingPaths, True, ExtractFileDir(JVCLDir),
+    ['jvcl3\common']);
   AddPaths(TargetConfig.Target.SearchPaths, True, ExtractFileDir(JVCLDir),
     ['jvcl3\common', TargetConfig.Target.InsertDirMacros(TargetConfig.UnitOutDir)]);
 
-  AddPaths(TargetConfig.Target.SearchPaths, {Add:=}TargetConfig.DeveloperInstall,
-    ExtractFileDir(JVCLDir),
-    [{'jvcl3\common',} 'jvcl3\run', 'jvcl3\qcommon', 'jvcl3\qrun']);
+ // add
+  if pkVCL in TargetConfig.InstallMode then
+  begin
+    AddPaths(TargetConfig.Target.BrowsingPaths, True, ExtractFileDir(JVCLDir),
+      ['jvcl3\run']);
+    AddPaths(TargetConfig.Target.SearchPaths, {Add:=}TargetConfig.DeveloperInstall, ExtractFileDir(JVCLDir),
+      ['jvcl3\run']);
+  end;
+  if pkCLX in TargetConfig.InstallMode then
+  begin
+    AddPaths(TargetConfig.Target.BrowsingPaths, True, ExtractFileDir(JVCLDir),
+      ['jvcl3\qcommon', 'jvcl3\qrun']);
+    AddPaths(TargetConfig.Target.SearchPaths, {Add:=}TargetConfig.DeveloperInstall, ExtractFileDir(JVCLDir),
+      ['jvcl3\qcommon', 'jvcl3\qrun']);
+  end;
 
   AllPackages := TProjectGroup.Create(TargetConfig, '');
   try

@@ -145,6 +145,9 @@ resourcestring
     'is required). However, unless noted otherwise, all files, including those without an MPL'#10 +
     'header, are subject to the MPL license.';
 
+var
+  WelcomeText: string;
+  
 { TInstaller }
 
 function TInstaller.InstallerName: WideString;
@@ -186,7 +189,7 @@ end;
 
 procedure TInstaller.Finish;
 begin
-
+  // do nothing
 end;
 
 function TInstaller.GetJclDir: string;
@@ -344,7 +347,25 @@ begin
 end;
 
 function TWelcomePage.Text: WideString;
+var
+  Lines: TStrings;
 begin
+  if WelcomeText = '' then
+  begin
+    Lines := TStringList.Create;
+    try
+      if FileExists(Installer.JVCLDir + '\Install\JVCLInstall\welcome.txt') then
+      begin
+        Lines.LoadFromFile(Installer.JVCLDir + '\Install\JVCLInstall\welcome.txt');
+        WelcomeText := Lines.Text;
+        Delete(WelcomeText, Length(WelcomeText) - 1, 2);
+      end
+      else
+        WelcomeText := SWelcomeText;
+    finally
+      Lines.Free;
+    end;
+  end;
   Result := SWelcomeText;
 end;
 
