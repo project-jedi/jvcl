@@ -621,7 +621,7 @@ end;
 procedure TJvCustomPageList.Loaded;
 begin
   inherited Loaded;
-  if GetPageCount > 0 then
+  if (GetPageCount > 0) and (ActivePage = nil) then
     ActivePage := Pages[0];
 end;
 
@@ -736,9 +736,11 @@ procedure TJvCustomPageList.SetActivePage(Page: TJvCustomPage);
 var
   ParentForm: TCustomForm;
 begin
-  if (csLoading in ComponentState) or ((Page <> nil) and (Page.PageList <> Self)) then
-    Exit;
-  if FActivePage <> Page then
+  if GetPageCount = 0 then
+    FActivePage := nil;
+  if (Page = nil) or (Page.PageList <> Self) then
+    Exit
+  else
   begin
     ParentForm := GetParentForm(Self);
     if (ParentForm <> nil) and (FActivePage <> nil) and
@@ -751,21 +753,18 @@ begin
         Exit;
       end;
     end;
-    if Page <> nil then
+    Page.BringToFront;
+    Page.Visible := True;
+    if (ParentForm <> nil) and (FActivePage <> nil) and (ParentForm.ActiveControl = FActivePage) then
     begin
-      Page.BringToFront;
-      Page.Visible := True;
-      if (ParentForm <> nil) and (FActivePage <> nil) and (ParentForm.ActiveControl = FActivePage) then
-      begin
-        if Page.CanFocus then
-          ParentForm.ActiveControl := Page
-        else
-          ParentForm.ActiveControl := Self;
-      end;
-      Page.Refresh;
+      if Page.CanFocus then
+        ParentForm.ActiveControl := Page
+      else
+        ParentForm.ActiveControl := Self;
     end;
+    Page.Refresh;
 
-    if (Page = nil) or CanChange(FPages.IndexOf(Page)) then
+    if CanChange(FPages.IndexOf(Page)) then
     begin
       if FActivePage <> nil then
         FActivePage.Visible := False;
