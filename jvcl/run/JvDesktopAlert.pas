@@ -66,7 +66,7 @@ type
     property CaptionTo: TColor read FCaptionTo write SetCaptionTo default $00944110;
   end;
 
-  TJvDesktopAlertPosition = (dapTopLeft, dapTopRight, dapBottomLeft, dapBottomRight, dapCustom);
+  TJvDesktopAlertPosition = (dapTopLeft, dapTopRight, dapBottomLeft, dapBottomRight, dapCustom, dapDesktopCenter, dapMainFormCenter, dapOwnerFormCenter, dapActiveFormCenter);
 
   TJvDesktopAlertLocation = class(TJvDesktopAlertChangePersistent)
   private
@@ -461,6 +461,11 @@ var
   ARect: TRect;
   i, X, Y: integer;
   FActiveWindow:HWND;
+  procedure CenterForm(AForm:TForm; ARect:TRect);
+  begin
+    AForm.Top := ARect.Top + ((ARect.Bottom - ARect.Top) - AForm.Height) div 2;
+    AForm.Left := ARect.Left + ((ARect.Right - ARect.Left) - AForm.Width) div 2;
+  end;
 begin
   Assert(FDesktopForm <> nil);
   if FDesktopForm.Visible then FDesktopForm.Close;
@@ -491,6 +496,19 @@ begin
         FDesktopForm.Top := Location.Top;
         FDesktopForm.Left := Location.Left;
       end;
+    dapDesktopCenter,
+    dapMainFormCenter,
+    dapOwnerFormCenter,
+    dapActiveFormCenter:
+    begin
+      CenterForm(FDesktopForm, ARect);
+      if (Location.Position = dapActiveFormCenter) and (Screen.ActiveForm <> nil) then
+        CenterForm(FDesktopForm, Screen.ActiveForm.BoundsRect)
+      else if (Location.Position = dapMainFormCenter) and (Application <> nil) and (Application.MainForm <> nil) then
+        CenterForm(FDesktopForm, Application.MainForm.BoundsRect)
+      else if (Location.Position = dapOwnerFormCenter) and (Owner is TCustomForm) then
+        CenterForm(FDesktopForm, TCustomForm(OWner).BoundsRect);
+    end;
   end;
   FDesktopForm.OnShow := InternalOnShow;
   FDesktopForm.OnClose := InternalOnClose;
