@@ -667,7 +667,7 @@ begin
       DrawFlags := DrawFlags or DFCS_HOT;
     DrawThemedFrameControl(self, Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
   end
-  else if MouseInControl and Enabled or (csDesigning in ComponentState) then
+  else if MouseOver and Enabled or (csDesigning in ComponentState) then
     DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
       FillStyles[Flat] or BF_RECT);
 

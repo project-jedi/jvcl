@@ -35,28 +35,22 @@ unit JvQControlBar;
 interface
 
 uses
+  SysUtils, Classes,
   
   
   Types, QGraphics, QExtCtrls, QControls, QForms, QMenus, QWindows,
   
-  SysUtils, Classes, JvQThemes, JvQExControls, JvQExExtCtrls;
+  JvQThemes, JvQExControls, JvQExExtCtrls;
 
 type
   TPopupNames = (pnHint, pnName);
   TJvControlBar = class(TJvExControlBar, IJvDenySubClassing)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
     FPopupControl: Boolean;
     FPopup: TPopupMenu;
     FPopupNames: TPopupNames;
     FList: TList;
   protected
-    procedure MouseEnter(AControl: TControl); override;
-    procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -68,13 +62,13 @@ type
     function SavePositions: string;
     procedure LoadPositions(const Value: string);
   published
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     
     property PopupControl: Boolean read FPopupControl write FPopupControl default True;
     property PopupNames: TPopupNames read FPopupNames write FPopupNames default pnHint;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
   end;
 
 implementation
@@ -88,8 +82,6 @@ constructor TJvControlBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FList := TList.Create;
-  FHintColor := clInfoBk;
-  FOver := False;
   FPopupControl := True;
   FPopupNames := pnHint;
   ControlStyle := ControlStyle + [csAcceptsControls];
@@ -101,36 +93,6 @@ begin
   FList.Free;
   FPopup.Free;
   inherited Destroy;
-end;
-
-procedure TJvControlBar.MouseEnter(AControl: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    FOver := True;
-    inherited MouseEnter(AControl);
-  end;
-end;
-
-procedure TJvControlBar.MouseLeave(AControl: TControl);
-begin
-  if FOver then
-  begin
-    FOver := False;
-    Application.HintColor := FSaved;
-    inherited MouseLeave(AControl);
-  end;
-end;
-
-procedure TJvControlBar.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 function TJvControlBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;

@@ -78,19 +78,15 @@ type
     FShowAccelChar: Boolean;
     FShowFocus: Boolean;
     FFocused: Boolean;
-    FMouseInControl: Boolean;
     FDragging: Boolean;
     FLeftMargin: Integer;
     FRightMargin: Integer;
     FImageIndex: TImageIndex;
     FImages: TCustomImageList;
     FChangeLink:TChangeLink;
-    FOnParentColorChanged: TNotifyEvent;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
     FFontSave: TFont;
-    FHintColor: TColor;
-    FHintSaved: TColor;
     FAutoOpenURL: Boolean;
     FURL: string;
     FAngle: TJvLabelRotateAngle;
@@ -127,7 +123,6 @@ type
       const KeyText: WideString): Boolean; override;
     procedure EnabledChanged; override;
     procedure VisibleChanged; override;
-    procedure ParentColorChanged; override;
 
     procedure DoDrawCaption(var Rect: TRect; Flags: Word); virtual;
     procedure DoDrawText(var Rect: TRect; Flags: Word); virtual;
@@ -156,7 +151,6 @@ type
     procedure NonProviderChange;
     property Angle: TJvLabelRotateAngle read FAngle write SetAngle default 0;
     property AutoOpenURL: Boolean read FAutoOpenURL write FAutoOpenURL;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
     property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
@@ -165,7 +159,7 @@ type
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Images:TCustomImageList read FImages write SetImages;
-    property ImageIndex:TImageIndex read FImageIndex write SetImageIndex default -1;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     // specifies the offset between the right edge of the image and the left edge of the text (in pixels)
     property Spacing:Integer read FSpacing write SetSpacing default 4;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
@@ -180,12 +174,11 @@ type
     property URL: string read FURL write FURL;
     property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas;
-    property MouseInControl: Boolean read FMouseInControl;
+    property MouseOver;
   end;
 
   TJvLabel = class(TJvCustomLabel)
@@ -249,7 +242,7 @@ function DrawShadowText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect;
 
 implementation
 uses
-  JvQThemes, JvQJCLUtils, JvQJVCLUtils, Math;
+  JvQThemes, JvQJCLUtils, JvQJVCLUtils, QMath;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -305,7 +298,6 @@ begin
   // (rom) needs better font handling
   FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
-  FHintColor := clInfoBk;
   Width := 65;
   Height := 17;
   FAutoSize := True;
@@ -377,13 +369,11 @@ begin
   ColorShadow := FShadowColor;
   if not Enabled then
   begin
-    {$IFDEF VCL}
     if (FShadowSize = 0) and NewStyleControls then
     begin
       PosShadow := spRightBottom;
       SizeShadow := 1;
     end;
-    {$ENDIF VCL}
     Canvas.Font.Color := clGrayText;
     ColorShadow := clBtnHighlight;
   end;
@@ -797,12 +787,12 @@ var
   P: TPoint;
   OldValue: Boolean;
 begin
-  OldValue := FMouseInControl;
+  OldValue := MouseOver;
   GetCursorPos(P);
-  FMouseInControl := Enabled and (FindDragTarget(P, True) = Self) and
+  MouseOver := Enabled and (FindDragTarget(P, True) = Self) and
     IsForegroundTask;
-  if FMouseInControl <> OldValue then
-    if FMouseInControl then
+  if MouseOver <> OldValue then
+    if MouseOver then
       MouseEnter(Self)
     else
       MouseLeave(Self);
@@ -864,28 +854,23 @@ procedure TJvCustomLabel.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FMouseInControl and Enabled and IsForegroundTask then
+  if not MouseOver and Enabled and IsForegroundTask then
   begin
-    FHintSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
     if HotTrack then
     begin
       FFontSave.Assign(Font);
       Font.Assign(FHotTrackFont);
     end;
-    FMouseInControl := True;
     inherited MouseEnter(Control);
   end;
 end;
 
 procedure TJvCustomLabel.MouseLeave(Control: TControl);
 begin
-  if FMouseInControl and Enabled and not FDragging then
+  if MouseOver then
   begin
-    Application.HintColor := FHintSaved;
     if HotTrack then
       Font.Assign(FFontSave);
-    FMouseInControl := False;
     inherited MouseLeave(Control);
   end;
 end;
@@ -956,13 +941,6 @@ begin
   Result := 0;
   if not ProviderActive and (Images <> nil) then
     Result := Images.Width;
-end;
-
-procedure TJvCustomLabel.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvCustomLabel.SetHotTrackFont(const Value: TFont);

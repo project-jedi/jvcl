@@ -49,10 +49,6 @@ uses
 type
   TJvCheckBox = class(TJvExCheckBox)
   private
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOver: Boolean;
-    FOnParentColorChanged: TNotifyEvent;
     FHotTrack: Boolean;
     FHotTrackFont: TFont;
     FFontSave: TFont;
@@ -80,7 +76,6 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
-    procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure EnabledChanged;override;
@@ -108,7 +103,7 @@ type
     // link the enabled state of other controls to the checked and/or enabled state of this control
     property LinkedControls: TJvLinkedControls read GetLinkedControls write SetLinkedControls;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
     property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions
@@ -120,7 +115,7 @@ type
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange;
   end;
 
 implementation
@@ -136,8 +131,6 @@ begin
   FHotTrack := False;
   FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
-  FHintColor := clInfoBk;
-  FOver := False;
   FHotTrackFontOptions := DefaultTrackFontOptions;
   FAutoSize := True;
   FWordWrap := False;
@@ -204,37 +197,25 @@ procedure TJvCheckBox.MouseEnter(AControl: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not FOver then
+  if not MouseOver then
   begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
     if FHotTrack then
     begin
       FFontSave.Assign(Font);
       Font.Assign(FHotTrackFont);
     end;
-    FOver := True;
     inherited MouseEnter(AControl);
   end;
 end;
 
 procedure TJvCheckBox.MouseLeave(AControl: TControl);
 begin
-  if FOver then
+  if MouseOver then
   begin
-    FOver := False;
-    Application.HintColor := FSaved;
     if FHotTrack then
       Font.Assign(FFontSave);
     inherited MouseLeave(AControl);
   end;
-end;
-
-procedure TJvCheckBox.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
 end;
 
 procedure TJvCheckBox.FontChanged;

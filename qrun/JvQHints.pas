@@ -58,15 +58,20 @@ type
     function CreateRegion(Shade: Boolean): HRGN;
     procedure FillRegion(Rgn: HRGN; Shade: Boolean);
   protected
-//    procedure CreateParams(var Params: TCreateParams); override;
+    procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ActivateHint(Rect: TRect; const AHint: widestring); override;
-    procedure ActivateHintData(Rect: TRect; const AHint: widestring;
+    procedure ActivateHint(Rect: TRect;
+      const AHint: widestring); override;
+    procedure ActivateHintData(Rect: TRect;
+      const AHint: widestring;
       AData: Pointer); override;
-    function CalcHintRect(MaxWidth: Integer; const AHint: widestring; AData: Pointer): TRect;override;
+    function CalcHintRect(MaxWidth: Integer;
+      const AHint: widestring;
+      AData: Pointer): TRect;override;
+
   end;
 
 procedure SetHintStyle(Style: THintStyle; ShadowSize: THintShadowSize;
@@ -131,7 +136,7 @@ end;
 procedure StandardHintFont(AFont: TFont);
 begin
   AFont.Name := 'Helvetica';
-  AFont.Height := 13;
+  AFont.Height := 11;
   AFont.Color := clInfoText;
 end;
 
@@ -263,8 +268,11 @@ var
   const
     Flag: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
   begin
+    
+    
     DrawTextW(FImage.Canvas.Handle, PWideChar(Caption), -1, R,
       DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment]);
+    
   end;
 
 begin
@@ -290,7 +298,8 @@ begin
   Canvas.Draw(0, 0, FImage);
 end;
 
-procedure TJvHintWindow.ActivateHint(Rect: TRect; const AHint: widestring);
+procedure TJvHintWindow.ActivateHint(Rect: TRect;
+  const AHint: widestring);
 var
   R: TRect;
   ScreenDC: HDC;
@@ -393,7 +402,8 @@ begin
     SWP_SHOWWINDOW or SWP_NOACTIVATE or SWP_NOSIZE);
 end;
 
-function TJvHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: widestring;
+function TJvHintWindow.CalcHintRect(MaxWidth: Integer;
+  const AHint: widestring;
   AData: Pointer): TRect;
 const
   Flag: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -402,8 +412,11 @@ var
   X, Y, Factor: Double;
 begin
   Result := Rect(0, 0, MaxWidth, 0);
-  DrawTextW(Canvas.Handle, PWideChar(AHint), -1, Result,
+  
+  
+  DrawTextW(Canvas.Handle, PwWideChar(AHint), -1, Result,
     DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or DrawTextBiDiModeFlagsReadingOnly);
+  
   Inc(Result.Right, 8);
   Inc(Result.Bottom, 4);
   FRect := Result;
@@ -444,7 +457,8 @@ begin
   end;
 end;
 
-procedure TJvHintWindow.ActivateHintData(Rect: TRect; const AHint: widestring;
+procedure TJvHintWindow.ActivateHintData(Rect: TRect;
+  const AHint: widestring;
   AData: Pointer);
 begin
   ActivateHint(Rect, AHint);

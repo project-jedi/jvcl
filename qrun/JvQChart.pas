@@ -2351,7 +2351,7 @@ begin
       Options.PenUnit[I];
    FMouseDownHintStrs.Add(str);
 {$ifdef DEBUGINFO_ON}
-   OutputDebugString(PChar('TJvChart.AutoHint: '+str));
+ //  OutputDebugString(PChar('TJvChart.AutoHint: '+str));
 {$endif}
   end;
 end;

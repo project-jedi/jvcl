@@ -653,7 +653,7 @@ begin
       DstRect := Rect(0, 0, FImageWidth, FImageHeight);
     
     
-    Bmp := THackBitmap.Create;
+    Bmp := TBitmap.Create;
     try
       Bmp.Width := SrcRect.Right - SrcRect.Left;
       Bmp.Height := SrcRect.Bottom - SrcRect.Top;

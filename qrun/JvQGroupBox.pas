@@ -49,33 +49,26 @@ type
   TJvGroupBox = class(TJvExGroupBox, IJvDenySubClassing)
   private
     FOnHotKey: TNotifyEvent;
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnParentColorChange: TNotifyEvent;
-    FOver: Boolean;
     FPropagateEnable: Boolean;
     procedure SetPropagateEnable(const Value: Boolean);
   protected
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-    procedure MouseEnter(Control: TControl); override;
-    procedure MouseLeave(Control: TControl); override;
     procedure EnabledChanged; override;
-    procedure ParentColorChanged; override;
     procedure DoHotKey; dynamic;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     property Canvas;
   published
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HintColor;
     {$IFDEF JVCLThemesEnabledD56}
     property ParentBackground default True;
     {$ENDIF JVCLThemesEnabledD56}
     property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable default False;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChange write FOnParentColorChange;
+    property OnParentColorChange;
     property OnHotKey: TNotifyEvent read FOnHotKey write FOnHotKey;
   end;
 
@@ -87,8 +80,6 @@ uses
 constructor TJvGroupBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
-  FOver := False;
   FPropagateEnable := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
   {$IFDEF JVCLThemesEnabledD56}
@@ -191,36 +182,6 @@ begin
     for I := 0 to ControlCount - 1 do
       Controls[I].Enabled := Enabled;
   Invalidate;
-end;
-
-procedure TJvGroupBox.MouseEnter(Control: TControl);
-begin
-  if csDesigning in ComponentState then
-    Exit;
-  if not FOver then
-  begin
-    FSaved := Application.HintColor;
-    Application.HintColor := FHintColor;
-    FOver := True;
-    inherited MouseEnter(Control);
-  end;
-end;
-
-procedure TJvGroupBox.MouseLeave(Control: TControl);
-begin
-  if FOver then
-  begin
-    Application.HintColor := FSaved;
-    FOver := False;
-    inherited MouseLeave(Control);
-  end;
-end;
-
-procedure TJvGroupBox.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChange) then
-    FOnParentColorChange(Self);
 end;
 
 procedure TJvGroupBox.DoHotKey;
