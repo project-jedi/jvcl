@@ -56,12 +56,7 @@ type
     function GetHKeyName: string;
     procedure SetSorted(const Value: Boolean);
   protected
-    {$IFDEF VCL}
     procedure CreateHandle; override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure CreateWidget; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
@@ -141,12 +136,7 @@ type
     function GetHKeyName: string;
     procedure SetSorted(const Value: Boolean);
   protected
-    {$IFDEF VCL}
     procedure CreateHandle; override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure CreateWidget; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
@@ -533,23 +523,12 @@ begin
   inherited Clear;
 end;
 
-{$IFDEF VCL}
 procedure TJvUninstallComboBox.CreateHandle;
 begin
   inherited CreateHandle;
   if ItemIndex < 0 then
     Rebuild;
 end;
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-procedure TJvUninstallComboBox.CreateWidget;
-begin
-  inherited CreateWidget;
-  if ItemIndex < 0 then
-    Rebuild;
-end;
-{$ENDIF VisualCLX}
 
 function TJvUninstallComboBox.GetProperties: TStrings;
 begin
@@ -686,23 +665,12 @@ begin
     ItemIndex := 0;
 end;
 
-{$IFDEF VCL}
 procedure TJvUninstallListBox.CreateHandle;
 begin
   inherited CreateHandle;
   if ItemIndex < 0 then
     Rebuild;
 end;
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-procedure TJvUninstallListBox.CreateWidget;
-begin
-  inherited CreateWidget;
-  if ItemIndex < 0 then
-    Rebuild;
-end;
-{$ENDIF VisualCLX}
 
 function TJvUninstallListBox.GetProperties: TStrings;
 begin
