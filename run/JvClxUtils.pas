@@ -95,13 +95,14 @@ function MakeIntResource(Value: Integer): PChar;
 {$ENDIF LINUX}
 
 type
-  TSysMetrics = (
+  TSysMetrics =
+   (
     SM_CXSCREEN, SM_CYSCREEN,
     SM_CXVSCROLL, SM_CYVSCROLL,
     SM_CXSMICON, SM_CXICON,
     SM_CXBORDER, SM_CYBORDER,
     SM_CXFRAME, SM_CYFRAME
-  );
+   );
 
 // limited implementation of
 
@@ -112,24 +113,24 @@ function TruncateName(const Name: String; Canvas: TCanvas; MaxLen: Integer): str
 
 const
 // constants for Canvas.TextRect
-  AlignLeft = 1 { $1 };
-  AlignRight = 2 { $2 };
-  AlignHCenter = 4 { $4 };
-  AlignTop = 8 { $8 };
-  AlignBottom = 16 { $10 };
-  AlignVCenter = 32 { $20 };
-  AlignCenter = 36 { $24 };
-  SingleLine = 64 { $40 };
-  DontClip = 128 { $80 };
-  ExpandTabs = 256 { $100 };
-  ShowPrefix = 512 { $200 };
-  WordBreak = 1024 { $400 };
-  ModifyString = 2048 { $800 };
-  DontPrint = 4096 { $1000 };
-  ClipPath = 8192 { $2000 };
-  ClipName = 16382 { $4000 };
-  CalcRect =  32764 { $8000 } ;
-  pf24bit = pf32bit;
+  AlignLeft    = 1;      // $0001
+  AlignRight   = 2;      // $0002
+  AlignHCenter = 4;      // $0004
+  AlignTop     = 8;      // $0008
+  AlignBottom  = 16;     // $0010
+  AlignVCenter = 32;     // $0020
+  AlignCenter  = 36;     // $0024
+  SingleLine   = 64;     // $0040
+  DontClip     = 128;    // $0080
+  ExpandTabs   = 256;    // $0100
+  ShowPrefix   = 512;    // $0200
+  WordBreak    = 1024;   // $0400
+  ModifyString = 2048;   // $0800
+  DontPrint    = 4096;   // $1000
+  ClipPath     = 8192;   // $2000
+  ClipName     = 16382;  // $4000
+  CalcRect     = 32764;  // $8000
+  pf24bit      = pf32bit;
 
 {$ENDIF VisualCLX}
 
@@ -139,57 +140,57 @@ const
 {$IFDEF LINUX}
 const
   { ClxDrawText() Format Flags }
-  DT_TOP = 0;          // default
-  DT_LEFT = 0;         // default
-  DT_CENTER = 1;
-  DT_RIGHT = 2;
-  DT_VCENTER = 4;
-  DT_BOTTOM = 8;
-  DT_WORDBREAK = $10;
+  DT_TOP        = 0;  // default
+  DT_LEFT       = 0;  // default
+  DT_CENTER     = 1;
+  DT_RIGHT      = 2;
+  DT_VCENTER    = 4;
+  DT_BOTTOM     = 8;
+  DT_WORDBREAK  = $10;
   DT_SINGLELINE = $20;
   DT_EXPANDTABS = $40;
-//  DT_TABSTOP = $80;
+  //DT_TABSTOP    = $80;
   DT_NOCLIP = $100;
-//  DT_EXTERNALLEADING = $200;
-  DT_CALCRECT = $400;
-  DT_NOPREFIX = $800;
-//  DT_INTERNAL = $1000;
-//  DT_HIDEPREFIX = $00100000;
-//  DT_PREFIXONLY = $00200000;
+  //DT_EXTERNALLEADING = $200;
+  DT_CALCRECT   = $400;
+  DT_NOPREFIX   = $800;
+  //DT_INTERNAL   = $1000;
+  //DT_HIDEPREFIX = $00100000;
+  //DT_PREFIXONLY = $00200000;
 
-//  DT_EDITCONTROL = $2000;
+  //DT_EDITCONTROL = $2000;
   DT_PATH_ELLIPSIS = $4000;
-  DT_END_ELLIPSIS = $8000;
+  DT_END_ELLIPSIS  = $8000;
   DT_ELLIPSIS = DT_END_ELLIPSIS;
   DT_MODIFYSTRING = $10000;
 //  DT_RTLREADING = $20000;
 //  DT_WORD_ELLIPSIS = $40000;
 
   { ClxExtTextOut() Format Flags }
-  ETO_OPAQUE = 2;
-  ETO_CLIPPED = 4;
-//  ETO_GLYPH_INDEX = $10;
+  ETO_OPAQUE     = 2;
+  ETO_CLIPPED    = 4;
+  //ETO_GLYPH_INDEX = $10;
   ETO_RTLREADING = $80;  // ignored
-//  ETO_NUMERICSLOCAL = $400;
-//  ETO_NUMERICSLATIN = $800;
-//  ETO_IGNORELANGUAGE = $1000;
-//  ETO_PDY = $2000;
+  //ETO_NUMERICSLOCAL  = $400;
+  //ETO_NUMERICSLATIN  = $800;
+  //ETO_IGNORELANGUAGE = $1000;
+  //ETO_PDY = $2000;
 
   { ShowWindow() Commands }
-  SW_HIDE = 0;
-  SW_SHOWNORMAL = 1;
-  SW_NORMAL = 1;
-  SW_SHOWMINIMIZED = 2;
-  SW_SHOWMAXIMIZED = 3;
-  SW_MAXIMIZE = 3;
-  SW_SHOWNOACTIVATE = 4;
-  SW_SHOW = 5;
-  SW_MINIMIZE = 6;
+  SW_HIDE            = 0;
+  SW_SHOWNORMAL      = 1;
+  SW_NORMAL          = 1;
+  SW_SHOWMINIMIZED   = 2;
+  SW_SHOWMAXIMIZED   = 3;
+  SW_MAXIMIZE        = 3;
+  SW_SHOWNOACTIVATE  = 4;
+  SW_SHOW            = 5;
+  SW_MINIMIZE        = 6;
   SW_SHOWMINNOACTIVE = 7;
-  SW_SHOWNA = 8;
-  SW_RESTORE = 9;
-  SW_SHOWDEFAULT = 10;
-  SW_MAX = 10;
+  SW_SHOWNA          = 8;
+  SW_RESTORE         = 9;
+  SW_SHOWDEFAULT     = 10;
+  SW_MAX             = 10;
 {$ENDIF LINUX}
 
 
@@ -198,16 +199,17 @@ function ClxDrawText(Canvas: TCanvas; var Caption: string; var R: TRect;
 function ClxDrawTextW(Canvas: TCanvas; var Caption: WideString; var R: TRect;
   Flags: Integer): Integer;
 
-function ClxExtTextOut(Canvas: TCanvas; X, Y: Integer; Flags: Integer; Rect: PRect;
-  const Text: String; lpDx: Pointer): Boolean;
+function ClxExtTextOut(Canvas: TCanvas; X, Y: Integer; Flags: Integer;
+  Rect: PRect; const Text: string; lpDx: Pointer): Boolean;
 function ClxExtTextOutW(Canvas: TCanvas; X, Y: Integer; Flags: Integer;
   Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean;
 
 implementation
 
 {$IFDEF VisualCLX}
+
 var
-  SysColorPalette: TPalette;
+  SysColorPalette: TPalette = nil;
 
 function GetSysColor(Color: Integer): TColorRef;
 begin
@@ -248,9 +250,11 @@ begin
   W.rcNormalPosition.Bottom := R.Left;
   if QWidget_isMinimized(Handle) then
     W.showCmd := SW_SHOWMINIMIZED
-  else if QWidget_isMaximized(Handle) then
+  else
+  if QWidget_isMaximized(Handle) then
     W.showCmd := SW_SHOWMAXIMIZED
-  else if not QWidget_isVisible(Handle) then
+  else
+  if not QWidget_isVisible(Handle) then
     W.showCmd := SW_HIDE
   else
     W.showCmd := SW_SHOWNORMAL;
@@ -284,20 +288,21 @@ begin
 end;
 
 // limited implementation of
+
 function GetSystemMetrics(PropItem: TSysMetrics): Integer;
 var
-  size: TSize;
+  Size: TSize;
 begin
   case PropItem of
     SM_CXVSCROLL:
       begin
-        QStyle_scrollBarExtent(QApplication_style, @size);
-        Result := size.cx;
+        QStyle_scrollBarExtent(QApplication_style, @Size);
+        Result := Size.cx;
       end;
     SM_CYVSCROLL:
       begin
-        QStyle_scrollBarExtent(QApplication_style, @size);
-        Result := size.cy;
+        QStyle_scrollBarExtent(QApplication_style, @Size);
+        Result := Size.cy;
       end;
     SM_CXSMICON:
       Result := 16;
@@ -365,8 +370,8 @@ const
 
 function TruncatePath(const FilePath: string; Canvas: TCanvas; MaxLen: Integer): string;
 var
-  Paths: TStrings;
-  k, i, start: Integer;
+  Paths: TStringList;
+  K, I, Start: Integer;
   CurPath: string;
 begin
   if Canvas.TextWidth(FilePath) <= MaxLen then
@@ -376,27 +381,27 @@ begin
     Paths := TStringList.Create;
     try
       Paths.Delimiter := PathDelim;
-      Paths.DelimitedText := FilePath ; // splits the filepath
-      if Length(paths[0]) = 0 then
-        start := 1
+      Paths.DelimitedText := FilePath; // splits the filepath
+      if Length(Paths[0]) = 0 then
+        Start := 1
       else
-        start := 0;
-      for k := start to Paths.Count - 2 do
+        Start := 0;
+      for K := Start to Paths.Count - 2 do
       begin
-        CurPath := Paths[k] ;
+        CurPath := Paths[K];
         if Length(CurPath) > 2 then   // this excludes ~ ..
         begin
-          Paths[k] := cEllipsis; // replace with ellipsis
+          Paths[K] := cEllipsis; // replace with ellipsis
           I := 1;
           while Canvas.TextWidth(Paths.DelimitedText) <= MaxLen do
           begin
-            Paths[k] := Copy(CurPath, I, MaxInt) + cEllipsis;   // add a character
+            Paths[K] := Copy(CurPath, I, MaxInt) + cEllipsis;   // add a character
             Inc(I);
           end;
           if I <> 1 then
           begin
             // remove last added character
-            Paths[k] := Copy(Paths[k], 2, MaxInt);
+            Paths[K] := Copy(Paths[K], 2, MaxInt);
             Result := Paths.DelimitedText ; // something /.../P../bin/file.tst
             Exit; // ready
           end;
@@ -405,8 +410,8 @@ begin
       // not succeeded.
       // replace /.../.../.../<filename> with .../<filename>
       // before starting to minimize filename
-      for k := Paths.count - 2 downto 1 do
-        Paths.Delete(k);
+      for K := Paths.Count - 2 downto 1 do
+        Paths.Delete(K);
       Paths[0] := cEllipsis;
       if Canvas.TextWidth(Paths.DelimitedText) > MaxLen then
       begin
@@ -436,7 +441,7 @@ begin
     Result := Name
   else
   begin
-    Result := cEllipsis ; // replace with ellipsis
+    Result := cEllipsis; // replace with ellipsis
     I := 1;
     while Canvas.TextWidth(Result) <= MaxLen do
     begin
@@ -501,25 +506,29 @@ begin
       Flgs := Flgs or ShowPrefix;
     if Flags and DT_RIGHT <> 0 then
       Flgs := Flgs or AlignRight
-    else if Flags and DT_CENTER <> 0 then
+    else
+    if Flags and DT_CENTER <> 0 then
       Flgs := Flgs or AlignHCenter
     else
       Flgs := Flgs or AlignLeft ; // default
     // vertical alignment
     if Flags and DT_BOTTOM <> 0 then
       Flgs := Flgs or AlignTop
-    else if Flags and DT_VCENTER <> 0 then
+    else
+    if Flags and DT_VCENTER <> 0 then
       Flgs := Flgs or AlignVCenter
     else
       Flgs := Flgs or AlignTop;  // default
 
     if Flags and DT_ELLIPSIS <> 0 then
       Text := TruncateName(Text, Canvas, R.Right - R.Left)
-    else if Flags and DT_PATH_ELLIPSIS <> 0 then
+    else
+    if Flags and DT_PATH_ELLIPSIS <> 0 then
       Text := TruncatePath(Text, Canvas, R.Right - R.Left)
-    else if Flags and DT_CALCRECT <> 0 then
+    else
+    if Flags and DT_CALCRECT <> 0 then
     begin
-      TextExtent(Caption, R, flgs);
+      TextExtent(Caption, R, Flgs);
       Result := R.Bottom - R.Top;
       Exit;
     end;
@@ -532,7 +541,7 @@ begin
 end;
 
 function ClxExtTextOut(Canvas: TCanvas; X, Y: Integer; Flags: Integer; Rect: PRect;
-  const Text: String; lpDx: Pointer): Boolean;
+  const Text: string; lpDx: Pointer): Boolean;
 begin
   {$IFDEF VCL}
   TOpenCanvas(Canvas).Changing;
@@ -547,7 +556,7 @@ end;
 function ClxExtTextOutW(Canvas: TCanvas; X, Y: Integer; Flags: Integer;
   Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean;
 {$IFDEF VisualCLX}
-{ missing feature: horizontal text alignment }
+{ TODO missing feature: horizontal text alignment }
 var
   RecallBrush: TBrush;
   RecallPenPos: TPoint;
@@ -591,7 +600,7 @@ begin
             FillRect(Rect^);
         end
         else
-          if (Brush.Style = bsSolid) then
+          if Brush.Style = bsSolid then
           begin
             RecallBrush := TBrush.Create;
             RecallBrush.Assign(Brush);
@@ -607,7 +616,7 @@ begin
         end
         else
         begin
-         // put each char in it's cell
+         // put each char in its cell
           TextLen := Length(Text);
           if (Flags and ETO_OPAQUE <> 0) and (Rect = nil) then
           begin
@@ -671,10 +680,9 @@ end;
 
 {$IFDEF VisualCLX}
 initialization
-  SysColorPalette := nil;
 
 finalization
   SysColorPalette.Free;
-
 {$ENDIF VisualCLX}
+
 end.

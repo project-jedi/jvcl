@@ -101,10 +101,10 @@ end;
 procedure TJvSpecialImage.ApplyChanges;
 var
   I, J: Integer;
-  Line, Line2: PRGBarray;
+  Line, Line2: PJvRGBArray;
   Dest: TBitmap;
   Val: Integer;
-  Tmp: TRgbTriple;
+  Tmp: TJvRGBTriple;
 begin
   if FWorking or (csLoading in ComponentState) or (csDestroying in ComponentState) then
     Exit;
@@ -120,7 +120,7 @@ begin
 
     if not Dest.Empty then
     begin
-      //Set brightness
+      // Set brightness
       Val := (FBrightness - 100) * 255 div 100;
       if Val > 0 then
       begin
@@ -130,18 +130,18 @@ begin
           for J := 0 to Dest.Width - 1 do
             with Line[J] do
             begin
-              if rgbtBlue + Val > 255 then
-                rgbtBlue := 255
+              if rgbBlue + Val > 255 then
+                rgbBlue := 255
               else
-                rgbtBlue := rgbtBlue + Val;
-              if rgbtGreen + Val > 255 then
-                rgbtGreen := 255
+                rgbBlue := rgbBlue + Val;
+              if rgbGreen + Val > 255 then
+                rgbGreen := 255
               else
-                rgbtGreen := rgbtGreen + Val;
-              if rgbtRed + Val > 255 then
-                rgbtRed := 255
+                rgbGreen := rgbGreen + Val;
+              if rgbRed + Val > 255 then
+                rgbRed := 255
               else
-                rgbtRed := rgbtRed + Val;
+                rgbRed := rgbRed + Val;
             end;
         end;
       end
@@ -154,18 +154,18 @@ begin
           for J := 0 to Dest.Width - 1 do
             with Line[J] do
             begin
-              if rgbtBlue + Val < 0 then
-                rgbtBlue := 0
+              if rgbBlue + Val < 0 then
+                rgbBlue := 0
               else
-                rgbtBlue := rgbtBlue + Val;
-              if rgbtGreen + Val < 0 then
-                rgbtGreen := 0
+                rgbBlue := rgbBlue + Val;
+              if rgbGreen + Val < 0 then
+                rgbGreen := 0
               else
-                rgbtGreen := rgbtGreen + Val;
-              if rgbtRed + Val < 0 then
-                rgbtRed := 0
+                rgbGreen := rgbGreen + Val;
+              if rgbRed + Val < 0 then
+                rgbRed := 0
               else
-                rgbtRed := rgbtRed + Val;
+                rgbRed := rgbRed + Val;
             end;
         end;
       end;
@@ -195,9 +195,9 @@ begin
           for J := 0 to Dest.Width - 1 do
             with Line[J] do
             begin
-              rgbtBlue := not rgbtBlue;
-              rgbtGreen := not rgbtGreen;
-              rgbtRed := not rgbtRed;
+              rgbBlue := not rgbBlue;
+              rgbGreen := not rgbGreen;
+              rgbRed := not rgbRed;
             end;
         end;
       end;

@@ -87,7 +87,7 @@ procedure HideFormCaption(FormHandle: HWND; Hide: Boolean);
 type
   TJvWallpaperStyle = (wpTile, wpCenter, wpStretch);
 
-  // set the background wallpaper (two versions)
+// set the background wallpaper (two versions)
 procedure SetWallpaper(const Path: string); overload;
 procedure SetWallpaper(const Path: string; Style: TJvWallpaperStyle); overload;
 
@@ -893,12 +893,12 @@ end;
 procedure GetRBitmap(var Dest: TBitmap; const Source: TBitmap);
 var
   I, J: Integer;
-  Line: PRGBQuadArray;
+  Line: PJvRGBArray;
 begin
   if not Assigned(Dest) then
     Dest := TBitmap.Create;
   Dest.Assign(Source);
-  Dest.PixelFormat := pf32bit;
+  Dest.PixelFormat := pf24bit;
   for J := Dest.Height - 1 downto 0 do
   begin
     Line := Dest.ScanLine[J];
@@ -914,12 +914,12 @@ end;
 procedure GetBBitmap(var Dest: TBitmap; const Source: TBitmap);
 var
   I, J: Integer;
-  Line: PRGBQuadArray;
+  Line: PJvRGBArray;
 begin
   if not Assigned(Dest) then
     Dest := TBitmap.Create;
   Dest.Assign(Source);
-  Dest.PixelFormat := pf32bit;
+  Dest.PixelFormat := pf24bit;
   for J := Dest.Height - 1 downto 0 do
   begin
     Line := Dest.ScanLine[J];
@@ -935,12 +935,12 @@ end;
 procedure GetGBitmap(var Dest: TBitmap; const Source: TBitmap);
 var
   I, J: Integer;
-  Line: PRGBQuadArray;
+  Line: PJvRGBArray;
 begin
   if not Assigned(Dest) then
     Dest := TBitmap.Create;
   Dest.Assign(Source);
-  Dest.PixelFormat := pf32bit;
+  Dest.PixelFormat := pf24bit;
   for J := Dest.Height - 1 downto 0 do
   begin
     Line := Dest.ScanLine[J];
@@ -964,12 +964,12 @@ end;
 procedure GetHueBitmap(var Dest: TBitmap; const Source: TBitmap);
 var
   I, J, H, S, V: Integer;
-  Line: PRGBQuadArray;
+  Line: PJvRGBArray;
 begin
   if not Assigned(Dest) then
     Dest := TBitmap.Create;
   Dest.Assign(Source);
-  Dest.PixelFormat := pf32bit;
+  Dest.PixelFormat := pf24bit;
   for J := Dest.Height - 1 downto 0 do
   begin
     Line := Dest.ScanLine[J];
@@ -988,12 +988,12 @@ end;
 procedure GetSaturationBitmap(var Dest: TBitmap; const Source: TBitmap);
 var
   I, J, H, S, V: Integer;
-  Line: PRGBQuadArray;
+  Line: PJvRGBArray;
 begin
   if not Assigned(Dest) then
     Dest := TBitmap.Create;
   Dest.Assign(Source);
-  Dest.PixelFormat := pf32bit;
+  Dest.PixelFormat := pf24bit;
   for J := Dest.Height - 1 downto 0 do
   begin
     Line := Dest.ScanLine[J];
@@ -1012,12 +1012,12 @@ end;
 procedure GetValueBitmap(var Dest: TBitmap; const Source: TBitmap);
 var
   I, J, H, S, V: Integer;
-  Line: PRGBQuadArray;
+  Line: PJvRGBArray;
 begin
   if not Assigned(Dest) then
     Dest := TBitmap.Create;
   Dest.Assign(Source);
-  Dest.PixelFormat := pf32bit;
+  Dest.PixelFormat := pf24bit;
   for J := Dest.Height - 1 downto 0 do
   begin
     Line := Dest.ScanLine[J];
@@ -3992,8 +3992,14 @@ begin
         Result := pf4bit;
       8:
         Result := pf8bit;
+      15:
+        Result := pf15bit;
+      16:
+        Result := pf16bit;
       24:
         Result := pf24bit;
+      32:
+        Result := pf32bit;
     else
       Result := pfDevice;
     end;
