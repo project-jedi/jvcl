@@ -1,3 +1,6 @@
+2002-09-12
+- Added Multiline to JvSizeablePanel //MBeck
+
 2002-09-05
 - Added JvPlugin donated by Tim Sullivan
 
