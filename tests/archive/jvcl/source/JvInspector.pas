@@ -3043,7 +3043,7 @@ begin
       cbSize := SizeOf(ScrollInfo);
       fMask := SIF_ALL;
       nMin := 0;
-      nMax := Round((DrawHeight) / ScFactor);
+      nMax := Round((IdxToY(Succ(YToIdx(ImageHeight - ClientHeight))) + ClientHeight) / ScFactor);
       nPage := Round(ClHeight / ScFactor);
       nPos := Round(IdxToY(TopIndex) / ScFactor);
       nTrackPos := 0;
