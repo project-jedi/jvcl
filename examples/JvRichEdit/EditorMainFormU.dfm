@@ -303,7 +303,8 @@ object EditorMainForm: TEditorMainForm
       FontName = 'System'
       Device = fdBoth
       ItemIndex = 0
-      Sorted = False
+      Options = [foWysiWyg]
+      Sorted = True
       TabOrder = 0
       OnChange = FontNameChange
     end
