@@ -55,7 +55,6 @@ JvgTreeView.res \
 JvLED.res \
 JvOutlookBar.res \
 JvPageSetupTitled.res \
-JvPickDate.res \
 JvPluginWiz.res \
 JvRegistryTreeView.res \
 JvScrollMax.res \
@@ -133,7 +132,6 @@ JvgTreeView.res: JvgTreeView.rc
 JvLED.res: JvLED.rc
 JvOutlookBar.res: JvOutlookBar.rc
 JvPageSetupTitled.res: JvPageSetupTitled.rc
-JvPickDate.res: JvPickDate.rc
 JvPluginWiz.res: JvPluginWiz.rc
 JvRegistryTreeView.res: JvRegistryTreeView.rc
 JvScrollMax.res: JvScrollMax.rc

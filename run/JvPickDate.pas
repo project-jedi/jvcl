@@ -157,17 +157,6 @@ uses
   Math, Consts,
   JvThemes, JvConsts, JvResources, JvJCLUtils, JvToolEdit, JvSpeedButton;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvPickDate.Res}
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{$R ../Resources/JvPickDate.Res}
-{$ENDIF UNIX}
-
-const
-  SBtnGlyphs: array [0..3] of PChar =
-    ('JV_PREV2', 'JV_PREV1', 'JV_NEXT1', 'JV_NEXT2');
-
 procedure FontSetDefault(AFont: TFont);
 {$IFDEF VCL}
 var
@@ -193,6 +182,62 @@ begin
       {$ENDIF VisualCLX}
       Style := [];
     end;
+end;
+
+procedure CreateButtonGlyph(Glyph: TBitmap; Idx: Integer);
+type
+  TPointList = array [0..3] of TPoint;
+const
+  PointsLeft: TPointList =
+   ((X: 2; Y: 0), (X: 2; Y: 5), (X: 0; Y: 3), (X: 0; Y: 2));
+  PointsRight: TPointList =
+   ((X: 0; Y: 0), (X: 0; Y: 5), (X: 2; Y: 3), (X: 2; Y: 2));
+var
+  Points: TPointList;
+
+  function OffsetPoints(const Points: TPointList; Offs: Integer): TPointList;
+  var
+    I: Integer;
+  begin
+    Result := Points;
+    for I := Low(TPointList) to High(TPointList) do
+      Inc(Result[I].X, Offs);
+  end;
+
+begin
+  Glyph.Width := 8;
+  Glyph.Height := 6;
+  Glyph.PixelFormat := pf1bit;
+  Glyph.Canvas.Brush.Color := clBtnFace;
+  Glyph.Canvas.FillRect(Rect(0, 0, 8, 6));
+  Glyph.Transparent := True;
+  Glyph.Canvas.Brush.Color := clBtnText;
+  Glyph.Canvas.Pen.Color := clBtnText;
+  case Idx of
+    0:
+      begin
+        Glyph.Canvas.Polygon(PointsLeft);
+        Points := OffsetPoints(PointsLeft, 4);
+        Glyph.Canvas.Polygon(Points);
+      end;
+    1:
+      begin
+        Points := OffsetPoints(PointsLeft, 2);
+        Glyph.Canvas.Polygon(Points);
+      end;
+    2:
+      begin
+        Points := OffsetPoints(PointsRight, 3);
+        Glyph.Canvas.Polygon(Points);
+      end;
+    3:
+      begin
+        Points := OffsetPoints(PointsRight, 1);
+        Glyph.Canvas.Polygon(Points);
+        Points := OffsetPoints(PointsRight, 5);
+        Glyph.Canvas.Polygon(Points);
+      end;
+  end;
 end;
 
 //=== { TJvTimerSpeedButton } ================================================
@@ -923,20 +968,20 @@ begin
 end;
 
 constructor TJvPopupCalendar.Create(AOwner: TComponent);
-{$IFNDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
+var
+  BtnSide: Integer;
+  VertOffset: Integer;
+  HorzOffset: Integer;
+  Control, BackPanel: TWinControl;
+{$ELSE}
 const
   BtnSide = 14;
   VertOffset = -1;
   HorzOffset = 1;
 var
   Control, BackPanel: TWinControl;
-{$ELSE}
-var
-  BtnSide: Integer;
-  VertOffset: Integer;
-  HorzOffset: Integer;
-  Control, BackPanel: TWinControl;
-{$ENDIF !JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
 begin
   inherited Create(AOwner);
   FFourDigitYear := IsFourDigitYear;
@@ -1010,8 +1055,7 @@ begin
   begin
     Parent := Control;
     SetBounds(0 - HorzOffset, VertOffset, BtnSide, BtnSide);
-    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[0]);
-    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[0]);
+    CreateButtonGlyph(Glyph, 0);
     OnClick := PrevYearBtnClick;
     Hint := RsPrevYearHint;
   end;
@@ -1021,8 +1065,7 @@ begin
   begin
     Parent := Control;
     SetBounds(BtnSide - 1 - HorzOffset, VertOffset, BtnSide, BtnSide);
-    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[1]);
-    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[1]);
+    CreateButtonGlyph(Glyph, 1);
     OnClick := PrevMonthBtnClick;
     Hint := RsPrevMonthHint;
   end;
@@ -1044,8 +1087,7 @@ begin
   begin
     Parent := Control;
     SetBounds(Control.Width - 2 * BtnSide + 1 + HorzOffset, VertOffset, BtnSide, BtnSide);
-    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[2]);
-    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[2]);
+    CreateButtonGlyph(Glyph, 2);
     OnClick := NextMonthBtnClick;
     Hint := RsNextMonthHint;
   end;
@@ -1055,8 +1097,7 @@ begin
   begin
     Parent := Control;
     SetBounds(Control.Width - BtnSide + HorzOffset, VertOffset, BtnSide, BtnSide);
-    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[3]);
-    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[3]);
+    CreateButtonGlyph(Glyph, 3);
     OnClick := NextYearBtnClick;
     Hint := RsNextYearHint;
   end;
@@ -1309,8 +1350,7 @@ begin
   begin
     Parent := Control;
     SetBounds(3, 3, 16, 16);
-    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[0]);
-    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[0]);
+    CreateButtonGlyph(Glyph, 0);
     OnClick := PrevYearBtnClick;
     Flat := True;
     Hint := RsPrevYearHint;
@@ -1321,8 +1361,7 @@ begin
   begin
     Parent := Control;
     SetBounds(19, 3, 16, 16);
-    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[1]);
-    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[1]);
+    CreateButtonGlyph(Glyph, 1);
     OnClick := PrevMonthBtnClick;
     Flat := True;
     Hint := RsPrevMonthHint;
@@ -1333,8 +1372,7 @@ begin
   begin
     Parent := Control;
     SetBounds(188, 3, 16, 16);
-    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[2]);
-    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[2]);
+    CreateButtonGlyph(Glyph, 2);
     OnClick := NextMonthBtnClick;
     Flat := True;
     Hint := RsNextMonthHint;
@@ -1345,8 +1383,7 @@ begin
   begin
     Parent := Control;
     SetBounds(204, 3, 16, 16);
-    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[3]);
-    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[3]);
+    CreateButtonGlyph(Glyph, 3);
     OnClick := NextYearBtnClick;
     Flat := True;
     Hint := RsNextYearHint;

@@ -584,9 +584,9 @@ begin
   begin
     FExpanded := Value;
     if FExpanded then
-      FButton.Glyph.LoadFromResourceName(HInstance, 'RASCROLLMAXBTNMINUS')
+      FButton.Glyph.LoadFromResourceName(HInstance, 'JvScrollMaxBandBTNMINUS')
     else
-      FButton.Glyph.LoadFromResourceName(HInstance, 'RASCROLLMAXBTNPLUS');
+      FButton.Glyph.LoadFromResourceName(HInstance, 'JvScrollMaxBandBTNPLUS');
     if FExpanded and Assigned(FOnExpand) then
       FOnExpand(Self);
     if not FExpanded and Assigned(FOnCollapse) then
@@ -1436,8 +1436,8 @@ end;
 
 { (rom) deactivated  can cause problems
 initialization
-  crRAHand := DefineCursor('RAHAND');
-  crRAHandMove := DefineCursor('RAHANDMOVE');
+  crRAHand := DefineCursor('JvHANDCURSOR');
+  crRAHandMove := DefineCursor('JvHANDMOVECURSOR');
 }
 
 {$IFDEF UNITVERSIONING}
