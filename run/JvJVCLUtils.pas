@@ -34,14 +34,14 @@ uses
   RTLConsts, Variants,
   {$ENDIF COMPILER6_UP}
   {$IFDEF MSWINDOWS}
-  Windows, ShellAPI, Registry,
+  Windows, Messages, ShellAPI, Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
   SysUtils, Classes,
   {$IFDEF VCL}
-  Messages, Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus, Dialogs,
+  Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus, Dialogs,
   ComCtrls, ImgList, Grids,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
@@ -563,7 +563,7 @@ function GetDefaultCheckBoxSize: TSize;
 
 function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 // AllocateHWndEx works like Classes.AllocateHWnd but does not use any virtual memory pages
 function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): Windows.HWND;
 // DeallocateHWndEx works like Classes.DeallocateHWnd but does not use any virtual memory pages
@@ -571,7 +571,7 @@ procedure DeallocateHWndEx(Wnd: Windows.HWND);
 
 function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
-{$ENDIF VCL}
+{$ENDIF MSWINDOWS}
 
 {$IFNDEF COMPILER6_UP}
 function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
@@ -5992,7 +5992,7 @@ begin
   Result := Canvas.TextHeight(S);
 end;
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 //=== AllocateHWndEx =========================================================
 
 const
@@ -6041,7 +6041,7 @@ begin
   if AClassName <> '' then
     UtilWindowExClass.lpszClassName := PChar(AClassName);
 
-  ClassRegistered := GetClassInfo(HInstance, UtilWindowExClass.lpszClassName,
+  ClassRegistered := Windows.GetClassInfo(HInstance, UtilWindowExClass.lpszClassName,
      TempClass);
   if not ClassRegistered or (TempClass.lpfnWndProc <> @DefWindowProc) then
   begin
@@ -6049,14 +6049,14 @@ begin
       Windows.UnregisterClass(UtilWindowExClass.lpszClassName, HInstance);
     Windows.RegisterClass(UtilWindowExClass);
   end;
-  Result := CreateWindowEx(WS_EX_TOOLWINDOW, UtilWindowExClass.lpszClassName,
-    '', WS_POPUP, 0, 0, 0, 0, 0, 0, HInstance, nil);
+  Result := Windows.CreateWindowEx(Windows.WS_EX_TOOLWINDOW, UtilWindowExClass.lpszClassName,
+    '', Windows.WS_POPUP, 0, 0, 0, 0, 0, 0, HInstance, nil);
 
   if Assigned(Method) then
   begin
-    SetWindowLong(Result, 0, Longint(TMethod(Method).Code));
-    SetWindowLong(Result, SizeOf(TMethod(Method).Code), Longint(TMethod(Method).Data));
-    SetWindowLong(Result, GWL_WNDPROC, Longint(@StdWndProc));
+    Windows.SetWindowLong(Result, 0, Longint(TMethod(Method).Code));
+    Windows.SetWindowLong(Result, SizeOf(TMethod(Method).Code), Longint(TMethod(Method).Data));
+    Windows.SetWindowLong(Result, GWL_WNDPROC, Longint(@StdWndProc));
   end;
 end;
 
@@ -6082,7 +6082,7 @@ begin
   FreeObjectInstance(ObjectInstance);
   {$ENDIF COMPILER6_UP}
 end;
-{$ENDIF VCL}
+{$ENDIF MSWINDOWS}
 
 {$IFNDEF COMPILER6_UP}
 function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
