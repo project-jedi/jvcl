@@ -59,12 +59,14 @@ type
     FArrowWidth: Integer;
     FDragBarHeight: Integer;
     FDragBarSpace: Integer;
+    FDragBarHint: string;
     procedure SetShowDragBar(const Value: Boolean);
     procedure SetDragCaption(const Value: string);
     procedure SetArrowWidth(const Value: Integer);
     procedure SetEdgeWidth(const Value: Integer);
     procedure SetDragBarHeight(const Value: Integer);
     procedure SetDragBarSpace(const Value: Integer);
+    procedure SetDragBarHint(const Value: string);
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
@@ -73,6 +75,7 @@ type
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default MinArrowWidth;
     property ShowDragBar: Boolean read FShowDragBar write SetShowDragBar default True;
     property DragCaption: string read FDragCaption write SetDragCaption;
+    property DragBarHint: string read FDragBarHint write SetDragBarHint;
     property DragBarHeight: Integer read FDragBarHeight write SetDragBarHeight default MinDragBarHeight;
     property DragBarSpace: Integer read FDragBarSpace write SetDragBarSpace default MinDragBarSpace;
   end;
@@ -120,10 +123,10 @@ type
     procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen postion
     {$IFDEF VCL}
     procedure CreateWnd; override;
-
-    {$ELSE}
-    procedure InitWidget; override;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure InitWidget; override;
+    {$ENDIF VisualCLX}
     procedure SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean); override;
     procedure FontChanged; override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -136,7 +139,7 @@ type
     procedure AdjustSize; override;
     property Flat: Boolean read FFlat write SetFlat default True;
     property Color: TColor read GetColor write SetColor default clBlack;
-    property SeletedColor: TColor read GetColor write SetColor default clBlack;
+    property SelectedColor: TColor read GetColor write SetColor default clBlack;
 
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;
     property Properties: TJvOfficeColorButtonProperties read GetProperties write SetProperties;
@@ -450,7 +453,7 @@ begin
     else
     begin
       if Assigned(FOnDropDown) then
-        FOnDropDown(Self);
+        FOnDropDown(self);
       ShowColorForm;
       FColorFormDropDown := True;
     end
@@ -692,6 +695,11 @@ begin
     AdjustColorForm;
   end
   else
+  if Cmp(PropName, 'DragBarHint') then
+  begin
+    FColorsForm.DragBarHint := Properties.DragBarHint;
+  end
+  else
   if Cmp(PropName, 'DragBarSpace') then
   begin
     FColorsForm.DragBarSpace := Properties.DragBarSpace;
@@ -745,6 +753,7 @@ begin
   FArrowWidth := MinArrowWidth;
   FDragBarHeight := MinDragBarHeight;
   FDragBarSpace := MinDragBarSpace;
+  FDragBarHint := 'Drag to floating';
 end;
 
 procedure TJvOfficeColorButtonProperties.Assign(Source: TPersistent);
@@ -753,12 +762,13 @@ begin
   if Source is TJvOfficeColorButtonProperties then
     with TJvOfficeColorButtonProperties(Source) do
     begin
-      Self.ShowDragBar := ShowDragBar;
-      Self.DragCaption := DragCaption;
-      Self.EdgeWidth := EdgeWidth;
-      Self.ArrowWidth := ArrowWidth;
-      Self.DragBarHeight := DragBarHeight;
-      Self.DragBarSpace := DragBarSpace;
+      Self.FShowDragBar := ShowDragBar;
+      Self.FDragCaption := DragCaption;
+      Self.FEdgeWidth := EdgeWidth;
+      Self.FArrowWidth := ArrowWidth;
+      Self.FDragBarHeight := DragBarHeight;
+      self.FDragBarHint := DragBarHint;
+      Self.FDragBarSpace := DragBarSpace;
     end;
 end;
 
@@ -786,6 +796,15 @@ begin
   begin
     FDragBarSpace := Value;
     Changed('DragBarSpace');
+  end;
+end;
+
+procedure TJvOfficeColorButtonProperties.SetDragBarHint(const Value: string);
+begin
+  if FDragBarHint<>Value then
+  begin
+    FDragBarHint := Value;
+    Changed('DragBarHint');
   end;
 end;
 

@@ -153,7 +153,7 @@ type
     property OnMouseLeave;
     property OnParentColorChange;
     property OnSelectCancel;
-    property OnChange;
+//    property OnChange;  // not supported for listboxes
     property OnVerticalScroll;
     property OnHorizontalScroll;
   end;
