@@ -988,19 +988,20 @@ uses
 const
   Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
     ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
+  {$IFDEF MSWINDOWS}
   RC_OpenCDDrive = 'set cdaudio door open wait';
   RC_CloseCDDrive = 'set cdaudio door closed wait';
   RC_ShellName = 'Shell_TrayWnd';
   RC_DefaultIcon = 'DefaultIcon';
+  {$ENDIF MSWINDOWS}
 
 resourcestring
   // (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
   RsPropertyNotExists  = 'Property "%s" does not exist';
   RsInvalidPropertyType = 'Property "%s" has invalid type';
+  RsPivotLessThanZero = 'JvJCLUtils.MakeYear4Digit: Pivot < 0';
 
-  RsPivotLessThanZero = 'JvFunctions.MakeYear4Digit: Pivot < 0';
-
-// StrToFloatUS uses US '.' as decimal seperator and ',' as thousand separator
+// StrToFloatUS uses US '.' as decimal separator and ',' as thousand separator
 function USToLocalFloatStr(const Text: string): string;
 var i: Integer;
 begin
