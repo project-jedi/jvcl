@@ -33,7 +33,7 @@ requires
   visualclx,
   rtl,
   JvQCoreD7R,
-  DJcl;
+  DJcl70;
 
 contains
   JvQCheckedItemsForm in '..\..\qdesign\JvQCheckedItemsForm.pas' {JvCheckItemsEditor},

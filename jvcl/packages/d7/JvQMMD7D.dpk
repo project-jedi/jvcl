@@ -34,9 +34,13 @@ requires
   rtl,
   designide,
   visualclx,
-  JvQCoreD7R;
+  JvQCoreD7R,
+  DJcl70,
+  JvQSystemD7R,
+  JvQCtrlsD7R;
 
 contains
-  JvQMMReg in '..\..\qdesign\JvQMMReg.pas';
+  JvQMMReg in '..\..\qdesign\JvQMMReg.pas',
+  JvQQtKeyEditorForm in '..\..\qdesign\JvQQtKeyEditorForm.pas' {frmJvQtKeyEditor};
 
 end.

@@ -28,7 +28,7 @@ package JvQCoreD7R;
 requires
   visualclx,
   rtl,
-  DJcl;
+  DJCL70;
 
 contains
   JvQConsts in '..\..\qcommon\JvQConsts.pas',

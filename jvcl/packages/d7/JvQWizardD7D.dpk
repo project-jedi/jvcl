@@ -33,13 +33,11 @@ requires
   rtl,
   designide,
   visualclx,
-  DJcl,
+  DJcl70,
   dclclxstd,
   visualdbclx;
 
 contains
-  JvQWizardReg in '..\..\qdesign\JvQWizardReg.pas',
-  JvQWizardEditorForm in '..\..\qdesign\JvQWizardEditorForm.pas' {JvWizardPageListEditor},
-  JvQWizardAboutInfoForm in '..\..\qdesign\JvQWizardAboutInfoForm.pas' {JvWizardAboutDialog};
+  JvQWizardReg in '..\..\qdesign\JvQWizardReg.pas';
 
 end.
