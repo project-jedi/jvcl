@@ -2779,6 +2779,8 @@ begin
   FShapeWidth := 16;
   FShapeHeight := 16;
   FLabelColor := fclDEFWindowText;
+  Width := 100;
+  Height := 25;
 end;
 
 destructor TJvFullColorLabel.Destroy;
