@@ -132,8 +132,8 @@ type
     property OnCanCollapse: TOnCanCollapse read FOnCanCollapse write FOnCanCollapse;
     property Left stored False;
     property Top stored False;
-    property Width stored False;
-    property Height stored False;
+    property Width;
+    property Height;
     property Color;
     property Font;
     property ParentColor;
@@ -542,7 +542,7 @@ begin
       Canvas.Font := Self.Font;
       // (rom) please check this change
       //FButton.Height := Canvas.TextHeight('W') + 4;
-      FButton.Height := CanvasMaxTextHeight(Canvas)+2;
+      FButton.Height := CanvasMaxTextHeight(Canvas) + 4;
       Invalidate;
     end;
 end;
