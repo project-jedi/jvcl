@@ -50,8 +50,14 @@ type
     btnOK: TButton;
     btnCancel: TButton;
     procedure cbColorChange(Sender: TObject);
+    {$IFDEF VCL}
     procedure cbColorDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure cbColorDrawItem(Sender: TObject; Index: Integer;
+      Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
+    {$ENDIF VisualCLX}
     procedure btnColorClick(Sender: TObject);
     procedure btnColorResize(Sender: TObject);
     procedure rbProviderClick(Sender: TObject);
@@ -290,8 +296,14 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TfrmAddColor.cbColorDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TfrmAddColor.cbColorDrawItem(Sender: TObject; Index: Integer;
+  Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
+{$ENDIF VisualCLX}
 var
   VL: IJvDataConsumerViewList;
   Item: IJvDataItem;
