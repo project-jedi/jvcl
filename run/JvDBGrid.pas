@@ -35,9 +35,9 @@ interface
 
 uses
   Windows,
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
   Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
   StdCtrls, ExtCtrls, Mask, IniFiles, DB, DBGrids, DBCtrls,
   JvAppStorage, JvSecretPanel, JvLabel, JvToolEdit, JvFormPlacement,
@@ -184,7 +184,8 @@ type
     procedure SetSelectColumnsDialogStrings(
       const Value: TJvSelectDialogColumnStrings);
   protected
-    
+    FCurrentDrawRow:integer;
+
     procedure MouseLeave(Control: TControl); override;
     function AcquireFocus: Boolean;
     function CanEditShow: Boolean; override;
@@ -233,7 +234,7 @@ type
     // End Lionel
 {$IFNDEF COMPILER6_UP}
     procedure FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
-    {$ENDIF !COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
     procedure DefineProperties(Filer: TFiler); override;
     procedure DoMinColWidth; virtual;
     procedure DoMaxColWidth; virtual;
@@ -315,7 +316,7 @@ type
     property OnMouseWheelUp;
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True; // WAP.
     // Lionel
-    property AlternateRowColor:TColor read FAlternateRowColor write SetAlternateRowColor default clNone;
+    property AlternateRowColor: TColor read FAlternateRowColor write SetAlternateRowColor default clNone;
     property PostOnEnter: Boolean read FPostOnEnter write FPostOnEnter default False;
     property SelectColumn: TSelectColumn read FSelectColumn write FSelectColumn default scDataBase;
     property SortedField: string read FSortedField write FSortedField;
@@ -329,7 +330,8 @@ type
     property MinColumnWidth: Integer read FMinColumnWidth write SetMinColumnWidth default 0;
     property AutoSizeColumns: Boolean read FAutoSizeColumns write SetAutoSizeColumns default False;
     property AutoSizeColumnIndex: Integer read FAutoSizeColumnIndex write SetAutoSizeColumnIndex default -1;
-    property SelectColumnsDialogStrings:TJvSelectDialogColumnStrings read FSelectColumnsDialogStrings write SetSelectColumnsDialogStrings;
+    property SelectColumnsDialogStrings: TJvSelectDialogColumnStrings read FSelectColumnsDialogStrings write
+      SetSelectColumnsDialogStrings;
   end;
 
 implementation
@@ -343,7 +345,7 @@ uses
 
 resourcestring
   RES_JvDBGridSelectTitle = 'Select columns';
-  RES_JvDBGridSelectOK      = '&OK';
+  RES_JvDBGridSelectOK = '&OK';
   RES_JvDBGridSelectWarning = 'At least one column must be visible!';
 
 type
@@ -362,8 +364,8 @@ const
 
 // (rom) changed to var
 var
-  GridBitmaps: array [TGridPicture] of TBitmap =
-    (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+  GridBitmaps: array[TGridPicture] of TBitmap =
+  (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
 
 function GetGridBitmap(BmpType: TGridPicture): TBitmap;
 begin
@@ -632,14 +634,14 @@ end;
 function TJvDBGrid.CreateEditor: TInplaceEdit;
 begin
   // Lionel
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   Result := TMyInplaceEdit.Create(Self);
   // replace the call to default constructor :
   //  Result := inherited CreateEditor;
   TEdit(Result).OnChange := EditChanged;
-  {$ELSE}
+{$ELSE}
   Result := inherited CreateEditor;
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 end;
 
 function TJvDBGrid.GetTitleOffset: Byte;
@@ -785,8 +787,7 @@ var
           ClearSelections;
           ACol := IndicatorOffset;
         end
-        else
-        if ACol < IndicatorOffset then
+        else if ACol < IndicatorOffset then
         begin
           ClearSelections;
           ACol := ColCount;
@@ -881,8 +882,7 @@ begin
         VK_PRIOR]) or ((Key = VK_INSERT) and (CanModify and
         (not ReadOnly) and (dgEditing in Options))) then
         ClearSelections
-      else
-      if (Key = VK_TAB) and not (ssAlt in Shift) then
+      else if (Key = VK_TAB) and not (ssAlt in Shift) then
         CheckTab(not (ssShift in Shift));
     end;
   OnKeyDown := nil;
@@ -1018,6 +1018,8 @@ begin
   if Result and Assigned(FOnShowEditor) then
     FOnShowEditor(Self, F, Result);
 end;
+type
+  THackDataset = class(TDataset);
 
 procedure TJvDBGrid.GetCellProps(Field: TField; AFont: TFont;
   var Background: TColor; Highlight: Boolean);
@@ -1038,18 +1040,17 @@ var
   end;
 
 begin
-  if (FAlternateRowColor <> clNone) and (FAlternateRowColor <> Color) and IsAfterFixedCols then
-  begin
-    if Odd(DataLink.ActiveRecord) then
-      Background := AlternateRowColor
-    else
-      Background := Color;
-  end;
+  Background := Color;
+  if (FCurrentDrawRow >= FixedRows)  and Odd(FCurrentDrawRow) and
+     (FAlternateRowColor <> clNone) and (FAlternateRowColor <> Color) and
+     IsAfterFixedCols then
+    Background := AlternateRowColor
+  else
+    Background := Color;
 
   if Assigned(FOnGetCellParams) then
     FOnGetCellParams(Self, Field, AFont, Background, Highlight)
-  else
-  if Assigned(FOnGetCellProps) then
+  else if Assigned(FOnGetCellProps) then
   begin
     if Highlight then
     begin
@@ -1136,7 +1137,11 @@ end;
 procedure TJvDBGrid.Scroll(Distance: Integer);
 begin
   if FDisableCount = 0 then
+  begin
     inherited Scroll(Distance);
+    if (AlternateRowColor <> clNone) and (AlternateRowColor <> Color) then
+      Invalidate;
+  end;
 end;
 
 function TJvDBGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
@@ -1270,8 +1275,7 @@ begin
         FSwapButtons := True;
         MouseCapture := True;
       end
-      else
-      if Button = mbLeft then
+      else if Button = mbLeft then
       begin
         EnableClick := True;
         CheckTitleButton(Cell.X - IndicatorOffset, Cell.Y, EnableClick);
@@ -1282,8 +1286,7 @@ begin
           FPressedCol := GetMasterColumn(Cell.X, Cell.Y);
           TrackButton(X, Y);
         end
-        else
-        if FBeepOnError then
+        else if FBeepOnError then
           SysUtils.Beep;
         Exit;
       end;
@@ -1292,8 +1295,7 @@ begin
     begin
       if dgIndicator in Options then
         inherited MouseDown(Button, Shift, 1, Y)
-      else
-      if Cell.Y >= TitleOffset then
+      else if Cell.Y >= TitleOffset then
         if Cell.Y - Row <> 0 then
           DataLink.Dataset.MoveBy(Cell.Y - Row);
     end
@@ -1316,7 +1318,7 @@ begin
             // Lionel
             if (ssShift in Shift) and (Count > 0) then
             begin
-              lLastSelected := Items[Count-1];
+              lLastSelected := Items[Count - 1];
               CurrentRowSelected := not CurrentRowSelected;
               if CurrentRowSelected then
               begin
@@ -1336,8 +1338,7 @@ begin
                         Next;
                       end;
                     end
-                    else
-                    if lCompare < 0 then
+                    else if lCompare < 0 then
                     begin
                       GotoBookmark(Pointer(lLastSelected));
                       Prior;
@@ -1347,9 +1348,9 @@ begin
                         Prior;
                       end;
                     end;
-                   finally
-                     EnableControls;
-                   end;
+                  finally
+                    EnableControls;
+                  end;
                 end;
               end;
             end
@@ -1377,7 +1378,6 @@ begin
   inherited MouseMove(Shift, X, Y);
 end;
 
-
 procedure TJvDBGrid.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
@@ -1402,8 +1402,7 @@ begin
         DoTitleClick(FPressedCol.Index, FPressedCol.Field);
     end;
   end
-  else
-  if FSwapButtons then
+  else if FSwapButtons then
   begin
     FSwapButtons := False;
     MouseCapture := False;
@@ -1414,7 +1413,7 @@ begin
   if (Button = mbLeft) and (FGridState = gsColSizing) and
     (FSizingIndex + Byte(not (dgIndicator in Options)) <= FixedCols)
 //    and not AutoSizeColumns
-      then
+  then
   begin
     ColWidths[FSizingIndex] := GetMinColWidth(X - FSizingOfs - CellRect(FSizingIndex, 0).Left);
     FGridState := gsNormal;
@@ -1437,8 +1436,7 @@ procedure TJvDBGrid.WMRButtonUp(var Msg: TWMMouse);
 begin
   if not (FGridState in [gsColMoving, gsRowMoving]) then
     inherited
-  else
-  if not (csNoStdEvents in ControlStyle) then
+  else if not (csNoStdEvents in ControlStyle) then
     with Msg do
       MouseUp(mbRight, KeysToShiftState(Keys), XPos, YPos);
 end;
@@ -1537,8 +1535,7 @@ begin
             end;
           end;
         end
-        else
-        if FieldKind = fkData then
+        else if FieldKind = fkData then
         begin
           if DataType = ftFloat then
             if Key in ['.', ','] then
@@ -1611,7 +1608,7 @@ end;
 
 procedure TJvDBGrid.DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
 const
-  EdgeFlag: array [Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
+  EdgeFlag: array[Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
 var
   FrameOffs: Byte;
   BackColor: TColor;
@@ -1691,8 +1688,8 @@ var
   procedure DrawExpandBtn(var TitleRect, TextRect: TRect; InBiDiMode: Boolean;
     Expanded: Boolean); { copied from Inprise's DbGrids.pas }
   const
-    ScrollArrows: array [Boolean, Boolean] of Integer =
-      ((DFCS_SCROLLRIGHT, DFCS_SCROLLLEFT), (DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT));
+    ScrollArrows: array[Boolean, Boolean] of Integer =
+    ((DFCS_SCROLLRIGHT, DFCS_SCROLLLEFT), (DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT));
   var
     ButtonRect: TRect;
     I: Integer;
@@ -1726,9 +1723,8 @@ var
 begin
 //  if gdFixed in AState then
 //    Canvas.Brush.Color := FixedColor;
-
+  FCurrentDrawRow := ARow;
   inherited DrawCell(ACol, ARow, ARect, AState);
-
   // Lionel
   with ARect do
     if FTitleArrow and (ARow = 0) and (ACol = 0) and
@@ -1774,8 +1770,7 @@ begin
         FixRect.Bottom - FMsIndicators.Height) shr 1, Indicator);
     end;
   end
-  else
-  if not (csLoading in ComponentState) and
+  else if not (csLoading in ComponentState) and
     (FTitleButtons or (FixedCols > 0)) and
     (gdFixed in AState) and (dgTitles in Options) and (ARow < TitleOffset) then
   begin
@@ -1801,8 +1796,7 @@ begin
         TitleRect.Right := ARect.Right;
       if MasterCol = nil then
         Exit
-      else
-      if MasterCol <> DrawColumn then
+      else if MasterCol <> DrawColumn then
         AField := MasterCol.Field;
       DrawColumn := MasterCol;
       if ((dgColLines in Options) or FTitleButtons) and (ACol = FixedCols - 1) then
@@ -1846,8 +1840,7 @@ begin
       ARect := TitleRect;
       if (DataLink = nil) or not DataLink.Active then
         Canvas.FillRect(TitleRect)
-      else
-      if DrawColumn <> nil then
+      else if DrawColumn <> nil then
       begin
         case SortMarker of
           smDown: Bmp := GetGridBitmap(gpMarkDown);
@@ -2088,8 +2081,7 @@ begin
   begin
     if StoreColumns then
       Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, GetDefaultSection(Self)])
-    else
-    if (DataSource <> nil) and
+    else if (DataSource <> nil) and
       (DataSource.DataSet <> nil) then
       Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, DataSetSectionName(DataSource.DataSet)])
     else
@@ -2106,8 +2098,7 @@ begin
   begin
     if StoreColumns then
       Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, GetDefaultSection(Self)])
-    else
-    if (DataSource <> nil) and
+    else if (DataSource <> nil) and
       (DataSource.DataSet <> nil) then
       Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, DataSetSectionName(DataSource.DataSet)])
     else
@@ -2262,12 +2253,10 @@ begin
       except
       end;
     end
-    else
-    if Assigned(FHintWnd) then
+    else if Assigned(FHintWnd) then
       FHintWnd.ReleaseHandle;
   end
-  else
-  if Assigned(FHintWnd) then
+  else if Assigned(FHintWnd) then
     FHintWnd.ReleaseHandle;
 end;
 
@@ -2411,8 +2400,7 @@ begin
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
     if ActiveList = DataList then
       ListValue := DataList.KeyValue
-    else
-    if PickList.ItemIndex <> -1 then
+    else if PickList.ItemIndex <> -1 then
       ListValue := PickList.Items[Picklist.ItemIndex];
     SetWindowPos(ActiveList.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
@@ -2429,8 +2417,7 @@ begin
           if MasterField.CanModify and TJvDBGrid(Grid).DataLink.Edit then
             MasterField.Value := ListValue;
         end
-      else
-      if (not VarIsNull(ListValue)) and EditCanModify then
+      else if (not VarIsNull(ListValue)) and EditCanModify then
         with TCustomDBGrid(Grid), TDBGrid(Grid).Columns[SelectedIndex].Field do
           Text := ListValue;
   end;
@@ -2461,8 +2448,7 @@ begin
         FDataList.LookupSource := FLookupSource; //  ListSource
         FDataList.KeyValue := DataSet.FieldByName(KeyFields).Value;
       end
-    else
-    if ActiveList = PickList then
+    else if ActiveList = PickList then
     begin
       PickList.Items.Assign(Column.PickList);
       DropDownRows := Column.DropDownRows;
@@ -2545,7 +2531,7 @@ procedure TMyInplaceEdit.KeyDown(var Key: Word; Shift: TShiftState);
   begin
     with Selection do
       Result := {(CaretPos = GetTextLen) and  }
-      ((StartPos = 0) or (EndPos = StartPos)) and (EndPos = GetTextLen);
+        ((StartPos = 0) or (EndPos = StartPos)) and (EndPos = GetTextLen);
   end;
 
   function LeftSide: Boolean;
@@ -2599,7 +2585,8 @@ begin
   FInAutoSize := True;
   try
     // get useable width
-    TotalWidth := ClientWidth - (Ord(dgIndicator in Options) * IndicatorWidth) - (Ord(dgColLines in Options) * Columns.Count * GridLineWidth);
+    TotalWidth := ClientWidth - (Ord(dgIndicator in Options) * IndicatorWidth) - (Ord(dgColLines in Options) *
+      Columns.Count * GridLineWidth);
     OrigWidth := 0;
     // get width currently occupied by columns
     BeginLayout;
@@ -2633,8 +2620,7 @@ begin
           end;
       end
       // a index of -2 indicates that we want to autosize the last visible column
-      else
-      if AutoSizeColumnIndex = -2 then // auto size last visible
+      else if AutoSizeColumnIndex = -2 then // auto size last visible
       begin
         // reuse AUsedWidth as the actual resize column index
         AUsedWidth := LastVisibleColumn;
@@ -2649,8 +2635,7 @@ begin
           Columns[AUsedWidth].Width := AWidth;
       end
       // only auto size one column
-      else
-      if AutoSizeColumnIndex <= LastVisibleColumn then
+      else if AutoSizeColumnIndex <= LastVisibleColumn then
       begin
         OrigWidth := 0;
         for I := 0 to Columns.Count - 1 do
