@@ -127,7 +127,7 @@ begin
         Inc(R.Left);
         Inc(R.Top);
         Brush.Color := clBtnHighlight;
-        FrameRect({$IFDEF VisualCLX}Canvas,{$ENDIF} R);
+        FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} R);
         OffsetRect(R, -1, -1);
         Brush.Color := clBtnShadow;
       {$IFDEF VCL}
@@ -135,7 +135,7 @@ begin
       else
         Brush.Color := clWindowFrame;
       {$ENDIF VCL}
-      FrameRect({$IFDEF VisualCLX}Canvas,{$ENDIF} R);
+      FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} R);
       if Text <> '' then
       begin
         if not UseRightToLeftAlignment then

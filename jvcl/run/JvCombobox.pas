@@ -357,15 +357,15 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
-	property OnChange;
+    property OnChange;
     property OnClick;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
-	property OnEnter;
-	property OnExit;
+    property OnEnter;
+    property OnExit;
   end;
 
 implementation

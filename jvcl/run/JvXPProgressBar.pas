@@ -257,7 +257,7 @@ begin
     end;
     ACanvas.Brush.Color := AColor;
     with ACanvas do
-      BrushCopy({$IFDEF VisualCLX}ACanvas,{$ENDIF} ClientRect, Bmp, ClientRect, clFuchsia);
+      BrushCopy({$IFDEF VisualCLX} ACanvas, {$ENDIF} ClientRect, Bmp, ClientRect, clFuchsia);
   finally
     Bmp.Free;
   end;

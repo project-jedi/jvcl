@@ -1607,20 +1607,20 @@ begin
         case Alignment of
           taLeftJustify:
             begin
-              Images.Draw(Canvas, Rect.Left, Rect.Top, ImageIndex, {$IFDEF VisualCLX}itImage, {$ENDIF}
+              Images.Draw(Canvas, Rect.Left, Rect.Top, ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF}
                   HasDisabledImage or not (pdsDisabled in State));
               Rect.Left := Rect.Left + Images.Width + 2;
             end;
           taRightJustify:
             begin
-              Images.Draw(Canvas, Rect.Right - Images.Width, Rect.Top, ImageIndex, {$IFDEF VisualCLX}itImage, {$ENDIF}
+              Images.Draw(Canvas, Rect.Right - Images.Width, Rect.Top, ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF}
                   HasDisabledImage or not (pdsDisabled in State));
               Rect.Right := Rect.Right - Images.Width - 2;
             end;
           taCenter:
             begin
               Images.Draw(Canvas, Rect.Left + ((Rect.Right - Rect.Left - Images.Width) div 2),
-                Rect.Top, ImageIndex, {$IFDEF VisualCLX}itImage, {$ENDIF}HasDisabledImage or not (pdsDisabled in State));
+                Rect.Top, ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} HasDisabledImage or not (pdsDisabled in State));
               Rect.Top := Rect.Top + Images.Height + 2;
               TxtW := Canvas.TextWidth(Text);
               Rect.Left := Rect.Left + ((Rect.Right - Rect.Left - TxtW) div 2);

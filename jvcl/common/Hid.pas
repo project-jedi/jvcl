@@ -51,6 +51,10 @@ interface
 // (rom) enable for functions only in HID.DLL of Windows XP
 { $ DEFINE WINXP}
 
+{$IFDEF WINXP}
+{$DEFINE WIN2000}
+{$ENDIF WINXP}
+
 uses
   Windows;
 
@@ -728,7 +732,7 @@ function HidD_GetInputReport(HidDeviceObject: THandle;
 function HidD_SetOutputReport(HidDeviceObject: THandle;
   Buffer: Pointer; BufferLength: ULONG): LongBool; stdcall;
 
-{$ENDIF}
+{$ENDIF WINXP}
 
 function HidP_GetCaps(PreparsedData: PHIDPPreparsedData;
   var Capabilities: THIDPCaps): NTSTATUS; stdcall;
@@ -976,7 +980,7 @@ function HidP_GetButtons(ReportType: THIDPReportType; UsagePage: TUsage;
 // 
 // Parameters:
 //     ReportType  One of HidP_Input, HidP_Output or HidP_Feature.
-// 
+//
 //     LinkCollection  An optional value which can limit which usages are returned
 //                     in the ButtonList to those usages that exist in a specific
 //                     LinkCollection.  A non-zero value indicates the index into
@@ -1441,7 +1445,7 @@ function HidP_GetScaledUsageValue(ReportType: THIDPReportType; UsagePage: TUsage
 //    ReportLength   Length of the given report packet.
 // 
 // Return Value:
-// 
+//
 // - HIDP_STATUS_SUCCESS                -- upon successfully retrieving the value
 //                                         from the report packet
 // - HIDP_STATUS_INVALID_REPORT_TYPE    -- if ReportType is not valid.
@@ -1658,7 +1662,7 @@ function HidP_SetScaledUsageValue(ReportType: THIDPReportType; UsagePage: TUsage
 //           of the previous value
 // 
 // Parameters:
-// 
+//
 //     ReportType  One of HidP_Output or HidP_Feature.
 // 
 //     UsagePage   The usage page to which the given usage refers.
@@ -1689,7 +1693,7 @@ function HidP_SetScaledUsageValue(ReportType: THIDPReportType; UsagePage: TUsage
 //     PreparsedData The preparsed data returned from HIDCLASS
 // 
 //     Report      The report packet.
-// 
+//
 //     ReportLength Length (in bytes) of the given report packet.
 // 
 // 
@@ -1816,7 +1820,7 @@ function HidP_GetExtendedAttributes(ReportType: THIDPReportType;
 // Parameters:
 // 
 //     ReportType  One of HidP_Input, HidP_Output, or HidP_Feature.
-// 
+//
 //     PreparsedData  Preparsed data structure returned by HIDCLASS
 // 
 //     Report      Buffer which to set the data into.
@@ -1842,7 +1846,7 @@ function HidP_InitializeReportForID(ReportType: THIDPReportType;
   ReportID: BYTE; PreparsedData: PHIDPPreparsedData;
   var Report; ReportLength: ULONG): NTSTATUS; stdcall;
 
-{$ENDIF}
+{$ENDIF WIN2000}
 
 {$ELSE}
 
@@ -1882,7 +1886,7 @@ function HidP_InitializeReportForID(ReportType: THIDPReportType;
     Buffer: Pointer; BufferLength: ULONG): LongBool; stdcall;
   THidD_SetOutputReport = function(HidDeviceObject: THandle;
     Buffer: Pointer; BufferLength: ULONG): LongBool; stdcall;
-  {$ENDIF}
+  {$ENDIF WINXP}
   THidP_GetCaps = function(PreparsedData: PHIDPPreparsedData;
     var Capabilities: THIDPCaps): NTSTATUS; stdcall;
   THidP_GetLinkCollectionNodes = function(LinkCollectionNodes: PHIDPLinkCollectionNode;
@@ -1970,7 +1974,7 @@ function HidP_InitializeReportForID(ReportType: THIDPReportType;
     InsertCodesProcedure: THIDPInsertScanCodes;
     InsertCodesContext: Pointer): NTSTATUS; stdcall;
     
-{$IFDEF WIN2000}
+  {$IFDEF WIN2000}
   THidP_GetExtendedAttributes = function(ReportType: THIDPReportType;
     DataIndex: Word; PreparsedData: PHIDPPreparsedData;
     Attributes: PHIDPExtendedAttributes;
@@ -1978,7 +1982,7 @@ function HidP_InitializeReportForID(ReportType: THIDPReportType;
   THidP_InitializeReportForID = function(ReportType: THIDPReportType;
     ReportID: BYTE; PreparsedData: PHIDPPreparsedData;
     var Report; ReportLength: ULONG): NTSTATUS; stdcall;
-{$ENDIF}
+  {$ENDIF WIN2000}
 
 var
   HidD_Hello: THidD_Hello;
@@ -2002,7 +2006,7 @@ var
    // (rom) new XP functions
   HidD_GetInputReport: THidD_GetInputReport;
   HidD_SetOutputReport: THidD_SetOutputReport;
-  {$ENDIF}
+  {$ENDIF WINXP}
   HidP_GetCaps: THidP_GetCaps;
   HidP_GetLinkCollectionNodes: THidP_GetLinkCollectionNodes;
   HidP_GetSpecificButtonCaps: THidP_GetSpecificButtonCaps;
@@ -2028,12 +2032,12 @@ var
   HidP_SetUsageValueArray: THidP_SetUsageValueArray;
   HidP_UsageListDifference: THidP_UsageListDifference;
   HidP_TranslateUsagesToI8042ScanCodes: THidP_TranslateUsagesToI8042ScanCodes;
-{$IFDEF WIN2000}
+  {$IFDEF WIN2000}
   HidP_GetExtendedAttributes: THidP_GetExtendedAttributes;
   HidP_InitializeReportForID: THidP_InitializeReportForID;
-{$ENDIF}
+  {$ENDIF WIN2000}
 
-{$ENDIF}
+{$ENDIF HID_LINKONREQUEST}
 
 // Description:
 //    HidP_GetButtonCaps returns all the buttons (binary values) that are a part
@@ -2162,7 +2166,7 @@ uses
 {$IFDEF HID_LINKONREQUEST}
 var
   HidLib: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
-{$ENDIF}
+{$ENDIF HID_LINKONREQUEST}
 
 // (rom) this function is a macro and cannot be implemented with the original name
 // (rom) simply adds three 0 params on call
@@ -2202,7 +2206,7 @@ begin
   Result := HidLib <> INVALID_MODULEHANDLE_VALUE;
   {$ELSE}
   Result := True;
-  {$ENDIF}
+  {$ENDIF HID_LINKONREQUEST}
 end;
 
 function LoadHid: Boolean;
@@ -2231,7 +2235,7 @@ begin
     {$IFDEF WINXP}
     @HidD_GetInputReport := GetModuleSymbolEx(HidLib, 'HidD_GetInputReport', Result);
     @HidD_SetOutputReport := GetModuleSymbolEx(HidLib, 'HidD_SetOutputReport', Result);
-    {$ENDIF}
+    {$ENDIF WINXP}
     @HidP_GetCaps := GetModuleSymbolEx(HidLib, 'HidP_GetCaps', Result);
     @HidP_GetLinkCollectionNodes := GetModuleSymbolEx(HidLib, 'HidP_GetLinkCollectionNodes', Result);
     @HidP_GetSpecificButtonCaps := GetModuleSymbolEx(HidLib, 'HidP_GetSpecificButtonCaps', Result);
@@ -2260,13 +2264,13 @@ begin
     {$IFDEF WIN2000}
     @HidP_GetExtendedAttributes := GetModuleSymbolEx(HidLib, 'HidP_GetExtendedAttributes', Result);
     @HidP_InitializeReportForID := GetModuleSymbolEx(HidLib, 'HidP_InitializeReportForID', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     if not Result then
       UnloadHid;
   end;
   {$ELSE}
   Result := True;
-  {$ENDIF}
+  {$ENDIF HID_LINKONREQUEST}
 end;
 
 procedure UnloadHid;
@@ -2292,7 +2296,7 @@ begin
   {$IFDEF WINXP}
   @HidD_GetInputReport := nil;
   @HidD_SetOutputReport := nil;
-  {$ENDIF}
+  {$ENDIF WINXP}
   @HidP_GetLinkCollectionNodes := nil;
   @HidP_GetSpecificButtonCaps := nil;
   @HidP_GetSpecificValueCaps := nil;
@@ -2320,8 +2324,8 @@ begin
   {$IFDEF WIN2000}
   @HidP_GetExtendedAttributes := nil;
   @HidP_InitializeReportForID := nil;
-  {$ENDIF}
-  {$ENDIF}
+  {$ENDIF WIN2000}
+  {$ENDIF HID_LINKONREQUEST}
 end;
 
 {$IFNDEF HID_LINKONREQUEST}
@@ -2346,7 +2350,7 @@ function HidD_GetIndexedString; external HidModuleName name 'HidD_GetIndexedStri
 {$IFDEF WINXP}
 function HidD_GetInputReport; external HidModuleName name 'HidD_GetInputReport';
 function HidD_SetOutputReport; external HidModuleName name 'HidD_SetOutputReport';
-{$ENDIF}
+{$ENDIF WINXP}
 function HidP_GetCaps; external HidModuleName name 'HidP_GetCaps';
 function HidP_GetLinkCollectionNodes; external HidModuleName name 'HidP_GetLinkCollectionNodes';
 function HidP_GetSpecificButtonCaps; external HidModuleName name 'HidP_GetSpecificButtonCaps';
@@ -2377,8 +2381,8 @@ function HidP_TranslateUsagesToI8042ScanCodes; external HidModuleName name 'HidP
 {$IFDEF WIN2000}
 function HidP_GetExtendedAttributes; external HidModuleName name 'HidP_GetExtendedAttributes';
 function HidP_InitializeReportForID; external HidModuleName name 'HidP_InitializeReportForID';
-{$ENDIF}
+{$ENDIF WIN2000}
 
-{$ENDIF}
+{$ENDIF HID_LINKONREQUEST}
 
 end.

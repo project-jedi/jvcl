@@ -75,7 +75,7 @@ uses
   {$IFNDEF COMPILER8_UP}
   JvgWebDocumentIterator, JvgHTTPVersionInfo,
   JvgCheckVersionInfoForm,
-  {$ENDIF}
+  {$ENDIF COMPILER8_UP}
   {$IFDEF JVCL_UseQuickReport}
   JvgQPrintPreviewForm, JvgQPrintSetupForm, JvgQRLabel,
   {$ENDIF JVCL_UseQuickReport}

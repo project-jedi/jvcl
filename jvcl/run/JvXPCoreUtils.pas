@@ -359,7 +359,7 @@ begin
     with ColorMap.Canvas do
     begin
       Brush.Color := AColor;
-      BrushCopy({$IFDEF VisualCLX}ColorMap.Canvas,{$ENDIF} Rect, Bitmap, Rect, clBlack);
+      BrushCopy({$IFDEF VisualCLX} ColorMap.Canvas, {$ENDIF} Rect, Bitmap, Rect, clBlack);
     end;
     {$IFDEF VisualCLX}
     Bitmap.FreeImage;

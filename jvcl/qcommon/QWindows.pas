@@ -1587,7 +1587,7 @@ function ReleaseSemaphore(Semaphore: THandle; ReleaseCount: Longint;
   PreviousCount: PInteger): LongBool;
 
 function semtimedop(semid: Integer; sops: PSemaphoreBuffer;
-  nsops: size_t; timeout: PTimeSpec): Integer; {$IFDEF DEBUG}cdecl;{$ENDIF}
+  nsops: size_t; timeout: PTimeSpec): Integer; {$IFDEF DEBUG} cdecl; {$ENDIF}
 
 function WaitForSingleObject(Handle: THandle; Milliseconds: Cardinal): Cardinal;
 
@@ -2132,9 +2132,9 @@ const
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   SystemFont: WideString = 'Fixed';   // asn: is not always True
-//  GuiFont: array[Boolean] of WideString = ('Verdana', 'Verdana');
-//asn:  in JVCL units Helvetica is used. Why introduce another?
-  GuiFont: array[Boolean] of WideString = ('Helvetica', 'Helvetica');
+  //GuiFont: array [Boolean] of WideString = ('Verdana', 'Verdana');
+  //asn:  in JVCL units Helvetica is used. Why introduce another?
+  GuiFont: array [Boolean] of WideString = ('Helvetica', 'Helvetica');
   {$ENDIF LINUX}
 type
   Int = Integer;
@@ -2144,9 +2144,10 @@ var
 begin
   {$IFDEF MSWINDOWS}
   GuiFontSelector := Win32MajorVersion >= 5;
-  {$ELSE}
-  GuiFontSelector := True;
   {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  GuiFontSelector := True;
+  {$ENDIF LINUX}
   EnterCriticalSection(StockObjectListCritSect);
   try
     if not Assigned(StockObjectList) then
@@ -4123,12 +4124,12 @@ end;
 
 function GetDoubleClickTime: Cardinal;
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Result := Windows.GetDoubleClickTime;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   Result := QApplication_doubleClickInterval;
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
 end;
 
 function SetDoubleClickTime(Interval: Cardinal): LongBool;
@@ -5563,11 +5564,10 @@ begin
                 begin
                   QPainter_fillRect(Handle, @R, QPainter_brush(Handle));
                   QStyle_drawCheckMark(Application.Style.Handle, Handle,
-                                       R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
-                                       GetColorGroup(uState),
-                                       uState and DFCS_CHECKED <> 0,
-                                       uState and DFCS_INACTIVE <> 0
-                                       );
+                    R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
+                    GetColorGroup(uState),
+                    uState and DFCS_CHECKED <> 0,
+                    uState and DFCS_INACTIVE <> 0);
                   Result := True;
                 end;
               DFCS_MENUBULLET:
@@ -5575,8 +5575,8 @@ begin
                   QPainter_fillRect(Handle, @R, QPainter_brush(Handle));
                   R := Types.Rect(0, 0, 7, 7);
                   OffsetRect(R,
-                       ((Rect.Right - Rect.Left) - R.Right) div 2 + Rect.Left,
-                       ((Rect.Bottom - Rect.Top) - R.Bottom) div 2 + Rect.Top);
+                    ((Rect.Right - Rect.Left) - R.Right) div 2 + Rect.Left,
+                    ((Rect.Bottom - Rect.Top) - R.Bottom) div 2 + Rect.Top);
                   SetDCBrushColor(Handle, clBlack);
                   SetDCPenColor(Handle, clBlack);
                   QPainter_drawEllipse(Handle, @R);
@@ -5697,7 +5697,7 @@ begin
                      Application.Palette.ColorGroup(cgActive), //GetColorGroup(cgInActive),
                      0, True, True);
                 InflateRect(R, -2, -2);
-                if uState and DFCS_CHECKED	<> 0 then
+                if uState and DFCS_CHECKED <> 0 then
                   DrawFrameControl(Handle, R, DFC_MENU, DFCS_MENUCHECK or (uState and not Mask));
                 Result := True;
               end;
@@ -5713,11 +5713,10 @@ begin
                   if uState and (DFCS_PUSHED or DFCS_HOT) <> 0 then
                   begin
                     QStyle_drawButton(Application.Style.Handle, Handle,
-                        R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
-                        GetColorGroup(uState),
-                        uState and DFCS_PUSHED <> 0,
-                        Brush
-                        );
+                      R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
+                      GetColorGroup(uState),
+                      uState and DFCS_PUSHED <> 0,
+                      Brush);
                    {QStyle_drawPanel(Application.Style.Handle, Handle,
                         R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
                         GetColorGroup(uState),
@@ -5731,10 +5730,10 @@ begin
                 else if uState and DFCS_MONO = 0 then
                 begin
                   QStyle_drawButton(Application.Style.Handle, Handle,
-                      R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
-                      GetColorGroup(uState),
-                      uState and DFCS_PUSHED <> 0,
-                      Brush);
+                    R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
+                    GetColorGroup(uState),
+                    uState and DFCS_PUSHED <> 0,
+                    Brush);
                   InflateRect(R, -2, -2);
                   Result := True;
                 end
@@ -5747,7 +5746,7 @@ begin
                 end;
               end;
           else
-              // not implemented
+            // not implemented
             raise Exception.Create('DrawFrameControl: not implemented');
           end;
 
@@ -6545,6 +6544,7 @@ begin
 end;
 
 {$IFDEF LINUX}
+
 function FileGetAttr(const FileName: string): Integer;
 var
   sr: TSearchRec;
@@ -6799,7 +6799,7 @@ begin
     Result := SP.sched_priority;
 end;
 
-function SetThreadPriority(ThreadID: TThreadID; priority: Integer): LongBool; 	// handle to the thread
+function SetThreadPriority(ThreadID: TThreadID; priority: Integer): LongBool;  // handle to the thread
 var
   SP: TSchedParam;
   P: Integer;
@@ -7703,8 +7703,8 @@ end;
 
 // The WaitForMultipleObjects function returns when one of the following occurs:
 //
-// ·	Either any one or all of the specified objects are in the signaled state.
-// ·	The time-out interval elapses.
+// -  Either any one or all of the specified objects are in the signaled state.
+// -  The time-out interval elapses.
 function WaitForMultipleObjects(Count: Cardinal; Handles: PWOHandleArray;
   WaitAll: LongBool; Milliseconds: Cardinal): Cardinal;
 var
@@ -8007,8 +8007,7 @@ begin
   else
     WinId := QWidget_winID(Handle);
   Result := ShellAPI.ShellExecute(WinId, PChar(Operation),
-                         PChar(FileName), PChar(Parameters),
-                         PChar(Directory), ShowCmd);
+    PChar(FileName), PChar(Parameters), PChar(Directory), ShowCmd);
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   if (Operation = 'open') or (Operation = '') then
@@ -8035,27 +8034,27 @@ end;
 function InjectCode(Addr: Pointer; Code: Pointer; Size: Integer): Boolean;
 var
   SysPageSize, PageSize, AlignedAddr: Integer;
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   P: Cardinal;
-{$ENDIF}
+  {$ENDIF MSWINDOWS}
 begin
   Result := False;
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   SysPageSize := 4096;
-{$ENDIF}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   SysPageSize := getpagesize;
-{$ENDIF}
+  {$ENDIF LINUX}
   PageSize := SysPageSize;
   AlignedAddr := Integer(Addr) and not (PageSize - 1);
   while Integer(Addr) + Size >= AlignedAddr + PageSize do
     Inc(PageSize, SysPageSize);
-{$ifdef MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if VirtualProtect(Pointer(AlignedAddr), PageSize, PAGE_EXECUTE_READWRITE, @P) then
-{$endif}
-{$ifdef LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   if mprotect(Pointer(AlignedAddr), PageSize, PROT_READ or PROT_WRITE or PROT_EXEC) = 0 then
-{$endif}
+  {$ENDIF LINUX}
     try
       Move(Code^, Addr^, Size);
       Result := True;
@@ -8104,6 +8103,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+
 { windows wrappers }
 function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 begin
@@ -9139,6 +9139,7 @@ finalization
   {$IFDEF LINUX}
   WaitObjectList.Free;
   {$ENDIF LINUX}
+
 end.
 
 
