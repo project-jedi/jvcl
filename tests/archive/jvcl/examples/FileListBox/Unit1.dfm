@@ -12,6 +12,9 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  DesignSize = (
+    595
+    398)
   PixelsPerInch = 96
   TextHeight = 13
   object DriveCombo1: TJvDriveCombo
@@ -34,19 +37,13 @@ object Form1: TForm1
     Top = 29
     Width = 215
     Height = 348
-    Style = lbOwnerDrawFixed
-    Anchors = [akLeft, akTop, akBottom]
-    ItemHeight = 17
-    Items.Strings = (
-      'C:\'
-      'C:\Program'
-      'C:\Program\adaptec'
-      'C:\Program\adaptec\shared'
-      'C:\Program\adaptec\shared\ecdc engine')
-    TabOrder = 1
+    Directory = 'C:\Program\Borland\Components\JEDI\JVCL\examples\FileListBox'
     FileList = JvFileListBox1
     DriveCombo = DriveCombo1
+    ItemHeight = 17
+    TabOrder = 1
     OnChange = JvDirectoryListBox1Change
+    Anchors = [akLeft, akTop, akBottom]
   end
   object JvFileListBox1: TJvFileListBox
     Left = 221
