@@ -208,16 +208,16 @@ Description
   but its \pages do not have any tabs.
 
   Do not create instances of TJvCustomPageList. To put a page list on a form,
-  use a descendant of TJvCustomPageList, such as <LINK TJvPageList,TJvPageList>.
+  use a descendant of TJvCustomPageList, such as TJvPageList.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.ActivePage
 Summary
   Specifies the page currently displayed by the page list control.
 Description
-  Read ActivePage to determine which page is selected by the user.
+  \Read ActivePage to determine which page is selected by the user.
   Set ActivePage to bring a page to the foreground. Only one page can be active at a time.
   To change the ActivePage to the page that precedes or follows the active page, use the
-  <LINK TJvCustomPageList.FindNextPage,FindNextPage> method.
+  FindNextPage method.
 See Also
   ActivePageIndex, FindNextPage
 ----------------------------------------------------------------------------------------------------
@@ -226,8 +226,8 @@ Summary
   Specifies the page currently displayed by the page list control.
 Description
   Use ActivePageIndex to get or set the active page by index rather than by object.
-  The value of ActivePageIndex identifies a page in the <LINK Pages,Pages> property array.
-  Changing the value of ActivePageIndex changes the <LINK ActivePage,ActivePage> property, and vice versa.
+  The value of ActivePageIndex identifies a page in the Pages property array.
+  Changing the value of ActivePageIndex changes the ActivePage property, and vice versa.
 
   If there is no active page, reading ActivePageIndex gives a value of –1.
 
@@ -285,7 +285,7 @@ Summary
   Occurs immediately after a new page has been selected.
 Description
   Write an OnChange event handler to take specific actions when the active page has changed.
-  To access the new active page, access either the <LINK ActivePage,ActivePage> or <LINK ActivePageIndex,ActivePageIndex> properties.
+  To access the new active page, access either the ActivePage or ActivePageIndex properties.
 See Also
   OnChanging, ActivePage, ActivePageIndex
 ----------------------------------------------------------------------------------------------------
@@ -300,8 +300,7 @@ Description
   An \OnChanging event handler can also be used to save information about the current state of the page before it is changed
   by a new page selection.
 
-  To access the currently active page, access either the <LINK ActivePage,ActivePage> or
-  <LINK ActivePageIndex,ActivePageIndex> properties.
+  To access the currently active page, access either the ActivePage or ActivePageIndex properties.
 
 Parameters
   Sender      - The page list that triggered the event.
@@ -318,7 +317,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.PageCount
 Summary
-  Indicates the number of pages in the <LINK Pages,Pages> array.
+  Indicates the number of pages in the Pages array.
 Description
   Use PageCount to determine the number of pages listed by the Pages property. PageCount is read-only.
 
@@ -419,12 +418,14 @@ Description
   additional properties and methods of the TJvPageIndexNode class, you must type cast the node to a TJvPageIndexNode.
   The individual nodes can be accessed by using the Items property along with the item's index into the tree view.
   For example, to access the second item in the tree view, you could use the following code.
+  <AUTOLINK OFF>
   <CODE>
     (Delphi)
       MyTreeNode := TreeView1.Items[1];
     (C++Builder)
       MyTreeNode = TreeView1->Items[1];
   </CODE>
+  <AUTOLINK ON>
 
   When setting this property at design-time in the Object Inspector the Tree View Items Editor appears.
   Use the New Item and New SubItem buttons to add items to the tree view. Use the Text property to modify
@@ -595,7 +596,7 @@ Summary
   Specifies the TreeView that is the "parent" of the TJvPageLinks instance.
 ----------------------------------------------------------------------------------------------------
 @@TJvPageList
-<TITLEIMG TJvPageList>
+<TITLEIMG TJvCustomPageList>
 JVCLInfo
   GROUP=JVCL.PagesAndTabs
   FLAG=Component
@@ -605,7 +606,7 @@ Description
   TJvPageList is derived from TJvCustomPageList and publishes most of its properties but doesn't add any new functionality.
 ----------------------------------------------------------------------------------------------------
 @@TJvPageListTreeView
-<TITLEIMG TJvPageListTreeView>
+<TITLEIMG TJvCustomPageListTreeView>
 JVCLInfo
   GROUP=JVCL.ListsAndTrees.Trees
   FLAG=Component
@@ -679,7 +680,7 @@ Description
   to access this property.
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingsTreeView
-<TITLEIMG TJvSettingsTreeView>
+<TITLEIMG TJvCustomPageListTreeView>
 JVCLInfo
   GROUP=JVCL.ListsAndTrees.Trees
   FLAG=Component
