@@ -281,11 +281,11 @@ begin
   FBottomColor := clBtnHighLight;
   FBTopColor := clBtnHighLight;
   FBBottomColor := clBtnShadow;
+  SetBounds(0,0,145,170);
   FAWidth := 145;
   FAHeight := 170;
   FCWidth := 22;
   FCHeight := 22;
-  SetBounds(0,0,145,170);
 end;
 
 destructor TJvCustomRollOut.Destroy;
@@ -513,14 +513,14 @@ end;
 procedure TJvCustomRollOut.ReadAWidth(Reader:TReader);
 begin
   FAWidth := Reader.ReadInteger;
-  if not Collapsed then
+  if not Collapsed and (Placement = plLeft) then
     SetBounds(Left,Top,FAWidth,Height);
 end;
 
 procedure TJvCustomRollOut.ReadAHeight(Reader:TReader);
 begin
   FAHeight := Reader.ReadInteger;
-  if not Collapsed then
+  if not Collapsed and (Placement = plTop) then
     SetBounds(Left,Top,Width,FAHeight);
 end;
 
