@@ -28,15 +28,11 @@ package JvQDlgsD7D;
 
 requires
   JvQDlgsD7R,
-  JvQCoreD7D,
-  designide,
-  rtl,
-  visualclx,
-  JvQCoreD7R,
-  DJcl;
+  JvQCoreD7D;
 
 contains
   JvQDlgsReg in '..\..\qdesign\JvQDlgsReg.pas',
-  JvQTipOfDayEditor in '..\..\qdesign\JvQTipOfDayEditor.pas';
+  JvQTipOfDayEditor in '..\..\qdesign\JvQTipOfDayEditor.pas',
+  JvQCommonDialogDEditor in '..\..\qdesign\JvQCommonDialogDEditor.pas';
 
 end.

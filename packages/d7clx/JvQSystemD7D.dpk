@@ -33,6 +33,8 @@ contains
   JvQSystemReg in '..\..\qdesign\JvQSystemReg.pas',
   JvQChangeNotifyEditor in '..\..\qdesign\JvQChangeNotifyEditor.pas',
   JvQMinMaxForm in '..\..\qdesign\JvQMinMaxForm.pas' {MinMaxInfoEditDialog},
-  JvQFormPropertiesForm in '..\..\qdesign\JvQFormPropertiesForm.pas' {JvFormPropsDlg};
+  JvQFormPropertiesForm in '..\..\qdesign\JvQFormPropertiesForm.pas' {JvFormPropsDlg},
+  JvQTimerListEditor in '..\..\qdesign\JvQTimerListEditor.pas',
+  JvQPerfStatEditor in '..\..\qdesign\JvQPerfStatEditor.pas';
 
 end.

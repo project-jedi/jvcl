@@ -29,12 +29,6 @@ requires
   JvQCoreD7D,
   JvQCmpD7R,
   JvQStdCtrlsD7R,
-  DesignIde,
-  visualclx,
-  rtl,
-  JvQCoreD7R,
-  DJcl,
-  clxdesigner,
   DJclVClx,
   JvQSystemD7R;
 
@@ -42,6 +36,8 @@ contains
   JvQPatcherEditor in '..\..\qdesign\JvQPatcherEditor.pas',
   JvQCmpReg in '..\..\qdesign\JvQCmpReg.pas',
   JvQPatchForm in '..\..\qrun\JvQPatchForm.pas' {FoPatch},
-  JvQDataEmbeddedEditor in '..\..\qdesign\JvQDataEmbeddedEditor.pas';
+  JvQDataEmbeddedEditor in '..\..\qdesign\JvQDataEmbeddedEditor.pas',
+  JvQPageManagerForm in '..\..\qdesign\JvQPageManagerForm.pas' {JvProxyEditor},
+  QDesignWindows in '..\..\qcommon\QDesignWindows.pas';
 
 end.

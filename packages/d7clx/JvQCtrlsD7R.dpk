@@ -27,7 +27,9 @@ package JvQCtrlsD7R;
 
 requires
   JvQCoreD7R,
-  JvQStdCtrlsD7R;
+  JvQStdCtrlsD7R,
+  rtl,
+  visualclx;
 
 contains
   JvQClock in '..\..\qrun\JvQClock.pas',
@@ -64,6 +66,12 @@ contains
   JvQScrollPanel in '..\..\qrun\JvQScrollPanel.pas',
   JvQSpeedbar in '..\..\qrun\JvQSpeedbar.pas',
   JvQSpeedbarSetupForm in '..\..\qrun\JvQSpeedbarSetupForm.pas' {JvSpeedbarSetupWindow},
-  JvQScrollMax in '..\..\qrun\JvQScrollMax.pas';
+  JvQScrollMax in '..\..\qrun\JvQScrollMax.pas',
+  JvQSplit in '..\..\qrun\JvQSplit.pas',
+  JvQComboListBox in '..\..\qrun\JvQComboListBox.pas',
+  JvQCharMap in '..\..\qrun\JvQCharMap.pas',
+  JvQUninstallControls in '..\..\qrun\JvQUninstallControls.pas',
+  JvQSyncSplitter in '..\..\qrun\JvQSyncSplitter.pas',
+  JvQZoom in '..\..\qrun\JvQZoom.pas';
 
 end.

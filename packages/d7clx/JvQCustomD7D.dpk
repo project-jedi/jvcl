@@ -29,12 +29,17 @@ package JvQCustomD7D;
 requires
   JvQCoreD7D,
   JvQCustomD7R,
-  JvQStdCtrlsD7R;
+  JvQStdCtrlsD7R,
+  rtl,
+  designide,
+  visualclx,
+  DJcl;
 
 contains
   JvQCustomReg in '..\..\qdesign\JvQCustomReg.pas',
   JvQOutlookBarForm in '..\..\qdesign\JvQOutlookBarForm.pas',
   JvQOutlookBarEditors in '..\..\qdesign\JvQOutlookBarEditors.pas',
-  JvQLookoutEditor in '..\..\qdesign\JvQLookoutEditor.pas';
+  JvQLookoutEditor in '..\..\qdesign\JvQLookoutEditor.pas',
+  JvQTimeLineEditor in '..\..\qdesign\JvQTimeLineEditor.pas';
 
 end.

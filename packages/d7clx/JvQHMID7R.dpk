@@ -27,10 +27,15 @@ package JvQHMID7R;
 {$DEFINE VisualCLX}
 
 requires
-  JvQCoreD7R;
+  JvQCoreD7R,
+  rtl,
+  visualclx,
+  DJcl,
+  DJclVClx;
 
 contains
   JvQDialButton in '..\..\qrun\JvQDialButton.pas',
-  JvQLED in '..\..\qrun\JvQLED.pas';
+  JvQLED in '..\..\qrun\JvQLED.pas',
+  JvQSegmentedLEDDisplay in '..\..\qrun\JvQSegmentedLEDDisplay.pas';
 
 end.

@@ -33,7 +33,10 @@ requires
   rtl,
   visualclx,
   DJcl,
-  DJclVClx;
+  DJclVClx,
+  vclactnband,
+  vclx,
+  vcl;
 
 contains
   JvQProviderTreeListDsgnFrame in '..\..\qdesign\JvQProviderTreeListDsgnFrame.pas' {fmeJvProviderTreeListDsgn: TFrame},
@@ -63,6 +66,7 @@ contains
   JvQDsgnTypes in '..\..\qdesign\JvQDsgnTypes.pas',
   JvQColorProviderDsgnTreeFrame in '..\..\qdesign\JvQColorProviderDsgnTreeFrame.pas' {fmeJvColorProviderDsgnTree: TFrame},
   JvQColorProviderAddDialogForm in '..\..\qdesign\JvQColorProviderAddDialogForm.pas' {frmAddColor},
-  JvQActnResForm in '..\..\qdesign\JvQActnResForm.pas' {JvStandardActions: TDataModule};
+  JvQActnResForm in '..\..\qdesign\JvQActnResForm.pas' {JvStandardActions: TDataModule},
+  JvQColorEditor in '..\..\qdesign\JvQColorEditor.pas';
 
 end.
