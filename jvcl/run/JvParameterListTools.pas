@@ -19,7 +19,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-
+// $Id$
 
 unit JvParameterListTools;
 
@@ -28,22 +28,24 @@ unit JvParameterListTools;
 
 interface
 
-function ParameterListRadioGroupBox (pSelectList : string;
-                                 pCaption : string = '';
-                                 pDefault : Integer = 0) : string;
+function ParameterListRadioGroupBox(SelectList: string;
+  Caption: string = ''; Default: Integer = 0): string;
 
 implementation
 
-Uses Classes, SysUtils, JvParameterList, JvParameterListParameter;
+uses
+  Classes, SysUtils,
+  JvParameterList, JvParameterListParameter, JvResources;
 
-function ParameterListRadioGroupBox (pSelectList : string;
-                                 pCaption : string = '';
-                                 pDefault : Integer = 0) : string;
+function ParameterListRadioGroupBox(SelectList: string;
+  Caption: string = ''; Default: Integer = 0): string;
+const
+ cSelectionType = 'SelectionType';
 var
-  ParameterList     : TJvParameterList;
-  Parameter         : TJvRadioGroupParameter;
-  s                 : tStringList;
-  i                 : Integer;
+  ParameterList: TJvParameterList;
+  Parameter: TJvRadioGroupParameter;
+  S: TStringList;
+  I: Integer;
 
   procedure InsertParameter(ItemText: string);
   begin
@@ -55,30 +57,30 @@ var
 
 begin
   Result := '';
-  if pSelectList = '' then
+  if SelectList = '' then
     Exit;
   ParameterList := TJvParameterList.Create(nil);
-  s := tStringList.Create;
+  S := TStringList.Create;
   try
-    ParameterList.Messages.Caption := 'Select ...';
-    s.Text := pSelectList;
-    if s.Count = 1 then
+    ParameterList.Messages.Caption := RsSelectCaption;
+    S.Text := SelectList;
+    if S.Count = 1 then
     begin
-      Result := s [0];
+      Result := S[0];
       Exit;
     end;
     Parameter := TJvRadioGroupParameter.Create(ParameterList);
     with Parameter do
     begin
-      SearchName := 'SelectionType';
-      Caption := pCaption;
+      SearchName := cSelectionType;
+      Caption := Caption;
       ItemIndex := 0;
       Width := 200;
       Height := 30;
-    end;                                {*** with Parameter do ***}
-    for i := 0 to s.Count -1 do
-      InsertParameter(s[i]);
-    Parameter.ItemIndex := pDefault;
+    end;
+    for I := 0 to S.Count - 1 do
+      InsertParameter(S[I]);
+    Parameter.ItemIndex := Default;
     ParameterList.AddParameter(Parameter);
     if (Parameter.ItemIndex < 0) or
       (Parameter.ItemIndex >= Parameter.ItemList.Count) then
@@ -86,13 +88,14 @@ begin
     if Parameter.ItemList.Count = 1 then
       Result := Parameter.ItemList[0]
     else
-      if ParameterList.ShowParameterDialog then
-        Result :=
-          TJvRadioGroupParameter(ParameterList.ParameterbyName('SelectionType')).AsString;
+    if ParameterList.ShowParameterDialog then
+      Result :=
+        TJvRadioGroupParameter(ParameterList.ParameterbyName(cSelectionType)).AsString;
   finally
     ParameterList.Free;
-    s.Free;
+    S.Free;
   end;
 end;
 
 end.
+

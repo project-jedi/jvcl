@@ -782,39 +782,39 @@ var
       xfoEQ:
         Result := AValue = Atom.Value;
       xfoIEQ:
-        Result := CompareText(AValue, Atom.Value) = 0;
+        Result := AnsiCompareText(AValue, Atom.Value) = 0;
       xfoNE:
         Result := AValue <> Atom.Value;
       xfoINE:
-        Result := CompareText(AValue, Atom.Value) <> 0;
+        Result := AnsiCompareText(AValue, Atom.Value) <> 0;
       xfoGT:
         try
           Result := StrToFloat(AValue) > StrToFloat(Atom.Value);
         except
         end;
       xfoIGT:
-        Result := CompareText(AValue, Atom.Value) > 0;
+        Result := AnsiCompareText(AValue, Atom.Value) > 0;
       xfoLT:
         try
           Result := StrToFloat(AValue) < StrToFloat(Atom.Value);
         except
         end;
       xfoILT:
-        Result := CompareText(AValue, Atom.Value) < 0;
+        Result := AnsiCompareText(AValue, Atom.Value) < 0;
       xfoGE:
         try
           Result := StrToFloat(AValue) >= StrToFloat(Atom.Value);
         except
         end;
       xfoIGE:
-        Result := CompareText(AValue, Atom.Value) >= 0;
+        Result := AnsiCompareText(AValue, Atom.Value) >= 0;
       xfoLE:
         try
           Result := StrToFloat(AValue) <= StrToFloat(Atom.Value);
         except
         end;
       xfoILE:
-        Result := CompareText(AValue, Atom.Value) <= 0;
+        Result := AnsiCompareText(AValue, Atom.Value) <= 0;
     end;
   end;
 

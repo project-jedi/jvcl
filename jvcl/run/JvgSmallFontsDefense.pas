@@ -102,7 +102,7 @@ var
 
   procedure UpdateFont(Font: TFont);
   begin
-    if CompareText(Font.Name, 'MS Sans Serif') = 0 then
+    if AnsiCompareText(Font.Name, 'MS Sans Serif') = 0 then
       Font.Name := 'Arial';
   end;
 

@@ -142,27 +142,27 @@ end;
 
 function TJvDualListDialog.IsLabel1Custom: Boolean;
 begin
-  Result := CompareStr(Label1Caption, RsDualListSrcCaption) <> 0;
+  Result := AnsiCompareStr(Label1Caption, RsDualListSrcCaption) <> 0;
 end;
 
 function TJvDualListDialog.IsLabel2Custom: Boolean;
 begin
-  Result := CompareStr(Label2Caption, RsDualListDestCaption) <> 0;
+  Result := AnsiCompareStr(Label2Caption, RsDualListDestCaption) <> 0;
 end;
 
 function TJvDualListDialog.IsOkBtnCustom: Boolean;
 begin
-  Result := CompareStr(OkBtnCaption, SOKButton) <> 0;
+  Result := AnsiCompareStr(OkBtnCaption, SOKButton) <> 0;
 end;
 
 function TJvDualListDialog.IsCancelBtnCustom: Boolean;
 begin
-  Result := CompareStr(CancelBtnCaption, SCancelButton) <> 0;
+  Result := AnsiCompareStr(CancelBtnCaption, SCancelButton) <> 0;
 end;
 
 function TJvDualListDialog.IsHelpBtnCustom: Boolean;
 begin
-  Result := CompareStr(HelpBtnCaption, SHelpButton) <> 0;
+  Result := AnsiCompareStr(HelpBtnCaption, SHelpButton) <> 0;
 end;
 
 function TJvDualListDialog.Execute: Boolean;

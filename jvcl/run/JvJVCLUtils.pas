@@ -3727,7 +3727,7 @@ end;
 function TargetFileName(const FileName: TFileName): TFileName;
 begin
   Result := FileName;
-  if CompareText(ExtractFileExt(FileName), '.lnk') = 0 then
+  if AnsiCompareText(ExtractFileExt(FileName), '.lnk') = 0 then
     if ResolveLink(GetAppHandle, FileName, Result) <> 0 then
       raise EJVCLException.CreateResFmt(@RsECantGetShortCut, [FileName]);
 end;

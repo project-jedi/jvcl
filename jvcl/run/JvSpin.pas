@@ -665,7 +665,7 @@ begin
     inherited Change;
     FOldValue := Value;
   end;
-  //  if CompareText(inherited Text, OldText) <> 0 then
+  //  if AnsiCompareText(inherited Text, OldText) <> 0 then
   //    inherited Change;
 
   SelStart := OldSelStart;
@@ -913,7 +913,7 @@ begin
     finally
       FChanging := False;
     end;
-    if CompareText(inherited Text, OldText) <> 0 then
+    if AnsiCompareText(inherited Text, OldText) <> 0 then
     begin
       Modified := True;
       Change;
@@ -1477,7 +1477,7 @@ begin
     finally
       FChanging := False;
     end;
-    if CompareText(inherited Text, OldText) <> 0 then
+    if AnsiCompareText(inherited Text, OldText) <> 0 then
     begin
       Modified := True;
       Change;

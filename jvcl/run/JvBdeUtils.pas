@@ -1291,7 +1291,7 @@ begin
     if DestTable.TableType <> ttDefault then
       TableType := DestTable.TableType
     else
-      if (CompareText(ExtractFileExt(DestTable.TableName), TextExt) = 0) then
+      if (AnsiCompareText(ExtractFileExt(DestTable.TableName), TextExt) = 0) then
       TableType := ttASCII;
   end;
   BatchMove := TBatchMove.Create(Application);
@@ -1305,7 +1305,7 @@ begin
       BatchMove.Mappings.Clear;
       if (DestTable.TableType = ttASCII) then
       begin
-        if CompareText(ExtractFileExt(DestTable.TableName), SchemaExt) = 0 then
+        if AnsiCompareText(ExtractFileExt(DestTable.TableName), SchemaExt) = 0 then
           DestTable.TableName := ChangeFileExt(DestTable.TableName, TextExt);
         with Source do
           for I := 0 to FieldCount - 1 do

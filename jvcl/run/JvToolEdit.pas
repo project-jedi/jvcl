@@ -3650,7 +3650,7 @@ end;
 
 function TJvCustomDateEdit.IsCustomTitle: Boolean;
 begin
-  Result := (CompareStr(RsDateDlgCaption, DialogTitle) <> 0) and
+  Result := (AnsiCompareStr(RsDateDlgCaption, DialogTitle) <> 0) and
     (DialogTitle <> ''); // Polaris
 end;
 
@@ -4702,12 +4702,12 @@ end;
 
 function TJvFilenameEdit.IsCustomFilter: Boolean;
 begin
-  Result := CompareStr(RsDefaultFilter, FDialog.Filter) <> 0;
+  Result := AnsiCompareStr(RsDefaultFilter, FDialog.Filter) <> 0;
 end;
 
 function TJvFilenameEdit.IsCustomTitle: Boolean;
 begin
-  Result := CompareStr(RsBrowseCaption, FDialog.Title) <> 0;
+  Result := AnsiCompareStr(RsBrowseCaption, FDialog.Title) <> 0;
 end;
 
 procedure TJvFilenameEdit.PopupDropDown(DisableEdit: Boolean);

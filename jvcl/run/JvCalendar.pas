@@ -633,7 +633,7 @@ begin
     S := Format('%.4d%.2d', [Year, Month]);
 
   for Result := 0 to Count - 1 do
-    if CompareText(Names[Result], S) = 0 then
+    if AnsiCompareText(Names[Result], S) = 0 then
       Exit;
   Result := -1;
 end;

@@ -1417,6 +1417,10 @@ resourcestring
   RsErrParameterFileExistOverwrite = 'Parameter %s: The file "%s" exists! Overwrite?';
   RsErrParameterDirectoryNotExist = 'Parameter %s: The directory "%s" does not exist!';
 
+//=== JvParameterListTools.pas ===============================================
+resourcestring
+  RsSelectCaption = 'Select...';
+
 //=== JvParserForm.pas =======================================================
 resourcestring
   RsNewObject = 'New';
