@@ -55,7 +55,7 @@ uses
   {$IFDEF LINUX}
   Xlib, QStdCtrls, StrUtils,
   {$ENDIF LINUX}
-  SysUtils, Classes, Graphics, Clipbrd,
+  SysUtils, Classes, Graphics, Clipbrd, Controls,
   {$IFDEF VisualCLX}
   Qt, QWindows,
   {$ENDIF VisualCLX}
@@ -999,6 +999,7 @@ function TextToValText(const AValue: string): string;
 
 {$IFDEF VCL}
 // VisualCLX compatibility functions
+function DrawText(DC: HDC; const Text: TCaption; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawTextEx(Canvas: TCanvas; lpchText: PChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
@@ -8454,6 +8455,11 @@ end;
 function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 begin
   Result := DrawText(Canvas, PChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified
+end;
+
+function DrawText(DC: HDC; const Text: TCaption; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+begin
+  Result := Windows.DrawText(DC, PChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified
 end;
 
 function DrawTextEx(Canvas: TCanvas; lpchText: PChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
