@@ -30,6 +30,7 @@
       - Exposed DropDownCount to specify the number of rows in a drop down
         list (Mantis #1646).
       - Fixed minor issue regarding item heights (Mantis #1647).
+      - Added default bkTile to TJvCustomInspector.BevelKind property.
     Apr 23, 2004, Marcel Bestebroer:
       - Added OnItemValueError event, which is fired when an exception occurs
         during the Item's Apply method. If no handler is assigned, the
@@ -481,6 +482,9 @@ type
       write SetAfterItemCreate;
     property BeforeItemCreate: TInspectorItemBeforeCreateEvent
       read GetBeforeItemCreate write SetBeforeItemCreate;
+    {$IFDEF VCL}
+    property BevelKind default bkTile;
+    {$ENDIF VCL}
     property BeforeSelection: TInspectorItemBeforeSelectEvent read GetBeforeSelection write SetBeforeSelection;
     property Painter: TJvInspectorPainter read GetPainter write SetPainter;
     property PaintGeneration: Integer read FPaintGen;
