@@ -35,13 +35,13 @@ unit JvTypes;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Controls, Forms, Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QTypes, Types, QControls, QForms, QGraphics, QWindows,
+  Qt, QTypes, Types, QControls, QForms, QGraphics, QWindows, JvWStrUtils,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
   JvConsts, JvResources;
 
 const
@@ -291,7 +291,7 @@ type
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   THintString = WideString;
-  THintStringList = TWideStringList;
+  THintStringList = TWStringList;
   {$ENDIF VisualCLX}
 
 type
