@@ -556,6 +556,7 @@ function TJvNTEventLogRecord.GetString(Index: Cardinal): string;
 var
   P: PChar;
 begin
+  Result := '';
   if Index < StringCount then
   begin
     P := PChar(FCurrentRecord) + PEventLogRecord(FCurrentRecord)^.StringOffset;
@@ -564,6 +565,7 @@ begin
       Inc(P, StrLen(P) + 1);
       Dec(Index);
     end;
+    Result := StrPas(P);
   end;
 end;
 
