@@ -44,7 +44,7 @@ type
   TJvUrlGrabberThreadClass = class of TJvUrlGrabberThread;
 
   // a trick for the Delphi editor that allows to have a sub object
-  // for each member of the a TJvUrlGrabberDefaultPropertiesList
+  // for each member of a TJvUrlGrabberDefaultPropertiesList
   // Because an indexed property cannot be published, the editor
   // for TJvUrlGrabberDefaultPropertiesList enumerates all the
   // items in the list, and passes the EditorTrick property of
@@ -351,6 +351,8 @@ var
   // url grabber classes
   GJvUrlGrabberClassList: TJvUrlGrabberClassList = nil;
 
+procedure RegisterUrlGrabberClasses; forward;
+
 function JvUrlGrabberClassList: TJvUrlGrabberClassList;
 begin
   if not Assigned(GJvUrlGrabberClassList) then
@@ -359,9 +361,7 @@ begin
     GJvUrlGrabberClassList := TJvUrlGrabberClassList.Create;
     AddFinalizeObjectNil(sUnitName, TObject(GJvUrlGrabberClassList));
 
-    // register the classes
-    GJvUrlGrabberClassList.Add(TJvFtpUrlGrabber);
-    GJvUrlGrabberClassList.Add(TJvHttpUrlGrabber);
+    RegisterUrlGrabberClasses;
   end;
   Result := GJvUrlGrabberClassList;
 end;
@@ -625,13 +625,13 @@ end;
 
 procedure TJvFtpUrlGrabberThread.Execute;
 const
-  cPassive: array [Boolean] of DWORD = (0, INTERNET_FLAG_PASSIVE);
+  cPassive: array[Boolean] of DWORD = (0, INTERNET_FLAG_PASSIVE);
 var
   hSession, hHostConnection, hDownload: HINTERNET;
   HostName, FileName: string;
   UserName, Password: PChar;
   BytesRead, TotalBytes: DWORD;
-  Buf: array [0..1023] of Byte;
+  Buf: array[0..1023] of Byte;
   dwFileSizeHigh: DWORD;
   Buffer: Pointer;
   dwBufLen, dwIndex: DWORD;
@@ -763,8 +763,7 @@ var
   Buffer: PChar;
   dwBufLen, dwIndex, dwBytesRead, dwTotalBytes: DWORD;
   HasSize: Boolean;
-  Buf: array [0..1024] of Byte;
-
+  Buf: array[0..1024] of Byte;
 begin
   // (rom) secure thread against exceptions
   Buffer := nil;
@@ -961,6 +960,12 @@ destructor TJvUrlGrabberDefaultProperties.Destroy;
 begin
   FEditorTrick.Free;
   inherited Destroy;
+end;
+
+procedure RegisterUrlGrabberClasses;
+begin
+  GJvUrlGrabberClassList.Add(TJvFtpUrlGrabber);
+  GJvUrlGrabberClassList.Add(TJvHttpUrlGrabber);
 end;
 
 initialization
