@@ -12,3 +12,4 @@ brc32 JvMMReg.rc -r -fo..\Resources\JvMMReg.dcr
 brc32 JvNetReg.rc -r -fo..\Resources\JvNetReg.dcr
 brc32 JvStdCtrlsReg.rc -r -fo..\Resources\JvStdCtrlsReg.dcr
 brc32 JvSystemReg.rc -r -fo..\Resources\JvSystemReg.dcr
+brc32 JvPluginReg.rc -r -fo..\Resources\JvPluginReg.dcr

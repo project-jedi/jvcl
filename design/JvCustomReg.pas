@@ -15,15 +15,14 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   ExptIntf, ToolsApi,
-  JclSchedule, 
+  JclSchedule,
 
   JvTrayIcon, JvGammaPanel, JvInspector, JvLinkLabel,
-  JvBandForms, JvBandObjectDLLWizard, JvBandObjectDLLWizardForm, 
   JvLookOut, JvOutlookBar, JvRadioControl, JvScheduledEvents, JvThumbImage,
   JvThumbnails, JvThumbviews, JvTimeLine, JvTMTimeLine, JvBalloonHint,
-  JvPlugin, JvPluginManager, JvPluginWizard,
   JvValidateEdit, JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvHLParser,
-  JvTimeLineEditor, JvHLEditEditor, JvScheduleEditors, JvOutlookBarEditors, JvLookoutEditor;
+  JvTimeLineEditor, JvHLEditEditor, JvScheduleEditors,
+  JvOutlookBarEditors, JvLookoutEditor;
 
 
 {$R ..\resources\JvCustomReg.dcr}
@@ -36,8 +35,7 @@ begin
     TJvLookout, TJvLookOutPage, TJvLookOutButton,
     TJvExpress, TJvExpressButton, TJvValidateEdit,
     TJvOutlookBar, TJvRadioControl, TJvScheduledEvents,
-    TJvThumbImage, TJvTimeLine, TJvTMTimeLine, TJvBalloonHint
-    ,TJvPluginManager,
+    TJvThumbImage, TJvTimeLine, TJvTMTimeLine, TJvBalloonHint,
     TJvEditor, TJvHLEditor, TJvHLEdPropDlg
     ]);
 
@@ -66,9 +64,7 @@ begin
   RegisterComponentEditor(TJvLookOutPage, TJvLookOutPageEditor);
   RegisterComponentEditor(TJvExpress, TJvExpressEditor);
   RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventComponentEditor);
-  RegisterCustomModule(TJvBandForm, TCustomModule);
-  RegisterPackageWizard(TJvBandObjectDLLWizard.Create);
-  RegisterLibraryExpert(TJvPluginWizard.Create)
+  RegisterClass(TJvLookoutPage);
 end;
 
 end.

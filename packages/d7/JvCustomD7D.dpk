@@ -30,21 +30,13 @@ requires
   JvCustomD7R,
   designide,
   JvCoreD7D,
-  vcl,
-  rtl,
-  vclactnband,
-  vclx,
   dclstd;
 
 contains
   JvCustomReg in '..\..\design\JvCustomReg.pas',
   JvOutlookBarForm in '..\..\design\JvOutlookBarForm.pas' {FrmOLBEditor},
   JvOutlookBarEditors in '..\..\design\JvOutlookBarEditors.pas',
-  JvBandObjectDLLWizard in '..\..\design\JvBandObjectDLLWizard.pas',
-  JvBandObjectDLLWizardForm in '..\..\design\JvBandObjectDLLWizardForm.pas' {zWizardForm},
   JvTimeLineEditor in '..\..\design\JvTimeLineEditor.pas',
-  JvPluginWizard in '..\..\design\JvPluginWizard.pas',
-  JvPluginParamsForm in '..\..\design\JvPLuginParamsForm.pas' {frmPluginParams},
   JVHLEditEditor in '..\..\design\JvHLEditEditor.pas',
   JvScheduleEditors in '..\..\design\JvScheduleEditors.pas',
   JvScheduleEditorForm in '..\..\design\JvScheduleEditorForm.pas' {FrmScheduleEditor},
