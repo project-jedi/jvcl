@@ -342,6 +342,8 @@ type
     function IntelSpecific: TIntelSpecific;
     function CyrixSpecific: TCyrixSpecific;
     function AMDSpecific: TAMDSpecific;
+    function TransmetaSpecific: TTransmetaSpecific;
+    function ViaSpecific: TViaSpecific;
   public
     property Features: Cardinal read GetFeatures write SetFeatures stored False;
     property TotalCycles: Cardinal read GetInCycles write SetInCycles stored False;
@@ -1795,13 +1797,23 @@ end;
 //=== { TJvCPUInfo } =========================================================
 
 function TJvCPUInfo.AMDSpecific: TAMDSpecific;
+var
+  ACpuInfo: TCpuInfo;
 begin
-  Result := GetCPUInfo.AMDSpecific;
+  ACpuInfo := GetCPUInfo;
+  if (ACpuInfo.CpuType = CPU_TYPE_AMD)
+    then Result := ACpuInfo.AMDSpecific
+    else FillChar(Result,SizeOf(Result),0);
 end;
 
 function TJvCPUInfo.CyrixSpecific: TCyrixSpecific;
+var
+  ACpuInfo: TCpuInfo;
 begin
-  Result := GetCPUInfo.CyrixSpecific;
+  ACpuInfo := GetCPUInfo;
+  if (ACpuInfo.CpuType = CPU_TYPE_CYRIX)
+    then Result := ACpuInfo.CyrixSpecific
+    else FillChar(Result,SizeOf(Result),0);
 end;
 
 function TJvCPUInfo.Get3DNow: Boolean;
@@ -1955,8 +1967,13 @@ begin
 end;
 
 function TJvCPUInfo.IntelSpecific: TIntelSpecific;
+var
+  ACpuInfo: TCpuInfo;
 begin
-  Result := GetCPUInfo.IntelSpecific;
+  ACpuInfo := GetCPUInfo;
+  if (ACpuInfo.CpuType = CPU_TYPE_INTEL)
+    then Result := ACpuInfo.IntelSpecific
+    else FillChar(Result,SizeOf(Result),0);
 end;
 
 procedure TJvCPUInfo.Set3DNow(const Value: Boolean);
@@ -2092,6 +2109,26 @@ end;
 procedure TJvCPUInfo.SetVendorIDString(const Value: string);
 begin
   RaiseReadOnly;
+end;
+
+function TJvCPUInfo.TransmetaSpecific: TTransmetaSpecific;
+var
+  ACpuInfo: TCpuInfo;
+begin
+  ACpuInfo := GetCPUInfo;
+  if (ACpuInfo.CpuType = CPU_TYPE_TRANSMETA)
+    then Result := ACpuInfo.TransmetaSpecific
+    else FillChar(Result,SizeOf(Result),0);
+end;
+
+function TJvCPUInfo.ViaSpecific: TViaSpecific;
+var
+  ACpuInfo: TCpuInfo;
+begin
+  ACpuInfo := GetCPUInfo;
+  if (ACpuInfo.CpuType = CPU_TYPE_VIA)
+    then Result := ACpuInfo.ViaSpecific
+    else FillChar(Result,SizeOf(Result),0);
 end;
 
 //=== { TJvBIOSInfo } ========================================================
