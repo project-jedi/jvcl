@@ -202,7 +202,7 @@ function TJvSAL.boolPop: boolean;
 begin
   dec(bsp);
   if bsp < 0 then
-    raise Exception.Create(sBooleanStackUnderflow);
+    raise EJVCLException.Create(RsEBooleanStackUnderflow);
   result := bstack[bsp];
 end;
 
@@ -211,7 +211,7 @@ begin
   bstack[bsp] := aValue;
   inc(bsp);
   if bsp > stacklimit then
-    raise exception.create(sBooleanStackOverflow);
+    raise EJVCLException.Create(RsEBooleanStackOverflow);
 end;
 
 constructor TJvSAL.create(AOwner: TComponent);
@@ -259,7 +259,7 @@ begin
       application.ProcessMessages;
     end;
     if FStop then
-      raise exception.create(sProgramStopped);
+      raise EJVCLException.Create(RsEProgramStopped);
   until pc >= c;
 end;
 
@@ -302,17 +302,17 @@ begin
     begin
       p2 := charfrom(p, ' ', s);
       if p2 = 0 then
-        raise exception.create(Format(sUnterminatedIncludeDirectiveNears, [copy(s, p, 50)]));
+        raise EJVCLException.CreateFmt(RsEUnterminatedIncludeDirectiveNears, [Copy(s, p, 50)]);
       fn := trim(copy(s, p + length(fuseDirective), p2 - p - length(fuseDirective)));
       if not assigned(onGetUnit) then
-        raise exception.create(sOngetUnitEventHandlerIsNotAssigned);
+        raise EJVCLException.Create(RsEOngetUnitEventHandlerIsNotAssigned);
       handled := false;
       fn := lowercase(fn);
       if FUnits.IndexOf(fn) = -1 then
       begin
         onGetUnit(self, fn, theunit, handled);
         if not handled then
-          raise Exception.CreateFmt(sCouldNotIncludeUnits, [fn]);
+          raise EJVCLException.CreateFmt(RsECouldNotIncludeUnits, [fn]);
         theunit := stringreplace(theunit, cr, ' ', [rfreplaceall]);
         delete(s, p, p2 - p);
         insert(theunit, s, p);
@@ -326,7 +326,7 @@ begin
     begin // default= {
       p := pos(fEndOfComment, s); // default= }
       if p = 0 then
-        raise EJVCLException.CreateFmt(sUnterminatedCommentNears, [s]);
+        raise EJVCLException.CreateFmt(RsEUnterminatedCommentNears, [s]);
       delete(s, 1, p + length(fEndOfComment) - 1);
       s := trim(s);
     end
@@ -372,7 +372,7 @@ begin
         if pos('proc-', token) = 1 then // do not localize
         begin // begin of procedure
           if pos('end-proc', s) = 0 then // do not localize
-            raise exception.createFmt(sUnterminatedProcedureNears, [s]);
+            raise EJVCLException.CreateFmt(RsEUnterminatedProcedureNears, [s]);
           apo(token, xbosub);
         end
         else if token = 'end-proc' then // do not localize
@@ -382,7 +382,7 @@ begin
         else if pos('var-', token) = 1 then // do not localize
         begin // define variable
           if atoms.IndexOf(token) <> -1 then
-            raise exception.CreateFmt(sVariablesAllreadyDefineds, [token, s]);
+            raise EJVCLException.CreateFmt(RsEVariablesAllreadyDefineds, [token, s]);
           a := TJvAtom.create;
           a.actor := xDefVariable;
           atoms.AddObject(token, a);
@@ -392,7 +392,7 @@ begin
           // find address
           i := atoms.IndexOf('var-' + copy(token, 2, maxint)); // do not localize
           if i = -1 then
-            raise exception.CreateFmt(sVariablesIsNotYetDefineds, [token, s]);
+            raise EJVCLException.CreateFmt(RsEVariablesIsNotYetDefineds, [token, s]);
           a := TJvAtom.create;
           a.Value := i;
           a.actor := xVariable;
@@ -406,7 +406,7 @@ begin
             apo(Token, aActor);
         end
         else
-          raise exception.CreateFmt(sProceduresNears, [token, s]);
+          raise EJVCLException.CreateFmt(RsEProceduresNears, [token, s]);
       end
     end
   end;
@@ -420,7 +420,7 @@ begin
       s := 'proc-' + copy(s, 1, length(s) - 2); // do not localize
       p := atoms.indexof(s);
       if p = -1 then
-        raise exception.CreateFmt(sUndefinedProcedures, [s]);
+        raise EJVCLException.CreateFmt(RsEUndefinedProcedures, [s]);
       TJvAtom(atoms.objects[i]).value := p;
     end;
   end;
@@ -539,7 +539,7 @@ begin
     inc(fpc);
     if op = 'end-proc' then exit; // do not localize
   until pc >= c;
-  raise exception.Create(sCouldNotFindEndOfProcedure);
+  raise EJVCLException.Create(RsECouldNotFindEndOfProcedure);
 end;
 
 procedure TJvSAL.SetonGetUnit(const Value: TOnGetUnitEvent);

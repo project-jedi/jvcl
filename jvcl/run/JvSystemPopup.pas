@@ -78,7 +78,7 @@ type
 implementation
 
 uses
-  JvWndProcHook;
+  JvWndProcHook, JvResources;
 
 type
   TMenuItemProtectedAccess = class(TMenuItem);
@@ -214,8 +214,6 @@ begin
 end;
 
 procedure TJvSystemPopup.Hook;
-const
-  cExceptionMessage = 'TJvSystemPopup.Hook: already hooked';
 begin
   { Hook the application's window or the owner window of TJvSystemPopup }
   case FPosition of
@@ -226,14 +224,14 @@ begin
         if not Assigned(FOwnerForm) then
           Exit;
         if FIsHooked then
-          raise EJVCLException.Create(cExceptionMessage);
+          raise EJVCLException.Create(RsEAlreadyHooked);
         RegisterWndProcHook(FOwnerForm, HandleWndProc, hoBeforeMsg);
         FIsHooked := True;
       end;
     ppApplication:
       begin
         if FIsHooked then
-          raise EJVCLException.Create(cExceptionMessage);
+          raise EJVCLException.Create(RsEAlreadyHooked);
         Application.HookMainWindow(HandleWndProc);
         FIsHooked := True;
       end;

@@ -164,11 +164,12 @@ var
   P: Longint;
 begin
   Result := Graphics.GraphicFilter(TGraphic);
+  // (rom) better clean that up
   P := Pos('(', Result);
-  InsertStr(Result, '*.pcx;*.tga;', p);
+  InsertStr(Result, RsPcxTga, p);
   P := Pos('|', Result);
-  InsertStr(Result, '*.pcx;*.tga;', p);
-  Result := Result + sFileFilters;
+  InsertStr(Result, RsPcxTga, p);
+  Result := Result + RsFileFilters;
     //Graphics.GraphicFilter(TGraphic)+'|PCX File|*.PCX|Targa File|*.TGA';
   { TODO : Add in the filter the rest of the images we support but are not registered to the Graphics unit }
 end;
@@ -408,7 +409,7 @@ begin
     Gr.SaveToFile(AFile);
   end
   else
-    raise Exception.CreateFmt(sUnknownFileExtension, [Ext]);
+    raise Exception.CreateFmt(RsEUnknownFileExtension, [Ext]);
 end;
 
 procedure TJvThumbImage.Save;

@@ -37,7 +37,7 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs,
   {$ENDIF}
-  JvSAL, JvConsts, JvTypes, Math{$IFDEF DELPHI6_UP}, Variants{$ENDIF};
+  JvSAL, JvTypes, Math{$IFDEF DELPHI6_UP}, Variants{$ENDIF};
 
 type
   TJvSALCore = class(TComponent)
@@ -232,14 +232,14 @@ end;
 procedure TJvSALCore.xdec;
 begin
   if VarIsEmpty(sal.variable.value) then
-    raise exception.CreateFmt(sVariablesIsNotInitialized, [sal.variablename]);
+    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [sal.variablename]);
   sal.variable.Value := sal.variable.value - 1;
 end;
 
 procedure TJvSALCore.xdeczero; // dec?  decrements a variable and test for zero
 begin
   if VarIsEmpty(sal.variable.value) then
-    raise exception.CreateFmt(sVariablesIsNotInitialized, [sal.variablename]);
+    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [sal.variablename]);
   sal.variable.Value := sal.variable.value - 1;
   if sal.variable.value = 0 then
     sal.boolpush(true)
@@ -253,7 +253,7 @@ var
 begin
   v2 := sal.pop;
   if v2 = 0 then
-    raise exception.create(sDivisionByZeroError);
+    raise EJVCLException.Create(RsEDivisionByZeroError);
   v1 := sal.pop;
   sal.push(v1 / v2);
 end;
@@ -292,7 +292,7 @@ begin
     end;
     sal.pc := sal.pc + 1;
   end;
-  raise exception.create(sMissingendselect);
+  raise EJVCLException.Create(RsEMissingendselect);
 end;
 
 procedure TJvSALCore.xEndIf;
@@ -354,7 +354,7 @@ end;
 procedure TJvSALCore.xinc;
 begin
   if VarIsEmpty(sal.variable.value) then
-    raise exception.CreateFmt(sVariablesIsNotInitialized, [sal.variablename]);
+    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [sal.variablename]);
   sal.variable.Value := sal.variable.value + 1;
 end;
 
@@ -455,24 +455,24 @@ var
   v1: variant;
 begin
   if VarIsEmpty(sal.variable.value) then
-    raise exception.CreateFmt(sVariablesIsNotInitialized, [sal.variablename]);
+    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [sal.variablename]);
   v1 := sal.pop;
   if v1 = 0 then
-    raise exception.create(sDivisionByZeroError);
+    raise EJVCLException.Create(RsEDivisionByZeroError);
   sal.variable.Value := sal.variable.value / v1;
 end;
 
 procedure TJvSALCore.xvMul; // *=
 begin
   if VarIsEmpty(sal.variable.value) then
-    raise exception.CreateFmt(sVariablesIsNotInitialized, [sal.variablename]);
+    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [sal.variablename]);
   sal.variable.Value := sal.variable.value * sal.pop;
 end;
 
 procedure TJvSALCore.xvSub; // -=
 begin
   if VarIsEmpty(sal.variable.value) then
-    raise exception.CreateFmt(sVariablesIsNotInitialized, [sal.variablename]);
+    raise EJVCLException.CreateFmt(RsEVariablesIsNotInitialized, [sal.variablename]);
   sal.variable.Value := sal.variable.value - sal.pop;
 end;
 

@@ -192,7 +192,7 @@ begin
     if Length(Trim(FNames[I])) < 1 then
       Continue;                         { skip empty ID's }
     if FLastProc > MaxProfEntries then
-      raise EJVCLException.CreateFmt(sMaxNumberOfIDsExceededd,
+      raise EJVCLException.CreateFmt(RsEMaxNumberOfIDsExceededd,
         [MaxProfEntries - 1]);
     Inc(FLastProc);
     with FProfileInfo[FLastProc] do
@@ -212,7 +212,7 @@ begin
   begin
     Snap := GetTickCount;
     if FStackSize > MaxStackSize then
-      raise EJVCLException.CreateFmt(sMaxStackSizeExceededd,
+      raise EJVCLException.CreateFmt(RsEMaxStackSizeExceededd,
         [MaxStackSize]);
     Inc(FStackSize);
 
@@ -367,7 +367,7 @@ begin
         LItem.SubItems.Add(EmptyLine);
       end;
     end;
-  Caption := Format(ssTotalElapsedTimedms, [sDefCaption, TotalSum]);
+  Caption := Format(RsTotalElapsedTimedms, [RsDefCaption, TotalSum]);
   lvReport.Items.EndUpdate;
 end;
 
@@ -419,11 +419,11 @@ var
 begin
   with TSaveDialog.Create(nil) do
   begin
-    Filter := sTextFormatsasctxtinfdocAllFiles;
+    Filter := RsTextFormatsasctxtinfdocAllFiles;
     if Execute then
     begin
       OutList := TStringList.Create;
-      OutList.Add(Format(sDefHeader, [DateToStr(Now), GetUserNamePas,
+      OutList.Add(Format(RsDefHeader, [DateToStr(Now), GetUserNamePas,
         GetComputerNamePas]));
       OutList.Add(DefHeader2);
       S := '';

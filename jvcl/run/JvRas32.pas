@@ -177,7 +177,7 @@ begin
     FPHandle := Application.Handle;
   FEntryIndex := -1;
 
-  FDll := LoadLibrary(PChar(RC_RasDllName));
+  FDll := LoadLibrary(PChar(RsRasDllName));
   if FDll <> 0 then
   begin
     FRasDial := GetProcAddress(FDll, 'RasDialA');
@@ -192,7 +192,7 @@ begin
     FRasEditPhonebookEntry := GetProcAddress(FDll, 'RasEditPhonebookEntryA');
   end
   else
-    raise EJvRasError.Create(RC_RasError);
+    raise EJvRasError.Create(RsERasError);
 end;
 
 destructor TJvRas32.Destroy;

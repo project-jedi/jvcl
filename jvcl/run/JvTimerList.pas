@@ -51,7 +51,7 @@ interface
 
 uses
   Windows,
-  Messages, Classes {, JvComponent};
+  Messages, Classes;
 
 const
   DefaultInterval = 1000;
@@ -155,7 +155,7 @@ implementation
 
 uses
   Consts, Forms, SysUtils, Math,
-  JvJVCLUtils, JvResources;
+  JvJVCLUtils, JvTypes, JvResources;
 
 const
   MinInterval = 100; { 0.1 sec }
@@ -482,7 +482,7 @@ end;
 constructor TJvTimerEvents.Create(AOwner: TPersistent);
 begin
   if not (AOwner is TJvTimerList) then
-    raise Exception.Create(sOwnerMustBeTJvTimerList);
+    raise EJVCLException.Create(RsEOwnerMustBeTJvTimerList);
   inherited Create(AOwner,TJvTimerEvent);
   FParent := TJvTimerList(AOwner); 
 end;

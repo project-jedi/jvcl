@@ -1101,7 +1101,7 @@ end;
 constructor TJvTFCustomImageMap.Create(anAppt: TJvTFAppt);
 begin
   if not Assigned(anAppt) then
-    raise EJvTFScheduleManagerError.Create(sCouldNotCreateCustomImageMap);
+    raise EJvTFScheduleManagerError.Create(RsECouldNotCreateCustomImageMap);
 
   inherited Create;
   FAppt := anAppt;
@@ -1325,7 +1325,7 @@ end;
 constructor TJvTFAppt.Create(Serv: TJvTFScheduleManager; ApptID: string);
 begin
   if not Assigned(Serv) then
-    raise EJvTFScheduleManagerError.Create(sCouldNotCreateAppointmentObject);
+    raise EJvTFScheduleManagerError.Create(RsECouldNotCreateAppointmentObject);
 
   inherited Create;
 
@@ -1462,7 +1462,7 @@ begin
   if Assigned(Serv) then
     Serv.Notify(Sender, Code)
   else
-    raise EJvTFScheduleManagerError.Create(sScheduleManagerNotificationFailedSc);
+    raise EJvTFScheduleManagerError.Create(RsEScheduleManagerNotificationFailedSc);
 end;
 
 procedure TJvTFAppt.NotifySchedule(Sched: TJvTFSched; Sender: TObject;
@@ -1471,7 +1471,7 @@ begin
   if Assigned(Sched) then
     Sched.Notify(Sender, Code)
   else
-    raise EJvTFScheduleManagerError.Create(sScheduleNotificationFailed);
+    raise EJvTFScheduleManagerError.Create(RsEScheduleNotificationFailed);
 end;
 
 function TJvTFAppt.GetConnection(Index: integer): TJvTFSched;
@@ -1605,7 +1605,7 @@ begin
   begin
     if trunc(NewStartDate) = trunc(NewEndDate) then
       if Frac(NewStartTime) >= Frac(NewEndTime) then
-        raise EJvTFScheduleManagerError.Create(sInvalidStartAndEndTimes);
+        raise EJvTFScheduleManagerError.Create(RsEInvalidStartAndEndTimes);
 
     FStartDate := NewStartDate;
     FEndDate := NewEndDate;
@@ -1621,7 +1621,7 @@ begin
     end
   end
   else
-    raise EJvTFScheduleManagerError.Create(sInvalidStartAndEndDates);
+    raise EJvTFScheduleManagerError.Create(RsEInvalidStartAndEndDates);
 end;
 
 procedure TJvTFAppt.SetModified;
@@ -1953,7 +1953,7 @@ begin
   if Assigned(Serv) then
     Serv.Notify(Sender, Code)
   else
-    raise EJvTFScheduleManagerError.Create(sScheduleManagerNotificationFailedSc);
+    raise EJvTFScheduleManagerError.Create(RsEScheduleManagerNotificationFailedSc);
 end;
 
 procedure TJvTFSched.NotifyAppt(Appt: TJvTFAppt; Sender: TObject;
@@ -1962,7 +1962,7 @@ begin
   if Assigned(Appt) then
     Appt.Notify(Sender, Code)
   else
-    raise EJvTFScheduleManagerError.Create(sAppointmentNotificationFailed);
+    raise EJvTFScheduleManagerError.Create(RsEAppointmentNotificationFailed);
 end;
 
 function TJvTFSched.GetConControl(Index: integer): TJvTFControl;
@@ -3161,7 +3161,7 @@ begin
   Result := nil;
   RequestAppt(ID, Result, New);
   if not New then
-    raise EJvTFScheduleManagerError.Create(sCouldNotCreateNewAppointment);
+    raise EJvTFScheduleManagerError.Create(RsECouldNotCreateNewAppointment);
 end;
 
 procedure TJvTFScheduleManager.PostAppts;
@@ -3251,7 +3251,7 @@ begin
       RefreshConnections(Appt.Connections[I]);
   end
   else
-    raise EJvTFScheduleManagerError.Create(sInvalidTriggerForRefreshControls)
+    raise EJvTFScheduleManagerError.Create(RsEInvalidTriggerForRefreshControls)
 end;
 
 procedure TJvTFScheduleManager.Flush(All: boolean); //param All defaults to False
@@ -3546,7 +3546,7 @@ begin
     for I := 0 to ApptCount - 1 do
       ReconcileRefresh(Appts[I])
   else
-    raise EJvTFScheduleManagerError.Create(sInvalidScopeInReconcileRefresh);
+    raise EJvTFScheduleManagerError.Create(RsEInvalidScopeInReconcileRefresh);
 end;
 
 procedure TJvTFScheduleManager.SetRefreshAutoReconcile(Value: boolean);
@@ -3935,7 +3935,7 @@ begin
   if Assigned(Serv) then
     Serv.Notify(Sender, Code)
   else
-    raise EJvTFScheduleManagerError.Create(sScheduleManagerNotificationFailedSc);
+    raise EJvTFScheduleManagerError.Create(RsEScheduleManagerNotificationFailedSc);
 end;
 
 procedure TJvTFControl.CNRequestRefresh(var Msg: TCNRequestRefresh);
@@ -4028,7 +4028,7 @@ begin
     if Assigned(ScheduleManager) then
       Result := ScheduleManager.RequestSchedule(Self, SchedName, SchedDate)
     else
-      raise EJvTFScheduleManagerError.Create(sCouldNotRetrieveSchedule);
+      raise EJvTFScheduleManagerError.Create(RsECouldNotRetrieveSchedule);
 end;
 
 procedure TJvTFControl.ReleaseSchedule(SchedName: string;
@@ -4041,7 +4041,7 @@ begin
     if Assigned(ScheduleManager) then
       ScheduleManager.ReleaseSchedule(Self, SchedName, SchedDate)
     else
-      raise EJvTFScheduleManagerError.Create(sCouldNotReleaseSchedule);
+      raise EJvTFScheduleManagerError.Create(RsECouldNotReleaseSchedule);
 
 end;
 
@@ -4150,7 +4150,7 @@ begin
   if Assigned(Serv) then
     Serv.Notify(Sender, Code)
   else
-    raise EJvTFScheduleManagerError.Create(sScheduleManagerNotificationFailedSc);
+    raise EJvTFScheduleManagerError.Create(RsEScheduleManagerNotificationFailedSc);
 end;
 
 procedure TJvTFComponent.ProcessBatches;
@@ -4174,7 +4174,7 @@ begin
     if Assigned(ScheduleManager) then
       ScheduleManager.ReleaseSchedule(Self, SchedName, SchedDate)
     else
-      raise EJvTFScheduleManagerError.Create(sCouldNotReleaseSchedule);
+      raise EJvTFScheduleManagerError.Create(RsECouldNotReleaseSchedule);
 end;
 
 procedure TJvTFComponent.ReleaseSchedules;
@@ -4210,7 +4210,7 @@ begin
     if Assigned(ScheduleManager) then
       Result := ScheduleManager.RequestSchedule(Self, SchedName, SchedDate)
     else
-      raise EJvTFScheduleManagerError.Create(sCouldNotRetrieveSchedule);
+      raise EJvTFScheduleManagerError.Create(RsECouldNotRetrieveSchedule);
 end;
 
 function TJvTFComponent.ScheduleCount: integer;
@@ -4319,7 +4319,7 @@ begin
       Printer.BeginDoc;
   end
   else
-    raise EJvTFPrinterError.Create(sCouldNotCreateADocumentBecauseA);
+    raise EJvTFPrinterError.Create(RsECouldNotCreateADocumentBecauseA);
 end;
 
 procedure TJvTFPrinter.CreateLayout;
@@ -4369,7 +4369,7 @@ begin
     Exit;
 
   if State <> spsCreating then
-    raise EJvTFPrinterError.Create(sCouldNotFinishDocumentBecauseNo);
+    raise EJvTFPrinterError.Create(RsECouldNotFinishDocumentBecauseNo);
 
   FPageCount := FBodies.Count;
   FState := spsAssembling;
@@ -4475,7 +4475,7 @@ end;
 function TJvTFPrinter.GetDocDateTime: TDateTime;
 begin
   if State = spsNoDoc then
-    raise EJvTFPrinterError.Create(sDocumentDoesNotExist);
+    raise EJvTFPrinterError.Create(RsEDocumentDoesNotExist);
 
   Result := FDocDateTime;
 end;
@@ -4510,17 +4510,17 @@ end;
 function TJvTFPrinter.GetPage(Index: integer): TMetafile;
 begin
   if DirectPrint then
-    raise EJvTFPrinterError.Create(sDocumentPagesCannotBeAccessedIf);
+    raise EJvTFPrinterError.Create(RsEDocumentPagesCannotBeAccessedIf);
 
   if State <> spsFinished then
-    raise EJvTFPrinterError.Create(sDocumentPagesAreInaccessibleUntil);
+    raise EJvTFPrinterError.Create(RsEDocumentPagesAreInaccessibleUntil);
   Result := TMetafile(FPages.Objects[Index]);
 end;
 
 function TJvTFPrinter.GetPageCount: integer;
 begin
   case State of
-    spsNoDoc: raise EJvTFPrinterError.Create(sCouldNotRetrievePageCount);
+    spsNoDoc: raise EJvTFPrinterError.Create(RsECouldNotRetrievePageCount);
     spsCreating: Result := FBodies.Count;
     spsAssembling: Result := FPageCount;
     spsFinished: Result := FPages.Count;
@@ -4651,9 +4651,9 @@ begin
     Exit;
 
   if State <> spsFinished then
-    raise EJvTFPrinterError.Create(sOnlyAFinishedDocumentCanBePrinted);
+    raise EJvTFPrinterError.Create(RsEOnlyAFinishedDocumentCanBePrinted);
   if PageCount = 0 then
-    raise EJvTFPrinterError.Create(sThereAreNoPagesToPrint);
+    raise EJvTFPrinterError.Create(RsEThereAreNoPagesToPrint);
 
   if Assigned(FOnPrintProgress) then
     FOnPrintProgress(Self, 0, PageCount);
@@ -4705,7 +4705,7 @@ var
   I: integer;
 begin
   if State <> spsFinished then
-    raise EJvTFPrinterError.Create(sDocumentMustBeFinishedToSaveToFile);
+    raise EJvTFPrinterError.Create(RsEDocumentMustBeFinishedToSaveToFile);
 
   for I := 0 to PageCount - 1 do
     Pages[I].SaveToFile(BaseFileName + '_' + IntToStr(I + 1) + '.emf');
@@ -4783,7 +4783,7 @@ end;
 procedure TJvTFPrinter.SetPropertyCheck;
 begin
   if (State <> spsNoDoc) and not ConvertingProps then
-    raise EJvTFPrinterError.Create(sThisPropertyCannotBeChangedIfA);
+    raise EJvTFPrinterError.Create(RsEThisPropertyCannotBeChangedIfA);
 end;
 
 procedure TJvTFPrinter.SetTitle(Value: string);
@@ -4844,7 +4844,7 @@ constructor TJvTFPrinterPageLayout.Create(aPrinter: TJvTFPrinter);
 begin
   inherited Create;
   if not Assigned(aPrinter) then
-    raise EJvTFPrinterError.Create(sCouldNotCreateTJvTFPrinterPageLayou);
+    raise EJvTFPrinterError.Create(RsECouldNotCreateTJvTFPrinterPageLayou);
 
   FPrinter := aPrinter;
 end;
@@ -4876,7 +4876,7 @@ begin
     if Printer.BodyHeight < 1 then
     begin
       FFooterHeight := Check;
-      raise EJvTFPrinterError.CreateFmt(sInvalidFooterHeightd, [Value]);
+      raise EJvTFPrinterError.CreateFmt(RsEInvalidFooterHeightd, [Value]);
     end
     else
       Change;
@@ -4898,7 +4898,7 @@ begin
     if Printer.BodyHeight < 1 then
     begin
       FHeaderHeight := Check;
-      raise EJvTFPrinterError.CreateFmt(sInvalidHeaderHeightd, [Value]);
+      raise EJvTFPrinterError.CreateFmt(RsEInvalidHeaderHeightd, [Value]);
     end
     else
       Change;

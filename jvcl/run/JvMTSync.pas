@@ -193,7 +193,7 @@ begin
       WAIT_FAILED:
         begin
           FLastError := GetLastError;
-          raise EMTThreadError.Create(SSemaphoreFailure + ' (' + IntToStr(FLastError) + ')');
+          raise EMTThreadError.CreateFmt(RsESemaphoreFailure, [FLastError]);
         end;
       WAIT_TIMEOUT:
         Result := False;
@@ -202,9 +202,9 @@ begin
       WAIT_OBJECT_0 + 1:
         CurrentMTThread.CheckTerminate; // do raise EMTTerminateError
       WAIT_ABANDONED:
-        raise EMTTerminateError.Create(SSemaphoreAbandoned);
+        raise EMTTerminateError.Create(RsESemaphoreAbandoned);
       WAIT_ABANDONED + 1:
-        raise EMTTerminateError.Create(SThreadAbandoned);
+        raise EMTTerminateError.Create(RsEThreadAbandoned);
     end;
   end
   else
@@ -215,13 +215,13 @@ begin
       WAIT_OBJECT_0:
         Result := True;
       WAIT_ABANDONED:
-        raise EMTTerminateError.Create(SSemaphoreAbandoned);
+        raise EMTTerminateError.Create(RsESemaphoreAbandoned);
       WAIT_TIMEOUT:
         Result := False;
       WAIT_FAILED:
         begin
           FLastError := GetLastError;
-          raise EMTThreadError.Create(SSemaphoreFailure);
+          raise EMTThreadError.Create(RsESemaphoreFailure);
         end;
     end;
   end;

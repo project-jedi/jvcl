@@ -1752,7 +1752,7 @@ begin
                   break;
                 end;
             else
-              FmtError(sInvalidXMLElementUnexpectedCharacte, [lBuf[i]]);
+              FmtError(RsEInvalidXMLElementUnexpectedCharacte, [lBuf[i]]);
             end;
           end;
 
@@ -1770,7 +1770,7 @@ begin
             ' ', #9, #10, #13:
               lPos := ptSpaceBeforeEqual;
           else
-            FmtError(sInvalidXMLElementUnexpectedCharacte, [lBuf[i]]);
+            FmtError(RsEInvalidXMLElementUnexpectedCharacte, [lBuf[i]]);
           end;
 
         ptStartingContent: //We are going to start a property content
@@ -1784,7 +1784,7 @@ begin
                 lPos := ptReadingValue;
               end;
           else
-            FmtError(sInvalidXMLElementUnexpectedCharacte_, [lBuf[i]]);
+            FmtError(RsEInvalidXMLElementUnexpectedCharacte_, [lBuf[i]]);
           end;
         ptReadingValue: //We are reading a property
           if lBuf[i] = lPropStart then
@@ -1803,10 +1803,10 @@ begin
             '=':
               lPos := ptStartingContent;
           else
-            FmtError(sInvalidXMLElementUnexpectedCharacte, [lBuf[i]]);
+            FmtError(RsEInvalidXMLElementUnexpectedCharacte, [lBuf[i]]);
           end;
       else
-        Assert(false, sUnexpectedValueForLPos);
+        Assert(false, RsEUnexpectedValueForLPos);
       end;
     end;
   until Count = 0;
@@ -1909,7 +1909,7 @@ begin
           if lBuf[i] = '<' then
             lPos := 2
           else
-            FmtError(sInvalidXMLElementExpectedBeginningO, [lBuf[i]]);
+            FmtError(RsEInvalidXMLElementExpectedBeginningO, [lBuf[i]]);
         -1:
           if lBuf[i] = '>' then
           begin
@@ -1917,13 +1917,13 @@ begin
             break;
           end
           else
-            FmtError(sInvalidXMLElementExpectedEndOfTagBu, [lBuf[i]]);
+            FmtError(RsEInvalidXMLElementExpectedEndOfTagBu, [lBuf[i]]);
       else
         begin
           if lBuf[i] in [#9, #10, #13, ' ', '.'] then
           begin
             if lPos = 2 then
-              Error(sInvalidXMLElementMalformedTagFoundn);
+              Error(RsEInvalidXMLElementMalformedTagFoundn);
             Stream.Seek(lStreamPos, soFromBeginning);
             Properties.LoadFromStream(Stream);
             lStreamPos := Stream.Position;
@@ -1939,7 +1939,7 @@ begin
                   Stream.Seek(lStreamPos, soFromBeginning);
                   St := Items.LoadFromStream(Stream, Parent);
                   if lName <> St then
-                    FmtError(sInvalidXMLElementErroneousEndOfTagE, [lName, St]);
+                    FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
                   lStreamPos := Stream.Position;
 
                   //Set value if only one sub element
@@ -2067,7 +2067,7 @@ begin
           if lBuf[i] = CS_START_COMMENT[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidCommentExpectedsButFounds, [CS_START_COMMENT[lPos], lBuf[i]]);
+            FmtError(RsEInvalidCommentExpectedsButFounds, [CS_START_COMMENT[lPos], lBuf[i]]);
         5:
           if lBuf[i] = CS_STOP_COMMENT[lPos] then
             Inc(lPos)
@@ -2091,7 +2091,7 @@ begin
           else
           begin
             if lBuf[i + 1] <> '>' then
-              Error(sInvalidCommentNotAllowedInsideComme);
+              Error(RsEInvalidCommentNotAllowedInsideComme);
             St := St + '--' + lBuf[i];
             Dec(lPos, 2);
           end;
@@ -2100,7 +2100,7 @@ begin
   until Count = 0;
 
   if not lOk then
-    Error(sInvalidCommentUnexpectedEndOfData);
+    Error(RsEInvalidCommentUnexpectedEndOfData);
 
   Value := St;
   Name := '';
@@ -2157,7 +2157,7 @@ begin
           if lBuf[i] = CS_START_CDATA[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidCDATAExpectedsButFounds, [CS_START_CDATA[lPos], lBuf[i]]);
+            FmtError(RsEInvalidCDATAExpectedsButFounds, [CS_START_CDATA[lPos], lBuf[i]]);
         10:
           if lBuf[i] = CS_STOP_CDATA[lPos] then
             Inc(lPos)
@@ -2188,7 +2188,7 @@ begin
   until Count = 0;
 
   if not lOk then
-    Error(sInvalidCDATAUnexpectedEndOfData);
+    Error(RsEInvalidCDATAUnexpectedEndOfData);
 
   Value := St;
   Name := '';
@@ -2318,7 +2318,7 @@ begin
           if lBuf[i] = CS_START_HEADER[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidHeaderExpectedsButFounds, [CS_START_HEADER[lPos], lBuf[i]]);
+            FmtError(RsEInvalidHeaderExpectedsButFounds, [CS_START_HEADER[lPos], lBuf[i]]);
         5: //L
           if lBuf[i] = CS_START_HEADER[lPos] then
           begin
@@ -2336,12 +2336,12 @@ begin
             break; //Re read buffer
           end
           else
-            FmtError(sInvalidHeaderExpectedsButFounds, [CS_START_HEADER[lPos], lBuf[i]]);
+            FmtError(RsEInvalidHeaderExpectedsButFounds, [CS_START_HEADER[lPos], lBuf[i]]);
         6: //?
           if lBuf[i] = CS_STOP_HEADER[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidHeaderExpectedsButFounds, [CS_STOP_HEADER[lPos], lBuf[i]]);
+            FmtError(RsEInvalidHeaderExpectedsButFounds, [CS_STOP_HEADER[lPos], lBuf[i]]);
         7: //>
           if lBuf[i] = CS_STOP_HEADER[lPos] then
           begin
@@ -2350,13 +2350,13 @@ begin
             break; //End if
           end
           else
-            FmtError(sInvalidHeaderExpectedsButFounds, [CS_STOP_HEADER[lPos], lBuf[i]]);
+            FmtError(RsEInvalidHeaderExpectedsButFounds, [CS_STOP_HEADER[lPos], lBuf[i]]);
       end;
     end;
   until Count = 0;
 
   if not lOk then
-    Error(sInvalidCommentUnexpectedEndOfData);
+    Error(RsEInvalidCommentUnexpectedEndOfData);
 
   Name := '';
 
@@ -2421,7 +2421,7 @@ begin
           if lBuf[i] = CS_START_DOCTYPE[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidHeaderExpectedsButFounds, [CS_START_DOCTYPE[lPos], lBuf[i]]);
+            FmtError(RsEInvalidHeaderExpectedsButFounds, [CS_START_DOCTYPE[lPos], lBuf[i]]);
         10: //]> or >
           if lChar = lBuf[i] then
           begin
@@ -2448,7 +2448,7 @@ begin
   until Count = 0;
 
   if not lOk then
-    Error(sInvalidCommentUnexpectedEndOfData);
+    Error(RsEInvalidCommentUnexpectedEndOfData);
 
   Name := '';
   Value := Trim(St);
@@ -2501,7 +2501,7 @@ begin
           if lBuf[i] = CS_START_PI[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidStylesheetExpectedsButFounds, [CS_START_PI[lPos], lBuf[i]]);
+            FmtError(RsEInvalidStylesheetExpectedsButFounds, [CS_START_PI[lPos], lBuf[i]]);
         16: //L
           if lBuf[i] = CS_START_PI[lPos] then
           begin
@@ -2512,12 +2512,12 @@ begin
             break; //Re read buffer
           end
           else
-            FmtError(sInvalidStylesheetExpectedsButFounds, [CS_START_PI[lPos], lBuf[i]]);
+            FmtError(RsEInvalidStylesheetExpectedsButFounds, [CS_START_PI[lPos], lBuf[i]]);
         17: //?
           if lBuf[i] = CS_STOP_PI[lPos] then
             Inc(lPos)
           else
-            FmtError(sInvalidStylesheetExpectedsButFounds, [CS_STOP_PI[lPos], lBuf[i]]);
+            FmtError(RsEInvalidStylesheetExpectedsButFounds, [CS_STOP_PI[lPos], lBuf[i]]);
         18: //>
           if lBuf[i] = CS_STOP_PI[lPos] then
           begin
@@ -2526,13 +2526,13 @@ begin
             break; //End if
           end
           else
-            FmtError(sInvalidStylesheetExpectedsButFounds, [CS_STOP_PI[lPos], lBuf[i]]);
+            FmtError(RsEInvalidStylesheetExpectedsButFounds, [CS_STOP_PI[lPos], lBuf[i]]);
       end;
     end;
   until Count = 0;
 
   if not lOk then
-    Error(sInvalidStylesheetUnexpectedEndOfDat);
+    Error(RsEInvalidStylesheetUnexpectedEndOfDat);
 
   Name := '';
 
@@ -2636,7 +2636,7 @@ begin
                   St := lBuf[i];
                 end;
             else
-              Error(sInvalidDocumentUnexpectedTextInFile);
+              Error(RsEInvalidDocumentUnexpectedTextInFile);
             end;
           end;
         1: //We are trying to determine the kind of the tag

@@ -167,7 +167,7 @@ begin
   CharWidth := 5;
   CharHeight := 6;
   FPicture := TPicture.Create;
-  FPicture.Bitmap.LoadFromResourceName(HInstance, RC_WinampRC);
+  FPicture.Bitmap.LoadFromResourceName(HInstance, RsWinampRC);
   FBitmap := TBitmap.Create;
   with FBitmap do
   begin
@@ -216,7 +216,7 @@ procedure TJvWinampLabel.SetPicture(Value: TPicture);
 begin
   FPicture.Assign(Value);
   if (FPicture.Bitmap.Width <> 155) or (FPicture.Bitmap.Height <> 18) then
-    raise EJVCLException.Create(RC_InvalidSkin);
+    raise EJVCLException.Create(RsEInvalidSkin);
   FText := '';
   Invalidate;
 end;

@@ -129,7 +129,7 @@ implementation
 
 uses
   Math,
-  JvResources;
+  JvTypes, JvResources;
 
 // -----------------------------------------------------------------------------
 //
@@ -348,7 +348,7 @@ begin
   SrcWidth := Src.Width;
   SrcHeight := Src.Height;
   if (SrcWidth < 1) or (SrcHeight < 1) then
-    raise Exception.Create(sSourceBitmapTooSmall);
+    raise EJVCLException.Create(RsESourceBitmapTooSmall);
 
   // Create intermediate image to hold horizontal zoom
   Work := TBitmap.Create;

@@ -166,7 +166,7 @@ end;
 function TJvSchedEvtStore.PeekStruct: TSchedEvtStructKind;
 begin
   if Length(FStructStack) = 0 then
-    raise EJVCLException.Create(sStructureStackIsEmpty);
+    raise EJVCLException.Create(RsEStructureStackIsEmpty);
   Result := FStructStack[High(FStructStack)];
 end;
 
@@ -239,12 +239,12 @@ end;
 
 procedure TJvSchedEvtStore.LoadState(const Event: TJvEventCollectionItem);
 begin
-  raise EJVCLException.Create(sNotImplemented);
+  raise EJVCLException.Create(RsENotImplemented);
 end;
 
 procedure TJvSchedEvtStore.SaveState(const Event: TJvEventCollectionItem);
 begin
-  raise EJVCLException.Create(sNotImplemented);
+  raise EJVCLException.Create(RsENotImplemented);
 end;
 
 procedure TJvSchedEvtStore.LoadSchedule(const Event: TJvEventCollectionItem);
@@ -257,7 +257,7 @@ begin
   with Event do
   begin
     if not (State in [sesNotInitialized, sesEnded]) then
-      raise EJVCLException.Create(sScheduleIsActiveReadingANewSchedule);
+      raise EJVCLException.Create(RsEScheduleIsActiveReadingANewSchedule);
     OrgSchedule := Schedule;
     try
       Schedule := CreateSchedule;
@@ -356,7 +356,7 @@ begin
   with Event do
   begin
     if not (State in [sesNotInitialized, sesEnded, sesPaused]) then
-      raise EJVCLException.Create(sScheduleIsActiveStoringOfAScheduleC);
+      raise EJVCLException.Create(RsEScheduleIsActiveStoringOfAScheduleC);
     if not IsStructured then
       StoreSignature;
     BeginStruct(seskSchedule);
@@ -438,12 +438,12 @@ end;
 
 procedure TJvSchedEvtStore.LoadEventSettings(const Event: TJvEventCollectionItem);
 begin
-  raise EJVCLException.Create(sNotImplemented_);
+  raise EJVCLException.Create(RsENotImplemented_);
 end;
 
 procedure TJvSchedEvtStore.SaveEventSettings(const Event: TJvEventCollectionItem);
 begin
-  raise EJVCLException.Create(sNotImplemented_);
+  raise EJVCLException.Create(RsENotImplemented_);
 end;
 
 const
@@ -534,14 +534,14 @@ begin
   SetLength(S, Length(BinStreamID));
   Stream.ReadBuffer(S[1], Length(BinStreamID));
   if S <> BinStreamID then
-    raise EJVCLException.Create(sNotASchedule);
+    raise EJVCLException.Create(RsENotASchedule);
 end;
 
 procedure TBinStore.CheckVersion;
 begin
   Stream.ReadBuffer(StreamVersion, SizeOf(StreamVersion));
   if StreamVersion > BinStreamVer then
-    raise EJVCLException.CreateFmt(sUnknownScheduleVersions, [IntToHex(StreamVersion, 4)]);
+    raise EJVCLException.CreateFmt(RsEUnknownScheduleVersions, [IntToHex(StreamVersion, 4)]);
 end;
 
 procedure TBinStore.RestoreScheduleStart;
@@ -1310,7 +1310,7 @@ begin
     seskScheduleYearly:
       WriteLn(sTXTID_SchedYearly);
   else
-    raise EJVCLException.Create(sUnexpectedStructure);
+    raise EJVCLException.Create(RsEUnexpectedStructure);
   end;
 end;
 
@@ -1328,30 +1328,30 @@ begin
   case StructType of
     seskSchedule:
       if not AnsiSameText(S, sTXTID_SchedGeneric) then
-        raise EJVCLException.Create(sIncorrectStructure);
+        raise EJVCLException.Create(RsEIncorrectStructure);
     seskScheduleRecurInfo:
       if not AnsiSameText(S, sTXTID_SchedRecur) then
-        raise EJVCLException.Create(sIncorrectStructure);
+        raise EJVCLException.Create(RsEIncorrectStructure);
     seskScheduleEndInfo:
       if not AnsiSameText(S, sTXTID_SchedEnd) then
-        raise EJVCLException.Create(sIncorrectStructure);
+        raise EJVCLException.Create(RsEIncorrectStructure);
     seskScheduleDayFreq:
       if not AnsiSameText(S, sTXTID_SchedFreq) then
-        raise EJVCLException.Create(sIncorrectStructure);
+        raise EJVCLException.Create(RsEIncorrectStructure);
     seskScheduleDaily:
       if not AnsiSameText(S, sTXTID_SchedDaily) then
-        raise EJVCLException.Create(sIncorrectStructure);
+        raise EJVCLException.Create(RsEIncorrectStructure);
     seskScheduleWeekly:
       if not AnsiSameText(S, sTXTID_SchedWeekly) then
-        raise EJVCLException.Create(sIncorrectStructure);
+        raise EJVCLException.Create(RsEIncorrectStructure);
     seskScheduleMonthly:
       if not AnsiSameText(S, sTXTID_SchedMonthly) then
-        raise EJVCLException.Create(sIncorrectStructure);
+        raise EJVCLException.Create(RsEIncorrectStructure);
     seskScheduleYearly:
       if not AnsiSameText(S, sTXTID_SchedYearly) then
-        raise EJVCLException.Create(sIncorrectStructure);
+        raise EJVCLException.Create(RsEIncorrectStructure);
   else
-    raise EJVCLException.Create(sUnexpectedStructure);
+    raise EJVCLException.Create(RsEUnexpectedStructure);
   end;
 end;
 
@@ -1428,7 +1428,7 @@ var
 begin
   Value := ReadItem(ItemName);
   if not AnsiSameText(AName, ItemName) then
-    raise EJVCLException.Create(sIncorrectIdentifierFound);
+    raise EJVCLException.Create(RsEIncorrectIdentifierFound);
   Result := GetEnumValue(TypeInfo, Value);
 end;
 
@@ -1439,7 +1439,7 @@ var
 begin
   Value := ReadItem(ItemName);
   if not AnsiSameText(AName, ItemName) then
-    raise EJVCLException.Create(sIncorrectIdentifierFound);
+    raise EJVCLException.Create(RsEIncorrectIdentifierFound);
   Result := StrToInt64(Value);
 end;
 
@@ -1450,7 +1450,7 @@ var
 begin
   StrValue := ReadItem(ItemName);
   if not AnsiSameText(AName, ItemName) then
-    raise EJVCLException.Create(sIncorrectIdentifierFound);
+    raise EJVCLException.Create(RsEIncorrectIdentifierFound);
   JclStrToSet(TypeInfo, Value, StrValue);
 end;
 
@@ -1470,7 +1470,7 @@ var
 begin
   Value := ReadItem(ItemName);
   if not AnsiSameText(AName, ItemName) then
-    raise EJVCLException.Create(sIncorrectIdentifierFound);
+    raise EJVCLException.Create(RsEIncorrectIdentifierFound);
   Y := StrToInt(Copy(Value, 1, 4));
   M := StrToInt(Copy(Value, 6, 2));
   D := StrToInt(Copy(Value, 9, 2));
@@ -1487,7 +1487,7 @@ var
 begin
   Value := ReadItem(ItemName);
   if not AnsiSameText(AName, ItemName) then
-    raise EJVCLException.Create(sIncorrectIdentifierFound);
+    raise EJVCLException.Create(RsEIncorrectIdentifierFound);
   if (Length(Value) < 3) or (Value[3] in DigitChars) then
     Result := StrToInt(Value)
   else

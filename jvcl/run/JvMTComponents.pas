@@ -34,14 +34,14 @@ uses
   JvMTThreading, JvMTConsts, JvMTData, JvMTSync, JvMTSyncMon;
 
 type
-  TJvMtComponent = class(TJvComponent);
-  TJvMtSingleThread = class(TMTThread);
-  TJvMtThread = class;
+  TJvMTComponent = class(TJvComponent);
+  TJvMTSingleThread = class(TMTThread);
+  TJvMTThread = class;
 
-  TJvMtThreadEvent = procedure (Sender: TJvMtThread;
-    MTThread: TJvMtSingleThread) of object;
+  TJvMTThreadEvent = procedure (Sender: TJvMTThread;
+    MTThread: TJvMTSingleThread) of object;
 
-  TJvMtManager = class (TJvMtComponent)
+  TJvMTManager = class (TJvMTComponent)
   private
     FManager: TMTManager;
   protected
@@ -50,32 +50,32 @@ type
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
-    function AcquireNewThread: TJvMtSingleThread;
+    function AcquireNewThread: TJvMTSingleThread;
     function AcquireThread(Ticket: TMTTicket;
-      var Thread: TJvMtSingleThread): Boolean;
+      var Thread: TJvMTSingleThread): Boolean;
     function ActiveThreads: Boolean;
     procedure ReleaseThread(Ticket: TMTTicket);
     procedure TerminateThreads;
     procedure WaitThreads;
   end;
 
-  TJvMtManagedComponent = class (TJvMtComponent)
+  TJvMTManagedComponent = class (TJvMTComponent)
   private
-    FManager: TJvMtManager;
+    FManager: TJvMTManager;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); 
       override;
-    procedure SetManager(Value: TJvMtManager); virtual;
+    procedure SetManager(Value: TJvMTManager); virtual;
   published
-    property Manager: TJvMtManager read FManager write SetManager;
+    property Manager: TJvMTManager read FManager write SetManager;
   end;
 
-  TJvMtThread = class (TJvMtManagedComponent)
+  TJvMTThread = class (TJvMTManagedComponent)
   private
-    FOnExecute: TJvMtThreadEvent;
-    FOnFinished: TJvMtThreadEvent;
-    FOnTerminating: TJvMtThreadEvent;
-    FThread: TJvMtSingleThread;
+    FOnExecute: TJvMTThreadEvent;
+    FOnFinished: TJvMTThreadEvent;
+    FOnTerminating: TJvMTThreadEvent;
+    FThread: TJvMTSingleThread;
     FRunOnCreate: Boolean;
     function GetStatus: TMTThreadStatus;
     function GetTicket: TMTTicket;
@@ -84,18 +84,18 @@ type
     procedure OnIntFinished(Thread: TMTThread);
     procedure OnIntTerminating(Thread: TMTThread);
     procedure ReleaseThread;
-    procedure SetOnExecute(Value: TJvMtThreadEvent);
-    procedure SetOnFinished(Value: TJvMtThreadEvent);
-    procedure SetOnTerminating(Value: TJvMtThreadEvent);
+    procedure SetOnExecute(Value: TJvMTThreadEvent);
+    procedure SetOnFinished(Value: TJvMTThreadEvent);
+    procedure SetOnTerminating(Value: TJvMTThreadEvent);
     procedure UnHookThread;
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
-    procedure SetManager(Value: TJvMtManager); override;
-    procedure DoExecute(MTThread: TJvMtSingleThread); dynamic;
-    procedure DoFinished(MTThread: TJvMtSingleThread); dynamic;
-    procedure DoTerminating(MTThread: TJvMtSingleThread); dynamic;
+    procedure SetManager(Value: TJvMTManager); override;
+    procedure DoExecute(MTThread: TJvMTSingleThread); dynamic;
+    procedure DoFinished(MTThread: TJvMTSingleThread); dynamic;
+    procedure DoTerminating(MTThread: TJvMTSingleThread); dynamic;
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
@@ -109,13 +109,13 @@ type
     property Ticket: TMTTicket read GetTicket;
   published
     property RunOnCreate: Boolean read FRunOnCreate write FRunOnCreate;
-    property OnExecute: TJvMtThreadEvent read FOnExecute write SetOnExecute;
-    property OnFinished: TJvMtThreadEvent read FOnFinished write SetOnFinished;
-    property OnTerminating: TJvMtThreadEvent read FOnTerminating write
+    property OnExecute: TJvMTThreadEvent read FOnExecute write SetOnExecute;
+    property OnFinished: TJvMTThreadEvent read FOnFinished write SetOnFinished;
+    property OnTerminating: TJvMTThreadEvent read FOnTerminating write
       SetOnTerminating;
   end;
 
-  TJvMtSectionBase = class (TJvMtComponent)
+  TJvMTSectionBase = class (TJvMTComponent)
   private
     FSync: TSynchroObject;
     function GetActive: Boolean;
@@ -132,7 +132,7 @@ type
     property Active: Boolean read GetActive;
   end;
 
-  TJvMtSection = class (TJvMtSectionBase)
+  TJvMTSection = class (TJvMTSectionBase)
   private
     FAllowRecursion: Boolean;
     FInitEntered: Boolean;
@@ -149,7 +149,7 @@ type
       default False;
   end;
   
-  TJvMtCountingSection = class (TJvMtSectionBase)
+  TJvMTCountingSection = class (TJvMTSectionBase)
   private
     FInitCount: Integer;
     FMaxCount: Integer;
@@ -165,7 +165,7 @@ type
     property MaxCount: Integer read FMaxCount write SetMaxCount default 1;
   end;
   
-  TJvMtAsyncBufferBase = class (TJvMtComponent)
+  TJvMTAsyncBufferBase = class (TJvMTComponent)
   private
     FBuffer: TMTAsyncBuffer;
     FHooking: TCriticalSection;
@@ -184,7 +184,7 @@ type
       default MTDefaultBufferSize;
   end;
 
-  TJvMtThreadToVCL = class (TJvMtAsyncBufferBase)
+  TJvMTThreadToVCL = class (TJvMTAsyncBufferBase)
   private
     FOnCanRead: TNotifyEvent;
   protected
@@ -194,7 +194,7 @@ type
     property OnCanRead: TNotifyEvent read FOnCanRead write FOnCanRead;
   end;
 
-  TJvMtVCLToThread = class (TJvMtAsyncBufferBase)
+  TJvMTVCLToThread = class (TJvMTAsyncBufferBase)
   private
     FOnCanWrite: TNotifyEvent;
   protected
@@ -205,7 +205,7 @@ type
     property OnCanWrite: TNotifyEvent read FOnCanWrite write FOnCanWrite;
   end;
 
-  TJvMtThreadToThread = class (TJvMtComponent)
+  TJvMTThreadToThread = class (TJvMTComponent)
   private
     FHooking: TCriticalSection;
     FMaxBufferSize: Integer;
@@ -222,7 +222,7 @@ type
       default MTDefaultBufferSize;
   end;
 
-  TJvMtMonitorSection = class (TJvMtComponent)
+  TJvMTMonitorSection = class (TJvMTComponent)
   private
     FMonitor: TMTMonitor;
     function GetCondition(ID: Integer): TMTCondition;
@@ -239,7 +239,7 @@ implementation
 uses
   JvResources;
 
-constructor TJvMtManager.Create(aOwner: TComponent);
+constructor TJvMTManager.Create(aOwner: TComponent);
 begin
   inherited Create(AOwner);
 
@@ -252,7 +252,7 @@ begin
     FManager := TMTManager.Create;
 end;
 
-destructor TJvMtManager.Destroy;
+destructor TJvMTManager.Destroy;
 begin
   // call inherited destroy, this will send Notification's to all the mtcThread
   //  components. These will release all their threads.
@@ -263,23 +263,23 @@ begin
   FManager.Free;
 end;
 
-function TJvMtManager.AcquireNewThread: TJvMtSingleThread;
+function TJvMTManager.AcquireNewThread: TJvMTSingleThread;
 begin
-  Result := TJvMtSingleThread(FManager.AcquireNewThread);
+  Result := TJvMTSingleThread(FManager.AcquireNewThread);
 end;
 
-function TJvMtManager.AcquireThread(Ticket: TMTTicket;
-  var Thread: TJvMtSingleThread): Boolean;
+function TJvMTManager.AcquireThread(Ticket: TMTTicket;
+  var Thread: TJvMTSingleThread): Boolean;
 begin
   Result := FManager.AcquireThread(Ticket, TMTThread(Thread));
 end;
 
-function TJvMtManager.ActiveThreads: Boolean;
+function TJvMTManager.ActiveThreads: Boolean;
 begin
   Result := FManager.ActiveThreads;
 end;
 
-procedure TJvMtManager.Notification(AComponent: TComponent; Operation: 
+procedure TJvMTManager.Notification(AComponent: TComponent; Operation: 
   TOperation);
 begin
   // check if the form is being destroyed
@@ -295,25 +295,25 @@ begin
   inherited;
 end;
 
-procedure TJvMtManager.ReleaseThread(Ticket: TMTTicket);
+procedure TJvMTManager.ReleaseThread(Ticket: TMTTicket);
 begin
   FManager.ReleaseThread(Ticket);
 end;
 
-procedure TJvMtManager.TerminateThreads;
+procedure TJvMTManager.TerminateThreads;
 begin
   FManager.TerminateThreads;
 end;
 
-procedure TJvMtManager.WaitThreads;
+procedure TJvMTManager.WaitThreads;
 begin
   FManager.WaitThreads;
 end;
 
 
-{ TJvMtManagedComponent }
+{ TJvMTManagedComponent }
 
-procedure TJvMtManagedComponent.Notification(AComponent: TComponent; Operation:
+procedure TJvMTManagedComponent.Notification(AComponent: TComponent; Operation:
   TOperation);
 begin
   if (Operation = opRemove) and (AComponent = FManager) then
@@ -322,7 +322,7 @@ begin
   inherited Notification(AComponent, Operation);
 end;
 
-procedure TJvMtManagedComponent.SetManager(Value: TJvMtManager);
+procedure TJvMTManagedComponent.SetManager(Value: TJvMTManager);
 begin
   if Assigned(FManager) then
     FManager.RemoveFreeNotification(Self);
@@ -333,43 +333,43 @@ begin
     FManager.FreeNotification(Self);
 end;
 
-{ TJvMtThread }
+{ TJvMTThread }
 
-constructor TJvMtThread.Create(aOwner: TComponent);
+constructor TJvMTThread.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
 end;
 
-destructor TJvMtThread.Destroy;
+destructor TJvMTThread.Destroy;
 begin
   ReleaseThread;
   inherited Destroy;
 end;
 
-procedure TJvMtThread.CheckTerminate;
+procedure TJvMTThread.CheckTerminate;
 begin
   HookThread;
   FThread.CheckTerminate;
 end;
 
-function TJvMtThread.GetStatus: TMTThreadStatus;
+function TJvMTThread.GetStatus: TMTThreadStatus;
 begin
   HookThread;
   Result := FThread.Status;
 end;
 
-function TJvMtThread.GetTicket: TMTTicket;
+function TJvMTThread.GetTicket: TMTTicket;
 begin
   HookThread;
   Result := FThread.Ticket;
 end;
 
-procedure TJvMtThread.HookThread;
+procedure TJvMTThread.HookThread;
 begin
   if FThread = nil then
   begin
     if FManager = nil then
-      raise EThread.Create(sNoThreadManager);
+      raise EThread.Create(RsENoThreadManager);
   
     // get the new thread
     FThread := FManager.AcquireNewThread;
@@ -384,7 +384,7 @@ begin
   end;
 end;
 
-procedure TJvMtThread.Notification(AComponent: TComponent; Operation: 
+procedure TJvMTThread.Notification(AComponent: TComponent; Operation: 
   TOperation);
 begin
   if (Operation = opRemove) and (AComponent = FManager) then
@@ -394,22 +394,22 @@ begin
   inherited Notification(AComponent, Operation);
 end;
 
-procedure TJvMtThread.OnIntExecute(Thread: TMTThread);
+procedure TJvMTThread.OnIntExecute(Thread: TMTThread);
 begin
-  DoExecute(TJvMtSingleThread(Thread));
+  DoExecute(TJvMTSingleThread(Thread));
 end;
 
-procedure TJvMtThread.OnIntFinished(Thread: TMTThread);
+procedure TJvMTThread.OnIntFinished(Thread: TMTThread);
 begin
-  DoFinished(TJvMtSingleThread(Thread));
+  DoFinished(TJvMTSingleThread(Thread));
 end;
 
-procedure TJvMtThread.OnIntTerminating(Thread: TMTThread);
+procedure TJvMTThread.OnIntTerminating(Thread: TMTThread);
 begin
-  DoTerminating(TJvMtSingleThread(Thread));
+  DoTerminating(TJvMTSingleThread(Thread));
 end;
 
-procedure TJvMtThread.ReleaseThread;
+procedure TJvMTThread.ReleaseThread;
 begin
   // check if there is an acquired thread
   if FThread <> nil then
@@ -420,55 +420,55 @@ begin
   end;
 end;
 
-procedure TJvMtThread.Run;
+procedure TJvMTThread.Run;
 begin
   HookThread;
   FThread.Run;
 end;
 
-procedure TJvMtThread.RunCopy;
+procedure TJvMTThread.RunCopy;
 begin
   ReleaseThread;
   Run;
 end;
 
-procedure TJvMtThread.SetManager(Value: TJvMtManager);
+procedure TJvMTThread.SetManager(Value: TJvMTManager);
 begin
   UnhookThread;
   inherited;
 end;
 
-procedure TJvMtThread.SetOnExecute(Value: TJvMtThreadEvent);
+procedure TJvMTThread.SetOnExecute(Value: TJvMTThreadEvent);
 begin
   UnhookThread;
   FOnExecute := Value;
 end;
 
-procedure TJvMtThread.SetOnFinished(Value: TJvMtThreadEvent);
+procedure TJvMTThread.SetOnFinished(Value: TJvMTThreadEvent);
 begin
   UnhookThread;
   FOnFinished := Value;
 end;
 
-procedure TJvMtThread.SetOnTerminating(Value: TJvMtThreadEvent);
+procedure TJvMTThread.SetOnTerminating(Value: TJvMTThreadEvent);
 begin
   UnhookThread;
   FOnTerminating := Value;
 end;
 
-procedure TJvMtThread.Synchronize(Method: TThreadMethod);
+procedure TJvMTThread.Synchronize(Method: TThreadMethod);
 begin
   HookThread;
   FThread.Synchronize(Method);
 end;
 
-procedure TJvMtThread.Terminate;
+procedure TJvMTThread.Terminate;
 begin
   HookThread;
   FThread.Terminate;
 end;
 
-procedure TJvMtThread.UnHookThread;
+procedure TJvMTThread.UnHookThread;
 begin
   if FThread <> nil then
   begin
@@ -479,32 +479,32 @@ begin
       FThread := nil;
     end
     else
-      raise EThread.Create(sOperatorNotAvailable);
+      raise EThread.Create(RsEOperatorNotAvailable);
   end;
 end;
 
-procedure TJvMtThread.Wait;
+procedure TJvMTThread.Wait;
 begin
   HookThread;
   FThread.Wait;
 end;
     
-procedure TJvMtThread.DoExecute(MTThread: TJvMtSingleThread);
+procedure TJvMTThread.DoExecute(MTThread: TJvMTSingleThread);
 begin
   if Assigned(FOnExecute) then FOnExecute(Self, MTThread);
 end;
 
-procedure TJvMtThread.DoFinished(MTThread: TJvMtSingleThread);
+procedure TJvMTThread.DoFinished(MTThread: TJvMTSingleThread);
 begin
   if Assigned(FOnFinished) then FOnFinished(Self, MTThread);
 end;
 
-procedure TJvMtThread.DoTerminating(MTThread: TJvMtSingleThread);
+procedure TJvMTThread.DoTerminating(MTThread: TJvMTSingleThread);
 begin
   if Assigned(FOnTerminating) then FOnTerminating(Self, MTThread);
 end;
 
-procedure TJvMtThread.Loaded;
+procedure TJvMTThread.Loaded;
 begin
   inherited;
   // Comonent is ready. Shall we start a thread?
@@ -512,9 +512,9 @@ begin
     Run;
 end;
 
-{ TJvMtSectionBase }
+{ TJvMTSectionBase }
 
-destructor TJvMtSectionBase.Destroy;
+destructor TJvMTSectionBase.Destroy;
 begin
   // signal interested components that we are going down
   inherited Destroy;
@@ -522,49 +522,49 @@ begin
   FSync.Free;
 end;
 
-procedure TJvMtSectionBase.CheckInactiveProperty;
+procedure TJvMTSectionBase.CheckInactiveProperty;
 begin
   if Active then
-    raise EThread.Create(sCannotChangePropertySection);
+    raise EThread.Create(RsECannotChangePropertySection);
 end;
 
-procedure TJvMtSectionBase.Enter;
+procedure TJvMTSectionBase.Enter;
 begin
   HookSync;
   FSync.Acquire;
 end;
 
-function TJvMtSectionBase.GetActive: Boolean;
+function TJvMTSectionBase.GetActive: Boolean;
 begin
   Result := FSync <> nil;
 end;
 
-procedure TJvMtSectionBase.HookSync;
+procedure TJvMTSectionBase.HookSync;
 begin
   if not Active then
     CreateSync;
 end;
 
-procedure TJvMtSectionBase.Leave;
+procedure TJvMTSectionBase.Leave;
 begin
   HookSync;
   FSync.Release;
 end;
 
-procedure TJvMtSectionBase.Loaded;
+procedure TJvMTSectionBase.Loaded;
 begin
   inherited Loaded;
 end;
 
-{ TJvMtSection }
+{ TJvMTSection }
 
-constructor TJvMtSection.Create(aOwner: TComponent);
+constructor TJvMTSection.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   FAllowRecursion := True;
 end;
 
-procedure TJvMtSection.CreateSync;
+procedure TJvMTSection.CreateSync;
 begin
   if FAllowRecursion then
     FSync := TMTCriticalSection.Create(Name)
@@ -575,61 +575,61 @@ begin
     Enter;
 end;
 
-procedure TJvMtSection.SetAllowRecursion(Value: Boolean);
+procedure TJvMTSection.SetAllowRecursion(Value: Boolean);
 begin
   CheckInactiveProperty;
   FAllowRecursion := Value;
 end;
 
-procedure TJvMtSection.SetInitEntered(Value: Boolean);
+procedure TJvMTSection.SetInitEntered(Value: Boolean);
 begin
   CheckInactiveProperty;
   FInitEntered := Value;
 end;
 
-{ TJvMtCountingSection }
+{ TJvMTCountingSection }
 
-constructor TJvMtCountingSection.Create(aOwner: TComponent);
+constructor TJvMTCountingSection.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   FMaxCount := 1;
 end;
 
-procedure TJvMtCountingSection.CreateSync;
+procedure TJvMTCountingSection.CreateSync;
 begin
   FSync := TMTSemaphore.Create(FMaxCount-FInitCount, FMaxCount, Name);
 end;
 
-procedure TJvMtCountingSection.SetInitAndMax(Init,Max: Integer);
+procedure TJvMTCountingSection.SetInitAndMax(Init,Max: Integer);
 begin
   CheckInactiveProperty;
   if (Max < 1) or (Init < 0) or (Init > Max) then
-    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [Self.Classname]);
+    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [ClassName]);
   
   FInitCount := Init;
   FMaxCount := Max;
 end;
 
-procedure TJvMtCountingSection.SetInitCount(Value: Integer);
+procedure TJvMTCountingSection.SetInitCount(Value: Integer);
 begin
   SetInitAndMax(Value, FMaxCount);
 end;
 
-procedure TJvMtCountingSection.SetMaxCount(Value: Integer);
+procedure TJvMTCountingSection.SetMaxCount(Value: Integer);
 begin
   SetInitAndMax(FInitCount, Value);
 end;
 
-{ TJvMtAsyncBufferBase }
+{ TJvMTAsyncBufferBase }
 
-constructor TJvMtAsyncBufferBase.Create(aOwner: TComponent);
+constructor TJvMTAsyncBufferBase.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   FMaxBufferSize := MTDefaultBufferSize;
   FHooking := TCriticalSection.Create;
 end;
 
-destructor TJvMtAsyncBufferBase.Destroy;
+destructor TJvMTAsyncBufferBase.Destroy;
 begin
   // notify interested components
   inherited Destroy;
@@ -638,7 +638,7 @@ begin
   FHooking.Free;
 end;
 
-procedure TJvMtAsyncBufferBase.HookBuffer;
+procedure TJvMTAsyncBufferBase.HookBuffer;
 begin
   // buffer still uncreated?
   if FBuffer = nil then
@@ -654,54 +654,54 @@ begin
   end;
 end;
 
-function TJvMtAsyncBufferBase.Read: TObject;
+function TJvMTAsyncBufferBase.Read: TObject;
 begin
   HookBuffer;
   Result := FBuffer.Read;
 end;
 
-procedure TJvMtAsyncBufferBase.SetMaxBufferSize(Value: Integer);
+procedure TJvMTAsyncBufferBase.SetMaxBufferSize(Value: Integer);
 begin
   if FBuffer <> nil then
-    raise EThread.Create(sCannotChangePropertyBuffer);
+    raise EThread.Create(RsECannotChangePropertyBuffer);
   FMaxBufferSize := Value;
 end;
 
-procedure TJvMtAsyncBufferBase.Write(AObject: TObject);
+procedure TJvMTAsyncBufferBase.Write(AObject: TObject);
 begin
   HookBuffer;
   FBuffer.Write(AObject);
 end;
 
-{ TJvMtThreadToVCL }
+{ TJvMTThreadToVCL }
 
-procedure TJvMtThreadToVCL.CreateBuffer;
+procedure TJvMTThreadToVCL.CreateBuffer;
 begin
   FBuffer := TMTBufferToVCL.Create(FMaxBufferSize, Name);
   TMTBufferToVCL(FBuffer).OnCanRead := DoCanRead;
 end;
 
-procedure TJvMtThreadToVCL.DoCanRead(Sender: TObject);
+procedure TJvMTThreadToVCL.DoCanRead(Sender: TObject);
 begin
   // call the OnCanRead event with this object as the sender
   if Assigned(FOnCanRead) then FOnCanRead(Self);
 end;
 
-{ TJvMtVCLToThread }
+{ TJvMTVCLToThread }
 
-procedure TJvMtVCLToThread.CreateBuffer;
+procedure TJvMTVCLToThread.CreateBuffer;
 begin
   FBuffer := TMTVCLToBuffer.Create(FMaxBufferSize, Name);
   TMTVCLToBuffer(FBuffer).OnCanWrite := DoCanWrite;
 end;
 
-procedure TJvMtVCLToThread.DoCanWrite(Sender: TObject);
+procedure TJvMTVCLToThread.DoCanWrite(Sender: TObject);
 begin
   // call the OnCanWrite event with this object as the sender
   if Assigned(FOnCanWrite) then FOnCanWrite(Self);
 end;
 
-procedure TJvMtVCLToThread.Loaded;
+procedure TJvMTVCLToThread.Loaded;
 begin
   inherited Loaded;
   // force first Event
@@ -710,23 +710,23 @@ begin
     FOnCanWrite(Self);
 end;
 
-{ TJvMtThreadToThread }
+{ TJvMTThreadToThread }
 
-constructor TJvMtThreadToThread.Create(aOwner: TComponent);
+constructor TJvMTThreadToThread.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   FMaxBufferSize := MTDefaultBufferSize;
   FHooking := TCriticalSection.Create;
 end;
 
-destructor TJvMtThreadToThread.Destroy;
+destructor TJvMTThreadToThread.Destroy;
 begin
   inherited Destroy;
   FQueue.Free;
   FHooking.Free;
 end;
 
-procedure TJvMtThreadToThread.HookQueue;
+procedure TJvMTThreadToThread.HookQueue;
 begin
   // buffer still uncreated?
   if FQueue = nil then
@@ -743,53 +743,53 @@ begin
   end;
 end;
 
-function TJvMtThreadToThread.Read: TObject;
+function TJvMTThreadToThread.Read: TObject;
 begin
   HookQueue;
   Result := FQueue.Pop;
 end;
 
-procedure TJvMtThreadToThread.SetMaxBufferSize(Value: Integer);
+procedure TJvMTThreadToThread.SetMaxBufferSize(Value: Integer);
 begin
   if FQueue <> nil then
-    raise EThread.Create(sCannotChangePropertyBuffer);
+    raise EThread.Create(RsECannotChangePropertyBuffer);
   if Value < 1 then
-    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [Self.Classname]);
+    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [ClassName]);
   FMaxBufferSize := Value;
 end;
 
-procedure TJvMtThreadToThread.Write(AObject: TObject);
+procedure TJvMTThreadToThread.Write(AObject: TObject);
 begin
   HookQueue;
   FQueue.Push(AObject);
 end;
 
 
-{ TJvMtMonitorSection }
+{ TJvMTMonitorSection }
 
-constructor TJvMtMonitorSection.Create(aOwner: TComponent);
+constructor TJvMTMonitorSection.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   FMonitor := TMTMonitor.Create;
 end;
 
-destructor TJvMtMonitorSection.Destroy;
+destructor TJvMTMonitorSection.Destroy;
 begin
   FMonitor.Free;
   inherited Destroy;
 end;
 
-procedure TJvMtMonitorSection.Enter;
+procedure TJvMTMonitorSection.Enter;
 begin
   FMonitor.Enter;
 end;
 
-function TJvMtMonitorSection.GetCondition(ID: Integer): TMTCondition;
+function TJvMTMonitorSection.GetCondition(ID: Integer): TMTCondition;
 begin
   Result := FMonitor.Condition[ID];
 end;
 
-procedure TJvMtMonitorSection.Leave;
+procedure TJvMTMonitorSection.Leave;
 begin
   FMonitor.Leave;
 end;

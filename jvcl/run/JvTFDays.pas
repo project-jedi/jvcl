@@ -2226,7 +2226,7 @@ procedure TJvTFDaysPrimeTime.SetStartTime(Value : TTime);
 begin
    if Assigned(FApptGrid) and not (csLoading in FApptGrid.ComponentState) and
       (Value >= EndTime) then
-      raise EJvTFDaysError.Create(sInvalidPrimeTimeStartTime);
+      raise EJvTFDaysError.Create(RsEInvalidPrimeTimeStartTime);
 
    FStartTime := Value;
    Change;
@@ -2236,7 +2236,7 @@ procedure TJvTFDaysPrimeTime.SetEndTime(Value : TTime);
 begin
    if Assigned(FApptGrid) and (Value <= StartTime) and
       not (csLoading in FApptGrid.ComponentState) then
-      raise EJvTFDaysError.Create(sInvalidPrimeTimeEndTime);
+      raise EJvTFDaysError.Create(RsEInvalidPrimeTimeEndTime);
 
    FEndTime := Value;
    Change;
@@ -3340,7 +3340,7 @@ end;
 procedure TJvTFDaysCols.EnsureCol(Index : Integer);
 begin
    if (Index < 0) or (Index > Count - 1) then
-      raise EJvTFDaysError.Create(sColumnIndexOutOfBounds);
+      raise EJvTFDaysError.Create(RsEColumnIndexOutOfBounds);
 end;
 
 function TJvTFDaysCols.GetOwner : TPersistent;
@@ -4690,7 +4690,7 @@ begin
          Invalidate;
       end
       else
-         raise EJvTFDaysError.Create(sRowIndexOutOfBounds);
+         raise EJvTFDaysError.Create(RsERowIndexOutOfBounds);
 end;
 
 procedure TJvTFDays.SetFocusedRow(Value : Integer);
@@ -4717,7 +4717,7 @@ begin
          Invalidate;
       end
       else
-         raise EJvTFDaysError.Create(sRowIndexOutOfBounds);
+         raise EJvTFDaysError.Create(RsERowIndexOutOfBounds);
 end;
 
 function TJvTFDays.GetFocusedRow : Integer;
@@ -4749,14 +4749,14 @@ begin
             end;
          end
          else
-            raise EJvTFDaysError.Create(sColumnIndexOutOfBounds)
+            raise EJvTFDaysError.Create(RsEColumnIndexOutOfBounds)
       else if Value = -1 then
       begin
          FLeftCol := -1;
          Invalidate;
       end
       else
-         raise EJvTFDaysError.Create(sColumnIndexOutOfBounds);
+         raise EJvTFDaysError.Create(RsEColumnIndexOutOfBounds);
 end;
 
 procedure TJvTFDays.SetFocusedCol(Value : Integer);
@@ -4779,7 +4779,7 @@ begin
          end;
       end
       else
-         raise EJvTFDaysError.Create(sColumnIndexOutOfBounds);
+         raise EJvTFDaysError.Create(RsEColumnIndexOutOfBounds);
 end;
 
 function TJvTFDays.GetFocusedCol : Integer;
@@ -8122,13 +8122,13 @@ end;
 procedure TJvTFDays.EnsureCol(aCol : Integer);
 begin
    if (aCol < 0) or (aCol > Cols.Count - 1) then
-      raise EJvTFDaysError.Create(sColumnIndexOutOfBounds);
+      raise EJvTFDaysError.Create(RsEColumnIndexOutOfBounds);
 end;
 
 procedure TJvTFDays.EnsureRow(aRow : Integer);
 begin
    if (aRow < 0) or (aRow > RowCount - 1) then
-      raise EJvTFDaysError.Create(sRowIndexOutOfBounds);
+      raise EJvTFDaysError.Create(RsERowIndexOutOfBounds);
 end;
 
 procedure TJvTFDays.KeyDown(var Key : Word; Shift : TShiftState);
@@ -9368,7 +9368,7 @@ begin
    if MapCol < 1 then
    begin
       //Cols[Col].DumpMap;
-      raise EJvTFDaysError.Create(sMapColNotFoundForAppointment);
+      raise EJvTFDaysError.Create(RsEMapColNotFoundForAppointment);
    end;
 
    MapColCount := Cols[Col].MapColCount(StartRow);
@@ -9376,7 +9376,7 @@ begin
    begin
       //Cols[Col].FMap.Dump('corrupt dump.txt');  !!! FOR DEBUGGING ONLY !!!!
       //Cols[Col].DumpMap;
-      raise EJvTFDaysError.Create(sCorruptAppointmentMap);
+      raise EJvTFDaysError.Create(RsECorruptAppointmentMap);
    end;
 
   // Col guaranteed to be partially visible
@@ -11361,16 +11361,16 @@ begin
    if (TimeBlocks.Count > 0) then
    begin
       if GridGran > BlockGran then
-         raise EJvTFBlockGranError.Create(sGridGranularityCannotBeGreater);
+         raise EJvTFBlockGranError.Create(RsEGridGranularityCannotBeGreater);
 
       if (BlockGran mod GridGran) <> 0 then
-         raise EJvTFBlockGranError.Create(sTimeBlockGranularityMustBeEvenly);
+         raise EJvTFBlockGranError.Create(RsETimeBlockGranularityMustBeEvenly);
 
       DecodeTime(DayStart, BlockHrs, BlockMins, S, MS);
       RowStartTime := RowToTime(TimeToRow(DayStart));
       DecodeTime(RowStartTime, GridHrs, GridMins, S, MS);
       if (BlockHrs <> GridHrs) or (BlockMins <> GridMins) then
-         raise EJvTFBlockGranError.Create(sTimeBlocksMustBeginExactlyOn);
+         raise EJvTFBlockGranError.Create(RsETimeBlocksMustBeginExactlyOn);
    end;
 end;
 
@@ -11553,7 +11553,7 @@ begin
       WorkEnd := EncodeTime(23, 59, 59, 999);
 
    if not (csLoading in ComponentState) and (WorkEnd <= GridStartTime) then
-      raise EJvTFDaysError.Create(sGridEndTimeCannotBePriorToGridStart);
+      raise EJvTFDaysError.Create(RsEGridEndTimeCannotBePriorToGridStart);
 
 
    TopTime := RowToTime(TopRow);
@@ -11597,7 +11597,7 @@ begin
       WorkEnd := EncodeTime(23, 59, 59, 999);
 
    if not (csLoading in ComponentState) and (Value >= WorkEnd) then
-      raise EJvTFDaysError.Create(sGridStartTimeCannotBeAfterGridEndTi);
+      raise EJvTFDaysError.Create(RsEGridStartTimeCannotBeAfterGridEndTi);
 
 
    TopTime := RowToTime(TopRow);
@@ -13498,7 +13498,7 @@ end;
 procedure TJvTFDaysPrinter.EnsureRow(RowNum : Integer);
 begin
    if RowNum >= RowCount then
-      raise EJvTFPrinterError.CreateFmt(sInvalidRowd, [RowNum]);
+      raise EJvTFPrinterError.CreateFmt(RsEInvalidRowd, [RowNum]);
 end;
 
 procedure TJvTFDaysPrinter.FilterPicDrawList(aRect : TRect;
@@ -13612,14 +13612,14 @@ begin
    MapCol := Cols[Col].LocateMapCol(Appt, StartRow);
    if MapCol < 1 then
    begin
-      raise EJvTFDaysError.Create(sMapColNotFoundForAppointment);
+      raise EJvTFDaysError.Create(RsEMapColNotFoundForAppointment);
    end;
 
    MapColCount := Cols[Col].MapColCount(StartRow);
    if MapColCount < 1 then
    begin
       //Cols[Col].FMap.Dump('corrupt dump.txt');  !!! FOR DEBUGGING ONLY !!!!
-      raise EJvTFPrinterError.Create(sCorruptAppointmentMap);
+      raise EJvTFPrinterError.Create(RsECorruptAppointmentMap);
    end;
 
   // Col guaranteed to be partially visible
@@ -13778,7 +13778,7 @@ begin
       FApptsDrawn := 0;
       CalcPageInfo;
       if FPageInfoList.Count = 0 then
-         raise EJvTFPrinterError.Create(sThereIsNoDataToPrint);
+         raise EJvTFPrinterError.Create(RsEThereIsNoDataToPrint);
 
       for I := 0 to FPageInfoList.Count - 1 do
          NewPage;
@@ -14183,7 +14183,7 @@ end;
 function TJvTFDaysPrinter.GetPageInfo(PageNum : Integer) : TJvTFDaysPageInfo;
 begin
    if not FValidPageInfo then
-      raise EJvTFPrinterError.Create(sNoPageInfoExists);
+      raise EJvTFPrinterError.Create(RsENoPageInfoExists);
 
    Result := TJvTFDaysPageInfo(FPageInfoList.Objects[PageNum - 1]);
 end;
@@ -14432,7 +14432,7 @@ begin
       WorkEnd := EncodeTime(23, 59, 59, 999);
 
    if not (csLoading in ComponentState) and (WorkEnd <= GridStartTime) then
-      raise EJvTFDaysError.Create(sGridEndTimeCannotBePriorToGridStart);
+      raise EJvTFDaysError.Create(RsEGridEndTimeCannotBePriorToGridStart);
 
    FGridEndTime := Value;
 
@@ -14453,7 +14453,7 @@ begin
       WorkEnd := EncodeTime(23, 59, 59, 999);
 
    if not (csLoading in ComponentState) and (Value >= WorkEnd) then
-      raise EJvTFDaysError.Create(sGridStartTimeCannotBeAfterGridEndTi);
+      raise EJvTFDaysError.Create(RsEGridStartTimeCannotBeAfterGridEndTi);
 
    FGridStartTime := Value;
 
@@ -14606,7 +14606,7 @@ end;
 procedure TJvTFDaysTimeBlock.SetName(Value : string);
 begin
    if Value = '' then
-      raise EJvTFDaysError.Create(sATimeBlockNameCannotBeNull);
+      raise EJvTFDaysError.Create(RsEATimeBlockNameCannotBeNull);
 
    if Value <> FName then
       if not Assigned(BlockCollection.FindBlock(Value)) then
@@ -14617,7 +14617,7 @@ begin
          Change;
       end
       else
-         raise EJvTFDaysError.CreateFmt(sAnotherTimeBlockWithTheName, [Value]);
+         raise EJvTFDaysError.CreateFmt(RsEAnotherTimeBlockWithTheName, [Value]);
 end;
 
 procedure TJvTFDaysTimeBlock.SetTitle(Value : string);
@@ -14659,7 +14659,7 @@ function TJvTFDaysTimeBlocks.BlockByName(BlockName : string) : TJvTFDaysTimeBloc
 begin
    Result := FindBlock(BlockName);
    if not Assigned(Result) then
-      raise EJvTFDaysError.CreateFmt(sATimeBlockWithTheNamesDoesNotExist,
+      raise EJvTFDaysError.CreateFmt(RsEATimeBlockWithTheNamesDoesNotExist,
         [BlockName]);
 end;
 

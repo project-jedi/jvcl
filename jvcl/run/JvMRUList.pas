@@ -484,7 +484,7 @@ end;
 procedure TJvMRUList.NeedUnicode;
 begin
   if not UnicodeAvailable then
-    raise EMruException.Create(RC_ErrorMRU_Unicode);
+    raise EMruException.Create(RsEErrorMRUUnicode);
 end;
 
 procedure TJvMRUList.ReCreateList;
@@ -624,7 +624,7 @@ begin
       FList := CreateMruList(@FLst);
 
     if FList = 0 then
-      raise EMruException.Create(RC_ErrorMRU_Creating);
+      raise EMruException.Create(RsEErrorMRUCreating);
   end;
 end;
 

@@ -171,7 +171,7 @@ implementation
 
 uses
   Controls, Math,
-  JvConsts, JvJVCLUtils, JvResources;
+  JvJVCLUtils, JvTypes, JvResources;
 
 const
   siRecentItem = 'Item_%d';
@@ -319,7 +319,7 @@ begin
   if not (Duplicates = dupAccept) and (FList.IndexOf(RecentName) > -1) then
   begin
     if Duplicates = dupError then
-      raise Exception.Create(sDuplicatesNotAllowedInMRUList);
+      raise EJVCLException.Create(RsEDuplicatesNotAllowedInMRUList);
   end
   else
   begin

@@ -220,7 +220,7 @@ begin
     begin
       // (rb) No reason to block this
       if {(Length(newValue) > 3) or} Length(NewValue) < 1 then
-        raise Exception.Create(SErrEmptyExt)
+        raise EJvPlugInError.Create(RsEErrEmptyExt)
       else
         FExtension := NewValue;
     end;
@@ -347,12 +347,14 @@ begin
       LibHandle := 0;
       PlugIn := nil;
       case PlgKind of
-        plgDLL: LibHandle := LoadLibrary(PChar(FileName));
-        plgPackage: LibHandle := LoadPackage(FileName);
+        plgDLL:
+          LibHandle := LoadLibrary(PChar(FileName));
+        plgPackage:
+          LibHandle := LoadPackage(FileName);
       end;
 
       if LibHandle = 0 then
-        raise EJvLoadPluginError.Create(FileName);
+        raise EJvLoadPluginError.CreateFmt(RsEPluginPackageNotFound, [FileName]);
 
       AllowLoad := true;
       if (Assigned(FOnAfterLoad)) then
@@ -369,12 +371,12 @@ begin
       // Load the registration procedure
       RegisterProc := GetProcAddress(LibHandle, C_REGISTER_PLUGIN);
       if not Assigned(RegisterProc) then
-        raise EJvLoadPluginError.Create(FileName);
+        raise EJvLoadPluginError.CreateFmt(RsERegisterPluginNotFound, [C_REGISTER_PLUGIN, FileName]);
 
       // register the plugin
       PlugIn := RegisterProc;
       if PlugIn = nil then
-        raise EJvCantRegisterPlugInError.Create(FileName);
+        raise EJvCantRegisterPlugInError.CreateFmt(RsERegisterPluginFailed, [C_REGISTER_PLUGIN, FileName]);
 
       // make sure we don't load more copies of the plugin than allowed
       if PlugIn.InstanceCount > 0 then // 0 = unlimited
