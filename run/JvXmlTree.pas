@@ -168,11 +168,6 @@ procedure PreProcessXML(aList: TStrings);
 implementation
 
 uses
-  {$IFDEF BCB}
-  {$IFNDEF BCB5}
-  Variants,
-  {$ENDIF BCB5}
-  {$ENDIF BCB}
   JvConsts;
 
 procedure PreProcessXML(aList: TStrings);

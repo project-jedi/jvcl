@@ -346,11 +346,6 @@ implementation
 
 uses
   Math,
-  {$IFDEF BCB}
-  {$IFNDEF BCB5}
-  Variants,
-  {$ENDIF BCB5}
-  {$ENDIF BCB}
   JvConsts, JvResources;
 
 { some utility functions }
