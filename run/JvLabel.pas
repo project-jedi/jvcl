@@ -563,23 +563,23 @@ begin
       case ShadowPos of
         spLeftTop:
         begin
-          Dec(ShadowX);
-          Dec(ShadowY);
+          Dec(ShadowX, ShadowSize);
+          Dec(ShadowY, ShadowSize);
         end;
         spRightBottom:
         begin
-          Inc(ShadowX);
-          Inc(ShadowY);
+          Inc(ShadowX, ShadowSize);
+          Inc(ShadowY, ShadowSize);
         end;
         spLeftBottom:
         begin
-          Dec(ShadowX);
-          Inc(ShadowY);
+          Dec(ShadowX, ShadowSize);
+          Inc(ShadowY, ShadowSize);
         end;
         spRightTop:
         begin
-          Inc(ShadowX);
-          Dec(ShadowY);
+          Inc(ShadowX, ShadowSize);
+          Dec(ShadowY, ShadowSize);
         end;
       end;
       Canvas.Font.Color := ShadowColor;
