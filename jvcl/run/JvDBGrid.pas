@@ -57,6 +57,7 @@ uses
   Windows, Messages,
   {$ENDIF VCL}
   Classes, Graphics, Controls, Grids, Menus, DBGrids, DB,
+  Contnrs,
   JvTypes, {JvTypes contains Exception base class}
   JvAppStorage, JvFormPlacement, JvExDBGrids;
 
@@ -78,7 +79,7 @@ type
   TJvDBGrid = class;
 
   // Consts for TJvDBGridLayoutChangeLink
-  JvDBGridLayoutChangeKind = (lcSizeChanged, lcTopLeftChnaged);
+  TJvDBGridLayoutChangeKind = (lcSizeChanged, lcTopLeftChanged);
 {  FooterMsgSizeChanged = 0;
   FooterMsgTopLeftChanged = 1;}
 
@@ -111,7 +112,7 @@ type
   private
     FOnChange: TJvDBGridLayoutChangeEvent;
   public
-    DoChange(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind);
+    procedure DoChange(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind);
   
     property OnChange: TJvDBGridLayoutChangeEvent read FOnChange write FOnChange;
   end;
@@ -740,7 +741,7 @@ end;
 
 //=== { TJvDBGridLayoutChangeLink } ==========================================
 procedure TJvDBGridLayoutChangeLink.DoChange(Grid: TJvDBGrid; 
-        Kind: TJvDBGridLayoutChangeKind)
+        Kind: TJvDBGridLayoutChangeKind);
 begin
   if Assigned(OnChange) then
     OnChange(Grid, Kind);
