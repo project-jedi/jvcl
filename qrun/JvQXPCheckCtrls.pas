@@ -311,14 +311,12 @@ begin
             if ClipW <> 0 then
               DrawGradient(FHlGradient);
             
-            FBgGradient.Canvas.Start;
-            
-            BitBlt(Handle, R.Left + 3 + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
+
+            BitBlt(Canvas, R.Left + 3 + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
               ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
-              FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
-            
-            FBgGradient.Canvas.Stop;
-            
+              FBgGradient.Canvas, 0, 0, SRCCOPY);
+
+
           end
           else
             DrawGradient(FCkGradient);
@@ -345,7 +343,7 @@ begin
       Bitmap := TBitmap.Create;
       try
         Bitmap.Transparent := True;
-        Bitmap.LoadFromResourceName(hInstance, 'CHECKBOX');
+        Bitmap.LoadFromResourceName(hInstance, 'XPCHECKBOX');
         if Theme = WindowsXP then
           JvXPColorizeBitmap(Bitmap, dxColor_Chk_Enb_NmSymb_WXP)
         else

@@ -21,6 +21,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 unit JvQSpinButton;
 
@@ -100,7 +101,7 @@ type
 
 implementation
 
-{$R spin.res}
+{$R ../Resources/JvSpin.Res}
 
 { TJvSpinButton }
 
@@ -127,6 +128,10 @@ begin
   Result.Visible := True;
   Result.Enabled := True;
   Result.AllowTimer := True;
+  Result.GrayedInactive := false;
+  Result.GrayNewStyle := false;
+  Result.InitPause := 400;
+  Result.RepeatInterval := 100;
   Result.Parent := Self;
 end;
 
@@ -281,7 +286,7 @@ begin
     FUpButton.Glyph := Value
   else
   begin
-    FUpButton.Glyph.LoadFromResourceName(HInstance, 'SpinUp');
+    FUpButton.Glyph.LoadFromResourceName(HInstance, 'JvSpinUpPole');
     FUpButton.NumGlyphs := 1;
     FUpButton.Invalidate;
   end;
@@ -308,7 +313,7 @@ begin
     FDownButton.Glyph := Value
   else
   begin
-    FDownButton.Glyph.LoadFromResourceName(HInstance, 'SpinDown');
+    FDownButton.Glyph.LoadFromResourceName(HInstance, 'JvSpinDownPole');
     FUpButton.NumGlyphs := 1;
     FDownButton.Invalidate;
   end;

@@ -15,11 +15,11 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvInspExtraEditors.pas, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Marcel Bestebroer
- <marcelb@zeelandnet.nl>.
+  <jedi_mbe (at) users (dot) sf (dot) net>.
 Portions created by Marcel Bestebroer are Copyright (C) 2000 - 2001 mbeSoft.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck att bigfoot dott com].
+Contributor(s): Michael Beck [mbeck att bigfoot dott com], Markus Spoettl.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -43,7 +43,7 @@ uses
   SysUtils, Classes,
   
   
-  QWindows, QGraphics, QControls, QStdCtrls, QImgList, Types,
+  QWindows, QGraphics, QControls, QStdCtrls, QImgList,
   
   JvQInspector;
 
@@ -443,6 +443,7 @@ var
   BoxRect: TRect;
   bc: TColor;
   pc: TColor;
+  txtRect: TRect;
 begin
   TH := Rects[iprValue].Bottom - Rects[iprValue].Top - 2;
   BoxRect.Left := ARect.Left + (ARect.Bottom - ARect.Top - TH) div 2;
@@ -464,7 +465,9 @@ begin
         Brush.Color := bc;
       end;
     end;
-    TextRect(Rects[iprValue], ARect.Left + (ARect.Bottom - ARect.Top) + 1, BoxRect.Top, ColorName);
+   txtRect := ARect;
+   txtRect.Left := txtRect.Left + (txtRect.Bottom-txtRect.Top)+ 1;
+   TextRect(txtRect, txtRect.Left, BoxRect.Top, ColorName);
   end;
 end;
 
@@ -553,8 +556,8 @@ end;
 
 procedure TJvInspectorColorItem.SetFlags(const Value: TInspectorItemFlags);
 begin
-  inherited SetFlags(Value + [iifValueList, iifAllowNonListValues, iifOwnerDrawListVariable] -
-    [iifOwnerDrawListFixed]);
+  inherited SetFlags(Value + [iifValueList, iifAllowNonListValues, iifOwnerDrawListFixed] -
+    [iifOwnerDrawListVariable]);
 end;
 
 procedure TJvInspectorColorItem.SetRects(const RectKind: TInspectorPaintRect; Value: TRect);

@@ -37,7 +37,7 @@ uses
   SysUtils, Classes,
   
   
-  QTypes, Types, QGraphics, QControls, QStdCtrls, QWindows,
+  QTypes, Types, QGraphics, QControls, QStdCtrls, Qt, QWindows,
   
   JvQExStdCtrls;
 
@@ -80,7 +80,7 @@ type
     procedure DoOnTimer(Sender: TObject);
     
   protected
-    
+    procedure Loaded; override;
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
     function GetCol(Ch: WideChar): Word;
@@ -97,7 +97,7 @@ type
   published
     property Active: Boolean read FActive write SetActive;
     property Stretch: Boolean read FStretch write SetStretch;
-    property ScrollBy: Integer read GetScrollBy write FScrollBy;
+    property ScrollByH: Integer read GetScrollBy write FScrollBy;
     property ScrollInterval: Cardinal read FScrollInterval write SetInterval;
     property WaitOnEnd: Integer read FWait write FWait;
     property Skin: TPicture read FPicture write SetPicture;
@@ -106,7 +106,6 @@ type
     property Align;
     property Alignment;
     property FocusControl;
-    
     property DragMode;
     property ParentColor;
     property ShowHint;
@@ -172,9 +171,9 @@ end;
 
 constructor TJvWinampLabel.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
+//  inherited Create(AOwner);
   AutoSize := False;
-  FScrollInterval := 100;
+  FScrollInterval := 400;
   FCharWidth := 5;
   FCharHeight := 6;
   FPicture := TPicture.Create;
@@ -182,7 +181,7 @@ begin
   FBitmap := TBitmap.Create;
   with FBitmap do
   begin
-    PixelFormat := pf24bit;
+//    PixelFormat := pf24bit;
     Width := 10;
     Height := 10;
   end;
@@ -193,14 +192,16 @@ begin
     FDelay := FScrollInterval;
     FOnDraw := DoOnTimer;
   end;
-  Width := 100;
-  Height := CharHeight * 2;
+//  Width := 100;
+//  Height := CharHeight * 2;
   FActive := False;
-  Activate;
+//  Activate;
   FStretch := True;
   FScrollBy := 2;
   FWait := 1000;
+//  DoubleBuffered := true;
   Color := clBlack;
+//  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
 end;
 
 destructor TJvWinampLabel.Destroy;
@@ -216,6 +217,11 @@ begin
     FTimer.Free;
     //-------------------}
   inherited Destroy;
+end;
+
+procedure TJvWinampLabel.Loaded;
+begin
+  Activate;
 end;
 
 function TJvWinampLabel.GetScrollBy: Integer;
@@ -424,6 +430,8 @@ var
   Rec: TRect;
 begin
   try
+  if FBitmap = nil then exit;
+    FBitmap.Canvas.Start;
     if not FStretch then
     begin
       Rec := ClientRect;
@@ -450,7 +458,8 @@ begin
         StretchBlt(Canvas.Handle, 0, 0, Width, Height, FBitmap.Canvas.Handle, 0, 0, Round(Width / FScale), CharHeight,
           srcCopy);
     end;
-  except
+    FBitmap.Canvas.stop;
+  finally
   end;
 end;
 

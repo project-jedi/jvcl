@@ -299,12 +299,12 @@ begin
   FTickStyle := tsAuto;
   FBitmapInvalid := True;
   FPointerRect.Left := -1; // Only on start up
-  Width := 51;
-  Height := 51;
   FRepeatDelay := 400;
   FRepeatRate := 100;
   SetTicks(FTickStyle);
   Position := 0;
+  Width := 51;
+  Height := 51;
 end;
 
 destructor TJvCustomDialButton.Destroy;

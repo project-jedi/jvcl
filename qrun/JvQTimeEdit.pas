@@ -15,13 +15,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-09-24
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 unit JvQTimeEdit;
 
@@ -48,6 +47,7 @@ type
     { Protected declarations }
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
     procedure AdjustSize; override;
+    procedure Loaded; override;
     procedure IncrementValue ; virtual;
     procedure DecrementValue ; virtual;
     procedure DownClick (Sender: TObject);
@@ -276,6 +276,12 @@ begin
   end
   else
     inherited;
+end;
+
+procedure TJvCustomSpinEdit.Loaded;
+begin
+  AdjustSize;
+  inherited;
 end;
 
 procedure TJvCustomSpinEdit.IncrementValue ;

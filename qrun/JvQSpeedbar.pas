@@ -1600,6 +1600,7 @@ var
   I, Idx: Integer;
   Sect: TJvSpeedBarSection;
 begin
+  if FSections = nil then exit;
   for I := 0 to FSections.Count - 1 do
     if FSections[I] <> nil then
     begin
