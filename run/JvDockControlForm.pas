@@ -32,9 +32,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
-  ExtCtrls, ComCtrls, StdCtrls, Consts, IniFiles, CommCtrl, Registry,
+  ExtCtrls, ComCtrls, StdCtrls, Consts, CommCtrl,
   {$IFDEF USEJVCL}
-  JvComponent,
+  JvComponent, JvAppStorage,
+  {$ELSE}
+  IniFiles, Registry,
   {$ENDIF USEJVCL}
   JvDockTree, JvDockSupportClass, JvDockSupportControl;
 
@@ -882,13 +884,17 @@ procedure SetTabDockHostBorderStyle(Value: TFormBorderStyle);
 
 procedure SetConjoinDockHostBorderStyle(Value: TFormBorderStyle);
 
-procedure SaveDockTreeToFile(FileName: string);
+{$IFDEF USEJVCL}
+procedure SaveDockTreeToAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
+procedure LoadDockTreeFromAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
 
+{$ELSE}
+procedure SaveDockTreeToFile(FileName: string);
 procedure LoadDockTreeFromFile(FileName: string);
 
 procedure SaveDockTreeToReg(RootKey: DWORD; RegPatch: string);
-
 procedure LoadDockTreeFromReg(RootKey: DWORD; RegPatch: string);
+{$ENDIF}
 
 function FindDockBaseControl(Client: TControl): TJvDockBaseControl;
 
@@ -1416,6 +1422,75 @@ begin
       TJvDockConjoinHostForm(Screen.CustomForms[I]).BorderStyle := Value;
 end;
 
+procedure ReshowAllVisibleWindow;
+var
+  I: Integer;
+begin
+  if IsWinXP then
+    for I := 0 to Screen.FormCount - 1 do
+      if Screen.Forms[I].Visible then
+        Windows.ShowWindow(Screen.Forms[I].Handle, SW_SHOW)
+      else
+        Windows.ShowWindow(Screen.Forms[I].Handle, SW_HIDE);
+end;
+
+{$IFDEF USEJVCL}
+procedure SaveDockTreeToAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
+var
+  JvDockInfoTree: TJvDockInfoTree;
+  I: Integer;
+begin
+  HideAllPopupPanel(nil);
+
+  JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
+  try
+    for I := 0 to Screen.CustomFormCount - 1 do
+      if (Screen.CustomForms[I].Parent = nil) and
+        ((FindDockClient(Screen.CustomForms[I]) <> nil) or (FindDockServer(Screen.CustomForms[I]) <> nil)) then
+        JvDockInfoTree.CreateZoneAndAddInfoFromApp(Screen.CustomForms[I]);
+
+    JvDockInfoTree.AppStorage := AppStorage;
+    JvDockInfoTree.AppStoragePath := AppStoragePath;
+    JvDockInfoTree.WriteInfoToAppStorage;
+  finally
+    JvDockInfoTree.Free;
+  end;
+end;
+
+procedure LoadDockTreeFromAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
+var
+  JvDockInfoTree: TJvDockInfoTree;
+  Form: TForm;
+begin
+  HideAllPopupPanel(nil);
+
+  Form := TForm.CreateNew(nil);
+  Form.BorderStyle := bsNone;
+  Form.BoundsRect := Rect(0, 0, 0, 0);
+  Form.Visible := True;
+  Form.Name := cDefaultFormName;
+
+  JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
+
+  JvDockLockWindow(nil);
+  try
+    JvDockInfoTree.AppStorage := AppStorage;
+    JvDockInfoTree.AppStoragePath := AppStoragePath;
+    try
+      JvGlobalDockIsLoading := True;
+      JvDockInfoTree.ReadInfoFromAppStorage;
+    finally
+      JvGlobalDockIsLoading := False;
+    end;
+  finally
+    Form.Release;
+    JvDockUnLockWindow;
+    JvDockInfoTree.Free;
+  end;
+  ReshowAllVisibleWindow;
+end;
+
+{$ELSE}
 procedure SaveDockTreeToFile(FileName: string);
 var
   JvDockInfoTree: TJvDockInfoTree;
@@ -1441,17 +1516,6 @@ begin
   end;
 end;
 
-procedure ReshowAllVisibleWindow;
-var
-  I: Integer;
-begin
-  if IsWinXP then
-    for I := 0 to Screen.FormCount - 1 do
-      if Screen.Forms[I].Visible then
-        Windows.ShowWindow(Screen.Forms[I].Handle, SW_SHOW)
-      else
-        Windows.ShowWindow(Screen.Forms[I].Handle, SW_HIDE);
-end;
 
 procedure LoadDockTreeFromFile(FileName: string);
 var
@@ -1550,6 +1614,7 @@ begin
   end;
   ReshowAllVisibleWindow;
 end;
+{$ENDIF}
 
 procedure SetDockSite(Control: TWinControl; SiteValue: Boolean);
 begin

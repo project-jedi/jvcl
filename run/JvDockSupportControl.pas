@@ -31,7 +31,7 @@ interface
 uses Messages, Windows, SysUtils, CommCtrl, Controls, Forms, Classes, ComCtrls,
   Graphics, ImgList, ExtCtrls,
   {$IFDEF USEJVCL}
-  JvComponent,
+  JvComponent, JvAppStorage,
   {$ENDIF}
   JvDockHashTable, JvDockTree;
 
@@ -445,17 +445,20 @@ type
     function GetFormVisible(DockWindow: TWinControl): Boolean;
     
     procedure SetTabDockHostBorderStyle(Value: TFormBorderStyle);
-    
+
     procedure SetConjoinDockHostBorderStyle(Value: TFormBorderStyle);
-    
+
+    {$IFDEF USEJVCL}
+    procedure SaveDockTreeToAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
+    procedure LoadDockTreeFromAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
+    {$ELSE}
     procedure SaveDockTreeToFile(FileName: string);
-    
     procedure LoadDockTreeFromFile(FileName: string);
-    
+
     procedure SaveDockTreeToReg(RootKey: DWORD; RegPatch: string);
-    
     procedure LoadDockTreeFromReg(RootKey: DWORD; RegPatch: string);
-    
+    {$ENDIF}
+
     procedure BeginDrag(Control: TControl;
       Immediate: Boolean; Threshold: Integer = -1); virtual;
     
@@ -2535,6 +2538,27 @@ begin
   JvDockControlForm.HideDockForm(DockWindow);
 end;
 
+{$IFDEF USEJVCL}
+procedure TJvDockManager.LoadDockTreeFromAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
+begin
+  BeginLoad;
+  try
+    JvDockControlForm.LoadDockTreeFromAppStorage(AppStorage, AppStoragePath);
+  finally
+    EndLoad;
+  end;
+end;
+
+procedure TJvDockManager.SaveDockTreeToAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
+begin
+  BeginSave;
+  try
+    JvDockControlForm.SaveDockTreeToAppStorage(AppStorage, AppStoragePath);
+  finally
+    EndSave;
+  end;
+end;
+{$ELSE}
 procedure TJvDockManager.LoadDockTreeFromFile(FileName: string);
 begin
   BeginLoad;
@@ -2576,6 +2600,7 @@ begin
     EndSave;
   end;
 end;
+{$ENDIF}
 
 procedure TJvDockManager.SetConjoinDockHostBorderStyle(
   Value: TFormBorderStyle);
