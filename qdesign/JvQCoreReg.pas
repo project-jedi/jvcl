@@ -104,8 +104,8 @@ begin
   {$IFDEF VCL}
   RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
   RegisterComponentEditor(TImageList, TJvImageListEditor);
-  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   {$ENDIF VCL}
+  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
