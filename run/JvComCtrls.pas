@@ -167,10 +167,12 @@ type
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
     procedure DoChange; dynamic;
+
     procedure DoAddressChange(Sender: TObject); virtual;
     procedure DoAddressChanging(Sender: TObject; Index: Integer;
       Value: Byte; var AllowChange: Boolean); virtual;
     procedure DoFieldChange(FieldIndex: Integer; var FieldValue: Integer); dynamic;
+    procedure TextChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -460,7 +462,7 @@ type
 implementation
 
 uses
-  JclSysUtils, JvJCLUtils, JvTypes;
+  JclSysUtils, JclStrings, JvJCLUtils, JvTypes;
 
 const
   TVIS_CHECKED = $2000;
@@ -838,6 +840,20 @@ procedure TJvIPAddress.DoGetDlgCode(var Code: TDlgCodes);
 begin
   Include(Code, dcWantArrows);
   Exclude(Code, dcNative); // prevent inherited call
+end;
+
+procedure TJvIPAddress.TextChanged;
+var S:string;
+begin
+  inherited;
+  S := Text;
+  with AddressValues do
+  begin
+    Value1 := StrToIntDef(StrToken(S, '.'), 0);
+    Value2 := StrToIntDef(StrToken(S, '.'), 0);
+    Value3 := StrToIntDef(StrToken(S, '.'), 0);
+    Value4 := StrToIntDef(S, 0);
+  end;
 end;
 
 procedure TJvIPAddress.WMParentNotify(var Msg: TWMParentNotify);
@@ -2023,6 +2039,7 @@ procedure TJvPageControl.SetReduceMemoryUse(const Value: Boolean);
 begin
   FReduceMemoryUse := Value;
 end;
+
 
 
 end.
