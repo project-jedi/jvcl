@@ -135,7 +135,7 @@ type
   published
     property AboutJVCL;
     property AutoSize;
-    property Caret;
+//    property Caret;
     property ClipboardCommands;
     property MaxLines;
     property HideCaret;
@@ -466,6 +466,7 @@ procedure TJvCustomMemo.WMKillFocus(var msg: TWMKillFocus);
 begin
   if FHideCaret then
     ShowCaret(handle);
+  inherited;  
 end;
 
 procedure TJvCustomMemo.WndProc(var Message: TMessage);
