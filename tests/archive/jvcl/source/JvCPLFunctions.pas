@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvFunctions.PAS, released on 2001-02-28.
+The Original Code is: JvCPLFunctions.PAS, released on 2002-09-23.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
@@ -18,13 +18,16 @@ Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Anthony Steele [asteele@iafrica.com]
 Peter Thörnqvist [peter3@peter3.com]
+Remko Bonte [remkobonte@xno.spamx.myrealbox.com]
 
-Last Modified: 2000-02-28
+Last Modified: 2002-09-23
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+This code was extracted from JvFunctions to simplify D6Pe usage
+(no need for $IFDEF D6PersonalEdition - just exclude this file and any file using it)
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
