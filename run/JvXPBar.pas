@@ -36,8 +36,14 @@ unit JvXPBar;
 interface
 
 uses
-  Windows, Messages, Classes, Controls, Graphics, Forms,
-  SysUtils, ImgList, ActnList,
+  Classes,  SysUtils,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Graphics, Forms, ImgList, ActnList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QControls, QGraphics, QForms, QImgList, QActnList, QWindows,
+  QTypes, JvTypes,
+  {$ENDIF VisualCLX}
   JvXPCore, JvXPCoreUtils;
 
 type
@@ -89,13 +95,20 @@ type
     function IsImageIndexLinked: Boolean; override;
     function IsVisibleLinked: Boolean; override;
     function IsOnExecuteLinked: Boolean; override;
+    {$IFDEF VCL}
     procedure SetCaption(const Value: string); override;
-    procedure SetEnabled(Value: Boolean); override;
     procedure SetHint(const Value: string); override;
+    function DoShowHint(var HintStr: string): Boolean; virtual;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure SetCaption(const Value: TCaption); override;
+    procedure SetHint(const Value: widestring); override;
+    function DoShowHint(var HintStr: widestring): Boolean; virtual;
+    {$ENDIF VisualCLX}
+    procedure SetEnabled(Value: Boolean); override;
     procedure SetImageIndex(Value: Integer); override;
     procedure SetVisible(Value: Boolean); override;
     procedure SetOnExecute(Value: TNotifyEvent); override;
-    function DoShowHint(var HintStr: string): Boolean; virtual;
     property Client: TJvXPBarItem read FClient write FClient;
   end;
 
@@ -291,8 +304,13 @@ type
     function GetRollHeight: integer;
     function GetRollWidth: integer;
   protected
+    {$IFDEF VCL}
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
-
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    {$ENDIF VisualCLX}
     function GetHitTestRect(const HitTest: TJvXPBarHitTest): TRect;
     function GetItemRect(Index: Integer): TRect; virtual;
     procedure ItemVisibilityChanged(Item: TJvXPBarItem); dynamic;
@@ -401,8 +419,11 @@ type
     property Anchors;
     //property AutoSize;
     property Constraints;
+    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
+    property OnCanResize;
+    {$ENDIF VCL}
     property DragMode;
     //property Enabled;
     property ParentFont;
@@ -416,7 +437,6 @@ type
     //property OnGetSiteInfo;
     //property OnStartDock;
     //property OnUnDock;
-    property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
 {$IFDEF COMPILER6_UP}
@@ -439,7 +459,7 @@ type
   end;
 
 implementation
-
+{$IFDEF VCL}
 uses
 {$IFDEF JVCLThemesEnabled}
   UxTheme,
@@ -453,12 +473,15 @@ uses
 {$ENDIF USEJVCL}
   Menus;
 
-{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvXPBar.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+uses
+  QMenus, JvResources;
+
 {$R ../Resources/JvXPBar.res}
-{$ENDIF LINUX}
+{$ENDIF VisualCLX}
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -526,7 +549,12 @@ begin
     JvXPMethodsEqual(TMethod(Client.OnClick), TMethod(Action.OnExecute));
 end;
 
+{$IFDEF VCL}
 procedure TJvXPBarItemActionLink.SetCaption(const Value: string);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvXPBarItemActionLink.SetCaption(const Value: TCaption);
+{$ENDIF VisualCLX}
 begin
   if IsCaptionLinked then
     Client.Caption := Value;
@@ -538,7 +566,12 @@ begin
     Client.Enabled := Value;
 end;
 
+{$IFDEF VCL}
 procedure TJvXPBarItemActionLink.SetHint(const Value: string);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvXPBarItemActionLink.SetHint(const Value: widestring);
+{$ENDIF VisualCLX}
 begin
   if IsHintLinked then
     Client.Hint := Value;
@@ -995,7 +1028,12 @@ begin
 
   { update inspector }
   if csDesigning in FWinXPBar.ComponentState then
+    {$IFDEF VCL}
     TCustomForm(FWinXPBar.Owner).Designer.Modified
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    TCustomForm(FWinXPBar.Owner).DesignerHook.Modified
+    {$ENDIF VisualCLX}
   else
     PostMessage(FWinXPBar.Handle, WM_XPBARAFTERCOLLAPSE,
       Ord(FRollDirection = rdCollapse), 0);
@@ -1163,7 +1201,7 @@ end;
 
 function TJvXPCustomWinXPBar.IsFontStored: Boolean;
 begin
-  Result := not ParentFont and not DesktopFont;
+  Result := not ParentFont {$IFDEF VCL}and not DesktopFont{$ENDIF};
 end;
 
 procedure TJvXPCustomWinXPBar.FontChange(Sender: TObject);
@@ -1262,6 +1300,9 @@ begin
   if FHitTest = htRollButton then
   begin
     Rect := GetHitTestRect(htRollButton);
+    {$IFDEF VisualCLX}
+    QWindows.
+    {$ENDIF VisualCLX}
     InvalidateRect(Handle, @Rect, False);
   end;
 end;
@@ -1277,6 +1318,9 @@ begin
   if FHitTest <> OldHitTest then
   begin
     Rect := Bounds(0, 5, Width, FHeaderHeight); // header
+    {$IFDEF VisualCLX}
+    QWindows.
+    {$ENDIF VisualCLX}
     InvalidateRect(Handle, @Rect, False);
     if FShowLinkCursor then
     begin
@@ -1594,7 +1638,7 @@ begin
 
     { draw frame... }
     Brush.Color := clWhite;
-    FrameRect(Rect);
+    FrameRect({$IFDEF VisualCLX}Canvas,{$ENDIF}   Rect);
 
     { ...with cutted edges }
     OwnColor := TJvXPWinControl(Parent).Color;
@@ -1646,9 +1690,9 @@ begin
               Index := 2; // down
           end;
           if FCollapsed then
-            Bitmap.Handle := LoadBitmap(hInstance, PChar('EXPAND' + IntToStr(Index)))
+            Bitmap.LoadFromResourceName(hInstance, 'EXPAND' + IntToStr(Index))
           else
-            Bitmap.Handle := LoadBitmap(hInstance, PChar('COLLAPSE' + IntToStr(Index)));
+            Bitmap.LoadFromResourceName(hInstance, 'COLLAPSE' + IntToStr(Index));
         end;
         Bitmap.Transparent := True;
         Draw(Rect.Right - 24, Rect.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
@@ -1677,9 +1721,14 @@ begin
       Font.Color := FHotTrackColor;
     Rect.Bottom := Rect.Top + FHeaderHeight;
     Dec(Rect.Right, 3);
+    {$IFDEF VCL}
     DrawText(Handle, PChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
       DT_END_ELLIPSIS);
-
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
+      DT_END_ELLIPSIS or DT_NOPREFIX);
+    {$ENDIF VisualCLX}
     { draw visible items }
     Brush.Color := FColors.BodyColor;
     if not FCollapsed or FRolling then
@@ -1804,7 +1853,12 @@ begin
 end;
 {$ENDIF USEJVCL}
 
+{$IFDEF VCL}
 function TJvXPBarItemActionLink.DoShowHint(var HintStr: string): Boolean;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+function TJvXPBarItemActionLink.DoShowHint(var HintStr: widestring): Boolean;
+{$ENDIF VisualCLX}
 begin
   Result := True;
   if Action is TCustomAction then
@@ -1826,6 +1880,7 @@ begin
     Items[i].ActionChange(Items[i].Action, csLoading in ComponentState);
 end;
 
+{$IFDEF VCL}
 procedure TJvXPCustomWinXPBar.CMDialogChar(var Message: TCMDialogChar);
 var I: Integer;
 begin
@@ -1849,6 +1904,38 @@ begin
   end;
   inherited;
 end;
+{$ENDIF}
+
+{$IFDEF VisualCLX}
+function TJvXPCustomWinXPBar.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+var
+  i: integer;  
+begin  
+  if CanFocus then
+  begin
+    if IsAccel(Key, Caption) then
+    begin
+      Result := True;
+      FHitTest := htHeader;
+      FHoverIndex := -1;
+      Click;
+      exit;
+    end
+    else
+      for I := 0 to VisibleItems.Count - 1 do
+        if IsAccel(Key, VisibleItems[I].Caption) then
+        begin
+          Result := true;
+          FHitTest := htNone;
+          FHoverIndex := I;
+          Click;
+          Exit;
+        end;
+  end;
+  Result := inherited WantKey(Key, Shift, KeyText);
+end;
+{$ENDIF VisualCLX}
 
 end.
 

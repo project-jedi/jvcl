@@ -31,8 +31,14 @@ unit JvXPCoreUtils;
 interface
 
 uses
-  Windows, Graphics, SysUtils, Classes, Controls, TypInfo,
-  JvXPCore;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QTypes, QWindows,
+  {$ENDIF VisualCLX}
+  TypInfo, JvXPCore;
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 procedure JvXPDrawLine(const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer);
@@ -50,7 +56,7 @@ procedure JvXPDrawBoundLines(const ACanvas: TCanvas; const BoundLines: TJvXPBoun
 
 procedure JvXPConvertToGray2(Bitmap: TBitmap);
 procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
-  AText: string; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
+  AText: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
   var Rect: TRect; Flags: Integer);
 procedure JvXPFrame3D(const ACanvas: TCanvas; const Rect: TRect;
   const TopColor, BottomColor: TColor; const Swapped: Boolean = False);
@@ -58,7 +64,7 @@ procedure JvXPColorizeBitmap(Bitmap: TBitmap; const AColor: TColor);
 procedure JvXPSetDrawFlags(const AAlignment: TAlignment; const AWordWrap: Boolean;
   var Flags: Integer);
 procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
-  const AText: string; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
+  const AText: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
   const AAlignment: TAlignment; const AWordWrap: Boolean; var Rect: TRect);
 
 implementation
@@ -148,9 +154,17 @@ begin
                   if (XX < AWidth) and (XX > -1) then
                     with Row[XX] do
                     begin
+                      {$IFDEF VCL}
                       rgbtRed := GetRValue(GBand[iLoop - 1]);
                       rgbtGreen := GetGValue(GBand[iLoop - 1]);
                       rgbtBlue := GetBValue(GBand[iLoop - 1]);
+                      {$ENDIF VCL}
+                      {$IFDEF VisualCLX}
+                      rgbRed := GetRValue(GBand[iLoop - 1]);
+                      rgbGreen := GetGValue(GBand[iLoop - 1]);
+                      rgbBlue := GetBValue(GBand[iLoop - 1]);
+                      rgbReserved := 0;
+                      {$ENDIF VisualCLX}
                     end;
                 end;
             end;
@@ -178,9 +192,17 @@ begin
               if xLoop < AWidth  then
                 with Row[xLoop] do
                 begin
+                  {$IFDEF VCL}
                   rgbtRed := GetRValue(GBand[iLoop - 1]);
                   rgbtGreen := GetGValue(GBand[iLoop - 1]);
                   rgbtBlue := GetBValue(GBand[iLoop - 1]);
+                  {$ENDIF VCL}
+                  {$IFDEF VisualCLX}
+                  rgbRed := GetRValue(GBand[iLoop - 1]);
+                  rgbGreen := GetGValue(GBand[iLoop - 1]);
+                  rgbBlue := GetBValue(GBand[iLoop - 1]);
+                  rgbReserved := 0;
+                  {$ENDIF VisualCLX}
                 end;
               end;
           end;
@@ -257,12 +279,18 @@ begin
 end;
 
 procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
-  AText: string; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
+  AText: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
   var Rect: TRect; Flags: Integer); overload;
 
   procedure DoDrawText;
   begin
+    {$IFDEF VCL}
     DrawText(ACanvas.Handle, PChar(AText), -1, Rect, Flags);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    SetPenColor(ACanvas.handle, ACanvas.Font.Color);
+    DrawText(ACanvas.Handle, WideString(AText), -1, Rect, Flags);
+    {$ENDIF VisualCLX}
   end;
 
 begin
@@ -271,7 +299,9 @@ begin
     AText := AText + ' ';
   if not AShowAccelChar then
     Flags := Flags or DT_NOPREFIX;
+  {$IFDEF VCL}
   Flags := AParent.DrawTextBiDiModeFlags(Flags);
+  {$ENDIF VCL}
   with ACanvas do
   begin
     Font.Assign(AFont);
@@ -324,14 +354,31 @@ begin
   try
     ColorMap.Assign(Bitmap);
     Bitmap.Dormant;
+    {$IFDEF VCL}
     Bitmap.FreeImage;
+    {$ENDIF VCL}
     with ColorMap.Canvas do
     begin
       Brush.Color := AColor;
+      {$IFDEF VCL}
       BrushCopy(Rect, Bitmap, Rect, clBlack);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      FillRect(Rect);
+      Bitmap.TransparentColor := clBlack;
+      Bitmap.Transparent := true;
+      Draw(0,0, Bitmap);
+      {$ENDIF}
     end;
+    {$IFDEF VisualCLX}
+    Bitmap.FreeImage;
+    Bitmap.Assign(ColorMap);
+    Bitmap.TransparentMode := tmAuto;
+    {$ENDIF VisualCLX}
+    {$IFDEF VCL}
     Bitmap.Assign(ColorMap);
     ColorMap.ReleaseHandle;
+    {$ENDIF VCL}
   finally
     ColorMap.Free;
   end;
@@ -355,7 +402,7 @@ begin
     Flags := Flags or DT_WORDBREAK;
 end;
 
-procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas; const AText: string;
+procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas; const AText: TCaption;
   const AFont: TFont; const AEnabled, AShowAccelChar: Boolean; const AAlignment: TAlignment;
   const AWordWrap: Boolean; var Rect: TRect);
 var
