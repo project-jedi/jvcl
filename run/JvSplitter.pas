@@ -31,7 +31,7 @@ unit JvSplitter;
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, Forms, ExtCtrls, Controls,
+  Windows, Messages, SysUtils, Classes, Graphics, Forms, ExtCtrls, Controls,
   JVCLVer;
 
 type
