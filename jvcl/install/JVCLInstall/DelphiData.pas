@@ -57,7 +57,7 @@ type
   TCompileTargetList = class(TObjectList)
   private
     function GetItems(Index: Integer): TCompileTarget;
-    procedure LoadTargets(const SubKey: string);
+    procedure LoadTargets(const SubKey, HKCUSubKey: string);
     function IsBDSSupported(const IDEVersionStr: string): Boolean;
   public
     constructor Create;
@@ -86,6 +86,7 @@ type
     FDisabledPackages: TDelphiPackageList;
     FKnownPackages: TDelphiPackageList;
     FKnownIDEPackages: TDelphiPackageList;
+    FHKLMRegistryKey: string;
     FRegistryKey: string;
 
     procedure LoadFromRegistry;
@@ -100,7 +101,7 @@ type
     function GetBplDir: string;
     function GetDcpDir: string;
   public
-    constructor Create(const AName, AVersion: string);
+    constructor Create(const AName, AVersion, ARegSubKey: string);
     destructor Destroy; override;
 
     function IsBCB: Boolean;
@@ -120,6 +121,7 @@ type
 
     property Homepage: string read GetHomepage;
     property RegistryKey: string read FRegistryKey;
+    property HKLMRegistryKey: string read FHKLMRegistryKey;
 
     property Make: string read GetMake;
 
@@ -256,12 +258,19 @@ end;
 constructor TCompileTargetList.Create;
 begin
   inherited Create;
+  if CmdOptions.RegistryKeyDelphi = '' then
+    CmdOptions.RegistryKeyDelphi := 'Delphi'; // do not localize
+  if CmdOptions.RegistryKeyBCB = '' then
+    CmdOptions.RegistryKeyBCB := 'C++Builder'; // do not localize
+  if CmdOptions.RegistryKeyBDS = '' then
+    CmdOptions.RegistryKeyBDS := 'BDS'; // do not localize
+
   if not CmdOptions.IgnoreDelphi then
-    LoadTargets('Delphi'); // do not localize
+    LoadTargets('Delphi', CmdOptions.RegistryKeyDelphi); // do not localize
   if not CmdOptions.IgnoreBCB then
-    LoadTargets('C++Builder'); // do not localize
+    LoadTargets('C++Builder', CmdOptions.RegistryKeyBCB); // do not localize
   if not CmdOptions.IgnoreDelphi then
-    LoadTargets('BDS'); // do not localize
+    LoadTargets('BDS', CmdOptions.RegistryKeyBDS); // do not localize
 end;
 
 function TCompileTargetList.GetItems(Index: Integer): TCompileTarget;
@@ -269,15 +278,17 @@ begin
   Result := TCompileTarget(inherited Items[Index]);
 end;
 
-procedure TCompileTargetList.LoadTargets(const SubKey: string);
+procedure TCompileTargetList.LoadTargets(const SubKey, HKCUSubKey: string);
 var
-  Reg: TRegistry;
+  Reg, HKCUReg: TRegistry;
   List: TStrings;
   i: Integer;
 begin
   Reg := TRegistry.Create;
+  HKCUReg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_LOCAL_MACHINE;
+    HKCUReg.RootKey := HKEY_CURRENT_USER;
     if Reg.OpenKeyReadOnly(KeyBorland + SubKey) then
     begin
       List := TStringList.Create;
@@ -286,12 +297,16 @@ begin
         for i := 0 to List.Count - 1 do
           if List[i][1] in ['1'..'9'] then // only version numbers (not "BDS\DBExpress")
             if (SubKey <> 'BDS') or IsBDSSupported(List[i]) then
-              Add(TCompileTarget.Create(SubKey, List[i]));
+            begin
+              if HKCUReg.KeyExists(KeyBorland + HKCUSubKey + '\' + List[i]) then
+                Add(TCompileTarget.Create(SubKey, List[i], HKCUSubKey));
+            end;
       finally
         List.Free;
       end;
     end;
   finally
+    HKCUReg.Free;
     Reg.Free;
   end;
 end;
@@ -308,7 +323,7 @@ end;
 
 { TCompileTarget }
 
-constructor TCompileTarget.Create(const AName, AVersion: string);
+constructor TCompileTarget.Create(const AName, AVersion, ARegSubKey: string);
 begin
   inherited Create;
   FIDEName := AName;
@@ -323,7 +338,8 @@ begin
   else
     GetBDSVersion(FName, FVersion, FVersionStr);
 
-  FRegistryKey := KeyBorland + IDEName + '\' + IDEVersionStr;
+  FHKLMRegistryKey := KeyBorland + IDEName + '\' + IDEVersionStr;
+  FRegistryKey := KeyBorland + ARegSubKey + '\' + IDEVersionStr;
 
   FBrowsingPaths := TStringList.Create;
   FPackageSearchPaths := TStringList.Create;
@@ -475,7 +491,7 @@ begin
   try
     Reg.RootKey := HKEY_LOCAL_MACHINE;
 
-    if Reg.OpenKeyReadOnly(RegistryKey) then
+    if Reg.OpenKeyReadOnly(HKLMRegistryKey) then
     begin
       if Reg.ValueExists('Edition') then
         FEdition := Reg.ReadString('Edition')

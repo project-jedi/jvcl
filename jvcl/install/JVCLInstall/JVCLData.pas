@@ -1274,17 +1274,17 @@ end;
 procedure TTargetConfig.CleanJVCLPalette(RemoveEmptyPalettes: Boolean);
 var
   i: Integer;
-  reg: TRegistry;
+  Reg: TRegistry;
   List: TStrings;
 begin
   reg := TRegistry.Create;
   try
-    reg.RootKey := HKEY_CURRENT_USER;
-    if reg.OpenKey(Target.RegistryKey + '\Palette', False) then // do not localize
+    Reg.RootKey := HKEY_CURRENT_USER;
+    if Reg.OpenKey(Target.RegistryKey + '\Palette', False) then // do not localize
     begin
       List := TStringList.Create;
       try
-        reg.GetValueNames(List);
+        Reg.GetValueNames(List);
         for i := 0 to List.Count - 1 do
           DoCleanPalette(reg, List[i], RemoveEmptyPalettes);
       finally
@@ -1292,7 +1292,7 @@ begin
       end;
     end;
   finally
-    reg.Free;
+    Reg.Free;
   end;
 end;
 
