@@ -4,7 +4,7 @@ object FormMain: TFormMain
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'JVCL VCL to CLX Converter'
-  ClientHeight = 274
+  ClientHeight = 268
   ClientWidth = 641
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -42,26 +42,26 @@ object FormMain: TFormMain
   end
   object Bevel1: TBevel
     Left = 424
-    Top = 0
-    Width = 9
-    Height = 273
+    Top = 1
+    Width = 6
+    Height = 268
     Shape = bsLeftLine
   end
-  object Button1: TButton
+  object BtnExecute: TButton
     Left = 8
     Top = 240
     Width = 75
     Height = 25
     Caption = '&Execute'
-    TabOrder = 0
-    OnClick = Button1Click
+    TabOrder = 10
+    OnClick = BtnExecuteClick
   end
   object ProgressBar: TProgressBar
     Left = 8
     Top = 216
     Width = 409
     Height = 17
-    TabOrder = 1
+    TabOrder = 5
   end
   object EditOutDir: TJvDirectoryEdit
     Left = 16
@@ -77,15 +77,15 @@ object FormMain: TFormMain
     Width = 401
     Height = 21
     ButtonFlat = False
-    TabOrder = 3
+    TabOrder = 1
   end
   object RBtnSingleFile: TRadioButton
     Left = 8
     Top = 16
     Width = 209
     Height = 17
-    Caption = '&Single file'
-    TabOrder = 4
+    Caption = '&Single file / directory:'
+    TabOrder = 0
   end
   object RBtnAll: TRadioButton
     Left = 8
@@ -94,17 +94,17 @@ object FormMain: TFormMain
     Height = 17
     Caption = '&All JVCL JVCLX files'
     Checked = True
-    TabOrder = 5
+    TabOrder = 3
     TabStop = True
   end
-  object Button2: TButton
+  object BtnQuit: TButton
     Left = 344
     Top = 240
     Width = 75
     Height = 25
     Caption = '&Quit'
-    TabOrder = 6
-    OnClick = Button2Click
+    TabOrder = 11
+    OnClick = BtnQuitClick
   end
   object EditJVCLDir: TJvDirectoryEdit
     Left = 16
@@ -113,42 +113,42 @@ object FormMain: TFormMain
     Height = 21
     DialogKind = dkWin32
     ButtonFlat = False
-    TabOrder = 7
+    TabOrder = 4
   end
   object CheckBoxReduceConditions: TCheckBox
-    Left = 432
+    Left = 434
     Top = 8
     Width = 201
     Height = 17
     Caption = '&Reduce conditions'
     Checked = True
     State = cbChecked
-    TabOrder = 8
+    TabOrder = 6
   end
   object CheckBoxKeepLines: TCheckBox
-    Left = 448
+    Left = 450
     Top = 32
     Width = 185
     Height = 17
     Caption = '&Keep removed lines'
     Checked = True
     State = cbChecked
-    TabOrder = 9
+    TabOrder = 7
   end
   object CheckBoxUnixLineBreaks: TCheckBox
-    Left = 432
+    Left = 434
     Top = 56
     Width = 201
     Height = 17
     Caption = '&Unix line breaks'
-    TabOrder = 10
+    TabOrder = 8
   end
   object CheckBoxForceOverwrite: TCheckBox
-    Left = 432
+    Left = 434
     Top = 80
     Width = 201
     Height = 17
     Caption = '&Force overwrite'
-    TabOrder = 11
+    TabOrder = 9
   end
 end
