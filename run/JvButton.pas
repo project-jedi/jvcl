@@ -55,6 +55,7 @@ type
     FHotTrackFontOptions: TJvTrackFontOptions;
     FOnDropDownMenu: TContextPopupEvent;
     FDropArrow: boolean;
+    FOnDropDownClose: TNotifyEvent;
     function GetPattern: TBitmap;
     procedure SetFlat(const Value: Boolean);
     procedure SetDown(Value: Boolean);
@@ -75,6 +76,7 @@ type
     procedure ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: Integer); virtual;
     procedure ForceSize(Sender: TControl; AWidth, AHeight: Integer);
     function DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean; virtual;
+    procedure DropDownClose;
     procedure UpdateExclusive;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -108,9 +110,10 @@ type
     property Down: Boolean read FDown write SetDown default False;
     property DropDownMenu: TPopupMenu read FDropDownMenu write SetDropDownMenu;
     property DropArrow: boolean read FDropArrow write SetDropArrow default False;
-    procedure Click; override;
     property OnDropDownMenu: TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
+    property OnDropDownClose:TNotifyEvent read FOnDropDownClose write FOnDropDownClose;
   public
+    procedure Click; override;
 
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
@@ -433,6 +436,7 @@ begin
     {$ENDIF VisualCLX}
     { release button }
     MouseUp(Button, Shift, X, Y);
+    DropDownClose;
   end;
 end;
 
@@ -960,6 +964,12 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
+
+procedure TJvCustomGraphicButton.DropDownClose;
+begin
+  if Assigned(FOnDropDownClose) then
+    FOnDropDownClose(Self);
+end;
 
 initialization
   {$IFDEF UNITVERSIONING}
