@@ -44,9 +44,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvBDEMove;
+
+{$I jvcl.inc}
 
 interface
 

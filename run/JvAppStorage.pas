@@ -22,15 +22,7 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
------------------------------------------------------------------------------}
-// $Id$
-
-{$I jvcl.inc}
-
-unit JvAppStorage;
-
-{
+Description:
   General storage unit - provides with a basic storage backend component to store application
   specific data. Descendants can provide specific backends for registry, INI-files, DB, XML,
   etc. Should be used to provide a common interface for storing data as is done in some of
@@ -78,8 +70,15 @@ unit JvAppStorage;
   Because all settings can be read from a single store (from the application's perspective) you have
   created the option to keep your settings storage and retrieval code simple and easy to understand.
   Upon startup you can set asUserIniBackend to the correct INI file for the user that has logged on,
-  and you are ready to read in the settings of that user
-}
+  and you are ready to read in the settings of that user.
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
+unit JvAppStorage;
+
+{$I jvcl.inc}
 
 interface
 

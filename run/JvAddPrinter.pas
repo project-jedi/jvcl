@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvAddPrinter;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvAddPrinter;
 
 interface
 

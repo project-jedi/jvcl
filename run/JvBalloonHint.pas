@@ -25,10 +25,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvBalloonHint;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvBalloonHint;
 
 interface
 

@@ -25,14 +25,12 @@ Description:
   separate events.
 
 Known Issues:
-
-
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvArrowButton;
+
+{$I jvcl.inc}
 
 interface
 

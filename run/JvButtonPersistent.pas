@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvButtonPersistent;
+
+{$I jvcl.inc}
 
 interface
 

@@ -26,10 +26,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvBandObject;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvBandObject;
 
 interface
 

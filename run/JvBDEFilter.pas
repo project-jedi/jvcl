@@ -22,11 +22,11 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvBDEFilter;
 
 interface
+
+{$I jvcl.inc}
 
 uses
   Classes, BDE, DB,
