@@ -35,6 +35,7 @@ Changelog for JVCL 3.0
     The unicode JvEditor has a "LinesANSI" property. This property is only for the object inspector.
 =============================================
 2003-09-20:
+- Added MeasureStyle property to JvComboBox // marcelb
 - Added AutoSize and WordWrap properties to JvCheckBox and JvRadioButton // peter3
 2003-09-18:
 - added new methods to TJvStringGrid: AutoSizeCol, InsertRow, InsertCol, RemoveRow, RemoveCol, HideRow, ShowRow, HideCol, ShowCol and Clear and a new FixedFont property // peter3
