@@ -61,8 +61,9 @@ const
     directory to be accepted as a new enought JCL version. The paths must start
     with a backslash. A leading "+" means that the file must exist, a leading
     "-" means that the file must not exist. }
-  JCLIdentifyOutdated: array[0..1] of string = (
+  JCLIdentifyOutdated: array[0..2] of string = (
 //    '+\source\windows\win32api\WinBase.int' // 1.93(CVS)
+     '+\source\common\JclCompression.pas',
      '+\source\common\JclUnitVersioning.pas',
      '+\source\common\JclWideStrings.pas'
   );
