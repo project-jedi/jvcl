@@ -459,6 +459,34 @@ const
      'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'];
 
+{$IFNDEF HAS_UNIT_VARIANTS}
+type
+  TVariantRelationship = (vrEqual, vrLessThan, vrGreaterThan, vrNotEqual);
+
+function VarCompareValue(const V1, V2: Variant): TVariantRelationship;
+begin
+  if VarIsNull(V1) and VarIsNull(V2) then
+    Result := vrEqual
+  else
+  if VarIsNull(V1) or VarIsNull(V2) then
+    Result := vrNotEqual
+  else
+  if VarIsEmpty(V1) and VarIsEmpty(V2) then
+    Result := vrEqual
+  else
+  if VarIsEmpty(V1) or VarIsEmpty(V2) then
+    Result := vrNotEqual
+  else
+  if V1 = V2 then
+    Result := vrEqual
+  else
+  if V1 < V2 then
+    Result := vrLessThan
+  else
+    Result := vrGreaterThan;
+end;
+{$ENDIF !HAS_UNIT_VARIANTS}
+
 //=== { TJvParameterListMessages } ===========================================
 
 constructor TJvParameterListMessages.Create;
@@ -1570,7 +1598,6 @@ begin
       if (not VarIsEmpty(Data)) and Reason.IsNotEmpty and (IEnable <> -1) then
         IEnable := 1;
       try
-//        if (VarToStr(Reason.AsVariant) = VarToStr(Data)) and (IEnable <> -1) then
         if (VarCompareValue(Reason.AsVariant, Data) = vrEqual) and (IEnable <> -1) then
           IEnable := 1;
       except
@@ -1599,7 +1626,6 @@ begin
       if (not (VarIsEmpty(Data) or (VarToStr(Data) = ''))) and Reason.IsNotEmpty then
         IEnable := -1;
       try
-//        if VarToStr(Reason.AsVariant) = VarToStr(Data) then
         if VarCompareValue(Reason.AsVariant, Data) = vrEqual then
           IEnable := -1;
       except
