@@ -111,7 +111,7 @@ type
     FImageList: TImageList;
     FBlockStartPos: Integer;
     function GetVSPane(Index: Integer): TJvDockVSPane;
-    function GetVSPaneCount: Integer;
+    function GetCount: Integer;
   protected
 
     procedure ResetActiveBlockWidth;
@@ -127,7 +127,7 @@ type
     procedure AddDockControl(Control: TWinControl);
     procedure RemoveDockControl(Control: TWinControl);
     function GetTotalWidth: Integer;
-    property VSPaneCount: Integer read GetVSPaneCount;
+    property Count: Integer read GetCount;
     property VSPanes[Index: Integer]: TJvDockVSPane read GetVSPane;
   end;
 
@@ -150,7 +150,7 @@ type
     FVSPopupPanel: TJvDockVSPopupPanel;
     FVSPopupPanelSplitter: TJvDockVSPopupPanelSplitter;
     FActivePaneSize: Integer;
-    function GetBlockCount: Integer;
+    function GetCount: Integer;
     function GetBlocks(Index: Integer): TJvDockVSBlock;
     procedure GetBlockRect(Block: TJvDockVSBlock; Index: Integer; var ARect: TRect);
     function GetDockFormWithMousePos(MousePos: TPoint): TJvDockVSPane;
@@ -198,7 +198,7 @@ type
     procedure DeleteBlock(Index: Integer);
     procedure AnimatePopupPanel(AnimateStyle: TJvDockPoppupPanelAnimateStyle);
     property DockServer: TJvDockServer read FDockServer write FDockServer;
-    property BlockCount: Integer read GetBlockCount;
+    property Count: Integer read GetCount;
     property Blocks[Index: Integer]: TJvDockVSBlock read GetBlocks;
     property VSPopupPanel: TJvDockVSPopupPanel read FVSPopupPanel;
     property VSPopupPanelSplitter: TJvDockVSPopupPanelSplitter read FVSPopupPanelSplitter
@@ -299,20 +299,20 @@ type
 
   TJvDockVSNETZone = class(TJvDockVIDZone)
   private
-    FAutoHideBtnDown: Boolean;
-    FAutoHideBtnState: TJvDockBtnState;
-    FCloseBtnState: TJvDockBtnState;
+    FAutoHideButtonDown: Boolean;
+    FAutoHideButtonState: TJvDockBtnState;
+    FCloseButtonState: TJvDockBtnState;
     FVSPaneVisible: Boolean;
-    procedure SetAutoHideBtnState(const Value: TJvDockBtnState);
-    procedure SetCloseBtnState(const Value: TJvDockBtnState);
-    procedure SetAutoHideBtnDown(const Value: Boolean);
+    procedure SetAutoHideButtonState(const Value: TJvDockBtnState);
+    procedure SetCloseButtonState(const Value: TJvDockBtnState);
+    procedure SetAutoHideButtonDown(const Value: Boolean);
     procedure SetVSPaneVisible(const Value: Boolean);
   protected
     procedure DoCustomSetControlName; override;
     procedure SetChildControlVisible(Client: TControl; AViisible: Boolean); override;
-    property AutoHideBtnDown: Boolean read FAutoHideBtnDown write SetAutoHideBtnDown;
-    property AutoHideBtnState: TJvDockBtnState read FAutoHideBtnState write SetAutoHideBtnState;
-    property CloseBtnState: TJvDockBtnState read FCloseBtnState write SetCloseBtnState;
+    property AutoHideButtonDown: Boolean read FAutoHideButtonDown write SetAutoHideButtonDown;
+    property AutoHideButtonState: TJvDockBtnState read FAutoHideButtonState write SetAutoHideButtonState;
+    property CloseButtonState: TJvDockBtnState read FCloseButtonState write SetCloseButtonState;
     property VSPaneVisible: Boolean read FVSPaneVisible write SetVSPaneVisible;
   public
     constructor Create(Tree: TJvDockTree); override;
@@ -362,11 +362,11 @@ type
 
   TJvDockVSNETTabSheet = class(TJvDockVIDTabSheet)
   private
-    FOldVisible: Boolean;
-    procedure SetOldVisible(const Value: Boolean);
+    FPreviousVisible: Boolean;
+    procedure SetPreviousVisible(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    property OldVisible: Boolean read FOldVisible write SetOldVisible;
+    property PreviousVisible: Boolean read FPreviousVisible write SetPreviousVisible;
   end;
 
   TJvDockVSNETTabPanel = class(TJvDockTabPanel)
@@ -781,7 +781,7 @@ var
           Exit;
         end;
       end;
-      for i := Pane.Index + 1 to Pane.Block.VSPaneCount - 1 do
+      for i := Pane.Index + 1 to Pane.Block.Count - 1 do
       begin
         if Pane.Block.VSPanes[i].Visible then
         begin
@@ -823,7 +823,7 @@ begin
       begin
         Pane.Visible := AVisible;
         ResetActiveControl;
-        TJvDockVSNETTabSheet(ADockClient.ParentForm.Parent).OldVisible := AVisible;
+        TJvDockVSNETTabSheet(ADockClient.ParentForm.Parent).PreviousVisible := AVisible;
       end;
     end;
     if VSChannel <> nil then
@@ -976,11 +976,11 @@ begin
     begin
       if ChildControl is TJvDockTabHostForm then
       begin
-        for i := 0 to TJvDockTabHostForm(ChildControl).PageControl.PageCount - 1 do
+        for i := 0 to TJvDockTabHostForm(ChildControl).PageControl.Count - 1 do
         begin
           Sheet := TJvDockVSNETTabSheet(TJvDockTabHostForm(ChildControl).PageControl.Pages[i]);
           Pane := FindPane(TWinControl(Sheet.Controls[0]));
-          SetPaneVisible(ChildControl, Sheet.OldVisible);
+          SetPaneVisible(ChildControl, Sheet.PreviousVisible);
         end;
       end
       else
@@ -1024,12 +1024,12 @@ begin
   if (Zone <> nil) then
   begin
     if (HTFlag = HTCLOSE) then
-      TJvDockVSNETZone(Zone).CloseBtnState := bsDown
+      TJvDockVSNETZone(Zone).CloseButtonState := bsDown
     else if HTFlag = HTAUTOHIDE then
     begin
       AutoHideZone := TJvDockVSNETZone(Zone);
-      AutoHideZone.AutoHideBtnDown := True;
-      AutoHideZone.AutoHideBtnState := bsDown;
+      AutoHideZone.AutoHideButtonDown := True;
+      AutoHideZone.AutoHideButtonState := bsDown;
     end;
   end;
 end;
@@ -1037,15 +1037,15 @@ end;
 procedure TJvDockVSNETTree.DoLButtonUp(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer);
 begin
-  if CloseBtnZone <> nil then
+  if CloseButtonZone <> nil then
   begin
-    TJvDockVSNETZone(CloseBtnZone).CloseBtnState := bsNormal;
+    TJvDockVSNETZone(CloseButtonZone).CloseButtonState := bsNormal;
   end;
   inherited;
   if (AutoHideZone <> nil) then
   begin
-    AutoHideZone.AutoHideBtnDown := False;
-    AutoHideZone.AutoHideBtnState := bsNormal;
+    AutoHideZone.AutoHideButtonDown := False;
+    AutoHideZone.AutoHideButtonState := bsNormal;
     if HTFlag = HTAUTOHIDE then
     begin
       if DockSite is TJvDockVSNETPanel then
@@ -1064,29 +1064,29 @@ begin
   if Zone <> nil then
   begin
     AZone := TJvDockVSNETZone(Zone);
-    if AZone.AutoHideBtnDown then
+    if AZone.AutoHideButtonDown then
     begin
       if HTFlag = HTAUTOHIDE then
-        AZone.AutoHideBtnState := bsDown
+        AZone.AutoHideButtonState := bsDown
       else
-        AZone.AutoHideBtnState := bsUp;
+        AZone.AutoHideButtonState := bsUp;
     end
     else if (HTFlag = HTAUTOHIDE) and not AZone.CloseBtnDown then
-      AZone.AutoHideBtnState := bsUp
+      AZone.AutoHideButtonState := bsUp
     else
-      AZone.AutoHideBtnState := bsNormal;
+      AZone.AutoHideButtonState := bsNormal;
 
     if AZone.CloseBtnDown then
     begin
       if HTFlag = HTCLOSE then
-        AZone.CloseBtnState := bsDown
+        AZone.CloseButtonState := bsDown
       else
-        AZone.CloseBtnState := bsUp;
+        AZone.CloseButtonState := bsUp;
     end
-    else if (HTFlag = HTCLOSE) and not AZone.AutoHideBtnDown then
-      AZone.CloseBtnState := bsUp
+    else if (HTFlag = HTCLOSE) and not AZone.AutoHideButtonDown then
+      AZone.CloseButtonState := bsUp
     else
-      AZone.CloseBtnState := bsNormal;
+      AZone.CloseButtonState := bsNormal;
   end;
 end;
 
@@ -1108,9 +1108,9 @@ begin
   begin
     AZone := TJvDockVSNETZone(Zone);
 
-    if AZone.AutoHideBtnState <> bsNormal then
+    if AZone.AutoHideButtonState <> bsNormal then
     begin
-      if AZone.AutoHideBtnState = bsUp then
+      if AZone.AutoHideButtonState = bsUp then
       begin
         ColorArr[1] := clBlack;
         if GetActiveControl = AZone.ChildControl then
@@ -1118,7 +1118,7 @@ begin
         else
           ColorArr[2] := clWhite;
       end
-      else if AZone.AutoHideBtnState = bsDown then
+      else if AZone.AutoHideButtonState = bsDown then
       begin
         ColorArr[1] := clBtnface;
         ColorArr[2] := clBlack;
@@ -1132,7 +1132,7 @@ begin
       Canvas.LineTo(Left, Top + ButtonHeight);
     end;
 
-    if AZone.AutoHideBtnState = bsDown then
+    if AZone.AutoHideButtonState = bsDown then
     begin
       Inc(Left);
       Inc(Top);
@@ -1184,14 +1184,14 @@ begin
   begin
 
     ADockClient := FindDockClient(Zone.ChildControl);
-    if (ADockClient <> nil) and (not ADockClient.EnableCloseBtn) then Exit;
+    if (ADockClient <> nil) and (not ADockClient.EnableCloseButton) then Exit;
     if Zone.ChildControl is TJvDockTabHostForm then
     begin
       AForm := TJvDockTabHostForm(Zone.ChildControl).GetActiveDockForm;
       if AForm <> nil then
       begin
         ADockClient := FindDockClient(AForm);
-        if (ADockClient <> nil) and (not ADockClient.EnableCloseBtn) then
+        if (ADockClient <> nil) and (not ADockClient.EnableCloseButton) then
           Exit;
       end;
     end;
@@ -1202,9 +1202,9 @@ begin
     DrawRect.Top := Top + 3;
     DrawRect.Bottom := DrawRect.Top + 7;
 
-    if AZone.CloseBtnState <> bsNormal then
+    if AZone.CloseButtonState <> bsNormal then
     begin
-      if AZone.CloseBtnState = bsUp then
+      if AZone.CloseButtonState = bsUp then
       begin
         ColorArr[1] := clBlack;
         if GetActiveControl = AZone.ChildControl then
@@ -1212,7 +1212,7 @@ begin
         else
           ColorArr[2] := clWhite;
       end
-      else if AZone.CloseBtnState = bsDown then
+      else if AZone.CloseButtonState = bsDown then
       begin
         ColorArr[1] := clBtnface;
         ColorArr[2] := clBlack;
@@ -1226,7 +1226,7 @@ begin
       Canvas.LineTo(Left, Top + ButtonHeight);
     end;
 
-    if AZone.CloseBtnState = bsDown then
+    if AZone.CloseButtonState = bsDown then
       OffsetRect(DrawRect, 1, 1);
 
     if AZone.ChildControl = GetActiveControl then
@@ -1314,7 +1314,7 @@ begin
       if AForm <> nil then
       begin
         ADockClient := FindDockClient(AForm);
-        if (ADockClient <> nil) and (not ADockClient.EnableCloseBtn) then
+        if (ADockClient <> nil) and (not ADockClient.EnableCloseButton) then
           Exit
         else
           AForm.Close;
@@ -1371,8 +1371,8 @@ end;
 constructor TJvDockVSNETZone.Create(Tree: TJvDockTree);
 begin
   inherited;
-  FAutoHideBtnState := bsNormal;
-  FCloseBtnState := bsNormal;
+  FAutoHideButtonState := bsNormal;
+  FCloseButtonState := bsNormal;
   FVSPaneVisible := True;
 end;
 
@@ -1416,16 +1416,16 @@ begin
   end;
 end;
 
-procedure TJvDockVSNETZone.SetAutoHideBtnDown(const Value: Boolean);
+procedure TJvDockVSNETZone.SetAutoHideButtonDown(const Value: Boolean);
 begin
-  FAutoHideBtnDown := Value;
+  FAutoHideButtonDown := Value;
 end;
 
-procedure TJvDockVSNETZone.SetAutoHideBtnState(const Value: TJvDockBtnState);
+procedure TJvDockVSNETZone.SetAutoHideButtonState(const Value: TJvDockBtnState);
 begin
-  if FAutoHideBtnState <> Value then
+  if FAutoHideButtonState <> Value then
   begin
-    FAutoHideBtnState := Value;
+    FAutoHideButtonState := Value;
     Tree.DockSite.Invalidate;
   end;
 end;
@@ -1438,11 +1438,11 @@ begin
 
 end;
 
-procedure TJvDockVSNETZone.SetCloseBtnState(const Value: TJvDockBtnState);
+procedure TJvDockVSNETZone.SetCloseButtonState(const Value: TJvDockBtnState);
 begin
-  if FCloseBtnState <> Value then
+  if FCloseButtonState <> Value then
   begin
-    FCloseBtnState := Value;
+    FCloseButtonState := Value;
     Tree.DockSite.Invalidate;
   end;
 end;
@@ -1462,8 +1462,8 @@ end;
 constructor TJvDockVSNETTabPageControl.Create(AOwner: TComponent);
 begin
   inherited;
-  lbDockTabSheetClass := TJvDockVSNETTabSheet;
-  lbTabPanelClass := TJvDockVSNETTabPanel;
+  TabSheetClass := TJvDockVSNETTabSheet;
+  TabPanelClass := TJvDockVSNETTabPanel;
 end;
 
 procedure TJvDockVSNETTabPageControl.CreatePanel;
@@ -1488,7 +1488,7 @@ begin
   end
   else
   begin
-    if (BlockCount >= 1) and (Blocks[0].BlockType = btConjoinBlock) then
+    if (Count >= 1) and (Blocks[0].BlockType = btConjoinBlock) then
     begin
       Blocks[0].AddDockControl(Control);
     end
@@ -1570,9 +1570,9 @@ begin
   BlockIndex := -1;
   PaneIndex := -1;
   if Control = nil then Exit;
-  for i := 0 to BlockCount - 1 do
+  for i := 0 to Count - 1 do
   begin
-    for j := 0 to Blocks[i].VSPaneCount - 1 do
+    for j := 0 to Blocks[i].Count - 1 do
       if Blocks[i].VSPanes[j].DockForm = Control then
       begin
         BlockIndex := i;
@@ -1594,7 +1594,7 @@ begin
   end;
 end;
 
-function TJvDockVSChannel.GetBlockCount: Integer;
+function TJvDockVSChannel.GetCount: Integer;
 begin
   Result := FBlockList.Count;
 end;
@@ -1655,9 +1655,9 @@ var
 begin
   Result := nil;
   FCurrentPos := FBlockStartOffset;
-  for i := 0 to BlockCount - 1 do
+  for i := 0 to Count - 1 do
   begin
-    for j := 0 to Blocks[i].VSPaneCount - 1 do
+    for j := 0 to Blocks[i].Count - 1 do
     begin
       if not Blocks[i].VSPanes[j].Visible then Continue;
       GetBlockRect(Blocks[i], j, ARect);
@@ -1757,7 +1757,7 @@ procedure TJvDockVSChannel.Paint;
     VisiblePaneCount: Integer;
   begin
     VisiblePaneCount := 0;
-    for i := 0 to Block.VSPaneCount - 1 do
+    for i := 0 to Block.Count - 1 do
     begin
       if not Block.VSPanes[i].Visible then Continue;
 
@@ -1805,7 +1805,7 @@ begin
   inherited;
 
   FCurrentPos := FBlockStartOffset;
-  for i := 0 to BlockCount - 1 do
+  for i := 0 to Count - 1 do
   begin
     DrawSingleBlock(Blocks[i]);
   end;
@@ -1828,16 +1828,16 @@ begin
     PopupPanelAnimate.PopupForm(Self, Pane.Width);
     if (Pane.DockForm <> nil) and (Pane.DockForm.HostDockSite.Parent is TJvDockTabHostForm) then
     begin
-      FVSPopupPanel.lbDockManager.ShowSingleControl(Pane.DockForm.HostDockSite.Parent);
+      FVSPopupPanel.JvDockManager.ShowSingleControl(Pane.DockForm.HostDockSite.Parent);
       SetSingleDockFormVisible(Pane.DockForm.HostDockSite, Pane.DockForm);
 
       TJvDockTabHostForm(Pane.DockForm.HostDockSite.Parent).Caption := Pane.DockForm.Caption;
     end
     else
-      FVSPopupPanel.lbDockManager.ShowSingleControl(Pane.DockForm);
+      FVSPopupPanel.JvDockManager.ShowSingleControl(Pane.DockForm);
     FActiveDockForm := Pane.DockForm;
     FActivePane := Pane;
-    FVSPopupPanel.lbDockManager.ResetBounds(True);
+    FVSPopupPanel.JvDockManager.ResetBounds(True);
 
     Pane.Block.FActiveDockControl := Pane.DockForm;
     Invalidate;
@@ -1852,7 +1852,7 @@ begin
   if FindDockControl(Control, BlockIndex, PaneIndex) then
   begin
     Blocks[BlockIndex].DeletePane(PaneIndex);
-    if (Blocks[BlockIndex].VSPaneCount <= 0) or (Blocks[BlockIndex].FBlockType = btTabBlock) then
+    if (Blocks[BlockIndex].Count <= 0) or (Blocks[BlockIndex].FBlockType = btTabBlock) then
       DeleteBlock(BlockIndex);
   end;
   ResetPosition;
@@ -1863,10 +1863,10 @@ procedure TJvDockVSChannel.ResetBlock;
 var
   i: Integer;
 begin
-  if BlockCount > 0 then
+  if Count > 0 then
   begin
     Blocks[0].FBlockStartPos := FBlockStartOffset;
-    for i := 1 to BlockCount - 1 do
+    for i := 1 to Count - 1 do
       Blocks[i].FBlockStartPos := Blocks[i - 1].FBlockStartPos + Blocks[i - 1].GetTotalWidth + FBlockInterval;
   end;
 end;
@@ -1877,8 +1877,8 @@ var
   PaneCount: Integer;
 begin
   PaneCount := 0;
-  for i := 0 to BlockCount - 1 do
-    for j := 0 to Blocks[i].VSPaneCount - 1 do
+  for i := 0 to Count - 1 do
+    for j := 0 to Blocks[i].Count - 1 do
       if Blocks[i].VSPanes[j].Visible = True then
         Inc(PaneCount);
 
@@ -1954,8 +1954,8 @@ var
   i, j: Integer;
 begin
   Result := nil;
-  for i := 0 to BlockCount - 1 do
-    for j := 0 to Blocks[i].VSPaneCount - 1 do
+  for i := 0 to Count - 1 do
+    for j := 0 to Blocks[i].Count - 1 do
       if AControl = Blocks[i].VSPanes[j].DockForm then
       begin
         Result := Blocks[i].VSPanes[j];
@@ -2000,7 +2000,7 @@ procedure TJvDockVSChannel.RemoveAllBlock;
 var
   i: Integer;
 begin
-  for i := BlockCount - 1 downto 0 do
+  for i := Count - 1 downto 0 do
     DeleteBlock(i);
   FActiveDockForm := nil;
 end;
@@ -2055,7 +2055,7 @@ begin
   end
   else if Align in [alTop, alBottom] then
   begin
-    FActivePane.Width := VSPopupPanel.Height + VSPopupPanel.lbDockManager.GrabberSize;
+    FActivePane.Width := VSPopupPanel.Height + VSPopupPanel.JvDockManager.GrabberSize;
   end;
   if DockClient <> nil then
     DockClient.VSPaneWidth := FActivePane.Width;
@@ -2134,11 +2134,11 @@ begin
         end
         else
           FImageList.AddIcon(TForm(PageControl.DockClients[i]).Icon);
-        TJvDockVSNETTabSheet(PageControl.Pages[i]).OldVisible := PageControl.DockClients[i].Visible;
+        TJvDockVSNETTabSheet(PageControl.Pages[i]).PreviousVisible := PageControl.DockClients[i].Visible;
         if PageControl.Pages[i] <> PageControl.ActivePage then
           PageControl.DockClients[i].Visible := False;
       end;
-      for i := 0 to VSPaneCount - 1 do
+      for i := 0 to Count - 1 do
       begin
         if VSPanes[i].Visible then
         begin
@@ -2187,7 +2187,7 @@ var
   i: Integer;
 begin
   FImageList.Free;
-  for i := 0 to VSPaneCount - 1 do
+  for i := 0 to Count - 1 do
     VSPanes[i].Free;
   FVSPaneList.Free;
   inherited;
@@ -2198,7 +2198,7 @@ begin
   Result := TJvDockVSPane(FVSPaneList[Index]);
 end;
 
-function TJvDockVSBlock.GetVSPaneCount: Integer;
+function TJvDockVSBlock.GetCount: Integer;
 begin
   Result := FVSPaneList.Count;
 end;
@@ -2217,7 +2217,7 @@ procedure TJvDockVSBlock.ResetActiveBlockWidth;
 var
   i: Integer;
 begin
-  for i := 0 to VSPaneCount - 1 do
+  for i := 0 to Count - 1 do
   begin
     FActiveBlockWidth := Max(FActiveBlockWidth, min(VSChannel.ActivePaneSize,
       TForm(VSChannel.Parent).Canvas.TextWidth(VSPanes[i].DockForm.Caption) + InactiveBlockWidth + 10));
@@ -2293,9 +2293,9 @@ begin
   VSChannel.AddDockControl(Control);
   ShowDockPanel(VisibleDockClientCount > 1, Control, sdfDockPanel);
   Control.Dock(VSChannel.VSPopupPanel, Rect(0, 0, 0, 0));
-  VSChannel.VSPopupPanel.lbDockManager.InsertControl(Control, alNone, nil);
-  VSChannel.VSPopupPanel.lbDockManager.ShowSingleControl(Control);
-  lbDockManager.HideControl(Control);
+  VSChannel.VSPopupPanel.JvDockManager.InsertControl(Control, alNone, nil);
+  VSChannel.VSPopupPanel.JvDockManager.ShowSingleControl(Control);
+  JvDockManager.HideControl(Control);
   ResetChannelBlockStartOffset(VSChannel);
 end;
 
@@ -2310,9 +2310,9 @@ var
     if Control is TJvDockTabHostForm then
     begin
       with TJvDockTabHostForm(Control) do
-        for i := 0 to PageControl.PageCount - 1 do
+        for i := 0 to PageControl.Count - 1 do
         begin
-          PageControl.Pages[i].Visible := TJvDockVSNETTabSheet(PageControl.Pages[i]).OldVisible;
+          PageControl.Pages[i].Visible := TJvDockVSNETTabSheet(PageControl.Pages[i]).PreviousVisible;
           PageControl.Pages[i].Controls[0].Visible := PageControl.Pages[i].Visible;
         end;
     end;
@@ -2322,8 +2322,8 @@ begin
   begin
     Panel := TJvDockVSPopupPanel(self).FVSNETDockPanel;
     Control.Dock(Panel, Rect(0, 0, 0, 0));
-    Panel.lbDockManager.ShowControl(Control);
-    lbDockManager.RemoveControl(Control);
+    Panel.JvDockManager.ShowControl(Control);
+    JvDockManager.RemoveControl(Control);
     Panel.VSChannel.RemoveDockControl(Control);
     Panel.ShowDockPanel(Panel.VisibleDockClientCount > 0, Control, sdfDockPanel);
     if (Panel.VSChannel.ActiveDockForm <> nil) and Panel.VSChannel.ActiveDockForm.CanFocus then
@@ -2427,12 +2427,12 @@ end;
 constructor TJvDockVSNETTabSheet.Create(AOwner: TComponent);
 begin
   inherited;
-  FOldVisible := True;
+  FPreviousVisible := True;
 end;
 
-procedure TJvDockVSNETTabSheet.SetOldVisible(const Value: Boolean);
+procedure TJvDockVSNETTabSheet.SetPreviousVisible(const Value: Boolean);
 begin
-  FOldVisible := Value;
+  FPreviousVisible := Value;
 end;
 
 type
@@ -3017,7 +3017,7 @@ var
 begin
   if DockStyle = nil then Exit;
 
-  for i := 0 to DockStyle.DockBaseControlListCount - 1 do
+  for i := 0 to DockStyle.Count - 1 do
   begin
     if DockStyle.DockBaseControlLists[i] is TJvDockServer then
     begin

@@ -22,23 +22,24 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
------------------------------------------------------------------------------}
-
+}
 {$I jvcl.inc}
-
 unit JvDockTree;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Consts,
-  JvDockSupportClass;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Consts, JvDockSupportClass;
 
 const
+
   HTSPLITTER = 30;
+
   HTNONE = 31;
 
 type
+
   TJvDockTree = class;
 
   IJvDockManager = interface(IDockManager)
@@ -53,37 +54,56 @@ type
     procedure SetBorderWidth(const Value: Integer);
     function GetDockRect: TRect;
     procedure SetDockRect(const Value: TRect);
+
     function GetDockSiteSize: Integer;
     procedure SetDockSiteSize(const Value: Integer);
+
     function GetMinSize: Integer;
+
     procedure BeginResizeDockSite;
     procedure EndResizeDockSite;
+
     function GetDockEdge(DockRect: TRect; MousePos: TPoint;
       var DropAlign: TAlign; Control: TControl): TControl;
+
     function GetHTFlag(MousePos: TPoint): Integer;
+
     procedure GetSiteInfo(Client: TControl;
       var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
+
     procedure ShowControl(Control: TControl);
     procedure HideControl(Control: TControl);
+
     procedure ShowAllControl;
     procedure HideAllControl;
     procedure ShowSingleControl(Control: TControl);
     procedure HideSingleControl(Control: TControl);
+
     procedure ReplaceZoneChild(OldControl, NewControl: TControl);
+
     function HasZoneWithControl(Control: TControl): Boolean;
+
     function GetDockClientLimit(Orient: TDockOrientation; IsMin: Boolean): Integer;
+
     function GetFrameRect(Control: TControl): TRect;
     function GetFrameRectEx(Control: TControl): TRect;
-    property ActiveControl: TControl read GetActiveControl write SetActiveControl;
-    property GrabberSize: Integer read GetGrabberSize write SetGrabberSize;
-    property SplitterWidth: Integer read GetDockSplitterWidth write SetDockSplitterWidth;
-    property BorderWidth: Integer read GetBorderWidth write SetBorderWidth;
+    property ActiveControl: TControl read GetActiveControl
+      write SetActiveControl;
+    property GrabberSize: Integer read GetGrabberSize
+      write SetGrabberSize;
+    property SplitterWidth: Integer read GetDockSplitterWidth
+      write SetDockSplitterWidth;
+    property BorderWidth: Integer read GetBorderWidth
+      write SetBorderWidth;
+
     property DockSiteSize: Integer read GetDockSiteSize write SetDockSiteSize;
+
     property DockRect: TRect read GetDockRect write SetDockRect;
+
     property MinSize: Integer read GetMinSize;
   end;
 
-  TJvDockZone = class(TObject)
+  TJvDockZone = class
   private
     FChildControl: TWinControl;
     FChildZones: TJvDockZone;
@@ -93,6 +113,7 @@ type
     FPrevSibling: TJvDockZone;
     FTree: TJvDockTree;
     FZoneLimit: Integer;
+
     FVisibleSize: Integer;
     FVisibled: Boolean;
     FControlVisibled: Boolean;
@@ -120,7 +141,7 @@ type
     procedure SetIsInside(const Value: Boolean);
   protected
     procedure AdjustZoneLimit(Value: Integer); virtual;
-    procedure LButtonDblClkMethod; virtual;
+    procedure LButtonDbClkMothed; virtual;
     function GetChildCount: Integer;
     function GetVisibleChildCount: Integer;
     function GetChildTotal: Integer;
@@ -130,59 +151,106 @@ type
     function GetTopLeft(Orient: Integer): Integer;
     function GetHeightWidth(Orient: Integer): Integer;
     function GetControlName: string;
+
     function GetSplitterLimit(IsMin: Boolean): Integer; virtual;
     function DoGetSplitterLimit(Orientation: TDockOrientation;
       IsMin: Boolean; var LimitResult: Integer): Integer; virtual;
+
     function SetControlName(const Value: string): Boolean;
     procedure DoCustomSetControlName; virtual;
-    procedure SetChildControlVisible(Client: TControl; AVisible: Boolean); virtual;
+    procedure SetChildControlVisible(Client: TControl; AViisible: Boolean); virtual;
   public
     constructor Create(Tree: TJvDockTree); virtual;
+
     procedure Insert(DockSize: Integer; Hide: Boolean); virtual;
+
     procedure Remove(DockSize: Integer; Hide: Boolean); virtual;
+
     procedure InsertOrRemove(DockSize: Integer; Insert: Boolean; Hide: Boolean); virtual;
     procedure ResetChildren(Exclude: TJvDockZone); virtual;
+
     procedure Update; virtual;
+
     function GetFrameRect: TRect; virtual;
+
     procedure SetZoneSize(Size: Integer; Show: Boolean); virtual;
+
     property BeforeClosestVisibleZone: TJvDockZone read GetBeforeClosestVisibleZone;
+
     property AfterClosestVisibleZone: TJvDockZone read GetAfterClosestVisibleZone;
+
     property BeforeApoapsisVisibleZone: TJvDockZone read GetBeforeApoapsisVisibleZone;
+
     property AfterApoapsisVisibleZone: TJvDockZone read GetAfterApoapsisVisibleZone;
+
     property FirstVisibleChildZone: TJvDockZone read GetFirstVisibleChildZone;
+
     property LastVisibleChildZone: TJvDockZone read GetLastVisibleChildZone;
+
     property ChildCount: Integer read GetChildCount;
+
     property ChildTotal: Integer read GetChildTotal;
+
     property ChildZones: TJvDockZone read FChildZones write FChildZones;
+
     property ChildControl: TWinControl read FChildControl write FChildControl;
+
     property FirstChild: TJvDockZone read GetFirstChild;
+
     property FirstSibling: TJvDockZone read GetFirstSibling;
+
     property Height: Integer index Ord(doHorizontal) read GetHeightWidth;
+
     property HeightWidth[Orient: TDockOrientation]: Integer read GetHeightWidthArr;
+
     property LastChild: TJvDockZone read GetLastChild;
+
     property LastSibling: TJvDockZone read GetLastSibling;
+
     property Left: Integer index Ord(doVertical) read GetTopLeft;
+
     property LimitBegin: Integer read GetLimitBegin;
+
     property LimitSize: Integer read GetLimitSize;
+
     property NextSibling: TJvDockZone read FNextSibling write FNextSibling;
+
     property NextSiblingCount: Integer read GetNextSiblingCount;
+
     property Orientation: TDockOrientation read FOrientation write FOrientation;
+
     property ParentZone: TJvDockZone read FParentZone write FParentZone;
+
     property PrevSibling: TJvDockZone read FPrevSibling write FPrevSibling;
+
     property PrevSiblingCount: Integer read GetPrevSiblingCount;
+
     property Top: Integer index Ord(doHorizontal) read GetTopLeft;
+
     property TopLeft[Orient: TDockOrientation]: Integer read GetTopLeftArr;
+
     property Tree: TJvDockTree read FTree write FTree;
+
     property VisibleChildCount: Integer read GetVisibleChildCount;
+
     property VisibleChildTotal: Integer read GetVisibleChildTotal;
+
     property VisiblePrevSiblingCount: Integer read GetVisiblePrevSiblingCount;
+
     property VisiblePrevSiblingTotal: Integer read GetVisiblePrevSiblingTotal;
+
     property VisibleNextSiblingCount: Integer read GetVisibleNextSiblingCount;
+
     property VisibleNextSiblingTotal: Integer read GetVisibleNextSiblingTotal;
+
     property VisibleSize: Integer read FVisibleSize write FVisibleSize;
+
     property Width: Integer index Ord(doVertical) read GetHeightWidth;
+
     property ZoneLimit: Integer read FZoneLimit write SetZoneLimit;
+
     property Visibled: Boolean read FVisibled write SetVisibled;
+
     property IsInside: Boolean read FIsInside write SetIsInside;
   end;
 
@@ -191,7 +259,7 @@ type
     FCloseBtnDown: Boolean;
     FMouseDown: Boolean;
   protected
-    procedure LButtonDblClkMethod; override;
+    procedure LButtonDbClkMothed; override;
   public
     constructor Create(Tree: TJvDockTree); override;
     destructor Destroy; override;
@@ -202,27 +270,38 @@ type
   end;
 
   TJvDockTreeScanKind = (tskForward, tskMiddle, tskBackward);
+
   TJvDockTreeScanPriority = (tspSibling, tspChild);
-  TJvDockGrabbersPosition = (gpTop, gpBottom, gpLeft, gpRight);
+
   TJvDockForEachZoneProc = procedure(Zone: TJvDockZone) of object;
+
+  TJvDockGrabbersPosition = (gpTop, gpBottom, gpLeft, gpRight);
+
   TJvDockZoneClass = class of TJvDockZone;
 
   TJvDockTree = class(TInterfacedObject, IJvDockManager)
   private
+
     FDockZoneClass: TJvDockZoneClass;
+
     FActiveControl: TControl;
+
     FBorderWidth: Integer;
+
     FSplitterWidth: Integer;
     FBrush: TBrush;
     FDockSite: TWinControl;
     FGrabberSize: Integer;
-    FOldRect: TRect;
+    FPreviousRect: TRect;
+
     FDockRect: TRect;
+
     FOldWndProc: TWndMethod;
     FReplacementZone: TJvDockZone;
     FResizeCount: Integer;
     FScaleBy: Double;
-    FShiftScaleOrient: TDockOrientation;
+
+    FShiftScaleOrientation: TDockOrientation;
     FShiftBy: Integer;
     FSizePos: TPoint;
     FSizingDC: HDC;
@@ -234,63 +313,90 @@ type
     FVersion: Integer;
     FOldHTFlag: Integer;
     FParentLimit: Integer;
+
     FMinSize: Integer;
+
     FCanvas: TControlCanvas;
+
     procedure SetTopZone(const Value: TJvDockZone);
     procedure SetTopXYLimit(const Value: Integer);
+
     procedure SetDockZoneClass(const Value: TJvDockZoneClass);
+
     function GetDockSplitterWidth: Integer;
+
     function GetBorderWidth: Integer;
+
     procedure SetDockSplitterWidth(const Value: Integer);
+
     procedure SetBorderWidth(const Value: Integer);
-    function GetDockSiteOrient: TDockOrientation;
+    function GetDockSiteOrientation: TDockOrientation;
     function GetDockSiteSize: Integer;
     procedure SetDockSiteSize(const Value: Integer);
     procedure SetMinSize(const Value: Integer);
     function GetDockSiteBegin: Integer;
     procedure SetDockSiteBegin(const Value: Integer);
-    function GetDockSiteSizeA: Integer;
-    procedure SetDockSiteSizeA(const Value: Integer);
+    function GetDockSiteSizeAlternatelternate: Integer;
+    procedure SetDockSiteSizeAlternatelternate(const Value: Integer);
     procedure SetVersion(const Value: Integer);
-    function GetDockSiteSizeWithOrient(Orient: TDockOrientation): Integer;
-    procedure SetDockSiteSizeWithOrient(Orient: TDockOrientation; const Value: Integer);
+    function GetDockSiteSizeWithOrientation(Orient: TDockOrientation): Integer;
+    procedure SetDockSiteSizeWithOrientation(Orient: TDockOrientation;
+      const Value: Integer);
     function GetDockRect: TRect;
     procedure SetDockRect(const Value: TRect);
     function GetMinSize: Integer;
   protected
     function HasZoneWithControl(Control: TControl): Boolean;
-    procedure WindowProc(var Msg: TMessage); virtual;
+
+    procedure WindowProc(var Message: TMessage); virtual;
+
     procedure BeginDrag(Control: TControl;
       Immediate: Boolean; Threshold: Integer = -1); virtual;
-    function DoMouseEvent(var Msg: TWMMouse;
+
+    function DoMouseEvent(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer): TWMNCHitMessage; virtual;
-    procedure DoMouseMove(var Msg: TWMMouse;
+
+    procedure DoMouseMove(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    function DoLButtonDown(var Msg: TWMMouse;
+
+    function DoLButtonDown(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer): Boolean; virtual;
-    procedure DoLButtonUp(var Msg: TWMMouse;
+
+    procedure DoLButtonUp(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoLButtonDbClk(var Msg: TWMMouse;
+
+    procedure DoLButtonDbClk(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoMButtonDown(var Msg: TWMMouse;
+
+    procedure DoMButtonDown(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoMButtonUp(var Msg: TWMMouse;
+
+    procedure DoMButtonUp(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoMButtonDbClk(var Msg: TWMMouse;
+
+    procedure DoMButtonDbClk(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoRButtonDown(var Msg: TWMMouse;
+
+    procedure DoRButtonDown(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoRButtonUp(var Msg: TWMMouse;
+
+    procedure DoRButtonUp(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoRButtonDbClk(var Msg: TWMMouse;
+
+    procedure DoRButtonDbClk(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer); virtual;
+
     procedure DoHideZoneChild(AZone: TJvDockZone); virtual;
-    procedure DoSetCursor(var Msg: TWMSetCursor;
+
+    procedure DoSetCursor(var Message: TWMSetCursor;
       var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoHintShow(var Msg: TCMHintShow;
+
+    procedure DoHintShow(var Message: TCMHintShow;
       var Zone: TJvDockZone; out HTFlag: Integer); virtual;
+
     procedure DoOtherHint(Zone: TJvDockZone;
       HTFlag: Integer; var HintStr: string); virtual;
+
     procedure CustomSaveZone(Stream: TStream;
       Zone: TJvDockZone); virtual;
     procedure CustomLoadZone(Stream: TStream;
@@ -298,24 +404,40 @@ type
     procedure DoSaveZone(Stream: TStream;
       Zone: TJvDockZone; Level: Integer); virtual;
     procedure DoLoadZone(Stream: TStream); virtual;
+
     procedure AdjustDockRect(Control: TControl; var ARect: TRect); virtual;
+
     procedure BeginResizeDockSite;
+
     procedure BeginUpdate;
+
     procedure CalcSplitterPos; virtual;
+
     procedure ControlVisibilityChanged(Control: TControl; Visible: Boolean); virtual;
+
     function GetDockAlign(Client: TControl; var DropCtl: TControl): TAlign; virtual;
+
     function DoFindZone(const MousePos: TPoint;
       out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; virtual;
+
     procedure DrawSizeSplitter; virtual;
+
     procedure EndResizeDockSite;
+
     procedure EndUpdate;
+
     function FindControlZone(Control: TControl; IncludeHide: Boolean = False): TJvDockZone; virtual;
+
     function FindControlZoneAndLevel(Control: TControl;
       var CtlLevel: Integer; IncludeHide: Boolean = False): TJvDockZone; virtual;
+
     procedure ForEachAt(Zone: TJvDockZone; Proc: TJvDockForEachZoneProc;
       ScanKind: TJvDockTreeScanKind = tskForward; ScanPriority: TJvDockTreeScanPriority = tspSibling); virtual;
+
     function GetActiveControl: TControl; virtual;
+
     function GetGrabberSize: Integer; virtual;
+
     function GetBorderHTFlag(const MousePos: TPoint;
       out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; virtual;
     function GetLeftGrabbersHTFlag(const MousePos: TPoint;
@@ -326,85 +448,129 @@ type
       out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; virtual;
     function GetBottomGrabbersHTFlag(const MousePos: TPoint;
       out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; virtual;
+
     function GetDockEdge(DockRect: TRect; MousePos: TPoint;
       var DropAlign: TAlign; Control: TControl): TControl; virtual;
+
     function GetDockClientLimit(Orient: TDockOrientation; IsMin: Boolean): Integer; virtual;
+
     function GetFrameRect(Control: TControl): TRect; virtual;
     function GetFrameRectEx(Control: TControl): TRect; virtual;
+
     function GetSplitterRect(Zone: TJvDockZone): TRect; virtual;
+
     function GeTJvDockGrabbersPosition: TJvDockGrabbersPosition; virtual;
+
     procedure GetControlBounds(Control: TControl; out CtlBounds: TRect); virtual;
+
     function GetSplitterLimit(AZone: TJvDockZone; IsCurrent, IsMin: Boolean): Integer; virtual;
     procedure DoGetNextLimit(Zone, AZone: TJvDockZone; var LimitResult: Integer); virtual;
+
     function GetHTFlag(MousePos: TPoint): Integer; virtual;
     procedure GetSiteInfo(Client: TControl;
       var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean); virtual;
+
     function HitTest(const MousePos: TPoint; out HTFlag: Integer): TControl; virtual;
+
     function InternalHitTest(const MousePos: TPoint;
       out HTFlag: Integer): TJvDockZone; virtual;
+
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
       DropCtl: TControl); virtual;
+
     procedure InsertNewParent(NewZone, SiblingZone: TJvDockZone;
       ParentOrientation: TDockOrientation; InsertLast, Update: Boolean); virtual;
+
     procedure InsertSibling(NewZone, SiblingZone: TJvDockZone;
       InsertLast, Update: Boolean); virtual;
+
     procedure LoadFromStream(Stream: TStream); virtual;
+
     procedure SaveToStream(Stream: TStream); virtual;
+
     procedure PaintDockSite; virtual;
+
     procedure DrawDockSiteRect; virtual;
+
     procedure DrawZone(Zone: TJvDockZone); virtual;
+
     procedure DrawZoneGrabber(Zone: TJvDockZone); virtual;
     procedure DrawDockGrabber(Control: TControl; const ARect: TRect); virtual;
+
     procedure DrawZoneSplitter(Zone: TJvDockZone); virtual;
     procedure DrawSplitterRect(const ARect: TRect); virtual;
+
     procedure DrawZoneBorder(Zone: TJvDockZone); virtual;
+
     procedure DrawDockBorder(DockControl: TControl; R1, R2: TRect); virtual;
+
     procedure GetCaptionRect(var Rect: TRect); virtual;
+
     procedure PositionDockRect(Client, DropCtl: TControl;
       DropAlign: TAlign; var DockRect: TRect); virtual;
+
     procedure PruneZone(Zone: TJvDockZone); virtual;
+
     procedure RemoveZone(Zone: TJvDockZone; Hide: Boolean = True); virtual;
+
     procedure ScaleZone(Zone: TJvDockZone); virtual;
+
     procedure ScaleChildZone(Zone: TJvDockZone); virtual;
+
     procedure ScaleSiblingZone(Zone: TJvDockZone); virtual;
+
     procedure ShiftZone(Zone: TJvDockZone); virtual;
+
     procedure UpdateZone(Zone: TJvDockZone); virtual;
+
     procedure DrawSplitter(Zone: TJvDockZone); virtual;
+
     procedure RemoveControl(Control: TControl); virtual;
+
     procedure SetActiveControl(const Value: TControl); virtual;
+
     procedure SetGrabberSize(const Value: Integer); virtual;
+
     procedure SetNewBounds(Zone: TJvDockZone); virtual;
     procedure SetReplacingControl(Control: TControl);
+
     procedure SplitterMouseDown(OnZone: TJvDockZone; MousePos: TPoint); virtual;
+
     procedure SplitterMouseUp; virtual;
+
     procedure ResetBounds(Force: Boolean); virtual;
+
     procedure WriteControlName(Stream: TStream; ControlName: string);
+
     procedure ReadControlName(Stream: TStream; var ControlName: string);
+
     procedure ShowControl(Control: TControl);
     procedure HideControl(Control: TControl);
     procedure ShowAllControl;
     procedure HideAllControl;
     procedure ShowSingleControl(Control: TControl);
     procedure HideSingleControl(Control: TControl);
+
     procedure ReplaceZoneChild(OldControl, NewControl: TControl);
+
     property BorderWidth: Integer read GetBorderWidth write SetBorderWidth;
     property Canvas: TControlCanvas read FCanvas;
     property DockSiteSize: Integer read GetDockSiteSize write SetDockSiteSize;
-    property DockSiteSizeA: Integer read GetDockSiteSizeA write SetDockSiteSizeA;
+    property DockSiteSizeAlternate: Integer read GetDockSiteSizeAlternatelternate write SetDockSiteSizeAlternatelternate;
     property DockSiteBegin: Integer read GetDockSiteBegin write SetDockSiteBegin;
-    property DockSiteSizeWithOrient[Orient: TDockOrientation]: Integer
-    read GetDockSiteSizeWithOrient write SetDockSiteSizeWithOrient;
+    property DockSiteSizeWithOrientation[Orient: TDockOrientation]: Integer
+    read GetDockSiteSizeWithOrientation write SetDockSiteSizeWithOrientation;
     property GrabberSize: Integer read FGrabberSize write SetGrabberSize;
     property GrabbersPosition: TJvDockGrabbersPosition read GeTJvDockGrabbersPosition;
     property MinSize: Integer read GetMinSize write SetMinSize;
     property DockRect: TRect read GetDockRect write SetDockRect;
-    property OldRect: TRect read FOldRect write FOldRect;
+    property PreviousRect: TRect read FPreviousRect write FPreviousRect;
     property ParentLimit: Integer read FParentLimit write FParentLimit;
     property ReplacementZone: TJvDockZone read FReplacementZone write FReplacementZone;
     property ResizeCount: Integer read FResizeCount write FResizeCount;
     property ScaleBy: Double read FScaleBy write FScaleBy;
     property ShiftBy: Integer read FShiftBy write FShiftBy;
-    property ShiftScaleOrient: TDockOrientation read FShiftScaleOrient write FShiftScaleOrient;
+    property ShiftScaleOrientation: TDockOrientation read FShiftScaleOrientation write FShiftScaleOrientation;
     property SizePos: TPoint read FSizePos write FSizePos;
     property SizingDC: HDC read FSizingDC;
     property SizingWnd: HWND read FSizingWnd;
@@ -413,36 +579,44 @@ type
     property UpdateCount: Integer read FUpdateCount write FUpdateCount;
     property Version: Integer read FVersion write SetVersion;
   public
-    // (rom) deactivated  completely unused
-    // SplitterCanvas: TControlCanvas;
-    constructor Create(DockSite: TWinControl; ADockZoneClass: TJvDockZoneClass); virtual;
+    SplitterCanvas: TControlCanvas;
+    constructor Create(DockSite: TWinControl;
+      ADockZoneClass: TJvDockZoneClass); virtual;
     destructor Destroy; override;
     property DockSite: TWinControl read FDockSite write FDockSite;
-    property DockSiteOrient: TDockOrientation read GetDockSiteOrient;
+    property DockSiteOrientation: TDockOrientation read GetDockSiteOrientation;
+
     procedure SetSplitterCursor(CursorIndex: TDockOrientation); virtual;
+
     procedure PaintSite(DC: HDC); virtual;
     property TopXYLimit: Integer read FTopXYLimit write SetTopXYLimit;
     property TopZone: TJvDockZone read FTopZone write SetTopZone;
+
     procedure UpdateAll;
+
     procedure UpdateChild(Zone: TJvDockZone);
-    property DockZoneClass: TJvDockZoneClass read FDockZoneClass write SetDockZoneClass;
+
+    property DockZoneClass: TJvDockZoneClass read FDockZoneClass
+      write SetDockZoneClass;
   end;
 
   TJvDockTreeClass = class of TJvDockTree;
 
   TJvDockAdvTree = class(TJvDockTree)
   private
-    FButtonHeight: Integer;
-    FButtonWidth: Integer;
-    FLeftOffset: Integer;
-    FRightOffset: Integer;
-    FTopOffset: Integer;
-    FBottomOffset: Integer;
+    FButtonHeight,
+      FButtonWidth,
+      FLeftOffset,
+      FRightOffset,
+      FTopOffset,
+      FBottomOffset: Integer;
     FButtonSplitter: Integer;
-    FCloseBtnZone: TJvDockAdvZone;
+    FCloseButtonZone: TJvDockAdvZone;
+
     FDropDockSize: Integer;
     FDockHeightWidth: array[TDockOrientation] of Integer;
-    FDockRectArr: array[TDockOrientation, Boolean] of Integer;
+    FDockRectangles: array[TDockOrientation, Boolean] of Integer;
+
     procedure SetBottomOffset(const Value: Integer);
     procedure SetButtonHeight(const Value: Integer);
     procedure SetButtonSplitter(const Value: Integer);
@@ -450,31 +624,40 @@ type
     procedure SetLeftOffset(const Value: Integer);
     procedure SetRightOffset(const Value: Integer);
     procedure SetTopOffset(const Value: Integer);
+
     function GetDockHeightWidth(Orient: TDockOrientation): Integer;
-    procedure SetDockHeightWidth(Orient: TDockOrientation; const Value: Integer);
-    function GetDockRectFromArr(Orient: TDockOrientation; AtLast: Boolean): Integer;
-    procedure SetDockRectToArr(Orient: TDockOrientation; AtLast: Boolean; const Value: Integer);
+    procedure SetDockHeightWidth(Orient: TDockOrientation;
+      const Value: Integer);
+
+    function GetDockRectFromArr(Orient: TDockOrientation;
+      AtLast: Boolean): Integer;
+    procedure SetDockRectToArr(Orient: TDockOrientation; AtLast: Boolean;
+      const Value: Integer);
     procedure SetDropDockSize(const Value: Integer);
+
   protected
-    function DoLButtonDown(var Msg: TWMMouse;
+    function DoLButtonDown(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer): Boolean; override;
-    procedure DoLButtonUp(var Msg: TWMMouse;
+    procedure DoLButtonUp(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer); override;
-    procedure DoMouseMove(var Msg: TWMMouse;
+    procedure DoMouseMove(var Message: TWMMouse;
       var Zone: TJvDockZone; out HTFlag: Integer); override;
     procedure InsertSibling(NewZone, SiblingZone: TJvDockZone;
       InsertLast, Update: Boolean); override;
     procedure InsertNewParent(NewZone, SiblingZone: TJvDockZone;
       ParentOrientation: TDockOrientation; InsertLast, Update: Boolean); override;
     procedure SetDockHeightWidthArr(NoOrValue, HorValue, VerValue: Integer);
-    procedure SetDockRectArr(ARect: TRect);
+    procedure SetDockRectangles(ARect: TRect);
+
     procedure ScaleZone(Zone: TJvDockZone); override;
     procedure ScaleChildZone(Zone: TJvDockZone); override;
     procedure ScaleSiblingZone(Zone: TJvDockZone); override;
     procedure ShiftZone(Zone: TJvDockZone); override;
+
     procedure RemoveZone(Zone: TJvDockZone; Hide: Boolean); override;
   public
-    constructor Create(DockSite: TWinControl; ADockZoneClass: TJvDockZoneClass); override;
+    constructor Create(DockSite: TWinControl;
+      ADockZoneClass: TJvDockZoneClass); override;
     property BottomOffset: Integer read FBottomOffset write SetBottomOffset;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight;
     property ButtonSplitter: Integer read FButtonSplitter write SetButtonSplitter;
@@ -482,30 +665,27 @@ type
     property LeftOffset: Integer read FLeftOffset write SetLeftOffset;
     property RightOffset: Integer read FRightOffset write SetRightOffset;
     property TopOffset: Integer read FTopOffset write SetTopOffset;
-    property CloseBtnZone: TJvDockAdvZone read FCloseBtnZone write FCloseBtnZone;
+    property CloseButtonZone: TJvDockAdvZone read FCloseButtonZone write FCloseButtonZone;
     property DockHeightWidth[Orient: TDockOrientation]: Integer read GetDockHeightWidth write SetDockHeightWidth;
-    property DockRectArr[Orient: TDockOrientation; AtLast: Boolean]: Integer read GetDockRectFromArr write
+    property DockRectangles[Orient: TDockOrientation; AtLast: Boolean]: Integer read GetDockRectFromArr write
       SetDockRectToArr;
     property DropDockSize: Integer read FDropDockSize write SetDropDockSize;
   end;
 
-// (rom) made typed const to allow SizeOf
-const
+var
+
   TreeStreamEndFlag: Integer = -1;
 
 implementation
 
-uses
-  Math,
-  JvDockControlForm, JvDockSupportProc, JvDockGlobals, JvDockVSNetStyle;
+uses Math, JvDockControlForm, JvDockSupportProc, JvDockGlobals, JvDockVSNetStyle;
 
 type
-  THackWinControl = class(TWinControl);
-
-//=== TJvDockZone ============================================================
+  TlbWinControlAccess = class(TWinControl);
 
 constructor TJvDockZone.Create(Tree: TJvDockTree);
 begin
+
   ParentZone := nil;
   PrevSibling := nil;
   NextSibling := nil;
@@ -538,8 +718,7 @@ begin
     CheckZone := FParentZone;
   if CheckZone.Orientation = doHorizontal then
     Result := Top
-  else
-  if CheckZone.Orientation = doVertical then
+  else if CheckZone.Orientation = doVertical then
     Result := Left
   else
     Result := 0;
@@ -555,8 +734,7 @@ begin
     CheckZone := FParentZone;
   if CheckZone.Orientation = doHorizontal then
     Result := Height
-  else
-  if CheckZone.Orientation = doVertical then
+  else if CheckZone.Orientation = doVertical then
     Result := Width
   else
     Result := Tree.TopXYLimit;
@@ -570,6 +748,7 @@ begin
   Zone := Self;
   while Zone <> FTree.FTopZone do
   begin
+
     if (Zone.VisiblePrevSiblingCount > 0) and (Zone.ParentZone.Orientation = TDockOrientation(Orient)) then
     begin
       Result := Zone.BeforeClosestVisibleZone.ZoneLimit;
@@ -579,12 +758,10 @@ begin
       Zone := Zone.ParentZone;
   end;
   R := FTree.FDockSite.ClientRect;
-  THackWinControl(FTree.FDockSite).AdjustClientRect(R);
+  TlbWinControlAccess(FTree.FDockSite).AdjustClientRect(R);
   case TDockOrientation(Orient) of
-    doVertical:
-      Result := R.Left;
-    doHorizontal:
-      Result := R.Top;
+    doVertical: Result := R.Left;
+    doHorizontal: Result := R.Top;
   else
     Result := 0;
   end;
@@ -599,7 +776,7 @@ begin
     (ChildControl <> nil) and (FTree.FTopZone.ChildCount = 1)) then
   begin
     R := FTree.FDockSite.ClientRect;
-    THackWinControl(FTree.FDockSite).AdjustClientRect(R);
+    TlbWinControlAccess(FTree.FDockSite).AdjustClientRect(R);
     if TDockOrientation(Orient) = doHorizontal then
       Result := R.Bottom - R.Top
     else
@@ -610,7 +787,8 @@ begin
     Zone := Self;
     while (Zone <> FTree.FTopZone) and (Zone.ParentZone <> nil) do
     begin
-      if Zone.ParentZone.Orientation = TDockOrientation(Orient) then
+
+      if (Zone.ParentZone.Orientation = TDockOrientation(Orient)) then
       begin
         Result := Zone.ZoneLimit - Zone.LimitBegin;
         Exit;
@@ -627,32 +805,30 @@ end;
 
 procedure TJvDockZone.ResetChildren(Exclude: TJvDockZone);
 var
-  SumLimit: Integer;
-  NewLimit: Integer;
-  FirstChildBegin: Integer;
-  OldPrevLimit: Integer;
+  SumLimit,
+    NewLimit,
+    FirstChildBegin,
+    OldPrevLimit: Integer;
   ChildNode: TJvDockZone;
   PrevNode: TJvDockZone;
 begin
+
   case Orientation of
-    doHorizontal:
-      NewLimit := Height;
-    doVertical:
-      NewLimit := Width;
+    doHorizontal: NewLimit := Height;
+    doVertical: NewLimit := Width;
   else
     Exit;
   end;
 
   ChildNode := FirstVisibleChildZone;
-  if ChildNode = nil then
-    Exit;
+  if ChildNode = nil then Exit;
 
   SumLimit := NewLimit;
   NewLimit := NewLimit div VisibleChildCount;
 
   FirstChildBegin := ChildNode.LimitBegin;
 
-  Tree.ShiftScaleOrient := Orientation;
+  Tree.ShiftScaleOrientation := Orientation;
   Tree.ParentLimit := 0;
   if ChildNode.ZoneLimit - FirstChildBegin > 0 then
     Tree.ScaleBy := NewLimit / (ChildNode.ZoneLimit - FirstChildBegin)
@@ -695,6 +871,7 @@ begin
 
     if ChildNode.AfterClosestVisibleZone = nil then
     begin
+
       if NewLimit = 0 then
         NewLimit := 1;
       ChildNode.ZoneLimit := ChildNode.ZoneLimit + (SumLimit mod NewLimit);
@@ -723,7 +900,7 @@ begin
   Client := nil;
   with FTree do
   begin
-    THackWinControl(FDockSite).ReloadDockedControl(Value, Client);
+    TlbWinControlAccess(FDockSite).ReloadDockedControl(Value, Client);
     Result := Client <> nil;
     if Result then
     begin
@@ -732,7 +909,11 @@ begin
       DoCustomSetControlName;
       try
         if IsInside then
+        begin
           Client.ManualDock(FDockSite, nil, alNone);
+
+        end;
+
       finally
         SetChildControlVisible(Client, FControlVisibled);
         FReplacementZone := nil;
@@ -742,9 +923,6 @@ begin
 end;
 
 procedure TJvDockZone.Update;
-var
-  NewWidth, NewHeight: Integer;
-  R: TRect;
 
   function ParentNotLast: Boolean;
   var
@@ -763,6 +941,9 @@ var
     end;
   end;
 
+var
+  NewWidth, NewHeight: Integer;
+  R: TRect;
 begin
   if Visibled and (ChildControl <> nil) and (FTree.FUpdateCount = 0) then
   begin
@@ -770,20 +951,24 @@ begin
     NewWidth := Width;
     NewHeight := Height;
     if ParentNotLast then
+    begin
       if FParentZone.Orientation = doHorizontal then
         Dec(NewWidth, FTree.SplitterWidth)
       else
         Dec(NewHeight, FTree.SplitterWidth);
+    end;
 
     if ((NextSibling <> nil) and (VisibleNextSiblingTotal > 0)) or ((FParentZone <> FTree.FTopZone) and
       ((FParentZone.Orientation = FTree.FTopZone.Orientation) and
       (FZoneLimit < FTree.TopXYLimit)) or
       ((FParentZone.Orientation <> FTree.FTopZone.Orientation) and
       (FZoneLimit < FTree.FTopZone.ZoneLimit))) then
+    begin
       if FParentZone.Orientation = doHorizontal then
         Dec(NewHeight, FTree.SplitterWidth)
       else
         Dec(NewWidth, FTree.SplitterWidth);
+    end;
     R := Bounds(Left, Top, NewWidth, NewHeight);
     FTree.AdjustDockRect(ChildControl, R);
     ChildControl.BoundsRect := R;
@@ -833,25 +1018,23 @@ end;
 
 function TJvDockZone.GetTopLeftArr(Orient: TDockOrientation): Integer;
 begin
+  Result := 0;
   case Orient of
-    doHorizontal:
-      Result := Top;
-    doVertical:
-      Result := Left;
+    doHorizontal: Result := Top;
+    doVertical: Result := Left;
   else
-    Result := 0;
+
   end;
 end;
 
 function TJvDockZone.GetHeightWidthArr(Orient: TDockOrientation): Integer;
 begin
+  Result := 0;
   case Orient of
-    doHorizontal:
-      Result := Height;
-    doVertical:
-      Result := Width;
+    doHorizontal: Result := Height;
+    doVertical: Result := Width;
   else
-    Result := 0;
+
   end;
 end;
 
@@ -860,6 +1043,7 @@ begin
   FZoneLimit := Value;
   if PrevSibling <> nil then
     PrevSibling.ZoneLimit := PrevSibling.ZoneLimit + Value;
+
 end;
 
 procedure TJvDockZone.SetZoneSize(Size: Integer; Show: Boolean);
@@ -899,9 +1083,11 @@ begin
 
   if AfterClosestVisibleZone = nil then
   begin
+
     Zone := BeforeClosestVisibleZone;
     if Zone <> nil then
     begin
+
       Zone.ZoneLimit := ZoneLimit;
       Tree.SetNewBounds(Zone);
     end;
@@ -932,6 +1118,7 @@ function TJvDockZone.GetChildTotal: Integer;
     begin
       DoFindChildCount(Zone.NextSibling);
       DoFindChildCount(Zone.ChildZones);
+
       Inc(Result);
     end;
   end;
@@ -949,7 +1136,7 @@ function TJvDockZone.GetVisibleChildTotal: Integer;
     begin
       DoFindVisibleChildCount(Zone.NextSibling);
       DoFindVisibleChildCount(Zone.ChildZones);
-      if Zone.Visibled then
+      if (Zone.Visibled) then
         Inc(Result);
     end;
   end;
@@ -965,7 +1152,7 @@ begin
   while Result <> nil do
   begin
     if Result.Visibled then
-      Break;
+      Exit;
     Result := Result.NextSibling;
   end;
 end;
@@ -976,7 +1163,7 @@ begin
   while Result <> nil do
   begin
     if Result.Visibled then
-      Break;
+      Exit;
     Result := Result.PrevSibling;
   end;
 end;
@@ -1029,10 +1216,16 @@ procedure TJvDockZone.SetVisibled(const Value: Boolean);
 begin
   FVisibled := Value;
   if (not FVisibled) and (Self <> Tree.TopZone) then
+  begin
     if ParentZone.Orientation = doNoOrient then
       VisibleSize := Tree.TopXYLimit
     else
       VisibleSize := LimitSize;
+  end
+  else
+  begin
+
+  end;
 end;
 
 function TJvDockZone.GetVisibleNextSiblingCount: Integer;
@@ -1057,7 +1250,7 @@ function TJvDockZone.GetVisibleNextSiblingTotal: Integer;
     begin
       DoFindVisibleNextSiblingCount(Zone.NextSibling);
       DoFindVisibleNextSiblingCount(Zone.ChildZones);
-      if Zone.Visibled then
+      if (Zone.Visibled) then
         Inc(Result);
     end;
   end;
@@ -1089,7 +1282,7 @@ function TJvDockZone.GetVisiblePrevSiblingTotal: Integer;
     begin
       DoFindVisibleNextSiblingCount(Zone.NextSibling);
       DoFindVisibleNextSiblingCount(Zone.ChildZones);
-      if Zone.Visibled then
+      if (Zone.Visibled) then
         Inc(Result);
     end;
   end;
@@ -1127,11 +1320,15 @@ function TJvDockZone.DoGetSplitterLimit(Orientation: TDockOrientation;
 begin
   Result := 0;
   if (ParentZone <> nil) and (ParentZone.Orientation = Orientation) and Visibled then
+  begin
     if IsMin then
       LimitResult := Min(LimitResult, ZoneLimit)
     else
-    if AfterClosestVisibleZone <> nil then
-      LimitResult := Max(LimitResult, ZoneLimit);
+    begin
+      if AfterClosestVisibleZone <> nil then
+        LimitResult := Max(LimitResult, ZoneLimit);
+    end;
+  end;
 
   if NextSibling <> nil then
     NextSibling.DoGetSplitterLimit(Orientation, IsMin, LimitResult);
@@ -1155,9 +1352,10 @@ end;
 
 procedure TJvDockZone.DoCustomSetControlName;
 begin
+
 end;
 
-procedure TJvDockZone.LButtonDblClkMethod;
+procedure TJvDockZone.LButtonDbClkMothed;
 begin
   if ChildControl <> nil then
     ChildControl.ManualDock(nil, nil, alTop);
@@ -1168,23 +1366,19 @@ begin
   FIsInside := Value;
 end;
 
-procedure TJvDockZone.SetChildControlVisible(Client: TControl; AVisible: Boolean);
+procedure TJvDockZone.SetChildControlVisible(Client: TControl; AViisible: Boolean);
 begin
   if Client <> nil then
+  begin
     Client.Visible := FControlVisibled;
+  end;
 end;
-
-//=== TJvDockTree ============================================================
 
 constructor TJvDockTree.Create(DockSite: TWinControl;
   ADockZoneClass: TJvDockZoneClass);
 var
   I: Integer;
 begin
-  // (rom) added inherited Create
-  inherited Create;
-  // (rom) Canvas now always existent
-  FCanvas := TControlCanvas.Create;
   FDockZoneClass := ADockZoneClass;
   FBorderWidth := 0;
   FSplitterWidth := 4;
@@ -1214,18 +1408,18 @@ end;
 
 destructor TJvDockTree.Destroy;
 begin
-  if Assigned(FOldWndProc) then
+  if @FOldWndProc <> nil then
     FDockSite.WindowProc := FOldWndProc;
   PruneZone(FTopZone);
   FBrush.Free;
   inherited Destroy;
-  // (rom) free a Canvas always AFTER inherited Destroy
-  FCanvas.Free;
 end;
 
 procedure TJvDockTree.AdjustDockRect(Control: TControl; var ARect: TRect);
 begin
+
   InflateRect(ARect, -BorderWidth, -BorderWidth);
+
   case GrabbersPosition of
     gpTop:
       Inc(ARect.Top, GrabberSize);
@@ -1263,6 +1457,7 @@ var
       CtlZone := StartZone
     else
     begin
+
       if (CtlZone = nil) and (StartZone.NextSibling <> nil) then
         DoFindControlZone(StartZone.NextSibling);
 
@@ -1273,8 +1468,7 @@ var
 
 begin
   CtlZone := nil;
-  if (Control <> nil) and (FTopZone <> nil) then
-    DoFindControlZone(FTopZone);
+  if (Control <> nil) and (FTopZone <> nil) then DoFindControlZone(FTopZone);
   Result := CtlZone;
 end;
 
@@ -1286,19 +1480,17 @@ procedure TJvDockTree.ForEachAt(Zone: TJvDockZone; Proc: TJvDockForEachZoneProc;
     Proc(Zone);
     if ScanPriority = tspSibling then
     begin
-      if Zone.NextSibling <> nil then
-        DoForwardForEach(Zone.NextSibling);
 
-      if Zone.ChildZones <> nil then
-        DoForwardForEach(Zone.ChildZones);
+      if Zone.NextSibling <> nil then DoForwardForEach(Zone.NextSibling);
+
+      if Zone.ChildZones <> nil then DoForwardForEach(Zone.ChildZones);
     end
     else
     begin
-      if Zone.ChildZones <> nil then
-        DoForwardForEach(Zone.ChildZones);
 
-      if Zone.NextSibling <> nil then
-        DoForwardForEach(Zone.NextSibling);
+      if Zone.ChildZones <> nil then DoForwardForEach(Zone.ChildZones);
+
+      if Zone.NextSibling <> nil then DoForwardForEach(Zone.NextSibling);
     end;
   end;
 
@@ -1306,49 +1498,47 @@ procedure TJvDockTree.ForEachAt(Zone: TJvDockZone; Proc: TJvDockForEachZoneProc;
   begin
     if ScanPriority = tspSibling then
     begin
-      if Zone.NextSibling <> nil then
-        DoMiddleForEach(Zone.NextSibling);
+
+      if Zone.NextSibling <> nil then DoMiddleForEach(Zone.NextSibling);
     end
     else
     begin
-      if Zone.ChildZones <> nil then
-        DoMiddleForEach(Zone.ChildZones);
+
+      if Zone.ChildZones <> nil then DoMiddleForEach(Zone.ChildZones);
     end;
 
     Proc(Zone);
 
     if ScanPriority = tspSibling then
     begin
-      if Zone.ChildZones <> nil then
-        DoMiddleForEach(Zone.ChildZones);
+
+      if Zone.ChildZones <> nil then DoMiddleForEach(Zone.ChildZones);
     end
     else
-    if Zone.NextSibling <> nil then
-      DoMiddleForEach(Zone.NextSibling);
+      if Zone.NextSibling <> nil then DoMiddleForEach(Zone.NextSibling);
   end;
 
   procedure DoBackwardForEach(Zone: TJvDockZone);
   begin
     if ScanPriority = tspSibling then
     begin
-      if Zone.NextSibling <> nil then
-        DoBackwardForEach(Zone.NextSibling);
 
-      if Zone.ChildZones <> nil then
-        DoBackwardForEach(Zone.ChildZones);
+      if Zone.NextSibling <> nil then DoBackwardForEach(Zone.NextSibling);
+
+      if Zone.ChildZones <> nil then DoBackwardForEach(Zone.ChildZones);
     end
     else
     begin
-      if Zone.ChildZones <> nil then
-        DoForwardForEach(Zone.ChildZones);
 
-      if Zone.NextSibling <> nil then
-        DoForwardForEach(Zone.NextSibling);
+      if Zone.ChildZones <> nil then DoForwardForEach(Zone.ChildZones);
+
+      if Zone.NextSibling <> nil then DoForwardForEach(Zone.NextSibling);
     end;
     Proc(Zone);
   end;
 
 begin
+
   if Zone = nil then
   begin
     if FTopZone = nil then
@@ -1357,12 +1547,9 @@ begin
   end;
 
   case ScanKind of
-    tskForward:
-      DoForwardForEach(Zone);
-    tskMiddle:
-      DoMiddleForEach(Zone);
-    tskBackward:
-      DoBackwardForEach(Zone);
+    tskForward: DoForwardForEach(Zone);
+    tskMiddle: DoMiddleForEach(Zone);
+    tskBackward: DoBackwardForEach(Zone);
   end;
 end;
 
@@ -1375,7 +1562,10 @@ begin
     FillChar(CtlBounds, SizeOf(CtlBounds), 0)
   else
     with Z do
+    begin
       CtlBounds := Bounds(Left, Top, Width, Height);
+
+    end;
 end;
 
 function TJvDockTree.HitTest(const MousePos: TPoint; out HTFlag: Integer): TControl;
@@ -1392,44 +1582,47 @@ end;
 procedure TJvDockTree.InsertControl(Control: TControl; InsertAt: TAlign;
   DropCtl: TControl);
 const
-  {$IFDEF COMPILER6_UP}
-  OrientArray: array [TAlign] of TDockOrientation = (doNoOrient, doHorizontal,
+
+{$IFDEF COMPILER6_UP}
+  OrientArray: array[TAlign] of TDockOrientation = (doNoOrient, doHorizontal,
     doHorizontal, doVertical, doVertical, doNoOrient, doNoOrient);
-  MakeLast: array [TAlign] of Boolean = (False, False, True, False, True, False, False);
-  {$ELSE}
-  OrientArray: array [TAlign] of TDockOrientation = (doNoOrient, doHorizontal,
+  MakeLast: array[TAlign] of Boolean = (False, False, True, False, True, False, False);
+{$ELSE}
+
+  OrientArray: array[TAlign] of TDockOrientation = (doNoOrient, doHorizontal,
     doHorizontal, doVertical, doVertical, doNoOrient);
-  MakeLast: array [TAlign] of Boolean = (False, False, True, False, True, False);
-  {$ENDIF COMPILER6_UP}
+  MakeLast: array[TAlign] of Boolean = (False, False, True, False, True, False);
+{$ENDIF}
+
 var
-  Sibling: TJvDockZone;
-  Me: TJvDockZone;
-  InsertOrientation: TDockOrientation;
-  CurrentOrientation: TDockOrientation;
+  Sibling,
+    Me: TJvDockZone;
+  InsertOrientation,
+    CurrentOrientation: TDockOrientation;
   NewWidth, NewHeight: Integer;
   R: TRect;
 begin
+
   if FReplacementZone <> nil then
   begin
+
     FReplacementZone.ChildControl := TWinControl(Control);
     FReplacementZone.Update;
     Exit;
   end
-  else
-  if FTopZone <> nil then
+  else if FTopZone <> nil then
   begin
     if FTopZone.ChildZones = nil then
     begin
+
       R := FDockSite.ClientRect;
-      THackWinControl(FDockSite).AdjustClientRect(R);
+      TlbWinControlAccess(FDockSite).AdjustClientRect(R);
       NewWidth := R.Right - R.Left;
       NewHeight := R.Bottom - R.Top;
-      if THackWinControl(FDockSite).AutoSize then
+      if TlbWinControlAccess(FDockSite).AutoSize then
       begin
-        if NewWidth = 0 then
-          NewWidth := Control.UndockWidth;
-        if NewHeight = 0 then
-          NewHeight := Control.UndockHeight;
+        if NewWidth = 0 then NewWidth := Control.UndockWidth;
+        if NewHeight = 0 then NewHeight := Control.UndockHeight;
       end;
       R := Bounds(R.Left, R.Top, NewWidth, NewHeight);
       AdjustDockRect(Control, R);
@@ -1441,18 +1634,18 @@ begin
     end
     else
     begin
-      if InsertAt in [alClient, alNone] then
-        InsertAt := alRight;
+
+      if InsertAt in [alClient, alNone] then InsertAt := alRight;
 
       Me := FindControlZone(Control, True);
-      if Me <> nil then
-        RemoveZone(Me, False);
+      if Me <> nil then RemoveZone(Me, False);
 
       Sibling := FindControlZone(DropCtl);
 
       InsertOrientation := OrientArray[InsertAt];
       if FTopZone.ChildCount = 1 then
       begin
+
         FTopZone.Orientation := InsertOrientation;
         case InsertOrientation of
           doHorizontal:
@@ -1472,7 +1665,9 @@ begin
       Me.ChildControl := TWinControl(Control);
 
       if Sibling <> nil then
+
         CurrentOrientation := Sibling.FParentZone.Orientation
+
       else
         CurrentOrientation := FTopZone.Orientation;
       if InsertOrientation = doNoOrient then
@@ -1481,11 +1676,13 @@ begin
       if InsertOrientation = CurrentOrientation then
         InsertSibling(Me, Sibling, MakeLast[InsertAt], True)
       else
+
         InsertNewParent(Me, Sibling, InsertOrientation, MakeLast[InsertAt], True);
     end;
 
     FDockSite.Invalidate;
   end;
+
 end;
 
 procedure TJvDockTree.InsertNewParent(NewZone, SiblingZone: TJvDockZone;
@@ -1498,9 +1695,10 @@ begin
   NewParent.Orientation := ParentOrientation;
   if SiblingZone = nil then
   begin
+
     NewParent.ZoneLimit := TopXYLimit;
     TopXYLimit := FTopZone.ZoneLimit;
-    ShiftScaleOrient := ParentOrientation;
+    ShiftScaleOrientation := ParentOrientation;
     ScaleBy := 0.5;
     if InsertLast then
     begin
@@ -1533,11 +1731,13 @@ begin
       else
         ShiftBy := TopXYLimit div 2;
       ForEachAt(NewZone.NextSibling, ShiftZone, tskForward);
+
     end;
     ForEachAt(nil, UpdateZone, tskForward);
   end
   else
   begin
+
     NewParent.ZoneLimit := SiblingZone.ZoneLimit;
     NewParent.ParentZone := SiblingZone.ParentZone;
     NewParent.PrevSibling := SiblingZone.PrevSibling;
@@ -1552,6 +1752,7 @@ begin
     SiblingZone.ParentZone := NewParent;
     if InsertLast then
     begin
+
       NewParent.ChildZones := SiblingZone;
       SiblingZone.ZoneLimit := NewParent.ParentZone.ZoneLimit;
       SiblingZone.PrevSibling := nil;
@@ -1560,6 +1761,7 @@ begin
     end
     else
     begin
+
       NewParent.ChildZones := NewZone;
       SiblingZone.PrevSibling := NewZone;
       SiblingZone.NextSibling := nil;
@@ -1568,6 +1770,7 @@ begin
   end;
   if Update then
   begin
+
     NewParent.ResetChildren(nil);
     ForEachAt(nil, UpdateZone, tskForward);
   end;
@@ -1587,6 +1790,7 @@ begin
   end;
   if InsertLast then
   begin
+
     NewZone.ParentZone := SiblingZone.ParentZone;
     NewZone.PrevSibling := SiblingZone;
     NewZone.NextSibling := SiblingZone.NextSibling;
@@ -1596,6 +1800,7 @@ begin
   end
   else
   begin
+
     NewZone.NextSibling := SiblingZone;
     NewZone.PrevSibling := SiblingZone.PrevSibling;
     if NewZone.PrevSibling <> nil then
@@ -1607,6 +1812,7 @@ begin
   end;
   if Update then
   begin
+
     SiblingZone.ParentZone.ResetChildren(nil);
     UpDateChild(SiblingZone.ParentZone);
   end;
@@ -1629,8 +1835,8 @@ begin
     HTFlag := HTFlagArr[Zone.VisibleNextSiblingTotal > 0];
     Result := Zone;
   end
-  else
-  if (Zone.FParentZone.Orientation = doVertical) and
+
+  else if (Zone.FParentZone.Orientation = doVertical) and
     (Zone.NextSibling <> nil) and
     ((MousePos.X <= Zone.FZoneLimit) and
     (MousePos.X >= Zone.FZoneLimit - SplitterWidth)) and
@@ -1640,18 +1846,15 @@ begin
     HTFlag := HTFlagArr[Zone.VisibleNextSiblingTotal > 0];
     Result := Zone;
   end
-  else
-  if Zone.ChildControl <> nil then
+
+  else if Zone.ChildControl <> nil then
   begin
+
     case GrabbersPosition of
-      gpTop:
-        Result := GetTopGrabbersHTFlag(MousePos, HTFlag, Zone);
-      gpLeft:
-        Result := GetLeftGrabbersHTFlag(MousePos, HTFlag, Zone);
-      gpBottom:
-        Result := GetBottomGrabbersHTFlag(MousePos, HTFlag, Zone);
-      gpRight:
-        Result := GetRightGrabbersHTFlag(MousePos, HTFlag, Zone);
+      gpTop: Result := GetTopGrabbersHTFlag(MousePos, HTFlag, Zone);
+      gpLeft: Result := GetLeftGrabbersHTFlag(MousePos, HTFlag, Zone);
+      gpBottom: Result := GetBottomGrabbersHTFlag(MousePos, HTFlag, Zone);
+      gpRight: Result := GetRightGrabbersHTFlag(MousePos, HTFlag, Zone);
     end;
 
     if Result = nil then
@@ -1660,8 +1863,7 @@ begin
   else
     Result := nil;
 
-  if (Result <> nil) and (not Result.Visibled) then
-    Result := nil;
+  if (Result <> nil) and (not Result.Visibled) then Result := nil;
 
   if (Result = nil) and (Zone.NextSibling <> nil) then
     Result := DoFindZone(MousePos, HTFlag, Zone.NextSibling);
@@ -1683,12 +1885,11 @@ var
       Result := FDockSite.Controls[I];
       with Result do
       begin
+
         if not Result.Visible or ((Result is TWinControl) and
-          not TWinControl(Result).Showing) then
-          continue;
+          not TWinControl(Result).Showing) then continue;
         P := Point(Pos.X - Left, Pos.Y - Top);
-        if PtInRect(ClientRect, P) then
-          Exit;
+        if PtInRect(ClientRect, P) then Exit;
       end;
     end;
     Result := nil;
@@ -1703,18 +1904,17 @@ begin
   if (CtlAtPos <> nil) and (CtlAtPos.HostDockSite = FDockSite) then
   begin
     ResultZone := FindControlZone(CtlAtPos);
-    if ResultZone <> nil then
-      HTFlag := HTCLIENT;
+    if ResultZone <> nil then HTFlag := HTCLIENT;
   end
-  else
-  if (FTopZone <> nil) and (FTopZone.ChildZones <> nil) and
-    (FTopZone.ChildCount >= 1) and (CtlAtPos = nil) then
+  else if (FTopZone <> nil) and (FTopZone.ChildZones <> nil) and (FTopZone.ChildCount >= 1) and
+    (CtlAtPos = nil) then
     ResultZone := DoFindZone(MousePos, HTFlag, FTopZone.ChildZones);
   Result := ResultZone;
 end;
 
 procedure TJvDockTree.LoadFromStream(Stream: TStream);
 var
+
   I: Integer;
 begin
   PruneZone(FTopZone);
@@ -1725,7 +1925,9 @@ begin
 
   BeginUpdate;
   try
+
     Stream.Read(FTopXYLimit, SizeOf(FTopXYLimit));
+
     DoLoadZone(Stream);
   finally
     EndUpdate;
@@ -1733,25 +1935,36 @@ begin
 end;
 
 procedure TJvDockTree.PaintSite(DC: HDC);
+
 begin
-  FCanvas.Control := FDockSite;
-  FCanvas.Lock;
+
+  FCanvas := TControlCanvas.Create;
   try
-    FCanvas.Handle := DC;
+
+    FCanvas.Control := FDockSite;
+    FCanvas.Lock;
     try
-      PaintDockSite;
+      FCanvas.Handle := DC;
+      try
+        PaintDockSite;
+      finally
+        FCanvas.Handle := 0;
+      end;
     finally
-      FCanvas.Handle := 0;
+      FCanvas.Unlock;
     end;
   finally
-    FCanvas.Unlock;
+    FCanvas.Free;
+    FCanvas := nil;
   end;
+
 end;
 
 procedure TJvDockTree.PositionDockRect(Client, DropCtl: TControl;
   DropAlign: TAlign; var DockRect: TRect);
 var
-  VisibleClients, NewX, NewY, NewWidth, NewHeight: Integer;
+  VisibleClients,
+    NewX, NewY, NewWidth, NewHeight: Integer;
 begin
   VisibleClients := FDockSite.VisibleDockClientCount;
 
@@ -1763,32 +1976,26 @@ begin
     if VisibleClients > 0 then
       with DockRect do
         case DropAlign of
-          alLeft:
-            Right := Right div 2;
-          alRight:
-            Left := Right div 2;
-          alTop:
-            Bottom := Bottom div 2;
-          alBottom:
-            Top := Bottom div 2;
+          alLeft: Right := Right div 2;
+          alRight: Left := Right div 2;
+          alTop: Bottom := Bottom div 2;
+          alBottom: Top := Bottom div 2;
         end;
   end
   else
   begin
+
     NewX := DropCtl.Left;
     NewY := DropCtl.Top;
     NewWidth := DropCtl.Width;
     NewHeight := DropCtl.Height;
     if DropAlign in [alLeft, alRight] then
       NewWidth := DropCtl.Width div 2
-    else
-    if DropAlign in [alTop, alBottom] then
+    else if DropAlign in [alTop, alBottom] then
       NewHeight := DropCtl.Height div 2;
     case DropAlign of
-      alRight:
-        Inc(NewX, NewWidth);
-      alBottom:
-        Inc(NewY, NewHeight);
+      alRight: Inc(NewX, NewWidth);
+      alBottom: Inc(NewY, NewHeight);
     end;
     DockRect := Bounds(NewX, NewY, NewWidth, NewHeight);
     if DropAlign = alClient then
@@ -1801,30 +2008,29 @@ procedure TJvDockTree.PruneZone(Zone: TJvDockZone);
 
   procedure DoPrune(Zone: TJvDockZone);
   begin
+
     if Zone.NextSibling <> nil then
       DoPrune(Zone.NextSibling);
+
     if Zone.ChildZones <> nil then
       DoPrune(Zone.ChildZones);
+
     Zone.Free;
   end;
 
 begin
-  if Zone = nil then
-    Exit;
+  if Zone = nil then Exit;
 
-  if Zone.ChildZones <> nil then
-    DoPrune(Zone.ChildZones);
+  if Zone.ChildZones <> nil then DoPrune(Zone.ChildZones);
 
   if Zone.FPrevSibling <> nil then
     Zone.FPrevSibling.NextSibling := Zone.NextSibling
-  else
-  if Zone.FParentZone <> nil then
+  else if Zone.FParentZone <> nil then
     Zone.FParentZone.ChildZones := Zone.NextSibling;
   if Zone.NextSibling <> nil then
     Zone.NextSibling.FPrevSibling := Zone.FPrevSibling;
 
-  if Zone = FTopZone then
-    FTopZone := nil;
+  if Zone = FTopZone then FTopZone := nil;
   Zone.Free;
 end;
 
@@ -1833,7 +2039,7 @@ var
   Z: TJvDockZone;
 begin
   Z := FindControlZone(Control, True);
-  if Z <> nil then
+  if (Z <> nil) then
   begin
     if Z = FReplacementZone then
       Z.ChildControl := nil
@@ -1854,10 +2060,10 @@ end;
 procedure TJvDockTree.RemoveZone(Zone: TJvDockZone; Hide: Boolean);
 var
   Sibling, LastChild: TJvDockZone;
-  VisibleZoneChildCount, ZoneChildCount: Integer;
-// (rom) disabled  unused
-//label
-//  LOOP;
+  VisibleZoneChildCount,
+    ZoneChildCount: Integer;
+label
+  LOOP;
 begin
   if not Hide then
   begin
@@ -1869,31 +2075,35 @@ begin
     ZoneChildCount := Zone.ParentZone.ChildCount;
     if VisibleZoneChildCount <= 1 then
     begin
+
       if Zone.PrevSibling = nil then
       begin
         Zone.ParentZone.ChildZones := Zone.NextSibling;
         if Zone.NextSibling <> nil then
           Zone.NextSibling.PrevSibling := nil;
       end
-      else
-      if Zone.NextSibling = nil then
+      else if Zone.NextSibling = nil then
         Zone.PrevSibling.NextSibling := nil
       else
       begin
         Zone.PrevSibling.NextSibling := Zone.NextSibling;
         Zone.NextSibling.PrevSibling := Zone.PrevSibling;
       end;
+
     end;
     if ZoneChildCount = 2 then
     begin
+
       if Zone.PrevSibling = nil then
         Sibling := Zone.NextSibling
       else
         Sibling := Zone.PrevSibling;
       if Sibling.ChildControl <> nil then
       begin
+
         if Zone.ParentZone = FTopZone then
         begin
+
           FTopZone.ChildZones := Sibling;
           Sibling.PrevSibling := nil;
           Sibling.NextSibling := nil;
@@ -1902,6 +2112,7 @@ begin
         end
         else
         begin
+
           Zone.ParentZone.Orientation := doNoOrient;
           Zone.ParentZone.ChildControl := Sibling.ChildControl;
           Zone.ParentZone.ChildZones := nil;
@@ -1912,8 +2123,10 @@ begin
       end
       else
       begin
+
         if Zone.ParentZone = FTopZone then
         begin
+
           Sibling.ZoneLimit := TopXYLimit;
           TopXYLimit := FTopZone.ZoneLimit;
           FTopZone.Free;
@@ -1924,6 +2137,7 @@ begin
         end
         else
         begin
+
           Sibling.ChildZones.PrevSibling := Zone.ParentZone.PrevSibling;
           if Sibling.ChildZones.PrevSibling = nil then
             Zone.ParentZone.ParentZone.ChildZones := Sibling.ChildZones
@@ -1952,8 +2166,10 @@ begin
     end
     else
     begin
+
       if Zone.PrevSibling = nil then
       begin
+
         Zone.ParentZone.ChildZones := Zone.NextSibling;
         if Zone.NextSibling <> nil then
         begin
@@ -1963,6 +2179,7 @@ begin
       end
       else
       begin
+
         Zone.PrevSibling.NextSibling := Zone.NextSibling;
         if Zone.NextSibling <> nil then
           Zone.NextSibling.PrevSibling := Zone.PrevSibling;
@@ -1971,7 +2188,7 @@ begin
       end;
       ForEachAt(Zone.ParentZone, UpdateZone, tskForward);
     end;
-    //LOOP:
+    LOOP:
     Zone.Free;
   end;
   SetNewBounds(nil);
@@ -1986,39 +2203,42 @@ begin
     (FTopZone <> nil) and (FDockSite.DockClientCount > 0) then
   begin
     R := FDockSite.ClientRect;
-    THackWinControl(FDockSite).AdjustClientRect(R);
-    if Force or (not CompareMem(@R, @FOldRect, SizeOf(TRect))) then
+    TlbWinControlAccess(FDockSite).AdjustClientRect(R);
+    if Force or (not CompareMem(@R, @FPreviousRect, SizeOf(TRect))) then
     begin
-      FOldRect := R;
+      FPreviousRect := R;
       case FTopZone.Orientation of
         doHorizontal:
           begin
             FTopZone.ZoneLimit := R.Right - R.Left;
+
             if R.Bottom - R.Top > 0 then
               TopXYLimit := R.Bottom - R.Top;
           end;
         doVertical:
           begin
             FTopZone.ZoneLimit := R.Bottom - R.Top;
+
             if R.Right - R.Left > 0 then
               TopXYLimit := R.Right - R.Left;
           end;
       end;
       SetNewBounds(nil);
-      if FUpdateCount = 0 then
-        ForEachAt(nil, UpdateZone, tskForward);
+      if FUpdateCount = 0 then ForEachAt(nil, UpdateZone, tskForward);
     end;
   end;
 end;
 
 procedure TJvDockTree.ScaleZone(Zone: TJvDockZone);
 begin
+
   FParentLimit := 0;
   ScaleChildZone(Zone);
 end;
 
 procedure TJvDockTree.SaveToStream(Stream: TStream);
 begin
+
   Stream.Write(FVersion, SizeOf(FVersion));
 
   Stream.Write(FTopXYLimit, SizeOf(FTopXYLimit));
@@ -2040,18 +2260,14 @@ procedure TJvDockTree.SetNewBounds(Zone: TJvDockZone);
         else
           Zone.ZoneLimit := Zone.ParentZone.ParentZone.FZoneLimit;
       end;
-      if Zone.ChildZones <> nil then
-        DoSetNewBounds(Zone.ChildZones);
-      if Zone.NextSibling <> nil then
-        DoSetNewBounds(Zone.NextSibling);
+      if Zone.ChildZones <> nil then DoSetNewBounds(Zone.ChildZones);
+      if Zone.NextSibling <> nil then DoSetNewBounds(Zone.NextSibling);
     end;
   end;
 
 begin
-  if JvGlobalDockIsLoading then
-    Exit;
-  if Zone = nil then
-    Zone := FTopZone.ChildZones;
+  if JvGlobalDockIsLoading then Exit;
+  if Zone = nil then Zone := FTopZone.ChildZones;
   DoSetNewBounds(Zone);
 
   FDockSite.Invalidate;
@@ -2065,7 +2281,7 @@ end;
 procedure TJvDockTree.ShiftZone(Zone: TJvDockZone);
 begin
   if (Zone <> nil) and (Zone <> FTopZone) and
-    (Zone.ParentZone.Orientation = FShiftScaleOrient) then
+    (Zone.ParentZone.Orientation = FShiftScaleOrientation) then
   begin
     Inc(Zone.FZoneLimit, FShiftBy);
     if Zone.LimitSize < FMinSize then
@@ -2078,7 +2294,8 @@ begin
   FSizingZone := OnZone;
   Mouse.Capture := FDockSite.Handle;
   FSizingWnd := FDockSite.Handle;
-  FSizingDC := GetDCEx(FSizingWnd, 0, DCX_CACHE or DCX_CLIPSIBLINGS or DCX_LOCKWINDOWUPDATE);
+  FSizingDC := GetDCEx(FSizingWnd, 0, DCX_CACHE or DCX_CLIPSIBLINGS or
+    DCX_LOCKWINDOWUPDATE);
   FSizePos := MousePos;
   DrawSizeSplitter;
 end;
@@ -2090,6 +2307,7 @@ procedure TJvDockTree.SplitterMouseUp;
     AZone: TJvDockZone;
     PrevCount, NextCount: Integer;
   begin
+
     PrevCount := FSizingZone.PrevSiblingCount;
     AZone := FSizingZone.ParentZone.ChildZones;
     while (AZone <> nil) and (AZone <> FSizingZone) do
@@ -2115,7 +2333,7 @@ procedure TJvDockTree.SplitterMouseUp;
 
     NextCount := 1;
     AZone := FSizingZone.NextSibling;
-    while AZone <> nil do
+    while (AZone <> nil) do
     begin
       if AZone.ZoneLimit <= PosXY + NextCount * MinSize +
         Integer(AZone.NextSibling <> nil) * (SplitterWidth div 2) then
@@ -2153,7 +2371,7 @@ end;
 
 procedure TJvDockTree.UpdateZone(Zone: TJvDockZone);
 begin
-  if FUpdateCount = 0 then
+  if (FUpdateCount = 0) then
     Zone.Update;
 end;
 
@@ -2165,6 +2383,7 @@ begin
   if FSizingZone <> nil then
   begin
     with R do
+    begin
       if FSizingZone.ParentZone.Orientation = doHorizontal then
       begin
         Left := FSizingZone.Left;
@@ -2179,6 +2398,7 @@ begin
         Right := Left + SplitterWidth;
         Bottom := Top + FSizingZone.Height;
       end;
+    end;
     PrevBrush := SelectObject(FSizingDC, FBrush.Handle);
     with R do
       PatBlt(FSizingDC, Left, Top, Right - Left, Bottom - Top, PATINVERT);
@@ -2189,61 +2409,76 @@ end;
 function TJvDockTree.GetSplitterLimit(AZone: TJvDockZone; IsCurrent, IsMin: Boolean): Integer;
 begin
   if IsCurrent then
-    Result := AZone.GetSplitterLimit(False)
+  begin
+    Result := AZone.GetSplitterLimit(False);
+  end
   else
-  if AZone.AfterClosestVisibleZone <> nil then
-    Result := AZone.AfterClosestVisibleZone.GetSplitterLimit(True)
-  else
-    Result := AZone.ZoneLimit + AZone.LimitSize;
+  begin
+    if AZone.AfterClosestVisibleZone <> nil then
+      Result := AZone.AfterClosestVisibleZone.GetSplitterLimit(True)
+    else
+      Result := AZone.ZoneLimit + AZone.LimitSize;
+  end;
 end;
 
 procedure TJvDockTree.ControlVisibilityChanged(Control: TControl;
   Visible: Boolean);
 begin
   if Visible then
-    ShowControl(Control)
+  begin
+    ShowControl(Control);
+  end
   else
     HideControl(Control);
 end;
 
-procedure TJvDockTree.WindowProc(var Msg: TMessage);
+procedure TJvDockTree.WindowProc(var Message: TMessage);
 var
   TempZone: TJvDockZone;
   HitTestValue: Integer;
 begin
-  case Msg.Msg of
+  case Message.Msg of
     CM_DOCKNOTIFICATION:
-      with TCMDockNotification(Msg) do
-        if NotifyRec.ClientMsg = CM_VISIBLECHANGED then
+      with TCMDockNotification(Message) do
+        if (NotifyRec.ClientMsg = CM_VISIBLECHANGED) then
           ControlVisibilityChanged(Client, Boolean(NotifyRec.MsgWParam));
     WM_MOUSEMOVE:
-      DoMouseMove(TWMMouse(Msg), TempZone, HitTestValue);
+
+      DoMouseMove(TWMMouse(Message), TempZone, HitTestValue);
     WM_LBUTTONDBLCLK:
-      DoLButtonDbClk(TWMMouse(Msg), TempZone, HitTestValue);
+
+      DoLButtonDbClk(TWMMouse(Message), TempZone, HitTestValue);
     WM_LBUTTONDOWN:
-      if DoLButtonDown(TWMMouse(Msg), TempZone, HitTestValue) then
-        Exit;
+
+      if DoLButtonDown(TWMMouse(Message), TempZone, HitTestValue) then Exit;
     WM_LBUTTONUP:
-      DoLButtonUp(TWMMouse(Msg), TempZone, HitTestValue);
+
+      DoLButtonUp(TWMMouse(Message), TempZone, HitTestValue);
     WM_MBUTTONDOWN:
-      DoMButtonDown(TWMMouse(Msg), TempZone, HitTestValue);
+
+      DoMButtonDown(TWMMouse(Message), TempZone, HitTestValue);
     WM_MBUTTONUP:
-      DoMButtonUp(TWMMouse(Msg), TempZone, HitTestValue);
+
+      DoMButtonUp(TWMMouse(Message), TempZone, HitTestValue);
     WM_RBUTTONDOWN:
-      DoRButtonDown(TWMMouse(Msg), TempZone, HitTestValue);
+
+      DoRButtonDown(TWMMouse(Message), TempZone, HitTestValue);
     WM_RBUTTONUP:
-      DoRButtonUp(TWMMouse(Msg), TempZone, HitTestValue);
+
+      DoRButtonUp(TWMMouse(Message), TempZone, HitTestValue);
     WM_SETCURSOR:
       begin
-        DoSetCursor(TWMSetCursor(Msg), TempZone, HitTestValue);
-        if Msg.Result = 1 then
-          Exit;
+
+        DoSetCursor(TWMSetCursor(Message), TempZone, HitTestValue);
+        if Message.Result = 1 then Exit;
       end;
   end;
 
-  FOldWndProc(Msg);
-  if Msg.Msg = CM_HINTSHOW then
-    DoHintShow(TCMHintShow(Msg), TempZone, HitTestValue);
+  FOldWndProc(Message);
+
+  if Message.Msg = CM_HINTSHOW then
+
+    DoHintShow(TCMHintShow(Message), TempZone, HitTestValue);
 end;
 
 procedure TJvDockTree.SetGrabberSize(const Value: Integer);
@@ -2281,6 +2516,7 @@ begin
 
   if PtInRect(ARect, MousePos) then
   begin
+
     InflateRect(ARect, -BorderWidth, -BorderWidth);
     if not PtInRect(ARect, MousePos) then
     begin
@@ -2358,21 +2594,20 @@ var
     end
     else
     begin
+
       if (CtlZone = nil) and (StartZone.NextSibling <> nil) then
         DoFindControlZone(StartZone.NextSibling, Level);
 
       if (CtlZone = nil) and (StartZone.ChildZones <> nil) then
         DoFindControlZone(StartZone.ChildZones, Level + 1);
-      if (CtlZone <> nil) and (not CtlZone.Visibled) then
-        CtlZone := nil;
+      if (CtlZone <> nil) and (not CtlZone.Visibled) then CtlZone := nil;
     end;
   end;
 
 begin
   CtlZone := nil;
   CtlLevel := 0;
-  if (Control <> nil) and (FTopZone <> nil) then
-    DoFindControlZone(FTopZone, 0);
+  if (Control <> nil) and (FTopZone <> nil) then DoFindControlZone(FTopZone, 0);
   Result := CtlZone;
 end;
 
@@ -2396,23 +2631,30 @@ begin
   FTopXYLimit := Value;
 end;
 
-procedure TJvDockTree.DoMouseMove(var Msg: TWMMouse;
+procedure TJvDockTree.DoMouseMove(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer);
+
 var
   Control: TControl;
   DockClient: TJvDockClient;
 begin
+
   if FSizingZone <> nil then
   begin
+
     DrawSizeSplitter;
-    FSizePos := SmallPointToPoint(Msg.Pos);
+
+    FSizePos := SmallPointToPoint(Message.Pos);
+
     CalcSplitterPos;
+
     DrawSizeSplitter;
   end;
 
-  Zone := InternalHitTest(SmallPointToPoint(Msg.Pos), HTFlag);
+  Zone := InternalHitTest(SmallPointToPoint(Message.Pos), HTFlag);
   if Zone <> nil then
   begin
+
     DockClient := FindDockClient(Zone.ChildControl);
     if DockClient <> nil then
       DockClient.DoNCMouseMove(JvDockCreateNCMessage(
@@ -2423,49 +2665,57 @@ begin
     Control := nil;
   if (Control <> nil) and (HTFlag <> FOldHTFlag) then
   begin
+
     Application.HideHint;
-    Application.HintMouseMessage(Control, TMessage(Msg));
-    Application.ActivateHint(SmallPointToPoint(Msg.Pos));
+    Application.HintMouseMessage(Control, TMessage(Message));
+    Application.ActivateHint(SmallPointToPoint(Message.Pos));
     FOldHTFlag := HTFlag;
   end;
 end;
 
-function TJvDockTree.DoLButtonDown(var Msg: TWMMouse;
+function TJvDockTree.DoLButtonDown(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer): Boolean;
 var
   P: TPoint;
-  Mesg: TMsg;
+  Msg: TMsg;
+
 begin
   Result := False;
-  P := SmallPointToPoint(Msg.Pos);
+  P := SmallPointToPoint(Message.Pos);
 
   Zone := InternalHitTest(P, HTFlag);
-  if Zone <> nil then
+  if (Zone <> nil) then
   begin
     if HTFlag = HTSPLITTER then
+
       SplitterMouseDown(Zone, P)
-    else
-    if (HTFlag = HTCAPTION) or (HTFlag = HTBORDER) then
+    else if (HTFlag = HTCAPTION) or (HTFlag = HTBORDER) then
     begin
+
       JvGlobalDockClient := FindDockClient(Zone.ChildControl);
       if JvGlobalDockClient <> nil then
+
         JvGlobalDockClient.DoNCButtonDown(JvDockCreateNCMessage(
           DockSite, WM_NCLBUTTONDOWN, HTFlag, P), mbLeft, msConjoin);
 
-      if (not PeekMessage(Mesg, FDockSite.Handle, WM_LBUTTONDBLCLK,
+      if (not PeekMessage(Msg, FDockSite.Handle, WM_LBUTTONDBLCLK,
         WM_LBUTTONDBLCLK, PM_NOREMOVE)) and
         (Zone.ChildControl is TWinControl) then
+
         if (GetActiveControl <> Zone.ChildControl) and Zone.ChildControl.CanFocus then
           Zone.ChildControl.SetFocus;
-      if (THackWinControl(Zone.ChildControl).DragKind = dkDock) and
-        (THackWinControl(Zone.ChildControl).DragMode = dmAutomatic) then
+      if (TlbWinControlAccess(Zone.ChildControl).DragKind = dkDock) and
+        (TlbWinControlAccess(Zone.ChildControl).DragMode = dmAutomatic) then
+      begin
+
         BeginDrag(Zone.ChildControl, True);
+      end;
       Result := True;
     end;
   end;
 end;
 
-procedure TJvDockTree.DoLButtonUp(var Msg: TWMMouse;
+procedure TJvDockTree.DoLButtonUp(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer);
 var
   P: TPoint;
@@ -2473,70 +2723,80 @@ var
 begin
   if FSizingZone = nil then
   begin
-    P := SmallPointToPoint(Msg.Pos);
+
+    P := SmallPointToPoint(Message.Pos);
     Zone := InternalHitTest(P, HTFlag);
-    if Zone <> nil then
+    if (Zone <> nil) then
+    begin
       if (HTFlag <> HTSPLITTER) and (Zone.ChildControl <> nil) then
       begin
         DockClient := FindDockClient(Zone.ChildControl);
         if DockClient <> nil then
+
           DockClient.DoNCButtonUp(JvDockCreateNCMessage(
             DockSite, WM_NCLBUTTONUP, HTFlag, P), mbLeft, msConjoin);
-        if HTFlag = HTCLOSE then
+        if (HTFlag = HTCLOSE) then
         begin
-          if (DockClient <> nil) and (not DockClient.EnableCloseBtn) then
-            Exit;
+          if (DockClient <> nil) and (not DockClient.EnableCloseButton) then Exit;
           DoHideZoneChild(Zone);
         end;
       end;
+    end;
   end
   else
+
     SplitterMouseUp;
 end;
 
-procedure TJvDockTree.DoLButtonDbClk(var Msg: TWMMouse;
+procedure TJvDockTree.DoLButtonDbClk(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer);
 var
   P: TPoint;
 begin
-  P := SmallPointToPoint(Msg.Pos);
+
+  P := SmallPointToPoint(Message.Pos);
   Zone := InternalHitTest(P, HTFlag);
-  if (Zone <> nil) and (Zone.ChildControl <> nil) and
-    (HTFlag = HTCAPTION) or (HTFlag = HTBORDER) then
+  if (Zone <> nil) and (Zone.ChildControl <> nil)
+    and (HTFlag = HTCAPTION) or (HTFlag = HTBORDER) then
   begin
-    if HTFlag <> HTSPLITTER then
+    if (HTFlag <> HTSPLITTER) then
+
       JvGlobalDockClient.DoNCButtonDblClk(JvDockCreateNCMessage(
         DockSite, WM_NCLBUTTONUP, HTFlag, P), mbLeft, msConjoin);
     if JvGlobalDockClient.CanFloat then
     begin
+
       JvGlobalDockManager.CancelDrag;
-      Zone.LButtonDblClkMethod;
+      Zone.LButtonDbClkMothed;
     end;
     Zone := nil;
   end;
 end;
 
-procedure TJvDockTree.DoSetCursor(var Msg: TWMSetCursor;
+procedure TJvDockTree.DoSetCursor(var Message: TWMSetCursor;
   var Zone: TJvDockZone; out HTFlag: Integer);
 var
   P: TPoint;
 begin
+
   GetCursorPos(P);
   P := FDockSite.ScreenToClient(P);
-  with Msg do
-    if (Smallint(HitTest) = HTCLIENT) and (CursorWnd = FDockSite.Handle) and
-      (FDockSite.VisibleDockClientCount > 0) then
+  with Message do
+    if (Smallint(HitTest) = HTCLIENT) and (CursorWnd = FDockSite.Handle)
+      and (FDockSite.VisibleDockClientCount > 0) then
     begin
+
       Zone := InternalHitTest(P, HTFlag);
       if (Zone <> nil) and (HTFlag = HTSPLITTER) then
       begin
+
         SetSplitterCursor(Zone.ParentZone.Orientation);
         Result := 1;
       end;
     end;
 end;
 
-procedure TJvDockTree.DoHintShow(var Msg: TCMHintShow;
+procedure TJvDockTree.DoHintShow(var Message: TCMHintShow;
   var Zone: TJvDockZone; out HTFlag: Integer);
 var
   Control: TWinControl;
@@ -2544,11 +2804,12 @@ var
   ADockClient: TJvDockClient;
   CanShow: Boolean;
 begin
-  with Msg do
+  with Message do
   begin
     if Result = 0 then
     begin
-      Zone := InternalHitTest(HintInfo^.CursorPos, HTFlag);
+
+      Zone := InternalHitTest(Message.HintInfo.CursorPos, HTFlag);
       if Zone <> nil then
         Control := Zone.ChildControl
       else
@@ -2560,14 +2821,17 @@ begin
 
       if HTFlag = HTSPLITTER then
         HintInfo^.HintStr := ''
-      else
-      if Control <> nil then
+      else if (Control <> nil) then
       begin
+
         R := GetFrameRect(Control);
         if HTFlag = HTCAPTION then
-          HintInfo^.HintStr := THackWinControl(Control).Caption
-        else
-        if HTFlag = HTCLOSE then
+        begin
+
+          HintInfo^.HintStr := TlbWinControlAccess(Control).Caption;
+        end
+        else if HTFlag = HTCLOSE then
+
           HintInfo^.HintStr := RsDockJvDockTreeCloseBtnHint
         else
           DoOtherHint(Zone, HTFlag, HintInfo^.HintStr);
@@ -2586,8 +2850,7 @@ end;
 
 procedure TJvDockTree.SetSplitterCursor(CursorIndex: TDockOrientation);
 const
-  SizeCursors: array [TDockOrientation] of TCursor =
-    (crDefault, crVSplit, crHSplit);
+  SizeCursors: array[TDockOrientation] of TCursor = (crDefault, crVSplit, crHSplit);
 begin
   Windows.SetCursor(Screen.Cursors[SizeCursors[CursorIndex]]);
 end;
@@ -2597,132 +2860,145 @@ begin
   FDockZoneClass := Value;
 end;
 
-procedure TJvDockTree.DoMButtonDown(var Msg: TWMMouse;
+procedure TJvDockTree.DoMButtonDown(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer);
 var
-  Mesg: TWMNCHitMessage;
+  Msg: TWMNCHitMessage;
   DockClient: TJvDockClient;
 begin
-  Mesg := DoMouseEvent(Msg, Zone, HTFlag);
-  if Mesg.Result > 0 then
+  Msg := DoMouseEvent(Message, Zone, HTFlag);
+  if Msg.Result > 0 then
   begin
     DockClient := FindDockClient(Zone.ChildControl);
     if DockClient <> nil then
-      DockClient.DoNCButtonDown(Mesg, mbMiddle, msConjoin);
+
+      DockClient.DoNCButtonDown(Msg, mbMiddle, msConjoin);
   end;
 end;
 
-procedure TJvDockTree.DoMButtonUp(var Msg: TWMMouse;
+procedure TJvDockTree.DoMButtonUp(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer);
 var
-  Mesg: TWMNCHitMessage;
+  Msg: TWMNCHitMessage;
   DockClient: TJvDockClient;
 begin
-  Mesg := DoMouseEvent(Msg, Zone, HTFlag);
-  if Mesg.Result > 0 then
+  Msg := DoMouseEvent(Message, Zone, HTFlag);
+  if Msg.Result > 0 then
   begin
     DockClient := FindDockClient(Zone.ChildControl);
     if DockClient <> nil then
-      DockClient.DoNCButtonUp(Mesg, mbMiddle, msConjoin);
+
+      DockClient.DoNCButtonUp(Msg, mbMiddle, msConjoin);
   end;
 end;
 
-procedure TJvDockTree.DoRButtonDown(var Msg: TWMMouse;
+procedure TJvDockTree.DoRButtonDown(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer);
 var
-  Mesg: TWMNCHitMessage;
+  Msg: TWMNCHitMessage;
   DockClient: TJvDockClient;
 begin
-  Mesg := DoMouseEvent(Msg, Zone, HTFlag);
-  if Mesg.Result > 0 then
+  Msg := DoMouseEvent(Message, Zone, HTFlag);
+  if Msg.Result > 0 then
   begin
     DockClient := FindDockClient(Zone.ChildControl);
     if DockClient <> nil then
-      DockClient.DoNCButtonDown(Mesg, mbRight, msConjoin);
+
+      DockClient.DoNCButtonDown(Msg, mbRight, msConjoin);
   end;
 end;
 
-procedure TJvDockTree.DoRButtonUp(var Msg: TWMMouse;
+procedure TJvDockTree.DoRButtonUp(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer);
 var
-  Mesg: TWMNCHitMessage;
+  Msg: TWMNCHitMessage;
   DockClient: TJvDockClient;
 begin
-  Mesg := DoMouseEvent(Msg, Zone, HTFlag);
-  if Mesg.Result > 0 then
+  Msg := DoMouseEvent(Message, Zone, HTFlag);
+  if Msg.Result > 0 then
   begin
     DockClient := FindDockClient(Zone.ChildControl);
     if DockClient <> nil then
-      DockClient.DoNCButtonUp(Mesg, mbRight, msConjoin);
+
+      DockClient.DoNCButtonUp(Msg, mbRight, msConjoin);
   end;
 end;
 
-function TJvDockTree.DoMouseEvent(var Msg: TWMMouse;
+function TJvDockTree.DoMouseEvent(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer): TWMNCHitMessage;
 var
-  Pt: TPoint;
+  APoint: TPoint;
 begin
   Result.Result := 0;
-  Pt := SmallPointToPoint(Msg.Pos);
-  Zone := InternalHitTest(Pt, HTFlag);
+  APoint := SmallPointToPoint(Message.Pos);
+
+  Zone := InternalHitTest(APoint, HTFlag);
   if (Zone <> nil) and (Zone.ChildControl <> nil) and (HTFlag <> HTSPLITTER) then
   begin
-    Result := JvDockCreateNCMessage(DockSite, Msg.Msg + WM_NCMOUSEFIRST - WM_MOUSEFIRST, HTFlag, Pt);
+
+    Result := JvDockCreateNCMessage(DockSite, Message.Msg + WM_NCMOUSEFIRST - WM_MOUSEFIRST, HTFlag, APoint);
     Result.Result := 1;
   end;
 end;
 
-procedure TJvDockTree.DoMButtonDbClk(var Msg: TWMMouse;
+procedure TJvDockTree.DoMButtonDbClk(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer);
 var
-  Pt: TPoint;
+  P: TPoint;
   DockClient: TJvDockClient;
 begin
-  Pt := SmallPointToPoint(Msg.Pos);
-  Zone := InternalHitTest(Pt, HTFlag);
+
+  P := SmallPointToPoint(Message.Pos);
+  Zone := InternalHitTest(P, HTFlag);
   if (Zone <> nil) and (Zone.ChildControl <> nil) and (HTFlag = HTCAPTION) then
-    if HTFlag <> HTSPLITTER then
+  begin
+    if (HTFlag <> HTSPLITTER) then
     begin
       DockClient := FindDockClient(Zone.ChildControl);
       if DockClient <> nil then
+
         DockClient.DoNCButtonDblClk(JvDockCreateNCMessage(
-          DockSite, WM_NCLBUTTONUP, HTFlag, Pt), mbMiddle, msConjoin);
+          DockSite, WM_NCLBUTTONUP, HTFlag, P), mbMiddle, msConjoin);
     end;
+  end;
 end;
 
-procedure TJvDockTree.DoRButtonDbClk(var Msg: TWMMouse;
+procedure TJvDockTree.DoRButtonDbClk(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer);
 var
-  Pt: TPoint;
+  P: TPoint;
   DockClient: TJvDockClient;
 begin
 
-  Pt := SmallPointToPoint(Msg.Pos);
-  Zone := InternalHitTest(Pt, HTFlag);
+  P := SmallPointToPoint(Message.Pos);
+  Zone := InternalHitTest(P, HTFlag);
   if (Zone <> nil) and (Zone.ChildControl <> nil) and (HTFlag = HTCAPTION) then
-    if HTFlag <> HTSPLITTER then
+  begin
+    if (HTFlag <> HTSPLITTER) then
     begin
       DockClient := FindDockClient(Zone.ChildControl);
       if DockClient <> nil then
+
         DockClient.DoNCButtonDblClk(JvDockCreateNCMessage(
-          DockSite, WM_NCLBUTTONUP, HTFlag, Pt), mbRight, msConjoin);
+          DockSite, WM_NCLBUTTONUP, HTFlag, P), mbRight, msConjoin);
     end;
+  end;
 end;
 
 function TJvDockTree.GetFrameRect(Control: TControl): TRect;
 var
-  NLeft, NTop: Integer;
+  ALeft, ATop: Integer;
 begin
   if Control <> nil then
   begin
     Result := Control.BoundsRect;
-    NLeft := Result.Left;
-    NTop := Result.Top;
+    ALeft := Result.Left;
+    Atop := Result.Top;
     AdjustDockRect(Control, Result);
     Dec(Result.Left, 2 * (Result.Left - Control.Left) + 1);
     Dec(Result.Top, 2 * (Result.Top - Control.Top));
-    Dec(Result.Right, 2 * (Result.Right - NLeft - Control.Width));
-    Dec(Result.Bottom, 2 * (Result.Bottom - NTop - Control.Height));
+    Dec(Result.Right, 2 * (Result.Right - ALeft - Control.Width));
+    Dec(Result.Bottom, 2 * (Result.Bottom - ATop - Control.Height));
   end
   else
     raise Exception.Create(RsDockControlCannotIsNil);
@@ -2732,9 +3008,9 @@ function TJvDockTree.GetSplitterRect(Zone: TJvDockZone): TRect;
 var
   A, B, C, D: Integer;
 begin
-  if (Zone <> nil) and Zone.Visibled and (Zone.ParentZone <> nil) and
-    (Zone.VisibleNextSiblingCount >= 1) and
-    (Zone.ParentZone.Orientation <> doNoOrient) then
+  if (Zone <> nil) and Zone.Visibled and (Zone.ParentZone <> nil)
+    and (Zone.VisibleNextSiblingCount >= 1)
+    and (Zone.ParentZone.Orientation <> doNoOrient) then
   begin
     A := Zone.ParentZone.LimitBegin;
     B := Zone.ParentZone.ZoneLimit;
@@ -2742,8 +3018,7 @@ begin
     D := C + 1 * SplitterWidth;
     if Zone.ParentZone.Orientation = doHorizontal then
       Result := Rect(A, C, B, D)
-    else
-    if Zone.ParentZone.Orientation = doVertical then
+    else if Zone.ParentZone.Orientation = doVertical then
       Result := Rect(C, A, D, B);
   end
   else
@@ -2753,11 +3028,12 @@ end;
 procedure TJvDockTree.BeginDrag(Control: TControl;
   Immediate: Boolean; Threshold: Integer);
 var
-  DockClient: TJvDockClient;
+  ADockClient: TJvDockClient;
 begin
-  DockClient := FindDockClient(Control);
-  if DockClient <> nil then
-    JvGlobalDockManager.BeginDrag(Control, DockClient.DirectDrag, Threshold);
+  ADockClient := FindDockClient(Control);
+
+  if ADockClient <> nil then
+    JvGlobalDockManager.BeginDrag(Control, ADockClient.DirectDrag, Threshold);
 end;
 
 function TJvDockTree.GetFrameRectEx(Control: TControl): TRect;
@@ -2771,6 +3047,7 @@ end;
 
 procedure TJvDockTree.DrawDockSiteRect;
 begin
+
 end;
 
 procedure TJvDockTree.SetBorderWidth(const Value: Integer);
@@ -2797,7 +3074,9 @@ procedure TJvDockTree.DrawSplitter(Zone: TJvDockZone);
 var
   R: TRect;
 begin
+
   R := GetSplitterRect(Zone);
+
   DrawSplitterRect(R);
 end;
 
@@ -2805,9 +3084,10 @@ function TJvDockTree.GetDockEdge(DockRect: TRect; MousePos: TPoint;
   var DropAlign: TAlign; Control: TControl): TControl;
 begin
   Result := nil;
+
 end;
 
-function TJvDockTree.GetDockSiteOrient: TDockOrientation;
+function TJvDockTree.GetDockSiteOrientation: TDockOrientation;
 begin
   Result := JvDockGetControlOrient(DockSite);
 end;
@@ -2826,23 +3106,28 @@ end;
 
 procedure TJvDockTree.ScaleChildZone(Zone: TJvDockZone);
 begin
+
   if (Zone <> nil) and (Zone.ParentZone <> nil) and Zone.Visibled and
-    (Zone.ParentZone.Orientation = ShiftScaleOrient) then
+    (Zone.ParentZone.Orientation = ShiftScaleOrientation) then
+  begin
+
     Zone.ZoneLimit := Integer(Round(Zone.ZoneLimit * ScaleBy + FParentLimit * (1 - ScaleBy)));
+
+  end;
 end;
 
 procedure TJvDockTree.ScaleSiblingZone(Zone: TJvDockZone);
 begin
+
   ScaleChildZone(Zone);
+
 end;
 
 function TJvDockTree.GetDockSiteSize: Integer;
 begin
-  case DockSiteOrient of
-    doVertical:
-      Result := DockSite.Width;
-    doHorizontal:
-      Result := DockSite.Height;
+  case DockSiteOrientation of
+    doVertical: Result := DockSite.Width;
+    doHorizontal: Result := DockSite.Height;
   else
     raise Exception.Create(RsDockCannotGetValueWithNoOrient);
   end;
@@ -2852,13 +3137,12 @@ procedure TJvDockTree.SetDockSiteSize(const Value: Integer);
 begin
   DockSite.Parent.DisableAlign;
   try
+
     if DockSite.Align in [alRight, alBottom] then
       DockSiteBegin := DockSiteBegin - (Value - DockSiteSize);
-    case DockSiteOrient of
-      doVertical:
-        DockSite.Width := Value;
-      doHorizontal:
-        DockSite.Height := Value;
+    case DockSiteOrientation of
+      doVertical: DockSite.Width := Value;
+      doHorizontal: DockSite.Height := Value;
     else
       raise Exception.Create(RsDockCannotSetValueWithNoOrient);
     end;
@@ -2874,11 +3158,9 @@ end;
 
 function TJvDockTree.GetDockSiteBegin: Integer;
 begin
-  case DockSiteOrient of
-    doVertical:
-      Result := DockSite.Left;
-    doHorizontal:
-      Result := DockSite.Top;
+  case DockSiteOrientation of
+    doVertical: Result := DockSite.Left;
+    doHorizontal: Result := DockSite.Top;
   else
     raise Exception.Create(RsDockCannotGetValueWithNoOrient);
   end;
@@ -2886,35 +3168,29 @@ end;
 
 procedure TJvDockTree.SetDockSiteBegin(const Value: Integer);
 begin
-  case DockSiteOrient of
-    doVertical:
-      DockSite.Left := Value;
-    doHorizontal:
-      DockSite.Top := Value;
+  case DockSiteOrientation of
+    doVertical: DockSite.Left := Value;
+    doHorizontal: DockSite.Top := Value;
   else
     raise Exception.Create(RsDockCannotSetValueWithNoOrient);
   end;
 end;
 
-function TJvDockTree.GetDockSiteSizeA: Integer;
+function TJvDockTree.GetDockSiteSizeAlternatelternate: Integer;
 begin
-  case DockSiteOrient of
-    doVertical:
-      Result := DockSite.Height;
-    doHorizontal:
-      Result := DockSite.Width;
+  case DockSiteOrientation of
+    doVertical: Result := DockSite.Height;
+    doHorizontal: Result := DockSite.Width;
   else
     raise Exception.Create(RsDockCannotGetValueWithNoOrient);
   end;
 end;
 
-procedure TJvDockTree.SetDockSiteSizeA(const Value: Integer);
+procedure TJvDockTree.SetDockSiteSizeAlternatelternate(const Value: Integer);
 begin
-  case DockSiteOrient of
-    doVertical:
-      DockSite.Height := Value;
-    doHorizontal:
-      DockSite.Width := Value;
+  case DockSiteOrientation of
+    doVertical: DockSite.Height := Value;
+    doHorizontal: DockSite.Width := Value;
   else
     raise Exception.Create(RsDockCannotSetValueWithNoOrient);
   end;
@@ -2922,27 +3198,23 @@ end;
 
 procedure TJvDockTree.CalcSplitterPos;
 var
-  MinWidth: Integer;
-  TestLimit: Integer;
+  MinWidth,
+    TestLimit: Integer;
 begin
   MinWidth := MinSize;
-  if FSizingZone.ParentZone.Orientation = doHorizontal then
+  if (FSizingZone.ParentZone.Orientation = doHorizontal) then
   begin
     TestLimit := GetSplitterLimit(FSizingZone, True, False) + MinWidth;
-    if FSizePos.y <= TestLimit then
-      FSizePos.y := TestLimit;
+    if FSizePos.y <= TestLimit then FSizePos.y := TestLimit;
     TestLimit := GetSplitterLimit(FSizingZone, False, True) - MinWidth - SplitterWidth;
-    if FSizePos.y >= TestLimit then
-      FSizePos.y := TestLimit;
+    if FSizePos.y >= TestLimit then FSizePos.y := TestLimit;
   end
   else
   begin
     TestLimit := GetSplitterLimit(FSizingZone, True, False) + MinWidth;
-    if FSizePos.x <= TestLimit then
-      FSizePos.x := TestLimit;
+    if FSizePos.x <= TestLimit then FSizePos.x := TestLimit;
     TestLimit := GetSplitterLimit(FSizingZone, False, True) - MinWidth - SplitterWidth;
-    if FSizePos.x >= TestLimit then
-      FSizePos.x := TestLimit;
+    if FSizePos.x >= TestLimit then FSizePos.x := TestLimit;
   end;
 end;
 
@@ -2956,12 +3228,14 @@ procedure TJvDockTree.DoSaveZone(Stream: TStream;
 begin
   with Stream do
   begin
+
     Write(Level, SizeOf(Level));
     CustomSaveZone(Stream, Zone);
   end;
 
   if Zone.ChildZones <> nil then
     DoSaveZone(Stream, Zone.ChildZones, Level + 1);
+
   if Zone.NextSibling <> nil then
     DoSaveZone(Stream, Zone.NextSibling, Level);
 end;
@@ -2972,8 +3246,7 @@ var
 begin
   NameLen := Length(ControlName);
   Stream.Write(NameLen, SizeOf(NameLen));
-  if NameLen > 0 then
-    Stream.Write(Pointer(ControlName)^, NameLen);
+  if NameLen > 0 then Stream.Write(Pointer(ControlName)^, NameLen);
 end;
 
 procedure TJvDockTree.DoLoadZone(Stream: TStream);
@@ -2988,8 +3261,7 @@ begin
     with Stream do
     begin
       Read(Level, SizeOf(Level));
-      if Level = TreeStreamEndFlag then
-        Break;
+      if Level = TreeStreamEndFlag then Break;
       Zone := FDockZoneClass.Create(Self);
       CustomLoadZone(Stream, Zone);
       if Zone = nil then
@@ -2997,21 +3269,18 @@ begin
     end;
     if Level = 0 then
       FTopZone := Zone
-    else
-    if Level = LastLevel then
+    else if Level = LastLevel then
     begin
       LastZone.NextSibling := Zone;
       Zone.FPrevSibling := LastZone;
       Zone.FParentZone := LastZone.FParentZone;
     end
-    else
-    if Level > LastLevel then
+    else if Level > LastLevel then
     begin
       LastZone.ChildZones := Zone;
       Zone.FParentZone := LastZone;
     end
-    else
-    if Level < LastLevel then
+    else if Level < LastLevel then
     begin
       NextZone := LastZone;
       for I := 1 to LastLevel - Level do
@@ -3054,11 +3323,15 @@ begin
     Read(Zone.FIsInside, SizeOf(Zone.FIsInside));
     ReadControlName(Stream, CompName);
     if CompName <> '' then
+    begin
       if not Zone.SetControlName(CompName) then
       begin
+
         Zone.Free;
         Zone := nil;
+        Exit;
       end;
+    end;
   end;
 end;
 
@@ -3068,7 +3341,9 @@ var
 begin
   with Stream do
   begin
+
     Write(Zone.Orientation, SizeOf(Zone.Orientation));
+
     Write(Zone.ZoneLimit, SizeOf(Zone.ZoneLimit));
 
     if Zone.ChildControl <> nil then
@@ -3083,8 +3358,8 @@ begin
     Write(Zone.VisibleSize, SizeOf(Zone.VisibleSize));
 
     Zone.IsInside := True;
-    if (Zone.ChildControl <> nil) and (Zone.ChildControl.HostDockSite <> DockSite) and
-      not (DockSite is TJvDockVSPopupPanel) then
+    if (Zone.ChildControl <> nil) and (Zone.ChildControl.HostDockSite <> DockSite)
+      and not (DockSite is TJvDockVSPopupPanel) then
       Zone.IsInside := False;
     Write(Zone.IsInside, SizeOf(Zone.IsInside));
 
@@ -3092,14 +3367,12 @@ begin
   end;
 end;
 
-procedure TJvDockTree.SetDockSiteSizeWithOrient(Orient: TDockOrientation;
+procedure TJvDockTree.SetDockSiteSizeWithOrientation(Orient: TDockOrientation;
   const Value: Integer);
 begin
   case Orient of
-    doVertical:
-      DockSite.Width := Value;
-    doHorizontal:
-      DockSite.Height := Value;
+    doVertical: DockSite.Width := Value;
+    doHorizontal: DockSite.Height := Value;
   else
     raise Exception.Create(RsDockCannotSetValueWithNoOrient);
   end;
@@ -3108,6 +3381,7 @@ end;
 procedure TJvDockTree.DoOtherHint(Zone: TJvDockZone;
   HTFlag: Integer; var HintStr: string);
 begin
+
 end;
 
 function TJvDockTree.GetHTFlag(MousePos: TPoint): Integer;
@@ -3115,8 +3389,7 @@ var
   Zone: TJvDockZone;
 begin
   Zone := InternalHitTest(MousePos, Result);
-  if Zone = nil then
-    Result := HTNONE;
+  if Zone = nil then Result := HTNONE;
 end;
 
 procedure TJvDockTree.GetSiteInfo(Client: TControl;
@@ -3148,12 +3421,10 @@ begin
     if (CRect.Top <= DRect.Top) and (CRect.Bottom < DRect.Bottom) and
       (CRect.Right >= DRect.Right) then
       Result := alTop
-    else
-    if (CRect.Left <= DRect.Left) and (CRect.Right < DRect.Right) and
+    else if (CRect.Left <= DRect.Left) and (CRect.Right < DRect.Right) and
       (CRect.Bottom >= DRect.Bottom) then
       Result := alLeft
-    else
-    if CRect.Top >= ((DRect.Top + DRect.Bottom) div 2) then
+    else if CRect.Top >= ((DRect.Top + DRect.Bottom) div 2) then
       Result := alBottom;
   end;
 end;
@@ -3162,10 +3433,10 @@ procedure TJvDockTree.HideControl(Control: TControl);
 var
   Z: TJvDockZone;
 begin
-  if ReplacementZone <> nil then
-    Exit;
+
+  if ReplacementZone <> nil then Exit;
   Z := FindControlZone(Control);
-  if Z <> nil then
+  if (Z <> nil) then
   begin
     if Z = FReplacementZone then
       Z.ChildControl := nil
@@ -3175,6 +3446,7 @@ begin
         Z.Remove(TopXYLimit, True)
       else
         Z.Remove(Z.LimitSize, True);
+
     end;
     Control.DockOrientation := doNoOrient;
     SetNewBounds(nil);
@@ -3188,8 +3460,8 @@ procedure TJvDockTree.ShowControl(Control: TControl);
 var
   Z: TJvDockZone;
 begin
-  if ReplacementZone <> nil then
-    Exit;
+
+  if ReplacementZone <> nil then Exit;
   Z := FindControlZone(Control, True);
   if Z <> nil then
     Z.Insert(Z.VisibleSize, False);
@@ -3206,10 +3478,9 @@ begin
     (Zone.ZoneLimit > AZone.FZoneLimit) and ((Zone.ChildControl = nil) or
     ((Zone.ChildControl <> nil) and (Zone.ChildControl.Visible))) then
     LimitResult := Min(LimitResult, Zone.ZoneLimit);
-  if Zone.NextSibling <> nil then
-    DoGetNextLimit(Zone.NextSibling, AZone, LimitResult);
+  if Zone.NextSibling <> nil then DoGetNextLimit(Zone.NextSibling, AZone, LimitResult);
 
-  if Zone.ChildZones <> nil then
+  if (Zone.ChildZones <> nil) then
     DoGetNextLimit(Zone.ChildZones, AZone, LimitResult);
 end;
 
@@ -3225,7 +3496,7 @@ var
 begin
   Result := 0;
   if TopZone.ChildCount = 1 then
-    Result := Integer(not IsMin) * DockSiteSizeWithOrient[Orient]
+    Result := Integer(not IsMin) * DockSiteSizeWithOrientation[Orient]
   else
   begin
     if IsMin then
@@ -3249,15 +3520,15 @@ begin
 
     TopZone.DoGetSplitterLimit(Orient, IsMin, Result);
   end;
+
 end;
 
-function TJvDockTree.GetDockSiteSizeWithOrient(Orient: TDockOrientation): Integer;
+function TJvDockTree.GetDockSiteSizeWithOrientation(
+  Orient: TDockOrientation): Integer;
 begin
   case Orient of
-    doVertical:
-      Result := DockSite.Width;
-    doHorizontal:
-      Result := DockSite.Height;
+    doVertical: Result := DockSite.Width;
+    doHorizontal: Result := DockSite.Height;
   else
     raise Exception.Create(RsDockCannotGetValueWithNoOrient);
   end;
@@ -3290,8 +3561,8 @@ procedure TJvDockTree.HideAllControl;
   end;
 
 begin
-  if ReplacementZone <> nil then
-    Exit;
+
+  if ReplacementZone <> nil then Exit;
   DoHideAllControl(TopZone.ChildZones);
   SetNewBounds(nil);
   UpdateAll;
@@ -3307,9 +3578,10 @@ procedure TJvDockTree.HideSingleControl(Control: TControl);
       DoHideSingleControl(AZone.NextSibling);
       DoHideSingleControl(AZone.ChildZones);
       if AZone.ChildControl <> nil then
-        if AZone.ChildControl = Control then
+      begin
+        if (AZone.ChildControl = Control) then
         begin
-          if AZone.ChildControl.Visible then
+          if (AZone.ChildControl.Visible) then
           begin
             AZone.Remove(AZone.LimitSize, True);
             AZone.ChildControl.Visible := False;
@@ -3320,12 +3592,13 @@ procedure TJvDockTree.HideSingleControl(Control: TControl);
           AZone.Insert(AZone.VisibleSize, False);
           AZone.ChildControl.Visible := True;
         end;
+      end;
     end;
   end;
 
 begin
-  if ReplacementZone <> nil then
-    Exit;
+
+  if ReplacementZone <> nil then Exit;
   if Control <> nil then
   begin
     DoHideSingleControl(TopZone.ChildZones);
@@ -3343,14 +3616,14 @@ procedure TJvDockTree.ShowAllControl;
     begin
       DoShowAllControl(AZone.NextSibling);
       DoShowAllControl(AZone.ChildZones);
-      if (AZone.ChildControl <> nil) and not AZone.Visibled then
+      if (AZone.ChildControl <> nil) and (not AZone.visibled) then
         AZone.Insert(AZone.VisibleSize, True);
     end;
   end;
 
 begin
-  if ReplacementZone <> nil then
-    Exit;
+
+  if ReplacementZone <> nil then Exit;
   DoShowAllControl(TopZone.ChildZones);
   SetNewBounds(nil);
   UpdateAll;
@@ -3366,9 +3639,10 @@ procedure TJvDockTree.ShowSingleControl(Control: TControl);
       DoShowSingleControl(AZone.NextSibling);
       DoShowSingleControl(AZone.ChildZones);
       if AZone.ChildControl <> nil then
-        if AZone.ChildControl = Control then
+      begin
+        if (AZone.ChildControl = Control) then
         begin
-          if not AZone.ChildControl.Visible then
+          if (not AZone.ChildControl.Visible) then
           begin
             AZone.Insert(AZone.VisibleSize, False);
             AZone.ChildControl.Visible := True;
@@ -3379,12 +3653,13 @@ procedure TJvDockTree.ShowSingleControl(Control: TControl);
           AZone.Remove(AZone.LimitSize, True);
           AZone.ChildControl.Visible := False;
         end;
+      end;
     end;
   end;
 
 begin
-  if ReplacementZone <> nil then
-    Exit;
+
+  if ReplacementZone <> nil then Exit;
   if Control <> nil then
   begin
     DoShowSingleControl(TopZone.ChildZones);
@@ -3396,18 +3671,17 @@ end;
 
 procedure TJvDockTree.DrawDockBorder(DockControl: TControl; R1, R2: TRect);
 begin
+
 end;
 
 procedure TJvDockTree.DrawDockGrabber(Control: TControl;
   const ARect: TRect);
-
   procedure DrawCloseButton(Left, Top: Integer);
   var
     ADockClient: TJvDockClient;
   begin
     ADockClient := FindDockClient(Control);
-    if (ADockClient <> nil) and not ADockClient.EnableCloseBtn then
-      Exit;
+    if (ADockClient <> nil) and (not ADockClient.EnableCloseButton) then Exit;
     DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + GrabberSize - 2,
       Top + GrabberSize - 2), DFC_CAPTION, DFCS_CAPTIONCLOSE);
   end;
@@ -3428,6 +3702,7 @@ procedure TJvDockTree.DrawDockGrabber(Control: TControl;
 
 begin
   with ARect do
+  begin
     case GrabbersPosition of
       gpLeft:
         begin
@@ -3445,17 +3720,20 @@ begin
           DrawGrabberLine(Left + BorderWidth + 2, Top + BorderWidth + BorderWidth + 6, Right - GrabberSize + BorderWidth
             - 2, Top + BorderWidth + 8);
         end;
+
     end;
+  end;
 end;
 
 procedure TJvDockTree.DrawSplitterRect(const ARect: TRect);
 begin
-  Canvas.Brush.Color := THackWinControl(DockSite).Color;
+  Canvas.Brush.Color := TlbWinControlAccess(DockSite).Color;
   Canvas.FillRect(ARect);
 end;
 
 procedure TJvDockTree.DrawZone(Zone: TJvDockZone);
 begin
+
   DrawZoneBorder(Zone);
   DrawZoneGrabber(Zone);
   DrawZoneSplitter(Zone);
@@ -3465,13 +3743,14 @@ end;
 procedure TJvDockTree.DrawZoneBorder(Zone: TJvDockZone);
 var
   ChildControl: TControl;
+
 begin
-  if Zone = nil then
-    Exit;
+  if Zone = nil then Exit;
   ChildControl := Zone.ChildControl;
   if (ChildControl <> nil) and ChildControl.Visible and
     (ChildControl.HostDockSite = DockSite) then
   begin
+
   end;
 end;
 
@@ -3480,8 +3759,7 @@ var
   ChildControl: TControl;
   R: TRect;
 begin
-  if Zone = nil then
-    Exit;
+  if Zone = nil then Exit;
   ChildControl := Zone.ChildControl;
   if (ChildControl <> nil) and ChildControl.Visible and
     (ChildControl.HostDockSite = DockSite) then
@@ -3495,7 +3773,9 @@ procedure TJvDockTree.DrawZoneSplitter(Zone: TJvDockZone);
 var
   R: TRect;
 begin
+
   R := GetSplitterRect(Zone);
+
   DrawSplitterRect(R);
 end;
 
@@ -3526,28 +3806,29 @@ var
   AForm: TCustomForm;
 begin
   if (AZone <> nil) and (AZone.ChildControl <> nil) then
+  begin
     if AZone.ChildControl.InheritsFrom(TCustomForm) then
     begin
+
       AForm := TCustomForm(AZone.ChildControl);
       AForm.Close;
     end
     else
       AZone.ChildControl.Visible := False;
+  end;
 end;
-
-//=== TJvDockAdvZone =========================================================
 
 constructor TJvDockAdvZone.Create(Tree: TJvDockTree);
 begin
-  inherited Create(Tree);
+  inherited;
   FCloseBtnDown := False;
   FMouseDown := False;
 end;
 
 destructor TJvDockAdvZone.Destroy;
 begin
-  if Self = TJvDockAdvTree(Tree).CloseBtnZone then
-    TJvDockAdvTree(Tree).CloseBtnZone := nil;
+  if Self = TJvDockAdvTree(Tree).CloseButtonZone then
+    TJvDockAdvTree(Tree).CloseButtonZone := nil;
   inherited Destroy;
 end;
 
@@ -3556,7 +3837,7 @@ begin
   InsertOrRemove(DockSize, True, Hide);
 end;
 
-procedure TJvDockAdvZone.LButtonDblClkMethod;
+procedure TJvDockAdvZone.LButtonDbClkMothed;
 begin
   if JvGlobalDockClient <> nil then
     JvGlobalDockClient.RestoreChild;
@@ -3566,8 +3847,6 @@ procedure TJvDockAdvZone.Remove(DockSize: Integer; Hide: Boolean);
 begin
   InsertOrRemove(DockSize, False, Hide);
 end;
-
-//=== TJvDockAdvTree =========================================================
 
 constructor TJvDockAdvTree.Create(DockSite: TWinControl;
   ADockZoneClass: TJvDockZoneClass);
@@ -3583,47 +3862,51 @@ begin
   FButtonSplitter := 2;
 end;
 
-function TJvDockAdvTree.DoLButtonDown(var Msg: TWMMouse;
+function TJvDockAdvTree.DoLButtonDown(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer): Boolean;
 var
   TempZone: TJvDockAdvZone;
 begin
-  Result := inherited DoLButtonDown(Msg, Zone, HTFlag);
+  Result := inherited DoLButtonDown(Message, Zone, HTFlag);
   if (Zone <> nil) and (HTFlag = HTCLOSE) then
   begin
     TempZone := TJvDockAdvZone(Zone);
     TempZone.CloseBtnDown := True;
     TempZone.MouseDown := True;
-    FCloseBtnZone := TempZone;
+    FCloseButtonZone := TempZone;
     DockSite.Invalidate;
   end;
 end;
 
-procedure TJvDockAdvTree.DoLButtonUp(var Msg: TWMMouse;
+procedure TJvDockAdvTree.DoLButtonUp(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer);
+
 begin
-  inherited DoLButtonUp(Msg, Zone, HTFlag);
+  inherited DoLButtonUp(Message, Zone, HTFlag);
   if SizingZone = nil then
   begin
-    FCloseBtnZone := nil;
+    FCloseButtonZone := nil;
     if (Zone <> nil) and (HTFlag = HTCLOSE) then
+    begin
+
       TJvDockAdvZone(Zone).CloseBtnDown := False;
+    end;
   end;
 end;
 
-procedure TJvDockAdvTree.DoMouseMove(var Msg: TWMMouse;
+procedure TJvDockAdvTree.DoMouseMove(var Message: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer);
 var
   TempZone: TJvDockAdvZone;
 begin
-  inherited DoMouseMove(Msg, Zone, HTFlag);
+  inherited DoMouseMove(Message, Zone, HTFlag);
   if SizingZone = nil then
   begin
     TempZone := TJvDockAdvZone(Zone);
-    if ((TempZone <> nil) and (TempZone.CloseBtnDown <> (HTFlag = HTCLOSE)) and
-      ((FCloseBtnZone = TempZone) and FCloseBtnZone.MouseDown)) then
+    if ((TempZone <> nil) and (TempZone.CloseBtnDown <> (HTFlag = HTCLOSE))
+      and ((FCloseButtonZone = TempZone) and FCloseButtonZone.MouseDown)) then
     begin
-      TempZone.CloseBtnDown := (HTFlag = HTCLOSE) and FCloseBtnZone.MouseDown;
+      TempZone.CloseBtnDown := (HTFlag = HTCLOSE) and FCloseButtonZone.MouseDown;
       DockSite.Invalidate;
     end;
   end;
@@ -3637,7 +3920,7 @@ begin
   TempUpdate := Update;
   Update := False;
   try
-    inherited InsertSibling(NewZone, SiblingZone, InsertLast, Update);
+    inherited;
     if NewZone.ChildControl <> nil then
       SetDockHeightWidthArr(0, NewZone.ChildControl.TBDockHeight + BorderWidth,
         NewZone.ChildControl.LRDockWidth + BorderWidth)
@@ -3690,7 +3973,8 @@ begin
   FTopOffset := Value;
 end;
 
-function TJvDockAdvTree.GetDockHeightWidth(Orient: TDockOrientation): Integer;
+function TJvDockAdvTree.GetDockHeightWidth(
+  Orient: TDockOrientation): Integer;
 begin
   Result := FDockHeightWidth[Orient];
 end;
@@ -3704,23 +3988,23 @@ end;
 function TJvDockAdvTree.GetDockRectFromArr(Orient: TDockOrientation;
   AtLast: Boolean): Integer;
 begin
-  Result := FDockRectArr[Orient, Atlast];
+  Result := FDockRectangles[Orient, Atlast];
 end;
 
 procedure TJvDockAdvTree.SetDockRectToArr(Orient: TDockOrientation;
   AtLast: Boolean; const Value: Integer);
 begin
-  FDockRectArr[Orient, Atlast] := Value;
+  FDockRectangles[Orient, Atlast] := Value;
 end;
 
-procedure TJvDockAdvTree.SetDockRectArr(ARect: TRect);
+procedure TJvDockAdvTree.SetDockRectangles(ARect: TRect);
 begin
-  FDockRectArr[doNoOrient, False] := 0;
-  FDockRectArr[doNoOrient, True] := 0;
-  FDockRectArr[doHorizontal, False] := ARect.Top;
-  FDockRectArr[doHorizontal, True] := ARect.Bottom;
-  FDockRectArr[doVertical, False] := ARect.Left;
-  FDockRectArr[doVertical, True] := ARect.Right;
+  FDockRectangles[doNoOrient, False] := 0;
+  FDockRectangles[doNoOrient, True] := 0;
+  FDockRectangles[doHorizontal, False] := ARect.Top;
+  FDockRectangles[doHorizontal, True] := ARect.Bottom;
+  FDockRectangles[doVertical, False] := ARect.Left;
+  FDockRectangles[doVertical, True] := ARect.Right;
 end;
 
 procedure TJvDockAdvTree.SetDockHeightWidthArr(NoOrValue, HorValue,
@@ -3734,28 +4018,28 @@ end;
 procedure TJvDockAdvTree.ScaleChildZone(Zone: TJvDockZone);
 begin
   if Zone = ReplacementZone then
-    ShiftScaleOrient := doNoOrient;
+    ShiftScaleOrientation := doNoOrient;
   inherited ScaleChildZone(Zone);
 end;
 
 procedure TJvDockAdvTree.ScaleSiblingZone(Zone: TJvDockZone);
 begin
   if Zone = ReplacementZone then
-    ShiftScaleOrient := doNoOrient;
+    ShiftScaleOrientation := doNoOrient;
   inherited ScaleSiblingZone(Zone);
 end;
 
 procedure TJvDockAdvTree.ScaleZone(Zone: TJvDockZone);
 begin
   if Zone = ReplacementZone then
-    ShiftScaleOrient := doNoOrient;
+    ShiftScaleOrientation := doNoOrient;
   inherited ScaleZone(Zone);
 end;
 
 procedure TJvDockAdvTree.ShiftZone(Zone: TJvDockZone);
 begin
   if Zone = ReplacementZone then
-    ShiftScaleOrient := doNoOrient;
+    ShiftScaleOrientation := doNoOrient;
   inherited ShiftZone(Zone);
 end;
 
@@ -3773,13 +4057,15 @@ begin
     SetDockHeightWidthArr(0, 0, 0);
 
   if SiblingZone = nil then
+  begin
     if InsertLast then
       ReplacementZone := TopZone
     else
       ReplacementZone := NewZone;
+  end;
 
   try
-    inherited InsertNewParent(NewZone, SiblingZone, ParentOrientation, InsertLast, Update);
+    inherited;
   finally
     Update := TempUpdate;
     ReplacementZone := nil;
@@ -3795,7 +4081,8 @@ end;
 
 procedure TJvDockAdvTree.RemoveZone(Zone: TJvDockZone; Hide: Boolean);
 begin
-  inherited RemoveZone(Zone, Hide);
+
+  inherited;
 end;
 
 procedure TJvDockAdvTree.SetDropDockSize(const Value: Integer);
