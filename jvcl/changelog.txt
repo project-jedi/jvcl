@@ -1,10 +1,11 @@
 Changelog for JVCL 3.0
 ======================
+2003-10-20:
+- JvHook.pas moved to archive // andreas
 2003-10-19:
 - Updated JvMenus and started documenting it //olivier
 - Updated the JvRichEdit demo // olivier
 - Removed some unit dependencies from JvJCLUtils and JvJVCLUtils // andreas
-- JvHooks.pas is nomore used // andreas
 2003-10-18:
 - Updated the BCB compatibility guide // olivier
 - Updated the installation guide for BCB // olivier
