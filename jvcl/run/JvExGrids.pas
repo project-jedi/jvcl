@@ -112,7 +112,6 @@ type
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -125,6 +124,7 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -209,7 +209,6 @@ type
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -222,6 +221,7 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   
   end;
   TJvExPubCustomGrid = class(TJvExCustomGrid)
@@ -302,7 +302,6 @@ type
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -315,6 +314,7 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   
   end;
   TJvExPubCustomDrawGrid = class(TJvExCustomDrawGrid)
@@ -393,7 +393,6 @@ type
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -406,6 +405,7 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -492,7 +492,6 @@ type
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -505,6 +504,7 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   
   end;
   TJvExPubDrawGrid = class(TJvExDrawGrid)
@@ -583,7 +583,6 @@ type
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -596,6 +595,7 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   
   end;
   TJvExPubStringGrid = class(TJvExStringGrid)
@@ -782,15 +782,6 @@ end;
 procedure TJvExInplaceEdit.DoFocusChanged(Control: TWinControl);
 begin
 end;
-
-function TJvExInplaceEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ELSE}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VCL}
-end;
 procedure TJvExInplaceEdit.DoBoundsChanged;
 begin
 end;
@@ -805,6 +796,16 @@ end;
 
 procedure TJvExInplaceEdit.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+function TJvExInplaceEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VisualCLX}
 end;
 
 {$IFDEF VCL}
@@ -1009,15 +1010,6 @@ end;
 procedure TJvExCustomGrid.DoFocusChanged(Control: TWinControl);
 begin
 end;
-
-function TJvExCustomGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ELSE}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VCL}
-end;
 procedure TJvExCustomGrid.DoBoundsChanged;
 begin
 end;
@@ -1032,6 +1024,16 @@ end;
 
 procedure TJvExCustomGrid.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+function TJvExCustomGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VisualCLX}
 end;
 
 constructor TJvExCustomGrid.Create(AOwner: TComponent);
@@ -1215,15 +1217,6 @@ end;
 procedure TJvExCustomDrawGrid.DoFocusChanged(Control: TWinControl);
 begin
 end;
-
-function TJvExCustomDrawGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ELSE}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VCL}
-end;
 procedure TJvExCustomDrawGrid.DoBoundsChanged;
 begin
 end;
@@ -1238,6 +1231,16 @@ end;
 
 procedure TJvExCustomDrawGrid.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+function TJvExCustomDrawGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VisualCLX}
 end;
 
 constructor TJvExCustomDrawGrid.Create(AOwner: TComponent);
@@ -1419,15 +1422,6 @@ end;
 procedure TJvExInplaceEditList.DoFocusChanged(Control: TWinControl);
 begin
 end;
-
-function TJvExInplaceEditList.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ELSE}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VCL}
-end;
 procedure TJvExInplaceEditList.DoBoundsChanged;
 begin
 end;
@@ -1442,6 +1436,16 @@ end;
 
 procedure TJvExInplaceEditList.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+function TJvExInplaceEditList.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VisualCLX}
 end;
 
 {$IFDEF VCL}
@@ -1648,15 +1652,6 @@ end;
 procedure TJvExDrawGrid.DoFocusChanged(Control: TWinControl);
 begin
 end;
-
-function TJvExDrawGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ELSE}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VCL}
-end;
 procedure TJvExDrawGrid.DoBoundsChanged;
 begin
 end;
@@ -1671,6 +1666,16 @@ end;
 
 procedure TJvExDrawGrid.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+function TJvExDrawGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VisualCLX}
 end;
 
 constructor TJvExDrawGrid.Create(AOwner: TComponent);
@@ -1852,15 +1857,6 @@ end;
 procedure TJvExStringGrid.DoFocusChanged(Control: TWinControl);
 begin
 end;
-
-function TJvExStringGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ELSE}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VCL}
-end;
 procedure TJvExStringGrid.DoBoundsChanged;
 begin
 end;
@@ -1875,6 +1871,16 @@ end;
 
 procedure TJvExStringGrid.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+function TJvExStringGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VisualCLX}
 end;
 
 constructor TJvExStringGrid.Create(AOwner: TComponent);

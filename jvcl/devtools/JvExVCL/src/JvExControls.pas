@@ -88,7 +88,6 @@ type
     function HitTest(X, Y: Integer): Boolean; // CM_HITTEST
     procedure MouseEnter(AControl: TControl);
     procedure MouseLeave(AControl: TControl);
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
     procedure DoFocusChanged(Control: TWinControl);
     {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean);
@@ -106,6 +105,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); // WM_GETDLGCODE
     procedure DoSetFocus(FocusedWnd: HWND);  // WM_SETFOCUS
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
   end;
 
   IJvCustomControlEvents = interface
@@ -289,18 +289,6 @@ begin
           with TCMDialogChar(PMsg^) do
             Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
         // CM_FOCUSCHANGED: handled by a message handler in the JvExVCL classes
-
-        WM_ERASEBKGND:
-          begin
-            Canvas := TCanvas.Create;
-            try
-              Canvas.Handle := HDC(PMsg^.WParam);
-              PMsg^.Result := Ord(DoPaintBackground(Canvas, PMsg^.LParam));
-            finally
-              Canvas.Handle := 0;
-              Canvas.Free;
-            end;
-          end
       else
         CallInherited := True;
       end;
@@ -363,7 +351,6 @@ begin
                   PMsg^.Result := PMsg^.Result or DLGC_BUTTON;
               end;
             end;
-
           WM_SETFOCUS:
             begin
               with PMsg^ do
@@ -376,13 +363,23 @@ begin
                 Result := InheritMsg(Instance, Msg, WParam, LParam);
               DoKillFocus(HWND(PMsg^.WParam));
             end;
-
           WM_SIZE:
             begin
               DoBoundsChanged;
               with PMsg^ do
                 Result := InheritMsg(Instance, Msg, WParam, LParam);
             end;
+        WM_ERASEBKGND:
+          begin
+            Canvas := TCanvas.Create;
+            try
+              Canvas.Handle := HDC(PMsg^.WParam);
+              PMsg^.Result := Ord(DoPaintBackground(Canvas, PMsg^.LParam));
+            finally
+              Canvas.Handle := 0;
+              Canvas.Free;
+            end;
+          end;
         else
           CallInherited := True;
         end;

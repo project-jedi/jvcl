@@ -135,7 +135,6 @@ type
     FIgnoreMouse: Boolean;
   protected
     function HitTest(X, Y: Integer): Boolean; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -435,12 +434,6 @@ begin
     end
     else}
   FIgnoreMouse := False;
-end;
-
-function TJvBaseThumbImage.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  inherited DoPaintBackground(Canvas, Param);
-  Result := True;
 end;
 
 procedure TJvBaseThumbImage.MouseDown(Button: TMouseButton; Shift: TShiftState;
