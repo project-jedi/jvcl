@@ -36,7 +36,7 @@ interface
 uses
   {$IFDEF VCL}
   Windows, Forms, Controls, Graphics, ExtCtrls, Tabs, Dialogs,
-  ExtDlgs, Menus, StdCtrls, ImgEdit, ImgList, FiltEdit, 
+  ExtDlgs, Menus, StdCtrls, ImgEdit, ImgList, 
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,

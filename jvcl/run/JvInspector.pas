@@ -6805,7 +6805,7 @@ begin
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
       DrawFrameControl(ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLDOWN);
-      {$ENDIF VisuaLCLX}
+      {$ENDIF VisualCLX}
     end
     else
     if iifEditButton in Flags then

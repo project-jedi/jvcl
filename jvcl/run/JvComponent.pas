@@ -51,7 +51,12 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
   published
-    property {$IFDEF VCL} AboutJVCL {$ELSE} AboutJVCLX {$ENDIF}: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$IFDEF VCL}
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF VisualCLX}
   end;
 
   TJvGraphicControl = class(TJvExGraphicControl);

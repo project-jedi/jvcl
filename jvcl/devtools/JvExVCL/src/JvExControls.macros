@@ -112,7 +112,7 @@
     FAboutJVCLX: TJVCLAboutInfo;
   published
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  {$ENDIF VisuaLCLX}
+  {$ENDIF VisualCLX}
 *)
 
 // ****************** Win Control **********************

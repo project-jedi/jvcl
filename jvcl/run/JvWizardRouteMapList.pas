@@ -114,8 +114,8 @@ type
     procedure CMCursorChanged(var Msg: TMessage); message CM_CURSORCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     {$ENDIF VCL}
-    procedure CursorChanged;{$IFDEF VisualCLX}override;{$ENDIF VisualCLX}
-    procedure FontChanged;{$IFDEF VisualCLX}override;{$ENDIF VisualCLX}
+    procedure CursorChanged;{$IFDEF VisualCLX} override; {$ENDIF}
+    procedure FontChanged;{$IFDEF VisualCLX} override; {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -333,16 +333,14 @@ begin
             taLeftJustify:
               begin
                 Wizard.HeaderImages.Draw(ACanvas, ARect.Left + 4, ARect.Top + ATop, Pages[PageIndex].Header.ImageIndex,
-                {$IFDEF VisualCLX}itImage,{$ENDIF VisualCLX}
-                  Pages[PageIndex].Enabled);
+                {$IFDEF VisualCLX} itImage, {$ENDIF} Pages[PageIndex].Enabled);
                 Inc(ARect.Left, Wizard.HeaderImages.Width + 4);
               end;
             taRightJustify:
               begin
                 Wizard.HeaderImages.Draw(ACanvas, ARect.Right - Wizard.HeaderImages.Width - 4, ARect.Top + ATop,
                   Pages[PageIndex].Header.ImageIndex,
-                  {$IFDEF VisualCLX}itImage,{$ENDIF VisualCLX}
-                  Pages[PageIndex].Enabled);
+                  {$IFDEF VisualCLX} itImage, {$ENDIF VisualCLX} Pages[PageIndex].Enabled);
                 Dec(ARect.Right, Wizard.HeaderImages.Width + 4);
               end;
             taCenter:
@@ -578,17 +576,16 @@ end;
 procedure TJvWizardRouteMapList.CursorChanged;
 begin
   {$IFDEF VisualCLX}
-  inherited;
+  inherited CursorChanged;
   {$ENDIF VisualCLX}
   if (Cursor <> FHotTrackCursor) and (Cursor <> FOldCursor) then
     FOldCursor := Cursor;
-
 end;
 
 procedure TJvWizardRouteMapList.FontChanged;
 begin
   {$IFDEF VisualCLX}
-  inherited;
+  inherited FontChanged;
   {$ENDIF VisualCLX}
   {$IFDEF USEJVCL}
   UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);

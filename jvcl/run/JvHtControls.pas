@@ -881,7 +881,7 @@ begin
   ItemHTDraw(Canvas, Rect, State, Items[Index]);
   {$IFDEF VisualCLX}
   Result := True;
-  {$ENDIF VisuaLCLX}
+  {$ENDIF VisualCLX}
 end;
 
 {$IFDEF VCL}
@@ -894,7 +894,8 @@ end;
 procedure TJvCustomHTListBox.FontChanged;
 begin
   inherited FontChanged;
-  if not assigned(Canvas) then exit; // VisualCLX needs this 
+  if not Assigned(Canvas) then
+    Exit; // VisualCLX needs this
   Canvas.Font := Font;
   ItemHeight := CanvasMaxTextHeight(Canvas);
 end;
@@ -919,7 +920,8 @@ var
 begin
   inherited MouseMove(Shift,X,Y);
   I := Self.ItemAtPos(Point(X, Y), True);
-  if I = -1 then exit;
+  if I = -1 then
+    Exit;
   R := Self.ItemRect(I);
   State := [];
   if Self.Selected[i] then
