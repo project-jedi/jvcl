@@ -242,11 +242,14 @@ function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitma
 implementation
 
 uses
-  Consts,
+  Consts, TypInfo,
   {$IFDEF VCL}
   ActiveX,
   {$ENDIF VCL}
-  TypInfo, JvJVCLUtils, JvResources, JvFinalize;
+  {$IFDEF COMPILER5}
+  JvJclUtils, // SameFileName() for Delphi 5
+  {$ENDIF COMPILER5}
+  JvJVCLUtils, JvResources, JvFinalize;
 
 const
   sUnitName = 'JvImageList';

@@ -135,6 +135,11 @@ function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar; assembler;
 function DeleteObject(P1: HGDIOBJ): BOOL; stdcall;
 {$ENDIF glDEBUG}
 
+{$IFDEF COMPILER5}
+// JVCL4: Use the JvJCLUtils.pas implementation
+function SameFileName(const Fn1, Fn2: string): Boolean;
+{$ENDIF COMPILER5}
+
 implementation
 
 uses
@@ -1889,6 +1894,7 @@ end;
 
 { User name for current thread }
 
+// JVCL4: Should go to JvJCLUtils.pas as "GetUserName: string"
 function UserName: string;
 var
   Name: array [0..127] of Char;
@@ -1901,6 +1907,7 @@ end;
 
 { PC name }
 
+// JVCL4: Should go to JvJCLUtils.pas as "GetComputerName: string"
 function ComputerName: string;
 var
   Name: array [0..127] of Char;
@@ -1910,6 +1917,14 @@ begin
   GetComputerName(Name, Len);
   Result := Name;
 end;
+
+{$IFDEF COMPILER5}
+// JVCL4: Use the JvJCLUtils.pas implementation
+function SameFileName(const Fn1, Fn2: string): Boolean;
+begin
+  Result := CompareText(Fn1, Fn2) <> 0;
+end;
+{$ENDIF COMPILER5}
 
 { Creates ini-file with the same name to project's file - use ChangeFileExt }
 

@@ -31,12 +31,12 @@ unit JvgProcessUtils;
 interface
 
 uses
-  Windows, Messages, Classes, SysUtils;
+  Windows, Classes;
 
 // (rom) definitely goes to JCL
 
 procedure GetProcessList(const SList: TStrings);
-procedure KillProcessByName(Name: string);
+procedure KillProcessByName(const Name: string);
 
 const
   // (rom) from WINNT.h
@@ -68,7 +68,11 @@ const
 implementation
 
 uses
-  TLHelp32;
+  TLHelp32,
+  {$IFDEF COMPILER5}
+  JvgUtils, // SameFileName() for Delphi 5
+  {$ENDIF COMPILER5}
+  SysUtils;
 
 procedure GetProcessList(const SList: TStrings);
 var
@@ -92,7 +96,7 @@ begin
   end;
 end;
 
-procedure KillProcessByName(Name: string);
+procedure KillProcessByName(const Name: string);
 var
   hProc, hSnapshot: THandle;
   Pe32: TProcessEntry32;

@@ -2463,7 +2463,9 @@ begin
     IntersectClipRect(DC, RW.Left, RW.Top, RW.Right, RW.Bottom);
     Windows.FillRect(DC, RW, Brush.Handle);
   finally
+    ACanvas.Handle := 0;
     ReleaseDC(Handle, DC);
+    ACanvas.Free;
   end;
 end;
 
@@ -2472,7 +2474,6 @@ begin
   InflateRect(Msg.CalcSize_Params^.rgrc[0], -2, -2);
   inherited;
 end;
-
 
 procedure TJvCustomTimeLine.CMEnter(var Msg: TWMNoParams);
 begin

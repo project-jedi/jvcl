@@ -34,6 +34,7 @@ Known Issues:
 unit JvJCLUtils;
 
 {$I jvcl.inc}
+{$I crossplatform.inc}
 
 interface
 
@@ -309,10 +310,13 @@ function VarIsStr(const V: Variant): Boolean;
 // (rom) ReplaceStrings1, GetSubStr removed
 function GetParameter: string;
 function GetLongFileName(const FileName: string): string;
+{$IFDEF COMPILER5}
 {* from unit FileCtrl}
 function DirectoryExists(const Name: string): Boolean;
 procedure ForceDirectories(Dir: string);
 {# from unit FileCtrl}
+function SameFileName(const Fn1, Fn2: string): Boolean;
+{$ENDIF COMPILER5}
 function FileNewExt(const FileName, NewExt: TFileName): TFileName;
 function GetComputerID: string;
 function GetComputerName: string;
@@ -1680,10 +1684,8 @@ begin
   while DosError = 0 do
   begin
     {$IFDEF MSWINDOWS}
-    {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
     if SameFileName(SearchRec.FindData.cFileName, FileName) or
       SameFileName(SearchRec.FindData.cAlternateFileName, FileName) then
-    {$WARNINGS ON}
     {$ENDIF MSWINDOWS}
     {$IFDEF LINUX}
     if AnsiSameStr(SearchRec.Name, FileName) then
@@ -1740,34 +1742,32 @@ begin
   FindClose(SearchRec);
 end;
 
+{$IFDEF COMPILER5}
 function DirectoryExists(const Name: string): Boolean;
-{$IFDEF COMPILER6_UP}
-begin
-  Result := SysUtils.DirectoryExists(Name);
-end;
-{$ELSE}
 var
   Code: Cardinal;
 begin
   Code := Integer(GetFileAttributes(PChar(Name)));
   Result := (Code <> $FFFFFFFF) and (Code and FILE_ATTRIBUTE_DIRECTORY <> 0);
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure ForceDirectories(Dir: string);
 begin
   if Dir[Length(Dir)] = PathDelim then
     Delete(Dir, Length(Dir), 1);
-  {$IFDEF MSWINDOWS}
   if (Length(Dir) < 3) or DirectoryExists(Dir) or (ExtractFilePath(Dir) = Dir) then
     Exit; { avoid 'xyz:\' problem.}
-  {$ENDIF MSWINDOWS}
   ForceDirectories(ExtractFilePath(Dir));
   CreateDir(Dir);
 end;
 
+function SameFileName(const Fn1, Fn2: string): Boolean;
+begin
+  Result := CompareText(Fn1, Fn2) <> 0;
+end;
+{$ENDIF COMPILER5}
+
 {$IFDEF MSWINDOWS}
-{# from unit FileCtrl}
 function LZFileExpand(const FileSource, FileDest: string): Boolean;
 type
   TLZCopy = function(Source, Dest: Integer): Longint; stdcall;
@@ -2153,9 +2153,7 @@ end;
 function DeleteReadOnlyFile(const FileName: TFileName): Boolean;
 begin
   {$IFDEF MSWINDOWS}
-  {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
   FileSetAttr(FileName, 0); {clear Read Only Flag}
-  {$WARNINGS ON}
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   FileSetReadOnly(FileName, False);
@@ -3685,9 +3683,7 @@ begin
           SetClipboardData(Format, Data);
           if Palette <> 0 then
             SetClipboardData(CF_PALETTE, Palette);
-          {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
           Data := GlobalAlloc(HeapAllocFlags, Stream.Size);
-          {$WARNINGS ON}
           try
             if Data <> 0 then
             begin
@@ -6032,9 +6028,7 @@ function HasAttr(const FileName: string; Attr: Integer): Boolean;
 var
   FileAttr: Integer;
 begin
-  {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
   FileAttr := FileGetAttr(FileName);
-  {$WARNINGS ON}
   Result := (FileAttr >= 0) and (FileAttr and Attr = Attr);
 end;
 
@@ -6200,9 +6194,7 @@ begin
     Result := '';
     Exit
   end;
-  {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
   FN := CmdLine;
-  {$WARNINGS ON}
   if FN[0] = '"' then
   begin
     FN := StrScan(FN + 1, '"');
@@ -6222,9 +6214,7 @@ begin
     end;
   end
   else
-    {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
     Result := Copy(CmdLine, Length(ParamStr(0)) + 1, 260);
-    {$WARNINGS ON}
   while (Length(Result) > 0) and (Result[1] = ' ') do
     Delete(Result, 1, 1);
   Result := ReplaceString(Result, '"', '');
@@ -6240,9 +6230,7 @@ var
 begin
   {$IFDEF MSWINDOWS}
   if FileGetInfo(FileName, SearchRec) then
-    {$WARNINGS OFF} // WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
     Result := ExtractFilePath(ExpandFileName(FileName)) + SearchRec.FindData.cFileName
-    {$WARNINGS ON}
   else
     Result := FileName;
   {$ENDIF MSWINDOWS}
@@ -7735,18 +7723,14 @@ end;
 function AllocMemo(Size: Longint): Pointer;
 begin
   if Size > 0 then
-    {$WARNINGS OFF} // for HeapAllocFlags  WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
     Result := GlobalAllocPtr(HeapAllocFlags or GMEM_ZEROINIT, Size)
-    {$WARNINGS ON}
   else
     Result := nil;
 end;
 
 function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
 begin
-  {$WARNINGS OFF} // for HeapAllocFlags  WARN SYMBOL_PLATFORM OFF is not Delphi 5 compatible
   Result := GlobalReallocPtr(fpBlock, Size, HeapAllocFlags or GMEM_ZEROINIT);
-  {$WARNINGS ON}
 end;
 
 procedure FreeMemo(var fpBlock: Pointer);
