@@ -33,7 +33,18 @@ Summary
   If set to False, the disk file will only be updated when you call Flush or when the component is
   destroyed.
 See Also
-  Flush
+  Flush, AutoReload
+
+
+----------------------------------------------------------------------------------------------------
+@@TJvAppXMLFileStorage.AutoReload
+Summary
+  If set to True, the Reload method will be called whenever an information is about to be read from
+  the in memory file.
+  If set to False, the disk file will only be read when you call Reload or when the FileName property
+  is set.
+See Also
+  Reload, FileName, AutoFlush
 
 
 ----------------------------------------------------------------------------------------------------

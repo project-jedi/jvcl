@@ -98,6 +98,7 @@ type
     property IniFile;
   published
     property AutoFlush;
+    property AutoReload;
     property FileName;
     property Location;
     property DefaultSection;
@@ -366,7 +367,10 @@ begin
   if Section = '' then
     raise EJVCLAppStorageError.Create(RsEReadValueFailed);
   if IniFile <> nil then
+  begin
+    if AutoReload and not IsUpdating then Reload;
     Result := IniFile.ReadString(Section, Key, '')
+  end
   else
     Result := '';
 end;
@@ -377,6 +381,7 @@ begin
   begin
     if Section = '' then
       raise EJVCLAppStorageError.Create(RsEWriteValueFailed);
+    if AutoReload and not IsUpdating then Reload;
     IniFile.WriteString(Section, Key, Value);
     if AutoFlush and not IsUpdating then Flush;
   end;

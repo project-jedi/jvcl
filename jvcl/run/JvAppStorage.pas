@@ -135,6 +135,7 @@ type
     FCryptEnabledStatus: Integer;
     FAutoFlush: Boolean;
     FUpdateCount:integer;
+    FAutoReload: Boolean;
     function GetUpdating: boolean;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -315,7 +316,8 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     property IsUpdating:boolean read GetUpdating;
-    property AutoFlush : Boolean read FAutoFlush write FAutoFlush default False;
+    property AutoFlush  : Boolean read FAutoFlush  write FAutoFlush  default False;
+    property AutoReload : Boolean read FAutoReload write FAutoReload default False;
 
     class function ConcatPaths(const Paths: array of string): string;
     { Resolve a path to it's actual used storage backend and root path. }
@@ -856,6 +858,7 @@ constructor TJvCustomAppStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAutoFlush := False;
+  FAutoReload := False;
   FStorageOptions := GetStorageOptionsClass.Create;
   FSubStorages := TJvAppSubStorages.Create(Self);
   FCryptEnabledStatus := 0;
@@ -2347,6 +2350,8 @@ end;
 
 procedure TJvCustomAppStorage.BeginUpdate;
 begin
+  if  not IsUpdating and AutoReload then
+    Reload;
   Inc(FUpdateCount);
 end;
 
