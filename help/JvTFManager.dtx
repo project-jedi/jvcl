@@ -10,15 +10,17 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@EJvTFPrinterError
 Summary
-  Write here a summary (1 line)
+  Exception class.
 Description
-  Write here a description
+  This exception is raised when an error is encountered in a Printer.
 ----------------------------------------------------------------------------------------------------
 @@EJvTFScheduleManagerError
 Summary
-  Write here a summary (1 line)
+  Exception class.
 Description
-  Write here a description
+  An EJvTFScheduleManagerError is raised whenever an error condition is encountered which is specific
+  to the server and its relationships and communication with the contained  TJvTFSched and  TJvTFAppt,
+  and connected controls.
 ---------------------------------------------------------------------------------------------------
 @@TCNRequestRefresh
 <TITLE TCNRequestRefresh type>
@@ -38,12 +40,9 @@ Description
 @@TDayOfWeek
 <TITLE TDayOfWeek type>
 Summary
-  Write here a summary (1 line)
+  Type describing the days of a week.
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = JvTFUtils . TDayOfWeek ; - for reference)
+  Enumerates the days of the week.
 ----------------------------------------------------------------------------------------------------
 @@TDynApptArray
 <TITLE TDynApptArray type>
@@ -58,39 +57,42 @@ Description
 @@TDynSchedArray
 <TITLE TDynSchedArray type>
 Summary
-  Write here a summary (1 line)
+
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = array of TJvTFSched ; - for reference)
+  TDynSchedArray is a dynamic array used to list schedule objects.
+
+  This type is NOT available in the Delphi 3 version of JTF.
 ----------------------------------------------------------------------------------------------------
 @@TDynTimeRangeArray
 <TITLE TDynTimeRangeArray type>
 Summary
-  Write here a summary (1 line)
+
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = array of TJvTFTimeRange ; - for reference)
+  TDynTimeRangeArray is a dynamic array used to list ranges of time.
+
+  This type is NOT available in the Delphi 3 version of JTF.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  The TJvTFAppt object is used to store information about an appointment within the server.
+  Normally the server completely maintains each appointment it contains, which includes creation,
+  destruction, and indexing for contained  TJvTFSched objects.
+
+  The TJvTFAppt object provides you with several properties that you can use to define the
+  appointment.  There are also several methods you may use to manipulate the object.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.AddSchedule
 Summary
-  Write here a summary (1 line)
+
 Description
-  Write here a description
+  Use the AddSchedule method to add the appointment to the schedule specified in SchedName.
+  An appointment can be added to multiple schedules, which is called "sharing".
 Parameters
-  SchedName - Description for this parameter
+  SchedName - Name of the schedule.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.AlarmAdvance
 Summary
@@ -112,9 +114,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Assign
 Summary
-  Write here a summary (1 line)
+
 Description
-  Write here a description
+  Use the Assign method to assign one appointment object to another.
 Parameters
   Source - Description for this parameter
 See Also
@@ -125,12 +127,13 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Use the AssignSchedules method to add the appointment to multiple schedules with one
+  call.  List should contain the names of all of the schedules that the appointment
+  belongs to. AssignSchedules will overwrite the current Schedules list.
+
 Parameters
-  List - Description for this parameter
+  List - List of schedules the appointement belongs to.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.BarColor
 Summary
@@ -145,19 +148,21 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Calling this method before you change one or more of the appt's properties prevents the
+  OnPostApptQuery/OnPostAppt events from being fired.  This is handy if you need to change more
+  than one property at a time.  Be sure to call EndUpdate when you are done modifying the properties.
+
+  Note that you do not have to call BeginUpdate/EndUpdate when the appointment is being loaded or
+  refreshed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EndUpdate
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.ClearSchedules
 Summary
-  Write here a summary (1 line)
+
 Description
-  Write here a description
+  Call the ClearSchedules method to remove all of the schedules from the appointment.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Color
 Summary
@@ -165,52 +170,55 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.ConnectionCount
 Summary
-  Write here a summary (1 line)
+  The number of maintained connections.
 Description
-  Write here a description
+  Returns the number of TJvTFSched objects stored in the  Connections list.
 Return value
-  Describe here what the function returns
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Connections
 Summary
-  Write here a summary (1 line)
+  Returns a  TJvTFSched object to which the appointment is connected.
 Description
-  Write here a description
+  Note that a "connection" signifies that the appointment belongs to a schedule that
+  is currently loaded in the server and is represented by a  TJvTFSched object.  A "schedule"
+  signifies that the appointment belongs to a schedule that may or may not currently reside
+  in the server.  A schedule is represented by a name and a date.  See the Schedules property for
+  more info.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Schedules, ConnectionCount
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Data
 Summary
-  Write here a summary (1 line)
+  Provides space for storing custom data.
 Description
-  Write here a description
+  You can use the Data property to attach custom data to an appointment.  Most likely you will define
+  a TObject to hold the additional data and then typecast this property into a TObject, but it has
+  been implemented as an Integer for added flexibility.
+
+  If you store additional data by using a TObject, you should use the TJvTFScheduleManager.OnCreateAppt
+  and the  TJvTFScheduleManager.OnDestroyAppt events to create and destroy your object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Delete
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This method will completely remove the appointment from the scheduling system.  This method calls
+  TJvTFScheduleManager.dbDeleteAppt, which eventually fires the TJvTFScheduleManager.OnDeleteAppt event.
+  (You would implement a handler for the OnDeleteAppt event that would remove the appointment data
+  from your physical data storage backend.)
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.Description
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  The property specifies the description of the appointment.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -246,10 +254,10 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  Calling this method after a call to BeginUpdate signifies that you are done updating the appt.
+  properties and TJvTFScheduleManager will fire the OnPostApptQuery/OnPostAppt events.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BeginUpdate
 ----------------------------------------------------------------------------------------------------
 @@TJvTFAppt.ID
 Summary
