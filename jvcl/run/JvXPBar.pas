@@ -2141,19 +2141,19 @@ var
         ACanvas.Draw(2, 0, FIcon);
         Inc(R.Left, 16);
       end;
-      Dec(Rect.Right, 25);
+      Dec(ARect.Right, 25);
     end;
 
     { draw seperator line }
-    Pen.Color := FColors.SeparatorColor;
-    JvXPDrawLine(Canvas, 1, Rect.Top + FHeaderHeight, Width - 1, Rect.Top + FHeaderHeight);
+    ACanvas.Pen.Color := FColors.SeparatorColor;
+    JvXPDrawLine(Canvas, 1, ARect.Top + FHeaderHeight, Width - 1, ARect.Top + FHeaderHeight);
 
     { draw icon }
-    Inc(Rect.Left, 22);
+    Inc(ARect.Left, 22);
     if not FIcon.Empty then
     begin
-      Draw(2, 1, FIcon);
-      Inc(Rect.Left, 16);
+      ACanvas.Draw(2, 1, FIcon);
+      Inc(ARect.Left, 16);
     end;
   end;
 begin
