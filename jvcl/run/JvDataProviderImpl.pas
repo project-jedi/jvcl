@@ -499,10 +499,10 @@ type
     function QueryInterface(const IID: TGUID; out Obj): HResult; override;
     procedure Changing(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
     procedure Changed(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
-    class function PersistentDataItems: Boolean; dynamic;
-    class function ItemsClass: TJvDataItemsClass; dynamic;
-    class function ContextsClass: TJvDataContextsClass; dynamic;
-    class function ContextsManagerClass: TJvDataContextsManagerClass; dynamic;
+    class function PersistentDataItems: Boolean; virtual;
+    class function ItemsClass: TJvDataItemsClass; virtual;
+    class function ContextsClass: TJvDataContextsClass; virtual;
+    class function ContextsManagerClass: TJvDataContextsManagerClass; virtual;
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadRoot(Reader: TReader);
     procedure WriteRoot(Writer: TWriter);
@@ -4618,3 +4618,5 @@ initialization
     // Context related
     TJvDataContext, TJvManagedDataContext, TJvFixedDataContext]);
 end.
+
+
