@@ -34,8 +34,12 @@
     <File Name="..\..\qrun\JvQGroupBox.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQHeaderControl.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQImage.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQImageList.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQRadioGroup.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQLinkedControls.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQStringGrid.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQControlBar.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQLabel.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qcommon\QComboEdits.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQExComboEdits.pas" Targets="allclx" Formname="" Condition=""/>
   </Contains>
