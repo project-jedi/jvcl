@@ -50,7 +50,7 @@ PackageDLLOutputDir=$(DELPHI)/bin
 PackageDCPOutputDir=$(DELPHI)/lib
 SearchPath=../../qrun:../../qdesign:../../qcommon:../../common
 Packages=rtl:visualclx:visualdbclx:dataclx:xmlrtl:netdataclx:netclx:indy:soaprtl:ACS:JvCLX:JclLinux
-Conditionals=K3:VisualCLX
+Conditionals=
 DebugSourceDirs=
 UsePackages=0
 
@@ -62,10 +62,21 @@ UseLauncher=0
 DebugCWD=
 
 [Excluded Packages]
-/usr/local/kylix3/bin/bplJvQCoreK3D.so=JVCLX Core Components
-/usr/local/kylix3/bin/bplJvQSystemK3D.so=JVCLX System Components
-/usr/local/kylix3/bin/bplJvQStdCtrlsK3D.so=JVCLX Standard Controls
-/usr/local/kylix3/bin/bplJvQCtrlsK3D.so=JVCLX Visual Controls
-/mnt/win_c/CVSCheckout/dev/jvcl3/packages/k3/bplJvQCustomK3D.so=JVCLX Custom Controls
-/mnt/win_c/CVSCheckout/dev/jvcl3/packages/k3/bplJvQDlgsK3D.so=JVCLX Dialog Components
+/mnt/win_c/CVSCheckout/dev/jvcl3/packages/k3/bplJvQWizardK3D.so=JVCLX Wizard Design Time Package
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=K3:VisualCLX
+
+[HistoryLists\hlSearchPath]
+Count=1
+Item0=../../common:../../qcommon:../../qrun
+
+[HistoryLists\hlBPLOutput]
+Count=1
+Item0=$(DELPHI)/bin
+
+[HistoryLists\hlDCPOutput]
+Count=1
+Item0=$(DELPHI)/lib
 
