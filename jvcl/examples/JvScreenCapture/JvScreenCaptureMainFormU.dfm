@@ -38,4 +38,14 @@ object JvScreenCaptureMainForm: TJvScreenCaptureMainForm
     TabOrder = 1
     OnClick = Button2Click
   end
+  object TaskBar: TCheckBox
+    Left = 328
+    Top = 32
+    Width = 97
+    Height = 17
+    Caption = 'include taskbar'
+    Checked = True
+    State = cbChecked
+    TabOrder = 2
+  end
 end
