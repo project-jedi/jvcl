@@ -64,7 +64,7 @@ const
   cAppletName = 'AppletName';
   cAppletIndex = 'AppletIndex';
 begin
-  RegisterComponents(RsPaletteDialog, [TOpenPictureDialog, TSavePictureDialog]);
+  RegisterComponents(RsPaletteDialog, [TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog]);
   RegisterComponents(RsPaletteDialog, [TJvSelectDirectory,  TJvTipOfDay,
     TJvFindReplace, TJvDSADialog]);
 

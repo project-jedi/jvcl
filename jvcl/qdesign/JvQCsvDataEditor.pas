@@ -40,7 +40,7 @@ interface
 
 uses
   SysUtils, Classes, Db,  
-  QForms, QDialogs, QGraphics, Types,  
+  QWindows, QForms, QControls, QDialogs, QGraphics, Types,
   DesignEditors, DesignIntf, 
   JvQCsvData;
 
@@ -85,9 +85,13 @@ function DoCsvDefDialog(OldValue: string): string;
 var
   Dialog: TJvCsvDefStrDialog;
   dlgResult: Integer;
+  {$IFDEF MSWINDOWS}
   WindowList: Pointer;
+  {$ENDIF MSWINDOWS}
 begin
+  {$IFDEF MSWINDOWS}
   WindowList := DisableTaskWindows(0);
+  {$ENDIF MSWINDOWS}
   Dialog := TJvCsvDefStrDialog.Create(nil); // no owner!
 //  dlgResult := idCancel;
   try
@@ -99,7 +103,9 @@ begin
       Result := OldValue;
   finally
     Dialog.Free;
+    {$IFDEF MSWINDOWS}
     EnableTaskWindows(WindowList);
+    {$ENDIF MSWINDOWS}
   end;
 end;
 
@@ -197,6 +203,8 @@ const
  //cTableName = 'TableName';
  cFileName = 'FileName';
 begin
+  GroupDescendentsWith(TJvCSVDataSet, TControl);
+  GroupDescendentsWith(TJvCustomCSVDataSet, TControl);
   RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cCsvFieldDef, TJvCsvDefStrProperty);
 // RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cTableName, TFileNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCSVDataSet, cFileName, TJvFileNameProperty);
