@@ -562,11 +562,11 @@ begin
   Value := AddSpaces(Args.Values[0], Args.Values[1]);
 end;
 
-{ function LastDate(const Dat: TDateTime): string; }
+{ function LastDateRUS(const Dat: TDateTime): string; }
 
-procedure JvInterpreter_LastDate(var Value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_LastDateRUS(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := LastDate(Args.Values[0]);
+  Value := LastDateRUS(Args.Values[0]);
 end;
 
 { function CurrencyToStr(const Cur: currency): string; }
@@ -1053,7 +1053,7 @@ begin
     AddFunction(cJvStrUtil, 'Win2Koi', JvInterpreter_Win2Koi, 1, [varString], varString);
     AddFunction(cJvStrUtil, 'Spaces', JvInterpreter_Spaces, 1, [varInteger], varEmpty);
     AddFunction(cJvStrUtil, 'AddSpaces', JvInterpreter_AddSpaces, 2, [varString, varInteger], varEmpty);
-    AddFunction(cJvStrUtil, 'LastDate', JvInterpreter_LastDate, 1, [varEmpty], varEmpty);
+    AddFunction(cJvStrUtil, 'LastDateRUS', JvInterpreter_LastDateRUS, 1, [varEmpty], varEmpty);
     AddFunction(cJvStrUtil, 'CurrencyToStr', JvInterpreter_CurrencyToStr, 1, [varEmpty], varEmpty);
     AddFunction(cJvStrUtil, 'Cmp', JvInterpreter_Cmp, 2, [varString, varString], varEmpty);
     AddFunction(cJvStrUtil, 'StringCat', JvInterpreter_StringCat, 2, [varString or varByRef, varString], varEmpty);

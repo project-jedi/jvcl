@@ -183,14 +183,13 @@ function GetControlPanelApplet(const AFileName: string; Strings: TStrings;
   Images: TCustomImageList = nil): Boolean;
 {$ENDIF VCL}
 
-{$IFDEF MSWINDOWS}
-function PointInPolyRgn(const P: TPoint; const Points: array of TPoint):
-  Boolean;
+function PointInPolyRgn(const P: TPoint; const Points: array of TPoint): Boolean;
 function PaletteColor(Color: TColor): Longint;
+{$IFDEF VCL}
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
 procedure ShowMDIClientEdge(ClientHandle: THandle; ShowEdge: Boolean);
-{$ENDIF MSWINDOWS}
+{$ENDIF VCL}
 procedure Delay(MSecs: Longint);
 procedure CenterControl(Control: TControl);
 
@@ -2120,32 +2119,32 @@ type
 
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 var
-  DC: HDC;
+  DC: Windows.HDC;
   r: TRect;
 begin
-  DC := GetDC(0);
+  DC := Windows.GetDC(0);
   try
     r := Rect(RectOrg.X, RectOrg.Y, RectEnd.X, RectEnd.Y);
-    InvertRect(DC, r);
+    Windows.InvertRect(DC, r);
   finally
-    ReleaseDC(0, DC);
+    Windows.ReleaseDC(0, DC);
   end;
 end;
 
 procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
 var
-  DC: HDC;
+  DC: Windows.HDC;
   i: Integer;
 begin
-  DC := GetDC(0);
+  DC := Windows.GetDC(0);
   try
     for i := 1 to Width do
     begin
-      DrawFocusRect(DC, ScreenRect);
-      InflateRect(ScreenRect, -1, -1);
+      Windows.DrawFocusRect(DC, ScreenRect);
+      //InflateRect(ScreenRect, -1, -1);
     end;
   finally
-    ReleaseDC(0, DC);
+    Windows.ReleaseDC(0, DC);
   end;
 end;
 {$ENDIF MSWINDOWS}
@@ -2301,7 +2300,7 @@ begin
   end;
 end;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 { ShowMDIClientEdge function has been copied from Inprise's FORMS.PAS unit,
   Delphi 4 version }
 
@@ -2327,7 +2326,7 @@ begin
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER);
   end;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 {$IFDEF VCL}
 { Shade rectangle }

@@ -40,14 +40,15 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes,
   {$IFDEF VCL}
   Controls, Graphics, Forms, ExtCtrls, Buttons, Menus, ImgList, ActnList,
   CommCtrl,
   {$ENDIF VCL}
+  SysUtils, Classes,
   {$IFDEF VisualCLX}
-  Types, Qt, QTypes, QControls, QGraphics, QForms, QExtCtrls, QButtons, QMenus,
-  QImgList, QActnList, QWindows,
+  Types, Qt, QTypes, QWindows,
+  QControls, QGraphics, QForms, QExtCtrls, QButtons, QMenus, QImgList,
+  QActnList,
   {$ENDIF VisualCLX}
   JvComponent, JvConsts, JvTypes, JvJCLUtils, JvJVCLUtils;
 
@@ -849,7 +850,7 @@ begin
     NeedRepaint :=
       {$IFDEF JVCLThemesEnabled}
       ThemeServices.ThemesEnabled or
-      {$ENDIF}
+      {$ENDIF JVCLThemesEnabled}
       FHotTrack or
       (FFlat and not FMouseInControl and Enabled and (DragMode <> dmAutomatic) and (GetCapture = 0));
 
@@ -1099,7 +1100,7 @@ begin
         P := GetDropDownMenuPos;
         if CheckMenuDropdown(PointToSmallPoint(P), False) then
           DoMouseUp(Button, Shift, X, Y);
-        {$IFDEF MSWINDOWS}
+        {$IFDEF VCL}
         if PeekMessage(Msg, 0, 0, 0, PM_NOREMOVE) then
         begin
           if (Msg.Message = WM_LBUTTONDOWN) or (Msg.Message = WM_LBUTTONDBLCLK) then
@@ -1109,7 +1110,7 @@ begin
               KillMessage(Windows.HWND_DESKTOP, Msg.Message);
           end;
         end;
-        {$ENDIF MSWINDOWS}
+        {$ENDIF VCL}
       finally
         FMenuTracking := False;
       end;
