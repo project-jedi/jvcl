@@ -39,6 +39,11 @@ uses
   FileCtrl, StdCtrls, ShellAPI, ImgList,
   JvComboBox, JvListBox, JVCLVer, JvTypes, JvSearchFiles;
 
+type
+  // redclare so user don't have to add JvTypes to uses manually
+  TJvDriveType = JvTypes.TJvDriveType;
+  TJvDriveTypes = JvTypes.TJvDriveTypes;
+
 const
   dtStandard: TJvDriveTypes = [dtFixed, dtRemote, dtCDROM];
 
@@ -661,8 +666,11 @@ procedure TJvDriveCombo.Change;
   end;
 begin
   if ItemIndex <> -1 then
-    FItemIndex := ItemIndex;
-  FDrive := FirstChar(FDrives[FItemIndex]);
+    FItemIndex := ItemIndex
+  else
+    FItemIndex := 0;
+  if (FItemIndex >= 0)  and (FItemIndex < FDrives.Count) then
+    Drive := FirstChar(FDrives[FItemIndex]);
   if (ItemIndex > -1) and (ItemIndex < Items.Count) then
     FDisplayName := Items[ItemIndex]
   else
