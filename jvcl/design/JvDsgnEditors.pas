@@ -305,9 +305,17 @@ end;
 
 procedure TJvDirectoryProperty.Edit;
 var
-  FolderName: string;
+  AName, FolderName: string;
+  C:TPersistent;
 begin
-  if SelectDirectory((GetComponent(0) as TComponent).Name + '.' + GetName, '', FolderName) then
+  C := GetComponent(0);
+  if C is TComponent then
+    AName := TComponent(C).Name
+  else if C is TCollectionItem then
+    AName := TCollectionItem(C).GetNamePath
+  else
+    AName := C.ClassName;
+  if SelectDirectory(AName + '.' + GetName, '', FolderName) then
     SetValue(FolderName);
 end;
 
