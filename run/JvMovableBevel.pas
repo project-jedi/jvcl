@@ -31,14 +31,15 @@ unit JvMovableBevel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Forms, ExtCtrls;
+  Windows, Messages, SysUtils, Classes, Controls, Forms, ExtCtrls,
+  JvExExtCtrls;
 
 type
   TJvBevelScrollTextDirection = (tdNone, tdUpToDown, tdDownToUp, tdLeftToRight,
     tdRightToLeft, tdTopLeftToBottomRight, tdTopRightToBottomLeft,
     tdBottomLeftToTopRight, tdBottomRightToTopLeft);
 
-  TJvMovableBevel = class(TBevel)
+  TJvMovableBevel = class(TJvExBevel)
   private
     FStartX: Integer;
     FStartY: Integer;
@@ -57,8 +58,8 @@ type
       X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -310,21 +311,27 @@ end;
 //      end
 //end;{}
 
-procedure TJvMovableBevel.CMMouseEnter(var Msg: TMessage);
+procedure TJvMovableBevel.MouseEnter(Control: TControl);
 var
   Pos: TPoint;
 begin
+  if csDesigning in ComponentState then
+    Exit;
   Pos := ScreenToClient(Mouse.CursorPos);
   SelectCursor(Pos.X, Pos.Y);
+  inherited MouseEnter(Control);
 end;
 
-procedure TJvMovableBevel.CMMouseLeave(var Msg: TMessage);
+procedure TJvMovableBevel.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if (not FMoving) and (not FSizing) then
   begin
     Screen.Cursor := crDefault;
     FDirection := tdNone;
   end;
+  inherited MouseLeave(Control);
 end;
 
 end.

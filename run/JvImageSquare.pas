@@ -249,7 +249,9 @@ end;
 
 procedure TJvImageSquare.MouseEnter(Control: TControl);
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseEnter(Control);
   if ColorToRGB(TmpColor) <> ColorToRGB(FHiColor) then
   begin
     TmpColor := FHiColor;
@@ -260,7 +262,9 @@ end;
 procedure TJvImageSquare.MouseLeave(Control: TControl);
 begin
   FDown := False;
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseLeave(Control);
   if ColorToRGB(TmpColor) <> ColorToRGB(FBackColor) then
   begin
     TmpColor := FBackColor;
@@ -270,7 +274,7 @@ end;
 
 procedure TJvImageSquare.ColorChanged;
 begin
-  inherited;
+  inherited ColorChanged;
   FBackColor := Color;
   TmpColor := Color;
   Repaint;

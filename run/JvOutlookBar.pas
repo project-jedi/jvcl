@@ -233,8 +233,8 @@ type
     procedure DoPageEdit(NewText: string; P: TJvOutlookBarPage);
     function GetActivePage: TJvOutlookBarPage;
     function GetActivePageIndex: Integer;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
   protected
+    procedure FontChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
     function GetButtonHeight(PageIndex: Integer): Integer;
     function GetButtonFrameRect(PageIndex, ButtonIndex: Integer): TRect;
@@ -2011,8 +2011,10 @@ end;
 
 procedure TJvCustomOutlookBar.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   RedrawRect(FButtonRect);
-  inherited;
+  inherited MouseEnter(Control);
 end;
 
 procedure TJvCustomOutlookBar.MouseLeave(Control: TControl);
@@ -2021,7 +2023,9 @@ var
   R: TRect;
 {$ENDIF}
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseLeave(Control);
   RedrawRect(FButtonRect);
   FPressedPageBtn := -1;
   FLastButtonIndex := -1;
@@ -2196,7 +2200,7 @@ procedure TJvCustomOutlookBar.ColorChanged;
 var
   I: Integer;
 begin
-  inherited;
+  inherited ColorChanged;
   for I := 0 to Pages.Count - 1 do
     if Pages[I].ParentColor then
     begin
@@ -2205,11 +2209,11 @@ begin
     end;
 end;
 
-procedure TJvCustomOutlookBar.CMFontChanged(var Message: TMessage);
+procedure TJvCustomOutlookBar.FontChanged;
 var
   I: Integer;
 begin
-  inherited;
+  inherited FontChanged;
   for I := 0 to Pages.Count - 1 do
     if Pages[I].ParentFont then
     begin

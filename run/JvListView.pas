@@ -18,7 +18,7 @@ Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Salvatore Meschini
 
-Last Modified: 2000-02-28
+Last Modified: 2004-01-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -26,7 +26,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvListView;
 
@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
   CommCtrl, Menus, ClipBrd,
-  JVCLVer, JvTypes;
+  JVCLVer, JvTypes, JvExComCtrls;
 
 type
   EJvListViewError = EJVCLException;
@@ -51,14 +51,12 @@ type
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
   end;
 
-  TJvListView = class(TListView)
+  TJvListView = class(TJvExListView)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FAutoClipboardCopy: Boolean;
     FHintColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     FSortOnClick: Boolean;
@@ -73,10 +71,10 @@ type
     procedure ColClick(Column: TListColumn); override;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMNotify(var Msg: TWMNotify); message CN_NOTIFY;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
@@ -103,8 +101,8 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property SortOnClick: Boolean read FSortOnClick write FSortOnClick default True;
     property AutoClipboardCopy: Boolean read FAutoClipboardCopy write FAutoClipboardCopy default True;
@@ -189,29 +187,28 @@ begin
     FOnVerticalScroll(Self);
 end;
 
-procedure TJvListView.MouseEnter(var Msg: TMessage);
+procedure TJvListView.MouseEnter(Control: TControl);
 begin
-  FOver := True;
-  FSaved := Application.HintColor;
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
+  FOver := True;
+  FSaved := Application.HintColor;
   Application.HintColor := FHintColor;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
 
-procedure TJvListView.MouseLeave(var Msg: TMessage);
+procedure TJvListView.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   Application.HintColor := FSaved;
   FOver := False;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
-procedure TJvListView.CMParentColorChanged(var Msg: TMessage);
+procedure TJvListView.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;

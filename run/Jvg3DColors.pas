@@ -32,11 +32,10 @@ unit Jvg3DColors;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms;
 
 type
-  TJvg3DLocalColors = class(TJvComponent)
+  TJvg3DLocalColors = class(TComponent)
   private
     FDkShadow: TColor;
     FHighlight: TColor;
@@ -54,10 +53,8 @@ type
     procedure CreateAuto3DColors(BaseColor: TColor);
     procedure MakeGlobal;
     procedure MakeLocal;
-    property ColorShadowShift: Byte read FColorShadowShift write FColorShadowShift
-      default 60;
-    property ColorHighlightShift: Byte read FColorHighlightShift write FColorHighlightShift
-      default 60;
+    property ColorShadowShift: Byte read FColorShadowShift write FColorShadowShift default 60;
+    property ColorHighlightShift: Byte read FColorHighlightShift write FColorHighlightShift default 60;
   published
     property DkShadow: TColor read FDkShadow write SetDkShadow default cl3DDkShadow;
     property Highlight: TColor read FHighlight write SetHighlight default clBtnHighlight;
@@ -75,8 +72,8 @@ type
 implementation
 
 uses
-  JvConsts,
   {$IFDEF USEJVCL}
+  JvConsts,
   JvResources,
   {$ENDIF USEJVCL}
   JvgUtils, JvgTypes;

@@ -91,14 +91,14 @@ type
     procedure OnGradientChanged(Sender: TObject);
     procedure OnIlluminationChanged(Sender: TObject);
     procedure WMSize(var Message: TMessage); message WM_SIZE;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure WMLButtonUp(var Message: TMessage); message WM_LBUTTONUP;
     procedure WMLButtonDown(var Message: TMessage); message WM_LBUTTONDOWN;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
     procedure SetAlignment(const Value: TLeftRight);
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+    procedure FontChanged; override;
+    procedure TextChanged; override;
     procedure Paint; override;
     procedure HookFocusControlWndProc;
     procedure UnhookFocusControlWndProc;
@@ -109,7 +109,6 @@ type
     procedure SetCheckedItemInGroup(TagNo: Integer);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
   published
     property Anchors;
     property Align;
@@ -226,19 +225,21 @@ begin
 end;
 //______________________________________________________________
 
-procedure TJvgCheckBox.CMFontChanged(var Message: TMessage);
+procedure TJvgCheckBox.FontChanged;
 begin
   if not FSuppressCMFontChanged then
   begin
     FImg.Canvas.Font.Assign(Font);
     Repaint;
-    inherited;
+    inherited FontChanged;
   end;
 end;
 //______________________________________________________________
 
 procedure TJvgCheckBox.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not Enabled or (fcoIgnoreMouse in Options) or
     FShowAsActiveWhileControlFocused then
     Exit;
@@ -265,6 +266,8 @@ end;
 
 procedure TJvgCheckBox.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not Enabled or (fcoIgnoreMouse in Options) or
     FShowAsActiveWhileControlFocused then
     Exit;
@@ -328,8 +331,9 @@ begin
 end;
 //______________________________________________________________
 
-procedure TJvgCheckBox.CMTextChanged(var Message: TMessage);
+procedure TJvgCheckBox.TextChanged;
 begin
+  inherited TextChanged;
   Invalidate;
 end;
 //______________________________________________________________

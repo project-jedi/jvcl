@@ -46,8 +46,8 @@ Notes (2003-05-21) // Remko Bonte
 
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
-{$I WINDOWSONLY.INC}
+{$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvListBox;
 
@@ -174,7 +174,6 @@ type
     procedure CNKeyDown(var Msg: TWMKeyDown); message CN_KEYDOWN;
 
     procedure DrawBackGround(ADC: HDC; const DoOffSet: Boolean);
-
     procedure UpdateStyle;
 
     { Handle messages that insert or delete strings from the listbox to

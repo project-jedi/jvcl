@@ -41,11 +41,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   ExtCtrls, StdCtrls, ImgList,
-  JvComponent, JVCLVer;
+  JvComponent, JVCLVer, JvComboBox;
 
 type
   TJvButtonColors = (fsLighter, fsLight, fsMedium, fsDark, fsDarker);
-
   TJvListPropertiesUsed = set of (puFont, puColorHighlight, puColorHighlightText);
 
 const
@@ -123,9 +122,8 @@ type
     property Objects[Index : Integer] : TObject read GetObjects write SetObjects;
   end;
 
-  TJvImageComboBox = class(TCustomComboBox)
+  TJvImageComboBox = class(TJvCustomComboBox)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FItems: TJvImageItems;
     FImageList: TCustomImageList;
     FDefaultIndent: Integer;
@@ -145,10 +143,6 @@ type
     procedure SetColorHighlight(Value: TColor);
     procedure SetColorHighlightText(Value: TColor);
     procedure SetImageList(Value: TCustomImageList);
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure ResetItemHeight;
     procedure ImageListChange(Sender: TObject);
     function GetDroppedWidth: Integer;
@@ -157,6 +151,10 @@ type
     procedure SetItems(const Value: TJvImageItems); reintroduce;
     procedure SetIndentSelected(const Value: boolean);
   protected
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
+    procedure FontChanged; override;
+    procedure EnabledChanged; override;
     procedure CreateWnd; override;
     procedure RecreateWnd;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -174,7 +172,6 @@ type
     property Canvas: TCanvas read GetCanvas;
     property Text;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property Color;
     property DragMode;
@@ -800,9 +797,9 @@ begin
   FDroppedWidth := SendMessage(Handle, CB_SETDROPPEDWIDTH, Value, 0);
 end;
 
-procedure TJvImageComboBox.CMFontChanged(var Msg: TMessage);
+procedure TJvImageComboBox.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   ResetItemHeight;
   RecreateWnd;
 end;
@@ -837,23 +834,23 @@ begin
   end;
 end;
 
-procedure TJvImageComboBox.CMEnabledChanged(var Msg: TMessage);
+procedure TJvImageComboBox.EnabledChanged;
 const
   EnableColors: array [Boolean] of TColor = (clBtnFace, clWindow);
 begin
-  inherited;
+  inherited EnabledChanged;
   Color := EnableColors[Enabled];
 end;
 
-procedure TJvImageComboBox.CMMouseEnter(var Msg: TMessage);
+procedure TJvImageComboBox.MouseEnter(AControl: TControl);
 begin
-  inherited;
+  inherited MouseEnter(AControl);
   MouseInControl := True;
 end;
 
-procedure TJvImageComboBox.CMMouseLeave(var Msg: TMessage);
+procedure TJvImageComboBox.MouseLeave(AControl: TControl);
 begin
-  inherited;
+  inherited MouseLeave(AControl);
   MouseInControl := False;
 end;
 

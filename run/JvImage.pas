@@ -31,8 +31,14 @@ unit JvImage;
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, ExtCtrls, Controls, Forms,
-  JVCLVer;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, ExtCtrls, Controls, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QExtCtrls, QControls, QForms,
+  {$ENDIF VisualCLX}
+  JVCLVer, JvExExtCtrls;
 
 type
   TPicState = (stDefault, stEntered, stClicked1, stClicked2, stDown);
@@ -61,13 +67,11 @@ type
     property PicDown: TPicture read FPicDown write SetPicDown;
   end;
 
-  TJvImage = class(TImage)
+  TJvImage = class(TJvExImage)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnStateChanged: TNotifyEvent;
     FPictures: TJvPictures;
     FState: TPicState;
@@ -83,9 +87,9 @@ type
     function UsesPictures: Boolean;
   protected
     procedure Click; override;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMHitTest(var Msg: TCMHitTest); message CM_HITTEST;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    function HitTest(X, Y: Integer): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -100,8 +104,8 @@ type
     property Pictures: TJvPictures read FPictures write FPictures;
     property Picture: TPicture read FPicture write SetPicture;
     property State: TPicState read FState write SetState default stDefault;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnStateChanged: TNotifyEvent read FOnStateChanged write FOnStateChanged;
   end;
 
@@ -201,27 +205,25 @@ begin
     ApplyClick;
 end;
 
-procedure TJvImage.CMMouseEnter(var Msg: TMessage);
+procedure TJvImage.MouseEnter(Control: TControl);
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FHintColor;
     if UsesPictures then
       State := stEntered;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
 
-procedure TJvImage.CMMouseLeave(var Msg: TMessage);
+procedure TJvImage.MouseLeave(Control: TControl);
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
@@ -229,8 +231,7 @@ begin
       ApplyClick;
     FOver := False;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
 // (rom) improvement. now only non-transparent pixels are considered
@@ -243,13 +244,13 @@ end;
 // transparency detection is possible (TGraphic doesn't have the necessary TransparentColor and Canvas.Pixels)
 // (rom) improved
 
-procedure TJvImage.CMHitTest(var Msg: TCMHitTest);
+function TJvImage.HitTest(X, Y: Integer): Boolean;
 begin
-  inherited;
+  Result := inherited HitTest(X, Y);
   if (not UsesPictures) and Assigned(Picture) and (Picture.Graphic is TBitmap) and
-    Transparent and (Msg.XPos < Picture.Bitmap.Width) and (Msg.YPos < Picture.Bitmap.Height) and
-    (Picture.Bitmap.Canvas.Pixels[Msg.XPos, Msg.YPos] = ColorToRGB(Picture.Bitmap.TransparentColor)) then
-    Msg.Result := 0;
+     Transparent and (X < Picture.Bitmap.Width) and (Y < Picture.Bitmap.Height) and
+     (Picture.Bitmap.Canvas.Pixels[X, Y] = ColorToRGB(Picture.Bitmap.TransparentColor)) then
+    Result := False;
 end;
 
 procedure TJvImage.PicturesChanged(Sender: TObject);

@@ -23,7 +23,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvGrids;
 
@@ -32,7 +32,7 @@ interface
 uses
   Windows,
   Messages, Classes, Controls, Graphics, StdCtrls, Forms, Grids,
-  JvAppStorage, JvConsts, JvFormPlacement;
+  JvAppStorage, JvConsts, JvFormPlacement, JvExGrids;
 
 type
   TAcceptKeyEvent = function(Sender: TObject; var Key: Char): Boolean of object;
@@ -60,7 +60,7 @@ type
   TEditStyleEvent = procedure(Sender: TObject; ACol, ARow: Longint;
     var Style: TInplaceEditStyle) of object;
 
-  TJvDrawGrid = class(TDrawGrid)
+  TJvDrawGrid = class(TJvExDrawGrid)
   private
     FNoUpdateData: Boolean;
     FFixedCellsButtons: Boolean;
@@ -83,8 +83,6 @@ type
     FOnChangeFocus: TNotifyEvent;
     FColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     FOnHScroll: TNotifyEvent;
@@ -110,12 +108,12 @@ type
     procedure WMRButtonUp(var Msg: TWMMouse); message WM_RBUTTONUP;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure SetDrawButtons(const Value: boolean);
   protected
     function SelectCell(ACol, ARow: Longint): Boolean; override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
 
     function CanEditAcceptKey(Key: Char): Boolean; override;
     function CanEditShow: Boolean; override;
@@ -191,8 +189,8 @@ type
     property OnGetPicklist: TPicklistEvent read FOnGetPicklist write FOnGetPicklist;
     property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick write FOnEditButtonClick;
 
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
@@ -1378,9 +1376,9 @@ begin
     FOnEditButtonClick(Self);
 end;
 
-procedure TJvDrawGrid.CMParentColorChanged(var Msg: TMessage);
+procedure TJvDrawGrid.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -1399,30 +1397,29 @@ begin
     FOnVScroll(Self);
 end;
 
-procedure TJvDrawGrid.CMMouseEnter(var Msg: TMessage);
+procedure TJvDrawGrid.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FColor;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
 
-procedure TJvDrawGrid.CMMouseLeave(var Msg: TMessage);
+procedure TJvDrawGrid.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
     FOver := False;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvDrawGrid.SetDrawButtons(const Value: boolean);
