@@ -377,13 +377,10 @@ begin
         InflateRect(ARect, -4, -4);
         if not Enabled then
         begin
-          {$IFDEF VCL}
           SetBkMode(Handle, Windows.TRANSPARENT);
-          {$ENDIF VCL}
           Canvas.Font.Color := clHighlightText;
           {$IFDEF VisualCLX}
           SetPainterFont(Handle, Canvas.Font);
-//          SetBkMode(Handle, QWindows.TRANSPARENT);
           {$ENDIF VisualCLX}
           DrawText(Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
           OffsetRect(ARect, -1, -1);

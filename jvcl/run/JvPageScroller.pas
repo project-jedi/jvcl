@@ -30,12 +30,7 @@ unit JvPageScroller;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ComCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QComCtrls,
-  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvExComCtrls;
 

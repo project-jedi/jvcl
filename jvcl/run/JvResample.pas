@@ -103,13 +103,7 @@ unit JvResample;
 interface
 
 uses
-  {$IFDEF VCL}
-  Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QWindows,
-  {$ENDIF VisualCLX}
-  SysUtils, Classes;
+  Graphics, SysUtils, Classes;
 
 type
   // Type of a filter for use with Stretch()
@@ -149,6 +143,11 @@ const
     (Name: 'Lanczos3'; Filter: Lanczos3Filter; Width: 3.0),
     (Name: 'Mitchell'; Filter: MitchellFilter; Width: 2.0)
     );
+{$IFDEF VisualCLX}
+  pf24bit = pf32bit;
+{$ENDIF VisualCLX}
+
+
 
 implementation
 
