@@ -899,10 +899,7 @@ begin
   inherited MouseMove(Shift, X, Y);
   {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
   if FDragging then
-  begin
-    Left := Left + X - FAnchorPos.X;
-    Top := Top + Y - FAnchorPos.Y;
-  end;
+    SetBounds(Left + X - FAnchorPos.X, Top + Y - FAnchorPos.Y, Width, Height);
   {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
 end;
 
