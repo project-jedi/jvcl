@@ -52,7 +52,7 @@ unit JvJCLUtils;
         ResSaveToFile(), ResSaveToFileEx(), ResSaveToString()
         CopyIconToClipboard(), AssignClipboardIcon(), CreateIconFromClipboard(),
           GetIconSize(), CreateRealSizeIcon(), DrawRealSizeIcon()
-        HasAttr(), FileLock(), FileUnlock(), FileUnlock(), GetWindowsDir(),
+         FileLock(), FileUnlock(), FileUnlock(), GetWindowsDir(),
           GetSystemDir(), CreateFileLink(), DeleteFileLink()
 }
 
@@ -70,7 +70,7 @@ uses
   Graphics, Clipbrd,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QClipbrd, QWindows, Types,
+  Qt, QStdCtrls, QGraphics, QClipbrd, QWindows, Types, DateUtils,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Variants,
@@ -455,7 +455,9 @@ procedure RleDecompress(Stream: TStream);
 { end JvRLE }
 
 { begin JvDateUtil }
+{$IFDEF MSWINDOWS}
 function CurrentYear: Word;
+{$ENDIF}
 function IsLeapYear(AYear: Integer): Boolean;
 function DaysPerMonth(AYear, AMonth: Integer): Integer;
 function FirstDayOfPrevMonth: TDateTime;
@@ -494,9 +496,10 @@ function StrToDateFmtDef(const DateFormat, S: string; Default: TDateTime): TDate
 function DefDateFormat(AFourDigitYear: Boolean): string;
 function DefDateMask(BlanksChar: Char; AFourDigitYear: Boolean): string;
 
+{$IFDEF MSWINDOWS}
 function FormatLongDate(Value: TDateTime): string;
 function FormatLongDateTime(Value: TDateTime): string;
-
+{$ENDIF}
 { end JvDateUtil }
 
 { begin JvStrUtils }
@@ -556,12 +559,14 @@ function RightStr(const S: string; N: Integer): string;
 function CenterStr(const S: string; Len: Integer): string;
 { CenterStr centers the characters in the string based upon the
   Len specified. }
+{$IFDEF MSWINDOWS}
 function CompStr(const S1, S2: string): Integer;
 { CompStr compares S1 to S2, with case-sensitivity. The return value is
   -1 if S1 < S2, 0 if S1 = S2, or 1 if S1 > S2. }
 function CompText(const S1, S2: string): Integer;
 { CompText compares S1 to S2, without case-sensitivity. The return value
   is the same as for CompStr. }
+{$ENDIF}
 function Copy2Symb(const S: string; Symb: Char): string;
 { Copy2Symb returns a substring of a string S from begining to first
   character Symb. }
@@ -660,9 +665,7 @@ function GetTempFileName(const Prefix: string): string;
 
 { begin JvFileUtil }
 function FileDateTime(const FileName: string): TDateTime;
-{$IFDEF MSWINDOWS}
 function HasAttr(const FileName: string; Attr: Integer): Boolean;
-{$ENDIF MSWINDOWS}
 function DeleteFilesEx(const FileMasks: array of string): Boolean;
 function NormalDir(const DirName: string): string;
 function RemoveBackSlash(const DirName: string): string; // only for Windows/DOS Paths
@@ -964,9 +967,11 @@ function ActivatePrevInstance(const MainFormClass: ShortString;
 function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
 {$ENDIF BCB}
+{$ENDIF VCL}
+{$IFDEF MSWINDOWS}
 { BrowseForFolder displays Browse For Folder dialog }
 function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
-{$ENDIF VCL}
+{$ENDIF}
 
 procedure AntiAlias(Clip: TBitmap);
 procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
@@ -3750,6 +3755,7 @@ begin
   end;
 end;
 
+{$IFDEF WINDOWS}
 procedure ReadIcon(Stream: TStream; var Icon: HICON; ImageCount: Integer;
   StartOffset: Integer);
 type
@@ -3855,6 +3861,7 @@ begin
     FreeMem(List, HeaderLen);
   end;
 end;
+{$ENDIF WINDOWS}
 
 {$IFDEF VCL}
 procedure GetIconSize(Icon: HIcon; var W, H: Integer);
@@ -4296,6 +4303,7 @@ begin
   Result := Trunc(ADate);
 end;
 
+{$IFDEF MSWINDOWS}
 function CurrentYear: Word;
 var
   SystemTime: TSystemTime;
@@ -4303,6 +4311,7 @@ begin
   GetLocalTime(SystemTime);
   Result := SystemTime.wYear;
 end;
+{$ENDIF}
 
 { String to date conversions. Copied from SYSUTILS.PAS unit. }
 
@@ -4388,12 +4397,20 @@ begin
 end;
 
 function CurrentMonth: Word;
+{$IFDEF WINDOWS}
 var
   SystemTime: TSystemTime;
 begin
   GetLocalTime(SystemTime);
   Result := SystemTime.wMonth;
 end;
+{$ENDIF}
+{$IFDEF LINUX}
+begin
+  Result := MonthOfTheYear(Now);
+end;
+{$ENDIF}
+
 
 {Modified}
 
@@ -4659,6 +4676,7 @@ begin
     Result := Result + BlanksChar;
 end;
 
+{$IFDEF MSWINDOWS}
 function FormatLongDate(Value: TDateTime): string;
 var
   Buffer: array[0..1023] of Char;
@@ -4677,6 +4695,7 @@ begin
   else
     Result := '';
 end;
+{$ENDIF}
 
 function FourDigitYear: Boolean;
 begin
@@ -4944,6 +4963,7 @@ begin
   Result := AddChar(' ', S, N);
 end;
 
+{$IFDEF MSWINDOWS}
 function CompStr(const S1, S2: string): Integer;
 begin
   Result := CompareString(GetThreadLocale, SORT_STRINGSORT, PChar(S1),
@@ -4955,6 +4975,7 @@ begin
   Result := CompareString(GetThreadLocale, SORT_STRINGSORT or NORM_IGNORECASE,
     PChar(S1), Length(S1), PChar(S2), Length(S2)) - 2;
 end;
+{$ENDIF}
 
 function Copy2Symb(const S: string; Symb: Char): string;
 var
@@ -5754,7 +5775,6 @@ begin
     Result := FileDateToDateTime(Age);
 end;
 
-{$IFDEF MSWINDOWS}
 function HasAttr(const FileName: string; Attr: Integer): Boolean;
 var
   FileAttr: Integer;
@@ -5764,7 +5784,6 @@ begin
   {$WARNINGS ON}
   Result := (FileAttr >= 0) and (FileAttr and Attr = Attr);
 end;
-{$ENDIF MSWINDOWS}
 
 function DeleteFilesEx(const FileMasks: array of string): Boolean;
 var
@@ -5811,7 +5830,12 @@ end;
 function GenTempFileName(FileName: string): string;
 var
   TempDir: string;
+  {$IFDEF MSWINDOWS}
   TempFile: array [0..MAX_PATH] of Char;
+  {$ENDIF}
+  {$IFDEF LINUX}
+  TempFile: string;
+  {$ENDIF}
   STempDir: TFileName;
   Res: Integer;
 begin
@@ -5836,7 +5860,7 @@ begin
     TempFile); { address of buffer that receives the new filename}
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  TempFile := GetTempFileName('~JV');
+//  TempFile := GetTempFileName('~JV');
   {$ENDIF LINUX}
   if Res <> 0 then
     Result := TempFile
@@ -6159,7 +6183,7 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 begin
-  if FileExists(LongtName) then
+  if FileExists(LongName) then
     Result := LongName
   else
     Result := '';
@@ -6289,7 +6313,7 @@ begin
 end;
 
 const
-  OneMillisecond = 1/24/60/60/1000;
+  OneMillisecond = 1/24/60/60/1000;  // as TDateTime 
 
 function CompareDateTime(const A, B:TDateTime):integer;
 begin
@@ -6459,7 +6483,7 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 begin
-  if Directory = '' then Directory := GetCurrentDirectory;
+  if Directory = '' then Directory := GetCurrentDir;
   Libc.system(PChar(Format('cd "%s" ; "%s" %s &', [Directory, FileName, Parameters])));
 end;
 {$ENDIF LINUX}
@@ -7450,14 +7474,16 @@ begin
     Result := GlobalAllocPtr(HeapAllocFlags or GMEM_ZEROINIT, Size)
      {$WARNINGS ON}
     {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
+  {$IFDEF LINUX}
+  begin
     Result := Libc.malloc(Size + 4);
     if Result <> nil then
     begin
       PInteger(Result)^ := Size;
       Result := Pointer(Integer(Result) + SizeOf(Integer));
     end;
-    {$ENDIF LINUX}
+  end
+  {$ENDIF LINUX}
   else
     Result := nil;
 end;
@@ -7886,6 +7912,7 @@ begin
     Folder := FN;
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 procedure FitRectToScreen(var Rect: TRect);
 var
@@ -7921,7 +7948,6 @@ begin
     end;
   end;
 end;
-{$ENDIF MSWINDOWS}
 
 procedure CenterWindow(Wnd: HWND);
 var
