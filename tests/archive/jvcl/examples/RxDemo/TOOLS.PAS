@@ -6,7 +6,7 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, TabNotBk, ExtCtrls, JvPicclip, JvClipView, JvPlacemnt,
   JvDualList, JvDataConv, Spin, JvxCtrls, JvCalc, Mask, JvToolEdit,
-  ComCtrls, JvComponent;
+  ComCtrls, JvComponent, JvBaseDlg;
 
 type
   TToolsForm = class(TForm)

@@ -213,109 +213,125 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
     ShowHint = True
     OnClick = SetCurrentBtnClick
   end
-  object MaxPosLeftEdit: TJvxCurrencyEdit
+  object MaxPosLeftEdit: TJvValidateEdit
     Left = 162
     Top = 10
     Width = 23
     Height = 21
     AutoSize = False
-    CheckOnExit = True
-    DecimalPlaces = 0
-    DisplayFormat = ',0;-,0'
+    CheckChars = '01234567890'
+    HasMaxValue = True
     MaxValue = 10000
+    PasswordChar = #0
+    ReadOnly = False
     TabOrder = 3
-    ZeroEmpty = False
+    Text = '0'
+    Value = 0
   end
-  object MaxPosTopEdit: TJvxCurrencyEdit
+  object MaxPosTopEdit: TJvValidateEdit
     Left = 242
     Top = 10
     Width = 23
     Height = 21
     AutoSize = False
-    CheckOnExit = True
-    DecimalPlaces = 0
-    DisplayFormat = ',0;-,0'
+    CheckChars = '01234567890'
+    HasMaxValue = True
     MaxValue = 10000
+    PasswordChar = #0
+    ReadOnly = False
     TabOrder = 4
-    ZeroEmpty = False
+    Text = '0'
+    Value = 0
   end
-  object MaxSizeWidthEdit: TJvxCurrencyEdit
+  object MaxSizeWidthEdit: TJvValidateEdit
     Left = 162
     Top = 39
     Width = 23
     Height = 21
     AutoSize = False
-    CheckOnExit = True
-    DecimalPlaces = 0
-    DisplayFormat = ',0;-,0'
+    CheckChars = '01234567890'
+    HasMaxValue = True
     MaxValue = 10000
+    PasswordChar = #0
+    ReadOnly = False
     TabOrder = 5
-    ZeroEmpty = False
+    Text = '0'
+    Value = 0
   end
-  object MaxSizeHeightEdit: TJvxCurrencyEdit
+  object MaxSizeHeightEdit: TJvValidateEdit
     Left = 242
     Top = 39
     Width = 23
     Height = 21
     AutoSize = False
-    CheckOnExit = True
-    DecimalPlaces = 0
-    DisplayFormat = ',0;-,0'
+    CheckChars = '01234567890'
+    HasMaxValue = True
     MaxValue = 10000
+    PasswordChar = #0
+    ReadOnly = False
     TabOrder = 6
-    ZeroEmpty = False
+    Text = '0'
+    Value = 0
   end
-  object MaxTrackWidthEdit: TJvxCurrencyEdit
+  object MaxTrackWidthEdit: TJvValidateEdit
     Left = 162
     Top = 68
     Width = 23
     Height = 21
     AutoSize = False
-    CheckOnExit = True
-    DecimalPlaces = 0
-    DisplayFormat = ',0;-,0'
+    CheckChars = '01234567890'
+    HasMaxValue = True
     MaxValue = 10000
+    PasswordChar = #0
+    ReadOnly = False
     TabOrder = 7
-    ZeroEmpty = False
+    Text = '0'
+    Value = 0
   end
-  object MaxTrackHeightEdit: TJvxCurrencyEdit
+  object MaxTrackHeightEdit: TJvValidateEdit
     Left = 242
     Top = 68
     Width = 23
     Height = 21
     AutoSize = False
-    CheckOnExit = True
-    DecimalPlaces = 0
-    DisplayFormat = ',0;-,0'
+    CheckChars = '01234567890'
+    HasMaxValue = True
     MaxValue = 10000
+    PasswordChar = #0
+    ReadOnly = False
     TabOrder = 8
-    ZeroEmpty = False
+    Text = '0'
+    Value = 0
   end
-  object MinTrackWidthEdit: TJvxCurrencyEdit
+  object MinTrackWidthEdit: TJvValidateEdit
     Left = 162
     Top = 98
     Width = 23
     Height = 21
     AutoSize = False
-    CheckOnExit = True
-    DecimalPlaces = 0
-    DisplayFormat = ',0;-,0'
+    CheckChars = '01234567890'
+    HasMaxValue = True
     MaxValue = 10000
+    PasswordChar = #0
+    ReadOnly = False
     TabOrder = 9
-    ZeroEmpty = False
+    Text = '0'
+    Value = 0
   end
-  object MinTrackHeightEdit: TJvxCurrencyEdit
+  object MinTrackHeightEdit: TJvValidateEdit
     Left = 242
     Top = 98
     Width = 23
     Height = 21
     AutoSize = False
-    CheckOnExit = True
-    DecimalPlaces = 0
-    DisplayFormat = ',0;-,0'
+    CheckChars = '01234567890'
+    HasMaxValue = True
     MaxValue = 10000
+    PasswordChar = #0
+    ReadOnly = False
     TabOrder = 10
-    ZeroEmpty = False
+    Text = '0'
+    Value = 0
   end
   object OkBtn: TButton
     Left = 163

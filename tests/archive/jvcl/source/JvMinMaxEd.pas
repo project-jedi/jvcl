@@ -44,7 +44,7 @@ uses
   DsgnIntf,
   {$ENDIF}
   Consts,
-  JvCurrEdit, JvVCLUtils, JvPlacemnt, JvToolEdit;
+  JvCurrEdit, JvVCLUtils, JvPlacemnt, JvToolEdit, JvValidateEdit, JvEdit;
 
 type
   TMinMaxInfoEditDialog = class(TForm)
@@ -68,14 +68,14 @@ type
     MaxTrackBtn: TSpeedButton;
     MinTrackBtn: TSpeedButton;
     ClearBtn: TButton;
-    MaxPosLeftEdit: TJvxCurrencyEdit;
-    MaxPosTopEdit: TJvxCurrencyEdit;
-    MaxSizeWidthEdit: TJvxCurrencyEdit;
-    MaxSizeHeightEdit: TJvxCurrencyEdit;
-    MaxTrackWidthEdit: TJvxCurrencyEdit;
-    MaxTrackHeightEdit: TJvxCurrencyEdit;
-    MinTrackWidthEdit: TJvxCurrencyEdit;
-    MinTrackHeightEdit: TJvxCurrencyEdit;
+    MaxPosLeftEdit: TJvValidateEdit;
+    MaxPosTopEdit: TJvValidateEdit;
+    MaxSizeWidthEdit: TJvValidateEdit;
+    MaxSizeHeightEdit: TJvValidateEdit;
+    MaxTrackWidthEdit: TJvValidateEdit;
+    MaxTrackHeightEdit: TJvValidateEdit;
+    MinTrackWidthEdit: TJvValidateEdit;
+    MinTrackHeightEdit: TJvValidateEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure SetCurrentBtnClick(Sender: TObject);

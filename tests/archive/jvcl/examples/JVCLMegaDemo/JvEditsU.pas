@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvTypedEdit, JvEdit, JvFloatEdit, JvCurrEdit, JvToolEdit, Mask,
+  StdCtrls, JvEdit, JvValidateEdit, JvCurrEdit, JvToolEdit, Mask,
   ExtCtrls, JvComponent, JvCaptionPanel, JvComCtrls, JvMaskEdit, JvSpin;
 
 type
@@ -35,12 +35,12 @@ type
     Label21: TLabel;
     JvFileNameBox1: TJvFilenameEdit;
     JvButtonBox1: TJvComboEdit;
-    JvFloatEdit1: TJvFloatEdit;
+    JvFloatEdit1: TJvValidateEdit;
     JvCalculatorBox1: TJvCalcEdit;
-    JvCurrencyEdit1: TJvCurrencyEdit;
-    JvFloatEdit21: TJvFloatEdit2;
-    JvIntegerEdit1: TJvIntegerEdit;
-    JvYearEdit1: TJvYearEdit;
+    JvCurrencyEdit1: TJvValidateEdit;
+    JvFloatEdit21: TJvValidateEdit;
+    JvIntegerEdit1: TJvValidateEdit;
+    JvYearEdit1: TJvValidateEdit;
     JvDirectoryEdit1: TJvDirectoryEdit;
     JvDateEdit1: TJvDateEdit;
     JvSpinEdit1: TJvSpinEdit;

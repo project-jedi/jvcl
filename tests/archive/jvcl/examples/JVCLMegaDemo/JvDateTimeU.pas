@@ -5,7 +5,7 @@ interface
 uses 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvComponent, JvCalendar, ComCtrls, JvMonthCalendar, JvDateTimePicker,
-  StdCtrls, JvEdit, JvTypedEdit, Mask, JvToolEdit, JvxClock, ExtCtrls,
+  StdCtrls, JvEdit, JvValidateEdit, Mask, JvToolEdit, JvxClock, ExtCtrls,
   JvAnalogClock, JvClock;
 
 type
@@ -16,7 +16,7 @@ type
     JvDateTimePicker1: TJvDateTimePicker;
     JvMonthCalendar1: TJvMonthCalendar;
     JvMonthCalendar21: TJvMonthCalendar2;
-    JvYearEdit1: TJvYearEdit;
+    JvYearEdit1: TJvValidateEdit;
     Label1: TLabel;
     JvDateEdit1: TJvDateEdit;
     Label4: TLabel;

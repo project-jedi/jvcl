@@ -110,7 +110,7 @@ object DestTableDlg: TDestTableDlg
       TabStop = True
       OnClick = RecordCountBtnClick
     end
-    object RecordCntEdit: TJvxCurrencyEdit 
+    object RecordCntEdit: TJvValidateEdit
       Left = 68
       Top = 43
       Width = 55

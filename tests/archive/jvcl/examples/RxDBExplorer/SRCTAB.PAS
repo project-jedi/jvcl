@@ -14,7 +14,7 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, ExtCtrls, Grids, StdCtrls, Mask, JvToolEdit, JvPlacemnt, DB,
-  JvDBLists, DBTables, JvDBCtrl, JvMemtable, DBGrids, JvCurrEdit;
+  JvDBLists, DBTables, JvDBCtrl, JvMemtable, DBGrids, JvCurrEdit, JvValidateEdit;
 
 type
   TSrcTableDlg = class(TForm)
@@ -40,7 +40,7 @@ type
     BottomPanel: TPanel;
     Label3: TLabel;
     MapGrid: TJvDBGrid ;
-    RecordCntEdit: TJvxCurrencyEdit ;
+    RecordCntEdit: TJvValidateEdit ;
     procedure FormCreate(Sender: TObject);
     procedure MapBtnClick(Sender: TObject);
     procedure SrcNameEditChange(Sender: TObject);

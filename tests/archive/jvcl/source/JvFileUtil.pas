@@ -109,6 +109,9 @@ uses
   OleAuto,
   {$ENDIF}
   {$ENDIF}
+  {$IFDEF COMPILER5}
+  FileCtrl,
+  {$ENDIF}
   ShellAPI, Forms,
   JvDateUtil, JvVCLUtils, JvPrgrss, JvBrowseFolder;
 

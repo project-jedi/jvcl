@@ -18,7 +18,7 @@ object JvEdits: TJvEdits
     Top = 19
     Width = 122
     Height = 15
-    Caption = 'I '#39'm a JvFilenameEdit: '
+    Caption = 'I ''m a JvFilenameEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -31,7 +31,7 @@ object JvEdits: TJvEdits
     Top = 50
     Width = 118
     Height = 15
-    Caption = 'I '#39'm a JvDirectoryEdit: '
+    Caption = 'I ''m a JvDirectoryEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -44,7 +44,7 @@ object JvEdits: TJvEdits
     Top = 81
     Width = 111
     Height = 15
-    Caption = 'I '#39'm a JvComboEdit: '
+    Caption = 'I ''m a JvComboEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -57,7 +57,7 @@ object JvEdits: TJvEdits
     Top = 112
     Width = 97
     Height = 15
-    Caption = 'I '#39'm a JvFloatEdit :'
+    Caption = 'I ''m a JvFloatEdit :'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -70,7 +70,7 @@ object JvEdits: TJvEdits
     Top = 144
     Width = 95
     Height = 15
-    Caption = 'I '#39'm a JvCalcEdit: '
+    Caption = 'I ''m a JvCalcEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -83,7 +83,7 @@ object JvEdits: TJvEdits
     Top = 175
     Width = 119
     Height = 15
-    Caption = 'I '#39'm a JvCurrencyEdit: '
+    Caption = 'I ''m a JvCurrencyEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -96,7 +96,7 @@ object JvEdits: TJvEdits
     Top = 237
     Width = 108
     Height = 15
-    Caption = 'I '#39'm a JvIntegerEdit: '
+    Caption = 'I ''m a JvIntegerEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -109,7 +109,7 @@ object JvEdits: TJvEdits
     Top = 269
     Width = 95
     Height = 15
-    Caption = 'I '#39'm a JvYearEdit: '
+    Caption = 'I ''m a JvYearEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -213,7 +213,7 @@ object JvEdits: TJvEdits
     Top = 206
     Width = 101
     Height = 15
-    Caption = 'I '#39'm a JvFloatEdit2:'
+    Caption = 'I ''m a JvFloatEdit2:'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -252,7 +252,7 @@ object JvEdits: TJvEdits
     Top = 300
     Width = 96
     Height = 15
-    Caption = 'I '#39'm a  JvDateEdit:'
+    Caption = 'I ''m a  JvDateEdit:'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -266,7 +266,7 @@ object JvEdits: TJvEdits
     Top = 331
     Width = 95
     Height = 15
-    Caption = 'I '#39'm a  JvSpinEdit:'
+    Caption = 'I ''m a  JvSpinEdit:'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -280,7 +280,7 @@ object JvEdits: TJvEdits
     Top = 363
     Width = 105
     Height = 15
-    Caption = 'I '#39'm a  JvIpAddress:'
+    Caption = 'I ''m a  JvIpAddress:'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -349,7 +349,7 @@ object JvEdits: TJvEdits
     TabOrder = 1
     OnButtonClick = JvButtonBox1ButtonClick
   end
-  object JvFloatEdit1: TJvFloatEdit
+  object JvFloatEdit1: TJvValidateEdit
     Left = 156
     Top = 110
     Width = 150
@@ -366,7 +366,7 @@ object JvEdits: TJvEdits
     PasswordChar = #0
     ReadOnly = False
     TabOrder = 2
-    Value = 1.900000000000000000
+    Value = 1.9
   end
   object JvCalculatorBox1: TJvCalcEdit
     Left = 156
@@ -377,7 +377,7 @@ object JvEdits: TJvEdits
     NumGlyphs = 2
     TabOrder = 3
   end
-  object JvCurrencyEdit1: TJvCurrencyEdit
+  object JvCurrencyEdit1: TJvValidateEdit
     Left = 156
     Top = 172
     Width = 150
@@ -385,11 +385,11 @@ object JvEdits: TJvEdits
     Alignment = taRightJustify
     ReadOnly = False
     TabOrder = 4
-    Value = 1.000000000000000000
+    Value = 1
     HasMaxValue = False
     HasMinValue = False
   end
-  object JvFloatEdit21: TJvFloatEdit2
+  object JvFloatEdit21: TJvValidateEdit
     Left = 156
     Top = 204
     Width = 150
@@ -398,14 +398,14 @@ object JvEdits: TJvEdits
     MaxLength = 10
     ReadOnly = False
     TabOrder = 5
-    Value = 1.000000000000000000
-    MaxValue = 999.000000000000000000
-    MinValue = 1.000000000000000000
+    Value = 1
+    MaxValue = 999
+    MinValue = 1
     MaxDecimals = 5
     HasMaxValue = True
     HasMinValue = True
   end
-  object JvIntegerEdit1: TJvIntegerEdit
+  object JvIntegerEdit1: TJvValidateEdit
     Left = 156
     Top = 235
     Width = 150
@@ -419,7 +419,7 @@ object JvEdits: TJvEdits
     HasMaxValue = True
     HasMinValue = True
   end
-  object JvYearEdit1: TJvYearEdit
+  object JvYearEdit1: TJvValidateEdit
     Left = 156
     Top = 266
     Width = 150

@@ -7,7 +7,8 @@ uses
   Forms, Dialogs, JvPlacemnt, StdCtrls, JvxCtrls, TabNotBk, JvxSlider, ExtCtrls,
   JvSwitch, Mask, JvToolEdit, Spin, JvCurrEdit, FileCtrl, JvSplit, Grids,
   Outline, DirOutln, JvDice, JvxClock, JvxAnimate, JvSpin, 
-  ComCtrls, JvComponent, JvColorCombo, JvCombobox, JvEdit;
+  ComCtrls, JvComponent, JvColorCombo, JvCombobox, JvEdit, JvValidateEdit,
+  JvMaskEdit;
 
 type
   TControlsForm = class(TForm)
@@ -45,17 +46,17 @@ type
     GroupBox8: TGroupBox;
     GroupBox9: TGroupBox;
     GroupBox10: TGroupBox;
-    ComboEdit1: TJvComboEdit ;
+    ComboEdit1: TJvComboEdit;
     Label13: TLabel;
     Label14: TLabel;
     Label15: TLabel;
     Label16: TLabel;
     Label17: TLabel;
     Label18: TLabel;
-    DateEdit1: TJvDateEdit ;
-    FilenameEdit1: TJvFilenameEdit ;
-    DirectoryEdit1: TJvDirectoryEdit ;
-    CurrencyEdit1: TJvxCurrencyEdit ;
+    DateEdit1: TJvDateEdit;
+    FilenameEdit1: TJvFilenameEdit;
+    DirectoryEdit1: TJvDirectoryEdit;
+    CurrencyEdit1: TJvValidateEdit;
     Label22: TLabel;
     Edit1: TEdit;
     rxLabel1: TJvxLabel ;
@@ -351,12 +352,12 @@ end;
 
 procedure TControlsForm.Edit1Change(Sender: TObject);
 begin
-  CurrencyEdit1.DisplayFormat := Edit1.Text;
+//  CurrencyEdit1.DisplayFormat := Edit1.Text;
 end;
 
 procedure TControlsForm.CheckBox7Click(Sender: TObject);
 begin
-  CurrencyEdit1.FormatOnEditing := CheckBox7.Checked;
+//  CurrencyEdit1.FormatOnEditing := CheckBox7.Checked;
 end;
 
 procedure TControlsForm.ColorComboBox2Change(Sender: TObject);

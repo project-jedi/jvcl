@@ -292,7 +292,7 @@ object OptionsDialog: TOptionsDialog
           Height = 13
           Caption = 'SQL text &font:  '
         end
-        object MaxHistoryEdit: TJvxCurrencyEdit 
+        object MaxHistoryEdit: TJvValidateEdit
           Left = 220
           Top = 13
           Width = 65
@@ -543,7 +543,7 @@ object OptionsDialog: TOptionsDialog
           OnClick = OptionsChanged
         end
       end
-      object BufferSizeEdit: TJvxCurrencyEdit 
+      object BufferSizeEdit: TJvValidateEdit
         Left = 210
         Top = 212
         Width = 101

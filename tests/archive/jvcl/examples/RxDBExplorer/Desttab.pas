@@ -13,7 +13,7 @@ interface
 
 uses WinTypes, WinProcs, SysUtils, Classes, Graphics, Forms, Controls,
   StdCtrls, ExtCtrls, FileCtrl, JvPlacemnt, Mask, JvToolEdit, DB, DBTables,
-  JvLookup, JvCurrEdit;
+  JvLookup, JvCurrEdit, JvValidateEdit;
 
 type
   TDestTableDlg = class(TForm)
@@ -27,7 +27,7 @@ type
     AllRecsBtn: TRadioButton;
     FirstRecsBtn: TRadioButton;
     Label2: TLabel;
-    RecordCntEdit: TJvxCurrencyEdit ;
+    RecordCntEdit: TJvValidateEdit;
     procedure TabnameEditAfterDialog(Sender: TObject; var Name: string;
       var Action: Boolean);
     procedure TabnameEditChange(Sender: TObject);

@@ -7,7 +7,7 @@ uses
   Main in 'MAIN.PAS' {MainForm},
   Dbaware in 'DBAWARE.PAS' {DBAwareForm},
   Tools in 'TOOLS.PAS' {ToolsForm},
-  Ctrls in 'CTRLS.PAS' {ControlsForm},
+  CTRLS in 'CTRLS.pas' {ControlsForm},
   About in 'ABOUT.PAS' {AboutForm},
   PageDemo in 'PAGEDEMO.PAS' {ClientAssistant};
 

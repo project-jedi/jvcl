@@ -244,6 +244,7 @@ begin
     with TJvMultiDateHttpThread.Create(Infos) do
     begin
       OnTerminate := ThreadDateTerminated;
+      FreeOnTerminate := true;
       Resume;
     end;
 end;
@@ -361,7 +362,7 @@ begin
 
     StopConnection(FInfos);
     Dispose(FInfos);
-    Free;
+    // Free; // (p3) FreeOnTerminate set when creating, so don't free here
   end;
 end;
 

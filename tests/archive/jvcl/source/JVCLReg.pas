@@ -58,12 +58,12 @@ uses
 
   // Standard
   JvEdit, JvCombobox, JvCheckBox, JvRadioButton, JvButton,
-  JvLabel, JvScrollBar, JvRadioGroup, JvPanel, JvMemo,
+  JvLabel, JvScrollBar, JvRadioGroup, JvPanel, JvMemo, JvValidateEdit,
 
   // Edits
   {  JvCustomBox, JvFileNameBox, JvDirectoryBox, JvImageBox, JvButtonBox,
   JvCalculatorBox, }
-  JvTypedEdit, JvFloatEdit,
+//  JvTypedEdit, JvFloatEdit,
 
   // Controls
   JvPlaylist, JvButtonShaped, JvFavoritesButton, JvClock, JvStartMenuBtn,
@@ -259,7 +259,7 @@ begin
   RegisterComponents(srJvStandardPalette,
     [TJvLabel, TJvEdit, TJvMemo, TJvButton, TJvCheckBox, TJvRadioButton,
      TJvListBox, TJvCombobox, TJvScrollBar, TJvGroupBox, TJvRadioGroup,
-     TJvPanel, TJvJVCLAboutComponent]);
+     TJvPanel, TJvJVCLAboutComponent, TJvValidateEdit]);
 
   // Jv Additional
   RegisterComponents(srJvAdditionalPalette,
@@ -404,8 +404,8 @@ begin
      TJvApplication, TJvEnterAsTab, TJvKeyboardStates ]);
 
   // Jv Convert
-  RegisterComponents(srJvConvertPalette,
-    [TJvFloatEdit, TJvFloatEdit2, TJvCurrencyEdit, TJvIntegerEdit, TJvYearEdit]);
+//  RegisterComponents(srJvConvertPalette,
+//    [TJvFloatEdit, TJvFloatEdit2, TJvCurrencyEdit, TJvIntegerEdit, TJvYearEdit]);
 
   // JvBands
   RegisterCustomModule(TJvBandForm, TCustomModule);

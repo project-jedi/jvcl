@@ -80,7 +80,7 @@ object SrcTableDlg: TSrcTableDlg
         TabStop = True
         OnClick = AllRecsBtnClick
       end
-      object RecordCntEdit: TJvxCurrencyEdit 
+      object RecordCntEdit: TJvValidateEdit
         Left = 204
         Top = 17
         Width = 55

@@ -155,7 +155,7 @@ object JvDateTimeFrm: TJvDateTimeFrm
     DateFirst = 37421.000000000000000000
     Today = 37421.516127847200000000
   end
-  object JvYearEdit1: TJvYearEdit
+  object JvYearEdit1: TJvValidateEdit
     Left = 152
     Top = 48
     Width = 105

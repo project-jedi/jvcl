@@ -63,7 +63,7 @@ contains
   JvIDEZoom in '..\Source\JvIDEZoom.pas',
   JvaDsgn in '..\Source\JvaDsgn.pas',
   JvRegAutoEditor in '..\Source\JvRegAutoEditor.pas' {RegEditor},
-  JvHTHintEditor in '..\Source\JvHTHintEditor.pas' {HintEditor},
+  JvHTHintEditor in '..\Source\JvhtHintEditor.pas' {HintEditor},
   JvIReg in '..\Source\JvIReg.pas',
   JVCLReg in '..\Source\JVCLReg.pas',
   JvAlarmsEditor in '..\Source\JvAlarmsEditor.pas',
@@ -100,11 +100,10 @@ contains
   JvFormWallpaperEditor in '..\source\JvFormWallpaperEditor.pas',
   JvIcoLEdit in '..\source\JvIColEdit.pas' {IconListDialog},
   JvGradEdit in '..\source\JvGradedit.pas' {GradCaptionsEditor},
-  JvMinMaxEd in '..\source\JvMinMaxEd.pas' {MinMaxInfoEditDialog},
   JvPgMngrEd in '..\source\JvPgMngrEd.pas' {JvProxyEditor},
   JvPictEdit in '..\source\JvPictEdit.pas' {PictureEditDialog},
   JvPresrDsn in '..\source\JvPresrDsn.pas' {JvFormPropsDlg},
-  JvQBndDlg in '..\source\JvQBndDlg.pas' {JvQueryParamsDialog},
+  JvQBndDlg in '..\source\JvQbnddlg.pas' {JvQueryParamsDialog},
   JvSbEdit in '..\source\JvSbEdit.pas' {JvSpeedbarEditor},
   JvSelDSFrm in '..\source\JvSelDSFrm.pas' {JvSelectDataSetForm},
   JvTimLstEd in '..\source\JvTimLstEd.pas' {JvTimerItemsEditor},
@@ -120,6 +119,7 @@ contains
   JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
   ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor},
   JvTransLedReg in '..\source\JvTransLEDReg.pas',
-  JvJVCLAboutProperty in '..\source\JvJVCLAboutProperty.pas';
+  JvJVCLAboutProperty in '..\source\JvJVCLAboutProperty.pas',
+  JvMinMaxEd in '..\source\JvMinMaxEd.pas' {MinMaxInfoEditDialog};
 
 end.

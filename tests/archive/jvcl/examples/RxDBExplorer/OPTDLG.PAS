@@ -14,7 +14,7 @@ interface
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, TabNotBk, JvPlacemnt, DB, JvDBLists,
-  JvLookup, Mask, JvCurrEdit, ComCtrls, DBTables, JvToolEdit;
+  JvLookup, Mask, JvCurrEdit, ComCtrls, DBTables, JvToolEdit, JvValidateEdit;
 
 type
   TOptionsDialog = class(TForm)
@@ -51,7 +51,7 @@ type
     Image4: TImage;
     Label7: TLabel;
     Label8: TLabel;
-    MaxHistoryEdit: TJvxCurrencyEdit ;
+    MaxHistoryEdit: TJvValidateEdit ;
     SQLFontBtn: TButton;
     SQLMemo: TMemo;
     FontDialog: TFontDialog;
@@ -71,7 +71,7 @@ type
     CBBlob: TCheckBox;
     CBVendor: TCheckBox;
     Label9: TLabel;
-    BufferSizeEdit: TJvxCurrencyEdit ;
+    BufferSizeEdit: TJvValidateEdit ;
     GroupBox6: TGroupBox;
     ShowWarnBox: TCheckBox;
     QueryInThreadBtn: TCheckBox;

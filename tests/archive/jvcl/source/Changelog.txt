@@ -1,4 +1,7 @@
 2003-03-23
+Replaced TJvFloatEdit, TJvFloatEdit2, TJvCurrencyEdit, TJvxCurrencyEdit, TJvIntegerEdit and TJvYearEdit with TJvValidateEdit. JvFloatEdit.pas and JvTypedEdit.pas moved to \archive, examples updated. // peter3
+
+2003-03-23
 Merged TJvRichEdit with TJvxRichEdit. TJvxRichEdit renamed to TJvRichEdit. JvRichEdit.pas moved to \archive. // roko, peter3
 2003-03-23
 - Removed TJvOpenDialog2000 and TJvSaveDialog2000 from registration in JVCLReg.pas: use TJvOpenDialog and TJvSaveDialog instead. They contain a better implementation of the same things as the xxx2000 versions. // peter3

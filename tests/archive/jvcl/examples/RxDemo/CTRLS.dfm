@@ -28,6 +28,7 @@ object ControlsForm: TControlsForm
     Width = 504
     Height = 313
     Align = alClient
+    PageIndex = 1
     TabsPerRow = 4
     TabFont.Charset = DEFAULT_CHARSET
     TabFont.Color = clBtnText
@@ -220,6 +221,7 @@ object ControlsForm: TControlsForm
           Font.Style = []
           ItemIndex = 0
           ParentFont = False
+          Sorted = False
           TabOrder = 0
           OnChange = FontComboBox1Change
         end
@@ -1067,21 +1069,27 @@ object ControlsForm: TControlsForm
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ParentFont = False
+          Visible = False
         end
-        object CurrencyEdit1: TJvxCurrencyEdit
+        object CurrencyEdit1: TJvValidateEdit
           Left = 8
           Top = 33
           Width = 97
           Height = 21
           AutoSize = False
-          DisplayFormat = ',0.00;-,0.00'
+          CheckChars = '01234567890'
+          EditText = '0'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ParentFont = False
+          PasswordChar = #0
+          ReadOnly = False
           TabOrder = 0
+          Text = '0'
+          Value = 0
         end
         object Edit1: TEdit
           Left = 164
@@ -1096,6 +1104,7 @@ object ControlsForm: TControlsForm
           ParentFont = False
           TabOrder = 1
           Text = ',0.00;-,0.00'
+          Visible = False
           OnChange = Edit1Change
         end
         object CheckBox7: TCheckBox
@@ -1111,6 +1120,7 @@ object ControlsForm: TControlsForm
           Font.Style = []
           ParentFont = False
           TabOrder = 2
+          Visible = False
           OnClick = CheckBox7Click
         end
       end
@@ -1389,7 +1399,6 @@ object ControlsForm: TControlsForm
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ParentFont = False
-          ReadOnly = False
           TabOrder = 0
         end
         object ComboBox9: TComboBox

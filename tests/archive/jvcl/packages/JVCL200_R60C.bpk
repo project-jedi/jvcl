@@ -25,7 +25,7 @@
       ..\lib6\JvDeleteError.obj ..\lib6\JvDeviceChanged.obj 
       ..\lib6\JvDirectories.obj ..\lib6\JvDiskPrompt.obj ..\lib6\JvDragDrop.obj 
       ..\lib6\JvDrawGrid.obj ..\lib6\JvEasterEgg.obj ..\lib6\JvEdit.obj 
-      ..\lib6\JvFavoritesButton.obj ..\lib6\JvFloatEdit.obj 
+      ..\lib6\JvFavoritesButton.obj ..\lib6\JvValidateEdit.obj
       ..\lib6\JvFormAlarms.obj ..\lib6\JvFormAnimatedIcon.obj 
       ..\lib6\JvFormAnimation.obj ..\lib6\JvFormImage.obj 
       ..\lib6\JvFormLogin.obj ..\lib6\JvFormParser.obj ..\lib6\JvFormPass.obj 
@@ -104,7 +104,7 @@
       ..\lib6\JvSHFileOp.obj ..\lib6\JvTimeLine.obj ..\lib6\JvTransBtn.obj 
       ..\lib6\JvTransBtn2.obj ..\lib6\JvDriveCtrls.obj ..\lib6\JvOLBar.obj 
       ..\lib6\JvTMTL.obj ..\lib6\JvColorForm.obj ..\lib6\JvArrow.obj 
-      ..\lib6\JvTypedEdit.obj ..\lib6\JvTranslator.obj ..\lib6\JvSimpleXml.obj 
+      ..\lib6\JvTranslator.obj ..\lib6\JvSimpleXml.obj
       ..\lib6\JvHotkeyEx.obj ..\lib6\JvObjPickerComp.obj 
       ..\lib6\JvImageDrawThread.obj ..\lib6\JvInspector.obj ..\lib6\JvInspDB.obj 
       ..\lib6\JvHidControllerClass.obj ..\lib6\JvAnalogClock.obj 
@@ -282,7 +282,7 @@
       <FILE FILENAME="..\source\JvEasterEgg.pas" FORMNAME="" UNITNAME="JvEasterEgg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvEdit.pas" FORMNAME="" UNITNAME="JvEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFavoritesButton.pas" FORMNAME="" UNITNAME="JvFavoritesButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvFloatEdit.pas" FORMNAME="" UNITNAME="JvFloatEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvValidateEdit.pas" FORMNAME="" UNITNAME="JvValidateEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormAlarms.pas" FORMNAME="FormAlarm" UNITNAME="JvFormAlarms" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormAnimatedIcon.pas" FORMNAME="" UNITNAME="JvFormAnimatedIcon" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormAnimation.pas" FORMNAME="" UNITNAME="JvFormAnimation" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -476,7 +476,6 @@
       <FILE FILENAME="..\source\JvTMTL.pas" FORMNAME="" UNITNAME="JvTMTL" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvColorForm.pas" FORMNAME="JvClrFrm" UNITNAME="JvColorForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvArrow.pas" FORMNAME="" UNITNAME="JvArrow" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvTypedEdit.pas" FORMNAME="" UNITNAME="JvTypedEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTranslator.pas" FORMNAME="" UNITNAME="JvTranslator" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSimpleXml.pas" FORMNAME="" UNITNAME="JvSimpleXml" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvHotkeyEx.pas" FORMNAME="" UNITNAME="JvHotkeyEx" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

@@ -442,7 +442,7 @@ begin
   RegisterComponents(srJvCompositesPalette,
     [TJvComboEdit, TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvCalcEdit]);
 
-  RegisterComponents(srJvConvertPalette, [TJvxCurrencyEdit]);
+//  RegisterComponents(srJvConvertPalette, [TJvxCurrencyEdit]);
 
   RegisterComponents(srJvControlsPalette, [TJvTextListBox,
     TJvxCheckListBox, TJvxSplitter, TJvxSlider,
