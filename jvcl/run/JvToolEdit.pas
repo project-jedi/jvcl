@@ -1083,7 +1083,7 @@ uses
   ShellAPI, ActiveX,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  JvBrowseFolder,
+  JvBrowseFolder, MultiMon,
   {$ENDIF VCL}
   JvPickDate, JvJCLUtils, JvJVCLUtils,
   JvThemes, JvResources, JvConsts;
@@ -1233,6 +1233,19 @@ var
 //=== Local procedures =======================================================
 
 {$IFDEF VCL}
+function FindMonitor(Handle: HMONITOR): TMonitor;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to Screen.MonitorCount - 1 do
+    if Screen.Monitors[I].Handle = Handle then
+    begin
+      Result := Screen.Monitors[I];
+      break;
+    end;
+end;
+
 function DateHook: TDateHook;
 begin
   if GDateHook = nil then
@@ -2682,7 +2695,7 @@ begin
 
     P := Parent.ClientToScreen(Point(Left, Top));
     {$IFDEF VCL}
-    Monitor := Screen.MonitorFromWindow(Handle);
+    Monitor := FindMonitor(MonitorFromWindow(Handle, MONITOR_DEFAULTTONEAREST));
     Y := Monitor.Top + P.Y + Height;
     if Y + FPopup.Height > Monitor.Top + Monitor.Height then
       Y := Monitor.Top + P.Y - FPopup.Height;
@@ -5010,7 +5023,7 @@ var
 {$ENDIF VCL}
 begin
   {$IFDEF VCL}
-  Monitor := Screen.MonitorFromPoint(Origin);
+  Monitor := FindMonitor(MonitorFromPoint(Origin,MONITOR_DEFAULTTONEAREST));
   Inc(Origin.X, Monitor.Left);
   Inc(Origin.Y, Monitor.Top);
   SetBounds(Origin.X, Origin.Y, Width, Height);
