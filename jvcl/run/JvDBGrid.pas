@@ -1877,14 +1877,14 @@ type
     Column: TColumn;
     EndIndex: Integer;
   end;
-  PColumnArray = ^TColumnArray;
-  TColumnArray = array [0..0] of TColumnInfo;
+  TColumnArray = array of TColumnInfo;
+  
 const
   Delims = [' ', ','];
 var
   I, J: Integer;
   SectionName, S: string;
-  ColumnArray: PColumnArray;
+  ColumnArray: TColumnArray;
 begin
   if Section <> '' then
     SectionName := Section
@@ -1893,21 +1893,20 @@ begin
   if Assigned(AppStorage) then
     with Columns do
     begin
-      ColumnArray := AllocMemo(Count * SizeOf(TColumnInfo));
+      SetLength(ColumnArray, Count);
       try
         for I := 0 to Count - 1 do
         begin
           S := AppStorage.ReadString(AppStorage.ConcatPaths([SectionName,
             Format('%s.%s', [Name, Items[I].FieldName])]));
-          ColumnArray^[I].Column := Items[I];
-          ColumnArray^[I].EndIndex := Items[I].Index;
+          ColumnArray[I].Column := Items[I];
+          ColumnArray[I].EndIndex := Items[I].Index;
           if S <> '' then
           begin
-            ColumnArray^[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims),
-              ColumnArray^[I].EndIndex);
+            ColumnArray[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims), ColumnArray[I].EndIndex);
             Items[I].Width := StrToIntDef(ExtractWord(2, S, Delims),
               Items[I].Width);
-            // Lionel  
+            // Lionel
             S := ExtractWord(2, S, Delims);
             Items[I].Width := StrToIntDef(S,Items[I].Width);
             Items[I].Visible := (S <> '-1');
@@ -1919,15 +1918,15 @@ begin
         begin
           for J := 0 to Count - 1 do
           begin
-            if ColumnArray^[J].EndIndex = I then
+            if ColumnArray[J].EndIndex = I then
             begin
-              ColumnArray^[J].Column.Index := ColumnArray^[J].EndIndex;
+              ColumnArray[J].Column.Index := ColumnArray[J].EndIndex;
               Break;
             end;
           end;
         end;
       finally
-        FreeMemo(Pointer(ColumnArray));
+        Finalize(ColumnArray);
       end;
     end;
 end;
