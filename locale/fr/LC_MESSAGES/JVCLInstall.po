@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL3\n"
 "POT-Creation-Date: 2004-04-19 20:17\n"
-"PO-Revision-Date: 2004-04-20 11:00+1000\n"
+"PO-Revision-Date: 2004-04-20 11:43+1000\n"
 "Last-Translator: Olivier Sannier <osannier@opcom.com>\n"
 "Language-Team: jvcl team <jvcl@sf.net>\n"
 "MIME-Version: 1.0\n"
@@ -606,7 +606,7 @@ msgstr "Les paquets sélectionnés sont en cours de compilation pour les version
 #. Programmer's name for it: RsPackageSelectionPageTitle
 #: InstallerConsts.pas:103
 msgid "Select packages"
-msgstr "Sélectionnez les paquets"
+msgstr "Sélection des paquets"
 
 #. Programmer's name for it: RsPackageSelectionPageSubTitle
 #: InstallerConsts.pas:104
