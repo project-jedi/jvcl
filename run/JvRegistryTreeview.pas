@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvRegTV;
+unit JvRegistryTreeView;
 
 {A treeview that displays the keys from the registry }
 

@@ -34,7 +34,7 @@ uses
   {$IFDEF WIN32}
   Registry,
   {$ENDIF}
-  JvPlacemnt {, JvComponent};
+  JvFormPlacement {, JvComponent};
 
 type
   TJvRecentStrings = class;

@@ -879,16 +879,10 @@ uses
   {$IFDEF JVCLThemesEnabled}
   Themes,
   {$ENDIF}
-  {$IFDEF COMPILER3_UP}
   ExtDlgs,
-  {$ENDIF}
   JvxRConst, JvVCLUtils, JvStrUtils, JvFileUtil, JvPickDate, JvBrowseFolder;
 
-{$IFDEF WIN32}
-{$R *.Res}
-{$ELSE}
-{$R *.R16}
-{$ENDIF}
+{$R ..\resources\JvToolEdit.res}
 
 const
   sFileBmp = 'JV_FEDITBMP'; { Filename and directory editor button glyph }

@@ -99,7 +99,7 @@ type
 
 implementation
 uses
-  JvMouseTimerU;
+  JvMouseTimer;
 
 constructor TJvPanel.Create(AOwner: TComponent);
 begin

@@ -39,7 +39,7 @@ uses
   {$ENDIF}
   Messages, Classes, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
   Buttons, Menus, IniFiles,
-  JvTimer, JvConst, JvPlacemnt, JvComponent, JVCLVer;
+  JvTimer, JvConst, JvFormPlacement, JvComponent, JVCLVer;
 
 type
   TPositiveInt = 1..MaxInt;

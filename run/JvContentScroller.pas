@@ -28,7 +28,7 @@ Known Issues:
 
 { @abstract(A TCustomPanel descendant that can scroll it's content.) }
 
-unit JvCntScr;
+unit JvContentScroller;
 
 interface
 
