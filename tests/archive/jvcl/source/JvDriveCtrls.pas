@@ -242,6 +242,8 @@ type
     { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
     FImages: TImageList;
+    FForceFileExtensions: boolean;
+    procedure SetForceFileExtensions(const Value: boolean);
   protected
     { Protected declarations }
     procedure DrawItem(Index: Integer; Rect: TRect;
@@ -257,6 +259,9 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Directory stored false;
     property Filename stored false;
+    // set this property to true to force the display of filename extensions for all files even if
+    // the user has activated the Explorer option "Don't show extensions for know file types"
+    property ForceFileExtensions: boolean read FForceFileExtensions write SetForceFileExtensions;
     property Columns;
     property BorderStyle;
     property Anchors;
@@ -1405,73 +1410,88 @@ var
 const
   Attributes: array[TFileAttr] of Word = (faReadOnly, faHidden, faSysFile,
     faVolumeID, faDirectory, faArchive, 0);
-var shi: TSHFileInfo; OldMode: Cardinal; 
+var shi: TSHFileInfo; OldMode: Cardinal;
 begin
   AttrWord := DDL_READWRITE;
   if HandleAllocated then
   begin
       { Set attribute flags based on values in FileType }
-      for AttrIndex := ftReadOnly to ftArchive do
-        if AttrIndex in FileType then
-          AttrWord := AttrWord or Attributes[AttrIndex];
-      OldMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
-      try
-        ChDir(FDirectory); { go to the directory we want }
-      finally
-        SetErrorMode(OldMode);
-      end;
-      Clear; { clear the list }
+    for AttrIndex := ftReadOnly to ftArchive do
+      if AttrIndex in FileType then
+        AttrWord := AttrWord or Attributes[AttrIndex];
+    OldMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
+    try
+      ChDir(FDirectory); { go to the directory we want }
+    finally
+      SetErrorMode(OldMode);
+    end;
+    Clear; { clear the list }
 
-      I := 0;
-      SaveCursor := Screen.Cursor;
-      try
-        MaskPtr := PChar(FMask);
-        while MaskPtr <> nil do
+    I := 0;
+    SaveCursor := Screen.Cursor;
+    try
+      MaskPtr := PChar(FMask);
+      while MaskPtr <> nil do
+      begin
+        Ptr := StrScan(MaskPtr, ';');
+        if Ptr <> nil then
+          Ptr^ := #0;
+        if FindFirst(MaskPtr, AttrWord, FileInfo) = 0 then
         begin
-          Ptr := StrScan(MaskPtr, ';');
-          if Ptr <> nil then
-            Ptr^ := #0;
-          if FindFirst(MaskPtr, AttrWord, FileInfo) = 0 then
-          begin
-            repeat
-              if (ftNormal in FileType) or (FileInfo.Attr and AttrWord <> 0) then
-                if (FileInfo.Attr and faDirectory <> 0) then
-                begin
-                  if (FileInfo.Name[1] <> '.') then
-                  begin
-                    SHGetFileInfo(PChar(AddPathBackSlash(FDirectory) + FileInfo.Name), 0, shi, sizeof(shi), SHGFI_SYSICONINDEX or SHGFI_ICON or SHGFI_SMALLICON or SHGFI_DISPLAYNAME);
-                    if Items.IndexOf(Format(cDirPrefix + '%s', [shi.szDisplayName])) = -1 then
-                    begin
-                      I := Items.Add(Format(cDirPrefix + '%s', [shi.szDisplayName]));
-                      Items.Objects[I] := TObject(shi.iIcon);
-                    end;
-                  end;
-                end
-                else if (FileInfo.Name[1] <> '.') then
+          repeat
+            if (ftNormal in FileType) or (FileInfo.Attr and AttrWord <> 0) then
+              if (FileInfo.Attr and faDirectory <> 0) then
+              begin
+                if (FileInfo.Name[1] <> '.') then
                 begin
                   SHGetFileInfo(PChar(AddPathBackSlash(FDirectory) + FileInfo.Name), 0, shi, sizeof(shi), SHGFI_SYSICONINDEX or SHGFI_ICON or SHGFI_SMALLICON or SHGFI_DISPLAYNAME);
-                  if Items.IndexOf(shi.szDisplayName) = -1 then
+//                    if Items.IndexOf(S) = -1 then
                   begin
-                    I := Items.Add(shi.szDisplayName);
+                    if FForceFileExtensions then
+                      I := Items.Add(Format(cDirPrefix + '%s', [FileInfo.Name]))
+                    else
+                      I := Items.Add(Format(cDirPrefix + '%s', [shi.szDisplayName]));
                     Items.Objects[I] := TObject(shi.iIcon);
                   end;
                 end;
-              if I = 100 then
-                Screen.Cursor := crHourGlass;
-            until FindNext(FileInfo) <> 0;
-            FindClose(FileInfo);
-          end;
-          if Ptr <> nil then
-          begin
-            Ptr^ := ';';
-            Inc(Ptr);
-          end;
-          MaskPtr := Ptr;
+              end
+              else if (FileInfo.Name[1] <> '.') then
+              begin
+                SHGetFileInfo(PChar(AddPathBackSlash(FDirectory) + FileInfo.Name), 0, shi, sizeof(shi), SHGFI_SYSICONINDEX or SHGFI_ICON or SHGFI_SMALLICON or SHGFI_DISPLAYNAME);
+//                  if Items.IndexOf(FileInfo.Name) = -1 then
+                begin
+                  if FForceFileExtensions then
+                    I := Items.Add(FileInfo.Name)
+                  else
+                    I := Items.Add(shi.szDisplayName);
+                  Items.Objects[I] := TObject(shi.iIcon);
+                end;
+              end;
+            if I = 100 then
+              Screen.Cursor := crHourGlass;
+          until FindNext(FileInfo) <> 0;
+          FindClose(FileInfo);
         end;
-      finally
-        Screen.Cursor := SaveCursor;
+        if Ptr <> nil then
+        begin
+          Ptr^ := ';';
+          Inc(Ptr);
+        end;
+        MaskPtr := Ptr;
       end;
-      Change;
+    finally
+      Screen.Cursor := SaveCursor;
+    end;
+    Change;
+  end;
+end;
+
+procedure TJvFileListBox.SetForceFileExtensions(const Value: boolean);
+begin
+  if FForceFileExtensions <> Value then
+  begin
+    FForceFileExtensions := Value;
+    ReadFilenames;
   end;
 end;
 
