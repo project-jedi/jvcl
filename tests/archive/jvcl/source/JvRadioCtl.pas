@@ -26,7 +26,8 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ TRadioControl component, a button like the dial on a radio. }
+{ TJvRadioControl component, a button like the dial on a radio. }
+{$O+}
 
 unit JvRadioCtl;
 
@@ -37,10 +38,10 @@ uses
   StdCtrls, ExtCtrls, ComCtrls, Math;
 
 const
-  dAngleToDouble = Pi / 1800;
-  dDoubleToAngle = 1800 / Pi;
-  rcMaxEdge      = 10;
-  rcMinEdge      = 2;
+  dAngleToRadian = Pi / 1800;
+  dRadianToAngle = 1800 / Pi;
+  rcMaxEdge      = 100;
+  rcMinEdge      = 0;
   rcMinRadius    = 15;
   tlLongLen      = 10;
   tlMiddleLen    = 6;
@@ -51,17 +52,24 @@ type
   TJvTickLength = (tlShort, tlMiddle, tlLong);
   TJvRadioAngle = 0..3600;        // 0.0 - 360.0 deg
   TJvRepeatValue = 10..1000;      // mouse repeat values
-  TJvRadioControl = class;
-  TJvRadioDrawEvent = procedure (Sender: TJvRadioControl; ARect: TRect) of object;
+  TJvCustomRadioControl = class;
+  TJvRadioDrawEvent = procedure (Sender: TJvCustomRadioControl; ARect: TRect) of object;
+
+  PTick = ^TTick;
+  TTick = record
+    Value: Integer;
+    Length: Integer;
+    Color: TColor;
+    Changed: Boolean;
+  end;
   
-  TJvRadioControl = class(TCustomControl)
+  TJvCustomRadioControl = class(TCustomControl)
   private
     FBitmap: TBitmap;
     FBitmapRect: TRect;
     FBitmapInvalid: Boolean;
     FBorderStyle: TBorderStyle;
     FButtonEdge: Integer;
-//    FCenter: TPoint;
     FDefaultPos: Integer;
     FFrequency: Integer;
     FLargeChange: Integer;
@@ -85,7 +93,6 @@ type
     FRepeatDelay: TJvRepeatValue;
     FOnChange: TNotifyEvent;
     FOnDrawPointer: TJvRadioDrawEvent;
-//    FOnScroll: TScrollEvent;
     function CalcBounds(var AWidth, AHeight: Integer): Boolean;
     function GetAngle: TJvRadioAngle;
     function GetCenter: TPoint;
@@ -113,14 +120,16 @@ type
     procedure BitmapNeeded; dynamic;
     procedure Change; dynamic;
     procedure ClearTicks;
+    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
     procedure CMParentColorChanged(var Message: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DrawBorder; dynamic;
     procedure DrawButton; dynamic;
     procedure DrawPointer; dynamic;
-    procedure DrawTick(ACanvas: TCanvas; P: Pointer); dynamic;
+    procedure DrawTick(ACanvas: TCanvas; var T: TTick); dynamic;
     procedure DrawTicks; dynamic;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -135,57 +144,90 @@ type
     procedure IncPos(Shift: TShiftState); dynamic;
     procedure DecPos(Shift: TShiftState); dynamic;
     property Ticks: TList read FTicks write FTicks stored True;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
-    function AngleToPoint(AnAngle: TJvRadioAngle; ACenter: TPoint; ARadius: Integer): TPoint;
-    procedure SetAngleParams(AnAngle, AMin, AMax: TJvRadioAngle); virtual;
-    procedure SetParams(APosition, AMin, AMax: Integer); virtual;
-    procedure SetTick(Value: Integer; Length: TJvTickLength); virtual;
-    property Bitmap: TBitmap read FBitmap;
-    property Center: TPoint read GetCenter;
-  published
-    property Align;
+
+    // to be published later:
     property Angle: TJvRadioAngle read GetAngle write SetAngle stored False;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
     property ButtonEdge: Integer read FButtonEdge write SetButtonEdge default 2;
-    property Color;
-    property Ctl3D;
-    property Cursor;
     property DefaultPos: Integer read FDefaultPos write SetDefaultPos;
-    property DragCursor;
-    property DragMode;
-    property Enabled;
     property Frequency: Integer read FFrequency write SetFrequency default 10;
     property LargeChange: Integer read FLargeChange write SetLargeChange default 2;
     property Max: Integer read FMax write SetMax default 100;
     property MaxAngle: TJvRadioAngle read FMaxAngle write SetMaxAngle default 3300;
     property Min: Integer read FMin write SetMin default 0;
     property MinAngle: TJvRadioAngle read FMinAngle write SetMinAngle default 300;
-    property ParentColor;
-    property ParentCtl3D;
-    property ParentShowHint;
     property PointerColor: TColor read FPointerColor write SetPointerColor default clBtnText;
     property PointerSize: Integer read FPointerSize write SetPointerSize default 33;
     property PointerShape: TJvRadioPointerShape read FPointerShape write SetPointerShape default psLine;
-    property PopupMenu;
     property Position: Integer read FPosition write SetPosition default 0;
     property Radius: Integer read FRadius write SetRadius;
     property RepeatDelay: TJvRepeatValue read FRepeatDelay write FRepeatDelay default 400;
     property RepeatRate: TJvRepeatValue read FRepeatRate write FRepeatRate default 100;
-    property ShowHint;
     property SmallChange: Integer read FSmallChange write SetSmallChange default 1;
     property TickStyle: TTickStyle read FTickStyle write SetTickStyle stored True;
-    property TabOrder;
     property TabStop default True;
-    property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnDrawPointer: TJvRadioDrawEvent read FOnDrawPointer write FOnDrawPointer;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function AngleToPoint(AnAngle: TJvRadioAngle; ACenter: TPoint; ARadius: Integer): TPoint;
+    procedure SetAngleParams(AnAngle, AMin, AMax: TJvRadioAngle); virtual;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
+    procedure SetParams(APosition, AMin, AMax: Integer); virtual;
+    procedure SetTick(Value: Integer; Length: TJvTickLength); virtual;
+    function RadToAngle(const Radian: Double): TJvRadioAngle;
+    function AngleToRad(AnAngle: TJvRadioAngle): Double;
+
+    property Bitmap: TBitmap read FBitmap;
+    property Center: TPoint read GetCenter;
+  end;
+
+  TJvRadioControl = class(TJvCustomRadioControl)
+
+    // properties
+    property Align;
+    property Angle;
+    property BorderStyle;
+    property ButtonEdge;
+    property Color;
+    property Ctl3D;
+    property Cursor;
+    property DefaultPos;
+    property DragCursor;
+    property DragMode;
+    property Enabled;
+    property Frequency;
+    property LargeChange;
+    property Max;
+    property MaxAngle;
+    property Min;
+    property MinAngle;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentShowHint;
+    property PointerColor;
+    property PointerSize;
+    property PointerShape;
+    property PopupMenu;
+    property Position;
+    property Radius;
+    property RepeatDelay;
+    property RepeatRate;
+    property ShowHint;
+    property SmallChange;
+    property TickStyle;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+
+    // events
+    property OnChange;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnDrawPointer: TJvRadioDrawEvent read FOnDrawPointer write FOnDrawPointer;
+    property OnDrawPointer;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -199,24 +241,15 @@ type
   end;
 
 
+procedure Register;
+
 implementation
 
 uses Consts;
 
-type
-  TFakeControl = class(TWinControl);    // TWinControl.Color is not public.
-
 const
   MinBorder = 1;
   TickBorder = tlLongLen;
-
-type
-  PTickRec = ^TTickRec;
-  TTickRec = record
-    Value: Integer;
-    Length: Byte;
-    Changed: Boolean;
-  end;
 
 function GetShiftState: TShiftState;
 begin
@@ -225,15 +258,19 @@ begin
   if GetKeyState(VK_CONTROL) < 0 then Include(Result, ssCtrl);
   if GetKeyState(VK_MENU) < 0 then Include(Result, ssAlt);
 end;
- 
 
-constructor TJvRadioControl.Create(AOwner: TComponent);
+procedure Register;
+begin
+  RegisterComponents('Samples', [TJvRadioControl]);
+end;
+
+constructor TJvCustomRadioControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csClickEvents, csCaptureMouse];
   FTicks := TList.Create;
   FBorderStyle := bsNone;
-  FButtonEdge := 2;
+  FButtonEdge := 5;
   FDefaultPos := 0;
   FFrequency := 10;
   FLargeChange := 2;
@@ -243,7 +280,6 @@ begin
   FMinAngle := 300;
   FPointerColor := clBtnText;
   FPointerSize := 33;
-  FPosition := 0;
   FRadius := rcMinRadius;
   FSmallChange := 1;
   TabStop := True;
@@ -255,9 +291,10 @@ begin
   FRepeatDelay := 400;
   FRepeatRate := 100;
   SetTicks(FTickStyle);
+  Position := 0;
 end;
 
-destructor TJvRadioControl.Destroy;
+destructor TJvCustomRadioControl.Destroy;
 begin
   FBitmap.Free;
   ClearTicks;
@@ -266,33 +303,38 @@ begin
   inherited Destroy;
 end;
 
-function TJvRadioControl.PosToAngle(Pos: Integer): TJvRadioAngle;
+// Convert position Pos to an angle.
+function TJvCustomRadioControl.PosToAngle(Pos: Integer): TJvRadioAngle;
 begin
   Result := FMinAngle + ((FMaxAngle - FMinAngle) * (Pos - FMin) div (FMax - FMin));
 end;
 
-function TJvRadioControl.AngleToPos(AnAngle: TJvRadioAngle): Integer;
+// Convert angle AnAngle to a position.
+function TJvCustomRadioControl.AngleToPos(AnAngle: TJvRadioAngle): Integer;
 begin
   Result := FMin + ((FMax - FMin) * (AnAngle - FMinAngle) div (FMaxAngle - FMinAngle));
 end;
 
-function TJvRadioControl.AngleToPoint(AnAngle: TJvRadioAngle; ACenter: TPoint;
+// Convert polar coordinates defined by AnAngle, ACenter and ARadius to a TPoint.
+function TJvCustomRadioControl.AngleToPoint(AnAngle: TJvRadioAngle; ACenter: TPoint;
   ARadius: Integer): TPoint;
 var
   RadAngle: Double;
 begin
-  RadAngle := AnAngle * dAngleToDouble;
+  RadAngle := AngleToRad(AnAngle);
   Result.X := ACenter.X - Round(ARadius * Sin(RadAngle));
   Result.Y := ACenter.Y + Round(ARadius * Cos(RadAngle));
 end;
 
-function PointToRad(APoint, ACenter: TPoint): Double;
+// Convert a APoint to an angle (relative to ACenter) in radians, where
+// bottom is 0, left is Pi/2, top is Pi and so on.
+function PointToRad(const APoint, ACenter: TPoint): Double;
 var
   N: Integer;
 begin
   N := APoint.X - ACenter.X;
   if N = 0 then
-    Result := Pi
+    Result := 0.5 * Pi
   else
     Result := ArcTan((ACenter.Y - APoint.Y) / N);
   if N < 0 then
@@ -300,17 +342,20 @@ begin
   Result := 1.5 * Pi - Result;
 end;
 
-function TJvRadioControl.GetAngle: TJvRadioAngle;
+// Get current angle (from position).
+function TJvCustomRadioControl.GetAngle: TJvRadioAngle;
 begin
   Result := PosToAngle(FPosition);
 end;
 
-procedure TJvRadioControl.SetAngle(Value: TJvRadioAngle);
+// Set current angle. Sets Position.
+procedure TJvCustomRadioControl.SetAngle(Value: TJvRadioAngle);
 begin
   SetAngleParams(Value, FMinAngle, FMaxAngle);
 end;
 
-procedure TJvRadioControl.SetBorderStyle(Value: TBorderStyle);
+// Set border style. Redraw if necessary.
+procedure TJvCustomRadioControl.SetBorderStyle(Value: TBorderStyle);
 begin
   if Value <> FBorderStyle then
   begin
@@ -323,77 +368,115 @@ begin
   end;
 end;
 
-procedure TJvRadioControl.SetParams(APosition, AMin, AMax: Integer);
+// Set positional (Cartesian) parameters, value checked and invalidate if
+// necessary.
+procedure TJvCustomRadioControl.SetParams(APosition, AMin, AMax: Integer);
 var
   Invalid: Boolean;
+  Changed: Boolean;
 begin
+  Changed := False;
+
+  // Ensure minimum and maximum in right order.
   if AMax < AMin then
-    raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [Self.ClassName]);
+    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [Self.ClassName]);
+
+  // Limit Position to Min and Max.
   if APosition < AMin then APosition := AMin;
   if APosition > AMax then APosition := AMax;
+
   Invalid := False;
+
+  // Change Min if necessary and flag redrawing if so.
   if FMin <> AMin then
   begin
     FMin := AMin;
     Invalid := True;
   end;
+
+  // Change Max if necessary and flag redrawing if so.
   if FMax <> AMax then
   begin
     FMax := AMax;
     Invalid := True;
   end;
+
+  // Change Position if necessary and draw pointer accordingly.
   if APosition <> FPosition then
   begin
     FPosition := APosition;
     DrawPointer;
+    Changed := True;
   end;
+
+  // If redrawing flagged, cause a redraw, redoing the bitmap too.
   if Invalid then
   begin
-    ClearTicks;
-    SetTicks(FTickStyle);
     FBitmapInvalid := True;
+    Changed := True;
     Invalidate;
   end;
-  Change;
+
+  if Changed then
+    // Notify the user of changes.
+    Change;
 end;
 
-procedure TJvRadioControl.SetAngleParams(AnAngle, AMin, AMax: TJvRadioAngle);
+// Set all angle parameters at once.
+procedure TJvCustomRadioControl.SetAngleParams(AnAngle, AMin, AMax: TJvRadioAngle);
 var
   Invalid: Boolean;
+  Pos: Integer;
 begin
+
+  // Error if AMax < AMin
   if AMax < AMin then
-    raise EInvalidOperation.CreateResFmt(@SPropertyOutOfRange, [Self.Classname]);
+    raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [Self.Classname]);
+
+  // Confine AnAngle to limits.
   if AnAngle < AMin then AnAngle := AMin;
   if AnAngle > AMax then AnAngle := AMax;
   Invalid := False;
+
+  // Set MinAngle.
   if FMinAngle <> AMin then
   begin
     FMinAngle := AMin;
     Invalid := True;
   end;
+
+  // Set MaxAngle.
   if FMaxAngle <> AMax then
   begin
     FMaxAngle := AMax;
     Invalid := True;
   end;
+
+  // Redraw if necessary
   if Invalid then
   begin
     FBitmapInvalid := True;
     Invalidate;
   end;
-  if AnAngle <> GetAngle then
-    SetParams(AngleToPos(AnAngle), FMin, FMax);
+
+  // Set Position.
+  Pos := AngleToPos(AnAngle);
+  if Pos <> FPosition then
+    SetParams(Pos, FMin, FMax);
 end;
 
-procedure TJvRadioControl.SetDefaultPos(Value: Integer);
+procedure TJvCustomRadioControl.SetDefaultPos(Value: Integer);
 begin
+
+  // Change this if side effects are needed, e.g. to show a default pos marker.
+
   if Value <> FDefaultPos then
   begin
     FDefaultPos := Value;
   end;
 end;
 
-procedure TJvRadioControl.SetFrequency(Value: Integer);
+procedure TJvCustomRadioControl.SetFrequency(Value: Integer);
 begin
   if Value <> FFrequency then
   begin
@@ -408,32 +491,32 @@ begin
   end;
 end;
 
-procedure TJvRadioControl.SetMin(Value: Integer);
+procedure TJvCustomRadioControl.SetMin(Value: Integer);
 begin
   SetParams(FPosition, Value, FMax);
 end;
 
-procedure TJvRadioControl.SetMinAngle(Value: TJvRadioAngle);
+procedure TJvCustomRadioControl.SetMinAngle(Value: TJvRadioAngle);
 begin
   SetAngleParams(PosToAngle(FPosition), Value, FMaxAngle);
 end;
 
-procedure TJvRadioControl.SetMax(Value: Integer);
+procedure TJvCustomRadioControl.SetMax(Value: Integer);
 begin
   SetParams(FPosition, FMin, Value);
 end;
 
-procedure TJvRadioControl.SetMaxAngle(Value: TJvRadioAngle);
+procedure TJvCustomRadioControl.SetMaxAngle(Value: TJvRadioAngle);
 begin
   SetAngleParams(PosToAngle(FPosition), FMinAngle, Value);
 end;
 
-procedure TJvRadioControl.SetPosition(Value: Integer);
+procedure TJvCustomRadioControl.SetPosition(Value: Integer);
 begin
   SetParams(Value, FMin, FMax);
 end;
 
-function TJvRadioControl.CalcBounds(var AWidth, AHeight: Integer): Boolean;
+function TJvCustomRadioControl.CalcBounds(var AWidth, AHeight: Integer): Boolean;
 var
   ASize: Integer;
 begin
@@ -454,7 +537,7 @@ begin
   end;
 end;
 
-procedure TJvRadioControl.SetRadius(Value: Integer);
+procedure TJvCustomRadioControl.SetRadius(Value: Integer);
 var
   MaxRadius: Integer;
 begin
@@ -477,7 +560,7 @@ begin
   UpdateSize;
 end;
 
-procedure TJvRadioControl.SetTicks(Value: TTickStyle);
+procedure TJvCustomRadioControl.SetTicks(Value: TTickStyle);
 var
   L: TJvTickLength;
   I: Integer;
@@ -500,7 +583,7 @@ begin
   end;
 end;
 
-procedure TJvRadioControl.SetTickStyle(Value: TTickStyle);
+procedure TJvCustomRadioControl.SetTickStyle(Value: TTickStyle);
 begin
   if FTickStyle <> Value then
   begin
@@ -512,39 +595,37 @@ begin
   end;
 end;
 
-procedure TJvRadioControl.Change;
+procedure TJvCustomRadioControl.Change;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
 
-procedure TJvRadioControl.SetSmallChange(Value: Integer);
+procedure TJvCustomRadioControl.SetSmallChange(Value: Integer);
 begin
   if Value > FLargeChange then
     Value := FLargeChange div 2;
   if Value < 1 then
     Value := 1;
-  if Value <> FSmallChange then
-    FSmallChange := Value;
+  FSmallChange := Value;
 end;
 
-procedure TJvRadioControl.SetLargeChange(Value: Integer);
+procedure TJvCustomRadioControl.SetLargeChange(Value: Integer);
 begin
   if Value <= FSmallChange + 1 then
     Value := FSmallChange + 1;
-  if Value <> FLargeChange then
-    FLargeChange := Value;
+  FLargeChange := Value;
 end;
 
-procedure TJvRadioControl.SetTick(Value: Integer; Length: TJvTickLength);
+procedure TJvCustomRadioControl.SetTick(Value: Integer; Length: TJvTickLength);
 const
   Lengths: array[TJvTickLength] of Byte = (tlShortLen, tlMiddleLen, tlLongLen);
 var
-  P: PTickRec;
+  P: PTick;
   I: Integer;
 begin
   if (Value < FMin) or (Value > FMax) then
-    raise EInvalidOperation.CreateResFmt(@SOutOfRange, [FMin, FMax]);
+    raise EInvalidOperation.CreateFmt(SOutOfRange, [FMin, FMax]);
   for I := 0 to FTicks.Count - 1 do
   begin
     P := FTicks.Items[I];
@@ -563,50 +644,45 @@ begin
   P^.Value := Value;
   P^.Length := Lengths[Length];
   P^.Changed := True;
+  P^.Color := clBtnText;
   FTicks.Add(P);
   if HandleAllocated then
   begin
-    DrawTick(FBitmap.Canvas, P);
-    DrawTick(Canvas, P);
+    DrawTick(FBitmap.Canvas, P^);
+    DrawTick(Canvas, P^);
   end;
 end;
 
-procedure TJvRadioControl.DrawTick(ACanvas: TCanvas; P: Pointer);
+procedure TJvCustomRadioControl.DrawTick(ACanvas: TCanvas; var T: TTick);
 var
   Pt: TPoint;
-  TR: PTickRec absolute P;
   ValueAngle: Integer;
 begin
-  with ACanvas do
-  begin
-    ValueAngle := PosToAngle(TR^.Value);
-    Pen.Color := clBtnText;
-    Pt := AngleToPoint(ValueAngle, GetCenter, FRadius);
-    MoveTo(Pt.X, Pt.Y);
-    Pt := AngleToPoint(ValueAngle, GetCenter, FRadius + TR^.Length);
-    LineTo(Pt.X, Pt.Y);
-    TR^.Changed := False;
-  end;
+  ValueAngle := PosToAngle(T.Value);
+  ACanvas.Pen.Color := T.Color;
+  Pt := AngleToPoint(ValueAngle, Center, FRadius);
+  ACanvas.MoveTo(Pt.X, Pt.Y);
+  Pt := AngleToPoint(ValueAngle, GetCenter, FRadius + T.Length);
+  ACanvas.LineTo(Pt.X, Pt.Y);
+  T.Changed := False;
 end;
 
-procedure TJvRadioControl.Paint;
+procedure TJvCustomRadioControl.Paint;
 begin
-  with Canvas do
-  begin
-    Brush.Color := TFakeControl(Parent).Color;
-    FillRect(ClientRect);
-  end;
+  Canvas.Brush.Color := Parent.Brush.Color;
+  Canvas.FillRect(ClientRect);
   BitmapNeeded;
   Canvas.CopyRect(FBitmapRect, FBitmap.Canvas, FBitmapRect);
   DrawBorder;
   DrawPointer;
 end;
 
-procedure TJvRadioControl.DrawPointer;
+procedure TJvCustomRadioControl.DrawPointer;
 var
-  Outer, Inner, Inner2: TPoint;
+  Outer, Inner, Extra: TPoint;
   InnerRadius, DotRadius: Integer;
   Region: HRgn;
+  SmallRadius: Integer;
 
   function Min(A, B: Integer): Integer;
   begin
@@ -637,82 +713,84 @@ var
 begin
   if not HandleAllocated then
     Exit;
-  InnerRadius := FRadius - FButtonEdge - 1;
+  InnerRadius := (100 - FButtonEdge) * FRadius div 100 - 1;
   if FPointerRect.Left < 0 then
-    FPointerRect := Rect(GetCenter.X - InnerRadius, GetCenter.Y - InnerRadius,
-                         GetCenter.X + InnerRadius + 1, GetCenter.Y + InnerRadius + 1);
+    FPointerRect := Rect(Center.X - InnerRadius,
+                         Center.Y - InnerRadius,
+                         Center.X + InnerRadius + 1,
+                         Center.Y + InnerRadius + 1);
   Canvas.CopyRect(FPointerRect, FBitmap.Canvas, FPointerRect);
-  with Canvas do
-  begin
-  
-    // This is for a solid dot. I'd also like to make a Ctl3D type of dot or
-    // an open type of dot. We'd also have to make a disabled type of dot.
-    Pen.Color := FPointerColor;
-    Brush.Color := FPointerColor;
-    case FPointerShape of
-      psLine:
-        begin
-          Pen.Color := FPointerColor;
-          Outer := AngleToPoint(GetAngle, GetCenter, InnerRadius);
-          MoveTo(Outer.X, Outer.Y);
-          Inner := AngleToPoint(GetAngle, GetCenter, (101 - FPointerSize) * InnerRadius div 100);
-          LineTo(Inner.X, Inner.Y);
-          FPointerRect := Rect(Min(Inner.X, Outer.X), Min(Inner.Y, Outer.Y),
-                               Max(Inner.X, Outer.X), Max(Inner.Y, Outer.Y));
-        end;
-      psTriangle:
-        begin
-          Pen.Color := FPointerColor;
-          Brush.Color := FPointerColor;
-          Outer := AngleToPoint(GetAngle, GetCenter, InnerRadius);
-          Inner := AngleToPoint(GetAngle - 1500, Outer, FPointerSize * InnerRadius div 100);
-          Inner2 := AngleToPoint(GetAngle + 1500, Outer, FPointerSize * InnerRadius div 100);
-          Polygon([Outer, Inner, Inner2]);
-          FPointerRect := Rect(Lowest(Outer.X, Inner.X, Inner2.X),
-                               Lowest(Outer.Y, Inner.Y, Inner2.Y),
-                               Highest(Outer.X, Inner.X, Inner2.X),
-                               Highest(Outer.Y, Inner.Y, Inner2.Y));
-        end;
-      psDot:
-        begin
-          Pen.Color := FPointerColor;
-          Brush.Color := FPointerColor;
-          DotRadius := FPointerSize * (FRadius - FButtonEdge) div 200;
-          Inner := AngleToPoint(GetAngle, GetCenter, FRadius - FButtonEdge - DotRadius - 1);
-          if Inner.X > GetCenter.X then Inc(Inner.X);
-          if Inner.Y > GetCenter.Y then Inc(Inner.Y);
-          FPointerRect := Rect(Inner.X - DotRadius, Inner.Y - DotRadius,
-                               Inner.X + DotRadius, Inner.Y + DotRadius);
-          with FPointerRect do
-            Ellipse(Left, Top, Right, Bottom);
-        end;
-      psOwnerDraw:
-        if Assigned(FOnDrawPointer) then
-        begin
-          FPointerRect := Rect(GetCenter.X - InnerRadius,
-                               GetCenter.Y - InnerRadius,
-                               GetCenter.X + InnerRadius + 1,
-                               GetCenter.Y + InnerRadius + 1);
+  // This is for a solid dot. I'd also like to make a Ctl3D type of dot or
+  // an open type of dot. We'd also have to make a disabled type of dot.
+  Canvas.Pen.Color := FPointerColor;
+  Canvas.Brush.Color := FPointerColor;
+  case FPointerShape of
+    psLine:
+      begin
+        Outer := AngleToPoint(Angle, Center, InnerRadius);
+        Canvas.MoveTo(Outer.X, Outer.Y);
+        Inner := AngleToPoint(Angle, Center, (101 - FPointerSize) * InnerRadius div 100);
+        Canvas.LineTo(Inner.X, Inner.Y);
+        FPointerRect := Rect(Min(Inner.X, Outer.X),
+                             Min(Inner.Y, Outer.Y),
+                             Max(Inner.X, Outer.X),
+                             Max(Inner.Y, Outer.Y));
+      end;
+    psTriangle:
+      begin
+        SmallRadius := FPointerSize * InnerRadius div 100;
+        Outer := AngleToPoint(Angle, Center, InnerRadius);
+        Inner := AngleToPoint(Angle - 1500, Outer, SmallRadius);
+        Extra := AngleToPoint(Angle + 1500, Outer, SmallRadius);
+        Canvas.Polygon([Outer, Inner, Extra]);
+        FPointerRect := Rect(Lowest(Outer.X, Inner.X, Extra.X),
+                             Lowest(Outer.Y, Inner.Y, Extra.Y),
+                             Highest(Outer.X, Inner.X, Extra.X),
+                             Highest(Outer.Y, Inner.Y, Extra.Y));
+      end;
+    psDot:
+      begin
+        DotRadius := FPointerSize * InnerRadius div 200;
+        Inner := AngleToPoint(Angle, Center, InnerRadius - DotRadius);
+        if Inner.X > Center.X then Inc(Inner.X);
+        if Inner.Y > Center.Y then Inc(Inner.Y);
+        FPointerRect := Rect(Inner.X - DotRadius,
+                             Inner.Y - DotRadius,
+                             Inner.X + DotRadius,
+                             Inner.Y + DotRadius);
+        with FPointerRect do
+          Canvas.Ellipse(Left, Top, Right, Bottom);
+      end;
+    psOwnerDraw:
+      if Assigned(FOnDrawPointer) then
+      begin
+        DotRadius := FPointerSize * InnerRadius div 200;
+        Outer := AngleToPoint(Angle, Center, InnerRadius - DotRadius);
+        if Outer.X > Center.X then Inc(Outer.X);
+        if Outer.Y > Center.Y then Inc(Outer.Y);
+        FPointerRect := Rect(Outer.X - DotRadius,
+                             Outer.Y - DotRadius,
+                             Outer.X + DotRadius,
+                             Outer.Y + DotRadius);
 
-          // Create a clipping region to protect the area outside the button
-          // face.
-          with FPointerRect do
-            Region := CreateEllipticRgn(Left, Top, Right, Bottom);
-          SelectClipRgn(Canvas.Handle, Region);
-          try
-            FOnDrawPointer(Self, FPointerRect);
-          except
-            DeleteObject(Region);
-            SelectClipRgn(Canvas.Handle, 0);
-            raise;
-          end;
+        // Create a clipping region to protect the area outside the button
+        // face.
+        with FPointerRect do
+          Region := CreateEllipticRgn(Left - 1, Top - 1, Right + 1, Bottom + 1);
+        SelectClipRgn(Canvas.Handle, Region);
+        try
+          FOnDrawPointer(Self, FPointerRect);
+        except
+          DeleteObject(Region);
+          SelectClipRgn(Canvas.Handle, 0);
+          raise;
         end;
-    end;
-    InflateRect(FPointerRect, 1, 1);
+      end;
   end;
+  InflateRect(FPointerRect, 1, 1);
 end;
 
-procedure TJvRadioControl.BitmapNeeded;
+procedure TJvCustomRadioControl.BitmapNeeded;
 begin
   if FBitmap = nil then
   begin
@@ -734,92 +812,80 @@ begin
   end;
 end;
 
-procedure TJvRadioControl.DrawButton;
+function Blend(const Factor: Double; const Color1, Color2: Longint): TColor;
+var
+  Factor2: Double;
+  Q1: TRGBQuad absolute Color1;
+  Q2: TRGBQuad absolute Color2;
+  R: TRGBQuad absolute Result;
+begin
+  Factor2 := 1.0 - Factor;
+  R.rgbBlue := Trunc(Factor * Q1.rgbBlue + Factor2 * Q2.rgbBlue);
+  R.rgbGreen := Trunc(Factor * Q1.rgbGreen + Factor2 * Q2.rgbGreen);
+  R.rgbRed := Trunc(Factor * Q1.rgbRed + Factor2 * Q2.rgbRed);
+  R.rgbReserved := 0;
+end;
+
+procedure TJvCustomRadioControl.DrawButton;
+const
+  HalfPi = 1.57079632679489661923;
 var
   Edge: Integer;
   ButtonRect: TRect;
-  Face, Light, Shadow: TColor;
-  Size, Size20, Size50, Size80: Integer;
+  Face, Highlight, Shadow: TColor;
+  Size: Integer;
   OldOrg: TPoint;
-
-  function ColorMix(Color1, Color2: Longint): TColor;
-  var
-    Quad1: TRGBQuad absolute Color1;
-    Quad2: TRGBQuad absolute Color2;
-    Quad3: TRGBQuad absolute Result;
-  begin
-    Quad3.rgbBlue := (Quad1.rgbBlue + Quad2.rgbBlue) shr 1;
-    Quad3.rgbGreen := (Quad1.rgbGreen + Quad2.rgbGreen) shr 1;
-    Quad3.rgbRed := (Quad1.rgbRed + Quad2.rgbRed) shr 1;
-  end;
-
+  C: TCanvas;
+  I: Integer;
 begin
   Size := 2 * FRadius + 1;
-  Size20 := (Size + 2) div 5;
-  Size50 := (Size + 1) div 2;
-  Size80 := 4 * Size div 5;
   ButtonRect := Bounds(0, 0, Size, Size);
-  with FBitmap.Canvas do
+  C := FBitmap.Canvas;
+  C.Brush.Color := Parent.Brush.Color;
+  C.Brush.Style := bsSolid;
+  C.FillRect(FBitmapRect);
+  SetViewPortOrgEx(C.Handle, FSize div 2 - FRadius, FSize div 2 - FRadius,
+    @OldOrg);
+
+  // Draw edge.
+  C.Pen.Style := psClear;
+
+  Highlight := ColorToRGB(clBtnHighlight);
+  Face := ColorToRGB(Color);
+  Shadow := (ColorToRGB(Color) and $00FEFEFE) shr 1;
+
+  for I := 0 to Size do
   begin
-    Brush.Color := TFakeControl(Parent).Color;
-    Brush.Style := bsSolid;
-    FillRect(FBitmapRect);
-    SetViewPortOrgEx(Handle, FSize div 2 - FRadius, FSize div 2 - FRadius,
-      @OldOrg);
-
-    // Draw edge.
-    Pen.Style := psClear;
-
-    // Draw top left half of edge in clBtnHighlight.
-    Brush.Color := clBtnHighlight;
-    Chord(0, 0, Size, Size, Size, 1, 1, Size);
-
-    // Draw bottom left half of button in clBtnShadow.
-    Brush.Color := clBtnShadow;
-    Chord(0, 0, Size, Size, 0, Size, Size, 0);
-
-    // Get color values and mix them for the gradient.
-    Shadow := ColortoRGB(clBtnShadow);
-    Light := ColorToRGB(clBtnHighlight);
-    Face := ColorMix(Light, Shadow);
-    Light := ColorMix(Light, Face);
-    Shadow := ColorMix(Shadow, Face);
-
-    // Draw top left lighter parts.
-    Brush.Color := Light;
-    Pie(0, 0, Size, Size, Size80 + 1, 0, Size50 + 1, 0);
-    Pie(0, 0, Size, Size, 0, Size50 + 1, 0, Size80 + 1);
-
-    // Draw center normal parts.
-    Brush.Color := Face;
-    Pie(0, 0, Size, Size, Size, Size20, Size80, 0);
-    Pie(0, 0, Size, Size, 0, Size80, Size20, Size);
-
-    // Draw bottom right darker parts.
-    Brush.Color := Shadow;
-    Pie(0, 0, Size, Size, Size, Size50, Size, Size20);
-    Pie(0, 0, Size, Size, Size20, Size, Size50, Size);
-
-    // Draw top of disk.
-    Pen.Style := psSolid;
-    Pen.Color := clBtnFace;
-    Brush.Color := clBtnFace;
-    Edge := FButtonEdge + 1;
-    Ellipse(0 + Edge, 0 + Edge, 0 + Size - Edge, 0 + Size - Edge);
-
-    // Draw bounding circle.
-    Pen.Color := clBtnText;
-    Pen.Style := psSolid;
-    Brush.Style := bsClear;
-    Ellipse(0, 0, Size, Size);
-
-    // Reset viewport origin.
-    SetViewPortOrgEx(Handle, OldOrg.X, OldOrg.Y, nil);
+    C.Brush.Color := Blend(Cos(I * HalfPi / Size), Highlight, Face);
+    C.Pie(0, 0, Size, Size, I + 1, 0, I - 1, 0);
+    C.Pie(0, 0, Size, Size, 0, I - 1, 0, I + 1);
   end;
+
+  for I := 0 to Size do
+  begin
+    C.Brush.Color := Blend(1.0 - Sin(I * HalfPi / Size), Face, Shadow);
+    C.Pie(0, 0, Size, Size, Size, I + 1, Size, I - 1);
+    C.Pie(0, 0, Size, Size, I - 1, Size, I + 1, Size);
+  end;
+
+  // Draw top of disk.
+  C.Pen.Style := psSolid;
+  C.Pen.Color := Color;
+  C.Brush.Color := Color;
+  Edge := FButtonEdge * FRadius div 100 + 1;
+  C.Ellipse(0 + Edge, 0 + Edge, 0 + Size - Edge, 0 + Size - Edge);
+
+  // Draw bounding circle.
+  C.Pen.Color := clBtnText;
+  C.Brush.Style := bsClear;
+  C.Ellipse(0, 0, Size, Size);
+
+  // Reset viewport origin.
+  SetViewportOrgEx(C.Handle, OldOrg.X, OldOrg.Y, nil);
   FBitmapInvalid := False;
 end;
 
-procedure TJvRadioControl.SetPointerShape(Value: TJvRadioPointerShape);
+procedure TJvCustomRadioControl.SetPointerShape(Value: TJvRadioPointerShape);
 begin
   if Value <> FPointerShape then
   begin
@@ -828,40 +894,36 @@ begin
   end;
 end;
 
-procedure TJvRadioControl.DrawBorder;
+procedure TJvCustomRadioControl.DrawBorder;
 var
   ARect: TRect;
 begin
   ARect := ClientRect;
   InflateRect(ARect, -1, -1);
-  with Canvas do
-  begin
-    Brush.Style := bsClear;
-    Pen.Color := TFakeControl(Parent).Color;
-    with ARect do
-      Rectangle(Left, Top, Right, Bottom);
-    Brush.Style := bsSolid;
-    if GetFocus = Self.Handle then
-      DrawFocusRect(ARect);
-  end;
+  Canvas.Brush.Style := bsClear;
+  Canvas.Pen.Color := Parent.Brush.Color;
+  Canvas.Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
+  Canvas.Brush.Style := bsSolid;
+  if GetFocus = Self.Handle then
+    Canvas.DrawFocusRect(ARect);
 end;
 
-procedure TJvRadioControl.DrawTicks;
+procedure TJvCustomRadioControl.DrawTicks;
 var
   I: Integer;
 begin
   if (FTickStyle = tsNone) or (FTicks = nil) or (FTicks.Count = 0) then
     Exit;
   for I := 0 to FTicks.Count - 1 do
-    DrawTick(FBitmap.Canvas, FTicks.List[I]);
+    DrawTick(FBitmap.Canvas, PTick(FTicks.List[I])^);
 end;
 
-procedure TJvRadioControl.UpdateSize;
+procedure TJvCustomRadioControl.UpdateSize;
 begin
   FSize := 2 * (MinBorder + FRadius + TickBorder) + 1;
 end;
 
-procedure TJvRadioControl.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+procedure TJvCustomRadioControl.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   if CalcBounds(AWidth, AHeight) then
     FBitmapInvalid := True;
@@ -869,13 +931,14 @@ begin
   SetRadius(AWidth + AHeight);
 end;
 
-procedure TJvRadioControl.CMParentColorChanged(var Message: TMessage);
+procedure TJvCustomRadioControl.CMParentColorChanged(var Message: TMessage);
 begin
   FBitmapInvalid := True;
   inherited;
 end;
 
-procedure TJvRadioControl.SetButtonEdge(Value: Integer);
+// Set button edge in percent (0 - 100).
+procedure TJvCustomRadioControl.SetButtonEdge(Value: Integer);
 begin
   if Value < rcMinEdge then
     Value := rcMinEdge;
@@ -892,21 +955,21 @@ begin
   end;
 end;
 
-procedure TJvRadioControl.WMKillFocus(var Message: TWMKillFocus);
+procedure TJvCustomRadioControl.WMKillFocus(var Message: TWMKillFocus);
 begin
   inherited;
   if HandleAllocated then
     DrawBorder;
 end;
 
-procedure TJvRadioControl.WMSetFocus(var Message: TWMSetFocus);
+procedure TJvCustomRadioControl.WMSetFocus(var Message: TWMSetFocus);
 begin
   inherited;
   if HandleAllocated then
     DrawBorder;
 end;
 
-procedure TJvRadioControl.MouseDown(Button: TMouseButton;
+procedure TJvCustomRadioControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   A: TJvRadioAngle;
@@ -921,8 +984,8 @@ begin
     MouseCapture := True
   else
   begin
-    A := Round(dDoubleToAngle * PointToRad(Point(X, Y), GetCenter));
-    if A < GetAngle then
+    A := RadToAngle(PointToRad(Point(X, Y), GetCenter));
+    if A < Angle then
     begin
       DecPos(Shift);
       FIncrementing := False;
@@ -940,7 +1003,7 @@ begin
   end;
 end;
 
-procedure TJvRadioControl.TimerExpired(Sender: TObject);
+procedure TJvCustomRadioControl.TimerExpired(Sender: TObject);
 begin
   FRepeatTimer.Enabled := False;
   FRepeatTimer.Interval := FRepeatRate;
@@ -951,14 +1014,14 @@ begin
   FRepeatTimer.Enabled := True;
 end;
 
-procedure TJvRadioControl.MouseMove(Shift: TShiftState; X, Y: Integer);
+procedure TJvCustomRadioControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
   if MouseCapture then
-    SetAngle(Round(dDoubleToAngle * PointToRad(Point(X, Y), GetCenter)));
+    SetAngle(RadToAngle(PointToRad(Point(X, Y), GetCenter)));
 end;
 
-procedure TJvRadioControl.MouseUp(Button: TMouseButton;
+procedure TJvCustomRadioControl.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
@@ -967,7 +1030,7 @@ begin
   MouseCapture := False;
 end;
 
-function TJvRadioControl.GetCenter: TPoint;
+function TJvCustomRadioControl.GetCenter: TPoint;
 begin
   with Result do
   begin
@@ -976,7 +1039,7 @@ begin
   end;
 end;
 
-procedure TJvRadioControl.ClearTicks;
+procedure TJvCustomRadioControl.ClearTicks;
 var
   I: Integer;
 begin
@@ -985,28 +1048,25 @@ begin
     begin
       for I := 0 to Count - 1 do
         if List[I] <> nil then
-          Dispose(PTickRec(List[I]));
+          Dispose(PTick(List[I]));
       Clear;
     end;
 end;
 
-procedure TJvRadioControl.CreateParams(var Params: TCreateParams);
+procedure TJvCustomRadioControl.CreateParams(var Params: TCreateParams);
 const
   BorderStyles: array[TBorderStyle] of Cardinal = (0, WS_BORDER);
 begin
   inherited CreateParams(Params);
-  with Params do
+  Params.Style := Params.Style or BorderStyles[FBorderStyle];
+  if NewStyleControls and Ctl3D and (FBorderStyle = bsSingle) then
   begin
-    Style := Style or BorderStyles[FBorderStyle];
-    if NewStyleControls and Ctl3D and (FBorderStyle = bsSingle) then
-    begin
-      Style := Style and not WS_BORDER;
-      ExStyle := ExStyle or WS_EX_STATICEDGE;
-    end;
+    Params.Style := Params.Style and not WS_BORDER;
+    Params.ExStyle := Params.ExStyle or WS_EX_STATICEDGE;
   end;
 end;
 
-procedure TJvRadioControl.SetPointerColor(Value: TColor);
+procedure TJvCustomRadioControl.SetPointerColor(Value: TColor);
 begin
   if Value <> FPointerColor then
   begin
@@ -1015,14 +1075,14 @@ begin
   end;
 end;
 
-procedure TJvRadioControl.CMCtl3DChanged(var Message: TMessage);
+procedure TJvCustomRadioControl.CMCtl3DChanged(var Message: TMessage);
 begin
   inherited;
   FBitmapInvalid := True;
   RecreateWnd;
 end;
 
-procedure TJvRadioControl.IncPos(Shift: TShiftState);
+procedure TJvCustomRadioControl.IncPos(Shift: TShiftState);
 begin
   if ssShift in Shift then
     Position := Position + FLargeChange
@@ -1032,7 +1092,7 @@ begin
     Position := Position + FSmallChange;
 end;
 
-procedure TJvRadioControl.DecPos(Shift: TShiftState);
+procedure TJvCustomRadioControl.DecPos(Shift: TShiftState);
 begin
   if ssShift in Shift then
     Position := Position - FLargeChange
@@ -1042,45 +1102,45 @@ begin
     Position := Position - FSmallChange;
 end;
 
-procedure TJvRadioControl.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TJvCustomRadioControl.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if (Key = VK_UP) or (Key = VK_RIGHT) then
-  begin
-    IncPos(Shift);
-    Key := 0;
-  end
-  else if (Key = VK_DOWN) or (Key = VK_LEFT) then
-  begin
-    DecPos(Shift);
-    Key := 0;
-  end
-  else if (Key = VK_HOME) then
-  begin
-    Position := FMin;
-    Key := 0;
-  end
-  else if (Key = VK_END) then
-  begin
-    Position := FMax;
-    Key := 0;
+  case Key of
+    VK_UP, VK_RIGHT:
+      IncPos(Shift);
+    VK_DOWN, VK_LEFT:
+      DecPos(Shift);
+    VK_PRIOR:
+      IncPos(Shift + [ssShift]);
+    VK_NEXT:
+      DecPos(Shift + [ssShift]);
+    VK_HOME:
+      Position := FMin;
+    VK_END:
+      Position := FMax;
+    else
+      begin
+        inherited KeyDown(Key, Shift);
+        Exit;
+      end;
   end;
+  Key := 0;
   inherited KeyDown(Key, Shift);
 end;
 
-procedure TJvRadioControl.WndProc(var Message: TMessage);
+procedure TJvCustomRadioControl.WndProc(var Message: TMessage);
 begin
   if Message.Msg = CN_KeyDown then
     DoKeyDown(TWMKey(Message));
   inherited WndProc(Message);
 end;
 
-procedure TJvRadioControl.WMSysColorChange(var Message: TMessage);
+procedure TJvCustomRadioControl.WMSysColorChange(var Message: TMessage);
 begin
   FBitmapInvalid := True;
   Invalidate;
 end;
 
-procedure TJvRadioControl.SetPointerSize(Value: Integer);
+procedure TJvCustomRadioControl.SetPointerSize(Value: Integer);
 begin
   if Value > 100 then
     Value := 100
@@ -1091,6 +1151,28 @@ begin
     FPointerSize := Value;
     DrawPointer;
   end;
+end;
+
+function TJvCustomRadioControl.AngleToRad(AnAngle: TJvRadioAngle): Double;
+begin
+  Result := dAngleToRadian * AnAngle;
+end;
+
+procedure TJvCustomRadioControl.CMColorChanged(var Message: TMessage);
+begin
+   FBitmapInvalid := True;
+   inherited;
+end;
+
+procedure TJvCustomRadioControl.Loaded;
+begin
+  inherited;
+  Change;
+end;
+
+function TJvCustomRadioControl.RadToAngle(const Radian: Double): TJvRadioAngle;
+begin
+  Result := Round(dRadianToAngle * Radian);
 end;
 
 end.
