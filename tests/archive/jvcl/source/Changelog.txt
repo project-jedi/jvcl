@@ -1,3 +1,17 @@
+2002-07-08
+- Modified Files for D5 support:
+	JvAppHotKey.pas JvCaptionButton.pas JvChangeNotify.pas 
+	JvCheckBox.pas JvCheckListBox.pas JvClipboardViewer.pas 
+	JvColorCombo.pas JvCombobox.pas JvDateTimePicker.pas 
+	JvDeviceChanged.pas JvDiagramShape.pas JvDialogs.pas 
+	JvDragDrop.pas JvEasterEgg.pas JvFunctions.pas 
+	JvImageTransform.pas JvJoystick.pas JvListBox.pas JvMagnet.pas 
+	JvPlaylist.pas JvRas32.pas JvScreenResolution.pas 
+	JvSearchFile.pas JvSearchFiles.pas JvSimpleXml.pas 
+	JvSlider.pas JvZlibMultiple.pas 
+
+- Added DPK's and DOF's for Delphi 5 (JVCL200_R5 and JVCL200_D5)
+
 2002-07-07
 - Added changes and bug fixes to JvTrayIcon, JvStatusBar, JvTranslator and JvListView from Sebastien Buysse
 
