@@ -40,7 +40,7 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  QGraphics, QControls, 
+  Types, QGraphics, QControls,
   Qt, QWindows, 
   Classes,
   JvQTimer, JvQComponent;
