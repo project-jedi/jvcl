@@ -13,9 +13,9 @@
     <VERSION value="BCB.05.03"/>
     <PROJECT value="%NAME%.bpl"/>
     <OBJFILES value="
-      ..\..\dcu\%NAME%.obj
+      ..\..\lib\c5\obj\%NAME%.obj
 <%%% START FILES %%%>
-      ..\..\dcu\%UNITNAME%.obj
+      ..\..\lib\c5\obj\%UNITNAME%.obj
 <%%% END FILES %%%>
     "/>
     <RESFILES value="%NAME%.res"/>
@@ -49,23 +49,23 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="%NAME%.cpp"/>
-    <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\run;..\..\design;..\..\common;..\..\resources;..\..\dcu;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\run;..\..\design;..\..\common;..\..\resources;..\..\lib\c5\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\design -I..\..\run -I..\..\common -I..\..\..\JCL\source
+    <IDLCFLAGS value="-I..\..\design -I..\..\run -I..\..\common
       -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
       -tWM"/>
-    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M 
+    <PFLAGS value="-N2..\..\lib\c5\obj -N0..\..\lib\c5\obj -$YD -$W -$O- -$A8 -v -JPHNE -M
                    %C5PFLAGS%
                    -U$(BCB)\Projects\Bpl
                   "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;%DESCRIPTION%&quot; -aa -Tpp
+    <LFLAGS value="-I..\..\lib\c5\obj -D&quot;%DESCRIPTION%&quot; -aa -Tpp
       -Gp%type% -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
