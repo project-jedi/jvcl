@@ -8153,7 +8153,7 @@ constructor TJvInspectorFloatItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
 begin
   inherited Create(AParent, AData);
-  FFormat := '%.4f';
+  FFormat := '';
 end;
 
 function TJvInspectorFloatItem.GetDisplayValue: string;
@@ -8163,7 +8163,7 @@ begin
   // attribute that doesn't convert nicely to a float causes
   // GUI Exception hell.
   try
-    Result := FloatToStr(Data.AsFloat);
+    Result := FormatFloat(FFormat, Data.AsFloat);
   except
     on E: EConvertError do
       if Data is TJvInspectorCustomConfData then
