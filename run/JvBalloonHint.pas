@@ -253,7 +253,7 @@ type
     property ApplicationHintOptions: TJvApplicationHintOptions read FApplicationHintOptions write
       FApplicationHintOptions default [ahShowHeaderInHint, ahShowIconInHint];
     property UseBalloonAsApplicationHint: Boolean read GetUseBalloonAsApplicationHint write
-      SetUseBalloonAsApplicationHint;
+      SetUseBalloonAsApplicationHint default False;
 
     property OnBalloonClick: TNotifyEvent read FOnBalloonClick write FOnBalloonClick;
     property OnCloseBtnClick: TCloseQueryEvent read FOnCloseBtnClick write FOnCloseBtnClick;
@@ -290,6 +290,7 @@ type
     FOldHintWindowClass: THintWindowClass;
     FSounds: array [TJvIconKind] of string;
     FUseBalloonAsApplicationHint: Boolean;
+    FDesigning: Boolean;
 
     function GetMainCtrl: TJvBalloonHint;
     procedure GetDefaultImages;
@@ -1342,6 +1343,7 @@ begin
     FDefaultImages.BkColor := clNone;
 
   FBkColor := Application.HintColor;
+  FUseBalloonAsApplicationHint := False;
 
   GetDefaultImages;
   GetDefaultSounds;
@@ -1357,6 +1359,9 @@ end;
 procedure TGlobalCtrl.Add(ABalloonHint: TJvBalloonHint);
 begin
   FCtrls.Add(ABalloonHint);
+  { Determine whether we are designing }
+  if Assigned(ABalloonHint) then
+    FDesigning := csDesigning in ABalloonHint.ComponentState;
 end;
 
 procedure TGlobalCtrl.DrawHintImage(Canvas: TCanvas; X, Y: Integer; const ABkColor: TColor);
@@ -1585,21 +1590,23 @@ end;
 
 procedure TGlobalCtrl.SetUseBalloonAsApplicationHint(const Value: Boolean);
 begin
-  if Value = FUseBalloonAsApplicationHint then
-    Exit;
-
-  FUseBalloonAsApplicationHint := Value;
-
-  Application.CancelHint;
-
-  if FUseBalloonAsApplicationHint then
+  if FDesigning then
+    FUseBalloonAsApplicationHint := Value
+  else if Value <> FUseBalloonAsApplicationHint then
   begin
-    FOldHintWindowClass := HintWindowClass;
-    HintWindowClass := TJvBalloonWindow;
-  end
-  else
-  begin
-    HintWindowClass := FOldHintWindowClass;
+    FUseBalloonAsApplicationHint := Value;
+
+    Application.CancelHint;
+
+    if FUseBalloonAsApplicationHint then
+    begin
+      FOldHintWindowClass := HintWindowClass;
+      HintWindowClass := TJvBalloonWindow;
+    end
+    else
+    begin
+      HintWindowClass := FOldHintWindowClass;
+    end;
   end;
 end;
 
