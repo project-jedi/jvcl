@@ -17,7 +17,7 @@ uses
   Messages,  Classes,   Graphics,
   Controls,  Forms,     Dialogs,
   ExtCtrls,  StdCtrls,  Buttons,
-  Spin,      JvChart;
+  Spin,      JvChart, JvComponent;
 
 type
   TJvChartDemoForm = class(TForm)
@@ -107,17 +107,17 @@ begin
        PenCount := 3;
 
        PenLegends.Clear;
-       PenLegends.Add(  'HgT');
-       PenLegends.Add(  'Hg0');
-       PenLegends.Add( 'Hg2+');
+       PenLegends.Add('HgT');
+       PenLegends.Add('Hg0');
+       PenLegends.Add('Hg2+');
 
        PenUnit.Clear;
-       PenUnit.Add( 'ug/m3');
-       PenUnit.Add(  'ug/m3');
-       PenUnit.Add(  'ug/m3');
+       PenUnit.Add('ug/m3');
+       PenUnit.Add('ug/m3');
+       PenUnit.Add('ug/m3');
 
-       ShowLegend     := TRUE;
-       ChartType := JvChartLine;
+       ShowLegend := TRUE;
+       ChartKind := ckChartLine;
    end;
    Chart.AutoFormatGraph;
    //Chart.ResizeChartCanvas;
@@ -141,24 +141,24 @@ end;
 
 procedure TJvChartDemoForm.SpeedButton3Click(Sender: TObject);
 begin
-   Chart.Options.ChartType := jvChartBar;
+   Chart.Options.ChartKind := ckChartBar;
    // ShowAsBar;
 end;
 
 procedure TJvChartDemoForm.SpeedButton4Click(Sender: TObject);
 begin
 {   Chart.ShowAsLine; this show it without marks}
-   Chart.Options.ChartType := jvChartLineWithMarkers;
+   Chart.Options.ChartKind := ckChartLineWithMarkers;
 end;
 
 procedure TJvChartDemoForm.SpeedButton5Click(Sender: TObject);
 begin
-   Chart.Options.ChartType := jvChartStackedBarAverage;
+   Chart.Options.ChartKind := ckChartStackedBarAverage;
 end;
 
 procedure TJvChartDemoForm.SpeedButton6Click(Sender: TObject);
 begin
-   Chart.Options.ChartType := jvChartStackedBar;
+   Chart.Options.ChartKind := ckChartStackedBar;
 end;
 
 procedure TJvChartDemoForm.SpeedButton7Click(Sender: TObject);
@@ -169,19 +169,19 @@ end;
 procedure TJvChartDemoForm.SpeedButton8Click(Sender: TObject);
 begin
    //Chart.ShowAsBarWithAve;
-   Chart.Options.ChartType := jvChartBarAverage;
+   Chart.Options.ChartKind := ckChartBarAverage;
 end;
 
 procedure TJvChartDemoForm.SpeedButton10Click(Sender: TObject);
 begin
    // Chart.ShowAsPie;
-   Chart.Options.ChartType := jvChartPieChart;
+   Chart.Options.ChartKind := ckChartPieChart;
 end;
 
 procedure TJvChartDemoForm.SpeedButton12Click(Sender: TObject);
 begin
    //Chart.ShowAsMark;
-   Chart.Options.ChartType := jvChartMarkers;
+   Chart.Options.ChartKind := ckChartMarkers;
 end;
 
 procedure TJvChartDemoForm.SpinEdit1Change(Sender: TObject);
@@ -231,7 +231,7 @@ end;
 procedure TJvChartDemoForm.SpeedButton14Click(Sender: TObject);
 begin
 
-  Chart.Options.ChartType :=jvChartDeltaAverage;
+  Chart.Options.ChartKind := ckChartDeltaAverage;
 end;
 
 procedure TJvChartDemoForm.FormCreate(Sender: TObject);
