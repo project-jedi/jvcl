@@ -65,7 +65,7 @@ type
     procedure SetAlignment(const Value: TAlignment);
     function GetColor: TColor;
     procedure SetColor(const Value: TColor);
-    procedure FontChanged(Sender: TObject);
+    procedure FontChange(Sender: TObject);
     function GetFont: TFont;
     procedure SetFont(const Value: TFont);
     procedure MouseD(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -136,7 +136,7 @@ begin
 
   FFont := TFont.Create;
   FFont := FMemo.Font;
-  FFont.OnChange := FontChanged;
+  FFont.OnChange := FontChange;
 
   FTimerTag := 0;
   FDown := False;
@@ -415,7 +415,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvScrollText.FontChanged(Sender: TObject);
+procedure TJvScrollText.FontChange(Sender: TObject);
 var
   Al: TAlignment;
 begin
