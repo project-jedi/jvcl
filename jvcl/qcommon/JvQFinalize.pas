@@ -402,10 +402,13 @@ begin
   Result := Pointer(Ptr);
 end;
 
+{$IFDEF MSWINDOWS}
 initialization
 
 finalization
+//
+// on linux this causing exceptions, if you try do deselect Jv Core.
   FinalizeUnits;
 
 end.
-
+{$ENDIF MSWINDOWS}
