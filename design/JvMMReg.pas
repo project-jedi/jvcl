@@ -58,7 +58,7 @@ uses
 procedure Register;
 begin
   RegisterComponents(RsPaletteImageAnimator, [TJvAnimate, TJvBmpAnimator,
-    TJvPicClip, TJvImageRotate, TJvImageTransform, TJvImageWindow,
+    TJvPicClip, TJvImageRotate, TJvImageTransform,
     TJvImageSquare, TJvStarfield, {$IFDEF USE_JV_GIF} TJvGIFAnimator, {$ENDIF}
     TJvAnimatedImage, TJvSpecialImage, TJvAVICapture]);
   RegisterComponents(RsPaletteBarPanel, [TJvGradientHeaderPanel, TJvGradient,
