@@ -41,13 +41,13 @@ const
   StConstSymbols10 = ['0'..'9'];
   StSeparators = ['(', ')', ',', '.', ';'];
   {$ENDIF Delphi}
-  {$IFDEF BCB}
+  {$IFDEF CBUILDER}
   StIdSymbols = '_0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
   StIdFirstSymbols = '_QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
   StConstSymbols = '0123456789ABCDEFabcdef';
   StConstSymbols10 = '0123456789';
   StSeparators = '(),.;';
-  {$ENDIF BCB}
+  {$ENDIF CBUILDER}
 
   {JvInterpreterFm}
   SNoReportProc = 'Procedure "JvInterpreterRunReportPreview" not found';

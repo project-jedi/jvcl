@@ -125,7 +125,7 @@ type
 
 procedure TJvProgressForm.Execute;
 begin
-{$IFDEF BCB}
+{$IFDEF CBUILDER}
   if not Assigned(FForm) then
     FForm := TJvProgressFormForm.CreateNew(Self, 1);
 {$ELSE}

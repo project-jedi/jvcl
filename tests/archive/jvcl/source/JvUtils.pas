@@ -74,10 +74,10 @@ const
 type
   TSetOfChar = set of Char;
 {$ENDIF DELPHI}
-{$IFDEF BCB}
+{$IFDEF CBUILDER}
 type
   TSetOfChar = string;
-{$ENDIF BCB}
+{$ENDIF CBUILDER}
 
 { GetWordOnPos returns Word from string, S, on the cursor position, P}
 function GetWordOnPos(const S: string; const P: Integer): string;
@@ -1570,9 +1570,9 @@ begin
   {$IFDEF DELPHI}
   Result := Ch in SetOfChar;
   {$ENDIF DELPHI}
-  {$IFDEF BCB}
+  {$IFDEF CBUILDER}
   Result := Pos(Ch, SetOfChar) > 0;
-  {$ENDIF BCB}
+  {$ENDIF CBUILDER}
 end;
 
 function IntPower(Base, Exponent: Integer): Integer;

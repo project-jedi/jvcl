@@ -104,19 +104,19 @@ uses
 type
   TSetOfChar = set of Char;
 {$ENDIF Delphi}
-{$IFDEF BCB}
+{$IFDEF CBUILDER}
 type
   TSetOfChar = string;
-{$ENDIF BCB}
+{$ENDIF CBUILDER}
 
 function CharInSet(const Ch: Char; const SetOfChar: TSetOfChar): Boolean;
 begin
   {$IFDEF Delphi}
   Result := Ch in SetOfChar;
   {$ENDIF Delphi}
-  {$IFDEF BCB}
+  {$IFDEF CBUILDER}
   Result := Pos(Ch, SetOfChar) > 0;
-  {$ENDIF BCB}
+  {$ENDIF CBUILDER}
 end;
 
 //=== EJvIParserError ========================================================
@@ -148,9 +148,9 @@ const
   {$IFDEF Delphi}
   StSkip = [' ', #10, #13];
   {$ENDIF Delphi}
-  {$IFDEF BCB}
+  {$IFDEF CBUILDER}
   StSkip = ' '#10#13;
-  {$ENDIF BCB}
+  {$ENDIF CBUILDER}
 var
   P, F: PChar;
   F1: PChar;
