@@ -722,6 +722,8 @@ var
   i, RW, GlyphWidth: Integer;
   Interspace: integer;
 begin
+  Canvas.Font.Assign(self.Font);
+  
   Interspace := 2;
   R := Rect(FCaptionShift.x, 0, 0, Canvas.TextHeight(Text) - FCaptionShift.y);
 
