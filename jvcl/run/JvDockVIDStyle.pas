@@ -754,13 +754,14 @@ begin
     end;
     if Result = alNone then Exit;
 
-    
+
     DockRect.TopLeft := ClientToScreen(DockRect.TopLeft);
     DockRect.BottomRight := ClientToScreen(DockRect.BottomRight);
   end;
 end;
 
 
+(*  (ahuser) not used - make Delphi 5 happy
 procedure SetTabControlPreview(VIDSource: TJvDockVIDDragDockObject;
   TabControl: TJvDockVIDTabPageControl;
   State: TDragState; DropAlign: TAlign);
@@ -792,7 +793,7 @@ begin
         
         TabControl.ActivePage := TabControl.FTempSheet;
         TabControl.Panel.SelectSheet := TabControl.FTempSheet;
-        
+
 
 
 {$IFDEF COMPILER6_UP}
@@ -842,7 +843,7 @@ begin
       TabControl.ParentForm.HostDockSite.Invalidate;
   end;
 end;
-
+*)
 
 
 
@@ -853,7 +854,7 @@ var
 begin
   with DockClient do
   begin
-    
+
     Accept := EnableDock and EachOtherDock and
       IsDockable(ParentForm, Source.Control, Source.DropOnControl, Source.DropAlign);
     if State = dsDragMove then
