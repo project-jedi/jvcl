@@ -30,8 +30,7 @@ unit JvTimer;
 interface
 
 uses
-  Windows,
-  Messages, SysUtils, Classes;
+  Windows, Messages, SysUtils, Classes;
 
 type
   TJvTimer = class(TComponent)

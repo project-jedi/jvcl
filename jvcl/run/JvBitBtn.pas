@@ -32,11 +32,11 @@ interface
 
 uses
   SysUtils, Classes,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Buttons, Menus,
-{$ELSE}
+  {$ELSE}
   QGraphics, QControls, QForms, QButtons, QMenus,
-{$ENDIF}
+  {$ENDIF VCL}
   JVCLVer, JvTypes;
 
 type
@@ -47,7 +47,7 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FSaved: TColor;
-    FColor: TColor;
+    FHintColor: TColor;
     FOver: Boolean;
     FGlyph: TBitmap;
     FOldGlyph: TBitmap;
@@ -60,18 +60,18 @@ type
     procedure SetHotFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
-{$IFDEF VCL}
+    {$IFDEF VCL}
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-{$ENDIF}
-{$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
     procedure FontChanged; override;
-{$ENDIF}
+    {$ENDIF VisualCLX}
   public
     procedure Click; override;
     constructor Create(AOwner: TComponent); override;
@@ -82,7 +82,7 @@ type
     property HotTrackFont: TFont read FHotFont write SetHotFont;
     property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
     property HotGlyph: TBitmap read FGlyph write SetGlyph;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -100,7 +100,7 @@ begin
   FHotTrack := False;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   FOver := False;
   FGlyph := TBitmap.Create;
   FOldGlyph := TBitmap.Create;
@@ -122,12 +122,12 @@ begin
   inherited Click;
   if FDropDown <> nil then
   begin
-    FDropDown.Popup(GetClientOrigin.x, GetClientOrigin.y + Height);
-{$IFDEF VCL}
+    FDropDown.Popup(GetClientOrigin.X, GetClientOrigin.Y + Height);
+    {$IFDEF VCL}
     Perform(CM_MOUSELEAVE, 0, 0);
-{$ELSE}
+    {$ELSE}
     MouseLeave(Self);
-{$ENDIF}
+    {$ENDIF VCL}
   end;
 end;
 
@@ -135,7 +135,7 @@ end;
 procedure TJvBitBtn.CMParentColorChanged(var Msg: TMessage);
 {$ELSE}
 procedure TJvBitBtn.ParentColorChanged;
-{$ENDIF}
+{$ENDIF VCL}
 begin
   inherited;
   if Assigned(FOnParentColorChanged) then
@@ -151,7 +151,7 @@ end;
 procedure TJvBitBtn.CMMouseEnter(var Msg: TMessage);
 {$ELSE}
 procedure TJvBitBtn.MouseEnter(AControl: TControl);
-{$ENDIF}
+{$ENDIF VCL}
 begin
   // for D7...
   if csDesigning in ComponentState then
@@ -159,7 +159,7 @@ begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    Application.HintColor := FColor;
+    Application.HintColor := FHintColor;
     if not FGlyph.Empty then
     begin
       FOldGlyph.Assign(Glyph);
@@ -180,7 +180,7 @@ end;
 procedure TJvBitBtn.CMMouseLeave(var Msg: TMessage);
 {$ELSE}
 procedure TJvBitBtn.MouseLeave(AControl: TControl);
-{$ENDIF}
+{$ENDIF VCL}
 begin
   // for D7...
   if csDesigning in ComponentState then
@@ -214,10 +214,10 @@ end;
 
 {$IFDEF VisualCLX}
 procedure TJvBitBtn.FontChanged;
-{$ENDIF}
+{$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvBitBtn.CMFontChanged(var Message: TMessage);
-{$ENDIF}
+{$ENDIF VCL}
 begin
   inherited;
   UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);

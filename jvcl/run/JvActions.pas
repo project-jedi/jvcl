@@ -32,13 +32,13 @@ unit JvActions;
 interface
 
 uses
-  Windows, Classes, ActnList, ShellApi,
+  Windows, Classes, ActnList, ShellAPI,
   JclMapi;
 
 type
   TJvSendMailOptions = class(TPersistent)
   private
-    FMail: TJclEmail;
+    FMailer: TJclEmail;
     FShowDialogs: Boolean;
     function GetAttachments: TStrings;
     function GetBody: string;
@@ -60,7 +60,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function Execute: Boolean;
-    property MapiComponent: TJclEmail read FMail write FMail;
+    property Mailer: TJclEmail read FMailer write FMailer;
   published
     property Attachments: TStrings read GetAttachments write SetAttachment;
     property Body: string read GetBody write SetBody;
@@ -74,15 +74,15 @@ type
     property UserLogged: Boolean read GetUserLogged;
   end;
 
-  TJvSendMail = class(TAction)
+  TJvSendMailAction = class(TAction)
   private
-    FMail: TJvSendMailOptions;
+    FMailOptions: TJvSendMailOptions;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Execute: Boolean; override;
   published
-    property Mail: TJvSendMailOptions read FMail write FMail;
+    property MailOptions: TJvSendMailOptions read FMailOptions write FMailOptions;
   end;
 
   TJvWebAction = class(TAction)
@@ -102,24 +102,24 @@ implementation
 uses
   JvJVCLUtils, JvJCLUtils;
 
-//=== TJvSendMail ============================================================
+//=== TJvSendMailAction ======================================================
 
-constructor TJvSendMail.Create(AOwner: TComponent);
+constructor TJvSendMailAction.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   DisableIfNoHandler := False;
-  FMail := TJvSendMailOptions.Create;
+  FMailOptions := TJvSendMailOptions.Create;
 end;
 
-destructor TJvSendMail.Destroy;
+destructor TJvSendMailAction.Destroy;
 begin
-  FMail.Free;
+  FMailOptions.Free;
   inherited Destroy;
 end;
 
-function TJvSendMail.Execute: Boolean;
+function TJvSendMailAction.Execute: Boolean;
 begin
-  Result := FMail.Execute;
+  Result := MailOptions.Execute;
 end;
 
 //=== TJvSendMailOptions =====================================================
@@ -128,109 +128,109 @@ constructor TJvSendMailOptions.Create;
 begin
   inherited Create;
   FShowDialogs := True;
-  FMail := TJclEmail.Create;
+  FMailer := TJclEmail.Create;
 end;
 
 destructor TJvSendMailOptions.Destroy;
 begin
-  FMail.Free;
+  FMailer.Free;
   inherited Destroy;
 end;
 
 function TJvSendMailOptions.Execute: Boolean;
 begin
-  Result := Fmail.Send(FShowDialogs);
+  Result := Mailer.Send(ShowDialogs);
 end;
 
 function TJvSendMailOptions.GetAttachments: TStrings;
 begin
-  Result := FMail.Attachments;
+  Result := Mailer.Attachments;
 end;
 
 function TJvSendMailOptions.GetBody: string;
 begin
-  Result := FMail.Body;
+  Result := Mailer.Body;
 end;
 
 function TJvSendMailOptions.GetFindOptions: TJclEmailFindOptions;
 begin
-  Result := FMail.FindOptions;
+  Result := Mailer.FindOptions;
 end;
 
 function TJvSendMailOptions.GetHtmlBody: Boolean;
 begin
-  Result := FMail.HtmlBody;
+  Result := Mailer.HtmlBody;
 end;
 
 function TJvSendMailOptions.GetLogonOptions: TJclEmailLogonOptions;
 begin
-  Result := FMail.LogonOptions;
+  Result := Mailer.LogonOptions;
 end;
 
 function TJvSendMailOptions.GetReadMsg: TJclEmailReadMsg;
 begin
-  Result := FMail.ReadMsg;
+  Result := Mailer.ReadMsg;
 end;
 
 function TJvSendMailOptions.GetRecipients: string;
 begin
-  if FMail.Recipients.Count = 0 then
+  if Mailer.Recipients.Count = 0 then
     Result := ''
   else
-    Result := FMail.Recipients.Items[0].Address;
+    Result := Mailer.Recipients.Items[0].Address;
 end;
 
 function TJvSendMailOptions.GetSubject: string;
 begin
-  Result := FMail.Subject;
+  Result := Mailer.Subject;
 end;
 
 function TJvSendMailOptions.GetUserLogged: Boolean;
 begin
-  Result := FMail.UserLogged;
+  Result := Mailer.UserLogged;
 end;
 
 procedure TJvSendMailOptions.SetAttachment(const Value: TStrings);
 begin
-  FMail.Attachments.Assign(Value);
+  Mailer.Attachments.Assign(Value);
 end;
 
 procedure TJvSendMailOptions.SetBody(const Value: string);
 begin
-  FMail.Body := Value;
+  Mailer.Body := Value;
 end;
 
 procedure TJvSendMailOptions.SetFindOptions(const Value: TJclEmailFindOptions);
 begin
-  FMail.FindOptions := Value;
+  Mailer.FindOptions := Value;
 end;
 
 procedure TJvSendMailOptions.SetHtmlBody(const Value: Boolean);
 begin
-  FMail.HtmlBody := Value;
+  Mailer.HtmlBody := Value;
 end;
 
 procedure TJvSendMailOptions.SetLogonOptions(const Value: TJclEmailLogonOptions);
 begin
-  FMail.LogonOptions := Value;
+  Mailer.LogonOptions := Value;
 end;
 
 procedure TJvSendMailOptions.SetRecipients(const Value: string);
 begin
-  Fmail.Recipients.Clear;
-  FMail.Recipients.Add(Value);
+  Mailer.Recipients.Clear;
+  Mailer.Recipients.Add(Value);
 end;
 
 procedure TJvSendMailOptions.SetSubject(const Value: string);
 begin
-  FMail.Subject := Value;
+  Mailer.Subject := Value;
 end;
 
 //=== TJvWebAction ===========================================================
 
 function TJvWebAction.Execute: Boolean;
 begin
-  Result := OpenObject(FUrl);
+  Result := OpenObject(Url);
 end;
 
 function TJvWebAction.HandlesTarget(Target: TObject): Boolean;
@@ -240,7 +240,7 @@ end;
 
 procedure TJvWebAction.UpdateTarget(Target: TObject);
 begin
-  Enabled := (Length(FUrl) <> 0);
+  Enabled := (Url <> '');
 end;
 
 end.
