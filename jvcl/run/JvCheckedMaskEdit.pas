@@ -347,7 +347,9 @@ begin
         {$ENDIF VCL}
         {$IFDEF VisualCLX}
         Parent := Self.ClientArea;
-        Align := alLeft;
+        Height := Self.ClientArea.Height;
+        Color := Self.Color;
+        Left := 3;
         {$ENDIF VisualCLX}
         Width := 15;
         Anchors := [akLeft, akTop, akBottom];
