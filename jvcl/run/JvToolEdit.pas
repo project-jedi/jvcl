@@ -1073,7 +1073,10 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  Math, Consts, MaskUtils,
+  Math, Consts,
+  {$IFDEF COMPILER6_UP}
+  MaskUtils,
+  {$ENDIF COMPILER6_UP}
   {$IFDEF MSWINDOWS}
   ShellAPI,
   {$ENDIF MSWINDOWS}
@@ -1105,7 +1108,11 @@ type
   TCustomMaskEditAccessPrivate = class(TCustomEdit)
   private
     // Do not remove these fields, although they are not used.
+    {$IFDEF COMPILER6_UP}
     FEditMask: TEditMask;
+    {$ELSE}
+    FEditMask: string;
+    {$ENDIF COMPILER6_UP}
     FMaskBlank: Char;
     FMaxChars: Integer;
     FMaskSave: Boolean;
