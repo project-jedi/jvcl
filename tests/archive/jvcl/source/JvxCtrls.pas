@@ -748,7 +748,7 @@ type
       Manual: Boolean): Boolean;
     procedure DoMouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
-    procedure CMButtonPressed(var Message: TMessage); message CM_JVBUTTONPRESSED;
+    procedure CMButtonPressed(var Message: TMessage); message CM_BUTTONPRESSED;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
