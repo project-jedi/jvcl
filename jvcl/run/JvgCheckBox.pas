@@ -34,10 +34,17 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls,
-  JvgTypes, JvgCommClasses, JvComponent, JvgUtils;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgCommClasses, JvgUtils;
 
 type
+  {$IFDEF USEJVCL}
   TJvgCheckBox = class(TJvGraphicControl)
+  {$ELSE}
+  TJvgCheckBox = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   private
     FChecked: Boolean;
     FColors: TJvgLabelColors;
@@ -92,10 +99,12 @@ type
     procedure WMLButtonDown(var Msg: TMessage); message WM_LBUTTONDOWN;
     procedure SetAlignment(const Value: TLeftRight);
   protected
+    {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure FontChanged; override;
     procedure TextChanged; override;
+    {$ENDIF USEJVCL}
     procedure Resize; override;
     procedure Paint; override;
     procedure HookFocusControlWndProc;
@@ -148,28 +157,58 @@ type
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property FocusControlMethod: TFocusControlMethod read FFocusControlMethod write FFocusControlMethod default fcmOnMouseDown;
 
+    {$IFDEF USEJVCL}
     property OnMouseEnter;
     property OnMouseLeave;
+    {$ENDIF USEJVCL}
     property AfterPaint: TNotifyEvent read FAfterPaint write FAfterPaint;
   end;
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
   Math,
   JvThemes, JvJVCLUtils;
+{$ELSE}
+uses
+  Math;
+{$ENDIF USEJVCL}
 
 {$R ..\Resources\JvgCheckBox.res}
 
-//________________________________________________________ Methods _
+{$IFNDEF USEJVCL}
+
+function JvMakeObjectInstance(Method: TWndMethod): Pointer;
+begin
+  {$IFDEF COMPILER6_UP}
+  Result := Classes.MakeObjectInstance(Method);
+  {$ELSE}
+  Result := MakeObjectInstance(Method);
+  {$ENDIF COMPILER6_UP}
+end;
+
+procedure JvFreeObjectInstance(ObjectInstance: Pointer);
+begin
+  if ObjectInstance <> nil then
+    {$IFDEF COMPILER6_UP}
+    Classes.FreeObjectInstance(ObjectInstance);
+    {$ELSE}
+    FreeObjectInstance(ObjectInstance);
+    {$ENDIF COMPILER6_UP}
+end;
+
+{$ENDIF !USEJVCL}
 
 constructor TJvgCheckBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := [csCaptureMouse, csOpaque, csClickEvents, csSetCaption,
-    csReplicatable];
+  ControlStyle :=
+    [csCaptureMouse, csOpaque, csClickEvents, csSetCaption, csReplicatable];
   //  ControlStyle := ControlStyle + [csOpaque, csReplicatable];
+  {$IFDEF USEJVCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF USEJVCL}
 
   //  FGlyphOn := TBitmap.Create;
   //  FGlyphOff := TBitmap.Create;
@@ -205,7 +244,6 @@ begin
   {$ENDIF FR_RUS}
   GlyphKind := fgkDefault;
 end;
-//______________________________________________________________
 
 destructor TJvgCheckBox.Destroy;
 begin
@@ -222,7 +260,8 @@ begin
   SetFocusControl(nil);
   inherited Destroy;
 end;
-//______________________________________________________________
+
+{$IFDEF USEJVCL}
 
 procedure TJvgCheckBox.FontChanged;
 begin
@@ -233,7 +272,6 @@ begin
     inherited FontChanged;
   end;
 end;
-//______________________________________________________________
 
 procedure TJvgCheckBox.MouseEnter(Control: TControl);
 begin
@@ -264,7 +302,6 @@ begin
     end;
   inherited MouseEnter(Control);
 end;
-//______________________________________________________________
 
 procedure TJvgCheckBox.MouseLeave(Control: TControl);
 begin
@@ -293,7 +330,14 @@ begin
     end;
   inherited MouseLeave(Control);
 end;
-//______________________________________________________________
+
+procedure TJvgCheckBox.TextChanged;
+begin
+  inherited TextChanged;
+  Invalidate;
+end;
+
+{$ENDIF USEJVCL}
 
 procedure TJvgCheckBox.WMLButtonUp(var Msg: TMessage);
 var
@@ -314,7 +358,6 @@ begin
   end;
   inherited;
 end;
-//______________________________________________________________
 
 procedure TJvgCheckBox.WMLButtonDown(var Msg: TMessage);
 begin
@@ -324,21 +367,12 @@ begin
   if (FocusControlMethod = fcmOnMouseDown) and Assigned(FocusControl) and FocusControl.CanFocus then
     FocusControl.SetFocus;
 end;
-//______________________________________________________________
 
 procedure TJvgCheckBox.Resize;
 begin
   inherited Resize;
   //  Img.Width := Width; Img.Height := Height;
 end;
-//______________________________________________________________
-
-procedure TJvgCheckBox.TextChanged;
-begin
-  inherited TextChanged;
-  Invalidate;
-end;
-//______________________________________________________________
 
 procedure TJvgCheckBox.Paint;
 var
@@ -525,7 +559,6 @@ begin
   if Assigned(FAfterPaint) then
     FAfterPaint(Self);
 end;
-//______________________________________________________________
 
 procedure TJvgCheckBox.Notification(AComponent: TComponent; Operation:
   TOperation);
@@ -536,8 +569,6 @@ begin
     FFocusControl := nil;
   end;
 end;
-
-//______________________________________________________________
 
 procedure TJvgCheckBox.HookFocusControlWndProc;
 var
@@ -551,7 +582,6 @@ begin
     SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FNewWndProc));
   end;
 end;
-//______
 
 procedure TJvgCheckBox.UnhookFocusControlWndProc;
 begin
@@ -565,20 +595,23 @@ begin
     FNewWndProc := nil;
   end;
 end;
-//______
 
 procedure TJvgCheckBox.FocusControlWndHookProc(var Msg: TMessage);
 begin
   case Msg.Msg of
     WM_SETFOCUS:
       begin
+        {$IFDEF USEJVCL}
         MouseEnter(Self);
+        {$ENDIF USEJVCL}
         FShowAsActiveWhileControlFocused := True;
       end;
     WM_KILLFOCUS:
       begin
         FShowAsActiveWhileControlFocused := False;
+        {$IFDEF USEJVCL}
         MouseLeave(Self);
+        {$ENDIF USEJVCL}
       end;
     WM_DESTROY: {fNeedRehookFocusControl := True};
   end;
@@ -586,7 +619,6 @@ begin
     Result := CallWindowProc(FPrevWndProc, TForm(Owner).Handle, Msg, WParam,
       LParam);
 end;
-//______
 
 procedure TJvgCheckBox.SetFocusControl(Value: TWinControl);
 begin
@@ -598,7 +630,6 @@ begin
   if (fcoActiveWhileControlFocused in Options) and Assigned(FFocusControl) then
     HookFocusControlWndProc;
 end;
-//______
 
 procedure TJvgCheckBox.OnGradientChanged(Sender: TObject);
 begin
@@ -606,14 +637,12 @@ begin
     FNeedUpdateOnlyMainText := True;
   Repaint;
 end;
-//______________________________________________________________
 
 procedure TJvgCheckBox.OnIlluminationChanged(Sender: TObject);
 begin
   CalcShadowAndHighlightColors((Parent as TWinControl).Brush.Color, Colors);
   Repaint;
 end;
-//______
 
 function TJvgCheckBox.IsCustomGlyph: Boolean;
 begin
@@ -759,60 +788,66 @@ end;
 
 procedure TJvgCheckBox.SetGroupIndex(Value: Integer);
 begin
-  if FGroupIndex = Value then
-    Exit;
-  FGroupIndex := Value;
-  if FChecked and (Value <> 0) then
+  if FGroupIndex <> Value then
   begin
-    FChecked := False;
-    //    SetChecked( True );
-    FChecked := True;
+    FGroupIndex := Value;
+    if FChecked and (Value <> 0) then
+    begin
+      FChecked := False;
+      //    SetChecked( True );
+      FChecked := True;
+    end;
   end;
 end;
 
 procedure TJvgCheckBox.SetOptions(Value: TglCheckBoxOptions);
 begin
-  if FOptions = Value then
-    Exit;
-  FOptions := Value;
-  CalcShadowAndHighlightColors((Parent as TWinControl).Brush.Color, Colors);
-  Invalidate;
+  if FOptions <> Value then
+  begin
+    FOptions := Value;
+    CalcShadowAndHighlightColors((Parent as TWinControl).Brush.Color, Colors);
+    Invalidate;
+  end;
 end;
 
 procedure TJvgCheckBox.SetTransparent(Value: Boolean);
 begin
-  if FTransparent = Value then
-    Exit;
-  FTransparent := Value;
-  if FTransparent then
-    ExcludeThemeStyle(Self, [csParentBackground])
-  else
-    IncludeThemeStyle(Self, [csParentBackground]);
-  Repaint;
+  if FTransparent <> Value then
+  begin
+    FTransparent := Value;
+    {$IFDEF USEJVCL}
+    if FTransparent then
+      ExcludeThemeStyle(Self, [csParentBackground])
+    else
+      IncludeThemeStyle(Self, [csParentBackground]);
+    {$ENDIF USEJVCL}
+    Repaint;
+  end;
 end;
 
 procedure TJvgCheckBox.SetDisabledMaskColor(Value: TColor);
 begin
-  if FDisabledMaskColor = Value then
-    Exit;
-  FDisabledMaskColor := Value;
-  FNeedRebuildBackground := True;
-  Invalidate;
+  if FDisabledMaskColor <> Value then
+  begin
+    FDisabledMaskColor := Value;
+    FNeedRebuildBackground := True;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgCheckBox.SetInterspace(Value: Integer);
 begin
-  if FInterspace = Value then
-    Exit;
-  FInterspace := Value;
-  FNeedRebuildBackground := True;
-  Invalidate;
+  if FInterspace <> Value then
+  begin
+    FInterspace := Value;
+    FNeedRebuildBackground := True;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgCheckBox.SetGlyphKind(Value: TglGlyphKind);
 begin
-  if FGlyphKind <> Value then
-    FGlyphKind := Value;
+  FGlyphKind := Value;
 
   if (FGlyphKind = fgkCustom) and (csReading in ComponentState) then
   begin

@@ -54,8 +54,13 @@ type
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
   JvTypes;
+{$ELSE}
+type
+  EJVCLException = class(Exception);
+{$ENDIF USEJVCL}
 
 constructor TJvgCGI.Create(AutoHeaderAndFooter: Boolean);
 //var
@@ -68,9 +73,9 @@ begin
   FillChar(Val, SizeOf(Val), #0);
 
   Reset(Input);
-  //_____________________________GET METHOD
+  // GET METHOD
   GetEnvironmentVariable('QUERY_STRING', @Val, SizeOf(Val));
-  //_____________________________POST METHOD
+  // POST METHOD
 //  if Val='' then
 //  begin Read(Input,Val); sMsg := 'Post'; end
 //  else sMsg := 'Get';

@@ -32,12 +32,11 @@ unit JvgCheckVersionInfoForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, ComCtrls, Buttons,
-  JvComponent; // for TJvForm
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Dialogs, ExtCtrls, StdCtrls, ComCtrls, Buttons;
 
 type
-  TJvgfCheckVersionInfo = class(TJvForm)
+  TJvgfCheckVersionInfo = class(TForm)
     sbNext: TButton;
     Bevel1: TBevel;
     Label1: TLabel;
@@ -71,7 +70,7 @@ uses
   {$IFDEF USEJVCL}
   JvResources,
   {$ENDIF USEJVCL}
-  JvConsts, JvgHTTPVersionInfo;
+  JvgHTTPVersionInfo;
 
 {$R *.dfm}
 

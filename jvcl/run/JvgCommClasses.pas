@@ -33,7 +33,8 @@ unit JvgCommClasses;
 interface
 
 uses
-  Windows, Graphics, Controls, Classes, ExtCtrls, JvgTypes;
+  Windows, Graphics, Controls, Classes, ExtCtrls,
+  JvgTypes;
 
 type
   TJvgTwainColors = class;
@@ -476,16 +477,16 @@ type
 
   TJvgBevelLines = class(TPersistent)
   private
-    FCount: cardinal;
-    FStep: cardinal;
+    FCount: Cardinal;
+    FStep: Cardinal;
     FOrigin: TglOrigin;
     FStyle: TPanelBevel;
     FBold: Boolean;
     FThickness: Byte;
     FIgnoreBorder: Boolean;
     FOnChanged: TNotifyEvent;
-    procedure SetCount(Value: cardinal);
-    procedure SetStep(Value: cardinal);
+    procedure SetCount(Value: Cardinal);
+    procedure SetStep(Value: Cardinal);
     procedure SetOrigin(Value: TglOrigin);
     procedure SetStyle(Value: TPanelBevel);
     procedure SetBold(Value: Boolean);
@@ -497,8 +498,8 @@ type
     constructor Create;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
-    property Count: cardinal read FCount write SetCount default 0;
-    property Step: cardinal read FStep write SetStep default 0;
+    property Count: Cardinal read FCount write SetCount default 0;
+    property Step: Cardinal read FStep write SetStep default 0;
     property Origin: TglOrigin read FOrigin write SetOrigin default forLeftTop;
     property Style: TPanelBevel read FStyle write SetStyle default bvLowered;
     property Bold: Boolean read FBold write SetBold default False;
@@ -512,11 +513,7 @@ uses
   Math,
   JvgUtils;
 
-procedure TJvgTwainColors.Changed;
-begin
-  if Assigned(FOnChanged) then
-    FOnChanged(Self);
-end;
+//=== { TJvgTwainColors } ====================================================
 
 constructor TJvgTwainColors.Create;
 begin
@@ -526,6 +523,12 @@ begin
   FRGBFromColor := ColorToRGB(FFromColor);
   FToColor := clBlack;
   FRGBToColor := ColorToRGB(FToColor);
+end;
+
+procedure TJvgTwainColors.Changed;
+begin
+  if Assigned(FOnChanged) then
+    FOnChanged(Self);
 end;
 
 procedure TJvgTwainColors.SetFromColor(Value: TColor);
@@ -547,7 +550,8 @@ begin
     Changed;
   end;
 end;
-//______________________________________{ . TJvgCustomGradient methods . }
+
+//=== { TJvgCustomGradient } =================================================
 
 constructor TJvgCustomGradient.Create;
 begin
@@ -611,8 +615,7 @@ begin
   end;
 end;
 
-function TJvgCustomGradient.GetColorFromGradientLine
-  (GradientLineWidth, Position: Word): COLORREF;
+function TJvgCustomGradient.GetColorFromGradientLine(GradientLineWidth, Position: Word): COLORREF;
 var
   c1F, c2F, c3F: Byte;
   c1T, c2T, c3T: Byte;
@@ -629,9 +632,9 @@ begin
   Step2 := (c2T - c2F) / GradientLineWidth;
   Step3 := (c3T - c3F) / GradientLineWidth;
 
-  Result := RGB(trunc(c1F + Step1 * Position),
-    trunc(c2F + Step2 * Position),
-    trunc(c3F + Step3 * Position));
+  Result := RGB(Trunc(c1F + Step1 * Position),
+    Trunc(c2F + Step2 * Position),
+    Trunc(c3F + Step3 * Position));
 end;
 
 procedure TJvgCustomGradient.TextOut(DC: HDC; const Str: string; TextR: TRect; X, Y: Integer);
@@ -672,7 +675,7 @@ begin
   Steps := MulDiv(Steps, PercentFilling, 100);
   for I := 0 to Steps do
   begin
-    SetTextColor(DC, RGB(trunc(c1), trunc(c2), trunc(c3)));
+    SetTextColor(DC, RGB(Trunc(c1), Trunc(c2), Trunc(c3)));
 
     if FOrientation = fgdVertical then
     begin
@@ -693,7 +696,8 @@ begin
   end;
   SetTextColor(DC, OldTextColor);
 end;
-//______________________________________{ . TJvg3DGradient methods . }
+
+//=== { TJvg3DGradient } =====================================================
 
 constructor TJvg3DGradient.Create;
 begin
@@ -721,7 +725,7 @@ begin
   end;
 end;
 
-//______________________________________{ . TJvg2DAlign methods . }
+//=== { TJvg2DAlign } ========================================================
 
 constructor TJvg2DAlign.Create;
 begin
@@ -733,8 +737,8 @@ end;
 
 procedure TJvg2DAlign.Changed;
 begin
-  if Assigned(OnChanged) then
-    OnChanged(Self);
+  if Assigned(FOnChanged) then
+    FOnChanged(Self);
 end;
 
 procedure TJvg2DAlign.SetHorizontal(Value: TglHorAlign);
@@ -754,12 +758,13 @@ begin
     Changed;
   end;
 end;
-//______________________________________{ . TJvgPointClass methods . }
+
+//=== { TJvgPointClass } =====================================================
 
 procedure TJvgPointClass.Changed;
 begin
-  if Assigned(OnChanged) then
-    OnChanged(Self);
+  if Assigned(FOnChanged) then
+    FOnChanged(Self);
 end;
 
 procedure TJvgPointClass.SetX(Value: Integer);
@@ -779,12 +784,12 @@ begin
     Changed;
   end;
 end;
-//______________________________________{ . TJvgBevelOptions methods . }
+
+//=== { TJvgBevelOptions } ===================================================
 
 constructor TJvgBevelOptions.Create;
 begin
-  inherited;
-  //..defaults
+  inherited Create;
   FSides := ALLGLSIDES;
 end;
 
@@ -830,12 +835,61 @@ begin
   end;
 end;
 
-//______________________________________{ . TJvgIllumination methods . }
+function TJvgBevelOptions.BordersHeight: Integer;
+begin
+  Result := 0;
+  if Inner <> bvNone then
+  begin
+    if fsdTop in Sides then
+      Inc(Result);
+    if fsdBottom in Sides then
+      if Bold then
+        Inc(Result, 1)
+      else
+        Inc(Result);
+  end;
+  if Outer <> bvNone then
+  begin
+    if fsdTop in Sides then
+      Inc(Result);
+    if fsdBottom in Sides then
+      if Bold then
+        Inc(Result, 1)
+      else
+        Inc(Result);
+  end;
+end;
+
+function TJvgBevelOptions.BordersWidth: Integer;
+begin
+  Result := 0;
+  if Inner <> bvNone then
+  begin
+    if fsdLeft in Sides then
+      Inc(Result);
+    if fsdRight in Sides then
+      if Bold then
+        Inc(Result, 1)
+      else
+        Inc(Result);
+  end;
+  if Outer <> bvNone then
+  begin
+    if fsdLeft in Sides then
+      Inc(Result);
+    if fsdRight in Sides then
+      if Bold then
+        Inc(Result, 1)
+      else
+        Inc(Result);
+  end;
+end;
+
+//=== { TJvgIllumination } ===================================================
 
 constructor TJvgIllumination.Create;
 begin
   inherited Create;
-  //..defaults
   FShadowDepth := 2;
 end;
 
@@ -849,12 +903,12 @@ begin
     Changed;
   end;
 end;
-//______________________________________{ . TJvgLabelTextStyles methods . }
+
+//=== { TJvgLabelTextStyles } ================================================
 
 constructor TJvgLabelTextStyles.Create;
 begin
   inherited Create;
-  //..defaults
   FActive := fstRaised;
   FPassive := fstRaised;
   FDisabled := fstPushed;
@@ -862,8 +916,8 @@ end;
 
 procedure TJvgLabelTextStyles.Changed;
 begin
-  if Assigned(OnChanged) then
-    OnChanged(Self);
+  if Assigned(FOnChanged) then
+    FOnChanged(Self);
 end;
 
 procedure TJvgLabelTextStyles.SetPassive(Value: TglTextStyle);
@@ -892,12 +946,12 @@ begin
     Changed;
   end;
 end;
-//______________________________________{ . TJvgCustomTextColors methods . }
+
+//=== { TJvgCustomTextColors } ===============================================
 
 constructor TJvgCustomTextColors.Create;
 begin
   inherited Create;
-  //..defaults
   FText := clBlack;
   FTextDisabled := clGray;
   FDelineate := clWhite;
@@ -908,8 +962,8 @@ end;
 
 procedure TJvgCustomTextColors.Changed;
 begin
-  if Assigned(OnChanged) then
-    OnChanged(Self);
+  if Assigned(FOnChanged) then
+    FOnChanged(Self);
 end;
 
 procedure TJvgCustomTextColors.SetText(Value: TColor);
@@ -965,12 +1019,12 @@ begin
     Changed;
   end;
 end;
-//______________________________________{ . TJvgCustomLabelColors . }
+
+//=== { TJvgCustomLabelColors } ==============================================
 
 constructor TJvgCustomLabelColors.Create;
 begin
   inherited Create;
-  //..defaults
   FTextActive := clBlack;
   FDelineateActive := clWhite;
   FAutoHighlight := False;
@@ -1042,12 +1096,12 @@ begin
     Changed;
   end;
 end;
-//______________________________________{ . TJvgGroupBoxColors . }
+
+//=== { TJvgGroupBoxColors } =================================================
 
 constructor TJvgGroupBoxColors.Create;
 begin
   inherited Create;
-  //..defaults
   FCaption := clBtnFace;
   FCaptionActive := clBtnFace;
   FClient := clBtnFace;
@@ -1089,12 +1143,12 @@ begin
     Changed;
   end;
 end;
-//______________________________________{ . TJvgExtBevelOptions . }
+
+//=== { TJvgExtBevelOptions } ================================================
 
 constructor TJvgExtBevelOptions.Create;
 begin
   inherited Create;
-  //..defaults
   FActive := True;
   FBevelPenStyle := psSolid;
   FBevelPenWidth := 1;
@@ -1136,7 +1190,7 @@ begin
   end;
 end;
 
-//______________________________________{ . TJvgCustomListBoxItemStyle . }
+//=== { TJvgCustomListBoxItemStyle } =========================================
 
 constructor TJvgCustomListBoxItemStyle.Create;
 begin
@@ -1160,8 +1214,8 @@ end;
 
 procedure TJvgCustomListBoxItemStyle.Changed;
 begin
-  if Assigned(OnChanged) then
-    OnChanged(Self);
+  if Assigned(FOnChanged) then
+    FOnChanged(Self);
 end;
 
 procedure TJvgCustomListBoxItemStyle.SetColor(Value: TColor);
@@ -1199,7 +1253,18 @@ begin
     Changed;
   end;
 end;
-//______________________________________{ . TJvgListBoxItemStyle . }
+
+function TJvgCustomListBoxItemStyle.HighlightColor: TColor;
+begin
+  Result := IncColor(Color, 60);
+end;
+
+function TJvgCustomListBoxItemStyle.ShadowColor: TColor;
+begin
+  Result := DecColor(Color, 60);
+end;
+
+//=== { TJvgListBoxItemStyle } ===============================================
 
 constructor TJvgListBoxItemStyle.Create;
 begin
@@ -1221,7 +1286,7 @@ begin
   FGradient.OnChanged := Value;
 end;
 
-//______________________________________{ . TJvgAskListBoxItemStyle . }
+//=== { TJvgAskListBoxItemStyle } ============================================
 
 constructor TJvgAskListBoxItemStyle.Create;
 begin
@@ -1262,7 +1327,7 @@ begin
   end;
 end;
 
-//______________________________________{ . TJvgCustomBoxStyle . }
+//=== { TJvgCustomBoxStyle } =================================================
 
 constructor TJvgCustomBoxStyle.Create;
 begin
@@ -1299,7 +1364,7 @@ begin
   end;
 end;
 
-//______________________________________{ . TJvgCustomTextBoxStyle . }
+//=== { TJvgCustomTextBoxStyle } =============================================
 
 constructor TJvgCustomTextBoxStyle.Create;
 begin
@@ -1326,7 +1391,7 @@ begin
   end;
 end;
 
-//______________________________________{ . TJvgBevelLines . }
+//=== { TJvgBevelLines } =====================================================
 
 constructor TJvgBevelLines.Create;
 begin
@@ -1337,11 +1402,11 @@ end;
 
 procedure TJvgBevelLines.Changed;
 begin
-  if Assigned(OnChanged) then
-    OnChanged(Self);
+  if Assigned(FOnChanged) then
+    FOnChanged(Self);
 end;
 
-procedure TJvgBevelLines.SetCount(Value: cardinal);
+procedure TJvgBevelLines.SetCount(Value: Cardinal);
 begin
   if Value <> FCount then
   begin
@@ -1350,7 +1415,7 @@ begin
   end;
 end;
 
-procedure TJvgBevelLines.SetStep(Value: cardinal);
+procedure TJvgBevelLines.SetStep(Value: Cardinal);
 begin
   if Value <> FStep then
   begin
@@ -1430,6 +1495,7 @@ var
     FRGBFromColor := FRGBToColor;
     FRGBToColor := TempColor;
   end;
+
 begin
   if (not Active) or glGlobalData.fSuppressGradient then
     Exit;
@@ -1626,15 +1692,15 @@ begin
               MoveToEx(TargetDC, X, Y, nil);
               LineTo(TargetDC, x2, y2);
             end;
-          end; {end case}
-        end; {end for}
+          end;
+        end;
         DeleteObject(SelectObject(TargetDC, OldPen));
-      end; {end case else}
-    end; {end case}
+      end;
+    end;
     //    if NumberOfColors=0 then exit;
     if I / NumberOfColors * 100 > PercentFilling then
       Break;
-  end; {end for}
+  end;
 
   if BufferedDraw then
   begin
@@ -1642,67 +1708,6 @@ begin
     DeleteObject(SelectObject(BufferDC, OldBMP));
     DeleteDC(BufferDC);
   end;
-
-end;
-
-function TJvgBevelOptions.BordersHeight: Integer;
-begin
-  Result := 0;
-  if Inner <> bvNone then
-  begin
-    if fsdTop in Sides then
-      Inc(Result);
-    if fsdBottom in Sides then
-      if Bold then
-        Inc(Result, 1)
-      else
-        Inc(Result);
-  end;
-  if Outer <> bvNone then
-  begin
-    if fsdTop in Sides then
-      Inc(Result);
-    if fsdBottom in Sides then
-      if Bold then
-        Inc(Result, 1)
-      else
-        Inc(Result);
-  end;
-end;
-
-function TJvgBevelOptions.BordersWidth: Integer;
-begin
-  Result := 0;
-  if Inner <> bvNone then
-  begin
-    if fsdLeft in Sides then
-      Inc(Result);
-    if fsdRight in Sides then
-      if Bold then
-        Inc(Result, 1)
-      else
-        Inc(Result);
-  end;
-  if Outer <> bvNone then
-  begin
-    if fsdLeft in Sides then
-      Inc(Result);
-    if fsdRight in Sides then
-      if Bold then
-        Inc(Result, 1)
-      else
-        Inc(Result);
-  end;
-end;
-
-function TJvgCustomListBoxItemStyle.HighlightColor: TColor;
-begin
-  Result := IncColor(Color, 60);
-end;
-
-function TJvgCustomListBoxItemStyle.ShadowColor: TColor;
-begin
-  Result := DecColor(Color, 60);
 end;
 
 end.
