@@ -882,14 +882,14 @@ begin
     // erase old selection
     R := GetRectForDate(FSelDate);
     InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);
-    {$IFDEF VisualCLX} QWindows.{$ENDIF}InvalidateRect(Handle, @R, True);
+    Windows.InvalidateRect(Handle, @R, True);
     FSelDate := Value;
     if Enabled then
     begin
       // draw new selection
       R := GetRectForDate(FSelDate);
       InflateRect(R, Selection.Pen.Width + 1, Selection.Pen.Width + 1);
-      {$IFDEF VisualCLX} QWindows.{$ENDIF}InvalidateRect(Handle, @R, True);
+      Windows.InvalidateRect(Handle, @R, True);
     end;
   end;
 end;
