@@ -28,7 +28,7 @@ begin
   RegisterComponents(SPaletteNonVisual,[
     TJvAlarms, TJvConverter, TJvDataEmbedded, TJvCreateProcess,
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
-    TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvPrint, TJvEasterEgg
+    TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvTranslatorStrings, TJvPrint, TJvEasterEgg
     ]);
 
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess, '', TJvExeNameProperty);
