@@ -54,12 +54,12 @@ unit JvQLabel;
 interface
 
 uses
-  
-  
+
+
   Qt, QGraphics, QControls, QForms, QStdCtrls, QImgList, Types, QWindows,
   
   SysUtils, Classes,
-  JvQTypes, JvQComponent, JvQConsts, JvQDataProvider, JvQDataProviderIntf;
+  JvQTypes, JvQComponent, JvQConsts;
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
@@ -92,7 +92,6 @@ type
     FAngle: TJvLabelRotateAngle;
     FSpacing: Integer;
     FHotTrackFontOptions: TJvTrackFontOptions;
-    FConsumerSvc: TJvDataConsumer;
     FNeedsResize:boolean;
     function GetTransparent: Boolean;
     procedure UpdateTracking;
@@ -147,10 +146,6 @@ type
     procedure MouseLeave(Control: TControl); override;
     function GetImageWidth:Integer;virtual;
     function GetImageHeight:Integer;virtual;
-    procedure SetConsumerService(Value: TJvDataConsumer);
-    function ProviderActive: Boolean;
-    procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
-    procedure NonProviderChange;
     property Angle: TJvLabelRotateAngle read FAngle write SetAngle default 0;
     property AutoOpenURL: Boolean read FAutoOpenURL write FAutoOpenURL;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
@@ -174,7 +169,6 @@ type
     property ShowFocus: Boolean read FShowFocus write SetShowFocus default False;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property URL: string read FURL write FURL;
-    property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
   public
     constructor Create(AOwner: TComponent); override;
@@ -192,7 +186,7 @@ type
     property AutoSize;
     property Caption;
     property Color;
-    
+
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -234,7 +228,6 @@ type
     property HotTrackFontOptions;
     property Images;
     property ImageIndex;
-    property Provider;
     property Spacing;
     property URL;
     property OnParentColorChange;
@@ -293,8 +286,6 @@ constructor TJvCustomLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FImageIndex := -1;
-  FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RendersSingleItem]);
-  FConsumerSvc.OnChanged := ConsumerServiceChanged;
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoImagesChange;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
@@ -319,28 +310,12 @@ begin
   FChangeLink.Free;
   FHotTrackFont.Free;
   FFontSave.Free;
-  FreeAndNil(FConsumerSvc);
   inherited;
 end;
 
 function TJvCustomLabel.GetLabelCaption: string;
-var
-  ItemText: IJvDataItemText;
 begin
-  if ProviderActive then
-  begin
-    Provider.Enter;
-    try
-      if Supports((Provider as IJvDataConsumerItemSelect).GetItem, IJvDataItemText, ItemText) then
-        Result := ItemText.Caption
-      else
-        Result := Caption;
-    finally
-      Provider.Leave;
-    end;
-  end
-  else
-    Result := Caption;
+  Result := Caption;
 end;
 
 function TJvCustomLabel.GetDefaultFontColor: TColor;
@@ -407,49 +382,7 @@ end;
 procedure TJvCustomLabel.DoDrawText(var Rect: TRect; Flags: Word);
 var
   Tmp: TSize;
-  TmpItem: IJvDataItem;
-  ItemsRenderer: IJvDataItemsRenderer;
-  ItemRenderer: IJvDataItemRenderer;
-  DrawState: TProviderDrawStates;
 begin
-  if ProviderActive then
-  begin
-    Provider.Enter;
-    try
-      if not Enabled then
-        DrawState := [pdsDisabled]
-      else
-        DrawState := [];
-      TmpItem := (Provider as IJvDataConsumerItemSelect).GetItem;
-      if (TmpItem <> nil) and (Supports(TmpItem.GetItems, IJvDataItemsRenderer, ItemsRenderer) or
-        Supports(TmpItem, IJvDataItemRenderer, ItemRenderer)) then
-      begin
-        Canvas.Brush.Color := Color;
-        Canvas.Font := Font;
-        if (Flags and DT_CALCRECT <> 0) then
-        begin
-          if ItemsRenderer <> nil then
-            Tmp := ItemsRenderer.MeasureItem(Canvas, TmpItem)
-          else
-            Tmp := ItemRenderer.Measure(Canvas);
-          Rect.Right := Tmp.cx;
-          Rect.Bottom := Tmp.cy;
-        end
-        else
-        begin
-          if ItemsRenderer <> nil then
-            ItemsRenderer.DrawItem(Canvas, Rect, TmpItem, DrawState)
-          else
-            ItemRenderer.Draw(Canvas, Rect, DrawState);
-        end;
-      end
-      else
-        DoDrawCaption(Rect, Flags);
-    finally
-      Provider.Leave;
-    end;
-  end
-  else
     DoDrawCaption(Rect, Flags);
 end;
 
@@ -582,7 +515,6 @@ end;
 procedure TJvCustomLabel.Loaded;
 begin
   inherited Loaded;
-  Provider.Loaded;
   FNeedsResize := true;
   AdjustBounds;
 end;
@@ -829,7 +761,6 @@ end;
 procedure TJvCustomLabel.TextChanged;
 begin
   inherited TextChanged;
-  NonProviderChange;
   Invalidate;
   FNeedsResize := true;
   AdjustBounds;
@@ -898,7 +829,6 @@ begin
     if Images <> nil then
     begin
       FNeedsResize := true;
-      NonProviderChange;
     end;
     FImageIndex := Value;
     if FNeedsResize then AdjustBounds else Invalidate;
@@ -909,7 +839,6 @@ procedure TJvCustomLabel.SetImages(const Value: TCustomImageList);
 begin
   if FImages <> Value then
   begin
-    NonProviderChange;
     if FImages <> nil then
     begin
       FImages.RemoveFreeNotification(self);
@@ -934,40 +863,17 @@ end;
 function TJvCustomLabel.GetImageHeight: Integer;
 begin
   Result := 0;
-  if not ProviderActive and (Images <> nil) then
+  if (Images <> nil) then
     Result := Images.Height;
 end;
 
-procedure TJvCustomLabel.SetConsumerService(Value: TJvDataConsumer);
-begin
-end;
 
-function TJvCustomLabel.ProviderActive: Boolean;
-begin
-  Result := (Provider <> nil) and (Provider.ProviderIntf <> nil);
-end;
 
-procedure TJvCustomLabel.ConsumerServiceChanged(Sender: TJvDataConsumer;
-  Reason: TJvDataConsumerChangeReason);
-begin
-  if ProviderActive or (Reason = ccrProviderSelect) then
-  begin
-    FNeedsResize := true;
-    AdjustBounds;
-  end;
-end;
-
-procedure TJvCustomLabel.NonProviderChange;
-begin
-{ TODO 3 -oJVCL -cPROVIDER : Causes AV at designtime when trying to change Images property }
-  if ProviderActive then
-    Provider.Provider := nil;
-end;
 
 function TJvCustomLabel.GetImageWidth: Integer;
 begin
   Result := 0;
-  if not ProviderActive and (Images <> nil) then
+  if Images <> nil then
     Result := Images.Width;
 end;
 
@@ -979,21 +885,8 @@ end;
 procedure TJvCustomLabel.Click;
 var
   HasBeenHandled: Boolean;
-  TmpItem: IJvDataItem;
-  ItemHandler: IJvDataItemBasicAction;
 begin
   HasBeenHandled := False;
-  if ProviderActive then
-  begin
-    Provider.Enter;
-    try
-      TmpItem := (Provider as IJvDataConsumerItemSelect).GetItem;
-      if (TmpItem <> nil) and Supports(TmpItem, IJvDataItemBasicAction, ItemHandler) then
-        HasBeenHandled := ItemHandler.Execute(Self);
-    finally
-      Provider.Leave;
-    end;
-  end;
   if not HasBeenHandled then
   begin
     inherited Click;
@@ -1007,10 +900,10 @@ begin
   if FAngle <> Value then
   begin
     FAngle := Value;
-    
+
     FNeedsResize := Autosize;
     AdjustBounds;
-    
+
     Invalidate;
   end;
 end;

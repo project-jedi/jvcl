@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -23,13 +23,12 @@ Contributor(s):
   Jens Fudickar
   Olivier Sannier
 
-Last Modified: 2004-01-18
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -95,9 +94,6 @@ type
   // and publishes a few properties for them to be
   // used by the user in the IDE
   TJvAppIniFileStorage = class (TJvCustomAppIniStorage)
-  protected
-    procedure WriteValue(const Section, Key, Value: string); override;
-    procedure RemoveValue(const Section, Key: string); override;
   public
     procedure Flush; override;
     procedure Reload; override;
@@ -106,6 +102,7 @@ type
     property IniFile;
   published
     property AutoFlush;
+    property AutoReload;
     property FileName;
     property Location;
     property DefaultSection;
@@ -374,7 +371,10 @@ begin
   if Section = '' then
     raise EJVCLAppStorageError.Create(RsEReadValueFailed);
   if IniFile <> nil then
+  begin
+    if AutoReload and not IsUpdating then Reload;
     Result := IniFile.ReadString(Section, Key, '')
+  end
   else
     Result := '';
 end;
@@ -385,7 +385,9 @@ begin
   begin
     if Section = '' then
       raise EJVCLAppStorageError.Create(RsEWriteValueFailed);
+    if AutoReload and not IsUpdating then Reload;
     IniFile.WriteString(Section, Key, Value);
+    if AutoFlush and not IsUpdating then Flush;
   end;
 end;
 
@@ -419,9 +421,15 @@ begin
   if IniFile <> nil then
   begin
     if IniFile.ValueExists(Section, Key) then
-      IniFile.DeleteKey(Section, Key)
+    begin
+      IniFile.DeleteKey(Section, Key);
+      if AutoFlush and not IsUpdating then Flush;
+    end
     else if IniFile.SectionExists(Section + '\' + Key) then
+    begin
       IniFile.EraseSection(Section + '\' + Key);
+      if AutoFlush and not IsUpdating then Flush;
+    end;
   end;
 end;
 
@@ -515,22 +523,10 @@ end;
 
 procedure TJvAppIniFileStorage.Reload;
 begin
-  if FileExists(FullFileName) then
+  if FileExists(FullFileName) and not IsUpdating then
     IniFile.Rename(FullFileName, True);
 end;
 
-procedure TJvAppIniFileStorage.RemoveValue(const Section, Key: string);
-begin
-  inherited;
-  if AutoFlush then Flush;
-end;
-
-procedure TJvAppIniFileStorage.WriteValue(const Section, Key,
-  Value: string);
-begin
-  inherited;
-  if AutoFlush then Flush;
-end;
 
 end.
 

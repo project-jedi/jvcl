@@ -20,7 +20,6 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2002-01-06;
 Current Version: 2.00
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -36,6 +35,7 @@ Description:
   Note: Documentation for this unit can be found in Doc\Source.txt and
         Doc\Readme.txt!
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -94,7 +94,6 @@ type
     procedure DeactivateActiveLinkNode;
     procedure HandleDynamicNode(out Source: string; const Node: TDynamicNode);
     procedure SetCaption(const Value: TCaption);
-    function GetCaption: TCaption;
     function GetTransparent: Boolean;
     function IsActiveLinkNodeClicked: Boolean;
     procedure SetAutoHeight(const Value: Boolean);
@@ -569,18 +568,13 @@ begin
   end;
 end;
 
-function TJvCustomLinkLabel.GetCaption: TCaption;
-begin
-  Result := inherited Caption;
-end;
-
 procedure TJvCustomLinkLabel.SetCaption(const Value: TCaption);
 begin
-  if Value <> Caption then
+  if Value <> FCaption then
   begin
-    inherited Caption := Value;
+    FCaption := Value;
     Text.Clear;
-    Text.Add(Value);
+    Text.Add(FCaption);
 
     FActiveLinkNode := nil; // We're about to free the tree containing the node it's pointing to
     FNodeTree.Free;

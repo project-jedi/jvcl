@@ -209,10 +209,10 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
     object JvHotLink1: TLabel
       Left = 181
       Top = 85
-      Width = 133
+      Width = 130
       Height = 13
       Cursor = crHandPoint
-      Caption = 'http://jvcl.sourceforge.net '
+      Caption = 'http://jvcl.sourceforge.net'
       Font.Color = clBlue
       Font.Height = 11
       Font.Name = 'MS Shell Dlg 2'
@@ -314,10 +314,10 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
     object lblBugsURL: TLabel
       Left = 185
       Top = 206
-      Width = 133
+      Width = 130
       Height = 13
       Cursor = crHandPoint
-      Caption = 'http://jvcl.sourceforge.net '
+      Caption = 'http://jvcl.sourceforge.net'
       Font.Color = clBlue
       Font.Height = 11
       Font.Name = 'MS Shell Dlg 2'

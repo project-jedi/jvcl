@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}
@@ -36,8 +35,11 @@ unit JvQJoystick;
 interface
 
 uses
-  SysUtils, Classes, Windows, Messages, MMSystem,
+  Windows, Messages, SysUtils, Classes, MMSystem,
+  
+  
   QForms,
+  
   JvQTypes, JvQComponent;
 
 // (rom) in the time of USB this unit may have to support more than 2 joysticks

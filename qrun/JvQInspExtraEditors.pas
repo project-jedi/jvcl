@@ -44,7 +44,7 @@ uses
   SysUtils, Classes,
   
   
-  QWindows, QGraphics, QControls, QStdCtrls, QImgList,
+  QWindows, QGraphics, QControls, QStdCtrls, QImgList, Types,
   
   JvQInspector;
 
@@ -128,8 +128,8 @@ type
     function NameForColor(const Color: TColor): string;
     procedure PaintValue(const Color: TColor; const ColorName: string; const ACanvas: TCanvas;
       const ARect: TRect);
-    procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState); override;
+    procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState; var Handled: Boolean); override;
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
     procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer; var Width: Integer); override;
     function GetDisplayValue: string; override;
@@ -154,8 +154,8 @@ type
   protected
     procedure PaintValue(const ImgNum: Integer; const ImgName: string; const ACanvas: TCanvas;
       const ARect: TRect);
-    procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState); override;
+    procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState; var Handled: Boolean); override;
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
     procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer; var Width: Integer); override;
     function GetDisplayValue: string; override;
@@ -469,8 +469,8 @@ begin
   end;
 end;
 
-procedure TJvInspectorColorItem.DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
-  State: TOwnerDrawState);
+procedure TJvInspectorColorItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
+  State: TOwnerDrawState; var Handled: Boolean);
 begin
   with TListBox(Control) do
   begin
@@ -481,6 +481,7 @@ begin
     Rect.Bottom := Rect.Bottom - 1;
     PaintValue(TColor(Items.Objects[Index]), Items[Index], Canvas, Rect);
   end;
+  Handled := true;
 end;
 
 procedure TJvInspectorColorItem.DoMeasureListItem(Control: TWinControl; Index: Integer;
@@ -848,8 +849,8 @@ begin
   end;
 end;
 
-procedure TJvInspectorTImageIndexItem.DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
-  State: TOwnerDrawState);
+procedure TJvInspectorTImageIndexItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
+  State: TOwnerDrawState; var Handled: Boolean);
 begin
   with TListBox(Control) do
   begin
@@ -860,6 +861,7 @@ begin
     Rect.Bottom := Rect.Bottom - 1;
     PaintValue(Integer(Items.Objects[Index]), Items[Index], Canvas, Rect);
   end;
+  Handled := true;
 end;
 
 procedure TJvInspectorTImageIndexItem.DoMeasureListItem(Control: TWinControl; Index: Integer;

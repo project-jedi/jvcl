@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,8 +20,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-10-25
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -29,6 +27,7 @@ Known Issues:
   Some russian comments were translated to english; these comments are marked
   with [translated]
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -42,7 +41,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   
-
+  
   Types, QWindows, QControls, QExtCtrls, QForms, QGraphics,
   
   JvQComponent;
@@ -106,12 +105,12 @@ const
 constructor TJvaScrollText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
-  FForeImage := TImage.Create(self);
-  FBackImage := TImage.Create(self);
-  FFontMaskImage := TImage.Create(self);
-  FFontImage := TImage.Create(self);
-  FScrollImage := TImage.Create(self);
+  
+  FForeImage := TImage.Create(nil);
+  FBackImage := TImage.Create(nil);
+  FFontMaskImage := TImage.Create(nil);
+  FFontImage := TImage.Create(nil);
+  FScrollImage := TImage.Create(nil);
   FStrings := TStringList.Create;
   FScrollBottom := -1;
   FScrollTop := -1;
@@ -125,6 +124,11 @@ end;
 
 destructor TJvaScrollText.Destroy;
 begin
+  FForeImage.Free;
+  FBackImage.Free;
+  FFontMaskImage.Free;
+  FFontImage.Free;
+  FScrollImage.Free;
   FStrings.Free;
   inherited Destroy;
 end;

@@ -2573,7 +2573,7 @@ end;
 
 function TJvBaseDataItemSubItems.GetInterface(const IID: TGUID; out Obj): Boolean;
 begin
-  Result := inherited GetInterface(IID, Obj) or Succeeded(FItems.QueryInterface(IID, Obj));
+  Result := inherited GetInterface(IID, Obj) //or Succeeded(FItems.QueryInterface(IID, Obj));
 end;
 
 //=== TJvCustomDataItemTextRenderer ==========================================
