@@ -909,6 +909,9 @@ begin
           FMouseDownClosingTab := Tab;
           SetClosingTab(Tab);
         end;
+    if (FClosingTab = nil) and AllowTabMoving and
+       ([ssLeft, ssMiddle, ssRight] * Shift = [ssLeft]) then
+      BeginDrag(False);
   end;
   inherited MouseDown(Button, Shift, X, Y);
 end;
@@ -957,9 +960,7 @@ begin
   CalcTabsRects;
   Tab := TabAt(X, Y);
   if HotTracking and ([ssLeft, ssMiddle, ssRight] * Shift = []) then
-    SetHotTab(Tab)
-  else if AllowTabMoving and (SelectedTab <> Tab) and ([ssLeft, ssMiddle, ssRight] * Shift = [ssLeft]) then
-    BeginDrag(True);
+    SetHotTab(Tab);
 
   if CloseButton and Assigned(FMouseDownClosingTab) and (ssLeft in Shift) then
   begin
