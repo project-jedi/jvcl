@@ -4603,7 +4603,8 @@ begin
             end;
           end;
           if (Message.Msg = WM_KEYDOWN) and (KeyDataToShiftState(Message.LParam) = []) and
-            (Message.WParam in [VK_DOWN, VK_UP, VK_NEXT, VK_PRIOR]) then
+            ((Message.WParam in [VK_NEXT, VK_PRIOR]) or (not DroppedDown and
+            (Message.WParam in [VK_DOWN, VK_UP]))) then
           begin
             PostMessage(Inspector.Handle, Message.Msg, Message.WParam, Message.LParam);
             Message.Result := 1;
