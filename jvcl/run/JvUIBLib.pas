@@ -269,6 +269,7 @@ type
     function GetIsBlob(const Index: Word): boolean;
     function GetIsNull(const Index: Word): boolean;
     function GetIsNullable(const Index: Word): boolean;
+
     function GetAsDouble(const Index: Word): Double;
     function GetAsCurrency(const Index: Word): Currency;
     function GetAsInt64(const Index: Word): Int64;
@@ -281,11 +282,13 @@ type
     function GetAsVariant(const Index: Word): Variant; virtual;
     function GetAsDateTime(const Index: Word): TDateTime;
     function GetAsBoolean(const Index: Word): boolean;
+    function GetAsDate(const Index: Word): Integer;
 
     function GetByNameIsNumeric(const Name: String): boolean;
     function GetByNameIsBlob(const Name: String): boolean;
     function GetByNameIsNull(const Name: String): boolean;
     function GetByNameIsNullable(const Name: String): boolean;
+
     function GetByNameAsDouble(const Name: String): Double;
     function GetByNameAsCurrency(const Name: String): Currency;
     function GetByNameAsInt64(const Name: String): Int64;
@@ -298,6 +301,7 @@ type
     function GetByNameAsVariant(const Name: String): Variant;
     function GetByNameAsDateTime(const Name: String): TDateTime;
     function GetByNameAsBoolean(const Name: String): boolean;
+    function GetByNameAsDate(const Name: String): Integer;
 
     function GetFieldType(const Index: Word): TUIBFieldType; virtual;
   public
@@ -426,7 +430,7 @@ type
     property AsWideString [const Index: Word]: WideString read GetAsWideString;
     property AsVariant    [const Index: Word]: Variant    read GetAsVariant;
     property AsDateTime   [const Index: Word]: TDateTime  read GetAsDateTime;
-    property AsDate       [const Index: Word]: Integer    read GetAsInteger;
+    property AsDate       [const Index: Word]: Integer    read GetAsDate;
     property AsBoolean    [const Index: Word]: Boolean    read GetAsBoolean;
 
     property ByNameIsNull[const name: String]: boolean read GetByNameIsNull;
@@ -444,6 +448,7 @@ type
     property ByNameAsVariant    [const name: String]: Variant    read GetByNameAsVariant;
     property ByNameAsDateTime   [const name: String]: TDateTime  read GetByNameAsDateTime;
     property ByNameAsBoolean    [const name: String]: Boolean    read GetByNameAsBoolean;
+    property ByNameAsDate       [const name: String]: Integer    read GetByNameAsDate;
 
     property Values[const name: String]: Variant read GetByNameAsVariant; default;
   end;
@@ -474,6 +479,7 @@ type
     procedure SetAsQuad(const Index: Word; const Value: TISCQuad);
     procedure SetAsDateTime(const Index: Word; const Value: TDateTime);
     procedure SetAsBoolean(const Index: Word; const Value: Boolean);
+    procedure SetAsDate(const Index: Word; const Value: Integer);
 
     procedure SetByNameIsNull(const Name: String; const Value: boolean);
     procedure SetByNameAsDouble(const Name: String; const Value: Double);
@@ -487,6 +493,7 @@ type
     procedure SetByNameAsQuad(const Name: String; const Value: TISCQuad);
     procedure SetByNameAsDateTime(const Name: String; const Value: TDateTime);
     procedure SetByNameAsBoolean(const Name: String; const Value: boolean);
+    procedure SetByNameAsDate(const Name: String; const Value: Integer);
 
     function GetFieldType(const Index: Word): TUIBFieldType; override;
   public
@@ -512,6 +519,7 @@ type
     property AsQuad       [const Index: Word]: TISCQuad   read GetAsQuad       write SetAsQuad;
     property AsDateTime   [const Index: Word]: TDateTime  read GetAsDateTime   write SetAsDateTime;
     property AsBoolean    [const Index: Word]: Boolean    read GetAsBoolean    write SetAsBoolean;
+    property AsDate       [const Index: Word]: Integer    read GetAsDate       write SetAsDate;
 
     property ByNameIsNull[const name: String]: boolean read GetByNameIsNull write SetByNameIsNull;
 
@@ -527,6 +535,7 @@ type
     property ByNameAsVariant    [const name: String]: Variant    read GetByNameAsVariant;
     property ByNameAsDateTime   [const name: String]: TDateTime  read GetByNameAsDateTime   write SetByNameAsDateTime;
     property ByNameAsBoolean    [const name: String]: Boolean    read GetByNameAsBoolean    write SetByNameAsBoolean;
+    property ByNameAsDate       [const name: String]: Integer    read GetByNameAsDate       write SetByNameAsDate;
 
     property Values[const name: String]: Variant read GetByNameAsVariant; default;
     property FieldName[const Index: Word]: string read GetFieldName;
@@ -674,11 +683,14 @@ type
    procedure DecodeTimeStamp(v: PISCTimeStamp; out TimeStamp: TTimeStamp); overload;
 
    function  DecodeTimeStamp(v: PISCTimeStamp): Double; overload;
-   procedure EncodeTimeStamp(const DateTime: TDateTime; v: PISCTimeStamp);
+   procedure EncodeTimeStamp(const DateTime: TDateTime; v: PISCTimeStamp); overload;
+   procedure EncodeTimeStamp(const Date: Integer; v: PISCTimeStamp); overload;
    procedure DecodeSQLDate(v: Integer; out Year: SmallInt; out Month, Day: Word); overload;
    procedure DecodeSQLDate(const v: Integer; out Date: Double); overload;
+   procedure DecodeSQLDate(const v: Integer; out Date: Integer); overload;
    function  DecodeSQLDate(const v: Integer): Integer; overload;
    procedure EncodeSQLDate(date: TDateTime; out v: Integer); overload;
+   procedure EncodeSQLDate(date: Integer; out v: Integer); overload;
    procedure EncodeSQLDate(Year: SmallInt; Month, Day: Word; out v: Integer); overload;
 
    procedure DecodeSQLTime(v: Cardinal; out Hour, Minute, Second: Word; out Fractions: LongWord);
@@ -2144,17 +2156,39 @@ const
     end;
   end;
 
-  function DecodeSQLDate(const v: Integer): Integer;
+  procedure DecodeSQLDate(const v: Integer; out Date: Integer);
   var
     year: SmallInt;
     month, day: Word;
   begin
     DecodeSQLDate(v, year, month, day);
-    EncodeDate(Year, month, day, Result)
+    EncodeDate(Year, month, day, Date)
   end;
 
+  function DecodeSQLDate(const v: Integer): Integer;
+  begin
+    DecodeSQLDate(v, Result);
+  end;
 
   procedure EncodeSQLDate(date: TDateTime; out v: Integer);
+  var
+    day, month: Word;
+    year: Word;
+    c, ya: Integer;
+  begin
+    DecodeDate(Date, year, month, day);
+    if (month > 2) then
+      dec(month, 3) else
+      begin
+        inc(month, 9);
+        dec(year);
+      end;
+    c := year div 100;
+    ya := year - (100 * c);
+    v := ((146097 * c) div 4 + (1461 * ya) div 4 + (153 * month + 2) div 5 + day - 678882);
+  end;
+
+  procedure EncodeSQLDate(date: Integer; out v: Integer); overload;
   var
     day, month: Word;
     year: Word;
@@ -2207,6 +2241,12 @@ const
   begin
     EncodeSQLDate(DateTime, v.timestamp_date);
     v.timestamp_time := Round(Frac(DateTime) * 864000000);
+  end;
+
+  procedure EncodeTimeStamp(const Date: Integer; v: PISCTimeStamp);
+  begin
+    EncodeSQLDate(Date, v.timestamp_date);
+    v.timestamp_time := 0;
   end;
 
   procedure DecodeSQLTime(v: Cardinal; out Hour, Minute, Second: Word;
@@ -3186,10 +3226,48 @@ begin
   Result := GetIsNull(GetFieldIndex(Name));
 end;
 
-function TSQLDA.GetAsDateTime(const Index: Word): TDateTime;
-begin
-  Result := GetAsDouble(Index);
-end;
+  function TSQLDA.GetAsDateTime(const Index: Word): TDateTime;
+  var ASQLCode: SmallInt;
+  begin
+    CheckRange(Index);
+    with FXSQLDA.sqlvar[Index] do
+    begin
+      Result := 0;
+      if (sqlind <> nil) and (sqlind^ = -1) then Exit;
+      ASQLCode := (sqltype and not(1));
+      // Is Numeric ?
+      if (sqlscale < 0)  then
+      begin
+        case ASQLCode of
+          SQL_SHORT  : Result := PSmallInt(sqldata)^ / ScaleDivisor[sqlscale];
+          SQL_LONG   : Result := PInteger(sqldata)^  / ScaleDivisor[sqlscale];
+          SQL_INT64,
+          SQL_QUAD   : Result := PInt64(sqldata)^    / ScaleDivisor[sqlscale];
+          SQL_DOUBLE : Result := PDouble(sqldata)^;
+        else
+          raise EUIBConvertError.Create(EUIB_UNEXPECTEDERROR + ': ' + EUIB_CASTERROR);
+        end;
+      end else
+        case ASQLCode of
+          SQL_DOUBLE    : Result := PDouble(sqldata)^;
+          SQL_TIMESTAMP : DecodeTimeStamp(PISCTimeStamp(sqldata), Double(Result));
+          SQL_TYPE_DATE : DecodeSQLDate(PInteger(sqldata)^, Double(Result));
+          SQL_TYPE_TIME : Result := PCardinal(sqldata)^ / 864000000;
+          SQL_LONG      : Result := PInteger(sqldata)^;
+          SQL_D_FLOAT,
+          SQL_FLOAT     : Result := PSingle(sqldata)^;
+{$IFDEF IB7_UP}
+          SQL_BOOLEAN,
+{$ENDIF}
+          SQL_SHORT     : Result := PSmallint(sqldata)^;
+          SQL_INT64     : Result := PInt64(sqldata)^;
+          SQL_TEXT      : Result := StrToDateTime(DecodeString(SQL_TEXT, Index));
+          SQL_VARYING   : Result := StrToDateTime(DecodeString(SQL_VARYING, Index));
+        else
+          raise EUIBConvertError.Create(EUIB_CASTERROR);
+        end;
+    end;
+  end;
 
 function TSQLDA.GetByNameAsDateTime(const Name: String): TDateTime;
 begin
@@ -3295,23 +3373,23 @@ function TSQLDA.GetAsBoolean(const Index: Word): boolean;
     end;
   end;
 
-function TSQLDA.GetByNameAsBoolean(const Name: String): boolean;
-begin
-  Result := GetAsBoolean(GetFieldIndex(Name));
-end;
+  function TSQLDA.GetByNameAsBoolean(const Name: String): boolean;
+  begin
+    Result := GetAsBoolean(GetFieldIndex(Name));
+  end;
 
-function TSQLDA.GetByNameIsNumeric(const Name: String): boolean;
-begin
-  result := GetIsNumeric(GetFieldIndex(Name));
-end;
+  function TSQLDA.GetByNameIsNumeric(const Name: String): boolean;
+  begin
+    result := GetIsNumeric(GetFieldIndex(Name));
+  end;
 
-function TSQLDA.GetIsNumeric(const Index: Word): boolean;
-begin
-  CheckRange(Index);
-  result := (FXSQLDA.sqlvar[Index].SqlScale < 0);
-end;
+  function TSQLDA.GetIsNumeric(const Index: Word): boolean;
+  begin
+    CheckRange(Index);
+    result := (FXSQLDA.sqlvar[Index].SqlScale < 0);
+  end;
 
-function TSQLDA.GetAsWideString(const Index: Word): WideString;
+  function TSQLDA.GetAsWideString(const Index: Word): WideString;
     function BoolToStr(const Value: boolean): string;
     begin if Value then result := sUIBTrue else result := sUIBFalse; end;
   var ASQLCode: SmallInt;
@@ -3388,6 +3466,55 @@ begin
     Result := uftUnKnown;
   end;
 end;
+
+  function TSQLDA.GetAsDate(const Index: Word): Integer;
+  var ASQLCode: SmallInt;
+  begin
+    CheckRange(Index);
+    with FXSQLDA.sqlvar[Index] do
+    begin
+      Result := 0;
+      if (sqlind <> nil) and (sqlind^ = -1) then Exit;
+      ASQLCode := (sqltype and not(1));
+      // Is Numeric ?
+      if (sqlscale < 0)  then
+      begin
+        case ASQLCode of
+          SQL_SHORT  : Result := PSmallInt(sqldata)^ div ScaleDivisor[sqlscale];
+          SQL_LONG   : Result := PInteger(sqldata)^  div ScaleDivisor[sqlscale];
+          SQL_INT64,
+          SQL_QUAD   : Result := PInt64(sqldata)^ div ScaleDivisor[sqlscale];
+          SQL_DOUBLE : Result := Trunc(PDouble(sqldata)^);
+        else
+          raise EUIBConvertError.Create(EUIB_UNEXPECTEDERROR + ': ' + EUIB_CASTERROR);
+        end;
+      end else
+        case ASQLCode of
+          SQL_DOUBLE    : Result := Trunc(PDouble(sqldata)^);
+          SQL_TIMESTAMP : DecodeSQLDate(PISCTimeStamp(sqldata).timestamp_date, Result);
+          SQL_TYPE_DATE : DecodeSQLDate(PInteger(sqldata)^, Result);
+          SQL_TYPE_TIME : Result := 0;
+          SQL_LONG      : Result := PInteger(sqldata)^;
+          SQL_D_FLOAT,
+          SQL_FLOAT     : Result := Trunc(PSingle(sqldata)^);
+{$IFDEF IB7_UP}
+          SQL_BOOLEAN,
+{$ENDIF}
+          SQL_SHORT     : Result := PSmallint(sqldata)^;
+          SQL_INT64     : Result := PInt64(sqldata)^;
+          SQL_TEXT      : Result := Trunc(StrToDate(DecodeString(SQL_TEXT, Index)));
+          SQL_VARYING   : Result := Trunc(StrToDate(DecodeString(SQL_VARYING, Index)));
+        else
+          raise EUIBConvertError.Create(EUIB_CASTERROR);
+
+        end;
+    end;
+  end;
+
+  function TSQLDA.GetByNameAsDate(const Name: String): Integer;
+  begin
+    Result := GetAsDate(GetFieldIndex(Name));
+  end;
 
 { TMemoryPool }
 
@@ -3622,6 +3749,16 @@ var
 begin
   if (Length(Name) > 0) and FindParam(Name, Field) then
     SetAsBoolean(Field, Value) else
+    raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
+end;
+
+procedure TSQLParams.SetByNameAsDate(const Name: String;
+  const Value: Integer);
+var
+  Field: Word;
+begin
+  if (Length(Name) > 0) and FindParam(Name, Field) then
+    SetAsDate(Field, Value) else
     raise Exception.CreateFmt(EUIB_PARAMSTRNOTFOUND, [name]);
 end;
 
@@ -4012,9 +4149,87 @@ end;
 
   procedure TSQLParams.SetAsDateTime(const Index: Word;
     const Value: TDateTime);
+  var ASQLCode: SmallInt;
   begin
     SetFieldType(Index, sizeof(TISCQuad), SQL_TIMESTAMP + 1);
-    SetAsDouble(Index, Value);
+    with FXSQLDA.sqlvar[Index] do
+    begin
+      ASQLCode := (sqltype and not(1));
+      // Is Numeric ?
+      if (sqlscale < 0)  then
+      begin
+        case ASQLCode of
+          SQL_SHORT  : PSmallInt(sqldata)^ := Trunc(Value * ScaleDivisor[sqlscale]);
+          SQL_LONG   : PInteger(sqldata)^  := Trunc(Value * ScaleDivisor[sqlscale]);
+          SQL_INT64,
+          SQL_QUAD   : PInt64(sqldata)^    := Trunc(Value * ScaleDivisor[sqlscale]);
+          SQL_DOUBLE : PDouble(sqldata)^   := Value;
+        else
+          raise EUIBConvertError.Create(EUIB_UNEXPECTEDERROR + ': ' + EUIB_CASTERROR);
+        end;
+      end else
+        case ASQLCode of
+          SQL_DOUBLE    : PDouble(sqldata)^   := Value;
+          SQL_TIMESTAMP : EncodeTimeStamp(Value, PISCTimeStamp(sqldata));
+          SQL_TYPE_DATE : EncodeSQLDate(Value, PInteger(sqldata)^);
+          SQL_TYPE_TIME : PCardinal(sqldata)^ := Round(Frac(Value) * 864000000);
+          SQL_LONG      : PInteger(sqldata)^ := Trunc(Value);
+          SQL_D_FLOAT,
+          SQL_FLOAT     : PSingle(sqldata)^ := Value;
+{$IFDEF IB7_UP}
+          SQL_BOOLEAN,
+{$ENDIF}
+          SQL_SHORT     : PSmallint(sqldata)^ := Trunc(Value);
+          SQL_INT64     : PInt64(sqldata)^ := Trunc(Value);
+          SQL_TEXT      : EncodeString(SQL_TEXT, Index, DateTimeToStr(Value));
+          SQL_VARYING   : EncodeString(SQL_VARYING, Index, DateTimeToStr(Value));
+        else
+          raise EUIBConvertError.Create(EUIB_CASTERROR);
+        end;
+        if (sqlind <> nil) then sqlind^ := 0; // not null
+    end;
+  end;
+
+  procedure TSQLParams.SetAsDate(const Index: Word; const Value: Integer);
+  var ASQLCode: SmallInt;
+  begin
+    SetFieldType(Index, sizeof(Integer), SQL_TYPE_DATE + 1);
+    with FXSQLDA.sqlvar[Index] do
+    begin
+      ASQLCode := (sqltype and not(1));
+      // Is Numeric ?
+      if (sqlscale < 0)  then
+      begin
+        case ASQLCode of
+          SQL_SHORT  : PSmallInt(sqldata)^ := Value * ScaleDivisor[sqlscale];
+          SQL_LONG   : PInteger(sqldata)^  := Value * ScaleDivisor[sqlscale];
+          SQL_INT64,
+          SQL_QUAD   : PInt64(sqldata)^    := Value * ScaleDivisor[sqlscale];
+          SQL_DOUBLE : PDouble(sqldata)^   := Value;
+        else
+          raise EUIBConvertError.Create(EUIB_UNEXPECTEDERROR + ': ' + EUIB_CASTERROR);
+        end;
+      end else
+        case ASQLCode of
+          SQL_DOUBLE    : PDouble(sqldata)^   := Value;
+          SQL_TIMESTAMP : EncodeTimeStamp(Value, PISCTimeStamp(sqldata));
+          SQL_TYPE_DATE : EncodeSQLDate(Value, PInteger(sqldata)^);
+          SQL_TYPE_TIME : PCardinal(sqldata)^ := 0;
+          SQL_LONG      : PInteger(sqldata)^ := Value;
+          SQL_D_FLOAT,
+          SQL_FLOAT     : PSingle(sqldata)^ := Value;
+{$IFDEF IB7_UP}
+          SQL_BOOLEAN,
+{$ENDIF}
+          SQL_SHORT     : PSmallint(sqldata)^ := Value;
+          SQL_INT64     : PInt64(sqldata)^ := Value;
+          SQL_TEXT      : EncodeString(SQL_TEXT, Index, DateToStr(Value));
+          SQL_VARYING   : EncodeString(SQL_VARYING, Index, DateToStr(Value));
+        else
+          raise EUIBConvertError.Create(EUIB_CASTERROR);
+        end;
+        if (sqlind <> nil) then sqlind^ := 0; // not null
+    end;
   end;
 
   procedure TSQLParams.SetAsBoolean(const Index: Word; const Value: Boolean);

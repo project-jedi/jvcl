@@ -157,7 +157,7 @@ TJvUIBComponent = class(TComponent)
     procedure RemoveTransaction(Transaction: TJvUIBTransaction);
     procedure ClearTransactions;
     procedure CloseTransactions;
-    procedure SetHandle(const Value: IscDbHandle);
+    procedure SetDbHandle(const Value: IscDbHandle);
     procedure SetLibraryName(const Lib: TFileName);
     function GetTransactions(const Index: Cardinal): TJvUIBTransaction;
     function GetTransactionsCount: Cardinal;
@@ -177,7 +177,7 @@ TJvUIBComponent = class(TComponent)
     procedure UnRegisterExceptions(Excpt: EUIBExceptionClass);
     procedure CreateDatabase(PageSize: Integer = 4096);
     function GetMetadata(Refresh: boolean = False): TObject;
-    property Handle: IscDbHandle read FDbHandle write SetHandle;
+    property DbHandle: IscDbHandle read FDbHandle write SetDbHandle;
     property IsHandleShared : Boolean read FHandleShared;
     property Transactions[const Index: Cardinal]: TJvUIBTransaction read GetTransactions;
     property TransactionsCount: Cardinal read GetTransactionsCount;
@@ -272,7 +272,7 @@ TJvUIBComponent = class(TComponent)
   private
     FDataBase: TJvUIBDataBase;
     FDataBases: TList;
-    FTransaction: IscTrHandle;
+    FTrHandle: IscTrHandle;
     FSQLComponent: TList;
     FStatements: Integer;
     FOptions   : TTransParams;
@@ -345,7 +345,7 @@ TJvUIBComponent = class(TComponent)
 {$ENDIF}
     property InTransaction: Boolean read GetInTransaction;
     {Transaction handle.}
-    property Handle: IscTrHandle read FTransaction;
+    property TrHandle: IscTrHandle read FTrHandle;
     { Queries connected to this transaction.}
     property Statements[const Index: Integer]: TJvUIBStatement read GetStatements;
     { Number of Queries connected to this transaction.}
@@ -382,7 +382,7 @@ TJvUIBComponent = class(TComponent)
     FCurrentState: TQueryState;
     FTransaction: TJvUIBTransaction;
     FDataBase: TJvUIBDataBase;
-    FStatement: IscStmtHandle;
+    FStHandle: IscStmtHandle;
     FOnError: TEndTransMode;
     FCursorName: string;
     FSQLResult: TSQLResult;
@@ -465,7 +465,7 @@ TJvUIBComponent = class(TComponent)
     procedure ParamsSetBlob(const Name: string; var str: string); overload;
     procedure ParamsSetBlob(const Name: string; Buffer: Pointer; Size: Word); overload;
 
-    property Handle: IscStmtHandle read FStatement;
+    property StHandle: IscStmtHandle read FStHandle;
     property Fields: TSQLResult read GetFields;
     property Params: TSQLParams read FParameter;
     property CursorName: string read FCursorName;
@@ -829,7 +829,7 @@ begin
     Connected := False;
 end;
 
-procedure TJvUIBDataBase.SetHandle(const Value: IscDbHandle);
+procedure TJvUIBDataBase.SetDbHandle(const Value: IscDbHandle);
 begin
   if (FDbHandle = nil) or ((FDbHandle <> nil) and FHandleShared) then
   begin
@@ -1092,7 +1092,7 @@ begin
       try
         FSQLResult.ClearRecords;
         with FindDataBase.FLibrary do
-          DSQLFreeStatement(FStatement, DSQL_close);
+          DSQLFreeStatement(FStHandle, DSQL_close);
       except
         InternalClose(FOnError, False);
         raise;
@@ -1168,8 +1168,8 @@ begin
       try
         if FSQLResult.FetchBlobs then
           DSQLFetchWithBlobs(FindDataBase.FDbHandle,
-            FTransaction.FTransaction, FStatement, FTransaction.FSQLDialect, FSQLResult) else
-          DSQLFetch(FStatement, FTransaction.FSQLDialect, FSQLResult);
+            FTransaction.FTrHandle, FStHandle, FTransaction.FSQLDialect, FSQLResult) else
+          DSQLFetch(FStHandle, FTransaction.FSQLDialect, FSQLResult);
       except
         if FOnError <> etmStayIn then
           EndExecute(FOnError, False);
@@ -1208,8 +1208,8 @@ begin
   try
     with FindDataBase.FLibrary do
     try
-      FStatement := nil;
-      DSQLAllocateStatement(FindDataBase.FDbHandle, FStatement);
+      FStHandle := nil;
+      DSQLAllocateStatement(FindDataBase.FDbHandle, FStHandle);
     except
       EndTransaction(FOnError, False);
       raise;
@@ -1226,9 +1226,9 @@ begin
   Lock;
   try
     with FindDataBase.FLibrary do
-      DSQLFreeStatement(FStatement, DSQL_drop);
+      DSQLFreeStatement(FStHandle, DSQL_drop);
 
-    FStatement := nil;
+    FStHandle := nil;
     Dec(FTransaction.FStatements);
   finally
     UnLock;
@@ -1243,19 +1243,19 @@ end;
 
 procedure TJvUIBStatement.BeginPrepare;
 begin
-  if (FStatement = nil) then BeginStatement;
+  if (FStHandle = nil) then BeginStatement;
   FSQLResult := ResultClass.Create(0, FCachedFetch, FFetchBlobs, FBufferChunks);
   Lock;
   try
     with FindDataBase.FLibrary do
     try
     if (FQuickScript or (not FParseParams)) then
-      FStatementType := DSQLPrepare(FTransaction.FTransaction, FStatement,
+      FStatementType := DSQLPrepare(FTransaction.FTrHandle, FStHandle,
         FSQL.Text, FTransaction.FSQLDialect, FSQLResult) else
-      FStatementType := DSQLPrepare(FTransaction.FTransaction, FStatement,
+      FStatementType := DSQLPrepare(FTransaction.FTrHandle, FStHandle,
         FParsedSQL, FTransaction.FSQLDialect, FSQLResult);
-      FCursorName := 'C' + inttostr(Integer(FStatement));
-      DSQLSetCursorName(FStatement, FCursorName);
+      FCursorName := 'C' + inttostr(Integer(FStHandle));
+      DSQLSetCursorName(FStHandle, FCursorName);
     except
       FSQLResult.free;
       FSQLResult := nil;
@@ -1284,9 +1284,9 @@ begin
     with FindDataBase.FLibrary do
     try
       if (FStatementType = stExecProcedure) then
-        DSQLExecute2(FTransaction.FTransaction, FStatement,
+        DSQLExecute2(FTransaction.FTrHandle, FStHandle,
           FTransaction.FSQLDialect, FParameter, FSQLResult) else
-        DSQLExecute(FTransaction.FTransaction, FStatement,
+        DSQLExecute(FTransaction.FTrHandle, FStHandle,
           FTransaction.FSQLDialect, FParameter);
     except
       if (FOnError <> etmStayIn) then
@@ -1315,7 +1315,7 @@ var
     try
       with FindDataBase.FLibrary do
       try
-        DSQLExecuteImmediate(FindDataBase.FDbHandle, FTransaction.FTransaction,
+        DSQLExecuteImmediate(FindDataBase.FDbHandle, FTransaction.FTrHandle,
           AQuery, FTransaction.FSQLDialect, Params);
       except
         if (FOnError <> etmStayIn) then
@@ -1379,7 +1379,7 @@ begin
   try
     if (FCurrentState < qsPrepare) then
       Raise Exception.Create(EUIB_MUSTBEPREPARED)else
-        Result := FindDataBase.FLibrary.DSQLInfoPlan(FStatement);
+        Result := FindDataBase.FLibrary.DSQLInfoPlan(FStHandle);
   finally
     UnLock
   end;
@@ -1503,7 +1503,7 @@ begin
   with FindDataBase.FLibrary do
   try
     Params.AsQuad[Index] := BlobCreate(FindDataBase.FDbHandle,
-      FTransaction.FTransaction, BlobHandle);
+      FTransaction.FTrHandle, BlobHandle);
     try
       BlobWriteStream(BlobHandle, Stream);
     finally
@@ -1524,7 +1524,7 @@ begin
   with FindDataBase.FLibrary do
   try
     Params.AsQuad[Index] := BlobCreate(FindDataBase.FDbHandle,
-      FTransaction.FTransaction, BlobHandle);
+      FTransaction.FTrHandle, BlobHandle);
     try
       BlobWriteString(BlobHandle, str);
     finally
@@ -1546,7 +1546,7 @@ begin
   with FindDataBase.FLibrary do
   try
     Params.AsQuad[Index] := BlobCreate(FindDataBase.FDbHandle,
-      FTransaction.FTransaction, BlobHandle);
+      FTransaction.FTrHandle, BlobHandle);
     try
       BlobWriteSegment(BlobHandle, Size, Buffer);
     finally
@@ -1567,7 +1567,7 @@ begin
   with FindDataBase.FLibrary do
   try
     Params.ByNameAsQuad[Name] := BlobCreate(FindDataBase.FDbHandle,
-      FTransaction.FTransaction, BlobHandle);
+      FTransaction.FTrHandle, BlobHandle);
     try
       BlobWriteStream(BlobHandle, Stream);
     finally
@@ -1588,7 +1588,7 @@ begin
   with FindDataBase.FLibrary do
   try
     Params.ByNameAsQuad[Name] := BlobCreate(FindDataBase.FDbHandle,
-      FTransaction.FTransaction, BlobHandle);
+      FTransaction.FTrHandle, BlobHandle);
     try
       BlobWriteString(BlobHandle, str);
     finally
@@ -1609,7 +1609,7 @@ begin
   with FindDataBase.FLibrary do
   try
     Params.ByNameAsQuad[Name] := BlobCreate(FindDataBase.FDbHandle,
-      FTransaction.FTransaction, BlobHandle);
+      FTransaction.FTrHandle, BlobHandle);
     try
       BlobWriteSegment(BlobHandle, Size, Buffer);
     finally
@@ -1633,7 +1633,7 @@ begin
     with FindDataBase.FLibrary do
     try
       BlobHandle := nil;
-      BlobOpen(FindDataBase.FDbHandle, FTransaction.FTransaction,
+      BlobOpen(FindDataBase.FDbHandle, FTransaction.FTrHandle,
         BlobHandle, sqlda.AsQuad[Index]);
       try
         BlobSaveToStream(BlobHandle, Stream);
@@ -1660,7 +1660,7 @@ begin
     with FindDataBase.FLibrary do
     try
       BlobHandle := nil;
-      BlobOpen(FindDataBase.FDbHandle, FTransaction.FTransaction,
+      BlobOpen(FindDataBase.FDbHandle, FTransaction.FTrHandle,
         BlobHandle, sqlda.AsQuad[Index]);
       try
         BlobReadString(BlobHandle, str);
@@ -1686,7 +1686,7 @@ begin
     with FindDataBase.FLibrary do
     try
       BlobHandle := nil;
-      BlobOpen(FindDataBase.FDbHandle, FTransaction.FTransaction,
+      BlobOpen(FindDataBase.FDbHandle, FTransaction.FTrHandle,
         BlobHandle, sqlda.AsQuad[Index]);
       try
         BlobReadVariant(BlobHandle, Value);
@@ -1823,7 +1823,7 @@ constructor TJvUIBTransaction.Create(AOwner: TComponent);
 begin
   inherited;
   FOptions     := [tpConcurrency,tpWait,tpWrite];
-  FTransaction := nil;
+  FTrHandle := nil;
   FStatements  := 0;
   FDataBases   := TList.Create;
   FAutoRetain  := False;
@@ -1923,14 +1923,14 @@ begin
   Lock;
   try
     with FDataBase.FLibrary do
-    if (FTransaction = nil) then
+    if (FTrHandle = nil) then
     begin
       If Auto and (not FAutoStart) then
         raise EUIBException.Create(EUIB_EXPLICITTRANS);
 
       if FDataBases.Count = 1 then
       begin
-        TransactionStart(FTransaction, FDataBase.FDbHandle, TPB);
+        TransactionStart(FTrHandle, FDataBase.FDbHandle, TPB);
       end else
       begin
         GetMem(Buffer,  SizeOf(TISCTEB) * FDataBases.Count);
@@ -1943,7 +1943,7 @@ begin
               Len     := Length(ATPB);
               Address := PChar(ATPB);
             end;
-          TransactionStartMultiple(FTransaction, FDataBases.Count, Buffer);
+          TransactionStartMultiple(FTrHandle, FDataBases.Count, Buffer);
         finally
           FreeMem(Buffer);
         end;
@@ -1967,7 +1967,7 @@ begin
   try
     // Default Action
     if (ETM = etmDefault) then ETM := FDefaultAction;
-    if (FTransaction <> nil) then
+    if (FTrHandle <> nil) then
       with FDataBase.FLibrary do
       try
         if Assigned(FOnEndTransaction) then
@@ -1991,23 +1991,23 @@ begin
         case ETM of
           etmCommit            :
             begin
-              TransactionCommit(FTransaction);
+              TransactionCommit(FTrHandle);
               Result := True;
             end;
-          etmCommitRetaining   : TransactionCommitRetaining(FTransaction);
+          etmCommitRetaining   : TransactionCommitRetaining(FTrHandle);
           etmRollback          :
             begin
-              TransactionRollback(FTransaction);
+              TransactionRollback(FTrHandle);
               Result := True;
             end;
-          etmRollbackRetaining : TransactionRollbackRetaining(FTransaction);
+          etmRollbackRetaining : TransactionRollbackRetaining(FTrHandle);
         end;
       except
         case ETM of
           etmCommit, etmRollback :
-            TransactionRollback(FTransaction);
+            TransactionRollback(FTrHandle);
           etmCommitRetaining, etmRollbackRetaining :
-            TransactionRollbackRetaining(FTransaction);
+            TransactionRollbackRetaining(FTrHandle);
         end;
         raise;
       end;
@@ -2146,7 +2146,7 @@ function TJvUIBTransaction.GetInTransaction: Boolean;
 begin
   Lock;
   try
-    Result := (FTransaction <> nil);
+    Result := (FTrHandle <> nil);
   finally
     UnLock;
   end;
