@@ -299,7 +299,10 @@ begin
     YAxisHeader := 'Readings (ng/m3)';
 
     // Try out the pen styles:
-    PenStyle[0] := psSolid;
+      if ChartKind = ckChartStackedBar then
+         PenStyle[0] := psClear // THIS IS HOW YOU TEMPORARILY HIDE ONE PEN!
+      else
+         PenStyle[0] := psSolid;
     PenStyle[1] := psDash;
     PenStyle[2] := psDot;
 
@@ -356,8 +359,7 @@ end;
 
 procedure TJvChartDemoForm.ButtonBarChartClick(Sender: TObject);
 begin
- Chart.Options.PenStyle[0] := psSolid; // make pen 0 visible if it was invisible before.
- 
+
   Chart.Options.ChartKind := ckChartBar;
   NewValues;
   //Chart.PlotGraph;
@@ -367,7 +369,6 @@ procedure TJvChartDemoForm.ButtonLineClick(Sender: TObject);
 var
  I:Integer;
 begin
- Chart.Options.PenStyle[0] := psSolid; // make pen 0 visible if it was invisible before.
 
   Chart.Options.ChartKind := ckChartLine;
   for I := 0 to Chart.Options.PenCount-1 do begin
@@ -382,7 +383,6 @@ procedure TJvChartDemoForm.ButtonLineMarkerClick(Sender: TObject);
 var
   I:Integer;
 begin
- Chart.Options.PenStyle[0] := psSolid; // make pen 0 visible if it was invisible before.
 
   Chart.Options.ChartKind := ckChartLine;
   Chart.Options.PenMarkerKind[0] := pmkDiamond; // demonstrate both Diamond and Circle Marks.
@@ -396,14 +396,12 @@ end;
 
 procedure TJvChartDemoForm.ButtonStackedBarAveClick(Sender: TObject);
 begin
-  Chart.Options.PenStyle[0] := psSolid; // make pen 0 visible if it was invisible before.
   Chart.Options.ChartKind := ckChartStackedBarAverage;
   NewValues;
 end;
 
 procedure TJvChartDemoForm.ButtonStackedBarClick(Sender: TObject);
 begin
-  Chart.Options.PenStyle[0] := psClear; // Hide Pen Zero (total) since stacked bars ARE a total.
   Chart.Options.ChartKind := ckChartStackedBar;
   NewValues;
 end;
@@ -574,7 +572,12 @@ procedure TJvChartDemoForm.MenuSecondaryAxisModeClick(Sender: TObject);
 begin
    MenuSecondaryAxisMode.Checked := not MenuSecondaryAxisMode.Checked;
 
-   NewValues;
+   if MenuSecondaryAxisMode.Checked then begin
+      ButtonLine.Down := true;
+      ButtonLineClick(Sender);
+   end
+      else
+           NewValues;
 
 
 
