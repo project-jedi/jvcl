@@ -1,9 +1,22 @@
 ##Package: Core
 ##Status: Locked by marcelb
+##Skip: TAggregatedPersistent.QueryInterface
+##Skip: TAggregatedPersistent._AddRef
+##Skip: TAggregatedPersistent._Release
+##Skip: TAggregatedPersistent.GetInterface
+##Skip: TAggregatedPersistentEx.AfterConstruction
+##Skip: TAggregatedPersistentEx.BeforeDestruction
+##Skip: TExtensibleInterfacedPersistent.AfterConstruction
+##Skip: TExtensibleInterfacedPersistent.BeforeConstruction
+##Skip: TExtensibleInterfacedPersistent.GetInterface
+##Skip: TExtensibleInterfacedPersistent.QueryInterface
+##Skip: TExtensibleInterfacedPersistent._AddRef
+##Skip: TExtensibleInterfacedPersistent._Release
+##SKip: TExtensibleInterfacedPersistent.NewInstance
 ----------------------------------------------------------------------------------------------------
 @@JvDataProvider.pas
 Summary
-  Contains the TJvDataProvider component.
+  Contains the base and standard implementations for the data provider interfaces.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Marcel Bestebroer
@@ -11,273 +24,386 @@ Author
 @@DisabledTextRect
 <TITLE DisabledTextRect procedure>
 Summary
-  Write here a summary (1 line)
+  Paints a text in a disabled fashion.
 Description
-  Write here a description
+  DisabledTextRect paints the specified text in a disabled fashion, much like TLabel does. The text
+  is painted on the specified canvas within the specified rectangle at the specified location.
+  
+  The text is painted using the selected font in the selected color. The disabled look is
+  accomplished by painting the text again 1 pixel to the right and down with a clBtnHighlight color.
 Parameters
-  ACanvas - Description for this parameter
-  ARect   - Description for this parameter
-  Left    - Description for this parameter
-  Top     - Description for this parameter
-  Text    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ACanvas - Canvas to paint the text to.
+  ARect   - Rectangle in which the text is to be painted. When the function returns this parameter
+            will hold the rectangle in which the text is placed, including the shadow.
+  Left    - Left coordinate at which the text is to be painted.
+  Top     - Top coordinate at which the text is to be painted.
+  Text    - The text to paint.
 ----------------------------------------------------------------------------------------------------
 @@DP_FindItemsImages
 <TITLE DP_FindItemsImages function>
 Summary
-  Write here a summary (1 line)
+  Locate nearest IJvDataItemsImages implementation for a specific item.
 Description
-  Write here a description
+  DP_FindItemsImages locates the nearest IJvDataItemsImages implementation for a specific item. The
+  function will scan the parent chain for the first item list to implement the IJvDataItemsImages
+  interface and returns a reference to it.
+  
+  If none of the item lists in the parent chain implement the IJvDataItemsImages interface the
+  function returns False, otherwise True will be returned.
+  
+  This function is implemented as:
+  <CODE>
+  <AUTOLINK OFF>
+  Result := DP_FindItemsIntf(AItem, IJvDataItemsImages, Images);
+  <AUTOLINK ON>
+  </CODE>
 Parameters
-  AItem  - Description for this parameter
-  Images - Description for this parameter
+  AItem  - Data item for which the nearest IJvDataItemsImages implementation is to be found.
+  Images - Variable to retrieve the reference to the IJvDataItemsImages interface in.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DP_FindItemsIntf, DP_FindItemsRenderer, IJvDataItemsImages
 ----------------------------------------------------------------------------------------------------
 @@DP_FindItemsIntf
 <TITLE DP_FindItemsIntf function>
 Summary
-  Write here a summary (1 line)
+  Locate the nearest IJvDataItems support interface implementation for a specific item.
 Description
-  Write here a description
+  DP_FindItemsIntf locates the nearest IJvDataItems support interface implementation for a specific
+  item. The function will scan the parent chain for the first item list to implement the requested
+  interface and returns a reference to it.
+
+  If none of the item lists in the parent chain implement the requested interface the function
+  returns False, otherwise True will be returned.
 Parameters
-  AItem - Description for this parameter
-  IID   - Description for this parameter
-  Obj   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AItem - Data item for which the nearest implementation is to be found.
+  IID   - GUID value or interface type of the interface to find.
+  Obj   - Variable to retrieve the reference to the requested interface in.
 ----------------------------------------------------------------------------------------------------
 @@DP_FindItemsRenderer
 <TITLE DP_FindItemsRenderer function>
 Summary
-  Write here a summary (1 line)
+  Locate nearest IJvDataItemsImages implementation for a specific item.
 Description
-  Write here a description
+  DP_FindItemsImages locates the nearest IJvDataItemsRenderer implementation for a specific item.
+  The function will scan the parent chain for the first item list to implement the
+  IJvDataItemsRenderer interface and returns a reference to it.
+  
+  If none of the item lists in the parent chain implement the IJvDataItemsRenderer interface the
+  function returns False, otherwise True will be returned.
+  
+  This function is implemented as:
+  <CODE>
+  <AUTOLINK OFF>
+  Result := DP_FindItemsIntf(AItem, IJvDataItemsRenderer, Images);
+  <AUTOLINK ON>
+  </CODE>
 Parameters
-  AItem    - Description for this parameter
-  Renderer - Description for this parameter
+  AItem    - Data item for which the nearest IJvDataItemsRenderer implementation is to be found.
+  Renderer - Variable to retrieve the reference to the IJvDataItemsRenderer interface in.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DP_FindItemsIntf, DP_FindItemsImages, IJvDataItemsRenderer
 ----------------------------------------------------------------------------------------------------
 @@DP_GenItemsList
 <TITLE DP_GenItemsList procedure>
 Summary
-  Write here a summary (1 line)
+  Transforms a data provider item tree into a string list.
 Description
-  Write here a description
+  DP_GenItemsList will transform a data provider item tree into a string list of items.
+  
+  The generated list will contain all items in the specified root list, including all sub items. The
+  items are placed in the order they would be shown in a user interface control if the tree was
+  fully expanded, each item accompanied by it's level in the tree.
+  
+  Upon entry to this method the specified string list will be emptied. Upon exit the objects
+  assigned to each item is a simple integer (and should therefor not be freed when an item is
+  removed or the list is cleared).
 Parameters
-  RootList - Description for this parameter
-  ItemList - Description for this parameter
+  RootList - Root data item list to fill the list with.
+  ItemList - A TStrings descendant to receive the item list in. The list is cleared upon entry to
+             the method.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IJvDataItems
 ----------------------------------------------------------------------------------------------------
 @@DP_OwnerDrawStateToProviderDrawState
 <TITLE DP_OwnerDrawStateToProviderDrawState function>
 Summary
-  Write here a summary (1 line)
+  Converts a \TOwnerDrawState value to a \TProviderDrawStates value.
 Description
-  Write here a description
+  DP_OwnerDrawStateToProviderDrawState converts the specified TOwnerDrawState set value to it's
+  TProviderDrawStates value.
 Parameters
-  State - Description for this parameter
+  State - TOwnerDrawState value to convert.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TProviderDrawStates, IJvDataItemsRenderer, IJvDataItemRenderer
 ----------------------------------------------------------------------------------------------------
 @@DP_ReleaseConsumerContext
 <TITLE DP_ReleaseConsumerContext procedure>
 Summary
-  Write here a summary (1 line)
+  Deselects the current consumer and context, reselecting any previous selected consumer and
+  context.
 Description
-  Write here a description
+  DP_ReleaseConsumerContext deselects the currently active consumer and context pair, reactivating
+  the consumer and context pair that was active before it.
+  
+  This routine in combination with DP_SelectConsumerContext allows the selection/deselection of a
+  consumer and it's active context to be performed atomically. If one of the deselection actions
+  fails, the other will be reverted automatically.
+
+  Most consumers will use this routine to deselect itself and it's associated context from the
+  provider when they no longer need access to the provider.
 Parameters
-  Provider - Description for this parameter
+  Provider - Reference to the IJvDataProvider to select a new consumer and context for.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IJvDataProvider.ReleaseConsumer, IJvDataProvider.ReleaseContext, DP_SelectConsumerContext
 ----------------------------------------------------------------------------------------------------
 @@DP_SelectConsumerContext
 <TITLE DP_SelectConsumerContext procedure>
 Summary
-  Write here a summary (1 line)
+  Selects a new consumer and context.
 Description
-  Write here a description
+  DP_SelectConsumerContext selects a new consumer and context pair as the active consumer and
+  context of a provider. The current consumer and context are pushed onto a stack. Use
+  DP_ReleaseConsumerContext to return to them. When the provider is created no consumer is
+  selected.
+  
+  This routine in combination with DP_ReleaseConsumerContext allows the selection/deselection of a
+  consumer and it's active context to be performed atomically. If one of the selection action fails,
+  the other will be reverted automatically.
+  
+  Most consumers will use this routine to select itself and it's associated context into the provider
+  before making other requests from the provider.
+  
+  It's highly recommended to keep the timespan of the selection as short as possible, i.e. select the
+  consumer/context, access the provider, release the consumer/context and always guard the code
+  between selection and release with a try/finally to make sure the release of the consumer/context
+  takes place:
+  
+  <CODE>
+  <AUTOLINK OFF>
+  DP_SelectConsumerContext(<I>Provider</I>, <I>Consumer</I>, <I>Context</I>);
+  <B>try</B>
+    <I> ... access the provider here ... </I>
+  <B>finally</B>
+    DP_ReleaseConsumerContext(<I>Provider</I>);
+  <B>end;</B>
+  <AUTOLINK ON>
+  </CODE>
 Parameters
-  Provider - Description for this parameter
-  Consumer - Description for this parameter
-  Context  - Description for this parameter
+  Provider - Reference to the IJvDataProvider to select a new consumer and context for.
+  Consumer - Reference to the consumer to select as the active consumer.
+  Context  - Reference to the context to select as the active context.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IJvDataProvider.SelectConsumer, IJvDataProvider.SelectContext, DP_ReleaseConsumerContext
 ----------------------------------------------------------------------------------------------------
 @@GetContextPath
 <TITLE GetContextPath function>
 Summary
-  Write here a summary (1 line)
+  Retrieves the full path for the specified context.
 Description
-  Write here a description
+  GetContextPath will retrieve a string containing the name path of the specified context. Each
+  context name in the parent chain is separated by the '\' (backslash) character with the specified
+  context's name being the last in the string.
 Parameters
-  Context - Description for this parameter
+  Context - Context to retrieve the full name path of.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IJvDataContext.Name
+----------------------------------------------------------------------------------------------------
+@@GetItemCheckedState
+<TITLE GetItemCheckedState function>
+Summary
+  Retrieve the checked state of the specified item.
+Description
+  GetItemCheckedState determines the checked state for the specified item. The following rules apply
+  to determine the checked state:
+  
+  * If a consumer is selected into the provider and the consumer supports the
+    IJvDataConsumerItemState interface, the checked state is retrieved from the
+    IJvDataConsumerItemState.Checked method.
+  * If the above did not apply or resulted in the disNotUsed state and the specified item supports
+    the IJvDataItemStates, the state is copied from the IJvDataItemStates.Checked property.
+  * If both of the rules above did not apply, the result will be disUnused.
+  
+  This function is often used by consumer sub services and/or provider implementations (e.g.
+  rendering implementations) to determine the correct state for drawing.
+Parameters
+  Item - Item to determine the checked state of.
+See Also
+  IJvDataConsumerItemState, IJvDataItemStates, GetItemEnabledState, GetItemVisibleState
+----------------------------------------------------------------------------------------------------
+@@GetItemEnabledState
+<TITLE GetItemEnabledState function>
+Summary
+  Retrieve the enabled state of the specified item.
+Description
+  GetItemEnabledState determines the enabled state for the specified item. The following rules apply
+  to determine the enabled state:
+  
+  * If a consumer is selected into the provider and the consumer supports the
+    IJvDataConsumerItemState interface, the enabled state is retrieved from the
+    IJvDataConsumerItemState.Enabled method.
+  * If the above did not apply or resulted in a state other than disFalse and the specified item
+    supports the IJvDataItemStates, the state is copied from the IJvDataItemStates.Enabled property.
+  * If both of the rules above did not apply, the result will be disUnused.
+  
+  This function is often used by consumer sub services and/or provider implementations (e.g.
+  rendering implementations) to determine the correct state for drawing.
+Parameters
+  Item - Item to determine the enabled state of.
+See Also
+  IJvDataConsumerItemState, IJvDataItemStates, GetItemCheckedState, GetItemVisibleState
 ----------------------------------------------------------------------------------------------------
 @@GetItemIDPath
 <TITLE GetItemIDPath function>
 Summary
-  Write here a summary (1 line)
+  Retrieves the full ID path for the specified data item.
 Description
-  Write here a description
+  GetItemIDPath will retrieve a string containing the ID path of the specified data item. Each
+  item ID in the parent chain is separated by the '\' (backslash) character with the specified
+  items ID being the last in the string.
+  
+  The path is determined by the currently selected consumer and context at the provider.
 Parameters
-  Item - Description for this parameter
+  Item - Data item to retrieve the ID path of.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IJvDataItem.GetID, IJvDataItems.GetItemByID
 ----------------------------------------------------------------------------------------------------
 @@GetItemIndexPath
 <TITLE GetItemIndexPath function>
 Summary
-  Write here a summary (1 line)
+  Retrieves the path of indices for the specified data item.
 Description
-  Write here a description
+  GetItemIndexPath will retrieve an integer array containing the path of index values. The last
+  value in the returned array represents the specified data item.
 Parameters
-  Item - Description for this parameter
+  Item - Data item to retrieve the index path of.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IJvDataItem.GetIndex, IJvDataItems.GetItemByIndexPath
+----------------------------------------------------------------------------------------------------
+@@GetItemVisibleState
+<TITLE GetItemVisibleState function>
+Summary
+  Retrieve the visible state of the specified item.
+Description
+  GetItemVisibleState determines the visible state for the specified item. The following rules apply
+  to determine the visible state:
+  
+  * If a consumer is selected into the provider and the consumer supports the
+    IJvDataConsumerItemState interface, the visible state is retrieved from the
+    IJvDataConsumerItemState.Visible method.
+  * If the above did not apply or resulted in either the disNotUsed or disIndetermined state and the
+    specified item supports the IJvDataItemStates, the state is copied from the
+    IJvDataItemStates.Visible property.
+  * If both of the rules above did not apply, the result will be disUnused.
+  
+  This function is often used by consumer sub services and/or provider implementations (e.g.
+  rendering implementations) to determine the correct state for drawing.
+Parameters
+  Item - Item to determine the visible state of.
+See Also
+  IJvDataConsumerItemState, IJvDataItemStates, GetItemCheckedState, GetItemEnabledState
 ----------------------------------------------------------------------------------------------------
 @@GetUniqueCtxName
 <TITLE GetUniqueCtxName function>
 Summary
-  Write here a summary (1 line)
+  Returns a unique name within a specified context list.
 Description
-  Write here a description
+  GetUniqueCtxName will determine and return a unique name within the specified context list, using
+  the specified prefix string and an integer value.
+  
+  The function will iterate over the contexts in the list and determine that largest integer value
+  that follows each context starting with the specified prefix. The new name will be the prefix
+  followed by the string representation of (1 + the largest value found). If no contexts are found
+  starting with that prefix or not followed by an integer value, the resulting name will be the
+  prefix followed by '1'.
+  
+  This function is often used by implementers of the IJvDataContextsManager.New method to generate
+  a new context with a unique name.
 Parameters
-  Contexts - Description for this parameter
-  Prefix   - Description for this parameter
+  Contexts - Context list for which the name must be unique.
+  Prefix   - Prefix of the context name to use.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IJvDataContext.Name, IJvDataContextsManager.New
 ----------------------------------------------------------------------------------------------------
 @@HexBytes
 <TITLE HexBytes function>
 Summary
-  Write here a summary (1 line)
+  Transforms a buffer into an hexadecimal string representation.
 Description
-  Write here a description
+  HexBytes transforms the specified buffer into an hexadecimal string repesentation.
+  
+  Each byte in the buffer will be represented by two hexadecimal digits in the resulting string,
+  making the result string exactly twice the specified length.
 Parameters
-  Buf    - Description for this parameter
-  Length - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Buf    - Buffer to transform.
+  Length - Length of the buffer to transform.
 ----------------------------------------------------------------------------------------------------
 @@TAfterCreateSubSvcEvent
 <TITLE TAfterCreateSubSvcEvent type>
 <COMBINE TJvDataConsumer.AfterCreateSubSvc>
 ----------------------------------------------------------------------------------------------------
 @@TAggregatedPersistent
+## Large parts are copied from the Delphi7 help and adapted from there.
 Summary
-  Write here a summary (1 line)
+  Provides the functionality for an inner object of an aggregate by implementing
+  the IInterface methods to delegate to the controlling IInterface.
 Description
-  Write here a description
+  An aggregated object is an object composed of several interfaced objects. Each object implements 
+  its own behavior and interfaces, but all of the objects share the same reference count, which is
+  that of the controller object. In the container pattern, the controller is the container object.
+
+  TAggregatedPersistent does not itself support any interfaces. However, as is typical of an
+  aggregate, it does implement the methods of IInterface, which are used by the objects that descend
+  from it. TAggregatedPersistent, therefore, serves as a base for classes that implement interfaces
+  for creating objects that are part of an aggregate.
+
+  TAggregatedPersistent is used as a base for classes that create contained objects and connecting
+  objects. Using TAggregatedPersistent ensures that calls to the IInterface methods delegate to the
+  controlling IInterface of the aggregate.
+
+  The controlling IInterface is specified in the constructor for TAggregatedPersistent and is
+  indicated by the Controller property.
+  
+  TAggregatedPersistent is much like the VCL provided TAggregatedObject, the difference being that
+  TAggregatedPersistent is derived from TPersistent and redeclares GetInterface as a virtual method.
+See Also
+  TAggregatedObject, TAggregatedPersistentEx
 ----------------------------------------------------------------------------------------------------
 @@TAggregatedPersistent.Controller
+## Copied from the Delphi7 help and adapted from there.
 Summary
-  Write here a summary (1 line)
+  Provides access to the controlling interface of the aggregate.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TAggregatedPersistent.GetInterface
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  IID - Description for this parameter
-  Obj - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TAggregatedPersistent.QueryInterface
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  IID - Description for this parameter
-  Obj - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TAggregatedPersistent._AddRef
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TAggregatedPersistent._Release
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Controller is the interface reference of the aggregate. TAggregatedPersistent is used as part of
+  an aggregate that has a single controlling IInterface. The IInterface methods that are implemented
+  in aggregated objects are delegated to the Controller.
+
+  When the aggregated object is created, its constructor is passed a controlling IInterface.
+  Controller is initialized to this IInterface in the constructor.
 ----------------------------------------------------------------------------------------------------
 @@TAggregatedPersistentEx
 Summary
-  Write here a summary (1 line)
+  Provides functionality for an inner object of an extensible controller.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TAggregatedPersistentEx.AfterConstruction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  TAggregatedPersistentEx is a derivative of TAggregatedPersistent and as such provides basic
+  functionality for an inner object of an aggregate.
+  
+  In addition, it provides functionality to automatically add itself to and to remove itself from
+  it's controllers extension list, as implemented by the TExtensibleInterfacedPersistent class.
+  
+  When an instance of this class (or rather a derivative of this class) is created, it will be
+  automatically added to the extension list of its controller. If the instance is removed, it will
+  also be removed from the extension list of its controller.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TAggregatedPersistentEx.BeforeDestruction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TAggregatedPersistent, TExtensibleInterfacedPersistent
 ----------------------------------------------------------------------------------------------------
 @@TAggregatedPersistentEx.Owner
 Summary
-  Write here a summary (1 line)
+  Reference to the \TExtensibleInterfacedPersistent object implementing the controller.
 Description
-  Write here a description
+  Owner is a direct reference to the TExtensibleInterfacedPersistent object that implements the
+  controller of this inner object (the extension).
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TExtensibleInterfacedPersistent
 ----------------------------------------------------------------------------------------------------
 @@TAggregatedPersistentExClass
 <TITLE TAggregatedPersistentExClass type>
@@ -293,142 +419,130 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent
 Summary
-  Write here a summary (1 line)
+  Ancestor for persistent objects that implement interfaces and can be extended at run time.
 Description
-  Write here a description
+  TExtensibleInterfacedPersistent, like it's ancestor, provides functionality to read and write its
+  to and from a stream. In addition, like the Delphi provided TInterfacedPersistent, it also
+  supplies a default implementation for the IInterface methods.
+  
+  Furthermore, TExtensibleInterfacedPersistent allows itself to be extended through aggregators,
+  where the interfaced supported by those aggregators are directly accesible from the main object,
+  as well as from eachother. The aggregators must be derived from TAggregatedPersistentEx for this
+  behavior to work correctly. In addition, TExtensibleInterfacedPersistent automatically provides
+  semi properties that allow the extensions to be read and written from and to a stream.
+  
+  This extensibility is achieved by having the QueryInterface method of IInterface call the
+  redeclared and virtual GetInterface method. This method will simply call the Delphi provided
+  implementation and if a match is not found, the aggregators (called "extensions" in this context)
+  are iterated until an extension is found that supports the interface. The first match is returned
+  (this implies that if multiple extension happen to share a common interface, only the first added
+  extension will be returned).
+See Also
+  TAggregatedPersistentEx
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.AddIntfImpl
 Summary
-  Write here a summary (1 line)
+  Adds an extension to the object.
 Description
-  This is a protected member, you don't have to describe these
+  AddIntfImpl adds an extension object to the extension list. If there's already an instance of the
+  same class added to the list an exception will be raised.
 Parameters
-  Obj - Description for this parameter
+  Obj - Extension object to add.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TExtensibleInterfacedPersistent.AfterConstruction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TExtensibleInterfacedPersistent.BeforeDestruction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RemoveIntfImpl, ClearIntfImpl, TAggregatedPersistentEx
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.ClearIntfImpl
 Summary
-  Write here a summary (1 line)
+  Clears the list of extensions.
 Description
-  This is a protected member, you don't have to describe these
+  ClearIntfImpl removes all registered extensions for this object. Each registered extension is
+  removed and destroyed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AddIntfImpl, RemoveIntfImpl, TAggregatedPersistentEx
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.DefineProperties
 Summary
-  Write here a summary (1 line)
+  ## Summary copied from D7 help for TPersistent.DefineProperties
+  Provides an interface for a method that reads and writes otherwise unpublished data.
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-  This is a protected member, you don't have to describe these
+  ## Adapted from D7 help for TComponent.DefineProperties
+  TExtensibleInterfacedPersistent overrides the DefineProperties method defined in TPersistent to
+  define the fake Implementers property. This is defined so that the extension list can be read and
+  written from and to the filer. However, there is no such property as Implementers.
+  
+  DefineProperties assigns the ReadImplementers and WriteImplementers methods as the reader and
+  writer methods for the Implementers property.
+
+  ## The rest of this text is copied from D7 help for TComponent.DefineProperties
+  DefineProperties is virtual; descendant classes can override it. When overriding DefineProperties,
+  be aware that the Ancestor property of Filer might be set, and that this property can determine
+  whether or not it is appropriate to write properties.
+
+  DefineProperties is called automatically as part of the component streaming system; do not call it
+  directly.
 Parameters
-  Filer - Description for this parameter
+  Filer - Filer object to read or write the data from or to.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ReadImplementers, WriteImplementers
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.FRefCount
 Summary
-  Write here a summary (1 line)
+  ## Copied from D7 help for TInterfacedObject.RefCount
+  Indicates the number of interface pointers currently dependent upon the object.
 Description
-  This is a protected member, you don't have to describe these
+  ## Adapted from D7 help for TInterfacedObject.RefCount
+  FRefCount defines the lifetime of the object. When FRefCount is zero, the object is destroyed.
+
+  FRefCount is incremented by calls to the _AddRef method and decremented by the _Release method.
+  
+  FRefCount is the field used by the RefCount property. The field is declared protected to allow it
+  to be manipulated using the interlocked routines from descendants.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TExtensibleInterfacedPersistent.GetInterface
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  IID - Description for this parameter
-  Obj - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RefCount
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.IndexOfImplClass
 Summary
-  Write here a summary (1 line)
+  Returns the index of the extension of the specified class.
 Description
-  This is a protected member, you don't have to describe these
+  IndexOfImplClass returns the index of the extension of the specified class. The returned index is
+  0-based, so the first extension has an index of 0.
+  
+  If there's no extension of the specified class, IndexOfImplClass returns -1.
 Parameters
-  AClass - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AClass - Extension class to locate.
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.InitImplementers
 Summary
-  Write here a summary (1 line)
+  Called upon creation of the object to allow initialization of extensions.
 Description
-  This is a protected member, you don't have to describe these
+  InitImplementers is called from the AfterConstruction method, just before the implicit reference
+  count (FRefCount is initialized to 1 when a new instance is generated to avoid destruction if an
+  interface was referenced and went out of scope again during the construction itself) is reset.
+  
+  The main purpose of this method is to allow descendants to automatically generate and initialize
+  (default) extensions. This is usually achieved by constructing a TAggregatedPersistentEx
+  derivative, handing it this object as it's owner. TAggregatedPersistentEx will then take care of
+  registering the extension.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TAggregatedPersistentEx, AddIntfImpl
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.IsStreamableExtension
 Summary
-  Write here a summary (1 line)
+  Determines if the specified extension should be stored in the form file.
 Description
-  This is a protected member, you don't have to describe these
+  IsStreamableExtension determines if the specified extension should be written to the form file.
+  It's called automatically whenever an instance of this object is being written to a filer object.
+  
+  The base class returns True if the class reference of the extension is registered with the filing
+  system (i.e. the class is, directly or indirectly, handed to a call to RegisterClass or
+  RegisterClasses) and False in all other cases. Descedants can override this method to deny
+  specific extensions being written to the form file, in addition to the check done by the base
+  class.
+  
+  The method returns True if the specified extension should be written to the form file, False if
+  it should not be written.
 Parameters
-  AnExtension - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TExtensibleInterfacedPersistent.NewInstance
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TExtensibleInterfacedPersistent.QueryInterface
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Parameters
-  IID - Description for this parameter
-  Obj - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AnExtension - Extension for which to determine if it should be stored in the form file.
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.ReadImplementer
 Summary
@@ -454,12 +568,15 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.RefCount
 Summary
-  Write here a summary (1 line)
+  ## Copied from D7 help for TInterfacedObject.RefCount
+  Indicates the number of interface pointers currently dependent upon the object.
 Description
-  Write here a description
+  ## Copied from D7 help for TInterfacedObject.RefCount
+  RefCount defines the lifetime of the object. When RefCount is zero, the object is destroyed.
+
+  RefCount is incremented by calls to the _AddRef method and decremented by the _Release method.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FRefCount
 ----------------------------------------------------------------------------------------------------
 @@TExtensibleInterfacedPersistent.RemoveIntfImpl
 Summary
@@ -509,28 +626,6 @@ Description
   This is a protected member, you don't have to describe these
 Parameters
   Writer - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TExtensibleInterfacedPersistent._AddRef
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TExtensibleInterfacedPersistent._Release
-Summary
-  Write here a summary (1 line)
-Description
-  This is a protected member, you don't have to describe these
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -5178,6 +5273,34 @@ See Also
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDataConsumerViewList.SubItem
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Parent - Description for this parameter
+  Index  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.SubItem
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Parent - Description for this parameter
+  Index  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDataConsumerViewList.SubItemIndex
 Summary
   Write here a summary (1 line)
 Description
