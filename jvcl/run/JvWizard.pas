@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Peter Thörnqvist - converted to JVCL naming conventions on 2003-07-11
 
-Last Modified: 2004-02-03
+Last Modified: 2004-02-13
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -475,14 +475,14 @@ type
     procedure SetLayout(Value: TJvWizardImageLayout);
     function GetTransparent: Boolean;
     procedure SetTransparent(Value: Boolean);
-    procedure SetOnChange(Value: TNotifyEvent);
     procedure DoChange;
+    procedure DoPictureChange(Sender:TObject);
   protected
     procedure PaintTo(const ACanvas: TCanvas; ARect: TRect);
   public
     constructor Create;
     destructor Destroy; override;
-    property OnChange: TNotifyEvent read FOnChange write SetOnChange;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property Picture: TPicture read FPicture write SetPicture;
     property Alignment: TJvWizardImageAlignment read FAlignment write SetAlignment;
@@ -1590,6 +1590,7 @@ end;
 constructor TJvWizardImage.Create;
 begin
   FPicture := TPicture.Create;
+  FPicture.OnChange := DoPictureChange;
   FAlignment := iaStretch;
   FLayout := ilStretch;
 end;
@@ -1635,12 +1636,6 @@ begin
   end;
 end;
 
-procedure TJvWizardImage.SetOnChange(Value: TNotifyEvent);
-begin
-  FPicture.OnChange := Value;
-  FOnChange := Value;
-end;
-
 function TJvWizardImage.GetTransparent: Boolean;
 var
   AGraphic: TGraphic;
@@ -1663,6 +1658,11 @@ begin
   begin
     AGraphic.Transparent := Value;
   end;
+end;
+
+procedure TJvWizardImage.DoPictureChange(Sender: TObject);
+begin
+  DoChange;
 end;
 
 { TJvWizardGraphicObject }
@@ -1986,9 +1986,9 @@ begin
   begin
     OffsetRect(Result, ARect.Right - ARect.Left - AImages.Width - 4, 0);
   end;
-  OffsetRect(Result, FImageOffset, 0);
   if FImageAlignment = iaLeft then
   begin
+    OffsetRect(Result, FImageOffset, 0);
     { YW - if right side of the image area still in the page header area
       then adjust the left side of title area. }
     if Result.Right > ARect.Left then
@@ -1996,6 +1996,7 @@ begin
   end
   else // must be iaRight
   begin
+    OffsetRect(Result, -FImageOffset, 0);
     { YW - if left side of the image area still in the page header area
       then adjust the ride side of title area. }
     if Result.Left < ARect.Right then
@@ -2654,6 +2655,7 @@ begin
      ignore or skip. we can not use Visible property, because all pages are
      invisible at startup until they are actived. }
   Result := nil;
+  Assert(Step <> 0);
   repeat
     Inc(PageIndex, Step);
   until (PageIndex < 0) or (PageIndex >= FPages.Count) or

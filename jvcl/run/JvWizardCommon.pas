@@ -223,11 +223,11 @@ begin
     Bmp.Height := ARect.Bottom - ARect.Top;
     Bmp.Canvas.Brush.Color := ACanvas.Brush.Color;
     Bmp.Canvas.FillRect(Bmp.Canvas.ClipRect);
-    AWidth := ARect.Left;
-    while AWidth <= ARect.Right do
+    AWidth := 0;
+    while AWidth <= Bmp.Width do
     begin
-      AHeight := ARect.Top;
-      while AHeight <= ARect.Bottom do
+      AHeight := 0;
+      while AHeight <= Bmp.Height do
       begin
         Bmp.Canvas.Draw(AWidth, AHeight, AGraphic);
         Inc(AHeight, AGraphic.Height);
