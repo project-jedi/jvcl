@@ -86,13 +86,11 @@ type
     procedure DoGetDisplayName(Index: Integer; AColor: TColor; var DisplayName: string); virtual;
     function DoInsertColor(AIndex: Integer; AColor: TColor; var DisplayName: string): Boolean; virtual;
     procedure DoBeforeCustom;
-    procedure Change; override;
     procedure InternalInsertColor(AIndex: Integer; AColor: TColor; const DisplayName: string); virtual;
     procedure DoNameMapChange(Sender:TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Loaded; override;
     procedure GetColors; virtual;
     procedure GetCustomColors(AList: TList);
     // Returns the current name for AColor. Note that this implicitly might call the
@@ -112,7 +110,6 @@ type
     {$IFDEF COMPILER6_UP}
     property AutoDropDown;
     {$ENDIF}
-    property AutoSave;
     property BevelEdges;
     property BevelInner;
     property BevelKind;
@@ -206,6 +203,7 @@ type
     function GetSorted: Boolean;
     procedure SetSorted(const Value: Boolean);
   protected
+    procedure Loaded; override;
     procedure GetFonts; virtual;
     procedure Click; override;
 
@@ -214,7 +212,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Loaded; override;
     property Text;
   published
     property Anchors;
@@ -222,7 +219,6 @@ type
     {$IFDEF COMPILER6_UP}
     property AutoDropDown;
     {$ENDIF}
-    property AutoSave;
     property BevelEdges;
     property BevelInner;
     property BevelKind;
@@ -791,17 +787,6 @@ begin
   end;
 end;
 
-procedure TJvColorComboBox.Loaded;
-begin
-  inherited;
-  HandleNeeded;
-  if HandleAllocated then
-  begin
-    AutoSave.LoadValue(Integer(FColorValue));
-    GetColors;
-  end;
-end;
-
 function TJvColorComboBox.DoInsertColor(AIndex: Integer; AColor: TColor;
   var DisplayName: string): Boolean;
 begin
@@ -824,15 +809,6 @@ begin
   begin
     Items[AIndex] := DisplayName;
     Items.Objects[AIndex] := TObject(AColor);
-  end;
-end;
-
-procedure TJvColorComboBox.Change;
-begin
-  if HandleAllocated then
-  begin
-    inherited;
-    AutoSave.SaveValue(ColorValue);
   end;
 end;
 
@@ -1053,7 +1029,6 @@ end;
 procedure TJvFontComboBox.Click;
 begin
   inherited Click;
-  AutoSave.SaveValue(FontName);
   Change;
 end;
 
@@ -1082,17 +1057,12 @@ begin
 end;
 
 procedure TJvFontComboBox.Loaded;
-var
-  S: string;
 begin
   inherited Loaded;
   HandleNeeded;
   if HandleAllocated then
   begin
     GetFonts;
-    S := FontName;
-    if AutoSave.LoadValue(S) then
-      FontName := S;
   end;
 end;
 

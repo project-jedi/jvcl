@@ -47,7 +47,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms, Menus, 
-  JvCaret, JvComponent, JvAutoSave, JvMaxPixel, JVCLVer, JvToolEdit;
+  JvCaret, JvComponent, JvMaxPixel, JVCLVer, JvToolEdit;
 
 type
   TJvCustomEdit = class(TCustomEdit)
@@ -64,8 +64,6 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FOnRestored: TNotifyEvent;
-    FAutoSave: TJvAutoSave;
     FMaxPixel: TJvMaxPixel;
     FCaret: TJvCaret;
     FClipboardCommands: TJvClipboardCommands;
@@ -121,7 +119,6 @@ type
     destructor Destroy; override;
   protected
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
     property UseFixedPopup:boolean read FUseFixedPopup write FUseFixedPopup default true;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Caret: TJvCaret read FCaret write SetCaret;
@@ -143,14 +140,12 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnRestored: TNotifyEvent read FOnRestored write FOnRestored;
   end;
 
   TJvEdit = class(TJvCustomEdit)
   published
     property AboutJVCL;
     property Align;
-    property AutoSave;
     property Alignment;
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
@@ -175,7 +170,6 @@ type
     property OnMouseLeave;
     property OnCtl3DChanged;
     property OnParentColorChange;
-    property OnRestored;
 
     property Anchors;
     property AutoSelect;
@@ -248,7 +242,6 @@ begin
   ClipboardCommands := [caCopy..caUndo];
   FCaret := TJvCaret.Create(Self);
   FCaret.OnChanged := CaretChanged;
-  FAutoSave := TJvAutoSave.Create(Self);
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
   FGroupIndex := -1;
@@ -259,23 +252,14 @@ end;
 
 destructor TJvCustomEdit.Destroy;
 begin
-  FAutoSave.Free;
   FMaxPixel.Free;
   FCaret.Free;
   inherited Destroy;
 end;
 
 procedure TJvCustomEdit.Loaded;
-var
-  St: string;
 begin
   inherited Loaded;
-  if FAutoSave.LoadValue(St) then
-  begin
-    Text := St;
-    if Assigned(FOnRestored) then
-      FOnRestored(Self);
-  end;
   SelStart := FStreamedSelStart;
   SelLength := FStreamedSelLength;
 end;
@@ -294,7 +278,6 @@ begin
     Text := St;
     SelStart := Min(SelStart, Length(Text));
   end;
-  FAutoSave.SaveValue(Text);
 end;
 
 procedure TJvCustomEdit.CreateParams(var Params: TCreateParams);

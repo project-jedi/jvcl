@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvAutoSave, JVCLVer;
+  JVCLVer;
 
 type
   TJvCheckBox = class(TCheckBox)
@@ -44,12 +44,10 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FOnRestored: TNotifyEvent;
     FHotTrack: Boolean;
     FHotFont: TFont;
     FFontSave: TFont;
     FOver: Boolean;
-    FAutoSave: TJvAutoSave;
     FAutoSize: Boolean;
     FAssociated: TControl;
     procedure SetHotFont(const Value: TFont);
@@ -76,7 +74,6 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Associated:TControl read FAssociated write SetAssociated;
-    property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
@@ -87,7 +84,6 @@ type
     property OnMouseLeave: TNotifyEvent read FonMouseLeave write FonMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FonCtl3DChanged write FonCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FonParentColorChanged write FonParentColorChanged;
-    property OnRestored: TNotifyEvent read FOnRestored write FOnRestored;
   end;
 
 implementation
@@ -103,12 +99,10 @@ begin
   FColor := clInfoBk;
   FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
-  FAutoSave := TJvAutoSave.Create(Self);
 end;
 
 destructor TJvCheckBox.Destroy;
 begin
-  FAutoSave.Free;
   FHotFont.Free;
   FFontSave.Free;
   inherited Destroy;
@@ -117,7 +111,6 @@ end;
 procedure TJvCheckBox.Toggle;
 begin
   inherited Toggle;
-  FAutoSave.SaveValue(Checked);
   if Assigned(FAssociated) then
     FAssociated.Enabled := Checked;
 end;
@@ -184,16 +177,8 @@ begin
 end;
 
 procedure TJvCheckBox.Loaded;
-var
-  B: Boolean;
 begin
   inherited;
-  if FAutoSave.LoadValue(B) then
-  begin
-    Checked := B;
-    if Assigned(FOnRestored) then
-      FOnRestored(Self);
-  end;
   if Assigned(Associated) then
     Associated.Enabled := Checked;
 end;

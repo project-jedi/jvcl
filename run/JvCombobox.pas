@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Dialogs, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvMaxPixel, JvAutoSave, JvItemsSearchs, JVCLVer;
+  JvMaxPixel, JvItemsSearchs, JVCLVer;
 
 type
   TJvCustomComboBox = class(TCustomComboBox)
@@ -50,10 +50,8 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FOnRestored: TNotifyEvent;
     FOver: Boolean;
     FMaxPixel: TJvMaxPixel;
-    FAutoSave: TJvAutoSave;
     FItemSearchs: TJvItemsSearchs;
     FAboutJVCL: TJVCLAboutInfo;
     FReadOnly: Boolean; // ain
@@ -78,7 +76,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Loaded; override;
     procedure WndProc(var Msg: TMessage); override; // ain
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
@@ -92,12 +89,10 @@ type
 //    property ItemIndex;
 
     property AutoComplete: Boolean read FAutoComplete write FAutoComplete default True;
-    property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
 
-    property OnRestored: TNotifyEvent read FOnRestored write FOnRestored;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -118,7 +113,6 @@ type
     {$IFDEF COMPILER6_UP}
     property AutoDropDown default False;
     {$ENDIF}
-    property AutoSave;
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
@@ -180,7 +174,6 @@ type
     property OnStartDrag;
     property Items; { Must be published after OnMeasureItem }
 
-    property OnRestored;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnCtl3DChanged;
@@ -202,7 +195,6 @@ begin
   FOver := False;
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
-  FAutoSave := TJvAutoSave.Create(Self);
   FItemSearchs := TJvItemsSearchs.Create;
   FReadOnly := False; // ain
 end;
@@ -210,35 +202,8 @@ end;
 destructor TJvCustomComboBox.Destroy;
 begin
   FMaxPixel.Free;
-  FAutoSave.Free;
   FItemSearchs.Free;
   inherited;
-end;
-
-procedure TJvCustomComboBox.Loaded;
-var
-  St: string;
-  I: Integer;
-begin
-  inherited;
-  if Style = csDropDownList then
-  begin
-    if FAutoSave.LoadValue(I) then
-    begin
-      ItemIndex := I;
-      if Assigned(FOnRestored) then
-        FOnRestored(Self);
-    end;
-  end
-  else
-  begin
-    if FAutoSave.LoadValue(St) then
-    begin
-      Text := St;
-      if Assigned(FOnRestored) then
-        FOnRestored(Self);
-    end;
-  end;
 end;
 
 procedure TJvCustomComboBox.Change;
@@ -275,10 +240,6 @@ begin
       FSearching := False;
     end;
   end;
-  if Style = csDropDownList then
-    FAutoSave.SaveValue(ItemIndex)
-  else
-    FAutoSave.SaveValue(Text);
 end;
 
 function TJvCustomComboBox.SearchExactString(Value: string;

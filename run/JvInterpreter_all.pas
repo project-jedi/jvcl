@@ -36,7 +36,7 @@ implementation
 
 uses
   JvInterpreter_System, JvInterpreter_SysUtils, JvInterpreter_Classes, JvInterpreter_Graphics,
-  JvInterpreter_Controls, JvInterpreter_Dialogs, JvInterpreter_JvRegAuto,
+  JvInterpreter_Controls, JvInterpreter_Dialogs,
   {$IFDEF COMPLIB_VCL}
   JvInterpreter_Windows,
   JvInterpreter_StdCtrls, JvInterpreter_ComCtrls, JvInterpreter_ExtCtrls, JvInterpreter_Forms,
@@ -57,7 +57,7 @@ initialization
   JvInterpreter_System.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_SysUtils.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_Classes.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
-  JvInterpreter_JvRegAuto.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
+//  JvInterpreter_JvRegAuto.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
   {$IFDEF COMPLIB_VCL}
   JvInterpreter_Windows.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);

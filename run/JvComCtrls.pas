@@ -53,7 +53,6 @@ const
   TVM_SETLINECOLOR = TV_FIRST + 40;
   TVM_GETLINECOLOR = TV_FIRST + 41;
 
-
 type
   TJvIpAddress = class;
 
@@ -65,7 +64,7 @@ type
   TJvIpAddressRange = class(TPersistent)
   private
     FControl: TWinControl;
-    FRange: array [0..3] of TJvIpAddressMinMax;
+    FRange: array[0..3] of TJvIpAddressMinMax;
     function GetMaxRange(Index: Integer): Byte;
     function GetMinRange(Index: Integer): Byte;
     procedure SetMaxRange(const Index: Integer; const Value: Byte);
@@ -92,7 +91,7 @@ type
 
   TJvIpAddressValues = class(TPersistent)
   private
-    FValues: array [0..3] of Byte;
+    FValues: array[0..3] of Byte;
     FOnChange: TNotifyEvent;
     FOnChanging: TJvIPAddressChanging;
     function GetValue: Cardinal;
@@ -395,16 +394,16 @@ type
     procedure SetChecked(Node: TTreenode; Value: Boolean);
     procedure SetNodePopup(Node: TTreeNode; Value: TPopupMenu);
     function GetNodePopup(Node: TTreeNode): TPopupMenu;
-    procedure InsertMark(Node:TTreeNode;MarkAfter:boolean); // TVM_SETINSERTMARK
+    procedure InsertMark(Node: TTreeNode; MarkAfter: boolean); // TVM_SETINSERTMARK
     procedure RemoveMark;
-    property InsertMarkColor:TColor read GetInsertMarkColor write SetInsertMarkColor;
-    property Checked[Node:TTreeNode]:boolean read GetChecked write SetChecked;
-    property MaxScrollTime:integer read GetMaxScrollTime write SetMaxScrollTime;
+    property InsertMarkColor: TColor read GetInsertMarkColor write SetInsertMarkColor;
+    property Checked[Node: TTreeNode]: boolean read GetChecked write SetChecked;
+    property MaxScrollTime: integer read GetMaxScrollTime write SetMaxScrollTime;
     // UseUnicode should only be changed on Win95 and Win98 that has IE5 or later installed
-    property UseUnicode:boolean read GetUseUnicode write SetUseUnicode default false;
+    property UseUnicode: boolean read GetUseUnicode write SetUseUnicode default false;
   published
-    property LineColor:TColor read GetLineColor write SetLineColor default clDefault;
-    property ItemHeight:integer read GetItemHeight write SetItemHeight default 16;
+    property LineColor: TColor read GetLineColor write SetLineColor default clDefault;
+    property ItemHeight: integer read GetItemHeight write SetItemHeight default 16;
 
     property HintColor: TColor read FColor write FColor default clInfoBk;
 
@@ -436,7 +435,7 @@ uses
 const
   TVIS_CHECKED = $2000;
 
-// === TJvIpAddressRange =====================================================
+  // === TJvIpAddressRange =====================================================
 
 constructor TJvIpAddressRange.Create(Control: TWinControl);
 var
@@ -1057,8 +1056,8 @@ end;
 
 procedure TJvTrackBar.InternalSetToolTipSide;
 const
-  ToolTipSides: array [TJvTrackToolTipSide] of DWORD =
-    (TBTS_LEFT, TBTS_TOP, TBTS_RIGHT, TBTS_BOTTOM);
+  ToolTipSides: array[TJvTrackToolTipSide] of DWORD =
+  (TBTS_LEFT, TBTS_TOP, TBTS_RIGHT, TBTS_BOTTOM);
 begin
   if HandleAllocated and (GetComCtlVersion >= ComCtlVersionIE3) then
     SendMessage(Handle, TBM_SETTIPSIDE, ToolTipSides[FToolTipSide], 0);
@@ -1347,8 +1346,7 @@ begin
     Exit;
   if Y < AutoScrollMargin then
     ScrollDirection := -1
-  else
-  if Y > ClientHeight - AutoScrollMargin then
+  else if Y > ClientHeight - AutoScrollMargin then
     ScrollDirection := 1
   else
     ScrollDirection := 0;
@@ -1413,8 +1411,7 @@ begin
         Canvas.Font.Color := clHighlightText;
         Canvas.Brush.Color := clHighlight;
       end
-      else
-      if not HideSelection then
+      else if not HideSelection then
       begin
         Canvas.Font.Color := Font.Color;
         Canvas.Brush.Color := clInactiveBorder;
@@ -1526,8 +1523,7 @@ procedure TJvTreeView.SelectItem(Node: TTreeNode; Unselect: Boolean);
 begin
   if Unselect then
     FSelectedList.Remove(Node)
-  else
-  if not IsNodeSelected(Node) then
+  else if not IsNodeSelected(Node) then
     FSelectedList.Add(Node);
   if HandleAllocated then
     InvalidateNode(Node);
@@ -1551,6 +1547,7 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
+
 procedure TJvTreeView.SetMultiSelect(const Value: Boolean);
 begin
   if FMultiSelect <> Value then
@@ -1573,8 +1570,7 @@ begin
   begin
     if Value = 0 then
       KillTimer(Handle, AutoScrollTimerID)
-    else
-    if (Value <> 0) and (FScrollDirection = 0) then
+    else if (Value <> 0) and (FScrollDirection = 0) then
       SetTimer(Handle, AutoScrollTimerID, 200, nil);
     FScrollDirection := Value;
   end;
@@ -1755,7 +1751,7 @@ end;
 function TJvTreeView.GetItemHeight: integer;
 begin
   if HandleAllocated then
-    Result := SendMessage(Handle,TVM_GETITEMHEIGHT,0,0)
+    Result := SendMessage(Handle, TVM_GETITEMHEIGHT, 0, 0)
   else
     Result := 16;
 end;
@@ -1765,7 +1761,7 @@ begin
   if Value <= 0 then
     Value := 16;
   if HandleAllocated then
-    SendMessage(Handle,TVM_SETITEMHEIGHT,Value,0);
+    SendMessage(Handle, TVM_SETITEMHEIGHT, Value, 0);
 end;
 
 function TJvTreeView.GetInsertMarkColor: TColor;
@@ -1793,7 +1789,7 @@ begin
     if Node = nil then
       RemoveMark
     else
-      SendMessage(Handle, TVM_SETINSERTMARK, integer(MarkAfter),integer(Node.ItemId));
+      SendMessage(Handle, TVM_SETINSERTMARK, integer(MarkAfter), integer(Node.ItemId));
   end;
 end;
 
@@ -1806,7 +1802,7 @@ end;
 function TJvTreeView.GetLineColor: TColor;
 begin
   if HandleAllocated then
-    Result := SendMessage(Handle,TVM_GETLINECOLOR,0,0)
+    Result := SendMessage(Handle, TVM_GETLINECOLOR, 0, 0)
   else
     Result := clDefault;
 end;
@@ -1817,7 +1813,7 @@ begin
   begin
     if Value = clDefault then
       Value := Font.Color;
-    SendMessage(Handle,TVM_SETLINECOLOR,0,ColorToRGB(Value));
+    SendMessage(Handle, TVM_SETLINECOLOR, 0, ColorToRGB(Value));
   end;
 end;
 
@@ -1838,7 +1834,7 @@ end;
 function TJvTreeView.GetUseUnicode: boolean;
 begin
   if HandleAllocated then
-    Result := boolean(SendMessage(Handle, TVM_GETUNICODEFORMAT,0,0))
+    Result := boolean(SendMessage(Handle, TVM_GETUNICODEFORMAT, 0, 0))
   else
     Result := false;
 end;
@@ -1848,7 +1844,7 @@ begin
   // only try to change value if not running on NT platform
   // (see MSDN: CCM_SETUNICODEFORMAT explanation for details)
   if HandleAllocated and (Win32Platform <> VER_PLATFORM_WIN32_NT) then
-    SendMessage(Handle, TVM_SETUNICODEFORMAT,integer(Value),0);
+    SendMessage(Handle, TVM_SETUNICODEFORMAT, integer(Value), 0);
 end;
 
 end.

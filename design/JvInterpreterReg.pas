@@ -17,7 +17,7 @@ uses
   JvInterpreterParser, JvInterpreter, JvInterpreter_all, JvInterpreter_Classes, JvInterpreter_ComCtrls, JvInterpreter_Contnrs,
   JvInterpreter_Controls, JvInterpreter_Db, JvInterpreter_DbCtrls, JvInterpreter_DbGrids, JvInterpreter_DBTables,
   JvInterpreter_Dialogs, JvInterpreter_ExtCtrls, JvInterpreter_Forms, JvInterpreter_Graphics, JvInterpreter_Grids,
-  JvInterpreter_httpapp, JvInterpreter_JvEditor, JvInterpreter_JvInterpreter, JvInterpreter_JvRegAuto, JvInterpreter_JvUtils,
+  JvInterpreter_httpapp, JvInterpreter_JvEditor, JvInterpreter_JvInterpreter, JvInterpreter_JvUtils,
   JvInterpreter_Menus, JvInterpreter_Quickrpt, JvInterpreter_StdCtrls, JvInterpreter_System, JvInterpreter_SysUtils,
   JvInterpreter_Types, JvInterpreter_Windows, JvInterpreterConst, JvInterpreterFm, JvDsgnEditors;
 

@@ -17,7 +17,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvConsts, 
   JvMemoryDataset, JvDBDatePickerEdit, JvDBDateTimePicker, JvDBLookupTreeView, JvDBProgressBar, JvDBRichEdit,
-  JvDBSpinEdit, JvDBTreeView, JvDBLookup, JvCsvData, JvDBCombobox, JvDBControls,
+  JvDBSpinEdit, JvDBTreeView, JvDBLookup, JvCsvData, JvDBCombobox, JvDBControls, JvDBRadioPanel,
   JvDBEditors, JvDBMemDatasetEditor
 
   {$IFDEF JV_MIDAS},JvDBRemoteLogin {$ENDIF};
@@ -39,7 +39,7 @@ begin
     ]);
   RegisterComponents(SPaletteDBVisual,[
     TJvDBDatePickerEdit, TJvDBProgressBar, TJvDBRichEdit, TJvDBSpinEdit,
-    TJvDBLookupList, TJvDBLookupCombo, TJvDBLookupEdit,
+    TJvDBLookupList, TJvDBLookupCombo, TJvDBLookupEdit, TJvDBRadioPanel,
     TJvDBCombobox, TJvDBTreeView, TJvDBLookupTreeViewCombo, TJvDBLookupTreeView,
     TJvDBGrid, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit, TJvDBStatusLabel
     ]);
