@@ -82,7 +82,9 @@ type
     procedure FontChanged; override;
     procedure EnabledChanged;override;
     procedure SetAutoSize(Value: Boolean); override;
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
 
