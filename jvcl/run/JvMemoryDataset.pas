@@ -71,7 +71,6 @@ type
     procedure QuickSort(L, R: Integer; Compare: TCompareRecords);
     procedure Sort;
     function CalcRecordSize: Integer;
-    function FindFieldData(Buffer: Pointer; Field: TField): Pointer;
     function GetMemoryRecord(Index: Integer): TJvMemoryRecord;
     function GetCapacity: Integer;
     function RecordFilter: Boolean;
@@ -80,6 +79,9 @@ type
     procedure InitBufferPointers(GetProps: Boolean);
     procedure FixReadOnlyFields(MakeReadOnly: boolean);
   protected
+    function FindFieldData(Buffer: Pointer; Field: TField): Pointer;
+    function CompareFields(Data1, Data2: Pointer; FieldType: TFieldType;
+      CaseInsensitive: Boolean): Integer;virtual;
     procedure DataConvert(Field: TField; Source, Dest: Pointer; ToNative: Boolean); override;
     procedure AssignMemoryRecord(Rec: TJvMemoryRecord; Buffer: PChar);
     function GetActiveRecBuf(var RecBuf: PChar): Boolean; virtual;
@@ -218,7 +220,7 @@ type
 implementation
 
 uses
-  Forms, DbConsts, Math;
+  Forms, Dialogs, DbConsts, Math;
 
 resourcestring
   SMemNoRecords = 'No data found';
@@ -239,76 +241,6 @@ const
 
 { Utility routines }
 
-function CompareFields(Data1, Data2: Pointer; FieldType: TFieldType;
-  CaseInsensitive: Boolean): Integer;
-begin
-  Result := 0;
-  case FieldType of
-    ftString:
-      if CaseInsensitive then
-        Result := AnsiCompareText(PChar(Data1), PChar(Data2))
-      else
-        Result := AnsiCompareStr(PChar(Data1), PChar(Data2));
-    ftSmallint:
-      if SmallInt(Data1^) > SmallInt(Data2^) then
-        Result := 1
-      else
-      if SmallInt(Data1^) < SmallInt(Data2^) then
-        Result := -1;
-    ftInteger, ftDate, ftTime, ftAutoInc:
-      if Longint(Data1^) > Longint(Data2^) then
-        Result := 1
-      else
-      if Longint(Data1^) < Longint(Data2^) then
-        Result := -1;
-    ftWord:
-      if Word(Data1^) > Word(Data2^) then
-        Result := 1
-      else
-      if Word(Data1^) < Word(Data2^) then
-        Result := -1;
-    ftBoolean:
-      if WordBool(Data1^) and not WordBool(Data2^) then
-        Result := 1
-      else
-      if not WordBool(Data1^) and WordBool(Data2^) then
-        Result := -1;
-    ftFloat, ftCurrency:
-      if Double(Data1^) > Double(Data2^) then
-        Result := 1
-      else
-      if Double(Data1^) < Double(Data2^) then
-        Result := -1;
-    ftDateTime:
-      if TDateTime(Data1^) > TDateTime(Data2^) then
-        Result := 1
-      else
-      if TDateTime(Data1^) < TDateTime(Data2^) then
-        Result := -1;
-    ftFixedChar:
-      if CaseInsensitive then
-        Result := AnsiCompareText(PChar(Data1), PChar(Data2))
-      else
-        Result := AnsiCompareStr(PChar(Data1), PChar(Data2));
-    ftWideString:
-      if CaseInsensitive then
-        Result := AnsiCompareText(WideCharToString(PWideChar(Data1)),
-          WideCharToString(PWideChar(Data2)))
-      else
-        Result := AnsiCompareStr(WideCharToString(PWideChar(Data1)),
-          WideCharToString(PWideChar(Data2)));
-    ftLargeint:
-      if Int64(Data1^) > Int64(Data2^) then
-        Result := 1
-      else
-      if Int64(Data1^) < Int64(Data2^) then
-        Result := -1;
-    ftVariant:
-      Result := 0;
-    ftGuid:
-      Result := AnsiCompareText(PChar(Data1), PChar(Data2));
-  end;
-end;
 
 function CalcFieldLen(FieldType: TFieldType; Size: Word): Word;
 begin
@@ -478,6 +410,77 @@ begin
   FLastID := Low(Integer);
   FAutoInc := 1;
   FRecords := TList.Create;
+end;
+
+function TJvMemoryData.CompareFields(Data1, Data2: Pointer; FieldType: TFieldType;
+  CaseInsensitive: Boolean): Integer;
+begin
+  Result := 0;
+  case FieldType of
+    ftString:
+      if CaseInsensitive then
+        Result := AnsiCompareText(PChar(Data1), PChar(Data2))
+      else
+        Result := AnsiCompareStr(PChar(Data1), PChar(Data2));
+    ftSmallint:
+      if SmallInt(Data1^) > SmallInt(Data2^) then
+        Result := 1
+      else
+      if SmallInt(Data1^) < SmallInt(Data2^) then
+        Result := -1;
+    ftInteger, ftDate, ftTime, ftAutoInc:
+      if Longint(Data1^) > Longint(Data2^) then
+        Result := 1
+      else
+      if Longint(Data1^) < Longint(Data2^) then
+        Result := -1;
+    ftWord:
+      if Word(Data1^) > Word(Data2^) then
+        Result := 1
+      else
+      if Word(Data1^) < Word(Data2^) then
+        Result := -1;
+    ftBoolean:
+      if WordBool(Data1^) and not WordBool(Data2^) then
+        Result := 1
+      else
+      if not WordBool(Data1^) and WordBool(Data2^) then
+        Result := -1;
+    ftFloat, ftCurrency:
+      if Double(Data1^) > Double(Data2^) then
+        Result := 1
+      else
+      if Double(Data1^) < Double(Data2^) then
+        Result := -1;
+    ftDateTime:
+      if TDateTime(Data1^) > TDateTime(Data2^) then
+        Result := 1
+      else
+      if TDateTime(Data1^) < TDateTime(Data2^) then
+        Result := -1;
+    ftFixedChar:
+      if CaseInsensitive then
+        Result := AnsiCompareText(PChar(Data1), PChar(Data2))
+      else
+        Result := AnsiCompareStr(PChar(Data1), PChar(Data2));
+    ftWideString:
+      if CaseInsensitive then
+        Result := AnsiCompareText(WideCharToString(PWideChar(Data1)),
+          WideCharToString(PWideChar(Data2)))
+      else
+        Result := AnsiCompareStr(WideCharToString(PWideChar(Data1)),
+          WideCharToString(PWideChar(Data2)));
+    ftLargeint:
+      if Int64(Data1^) > Int64(Data2^) then
+        Result := 1
+      else
+      if Int64(Data1^) < Int64(Data2^) then
+        Result := -1;
+    ftVariant:
+      Result := 0;
+    ftGuid:
+      Result := AnsiCompareText(PChar(Data1), PChar(Data2));
+  end;
 end;
 
 destructor TJvMemoryData.Destroy;
@@ -1182,6 +1185,7 @@ end;
 
 procedure TJvMemoryData.InternalInitFieldDefs;
 begin
+ // InitFieldDefsFromFields
 end;
 
 function TJvMemoryData.IsCursorOpen: Boolean;
@@ -1261,15 +1265,16 @@ procedure TJvMemoryData.CopyStructure(Source: TDataSet; UseAutoIncAsInteger: boo
 var
   I: Integer;
 begin
+  if Source = nil then
+    Exit;
   CheckInactive;
   for I := FieldCount - 1 downto 0 do
     Fields[I].Free;
-  if Source = nil then
-    Exit;
+
   Source.FieldDefs.Update;
   FieldDefs := Source.FieldDefs;
   CheckDataTypes(FieldDefs);
-  CreateFields;
+//  CreateFields;
 end;
 
 procedure TJvMemoryData.FixReadOnlyFields(MakeReadOnly: boolean);

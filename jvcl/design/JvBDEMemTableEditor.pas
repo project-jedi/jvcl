@@ -12,7 +12,7 @@ uses
   SysUtils, JvDBMemDatasetEditor, JvBDEMemTable;
 
 type
-  TJvBDEMemoryTableEditor = class(TJvMemDataSetEditor)
+  TJvBDEMemoryTableEditor = class(TJvAbstractMemDataSetEditor)
   protected
     function CopyStructure(Source, Dest: TDataSet): Boolean; override;
   end;
