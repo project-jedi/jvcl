@@ -38,13 +38,12 @@ interface
 { Additional editors for JvInspector. }
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
+
+
   SysUtils, Classes,
   
   
-  QWindows, QGraphics, QControls, QStdCtrls, QImgList,
+  Types, QGraphics, QControls, QStdCtrls, QImgList, QWindows,
   
   JvQInspector;
 
@@ -129,7 +128,7 @@ type
     procedure PaintValue(const Color: TColor; const ColorName: string; const ACanvas: TCanvas;
       const ARect: TRect);
     procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState); override;
+      State: TOwnerDrawState); overload;
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
     procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer; var Width: Integer); override;
     function GetDisplayValue: string; override;
@@ -155,7 +154,7 @@ type
     procedure PaintValue(const ImgNum: Integer; const ImgName: string; const ACanvas: TCanvas;
       const ARect: TRect);
     procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
-      State: TOwnerDrawState); override;
+      State: TOwnerDrawState); overload;
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
     procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer; var Width: Integer); override;
     function GetDisplayValue: string; override;

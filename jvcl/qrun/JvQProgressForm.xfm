@@ -1,23 +1,26 @@
 object frmProgress: TfrmProgress
   Left = 411
   Top = 226
+  Width = 316
+  Height = 165
+  VertScrollBar.Range = 149
+  HorzScrollBar.Range = 42
+  ActiveControl = btnCancel
   BorderIcons = []
-  BorderStyle = bsToolWindow
+  BorderStyle = fbsToolWindow
   Caption = 'Caption'
-  ClientHeight = 165
-  ClientWidth = 316
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -11
+  Color = clButton
+  Font.Color = clText
+  Font.Height = 11
   Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
   Font.Style = []
-  OldCreateOrder = False
+  Font.Weight = 40
+  ParentFont = False
   Position = poScreenCenter
   Scaled = False
   OnPaint = FormPaint
   PixelsPerInch = 96
-  TextHeight = 13
   object imProgress: TImage
     Left = 16
     Top = 12
@@ -28,22 +31,19 @@ object frmProgress: TfrmProgress
     IncrementalDisplay = True
     Visible = False
   end
-  object Label1: TLabel
-    Left = 16
-    Top = 70
-    Width = 26
-    Height = 13
-    Caption = 'Label'
-  end
   object pbProgress: TProgressBar
     Left = 16
     Top = 88
     Width = 284
     Height = 16
     Anchors = [akLeft, akTop, akRight]
-    Min = 0
-    Max = 100
-    TabOrder = 0
+  end
+  object Label1: TLabel
+    Left = 16
+    Top = 70
+    Width = 26
+    Height = 13
+    Caption = 'Label'
   end
   object btnCancel: TButton
     Left = 224

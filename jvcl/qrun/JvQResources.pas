@@ -1664,6 +1664,10 @@ resourcestring
   RsTipsCheckBoxText = '&Show Tips on Startup';
   RsStoreShowOnStartUp = 'Show On Startup';
 
+//=== JvTMTimeLine.pas =========================================================
+resourcestring
+  RsInvalidImage = 'Invalid image';
+
 //=== JvToolEdit.pas =========================================================
 resourcestring
   RsBrowseCaption = 'Browse';
