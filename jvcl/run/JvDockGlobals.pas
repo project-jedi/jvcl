@@ -32,7 +32,7 @@ interface
 
 uses
   Messages,
-  JvDockControlForm, JvDockSupportControl;
+  JvDockControlForm, JvDockInfo, JvDockSupportControl;
 
 resourcestring
   {$IFNDEF USEJVCL}
@@ -96,7 +96,7 @@ resourcestring
 
   RsDockCannotFindWindow = 'Cannot find window';
 
-  RsEInvalidDockSiteOrientValue = 'invalid DockSiteOrient value doNoOrient';
+  RsEInvalidDockSiteOrientationValue = 'invalid DockSiteOrientation value doNoOrient';
 
 const
   RsDockBaseDockTreeVersion = $00040000;
