@@ -17,13 +17,14 @@ SRCHH = ..\..\$(RUN);..\..\$(COM);$(JCLHH);
 SRCHHH = ..\..\..\$(RUN);..\..\..\$(COM);$(JCLHHH);
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**
-DCC  = -$(ROOT)\dcc32.exe -e$(BIN) -i$(SRC) -n$(DCU) -r$(SRC) -u$(SRC) -q -w -B
-DCCH = -$(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -B
-DCCHH = -$(ROOT)\dcc32.exe -e..\..\$(BIN) -i$(SRCHH) -n..\..\$(DCU) -r$(SRCHH) -u$(SRCHH) -q -w -B
-DCCHHH = -$(ROOT)\dcc32.exe -e..\..\..\$(BIN) -i$(SRCHHH) -n..\..\..\$(DCU) -r$(SRCHHH) -u$(SRCHHH) -q -w -B
+DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRC) -n$(DCU) -r$(SRC) -u$(SRC) -q -w -B
+DCCH = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -B
+DCCHSURVEY = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH);..\common -n..\$(DCU) -r$(SRCH);..\common -u$(SRCH);..\common -q -w -B
+DCCHH = $(ROOT)\dcc32.exe -e..\..\$(BIN) -i$(SRCHH) -n..\..\$(DCU) -r$(SRCHH) -u$(SRCHH) -q -w -B
+DCCHHH = $(ROOT)\dcc32.exe -e..\..\..\$(BIN) -i$(SRCHHH) -n..\..\..\$(DCU) -r$(SRCHHH) -u$(SRCHHH) -q -w -B
 BRCC = $(ROOT)\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
-default: uib globus docking inspector standard threads diagram ralib rxlib plugin xml mega surveyor
+all: uib globus docking inspector standard threads diagram ralib rxlib plugin xml mega surveyor
 #---------------------------------------------------------------------------------------------------
 surveyor: jsb.exe jsr.exe sc.exe js.exe
 #---------------------------------------------------------------------------------------------------
@@ -102,22 +103,22 @@ _glXMLSerializer_demo.exe: "Globus\XMLSerializer\_glXMLSerializer_demo.dpr"
 
 jsb.exe: "JediSurveyor\Builder\jsb.dpr"
   @cd JediSurveyor\Builder
-  $(DCCH) $&.dpr
+  $(DCCHSURVEY) $&.dpr
   @cd ..\..
 
 jsr.exe: "JediSurveyor\Reporter\jsr.dpr"
   @cd JediSurveyor\Reporter
-  $(DCCH) $&.dpr
+  $(DCCHSURVEY) $&.dpr
   @cd ..\..
 
 sc.exe: "JediSurveyor\SurveyConvert\sc.dpr"
   @cd JediSurveyor\SurveyConvert
-  $(DCCH) $&.dpr
+  $(DCCHSURVEY) $&.dpr
   @cd ..\..
 
 js.exe: "JediSurveyor\Surveyor\js.dpr"
   @cd JediSurveyor\Surveyor
-  $(DCCH) $&.dpr
+  $(DCCHSURVEY) $&.dpr
   @cd ..\..
 
 JvAniProj.exe: "JvAni\JvAniProj.dpr"
@@ -1019,6 +1020,9 @@ Rxdemo.exe: "RxLib\Rxdemo.dpr"
   @cd RxLib
   $(DCC) $&.dpr
   @cd ..
+#---------------------------------------------------------------------------------------------------
+clean: $(NULL)
+  -@del /q /f "..\dcu\*.dcu" "..\bin\*.exe" "..\bin\*.dll" "..\bin\*.bpl" "..\bin\*.dcp"
 #---------------------------------------------------------------------------------------------------
 
 
