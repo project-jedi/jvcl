@@ -35,9 +35,9 @@ uses
   {$IFDEF VCL}
   Graphics, Controls, Forms, Buttons, StdCtrls, Mask,
   {$ELSE}
-  QGraphics, QControls, QForms, QButtons, QStdCtrls, QMask,
+  QGraphics, QControls, QForms, QButtons, QStdCtrls, QMask, JvQToolEdit,
   {$ENDIF}
-  JvToolEdit, JvComponent, JvSearchFiles, JvButton, JvQToolEdit;
+  JvToolEdit, JvComponent, JvSearchFiles, JvButton;
 
 type
   TFoWallpaperChooser = class(TJvForm)

@@ -80,7 +80,7 @@ type
 
 implementation
 
-{$IFDEF VCL
+{$IFDEF VCL}
 uses
   Consts;
 
