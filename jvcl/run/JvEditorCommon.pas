@@ -2888,6 +2888,9 @@ begin
   else
     Completion.FTimer.Enabled := False;
 
+  if not (ssShift in Shift) then
+    FSelection.Selecting := False;
+
   if WaitSecondKey then
   begin
     IgnoreKeyPress := True; { Set this before calling FKeyboard.Command2()
@@ -4447,7 +4450,7 @@ begin
       { caret movements }
       ecLeft, ecRight, ecSelLeft, ecSelRight:
         begin
-          if Com([ecSelLeft, ecSelRight]) and (IsNewSelection) then
+          if Com([ecSelLeft, ecSelRight]) and IsNewSelection then
             SetSel1(X, Y);
           if Com([ecLeft, ecSelLeft]) then
             Dec(X)
