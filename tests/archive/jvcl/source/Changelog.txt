@@ -1,8 +1,12 @@
+2002-10-15
+- Fixed JvScrollText - If you had lines longer than the width of the component, not all of the text would get scrolled. fixed. Fix provide by Michael Freislich. //MBeck 
+
 2002-10-13
 - Fixed some memory leaks in JvInspector //marcelb
 - Added OnItemValueChanged/OnDataValueChanged events to TJvCustomInspector //marcelb
 - Added OnValueChanged event to TJvCustomInspectorItem //marcelb
 - Added OnValueChanged event to TJvCustomInspectorData //marcelb
+
 2002-10-10
 - Added Oliver Giesens date components to the D6 packages
 - Added JvStdActions, JvDialogActns and JvActnRes to D6 DT package

@@ -14,9 +14,10 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.c
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s): Michael Beck [mbeck@bigfoot.com]
+                Michael Freislich [mikef@korbi.net]
 
-Last Modified: 2000-02-28
+Last Modified: 2002-10-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -397,7 +398,7 @@ begin
     for i := 0 to ts.Count - 1 do
     try
       if ts[i] <> '' then
-        j := j + TextHeight(ts[i])
+        j := j + TextHeight(ts[i])*((TextWidth(ts[i]) div Width) + 1)
       else
         j := j + TextHeight(RC_TestText);
     except
