@@ -41,6 +41,7 @@ type
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(Value: String);
   end;
 
   IJvDynControlData = interface
@@ -187,6 +188,13 @@ type
     function ControlGetItemEnabled(Index: Integer): Boolean;
     function ControlGetHeader(Index: Integer): Boolean;
     function ControlGetState(Index: Integer): TCheckBoxState;
+  end;
+
+  IJvDynControlCheckBox = interface
+    ['{632BF70D-5F9F-4164-8137-4E344A5C41A3}']
+    procedure ControlSetAllowGrayed(Value: Boolean);
+    procedure ControlSetState(Value: TCheckBoxState);
+    function ControlGetState: TCheckBoxState;
   end;
 
 implementation
