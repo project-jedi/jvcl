@@ -31,11 +31,11 @@ unit JvSimpleXML;
 interface
 
 uses
-  SysUtils, Classes, IniFiles,
+  SysUtils, Classes,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  JvComponent;
+  IniFiles;
 
 type
   {$IFNDEF COMPILER6_UP}
@@ -304,7 +304,7 @@ type
 
   TJvSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent);
 
-  TJvSimpleXML = class(TJvComponent)
+  TJvSimpleXML = class(TComponent)
   private
     FIndentString: string;
     procedure SetIndentString(const Value: string);
