@@ -3120,7 +3120,11 @@ initialization
 
 finalization
   PopupPanelAnimate.Free;
-  ApplicationEvents.Free;
+  { (ahuser) Prevent function ApplicationEvents from creating a TApplicationEvents
+             instance that access a already destroyed but not nil'ed AppEvents
+             instance. }
+  if GlobalApplicationEvents <> nil then
+    ApplicationEvents.Free;
 
 end.
 
