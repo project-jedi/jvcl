@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2003-11-13
+Last Modified: 2004-03-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -96,6 +96,7 @@ type
     property AutoSelect;
     property AutoSize default False;
     property BorderStyle;
+    property CalendarAppearance;
     property Caret;
     property CharCase;
     property ClipboardCommands;
@@ -105,6 +106,7 @@ type
     property DataField;
     property DataSource;
     property DateFormat;
+    property DateSeparator;
     property DisabledColor;
     property DisabledTextColor;
     property DragCursor;
@@ -128,6 +130,7 @@ type
     property ReadOnly;
     property ShowHint;
     property ShowCheckBox;
+    property StoreDateFormat;
     property TabOrder;
     property Visible;
     property OnChange;
@@ -136,6 +139,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEnabledChanged;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
