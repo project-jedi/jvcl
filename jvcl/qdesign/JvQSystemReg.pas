@@ -49,9 +49,9 @@ uses
   {$ENDIF MSWINDOWS}
   JvQScreenSaver,
   JvQSystemColors, JvQThread, JvQThreadTimer, JvQChangeNotify,
-  JvQSimpleXml, JvQXMLDatabase, JvQTimer,
-  JvQChangeNotifyEditor,
-  JvQDsgnEditors,
+  JvQSimpleXml, JvQXMLDatabase, JvQTimer, JvQFormPlacement,
+  JvQChangeNotifyEditor, JvQMinMaxForm,
+  JvQFormPropertiesForm, JvQDsgnEditors, JvQFormPlacementSelectList,
   JvQAppXMLStorage;
 
 {$IFDEF MSWINDOWS}
@@ -67,12 +67,18 @@ begin
       {$IFDEF MSWINDOWS}
       TJvJoystick, TJvSoundControl,
       {$ENDIF MSWINDOWS}
-      TJvSystemColors]);
+      TJvChangeNotify, TJvSystemColors]);
   RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase]);
   RegisterComponents(RsPaletteNonVisual, [TJvTimer, TJvThread, TJvThreadTimer]);
-  RegisterComponents(RsPalettePersistence, [TJvAppXMLFileStorage]);
+  RegisterComponents(RsPalettePersistence, [TJvFormStorage, {TJvFormStorageSelectList,}
+      TJvAppXMLFileStorage]);
   RegisterPropertyEditor(TypeInfo(string), TJvChangeItem,
     'Directory', TJvDirectoryProperty);
+  RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
+    'MinMaxInfo', TMinMaxProperty);
+  RegisterPropertyEditor(TypeInfo(TStrings), TJvFormStorage,
+    'StoredProps', TJvStoredPropsProperty);
+  RegisterComponentEditor(TJvFormStorage, TJvFormStorageEditor);
   RegisterComponentEditor(TJvChangeNotify, TJvChangeNotifyEditor);
 end;
 
