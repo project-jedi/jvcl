@@ -54,6 +54,15 @@ const
   DefHintShortPause = DefHintPause div 10;
   DefHintHidePause = DefHintPause * 5;
 
+{$IFDEF VisualCLX}
+type
+  { short names }
+  TUIEffect = ( General, AnimateMenu, FadeMenu, AnimateCombo, AnimateTooltip, FadeTooltip );
+  TUIEffects = set of TUIEffect;
+{$ENDIF VisualCLX}
+
+
+
 type
   TJvAppEvents = class(TJvComponent)
   private
@@ -132,6 +141,12 @@ type
     procedure SetBiDiKeyboard(const Value: string);
     procedure SetNonBiDiKeyboard(const Value: string);
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    function GetEffects: TUIEffects;
+    function GetHintFont: TFont;
+    procedure SetEffects(Value: TUIEffects);
+    procedure SetHintFont(Value: TFont);
+    {$ENDIF VisualCLX}
   protected
     procedure Loaded; override;
     {$IFDEF VCL}
@@ -147,6 +162,9 @@ type
   published
     property Chained: Boolean read FChained write FChained default True;
     property HintColor: TColor read GetHintColor write SetHintColor default DefHintColor;
+    {$IFDEF VisualCLX}
+    property HintFont: TFont read GetHintFont write SetHintFont;
+    {$ENDIF VisualCLX}
     property HintPause: Integer read GetHintPause write SetHintPause default DefHintPause;
     property ShowHint: Boolean read GetShowHint write SetShowHint default True;
     property UpdateFormatSettings: Boolean read GetUpdateFormatSettings
@@ -159,6 +177,9 @@ type
       default True;
     property HintShortCuts: Boolean read GetHintShortCuts write SetHintShortCuts
       default True;
+    {$IFDEF VisualCLX}
+    property Effects: TUIEffects read GetEffects write SetEffects;
+    {$ENDIF VisualCLX}
     {$IFDEF VCL}
     property UpdateMetricSettings: Boolean read GetUpdateMetricSettings
       write SetUpdateMetricSettings default True;
@@ -935,6 +956,29 @@ begin
   if not (csDesigning in ComponentState) then
     Application.ShowMainForm := Value;
 end;
+
+{$IFDEF VisualCLX}
+function TJvAppEvents.GetEffects: TUIEffects;
+begin
+  Result := TUIEffects(Application.Effects);
+end;
+
+procedure TJvAppEvents.SetEffects(Value: TUIEffects);
+begin
+  Application.Effects := TAppEffects(Value);
+end;
+
+function TJvAppEvents.GetHintFont: TFont;
+begin
+  Result := Screen.HintFont;
+end;
+
+procedure TJvAppEvents.SetHintFont(Value: TFont);
+begin
+  Screen.HintFont := Value;
+end;
+{$ENDIF VisualCLX}
+
 
 {$IFDEF VCL}
 
