@@ -16,7 +16,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvTypes, JvConsts, JvJCLUtils, JVCLVer, JvComponent, JvActions, JvActnResForm, JvJVCLAboutForm, JvDsgnEditors, JvIDEZoom,
   JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor, JvContextProvider,
-  JvAppRegistryStore;
+  JvAppRegistryStore, JvAppIniStore;
 
 {$R ..\resources\JvCoreReg.dcr}
 
@@ -28,7 +28,8 @@ begin
   RegisterComponents(SPaletteNonVisual,[
     TJvJVCLAboutComponent,
     TJvContextProvider,
-    TJvAppRegistryStore
+    TJvAppRegistryStore,
+    TJvAppINIFileStore
     ]);
 
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);

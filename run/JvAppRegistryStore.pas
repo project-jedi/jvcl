@@ -1,4 +1,31 @@
-{ Insert famous MPL header here... }
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvAppStore.pas, released on --.
+
+The Initial Developer of the Original Code is Marcel Bestebroer
+Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
+Bestebroer
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-09-05
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
 
 unit JvAppRegistryStore;
 
@@ -15,9 +42,8 @@ type
   protected
     function GetApplicationRoot: string;
     procedure SetApplicationRoot(Value: string);
-    { Split the specified path into an absolute path and a value name (the last item in the path
-      string). Just a helper for all the storage methods. }
-    procedure SplitKeyPath(const Path: string; out Key, ValueName: string);
+    { Create the registry key path if it doesn't exist yet. Any key in the path that doesn't exist
+      is created. }
     procedure CreateKey(Key: string);
   public
     constructor Create(AOwner: TComponent); override;
@@ -46,21 +72,21 @@ uses
   JclRegistry, JclResources, JclStrings;
 
 const
-  HKEY_Names: array[HKEY_CLASSES_ROOT .. HKEY_DYN_DATA] of string = (
-    'HKEY_CLASSES_ROOT',
-    'HKEY_CURRENT_USER',
-    'HKEY_LOCAL_MACHINE',
-    'HKEY_USERS',
-    'HKEY_PERFORMANCE_DATA',
-    'HKEY_CURRENT_CONFIG',
-    'HKEY_DYN_DATA'
+  HKEY_Names: array[HKEY_CLASSES_ROOT .. HKEY_DYN_DATA, 0 .. 1] of string = (
+    ('HKEY_CLASSES_ROOT', 'HKCR'),
+    ('HKEY_CURRENT_USER', 'HKCU'),
+    ('HKEY_LOCAL_MACHINE', 'HKLM'),
+    ('HKEY_USERS', 'HKU'),
+    ('HKEY_PERFORMANCE_DATA', 'HKPD'),
+    ('HKEY_CURRENT_CONFIG', 'HKCC'),
+    ('HKEY_DYN_DATA', 'HKDD')
   );
 
 //===TJvAppRegistryStore============================================================================
 
 function TJvAppRegistryStore.GetApplicationRoot: string;
 begin
-  Result := HKEY_Names[FRegHKEY];
+  Result := HKEY_Names[FRegHKEY, 0];
   if GetAppRoot <> '' then
     Result := Result + '\' + GetAppRoot;
 end;
@@ -76,33 +102,21 @@ begin
     if SL.Count > 0 then
     begin
       I := HKEY_DYN_DATA;
-      while (I >= HKEY_CLASSES_ROOT) and not AnsiSameText(HKEY_Names[I], SL[0]) do
+      while (I >= HKEY_CLASSES_ROOT) and not AnsiSameText(HKEY_Names[I, 0], SL[0]) and
+          not AnsiSameText(HKEY_Names[I, 1], SL[0]) do
         Dec(I);
       if I >= HKEY_CLASSES_ROOT then
       begin
         FRegHKEY := I;
         SL.Delete(0);
-        SetAppRoot(StringsToStr(SL, '\', False));
-      end
-      else
-        raise Exception.CreateFmt('''%s'' is not a valid registry location', [SL[0]]);
+      end;
+      SetAppRoot(StringsToStr(SL, '\', False));
     end
     else
-      raise Exception.Create('You need to specify a location.');
+      SetAppRoot('');
   finally
     SL.Free;
   end;
-end;
-
-procedure TJvAppRegistryStore.SplitKeyPath(const Path: string; out Key, ValueName: string);
-var
-  AbsPath: string;
-  IValueName: Integer;
-begin
-  AbsPath := GetAbsPath(Path);
-  IValueName := LastDelimiter('\', AbsPath);
-  Key := StrLeft(AbsPath, IValueName - 1);
-  ValueName := StrRestOf(AbsPath, IValueName + 1);
 end;
 
 procedure TJvAppRegistryStore.CreateKey(Key: string);
@@ -136,23 +150,6 @@ begin
     end
     else
       raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyRead, [SubKey]);
-    if not Result then
-    begin
-      SubKey := SubKey + '\' + ValueName;
-      ValueName := 'Count';
-      Result := RegKeyExists(FRegHKEY, SubKey);
-      if Result then
-      begin
-        if RegOpenKey(FRegHKEY, PChar(SubKey), TmpKey) = ERROR_SUCCESS then
-        try
-          Result := RegQueryValueEx(TmpKey, PChar(ValueName), nil, nil, nil, nil) = ERROR_SUCCESS;
-        finally
-          RegCloseKey(TmpKey);
-        end
-        else
-          raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyRead, [SubKey]);
-      end;
-    end;
   end;
 end;
 
