@@ -373,7 +373,7 @@ begin
   DisabledBitmap(Bmp);
 end;
 
-{ TJvTransparentButtonActionLink }
+//=== { TJvTransparentButtonActionLink } =====================================
 
 procedure TJvTransparentButtonActionLink.AssignClient(AClient: TObject);
 begin
@@ -389,11 +389,12 @@ begin
   if FClient is TJvTransparentButton2 then
     Result := inherited IsCheckedLinked and (TJvTransparentButton2(FClient).Down = (Action as TCustomAction).Checked)
   else
-    Result := false;
+    Result := False;
 end;
 
 {$IFDEF VCL}
 {$IFDEF COMPILER6_UP}
+
 function TJvTransparentButtonActionLink.IsGroupIndexLinked: Boolean;
 begin
   Result := False;
@@ -403,6 +404,7 @@ procedure TJvTransparentButtonActionLink.SetGroupIndex(Value: Integer);
 begin
   //
 end;
+
 {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
 
@@ -419,21 +421,6 @@ begin
 end;
 
 //=== { TJvTransparentButton } ===============================================
-
-procedure TJvTransparentButton.CalcGlyphCount;
-var GlyphNum:Integer;
-begin
-  if (Glyph <> nil) and (Glyph.Height > 0) then
-  begin
-    if Glyph.Width mod Glyph.Height = 0 then
-    begin
-      GlyphNum := Glyph.Width div Glyph.Height;
-      if GlyphNum > 4 then
-        GlyphNum := 1;
-      SetNumGlyphs(GlyphNum);
-    end;
-  end;
-end;
 
 constructor TJvTransparentButton.Create(AOwner: TComponent);
 begin
@@ -467,6 +454,22 @@ begin
   FDisabledGlyph.Free;
 //  FImList.Free;
   inherited Destroy;
+end;
+
+procedure TJvTransparentButton.CalcGlyphCount;
+var
+  GlyphNum: Integer;
+begin
+  if (Glyph <> nil) and (Glyph.Height > 0) then
+  begin
+    if Glyph.Width mod Glyph.Height = 0 then
+    begin
+      GlyphNum := Glyph.Width div Glyph.Height;
+      if GlyphNum > 4 then
+        GlyphNum := 1;
+      SetNumGlyphs(GlyphNum);
+    end;
+  end;
 end;
 
 procedure TJvTransparentButton.AddGlyphs(aGlyph: TBitmap; AColor: TColor; Value: Integer);
@@ -846,7 +849,6 @@ begin
     DrawText(Canvas, Caption, -1, TmpRect, Flags);
   end;
   {$ENDIF VisualCLX}
-
 end;
 
 procedure TJvTransparentButton.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);
@@ -876,7 +878,7 @@ begin
           Index := 2;
     else
       Index := 0;
-    end; { case }
+    end;
 
     if FGlyph.Empty then
       Exit;
@@ -915,20 +917,21 @@ begin
   AddGlyphs(Glyph, Glyph.TransparentColor, NumGlyphs);
 end;
 
-procedure TJvTransparentButton.ActionChange(Sender: TObject;
-  CheckDefaults: Boolean);
+procedure TJvTransparentButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+
   procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
   begin
     with Glyph do
     begin
       Width := ImageList.Width;
       Height := ImageList.Height;
-      Self.Canvas.Brush.Color := clFuchsia;//! for lack of a better color
+      Self.Canvas.Brush.Color := clFuchsia; //! for lack of a better color
       Self.Canvas.FillRect(Rect(0,0, Width, Height));
       ImageList.Draw(Self.Canvas, 0, 0, Index);
     end;
     GlyphChanged(Glyph);
   end;
+
 begin
   inherited ActionChange(Sender, CheckDefaults);
   if Sender is TCustomAction then
@@ -941,7 +944,6 @@ begin
         (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
         CopyImage(ActionList.Images, ImageIndex);
     end;
-
 end;
 
 function TJvTransparentButton.GetActionLinkClass: TControlActionLinkClass;
@@ -1382,7 +1384,7 @@ begin
           Frame3D(Canvas, TmpRect, clBtnHighlight, cl3DDkShadow, 1);
       end;
     end;
-    //
+
     if (HotTrackFont <> Font) and (Caption <> '') then
     begin
       InflateRect(TmpRect, 1, 1);
@@ -1543,7 +1545,7 @@ begin
     if not Enabled then
       Index := 1
     else
-    if (bsMouseDown in MouseStates) then
+    if bsMouseDown in MouseStates then
       Index := 2
     else
     if (FrameStyle = fsExplorer) and FAutoGray and (MouseStates = []) then
@@ -1606,7 +1608,6 @@ function TJvTransparentButton2.GetActionLinkClass: TControlActionLinkClass;
 begin
   Result := TJvTransparentButtonActionLink;
 end;
-
 
 end.
 

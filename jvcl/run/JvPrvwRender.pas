@@ -325,7 +325,7 @@ begin
   OffsetRect(Result, DstRect.Left, DstRect.Top);
 end;
 
-{ TJvCustomPreviewRenderer }
+//=== { TJvCustomPreviewRenderer } ===========================================
 
 function TJvCustomPreviewRenderer.CreatePreview(Append: Boolean): Boolean;
 begin
@@ -373,7 +373,7 @@ begin
   end;
 end;
 
-{ TJvPreviewRenderRichEdit }
+//=== { TJvPreviewRenderRichEdit } ===========================================
 
 function TJvPreviewRenderRichEdit.CreatePreview(Append: Boolean): Boolean;
 begin
@@ -457,7 +457,7 @@ begin
   end;
 end;
 
-{ TJvPreviewRenderJvRichEdit }
+//=== { TJvPreviewRenderJvRichEdit } =========================================
 
 function TJvPreviewRenderJvRichEdit.CreatePreview(Append: Boolean): Boolean;
 begin
@@ -552,7 +552,7 @@ begin
   end;
 end;
 
-{ TJvPreviewRenderStrings }
+//=== { TJvPreviewRenderStrings } ============================================
 
 constructor TJvPreviewRenderStrings.Create(AOwner: TComponent);
 begin
@@ -637,7 +637,7 @@ begin
   FStrings.Assign(Value);
 end;
 
-{ TJvPreviewRenderControl }
+//=== { TJvPreviewRenderControl } ============================================
 
 function TJvPreviewRenderControl.CreatePreview(Append: Boolean): Boolean;
 begin
@@ -739,7 +739,7 @@ begin
   FCenter := True;
 end;
 
-{ TJvPreviewGraphicItems }
+//=== { TJvPreviewGraphicItems } =============================================
 
 function TJvPreviewGraphicItems.Add: TJvPreviewGraphicItem;
 begin
@@ -763,7 +763,7 @@ begin
   inherited Items[Index] := Value;
 end;
 
-{ TJvPreviewGraphicItem }
+//=== { TJvPreviewGraphicItem } ==============================================
 
 constructor TJvPreviewGraphicItem.Create(Collection: TCollection);
 begin
@@ -804,7 +804,7 @@ begin
   end;
 end;
 
-{ TJvPreviewRenderGraphics }
+//=== { TJvPreviewRenderGraphics } ===========================================
 
 constructor TJvPreviewRenderGraphics.Create(AOwner: TComponent);
 begin
@@ -869,7 +869,7 @@ begin
   FImages.Assign(Value);
 end;
 
-{ TJvPreviewPrinter }
+//=== { TJvPreviewPrinter } ==================================================
 
 procedure TJvPreviewPrinter.Abort;
 begin

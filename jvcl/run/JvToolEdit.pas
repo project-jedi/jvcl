@@ -977,7 +977,7 @@ uses
   Math, Consts,
   {$IFDEF MSWINDOWS}
   ShellAPI,
-  {$ENDIF WINDOWS}
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   JvBrowseFolder, ActiveX,
   {$ENDIF VCL}
