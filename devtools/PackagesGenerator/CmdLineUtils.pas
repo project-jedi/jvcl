@@ -17,8 +17,8 @@ begin
   WriteLn(#9'-d'#9#9'Generates the DOFs files where applicable');
   WriteLn(#9'-p=PATH'#9#9'the path to packages');
   WriteLn(#9'-t=TARGETS'#9'comma separated list of targets');
-  WriteLn(#9'-r=PREFIX'#9'Prefix to use for package name generation');
-  WriteLn(#9'-f=FORMAT'#9'Format of generated package name');
+  WriteLn(#9'-r=PREFIX'#9'Prefix to use for package name generation (Jv)');
+  WriteLn(#9'-f=FORMAT'#9'Format of generated package name (%p%n%e%v%t)');
 end;
 
 procedure Error(Msg : string);
