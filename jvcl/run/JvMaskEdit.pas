@@ -71,6 +71,8 @@ type
     procedure SetText(const Value: string);
     (* -- RDB -- *)
   protected
+
+
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -421,9 +423,9 @@ var
   R: TRect;
   ButtonWidth: Integer;
 begin
-  if Enabled then
-    inherited
-  else
+  if Enabled then begin
+    inherited;
+  end else
   begin
     Style := GetWindowLong(Handle, GWL_STYLE);
     if (Style and ES_RIGHT) <> 0 then
@@ -473,6 +475,7 @@ begin
     end;
   end;
 end;
+
 
 procedure TJvCustomMaskEdit.WMSetFocus(var Msg: TMessage);
 begin
