@@ -56,16 +56,16 @@ type
     Label2: TLabel;
     ComboBox1: TComboBox;
     RichEdit1: TRichEdit;
+    Button4: TButton;
+    OpenDialog1: TOpenDialog;
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ComboBox1Change(Sender: TObject);
-  private
-    { Private declarations }
+    procedure Button4Click(Sender: TObject);
   public
-    { Public declarations }
   end;
 
 var
@@ -77,11 +77,11 @@ implementation
 
 procedure TCsvDataSourceForm.Button2Click(Sender: TObject);
 begin
- // OutputDebugString(PChar(JvCsvDataSet1.GetCsvHeader)); // neat trick. reads first line of file only.
+  // OutputDebugString(PChar(JvCsvDataSet1.GetCsvHeader)); // neat trick. reads first line of file only.
 
-          JvCsvDataSet1.Flush; // flush current contents to disk. okay, maybe it should be called save,
-                             // then you wouldn't see jokes in the code about how this component has
-                             // been tested, and shown to last for over two thousand flushes. <grin>
+  JvCsvDataSet1.Flush; // flush current contents to disk. okay, maybe it should be called save,
+                       // then you wouldn't see jokes in the code about how this component has
+                       // been tested, and shown to last for over two thousand flushes. <grin>
 end;
 
 procedure TCsvDataSourceForm.Button1Click(Sender: TObject);
@@ -92,31 +92,36 @@ end;
 
 procedure TCsvDataSourceForm.Button3Click(Sender: TObject);
 begin
-   JvCsvDataSet1.Active := false;
+   JvCsvDataSet1.Active := False;
    JvCsvDataSet1.AssignFromStrings(Memo1.Lines);
-   JvCsvDataSet1.Active := true;
-
+   JvCsvDataSet1.Active := True;
 end;
 
 procedure TCsvDataSourceForm.FormCreate(Sender: TObject);
 begin
-   JvCsvDataSet1.Active := true; // ensure it's opened when the app is started.
+   JvCsvDataSet1.Active := True; // ensure it's opened when the app is started.
 
    // second component tests what happens if you don't set up the CsvDef field
 
-//  JvCsvDataSet2.Active := true; // ensure it's opened when the app is started.
+//  JvCsvDataSet2.Active := True; // ensure it's opened when the app is started.
 end;
 
 procedure TCsvDataSourceForm.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-    if DataSource1.State = dsEdit then
-         JvCsvDataSet1.Post;
+  if DataSource1.State = dsEdit then
+    JvCsvDataSet1.Post;
 end;
 
 procedure TCsvDataSourceForm.ComboBox1Change(Sender: TObject);
 begin
-   JvCsvDataSet1LASTPHONECALL.DisplayFormat :=  StrStrip(ComboBox1.Text);
+   JvCsvDataSet1LASTPHONECALL.DisplayFormat := StrStrip(ComboBox1.Text);
+end;
+
+procedure TCsvDataSourceForm.Button4Click(Sender: TObject);
+begin
+  if OpenDialog1.Execute then
+    Memo1.Lines.LoadFromFile(OpenDialog1.FileName);
 end;
 
 end.

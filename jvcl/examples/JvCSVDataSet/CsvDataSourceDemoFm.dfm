@@ -5,6 +5,8 @@ object CsvDataSourceForm: TCsvDataSourceForm
   Height = 638
   Caption = 'Comma Separated Variable File (TJvCsvDataSet) Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 480
+  Constraints.MinWidth = 800
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -16,14 +18,14 @@ object CsvDataSourceForm: TCsvDataSourceForm
   PixelsPerInch = 96
   TextHeight = 13
   object Label2: TLabel
-    Left = 336
-    Top = 144
+    Left = 344
+    Top = 140
     Width = 299
     Height = 13
     Caption = 'Date Display Format in Grid (does not affect saved CSV format):'
   end
   object DBNavigator1: TDBNavigator
-    Left = 24
+    Left = 8
     Top = 136
     Width = 240
     Height = 25
@@ -31,13 +33,13 @@ object CsvDataSourceForm: TCsvDataSourceForm
     TabOrder = 0
   end
   object DBGrid1: TDBGrid
-    Left = 24
+    Left = 8
     Top = 160
-    Width = 754
+    Width = 785
     Height = 223
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DataSource1
-    TabOrder = 1
+    TabOrder = 2
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
@@ -91,17 +93,17 @@ object CsvDataSourceForm: TCsvDataSourceForm
     Height = 25
     Anchors = [akLeft, akBottom]
     Caption = 'JvCsvDataSet1.AssignToStrings(Memo1.Lines)'
-    TabOrder = 2
+    TabOrder = 3
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 560
+    Left = 553
     Top = 398
     Width = 173
     Height = 25
     Anchors = [akLeft, akBottom]
     Caption = 'Save Now. (aka Flush)'
-    TabOrder = 3
+    TabOrder = 5
     OnClick = Button2Click
   end
   object Memo1: TMemo
@@ -119,7 +121,7 @@ object CsvDataSourceForm: TCsvDataSourceForm
       '<Click the VIEW button to view the results as a CSV ascii file.>')
     ParentFont = False
     ScrollBars = ssBoth
-    TabOrder = 4
+    TabOrder = 7
   end
   object Button3: TButton
     Left = 280
@@ -128,16 +130,16 @@ object CsvDataSourceForm: TCsvDataSourceForm
     Height = 25
     Anchors = [akLeft, akBottom]
     Caption = 'JvCsvDataSet1.AssignFromStrings(Memo1.Lines)'
-    TabOrder = 5
+    TabOrder = 4
     OnClick = Button3Click
   end
   object ComboBox1: TComboBox
-    Left = 640
+    Left = 648
     Top = 136
     Width = 145
     Height = 21
     ItemHeight = 13
-    TabOrder = 6
+    TabOrder = 1
     OnChange = ComboBox1Change
     Items.Strings = (
       'yyyy-mm-dd hh:nn:ss'
@@ -152,6 +154,7 @@ object CsvDataSourceForm: TCsvDataSourceForm
     Top = 0
     Width = 802
     Height = 113
+    TabStop = False
     Align = alTop
     BorderStyle = bsNone
     Color = clBtnFace
@@ -182,25 +185,68 @@ object CsvDataSourceForm: TCsvDataSourceForm
         'sgroups. ***')
     ParentFont = False
     ReadOnly = True
-    TabOrder = 7
+    TabOrder = 8
+  end
+  object Button4: TButton
+    Left = 734
+    Top = 398
+    Width = 59
+    Height = 25
+    Caption = 'Load...'
+    TabOrder = 6
+    OnClick = Button4Click
   end
   object DataSource1: TDataSource
     DataSet = JvCsvDataSet1
-    Left = 52
+    Left = 56
     Top = 216
   end
   object JvCsvDataSet1: TJvCsvDataSet
+    FieldDefs = <
+      item
+        Name = 'NAME'
+        DataType = ftString
+        Size = 80
+      end
+      item
+        Name = 'ADDRESS'
+        DataType = ftString
+        Size = 80
+      end
+      item
+        Name = 'ADDRESS2'
+        DataType = ftString
+        Size = 80
+      end
+      item
+        Name = 'TELEPHONE'
+        DataType = ftString
+        Size = 80
+      end
+      item
+        Name = 'AGE'
+        DataType = ftInteger
+      end
+      item
+        Name = 'LASTPHONECALL'
+        DataType = ftDateTime
+      end
+      item
+        Name = 'PRIVATENUMBER'
+        DataType = ftBoolean
+      end>
     FileName = 'PhoneList.csv'
     Changed = False
     CsvFieldDef = 
       'NAME,ADDRESS,ADDRESS2,TELEPHONE,AGE:%,LASTPHONECALL:@,PRIVATENUM' +
       'BER:!'
     CsvUniqueKeys = False
+    ExtendedHeaderInfo = False
     CaseInsensitive = False
     AutoBackupCount = 0
     StoreDefs = True
-    Left = 124
-    Top = 196
+    Left = 128
+    Top = 216
     object JvCsvDataSet1NAME: TStringField
       FieldName = 'NAME'
       Size = 80
@@ -226,5 +272,11 @@ object CsvDataSourceForm: TCsvDataSourceForm
     object JvCsvDataSet1PRIVATENUMBER: TBooleanField
       FieldName = 'PRIVATENUMBER'
     end
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = 'csv'
+    Filter = 'CSV files (*.csv)|*.csv|all files (*.*)|*.*'
+    Left = 200
+    Top = 216
   end
 end

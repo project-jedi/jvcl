@@ -255,7 +255,7 @@ end;
 procedure TJvContentScroller.DoBeforeScroll;
 begin
   if Assigned(FOnBeforeScroll) then
-    FOnBeforeScroll(self);
+    FOnBeforeScroll(Self);
 end;
 
 procedure TJvContentScroller.ScrollContent(Amount: TJvScrollAmount);

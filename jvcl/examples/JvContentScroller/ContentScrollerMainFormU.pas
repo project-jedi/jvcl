@@ -35,11 +35,12 @@ uses
 
 type
   TContentScrollerMainForm = class(TForm)
-    ContentScroller1: TJvContentScroller;
+    JvContentScroller1: TJvContentScroller;
     Label1: TLabel;
     Image11: TImage;
     chkGoDown: TCheckBox;
     Button1: TButton;
+    procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   end;
 
@@ -50,13 +51,21 @@ implementation
 
 {$R *.dfm}
 
+procedure TContentScrollerMainForm.FormCreate(Sender: TObject);
+var
+  Buffer: array [0..255] of Char;
+begin
+  GetWindowsDirectory(Buffer, SizeOf(Buffer));
+  JvContentScroller1.MediaFile := Buffer + '\Media\Tada.wav';
+end;
+
 procedure TContentScrollerMainForm.Button1Click(Sender: TObject);
 begin
   if chkGoDown.Checked then
-    ContentScroller1.ScrollDirection := sdDown
+    JvContentScroller1.ScrollDirection := sdDown
   else
-    ContentScroller1.ScrollDirection := sdUp;
-  ContentScroller1.Active := not ContentScroller1.Active;
+    JvContentScroller1.ScrollDirection := sdUp;
+  JvContentScroller1.Active := not JvContentScroller1.Active;
 end;
 
 end.
