@@ -11,6 +11,10 @@
     <Package Name="vcl" Targets="all" Condition=""/>
     <Package Name="designide" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
   </Requires>
-  <Contains/>
+  <Contains>
+    <File Name="..\..\design\JvXPCtrlsReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvXPPropertyEditors.pas" Targets="all" Formname="" Condition=""/>
+  </Contains>
 </Package>
