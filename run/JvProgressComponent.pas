@@ -133,12 +133,7 @@ begin
     begin
       ClientWidth := 307;
       ClientHeight := 98;
-      {$IFDEF VCL}
-      BorderStyle := bsDialog;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
       BorderStyle := fbsDialog;
-      {$ENDIF VisualCLX}
       Position := poMainFormCenter;
       FormStyle := fsStayOnTop;
       Scaled := False;

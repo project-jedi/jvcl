@@ -567,12 +567,11 @@ var
 begin
   inherited CreateNew(AOwner, 0); // for BCB
   BorderIcons := [biSystemMenu];
+  BorderStyle := fbsDialog;
   {$IFDEF VCL}
-  BorderStyle := bsDialog;
   PixelsPerInch := 96;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  BorderStyle := fbsDialog;
   Scaled := False;
   {$ENDIF VisualCLX}
   Caption := RsCalculatorCaption;

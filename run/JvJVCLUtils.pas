@@ -2471,12 +2471,7 @@ begin
   TCustomControlAccessProtected(AForm).DestroyHandle;
   with AForm do
   begin
-    {$IFDEF VCL}
-    BorderStyle := bsNone;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     BorderStyle := fbsNone;
-    {$ENDIF VisualCLX}
     BorderIcons := [];
     Parent := AControl;
   end;
@@ -4413,12 +4408,7 @@ begin
         StorePath + '\' + siPixels, Screen.PixelsPerInch));
       if DataFound then
       begin
-        {$IFDEF VCL}
-        if not (BorderStyle in [bsSizeable, bsSizeToolWin]) then
-        {$ENDIF VCL}
-          {$IFDEF VisualCLX}
-          if not (BorderStyle in [fbsSizeable, fbsSizeToolWin]) then
-          {$ENDIF VisualCLX}
+        if not (BorderStyle in [fbsSizeable, fbsSizeToolWin]) then
             rcNormalPosition := Rect(rcNormalPosition.Left,
               rcNormalPosition.Top, rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
         if rcNormalPosition.Right > rcNormalPosition.Left then

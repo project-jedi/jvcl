@@ -107,12 +107,7 @@ begin
   FButtonSize := cButtonWidth;
   FSelectedColor := clBlack;
   BorderIcons := [];
-  {$IFDEF VCL}
-  BorderStyle := bsDialog;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
   BorderStyle := fbsDialog;
-  {$ENDIF VisualCLX}
   // (rom) this is not a standard Windows font
 //  Font.Name := 'MS Shell Dlg 2';
   FormStyle := fsStayOnTop;

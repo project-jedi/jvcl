@@ -33,7 +33,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JvTypes, JvDynControlEngine, JvDynControlEngineIntf, JvDSADialogs,
+  JvConsts, JvTypes, JvDynControlEngine, JvDynControlEngineIntf, JvDSADialogs,
   JvComponent, JvPanel, JvPropertyStore, JvAppStorage, JvAppStorageSelectList;
 
 type
@@ -1252,11 +1252,8 @@ begin
     BorderIcons := [];
     {$IFDEF VCL}
     DefaultMonitor := dmActiveForm;
-    BorderStyle := bsDialog;
     {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     BorderStyle := fbsDialog;
-    {$ENDIF VisualCLX}
     FormStyle := fsNormal;
     Position := poScreenCenter;
     OnShow := DialogShow;
