@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL3\n"
 "POT-Creation-Date: 2004-12-18 18:02\n"
-"PO-Revision-Date: 2004-12-18 17:50+0100\n"
+"PO-Revision-Date: 2004-12-18 20:53+0100\n"
 "Last-Translator: Olivier Sannier <obones@meloo.com>\n"
 "Language-Team: jvcl team <jvcl@sf.net>\n"
 "MIME-Version: 1.0\n"
@@ -101,16 +101,8 @@ msgid "An error occured while compiling the packages."
 msgstr "Une erreur est survenue lors de la compilation des paquets."
 
 #. Programmer's name for it: RsCommandNotFound
-#: Compile.pas:175
-msgid ""
-"Command could not be executed.\n"
-"\n"
-"\n"
-"Cmdline: %s\n"
-msgid_plural "Start directory: %s"
-msgstr[0] ""
-
 #. FrameConfigPage..LblBCBGuide....Cursor
+#: Compile.pas:175
 #: Frames/FrmConfigPage.dfm:15
 msgid "Open the default web browser to show the C++Builder Installation Guide."
 msgstr "Ouvre le navigateur par défaut pour voir le Guide D'installation de C++Builder"
@@ -548,7 +540,8 @@ msgstr "Réinitialiser la sélection de paquets à l'EDI standard."
 
 #. FormCompile..Caption
 #. Programmer's name for it: RsCompiling
-#: FrmCompile.dfm:6 FrmCompile.pas:127
+#: FrmCompile.dfm:6
+#: FrmCompile.pas:127
 msgid "Compiling"
 msgstr "Compilation"
 
@@ -598,7 +591,8 @@ msgstr "Projet :"
 
 #. FormCompile..PanelClient..LblStatus..Caption
 #. Programmer's name for it: RsThereAreErrors
-#: FrmCompile.dfm:178 FrmCompile.pas:130
+#: FrmCompile.dfm:178
+#: FrmCompile.pas:130
 msgid "There are errors."
 msgstr "Il y a des erreurs."
 
@@ -611,7 +605,7 @@ msgstr "OK"
 #. Programmer's name for it: RsPreparing
 #: FrmCompile.pas:126
 msgid "Preparing..."
-msgstr "Preparation..."
+msgstr "Préparation..."
 
 #. Programmer's name for it: RsLinking
 #: FrmCompile.pas:128
@@ -649,7 +643,7 @@ msgstr "Messages du compilateur"
 #. FormCompileMessages..PanelTop..LabelHelp....Height
 #: FrmCompileMessages.dfm:52
 msgid "Many error messages appear because the JCL version and the JVCL version are not compatible. Please keep in mind that you need the correct JCL version."
-msgstr "De nombreux messages d'erreurs sont dûs à des versions de JVCL et JCL non compatibles. Penseé à toujours avoir la bonne version de la JCL."
+msgstr "De nombreux messages d'erreurs sont dûs à des versions de JVCL et JCL non compatibles. Pensez à toujours avoir la bonne version de la JCL."
 
 #. FormCompileMessages..PopupMenu..Open1..Caption
 #: FrmCompileMessages.dfm:59
@@ -663,7 +657,8 @@ msgstr "Ouvrir dans &Notepad"
 
 #. FormMain..JvWizard..ButtonHelp.Caption
 #. Programmer's name for it: STR_HELPBTN
-#: Helpers/AHCompBrowseFolderDlg.pas:119 Main.dfm:49
+#: Helpers/AHCompBrowseFolderDlg.pas:119
+#: Main.dfm:49
 msgid "&Help"
 msgstr "&Aide"
 
@@ -727,7 +722,8 @@ msgstr ""
 
 #. FormMain..Caption
 #. Programmer's name for it: RsInstallerName
-#: InstallerConsts.pas:50 Main.dfm:6
+#: InstallerConsts.pas:50
+#: Main.dfm:6
 msgid "JVCL 3  Installation"
 msgstr "Installation de JVCL 3"
 
@@ -807,7 +803,8 @@ msgstr "Un erreur est survenue."
 
 #. Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
-#: InstallerConsts.pas:85 JVCLData.pas:297
+#: InstallerConsts.pas:85
+#: JVCLData.pas:297
 msgid "Complete."
 msgstr "Terminé."
 
@@ -1223,3 +1220,4 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 #: Main.dfm:64
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Site Web Jedi Visual Component Library"
+
