@@ -77,7 +77,6 @@ type
     property CurrentSize: Integer read FCurrentSize;
     property TableSize: Integer read FTableSize write SetTableSize;
   end;
-
 implementation
 
 uses
@@ -187,6 +186,7 @@ begin
   Result := -1;
   Index := HashProc(Name);
   Assert((Index >= 0) and (Index < FTableSize), RsDockTableIndexError);
+  ParentNode := nil;
   if FEntryList[Index] = nil then
     FEntryList[Index] := CreateKeyNode(Name, Data, Index)
   else
