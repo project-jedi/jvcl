@@ -815,64 +815,7 @@ end;
 
 procedure TJvCustomWideEditor.GetLineAttr(var Str: WideString; Line, ColBeg, ColEnd: Integer);
 var
-  I, TmpI: Integer;
-  S: WideString;
-  LineStyle: TJvLineSelectStyle;
-
-  procedure ChangeSelectedAttr(LineStyle: TJvLineSelectStyle);
-
-    procedure DoChange(const iBeg, iEnd: Integer);
-    var
-      I: Integer;
-      Color: TColor;
-    begin
-      if LineStyle = lssUnselected then          
-      begin
-        for I := iBeg to iEnd do
-        begin
-          LineAttrs[I+1].FC := SelForeColor;
-          LineAttrs[I+1].BC := SelBackColor;
-          LineAttrs[I+1].Border := clNone;
-        end;
-      end
-      else
-      begin
-       // exchange fore and background color
-        for I := iBeg to iEnd do
-        begin
-          Color := LineAttrs[I+1].FC;
-          LineAttrs[I+1].FC := LineAttrs[I+1].BC;
-          LineAttrs[I+1].BC := Color;
-          LineAttrs[I+1].Border := clNone;
-        end;
-      end;
-    end;
-
-  begin
-    with FSelection do
-    begin
-      if SelBlockFormat = bfColumn then
-      begin
-        if (Line >= SelBegY) and (Line <= SelEndY) then
-          DoChange(SelBegX, SelEndX - 1 + Ord(True)); {always Inclusive}
-      end
-      else
-      begin
-        if (Line = SelBegY) and (Line = SelEndY) then
-          DoChange(SelBegX, SelEndX - 1 + Ord(SelBlockFormat = bfInclusive))
-        else
-        begin
-          if Line = SelBegY then
-            DoChange(SelBegX, LeftCol + SelBegX + VisibleColCount);
-          if (Line > SelBegY) and (Line < SelEndY) then
-            DoChange(ColBeg, ColEnd);
-          if Line = SelEndY then
-            DoChange(ColBeg, SelEndX - 1 + Ord(SelBlockFormat = bfInclusive));
-        end;
-      end;
-    end;
-  end;
-
+  I: Integer;
 begin
   if ColBeg < 0 then
     ColBeg := 0;
@@ -883,50 +826,15 @@ begin
   LineAttrs[ColBeg].BC := Color;
   LineAttrs[ColBeg].Border := clNone;
 
+{  for I := ColBeg + 1 to ColEnd do
+    Move(LineAttrs[ColBeg], LineAttrs[I], SizeOf(LineAttrs[1]));}
   for I := ColBeg + 1 to ColEnd do
-    Move(LineAttrs[ColBeg], LineAttrs[I], SizeOf(LineAttrs[1]));
-  S := FLines[Line];
+    LineAttrs[I] := LineAttrs[ColBeg];
+
   GetAttr(Line, ColBeg, ColEnd);
-
- // line style
-  LineStyle := LineInformations.SelectStyle[Line];
-  case LineStyle of
-    lssBreakpoint:
-      begin
-        LineAttrs[ColBeg].FC := LineInformations.BreakpointTextColor;
-        LineAttrs[ColBeg].BC := LineInformations.BreakpointColor;
-      end;
-    lssDebugPoint:
-      begin
-        LineAttrs[ColBeg].FC := LineInformations.DebugPointTextColor;
-        LineAttrs[ColBeg].BC := LineInformations.DebugPointColor;
-      end;
-    lssErrorPoint:
-      begin
-        LineAttrs[ColBeg].FC := LineInformations.ErrorPointTextColor;
-        LineAttrs[ColBeg].BC := LineInformations.ErrorPointColor;
-      end;
-  end;
-  if LineStyle <> lssUnselected then
-  begin
-    TmpI := ColEnd;
-    if TmpI < Max_X then
-      Inc(TmpI);
-    for I := ColBeg + 1 to TmpI do
-    begin
-      LineAttrs[I].FC := LineAttrs[ColBeg].FC;
-      LineAttrs[I].BC := LineAttrs[ColBeg].BC;
-      LineAttrs[I].Border := LineAttrs[ColBeg].Border;
-    end;
-  end;
-
-  GetBracketHighlightAttr(Line, LineAttrs);
-  
-  if Assigned(FOnGetLineAttr) then
-    FOnGetLineAttr(Self, S, Line, LineAttrs);
-  if FSelection.IsSelected then
-    ChangeSelectedAttr(LineStyle); { we change the attributes of the chosen block [translated] }
   ChangeAttr(Line, ColBeg, ColEnd);
+  if Assigned(FOnGetLineAttr) then
+    FOnGetLineAttr(Self, Str, Line, LineAttrs);
 end;
 
 function TJvCustomWideEditor.GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean; 
