@@ -59,7 +59,12 @@ type
 
 implementation
 
-{$R *.dfm}
+{$IFDEF VCL}
+ {$R *.dfm}
+{$ENDIF}
+{$IFDEF VisualCLX}
+ {$R *.xfm}
+{$ENDIF}
 
 procedure TYearGridEditForm.BtnLoadClick(Sender: TObject);
 begin
