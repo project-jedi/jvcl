@@ -40,7 +40,7 @@ unit QWindows;
 interface
 
 uses
-  Types, StrUtils, SysUtils, Classes, Math,
+  Types, StrUtils, SysUtils, Classes, Math, SyncObjs,
   QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QButtons;
 
 const
@@ -167,6 +167,8 @@ const
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
 
+  INFINITE = LongWord($FFFFFFFF); // Infinite timeout
+  
 type
   HWND = QWidgetH;
   HCURSOR = QCursorH;
@@ -187,6 +189,14 @@ type
   end;
   TTime = TDateTime;
   TDate = TDateTime;
+
+  PMessage = ^TMessage;
+  TMessage = packed record
+    Msg: Integer;
+    WParam: Integer;
+    LParam: Integer;
+    Result: Integer;
+  end;
 
 {
   2 dummies for ... VCL
@@ -498,6 +508,7 @@ function DeleteObject(Handle: QPainterH): LongBool; overload;
 function DeleteObject(Handle: QPixmapH): LongBool; overload;
 function GetDC(Handle: QWidgetH): QPainterH; overload;
 function GetDC(Handle: Integer): QPainterH; overload;
+function GetWindowDC(Handle: QWidgetH): QPainterH;
 
 function ReleaseDC(wdgtH: QWidgetH; Handle: QPainterH): Integer; overload;
 function ReleaseDC(wdgtH: Integer; Handle: QPainterH): Integer; overload;
@@ -637,6 +648,7 @@ type
   TSysMetrics = (
     SM_CXSCREEN,  SM_CYSCREEN,
     SM_CXVSCROLL, SM_CYVSCROLL,
+    SM_CXHSCROLL, SM_CYHSCROLL,
     SM_CXSMICON,  SM_CYSMICON,
     SM_CXICON,    SM_CYICON,
     SM_CXBORDER,  SM_CYBORDER,
@@ -717,7 +729,8 @@ function WindowFromPoint(Point: TPoint): QWidgetH;
 function GetClassName(Handle: QWidgetH; Buffer: PChar; MaxCount: Integer): Integer;
 
 function HWND_DESKTOP: QWidgetH;
-function InvalidateRect(Handle: QWidgetH; R: PRect; erasebackground: Boolean): LongBool;
+function InvalidateRect(Handle: QWidgetH; R: PRect; EraseBackground: Boolean): LongBool;
+function UpdateWindow(Handle: QWidgetH): LongBool;
 function IsChild(ParentHandle, ChildHandle: QWidgetH): LongBool;
 function IsWindowEnabled(Handle: QWidgetH): LongBool;
 function IsWindowVisible(Handle: QWidgetH): LongBool;
@@ -738,7 +751,6 @@ function SetWindowPos(Wnd, WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
   uFlags: LongWord): LongBool; overload;
 function SetWindowPos(Wnd: QWidgetH; WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
   uFlags: LongWord): LongBool; overload;
-
 
 const
   { SetWindowPos Flags }
@@ -919,6 +931,17 @@ function SetDoubleClickTime(Interval: Cardinal): LongBool;
 function Win2QtAlign(Flags: Integer): Integer;
 function QtStdAlign(Flags: Integer): Word;
 
+{ Message }
+//  (ahuser) Do not rename PostMsg/SendMsg to PostMessage/SendMessage because
+//  it is easier to find non-working PostMessage/SendMessage calls when the
+//  compiler give you an error at these positions.
+function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
+{ Limitation: Handle must be a TWidgetControl derived class handle }
+function PostMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
+ { SendMsg synchronizes with the main thread }
+function SendMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
+
+
 {$IFDEF LINUX}
 
 resourcestring
@@ -946,6 +969,15 @@ procedure MessageBeep(Value: Integer);   // value ignored
 
 {$ENDIF LINUX}
 
+// easier QColor handling that prevents memory leaks
+type
+  IQColorGuard = interface
+    function Handle: QColorH;
+  end;
+
+function QColorEx(Color: TColor): IQColorGuard;
+
+
 implementation
 
 {$IFDEF LINUX}
@@ -958,12 +990,8 @@ uses
 {$ENDIF MSWINDOWS}
 
 {---------------------------------------}
-// easier QColor handling:
+// easier QColor handling that prevents memory leaks
 type
-  IQColorGuard = interface
-    function Handle: QColorH;
-  end;
-
   TQColorGuard = class(TInterfacedObject, IQColorGuard)
   private
     FHandle: QColorH;
@@ -2138,6 +2166,32 @@ begin
   end;
 end;
 
+function InvalidateRect(Handle: QWidgetH; R: PRect; EraseBackground: Boolean): LongBool;
+begin
+  Result := False;
+  if Handle <> nil then
+    Exit;
+  try
+    QWidget_repaint(Handle, R, erasebackground);
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+function UpdateWindow(Handle: QWidgetH): LongBool;
+begin
+  Result := False;
+  if Handle <> nil then
+    Exit;
+  try
+    QWidget_update(Handle);
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
 function IsChild(ParentHandle, ChildHandle: QWidgetH): LongBool;
 var
   ParentH: QWidgetH;
@@ -2789,12 +2843,12 @@ var
   size: TSize;
 begin
   case PropItem of
-    SM_CXVSCROLL:
+    SM_CXVSCROLL, SM_CXHSCROLL:
       begin
         QStyle_scrollBarExtent(QApplication_Style, @size);
         Result := size.cx;
       end;
-    SM_CYVSCROLL:
+    SM_CYVSCROLL, SM_CYHSCROLL:
       begin
         QStyle_scrollBarExtent(QApplication_Style, @size);
         Result := size.cy;
@@ -3264,6 +3318,8 @@ var
   end;
 
 begin
+  if Len = -1 then
+    Len := Length(Text);
   FontSaved := nil;
   FontSet := nil;
   if WinFlags and DT_INTERNAL <> 0 then
@@ -3591,17 +3647,6 @@ function Ellipse(Handle: QPainterH; Left, Top, Right, Bottom: Integer): LongBool
 begin
   try
     QPainter_drawEllipse(Handle, Left, Top, Right, Bottom);
-    Result := True;
-  except
-    Result := False;
-  end;
-end;
-
-function InvalidateRect(Handle: QWidgetH; R: PRect;
-  erasebackground: Boolean): LongBool;
-begin
-  try
-    QWidget_repaint(Handle, R, erasebackground);
     Result := True;
   except
     Result := False;
@@ -4013,6 +4058,11 @@ begin
   Result := GetDC(QWidgetH(Handle));
 end;
 
+function GetWindowDC(Handle: QWidgetH): QPainterH;
+begin
+  Result := GetDC(Handle);
+end;
+
 function ReleaseDC(wdgtH: QWidgetH; Handle: QPainterH): Integer;
 begin
   try
@@ -4149,11 +4199,11 @@ var
 {$ENDIF LINUX}
 begin
   try
-   {$IFDEF MSWINDOWS}
+    {$IFDEF MSWINDOWS}
     MapPainterLP(Handle, X, Y); // GetPixel does not know about the world matrix
     Result := Windows.GetPixel(QPainter_handle(Handle), X, Y);
-   {$ENDIF}
-   {$IFDEF LINUX}
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
     pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
     depth := QPaintDeviceMetrics_depth(pdm);
     QPaintDeviceMetrics_destroy(pdm);
@@ -4175,7 +4225,7 @@ begin
       if Assigned(pixmap) then
         QPixmap_destroy(pixmap);
     end;
-   {$ENDIF LINUX}
+    {$ENDIF LINUX}
   except
     Result := 0;
   end;
@@ -4457,7 +4507,169 @@ end;
 
 {$ENDIF LINUX}
 
+const
+  QEventType_CMDispatchMessagePost = QEventType(Integer(QEventType_ClxUser) - 1);
+  QEventType_CMDispatchMessageSend = QEventType(Integer(QEventType_ClxUser) - 2);
+
+type
+  PMessageData = ^TMessageData;
+  TMessageData = record
+    Control: TWidgetControl;
+    Event: TEvent;
+    Msg: TMessage;
+  end;
+
+function AppEventFilter(App: TApplication; Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  Msg: PMessageData;
+begin
+  try
+    Result := False;
+    if QEvent_isQCustomEvent(Event) then
+    begin
+      Msg := QCustomEvent_data(QCustomEventH(Event));
+      case QEvent_type(Event) of
+        QEventType_CMDispatchMessagePost:
+          begin
+            Result := True;
+            if Msg <> nil then
+              try
+                Msg^.Control.Dispatch(Msg^.Msg);
+              finally
+                Dispose(Msg);
+              end;
+            Exit;
+          end;
+        QEventType_CMDispatchMessageSend:
+          begin
+            Result := True;
+            try
+              if Msg <> nil then
+                Msg^.Control.Dispatch(Msg^.Msg);
+            finally
+              if Msg^.Event <> nil then
+                Msg^.Event.SetEvent;
+            end;
+            Exit;
+          end;
+      end;
+    end;
+  except
+    on E: Exception do
+    begin
+      Application.ShowException(E);
+      Result := False;
+    end;
+  end;
+end;
+
+var
+  AppEventFilterHook: QObject_hookH = nil;
+
+procedure InstallAppEventFilter;
+var
+  Method: TMethod;
+begin
+  if AppEventFilterHook <> nil then
+    Exit;
+
+  Method.Code := @AppEventFilter;
+  Method.Data := Application;
+
+  AppEventFilterHook := QObject_hook_create(Application.Handle);
+  Qt_hook_hook_events(AppEventFilterHook, Method);
+end;
+
+function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  M: TMessage;
+begin
+  M.Msg := Msg;
+  M.WParam := WParam;
+  M.LParam := LParam;
+  M.Result := 0;
+  Control.Dispatch(M);
+  Result := M.Result;
+end;
+
+function PostMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
+var
+  M: PMessageData;
+  Control: TWidgetControl;
+begin
+  Result := False;
+  if Handle = nil then
+    Exit;
+  Control := FindControl(Handle);
+  if Control = nil then
+    Exit;
+  try
+    New(M);
+    M^.Control := Control;
+    M.Event := nil;
+    M^.Msg.Msg := Msg;
+    M^.Msg.WParam := WParam;
+    M^.Msg.LParam := LParam;
+    M^.Msg.Result := 0;
+    InstallAppEventFilter;
+
+    QApplication_postEvent(Handle, QCustomEvent_create(QEventType_CMDispatchMessagePost, M));
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+function SendMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
+var
+  Event: QCustomEventH;
+  M: TMessageData;
+  Control: TWidgetControl;
+begin
+  Result := 0;
+  if Handle = nil then
+    Exit;
+  Control := FindControl(Handle);
+  if Control = nil then
+    Exit;
+  try
+    M.Control := Control;
+    M.Event := nil;
+    M.Msg.Msg := Msg;
+    M.Msg.WParam := WParam;
+    M.Msg.LParam := LParam;
+    M.Msg.Result := 0;
+
+    InstallAppEventFilter;
+
+    Event := QCustomEvent_create(QEventType_CMDispatchMessageSend, @M);
+    try
+      if GetCurrentThreadId = MainThreadID then
+        QApplication_sendEvent(Handle, Event)
+      else
+      begin
+       // synchronize with main thread
+        M.Event := TSimpleEvent.Create;
+        try
+          QApplication_postEvent(Handle, Event);
+          M.Event.WaitFor(INFINITE);
+        finally
+          M.Event.Free;
+          M.Event := nil;
+        end;
+      end;
+      Result := M.Msg.Result;
+    finally
+      if GetCurrentThreadId = MainThreadID then
+        QCustomEvent_destroy(Event);
+    end;
+  except
+  end;
+end;
+
+
 { ------------ Caret -------------- }
+{ (C) 2003 Andreas Hausladen <Andreas.Hausladen@gmx.de> }
 type
   TEmulatedCaret = class(TObject)
   private
@@ -4519,7 +4731,7 @@ begin
   Result := Windows.GetCaretBlinkTime;
   {$ELSE}
   Result := QApplication_cursorFlashTime;
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
 end;
 
 function SetCaretBlinkTime(uMSeconds: Cardinal): LongBool;
@@ -4528,7 +4740,7 @@ begin
   try
     {$IFDEF MSWINDOWS}
     Windows.SetCaretBlinkTime(uMSeconds);
-    {$ENDIF}
+    {$ENDIF MSWINDOWS}
     QApplication_setCursorFlashTime(uMSeconds);
     GlobalCaret.Lock;
     try
@@ -4765,6 +4977,8 @@ initialization
 
 finalization
   GlobalCaret.Free;
+  if Assigned(AppEventFilterHook) then
+    QObject_hook_destroy(AppEventFilterHook);
   FreePainterInfos;
 
 end.
