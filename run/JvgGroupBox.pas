@@ -421,7 +421,7 @@ end;
 procedure TJvgGroupBox.Collapse(fCollapse: Boolean);
 var
   I: Integer;
-  fAnotherExpandedWasFound: Boolean;
+  AnotherExpandedWasFound: Boolean;
 begin
   if csLoading in ComponentState then
     Exit;
@@ -432,19 +432,18 @@ begin
       Exit;
     if (FGroupIndex <> 0) and (fgoOneAlwaysExpanded in Options) then
     begin //...One Stay Always Expanded in group
-      FAnotherExpandedWasFound := False;
+      AnotherExpandedWasFound := False;
       for I := 0 to Owner.ComponentCount - 1 do
         with TControl(Owner) do
           if (Components[I] is TJvgGroupBox) and
             (TJvgGroupBox(Components[I]).GroupIndex = FGroupIndex) then
-            if
-              (not TJvgGroupBox(Components[I]).Collapsed) and
+            if (not TJvgGroupBox(Components[I]).Collapsed) and
               (Components[I] <> Self) then
             begin
-              fAnotherExpandedWasFound := True;
-              break;
+              AnotherExpandedWasFound := True;
+              Break;
             end; //...are another expanded controls in group
-      if not fAnotherExpandedWasFound then
+      if not AnotherExpandedWasFound then
         Exit; //..i'm last- can't collapse
     end;
   end

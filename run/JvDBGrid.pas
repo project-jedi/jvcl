@@ -162,7 +162,7 @@ type
     FPostOnEnter: Boolean;
     FSelectColumn: TSelectColumn;
     FTitleArrow: Boolean;
-    FTitlePopUp: TPopupMenu;
+    FTitlePopup: TPopupMenu;
     FOnShowTitleHint: TJvTitleHintEvent;
     FOnTitleArrowMenuEvent: TNotifyEvent;
     FAlternateRowColor: TColor;
@@ -477,7 +477,7 @@ type
   private
     FDataList: TJvDBLookupList; //  TDBLookupListBox
     FUseDataList: Boolean;
-    FLookupSource: TDatasource;
+    FLookupSource: TDataSource;
   protected
     procedure CloseUp(Accept: Boolean); override;
     procedure DoEditButtonClick; override;
@@ -510,7 +510,7 @@ begin
       ListValue := DataList.KeyValue
     else
     if PickList.ItemIndex <> -1 then
-      ListValue := PickList.Items[Picklist.ItemIndex];
+      ListValue := PickList.Items[PickList.ItemIndex];
     SetWindowPos(ActiveList.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
     ListVisible := False;
@@ -2231,7 +2231,7 @@ begin
     begin
       Bmp := GetGridBitmap(gpPopup);
       DrawBitmapTransparent(Canvas, (ARect.Left + ARect.Right - Bmp.Width) div 2,
-        (ARect.Top + ARect.Bottom - Bmp.Height) div 2, Bmp, clwhite);
+        (ARect.Top + ARect.Bottom - Bmp.Height) div 2, Bmp, clWhite);
     end;
 
   InBiDiMode := Canvas.CanvasOrientation = coRightToLeft;
@@ -3197,7 +3197,7 @@ begin
     begin
       AtCursorPosition := False;
       HintStr := Columns[ACol].FieldName;
-      ATimeOut := max(ATimeOut, Length(HintStr) * C_TIMEOUT);
+      ATimeOut := Max(ATimeOut, Length(HintStr) * C_TIMEOUT);
       if Assigned(FOnShowTitleHint) and DataLink.Active then
         FOnShowTitleHint(Self, Columns[ACol].Field, HintStr, ATimeOut);
       HideTimeOut := ATimeOut;
