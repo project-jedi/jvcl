@@ -151,7 +151,7 @@ resourcestring
 implementation
 
 uses
-  CmdLineUtils, JvConsts, Utils;
+  CmdLineUtils, JvConsts, Utils, Core;
 
 resourcestring
   RsCompilingJCL = 'Compiling JCL dcp files...';
@@ -441,6 +441,7 @@ begin
 
   // redirect DCPDir to the BPLDir
   SetEnvironmentVariable('DCPDIR', PChar(TargetConfig.BplDir));
+  SetEnvironmentVariable('JCLROOT', PChar(string(Core.PackageInstaller.Installer.GetJCLDir)));
   try
     Args := '-f MakeJCLDcp4BCB.mak';
 
@@ -461,7 +462,7 @@ begin
       DoPackageProgress(nil, RsCompilingJCL, 2, 3);
 
      // compile dcp files
-      if Make(TargetConfig, Args + FQuiet + ' Compile', CaptureLine,
+      if Make(TargetConfig, Args + FQuiet, CaptureLine,
         Data.JVCLPackagesDir + '\bin') <> 0 then
       begin
         AbortReason := RsErrorCompilingJclDcpFiles;
