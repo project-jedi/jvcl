@@ -1391,16 +1391,16 @@ begin
     Done := SIdx = Length(Result);
     if not Done then
     begin
-      while (SIdx < Length(Result)) and (Copy(Result, SIdx, 2) <> CrLf) do
+      while (SIdx < Length(Result)) and (Copy(Result, SIdx, Length(sLineBreak)) <> sLineBreak) do
         Inc(SIdx);
-      Done := Copy(Result, SIdx, 2) = CrLf;
+      Done := Copy(Result, SIdx, Length(sLineBreak)) = sLineBreak;
       if Done then
         SetLength(Result, SIdx + 1);
     end;
   until Done;
   Stream.Position := OrgPos + Length(Result);
-  if Copy(Result, Length(Result) - 1, 2) = CrLf then
-    SetLength(Result, Length(Result) - 2);
+  if Copy(Result, Length(Result) - 1, Length(sLineBreak)) = sLineBreak then
+    SetLength(Result, Length(Result) - Length(sLineBreak));
 end;
 
 function TTxtStore.ReadNextLine: string;
@@ -1432,7 +1432,7 @@ procedure TTxtStore.WriteLn(const S: string);
 var
   S2: string;
 begin
-  S2 := S + CrLf;
+  S2 := S + sLineBreak;
   Stream.WriteBuffer(S2[1], Length(S2));
 end;
 

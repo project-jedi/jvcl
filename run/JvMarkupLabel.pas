@@ -494,15 +494,12 @@ begin
 end;
 
 procedure TJvMarkupLabel.SetText(const Value: string);
-const
-  cr = chr(13) + chr(10);
-  tab = chr(9);
 var
   s: string;
 begin
-  if value = FText then exit;
-  s := value;
-  s := stringreplace(s, cr, ' ', [rfreplaceall]);
+  if Value = FText then Exit;
+  s := Value;
+  s := StringReplace(s, sLineBreak, ' ', [rfreplaceall]);
   s := Trimright(s);
   parseHTML(s);
   HTMLElementDimensions;

@@ -906,14 +906,14 @@ begin
       for I := 0 to Columns.Count - 1 do
         st := st + Columns[I].Caption + #9;
       if st <> '' then
-        st := st + CRLF;
+        st := st + sLineBreak;
       for I := 0 to Items.Count - 1 do
         if (SelCount = 0) or (Items[I].Selected) then
         begin
           st := st + Items[I].Caption;
           for J := 0 to Items[I].SubItems.Count - 1 do
             st := st + #9 + Items[I].SubItems[J];
-          st := st + CRLF;
+          st := st + sLineBreak;
         end;
       Clipboard.SetTextBuf(PChar(st));
     end;

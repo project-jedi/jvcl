@@ -385,13 +385,11 @@ resourcestring
 
 implementation
 
-{$IFDEF BCB}
-uses Variants;
-{$ENDIF}
-
-const
-  cr = chr(13) + chr(10);
-  tab = chr(9);
+uses
+  {$IFDEF BCB}
+  Variants,
+  {$ENDIF}
+  JvTypes;
 
   { some utility functions }
 
@@ -443,7 +441,7 @@ begin
   p2 := PosStr('"', aText, p + L);
   if p2 = 0 then exit;
   result := copy(atext, p + L, p2 - (p + L));
-  result := stringreplace(result, '~~', cr, [rfreplaceall]);
+  result := stringreplace(result, '~~', sLineBreak, [rfreplaceall]);
 end;
 
 // some special expression functions
@@ -902,7 +900,7 @@ begin
       end;
     end;
   until p = 0;
-  s := trim(stringreplace(s, cr, ' ', [rfreplaceall]));
+  s := trim(stringreplace(s, sLineBreak, ' ', [rfreplaceall]));
   // remove comments
   repeat
     p := pos('{', s);
@@ -2360,7 +2358,7 @@ end;
 
 procedure TJvForthScript.proccrlf;
 begin
-  vpush(cr);
+  vpush(sLineBreak);
 end;
 
 procedure TJvForthScript.procshellexecute;

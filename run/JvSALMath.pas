@@ -30,7 +30,8 @@ unit JvSALMath;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvSAL, math;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  JvSAL, Math;
 
 type
   TJvSALMath = class(TComponent)
@@ -58,9 +59,8 @@ type
 
 implementation
 
-const
-  cr = chr(13) + chr(10);
-  tab = chr(9);
+uses
+  JvTypes;
 
   { TJvSALMathBasic }
 

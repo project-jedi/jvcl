@@ -184,18 +184,13 @@ procedure PreProcessXML(aList: Tstringlist);
 
 implementation
 
-{$IFDEF BCB}
-uses Variants;
-{$ENDIF}
-
-const
-  cr = chr(13) + chr(10);
-  tab = chr(9);
+uses
+  {$IFDEF BCB}
+  Variants,
+  {$ENDIF}
+  JvTypes;
 
 procedure PreProcessXML(aList: Tstringlist);
-const
-  crlf = chr(13) + chr(10);
-  tab = chr(9);
 var
   oList: TStringlist;
   s, xTag, xText, xData: string;
@@ -204,14 +199,14 @@ var
 
   function clean(aText: string): string;
   begin
-    result := stringreplace(aText, crlf, ' ', [rfreplaceall]);
+    result := stringreplace(aText, sLineBreak, ' ', [rfreplaceall]);
     result := stringreplace(result, tab, ' ', [rfreplaceall]);
     result := trim(result);
   end;
 
   function cleanCDATA(aText: string): string;
   begin
-    result := stringreplace(aText, crlf, '\n ', [rfreplaceall]);
+    result := stringreplace(aText, sLineBreak, '\n ', [rfreplaceall]);
     result := stringreplace(result, tab, '\t ', [rfreplaceall]);
   end;
 
@@ -424,17 +419,13 @@ begin
 end;
 
 function TJvXMLNode.document(aLevel: integer): string;
-const
-  cr = chr(13) + chr(10);
-  tab = chr(9);
-
 var
   i: integer;
   spc: string;
 
   function ExpandCDATA(aValue: string): string;
   begin
-    result := stringreplace(aValue, '\n ', cr, [rfreplaceall]);
+    result := stringreplace(aValue, '\n ', sLineBreak, [rfreplaceall]);
     result := stringreplace(result, '\t ', tab, [rfreplaceall]);
   end;
 begin
@@ -448,24 +439,24 @@ begin
       result := result + TJvXMLAttribute(Attributes[i]).document;
   if (nodes.count = 0) and (value = '') then
   begin
-    result := result + ' />' + cr;
+    result := result + ' />' + sLineBreak;
     exit;
   end
   else
-    result := result + '>' + cr;
+    result := result + '>' + sLineBreak;
   if Value <> '' then
   begin
     if ValueType = xvtString then
-      result := result + spc + '  ' + Value + cr
+      result := result + spc + '  ' + Value + sLineBreak
     else if ValueType = xvtCDATA then
     begin
-      result := result + spc + '  ' + '<![CDATA[' + ExpandCDATA(value) + ']]>' + cr;
+      result := result + spc + '  ' + '<![CDATA[' + ExpandCDATA(value) + ']]>' + sLineBreak;
     end
   end;
   if nodes.count <> 0 then
     for i := 0 to nodes.count - 1 do
       result := result + TJvXMLNode(nodes[i]).document(aLevel + 1);
-  result := result + spc + '</' + Name + '>' + cr;
+  result := result + spc + '</' + Name + '>' + sLineBreak;
 end;
 
 // duplicates a node recursively
@@ -1009,17 +1000,13 @@ end;
 // basically works like the document function except for nodes with processing instructions
 
 function TJvXMLNode.process(aLevel: integer; node: TJvXMLNode): string;
-const
-  cr = chr(13) + chr(10);
-  tab = chr(9);
-
 var
   i: integer;
   spc: string;
 
   function ExpandCDATA(aValue: string): string;
   begin
-    result := stringreplace(aValue, '\n ', cr, [rfreplaceall]);
+    result := stringreplace(aValue, '\n ', sLineBreak, [rfreplaceall]);
     result := stringreplace(result, '\t ', tab, [rfreplaceall]);
   end;
 begin
@@ -1040,24 +1027,24 @@ begin
       result := result + TJvXMLAttribute(Attributes[i]).document;
   if (nodes.count = 0) and (value = '') then
   begin
-    result := result + ' />' + cr;
+    result := result + ' />' + sLineBreak;
     exit;
   end
   else
-    result := result + '>' + cr;
+    result := result + '>' + sLineBreak;
   if Value <> '' then
   begin
     if ValueType = xvtString then
-      result := result + spc + '  ' + Value + cr
+      result := result + spc + '  ' + Value + sLineBreak
     else if ValueType = xvtCDATA then
     begin
-      result := result + spc + '  ' + '<![CDATA[' + ExpandCDATA(value) + ']]>' + cr;
+      result := result + spc + '  ' + '<![CDATA[' + ExpandCDATA(value) + ']]>' + sLineBreak;
     end
   end;
   if nodes.count <> 0 then
     for i := 0 to nodes.count - 1 do
       result := result + TJvXMLNode(nodes[i]).process(aLevel + 1, node);
-  result := result + spc + '</' + Name + '>' + cr;
+  result := result + spc + '</' + Name + '>' + sLineBreak;
 end;
 
 function TJvXMLNode.getNameSpace: string;
@@ -1324,10 +1311,10 @@ begin
   if Attributes.Count > 0 then
     for i := 0 to Attributes.count - 1 do
       result := result + TJvXMLAttribute(Attributes[i]).document;
-  result := result + '>' + cr;
+  result := result + '>' + sLineBreak;
   for i := 0 to c - 1 do
     result := result + TJvXMLNode(nodes[i]).document(1);
-  result := result + '</' + Name + '>' + cr;
+  result := result + '</' + Name + '>' + sLineBreak;
 end;
 
 procedure TJvXMLTree.SaveToFile(aFile: string);
@@ -1366,11 +1353,11 @@ begin
   //  if Attributes.Count>0 then
   //  for i:=0 to Attributes.count-1 do
   //    result:=result+TJvXMLAttribute(Attributes[i]).document;
-  //  result:=result+'>'+cr;
+  //  result:=result+'>'+sLineBreak;
   result := '';
   for i := 0 to c - 1 do
     result := result + TJvXMLNode(nodes[i]).document(0);
-  //  result:=result+'</'+Name+'>'+cr;
+  //  result:=result+'</'+Name+'>'+sLineBreak;
 end;
 
 procedure TJvXMLTree.setText(const Value: string);

@@ -229,7 +229,7 @@ begin
       with TJvLogRecord(FList.Items[I]) do
       begin
         St := '[' + Time + ']' + StringReplace(Title, '>', '>>', [rfReplaceAll]) +
-          '>' + Description + CrLf;
+          '>' + Description + sLineBreak;
         Stream.WriteBuffer(Pointer(St)^, Length(St));
       end;
   finally

@@ -30,8 +30,8 @@ unit JvYearGrid;
 interface
 
 uses
-  Windows, shellapi, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Grids, menus, clipbrd;
+  Windows, ShellApi, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, Menus, Clipbrd;
 
 type
   TYearData = record
@@ -102,11 +102,11 @@ type
     { Protected declarations }
     procedure DrawCell(ACol, ARow: Integer; Rect: TRect; State: TGridDrawState); override;
     function SelectCell(ACol, ARow: Integer): boolean; override;
-    procedure dblclick; override;
+    procedure DblClick; override;
   public
     { Public declarations }
-    constructor create(AOwner: Tcomponent); override;
-    destructor destroy; override;
+    constructor Create(AOwner: Tcomponent); override;
+    destructor Destroy; override;
     function GetSelDateText: string;
     procedure SetSelDateText(Atext: string);
     function GetDateInfo(aDate: TDate; var aText: string): boolean;
@@ -156,8 +156,6 @@ const
   todayfontcolor = clwhite;
   todaybrushcolor = clred;
 
-  tab = chr(9);
-
 var
   appldir: string;
   daysinmonth: array[1..12] of integer;
@@ -170,7 +168,7 @@ var
 
   { TJvYearGrid }
 
-constructor TJvYearGrid.create(AOwner: Tcomponent);
+constructor TJvYearGrid.Create(AOwner: Tcomponent);
 begin
   inherited create(AOwner);
   width := 746;
@@ -193,10 +191,9 @@ begin
   HTMLFontName := 'Arial';
   application.HintHidePause := 5000;
   setYear(0);
-
 end;
 
-destructor TJvYearGrid.destroy;
+destructor TJvYearGrid.Destroy;
 begin
   SaveYear;
   GridPop.free;
@@ -837,7 +834,7 @@ begin
   result := true;
 end;
 
-procedure TJvYearGrid.dblclick;
+procedure TJvYearGrid.DblClick;
 begin
   if assigned(ondblclick) then
     ondblclick(self);
