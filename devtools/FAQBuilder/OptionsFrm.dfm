@@ -287,7 +287,7 @@ object frmOptions: TfrmOptions
       end
     end
   end
-  object btnOK: TButton
+  object btnOK: TJvDotNetButton
     Left = 242
     Top = 380
     Width = 75
@@ -298,7 +298,7 @@ object frmOptions: TfrmOptions
     ModalResult = 1
     TabOrder = 1
   end
-  object btnCancel: TButton
+  object btnCancel: TJvDotNetButton
     Left = 322
     Top = 380
     Width = 75
