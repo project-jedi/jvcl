@@ -34,9 +34,9 @@ $Id$
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQPageLinkEditorForm;
+
+{$I jvcl.inc}
 
 interface
 

@@ -27,9 +27,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQIconListForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -127,6 +127,9 @@ const
   sImage = 'Image%d';
 
 
+
+const
+  cDelphiBitmapClipboardType = 'image/delphi.bitmap';
 
 type
   TOpenIcon = class(TIcon);
@@ -257,7 +260,7 @@ end;
 
 procedure TIconListDialog.CheckEnablePaste;
 begin  
-  Paste.Enabled := Clipboard.Provides('image/delphi.bitmap') 
+  Paste.Enabled := Clipboard.Provides(cDelphiBitmapClipboardType); 
 end;
 
 procedure TIconListDialog.SetSelectedIndex(Index: Integer; Force: Boolean);
@@ -399,7 +402,7 @@ procedure TIconListDialog.PasteClick(Sender: TObject);
 var
   Ico: TIcon;
 begin  
-  if Clipboard.Provides('image/delphi.bitmap') then 
+  if Clipboard.Provides(cDelphiBitmapClipboardType) then 
   begin
     Ico := CreateIconFromClipboard;
     try

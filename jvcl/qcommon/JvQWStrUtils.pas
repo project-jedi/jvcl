@@ -19,6 +19,7 @@ The Initial Developers of the Original Code are: Andreas Hausladen <Andreas dott
 All Rights Reserved.
 
 Contributers:
+  André Snepvangers: several functions from  JclUnicode added.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -29,18 +30,48 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQWStrUtils;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes;
+  SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF LINUX}
+  SyncObjs;
 
 const
+  // asn: taken from JclUnicode
+  // definitions of often used characters:
+  // Note: Use them only for tests of a certain character not to determine character
+  //       classes (like white spaces) as in Unicode are often many code points defined
+  //       being in a certain class. Hence your best option is to use the various
+  //       UnicodeIs* functions.
+  WideNull = WideChar(#0);
+  WideTabulator = WideChar(#9);
+  WideSpace = WideChar(#32);
+
+  // logical line breaks
+  WideLF = WideChar(#10);
+  WideLineFeed = WideChar(#10);
+  WideVerticalTab = WideChar(#11);
+  WideFormFeed = WideChar(#12);
+  WideCR = WideChar(#13);
+  WideCarriageReturn = WideChar(#13);
+  WideCRLF: WideString = #13#10;
+  WideLineSeparator = WideChar($2028);
+  WideParagraphSeparator = WideChar($2029);
+
   BOM_LSB_FIRST = WideChar($FEFF);
   BOM_MSB_FIRST = WideChar($FFFE);
+
+  
 
 type
   TWideFileOptionsType =
@@ -68,10 +99,17 @@ type
   TUCS4Array = array of UCS4;
 
 const
+  // taken from JclUniCode
   ReplacementCharacter: UCS4 = $0000FFFD;
   MaximumUCS2: UCS4 = $0000FFFF;
   MaximumUTF16: UCS4 = $0010FFFF;
   MaximumUCS4: UCS4 = $7FFFFFFF;
+
+  SurrogateHighStart: UCS4 = $D800;
+  SurrogateHighEnd: UCS4 = $DBFF;
+  SurrogateLowStart: UCS4 = $DC00;
+  SurrogateLowEnd: UCS4 = $DFFF;
+
 
 type
   TWStrings = class;
@@ -258,7 +296,28 @@ function TrimRightW(const S: WideString): WideString;
 function TrimLeftLengthW(const S: WideString): Integer;
 function TrimRightLengthW(const S: WideString): Integer;
 
+// asn: functions taken from JclUnicode
+function WideStringToStringEx(const WS: WideString; CodePage: Word): string;
+function StringToWideStringEx(const S: string; CodePage: Word): WideString;
+function UTF8ToWideString(S: AnsiString): WideString;
+function WideStringToUTF8(S: WideString): AnsiString;
+function WideCaseFolding(C: WideChar): WideString; overload;
+function WideCaseFolding(const S: WideString): WideString; overload;
+
+var
+  // As the global data can be accessed by several threads it should be guarded
+  // while the data is loaded.
+  LoadInProgress: TCriticalSection;
+
 implementation
+
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvWStrUtils.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvWStrUtils.res}
+{$ENDIF LINUX}
+
 
 uses 
   RTLConsts, 
@@ -479,7 +538,7 @@ var
   NullWide: WideChar;
 begin
   Result := 0;
-  if (S1 = S2) then // "equal" and "nil" case
+  if S1 = S2 then // "equal" and "nil" case
     Exit;
   NullWide := #0;
 
@@ -714,6 +773,261 @@ begin
     MoveWideChar(P^, Dest^, Src - P - 1);
   end;
 end;
+//----------------- support for case mapping -------------------------------------------------------
+
+type
+  TCase = array[0..3] of TUCS4Array; // mapping for case fold, lower, title and upper in this order
+  TCaseArray = array of TCase;
+
+var
+  // An array for all case mappings (including 1 to many casing if saved by the extraction program).
+  // The organization is a sparse, two stage matrix.
+  // SingletonMapping is to quickly return a single default mapping.
+  CaseDataLoaded: Boolean;
+  CaseMapping: array[Byte] of TCaseArray;
+  SingletonMapping: TUCS4Array;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure LoadCaseMappingData;
+
+var
+  Stream: TResourceStream;
+  I, Code,
+  Size: Cardinal;
+  First,
+  Second: Byte;
+
+begin
+  if not CaseDataLoaded then
+  begin
+    // make sure no other code is currently modifying the global data area
+    LoadInProgress.Enter;
+
+    try
+      SetLength(SingletonMapping, 1);
+      CaseDataLoaded := True;
+      Stream := TResourceStream.Create(HInstance, 'CASE', 'UNICODEDATA');
+      try
+        // the first entry in the stream is the number of entries in the case mapping table
+        Stream.ReadBuffer(Size, 4);
+        for I := 0 to Size - 1 do
+        begin
+          // a) read actual code point
+          Stream.ReadBuffer(Code, 4);
+
+          Assert(Code < $10000, 'cased Unicode character > $FFFF found');
+          // if there is no high byte entry in the first stage table then create one
+          First := (Code shr 8) and $FF;
+          Second := Code and $FF;
+          if CaseMapping[First] = nil then
+            SetLength(CaseMapping[First], 256);
+
+          // b) read fold case array
+          Stream.ReadBuffer(Size, 4);
+          if Size > 0 then
+          begin
+            SetLength(CaseMapping[First, Second, 0], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, 0, 0], Size * SizeOf(UCS4));
+          end;
+          // c) read lower case array
+          Stream.ReadBuffer(Size, 4);
+          if Size > 0 then
+          begin
+            SetLength(CaseMapping[First, Second, 1], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, 1, 0], Size * SizeOf(UCS4));
+          end;
+          // d) read title case array
+          Stream.ReadBuffer(Size, 4);
+          if Size > 0 then
+          begin
+            SetLength(CaseMapping[First, Second, 2], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, 2, 0], Size * SizeOf(UCS4));
+          end;
+          // e) read upper case array
+          Stream.ReadBuffer(Size, 4);
+          if Size > 0 then
+          begin
+            SetLength(CaseMapping[First, Second, 3], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, 3, 0], Size * SizeOf(UCS4));
+          end;
+        end;
+
+      finally
+        Stream.Free;
+      end;
+    finally
+      LoadInProgress.Leave;
+    end;
+  end;
+end;
+
+
+//----------------- general purpose case mapping ---------------------------------------------------
+
+function CaseLookup(Code: Cardinal; CaseType: Cardinal): TUCS4Array;
+
+// Performs a lookup of the given code and returns its case mapping if found.
+// CaseType must be 0 for case folding, 1 for lower case, 2 for title case and 3 for upper case, respectively.
+// If Code could not be found (or there is no case mapping) then the result is a mapping of length 1 with the
+// code itself. Otherwise an array of code points is returned which represent the mapping.
+
+var
+  First,
+  Second: Byte;
+
+begin
+  // load case mapping data if not already done
+  if not CaseDataLoaded then
+    LoadCaseMappingData;
+
+  First := (Code shr 8) and $FF;
+  Second := Code and $FF;
+  // Check first stage table whether there is a mapping for a particular block and
+  // (if so) then whether there is a mapping or not.
+  if (CaseMapping[First] = nil) or (CaseMapping[First, Second, CaseType] = nil) then
+  begin
+    SingletonMapping[0] := Code;
+    Result := SingletonMapping;
+  end
+  else
+    Result := CaseMapping[First, Second, CaseType];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function UnicodeCaseFold(Code: UCS4): TUCS4Array;
+
+// This function returnes an array of special case fold mappings if there is one defined for the given
+// code, otherwise the lower case will be returned. This all applies only to cased code points.
+// Uncased code points are returned unchanged.
+
+begin
+  Result := CaseLookup(Code, 0);
+end;
+
+function WideCaseFolding(C: WideChar): WideString;
+
+// Special case folding function to map a string to either its lower case or
+// to special cases. This can be used for case-insensitive comparation.
+
+var
+  I: Integer;
+  Mapping: TUCS4Array;
+
+begin
+  Mapping := UnicodeCaseFold(UCS4(C));
+  SetLength(Result, Length(Mapping));
+  for I := 0 to High(Mapping) do
+    Result[I + 1] := WideChar(Mapping[I]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function WideCaseFolding(const S: WideString): WideString;
+
+var
+  I: Integer;
+
+begin
+  Result := '';
+  for I := 1 to Length(S) do
+    Result := Result + WideCaseFolding(S[I]);
+end;
+
+
+function StringToWideStringEx(const S: string; CodePage: Word): WideString;
+{$IFDEF MSWINDOWS}
+var
+  InputLength,
+  OutputLength: Integer;
+{$ENDIF MSWINDOWS}
+begin
+  {$IFDEF MSWINDOWS}
+  InputLength := Length(S);
+  OutputLength := MultiByteToWideChar(CodePage, 0, PChar(S), InputLength, nil, 0);
+  SetLength(Result, OutputLength);
+  MultiByteToWideChar(CodePage, 0, PChar(S), InputLength, PWideChar(Result), OutputLength);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Result := S;  // TODO
+  {$ENDIF LINUX}
+end;
+
+function WideStringToStringEx(const WS: WideString; CodePage: Word): string;
+{$IFDEF MSWINDOWS}
+var
+  InputLength,
+  OutputLength: Integer;
+{$ENDIF MSWINDOWS}
+begin
+  {$IFDEF MSWINDOWS}
+  InputLength := Length(WS);
+  OutputLength := WideCharToMultiByte(CodePage, 0, PWideChar(WS), InputLength, nil, 0, nil, nil);
+  SetLength(Result, OutputLength);
+  WideCharToMultiByte(CodePage, 0, PWideChar(WS), InputLength, PChar(Result), OutputLength, nil, nil);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Result := WS;     // TODO
+  {$ENDIF LINUX}
+end;
+
+function UTF8ToWideString(S: AnsiString): WideString;
+var
+  L, J, T: Cardinal;
+  Ch: UCS4;
+  ExtraBytesToWrite: Word;
+begin
+  if Length(S) = 0 then
+    Result := ''
+  else
+  begin
+    SetLength(Result, Length(S)); // create enough room
+
+    L := 1;
+    T := 1;
+    while L <= Cardinal(Length(S)) do
+    begin
+      Ch := 0;
+      ExtraBytesToWrite := BytesFromUTF8[Ord(S[L])];
+
+      for J := ExtraBytesToWrite downto 1 do
+      begin
+        Ch := Ch + Ord(S[L]);
+        Inc(L);
+        Ch := Ch shl 6;
+      end;
+      Ch := Ch + Ord(S[L]);
+      Inc(L);
+      Ch := Ch - OffsetsFromUTF8[ExtraBytesToWrite];
+
+      if Ch <= MaximumUCS2 then
+      begin
+        Result[T] := WideChar(Ch);
+        Inc(T);
+      end
+      else
+        if Ch > MaximumUCS4 then
+        begin
+          Result[T] := WideChar(ReplacementCharacter);
+          Inc(T);
+        end
+        else
+        begin
+          Ch := Ch - HalfBase;
+          Result[T] := WideChar((Ch shr HalfShift) + SurrogateHighStart);
+          Inc(T);
+          Result[T] := WideChar((Ch and HalfMask) + SurrogateLowStart);
+          Inc(T);
+        end;
+    end;
+    SetLength(Result, T - 1); // now fix up length
+  end;
+end;
+
+// END of code by Mike Lischke (extracted from JclUnicode.pas)
+
+
 
 
 
@@ -1023,7 +1337,7 @@ begin
             Break;
         end;
       end;
-      if (P[0] <> WideChar(0)) then
+      if P[0] <> WideChar(0) then
         S := WideQuotedStr(S, AQuoteChar);
       Result := Result + S + ADelimiter;
     end;
@@ -1713,5 +2027,12 @@ begin
   if not Sorted then
     CustomSort(DefaultSort);
 end;
+
+initialization
+  LoadInProgress := TCriticalSection.Create;
+
+finalization
+  LoadInProgress.Free;
+
 
 end.

@@ -30,9 +30,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQFinalize;
+
+{$I jvcl.inc}
 
 interface
 
@@ -85,7 +85,6 @@ function AddFinalizeMemory(const UnitName: string; Ptr: Pointer): Pointer;
 /// </limitation>
 function AddFinalizeMemoryNil(const UnitName: string; var Ptr{: Pointer}): Pointer;
 
-
 /// <summary>
 /// FinalizeUnit finalizes all items from the unit UnitName. The UnitName is
 /// case sensitive. If you add any finalization item you must call this function
@@ -115,7 +114,7 @@ type
 var
   FinalizeUnitList: TFinalizeUnitItem = nil;
 
-//=== TFinalizeItem ==========================================================
+//=== { TFinalizeItem } ======================================================
 
 constructor TFinalizeItem.Create(const AUnitName: string);
 var
@@ -139,7 +138,7 @@ begin
 end;
 
 
-//=== TFinalizeUnitItem ======================================================
+//=== { TFinalizeUnitItem } ==================================================
 
 constructor TFinalizeUnitItem.Create(AUnitName: string; ANext: TFinalizeUnitItem);
 begin
@@ -199,13 +198,14 @@ begin
         FinalizeUnitList := P.Next
       else
         N.Next := P.Next;
-        P.Free;
+      P.Free;
       Break;
     end;
     N := P;
     P := P.Next;
   end;
 end;
+
 //============================================================================
 
 type
@@ -260,7 +260,7 @@ type
     destructor Destroy; override;
   end;
 
-//=== TFinalizeProcItem ======================================================
+//=== { TFinalizeProcItem } ==================================================
 
 constructor TFinalizeProcItem.Create(const AUnitName: string;
   AFinalizeProc: TFinalizeProc);
@@ -275,8 +275,7 @@ begin
   inherited Destroy;
 end;
 
-
-//=== TFinalizeObjectItem ====================================================
+//=== { TFinalizeObjectItem } ================================================
 
 constructor TFinalizeObjectItem.Create(const AUnitName: string;
   AInstance: TObject);
@@ -291,8 +290,7 @@ begin
   inherited Destroy;
 end;
 
-
-//=== TFinalizeObjectNilItem =================================================
+//=== { TFinalizeObjectNilItem } =============================================
 
 constructor TFinalizeObjectNilItem.Create(const AUnitName: string;
   var AReference: TObject);
@@ -308,8 +306,7 @@ begin
   inherited Destroy;
 end;
 
-
-//=== TFinalizeFreeAndNilItem ================================================
+//=== { TFinalizeFreeAndNilItem } ============================================
 
 constructor TFinalizeFreeAndNilItem.Create(const AUnitName: string;
   var AReference: TObject);
@@ -328,8 +325,7 @@ begin
   inherited Destroy;
 end;
 
-
-//=== TFinalizeMemoryItem ====================================================
+//=== { TFinalizeMemoryItem } ================================================
 
 constructor TFinalizeMemoryItem.Create(const AUnitName: string; APtr: Pointer);
 begin
@@ -344,8 +340,7 @@ begin
   inherited Destroy;
 end;
 
-
-//=== TFinalizeMemoryNilItem =================================================
+//=== { TFinalizeMemoryNilItem } =============================================
 
 constructor TFinalizeMemoryNilItem.Create(const AUnitName: string;
   var APtr: Pointer);

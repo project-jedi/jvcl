@@ -28,18 +28,11 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQValidatorsReg;
 
-interface
+{$I jvcl.inc}
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvValidatorsReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{$R ../Resources/JvValidatorsReg.dcr}
-{$ENDIF LINUX}
+interface
 
 procedure Register;
 
@@ -50,6 +43,13 @@ uses
   DesignEditors, DesignIntf, 
   JvQDsgnConsts,
   JvQErrorIndicator, JvQValidators, JvQValidatorsEditorForm, JvQDsgnEditors;
+
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvValidatorsReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvValidatorsReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

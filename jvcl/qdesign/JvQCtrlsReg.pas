@@ -28,15 +28,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQCtrlsReg;
 
-interface
+{$I jvcl.inc}
 
 {$IFDEF MSWINDOWS}
 {$DEFINE USEWINDOWS}
 {$ENDIF MSWINDOWS}
+
+interface
 
 procedure Register;
 
@@ -95,11 +95,11 @@ begin
     TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice
-  {$IFDEF USEWINDOWS}
-  ,TJvCharMap
-  {$ENDIF USEWINDOWS}
-  ]);
+  RegisterComponents(RsPaletteVisual, [TJvClock,
+    {$IFDEF USEWINDOWS}
+    TJvCharMap,
+    {$ENDIF USEWINDOWS}
+    TJvZoom, TJvDice]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);

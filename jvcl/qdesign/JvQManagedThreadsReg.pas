@@ -25,9 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQManagedThreadsReg;
+
+{$I jvcl.inc}
 
 interface
 

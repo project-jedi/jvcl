@@ -24,15 +24,16 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  TStrings property editor originally from the Rx library (duplicated for internal use)
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQStringsForm;
 
-{ TStrings property editor originally from the Rx library: duplicated for internal use) }
+{$I jvcl.inc}
 
 interface
 
@@ -133,7 +134,8 @@ end;
 procedure TJvStrEditDlg.MemoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then
+  //if Key = VK_ESCAPE then
+  if Ord(Key) = 27 then   //asn: With VisualCLX VK_ESCAPE <> 27
     CancelBtn.Click;
 end;
 

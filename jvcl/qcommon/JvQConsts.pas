@@ -27,14 +27,14 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQConsts;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  SysUtils, QControls, QGraphics, Types, QWindows;
+  SysUtils, Classes, QControls, QGraphics, Types, QWindows;
 
 
 const
@@ -76,7 +76,7 @@ const
   SDelphiKey = 'Software\Borland\Delphi\7.0';   
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  SDelphiKey = '.borland/.JEDI';
+  SDelphiKey = '.borland/.jvclx1';
   {$ENDIF}
   { JvDataProvider constants }
   { Consumer attributes }
@@ -184,6 +184,10 @@ const
 
 const
   SC_DRAGMOVE = $F012;
+
+const
+  KeyboardShiftStates = [ssShift, ssAlt, ssCtrl];
+  MouseShiftStates = [ssLeft, ssRight, ssMiddle, ssDouble];
 
 implementation
 

@@ -65,8 +65,8 @@ implementation
 
 uses
   TypInfo,
-  DsnDbCst,
-  {$IFDEF MSWINDOWS}DSDesign{$ENDIF}{$IFDEF LINUX}DSDesignLin{$ENDIF},
+  {DsnDbCst,}
+  {DSDesign,}
   JvQJVCLUtils, JvQConsts;
 
 

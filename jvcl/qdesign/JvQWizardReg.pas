@@ -37,9 +37,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQWizardReg;
+
+{$I jvcl.inc}
 
 interface
 
@@ -51,8 +51,8 @@ uses
   Classes, 
   DesignIntf, DesignEditors,  
   JvQDsgnConsts, 
-  JvQWizard, JvQWizardRouteMapNodes, JvQWizardRouteMapSteps, JvQWizardRouteMapList,
-  JvQWizardEditorForm;
+  JvQWizard, JvQWizardRouteMapNodes, JvQWizardRouteMapSteps,
+  JvQWizardRouteMapList, JvQWizardEditorForm;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvWizardReg.dcr}

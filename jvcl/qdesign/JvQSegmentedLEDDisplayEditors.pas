@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQSegmentedLEDDisplayEditors;
+
+{$I jvcl.inc}
 
 interface
 
@@ -64,18 +64,14 @@ type
     function GetVerbCount: Integer; override; 
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override; 
   end;
-
-
-
-
+ 
+ 
   TUnlitColorProperty = class(TJvColorProperty)
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
-  end;
-
-
+  end; 
 
 implementation
 
@@ -109,12 +105,12 @@ var
   I: Integer;
 begin
   with DigitClassList.LockList do
-  try
-    for I := 0 to Count - 1 do
-      Proc(TClass(Items[I]).ClassName);
-  finally
-    DigitClassList.UnlockList;
-  end;
+    try
+      for I := 0 to Count - 1 do
+        Proc(TClass(Items[I]).ClassName);
+    finally
+      DigitClassList.UnlockList;
+    end;
 end;
 
 //=== { TJvSegmentedLEDDisplayEditor } =======================================

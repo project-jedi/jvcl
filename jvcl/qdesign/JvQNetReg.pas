@@ -28,24 +28,23 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQNetReg;
 
-interface
+{$I jvcl.inc}
 
 {$IFDEF MSWINDOWS}
 {$DEFINE USEWINDOWS}
 {$ENDIF MSWINDOWS}
 
+interface
 
 procedure Register;
 
 implementation
 
 uses
-  Classes,
-  DesignEditors, DesignIntf,
+  Classes, 
+  DesignEditors, DesignIntf,  
   {$IFDEF USEWINDOWS}
   JvQUrlListGrabber, JvQUrlGrabbers, JvQUrlListGrabberEditors,
   {$ENDIF USEWINDOWS}

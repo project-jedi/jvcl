@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQUrlListGrabberEditors;
+
+{$I jvcl.inc}
 
 interface
 
@@ -62,12 +62,8 @@ type
 implementation
 
 uses
-  TypInfo,
-  JvQUrlListGrabber,
-  SysUtils;
-
-const
-  None: string = '(none)';
+  TypInfo, SysUtils,
+  JvQUrlListGrabber, JvQDsgnConsts;
 
 //=== { TJvUrlGrabberDefaultPropertiesListEditor } ===========================
 
@@ -106,7 +102,7 @@ begin
   Result := EditorTrick.DefaultProperties.SupportedURLName;
 end;
 
-{ TJvUrlGrabberIndexProperty }
+//=== { TJvUrlGrabberIndexProperty } =========================================
 
 function TJvUrlGrabberIndexProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -119,7 +115,7 @@ var
 begin
   Index := GetOrdValue;
   if (Index < 0) or (Index >= JvUrlGrabberClassList.Count) then
-    Result := '-1 - ' + None
+    Result := '-1 - ' + RsNone
   else
     Result := IntToStr(Index) + ' - ' + JvUrlGrabberClassList[Index].GetSupportedURLName;
 end;
@@ -128,7 +124,7 @@ procedure TJvUrlGrabberIndexProperty.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
 begin
-  Proc('-1 - ' + None);
+  Proc('-1 - ' + RsNone);
   for I := 0 to JvUrlGrabberClassList.Count - 1 do
     Proc(IntToStr(I) + ' - ' + JvUrlGrabberClassList[I].GetSupportedURLName);
 end;
@@ -145,7 +141,7 @@ begin
   if Pos('-', Value) > 0 then
     CleanValue := Trim(Copy(Value, Pos('-', Value)+1, Length(Value)));
 
-  if CleanValue = None then
+  if CleanValue = RsNone then
     SetOrdValue(-1)
   else
   begin

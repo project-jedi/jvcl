@@ -25,14 +25,15 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
 unit JvQPageListEditors;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   Classes, SysUtils,  
   QImgList, QGraphics,  
@@ -73,8 +74,10 @@ type
  
 
 implementation
+
 uses
-  TypInfo, JvQDsgnConsts, JvQPageListTreeView, JvQPageListEditorForm;
+  TypInfo,
+  JvQDsgnConsts, JvQPageListTreeView, JvQPageListEditorForm;
 
 type
   THackTreeView = class(TJvCustomPageListTreeView);
@@ -86,6 +89,8 @@ const
   cNextPage = 3;
   cPrevPage = 4;
   cDelPage = 5;
+
+  cElementCount = 6;
 
 procedure TJvCustomPageEditor.Edit;
 begin
@@ -120,7 +125,7 @@ function TJvCustomPageEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     cShowEditor:
-      Result := 'Page List Editor...';
+      Result := RsPageListEditorEllipsis;
     cDash:
       Result := '-';
     cNewPage:
@@ -136,7 +141,7 @@ end;
 
 function TJvCustomPageEditor.GetVerbCount: Integer;
 begin
-  Result := 6; // list, div, new, next, previous, delete,
+  Result := cElementCount; // list, div, new, next, previous, delete
 end;
 
 procedure TJvCustomPageEditor.InsertPage;

@@ -29,18 +29,18 @@
 {                                                                              }
 {******************************************************************************}
 
+unit JvQUIBReg;
+
 
 {$I jvcl.inc}
 
 {$I jvuib.inc}
 
-unit JvQUIBReg;
-
 interface
 
 {$IFNDEF UIBNOCOMPONENT}
 procedure Register;
-{$ENDIF UIBNOCOMPONENT}
+{$ENDIF !UIBNOCOMPONENT}
 
 implementation
 
@@ -68,13 +68,13 @@ begin
   {$IFNDEF DelphiPersonalEdition}
   GroupDescendentsWith(TJvUIBDataSet, TControl);
   GroupDescendentsWith(TJvUIBCustomDataSet, TControl);
-  {$ENDIF DelphiPersonalEdition} 
+  {$ENDIF !DelphiPersonalEdition} 
 
   RegisterComponents(RsPaletteUIB, [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
     {$IFNDEF DelphiPersonalEdition} TJvUIBDataSet, {$ENDIF}
     TJvUIBScript, TJvUIBBackup, TJvUIBRestore]);
 end;
 
-{$ENDIF UIBNOCOMPONENT}
+{$ENDIF !UIBNOCOMPONENT}
 
 end.
