@@ -1,10 +1,16 @@
+{$I jvcl.inc}
+
 unit Unit1;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvDockControlForm, JvDockVIDStyle, StdCtrls;
+  Windows, Messages, SysUtils, Classes, Graphics,
+  Controls, Forms, Dialogs, StdCtrls,
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvDockControlForm, JvDockVIDStyle;
 
 type
   TForm1 = class(TForm)
@@ -12,9 +18,7 @@ type
     JvDockVIDStyle1: TJvDockVIDStyle;
     Label1: TLabel;
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
 var
@@ -24,6 +28,6 @@ implementation
 
 uses Unit2;
 
-{$R *.DFM}
+{$R *.dfm}
 
 end.
