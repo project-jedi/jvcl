@@ -13,8 +13,6 @@ The Original Code is: WStrUtils.PAS, released on 2004-01-25
 The Initial Developers of the Original Code are: Andreas Hausladen <Andreas.Hausladen@gmx.de>
 All Rights Reserved.
 
-Last Modified: 2004-02-13
-
 Contributers:
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -22,6 +20,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $ld$
 
 {$I jvcl.inc}
 
