@@ -162,7 +162,7 @@ Description
   Changed will generate an OnChange event if a handler is assigned and change notifications are not
   supressed (every BeginUpdate has been matched with an EndUpdate).
 See Also
-  BeginUpdate, EndUpdate, OnChange, Updatecount
+  BeginUpdate, EndUpdate, OnChanged, Updatecount
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.CreateCaret
 Summary
@@ -200,7 +200,7 @@ Note
   Gray carets seem to be unsupported under Windows 95. The Gray property will have no effect on
   Windows 95 operating systems.
 See Also
-  Bitmap, Height, Width.
+  Bitmap, Height, Width
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.Height
 Summary
@@ -272,9 +272,9 @@ Summary
   Number of BeginUpdate calls to matched by an EndUpdate.
 Description
   Updatecount indicates the number of calls to BeginUpdate issued that have not been matched by a
-  call to EndUpdate. While Updatecount > 0, the OnChange event will never fire.
+  call to EndUpdate. While Updatecount > 0, the OnChanged event will never fire.
 See Also
-  BeginUpdate, EndUpdate, OnChange
+  BeginUpdate, EndUpdate, OnChanged
 ----------------------------------------------------------------------------------------------------
 @@TJvCaret.Width
 Summary

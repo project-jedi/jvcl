@@ -531,8 +531,8 @@ Description
 Parameters
   None.
 See Also
-  ApplicationName CloseApplication CommandLine CreationFlags CurrentDirectory Environment OnTerminate
-  Priority ProcessInfo StartupInfo State StopWaiting Terminate WaitForTerminate
+  ApplicationName, CloseApplication, CommandLine, CreationFlags, CurrentDirectory, Environment,
+  OnTerminate, Priority, ProcessInfo, StartupInfo, State, StopWaiting, Terminate, WaitForTerminate
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.StartupInfo
 Summary
@@ -616,14 +616,14 @@ Summary
 Description
   Set WaitForTerminate to True to specify that the component must wait for the process to terminate.
   After calling Run, property State will be set to psWaiting. If the process ends, the State will be
-  set to psReady and the OnTerminate event will be fired. Note that you cannot call Run if the 
+  set to psReady and the OnTerminate event will be fired. Note that you cannot call Run if the
   component is waiting for a process to end.
-  
+
   Set WaitForTerminate to False to specify that the component must not wait for the process to
   terminate. After calling Run, property State will be set to psRunning.
-  
+
   Setting WaitForTerminate to True is usefull if you want to take action when the process ends, or
-  if you want to prevent the user to call Run if a process started by TJvCreateProcess is still running. 
+  if you want to prevent the user to call Run if a process started by TJvCreateProcess is still running.
   Otherwise set WaitForTerminate to False.
 
   Note that you cannot change WaitForTerminate if State is psWaiting.
@@ -659,3 +659,4 @@ Description
   caches not to flush or cause the mouse to be unresponsive.
 See Also
   CreationFlags, Run
+----------------------------------------------------------------------------------------------------
