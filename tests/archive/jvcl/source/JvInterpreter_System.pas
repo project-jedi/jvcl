@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvInterpreter_System.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s):  peter Fischer-Haase <pfischer@ise-online.de> commented as "pfh" 
+Contributor(s):  peter Fischer-Haase <pfischer@ise-online.de> commented as "pfh"
 
 Last Modified: 2002-07-04
 
@@ -26,21 +26,19 @@ Description : JVCL Interpreter version 2
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
 
 unit JvInterpreter_System;
 
 interface
 
-uses JvInterpreter {$IFDEF COMPILER6_UP}, Variants {$ENDIF};
+uses JvInterpreter{$IFDEF COMPILER6_UP}, Variants{$ENDIF};
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
 implementation
 
-
-  { TObject }
+{ TObject }
 
 {  function ClassType: TClass; }
 
@@ -315,7 +313,6 @@ begin
     Value := Integer(Args.Values[0]);
 end;
 
-
 { function Chr(X: Byte): Char }
 
 procedure JvInterpreter_Chr(var Value: Variant; Args: TArgs);
@@ -365,82 +362,95 @@ end;
 
 procedure JvInterpreter_Pos(var Value: Variant; Args: TArgs);
 begin
-  Value := Pos(String(Args.Values[0]), String(Args.Values[1]));
+  Value := Pos(string(Args.Values[0]), string(Args.Values[1]));
 end;
 
 //+++pfh
 {procedure Delete(var S: string; Index, Count:Integer);}
-procedure JvInterpreter_Delete(var value : Variant; Args : TArgs);
-Var
-  s : String;
-Begin
+
+procedure JvInterpreter_Delete(var value: Variant; Args: TArgs);
+var
+  s: string;
+begin
   s := Args.Values[0];
-  Delete(S,Integer(Args.Values[1]),Integer(Args.Values[2]));
+  Delete(S, Integer(Args.Values[1]), Integer(Args.Values[2]));
   Args.Values[0] := s;
   Value := S;
-End;
+end;
 
 {procedure Insert(Source: string; var S: string; Index: Integer);}
-procedure JvInterpreter_Insert(var value : Variant; Args : TArgs);
-Var
-  s : String;
-Begin
+
+procedure JvInterpreter_Insert(var value: Variant; Args: TArgs);
+var
+  s: string;
+begin
   s := Args.Values[1];
-  Insert(String(Args.Values[0]),S,Integer(Args.Values[2]));
+  Insert(string(Args.Values[0]), S, Integer(Args.Values[2]));
   Args.Values[1] := s;
   Value := S;
-End;
+end;
 
 { function Sqr(X: Extended): Extended; }
-procedure JvInterpreter_Sqr(var value : Variant; Args : TArgs);
-Begin
+
+procedure JvInterpreter_Sqr(var value: Variant; Args: TArgs);
+begin
   Value := Sqr(Args.Values[0]);
-End;
+end;
 
 { function Sqrt(X: Extended): Extended; }
-procedure JvInterpreter_Sqrt(var value : Variant; Args : TArgs);
-Begin
+
+procedure JvInterpreter_Sqrt(var value: Variant; Args: TArgs);
+begin
   Value := Sqrt(Args.Values[0]);
-End;
+end;
 
 { function Exp(X: Extended): Extended; }
-procedure JvInterpreter_Exp(var value : Variant; Args : TArgs);
-Begin
+
+procedure JvInterpreter_Exp(var value: Variant; Args: TArgs);
+begin
   Value := Exp(Args.Values[0]);
-End;
+end;
 
 { function Ln(X: Extended): Extended; }
-procedure JvInterpreter_Ln(var value : Variant; Args : TArgs);
-Begin
+
+procedure JvInterpreter_Ln(var value: Variant; Args: TArgs);
+begin
   Value := Ln(Args.Values[0]);
-End;
+end;
 
 { function Sin(X: Extended): Extended; }
-procedure JvInterpreter_Sin(var value : Variant; Args : TArgs);
-Begin
+
+procedure JvInterpreter_Sin(var value: Variant; Args: TArgs);
+begin
   Value := Sin(Args.Values[0]);
-End;
+end;
 
 { function Cos(X: Extended): Extended; }
-procedure JvInterpreter_Cos(var value : Variant; Args : TArgs);
-Begin
+
+procedure JvInterpreter_Cos(var value: Variant; Args: TArgs);
+begin
   Value := Cos(Args.Values[0]);
-End;
+end;
 
 { function Tan(X: Extended): Extended; }
-procedure JvInterpreter_Tan(var value : Variant; Args : TArgs);
-Begin
-  Value := Sqr(Args.Values[0]);
-End;
+
+procedure JvInterpreter_Tan(var value: Variant; Args: TArgs);
+begin
+//(p3) Tan() is defined in Math.pas which isn't available in all Delphi SKU's
+//  Tan(X) = Sin(X)/ Cos(X)
+  Value := Sin(Args.Values[0]) / Cos(Args.Values[0]);
+end;
 
 { function ArcTan(X: Extended): Extended; }
-procedure JvInterpreter_ArcTan(var value : Variant; Args : TArgs);
-Begin
-  Value := Sqr(Args.Values[0]);
-End;
+
+procedure JvInterpreter_ArcTan(var value: Variant; Args: TArgs);
+begin
+  Value := ArcTan(Args.Values[0]);
+end;
 //---pfh
 
 { procedure SetLength(var s: ShortString; newLength: Integer); }
+
 procedure JvInterpreter_SetLength(var Value: Variant; Args: TArgs);
 begin
   SetLength(string(TVarData(Args.Values[0]).vString), Integer(Args.Values[1]));
@@ -450,7 +460,7 @@ procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapt
 begin
   with JvInterpreterAdapter do
   begin
-   { TObject }
+    { TObject }
     AddClass('System', TObject, 'TObject');
     AddGet(TObject, 'ClassType', TObject_ClassType, 0, [0], varEmpty);
     AddGet(TObject, 'ClassName', TObject_ClassName, 0, [0], varEmpty);
@@ -459,8 +469,8 @@ begin
     AddGet(TObject, 'ClassInfo', TObject_ClassInfo, 0, [0], varEmpty);
     AddGet(TObject, 'InstanceSize', TObject_InstanceSize, 0, [0], varEmpty);
     AddGet(TObject, 'InheritsFrom', TObject_InheritsFrom, 1, [varEmpty], varEmpty);
-   // AddGet(TObject, 'GetInterface', TObject_GetInterface, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-   { TInterfacedObject }
+    // AddGet(TObject, 'GetInterface', TObject_GetInterface, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    { TInterfacedObject }
 {$IFDEF COMPILER3_UP}
     AddClass('System', TInterfacedObject, 'TInterfacedObject');
     AddGet(TInterfacedObject, 'RefCount', TInterfacedObject_Read_RefCount, 0, [0], varEmpty);
@@ -471,14 +481,14 @@ begin
     AddFun('System', 'Randomize', JvInterpreter_Randomize, 0, [0], varEmpty);
     AddFun('System', 'Random', JvInterpreter_Random, 1, [varInteger], varEmpty);
     AddFun('System', 'UpCase', JvInterpreter_UpCase, 1, [varEmpty], varEmpty);
-  {  AddFun('System', 'WideCharToString', JvInterpreter_WideCharToString, 1, [varEmpty], varEmpty);
-    AddFun('System', 'WideCharLenToString', JvInterpreter_WideCharLenToString, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun('System', 'WideCharToStrVar', JvInterpreter_WideCharToStrVar, 2, [varEmpty, varByRef], varEmpty);
-    AddFun('System', 'WideCharLenToStrVar', JvInterpreter_WideCharLenToStrVar, 3, [varEmpty, varEmpty, varByRef], varEmpty);
-    AddFun('System', 'StringToWideChar', JvInterpreter_StringToWideChar, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    AddFun('System', 'OleStrToString', JvInterpreter_OleStrToString, 1, [varEmpty], varEmpty);
-    AddFun('System', 'OleStrToStrVar', JvInterpreter_OleStrToStrVar, 2, [varEmpty, varByRef], varEmpty);
-    AddFun('System', 'StringToOleStr', JvInterpreter_StringToOleStr, 1, [varEmpty], varEmpty); }
+    {  AddFun('System', 'WideCharToString', JvInterpreter_WideCharToString, 1, [varEmpty], varEmpty);
+      AddFun('System', 'WideCharLenToString', JvInterpreter_WideCharLenToString, 2, [varEmpty, varEmpty], varEmpty);
+      AddFun('System', 'WideCharToStrVar', JvInterpreter_WideCharToStrVar, 2, [varEmpty, varByRef], varEmpty);
+      AddFun('System', 'WideCharLenToStrVar', JvInterpreter_WideCharLenToStrVar, 3, [varEmpty, varEmpty, varByRef], varEmpty);
+      AddFun('System', 'StringToWideChar', JvInterpreter_StringToWideChar, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+      AddFun('System', 'OleStrToString', JvInterpreter_OleStrToString, 1, [varEmpty], varEmpty);
+      AddFun('System', 'OleStrToStrVar', JvInterpreter_OleStrToStrVar, 2, [varEmpty, varByRef], varEmpty);
+      AddFun('System', 'StringToOleStr', JvInterpreter_StringToOleStr, 1, [varEmpty], varEmpty); }
     AddFun('System', 'VarType', JvInterpreter_VarType, 1, [varEmpty], varEmpty);
     AddFun('System', 'VarAsType', JvInterpreter_VarAsType, 2, [varEmpty, varEmpty], varEmpty);
     AddFun('System', 'VarIsEmpty', JvInterpreter_VarIsEmpty, 1, [varEmpty], varEmpty);
@@ -486,42 +496,42 @@ begin
     AddFun('System', 'VarToStr', JvInterpreter_VarToStr, 1, [varEmpty], varEmpty);
     AddFun('System', 'VarFromDateTime', JvInterpreter_VarFromDateTime, 1, [varEmpty], varEmpty);
     AddFun('System', 'VarToDateTime', JvInterpreter_VarToDateTime, 1, [varEmpty], varEmpty);
-   { AddFun('System', 'VarArrayCreate', JvInterpreter_VarArrayCreate, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun('System', 'VarArrayOf', JvInterpreter_VarArrayOf, 1, [varEmpty], varEmpty);
-    AddFun('System', 'VarArrayDimCount', JvInterpreter_VarArrayDimCount, 1, [varEmpty], varEmpty);
-    AddFun('System', 'VarArrayLowBound', JvInterpreter_VarArrayLowBound, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun('System', 'VarArrayHighBound', JvInterpreter_VarArrayHighBound, 2, [varEmpty, varEmpty], varEmpty);
-    AddFun('System', 'VarArrayLock', JvInterpreter_VarArrayLock, 1, [varEmpty], varEmpty);
-    AddFun('System', 'VarArrayUnlock', JvInterpreter_VarArrayUnlock, 1, [varEmpty], varEmpty);
-    AddFun('System', 'VarArrayRef', JvInterpreter_VarArrayRef, 1, [varEmpty], varEmpty);
-    AddFun('System', 'VarIsArray', JvInterpreter_VarIsArray, 1, [varEmpty], varEmpty); }
+    { AddFun('System', 'VarArrayCreate', JvInterpreter_VarArrayCreate, 2, [varEmpty, varEmpty], varEmpty);
+     AddFun('System', 'VarArrayOf', JvInterpreter_VarArrayOf, 1, [varEmpty], varEmpty);
+     AddFun('System', 'VarArrayDimCount', JvInterpreter_VarArrayDimCount, 1, [varEmpty], varEmpty);
+     AddFun('System', 'VarArrayLowBound', JvInterpreter_VarArrayLowBound, 2, [varEmpty, varEmpty], varEmpty);
+     AddFun('System', 'VarArrayHighBound', JvInterpreter_VarArrayHighBound, 2, [varEmpty, varEmpty], varEmpty);
+     AddFun('System', 'VarArrayLock', JvInterpreter_VarArrayLock, 1, [varEmpty], varEmpty);
+     AddFun('System', 'VarArrayUnlock', JvInterpreter_VarArrayUnlock, 1, [varEmpty], varEmpty);
+     AddFun('System', 'VarArrayRef', JvInterpreter_VarArrayRef, 1, [varEmpty], varEmpty);
+     AddFun('System', 'VarIsArray', JvInterpreter_VarIsArray, 1, [varEmpty], varEmpty); }
     AddFun('System', 'ord', JvInterpreter_Ord, 1, [varEmpty], varEmpty);
 
     AddFun('system', 'Chr', JvInterpreter_Chr, 1, [varEmpty], varEmpty);
-    AddFun('system', 'Abs', JvInterpreter_Abs,1,[varEmpty], varEmpty);
-    AddFun('system', 'Length', JvInterpreter_Length,1,[varEmpty], varEmpty);
-    AddFun('system', 'Copy', JvInterpreter_Copy,3,[varEmpty,varEmpty,varEmpty], varEmpty);
-    AddFun('system', 'Round', JvInterpreter_Round,1,[varEmpty], varEmpty);
-    AddFun('system', 'Trunc', JvInterpreter_Trunc,1,[varEmpty], varEmpty);
-    AddFun('system', 'Pos', JvInterpreter_Pos,2,[varEmpty,varEmpty], varEmpty);
+    AddFun('system', 'Abs', JvInterpreter_Abs, 1, [varEmpty], varEmpty);
+    AddFun('system', 'Length', JvInterpreter_Length, 1, [varEmpty], varEmpty);
+    AddFun('system', 'Copy', JvInterpreter_Copy, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
+    AddFun('system', 'Round', JvInterpreter_Round, 1, [varEmpty], varEmpty);
+    AddFun('system', 'Trunc', JvInterpreter_Trunc, 1, [varEmpty], varEmpty);
+    AddFun('system', 'Pos', JvInterpreter_Pos, 2, [varEmpty, varEmpty], varEmpty);
 
-//+++pfh
-    // some Stringfunctions
-    AddFun('system', 'Delete', JvInterpreter_Delete,3,[varByRef,varEmpty,varEmpty], varEmpty);
-    AddFun('system', 'Insert', JvInterpreter_Insert,3,[varEmpty,varByRef,varEmpty], varEmpty);
+    //+++pfh
+        // some Stringfunctions
+    AddFun('system', 'Delete', JvInterpreter_Delete, 3, [varByRef, varEmpty, varEmpty], varEmpty);
+    AddFun('system', 'Insert', JvInterpreter_Insert, 3, [varEmpty, varByRef, varEmpty], varEmpty);
     // some mathfunctions
-    AddFun('system', 'Sqr', JvInterpreter_Sqr,1,[varEmpty], varEmpty);
-    AddFun('system', 'Sqrt', JvInterpreter_Sqrt,1,[varEmpty], varEmpty);
-    AddFun('system', 'Exp', JvInterpreter_Exp,1,[varEmpty], varEmpty);
-    AddFun('system', 'Ln', JvInterpreter_Ln,1,[varEmpty], varEmpty);
-    AddFun('system', 'Sin', JvInterpreter_Sin,1,[varEmpty], varEmpty);
-    AddFun('system', 'Cos', JvInterpreter_Cos,1,[varEmpty], varEmpty);
-    AddFun('system', 'Tan', JvInterpreter_Tan,1,[varEmpty], varEmpty);
-    AddFun('system', 'ArcTan', JvInterpreter_ArcTan,1,[varEmpty], varEmpty);
-//---pfh
+    AddFun('system', 'Sqr', JvInterpreter_Sqr, 1, [varEmpty], varEmpty);
+    AddFun('system', 'Sqrt', JvInterpreter_Sqrt, 1, [varEmpty], varEmpty);
+    AddFun('system', 'Exp', JvInterpreter_Exp, 1, [varEmpty], varEmpty);
+    AddFun('system', 'Ln', JvInterpreter_Ln, 1, [varEmpty], varEmpty);
+    AddFun('system', 'Sin', JvInterpreter_Sin, 1, [varEmpty], varEmpty);
+    AddFun('system', 'Cos', JvInterpreter_Cos, 1, [varEmpty], varEmpty);
+    AddFun('system', 'Tan', JvInterpreter_Tan, 1, [varEmpty], varEmpty);
+    AddFun('system', 'ArcTan', JvInterpreter_ArcTan, 1, [varEmpty], varEmpty);
+    //---pfh
     AddFun('system', 'SetLength', JvInterpreter_SetLength, 2, [varByRef or varString, varInteger], varEmpty);
 
- end; { with }
+  end; { with }
 end; { RegisterJvInterpreterAdapter }
 
 end.
