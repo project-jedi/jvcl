@@ -77,9 +77,11 @@ MakeCFG.exe: MakeCFG\MakeCFG.dpr
   $(DCC) $&.dpr
   cd ..
 
-Bpg2Make.exe: Bpg2Make\Bpg2Make.dpr
+Bpg2Make.exe: bin\Bpg2Make.exe
+
+bin\Bpg2Make.exe: Bpg2Make\Bpg2Make.dpr Bpg2Make\Bpg2MakeUtils.pas
   cd Bpg2Make
-  $(DCC) $&.dpr
+  $(DCC) Bpg2Make.dpr
   cd ..
 
 jtouch.exe: JTouch\jtouch.dpr
