@@ -1,5 +1,10 @@
 ##Package: Core
 ##Status: Completed
+##Skip: TJvPubCustomControl
+##Skip: TJvPubCustomPanel
+##Skip: TJvPubCustomTreeView
+##Skip: TJvPubGraphicControl
+##Skip: TJvPubWinControl
 ----------------------------------------------------------------------------------------------------
 @@JvComponent.pas
 Summary
@@ -7,27 +12,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Joe Doe
-----------------------------------------------------------------------------------------------------
-@@TJvClipboardCommand
-<TITLE TJvClipboardCommand type>
-Summary
-  Enumerates clipboard commands.
-Description
-@@TJvClipboardCommand.caCopy
-  \Copy command; This command copies the current selection to the clipboard in CF_TEXT format.
-@@TJvClipboardCommand.caCut
-  Cut command; This command deletes (cut) the current selection, if any, in the edit control and
-  copies the deleted text to the clipboard in CF_TEXT format.
-@@TJvClipboardCommand.caPaste
-  Paste command; This command copies the current content of the clipboard to the edit control at the
-  current caret position. \Data is inserted only if the clipboard contains data in CF_TEXT format.
-@@TJvClipboardCommand.caUndo
-  Undo command. This command reverses the effect of the last operation on an edit control. The
-  previously deleted text is restored or the previously added text is deleted.
-----------------------------------------------------------------------------------------------------
-@@TJvClipboardCommands
-<TITLE TJvClipboardCommands type>
-<COMBINE TJvClipboardCommand>
 ----------------------------------------------------------------------------------------------------
 @@TJvComponent
 Summary
@@ -50,9 +34,6 @@ Description
   published property, AboutJVCL, that is used to display information about the currently installed
   JEDI-VCL release.
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomControl.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
-----------------------------------------------------------------------------------------------------
 @@TJvCustomPanel
 Summary
   The base class for custom panels.
@@ -61,9 +42,6 @@ Description
   published property, AboutJVCL, that is used to display information about the currently installed
   JEDI-VCL release.
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPanel.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
-----------------------------------------------------------------------------------------------------
 @@TJvCustomTreeView
 Summary
   The base class for tree-view components.
@@ -71,9 +49,6 @@ Description
   TJvCustomTreeView is the base class for tree-view components within the JEDI VCL. The class
   defines one published property, AboutJVCL, that is used to display information about the currently
   installed JEDI-VCL release.
-----------------------------------------------------------------------------------------------------
-@@TJvCustomTreeView.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvForm
 Summary
@@ -85,9 +60,6 @@ Description
 See Also
   TJvWinControl
 ----------------------------------------------------------------------------------------------------
-@@TJvForm.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
-----------------------------------------------------------------------------------------------------
 @@TJvGraphicControl
 Summary
   The base class for custom graphic controls.
@@ -98,8 +70,11 @@ Description
 See Also
   TJvComponent, TJvWinControl
 ----------------------------------------------------------------------------------------------------
-@@TJvGraphicControl.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+@@TJvPopupListBox
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvWinControl
 Summary
@@ -110,6 +85,3 @@ Description
   installed JEDI-VCL release.
 See Also
   TJvCustomControl
-----------------------------------------------------------------------------------------------------
-@@TJvWinControl.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>

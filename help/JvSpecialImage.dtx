@@ -37,9 +37,6 @@ Description
   
   Call Reset to restore the image to it's original state. 
 ----------------------------------------------------------------------------------------------------
-@@TJvSpecialImage.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
-----------------------------------------------------------------------------------------------------
 @@TJvSpecialImage.Brightness
 Summary
   Specifies the brightness of the image.
@@ -50,36 +47,6 @@ Description
   The default value is 100.
 See Also
   FadeIn, FadeOut, Reset
-----------------------------------------------------------------------------------------------------
-@@TJvSpecialImage.Create
-Summary
-  Creates and initializes an instance of TJvSpecialImage.
-Description
-  Call \Create to create an instance of TJvSpecialImage at runtime. A TJvSpecialImage component placed on a 
-  form at design time is created automatically.
-
-  Pass a single Component as a parameter to provide the image with an Owner that is responsible
-  for freeing it.
-
-  \Create calls the inherited \Create method, then sets the initial values for the image as follows: 
-
-  * Brightness is set to 100.
-  * Inverted is set to False.
-  * Flipped is set to False.
-  * Mirrored is set to False.
-Parameters
-  AOwner - The owner for the instance of TJvScrollbar.
-See Also
-  Brightness, Destroy, Flipped, Inverted, Mirrored
-----------------------------------------------------------------------------------------------------
-@@TJvSpecialImage.Destroy
-Summary
-  Destroys an instance of TJvSpecialImage.
-Description
-  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the 
-  TJvSpecialImage object is not nil and only then calls Destroy.
-See Also
-  Create
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialImage.FadeIn
 Summary

@@ -21,24 +21,6 @@ Description
 
   Use property HintColor to change the color of the hint boxes for the scroll box.
 ----------------------------------------------------------------------------------------------------
-@@TJvSplitter.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
-----------------------------------------------------------------------------------------------------
-@@TJvSplitter.Create
-Summary
-  Creates and initializes a new TJvSplitter object.
-Description
-  Use \Create to create and initialize a new TJvSplitter object.
-
-  \Create calls the inherited \Create method, then sets the initial values for the splitter control
-  as follows:
-
-  * HintColor is set to clInfoBk.
-Parameters
-  AOwner - A component, typically the form, that is responsible for freeing the splitter control.
-See Also
-  HintColor
-----------------------------------------------------------------------------------------------------
 @@TJvSplitter.HintColor
 Summary
   Determines the color of the hint boxes for the Help Hints for the splitter control.
@@ -46,26 +28,6 @@ Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
   assign it a new TColor value.
-----------------------------------------------------------------------------------------------------
-@@TJvSplitter.OnMouseEnter
-Summary
-  Occurs when the mouse pointer moves over the splitter control.
-Description
-  \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
-  splitter control. For example, you can use this event to change the font color when the mouse is over the
-  splitter control, and then use the OnMouseLeave event to change it back when the mouse moves off the splitter control.
-See Also
-  OnMouseLeave
-----------------------------------------------------------------------------------------------------
-@@TJvSplitter.OnMouseLeave
-Summary
-  Occurs when the mouse pointer moves off the splitter control.
-Description
-  \Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  splitter control. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
-See Also
-  OnMouseEnter
 ----------------------------------------------------------------------------------------------------
 @@TJvSplitter.OnParentColorChange
 Summary

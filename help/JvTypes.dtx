@@ -260,6 +260,30 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TJvClipboardCommand
+<TITLE TJvClipboardCommand type>
+Summary
+  Enumerates clipboard commands.
+Description
+  Use the TJvClipboardCommand type to specify a specific clipboard command.
+  
+  TJvClipboardCommands is a set of TJvClipboardCommand values.
+@@TJvClipboardCommand.caCopy
+  \Copy command; This command copies the current selection to the clipboard in CF_TEXT format.
+@@TJvClipboardCommand.caCut
+  Cut command; This command deletes (cut) the current selection, if any, in the edit control and
+  copies the deleted text to the clipboard in CF_TEXT format.
+@@TJvClipboardCommand.caPaste
+  Paste command; This command copies the current content of the clipboard to the edit control at the
+  current caret position. \Data is inserted only if the clipboard contains data in CF_TEXT format.
+@@TJvClipboardCommand.caUndo
+  Undo command. This command reverses the effect of the last operation on an edit control. The
+  previously deleted text is restored or the previously added text is deleted.
+----------------------------------------------------------------------------------------------------
+@@TJvClipboardCommands
+<TITLE TJvClipboardCommands type>
+<COMBINE TJvClipboardCommand>
+----------------------------------------------------------------------------------------------------
 @@TJvCMButtonPressed
 <TITLE TJvCMButtonPressed type>
 Summary
@@ -786,23 +810,23 @@ Description
 
   TJvRegKeys is a set of TJvRegKey values.
 @@TJvRegKey.hkClassesRoot
-  The HKEY_CLASSES_ROOT key, used to define types (or classes) of documents and the properties
+    The HKEY_CLASSES_ROOT key, used to define types (or classes) of documents and the properties
   associated with those types.
 @@TJvRegKey.hkCurrentUser
-  The HKEY_CURRENT_USER key, used for preferences of the current user.
+    The HKEY_CURRENT_USER key, used for preferences of the current user.
 @@TJvRegKey.hkLocalMachine
-  The HKEY_LOCAL_MACHINE key, used to define the physical state of the computer,
+    The HKEY_LOCAL_MACHINE key, used to define the physical state of the computer,
 @@TJvRegKey.hkUsers
-  The HKEY_USERS key, used for defining the default user configuration for new users on the local
+    The HKEY_USERS key, used for defining the default user configuration for new users on the local
   computer and the user configuration for the current user.
-@@TJvRegKey.hkCurrentConfig
-  The HKEY_CURRENT_CONFIG key, contains information about the current hardware profile of the
-  local computer system.
 @@TJvRegKey.hkPerformanceData
-  The HKEY_PERFORMANCE_DATA key, allows you to access performance data.
+    The HKEY_PERFORMANCE_DATA key, allows you to access performance data.
   Not supported on Windows Me/98/95.
+@@TJvRegKey.hkCurrentConfig
+    The HKEY_CURRENT_CONFIG key, contains information about the current hardware profile of the
+  local computer system.
 @@TJvRegKey.hkDynData
-  The HKEY_DYN_DATA key, allows you to collect performance data.
+   The HKEY_DYN_DATA key, allows you to collect performance data.
   Only supported on Windows Me/98/95.
 ----------------------------------------------------------------------------------------------------
 @@TJvRegKeys

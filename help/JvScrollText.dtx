@@ -23,37 +23,6 @@ Description
   * Use Delay to specify the interval between refresh events.
   * Set Active to true to scroll the text.
 ----------------------------------------------------------------------------------------------------
-@@TJvScrollText.Create
-Summary
-  Creates and initializes a new TJvScrollText object.
-Description
-  Call \Create to create an instance of TJvScrollText at runtime. A TJvScrollText component placed on a
-  form at design time is created automatically.
-
-  Pass a single Component as a parameter to provide the control with an Owner that is
-  responsible for freeing it.
-
-  \Create calls the inherited \Create method, then sets the initial values for the control
-  as follows:
-
-  * Active is set to false.
-  * Delay is set to 50.
-  * ScrollPixels is set to 1.
-  * ScrollDirection is set to drFromBottom.
-Parameters
-  AOwner - A component, typically the form, that is responsible for freeing the control.
-See Also
-  Destroy
-----------------------------------------------------------------------------------------------------
-@@TJvScrollText.Destroy
-Summary
-  Destroys an instance of TJvScrollText.
-Description
-  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the
-  TJvScrollText object is not nil and only then calls Destroy.
-See Also
-   Create
-----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Active
 Summary
   Indicates whether the text is scrolling in the control.
@@ -61,6 +30,22 @@ Description
   Set Active to true to scroll the text. Set Active to false to interrupt the scrolling.
 See Also
   Pause, Reset, Unpause
+----------------------------------------------------------------------------------------------------
+@@TJvScrollText.Alignment
+Summary
+  Determines how the scroll text is aligned within the control.
+Description
+  The possible values of Alignment are
+
+  <TABLE>
+    Value               Meaning
+    -----               -------
+    taLeftJustify       Text is aligned at the left of the control.
+    taCenter            Text is centered in the control.
+    taRightJustify      Text is aligned at the right of the control.
+  </TABLE>
+See Also
+  Items
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.BackgroundColor
 Summary
@@ -140,22 +125,6 @@ Description
 See Also
   Delay
 ----------------------------------------------------------------------------------------------------
-@@TJvScrollText.Alignment
-Summary
-  Determines how the scroll text is aligned within the control.
-Description
-  The possible values of Alignment are
-
-  <TABLE>
-    Value               Meaning
-    -----               -------
-    taLeftJustify       Text is aligned at the left of the control.
-    taCenter            Text is centered in the control.
-    taRightJustify      Text is aligned at the right of the control.
-  </TABLE>
-See Also
-  Items
-----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Unpause
 Summary
   Resumes scrolling the text.
@@ -164,14 +133,6 @@ Description
   specified by the user.
 See Also
   Pause, Reset, ScrollPixels
-----------------------------------------------------------------------------------------------------
-@@TJvScrollText.WMSize
-Summary
-  Responds when the user resizes the control.
-Description
-  WMSize is called automatically when the user resizes the control.
-Parameters
-  Msg - Represents the parameters of the Windows message that informs the control of the resize event.
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollTextDirection
 <TITLE TJvScrollTextDirection type>

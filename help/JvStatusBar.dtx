@@ -27,54 +27,11 @@ Description
   
   Property HintColor can be used to set a different color of the Help hint boxes for the status bar.  
 ----------------------------------------------------------------------------------------------------
-@@TJvStatusBar.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
-----------------------------------------------------------------------------------------------------
 @@TJvStatusBar.AutoHintShown
 Summary
   Specifies whether the status bar is showing the current hint.
 Description
   Read AutoHintShown to determine whether the status bar is showing the current hint.
-----------------------------------------------------------------------------------------------------
-@@TJvStatusBar.Create
-Summary
-  Creates and initializes a new TJvStatusBar object.
-Description
-  Use Create to create and initialize a new TJvStatusBar object.
-  
-  Create calls the inherited Create method, then sets the initial values for the status bar as follows: 
-
-  * HintColor is set to clInfoBk.
-  * csAcceptsControls is added to ControlStyle.
-Parameters
-  AOwner - A component, typically the form, that is responsible for freeing the status bar.
-See Also
-  HintColor
-----------------------------------------------------------------------------------------------------
-@@TJvStatusBar.CreateParams
-Summary
-  Initializes a window-creation parameter record passed in the Params parameter.
-Description
-  CreateParams is called automatically to initialize the window-creation parameters whenever the window 
-  for the status bar needs to be created. TJvStatusBar overrides CreateParams to customize the 
-  parameters to specify a status bar control that reflects the properties of TJvStatusBar.
-Parameters
-  Params - a window-creation parameter record.
-----------------------------------------------------------------------------------------------------
-@@TJvStatusBar.ExecuteAction
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Action - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvStatusBar.HintColor
 Summary
@@ -116,7 +73,7 @@ Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvStatusPanel.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvStatusPanel.Control
 Summary

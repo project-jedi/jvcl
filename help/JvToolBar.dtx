@@ -23,22 +23,6 @@ Description
 
   Use property HintColor to change the color of the hint boxes for the toolbar.
 ----------------------------------------------------------------------------------------------------
-@@TJvToolBar.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
-----------------------------------------------------------------------------------------------------
-@@TJvToolBar.Create
-Summary
-  Creates and initializes a new TJvToolBar object.
-Description
-  Use \Create to create and initialize a new TJvToolBar object.
-  
-  \Create calls the inherited \Create method, then sets the initial values for the toolbar as follows: 
-
-  * HintColor is set to clInfoBk.
-  * csAcceptsControls is added to ControlStyle.
-Parameters
-  AOwner - A component, typically the form, that is responsible for freeing the toolbar.
-----------------------------------------------------------------------------------------------------
 @@TJvToolBar.HintColor
 Summary
   Determines the color of the hint boxes for the Help Hints for the toolbar.
@@ -56,25 +40,6 @@ Description
   update itself when the menu is changed.
 See Also
   TToolbar, TJvMainMenu
-----------------------------------------------------------------------------------------------------
-@@TJvToolBar.OnMouseEnter
-Summary
-  Occurs when the mouse pointer moves over the toolbar.
-Description
-  \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
-  toolbar.
-See Also
-  OnMouseLeave
-----------------------------------------------------------------------------------------------------
-@@TJvToolBar.OnMouseLeave
-Summary
-  Occurs when the mouse pointer moves off the toolbar.
-Description
-  \Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  toolbar. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
-See Also
-  OnMouseEnter
 ----------------------------------------------------------------------------------------------------
 @@TJvToolBar.OnParentColorChange
 Summary

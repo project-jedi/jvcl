@@ -26,9 +26,6 @@ Description
   objects that permit the user to enter or modify text, that will use the new behavior introduced
   in TJvCustomEdit.
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomEdit.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
-----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.Alignment
 Summary
   Determines how the text in the edit component is aligned.
@@ -48,15 +45,6 @@ Summary
   Specifies the caret settings for the edit control.
 Description
   Caret holds the settings for the custom caret.
-----------------------------------------------------------------------------------------------------
-@@TJvCustomEdit.ClipboardCommands
-Summary
-  Specifies the clipboard commands that are enabled for the control.
-Description
-  Use ClipboardCommands to specify which clipboard commands are allowed for the edit control.
-
-  * ClipboardCommands can't be set to [].
-  * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.DisabledColor
 Summary
@@ -153,18 +141,6 @@ Description
 
   This is usefull if you want the user to type enter a password in this edit control, and want to
   prevent possible trojans from retrieving the typed password.
-----------------------------------------------------------------------------------------------------
-@@TJvCustomEdit.ReadOnly
-Summary
-  Specifies if the edit is in read only mode.
-Description
-  ReadOnly specifies if the user can modify the text of the edit.
-
-  If set to True the user can not modify the text of the edit control.
-
-  If set to False the user can modify the text of the edit control.
-
-  Regardless of the setting of this property, you can change the text of the edit through code.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.Text
 Summary
