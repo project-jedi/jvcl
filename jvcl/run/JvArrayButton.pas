@@ -338,7 +338,7 @@ procedure TJvArrayButton.SetThemed(Value: Boolean);
 begin
   if Value <> FThemed then
   begin
-    FThemed := True;
+    FThemed := Value;
     if FThemed then
       IncludeThemeStyle(Self, [csParentBackground])
     else
