@@ -84,6 +84,7 @@ begin
   FStartColor := clBlue;
   inherited;
   Align := AlClient;
+  ControlStyle := ControlStyle + [csOpaque];
 end;
 
 {***********************************************}
