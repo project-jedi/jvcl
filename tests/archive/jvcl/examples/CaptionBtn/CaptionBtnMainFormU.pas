@@ -4,17 +4,65 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls,JvCaptionButton, ExtCtrls, JvComponent;
+  StdCtrls, JvCaptionButton, ExtCtrls, JvComponent, ComCtrls;
 
 type
   TCaptionBtnMainForm = class(TForm)
-    CaptionButton1: TJvCaptionButton;
-    procedure CaptionButton1MouseDown(Sender: TObject;
+    JvCaptionButton1: TJvCaptionButton;
+    Label1: TLabel;
+    udPosition: TUpDown;
+    lblPos: TLabel;
+    chkToggle: TCheckBox;
+    chkDown: TCheckBox;
+    Label3: TLabel;
+    cbStandard: TComboBox;
+    chkVisible: TCheckBox;
+    Label2: TLabel;
+    edCaption: TEdit;
+    Label4: TLabel;
+    cbBorderStyle: TComboBox;
+    gbButtons: TGroupBox;
+    chkSysMenu: TCheckBox;
+    chkMax: TCheckBox;
+    chkMin: TCheckBox;
+    chkHelp: TCheckBox;
+    meEvents: TMemo;
+    Label5: TLabel;
+    edHint: TEdit;
+    Label6: TLabel;
+    chkShowHints: TCheckBox;
+    chkEnabled: TCheckBox;
+    chkLogEvents: TCheckBox;
+    tbBtnWidth: TTrackBar;
+    Label7: TLabel;
+    Bevel1: TBevel;
+    btnAdd: TButton;
+    btnDelete: TButton;
+    procedure JvCaptionButton1Click(Sender: TObject);
+    procedure JvCaptionButton1MouseDown(Sender: TObject;
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure CaptionButton1MouseUp(Sender: TObject; Button: TMouseButton;
+    procedure JvCaptionButton1MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure FormClick(Sender: TObject);
-    procedure CaptionButton1Click(Sender: TObject);
+    procedure JvCaptionButton1MouseMove(Sender: TObject; Shift: TShiftState;
+      X, Y: Integer);
+    procedure chkVisibleClick(Sender: TObject);
+    procedure chkToggleClick(Sender: TObject);
+    procedure cbStandardChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure udPositionClick(Sender: TObject; Button: TUDBtnType);
+    procedure chkDownClick(Sender: TObject);
+    procedure edCaptionChange(Sender: TObject);
+    procedure chkSysMenuClick(Sender: TObject);
+    procedure chkMaxClick(Sender: TObject);
+    procedure chkMinClick(Sender: TObject);
+    procedure chkHelpClick(Sender: TObject);
+    procedure cbBorderStyleChange(Sender: TObject);
+    procedure chkShowHintsClick(Sender: TObject);
+    procedure edHintChange(Sender: TObject);
+    procedure chkEnabledClick(Sender: TObject);
+    procedure tbBtnWidthChange(Sender: TObject);
+    procedure btnAddClick(Sender: TObject);
+    procedure btnDeleteClick(Sender: TObject);
   end;
 
 var
@@ -24,45 +72,183 @@ implementation
 
 {$R *.DFM}
 
-function BoolToString(Value:boolean):String;
-const
-  cBoolString:array[boolean] of shortstring = ('no','yes');
-begin
-  Result := cBoolString[Value];
-end;
-
-procedure TCaptionBtnMainForm.CaptionButton1MouseDown(Sender: TObject;
+procedure TCaptionBtnMainForm.JvCaptionButton1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  Caption := 'MouseDown: ' + BoolToString(CaptionButton1.Down);;
-{  if CaptionButton1.Down then
-    Screen.Cursor := crHelp
-  else
-    Screen.Cursor := crDefault; }
+  if chkLogEvents.Checked then
+    meEvents.Lines.Add(Format('MouseDown at %d, %d', [X, Y]));
 end;
 
-procedure TCaptionBtnMainForm.CaptionButton1MouseUp(Sender: TObject;
+procedure TCaptionBtnMainForm.JvCaptionButton1MouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  Caption := 'MouseUp: ' + BoolToString(CaptionButton1.Down);;
-{  if CaptionButton1.Down then
-    Screen.Cursor := crHelp
-  else
-    Screen.Cursor := crDefault; }
+  if chkLogEvents.Checked then
+    meEvents.Lines.Add(Format('MouseUp at %d, %d', [X, Y]));
 end;
 
-procedure TCaptionBtnMainForm.FormClick(Sender: TObject);
+procedure TCaptionBtnMainForm.JvCaptionButton1MouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
 begin
-  Caption := 'FormClick: ' + BoolToString(CaptionButton1.Down);
-{  if CaptionButton1.Down then
-    Screen.Cursor := crDefault
-  else
-    Screen.Cursor := crHelp; }
+  if chkLogEvents.Checked then
+    meEvents.Lines.Add(Format('CaptionButton OnMouseMove at %d, %d', [X, Y]));
 end;
 
-procedure TCaptionBtnMainForm.CaptionButton1Click(Sender: TObject);
+procedure TCaptionBtnMainForm.JvCaptionButton1Click(Sender: TObject);
+var
+  P: TPoint;
 begin
-  Caption  := 'Click!';
+  if chkLogEvents.Checked then
+  begin
+    GetCursorPos(P);
+    meEvents.Lines.Add(Format('Click at %d, %d', [P.X, P.Y]));
+  end;
+  chkDown.Checked := JvCaptionButton1.Down;
+end;
+
+procedure TCaptionBtnMainForm.chkVisibleClick(Sender: TObject);
+begin
+  JvCaptionButton1.Visible := chkVisible.Checked;
+end;
+
+procedure TCaptionBtnMainForm.chkToggleClick(Sender: TObject);
+begin
+  JvCaptionButton1.Toggle := chkToggle.Checked;
+  chkDown.Checked := JvCaptionButton1.Down;
+  chkDown.Enabled := chkToggle.Checked;
+end;
+
+procedure TCaptionBtnMainForm.cbStandardChange(Sender: TObject);
+begin
+  JvCaptionButton1.Standard := TJvStandardButton(cbStandard.ItemIndex);
+end;
+
+procedure TCaptionBtnMainForm.FormCreate(Sender: TObject);
+begin
+  udPosition.Position := JvCaptionButton1.Position;
+  udPositionClick(Sender, btNext);
+  cbStandard.ItemIndex := integer(JvCaptionButton1.Standard);
+  chkToggle.Checked := JvCaptionButton1.Toggle;
+  chkVisible.Checked := JvCaptionButton1.Visible;
+  edCaption.Text := JvCaptionButton1.Caption;
+  edHint.Text := JvCaptionButton1.Hint;
+  chkSysMenu.Checked := biSystemMenu in BorderIcons;
+  chkMax.Checked := biMaximize in BorderIcons;
+  chkMin.Checked := biMinimize in BorderIcons;
+  chkHelp.Checked := biHelp in BorderIcons;
+  chkEnabled.Checked := JvCaptionButton1.Enabled;
+  cbBorderStyle.ItemIndex := integer(BorderStyle);
+  chkShowHints.Checked := ShowHint;
+  tbBtnWidth.Min := JvCaptionButton1.ButtonWidth;
+end;
+
+procedure TCaptionBtnMainForm.udPositionClick(Sender: TObject;
+  Button: TUDBtnType);
+begin
+  JvCaptionButton1.Position := udPosition.Position;
+  lblPos.Caption := Format('(%d)', [JvCaptionButton1.Position]);
+end;
+
+procedure TCaptionBtnMainForm.chkDownClick(Sender: TObject);
+begin
+  JvCaptionButton1.Down := chkDown.Checked;
+  chkDown.Checked := JvCaptionButton1.Down;
+end;
+
+procedure TCaptionBtnMainForm.edCaptionChange(Sender: TObject);
+begin
+  JvCaptionButton1.Caption := edCaption.Text;
+end;
+
+procedure TCaptionBtnMainForm.chkSysMenuClick(Sender: TObject);
+begin
+  if chkSysMenu.Checked then
+    BorderIcons := BorderIcons + [biSystemMenu]
+  else
+    BorderIcons := BorderIcons - [biSystemMenu];
+end;
+
+procedure TCaptionBtnMainForm.chkMaxClick(Sender: TObject);
+begin
+  if chkMax.Checked then
+    BorderIcons := BorderIcons + [biMaximize]
+  else
+    BorderIcons := BorderIcons - [biMaximize];
+end;
+
+procedure TCaptionBtnMainForm.chkMinClick(Sender: TObject);
+begin
+  if chkMin.Checked then
+    BorderIcons := BorderIcons + [biMinimize]
+  else
+    BorderIcons := BorderIcons - [biMinimize];
+end;
+
+procedure TCaptionBtnMainForm.chkHelpClick(Sender: TObject);
+begin
+  if chkHelp.Checked then
+    BorderIcons := BorderIcons + [biHelp]
+  else
+    BorderIcons := BorderIcons - [biHelp];
+end;
+
+procedure TCaptionBtnMainForm.cbBorderStyleChange(Sender: TObject);
+begin
+  BorderStyle := TBorderStyle(cbBorderStyle.ItemIndex);
+end;
+
+procedure TCaptionBtnMainForm.chkShowHintsClick(Sender: TObject);
+begin
+  ShowHint := chkShowHints.Checked;
+end;
+
+procedure TCaptionBtnMainForm.edHintChange(Sender: TObject);
+begin
+  JvCaptionButton1.Hint := edHint.Text;
+end;
+
+procedure TCaptionBtnMainForm.chkEnabledClick(Sender: TObject);
+begin
+  JvCaptionButton1.Enabled := chkEnabled.Checked;
+end;
+
+procedure TCaptionBtnMainForm.tbBtnWidthChange(Sender: TObject);
+var P:TPoint;
+begin
+  JvCaptionButton1.ButtonWidth := tbBtnWidth.Position;
+  tbBtnWidth.Hint := Format('(%d)',[tbBtnWidth.Position]);
+  GetCursorPos(P);
+  Application.ActivateHint(P);
+end;
+
+procedure TCaptionBtnMainForm.btnAddClick(Sender: TObject);
+var i,j:integer;
+begin
+  j := 0;
+  // find next position
+  for i := 0 to ComponentCount - 1 do
+    if (Components[i] is TJvCaptionButton) and (TJvCaptionButton(Components[i]).Position >= j) then
+      j := TJvCaptionButton(Components[i]).Position + 1;
+  with TJvCaptionButton.Create(self) do
+  begin
+    Assign(JvCaptionButton1);
+    Position := j;
+    OnClick := JvCaptionButton1Click;
+    OnMouseMove := JvCaptionButton1MouseMove;
+    OnMouseUp := JvCaptionButton1MouseUp;
+    OnMouseDown := JvCaptionButton1MouseDown;
+  end;
+end;
+
+procedure TCaptionBtnMainForm.btnDeleteClick(Sender: TObject);
+var i:integer;
+begin
+  for i := ComponentCount - 1 downto 0 do
+    if (Components[i] is TJvCaptionButton) and (Components[i] <> JvCaptionButton1) then
+    begin
+      Components[i].Free;
+      Exit;
+    end;
 end;
 
 end.
+

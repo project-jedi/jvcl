@@ -9,6 +9,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TCaptionBtnMainForm, CaptionBtnMainForm);
-  Application.CreateForm(TCaptionBtnMainForm, CaptionBtnMainForm);
   Application.Run;
 end.
