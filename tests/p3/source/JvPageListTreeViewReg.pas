@@ -59,8 +59,11 @@ type
     function GetVerbCount: Integer; override;
     procedure ExecuteVerb(Index: Integer); override;
     procedure Edit; override;
-
-    procedure PrepareItem(Index: Integer; const AItem: {$IFDEF COMPILER6_UP}IMenuItem{$ELSE}TMenuItem{$ENDIF});override;
+    {$IFDEF COMPILER6_UP}
+    procedure PrepareItem(Index: Integer; const AItem: IMenuItem);override;
+    {$ELSE}
+    procedure PrepareItem(Index: Integer; const AItem: TMenuItem);override;
+    {$ENDIF}
   end;
 
   TJvSettingsTreeImagesProperty = class(TJvDefaultImageIndexProperty)
@@ -75,13 +78,16 @@ type
   TJvInterfaceProperty = class(TComponentProperty)
   protected
     function GetInterface:TGUID;virtual;
+    function GetInterfaceName:string;virtual;
   public
     procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const Value: string); override;
   end;
 
   TJvPageListProperty = class(TJvInterfaceProperty)
   protected
     function GetInterface:TGUID;override;
+    function GetInterfaceName:string;override;
   end;
   {$ENDIF}
 
@@ -92,7 +98,9 @@ implementation
 uses
   Forms, ComCtrls, Controls, SysUtils,
   JvPageLinkEditor, JvTreeItemsEditor, TypInfo;
-
+resourcestring
+  SFmtInterfaceNotSupported = '%s does not support the required interface (%s)';
+  
 type
   THackTreeView = class(TJvCustomPageListTreeView);
 
@@ -185,7 +193,11 @@ begin
   GetPageControl.NextPage;
 end;
 
-procedure TJvCustomPageEditor.PrepareItem(Index: Integer; const AItem: {$IFDEF COMPILER6_UP}IMenuItem{$ELSE}TMenuItem{$ENDIF});
+{$IFDEF COMPILER6_UP}
+procedure TJvCustomPageEditor.PrepareItem(Index: Integer; const AItem: IMenuItem);
+{$ELSE}
+procedure TJvCustomPageEditor.PrepareItem(Index: Integer; const AItem: TMenuItem);
+{$ENDIF}
 begin
   inherited;
   if (Index = 3) and (GetPageControl.ActivePage = nil) then
@@ -262,6 +274,11 @@ begin
   Result := IUnknown;
 end;
 
+function TJvInterfaceProperty.GetInterfaceName:string;
+begin
+  Result := 'IUnknown';
+end;
+
 procedure TJvInterfaceProperty.GetValues(Proc: TGetStrProc);
 var i:integer;obj:IUnknown;
 begin
@@ -271,6 +288,21 @@ begin
         Proc(Designer.Form.Components[i].Name);
 end;
 
+procedure TJvInterfaceProperty.SetValue(const Value: string);
+var i:integer;obj:IUnknown;
+begin
+  if Value = '' then
+    inherited // setting to nil
+  else
+  begin
+    for i := 0 to Designer.Form.ComponentCount - 1 do
+      if SameText(Designer.Form.Components[i].Name,Value) then
+        if not Supports(Designer.Form.Components[i],GetInterface,obj) then
+          raise Exception.CreateFmt(SFmtInterfaceNotSupported,[Value,GetInterfaceName]);
+    inherited;
+  end;
+end;
+
 { TJvPageListProperty }
 
 function TJvPageListProperty.GetInterface: TGUID;
@@ -278,6 +310,10 @@ begin
   Result := IPageList;
 end;
 
+function TJvPageListProperty.GetInterfaceName:string;
+begin
+  Result := 'IPageList';
+end;
 {$ENDIF}
 
 end.
