@@ -2429,7 +2429,7 @@ begin
     ImageList_Draw(FGlyphList.Handle, Index, Canvas.Handle, X, Y, ILD_NORMAL);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    FGlyphList.Draw(Canvas, X, Y, Index, itMask);
+    FGlyphList.Draw(Canvas, X, Y, Index, itImage);
     {$ENDIF VisualCLX}
     Result := Point(FGlyphList.Width, FGlyphList.Height);
   end;
