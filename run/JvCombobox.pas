@@ -49,7 +49,11 @@ type
 
     Whenever an item is added to the list the provider will be deactivated and the list will be
     handled by the combo box as usual. }
-  TJvComboBoxStrings = class({$IFDEF COMPILER6_UP} TCustomComboBoxStrings {$ELSE} TStrings {$ENDIF})
+  {$IFDEF COMPILER6_UP}
+  TJvComboBoxStrings = class(TCustomComboBoxStrings)
+  {$ELSE}
+  TJvComboBoxStrings = class(TStrings)
+  {$ENDIF}
   private
     {$IFDEF COMPILER5}
     FComboBox: TJvCustomComboBox;
@@ -277,7 +281,6 @@ type
     FCapDeselAll: string;
     FItems: TStrings;
     FListBox: TJvCheckListBox;
-    FPopupMenu: TPopupMenu;
     FSelectAll: TMenuItem;
     FDeselectAll: TMenuItem;
     FNoFocusColor: TColor;
@@ -290,6 +293,7 @@ type
     procedure SetItems(AItems: TStrings);
     procedure ToggleOnOff(Sender: TObject);
     procedure KeyListBox(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ContextListBox(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure ItemsChange(Sender: TObject);
     procedure SetSorted(Value: Boolean);
     procedure AdjustHeight;
@@ -310,8 +314,6 @@ type
     procedure DoExit; override;
     procedure AdjustSize; override;
     procedure CreatePopup; override;
-    procedure HidePopup; override;
-    procedure ShowPopup(Origin: TPoint); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -371,11 +373,10 @@ uses
 type
   PStrings = ^TStrings;
 
-  TJvPrivForm = class(TForm)
+  TJvPrivForm = class(TJvPopupWindow)
   protected
-    procedure CreateParams(var Params: TCreateParams); override;
-  public
-    constructor Create(AOwner: TComponent); override;
+    function GetValue: Variant; override;
+    procedure SetValue(const Value: Variant); override;
   end;
 
 const
@@ -522,6 +523,8 @@ begin
 
   // Create a form with its contents
   FPopup := TJvPrivForm.Create(Self);
+  TJvPrivForm(FPopup).OnCloseUp := PopupCloseUp;
+  TJvPrivForm(FPopup).FIsFocusable := True;
 
   // Create CheckListBox
   FListBox := TJvCheckListBox.Create(FPopup);
@@ -532,25 +535,23 @@ begin
   FListBox.Align := alClient;
   FListBox.OnClickCheck := ToggleOnOff;
   FListBox.OnKeyDown := KeyListBox;
+  FListBox.OnContextPopup := ContextListBox;
+  TJvPrivForm(FPopup).FActiveControl := FListBox;
+
   // Create PopUp
-  FPopupMenu := TPopupMenu.Create(FListBox);
-  FSelectAll := TMenuItem.Create(FPopupMenu);
+  FListBox.PopupMenu := TPopupMenu.Create(FPopup);
+  FSelectAll := TMenuItem.Create(FListBox.PopupMenu);
   FSelectAll.Caption := FCapSelAll;
-  FDeselectAll := TMenuItem.Create(FPopupMenu);
-  FDeselectAll.Caption := FCapDeselAll;
-  FPopupMenu.Items.Insert(0, FSelectAll);
-  FPopupMenu.Items.Insert(1, FDeselectAll);
   FSelectAll.OnClick := SetCheckedAll;
+  FListBox.PopupMenu.Items.Insert(0, FSelectAll);
+  FDeselectAll := TMenuItem.Create(FListBox.PopupMenu);
+  FDeselectAll.Caption := FCapDeselAll;
   FDeselectAll.OnClick := SetUnCheckedAll;
-  FListBox.PopupMenu := FPopupMenu;
+  FListBox.PopupMenu.Items.Insert(1, FDeselectAll);
 end;
 
 destructor TJvCheckedComboBox.Destroy;
 begin
-  FSelectAll.Free;
-  FDeselectAll.Free;
-  FPopupMenu.Free;
-  FListBox.Free;
   FItems.Free;
   FPopup.Free;
   FPopup := nil;
@@ -601,6 +602,36 @@ begin
   inherited Clear;
 end;
 
+procedure TJvCheckedComboBox.ContextListBox(Sender: TObject;
+  MousePos: TPoint; var Handled: Boolean);
+var
+  PopupMenu: TPopupMenu;
+begin
+  { We basically need this code because the standard Delphi code sends a
+    SendCancelMode(nil) that will close the popup if the popup has not the focus.
+    But this also gives us a change to position the popup when Shift + F10
+    is used (Thus if InvalidPoint(MousePos) = true)
+  }
+  PopupMenu := FListBox.PopupMenu;
+  if (PopupMenu <> nil) and PopupMenu.AutoPopup then
+  begin
+    SendCancelMode(FListBox);
+    PopupMenu.PopupComponent := FListBox;
+    if InvalidPoint(MousePos) then
+    begin
+      with FListBox do
+        if ItemIndex >= 0 then
+          MousePos := Point(Width div 2, ItemHeight * (ItemIndex + 1))
+        else
+          MousePos := Point(Width div 2, Height div 2);
+    end;
+
+    MousePos := FListBox.ClientToScreen(MousePos);
+    PopupMenu.Popup(MousePos.X, MousePos.Y);
+    Handled := True;
+  end;
+end;
+
 procedure TJvCheckedComboBox.CreatePopup;
 begin
   //Click;
@@ -618,7 +649,6 @@ begin
     Font := Self.Font;
     Width := Self.Width;
     Height := (FDropDownLines * FListBox.itemHeight + 4 { FEdit.Height });
-    BorderStyle := bsNone;
   end;
 end;
 
@@ -660,11 +690,6 @@ begin
     Result := GetFormatedText(FQuoteStyle, Text, Delimiter);
 end;
 
-procedure TJvCheckedComboBox.HidePopup;
-begin
-  TJvPrivForm(FPopup).Close;
-end;
-
 function TJvCheckedComboBox.IsChecked(Index: Integer): Boolean;
 begin
   Result := FListBox.Checked[Index];
@@ -693,6 +718,7 @@ begin
   if (Key = VK_ESCAPE) and (Shift * KeyboardShiftStates = []) then
   begin
     PopupCloseUp(Self, False);
+    Key := 0;
   end;
 end;
 
@@ -838,16 +864,6 @@ begin
   end;
   Text := '';
   Change;
-end;
-
-procedure TJvCheckedComboBox.ShowPopup(Origin: TPoint);
-begin
-  with TJvPrivForm(FPopup) do
-  begin
-    Left := Origin.X;
-    Top := Origin.Y;
-    Show;
-  end;
 end;
 
 procedure TJvCheckedComboBox.ToggleOnOff(Sender: TObject);
@@ -1536,8 +1552,8 @@ begin
               Break;
           end
           else
-            if AnsiStrLIComp(PChar(Value), PChar(ItemText.Caption), Length(Value)) = 0 then
-              Break;
+          if AnsiStrLIComp(PChar(Value), PChar(ItemText.Caption), Length(Value)) = 0 then
+            Break;
         end;
         Inc(Result);
         if Result >= VL.Count then
@@ -1610,7 +1626,7 @@ begin
     FFilter := Text
   else
   begin
-   if GetTickCount - FLastTime >= 500 then
+    if GetTickCount - FLastTime >= 500 then
       FFilter := '';
     FLastTime := GetTickCount;
   end;
@@ -1661,8 +1677,8 @@ begin
       end;
     end
     else
-      if SelectItem(SaveText) then
-        Key := #0;
+    if SelectItem(SaveText) then
+      Key := #0;
   end;
 end;
 
@@ -2000,17 +2016,14 @@ end;
 
 //=== { TJvPrivForm } ========================================================
 
-constructor TJvPrivForm.Create(AOwner: TComponent);
+function TJvPrivForm.GetValue: Variant;
 begin
-  inherited CreateNew(AOwner);
-  Color := clWindow;
+  Result := '';
 end;
 
-procedure TJvPrivForm.CreateParams(var Params: TCreateParams);
+procedure TJvPrivForm.SetValue(const Value: Variant);
 begin
-  inherited CreateParams(Params);
-  Params.Style := WS_POPUP or WS_BORDER;
-  Params.ExStyle := WS_EX_TOOLWINDOW;
+  {Nothing}
 end;
 
 end.
