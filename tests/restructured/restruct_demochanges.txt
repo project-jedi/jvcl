@@ -17,5 +17,5 @@ JvWindowsTitleProj - removed JvWindowsTitle, calls GetVisibleWindows in JvFuncti
 ListCombDemo       - renamed TJvComboBox3 to TJvImageComboBox
                      renamed TJvFontComboBox2 to TJvFontComboBox
                      renamed TJvListBox3 to TJvImageListBox
-
+JvOutlookPanel	   - remove as TJvOutlookPanel is in \archive
 

@@ -254,6 +254,7 @@ Others:
   Changed ancestry of JvRLE to TObject, removed registration
 * Changed JvClock slightly: removed the predefined border  - set your own border using a panel or bevel or similar
 * Renamed TJvImageBox2 to TJvImageSquare and changed icon name in JvP3Reg.dcr
+* Moved TAppletFileProperty from jvDialogsReg to new unit JvAppletProperty
 
 Merging of TJvStringGrid:
 -------------------------
