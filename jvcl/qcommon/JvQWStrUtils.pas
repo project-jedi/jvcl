@@ -187,6 +187,8 @@ type
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
   end;
 
+  TWideStringList = TWStringList;
+  TWideStrings = TWStrings;
 
 // WideChar functions
 function CharToWideChar(Ch: AnsiChar): WideChar;
