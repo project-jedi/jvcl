@@ -48,7 +48,7 @@ type
     GroupBoxInstallOptions: TGroupBox;
     CheckBoxDeveloperInstall: TCheckBox;
     CheckBoxCleanPalettes: TCheckBox;
-    Label1: TLabel;
+    LblOptionsFor: TLabel;
     ComboBoxTargetIDE: TComboBox;
     ImageListTargets: TImageList;
     CheckBoxBuild: TCheckBox;
@@ -57,6 +57,8 @@ type
     FrameDirEditBrowseDCP: TFrameDirEditBrowse;
     FrameDirEditBrowseHPP: TFrameDirEditBrowse;
     BtnEditJvclInc: TButton;
+    LblBCBGuide: TLabel;
+    CheckBoxCompileJclDcp: TCheckBox;
     procedure CheckBoxDeveloperInstallClick(Sender: TObject);
     procedure CheckBoxXPThemingClick(Sender: TObject);
     procedure ComboBoxTargetIDEChange(Sender: TObject);
@@ -64,6 +66,8 @@ type
       Index: Integer; Rect: TRect; State: TOwnerDrawState);
     procedure BtnEditJvclIncClick(Sender: TObject);
     procedure LblDxgettextHomepageClick(Sender: TObject);
+    procedure LblBCBGuideClick(Sender: TObject);
+    procedure CheckBoxCompileJclDcpClick(Sender: TObject);
   private
     FInitializing: Integer;
     FInstaller: TInstaller;
@@ -84,12 +88,9 @@ type
 implementation
 
 uses
-  Core, MainConfig, Main;
+  InstallerConsts, Core, MainConfig, Main, Utils;
 
 {$R *.dfm}
-
-resourcestring
-  RsAllTargets = 'All versions';
 
 { TFrameConfigPage }
 
@@ -143,6 +144,7 @@ begin
     FrameDirEditBrowseBPL.OnChange := BplDirChanged;
     FrameDirEditBrowseDCP.OnChange := DcpDirChanged;
     FrameDirEditBrowseHPP.OnChange := HppDirChanged;
+    FrameDirEditBrowseHPP.AllowEmpty := True;
 
     with ComboBoxTargetIDE do
     begin
@@ -180,6 +182,9 @@ begin
 
     CheckBoxDxgettextSupport.Visible := Installer.Data.IsDxgettextInstalled;
     LblDxgettextHomepage.Visible := not Installer.Data.IsDxgettextInstalled;
+
+   // common options 
+    CheckBoxCompileJclDcp.Checked := Installer.Data.CompileJclDcp;
 
     UpdateJvclIncSettings;
   finally
@@ -225,6 +230,13 @@ begin
     ;
   end;
   PackageInstaller.UpdatePages;
+end;
+
+procedure TFrameConfigPage.CheckBoxCompileJclDcpClick(Sender: TObject);
+begin
+  if FInitializing > 0 then
+    Exit;
+  Installer.Data.CompileJclDcp := CheckBoxCompileJclDcp.Checked;
 end;
 
 procedure TFrameConfigPage.UpdateJvclIncSettings;
@@ -288,6 +300,7 @@ begin
     FrameDirEditBrowseBPL.Visible := ItemIndex > 0;
     FrameDirEditBrowseDCP.Visible := ItemIndex > 0;
     FrameDirEditBrowseHPP.Visible := (ItemIndex > 0) and SelTargetConfig.Target.IsBCB;
+    LblBCBGuide.Visible := FrameDirEditBrowseHPP.Visible;
   finally
     Dec(FInitializing);
   end;
@@ -336,6 +349,15 @@ end;
 procedure TFrameConfigPage.LblDxgettextHomepageClick(Sender: TObject);
 begin
   Installer.DoHomepageClick(Sender);
+end;
+
+procedure TFrameConfigPage.LblBCBGuideClick(Sender: TObject);
+var
+  Filename: string;
+begin
+  Filename := Installer.Data.JVCLDir + '\' + SInstallHTM;
+  if not OpenAtAnchor(Filename, SBCBGuideAnchor) then
+    MessageDlg(Format(RsCannotOpen, [Filename]), mtError, [mbOk], 0);
 end;
 
 end.

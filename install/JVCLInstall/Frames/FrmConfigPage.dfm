@@ -4,6 +4,22 @@ object FrameConfigPage: TFrameConfigPage
   Width = 518
   Height = 335
   TabOrder = 0
+  object LblBCBGuide: TLabel
+    Left = 264
+    Top = 312
+    Width = 102
+    Height = 13
+    Cursor = crHandPoint
+    Caption = 'BCB installation guide'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlue
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsUnderline]
+    ParentFont = False
+    Visible = False
+    OnClick = LblBCBGuideClick
+  end
   object GroupBoxJvclInc: TGroupBox
     Left = 272
     Top = 8
@@ -127,7 +143,7 @@ object FrameConfigPage: TFrameConfigPage
     Height = 321
     Caption = ' Installation options '
     TabOrder = 0
-    object Label1: TLabel
+    object LblOptionsFor: TLabel
       Left = 8
       Top = 20
       Width = 54
@@ -265,6 +281,7 @@ object FrameConfigPage: TFrameConfigPage
         Left = 7
         Width = 70
         Caption = '&HPP Directory:'
+        ParentShowHint = False
       end
       inherited Bevel: TBevel
         Width = 309
@@ -273,11 +290,26 @@ object FrameConfigPage: TFrameConfigPage
       inherited EditDirectory: TEdit
         Left = 7
         Width = 208
+        Hint = 
+          'The HPP directory specifies where the generated .hpp files'#13#10'shou' +
+          'ld go. If this field is empty the generated .hpp files are'#13#10'writ' +
+          'ten to the directory where the pascal source file is.'
+        ParentShowHint = False
+        ShowHint = True
       end
       inherited BtnJCLDirBrowse: TButton
         Left = 216
       end
     end
+  end
+  object CheckBoxCompileJclDcp: TCheckBox
+    Left = 272
+    Top = 176
+    Width = 241
+    Height = 17
+    Caption = 'Compile JCL .dcp files if necessary'
+    TabOrder = 2
+    OnClick = CheckBoxCompileJclDcpClick
   end
   object ImageListTargets: TImageList
     Left = 200

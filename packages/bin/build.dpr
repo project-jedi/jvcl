@@ -47,6 +47,9 @@ var
   MakeOptions: string = '';
   Verbose: Boolean = False;
 
+  DccOpt: string = '-Q -M';
+  LibDir, DcpDir, BplDir: string;
+
   Editions: array of string = nil;
   Targets: array of TTarget = nil;
 
@@ -472,10 +475,10 @@ var
   i: Integer;
 begin
   AddAllEditions(True);
-  WriteLn('buildtarget.exe setups the environment for the given targets and executes the');
+  WriteLn('build.exe setups the environment for the given targets and executes the');
   WriteLn('make file that does the required actions.');
   WriteLn;
-  WriteLn('buildtarget.exe [TARGET] [OPTIONS]');
+  WriteLn('build.exe [TARGET] [OPTIONS]');
   WriteLn('  targets:');
 
   Write('    ');
@@ -488,6 +491,7 @@ begin
   WriteLn;
   WriteLn('  OPTIONS:');
   WriteLn('    --make=X        X will be added to the make command line.');
+  WriteLn('    --dcc-opt=X     sets the DCCOPT environment variable to X.');
   WriteLn('    --jcl-path=X    sets the JCLROOT environment variable to X.');
   WriteLn('    --bpl-path=X    sets the BPLDIR and DCPDIR environment variable to X.');
   WriteLn('    --lib-path=X    sets the LIBDIR environment variable to X (BCB only).');
@@ -524,6 +528,11 @@ begin
         if S <> '' then
           MakeOptions := MakeOptions + ' "' + S + '"';
       end
+      else if StartsText('--dcc-opt=', S) then
+      begin
+        Delete(S, 1, 10);
+        DccOpt := S;
+      end
       else if StartsText('--jcl-path=', S) then
       begin
         Delete(S, 1, 11);
@@ -532,13 +541,13 @@ begin
       else if StartsText('--bpl-path=', S) then
       begin
         Delete(S, 1, 11);
-        SetEnvironmentVariable('BPLDIR', Pointer(S));
-        SetEnvironmentVariable('DCPDIR', Pointer(S));
+        BplDir := S;
+        DcpDir := S;
       end
       else if StartsText('--lib-path=', S) then
       begin
         Delete(S, 1, 11);
-        SetEnvironmentVariable('LIBDIR', Pointer(S));
+        LibDir := S;
       end
       else if StartsText('--hpp-path=', S) then
       begin
@@ -548,7 +557,7 @@ begin
       end
       else if SameText(S, '--build') then
       begin
-        SetEnvironmentVariable('DCCOPT', '-Q -M -B');
+        DccOpt := DccOpt + ' -B';
       end
       else if StartsText('--targets=', S) then
       begin
@@ -626,6 +635,12 @@ begin
   JVCLRoot := ExtractFileDir(JVCLRoot); // $(JVCL)\Packages
   JVCLRoot := ExtractFileDir(JVCLRoot); // $(JVCL)
 
+  SetEnvironmentVariable('JCLROOT', '..\..\..\jcl'); // could be changed by command line option
+
+  BplDir := '';
+  DcpDir := '';
+  LibDir := '';
+
   LoadTargetNames;
   ProcessArgs;
 
@@ -661,12 +676,27 @@ begin
 
     FindDxgettext(Version);
 
+
+    if DcpDir = '' then
+    begin
+      BplDir := Root + '\Projects\Bpl';
+      DcpDir := Root + '\Projects\Bpl';
+      LibDir := Root + '\Projects\Lib';
+    end;
+
    // setup environment and execute build.bat
+    SetEnvironmentVariable('PATH', PChar(Root + ';' + BplDir + ';' + LibDir));
+    SetEnvironmentVariable('BPLDIR', Pointer(BplDir));
+    SetEnvironmentVariable('DCPDIR', Pointer(DcpDir));
+    SetEnvironmentVariable('LIBDIR', Pointer(LibDir));
+    SetEnvironmentVariable('BPILIBDIR', Pointer(LibDir));
     SetEnvironmentVariable('PERSONALEDITION_OPTION', nil);
     SetEnvironmentVariable('ROOT', PChar(Root));
     SetEnvironmentVariable('JVCLROOT', PChar(JVCLRoot));
     SetEnvironmentVariable('VERSION', PChar(Version));
     SetEnvironmentVariable('UNITOUTDIR', PChar(UnitOutDir));
+    SetEnvironmentVariable('DCCOPT', Pointer(DccOpt));
+    SetEnvironmentVariable('DCC', PChar('"' + Root + '\bin\dcc32.exe" ' + DccOpt));
 
     if (UpCase(PkgDir[3]) = 'P') or (UpCase(PkgDir[3]) = 'S') then
     begin

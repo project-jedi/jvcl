@@ -73,6 +73,7 @@ resourcestring
  // FrmDirEditBrowse.pas
 resourcestring
   RsSelectJCLDir = 'Select the directory where the JCL source is.';
+  RsNoDirectoryButton = 'No directory';
 
  // FrmInstall.pas
 resourcestring
@@ -143,6 +144,15 @@ resourcestring
   RsConfigPageTitle = 'Configuration';
   RsConfigPageSubTitle = 'Choose the compilation options and global options for all targets';
 
+ // FrmConfigPage.pas
+resourcestring
+  RsAllTargets = 'All versions';
+  RsCannotOpen = 'Cannot open %s';
+  
+const
+  SInstallHTM = 'help\install.htm'; // do not localize
+  SBCBGuideAnchor = 'AddJVCLPathToBCB'; // do not localize
+
  // PgIDESelection.pas
 resourcestring
   RsSelectionPageTitle = 'Choose IDE targets';
@@ -162,8 +172,6 @@ resourcestring
 
   RsJCLDirectoryCaption = '&JCL directory:';
   RsDeleteJVCLFilesCaption = '&Delete JVCL files (dcu,bpl,dcp, obj,bpi,lib,tds)';
-
-
 
  // Main.pas
 resourcestring

@@ -87,11 +87,11 @@ JVCLRESDIRS=$(JVCLROOT)\Resources
 #-------------------------------------------------------------------------------
 
 default: \
-		BuildJCLdcpFiles \
-		Resources \
-		pg.exe \
-		Compile \
-		Clean
+	BuildJCLdcpFiles \
+	Resources \
+	pg.exe \
+	Compile \
+	Clean
 
 
 ################################################################################
@@ -103,8 +103,6 @@ BuildJCLdcpFiles:
 BuildJCLdcpFilesForce:
 	# for C++ targets compile JCL .dcp files
 	IF EXIST "$(ROOT)\bin\bcc32.exe" $(MAKE) -s -f MakeJCLDcp4BCB.mak
-	@if EXIST "$(JCLROOT)\packages\error.log"  @type "$(JCLROOT)\packages\error.log"
-	@del "$(JCLROOT)\packages\error.log" 2>NUL
 
 ################################################################################
 Resources:
@@ -140,7 +138,8 @@ pg.exe: Templates GeneratePackages
 ################################################################################
 configfile:
 	# create dcc32.cfg file
-	-@del "$(CFG)" >NUL 2>NUL
+	@echo Writing: $(CFG)
+	-@del /q "$(CFG)" 2>NUL
 	-@IF EXIST "$(ROOT)\bin\dcc32.cfg" @type "$(ROOT)\bin\dcc32.cfg" >>"$(CFG)"
 	@echo. >>"$(CFG)"
 	@echo -Q>>"$(CFG)"
@@ -167,7 +166,7 @@ configfile:
 ################################################################################
 Templates:
 	@echo [Generating: Templates]
-	@$(MAKE) -f makefile.mak "-DCFG=$(CFGFILE)" configfile >NUL
+	@$(MAKE) -f makefile.mak "-DCFG=$(CFGFILE)" configfile
 	#
 	@echo -LE"$(BPLDIR)">>"$(CFGFILE)"
 	@echo -LN"$(DCPDIR)">>"$(CFGFILE)"
@@ -187,38 +186,23 @@ Compile: Bpg2Make.exe CompilePackages
 CompilePackages:
 	@echo [Compiling: Packages]
 	@cd $(JVCLPACKAGEDIR)
-	#
-	# create temporary batch file that calls "make"
-	@echo @echo off>tmp.bat
-	@echo IF NOT $(JCLROOT)!==! SET ADDFLAGS=-U$(JCLROOT)\dcu>>tmp.bat
-	@echo SET BPLDIR=$(BPLDIR)>>tmp.bat
-	@echo SET BPILIBDIR=$(LIBDIR)>>tmp.bat
-	@echo SET PATH=$(ROOT)\bin;$(LIBDIR);$(BPLDIR);%PATH%>>tmp.bat
-	@echo SET LIBDIR=$(LIBDIR)>>tmp.bat
-	@echo SET HPPDIR=$(HPPDIR)>>tmp.bat
-	@echo SET DCCOPT=$(DCCOPT)>>tmp.bat
-	@echo SET DCC=$(DCC)>>tmp.bat
-	@echo $(MAKE) -f "$(PKGDIR) Packages.mak" $(MAKEOPTIONS) $(TARGETS)>>tmp.bat
-	#
-	#
-	@call tmp.bat
-	-@del tmp.bat >NUL
+	$(MAKE) -f "$(PKGDIR) Packages.mak" $(MAKEOPTIONS) $(TARGETS)
 	@cd bin
 
 ################################################################################
 Clean:
 	@echo [Cleaning...]
 	@cd $(JVCLROOT)\packages
-	-del /f /q "$(PKGDIR) Packages.mak" 2>NUL
-	-del /f /q "$(PKGDIR)\*.cfg" "$(PKGDIR)\*.mak" 2>NUL
-	-del /f /q tmp.bat 2>NUL
+	-del /q "$(PKGDIR) Packages.mak" 2>NUL
+	-del /q "$(PKGDIR)\*.cfg" "$(PKGDIR)\*.mak" 2>NUL
+	-del /q tmp.bat 2>NUL
 	-@IF NOT "$(PKGDIR_MASTEREDITION)!" == "!" del /f /q "$(PKGDIR_MASTEREDITION)\*.mak" 2>NUL
 	@cd bin
 
 ################################################################################
 Installer:
 	@echo [Compiling: Installer]
-	$(MAKE) "-DCFG=..\..\install\JVCLInstall\JVCLInstall.cfg" configfile >NUL
+	$(MAKE) "-DCFG=..\..\install\JVCLInstall\JVCLInstall.cfg" configfile
 	@cd ..\..\install\JVCLInstall
 	#
 	@echo -E"$(JVCLROOT)\bin">>JVCLInstall.cfg

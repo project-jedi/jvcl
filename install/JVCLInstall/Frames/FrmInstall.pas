@@ -264,6 +264,7 @@ procedure TFrameInstall.Execute;
 var
   Success: Boolean;
   i: Integer;
+  AbortReason: string;
 begin
   Aborted := False;
 
@@ -277,6 +278,7 @@ begin
     Compiler.OnProgress := EvProgress;
     Compiler.OnCaptureLine := EvCaptureLine;
     Success := Compiler.Compile;
+    AbortReason := Compiler.AbortReason;
   finally
     Compiler.Free;
   end;
@@ -301,7 +303,7 @@ begin
     LblTarget.Caption := Format(RsError, [LblTarget.Hint]);
     BtnDetails.Visible := False;
     RichEditLog.Visible := True;
-    MessageDlg(RsCompileError, mtError, [mbOk], 0);
+    MessageDlg(RsCompileError + #10#10 + AbortReason, mtError, [mbOk], 0);
   end
   else
     LblTarget.Caption := RsComplete;
