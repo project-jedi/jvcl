@@ -388,6 +388,9 @@ type
     FBtnGlyph: TBitmap;
     FBtnDisabled: TBitmap;
 {$ENDIF}
+{$IFDEF COMPILER7_UP}
+    FMouseInControl: Boolean;
+{$ENDIF}
     FOnDropDown: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
     procedure ListMouseUp(Sender: TObject; Button: TMouseButton;
@@ -412,6 +415,10 @@ type
 {$ENDIF}
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+{$IFDEF COMPILER7_UP}
+    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+{$ENDIF}
     procedure WMCancelMode(var Message: TMessage); message WM_CANCELMODE;
     procedure WMGetDlgCode(var Message: TMessage); message WM_GETDLGCODE;
     procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
@@ -687,7 +694,8 @@ type
 implementation
 
 uses DBConsts, Dialogs, {$IFNDEF WIN32}JvStr16, {$ENDIF}JvVCLUtils, JvStrUtils,
-{$IFNDEF COMPILER3_UP}JvBdeUtils, {$ENDIF}JvMaxMin, JvClipIcon;
+{$IFNDEF COMPILER3_UP}JvBdeUtils, {$ENDIF}JvMaxMin, JvClipIcon
+{$IFDEF COMPILER7_UP}, Themes{$ENDIF};
 
 procedure CheckLookupFormat(const AFormat: string);
 var
@@ -798,7 +806,11 @@ constructor TJvLookupControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if NewStyleControls then
+{$IFDEF COMPILER7_UP}
+    ControlStyle := [csOpaque, csNeedsBorderPaint]
+{$ELSE}
     ControlStyle := [csOpaque]
+{$ENDIF}
   else
     ControlStyle := [csOpaque, csFramed];
   ParentColor := False;
@@ -2943,6 +2955,10 @@ var
 {$IFNDEF WIN32}
   Target: TRect;
 {$ENDIF}
+{$IFDEF COMPILER7_UP}
+  State: TThemedComboBox;
+  Details: TThemedElementDetails;
+{$ENDIF}
 begin
   Canvas.Font := Font;
   Canvas.Brush.Color := Color;
@@ -3088,13 +3104,31 @@ begin
   end;
 {$ENDIF}
 {$IFDEF WIN32}
-  if (not FListActive) or (not Enabled) or ReadOnly then
-    Flags := DFCS_SCROLLCOMBOBOX or DFCS_INACTIVE
-  else if FPressed then
-    Flags := DFCS_SCROLLCOMBOBOX or DFCS_FLAT or DFCS_PUSHED
+{$IFDEF COMPILER7_UP}
+  if ThemeServices.ThemesEnabled then
+  begin
+    if (not FListActive) or (not Enabled) or ReadOnly then
+      State := tcDropDownButtonDisabled
+    else if FPressed then
+      State := tcDropDownButtonPressed
+    else if FMouseInControl and not FListVisible then
+      State := tcDropDownButtonHot
+    else
+      State := tcDropDownButtonNormal;
+    Details := ThemeServices.GetElementDetails(State);
+    ThemeServices.DrawElement(Canvas.Handle, Details, R);
+  end
   else
-    Flags := DFCS_SCROLLCOMBOBOX;
-  DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, Flags);
+{$ENDIF COMPILER7_UP}
+  begin
+    if (not FListActive) or (not Enabled) or ReadOnly then
+      Flags := DFCS_SCROLLCOMBOBOX or DFCS_INACTIVE
+    else if FPressed then
+      Flags := DFCS_SCROLLCOMBOBOX or DFCS_FLAT or DFCS_PUSHED
+    else
+      Flags := DFCS_SCROLLCOMBOBOX;
+    DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, Flags);
+  end;
 {$ELSE}
   if NewStyleControls then
   begin
@@ -3118,7 +3152,7 @@ begin
   { Canvas.Draw(Target.Left, Target.Top, Bmp); }
   DrawBitmapTransparent(Canvas, Target.Left, Target.Top, Bmp,
     TransColor[Bmp = FBtnGlyph]);
-{$ENDIF}
+{$ENDIF WIN32}
 end;
 
 procedure TJvDBLookupCombo.ResetField;
@@ -3204,6 +3238,31 @@ begin
   if not (csReading in ComponentState) then
     Height := Max(Height, GetMinHeight);
 end;
+
+{$IFDEF COMPILER7_UP}
+
+procedure TJvDBLookupCombo.CMMouseEnter(var Message: TMessage);
+begin
+  inherited;
+  {Windows XP themes use hot track states, hence we have to update the drop down button.}
+  if ThemeServices.ThemesEnabled and not (FMouseInControl) and not (csDesigning in
+    ComponentState) then
+  begin
+    FMouseInControl := True;
+    Invalidate;
+  end;
+end;
+
+procedure TJvDBLookupCombo.CMMouseLeave(var Message: TMessage);
+begin
+  inherited;
+  if ThemeServices.ThemesEnabled and FMouseInControl then
+  begin
+    FMouseInControl := False;
+    Invalidate;
+  end;
+end;
+{$ENDIF COMPILER7_UP}
 
 procedure TJvDBLookupCombo.CMEnabledChanged(var Message: TMessage);
 begin
