@@ -3,6 +3,7 @@ object Form1: TForm1
   Top = 122
   Width = 555
   Height = 431
+  ActiveControl = cbColor
   Caption = 'JvCharMap Demo'
   Color = clBtnFace
   Constraints.MinHeight = 300
@@ -18,16 +19,13 @@ object Form1: TForm1
   TextHeight = 14
   object Panel1: TPanel
     Left = 0
-    Top = 279
+    Top = 248
     Width = 547
-    Height = 125
+    Height = 156
     Align = alBottom
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 0
-    DesignSize = (
-      547
-      125)
     object Label1: TLabel
       Left = 8
       Top = 8
@@ -52,9 +50,18 @@ object Form1: TForm1
       Caption = '&Columns:'
       FocusControl = udColumns
     end
+    object lblFilter: TLabel
+      Left = 8
+      Top = 76
+      Width = 26
+      Height = 14
+      Caption = '&Filter:'
+      Enabled = False
+      FocusControl = cbFilter
+    end
     object btnFont: TButton
       Left = 216
-      Top = 92
+      Top = 124
       Width = 75
       Height = 25
       Caption = '&Font...'
@@ -137,7 +144,7 @@ object Form1: TForm1
     end
     object cbColor: TJvColorComboBox
       Left = 8
-      Top = 94
+      Top = 126
       Width = 97
       Height = 21
       ColorNameMap.Strings = (
@@ -203,7 +210,7 @@ object Form1: TForm1
     end
     object cbFont: TJvFontComboBox
       Left = 112
-      Top = 94
+      Top = 126
       Width = 97
       Height = 22
       FontName = 'System'
@@ -214,7 +221,7 @@ object Form1: TForm1
     object chkUnicode: TCheckBox
       Left = 126
       Top = 52
-      Width = 97
+      Width = 59
       Height = 17
       Caption = '&Unicode'
       TabOrder = 7
@@ -224,7 +231,7 @@ object Form1: TForm1
       Left = 312
       Top = 48
       Width = 222
-      Height = 65
+      Height = 96
       Anchors = [akLeft, akTop, akRight, akBottom]
       ParentShowHint = False
       ScrollBars = ssBoth
@@ -241,6 +248,17 @@ object Form1: TForm1
       Caption = 'Se&lect'
       TabOrder = 11
       OnClick = btnSelectClick
+    end
+    object cbFilter: TComboBox
+      Left = 8
+      Top = 90
+      Width = 289
+      Height = 22
+      Style = csDropDownList
+      Enabled = False
+      ItemHeight = 14
+      TabOrder = 13
+      OnClick = cbFilterClick
     end
   end
   object FontDialog1: TFontDialog
