@@ -34,11 +34,7 @@ unit JvCheckBox;
 interface
 
 uses
-  Windows, 
-  {$IFDEF VCL}
-  Messages,
-  {$ENDIF VCL}
-  Classes, Graphics, Controls, StdCtrls,
+  Windows, Messages, Classes, Graphics, Controls, StdCtrls,
   JvTypes, JvExStdCtrls, JvLinkedControls;
 
 type
@@ -90,9 +86,10 @@ type
     {$IFDEF VCL}
     procedure BmSetCheck(var Msg: TMessage); message BM_SETCHECK;
     {$ENDIF VCL}
-    {$IFDEF VisualCLX}
+  {$IFDEF VisualCLX}
     procedure StateChanged(State: TToggleState); override;
-    {$ENDIF VisualCLX}
+  public
+  {$ENDIF VisualCLX}
     procedure Toggle; override;
   public
     constructor Create(AOwner: TComponent); override;

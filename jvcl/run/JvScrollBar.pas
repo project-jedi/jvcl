@@ -30,13 +30,7 @@ unit JvScrollBar;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Messages, Graphics, Controls, Forms, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QStdCtrls, Types,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   JvExStdCtrls;
 
 type

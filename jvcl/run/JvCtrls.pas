@@ -33,13 +33,7 @@ unit JvCtrls;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
-  Classes, Graphics, Controls, StdCtrls, ImgList,
+  Windows, Messages, Classes, Graphics, Controls, StdCtrls, ImgList,
   JvButton;
 
 {$IFDEF VisualCLX}
@@ -210,7 +204,7 @@ type
 implementation
 
 uses
-  SysUtils, Forms, ActnList, Consts,
+  Consts, SysUtils, Forms, ActnList, 
   JvJCLUtils, JvThemes, JvFinalize;
 
 {$IFDEF MSWINDOWS}

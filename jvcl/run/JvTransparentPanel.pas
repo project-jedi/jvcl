@@ -30,13 +30,10 @@ unit JvTransparentPanel;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, ExtCtrls,
-  {$ENDIF VCL}
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls,
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QExtCtrls, Types, Qt, QWindows,
+  Qt,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
   JvPanel;
 
 type

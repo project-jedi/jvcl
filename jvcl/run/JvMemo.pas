@@ -40,6 +40,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I vclonly.inc}
 
 unit JvMemo;
 
@@ -49,8 +50,8 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   JvCaret, JvTypes, JvComponent, JvExStdCtrls;
 
-const
-  WM_AUTOBAR = WM_USER + 43;
+//const  (ahuser): not used
+//  WM_AUTOBAR = WM_USER + 43;
 
 type
   TJvCustomMemo = class(TJvExCustomMemo)

@@ -35,11 +35,7 @@ unit JvCheckedMaskEdit;
 interface
 
 uses
-  Windows,
-  {$IFDEF VCL}
-  Messages,
-  {$ENDIF VCL}
-  Classes, Controls, StdCtrls,
+  Windows, Messages, Classes, Controls, StdCtrls,
   JvMaskEdit;
 
 type

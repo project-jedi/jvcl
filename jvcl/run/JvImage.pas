@@ -30,13 +30,7 @@ unit JvImage;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Graphics, ExtCtrls, Controls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QExtCtrls, QControls, QForms,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Graphics, ExtCtrls, Controls, Forms,
   JvExExtCtrls;
 
 type

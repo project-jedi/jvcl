@@ -30,11 +30,11 @@ unit JvStatusBar;
 interface
 
 uses
-  SysUtils, Classes, Contnrs,
-  {$IFDEF VCL}
   Windows, Messages,
+  {$IFDEF VCL}
+  CommCtrl,
   {$ENDIF VCL}
-  Graphics, Controls, Forms, ComCtrls, CommCtrl, StdActns,
+  SysUtils, Classes, Contnrs, Graphics, Controls, Forms, ComCtrls, StdActns,
   JVCLVer, JvExComCtrls;
 
 type

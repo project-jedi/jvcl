@@ -30,13 +30,7 @@ unit JvControlBar;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
-  Classes, Graphics, Controls, Menus,
+  Windows, Classes, Graphics, Controls, Menus,
   JvExControls, JvExExtCtrls;
 
 type

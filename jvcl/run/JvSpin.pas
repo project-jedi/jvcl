@@ -42,7 +42,7 @@ uses
   {$ENDIF VCL}
   ComCtrls, Controls, ExtCtrls, Graphics, Forms,
   {$IFDEF VisualCLX}
-  QComboEdits, QWindows, JvQExComboEdits, QComCtrlsEx,
+  QComboEdits, Types, QWindows, JvQExComboEdits, QComCtrlsEx,
   {$ENDIF VisualCLX}
   JvEdit, JvExMask, JvMaskEdit, JvComponent;
 

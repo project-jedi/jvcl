@@ -24,6 +24,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I vcl.inc} // <- JvComCtrls
 
 unit JvCheckTreeView;
 

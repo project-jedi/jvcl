@@ -45,10 +45,7 @@ unit JvEdit;
 interface
 
 uses
-  Windows,
-  {$IFDEF VCL}
-  Messages,
-  {$ENDIF VCL}
+  Windows, Messages,
   {$IFDEF VisualCLX}
   Qt, QTypes,
   {$ENDIF VisualCLX}

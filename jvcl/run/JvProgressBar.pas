@@ -30,13 +30,11 @@ unit JvProgressBar;
 interface
 
 uses
-  SysUtils, Classes,
+  Windows, Messages,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, ComCtrls, CommCtrl,
+  CommCtrl,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QComCtrls, QWindows,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
   JvExComCtrls;
 
 type
@@ -219,7 +217,12 @@ begin
   R := ClientRect;
   ACanvas.Brush.Color := Color;
   ACanvas.FillRect(R);
+  {$IFDEF VCL}
   DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  DrawEdge(ACanvas, R, esNone, esLowered, ebRect);
+  {$ENDIF VisualCLX}
   if BarSize = 0 then
     Exit;
   ACanvas.Brush.Color := BarColor;

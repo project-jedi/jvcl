@@ -27,9 +27,9 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
+{$I vclonly.inc}
 
-unit JvControlPanelButton;
+unit JvControlPanelButton; 
 
 interface
 

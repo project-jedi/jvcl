@@ -31,6 +31,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I vclonly.inc}
 
 unit JvUpDown;
 

@@ -46,6 +46,9 @@ interface
 {$ENDIF BCB6}
 
 uses
+  {$IFDEF VisualCLX}
+  Qt, QWindows,
+  {$ENDIF VisualCLX}
   Windows, Messages, Classes, ShlObj,
   JvBaseDlg;
 
@@ -295,8 +298,13 @@ function BrowseComputer(var AComputerName: string; const DlgText: string;
 implementation
 
 uses
-  SysUtils, ActiveX, Controls, Forms, FileCtrl, Consts,
+  SysUtils, ActiveX, Controls, Forms, Consts,
   JvJCLUtils, JvJVCLUtils, JvConsts, JvResources, JvTypes;
+
+{$IFDEF VisualCLX}
+type
+  TMessage = Messages.TMessage;
+{$ENDIF VisualCLX}  
 
 type
   TSHGetFolderPathProc = function(hWnd: HWND; csidl: Integer; hToken: THandle;
@@ -1172,13 +1180,28 @@ begin
   else
     F := nil;
   if F <> nil then
+    {$IFDEF VCL}
     Result := F.Handle
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Result := QWidget_winId(F.Handle)
+    {$ENDIF VisualCLX}
   else
   if Owner is TWinControl then
+    {$IFDEF VCL}
     Result := (Owner as TWinControl).Handle
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Result := QWidget_winId((Owner as TWinControl).Handle)
+    {$ENDIF VisualCLX}
   else
   if (Screen <> nil) and (Screen.ActiveCustomForm <> nil) then
+    {$IFDEF VCL}
     Result := Screen.ActiveCustomForm.Handle
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Result := QWidget_winId(Screen.ActiveCustomForm.Handle)
+    {$ENDIF VisualCLX}
   else
     Result := GetForegroundWindow;
 end;
@@ -1363,8 +1386,7 @@ begin
     begin
       GetWindowRect(FDialogWindow, WindowRect);
       GetWindowRect(ItemHandle, ItemRect);
-      // (rom) MinimizeName from FileCtrl not JvJCLUtils
-      AText := MinimizeName(AText, Application.MainForm.Canvas,
+      AText := MinimizeFileName(AText, Application.MainForm.Canvas,
         (WindowRect.Right - WindowRect.Left) - (ItemRect.Left - WindowRect.Left) * 2 - 8);
     end;
   end;

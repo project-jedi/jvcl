@@ -34,13 +34,8 @@ unit JvPanel;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows, QGraphics, QControls, QForms, QExtCtrls,
-  {$ENDIF VisualCLX}
-  SysUtils, Classes,
+  Windows, Messages,
+  SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   JvThemes, JvComponent, JvExControls;
 
 type
