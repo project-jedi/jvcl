@@ -44,20 +44,29 @@ uses
   DesignEditors, DesignIntf,
 
   JvQDsgnConsts,
-  JvQJoystick,
-  JvQScreenSaver, JvQSoundControl,
+  {$IFDEF MSWINDOWS}
+  JvQJoystick, JvQSoundControl,
+  {$ENDIF MSWINDOWS}
+  JvQScreenSaver,
   JvQSystemColors, JvQThread, JvQThreadTimer, JvQChangeNotify,
   JvQSimpleXml, JvQXMLDatabase, JvQTimer,
   JvQChangeNotifyEditor,
   JvQDsgnEditors,
   JvQAppXMLStorage;
 
+{$IFDEF MSWINDOWS}
 {$R ..\resources\JvSystemReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvSystemReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin
   RegisterComponents(RsPaletteSystem, [TJvScreenSaver,
+      {$IFDEF MSWINDOWS}
       TJvJoystick, TJvSoundControl,
+      {$ENDIF MSWINDOWS}
       TJvSystemColors]);
   RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase]);
   RegisterComponents(RsPaletteNonVisual, [TJvTimer, TJvThread, TJvThreadTimer]);

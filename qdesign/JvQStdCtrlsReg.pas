@@ -45,7 +45,7 @@ uses
   DesignEditors, DesignIntf,
 
   JvQDsgnConsts, JvQTypes,
-  JvQEdit, JvQProgressBar,
+  JvQEdit, JvQProgressBar, JvQTransparentPanel,
   JvQMaskEdit, JvQBaseEdits, JvQCalc, JvQToolEdit,
   JvQBevel, JvQCheckBox, JvQSpeedButton,
   JvQGroupBox, JvQHeaderControl,
@@ -76,8 +76,8 @@ begin
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [TJvTabControl, TJvControlBar,
-    TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel
-    {TJvTransparentPanel}]);
+    TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
+    TJvTransparentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvLabel]);
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar]);
 
