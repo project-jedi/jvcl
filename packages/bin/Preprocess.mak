@@ -61,7 +61,6 @@ default: \
 JvExVCLFiles = \
 	$(RUN)\JvExButtons.pas \
 	$(RUN)\JvExCheckLst.pas \
-	$(QRUN)\JvExComboEdits.pas \
 	$(RUN)\JvExComCtrls.pas \
 	$(RUN)\JvExControls.pas \
 	$(RUN)\JvExDBGrids.pas \
@@ -81,10 +80,6 @@ $(RUN)\JvExButtons.pas: $(JVEXVCLSRC)\JvExButtons.pas $(JVEXVCLSRC_DEP)
 	preprocess.bat $&
 	cd ..\..\packages\bin
 $(RUN)\JvExCheckLst.pas: $(JVEXVCLSRC)\JvExCheckLst.pas $(JVEXVCLSRC_DEP)
-	cd ..\..\devtools\JvExVCL
-	preprocess.bat $&
-	cd ..\..\packages\bin
-$(QRUN)\JvExComboEdits.pas: $(JVEXVCLSRC)\JvExComboEdits.pas $(JVEXVCLSRC_DEP)
 	cd ..\..\devtools\JvExVCL
 	preprocess.bat $&
 	cd ..\..\packages\bin
