@@ -79,7 +79,7 @@ object FileListBoxMainForm: TFileListBoxMainForm
   object JvDriveList1: TJvDriveList
     Left = 40
     Top = 344
-    Width = 121
+    Width = 145
     Height = 97
     ScrollBars = ssBoth
     DriveTypes = [dtFixed, dtRemote, dtCDROM]
@@ -92,19 +92,22 @@ object FileListBoxMainForm: TFileListBoxMainForm
     Top = 56
     Width = 553
     Height = 257
-    Buttons = []
+    Buttons = [capClose]
+    Caption = 'Mini Explorer'
     CaptionFont.Charset = DEFAULT_CHARSET
     CaptionFont.Color = clWhite
     CaptionFont.Height = -13
     CaptionFont.Name = 'MS Shell Dlg 2'
     CaptionFont.Style = [fsBold]
+    FlatButtons = True
     OutlookLook = False
     TabOrder = 1
+    OnButtonClick = JvCaptionPanel1ButtonClick
     object JvFileListBox1: TJvFileListBox
       Left = 217
-      Top = 25
+      Top = 23
       Width = 329
-      Height = 225
+      Height = 227
       Align = alRight
       FileEdit = Edit1
       ItemHeight = 16
@@ -113,9 +116,9 @@ object FileListBoxMainForm: TFileListBoxMainForm
       ForceFileExtensions = False
     end
     object JvDriveCombo1: TJvDriveCombo
-      Left = 25
+      Left = 22
       Top = 1
-      Width = 521
+      Width = 524
       Height = 22
       Align = alTop
       DriveTypes = [dtFixed, dtRemote, dtCDROM]
@@ -125,10 +128,10 @@ object FileListBoxMainForm: TFileListBoxMainForm
       TabOrder = 1
     end
     object JvDirectoryListBox1: TJvDirectoryListBox
-      Left = 25
-      Top = 25
-      Width = 192
-      Height = 225
+      Left = 22
+      Top = 23
+      Width = 195
+      Height = 227
       Align = alClient
       Directory = 'C:\'
       DirLabel = Label1
@@ -137,6 +140,7 @@ object FileListBoxMainForm: TFileListBoxMainForm
       ItemHeight = 17
       ScrollBars = ssBoth
       TabOrder = 2
+      OnDriveChangeError = JvDirectoryListBox1DriveChangeError
     end
   end
   object Edit1: TEdit

@@ -47,6 +47,10 @@ type
     JvDirectoryListBox1: TJvDirectoryListBox;
     Edit1: TEdit;
     Label3: TLabel;
+    procedure JvDirectoryListBox1DriveChangeError(Sender: TObject;
+      var NewDrive: Char);
+    procedure JvCaptionPanel1ButtonClick(Sender: TObject;
+      Button: TJvCapBtnStyle);
   end;
 
 var
@@ -55,5 +59,19 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TFileListBoxMainForm.JvDirectoryListBox1DriveChangeError(
+  Sender: TObject; var NewDrive: Char);
+begin
+  ShowMessageFmt('Could not change to the selected drive (%s:). Please make sure it is available and try again',[NewDrive]);
+  JvDriveCombo1.Drive := JvDirectoryListBox1.Drive;
+end;
+
+procedure TFileListBoxMainForm.JvCaptionPanel1ButtonClick(Sender: TObject;
+  Button: TJvCapBtnStyle);
+begin
+  if Button = capClose then
+    ShowMessage('Sorry, you can''t close this window!');
+end;
 
 end.
