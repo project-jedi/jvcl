@@ -1,9 +1,9 @@
-## Completed by: Remko Bonte
+## Completed by: Remko Bonte - TODO : Update
 ----------------------------------------------------------------------------------------------------
-@@JvTimerLst.pas
+@@JvTimerList.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the TJvTimerLst component.
+  Contains the TJvTimerList component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
@@ -138,6 +138,130 @@ Description
 
   Use the properties of the timer list component to obtain additional information.
 ----------------------------------------------------------------------------------------------------
+@@TJvTimerEvents
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvTimerEvents.Activate
+Summary
+  Activates the timer list.
+Description
+  Call Activate to activate the timer list. Activate sets the Active property to True. Calling Activate
+  will resum the timers which property <LINK TJvTimerEvent.Enabled,Enabled> is set to True.
+See Also
+  Active, Deactivate
+----------------------------------------------------------------------------------------------------
+@@TJvTimerEvents.Add
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTimerEvents.Deactivate
+Summary
+  Pauses all enabled timers.
+Description
+  Call Deactivate to deactivate the timer list. Deactivate sets the Active property to False. It will
+  pause all enabled timer.
+See Also
+  Activate, Active
+----------------------------------------------------------------------------------------------------
+@@TJvTimerEvents.DeleteByHandle
+Summary
+  Deletes the timer event with the specified handle.
+Description
+  Use \Delete to delete a timer event and remove it from the Events list.
+Parameters
+  AHandle - Specifies the value of the timer event's Handle property.
+See Also
+  <LINK ItemByHandle>, TJvTimerEvent.Handle
+----------------------------------------------------------------------------------------------------
+@@TJvTimerEvents.EnabledCount
+Summary
+  \Returns the number of enabled timers maintained by the timer list.
+Description
+  EnabledCount contains the number of enabled timers in the Events array. Use Count to retrieve
+  the number of <i>all</i> timers.
+See Also
+  Count, TJvTimerEvent.Enabled
+----------------------------------------------------------------------------------------------------
+@@TJvTimerEvents.GetEnabledCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTimerEvents.ItemByHandle
+Summary
+  \Returns the TJvTimerEvent object with a specified handle.
+Description
+  Call ItemByHandle to obtain information about a particular timer event.
+Note
+  Use this method to access a specific timer event object instead of directly accessing property
+  Events.
+Parameters
+  AHandle - Specifies the value of the timer event's Handle property.
+Return Value
+  \Returns the TJvTimerEvent component with AHandle as handle in the list, if there is no timer event
+  in the list with the specified handle, it returns nil.
+See Also
+  <LINK ItemIndexByHandle>, TJvTimerEvent.Handle
+----------------------------------------------------------------------------------------------------
+@@TJvTimerEvents.ItemIndexByHandle
+Summary
+  \Returns the index of the TJvTimerEvent object with a specified handle.
+Description
+  Call ItemIndexByHandle to obtain the index of a TJvTimerEvent object with handle AHandle in the
+  Events property array.
+Parameters
+  AHandle - Specifies the value of the timer event's Handle property.
+Return Value
+  \Returns the index in the list of a timer event with the specified handle. If there is no such timer
+  event, ItemIndexByHandle returns -1.
+See Also
+  <LINK ItemByHandle>, TJvTimerEvent.Handle
+----------------------------------------------------------------------------------------------------
+@@TJvTimerEvents.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTimerEvents.NextHandle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTimerEvents.Sort
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvTimerList
 <TITLEIMG TJvTimerList>
 JVCLInfo
@@ -164,15 +288,6 @@ Description
   removed (accordingly Cycled property value).
 See Also
   TJvTimerEvent
-----------------------------------------------------------------------------------------------------
-@@TJvTimerList.Activate
-Summary
-  Activates the timer list.
-Description
-  Call Activate to activate the timer list. Activate sets the Active property to True. Calling Activate
-  will resum the timers which property <LINK TJvTimerEvent.Enabled,Enabled> is set to True.
-See Also
-  Active, Deactivate
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.Active
 Summary
@@ -230,53 +345,6 @@ Return Value
 See Also
   <LINK Add>
 ----------------------------------------------------------------------------------------------------
-@@TJvTimerList.Clear
-Summary
-  Deletes all timers from the timer list.
-Description
-  Clear empties the Events array and destroys each TJvTimerEvent.
-See Also
-  Delete, Events, TJvTimerEvent
-----------------------------------------------------------------------------------------------------
-@@TJvTimerList.Count
-Summary
-  \Returns the number of timers maintained by the timer list.
-Description
-  Count contains the number of timers in the Events array. The number returned includes both 
-  enabled and disabled timers.
-  
-  Use EnabledCount to retrieve the number of <i>enabled</i> timers.
-See Also
-  EnabledCount, Events
-----------------------------------------------------------------------------------------------------
-@@TJvTimerList.Deactivate
-Summary
-  Pauses all enabled timers.
-Description
-  Call Deactivate to deactivate the timer list. Deactivate sets the Active property to False. It will
-  pause all enabled timer.
-See Also
-  Activate, Active
-----------------------------------------------------------------------------------------------------
-@@TJvTimerList.Delete
-Summary
-  Deletes the timer event with the specified handle.
-Description
-  Use \Delete to delete a timer event and remove it from the Events list.
-Parameters
-  AHandle - Specifies the value of the timer event's Handle property.
-See Also
-  <LINK ItemByHandle>, TJvTimerEvent.Handle
-----------------------------------------------------------------------------------------------------
-@@TJvTimerList.EnabledCount
-Summary
-  \Returns the number of enabled timers maintained by the timer list.
-Description
-  EnabledCount contains the number of enabled timers in the Events array. Use Count to retrieve
-  the number of <i>all</i> timers.
-See Also
-  Count, TJvTimerEvent.Enabled
-----------------------------------------------------------------------------------------------------
 @@TJvTimerList.Events
 Summary
   Provides indexed access to the TJvTimerEvent objects maintained by the timer list.
@@ -288,36 +356,6 @@ Note
   timer events and Add for adding a new timer event.
 See Also
   <LINK Add>, <LINK ItemByHandle>, <LINK ItemIndexByHandle>
-----------------------------------------------------------------------------------------------------
-@@TJvTimerList.ItemByHandle
-Summary
-  \Returns the TJvTimerEvent object with a specified handle.
-Description
-  Call ItemByHandle to obtain information about a particular timer event.
-Note
-  Use this method to access a specific timer event object instead of directly accessing property
-  Events.
-Parameters
-  AHandle - Specifies the value of the timer event's Handle property.
-Return Value
-  \Returns the TJvTimerEvent component with AHandle as handle in the list, if there is no timer event
-  in the list with the specified handle, it returns nil.
-See Also
-  <LINK ItemIndexByHandle>, TJvTimerEvent.Handle
-----------------------------------------------------------------------------------------------------
-@@TJvTimerList.ItemIndexByHandle
-Summary
-  \Returns the index of the TJvTimerEvent object with a specified handle.
-Description
-  Call ItemIndexByHandle to obtain the index of a TJvTimerEvent object with handle AHandle in the
-  Events property array.
-Parameters
-  AHandle - Specifies the value of the timer event's Handle property.
-Return Value
-  \Returns the index in the list of a timer event with the specified handle. If there is no such timer
-  event, ItemIndexByHandle returns -1.
-See Also
-  <LINK ItemByHandle>, TJvTimerEvent.Handle
 ----------------------------------------------------------------------------------------------------
 @@TJvTimerList.OnFinish
 Summary
