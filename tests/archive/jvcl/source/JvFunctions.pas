@@ -334,6 +334,8 @@ var
 
 {$IFNDEF COMPILER6_UP}
 
+{ (rb) Duplicate of JclBase.RaiseLastOSError }
+
 procedure RaiseLastOSError;
 begin
   RaiseLastWin32Error;
@@ -421,6 +423,8 @@ function OpenObject(Value: string): Boolean;
 begin
   Result := OpenObject(PChar(Value));
 end;
+
+{ (rb) Duplicate of JvFunctions.Exec }
 
 function OpenObject(Value: PChar): Boolean;
 begin
@@ -614,6 +618,8 @@ begin
   Result := CaptureScreen(Rect(0, 0, Screen.Width, Screen.Height));
 end;
 
+{ (rb) Duplicate of JclMultimedia.OpenCloseCdDrive ?? }
+
 procedure OpenCdDrive;
 begin
   mciSendString(PChar(RC_OpenCDDrive), nil, 0, Application.Handle);
@@ -774,6 +780,8 @@ begin
     end;
   end;
 end;
+
+{ (rb) Duplicate of JvAppUtils.AppTaskbarIcons }
 
 procedure HideFormCaption(FormHandle: THandle; Hide: Boolean);
 begin
@@ -951,6 +959,8 @@ begin
     SW_SHOWNORMAL);
 end;
 
+{ (rb) Duplicate of JclMiscel.WinExec32AndWait }
+
 procedure ExecuteAndWait(FileName: string; Visibility: Integer);
 var
   zAppName: array [0..512] of Char;
@@ -970,6 +980,8 @@ begin
     nil, nil, StartupInfo, ProcessInfo) then
     WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
 end;
+
+{ (rb) Duplicate of JclFileUtils.DiskInDrive }
 
 function DiskInDrive(Drive: Char): Boolean;
 var
@@ -1015,6 +1027,7 @@ begin
 
   if OtherWnd <> 0 then
   begin
+    { (rb) Use JvVCLUtils.SwitchToWindow }
     if IsIconic(OtherWnd) then
       ShowWindow(OtherWnd, SW_RESTORE);
 
@@ -1221,6 +1234,8 @@ begin
     Dirs.Free;
   end;
 end;
+
+{ (rb) Duplicate of JvWinDialogs.AddToRecentDocs }
 
 procedure AddToRecentDocs(const Filename: string);
 begin
