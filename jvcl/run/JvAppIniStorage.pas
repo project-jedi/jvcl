@@ -232,7 +232,7 @@ begin
   if ValueExists(Section, Key) then
   begin
     Value := 0.0;
-    ReadBinary(Path, Value, Sizeof(Value));
+    ReadBinary(Path, @Value, Sizeof(Value));
     Result := Value;
 //    Value := ReadValue(Section, Key);
 //    if Value = '' then
@@ -245,7 +245,7 @@ end;
 
 procedure TJvCustomAppIniStorage.DoWriteFloat(const Path: string; Value: Extended);
 begin
-  WriteBinary(Path, Value, SizeOf(Value));
+  WriteBinary(Path, @Value, SizeOf(Value));
 end;
 
 function TJvCustomAppIniStorage.DoReadString(const Path: string; const Default: string): string;
