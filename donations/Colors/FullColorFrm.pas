@@ -65,12 +65,12 @@ type
     ColorBox: TColorBox;
     procedure ButtonGraphicsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure ComboBoxColorSpaceChange(Sender: TObject);
+    procedure JvComboBoxColorSpaceSelect(Sender: TObject);
     procedure SpinEditChange(Sender: TObject);
     procedure ScrollBarChange(Sender: TObject);
     procedure JvColorPanelColorChange(Sender: TObject);
     procedure ComboBoxAxisChange(Sender: TObject);
-    procedure ComboBoxPredefinedChange(Sender: TObject);
+    procedure ComboBoxPredefinedSelect(Sender: TObject);
     procedure ButtonApplyClick(Sender: TObject);
     procedure LabelDrawOldClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -109,19 +109,17 @@ begin
   Result := TJvAxisIndex(ATag and $03);
 end;
 
-procedure TJvFullColorForm.ButtonGraphicsClick(Sender: TObject);
-begin
-  if Expanded then
-    Collapse
-  else
-    Expand;
-end;
-
 procedure TJvFullColorForm.FormCreate(Sender: TObject);
 begin
   LabelDrawOld.Color := ColorSpaceManager.ConvertToColor(FullColor);
   SetFullColor(FullColor);
   SetOptions(Options);
+end;
+
+procedure TJvFullColorForm.Loaded;
+begin
+  inherited Loaded;
+  FExpandedWidth := Width;
 end;
 
 procedure TJvFullColorForm.FillInternalArrays;
@@ -141,16 +139,18 @@ begin
   end;
 end;
 
-procedure TJvFullColorForm.Loaded;
+procedure TJvFullColorForm.ButtonGraphicsClick(Sender: TObject);
 begin
-  inherited Loaded;
-  FExpandedWidth := Width;
+  if Expanded then
+    Collapse
+  else
+    Expand;
 end;
 
 procedure TJvFullColorForm.Expand;
 begin
-  Width := FExpandedWidth;
   PanelGraphic.Visible := True;
+  Width := FExpandedWidth;
   ButtonGraphics.Caption := RsExpandedCaption;
   FExpanded := True;
 end;
@@ -195,7 +195,7 @@ begin
   UpdateColorValue;
 end;
 
-procedure TJvFullColorForm.ComboBoxColorSpaceChange(Sender: TObject);
+procedure TJvFullColorForm.JvComboBoxColorSpaceSelect(Sender: TObject);
 begin
   if FUpdating then
     Exit;
@@ -206,7 +206,7 @@ begin
   UpdateColorSpace;
 end;
 
-procedure TJvFullColorForm.ComboBoxPredefinedChange(Sender: TObject);
+procedure TJvFullColorForm.ComboBoxPredefinedSelect(Sender: TObject);
 begin
   if FUpdating then
     Exit;
@@ -228,7 +228,7 @@ var
   C: TColor;
   NewIndex: Integer;
   ValueAxes: array [TJvAxisIndex] of Byte;
-  Index: Integer;
+  J: Integer;
   LColorID: TJvColorSpaceID;
 begin
   if FUpdating then
@@ -267,21 +267,19 @@ begin
       FScrollBarAxes[I].Position := ValueAxes[I];
       FSpinEditAxes[I].Value := ValueAxes[I];
     end;
-
-    JvColorPanel.FullColor := FullColor;
   end;
-
+  JvColorPanel.FullColor := FullColor;
   JvColorSpaceCombo.ColorSpaceID := LColorID;
 
   NewIndex := -1;
   with ColorBox, Items, ColorSpaceManager do
   begin
-    for Index := 0 to Count - 1 do
+    for J := 0 to Items.Count - 1 do
     begin
-      C := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(Colors[Index]);
+      C := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(Colors[J]);
       if ConvertToID(C, LColorID) = FullColor then
       begin
-        NewIndex := Index;
+        NewIndex := J;
         Break;
       end;
     end;
@@ -319,6 +317,9 @@ begin
       FSpinEditAxes[I].MaxValue := AxisMax;
     end;
   end;
+
+  JvColorPanel.FullColor := FullColor;
+  JvFullColorTrackBar.FullColor := FullColor;
 
   FUpdating := False;
 

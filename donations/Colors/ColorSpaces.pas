@@ -39,12 +39,12 @@ type
   TJvFullColor = type Cardinal;
 
 const
-  csRGB = TJvColorSpaceID(4);
-  csHLS = TJvColorSpaceID(5);
-  csCMY = TJvColorSpaceID(6);
-  csYUV = TJvColorSpaceID(7);
-  csHSV = TJvColorSpaceID(8);
-  csDEF = TJvColorSpaceID(9);
+  csRGB = TJvColorSpaceID(1 shl 2);
+  csHLS = TJvColorSpaceID(2 shl 2);
+  csCMY = TJvColorSpaceID(3 shl 2);
+  csYUV = TJvColorSpaceID(4 shl 2);
+  csHSV = TJvColorSpaceID(5 shl 2);
+  csDEF = TJvColorSpaceID(6 shl 2);
 
   RGB_MIN = 0;
   RGB_MAX = 255;

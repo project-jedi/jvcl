@@ -986,7 +986,7 @@ var
   MinX, MaxX, MinY, MaxY: Byte;
   TempColor: TJvFullColor;
   Line: PFullColorArray;
-  X, Y, I: Integer;
+  PosX, PosY, I: Integer;
 begin
   AxisX := GetIndexAxisX(AxisConfig);
   AxisY := GetIndexAxisY(AxisConfig);
@@ -997,32 +997,30 @@ begin
       Brush.Color := Color;
       FillRect(Rect(0, 0, Width, Height));
       Pen.Color := clBlack;
-      X := 8;
-      Y := 8;
-      {
+      PosX := 8;
+      PosY := 8;
       for I := Low(ColorValues) to High(ColorValues) do
       begin
         Brush.Color := ColorValues[I].Value;
-        Rectangle(X, Y, X+16, Y+16);
-        Inc(X, 16+6);
-        if X > FBuffer.Width - 8 then
+        Rectangle(PosX, PosY, PosX+16, PosY+16);
+        Inc(PosX, 16+6);
+        if PosX > FBuffer.Width - 8 then
         begin
-          X := 8;
-          Inc(Y, 16+6);
+          PosX := 8;
+          Inc(PosY, 16+6);
         end;
       end;
-      X := 8;
-      Inc(Y, 16+6);
-      }
+      PosX := 8;
+      Inc(PosY, 16+6);
       for I := Low(SysColorValues) to High(SysColorValues) do
       begin
         Brush.Color := SysColorValues[I].Value;
-        Rectangle(X, Y, X+16, Y+16);
-        Inc(X, 16+6);
-        if X > FBuffer.Width - 8 then
+        Rectangle(PosX, PosY, PosX+16, PosY+16);
+        Inc(PosX, 16+6);
+        if PosX > FBuffer.Width - 8 then
         begin
-          X := 8;
-          Inc(Y, 16+6);
+          PosX := 8;
+          Inc(PosY, 16+6);
         end;
       end;
     end
@@ -1236,12 +1234,11 @@ begin
     Dec(Y, CrossSize);
     PosX := 8;
     PosY := 8;
-    {
     for I := Low(ColorValues) to High(ColorValues) do
     begin
       if (X >= PosX) and (X < PosX+16) and (Y >= PosY) and (Y < PosY+16) then
-        FullColor := ColorValues[I].Value;
-      Inc(X, 16+6);
+        FullColor := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(ColorValues[I].Value);
+      Inc(PosX, 16+6);
       if PosX > FBuffer.Width - 8 then
       begin
         PosX := 8;
@@ -1250,11 +1247,10 @@ begin
     end;
     PosX := 8;
     Inc(PosY, 16+6);
-    }
     for I := Low(SysColorValues) to High(SysColorValues) do
     begin
       if (X >= PosX) and (X < PosX+16) and (Y >= PosY) and (Y < PosY+16) then
-        FullColor := SysColorValues[I].Value;
+        FullColor := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(SysColorValues[I].Value);
       Inc(PosX, 16+6);
       if PosX > FBuffer.Width - 8 then
       begin
@@ -3040,11 +3036,11 @@ end;
 
 function TJvColorSpaceCombo.GetColorSpaceID: TJvColorSpaceID;
 var
-  LColorSpace: TJvColorSpace;
+  CS: TJvColorSpace;
 begin
-  LColorSpace := SelectedSpace;
-  if LColorSpace <> nil then
-    Result := LColorSpace.ID
+  CS := SelectedSpace;
+  if CS <> nil then
+    Result := CS.ID
   else
     Result := csRGB;
 end;
@@ -3080,22 +3076,19 @@ end;
 
 procedure TJvColorSpaceCombo.SetColorSpace(const Value: TJvColorSpace);
 var
-  Index: Integer;
+  I: Integer;
 begin
-  with Items do
-    for Index := 0 to Count - 1 do
-      if Value.ID = TJvColorSpace(Objects[Index]).ID then
-      begin
-        ItemIndex := Index;
-        Exit;
-      end;
+  for I := 0 to Items.Count - 1 do
+    if Value.ID = TJvColorSpace(Items.Objects[I]).ID then
+    begin
+      ItemIndex := I;
+      Exit;
+    end;
 end;
 
 procedure TJvColorSpaceCombo.SetColorSpaceID(const Value: TJvColorSpaceID);
 begin
   SetColorSpace(ColorSpaceManager.ColorSpace[Value]);
-  if Assigned(OnChange) then
-    OnChange(Self);
 end;
 
 procedure TJvColorSpaceCombo.SetItemFormat(const Value: TJvColorSpaceFormat);

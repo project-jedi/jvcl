@@ -3,8 +3,8 @@ object JvColorCircleForm: TJvColorCircleForm
   Top = 103
   BorderStyle = bsDialog
   Caption = 'Color circle configurations'
-  ClientHeight = 631
-  ClientWidth = 990
+  ClientHeight = 660
+  ClientWidth = 1019
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -66,8 +66,8 @@ object JvColorCircleForm: TJvColorCircleForm
   object PanelGraphics: TPanel
     Left = 384
     Top = 8
-    Width = 601
-    Height = 617
+    Width = 629
+    Height = 641
     BevelInner = bvRaised
     BevelOuter = bvLowered
     Caption = 'PanelGraphics'
@@ -82,7 +82,7 @@ object JvColorCircleForm: TJvColorCircleForm
     end
     object JvColorCircle: TJvColorCircle
       Left = 96
-      Top = 80
+      Top = 64
       Width = 531
       Height = 531
       FullColor = 83886079
@@ -108,7 +108,7 @@ object JvColorCircleForm: TJvColorCircleForm
     end
     object JvFullColorTrackBarCommon: TJvFullColorTrackBar
       Left = 40
-      Top = 72
+      Top = 32
       Width = 21
       Height = 276
       FullColor = 83886079
@@ -120,7 +120,7 @@ object JvColorCircleForm: TJvColorCircleForm
     end
     object JvFullColorTrackBarBlue: TJvFullColorTrackBar
       Left = 72
-      Top = 352
+      Top = 312
       Width = 21
       Height = 276
       FullColor = 67108864
@@ -133,7 +133,7 @@ object JvColorCircleForm: TJvColorCircleForm
     end
     object JvFullColorTrackBarGreen: TJvFullColorTrackBar
       Left = 40
-      Top = 352
+      Top = 312
       Width = 21
       Height = 276
       FullColor = 67108864
@@ -146,7 +146,7 @@ object JvColorCircleForm: TJvColorCircleForm
     end
     object JvFullColorTrackBarRed: TJvFullColorTrackBar
       Left = 8
-      Top = 352
+      Top = 312
       Width = 21
       Height = 276
       FullColor = 67108864
@@ -170,7 +170,7 @@ object JvColorCircleForm: TJvColorCircleForm
   end
   object PanelCommonSettings: TPanel
     Left = 8
-    Top = 200
+    Top = 208
     Width = 361
     Height = 113
     BevelInner = bvRaised
@@ -275,7 +275,7 @@ object JvColorCircleForm: TJvColorCircleForm
   end
   object PanelAxisSettings: TPanel
     Left = 8
-    Top = 328
+    Top = 344
     Width = 361
     Height = 257
     BevelInner = bvRaised
@@ -530,7 +530,7 @@ object JvColorCircleForm: TJvColorCircleForm
   end
   object RadioButtonCommonSettings: TRadioButton
     Left = 16
-    Top = 192
+    Top = 200
     Width = 113
     Height = 17
     Caption = 'Co&mmon Settings:'
@@ -539,7 +539,7 @@ object JvColorCircleForm: TJvColorCircleForm
   end
   object RadioButtonAxisSettings: TRadioButton
     Left = 16
-    Top = 320
+    Top = 336
     Width = 89
     Height = 17
     Caption = '&Axis Settings:'
@@ -548,7 +548,7 @@ object JvColorCircleForm: TJvColorCircleForm
   end
   object ButtonGraphics: TButton
     Left = 296
-    Top = 600
+    Top = 624
     Width = 73
     Height = 25
     TabOrder = 9
@@ -556,7 +556,7 @@ object JvColorCircleForm: TJvColorCircleForm
   end
   object ButtonCancel: TButton
     Left = 104
-    Top = 600
+    Top = 624
     Width = 75
     Height = 25
     Caption = 'Ca&ncel'
@@ -565,7 +565,7 @@ object JvColorCircleForm: TJvColorCircleForm
   end
   object ButtonOK: TButton
     Left = 8
-    Top = 600
+    Top = 624
     Width = 75
     Height = 25
     Caption = '&OK'
@@ -575,7 +575,7 @@ object JvColorCircleForm: TJvColorCircleForm
   end
   object ButtonApply: TButton
     Left = 200
-    Top = 600
+    Top = 624
     Width = 75
     Height = 25
     Caption = '&Apply'
