@@ -1173,6 +1173,11 @@ begin
             case FLong of
               lgNone: //  not in comment
                 case S[I] of
+                  '/':
+                    begin
+                      if S[I + 1] = '/' then
+                        Break;
+                    end;
                   '{':
                     begin
                       P := StrScan(F + I, Char('}'));
@@ -1599,9 +1604,9 @@ begin
     Exit;
   case FHighlighter of
     hlPascal:
-      S := #13'{}*()/';
+      S := #13'{}*()/ ';
     hlCBuilder, hlJava, hlSql, hlPhp, hlNQC, hlCSharp:
-      S := #13'*/\';
+      S := #13'*/\ ';
     hlVB:
       S := #13'''';
     hlPython, hlPerl:
@@ -1609,7 +1614,7 @@ begin
     hlHtml:
       S := #13'<>';
     hlCocoR:
-      S := #13'*()/';
+      S := #13'*()/ ';
     hlSyntaxHighlighter:
       if FSyntaxHighlighter <> nil then
       begin
@@ -1625,7 +1630,6 @@ begin
   else
     S := #13; { unknown Highlighter ? }
   end;
-
 
   if Action = maAll then
     ACaretY := -1;  // rescan all lines
