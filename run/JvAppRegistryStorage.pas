@@ -66,6 +66,8 @@ type
   private
     FRegHKEY: HKEY;
     FUseOldDefaultRoot: Boolean;
+    FDefaultCompanyName: string;
+    FDefaultAppName: string;
   protected
     procedure Loaded; override;
 
@@ -106,6 +108,12 @@ type
     property Root read GetRoot write SetRoot;
     property SubStorages;
     property UseOldDefaultRoot: Boolean read FUseOldDefaultRoot write SetUseOldDefaultRoot stored True default False ;
+
+    // Used when no app name can be found in the exe file
+    property DefaultAppName: string read FDefaultAppName write FDefaultAppName;
+
+    // Used when no company name can be found in the exe file
+    property DefaultCompanyName: string read FDefaultCompanyName write FDefaultCompanyName;
     property ReadOnly;
   end;
 
@@ -159,11 +167,16 @@ var
   var
     VersionInfo: TJclFileVersionInfo;
   begin
-    VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
     try
-      Result := VersionInfo.ProductName;
-    finally
-      VersionInfo.Free;
+      VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
+      try
+        Result := VersionInfo.ProductName;
+      finally
+        VersionInfo.Free;
+      end;
+    except
+      on EJclFileVersionInfoError do Result := DefaultAppName;
+      else raise;
     end;
   end;
 
@@ -171,11 +184,16 @@ var
   var
     VersionInfo: TJclFileVersionInfo;
   begin
-    VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
     try
-      Result := VersionInfo.CompanyName;
-    finally
-      VersionInfo.Free;
+      VersionInfo := TJclFileVersionInfo.Create(Application.ExeName);
+      try
+        Result := VersionInfo.CompanyName;
+      finally
+        VersionInfo.Free;
+      end;
+    except
+      on EJclFileVersionInfoError do Result := DefaultCompanyName;
+      else raise;
     end;
   end;
 
