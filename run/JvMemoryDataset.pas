@@ -938,10 +938,8 @@ begin
   begin
     CheckBrowseMode;
     if Filtered <> Value then
-    begin
       inherited SetFiltered(Value);
-      First;
-    end;
+    First;
   end
   else
     inherited SetFiltered(Value);
