@@ -1,6 +1,6 @@
 #--------------------------------------------------------------------------------------------------#
 #                                                                                                  #
-# JVCL Examples                                                                                     #
+# JVCL Examples                                                                                    #
 #                                                                                                  #
 #--------------------------------------------------------------------------------------------------#
 
@@ -61,6 +61,7 @@ prjControls.exe \
 JvHtmlParserProj.exe \
 InspectorDBExample.exe \
 InspExample.exe \
+JvID3v1Demo.exe \
 JvLinkLabelDemo.exe \
 JvMousePositionnerProj.exe \
 JvMruList.exe \
@@ -300,6 +301,11 @@ JvHtmlParserProj.exe: JvHTMLParser\JvHtmlParserProj.dpr
 
 InspectorDBExample.exe: JvInspectorDBDemo\InspectorDBExample.dpr
   cd JvInspectorDBDemo
+  $(DCC) $&.dpr
+  cd ..
+
+JvID3v1Demo.exe: JvID3v1\JvID3v1Demo.dpr
+  cd JvID3v1
   $(DCC) $&.dpr
   cd ..
 
