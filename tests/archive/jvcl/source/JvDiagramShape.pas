@@ -40,7 +40,7 @@ type
     FCaption: TJvTextShape;
     FSelected: Boolean;
     FWasCovered: Boolean;
-
+    FAlignment: TAlignment;
   protected
     procedure SetCaption(Value: TJvTextShape); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -97,6 +97,7 @@ type
 
     property Moving: Boolean read FMoving write FMoving;
   public
+
     constructor Create(AOwner: TComponent); override;
   end;
 
@@ -145,7 +146,7 @@ type
     procedure SetFont(Value: TFont);
     procedure FontChanged(Sender: TObject);
   protected
-    procedure SetAutosize(Value: Boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure SetAutosize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure RefreshText;
     procedure SetParent(AParent: TWinControl); override;
     procedure Paint; override;
@@ -409,7 +410,7 @@ begin {Create}
   FCaption := nil;
   FSelected := False;
   FWasCovered := False;
-
+  if AOwner = nil then Exit;
   // Give the component a name and ensure that it is unique
   repeat
     // Use a local variable to hold the name, so that don't get exceptions
@@ -438,8 +439,7 @@ destructor TJvCustomDiagramShape.Destroy;
 var
   i: Integer;
 begin {Destroy}
-  FCaption.Free;
-
+  FreeAndNil(FCaption);
   // First check that this control has been placed on a form
   if Assigned(Parent) then
   begin
@@ -468,14 +468,13 @@ procedure TJvCustomDiagramShape.SetCaption(Value: TJvTextShape);
 begin {SetCaption}
   if (Value = nil) and Assigned(FCaption) then
   begin
-    FCaption.Free;
-    FCaption := nil;
+    FreeAndNil(FCaption);
   end
   else if (Value <> FCaption) then
   begin
     FCaption := Value;
     FCaption.Parent := Self.Parent;
-    // Ensure the caption gets aligned correctly. Ths only needs to happen if
+    // Ensure the caption gets aligned correctly. This only needs to happen if
     // the caption has not already been set in place (it will already be in the
     // right place if we are loading this from a file).
     if (FCaption.Left = 0) and (FCaption.Top = 0) then
@@ -515,6 +514,7 @@ begin {SetBounds}
   begin
     Exit;
   end;
+  AlignCaption(FAlignment);
 
   // Search parent control for TJvConnector components
   for i := 0 to Parent.ControlCount - 1 do
@@ -626,6 +626,7 @@ procedure TJvCustomDiagramShape.AlignCaption(Alignment: TAlignment);
 var
   ALeft, ATop, AWidth, AHeight: Integer;
 begin {AlignCaption}
+  FAlignment := Alignment;
   if not Assigned(FCaption) then
   begin
     Exit;
@@ -641,7 +642,6 @@ begin {AlignCaption}
     taRightJustify: ALeft := Left + Width - 1;
     taCenter: ALeft := Left + ((Width - FCaption.Width) div 2);
   end;
-
   FCaption.SetBounds(ALeft, ATop, AWidth, AHeight);
 end; {AlignCaption}
 
@@ -1228,7 +1228,7 @@ end; {Create}
 
 destructor TJvTextShape.Destroy;
 begin {Destroy}
-  FFont.Free;
+  FreeAndNil(FFont);
   inherited Destroy;
 end; {Destroy}
 
@@ -1685,8 +1685,8 @@ end; {Create}
 
 destructor TJvConnector.Destroy;
 begin {Destroy}
-  FStartConn.Free;
-  FEndConn.Free;
+  FreeAndNil(FStartConn);
+  FreeAndNil(FEndConn);
   inherited Destroy;
 end; {Destroy}
 
@@ -1727,12 +1727,12 @@ begin {Notification}
 
   if Operation = opRemove then
   begin
-    if AComponent = FStartConn.FShape then
+    if Assigned(FStartConn) and (AComponent = FStartConn.FShape) then
     begin
       FStartConn.FShape := nil;
     end;
 
-    if AComponent = FEndConn.FShape then
+    if Assigned(FEndConn) and (AComponent = FEndConn.FShape) then
     begin
       FEndConn.FShape := nil;
     end;
@@ -1888,8 +1888,8 @@ end; {Convert}
 
 function TJvConnector.IsConnected(ConnectedShape: TJvCustomDiagramShape): Boolean;
 begin {IsConnected}
-  Result := (FStartConn.Shape = ConnectedShape) or
-    (FEndConn.Shape = ConnectedShape);
+  Result := (FStartConn<> nil) and (FEndConn<> nil) and (ConnectedShape <> nil) and ((FStartConn.Shape = ConnectedShape) or
+    (FEndConn.Shape = ConnectedShape));
 end; {IsConnected}
 
 function TJvConnector.GetMidPoint: TPoint;
