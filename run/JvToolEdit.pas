@@ -51,7 +51,7 @@ uses
   {$IFDEF VisualCLX}
   Qt, QComboEdits, JvQExComboEdits, QWindows,
   {$ENDIF VisualCLX}
-  JvSpeedButton, JvTypes, JvExMask, JvExForms;
+  JvSpeedButton, JvTypes, JvExMask, JvExForms, JvButton;
 
 const
   scAltDown = scAlt + VK_DOWN;
@@ -169,6 +169,7 @@ type
     FReadOnly: Boolean;
     FDirectInput: Boolean;
     FAlwaysEnableButton: Boolean;
+    FAlwaysShowPopup: Boolean;
     FPopupAlign: TPopupAlign;
     FGroupIndex: Integer; // RDB
     FDisabledColor: TColor; // RDB
@@ -333,6 +334,7 @@ type
     property Alignment;
     {$ENDIF VisualCLX}
     property AlwaysEnableButton: Boolean read FAlwaysEnableButton write FAlwaysEnableButton default False;
+    property AlwaysShowPopup: Boolean read FAlwaysShowPopup write FAlwaysShowPopup default False;
     {$IFDEF VCL}
     {$IFDEF COMPILER7_UP}
     property AutoCompleteItems: TStrings read FAutoCompleteItems write SetAutoCompleteItems;
@@ -389,6 +391,7 @@ type
     property Align;
     property Alignment;
     property AlwaysEnableButton;
+    property AlwaysShowPopup;
     property Anchors;
     property AutoSelect;
     property AutoSize;
@@ -2620,7 +2623,7 @@ var
   P: TPoint;
   Y: Integer;
 begin
-  if not (ReadOnly or FPopupVisible) then
+  if not ((ReadOnly and not FAlwaysShowPopup) or FPopupVisible) then
   begin
     CreatePopup;
     if FPopup = nil then Exit;

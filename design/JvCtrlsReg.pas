@@ -95,7 +95,7 @@ begin
   RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel, TJvInstallLabel,
     TJvHTLabel, TJvWinampLabel]);
   RegisterComponents(RsPaletteListComboTree, [TJvImageComboBox, TJvImageListBox,
-    TJvComboListBox, TJvHTListBox, TJvHTComboBox]);
+    TJvComboListBox, TJvCheckedComboBox, TJvHTListBox, TJvHTComboBox]);
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteListComboTree, [TJvUninstallComboBox, TJvUninstallListBox]);
   {$ENDIF USEWINDOWS}
