@@ -25,6 +25,13 @@
  page, located at http://www.delphi-jedi.org
 
  RECENT CHANGES:
+    Apr 30, 2004, Marcel Bestebroer:
+      - Added UseFont property to TJvInspectorFontNameItem. When set to True
+        the actualy font represented is used to render the font name, \
+        otherwise the standard font is used. Note: the property defaults to
+        False which breaks backwards compatability. This is deliberate, since
+        the previous mechanism was to slow on slower machines to be usable.
+        Borland has the same default settings for the Object Inspector.
     Apr 28, 2004, Markus Spoettl:
       - Added rectangle around check mark boolean items (Mantis #1645).
       - Exposed DropDownCount to specify the number of rows in a drop down
@@ -1256,7 +1263,11 @@ type
   end;
 
   TJvInspectorFontNameItem = class(TJvInspectorStringItem)
+  private
+    FUseFont: Boolean;
   protected
+    function GetUseFont: Boolean;
+    procedure SetUseFont(Value: Boolean);
     {$IFDEF VCL}
     procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
@@ -1271,6 +1282,8 @@ type
       var Width: Integer); override;
     procedure GetValueList(const Strings: TStrings); override;
     procedure SetFlags(const Value: TInspectorItemFlags); override;
+  public
+    property UseFont: Boolean read GetUseFont write SetUseFont;
   end;
 
   TJvInspectorBooleanItem = class(TJvInspectorEnumItem)
@@ -8544,6 +8557,20 @@ end;
 
 //=== TJvInspectorFontNameItem ===============================================
 
+function TJvInspectorFontNameItem.GetUseFont: Boolean;
+begin
+  Result := FUseFont;
+end;
+
+procedure TJvInspectorFontNameItem.SetUseFont(Value: Boolean);
+begin
+  if UseFont <> Value then
+  begin
+    FUseFont := Value;
+    InvalidateMetaData;
+  end;
+end;
+
 {$IFDEF VCL}
 procedure TJvInspectorFontNameItem.DoDrawListItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
@@ -8557,8 +8584,11 @@ var
 begin
   with TListBox(Control) do
   begin
-    FontName := Items[Index];
-    Canvas.Font.Name := FontName;
+    if UseFont then
+    begin
+      FontName := Items[Index];
+      Canvas.Font.Name := FontName;
+    end;
     Canvas.TextRect(Rect, Rect.Left, Rect.Top, Items[Index]);
   end;
 end;
@@ -8568,11 +8598,12 @@ procedure TJvInspectorFontNameItem.DoMeasureListItem(Control: TWinControl;
 var
   FontName: string;
 begin
-  with TListBox(Control) do
-  begin
-    FontName := Items[Index];
-    Canvas.Font.Name := FontName;
-  end;
+  if UseFont then
+    with TListBox(Control) do
+    begin
+      FontName := Items[Index];
+      Canvas.Font.Name := FontName;
+    end;
   Height := CanvasMaxTextHeight(TListBox(Control).Canvas);
 end;
 
@@ -8581,11 +8612,12 @@ procedure TJvInspectorFontNameItem.DoMeasureListItemWidth(Control: TWinControl;
 var
   FontName: string;
 begin
-  with TListBox(Control) do
-  begin
-    FontName := Items[Index];
-    Canvas.Font.Name := FontName;
-  end;
+  if UseFont then
+    with TListBox(Control) do
+    begin
+      FontName := Items[Index];
+      Canvas.Font.Name := FontName;
+    end;
   Width := TListBox(Control).Canvas.TextWidth(FontName);
 end;
 
