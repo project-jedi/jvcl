@@ -1420,8 +1420,8 @@ begin
       end;
       if not ed.Enabled then
       begin
-        if Supports(ed, IJvControlEvents) then
-          (ed as IJvControlEvents).DoPaintBackground(ACanvas, 0);
+        if Supports(ed, IJvWinControlEvents) then
+          (ed as IJvWinControlEvents).DoPaintBackground(ACanvas, 0);
         ACanvas.Brush.Style := bsClear;
         ACanvas.Font.Color := DisabledTextColor;
         ACanvas.TextRect(EditRect, X, EditRect.Top + 1, S);
