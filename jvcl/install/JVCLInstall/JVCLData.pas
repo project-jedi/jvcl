@@ -112,7 +112,8 @@ type
       RemoveEmptyPalettes: Boolean);
     function RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup): Boolean;
 
-    procedure UpdateJVCLConfig;
+    procedure UpdateOptions;
+    procedure EnableOption(const Name: string; Enable: Boolean);
   public
     property Target: TCompileTarget read GetTarget;
     property Owner: TJVCLData read FOwner;
@@ -1174,10 +1175,16 @@ begin
     // set (hidden) personal edition configuration
     JVCLConfig.Enabled['DelphiPersonalEdition'] := Target.IsPersonal;
 
-    UpdateJVCLConfig;
+    UpdateOptions;
   finally
     Ini.Free;
   end;
+end;
+
+procedure TTargetConfig.EnableOption(const Name: string; Enable: Boolean);
+begin
+  if Name <> '' then
+    JVCLConfig.Enabled[Name] := Enable and JVCLConfig.Enabled[Name];
 end;
 
 function TTargetConfig.RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup): Boolean;
