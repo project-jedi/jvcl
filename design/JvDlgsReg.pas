@@ -43,7 +43,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvBaseDlg, JvFindReplace, JvDSADialogs, JvTipOfDay, JvWinDialogs,
-  JvAddPrinter, JvCommonDialogD, JvCommonExecDlg,
+  JvAddPrinter, JvCommonDialogD, JvCommonExecDlg, JvDesktopAlert,
   {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
   JvDialogActns,
   {$ENDIF BCB5}
@@ -76,7 +76,7 @@ begin
     TJvDiskFullDialog, TJvExitWindowsDialog, TJvOutOfMemoryDialog,
     TJvObjectPickerDialog, TJvDualListDialog, TJvImageDialog, TJvLoginDialog,
     TJvProgressDialog, TJvProgressComponent, TJvDiskPrompt, TJvCopyError,
-    TJvDeleteError, TJvRenameError]);
+    TJvDeleteError, TJvRenameError, TJvDesktopAlert, TJvDesktopAlertStack]);
 
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, cAppletName, TJvAppletNameProperty);
   RegisterPropertyEditor(TypeInfo(Integer), TJvAppletDialog, cAppletIndex, TJvAppletIndexProperty);
