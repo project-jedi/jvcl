@@ -32,8 +32,12 @@ unit JvForth;
 interface
 
 uses
-  Windows, ShellAPI, Messages, SysUtils, Classes, Forms, Dialogs, Math,
-  FileCtrl, JvXMLTree, JvStrings{$IFDEF DELPHI6_UP}, Variants{$ENDIF};
+  Windows, ShellAPI, Messages, SysUtils, Classes, Forms, Dialogs,
+  {$IFDEF DELPHI6_UP}
+  Variants,
+  {$ENDIF DELPHI6_UP}
+  FileCtrl,
+  JvXMLTree, JvStrings;
 
 const
   StackMax = 1000;
@@ -344,6 +348,7 @@ procedure Launch(Afile: string);
 implementation
 
 uses
+  Math,
   {$IFDEF BCB}
   {$IFNDEF BCB5}
   Variants,

@@ -228,9 +228,6 @@ uses
   JvResources,
   {$ENDIF USEJVCL}
   JvgUtils;
-  //mb {$IFDEF COMPILER6_UP},
-  //mb  DesignIntf{$ELSE}{$IFDEF COMPILER5_UP},
-  //mb  dsgnintf{$ENDIF}{$ENDIF}
 
 const
   ORDINAL_TYPES = [tkInteger, tkChar, tkEnumeration, tkSet];

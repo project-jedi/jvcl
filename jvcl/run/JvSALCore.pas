@@ -23,31 +23,31 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvSALCore;
 
-// SAL Core package
 interface
 
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs,
-  {$ENDIF}
-  JvSAL, JvTypes, Math{$IFDEF DELPHI6_UP}, Variants{$ENDIF};
+  {$ENDIF VisualCLX}
+  {$IFDEF DELPHI6_UP}
+  Variants,
+  {$ENDIF DELPHI6_UP}
+  JvSAL, JvTypes;
 
 type
   TJvSALCore = class(TComponent)
   private
-    { Private declarations }
     sal: TJvSAL;
-  protected
-    { Protected declarations }
   public
-    { Public declarations }
     procedure AddProcedures(aSal: TJvSAL);
     // SAL language
     procedure xIf;
@@ -103,14 +103,12 @@ type
     procedure xdrop;
     procedure xswap;
     procedure xcap;
-
-  published
-    { Published declarations }
   end;
 
 implementation
 
 uses
+  Math,
   {$IFDEF BCB}
   {$IFNDEF BCB5}
   Variants,

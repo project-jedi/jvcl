@@ -34,7 +34,7 @@ unit JvFTPGrabber;
 interface
 
 uses
-  Windows, SysUtils, Classes, WinInet,
+  Windows, SysUtils, Classes,
   JvTypes, JvComponent;
 
 type
@@ -45,7 +45,7 @@ type
     FSender: TObject; //acp
     FStream: TMemoryStream;
     FUrl: string;
-    FPassiveFTP:boolean;
+    FPassiveFTP: Boolean;
     FUserName: string;
     FFileName: string;
     FPassword: string;
@@ -69,7 +69,7 @@ type
     procedure Closed;
   public
     constructor Create(Url, UserName, FileName, Password: string;
-      OutputMode: TJvOutputMode; PassiveFTP:boolean; OnError: TJvErrorEvent;
+      OutputMode: TJvOutputMode; PassiveFTP: Boolean; OnError: TJvErrorEvent;
       OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
       OnProgress: TJvFTPProgressEvent; Mode: TJvDownloadMode; Agent: string;
       OnStatus: TJvFTPProgressEvent; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
@@ -103,7 +103,7 @@ type
     FOnClosed: TNotifyEvent;
     FOnClosing: TNotifyEvent;
     FOnRequest: TNotifyEvent;
-    FPassiveFTP: boolean;
+    FPassiveFTP: Boolean;
     procedure ThreadFinished(Sender: TObject);
     procedure Error(Sender: TObject; ErrorMsg: string);
     procedure DoneFile(Sender: TObject; FileName: string; FileSize: Integer; Url: string);
@@ -121,7 +121,7 @@ type
     property Password: string read FPassword write FPassword;
     property FileName: TFileName read FFileName write FFileName;
     property OutputMode: TJvOutputMode read FOutputMode write FOutputMode default omStream;
-    property PassiveFTP:boolean read FPassiveFTP write FPassiveFTP; 
+    property PassiveFTP: Boolean read FPassiveFTP write FPassiveFTP; 
     property Mode: TJvDownloadMode read FMode write FMode default hmBinary;
     property Agent: string read FAgent write FAgent;
     property OnDoneFile: TJvDoneFileEvent read FOnDoneFile write FOnDoneFile;
@@ -147,14 +147,13 @@ type
 
 implementation
 
-{$IFNDEF COMPILER6_UP}
-const
-  WinetDll = 'wininet.dll';
+uses
+  WinInet;
 
+{$IFNDEF COMPILER6_UP}
 function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall;
-  external WinetDll name 'FtpGetFileSize';
-{$EXTERNALSYM FtpGetFileSize}
-{$ENDIF}
+  external 'wininet.dll' name 'FtpGetFileSize';
+{$ENDIF COMPILER6_UP}
 
 //=== TJvFTPGrabber ==========================================================
 
@@ -219,8 +218,9 @@ begin
    //Download it
   if FThread = nil then
   begin
-    FThread := TJvFtpThread.Create(Url, UserName, FileName, Password, OutputMode, PassiveFTP, Error, DoneFile, DoneStream,
-      Progress, Mode, Agent, Status, Self, Closed); // acp
+    FThread := TJvFtpThread.Create(Url, UserName, FileName, Password, OutputMode,
+     PassiveFTP, Error, DoneFile, DoneStream, Progress, Mode, Agent,
+     Status, Self, Closed); // acp
     FThread.OnTerminate := ThreadFinished;
     FThread.Resume;
   end;
@@ -285,10 +285,10 @@ end;
 //=== TJvFtpThread ===========================================================
 
 constructor TJvFtpThread.Create(Url, UserName, FileName,
-  Password: string; OutputMode: TJvOutputMode; PassiveFTP:boolean; OnError: TJvErrorEvent;
+  Password: string; OutputMode: TJvOutputMode; PassiveFTP: Boolean; OnError: TJvErrorEvent;
   OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
-  OnProgress: TJvFTPProgressEvent; Mode: TJvDownloadMode;
-  Agent: string; OnStatus: TJvFTPProgressEvent; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
+  OnProgress: TJvFTPProgressEvent; Mode: TJvDownloadMode; Agent: string;
+  OnStatus: TJvFTPProgressEvent; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
 begin
   inherited Create(True);
   FUrl := Url;
@@ -347,7 +347,7 @@ end;
 
 procedure TJvFtpThread.Execute;
 const
-  cPassive:array [boolean] of DWORD = (0, INTERNET_FLAG_PASSIVE);
+  cPassive: array [Boolean] of DWORD = (0, INTERNET_FLAG_PASSIVE);
 var
   hSession, hHostConnection, hDownload: HINTERNET;
   HostName, FileName: string;
@@ -448,7 +448,8 @@ begin
           Inc(TotalBytes, BytesRead);
           FBytesRead := TotalBytes;
           FStream.Write(Buf, BytesRead);
-          Synchronize(Progress);
+          if Assigned(FOnProgress) then
+            Synchronize(Progress);
         end;
       end;
       if not Terminated then // acp
