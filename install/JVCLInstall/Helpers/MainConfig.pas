@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit MainConfig;
+
+{$I jvcl.inc}
 
 interface
 
@@ -50,7 +50,6 @@ type
     Label4: TLabel;
     BevelHeader: TBevel;
     PanelSpace: TPanel;
-    Label1: TLabel;
     PaintBoxWhite: TPaintBox;
     BtnCancel: TButton;
     BtnOk: TButton;
@@ -61,10 +60,16 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
+    function GetCurrentItem: TJVCLConfigItem;
+  private
     FConfig: TJVCLConfig;
+    FSavedCaption: string;
     FFileName: string;
+    property CurrentItem: TJVCLConfigItem read GetCurrentItem;
   public
+    function Execute(const Version: String): Boolean;
     procedure UpdateCheckStates;
+
     property FileName: string read FFileName write FFileName;
     property Config: TJVCLConfig read FConfig;
   end;
@@ -78,25 +83,27 @@ implementation
 
 procedure TFormJvclIncConfig.CheckListBoxClick(Sender: TObject);
 begin
-  LblComment.Caption := FConfig.Items[CheckListBox.ItemIndex].Comment;
+  LblComment.Caption := CurrentItem.Comment;
   LblComment.Font.Color := clWindowText;
 end;
 
 procedure TFormJvclIncConfig.CheckListBoxClickCheck(Sender: TObject);
 begin
-  FConfig.Items[CheckListBox.ItemIndex].Enabled :=
-    CheckListBox.Checked[CheckListBox.ItemIndex];
+  CurrentItem.Enabled := CheckListBox.Checked[CheckListBox.ItemIndex];
 end;
 
 procedure TFormJvclIncConfig.UpdateCheckStates;
 var
-  I: Integer;
+  I, J: Integer;
 begin
   CheckListBox.Clear;
   for I := 0 to FConfig.ItemCount - 1 do
   begin
-    CheckListBox.Items.Add(FConfig.Items[I].Name);
-    CheckListBox.Checked[I] := FConfig.Items[I].Enabled;
+    if not FConfig.Items[I].Hidden then
+    begin
+      J := CheckListBox.Items.AddObject(FConfig.Items[I].Name, FConfig.Items[I]);
+      CheckListBox.Checked[J] := FConfig.Items[I].Enabled
+    end;
   end;
 end;
 
@@ -114,7 +121,7 @@ end;
 
 procedure TFormJvclIncConfig.PaintBoxWhitePaint(Sender: TObject);
 begin
- // XP Theming makes the panel gray so we paint a white rectangle
+  // XP Theming makes the panel gray so we paint a white rectangle
   PaintBoxWhite.Canvas.Brush.Color := clWindow;
   PaintBoxWhite.Canvas.FillRect(PaintBoxWhite.ClientRect);
 end;
@@ -122,14 +129,35 @@ end;
 procedure TFormJvclIncConfig.FormCreate(Sender: TObject);
 begin
   {$IFDEF USE_DXGETTEXT}
-  TranslateComponent(Label1, 'JVCLInstall');
+  TranslateComponent(Self, 'JVCLInstall');
   {$ENDIF USE_DXGETTEXT}
   FConfig := TJVCLConfig.Create;
+  FSavedCaption := Caption;
+  LblComment.Caption := '';
 end;
 
 procedure TFormJvclIncConfig.FormDestroy(Sender: TObject);
 begin
   FConfig.Free;
+end;
+
+function TFormJvclIncConfig.GetCurrentItem: TJVCLConfigItem;
+begin
+  if CheckListBox.ItemIndex >= 0 then
+    Result := TJVCLConfigItem(CheckListBox.Items.Objects[CheckListBox.ItemIndex])
+  else
+    Result := nil;
+end;
+
+function TFormJvclIncConfig.Execute(const Version: String): Boolean;
+begin
+  if Version <> '' then
+    Caption := FSavedCaption + ' - ' + Version
+  else
+    Caption := FSavedCaption;
+
+  UpdateCheckStates;
+  Result := ShowModal = mrOk;
 end;
 
 end.

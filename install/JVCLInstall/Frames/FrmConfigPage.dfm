@@ -2,10 +2,10 @@ object FrameConfigPage: TFrameConfigPage
   Left = 0
   Top = 0
   Width = 518
-  Height = 335
+  Height = 348
   TabOrder = 0
   object LblBCBGuide: TLabel
-    Left = 264
+    Left = 272
     Top = 312
     Width = 102
     Height = 13
@@ -27,34 +27,11 @@ object FrameConfigPage: TFrameConfigPage
   end
   object GroupBoxJvclInc: TGroupBox
     Left = 272
-    Top = 8
+    Top = 33
     Width = 241
-    Height = 185
-    Caption = ' Global options for all IDEs '
+    Height = 160
+    Caption = ' JVCL Options  '
     TabOrder = 1
-    object LblDxgettextHomepage: TLabel
-      Left = 8
-      Top = 74
-      Width = 146
-      Height = 13
-      Cursor = crHandPoint
-      Hint = 
-        'http://dxgettext.sourceforge.net|Download from <c:blue>http://dx' +
-        'gettext.sourceforge.net<c:black>'#13#10'<c:red>The gnugettext.pas unit' +
-        ' will be added to the contains list'#13#10'of the JvCore-R package. Th' +
-        'at means that you cannot add'#13#10'it to another package.'
-      Caption = 'dxgettext &support (not required)'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsUnderline]
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      Visible = False
-      OnClick = LblDxgettextHomepageClick
-    end
     object CheckBoxXPTheming: TCheckBox
       Left = 8
       Top = 16
@@ -135,18 +112,6 @@ object FrameConfigPage: TFrameConfigPage
       TabOrder = 4
       OnClick = CheckBoxXPThemingClick
     end
-    object BtnEditJvclInc: TButton
-      Left = 152
-      Top = 154
-      Width = 81
-      Height = 25
-      Hint = 'Edit all compile time conditions that are in the jvcl.inc file.'
-      Caption = 'Edit jvcl.inc'
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 5
-      OnClick = BtnEditJvclIncClick
-    end
     object CheckBoxUnitVersioning: TCheckBox
       Left = 8
       Top = 136
@@ -159,29 +124,21 @@ object FrameConfigPage: TFrameConfigPage
       Caption = 'Unit Versioning'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 6
+      TabOrder = 5
       OnClick = CheckBoxXPThemingClick
     end
   end
   object GroupBoxInstallOptions: TGroupBox
     Left = 8
-    Top = 8
+    Top = 33
     Width = 249
-    Height = 321
+    Height = 312
     Caption = ' Installation options '
     TabOrder = 0
-    object LblOptionsFor: TLabel
-      Left = 8
-      Top = 20
-      Width = 54
-      Height = 13
-      Caption = '&Options for:'
-      FocusControl = ComboBoxTargetIDE
-    end
     object CheckBoxDeveloperInstall: TCheckBox
-      Left = 16
-      Top = 115
-      Width = 225
+      Left = 8
+      Top = 88
+      Width = 233
       Height = 17
       Hint = 
         'Activate this option if you are a JVCL developer.'#13#10'This adds the' +
@@ -191,13 +148,13 @@ object FrameConfigPage: TFrameConfigPage
       Caption = '&JVCL Developer installation'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 4
+      TabOrder = 3
       OnClick = CheckBoxDeveloperInstallClick
     end
     object CheckBoxCleanPalettes: TCheckBox
-      Left = 16
-      Top = 91
-      Width = 225
+      Left = 24
+      Top = 64
+      Width = 217
       Height = 17
       Hint = 
         'Remove all JVCL components from the component palettes in'#13#10'order' +
@@ -206,23 +163,12 @@ object FrameConfigPage: TFrameConfigPage
       Caption = 'Clean JVCL component &palettes'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 3
+      TabOrder = 2
       OnClick = CheckBoxDeveloperInstallClick
-    end
-    object ComboBoxTargetIDE: TComboBox
-      Left = 72
-      Top = 16
-      Width = 169
-      Height = 22
-      Style = csOwnerDrawFixed
-      ItemHeight = 16
-      TabOrder = 0
-      OnChange = ComboBoxTargetIDEChange
-      OnDrawItem = ComboBoxTargetIDEDrawItem
     end
     object CheckBoxBuild: TCheckBox
       Left = 8
-      Top = 43
+      Top = 16
       Width = 233
       Height = 17
       Hint = 
@@ -233,12 +179,12 @@ object FrameConfigPage: TFrameConfigPage
       Caption = 'B&uild packages'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 1
+      TabOrder = 0
       OnClick = CheckBoxDeveloperInstallClick
     end
-    object CheckBoxCompileOnly: TCheckBox
+    object CheckBoxIDERegister: TCheckBox
       Left = 8
-      Top = 67
+      Top = 40
       Width = 233
       Height = 17
       Hint = 
@@ -248,12 +194,12 @@ object FrameConfigPage: TFrameConfigPage
       Caption = '&IDE registration'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 2
+      TabOrder = 1
       OnClick = CheckBoxDeveloperInstallClick
     end
     inline FrameDirEditBrowseBPL: TFrameDirEditBrowse
       Left = 2
-      Top = 160
+      Top = 155
       Width = 239
       Height = 49
       TabOrder = 6
@@ -277,7 +223,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     inline FrameDirEditBrowseDCP: TFrameDirEditBrowse
       Left = 2
-      Top = 208
+      Top = 203
       Width = 239
       Height = 49
       TabOrder = 7
@@ -301,7 +247,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     inline FrameDirEditBrowseHPP: TFrameDirEditBrowse
       Left = 2
-      Top = 264
+      Top = 259
       Width = 239
       Height = 49
       TabOrder = 8
@@ -333,7 +279,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxGenerateMapFiles: TCheckBox
       Left = 8
-      Top = 139
+      Top = 136
       Width = 233
       Height = 17
       Hint = 
@@ -346,6 +292,22 @@ object FrameConfigPage: TFrameConfigPage
       ParentShowHint = False
       ShowHint = True
       TabOrder = 5
+      OnClick = CheckBoxDeveloperInstallClick
+    end
+    object CheckBoxDebugUnits: TCheckBox
+      Left = 24
+      Top = 112
+      Width = 217
+      Height = 17
+      Hint = 
+        'Activate this option if you also want to compile debug units.'#13#10'J' +
+        'VCL Developer installations units do not need this because'#13#10'they' +
+        ' are compiled with debug information included.'
+      AllowGrayed = True
+      Caption = 'Compile debug units'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 4
       OnClick = CheckBoxDeveloperInstallClick
     end
   end
@@ -391,6 +353,46 @@ object FrameConfigPage: TFrameConfigPage
     ShowHint = True
     TabOrder = 3
     OnClick = CheckBoxCompileJclDcpClick
+  end
+  object ComboBoxTargetIDE: TComboBox
+    Left = 80
+    Top = 8
+    Width = 177
+    Height = 22
+    Style = csOwnerDrawFixed
+    ItemHeight = 16
+    TabOrder = 5
+    OnChange = ComboBoxTargetIDEChange
+    OnDrawItem = ComboBoxTargetIDEDrawItem
+  end
+  object BtnEditJvclInc: TButton
+    Left = 384
+    Top = 7
+    Width = 129
+    Height = 25
+    Hint = 'Edit all compile time conditions that are in the jvcl.inc file.'
+    Caption = 'Edit jvcl%s%d.inc'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 6
+    OnClick = BtnEditJvclIncClick
+  end
+  object PanelBk: TPanel
+    Left = 0
+    Top = 8
+    Width = 78
+    Height = 22
+    BevelOuter = bvNone
+    TabOrder = 7
+    object LblOptionsFor: TLabel
+      Left = 8
+      Top = 4
+      Width = 54
+      Height = 13
+      Caption = '&Options for:'
+      FocusControl = ComboBoxTargetIDE
+      Transparent = False
+    end
   end
   object ImageListTargets: TImageList
     Left = 200

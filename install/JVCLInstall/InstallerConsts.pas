@@ -161,6 +161,8 @@ resourcestring
   RsReadReadmeForXPThemingInfo = 'Please read the readme.htm for details about XP theming with Delphi/C++Builder 5 and 6.'#10 +
               'Do you want to open readme.htm ?';
   RsErrorOpeningReadmeHTM = 'Cannot open file readme.htm';
+  RsEditJvclInc = 'Edit jvcl%s%d.inc';
+  RsJVCLConfigurationError = 'The jvcl.inc files are corrupted.';
 
 const
   SInstallHTM = 'help\install.htm'; // do not localize

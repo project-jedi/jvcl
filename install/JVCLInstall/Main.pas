@@ -24,14 +24,14 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 {
   command line arguments:
     --help              Shows the help screen with all options
 }
 
 unit Main;
+
+{$I jvcl.inc}
 
 interface
 
@@ -179,7 +179,8 @@ begin
     begin
       Page := TJvWizardInteriorPage.Create(JvWizard);
       Page.Wizard := JvWizard;
-      Page.Header.Height := 65;
+      //Page.Header.Height := 65;
+      Page.Header.Height := 50;
       PreparePage(Page, Inst);
       Page.OnPage := DoPageShow;
 

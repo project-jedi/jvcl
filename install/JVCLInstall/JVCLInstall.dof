@@ -1,4 +1,4 @@
-[FileVersion]
+y[FileVersion]
 Version=7.0
 [Compiler]
 A=8
@@ -95,12 +95,11 @@ UnitOutputDir=..\..\dcu
 PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=
-Packages=vcl;rtl;vclx;indy;vclie;xmlrtl;inetdbbde;inet;inetdbxpress;VclSmp;dbrtl;dbexpress;vcldb;dsnap;dbxcds;inetdb;bdertl;vcldbx;adortl;visualclx;visualdbclx;vclactnband;vclshlctrls;JvStdCtrlsD7R;JvAppFrmD7R;JvCoreD7R;JvCmpD7R;JvCtrlsD7R;JvCustomD7R;JvDockingD7R;JvMMD7R;JvPageCompsD7R;JvSystemD7R;JvWizardD7R;JvDlgsD7R;DJcl;AHComps;soaprtl;teeui;teedb;tee;ibxpress;IntrawebDB_50_70;Intraweb_50_70;dclOffice2k;Rave50CLX;Rave50VCL
-Conditionals=NO_JCL;USE_DXGETTEXT
+Conditionals=NO_JCL;USE_DXGETTEXT;DEFAULT_JVCL_INC
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=--ignore-ide --keep-files
+RunParams=--ignore-ide
 HostApplication=
 Launcher=
 UseLauncher=0
@@ -123,16 +122,4 @@ Private=0
 DLL=0
 Locale=1031
 CodePage=1252
-[HistoryLists\hlConditionals]
-Count=2
-Item0=NO_JCL;USE_DXGETTEXT
-Item1=NO_JCL;
-[HistoryLists\hlUnitAliases]
-Count=1
-Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
-[HistoryLists\hlUnitOutputDirectory]
-Count=1
-Item0=..\..\dcu
-[HistoryLists\hlOutputDirectorry]
-Count=1
-Item0=..\..\bin
+

@@ -2,7 +2,7 @@ object FramePackageSelection: TFramePackageSelection
   Left = 0
   Top = 0
   Width = 518
-  Height = 335
+  Height = 348
   TabOrder = 0
   object LblTarget: TLabel
     Left = 8
@@ -48,7 +48,7 @@ object FramePackageSelection: TFramePackageSelection
     Left = 8
     Top = 120
     Width = 505
-    Height = 209
+    Height = 225
     OnClickCheck = CheckListBoxPackagesClickCheck
     AllowGrayed = True
     ItemHeight = 18

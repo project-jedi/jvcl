@@ -24,10 +24,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit CapExec;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit CapExec;
 
 interface
 

@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JVCLConfiguration;
+
+{$I jvcl.inc}
 
 interface
 
@@ -43,25 +43,28 @@ type
     FComment: string;
     FDirective: string;
     FLine: Integer;
+    FHidden: Boolean;
     function GetEnabled: Boolean;
     function GetName: string;
     procedure SetEnabled(const Value: Boolean);
   public
     constructor Create(AOwner: TJVCLConfig; const AComment, ADirective: string;
-      ALine: Integer);
+      ALine: Integer; AHidden: Boolean);
     property Line: Integer read FLine;
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Name: string read GetName;
     property Comment: string read FComment;
+    property Hidden: Boolean read FHidden;
   end;
 
-  // Do not edit the lines directly. If you must then call Parse after you had
+  // Do not edit the lines directly. If you must then call Parse after you have
   // done your changes.
   TJVCLConfig = class(TStringList)
   private
     FModified: Boolean;
     FItems: TObjectList;
     FFilename: string;
+    FNextHidden: Boolean;
     procedure ParseComment(Token: PTokenInfo; var LastCommentToken: string;
       var InAutoConfig: Integer);
     function GetItemCount: Integer;
@@ -83,7 +86,7 @@ type
     property Items[Index: Integer]: TJVCLConfigItem read GetItems;
     property Enabled[Index: string]: Boolean read GetEnabled write SetEnabled;
     property Modified: Boolean read FModified write FModified;
-    property Filename: string read FFilename;
+    property Filename: string read FFilename write FFilename;
   end;
 
 implementation
@@ -112,16 +115,16 @@ begin
     Result := S[Length(Directive) + 1] in [#0..#32, '}', '*'];
 end;
 
-
 //=== TJVCLConfigItem ========================================================
 
 constructor TJVCLConfigItem.Create(AOwner: TJVCLConfig;
-  const AComment, ADirective: string; ALine: Integer);
+  const AComment, ADirective: string; ALine: Integer; AHidden: Boolean);
 begin
   inherited Create;
   FOwner := AOwner;
   FLine := ALine;
   FComment := AComment;
+  FHidden := AHidden;
   FDirective := ADirective;
 end;
 
@@ -227,6 +230,7 @@ begin
   try
     LastCommentToken := '';
     InAutoConfig := 0;
+    FNextHidden := False;
     while Parser.GetToken(Token) do
     begin
       if Token.Kind = tkComment then
@@ -246,6 +250,9 @@ var
 begin
   S := Trim(RemoveCommentBrackets(Token.Value));
 
+  if IsDirective(S, '%hidden%') then
+    FNextHidden := True;
+
   if IsDirective(S, '$IFDEF') or IsDirective(S, '$IF') or       // do not localize
     IsDirective(S, '$IFNDEF') then                              // do not localize
     Inc(InAutoConfig)
@@ -254,13 +261,16 @@ begin
     Dec(InAutoConfig);
 
   if InAutoConfig = 0 then
+  begin
     if IsDirective(S, '$DEFINE') or IsDirective(S, '.$DEFINE') then // do not localize
     begin
-      Item := TJVCLConfigItem.Create(Self, LastCommentToken, S, Token.StartLine - 1);
+      Item := TJVCLConfigItem.Create(Self, LastCommentToken, S, Token.StartLine - 1, FNextHidden);
       FItems.Add(Item);
+      FNextHidden := False;
     end
     else
       LastCommentToken := S;
+  end;
 end;
 
 procedure TJVCLConfig.LoadFromFile(const AFilename: string);

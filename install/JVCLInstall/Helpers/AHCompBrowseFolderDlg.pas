@@ -24,15 +24,18 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit AHCompBrowseFolderDlg;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
 
-unit AHCompBrowseFolderDlg;
 {$IFDEF COMPILER6_UP}
  {$WARN UNIT_PLATFORM OFF}
  {$WARN SYMBOL_PLATFORM OFF}
 {$ENDIF}
+
 interface
+
 uses
   Windows, Messages, SysUtils, Graphics, Controls, Forms, Classes, Dialogs,
   ActiveX, ComObj, ShlObj, FileCtrl;

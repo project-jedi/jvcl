@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JVCLData;
+
+{$I jvcl.inc}
 
 interface
 
@@ -78,12 +78,17 @@ type
     FBplDir: string;
     FGenerateMapFiles: Boolean;
 
+    FJVCLConfig: TJVCLConfig;
+
     procedure SetInstallMode(const Value: TInstallMode);
     function GetFrameworkCount: Integer;
     function GetDxgettextDir: string;
     function GetDeveloperInstall: Boolean;
     function GetGenerateMapFiles: Boolean;
     procedure SetJCLDir(const Value: string);
+    function GetJVCLConfig: TJVCLConfig;
+    function GetQuickReport: Boolean;
+    function GetQuickReport4: Boolean;
   private
     { ITargetConfig }
     function GetInstance: TObject;
@@ -154,7 +159,10 @@ type
       // DCP directory for this target
 
     property DxgettextDir: string read GetDxgettextDir;
-      // Directory where dxgettext is installed or ''. (special handling for Delphi/BCb 5)
+      // Directory where dxgettext is installed or ''. (special handling for Delphi/BCB 5)
+
+    property QuickReport: Boolean read GetQuickReport;
+    property QuickReport4: Boolean read GetQuickReport4;
 
     property InstalledJVCLVersion: Integer read FInstalledJVCLVersion;
       // InstalledJVCLVersion returns the version of the installed JVCL.
@@ -177,6 +185,9 @@ type
     property FrameworkCount: Integer read GetFrameworkCount;
       // FrameworkCount returns the number of available frameworks for this
       // target.
+
+    property JVCLConfig: TJVCLConfig read GetJVCLConfig;
+      // JVCLConfig returns the confiuration
   public
     property InstallJVCL: Boolean read FInstallJVCL write FInstallJVCL;
       // InstallJVCL specifies if the JVCL should be installed on this target.
@@ -224,7 +235,6 @@ type
     FTargets: TCompileTargetList;
     FIsDxgettextInstalled: Boolean;
     FDxgettextDir: string;
-    FJVCLConfig: TJVCLConfig;
     FJVCLDir: string;
     FDeleteFilesOnUninstall: Boolean;
     FCompileJclDcp: Boolean;
@@ -246,6 +256,8 @@ type
     function GetOptionState(Index: Integer): Integer;
     function GetGenerateMapFiles: Integer;
     procedure SetGenerateMapFiles(const Value: Integer);
+    function GetDebugUnits: Integer;
+    procedure SetDebugUnits(const Value: Integer);
   protected
     function JvclIncFilename: string;
     procedure Init; virtual;
@@ -260,12 +272,12 @@ type
     property DxgettextDir: string read FDxgettextDir;
     property IsDxgettextInstalled: Boolean read FIsDxgettextInstalled;
 
-    property JVCLConfig: TJVCLConfig read FJVCLConfig;
     property JVCLDir: string read GetJVCLDir;
     property JVCLPackagesDir: string read GetJVCLPackagesDir;
     property JVCLPackagesXmlDir: string read GetJVCLPackagesXmlDir;
 
     property DeveloperInstall: Integer read GetDeveloperInstall write SetDeveloperInstall;
+    property DebugUnits: Integer read GetDebugUnits write SetDebugUnits;
     property CleanPalettes: Integer read GetCleanPalettes write SetCleanPalettes;
     property Build: Integer read GetBuild write SetBuild;
     property CompileOnly: Integer read GetCompileOnly write SetCompileOnly;
@@ -279,6 +291,9 @@ type
     property TargetConfig[Index: Integer]: TTargetConfig read GetTargetConfig;
     property Targets: TCompileTargetList read FTargets;
   end;
+
+const
+  TargetTypes: array[Boolean] of string = ('D', 'C'); // do not localize
 
 implementation
 
@@ -295,9 +310,6 @@ resourcestring
   RsUnregisteringPackages = 'Unregistering packages...';
   RsDeletingFiles = 'Deleting files...';
   RsComplete = 'Complete.';
-
-const
-  TargetTypes: array[Boolean] of string = ('D', 'C'); // do not localize
 
 function ReadRegString(RootKey: HKEY; const Key, Name: string): string;
 var
@@ -339,9 +351,6 @@ begin
   FCompileJclDcp := True;
   FVerbose := False;
 
-  FJVCLConfig := TJVCLConfig.Create;
-  FJVCLConfig.LoadFromFile(JvclIncFilename);
-
   ErrMsg := '';
   LoadConfig(JVCLDir + '\' + sPackageGeneratorFile, 'JVCL', ErrMsg);
 
@@ -356,7 +365,6 @@ destructor TJVCLData.Destroy;
 var
   i: Integer;
 begin
-  FJVCLConfig.Free;
   for i := 0 to High(FConfigs) do
     FConfigs[I].Free;
   FTargets.Free;
@@ -391,7 +399,8 @@ begin
         1: b := TargetConfig[i].CleanPalettes;
         2: b := TargetConfig[i].CompileOnly;
         3: b := TargetConfig[i].DeveloperInstall;
-        4: b := TargetConfig[i].GenerateMapFiles;
+        4: b := TargetConfig[i].DebugUnits;
+        5: b := TargetConfig[i].GenerateMapFiles;
       else
         b := False;
       end;
@@ -439,9 +448,19 @@ begin
   Result := GetOptionState(3);
 end;
 
-function TJVCLData.GetGenerateMapFiles: Integer;
+function TJVCLData.GetDebugUnits: Integer;
 begin
   Result := GetOptionState(4);
+end;
+
+function TJVCLData.GetGenerateMapFiles: Integer;
+begin
+  Result := GetOptionState(5);
+end;
+
+function TTargetConfig.GetJVCLConfig: TJVCLConfig;
+begin
+  Result := FJVCLConfig;
 end;
 
 function TJVCLData.GetJVCLDir: string;
@@ -522,11 +541,6 @@ procedure TJVCLData.SaveTargetConfigs;
 var
   i: Integer;
 begin
-  if FJVCLConfig.Modified then
-  begin
-    FileSetReadOnly(JVCLConfig.Filename, False);
-    JVCLConfig.SaveToFile(JVCLConfig.Filename);
-  end;
   for i := 0 to Targets.Count - 1 do
     TargetConfig[i].Save;
 end;
@@ -571,6 +585,14 @@ begin
     TargetConfig[i].GenerateMapFiles := Value <> 0;
 end;
 
+procedure TJVCLData.SetDebugUnits(const Value: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to Targets.Count - 1 do
+    TargetConfig[i].DebugUnits := Value <> 0;
+end;
+
 { TTargetConfig }
 
 constructor TTargetConfig.Create(AOwner: TJVCLData; ATarget: TCompileTarget);
@@ -593,6 +615,7 @@ begin
   FInstallJVCL := CanInstallJVCL;
 
   FFrameworks := TJVCLFrameworks.Create(Self);
+  FJVCLConfig := TJVCLConfig.Create;
   Load;
 end;
 
@@ -603,8 +626,8 @@ begin
 end;
 
 procedure TTargetConfig.Init;
- // Memory allocations must go to the constructor because Init could be called
- // more the once.
+  // Memory allocations must go to the constructor because Init could be called
+  // more the once.
 
   function FindJCL(List: TStrings): string;
   var
@@ -669,7 +692,7 @@ begin
   FCompiledJCL := False;
   FOutdatedJCL := False;
 
- // identify JVCL version
+  // identify JVCL version
   FInstalledJVCLVersion := 0;
   if Target.FindPackageEx('JvPack1') <> nil then
     FInstalledJVCLVersion := 1
@@ -688,7 +711,7 @@ begin
   if FInstallMode = [] then // if no VCL and no CLX that it is CLX
     Include(FInstallMode, pkVCL);
 
- // identify JCL version
+  // identify JCL version
   FMissingJCL := True;
   if FJCLDir = '' then
   begin
@@ -1046,6 +1069,12 @@ var
   Ini: TMemIniFile;
   IniFileName: string;
 begin
+  if JVCLConfig.Modified then
+  begin
+    FileSetReadOnly(JVCLConfig.Filename, False);
+    JVCLConfig.SaveToFile(JVCLConfig.Filename);
+  end;
+
   for Kind := pkFirst to pkLast do
   begin
     if Frameworks.Items[False, Kind] <> nil then
@@ -1084,6 +1113,7 @@ begin
       Ini.WriteBool(Target.DisplayName, 'InstallMode_' + IntToStr(Integer(Kind)), Kind in InstallMode); // do not localize
     Ini.WriteBool(Target.DisplayName, 'AutoDependencies', AutoDependencies); // do not localize
     Ini.WriteBool(Target.DisplayName, 'GenerateMapFiles', GenerateMapFiles); // do not localize
+    Ini.WriteBool(Target.DisplayName, 'DebugUnits', DebugUnits); // do not localize
 
     Ini.UpdateFile;
   finally
@@ -1096,6 +1126,7 @@ var
   Kind: TPackageGroupKind;
   Ini: TMemIniFile;
   Mode: TInstallMode;
+  Filename: string;
 begin
   for Kind := pkFirst to pkLast do
   begin
@@ -1115,6 +1146,7 @@ begin
     DeveloperInstall := Ini.ReadBool(Target.DisplayName, 'DeveloperInstall', DeveloperInstall); // do not localize
     CleanPalettes := Ini.ReadBool(Target.DisplayName, 'CleanPalettes', CleanPalettes); // do not localize
     GenerateMapFiles := Ini.ReadBool(Target.DisplayName, 'GenerateMapFiles', GenerateMapFiles); // do not localize
+    DebugUnits := Ini.ReadBool(Target.DisplayName, 'DebugUnits', DebugUnits); // do not localize
     Mode := [];
     for Kind := pkFirst to pkLast do
       if Ini.ReadBool(Target.DisplayName, 'InstallMode_' + IntToStr(Integer(Kind)), Kind in InstallMode) then // do not localize
@@ -1127,6 +1159,22 @@ begin
     BplDir := FixBackslashBackslash(BplDir);
     DcpDir := FixBackslashBackslash(DcpDir);
 
+    // Load jvcl%t.inc. Or the jvclbase.inc when no jvcl%t.inc exists
+    Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d.inc', [LowerCase(TargetTypes[Target.IsBCB]), Target.Version]);
+    if not FileExists(Filename) then
+    begin
+      JVCLConfig.LoadFromFile(GetJVCLDir + '\common\jvclbase.inc');
+      JVCLConfig.Filename := Filename;
+      JVCLConfig.Modified := True; // must be stored
+    end
+    else
+      JVCLConfig.LoadFromFile(Filename);
+    // set (hidden) personal edition configuration 
+    JVCLConfig.Enabled['DelphiPersonalEdition'] := Target.IsPersonal;
+
+    // QuickReport configuration
+    JVCLConfig.Enabled['QREPORT4'] := JVCLConfig.Enabled['QREPORT4'] or QuickReport4;
+    JVCLConfig.Enabled['JVCL_UseQuickReport'] := JVCLConfig.Enabled['JVCL_UseQuickReport'] or QuickReport;
   finally
     Ini.Free;
   end;
@@ -1178,20 +1226,25 @@ begin
   if InstalledJVCLVersion < 3 then
     DeinstallJVCL(nil, nil);
 
- // remove old
+  // remove old
   AddPaths(Target.BrowsingPaths, False, Owner.JVCLDir,
     ['common', 'run', 'qcommon', 'qrun']); // do not localize
   AddPaths(Target.SearchPaths, False, Owner.JVCLDir,
     ['common', 'run', 'qcommon', 'qrun']); // do not localize
+  AddPaths(Target.DebugDcuPaths, {Add:=}False, Owner.JVCLDir,
+    [Target.InsertDirMacros(UnitOutDir + '\debug'), UnitOutDir + '\debug']); // do not localize
 
 
- // common
+  // common
   AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir,
     ['common']); // do not localize
   AddPaths(Target.SearchPaths, True, Owner.JVCLDir,
     ['common', Target.InsertDirMacros(UnitOutDir)]); // do not localize
+  if DebugUnits and not DeveloperInstall then
+    AddPaths(Target.DebugDcuPaths, True, Owner.JVCLDir,
+      [Target.InsertDirMacros(UnitOutDir + '\debug')]); // do not localize
 
- // add
+  // add
   if pkVCL in InstallMode then
   begin
     AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir,
@@ -1322,7 +1375,7 @@ begin
 
 {**}DoProgress(RsCleaningPathLists, 1, MaxSteps);
 
- // remove JVCL 1 and 2 directories
+  // remove JVCL 1 and 2 directories
   for i := Target.BrowsingPaths.Count - 1 downto 0 do
     if Pos('\jvpack\', AnsiLowerCase(Target.BrowsingPaths[i])) <> 0 then // do not localize
       Target.BrowsingPaths.Delete(i);
@@ -1332,12 +1385,14 @@ begin
       Target.SearchPaths.Delete(i);
 
 
- // remove JVCL 3 directories
+  // remove JVCL 3 directories
   AddPaths(Target.BrowsingPaths, {Add:=}False, Owner.JVCLDir,
     ['common', 'design', 'run', 'qcommon', 'qdesign', 'qrun']); // do not localize
   AddPaths(Target.SearchPaths, {Add:=}False, Owner.JVCLDir,
     ['common', 'design', 'run', 'qcommon', 'qdesign', 'qrun', // do not localize
     Target.InsertDirMacros(UnitOutDir), UnitOutDir]);
+  AddPaths(Target.DebugDcuPaths, {Add:=}False, Owner.JVCLDir,
+    [Target.InsertDirMacros(UnitOutDir + '\debug'), UnitOutDir + '\debug']); // do not localize
   Target.SavePaths;
 
 {**}DoProgress(RsUnregisteringPackages, 2, MaxSteps);
@@ -1354,7 +1409,7 @@ begin
   end;
   Target.SavePackagesLists;
 
- // clean ini file
+  // clean ini file
   Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini')); // do not localize
   try
     Ini.EraseSection(Target.DisplayName);
@@ -1377,6 +1432,16 @@ begin
   end;
 
 {**}DoProgress(RsComplete, MaxSteps, MaxSteps);
+end;
+
+function TTargetConfig.GetQuickReport: Boolean;
+begin
+  Result := FileExists(Target.RootDir + '\qrpt.bpl') or GetQuickReport4;
+end;
+
+function TTargetConfig.GetQuickReport4: Boolean;
+begin
+  Result := FileExists(Target.RootDir + Format('\qr4run%s%d.bpl', [LowerCase(TargetTypes[Target.IsBCB]), Target.Version]));
 end;
 
 end.

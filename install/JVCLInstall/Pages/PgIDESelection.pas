@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit PgIDESelection;
+
+{$I jvcl.inc}
 
 interface
 

@@ -2,7 +2,7 @@ object FrameInstall: TFrameInstall
   Left = 0
   Top = 0
   Width = 518
-  Height = 335
+  Height = 348
   TabOrder = 0
   object LblTarget: TLabel
     Left = 8
@@ -26,7 +26,7 @@ object FrameInstall: TFrameInstall
   end
   object LblOpenFile: TLabel
     Left = 8
-    Top = 320
+    Top = 331
     Width = 505
     Height = 13
     Cursor = crHandPoint
@@ -61,7 +61,7 @@ object FrameInstall: TFrameInstall
     Left = 8
     Top = 128
     Width = 505
-    Height = 193
+    Height = 201
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
