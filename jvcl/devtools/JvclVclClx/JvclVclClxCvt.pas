@@ -123,6 +123,9 @@ end;
 function TJVCLConverter.ChangeFileName(const Name: String): String;
 begin
   Result := Name;
+  if SameText(ExtractFileExt(Result), '.dfm') then
+    Result := ChangeFileExt(Result, '.xfm');
+
   if AnsiStartsStr('Jv', Name) then
   begin
     Insert('Q', Result, 3);

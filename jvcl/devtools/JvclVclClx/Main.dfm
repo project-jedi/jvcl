@@ -1,6 +1,7 @@
 object FormMain: TFormMain
   Left = 192
   Top = 114
+  ActiveControl = BtnExecute
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'JVCL VCL to CLX Converter'
@@ -48,7 +49,7 @@ object FormMain: TFormMain
     Shape = bsLeftLine
   end
   object BtnExecute: TButton
-    Left = 24
+    Left = 16
     Top = 366
     Width = 75
     Height = 25
@@ -93,12 +94,10 @@ object FormMain: TFormMain
     Width = 201
     Height = 17
     Caption = '&Directory'
-    Checked = True
     TabOrder = 3
-    TabStop = True
   end
   object BtnQuit: TButton
-    Left = 339
+    Left = 343
     Top = 366
     Width = 75
     Height = 25
@@ -147,6 +146,8 @@ object FormMain: TFormMain
     Width = 201
     Height = 17
     Caption = '&Force overwrite'
+    Checked = True
+    State = cbChecked
     TabOrder = 9
   end
   object ListBox1: TListBox
@@ -163,7 +164,9 @@ object FormMain: TFormMain
     Width = 113
     Height = 17
     Caption = '&All JVCL JVCLX files'
+    Checked = True
     TabOrder = 13
+    TabStop = True
   end
   object EditDirectory: TJvDirectoryEdit
     Left = 16

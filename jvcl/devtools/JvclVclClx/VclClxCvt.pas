@@ -89,7 +89,12 @@ type
     procedure CheckCondition(Parser: TPascalParser; EndifToken: PTokenInfo);
       { Removes if necessary the condition blocks. }
     procedure CheckUses(Token: PTokenInfo; var Context: TParseContext);
-      { Parses the uses-clause and allows the replacement of unit names. }
+      { Parses the uses-clause and allows the replacement of unit names.
+        If it finds a "Windows" in a non-IFDEF'ed area the "Types" unit will be
+        added before the replaced "Windows"
+        If no "Windows" unit is found the "Types" unit will be inserted before
+        the replaced "Graphics" unit.
+        "Types" will not be added when it already is in the uses list. }
     procedure CheckFileHead(Token: PTokenInfo; var Context: TParseContext);
       { Replaces the "unit", "program", ... name and adds the unit name to the
         UsedUnits list. }
@@ -424,7 +429,8 @@ begin
       ParserIndex := Parser.Index;
       if GetNextToken(Parser, Token, Context) and (Token.Kind = tkSymbol) and (Token.Value = '.') then
       begin
-        ReplaceUnitName(@Tk);
+        if not IsUnitIgnored(Tk.Value) then
+          ReplaceUnitName(@Tk);
         Result := True;
       end
       else
@@ -736,7 +742,9 @@ procedure TVCLConverter.CheckUses(Token: PTokenInfo; var Context: TParseContext)
 var
   Parser: TPascalParser;
   StartConditionStackCount: Integer;
+  InsertTypesUnitStartIndex: Integer;
 begin
+  InsertTypesUnitStartIndex := -1;
   StartConditionStackCount := FConditionStack.OpenCount;
   Parser := Token.Parser;
   while GetNextToken(Parser, Token, Context) do
@@ -762,10 +770,22 @@ begin
           begin
             // replace unit names, because we are outside a VCL/VisualCLX condition
             if not IsUnitIgnored(Token.Value) then
+            begin
+              if SameText(Token.Value, 'Windows') then
+                InsertTypesUnitStartIndex := Token.StartIndex;
+              if (InsertTypesUnitStartIndex = -1) and SameText(Token.Value, 'Graphics') then
+                InsertTypesUnitStartIndex := Token.StartIndex;
               ReplaceUnitName(Token);
+            end;
           end;
         end;
     end;
+  end;
+  if (InsertTypesUnitStartIndex > 0) and Context.InInterfaceSection and
+     (FUsesUnits.IndexOf('Types') = -1) then
+  begin
+    Parser.Insert(InsertTypesUnitStartIndex, 'Types, ');
+    Parser.IndexNoClear := Parser.Index + 7;
   end;
 end;
 
@@ -974,7 +994,7 @@ begin
       end;
 
       WriteFile(Lines,
-        FOutDirectory + PathDelim + ChangeFileExt(ChangeFileName(ExtractFileName(Filename)),'.xfm'),
+        FOutDirectory + PathDelim + ChangeFileName(ExtractFileName(Filename)),
         False);
     end
     else
@@ -1001,7 +1021,6 @@ end;
 
 procedure TVCLConverter.ChangeDfmLine(var Line: string);
 begin
-  // do nothing
   if AnsiStartsText('BorderStyle = ', Line) then
     Line := StringReplace(Line, ' bs', ' fbs', []);
   if AnsiStartsText('Ctl3D = ', Line) or
