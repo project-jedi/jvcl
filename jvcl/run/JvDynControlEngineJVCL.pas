@@ -758,7 +758,7 @@ end;
 
 procedure TJvDynControlJVCLButtonEdit.ControlSetOnButtonClick(Value: TNotifyEvent);
 begin
-  FButton.OnClick:= Value;
+  FButton.OnClick := Value;
 end;
 
 procedure TJvDynControlJVCLButtonEdit.ControlSetButtonCaption(const Value: string);

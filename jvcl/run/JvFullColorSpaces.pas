@@ -1415,7 +1415,7 @@ begin
   inherited Create(ColorID);
   FDelphiColors := TStringList.Create;
   // ignore duplicates
-  FDelphiColors.Duplicates:=dupIgnore;
+  FDelphiColors.Duplicates := dupIgnore;
   GetColorValues(GetColorValuesCallBack);
   AddDelphiColor(clNone);
 end;

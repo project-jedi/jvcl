@@ -1309,7 +1309,7 @@ var
   Index: Integer;
 begin
   if Assigned(JvDynControlData) then
-    Index:= JvDynControlData.ControlValue
+    Index := JvDynControlData.ControlValue
   else
     Index := -1;
   if VariantAsItemIndex then
@@ -1429,8 +1429,8 @@ constructor TJvComboBoxParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   LabelArrangeMode := lamBefore;
-  FSorted:= False;
-  FNewEntriesAllowed:= False;
+  FSorted := False;
+  FNewEntriesAllowed := False;
 end;
 
 procedure TJvComboBoxParameter.Assign(Source: TPersistent);
@@ -1484,7 +1484,7 @@ var
   Index: Integer;
 begin
   if Assigned(JvDynControlData) then
-    Index:= ItemList.IndexOf(JvDynControlData.ControlValue)
+    Index := ItemList.IndexOf(JvDynControlData.ControlValue)
   else
     Index := -1;
   if VariantAsItemIndex then

@@ -73,8 +73,7 @@ uses
   JvCheckListBox, JvControlBar, JvCtrls, JvGroupBox, JvHeaderControl,
   JvImage, JvLabel, JvRadioButton, JvRadioGroup, JvScrollBar, JvShape,
   JvStaticText, JvStatusBar, JvGrids, JvStringGrid, JvBitBtn, JvPanel, JvImageList,
-  JvTransparentPanel, JvCheckedItemsForm, JvProgressEditor, JvDsgnEditors,
-  JvCheckedMaskEdit;
+  JvCheckedItemsForm, JvProgressEditor, JvDsgnEditors, JvCheckedMaskEdit;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvStdCtrlsReg.dcr}

@@ -859,7 +859,7 @@ end;
 
 procedure TJvDynControlCxButtonEdit.ControlSetOnButtonClick(Value: TNotifyEvent);
 begin
-  FIntOnButtonClick:= Value;;
+  FIntOnButtonClick := Value;;
 end;
 
 procedure TJvDynControlCxButtonEdit.ControlSetButtonCaption(const Value: string);

@@ -493,7 +493,7 @@ type
     { Defines location which is used for the version check,
     only assigned locations are supported }
     property LocationType: TJvProgramVersionLocationType read FLocationType write FLocationType;
-    {Defines which options of the component are stored/restored wia AppStorage }
+    {Defines which options of the component are stored/restored via AppStorage }
     property UserOptions: TJvProgramVersionUserOptions read FUserOptions write SetUserOptions
       default [uoCheckFrequency, uoLocalDirectory, uoAllowedReleaseType,
         uoLocationType, uoLocationNetwork, uoLocationHTTP, uoLocationFTP, uoLocationDatabase];
@@ -530,7 +530,7 @@ const
 
 function CompareVersionNumbers(AVersion1, AVersion2: string): Integer;
 var
-  n1, n2: Integer;
+  N1, N2: Integer;
 
   function GetNextNumber(var Version: string): Integer;
   var
@@ -561,15 +561,15 @@ var
 begin
   Result := 0;
   repeat
-    n1 := GetNextNumber(AVersion1);
-    n2 := GetNextNumber(AVersion2);
-    if n2 > n1 then
+    N1 := GetNextNumber(AVersion1);
+    N2 := GetNextNumber(AVersion2);
+    if N2 > N1 then
     begin
       Result := 1;
       Exit;
     end
     else
-    if n2 < n1 then
+    if N2 < N1 then
     begin
       Result := -1;
       Exit;

@@ -37,7 +37,6 @@ uses
   QActnList, QWindows, QImgList, QGraphics,
   {$ENDIF UNIX}
   Forms, Controls, Classes, DB,
-  JvPanel,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   cxGridCustomTableView,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
@@ -47,7 +46,7 @@ uses
   {$IFDEF USE_3RDPARTY_SMIMPORT}
   SMIWiz, SMIBase,
   {$ENDIF USE_3RDPARTY_SMIMPORT}
-  JvDynControlEngineDB, JvDynControlEngineDBTools;
+  JvPanel, JvDynControlEngineDB, JvDynControlEngineDBTools;
 
 type
   TComponentClass = class of TComponent;
@@ -945,33 +944,33 @@ function TJvDatabaseActionDevExpCxGridEngine.Bof(ADataComponent: TComponent): Bo
 var
   View: TcxCustomGridTableView;
 begin
-  View:= GetGridView(ADataComponent);
-  if Assigned (View) then
+  View := GetGridView(ADataComponent);
+  if Assigned(View) then
     Result := View.DataController.FocusedRowIndex = 0
   else
-    Result := inherited Bof(ADatacomponent);
+    Result := inherited Bof(ADataComponent);
 end;
 
 function TJvDatabaseActionDevExpCxGridEngine.RecNo(ADataComponent: TComponent): Integer;
 var
   View: TcxCustomGridTableView;
 begin
-  View:= GetGridView(ADataComponent);
-  if Assigned (View) then
+  View := GetGridView(ADataComponent);
+  if Assigned(View) then
     Result := View.DataController.FocusedRowIndex+1
   else
-    Result := inherited RecNo(ADatacomponent);
+    Result := inherited RecNo(ADataComponent);
 end;
 
 function TJvDatabaseActionDevExpCxGridEngine.RecordCount(ADataComponent: TComponent): Integer;
 var
   View: TcxCustomGridTableView;
 begin
-  View:= GetGridView(ADataComponent);
-  if Assigned (View) then
+  View := GetGridView(ADataComponent);
+  if Assigned(View) then
     Result := View.DataController.RecordCount
   else
-    Result := inherited RecordCount(ADatacomponent);
+    Result := inherited RecordCount(ADataComponent);
 end;
 
 
@@ -979,33 +978,33 @@ function TJvDatabaseActionDevExpCxGridEngine.CanInsert(ADataComponent: TComponen
 var
   View: TcxCustomGridTableView;
 begin
-  View:= GetGridView(ADataComponent);
-  if Assigned (View) then
-    Result := View.OptionsData.Inserting and inherited CanInsert(ADatacomponent)
+  View := GetGridView(ADataComponent);
+  if Assigned(View) then
+    Result := View.OptionsData.Inserting and inherited CanInsert(ADataComponent)
   else
-    Result := inherited CanInsert(ADatacomponent);
+    Result := inherited CanInsert(ADataComponent);
 end;
 
 function TJvDatabaseActionDevExpCxGridEngine.CanUpdate(ADataComponent: TComponent): Boolean;
 var
   View: TcxCustomGridTableView;
 begin
-  View:= GetGridView(ADataComponent);
-  if Assigned (View) then
-    Result := View.OptionsData.Editing and inherited CanUpdate(ADatacomponent)
+  View := GetGridView(ADataComponent);
+  if Assigned(View) then
+    Result := View.OptionsData.Editing and inherited CanUpdate(ADataComponent)
   else
-    Result := inherited CanUpdate(ADatacomponent);
+    Result := inherited CanUpdate(ADataComponent);
 end;
 
 function TJvDatabaseActionDevExpCxGridEngine.CanDelete(ADataComponent: TComponent): Boolean;
 var
   View: TcxCustomGridTableView;
 begin
-  View:= GetGridView(ADataComponent);
-  if Assigned (View) then
-    Result := View.OptionsData.Deleting and inherited CanDelete(ADatacomponent)
+  View := GetGridView(ADataComponent);
+  if Assigned(View) then
+    Result := View.OptionsData.Deleting and inherited CanDelete(ADataComponent)
   else
-    Result := inherited CanDelete(ADatacomponent);
+    Result := inherited CanDelete(ADataComponent);
 end;
 
 procedure TJvDatabaseActionDevExpCxGridEngine.First(ADataComponent: TComponent);

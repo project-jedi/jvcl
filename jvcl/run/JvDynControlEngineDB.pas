@@ -489,7 +489,7 @@ begin
   if not ADataSource.DataSet.Active then
     raise EJVCLException.CreateRes(@RsEUnassignedDataSet);
   if not Assigned(AOptions) then
-    CreateOptions:= TJvCreateDBFieldsOnControlOptions.Create
+    CreateOptions := TJvCreateDBFieldsOnControlOptions.Create
   else
     CreateOptions := AOptions;
   try

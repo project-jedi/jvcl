@@ -153,15 +153,15 @@ begin
       ColorGreen := ConvertToColor(DoRotate(ConvertFromColor(LColor and $0000FF00), AColorDelta.AxisGreen));
       ColorBlue := ConvertToColor(DoRotate(ConvertFromColor(LColor and $00FF0000), AColorDelta.AxisBlue));
 
-      MaxColorAxis:=255;
+      MaxColorAxis := 255;
       for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
       begin
         ValueAxis[I] := (ColorRed and $FF) + (ColorGreen and $FF) + (ColorBlue and $FF);
         if ValueAxis[I] > MaxColorAxis then
           MaxColorAxis := ValueAxis[I];
-        ColorRed:=ColorRed shr 8;
-        ColorGreen:=ColorGreen shr 8;
-        ColorBlue:=ColorBlue shr 8;
+        ColorRed := ColorRed shr 8;
+        ColorGreen := ColorGreen shr 8;
+        ColorBlue := ColorBlue shr 8;
       end;
 
       for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
