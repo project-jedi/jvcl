@@ -31,6 +31,8 @@
 
 unit ModuleLoader;
 
+{$WEAKPACKAGEUNIT ON}
+
 interface
 
 {$IFDEF MSWINDOWS}

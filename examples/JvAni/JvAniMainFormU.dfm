@@ -39,7 +39,7 @@ object JvAniMainForm: TJvAniMainForm
     Top = 34
     Width = 145
     Height = 97
-    Directory = 'F:\Program\Borland\Add\JEDI\jvcl\examples\JvAni'
+    Directory = 'E:\Daten\dev\JVCL3\examples\JvAni'
     FileList = FileListBox1
     DriveCombo = DriveComboBox1
     ItemHeight = 16
