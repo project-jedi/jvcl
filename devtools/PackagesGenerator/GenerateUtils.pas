@@ -1428,6 +1428,7 @@ begin
       // if outfile contains line, save it.
       // else, it's because the template file was a binary file, so simply
       // copy it to the destination name
+      SetFileAttributes(PChar(OutFileName), 0); // do not fail on read only files
       if outFile.count > 0 then
         outFile.SaveToFile(OutFileName)
       else
