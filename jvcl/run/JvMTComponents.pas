@@ -236,6 +236,11 @@ type
 
 implementation
 
+resourcestring
+  sNoThreadManager = 'No ThreadManager specified';
+  sOperatorNotAvailable = 'Operation not available while thread is active';
+  sCannotChangePropertySection = 'Can not change property of active section';
+  sCannotChangePropertyBuffer = 'Can''t change property of active buffer';
 
 { TJvMtManager }
 
@@ -369,7 +374,7 @@ begin
   if FThread = nil then
   begin
     if FManager = nil then
-      raise EThread.Create('No ThreadManager specified');
+      raise EThread.Create(sNoThreadManager);
   
     // get the new thread
     FThread := FManager.AcquireNewThread;
@@ -479,7 +484,7 @@ begin
       FThread := nil;
     end
     else
-      raise EThread.Create('Operation not available while thread is active');
+      raise EThread.Create(sOperatorNotAvailable);
   end;
 end;
 
@@ -525,7 +530,7 @@ end;
 procedure TJvMtSectionBase.CheckInactiveProperty;
 begin
   if Active then
-    raise EThread.Create('Can not change property of active section');
+    raise EThread.Create(sCannotChangePropertySection);
 end;
 
 procedure TJvMtSectionBase.Enter;
@@ -663,7 +668,7 @@ end;
 procedure TJvMtAsyncBufferBase.SetMaxBufferSize(Value: Integer);
 begin
   if FBuffer <> nil then
-    raise EThread.Create('Can''t change property of active buffer');
+    raise EThread.Create(sCannotChangePropertyBuffer);
   FMaxBufferSize := Value;
 end;
 
@@ -752,7 +757,7 @@ end;
 procedure TJvMtThreadToThread.SetMaxBufferSize(Value: Integer);
 begin
   if FQueue <> nil then
-    raise EThread.Create('Can''t change property of active buffer');
+    raise EThread.Create(sCannotChangePropertyBuffer);
   if Value < 1 then
     raise EInvalidOperation.CreateFmt(SPropertyOutOfRange, [Self.Classname]);
   FMaxBufferSize := Value;

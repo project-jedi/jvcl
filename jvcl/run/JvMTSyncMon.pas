@@ -15,8 +15,8 @@ Portions created by Erwin Molendijk are Copyright (C) 2002 Erwin Molendijk.
 All Rights Reserved.
 
 Contributor(s): ______________________________________.
-            
-Last Modified: 2002-09-29
+
+Last Modified: 2002-10-24
 
 You may retrieve the latest version of this file at the Project JEDI home page,
 located at http://www.delphi-jedi.org
@@ -30,8 +30,11 @@ unit JvMTSyncMon;
 interface
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, JvMTThreading, JvMTSync, Contnrs, JvMTConsts, SyncObjs;
+{$IFDEF MSWINDOWS}
+  Windows,
+{$ENDIF}
+  SysUtils, Classes, Contnrs, SyncObjs,
+  JvMTThreading, JvMTSync, JvMTConsts;
 
 type
   TMTCondition = class;
@@ -65,7 +68,7 @@ type
     procedure Leave;
     property Condition[ID: Integer]: TMTCondition read GetCondition; default;
   end;
-  
+
   TMTCondition = class (TObject)
   private
     FID: Integer;
@@ -80,7 +83,7 @@ type
     property ID: Integer read FID;
     property Monitor: TMTMonitor read FMonitor;
   end;
-  
+
 
 implementation
 
@@ -88,14 +91,32 @@ implementation
 const
   InvalidThreadPtr = TMTThread(-1);
 
+{$IFDEF LINUX}
+function InterlockedIncrement(var I: Integer): Integer;
+asm
+        MOV     EDX, 1
+        XCHG    EAX, EDX
+   LOCK XADD    [EDX], EAX
+        INC     EAX
+end;
+
+function InterlockedDecrement(var I: Integer): Integer;
+asm
+        MOV     EDX, -1
+        XCHG    EAX, EDX
+   LOCK XADD    [EDX], EAX
+        DEC     EAX
+end;
+{$ENDIF LINUX}
+
 { TMTMonitor }
 
 constructor TMTMonitor.Create;
 begin
   inherited Create;
   FConditions := TObjectList.Create;
-  FMutex := TMTSemaphore.Create(1,1);
-  FNext := TMTSemaphore.Create(0,1);
+  FMutex := TMTSemaphore.Create(1, 1);
+  FNext := TMTSemaphore.Create(0, 1);
   FCriticalTransition := TCriticalSection.Create;
   InvalidateActiveThread;
 end;
@@ -237,7 +258,7 @@ begin
   finally
     FMonitor.CriticalLeave;
   end;
-  
+
   if OtherWaiting then
     try
       FMonitor.WaitNext;   // Can raise EMTTerminate
@@ -270,7 +291,7 @@ begin
     //FMonitor.FActiveThread := nil;
     FMonitor.InvalidateActiveThread;
     InterlockedIncrement(FXCount);
-  
+
     if FMonitor.GetNextCount > 0 then
       FMonitor.SignalNext
     else
@@ -278,8 +299,7 @@ begin
   finally
     FMonitor.CriticalLeave;
   end;
-  
-  
+
   try
     FXSem.Wait;  // Can raise EMTTerminate
   except
@@ -294,8 +314,7 @@ begin
       raise;
     end;
   end;
-  
-  
+
   FMonitor.CriticalEnter;
   try
     InterlockedDecrement(FXCount);
