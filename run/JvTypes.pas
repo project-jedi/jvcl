@@ -420,6 +420,10 @@ const
 
 implementation
 
+{$IFDEF COMPLIB_CLX}
+uses
+  QWinCursors;
+{$ENDIF}
 
 initialization
   Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
