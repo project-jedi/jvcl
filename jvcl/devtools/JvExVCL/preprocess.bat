@@ -1,6 +1,6 @@
 @echo off
 cd source
-dpp.exe .\build.pas
+dpp.exe .\build.pas -I..\..\..\common
 
 SET OUTDIR=..\..\..\run
 
