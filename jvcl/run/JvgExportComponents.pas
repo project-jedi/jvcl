@@ -378,6 +378,7 @@ begin
   XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[1].Name := 'Report';
   Sheet := XL.WorkBooks[XL.WorkBooks.Count].WorkSheets['Report'];
   if (BackgroundPicture <> '') and FileExists(BackgroundPicture) then
+    // (rom) This is correct Delphi. See "positional parameters" in the Delphi help.
     Sheet.SetBackgroundPicture(FileName := BackgroundPicture);
 
   CellFont := TFont.Create;

@@ -100,17 +100,16 @@ type
     property OnHyperLinkClick;
   end;
 
-
 implementation
 
 function ReplaceFieldNameTag(Str: string; DataSet: TDataSet): string;
 var
   A, FieldName, Text: string;
-  i, j: Integer;
+  I, J: Integer;
   F:TField;
 const
   FieldStr: string = '<FIELD='; // non-standard html
-  function ExtractPropertyValue(Tag, PropName: string):string;
+  function ExtractPropertyValue(Tag, PropName: string): string;
   begin
     Result := '';
     PropName := UpperCase(PropName);
@@ -123,14 +122,14 @@ const
   end;
 begin
   Result := '';
-  i := Pos(FieldStr, Str);
-  while i > 0 do
+  I := Pos(FieldStr, Str);
+  while I > 0 do
   begin
-    Result := Result + Copy(Str, 1, i - 1);
-    A := Copy(Str, i, Length(Str));
-    j := Pos('>', A);
-    if j > 0 then
-      Delete(Str, 1, i + j - 1)
+    Result := Result + Copy(Str, 1, I - 1);
+    A := Copy(Str, I, Length(Str));
+    J := Pos('>', A);
+    if J > 0 then
+      Delete(Str, 1, I + J - 1)
     else
       Str := '';
     FieldName := ExtractPropertyValue(A, 'FIELD');
@@ -145,7 +144,7 @@ begin
     else
       Text := Format('(%s)',[FieldName]);
     Result := Result + Text;
-    i := Pos(FieldStr, Str);
+    I := Pos(FieldStr, Str);
   end;
   Result := Result + Str;
 end;

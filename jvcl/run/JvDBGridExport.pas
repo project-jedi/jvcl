@@ -24,6 +24,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvDBGridExport;
 
@@ -404,6 +405,7 @@ begin
       FWord.ActiveDocument.PageSetup.Orientation := 1;
     lTable := FWord.ActiveDocument.Tables.Add(FWord.ActiveDocument.Range, lRowCount + 1, lColVisible);
     FWord.ActiveDocument.Range.InsertAfter('Date ' + DateTimeToStr(Now));
+    // (rom) This is correct Delphi. See "positional parameters" in the Delphi help.
     lTable.AutoFormat(Format := WordFormat); // FormatNum, 1, 1, 1, 1, 1, 0, 0, 0, 1
 
     K := 1;

@@ -31,8 +31,7 @@ unit JvRecentMenuButton;
 interface
 
 uses
-  Windows, ShellApi, SysUtils, Classes,
-  Graphics, Controls, StdCtrls, Menus,
+  Windows, ShellAPI, SysUtils, Classes, Graphics, Controls, StdCtrls, Menus,
   JvButton, JvComputerInfoEx, JvTypes, JvJVCLUtils;
 
 // (rom) best separate out a TJvRecentPopupMenu
@@ -200,9 +199,9 @@ begin
     try
       while H = 0 do
       begin
-        if (Sr.FindData.cFilename[0] <> '.') then
+        if Sr.FindData.cFileName[0] <> '.' then
         begin
-          Tmp := ShellLinkResolve(Path + Sr.FindData.cFilename);
+          Tmp := ShellLinkResolve(Path + Sr.FindData.cFileName);
           if (Tmp <> '') and (ExtractFileExt(Tmp) <> '') then
             Strings.AddObject(Tmp, TObject(Sr.Time));
         end;
