@@ -15,10 +15,11 @@ Portions created by Petr Vones are Copyright (C) 1999 Petr Vones.
 Portions created by Microsoft are Copyright (C) 1998, 1999 Microsoft Corp.
 All Rights Reserved.
 
-Contributor(s): Marcel van Brakel <brakelm@bart.nl>.
+Contributor(s):
+  Marcel van Brakel <brakelm@bart.nl>.
+  Remko Bonte <remkobonte@myrealbox.com> (redirect console output)
 
-Last Modified: Jun 20, 2000
-Current Version: 0.50
+Last Modified: Mrt 4, 2004
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,8 +35,11 @@ unit JvCreateProcess;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Forms, ShellAPI, SyncObjs,
-  Contnrs,
+  Windows, Messages, SysUtils, Classes,
+  {$IFNDEF COMPILER6_UP}
+  Forms,
+  {$ENDIF !COMPILER6_UP}
+  ShellAPI, SyncObjs, Contnrs,
   JclStrings,
   JvComponent, JvTypes;
 
@@ -163,8 +167,8 @@ type
     function GetConsoleOutput: TStrings;
     function GetEnvironment: TStrings;
     procedure SetWaitForTerminate(const Value: Boolean);
-    procedure WaitThreadOnTerminate(Sender: TObject);
-    procedure ReadThreadOnTerminate(Sender: TObject);
+    procedure WaitThreadTerminated(Sender: TObject);
+    procedure ReadThreadTerminated(Sender: TObject);
     procedure SetEnvironment(const Value: TStrings);
     function GetHandle: THandle;
   protected
@@ -290,13 +294,24 @@ begin
     Result := True;
 end;
 
-procedure ConstructPipe(var ConsoleHandles: TJvRWEHandles;
-  var LocalHandles: TJvRWHandles);
+function ConstructPipe(var ConsoleHandles: TJvRWEHandles; var LocalHandles: TJvRWHandles): Boolean;
 var
   LHandles: TJvRWHandles;
   LSecurityAttr: TSecurityAttributes;
   LSecurityDesc: TSecurityDescriptor;
-  Ok: Boolean;
+
+  procedure CloseAllHandles;
+  begin
+    // Some error occurred; close all possibly created handles
+    SafeCloseHandle(ConsoleHandles.Read);
+    SafeCloseHandle(ConsoleHandles.Write);
+    SafeCloseHandle(ConsoleHandles.Error);
+    SafeCloseHandle(LocalHandles.Read);
+    SafeCloseHandle(LocalHandles.Write);
+    SafeCloseHandle(LHandles.Read);
+    SafeCloseHandle(LHandles.Write);
+  end;
+
 begin
   { http://support.microsoft.com/default.aspx?scid=KB;EN-US;q190351& }
   { http://community.borland.com/article/0,1410,10387,00.html }
@@ -304,7 +319,6 @@ begin
   FillChar(ConsoleHandles, SizeOf(TJvRWEHandles), 0);
   FillChar(LocalHandles, SizeOf(TJvRWHandles), 0);
   FillChar(LHandles, SizeOf(TJvRWHandles), 0);
-  Ok := False;
 
   // Set up the security attributes struct.
   LSecurityAttr.nLength := SizeOf(TSecurityAttributes);
@@ -319,61 +333,66 @@ begin
     LSecurityAttr.lpSecurityDescriptor := nil;
   LSecurityAttr.bInheritHandle := True;
 
-  try
-    // Create the child output pipe.
-    if not CreatePipe(LHandles.Read, ConsoleHandles.Write, @LSecurityAttr, 0)
-      then
-      RaiseLastOSError;
-
-    // Create a duplicate of the output write handle for the std error
-    // write handle. This is necessary in case the child application
-    // closes one of its std output handles.
-    if not DuplicateHandle(GetCurrentProcess, ConsoleHandles.Write,
-      GetCurrentProcess,
-      @ConsoleHandles.Error, // Address of new handle.
-      0, True, // Make it inheritable.
-      DUPLICATE_SAME_ACCESS) then
-      RaiseLastOSError;
-
-    // Create the child input pipe.
-    if not CreatePipe(ConsoleHandles.Read, LHandles.Write, @LSecurityAttr, 0) then
-      RaiseLastOSError;
-
-    // Create new output read handle and the input write handles. Set
-    // the Properties to FALSE. Otherwise, the child inherits the
-    // properties and, as a result, non-closeable handles to the pipes
-    // are created.
-    if not DuplicateHandle(GetCurrentProcess, LHandles.Read,
-      GetCurrentProcess,
-      @LocalHandles.Read, // Address of new handle.
-      0, False, // Make it uninheritable.
-      DUPLICATE_SAME_ACCESS) then
-      RaiseLastOSError;
-
-    if not DuplicateHandle(GetCurrentProcess, LHandles.Write,
-      GetCurrentProcess,
-      @LocalHandles.Write, // Address of new handle.
-      0, False, // Make it uninheritable.
-      DUPLICATE_SAME_ACCESS) then
-      RaiseLastOSError;
-
-    Ok := True;
-  finally
-    // Close inheritable copies of the handles you do not want to be
-    // inherited.
-    SafeCloseHandle(LHandles.Read);
-    SafeCloseHandle(LHandles.Write);
-
-    if not Ok then
-    begin
-      // Some error occurred; close all possibly created handles
-      SafeCloseHandle(ConsoleHandles.Read);
-      SafeCloseHandle(ConsoleHandles.Write);
-      SafeCloseHandle(ConsoleHandles.Error);
-      SafeCloseHandle(LocalHandles.Read);
-      SafeCloseHandle(LocalHandles.Write);
-    end;
+  // Create the child output pipe.
+  Result := CreatePipe(LHandles.Read, ConsoleHandles.Write, @LSecurityAttr, 0);
+  if not Result then
+  begin
+    CloseAllHandles;
+    Exit;
   end;
+
+  // Create a duplicate of the output write handle for the std error
+  // write handle. This is necessary in case the child application
+  // closes one of its std output handles.
+  Result := DuplicateHandle(GetCurrentProcess, ConsoleHandles.Write,
+    GetCurrentProcess,
+    @ConsoleHandles.Error, // Address of new handle.
+    0, True, // Make it inheritable.
+    DUPLICATE_SAME_ACCESS);
+  if not Result then
+  begin
+    CloseAllHandles;
+    Exit;
+  end;
+
+  // Create the child input pipe.
+  Result := CreatePipe(ConsoleHandles.Read, LHandles.Write, @LSecurityAttr, 0);
+  if not Result then
+  begin
+    CloseAllHandles;
+    Exit;
+  end;
+
+  // Create new output read handle and the input write handles. Set
+  // the Properties to FALSE. Otherwise, the child inherits the
+  // properties and, as a result, non-closeable handles to the pipes
+  // are created.
+  Result := DuplicateHandle(GetCurrentProcess, LHandles.Read,
+    GetCurrentProcess,
+    @LocalHandles.Read, // Address of new handle.
+    0, False, // Make it uninheritable.
+    DUPLICATE_SAME_ACCESS);
+  if not Result then
+  begin
+    CloseAllHandles;
+    Exit;
+  end;
+
+  Result := DuplicateHandle(GetCurrentProcess, LHandles.Write,
+    GetCurrentProcess,
+    @LocalHandles.Write, // Address of new handle.
+    0, False, // Make it uninheritable.
+    DUPLICATE_SAME_ACCESS);
+  if not Result then
+  begin
+    CloseAllHandles;
+    Exit;
+  end;
+
+  // Okay, everything went as expected; now close inheritable copies of the
+  // handles you do not want to be inherited.
+  SafeCloseHandle(LHandles.Read);
+  SafeCloseHandle(LHandles.Write);
 end;
 
 //=== TJvProcessEntry ========================================================
@@ -613,8 +632,7 @@ type
     constructor Create(AReadHandle, ADestHandle: THandle);
     destructor Destroy; override;
     procedure CloseRead;
-    function ReadBuffer(var ABuffer: TJvCPSBuffer; out ABufferSize: Cardinal):
-      Boolean;
+    function ReadBuffer(var ABuffer: TJvCPSBuffer; out ABufferSize: Cardinal): Boolean;
     procedure TerminateThread;
   end;
 
@@ -861,8 +879,7 @@ begin
 
       BytesToWrite := FOutputBufferEnd;
 
-      if not WriteFile(FWriteHandle, FOutputBuffer, BytesToWrite, BytesWritten,
-        nil) then
+      if not WriteFile(FWriteHandle, FOutputBuffer, BytesToWrite, BytesWritten, nil) then
       begin
         { WriteFile documentation on MSDN states that WriteFile returns
           ERROR_BROKEN_PIPE if the console closes it's read handle, but that
@@ -877,8 +894,8 @@ begin
         Exit;
 
       if BytesWritten < BytesToWrite then
-        Move(FOutputbuffer[BytesWritten], FOutputBuffer[0],
-          BytesToWrite - BytesWritten);
+        { Move unwritten tail to the begin of the buffer }
+        Move(FOutputBuffer[BytesWritten], FOutputBuffer[0], BytesToWrite - BytesWritten);
 
       Dec(FOutputBufferEnd, BytesWritten);
     finally
@@ -976,13 +993,13 @@ end;
 
 procedure TJvCreateProcess.CloseRead;
 begin
-  if Assigned(FReadThread) and (FReadThread is TJvReadThread) then
+  if FReadThread is TJvReadThread then
     TJvReadThread(FReadThread).CloseRead;
 end;
 
 procedure TJvCreateProcess.CloseWrite;
 begin
-  if Assigned(FWaitThread) and (FWaitThread is TJvConsoleThread) then
+  if FWaitThread is TJvConsoleThread then
     TJvConsoleThread(FWaitThread).CloseWrite;
 end;
 
@@ -1021,7 +1038,7 @@ end;
 function TJvCreateProcess.GetHandle: THandle;
 begin
   if FHandle = 0 then
-    FHandle := AllocateHWndEx(WndProc);
+    FHandle := AllocateHWndEx(MainWndProc);
   Result := FHandle;
 end;
 
@@ -1036,7 +1053,7 @@ var
 begin
   { Copy the data from the read thread to the this (main) thread and
     parse the console output }
-  if Assigned(FReadThread) and (FReadThread is TJvReadThread) then
+  if FReadThread is TJvReadThread then
     while Assigned(FReadThread) and
       TJvReadThread(FReadThread).ReadBuffer(FParseBuffer, ASize) do
       ParseConsoleOutput(FParseBuffer, ASize);
@@ -1047,7 +1064,14 @@ begin
   try
     WndProc(Msg);
   except
+    {$IFDEF COMPILER6_UP}
+    if Assigned(ApplicationHandleException) then
+      ApplicationHandleException(Self)
+    else
+      raise;
+    {$ELSE}
     Application.HandleException(Self);
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -1141,7 +1165,7 @@ begin
   DoOutput;
 end;
 
-procedure TJvCreateProcess.ReadThreadOnTerminate(Sender: TObject);
+procedure TJvCreateProcess.ReadThreadTerminated(Sender: TObject);
 begin
   { Read for the last time data from the read thread }
   HandleReadEvent;
@@ -1149,7 +1173,7 @@ begin
     DoReadEvent;
   FReadThread := nil;
 
-  { We only send a TerminateEvent if both the read thread and the wait thread
+  { We only fire a TerminateEvent if both the read thread and the wait thread
     have terminated; usually the read thread will terminate before the wait
     thread: }
 
@@ -1201,7 +1225,8 @@ begin
 
     if DoRedirect then
     begin
-      ConstructPipe(LConsoleHandles, LLocalHandles);
+      if not ConstructPipe(LConsoleHandles, LLocalHandles) then
+        RaiseLastOSError;
 
       with LStartupInfo do
       begin
@@ -1223,14 +1248,18 @@ begin
 
     if DoRedirect then
     begin
-      FWaitThread := TJvConsoleThread.Create(FProcessInfo.hProcess,
-        LLocalHandles.Write);
-      FWaitThread.OnTerminate := WaitThreadOnTerminate;
-      FWaitThread.Resume;
-
+      { (rb) The wait thread assumes that the read thread is done if FReadThread
+             is nil; thus we have to create the read thread /before/ the wait
+             thread (otherwise will go wrong with very fast finishing executables)
+             (See Mantis #1393)
+      }
       FReadThread := TJvReadThread.Create(LLocalHandles.Read, Handle);
-      FReadThread.OnTerminate := ReadThreadOnTerminate;
+      FReadThread.OnTerminate := ReadThreadTerminated;
       FReadThread.Resume;
+
+      FWaitThread := TJvConsoleThread.Create(FProcessInfo.hProcess, LLocalHandles.Write);
+      FWaitThread.OnTerminate := WaitThreadTerminated;
+      FWaitThread.Resume;
 
       FState := psWaiting;
     end
@@ -1238,7 +1267,7 @@ begin
     if FWaitForTerminate then
     begin
       FWaitThread := TJvWaitForProcessThread.Create(FProcessInfo.hProcess);
-      FWaitThread.OnTerminate := WaitThreadOnTerminate;
+      FWaitThread.OnTerminate := WaitThreadTerminated;
       FWaitThread.Resume;
       FState := psWaiting;
     end
@@ -1319,19 +1348,19 @@ begin
   end;
 end;
 
-procedure TJvCreateProcess.WaitThreadOnTerminate(Sender: TObject);
+procedure TJvCreateProcess.WaitThreadTerminated(Sender: TObject);
 begin
   FWaitThread := nil;
 
   if (Sender is TJvConsoleThread) and Assigned(FReadThread) then
   begin
-    // FReadThread is not yet terminated.
+    // FReadThread is not yet terminated, signal it must stop.
     FReadThread.Terminate;
     // Force the read on the input to return by closing the handle.
     TJvReadThread(FReadThread).CloseRead;
   end;
 
-  { We only send a TerminateEvent if both the read thread and the wait thread
+  { We only fire a TerminateEvent if both the read thread and the wait thread
     have terminated; usually the read thread will terminate before the wait
     thread: }
 
@@ -1350,7 +1379,7 @@ end;
 
 function TJvCreateProcess.Write(const S: string): Boolean;
 begin
-  Result := Assigned(FWaitThread) and (FWaitThread is TJvConsoleThread) and
+  Result := (FWaitThread is TJvConsoleThread) and
     TJvConsoleThread(FWaitThread).Write(S);
 end;
 
