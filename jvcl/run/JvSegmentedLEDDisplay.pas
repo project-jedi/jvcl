@@ -326,6 +326,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure MapText(var Text: PChar; ADigit: TJvCustomSegmentedLEDDigit);
     procedure Clear;
+    procedure LoadDefaultMapping; dynamic;
     procedure LoadFromFile(const FileName: string);
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToFile(const FileName: string);
@@ -1600,16 +1601,9 @@ begin
 end;
 
 constructor TJvBaseSegmentedLEDCharacterMapper.Create(AOwner: TComponent);
-var
-  Stream: TStream;
 begin
   inherited Create(AOwner);
-  Stream := TResourceStream.Create(HInstance, MapperFileID + '_DEFAULT', RT_RCDATA);
-  try
-    LoadFromStream(Stream);
-  finally
-    FreeAndNil(Stream);
-  end;
+  LoadDefaultMapping;
 end;
 
 procedure TJvBaseSegmentedLEDCharacterMapper.MapText(var Text: PChar;
@@ -1629,6 +1623,18 @@ end;
 procedure TJvBaseSegmentedLEDCharacterMapper.Clear;
 begin
   FillChar(FActiveMapping[#0], SizeOf(FActiveMapping), 0);
+end;
+
+procedure TJvBaseSegmentedLEDCharacterMapper.LoadDefaultMapping;
+var
+  Stream: TStream;
+begin
+  Stream := TResourceStream.Create(HInstance, MapperFileID + '_DEFAULT', RT_RCDATA);
+  try
+    LoadFromStream(Stream);
+  finally
+    FreeAndNil(Stream);
+  end;
 end;
 
 procedure TJvBaseSegmentedLEDCharacterMapper.LoadFromFile(const FileName: string);
