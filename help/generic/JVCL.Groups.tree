@@ -97,3 +97,5 @@
         |- Libraries=Libraries=JVCL provides a number of components to control library files (.DLLs).
         |- Processes=Processes=JVCL provides a number of components and controls to create and/or control processes.
         |- Threads=Threads=JVCL provides a number of components and controls to create and/or control threads.
+|-Wizards=Components for creating wizard style dialogs and applications.
+  |-RouteMaps=Components to extend wizards with alternative page navigation or for displaying the wizard pages in an alternate way.
