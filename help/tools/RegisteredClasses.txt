@@ -92,6 +92,7 @@ TJvDBStatusLabel
 TJvDBTreeView
 TJvDeleteError
 TJvDeviceChanged
+TJvDialButton
 TJvDice
 TJvDirectories
 TJvDirectoryEdit
@@ -306,7 +307,6 @@ TJvProgressDialog
 TJvQBEQuery
 TJvQuery
 TJvRadioButton
-TJvRadioControl
 TJvRadioGroup
 TJvRas32
 TJvRecentMenuButton
@@ -382,6 +382,8 @@ TJvTFWeeks
 TJvThread
 TJvThreadTimer
 TJvThumbImage
+TJvThumbnail
+TJvThumbView
 TJvTimeLimit
 TJvTimeLine
 TJvTimer
