@@ -31,8 +31,8 @@ interface
 
 uses
   SysUtils, Classes,
-  Controls, Forms, StdCtrls, Mask,
-  JvToolEdit, JvComponent, JvExMask;
+  Controls, Forms, StdCtrls, 
+  JvComponent;
 
 type
   TPatchFrm = class(TJvForm)
@@ -41,15 +41,19 @@ type
     Label2: TLabel;
     Label3: TLabel;
     edPassword: TEdit;
-    edSource: TJvFilenameEdit;
-    edDest: TJvFilenameEdit;
+    edSource: TEdit;
+    edDest: TEdit;
     OkBtn: TButton;
     CancelBtn: TButton;
     ClearBtn: TButton;
+    btnSrc: TButton;
+    btnDest: TButton;
     procedure OkBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ClearBtnClick(Sender: TObject);
+    procedure btnSrcClick(Sender: TObject);
+    procedure btnDestClick(Sender: TObject);
   private
     FPos: Integer;
     function Crypt(Value: Byte): Byte;
@@ -74,8 +78,8 @@ procedure TPatchFrm.LoadFromStr(Value: TStringList);
 begin
   if Value.Count > 2 then
   begin
-    edSource.FileName := Value[0];
-    edDest.FileName := Value[1];
+    edSource.Text := Value[0];
+    edDest.Text := Value[1];
   end;
 end;
 
@@ -105,14 +109,14 @@ var
   res1, res2: Integer;
   iCount, LastCount: Integer;
 begin
-  if not FileExists(edSource.FileName) or not FileExists(edDest.FileName) then
+  if not FileExists(edSource.Text) or not FileExists(edDest.Text) then
   begin
     ModalResult := mrNone;
     MessageDlg(RsErrJvPatcherEditorInvalidFilename, mtError, [mbOK], 0);
     Exit;
   end;
-  Src := TFileStream.Create(edSource.FileName, fmOpenRead or fmShareDenyNone);
-  Dest := TFileStream.Create(edDest.FileName, fmOpenRead or fmShareDenyNone);
+  Src := TFileStream.Create(edSource.Text, fmOpenRead or fmShareDenyNone);
+  Dest := TFileStream.Create(edDest.Text, fmOpenRead or fmShareDenyNone);
   try
     res1 := 0;
     res2 := 0;
@@ -120,8 +124,8 @@ begin
     Tag := 0;
 
     FPatch.Clear;
-    FPatch.Add(edSource.FileName);
-    FPatch.Add(edDest.FileName);
+    FPatch.Add(edSource.Text);
+    FPatch.Add(edDest.Text);
     Caption := Format(RsJvPatcherEditorComparingFilesd, [0]);
     Repaint;
     j := FPatch.Add(IntToStr(Src.Size));
@@ -216,6 +220,30 @@ begin
   FPatch.Clear;
 end;
 
+procedure TPatchFrm.btnSrcClick(Sender: TObject);
+begin
+  with TOpenDialog.Create(nil) do
+  try
+    Filename := edSource.Text;
+    if Execute then
+      edSource.Text := Filename;
+  finally
+    Free;
+  end;
+end;
+
+procedure TPatchFrm.btnDestClick(Sender: TObject);
+begin
+  with TOpenDialog.Create(nil) do
+  try
+    Filename := edDest.Text;
+    if Execute then
+      edDest.Text := Filename;
+  finally
+    Free;
+  end;
+end;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -224,6 +252,7 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

@@ -48,7 +48,7 @@ object JvProxyEditor: TJvProxyEditor
     Left = 409
     Top = 0
     Width = 97
-    Height = 301
+    Height = 304
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 0
@@ -77,7 +77,7 @@ object JvProxyEditor: TJvProxyEditor
     Left = 0
     Top = 0
     Width = 409
-    Height = 301
+    Height = 304
     Align = alClient
     ColCount = 2
     Ctl3D = True
