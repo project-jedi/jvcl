@@ -112,9 +112,9 @@ var
   FHandle:THandle;
 begin
   Result := 0;
-  FHandle := getParentHandle;
   with TObject(lpData) as TJvBrowseFolder do
   begin
+    FHandle := getParentHandle;
     case uMsg of
       BFFM_INITIALIZED:
         begin
