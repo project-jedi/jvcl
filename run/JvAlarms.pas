@@ -173,7 +173,7 @@ begin
         Current := Now;
         Stamp := DateTimeToTimeStamp(Now);
         // sort out delayed Timer events which may arrive in bunches
-        if (Stamp.Time - FLast.Time) >= 1000 then
+        if ((Stamp.Time - FLast.Time) >= 1000) or (Stamp.Date > FLast.Date) then
         begin
           FLast := Stamp;
           for I := FAlarms.Count - 1 downto 0 do
@@ -181,9 +181,8 @@ begin
             Alarm := Alarms[I];
             if Current >= Alarm.Time then
             begin
-              // OnAlarm aufrufen - hier am besten keine Funktionen
-              // > 500msec aufrufen, da diese Routine sonst hier kreiselt
-              // und keine weiteren Alarme durchkommen !
+              // Call OnAlarm - avoid calling a function that takes > 500msecs to complete
+              // since this could mean no other alarm events are called
               DoAlarm(Alarm, Current);
               Stamp := DateTimeToTimeStamp(Alarm.Time);
               case Alarm.Kind of
