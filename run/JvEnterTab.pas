@@ -42,16 +42,20 @@ uses
   JvComponent;
 
 type
+  TJvEnterAsTabEvent = procedure (Sender:TObject; AControl:TWinControl; var Handled:Boolean) of object;
   TJvEnterAsTab = class(TJvGraphicControl)
   private
     FEnterAsTab: Boolean;
     FAllowDefault: Boolean;
     FBmp: TBitmap;
+    FOnHandleEnter: TJvEnterAsTabEvent;
   protected
     {$IFDEF VCL}
+    function EnterHandled(AControl: TWinControl): Boolean;virtual;
     procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
+    function EnterHandled(AControl: QObjectH): Boolean;virtual;
     function TabKeyHook(Sender: QObjectH; Event: QEventH): Boolean; virtual;
     {$ENDIF VisualCLX}
     procedure Paint; override;
@@ -63,6 +67,11 @@ type
   published
     property EnterAsTab: Boolean read FEnterAsTab write FEnterAsTab default True;
     property AllowDefault: Boolean read FAllowDefault write FAllowDefault default True;
+    // Assign a handler if you want to specify when the Enter key is not to be converted into a
+    // Tab key. Only triggered if AllowDefault is true. If no event handler is assigned,
+    // Enter keys will not be converted into Tab if the currently active control is a
+    // TbuttonControl descendant
+    property OnHandleEnter:TJvEnterAsTabEvent read FOnHandleEnter write FOnHandleEnter;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -114,22 +123,40 @@ begin
   inherited Destroy;
 end;
 
+
 {$IFDEF VCL}
+function TJvEnterAsTab.EnterHandled(AControl:TWinControl):Boolean;
+begin
+  Result := AControl is TButtonControl;
+  if Assigned(FOnHandleEnter) then
+    FOnHandleEnter(Self, AControl, Result);
+end;
+
 procedure TJvEnterAsTab.CMDialogKey(var Msg: TCMDialogKey);
 begin
-  if (GetParentForm(Self).ActiveControl is TButtonControl) and AllowDefault then
-    inherited
-  else
   if (Msg.CharCode = VK_RETURN) and EnterAsTab then
   begin
-    GetParentForm(Self).Perform(CM_DIALOGKEY, VK_TAB, 0);
-    Msg.Result := 1;
+    if AllowDefault and EnterHandled(GetParentForm(Self).ActiveControl) then
+      inherited
+    else
+    begin
+      GetParentForm(Self).Perform(CM_DIALOGKEY, VK_TAB, 0);
+      Msg.Result := 1;
+    end;
   end
   else
     inherited;
 end;
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
+function TJvEnterAsTab.EnterHandled(AControl:QObjectH):Boolean;
+begin
+  Result := QObject_inherits(AControl, 'QButton');
+  if Assigned(FOnHandleEnter) then
+    FOnHandleEnter(Self, FindObject(AControl) as TWinControl, Result);
+end;
+
 function TJvEnterAsTab.TabKeyHook(Sender: QObjectH; Event: QEventH): Boolean;
 var
   ws: WideString;
@@ -137,12 +164,11 @@ begin
   Result := False;
   if QEvent_type(Event) = QEventType_KeyPress then
   begin
-    if QObject_inherits(Sender, 'QButton') and AllowDefault then
-      Exit;
-
     if ((QKeyEvent_key(QKeyEventH(Event)) = Key_Enter) or
       (QKeyEvent_key(QKeyEventH(Event)) = Key_Return) ) and EnterAsTab then
     begin
+      if AllowDefault and EnterHandled(Sender) then
+        Exit;
       ws := Tab;
 
       QApplication_postEvent(GetParentForm(Self).Handle,
