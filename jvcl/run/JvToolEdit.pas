@@ -104,12 +104,12 @@ type
     FNoAction: Boolean;
     {$IFDEF VCL}
     procedure WMContextMenu(var Msg: TWMContextMenu); message WM_CONTEXTMENU;
+    {$ENDIF VCL}
     function GetGlyph: TBitmap;
     function GetNumGlyphs: TJvNumGlyphs;
+    function GetUseGlyph: Boolean;
     procedure SetGlyph(const Value: TBitmap);
     procedure SetNumGlyphs(Value: TJvNumGlyphs);
-    function GetUseGlyph: Boolean;
-    {$ENDIF VCL}
   protected
     {$IFDEF JVCLThemesEnabled}
     FDrawThemedDropDownBtn: Boolean;
