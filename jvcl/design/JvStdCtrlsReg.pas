@@ -68,7 +68,7 @@ begin
     TJvStatusBar, TJvTabControl, TJvToolBar,
     TJvControlBar, TJvCoolBar,
     TJvGroupBox, TJvHeaderControl,
-    TJvPanel, TJvBevel {TJvTransparentPanel}
+    TJvPanel, TJvBevel, TJvSecretPanel {TJvTransparentPanel}
     ]);
 
   RegisterComponents(SPaletteLabel,[
@@ -78,7 +78,7 @@ begin
     TJvComboBox,TJvListBox, TJvCheckListBox,
     TJvTreeView, TJvListView, TJvCheckTreeView,
     TJvColorComboBox, TJvFontComboBox,
-    { TJvTextListBox, TJvxCheckListBox,}
+    TJvTextListBox, TJvxCheckListBox,
     TJvDateTimePicker, TJvMonthCalendar, {TJvMonthCalendar2,}
     TJvDrawGrid, TJvStringGrid
     ]);
