@@ -8,11 +8,11 @@ procedure Register;
 
 implementation
 uses
-  Classes, DesignIntf, ActnList, JvBaseDlg, 
+  Classes, DesignIntf, ActnList, JvBaseDlg, JvFindReplace, 
   JvDSADialogs, JvTipOfDay, JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvCommonExecDlg,
   JvDialogActns, JvActnRes, JvDialogs, JvProgressForm, JvPageSetupTitled, JvPageSetup, JvConnectNetwork,
   JvSelectDirectory, JvCopyError, JvDeleteError, JvRenameError, JvDiskPrompt, JvFindFiles,
-  JvImageDlg, JvLoginForm,
+  JvImageDlg, JvLoginForm, JvDualList, JvProgressDialog,
   JvAppletEditor, JvObjectPickerDialog, JvBaseDlgEditor, JvCommonDialogDEditor, JvTipOfDayEditor;
 
 {.$R ..\resources\JvDlgsReg.dcr}
@@ -20,11 +20,20 @@ uses
 procedure Register;
 begin
   RegisterComponents('Jv Dialogs',[
-    TJvDSADialog, TJvTipOfDay,
-    TJvFormatDriveDialog, TJvOrganizeFavoritesDialog, TJvAppletDialog,
-    
-    TJvProgressForm, TJvImageDlg, TJvLoginDialog 
+     TJvSelectDirectory, TJvOpenDialog, TJvSaveDialog,
+     TJvConnectNetwork, TJvDisconnectNetwork, TJvPageSetupDialog, TJvPageSetupTitledDialog,
+     TJvAddPrinterDialog, TJvFindFilesDialog, TJvFormatDriveDialog,
+     TJvColorDialog, TJvOrganizeFavoritesDialog, TJvComputerNameDialog,
+     TJvAppletDialog, TJvChangeIconDialog,
+     TJvShellAboutDialog, TJvRunDialog, TJvObjectPropertiesDialog,
+     TJvNewLinkDialog, TJvAddHardwareDialog, TJvOpenWithDialog,
+     TJvDiskFullDialog, TJvExitWindowsDialog, TJvOutOfMemoryDialog,
+     TJvObjectPickerDialog, TJvDualListDialog,
 
+     TJvTipOfDay, TJvFindReplace,
+     TJvImageDlg, TJvDSADialog, TJvLoginDialog,
+     TJvDiskPrompt, TJvCopyError, TJvDeleteError, TJvRenameError,
+     TJvProgressDialog, TJvProgressForm
     ]);
 
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, 'AppletName', TJvAppletNameProperty);
@@ -43,8 +52,7 @@ begin
   RegisterActions('JVCL',
     [TJvBrowseForFolderAction, TJvSelectDirectoryAction, TJvConnectNetworkAction,
      TJvFloppyFormatAction, TJvOrganizeFavoritesAction, TJvControlPanelAction,
-     TJvOpenFileAction, TJvSaveFileAction, TJvPageSetupAction,
-     TJvPageSetupTitledAction],
+     TJvOpenFileAction, TJvSaveFileAction, TJvPageSetupAction, TJvPageSetupTitledAction],
     // TJvStandardActions is a datamodule with default settings for our actions
     TJvStandardActions);
 end;

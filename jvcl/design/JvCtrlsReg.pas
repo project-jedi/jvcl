@@ -11,12 +11,12 @@ uses
   Classes, Controls, DesignIntf, DesignEditors, 
   JvZoom, JvAnalogClock, JvBehaviorLabel, JvArrowButton, JvaScrollText, JvCaptionButton,
   JvClock, JvContentScroller, JvColorBox, JvColorButton, JvDice,
-  JvDriveCtrls, JvFooter, JvGroupHeader, JvHtControls, JvInstallLabel, JvItemsPanel,
+  JvDriveCtrls, JvFooter, JvGroupHeader, JvHint, JvHtControls, JvInstallLabel, JvItemsPanel,
   JvListComb, JvPageScroller, JvRegistryTreeView, JvRollOut, JvScrollPanel,
   JvScrollText, JvSpacer, JvSpeedBar, JvSplit, JvSplitter, JvSwitch, JvSyncSplitter,
   JvTransparentButton, JvTransLED, JvxClock, JvSpeedbarSetupForm,
-  JvColorForm, JvDsgnIntf, JvImageDrawThread, JvRegAuto, JvWinampLabel,
-  JvButtons, JvCaptionPanel, JvScrollMax,
+  JvColorForm, JvDsgnIntf, JvImageDrawThread, JvRegAuto, JvWinampLabel, JvPlaylist, JvComponentPanel,
+  JvButtons, JvCaptionPanel, JvScrollMax, JvUninstallControls, JvMovableBevel,
   JvRegAutoEditor, JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor, JvFooterEditor,
   JvSpeedbarForm,
   JvDsgnEditors;
@@ -30,12 +30,13 @@ begin
     TJvCaptionButton, TJvClock, TJvContentScroller, TJvColorButton, TJvDice,
     TJvDriveCombo, TJvDriveList, TJvFileListBox, TJvDirectoryListBox,
     TJvFooter, TJvGroupHeader, TJvInstallLabel, TJvItemsPanel,
-    TJvHtListBox, TJvHTComboBox, TJvHTLabel,
+    TJvHint, TJvHtListBox, TJvHTComboBox, TJvHTLabel, TJvHTButton, TJvComponentPanel,
     TJvImageComboBox, TJvImageListBox, TJvPageScroller, TJvRegistryTreeView,
     TJvRollOut, TJvScrollingWindow, TJvScrollText, TJvSpacer, TJvSpeedBar,
     TJvSplitter, TJvxSplitter, TJvSwitch, TJvSyncSplitter,  TJvTransparentButton,
-    TJvTransparentButton2, TJvTransLED, TJvxClock, TJvRegAuto, TJvWinampLabel,
-    TJvHTButton, TJvCaptionPanel, TJvScrollMax, TJvBehaviorLabel
+    TJvTransparentButton2, TJvTransLED, TJvxClock, TJvRegAuto, TJvWinampLabel, TJvPlaylist,
+    TJvCaptionPanel, TJvScrollMax, TJvBehaviorLabel,
+    TJvUninstallComboBox,TJvUninstallListBox, TJvMovableBevel
     ]);
 
   RegisterPropertyEditor(typeinfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);

@@ -14,7 +14,7 @@ uses
   JvxSlider, JvBevel, JvCheckBox, JvCheckListBox, JvCombobox,
   JvComCtrls, JvControlBar, JvCoolBar, JvCtrls, JvGroupBox, JvHeaderControl,
   JvHotKey, JvImage, JvLabel, JvListView, JvMemo, JvMenus, JvRadioButton, JvRadioGroup,
-  JvScrollBar, JvScrollBox, JvShape, JvStaticText, JvStatusBar, JvStringGrid,
+  JvScrollBar, JvScrollBox, JvShape, JvStaticText, JvStatusBar, JvGrids, JvStringGrid,
   JvSystemPopup, JvTabControl, JvToolBar, JvUpDown, JvBitBtn, JvPanel, JvMonthCalendar,
   JvFindReplace, JvControlPanelButton, JvStartMenuButton, JvRecentMenuButton, JvFavoritesButton,
   
@@ -34,7 +34,7 @@ begin
     TJvMainMenu, TJvPopupMenu, TJvSystemPopup, TJvEdit, TJvCheckedMaskEdit,
     TJvMaskEdit, TJvCalcEdit, TJvCalculator, TJvComboEdit, TJvFileDirEdit,
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvSpinEdit,
-    TJvMemo, TJvPanel, TJvxSlider, TJvBevel, TJvStringGrid,
+    TJvMemo, TJvPanel, TJvxSlider, TJvBevel, TJvDrawGrid, TJvStringGrid,
     // TJvTextListBox, TJvxCheckListBox, TJvTransparentPanel,
     TJvCheckBox, TJvRadioButton, TJvRadioGroup, TJvCheckListBox, TJvComboBox,
     TJvColorComboBox, TJvFontComboBox, TJvListBox, TJvBitBtn, TJvImgBtn, TJvScrollBox, TJvShape,
@@ -42,10 +42,13 @@ begin
     TJvStaticText, TJvIPAddress, TJvPageControl, TJvTreeView, TJvTrackBar,
     TJvControlBar, TJvCoolBar, TJvHotKey, TJvListView, TJvRichEdit, TJvProgressBar,
     TJvDateTimePicker, TJvMonthCalendar, {TJvMonthCalendar2,} TJvStatusBar, TJvTabControl, TJvToolBar,
-    TJvUpDown, TJvDomainUpDown, TJvBrowseForFolderDialog,
+    TJvUpDown, TJvDomainUpDown,
 
     TJvControlPanelButton, TJvStartMenuButton, TJvRecentMenuButton, TJvFavoritesButton,
     TJvGroupBox, TJvHeaderControl, TJvImage, TJvLabel, TJvFindReplace
+    ]);
+  RegisterComponents('Jv Dialogs',[
+    TJvBrowseForFolderDialog
     ]);
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);

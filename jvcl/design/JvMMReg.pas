@@ -17,7 +17,7 @@ uses
   JvSpecialProgress, JvSlider, {$IFDEF USE_JV_GIF} JvGIF, JvGIFCtrl, {$ENDIF} JvID3v2Base, JvAnimatedImage,
   JvSpecialImage,
 
-  JvAnimatedEditor, JvID3v2EditorForm, JvPictureEditForm, JvIconListForm;
+  JvAnimatedEditor, JvID3v2EditorForm, JvPictureEditForm, JvIconListForm, JvGradientCaptionForm;
 
 {.$R ..\resources\JvMMReg.dcr}
 
@@ -33,7 +33,9 @@ begin
     TJvSpecialImage
     ]);
   RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
-  
+
+  RegisterComponentEditor(TJvGradientCaption,TGradientCaptionEditor);
+
   RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
   RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
   RegisterComponentEditor(TJvID3Controller, TJvID3ControllerEditor);
