@@ -59,6 +59,13 @@ procedure FindFiles(const Dir, Mask: string; SubDirs: Boolean; List: TStrings;
 
 function FindFilename(const Paths: string; const Filename: string): string;
 
+ { DirContainsFiles returns True if the directory Dir contains at least one file
+   that matches Mask. }
+function DirContainsFiles(const Dir, Mask: string): Boolean;
+
+function PathListToStr(List: TStrings): string;
+procedure StrToPathList(Paths: string; List: TStrings);
+
 {$IFDEF COMPILER5}
 type
   IInterface = IUnknown;
@@ -66,6 +73,7 @@ type
 function Supports(const Intf: IInterface; const IID: TGUID): Boolean; overload;
 
 function FileSetReadOnly(const FileName: string; ReadOnly: Boolean): Boolean;
+function GetEnvironmentVariable(const Name: string): string;
 {$ENDIF COMPILER5}
 
 procedure ClearEnvironment;
@@ -275,6 +283,44 @@ begin
   Result := Filename;
 end;
 
+function DirContainsFiles(const Dir, Mask: string): Boolean;
+var
+  sr: TSearchRec;
+begin
+  Result := FindFirst(Dir + PathDelim + Mask, faAnyFile and not faDirectory, sr) = 0;
+  if Result then
+    FindClose(sr);
+end;
+
+function PathListToStr(List: TStrings): string;
+var
+  i: Integer;
+begin
+  Result := '';
+  if List.Count > 0 then
+    Result := List[0];
+  for i := 1 to List.Count - 1 do
+    Result := Result + ';' + List[i];
+end;
+
+procedure StrToPathList(Paths: string; List: TStrings);
+var
+  ps: Integer;
+  S: string;
+begin
+  Assert(List <> nil);
+
+  ps := Pos(';', Paths);
+  while ps > 0 do
+  begin
+    S := Trim(Copy(Paths, 1, ps - 1));
+    if S <> '' then
+      List.Add(S);
+    Delete(Paths, 1, ps);
+    ps := Pos(';', Paths);
+  end;
+end;
+                                      
 function StartsWith(const Text, StartText: string; CaseInsensitive: Boolean = False): Boolean;
 var
   Len, i: Integer;
@@ -409,6 +455,12 @@ begin
   else
     Attr := Attr and not FILE_ATTRIBUTE_READONLY;
   SetFileAttributes(PChar(FileName), Attr);
+end;
+
+function GetEnvironmentVariable(const Name: string): string;
+begin
+  SetLength(Result, 8 * 1024);
+  SetLength(Result, Windows.GetEnvironmentVariable(PChar(Name), PChar(Result), Length(Result)));
 end;
 {$ENDIF COMPILER5}
 

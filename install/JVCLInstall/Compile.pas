@@ -144,6 +144,7 @@ const
 
 var
   Compiler: TJVCLCompiler = nil;
+  StartupEnvVarPath: string;
 
 resourcestring
   RsPackagesAreUpToDate = 'Packages are up to date';
@@ -805,6 +806,8 @@ var
   TargetConfig: ITargetConfig;
   DccOpt: string;
   Path: string;
+  PathList, BplPaths: TStringList;
+  S, BrowsePaths: string;
 
   function GetProjectIndex: Integer;
   begin
@@ -814,6 +817,7 @@ var
 
 begin
   // ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
+  // ahuser (2005-01-22): make.exe fails only if a path with spaces is in the PATH envvar
 
   SetEnvironmentVariable('MAKEOPTIONS', nil);
   Result := False;
@@ -859,8 +863,37 @@ begin
       CreateDir(TargetConfig.UnitOutDir + '\debug');
     end;
 
-    Path := GetWindowsDir + ';' + GetSystemDir + ';' + GetWindowsDir + '\Command';
-    Path := Path + ';' + ExtractShortPathName(TargetConfig.Target.BplDir); // add original BPL directory for "common" BPLs
+    { set PATH envvar and add all directories that contain .bpl files }
+    PathList := TStringList.Create;
+    try
+      PathList.Duplicates := dupIgnore;
+      PathList.Add(GetWindowsDir);
+      PathList.Add(GetSystemDir);
+      PathList.Add(GetWindowsDir + '\Command'); // Win9x
+
+      PathList.Add(ExtractShortPathName(TargetConfig.Target.RootDir));
+      PathList.Add(ExtractShortPathName(TargetConfig.BplDir));
+      PathList.Add(ExtractShortPathName(TargetConfig.DcpDir));
+      { Add original BPL directory for "common" BPLs, but add it as the very
+        last path to prevent collisions between packages in TargetConfig.BplDir
+        and Target.BplDir. }
+      PathList.Add(ExtractShortPathName(TargetConfig.Target.BplDir));
+
+      BplPaths := TStringList.Create;
+      try
+        StrToPathList(StartupEnvVarPath, BplPaths);
+        for i := 0 to BplPaths.Count - 1 do
+          if DirContainsFiles(ExcludeTrailingPathDelimiter(BplPaths[i]), '*.bpl') then
+            PathList.Add(ExtractShortPathName(ExcludeTrailingPathDelimiter(BplPaths[i])));
+      finally
+        BplPaths.Free;
+      end;
+
+      Path := PathListToStr(PathList);
+    finally
+      PathList.Free;
+    end;
+(*    Path := GetWindowsDir + ';' + GetSystemDir + ';' + GetWindowsDir + '\Command';
     if TargetConfig.DcpDir <> TargetConfig.BplDir then
       Path := ExtractShortPathName(TargetConfig.Target.RootDir) + ';' +
               ExtractShortPathName(TargetConfig.BplDir) + ';' +
@@ -869,12 +902,28 @@ begin
     else
       Path := ExtractShortPathName(TargetConfig.Target.RootDir) + ';' +
               ExtractShortPathName(TargetConfig.BplDir) + ';' +
-              Path;
+              Path;}
+    { Add original BPL directory for "common" BPLs, but add it as the very last
+      path to prevent collisions between packages in TargetConfig.BplDir and
+      Target.BplDir. }
+    Path := Path + ';' + ExtractShortPathName(TargetConfig.Target.BplDir);
+*)
+
+    BrowsePaths := '';
+    for i := 0 to TargetConfig.Target.BrowsingPaths.Count - 1 do
+    begin
+      S := ExtractShortPathName(ExcludeTrailingPathDelimiter(TargetConfig.Target.ExpandDirMacros(TargetConfig.Target.BrowsingPaths[i])));
+      if BrowsePaths <> '' then
+        BrowsePaths := BrowsePaths + ';' + S
+      else
+        BrowsePaths := S;
+    end;
 
     SetEnvironmentVariable('PATH', PChar(Path));
     SetEnvironmentVariable('DCCOPT', Pointer(DccOpt));
     // especially for BCB generated make file
     SetEnvironmentVariable('DCC', PChar('"' + TargetConfig.Target.RootDir + '\bin\dcc32.exe" ' + DccOpt));
+    SetEnvironmentVariable('UNITDIRS', PChar(BrowsePaths));
 
     SetEnvironmentVariable('QUIET', Pointer(Copy(FQuiet, 2, MaxInt))); // make command line option " -s"
 
@@ -1354,6 +1403,10 @@ procedure TListConditionParser.MissingRightParenthesis;
 begin
   raise Exception.Create('Missing ")" in conditional expression');
 end;
+
+
+initialization
+  StartupEnvVarPath := GetEnvironmentVariable('PATH');
 
 end.
 
