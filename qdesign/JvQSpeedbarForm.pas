@@ -47,7 +47,7 @@ uses
   {$IFDEF MSWINDOWS}
   JvQAppRegistryStorage,
   {$ENDIF MSWINDOWS}
-  JvQSpeedButton, JvQSpeedBar, JvQFormPlacement,
+  JvQSpeedButton, JvQSpeedbar, JvQFormPlacement,
   JvQConsts, JvQComponent, JvQAppStorage, QTypes;
 
 type

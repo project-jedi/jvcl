@@ -3,8 +3,8 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
   Top = 221
   Width = 437
   Height = 285
-  VertScrollBar.Range = 281
   HorzScrollBar.Range = 434
+  VertScrollBar.Range = 281
   ActiveControl = SectionList
   BorderIcons = [biSystemMenu]
   BorderStyle = fbsSingle
@@ -47,12 +47,12 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  PixelsPerInch = 96
+  PixelsPerInch = 113
   object SectionNameLabel: TLabel
     Left = 180
     Top = 10
-    Width = 71
-    Height = 13
+    Width = 68
+    Height = 18
     Caption = '&Section name: '
     FocusControl = SectionName
   end
@@ -219,7 +219,7 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
     Left = 268
     Top = 7
     Width = 165
-    Height = 21
+    Height = 26
     MaxLength = 255
     TabOrder = 1
     OnExit = SectionNameExit
