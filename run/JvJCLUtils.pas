@@ -1030,6 +1030,7 @@ begin
   Result := Windows.IsCharAlpha(Ch);
 end;
 
+{ (ahuser) make Delphi 5 compiler happy
 function StrStripNonNumberChars(const S: string): string;
 var
   I: Integer;
@@ -1042,7 +1043,7 @@ begin
     if CharIsNumber(Ch) or (Ch = DecimalSeparator) then
       Result := Result + Ch;
   end;
-end;
+end;}
 
 {$IFDEF MSWINDOWS}
 

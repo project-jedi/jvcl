@@ -946,7 +946,7 @@ type
   // (ahuser) introduced for refactoring the WizardButtons
   TJvWizardBaseButton = class(TJvWizardButtonControl)
   protected
-    procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); virtual; abstract;
+    procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); virtual;
     procedure SelectPage; virtual;
   public
     procedure Click; override;
@@ -1081,6 +1081,11 @@ begin
   // default action: nothing
 end;
 
+procedure TJvWizardBaseButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean);
+begin
+  // do nothing (make Delphi 5 compiler happy)
+end;
+
 { TJvWizardStartButton }
 
 constructor TJvWizardStartButton.Create(AOwner: TComponent);
@@ -1095,6 +1100,7 @@ end;
 
 procedure TJvWizardStartButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean);
 begin
+  inherited ButtonClick(Page, Stop);
   if Assigned(Page.FOnStartButtonClick) then
     Page.FOnStartButtonClick(Page, Stop);
 end;
