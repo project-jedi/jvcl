@@ -9,17 +9,16 @@ uses
 type
   TfrmAboutMe = class(TForm)
     Panel1: TPanel;
-    Version: TLabel;
-    Comments: TLabel;
     Label1: TLabel;
     Image1: TImage;
     Label2: TLabel;
-    Label3: TLabel;
     Memo1: TMemo;
     OKButton: TButton;
-    Label4: TLabel;
-    JvHotLink1: TJvLabel;
     JvHotLink2: TJvLabel;
+    Label3: TLabel;
+    JvHotLink1: TJvLabel;
+    Version: TLabel;
+    Comments: TLabel;
   private
     { Private declarations }
   public

@@ -338,6 +338,7 @@ var
   FromStr, ToStr: string;
   i: Integer;
 begin
+  if mnuSimulate.Checked then Exit; // don't rename when simulating
   NewFileName := '';
   FileName := ChangeFileExt(ExtractFileName(FileItem.Caption), '');
   FilePath := ExtractFilePath(FileItem.Caption);

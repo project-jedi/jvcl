@@ -1,58 +1,75 @@
 object frmAboutMe: TfrmAboutMe
-  Left = 569
-  Top = 209
-  Width = 237
-  Height = 383
+  Left = 409
+  Top = 218
+  Width = 559
+  Height = 285
   Caption = 'About Me'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -14
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
   Position = poOwnerFormCenter
-  PixelsPerInch = 96
-  TextHeight = 13
+  PixelsPerInch = 120
+  TextHeight = 17
+  object Label3: TLabel
+    Left = 23
+    Top = 210
+    Width = 127
+    Height = 17
+    Caption = 'Copyright: (c) 2003 '
+    WordWrap = True
+    IsControl = True
+  end
+  object JvHotLink1: TJvLabel
+    Left = 160
+    Top = 210
+    Width = 82
+    Height = 18
+    Cursor = crHandPoint
+    Hint = 'Project JEDI homepage (http://delphi-jedi.org)'
+    Caption = 'Project JEDI'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clBlue
+    Font.Height = -15
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    AutoOpenURL = True
+    HotTrack = True
+    HotTrackFont.Charset = ANSI_CHARSET
+    HotTrackFont.Color = clBlue
+    HotTrackFont.Height = -15
+    HotTrackFont.Name = 'Tahoma'
+    HotTrackFont.Style = [fsUnderline]
+    URL = 'http://delphi-jedi.org'
+  end
   object Panel1: TPanel
-    Left = 8
-    Top = 8
-    Width = 209
-    Height = 305
+    Left = 10
+    Top = 10
+    Width = 535
+    Height = 183
     BevelInner = bvRaised
     BevelOuter = bvLowered
     ParentColor = True
     TabOrder = 0
-    object Version: TLabel
-      Left = 16
-      Top = 136
-      Width = 67
-      Height = 13
-      Caption = 'Version: 1.23 '
-      IsControl = True
-    end
-    object Comments: TLabel
-      Left = 95
-      Top = 136
-      Width = 56
-      Height = 13
-      Caption = '2003-01-10'
-      WordWrap = True
-      IsControl = True
-    end
     object Label1: TLabel
-      Left = -171
-      Top = 72
-      Width = 172
-      Height = 13
+      Left = -224
+      Top = 94
+      Width = 222
+      Height = 17
       Caption = 'Copyright: 1999 Martin Waldenburg'
       IsControl = True
     end
     object Image1: TImage
-      Left = 11
-      Top = 5
-      Width = 177
-      Height = 52
+      Left = 14
+      Top = 7
+      Width = 232
+      Height = 68
       Picture.Data = {
         0A544A504547496D6167653F260000FFD8FFE000104A46494600010001004800
         480000FFFE001F4C45414420546563686E6F6C6F6769657320496E632E205631
@@ -365,118 +382,98 @@ object frmAboutMe: TfrmAboutMe
       Transparent = True
     end
     object Label2: TLabel
-      Left = 16
-      Top = 96
-      Width = 163
-      Height = 15
-      Caption = 'Conversion Utility for users of:'
+      Left = 69
+      Top = 126
+      Width = 176
+      Height = 17
+      Caption = 'Conversion Utility for JVCL.'
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlue
-      Font.Height = -12
+      Font.Height = -15
       Font.Name = 'Arial'
       Font.Style = []
       ParentFont = False
       IsControl = True
-    end
-    object Label3: TLabel
-      Left = 5
-      Top = 285
-      Width = 156
-      Height = 13
-      AutoSize = False
-      Caption = 'Copyright: (c) 2003 '
-      WordWrap = True
-      IsControl = True
-    end
-    object Label4: TLabel
-      Left = 8
-      Top = 112
-      Width = 178
-      Height = 15
-      Caption = 'RxLib, RALib, Jans Components'
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clBlue
-      Font.Height = -12
-      Font.Name = 'Arial'
-      Font.Style = []
-      ParentFont = False
-      IsControl = True
-    end
-    object JvHotLink1: TJvLabel
-      Left = 104
-      Top = 285
-      Width = 61
-      Height = 13
-      Cursor = crHandPoint
-      Hint = 'http://delphi-jedi.org'
-      Caption = 'Project JEDI'
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clBlue
-      Font.Height = -11
-      Font.Name = 'MS Shell Dlg 2'
-      Font.Style = []
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      AutoOpenURL = True
-      HotTrack = True
-      HotTrackFont.Charset = ANSI_CHARSET
-      HotTrackFont.Color = clBlue
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'Tahoma'
-      HotTrackFont.Style = [fsUnderline]
-      URL = 'http://delphi-jedi.org'
     end
     object JvHotLink2: TJvLabel
-      Left = 8
-      Top = 64
-      Width = 184
-      Height = 32
+      Left = 10
+      Top = 84
+      Width = 241
+      Height = 42
       Cursor = crHandPoint
       Hint = 'Go to JVCL Webpage: http://jvcl.sourceforge.net'
       AutoSize = False
-      Caption = 'JVCL Convert '
+      Caption = 'JVCL Convert'
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlue
-      Font.Height = -27
+      Font.Height = -35
       Font.Name = 'Arial'
       Font.Style = [fsBold, fsItalic]
       ParentFont = False
       ParentShowHint = False
+      ShadowColor = clBlack
+      ShadowSize = 1
+      ShadowPos = spRightBottom
       ShowHint = True
       AutoOpenURL = True
       HotTrack = True
       HotTrackFont.Charset = ANSI_CHARSET
       HotTrackFont.Color = clBlue
-      HotTrackFont.Height = -27
+      HotTrackFont.Height = -35
       HotTrackFont.Name = 'Arial'
-      HotTrackFont.Style = [fsBold, fsItalic, fsUnderline]
+      HotTrackFont.Style = [fsBold, fsItalic]
       URL = 'http://jvcl.sourceforge.net'
     end
+    object Version: TLabel
+      Left = 77
+      Top = 150
+      Width = 85
+      Height = 17
+      Caption = 'Version: 1.24 '
+      IsControl = True
+    end
+    object Comments: TLabel
+      Left = 172
+      Top = 150
+      Width = 74
+      Height = 17
+      Caption = '2003-01-10'
+      WordWrap = True
+      IsControl = True
+    end
     object Memo1: TMemo
-      Left = 8
-      Top = 176
-      Width = 193
-      Height = 105
-      BorderStyle = bsNone
+      Left = 262
+      Top = 14
+      Width = 259
+      Height = 155
       Color = clBtnFace
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'MS Shell Dlg 2'
+      Font.Style = []
       Lines.Strings = (
-        'Developed by:   Michael Beck'
+        'Developed by:'
+        #9'Michael Beck'
         ''
-        'Based on work of: Igor Komar'
-        #9'              Dave Jewell '
-        #9'              Martin Waldenburg'
+        'Based on work of: '
+        #9'Igor Komar'
+        #9'Dave Jewell '
+        #9'Martin Waldenburg'
         ''
-        'Contributors:     Peter Th'#246'rnqvist'
-        #9'          Arioch')
+        'Contributors:'
+        #9'Peter Th'#246'rnqvist'
+        #9'Arioch')
+      ParentFont = False
+      ScrollBars = ssVertical
       TabOrder = 0
     end
   end
   object OKButton: TButton
-    Left = 71
-    Top = 324
-    Width = 75
-    Height = 25
+    Left = 437
+    Top = 200
+    Width = 98
+    Height = 32
     Caption = 'OK'
     Default = True
     ModalResult = 1

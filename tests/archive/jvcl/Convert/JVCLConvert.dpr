@@ -1,5 +1,7 @@
 program JVCLConvert;
 
+{%File 'ChangeLog.txt'}
+
 uses
   Forms,
   fJvclConverterMain in 'fJvclConverterMain.pas' {frmMain},
