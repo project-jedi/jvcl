@@ -1430,6 +1430,8 @@ var
   CallCutToClipboard, CallPasteFromClipboard,
     CallCopyToClipboard, CallUndo: TOrgCallCode;
 
+{$ENDIF VisualCLX}
+
 
 initialization
   {$IFDEF COMPILER5}
