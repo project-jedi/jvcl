@@ -14,8 +14,6 @@ The Initial Developers of the Original Code is: Andreas Hausladen
 Copyright (c) 2004 Andreas Hausladen
 All Rights Reserved.
 
-Last Modified: 2004-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -25,6 +23,7 @@ finalization section.
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
