@@ -54,7 +54,8 @@ Interval - the number of miliseconds between calls to OnProgress. If Interval <=
            OnProgress is called once. If Interval is still <= 0, the dialog is closed.
 Caption - caption of dialog. If caption is empty, the entire caption area is removed
 Text   - text of label above progressbar
-ShowCancel - shows or hides the Cancel button
+ShowCancel - shows or hides the Cancel button. Note that the Cancel button is always visible when previewing in design mode:
+             you wouldn't be able to close the dialog otherwise...
 Image - (optional) image to display in dialog. The image can be any size as the dialog
         auto-adjusts to it's size but you should keep them fairly small (say, less than 160x100 something)
         as large images doesn't look too good (IMO)
@@ -240,7 +241,7 @@ begin
   StoreValues;
   try
     if TfrmProgress.Execute(TfrmProgress(FForm), Caption, Text, Image, Transparent, Min, Max, Position, Interval,
-      ShowCancel, InternalDoProgress, InternalDoCancel) then
+      ShowCancel or (csDesigning in ComponentState), InternalDoProgress, InternalDoCancel) then
         Result := mrOK;
   finally
     RestoreValues;
