@@ -32,7 +32,7 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  JvDBHTLabel1.Mask := StringReplace(memFormat.Lines.Text,#13#10,' ',[rfReplaceAll]);
+  JvDBHTLabel1.Mask := StringReplace(memFormat.Lines.Text,#13#10,'',[rfReplaceAll]);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

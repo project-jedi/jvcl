@@ -879,6 +879,8 @@ function CreatePopupCalendar(AOwner: TComponent;
   MaxDate: TDateTime = 0): TWinControl;
 begin
   Result := TJvPopupCalendar.Create(AOwner);
+(*
+  // TJvPopupCalendar sets Scaled to false anyway...
   if (AOwner <> nil) and not (csDesigning in AOwner.ComponentState) and
     (Screen.PixelsPerInch <> 96) then
   begin { scale to screen res }
@@ -893,6 +895,7 @@ begin
     Result.BiDiMode := ABiDiMode;
     {$ENDIF VCL}
   end;
+*)
 end;
 
 procedure SetupPopupCalendar(PopupCalendar: TWinControl;

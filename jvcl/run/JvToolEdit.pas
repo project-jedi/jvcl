@@ -3997,6 +3997,8 @@ begin
   Ctl3D := False;
   ParentCtl3D := False;
   Parent := FEditor;
+  // use same size on small and large font:
+  Scaled := false;
   {$ENDIF VCL}
 end;
 

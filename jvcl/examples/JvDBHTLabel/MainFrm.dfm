@@ -84,11 +84,10 @@ object Form1: TForm1
         DataType = ftString
         Size = 255
       end>
-    FileName = 'TestData.csv'
+    FileName = 'TestData2.csv'
     ReadOnly = True
     Changed = False
     CsvFieldDef = 'FILENAME:$255,SIZE:%,ATTRIBUTES:$64,TYPE:$255'
-    CsvKeyDef = 'Filename'
     CsvUniqueKeys = False
     CaseInsensitive = True
     SavesChanges = False
