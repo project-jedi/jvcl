@@ -5061,7 +5061,7 @@ var
     end
     else
     begin
-      // diagonal (does not realy work properly with Qt's line alogrithm)
+      // diagonal (does not really work properly with Qt's line algorithm)
       QPainter_setPen(Handle, PenLeftTop);
       if (Flags and BF_DIAGONAL_ENDTOPLEFT = BF_DIAGONAL_ENDTOPLEFT) or
          (Flags and BF_DIAGONAL_ENDBOTTOMRIGHT = BF_DIAGONAL_ENDBOTTOMRIGHT) then
