@@ -7,7 +7,7 @@ procedure Run;
 implementation
 uses
   Windows, SysUtils, Classes, Graphics,
-  unitResFile,  unitResourceGraphics, // get these from
+  unitResFile,  unitResourceGraphics, // get these from http://www.wilsonc.demon.co.uk/d7resourceutils.htm
   JTools;
 
 procedure ShowHelp;
