@@ -46,6 +46,16 @@ uses
 {$ENDIF VCL}
 
 type
+  TDlgCode = (
+    dcWantAllKeys, dcWantArrows, dcWantTab, dcWantChars,
+    dcButton,
+    dcNative // if dcNative is in the set the native functions are used and DoGetDlgCode is ignored
+  );
+  TDlgCodes = set of TDlgCode;
+const
+  dcWantMessage = dcWantAllKeys;
+
+type
   IJvControlEvents = interface
     ['{61FC57FF-D4DA-4840-B871-63DE804E9921}']
     procedure VisibleChanged;
@@ -68,13 +78,18 @@ type
     {$ENDIF VCL}
   end;
 
-  IJvWinControlEvents = interface(IJvControlEvents)
+  IJvWinControlEvents = interface
     ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
     procedure CursorChanged;
     procedure ShowingChanged;
     procedure ShowHintChanged;
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean);
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean);
+    procedure DoGetDlgCode(var Code: TDlgCodes);
+  end;
+
+  IJvCustomControlEvents = interface
+    ['{7804BD3A-D7A5-4314-9259-6DE08A0DC38A}']
   end;
 
 const
@@ -87,6 +102,7 @@ type
   IJvDenySubClassing = interface
     ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
   end;
+
 
 type
   TJvExControl = class(TControl, IJvControlEvents)
@@ -172,6 +188,11 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+    {$IFDEF VisualCLX}
+    function NeedKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    {$ENDIF VisualCLX}
+    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
@@ -286,6 +307,11 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+    {$IFDEF VisualCLX}
+    function NeedKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    {$ENDIF VisualCLX}
+    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
@@ -348,6 +374,11 @@ type
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
+    {$IFDEF VisualCLX}
+    function NeedKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    {$ENDIF VisualCLX}
+    procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
   public
     procedure Dispatch(var Msg); override;
   {$ENDIF VCL}
@@ -375,8 +406,8 @@ type
   end;
   
 
-{$IFDEF VCL}
 
+{$IFDEF VCL}
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 
 function InheritMsg(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer; overload;
@@ -400,6 +431,9 @@ function WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
   // - enters the painting and returns an interface that leaves the painting when
   //   is is released.
 procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
+
+function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
+  Shift: TShiftState; const KeyText: WideString; InheritedValue: Boolean): Boolean;
 {$ENDIF VisualCLX}
 
 implementation
@@ -445,6 +479,7 @@ var
   PMsg: PMessage;
   CallInherited: Boolean;
   Canvas: TCanvas;
+  DlgCodes: TDlgCodes;
 begin
   CallInherited := True;
   PMsg := @Msg;
@@ -531,6 +566,40 @@ begin
               ControlsListChanging(TControl(PMsg^.WParam), False)
             else
               ControlsListChanged(TControl(PMsg^.WParam), True);
+
+          WM_GETDLGCODE:
+            begin
+              PMsg^.Result := InheritMsg(Instance, PMsg^.Msg, PMsg^.WParam, PMsg^.LParam);
+
+              DlgCodes := [dcNative];
+              if PMsg^.Result and DLGC_WANTARROWS <> 0 then
+                Include(DlgCodes, dcWantArrows);
+              if PMsg^.Result and DLGC_WANTTAB <> 0 then
+                Include(DlgCodes, dcWantTab);
+              if PMsg^.Result and DLGC_WANTALLKEYS <> 0 then
+                Include(DlgCodes, dcWantAllKeys);
+              if PMsg^.Result and DLGC_WANTCHARS <> 0 then
+                Include(DlgCodes, dcWantChars);
+              if PMsg^.Result and DLGC_BUTTON <> 0 then
+                Include(DlgCodes, dcButton);
+
+              DoGetDlgCode(DlgCodes);
+
+              if not (dcNative in DlgCodes) then
+              begin
+                PMsg^.Result := 0;
+                if dcWantAllKeys in DlgCodes then
+                  PMsg^.Result := PMsg^.Result or DLGC_WANTALLKEYS;
+                if dcWantArrows in DlgCodes then
+                  PMsg^.Result := PMsg^.Result or DLGC_WANTARROWS;
+                if dcWantTab in DlgCodes then
+                  PMsg^.Result := PMsg^.Result or DLGC_WANTTAB;
+                if dcWantChars in DlgCodes then
+                  PMsg^.Result := PMsg^.Result or DLGC_WANTCHARS;
+                if dcButton in DlgCodes then
+                  PMsg^.Result := PMsg^.Result or DLGC_BUTTON;
+              end;
+            end;
         else
           CallInherited := True;
         end;
@@ -608,7 +677,9 @@ procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
 var
   Event: QPaintEventH;
 begin
-  if not (csDestroying in Instance.ComponentState) then
+  if not (csDestroying in Instance.ComponentState) and
+     (not Supports(Instance, IJvCustomControlEvents) then
+       { TCustomControls do not have a default paint method. }
   begin
     Event := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), False);
     try
@@ -621,6 +692,55 @@ begin
     finally
       QPaintEvent_destroy(Event);
     end;
+  end;
+end;
+
+function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
+  Shift: TShiftState; const KeyText: WideString; InheritedValue: Boolean): Boolean;
+
+  function IsTabKey: Boolean;
+  begin
+    Result := (Key = Key_Tab) or (Key = Tab_BackTab);
+  end;
+
+  function IsArrowKey: Boolean;
+  begin
+    Result := (Key = Key_Left) or (Key = Key_Right) or
+              (Key = Key_Down) or (Key = Key_Up);
+  end
+
+var
+  DlgCodes: TDlgCodes;
+  Value: TInputKeys;
+begin
+  Result := InheritedValue;
+  Value := TOpenWidgetControl(Instance).InputKeys;
+
+  DlgCodes := [dcNative];
+  if ikAll in Value then
+    Include(DlgCodes, dcWantAllKeys);
+  if ikArrows in Value then
+    Include(DlgCodes, dcWantArrows);
+  if ikTabs in Value then
+    Include(DlgCodes, dcWantTab);
+  if ikChars in Value then
+    Include(DlgCodes, dcWantChars);
+
+  DoGetDlgCode(DlgCodes);
+
+  if not (dcNative in DlgCodes) then
+  begin
+    Result := False;
+    if dcWantAllKeys in DlgCodes then
+      Result := True;
+    if (not Result) and (dcWantTab in DlgCodes) then
+      Result := IsTabKey;
+    if (not Result) and (dcWantArrows in DlgCodes) then
+      Result := IsArrowKey;
+    if (not Result) and (dcWantChars in DlgCodes) then
+      Result := ((Shift * [ssCtrl, ssAlt] = []) and
+                ((Hi(Word(Key)) = 0) or (Length(KeyText) > 0)) and
+                not (IsTabKey or IsArrowKey);
   end;
 end;
 
@@ -863,6 +983,11 @@ begin
 end;
  {$IFEND}
 {$ENDIF VisualCLX}
+
+procedure TJvExWinControl.DoGetDlgCode(var Code: TDlgCodes);
+begin
+end;
+
 {$IFDEF VisualCLX}
 procedure TJvExWinControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -872,6 +997,14 @@ begin
     Paint;
   end;
 end;
+
+function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExWinControl.CursorChanged;
@@ -1188,6 +1321,11 @@ begin
 end;
  {$IFEND}
 {$ENDIF VisualCLX}
+
+procedure TJvExCustomControl.DoGetDlgCode(var Code: TDlgCodes);
+begin
+end;
+
 {$IFDEF VisualCLX}
 procedure TJvExCustomControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -1197,6 +1335,14 @@ begin
     Paint;
   end;
 end;
+
+function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExCustomControl.CursorChanged;
@@ -1364,6 +1510,11 @@ begin
 end;
  {$IFEND}
 {$ENDIF VisualCLX}
+
+procedure TJvExHintWindow.DoGetDlgCode(var Code: TDlgCodes);
+begin
+end;
+
 {$IFDEF VisualCLX}
 procedure TJvExHintWindow.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
@@ -1373,6 +1524,14 @@ begin
     Paint;
   end;
 end;
+
+function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExHintWindow.CursorChanged;

@@ -34,7 +34,7 @@ interface
 uses
   Windows, Classes, Controls, Forms, ExtCtrls,
   FileCtrl, StdCtrls, SysUtils, Messages, Graphics,
-  JvThumbNails, JvBaseThumbnail;
+  JvThumbNails, JvBaseThumbnail, JvExControls;
 
 type
   // (rom) already in JvBaseThumbnail
@@ -101,7 +101,6 @@ type
     procedure SetSorted(const Value: Boolean);
     procedure CalculateMaxX;
     procedure CalculateSize;
-    procedure WmGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     function CalculateXPos(Num: Word): Longint;
     function CalculateYPos(Num: Word): Longint;
     procedure ScrollTo(const Number: Longint);
@@ -121,6 +120,7 @@ type
     procedure DoInvalidImage(Sender: TObject; const FileName: string);
     //    Procedure WMLoadWhenReady(var Msg:TMessage); message WM_LoadWhenReady;
   protected
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure SetScrollMode(AMode: TscrollMode);
     procedure SetSelected(Number: Longint);
     //    Procedure SetBufferFile(NewName:String);
@@ -1041,9 +1041,9 @@ begin
   end;
 end;
 
-procedure TJvThumbView.WmGetDlgCode(var Msg: TWMGetDlgCode);
+procedure TJvThumbView.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  Msg.Result := DLGC_WANTARROWS or DLGC_WANTALLKEYS;
+  Code := [dcWantArrows, dcWantAllKeys];
 end;
 
 procedure TJvThumbView.GoRight;

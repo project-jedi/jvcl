@@ -42,7 +42,7 @@ uses
   Variants, VDBConsts,
   {$ENDIF COMPILER6_UP}
   Messages, Classes, Controls, Forms, Graphics, Menus, DB, Mask, StdCtrls,
-  JvDBUtils, JvToolEdit, JvComponent;
+  JvDBUtils, JvToolEdit, JvComponent, JvExControls;
 
 const
   // (rom) renamed
@@ -151,10 +151,10 @@ type
     procedure DrawPicture(Canvas: TCanvas; Rect: TRect; Image: TGraphic);
     procedure UpdateDisplayValue;
     function EmptyRowVisible: Boolean;
-    procedure WMGetDlgCode(var Msg: TMessage); message WM_GETDLGCODE;
     procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
   protected
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
     function GetReadOnly: Boolean;virtual;
     procedure SetReadOnly(Value: Boolean);virtual;
     procedure Change; dynamic;
@@ -379,12 +379,12 @@ type
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
-    procedure WMGetDlgCode(var Msg: TMessage); message WM_GETDLGCODE;
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
   protected
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     {$IFDEF JVCLThemesEnabled}
@@ -1436,9 +1436,9 @@ begin
     FOnGetImage(Self, Empty, Result, TextMargin);
 end;
 
-procedure TJvLookupControl.WMGetDlgCode(var Msg: TMessage);
+procedure TJvLookupControl.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  Msg.Result := DLGC_WANTARROWS or DLGC_WANTCHARS;
+  Code := [dcWantArrows, dcWantChars];
 end;
 
 procedure TJvLookupControl.WMKillFocus(var Msg: TMessage);
@@ -3211,10 +3211,9 @@ begin
   inherited;
 end;
 
-procedure TJvDBLookupCombo.WMGetDlgCode(var Msg: TMessage);
+procedure TJvDBLookupCombo.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  inherited;
-  Msg.Result := DLGC_BUTTON or DLGC_WANTALLKEYS or DLGC_WANTARROWS or DLGC_WANTCHARS;
+  Code := [dcButton, dcWantAllKeys, dcWantArrows, dcWantChars];
 end;
 
 procedure TJvDBLookupCombo.WMKillFocus(var Msg: TWMKillFocus);

@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Buttons, Graphics,
   ExtCtrls, Forms, ImgList,
-  JvComponent;
+  JvComponent, JvExControls;
 
 type
   TDate = TDateTime;
@@ -124,7 +124,6 @@ type
     procedure DoRMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     // this is needed so we receive the arrow keys
-    procedure WMGetDlgCode(var Msg: TWmGetDlgCode); message WM_GETDLGCODE;
 
     procedure DrawFrame(ACanvas: TCanvas; AColor: TColor;
       ALineWidth: Integer; ARect: TRect);
@@ -147,6 +146,7 @@ type
     procedure StopTimer;
 
   protected
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure CursorChanged; override;
     procedure EnabledChanged; override;
     procedure Paint; override;
@@ -990,10 +990,10 @@ begin
   FSelection.Assign(Value);
 end;
 
-procedure TJvCustomTMTimeline.WMGetDlgCode(var Msg: TWMGetDlgCode);
+procedure TJvCustomTMTimeline.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  inherited;
-  Msg.Result := Msg.Result or DLGC_WANTARROWS;
+  Include(Code, dcWantArrows);
+  Exclude(Code, dcNative);
 end;
 
 procedure TJvCustomTMTimeline.EnabledChanged;

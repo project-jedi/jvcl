@@ -36,7 +36,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, CommCtrl, ComCtrls,
-  JvComponent, JvTypes;
+  JvComponent, JvTypes, JvExControls;
 
 type
   EMonthCalError = class(EJVCLException);
@@ -156,11 +156,11 @@ type
     function GetDays(Year, Month: Word): string;
     procedure SetDays(Year, Month: Word; Value: string);
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
-    procedure WMGetDlgCode(var Msg: TMessage); message WM_GETDLGCODE;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
   protected
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure ColorChanged; override;
     procedure FontChanged; override;
     procedure ConstrainedResize(var MinWidth: Integer;
@@ -1206,9 +1206,9 @@ begin
     Result := False;
 end;
 
-procedure TJvCustomMonthCalendar.WMGetDlgCode(var Msg: TMessage);
+procedure TJvCustomMonthCalendar.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  Msg.Result := DLGC_WANTARROWS;
+  Code := [dcWantArrows];
 end;
 
 procedure TJvCustomMonthCalendar.WMLButtonDown(var Msg: TWMLButtonDown);

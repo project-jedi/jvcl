@@ -134,11 +134,11 @@ type
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure WMDestroy(var Msg: TWMNCDestroy); message WM_DESTROY;
-    procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMParentNotify(var Msg: TWMParentNotify); message WM_PARENTNOTIFY;
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
     procedure SetAddressValues(const Value: TJvIPAddressValues);
   protected
+    procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure ColorChanged; override;
     procedure FontChanged; override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
@@ -746,11 +746,10 @@ begin
   Result := True;
 end;
 
-procedure TJvIPAddress.WMGetDlgCode(var Msg: TWMGetDlgCode);
+procedure TJvIPAddress.DoGetDlgCode(var Code: TDlgCodes);
 begin
-  inherited;
-  with Msg do
-    Result := Result or DLGC_WANTARROWS;
+  Include(Code, dcWantArrows);
+  Exclude(Code, dcNative); // prevent inherited call
 end;
 
 procedure TJvIPAddress.WMParentNotify(var Msg: TWMParentNotify);
