@@ -1278,7 +1278,7 @@ type
     function IsInitialized: Boolean; override;
     class function ItemRegister: TJvInspectorRegister; override;
     class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AAddress: Pointer): TJvCustomInspectorItem; overload;
-    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AVar): TJvCustomInspectorItem; overload;
+//    class function New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AVar): TJvCustomInspectorItem; overload;
     procedure SetAsSet(const Buf); override;
     property Address: Pointer read GetAddress write SetAddress;
   end;
@@ -2531,7 +2531,8 @@ var
   ItemRect: TRect;
   Item: TJvCustomInspectorItem;
 begin
-  Item := nil; // Make sure bogus Item pointer doesn't get into event.
+  { marcelb: removed this line which resulted in a compiler hint and seems to have no use at all }
+//  Item := nil; // Make sure bogus Item pointer doesn't get into event.
   inherited MouseDown(Button, Shift, X, Y);
   if UseBands then
   begin
@@ -9136,10 +9137,11 @@ begin
     Result := nil;
 end;
 
-class function TJvInspectorVarData.New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AVar): TJvCustomInspectorItem;
+(*class function TJvInspectorVarData.New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo: PTypeInfo; const AVar): TJvCustomInspectorItem;
 begin
   Result := New(AParent, AName, ATypeInfo, Addr(AVar));
 end;
+*)
 
 procedure TJvInspectorVarData.SetAsSet(const Buf);
 var
