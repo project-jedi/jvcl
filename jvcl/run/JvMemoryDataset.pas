@@ -219,10 +219,8 @@ type
 implementation
 
 uses
-  Forms, Dialogs, DbConsts, Math;
-
-resourcestring
-  SMemNoRecords = 'No data found';
+  Forms, Dialogs, DbConsts, Math,
+  JvResources;
 
 const
   ftBlobTypes = [ftBlob, ftMemo, ftGraphic, ftFmtMemo, ftParadoxOle,

@@ -356,29 +356,13 @@ type
     property Options: TJvChartOptions read FOptions write FOptions;
   end;
 
-resourcestring
-  sDataIndexCannotBeNegative = 'Data: index cannot be negative';
-  sDataIndexTooLargeProbablyAnInternal = 'Data: index too large. probably an internal error.';
-  sGetAverageValueIndexNegative = 'GetAverageValue: Index negative';
-  sSetAverageValueIndexNegative = 'SetAverageValue: Index negative';
-  sJvChartOptionsPenCountPenCountOutOf = 'JvChart.Options.PenCount - PenCount out of range';
-  sJvChartOptionsXStartOffsetValueOutO = 'JvChart.Options.XStartOffset  - value out of range';
-  sNoData = 'No data.';
-  sUnableToGetCanvas = 'Unable to get canvas';
-  sGraphHeader = 'Graph Header';
-  sCurrentHeaders = 'Current Header: %s';
-  sXAxisHeaders = 'X Axis Header: %s';
-  sGraphScale = 'Graph Scale';
-  sYAxisScales = 'Y Axis Scale: %s';
-  sNoValuesHere = 'No values here!';
-
 implementation
 
 uses
   {$IFNDEF COMPILER6_UP}
   JvJVCLUtils,
   {$ENDIF COMPILER6_UP}
-  JvConsts;
+  JvConsts, JvResources;
 
 const
   CHART_DATA_GROWBY = 100;

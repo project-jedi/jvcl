@@ -109,10 +109,7 @@ implementation
 
 uses
   Consts, Math,
-  JvJVCLUtils, JvJCLUtils, JvIconList, JvConsts;
-
-resourcestring
-  SWriteStreamNotImplemented = 'TJvAnimatedCursorImage.WriteStream not implemented';
+  JvJVCLUtils, JvJCLUtils, JvIconList, JvConsts, JvResources;
 
 { This implementation based on animated cursor editor source code
   (ANIEDIT.C, copyright (C) Microsoft Corp., 1993-1996) }

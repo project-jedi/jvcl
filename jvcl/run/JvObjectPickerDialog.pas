@@ -260,11 +260,10 @@ type
   // just to be able to distinquish between exceptions raised by the Object Picker specifically and all others
   EObjectPickerError = class(EJVCLException);
 
-resourcestring
-  RsAttributeIndexOutOfBounds = '%d is not a valid attribute index';
-  RsSelectionIndexOutOfBounds = '%d is not a valid selection index';
-
 implementation
+
+uses
+  JvResources;
 
 function ScopeTypesToOrdinal(const ScopeTypes: TScopeTypes): Cardinal;
 begin

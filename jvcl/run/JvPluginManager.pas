@@ -176,17 +176,15 @@ type
 implementation
 
 uses
-{$IFNDEF COMPILER6_UP}
+  Forms,
+  {$IFNDEF COMPILER6_UP}
   JvJCLUtils, // for IncludeTrailingPathDelimiter (only <D6)
-{$ENDIF}
-  Forms;
-
-resourcestring
-  SErrEmptyExt = 'Extension may not be empty';
+  {$ENDIF}
+  JvResources;
 
 const
   C_REGISTER_PLUGIN = 'RegisterPlugin';
-  C_Extensions: array[plgDLL..plgPackage] of PChar = ('dll', 'bpl');
+  C_Extensions: array [plgDLL..plgPackage] of PChar = ('dll', 'bpl');
 
 constructor TJvPluginManager.Create(AOwner: TComponent);
 begin

@@ -438,13 +438,10 @@ function JvMouseGestureHook(code: integer; wParam: word; lParam: longword): long
 
 implementation
 
-//******************************************************************************
-
-resourcestring
-  sCannotHookTwice = 'Fatal: You cannot hook this event twice';
+uses
+  JvResources;
 
 const
-
   JVMG_LEFT = 0;
   JVMG_RIGHT = 1;
   JVMG_UP = 2;

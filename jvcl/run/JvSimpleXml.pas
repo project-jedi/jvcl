@@ -391,30 +391,7 @@ procedure SimpleXMLDecode(var S: string; TrimBlanks:boolean);
 implementation
 
 uses
-  JvTypes;
-
-resourcestring
-{$IFNDEF COMPILER6_UP}
-//  SInvalidBoolean = '''%s'' is not a valid Boolean value'; make Delphi 5 compiler happy // andreas
-{$ENDIF COMPILER6_UP}
-  sInvalidXMLElementUnexpectedCharacte =
-    'Invalid XML Element: Unexpected character in properties declaration ("%s" found).';
-  sInvalidXMLElementUnexpectedCharacte_ =
-    'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found.';
-  sUnexpectedValueForLPos = 'Unexpected value for lPos';
-  sInvalidXMLElementExpectedBeginningO = 'Invalid XML Element: Expected beginning of tag but "%s" found.';
-  sInvalidXMLElementExpectedEndOfTagBu = 'Invalid XML Element: Expected end of tag but "%s" found.';
-  sInvalidXMLElementMalformedTagFoundn = 'Invalid XML Element: malformed tag found (no valid name)';
-  sInvalidXMLElementErroneousEndOfTagE = 'Invalid XML Element: Erroneous end of tag, expecting </%s> but </%s> found.';
-  sInvalidCommentExpectedsButFounds = 'Invalid Comment: expected "%s" but found "%s"';
-  sInvalidCommentNotAllowedInsideComme = 'Invalid Comment: "--" not allowed inside comments';
-  sInvalidCommentUnexpectedEndOfData = 'Invalid Comment: Unexpected end of data';
-  sInvalidCDATAExpectedsButFounds = 'Invalid CDATA: expected "%s" but found "%s"';
-  sInvalidCDATAUnexpectedEndOfData = 'Invalid CDATA: Unexpected end of data';
-  sInvalidHeaderExpectedsButFounds = 'Invalid Header: expected "%s" but found "%s"';
-  sInvalidStylesheetExpectedsButFounds = 'Invalid Stylesheet: expected "%s" but found "%s"';
-  sInvalidStylesheetUnexpectedEndOfDat = 'Invalid Stylesheet: Unexpected end of data';
-  sInvalidDocumentUnexpectedTextInFile = 'Invalid Document: Unexpected text in file prolog.';
+  JvTypes, JvResources;
 
 const
   cBufferSize = 8192;
@@ -422,15 +399,14 @@ const
   DefaultFalseBoolStr = 'False'; // DO NOT LOCALIZE
 
 var
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   XmlVariant: TXmlVariant = nil;
-{$ENDIF}
+  {$ENDIF}
   GSorts: TList = nil;
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   TrueBoolStrs: array of string;
   FalseBoolStrs: array of string;
-
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 
 {$IFNDEF COMPILER6_UP}
 

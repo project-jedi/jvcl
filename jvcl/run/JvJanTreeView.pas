@@ -151,7 +151,7 @@ type
 
   end;
 
-  TJvJanTreeview = class(TTreeView)
+  TJvJanTreeView = class(TTreeView)
   private
     { Private declarations }
     FParser: TJvMathParser;
@@ -165,7 +165,7 @@ type
     FFileName: TFileName;
     FSearchText: string;
     procedure ParseVariables;
-    procedure nodeduplicate(mytree: TJvJanTreeview; fromnode, tonode: ttreenode);
+    procedure nodeduplicate(mytree: TJvJanTreeView; fromnode, tonode: ttreenode);
     procedure SetKeyMappings(const Value: TTreeKeyMappings);
     procedure SetKeyMappingsEnabled(const Value: Boolean);
     procedure SetUpKeyMappings;
@@ -209,23 +209,12 @@ type
     property DefaultExt: string read FDefaultExt write SetDefaultExt;
   end;
 
-
-resourcestring
-  sInvalidReduction = 'Invalid reduction';
-  sTreeViewFiles = 'TreeView Files';
-  sSaveCurrentTree = 'Save Current Tree';
-  sSearch = 'Search';
-  sSearchFor = 'Search for:';
-  sNoMoresFound = 'No more %s found';
-
 implementation
 
 uses
-  JvConsts;
+  JvConsts, JvResources;
 
-{ TJvJanTreeview }
-
-constructor TJvJanTreeview.Create(AOwner: Tcomponent);
+constructor TJvJanTreeView.Create(AOwner: Tcomponent);
 begin
   inherited;
   DragMode := dmAutomatic;
@@ -241,7 +230,7 @@ begin
   onCustomDrawItem := doCustomDrawItem;
 end;
 
-procedure TJvJanTreeview.SetUpKeyMappings;
+procedure TJvJanTreeView.SetUpKeyMappings;
 begin
   FKeyMappings.AddChildNode := TextToShortCut('Ctrl+Ins');
   FKeyMappings.AddNode := TextToShortCut('Ctrl+Shift+Ins');
@@ -256,7 +245,7 @@ begin
   FKeyMappings.SaveTreeAs := TextToShortCut('Ctrl+Alt+S');
 end;
 
-procedure TJvJanTreeview.DblClick;
+procedure TJvJanTreeView.DblClick;
 var
   n: ttreenode;
   s: string;
@@ -272,7 +261,7 @@ begin
     onDblClick(self);
 end;
 
-procedure TJvJanTreeview.DoAddChildNode;
+procedure TJvJanTreeView.DoAddChildNode;
 var
   n: ttreenode;
 begin
@@ -284,7 +273,7 @@ begin
   end;
 end;
 
-procedure TJvJanTreeview.DoAddNode;
+procedure TJvJanTreeView.DoAddNode;
 var
   n: ttreenode;
 begin
@@ -294,7 +283,7 @@ begin
   selected := n;
 end;
 
-procedure TJvJanTreeview.DoDeleteNode;
+procedure TJvJanTreeView.DoDeleteNode;
 begin
   if Selected <> nil then
   begin
@@ -302,7 +291,7 @@ begin
   end;
 end;
 
-procedure TJvJanTreeview.DoEditNode;
+procedure TJvJanTreeView.DoEditNode;
 var
   n: ttreenode;
 begin
@@ -313,7 +302,7 @@ begin
   end;
 end;
 
-procedure TJvJanTreeview.DoInsertNode;
+procedure TJvJanTreeView.DoInsertNode;
 var
   n: ttreenode;
 begin
@@ -327,7 +316,7 @@ begin
   end;
 end;
 
-procedure TJvJanTreeview.DragDrop(Source: TObject; X, Y: Integer);
+procedure TJvJanTreeView.DragDrop(Source: TObject; X, Y: Integer);
 var
   MyHitTest: THitTests;
   n: ttreenode;
@@ -347,7 +336,7 @@ begin
     ondragdrop(self, source, x, y);
 end;
 
-procedure TJvJanTreeview.DragOver(Source: TObject; X, Y: Integer;
+procedure TJvJanTreeView.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   inherited;
@@ -356,7 +345,7 @@ begin
     ondragover(self, source, x, y, state, accept);
 end;
 
-procedure TJvJanTreeview.DuplicateNode;
+procedure TJvJanTreeView.DuplicateNode;
 var
   mynode, mynewnode: ttreenode;
 begin
@@ -368,7 +357,7 @@ begin
   end;
 end;
 
-procedure TJvJanTreeview.KeyUp(var Key: Word; Shift: TShiftState);
+procedure TJvJanTreeView.KeyUp(var Key: Word; Shift: TShiftState);
 var
   Mkey: word;
   MShift: TshiftState;
@@ -470,17 +459,17 @@ begin
     onkeyDown(self, key, shift);
 end;
 
-procedure TJvJanTreeview.SetKeyMappings(const Value: TTreeKeyMappings);
+procedure TJvJanTreeView.SetKeyMappings(const Value: TTreeKeyMappings);
 begin
   FKeyMappings := Value;
 end;
 
-procedure TJvJanTreeview.SetKeyMappingsEnabled(const Value: Boolean);
+procedure TJvJanTreeView.SetKeyMappingsEnabled(const Value: Boolean);
 begin
   FKeyMappingsEnabled := Value;
 end;
 
-procedure TJvJanTreeview.MouseMove(Shift: TShiftState; X, Y: Integer);
+procedure TJvJanTreeView.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   MyHitTest: THitTests;
   n: ttreenode;
@@ -502,7 +491,7 @@ begin
     onmousemove(self, shift, x, y);
 end;
 
-procedure TJvJanTreeview.nodeduplicate(mytree: TJvJanTreeview; fromnode,
+procedure TJvJanTreeView.nodeduplicate(mytree: TJvJanTreeView; fromnode,
   tonode: ttreenode);
 var
   i: Integer;
@@ -516,7 +505,7 @@ begin
     end;
 end;
 
-destructor TJvJanTreeview.Destroy;
+destructor TJvJanTreeView.Destroy;
 begin
   FParser.Free;
   FKeyMappings.free;
@@ -524,7 +513,7 @@ begin
   inherited;
 end;
 
-procedure TJvJanTreeview.ParserGetVar(Sender: TObject; VarName: string;
+procedure TJvJanTreeView.ParserGetVar(Sender: TObject; VarName: string;
   var Value: Extended; var Found: Boolean);
 var
   n: TTreenode;
@@ -550,13 +539,13 @@ begin
   end;
 end;
 
-procedure TJvJanTreeview.ParserParseError(Sender: TObject;
+procedure TJvJanTreeView.ParserParseError(Sender: TObject;
   ParseError: Integer);
 begin
   FParseError := true;
 end;
 
-procedure TJvJanTreeview.Recalculate;
+procedure TJvJanTreeView.Recalculate;
 var
   n, nv: TTreeNode;
   s: string;
@@ -1222,7 +1211,7 @@ begin
   FEditNode := Value;
 end;
 
-procedure TJvJanTreeview.KeyPress(var Key: Char);
+procedure TJvJanTreeView.KeyPress(var Key: Char);
 begin
   if key = char(vk_return) then
     recalculate;
@@ -1230,7 +1219,7 @@ begin
     onkeyPress(self, key);
 end;
 
-procedure TJvJanTreeview.ParseVariables;
+procedure TJvJanTreeView.ParseVariables;
 var
   i, p: integer;
   n: TTreeNode;
@@ -1250,7 +1239,7 @@ begin
   end;
 end;
 
-procedure TJvJanTreeview.doCustomDrawItem(Sender: TCustomTreeView;
+procedure TJvJanTreeView.doCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
 var
   s: string;
@@ -1285,12 +1274,12 @@ begin
     defaultdraw := true;
 end;
 
-procedure TJvJanTreeview.SetColorFormulas(const Value: boolean);
+procedure TJvJanTreeView.SetColorFormulas(const Value: boolean);
 begin
   FColorFormulas := Value;
 end;
 
-procedure TJvJanTreeview.SetFormuleColor(const Value: TColor);
+procedure TJvJanTreeView.SetFormuleColor(const Value: TColor);
 begin
   FFormuleColor := Value;
 end;
@@ -1305,7 +1294,7 @@ begin
   FSaveTree := Value;
 end;
 
-procedure TJvJanTreeview.DoLoadTree;
+procedure TJvJanTreeView.DoLoadTree;
 var
   dlg: TOpenDialog;
   s: string;
@@ -1327,7 +1316,7 @@ begin
   end;
 end;
 
-procedure TJvJanTreeview.DoSaveTreeAs;
+procedure TJvJanTreeView.DoSaveTreeAs;
 var
   dlg: TSaveDialog;
   s: string;
@@ -1348,17 +1337,17 @@ begin
   end;
 end;
 
-procedure TJvJanTreeview.SetDefaultExt(const Value: string);
+procedure TJvJanTreeView.SetDefaultExt(const Value: string);
 begin
   FDefaultExt := Value;
 end;
 
-procedure TJvJanTreeview.SetFilename(const Value: TFileName);
+procedure TJvJanTreeView.SetFilename(const Value: TFileName);
 begin
   FFilename := Value;
 end;
 
-procedure TJvJanTreeview.DoCloseTree;
+procedure TJvJanTreeView.DoCloseTree;
 begin
   if messagedlg(sSaveCurrentTree, mtconfirmation, [mbyes, mbno], 0) = mryes then
   begin
@@ -1383,7 +1372,7 @@ begin
   FSaveTreeAs := Value;
 end;
 
-procedure TJvJanTreeview.DoSaveTree;
+procedure TJvJanTreeView.DoSaveTree;
 begin
   if FFileName <> '' then
     SaveToFile(FFileName)
@@ -1396,7 +1385,7 @@ begin
   FFindNode := Value;
 end;
 
-procedure TJvJanTreeview.DoFindNode;
+procedure TJvJanTreeView.DoFindNode;
 var
   n: TTreeNode;
   i, fr: integer;

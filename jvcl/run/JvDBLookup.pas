@@ -627,15 +627,11 @@ type
   end;
 
 
-resourcestring
-  sInvalidFormatNotAllowed = 'Invalid format: % not allowed';
-  sInvalidFormatsNotAllowed = 'Invalid format: %s not allowed';
-
 implementation
 
 uses
   DBConsts, Dialogs, Math,
-  JvThemes, JvConsts, JvJVCLUtils, JvJCLUtils;
+  JvThemes, JvConsts, JvJVCLUtils, JvJCLUtils, JvResources;
 
 procedure CheckLookupFormat(const AFormat: string);
 var

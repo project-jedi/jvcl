@@ -128,8 +128,8 @@ type
 
 implementation
 
-resourcestring
-  SFmtResNotFound = 'Resource not found: %s';
+uses
+  JvResources;
 
 //=== TJvPlugin ==============================================================
 

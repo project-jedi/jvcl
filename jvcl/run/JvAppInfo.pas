@@ -76,11 +76,7 @@ implementation
 
 uses
   IniFiles, TypInfo,
-  JvTypes;
-
-resourcestring
-  SInvalidPropertyFmt = 'Invalid property: %s';
-  SNoPathSpecified = 'No path specified';
+  JvTypes, JvResources;
 
 constructor TJvAppInfo.Create;
 begin

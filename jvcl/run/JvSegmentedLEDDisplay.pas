@@ -380,13 +380,9 @@ implementation
 
 uses
   Controls, SysUtils,
-  JclGraphUtils, JvThemes;
+  JclGraphUtils, JvThemes, JvResources;
 
 {$R ..\resources\JvSegmentedLEDDisplay.res}
-
-resourcestring
-  sInvalidClass = 'Invalid class.';
-  sInvalidMappingFile = 'Invalid mapping file.';
 
 var
   GDigitClassList: TThreadList;

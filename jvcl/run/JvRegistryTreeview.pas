@@ -143,13 +143,10 @@ type
     property OnGetSelectedIndex;
   end;
 
-resourcestring
-  SDefaultCaption = '(Default)';
-  SMyComputer = 'My Computer';
-  SDefaultNoValue = '(value not set)';
-  SUnknownCaption = '(Unknown)';
-
 implementation
+
+uses
+  JvResources;
 
 {$R ..\resources\JvRegistryTreeView.res }
 

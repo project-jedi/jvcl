@@ -1644,26 +1644,6 @@ type
     property TypeInfo: PTypeInfo read FTypeInfo;
   end;
 
-resourcestring
-  sJvInspItemHasParent = 'Item already assigned to another parent.';
-  sJvInspItemValueException = 'Exception ';
-  sJvInspItemUnInitialized = '(uninitialized)';
-  sJvInspItemUnassigned = '(unassigned)';
-  sJvInspItemNoValue = '(no value)';
-  sJvInspItemNotAChild = 'Specified Item is not a child of this item.';
-  sJvInspItemColNotFound = 'Specified column does not belong to this compound item.';
-  sJvInspItemItemIsNotCol = 'Specified item is not a column of this compound item.';
-  sJvInspItemInvalidPropValue = 'Invalid property value %s.';
-  sJvInspDataNoAccessAs = 'Data cannot be accessed as %s.';
-  sJvInspDataNotInit = 'Data not initialized.';
-  sJvInspDataNotAssigned = 'Data not assigned.';
-  sJvInspDataNoValue = 'Data has no value.';
-  sJvInspDataStrTooLong = 'String too long.';
-  sJvInspRegNoCompare = 'Cannot compare %s to %s.';
-  sJvInspNoGenReg = 'Unable to create generic item registration list.';
-  sJvInspPaintNotActive = 'Painter is not the active painter of the specified inspector.';
-  sJvInspPaintOnlyUsedOnce = 'Inspector painter can only be linked to one inspector.';
-
 implementation
 
 uses
@@ -1679,7 +1659,7 @@ uses
   QDialogs, QForms, QButtons,
   {$ENDIF VisualCLX}
   JclRTTI, JclLogic,
-  JvJCLUtils, JvThemes;
+  JvJCLUtils, JvThemes, JvResources;
 
 type
   PMethod = ^TMethod;
@@ -1691,15 +1671,6 @@ var
   FGenItemReg: TJvInspectorRegister;
   FVarItemReg: TJvInspectorRegister;
   FPropItemReg: TJvInspectorRegister;
-
-resourcestring
-  // (rom) converted assertions
-  sJvAssertSetTopIndex = 'TJvCustomInspector.SetTopIndex: unexpected MaxIdx <= -1';
-  sJvAssertInspectorPainter = 'TJvInspectorCustomCompoundItem.DivideRect: unexpected Inspector.Painter = nil';
-  sJvAssertDataParent = 'TJvInspectorSetMemberData.New: unexpected ADataParent = nil';
-  sJvAssertParent = 'TJvInspectorSetMemberData.New: unexpected AParent = nil';
-  sJvAssertPropInfo = 'TJvInspectorPropData.New: unexpected PropInfo = nil';
-  sJvAssertINIFile = 'TJvInspectorINIFileData.New: unexpected AINIFile = nil';
 
 //=== TJvPopupListBox ========================================================
 

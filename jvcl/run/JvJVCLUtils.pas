@@ -622,7 +622,7 @@ implementation
 uses
   Consts, SysConst, CommCtrl, MMSystem, ShlObj, ActiveX, Math,
   JclSysInfo,
-  JvConsts, JvProgressUtils;
+  JvConsts, JvProgressUtils, JvResources;
 
 {$IFDEF MSWINDOWS}
 {$R ..\resources\JvConsts.res}
@@ -630,11 +630,6 @@ uses
 {$IFDEF LINUX}
 {$R ../Resources/JvConsts.res}
 {$ENDIF}
-
-resourcestring
-  RsNotForMdi = 'MDI forms are not allowed';
-  SPixelFormatNotImplemented = 'BitmapToMemoryStream: pixel format not implemented';
-  SBitCountNotImplemented = 'BitmapToMemoryStream: bit count not implemented';
 
 const
   RC_ControlRegistry = 'Control Panel\Desktop';

@@ -94,18 +94,15 @@ type
     property ParentShowHint;
     property Height default 150;
     property Width default 200;
-  {$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     property ParentBackground default True;
-  {$ENDIF}
+    {$ENDIF}
   end;
 
 implementation
 
 uses
-  JvThemes;
-
-resourcestring
-  RC_TestText = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  JvThemes, JvResources;
 
 constructor TJvScrollText.Create(AOwner: TComponent);
 begin

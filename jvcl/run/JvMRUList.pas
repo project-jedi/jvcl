@@ -172,11 +172,7 @@ implementation
 
 uses
   Registry,
-  JvJCLUtils;
-
-resourcestring
-  RC_ErrorMRU_Creating = 'Unable to create MRU';
-  RC_ErrorMRU_Unicode = 'Windows NT required for Unicode in MRU';
+  JvJCLUtils, JvResources;
 
 var
   hComCtlDll: HMODULE = 0;

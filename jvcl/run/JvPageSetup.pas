@@ -133,10 +133,7 @@ implementation
 
 uses
   SysUtils, Controls, Forms, Printers,
-  JvJCLUtils;
-
-resourcestring
-  SInvalidValue = 'Value must be greater then zero';
+  JvJCLUtils, JvResources;
 
 //=== TJvMarginSize ==========================================================
 

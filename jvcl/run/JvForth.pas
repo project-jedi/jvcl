@@ -339,50 +339,6 @@ type
 // runs an external file or progam
 procedure Launch(Afile: string);
 
-
-resourcestring
-  sInvalidNumbers = 'invalid number %s';
-  sUnterminatedStringNears = 'unterminated string near %s';
-  sUnrecognizedDataTypeInSetOperation = 'unrecognized data type in set operation';
-  sStackOverflow = 'stack overflow';
-  sStackUnderflow = 'stack underflow';
-  sUnterminatedBlockNear = 'unterminated block near ';
-  sParserTimedOutAfterdSecondsYouMayHa = 'parser timed out after %d seconds; you may have circular includes';
-  sUnterminatedIncludeNears = 'unterminated include near %s';
-  sIllegalSpaceCharacterInTheIncludeFi = 'illegal space character in the include file: %s';
-  sCanNotFindIncludeFiles = 'Can not find include file: %s';
-  sOnIncludeHandlerNotAssignedCanNotHa = 'onInclude handler not assigned, can not handle include file: %s';
-  sMissingCommentTerminatorNears = 'missing "}" comment terminator near %s';
-  sMissingXmlMethodSpecifierNears = 'missing xml method specifier near %s';
-  sMissingDataSourceMethodSpecifierNea = 'missing data source method specifier near %s';
-  sMissingSystemMethodSpecifierNears = 'missing system method specifier near %s';
-  sMissingExternalVariableMethodSpecif = 'missing external variable method specifier near %s';
-  sMissingInternalVariableMethodSpecif = 'missing internal variable method specifier near %s';
-  sUndefinedWordsNears = 'undefined word "%s" near %s';
-  sScriptTimedOutAfterdSeconds = 'Script timed out after %d seconds';
-  sCanNotAssignVariables = 'can not assign variable %s';
-  sVariablesNotDefined = 'Variable %s not defined';
-  sReturnStackUnderflow = 'return stack underflow';
-  sReturnStackOverflow = 'return stack overflow';
-  sProceduresNotDefined = 'procedure %s not defined';
-  sVariablesNotDefined_ = 'variable %s not defined';
-  sSystemsNotDefined = 'System %s not defined';
-  sCanNotAssignSystems = 'can not assign System %s';
-  sUnrecognizeExternalVariableMethodss = 'unrecognize external variable method %s.%s';
-  sUnrecognizeInternalVariableMethodss = 'unrecognize internal variable method %s.%s';
-  sUnrecognizeSystemMethodss = 'unrecognize system method %s.%s';
-  sFilesDoesNotExist = 'File %s does not exist';
-  sCanNotSaveToFiles = 'Can not save to file %s';
-  sXMLSelectionIsEmpty = 'XML selection is empty';
-  sNoXMLSelectionSelected = 'no XML selection selected';
-  sXMLSelectionOutOfRange = 'XML selection out of range';
-  sInvalidXmlMethodSpecifiers = 'invalid xml method specifier %s';
-  sIncrementIndexExpectedIns = 'Increment Index: "[" expected in %s';
-  sIncrementIndexExpectedIns_ = 'Increment Index: "]" expected in %s';
-  sIncrementIndexExpectedIntegerBetwee = 'Increment Index: expected integer between "[..]" in %s';
-  sDSOIndexOutOfRanged = 'DSO index out of range %d';
-  sDSOUnknownKeys = 'DSO unknown key %s';
-
 implementation
 
 uses
@@ -391,7 +347,7 @@ uses
   Variants,
   {$ENDIF}
   {$ENDIF}
-  JvTypes;
+  JvTypes, JvResources;
 
   { some utility functions }
 

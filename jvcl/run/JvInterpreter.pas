@@ -1019,13 +1019,6 @@ const
   irEndOfFile = 304;
   irClass = 305;
 
-resourcestring
-  sSorryDynamicArraysSupportIsMadeForO = 'Sorry. Dynamic arrays support is made for one-dimensional arrays only.';
-  sSorryForOnedimensionalArraysOnly = 'Sorry. For one-dimensional arrays only.';
-  sNotImplemented = ' not implemented';
-  sUnknownRecordType = 'Unknown RecordType';
-  sRangeCheckError = 'range check error';
-
 implementation
 
 uses
@@ -1034,7 +1027,7 @@ uses
   OleConst,
   ActiveX, ComObj,
   {$ENDIF JvInterpreter_OLEAUTO}
-  JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils;
+  JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils, JvResources;
 
 {$R ..\resources\JvInterpreter.res} { error messages }
 

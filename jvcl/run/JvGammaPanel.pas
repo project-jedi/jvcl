@@ -82,21 +82,10 @@ type
 
 implementation
 
+uses
+  JvResources;
+
 {$R ..\resources\JvGammaPanel.res}
-
-resourcestring
-  RC_RedFormat = 'R : %3D';
-  RC_GreenFormat = 'G : %3D';
-  RC_BlueFormat = 'B : %3D';
-
-  RC_Hint1 = 'Background Color';
-  RC_Hint2 = 'Foreground Color';
-  RC_LabelCaption = 'X';
-  RC_LabelHint = 'Exchange colors';
-
-  RC_DefaultB = 'B : ---';
-  RC_DefaultG = 'G : ---';
-  RC_DefaultR = 'R : ---';
 
 constructor TJvGammaPanel.Create(AOwner: TComponent);
 begin

@@ -197,19 +197,11 @@ type
     property ImageIndex: integer read FImageIndex write SetImageIndex;
   end;
 
-
-resourcestring
-  sControlNotFoundInGetError = 'Control not found in GetError';
-  sControlNotFoundInGetImageAlignment = 'Control not found in GetImageAlignment';
-  sControlNotFoundInGetImagePadding = 'Control not found in GetImagePadding';
-  sUnableToAddControlInSetError = 'Unable to add control in SetError';
-  sUnableToAddControlInSetImageAlignme = 'Unable to add control in SetImageAlignment';
-  sUnableToAddControlInSetImagePadding = 'Unable to add control in SetImagePadding';
-
 implementation
+
 uses
   CommCtrl,
-  JvConsts;
+  JvConsts, JvResources;
 
 const
   cDefBlinkCount = 5;

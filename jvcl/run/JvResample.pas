@@ -128,10 +128,8 @@ const
 implementation
 
 uses
-  Math;
-
-resourcestring
-  sSourceBitmapTooSmall = 'Source bitmap too small';
+  Math,
+  JvResources;
 
 // -----------------------------------------------------------------------------
 //

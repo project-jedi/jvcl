@@ -439,57 +439,17 @@ type
     property OnAutoClose: TJvDSAAutoCloseEvent read FOnAutoClose write FOnAutoClose;
   end;
 
-
-resourcestring
-  sCannotEndCustomReadIfNotInCustomRea = 'Cannot end custom read if not in custom read mode.';
-  sCannotEndCustomWriteIfNotInCustomWr = 'Cannot end custom write if not in custom write mode.';
-  sCannotEndReadIfNotInReadMode = 'Cannot end read if not in read mode.';
-  sCannotEndWriteIfNotInWriteMode = 'Cannot end write if not in write mode.';
-  sInTheCurrentQueue = 'in the current queue';
-  sJvDSADialogPatchErrorJvDSADialogCom = 'JvDSADialog patch error: JvDSADialog component not found.';
-
 implementation
+
 uses
   Consts, Math, TypInfo,
   JclRegistry, JclSysUtils,
-  JvConsts;
+  JvConsts, JvResources;
 
 {$IFNDEF DELPHI6_UP}
 type
   PBoolean = ^Boolean;
 {$ENDIF DELPHI6_UP}
-
-resourcestring
-  sDSARegKeyCreateError = 'Unable to create key %s';
-  sDSADuplicateID = 'DSA dialog with ID ''%d'' is already assigned to another dialog name.';
-  sDSADuplicateName = 'DSA dialog named ''%s'' is already assigned to another dialog ID.';
-  sDSADialogIDNotFound = 'DSA dialog %d does not exist.';
-  sDSADuplicateCTK_ID = 'CheckMarkText ID %d already registered.';
-  sDSADialogIDNotStored = 'DSA dialog %d has not been stored.';
-  sDSAKeyNotFound = 'Key %s does not exist.';
-  sDSAKeyNoAccessAs = 'Key %s cannot be accessed as %s.';
-
-  sDSAAccessBool = 'Boolean';
-  sDSAAccessFloat = 'Float';
-  sDSAAccessInt64 = 'Int64';
-  sDSAAccessInt = 'Integer';
-  sDSAAccessString = 'string';
-
-  sDSActkShowText = 'Don''t show this dialog again';
-  sDSActkAskText = 'Don''t ask me again';
-  sDSActkWarnText = 'Don''t warn me again';
-
-  sDSAStateValueName = 'DSA_State'; // do not localize
-  sDSAStateLastResultName = 'LastResult'; // do not localize
-
-  sCtrlHasNoCheckedProp = 'The specified control has no "Checked" property.';
-  sCtrlHasNoCaptionProp = 'The specified control has no "Caption" property.';
-  sDialogIDChangeOnlyInDesign = 'The dialog ID can only be changed at design time.';
-  sOnlyAllowedOnForms = 'TJvDSADialog is only allowed on forms.';
-  sAlreadyDSADialog = 'The form already has a TJvDSADialog component.';
-  sCntdwnText = 'This dialog is closing in %d %s.';
-  sCntdwnSecText = 'second';
-  sCntdwnSecsText = 'seconds';
 
 //--------------------------------------------------------------------------------------------------
 //  CheckMarkTexts

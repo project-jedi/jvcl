@@ -31,7 +31,7 @@ unit JvImageForm;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, ExtCtrls, Jpeg,
+  SysUtils, Classes, Controls, Forms, ExtCtrls, jpeg,
   JvComponent;
 
 type

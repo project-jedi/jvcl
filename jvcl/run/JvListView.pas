@@ -167,8 +167,8 @@ type
 
 implementation
 
-resourcestring
-  sTooManyColumns = 'too many columns';
+uses
+  JvResources;
 
 //=== TJvListItem ============================================================
 

@@ -319,19 +319,10 @@ var
   crRAHand: Integer;
   crRAHandMove: Integer;
 
-
-resourcestring
-  sCannotLoadCursorResource = 'Cannot load cursor resource';
-  sTooManyUserdefinedCursors = 'Too many user-defined cursors';
-  sTJvScrollMaxBandCanBePutOnlyIntoTJv = 'TJvScrollMaxBand can be put only into TJvScrollMax component';
-  sTJvScrollMaxCanContainOnlyTJvScroll = 'TJvScrollMax can contain only TJvScrollMaxBand components';
-  sRightClickAndChooseAddBand = 'Right click and choose "Add band"';
-  sControlsNotAChildOfs = 'Control %s not a child of %s';
-
 implementation
 
 uses
-  JvDsgnIntf, JvConsts, JvThemes;
+  JvDsgnIntf, JvConsts, JvThemes, JvResources;
 
 { Cursors resources }
 {$R ..\resources\JvScrollMax.res}

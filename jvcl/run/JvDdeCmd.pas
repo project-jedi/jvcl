@@ -82,11 +82,8 @@ type
 implementation
 
 uses
-  JclSysUtils;
-
-resourcestring
-  SErrorCommandStart = 'Invalid command start format';
-  SErrorCommandFormat = 'Invalid command format: %s';
+  JclSysUtils,
+  JvResources;
 
 const
   DdeTopicStr = 'System';

@@ -503,10 +503,16 @@ function ColorProviderColorAdderRegister: TJvColorProviderColorAdderRegister;
 implementation
 
 uses
-  {$IFNDEF COMPILER6_UP}Consts, {$ENDIF}Controls, {$IFDEF COMPILER6_UP}RTLConsts,{$ENDIF}SysUtils,
-  Dialogs,
+  {$IFNDEF COMPILER6_UP}
+  Consts,
+  {$ENDIF COMPILER6_UP}
+  Controls,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF COMPILER6_UP}
+  SysUtils, Dialogs,
   JclRTTI, JclStrings,
-  JvConsts;
+  JvConsts, JvResources;
 
 const
   aisPrvEvt = 'aisPrvEvt';
@@ -514,25 +520,6 @@ const
 
 type
   TOpenWriter = class(TWriter);
-
-resourcestring
-  SDelphiConstantNames = 'Delphi constant names';
-  SEnglishNames = 'English names';
-  SSpecifiedMappingError = 'Specified mapping does not belong to the current provider';
-  SCustomColors = 'Custom colors';
-  SStandardColors = 'Standard colors';
-  SSystemColors = 'System colors';
-  SAlreadyRegistered = '''%s'' is already registered';
-  SNoSettings = '(no settings)';
-  SNoICR = 'Component does not support IInterfaceComponentReference';
-  SNoColProv = 'Component does not support IJvColorProvider';
-  SMappingCollectionExpected = 'Mapping collection expected';
-  SExpectedMappingName = 'Expected mapping name';
-  SExpectedNameMappings = 'Expected name mappings';
-  SInvalidNameMappingSpecification = 'Invalid name mapping specification';
-  SUnknownColor = 'Unknown color ''%s''';
-  SInvalidColor = 'Invalid color (%d)';
-  SItemNotForList = 'Item does not belong to this list';
 
 function GetItemColorValue(Item: IJvDataItem; out Color: TColor): Boolean;
 var

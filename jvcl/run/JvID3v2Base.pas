@@ -1194,32 +1194,7 @@ uses
   Forms,
   {$ENDIF COMPILER6_UP}
   JclBase, JclFileUtils, JclLogic, JclDateTime,
-  JvConsts;
-
-resourcestring
-  SAllowedEncodingsIsEmpty = 'FAllowedEncodings is empty';
-  SAlreadyReadingWriting = 'Already reading or writing';
-  SAlreadyReadingWritingFrame = 'Already reading/writing frame';
-  SAlreadyUsingTempStream = 'Already using temp stream';
-  SCannotCallCanRead = 'Can''t call CanRead while writing';
-  SControllerDoesNotSupportCompression = 'Controller doesn''t support compression';
-  SControllerDoesNotSupportCRC = 'Controller doesn''t support CRC';
-  SControllerDoesNotSupportEncryption = 'Controller doesn''t support encryption';
-  SControllerDoesNotSupportFooter = 'Controller doesn''t support footer';
-  SCouldNotFindAllowableEncoding = 'Could not find allowable encoding';
-  SCouldNotReadData = 'Couldn''t read data from stream';
-  SErrorInFrame = 'Error in frame %s (%s), %s';
-  SFrameSizeDiffers = 'Frame size differs from actually amount of data written';
-  SFrameSizeTooBig = 'Frame size is too big';
-  SLanguageNotOfLength3 = 'Language is not of length 3';
-  SNoTempStream = 'No temp stream';
-  SNotReadingFrame = 'Not reading frame';
-  SNotUsingTempStream = 'Not using temp stream';
-  SNotWriting = 'Not writing';
-  SNotWritingFrame = 'Not writing frame';
-  STagTooBig = 'Tag is too big';
-  SValueTooBig = 'Can''t write value in v2.2; too big';
-  SNotReading = 'Not reading';
+  JvConsts, JvResources;
 
 type
   TJvID3StringList = class(TStringList)

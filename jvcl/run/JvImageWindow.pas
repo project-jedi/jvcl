@@ -187,15 +187,11 @@ type
     property OnStartDrag;
   end;
 
-
-resourcestring
-  sImagesNotAssigned = 'Images not Assigned!';
-
 implementation
 
 uses
   Math,
-  JvConsts, JvTypes, JvThemes;
+  JvConsts, JvTypes, JvThemes, JvResources;
 
 //=== TJvImageWindow =========================================================
 

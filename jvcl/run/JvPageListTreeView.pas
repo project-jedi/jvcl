@@ -667,7 +667,11 @@ type
   end;
 
 implementation
+
 uses
+  {$IFNDEF COMPILER6_UP}
+  JvResources,
+  {$ENDIF COMPLER6_UP}
   Forms;
 
 type
@@ -884,8 +888,6 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-resourcestring
-  SInterfaceNotSupported = '%s does not support the %s interface';
 
 procedure TJvCustomPageListTreeView.SetPageListComponent(const Value: TComponent);
 var obj: IPageList;

@@ -54,8 +54,8 @@ function JvDiskStylesToDWORD(const Style: TJvDiskStyles): DWORD;
 
 implementation
 
-resourcestring
-  RC_ErrorSetupDll = 'Unable to find SetupApi.dll';
+uses
+  JvResources;
 
 const
   IDF_NOBROWSE     = $00000001;

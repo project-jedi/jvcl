@@ -47,5 +47,6 @@
     <File Name="..\..\run\JvClxUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvActnResForm.pas" Targets="all" Formname="JvStandardActions: TDataModule" Condition=""/>
     <File Name="..\..\run\JvPropertyStore.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvResources.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

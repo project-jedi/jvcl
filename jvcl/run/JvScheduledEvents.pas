@@ -206,11 +206,8 @@ implementation
 uses
   Contnrs, Forms, TypInfo,
   JclDateTime, JclRTTI,
-  JvSchedEvtStore, JvTypes;
+  JvTypes, JvResources;
 
-resourcestring
-  sCannotRestart = 'Can''t restart: Event is being triggered or is executing.';
-    
 { registry constants }
 
 const

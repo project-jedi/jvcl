@@ -271,7 +271,7 @@ uses
   SysUtils, CommCtrl, Registry, Math,
   MMSystem, // needed for sndPlaySound
   ComCtrls, // needed for GetComCtlVersion
-  JvThemes, JvWndProcHook;
+  JvThemes, JvWndProcHook, JvResources;
 
 const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);
@@ -331,10 +331,6 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-
-resourcestring
-  SParentRequired = 'Control ''%s'' has no parent window';
-  SParentGivenNotAParent = 'Parent given is not a parent of ''%s''';
 
 const
   SPI_GETTOOLTIPANIMATION = $1016;

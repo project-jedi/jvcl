@@ -124,33 +124,9 @@ procedure FixedDefaultEditPopupUpdate(AEdit: TWinControl);
 
 implementation
 
-resourcestring
-  SDefaultPopUpUndo = '&Undo';
-  SDefaultPopUpCut  = 'Cu&t';
-  SDefaultPopUpCopy = '&Copy';
-  SDefaultPopUpPaste = '&Paste';
-  SDefaultPopUpDelete = '&Delete';
-  SDefaultPopUpSelAll = 'Select &All';
+uses
+  JvResources;
 
-{
-  SWEDISH:
-  SDefaultPopUpUndo = '&Ångra';
-  SDefaultPopUpCut  = '&Klipp ut';
-  SDefaultPopUpCopy = 'K&opiera';
-  SDefaultPopUpPaste = 'Kl&istra in';
-  SDefaultPopUpDelete = '&Ta bort';
-  SDefaultPopUpSelAll = '&Markera allt';
-
-  GERMAN:
-  SDefaultPopUpUndo = '&Rückgängig';
-  SDefaultPopUpCut  = '&Ausschneiden';
-  SDefaultPopUpCopy = '&Kopieren';
-  SDefaultPopUpPaste = '&Einfügen';
-  SDefaultPopUpDelete = '&Löschen';
-  SDefaultPopUpSelAll = '&Alles markieren';
-
-  --add other languages here--
-}
 type
   THiddenPopupObject = class(TComponent)
   private

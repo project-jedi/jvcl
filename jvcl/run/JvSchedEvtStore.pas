@@ -148,27 +148,12 @@ type
 function ScheduledEventStore_Stream(const Stream: TStream; const Binary: Boolean = False;
   const OwnsStream: Boolean = True): IJvScheduledEventsStore;
 
-
-resourcestring
-  sStructureStackIsEmpty = 'Structure stack is empty.';
-  sNotImplemented = 'not implemented';
-  sScheduleIsActiveReadingANewSchedule = 'Schedule is active. Reading a new schedule can only be done on inactive schedules.';
-  sScheduleIsActiveStoringOfAScheduleC = 'Schedule is active. Storing of a schedule can only be done on inactive schedules.';
-  sNotImplemented_ = 'not implemented.';
-  sNotASchedule = 'Not a schedule.';
-  sUnknownScheduleVersions = 'Unknown schedule version ($%s)';
-  sUnexpectedStructure = 'Unexpected structure.';
-  sIncorrectIdentifierFound = 'Incorrect identifier found.';
-
 implementation
 
 uses
   SysUtils, TypInfo,
   JclRTTI, JclSchedule,
-  JvConsts, JvTypes;
-
-resourcestring
-  sIncorrectStructure = 'Incorrect structure found.';
+  JvConsts, JvTypes, JvResources;
 
 //=== TJvSchedEvtStore =======================================================
 

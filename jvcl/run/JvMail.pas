@@ -175,11 +175,8 @@ type
 
 implementation
 
-resourcestring
-  RsAttachmentNotFound = 'Attached file "%s" not found';
-  RsRecipNotValid = 'Recipient %s has invalid address';
-  RsNoClientInstalled = 'There is no MAPI-enabled client on the machine';
-  RsNoUserLogged = 'There must be a user logged before call this function';
+uses
+  JvResources;
 
 //=== TJvMailRecipient =======================================================
 

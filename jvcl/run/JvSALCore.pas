@@ -110,18 +110,13 @@ type
 
 implementation
 
-{$IFDEF BCB}
-{$IFNDEF BCB5}
-uses Variants;
-{$ENDIF}
-{$ENDIF}
-
-resourcestring
-  sVariablesIsNotInitialized = 'variable %s is not initialized';
-  sDivisionByZeroError = 'division by zero error';
-  sMissingendselect = 'missing "endselect"';
-
-  { TJvSALCoreBasic }
+uses
+  {$IFDEF BCB}
+  {$IFNDEF BCB5}
+  Variants,
+  {$ENDIF}
+  {$ENDIF}
+  JvResources;
 
 procedure TJvSALCore.AddProcedures(aSal: TJvSAL);
 begin

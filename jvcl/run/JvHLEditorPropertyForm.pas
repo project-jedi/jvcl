@@ -185,12 +185,9 @@ implementation
 
 uses
   Math,
-  JvConsts, JvJVCLUtils, JvJCLUtils;
+  JvConsts, JvJVCLUtils, JvJCLUtils, JvResources;
 
 {$R *.dfm}
-
-resourcestring
-  sGridCellNotFound = 'Grid cell not found';
 
 function GetHardCodedExamples: string; forward;
 

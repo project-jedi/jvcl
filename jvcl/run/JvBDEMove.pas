@@ -122,16 +122,13 @@ type
 implementation
 
 uses
-  JvBDEUtils;
+  JvBDEUtils, JvResources;
 
 const
   cTable = 'Table';
   cField = 'Field';
   cOldValue = 'OldValue';
   cNewValue = 'NewValue';
-
-resourcestring
-  SInvalidReferenceDescriptor = 'Invalid reference descriptor';
 
 type
   TFieldRef = class(TObject)

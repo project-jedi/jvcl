@@ -89,10 +89,8 @@ type
 implementation
 
 uses
-  CommCtrl;
-
-resourcestring
-  SNullText = '(none)';
+  CommCtrl,
+  JvResources;
 
 {$IFNDEF COMPILER6_UP}
 function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;

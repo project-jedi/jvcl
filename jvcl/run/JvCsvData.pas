@@ -619,41 +619,11 @@ function JvCsvWildcardMatch(data, pattern: string): boolean;
 implementation
 
 uses
-  Forms, Controls, JvCsvParse
+  Forms, Controls,
   {$IFNDEF COMPILER6_UP}
-  , JvJVCLUtils, JvJCLUtils
-  {$ENDIF}
-  ;
-
-resourcestring
-  sProblemReadingRow = 'Problem reading row %d';
-  sNoRecord = 'No records';
-  sTimeTConvError = 'SetFieldData Error - TimeT-to-DateTime conversion error.';
-  sFieldTypeNotHandled = 'SetFieldData Error - Field type not handled.';
-  sUndableToLocateCSVFileInfo = 'Unable to locate CSV file information for field %s';
-  sPhysicalLocationOfCSVField = 'Physical location of CSV field %s unknown.';
-  sInvalidFieldTypeCharacter = 'Invalid field type character: %s';
-  sUnexpectedError = 'Unexpected error parsing CSV Field Definitions';
-  sFieldDefinitionError = 'Field Definition Error. CsvFieldDef, FieldDefs, and file contents must match.';
-  sInvalidCsvKeyDef = 'Invalid CsvKeyDef property. InternalInitFieldDefs failed.';
-  sInternalErrorParsingCsvKeyDef = 'Internal Error parsing CsvKeyDef. InternalInitFieldDefs failed.';
-  sContainsField = 'CsvKeyDef contains field ''%s'' which is not defined. InternalInitFieldDefs failed.';
-  sInsertBlocked = 'InternalAddRecord Can''t Add. Insert blocked.';
-  sPostingHasBeenBlocked = 'Posting to this database has been blocked.';
-  sKeyNotUnique = '%s - Key is not unique ';
-  sCannotInsertNewRow = 'Can''t insert new row. Insert blocked.';
-  sCannotPost = 'Post: Can''t post. Not in not dsEdit or dsInsert mode';
-  sSortFailedCommaSeparated = 'Sort failed. You must give a comma separated list of field names.';
-  sSortFailedFieldNames = 'Sort failed. Unable to parse field names. ';
-  sSortFailedInvalidFieldNameInList = 'Sort failed. Invalid field name in list: %s';
-  sDataSetNotOpen = 'AppendRowString: DataSet is not open (active not set to true)';
-  sErrorProcessingFirstLine = 'Error processing first line of CSV file.';
-  sFieldInFileButNotInDefinition = 'ProcessCsvHeaderRow: Field %s found in file, but not in field definitions.';
-  sCsvFieldLocationError = 'Csv field location error: %s';
-  sFieldNotFound = 'Field %s not found in the data file.';
-  sCsvStringTooLong = 'CSV String is too long: %s...';
-  sInternalLimit = 'JvCsvData - Internal Limit of MAXCOLUMNS (%d) reached. CSV Data has too many columns';
-  sErrorRowItem = '<ERROR>';
+  JvJVCLUtils, JvJCLUtils,
+  {$ENDIF COMPILER6_UP}
+  JvCsvParse, JvResources;
 
 var
   CallCount: integer;

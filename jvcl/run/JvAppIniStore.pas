@@ -144,7 +144,7 @@ type
 implementation
 
 uses
-  JvTypes;
+  JvTypes, JvResources;
 
 const
   cNullDigit = '0';
@@ -152,11 +152,6 @@ const
   cSectionHeaderStart = '[';
   cSectionHeaderEnd = ']';
   cKeyValueSeparator = '=';
-
-resourcestring
-  SReadValueFailed = 'TJvAppINIFileStore.ReadValue: Section undefined';
-  SWriteValueFailed = 'TJvAppINIFileStore.WriteValue: Section undefined';
-  SDelSubTreeNotImplemented = 'TJvAppINIFileStore.DeleteSubTreeInt has not been implemented yet';
 
 {$IFDEF LINUX}
 function GetTickCount: Cardinal;

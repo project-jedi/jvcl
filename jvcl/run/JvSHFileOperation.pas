@@ -106,10 +106,7 @@ type
 implementation
 
 uses
-  JvConsts, JvTypes;
-
-resourcestring
-  SNoFilesSpecifiedToTJvSHFileOperatio = 'No files specified to TJvSHFileOperation Execute function';
+  JvConsts, JvTypes, JvResources;
 
 type
   // helper object for file mappings

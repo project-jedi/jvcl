@@ -138,12 +138,8 @@ function CurrentMTThread: TMTThread;
 
 implementation
 
-resourcestring
-  sCurThreadIsPartOfManager = 'Current MTThread is part of the MTManager';
-  sCheckTerminateCalledByWrongThread = 'CheckTerminate can only be called by the same thread';
-  sThreadNotInitializedOrWaiting = 'Can''t run: thread is not Initializing or Waiting.';
-  sCannotChangeNameOfOtherActiveThread = 'Cannot change name of other active thread.';
-  sReleaseOfUnusedTicket = 'Release of unused ticket';
+uses
+  JvResources;
 
 threadvar
   _CurrentMTThread: TMTThread;

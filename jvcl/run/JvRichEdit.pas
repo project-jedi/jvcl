@@ -886,29 +886,7 @@ implementation
 uses
   OleCtnrs,
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
-  JvThemes, JvTypes;
-
-resourcestring
-  SRTFFilter = 'Rich Text Format (*.rtf)|*.RTF';
-  STextFilter = 'Plain text (*.txt)|*.TXT';
-
-  SConversionError = 'Conversion error %.8x';
-  SErr_ConversionBusy = 'Cannot execute multiple conversions';
-  SErr_CouldNotInitConverter = 'Could not initialize converter';
-  SErr_DiskFull = 'Out of space on output';
-  SErr_DocTooLarge = 'Conversion document too large for target';
-  SErr_InvalidDoc = 'Invalid document';
-  SErr_InvalidFile = 'Invalid data in conversion file';
-  SErr_NoMemory = 'Out of memory';
-  SErr_OpenConvErr = 'Error opening conversion file';
-  SErr_OpenExceptErr = 'Error opening exception file';
-  SErr_OpenInFileErr = 'Could not open input file';
-  SErr_OpenOutFileErr = 'Could not open output file';
-  SErr_ReadErr = 'Error during read';
-  SErr_UserCancel = 'Conversion cancelled by user';
-  SErr_WriteErr = 'Error during write';
-  SErr_WriteExceptErr = 'Error writing exception file';
-  SErr_WrongFileType = 'Wrong file type for this converter';
+  JvThemes, JvTypes, JvResources;
 
 type
   PENLink = ^TENLink;

@@ -280,17 +280,14 @@ function DayStatesToString(Days: TMonthDayState): string;
 
 implementation
 
-resourcestring
-  sInvalidDateStr = 'Invalid date specification to TMonthCalStrings (%s)';
-  SCannotAssign = 'Cannot assign %s to a %s';
-  SInvalidArgumentToSetDayStates = 'Invalid argument to SetDayStates';
-
+uses
+  JvResources;
 
 const
   MCM_GETMAXTODAYWIDTH = (MCM_FIRST + 21);
   MCS_NOTODAYCIRCLE = $0008;
   MCS_NOTODAY = $0010;
-  ColorIndex: array[0..5] of Integer = (MCSC_BACKGROUND, MCSC_TEXT,
+  ColorIndex: array [0..5] of Integer = (MCSC_BACKGROUND, MCSC_TEXT,
     MCSC_TITLEBK, MCSC_TITLETEXT, MCSC_MONTHBK, MCSC_TRAILINGTEXT);
 
   // IE3 and previous:

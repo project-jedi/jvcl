@@ -110,10 +110,10 @@ type
 
 implementation
 
-{$R ..\resources\JvComponentPanel.res}
+uses
+  JvResources;
 
-resourcestring
-  SInvalidButtonCount = 'Invalid ButtonCount';
+{$R ..\resources\JvComponentPanel.res}
 
 constructor TJvComponentPanel.Create(AOwner: TComponent);
 begin
