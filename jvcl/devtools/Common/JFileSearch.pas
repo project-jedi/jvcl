@@ -5,6 +5,7 @@ uses
 
 {$IFNDEF MSWINDOWS} // Delphi 1-5
  {$IFNDEF LINUX}
+const
   PathDelim = '\';
  {$ENDIF} 
 {$ENDIF}
