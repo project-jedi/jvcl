@@ -9,7 +9,9 @@ del lib\d7\*.dcp lib\d7\*.bpl lib\d7\*.dfm >NUL
 del lib\d7clx\*.dcp lib\d7clx\*.bpl lib\d7clx\*.xfm >NUL
 del lib\c5\obj\*.obj lib\c5\obj\*.dcu lib\c5\obj\*.dfm >NUL
 del lib\c6\obj\*.obj lib\c6\obj\*.dcu lib\c6\obj\*.dfm >NUL
-del /S *.hpp >NUL
+del /S run\*.hpp >NUL
+del /S design\*.hpp >NUL
+del /S common\*.hpp >NUL
 del packages\*Packages.mak >NUL
 
 :LEAVE
