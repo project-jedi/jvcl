@@ -47,6 +47,7 @@ function MakeBitmap(ResID: PChar): TBitmap;
 function MakeBitmapID(ResID: Word): TBitmap;
 function MakeModuleBitmap(Module: THandle; ResID: PChar): TBitmap;
 function CreateTwoColorsBrushPattern(Color1, Color2: TColor): TBitmap;
+function CreateDisabledBitmap_NewStyle(FOriginal: TBitmap; BackColor: TColor): TBitmap;
 function CreateDisabledBitmapEx(FOriginal: TBitmap; OutlineColor, BackColor,
   HighlightColor, ShadowColor: TColor; DrawHighlight: Boolean): TBitmap;
 function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor): TBitmap;
@@ -727,6 +728,51 @@ end;
 
 const
   ROP_DSPDxax = $00E20746;
+
+function CreateDisabledBitmap_NewStyle(FOriginal: TBitmap; BackColor: TColor): TBitmap;
+var
+  MonoBmp: TBitmap;
+  R: TRect;
+  DestDC, SrcDC: HDC;
+begin
+  R := Rect(0, 0, FOriginal.Width, FOriginal.Height);
+  Result := TBitmap.Create;
+  try
+    Result.Width := FOriginal.Width;
+    Result.Height := FOriginal.Height;
+    Result.Canvas.Brush.Color := BackColor;
+    Result.Canvas.FillRect(R);
+
+    MonoBmp := TBitmap.Create;
+    try
+      MonoBmp.Width := FOriginal.Width;
+      MonoBmp.Height := FOriginal.Height;
+      MonoBmp.Canvas.Brush.Color := clWhite;
+      MonoBmp.Canvas.FillRect(R);
+      DrawBitmapTransparent(MonoBmp.Canvas, 0, 0, FOriginal, BackColor);
+      MonoBmp.Monochrome := True;
+
+      SrcDC := MonoBmp.Canvas.Handle;
+      { Convert Black to clBtnHighlight }
+      Result.Canvas.Brush.Color := clBtnHighlight;
+      DestDC := Result.Canvas.Handle;
+      Windows.SetTextColor(DestDC, clWhite);
+      Windows.SetBkColor(DestDC, clBlack);
+      BitBlt(DestDC, 1, 1, FOriginal.Width, FOriginal.Height, SrcDC, 0, 0, ROP_DSPDxax);
+      { Convert Black to clBtnShadow }
+      Result.Canvas.Brush.Color := clBtnShadow;
+      DestDC := Result.Canvas.Handle;
+      Windows.SetTextColor(DestDC, clWhite);
+      Windows.SetBkColor(DestDC, clBlack);
+      BitBlt(DestDC, 0, 0 , FOriginal.Width, FOriginal.Height, SrcDC, 0, 0, ROP_DSPDxax);
+    finally
+      MonoBmp.Free;
+    end;
+  except
+    Result.Free;
+    raise;
+  end;
+end;
 
 function CreateDisabledBitmapEx(FOriginal: TBitmap; OutlineColor, BackColor,
   HighlightColor, ShadowColor: TColor; DrawHighlight: Boolean): TBitmap;

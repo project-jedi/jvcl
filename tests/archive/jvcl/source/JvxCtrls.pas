@@ -722,6 +722,8 @@ type
     procedure UpdateExclusive;
     function GetGlyph: TBitmap;
     procedure SetGlyph(Value: TBitmap);
+    function GetGrayNewStyle: Boolean;
+    procedure SetGrayNewStyle(const Value: Boolean);
     function GetNumGlyphs: TJvNumGlyphs;
     procedure SetNumGlyphs(Value: TJvNumGlyphs);
     function GetWordWrap: Boolean;
@@ -820,6 +822,7 @@ type
     property MarkDropDown: Boolean read FMarkDropDown write SetMarkDropDown default True;
     property ModalResult: TModalResult read FModalResult write FModalResult default 0;
     property NumGlyphs: TJvNumGlyphs read GetNumGlyphs write SetNumGlyphs default 1;
+    property GrayNewStyle: Boolean read GetGrayNewStyle write SetGrayNewStyle default True;
     property ParentFont;
     property ParentShowHint default False;
     property RepeatInterval: Word read FRepeatPause write FRepeatPause default 100;
@@ -891,12 +894,14 @@ type
     FIndexs: array[TJvButtonState] of Integer;
     FTransparentColor: TColor;
     FNumGlyphs: TJvNumGlyphs;
+    FGrayNewStyle: Boolean;
     FWordWrap: Boolean;
     FAlignment: TAlignment;
     FOnChange: TNotifyEvent;
     procedure GlyphChanged(Sender: TObject);
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TJvNumGlyphs);
+    procedure SetGrayNewStyle(const Value: Boolean);
     function MapColor(Color: TColor): TColor;
   protected
     procedure MinimizeCaption(Canvas: TCanvas; const Caption: string;
@@ -934,6 +939,7 @@ type
     property Alignment: TAlignment read FAlignment write FAlignment;
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TJvNumGlyphs read FNumGlyphs write SetNumGlyphs;
+    property GrayNewStyle: Boolean read FGrayNewStyle write SetGrayNewStyle;
     property WordWrap: Boolean read FWordWrap write FWordWrap;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -4142,6 +4148,15 @@ begin
   end;
 end;
 
+procedure TJvButtonGlyph.SetGrayNewStyle(const Value: Boolean);
+begin
+  if Value <> FGrayNewStyle then
+  begin
+    Invalidate;
+    FGrayNewStyle := Value;
+  end;
+end;
+
 function TJvButtonGlyph.MapColor(Color: TColor): TColor;
 var
   Index: Byte;
@@ -4289,12 +4304,25 @@ begin
         end
         else
         begin
-          MonoBmp := CreateDisabledBitmap(FOriginal, clBlack);
-          try
-            FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(MonoBmp,
-              ColorToRGB(clBtnFace));
-          finally
-            MonoBmp.Free;
+          if FGrayNewStyle then
+          begin
+            MonoBmp := CreateDisabledBitmap_NewStyle(FOriginal, FTransparentColor);
+            try
+              FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(MonoBmp,
+                FTransparentColor);
+            finally
+              MonoBmp.Free;
+            end;
+          end
+          else
+          begin
+            MonoBmp := CreateDisabledBitmap(FOriginal, clBlack);
+            try
+              FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(MonoBmp,
+                ColorToRGB(clBtnFace));
+            finally
+              MonoBmp.Free;
+            end;
           end;
         end;
       rbsInactive:
@@ -4866,6 +4894,7 @@ begin
   FDrawImage := TBitmap.Create;
   FGlyph := TJvButtonGlyph.Create;
   TJvButtonGlyph(FGlyph).OnChange := GlyphChanged;
+  TJvButtonGlyph(FGlyph).GrayNewStyle := True;
   ParentFont := True;
   ParentShowHint := False;
   ShowHint := True;
@@ -4928,7 +4957,6 @@ var
   PaintRect: TRect;
   AState: TJvButtonState;
 {$IFDEF COMPILER7_UP}
-  Offset: TPoint;
   Button: TThemedButton;
   ToolButton: TThemedToolBar;
   Details: TThemedElementDetails;
@@ -5327,6 +5355,11 @@ begin
   Invalidate;
 end;
 
+function TJvxSpeedButton.GetGrayNewStyle: Boolean;
+begin
+  Result := TJvButtonGlyph(FGlyph).GrayNewStyle;
+end;
+
 function TJvxSpeedButton.GetNumGlyphs: TJvNumGlyphs;
 begin
   Result := TJvButtonGlyph(FGlyph).NumGlyphs;
@@ -5471,6 +5504,15 @@ begin
   if Value <> FFlat then
   begin
     FFlat := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvxSpeedButton.SetGrayNewStyle(const Value: Boolean);
+begin
+  if GrayNewStyle <> Value then
+  begin
+    TJvButtonGlyph(FGlyph).GrayNewStyle := Value;
     Invalidate;
   end;
 end;
