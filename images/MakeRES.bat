@@ -1,3 +1,4 @@
+@echo off
 brc32 JvBaseEdits.rc -r -fo..\Resources\JvBaseEdits.res
 brc32 JvCalc.rc -r -fo..\Resources\JvCalc.res
 brc32 JvCheckmarks.rc -r -fo..\Resources\JvCheckmarks.res

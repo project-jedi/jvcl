@@ -83,7 +83,9 @@ JvPreviewReg.dcr \
 JvValidatorsReg.dcr \
 JvWizardReg.dcr \
 JvTimeFrameWorkReg.dcr \
-JvManagedThreadsReg.dcr
+JvManagedThreadsReg.dcr \
+JvXPCtrlsReg.drc \
+JvDotNetCtrlsReg.dcr
 
 #--- RES ---------------------------------------
 JvBaseEdits.res: JvBaseEdits.rc
@@ -280,4 +282,10 @@ JvTimeFrameWorkReg.dcr: JvTimeFrameWorkReg.rc
 	$(BRC) -fo$(RSRC)\$&.dcr $&.rc
 
 JvManagedThreadsReg.dcr: JvManagedThreadsReg.rc
+	$(BRC) -fo$(RSRC)\$&.dcr $&.rc
+
+JvXPCtrlsReg.drc: JvXPCtrlsReg.rc \
+	$(BRC) -fo$(RSRC)\$&.dcr $&.rc
+
+JvDotNetCtrlsReg.dcr: JvDotNetCtrlsReg.rc \
 	$(BRC) -fo$(RSRC)\$&.dcr $&.rc
