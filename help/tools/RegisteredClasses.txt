@@ -9,9 +9,11 @@ TJvAppAnimatedIcon
 TJvAppDdeCmd
 TJvAppEvents
 TJvAppINIFileStore
+TJvAppInstances
 TJvAppletDialog
 TJvApplicationHotKey
 TJvAppRegistryStore
+TJvAppStore
 TJvArrayButton
 TJvArrowButton
 TJvaScrollText
@@ -33,6 +35,8 @@ TJvCaptionButton
 TJvCaptionPanel
 TJvChangeIconDialog
 TJvChangeNotify
+TJvCharMap
+TJvChart
 TJvCheckBox
 TJvCheckedMaskEdit
 TJvCheckListBox
@@ -43,8 +47,11 @@ TJvClock
 TJvColorButton
 TJvColorComboBox
 TJvColorDialog
+TJvColorMappingProvider
+TJvColorProvider
 TJvComboBox
 TJvComboEdit
+TJvComboListBox
 TJvCommStatus
 TJvComponentPanel
 TJvComputerNameDialog
@@ -77,10 +84,12 @@ TJvDBFilter
 TJvDBGrid
 TJvDBIndexCombo
 TJvDBLookupCombo
+TJvDBLookupComboEdit
 TJvDBLookupEdit
 TJvDBLookupList
 TJvDBLookupTreeView
 TJvDBLookupTreeViewCombo
+TJvDBMaskEdit
 TJvDBMove
 TJvDBProgress
 TJvDBProgressBar
@@ -113,7 +122,7 @@ TJvEasterEgg
 TJvEdit
 TJvEditor
 TJvEnterAsTab
-TJvErrorProvider
+TJvErrorIndicator
 TJvExitWindowsDialog
 TJvExpress
 TJvExpressButton
@@ -146,7 +155,7 @@ TJvgCheckBox
 TJvgCheckListBox
 TJvgCheckTreeView
 TJvgDBGrid
-TJvgDBNAvigator
+TJvgDBNavigator
 TJvgDigits
 TJvGenetic
 TJvgExceptionHandler
@@ -154,6 +163,7 @@ TJvgExportDBETable
 TJvgExportExcel
 TJvgExportHTML
 TJvgExportXML
+TJvgExtSpeedButton
 TJvgFixFont
 TJvgFlyingText
 TJvgGraphicButton
@@ -224,6 +234,7 @@ TJvID3v2
 TJvImage
 TJvImageComboBox
 TJvImageDialog
+TJvImageList
 TJvImageListBox
 TJvImageRotate
 TJvImageSquare
@@ -247,6 +258,7 @@ TJvLED
 TJvLinkLabel
 TJvListBox
 TJvListView
+TJvLogFile
 TJvLogic
 TJvLoginDialog
 TJvLookout
@@ -265,6 +277,14 @@ TJvMouseGestureHook
 TJvMovableBevel
 TJvMRUList
 TJvMRUManager
+TJvMtCountingSection
+TJvMtManager
+TJvMtMonitorSection
+TJvMtSection
+TJvMtThread
+TJvMtThreadToThread
+TJvMtThreadToVCL
+TJvMtVCLToThread
 TJvMultiHTTPGrabber
 TJvNewLinkDialog
 TJvNTEventLog
@@ -326,6 +346,7 @@ TJvScrollingWindow
 TJvScrollMax
 TJvScrollText
 TJvSearchFiles
+TJvSecretPanel
 TJvSegmentedLEDDisplay
 TJvSelectDirectory
 TJvSerialMaker
@@ -355,6 +376,7 @@ TJvSpeedButton
 TJvSpeller
 TJvSpinEdit
 TJvSplitter
+TJvSQLScript
 TJvStarfield
 TJvStartMenuButton
 TJvStaticText
@@ -370,6 +392,7 @@ TJvSystemColors
 TJvSystemPopup
 TJvTabControl
 TJvTableItems
+TJvTextListBox
 TJvTFAlarm
 TJvTFDays
 TJvTFDaysPrinter
@@ -402,12 +425,15 @@ TJvTreeView
 TJvTurtle
 TJvUIBBackup
 TJvUIBDatabase
+TJvUIBDataSet
 TJvUIBQuery
 TJvUIBRestore
+TJvUIBScript
 TJvUIBTransaction
 TJvUninstallComboBox
 TJvUninstallListBox
 TJvUpDown
+TJvUrlListGrabber
 TJvValidateEdit
 TJvValidationSummary
 TJvValidators
@@ -421,6 +447,7 @@ TJvWinHelp
 TJvWizard
 TJvWizardRouteMapNodes
 TJvWizardRouteMapSteps
+TJvxCheckListBox
 TJvxClock
 TJvXMLDatabase
 TJvXORCipher

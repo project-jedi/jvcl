@@ -4,6 +4,7 @@ JvAni
 JvAniFile
 JvAnimatedImage
 JvAppEvent
+JvAppInst
 JvArrayButton
 JvaScrollText
 JvBandForms
@@ -29,11 +30,14 @@ JvButton
 JvButtonPersistent
 JvButtons
 JvButtonUtils
+JvChart
 JvCheckListBox
 JvClipboardMonitor
 JvClipboardViewer
+JvClipbrd
 JvClock
 JVCLVer
+JvColorProvider
 JvComCtrls
 JvCommonExecDlg
 JvCommStatus
@@ -54,6 +58,7 @@ JvDBCombobox
 JvDBControls
 JvDBDatePickerEdit
 JvDBDateTimePicker
+JvDBLookupComboEdit
 JvDBLookupTreeView
 JvDBProgressBar
 JvDBRadioPanel
@@ -133,6 +138,7 @@ JvGradient
 JvGradientCaption
 JvGradientHeaderPanel
 JvgReport
+JvgReportParamsEditor
 JvgRichEditUtils
 JvGridFilter
 JvGridPrinter
@@ -178,10 +184,10 @@ JvHtControls
 JvHtmlParser
 JvHttpGrabber
 JvIconList
-JvId3v2
 JvImage
 JvImageDlg
 JvImageDrawThread
+JvImageList
 JvImageRotate
 JvInspDB
 JvInspExtraEditors
@@ -220,6 +226,12 @@ JvMouseTimer
 JvMovableBevel
 JvMRUList
 JvMRUManager
+JvMTComponents
+JvMTConsts
+JvMTData
+JvMTSync
+JvMTSyncMon
+JvMTThreading
 JvMultiHttpGrabber
 JvNTEventLog
 JvObjectPickerDialog
@@ -237,6 +249,7 @@ JvPlaylist
 JvPrint
 JvProgressBar
 JvProgressUtils
+JvPropertyStore
 JvPropsStorage
 JvRadioButton
 JvRadioGroup
@@ -251,6 +264,7 @@ JvSALHashList
 JvSALMath
 JvScreenSaver
 JvScrollMax
+JvSecretPanel
 JvSerialMaker
 JvShapedButton
 JvSimIndicator
@@ -260,6 +274,9 @@ JvSimPIDLinker
 JvSimpleXml
 JvSimScope
 JvSpeedbar
+JvSpeedButton
+JvSpellChecker
+JvSpellIntf
 JvSpin
 JvSplashWindow
 JvSplit
@@ -268,6 +285,7 @@ JvSticker
 JvStringHolder
 JvStrings
 JvSwitch
+JvTextListBox
 JvTFAlarm
 JvTFGantt
 JvTFGlance
@@ -276,6 +294,7 @@ JvTFMonths
 JvTFSparseMatrix
 JvTFUtils
 JvTFWeeks
+JvThemes
 JvThread
 JvThumbImage
 jvThumbNails
@@ -286,10 +305,17 @@ JvTracker
 JvTransparentPanel
 JvTurtle
 JvUIB
+JvUIBDataSet
 JvUIBLib
+JvUIBMetaData
 JvUIBObj
 JvUIBSrv
+JvUnicodeCanvas
+JvUnicodeEditor
+JvUnicodeHLEditor
 JvUpDown
+JvUrlGrabbers
+JvUrlListGrabber
 JvVersionInfo
 JvVigenereCipher
 JvWaitingGradient
@@ -301,6 +327,7 @@ JvWizard
 JvWizardCommon
 JvWizardRouteMapNodes
 JvWizardRouteMapSteps
+JvxCheckListBox
 JvxClock
 JvxCtrls
 JvXmlTree

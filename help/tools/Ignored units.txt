@@ -33,6 +33,7 @@ JvgConstSysRequirements
 JvgPointEditor
 JvgQPrintPreviewForm
 JvgQPrintSetupForm
+JvgReportParamsEditor
 JvGridPreviewForm
 JvGroupHeaderEditor
 JVHLEditEditor
@@ -100,6 +101,8 @@ JvSbEdit
 JvSchedEvntReg
 JvScheduleEditor
 JvScrollMaxEditor
+JvSegmentedLEDDisplayMapperFrame
+JvSLDMappingEditorDialog
 JvSpeedbarSetupForm
 JvSpellerForm
 JvStrLEdit
@@ -112,6 +115,7 @@ JvTransparentForm
 JvUIBase
 JvUIBConst
 JvUIBError
+JvUIBSQLParser
 JvWallpaperEditForm
 JvxDConst
 JvxRConst
