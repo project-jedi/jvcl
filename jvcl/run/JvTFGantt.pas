@@ -41,7 +41,7 @@ uses
   Windows,  Messages, Graphics, Controls, Forms, Dialogs,
   Menus, StdCtrls, ExtCtrls,
   {$ELSE}
-  QGraphics, QControls, QForms, QDialogs, QMenus, QStdCtrls, QExtCtrls,
+  QGraphics, QControls, QForms, QDialogs, QMenus, QStdCtrls, QExtCtrls, Types,
   {$ENDIF VCL}
   JvTFUtils, JvTFManager;
 

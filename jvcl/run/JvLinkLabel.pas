@@ -290,7 +290,9 @@ begin
   FLinkCursor := crHandPoint;
   FText := TStringList.Create;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF VCL}
   Width := 160;
   Height := 17;
   FNodeTree := TNodeTree.Create;
@@ -669,12 +671,16 @@ begin
     if Value then
     begin
       ControlStyle := ControlStyle - [csOpaque];
+      {$IFDEF VCL}
       ExcludeThemeStyle(Self, [csParentBackground]);
+      {$ENDIF VCL}
     end
     else
     begin
       ControlStyle := ControlStyle + [csOpaque];
+      {$IFDEF VCL}
       IncludeThemeStyle(Self, [csParentBackground]);
+      {$ENDIF VCL}
     end;
     Invalidate;
   end;

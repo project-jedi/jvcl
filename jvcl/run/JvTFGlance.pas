@@ -37,7 +37,7 @@ uses
   Windows, Messages, Graphics, Controls, Forms, Dialogs, ImgList,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QImgList, Types,
+  QGraphics, QControls, QForms, QDialogs, QImgList, Types, QWindows,
   {$ENDIF VisualCLX}
   JvTFUtils, JvTFManager;
 

@@ -699,7 +699,9 @@ type
     procedure SetHintText(StartDate, EndDate: TDate; StartTime, EndTime: TTime;
       const Desc: string; ShowDatesTimes, ShowDesc: Boolean);
     procedure DoHint(Sustained: Boolean);
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
     procedure PropertyCheck; dynamic;
   public
     constructor Create(anApptCtrl: TJvTFControl); reintroduce;
@@ -1053,8 +1055,13 @@ type
 implementation
 
 uses
+  {$IFDEF VisualCLX}
+  QDialogs, QForms,
+  {$ENDIF VisualCLX}
   {$IFDEF USEJVCL}
+  {$IFDEF VCL}
   Dialogs, Forms,
+  {$ENDIF VCL}
   JvConsts, JvResources;
   {$ELSE}
   Dialogs, Forms;
@@ -3725,6 +3732,7 @@ begin
       ActivateHint(FHintRect, FHintText);
 end;
 
+{$IFDEF VCL}
 procedure TJvTFHint.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -3733,6 +3741,7 @@ begin
     WindowClass.Style := WindowClass.Style and not CS_SAVEBITS;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvTFHint.ActivateHint(Rect: TRect; const AHint: string);
 begin

@@ -25,15 +25,20 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvZlibMultiple;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Dialogs, ZLib,
-  JvComponent;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QDialogs, Types,
+  {$ENDIF VisualCLX}
+  ZLib, JvComponent, JvJCLUtils;
 
 type
   TFileEvent = procedure(Sender: TObject; const FileName: string) of object;
@@ -103,7 +108,7 @@ function TJvZlibMultiple.CompressDirectory(Directory: string; Recursive: Boolean
   begin
     // (rom) this may not work for network drives and compressed files
     // (rom) because of faAnyFile
-    Res := FindFirst(Directory + SDirectory + '*.*', faAnyFile, SearchRec);
+    Res := FindFirst(Directory + SDirectory + AllFilesMask, faAnyFile, SearchRec);
     try
       while Res = 0 do
       begin
@@ -113,7 +118,7 @@ function TJvZlibMultiple.CompressDirectory(Directory: string; Recursive: Boolean
             AddFile(SearchRec.Name, SDirectory, Directory + SDirectory + SearchRec.Name, Result)
           else
           if Recursive then
-            SearchDirectory(SDirectory + SearchRec.Name + '\');
+            SearchDirectory(SDirectory + SearchRec.Name + PathDelim);
         end;
         Res := FindNext(SearchRec);
       end;
@@ -126,8 +131,8 @@ begin
   { (RB) Letting this function create a stream is not a good idea;
          see other CompressDirectory function that causes a memory leak }
   Result := TMemoryStream.Create;
-  if (Length(Directory) > 0) and (Directory[Length(Directory)] <> '\') then
-    Directory := Directory + '\';
+  if (Length(Directory) > 0) and (Directory[Length(Directory)] <> PathDelim) then
+    Directory := Directory + PathDelim;
   SearchDirectory('');
   Result.Position := 0;
 end;
@@ -289,8 +294,8 @@ var
   Count, FileSize, I: Integer;
   Buffer: array [0..1023] of Byte;
 begin
-  if (Length(Directory) > 0) and (Directory[Length(Directory)] <> '\') then
-    Directory := Directory + '\';
+  if (Length(Directory) > 0) and (Directory[Length(Directory)] <> PathDelim) then
+    Directory := Directory + PathDelim;
 
   while Stream.Position < Stream.Size do
   begin
@@ -302,8 +307,8 @@ begin
     for I := 1 to B do
       S := S + Tab[I];
     ForceDirectories(Directory + S);
-    if (Length(S) > 0) and (S[Length(S)] <> '\') then
-      S := S + '\';
+    if (Length(S) > 0) and (S[Length(S)] <> PathDelim) then
+      S := S + PathDelim;
 
     //Read filename
     Stream.Read(B, SizeOf(B));

@@ -36,7 +36,7 @@ uses
   Windows, Messages, Graphics, Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, Types, 
+  QGraphics, QControls, Types, QWindows,
   {$ENDIF VisualCLX}
   Math;
 
@@ -951,14 +951,20 @@ end;
 procedure TJvTurtle.TextRotate(X, Y, Angle: Integer; AText: string;
   AFont: TFont);
 var
+  {$IFDEF VCL}
   DC: HDC;
   Fnt: LOGFONT;
   HFnt, HFntPrev: HFONT;
   I: Integer;
   FontName: string;
+  {$ENDIF VCL}
 begin
   if AText = '' then
     Exit;
+  {$IFDEF VisualCLX}
+  TextOutAngle(Canvas. Angle, X, Y, AText);
+  {$ENDIF VisualCLX}
+  {$IFDEF VCL}
   Fnt.lfEscapement := Angle * 10;
   Fnt.lfOrientation := Angle * 10;
   if fsBold in AFont.Style then
@@ -987,6 +993,7 @@ begin
   TextOut(DC, X, Y, PChar(AText), Length(AText));
   SelectObject(DC, HFntPrev);
   DeleteObject(HFnt);
+  {$ENDIF VCL}
 end;
 
 function TJvTurtle.txAngle: string;
