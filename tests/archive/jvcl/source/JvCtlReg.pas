@@ -597,7 +597,7 @@ begin
   RegisterComponentEditor(TImageList, TJvImageListEditor);
 {$ENDIF}
 {$ENDIF}
-  RegisterRxColors;
+  RegisterJvColors;
 end;
 
 end.
