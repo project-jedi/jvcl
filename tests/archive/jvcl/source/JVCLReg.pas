@@ -112,7 +112,7 @@ uses
   JvCommonDialogD, JvBaseDlg,
   JvSelectDirectory, JvPasswordForm,
   JvExchListboxes, JvLoginDlg, JvSerialDlg, JvNagScreen,
-  JvTipsOfDay, JvImageDlg, JvProgressDlg, JvDiskPrompt,
+  JvTipOfDay, JvImageDlg, JvProgressDlg, JvDiskPrompt,
   JvCopyError, JvDeleteError, JvRenameError, JvPageSetupTitled, JvPageSetup,
 
   //WinDialogs
@@ -169,7 +169,7 @@ FiltEdit,
 
   JvCaptionPanel, JvColorBtn, JvColorBox, JvColorForm, JvOutEdit,
   JvImagewindow, JvListComb, JvLookout, JvProfiler32, JvRegTV,
-  JvSearchFiles, JvTipWin, JvTransBtn, ImgList, JvLCProperty, JvTipProperty,
+  JvSearchFiles, JvTransBtn, ImgList, JvLCProperty, JvTipOfDayProp,
 
   JvChangeNotify, JvEnterTab, JvFindFiles,
   JvFileInfo, JvItemsPanel, JvDsgnEditors, JvCntScr, JvCmdEdit,
@@ -229,7 +229,7 @@ begin
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCustomTimeLine, TTimeLineEditor);
 
-  RegisterComponentEditor(TJvTipWindow, TJvTipPropertyEditor);
+  RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
   RegisterComponentEditor(TJvLookOut, TLookOutEditor);
   RegisterComponentEditor(TJvLookOutPage, TLookOutPageEditor);
   RegisterComponentEditor(TJvImageListBox, TJvListCombProperty);
@@ -443,8 +443,7 @@ begin
       TJvLoginDlg,
       TJvSerialDlg,
       TJvNagScreen,
-      TJvTipsOfDay,
-      TJvTipWindow,
+      TJvTipOfDay,
       TJvProgressDlg,
       TJvFindReplace,
       TJvImageDlg,
