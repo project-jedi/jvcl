@@ -255,7 +255,7 @@ procedure TJvInterpreterForm.FixupMethods;
             begin
               SetMethodProp(Com, PropList^[I],
                 TMethod(FJvInterpreterFm.NewEvent(FUnitName,
-                PString(FMethodList[F])^, PropList^[I]^.PropType^.Name, Self)));
+                PChar(FMethodList[F]), PropList^[I]^.PropType^.Name, Self)));
             end;
           end;
         end;
