@@ -239,7 +239,12 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   TypInfo,
+  {$IFDEF VCL}
   JclUnicode, // for reg exp support
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  JvWStrUtils,
+  {$ENDIF VisualCLX}
   JvTypes, JvResources;
 
 const
