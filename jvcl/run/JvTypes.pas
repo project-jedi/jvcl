@@ -309,6 +309,10 @@ type
     Constant: string;
     Description: string;
   end;
+  // JvCheckbox and JvRadiobutton
+//  TJvLinkedControls = TStrings;
+  TJvLinkedControlsOption = (loLinkChecked, loLinkEnabled);
+  TJvLinkedControlsOptions = set of TJvLinkedControlsOption;
 
 const
   ColCount = 20;

@@ -24,6 +24,8 @@
   <Contains>
     <File Name="..\..\design\JvCheckedItemsForm.pas" Targets="all" Formname="JvCheckItemsEditor" Condition=""/>
     <File Name="..\..\design\JvProgressEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvLinkedControlsEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvLinkedControlsEditorForm.pas" Targets="all" Formname="frmLinkedControlsEditor" Condition=""/>
     <File Name="..\..\design\JvStdCtrlsReg.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
