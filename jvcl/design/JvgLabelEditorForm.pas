@@ -29,8 +29,9 @@ unit JvgLabelEditorForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvCompEditorTemplateForm, Buttons, JvgSpeedButton, ComCtrls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, 
+  ExtCtrls, Buttons, JvgSpeedButton, ComCtrls,
+  JvCompEditorTemplateForm,
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   DesignEditors,
@@ -39,12 +40,11 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
 
-  JvgPage, JvgTypes,
-  ExtCtrls, JvgSplit, JvComponent, JvgWizardHeader, JvgShadow, StdCtrls,
-  JvgGroupBox, JvgLabel, JvgCheckBox, JvComCtrls,
+  JvgTypes, JvgGroupBox, JvgLabel, JvgCheckBox, JvgSplit, JvComCtrls, JvgShadow,
   JvColorBox, JvColorButton, JvDialogs, JvCombobox, JvColorCombo, ImgList,
   JvxSlider, JvImageWindow, JvBaseDlg, JvImageDlg, JvListComb, JvImage,
   ExtDlgs, JvgImage;
+
 
 type
   TJvgLabelEditorDlg = class(TJvgCompEditorTemplate)
