@@ -1,10 +1,13 @@
 object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
   Left = 247
   Top = 109
-  Width = 770
-  Height = 575
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'JvSpecialProgressMainForm'
+  ClientHeight = 541
+  ClientWidth = 762
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -12,6 +15,7 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
+  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -25,6 +29,9 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
     Constraints.MinHeight = 183
     FullRepaint = False
     TabOrder = 0
+    DesignSize = (
+      762
+      238)
     object JvSpecialProgress1: TJvSpecialProgress
       Left = 8
       Top = 56
@@ -64,7 +71,7 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
       Position = 0
       SelEnd = 0
       SelStart = 0
-      TabOrder = 0
+      TabOrder = 1
       TickMarks = tmBottomRight
       TickStyle = tsAuto
       OnChange = TrackBar1Change

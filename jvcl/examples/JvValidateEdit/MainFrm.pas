@@ -4,7 +4,7 @@
 
  Copyright (C) 2002 Project JEDI
 
- Original author:
+ Original author: Christopher Latta
 
  Contributor(s):
 
@@ -36,7 +36,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvValidateEdit, StdCtrls, ComCtrls, Spin, ExtCtrls, JvCombobox,
-  JvColorCombo, JvExStdCtrls;
+  JvColorCombo, JvExStdCtrls, JvEdit;
 
 type
   TfrmValidateEditDemo = class(TForm)
@@ -45,7 +45,6 @@ type
     Label1: TLabel;
     Label3: TLabel;
     cbDisplayFormat: TComboBox;
-    Button2: TButton;
     chkHasMaxValue: TCheckBox;
     chkHasMinValue: TCheckBox;
     seDecimalPlaces: TSpinEdit;
@@ -79,6 +78,7 @@ type
     Label12: TLabel;
     cbCPCheckPoints: TComboBox;
     chkAsVariant: TCheckBox;
+    JvValidateEdit: TJvValidateEdit;
     procedure FormCreate(Sender: TObject);
     procedure cbDisplayFormatKeyPress(Sender: TObject; var Key: Char);
     procedure cbDisplayFormatChange(Sender: TObject);
@@ -97,14 +97,13 @@ type
     procedure cbCPCheckPointsChange(Sender: TObject);
     procedure edMaxValueExit(Sender: TObject);
     procedure edMinValueExit(Sender: TObject);
+    procedure JvValidateEditCustomValidate(Sender: TObject; Key: Char;
+      const AText: String; const Pos: Integer; var IsValid: Boolean);
+    procedure JvValidateEditValueChanged(Sender: TObject);
   private
-    procedure DoCustomValidate(Sender: TObject; Key: Char;
-      const AText: string; const Pos: Integer; var IsValid: boolean);
-    procedure ShowValueChange(Sender: TObject);
     { Private declarations }
   public
     { Public declarations }
-    FValidateEdit: TJvValidateEdit;
   end;
 
 var
@@ -114,34 +113,15 @@ implementation
 uses
   TypInfo,
   JvJCLUtils, JvJVCLUtils; // for D5
-  
+
 {$R *.DFM}
 
-procedure TfrmValidateEditDemo.DoCustomValidate(Sender: TObject; Key: Char;
-      const AText: string; const Pos: Integer; var IsValid: boolean);
-function KeyOrAscii(Key: Char): string;
-begin
-  if Key < #32 then
-    Result := Format('#%s', [Key])
-  else
-    Result := Key;
-end;
-
-begin
-  IsValid := Windows.MessageBox(Handle, PChar(Format('Accept this key: %s?', [KeyOrAscii(Key)])), PChar('Validate'), MB_YESNO) = IDYES;
-end;
 
 procedure TfrmValidateEditDemo.FormCreate(Sender: TObject);
 var
   df: TJvValidateEditDisplayFormat;
   cp: TJvValidateEditCriticalPointsCheck;
 begin
-  FValidateEdit := TJvValidateEdit.Create(self);
-  FValidateEdit.Parent := Self;
-  FValidateEdit.SetBounds(Label2.Left, Label2.Top + Label2.Height + 4, Self.ClientWidth - Label2.Left * 2, FValidateEdit.Height);
-  FValidateEdit.Anchors := [akLeft, akTop, akRight];
-  FValidateEdit.OnCustomValidate := DoCustomValidate;
-  FValidateEdit.OnValueChanged := ShowValueChange;
   for df := Low(TJvValidateEditDisplayFormat) to High(TJvValidateEditDisplayFormat) do
     cbDisplayFormat.Items.Add(GetEnumName(TypeInfo(TJvValidateEditDisplayFormat), Ord(df)));
   cbDisplayFormat.ItemIndex := 0;
@@ -149,10 +129,10 @@ begin
   for cp := Low(TJvValidateEditCriticalPointsCheck) to High(TJvValidateEditCriticalPointsCheck) do
     cbCPCheckPoints.Items.Add(GetEnumName(TypeInfo(TJvValidateEditCriticalPointsCheck), Ord(cp)));
   cbCPCheckPoints.ItemIndex := 0;
-  edCPMaxValue.Text := FloatToStr(FValidateEdit.CriticalPoints.MaxValue);
-  colCPAbove.ColorValue := FValidateEdit.CriticalPoints.ColorAbove;
-  edCPMinValue.Text := FloatToStr(FValidateEdit.CriticalPoints.MinValue);
-  colCPBelow.ColorValue := FValidateEdit.CriticalPoints.ColorBelow;
+  edCPMaxValue.Text := FloatToStr(JvValidateEdit.CriticalPoints.MaxValue);
+  colCPAbove.ColorValue := JvValidateEdit.CriticalPoints.ColorAbove;
+  edCPMinValue.Text := FloatToStr(JvValidateEdit.CriticalPoints.MinValue);
+  colCPBelow.ColorValue := JvValidateEdit.CriticalPoints.ColorBelow;
   colCPAbove.OnChange := colCPAboveChange;
   colCPBelow.OnChange := colCPBelowChange;
 end;
@@ -165,27 +145,27 @@ end;
 
 procedure TfrmValidateEditDemo.cbDisplayFormatChange(Sender: TObject);
 begin
-  FValidateEdit.DisplayFormat := TJvValidateEditDisplayFormat(cbDisplayFormat.ItemIndex);
-  edCheckChars.Text := FValidateEdit.CheckChars;
+  JvValidateEdit.DisplayFormat := TJvValidateEditDisplayFormat(cbDisplayFormat.ItemIndex);
+  edCheckChars.Text := JvValidateEdit.CheckChars;
   btnCheckChars.Enabled := (cbDisplayFormat.Text = 'dfCheckChars') or
     (cbDisplayFormat.Text = 'dfNonCheckChars');
 end;
 
 procedure TfrmValidateEditDemo.seDecimalPlacesChange(Sender: TObject);
 begin
-  FValidateEdit.DecimalPlaces := seDecimalPlaces.Value;
+  JvValidateEdit.DecimalPlaces := seDecimalPlaces.Value;
 end;
 
 procedure TfrmValidateEditDemo.chkHasMaxValueClick(Sender: TObject);
 begin
-  FValidateEdit.MaxValue := StrToFloatDef(edMaxValue.Text, 0);
-  FValidateEdit.HasMaxValue := chkHasMaxValue.Checked;
+  JvValidateEdit.MaxValue := StrToFloatDef(edMaxValue.Text, 0);
+  JvValidateEdit.HasMaxValue := chkHasMaxValue.Checked;
 end;
 
 procedure TfrmValidateEditDemo.chkHasMinValueClick(Sender: TObject);
 begin
-  FValidateEdit.MinValue := StrToFloatDef(edMinValue.Text, 0);
-  FValidateEdit.HasMinValue := chkHasMinValue.Checked;
+  JvValidateEdit.MinValue := StrToFloatDef(edMinValue.Text, 0);
+  JvValidateEdit.HasMinValue := chkHasMinValue.Checked;
 end;
 
 procedure TfrmValidateEditDemo.btnSetToClick(Sender: TObject);
@@ -193,92 +173,108 @@ begin
   case rgSetToType.ItemIndex of
     0:
       if chkAsVariant.Checked then
-        FValidateEdit.Value := StrToCurrDef(edSetTo.Text, 0)
+        JvValidateEdit.Value := StrToCurrDef(edSetTo.Text, 0)
       else
-        FValidateEdit.AsCurrency := StrToCurrDef(edSetTo.Text, 0);
+        JvValidateEdit.AsCurrency := StrToCurrDef(edSetTo.Text, 0);
     1:
       if chkAsVariant.Checked then
-        FValidateEdit.Value := StrToFloatDef(edSetTo.Text, 0)
+        JvValidateEdit.Value := StrToFloatDef(edSetTo.Text, 0)
       else
-        FValidateEdit.AsFloat := StrToFloatDef(edSetTo.Text, 0);
+        JvValidateEdit.AsFloat := StrToFloatDef(edSetTo.Text, 0);
     2:
       if chkAsVariant.Checked then
-        FValidateEdit.Value := StrToIntDef(edSetTo.Text, 0)
+        JvValidateEdit.Value := StrToIntDef(edSetTo.Text, 0)
       else
-        FValidateEdit.AsInteger := StrToIntDef(edSetTo.Text, 0);
+        JvValidateEdit.AsInteger := StrToIntDef(edSetTo.Text, 0);
     3:
       if chkAsVariant.Checked then
-        FValidateEdit.Value := edSetTo.Text
+        JvValidateEdit.Value := edSetTo.Text
       else
-        FValidateEdit.Text := edSetTo.Text;
+        JvValidateEdit.Text := edSetTo.Text;
   end;
   edSetTo.SetFocus;
 end;
 
-procedure TfrmValidateEditDemo.ShowValueChange(Sender: TObject);
-begin
-  if chkValueChanged.Checked then
-    MessageDlg('ValidateEdit Text changed to: ' + FValidateEdit.Text,
-      mtInformation, [mbOK], 0);
-end;
-
 procedure TfrmValidateEditDemo.chkZeroEmptyClick(Sender: TObject);
 begin
-  FValidateEdit.ZeroEmpty := chkZeroEmpty.Checked;
+  JvValidateEdit.ZeroEmpty := chkZeroEmpty.Checked;
 end;
 
 procedure TfrmValidateEditDemo.btnCheckCharsClick(Sender: TObject);
 begin
-  FValidateEdit.CheckChars := edCheckChars.Text;
+  JvValidateEdit.CheckChars := edCheckChars.Text;
 end;
 
 procedure TfrmValidateEditDemo.btnSetDisplayPrefixClick(Sender: TObject);
 begin
-  FValidateEdit.DisplayPrefix := edDisplayPrefix.Text;
+  JvValidateEdit.DisplayPrefix := edDisplayPrefix.Text;
 end;
 
 procedure TfrmValidateEditDemo.btnSetDisplaySuffixClick(Sender: TObject);
 begin
-  FValidateEdit.DisplaySuffix := edDisplaySuffix.Text;
+  JvValidateEdit.DisplaySuffix := edDisplaySuffix.Text;
 end;
 
 procedure TfrmValidateEditDemo.edCPMaxValueExit(Sender: TObject);
 begin
-  FValidateEdit.CriticalPoints.MaxValue := StrToFloatDef(edCPMaxValue.Text, 0);
-  edCPMaxValue.Text := FloatToStr(FValidateEdit.CriticalPoints.MaxValue);
+  JvValidateEdit.CriticalPoints.MaxValue := StrToFloatDef(edCPMaxValue.Text, 0);
+  edCPMaxValue.Text := FloatToStr(JvValidateEdit.CriticalPoints.MaxValue);
 end;
 
 procedure TfrmValidateEditDemo.edCPMinValueExit(Sender: TObject);
 begin
-  FValidateEdit.CriticalPoints.MinValue := StrToFloatDef(edCPMinValue.Text, 0);
-  edCPMinValue.Text := FloatToStr(FValidateEdit.CriticalPoints.MinValue);
+  JvValidateEdit.CriticalPoints.MinValue := StrToFloatDef(edCPMinValue.Text, 0);
+  edCPMinValue.Text := FloatToStr(JvValidateEdit.CriticalPoints.MinValue);
 end;
 
 procedure TfrmValidateEditDemo.colCPAboveChange(Sender: TObject);
 begin
-  FValidateEdit.CriticalPoints.ColorAbove := colCpAbove.ColorValue;
+  JvValidateEdit.CriticalPoints.ColorAbove := colCpAbove.ColorValue;
 end;
 
 procedure TfrmValidateEditDemo.colCPBelowChange(Sender: TObject);
 begin
-  FValidateEdit.CriticalPoints.ColorBelow := colCpBelow.ColorValue;
+  JvValidateEdit.CriticalPoints.ColorBelow := colCpBelow.ColorValue;
 end;
 
 procedure TfrmValidateEditDemo.cbCPCheckPointsChange(Sender: TObject);
 begin
-  FValidateEdit.CriticalPoints.CheckPoints :=
+  JvValidateEdit.CriticalPoints.CheckPoints :=
     TJvValidateEditCriticalPointsCheck(cbCPCheckPoints.ItemIndex);
 end;
 
 
 procedure TfrmValidateEditDemo.edMaxValueExit(Sender: TObject);
 begin
-  FValidateEdit.MaxValue := StrToFloatDef(edMaxValue.Text, 0);
+  JvValidateEdit.MaxValue := StrToFloatDef(edMaxValue.Text, 0);
 end;
 
 procedure TfrmValidateEditDemo.edMinValueExit(Sender: TObject);
 begin
-  FValidateEdit.MinValue := StrToFloatDef(edMinValue.Text, 0);
+  JvValidateEdit.MinValue := StrToFloatDef(edMinValue.Text, 0);
+end;
+
+procedure TfrmValidateEditDemo.JvValidateEditCustomValidate(
+  Sender: TObject; Key: Char; const AText: String; const Pos: Integer;
+  var IsValid: Boolean);
+
+  function KeyOrAscii(Key: Char): string;
+  begin
+    if Key < #32 then
+      Result := Format('#%s', [Key])
+    else
+      Result := Key;
+  end;
+
+begin
+  IsValid := Windows.MessageBox(Handle, PChar(Format('Accept this key: %s?', [KeyOrAscii(Key)])), PChar('Validate'), MB_YESNO) = IDYES;
+end;
+
+procedure TfrmValidateEditDemo.JvValidateEditValueChanged(Sender: TObject);
+begin
+  if chkValueChanged.Checked then
+    MessageDlg('ValidateEdit Text changed to: ' + JvValidateEdit.Text,
+      mtInformation, [mbOK], 0);
 end;
 
 end.

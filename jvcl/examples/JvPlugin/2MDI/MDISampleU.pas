@@ -46,7 +46,8 @@ type
     procedure uilPluginManager1AfterLoading(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure uilPluginManager1NewCommand(Sender: TObject; ACaption, AHint,
-      AData: String; ABitmap: TBitmap; AEvent: TNotifyEvent);
+      AData: String; AShortCut: TShortCut; ABitmap: TBitmap;
+      AEvent: TNotifyEvent);
   private
     { Private declarations }
        NumButtons : integer;
@@ -76,8 +77,10 @@ begin
    uilPluginManager1.LoadPlugins;
 end;
 
+
 procedure TForm1.uilPluginManager1NewCommand(Sender: TObject; ACaption,
-  AHint, AData: String; ABitmap: TBitmap; AEvent: TNotifyEvent);
+  AHint, AData: String; AShortCut: TShortCut; ABitmap: TBitmap;
+  AEvent: TNotifyEvent);
 var
    Item : TMenuItem;
 begin
@@ -102,3 +105,4 @@ begin
 end;
 
 end.
+

@@ -1,10 +1,13 @@
 object Form1: TForm1
   Left = 257
   Top = 157
-  Width = 705
-  Height = 537
+  Width = 664
+  Height = 543
   Caption = 'Delphi Informant - Object Picker Article Code'
   Color = clBtnFace
+  Constraints.MinHeight = 300
+  Constraints.MinWidth = 400
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -12,14 +15,16 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object Memo1: TMemo
     Left = 0
-    Top = 47
-    Width = 697
+    Top = 46
+    Width = 656
     Height = 463
     Align = alBottom
+    Anchors = [akLeft, akTop, akRight, akBottom]
     ScrollBars = ssBoth
     TabOrder = 0
   end

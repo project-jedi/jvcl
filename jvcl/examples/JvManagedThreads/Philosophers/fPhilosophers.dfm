@@ -1,19 +1,26 @@
 object frmDiningPhilosophers: TfrmDiningPhilosophers
   Left = 425
   Top = 161
-  BorderStyle = bsDialog
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'Dining Philosophers'
   ClientHeight = 416
   ClientWidth = 508
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow
+  DesignSize = (
+    508
+    416)
   PixelsPerInch = 96
   TextHeight = 13
   object PhilLabel1: TLabel

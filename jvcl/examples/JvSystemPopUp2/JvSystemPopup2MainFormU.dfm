@@ -1,16 +1,21 @@
 object JvSystemPopup2MainForm: TJvSystemPopup2MainForm
   Left = 351
   Top = 258
-  Width = 520
-  Height = 318
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'JvSystemPopup2MainForm'
+  ClientHeight = 262
+  ClientWidth = 397
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object btnSwitch: TButton
@@ -76,7 +81,7 @@ object JvSystemPopup2MainForm: TJvSystemPopup2MainForm
   end
   object PopupMenu1: TPopupMenu
     Images = ImageList1
-    Left = 328
+    Left = 280
     Top = 8
     object est1: TMenuItem
       Caption = 'Menu1'
@@ -103,7 +108,7 @@ object JvSystemPopup2MainForm: TJvSystemPopup2MainForm
   end
   object ActionList1: TActionList
     Images = ImageList1
-    Left = 360
+    Left = 312
     Top = 8
     object actClickToCheck: TAction
       Caption = 'Click to switch Checked'
@@ -125,7 +130,7 @@ object JvSystemPopup2MainForm: TJvSystemPopup2MainForm
     end
   end
   object PopupMenu2: TPopupMenu
-    Left = 296
+    Left = 248
     Top = 8
     object Action21: TMenuItem
       Caption = 'Radio1'
@@ -156,7 +161,7 @@ object JvSystemPopup2MainForm: TJvSystemPopup2MainForm
     end
   end
   object ImageList1: TImageList
-    Left = 400
+    Left = 352
     Top = 8
     Bitmap = {
       494C010103000400040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
@@ -301,7 +306,7 @@ object JvSystemPopup2MainForm: TJvSystemPopup2MainForm
   object JvSystemPopup1: TJvSystemPopup
     Popup = PopupMenu1
     Position = ppForm
-    Left = 264
+    Left = 216
     Top = 8
   end
 end

@@ -6,13 +6,21 @@ object OLBarMainForm: TOLBarMainForm
   ClientHeight = 273
   ClientWidth = 213
   Color = clBtnFace
+  Constraints.MinHeight = 300
+  Constraints.MinWidth = 220
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
+  DesignSize = (
+    213
+    273)
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter

@@ -1,10 +1,13 @@
 object Profiler32MainForm: TProfiler32MainForm
   Left = 343
   Top = 157
-  Width = 506
-  Height = 307
+  Width = 463
+  Height = 350
   Caption = 'Profiler 32 test program'
   Color = clBtnFace
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 380
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -12,6 +15,8 @@ object Profiler32MainForm: TProfiler32MainForm
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = True
+  Position = poDesktopCenter
+  Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
@@ -20,8 +25,8 @@ object Profiler32MainForm: TProfiler32MainForm
   object ListBox1: TListBox
     Left = 0
     Top = 41
-    Width = 498
-    Height = 220
+    Width = 455
+    Height = 259
     Align = alClient
     BorderStyle = bsNone
     ItemHeight = 13
@@ -103,11 +108,14 @@ object Profiler32MainForm: TProfiler32MainForm
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 498
+    Width = 455
     Height = 41
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
+    DesignSize = (
+      455
+      41)
     object Label1: TLabel
       Left = 10
       Top = 10
@@ -134,10 +142,11 @@ object Profiler32MainForm: TProfiler32MainForm
       OnClick = UseNameBtnClick
     end
     object ResultBtn: TButton
-      Left = 392
+      Left = 373
       Top = 8
       Width = 75
       Height = 25
+      Anchors = [akTop, akRight]
       Caption = '&Result'
       TabOrder = 2
       OnClick = ResultBtnClick
@@ -145,8 +154,8 @@ object Profiler32MainForm: TProfiler32MainForm
   end
   object Progress: TProgressBar
     Left = 0
-    Top = 261
-    Width = 498
+    Top = 300
+    Width = 455
     Height = 16
     Align = alBottom
     Min = 0

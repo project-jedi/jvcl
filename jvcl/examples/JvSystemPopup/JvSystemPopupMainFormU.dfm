@@ -1,18 +1,21 @@
 object JvSystemPopupMainForm: TJvSystemPopupMainForm
   Left = 315
   Top = 275
-  Width = 206
-  Height = 136
   BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'JvSystemPopupMainForm'
+  ClientHeight = 102
+  ClientWidth = 198
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDesktopCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object RadioGroup1: TRadioGroup

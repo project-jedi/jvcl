@@ -5,15 +5,21 @@ object fBouncingBalls: TfBouncingBalls
   Height = 518
   Caption = 'Bouncing Balls'
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  DesignSize = (
+    492
+    484)
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton

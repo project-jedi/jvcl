@@ -5,6 +5,9 @@ object Form1: TForm1
   Height = 284
   Caption = 'Sample Plugin Host Application'
   Color = clBtnFace
+  Constraints.MinHeight = 250
+  Constraints.MinWidth = 300
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -12,7 +15,8 @@ object Form1: TForm1
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDesktopCenter
+  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -28,17 +32,18 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 216
+    Top = 211
     Width = 406
     Height = 19
     Panels = <>
     SimplePanel = True
   end
   object ListBox1: TListBox
-    Left = 4
-    Top = 36
-    Width = 397
-    Height = 177
+    Left = 0
+    Top = 29
+    Width = 406
+    Height = 182
+    Align = alClient
     ItemHeight = 13
     TabOrder = 2
   end

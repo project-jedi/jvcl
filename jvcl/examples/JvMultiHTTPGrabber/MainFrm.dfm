@@ -7,6 +7,9 @@ object Form1: TForm1
   ClientHeight = 336
   ClientWidth = 401
   Color = clBtnFace
+  Constraints.MinHeight = 374
+  Constraints.MinWidth = 413
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -14,6 +17,7 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   PopupMenu = popMain
+  Position = poDesktopCenter
   Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -36,6 +40,9 @@ object Form1: TForm1
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 0
+    DesignSize = (
+      401
+      61)
     object Label1: TLabel
       Left = 12
       Top = 12
@@ -91,6 +98,9 @@ object Form1: TForm1
     Align = alClient
     Caption = ' Content: '
     TabOrder = 1
+    DesignSize = (
+      401
+      166)
     object reContent: TRichEdit
       Left = 5
       Top = 17
@@ -145,6 +155,9 @@ object Form1: TForm1
     Align = alBottom
     Caption = ' Log: '
     TabOrder = 2
+    DesignSize = (
+      401
+      85)
     object reLog: TRichEdit
       Left = 5
       Top = 15

@@ -1,10 +1,13 @@
 object frmMain: TfrmMain
-  Left = 353
-  Top = 176
-  Width = 732
-  Height = 540
+  Left = 204
+  Top = 104
+  Width = 620
+  Height = 400
   Caption = 'JvPreviewDocument Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 400
+  Constraints.MinWidth = 620
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -12,83 +15,85 @@ object frmMain: TfrmMain
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object pnlBottom: TPanel
     Left = 0
-    Top = 407
-    Width = 724
+    Top = 262
+    Width = 612
     Height = 65
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
     object Label1: TLabel
-      Left = 16
+      Left = 8
       Top = 8
       Width = 44
       Height = 13
       Caption = 'Columns:'
     end
     object Label2: TLabel
-      Left = 88
+      Left = 56
       Top = 8
       Width = 30
       Height = 13
       Caption = 'Rows:'
     end
     object Label3: TLabel
-      Left = 152
+      Left = 104
       Top = 8
       Width = 42
       Height = 13
       Caption = 'Shadow:'
     end
     object Label4: TLabel
-      Left = 216
+      Left = 152
       Top = 8
       Width = 29
       Height = 13
       Caption = 'Scale:'
     end
     object Label5: TLabel
-      Left = 568
+      Left = 480
       Top = 8
       Width = 42
       Height = 13
       Caption = 'Preview:'
     end
     object Label6: TLabel
-      Left = 408
+      Left = 344
       Top = 8
       Width = 58
       Height = 13
       Caption = 'Scale Mode:'
     end
     object Label7: TLabel
-      Left = 280
+      Left = 216
       Top = 8
       Width = 24
       Height = 13
       Caption = 'Vert:'
     end
     object Label8: TLabel
-      Left = 344
+      Left = 280
       Top = 8
       Width = 26
       Height = 13
       Caption = 'Horz:'
     end
     object edCols: TEdit
-      Left = 16
+      Left = 8
       Top = 24
-      Width = 49
+      Width = 25
       Height = 21
       TabOrder = 0
       Text = '1'
     end
     object udCols: TUpDown
-      Left = 65
+      Left = 33
       Top = 24
       Width = 15
       Height = 21
@@ -100,15 +105,15 @@ object frmMain: TfrmMain
       OnClick = udColsClick
     end
     object edRows: TEdit
-      Left = 88
+      Left = 56
       Top = 24
-      Width = 41
+      Width = 25
       Height = 21
       TabOrder = 2
       Text = '1'
     end
     object udRows: TUpDown
-      Left = 129
+      Left = 81
       Top = 24
       Width = 15
       Height = 21
@@ -120,15 +125,15 @@ object frmMain: TfrmMain
       OnClick = udRowsClick
     end
     object edShadow: TEdit
-      Left = 152
+      Left = 104
       Top = 24
-      Width = 41
+      Width = 25
       Height = 21
       TabOrder = 4
       Text = '4'
     end
     object udShadowWidth: TUpDown
-      Left = 193
+      Left = 129
       Top = 24
       Width = 15
       Height = 21
@@ -140,7 +145,7 @@ object frmMain: TfrmMain
       OnClick = udShadowWidthClick
     end
     object edScale: TEdit
-      Left = 216
+      Left = 152
       Top = 24
       Width = 41
       Height = 21
@@ -148,7 +153,7 @@ object frmMain: TfrmMain
       Text = '100'
     end
     object udZoom: TUpDown
-      Left = 257
+      Left = 193
       Top = 24
       Width = 16
       Height = 21
@@ -162,9 +167,9 @@ object frmMain: TfrmMain
       OnClick = udZoomClick
     end
     object cbPreview: TComboBox
-      Left = 568
+      Left = 480
       Top = 24
-      Width = 145
+      Width = 129
       Height = 21
       Style = csDropDownList
       ItemHeight = 13
@@ -175,9 +180,9 @@ object frmMain: TfrmMain
         'Printer')
     end
     object cbScaleMode: TComboBox
-      Left = 408
+      Left = 344
       Top = 24
-      Width = 145
+      Width = 129
       Height = 21
       Style = csDropDownList
       ItemHeight = 13
@@ -191,7 +196,7 @@ object frmMain: TfrmMain
         'Use Cols and Rows')
     end
     object edVert: TEdit
-      Left = 280
+      Left = 216
       Top = 24
       Width = 41
       Height = 21
@@ -199,7 +204,7 @@ object frmMain: TfrmMain
       Text = '8'
     end
     object udVertSpacing: TUpDown
-      Left = 321
+      Left = 257
       Top = 24
       Width = 15
       Height = 21
@@ -213,7 +218,7 @@ object frmMain: TfrmMain
       OnClick = udVertSpacingClick
     end
     object edHorz: TEdit
-      Left = 344
+      Left = 280
       Top = 24
       Width = 41
       Height = 21
@@ -221,7 +226,7 @@ object frmMain: TfrmMain
       Text = '8'
     end
     object udHorzSpacing: TUpDown
-      Left = 385
+      Left = 321
       Top = 24
       Width = 15
       Height = 21
@@ -238,10 +243,11 @@ object frmMain: TfrmMain
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 724
-    Height = 407
+    Width = 612
+    Height = 262
     ActivePage = tabOriginal
     Align = alClient
+    TabIndex = 0
     TabOrder = 1
     object tabOriginal: TTabSheet
       Caption = 'Original'
@@ -249,8 +255,8 @@ object frmMain: TfrmMain
       object reOriginal: TRichEdit
         Left = 0
         Top = 0
-        Width = 716
-        Height = 379
+        Width = 604
+        Height = 234
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -268,8 +274,8 @@ object frmMain: TfrmMain
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 472
-    Width = 724
+    Top = 327
+    Width = 612
     Height = 19
     Panels = <
       item

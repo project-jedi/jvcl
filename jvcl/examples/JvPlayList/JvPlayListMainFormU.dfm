@@ -1,11 +1,13 @@
 object JvPlayListMainForm: TJvPlayListMainForm
   Left = 433
   Top = 276
+  BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'PlayList Demo'
   ClientHeight = 256
   ClientWidth = 421
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -13,7 +15,8 @@ object JvPlayListMainForm: TJvPlayListMainForm
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDesktopCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

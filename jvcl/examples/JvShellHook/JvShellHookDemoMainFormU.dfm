@@ -1,8 +1,8 @@
 object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
   Left = 333
   Top = 148
-  Width = 559
-  Height = 332
+  Width = 540
+  Height = 280
   Hint = 
     'Try opening and closing programs, move focus between application' +
     's etc.'#13#10#13#10'If your keyboard has extra buttons for opening mail pr' +
@@ -12,6 +12,9 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
     'sterShellHookWindow/DeregisterShellHookWindow functions.'#13#10
   Caption = 'JvShellHook Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 280
+  Constraints.MinWidth = 540
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -20,9 +23,13 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   Position = poDesktopCenter
+  Scaled = False
   ShowHint = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  DesignSize = (
+    532
+    246)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -39,8 +46,8 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
     ParentFont = False
   end
   object btnClear: TButton
-    Left = 443
-    Top = 259
+    Left = 448
+    Top = 207
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -50,7 +57,7 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
   end
   object chkActive: TCheckBox
     Left = 16
-    Top = 249
+    Top = 197
     Width = 97
     Height = 17
     Anchors = [akLeft, akBottom]
@@ -60,7 +67,7 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
   end
   object chkNoRedraw: TCheckBox
     Left = 16
-    Top = 272
+    Top = 220
     Width = 121
     Height = 17
     Anchors = [akLeft, akBottom]
@@ -72,8 +79,8 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
   object lvMessages: TListView
     Left = 8
     Top = 32
-    Width = 534
-    Height = 207
+    Width = 515
+    Height = 155
     Anchors = [akLeft, akTop, akRight, akBottom]
     BorderStyle = bsNone
     Columns = <

@@ -1,10 +1,13 @@
 object Form1: TForm1
   Left = 353
   Top = 148
-  Width = 446
-  Height = 308
+  Width = 435
+  Height = 300
   Caption = 'Sample Plugin Host Application'
   Color = clBtnFace
+  Constraints.MinHeight = 300
+  Constraints.MinWidth = 435
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -12,8 +15,12 @@ object Form1: TForm1
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
+  DesignSize = (
+    427
+    246)
   PixelsPerInch = 96
   TextHeight = 13
   object Label4: TLabel
@@ -27,7 +34,7 @@ object Form1: TForm1
     Left = 0
     Top = 29
     Width = 3
-    Height = 230
+    Height = 217
     Cursor = crHSplit
   end
   object clbPlugins: TListBox
@@ -44,7 +51,7 @@ object Form1: TForm1
     Left = 4
     Top = 168
     Width = 229
-    Height = 89
+    Height = 81
     Anchors = [akLeft, akTop, akBottom]
     ItemHeight = 13
     TabOrder = 1
@@ -52,7 +59,7 @@ object Form1: TForm1
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 438
+    Width = 427
     Height = 29
     Align = alTop
     ParentShowHint = False
@@ -62,11 +69,14 @@ object Form1: TForm1
   object Panel2: TPanel
     Left = 240
     Top = 36
-    Width = 190
-    Height = 221
+    Width = 179
+    Height = 213
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelOuter = bvLowered
     TabOrder = 3
+    DesignSize = (
+      179
+      213)
     object Label1: TLabel
       Left = 8
       Top = 8
@@ -83,7 +93,7 @@ object Form1: TForm1
     object labAuthor: TLabel
       Left = 52
       Top = 8
-      Width = 130
+      Width = 119
       Height = 13
       Anchors = [akLeft, akTop, akRight]
       AutoSize = False
@@ -104,16 +114,16 @@ object Form1: TForm1
     object labDescription: TLabel
       Left = 8
       Top = 48
-      Width = 174
-      Height = 149
+      Width = 163
+      Height = 141
       Anchors = [akLeft, akTop, akRight, akBottom]
       AutoSize = False
       WordWrap = True
     end
     object Label3: TLabel
       Left = 1
-      Top = 203
-      Width = 188
+      Top = 195
+      Width = 177
       Height = 17
       Align = alBottom
       Alignment = taCenter

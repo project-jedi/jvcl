@@ -1,10 +1,13 @@
 object RegTVMainForm: TRegTVMainForm
-  Left = 305
-  Top = 72
-  Width = 739
-  Height = 473
+  Left = 187
+  Top = 94
+  Width = 640
+  Height = 400
   Caption = 'Registry Editor Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 180
+  Constraints.MinWidth = 400
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -12,19 +15,21 @@ object RegTVMainForm: TRegTVMainForm
   Font.Style = []
   Menu = mmMain
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
     Left = 209
     Top = 0
     Width = 5
-    Height = 405
+    Height = 327
     Cursor = crHSplit
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 405
-    Width = 731
+    Top = 327
+    Width = 632
     Height = 19
     Panels = <
       item
@@ -36,7 +41,7 @@ object RegTVMainForm: TRegTVMainForm
     Left = 0
     Top = 0
     Width = 209
-    Height = 405
+    Height = 327
     Align = alLeft
     ShowHint = False
     ReadOnly = False
@@ -53,8 +58,8 @@ object RegTVMainForm: TRegTVMainForm
   object ListView1: TListView
     Left = 214
     Top = 0
-    Width = 517
-    Height = 405
+    Width = 418
+    Height = 327
     Align = alClient
     Columns = <
       item

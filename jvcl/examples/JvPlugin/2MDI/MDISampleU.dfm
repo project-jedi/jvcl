@@ -5,6 +5,9 @@ object Form1: TForm1
   Height = 388
   Caption = 'MDI Sample Program'
   Color = clBtnFace
+  Constraints.MinHeight = 300
+  Constraints.MinWidth = 400
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -13,6 +16,8 @@ object Form1: TForm1
   FormStyle = fsMDIForm
   Menu = MainMenu1
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   WindowMenu = Window1
   OnShow = FormShow
   PixelsPerInch = 96
@@ -29,7 +34,7 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 320
+    Top = 315
     Width = 514
     Height = 19
     Panels = <>

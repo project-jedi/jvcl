@@ -1,16 +1,21 @@
 object JvNTEventLogMainForm: TJvNTEventLogMainForm
   Left = 248
   Top = 128
-  Width = 613
-  Height = 476
+  Width = 630
+  Height = 400
   Caption = 'Event Viewer'
   Color = clBtnFace
+  Constraints.MinHeight = 400
+  Constraints.MinWidth = 630
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -18,13 +23,13 @@ object JvNTEventLogMainForm: TJvNTEventLogMainForm
     Left = 89
     Top = 38
     Width = 4
-    Height = 411
+    Height = 328
     Cursor = crHSplit
   end
   object ButtonsPanel: TPanel
     Left = 0
     Top = 0
-    Width = 605
+    Width = 622
     Height = 38
     Align = alTop
     BevelOuter = bvNone
@@ -42,7 +47,7 @@ object JvNTEventLogMainForm: TJvNTEventLogMainForm
     Left = 0
     Top = 38
     Width = 89
-    Height = 411
+    Height = 328
     Align = alLeft
     ItemHeight = 13
     TabOrder = 1
@@ -51,8 +56,8 @@ object JvNTEventLogMainForm: TJvNTEventLogMainForm
   object ListView1: TListView
     Left = 93
     Top = 38
-    Width = 512
-    Height = 411
+    Width = 529
+    Height = 328
     Align = alClient
     Columns = <
       item

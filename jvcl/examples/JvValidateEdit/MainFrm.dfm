@@ -8,6 +8,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
   Color = clBtnFace
   Constraints.MinHeight = 170
   Constraints.MinWidth = 325
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -15,6 +16,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -78,23 +80,13 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       OnChange = cbDisplayFormatChange
       OnKeyPress = cbDisplayFormatKeyPress
     end
-    object Button2: TButton
-      Left = 336
-      Top = 8
-      Width = 21
-      Height = 21
-      Anchors = [akTop, akRight]
-      Caption = '...'
-      TabOrder = 1
-      Visible = False
-    end
     object chkHasMaxValue: TCheckBox
       Left = 216
       Top = 40
       Width = 89
       Height = 17
       Caption = 'Has Maximum'
-      TabOrder = 2
+      TabOrder = 1
       OnClick = chkHasMaxValueClick
     end
     object chkHasMinValue: TCheckBox
@@ -103,7 +95,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Width = 89
       Height = 17
       Caption = 'Has Minimum'
-      TabOrder = 3
+      TabOrder = 2
       OnClick = chkHasMinValueClick
     end
     object seDecimalPlaces: TSpinEdit
@@ -113,7 +105,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Height = 22
       MaxValue = 0
       MinValue = 0
-      TabOrder = 4
+      TabOrder = 3
       Value = 0
       OnChange = seDecimalPlacesChange
     end
@@ -123,7 +115,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Width = 97
       Height = 17
       Caption = 'Empty if Zero?'
-      TabOrder = 5
+      TabOrder = 4
       OnClick = chkZeroEmptyClick
     end
     object edCheckChars: TEdit
@@ -131,7 +123,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Top = 128
       Width = 297
       Height = 21
-      TabOrder = 6
+      TabOrder = 5
     end
     object btnCheckChars: TButton
       Left = 312
@@ -139,7 +131,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Width = 49
       Height = 21
       Caption = 'Set'
-      TabOrder = 7
+      TabOrder = 6
       OnClick = btnCheckCharsClick
     end
     object edDisplayPrefix: TEdit
@@ -147,14 +139,14 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Top = 64
       Width = 57
       Height = 21
-      TabOrder = 8
+      TabOrder = 7
     end
     object edDisplaySuffix: TEdit
       Left = 88
       Top = 88
       Width = 57
       Height = 21
-      TabOrder = 9
+      TabOrder = 8
     end
     object btnSetDisplayPrefix: TButton
       Left = 152
@@ -162,7 +154,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Width = 47
       Height = 21
       Caption = 'Set'
-      TabOrder = 10
+      TabOrder = 9
       OnClick = btnSetDisplayPrefixClick
     end
     object btnSetDisplaySuffix: TButton
@@ -171,7 +163,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Width = 47
       Height = 21
       Caption = 'Set'
-      TabOrder = 11
+      TabOrder = 10
       OnClick = btnSetDisplaySuffixClick
     end
     object edMaxValue: TEdit
@@ -179,7 +171,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Top = 40
       Width = 49
       Height = 21
-      TabOrder = 12
+      TabOrder = 11
       OnExit = edMaxValueExit
     end
     object edMinValue: TEdit
@@ -187,7 +179,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Top = 64
       Width = 49
       Height = 21
-      TabOrder = 13
+      TabOrder = 12
       OnExit = edMinValueExit
     end
     object GroupBox3: TGroupBox
@@ -196,7 +188,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Width = 353
       Height = 73
       Caption = 'Critical Points'
-      TabOrder = 14
+      TabOrder = 13
       object Label8: TLabel
         Left = 104
         Top = 16
@@ -446,11 +438,27 @@ object frmValidateEditDemo: TfrmValidateEditDemo
     end
   end
   object chkValueChanged: TCheckBox
-    Left = 224
+    Left = 216
     Top = 248
     Width = 153
     Height = 17
     Caption = 'Message on Value Change?'
     TabOrder = 2
+  end
+  object JvValidateEdit: TJvValidateEdit
+    Left = 8
+    Top = 264
+    Width = 369
+    Height = 21
+    CheckChars = '01234567890'
+    CriticalPoints.CheckPoints = cpNone
+    CriticalPoints.ColorAbove = clBlue
+    CriticalPoints.ColorBelow = clRed
+    PasswordChar = #0
+    TabOrder = 3
+    Text = '0'
+    Value = 0
+    OnCustomValidate = JvValidateEditCustomValidate
+    OnValueChanged = JvValidateEditValueChanged
   end
 end

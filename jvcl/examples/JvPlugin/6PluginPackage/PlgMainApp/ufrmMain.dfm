@@ -5,13 +5,17 @@ object frmMain: TfrmMain
   Height = 364
   Caption = 'Main test application for JvPlugin'
   Color = clBtnFace
+  Constraints.MinHeight = 360
+  Constraints.MinWidth = 540
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDesktopCenter
+  Scaled = False
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
@@ -19,14 +23,14 @@ object frmMain: TfrmMain
     Left = 161
     Top = 0
     Width = 3
-    Height = 337
+    Height = 330
     Cursor = crHSplit
   end
   object Memo1: TMemo
     Left = 164
     Top = 0
     Width = 374
-    Height = 337
+    Height = 330
     Align = alClient
     ScrollBars = ssBoth
     TabOrder = 0
@@ -36,7 +40,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 161
-    Height = 337
+    Height = 330
     Align = alLeft
     BevelOuter = bvLowered
     TabOrder = 1
@@ -79,7 +83,6 @@ object frmMain: TfrmMain
   object JvPluginManager1: TJvPluginManager
     Extension = 'bpl'
     PluginKind = plgPackage
-    OnErrorLoading = JvPluginManager1ErrorLoading
     Left = 184
     Top = 8
   end

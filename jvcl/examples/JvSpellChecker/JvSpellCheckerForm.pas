@@ -120,6 +120,8 @@ begin
   // Dictionaries are plain text files, one word per row, preferably sorted.
   // If you don't load a dictionary, all words are misspelled and you won't get any suggestions
   S := ExtractFilePath(Application.ExeName) + 'english.dic';
+  if not FileExists(S) then
+    S := '..\Dict\english.dic';
   if FileExists(S) then
     ASpellChecker.Dictionary := S
   else

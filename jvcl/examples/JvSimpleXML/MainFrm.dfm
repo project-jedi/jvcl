@@ -5,12 +5,20 @@ object Form1: TForm1
   Height = 329
   Caption = 'JvSimpleXML Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 250
+  Constraints.MinWidth = 300
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
+  DesignSize = (
+    368
+    295)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

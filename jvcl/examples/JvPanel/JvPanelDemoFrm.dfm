@@ -5,12 +5,15 @@ object Form1: TForm1
   Height = 453
   Caption = 'JvPanel Demo'
   Color = clBackground
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object JvPanel1: TJvPanel
@@ -24,6 +27,9 @@ object Form1: TForm1
     Constraints.MinHeight = 160
     Constraints.MinWidth = 495
     TabOrder = 0
+    DesignSize = (
+      495
+      289)
     object Label1: TLabel
       Left = 14
       Top = 232

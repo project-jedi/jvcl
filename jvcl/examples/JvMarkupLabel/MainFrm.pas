@@ -5,26 +5,29 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, JvComCtrls, JvComponent, JvMarkupLabel, StdCtrls,
-  JvExControls, JvExComCtrls;
+  JvExControls, JvExComCtrls, JvExStdCtrls, JvGroupBox;
 
 type
   TForm1 = class(TForm)
     JvMarkupLabel1: TJvMarkupLabel;
-    JvTrackBar1: TJvTrackBar;
     Label1: TLabel;
     Edit1: TMemo;
     Button1: TButton;
-    Label2: TLabel;
-    CheckBox1: TCheckBox;
-    Label3: TLabel;
-    JvTrackBar2: TJvTrackBar;
     Label4: TLabel;
+    JvGroupBox1: TJvGroupBox;
+    Label2: TLabel;
+    Label3: TLabel;
+    JvTrackBar1: TJvTrackBar;
+    CheckBox1: TCheckBox;
+    JvTrackBar2: TJvTrackBar;
     procedure JvTrackBarChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     { Déclarations privées }
+    procedure RecalibrateTrackbars;
   public
     { Déclarations publiques }
   end;
@@ -57,11 +60,26 @@ end;
 procedure TForm1.CheckBox1Click(Sender: TObject);
 begin
   JvMarkupLabel1.AutoSize := CheckBox1.Checked;
-  if CheckBox1.Checked then
+  if not CheckBox1.Checked then
   begin
-    JvTrackBar1.Position := JvMarkupLabel1.Width;
-    JvTrackBar2.Position := JvMarkupLabel1.Height;
+    JvMarkupLabel1.Width := Self.Width-27;
+    JvMarkupLabel1.Height := Self.Height - Label4.Top - 64;
   end;
+  RecalibrateTrackbars;
+end;
+
+procedure TForm1.RecalibrateTrackbars;
+begin
+  JvTrackBar1.Max := JvMarkupLabel1.Width;
+  JvTrackBar1.Position := JvMarkupLabel1.Width;
+  JvTrackBar2.Max := JvMarkupLabel1.Height;
+  JvTrackBar2.Position := JvMarkupLabel1.Height;
+end;
+
+procedure TForm1.FormResize(Sender: TObject);
+begin
+  RecalibrateTrackbars;
 end;
 
 end.
+

@@ -46,6 +46,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure JvThread2Execute(Sender: TObject; params: Pointer);
     procedure Button2Click(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
   public
     Value: Integer;
@@ -77,7 +78,7 @@ begin
       Synchronize(TForm1(params).Stats1);
 
       if JvThread1.Terminated then
-        Break;
+        Exit;
     end;
 end;
 
@@ -97,7 +98,7 @@ begin
       Synchronize(TForm1(params).Stats2);
 
       if JvThread2.Terminated then
-        Break;
+        Exit;
     end;
 end;
 
@@ -121,6 +122,20 @@ end;
 procedure TForm1.Stats2(Sender: TObject);
 begin
   Label4.Caption := IntToStr(Value2);
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  if not JvThread1.Terminated then
+    JvThread1.Terminate;
+  if not JvThread2.Terminated then
+    JvThread2.Terminate;
+  while not (JvThread1.Terminated or JvThread2.Terminated) do
+  begin
+    Sleep(100);
+    Application.ProcessMessages;
+  end;
+
 end;
 
 end.

@@ -72,8 +72,8 @@ object SampleUILPlugin: TSampleUILPlugin
   PluginVersion = '2.0'
   OnPluginMessage = uilPlugin1PluginMessage
   OnConfigure = uilPlugin1Configure
-  Left = 228
-  Top = 151
+  Left = 251
+  Top = 156
   Height = 150
   Width = 215
 end

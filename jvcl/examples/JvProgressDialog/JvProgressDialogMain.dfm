@@ -1,17 +1,22 @@
 object frmProgressDialogDemo: TfrmProgressDialogDemo
-  Left = 541
-  Top = 141
-  Width = 376
-  Height = 230
+  Left = 425
+  Top = 119
+  Width = 440
+  Height = 240
   ActiveControl = btnExecute
   Caption = 'JvProgressDialog Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 240
+  Constraints.MinWidth = 440
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   ShowHint = True
   PixelsPerInch = 96
   TextHeight = 13

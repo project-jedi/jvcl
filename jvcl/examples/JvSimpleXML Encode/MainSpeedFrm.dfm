@@ -1,19 +1,27 @@
 object frmSpeedTest: TfrmSpeedTest
   Left = 265
   Top = 192
-  Width = 650
-  Height = 380
+  Width = 680
+  Height = 388
   Caption = 'SimpleXMLEncode and  SimpleXMLDecode Speed Test'
   Color = clBtnFace
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 640
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
+  DesignSize = (
+    672
+    354)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -34,7 +42,7 @@ object frmSpeedTest: TfrmSpeedTest
     Left = 12
     Top = 24
     Width = 265
-    Height = 310
+    Height = 318
     Anchors = [akLeft, akTop, akBottom]
     ScrollBars = ssBoth
     TabOrder = 0
@@ -61,8 +69,8 @@ object frmSpeedTest: TfrmSpeedTest
   object sgResults: TJvStringGrid
     Left = 384
     Top = 24
-    Width = 251
-    Height = 310
+    Width = 281
+    Height = 318
     Anchors = [akLeft, akTop, akRight, akBottom]
     ColCount = 6
     DefaultRowHeight = 19

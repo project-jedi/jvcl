@@ -8,16 +8,20 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
   Color = clBtnFace
   Constraints.MinHeight = 343
   Constraints.MinWidth = 370
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDesktopCenter
   Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  DesignSize = (
+    362
+    318)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
@@ -27,6 +31,9 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
     Height = 139
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
+    DesignSize = (
+      353
+      139)
     object Label1: TLabel
       Left = 10
       Top = 16
@@ -126,6 +133,9 @@ object JvSearchFileMainForm: TJvSearchFileMainForm
     Height = 105
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 5
+    DesignSize = (
+      353
+      105)
     object reFoundFiles: TRichEdit
       Left = 6
       Top = 12
