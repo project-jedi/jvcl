@@ -7,7 +7,8 @@ uses
   SimpleFormU in 'SimpleFormU.pas' {SimpleFrm},
   JvOLBar_Test in 'JvOLBar_Test.pas',
   JvWndProcHook_Test in 'JvWndProcHook_Test.pas',
-  DUnit_TestSpell in 'DUnit_TestSpell.pas';
+  DUnit_TestSpell in 'DUnit_TestSpell.pas',
+  JvDocking_Test in 'JvDocking_Test.pas';
 
 {$R *.res}
 
