@@ -46,7 +46,6 @@ Known Issues:
     ugly.
   * Only tested on XP.
 
-
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -304,6 +303,19 @@ uses
 
 {$IFDEF JVCLThemesEnabled}
 
+{ TransparentBlt is included in Windows 98 and later }
+
+const
+  Msimg32DLLName = 'Msimg32.dll';
+  TransparentBltName = 'TransparentBlt';
+
+type
+  TTransparentBlt = function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, hHeightDest: Integer;
+    hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; crTransparent: UINT): BOOL; stdcall;
+
+var
+  _TransparentBlt: TTransparentBlt = nil;
+
 type
   TGlobalXPData = class
   private
@@ -313,6 +325,17 @@ type
     FIsThemed: Boolean;
     FBitmapValid: Boolean;
     FClientCount: Integer;
+    FMsimg32Handle: THandle;
+    FTriedLoadMsimg32Dll: Boolean;
+
+    { See http://www.truelaunchbar.com/spec/skins.html }
+    FSizingMargins: TMargins;
+    //    FContentMargins: TMargins;
+  protected
+    procedure LoadMsimg32Dll;
+    procedure UnloadMsimg32Dll;
+
+    function CanDrawTransparent: Boolean;
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -404,11 +427,138 @@ begin
   end;
 end;
 
+function TransparentBltStretch(DestDC: HDC; const DestRect: TRect;
+  SourceDC: HDC; const SourceRect: TRect; const SizingMargins: TMargins;
+  const TransparentColor: TColor): Boolean;
+var
+  ESourceWidth, ESourceHeight: Integer;
+  EDestWidth, EDestHeight: Integer;
+  LastOriginSource: TPoint;
+  LastOriginDest: TPoint;
+begin
+  {                Source                           Dest
+
+               |--------------|             |--------------------|
+               | A |   B  | C |             | A |      B     | C |
+               |-- |------|---|             |-- |------------|---|
+               |   |      |   |             |   |            |   |
+               | D |   E  | F |             |   |            |   |
+               |   |      |   |     =>      | D |      E     | F |
+               |---|------|---|             |   |            |   |
+               | G |   H  | I |             |   |            |   |
+               |--------------|             |--------------------|
+                                            | G |      H     | I |
+                                            |-- |------------|---|
+  }
+  ESourceWidth := SourceRect.Right - SourceRect.Left - SizingMargins.cxLeftWidth - SizingMargins.cxRightWidth;
+  ESourceHeight := SourceRect.Bottom - SourceRect.Top - SizingMargins.cyTopHeight - SizingMargins.cyBottomHeight;
+  EDestWidth := DestRect.Right - DestRect.Left - SizingMargins.cxLeftWidth - SizingMargins.cxRightWidth;
+  EDestHeight := DestRect.Bottom - DestRect.Top - SizingMargins.cyTopHeight - SizingMargins.cyBottomHeight;
+
+  GetWindowOrgEx(SourceDC, LastOriginSource);
+  SetWindowOrgEx(SourceDC, LastOriginSource.X - SourceRect.Left, LastOriginSource.Y - SourceRect.Top, nil);
+  GetWindowOrgEx(DestDC, LastOriginDest);
+  SetWindowOrgEx(DestDC, LastOriginDest.X - DestRect.Left, LastOriginDest.Y - DestRect.Top, nil);
+
+  { A }
+  _TransparentBlt(
+    DestDC,
+    0, 0, SizingMargins.cxLeftWidth, SizingMargins.cyTopHeight,
+    SourceDC,
+    0, 0, SizingMargins.cxLeftWidth, SizingMargins.cyTopHeight,
+    TransparentColor
+    );
+
+  { B }
+  _TransparentBlt(
+    DestDC,
+    SizingMargins.cxLeftWidth, 0, EDestWidth, SizingMargins.cyTopHeight,
+    SourceDC,
+    SizingMargins.cxLeftWidth, 0, ESourceWidth, SizingMargins.cyTopHeight,
+    TransparentColor
+    );
+
+  { C }
+  _TransparentBlt(
+    DestDC,
+    EDestWidth + SizingMargins.cxLeftWidth, 0, SizingMargins.cxRightWidth, SizingMargins.cyTopHeight,
+    SourceDC,
+    ESourceWidth + SizingMargins.cxLeftWidth, 0, SizingMargins.cxRightWidth, SizingMargins.cyTopHeight,
+    TransparentColor
+    );
+
+  { D }
+  _TransparentBlt(
+    DestDC,
+    0, 0 + SizingMargins.cyTopHeight, SizingMargins.cxLeftWidth, EDestHeight,
+    SourceDC,
+    0, 0 + SizingMargins.cyTopHeight, SizingMargins.cxLeftWidth, ESourceHeight,
+    TransparentColor
+    );
+
+  { E }
+  _TransparentBlt(
+    DestDC,
+    SizingMargins.cxLeftWidth, SizingMargins.cyTopHeight, EDestWidth, EDestHeight,
+    SourceDC,
+    SizingMargins.cxLeftWidth, SizingMargins.cyTopHeight, ESourceWidth, ESourceHeight,
+    TransparentColor
+    );
+
+  { F }
+  _TransparentBlt(
+    DestDC,
+    EDestWidth + SizingMargins.cxLeftWidth, SizingMargins.cyTopHeight, SizingMargins.cxRightWidth, EDestHeight,
+    SourceDC,
+    ESourceWidth + SizingMargins.cxLeftWidth, SizingMargins.cyTopHeight, SizingMargins.cxRightWidth, ESourceHeight,
+    TransparentColor
+    );
+
+  { G }
+  _TransparentBlt(
+    DestDC,
+    0, EDestHeight + SizingMargins.cyTopHeight, SizingMargins.cxLeftWidth, SizingMargins.cyBottomHeight,
+    SourceDC,
+    0, ESourceHeight + SizingMargins.cyTopHeight, SizingMargins.cxLeftWidth, SizingMargins.cyBottomHeight,
+    TransparentColor
+    );
+
+  { H }
+  _TransparentBlt(
+    DestDC,
+    SizingMargins.cxLeftWidth, EDestWidth + SizingMargins.cyTopHeight, EDestWidth, SizingMargins.cyBottomHeight,
+    SourceDC,
+    SizingMargins.cxLeftWidth, ESourceWidth + SizingMargins.cyTopHeight, ESourceWidth, SizingMargins.cyBottomHeight,
+    TransparentColor
+    );
+
+  { I }
+  _TransparentBlt(
+    DestDC,
+    EDestWidth + SizingMargins.cxLeftWidth, EDestHeight + SizingMargins.cyTopHeight,
+    SizingMargins.cxRightWidth, SizingMargins.cyTopHeight,
+    SourceDC,
+    ESourceWidth + SizingMargins.cxLeftWidth, ESourceHeight + SizingMargins.cyTopHeight,
+    SizingMargins.cxRightWidth, SizingMargins.cyTopHeight,
+    TransparentColor
+    );
+
+  SetWindowOrgEx(SourceDC, LastOriginSource.X, LastOriginSource.Y, nil);
+  SetWindowOrgEx(DestDC, LastOriginDest.X, LastOriginDest.Y, nil);
+end;
+
 //=== TGlobalXPData ==========================================================
 
 procedure TGlobalXPData.AddClient;
 begin
   Inc(FClientCount);
+end;
+
+function TGlobalXPData.CanDrawTransparent: Boolean;
+begin
+  if not FTriedLoadMsimg32Dll then
+    LoadMsimg32Dll;
+  Result := Assigned(_TransparentBlt);
 end;
 
 constructor TGlobalXPData.Create;
@@ -420,6 +570,7 @@ end;
 
 destructor TGlobalXPData.Destroy;
 begin
+  UnloadMsimg32Dll;
   FButtons.Free;
   inherited Destroy;
 end;
@@ -427,12 +578,24 @@ end;
 procedure TGlobalXPData.Draw(HDC: HDC; State: Integer;
   const DrawRect: TRect);
 begin
-  if FBitmapValid then
-    // We could call TransparentBlt() for windows systems >= 98
-    StretchBltTransparent(HDC, DrawRect.Left, DrawRect.Top, DrawRect.Right - DrawRect.Left, DrawRect.Bottom -
-      DrawRect.Top,
-      FButtons.Canvas.Handle, 0, FButtonHeight * (State - 1),
-      FButtonWidth, FButtonHeight, FButtons.Palette, clFuchsia)
+  if FBitmapValid and CanDrawTransparent then
+  begin
+    // Same Rect?
+    if (DrawRect.Right - DrawRect.Left = FButtonWidth) and
+       (DrawRect.Bottom - DrawRect.Top = FButtonHeight) then
+    begin
+      _TransparentBlt(HDC, DrawRect.Left, DrawRect.Top,
+        DrawRect.Right - DrawRect.Left, DrawRect.Bottom - DrawRect.Top,
+        FButtons.Canvas.Handle, 0, FButtonHeight * (State - 1),
+        FButtonWidth, FButtonHeight, {FButtons.Palette,} clFuchsia)
+    end
+    else
+    begin
+      TransparentBltStretch(HDC, DrawRect,
+        FButtons.Canvas.Handle, Bounds(0, FButtonHeight * (State - 1),
+        FButtonWidth, FButtonHeight), FSizingMargins, clFuchsia)
+    end
+  end
   else
     DrawSimple(HDC, State, DrawRect);
 end;
@@ -472,6 +635,14 @@ begin
   end;
 end;
 
+procedure TGlobalXPData.LoadMsimg32Dll;
+begin
+  FTriedLoadMsimg32Dll := True;
+  FMsimg32Handle := Windows.LoadLibrary(Msimg32DLLName);
+  if FMsimg32Handle > 0 then
+    _TransparentBlt := GetProcAddress(FMsimg32Handle, TransparentBltName);
+end;
+
 procedure TGlobalXPData.RemoveClient;
 begin
   Dec(FClientCount);
@@ -483,7 +654,17 @@ begin
   end;
 end;
 
+procedure TGlobalXPData.UnloadMsimg32Dll;
+begin
+  _TransparentBlt := nil;
+  if FMsimg32Handle > 0 then
+    FreeLibrary(FMsimg32Handle);
+  FMsimg32Handle := 0;
+end;
+
 procedure TGlobalXPData.Update;
+var
+  Details: TThemedElementDetails;
 begin
   FIsThemed := ThemeServices.ThemesAvailable and IsThemeActive and IsAppThemed;
   if not FIsThemed then
@@ -495,6 +676,16 @@ begin
   begin
     FButtonWidth := FButtons.Width;
     FButtonHeight := FButtons.Height div 8;
+
+    Details := ThemeServices.GetElementDetails(twMinButtonNormal);
+    //    with Details do
+    //      if GetThemeMargins(ThemeServices.Theme[Element], 0, Part, State,
+    //        TMT_CONTENTMARGINS, nil, FContentMargins) <> S_OK then
+    //        FillChar(FContentMargins, SizeOf(FContentMargins), 0);
+    with Details do
+      if GetThemeMargins(ThemeServices.Theme[Element], 0, Part, State,
+        TMT_SIZINGMARGINS, nil, FSizingMargins) <> S_OK then
+        FillChar(FSizingMargins, SizeOf(FSizingMargins), 0);
   end;
 end;
 
@@ -1145,6 +1336,13 @@ begin
   Result := Assigned(Images) and (ImageIndex > -1) and (ImageIndex < Images.Count);
 end;
 
+{$IFDEF JVCLThemesEnabled}
+function TJvCaptionButton.GetIsThemed: Boolean;
+begin
+  Result := GlobalXPData.IsThemed;
+end;
+{$ENDIF JVCLThemesEnabled}
+
 function TJvCaptionButton.GetParentForm: TCustomForm;
 begin
   if Owner is TControl then
@@ -1483,6 +1681,8 @@ end;
 procedure TJvCaptionButton.Loaded;
 begin
   inherited Loaded;
+
+  CreateToolTip(ParentFormHandle);
   Redraw(rkTotalCaptionBar);
 end;
 
@@ -2003,13 +2203,6 @@ begin
     Result := False;
   end;
 end;
-
-{$IFDEF JVCLThemesEnabled}
-function TJvCaptionButton.GetIsThemed: Boolean;
-begin
-  Result := GlobalXPData.IsThemed;
-end;
-{$ENDIF JVCLThemesEnabled}
 
 //=== TJvCaptionButtonActionLink =============================================
 
