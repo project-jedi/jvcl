@@ -595,7 +595,7 @@ procedure TJvCustomOfficeColorButton.DoFormClose(Sender: TObject; var Action: TC
 begin
   if FColorsForm.ToolWindowStyle then
     FColorFormDropDown := False;
-  if csDestroying	in ComponentState then
+  if csDestroying in ComponentState then
     Action := caFree
   else
     Action := caHide;
