@@ -10,7 +10,7 @@
     <Package Name="JvDlgs-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="JvDB-R" Targets="C5,C6,C6p" Condition=""/>
-    <Package Name="JvCore6R" Targets="C5,C6,C6p" Condition=""/>
+    <Package Name="JvCore-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="dcldb50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>

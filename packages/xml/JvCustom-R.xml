@@ -6,7 +6,7 @@
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvCtrls-R" Targets="C5,C6,C6p,D5,D5s,D6,D6p" Condition=""/>
-    <Package Name="JvStdCtlrs-R" Targets="C5,C6,C6p,D7,D7p" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p,D7,D7p" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="vcljpg50" Targets="C5" Condition=""/>
