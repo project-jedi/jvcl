@@ -26,7 +26,8 @@ package JvUIBD5R;
 {$IMPLICITBUILD OFF}
 
 requires
-  vcl50;
+  vcl50,
+  Vclx50;
 
 contains
   JvUIB in '..\..\run\JvUIB.pas',
