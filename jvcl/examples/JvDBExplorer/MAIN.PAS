@@ -41,7 +41,8 @@ uses Windows, SysUtils, Classes, Graphics, Forms, Controls, Menus,
   StdCtrls, Dialogs, Buttons, Messages, ExtCtrls, DB, DBTables,
   DBCtrls, JvSpeedbar, JvMRUList, ComCtrls, 
   JvComponent, JvMRUManager,
-  JvFormPlacement, JvBDEProgress, JvLabel, JvDBControls, JvAppEvent;
+  JvFormPlacement, JvBDEProgress, JvLabel, JvDBControls, JvAppEvent,
+  JvExExtCtrls, JvExControls;
 
 type
   TDBExplorerMainForm = class(TForm)

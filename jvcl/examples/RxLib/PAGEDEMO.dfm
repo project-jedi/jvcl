@@ -736,7 +736,6 @@ object ClientAssistant: TClientAssistant
         DataSource = ClientsDS
         ButtonHint = 'Calendar|'
         DialogTitle = 'Select a date'
-        NumGlyphs = 2
         ParentShowHint = False
         ShowHint = True
         TabOrder = 10
@@ -770,7 +769,6 @@ object ClientAssistant: TClientAssistant
         DataSource = ClientsDS
         ButtonHint = 'Calendar|'
         DialogTitle = 'Select a date'
-        NumGlyphs = 2
         ParentShowHint = False
         ShowHint = True
         TabOrder = 1
