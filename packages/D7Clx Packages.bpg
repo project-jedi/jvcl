@@ -19,7 +19,7 @@ PROJECTS = JvQ3rdD7R.bpl JvQCoreD7R.bpl JvQCoreD7D.bpl JvQSystemD7R.bpl \
   JvQWizardD7R.bpl JvQWizardD7D.bpl JvQAppFrmD7R.bpl JvQAppFrmD7D.bpl \
   JvQHMID7R.bpl JvQHMID7D.bpl JvQEDID7R.bpl JvQEDID7D.bpl JvQPageCompsD7R.bpl \
   JvQPageCompsD7D.bpl JvQXPCtrlsD7R.bpl JvQXPCtrlsD7D.bpl JvQInspectorD7R.bpl \
-  JvQInspectorD7D.bpl JvQDBD7R.bpl JvQDBD7D.bpl
+  JvQInspectorD7D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -151,12 +151,6 @@ JvQInspectorD7R.bpl: d7clx\JvQInspectorD7R.dpk
   $(DCC)
 
 JvQInspectorD7D.bpl: d7clx\JvQInspectorD7D.dpk
-  $(DCC)
-
-JvQDBD7R.bpl: d7clx\JvQDBD7R.dpk
-  $(DCC)
-
-JvQDBD7D.bpl: d7clx\JvQDBD7D.dpk
   $(DCC)
 
 
