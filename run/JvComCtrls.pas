@@ -484,6 +484,7 @@ type
     procedure SetUseUnicode(const Value: Boolean);
     procedure SetMenu(const Value: TMenu);
     procedure DoMenuChange(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
+    procedure SetPageControl(const Value: TPageControl);
   protected
     procedure RebuildFromMenu; virtual;
     function IsMenuItemClick(Node:TTreeNode):boolean;
@@ -543,7 +544,7 @@ type
     property Checkboxes: Boolean read FCheckBoxes write SetCheckBoxes default False;
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
-    property PageControl: TPageControl read FPageControl write FPageControl;
+    property PageControl: TPageControl read FPageControl write SetPageControl;
     property OnPageChanged: TPageChangedEvent read FOnPage write FOnPage;
 
     property AutoDragScroll: Boolean read FAutoDragScroll write FAutoDragScroll default False;
@@ -2457,8 +2458,13 @@ procedure TJvTreeView.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FMenu) then
-    Menu := nil;
+  if (Operation = opRemove) then
+  begin
+    if (AComponent = FMenu) then
+      Menu := nil
+    else if (AComponent = FPageControl) then
+      PageControl := nil;
+  end;
 end;
 
 procedure TJvTreeView.DblClick;
@@ -2473,6 +2479,17 @@ begin
  Result := Assigned(Menu) and Assigned(Node) and Assigned(Node.Data)
     and (TObject(Node.Data) is TMenuItem) and Assigned(TMenuItem(Node.Data).OnClick);
 end;
+
+procedure TJvTreeView.SetPageControl(const Value: TPageControl);
+begin
+  if FPageControl <> Value then
+  begin
+    FPageControl := Value;
+    if FPageControl <> nil then
+      FPageControl.FreeNotification(Self);
+  end;
+end;
+
 
 // === TJvIPAddressValues ====================================================
 
@@ -2566,6 +2583,7 @@ begin
     Change;
   end;
 end;
+
 
 end.
 
