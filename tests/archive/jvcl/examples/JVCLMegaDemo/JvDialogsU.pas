@@ -33,13 +33,27 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvComponent, JvBaseDlg, JvPasswordForm, StdCtrls, JvExchListboxes,
-  JvLoginDlg, JvNagScreen, JvImageDlg,
+  JvLoginDlg, JvNagScreen, JvImageDlg, JvWinDialogs, 
   JvProgressDlg, JvCommonDialogD, JvDiskPrompt, JvCopyError,
-  JvDeleteError, JvPageSetup, JvPageSetupTitled, JvSHFmt, JvObjPickerComp,
-  JvCalc, JvTipOfDay, JvSerialDlg;
+  JvDeleteError, JvPageSetup, JvPageSetupTitled, JvObjPickerComp,
+  JvCalc, JvTipOfDay, JvSerialDlg, ExtCtrls, JvCaptionPanel;
 
 type
   TJvDialogs = class(TFrame)
+    JvPasswordForm1: TJvPasswordForm;
+    JvExchListboxes1: TJvExchListboxes;
+    JvLoginDlg1: TJvLoginDlg;
+    JvImageDlg1: TJvImageDlg;
+    JvCalculator1: TJvCalculator;
+    JvProgressDlg1: TJvProgressDlg;
+    JvDiskPrompt1: TJvDiskPrompt;
+    JvCopyError1: TJvCopyError;
+    JvDeleteError1: TJvDeleteError;
+    JvPageSetupDialog1: TJvPageSetupDialog;
+    JvPageSetupTitledDialog1: TJvPageSetupTitledDialog;
+    JvObjectPickerDialog1: TJvObjectPickerDialog;
+    JvSerialDlg1: TJvSerialDlg;
+    JvCaptionPanel1: TJvCaptionPanel;
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
@@ -54,22 +68,7 @@ type
     Button13: TButton;
     Button14: TButton;
     Button15: TButton;
-    Button16: TButton;
     Button17: TButton;
-    JvPasswordForm1: TJvPasswordForm;
-    JvExchListboxes1: TJvExchListboxes;
-    JvLoginDlg1: TJvLoginDlg;
-    JvImageDlg1: TJvImageDlg;
-    JvCalculator1: TJvCalculator;
-    JvProgressDlg1: TJvProgressDlg;
-    JvDiskPrompt1: TJvDiskPrompt;
-    JvCopyError1: TJvCopyError;
-    JvDeleteError1: TJvDeleteError;
-    JvPageSetupDialog1: TJvPageSetupDialog;
-    JvPageSetupTitledDialog1: TJvPageSetupTitledDialog;
-    JvFormatDrive1: TJvFormatDrive;
-    JvObjectPickerDialog1: TJvObjectPickerDialog;
-    JvSerialDlg1: TJvSerialDlg;
     Button4: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -85,9 +84,7 @@ type
     procedure Button12Click(Sender: TObject);
     procedure Button13Click(Sender: TObject);
     procedure Button14Click(Sender: TObject);
-    procedure Button16Click(Sender: TObject);
     procedure Button17Click(Sender: TObject);
-    procedure Button15Click(Sender: TObject);
   end;
 
 implementation
@@ -192,19 +189,9 @@ begin
   JvPageSetupTitledDialog1.Execute;
 end;
 
-procedure TJvDialogs.Button16Click(Sender: TObject);
-begin
-  JvFormatDrive1.Execute;
-end;
-
 procedure TJvDialogs.Button17Click(Sender: TObject);
 begin
   JvObjectPickerDialog1.Execute;
-end;
-
-procedure TJvDialogs.Button15Click(Sender: TObject);
-begin
-  { TODO }
 end;
 
 end.

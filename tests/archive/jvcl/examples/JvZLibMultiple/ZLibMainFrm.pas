@@ -1,5 +1,5 @@
 {$I JVCL.INC}
-unit MainFrm;
+unit ZLibMainFrm;
 
 interface
 

@@ -309,7 +309,6 @@ object JvWinDialogs: TJvWinDialogs
     Top = 40
   end
   object JvDiskFullDialog1: TJvDiskFullDialog
-    DriveChar = 'C'
     Left = 416
     Top = 72
   end

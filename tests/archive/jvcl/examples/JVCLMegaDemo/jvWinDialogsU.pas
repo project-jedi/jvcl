@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvAddPrinter, JvWinDialogs, JvDisconnectNetwork,
+  StdCtrls, JvAddPrinter, JvWinDialogs,
   JvConnectNetwork, JvBaseDlg, JvSelectDirectory, JvComponent,
   JvBrowseFolder;
 

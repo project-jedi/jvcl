@@ -18,12 +18,13 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 492
-    Height = 354
+    Height = 351
     ActivePage = TabSheet1
     Align = alClient
     HotTrack = True
     ParentShowHint = False
     ShowHint = True
+    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Hint = 'Table Demo'
@@ -50,7 +51,7 @@ object Form1: TForm1
         Left = 0
         Top = 108
         Width = 484
-        Height = 184
+        Height = 181
         AutoSize = False
         MaxLines = 0
         HideCaret = False
@@ -63,12 +64,16 @@ object Form1: TForm1
       end
       object JvPanel1: TJvPanel
         Left = 0
-        Top = 292
+        Top = 289
         Width = 484
         Height = 34
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 2
+        MultiLine = False
+        DesignSize = (
+          484
+          34)
         object btnProcessTable: TJvButton
           Left = 408
           Top = 5
@@ -94,7 +99,7 @@ object Form1: TForm1
         Left = 0
         Top = 0
         Width = 484
-        Height = 292
+        Height = 289
         AutoSize = False
         MaxLines = 0
         HideCaret = False
@@ -106,12 +111,16 @@ object Form1: TForm1
       end
       object JvPanel2: TJvPanel
         Left = 0
-        Top = 292
+        Top = 289
         Width = 484
         Height = 34
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
+        MultiLine = False
+        DesignSize = (
+          484
+          34)
         object btnProcessHTML2Text: TJvButton
           Left = 408
           Top = 5
@@ -137,7 +146,7 @@ object Form1: TForm1
         Left = 0
         Top = 0
         Width = 484
-        Height = 292
+        Height = 289
         AutoSize = False
         MaxLines = 0
         HideCaret = False
@@ -149,12 +158,16 @@ object Form1: TForm1
       end
       object JvPanel3: TJvPanel
         Left = 0
-        Top = 292
+        Top = 289
         Width = 484
         Height = 34
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
+        MultiLine = False
+        DesignSize = (
+          484
+          34)
         object btnProcessURL: TJvButton
           Left = 408
           Top = 5
@@ -180,7 +193,7 @@ object Form1: TForm1
         Left = 0
         Top = 0
         Width = 484
-        Height = 292
+        Height = 289
         AutoSize = False
         MaxLines = 0
         HideCaret = False
@@ -192,12 +205,16 @@ object Form1: TForm1
       end
       object JvPanel4: TJvPanel
         Left = 0
-        Top = 292
+        Top = 289
         Width = 484
         Height = 34
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 1
+        MultiLine = False
+        DesignSize = (
+          484
+          34)
         object btnProcessTags: TJvButton
           Left = 408
           Top = 5
@@ -218,14 +235,14 @@ object Form1: TForm1
   end
   object JvStatusBar1: TJvStatusBar
     Left = 0
-    Top = 354
+    Top = 351
     Width = 492
     Height = 19
     Panels = <>
     SimplePanel = True
   end
   object JvHtmlParser1: TJvHtmlParser
-    FileName = 'D:\Borland\Add\jvcl\examples\JvHTMLParser\sample.htm'
+    FileName = '..\examples\JvHTMLParser\sample.htm'
     Left = 8
     Top = 28
   end

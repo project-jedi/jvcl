@@ -5,7 +5,7 @@ interface
 uses 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvGammaPanel, JvColorCombo, StdCtrls, JvCombobox, JvComponent,
-  JvColorBox, JvColorBtn, JvArrow, JvLabel, JvxCtrls;
+  JvColorBox, JvColorBtn, JvArrow, JvLabel, JvxCtrls, JvDialogs;
 
 type
   TJvChoosersFrm = class(TFrame)
@@ -21,9 +21,14 @@ type
     JvColorComboBox1: TJvColorComboBox;
     JvGammaPanel1: TJvGammaPanel;
     JvxLabel1: TJvxLabel;
+    JvColorDialog1: TJvColorDialog;
+    JvColorBox1: TJvColorBox;
+    Label2: TLabel;
+    Label1: TLabel;
     procedure JvGammaPanel1ChangeColor(Sender: TObject; Foreground,
       Background: TColor);
     procedure JvFontCombobox1Change(Sender: TObject);
+    procedure Label1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -43,6 +48,11 @@ end;
 procedure TJvChoosersFrm.JvFontCombobox1Change(Sender: TObject);
 begin
  JvxLabel1.Font.Name := JvFontCombobox1.Items[JvFontCombobox1.itemindex];
+end;
+
+procedure TJvChoosersFrm.Label1Click(Sender: TObject);
+begin
+ JvColorDialog1.Execute;
 end;
 
 end.

@@ -16,6 +16,7 @@ object JvBrowseFolderFrm: TJvBrowseFolderFrm
     CaptionFont.Height = -13
     CaptionFont.Name = 'Arial'
     CaptionFont.Style = [fsBold]
+    OutlookLook = False
     TabOrder = 0
     object Button1: TButton
       Left = 226

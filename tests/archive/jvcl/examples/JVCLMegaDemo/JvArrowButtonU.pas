@@ -4,7 +4,8 @@ interface
 
 uses 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ImgList, Menus, JvComponent, JvArrowBtn, ExtCtrls, JvCaptionPanel;
+  ImgList, Menus, JvComponent, JvArrowBtn, ExtCtrls, JvCaptionPanel,
+  StdCtrls;
 
 type
   TJvArrowButtonFrm = class(TFrame)
@@ -19,6 +20,8 @@ type
     N1: TMenuItem;
     Close1: TMenuItem;
     ImageList1: TImageList;
+    Label1: TLabel;
+    Label2: TLabel;
   private
     { Private declarations }
   public

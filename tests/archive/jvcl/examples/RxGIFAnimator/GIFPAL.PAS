@@ -49,7 +49,9 @@ function SelectColor(Palette: HPALETTE; AColor: TColor): TColor;
 
 implementation
 
-uses JvVCLUtils, JvMaxMin;
+uses
+  Math,
+  JvVCLUtils;
 
 {$R *.DFM}
 

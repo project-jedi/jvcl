@@ -1,5 +1,5 @@
 {******************************************************************
-                                                                  
+
                        JEDI-VCL Demo
 
  Copyright (C) 2002 Project JEDI
@@ -18,11 +18,11 @@
  not use this file except in compliance with the License. You may 
  obtain a copy of the License at                                  
  http://www.mozilla.org/MPL/MPL-1_1Final.html
-                                                                  
+
  Software distributed under the License is distributed on an      
  "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or   
  implied. See the License for the specific language governing
- rights and limitations under the License.                        
+ rights and limitations under the License.
 
 ******************************************************************}
 
@@ -32,60 +32,38 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ImgList, ComCtrls, JvComCtrls;
+  ComCtrls, JvComCtrls, JvComponent, JvOLBar, ExtCtrls, JvAutoSizeCompo;
 
 type
   TMainform = class(TForm)
-    tv_main: TJvTreeView;
-    ilTreeview: TImageList;
+    JvOutlookBar1: TJvOutlookBar;
+    pnlParent: TPanel;
+    JvAutoSizeCompo1: TJvAutoSizeCompo;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure tv_mainClick(Sender: TObject);
+    procedure JvOutlookBar1ButtonClick(Sender: TObject; Index: Integer);
   private
-    { Private-Deklarationen }
-    procedure CreateFrame(const FrameID: integer);
-
-  public
-    { Public-Deklarationen }
-    TheFrame: TFrame;
+    procedure CreateDemo(const ID: integer);
   end;
 
 var
-  Mainform: TMainform;
-
-type
-  TFrameClass = class of TFrame;
-
+  Mainform : TMainform;
+  TheFrame : TFrame;
+  TheForm  : TForm;
 
 implementation
+
 uses
-  inifiles,
-  jvFrameEmpty,         //Empty frame
-  hello,                //Hello frame
-  JvLabelsU,
-  JvFormsU,
-  JvDialogsU,
-  jvButtonsU,
-  JvExtEditsU,
-  JvDateTimeU,
-  JvPanelsU,
-  JvChoosersU,
-  JvFilesU,
-  JvGraphicalU,
-  JvUtilsU,
-  JvControlsU,
-  JvAniViewerU,          // A Simple ANI Viewer
-  JvSearchFiles,
-  JvSearchFileU,
-  JvMousePositionnerU,
-  JvDataEmbeddedPU,
-  JvBmpAnimatorU,
-  JvArrowButtonU,
-  JvClipboardViewerU,
-  JvBrowseFolderU,
-  jvInstallLabelU,
-  JvWinDialogsU,
-  JvEditsU;
+  jvFrameEmpty, hello, JvLabelsU, JvFormsU, JvDialogsU, jvButtonsU, JvDateTimeU,
+  JvPanelsU, JvChoosersU, JvFilesU, JvUtilsU, JvControlsU, JvAniViewerU,
+  JvSearchFiles, JvMousePositionnerU, JvDataEmbeddedPU, JvBmpAnimatorU,
+  JvArrowButtonU, JvClipboardViewerU, JvBrowseFolderU, JvInstallLabelU,
+  JvWinDialogsU, JvEditsU, JvControlsMainU, JvLogFileDemoU, JvOutlookBarU,
+  JvChangeNotifyUMainForm, JvCreateProcessFormU, JvNTEventLogFormU,
+  JvSearchFileForm, JvZoomU, JvWindowsLister, JvColorComboU, JvColoredHintU,
+  JvContentScroller, JvMailU, JvTreeViewAsMenuU, JvMonthCalendar2U, JvListCombU,
+  JvDBDateTimeU, JvInspectorU, JvHotKeyFormU, JvMruListU;
+
 {$R *.DFM}
 
 procedure TMainform.FormCreate(Sender: TObject);
@@ -105,25 +83,29 @@ procedure TMainform.FormDestroy(Sender: TObject);
 begin
   if (TheFrame <> nil) then
     TheFrame.Free;
+  if (TheForm <> nil) then
+    TheForm.Free;
 end;
 
-procedure TMainform.CreateFrame(const FrameID: integer);
+procedure TMainform.CreateDemo(const ID: integer);
 begin
   if (TheFrame <> nil) then
-    TheFrame.Free;
+    freeAndNil(TheFrame);
+  if (TheForm <> nil) then
+    freeAndNil(TheForm);
 
-  case FrameID of
+  case ID of
     0: TheFrame := Tfrm_hello.Create(nil);
     1: TheFrame := TJvFormsFrm.Create(nil);
     2: TheFrame := TJvDialogs.Create(nil);
     3: TheFrame := TJvUtilsFrm.Create(nil);
     4: TheFrame := TJvLabelsFrm.Create(nil);
-    6: TheFrame := TJvEditsFrm.Create(nil);
-    7: TheFrame := TJvEdits.Create(NIL);
+    6: TheForm  := TJvZoomForm.Create(MainForm);
+    7: TheFrame := TJvEdits.Create(nil);
     8: TheFrame := TJvFilesFrm.Create(nil);
     9: TheFrame := TJvPanelsFrm.Create(nil);
-   10: TheFrame := TJvGraphicalFrm.Create(nil);
-   11: TheFrame := TJvSearchFileFrm.Create(nil);
+   10: TheForm  := TJvMonthCalendar2Form.Create(MainForm);
+   11: TheForm  := TJvSeachFilesForm.Create(MainForm);
    12: TheFrame := TJvDateTimeFrm.Create(nil);
    13: TheFrame := TJvChoosersFrm.Create(nil);
    14: TheFrame := TJvControls.Create(nil);
@@ -135,21 +117,58 @@ begin
    20: TheFrame := TJvClipboardViewerFrm.Create(nil);
    21: TheFrame := TJvBrowseFolderFrm.Create(nil);
    22: TheFrame := TJvInstallLabelFrm.Create(nil);
-   23: TheFrame := TJvWinDialogs.Create(NIL);
+   23: TheFrame := TJvWinDialogs.Create(nil);
+   24: TheFrame := TJvLogFileDemo.Create(nil);
+   25: TheForm  := TJvOutlookBarForm.Create(MainForm);
+   26: TheForm  := TJvControlsMainForm.Create(MainForm);
+   27: TheForm  := TJvChangeNotifyMainForm.Create(MainForm);
+   28: TheForm  := TJvCreateProcessForm.Create(MainForm);
+   29: TheForm  := TJvNTEventLogForm.Create(MainForm);
+   30: TheForm  := TJvHotKeyForm.Create(MainForm);
+   31: TheForm  := TJvWindowsListerForm.Create(MainForm);
+   32: TheForm  := TJvColorCombo.Create(MainForm);
+   33: TheForm  := TJvColoredHint.Create(MainForm);
+   34: TheForm  := TJvContenScrollerForm.Create(MainForm);
+   35: TheForm  := TJvMailForm.Create(MainForm);
+   36: TheForm  := TJvTreeViewAsMenu.Create(MainForm);
+   37: TheForm  := TJvListCombForm.Create(MainForm);
+   38: TheForm  := TJvDBDateTimeForm.Create(MainForm);
+   39: TheForm  := TJvInspectorDBForm.Create(MainForm);
+   40: TheForm  := TJvMruListForm.Create(MainForm);
 
   else
-    TheFrame := tfrEmpty.create(NIL);
+    TheFrame := tfrEmpty.create(nil);
   end;
 
-  TheFrame.Parent := mainForm;
-  TheFrame.Align := alClient;
-  theFrame.Visible := true;
-  theFrame.SetFocus;
+  if TheFrame <> nil then
+  begin
+    TheFrame.Parent := pnlParent;
+    TheFrame.Align := alClient;
+    TheFrame.Visible := true;
+    TheFrame.SetFocus;
+  end;
+
+ if TheForm <> nil then
+ begin
+   TheForm.Parent := pnlParent;
+   TheForm.Visible := true;
+   TheForm.left := 10;
+   TheForm.top  := 10;
+   TheForm.SetFocus;
+  end;
 end;
 
-procedure TMainform.tv_mainClick(Sender: TObject);
+procedure TMainform.JvOutlookBar1ButtonClick(Sender: TObject; Index: Integer);
+var
+  P : TJvOutlookBarPage;
 begin
-  CreateFrame(tv_main.selected.AbsoluteIndex);
+  if (Index > -1) then
+  begin
+    P := JvOutlookBar1.Pages[JvOutlookBar1.ActivePageIndex];
+    CreateDemo(P.Buttons[Index].tag);
+  end;
 end;
 
 end.
+
+

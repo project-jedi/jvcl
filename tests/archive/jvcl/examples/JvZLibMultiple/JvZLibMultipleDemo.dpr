@@ -2,7 +2,7 @@ program JvZLibMultipleDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {frmMain};
+  ZLibMainFrm in 'ZLibMainFrm.pas' {frmMain};
 
 {$R *.res}
 

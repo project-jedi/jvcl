@@ -16,6 +16,7 @@ object JvBmpAnimatorFrm: TJvBmpAnimatorFrm
     CaptionFont.Height = -13
     CaptionFont.Name = 'Arial'
     CaptionFont.Style = [fsBold]
+    OutlookLook = False
     TabOrder = 0
     object Label1: TLabel
       Left = 197
@@ -61,7 +62,6 @@ object JvBmpAnimatorFrm: TJvBmpAnimatorFrm
       Width = 15
       Height = 21
       Associate = Edit1
-      Min = 0
       Max = 45
       Position = 5
       TabOrder = 1

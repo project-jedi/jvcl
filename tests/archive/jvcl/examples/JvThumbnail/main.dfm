@@ -372,11 +372,6 @@ object Form1: TForm1
       EndColor = clNavy
       Step = 0
       Solid = True
-      TextFont.Charset = DEFAULT_CHARSET
-      TextFont.Color = clWindowText
-      TextFont.Height = -11
-      TextFont.Name = 'MS Sans Serif'
-      TextFont.Style = []
       HintColor = clBtnFace
     end
   end

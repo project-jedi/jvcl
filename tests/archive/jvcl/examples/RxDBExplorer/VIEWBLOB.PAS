@@ -45,7 +45,9 @@ implementation
 
 {$R *.DFM}
 
-uses Messages, SysUtils, DBConsts, JvVCLUtils, JvMaxMin;
+uses
+  Messages, SysUtils, DBConsts, Math,
+  JvVCLUtils;
 
 const
   SBlobSize = 'Blob size: %s byte(s)';

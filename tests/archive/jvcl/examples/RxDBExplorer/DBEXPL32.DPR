@@ -14,7 +14,7 @@ uses
   JvDBExcpt,
   JvVCLUtils,
   Main in 'MAIN.PAS' {DBExplorerMainForm},
-  ChildWin in 'CHILDWIN.PAS' {MDIChild},
+  ChildWin2 in 'CHILDWIN2.PAS' {MDIChild},
   OpenDlg in 'OPENDLG.PAS' {OpenDatabaseDlg},
   DestTab in 'DESTTAB.PAS' {DestTableDlg},
   About in 'ABOUT.PAS' {AboutDlg},

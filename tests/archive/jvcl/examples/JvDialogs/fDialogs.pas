@@ -4,14 +4,13 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvCommonExecDlg, JvRenameError, JvDeleteError,
   JvCopyError, JvCommonDialogD, JvDiskPrompt, JvProgressDlg, 
-  JvSerialDlg, JvLoginDlg, JvExchListboxes, JvPasswordForm, JvDisconnectNetwork,
+  JvSerialDlg, JvLoginDlg, JvExchListboxes, JvPasswordForm,
   JvConnectNetwork, JvSelectDirectory, JvBaseDlg, JvFindFiles, JvComponent,
   JvWinDialogs, ComCtrls, JvBrowseFolder, JvPageSetupTitled, JvPageSetup,
-  JvAddPrinter, JvSHFmt, JvCalc;
+  JvAddPrinter, JvCalc;
 
 type
   TForm1 = class(TForm)
-    JvFormatDrive1: TJvFormatDrive;
     JvFindFiles1: TJvFindFilesDialog;
     JvBrowseFolder1: TJvBrowseForFolderDialog;   //TJvShellAbout;
     JvSelectDirectory1: TJvSelectDirectory;
@@ -61,6 +60,7 @@ type
     Button22: TButton;
     Button23: TButton;
     JvChooseIconDlg1: TJvChangeIconDialog;
+    JvFormatDriveDialog1: TJvFormatDriveDialog;
     JvRunDlg1: TJvRunDialog;
     JvFindComputerDlg1: TJvComputerNameDialog;
     JvObjectPropertiesDlg1: TJvObjectPropertiesDialog;
@@ -126,14 +126,17 @@ type
   public
     { Public declarations }
   end;
+
 var
   Form1: TForm1;
+
 implementation
+
 {$R *.DFM}
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  JvFormatDrive1.Execute;
+  JvFormatDriveDialog1.Execute;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -293,7 +296,6 @@ end;
 procedure TForm1.Button38Click(Sender: TObject);
 var
   WinDir: array[0..255] of char;
-  FileToFind: string;
 begin
   GetWindowsDirectory(WinDir, SizeOf(WinDir));
 

@@ -4,10 +4,11 @@ interface
 
 uses 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ImgList, JvComponent, JvInstallLabel, ExtCtrls, StdCtrls;
+  ImgList, JvComponent, JvInstallLabel, ExtCtrls, StdCtrls, JvCaptionPanel;
 
 type
   TJvInstallLabelFrm = class(TFrame)
+    JvCaptionPanel1: TJvCaptionPanel;
     Image1: TImage;
     Next: TButton;
     Button1: TButton;

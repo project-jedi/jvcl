@@ -182,7 +182,7 @@ implementation
 
 {$R *.DFM}
 
-uses DBInpReq, DBCbRest, SQLMon, Bde, JvVCLUtils, ChildWin, OpenDlg, 
+uses DBInpReq, DBCbRest, SQLMon, Bde, JvVCLUtils, ChildWin2, OpenDlg, 
   JvAppUtils, JvDBUtils, IniFiles, JvxLoginDlg, RenDlg, About, Options, OptDlg,
   JvBdeUtils, BdeProp, UserHelp, JvHints, ShellAPI;
 

@@ -5,20 +5,19 @@ interface
 uses 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   FileCtrl, JvDriveCtrls, StdCtrls, JvCombobox, JvListBox, JvLabel,
-  JvComponent, JvFileInfo;
+  JvComponent, JvFileInfo, ExtCtrls, JvCaptionPanel;
 
 type
   TJvFilesFrm = class(TFrame)
     JvLabel6: TJvLabel;
-    JvLabel7: TJvLabel;
     JvLabel8: TJvLabel;
-    JvLabel9: TJvLabel;
-    JvDirectoryListBox1: TJvDirectoryListBox;
-    JvDriveCombo1: TJvDriveCombo;
     JvDriveList1: TJvDriveList;
-    JvFileListBox1: TJvFileListBox;
     Label1: TLabel;
     Label2: TLabel;
+    JvCaptionPanel1: TJvCaptionPanel;
+    JvFileListBox1: TJvFileListBox;
+    JvDriveCombo1: TJvDriveCombo;
+    JvDirectoryListBox1: TJvDirectoryListBox;
   private
     { Private declarations }
   public

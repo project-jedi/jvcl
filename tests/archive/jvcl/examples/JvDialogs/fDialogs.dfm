@@ -17,9 +17,10 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 736
-    Height = 611
+    Height = 608
     ActivePage = TabSheet1
     Align = alClient
+    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Windows Dialogs'
@@ -352,12 +353,6 @@ object Form1: TForm1
       end
     end
   end
-  object JvFormatDrive1: TJvFormatDrive
-    FormatType = ftQuick
-    Capacity = dcDefault
-    Left = 104
-    Top = 474
-  end
   object JvFindFiles1: TJvFindFilesDialog
     SpecialFolder = sfRecycleBin
     UseSpecialFolder = False
@@ -477,7 +472,6 @@ object Form1: TForm1
     Top = 536
   end
   object JvOutOfSpaceDlg1: TJvDiskFullDialog
-    DriveChar = 'C'
     Left = 258
     Top = 532
   end
@@ -526,5 +520,11 @@ object Form1: TForm1
   object JvAddPrinterDialog1: TJvAddPrinterDialog
     Left = 312
     Top = 288
+  end
+  object JvFormatDriveDialog1: TJvFormatDriveDialog
+    FormatType = ftQuick
+    Capacity = dcDefault
+    Left = 544
+    Top = 200
   end
 end

@@ -44,7 +44,6 @@ FindReplaceDemo.exe \
 BasicDemo.exe \
 CollectionDemo.exe \
 SimpleHIDWrite.exe \
-GreyMouser.exe \
 ImageWindowDemo.exe \
 Install2LabelDemo.exe \
 JvAniProj.exe \
@@ -219,11 +218,6 @@ CollectionDemo.exe: HID\CollectionDemo\CollectionDemo.dpr
 
 SimpleHIDWrite.exe: HID\ReadWriteDemo\SimpleHIDWrite.dpr
   cd HID\ReadWriteDemo
-  $(DCCH) $&.dpr
-  cd ..\..
-
-GreyMouser.exe: HID\ThreadDemo\GreyMouser.dpr
-  cd HID\ThreadDemo
   $(DCCH) $&.dpr
   cd ..\..
 

@@ -7,9 +7,9 @@ object JvChoosersFrm: TJvChoosersFrm
   object JvLabel1: TJvLabel
     Left = 16
     Top = 43
-    Width = 82
+    Width = 86
     Height = 16
-    Caption = 'JvColorbutton'
+    Caption = 'JvColorButton:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -25,9 +25,9 @@ object JvChoosersFrm: TJvChoosersFrm
   object JvLabel2: TJvLabel
     Left = 336
     Top = 8
-    Width = 74
+    Width = 77
     Height = 13
-    Caption = 'JvGammaPanel'
+    Caption = 'JvGammaPanel:'
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -44,9 +44,9 @@ object JvChoosersFrm: TJvChoosersFrm
   object JvLabel3: TJvLabel
     Left = 336
     Top = 48
-    Width = 69
+    Width = 72
     Height = 13
-    Caption = 'JvColorSquare'
+    Caption = 'JvColorSquare:'
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -56,9 +56,9 @@ object JvChoosersFrm: TJvChoosersFrm
   object Label5: TLabel
     Left = 16
     Top = 120
-    Width = 107
+    Width = 110
     Height = 16
-    Caption = 'JvFontComboBox'
+    Caption = 'JvFontComboBox:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -70,9 +70,9 @@ object JvChoosersFrm: TJvChoosersFrm
   object JvLabel4: TJvLabel
     Left = 16
     Top = 81
-    Width = 113
+    Width = 116
     Height = 16
-    Caption = 'JvColorComboBox'
+    Caption = 'JvColorComboBox:'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
@@ -91,8 +91,6 @@ object JvChoosersFrm: TJvChoosersFrm
     Width = 65
     Height = 25
     Shape = atDownLeft
-    ArrowSize = 5
-    ArrowWidth = 5
   end
   object JvxLabel1: TJvxLabel
     Left = 41
@@ -101,11 +99,39 @@ object JvChoosersFrm: TJvChoosersFrm
     Height = 13
     Caption = 'change the font in the FontComboBox !'
   end
+  object Label2: TLabel
+    Left = 24
+    Top = 200
+    Width = 116
+    Height = 16
+    Caption = 'JvColorComboBox:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    Transparent = True
+  end
+  object Label1: TLabel
+    Left = 24
+    Top = 360
+    Width = 214
+    Height = 16
+    Caption = 'click me to Execute a JvColorDialog'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    Transparent = True
+    OnClick = Label1Click
+  end
   object JvColorButton1: TJvColorButton
     Left = 144
     Top = 40
     Width = 81
-    Height = 21
     OtherCaption = '&Other...'
     Options = []
   end
@@ -114,7 +140,7 @@ object JvChoosersFrm: TJvChoosersFrm
     Top = 117
     Width = 145
     Height = 22
-    FontName = '@Arial Unicode MS'
+    FontName = 'Arial'
     ItemIndex = 0
     Options = [foWysiWyg]
     Sorted = True
@@ -133,11 +159,22 @@ object JvChoosersFrm: TJvChoosersFrm
     TabOrder = 2
   end
   object JvGammaPanel1: TJvGammaPanel
-    Left = 424
+    Left = 432
     Top = 8
     Width = 65
     Height = 250
     AutoSize = True
     OnChangeColor = JvGammaPanel1ChangeColor
+  end
+  object JvColorBox1: TJvColorBox
+    Left = 48
+    Top = 224
+    Width = 78
+    Height = 96
+    BorderStyle = bsSingle
+  end
+  object JvColorDialog1: TJvColorDialog
+    Left = 256
+    Top = 208
   end
 end

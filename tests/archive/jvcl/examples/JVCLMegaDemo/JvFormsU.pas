@@ -32,10 +32,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons;
+  StdCtrls, Buttons, ExtCtrls, JvComponent, JvCaptionPanel;
 
 type
   TJvFormsFrm = class(TFrame)
+    JvCaptionPanel1: TJvCaptionPanel;
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;

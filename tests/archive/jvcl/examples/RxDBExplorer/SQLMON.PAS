@@ -57,7 +57,8 @@ procedure BufSetSize(Value: Integer);
 
 implementation
 
-uses Options, JvStrUtils, JvMaxMin;
+uses
+  Options, JvStrUtils, Math;
 
 {$R *.DFM}
 

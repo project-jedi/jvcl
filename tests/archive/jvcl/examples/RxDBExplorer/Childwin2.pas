@@ -25,7 +25,7 @@
   {$UNDEF USE_QR2}
 {$ENDIF}
 
-unit ChildWin;
+unit ChildWin2;
 
 interface
 

@@ -16,6 +16,7 @@ object JvArrowButtonFrm: TJvArrowButtonFrm
     CaptionFont.Height = -13
     CaptionFont.Name = 'Arial'
     CaptionFont.Style = [fsBold]
+    OutlookLook = False
     TabOrder = 0
     object ArrowButton1: TJvArrowButton
       Left = 120
@@ -80,10 +81,24 @@ object JvArrowButtonFrm: TJvArrowButtonFrm
       PressBoth = False
       Spacing = 9
     end
+    object Label1: TLabel
+      Left = 224
+      Top = 120
+      Width = 73
+      Height = 13
+      Caption = 'It is hottracked!'
+    end
+    object Label2: TLabel
+      Left = 224
+      Top = 168
+      Width = 148
+      Height = 26
+      Caption = 'This button can be donw or up.'#13#10'Press it to see this.'
+    end
   end
   object PopupMenu1: TPopupMenu
-    Left = 288
-    Top = 136
+    Left = 392
+    Top = 104
     object Add1: TMenuItem
       Caption = 'Add'
     end
@@ -104,8 +119,8 @@ object JvArrowButtonFrm: TJvArrowButtonFrm
     end
   end
   object ImageList1: TImageList
-    Left = 240
-    Top = 136
+    Left = 400
+    Top = 168
     Bitmap = {
       494C01010E000F00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001001000000000000020
