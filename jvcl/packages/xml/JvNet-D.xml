@@ -19,8 +19,8 @@
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvUrlListGrabberEditors.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvHtmlParserEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvUrlListGrabberEditors.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\design\JvHtmlParserEditor.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\design\JvMailEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvNetReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvParserForm.pas" Targets="all" Formname="FormParsers" Condition=""/>
