@@ -41,11 +41,11 @@ uses
   Classes, SysUtils;
 
 type
-  TJvTFVisibleScrollBars  = set of (vsbHorz, vsbVert);
+  TJvTFVisibleScrollBars = set of (vsbHorz, vsbVert);
   EJvTFDateError = class(Exception);
 
   TTFDayOfWeek = (dowSunday, dowMonday, dowTuesday, dowWednesday,
-                dowThursday, dowFriday, dowSaturday);
+    dowThursday, dowFriday, dowSaturday);
   TTFDaysOfWeek = set of TTFDayOfWeek;
 
   TJvTFVAlignment = (vaTop, vaCenter, vaBottom);
@@ -97,17 +97,16 @@ function DateToDOW(aDate: TDateTime): TTFDayOfWeek;
 
 procedure CalcTextPos(HostRect: TRect; var TextLeft, TextTop: Integer;
   var TextBounds: TRect; aFont: TFont; aAngle: Integer;
-  HAlign: TAlignment; VAlign: TJvTFVAlignment; aTxt: String);
+  HAlign: TAlignment; VAlign: TJvTFVAlignment; aTxt: string);
 
 procedure DrawAngleText(aCanvas: TCanvas; HostRect: TRect;
   var TextBounds: TRect; aAngle: Integer; HAlign: TAlignment;
-  VAlign: TJvTFVAlignment; aTxt: String);
+  VAlign: TJvTFVAlignment; aTxt: string);
 
-Function RectWidth(aRect: TRect): Integer;
-Function RectHeight(aRect: TRect): Integer;
+function RectWidth(ARect: TRect): Integer;
+function RectHeight(ARect: TRect): Integer;
 function EmptyRect: TRect;
 function IsClassByName(Obj: TObject; ClassName: ShortString): Boolean;
-
 
 implementation
 
@@ -121,7 +120,7 @@ resourcestring
   RsEResultDoesNotFallInMonth = 'Result does not fall in given month';
   RsEInvalidMonthValue = 'Invalid Month Value (%d)';
   RsEInvalidDayOfWeekValue = 'Invalid value for day of week (%d)';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 function ExtractYear(aDate: TDateTime): Word;
 var
@@ -160,7 +159,7 @@ begin
   WorkDate := EncodeDate(Year, Month, 1);
   FirstDayDOW := DayOfWeek(WorkDate);
   WorkDate := WorkDate + (DOW - FirstDayDOW);
-  If DOW < FirstDayDOW Then
+  if DOW < FirstDayDOW then
     WorkDate := WorkDate + 7;
 
   // WorkDate is now at the first DOW
@@ -169,16 +168,16 @@ begin
 
   Result := ExtractDay(WorkDate);
   // Finally, check to make sure WorkDate is in the given month
-  If Trunc(EncodeDate(Year, Month, 1)) <> Trunc(FirstOfMonth(WorkDate)) Then
-    Raise EJvTFDateError.Create(RsEResultDoesNotFallInMonth);
+  if Trunc(EncodeDate(Year, Month, 1)) <> Trunc(FirstOfMonth(WorkDate)) then
+    raise EJvTFDateError.Create(RsEResultDoesNotFallInMonth);
 end;
 
 function GetWeeksInMonth(Year, Month: Word; StartOfWeek: Integer): Word;
 var
   DOW,
-  EndOfWeek: Integer;
+    EndOfWeek: Integer;
   EOM,
-  WorkDate: TDateTime;
+    WorkDate: TDateTime;
 begin
   // Get the end of the week
   EndOfWeek := StartOfWeek;
@@ -194,26 +193,26 @@ begin
   DOW := DayOfWeek(WorkDate);
 
   // Advance WorkDate to the end of the week
-  While DOW <> EndOfWeek do
-    Begin
-      IncBorlDOW(DOW, 1);
-      WorkDate := WorkDate + 1;
-    End;
+  while DOW <> EndOfWeek do
+  begin
+    IncBorlDOW(DOW, 1);
+    WorkDate := WorkDate + 1;
+  end;
 
   // We're now on week 1
   Result := 1;
   // Now roll through the rest of the month
-  While Trunc(WorkDate) < Trunc(EOM) do
-    Begin
-      Inc(Result);
-      IncWeeks(WorkDate, 1);
-    End;
+  while Trunc(WorkDate) < Trunc(EOM) do
+  begin
+    Inc(Result);
+    IncWeeks(WorkDate, 1);
+  end;
 end;
 
 procedure IncBorlDOW(var BorlDOW: Integer; N: Integer); // N defaults to 1
 begin
   BorlDOW := (BorlDOW + (N mod 7)) mod 7;
-  If BorlDOW = 0 Then
+  if BorlDOW = 0 then
     BorlDOW := 7;
   BorlDOW := Abs(BorlDOW);
 end;
@@ -234,13 +233,11 @@ begin
   aDate := aDate + N;
 end;
 
-
 procedure IncWeeks(var aDate: TDateTime; N: Integer);
                                      // N defaults to 1
 begin
   aDate := aDate + N * 7;
 end;
-
 
 procedure IncMonths(var aDate: TDateTime; N: Integer);
                                       // N defaults to 1
@@ -252,12 +249,12 @@ begin
   Inc(M, N mod 12);
 
   // Be careful not to get invalid date in Feb.
-  If M = 2 Then
-    Begin
-      EOMD := ExtractDay(EndOfMonth(EncodeDate(Y, M, 1)));
-      If D > EOMD Then
-        D := EOMD;
-    End;
+  if M = 2 then
+  begin
+    EOMD := ExtractDay(EndOfMonth(EncodeDate(Y, M, 1)));
+    if D > EOMD then
+      D := EOMD;
+  end;
 
   aDate := EncodeDate(Y, M, D);
 end;
@@ -271,12 +268,12 @@ begin
   Inc(Y, N);
 
   // Be careful not to get invalid date in Feb.
-  If M = 2 Then
-    Begin
-      EOMD := ExtractDay(EndOfMonth(EncodeDate(Y, M, 1)));
-      If D > EOMD Then
-        D := EOMD;
-    End;
+  if M = 2 then
+  begin
+    EOMD := ExtractDay(EndOfMonth(EncodeDate(Y, M, 1)));
+    if D > EOMD then
+      D := EOMD;
+  end;
 
   aDate := EncodeDate(Y, M, D);
 end;
@@ -287,11 +284,11 @@ var
 begin
   DecodeDate(aDate, Y, M, D);
   Inc(M);
-  If M > 12 Then
-    Begin
-      M := 1;
-      Inc(Y);
-    End;
+  if M > 12 then
+  begin
+    M := 1;
+    Inc(Y);
+  end;
   Result := EncodeDate(Y, M, 1) - 1;
 end;
 
@@ -310,14 +307,14 @@ end;
 
 procedure EnsureMonth(Month: Word);
 begin
-  If (Month < 1) or (Month > 12) Then
-    Raise EJvTFDateError.CreateFmt(RsEInvalidMonthValue, [Month]);
+  if (Month < 1) or (Month > 12) then
+    raise EJvTFDateError.CreateFmt(RsEInvalidMonthValue, [Month]);
 end;
 
 procedure EnsureDOW(DOW: Word);
 begin
-  If (DOW < 1) or (DOW > 7) Then
-    Raise EJvTFDateError.CreateFmt(RsEInvalidDayOfWeekValue, [DOW]);
+  if (DOW < 1) or (DOW > 7) then
+    raise EJvTFDateError.CreateFmt(RsEInvalidDayOfWeekValue, [DOW]);
 end;
 
 function EqualDates(D1, D2: TDateTime): Boolean;
@@ -355,72 +352,72 @@ end;
 
 function Lesser(N1, N2: Integer): Integer;
 begin
-  If N1 < N2 Then
+  if N1 < N2 then
     Result := N1
-  Else
+  else
     Result := N2;
 end;
 
 function Greater(N1, N2: Integer): Integer;
 begin
-  If N1 > N2 Then
+  if N1 > N2 then
     Result := N1
-  Else
+  else
     Result := N2;
 end;
 
 function GetDivLength(TotalLength, DivCount, DivNum: Integer): Integer;
 begin
-  If (DivNum < 0) or (DivNum >= DivCount) Then
+  if (DivNum < 0) or (DivNum >= DivCount) then
     Result := -1
-  Else
-    Begin
-      Result := TotalLength div DivCount;
-      If DivNum < TotalLength mod DivCount Then
-        Inc(Result);
-    End;
+  else
+  begin
+    Result := TotalLength div DivCount;
+    if DivNum < TotalLength mod DivCount then
+      Inc(Result);
+  end;
 end;
 
 function GetDivNum(TotalLength, DivCount, X: Integer): Integer;
 var
   Base,
-  MakeUp,
-  MakeUpWidth: Integer;
+    MakeUp,
+    MakeUpWidth: Integer;
 begin
-  If (X < 0) or (X >= TotalLength) Then
+  if (X < 0) or (X >= TotalLength) then
     Result := -1
-  Else
-    Begin
-      Base := TotalLength div DivCount;
-      MakeUp := TotalLength mod DivCount;
-      MakeUpWidth := MakeUp * (Base + 1);
+  else
+  begin
+    Base := TotalLength div DivCount;
+    MakeUp := TotalLength mod DivCount;
+    MakeUpWidth := MakeUp * (Base + 1);
 
-      If X < MakeUpWidth Then
-        Result := X div (Base + 1)
-      Else
-        Result := (X - MakeUpWidth) div Base + MakeUp;
-    End;
+    if X < MakeUpWidth then
+      Result := X div (Base + 1)
+    else
+      Result := (X - MakeUpWidth) div Base + MakeUp;
+  end;
 end;
 
 function GetDivStart(TotalLength, DivCount, DivNum: Integer): Integer;
 var
   Base,
-  MakeUp,
-  MakeUpWidth: Integer;
+    MakeUp,
+    MakeUpWidth: Integer;
 begin
-  If (DivNum < 0) or (DivNum >= DivCount) Then
+  if (DivNum < 0) or (DivNum >= DivCount) then
     Result := -1
-  Else
-    Begin
-      Base := TotalLength div DivCount;
-      MakeUp := TotalLength mod DivCount;
-      MakeUpWidth := MakeUp * (Base + 1);
+  else
+  begin
+    Base := TotalLength div DivCount;
+    MakeUp := TotalLength mod DivCount;
+    MakeUpWidth := MakeUp * (Base + 1);
 
-      If DivNum <= MakeUp Then
-        Result := DivNum * (Base + 1)
-      Else
-        Result := (DivNum - MakeUp) * Base + MakeUpWidth;
-    End;
+    if DivNum <= MakeUp then
+      Result := DivNum * (Base + 1)
+    else
+      Result := (DivNum - MakeUp) * Base + MakeUpWidth;
+  end;
 end;
 
 function DOWToBorl(aDOW: TTFDayOfWeek): Integer;
@@ -447,20 +444,22 @@ end;
 // It is used here with his permission.  Thanks Joerg!          //
 // He can be reached at jlingner@t-online.de                    //
 //////////////////////////////////////////////////////////////////
+
 procedure CalcTextPos(HostRect: TRect; var TextLeft, TextTop: Integer;
   var TextBounds: TRect; aFont: TFont; aAngle: Integer;
-  HAlign: TAlignment; VAlign: TJvTFVAlignment; aTxt: String);
+  HAlign: TAlignment; VAlign: TJvTFVAlignment; aTxt: string);
 {==========================================================================}
 { Calculate text pos. depend. on: Font, Escapement, Alignment and length   }
 {--------------------------------------------------------------------------}
-var DC     : HDC;
-    hSavFont: HFont;
-    Size   : TSize;
-    x,y    : Integer;
+var
+  DC: HDC;
+  hSavFont: HFont;
+  Size: TSize;
+  x, y: Integer;
     //cStr   : array[0..255] of Char;
-    PTxt: PChar;
-    a, b, c, d: Integer;
-    lb, lt, rb, rt: TPoint;
+  PTxt: PChar;
+  a, b, c, d: Integer;
+  lb, lt, rb, rt: TPoint;
 begin
   aAngle := aAngle div 10;
 
@@ -484,79 +483,88 @@ begin
   x := 0;
   y := 0;
 
-  if aAngle<=90 then
-    begin             { 1.Quadrant }
-      x := 0;
-      y := Trunc(Size.cx * sin(aAngle*Pi/180));
-    end
-  else if aAngle<=180 then
-    begin             { 2.Quadrant }
-      x := Trunc(Size.cx * -cos(aAngle*Pi/180));
-      y := Trunc(Size.cx *  sin(aAngle*Pi/180) + Size.cy * cos((180-aAngle)*Pi/180));
-    end
-  else if aAngle<=270 then
-    begin             { 3.Quadrant }
-      x := Trunc(Size.cx * -cos(aAngle*Pi/180) + Size.cy * sin((aAngle-180)*Pi/180));
-      y := Trunc(Size.cy * sin((270-aAngle)*Pi/180));
-    end
-  else if aAngle<=360 then
-    begin             { 4.Quadrant }
-      x := Trunc(Size.cy * sin((360-aAngle)*Pi/180));
-      y := 0;
-    end;
+  if aAngle <= 90 then
+  begin { 1.Quadrant }
+    x := 0;
+    y := Trunc(Size.cx * sin(aAngle * Pi / 180));
+  end
+  else
+  if aAngle <= 180 then
+  begin { 2.Quadrant }
+    x := Trunc(Size.cx * -cos(aAngle * Pi / 180));
+    y := Trunc(Size.cx * sin(aAngle * Pi / 180) + Size.cy * cos((180 - aAngle) * Pi / 180));
+  end
+  else
+  if aAngle <= 270 then
+  begin { 3.Quadrant }
+    x := Trunc(Size.cx * -cos(aAngle * Pi / 180) + Size.cy * sin((aAngle - 180) * Pi / 180));
+    y := Trunc(Size.cy * sin((270 - aAngle) * Pi / 180));
+  end
+  else
+  if aAngle <= 360 then
+  begin { 4.Quadrant }
+    x := Trunc(Size.cy * sin((360 - aAngle) * Pi / 180));
+    y := 0;
+  end;
 
   TextLeft := HostRect.Left + x;
   TextTop := HostRect.Top + y;
-  //aRect.Top := aRect.Top + y;
-  //aRect.Left := aRect.Left + x;
+  //ARect.Top := ARect.Top + y;
+  //ARect.Left := ARect.Left + x;
 
-  x := Abs(Trunc(Size.cx * cos(aAngle*Pi/180))) + Abs(Trunc(Size.cy * sin(aAngle*Pi/180)));
-  y := Abs(Trunc(Size.cx * sin(aAngle*Pi/180))) + Abs(Trunc(Size.cy * cos(aAngle*Pi/180)));
+  x := Abs(Trunc(Size.cx * cos(aAngle * Pi / 180))) + Abs(Trunc(Size.cy * sin(aAngle * Pi / 180)));
+  y := Abs(Trunc(Size.cx * sin(aAngle * Pi / 180))) + Abs(Trunc(Size.cy * cos(aAngle * Pi / 180)));
 
-  Case HAlign of
+  case HAlign of
     taCenter:
-      //aRect.Left := aRect.Left + ((RectWidth(SaveRect) - X) div 2);
+      //ARect.Left := ARect.Left + ((RectWidth(SaveRect) - X) div 2);
       TextLeft := TextLeft + ((RectWidth(HostRect) - x) div 2);
     taRightJustify:
-      //aRect.Left := aRect.Left + RectWidth(SaveRect) - X;
+      //ARect.Left := ARect.Left + RectWidth(SaveRect) - X;
       TextLeft := TextLeft + RectWidth(HostRect) - x;
-  End;
+  end;
 
-  Case VAlign of
-    vaCenter :
-      //aRect.Top := aRect.Top + ((RectHeight(SaveRect) - Y) div 2);
+  case VAlign of
+    vaCenter:
+      //ARect.Top := ARect.Top + ((RectHeight(SaveRect) - Y) div 2);
       TextTop := TextTop + ((RectHeight(HostRect) - y) div 2);
-    vaBottom :
-      //aRect.Top := aRect.Top + RectHeight(SaveRect) - Y;
+    vaBottom:
+      //ARect.Top := ARect.Top + RectHeight(SaveRect) - Y;
       TextTop := TextTop + RectHeight(HostRect) - y;
-  End;
+  end;
 
-  //aRect.Right := aRect.Left + X;
-  //aRect.Bottom := aRect.Top + Y;
+  //ARect.Right := ARect.Left + X;
+  //ARect.Bottom := ARect.Top + Y;
 //********************************************
 //  calculate the border areas
 
-  a := Trunc(Size.cy * sin(aAngle*Pi/180));
-  b := Trunc(Size.cy * cos(aAngle*Pi/180));
-  c := Trunc(Size.cx * cos(aAngle*Pi/180));
-  d := Trunc(Size.cx * sin(aAngle*Pi/180));
+  a := Trunc(Size.cy * sin(aAngle * Pi / 180));
+  b := Trunc(Size.cy * cos(aAngle * Pi / 180));
+  c := Trunc(Size.cx * cos(aAngle * Pi / 180));
+  d := Trunc(Size.cx * sin(aAngle * Pi / 180));
 
-  //lt := aRect.TopLeft;
+  //lt := ARect.TopLeft;
   lt := Point(TextLeft, TextTop);
-  lb := lt; lb.x := lb.x + a; lb.y := lb.y + b;
-  rb := lb; rb.x := rb.x + c; rb.y := rb.y - d;
-  rt := rb; rt.x := rt.x - a; rt.y := rt.y - b;
+  lb := lt;
+  lb.x := lb.x + a;
+  lb.y := lb.y + b;
+  rb := lb;
+  rb.x := rb.x + c;
+  rb.y := rb.y - d;
+  rt := rb;
+  rt.x := rt.x - a;
+  rt.y := rt.y - b;
 
-  TextBounds.Left   := Lesser(Lesser(lt.x,lb.x),Lesser(rb.x,rt.x));
-  TextBounds.Right  := Greater(Greater(lt.x,lb.x),Greater(rb.x,rt.x));
-  TextBounds.Top    := Lesser(Lesser(lt.y,lb.y),Lesser(rb.y,rt.y));
-  TextBounds.Bottom := Greater(Greater(lt.y,lb.y),Greater(rb.y,rt.y));
+  TextBounds.Left := Lesser(Lesser(lt.x, lb.x), Lesser(rb.x, rt.x));
+  TextBounds.Right := Greater(Greater(lt.x, lb.x), Greater(rb.x, rt.x));
+  TextBounds.Top := Lesser(Lesser(lt.y, lb.y), Lesser(rb.y, rt.y));
+  TextBounds.Bottom := Greater(Greater(lt.y, lb.y), Greater(rb.y, rt.y));
 //*********************************************************************************************
 end;
 
 procedure DrawAngleText(aCanvas: TCanvas; HostRect: TRect;
   var TextBounds: TRect; aAngle: Integer; HAlign: TAlignment;
-  VAlign: TJvTFVAlignment; aTxt: String);
+  VAlign: TJvTFVAlignment; aTxt: string);
 var
   {$IFDEF VCL}
   LogFont: TLogFont;
@@ -566,9 +574,9 @@ var
   PTxt: PChar;
   ClipRgn: HRgn;
   TextLeft,
-  TextTop: Integer;
+    TextTop: Integer;
 begin
-  //TxtRect := aRect;
+  //TxtRect := ARect;
   //CalcTextPos(TxtRect, aCanvas.Font, aAngle, HAlign, VAlign, aTxt);
   CalcTextPos(HostRect, TextLeft, TextTop, TextBounds, aCanvas.Font, aAngle,
     HAlign, VAlign, aTxt);
@@ -583,12 +591,11 @@ begin
   PTxt := StrAlloc((Length(aTxt) + 4) * SizeOf(Char));
   StrPCopy(PTxt, aTxt);
   {$IFDEF VCL}
-  //ClipRgn := Windows.CreateRectRgn(aRect.Left, aRect.Top,
-    //                               aRect.Right, aRect.Bottom);
+  //ClipRgn := Windows.CreateRectRgn(ARect.Left, ARect.Top,
+    //                               ARect.Right, ARect.Bottom);
   ClipRgn := Windows.CreateRectRgn(HostRect.Left, HostRect.Top,
-                                   HostRect.Right, HostRect.Bottom);
+    HostRect.Right, HostRect.Bottom);
   Windows.SelectClipRgn(aCanvas.Handle, ClipRgn);
-
 
   //Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
   TxtRect := Rect(TextLeft, TextTop, TextLeft + 1, TextTop + 1);
@@ -601,9 +608,8 @@ begin
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   ClipRgn := CreateRectRgn(HostRect.Left, HostRect.Top,
-                                   HostRect.Right, HostRect.Bottom);
+    HostRect.Right, HostRect.Bottom);
   SelectClipRgn(aCanvas.Handle, ClipRgn);
-
 
   //Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
   TxtRect := Rect(TextLeft, TextTop, TextLeft + 1, TextTop + 1);
@@ -615,18 +621,18 @@ begin
   aCanvas.Font.Handle := nil;
   {$ENDIF VisualCLX}
 
-  //aRect := TxtRect;
+  //ARect := TxtRect;
 end;
 
-Function RectWidth(aRect: TRect): Integer;
-Begin
-  Result := aRect.Right - aRect.Left;
-End;
+function RectWidth(ARect: TRect): Integer;
+begin
+  Result := ARect.Right - ARect.Left;
+end;
 
-Function RectHeight(aRect: TRect): Integer;
-Begin
-  Result := aRect.Bottom - aRect.Top;
-End;
+function RectHeight(ARect: TRect): Integer;
+begin
+  Result := ARect.Bottom - ARect.Top;
+end;
 
 function EmptyRect: TRect;
 begin
@@ -639,13 +645,12 @@ var
 begin
   Result := False;
   ClassRef := Obj.ClassType;
-  While (ClassRef <> nil) and not Result do
-    If ClassRef.ClassName = ClassName Then
+  while (ClassRef <> nil) and not Result do
+    if ClassRef.ClassName = ClassName then
       Result := True
-    Else
+    else
       ClassRef := ClassRef.ClassParent;
 end;
 
 end.
-
 

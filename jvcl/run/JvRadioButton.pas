@@ -72,7 +72,7 @@ type
     procedure SetLeftText(const Value: Boolean);
     function GetLinkedControls: TJvLinkedControls;
     procedure SetLinkedControls(const Value: TJvLinkedControls);
-    procedure BmSetCheck(var Msg:TMessage); message BM_SETCHECK;
+    procedure BMSetCheck(var Msg:TMessage); message BM_SETCHECK;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
     procedure MouseEnter(AControl: TControl); override;
@@ -339,7 +339,7 @@ procedure TJvRadioButton.CheckLinkedControls;
 var
   I: Integer;
 begin
-  if (LinkedControls <> nil) then
+  if LinkedControls <> nil then
     for I := 0 to LinkedControls.Count - 1 do
       with LinkedControls[I] do
         if Control <> nil then
@@ -364,7 +364,7 @@ begin
   FLinkedControls.Assign(Value);
 end;
 
-procedure TJvRadioButton.BmSetCheck(var Msg: TMessage);
+procedure TJvRadioButton.BMSetCheck(var Msg: TMessage);
 begin
   inherited;
   CheckLinkedControls;

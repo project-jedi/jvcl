@@ -186,7 +186,7 @@ uses
   Consts,
   JvThemes, JvJCLUtils;
 
-{$R ..\resources\JvCtrls.res}
+{$R ..\Resources\JvCtrls.res}
 
 const
   JvImgBtnModalResults: array [TJvImgBtnKind] of TModalResult =

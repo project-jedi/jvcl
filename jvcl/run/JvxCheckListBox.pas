@@ -305,7 +305,7 @@ const
 function CheckBitmap: TBitmap;
 
 implementation
-{$R ..\resources\JvxCheckListBox.res}
+{$R ..\Resources\JvxCheckListBox.res}
 
 uses
   SysUtils, Consts, Math,

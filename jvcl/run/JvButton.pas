@@ -97,18 +97,18 @@ type
     procedure RepaintBackground;virtual;
 
 
-    property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
+    property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default False;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
 
     property MouseStates: TJvButtonMouseStates read FStates write FStates default [];
-    property ForceSameSize: Boolean read FForceSameSize write SetForceSameSize default false;
+    property ForceSameSize: Boolean read FForceSameSize write SetForceSameSize default False;
     property Pattern: TBitmap read GetPattern;
-    property Flat: Boolean read FFlat write SetFlat default true;
-    property HotTrack: Boolean read FHotTrack write FHotTrack default false;
+    property Flat: Boolean read FFlat write SetFlat default True;
+    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
-    property Down: Boolean read FDown write SetDown default false;
+    property Down: Boolean read FDown write SetDown default False;
     property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
 
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -146,10 +146,10 @@ type
     {$ENDIF VCL}
     function GetRealCaption: string; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    property WordWrap: Boolean read FWordWrap write SetWordWrap default true;
-    property ForceSameSize: Boolean read FForceSameSize write SetForceSameSize default false;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
+    property ForceSameSize: Boolean read FForceSameSize write SetForceSameSize default False;
     property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
-    property HotTrack: Boolean read FHotTrack write FHotTrack default false;
+    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
@@ -210,8 +210,8 @@ begin
   FStates := [];
   SetBounds(0, 0, 40, 40);
   FBuffer := TBitmap.Create;
-  FFlat := true;
-  FForceSameSize := false;
+  FFlat := True;
+  FForceSameSize := False;
   FHotFont := TFont.Create;
   FHotTrackFontOptions := DefaultTrackFontOptions;
 end;
@@ -355,8 +355,10 @@ begin
   begin
     DropDownMenu.PopupComponent := Self;
     case DropDownMenu.Alignment of
-      paRight:  Inc(X,Width);
-      paCenter: Inc(X,Width div 2);
+      paRight:
+         Inc(X, Width);
+      paCenter:
+        Inc(X, Width div 2);
     end;
     DropDownMenu.Popup(X, Y);
     {$IFDEF VCL}
@@ -367,7 +369,7 @@ begin
     {$IFDEF VisualCLX}
     repeat
       Application.ProcessMessages; // (ahuser) does this really do the job?
-    until QWidget_isVisible(DropDownMenu.handle) = false; // (asn) it did not, now it does
+    until not QWidget_isVisible(DropDownMenu.handle); // (asn) it did not, now it does
     {$ENDIF VisualCLX}
     { release button }
     MouseUp(Button, Shift, X, Y);
@@ -390,7 +392,7 @@ end;
 procedure TJvCustomGraphicButton.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = DropDownMenu) then
     DropDownMenu := nil;
 end;
@@ -398,10 +400,10 @@ end;
 procedure TJvCustomGraphicButton.SetDown(Value: Boolean);
 begin
   if GroupIndex <> 0 then
-    Value := false;
+    Value := False;
   if FDown <> Value then
   begin
-    if FDown and (not AllowAllUp) then
+    if FDown and not AllowAllUp then
       Exit;
     FDown := Value;
     if FDown then
@@ -501,7 +503,7 @@ begin
     begin
       if Sender.Down and Down then
       begin
-        Down := false;
+        Down := False;
         Exclude(FStates, bsMouseDown);
         RepaintBackground;
       end;
@@ -551,13 +553,13 @@ constructor TJvCustomButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FColor := clInfoBk;
-  FHotTrack := false;
+  FHotTrack := False;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
   // ControlStyle := ControlStyle + [csAcceptsControls];
-  FOver := false;
-  FWordWrap := true;
-  FForceSameSize := false;
+  FOver := False;
+  FWordWrap := True;
+  FForceSameSize := False;
   FHotTrackFontOptions := DefaultTrackFontOptions;
 end;
 
@@ -618,7 +620,7 @@ begin
       FFontSave.Assign(Font);
       Font.Assign(FHotFont);
     end;
-    FOver := true;
+    FOver := True;
     inherited MouseEnter(Control);
   end;
 end;
@@ -630,7 +632,7 @@ begin
     Application.HintColor := FSaved;
     if FHotTrack then
       Font.Assign(FFontSave);
-    FOver := false;
+    FOver := False;
     inherited MouseLeave(Control);
   end;
 end;
@@ -680,7 +682,7 @@ var
   Form: TCustomForm;
   Msg: TCMForceSize;
 begin
-  inherited;
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if ForceSameSize then
   begin
     Form := GetParentForm(Self);
@@ -717,7 +719,7 @@ begin
   if (Parent <> nil) and Parent.HandleAllocated then
   begin
     R := BoundsRect;
-    InvalidateRect(Parent.Handle,@R, true);
+    InvalidateRect(Parent.Handle,@R, True);
   end;
   Repaint;
 end;

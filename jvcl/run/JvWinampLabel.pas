@@ -142,11 +142,11 @@ const
   Row3: string[31] = 'бжд?* ';
 
 {$IFDEF MSWINDOWS}
-{$R ..\resources\JvWinampLabel.res}
+{$R ..\Resources\JvWinampLabel.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 {$R ../Resources/JvWinampLabel.res}
-{$ENDIF}
+{$ENDIF LINUX}
 
 
 //=== TJvWinampThread ========================================================

@@ -52,6 +52,7 @@ const
 
 {$HPPEMIT '#define TDate Controls::TDate'}
 {$HPPEMIT '#define TTime Controls::TTime'}
+
 type
   // Redeclaration of this type.  It is used in JvTFMonths.TJvTFDrawDWTitleEvent.
   // If not redeclared here, Delphi complains of 'unknown type' because it
@@ -713,7 +714,7 @@ type
     procedure ActivateHint(Rect: TRect; const AHint: string); override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure ActivateHint(Rect: TRect; const AHint: widestring); override;
+    procedure ActivateHint(Rect: TRect; const AHint: WideString); override;
     {$ENDIF VisualCLX}
     procedure ApptHint(Appt: TJvTFAppt; X, Y: Integer;
       ShowDatesTimes, ShowDesc, FormattedDesc: Boolean); virtual;
@@ -947,7 +948,7 @@ type
     property PageCount: Integer read GetPageCount;
     {$IFDEF VCL}
     property Pages[Index: Integer]: TMetafile read GetPage;
-    {$ENDIF}
+    {$ENDIF VCL}
     function ConvertMeasure(Value: Integer; FromMeasure,
       ToMeasure: TJvTFPrinterMeasure; Horizontal: Boolean): Integer;
     function ScreenToPrinter(Value: Integer; Horizontal: Boolean): Integer;
@@ -1060,7 +1061,6 @@ type
 
 {$HPPEMIT '#undef TDate'}
 {$HPPEMIT '#undef TTime'}
-
 
 implementation
 
@@ -3769,12 +3769,12 @@ begin
 end;
 {$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvTFHint.ActivateHint(Rect: TRect; const AHint: widestring);
-{$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvTFHint.ActivateHint(Rect: TRect; const AHint: string);
 {$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvTFHint.ActivateHint(Rect: TRect; const AHint: WideString);
+{$ENDIF VisualCLX}
 begin
   PrepTimer(False);
   inherited;
@@ -4385,15 +4385,20 @@ begin
   {$ENDIF VisualCLX}
   if (FromMeasure = pmPixels) and (ToMeasure = pmInches) then
     Result := round(Value / PPI * 100)
-  else if (FromMeasure = pmPixels) and (ToMeasure = pmMM) then
+  else
+  if (FromMeasure = pmPixels) and (ToMeasure = pmMM) then
     Result := round(Value / PPI * 100 * MMFactor)
-  else if (FromMeasure = pmInches) and (ToMeasure = pmPixels) then
+  else
+  if (FromMeasure = pmInches) and (ToMeasure = pmPixels) then
     Result := round(Value / 100 * PPI)
-  else if (FromMeasure = pmInches) and (ToMeasure = pmMM) then
+  else
+  if (FromMeasure = pmInches) and (ToMeasure = pmMM) then
     Result := round(Value * MMFactor)
-  else if (FromMeasure = pmMM) and (ToMeasure = pmPixels) then
+  else
+  if (FromMeasure = pmMM) and (ToMeasure = pmPixels) then
     Result := round(Value / MMFactor / 100 * PPI)
-  else if (FromMeasure = pmMM) and (ToMeasure = pmInches) then
+  else
+  if (FromMeasure = pmMM) and (ToMeasure = pmInches) then
     Result := round(Value / MMFactor)
   else
     Result := Value;
@@ -4401,13 +4406,22 @@ end;
 
 constructor TJvTFPrinter.Create(AOwner: TComponent);
 begin
-  inherited;
-
+  inherited Create(AOwner);
   CreateLayout;
   FMeasure := pmInches;
   FPages := TStringlist.Create;
   FBodies := TStringlist.Create;
   InitializeMargins;
+end;
+
+destructor TJvTFPrinter.Destroy;
+begin
+  FreeDoc;
+  FBodies.Free;
+  FPages.Free;
+
+  FPageLayout.Free;
+  inherited;
 end;
 
 procedure TJvTFPrinter.CreateDoc;
@@ -4428,16 +4442,6 @@ end;
 procedure TJvTFPrinter.CreateLayout;
 begin
   FPageLayout := TJvTFPrinterPageLayout.Create(Self);
-end;
-
-destructor TJvTFPrinter.Destroy;
-begin
-  FreeDoc;
-  FBodies.Free;
-  FPages.Free;
-
-  FPageLayout.Free;
-  inherited;
 end;
 
 procedure TJvTFPrinter.DrawBody(aCanvas: TCanvas; ARect: TRect;
@@ -4631,6 +4635,7 @@ begin
   Result := TMetafile(FPages.Objects[Index]);
 end;
 {$ENDIF VCL}
+
 function TJvTFPrinter.GetPageCount: Integer;
 begin
   case State of
@@ -4858,23 +4863,15 @@ begin
   ScreenPPI := Screen.PixelsPerInch;
   {$IFDEF VCL}
   if Horizontal then
-  begin
-    PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSX);
-  end
+    PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSX)
   else
-  begin
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSY);
-  end;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   if Horizontal then
-  begin
-    PrinterPPI := GetDeviceCaps(Printer.Handle, LOGPIXELSX);
-  end
+    PrinterPPI := GetDeviceCaps(Printer.Handle, LOGPIXELSX)
   else
-  begin
     PrinterPPI := GetDeviceCaps(Printer.Handle, LOGPIXELSY);
-  end;
   {$ENDIF VisualCLX}
   Result := Trunc(PrinterPPI / ScreenPPI * Value);
 end;
@@ -4890,9 +4887,12 @@ begin
   // Allow negative value...
   // SetMargin will catch that case and throw exception
   case Index of
-    1: FMarginOffsets.Left := Value;
-    2: FMarginOffsets.Top := Value;
-    3: FMarginOffsets.Right := Value;
+    1:
+      FMarginOffsets.Left := Value;
+    2:
+      FMarginOffsets.Top := Value;
+    3:
+      FMarginOffsets.Right := Value;
   else
     FMarginOffsets.Bottom := Value;
   end;

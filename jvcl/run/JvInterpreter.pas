@@ -1079,7 +1079,7 @@ uses
   {$ENDIF JvInterpreter_OLEAUTO}
   JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils, JvResources, JvTypes;
 
-{$R ..\resources\JvInterpreter.res} { error messages }
+{$R ..\Resources\JvInterpreter.res} { error messages }
 
 { internal structures }
 type

@@ -381,7 +381,7 @@ uses
   Controls, SysUtils,
   JclGraphUtils, JvThemes, JvConsts, JvResources;
 
-{$R ..\resources\JvSegmentedLEDDisplay.res}
+{$R ..\Resources\JvSegmentedLEDDisplay.res}
 
 var
   GDigitClassList: TThreadList = nil;
