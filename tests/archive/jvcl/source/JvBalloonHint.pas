@@ -1,0 +1,1476 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvBalloonHint.PAS, released on 2001-02-28.
+
+The Initial Developer of the Original Code is Remko Bonte <remkobonte@myrealbox.com>
+Portions created by Remko Bonte are Copyright (C) 2001 Remko Bonte.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2002-12-21
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
+unit JvBalloonHint;
+
+interface
+
+uses
+  Windows, Controls, Classes, Graphics, Messages, Forms, ImgList, JvComponent;
+
+type
+  TJvStemSize = (ssSmall, ssNormal, ssLarge);
+  TJvIconKind = (ikCustom, ikNone, ikApplication, ikError, ikInformation, ikQuestion, ikWarning);
+  TJvBalloonOption = (boUseDefaultHeader, boUseDefaultIcon, boUseDefaultImageIndex,
+    boShowCloseBtn, boCustomAnimation, boPlaySound);
+  TJvBalloonOptions = set of TJvBalloonOption;
+  TJvApplicationHintOption = (ahShowHeaderInHint, ahShowIconInHint, ahUseBalloonAsHint,
+    ahPlaySound);
+  TJvApplicationHintOptions = set of TJvApplicationHintOption;
+  TJvBalloonPosition = (bpAuto, bpLeftDown, bpRightDown, bpLeftUp, bpRightUp);
+  TJvAnimationStyle = (atNone, atSlide, atRoll, atRollHorNeg, atRollHorPos, atRollVerNeg,
+    atRollVerPos, atSlideHorNeg, atSlideHorPos, atSlideVerNeg, atSlideVerPos, atCenter, atBlend);
+
+  TJvBalloonHint = class;
+
+  PHintData = ^THintData;
+  THintData = record
+    RAnchorWindow: TCustomForm;
+    { Position of the stem point inside the client rect of the anchor window: }
+    RAnchorPosition: TPoint;
+    { Position of the stem point inside the client rect of the balloon window: }
+    RStemPointPosition: TPoint;
+    RHeader: string;
+    RHint: string;
+    RIconKind: TJvIconKind;
+    RImageIndex: TImageIndex;
+    RVisibleTime: Integer;
+    RShowCloseBtn: Boolean;
+    RAnimationStyle: TJvAnimationStyle;
+    RAnimationTime: Cardinal;
+    { If the position of the balloon needs to be changed - for example if
+      DefaultBalloonPosition = bpAuto - RSwitchHeight indicates how much we
+      change the vertical position; if the balloon is an application hint,
+      RSwitchHeight is the height of the cursor; if the balloon is attached to
+      a control, RSwitchHeight is the height of that control }
+    RSwitchHeight: Integer;
+  end;
+
+  TJvBalloonWindow = class(THintWindow)
+  private
+    FCurrentPosition: TJvBalloonPosition;
+    FDeltaY: Integer;
+    FSwitchHeight: Integer;
+
+    FShowIcon: Boolean;
+    FShowHeader: Boolean;
+
+    FMsg: string;
+    FHeader: string;
+    FMessageTop: Integer;
+    FTipHeight: Integer;
+    FTipWidth: Integer;
+    FTipDelta: Integer;
+    FImageSize: TSize;
+    function GetStemPointPosition: TPoint;
+    function GetStemPointPositionInRect(const ARect: TRect): TPoint;
+  protected
+    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
+    procedure CMShowingChanged(var Message: TMessage); message CM_SHOWINGCHANGED;
+    procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
+
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure NCPaint(DC: HDC); override;
+    procedure Paint; override;
+
+    function CreateRegion: HRGN;
+    procedure UpdateRegion;
+    procedure CalcAutoPosition(var ARect: TRect);
+    procedure CheckPosition(var ARect: TRect);
+
+    function CalcOffset(const ARect: TRect): TPoint;
+    function CalcHeaderRect(MaxWidth: Integer): TRect; virtual;
+    function CalcMsgRect(MaxWidth: Integer): TRect; virtual;
+    procedure Init(AData: Pointer); virtual;
+  public
+    procedure ActivateHint(Rect: TRect; const AHint: string); override;
+    function CalcHintRect(MaxWidth: Integer; const AHint: string;
+      AData: Pointer): TRect; override;
+    property StemPointPosition: TPoint read GetStemPointPosition;
+  end;
+
+  TJvBalloonWindowEx = class(TJvBalloonWindow)
+  private
+    FCtrl: TJvBalloonHint;
+    FCloseBtnRect: TRect;
+    FCloseState: Cardinal;
+    FImageIndex: TImageIndex;
+    FIconKind: TJvIconKind;
+    FAnimationTime: Cardinal;
+    FAnimationStyle: TJvAnimationStyle;
+
+    FShowCloseBtn: Boolean;
+    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
+  protected
+    procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
+    procedure WMMouseMove(var Message: TWMMouseMove); message WM_MOUSEMOVE;
+    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure WMLButtonUp(var Message: TWMLButtonUp); message WM_LBUTTONUP;
+    procedure WMActivateApp(var Message: TWMActivateApp); message WM_ACTIVATEAPP;
+
+    procedure Paint; override;
+
+    procedure InternalActivateHint(var Rect: TRect; const AHint: string);
+    procedure MoveWindow(NewPos: TPoint);
+    procedure ChangeCloseState(const AState: Cardinal);
+
+    function CalcHeaderRect(MaxWidth: Integer): TRect; override;
+    procedure Init(AData: Pointer); override;
+  end;
+
+  TJvBalloonHint = class(TJvComponent)
+  private
+    FHint: TJvBalloonWindowEx;
+    FActive: Boolean;
+    FTimerHandle: Word;
+    FOptions: TJvBalloonOptions;
+    FImages: TCustomImageList;
+    FDefaultHeader: string;
+    FDefaultIcon: TJvIconKind;
+    FDefaultImageIndex: TImageIndex;
+    FData: THintData;
+    FApplicationHintOptions: TJvApplicationHintOptions;
+    FDefaultBalloonPosition: TJvBalloonPosition;
+    FCustomAnimationTime: Cardinal;
+    FCustomAnimationStyle: TJvAnimationStyle;
+    FOldHintWindowClass: THintWindowClass;
+    procedure SetOptions(const Value: TJvBalloonOptions);
+    procedure SetImages(const Value: TCustomImageList);
+    procedure SetApplicationHintOptions(const Value: TJvApplicationHintOptions);
+  protected
+    function HookProc(var Message: TMessage): Boolean;
+    procedure Hook;
+    procedure Unhook;
+
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
+    procedure StartHintTimer(Value: Integer);
+    procedure StopHintTimer;
+
+    procedure InternalActivateHintPos;
+    procedure InternalActivateHint(ACtrl: TControl);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure ActivateHint(ACtrl: TControl; const AHint: string; const AHeader: string = ''; const
+      VisibleTime: Integer = 5000); overload;
+    procedure ActivateHint(ACtrl: TControl; const AHint: string; const AImageIndex: TImageIndex;
+      const AHeader: string = ''; const VisibleTime: Integer = 5000); overload;
+    procedure ActivateHint(ACtrl: TControl; const AHint: string; const AIconKind: TJvIconKind;
+      const AHeader: string = ''; const VisibleTime: Integer = 5000); overload;
+    procedure ActivateHintPos(AAnchorWindow: TCustomForm; AAnchorPosition: TPoint;
+      const AHeader, AHint: string; const VisibleTime: Integer = 5000;
+      const AIconKind: TJvIconKind = ikInformation; const AImageIndex: TImageIndex = -1);
+    procedure CancelHint;
+  published
+    property CustomAnimationStyle: TJvAnimationStyle read FCustomAnimationStyle write
+      FCustomAnimationStyle default atBlend;
+    property CustomAnimationTime: Cardinal read FCustomAnimationTime write FCustomAnimationTime
+      default 100;
+    property DefaultBalloonPosition: TJvBalloonPosition read FDefaultBalloonPosition write
+      FDefaultBalloonPosition default bpAuto;
+    property DefaultImageIndex: TImageIndex read FDefaultImageIndex write FDefaultImageIndex
+      default -1;
+    property DefaultHeader: string read FDefaultHeader write FDefaultHeader;
+    property DefaultIcon: TJvIconKind read FDefaultIcon write FDefaultIcon default ikInformation;
+    property Images: TCustomImageList read FImages write SetImages;
+    property Options: TJvBalloonOptions read FOptions write SetOptions default [boShowCloseBtn];
+    property ApplicationHintOptions: TJvApplicationHintOptions read FApplicationHintOptions write
+      SetApplicationHintOptions default [ahShowHeaderInHint, ahShowIconInHint];
+  end;
+
+implementation
+
+uses
+  SysUtils, CommCtrl, Registry, JvMaxMin, JvWndProcHook, JvFunctions,
+  MMSystem; // needed for sndPlaySound
+
+const
+  { TJvStemSize = (ssSmall, ssNormal, ssLarge);
+    ssLarge isn't used (yet)
+  }
+  CTipHeight: array[TJvStemSize] of Integer = (8, 16, 24);
+  CTipWidth: array[TJvStemSize] of Integer = (8, 16, 24);
+  CTipDelta: array[TJvStemSize] of Integer = (16, 15, 17);
+
+type
+  TGlobalCtrl = class(TComponent)
+  private
+    FMainCtrl: TJvBalloonHint;
+    FDefaultImages: TImageList;
+    FSounds: array[TJvIconKind] of string;
+    FBkColor: TColor;
+    function GetMainCtrl: TJvBalloonHint;
+    procedure GetDefaultSounds;
+    procedure GetDefaultImages;
+    procedure SetMainCtrl(ACtrl: TJvBalloonHint);
+    procedure SetBkColor(const Value: TColor);
+  protected
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    class function Instance: TGlobalCtrl;
+    function HintImageSize: TSize; overload;
+    function HintImageSize(const AIconKind: TJvIconKind;
+      const AImageIndex: TImageIndex): TSize; overload;
+    procedure DrawHintImage(Canvas: TCanvas; X, Y: Integer; const ABkColor: TColor); overload;
+    procedure DrawHintImage(Canvas: TCanvas; X, Y: Integer; const AIconKind: TJvIconKind;
+      const AImageIndex: TImageIndex; const ABkColor: TColor); overload;
+    procedure PlaySound(const AIconKind: TJvIconKind);
+
+    property MainCtrl: TJvBalloonHint read GetMainCtrl write SetMainCtrl;
+    property BkColor: TColor read FBkColor write SetBkColor;
+  end;
+
+var
+  GGlobalCtrl: TGlobalCtrl = nil;
+
+procedure HintTimerProc(Wnd: HWND; Msg, TimerID, SysTime: Longint); stdcall;
+begin
+  try
+    TGlobalCtrl.Instance.MainCtrl.CancelHint;
+  except
+    Application.HandleException(Application);
+  end;
+end;
+
+{ TJvBalloonWindow }
+
+procedure TJvBalloonWindow.ActivateHint(Rect: TRect; const AHint: string);
+begin
+  if HandleAllocated and IsWindowVisible(Handle) then
+    ShowWindow(Handle, SW_HIDE);
+
+  CheckPosition(Rect);
+
+  Inc(Rect.Bottom, 4);
+  UpdateBoundsRect(Rect);
+  Dec(Rect.Bottom, 4);
+
+  UpdateRegion;
+
+  with TGlobalCtrl.Instance do
+    if ahPlaySound in MainCtrl.ApplicationHintOptions then
+      PlaySound(MainCtrl.DefaultIcon);
+  inherited;
+end;
+
+procedure TJvBalloonWindow.CalcAutoPosition(var ARect: TRect);
+var
+  NewPosition: TJvBalloonPosition;
+  ScreenRect: TRect;
+  LStemPointPosition: TPoint;
+begin
+
+  { bpAuto returns the same value as bpLeftDown; bpLeftDown is choosen
+    arbitrary }
+  FCurrentPosition := bpLeftDown;
+  ScreenRect := Screen.WorkAreaRect;
+
+  { Note: 2*(Left + Width div 2) = 2*(Left + (Right-Left) div 2) ~=
+          2*Left + (Right-Left) = Left + Right;
+
+          Thus multiply everything with 2
+
+         Monitor:
+     |---------------|
+     |       |       |
+     |   1   |   2   |
+     |       |       |
+     |---------------|
+     |       |       |
+     |   3   |   4   |
+     |       |       |
+     |---------------|
+
+  }
+  with GetStemPointPositionInRect(ARect) do
+    LStemPointPosition := Point(X * 2, Y * 2);
+
+  if LStemPointPosition.Y < ScreenRect.Top + ScreenRect.Bottom then
+  begin
+    if LStemPointPosition.X < ScreenRect.Left + ScreenRect.Right then
+      { 1 }
+      NewPosition := bpLeftUp
+    else
+      { 2 }
+      NewPosition := bpRightUp;
+  end
+  else
+  begin
+    if LStemPointPosition.X < ScreenRect.Left + ScreenRect.Right then
+      { 3 }
+      NewPosition := bpLeftDown
+    else
+      { 4 }
+      NewPosition := bpRightDown;
+  end;
+
+  if NewPosition <> FCurrentPosition then
+  begin
+    { Reset the offset.. }
+    with CalcOffset(ARect) do
+      OffsetRect(ARect, -X, -Y);
+
+    FCurrentPosition := NewPosition;
+
+    { ..and set the offset }
+    with CalcOffset(ARect) do
+      OffsetRect(ARect, X, Y);
+  end;
+
+  case FCurrentPosition of
+    bpLeftDown, bpRightDown: FDeltaY := FTipHeight;
+    bpLeftUp, bpRightUp: FDeltaY := 0;
+  end;
+end;
+
+function TJvBalloonWindow.CalcHeaderRect(MaxWidth: Integer): TRect;
+begin
+  if FShowHeader then
+  begin
+    Result := Rect(0, 0, MaxWidth, 0);
+    Canvas.Font.Style := Canvas.Font.Style + [fsBold];
+    DrawText(Canvas.Handle, PChar(FHeader), -1, Result, DT_CALCRECT or DT_LEFT or
+      DT_WORDBREAK or DT_NOPREFIX or DrawTextBiDiModeFlagsReadingOnly);
+
+    { Other }
+    Inc(Result.Right, 13);
+    Inc(Result.Bottom, 11);
+
+    if FShowIcon then
+      with FImageSize do
+      begin
+        { Include image }
+        Inc(Result.Right, cx + 8);
+        Result.Bottom := Max(Result.Bottom, cy + 11);
+      end;
+  end
+  else if FShowIcon then
+    with FImageSize do
+      Result := Rect(0, 0, cx + 11, cy + 11)
+  else
+    SetRectEmpty(Result);
+end;
+
+function TJvBalloonWindow.CalcHintRect(MaxWidth: Integer; const AHint: string;
+  AData: Pointer): TRect;
+var
+  MsgRect, HeaderRect: TRect;
+  StemSize: TJvStemSize;
+begin
+  Init(AData);
+
+  FMsg := AHint;
+
+  { Calc HintRect }
+  MsgRect := CalcMsgRect(MaxWidth);
+
+  { Calc HeaderRect }
+  HeaderRect := CalcHeaderRect(MaxWidth);
+  if IsRectEmpty(HeaderRect) then
+  begin
+    HeaderRect.Bottom := 9;
+    FMessageTop := 7;
+    StemSize := ssSmall;
+  end
+  else
+  begin
+    Inc(HeaderRect.Right, 12);
+    FMessageTop := HeaderRect.Bottom + 1;
+    StemSize := ssNormal;
+  end;
+
+  FTipHeight := CTipHeight[StemSize];
+  FTipWidth := CTipWidth[StemSize];
+  FTipDelta := CTipDelta[StemSize];
+
+  { Combine }
+  Result := Rect(0, 0, Max(MsgRect.Right, HeaderRect.Right),
+    HeaderRect.Bottom + MsgRect.Bottom + FTipHeight + 13);
+
+  with CalcOffset(Result) do
+    OffsetRect(Result, X, Y);
+  { bpAuto returns the same value as bpLeftDown; bpLeftDown is choosen
+    arbitrary }
+  case FCurrentPosition of
+    bpAuto, bpLeftDown, bpRightDown: FDeltaY := FTipHeight;
+    bpLeftUp, bpRightUp: FDeltaY := 0;
+  end;
+end;
+
+function IsWinXP: Boolean;
+begin
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and
+    (Win32MajorVersion >= 5) and (Win32MinorVersion >= 1);
+end;
+
+function TJvBalloonWindow.CalcMsgRect(MaxWidth: Integer): TRect;
+begin
+  if FMsg > '' then
+  begin
+    Result := Rect(0, 0, MaxWidth, 0);
+    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
+    DrawText(Canvas.Handle, PChar(FMsg), -1, Result, DT_CALCRECT or DT_LEFT or
+      DT_WORDBREAK or DT_NOPREFIX or DrawTextBiDiModeFlagsReadingOnly);
+
+    { Other }
+    Inc(Result.Right, 27);
+  end
+  else
+    SetRectEmpty(Result);
+end;
+
+function TJvBalloonWindow.CalcOffset(const ARect: TRect): TPoint;
+begin
+  with ARect do
+    case FCurrentPosition of
+      { bpAuto returns the same value as bpLeftDown; bpLeftDown is choosen
+        arbitrary }
+      bpAuto, bpLeftDown: Result := Point(Left - Right + FTipDelta, 0);
+      bpRightDown: Result := Point(-FTipDelta, 0);
+      bpLeftUp: Result := Point(Left - Right + FTipDelta, Top - Bottom - FSwitchHeight);
+      bpRightUp: Result := Point(-FTipDelta, Top - Bottom - FSwitchHeight);
+    end;
+end;
+
+procedure TJvBalloonWindow.CheckPosition(var ARect: TRect);
+var
+  NewPosition: TJvBalloonPosition;
+  ScreenRect: TRect;
+begin
+  if FCurrentPosition = bpAuto then
+    CalcAutoPosition(ARect);
+
+  NewPosition := FCurrentPosition;
+  ScreenRect := Screen.WorkAreaRect;
+
+  if ARect.Bottom > ScreenRect.Bottom - ScreenRect.Top then
+  begin
+    if NewPosition = bpLeftDown then
+      NewPosition := bpLeftUp
+    else if NewPosition = bpRightDown then
+      NewPosition := bpRightUp;
+  end;
+  if ARect.Right > ScreenRect.Right - ScreenRect.Left then
+  begin
+    if NewPosition = bpRightDown then
+      NewPosition := bpLeftDown
+    else if NewPosition = bpRightUp then
+      NewPosition := bpLeftUp;
+  end;
+  if ARect.Left < ScreenRect.Left then
+  begin
+    if NewPosition = bpLeftDown then
+      NewPosition := bpRightDown
+    else if NewPosition = bpLeftUp then
+      NewPosition := bpRightUp;
+  end;
+  if ARect.Top < ScreenRect.Top then
+  begin
+    if NewPosition = bpLeftUp then
+      NewPosition := bpLeftDown
+    else if NewPosition = bpRightUp then
+      NewPosition := bpRightDown;
+  end;
+
+  if NewPosition <> FCurrentPosition then
+  begin
+    { Reset the offset.. }
+    with CalcOffset(ARect) do
+      OffsetRect(ARect, -X, -Y);
+    FCurrentPosition := NewPosition;
+
+    { ..and set the offset }
+    with CalcOffset(ARect) do
+      OffsetRect(ARect, X, Y);
+  end;
+
+  case FCurrentPosition of
+    bpLeftDown, bpRightDown: FDeltaY := FTipHeight;
+    bpLeftUp, bpRightUp: FDeltaY := 0;
+  end;
+end;
+
+procedure TJvBalloonWindow.CMShowingChanged(var Message: TMessage);
+begin
+  inherited;
+  { In response of RecreateWnd, SetParentWindow calls }
+  UpdateRegion;
+end;
+
+procedure TJvBalloonWindow.CMTextChanged(var Message: TMessage);
+begin
+  {inherited;}
+end;
+
+procedure TJvBalloonWindow.CreateParams(var Params: TCreateParams);
+const
+  CS_DROPSHADOW = $00020000;
+begin
+  inherited CreateParams(Params);
+
+  { Drop shadow in combination with custom animation may cause blurry effect,
+    no solution.
+  }
+  if IsWinXP then
+    Params.WindowClass.Style := Params.WindowClass.Style or CS_DROPSHADOW
+end;
+
+function TJvBalloonWindow.CreateRegion: HRGN;
+var
+  Rect: TRect;
+  RegionRound, RegionTip: HRGN;
+  ptTail: array[0..2] of TPoint;
+begin
+  SetRect(Rect, 0, 0, Width, Height);
+
+  case FCurrentPosition of
+    bpLeftDown:
+      begin
+        {         0
+                / |
+               /  |
+              /   |
+             2----1
+        }
+
+        ptTail[0] := Point(Rect.Right - (FTipDelta + 1), 0);
+        ptTail[1] := Point(Rect.Right - (FTipDelta + 1), FTipHeight + 1);
+        ptTail[2] := Point(Rect.Right - (FTipDelta + FTipWidth + 2), FTipHeight + 1);
+      end;
+    bpRightDown:
+      begin
+        {    0
+             | \
+             |  \
+             |   \
+             1----2
+        }
+        ptTail[0] := Point(FTipDelta + 1, 0);
+        ptTail[1] := Point(FTipDelta + 1, FTipHeight + 1);
+        ptTail[2] := Point(FTipDelta + FTipWidth + 2, FTipHeight + 1);
+      end;
+    bpLeftUp:
+      begin
+        {    2----1
+              \   |
+               \  |
+                \ |
+                  0
+        }
+
+        ptTail[0] := Point(Rect.Right - (FTipDelta + 1), Rect.Bottom + 1);
+        ptTail[1] := Point(Rect.Right - (FTipDelta + 1), Rect.Bottom - (FTipHeight + 1));
+        ptTail[2] := Point(Rect.Right - (FTipDelta + FTipWidth + 2), Rect.Bottom - (FTipHeight +
+          1));
+      end;
+    bpRightUp:
+      begin
+        {    1----2
+             |   /
+             |  /
+             | /
+             0
+        }
+
+        ptTail[0] := Point(FTipDelta + 1, Rect.Bottom);
+        ptTail[1] := Point(FTipDelta + 1, Rect.Bottom - (FTipHeight + 1));
+        ptTail[2] := Point(FTipDelta + FTipWidth + 2, Rect.Bottom - (FTipHeight + 1));
+      end;
+  end;
+
+  RegionTip := CreatePolygonRgn(ptTail, 3, WINDING);
+  case FCurrentPosition of
+    bpLeftDown, bpRightDown:
+      RegionRound := CreateRoundRectRgn(1, FTipHeight + 1, Width, Height - 3, 11, 11);
+  else {bpLeftUp, bpRightUp:}
+    RegionRound := CreateRoundRectRgn(1, 1, Rect.Right, Rect.Bottom - FTipHeight, 11, 11);
+  end;
+  Result := CreateRectRgn(0, 0, 1, 1);
+
+  CombineRgn(Result, RegionTip, RegionRound, RGN_OR);
+  DeleteObject(RegionTip);
+  DeleteObject(RegionRound);
+end;
+
+function TJvBalloonWindow.GetStemPointPosition: TPoint;
+begin
+  Result := GetStemPointPositionInRect(BoundsRect);
+end;
+
+function TJvBalloonWindow.GetStemPointPositionInRect(
+  const ARect: TRect): TPoint;
+begin
+  { bpAuto returns the same value as bpLeftDown; bpLeftDown is choosen
+    arbitrary }
+  with ARect do
+    case FCurrentPosition of
+      bpAuto, bpLeftDown: Result := Point(Right - FTipDelta, Top);
+      bpRightDown: Result := Point(Left + FTipDelta, Top);
+      bpLeftUp: Result := Point(Right - FTipDelta, Bottom);
+      bpRightUp: Result := Point(Left + FTipDelta, Bottom);
+    end;
+end;
+
+procedure TJvBalloonWindow.Init(AData: Pointer);
+begin
+  with TGlobalCtrl.Instance.MainCtrl do
+  begin
+    FShowIcon := (ahShowIconInHint in ApplicationHintOptions) and
+      (DefaultIcon <> ikNone) and
+      ((DefaultIcon <> ikCustom) or (DefaultImageIndex > -1));
+    FShowHeader := (ahShowHeaderInHint in ApplicationHintOptions) and (DefaultHeader > '');
+    FHeader := DefaultHeader;
+    FCurrentPosition := DefaultBalloonPosition;
+  end;
+
+  FImageSize := TGlobalCtrl.Instance.HintImageSize;
+  FSwitchHeight := GetSystemMetrics(SM_CYCURSOR);
+end;
+
+procedure TJvBalloonWindow.NCPaint(DC: HDC);
+begin
+end;
+
+procedure TJvBalloonWindow.Paint;
+var
+  HintRect: TRect;
+  HeaderRect: TRect;
+begin
+  HintRect := ClientRect;
+
+  if FShowIcon then
+    TGlobalCtrl.Instance.DrawHintImage(Canvas, 12, FDeltaY + 8, Color);
+
+  if FMsg > '' then
+  begin
+    Inc(HintRect.Left, 12);
+    Inc(HintRect.Top, FDeltaY + FMessageTop);
+    Canvas.Font.Color := Screen.HintFont.Color;
+    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
+    DrawText(Canvas.Handle, PChar(FMsg), -1, HintRect, DT_LEFT or DT_NOPREFIX or
+      DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+  end;
+
+  if FShowHeader then
+  begin
+    HeaderRect := ClientRect;
+    Inc(HeaderRect.Left, 12);
+    if FShowIcon then
+      Inc(HeaderRect.Left, FImageSize.cx + 8);
+    Inc(HeaderRect.Top, FDeltaY + 8);
+    Canvas.Font.Style := Canvas.Font.Style + [fsBold];
+    DrawText(Canvas.Handle, PChar(FHeader), -1, HeaderRect, DT_LEFT or DT_NOPREFIX or
+      DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+  end;
+end;
+
+procedure TJvBalloonWindow.UpdateRegion;
+var
+  Region: HRGN;
+begin
+  Region := CreateRegion;
+  if SetWindowRgn(Handle, CreateRegion, False) = 0 then
+    DeleteObject(Region);
+  { MSDN: After a successful call to SetWindowRgn, the system owns the region
+    specified by the region handle hRgn. The system does not make a copy of
+    the region. Thus, you should not make any further function calls with
+    this region handle. In particular, do not delete this region handle. The
+    system deletes the region handle when it no longer needed. }
+end;
+
+procedure TJvBalloonWindow.WMEraseBkgnd(var Message: TWmEraseBkgnd);
+var
+  Brush, BrushBlack: HBRUSH;
+  Region: HRGN;
+begin
+  Brush := CreateSolidBrush(ColorToRGB(Color));
+  BrushBlack := CreateSolidBrush(0);
+  try
+    Region := CreateRegion;
+    OffsetRgn(Region, -1, -1);
+    FillRgn(Message.DC, Region, Brush);
+    FrameRgn(Message.DC, Region, BrushBlack, 1, 1);
+    DeleteObject(Region);
+  finally
+    DeleteObject(Brush);
+    DeleteObject(BrushBlack);
+  end;
+  Message.Result := 1;
+end;
+
+{ TJvBalloonHint }
+
+procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint,
+  AHeader: string; const VisibleTime: Integer);
+begin
+  if not Assigned(ACtrl) then
+    Exit;
+
+  CancelHint;
+
+  with FData do
+  begin
+    RHint := AHint;
+    RHeader := AHeader;
+    RVisibleTime := VisibleTime;
+    RIconKind := ikNone;
+  end;
+
+  InternalActivateHint(ACtrl);
+end;
+
+procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint: string;
+  const AImageIndex: TImageIndex; const AHeader: string;
+  const VisibleTime: Integer);
+begin
+  if not Assigned(ACtrl) then
+    Exit;
+
+  CancelHint;
+
+  with FData do
+  begin
+    RHint := AHint;
+    RIconKind := ikCustom;
+    RImageIndex := AImageIndex;
+    RHeader := AHeader;
+    RVisibleTime := VisibleTime;
+  end;
+
+  InternalActivateHint(ACtrl);
+end;
+
+procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint: string;
+  const AIconKind: TJvIconKind; const AHeader: string;
+  const VisibleTime: Integer);
+begin
+  if not Assigned(ACtrl) then
+    Exit;
+
+  CancelHint;
+
+  with FData do
+  begin
+    RHint := AHint;
+    RIconKind := AIconKind;
+    RImageIndex := -1;
+    RHeader := AHeader;
+    RVisibleTime := VisibleTime;
+  end;
+
+  InternalActivateHint(ACtrl);
+end;
+
+procedure TJvBalloonHint.ActivateHintPos(AAnchorWindow: TCustomForm; AAnchorPosition: TPoint;
+  const AHeader, AHint: string; const VisibleTime: Integer; const AIconKind: TJvIconKind;
+  const AImageIndex: TImageIndex);
+begin
+  CancelHint;
+
+  if not Assigned(AAnchorWindow) then
+    Exit;
+
+  with FData do
+  begin
+    RAnchorWindow := AAnchorWindow;
+    RAnchorPosition := AAnchorPosition;
+    RHeader := AHeader;
+    RHint := AHint;
+    RVisibleTime := VisibleTime;
+    RIconKind := AIconKind;
+    RImageIndex := AImageIndex;
+    RSwitchHeight := GetSystemMetrics(SM_CYCURSOR);
+  end;
+
+  InternalActivateHintPos;
+end;
+
+procedure TJvBalloonHint.CancelHint;
+begin
+  if not FActive then
+    Exit;
+
+  FActive := False;
+  StopHintTimer;
+  UnHook;
+
+  if GetCapture = FHint.Handle then
+    ReleaseCapture;
+  ShowWindow(FHint.Handle, SW_HIDE);
+end;
+
+constructor TJvBalloonHint.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FActive := False;
+  FHint := TJvBalloonWindowEx.Create(Self);
+  FHint.FCtrl := Self;
+  FOptions := [boShowCloseBtn];
+  FApplicationHintOptions := [ahShowHeaderInHint, ahShowIconInHint];
+  FDefaultIcon := ikInformation;
+  FDefaultBalloonPosition := bpRightDown;
+  FDefaultImageIndex := -1;
+  FCustomAnimationTime := 100;
+  FCustomAnimationStyle := atBlend;
+  TGlobalCtrl.Instance.MainCtrl := Self;
+end;
+
+destructor TJvBalloonHint.Destroy;
+begin
+  CancelHint;
+  StopHintTimer;
+  { This will implicity reset the global HintWindowClass var.: }
+  ApplicationHintOptions := [];
+  inherited;
+end;
+
+procedure TJvBalloonHint.Hook;
+begin
+  RegisterWndProcHook(FData.RAnchorWindow, HookProc, hoBeforeMsg);
+end;
+
+function TJvBalloonHint.HookProc(var Message: TMessage): Boolean;
+begin
+  Result := False;
+  case Message.Msg of
+    WM_MOVE:
+      with FData do
+        FHint.MoveWindow(RAnchorWindow.ClientToScreen(RAnchorPosition));
+    WM_SIZE:
+      with FData do
+        if not PtInRect(RAnchorWindow.ClientRect, RStemPointPosition) then
+          CancelHint;
+    WM_SHOWWINDOW:
+      CancelHint;
+    WM_CLOSE:
+      CancelHint;
+  end;
+end;
+
+procedure TJvBalloonHint.InternalActivateHint(ACtrl: TControl);
+var
+  LParentForm: TCustomForm;
+begin
+  if not Assigned(ACtrl) then
+    Exit;
+
+  LParentForm := GetParentForm(ACtrl);
+  with ACtrl, FData do
+  begin
+    RAnchorWindow := LParentForm;
+    if LParentForm = ACtrl then
+    begin
+      RAnchorPosition := Point(Width div 2, ClientHeight);
+      case FDefaultBalloonPosition of
+        bpLeftDown, bpRightDown:
+          RSwitchHeight := 0;
+        bpLeftUp, bpRightUp:
+          RSwitchHeight := ClientHeight;
+      end;
+    end
+    else
+    begin
+      RAnchorPosition := ClientToParent(Point(Width div 2, Height), LParentForm);
+      case FDefaultBalloonPosition of
+        bpLeftDown, bpRightDown:
+          RSwitchHeight := 0;
+        bpLeftUp, bpRightUp:
+          RSwitchHeight := Height;
+      end;
+    end;
+    if boCustomAnimation in Options then
+    begin
+      RAnimationStyle := FCustomAnimationStyle;
+      RAnimationTime := FCustomAnimationTime;
+    end
+    else
+    begin
+      RAnimationStyle := atBlend;
+      RAnimationTime := 100;
+    end;
+
+    RSwitchHeight := ACtrl.Height;
+  end;
+
+  InternalActivateHintPos;
+end;
+
+procedure TJvBalloonHint.InternalActivateHintPos;
+var
+  Rect: TRect;
+begin
+  with FData do
+  begin
+    { Use defaults if necessairy: }
+    if boUseDefaultHeader in Options then
+      RHeader := DefaultHeader;
+    if boUseDefaultIcon in Options then
+      RIconKind := DefaultIcon;
+    if boUseDefaultImageIndex in Options then
+      RImageIndex := DefaultImageIndex;
+    RShowCloseBtn := boShowCloseBtn in Options;
+
+    FActive := True;
+    Hook;
+    Rect := FHint.CalcHintRect(Screen.Width, RHint, @FData);
+    with RAnchorWindow.ClientToScreen(RAnchorPosition) do
+      OffsetRect(Rect, X, Y);
+
+    if boPlaySound in Options then
+      TGlobalCtrl.Instance.PlaySound(RIconKind);
+
+    FHint.InternalActivateHint(Rect, RHint);
+    RAnchorPosition := RAnchorWindow.ScreenToClient(Rect.TopLeft);
+    RStemPointPosition := RAnchorWindow.ScreenToClient(FHint.StemPointPosition);
+
+    { Last call because of possible CancelHint call in StartHintTimer }
+    if RVisibleTime > 0 then
+      StartHintTimer(RVisibleTime);
+    if GetCapture = 0 then
+      SetCapture(FHint.Handle);
+    ReleaseCapture;
+  end;
+end;
+
+procedure TJvBalloonHint.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = Images) then
+    Images := nil;
+end;
+
+procedure TJvBalloonHint.SetImages(const Value: TCustomImageList);
+begin
+  FImages := Value;
+  if Images <> nil then
+    Images.FreeNotification(Self);
+end;
+
+procedure TJvBalloonHint.SetApplicationHintOptions(
+  const Value: TJvApplicationHintOptions);
+var
+  ChangedOptions: TJvApplicationHintOptions;
+  IsMainCtrl: Boolean;
+begin
+  if Value = FApplicationHintOptions then
+    Exit;
+
+  ChangedOptions := FApplicationHintOptions + Value - (FApplicationHintOptions * Value);
+  IsMainCtrl := TGlobalCtrl.Instance.MainCtrl = Self;
+
+  FApplicationHintOptions := Value;
+
+  // boShowHeaderInHint, boShowIconInHint, boUseBalloonAsHint
+  if (ahUseBalloonAsHint in ChangedOptions) and not (csDesigning in ComponentState) then
+  begin
+    { Safety check, this is always true unless you use more than 1 TJvBalloonHint
+      control in a project, which is not a good idea }
+    if not IsMainCtrl then
+      { Flag can't be on if the control isn't the 'main' control }
+      Exclude(FApplicationHintOptions, ahUseBalloonAsHint)
+    else if ahUseBalloonAsHint in FApplicationHintOptions then
+    begin
+      { If flag is turned on then.. }
+      FOldHintWindowClass := HintWindowClass;
+      HintWindowClass := TJvBalloonWindow;
+    end
+    else
+      { If flag is turned off then.. }
+      HintWindowClass := FOldHintWindowClass;
+  end;
+end;
+
+procedure TJvBalloonHint.SetOptions(const Value: TJvBalloonOptions);
+begin
+  if Value = FOptions then
+    Exit;
+
+  FOptions := Value;
+end;
+
+procedure TJvBalloonHint.StartHintTimer(Value: Integer);
+begin
+  StopHintTimer;
+  FTimerHandle := SetTimer(0, 0, Value, @HintTimerProc);
+  if FTimerHandle = 0 then
+    CancelHint;
+end;
+
+procedure TJvBalloonHint.StopHintTimer;
+begin
+  if FTimerHandle <> 0 then
+  begin
+    KillTimer(0, FTimerHandle);
+    FTimerHandle := 0;
+  end;
+end;
+
+procedure TJvBalloonHint.Unhook;
+begin
+  UnRegisterWndProcHook(FData.RAnchorWindow, HookProc, hoBeforeMsg);
+end;
+
+{ TGlobalCtrl }
+
+constructor TGlobalCtrl.Create(AOwner: TComponent);
+begin
+  inherited;
+
+  if IsWinXP then
+  begin
+    FDefaultImages := TImageList.Create(nil);
+    FDefaultImages.BkColor := clNone;
+    { According to MSDN flag ILC_COLOR32 needs to be included (?) }
+    FDefaultImages.Handle := ImageList_Create(16, 16, ILC_COLORDDB or ILC_COLOR32 or ILC_MASK,
+      4, 4);
+  end
+  else
+    FDefaultImages := TImageList.CreateSize(16, 16);
+
+  FDefaultImages.BkColor := Application.HintColor;
+  FDefaultImages.Masked := True;
+
+  FBkColor := FDefaultImages.BkColor;
+
+  GetDefaultImages;
+  GetDefaultSounds;
+end;
+
+destructor TGlobalCtrl.Destroy;
+begin
+  FDefaultImages.Free;
+  inherited;
+end;
+
+procedure TGlobalCtrl.DrawHintImage(Canvas: TCanvas; X, Y: Integer; const ABkColor: TColor);
+begin
+  DrawHintImage(Canvas, X, Y, MainCtrl.DefaultIcon, MainCtrl.DefaultImageIndex, ABkColor);
+end;
+
+procedure TGlobalCtrl.DrawHintImage(Canvas: TCanvas; X, Y: Integer;
+  const AIconKind: TJvIconKind; const AImageIndex: TImageIndex; const ABkColor: TColor);
+const
+  CDefaultImages: array[TJvIconKind] of Integer = (-1, -1, 0, 1, 2, 3, 4);
+begin
+  case AIconKind of
+    ikCustom:
+      with MainCtrl do
+        if not Assigned(Images) or (AImageIndex < 0) or (AImageIndex >= Images.Count) then
+        begin
+          BkColor := ABkColor;
+          FDefaultImages.Draw(Canvas, X, Y, CDefaultImages[ikInformation]);
+        end
+        else
+          Images.Draw(Canvas, X, Y, AImageIndex);
+    ikNone:
+      ;
+  else
+    begin
+      BkColor := ABkColor;
+      FDefaultImages.Draw(Canvas, X, Y, CDefaultImages[AIconKind]);
+    end;
+  end;
+end;
+
+procedure TGlobalCtrl.GetDefaultImages;
+const
+  { ikApplication, ikError, ikInformation, ikQuestion, ikWarning }
+  CIcons: array[ikApplication..ikWarning] of Integer =
+  (OIC_SAMPLE, OIC_HAND, OIC_NOTE, OIC_QUES, OIC_BANG);
+var
+  IconKind: TJvIconKind;
+begin
+  { MSDN: Do not use DestroyIcon to destroy a shared icon. A shared icon is
+    valid as long as the module from which it was loaded remains in memory }
+  for IconKind := Low(CIcons) to High(CIcons) do
+    ImageList_AddIcon(FDefaultImages.Handle, LoadImage(0, MakeIntResource(CIcons[IconKind]),
+      IMAGE_ICON, 16, 16, LR_SHARED));
+end;
+
+procedure TGlobalCtrl.GetDefaultSounds;
+{ Taken from ActnMenus.pas }
+var
+  Registry: TRegistry;
+
+  function ReadSoundSetting(KeyStr: string): string;
+  var
+    S: string;
+  begin
+    Registry.RootKey := HKEY_CURRENT_USER;
+    Result := '';
+    if Registry.OpenKeyReadOnly('\AppEvents\Schemes\Apps\.Default\' + KeyStr) then
+    try
+      S := Registry.ReadString('');
+      SetLength(Result, 4096);
+      SetLength(Result, ExpandEnvironmentStrings(PChar(S), PChar(Result), 4096) - 1);
+    finally
+      Registry.CloseKey;
+    end;
+  end;
+
+begin
+  Registry := TRegistry.Create;
+  try
+    FSounds[ikCustom] := ReadSoundSetting('SystemNotification\.Current');
+    FSounds[ikNone] := FSounds[ikCustom];
+    FSounds[ikApplication] := FSounds[ikCustom];
+    FSounds[ikError] := ReadSoundSetting('SystemHand\.Current');
+    FSounds[ikInformation] := ReadSoundSetting('SystemAsterisk\.Current');
+    FSounds[ikQuestion] := ReadSoundSetting('SystemQuestion\.Current');
+    FSounds[ikWarning] := ReadSoundSetting('SystemExclamation\.Current');
+  finally
+    Registry.Free;
+  end;
+end;
+
+function TGlobalCtrl.GetMainCtrl: TJvBalloonHint;
+begin
+  if not Assigned(FMainCtrl) then
+    FMainCtrl := TJvBalloonHint.Create(Self);
+  Result := FMainCtrl;
+end;
+
+function TGlobalCtrl.HintImageSize: TSize;
+begin
+  Result := HintImageSize(MainCtrl.DefaultIcon, MainCtrl.DefaultImageIndex);
+end;
+
+function TGlobalCtrl.HintImageSize(const AIconKind: TJvIconKind;
+  const AImageIndex: TImageIndex): TSize;
+begin
+  case AIconKind of
+    ikCustom:
+      with MainCtrl do
+        if not Assigned(Images) or (AImageIndex < 0) or (AImageIndex >= Images.Count) then
+        begin
+          Result.cx := 16;
+          Result.cy := 16;
+        end
+        else
+        begin
+          Result.cx := Images.Width;
+          Result.cy := Images.Height;
+        end;
+    ikNone:
+      begin
+        Result.cx := 0;
+        Result.cy := 0;
+      end;
+  else
+    begin
+      Result.cx := 16;
+      Result.cy := 16;
+    end;
+  end;
+end;
+
+class function TGlobalCtrl.Instance: TGlobalCtrl;
+begin
+  if not Assigned(GGlobalCtrl) then
+    GGlobalCtrl := TGlobalCtrl.Create(nil);
+  Result := GGlobalCtrl;
+end;
+
+procedure TGlobalCtrl.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = FMainCtrl) and (Operation = opRemove) then
+    SetMainCtrl(nil);
+end;
+
+procedure TGlobalCtrl.PlaySound(const AIconKind: TJvIconKind);
+begin
+  if Length(FSounds[AIconKind]) > 0 then
+    sndPlaySound(PChar(FSounds[AIconKind]), SND_NOSTOP or SND_ASYNC);
+end;
+
+procedure TGlobalCtrl.SetBkColor(const Value: TColor);
+begin
+  if FBkColor <> Value then
+  begin
+    FBkColor := Value;
+    { Icons in windows XP use an alpha channel to 'blend' with the background.
+      If the background color changes, then the images must be redrawn - that is
+      I don't know an other solution :)
+    }
+    if IsWinXP then
+    begin
+      FDefaultImages.Clear;
+      FDefaultImages.BkColor := FBkColor;
+      GetDefaultImages;
+    end;
+  end;
+end;
+
+procedure TGlobalCtrl.SetMainCtrl(ACtrl: TJvBalloonHint);
+begin
+  if FMainCtrl = ACtrl then
+    Exit;
+
+  if Assigned(FMainCtrl) then
+  begin
+    FMainCtrl.RemoveFreeNotification(Self);
+    FMainCtrl.ApplicationHintOptions := FMainCtrl.ApplicationHintOptions - [ahUseBalloonAsHint];
+  end;
+
+  FMainCtrl := ACtrl;
+
+  if Assigned(FMainCtrl) then
+    FMainCtrl.FreeNotification(Self)
+end;
+
+{ TJvBalloonWindowEx }
+
+function TJvBalloonWindowEx.CalcHeaderRect(MaxWidth: Integer): TRect;
+begin
+  Result := inherited CalcHeaderRect(MaxWidth);
+  if FShowCloseBtn then
+  begin
+    Inc(Result.Right, 20);
+    if Result.Bottom < 20 then
+      Result.Bottom := 20;
+  end;
+end;
+
+procedure TJvBalloonWindowEx.ChangeCloseState(const AState: Cardinal);
+begin
+  if AState <> FCloseState then
+  begin
+    FCloseState := AState;
+    DrawFrameControl(Canvas.Handle, FCloseBtnRect, DFC_CAPTION, DFCS_TRANSPARENT or
+      DFCS_CAPTIONCLOSE or FCloseState);
+  end;
+end;
+
+procedure TJvBalloonWindowEx.CMTextChanged(var Message: TMessage);
+begin
+  {}
+end;
+
+procedure TJvBalloonWindowEx.Init(AData: Pointer);
+begin
+  Canvas.Font := Screen.HintFont;
+  Color := Application.HintColor;
+
+  with PHintData(AData)^ do
+  begin
+    FImageIndex := RImageIndex;
+    FIconKind := RIconKind;
+    FHeader := RHeader;
+
+    FShowHeader := FHeader > '';
+    FShowIcon := (FIconKind <> ikNone) and
+      ((FIconKind <> ikCustom) or (FImageIndex <> -1));
+    FShowCloseBtn := RShowCloseBtn;
+
+    FAnimationTime := RAnimationTime;
+    FAnimationStyle := RAnimationStyle;
+
+    FSwitchHeight := RSwitchHeight;
+  end;
+
+  FImageSize := TGlobalCtrl.Instance.HintImageSize(FIconKind, FImageIndex);
+  FCurrentPosition := FCtrl.DefaultBalloonPosition;
+end;
+
+procedure TJvBalloonWindowEx.InternalActivateHint(var Rect: TRect;
+  const AHint: string);
+const
+  {TJvAnimationStyle = (atNone, atSlide, atRoll, atRollHorNeg, atRollHorPos, atRollVerNeg,
+    atRollVerPos, atSlideHorNeg, atSlideHorPos, atSlideVerNeg, atSlideVerPos, atCenter, atBlend);}
+  CAnimationStyle: array[TJvAnimationStyle] of Integer = (0, AW_SLIDE, 0, AW_HOR_NEGATIVE,
+    AW_HOR_POSITIVE, AW_VER_NEGATIVE, AW_VER_POSITIVE, AW_HOR_NEGATIVE or AW_SLIDE,
+    AW_HOR_POSITIVE or AW_SLIDE, AW_VER_NEGATIVE or AW_SLIDE, AW_VER_POSITIVE or AW_SLIDE,
+    AW_CENTER, AW_BLEND);
+var
+  Animate: bool;
+  AutoValue: Integer;
+begin
+  CheckPosition(Rect);
+
+  if HandleAllocated and IsWindowVisible(Handle) then
+    ShowWindow(Handle, SW_HIDE);
+
+  UpdateBoundsRect(Rect);
+  UpdateRegion;
+  UpdateBoundsRect(Rect);
+
+  if Rect.Top + Height > Screen.DesktopHeight then
+    Rect.Top := Screen.DesktopHeight - Height;
+  if Rect.Left + Width > Screen.DesktopWidth then
+    Rect.Left := Screen.DesktopWidth - Width;
+  if Rect.Left < Screen.DesktopLeft then
+    Rect.Left := Screen.DesktopLeft;
+  if Rect.Bottom < Screen.DesktopTop then
+    Rect.Bottom := Screen.DesktopTop;
+  SetWindowPos(Handle, HWND_TOPMOST, Rect.Left, Rect.Top, Width, Height,
+    SWP_NOACTIVATE);
+  if IsWinXP and Assigned(AnimateWindowProc) and (FAnimationStyle <> atNone) then
+  begin
+    SystemParametersInfo(SPI_GETTOOLTIPANIMATION, 0, @Animate, 0);
+    if Animate then
+    begin
+      if FAnimationStyle in [atSlide, atRoll] then
+        case FCurrentPosition of
+          bpLeftDown, bpRightDown:
+            AutoValue := AW_VER_POSITIVE;
+        else {bpLeftUp, bpRightUp:}
+          AutoValue := AW_VER_NEGATIVE;
+        end
+      else
+        AutoValue := 0;
+      SystemParametersInfo(SPI_GETTOOLTIPFADE, 0, @Animate, 0);
+      { This function will fail on systems other than Windows XP,
+        because of use of the window region: }
+      AnimateWindowProc(Handle, FAnimationTime, CAnimationStyle[FAnimationStyle] or AutoValue);
+    end;
+  end;
+  ShowWindow(Handle, SW_SHOWNOACTIVATE);
+  //Invalidate;
+end;
+
+procedure TJvBalloonWindowEx.MoveWindow(NewPos: TPoint);
+begin
+  BoundsRect := Rect(NewPos.X, NewPos.Y, NewPos.X + Width, NewPos.Y + Height);
+end;
+
+procedure TJvBalloonWindowEx.Paint;
+var
+  HintRect: TRect;
+  HeaderRect: TRect;
+begin
+  HintRect := ClientRect;
+
+  if FShowIcon then
+    TGlobalCtrl.Instance.DrawHintImage(Canvas, 12, FDeltaY + 7, FIconKind, FImageIndex, Color);
+
+  FCloseState := 0;
+  if FShowCloseBtn then
+  begin
+    FCloseBtnRect := Rect(HintRect.Right - 22, FDeltaY + 5, HintRect.Right - 6, FDeltaY + 21);
+    ChangeCloseState(DFCS_FLAT);
+  end;
+
+  if FMsg > '' then
+  begin
+    Inc(HintRect.Left, 12);
+    Inc(HintRect.Top, FDeltaY + FMessageTop);
+    Canvas.Font.Color := Screen.HintFont.Color;
+    Canvas.Font.Style := Canvas.Font.Style - [fsBold];
+    DrawText(Canvas.Handle, PChar(FMsg), -1, HintRect, DT_LEFT or DT_NOPREFIX or
+      DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+  end;
+
+  if FShowHeader then
+  begin
+    HeaderRect := ClientRect;
+    Inc(HeaderRect.Left, 12);
+    if FShowIcon then
+      Inc(HeaderRect.Left, FImageSize.cx + 8);
+    Inc(HeaderRect.Top, FDeltaY + 8);
+    Canvas.Font.Style := Canvas.Font.Style + [fsBold];
+    DrawText(Canvas.Handle, PChar(FHeader), -1, HeaderRect, DT_LEFT or DT_NOPREFIX or
+      DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+  end;
+end;
+
+procedure TJvBalloonWindowEx.WMActivateApp(var Message: TWMActivateApp);
+begin
+  inherited;
+  if Message.Active = False then
+    FCtrl.CancelHint;
+end;
+
+procedure TJvBalloonWindowEx.WMLButtonDown(var Message: TWMLButtonDown);
+begin
+  inherited;
+  if FShowCloseBtn then
+  begin
+    if PtInRect(FCloseBtnRect, SmallPointToPoint(Message.Pos)) then
+    begin
+      SetCapture(Handle);
+      ChangeCloseState(FCloseState or DFCS_PUSHED);
+    end;
+  end;
+end;
+
+procedure TJvBalloonWindowEx.WMLButtonUp(var Message: TWMLButtonUp);
+begin
+  inherited;
+  if FShowCloseBtn then
+  begin
+    if FCloseState and DFCS_PUSHED > 0 then
+    begin
+      ReleaseCapture;
+      ChangeCloseState(FCloseState and not DFCS_PUSHED);
+      if PtInRect(FCloseBtnRect, SmallPointToPoint(Message.Pos)) then
+        FCtrl.CancelHint;
+    end;
+  end;
+end;
+
+procedure TJvBalloonWindowEx.WMMouseMove(var Message: TWMMouseMove);
+var
+  State: Cardinal;
+begin
+  inherited;
+  if FShowCloseBtn then
+  begin
+    State := DFCS_FLAT;
+
+    if PtInRect(FCloseBtnRect, SmallPointToPoint(Message.Pos)) then
+    begin
+      { Note: DFCS_HOT is not supported in windows 95 systems }
+      State := State or DFCS_HOT;
+      if FCloseState and DFCS_PUSHED > 0 then
+        State := State or DFCS_PUSHED;
+    end;
+    ChangeCloseState(State);
+  end;
+end;
+
+procedure TJvBalloonWindowEx.WMNCHitTest(var Message: TWMNCHitTest);
+begin
+  if FShowCloseBtn then
+    Message.Result := HTCLIENT
+  else
+    inherited;
+end;
+
+initialization
+finalization
+  FreeAndNil(GGlobalCtrl);
+end.
+
