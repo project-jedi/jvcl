@@ -39,6 +39,7 @@ uses
 
 type
   EShellOleError = class(Exception);
+  EWinDialogError = class(Exception);
 
   TShellLinkInfo = record
     PathName: string;
@@ -308,12 +309,12 @@ type
 
   TJvDiskFullDialog = class(TjvCommonDialog)
   private
-    FDrive: integer;
     FDriveChar: Char;
     procedure SetDriveChar(Value: Char);
+    function GetDrive: UINT;
   public
     constructor Create(AOwner: TComponent); override;
-    function Execute:boolean; override;
+    function Execute: Boolean; override;
   published
     property DriveChar: char read FDriveChar write SetDriveChar;
   end;
@@ -334,7 +335,7 @@ type
     function Execute: Boolean; override;
   end;
 
-  //Tools routines
+  // Tools routines
 function GetSpecialFolderPath(FolderName: string; CanCreate: Boolean): string;
 procedure AddToRecentDocs(const Filename: string);
 procedure ClearRecentDocs;
@@ -389,12 +390,13 @@ var
 resourcestring
   SDiskFullError = 'TJvDiskFullDialog does not support removable media or network drives.';
   SNotSupported = 'This function is not supported by your version of Windows';
+  SInvalidDriveChar = 'Invalid drive (%s)';
+  SUnsupportedDisk = 'Unsupported drive (%s): JvDiskFullDialog only supports fixed drives.';
 
 implementation
 
 const
   shell32 = 'shell32.dll';
-
 
 var
   ShellHandle: THandle = 0;
@@ -533,24 +535,34 @@ begin
   end;
 end;
 
+{ TJvOrganizeFavoritesDialog }
+
 function TJvOrganizeFavoritesDialog.Execute: boolean;
 var
   SHModule: THandle;
   Path: string;
   lpfnDoOrganizeFavDlg: LPFNORGFAV;
 begin
+  lpfnDoOrganizeFavDlg := nil;
   ShModule := SafeLoadLibrary('shdocvw.dll');
-  if ShModule <= HINSTANCE_ERROR then
-  begin
-    Result := False;
-    Exit;
+  try
+    if ShModule <= HINSTANCE_ERROR then
+    begin
+      Result := False;
+      Exit;
+    end;
+    Path := GetSpecialFolderPath('Favorites', true) + #0#0;
+    lpfnDoOrganizeFavDlg := LPFNORGFAV(GetProcAddress(SHModule, 'DoOrganizeFavDlg'));
+    if not Assigned(lpfnDoOrganizeFavDlg) then
+      raise EWinDialogError.Create(SNotSupported);
+    lpfnDoOrganizeFavDlg(Application.Handle, PChar(Path));
+  finally
+    FreeLibrary(SHModule);
   end;
-  Path := GetSpecialFolderPath('Favorites', true) + #0#0;
-  lpfnDoOrganizeFavDlg := LPFNORGFAV(GetProcAddress(SHModule, 'DoOrganizeFavDlg'));
-  lpfnDoOrganizeFavDlg(Application.Handle, PChar(Path));
-  FreeLibrary(SHModule);
   Result := true;
 end;
+
+{ TJvControlPanelDialog }
 
 procedure TJvControlPanelDialog.Execute;
 begin
@@ -560,6 +572,8 @@ begin
     nil,
     SW_SHOWDEFAULT);
 end;
+
+{ TJvAppletDialog }
 
 function TJvAppletDialog.Execute: boolean;
 var APModule: THandle;
@@ -581,6 +595,8 @@ begin
   FreeLibrary(ApModule);
   Result := true;
 end;
+
+{ TJvComputerNameDialog }
 
 constructor TJvComputerNameDialog.Create(AOwner: TComponent);
 begin
@@ -617,6 +633,8 @@ begin
     FComputerName := NameBuffer;
 end;
 
+{ TJvBrowseFolderDialog }
+
 constructor TJvBrowseFolderDialog.Create(AOwner: TComponent);
 begin
   inherited;
@@ -652,7 +670,6 @@ begin
     FFolderName := NameBuffer;
   end;
   Freepidl(BrowseInfo.pidlRoot);
-
 end;
 
 { TJvFormatDialog }
@@ -684,6 +701,8 @@ begin
       options := 0;
     end;
   end;
+  if not Assigned(SHFormatDrive) then
+    raise EWinDialogError.Create(SNotSupported);
   SHFormatDrive(Application.Handle, FDrive, SHFMT_ID_DEFAULT, Options);
 end;
 
@@ -692,7 +711,7 @@ begin
   if (Value in ['a'..'z']) then
     Value := Char(ord(Value) - $20);
   if (not (Value in ['A'..'Z'])) then
-    raise Exception.Create('Wrong drive char');
+    raise EWinDialogError.CreateFmt(SInvalidDriveChar, [Value]);
   FDriveChar := Value;
   FDrive := ord(FDriveChar) - ord('A');
 end;
@@ -816,8 +835,10 @@ begin
   if Assigned(SHOutOfMemoryMessageBox) then
     Result := Boolean(SHOutOfMemoryMessageBox(Application.Handle, CaptionBuffer, MB_OK or MB_ICONHAND))
   else
-    raise Exception.Create(sNotSupported);
+    raise EWinDialogError.Create(sNotSupported);
 end;
+
+{ TJvShellAboutDialog }
 
 constructor TJvShellAboutDialog.Create(AOwner: TComponent);
 begin
@@ -866,6 +887,8 @@ begin
   Result := True;
 end;
 
+{ TJvRunDialog }
+
 constructor TJvRunDialog.Create(AOwner: TComponent);
 begin
   inherited;
@@ -912,13 +935,15 @@ begin
   if Assigned(SHRunDialog) then
     SHRunDialog(Application.Handle, FIcon.Handle, nil, CaptionBuffer, DescriptionBuffer, 0)
   else
-    raise Exception.Create(sNotSupported);
+    raise EWinDialogError.Create(sNotSupported);
 end;
 
 procedure TJvRunDialog.SetIcon(const Value: TIcon);
 begin
   FIcon.Assign(Value);
 end;
+
+{ TJvObjectPropertiesDialog }
 
 function TJvObjectPropertiesDialog.Execute: boolean;
 var
@@ -1145,24 +1170,31 @@ end;
 
 procedure TJvOpenWithDialog.Execute;
 begin
-  SHOpenWidth(0, 0, PChar(FFileName), SW_SHOW);
+  SHOpenWith(0, 0, PChar(FFileName), SW_SHOW);
 end;
+
+{ TJvDiskFullDialog }
 
 constructor TJvDiskFullDialog.Create(AOwner: TComponent);
 begin
-  inherited;
-  FDriveChar := 'C';
+  inherited Create(AOwner);
+  DriveChar := 'C';
 end;
 
-function TJvDiskFullDialog.Execute:boolean;
-const
-  cFixed = 3;
+function TJvDiskFullDialog.GetDrive: UINT;
 begin
-  Result := GetDriveType(PChar(FDriveChar + ':\')) = cFixed;
+  Result := Ord(FDriveChar) - Ord('A');
+end;
+
+function TJvDiskFullDialog.Execute: boolean;
+begin
+  if not Assigned(SHHandleDiskFull) then
+    raise EWinDialogError.Create(SNotSupported);
+  Result := GetDriveType(PChar(DriveChar + ':\')) = 3;
   if Result then
-    SHHandleDiskFull(Application.Handle, UINT(FDrive))
-  else if (csDesigning in ComponentState) then
-    raise Exception.Create(SDiskFullError);
+    SHHandleDiskFull(GetFocus, GetDrive)
+  else
+    raise EWinDialogError.CreateFmt(SUnSupportedDisk, [DriveChar]);
 end;
 
 procedure TJvDiskFullDialog.SetDriveChar(Value: Char);
@@ -1170,9 +1202,8 @@ begin
   if (Value in ['a'..'z']) then
     Value := Char(ord(Value) - $20);
   if (not (Value in ['A'..'Z'])) then
-    raise Exception.Create('Wrong drive char');
+    raise EWinDialogError.CreateFmt(SInvalidDriveChar, [Value]);
   FDriveChar := Value;
-  FDrive := ord(FDriveChar) - ord('A');
 end;
 
 { TJvExitWindowsDialog }
@@ -1182,13 +1213,14 @@ begin
   SHShutDownDialog(Application.Handle);
 end;
 
+{ TJvChangeIconDialog }
+
 procedure TJvChangeIconDialog.Execute;
 begin
   if Assigned(SHChangeIcon) then
     SHChangeIcon(Application.Handle, nil, 0, FIconIndex)
   else
-    raise Exception.Create(sNotSupported);
-
+    raise EWinDialogError.Create(SNotSupported);
 end;
 
 function OpenInterceptor(var DialogData: TOpenFileName):
@@ -1213,6 +1245,8 @@ begin
   Result := GetSaveFileNameEx(DialogDataEx);
 end;
 
+{ TJvOpenDialog2000 }
+
 function TJvOpenDialog2000.Execute: Boolean;
 begin
   if (Win32MajorVersion >= 5) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
@@ -1222,6 +1256,8 @@ begin
   else
     Result := inherited Execute;
 end;
+
+{ TJvSaveDialog2000 }
 
 function TJvSaveDialog2000.Execute: Boolean;
 begin
