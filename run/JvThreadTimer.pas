@@ -83,7 +83,11 @@ type
     property Interval: Cardinal read FInterval write SetInterval default 1000;
     property KeepAlive: Boolean read FKeepAlive write SetKeepAlive default False;
     property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
-    property Priority: TThreadPriority read FPriority write SetPriority{$IFDEF MSWINDOWS} default tpNormal{$ENDIF};
+    property Priority: TThreadPriority read FPriority write SetPriority
+      {$IFDEF MSWINDOWS}
+      default tpNormal
+      {$ENDIF MSWINDOWS}
+      ;
   end;
 
 implementation
@@ -214,7 +218,7 @@ begin
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   FPriority := 0;
-  {$ENDIF}
+  {$ENDIF LINUX}
 end;
 
 destructor TJvThreadTimer.Destroy;
