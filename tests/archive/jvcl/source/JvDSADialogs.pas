@@ -24,11 +24,12 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
 unit JvDSADialogs;
 
 interface
-
-{$I JVCL.INC}
 
 uses
   Classes, Contnrs, Controls, Dialogs, Forms, Graphics, SysUtils, Windows,
@@ -491,13 +492,13 @@ end;
 
 procedure TDSAMessageForm.CustomShow(Sender: TObject);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to ComponentCount - 1 do
+  for I := 0 to ComponentCount - 1 do
   begin
-    if (Components[i] is TButton) and (Components[i] as TButton).Default then
+    if (Components[I] is TButton) and (Components[I] as TButton).Default then
     begin
-      (Components[i] as TButton).SetFocus;
+      (Components[I] as TButton).SetFocus;
       Break;
     end;
   end;
@@ -541,7 +542,7 @@ end;
 function TDSAMessageForm.GetFormText: String;
 var
   DividerLine, ButtonCaptions: string;
-  I: integer;
+  I: Integer;
 begin
   DividerLine := StringOfChar('-', 27) + sLineBreak;
   for I := 0 to ComponentCount - 1 do
@@ -573,7 +574,7 @@ end;
 function GetAveCharSize(Canvas: TCanvas): TPoint;
 var
   I: Integer;
-  Buffer: array[0..51] of Char;
+  Buffer: array [0..51] of Char;
 begin
   for I := 0 to 25 do
     Buffer[I] := Chr(I + Ord('A'));
@@ -841,7 +842,7 @@ end;
 
 function TDSARegister.IndexOf(const Item: TDSARegItem): Integer;
 begin
-  Result := Indexof(Item.ID);
+  Result := IndexOf(Item.ID);
   if (Result > -1) and not AnsiSameText(FList[Result].Name, Item.Name) then
     Result := -1;
 end;
@@ -862,7 +863,8 @@ var
 begin
   if IndexOf(Item) > -1 then
     Result := arExists
-  else if IndexOf(Item.ID) > -1 then
+  else
+  if IndexOf(Item.ID) > -1 then
   begin
     Idx := IndexOf(Item.ID);
     if AnsiSameText(FList[Idx].Name, Item.Name) then
@@ -870,7 +872,8 @@ begin
     else
       Result := arDuplicateID;
   end
-  else if IndexOf(Item.Name) > -1 then
+  else
+  if IndexOf(Item.Name) > -1 then
     Result := arDuplicateName
   else
   begin
@@ -1068,7 +1071,7 @@ begin
     if Result then
     begin
       LastResult := ReadIntegerDef(DSAInfo, sDSAStateLastResultName, 0);
-      if @OnCustomData <> nil then
+      if Assigned(OnCustomData) then
       begin
         BeginCustomRead(DSAInfo);
         try
@@ -1094,7 +1097,7 @@ begin
     if DontShowAgain then
     begin
       WriteInteger(DSAInfo, sDSAStateLastResultName, LastResult);
-      if @OnCustomData <> nil then
+      if Assigned(OnCustomData) then
       begin
         BeginCustomWrite(DSAInfo);
         try
@@ -1169,8 +1172,7 @@ end;
 function TDSARegStorage.ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Extended): Extended;
 begin
-  if RegReadBinaryDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Result, SizeOf(Extended),
-      0) = 0 then
+  if RegReadBinaryDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Result, SizeOf(Extended), 0) = 0 then
     Result := Default;
 end;
 
@@ -1271,8 +1273,6 @@ end;
 // TDSAQueueStorage
 //--------------------------------------------------------------------------------------------------
 
-{ constants}
-
 const
   DSABool = 1;
   DSAFloat = 2;
@@ -1280,10 +1280,8 @@ const
   DSAInt = 4;
   DSAString = 5;
 
-  DSAKindTexts: array[DSABool .. DSAString] of string = (
+  DSAKindTexts: array [DSABool..DSAString] of string = (
     sDSAAccessBool, sDSAAccessFloat, sDSAAccessInt64, sDSAAccessInt, sDSAAccessString);
-
-{ TDSAValues object }
 
 type
   TDSAValues = class(TStringList)
@@ -1295,8 +1293,6 @@ begin
   inherited Create;
   Sorted := True;
 end;
-
-{ TDSAQueueStorage }
 
 procedure TDSAQueueStorage.AddDSA(const DSAInfo: TDSARegItem);
 begin
@@ -1563,17 +1559,17 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 const
-  Captions: array[TMsgDlgType] of string = (SMsgDlgWarning, SMsgDlgError,
-    SMsgDlgInformation, SMsgDlgConfirm, '');
-  IconIDs: array[TMsgDlgType] of PChar = (IDI_EXCLAMATION, IDI_HAND,
-    IDI_ASTERISK, IDI_QUESTION, nil);
-  ButtonCaptions: array[TMsgDlgBtn] of string = (
-    SMsgDlgYes, SMsgDlgNo, SMsgDlgOK, SMsgDlgCancel, SMsgDlgAbort,
-    SMsgDlgRetry, SMsgDlgIgnore, SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll,
-    SMsgDlgHelp);
-  ModalResults: array[TMsgDlgBtn] of Integer = (
-    mrYes, mrNo, mrOk, mrCancel, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
-    mrYesToAll, 0);
+  Captions: array [TMsgDlgType] of string =
+    (SMsgDlgWarning, SMsgDlgError, SMsgDlgInformation, SMsgDlgConfirm, '');
+  IconIDs: array [TMsgDlgType] of PChar =
+    (IDI_EXCLAMATION, IDI_HAND, IDI_ASTERISK, IDI_QUESTION, nil);
+  ButtonCaptions: array [TMsgDlgBtn] of string =
+    (SMsgDlgYes, SMsgDlgNo, SMsgDlgOK, SMsgDlgCancel, SMsgDlgAbort,
+     SMsgDlgRetry, SMsgDlgIgnore, SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll,
+     SMsgDlgHelp);
+  ModalResults: array [TMsgDlgBtn] of Integer =
+    (mrYes, mrNo, mrOk, mrCancel, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
+     mrYesToAll, 0);
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1719,7 +1715,8 @@ begin
   begin
     if mbOk in Buttons then
       DefBtn := mbOk
-    else if mbYes in Buttons then
+    else
+    if mbYes in Buttons then
       DefBtn := mbYes
     else
       DefBtn := mbRetry;
@@ -1730,7 +1727,8 @@ begin
   begin
     if mbCancel in Buttons then
       CanBtn := mbCancel
-    else if mbNo in Buttons then
+    else
+    if mbNo in Buttons then
       CanBtn := mbNo
     else
       CanBtn := mbOk;
@@ -1864,7 +1862,8 @@ begin
   begin
     if mbOk in Buttons then
       DefBtn := mbOk
-    else if mbYes in Buttons then
+    else
+    if mbYes in Buttons then
       DefBtn := mbYes
     else
       DefBtn := mbRetry;
@@ -1875,7 +1874,8 @@ begin
   begin
     if mbCancel in Buttons then
       CanBtn := mbCancel
-    else if mbNo in Buttons then
+    else
+    if mbNo in Buttons then
       CanBtn := mbNo
     else
       CanBtn := mbOk;
@@ -2196,8 +2196,6 @@ begin
     JvDSADialog.ApplySavedState;
 end;
 
-{ TJvDSADialog }
-
 procedure TJvDSADialog.ApplySavedState;
 var
   ResCode: Integer;
@@ -2208,13 +2206,13 @@ end;
 
 procedure TJvDSADialog.DoApplyKeys(const Storage: TDSAStorage; const DSAInfo: TDSARegItem);
 begin
-  if @FOnApplyKeys <> nil then
+  if Assigned(FOnApplyKeys) then
     OnApplyKeys(Self, DSAInfo, Storage);
 end;
 
 procedure TJvDSADialog.DoUpdateKeys;
 begin
-  if @FOnUpdateKeys <> nil then
+  if Assigned(FOnUpdateKeys) then
     OnUpdateKeys(Self, DSAInfo, Storage);
 end;
 
