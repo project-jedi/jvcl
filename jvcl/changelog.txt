@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2005-03-13:
+- Added TJvTabBar.AllowTabMoving // ahuser
+- Changed default value of TJvTabBar.FlatScrollButtons to True // ahuser
 2005-03-10:
 - Renamed TJvSimpleXMLElem.Pointer property to NameSpace. This describes what it actually is // peter3
 - Added TJvSimpleXMLElem.FullName function: returns NameSpace:Name or just Name depending on whether NameSpace is defined or not // peter3
