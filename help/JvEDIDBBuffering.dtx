@@ -1,539 +1,614 @@
 ##Package: EDI
-##Status: Generated
+##Status: Needs review
 ----------------------------------------------------------------------------------------------------
 @@JvEDIDBBuffering.pas
 Summary
   Contains the TJvEDIDBBuffering component.
-<INCLUDE JVCL.UnitText.dtx>
+  <INCLUDE JVCL.UnitText.dtx>
 Author
   Raymond Alexander.
+Description
+  This unit contains components used in creating and maintaining a SQL database buffer for EDI data.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer
+JVCLInfo
+  GROUP=JVCL.EDI
+  FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Use this component to create and update an EDI database buffer.
 Description
-  Write here a description
+  This is the generic TDataSet compatible EDI Database buffer component.  For best results create a
+  descendent component for TDataSet compatible third party components.
+  
+  Element , Loop, and Segment profile datasets are needed.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.ElementNonKeyPrefix
 Summary
-  Write here a summary (1 line)
+  Element non-key field name prefix.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The default prefix for element field names is "E".
+  
+  Examples:
+      Element 0143 is assigned the field name "E143_1".
+      Element 0329 is assigned the field name "E329_1".
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.ElementProfiles
 Summary
-  Write here a summary (1 line)
+  The dataset that contains element profiles.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The element profile is the collection of elements with the maximum length and usage used in a
+  segment in transactions across all profiled EDI specification files.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.KeySuffix
 Summary
-  Write here a summary (1 line)
+  Key field name suffix.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The default suffix for key field names is "_Id".
+  
+  Examples:
+      Key field for segment table "ST" is assigned "ST_Id"
+      Key field for loop table "0100" is assigned "Loop_0100_Id"
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.LoopKeyPrefix
 Summary
-  Write here a summary (1 line)
+  Loop key field name prefix.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The default loop key field name prefix is ""Loop_".
+  
+  Examples:
+      Key field for loop table "0100" is assigned "Loop_0100_Id"
+      Key field for loop table "0200" is assigned "Loop_0200_Id"
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.LoopProfiles
 Summary
-  Write here a summary (1 line)
+  The dataset that contains loop profiles.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The loop profile is the collection of loops and their relationships in transactions of all profiled
+  EDI specification files.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.OnAfterCloseDataSets
 Summary
-  Write here a summary (1 line)
+  Occurs after the profile datasets are closed.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.OnAfterOpenDataSets
 Summary
-  Write here a summary (1 line)
+  Occurs after the profile datasets are opened.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.OnAlterTable
 Summary
-  Write here a summary (1 line)
+  Occurs when a table needs to be altered.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Write the code here to alter a table based on the field definitions in the FieldDefs parameter.
+  
+  Each field definition status should be examined for the following values:
+      usModified - Indicates the field was altered.
+      usInserted - Indicates the field is new.
+      usDeleted - Indicates the field should be deleted.
+Parameters
+  FieldDefs - The field definitions of the table.
+  TableName - The name of the table.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.OnBeforeApplyElementFilter
 Summary
-  Write here a summary (1 line)
+  Occurs when it needs to be known if the default TDataSet filter capability should be used.
 Description
-  Write here a description
+  Use this event to apply a custom method of filtering to the ElementProfiles dataset if the TDataSet
+  compatible component is not compatible with TDataSet filter capability.
 Parameters
-  DataSet     - Description for this parameter
-  TableName   - Description for this parameter
-  ApplyFilter - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DataSet     - The ElementProfile dataset.
+  TableName   - The segment id table name that should be used to filter the correct element profile
+  records.
+  ApplyFilter - For TDataSet components that do not support filters set the parameter to False.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.OnBeforeCloseDataSets
 Summary
-  Write here a summary (1 line)
+  Occurs before the profile datasets are closed.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.OnBeforeOpenDataSets
 Summary
-  Write here a summary (1 line)
+  Occurs before the profile datasets are opened.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.OnCheckForFieldChanges
 Summary
-  Write here a summary (1 line)
+  Occurs when checking for changes to a table.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Write the code to check for changes to a table by comparing the current table field definitions to
+  the field definitions given in the FieldDefs parameter.  Update the field definitions in the
+  FieldsDefs parameter as necessary.  Usually this involves changing the status of the field
+  definitions of the FieldsDefs parameter to one of the following values:
+  
+      usUnmodified - Default value
+      usModified - Indicates the field was altered.
+      usInserted - Indicates the field is new.
+      usDeleted - Indicates the field should be deleted.
+Parameters
+  FieldDefs - The field definitions of the table to create.
+  TableName - The name of the table to create.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.OnCreateTable
 Summary
-  Write here a summary (1 line)
+  Occurs when a table needs to be created.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Write the code to create a table (and indexes) based on the TableName and FieldDefs parameters.
+Parameters
+  FieldDefs - The field definitions of the table.
+  TableName - The name of the table.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.OnResolveFieldDefType
 Summary
-  Write here a summary (1 line)
+  Resolve field types in this event.
 Description
-  Write here a description
+  Change field definition properties using this event.  Using this event is optional.
+  
+  By default the following EDI Types map to the following TFieldTypes:
+      EDIDataType_Numeric    -> ftInteger
+      EDIDataType_Decimal    -> ftFloat
+      EDIDataType_Identifier -> ftString
+      EDIDataType_String     -> ftString
+      EDIDataType_Date       -> ftDate
+      EDIDataType_Time       -> ftTime
+      EDIDataType_Binary     -> ftBlob
+      Any custom types       -> ftString
 Parameters
-  FieldDef - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FieldDef - The field definition to examine and change.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.OnTableExists
 Summary
-  Write here a summary (1 line)
+  Occurs when the existence of a table needs to be determined.
 Description
-  Write here a description
+  Write the code necessary to determine if the table exists in the EDI database buffer.  If the table
+  does not exist then the OnCreateTable event will be raised.
 Parameters
-  TableName   - Description for this parameter
-  TableExists - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TableName   - The table name to check the existence of.
+  TableExists - Set this parameter to True if the table exists.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.SegmentKeyPrefix
 Summary
-  Write here a summary (1 line)
+  Segment key prefix.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  There is no default value for this property.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.SegmentProfiles
 Summary
-  Write here a summary (1 line)
+  The dataset that contains segment profiles.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The segment profile is the collection of segments and their loop relationships in transactions of
+  all profiled EDI specification files.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer.SyncProfilesWithBuffer
 Summary
-  Write here a summary (1 line)
+  The main method called to build and update the EDI database buffer.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Call this method to start the build and update of the EDI database buffer.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler
+JVCLInfo
+  GROUP=JVCL.EDI
+  FLAG=Component
 Summary
-  Write here a summary (1 line)
+  The base EDI database profiler component.
 Description
-  Write here a description
+  The pupose of a TJvEDIDBProfiler decendent component is to build the ElementProfiles,
+  SegmentProfiles, and LoopProfiles datasets for use with a TJvEDIDBBuffering type component.
+  
+  Create descendents of this component and override the abstract method BuildProfile in order to
+  enable building profiles for different EDI specification file formats.
+  
+  The profiles become a sum of all EDI specification files that are profiled.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.AddElement
 Summary
-  Write here a summary (1 line)
+  Adds an element profile to the ElementProfiles dataset.
 Description
-  Write here a description
+  This method is designed to be called by the BuildProfile method and uses TDataSet compatible code.
 Parameters
-  SegmentId     - Description for this parameter
-  ElementId     - Description for this parameter
-  ElementType   - Description for this parameter
-  MaximumLength - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SegmentId     - The segment id of the segment that the element is contained in.
+  ElementId     - The element id of the element being added.
+  ElementType   - The type of the element.
+  MaximumLength - The maximum length of the element.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.AddLoop
 Summary
-  Write here a summary (1 line)
+  Adds a loop profile to the LoopProfiles dataset.
 Description
-  Write here a description
+  This method is designed to be called by the BuildProfile method and uses TDataSet compatible code.
 Parameters
-  OwnerLoopId  - Description for this parameter
-  ParentLoopId - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OwnerLoopId  - The loop id of the loop being added.
+  ParentLoopId - The parent loop id of the loop being added.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.AddSegment
 Summary
-  Write here a summary (1 line)
+  Adds a segment profile to the SegmentProfiles dataset.
 Description
-  Write here a description
+  This method is designed to be called by the BuildProfile method and uses TDataSet compatible code.
 Parameters
-  SegmentId    - Description for this parameter
-  OwnerLoopId  - Description for this parameter
-  ParentLoopId - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SegmentId    - The segment id of the segment being added.
+  OwnerLoopId  - The loop id the segment is contained in.
+  ParentLoopId - The parent loop id of the loop the segment is contained in.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.BuildProfile
 Summary
-  Write here a summary (1 line)
+  The main method called to build a profile from an EDI specification file.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This abstract method is designed to be overridden so other EDI specification file formats can be
+  supported by the TJvEDIDBProfiler component.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.ClearProfile
 Summary
-  Write here a summary (1 line)
+  Completely clears all of the profile datasets.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This method uses TDataSet compatible code.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.ElementExist
 Summary
-  Write here a summary (1 line)
+  Determines if the element profile already exists in the ElementProfiles dataset.
 Description
-  Write here a description
+  This method is designed to be called by the BuildProfile method and uses TDataSet compatible code.
 Parameters
-  SegmentId - Description for this parameter
-  ElementId - Description for this parameter
+  SegmentId     - The segment id of the segment that the element is contained in.
+  ElementId     - The element id of the element.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If the element profile is found then the function returns True.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.ElementProfiles
 Summary
-  Write here a summary (1 line)
+  The dataset that contains element profiles.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The element profile is the collection of elements with the maximum length and usage used in a
+  segment in transactions across all profiled EDI specification files.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.LoopExist
 Summary
-  Write here a summary (1 line)
+  Determines if the loop profile already exists in the LoopProfiles dataset.
 Description
-  Write here a description
+  This method is designed to be called by the BuildProfile method and uses TDataSet compatible code.
 Parameters
-  OwnerLoopId  - Description for this parameter
-  ParentLoopId - Description for this parameter
+  OwnerLoopId  - The loop id of the loop.
+  ParentLoopId - The parent loop id of the loop.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If the loop profile is found then the function returns True.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.LoopProfiles
 Summary
-  Write here a summary (1 line)
+  The dataset that contains loop profiles.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The loop profile is the collection of loops and their relationships in transactions of all profiled
+  EDI specification files.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.OnAfterProfiledSegment
 Summary
-  Write here a summary (1 line)
+  The event that occurs after a segment has been profiled.
 Description
-  Write here a description
+  The event is used to advance progress bars and update status indicators.
 Parameters
-  Segment - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Segment - This parameter must be cast to its proper type in order to use it in an event handler.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.OnAfterProfiledTransactionSet
 Summary
-  Write here a summary (1 line)
+  The event that occurs after a transaction set has been profiled.
 Description
-  Write here a description
+  The event is used to advance progress bars and update status indicators.
 Parameters
-  TransactionSet - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TransactionSet - This parameter must be cast to its proper type in order to use it in an event
+  handler.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.SegmentExist
 Summary
-  Write here a summary (1 line)
+  Determines if the segment profile already exists in the SegmentProfiles dataset.
 Description
-  Write here a description
+  This method is designed to be called by the BuildProfile method and uses TDataSet compatible code.
 Parameters
-  SegmentId    - Description for this parameter
-  OwnerLoopId  - Description for this parameter
-  ParentLoopId - Description for this parameter
+  SegmentId    - The segment id of the segment.
+  OwnerLoopId  - The loop id the segment is contained in.
+  ParentLoopId - The parent loop id of the loop the segment is contained in.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If the segment profile is found then the function returns True.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.SegmentProfiles
 Summary
-  Write here a summary (1 line)
+  The dataset that contains segment profiles.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The segment profile is the collection of segments and their loop relationships in transactions of
+  all profiled EDI specification files.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler.UpdateElement
 Summary
-  Write here a summary (1 line)
+  Updates element profile data.
 Description
-  Write here a description
+  This method is designed to be called by the BuildProfile method and uses TDataSet compatible code.
 Parameters
-  SegmentId     - Description for this parameter
-  ElementId     - Description for this parameter
-  ElementType   - Description for this parameter
-  MaximumLength - Description for this parameter
-  Count         - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SegmentId     - Parameter used to locate correct record for update.
+  ElementId     - Parameter used to locate correct record for update.
+  ElementType   - Parameter
+  MaximumLength - If the parameter value is greater than the current value then the current value is
+  updated.
+  Count         - If the parameter value is greater than the current value then the current value is
+  updated.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBSEFProfiler
+JVCLInfo
+  GROUP=JVCL.EDI
+  FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Use this component for building a profile from SEF files.
 Description
-  Write here a description
+  A descendent of TJvEDIDBPrifiler that works with the SEF file format.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBSEFProfiler.BuildProfile
 Summary
-  Write here a summary (1 line)
+  See TJvEDIDBProfiler.BuildProfile
 Description
-  Write here a description
+  See TJvEDIDBProfiler.BuildProfile
 Parameters
-  EDISEFFile - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EDISEFFile - The SEF file object to be profiled.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBSpecProfiler
+JVCLInfo
+  GROUP=JVCL.EDI
+  FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Use this component for building a profile from EDI SDK specification files.
 Description
-  Write here a description
+  A descendent of TJvEDIDBPrifiler that works with a native EDI specification file format used in the
+  EDI SDK project on SourceForge.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBSpecProfiler.BuildProfile
 Summary
-  Write here a summary (1 line)
+  See TJvEDIDBProfiler.BuildProfile
 Description
-  Write here a description
+  See TJvEDIDBProfiler.BuildProfile
 Parameters
-  EDIFileSpec - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EDIFileSpec -  The EDI SDK EDI specification file object to be profiled.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIFieldDef
 Summary
-  Write here a summary (1 line)
+  A specific field definition type for use with TJvEDIDBBuffer type components.
 Description
-  Write here a description
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIFieldDef.DataType
 Summary
-  Write here a summary (1 line)
+  The TFieldType equivalient of FieldType.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIFieldDef.FieldName
 Summary
-  Write here a summary (1 line)
+  The field name.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIFieldDef.FieldType
 Summary
-  Write here a summary (1 line)
+  The EDI field type.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Usually assigned to one of the following constants:  EDIDataType_Numeric, EDIDataType_Decimal,
+  EDIDataType_Identifier, EDIDataType_String, EDIDataType_Date, EDIDataType_Time, or
+  EDIDataType_Binary.  Custom values can also be assigned.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIFieldDef.MaximumLength
 Summary
-  Write here a summary (1 line)
+  The maximum field length.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIFieldDef.UpdateStatus
 Summary
-  Write here a summary (1 line)
+  The update status of the field.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Can have one of the following values:  usUnmodified, usModified, usInserted, or usDeleted.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIFieldDefs
 Summary
-  Write here a summary (1 line)
+  A specific field definitions collection type for use with TJvEDIDBBuffer type components.
 Description
-  Write here a description
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIFieldDefs.Add
 Summary
-  Write here a summary (1 line)
+  Add a field definition.
 Description
-  Write here a description
+  None.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Returns the index of the added item.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIFieldDefs.Items
 Summary
-  Write here a summary (1 line)
+  Items property.
 Description
-  Write here a description
+  None.
 Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Index - Index of field definition to get.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOnAfterProfiledSegment
 <TITLE TJvOnAfterProfiledSegment type>
 <COMBINE TJvEDIDBProfiler.OnAfterProfiledSegment>
+Summary
+  A TJvEDIDBProfiler event.
+Description
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOnAfterProfiledTransactionSet
 <TITLE TJvOnAfterProfiledTransactionSet type>
 <COMBINE TJvEDIDBProfiler.OnAfterProfiledTransactionSet>
+Summary
+  A TJvEDIDBProfiler event.
+Description
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOnAlterTableEvent
 <TITLE TJvOnAlterTableEvent type>
 Summary
-  Write here a summary (1 line)
+  A TJvEDIDBBuffer event.
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = TJvOnTableProfileEvent; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOnBeforeApplyElementFilterEvent
 <TITLE TJvOnBeforeApplyElementFilterEvent type>
 <COMBINE TJvEDIDBBuffer.OnBeforeApplyElementFilter>
+Summary
+  A TJvEDIDBBuffer event.
+Description
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOnCheckForFieldChangesEvent
 <TITLE TJvOnCheckForFieldChangesEvent type>
 Summary
-  Write here a summary (1 line)
+  A TJvEDIDBBuffer event.
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = TJvOnTableProfileEvent; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOnCreateTableEvent
 <TITLE TJvOnCreateTableEvent type>
 Summary
-  Write here a summary (1 line)
+  A TJvEDIDBBuffer event.
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = TJvOnTableProfileEvent; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOnResolveFieldDefTypeEvent
 <TITLE TJvOnResolveFieldDefTypeEvent type>
 <COMBINE TJvEDIDBBuffer.OnResolveFieldDefType>
+Summary
+  A TJvEDIDBBuffer event.
+Description
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOnTableExistsEvent
 <TITLE TJvOnTableExistsEvent type>
 <COMBINE TJvEDIDBBuffer.OnTableExists>
+Summary
+  A TJvEDIDBBuffer event.
+Description
+  None.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOnTableProfileEvent
 <TITLE TJvOnTableProfileEvent type>
 Summary
-  Write here a summary (1 line)
+  A TJvEDIDBBuffer event.
 Description
-  This type is used by (for reference):
-    Nothing in this unit.
+  The base event type for TJvCreateTableEvent, TJvCheckForFieldChangesEvent, and TJvAlterTableEvent.
 Parameters
-  FieldDefs - Description for this parameter
-  TableName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FieldDefs - Field definitions for the table.
+  TableName - A table name.
+
+
