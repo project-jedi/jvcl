@@ -1,0 +1,4 @@
+JVCL.INC=jvcl.inc
+WINDOWSONLY.INC=windowsonly.inc
+JVUIB.INC=jvuib.inc
+JEDI.INC=jedi.inc
