@@ -14,6 +14,7 @@ object FormJvclIncConfig: TFormJvclIncConfig
   OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -26,8 +27,9 @@ object FormJvclIncConfig: TFormJvclIncConfig
   object Label1: TLabel
     Left = 280
     Top = 200
-    Width = 439
-    Height = 16
+    Width = 457
+    Height = 49
+    AutoSize = False
     Caption = 
       'jvcl.inc changes are global to all installed Delphi/BCB versions' +
       '.'
@@ -37,6 +39,7 @@ object FormJvclIncConfig: TFormJvclIncConfig
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     ParentFont = False
+    WordWrap = True
   end
   object CheckListBox: TCheckListBox
     Left = 0
@@ -125,14 +128,6 @@ object FormJvclIncConfig: TFormJvclIncConfig
       Height = 2
       Align = alBottom
       Shape = bsBottomLine
-    end
-    object LabelTmp1: TLabel
-      Left = 632
-      Top = 16
-      Width = 92
-      Height = 13
-      Caption = 'Assigned to runtime'
-      Visible = False
     end
   end
   object PanelSpace: TPanel

@@ -34,6 +34,9 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JVCLConfiguration, CheckLst, Buttons, ExtCtrls,
   ImgList,
+  {$IFDEF USE_DXGETTEXT}
+  gnugettext,
+  {$ENDIF USE_DXGETTEXT}
   JvComponent;
 
 type
@@ -48,7 +51,6 @@ type
     Label4: TLabel;
     BevelHeader: TBevel;
     PanelSpace: TPanel;
-    LabelTmp1: TLabel;
     Label1: TLabel;
     PaintBoxWhite: TPaintBox;
     procedure CheckListBoxClick(Sender: TObject);
@@ -56,6 +58,7 @@ type
     procedure CheckListBoxClickCheck(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure PaintBoxWhitePaint(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     FConfig: TJVCLConfig;
     FFileName: string;
@@ -117,6 +120,13 @@ procedure TFormJvclIncConfig.PaintBoxWhitePaint(Sender: TObject);
 begin
   PaintBoxWhite.Canvas.Brush.Color := clWindow;
   PaintBoxWhite.Canvas.FillRect(PaintBoxWhite.ClientRect);
+end;
+
+procedure TFormJvclIncConfig.FormCreate(Sender: TObject);
+begin
+  {$IFDEF USE_DXGETTEXT}
+  TranslateComponent(Label1, 'JVCLInstall');
+  {$ENDIF USE_DXGETTEXT}
 end;
 
 end.

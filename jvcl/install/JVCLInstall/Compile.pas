@@ -227,7 +227,9 @@ end;
 procedure TJVCLCompiler.CaptureLineGetCompileCount(const Line: string; var Aborted: Boolean);
 begin
   if StartsWith(Trim(Line), 'echo [Compiling: ', True) then
-    Inc(FCount);
+    Inc(FCount)
+  else if (Line <> '') and (Line[1] <> #9) then
+    CaptureLine(Line, FAborted);
   Aborted := FAborted;
 end;
 
