@@ -708,13 +708,16 @@ begin
       SetEnvironmentVariable('PERSONALEDITION_OPTION', '-DDelphiPersonalEdition');
       SetEnvironmentVariable('PKGDIR', PChar(Copy(PkgDir, 1, 2)));
       SetEnvironmentVariable('EDITION', PChar(Copy(Edition, 1, 2)));
-      Execute('"' + Root + '\bin\make.exe" -f makefile.mak pg.exe');
-    end;
+      if Verbose then
+        Execute('"' + Root + '\bin\make.exe" -l+ -f makefile.mak pg.exe')
+      else
+        Execute('"' + Root + '\bin\make.exe" -l+ -s -f makefile.mak pg.exe');
+      end;
 
     SetEnvironmentVariable('EDITION', PChar(Edition));
     SetEnvironmentVariable('PKGDIR', PChar(PkgDir));
 
-    ExitCode := Execute('"' + Root + '\bin\make.exe" -f makefile.mak' + MakeOptions);
+    ExitCode := Execute('"' + Root + '\bin\make.exe" -l+ -f makefile.mak' + MakeOptions);
     if ExitCode <> 0 then
     begin
       WriteLn('Press ENTER to continue');

@@ -25,7 +25,8 @@ DRC = $&.drc
 SRCP = $(SRC);$(COM);$(JCL);$(ARCH);$(DCU)
 SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
 #---------------------------------------------------------------------------------------------------
-MAKE = "$(ROOT)\bin\make.exe" -$(MAKEFLAGS)
+MAKE = "$(ROOT)\bin\make.exe" -l+ $(QUIET)
+#-$(MAKEFLAGS)
 DCC  = "$(ROOT)\bin\dcc32.exe" -e"$(BIN)" -i"$(SRCP)" -n"$(DCU)" -r"$(SRCP)" -u"$(SRCP)" -u"$(ROOT)\Lib\Obj" -q -w -h -m
 DCCx = "$(ROOT)\bin\dcc32.exe" -Q -M 
 #-I$(COM) -U$(SRC) -U$(COM)
@@ -59,8 +60,8 @@ pg2want.exe
 
 # configfile requires symbol "CFG=path\filename.cfg"
 configfile:
-	-@del "$(CFG)" >NUL 2>NUL
-	-@IF EXIST "$(ROOT)\bin\dcc32.cfg" @type "$(ROOT)\bin\dcc32.cfg" >>"$(CFG)"
+	-@IF EXIST "$(CFG) del /q "$(CFG)" >NUL
+	-@IF EXIST "$(ROOT)\bin\dcc32.cfg" type "$(ROOT)\bin\dcc32.cfg" >>"$(CFG)"
 	@echo. >>"$(CFG)"
 	@echo. >>"$(CFG)"
 	@echo -e"$(BIN)">>$(CFG)
@@ -145,10 +146,10 @@ pg.exe: PackagesGenerator\pg.dpr \
 		PackagesGenerator\CmdLineUtils.pas \
 		PackagesGenerator\FileUtils.pas \
 		PackagesGenerator\GenerateUtils.pas
-  @$(MAKE) -DCFG=PackagesGenerator\pg.cfg configfile >NUL
+  @$(MAKE) -DCFG=PackagesGenerator\pg.cfg configfile
   @cd PackagesGenerator
   $(DCCx) -DNO_JCL pg.dpr
-  -@del pg.cfg >NUL 2>NUL
+  -@IF EXIST pg.cfg  del /q pg.cfg >NUL
   @cd ..
 
 pgEdit.exe: PackagesGenerator\pgEdit.dpr \
@@ -164,10 +165,10 @@ pgEdit.exe: PackagesGenerator\pgEdit.dpr \
 		PackagesGenerator\ModelsForm.pas \
 		PackagesGenerator\TargetDialog.pas \
 		PackagesGenerator\UtilsJcl.pas
-  @$(MAKE) -DCFG=PackagesGenerator\pgEdit.cfg configfile >NUL
+  @$(MAKE) -DCFG=PackagesGenerator\pgEdit.cfg configfile
   @cd PackagesGenerator
   $(DCCx) pgEdit.dpr
-  -@del pgEdit.cfg >NUL 2>NUL
+  -@IF EXIST pgEdit.cfg  del pgEdit.cfg >NUL
   @cd ..
 
 NoQuotes.exe: NoQuotes\NoQuotes.dpr

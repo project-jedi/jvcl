@@ -79,10 +79,10 @@ Compile: ChangeDirPackageDir
 
 Clean:
 	@echo [Cleaning...]
-	-del /q C*.dcp 2>NUL
-	-del /q C*.bpl 2>NUL
-	-del /q *.lsp 2>NUL
-	-del /q *.dpk 2>NUL
-	-del /q *.dcu 2>NUL
-	-del /q *.cfg 2>NUL
-	-del /q *.log 2>NUL
+	-del /q C*.dcp >NUL
+	-del /q C*.bpl >NUL
+	-del /q *.lsp >NUL
+	-del /q *.dpk >NUL
+	-del /q *.dcu >NUL
+	-del /q *.cfg >NUL
+	-del /q *.log >NUL

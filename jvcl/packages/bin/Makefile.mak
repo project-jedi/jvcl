@@ -115,7 +115,7 @@ Resources:
 Bpg2Make.exe:
 	@echo [Compiling: Bpg2Make.exe]
 	@cd $(DEVTOOLS)
-	$(MAKE) -f makefile.mak $(QUIET) Bpg2Make.exe
+	$(MAKE) $(QUIET) -f makefile.mak Bpg2Make.exe
 	@cd $(DEVTOOLS_BACK)
 	$(DEVTOOLS)\bin\Bpg2Make.exe "..\$(PKGDIR) Packages.bpg"
 
@@ -125,12 +125,12 @@ GeneratePackages:
 	@cd $(DEVTOOLS)
 	#-SET C5PFLAGS=
 	#if $(VERSION)==5 SET C5PFLAGS=-LUvcl50
-	$(MAKE) $(QUITE) -f makefile.mak pg.exe
+	$(MAKE) $(QUIET) -f makefile.mak pg.exe
 	#-SET C5PFLAGS=
 	@cd $(DEVTOOLS_BACK)
 	echo [Generating: JVCL Packages]
-	@$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(EDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
-	@IF NOT $(MASTEREDITION)! == ! @$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(MASTEREDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
+	$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(EDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
+	@IF NOT $(MASTEREDITION)! == ! $(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(MASTEREDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
 
 ################################################################################
 pg.exe: Templates GeneratePackages
@@ -140,8 +140,8 @@ pg.exe: Templates GeneratePackages
 configfile:
 	# create dcc32.cfg file
 	@echo Writing: $(CFG)
-	-@del /q "$(CFG)" 2>NUL
-	-@IF EXIST "$(ROOT)\bin\dcc32.cfg" @type "$(ROOT)\bin\dcc32.cfg" >>"$(CFG)"
+	-@IF EXIST "$(CFG)"  del /q "$(CFG)"
+	-@IF EXIST "$(ROOT)\bin\dcc32.cfg"  type "$(ROOT)\bin\dcc32.cfg" >>"$(CFG)"
 	@echo. >>"$(CFG)"
 	@echo -Q>>"$(CFG)"
 	@echo -U"$(ROOT)\Lib;$(ROOT)\Lib\Obj">>"$(CFG)"
@@ -194,15 +194,15 @@ CompilePackages:
 Clean:
 	@echo [Cleaning...]
 	@cd $(JVCLROOT)\packages
-	-del /q "$(PKGDIR) Packages.mak" 2>NUL
-	-del /q "$(PKGDIR)\*.cfg" "$(PKGDIR)\*.mak" 2>NUL
-	-@IF NOT "$(PKGDIR_MASTEREDITION)!" == "!" del /f /q "$(PKGDIR_MASTEREDITION)\*.mak" 2>NUL
+	-del /q "$(PKGDIR) Packages.mak"
+	-del /q "$(PKGDIR)\*.cfg" "$(PKGDIR)\*.mak"
+	-@IF NOT "$(PKGDIR_MASTEREDITION)!" == "!" del /q "$(PKGDIR_MASTEREDITION)\*.mak"
 	@cd bin
 
 ################################################################################
 Installer:
 	@echo [Compiling: Installer]
-	$(MAKE) $(QUITE) "-DCFG=..\..\install\JVCLInstall\JVCLInstall.cfg" configfile
+	$(MAKE) $(QUIET) "-DCFG=..\..\install\JVCLInstall\JVCLInstall.cfg" configfile
 	@cd ..\..\install\JVCLInstall
 	#
 	@echo -E"$(JVCLROOT)\bin">>JVCLInstall.cfg
@@ -210,7 +210,7 @@ Installer:
 	@echo -DNO_JCL>>JVCLInstall.cfg
 	#
 	#
-	@$(DCC) -DNO_JCL JVCLInstall.dpr
-	@start ..\..\bin\JVCLInstall.exe
+	$(DCC) -DNO_JCL JVCLInstall.dpr
+	start ..\..\bin\JVCLInstall.exe
 
 
