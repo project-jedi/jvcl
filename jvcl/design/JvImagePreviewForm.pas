@@ -299,12 +299,7 @@ begin
   with PreviewForm do
   try
     Caption := RsPreview;
-    {$IFDEF VCL}
-    BorderStyle := bsSizeToolWin;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     BorderStyle := fbsSizeToolWin;
-    {$ENDIF VisualCLX}
     Icon := Self.Icon;
     KeyPreview := True;
     Position := poScreenCenter;
