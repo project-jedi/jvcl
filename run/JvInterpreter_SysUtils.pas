@@ -2062,7 +2062,9 @@ begin
     AddConst(cSysUtils, 'faReadOnly', Ord(faReadOnly));
     AddConst(cSysUtils, 'faHidden', Ord(faHidden));
     AddConst(cSysUtils, 'faSysFile', Ord(faSysFile));
-    AddConst(cSysUtils, 'faVolumeID', Ord(faVolumeID));
+    {$IFNDEF COMPILER8_UP}
+    AddConst(cSysUtils, 'faVolumeID', Ord(faVolumeID)); // deprecated
+    {$ENDIF ~COMPILER8_UP}
     AddConst(cSysUtils, 'faDirectory', Ord(faDirectory));
     AddConst(cSysUtils, 'faArchive', Ord(faArchive));
     AddConst(cSysUtils, 'faAnyFile', Ord(faAnyFile));
