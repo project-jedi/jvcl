@@ -1116,11 +1116,8 @@ begin
 end;
 
 function TJvExCustomTabControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExCustomTabControl.Create(AOwner: TComponent);
@@ -1221,11 +1218,8 @@ begin
 end;
 
 function TJvExTabControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExTabControl.Create(AOwner: TComponent);
@@ -1326,11 +1320,8 @@ begin
 end;
 
 function TJvExTabSheet.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExTabSheet.Create(AOwner: TComponent);
@@ -1431,11 +1422,8 @@ begin
 end;
 
 function TJvExPageControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExPageControl.Create(AOwner: TComponent);
@@ -1536,11 +1524,8 @@ begin
 end;
 
 function TJvExStatusBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExStatusBar.Create(AOwner: TComponent);
@@ -1641,11 +1626,8 @@ begin
 end;
 
 function TJvExCustomViewControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -1756,11 +1738,8 @@ begin
 end;
 
 function TJvExToolBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExToolBar.Create(AOwner: TComponent);
@@ -1861,11 +1840,8 @@ begin
 end;
 
 function TJvExToolButton.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExToolButton.Create(AOwner: TComponent);
@@ -1968,11 +1944,8 @@ begin
 end;
 
 function TJvExCustomHeaderControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -2085,11 +2058,8 @@ begin
 end;
 
 function TJvExHeaderControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -2200,11 +2170,8 @@ begin
 end;
 
 function TJvExCustomTreeView.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -2315,11 +2282,8 @@ begin
 end;
 
 function TJvExTreeView.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -2430,11 +2394,8 @@ begin
 end;
 
 function TJvExCustomListView.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -2545,11 +2506,8 @@ begin
 end;
 
 function TJvExListView.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -2663,11 +2621,8 @@ begin
 end;
 
 function TJvExAnimate.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExAnimate.Create(AOwner: TComponent);

@@ -315,11 +315,8 @@ begin
 end;
 
 function TJvExCustomMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -518,11 +515,8 @@ begin
 end;
 
 function TJvExMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 

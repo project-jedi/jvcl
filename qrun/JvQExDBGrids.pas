@@ -247,11 +247,8 @@ begin
 end;
 
 function TJvExCustomDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
@@ -352,11 +349,8 @@ begin
 end;
 
 function TJvExDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExDBGrid.Create(AOwner: TComponent);

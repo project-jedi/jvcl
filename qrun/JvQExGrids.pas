@@ -362,11 +362,8 @@ begin
 end;
 
 function TJvExInplaceEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -477,11 +474,8 @@ begin
 end;
 
 function TJvExCustomGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExCustomGrid.Create(AOwner: TComponent);
@@ -583,11 +577,8 @@ begin
 end;
 
 function TJvExDrawGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExDrawGrid.Create(AOwner: TComponent);
@@ -688,11 +679,8 @@ begin
 end;
 
 function TJvExStringGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExStringGrid.Create(AOwner: TComponent);

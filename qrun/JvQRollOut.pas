@@ -20,7 +20,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-03-23
+Last Modified: 2004-03-09
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -55,8 +55,11 @@ unit JvQRollOut;
 interface
 
 uses
-  SysUtils, Classes, QGraphics, QImgList, QControls, QExtCtrls,
-  QActnList, Types, QWindows,
+  SysUtils, Classes,
+  
+  
+  QGraphics, QImgList, QControls, QExtCtrls,  QActnList, Types, QWindows,
+  
   JvQComponent, JvQThemes;
 
 const
@@ -64,6 +67,7 @@ const
 
 type
   TJvPlacement = (plTop, plLeft);
+
   TJvRollOutColors = class(TPersistent)
   private
     FFrameBottom: TColor;
@@ -254,10 +258,12 @@ type
     property Align;
     property BevelWidth;
     property BorderWidth;
+    property ButtonHeight;
     property Caption;
     property ChildOffset;
     property Collapsed;
     property Colors;
+//    property DragCursor;
     property DragMode;
     property Enabled;
     property Font;
@@ -292,25 +298,17 @@ type
   end;
 
 implementation
+
+
 uses
-  QForms; // for IsAccel()
+  QForms; 
 
 // (p3) not used
 // const
 //  cIncrement = 24;
 //  cSmooth = False;
 
-(*)
-procedure SetTextAngle(Cnv: TCanvas; Angle: Integer);
-var
-  FntLogRec: TLogFont;
-begin
-  GetObject(Cnv.Font.Handle, SizeOf(FntLogRec), Addr(FntLogRec));
-  FntLogRec.lfEscapement := Angle * 10;
-  FntLogRec.lfOutPrecision := OUT_TT_ONLY_PRECIS;
-  Cnv.Font.Handle := CreateFontIndirect(FntLogRec);
-end;
-(*)
+
 
 procedure InternalFrame3D(Canvas: TCanvas; var Rect: TRect; TopColor, BottomColor: TColor; Width: Integer);
   procedure DoRect;
@@ -677,7 +675,6 @@ begin
       UpdateGroup;
     end;
     CheckChildTabStops;
-    invalidate;
   end;
 end;
 
@@ -863,9 +860,10 @@ var
   R: TRect;
   TopC, BottomC: TColor;
   FIndex: Integer;
-  ws : widestring;
-begin
 
+  ws: widestring;
+
+begin
   if FPlacement = plTop then
     FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
   else
@@ -937,11 +935,14 @@ begin
     SetBkMode(Canvas.Handle, Transparent);
     if FMouseDown and FInsideButton then
       OffsetRect(R, 1, 1);
+    
+    
     ws := Caption;
     if Placement = plLeft then
       DrawText(Canvas.Handle, ws , -1, FButtonHeight , BevelWidth + 2, Canvas.Textwidth(ws), FButtonHeight, DT_VCENTER, 270)
     else
       DrawText(Canvas.Handle, ws , -1, BevelWidth + 2, 0, Canvas.Textwidth(ws), FButtonHeight, DT_VCENTER, 0)
+    
   end;
   if ShowFocus and Focused then
   begin

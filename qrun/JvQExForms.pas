@@ -547,11 +547,8 @@ begin
 end;
 
 function TJvExScrollingWinControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -662,11 +659,8 @@ begin
 end;
 
 function TJvExScrollBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -777,11 +771,8 @@ begin
 end;
 
 function TJvExCustomFrame.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -892,11 +883,8 @@ begin
 end;
 
 function TJvExFrame.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
@@ -1007,11 +995,8 @@ begin
 end;
 
 function TJvExCustomForm.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExCustomForm.Create(AOwner: TComponent);
@@ -1112,11 +1097,8 @@ begin
 end;
 
 function TJvExForm.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 constructor TJvExForm.Create(AOwner: TComponent);
@@ -1217,11 +1199,8 @@ begin
 end;
 
 function TJvExToolWindow.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  
-  
-  Result := False; // Qt allways paints the background
-  
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 
