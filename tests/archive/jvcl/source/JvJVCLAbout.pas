@@ -32,8 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, IniFiles, StdCtrls, ExtCtrls,
-  JclSysInfo, JclWin32,
-  JVCLVer, JvBaseDlg, JvHotLink, Dialogs, jpeg, Buttons, JvLabel;
+  JclSysInfo, JclWin32, JVCLVer, JvBaseDlg, Dialogs, jpeg, Buttons;
 
 type
   TJvJVCLAboutForm = class(TForm)
@@ -42,9 +41,9 @@ type
     pnlImage: TPanel;
     imgStarfield: TImage;
     btnOK: TButton;
-    JvHotLink1: TJvHotLink;
-    JvHotLink4: TJvHotLink;
-    lblNews: TJvHotLink;
+    JvHotLink1: TLabel;
+    JvHotLink4: TLabel;
+    lblNews: TLabel;
     Label1: TLabel;
     Label2: TLabel;
     lblCopyRight: TLabel;
@@ -55,9 +54,9 @@ type
     lblVisitJedi: TLabel;
     lblMailingList: TLabel;
     lblNewsgroup: TLabel;
-    lblJvHotLink2: TJvHotLink;
+    lblJvHotLink2: TLabel;
     lblBugs: TLabel;
-    lblBugsURL: TJvHotLink;
+    lblBugsURL: TLabel;
     btnHelp: TSpeedButton;
     btnOptions: TSpeedButton;
     OpenDialog1: TOpenDialog;

@@ -1,6 +1,6 @@
 object JvJVCLAboutForm: TJvJVCLAboutForm
-  Left = 201
-  Top = 165
+  Left = 300
+  Top = 156
   Anchors = [akLeft, akTop, akRight, akBottom]
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
@@ -36,6 +36,12 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
     Height = 317
     Align = alClient
     BevelOuter = bvNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Shell Dlg 2'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 0
     OnMouseDown = Panel1MouseDown
     object Bevel1: TBevel
@@ -81,7 +87,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
     object lblMailingList: TLabel
       Left = 168
       Top = 120
-      Width = 144
+      Width = 143
       Height = 13
       Caption = 'JEDI-VCL Support Mailing List:'
     end
@@ -92,68 +98,47 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       Height = 13
       Caption = 'JEDI-VCL Support Newsgroup:'
     end
-    object JvHotLink1: TJvHotLink
+    object JvHotLink1: TLabel
       Left = 181
       Top = 85
-      Width = 127
+      Width = 133
       Height = 13
       Cursor = crHandPoint
       Caption = 'http://jvcl.sourceforge.net '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
+      Font.Name = 'MS Shell Dlg 2'
+      Font.Style = [fsUnderline]
       ParentFont = False
-      HotTrack = True
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clBlue
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Sans Serif'
-      HotTrackFont.Style = [fsUnderline]
-      Url = 'http://jvcl.sourceforge.net '
     end
-    object JvHotLink4: TJvHotLink
+    object JvHotLink4: TLabel
       Left = 185
       Top = 135
-      Width = 201
+      Width = 202
       Height = 13
       Cursor = crHandPoint
       Caption = 'http://groups.yahoo.com/group/JEDI-VCL'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
+      Font.Name = 'MS Shell Dlg 2'
+      Font.Style = [fsUnderline]
       ParentFont = False
-      HotTrack = True
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clBlue
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Sans Serif'
-      HotTrackFont.Style = [fsUnderline]
-      Url = 'http://groups.yahoo.com/group/JEDI-VCL'
     end
-    object lblNews: TJvHotLink
+    object lblNews: TLabel
       Left = 183
       Top = 171
-      Width = 154
+      Width = 159
       Height = 13
       Cursor = crHandPoint
       Caption = 'news://forums.talkto.net/jedi.vcl'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
+      Font.Name = 'MS Shell Dlg 2'
+      Font.Style = [fsUnderline]
       ParentFont = False
-      HotTrack = True
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clBlue
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Sans Serif'
-      HotTrackFont.Style = [fsUnderline]
-      Url = 'news://forums.talkto.net/jedi.vcl'
     end
     object Label1: TLabel
       Left = 162
@@ -177,7 +162,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -27
-      Font.Name = 'Tahoma'
+      Font.Name = 'MS Shell Dlg 2'
       Font.Style = [fsBold]
       ParentFont = False
       Transparent = True
@@ -185,44 +170,37 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
     object lblCopyRight: TLabel
       Left = 7
       Top = 278
-      Width = 118
+      Width = 122
       Height = 13
       Caption = 'Copyright '#169' Project JEDI'
     end
     object lblRights: TLabel
       Left = 7
       Top = 294
-      Width = 86
+      Width = 91
       Height = 13
       Caption = 'All rights reserved.'
     end
     object lblBugs: TLabel
       Left = 170
       Top = 189
-      Width = 110
+      Width = 111
       Height = 13
       Caption = 'Reporting a Bug/Issue:'
     end
-    object lblBugsURL: TJvHotLink
+    object lblBugsURL: TLabel
       Left = 185
       Top = 206
-      Width = 127
+      Width = 133
       Height = 13
       Cursor = crHandPoint
       Caption = 'http://jvcl.sourceforge.net '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
+      Font.Name = 'MS Shell Dlg 2'
+      Font.Style = [fsUnderline]
       ParentFont = False
-      HotTrack = True
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clBlue
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'MS Sans Serif'
-      HotTrackFont.Style = [fsUnderline]
-      Url = 'http://jvcl.sourceforge.net '
     end
     object btnHelp: TSpeedButton
       Left = 304
@@ -326,14 +304,14 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
     object lblWindowsVersion: TLabel
       Left = 168
       Top = 232
-      Width = 74
+      Width = 73
       Height = 13
       Caption = 'Windows 2000 '
     end
     object Label4: TLabel
       Left = 168
       Top = 248
-      Width = 145
+      Width = 147
       Height = 13
       Caption = 'Memory Available to Windows:'
     end
@@ -756,7 +734,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
           B33112AB16C724F5AF06AE0A8D39368B5AA3FFD9}
         OnMouseDown = Panel1MouseDown
       end
-      object lblJvHotLink2: TJvHotLink
+      object lblJvHotLink2: TLabel
         Left = 20
         Top = 228
         Width = 102
@@ -771,13 +749,6 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
         Font.Style = []
         ParentColor = False
         ParentFont = False
-        HotTrack = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clBlue
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'MS Sans Serif'
-        HotTrackFont.Style = [fsUnderline]
-        Url = 'http://delphi-jedi.org'
       end
     end
     object btnOK: TButton
