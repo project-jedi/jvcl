@@ -66,17 +66,17 @@ const
   cSchedule = 'Schedule';
   cFilter = 'Filter';
 begin
-  RegisterComponents(SPaletteButton, [TJvLookOutButton, TJvExpressButton]);
-  RegisterComponents(SPaletteEdit, [TJvValidateEdit, TJvEditor, TJvHLEditor,
+  RegisterComponents(RsPaletteButton, [TJvLookOutButton, TJvExpressButton]);
+  RegisterComponents(RsPaletteEdit, [TJvValidateEdit, TJvEditor, TJvHLEditor,
     TJvHLEdPropDlg]);
-  RegisterComponents(SPaletteBarPanel, [TJvGammaPanel, TJvOutlookBar,
+  RegisterComponents(RsPaletteBarPanel, [TJvGammaPanel, TJvOutlookBar,
     TJvLookout, {TJvLookOutPage, } TJvExpress]);
-  RegisterComponents(SPaletteLabel, [TJvLinkLabel]);
-  RegisterComponents(SPaletteImageAnimator, [TJvThumbView, TJvThumbnail,
+  RegisterComponents(RsPaletteLabel, [TJvLinkLabel]);
+  RegisterComponents(RsPaletteImageAnimator, [TJvThumbView, TJvThumbnail,
     TJvThumbImage]);
-  RegisterComponents(SPaletteVisual, [TJvInspector, TJvInspectorBorlandPainter,
+  RegisterComponents(RsPaletteVisual, [TJvInspector, TJvInspectorBorlandPainter,
     TJvInspectorDotNETPainter, TJvTimeLine, TJvTMTimeLine, TJvChart]);
-  RegisterComponents(SPaletteNonVisual, [TJvTrayIcon, TJvScheduledEvents,
+  RegisterComponents(RsPaletteNonVisual, [TJvTrayIcon, TJvScheduledEvents,
     TJvBalloonHint]);
 
   RegisterPropertyEditor(TypeInfo(Integer), TJvCustomOutlookBar,

@@ -209,50 +209,50 @@ uses
 function ValueName(E: Extended): string;
 begin
   if E = High(Integer) then
-    Result := SMaxInt
+    Result := RsMaxInt
   else
   if E = Low(Integer) then
-    Result := SMinInt
+    Result := RsMinInt
   else
   if E = High(Longint) then
-    Result := SMaxLong
+    Result := RsMaxLong
   else
   if E = Low(Longint) then
-    Result := SMinLong
+    Result := RsMinLong
   else
   if E = High(ShortInt) then
-    Result := SMaxShort
+    Result := RsMaxShort
   else
   if E = Low(ShortInt) then
-    Result := SMinShort
+    Result :=RsMinShort
   else
   if E = High(Word) then
-    Result := SMaxWord
+    Result := RsMaxWord
   else
     Result := '';
 end;
 
 function StrToValue(const S: string): Longint;
 begin
-  if CompareText(S, SMaxLong) = 0 then
+  if CompareText(S, RsMaxLong) = 0 then
     Result := High(Longint)
   else
-  if CompareText(S, SMinLong) = 0 then
+  if CompareText(S, RsMinLong) = 0 then
     Result := Low(Longint)
   else
-  if CompareText(S, SMaxInt) = 0 then
+  if CompareText(S, RsMaxInt) = 0 then
     Result := High(Integer)
   else
-  if CompareText(S, SMinInt) = 0 then
+  if CompareText(S, RsMinInt) = 0 then
     Result := Low(Integer)
   else
-  if CompareText(S, SMaxShort) = 0 then
+  if CompareText(S, RsMaxShort) = 0 then
     Result := High(Shortint)
   else
-  if CompareText(S, SMinShort) = 0 then
+  if CompareText(S, RsMinShort) = 0 then
     Result := Low(Shortint)
   else
-  if CompareText(S, SMaxWord) = 0 then
+  if CompareText(S, RsMaxWord) = 0 then
     Result := High(Word)
   else
     Result := 0;
@@ -282,7 +282,7 @@ end;
 
 function TJvFilenameProperty.GetFilter: string;
 begin
-  Result := SAllFilesFilter;
+  Result := RsAllFilesFilter;
 end;
 
 function TJvFilenameProperty.GetOptions: TOpenOptions;
@@ -294,7 +294,7 @@ function TJvFilenameProperty.GetValue: string;
 begin
   Result := inherited GetValue;
   if Result = '' then
-    Result := SFileName;
+    Result := RsFileName;
 end;
 
 //=== TJvDirectoryProperty ===================================================
@@ -325,7 +325,7 @@ function TJvDirectoryProperty.GetValue: string;
 begin
   Result := inherited GetValue;
   if Result = '' then
-    Result := SDirectory;
+    Result := RsDirectory;
 end;
 
 //=== TJvHintProperty ========================================================
@@ -437,13 +437,13 @@ end;
 
 function TJvStringsEditor.GetStringsName: string;
 begin
-  Result := SItems;
+  Result := RsItems;
 end;
 
 function TJvStringsEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := Format(SFmtEditEllipsis, [GetStringsName])
+    Result := Format(RsFmtEditEllipsis, [GetStringsName])
   else
     Result := '';
 end;
@@ -735,7 +735,7 @@ begin
   try
     Result := ShortCutToText(GetOrdValue);
     if Result = '' then
-      Result := SNone;
+      Result := RsNone;
   except
     Result := inherited GetValue;
   end;
@@ -746,7 +746,7 @@ var
   Key: Word;
   Shift: TShiftState;
 begin
-  Proc(SNone);
+  Proc(RsNone);
 
   Shift := [ssCtrl];
   for Key := Ord('A') to Ord('Z') do
@@ -807,14 +807,14 @@ end;
 procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
 begin
   // (rom) Where does chx1 come from?
-  SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(SStripFilePath));
+  SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(RsStripFilePath));
 end;
 
 //=== TJvExeNameProperty =====================================================
 
 function TJvExeNameProperty.GetFilter: string;
 begin
-  Result := SExecutableFilesExeExeAllFiles;
+  Result := RsExecutableFilesExeExeAllFiles;
 end;
 
 //=== TJvIntegerProperty =====================================================

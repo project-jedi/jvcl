@@ -317,11 +317,11 @@ begin
   if (Comp <> nil) and (Comp is TComponent) then
     Result := (Comp as TComponent).Name
   else
-    Result := SUnknown;
+    Result := RsUnknown;
   if Item <> nil then
     Result := Result + ': Item[' + Item.GetID + ']'
   else
-    Result := Result + ': ' + SNoItem;
+    Result := Result + ': ' + RsNoItem;
 end;
 
 //=== TJvDataItemTextPropView ================================================

@@ -57,14 +57,14 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteImageAnimator, [TJvAnimate, TJvBmpAnimator,
+  RegisterComponents(RsPaletteImageAnimator, [TJvAnimate, TJvBmpAnimator,
     TJvPicClip, TJvImageRotate, TJvImageTransform, TJvImageWindow,
     TJvImageSquare, TJvStarfield, {$IFDEF USE_JV_GIF} TJvGIFAnimator, {$ENDIF}
     TJvAnimatedImage, TJvSpecialImage, TJvAVICapture]);
-  RegisterComponents(SPaletteBarPanel, [TJvGradientHeaderPanel, TJvGradient,
+  RegisterComponents(RsPaletteBarPanel, [TJvGradientHeaderPanel, TJvGradient,
     TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress]);
-  RegisterComponents(SPaletteNonVisual, [TJvID3v1, TJvID3v2, TJvWavePlayer]);
-  RegisterComponents(SPaletteSliderSplitter, [TJvSlider]);
+  RegisterComponents(RsPaletteNonVisual, [TJvID3v1, TJvID3v2, TJvWavePlayer]);
+  RegisterComponents(RsPaletteSliderSplitter, [TJvSlider]);
 
   RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
   RegisterPropertyEditor(TypeInfo(TJvDriverIndex), nil, '', TJvDriverIndexEditor);

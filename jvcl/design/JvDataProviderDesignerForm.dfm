@@ -8,7 +8,14 @@ inherited frmDataProviderDesigner: TfrmDataProviderDesigner
   PixelsPerInch = 96
   TextHeight = 13
   inline fmeToolbar: TfmeJvProviderToolbar
+    Left = 0
+    Top = 0
     Width = 621
+    Height = 48
+    Align = alTop
+    AutoScroll = False
+    AutoSize = True
+    TabOrder = 0
     inherited spToolbar: TSplitter
       Width = 621
     end
@@ -34,9 +41,12 @@ inherited frmDataProviderDesigner: TfrmDataProviderDesigner
     end
   end
   inline fmeTreeList: TfmeJvProviderTreeList
+    Left = 0
     Top = 48
     Width = 621
     Height = 222
+    Align = alClient
+    AutoScroll = False
     TabOrder = 1
     inherited lvProvider: TListView
       Width = 621

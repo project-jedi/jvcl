@@ -59,24 +59,24 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteButton, [TJvTransparentButton,
+  RegisterComponents(RsPaletteButton, [TJvTransparentButton,
     TJvTransparentButton2, TJvArrowButton, TJvCaptionButton, TJvColorButton,
     TJvHTButton, TJvSpacer, TJvSwitch]);
-  RegisterComponents(SPaletteBarPanel, [TJvSpeedBar, TJvCaptionPanel,
+  RegisterComponents(RsPaletteBarPanel, [TJvSpeedBar, TJvCaptionPanel,
     TJvItemsPanel, TJvMovableBevel, TJvRollOut, TJvFooter, TJvGroupHeader,
     TJvComponentPanel]);
-  RegisterComponents(SPaletteLabel, [TJvBehaviorLabel, TJvInstallLabel,
+  RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel, TJvInstallLabel,
     TJvHTLabel, TJvWinampLabel]);
-  RegisterComponents(SPaletteListComboTree, [TJvImageComboBox, TJvImageListBox,
+  RegisterComponents(RsPaletteListComboTree, [TJvImageComboBox, TJvImageListBox,
     TJvComboListBox, TJvHTListBox, TJvHTComboBox, TJvUninstallComboBox,
     TJvUninstallListBox, TJvDriveCombo, TJvDriveList, TJvFileListBox,
     TJvDirectoryListBox, TJvRegistryTreeView, TJvPlaylist]);
-  RegisterComponents(SPaletteScrollerTracker, [TJvScrollMax, TJvaScrollText,
+  RegisterComponents(RsPaletteScrollerTracker, [TJvScrollMax, TJvaScrollText,
     TJvContentScroller, TJvPageScroller, TJvScrollingWindow, TJvScrollText]);
-  RegisterComponents(SPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
+  RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter]);
-  RegisterComponents(SPaletteVisual, [TJvClock, TJvZoom, TJvDice, TJvCharMap]);
-  RegisterComponents(SPaletteNonVisual, [TJvHint {, TJvRegAuto}]);
+  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice, TJvCharMap]);
+  RegisterComponents(RsPaletteNonVisual, [TJvHint {, TJvRegAuto}]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(TJvLabelBehaviorName), TJvBehaviorLabel, 'Behavior', TJvLabelBehaviorProperty);

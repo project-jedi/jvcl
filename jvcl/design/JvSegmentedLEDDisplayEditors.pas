@@ -167,13 +167,13 @@ function TJvSegmentedLEDDisplayEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SAddDigit;
+      Result := RsAddDigit;
     1:
-      Result := SRemoveDigit;
+      Result := RsRemoveDigit;
     2:
       Result := '-'; // do not localize
     3:
-      Result := SEditMappingEllipsis;
+      Result := RsEditMappingEllipsis;
   end;
 end;
 

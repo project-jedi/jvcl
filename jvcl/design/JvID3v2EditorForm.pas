@@ -149,103 +149,103 @@ type
 const
   cFrameDescriptions: array [TJvID3FrameID] of string =
    (
-    SfiErrorFrame,
-    SfiPaddingFrame,
-    SfiNoFrame,
-    SfiAudioCrypto,
-    SfiPicture,
-    SfiAudioSeekPoint,
-    SfiComment,
-    SfiCommercial,
-    SfiCryptoReg,
-    SfiEqualization2,
-    SfiEqualization,
-    SfiEventTiming,
-    SfiGeneralObject,
-    SfiGroupingReg,
-    SfiInvolvedPeople,
-    SfiLinkedInfo,
-    SfiCDID,
-    SfiMPEGLookup,
-    SfiOwnership,
-    SfiPrivate,
-    SfiPlayCounter,
-    SfiPopularimeter,
-    SfiPositionsync,
-    SfiBufferSize,
-    SfiVolumeAdj2,
-    SfiVolumeAdj,
-    SfiReverb,
-    SfiSeekFrame,
-    SfiSignature,
-    SfiSyncedLyrics,
-    SfiSyncedTempo,
-    SfiAlbum,
-    SfiBPM,
-    SfiComposer,
-    SfiContentType,
-    SfiCopyright,
-    SfiDate,
-    SfiEncodingTime,
-    SfiPlaylistDelay,
-    SfiOrigReleaseTime,
-    SfiRecordingTime,
-    SfiReleaseTime,
-    SfiTaggingTime,
-    SfiInvolvedPeople2,
-    SfiEncodedBy,
-    SfiLyricist,
-    SfiFileType,
-    SfiTime,
-    SfiContentGroup,
-    SfiTitle,
-    SfiSubTitle,
-    SfiInitialKey,
-    SfiLanguage,
-    SfiSongLen,
-    SfiMusicianCreditList,
-    SfiMediaType,
-    SfiMood,
-    SfiOrigAlbum,
-    SfiOrigFileName,
-    SfiOrigLyricist,
-    SfiOrigArtist,
-    SfiOrigYear,
-    SfiFileOwner,
-    SfiLeadArtist,
-    SfiBand,
-    SfiConductor,
-    SfiMixArtist,
-    SfiPartInSet,
-    SfiProducedNotice,
-    SfiPublisher,
-    SfiTrackNum,
-    SfiRecordingDates,
-    SfiNetRadioStation,
-    SfiNetRadioOwner,
-    SfiSize,
-    SfiAlbumSortOrder,
-    SfiPerformerSortOrder,
-    SfiTitleSortOrder,
-    SfiISRC,
-    SfiEncoderSettings,
-    SfiSetSubTitle,
-    SfiUserText,
-    SfiYear,
-    SfiUniqueFileID,
-    SfiTermsOfUse,
-    SfiUnsyncedLyrics,
-    SfiWWWCommercialInfo,
-    SfiWWWCopyright,
-    SfiWWWAudioFile,
-    SfiWWWArtist,
-    SfiWWWAudioSource,
-    SfiWWWRadioPage,
-    SfiWWWPayment,
-    SfiWWWPublisher,
-    SfiWWWUser,
-    SfiMetaCrypto,
-    SfiMetaCompression
+    RsfiErrorFrame,
+    RsfiPaddingFrame,
+    RsfiNoFrame,
+    RsfiAudioCrypto,
+    RsfiPicture,
+    RsfiAudioSeekPoint,
+    RsfiComment,
+    RsfiCommercial,
+    RsfiCryptoReg,
+    RsfiEqualization2,
+    RsfiEqualization,
+    RsfiEventTiming,
+    RsfiGeneralObject,
+    RsfiGroupingReg,
+    RsfiInvolvedPeople,
+    RsfiLinkedInfo,
+    RsfiCDID,
+    RsfiMPEGLookup,
+    RsfiOwnership,
+    RsfiPrivate,
+    RsfiPlayCounter,
+    RsfiPopularimeter,
+    RsfiPositionsync,
+    RsfiBufferSize,
+    RsfiVolumeAdj2,
+    RsfiVolumeAdj,
+    RsfiReverb,
+    RsfiSeekFrame,
+    RsfiSignature,
+    RsfiSyncedLyrics,
+    RsfiSyncedTempo,
+    RsfiAlbum,
+    RsfiBPM,
+    RsfiComposer,
+    RsfiContentType,
+    RsfiCopyright,
+    RsfiDate,
+    RsfiEncodingTime,
+    RsfiPlaylistDelay,
+    RsfiOrigReleaseTime,
+    RsfiRecordingTime,
+    RsfiReleaseTime,
+    RsfiTaggingTime,
+    RsfiInvolvedPeople2,
+    RsfiEncodedBy,
+    RsfiLyricist,
+    RsfiFileType,
+    RsfiTime,
+    RsfiContentGroup,
+    RsfiTitle,
+    RsfiSubTitle,
+    RsfiInitialKey,
+    RsfiLanguage,
+    RsfiSongLen,
+    RsfiMusicianCreditList,
+    RsfiMediaType,
+    RsfiMood,
+    RsfiOrigAlbum,
+    RsfiOrigFileName,
+    RsfiOrigLyricist,
+    RsfiOrigArtist,
+    RsfiOrigYear,
+    RsfiFileOwner,
+    RsfiLeadArtist,
+    RsfiBand,
+    RsfiConductor,
+    RsfiMixArtist,
+    RsfiPartInSet,
+    RsfiProducedNotice,
+    RsfiPublisher,
+    RsfiTrackNum,
+    RsfiRecordingDates,
+    RsfiNetRadioStation,
+    RsfiNetRadioOwner,
+    RsfiSize,
+    RsfiAlbumSortOrder,
+    RsfiPerformerSortOrder,
+    RsfiTitleSortOrder,
+    RsfiISRC,
+    RsfiEncoderSettings,
+    RsfiSetSubTitle,
+    RsfiUserText,
+    RsfiYear,
+    RsfiUniqueFileID,
+    RsfiTermsOfUse,
+    RsfiUnsyncedLyrics,
+    RsfiWWWCommercialInfo,
+    RsfiWWWCopyright,
+    RsfiWWWAudioFile,
+    RsfiWWWArtist,
+    RsfiWWWAudioSource,
+    RsfiWWWRadioPage,
+    RsfiWWWPayment,
+    RsfiWWWPublisher,
+    RsfiWWWUser,
+    RsfiMetaCrypto,
+    RsfiMetaCompression
    );
 
 procedure ShowFramesEditor(Designer: IJvFormDesigner; AController: TJvID3Controller);
@@ -276,18 +276,18 @@ end;
 procedure ShowFileInfo(AController: TJvID3Controller);
 const
   cVersion: array [TJvMPEGVersion] of string =
-    (SMPEG25, SMPEGUnknown, SMPEG20, SMPEG10);
+    (RsMPEG25, RsMPEGUnknown, RsMPEG20, RsMPEG10);
   cLayer: array [TJvMPEGLayer] of string =
-    (SLayerUnknown, SLayer3, SLayer2, SLayer1);
+    (RsLayerUnknown, RsLayer3, RsLayer2, RsLayer1);
   cChannelMode: array [TJvMPEGChannelMode] of string =
-    (SChannelModeStereo, SChannelModeJointStereo,
-     SChannelModeDualChannel, SChannelModeMono);
+    (RsChannelModeStereo, RsChannelModeJointStereo,
+     RsChannelModeDualChannel, RsChannelModeMono);
   cEmphasis: array [TJvMPEGEmphasis] of string =
-    (SEmphasisNone, SEmphasisMicrosec, SEmphasisUnknown, SEmphasisCCITTJ17);
+    (RsEmphasisNone, RsEmphasisMicrosec, RsEmphasisUnknown, RsEmphasisCCITTJ17);
   cBool: array [Boolean] of string =
-    (SBoolNo, SBoolYes);
+    (RsBoolNo, RsBoolYes);
   cVbr: array [Boolean] of string =
-    (SVbrNo, SVbrVbr);
+    (RsVbrNo, RsVbrVbr);
 var
   Msg: string;
   SavedActive: Boolean;
@@ -298,13 +298,13 @@ begin
     begin
       if FileName = '' then
       begin
-        MessageDlg(SID3Err_NoFileSpecified, mtError, [mbOK], 0);
+        MessageDlg(RsID3Err_NoFileSpecified, mtError, [mbOK], 0);
         Exit;
       end;
 
       if not FileExists(FileName) then
       begin
-        MessageDlg(Format(SID3Err_FileDoesNotExists, [FileName]),
+        MessageDlg(Format(RSID3Err_FileDoesNotExists, [FileName]),
           mtError, [mbOK], 0);
         Exit;
       end;
@@ -315,11 +315,11 @@ begin
       begin
         if not IsValid then
         begin
-          MessageDlg(SID3Err_NoValidMPEGTag, mtError, [mbOK], 0);
+          MessageDlg(RSID3Err_NoValidMPEGTag, mtError, [mbOK], 0);
           Exit;
         end;
 
-        Msg := Format(SIDV2FileInfo, [FileSize, HeaderFoundAt, LengthInSec,
+        Msg := Format(RsIDV2FileInfoFmt, [FileSize, HeaderFoundAt, LengthInSec,
           cVersion[Version], cLayer[Layer], Bitrate, cVbr[IsVbr], FrameCount,
           SamplingRateFrequency, cChannelMode[ChannelMode],
           cBool[mbProtection in Bits], cBool[mbCopyrighted in Bits],
@@ -331,7 +331,7 @@ begin
     with CreateMessageDialog(Msg, mtCustom, [mbOK]) do
     try
       Position := poScreenCenter;
-      Caption := SIDV2FileInfoCaption;
+      Caption := RsIDV2FileInfoCaption;
       ShowModal;
     finally
       Free;
@@ -750,7 +750,7 @@ end;
 
 procedure TJvID3ControllerEditor.Commit;
 begin
-  if MessageDlg(SCommit, mtConfirmation, mbOKCancel, 0) = mrOk then
+  if MessageDlg(RsCommit, mtConfirmation, mbOKCancel, 0) = mrOk then
     TJvID3Controller(Component).Commit;
 end;
 
@@ -772,13 +772,13 @@ function TJvID3ControllerEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SID3FrameEditorTag;
+      Result := RSID3FrameEditorTag;
     1:
-      Result := SID3RemoveTag;
+      Result := RSID3RemoveTag;
     2:
-      Result := SID3FileInfoTag;
+      Result := RSID3FileInfoTag;
     3:
-      Result := SID3CommitTag;
+      Result := RSID3CommitTag;
   end;
 end;
 
@@ -803,17 +803,17 @@ begin
   begin
     if FileName = '' then
     begin
-      MessageDlg(SID3Err_NoFileSpecified, mtError, [mbOK], 0);
+      MessageDlg(RSID3Err_NoFileSpecified, mtError, [mbOK], 0);
       Exit;
     end;
 
     if not FileExists(FileName) then
     begin
-      MessageDlg(Format(SID3Err_FileDoesNotExists, [FileName]), mtError, [mbOK], 0);
+      MessageDlg(Format(RSID3Err_FileDoesNotExists, [FileName]), mtError, [mbOK], 0);
       Exit;
     end;
 
-    if MessageDlg(SID3RemoveTagConfirmation, mtConfirmation, mbOKCancel, 0) = mrOk then
+    if MessageDlg(RSID3RemoveTagConfirmation, mtConfirmation, mbOKCancel, 0) = mrOk then
       Erase;
   end;
 end;

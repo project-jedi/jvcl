@@ -47,7 +47,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteEncryptCompress, [TJvVigenereCipher,
+  RegisterComponents(RsPaletteEncryptCompress, [TJvVigenereCipher,
     TJvXORCipher, TJvCaesarCipher, TJvGenetic, TJvCABFile,
     {$IFNDEF BCB}
     TJvZlibMultiple,

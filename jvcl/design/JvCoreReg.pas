@@ -53,7 +53,7 @@ procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
-  RegisterComponents(SPaletteNonVisual, [TJvJVCLAboutComponent,
+  RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
     TJvContextProvider, TJvColorProvider, TJvColorMappingProvider,
     TJvAppStore, TJvAppRegistryStore, TJvAppINIFileStore]);
 
@@ -101,7 +101,7 @@ begin
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
 
-  RegisterActions(SJVCLActionsCategory, [TJvSendMailAction, TJvWebAction], TJvStandardActions);
+  RegisterActions(RsJVCLActionsCategory, [TJvSendMailAction, TJvWebAction], TJvStandardActions);
   RegisterZoom;
 end;
 

@@ -62,7 +62,7 @@ begin
   MemStream := TMemoryStream(GetOrdValue);
   with TOpenDialog.Create(nil) do
     try
-      Filter := SAllFilesFilter;
+      Filter := RsAllFilesFilter;
       if Execute then
       begin
         Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
@@ -86,17 +86,17 @@ end;
 
 function TJvDataEmbeddedEditor.GetValue: string;
 begin
-  Result := SJvEditorString;
+  Result := RsJvEditorString;
 end;
 
 procedure TJvDataEmbeddedEditor.GetValues(Proc: TGetStrProc);
 begin
-  SetStrValue(SJvEditorString);
+  SetStrValue(RsJvEditorString);
 end;
 
 procedure TJvDataEmbeddedEditor.SetValue(const Value: string);
 begin
-  SetStrValue(SJvEditorString);
+  SetStrValue(RsJvEditorString);
 end;
 
 end.

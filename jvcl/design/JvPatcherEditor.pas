@@ -71,7 +71,7 @@ end;
 
 procedure TJvPatcherEditor.GetValues(Proc: TGetStrProc);
 begin
-  SetStrValue(SJvEditorString);
+  SetStrValue(RsJvEditorString);
 end;
 
 procedure TJvPatcherEditor.Edit;

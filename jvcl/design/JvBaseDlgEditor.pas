@@ -91,7 +91,7 @@ function TJvBaseDlgEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SPreviewEllipsis;
+      Result := RsPreviewEllipsis;
   end;
 end;
 

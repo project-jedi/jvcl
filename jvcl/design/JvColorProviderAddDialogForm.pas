@@ -76,7 +76,7 @@ function DoAddDsgnColor(AColorType: TColorType; AProvider: IJvDataProvider;
 implementation
 
 uses
-  JvConsts;
+  JvConsts, JvDsgnConsts;
   
 {$R *.dfm}
 
@@ -172,20 +172,20 @@ begin
       with StandardColorSettings do
       begin
         Active := True;
-        Caption := 'Standard colors';
+        Caption := RsStandardColors;
         ShowHeader := True;
       end;
       with SystemColorSettings do
       begin
         Active := True;
-        Caption := 'System colors';
+        Caption := RsSystemColors;
         ShowHeader := True;
       end;
       with CustomColorSettings do
       begin
         AddColorSettings.Active := False;
         Active := True;
-        Caption := 'Custom colors';
+        Caption := RsCustomColors;
         ShowHeader := True;
       end;
     end;

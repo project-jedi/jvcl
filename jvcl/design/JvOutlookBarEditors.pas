@@ -172,7 +172,7 @@ function TJvOutlookBarComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SOLEditor;
+      Result := RsOLEditor;
   else
     Result := inherited GetVerb(Index);
   end;

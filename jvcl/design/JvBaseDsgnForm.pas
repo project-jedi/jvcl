@@ -140,7 +140,7 @@ end;
 
 function TJvBaseDesign.GetRegKey: string;
 begin
-  Result := SDelphiKey + SPropertyEditors + '\' + Trim(DesignerFormName) + '\' + ClassName
+  Result := SDelphiKey + RsPropertyEditors + RegPathDelim + Trim(DesignerFormName) + RegPathDelim + ClassName
 end;
 
 function TJvBaseDesign.DesignerFormName: string;

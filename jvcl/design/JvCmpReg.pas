@@ -52,7 +52,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteNonVisual,[TJvAlarms, TJvConverter,
+  RegisterComponents(RsPaletteNonVisual,[TJvAlarms, TJvConverter,
     TJvDataEmbedded, TJvCreateProcess,
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
     TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvTranslatorStrings,

@@ -187,7 +187,7 @@ end;
 
 function TJvBandObjectDLLWizard.GetComment: string;
 begin
-  Result := SCreatesABandObjectDLLProject;
+  Result := RsCreatesABandObjectDLLProject;
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -206,7 +206,7 @@ end;
 
 function TJvBandObjectDLLWizard.GetName: string;
 begin
-  Result := SBandObjectDLLWizard;
+  Result := RsBandObjectDLLWizard;
 end;
 
 function TJvBandObjectDLLWizard.GetPage: string;

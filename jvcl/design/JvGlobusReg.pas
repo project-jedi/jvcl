@@ -81,7 +81,7 @@ uses Classes,
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteGlobusComponents1, [
+  RegisterComponents(RsPaletteGlobusComponents1, [
     {$IFNDEF DelphiPersonalEdition}
     TJvgExportDBETable, TJvgDBNavigator, TJvgPrintCrossTable, TJvgDBGrid,
     TJvgVertDBSGrid,
@@ -94,7 +94,7 @@ begin
     TJvgAskListBox, TJvgScrollBox, TJvgStringGrid, TJvgSpeedButton,
     TJvgExtSpeedButton, TJvgWizardHeader, TJvgCaption]);
 
-  RegisterComponents(SPaletteGlobusComponents2, [TJvgCheckBox,
+  RegisterComponents(RsPaletteGlobusComponents2, [TJvgCheckBox,
     TJvgRuler, TJvgPageControl, TJvgTabControl, TJvgProcess,
     TJvgMailSlotServer, TJvgMailSlotClient, TJvgLabel, TJvgFlyingText,
     TJvgDigits, TJvgStaticText, TJvgHoleShape, TJvgHelpPanel,

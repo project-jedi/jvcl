@@ -56,15 +56,15 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteSystem, [TJvClipboardMonitor, TJvClipboardViewer,
+  RegisterComponents(RsPaletteSystem, [TJvClipboardMonitor, TJvClipboardViewer,
     {TJvComputerInfo, // - do not register this component as default}
     TJvSHFileOperation, TJvChangeNotify, TJvDropTarget, TJvDragDrop, TJvAppInstances,
       TJvHidDeviceController, TJvNTEventLog, TJvScreenSaver, TJvDeviceChanged,
       TJvJoystick, TJvSoundControl, TJvKeyboardStates, TJvDirectories,
       TJvSystemColors, TJvAppDdeCmd, TJvPerfStat95]);
-  RegisterComponents(SPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase,
+  RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase,
     TJvRas32, TJvCommStatus]);
-  RegisterComponents(SPaletteNonVisual, [TJvFormStorage, TJvSearchFiles,
+  RegisterComponents(RsPaletteNonVisual, [TJvFormStorage, TJvSearchFiles,
       TJvMRUList, TJvMRUManager, TJvShellHook, TJvWindowHook,
       TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList, TJvAppXmlStore]);
 

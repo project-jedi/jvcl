@@ -75,7 +75,7 @@ procedure TfrmPluginParams.SettingsChanged(Sender: TObject);
   end;
 
 begin
-  lblCreateInfo.Caption := Format(SPluginParamsFormInfoText, [edtPluginName.Text, RbToPrjExt]);
+  lblCreateInfo.Caption := Format(RsPluginParamsFormInfoText, [edtPluginName.Text, RbToPrjExt]);
   butOK.Enabled := Trim(edtPluginName.Text) <> '';
   edtPluginUID.Text := 'JVCL.' + edtPluginHostProject.Text + '.Plg' + edtPluginName.Text;
 end;

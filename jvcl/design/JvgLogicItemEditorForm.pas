@@ -122,7 +122,7 @@ function TJvgLogicItemEditor.Execute(ALogics: TJvgLogics; ALogicElement: TJvgLog
 var
   I: Integer;
 begin
-  Caption := Format(SLogicElements, [ALogicElement.Caption]);
+  Caption := Format(RsLogicElements, [ALogicElement.Caption]);
   Logics := ALogics;
   LogicElement := ALogicElement;
 
@@ -134,7 +134,7 @@ begin
     LB.Items.Add('1');
 
   cbExpr.Items.Clear;
-  cbExpr.Items.Add(SResult);
+  cbExpr.Items.Add(RsResult);
   for I := 0 to Logics.Dictionary.Count - 1 do
     cbExpr.Items.Add('[' + Logics.Dictionary.Names[I] + ']');
 
@@ -316,9 +316,9 @@ procedure TJvgLogicItemEditor.ToolButton1Click(Sender: TObject);
 begin
   with LogicElement.LogicVariants.Add do
   begin
-    Value := SNotDefined;
-    TrueResult := SNotDefined;
-    FalseResult := SNotDefined;
+    Value := RsNotDefined;
+    TrueResult := RsNotDefined;
+    FalseResult := RsNotDefined;
   end;
   LB.Items.Add('1');
 end;

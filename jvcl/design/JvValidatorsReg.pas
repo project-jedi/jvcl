@@ -49,7 +49,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteValidators, [TJvValidators,
+  RegisterComponents(RsPaletteValidators, [TJvValidators,
     TJvValidationSummary, TJvErrorIndicator]);
   RegisterNoIcon([TJvRequiredFieldValidator, TJvCompareValidator,
     TJvRangeValidator, TJvRegularExpressionValidator, TJvCustomValidator]);

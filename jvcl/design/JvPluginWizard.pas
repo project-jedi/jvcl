@@ -194,17 +194,17 @@ end;
 
 function TJvPluginWizard.GetMenuText: string;
 begin
-  Result := SJediPuginWizard;
+  Result := RsJediPuginWizard;
 end;
 
 function TJvPluginWizard.GetName: string;
 begin
-  Result := SJvPluginWizard;
+  Result := RsJvPluginWizard;
 end;
 
 function TJvPluginWizard.GetPage: string;
 begin
-  Result := SProjects;
+  Result := RsProjects;
 end;
 
 function TJvPluginWizard.GetAuthor: string;
@@ -214,7 +214,7 @@ end;
 
 function TJvPluginWizard.GetComment: string;
 begin
-  Result := SNewPlugin;
+  Result := RsNewPlugin;
 end;
 
 function TJvPluginWizard.GetGlyph: {$IFDEF COMPILER6_UP} Cardinal; {$ELSE} HICON; {$ENDIF}
@@ -816,9 +816,9 @@ begin
     '  ' + ClassNameOfPlugin + ' = class(T' + Ancestor + ')' + CrLf +
     //    '  T' + TypeName + ' = class(T' + Ancestor + ')' + CrLf +
     '  private' + CrLf +
-    '    ' + SPrivateDeclarations + CrLf +
+    '    ' + RsPrivateDeclarations + CrLf +
     '  public' + CrLf +
-    '    ' + SPublicDeclarations + CrLf +
+    '    ' + RsPublicDeclarations + CrLf +
     '  end;' + CrLf2 +
 
     //  'function RegisterPlugin: T' + TypeName + '; stdcall;' + CrLf2;
@@ -833,7 +833,7 @@ begin
 
     '{$R *.dfm}' + CrLf2 +
 
-  SIMPORTANTNOTEIfYouChangeTheNameOfTh + CrLf +
+  RsIMPORTANTNOTEIfYouChangeTheNameOfTh + CrLf +
     'function RegisterPlugin: TJvPlugin;' + CrLf +
     'begin' + CrLf +
     '  Result := ' + ClassNameOfPlugin + '.Create(nil);' + CrLf +

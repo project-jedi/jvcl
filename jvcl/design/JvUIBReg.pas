@@ -53,7 +53,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteUIB, [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
+  RegisterComponents(RsPaletteUIB, [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
     {$IFNDEF DelphiPersonalEdition} TJvUIBDataSet, {$ENDIF}
     TJvUIBScript, TJvUIBBackup, TJvUIBRestore]);
 end;

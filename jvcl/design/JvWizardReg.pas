@@ -65,7 +65,7 @@ const
   cActivePage = 'ActivePage';
   cPages = 'Pages';
 begin
-  RegisterComponents(SPaletteWizard, [TJvWizard, TJvWizardRouteMapSteps,
+  RegisterComponents(RsPaletteWizard, [TJvWizard, TJvWizardRouteMapSteps,
     TJvWizardRouteMapNodes]);
   RegisterClasses([TJvWizardCustomPage, TJvWizardWelcomePage,
     TJvWizardInteriorPage]);

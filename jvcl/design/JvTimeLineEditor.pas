@@ -96,7 +96,7 @@ end;
 function TJvTimeLineEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := SItemsEditorEllipsis
+    Result := RsItemsEditorEllipsis
   else
     Result := inherited GetVerb(Index);
 end;

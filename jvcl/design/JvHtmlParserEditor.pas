@@ -71,7 +71,7 @@ end;
 
 procedure TJvHtmlParserEditor.GetValues(Proc: TGetStrProc);
 begin
-  SetStrValue(SJvEditorString);
+  SetStrValue(RsJvEditorString);
 end;
 
 procedure TJvHtmlParserEditor.Edit;

@@ -223,8 +223,8 @@ procedure TJvCsvDefStrDialog.ButtonOkClick(Sender: TObject);
 begin
   UpdateCsvStr;
   if EditCsvStr.Text = FOriginalCsvStr then
-    if MessageBox(Self.Handle, PChar(SYouHaventActuallyChangedAnythingIfY),
-      PChar(SConfirm), MB_YESNO or MB_ICONWARNING) = IDNO then
+    if MessageBox(Self.Handle, PChar(RsYouHaventActuallyChangedAnythingIfY),
+      PChar(RsConfirm), MB_YESNO or MB_ICONWARNING) = IDNO then
       Exit; // quit before we set ModalResult, so we continue on editing.
   ModalResult := mrOk;
 end;
@@ -316,16 +316,16 @@ begin
   S := MakeString;
   if S = '' then
   begin
-    MessageBox(Self.Handle, PChar(SMustTypeAValidFieldNameAndSelectAFi),
-      PChar(SAddFailed), MB_OK or MB_ICONERROR);
+    MessageBox(Self.Handle, PChar(RsMustTypeAValidFieldNameAndSelectAFi),
+      PChar(RsAddFailed), MB_OK or MB_ICONERROR);
     Exit; { not valid, can't add }
   end;
    // XXX Check Validity and Uniqueness before adding.
   F := FieldNameOnly(S);
   if not ValidIdentifier(PChar(F)) then
   begin
-    MessageBox(Self.Handle, PChar(Format(SFieldNameIsNotAValidIdentifier, [S])),
-      PChar(SAddFailed), MB_OK or MB_ICONERROR);
+    MessageBox(Self.Handle, PChar(Format(RsFieldNameIsNotAValidIdentifier, [S])),
+      PChar(RsAddFailed), MB_OK or MB_ICONERROR);
     Exit;
   end;
   for I := 0 to ListBoxFields.Items.Count - 1 do
@@ -333,8 +333,8 @@ begin
     Unique := FieldNameOnly(ListBoxFields.Items[I]);
     if Unique = F then
     begin
-      MessageBox(Self.Handle, PChar(SCantAddTwoFieldsWithTheSameNameSele),
-        PChar(SAddFailed), MB_OK or MB_ICONERROR);
+      MessageBox(Self.Handle, PChar(RsCantAddTwoFieldsWithTheSameNameSele),
+        PChar(RsAddFailed), MB_OK or MB_ICONERROR);
       Exit;
     end;
   end;
@@ -361,22 +361,23 @@ begin
   S := MakeString;
   if S = '' then
   begin
-    MessageBox(Self.Handle, PChar(SMustTypeAValidFieldNameAndSelectAFi), PChar(SUpdateFailed), MB_OK or MB_ICONERROR);
+    MessageBox(Self.Handle, PChar(RsMustTypeAValidFieldNameAndSelectAFi),
+      PChar(RsUpdateFailed), MB_OK or MB_ICONERROR);
     Exit; { not valid, can't add }
   end;
    // XXX Check Validity and Uniqueness before adding.
   F := FieldNameOnly(S);
   if not ValidIdentifier(PChar(F)) then
   begin
-    MessageBox(Self.Handle, PChar(Format(SFieldNameIsNotAValidIdentifier, [S])),
-      PChar(SUpdateFailed), MB_OK or MB_ICONERROR);
+    MessageBox(Self.Handle, PChar(Format(RsFieldNameIsNotAValidIdentifier, [S])),
+      PChar(RsUpdateFailed), MB_OK or MB_ICONERROR);
     Exit;
   end;
   Selected := ListBoxFields.ItemIndex;
   if Selected < 0 then
   begin
-    MessageBox(Self.Handle, PChar(SNoItemIsSelectedInTheFieldsListYouC),
-      PChar(SUpdateFailed), MB_OK or MB_ICONERROR);
+    MessageBox(Self.Handle, PChar(RsNoItemIsSelectedInTheFieldsListYouC),
+      PChar(RsUpdateFailed), MB_OK or MB_ICONERROR);
     Exit; // can't do that!
   end;
   for I := 0 to ListBoxFields.Items.Count - 1 do
@@ -384,8 +385,8 @@ begin
     Unique := FieldNameOnly(ListBoxFields.Items[I]);
     if (I <> Selected) and (Unique = F) then
     begin
-      MessageBox(Self.Handle, PChar(SModifyingTheCurrentlySelectedItemWo),
-        PChar(SUpdateFailed), MB_OK or MB_ICONERROR);
+      MessageBox(Self.Handle, PChar(RsModifyingTheCurrentlySelectedItemWo),
+        PChar(RsUpdateFailed), MB_OK or MB_ICONERROR);
       Exit;
     end;
   end;

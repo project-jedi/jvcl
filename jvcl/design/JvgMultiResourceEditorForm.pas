@@ -70,6 +70,9 @@ var
 
 implementation
 
+uses
+  JvDsgnConsts;
+
 {$R *.dfm}
 
 function TJvgResourcesProperty.GetAttributes: TPropertyAttributes;
@@ -111,8 +114,8 @@ var
 begin
   sg.ColCount := 3;
   sg.RowCount := Component.Resources.Count + 2;
-  sg.Cells[0, 0] := 'Control';
-  sg.Cells[1, 0] := 'Default';
+  sg.Cells[0, 0] := RsCellControlCaption;
+  sg.Cells[1, 0] := RsCellDefaultCaption;
   LoadDefaults;
   with Component, sg do
     for ARow := 1 to Resources.Count do

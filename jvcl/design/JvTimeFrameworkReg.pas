@@ -104,11 +104,11 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteTimeFramework, [TJvTFScheduleManager,
+  RegisterComponents(RsPaletteTimeFramework, [TJvTFScheduleManager,
     TJvTFUniversalPrinter]);
 //  RegisterPropertyEditor(TypeInfo(string), TJvTFControl, 'Version', TutfVersionEditor);
 //  RegisterPropertyEditor(TypeInfo(string), TJvTFScheduleManager, 'Version', TutfVersionEditor);
-  RegisterComponents(SPaletteTimeFramework, [TJvTFGlanceTextViewer, TJvTFMonths,
+  RegisterComponents(RsPaletteTimeFramework, [TJvTFGlanceTextViewer, TJvTFMonths,
     TJvTFWeeks, TJvTFAlarm]);
 //  RegisterPropertyEditor(TypeInfo(TJvTFGlanceCells), '', 'Cells',
 //    TJvTFGlanceCellsProperty);
@@ -116,7 +116,7 @@ begin
   // register a nil property editor for now, so cells cannot be added,
   // deleted, or moved at design time... BAD THINGS HAPPEN
   RegisterPropertyEditor(TypeInfo(TJvTFGlanceCells), TJvTFMonths, 'Cells', nil);
-  RegisterComponents(SPaletteTimeFramework, [TJvTFDays, TJvTFDaysPrinter]);
+  RegisterComponents(RsPaletteTimeFramework, [TJvTFDays, TJvTFDaysPrinter]);
   {$IFDEF COMPILER5}
   RegisterPropertiesInCategory(TVisualCategory, ['StateImages', 'CustomImages',
     'StateImageMap']);

@@ -38,7 +38,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteMTThreads, [TJvMtManager, TJvMtThread,
+  RegisterComponents(RsPaletteMTThreads, [TJvMtManager, TJvMtThread,
     TJvMtThreadToVCL, TJvMtVCLToThread, TJvMtThreadToThread, TJvMtSection,
     TJvMtCountingSection, TJvMtMonitorSection]);
 end;

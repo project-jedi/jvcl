@@ -65,7 +65,7 @@ begin
     if not IsValidIdent(Text) then
     begin
       SetFocus;
-      raise EJVCLException.Create(SBandNameHasToBeAValidIdentifier);
+      raise EJVCLException.Create(RsEBandNameHasToBeAValidIdentifier);
     end;
   end;
   with EditBandDesc do
@@ -74,7 +74,7 @@ begin
     if Text = '' then
     begin
       SetFocus;
-      raise EJVCLException.Create(SPleaseEnterBandDescription);
+      raise EJVCLException.Create(RsEPleaseEnterBandDescription);
     end;
   end;
   ModalResult := mrOk;
@@ -89,7 +89,7 @@ begin
   try
     with HelpForm do
     begin
-      Caption := Self.Caption + ' ' + SHelp;
+      Caption := Format(RsBandHelpCaptionFmt, [Self.Caption, RsHelp]);
       BorderStyle := bsDialog;
       Top := Self.Top + Self.Height div 2;
       Left := Self.Left + Self.Width div 2;
@@ -102,7 +102,7 @@ begin
       Parent := HelpForm;
       Align := alClient;
       ReadOnly := True;
-      Text := SHelpText;
+      Text := RsHelpText;
     end;
     HelpForm.ShowModal;
   finally

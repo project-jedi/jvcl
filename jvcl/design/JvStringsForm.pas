@@ -77,7 +77,7 @@ procedure TJvStrEditDlg.FileOpen(Sender: TObject);
 begin
   with OpenDialog do
   begin
-    Filter := STextFilter;
+    Filter := RsTextFilter;
     Filename := FFilename;
     if Execute then
     begin
@@ -93,7 +93,7 @@ begin
     SaveDialog.FileName := FFilename;
   with SaveDialog do
   begin
-    Filter := STextFilter;
+    Filter := RsTextFilter;
     if Execute then
       // FFilename := Filename;
       Memo.Lines.SaveToFile(FileName);
@@ -116,8 +116,8 @@ begin
   HelpContext := hcDStringListEditor;
   OpenDialog.HelpContext := hcDStringListLoad;
   SaveDialog.HelpContext := hcDStringListSave;
-  SingleLine := SSingleLine;
-  MultipleLines := SMultipleLines;
+  SingleLine := RsSingleLine;
+  MultipleLines := RsMultipleLines;
 end;
 
 procedure TJvStrEditDlg.MemoKeyDown(Sender: TObject; var Key: Word;

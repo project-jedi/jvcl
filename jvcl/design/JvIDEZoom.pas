@@ -103,7 +103,7 @@ begin
     MenuItem := TMenuItem.Create(F);
     with MenuItem do
     begin
-      Caption := SZoomEditWindow;
+      Caption := RsZoomEditWindow;
       ShortCut := Menus.ShortCut(Ord('Z'), [ssAlt]);
       Name := cJvZoomEditor;
       OnClick := Zoom.Zoom;
