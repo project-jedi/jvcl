@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ Color dorm for the @link(TJvColorButton) component }
+{ Color form for the @link(TJvColorButton) component }
 
 unit JvColorForm;
 

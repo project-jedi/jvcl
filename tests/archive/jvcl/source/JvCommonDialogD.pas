@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvCommonDialogD;
 
-
-
 interface
 
 uses
@@ -56,8 +54,6 @@ implementation
 resourcestring
   RC_ErrorSetupDll = 'Unable to find SetupApi.dll';
 
-  {**************************************************}
-
 constructor TJvCommonDialogD.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -71,8 +67,6 @@ begin
   if not IsSetupApiLoaded then
     raise EJVCLException.Create(RC_ErrorSetupDll);
 end;
-
-{**************************************************}
 
 destructor TJvCommonDialogD.Destroy;
 begin

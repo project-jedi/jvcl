@@ -67,15 +67,12 @@ type
     property HotGlyph: TBitmap read FGlyph write SetGlyph;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
-
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
 implementation
-
-{**************************************************}
 
 constructor TJvBitBtn.Create(AOwner: TComponent);
 begin
@@ -90,7 +87,14 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
-{**************************************************}
+destructor TJvBitBtn.Destroy;
+begin
+  FHotFont.Free;
+  FFontSave.Free;
+  FGlyph.Free;
+  FOldGlyph.Free;
+  inherited Destroy;
+end;
 
 procedure TJvBitBtn.Click;
 begin
@@ -102,19 +106,6 @@ begin
   end;
 end;
 
-{**************************************************}
-
-destructor TJvBitBtn.Destroy;
-begin
-  FHotFont.Free;
-  FFontSave.Free;
-  FGlyph.Free;
-  FOldGlyph.Free;
-  inherited Destroy;
-end;
-
-{**************************************************}
-
 procedure TJvBitBtn.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -122,14 +113,10 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvBitBtn.SetGlyph(Value: TBitmap);
 begin
   FGlyph.Assign(Value);
 end;
-
-{**************************************************}
 
 procedure TJvBitBtn.CMMouseEnter(var Msg: TMessage);
 begin
@@ -156,8 +143,6 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvBitBtn.CMMouseLeave(var Msg: TMessage);
 begin
   // for D7...
@@ -175,8 +160,6 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
-
-{**************************************************}
 
 procedure TJvBitBtn.SetHotFont(const Value: TFont);
 begin

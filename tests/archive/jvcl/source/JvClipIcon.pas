@@ -24,17 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF}
+{$I WINDOWSONLY.INC}
 
 unit JvClipIcon;
-
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
 
 interface
 
@@ -70,7 +62,6 @@ uses
 { Icon clipboard routines }
 
 {$IFDEF WIN32}
-
 function CreateBitmapFromIcon(Icon: TIcon; BackColor: TColor): TBitmap;
 var
   Ico: HIcon;
@@ -96,14 +87,11 @@ begin
     DestroyIcon(Ico);
   end;
 end;
-
 {$ELSE}
-
 function CreateBitmapFromIcon(Icon: TIcon; BackColor: TColor): TBitmap;
 begin
   Result := JvVCLUtils.CreateBitmapFromIcon(Icon, BackColor);
 end;
-
 {$ENDIF}
 
 procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);
@@ -121,7 +109,8 @@ begin
     try
       Icon.SaveToStream(Stream);
       Palette := 0;
-      with Clipboard do begin
+      with Clipboard do
+      begin
         Open;
         try
           Clear;
@@ -509,7 +498,6 @@ end;
 {$ENDIF WIN32}
 
 {$IFDEF WIN32}
-
 function CreateRealSizeIcon(Icon: TIcon): HIcon;
 var
   Mem: TMemoryStream;
@@ -530,18 +518,14 @@ begin
     Mem.Free;
   end;
 end;
-
 {$ELSE}
-
 function CreateRealSizeIcon(Icon: TIcon): HIcon;
 begin
   Result := CopyIcon(hInstance, Icon.Handle);
 end;
-
 {$ENDIF}
 
 {$IFDEF WIN32}
-
 procedure DrawRealSizeIcon(Canvas: TCanvas; Icon: TIcon; X, Y: Integer);
 var
   Ico: HIcon;
@@ -555,19 +539,15 @@ begin
     DestroyIcon(Ico);
   end;
 end;
-
 {$ELSE}
-
 begin
   Canvas.Draw(X, Y, Icon);
 end;
-
 {$ENDIF}
-
-{ Module initialization part }
 
 initialization
   { The following string should not be localized }
   CF_ICON := RegisterClipboardFormat('Delphi Icon');
   TPicture.RegisterClipboardFormat(CF_ICON, TIcon);
+
 end.

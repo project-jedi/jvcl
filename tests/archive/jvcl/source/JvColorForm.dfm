@@ -5,7 +5,7 @@ object JvClrFrm: TJvClrFrm
   BorderStyle = bsDialog
   Caption = ' '
   ClientHeight = 143
-  ClientWidth = 104
+  ClientWidth = 128
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

@@ -28,34 +28,32 @@ Known Issues:
 
 unit JvExchListboxes;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvFormLists, JvBaseDlg, JvTypes;
+  SysUtils, Classes, Dialogs,
+  JvFormLists, JvBaseDlg;
 
 type
   TJvExchListboxes = class(TJvCommonDialog)
   private
-    FCaption2: string;
-    FCaption: string;
-    FListbox2: TstringList;
-    FListbox: TstringList;
+    FSecondCaption: string;
+    FFirstCaption: string;
+    FFirstListbox: TStringList;
+    FSecondListbox: TStringList;
     FTitle: string;
-    procedure SetListbox(const Value: TstringList);
-    procedure SetListbox2(const Value: TstringList);
+    procedure SetFirstListbox(const Value: TStringList);
+    procedure SetSecondListbox(const Value: TStringList);
   protected
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property FirstListbox: TstringList read FListbox write SetListbox;
-    property SecondListbox: TstringList read FListbox2 write SetListbox2;
-    property FirstCaption: string read FCaption write FCaption;
-    property SecondCaption: string read FCaption2 write FCaption2;
+    property FirstListbox: TStringList read FFirstListbox write SetFirstListbox;
+    property SecondListbox: TStringList read FSecondListbox write SetSecondListbox;
+    property FirstCaption: string read FFirstCaption write FFirstCaption;
+    property SecondCaption: string read FSecondCaption write FSecondCaption;
     property Title: string read FTitle write FTitle;
-    function Execute: boolean; override;
+    function Execute: Boolean; override;
   end;
 
 implementation
@@ -65,33 +63,29 @@ resourcestring
   RC_Column2Caption = 'Second Column';
   RC_FormCaption = 'Listbox Editor';
 
-  {**************************************************}
-
 constructor TJvExchListboxes.Create(AOwner: TComponent);
 begin
-  inherited;
-  FListbox := TStringList.Create;
-  FListbox2 := TStringList.Create;
-  FCaption := RC_Column1Caption;
-  FCaption2 := RC_Column2Caption;
+  inherited Create(AOwner);
+  FFirstListbox := TStringList.Create;
+  FSecondListbox := TStringList.Create;
+  FFirstCaption := RC_Column1Caption;
+  FSecondCaption := RC_Column2Caption;
   FTitle := RC_FormCaption;
 end;
-{**************************************************}
 
-function TJvExchListboxes.Execute: boolean;
+function TJvExchListboxes.Execute: Boolean;
 begin
-  Result := TFormListb.Execute(FTitle,FCaption,FCaption2,FListBox,FListBox2);
-end;
-{**************************************************}
-
-procedure TJvExchListboxes.SetListbox(const Value: TstringList);
-begin
-  FListbox.Assign(Value);
+  Result := TFormListb.Execute(FTitle, FFirstCaption, FSecondCaption, FFirstListbox, FSecondListbox);
 end;
 
-procedure TJvExchListboxes.SetListbox2(const Value: TstringList);
+procedure TJvExchListboxes.SetFirstListbox(const Value: TStringList);
 begin
-  FListbox2.Assign(Value);
+  FFirstListbox.Assign(Value);
+end;
+
+procedure TJvExchListboxes.SetSecondListbox(const Value: TStringList);
+begin
+  FSecondListbox.Assign(Value);
 end;
 
 end.

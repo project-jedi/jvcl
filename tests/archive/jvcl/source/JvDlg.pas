@@ -28,7 +28,6 @@ description : dialog components
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
 
 unit JvDlg;
@@ -36,55 +35,51 @@ unit JvDlg;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics,
-  Controls, Forms, Grids, StdCtrls, ComCtrls;
+  Windows, Messages, SysUtils, Classes,
+  Controls, Forms, StdCtrls, ComCtrls,
+  JvComponent;
 
 type
-
-  TJvProgressForm = class(TComponent)
+  TJvProgressForm = class(TJvComponent)
   private
-    Form: TForm;
+    FForm: TForm;
     FProgressBar: TProgressBar;
-    Label1: TLabel;
-
+    FLabel1: TLabel;
     FCaption: TCaption;
     FInfoLabel: TCaption;
     FOnShow: TNotifyEvent;
-    FCancel: boolean;
-    FProgressMin,
-      FProgressMax,
-      FProgressStep,
-      FProgressPosition: integer;
-    EE: Exception;
-
+    FCancel: Boolean;
+    FProgressMin: Integer;
+    FProgressMax: Integer;
+    FProgressStep: Integer;
+    FProgressPosition: Integer;
+    FException: Exception;
     procedure SetCaption(ACaption: TCaption);
     procedure SetInfoLabel(ACaption: TCaption);
     procedure FormOnShow(Sender: TObject);
     procedure FormOnCancel(Sender: TObject);
-    procedure SetProgress(index: integer; AValue: integer);
+    procedure SetProgress(Index: Integer; AValue: Integer);
   public
     destructor Destroy; override;
     procedure Execute;
     procedure ProgressStepIt;
-    property Cancel: boolean read FCancel;
+    property Cancel: Boolean read FCancel;
   published
     property Caption: TCaption read FCaption write SetCaption;
     property InfoLabel: TCaption read FInfoLabel write SetInfoLabel;
-    property ProgressMin: integer index 0 read FProgressMin write SetProgress;
-    property ProgressMax: integer index 1 read FProgressMax write SetProgress;
-    property ProgressStep: integer index 2 read FProgressStep write SetProgress;
-    property ProgressPosition: integer index 3 read FProgressPosition write SetProgress;
+    property ProgressMin: Integer Index 0 read FProgressMin write SetProgress;
+    property ProgressMax: Integer Index 1 read FProgressMax write SetProgress;
+    property ProgressStep: Integer Index 2 read FProgressStep write SetProgress;
+    property ProgressPosition: Integer Index 3 read FProgressPosition write SetProgress;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
   end;
 
 implementation
 
-uses JvCtlConst;
+uses
+  JvCtlConst;
 
 {$IFNDEF BCB3}
-{$IFDEF COMPILER6_UP}
-{$WARN SYMBOL_DEPRECATED OFF}
-{$ENDIF}
 
 function ChangeTopException(E: TObject): TObject;
 type
@@ -100,97 +95,104 @@ begin
   { if linker error occured with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
     then uncomment and compile again. }
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   if RaiseList <> nil then
   begin
     Result := PRaiseFrame(RaiseList)^.ExceptObject;
     PRaiseFrame(RaiseList)^.ExceptObject := E
-  end else
+  end
+  else
     Result := nil;
-{$ENDIF COMPLIB_VCL}
-{$IFDEF LINUX}
+  {$ENDIF COMPLIB_VCL}
+  {$IFDEF LINUX}
   // XXX: changing exception in stack frame is not supported on Kylix
   Writeln('ChangeTopException');
   Result := E;
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
 end;
-{$IFDEF COMPILER6_UP}
-{$WARN SYMBOL_DEPRECATED ON}
-{$ENDIF}
 {$ENDIF BCB3}
+
 {##################### From JvUtils unit #####################}
 
 type
-
   TJvProgressFormForm = class(TForm)
   private
-    procedure WMUser1(var Message: TMessage); message wm_User + 1;
+    procedure WMUser1(var Msg: TMessage); message WM_USER + 1;
   end;
 
 procedure TJvProgressForm.Execute;
 begin
-{$IFDEF BCB}
-  if not Assigned(Form) then Form := TJvProgressFormForm.CreateNew(Owner, 1);
-{$ELSE}
-  if not Assigned(Form) then Form := TJvProgressFormForm.CreateNew(Owner);
-{$ENDIF}
+  {$IFDEF BCB}
+  if not Assigned(FForm) then
+    FForm := TJvProgressFormForm.CreateNew(Owner, 1);
+  {$ELSE}
+  if not Assigned(FForm) then
+    FForm := TJvProgressFormForm.CreateNew(Owner);
+  {$ENDIF}
   try
-    Form.Caption := Caption;
-    with Form do
+    FForm.Caption := Caption;
+    with FForm do
     begin
       ClientWidth := 307;
       ClientHeight := 98;
       BorderStyle := bsDialog;
       Position := poScreenCenter;
-      FProgressBar := TProgressBar.Create(Form);
+      FProgressBar := TProgressBar.Create(FForm);
     end;
-    with FProgressBar do begin
-      Parent := Form;
+    with FProgressBar do
+    begin
+      Parent := FForm;
       Min := FProgressMin;
       Max := FProgressMax;
       SetBounds(8, 38, 292, 18);
-      if FProgressStep = 0 then FProgressStep := 1;
+      if FProgressStep = 0 then
+        FProgressStep := 1;
       Step := FProgressStep;
       Position := FProgressPosition;
     end;
-    Label1 := TLabel.Create(Form);
-    with Label1 do begin
-      Parent := Form;
+    FLabel1 := TLabel.Create(FForm);
+    with FLabel1 do
+    begin
+      Parent := FForm;
       Caption := '';
-      AutoSize := false;
+      AutoSize := False;
       SetBounds(8, 8, 293, 13);
     end;
-    with TButton.Create(Form) do begin
-      Parent := Form;
+    with TButton.Create(FForm) do
+    begin
+      Parent := FForm;
       Caption := SCancel;
       SetBounds(116, 67, 75, 23);
       OnClick := FormOnCancel;
     end;
-    FCancel := false;
+    FCancel := False;
     if Assigned(FOnShow) then
     begin
-      Form.OnShow := FormOnShow;
-      EE := nil;
-      Form.ShowModal;
-      if EE <> nil then raise EE;
+      FForm.OnShow := FormOnShow;
+      FException := nil;
+      FForm.ShowModal;
+      if FException <> nil then
+        raise FException;
     end
-    else Form.Show;
+    else
+      FForm.Show;
   finally
-    if Assigned(FOnShow) then FreeAndNil(Form);
+    if Assigned(FOnShow) then
+      FreeAndNil(FForm);
   end;
 end;
 
 procedure TJvProgressForm.FormOnShow(Sender: TObject);
 begin
-  PostMessage(Form.Handle, wm_User + 1, 0, 0);
+  PostMessage(FForm.Handle, WM_USER + 1, 0, 0);
 end;
 
 procedure TJvProgressForm.FormOnCancel(Sender: TObject);
 begin
-  FCancel := true;
+  FCancel := True;
 end;
 
-procedure TJvProgressFormForm.WMUser1(var Message: TMessage);
+procedure TJvProgressFormForm.WMUser1(var Msg: TMessage);
 begin
   Application.ProcessMessages;
   try
@@ -199,13 +201,13 @@ begin
     except
       on E: Exception do
       begin
-{$IFNDEF BCB3}
-        (Owner as TJvProgressForm).EE := E;
+        {$IFNDEF BCB3}
+        (Owner as TJvProgressForm).FException := E;
         ChangeTopException(nil);
-{$ENDIF BCB3}
-{$IFDEF BCB3}
-        (Owner as TJvProgressForm).EE := Exception.Create(E.Message);
-{$ENDIF BCB3}
+        {$ENDIF BCB3}
+        {$IFDEF BCB3}
+        (Owner as TJvProgressForm).FException := Exception.Create(E.Message);
+        {$ENDIF BCB3}
       end;
     end;
   finally
@@ -216,24 +218,30 @@ end;
 procedure TJvProgressForm.SetCaption(ACaption: TCaption);
 begin
   FCaption := ACaption;
-  if Form <> nil then Form.Caption := FCaption;
+  if FForm <> nil then
+    FForm.Caption := FCaption;
 end;
 
 procedure TJvProgressForm.SetInfoLabel(ACaption: TCaption);
 begin
   FInfoLabel := ACaption;
-  if Form <> nil then Label1.Caption := ACaption;
+  if FForm <> nil then
+    FLabel1.Caption := ACaption;
 end;
 
-procedure TJvProgressForm.SetProgress(index: integer; AValue: integer);
+procedure TJvProgressForm.SetProgress(Index: Integer; AValue: Integer);
 begin
-  case index of
-    0: FProgressMin := AValue;
-    1: FProgressMax := AValue;
-    2: FProgressStep := AValue;
-    3: FProgressPosition := AValue;
+  case Index of
+    0:
+      FProgressMin := AValue;
+    1:
+      FProgressMax := AValue;
+    2:
+      FProgressStep := AValue;
+    3:
+      FProgressPosition := AValue;
   end;
-  if Form <> nil then
+  if FForm <> nil then
   begin
     FProgressBar.Min := FProgressMin;
     FProgressBar.Max := FProgressMax;
@@ -244,14 +252,14 @@ end;
 
 procedure TJvProgressForm.ProgressStepIt;
 begin
-  if Form <> nil then
+  if FForm <> nil then
     FProgressBar.StepIt;
 end;
 
 destructor TJvProgressForm.Destroy;
 begin
-  if Assigned(Form) then Form.Free;
-  inherited;
+  FForm.Free;
+  inherited Destroy;
 end;
 
 end.

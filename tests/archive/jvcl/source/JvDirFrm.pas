@@ -30,16 +30,14 @@ unit JvDirFrm;
 interface
 
 uses
-  {$IFDEF WIN32}
-  Windows,
-  {$ELSE}
+  {$IFNDEF WIN32}
   WinTypes, WinProcs,
   {$ENDIF}
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
-  JvxCtrls, JvPlacemnt;
+  SysUtils, Classes, Controls, Forms, StdCtrls,
+  JvxCtrls, JvPlacemnt, JvComponent;
 
 type
-  TJvDirectoryListDialog = class(TForm)
+  TJvDirectoryListDialog = class(TJvForm)
     DirectoryList: TJvTextListBox;
     AddBtn: TButton;
     RemoveBtn: TButton;

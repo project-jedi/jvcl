@@ -204,7 +204,7 @@ uses
   {$IFDEF COMPILER3_UP}
   BDEConst, DBCommon,
   {$ENDIF}
-  JvxConst, JvVCLUtils, JvFileUtil, JvAppUtils, JvStrUtils, JvMaxMin,
+  JvxConst, JvVCLUtils, JvFileUtil, JvStrUtils, JvMaxMin,
   {$IFNDEF WIN32}
   JvStr16,
   {$ENDIF}
@@ -326,15 +326,15 @@ end;
 
 function FieldLogicMap(FldType: TFieldType): Integer;
 {$IFNDEF COMPILER3_UP}
-{$IFDEF VER80}
+{$IFDEF DELPHI1}
 const
-  FldTypeMap: array[TFieldType] of Integer = (
+  FldTypeMap: array [TFieldType] of Integer = (
     fldUNKNOWN, fldZSTRING, fldINT16, fldINT32, fldUINT16, fldBOOL,
     fldFLOAT, fldFLOAT, fldBCD, fldDATE, fldTIME, fldTIMESTAMP, fldBYTES,
     fldVARBYTES, fldBLOB, fldBLOB, fldBLOB);
   {$ELSE}
 const
-  FldTypeMap: array[TFieldType] of Integer = (
+  FldTypeMap: array [TFieldType] of Integer = (
     fldUNKNOWN, fldZSTRING, fldINT16, fldINT32, fldUINT16, fldBOOL,
     fldFLOAT, fldFLOAT, fldBCD, fldDATE, fldTIME, fldTIMESTAMP, fldBYTES,
     fldVARBYTES, fldINT32, fldBLOB, fldBLOB, fldBLOB, fldBLOB, fldBLOB,
@@ -347,14 +347,14 @@ end;
 
 function FieldSubtypeMap(FldType: TFieldType): Integer;
 {$IFNDEF COMPILER3_UP}
-{$IFDEF VER80}
+{$IFDEF DELPHI1}
 const
-  FldSubtypeMap: array[TFieldType] of Integer = (
+  FldSubtypeMap: array [TFieldType] of Integer = (
     0, 0, 0, 0, 0, 0, 0, fldstMONEY, 0, 0, 0, 0, 0, 0, fldstBINARY,
     fldstMEMO, fldstGRAPHIC);
   {$ELSE}
 const
-  FldSubtypeMap: array[TFieldType] of Integer = (
+  FldSubtypeMap: array [TFieldType] of Integer = (
     0, 0, 0, 0, 0, 0, 0, fldstMONEY, 0, 0, 0, 0, 0, 0, fldstAUTOINC,
     fldstBINARY, fldstMEMO, fldstGRAPHIC, fldstFMTMEMO, fldstOLEOBJ,
     fldstDBSOLEOBJ, fldstTYPEDBINARY);
@@ -394,11 +394,12 @@ var
   L: Longint;
   B: WordBool;
   DateTime: TDateTime;
-  DtData: TDateTime;
-  D: Double absolute DtData;
-  Data: Longint absolute DtData;
+  D: Double;
+  Data: Longint;
   {$IFDEF WIN32}
   TimeStamp: TTimeStamp;
+  {$ELSE}
+  DtData: TDateTime;
   {$ENDIF}
 begin
   if Buffer = nil then
@@ -455,46 +456,54 @@ begin
             end;
           end;
         end;
-      fldDATE, fldTIME, fldTIMESTAMP:
+      fldDATE:
         begin
           if Value = '' then
-            Data := Trunc(NullDate)
+            FillChar(Buffer^, FldSize, 0)
           else
           begin
-            case FldLogicType of
-              fldDATE:
-                begin
-                  DateTime := StrToDate(Value);
-                  {$IFDEF WIN32}
-                  TimeStamp := DateTimeToTimeStamp(DateTime);
-                  Data := TimeStamp.Date;
-                  {$ELSE}
-                  Data := Trunc(DateTime);
-                  {$ENDIF}
-                end;
-              fldTIME:
-                begin
-                  DateTime := StrToTime(Value);
-                  {$IFDEF WIN32}
-                  TimeStamp := DateTimeToTimeStamp(DateTime);
-                  Data := TimeStamp.Time;
-                  {$ELSE}
-                  Data := Round(Frac(DateTime) * MSecsPerDay);
-                  {$ENDIF}
-                end;
-              fldTIMESTAMP:
-                begin
-                  DateTime := StrToDateTime(Value);
-                  {$IFDEF WIN32}
-                  TimeStamp := DateTimeToTimeStamp(DateTime);
-                  D := TimeStampToMSecs(DateTimeToTimeStamp(DateTime));
-                  {$ELSE}
-                  DtData := DateTime * MSecsPerDay;
-                  {$ENDIF}
-                end;
-            end;
+            DateTime := StrToDate(Value);
+            {$IFDEF WIN32}
+            TimeStamp := DateTimeToTimeStamp(DateTime);
+            Data := TimeStamp.Date;
+            {$ELSE}
+            Data := Trunc(DateTime);
+            {$ENDIF}
+            Move(Data, Buffer^, Min(FldSize, SizeOf(Data)));
           end;
-          Move(D, Buffer^, FldSize);
+        end;
+      fldTIME:
+        begin
+          if Value = '' then
+            FillChar(Buffer^, FldSize, 0)
+          else
+          begin
+            DateTime := StrToTime(Value);
+            {$IFDEF WIN32}
+            TimeStamp := DateTimeToTimeStamp(DateTime);
+            Data := TimeStamp.Time;
+            {$ELSE}
+            Data := Round(Frac(DateTime) * MSecsPerDay);
+            {$ENDIF}
+            Move(Data, Buffer^, Min(FldSize, SizeOf(Data)));
+          end;
+        end;
+      fldTIMESTAMP:
+        begin
+          if Value = '' then
+            FillChar(Buffer^, FldSize, 0)
+          else
+          begin
+            DateTime := StrToDateTime(Value);
+            {$IFDEF WIN32}
+            TimeStamp := DateTimeToTimeStamp(DateTime);
+            D := TimeStampToMSecs(DateTimeToTimeStamp(DateTime));
+            Move(D, Buffer^, Min(FldSize, SizeOf(D)));
+            {$ELSE}
+            DtData := DateTime * MSecsPerDay;
+            Move(DtData, Buffer^, Min(FldSize, SizeOf(DtData)));
+            {$ENDIF}
+          end;
         end;
     else
       DbiError(DBIERR_INVALIDFLDTYPE);
@@ -679,7 +688,7 @@ begin
   end;
 end;
 
-{ TJvCloneDataset }
+//=== TJvCloneDataset ========================================================
 
 procedure TJvCloneDataset.SetSourceHandle(ASourceHandle: HDBICur);
 begin
@@ -703,7 +712,7 @@ begin
   FReadOnly := Value;
 end;
 
-{ TJvCloneDbDataset }
+//=== TJvCloneDbDataset ======================================================
 
 procedure TJvCloneDbDataset.InitFromDataSet(Source: TDBDataSet; Reset: Boolean);
 begin
@@ -752,7 +761,7 @@ begin
   FReadOnly := Value;
 end;
 
-{ TJvCloneTable }
+//=== TJvCloneTable ==========================================================
 
 procedure TJvCloneTable.InitFromTable(SourceTable: TTable; Reset: Boolean);
 begin
@@ -814,7 +823,7 @@ begin
   Check(DbiCloneCursor(FSourceHandle, FReadOnly, False, Result));
 end;
 
-{ TJvDBLocate }
+//=== TJvDBLocate ============================================================
 
 function CreateDbLocate: TJvLocateObject;
 begin
@@ -822,12 +831,9 @@ begin
 end;
 
 {$IFNDEF WIN32}
-
 function CallbackFilter(pDBLocate: Longint; RecBuf: Pointer;
   RecNo: Longint): Smallint;
-  {$IFDEF WIN32} stdcall;
-  {$ELSE} export;
-  {$ENDIF WIN32}
+  {$IFDEF WIN32} stdcall;{$ELSE} export; {$ENDIF WIN32}
 begin
   Result := TJvDBLocate(pDBLocate).RecordFilter(RecBuf, RecNo);
 end;
@@ -1235,7 +1241,8 @@ begin
   end;
 end;
 
-const
+// (rom) changed to var
+var
   SaveIndexFieldNames: TStrings = nil;
 
 procedure UsesSaveIndexies;
@@ -1349,7 +1356,7 @@ var
   { Uses as a handle to the database }
   hDb: hDbiDB;
   { Path to the currently opened table }
-  TablePath: array[0..dbiMaxPathLen] of Char;
+  TablePath: array [0..dbiMaxPathLen] of Char;
   Exclusive: Boolean;
 begin
   if not Table.Active then
@@ -1932,11 +1939,13 @@ end;
 
 initialization
   JvDBUtils.CreateLocateObject := CreateDbLocate;
+  
 {$IFDEF WIN32}
 finalization
   ReleaseSaveIndexies;
 {$ELSE}
   AddExitProc(ReleaseSaveIndexies);
 {$ENDIF}
+
 end.
 

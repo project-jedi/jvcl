@@ -151,6 +151,8 @@ const
 var
   ProjectModule: IOTAModule;
 
+//=== TJvBandObjectDLLWizard =================================================
+
 procedure TJvBandObjectDLLWizard.AfterSave;
 begin
 end;
@@ -223,7 +225,7 @@ procedure TJvBandObjectDLLWizard.Modified;
 begin
 end;
 
-{ TJvBandObjectProjectCreator }
+//=== TJvBandObjectProjectCreator ============================================
 
 function TJvBandObjectProjectCreator.GetCreatorType: string;
 begin
@@ -286,7 +288,7 @@ begin
   Result := TJvBandObjectProjectSource.Create(ProjectName);
 end;
 
-{ TJvBandObjectProjectSource }
+//=== TJvBandObjectProjectSource =============================================
 
 constructor TJvBandObjectProjectSource.Create(const ProjectName: string);
 begin
@@ -314,6 +316,8 @@ begin
     'begin' + CRLF +
     'end.';
 end;
+
+//=== TJvBandObjectModuleCreator =============================================
 
 constructor TJvBandObjectModuleCreator.Create(const BandName, BandDesc: string;
   const BandType: TJvBandType);
@@ -407,6 +411,8 @@ function TJvBandObjectModuleCreator.NewIntfSource(const ModuleIdent,
 begin
   Result := nil;
 end;
+
+//=== TJvBandObjectModuleSource ==============================================
 
 constructor TJvBandObjectModuleSource.Create(const BandName, BandDesc: string;
   const BandType: TJvBandType; const ModuleIdent, FormIdent, AncestorIdent: string);

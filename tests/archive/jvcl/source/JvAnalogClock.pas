@@ -26,7 +26,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.Inc}
+{$I JVCL.INC}
 
 unit JvAnalogClock;
 
@@ -224,7 +224,7 @@ constructor TJvAnalogClock.Create(AOwner: TComponent);
 var
   h, m, s, hund: Word;
 begin
-  inherited;
+  inherited Create(AOwner);
   BevelInner := bvRaised;
   BevelOuter := bvLowered;
   FHourSize := 12;

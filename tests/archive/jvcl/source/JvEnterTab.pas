@@ -31,17 +31,19 @@ Known Issues:
 unit JvEnterTab;
 
 interface
+
 uses
-  Windows, SysUtils, Messages, Classes, Graphics, Controls, JvComponent;
+  Windows, SysUtils, Messages, Classes, Graphics, Controls,
+  JvComponent;
 
 type
   TJvEnterAsTab = class(TJvGraphicControl)
   private
-    FEnterAsTab: boolean;
-    FAllowDefault: boolean;
+    FEnterAsTab: Boolean;
+    FAllowDefault: Boolean;
     FBmp: TBitmap;
   protected
-    procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
+    procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -49,11 +51,12 @@ type
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
   published
-    property EnterAsTab: boolean read FEnterAsTab write FEnterAsTab default true;
-    property AllowDefault: boolean read FAllowDefault write FAllowDefault default true;
+    property EnterAsTab: Boolean read FEnterAsTab write FEnterAsTab default true;
+    property AllowDefault: Boolean read FAllowDefault write FAllowDefault default true;
   end;
 
 implementation
+
 uses
   Forms, StdCtrls;
   
@@ -63,34 +66,35 @@ constructor TJvEnterAsTab.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csNoStdEvents, csFixedHeight, csFixedWidth];
-  FEnterAsTab := true;
-  FAllowDefault := true;
-  if (csDesigning in ComponentState) then
+  FEnterAsTab := True;
+  FAllowDefault := True;
+  if csDesigning in ComponentState then
   begin
     FBmp := TBitmap.Create;
     FBmp.LoadFromResourceName(hInstance, 'DESIGNENTERASTAB');
   end
   else
-    Visible := false;
-end;
-
-procedure TJvEnterAsTab.CMDialogKey(var Message: TCMDialogKey);
-begin
-  if (GetParentForm(Self).ActiveControl is TButtonControl) and (FAllowDefault) then
-    inherited
-  else if (Message.CharCode = VK_RETURN) and (FEnterAsTab) then
-  begin
-    GetParentForm(Self).Perform(CM_DIALOGKEY, VK_TAB, 0);
-    Message.Result := 1;
-  end
-  else
-    inherited;
+    Visible := False;
 end;
 
 destructor TJvEnterAsTab.Destroy;
 begin
   FBmp.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TJvEnterAsTab.CMDialogKey(var Msg: TCMDialogKey);
+begin
+  if (GetParentForm(Self).ActiveControl is TButtonControl) and (FAllowDefault) then
+    inherited
+  else
+  if (Msg.CharCode = VK_RETURN) and FEnterAsTab then
+  begin
+    GetParentForm(Self).Perform(CM_DIALOGKEY, VK_TAB, 0);
+    Msg.Result := 1;
+  end
+  else
+    inherited;
 end;
 
 procedure TJvEnterAsTab.Paint;

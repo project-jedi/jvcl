@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvDBTreeView.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
 Last Modified: 2002-07-04
 
@@ -28,7 +28,6 @@ Known Issues:
   Some russian comments were translated to english; these comments are marked
   with [translated]
 -----------------------------------------------------------------------------}
-
 
 {$I JVCL.INC}
 
@@ -46,87 +45,78 @@ unit JvDBTreeView;
 interface
 
 uses
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF}
   Windows, Messages, SysUtils, Classes, Controls, Dialogs, Graphics,
-  CommCtrl, ComCtrls, ExtCtrls, Db, dbctrls {$IFDEF COMPILER6_UP}, Variants {$ENDIF};
+  CommCtrl, ComCtrls, ExtCtrls, Db;
 
 type
   TJvDBTreeNode = class;
   TJvDBTreeViewDataLink = class;
   TFieldTypes = set of TFieldType;
-  TGetDetailValue = function (const AMasterValue : variant; var DetailValue : variant) : boolean;
+  TGetDetailValue = function(const AMasterValue: Variant; var DetailValue: Variant): Boolean;
 
   TCustomJvDBTreeView = class(TCustomTreeView)
   private
-    FDataLink : TJvDBTreeViewDataLink;
-
-    FMasterField : string;
-    FDetailField : string;
-    FItemField   : string;
-    FIconField   : string;
-    FStartMasterValue: variant;
-    FGetDetailValue : TGetDetailValue;
-    FUseFilter: boolean;
-    FSelectedIndex : integer;
-
-   {Update flags}
-    FUpdateLock : Byte;
-    InTreeUpdate : boolean;
-    InDataScrolled : boolean;
-    InAddChild : boolean;
-    InDelete : boolean;
-    Sel : TTreeNode;
-    oldRecCount : integer;
-
-    FPersistentNode : boolean;
-
+    FDataLink: TJvDBTreeViewDataLink;
+    FMasterField: string;
+    FDetailField: string;
+    FItemField: string;
+    FIconField: string;
+    FStartMasterValue: Variant;
+    FGetDetailValue: TGetDetailValue;
+    FUseFilter: Boolean;
+    FSelectedIndex: Integer;
+    {Update flags}
+    FUpdateLock: Byte;
+    InTreeUpdate: Boolean;
+    InDataScrolled: Boolean;
+    InAddChild: Boolean;
+    InDelete: Boolean;
+    Sel: TTreeNode;
+    OldRecCount: Integer;
+    FPersistentNode: Boolean;
     FMirror: Boolean;
-
+    {**** Drag'n'Drop ****}
+    YDragPos: Integer;
+    TimerDnD: TTimer;
     procedure InternalDataChanged;
     procedure InternalDataScrolled;
     procedure InternalRecordChanged(Field: TField);
-   {*** for property}
     procedure SetMasterField(Value: string);
     procedure SetDetailField(Value: string);
     procedure SetItemField(Value: string);
     procedure SetIconField(Value: string);
-    function GetStartMasterValue : string;
+    function GetStartMasterValue: string;
     procedure SetStartMasterValue(Value: string);
-
-    function  GetDataSource: TDataSource;
+    function GetDataSource: TDataSource;
     procedure SetDataSource(Value: TDataSource);
-   {### for property}
-    procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
-   {$IFDEF COMPILER4_UP}
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
+    {$IFDEF COMPILER4_UP}
     procedure SetMirror(Value: Boolean);
-   {$ENDIF COMPILER4_UP}
-  private
- {**** Drag'n'Drop ****}
-    YY : integer;
-    timerDnD : TTimer;
-    procedure timerDnDTimer(Sender: TObject);
+    {$ENDIF COMPILER4_UP}
+    {**** Drag'n'Drop ****}
+    procedure TimerDnDTimer(Sender: TObject);
   protected
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
-  public
-    procedure DragDrop(Source: TObject; X, Y: Integer); override;
- {#### Drag'n'Drop ####}
   protected
-    procedure Warning(Message : string);
+    procedure Warning(Msg: string);
     procedure HideEditor;
     function ValidDataSet: Boolean;
     procedure CheckDataSet;
-    function ValidField(FieldName : string; AllowFieldTypes : TFieldTypes) : boolean;
+    function ValidField(FieldName: string; AllowFieldTypes: TFieldTypes): Boolean;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure Notification(Component : TComponent; Operation : TOperation); override;
+    procedure Notification(Component: TComponent; Operation: TOperation); override;
     procedure Change(Node: TTreeNode); override;
-
-   { data }
+    { data }
     procedure DataChanged; dynamic;
     procedure DataScrolled; dynamic;
     procedure Change2(Node: TTreeNode); dynamic;
     procedure RecordChanged(Field: TField); dynamic;
 
-    function CanExpand(Node: TTreeNode) : Boolean; override;
+    function CanExpand(Node: TTreeNode): Boolean; override;
     procedure Collapse(Node: TTreeNode); override;
     function CreateNode: TTreeNode; override;
     function CanEdit(Node: TTreeNode): Boolean; override;
@@ -135,23 +125,24 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure RefreshChild(ANode : TJvDBTreeNode);
+    procedure DragDrop(Source: TObject; X, Y: Integer); override;
+    procedure RefreshChild(ANode: TJvDBTreeNode);
     procedure UpdateTree;
     procedure LinkActive(Value: Boolean); virtual;
     procedure UpdateLock;
-    procedure UpdateUnLock(const AUpdateTree : boolean);
-    function UpdateLocked : boolean;
-    function AddChildNode(const Node : TTreeNode; const Select : boolean) : TJvDBTreeNode;
-    procedure DeleteNode(Node : TTreeNode);
-    function FindNextNode(const Node : TTreeNode) : TTreeNode;
-    function FindNode(AMasterValue : variant) : TJvDBTreeNode;
-    function SelectNode(AMasterValue : variant) : TTreeNode;
+    procedure UpdateUnLock(const AUpdateTree: Boolean);
+    function UpdateLocked: Boolean;
+    function AddChildNode(const Node: TTreeNode; const Select: Boolean): TJvDBTreeNode;
+    procedure DeleteNode(Node: TTreeNode);
+    function FindNextNode(const Node: TTreeNode): TTreeNode;
+    function FindNode(AMasterValue: Variant): TJvDBTreeNode;
+    function SelectNode(AMasterValue: Variant): TTreeNode;
 
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DataLink: TJvDBTreeViewDataLink read FDataLink;
     property MasterField: string read FMasterField write SetMasterField;
     // alias for MasterField
-    property ParentField:string read FMasterField write SetMasterField;
+    property ParentField: string read FMasterField write SetMasterField;
     property DetailField: string read FDetailField write SetDetailField;
     // alias for DetailField
     property KeyField: string read FDetailField write SetDetailField;
@@ -159,14 +150,13 @@ type
     property ItemField: string read FItemField write SetItemField;
     property IconField: string read FIconField write SetIconField;
     property StartMasterValue: string read GetStartMasterValue write SetStartMasterValue;
-    property GetDetailValue : TGetDetailValue read FGetDetailValue write FGetDetailValue;
-    property PersistentNode : boolean read FPersistentNode write FPersistentNode;
-    property SelectedIndex : integer read FSelectedIndex write FSelectedIndex default 1;
-    property UseFilter: boolean read FUseFilter write FUseFilter;
-   {$IFDEF COMPILER4_UP}
+    property GetDetailValue: TGetDetailValue read FGetDetailValue write FGetDetailValue;
+    property PersistentNode: Boolean read FPersistentNode write FPersistentNode;
+    property SelectedIndex: Integer read FSelectedIndex write FSelectedIndex default 1;
+    property UseFilter: Boolean read FUseFilter write FUseFilter;
+    {$IFDEF COMPILER4_UP}
     property Mirror: Boolean read FMirror write SetMirror;
-   {$ENDIF COMPILER4_UP}
-
+    {$ENDIF COMPILER4_UP}
     property Items;
   end;
 
@@ -183,14 +173,14 @@ type
     destructor Destroy; override;
   end;
 
-
   TJvDBTreeNode = class(TTreeNode)
   private
-    FMasterValue : variant;
+    FMasterValue: Variant;
   public
-    procedure SetMasterValue(AValue : variant);
-    procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); {$IFNDEF COMPILER2} override; {$ENDIF}
-    property MasterValue : variant read FMasterValue;
+    procedure SetMasterValue(AValue: Variant);
+    procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode);
+      {$IFNDEF COMPILER2} override; {$ENDIF}
+    property MasterValue: Variant read FMasterValue;
   end;
 
   TJvDBTreeView = class(TCustomJvDBTreeView)
@@ -210,9 +200,9 @@ type
     property ShowLines;
     property ShowRoot;
     property ReadOnly;
-   {$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     property RightClickSelect;
-   {$ENDIF COMPILER3_UP}
+    {$ENDIF COMPILER3_UP}
     property DragMode;
     property HideSelection;
     property Indent;
@@ -259,7 +249,7 @@ type
     property ShowHint;
     property Images;
     property StateImages;
-   {$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     property AutoExpand;
     property BiDiMode;
@@ -276,61 +266,66 @@ type
     property OnEndDock;
     property OnStartDock;
     property Mirror;
-   {$ENDIF COMPILER4_UP}
+    {$ENDIF COMPILER4_UP}
   end;
 
-  EJvDBTreeViewError  = class(ETreeViewError);
-
-const
-  DnDScrollArea : integer = 15;
-  DnDInterval   : integer = 200;
+  EJvDBTreeViewError = class(ETreeViewError);
 
 implementation
 
-uses JvDBConst;
+uses
+  JvDBConst;
 
 {$IFNDEF COMPILER4_UP}
 type
   LongWord = Longint;
 {$ENDIF}
 
-function Var2Type(V : Variant; const VarType : integer) : variant;
+// (rom) moved to implementation and removed type
+// (rom) never rely on assignable consts
+const
+  DnDScrollArea = 15;
+  DnDInterval = 200;
+
+function Var2Type(V: Variant; const VarType: Integer): Variant;
 begin
-  if V = null then
+  if V = Null then
   begin
     case VarType of
-      varString,
-      varOleStr    : Result := '';
-      varInteger,
-      varSmallint,
-      varByte      : Result := 0;
-      varBoolean   : Result := false;
-      varSingle,
-      varDouble,
-      varCurrency,
-      varDate      : Result := 0.0;
-      else Result := VarAsType(V, VarType);
+      varString, varOleStr:
+        Result := '';
+      varInteger, varSmallint, varByte:
+        Result := 0;
+      varBoolean:
+        Result := False;
+      varSingle, varDouble, varCurrency, varDate:
+        Result := 0.0;
+    else
+      Result := VarAsType(V, VarType);
     end;
-  end else
+  end
+  else
     Result := VarAsType(V, VarType);
 end;
 
 {$IFDEF COMPILER4_UP}
 procedure MirrorControl(Control: TWinControl; RightToLeft: Boolean);
 var
-  OldLong: LongWord;
+  OldLong: Longword;
 begin
   OldLong := GetWindowLong(Control.Handle, GWL_EXSTYLE);
-  if RightToLeft then begin
+  if RightToLeft then
+  begin
     Control.BiDiMode := bdLeftToRight;
     SetWindowLong(Control.Handle, GWL_EXSTYLE, OldLong or $00400000);
-  end else
-   SetWindowLong(Control.Handle, GWL_EXSTYLE, OldLong and not $00400000);
+  end
+  else
+    SetWindowLong(Control.Handle, GWL_EXSTYLE, OldLong and not $00400000);
   Control.Repaint;
 end;
 {$ENDIF COMPILER4_UP}
 
-{********************* TJvDBTreeViewDataLink *********************}
+//=== TJvDBTreeViewDataLink ==================================================
 
 constructor TJvDBTreeViewDataLink.Create(ATreeView: TCustomJvDBTreeView);
 begin
@@ -363,48 +358,42 @@ begin
   FTreeView.InternalDataScrolled;
 end;
 
-{##################### TJvDBTreeViewDataLink #####################}
+//=== TJvDBTreeNode ==========================================================
 
-
-
-{********************* TJvDBTreeNode **********************}
 procedure TJvDBTreeNode.MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode);
 var
-  PersistNode : boolean;
-  TV : TJvDBTreeView;
+  PersistNode: Boolean;
+  TV: TJvDBTreeView;
 begin
   TV := (TreeView as TJvDBTreeView);
   PersistNode := TV.FPersistentNode;
   TV.MoveTo(Self as TJvDBTreeNode, Destination as TJvDBTreeNode, Mode);
-  TV.FPersistentNode := true;
+  TV.FPersistentNode := True;
   if Destination.HasChildren and (Destination.Count = 0) then
     Free
   else
     inherited MoveTo(Destination, Mode);
- {$IFDEF COMPILER2}
-  Destination.HasChildren := true;
- {$ENDIF}   
+  {$IFDEF COMPILER2}
+  Destination.HasChildren := True;
+  {$ENDIF}
   TV.FPersistentNode := PersistNode;
 end;
 
-procedure TJvDBTreeNode.SetMasterValue(AValue : variant);
+procedure TJvDBTreeNode.SetMasterValue(AValue: Variant);
 begin
   FMasterValue := AValue;
 end;
 
-{##################### TJvDBTreeNode ######################}
-
-
-{********************* TCustomJvDBTreeView *********************}
+//=== TCustomJvDBTreeView ====================================================
 
 constructor TCustomJvDBTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDataLink := TJvDBTreeViewDataLink.Create(Self);
-  timerDnD := TTimer.Create(Self);
-  timerDnD.Enabled := false;
-  timerDnD.Interval := DnDInterval;
-  timerDnD.OnTimer := timerDnDTimer;
+  TimerDnD := TTimer.Create(Self);
+  TimerDnD.Enabled := False;
+  TimerDnD.Interval := DnDInterval;
+  TimerDnD.OnTimer := TimerDnDTimer;
   FStartMasterValue := Null;
   FSelectedIndex := 1;
 end;
@@ -412,35 +401,35 @@ end;
 destructor TCustomJvDBTreeView.Destroy;
 begin
   FDataLink.Free;
-  timerDnD.Free;
+  TimerDnD.Free;
   inherited Destroy;
 end;
 
 procedure TCustomJvDBTreeView.CheckDataSet;
 begin
   if not ValidDataSet then
-    raise EJvDBTreeViewError .Create(SDataSetNotActive);
+    raise EJvDBTreeViewError.Create(SDataSetNotActive);
 end;
 
-procedure TCustomJvDBTreeView.Warning(Message : string);
+procedure TCustomJvDBTreeView.Warning(Msg: string);
 begin
-  MessageDlg(Name + ': ' + Message, mtWarning, [mbOk], 0);
+  MessageDlg(Name + ': ' + Msg, mtWarning, [mbOk], 0);
 end;
 
-function TCustomJvDBTreeView.ValidField(FieldName : string; AllowFieldTypes : TFieldTypes) : boolean;
+function TCustomJvDBTreeView.ValidField(FieldName: string; AllowFieldTypes: TFieldTypes): Boolean;
 var
-  AField : TField;
+  AField: TField;
 begin
   Result := (csLoading in ComponentState) or
-            (FDataLink.DataSet = nil) or
-            not FDataLink.DataSet.Active;
-  if not Result and (Length(FieldName) > 0) then begin
+    (FDataLink.DataSet = nil) or not FDataLink.DataSet.Active;
+  if not Result and (Length(FieldName) > 0) then
+  begin
     AField := FDataLink.DataSet.FindField(FieldName); { no exceptions }
     Result := (AField <> nil) and (AField.DataType in AllowFieldTypes);
   end;
 end;
 
-procedure TCustomJvDBTreeView.SetMasterField(Value: String);
+procedure TCustomJvDBTreeView.SetMasterField(Value: string);
 begin
   if ValidField(Value, [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftString]) then
   begin
@@ -451,7 +440,7 @@ begin
     Warning(SMasterFieldError);
 end;
 
-procedure TCustomJvDBTreeView.SetDetailField(Value: String);
+procedure TCustomJvDBTreeView.SetDetailField(Value: string);
 begin
   if ValidField(Value, [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftString]) then
   begin
@@ -462,9 +451,10 @@ begin
     Warning(SDetailFieldError);
 end;
 
-procedure TCustomJvDBTreeView.SetItemField(Value: String);
+procedure TCustomJvDBTreeView.SetItemField(Value: string);
 begin
-  if ValidField(Value, [ftString, ftMemo, ftSmallInt, ftInteger, ftAutoInc, ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime]) then
+  if ValidField(Value, [ftString, ftMemo, ftSmallInt, ftInteger, ftAutoInc,
+    ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime]) then
   begin
     FItemField := Value;
     RefreshChild(nil);
@@ -473,7 +463,7 @@ begin
     Warning(SItemFieldError);
 end;
 
-procedure TCustomJvDBTreeView.SetIconField(Value: String);
+procedure TCustomJvDBTreeView.SetIconField(Value: string);
 begin
   if ValidField(Value, [ftSmallInt, ftAutoInc, ftInteger, ftWord]) then
   begin
@@ -484,9 +474,9 @@ begin
     Warning(SIconFieldError);
 end;
 
-function TCustomJvDBTreeView.GetStartMasterValue : string;
+function TCustomJvDBTreeView.GetStartMasterValue: string;
 begin
-  if FStartMasterValue = null then
+  if FStartMasterValue = Null then
     Result := ''
   else
     Result := FStartMasterValue;
@@ -497,7 +487,7 @@ begin
   if Length(Value) > 0 then
     FStartMasterValue := Value
   else
-    FStartMasterValue := null;
+    FStartMasterValue := Null;
 end;
 
 function TCustomJvDBTreeView.GetDataSource: TDataSource;
@@ -507,21 +497,23 @@ end;
 
 procedure TCustomJvDBTreeView.SetDataSource(Value: TDataSource);
 begin
-  if Value = FDatalink.Datasource then Exit;
+  if Value = FDatalink.Datasource then
+    Exit;
   Items.Clear;
   FDataLink.DataSource := Value;
-  if Value <> nil then Value.FreeNotification(Self);
+  if Value <> nil then
+    Value.FreeNotification(Self);
 end;
 
-procedure TCustomJvDBTreeView.CMGetDataLink(var Message: TMessage);
+procedure TCustomJvDBTreeView.CMGetDataLink(var Msg: TMessage);
 begin
-  Message.Result := Integer(FDataLink);
+  Msg.Result := Integer(FDataLink);
 end;
 
-procedure TCustomJvDBTreeView.Notification(Component : TComponent; Operation : TOperation);
+procedure TCustomJvDBTreeView.Notification(Component: TComponent; Operation: TOperation);
 begin
   inherited Notification(Component, Operation);
-  if (FDataLink <> nil) and (Component= DataSource) and (Operation = opRemove) then
+  if (FDataLink <> nil) and (Component = DataSource) and (Operation = opRemove) then
     DataSource := nil;
 end;
 
@@ -533,7 +525,7 @@ end;
 procedure TCustomJvDBTreeView.HideEditor;
 begin
   if Selected <> nil then
-    Selected.EndEdit(true);
+    Selected.EndEdit(True);
 end;
 
 function TCustomJvDBTreeView.ValidDataSet: Boolean;
@@ -542,19 +534,24 @@ begin
 end;
 
 procedure TCustomJvDBTreeView.LinkActive(Value: Boolean);
-  function AllFieldsValid : boolean;
+
+function AllFieldsValid: Boolean;
   begin
-    Result := false;
-    if ValidDataSet then begin
-      if (FMasterField = '') or (FDataLink.DataSet.FindField(FMasterField) = nil) then begin
+    Result := False;
+    if ValidDataSet then
+    begin
+      if (FMasterField = '') or (FDataLink.DataSet.FindField(FMasterField) = nil) then
+      begin
         Warning(SMasterFieldEmpty);
         Exit;
       end;
-      if (FDetailField = '') or (FDataLink.DataSet.FindField(FDetailField) = nil) then begin
+      if (FDetailField = '') or (FDataLink.DataSet.FindField(FDetailField) = nil) then
+      begin
         Warning(SDetailFieldEmpty);
         Exit;
       end;
-      if (FItemField = '') or (FDataLink.DataSet.FindField(FItemField) = nil) then begin
+      if (FItemField = '') or (FDataLink.DataSet.FindField(FItemField) = nil) then
+      begin
         Warning(SItemFieldEmpty);
         Exit;
       end;
@@ -563,102 +560,116 @@ procedure TCustomJvDBTreeView.LinkActive(Value: Boolean);
         Exit;
       end; }
       if (FDataLink.DataSet.FindField(FItemField).DataType in
-          [ftBytes,ftVarBytes,ftBlob,ftGraphic,ftFmtMemo,ftParadoxOle,ftDBaseOle,ftTypedBinary]) then begin
+        [ftBytes, ftVarBytes, ftBlob, ftGraphic, ftFmtMemo, ftParadoxOle, ftDBaseOle, ftTypedBinary]) then
+      begin
         Warning(SItemFieldError);
         Exit;
       end;
-      if (FIconField <> '') and not (FDataLink.DataSet.FindField(FIconField).DataType in [ftSmallInt, ftInteger, ftWord]) then begin
+      if (FIconField <> '') and not (FDataLink.DataSet.FindField(FIconField).DataType in
+        [ftSmallInt, ftInteger, ftWord]) then
+      begin
         Warning(SIconFieldError);
         Exit;
       end;
     end;
-    Result := true;
+    Result := True;
   end;
 begin
-  if not Value then HideEditor;
-  if not AllFieldsValid then exit;
+  if not Value then
+    HideEditor;
+  if not AllFieldsValid then
+    Exit;
   //if ( csDesigning in ComponentState ) then Exit;
   if ValidDataSet then
   begin
     RefreshChild(nil);
-    oldRecCount := FDataLink.DataSet.RecordCount;
+    OldRecCount := FDataLink.DataSet.RecordCount;
   end
-  else if FUpdateLock = 0 then
+  else
+  if FUpdateLock = 0 then
     Items.Clear;
 end;
 
 procedure TCustomJvDBTreeView.UpdateLock;
 begin
-  inc(FUpdateLock);
+  Inc(FUpdateLock);
 end;
 
-procedure TCustomJvDBTreeView.UpdateUnLock(const AUpdateTree : boolean);
+procedure TCustomJvDBTreeView.UpdateUnLock(const AUpdateTree: Boolean);
 begin
   if FUpdateLock > 0 then
-    dec(FUpdateLock);
+    Dec(FUpdateLock);
   if (FUpdateLock = 0) then
     if AUpdateTree then
-      UpdateTree else
-      oldRecCount := FDataLink.DataSet.RecordCount;
+      UpdateTree
+    else
+      OldRecCount := FDataLink.DataSet.RecordCount;
 end;
 
-function TCustomJvDBTreeView.UpdateLocked : boolean;
+function TCustomJvDBTreeView.UpdateLocked: Boolean;
 begin
   Result := FUpdateLock > 0;
 end;
 
-procedure TCustomJvDBTreeView.RefreshChild(ANode : TJvDBTreeNode);
+procedure TCustomJvDBTreeView.RefreshChild(ANode: TJvDBTreeNode);
 var
-  ParentValue : variant;
-  BK : TBookmark;
-  oldFilter : string;
-  oldFiltered :boolean;
-  PV : string;
-  i : integer;
+  ParentValue: Variant;
+  BK: TBookmark;
+  OldFilter: string;
+  OldFiltered: Boolean;
+  PV: string;
+  I: Integer;
 begin
 //  CheckDataSet;
-  if not ValidDataSet or UpdateLocked then exit;
-  inc(FUpdateLock);
-  with FDataLink.DataSet do begin
+  if not ValidDataSet or UpdateLocked then
+    Exit;
+  Inc(FUpdateLock);
+  with FDataLink.DataSet do
+  begin
     BK := GetBookmark;
     try
       DisableControls;
-      if ANode <> nil then begin
+      if ANode <> nil then
+      begin
         ANode.DeleteChildren;
         ParentValue := ANode.FMasterValue;
-      end else begin
+      end
+      else
+      begin
         Items.Clear;
         ParentValue := FStartMasterValue;
       end;
-      oldFiltered := false;
-      oldFilter := '';
+      OldFiltered := False;
+      OldFilter := '';
       if FUseFilter then
       begin
-        if ParentValue = null then
-          PV := 'null'
+        if ParentValue = Null then
+          PV := 'Null'
         else
-          PV := ''''+Var2Type(ParentValue, varString)+'''';
-        oldFilter := Filter; oldFiltered := Filtered;
+          PV := '''' + Var2Type(ParentValue, varString) + '''';
+        OldFilter := Filter;
+        OldFiltered := Filtered;
         if Filtered then
-          Filter := '('+oldFilter+') and ('+FDetailField+'='+PV+')'
+          Filter := '(' + OldFilter + ') and (' + FDetailField + '=' + PV + ')'
         else
-          Filter := '('+FDetailField+'='+PV+')';
-        Filtered := true;
+          Filter := '(' + FDetailField + '=' + PV + ')';
+        Filtered := True;
       end;
       try
         First;
         while not Eof do
         begin
           if FUseFilter or
-            ( ((ParentValue=null) and
-             ((Length(FieldByName(FDetailField).asString)=0)
-               or (Copy(Trim(FieldByName(FDetailField).asString),1,1)='-'))
-             ) or (FieldByName(FDetailField).Value = ParentValue)) then
+            (((ParentValue = Null) and
+            ((Length(FieldByName(FDetailField).AsString) = 0) or
+            (Copy(Trim(FieldByName(FDetailField).AsString), 1, 1) = '-'))) or
+            (FieldByName(FDetailField).Value = ParentValue)) then
           begin
             with Items.AddChild(ANode, FieldByName(FItemField).Text) as TJvDBTreeNode do
             begin
               FMasterValue := FieldValues[FMasterField];
-              if FIconField <> '' then begin
+              if FIconField <> '' then
+              begin
                 ImageIndex := Var2Type(FieldValues[FIconField], varInteger);
                 SelectedIndex := ImageIndex + FSelectedIndex;
               end;
@@ -669,24 +680,25 @@ begin
       finally
         if FUseFilter then
         begin
-          Filtered := oldFiltered; Filter := oldFilter;
+          Filtered := OldFiltered;
+          Filter := OldFilter;
         end;
       end;
       if ANode = nil then
-        for i := 0 to Items.Count-1 do
-          with Items[i] as TJvDBTreeNode do
-            HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> null
+        for I := 0 to Items.Count - 1 do
+          with Items[I] as TJvDBTreeNode do
+            HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> Null
       else
-        for i := 0 to ANode.Count-1 do
-          with ANode[i] as TJvDBTreeNode do
-            HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> null
+        for I := 0 to ANode.Count - 1 do
+          with ANode[I] as TJvDBTreeNode do
+            HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> Null
     finally
       try
         GotoBookmark(BK);
         FreeBookmark(BK);
         EnableControls;
       finally
-        dec(FUpdateLock);
+        Dec(FUpdateLock);
       end;
     end;
   end;
@@ -701,145 +713,171 @@ end;
 
 procedure TCustomJvDBTreeView.Collapse(Node: TTreeNode);
 var
-  HasChildren : boolean;
+  HasChildren: Boolean;
 begin
   inherited Collapse(Node);
-  if not FPersistentNode then begin
+  if not FPersistentNode then
+  begin
     HasChildren := Node.HasChildren;
     Node.DeleteChildren;
     Node.HasChildren := HasChildren;
   end;
 end;
 
-function TCustomJvDBTreeView.FindNode(AMasterValue : variant) : TJvDBTreeNode;
+function TCustomJvDBTreeView.FindNode(AMasterValue: Variant): TJvDBTreeNode;
 var
-  i : integer;
+  I: Integer;
 begin
-  for i := 0 to Items.Count -1 do begin
-    Result := Items[i] as TJvDBTreeNode;
+  for I := 0 to Items.Count - 1 do
+  begin
+    Result := Items[I] as TJvDBTreeNode;
     if Result.FMasterValue = AMasterValue then
-      exit;
+      Exit;
   end;
   Result := nil;
 end;
 
+function TCustomJvDBTreeView.SelectNode(AMasterValue: Variant): TTreeNode;
+var
+  V: Variant;
+  Node: TJvDBTreeNode;
+  Parents: Variant; {varArray}
+  I: Integer;
 
-function TCustomJvDBTreeView.SelectNode(AMasterValue : variant) : TTreeNode;
-  function GetDetailValue(const AMasterValue : variant; var DetailValue : variant) : boolean;
+  function GetDetailValue(const AMasterValue: Variant; var DetailValue: Variant): Boolean;
   var
-    V : variant;
+    V: Variant;
   begin
-    if Assigned(FGetDetailValue) then begin
+    if Assigned(FGetDetailValue) then
+    begin
       Result := FGetDetailValue(AMasterValue, DetailValue);
       if DetailValue = FStartMasterValue then
-        raise EJvDBTreeViewError .Create('error value for DetailValue');
-    end else begin
-      V := FDataLink.DataSet.Lookup(FMasterField, AMasterValue, FMasterField+';'+FDetailField);
-      Result := ((VarType(V) and varArray) = varArray) and (V[1] <> null);
-      if Result then begin
+        raise EJvDBTreeViewError.Create('error value for DetailValue');
+    end
+    else
+    begin
+      V := FDataLink.DataSet.Lookup(FMasterField, AMasterValue, FMasterField + ';' + FDetailField);
+      Result := ((VarType(V) and varArray) = varArray) and (V[1] <> Null);
+      if Result then
+      begin
         DetailValue := V[1];
         if DetailValue = FStartMasterValue then
-          raise EJvDBTreeViewError .Create('internal error');
+          raise EJvDBTreeViewError.Create('internal error');
       end;
     end;
   end;
-var
-  V : variant;
-  Node : TJvDBTreeNode;
-  Parents : variant; {varArray}
-  i : integer;
+
 begin
   Result := FindNode(AMasterValue);
   if Result = nil then
-    try
-     // inc(FUpdateLock);
-      Parents := VarArrayCreate([0, 0], varVariant);
-      V := AMasterValue;
-      i := 0;
-      repeat
-        if not GetDetailValue(V, V) then exit;
-        Node := FindNode(V);
-        if Node <> nil then begin
-          { To open all branches from that found to the necessary [translated] }
-          //..
-          Node.Expand(false);
-          while i > 0 do begin
-            FindNode(Parents[i]).Expand(false);
-            dec(i);
-          end;
-          Result := FindNode(AMasterValue);
-        end else begin
-          { To add in the array of parents [translated] }
-          inc(i);
-          VarArrayRedim(Parents, i);
-          Parents[i] := V;
+  try
+     // Inc(FUpdateLock);
+    Parents := VarArrayCreate([0, 0], varVariant);
+    V := AMasterValue;
+    I := 0;
+    repeat
+      if not GetDetailValue(V, V) then
+        Exit;
+      Node := FindNode(V);
+      if Node <> nil then
+      begin
+        { To open all branches from that found to the necessary [translated] }
+        //..
+        Node.Expand(False);
+        while I > 0 do
+        begin
+          FindNode(Parents[I]).Expand(False);
+          Dec(I);
         end;
-      until Node <> nil;
-    finally
-     // dec(FUpdateLock);
-    end;
-  if Result <> nil then Result.Selected := true;
+        Result := FindNode(AMasterValue);
+      end
+      else
+      begin
+        { To add in the array of parents [translated] }
+        Inc(I);
+        VarArrayRedim(Parents, I);
+        Parents[I] := V;
+      end;
+    until Node <> nil;
+  finally
+     // Dec(FUpdateLock);
+  end;
+  if Result <> nil then
+    Result.Selected := True;
 end;
 
 procedure TCustomJvDBTreeView.UpdateTree;
+var
+  I: Integer;
+  BK: TBookmark;
+  AllChecked: Boolean;
+
   procedure AddRecord;
   var
-    Node, ParentNode : TJvDBTreeNode;
+    Node, ParentNode: TJvDBTreeNode;
   begin
     { If the current record is absent from the tree, but it must be in it, then
       add [translated] }
     Node := FindNode(FDataLink.DataSet[FMasterField]);
-    if (Node = nil) then begin
+    if Node = nil then
+    begin
       ParentNode := FindNode(FDataLink.DataSet[FDetailField]);
       if (((ParentNode <> nil) and (not ParentNode.HasChildren or (ParentNode.Count <> 0))) or
-        (FDataLink.DataSet[FDetailField] = FStartMasterValue))
-      then begin
+        (FDataLink.DataSet[FDetailField] = FStartMasterValue)) then
+      begin
         if FDataLink.DataSet[FDetailField] = FStartMasterValue then
           Node := nil
-        else begin
+        else
+        begin
           Node := FindNode(FDataLink.DataSet[FDetailField]);
-          if (Node = nil) or (Node.HasChildren and (Node.Count = 0)) then exit;
+          if (Node = nil) or (Node.HasChildren and (Node.Count = 0)) then
+            Exit;
         end;
-        with FDataLink.DataSet, Items.AddChild(Node, FDataLink.DataSet.FieldByName(FItemField).Text) as TJvDBTreeNode do begin
+        with FDataLink.DataSet, Items.AddChild(Node, FDataLink.DataSet.FieldByName(FItemField).Text) as TJvDBTreeNode do
+        begin
           FMasterValue := FieldValues[FMasterField];
-          if FIconField <> '' then begin
+          if FIconField <> '' then
+          begin
             ImageIndex := Var2Type(FieldValues[FIconField], varInteger);
             SelectedIndex := ImageIndex + FSelectedIndex;
           end;
-          HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> null
+          HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> Null
         end;
       end;
     end;
   end;
-var
-  i : integer;
-  BK : TBookmark;
-  AllChecked : boolean;
+
 begin
   CheckDataSet;
-  if UpdateLocked or (InTreeUpdate) then exit;
-  InTreeUpdate := true;
+  if UpdateLocked or (InTreeUpdate) then
+    Exit;
+  InTreeUpdate := True;
   Items.BeginUpdate;
   try
-    with FDataLink.DataSet do begin
+    with FDataLink.DataSet do
+    begin
       BK := GetBookmark;
       DisableControls;
       try
         {*** To delete from a tree the remote/removed records [translated] }
         repeat
-          AllChecked := true;
-          for i :=0 to Items.Count -1 do
-            if not Locate(FMasterField, (Items[i] as TJvDBTreeNode).FMasterValue, []) then begin
-              Items[i].Free;
-              AllChecked := false;
-              break;
-            end else
-              Items[i].HasChildren := Lookup(FDetailField, (Items[i] as TJvDBTreeNode).FMasterValue, FDetailField) <> null;
+          AllChecked := True;
+          for I := 0 to Items.Count - 1 do
+            if not Locate(FMasterField, (Items[I] as TJvDBTreeNode).FMasterValue, []) then
+            begin
+              Items[I].Free;
+              AllChecked := False;
+              Break;
+            end
+            else
+              Items[I].HasChildren := Lookup(FDetailField, (Items[I] as TJvDBTreeNode).FMasterValue, FDetailField) <>
+                Null;
         until AllChecked;
        {###}
         {*** To add new [translated]}
         First;
-        while not Eof do begin
+        while not Eof do
+        begin
           AddRecord;
           Next;
         end;
@@ -852,46 +890,49 @@ begin
     end;
   finally
     Items.EndUpdate;
-    InTreeUpdate := false;
+    InTreeUpdate := False;
   end;
 end;
 
 procedure TCustomJvDBTreeView.InternalDataChanged;
 begin
-  if not HandleAllocated or UpdateLocked or InDataScrolled then Exit;
-//  InDataScrolled := true;
+  if not HandleAllocated or UpdateLocked or InDataScrolled then
+    Exit;
+//  InDataScrolled := True;
   try
     DataChanged;
   finally
-//    InDataScrolled := false;
+//    InDataScrolled := False;
   end;
 end;
 
 procedure TCustomJvDBTreeView.DataChanged;
 var
-  RecCount : integer;
+  RecCount: Integer;
 begin
   case FDataLink.DataSet.State of
-    dsBrowse :
+    dsBrowse:
       begin
         RecCount := FDataLink.DataSet.RecordCount;
-        if (RecCount = -1) or (RecCount <> oldRecCount) then
+        if (RecCount = -1) or (RecCount <> OldRecCount) then
           UpdateTree;
-        oldRecCount := RecCount;
+        OldRecCount := RecCount;
       end;
-    dsInsert : oldRecCount := -1; { TQuery don't change RecordCount value after insert new record }
+    dsInsert:
+      OldRecCount := -1; { TQuery don't change RecordCount value after insert new record }
   end;
   Selected := FindNode(FDataLink.DataSet[FMasterField]);
 end;
 
 procedure TCustomJvDBTreeView.InternalDataScrolled;
 begin
-  if not HandleAllocated or UpdateLocked then Exit;
-  InDataScrolled := true;
+  if not HandleAllocated or UpdateLocked then
+    Exit;
+  InDataScrolled := True;
   try
     DataScrolled;
   finally
-    InDataScrolled := false;
+    InDataScrolled := False;
   end;
 end;
 
@@ -904,13 +945,13 @@ procedure TCustomJvDBTreeView.Change(Node: TTreeNode);
 begin
   if ValidDataSet and Assigned(Node) and not InDataScrolled and
     (FUpdateLock = 0) and
-    (FDataLink.DataSet.State in [dsBrowse, dsEdit, dsInsert])
-  then begin
-    inc(FUpdateLock);
+    (FDataLink.DataSet.State in [dsBrowse, dsEdit, dsInsert]) then
+  begin
+    Inc(FUpdateLock);
     try
       Change2(Node);
     finally
-      dec(FUpdateLock);
+      Dec(FUpdateLock);
     end;
   end;
   inherited Change(Node);
@@ -923,52 +964,52 @@ end;
 
 procedure TCustomJvDBTreeView.InternalRecordChanged(Field: TField);
 begin
-  if not (HandleAllocated and ValidDataSet) then Exit;
+  if not (HandleAllocated and ValidDataSet) then
+    Exit;
   if (Selected <> nil) and (FUpdateLock = 0) and
-     (FDataLink.DataSet.State = dsEdit)
-  then begin
-    inc(FUpdateLock);
+    (FDataLink.DataSet.State = dsEdit) then
+  begin
+    Inc(FUpdateLock);
     try
       RecordChanged(Field);
     finally
-      dec(FUpdateLock);
+      Dec(FUpdateLock);
     end;
   end;
 end;
 
 procedure TCustomJvDBTreeView.RecordChanged(Field: TField);
 var
-  Node : TJvDBTreeNode;
+  Node: TJvDBTreeNode;
 begin
   Selected.Text := FDataLink.DataSet.FieldByName(FItemField).Text;
-  with (Selected as TJvDBTreeNode) do
-    if FIconField <> '' then begin
+  with Selected as TJvDBTreeNode do
+    if FIconField <> '' then
+    begin
       ImageIndex := Var2Type(FDataLink.DataSet[FIconField], varInteger);
       SelectedIndex := ImageIndex + FSelectedIndex;
     end;
  {*** ParentNode changed ?}
   if ((Selected.Parent <> nil) and
-      (FDataLink.DataSet[FDetailField] <>
-       (Selected.Parent as TJvDBTreeNode).FMasterValue))
-      or
-     ((Selected.Parent = nil) and
-      (FDataLink.DataSet[FDetailField] <> FStartMasterValue))
-  then begin
+    (FDataLink.DataSet[FDetailField] <> (Selected.Parent as TJvDBTreeNode).FMasterValue)) or
+    ((Selected.Parent = nil) and
+    (FDataLink.DataSet[FDetailField] <> FStartMasterValue)) then
+  begin
     Node := FindNode(FDataLink.DataSet[FDetailField]);
-    if (FDataLink.DataSet[FDetailField] = FStartMasterValue) or
-       (Node <> nil) then
+    if (FDataLink.DataSet[FDetailField] = FStartMasterValue) or (Node <> nil) then
       (Selected as TJvDBTreeNode).MoveTo(Node, naAddChild)
     else
       Selected.Free;
   end;
- {###}
- {*** MasterValue changed ?}
-  if (FDataLink.DataSet[FMasterField] <>
-     (Selected as TJvDBTreeNode).FMasterValue)
-  then begin
-    with (Selected as TJvDBTreeNode) do begin
+  {###}
+  {*** MasterValue changed ?}
+  if (FDataLink.DataSet[FMasterField] <> (Selected as TJvDBTreeNode).FMasterValue) then
+  begin
+    with (Selected as TJvDBTreeNode) do
+    begin
       FMasterValue := FDataLink.DataSet[FMasterField];
-      if FIconField <> '' then begin
+      if FIconField <> '' then
+      begin
         ImageIndex := Var2Type(FDataLink.DataSet[FIconField], varInteger);
         SelectedIndex := ImageIndex + FSelectedIndex;
       end;
@@ -976,63 +1017,72 @@ begin
     {what have I do with Children ?}
     {if you know, place your code here...}
   end;
- {###}
+  {###}
 end;
 
 function TCustomJvDBTreeView.CanEdit(Node: TTreeNode): Boolean;
 begin
   Result := inherited CanEdit(Node);
   if FDataLink.DataSet <> nil then
-   Result := Result and not FDataLink.ReadOnly;
+    Result := Result and not FDataLink.ReadOnly;
 end;
 
 procedure TCustomJvDBTreeView.Edit(const Item: TTVItem);
 begin
   CheckDataSet;
   inherited Edit(Item);
-  if Assigned(Selected) then begin
-    inc(FUpdateLock);
+  if Assigned(Selected) then
+  begin
+    Inc(FUpdateLock);
     try
-      if Item.pszText <> nil then begin
+      if Item.pszText <> nil then
+      begin
         if FDataLink.Edit then
           FDataLink.DataSet.FieldByName(FItemField).Text := Item.pszText;
         Change2(Self.Selected); {?}
-      end else begin
+      end
+      else
+      begin
         FDataLink.DataSet.Cancel;
-        if InAddChild then begin
+        if InAddChild then
+        begin
           Self.Selected.Free;
-          if Sel <> nil then Selected := Sel;
+          if Sel <> nil then
+            Selected := Sel;
         end;
       end;
     finally
-      InAddChild := false;
-      dec(FUpdateLock);
+      InAddChild := False;
+      Dec(FUpdateLock);
     end;
   end;
 end;
 
-function TCustomJvDBTreeView.AddChildNode(const Node : TTreeNode; const Select : boolean) : TJvDBTreeNode;
+function TCustomJvDBTreeView.AddChildNode(const Node: TTreeNode; const Select: Boolean): TJvDBTreeNode;
 var
-  MV : variant;
-  M : string;
+  MV: Variant;
+  M: string;
 begin
   CheckDataSet;
   if Assigned(Node) then
-    MV := (Node as TJvDBTreeNode).FMasterValue else
+    MV := (Node as TJvDBTreeNode).FMasterValue
+  else
     MV := FStartMasterValue;
   if Assigned(Node) and Node.HasChildren and (Node.Count = 0) then
     RefreshChild(Node as TJvDBTreeNode);
-  inc(FUpdateLock);
-  InAddChild := true;
+  Inc(FUpdateLock);
+  InAddChild := True;
   try
-    oldRecCount := FDataLink.DataSet.RecordCount + 1;
+    OldRecCount := FDataLink.DataSet.RecordCount + 1;
     FDataLink.DataSet.Append;
     FDataLink.DataSet[FDetailField] := MV;
-    if FDataLink.DataSet.FieldValues[FItemField] = null then
-      M := '' else
+    if FDataLink.DataSet.FieldValues[FItemField] = Null then
+      M := ''
+    else
       M := FDataLink.DataSet.FieldByName(FItemField).Text;
     Result := Items.AddChild(Node, M) as TJvDBTreeNode;
-    with Result do begin
+    with Result do
+    begin
       FMasterValue := FDataLink.DataSet.FieldValues[FMasterField];
       if FIconField <> '' then
       begin
@@ -1042,38 +1092,39 @@ begin
     end;
     Result.Selected := Select;
     { This line is very necessary, well it(he) does not understand from the first [translated]}
-    Result.Selected := Select;
+    Result.Selected := Select; 
   finally
-    dec(FUpdateLock);
+    Dec(FUpdateLock);
   end;
 end;
 
-procedure TCustomJvDBTreeView.DeleteNode(Node : TTreeNode);
+procedure TCustomJvDBTreeView.DeleteNode(Node: TTreeNode);
 var
-  NewSel : TTreeNode;
+  NewSel: TTreeNode;
 begin
   CheckDataSet;
-  inc(FUpdateLock);
-  InDelete := true;
+  Inc(FUpdateLock);
+  InDelete := True;
   try
     NewSel := FindNextNode(Selected);
     FDataLink.DataSet.Delete;
     Selected.Free;
     if NewSel <> nil then
-      NewSel.Selected := true;
+      NewSel.Selected := True;
   finally
-    InDelete := false;
-    dec(FUpdateLock);
+    InDelete := False;
+    Dec(FUpdateLock);
   end;
 end;
 
-function TCustomJvDBTreeView.FindNextNode(const Node : TTreeNode) : TTreeNode;
+function TCustomJvDBTreeView.FindNextNode(const Node: TTreeNode): TTreeNode;
 begin
   if (Node <> nil) and (Node.Parent <> nil) then
     if Node.Parent.Count > 1 then
-      if Node.Index = Node.Parent.Count-1 then
-        Result := Node.Parent[Node.Index-1] else
-        Result := Node.Parent[Node.Index+1]
+      if Node.Index = Node.Parent.Count - 1 then
+        Result := Node.Parent[Node.Index - 1]
+      else
+        Result := Node.Parent[Node.Index + 1]
     else
       Result := Node.Parent
   else
@@ -1081,65 +1132,70 @@ begin
       if Node.Index = Items.Count-1 then
         Result := Items[Node.Index-1] else
         Result := Items[Node.Index+1]
-    else} Result := nil;
+    else}
+    Result := nil;
 end;
 
 procedure TCustomJvDBTreeView.MoveTo(Source, Destination: TJvDBTreeNode; Mode: TNodeAttachMode);
 var
-  MV, V : variant;
+  MV, V: Variant;
 begin
   CheckDataSet;
-  if FUpdateLock = 0 then begin
-    inc(FUpdateLock);
+  if FUpdateLock = 0 then
+  begin
+    Inc(FUpdateLock);
     try
       MV := Source.FMasterValue;
-      if FDataLink.DataSet.Locate(FMasterField, MV, []) and
-         FDataLink.Edit
-      then begin
+      if FDataLink.DataSet.Locate(FMasterField, MV, []) and FDataLink.Edit then
+      begin
         case Mode of
-          naAdd :
+          naAdd:
             if Destination.Parent <> nil then
               V := (Destination.Parent as TJvDBTreeNode).FMasterValue
             else
               V := FStartMasterValue;
-          naAddChild : V := Destination.FMasterValue;
-          else raise EJvDBTreeViewError .Create(SMoveToModeError);
+          naAddChild:
+            V := Destination.FMasterValue;
+        else
+          raise EJvDBTreeViewError.Create(SMoveToModeError);
         end;
         FDataLink.DataSet[FDetailField] := V;
       end;
     finally
-      dec(FUpdateLock);
+      Dec(FUpdateLock);
     end;
   end;
 end;
 
 {******************* Drag'n'Drop ********************}
-procedure TCustomJvDBTreeView.timerDnDTimer(Sender: TObject);
+
+procedure TCustomJvDBTreeView.TimerDnDTimer(Sender: TObject);
 begin
-  if (YY < DnDScrollArea) then
+  if YDragPos < DnDScrollArea then
     Perform(WM_VSCROLL, SB_LINEUP, 0)
-  else if (YY > ClientHeight - DnDScrollArea) then
+  else
+  if YDragPos > ClientHeight - DnDScrollArea then
     Perform(WM_VSCROLL, SB_LINEDOWN, 0);
 end;
 
 procedure TCustomJvDBTreeView.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 var
-  Node : TTreeNode;
+  Node: TTreeNode;
   HT: THitTests;
 begin
   inherited DragOver(Source, X, Y, State, Accept);
   if ValidDataSet and (DragMode = dmAutomatic) and
-     not FDataLink.ReadOnly and not Accept
-  then begin
+    not FDataLink.ReadOnly and not Accept then
+  begin
     HT := GetHitTestInfoAt(X, Y);
     Node := GetNodeAt(X, Y);
     Accept := (Source = Self) and Assigned(Selected) and
-              (Node <> Selected) and Assigned(Node) and
-               not Node.HasAsParent(Selected) and
-              (HT - [htOnLabel, htOnItem, htOnIcon, htNowhere, htOnIndent, htOnButton] <> HT);
-    YY := Y;
-    timerDnD.Enabled := ((Y < DnDScrollArea) or (Y > ClientHeight - DnDScrollArea));
+      (Node <> Selected) and Assigned(Node) and
+      not Node.HasAsParent(Selected) and
+      (HT - [htOnLabel, htOnItem, htOnIcon, htNowhere, htOnIndent, htOnButton] <> HT);
+    YDragPos := Y;
+    TimerDnD.Enabled := ((Y < DnDScrollArea) or (Y > ClientHeight - DnDScrollArea));
   end;
 end;
 
@@ -1149,7 +1205,7 @@ var
   AttachMode: TNodeAttachMode;
   HT: THitTests;
 begin
-  timerDnD.Enabled := false;
+  TimerDnD.Enabled := False;
   inherited DragDrop(Source, X, Y);
   AnItem := GetNodeAt(X, Y);
   if ValidDataSet and (DragMode = dmAutomatic) and Assigned(Selected) and Assigned(AnItem) then
@@ -1158,7 +1214,8 @@ begin
     if (HT - [htOnItem, htOnLabel, htOnIcon, htNowhere, htOnIndent, htOnButton] <> HT) then
     begin
       if (HT - [htOnItem, htOnLabel, htOnIcon] <> HT) then
-        AttachMode := naAddChild else
+        AttachMode := naAddChild
+      else
         AttachMode := naAdd;
       (Selected as TJvDBTreeNode).MoveTo(AnItem, AttachMode);
     end;
@@ -1181,38 +1238,46 @@ begin
     TreeView1.Selected.MoveTo(AnItem, AttachMode);
   end;
 end;
-}  
+ }
 end;
 
 {################### Drag'n'Drop ####################}
 
 procedure TCustomJvDBTreeView.KeyDown(var Key: Word; Shift: TShiftState);
-  procedure DeleteSelected;
+
+procedure DeleteSelected;
   var
-    M : string;
+    M: string;
   begin
-    if Selected.HasChildren then M := SDeleteNode2 else M := SDeleteNode;
+    if Selected.HasChildren then
+      M := SDeleteNode2
+    else
+      M := SDeleteNode;
     if MessageDlg(Format(M, [Selected.Text]), mtConfirmation, [mbYes, mbNo], 0) = mrYes then
       DeleteNode(Selected);
   end;
 begin
   inherited KeyDown(Key, Shift);
-  if not ValidDataSet or (FDataLink.ReadOnly) or ReadOnly then exit;
+  if not ValidDataSet or (FDataLink.ReadOnly) or ReadOnly then
+    Exit;
   case Key of
-    VK_DELETE :
+    VK_DELETE:
       if ([ssCtrl] = Shift) and Assigned(Selected) then
         DeleteSelected;
-    VK_INSERT :
-      if not IsEditing then begin
+    VK_INSERT:
+      if not IsEditing then
+      begin
         Sel := Selected;
         if [ssAlt] = Shift then
           //AddChild
-          AddChildNode(Selected, true).EditText
+          AddChildNode(Selected, True).EditText
         else
           //Add
-          AddChildNode(Selected.Parent, true).EditText;
+          AddChildNode(Selected.Parent, True).EditText;
       end;
-    VK_F2 : if Selected <> nil then Selected.EditText;
+    VK_F2:
+      if Selected <> nil then
+        Selected.EditText;
   end;
 end;
 

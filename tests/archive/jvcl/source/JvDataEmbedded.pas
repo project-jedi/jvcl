@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvDataEmbedded;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Dialogs, JvComponent;
+  SysUtils, Classes,
+  JvComponent;
 
 type
   TJvDataEmbedded = class(TJvComponent)
@@ -50,7 +49,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure SaveToFile(FileName: TFileName);
     procedure SaveToStream(Stream: TStream);
   published
@@ -60,39 +58,29 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvDataEmbedded.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FStream := TMemoryStream.Create;
 end;
-
-{**************************************************}
-
-procedure TJvDataEmbedded.DefineProperties(Filer: TFiler);
-begin
-  inherited;
-  Filer.DefineBinaryProperty('EmbeddedData', ReadData, WriteData,
-    FStream.Size > 0);
-end;
-
-{**************************************************}
 
 destructor TJvDataEmbedded.Destroy;
 begin
   FStream.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-{**************************************************}
+procedure TJvDataEmbedded.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineBinaryProperty('EmbeddedData', ReadData, WriteData,
+    FStream.Size > 0);
+end;
 
 function TJvDataEmbedded.GetSize: Integer;
 begin
   Result := FStream.Size;
 end;
-
-{**************************************************}
 
 function TJvDataEmbedded.GetStream: TStream;
 begin
@@ -101,40 +89,30 @@ begin
   Result.Position := 0;
 end;
 
-{**************************************************}
-
 procedure TJvDataEmbedded.ReadData(Stream: TStream);
 var
-  i: Integer;
+  I: Integer;
 begin
-  Stream.Read(i, SizeOf(i));
+  Stream.Read(I, SizeOf(I));
   FStream.Clear;
-  FStream.Size := i;
-  Stream.Read(FStream.Memory^, i);
+  FStream.Size := I;
+  Stream.Read(FStream.Memory^, I);
 end;
-
-{**************************************************}
 
 procedure TJvDataEmbedded.SaveToFile(FileName: TFileName);
 begin
   FStream.SaveToFile(FileName);
 end;
 
-{**************************************************}
-
 procedure TJvDataEmbedded.SaveToStream(Stream: TStream);
 begin
   Stream.CopyFrom(FStream, 0);
 end;
 
-{**************************************************}
-
 procedure TJvDataEmbedded.SetSize(const Value: Integer);
 begin
   FStream.SetSize(Value);
 end;
-
-{**************************************************}
 
 procedure TJvDataEmbedded.SetStream(const Value: TStream);
 begin
@@ -143,15 +121,14 @@ begin
     FStream.CopyFrom(Value, Value.Size - Value.Position);
 end;
 
-{**************************************************}
-
 procedure TJvDataEmbedded.WriteData(Stream: TStream);
 var
-  i: Integer;
+  I: Integer;
 begin
-  i := FStream.Size;
-  Stream.Write(i, SizeOf(i));
-  Stream.Write(FStream.Memory^, i);
+  I := FStream.Size;
+  Stream.Write(I, SizeOf(I));
+  Stream.Write(FStream.Memory^, I);
 end;
 
 end.
+

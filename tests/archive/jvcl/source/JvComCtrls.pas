@@ -36,25 +36,18 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF}
+{$I WINDOWSONLY.INC}
 
 unit JvComCtrls;
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, ComCtrls, CommCtrl, StdActns,
-{$IFDEF COMPILER5_UP}
+  {$IFDEF COMPILER5_UP}
   Contnrs,
-{$ENDIF}
+  {$ENDIF}
   JclBase, JVCLVer;
 
 const
@@ -71,7 +64,7 @@ type
   TJvIpAddressRange = class(TPersistent)
   private
     FControl: TWinControl;
-    FRange: array[0..3] of TJvIpAddressMinMax;
+    FRange: array [0..3] of TJvIpAddressMinMax;
     function GetMaxRange(Index: Integer): Byte;
     function GetMinRange(Index: Integer): Byte;
     procedure SetMaxRange(const Index: Integer; const Value: Byte);
@@ -98,7 +91,7 @@ type
 
   TJvIpAddressValues = class(TPersistent)
   private
-    FValues: array[0..3] of Byte;
+    FValues: array [0..3] of Byte;
     FOnChange: TNotifyEvent;
     FOnChanging: TJvIPAddressChanging;
     function GetValue: Cardinal;
@@ -182,9 +175,9 @@ type
     property TabStop default True;
     property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-{$IFDEF COMPILER5_UP}
+    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-{$ENDIF}
+    {$ENDIF}
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -217,8 +210,8 @@ type
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure WMLButtonDown(var msg: TWMLButtonDown); message WM_LBUTTONDOWN;
-    procedure CMDialogKey(var msg: TWMKey); message CM_DIALOGKEY;
+    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure CMDialogKey(var Msg: TWMKey); message CM_DIALOGKEY;
     procedure SetDrawTabShadow(const Value: Boolean);
     procedure SetHideAllTabs(const Value: Boolean);
     function FormKeyPreview: Boolean;
@@ -350,15 +343,15 @@ type
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure MouseEnter(var msg: Tmessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var msg: Tmessage); message CM_MOUSELEAVE;
+    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure SetCheckBoxes(const Value: Boolean);
   protected
     function CreateNode: TTreeNode; override;
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure WMNotify(var msg: TWMNotify); message CN_NOTIFY;
+    procedure WMNotify(var Msg: TWMNotify); message CN_NOTIFY;
 
     procedure Change(Node: TTreeNode); override;
     procedure Delete(Node: TTreeNode); override;
@@ -416,7 +409,20 @@ implementation
 uses
   JclSysUtils, JvFunctions, JvTypes;
 
-{ TJvIpAddressRange }
+// === TJvIpAddressRange =====================================================
+
+constructor TJvIpAddressRange.Create(Control: TWinControl);
+var
+  I: Integer;
+begin
+  inherited Create;
+  FControl := Control;
+  for I := Low(FRange) to High(FRange) do
+  begin
+    FRange[I].Min := 0;
+    FRange[I].Max := 255;
+  end;
+end;
 
 procedure TJvIpAddressRange.AssignTo(Dest: TPersistent);
 begin
@@ -427,7 +433,7 @@ begin
       Change(-1);
     end
   else
-    inherited;
+    inherited AssignTo(Dest);
 end;
 
 procedure TJvIpAddressRange.Change(Index: Integer);
@@ -448,19 +454,6 @@ begin
       ChangeRange(I)
   else
     ChangeRange(Index);
-end;
-
-constructor TJvIpAddressRange.Create(Control: TWinControl);
-var
-  I: Integer;
-begin
-  inherited Create;
-  FControl := Control;
-  for I := Low(FRange) to High(FRange) do
-  begin
-    FRange[I].Min := 0;
-    FRange[I].Max := 255;
-  end;
 end;
 
 function TJvIpAddressRange.GetMaxRange(Index: Integer): Byte;
@@ -485,7 +478,76 @@ begin
   Change(Index);
 end;
 
-{ TJvIpAddress }
+// === TJvIpAddress ==========================================================
+
+constructor TJvIpAddress.Create(AOwner: TComponent);
+begin
+  CheckCommonControl(ICC_INTERNET_CLASSES);
+  inherited Create(AOwner);
+  FRange := TJvIpAddressRange.Create(Self);
+  FAddressValues := TJvIpAddressValues.Create;
+  FAddressValues.OnChange := DoAddressChange;
+  FAddressValues.OnChanging := DoAddressChanging;
+
+  ControlStyle := ControlStyle + [csFixedHeight, csReflector];
+  Color := clWindow;
+  ParentColor := False;
+  TabStop := True;
+  Width := 150;
+  AdjustHeight;
+end;
+
+destructor TJvIpAddress.Destroy;
+begin
+  FreeAndNil(FRange);
+  FreeAndNil(FAddressValues);
+  inherited Destroy;
+end;
+
+procedure TJvIpAddress.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  CreateSubClass(Params, WC_IPADDRESS);
+  with Params do
+  begin
+    Style := Style or WS_CHILD;
+    WindowClass.style := WindowClass.style and not (CS_HREDRAW or CS_VREDRAW);
+  end;
+end;
+
+procedure TJvIpAddress.CreateWnd;
+begin
+  //  ClearEditControls;
+  FChanging := True;
+  try
+    inherited CreateWnd;
+    FRange.Change(-1);
+    if FSaveBlank then
+      ClearAddress
+    else
+    begin
+      Perform(IPM_SETADDRESS, 0, FAddress);
+      FAddressValues.Address := FAddress;
+    end;
+  finally
+    FChanging := False;
+  end;
+end;
+
+procedure TJvIpAddress.DestroyLocalFont;
+begin
+  if LocalFont <> 0 then
+  begin
+    OSCheck(DeleteObject(LocalFont));
+    LocalFont := 0;
+  end;
+end;
+
+procedure TJvIpAddress.DestroyWnd;
+begin
+  FSaveBlank := IsBlank;
+  inherited DestroyWnd;
+end;
 
 procedure TJvIpAddress.AdjustHeight;
 var
@@ -515,7 +577,7 @@ end;
 
 procedure TJvIpAddress.AdjustSize;
 begin
-  inherited;
+  inherited AdjustSize;
   RecreateWnd;
 end;
 
@@ -528,7 +590,7 @@ end;
 
 {procedure TJvIpAddress.ClearEditControls;
 begin
-  ZeroMemory(@FEditControls, Sizeof(FEditControls));
+  FillChar(FEditControls, Sizeof(FEditControls), #0);
   FEditControlCount := 0;
 end;}
 
@@ -575,75 +637,6 @@ begin
     if code = IPN_FIELDCHANGED then
       with PNMIPAddress(NMHdr)^ do
         DoFieldChange(iField, iValue);
-  inherited;
-end;
-
-constructor TJvIpAddress.Create(AOwner: TComponent);
-begin
-  CheckCommonControl(ICC_INTERNET_CLASSES);
-  inherited;
-  FRange := TJvIpAddressRange.Create(Self);
-  FAddressValues := TJvIpAddressValues.Create;
-  FAddressValues.OnChange := DoAddressChange;
-  FAddressValues.OnChanging := DoAddressChanging;
-
-  ControlStyle := ControlStyle + [csFixedHeight, csReflector];
-  Color := clWindow;
-  ParentColor := False;
-  TabStop := True;
-  Width := 150;
-  AdjustHeight;
-end;
-
-procedure TJvIpAddress.CreateParams(var Params: TCreateParams);
-begin
-  inherited;
-  CreateSubClass(Params, WC_IPADDRESS);
-  with Params do
-  begin
-    Style := Style or WS_CHILD;
-    WindowClass.style := WindowClass.style and not (CS_HREDRAW or CS_VREDRAW);
-  end;
-end;
-
-procedure TJvIpAddress.CreateWnd;
-begin
-  //  ClearEditControls;
-  FChanging := True;
-  try
-    inherited;
-    FRange.Change(-1);
-    if FSaveBlank then
-      ClearAddress
-    else
-    begin
-      Perform(IPM_SETADDRESS, 0, FAddress);
-      FAddressValues.Address := FAddress;
-    end;
-  finally
-    FChanging := False;
-  end;
-end;
-
-destructor TJvIpAddress.Destroy;
-begin
-  FreeAndNil(FRange);
-  FreeAndNil(FAddressValues);
-  inherited;
-end;
-
-procedure TJvIpAddress.DestroyLocalFont;
-begin
-  if LocalFont <> 0 then
-  begin
-    OSCheck(DeleteObject(LocalFont));
-    LocalFont := 0;
-  end;
-end;
-
-procedure TJvIpAddress.DestroyWnd;
-begin
-  FSaveBlank := IsBlank;
   inherited;
 end;
 
@@ -733,7 +726,7 @@ procedure TJvIpAddress.WMSetFont(var Msg: TWMSetFont);
 var
   LF: TLogFont;
 begin
-  ZeroMemory(@LF, Sizeof(TLogFont));
+  FillChar(LF, Sizeof(TLogFont), #0);
   try
     OSCheck(GetObject(Font.Handle, Sizeof(LF), @LF) > 0);
     DestroyLocalFont;
@@ -745,7 +738,14 @@ begin
   end;
 end;
 
-{ TJvPageControl }
+// === TJvPageControl ========================================================
+
+constructor TJvPageControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FColor := clInfoBk;
+  FClientBorderWidth := JvDefPageControlBorder;
+end;
 
 function TJvPageControl.FormKeyPreview: Boolean;
 var
@@ -758,12 +758,12 @@ begin
     Result := False;
 end;
 
-procedure TJvPageControl.CMDialogKey(var msg: TWMKey);
+procedure TJvPageControl.CMDialogKey(var Msg: TWMKey);
 var
   thistab, tab: TTabSheet;
   forward: Boolean;
 begin
-  if HandleGlobalTab and not FormKeyPreview and (msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
+  if HandleGlobalTab and not FormKeyPreview and (Msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
   begin
     thistab := ActivePage;
     forward := GetKeyState(VK_SHIFT) >= 0;
@@ -790,13 +790,6 @@ begin
   inherited;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
-end;
-
-constructor TJvPageControl.Create(AOwner: TComponent);
-begin
-  inherited;
-  FColor := clInfoBk;
-  FClientBorderWidth := JvDefPageControlBorder;
 end;
 
 procedure TJvPageControl.DrawDefaultTab(TabIndex: Integer;
@@ -880,7 +873,7 @@ end;
 
 procedure TJvPageControl.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   HideAllTabs := FHideAllTabs;
 end;
 
@@ -925,20 +918,17 @@ var
   I: Integer;
   SaveActivePage: TTabSheet;
 begin
-  if FHideAllTabs <> Value then
+  FHideAllTabs := Value;
+  if (csDesigning in ComponentState) then
+    Exit;
+  if HandleAllocated then
   begin
-    FHideAllTabs := Value;
-    if (csDesigning in ComponentState) then
-      Exit;
-    if HandleAllocated then
-    begin
-      SaveActivePage := ActivePage;
-      for I := 0 to PageCount - 1 do
-        Pages[I].TabVisible := not FHideAllTabs;
-      ActivePage := SaveActivePage;
-      if FHideAllTabs then
-        TabStop := False;
-    end;
+    SaveActivePage := ActivePage;
+    for I := 0 to PageCount - 1 do
+      Pages[I].TabVisible := not FHideAllTabs;
+    ActivePage := SaveActivePage;
+    if FHideAllTabs then
+      TabStop := False;
   end;
 end;
 
@@ -959,7 +949,7 @@ begin
   inherited UpdateTabImages;
 end;
 
-procedure TJvPageControl.WMLButtonDown(var msg: TWMLButtonDown);
+procedure TJvPageControl.WMLButtonDown(var Msg: TWMLButtonDown);
 var
   hi: TTCHitTestInfo;
   tabindex: Integer;
@@ -969,20 +959,29 @@ begin
     inherited;
     Exit;
   end;
-  hi.pt.x := msg.XPos;
-  hi.pt.y := msg.YPos;
+  hi.pt.x := Msg.XPos;
+  hi.pt.y := Msg.YPos;
   hi.flags := 0;
-  tabindex := Perform(TCM_HITTEST, 0, longint(@hi));
+  tabindex := Perform(TCM_HITTEST, 0, Longint(@hi));
   if (tabindex >= 0) and ((hi.flags and TCHT_ONITEM) <> 0) then
     if not Pages[tabindex].Enabled then
     begin
-      msg.result := 0;
+      Msg.Result := 0;
       Exit;
     end;
   inherited;
 end;
 
-{ TJvTrackBar }
+// === TJvTrackBar ===========================================================
+
+constructor TJvTrackBar.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FColor := clInfoBk;
+  ControlStyle := ControlStyle + [csAcceptsControls];
+  FToolTipSide := tsLeft;
+  FShowRange := True;
+end;
 
 procedure TJvTrackBar.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -1010,38 +1009,29 @@ begin
     inherited;
 end;
 
-constructor TJvTrackBar.Create(AOwner: TComponent);
-begin
-  inherited;
-  FColor := clInfoBk;
-  ControlStyle := ControlStyle + [csAcceptsControls];
-  FToolTipSide := tsLeft;
-  FShowRange := True;
-end;
-
 procedure TJvTrackBar.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
+  inherited CreateParams(Params);
   with Params do
   begin
     if FToolTips and (GetComCtlVersion >= ComCtlVersionIE3) then
       Style := Style or TBS_TOOLTIPS;
     // (p3) this stolen from Rudy Velthuis's ExTrackBar
     if not ShowRange then
-      Style := Style and not (TBS_ENABLESELRANGE);
+      Style := Style and not TBS_ENABLESELRANGE;
   end;
 end;
 
 procedure TJvTrackBar.CreateWnd;
 begin
-  inherited;
+  inherited CreateWnd;
   InternalSetToolTipSide;
 end;
 
 procedure TJvTrackBar.InternalSetToolTipSide;
 const
-  ToolTipSides: array[TJvTrackToolTipSide] of DWORD =
-  (TBTS_LEFT, TBTS_TOP, TBTS_RIGHT, TBTS_BOTTOM);
+  ToolTipSides: array [TJvTrackToolTipSide] of DWORD =
+    (TBTS_LEFT, TBTS_TOP, TBTS_RIGHT, TBTS_BOTTOM);
 begin
   if HandleAllocated and (GetComCtlVersion >= ComCtlVersionIE3) then
     SendMessage(Handle, TBM_SETTIPSIDE, ToolTipSides[FToolTipSide], 0);
@@ -1068,7 +1058,7 @@ end;
 procedure TJvTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
-  inherited;
+  inherited MouseUp(Button, Shift, X, Y);
   if Assigned(FOnChanged) then
     FOnChanged(Self);
 end;
@@ -1120,7 +1110,7 @@ begin
       inherited;
 end;
 
-{ TJvTreeNode }
+// === TJvTreeNode ===========================================================
 
 constructor TJvTreeNode.CreateEnh(AOwner: TTreeNodes);
 begin
@@ -1128,14 +1118,10 @@ begin
   FPopupMenu := TPopupMenu.Create(AOwner.Owner);
 end;
 
-{***********************************************}
-
 procedure TJvTreeNode.SetPopupMenu(const Value: TPopupMenu);
 begin
   FPopupMenu := Value;
 end;
-
-{***********************************************}
 
 function TJvTreeNode.GetBold: Boolean;
 var
@@ -1152,8 +1138,6 @@ begin
   end;
 end;
 
-{***********************************************}
-
 function TJvTreeNode.GetChecked: Boolean;
 var
   Item: TTVItem;
@@ -1168,8 +1152,6 @@ begin
       Result := False;
   end;
 end;
-
-{***********************************************}
 
 procedure TJvTreeNode.SetBold(const Value: Boolean);
 var
@@ -1190,8 +1172,6 @@ begin
   end;
 end;
 
-{***********************************************}
-
 procedure TJvTreeNode.SetChecked(Value: Boolean);
 var
   Item: TTVItem;
@@ -1211,11 +1191,31 @@ begin
   end;
 end;
 
-{ TJvTreeView }
+// === TJvTreeView ===========================================================
 
 const
   AutoScrollMargin = 20;
   AutoScrollTimerID = 100;
+
+constructor TJvTreeView.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FColor := clInfoBk;
+  FOver := False;
+  FCheckBoxes := False;
+  ControlStyle := ControlStyle + [csAcceptsControls];
+  FSelectedList := TObjectList.Create(False);
+  // Since IsCustomDrawn method is not virtual we have to assign ancestor's
+  // OnCustomDrawItem event to enable custom drawing
+  if not (csDesigning in ComponentState) then
+    inherited OnCustomDrawItem := InternalCustomDrawItem;
+end;
+
+destructor TJvTreeView.Destroy;
+begin
+  FreeAndNil(FSelectedList);
+  inherited Destroy;
+end;
 
 procedure TJvTreeView.Change(Node: TTreeNode);
 begin
@@ -1229,7 +1229,7 @@ begin
     FSelectThisNode := False;
     SelectItem(Node);
   end;
-  inherited;
+  inherited Change(Node);
 end;
 
 procedure TJvTreeView.ClearSelection;
@@ -1263,20 +1263,6 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-constructor TJvTreeView.Create(AOwner: TComponent);
-begin
-  inherited;
-  FColor := clInfoBk;
-  FOver := False;
-  FCheckBoxes := False;
-  ControlStyle := ControlStyle + [csAcceptsControls];
-  FSelectedList := TObjectList.Create(False);
-  // Since IsCustomDrawn method is not virtual we have to assign ancestor's
-  // OnCustomDrawItem event to enable custom drawing
-  if not (csDesigning in ComponentState) then
-    inherited OnCustomDrawItem := InternalCustomDrawItem;
-end;
-
 function TJvTreeView.CreateNode: TTreeNode;
 begin
   Result := TJvTreeNode.CreateEnh(Items);
@@ -1284,7 +1270,7 @@ end;
 
 procedure TJvTreeView.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
+  inherited CreateParams(Params);
   if FCheckBoxes then
     Params.Style := Params.Style or TVS_CHECKBOXES;
 end;
@@ -1293,13 +1279,7 @@ procedure TJvTreeView.Delete(Node: TTreeNode);
 begin
   if FMultiSelect then
     FSelectedList.Remove(Node);
-  inherited;
-end;
-
-destructor TJvTreeView.Destroy;
-begin
-  FreeAndNil(FSelectedList);
-  inherited;
+  inherited Delete(Node);
 end;
 
 procedure TJvTreeView.DoEditCancelled;
@@ -1311,7 +1291,7 @@ end;
 procedure TJvTreeView.DoEndDrag(Target: TObject; X, Y: Integer);
 begin
   ScrollDirection := 0;
-  inherited;
+  inherited DoEndDrag(Target, X, Y);
 end;
 
 procedure TJvTreeView.DoEnter;
@@ -1323,7 +1303,7 @@ end;
 procedure TJvTreeView.DoExit;
 begin
   InvalidateSelectedItems;
-  inherited;
+  inherited DoExit;
 end;
 
 procedure TJvTreeView.DoSelectionChange;
@@ -1335,21 +1315,21 @@ end;
 procedure TJvTreeView.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
-  inherited;
+  inherited DragOver(Source, X, Y, State, Accept);
   if not FAutoDragScroll then
     Exit;
   if Y < AutoScrollMargin then
     ScrollDirection := -1
   else
-    if Y > ClientHeight - AutoScrollMargin then
-      ScrollDirection := 1
-    else
-      ScrollDirection := 0;
+  if Y > ClientHeight - AutoScrollMargin then
+    ScrollDirection := 1
+  else
+    ScrollDirection := 0;
 end;
 
 procedure TJvTreeView.Edit(const Item: TTVItem);
 begin
-  inherited;
+  inherited Edit(Item);
   if Item.pszText = nil then
     DoEditCancelled;
 end;
@@ -1407,11 +1387,11 @@ begin
         Canvas.Brush.Color := clHighlight;
       end
       else
-        if not HideSelection then
-        begin
-          Canvas.Font.Color := Font.Color;
-          Canvas.Brush.Color := clInactiveBorder;
-        end;
+      if not HideSelection then
+      begin
+        Canvas.Font.Color := Font.Color;
+        Canvas.Brush.Color := clInactiveBorder;
+      end;
     end
     else
     begin
@@ -1478,7 +1458,7 @@ begin
       end;
     end;
   end;
-  inherited;
+  inherited KeyDown(Key, Shift);
 end;
 
 procedure TJvTreeView.KeyPress(var Key: Char);
@@ -1486,10 +1466,10 @@ begin
   if FMultiSelect and (Key = #32) then
     Key := #0
   else
-    inherited;
+    inherited KeyPress(Key);
 end;
 
-procedure TJvTreeView.MouseEnter(var msg: Tmessage);
+procedure TJvTreeView.MouseEnter(var Msg: TMessage);
 begin
   FOver := True;
   FSaved := Application.HintColor;
@@ -1501,7 +1481,7 @@ begin
     FOnMouseEnter(Self);
 end;
 
-procedure TJvTreeView.MouseLeave(var msg: Tmessage);
+procedure TJvTreeView.MouseLeave(var Msg: TMessage);
 begin
   Application.HintColor := FSaved;
   FOver := False;
@@ -1520,8 +1500,8 @@ begin
   if Unselect then
     FSelectedList.Remove(Node)
   else
-    if not IsNodeSelected(Node) then
-      FSelectedList.Add(Node);
+  if not IsNodeSelected(Node) then
+    FSelectedList.Add(Node);
   if HandleAllocated then
     InvalidateNode(Node);
   DoSelectionChange;
@@ -1565,8 +1545,8 @@ begin
     if Value = 0 then
       KillTimer(Handle, AutoScrollTimerID)
     else
-      if (Value <> 0) and (FScrollDirection = 0) then
-        SetTimer(Handle, AutoScrollTimerID, 200, nil);
+    if (Value <> 0) and (FScrollDirection = 0) then
+      SetTimer(Handle, AutoScrollTimerID, 200, nil);
     FScrollDirection := Value;
   end;
 end;
@@ -1598,7 +1578,7 @@ begin
   inherited;
 end;
 
-procedure TJvTreeView.WMNotify(var msg: TWMNotify);
+procedure TJvTreeView.WMNotify(var Msg: TWMNotify);
 var
   Node: TTreeNode;
   Point: TPoint;
@@ -1677,7 +1657,7 @@ begin
     FOnVScroll(Self);
 end;
 
-{ TJvIpAddressValues }
+// === TJvIpAddressValues ====================================================
 
 procedure TJvIpAddressValues.Change;
 begin

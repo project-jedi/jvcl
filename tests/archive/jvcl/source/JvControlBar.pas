@@ -66,10 +66,8 @@ type
     procedure LoadPositions(const Value: string);
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-
     property PopupControl: Boolean read FPopupControl write FPopupControl default True;
     property PopupNames: TPopupNames read FPopupNames write FPopupNames default pnHint;
-
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -77,17 +75,6 @@ type
   end;
 
 implementation
-
-{**************************************************}
-
-procedure TJvControlBar.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-{**************************************************}
 
 constructor TJvControlBar.Create(AOwner: TComponent);
 begin
@@ -100,7 +87,20 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
-{**************************************************}
+destructor TJvControlBar.Destroy;
+begin
+  FList.Free;
+  if FPopup <> nil then
+    FPopup.Free;
+  inherited Destroy;
+end;
+
+procedure TJvControlBar.CMParentColorChanged(var Msg: TMessage);
+begin
+  inherited;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
 
 procedure TJvControlBar.CMMouseEnter(var Msg: TMessage);
 begin
@@ -117,8 +117,6 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvControlBar.CMMouseLeave(var Msg: TMessage);
 begin
   if FOver then
@@ -129,8 +127,6 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
-
-{**************************************************}
 
 procedure TJvControlBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
@@ -156,7 +152,7 @@ var
   end;
 
 begin
-  inherited;
+  inherited MouseUp(Button, Shift, X, Y);
   if PopupControl and (Button = mbRight) then
   begin
     if FPopup <> nil then
@@ -170,18 +166,6 @@ begin
   end;
 end;
 
-{**************************************************}
-
-destructor TJvControlBar.Destroy;
-begin
-  FList.Free;
-  if FPopup <> nil then
-    FPopup.Free;
-  inherited Destroy;
-end;
-
-{**************************************************}
-
 procedure TJvControlBar.PopupMenuClick(Sender: TObject);
 begin
   with Sender as TMenuItem do
@@ -193,8 +177,6 @@ begin
       TControl(FList[Tag]).Visible := Checked;
   end;
 end;
-
-{**************************************************}
 
 procedure TJvControlBar.LoadPositions(const Value: string);
 var
@@ -260,8 +242,6 @@ begin
   end;
 end;
 
-{**************************************************}
-
 function TJvControlBar.SavePositions: string;
 var
   I: Integer;
@@ -280,13 +260,11 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvControlBar.Loaded;
 var
   I: Integer;
 begin
-  inherited;
+  inherited Loaded;
   for I := 0 to ControlCount - 1 do
     FList.Add(Controls[I]);
 end;

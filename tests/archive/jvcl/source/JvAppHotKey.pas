@@ -94,6 +94,19 @@ begin
 end;
 
 
+//=== TJvApplicationHotKey ===================================================
+
+constructor TJvApplicationHotKey.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
+destructor TJvApplicationHotKey.Destroy;
+begin
+  ResetWndProc;
+  inherited Destroy;
+end;
+
 procedure TJvApplicationHotKey.SetShortCut(Value: TShortCut);
 var
   B: Boolean;
@@ -105,17 +118,6 @@ begin
     FShortCut := Value;
     SetActive(B);
   end;
-end;
-
-constructor TJvApplicationHotKey.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-end;
-
-destructor TJvApplicationHotKey.Destroy;
-begin
-  ResetWndProc;
-  inherited Destroy;
 end;
 
 function TJvApplicationHotKey.DoRegisterHotKey: Boolean;

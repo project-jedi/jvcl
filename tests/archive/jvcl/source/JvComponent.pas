@@ -32,7 +32,7 @@ unit JvComponent;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Controls, ExtCtrls,
+  Windows, SysUtils, Classes, Graphics, StdCtrls, Controls, ExtCtrls, Forms,
   JVCLVer;
 
 type
@@ -74,6 +74,13 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
+  TJvForm = class(TForm)
+  private
+    FAboutJVCL: TJVCLAboutInfo;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  end;
+
   TJvCustomMemo = class(TCustomMemo)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -81,186 +88,6 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
-  { A caret can be specified either by giving a bitmap that defines its shape
-    or by defining the caret width and height. If a bitmap is specified the
-    other properties are set to 0, if width or height are specified the
-    bitmap is not used. A change to the caret at runtime will only have an
-    immediate effect if the control has focus. }
-
-  TJvCaret = class(TPersistent)
-  private
-    FCaretBitmap: TBitmap;
-    FCaretWidth: Integer;
-    FCaretHeight: Integer;
-    FGrayCaret: Boolean;
-    FCaretOwner: TCustomEdit;
-    FUpdatecount: Integer;
-    FChangedEvent: TNotifyEvent;
-    procedure SetCaretBitmap(const Value: TBitmap);
-    procedure SetCaretHeight(const Value: Integer);
-    procedure SetCaretWidth(const Value: Integer);
-    procedure SetGrayCaret(const Value: Boolean);
-    procedure ReadBitmap(Stream: TStream);
-    procedure WriteBitmap(Stream: TStream);
-  protected
-    procedure Changed; dynamic;
-    property CaretOwner: TCustomEdit read FCaretOwner;
-    property Updatecount: Integer read FUpdatecount;
-  public
-    constructor Create(Owner: TCustomEdit);
-    destructor Destroy; override;
-    procedure DefineProperties(Filer: TFiler); override;
-    procedure CreateCaret;
-    procedure Assign(Source: TPersistent); override;
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    property OnChanged: TNotifyEvent read FChangedEvent write FChangedEvent;
-  published
-    { Note: streaming system does not deal properly with a published persistent
-      property on another nested persitent. We use a pseudoproperty to save the
-      bitmap. }
-    property Bitmap: TBitmap read FCaretBitmap write SetCaretBitmap stored False;
-    property Width: Integer read FCaretWidth write SetCaretWidth default 0;
-    property Height: Integer read FCaretHeight write SetCaretHeight default 0;
-    property Gray: Boolean read FGrayCaret write SetGrayCaret default False;
-  end;
-
 implementation
-
-uses
-  JvFunctions;
-
-{ TJvCaret }
-
-procedure TJvCaret.Assign(Source: TPersistent);
-begin
-  if Source is TJvCaret then
-  begin
-    BeginUpdate;
-    try
-      FCaretWidth := TJvCaret(Source).Width;
-      FCaretHeight := TJvCaret(Source).Height;
-      FGrayCaret := TJvCaret(Source).Gray;
-      Bitmap := TJvCaret(Source).Bitmap;
-    finally
-      EndUpdate;
-    end;
-  end
-  else
-    inherited;
-end;
-
-procedure TJvCaret.BeginUpdate;
-begin
-  Inc(FUpdateCount);
-end;
-
-procedure TJvCaret.Changed;
-begin
-  if Assigned(OnChanged) and (FUpdateCount = 0) then
-    OnChanged(Self);
-end;
-
-constructor TJvCaret.Create(Owner: TCustomEdit);
-begin
-  Assert(Assigned(Owner));
-  inherited Create;
-  FCaretOwner := Owner;
-  FCaretBitmap := TBitmap.Create;
-end;
-
-procedure TJvCaret.CreateCaret;
-const
-  GrayHandles: array [Boolean] of THandle = (0, THandle(-1));
-
-  function UsingBitmap: Boolean;
-  begin
-    Result := (Width = 0) and (Height = 0) and not Gray and not Bitmap.Empty;
-  end;
-
-  function IsDefaultCaret: Boolean;
-  begin
-    Result := (Width = 0) and (Height = 0) and not Gray and Bitmap.Empty;
-  end;
-
-begin
-  if FCaretOwner.Focused and
-    not (csDesigning in FCaretOwner.ComponentState) and not IsDefaultCaret then
-  begin
-    if UsingBitmap then
-      OSCheck(Windows.CreateCaret(FCaretOwner.handle, Bitmap.Handle, 0, 0))
-    else
-    if not Windows.CreateCaret(FCaretOwner.handle, GrayHandles[Gray],
-      Width, Height) then
-      Windows.CreateCaret(FCaretOwner.handle, 0, Width, Height);
-    { Gray carets seem to be unsupported on Win95 at least, so if the create
-      failed for the gray caret, try again with a standard black caret }
-    ShowCaret(FCaretOwner.handle);
-  end;
-end;
-
-procedure TJvCaret.ReadBitmap(Stream: TStream);
-begin
-  FCaretBitmap.LoadFromStream(Stream);
-end;
-
-procedure TJvCaret.WriteBitmap(Stream: TStream);
-begin
-  FCaretBitmap.SaveToStream(Stream);
-end;
-
-procedure TJvCaret.DefineProperties(Filer: TFiler);
-begin
-  Filer.DefineBinaryProperty('CaretBitmap', ReadBitmap,
-    WriteBitmap, not FCaretBitmap.Empty);
-end;
-
-destructor TJvCaret.Destroy;
-begin
-  FCaretBitmap.Free;
-  inherited Destroy;
-end;
-
-procedure TJvCaret.EndUpdate;
-begin
-  Dec(FUpdateCount);
-  Changed;
-end;
-
-procedure TJvCaret.SetCaretBitmap(const Value: TBitmap);
-begin
-  FCaretBitmap.Assign(Value);
-  FCaretWidth := 0;
-  FCaretHeight := 0;
-  FGrayCaret := False;
-  Changed;
-end;
-
-procedure TJvCaret.SetCaretHeight(const Value: Integer);
-begin
-  if FCaretHeight <> Value then
-  begin
-    FCaretHeight := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvCaret.SetCaretWidth(const Value: Integer);
-begin
-  if FCaretWidth <> Value then
-  begin
-    FCaretWidth := Value;
-    Changed;
-  end;
-end;
-
-procedure TJvCaret.SetGrayCaret(const Value: Boolean);
-begin
-  if FGrayCaret <> Value then
-  begin
-    FGrayCaret := Value;
-    Changed;
-  end;
-end;
 
 end.

@@ -49,37 +49,27 @@ type
 
 implementation
 
-{***********************************************}
-
 procedure TJvChrono.StartTimer;
 begin
   FPause := 0;
   FStart := Time;
 end;
 
-{***********************************************}
-
 procedure TJvChrono.Pause;
 begin
   FPause := Time;
 end;
-
-{***********************************************}
 
 procedure TJvChrono.UnPause;
 begin
   FStart := FStart + (Time - FPause);
 end;
 
-{***********************************************}
-
 function TJvChrono.StopTimer: TTime;
 begin
   FStop := Time;
   Result := FStop - FStart;
 end;
-
-{***********************************************}
 
 function TJvChrono.GetElapsed: TTime;
 begin

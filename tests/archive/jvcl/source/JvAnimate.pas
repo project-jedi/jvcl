@@ -75,8 +75,6 @@ type
 
 implementation
 
-{*****************************************************************}
-
 constructor TJvAnimate.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -84,15 +82,11 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
-{**************************************************}
-
 procedure TJvAnimate.DoParentColorChange(var Msg: TMessage);
 begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
-
-{**************************************************}
 
 procedure TJvAnimate.DoMouseEnter(var Msg: TMessage);
 begin
@@ -100,23 +94,17 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvAnimate.DoMouseLeave(var Msg: TMessage);
 begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
 procedure TJvAnimate.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
   DoParentColorChange(Msg);
 end;
-
-{**************************************************}
 
 procedure TJvAnimate.MouseEnter(var Msg: TMessage);
 begin
@@ -128,8 +116,6 @@ begin
   Application.HintColor := FColor;
   DoMouseEnter(Msg);
 end;
-
-{**************************************************}
 
 procedure TJvAnimate.MouseLeave(var Msg: TMessage);
 begin

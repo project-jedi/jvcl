@@ -12,7 +12,7 @@ The Original Code is: JvDsgn.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,23 +25,27 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvDsgn;
 
 interface
 
-uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, {$ENDIF} Classes, SysUtils,
- {$IFDEF COMPILER6_UP}RTLConsts,DesignIntf, VCLEditors, DesignEditors,{$ELSE}DsgnIntf,{$ENDIF}
-  Controls, Graphics, ExtCtrls, Menus, Forms;
+uses
+  {$IFNDEF WIN32}
+  WinTypes,
+  {$ENDIF}
+  Classes, SysUtils,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, DesignIntf, VCLEditors, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF}
+  Controls, Forms;
 
 type
-{$IFNDEF COMPILER4_UP}
+  {$IFNDEF COMPILER4_UP}
   IDesigner = TDesigner;
   IFormDesigner = TFormDesigner;
-{$ENDIF}
-
-
-{ TJvFilenameProperty }
+  {$ENDIF}
 
   TJvFilenameProperty = class(TStringProperty)
   protected
@@ -51,15 +55,11 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
-{ TJvDirNameProperty }
-
   TJvDirNameProperty = class(TStringProperty)
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
   end;
-
-{ TJvProgressControlProperty }
 
   TJvProgressControlProperty = class(TComponentProperty)
   private
@@ -68,8 +68,6 @@ type
   public
     procedure GetValues(Proc: TGetStrProc); override;
   end;
-
-{ TJvDBStringProperty }
 
   TJvDBStringProperty = class(TStringProperty)
   public
@@ -80,9 +78,11 @@ type
 
 implementation
 
-uses Consts, Dialogs, JvxConst, JvFileUtil, JvVCLUtils, JvPrgrss;
+uses
+  Consts, Dialogs,
+  JvxConst, JvFileUtil, JvVCLUtils, JvPrgrss;
 
-{ TJvFilenameProperty }
+//=== TJvFilenameProperty ====================================================
 
 function TJvFilenameProperty.GetFilter: string;
 begin
@@ -90,22 +90,21 @@ begin
 end;
 
 procedure TJvFilenameProperty.Edit;
-var
-  FileOpen: TOpenDialog;
 begin
-  FileOpen := TOpenDialog.Create(Application);
-  try
-    FileOpen.Filename := GetValue;
-    FileOpen.InitialDir := ExtractFilePath(FileOpen.Filename);
-    if (ExtractFileName(FileOpen.Filename) = '') or not
-      ValidFileName(ExtractFileName(FileOpen.Filename)) then
-      FileOpen.Filename := '';
-    FileOpen.Filter := GetFilter;
-    FileOpen.Options := FileOpen.Options + [ofHideReadOnly];
-    if FileOpen.Execute then SetValue(FileOpen.Filename);
-  finally
-    FileOpen.Free;
-  end;
+  with TOpenDialog.Create(Application) do
+    try
+      FileName := GetValue;
+      InitialDir := ExtractFilePath(FileName);
+      if (ExtractFileName(FileName) = '') or not
+        ValidFileName(ExtractFileName(FileName)) then
+        FileName := '';
+      Filter := GetFilter;
+      Options := Options + [ofHideReadOnly];
+      if Execute then
+        SetValue(FileName);
+    finally
+      Free;
+    end;
 end;
 
 function TJvFilenameProperty.GetAttributes: TPropertyAttributes;
@@ -113,7 +112,7 @@ begin
   Result := [paDialog {$IFDEF WIN32}, paRevertable {$ENDIF}];
 end;
 
-{ TJvDirNameProperty }
+//=== TJvDirNameProperty =====================================================
 
 procedure TJvDirNameProperty.Edit;
 var
@@ -129,17 +128,17 @@ begin
   Result := [paDialog {$IFDEF WIN32}, paRevertable {$ENDIF}];
 end;
 
-{ TJvProgressControlProperty }
+//=== TJvProgressControlProperty =============================================
 
 procedure TJvProgressControlProperty.CheckComponent(const AName: string);
 var
   Component: TComponent;
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Component := Designer.GetComponent(AName);
-{$ELSE}
+  {$ELSE}
   Component := Designer.Form.FindComponent(AName);
-{$ENDIF}
+  {$ENDIF}
   if (Component <> nil) and (Component is TControl) and
     SupportsProgressControl(TControl(Component)) and Assigned(FProc) then
     FProc(AName);
@@ -155,7 +154,7 @@ begin
   end;
 end;
 
-{ TJvDBStringProperty }
+//=== TJvDBStringProperty ====================================================
 
 function TJvDBStringProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -170,7 +169,8 @@ begin
   Values := TStringList.Create;
   try
     GetValueList(Values);
-    for I := 0 to Values.Count - 1 do Proc(Values[I]);
+    for I := 0 to Values.Count - 1 do
+      Proc(Values[I]);
   finally
     Values.Free;
   end;
@@ -181,3 +181,4 @@ begin
 end;
 
 end.
+

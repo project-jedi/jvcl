@@ -1171,10 +1171,11 @@ asm
 end;
 {$ENDIF COMPILER2}
 
-{************************* TJvControlScrollBar95 ****************************}
+//=== TJvControlScrollBar95 ==================================================
 
 constructor TJvControlScrollBar95.Create;
 begin
+  inherited Create;
   FPage := 1;
   FSmallChange := 1;
   FLargeChange := 1;
@@ -1297,7 +1298,8 @@ begin
   if Assigned(FOnScroll) then
     FOnScroll(Self, ScrollCode, ScrollPos);
 end;
-{######################### TJvControlScrollBar95 #########################}
+
+//=== TJvEditorStrings =======================================================
 
 constructor TJvEditorStrings.Create;
 begin
@@ -1412,6 +1414,8 @@ begin
   end;
 end;
 
+//=== TJvEditorClient ========================================================
+
 function TJvEditorClient.GetCanvas: TCanvas;
 begin
   Result := FRAEditor.Canvas;
@@ -1452,6 +1456,8 @@ begin
   Result := Bounds(0, 0, Width, Height);
 end;
 
+//=== TJvGutter ==============================================================
+
 procedure TJvGutter.Invalidate;
 {var
   R : TRect;}
@@ -1485,7 +1491,7 @@ begin
     GutterPaint(Canvas);
 end;
 
-{*********************** TJvCustomEditor ***********************}
+//=== TJvCustomEditor ========================================================
 
 constructor TJvCustomEditor.Create(AOwner: TComponent);
 begin
@@ -1886,7 +1892,7 @@ begin
           begin
             // ending add by patofan
             //Self.Canvas.TextOut(R.Left, R.Top, Ch);
-            ExtTextOut(Canvas.Handle, R.Left, R.Top, 0, nil, PChar(Ch), Length(Ch), @MyDi);
+            ExtTextOut(Canvas.Handle, R.Left, R.Top, 0, nil, PChar(Ch), Length(Ch), @MyDi[0]);
             // add by patofan
           end;
           // ending add by patofan
@@ -1992,8 +1998,6 @@ begin
       LineTo(F, EditorClient.Top + EditorClient.Height);
     end;
 end;
-
-{************************** Scroll **************************}
 
 procedure TJvCustomEditor.WMHScroll(var Msg: TWMHScroll);
 begin
@@ -2108,10 +2112,6 @@ begin
     FOnScroll(Self);
   //  EndTick;
 end;
-{####################### Scroll #########################}
-{####################### Painting - Otrisovka [translated] ##################}
-
-{************** Caret ***************}
 
 procedure TJvCustomEditor.PaintCaret(const bShow: Boolean);
 var
@@ -2207,10 +2207,6 @@ begin
   {$ENDIF RAEDITOR_COMPLETION}
   DestroyCaret;
 end;
-
-{############### Caret ###############}
-
-{************** Keyboard ***************}
 
 procedure TJvCustomEditor.WMGetDlgCode(var Msg: TWMGetDlgCode);
 begin
@@ -3130,8 +3126,6 @@ begin
   FGutter.Invalidate;
 end;
 
-{############### Keyboard [translated] ###############}
-
 procedure TJvCustomEditor.SelectionChanged;
 begin
   {abstract}
@@ -3241,8 +3235,6 @@ procedure TJvCustomEditor.SetSelBlockFormat(const Value: TSelBlockFormat);
 begin
   Command(ecInclusiveBlock + Integer(Value));
 end;
-
-{************** Mouse [translated] ***************}
 
 procedure TJvCustomEditor.Mouse2Cell(const X, Y: Integer; var CX, CY: Integer);
 begin
@@ -3417,8 +3409,6 @@ begin
 end;
 
 {############## Mouse [translated] ###############}
-
-{************** ClipBoard ***************}
 
 function TJvCustomEditor.GetClipboardBlockFormat: TSelBlockFormat;
 var
@@ -3799,8 +3789,6 @@ begin
   end;
 end;
 
-{############### ClipBoard ###############}
-
 procedure TJvCustomEditor.SetGutterWidth(AWidth: Integer);
 begin
   if FGutterWidth <> AWidth then
@@ -3965,8 +3953,6 @@ begin
 end;
 {$ENDIF COMPILER3_UP}
 // ending add by patofan
-
-{ ************************ triggers ************************ }
 
 procedure TJvCustomEditor.TextModified(Pos: Integer; Action: TModifiedAction;
   Text: string);
@@ -4319,11 +4305,70 @@ begin
   Result := (Len > 0);
 end;
 
-{************************** TJvEditKey  ***************************}
+procedure TJvCustomEditor.NotUndoable;
+begin
+  FUndoBuffer.Clear;
+end;
+
+{$IFDEF RAEDITOR_COMPLETION}
+
+procedure TJvCustomEditor.CompletionIdentifer(var Cancel: Boolean);
+begin
+  {abstract}
+end;
+
+procedure TJvCustomEditor.CompletionTemplate(var Cancel: Boolean);
+begin
+  {abstract}
+end;
+
+procedure TJvCustomEditor.DoCompletionIdentifer(var Cancel: Boolean);
+begin
+  CompletionIdentifer(Cancel);
+  if Assigned(FOnCompletionIdentifer) then
+    FOnCompletionIdentifer(Self, Cancel);
+end;
+
+procedure TJvCustomEditor.DoCompletionTemplate(var Cancel: Boolean);
+begin
+  CompletionTemplate(Cancel);
+  if Assigned(FOnCompletionTemplate) then
+    FOnCompletionTemplate(Self, Cancel);
+end;
+
+{$ENDIF RAEDITOR_COMPLETION}
+
+{ TIEditReader support }
+
+procedure TJvCustomEditor.ValidateEditBuffer;
+begin
+  if FPEditBuffer = nil then
+  begin
+    FEditBuffer := Lines.Text;
+    FPEditBuffer := PChar(FEditBuffer);
+    FEditBufferSize := Length(FEditBuffer);
+  end;
+end;
+
+function TJvCustomEditor.GetText(Position: Longint; Buffer: PChar;
+  Count: Longint): Longint;
+begin
+  ValidateEditBuffer;
+  if Position <= FEditBufferSize then
+  begin
+    Result := Min(FEditBufferSize - Position, Count);
+    Move(FPEditBuffer[Position], Buffer[0], Result);
+  end
+  else
+    Result := 0;
+end;
+
+//=== TJvEditKey =============================================================
 
 constructor TJvEditKey.Create(const ACommand: TEditCommand; const AKey1: Word;
   const AShift1: TShiftState);
 begin
+  inherited Create;
   Key1 := AKey1;
   Shift1 := AShift1;
   Command := ACommand;
@@ -4332,6 +4377,7 @@ end;
 constructor TJvEditKey.Create2(const ACommand: TEditCommand; const AKey1: Word;
   const AShift1: TShiftState; const AKey2: Word; const AShift2: TShiftState);
 begin
+  inherited Create;
   Key1 := AKey1;
   Shift1 := AShift1;
   Key2 := AKey2;
@@ -4339,8 +4385,11 @@ begin
   Command := ACommand;
 end;
 
+//=== TJvKeyboard ============================================================
+
 constructor TJvKeyboard.Create;
 begin
+  inherited Create;
   List := TList.Create;
 end;
 
@@ -4348,6 +4397,7 @@ destructor TJvKeyboard.Destroy;
 begin
   Clear;
   List.Free;
+  inherited Destroy;
 end;
 
 procedure TJvKeyboard.Add(const ACommand: TEditCommand; const AKey1: Word;
@@ -4573,14 +4623,11 @@ end;
 
 {$IFDEF RAEDITOR_UNDO}
 
+//=== TUndoBuffer ============================================================
+
 procedure RedoNotImplemented;
 begin
   raise EJvEditorError.Create('Redo not yet implemented');
-end;
-
-procedure TJvCustomEditor.NotUndoable;
-begin
-  FUndoBuffer.Clear;
 end;
 
 procedure TUndoBuffer.Add(AUndo: TUndo);
@@ -4684,8 +4731,11 @@ begin
   Result := (LastUndo <> nil);
 end;
 
+//=== TUndo ==================================================================
+
 constructor TUndo.Create(ARAEditor: TJvCustomEditor);
 begin
+  inherited Create;
   FRAEditor := ARAEditor;
   UndoBuffer.Add(Self);
 end;
@@ -4697,6 +4747,8 @@ begin
   else
     Result := nil;
 end;
+
+//=== TJvCaretUndo ===========================================================
 
 constructor TJvCaretUndo.Create(ARAEditor: TJvCustomEditor;
   ACaretX, ACaretY: Integer);
@@ -4723,6 +4775,8 @@ procedure TJvCaretUndo.Redo;
 begin
   RedoNotImplemented;
 end;
+
+//=== TJvInsertUndo ==========================================================
 
 constructor TJvInsertUndo.Create(ARAEditor: TJvCustomEditor;
   ACaretX, ACaretY: Integer; AText: string);
@@ -4758,6 +4812,8 @@ begin
   end;
 end;
 
+//=== TJvInsertColumnUndo ====================================================
+
 procedure TJvInsertColumnUndo.Undo;
 var
   SS: TStringList;
@@ -4780,6 +4836,8 @@ begin
   FRAEditor.SetCaretInternal(FCaretX, FCaretY);
 end;
 
+//=== TJvOverwriteUndo =======================================================
+
 constructor TJvOverwriteUndo.Create(ARAEditor: TJvCustomEditor;
   ACaretX, ACaretY: Integer; AOldText, ANewText: string);
 begin
@@ -4798,6 +4856,8 @@ begin
   FRAEditor.Lines[FCaretY] := S;
   FRAEditor.SetCaretInternal(FCaretX, FCaretY);
 end;
+
+//=== TJvDeleteUndo ==========================================================
 
 procedure TJvDeleteUndo.Undo;
 var
@@ -4826,6 +4886,8 @@ begin
   end;
 end;
 
+//=== TJvBackspaceUndo =======================================================
+
 procedure TJvBackspaceUndo.Undo;
 var
   S, Text: string;
@@ -4853,6 +4915,8 @@ begin
   end;
 end;
 
+//=== TJvReplaceUndo =========================================================
+
 constructor TJvReplaceUndo.Create(ARAEditor: TJvCustomEditor;
   ACaretX, ACaretY: Integer; ABeg, AEnd: Integer; AText, ANewText: string);
 begin
@@ -4873,6 +4937,8 @@ begin
   FRAEditor.FLines.SetLockText(S);
   FRAEditor.SetCaretInternal(FCaretX, FCaretY);
 end;
+
+//=== TJvDeleteSelectedUndo ==================================================
 
 constructor TJvDeleteSelectedUndo.Create(ARAEditor: TJvCustomEditor;
   ACaretX, ACaretY: Integer; AText: string; ASelBlockFormat: TSelBlockFormat;
@@ -4918,6 +4984,8 @@ begin
   FRAEditor.SetCaretInternal(FCaretX, FCaretY);
 end;
 
+//=== TJvSelectUndo ==========================================================
+
 constructor TJvSelectUndo.Create(ARAEditor: TJvCustomEditor;
   ACaretX, ACaretY: Integer; ASelected: Boolean; ASelBlockFormat: TSelBlockFormat;
   ASelBegX, ASelBegY, ASelEndX, ASelEndY: Integer);
@@ -4942,6 +5010,8 @@ begin
   FRAEditor.SetCaretInternal(FCaretX, FCaretY);
 end;
 
+//=== TJvBeginCompoundUndo ===================================================
+
 procedure TJvBeginCompoundUndo.Undo;
 begin
   { nothing }
@@ -4949,34 +5019,9 @@ end;
 
 {$ENDIF RAEDITOR_UNDO}
 
-{#####################  Undo  #####################}
+//=== TJvEditorCompletion ====================================================
 
-{*********************  Code Completion  *********************}
 {$IFDEF RAEDITOR_COMPLETION}
-
-procedure TJvCustomEditor.CompletionIdentifer(var Cancel: Boolean);
-begin
-  {abstract}
-end;
-
-procedure TJvCustomEditor.CompletionTemplate(var Cancel: Boolean);
-begin
-  {abstract}
-end;
-
-procedure TJvCustomEditor.DoCompletionIdentifer(var Cancel: Boolean);
-begin
-  CompletionIdentifer(Cancel);
-  if Assigned(FOnCompletionIdentifer) then
-    FOnCompletionIdentifer(Self, Cancel);
-end;
-
-procedure TJvCustomEditor.DoCompletionTemplate(var Cancel: Boolean);
-begin
-  CompletionTemplate(Cancel);
-  if Assigned(FOnCompletionTemplate) then
-    FOnCompletionTemplate(Self, Cancel);
-end;
 
 type
   TJvEditorCompletionList = class(TListBox)
@@ -5373,7 +5418,7 @@ begin
   FTimer.Interval := AValue;
 end;
 
-{**************  TJvEditorCompletionList  *************}
+//=== TJvEditorCompletionList ================================================
 
 constructor TJvEditorCompletionList.Create(AOwner: TComponent);
 begin
@@ -5520,31 +5565,6 @@ end;
 
 {$ENDIF RAEDITOR_COMPLETION}
 {$ENDIF RAEDITOR_EDITOR}
-
-{ TIEditReader support }
-
-procedure TJvCustomEditor.ValidateEditBuffer;
-begin
-  if FPEditBuffer = nil then
-  begin
-    FEditBuffer := Lines.Text;
-    FPEditBuffer := PChar(FEditBuffer);
-    FEditBufferSize := Length(FEditBuffer);
-  end;
-end;
-
-function TJvCustomEditor.GetText(Position: Longint; Buffer: PChar;
-  Count: Longint): Longint;
-begin
-  ValidateEditBuffer;
-  if Position <= FEditBufferSize then
-  begin
-    Result := Min(FEditBufferSize - Position, Count);
-    Move(FPEditBuffer[Position], Buffer[0], Result);
-  end
-  else
-    Result := 0;
-end;
 
 end.
 

@@ -30,10 +30,9 @@ unit JvDrawGrid;
 
 interface
 
-
-
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Grids, Forms, JVCLVer;
+  Messages, SysUtils, Classes, Graphics, Controls, Grids, Forms,
+  JVCLVer;
 
 type
   TJvDrawGrid = class(TDrawGrid)
@@ -60,7 +59,6 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
-
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -71,26 +69,6 @@ type
 
 implementation
 
-{**************************************************}
-
-procedure TJvDrawGrid.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnCtl3DChanged) then
-    FOnCtl3DChanged(Self);
-end;
-
-{**************************************************}
-
-procedure TJvDrawGrid.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-{**************************************************}
-
 constructor TJvDrawGrid.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -99,7 +77,19 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
-{**************************************************}
+procedure TJvDrawGrid.CMCtl3DChanged(var Msg: TMessage);
+begin
+  inherited;
+  if Assigned(FOnCtl3DChanged) then
+    FOnCtl3DChanged(Self);
+end;
+
+procedure TJvDrawGrid.CMParentColorChanged(var Msg: TMessage);
+begin
+  inherited;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
 
 procedure TJvDrawGrid.WMHScroll(var Msg: TWMHScroll);
 begin
@@ -108,8 +98,6 @@ begin
     FOnHScroll(Self);
 end;
 
-{**************************************************}
-
 procedure TJvDrawGrid.WMVScroll(var Msg: TWMVScroll);
 begin
   inherited;
@@ -117,23 +105,20 @@ begin
     FOnVScroll(Self);
 end;
 
-{**************************************************}
-
 procedure TJvDrawGrid.CMMouseEnter(var Msg: TMessage);
 begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
+    if csDesigning in ComponentState then
+      Exit;
     Application.HintColor := FColor;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvDrawGrid.CMMouseLeave(var Msg: TMessage);
 begin
@@ -147,3 +132,4 @@ begin
 end;
 
 end.
+

@@ -61,7 +61,7 @@ type
     procedure SetExecuteKey(const Value: TShortCut);
     procedure SetHistory(const Value: TStrings);
     procedure SetPrompt(const Value: string);
-    procedure CheckLimits(var Key: word);
+    procedure CheckLimits(var Key: Word);
     procedure ResetHistory;
 //    procedure UpdateState;
     function GetCurrCmd: string;
@@ -183,7 +183,7 @@ begin
 end;
 }
 
-procedure TJvCustomCommandEdit.CheckLimits(var Key: word);
+procedure TJvCustomCommandEdit.CheckLimits(var Key: Word);
 var
   P: TPoint;
 begin
@@ -234,7 +234,7 @@ end;
 
 {$IFDEF RESETJ}
 {$UNDEF RESETJ}
-{$J- }
+{$J-}
 {$ENDIF}
 
 function TJvCustomCommandEdit.Execute: Boolean;
@@ -349,7 +349,7 @@ begin
         FSuppress := False;
         inherited KeyUp(Key, Shift);
       end
-    end // case
+    end
   end
   else
   begin
@@ -440,7 +440,7 @@ end;
 procedure TJvCustomCommandEdit.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
-  Key: word;
+  Key: Word;
 begin
   inherited MouseDown(Button, Shift, X, y);
   CheckLimits(Key);

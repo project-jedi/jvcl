@@ -24,16 +24,19 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$I JVCL.INC}
 
 unit JvDBReg;
 
 interface
 
-uses Classes,
-{$IFDEF COMPILER6_UP}
+uses
+  Classes,
+  {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
-{$ELSE}LibIntf, DsgnIntf,{$ENDIF} SysUtils, DB;
+  {$ELSE}
+  LibIntf, DsgnIntf,
+  {$ENDIF}
+  SysUtils, DB;
 
 { Register data aware custom controls and components }
 
@@ -47,10 +50,23 @@ implementation
 {.$R *.D16}
 {.$ENDIF}
 
-uses TypInfo, JvxConst, JvDBCtrl, JvLookup, JvxLogin, JvDBComb, JvVCLUtils,
-{$IFNDEF COMPILER3_UP}DBTables, {$ENDIF}{$IFNDEF DelphiPersonalEdition}JvSelDSFrm, {$ENDIF}
-{$IFDEF COMPILER3_UP}JvMemDS, {$ENDIF}{$IFDEF WIN32}JvDBRichEd, {$ENDIF}
-  Consts, LibHelp, JvDsgn;
+uses
+  TypInfo,
+  {$IFNDEF COMPILER3_UP}
+  DBTables,
+  {$ENDIF}
+  {$IFNDEF DelphiPersonalEdition}
+  JvSelDSFrm,
+  {$ENDIF}
+  {$IFDEF COMPILER3_UP}
+  JvMemDS,
+  {$ENDIF}
+  {$IFDEF WIN32}
+  JvDBRichEd,
+  {$ENDIF}
+  JvDBCtrl, JvLookup, JvxLogin, JvDBComb, JvVCLUtils, JvDsgn;
+
+//=== TJvFieldProperty =======================================================
 
 { TJvFieldProperty }
 { For TJvDBLookupList, TJvDBLookupCombo components }
@@ -83,10 +99,10 @@ begin
   end;
 end;
 
+//=== TJvMemoryDataEditor ====================================================
+
 {$IFNDEF DelphiPersonalEdition}
 {$IFDEF COMPILER3_UP}
-
-{ TJvMemoryDataEditor }
 
 type
   TJvMemoryDataEditor = class(TJvMemDataSetEditor)
@@ -108,39 +124,39 @@ end;
 
 procedure Register;
 begin
-{$IFDEF COMPILER4_UP}
+  {$IFDEF COMPILER4_UP}
   { Database Components are excluded from the STD SKU }
   if GDAL = LongWord(-16) then
     Exit;
-{$ENDIF}
+  {$ENDIF}
 
   { Data aware components and controls }
-  RegisterComponents('Jv Data Controls', [
-    TJvDBGrid, TJvDBLookupList, TJvDBLookupCombo, TJvLookupEdit, TJvDBDateEdit,
-      TJvDBCalcEdit, TJvDBComboEdit, {$IFDEF WIN32}TJvDBRichEdit, {$ENDIF}
-      TJvDBStatusLabel, TJvDBComboBox]);
+  RegisterComponents('Jv Data Controls',
+    [TJvDBGrid, TJvDBLookupList, TJvDBLookupCombo, TJvLookupEdit, TJvDBDateEdit,
+     TJvDBCalcEdit, TJvDBComboEdit, {$IFDEF WIN32} TJvDBRichEdit, {$ENDIF}
+     TJvDBStatusLabel, TJvDBComboBox]);
 
-  RegisterComponents('Jv Data Access', [{$IFDEF COMPILER3_UP}TJvMemoryData, {$ENDIF}TJvLoginDialog]);
+  RegisterComponents('Jv Data Access',
+    [{$IFDEF COMPILER3_UP} TJvMemoryData, {$ENDIF} TJvLoginDialog]);
 
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   RegisterNonActiveX([TJvMemoryData, TJvDBGrid, TJvDBDateEdit,
     TJvDBStatusLabel, TJvDBComboBox, TJvDBLookupList,
-      TJvDBLookupCombo, TJvLookupEdit, TJvDBComboEdit, TJvDBCalcEdit,
-      TJvDBRichEdit, TJvCustomDBComboBox, TJvLookupControl, TJvLoginDialog],
-      axrComponentOnly);
-{$ENDIF COMPILER3_UP}
+    TJvDBLookupCombo, TJvLookupEdit, TJvDBComboEdit, TJvDBCalcEdit,
+    TJvDBRichEdit, TJvCustomDBComboBox, TJvLookupControl, TJvLoginDialog],
+    axrComponentOnly);
+  {$ENDIF COMPILER3_UP}
   { Property and component editors for data aware components }
   RegisterPropertyEditor(TypeInfo(string), TJvLookupControl, 'LookupField',
     TJvFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvLookupEdit, 'LookupField',
     TJvFieldProperty);
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   RegisterPropertyEditor(TypeInfo(Integer), TJvDBGrid, 'RowsHeight', nil);
-{$IFNDEF DelphiPersonalEdition}
+  {$IFNDEF DelphiPersonalEdition}
   RegisterComponentEditor(TJvMemoryData, TJvMemoryDataEditor);
-{$ENDIF DelphiPersonalEdition}
-{$ENDIF COMPILER3_UP}
-
+  {$ENDIF DelphiPersonalEdition}
+  {$ENDIF COMPILER3_UP}
 end;
 
 end.

@@ -530,8 +530,8 @@ begin
   tW := ((R.Right - R.Left) - Canvas.TextHeight(FCaption)) div 2;
   if FOutlookLook then
   begin
-    Dec(th,1);
-    Dec(tw,1);
+    Dec(th);
+    Dec(tw);
   end;
   with Canvas do
   begin

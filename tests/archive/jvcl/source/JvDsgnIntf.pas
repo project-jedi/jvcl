@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvDsgnIntf.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
 Last Modified: 2002-07-04
 
@@ -26,7 +26,6 @@ description : interface to design-time routines
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
 
 unit JvDsgnIntf;
@@ -34,39 +33,37 @@ unit JvDsgnIntf;
 interface
 
 uses
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   Windows, SysUtils, Classes, Graphics;
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
+  {$ENDIF COMPLIB_VCL}
+  {$IFDEF COMPLIB_CLX}
   SysUtils, Types, Classes, QGraphics;
-{$ENDIF COMPLIB_CLX}
+  {$ENDIF COMPLIB_CLX}
 
-  { DrawDesignFrame draws frame on the rect, Rect.
-    JVCL uses this function to drawing frame around controls at design-time }
+{ DrawDesignFrame draws frame on the rect, Rect.
+  JVCL uses this function to drawing frame around controls at design-time }
 
-  procedure DrawDesignFrame(Canvas : TCanvas; Rect : TRect);
+procedure DrawDesignFrame(Canvas: TCanvas; Rect: TRect);
 
-
-  procedure DesignerNotify(Self, Item: TComponent; Operation: TOperation);
-  procedure DesignerModified(Self : TComponent);
-  procedure DesignerSelectComponent(Self : TComponent);
-
+procedure DesignerNotify(Self, Item: TComponent; Operation: TOperation);
+procedure DesignerModified(Self: TComponent);
+procedure DesignerSelectComponent(Self: TComponent);
 
 var
-  DrawDesignFrameProc: procedure (Canvas : TCanvas; Rect : TRect);
-  DesignerNotifyProc: procedure (Self, Item: TComponent; Operation: TOperation);
-  DesignerModifiedProc: procedure (Self : TComponent);
-  DesignerSelectComponentProc: procedure (Self : TComponent);
+  DrawDesignFrameProc: procedure(Canvas: TCanvas; Rect: TRect);
+  DesignerNotifyProc: procedure(Self, Item: TComponent; Operation: TOperation);
+  DesignerModifiedProc: procedure(Self: TComponent);
+  DesignerSelectComponentProc: procedure(Self: TComponent);
 
 type
   TGetProjectNameProc = function: string;
-  
+
 var
   GetProjectNameProc: TGetProjectNameProc = nil;
 
 implementation
 
-procedure DrawDesignFrame(Canvas : TCanvas; Rect : TRect);
+procedure DrawDesignFrame(Canvas: TCanvas; Rect: TRect);
 begin
   if Assigned(DrawDesignFrameProc) then
     DrawDesignFrameProc(Canvas, Rect);
@@ -78,16 +75,17 @@ begin
     DesignerNotifyProc(Self, Item, Operation);
 end;
 
-procedure DesignerModified(Self : TComponent);
+procedure DesignerModified(Self: TComponent);
 begin
   if Assigned(DesignerModifiedProc) then
     DesignerModifiedProc(Self);
 end;
 
-procedure DesignerSelectComponent(Self : TComponent);
+procedure DesignerSelectComponent(Self: TComponent);
 begin
   if Assigned(DesignerSelectComponentProc) then
     DesignerSelectComponentProc(Self);
 end;
 
 end.
+

@@ -15,6 +15,9 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
+Contributor(s):
+  Polaris Software
+
 Last Modified: 2002-07-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -29,12 +32,12 @@ unit JvCalc;
 
 interface
 
-uses Windows, SysUtils,
+uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF}
-  Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
-  ExtCtrls, Buttons, JvxCtrls, Clipbrd {, JvComponent};
+  Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, Menus, ExtCtrls, Buttons, JvxCtrls, Clipbrd {, JvComponent};
 
 const
   DefCalcPrecision = 15;
@@ -42,8 +45,6 @@ const
 type
   TJvCalcState = (csFirst, csValid, csError);
   TJvCalculatorForm = class;
-
-{ TJvCalculator }
 
   TJvCalculator = class(TComponent)
   private
@@ -194,6 +195,8 @@ begin
   end;
 end;
 
+//=== TJvCalcButton ==========================================================
+
 type
   TJvCalcButton = class(TJvxSpeedButton)
   private
@@ -226,10 +229,10 @@ procedure TJvCalcButton.CMParentFontChanged(var Message: TMessage);
     if Kind in [cbSqr, cbPcnt, cbRev, cbMP..cbMC] then
       Result := clNavy
     else
-      if Kind in [cbDiv, cbMul, cbSub, cbAdd, cbEql] then
+    if Kind in [cbDiv, cbMul, cbSub, cbAdd, cbEql] then
       Result := clPurple
     else
-      if Kind in [cbBck, cbClr] then
+    if Kind in [cbBck, cbClr] then
       Result := clMaroon
     else
       Result := clBtnText;
@@ -260,14 +263,33 @@ const
     (X: 199; Y: 104), (X: 145; Y: 6), (X: 191; Y: 6), (X: 5; Y: 104),
     (X: 5; Y: 80), (X: 5; Y: 56), (X: 5; Y: 32),
     (X: 47; Y: 6), (X: 85; Y: 6)),
+    {PopUp}
+     {cbNone         cbNum0         cbNum1         cbNum2}
     ((X: - 1; Y: - 1), (X: 6; Y: 75), (X: 6; Y: 52), (X: 29; Y: 52),
+    {cbNum3         cbNum4         cbNum5          cbNum6}
     (X: 52; Y: 52), (X: 6; Y: 29), (X: 29; Y: 29), (X: 52; Y: 29),
+    {cbNum7       cbNum8         cbNum9         cbSgn}
     (X: 6; Y: 6), (X: 29; Y: 6), (X: 52; Y: 6), (X: 52; Y: 75),
+    {cbDcm           cbDiv         cbMul           cbSub}
     (X: 29; Y: 75), (X: 75; Y: 6), (X: 75; Y: 29), (X: 75; Y: 52),
-    (X: 75; Y: 75), (X: - 1; Y: - 1), (X: - 1; Y: - 1), (X: - 1; Y: - 1),
-    (X: 52; Y: 98), (X: 29; Y: 98), (X: 6; Y: 98), (X: - 1; Y: - 1),
+    {cbAdd          cbSqr           cbPcnt          cbRev}
+//Polaris    (X: 75; Y: 75), (X: -1; Y: -1), (X: -1; Y: -1), (X: -1; Y: -1),
+    (X: 75; Y: 75), (X: 98; Y: 6), (X: 98; Y: 29), (X: 98; Y: 52),
+    {cbEql          cbBck           cbClr          cbMP}
+//Polaris    (X: 52; Y: 98), (X: 29; Y: 98), (X: 6; Y: 98), (X: -1; Y: -1),
+    (X: 98; Y: 75), (X: 29; Y: 98), (X: 6; Y: 98), (X: - 1; Y: - 1),
+    {cbMS           cbMR            cbMC}
     (X: - 1; Y: - 1), (X: - 1; Y: - 1), (X: - 1; Y: - 1),
+    {cbOk           cbCancel}
     (X: - 1; Y: - 1), (X: - 1; Y: - 1)));
+  {((X: - 1; Y: - 1), (X: 6; Y: 75), (X: 6; Y: 52), (X: 29; Y: 52),
+  (X: 52; Y: 52), (X: 6; Y: 29), (X: 29; Y: 29), (X: 52; Y: 29),
+  (X: 6; Y: 6), (X: 29; Y: 6), (X: 52; Y: 6), (X: 52; Y: 75),
+  (X: 29; Y: 75), (X: 75; Y: 6), (X: 75; Y: 29), (X: 75; Y: 52),
+  (X: 75; Y: 75), (X: - 1; Y: - 1), (X: - 1; Y: - 1), (X: - 1; Y: - 1),
+  (X: 52; Y: 98), (X: 29; Y: 98), (X: 6; Y: 98), (X: - 1; Y: - 1),
+  (X: - 1; Y: - 1), (X: - 1; Y: - 1), (X: - 1; Y: - 1),
+  (X: - 1; Y: - 1), (X: - 1; Y: - 1)));}
 
   ResultKeys = [#13, '=', '%'];
 
@@ -275,8 +297,8 @@ function CreateCalcBtn(AParent: TWinControl; AKind: TCalcBtnKind;
   AOnClick: TNotifyEvent; ALayout: TCalcPanelLayout): TJvCalcButton;
 const
   BtnCaptions: array[cbSgn..cbMC] of PChar =
-  ('±', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
-    'MP', 'MS', 'MR', 'MC');
+    ('±', ',', '/', '*', '-', '+', 'sqrt', '%', '1/x', '=', '<-', 'C',
+     'MP', 'MS', 'MR', 'MC');
 begin
   Result := TJvCalcButton.CreateKind(AParent, AKind);
   with Result do
@@ -284,7 +306,7 @@ begin
     if Kind in [cbNum0..cbNum9] then
       Caption := IntToStr(Tag)
     else
-      if Kind = cbDcm then
+    if Kind = cbDcm then
       Caption := DecimalSeparator
     else
     if Kind in [cbSgn..cbMC] then
@@ -310,6 +332,8 @@ begin
     raise;
   end;
 end;
+
+//=== TJvCalculatorPanel =====================================================
 
 type
   TJvCalculatorPanel = class(TPanel)
@@ -366,7 +390,7 @@ var
   Bmp: TBitmap;
   I: TCalcBtnKind;
 const
-  BtnGlyphs: array [cbSgn..cbCancel] of Integer = (2 {Sgn}, -1, -1, 3 {Mul},
+  BtnGlyphs: array[cbSgn..cbCancel] of Integer = (2 {Sgn}, -1, -1, 3 {Mul},
     4 {Sub}, 5 {Add}, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1 {Ok}, 0 {Cancel});
 begin
   inherited Create(AOwner);
@@ -384,7 +408,8 @@ begin
   else
   begin
     Height := 124;
-    Width := 98;
+    //    Width := 98;
+    Width := 131; // Polaris
   end;
   SetDefaultFont(Font, ALayout);
   ParentFont := False;
@@ -398,7 +423,7 @@ begin
     Bmp := nil;
   try
     if Bmp <> nil then
-      Bmp.Handle := LoadBitmap(hInstance, 'JVCALCBTNS');
+      Bmp.Handle := LoadBitmap(HInstance, 'JVCALCBTNS');
     for I := cbNum0 to cbCancel do
     begin
       if BtnPos[ALayout, I].X > 0 then
@@ -417,8 +442,20 @@ begin
           end
           else
           begin
-            if Kind in [cbEql] then
-              Width := 44;
+            //Polaris            if Kind in [cbEql] then Width := 44;
+            case Kind of
+              cbSqr..cbRev:
+                Width := 31;
+              cbAdd:
+                Height := 44;
+              cbEql:
+                begin
+                  Height := 44;
+                  Width := 31;
+                end;
+              cbBck:
+                Width := 44;
+            end;
           end;
         end;
     end;
@@ -524,7 +561,7 @@ begin
     if Components[I] is TJvxSpeedButton then
       TJvxSpeedButton(Components[I]).Style := Ctl3DStyle[Ctl3D]
     else
-      if Components[I] = FMemoryPanel then
+    if Components[I] = FMemoryPanel then
     begin
       FMemoryPanel.BevelInner := Ctl3DBevel[Ctl3D];
       FMemoryPanel.BorderStyle := Ctl3DBorder[Ctl3D];
@@ -665,7 +702,7 @@ begin
   if Key in [DecimalSeparator, '.', ','] then
     Key := '.'
   else
-    if Key = #13 then
+  if Key = #13 then
     Key := '='
   else
   if Key = #27 then
@@ -773,6 +810,8 @@ begin
   end;
 end;
 
+//=== TJvLocCalculator =======================================================
+
 type
   TJvLocCalculator = class(TJvCalculatorPanel)
   private
@@ -811,6 +850,8 @@ begin
     {$ENDIF}
   end;
 end;
+
+//=== TJvPopupCalculator =====================================================
 
 type
   TJvPopupCalculator = class(TJvPopupWindow)
@@ -871,7 +912,8 @@ constructor TJvPopupCalculator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Height := 127;
-  Width := 104;
+  //  Width := 104;
+  Width := 137; // Polaris
   Color := clBtnFace;
   SetDefaultFont(Font, clPopup);
   if csDesigning in ComponentState then
@@ -1004,6 +1046,8 @@ begin
   InvalidateEditor;
 end;
 
+//=== TJvCalculator ==========================================================
+
 constructor TJvCalculator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1094,11 +1138,13 @@ begin
   end;
 end;
 
+//=== TJvCalculatorForm ======================================================
+
 constructor TJvCalculatorForm.Create(AOwner: TComponent);
 var
   Control: TWinControl;
   Popup: TPopupMenu;
-  Items: array [0..1] of TMenuItem;
+  Items: array[0..1] of TMenuItem;
 begin
   {$IFDEF CBUILDER}
   inherited CreateNew(AOwner, 0);
@@ -1177,7 +1223,7 @@ end;
 
 procedure TJvCalculatorForm.CMCtl3DChanged(var Message: TMessage);
 const
-  Ctl3DBevel: array [Boolean] of TPanelBevel = (bvNone, bvLowered);
+  Ctl3DBevel: array[Boolean] of TPanelBevel = (bvNone, bvLowered);
 begin
   inherited;
   if FDisplayPanel <> nil then

@@ -31,7 +31,8 @@ unit JvCabFile;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, SetupApi,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  SetupApi,
   JvTypes, JvComponent;
 
 type
@@ -82,8 +83,6 @@ implementation
 resourcestring
   RC_SetupApiDll = 'Unable to find setupapi.dll';
 
-{**************************************************}
-
 constructor TJvCabFile.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -94,8 +93,6 @@ begin
     raise EJVCLException.Create(RC_SetupApiDll);
 end;
 
-{**************************************************}
-
 destructor TJvCabFile.Destroy;
 begin
   FFiles.Free;
@@ -103,24 +100,18 @@ begin
   inherited Destroy;
 end;
 
-{**************************************************}
-
 procedure TJvCabFile.SetFileName(const Value: TFileName);
 begin
   FFileName := Value;
   RefreshFiles;
 end;
 
-{**************************************************}
-
 procedure TJvCabFile.SetFiles(const Value: TStringList);
 begin
   //do nothing !!!!
 end;
 
-{**************************************************}
-
-function CBack(Context: Pointer; Notification: UINT; Param1, Param2: UINT_PTR): Integer; stdcall;
+function CBack(Context: Pointer; Notification: UINT; Param1, Param2: UINT_PTR): UINT; stdcall;
 var
   Cab: PFileInCabinetInfo;
   Sender: TJvCabFile;
@@ -157,9 +148,7 @@ begin
   end;
 end;
 
-{**************************************************}
-
-function CExtract(Context: Pointer; Notification: UINT; Param1, Param2: UINT_PTR): Integer; stdcall;
+function CExtract(Context: Pointer; Notification: UINT; Param1, Param2: UINT_PTR): UINT; stdcall;
 var
   Cab: PFileInCabinetInfo;
   Sender: TJvCabFile;
@@ -255,34 +244,28 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvCabFile.RefreshFiles;
 begin
   FFiles.Clear;
-  if SetupIterateCabinet(PChar(FFileName), 0, @CBack, @Self) then
+  if SetupIterateCabinet(PChar(FFileName), 0, CBack, @Self) then
     if Assigned(FOnFiles) then
       FOnFiles(Self);
 end;
-
-{**************************************************}
 
 function TJvCabFile.ExtractAll(DestPath: string): Boolean;
 begin
   if DestPath[Length(DestPath)] <> '\' then
     DestPath := DestPath + '\';
   FDestPath := DestPath;
-  Result := SetupIterateCabinet(PChar(FFileName), 0, @CExtract, @Self);
+  Result := SetupIterateCabinet(PChar(FFileName), 0, CExtract, @Self);
 end;
-
-{**************************************************}
 
 function TJvCabFile.ExtractFile(FileName, DestPath: string): Boolean;
 begin
   if DestPath[Length(DestPath)] <> '\' then
     DestPath := DestPath + '\';
   FDestPath := DestPath + FileName;
-  Result := SetupIterateCabinet(PChar(FFileName), 0, @CExtract, @Self);
+  Result := SetupIterateCabinet(PChar(FFileName), 0, CExtract, @Self);
 end;
 
 end.

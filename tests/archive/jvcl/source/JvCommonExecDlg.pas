@@ -49,8 +49,6 @@ implementation
 resourcestring
   RC_ErrorOwner = 'Owner must be of type TWinControl';
 
-{**************************************************}
-
 constructor TJvCommonExecDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -59,8 +57,6 @@ begin
   else
     raise EJVCLException.Create(RC_ErrorOwner);
 end;
-
-{**************************************************}
 
 procedure TJvCommonExecDlg.Execute;
 begin

@@ -26,9 +26,9 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ Property editor for the TJvChangeNotify component }
-
 unit JvChNtfyProperty;
+
+{ Property editor for the TJvChangeNotify component }
 
 interface
 
@@ -59,7 +59,6 @@ resourcestring
 implementation
 
 {$IFDEF COMPILER6_UP}
-
 procedure TJvChangeNotifyEditor.EditProperty(const Prop: IProperty; var Cont: Boolean);
 var
   PropName: string;
@@ -71,9 +70,7 @@ begin
     Cont := False;
   end;
 end;
-
 {$ELSE}
-
 procedure TJvChangeNotifyEditor.EditProperty(PropertyEditor: TPropertyEditor; var Cont, FreeEditor: Boolean);
 var
   PropName: string;
@@ -85,7 +82,6 @@ begin
     Cont := False;
   end;
 end;
-
 {$ENDIF}
 
 procedure TJvChangeNotifyEditor.ExecuteVerb(Index: Integer);

@@ -201,9 +201,6 @@ type
 
 implementation
 
-uses
-  JvAppUtils, JvVCLUtils;
-
 type
   TJvAppEventList = class(TObject)
   private
@@ -253,6 +250,8 @@ type
     constructor Create;
     destructor Destroy; override;
   end;
+
+//=== TJvAppEventList ========================================================
 
 constructor TJvAppEventList.Create;
 begin
@@ -597,7 +596,10 @@ end;
 
 {$ENDIF COMPILER4_UP}
 
-const
+//=== TJvAppEvents ===========================================================
+
+// (rom) changed to var
+var
   AppList: TJvAppEventList = nil;
 
 constructor TJvAppEvents.Create(AOwner: TComponent);

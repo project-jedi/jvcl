@@ -12,7 +12,7 @@ The Original Code is: JvDataConv.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,14 +25,16 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
-
 unit JvDataConv;
 
 interface
 
-uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Messages, Classes, Graphics, Controls, Forms, Dialogs, JvDateUtil{, JvComponent};
+uses
+  {$IFNDEF WIN32}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  SysUtils, Classes,
+  JvDateUtil {, JvComponent};
 
 type
 
@@ -40,8 +42,6 @@ type
     dtTime, dtBoolean);
 
   TTimeFormat = (tfHHMMSS, tfHMMSS, tfHHMM, tfHMM);
-
-{ TJvDateTimeFormat }
 
   TJvDateTimeFormat = class(TPersistent)
   private
@@ -82,17 +82,15 @@ type
     property LeadingZero: Boolean read FLeadingZero write FLeadingZero default False;
   end;
 
-{ TJvConverter }
-
   TJvConverter = class(TComponent)
   private
-    { Private declarations }
-    FData: String;
-    FTextValues: array[Boolean] of string[15];
+    FData: string;
+    FTextValues: array [Boolean] of string;
     FDataType: TDataType;
     FDateTimeFormat: TJvDateTimeFormat;
     FFloatFormat: TFloatFormat;
-    FPrecision, FDigits: Integer;
+    FDigits: Integer;
+    FPrecision: Integer;
     FRaiseOnError: Boolean;
     FOnChange: TNotifyEvent;
     procedure SetDataType(Value: TDataType);
@@ -108,7 +106,6 @@ type
     function FloatToString(Value: Double): string;
     function DateTimeToString(Value: TDateTime): string;
   protected
-    { Protected declarations }
     procedure Change; dynamic;
     function GetAsBoolean: Boolean; virtual;
     function GetAsDateTime: TDateTime; virtual;
@@ -125,7 +122,6 @@ type
     procedure SetAsInteger(Value: Longint); virtual;
     procedure SetAsString(const Value: string); virtual;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
@@ -138,7 +134,6 @@ type
     property AsInteger: Longint read GetAsInteger write SetAsInteger;
     property AsString: string read GetAsString write SetAsString;
   published
-    { Published declarations }
     property DataType: TDataType read FDataType write SetDataType default dtString;
     property DateTimeFormat: TJvDateTimeFormat read GeTJvDateTimeFormat write SeTJvDateTimeFormat;
     property Digits: Integer read FDigits write FDigits default 2;
@@ -153,7 +148,7 @@ type
 
 implementation
 
-{ TJvDateTimeFormat }
+//=== TJvDateTimeFormat ======================================================
 
 constructor TJvDateTimeFormat.Create;
 begin
@@ -181,7 +176,8 @@ end;
 
 procedure TJvDateTimeFormat.Assign(Source: TPersistent);
 begin
-  if Source is TJvDateTimeFormat then begin
+  if Source is TJvDateTimeFormat then
+  begin
     FAMString := TJvDateTimeFormat(Source).AMString;
     FPMString := TJvDateTimeFormat(Source).PMString;
     FDateOrder := TJvDateTimeFormat(Source).DateOrder;
@@ -191,9 +187,9 @@ begin
     FLongDate := TJvDateTimeFormat(Source).LongDate;
     FFourDigitYear := TJvDateTimeFormat(Source).FourDigitYear;
     FLeadingZero := TJvDateTimeFormat(Source).LeadingZero;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 function TJvDateTimeFormat.GetAMString: string;
@@ -203,8 +199,10 @@ end;
 
 procedure TJvDateTimeFormat.SetAMString(const Value: string);
 begin
-  if Value = '' then FAMString := TimeAMString
-  else FAMString := Value;
+  if Value = '' then
+    FAMString := TimeAMString
+  else
+    FAMString := Value;
 end;
 
 function TJvDateTimeFormat.GetPMString: string;
@@ -214,61 +212,78 @@ end;
 
 procedure TJvDateTimeFormat.SetPMString(const Value: string);
 begin
-  if Value = '' then FPMString := TimePMString
-  else FPMString := Value;
+  if Value = '' then
+    FPMString := TimePMString
+  else
+    FPMString := Value;
 end;
 
 function TJvDateTimeFormat.GetDateMask: string;
 var
-  S: array[1..3] of string[7];
+  S: array [1..3] of string[7];
   Separator: string[3];
 begin
   Result := '';
-  if LeadingZero then begin
+  if LeadingZero then
+  begin
     S[1] := 'dd';
     S[2] := 'mm';
   end
-  else begin
+  else
+  begin
     S[1] := 'd';
     S[2] := 'm';
   end;
-  if LongDate then begin
+  if LongDate then
+  begin
     S[2] := 'mmmm';
     Separator := ' ';
   end
-  else Separator := '"' + DateSeparator + '"';
-  if FourDigitYear then S[3] := 'yyyy'
-  else S[3] := 'yy';
+  else
+    Separator := '"' + DateSeparator + '"';
+  if FourDigitYear then
+    S[3] := 'yyyy'
+  else
+    S[3] := 'yy';
   case DateOrder of
-    doDMY: Result := S[1] + Separator + S[2] + Separator + S[3];
-    doMDY: Result := S[2] + Separator + S[1] + Separator + S[3];
-    doYMD: Result := S[3] + Separator + S[2] + Separator + S[1];
+    doDMY:
+      Result := S[1] + Separator + S[2] + Separator + S[3];
+    doMDY:
+      Result := S[2] + Separator + S[1] + Separator + S[3];
+    doYMD:
+      Result := S[3] + Separator + S[2] + Separator + S[1];
   end;
 end;
 
 function TJvDateTimeFormat.GetTimeMask: string;
 var
-  S: array[1..3] of string[7];
+  S: array [1..3] of string[7];
   Separator: string[3];
   AMPM: string[16];
 begin
   Separator := '"' + TimeSeparator + '"';
   AMPM := ' ' + AMString + '/' + PMString;
-  if LeadingZero then begin
+  if LeadingZero then
+  begin
     S[1] := 'hh';
     S[2] := 'nn';
     S[3] := 'ss';
   end
-  else begin
+  else
+  begin
     S[1] := 'h';
     S[2] := 'n';
     S[3] := 's';
   end;
   case TimeFormat of
-    tfHHMMSS: Result := S[1] + Separator + S[2] + Separator + S[3];
-    tfHMMSS: Result := S[1] + Separator + S[2] + Separator + S[3] + AMPM;
-    tfHHMM: Result := S[1] + Separator + S[2];
-    tfHMM: Result := S[1] + Separator + S[2] + AMPM;
+    tfHHMMSS:
+      Result := S[1] + Separator + S[2] + Separator + S[3];
+    tfHMMSS:
+      Result := S[1] + Separator + S[2] + Separator + S[3] + AMPM;
+    tfHHMM:
+      Result := S[1] + Separator + S[2];
+    tfHMM:
+      Result := S[1] + Separator + S[2] + AMPM;
   end;
 end;
 
@@ -277,7 +292,7 @@ begin
   Result := GetDateMask + ' ' + GetTimeMask;
 end;
 
-{ TJvConverter }
+//=== TJvConverter ===========================================================
 
 constructor TJvConverter.Create(AOwner: TComponent);
 begin
@@ -303,13 +318,14 @@ end;
 procedure TJvConverter.Clear;
 begin
   //if (FData <> nil) and (FData^ <> '') then Dispose(FData);
-  FData := EmptyStr;
+  FData := '';
   Change;
 end;
 
 procedure TJvConverter.Change;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 function TJvConverter.GetString: string;
@@ -339,12 +355,12 @@ end;
 
 procedure TJvConverter.SetBoolValues(Index: Integer; const Value: string);
 begin
-  FTextValues[Boolean(Index)] := Value;
+  FTextValues[Index <> 0] := Value;
 end;
 
 function TJvConverter.BoolToStr(Value: Boolean): string;
 begin
-  Result := GetBoolValues(Integer(Value));
+  Result := GetBoolValues(Ord(Value));
 end;
 
 function TJvConverter.FloatToString(Value: Double): string;
@@ -355,22 +371,27 @@ end;
 function TJvConverter.DateTimeToString(Value: TDateTime): string;
 begin
   case FDataType of
-    dtDate: Result := FormatDateTime(DateTimeFormat.DateMask, Value);
-    dtTime: Result := FormatDateTime(DateTimeFormat.TimeMask, Value);
-    else Result := FormatDateTime(DateTimeFormat.Mask, Value);
+    dtDate:
+      Result := FormatDateTime(DateTimeFormat.DateMask, Value);
+    dtTime:
+      Result := FormatDateTime(DateTimeFormat.TimeMask, Value);
+  else
+    Result := FormatDateTime(DateTimeFormat.Mask, Value);
   end;
 end;
 
 procedure TJvConverter.SetDataType(Value: TDataType);
 begin
-  if Value <> FDataType then begin
+  if Value <> FDataType then
+  begin
     FDataType := Value;
     try
       CheckDataType;
       Change;
     except
       Clear;
-      if RaiseOnError then raise;
+      if RaiseOnError then
+        raise;
     end;
   end;
 end;
@@ -378,26 +399,34 @@ end;
 function TJvConverter.IsValidChar(Ch: Char): Boolean;
 begin
   case FDataType of
-    dtString: Result := True;
-    dtInteger: Result := Ch in ['+', '-', '0'..'9'];
-    dtFloat: Result := Ch in [DecimalSeparator, '+', '-', '0'..'9', 'E', 'e'];
-    dtDateTime, dtDate, dtTime: Result := True;
-    dtBoolean: Result := True;
-    else Result := False;
+    dtString:
+      Result := True;
+    dtInteger:
+      Result := Ch in ['+', '-', '0'..'9'];
+    dtFloat:
+      Result := Ch in [DecimalSeparator, '+', '-', '0'..'9', 'E', 'e'];
+    dtDateTime, dtDate, dtTime:
+      Result := True;
+    dtBoolean:
+      Result := True;
+  else
+    Result := False;
   end;
 end;
 
 procedure TJvConverter.CheckDataType;
 begin
   case FDataType of
-    dtInteger, dtFloat: StrToFloat(GetString);
-    dtDateTime, dtDate, dtTime: GetDateTime;
+    dtInteger, dtFloat:
+      StrToFloat(GetString);
+    dtDateTime, dtDate, dtTime:
+      GetDateTime;
   end;
 end;
 
 function TJvConverter.GetAsBoolean: Boolean;
 var
-  S: string[15];
+  S: string;
 begin
   S := GetString;
   Result := (Length(S) > 0) and ((S[1] in ['T', 't', 'Y', 'y']) or
@@ -411,13 +440,17 @@ var
   DateS, TimeS: set of Char;
 begin
   S := GetString;
-  DateS := ['/', '.'] + [DateTimeFormat.DateSeparator] - 
+  DateS := ['/', '.'] + [DateTimeFormat.DateSeparator] -
     [DateTimeFormat.TimeSeparator];
-  TimeS := [':', '-'] - [DateTimeFormat.DateSeparator] + 
+  TimeS := [':', '-'] - [DateTimeFormat.DateSeparator] +
     [DateTimeFormat.TimeSeparator];
-  for I := 1 to Length(S) do begin
-    if S[I] in DateS then S[I] := DateSeparator
-    else if S[I] in TimeS then S[I] := TimeSeparator;
+  for I := 1 to Length(S) do
+  begin
+    if S[I] in DateS then
+      S[I] := DateSeparator
+    else
+    if S[I] in TimeS then
+      S[I] := TimeSeparator;
   end;
   Result := StrToDateTime(S);
 end;
@@ -461,10 +494,14 @@ function TJvConverter.GetAsFloat: Double;
 begin
   try
     case FDataType of
-      dtDateTime: Result := GetAsDateTime;
-      dtDate: Result := GetAsDate;
-      dtTime: Result := GetAsTime;
-      else Result := StrToFloat(GetString);
+      dtDateTime:
+        Result := GetAsDateTime;
+      dtDate:
+        Result := GetAsDate;
+      dtTime:
+        Result := GetAsTime;
+    else
+      Result := StrToFloat(GetString);
     end;
   except
     Result := 0.0;
@@ -479,13 +516,20 @@ end;
 function TJvConverter.GetAsString: string;
 begin
   case FDataType of
-    dtString: Result := GetString;
-    dtInteger: Result := IntToStr(GetAsInteger);
-    dtFloat: Result := FloatToString(GetAsFloat);
-    dtDateTime: Result := DateTimeToString(GetAsDateTime);
-    dtDate: Result := DateTimeToString(GetAsDate);
-    dtTime: Result := DateTimeToString(GetAsTime);
-    dtBoolean: Result := BoolToStr(GetAsBoolean);
+    dtString:
+      Result := GetString;
+    dtInteger:
+      Result := IntToStr(GetAsInteger);
+    dtFloat:
+      Result := FloatToString(GetAsFloat);
+    dtDateTime:
+      Result := DateTimeToString(GetAsDateTime);
+    dtDate:
+      Result := DateTimeToString(GetAsDate);
+    dtTime:
+      Result := DateTimeToString(GetAsTime);
+    dtBoolean:
+      Result := BoolToStr(GetAsBoolean);
   end;
 end;
 
@@ -513,13 +557,16 @@ procedure TJvConverter.SetAsFloat(Value: Double);
 begin
   if FDataType in [dtDateTime, dtDate, dtTime] then
     SetAsDateTime(Value)
-  else SetAsString(FloatToStr(Value));
+  else
+    SetAsString(FloatToStr(Value));
 end;
 
 procedure TJvConverter.SetAsInteger(Value: Longint);
 begin
-  if FDataType = dtInteger then SetAsString(IntToStr(Value))
-  else SetAsFloat(Value);
+  if FDataType = dtInteger then
+    SetAsString(IntToStr(Value))
+  else
+    SetAsFloat(Value);
 end;
 
 procedure TJvConverter.SetAsString(const Value: string);
@@ -533,8 +580,10 @@ begin
     Change;
   except
     SetString(S);
-    if RaiseOnError then raise;
+    if RaiseOnError then
+      raise;
   end;
 end;
 
 end.
+

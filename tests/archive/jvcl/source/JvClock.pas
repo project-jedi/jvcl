@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  JvTypes, JvComponent;
+  JvComponent;
 
 type
   TClockStyle = (csTime, csTimeDate, csDateTime, csDate);
@@ -86,7 +86,7 @@ implementation
 
 constructor TJvClock.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FColor := clInfoBk;
   FOver := False;
   FClock := csTime;
@@ -108,23 +108,17 @@ begin
   FTimer.Enabled := True;
 end;
 
-{*******************************************************}
-
 destructor TJvClock.Destroy;
 begin
   FTImer.Free;
   FLabel.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{*******************************************************}
 
 function TJvClock.GetFont: TFont;
 begin
   Result := FLabel.Font;
 end;
-
-{*******************************************************}
 
 procedure TJvClock.OnUpdate(Sender: TObject);
 begin
@@ -142,8 +136,6 @@ begin
     FOnUpdate(Self, FLabel.Caption);
 end;
 
-{*******************************************************}
-
 procedure TJvClock.SetFont(const Value: TFont);
 begin
   FLabel.Font := Value;
@@ -151,15 +143,12 @@ begin
   FLabel.Top := (Height div 2) - (FLabel.Height div 2);
 end;
 
-{*******************************************************}
-
 procedure TJvClock.WMSize(var Msg: TWMSize);
 begin
   inherited;
   FLabel.Left := (Width div 2) - (FLabel.Width div 2);
   FLabel.Top := (Height div 2) - (FLabel.Height div 2);
 end;
-{*******************************************************}
 
 procedure TJvClock.CMMouseEnter(var Msg: TMessage);
 begin
@@ -173,8 +162,6 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvClock.CMMouseLeave(var Msg: TMessage);
 begin
   Application.HintColor := FSaved;
@@ -182,8 +169,6 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
-
-{**************************************************}
 
 procedure TJvClock.SetClockStyle(const Value: TClockStyle);
 begin

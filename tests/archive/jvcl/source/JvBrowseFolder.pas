@@ -72,7 +72,7 @@ type
     { For hooking the control }
     FDefWndProc: Pointer;
     FObjectInstance: Pointer;
-    FSizeInitialized: Boolean;
+    FPositionSet: Boolean;
 
     { For hooking the control we need some vars (FDefWndProc, FObjectInstance)
       and some methods (MainWndProc, DefaultHandler) that are already defined
@@ -85,7 +85,6 @@ type
     // (p3) updates the status text. NOTE: doesn't work if odNewDialogStyle is true (MS limitation)!!!
     procedure UpdateStatusText(const HWND: THandle; const Text: string);
     procedure SetPath(const HWND: THandle; const Path: string);
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMShowWindow(var Msg: TMessage); message WM_SHOWWINDOW;
   protected
     function GetOwnerHandle: THandle;
@@ -159,12 +158,24 @@ constructor TJvBrowseFolder.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOptions := [odStatusAvailable, odNewDialogStyle];
-  FOwnerHandle := GetOwnerHandle;
+  { (rb) delayed until execute }
+  //FOwnerHandle := GetOwnerHandle;
   {$IFDEF COMPILER6_UP}
   FObjectInstance := Classes.MakeObjectInstance(MainWndProc);
   {$ELSE}
   FObjectInstance := MakeObjectInstance(MainWndProc);
   {$ENDIF}
+end;
+
+destructor TJvBrowseFolder.Destroy;
+begin
+  if FObjectInstance <> nil then
+    {$IFDEF COMPILER6_UP}
+    Classes.FreeObjectInstance(FObjectInstance);
+    {$ELSE}
+    FreeObjectInstance(FObjectInstance);
+    {$ENDIF}
+  inherited Destroy;
 end;
 
 procedure SetDialogPos(AParentHandle, AWndHandle: THandle;
@@ -251,7 +262,6 @@ begin
   end;
 end;
 
-{**************************************************}
 // (p3) incorrectly declared as a function before
 
 procedure lpfnBrowseProc(hWnd: THandle; uMsg: Integer; lParam: LPARAM;
@@ -273,9 +283,9 @@ begin
       BFFM_INITIALIZED:
         begin
           // Change the position of the dialog
-          FSizeInitialized := not (odNewDialogStyle in Options);
-          if not FSizeInitialized then
-            // Delay the change until receive of WM_SIZE
+          FPositionSet := not (odNewDialogStyle in Options);
+          if not FPositionSet then
+            // Delay the change until receive of WM_SHOWWINDOW
             HookDialog
           else
             SetDialogPos(FOwnerHandle, FDialogHandle, Position);
@@ -307,15 +317,11 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvBrowseFolder.SetOkEnabled(Value: Boolean);
 begin
   if FDialogHandle <> 0 then
     SendMessage(FDialogHandle, BFFM_ENABLEOK, 0, LPARAM(Value));
 end;
-
-{**************************************************}
 
 procedure TJvBrowseFolder.SetStatusText(Value: string);
 begin
@@ -323,16 +329,14 @@ begin
     SendMessage(FDialogHandle, BFFM_SETSTATUSTEXT, 0, LPARAM(PChar(Value)));
 end;
 
-{**************************************************}
-
 function TJvBrowseFolder.Execute: Boolean;
 const
   CSIDLLocations: array [TFromDirectory] of Cardinal =
-  (0, CSIDL_BITBUCKET, CSIDL_CONTROLS, CSIDL_DESKTOP,
-    CSIDL_DESKTOPDIRECTORY, CSIDL_DRIVES, CSIDL_FONTS, CSIDL_NETHOOD,
-    CSIDL_NETWORK, CSIDL_PERSONAL,
-    CSIDL_PRINTERS, CSIDL_PROGRAMS, CSIDL_RECENT, CSIDL_SENDTO, CSIDL_STARTMENU,
-    CSIDL_STARTUP, CSIDL_TEMPLATES);
+    (0, CSIDL_BITBUCKET, CSIDL_CONTROLS, CSIDL_DESKTOP,
+     CSIDL_DESKTOPDIRECTORY, CSIDL_DRIVES, CSIDL_FONTS, CSIDL_NETHOOD,
+     CSIDL_NETWORK, CSIDL_PERSONAL,
+     CSIDL_PRINTERS, CSIDL_PROGRAMS, CSIDL_RECENT, CSIDL_SENDTO, CSIDL_STARTMENU,
+     CSIDL_STARTUP, CSIDL_TEMPLATES);
 var
   Path: array [0..MAX_PATH] of Char;
   dspName: array [0..MAX_PATH] of Char;
@@ -340,13 +344,14 @@ var
   pidl: PItemIDList;
   ShellVersion: Cardinal;
 begin
-  FDialogHandle := 0;
-  FSizeInitialized := False;
-  Result := False;
-
   ShellVersion := GetShellVersion;
   if ShellVersion < $00040000 then
     raise EJVCLException.Create('Shell not compatible with BrowseForFolder');
+
+  FDialogHandle := 0;
+  FOwnerHandle := GetOwnerHandle;
+  FPositionSet := False;
+  Result := False;
 
   FillChar(BrowseInfo, SizeOf(BrowseInfo), #0);
 
@@ -373,7 +378,8 @@ begin
   if (odShareable in FOptions) and (ShellVersion >= $00050000) then
     BrowseInfo.ulFlags := BrowseInfo.ulFlags or BIF_SHAREABLE;
 
-  BrowseInfo.hwndOwner := GetOwnerHandle;
+  BrowseInfo.hwndOwner := FOwnerHandle;
+  
   if CSIDLLocations[FFromDirectory] <> 0 then
     SHGetSpecialFolderLocation(Handle, CSIDLLocations[FFromDirectory],
       BrowseInfo.pidlRoot);
@@ -383,7 +389,7 @@ begin
     BrowseInfo.lpszTitle := nil
   else
     BrowseInfo.lpszTitle := PChar(FTitle);
-  BrowseInfo.lpfn := @lpfnBrowseProc;
+  BrowseInfo.lpfn := TFNBFFCallBack(@lpfnBrowseProc);
   BrowseInfo.lParam := Longint(Self);
 
   try
@@ -409,20 +415,22 @@ begin
   except
   end;
   FDialogHandle := 0;
+  FOwnerHandle := 0;
 end;
 
 function TJvBrowseFolder.GetOwnerHandle: THandle;
 var
   F: TCustomForm;
 begin
-  if Owner <> nil then
+  // (Ralf Kaiser) Owner maybe a TDataModule
+  if Owner is TControl then
     F := GetParentForm(TControl(Owner))
   else
     F := nil;
   if F <> nil then
     Result := F.Handle
   else
-  if Assigned(Owner) and (Owner is TWinControl) then
+  if Owner is TWinControl then
     Result := (Owner as TWinControl).Handle
   else
   if (Screen <> nil) and (Screen.ActiveCustomForm <> nil) then
@@ -434,17 +442,6 @@ end;
 procedure TJvBrowseFolder.SetPath(const HWND: THandle; const Path: string);
 begin
   SendMessage(HWND, BFFM_SETSELECTION, Ord(True), Integer(PChar(Path)));
-end;
-
-destructor TJvBrowseFolder.Destroy;
-begin
-  if FObjectInstance <> nil then
-    {$IFDEF COMPILER6_UP}
-    Classes.FreeObjectInstance(FObjectInstance);
-    {$ELSE}
-    FreeObjectInstance(FObjectInstance);
-    {$ENDIF}
-  inherited Destroy;
 end;
 
 procedure TJvBrowseFolder.MainWndProc(var Msg: TMessage);
@@ -465,17 +462,6 @@ begin
     inherited DefaultHandler(Msg);
 end;
 
-procedure TJvBrowseFolder.WMSize(var Msg: TWMSize);
-begin
-  inherited;
-  if FSizeInitialized then
-    Exit;
-
-  { Maybe unhook the control now? }
-  SetDialogPos(FOwnerHandle, FDialogHandle, Position);
-  FSizeInitialized := True;
-end;
-
 procedure TJvBrowseFolder.HookDialog;
 begin
   if FDialogHandle <> 0 then
@@ -490,9 +476,9 @@ begin
 
     Maybe good idea to only respond to WM_SHOWWINDOW <g> }
 
-  if not FSizeInitialized then
+  if not FPositionSet then
     SetDialogPos(FOwnerHandle, FDialogHandle, Position);
-  FSizeInitialized := True;
+  FPositionSet := True;
 
   inherited;
 end;

@@ -101,7 +101,7 @@ implementation
 resourcestring
   RC_Alarm = 'Unable to get alarm number %d. Index out of bounds';
 
-  {*****************************************************}
+//=== TJvAlarms ==============================================================
 
 constructor TJvAlarms.Create(AOwner: TComponent);
 begin
@@ -117,16 +117,12 @@ begin
   FLast := DateTimeToTimeStamp(Now);
 end;
 
-{*****************************************************}
-
 destructor TJvAlarms.Destroy;
 begin
   FAlarms.Free;
   FTimer.Free;
   inherited Destroy;
 end;
-
-{*****************************************************}
 
 procedure TJvAlarms.Add(const AName: string; const ATime: TDateTime; const AKind: TJvTriggerKind);
 begin
@@ -145,8 +141,6 @@ begin
   end;
 end;
 
-{*****************************************************}
-
 procedure TJvAlarms.Delete(const Idx: Cardinal);
 begin
   FAlarms.Delete(Idx);
@@ -155,15 +149,11 @@ begin
   FTimer.Enabled := Running;
 end;
 
-{*****************************************************}
-
 procedure TJvAlarms.DoAlarm(const Alarm: TJvAlarmItem; const TriggerTime: TDateTime);
 begin
   if Assigned(FOnAlarm) then
     FOnAlarm(Self, Alarm, TriggerTime);
 end;
-
-{*****************************************************}
 
 procedure TJvAlarms.OnTimer(Sender: TObject);
 var
@@ -242,8 +232,6 @@ begin
   end;
 end;
 
-{*****************************************************}
-
 procedure TJvAlarms.SetActive(const Value: Boolean);
 begin
   FActive := Value;
@@ -251,7 +239,17 @@ begin
   FTimer.Enabled := Running;
 end;
 
-{ TJvAlarmItems }
+procedure TJvAlarms.SetAlarms(const Value: TJvAlarmItems);
+begin
+  FAlarms.Assign(Value);
+end;
+
+//=== TJvAlarmItems ==========================================================
+
+constructor TJvAlarmItems.Create(AOwner: TPersistent);
+begin
+  inherited Create(AOwner, TJvAlarmItem);
+end;
 
 function TJvAlarmItems.Add: TJvAlarmItem;
 begin
@@ -272,11 +270,6 @@ begin
     inherited Assign(Source);
 end;
 
-constructor TJvAlarmItems.Create(AOwner: TPersistent);
-begin
-  inherited Create(AOwner, TJvAlarmItem);
-end;
-
 function TJvAlarmItems.GetItems(Index: Integer): TJVAlarmItem;
 begin
   Result := TJVAlarmItem(inherited Items[Index]);
@@ -287,7 +280,7 @@ begin
   inherited Items[Index] := Value;
 end;
 
-{ TJvAlarmItem }
+//=== TJvAlarmItem ===========================================================
 
 procedure TJvAlarmItem.Assign(Source: TPersistent);
 begin
@@ -298,11 +291,6 @@ begin
     Kind := TJvAlarmItem(Source).Kind;
   end;
   inherited Assign(Source);
-end;
-
-procedure TJvAlarms.SetAlarms(const Value: TJvAlarmItems);
-begin
-  FAlarms.Assign(Value);
 end;
 
 end.

@@ -250,7 +250,6 @@ type
     property OnDragOver;
     property OnDragDrop;
     property OnEndDrag;
-
     { new properties }
     property AutoSize;
     property BoldDays;
@@ -364,7 +363,7 @@ begin
     @pDllGetVersion := GetProcAddress(hDLL, PChar('DllGetVersion'));
     if Assigned(pDllGetVersion) then
     begin
-      ZeroMemory(@dvi, SizeOf(dvi));
+      FillChar(dvi, SizeOf(dvi), #0);
       dvi.cbSize := SizeOf(dvi);
       hr := pDllGetVersion(dvi);
       if (hr = 0) then
@@ -398,6 +397,8 @@ begin
   if AnsiLastChar(Result) = ',' then
     SetLength(Result, Length(Result) - 1);
 end;
+
+//=== TJvMonthCalColors ======================================================
 
 constructor TJvMonthCalColors.Create(AOwner: TJvCustomMonthCalendar);
 begin
@@ -482,6 +483,8 @@ begin
   SetColor(4, FMonthBackColor);
   SetColor(5, FTrailingTextColor);
 end;
+
+//=== TMonthCalStrings =======================================================
 
 type
   TMonthCalStrings = class(TStringList)
@@ -618,6 +621,8 @@ begin
     S := Format('%.4d%.2d', [Y, M]);
   Result := Values[S];
 end;
+
+//=== TJvCustomMonthCalendar =================================================
 
 constructor TJvCustomMonthCalendar.Create(AOwner: TComponent);
 begin
@@ -785,7 +790,7 @@ begin
       wMonth := M;
       wDay := D;
     end;
-    MonthCal_SetRange(Handle, GDTR_MIN or GDTR_MAX, @rgst);
+    MonthCal_SetRange(Handle, GDTR_MIN or GDTR_MAX, @rgst[0]);
   end
   else
     MonthCal_SetRange(Handle, 0, nil);
@@ -815,7 +820,7 @@ begin
     stStart.wMonth := M;
     stStart.wDay := D;
     cDayState := VisibleMonths;
-    prgDayState := @DayArray;
+    prgDayState := PMonthDayState(@DayArray);
   end;
   for D := 0 to VisibleMonths - 1 do
   begin
@@ -878,7 +883,7 @@ begin
   if Assigned(FOnGetState) then
     with DayState do
       FOnGetState(Self, aDate, cDayState, StateArray);
-  DayState.prgDayState := @StateArray;
+  DayState.prgDayState := PMonthDayState(@StateArray);
 end;
 
 procedure TJvCustomMonthCalendar.CreateWnd;
@@ -972,7 +977,7 @@ begin
   if not HandleAllocated then
     Exit;
   if FMultiSelect then
-    MonthCal_GetSelRange(Handle, @rgst)
+    MonthCal_GetSelRange(Handle, @rgst[0])
   else
     MonthCal_GetCurSel(Handle, rgst[0]);
   with rgst[0] do
@@ -1000,7 +1005,7 @@ begin
     Result := FLastSelDate;
     Exit;
   end;
-  if MonthCal_GetSelRange(Handle, @rgst) then
+  if MonthCal_GetSelRange(Handle, @rgst[0]) then
     with rgst[1] do
       FLastSelDate := Trunc(EncodeDate(wYear, wMonth, wDay));
 end;
@@ -1019,7 +1024,7 @@ begin
         DecodeDate(dFrom, wYear, wMonth, wDay);
       with rgst[1] do
         DecodeDate(dTo, wYear, wMonth, wDay);
-      MonthCal_SetSelRange(Handle, @rgst);
+      MonthCal_SetSelRange(Handle, @rgst[0]);
     end
     else
       MonthCal_SetSelRange(Handle, nil);
@@ -1260,6 +1265,8 @@ begin
   end;
 
 end;
+
+//=== TJvMonthCalAppearance ==================================================
 
 constructor TJvMonthCalAppearance.Create;
 begin

@@ -31,7 +31,7 @@ unit JvCommStatus;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Windows, SysUtils, Classes, Controls,
   JvTypes, JvComponent;
 
 type
@@ -65,17 +65,18 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property ClearToSend: Boolean read FClear write FDummy;
-    property DataSetReady: Boolean read FDataSet write FDummy;
-    property Ring: Boolean read FRing write FDummy;
-    property ReceiveLine: Boolean read FReceive write FDummy;
+    { Do not store dummies }
+    property ClearToSend: Boolean read FClear write FDummy stored False;
+    property DataSetReady: Boolean read FDataSet write FDummy stored False;
+    property Ring: Boolean read FRing write FDummy stored False;
+    property ReceiveLine: Boolean read FReceive write FDummy stored False;
     property Comm: TJvCommPort read FComm write SetComm default 0;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   end;
 
 implementation
 
-{**************************************************}
+// === TJvCommStatus =========================================================
 
 constructor TJvCommStatus.Create(AOwner: TComponent);
 begin
@@ -100,8 +101,6 @@ begin
   SetComm(FComm);
 end;
 
-{**************************************************}
-
 destructor TJvCommStatus.Destroy;
 begin
   if FWatcher <> nil then
@@ -113,8 +112,6 @@ begin
     CloseHandle(FHandle);
   inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvCommStatus.OnChange(Sender: TObject);
 var
@@ -133,8 +130,6 @@ begin
   if Assigned(FOnChanged) then
     FOnChanged(Self);
 end;
-
-{**************************************************}
 
 procedure TJvCommStatus.SetComm(const Value: TJvCommPort);
 var
@@ -179,16 +174,12 @@ begin
   OnChange(Self);
 end;
 
-///////////////////////////////////////////////////////////
-// TJvCommWatcher
-///////////////////////////////////////////////////////////
+// === TJvCommWatcher ========================================================
 
 procedure TJvCommWatcher.Changed;
 begin
   FOnChange(nil);
 end;
-
-{**************************************************}
 
 procedure TJvCommWatcher.Execute;
 var

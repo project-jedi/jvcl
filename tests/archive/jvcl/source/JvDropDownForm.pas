@@ -23,7 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+
 {$I JVCL.INC}
 
 { A generic container form to be displayed as dropdown below a TCustomEdit
@@ -37,12 +37,7 @@ unit JvDropDownForm;
 interface
 
 uses
-  Classes,
-  Windows,
-  Messages,
-  Controls,
-  StdCtrls,
-  Forms,
+  Classes, Windows, Messages, Controls, StdCtrls, Forms,
   JvTypes;
 
 type
@@ -57,23 +52,17 @@ type
     procedure WMSetFocus(var AMessage: TMessage); message WM_SETFOCUS;
   protected
     function GetEdit: TCustomEdit;
-
-    procedure DoSetFocus(const APreviousControl: TWinControl);dynamic;
+    procedure DoSetFocus(const APreviousControl: TWinControl); dynamic;
     procedure DoKillFocus(const ANextControl: TWinControl); virtual;
-
     procedure DoClose(var AAction: TCloseAction); override;
     procedure DoShow; override;
     procedure CreateParams(var AParams: TCreateParams); override;
-
     property Edit: TCustomEdit read GetEdit;
   public
     constructor Create(AOwner: TComponent); override;
-
     property CloseOnLeave: Boolean read FCloseOnLeave write FCloseOnLeave;
-
     property Entering: Boolean read FEntering;
     property Leaving: Boolean read FLeaving;
-
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
   end;
@@ -86,20 +75,17 @@ implementation
 uses
   SysUtils;
 
-
 function IsChildOf(const AChild, AParent: HWND): Boolean;
 var
-  lParent: HWND;
+  LParent: HWND;
 begin
  {determines whether one control is the child (or grand^x-child) of another}
-  lParent := AChild;
+  LParent := AChild;
   repeat
-    lParent := GetParent(lParent);
-  until(lParent = AParent) or(lParent = 0);
-  result := lParent = AParent;
+    LParent := GetParent(LParent);
+  until (LParent = AParent) or (LParent = 0);
+  Result := LParent = AParent;
 end;
-
-{ TJvCustomDropDownForm }
 
 type
   TCustomEditHack = class(TCustomEdit);
@@ -119,7 +105,7 @@ begin
   FLeaving := False;
   FCloseOnLeave := True;
 
-  with(TWinControl(AOwner)) do
+  with TWinControl(AOwner) do
   begin
     Self.Left := ClientOrigin.X;
     Self.Top := ClientOrigin.Y + Height;
@@ -128,7 +114,7 @@ end;
 
 procedure TJvCustomDropDownForm.CreateParams(var AParams: TCreateParams);
 begin
-  inherited;
+  inherited CreateParams(AParams);
   AParams.Style := AParams.Style or WS_BORDER;
 end;
 
@@ -140,28 +126,25 @@ end;
 
 procedure TJvCustomDropDownForm.DoShow;
 var
-  lScreenRect: TRect;
+  LScreenRect: TRect;
 begin
-  inherited;
-
-  if(not SystemParametersInfo(SPI_GETWORKAREA, 0, @lScreenRect, 0)) then
-    lScreenRect := Rect(0, 0, Screen.Width, Screen.Height);
-
-  if(Left + Width > lScreenRect.Right) then
-    Left := lScreenRect.Right - Width;
-
-  if(Top + Height > lScreenRect.Bottom) then
+  inherited DoShow;
+  if (not SystemParametersInfo(SPI_GETWORKAREA, 0, @lScreenRect, 0)) then
+    LScreenRect := Rect(0, 0, Screen.Width, Screen.Height);
+  if (Left + Width > LScreenRect.Right) then
+    Left := LScreenRect.Right - Width;
+  if (Top + Height > LScreenRect.Bottom) then
     Top := Self.Edit.ClientOrigin.y - Height;
 end;
 
 function TJvCustomDropDownForm.GetEdit: TCustomEdit;
 begin
-  result := TCustomEdit(Owner);
+  Result := TCustomEdit(Owner);
 end;
 
 procedure TJvCustomDropDownForm.WMKillFocus(var AMessage: TMessage);
 begin
-  if(IsChildOf(AMessage.WParam, Self.Handle)) then
+  if IsChildOf(AMessage.WParam, Self.Handle) then
     inherited
   else
   begin
@@ -177,16 +160,15 @@ end;
 
 procedure TJvCustomDropDownForm.DoKillFocus(const ANextControl: TWinControl);
 begin
-  if(Assigned(OnKillFocus)) then
+  if Assigned(OnKillFocus) then
     OnKillFocus(Self, ANextControl);
-
-  if(CloseOnLeave) then
+  if CloseOnLeave then
     Close;
 end;
 
 procedure TJvCustomDropDownForm.WMSetFocus(var AMessage: TMessage);
 begin
-  if(IsChildOf(AMessage.WParam, Self.Handle)) then
+  if IsChildOf(AMessage.WParam, Self.Handle) then
     inherited
   else
   begin
@@ -203,8 +185,9 @@ end;
 procedure TJvCustomDropDownForm.DoSetFocus(
   const APreviousControl: TWinControl);
 begin
-  if(Assigned(OnSetFocus)) then
+  if Assigned(OnSetFocus) then
     OnSetFocus(Self, APreviousControl);
 end;
 
 end.
+

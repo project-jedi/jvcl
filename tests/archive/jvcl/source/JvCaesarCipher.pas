@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, SysUtils, Classes,
-  JvTypes, JvComponent;
+  JvComponent;
 
 type
   TJvCaesarCipher = class(TJvComponent)
@@ -56,8 +56,6 @@ type
 
 implementation
 
-{***********************************************************}
-
 function TJvCaesarCipher.CryptByte(Ch, N: Byte): Byte;
 var
   J: Integer;
@@ -71,8 +69,6 @@ begin
   Result := J;
 end;
 
-{***********************************************************}
-
 function TJvCaesarCipher.Crypt(St: string; N: Byte): string;
 var
   I: Integer;
@@ -83,23 +79,17 @@ begin
     Result[I] := Char(CryptByte(Byte(St[I]), N));
 end;
 
-{***********************************************************}
-
 procedure TJvCaesarCipher.SetDecoded(St: string);
 begin
   FDecoded := St;
   FEncoded := Crypt(St, Fn);
 end;
 
-{***********************************************************}
-
 procedure TJvCaesarCipher.SetEncoded(St: string);
 begin
   FEncoded := St;
   FDecoded := Crypt(St, -Fn);
 end;
-
-{***********************************************************}
 
 procedure TJvCaesarCipher.Decode(It: TStrings);
 var
@@ -110,8 +100,6 @@ begin
     It[I] := Crypt(It[I], -Fn);
 end;
 
-{***********************************************************}
-
 procedure TJvCaesarCipher.Encode(It: TStrings);
 var
   I: Integer;
@@ -120,8 +108,6 @@ begin
   for I := 0 to It.Count - 1 do
     It[I] := Crypt(It[I], Fn);
 end;
-
-{***********************************************************}
 
 function TJvCaesarCipher.DecodeStream(Value: TStream): TStream;
 var
@@ -137,8 +123,6 @@ begin
     Result.Write(Buffer, Count);
   end;
 end;
-
-{***********************************************************}
 
 function TJvCaesarCipher.EncodeStream(Value: TStream): TStream;
 var

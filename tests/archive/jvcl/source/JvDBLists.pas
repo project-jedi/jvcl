@@ -12,7 +12,7 @@ The Original Code is: JvDBLists.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -27,56 +27,53 @@ Known Issues:
 
 unit JvDBLists;
 
-
 interface
 
-uses SysUtils, Classes, DB, DBTables, JvDBUtils, JvBdeUtils,
-{$IFDEF WIN32} 
-  Windows, Bde;
-{$ELSE}
-  WinTypes, WinProcs, DbiTypes, DbiProcs, DbiErrs;
-{$ENDIF}
+uses
+  SysUtils, Classes, DB, DBTables,
+  {$IFDEF WIN32}
+  Bde,
+  {$ELSE}
+  WinTypes, WinProcs, DbiTypes, DbiProcs, DbiErrs,
+  {$ENDIF}
+  JvDBUtils;
 
 type
-
-{ TJvBDEItems }
-
-  TBDEItemType = (bdDatabases, bdDrivers, bdLangDrivers, bdUsers 
+  TBDEItemType = (bdDatabases, bdDrivers, bdLangDrivers, bdUsers
     {$IFDEF WIN32}, bdRepositories {$ENDIF});
 
   TJvCustomBDEItems = class(TBDEDataSet)
   private
     FItemType: TBDEItemType;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     FSessionName: string;
     FSessionLink: TDatabase;
     function GetDBSession: TSession;
     procedure SetSessionName(const Value: string);
-{$ENDIF}
+    {$ENDIF}
     procedure SetItemType(Value: TBDEItemType);
   protected
-{$IFDEF WIN32}
-    function GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE}
-      Integer; override {$ENDIF};
-    procedure OpenCursor {$IFDEF COMPILER3_UP}(InfoQuery: Boolean){$ENDIF}; override;
+    {$IFDEF WIN32}
+    function GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE} Integer; override {$ENDIF};
+    procedure OpenCursor {$IFDEF COMPILER3_UP} (InfoQuery: Boolean) {$ENDIF}; override;
     procedure CloseCursor; override;
-{$ENDIF}
+    {$ENDIF}
     function CreateHandle: HDBICur; override;
     property ItemType: TBDEItemType read FItemType write SetItemType
       default bdDatabases;
   public
-{$IFDEF WIN32}
-  {$IFDEF COMPILER3_UP}
+    {$IFDEF WIN32}
+    {$IFDEF COMPILER3_UP}
     function Locate(const KeyFields: string; const KeyValues: Variant;
       Options: TLocateOptions): Boolean; override;
-  {$ENDIF}
+    {$ENDIF}
     property DBSession: TSession read GetDBSession;
-  {$IFNDEF COMPILER3_UP}
+    {$IFNDEF COMPILER3_UP}
     property RecordCount: Longint read GetRecordCount;
-  {$ENDIF}
+    {$ENDIF}
   published
     property SessionName: string read FSessionName write SetSessionName;
-{$ENDIF WIN32}
+    {$ENDIF WIN32}
   end;
 
   TJvBDEItems = class(TJvCustomBDEItems)
@@ -84,24 +81,19 @@ type
     property ItemType;
   end;
 
-{ TJvDBListDataSet }
-
   TJvDBListDataSet = class(TDBDataSet)
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   protected
-    function GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE}
-      Integer; override {$ENDIF};
+    function GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE} Integer; override {$ENDIF};
   public
-  {$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     function Locate(const KeyFields: string; const KeyValues: Variant;
       Options: TLocateOptions): Boolean; override;
-  {$ELSE}
+    {$ELSE}
     property RecordCount: Longint read GetRecordCount;
+    {$ENDIF}
   {$ENDIF}
-{$ENDIF}
   end;
-
-{ TJvDatabaseItems }
 
   TDBItemType = (dtTables, dtStoredProcs, dtFiles {$IFDEF WIN32},
     dtFunctions {$ENDIF});
@@ -138,8 +130,6 @@ type
     property SystemItems;
   end;
 
-{ TJvTableItems }
-
   TTabItemType = (dtFields, dtIndices, dtValChecks, dtRefInt,
     dtSecurity, dtFamily);
 
@@ -167,8 +157,6 @@ type
     property PhysTypes;
   end;
 
-{ TJvDatabaseDesc }
-
   TJvDatabaseDesc = class(TObject)
   private
     FDescription: DBDesc;
@@ -176,8 +164,6 @@ type
     constructor Create(const DatabaseName: string);
     property Description: DBDesc read FDescription;
   end;
-
-{ TJvDriverDesc }
 
   TJvDriverDesc = class(TObject)
   private
@@ -187,13 +173,10 @@ type
     property Description: DRVType read FDescription;
   end;
 
-{*************************************************************************}
-
 {$IFNDEF CBUILDER}
 { Obsolete classes, for backward compatibility only }
 
 type
-
   TJvDatabaseList = class(TJvCustomBDEItems);
 
   TJvLangDrivList = class(TJvCustomBDEItems)
@@ -227,17 +210,26 @@ type
 
 implementation
 
-uses DBConsts, {$IFDEF COMPILER3_UP} BDEConst, {$ENDIF} JvxConst;
+uses
+  DBConsts,
+  {$IFDEF COMPILER3_UP}
+  BDEConst,
+  {$ENDIF}
+  JvxConst;
 
 { Utility routines }
 
 function dsGetRecordCount(DataSet: TBDEDataSet): Longint;
 begin
-  if DataSet.State = dsInactive then _DBError(SDataSetClosed);
+  if DataSet.State = dsInactive then
+    _DBError(SDataSetClosed);
   Check(DbiGetRecordCount(DataSet.Handle, Result));
 end;
 
+//=== TJvSessionLink =========================================================
+
 {$IFDEF WIN32}
+
 type
   TJvSessionLink = class(TDatabase)
   private
@@ -258,19 +250,22 @@ end;
 
 destructor TJvSessionLink.Destroy;
 begin
-  if FList <> nil then begin
+  if FList <> nil then
+  begin
     FList.FSessionLink := nil;
     FList.Close;
   end;
   inherited Destroy;
 end;
+
 {$ENDIF}
 
-{ TJvCustomBDEItems }
+//=== TJvCustomBDEItems ======================================================
 
 procedure TJvCustomBDEItems.SetItemType(Value: TBDEItemType);
 begin
-  if ItemType <> Value then begin
+  if ItemType <> Value then
+  begin
     CheckInactive;
     FItemType := Value;
   end;
@@ -279,26 +274,32 @@ end;
 function TJvCustomBDEItems.CreateHandle: HDBICur;
 begin
   case FItemType of
-    bdDatabases: Check(DbiOpenDatabaseList(Result));
-    bdDrivers: Check(DbiOpenDriverList(Result));
-    bdLangDrivers: Check(DbiOpenLdList(Result));
-    bdUsers: Check(DbiOpenUserList(Result));
-{$IFDEF WIN32}
-    bdRepositories: Check(DbiOpenRepositoryList(Result));
-{$ENDIF}
+    bdDatabases:
+      Check(DbiOpenDatabaseList(Result));
+    bdDrivers:
+      Check(DbiOpenDriverList(Result));
+    bdLangDrivers:
+      Check(DbiOpenLdList(Result));
+    bdUsers:
+      Check(DbiOpenUserList(Result));
+    {$IFDEF WIN32}
+    bdRepositories:
+      Check(DbiOpenRepositoryList(Result));
+    {$ENDIF}
   end;
 end;
 
 {$IFDEF WIN32}
+
 function TJvCustomBDEItems.GetDBSession: TSession;
 begin
   Result := Sessions.FindSession(SessionName);
   if Result = nil then
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     Result := DBTables.Session;
-{$ELSE}
+    {$ELSE}
     Result := DB.Session;
-{$ENDIF}
+    {$ENDIF}
 end;
 
 procedure TJvCustomBDEItems.SetSessionName(const Value: string);
@@ -318,7 +319,7 @@ begin
   FSessionLink := TJvSessionLink.Create(S);
   try
     TJvSessionLink(FSessionLink).FList := Self;
-    inherited OpenCursor{$IFDEF COMPILER3_UP}(InfoQuery){$ENDIF};
+    inherited OpenCursor {$IFDEF COMPILER3_UP} (InfoQuery) {$ENDIF};
   except
     FSessionLink.Free;
     FSessionLink := nil;
@@ -329,19 +330,19 @@ end;
 procedure TJvCustomBDEItems.CloseCursor;
 begin
   inherited CloseCursor;
-  if FSessionLink <> nil then begin
+  if FSessionLink <> nil then
+  begin
     TJvSessionLink(FSessionLink).FList := nil;
     FSessionLink.Free;
     FSessionLink := nil;
   end;
 end;
-{$ENDIF WIN32}
 
-{$IFDEF WIN32}
 function TJvCustomBDEItems.GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE} Integer {$ENDIF};
 begin
   Result := dsGetRecordCount(Self);
 end;
+
 {$ENDIF WIN32}
 
 {$IFDEF COMPILER3_UP}
@@ -350,14 +351,15 @@ function TJvCustomBDEItems.Locate(const KeyFields: string;
 begin
   DoBeforeScroll;
   Result := DataSetLocateThrough(Self, KeyFields, KeyValues, Options);
-  if Result then begin
+  if Result then
+  begin
     DataEvent(deDataSetChange, 0);
     DoAfterScroll;
   end;
 end;
 {$ENDIF COMPILER3_UP}
 
-{ TJvDBListDataSet }
+//=== TJvDBListDataSet =======================================================
 
 {$IFDEF COMPILER3_UP}
 function TJvDBListDataSet.Locate(const KeyFields: string;
@@ -365,7 +367,8 @@ function TJvDBListDataSet.Locate(const KeyFields: string;
 begin
   DoBeforeScroll;
   Result := DataSetLocateThrough(Self, KeyFields, KeyValues, Options);
-  if Result then begin
+  if Result then
+  begin
     DataEvent(deDataSetChange, 0);
     DoAfterScroll;
   end;
@@ -379,11 +382,12 @@ begin
 end;
 {$ENDIF WIN32}
 
-{ TJvCustomDatabaseItems }
+//=== TJvCustomDatabaseItems =================================================
 
 procedure TJvCustomDatabaseItems.SetItemType(Value: TDBItemType);
 begin
-  if ItemType <> Value then begin
+  if ItemType <> Value then
+  begin
     CheckInactive;
     FItemType := Value;
     DataEvent(dePropertyChange, 0);
@@ -392,8 +396,10 @@ end;
 
 procedure TJvCustomDatabaseItems.SetFileMask(const Value: string);
 begin
-  if FileMask <> Value then begin
-    if Active and (FItemType in [dtTables, dtFiles]) then begin
+  if FileMask <> Value then
+  begin
+    if Active and (FItemType in [dtTables, dtFiles]) then
+    begin
       DisableControls;
       try
         Close;
@@ -403,14 +409,16 @@ begin
         EnableControls;
       end;
     end
-    else FFileMask := Value;
+    else
+      FFileMask := Value;
     DataEvent(dePropertyChange, 0);
   end;
 end;
 
 procedure TJvCustomDatabaseItems.SetExtendedInfo(Value: Boolean);
 begin
-  if FExtended <> Value then begin
+  if FExtended <> Value then
+  begin
     CheckInactive;
     FExtended := Value;
     DataEvent(dePropertyChange, 0);
@@ -419,8 +427,10 @@ end;
 
 procedure TJvCustomDatabaseItems.SetSystemItems(Value: Boolean);
 begin
-  if FSystemItems <> Value then begin
-    if Active and (FItemType in [dtTables, dtStoredProcs]) then begin
+  if FSystemItems <> Value then
+  begin
+    if Active and (FItemType in [dtTables, dtStoredProcs]) then
+    begin
       DisableControls;
       try
         Close;
@@ -430,7 +440,8 @@ begin
         EnableControls;
       end;
     end
-    else FSystemItems := Value;
+    else
+      FSystemItems := Value;
     DataEvent(dePropertyChange, 0);
   end;
 end;
@@ -438,24 +449,28 @@ end;
 function TJvCustomDatabaseItems.CreateHandle: HDBICur;
 var
   WildCard: PChar;
-  Pattern: array[0..DBIMAXTBLNAMELEN] of Char;
+  Pattern: array [0..DBIMAXTBLNAMELEN] of Char;
 begin
   WildCard := nil;
   if FileMask <> '' then
     WildCard := AnsiToNative(DBLocale, FileMask, Pattern, SizeOf(Pattern) - 1);
   case FItemType of
-    dtTables: Check(DbiOpenTableList(DBHandle, FExtended, FSystemItems, WildCard, Result));
+    dtTables:
+      Check(DbiOpenTableList(DBHandle, FExtended, FSystemItems, WildCard, Result));
     dtStoredProcs:
       if DataBase.IsSQLBased then
         Check(DbiOpenSPList(DBHandle, FExtended, FSystemItems, nil, Result))
-      else DatabaseError(SLocalDatabase);
-    dtFiles: Check(DbiOpenFileList(DBHandle, WildCard, Result));
-{$IFDEF WIN32}
+      else
+        DatabaseError(SLocalDatabase);
+    dtFiles:
+      Check(DbiOpenFileList(DBHandle, WildCard, Result));
+    {$IFDEF WIN32}
     dtFunctions:
       if DataBase.IsSQLBased then
         Check(DbiOpenFunctionList(DBHandle, DBIFUNCOpts(FExtended), @Result))
-      else DatabaseError(SLocalDatabase);
-{$ENDIF}
+      else
+        DatabaseError(SLocalDatabase);
+    {$ENDIF}
   end;
 end;
 
@@ -463,33 +478,40 @@ function TJvCustomDatabaseItems.GetItemName: string;
 const
   sObjListNameField = 'NAME';
   sFileNameField = 'FILENAME';
-  sTabListExtField  = 'EXTENSION';
+  sTabListExtField = 'EXTENSION';
 var
   Temp: string;
   Field: TField;
 begin
   Result := '';
-  if not Active then Exit;
-  if FItemType = dtFiles then Field := FindField(sFileNameField)
-  else Field := FindField(sObjListNameField);
-  if Field = nil then Exit;
+  if not Active then
+    Exit;
+  if FItemType = dtFiles then
+    Field := FindField(sFileNameField)
+  else
+    Field := FindField(sObjListNameField);
+  if Field = nil then
+    Exit;
   Result := Field.AsString;
-  if FItemType in [dtTables, dtFiles] then begin
+  if FItemType in [dtTables, dtFiles] then
+  begin
     Field := FindField(sTabListExtField);
-    if Field = nil then Exit;
+    if Field = nil then
+      Exit;
     Temp := Field.AsString;
-    if Temp <> '' then begin
-      if Temp[1] <> '.' then Temp := '.' + Temp;
+    if Temp <> '' then
+    begin
+      if Temp[1] <> '.' then
+        Temp := '.' + Temp;
       Result := Result + Temp;
     end;
   end;
 end;
 
-{ TJvCustomTableItems }
-
 procedure TJvCustomTableItems.SetItemType(Value: TTabItemType);
 begin
-  if ItemType <> Value then begin
+  if ItemType <> Value then
+  begin
     CheckInactive;
     FItemType := Value;
     DataEvent(dePropertyChange, 0);
@@ -498,8 +520,10 @@ end;
 
 procedure TJvCustomTableItems.SetPhysTypes(Value: Boolean);
 begin
-  if Value <> PhysTypes then begin
-    if Active and (ItemType = dtFields) then begin
+  if Value <> PhysTypes then
+  begin
+    if Active and (ItemType = dtFields) then
+    begin
       DisableControls;
       try
         Close;
@@ -509,25 +533,30 @@ begin
         EnableControls;
       end;
     end
-    else FPhysTypes := Value;
+    else
+      FPhysTypes := Value;
     DataEvent(dePropertyChange, 0);
   end;
 end;
 
 procedure TJvCustomTableItems.SetTableName(const Value: TFileName);
 begin
-  if Value <> FTableName then begin
-    if Active then begin
+  if Value <> FTableName then
+  begin
+    if Active then
+    begin
       DisableControls;
       try
         Close;
         FTableName := Value;
-        if FTableName <> '' then Open;
+        if FTableName <> '' then
+          Open;
       finally
         EnableControls;
       end;
     end
-    else FTableName := Value;
+    else
+      FTableName := Value;
     DataEvent(dePropertyChange, 0);
   end;
 end;
@@ -536,41 +565,49 @@ function TJvCustomTableItems.CreateHandle: HDBICur;
 var
   STableName: PChar;
 begin
-  if FTableName = '' then _DBError(SNoTableName);
+  if FTableName = '' then
+    _DBError(SNoTableName);
   STableName := StrAlloc(Length(FTableName) + 1);
   try
     AnsiToNative(DBLocale, FTableName, STableName, Length(FTableName));
     case FItemType of
       dtFields:
         while not CheckOpen(DbiOpenFieldList(DBHandle, STableName, nil,
-          FPhysTypes, Result)) do {Retry};
+          FPhysTypes, Result)) do {Retry}
+          ;
       dtIndices:
         while not CheckOpen(DbiOpenIndexList(DBHandle, STableName, nil,
-          Result)) do {Retry};
+          Result)) do {Retry}
+          ;
       dtValChecks:
         while not CheckOpen(DbiOpenVchkList(DBHandle, STableName, nil,
-          Result)) do {Retry};
+          Result)) do {Retry}
+          ;
       dtRefInt:
         while not CheckOpen(DbiOpenRintList(DBHandle, STableName, nil,
-          Result)) do {Retry};
+          Result)) do {Retry}
+          ;
       dtSecurity:
         while not CheckOpen(DbiOpenSecurityList(DBHandle, STableName, nil,
-          Result)) do {Retry};
+          Result)) do {Retry}
+          ;
       dtFamily:
         while not CheckOpen(DbiOpenFamilyList(DBHandle, STableName, nil,
-          Result)) do {Retry};
+          Result)) do {Retry}
+          ;
     end;
   finally
     StrDispose(STableName);
   end;
 end;
 
-{ TJvDatabaseDesc }
+//=== TJvDatabaseDesc ========================================================
 
 constructor TJvDatabaseDesc.Create(const DatabaseName: string);
 var
   Buffer: PChar;
 begin
+  inherited Create;
   Buffer := StrPCopy(StrAlloc(Length(DatabaseName) + 1), DatabaseName);
   try
     Check(DbiGetDatabaseDesc(Buffer, @FDescription));
@@ -579,12 +616,11 @@ begin
   end;
 end;
 
-{ TJvDriverDesc }
-
 constructor TJvDriverDesc.Create(const DriverType: string);
 var
   Buffer: PChar;
 begin
+  inherited Create;
   Buffer := StrPCopy(StrAlloc(Length(DriverType) + 1), DriverType);
   try
     Check(DbiGetDriverDesc(Buffer, FDescription));
@@ -593,11 +629,9 @@ begin
   end;
 end;
 
-{*************************************************************************}
-
 {$IFNDEF CBUILDER}
 
-{ TJvLangDrivList }
+//=== TJvLangDrivList ========================================================
 
 constructor TJvLangDrivList.Create(AOwner: TComponent);
 begin
@@ -605,14 +639,12 @@ begin
   FItemType := bdLangDrivers;
 end;
 
-{ TJvTableList }
+//=== TJvTableList ===========================================================
 
 function TJvTableList.GetTableName: string;
 begin
   Result := ItemName;
 end;
-
-{ TJvStoredProcList }
 
 constructor TJvStoredProcList.Create(AOwner: TComponent);
 begin
@@ -620,7 +652,7 @@ begin
   FItemType := dtStoredProcs;
 end;
 
-{ TJvIndexList }
+//=== TJvIndexList ===========================================================
 
 constructor TJvIndexList.Create(AOwner: TComponent);
 begin
@@ -631,3 +663,4 @@ end;
 {$ENDIF CBUILDER}
 
 end.
+

@@ -3,7 +3,7 @@ object JvDualListForm: TJvDualListForm
   Top = 100
   ActiveControl = SrcList
   BorderIcons = []
-  BorderStyle = bsDialog
+  BorderStyle = bsSingle
   ClientHeight = 269
   ClientWidth = 392
   Color = clBtnFace
@@ -11,7 +11,18 @@ object JvDualListForm: TJvDualListForm
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
-  Font.Style = [fsBold]
+  Font.Style = []
+  Icon.Data = {
+    0000010001001010100001001000280100001600000028000000100000002000
+    00000100040000000000C0000000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
+    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
+    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
+    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
+    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
+    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = True
   Position = poScreenCenter
   OnActivate = ListClick
@@ -30,13 +41,13 @@ object JvDualListForm: TJvDualListForm
   object SrcLabel: TLabel
     Left = 12
     Top = 12
-    Width = 5
+    Width = 3
     Height = 13
   end
   object DstLabel: TLabel
     Left = 216
     Top = 12
-    Width = 5
+    Width = 3
     Height = 13
   end
   object SrcList: TJvTextListBox
@@ -136,7 +147,7 @@ object JvDualListForm: TJvDualListForm
     OnClick = ExclAllBtnClick
   end
   object OkBtn: TButton
-    Left = 138
+    Left = 130
     Top = 239
     Width = 77
     Height = 25
@@ -145,7 +156,7 @@ object JvDualListForm: TJvDualListForm
     TabOrder = 6
   end
   object CancelBtn: TButton
-    Left = 221
+    Left = 213
     Top = 239
     Width = 77
     Height = 25

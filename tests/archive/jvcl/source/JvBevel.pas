@@ -69,16 +69,12 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvBevel.Create(AOwner: TComponent);
 begin
   inherited;
   FColor := clInfoBk;
   FOver := False;
 end;
-
-{**************************************************}
 
 procedure TJvBevel.CMMouseEnter(var Msg: TMessage);
 begin
@@ -94,8 +90,6 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvBevel.CMMouseLeave(var Msg: TMessage);
 begin

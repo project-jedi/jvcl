@@ -32,7 +32,7 @@ unit JvColors;
 interface
 
 uses
-  Classes, Controls, Graphics, Forms,
+  Classes, Graphics,
   JvVCLUtils;
 
 function JvIdentToColor(const Ident: string; var Color: Longint): Boolean;
@@ -123,6 +123,8 @@ begin
     Proc(StrPas(Colors[I].Name));
 end;
 
+// === TJvColorProperty ======================================================
+
 type
   TJvColorProperty = class(TColorProperty)
   public
@@ -160,6 +162,9 @@ end;
 
 procedure TJvColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
+var
+  Rght: Integer;
+  OldPenColor, OldBrushColor: TColor;
 
   function ColorToBorderColor(AColor: TColor): TColor;
   type
@@ -178,9 +183,6 @@ procedure TJvColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
       Result := AColor;
   end;
 
-var
-  Rght: Integer;
-  OldPenColor, OldBrushColor: TColor;
 begin
   Rght := (ARect.Bottom - ARect.Top) + ARect.Left;
   with ACanvas do

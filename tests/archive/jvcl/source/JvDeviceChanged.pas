@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvDeviceChanged;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, DBT, JvTypes, JvComponent;
+  Windows, Messages, SysUtils, Classes, Forms, DBT,
+  JvComponent;
 
 type
   TOnDeviceArrived = procedure(Sender: TObject; Drive: Char) of object;
@@ -44,7 +43,7 @@ type
     FHandle: THandle;
     FOnDeviceArrived: TOnDeviceArrived;
     FOnDeviceRemoveCompleted: TOnDeviceArrived;
-    function GetFirstDriveLetter(unitmask: Longint): Char;
+    function GetFirstDriveLetter(UnitMask: Longint): Char;
     procedure WndProc(var Msg: TMessage);
   public
     procedure WMDeviceChange(var Msg: TWMDeviceChange);
@@ -57,23 +56,25 @@ type
 
 implementation
 
-{************************************************************}
-
 constructor TJvDeviceChanged.Create(AOwner: TComponent);
 begin
-  inherited;
-  FHandle := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWND(WndProc);
+  inherited Create(AOwner);
+  {$IFDEF COMPILER6_UP}
+  FHandle := Classes.AllocateHWnd(WndProc);
+  {$ELSE}
+  FHandle := AllocateHWnd(WndProc);
+  {$ENDIF}
 end;
-
-{************************************************************}
 
 destructor TJvDeviceChanged.Destroy;
 begin
-  {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FHandle);
-  inherited;
+  {$IFDEF COMPILER6_UP}
+  Classes.DeallocateHWnd(FHandle);
+  {$ELSE}
+  DeallocateHWnd(FHandle);
+  {$ENDIF}
+  inherited Destroy;
 end;
-
-{************************************************************}
 
 procedure TJvDeviceChanged.WndProc(var Msg: TMessage);
 begin
@@ -83,22 +84,18 @@ begin
     Msg.Result := DefWindowProc(FHandle, Msg.Msg, Msg.wParam, Msg.lParam);
 end;
 
-{************************************************************}
-
-function TJvDeviceChanged.GetFirstDriveLetter(unitmask: Longint): Char;
+function TJvDeviceChanged.GetFirstDriveLetter(UnitMask: Longint): Char;
 var
-  DriveLetter: shortint;
+  DriveLetter: Shortint;
 begin
   DriveLetter := Ord('A');
-  while (unitmask and 1) = 0 do
+  while (UnitMask and 1) = 0 do
   begin
-    unitmask := unitmask shr 1;
+    UnitMask := UnitMask shr 1;
     Inc(DriveLetter);
   end;
   Result := Char(DriveLetter);
 end;
-
-{************************************************************}
 
 procedure TJvDeviceChanged.WMDeviceChange(var Msg: TWMDeviceChange);
 var
@@ -131,3 +128,4 @@ begin
 end;
 
 end.
+

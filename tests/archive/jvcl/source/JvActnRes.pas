@@ -42,7 +42,6 @@ type
   TJvStandardActions = class(TDataModule)
     ImageList1: TImageList;
     ActionList1: TActionList;
-  private
   public
   end;
 

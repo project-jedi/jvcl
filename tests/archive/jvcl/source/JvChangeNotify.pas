@@ -25,17 +25,11 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
-
-{A wrapper for the Find[First/Next]ChangeNotification API calls. }
+{$I WINDOWSONLY.INC}
 
 unit JvChangeNotify;
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
+
+{A wrapper for the Find[First/Next]ChangeNotification API calls. }
 
 interface
 
@@ -159,6 +153,8 @@ begin
         Result := Result + ',' + ActionStrings[I];
 end;
 
+//=== TJvChangeItem ==========================================================
+
 constructor TJvChangeItem.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
@@ -219,6 +215,8 @@ begin
     FOnChange(Self);
 end;
 
+//=== TJvChangeItems =========================================================
+
 constructor TJvChangeItems.Create(AOwner: TJvChangeNotify);
 begin
   inherited Create(TJvChangeItem);
@@ -261,6 +259,8 @@ begin
   end;
   inherited;
 end;
+
+//=== TJvChangeNotify ========================================================
 
 constructor TJvChangeNotify.Create(AOwner: TComponent);
 begin
@@ -391,6 +391,8 @@ begin
     }
 end;
 
+//=== TJvChangeThread ========================================================
+
 constructor TJvChangeThread.Create(NotifyArray: TJvNotifyArray; Count, Interval: Integer);
 var
   I: Integer;
@@ -415,7 +417,7 @@ var
 begin
   while not Terminated do
   begin
-    I := WaitForMultipleObjects(FCount, @FNotifyArray, False, FInterval);
+    I := WaitForMultipleObjects(FCount, PWOHandleArray(@FNotifyArray), False, FInterval);
     if (I >= 0) and (I < FCount) then
     begin
       try

@@ -98,9 +98,7 @@ type
     property ArrowWidth;
   end;
 
-
 implementation
-
 
 constructor TCustomArrow.Create(AOwner: TComponent);
 begin

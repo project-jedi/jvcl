@@ -36,9 +36,7 @@ procedure Register;
 implementation
 
 uses
-  {$IFDEF WIN32}
-  Windows,
-  {$ELSE}
+  {$IFNDEF WIN32}
   WinTypes,
   {$ENDIF}
   Classes, SysUtils,
@@ -64,17 +62,19 @@ uses
   {$IFDEF WIN32}
   JvRichEd,
   {$ENDIF}
-  Menus, FiltEdit, StdCtrls, Buttons,
+  Menus, FiltEdit, StdCtrls,
   JvxConst, JvxCtrls, JvGrids, JvCurrEdit, JvToolEdit, JvDateUtil,
-  JvPickDate, JvSplit, JvxSlider, JvxClock, JvxAnimate, JvSpin, Consts,
+  JvPickDate, JvSplit, JvxSlider, JvxClock, JvxAnimate, JvSpin,
   JvDsgnEditors, JvDice, JvSwitch, JvCheckItm, JvVCLUtils, JvColors, JvAniFile, JvGraph,
-  {$IFDEF USE_Jv_GIF}
+  {$IFDEF USE_JV_GIF}
   JvGIF, JvGIFCtrl,
   {$ENDIF}
-  JvHints, JvExcptDlg, 
+  JvHints, JvExcptDlg,
   JvFileUtil, JvDsgn;
 
 {$IFNDEF COMPILER3_UP}
+
+//=== TJvDateProperty ========================================================
 
 type
   TJvDateProperty = class(TFloatProperty)
@@ -98,6 +98,8 @@ begin
   else
     SetFloatValue(StrToDateFmt(ShortDateFormat, Value));
 end;
+
+//=== TJvModalResultProperty =================================================
 
 type
   TJvModalResultProperty = class(TModalResultProperty)
@@ -201,6 +203,8 @@ begin
     Result := 0;
 end;
 
+//=== TJvIntegerProperty =====================================================
+
 type
   TJvIntegerProperty = class(TIntegerProperty)
   public
@@ -224,6 +228,8 @@ begin
     L := StrToInt(Value);
   inherited SetValue(IntToStr(L));
 end;
+
+//=== TJvFloatProperty =======================================================
 
 type
   TJvFloatProperty = class(TFloatProperty)
@@ -257,6 +263,8 @@ begin
     SetFloatValue(StrToFloat(Value));
 end;
 
+//=== TJvPaintBoxEditor ======================================================
+
 type
   TJvPaintBoxEditor = class(TDefaultEditor)
   public
@@ -285,6 +293,8 @@ begin
   else
     inherited;
 end;
+
+//=== TJvAnimatedEditor ======================================================
 
 type
   TJvAnimatedEditor = class(TComponentEditor)
@@ -412,6 +422,8 @@ begin
   Result := inherited GetVerbCount + 2;
 end;
 
+//=== TJvImageListEditor =====================================================
+
 {$IFNDEF DelphiPersonalEdition}
 {$IFDEF WIN32}
 
@@ -517,6 +529,8 @@ end;
 {$ENDIF WIN32}
 {$ENDIF DelphiPersonalEdition}
 
+//=== TJvWeekDayProperty =====================================================
+
 type
   TJvWeekDayProperty = class(TEnumProperty)
     function GetAttributes: TPropertyAttributes; override;
@@ -552,7 +566,7 @@ begin
     TJvxRichEdit,
     {$ENDIF}
     TJvxClock, TJvAnimatedImage, TJvxDrawGrid, TJvxSpeedButton,
-    {$IFDEF USE_Jv_GIF}
+    {$IFDEF USE_JV_GIF}
     TJvGIFAnimator,
     {$ENDIF}
     TJvSpinButton,

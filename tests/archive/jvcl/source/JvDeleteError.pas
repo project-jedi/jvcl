@@ -28,14 +28,12 @@ Known Issues:
 
 unit JvDeleteError;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, SysUtils, Classes,
   SetupApi,
-  JvCommonDialogD, JvBaseDlg, JvTypes;
+  JvCommonDialogD, JvTypes;
 
 type
   TJvDeleteError = class(TJvCommonDialogD)
@@ -58,8 +56,6 @@ implementation
 uses
   JclSysUtils;
 
-{**************************************************}
-
 constructor TJvDeleteError.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -68,20 +64,17 @@ begin
   FWin32ErrorCode := 0;
 end;
 
-{**************************************************}
-
 function TJvDeleteError.Execute: TDiskRes;
 var
   Sty: DWORD;
 begin
   Sty := 0;
-  if idNoBeep in FStyle then
+  if idNoBeep in Style then
     Sty := Sty or IDF_NOBEEP;
-  if idNoForeground in FStyle then
+  if idNoForeground in Style then
     Sty := Sty or IDF_NOFOREGROUND;
 
-  case SetupDeleteError(OwnerWindow, PCharOrNil(Title),
-      PChar(FileName), FWin32ErrorCode, Sty) of
+  case SetupDeleteError(OwnerWindow, PCharOrNil(Title), PChar(FileName), FWin32ErrorCode, Sty) of
     DPROMPT_SUCCESS:
       Result := dsSuccess;
     DPROMPT_CANCEL:
@@ -94,3 +87,4 @@ begin
 end;
 
 end.
+

@@ -70,10 +70,6 @@ type
 
 implementation
 
-///////////////////////////////////////////////////////////
-// TJvAppearingLabel
-///////////////////////////////////////////////////////////
-
 constructor TJvAppearingLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -91,8 +87,6 @@ begin
   FThread.OnDraw := Appearing;
 end;
 
-{**************************************************}
-
 destructor TJvAppearingLabel.Destroy;
 begin
   FThread.OnDraw := nil;
@@ -102,15 +96,11 @@ begin
   inherited Destroy;
 end;
 
-{**************************************************}
-
 procedure TJvAppearingLabel.Appear;
 begin
   FTag := 0;
   FThread.Resume;
 end;
-
-{**************************************************}
 
 procedure TJvAppearingLabel.Appearing(Sender: TObject);
 begin
@@ -206,8 +196,6 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvAppearingLabel.SetAutoStart(const Value: Boolean);
 begin
   FAutoStart := Value;
@@ -222,16 +210,12 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvAppearingLabel.SetFirst(const Value: Cardinal);
 begin
   FFirst := Value;
   if FTag = 0 then
     FThread.Delay := FFirst;
 end;
-
-{**************************************************}
 
 procedure TJvAppearingLabel.SetInterval(const Value: Cardinal);
 begin

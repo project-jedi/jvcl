@@ -36,7 +36,7 @@ unit JvComponentPanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Messages, SysUtils, Classes, Graphics, Controls,
   ExtCtrls, Buttons,
   JvButtons;
 
@@ -111,9 +111,6 @@ type
   end;
 
 implementation
-
-uses
-  JvDsgnIntf;
 
 {$R JvComponentPanel.res}
 

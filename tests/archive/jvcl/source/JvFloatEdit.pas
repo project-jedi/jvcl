@@ -28,12 +28,10 @@ Known Issues:
 
 unit JvFloatEdit;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  SysUtils, Classes, Controls,
   JvTypes, JvEdit;
 
 type
@@ -54,7 +52,11 @@ type
 
 implementation
 
-{*****************************************************}
+constructor TJvFloatEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  SetValue(0.0);
+end;
 
 procedure TJvFloatEdit.CMEnter(var Msg: TCMEnter);
 begin
@@ -62,51 +64,37 @@ begin
   FOld := GetValue;
 end;
 
-{*****************************************************}
-
 procedure TJvFloatEdit.CMExit(var Msg: TCMExit);
 var
-  st: string;
+  St: string;
 begin
   inherited;
-  st := inherited Text;
+  St := inherited Text;
   try
-    StrToFloat(st);
+    StrToFloat(St);
   except
     SetValue(FOld);
   end;
 end;
 
-{*****************************************************}
-
-constructor TJvFloatEdit.Create(AOwner: TComponent);
-begin
-  inherited;
-  SetValue(0.0);
-end;
-
-{*****************************************************}
-
 function TJvFloatEdit.GetValue: Extended;
 var
-  st: string;
+  St: string;
 begin
-  st := inherited Text;
+  St := inherited Text;
   try
-    Result := StrToFloat(st);
+    Result := StrToFloat(St);
   except
     Result := 0.0;
   end;
 end;
 
-{*****************************************************}
-
 procedure TJvFloatEdit.SetValue(const Value: Extended);
 var
-  st: string;
+  St: string;
 begin
-  st := FloatToStr(Value);
-  inherited Text := st;
+  St := FloatToStr(Value);
+  inherited Text := St;
 end;
 
 end.

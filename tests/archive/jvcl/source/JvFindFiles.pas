@@ -32,69 +32,72 @@ Known Issues:
 unit JvFindFiles;
 
 interface
+
 uses
-  SysUtils, Classes, Controls, ShlObj, ShellAPI, ActiveX, Dialogs, JvBaseDlg;
+  SysUtils, Classes, ShlObj, ShellAPI, ActiveX, Dialogs,
+  JvBaseDlg;
 
 type
-  TJvSpecialFolder = (sfRecycleBin, sfControlPanel, sfDesktop, sfDesktopDirectory,
-    sfMyComputer, sfFonts, sfNetHood, sfNetwork, sfPersonal, sfPrinters,
-    sfPrograms, sfRecent, sfSendTo, sfStartMenu, stStartUp, sfTemplates);
+  TJvSpecialFolder =
+    (sfRecycleBin, sfControlPanel, sfDesktop, sfDesktopDirectory,
+     sfMyComputer, sfFonts, sfNetHood, sfNetwork, sfPersonal, sfPrinters,
+     sfPrograms, sfRecent, sfSendTo, sfStartMenu, stStartUp, sfTemplates);
 
   TJvFindFilesDialog = class(TJvCommonDialog)
   private
-    FUse: boolean;
+    FUse: Boolean;
     FDir: string;
     FSpecial: TJvSpecialFolder;
   public
-    function Execute: boolean; override;
+    function Execute: Boolean; override;
   published
     // the directory to start the search in
     property Directory: string read FDir write FDir;
     // ... or a special folder to start in
     property SpecialFolder: TJvSpecialFolder read FSpecial write FSpecial;
-    // set to true to sue SpecialFolder instead of Directory
-    property UseSpecialFolder: boolean read FUse write FUse;
+    // set to True to sue SpecialFolder instead of Directory
+    property UseSpecialFolder: Boolean read FUse write FUse;
   end;
 
-function FindFilesDlg(StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: boolean): boolean;
+function FindFilesDlg(StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: Boolean): Boolean;
 
 implementation
 
 const
-  FFolder: array[TJvSpecialFolder] of integer = (
-    CSIDL_BITBUCKET, CSIDL_CONTROLS, CSIDL_DESKTOP, CSIDL_DESKTOPDIRECTORY,
-    CSIDL_DRIVES, CSIDL_FONTS, CSIDL_NETHOOD, CSIDL_NETWORK, CSIDL_PERSONAL,
-    CSIDL_PRINTERS, CSIDL_PROGRAMS, CSIDL_RECENT, CSIDL_SENDTO, CSIDL_STARTMENU,
-    CSIDL_STARTUP, CSIDL_TEMPLATES);
+  FFolder: array [TJvSpecialFolder] of Integer =
+    (CSIDL_BITBUCKET, CSIDL_CONTROLS, CSIDL_DESKTOP, CSIDL_DESKTOPDIRECTORY,
+     CSIDL_DRIVES, CSIDL_FONTS, CSIDL_NETHOOD, CSIDL_NETWORK, CSIDL_PERSONAL,
+     CSIDL_PRINTERS, CSIDL_PROGRAMS, CSIDL_RECENT, CSIDL_SENDTO, CSIDL_STARTMENU,
+     CSIDL_STARTUP, CSIDL_TEMPLATES);
 
-function TJvFindFilesDialog.Execute: boolean;
+function TJvFindFilesDialog.Execute: Boolean;
 begin
   Result := FindFilesDlg(FDir, FSpecial, FUse);
 end;
 
-function FindFilesDlg(StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: boolean): boolean;
+function FindFilesDlg(StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: Boolean): Boolean;
 var
-  pidl: PITEMIDLIST;
+  Pidl: PITEMIDLIST;
   PMalloc: IMalloc;
-  sei: TShellExecuteInfo;
+  Sei: TShellExecuteInfo;
 begin
   try
     SHGetMalloc(PMalloc);
-    FillChar(sei, sizeof(TShellExecuteInfo), 0);
-    sei.lpVerb := 'find';
-    sei.cbSize := SizeOf(sei);
+    FillChar(Sei, SizeOf(TShellExecuteInfo), 0);
+    Sei.lpVerb := 'find';
+    Sei.cbSize := SizeOf(Sei);
     if UseFolder then
     begin
-      SHGetSpecialFolderLocation(0, FFolder[SpecialFolder], pidl);
-      with sei do
+      SHGetSpecialFolderLocation(0, FFolder[SpecialFolder], Pidl);
+      with Sei do
       begin
         fMask := SEE_MASK_INVOKEIDLIST;
-        lpIDList := pidl;
+        lpIDList := Pidl;
       end;
     end
     else
-      sei.lpFile := PChar(StartIn);
-    Result := ShellExecuteEx(@sei);
+      Sei.lpFile := PChar(StartIn);
+    Result := ShellExecuteEx(@Sei);
   finally
     pMalloc._Release;
     pMalloc := nil;

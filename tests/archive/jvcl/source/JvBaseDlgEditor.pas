@@ -54,8 +54,6 @@ type
 
 implementation
 
-{*************************************************}
-
 procedure TJvBaseDlgEditor.Edit;
 begin
   ExecuteVerb(0);
@@ -76,8 +74,6 @@ begin
     TJvCommonDialogP(Component).Execute;
 end;
 
-{*************************************************}
-
 function TJvBaseDlgEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
@@ -85,8 +81,6 @@ begin
       Result := 'Preview...';
   end;
 end;
-
-{*************************************************}
 
 function TJvBaseDlgEditor.GetVerbCount: Integer;
 begin

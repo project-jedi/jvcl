@@ -12,7 +12,7 @@ The Original Code is: JvDBFilter.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,24 +29,22 @@ unit JvDBFilter;
 
 interface
 
-
-{$IFDEF WIN32}
-uses SysUtils, Windows, Messages, Classes, Controls, Forms,
-  Graphics, Menus, StdCtrls, ExtCtrls, Bde, DB, DBTables, JvTypes, JvComponent;
-{$ELSE}
-uses SysUtils, WinTypes, WinProcs, Messages, Classes, Controls, Forms,
-  Graphics, Menus, StdCtrls, ExtCtrls, DBITypes, DB, DBTables, JvTypes, JvComponent;
-{$ENDIF}
+uses
+  {$IFDEF WIN32}
+  SysUtils, Classes, Forms,
+  Bde, DB, DBTables,
+  {$ELSE}
+  SysUtils, WinTypes, WinProcs, Classes, Forms,
+  DBITypes, DB, DBTables,
+  {$ENDIF}
+  JvTypes, JvComponent;
 
 type
-
-{ TJvDBFilter }
-
   TFilterLogicCond = (flAnd, flOr); { for captured DataSet }
   TDBFilterOption = TFilterOption;
   TDBFilterOptions = TFilterOptions;
 
-  TFilterEvent = function (Sender: TObject; DataSet: TDataSet): Boolean of object;
+  TFilterEvent = function(Sender: TObject; DataSet: TDataSet): Boolean of object;
 
   TDataSetStorage = record { for internal use only }
     FBof: Boolean;
@@ -100,7 +98,8 @@ type
     procedure RecreateFuncFilter;
     procedure ActivateFilters;
     procedure DeactivateFilters;
-    function RecordFilter(RecBuf: Pointer; RecNo: Longint): Smallint; {$IFDEF WIN32} stdcall; {$ENDIF WIN32}
+    function RecordFilter(RecBuf: Pointer; RecNo: Longint): Smallint;
+      {$IFDEF WIN32} stdcall; {$ENDIF WIN32}
     procedure BeforeDataPost(DataSet: TDataSet);
     procedure BeforeDataChange(DataSet: TDataSet);
     procedure BeforeDataCancel(DataSet: TDataSet);
@@ -149,22 +148,28 @@ function SetLookupFilter(DataSet: TDataSet; Field: TField;
 
 implementation
 
-uses {$IFNDEF WIN32} DBIErrs, DBIProcs, JvStr16, {$ENDIF} DBConsts, Dialogs,
-  {$IFDEF COMPILER3_UP} DbCommon, {$ENDIF} JvxConst, JvVCLUtils, JvDBUtils, JvBdeUtils;
+uses
+  {$IFNDEF WIN32}
+  DBIErrs, DBIProcs, JvStr16,
+  {$ENDIF}
+  DBConsts, Dialogs,
+  {$IFDEF COMPILER3_UP}
+  DbCommon,
+  {$ENDIF}
+  JvxConst, JvVCLUtils, JvDBUtils, JvBdeUtils;
 
 procedure DropAllFilters(DataSet: TDataSet);
 begin
-  if (DataSet <> nil) and DataSet.Active then begin
-{$IFDEF WIN32}
+  if (DataSet <> nil) and DataSet.Active then
+  begin
+    {$IFDEF WIN32}
     DataSet.Filtered := False;
-{$ENDIF}
+    {$ENDIF}
     DbiDropFilter((DataSet as TBDEDataSet).Handle, nil);
     DataSet.CursorPosChanged;
     DataSet.Resync([]);
   end;
 end;
-
-{ JvDBFilter exceptions }
 
 procedure FilterError(const Ident: string);
 begin
@@ -177,14 +182,14 @@ begin
 end;
 
 const
-  SExprNothing = '""';   { nothing token name          }
-  cQuota = '''';         { qoutas for string constants }
-  cFldQuotaLeft = '[';   { left qouta for field names  }
-  cFldQuotaRight = ']';  { right qouta for field names }
+  SExprNothing = '""'; { nothing token name }
+  cQuota = ''''; { quotas for string constants }
+  cFldQuotaLeft = '['; { left qouta for field names }
+  cFldQuotaRight = ']'; { right qouta for field names }
 
 {$IFNDEF COMPILER3_UP} {DbCommon.pas}
 
-{ TJvFilterExpr }
+//=== TJvFilterExpr ==========================================================
 
 type
   TExprNodeKind = (enField, enConst, enOperator);
@@ -241,8 +246,10 @@ destructor TJvFilterExpr.Destroy;
 var
   Node: PExprNode;
 begin
-  if (FExprBuffer <> nil) then FreeMem(FExprBuffer, FExprBufSize);
-  while FNodes <> nil do begin
+  if FExprBuffer <> nil then
+    FreeMem(FExprBuffer, FExprBufSize);
+  while FNodes <> nil do
+  begin
     Node := FNodes;
     FNodes := Node^.FNext;
     Dispose(Node);
@@ -258,11 +265,11 @@ end;
 
 function TJvFilterExpr.GetExprData(Pos, Size: Integer): PChar;
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   ReallocMem(FExprBuffer, FExprBufSize + Size);
-{$ELSE}
+  {$ELSE}
   FExprBuffer := ReallocMem(FExprBuffer, FExprBufSize, FExprBufSize + Size);
-{$ENDIF}
+  {$ENDIF}
   Move(PChar(FExprBuffer)[Pos], PChar(FExprBuffer)[Pos + Size],
     FExprBufSize - Pos);
   Inc(FExprBufSize, Size);
@@ -274,7 +281,8 @@ begin
   FExprBufSize := SizeOf(CANExpr);
   GetMem(FExprBuffer, FExprBufSize);
   PutExprNode(Root);
-  with FExprBuffer^ do begin
+  with FExprBuffer^ do
+  begin
     iVer := CANEXPRVERSION;
     iTotalSize := FExprBufSize;
     iNodes := $FFFF;
@@ -298,7 +306,8 @@ function TJvFilterExpr.NewNode(Kind: TExprNodeKind; Operator: CanOp;
   const Data: string; Left, Right: PExprNode): PExprNode;
 begin
   New(Result);
-  with Result^ do begin
+  with Result^ do
+  begin
     FNext := FNodes;
     FKind := Kind;
     FPartial := False;
@@ -312,8 +321,8 @@ end;
 
 function TJvFilterExpr.PutCompareNode(Node: PExprNode): Integer;
 const
-  ReverseOperator: array[canEQ..canLE] of CanOp = (
-    canEQ, canNE, canLT, canGT, canLE, canGE);
+  ReverseOperator: array [canEQ..canLE] of CanOp =
+    (canEQ, canNE, canLT, canGT, canLE, canGE);
 var
   Operator: CanOp;
   Left, Right, Temp: PExprNode;
@@ -325,19 +334,24 @@ begin
   Operator := Node^.FOperator;
   Left := Node^.FLeft;
   Right := Node^.FRight;
-  if (Left^.FKind <> enConst) and (Right^.FKind <> enConst) then begin
+  if (Left^.FKind <> enConst) and (Right^.FKind <> enConst) then
+  begin
     if FDataSet.FindField(Left^.FData) = nil then
       Left^.FKind := enConst
-    else if FDataSet.FindField(Right^.FData) = nil then
+    else
+    if FDataSet.FindField(Right^.FData) = nil then
       Right^.FKind := enConst;
   end;
-  if (Left^.FKind <> enField) and (Right^.FKind <> enField) then begin
+  if (Left^.FKind <> enField) and (Right^.FKind <> enField) then
+  begin
     if FDataSet.FindField(Left^.FData) <> nil then
       Left^.FKind := enField
-    else if FDataSet.FindField(Right^.FData) <> nil then
+    else
+    if FDataSet.FindField(Right^.FData) <> nil then
       Right^.FKind := enField;
   end;
-  if Right^.FKind = enField then begin
+  if Right^.FKind = enField then
+  begin
     Temp := Left;
     Left := Right;
     Right := Temp;
@@ -351,11 +365,13 @@ begin
     case Operator of
       canEQ: Operator := canISBLANK;
       canNE: Operator := canNOTBLANK;
-      else FilterError(SExprBadNullTest);
+    else
+      FilterError(SExprBadNullTest);
     end;
     Result := PutNode(nodeUNARY, Operator, 1);
     SetNodeOp(Result, 0, PutFieldNode(Field));
-  end else
+  end
+  else
   begin
     if ((Operator = canEQ) or (Operator = canNE)) and
       (Field.DataType = ftString) then
@@ -366,9 +382,12 @@ begin
       begin
         CaseInsensitive := 0;
         PartialLength := 0;
-        if foCaseInsensitive in FOptions then CaseInsensitive := 1;
-        if Node^.FPartial then PartialLength := L
-        else begin
+        if foCaseInsensitive in FOptions then
+          CaseInsensitive := 1;
+        if Node^.FPartial then
+          PartialLength := L
+        else
+        begin
           if not (foNoPartialCompare in FOptions) and (L > 1) and
             (S[L] = '*') then
           begin
@@ -376,7 +395,8 @@ begin
             PartialLength := L - 1;
           end;
         end;
-        if (CaseInsensitive <> 0) or (PartialLength <> 0) then begin
+        if (CaseInsensitive <> 0) or (PartialLength <> 0) then
+        begin
           Result := PutNode(nodeCOMPARE, Operator, 4);
           SetNodeOp(Result, 0, CaseInsensitive);
           SetNodeOp(Result, 1, PartialLength);
@@ -415,7 +435,7 @@ end;
 
 function TJvFilterExpr.PutConstStr(const Value: string): Integer;
 var
-  Buffer: array[0..255] of Char;
+  Buffer: array [0..255] of Char;
 begin
   AnsiToNative((FDataSet as TBDEDataSet).Locale, Value, Buffer,
     SizeOf(Buffer) - 1);
@@ -457,17 +477,18 @@ begin
             SetNodeOp(Result, 0, PutExprNode(Node^.FLeft));
             SetNodeOp(Result, 1, PutExprNode(Node^.FRight));
           end;
-        else
-          Result := PutNode(nodeUNARY, canNOT, 1);
-          SetNodeOp(Result, 0, PutExprNode(Node^.FLeft));
+      else
+        Result := PutNode(nodeUNARY, canNOT, 1);
+        SetNodeOp(Result, 0, PutExprNode(Node^.FLeft));
       end; { case Node^.FOperator }
-    else FilterError(SExprIncorrect);
+  else
+    FilterError(SExprIncorrect);
   end; { case Node^.FKind }
 end;
 
 function TJvFilterExpr.PutFieldNode(Field: TField): Integer;
 var
-  Buffer: array[0..255] of Char;
+  Buffer: array [0..255] of Char;
 begin
   AnsiToNative((FDataSet as TBDEDataSet).Locale, Field.FieldName, Buffer,
     SizeOf(Buffer) - 1);
@@ -482,7 +503,8 @@ var
   Size: Integer;
 begin
   Size := SizeOf(CANHdr) + OpCount * SizeOf(Word);
-  with PCANHdr(GetExprData(SizeOf(CANExpr) + FExprNodeSize, Size))^ do begin
+  with PCANHdr(GetExprData(SizeOf(CANExpr) + FExprNodeSize, Size))^ do
+  begin
     nodeClass := NodeType;
     canOp := OpType;
   end;
@@ -496,7 +518,7 @@ begin
     SizeOf(CANHdr)))^[Index] := Data;
 end;
 
-{ SetLookupFilter }
+//=== TExprParser ============================================================
 
 function SetLookupFilter(DataSet: TDataSet; Field: TField;
   const Value: string; CaseSensitive, Exact: Boolean): HDBIFilter;
@@ -505,12 +527,15 @@ var
   Filter: TJvFilterExpr;
   Node: PExprNode;
 begin
-  if not CaseSensitive then Options := [foNoPartialCompare, foCaseInsensitive]
-  else Options := [foNoPartialCompare];
+  if not CaseSensitive then
+    Options := [foNoPartialCompare, foCaseInsensitive]
+  else
+    Options := [foNoPartialCompare];
   Filter := TJvFilterExpr.Create(DataSet, Options);
   try
     Node := Filter.NewCompareNode(Field, canEQ, Value);
-    if not Exact then Node^.FPartial := True;
+    if not Exact then
+      Node^.FPartial := True;
     Check(DbiAddFilter((DataSet as TBDEDataSet).Handle, 0, 2, False,
       Filter.GetFilterData(Node), nil, Result));
     DataSet.CursorPosChanged;
@@ -520,13 +545,11 @@ begin
   end;
 end;
 
-{ TExprParser }
-
 type
   TExprToken = (etEnd, etSymbol, etName, etLiteral, etLParen, etRParen,
     etEQ, etNE, etGE, etLE, etGT, etLT);
 
-  TExprParser = class
+  TExprParser = class(TObject)
   private
     FFilter: TJvFilterExpr;
     FText: PChar;
@@ -557,12 +580,14 @@ constructor TExprParser.Create(DataSet: TDataSet; const Text: PChar;
 var
   Root: PExprNode;
 begin
+  inherited Create;
   FFilter := TJvFilterExpr.Create(DataSet, Options);
   FText := Text;
   FSourcePtr := Text;
   NextToken;
   Root := ParseExpr;
-  if FToken <> etEnd then FilterError(SExprTermination);
+  if FToken <> etEnd then
+    FilterError(SExprTermination);
   FFilterData := FFilter.GetFilterData(Root);
   FDataSize := FFilter.FExprBufSize;
 end;
@@ -570,25 +595,27 @@ end;
 destructor TExprParser.Destroy;
 begin
   FFilter.Free;
+  inherited Destroy;
 end;
 
 procedure TExprParser.NextToken;
 var
   P, TokenStart: PChar;
   L: Integer;
-  StrBuf: array[0..255] of Char;
-
+  StrBuf: array [0..255] of Char;
 begin
   FTokenString := '';
   P := FSourcePtr;
-  while (P^ <> #0) and (P^ <= ' ') do Inc(P);
+  while (P^ <> #0) and (P^ <= ' ') do
+    Inc(P);
   FTokenPtr := P;
   case P^ of
-    'A'..'Z', 'a'..'z', '_', #$81..#$fe:
+    'A'..'Z', 'a'..'z', '_', #$81..#$FE:
       begin
         TokenStart := P;
         Inc(P);
-        while P^ in ['A'..'Z', 'a'..'z', '0'..'9', '_'] do Inc(P);
+        while P^ in ['A'..'Z', 'a'..'z', '0'..'9', '_'] do
+          Inc(P);
         SetString(FTokenString, TokenStart, P - TokenStart);
         FToken := etSymbol;
       end;
@@ -596,8 +623,10 @@ begin
       begin
         Inc(P);
         TokenStart := P;
-        while (P^ <> cFldQuotaRight) and (P^ <> #0) do Inc(P);
-        if P^ = #0 then FilterError(SExprNameError);
+        while (P^ <> cFldQuotaRight) and (P^ <> #0) do
+          Inc(P);
+        if P^ = #0 then
+          FilterError(SExprNameError);
         SetString(FTokenString, TokenStart, P - TokenStart);
         FToken := etName;
         Inc(P);
@@ -608,12 +637,16 @@ begin
         L := 0;
         while True do
         begin
-          if P^ = #0 then FilterError(SExprStringError);
-          if P^ = cQuota then begin
+          if P^ = #0 then
+            FilterError(SExprStringError);
+          if P^ = cQuota then
+          begin
             Inc(P);
-            if P^ <> cQuota then Break;
+            if P^ <> cQuota then
+              Break;
           end;
-          if L < SizeOf(StrBuf) then begin
+          if L < SizeOf(StrBuf) then
+          begin
             StrBuf[L] := P^;
             Inc(L);
           end;
@@ -626,7 +659,8 @@ begin
       begin
         TokenStart := P;
         Inc(P);
-        while P^ in ['0'..'9', '.', 'e', 'E', '+', '-'] do Inc(P);
+        while P^ in ['0'..'9', '.', 'e', 'E', '+', '-'] do
+          Inc(P);
         SetString(FTokenString, TokenStart, P - TokenStart);
         FToken := etLiteral;
       end;
@@ -654,7 +688,8 @@ begin
               Inc(P);
               FToken := etNE;
             end;
-          else FToken := etLT;
+        else
+          FToken := etLT;
         end;
       end;
     '=':
@@ -665,14 +700,17 @@ begin
     '>':
       begin
         Inc(P);
-        if P^ = '=' then begin
+        if P^ = '=' then
+        begin
           Inc(P);
           FToken := etGE;
         end
-        else FToken := etGT;
+        else
+          FToken := etGT;
       end;
     #0: FToken := etEnd;
-    else FilterErrorFmt(SExprInvalidChar, [P^]);
+  else
+    FilterErrorFmt(SExprInvalidChar, [P^]);
   end;
   FSourcePtr := P;
 end;
@@ -680,7 +718,8 @@ end;
 function TExprParser.ParseExpr: PExprNode;
 begin
   Result := ParseExpr2;
-  while TokenSymbolIs('OR') do begin
+  while TokenSymbolIs('OR') do
+  begin
     NextToken;
     Result := FFilter.NewNode(enOperator, canOR, EmptyStr,
       Result, ParseExpr2);
@@ -690,7 +729,8 @@ end;
 function TExprParser.ParseExpr2: PExprNode;
 begin
   Result := ParseExpr3;
-  while TokenSymbolIs('AND') do begin
+  while TokenSymbolIs('AND') do
+  begin
     NextToken;
     Result := FFilter.NewNode(enOperator, canAND, EmptyStr,
       Result, ParseExpr3);
@@ -699,23 +739,26 @@ end;
 
 function TExprParser.ParseExpr3: PExprNode;
 begin
-  if TokenSymbolIs('NOT') then begin
+  if TokenSymbolIs('NOT') then
+  begin
     NextToken;
     Result := FFilter.NewNode(enOperator, canNOT, EmptyStr,
       ParseExpr4, nil);
-  end 
-  else Result := ParseExpr4;
+  end
+  else
+    Result := ParseExpr4;
 end;
 
 function TExprParser.ParseExpr4: PExprNode;
 const
-  Operators: array[etEQ..etLT] of CanOp = (
-    canEQ, canNE, canGE, canLE, canGT, canLT);
+  Operators: array [etEQ..etLT] of CanOp =
+    (canEQ, canNE, canGE, canLE, canGT, canLT);
 var
   Operator: CanOp;
 begin
   Result := ParseExpr5;
-  if FToken in [etEQ..etLT] then begin
+  if FToken in [etEQ..etLT] then
+  begin
     Operator := Operators[FToken];
     NextToken;
     Result := FFilter.NewNode(enOperator, Operator, EmptyStr,
@@ -733,24 +776,28 @@ begin
       else
         Result := FFilter.NewNode(enField, canNOTDEFINED, FTokenString, nil, nil);
     etName:
-        Result := FFilter.NewNode(enField, canNOTDEFINED, FTokenString, nil, nil);
+      Result := FFilter.NewNode(enField, canNOTDEFINED, FTokenString, nil, nil);
     etLiteral:
-        Result := FFilter.NewNode(enConst, canNOTDEFINED, FTokenString, nil, nil);
+      Result := FFilter.NewNode(enConst, canNOTDEFINED, FTokenString, nil, nil);
     etLParen:
       begin
         NextToken;
         Result := ParseExpr;
-        if FToken <> etRParen then FilterErrorFmt(SExprNoRParen, [TokenName]);
+        if FToken <> etRParen then
+          FilterErrorFmt(SExprNoRParen, [TokenName]);
       end;
-    else FilterErrorFmt(SExprExpected, [TokenName]);
+  else
+    FilterErrorFmt(SExprExpected, [TokenName]);
   end;
   NextToken;
 end;
 
 function TExprParser.TokenName: string;
 begin
-  if (FSourcePtr = FTokenPtr) then Result := SExprNothing
-  else begin
+  if FSourcePtr = FTokenPtr then
+    Result := SExprNothing
+  else
+  begin
     SetString(Result, FTokenPtr, FSourcePtr - FTokenPtr);
     Result := '''' + Result + '''';
   end;
@@ -764,7 +811,7 @@ end;
 {$ENDIF COMPILER3_UP} {DbCommon.pas}
 
 {$IFDEF WIN32}
-  {$HINTS OFF}
+{$HINTS OFF}
 {$ENDIF}
 
 type
@@ -916,7 +963,7 @@ type
 {$ENDIF COMPILER3_UP}
 
 {$IFDEF WIN32}
-  {$HINTS ON}
+{$HINTS ON}
 {$ENDIF}
 
 procedure dsSetState(DataSet: TDataSet; Value: TDataSetState);
@@ -1000,7 +1047,7 @@ begin
   TBDENastyDataSet(DataSet).FCanModify := Value;
 end;
 
-{ TJvFilterDataLink }
+//=== TJvFilterDataLink ======================================================
 
 type
   TJvFilterDataLink = class(TDataLink)
@@ -1027,10 +1074,14 @@ end;
 
 procedure TJvFilterDataLink.ActiveChanged;
 begin
-  if FFilter <> nil then FFilter.ActiveChanged;
+  if FFilter <> nil then
+    FFilter.ActiveChanged;
 end;
 
+//=== TJvDBFilter ============================================================
+
 {$IFNDEF WIN32}
+
 type
   TFilterOption = TDBFilterOption;
   TFilterOptions = TDBFilterOptions;
@@ -1040,9 +1091,8 @@ function FilterCallback(pDBFilter: Longint; RecBuf: Pointer;
 begin
   Result := TJvDBFilter(pDBFilter).RecordFilter(RecBuf, RecNo);
 end;
-{$ENDIF WIN32}
 
-{ TJvDBFilter }
+{$ENDIF WIN32}
 
 constructor TJvDBFilter.Create(AOwner: TComponent);
 begin
@@ -1068,11 +1118,13 @@ procedure TJvDBFilter.Loaded;
 begin
   inherited Loaded;
   try
-    if FStreamedActive then Active := True;
+    if FStreamedActive then
+      Active := True;
   except
     if csDesigning in ComponentState then
       Application.HandleException(Self)
-    else raise;
+    else
+      raise;
   end;
 end;
 
@@ -1085,17 +1137,20 @@ procedure TJvDBFilter.SetDataSource(Value: TDataSource);
 var
   DSChange: Boolean;
 begin
-  if not (csLoading in ComponentState) then ReleaseCapture;
+  if not (csLoading in ComponentState) then
+    ReleaseCapture;
   DSChange := True;
   if (Value <> nil) and (DataSource <> nil) then
     DSChange := (Value.DataSet <> FDataLink.DataSet);
   FIgnoreDataEvents := not DSChange;
   try
-    if not (csLoading in ComponentState) then ActiveChanged;
+    if not (csLoading in ComponentState) then
+      ActiveChanged;
     FDataLink.DataSource := Value;
-{$IFDEF WIN32}
-    if Value <> nil then Value.FreeNotification(Self);
-{$ENDIF}
+    {$IFDEF WIN32}
+    if Value <> nil then
+      Value.FreeNotification(Self);
+    {$ENDIF}
   finally
     FIgnoreDataEvents := False;
   end;
@@ -1105,15 +1160,17 @@ procedure TJvDBFilter.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (FDataLink <> nil) then begin
-    if AComponent = DataSource then DataSource := nil;
+  if (Operation = opRemove) and (FDataLink <> nil) then
+  begin
+    if AComponent = DataSource then
+      DataSource := nil;
   end;
 end;
 
 function TJvDBFilter.CreateExprFilter: hDBIFilter;
 begin
   Result := nil;
-  if (FFilter.Count > 0) then
+  if FFilter.Count > 0 then
     if BuildTree then
     try
       Check(DbiAddFilter((FDatalink.DataSet as TBDEDataSet).Handle,
@@ -1131,15 +1188,16 @@ var
 begin
   if (FPriority < $FFFF) and (FExprHandle <> nil) then
     FuncPriority := FPriority + 1
-  else FuncPriority := FPriority;
-{$IFDEF WIN32}
+  else
+    FuncPriority := FPriority;
+  {$IFDEF WIN32}
   Check(DbiAddFilter((FDataLink.DataSet as TBDEDataSet).Handle, Longint(Self),
     FuncPriority, False, nil, PFGENFilter(@TJvDBFilter.RecordFilter),
     Result));
-{$ELSE}
+  {$ELSE}
   Check(DbiAddFilter(FDataLink.DataSet.Handle, Longint(Self), FuncPriority,
     False, nil, FilterCallback, Result));
-{$ENDIF WIN32}
+  {$ENDIF WIN32}
   FDataHandle := TBDEDataSet(FDatalink.DataSet).Handle;
 end;
 
@@ -1148,7 +1206,8 @@ procedure TJvDBFilter.SetFilterHandle(var Filter: HDBIFilter;
 var
   Info: FilterInfo;
 begin
-  if FActive and FDataLink.Active then begin
+  if FActive and FDataLink.Active then
+  begin
     FDataLink.DataSet.CursorPosChanged;
     DbiSetToBegin((FDataLink.DataSet as TBDEDataSet).Handle);
     if (Filter <> nil) and (Filter <> Value) then
@@ -1157,18 +1216,20 @@ begin
     if Filter <> nil then
       DbiActivateFilter((FDataLink.DataSet as TBDEDataSet).Handle, Filter);
   end
-  else if FActive and (Filter <> nil) and (FDataHandle <> nil) and
+  else
+  if FActive and (Filter <> nil) and (FDataHandle <> nil) and
     (FDataLink.DataSet = nil) and (Value = nil) then
   begin
     if DbiGetFilterInfo(FDataHandle, Filter, 0, 0, Info) = DBIERR_NONE then
       DbiDeactivateFilter(FDataHandle, Filter);
     Filter := Value;
   end
-  else begin
-{$IFNDEF WIN32}
+  else
+  begin
+    {$IFNDEF WIN32}
     if (Filter <> nil) and FDatalink.Active then
       DbiDropFilter((FDataLink.DataSet as TBDEDataSet).Handle, Filter);
-{$ENDIF}
+    {$ENDIF}
     Filter := Value;
   end;
 end;
@@ -1191,9 +1252,9 @@ end;
 
 procedure TJvDBFilter.DeactivateFilters;
 begin
-  if (FFuncHandle <> nil) then
+  if FFuncHandle <> nil then
     DbiDeactivateFilter(TBDEDataSet(FDatalink.DataSet).Handle, FFuncHandle);
-  if (FExprHandle <> nil) then
+  if FExprHandle <> nil then
     DbiDeactivateFilter(TBDEDataSet(FDatalink.DataSet).Handle, FExprHandle);
 end;
 
@@ -1201,9 +1262,9 @@ function TJvDBFilter.RecordFilter(RecBuf: Pointer; RecNo: Longint): Smallint;
 var
   ACanModify: Boolean;
   Buffers: PBufferList;
-{$IFDEF COMPILER4_UP}
+  {$IFDEF COMPILER4_UP}
   BufPtr: TBufferList;
-{$ENDIF}
+  {$ENDIF}
   ActiveRecord: Integer;
   RecCount: Integer;
   DS: TBDEDataSet;
@@ -1221,13 +1282,13 @@ begin
       dsSetActiveRecord(DS, 0);
       dsSetRecordCount(DS, 1); { FActiveRecord + 1 }
       dsSetCanModify(DS, False);
-{$IFDEF COMPILER4_UP}
+      {$IFDEF COMPILER4_UP}
       SetLength(BufPtr, 1);
       BufPtr[0] := PChar(RecBuf);
       dsSetBuffers(DS, BufPtr);
-{$ELSE}
+      {$ELSE}
       dsSetBuffers(DS, @PChar(RecBuf));
-{$ENDIF}
+      {$ENDIF}
       { call user defined function }
       Result := Ord(FOnFiltering(Self, DS));
     finally
@@ -1249,10 +1310,13 @@ end;
 
 procedure TJvDBFilter.SetOnFiltering(const Value: TFilterEvent);
 begin
-  if Assigned(FOnFiltering) <> Assigned(Value) then begin
+  if Assigned(FOnFiltering) <> Assigned(Value) then
+  begin
     FOnFiltering := Value;
     RecreateFuncFilter;
-  end else FOnFiltering := Value;
+  end
+  else
+    FOnFiltering := Value;
 end;
 
 procedure TJvDBFilter.RecreateFuncFilter;
@@ -1261,9 +1325,12 @@ var
 begin
   if FDataLink.Active and not (csReading in ComponentState) then
   begin
-    if not FCaptured then FDataLink.DataSet.CheckBrowseMode;
-    if Assigned(FOnFiltering) then Filter := CreateFuncFilter
-    else Filter := nil;
+    if not FCaptured then
+      FDataLink.DataSet.CheckBrowseMode;
+    if Assigned(FOnFiltering) then
+      Filter := CreateFuncFilter
+    else
+      Filter := nil;
     SetFilterHandle(FFuncHandle, Filter);
   end;
   if FDataLink.Active and Active and not FCaptured then
@@ -1274,16 +1341,21 @@ procedure TJvDBFilter.RecreateExprFilter;
 var
   Filter: HDBIFilter;
 begin
-  if FDataLink.Active and not (csReading in ComponentState) then begin
-    if not FCaptured then FDataLink.DataSet.CheckBrowseMode;
-    if (FFilter.Count > 0) then
-      try
-        Filter := CreateExprFilter;
-      except
-        if Active or FActivating then raise
-        else Filter := nil;
-      end
-    else Filter := nil;
+  if FDataLink.Active and not (csReading in ComponentState) then
+  begin
+    if not FCaptured then
+      FDataLink.DataSet.CheckBrowseMode;
+    if FFilter.Count > 0 then
+    try
+      Filter := CreateExprFilter;
+    except
+      if Active or FActivating then
+        raise
+      else
+        Filter := nil;
+    end
+    else
+      Filter := nil;
     SetFilterHandle(FExprHandle, Filter);
   end;
   if FDataLink.Active and Active and not FCaptured then
@@ -1297,7 +1369,8 @@ end;
 
 procedure TJvDBFilter.SetOptions(Value: TDBFilterOptions);
 begin
-  if Value <> FOptions then begin
+  if Value <> FOptions then
+  begin
     FOptions := Value;
     RecreateExprFilter;
   end;
@@ -1310,7 +1383,8 @@ end;
 
 procedure TJvDBFilter.SetPriority(Value: Word);
 begin
-  if FPriority <> Value then begin
+  if FPriority <> Value then
+  begin
     FPriority := Value;
     Update;
   end;
@@ -1321,7 +1395,7 @@ var
   BufLen: Word;
   I: Integer;
   StrEnd: PChar;
-  StrBuf: array[0..255] of Char;
+  StrBuf: array [0..255] of Char;
 begin
   BufLen := 1;
   for I := 0 to FFilter.Count - 1 do
@@ -1329,8 +1403,10 @@ begin
   Result := StrAlloc(BufLen);
   try
     StrEnd := Result;
-    for I := 0 to Filter.Count - 1 do begin
-      if Filter.Strings[I] <> '' then begin
+    for I := 0 to Filter.Count - 1 do
+    begin
+      if Filter.Strings[I] <> '' then
+      begin
         StrPCopy(StrBuf, Filter.Strings[I]);
         StrEnd := StrECopy(StrEnd, StrBuf);
         StrEnd := StrECopy(StrEnd, ' ');
@@ -1344,7 +1420,8 @@ end;
 
 procedure TJvDBFilter.DestroyTree;
 begin
-  if FParser <> nil then begin
+  if FParser <> nil then
+  begin
     FParser.Free;
     FParser := nil;
   end;
@@ -1374,21 +1451,25 @@ var
   I: Integer;
 begin
   Result := True;
-  if not FDataLink.Active then _DBError(SDataSetClosed);
+  if not FDataLink.Active then
+    _DBError(SDataSetClosed);
   TStringList(FFilter).OnChange := nil;
   try
     for I := FFilter.Count - 1 downto 0 do
-      if FFilter[I] = '' then FFilter.Delete(I);
+      if FFilter[I] = '' then
+        FFilter.Delete(I);
   finally
     TStringList(FFilter).OnChange := FilterChanged;
   end;
-  if FFilter.Count = 0 then begin
+  if FFilter.Count = 0 then
+  begin
     Result := False;
     Exit;
   end;
   Expr := GetFilterText;
   try
-    if StrLen(Expr) = 0 then begin
+    if StrLen(Expr) = 0 then
+    begin
       Result := False;
       Exit;
     end;
@@ -1402,30 +1483,39 @@ end;
 
 procedure TJvDBFilter.DoActivate;
 begin
-  if Assigned(FOnActivate) then FOnActivate(Self);
+  if Assigned(FOnActivate) then
+    FOnActivate(Self);
 end;
 
 procedure TJvDBFilter.DoDeactivate;
 begin
-  if Assigned(FOnDeactivate) then FOnDeactivate(Self);
+  if Assigned(FOnDeactivate) then
+    FOnDeactivate(Self);
 end;
 
 procedure TJvDBFilter.SetActive(Value: Boolean);
 var
   Bookmark: TBookmark;
 begin
-  if (csReading in ComponentState) then
+  if csReading in ComponentState then
     FStreamedActive := Value
-  else if FDatalink.Active then begin
+  else
+  if FDatalink.Active then
+  begin
     FDatalink.DataSet.CheckBrowseMode;
-    if FActive <> Value then begin
-      if Value then begin
+    if FActive <> Value then
+    begin
+      if Value then
+      begin
         FActivating := True;
         try
-          if FCaptured then FilterError(SCaptureFilter);
+          if FCaptured then
+            FilterError(SCaptureFilter);
           DbiSetToBegin((FDatalink.DataSet as TBDEDataSet).Handle);
-          if FExprHandle = nil then RecreateExprFilter;
-          if FFuncHandle = nil then RecreateFuncFilter;
+          if FExprHandle = nil then
+            RecreateExprFilter;
+          if FFuncHandle = nil then
+            RecreateFuncFilter;
           ActivateFilters;
           FDatalink.DataSet.First;
           FActive := Value;
@@ -1434,10 +1524,12 @@ begin
           FActivating := False;
         end;
       end
-      else begin
+      else
+      begin
         if not IsDataSetEmpty(FDatalink.DataSet) then
           Bookmark := FDatalink.DataSet.GetBookmark
-        else Bookmark := nil;
+        else
+          Bookmark := nil;
         try
           DbiSetToBegin((FDatalink.DataSet as TBDEDataSet).Handle);
           DeactivateFilters;
@@ -1452,7 +1544,8 @@ begin
       FActive := Value;
     end;
   end
-  else FActive := Value;
+  else
+    FActive := Value;
 end;
 
 procedure TJvDBFilter.Activate;
@@ -1467,13 +1560,16 @@ end;
 
 procedure TJvDBFilter.SetCapture;
 begin
-  if not FCaptured and (FDataLink <> nil) then begin
-    if not FDataLink.Active then _DBError(SDataSetClosed);
+  if not FCaptured and (FDataLink <> nil) then
+  begin
+    if not FDataLink.Active then
+      _DBError(SDataSetClosed);
     DataSource.DataSet.CheckBrowseMode;
     Deactivate;
     FIgnoreDataEvents := True;
     { store private fields values }
-    with FStorage do begin
+    with FStorage do
+    begin
       FBof := DataSource.DataSet.Bof;
       FEof := DataSource.DataSet.Eof;
       State := DataSource.DataSet.State;
@@ -1497,7 +1593,8 @@ begin
     THackDataSet(DataSource.DataSet).DataEvent(deDataSetChange, 0);
     {DataSource.DataSet := DataSource.DataSet;}
     FCaptured := True;
-    if Assigned(FOnSetCapture) then FOnSetCapture(Self);
+    if Assigned(FOnSetCapture) then
+      FOnSetCapture(Self);
   end;
 end;
 
@@ -1506,7 +1603,8 @@ begin
   if (DataSource <> nil) and (DataSource.DataSet <> nil) and FCaptured then
   begin
     { restore private fields values stored in SetCapture }
-    with FStorage do begin
+    with FStorage do
+    begin
       dsSetBOF(DataSource.DataSet, FBof);
       dsSetEOF(DataSource.DataSet, FEof);
       dsSetState(DataSource.DataSet, State);
@@ -1522,33 +1620,38 @@ begin
     THackDataSet(DataSource.DataSet).DataEvent(deUpdateState, 0);
     THackDataSet(DataSource.DataSet).DataEvent(deDataSetChange, 0);
     {DataSource.DataSet := DataSource.DataSet;}
-    if Assigned(FOnReleaseCapture) then FOnReleaseCapture(Self);
+    if Assigned(FOnReleaseCapture) then
+      FOnReleaseCapture(Self);
     ActiveChanged;
   end;
 end;
 
 procedure TJvDBFilter.ReadCaptureControls;
 const
-  LogicStr: array[TFilterLogicCond] of string[4] = (' AND', ' OR');
+  LogicStr: array [TFilterLogicCond] of string[4] = (' AND', ' OR');
 var
   I: Integer;
   Field: TField;
   S: string;
 begin
-  if FCaptured then begin
+  if FCaptured then
+  begin
     FFilter.BeginUpdate;
     try
       FFilter.Clear;
-      with FDatalink.DataSet do begin
+      with FDatalink.DataSet do
+      begin
         UpdateRecord;
-        for I := 0 to FieldCount - 1 do begin
+        for I := 0 to FieldCount - 1 do
+        begin
           Field := Fields[I];
           if not (Field.IsNull or Field.Calculated {$IFDEF WIN32}
             or Field.Lookup {$ENDIF}) then
           begin
             S := '(' + cFldQuotaLeft + Field.FieldName + cFldQuotaRight +
               '=' + cQuota + Field.AsString + cQuota + ')';
-            if FFilter.Count > 0 then S := S + LogicStr[FLogicCond];
+            if FFilter.Count > 0 then
+              S := S + LogicStr[FLogicCond];
             FFilter.Insert(0, S);
           end;
         end;
@@ -1557,13 +1660,15 @@ begin
       FFilter.EndUpdate;
     end;
   end
-  else FilterError(SNotCaptureFilter);
+  else
+    FilterError(SNotCaptureFilter);
 end;
 
 procedure TJvDBFilter.UpdateFuncFilter;
 begin
   if FDataLink.Active and Active and (FFuncHandle <> nil) then
-    with FDatalink.DataSet as TBDEDataSet do begin
+    with FDatalink.DataSet as TBDEDataSet do
+    begin
       DisableControls;
       try
         DbiDeactivateFilter(Handle, FFuncHandle);
@@ -1578,7 +1683,8 @@ end;
 
 procedure TJvDBFilter.Update;
 begin
-  if FDataLink.Active and Active then begin
+  if FDataLink.Active and Active then
+  begin
     FDatalink.DataSet.DisableControls;
     try
       RecreateExprFilter;
@@ -1588,22 +1694,27 @@ begin
       FDatalink.DataSet.EnableControls;
     end;
   end
-  else DeactivateFilters;
+  else
+    DeactivateFilters;
 end;
 
 procedure TJvDBFilter.ActiveChanged;
 var
   WasActive: Boolean;
 begin
-  if not FIgnoreDataEvents then begin
+  if not FIgnoreDataEvents then
+  begin
     WasActive := Active;
     DropFilters;
-    if not (csDestroying in ComponentState) then begin
+    if not (csDestroying in ComponentState) then
+    begin
       RecreateExprFilter;
       RecreateFuncFilter;
-      if WasActive then Activate;
+      if WasActive then
+        Activate;
     end;
   end;
 end;
 
 end.
+

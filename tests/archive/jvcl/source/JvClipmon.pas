@@ -24,16 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF}
+{$I WINDOWSONLY.INC}
 
 unit JvClipMon;
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
 
 interface
 
@@ -49,8 +42,8 @@ uses
 type
   TJvClipboardMonitor = class(TJvComponent)
   private
-    FWindowHandle: HWnd;
-    FNextWindow: HWnd;
+    FWindowHandle: HWND;
+    FNextWindow: HWND;
     FEnabled: Boolean;
     FOnChange: TNotifyEvent;
     procedure ForwardMessage(var Msg: TMessage);
@@ -176,8 +169,8 @@ begin
       WM_DESTROYCLIPBOARD:
         ClipboardChanged;
       WM_CHANGECBCHAIN:
-        if HWnd(WParam) = FNextWindow then
-          FNextWindow := HWnd(LParam)
+        if HWND(WParam) = FNextWindow then
+          FNextWindow := HWND(LParam)
         else
           ForwardMessage(AMsg);
       WM_DRAWCLIPBOARD:

@@ -55,35 +55,25 @@ implementation
 resourcestring
   RS_JvAlarmsEditorString = 'Click to edit...';
 
-{*************************************************}
-
 function TJvAlarmsEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paSortList];
 end;
-
-{*************************************************}
 
 function TJvAlarmsEditor.GetValue: string;
 begin
   Result := GetStrValue;
 end;
 
-{*************************************************}
-
 procedure TJvAlarmsEditor.SetValue(const Value: string);
 begin
   SetStrValue(Value);
 end;
 
-{*************************************************}
-
 procedure TJvAlarmsEditor.GetValues(Proc: TGetStrProc);
 begin
   SetStrValue(RS_JvAlarmsEditorString);
 end;
-
-{*************************************************}
 
 procedure TJvAlarmsEditor.Edit;
 var

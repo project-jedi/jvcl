@@ -26,12 +26,13 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ A bitmap animator: animates an imagelist consisting of multiple likesized bitmaps
-  like the explorer logo in Internet Explorer and Netscape Navigator. }
-
 unit JvBmpAnim;
 
 interface
+
+{ A bitmap animator: animates an imagelist consisting of multiple likesized bitmaps
+  like the explorer logo in Internet Explorer and Netscape Navigator. }
+
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, CommCtrl,
   ExtCtrls, ImgList,
@@ -42,7 +43,6 @@ type
 
   TJvCustomBmpAnimator = class(TJvGraphicControl)
   private
-    { Private declarations }
     FImageList: TImageList;
     FTimer: TTimer;
     FIndex: Integer;

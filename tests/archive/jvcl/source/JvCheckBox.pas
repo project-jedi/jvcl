@@ -105,8 +105,6 @@ begin
     FAssociated.Enabled := Checked;
 end;
 
-{**************************************************}
-
 destructor TJvCheckBox.Destroy;
 begin
   FAutoSave.Free;
@@ -114,8 +112,6 @@ begin
   FFontSave.Free;
   inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvCheckBox.Toggle;
 begin
@@ -125,15 +121,11 @@ begin
     FAssociated.Enabled := Checked;
 end;
 
-{**************************************************}
-
 procedure TJvCheckBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or BS_MULTILINE or BS_TOP;
 end;
-
-{**************************************************}
 
 procedure TJvCheckBox.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -141,7 +133,6 @@ begin
   if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(Self);
 end;
-{**************************************************}
 
 procedure TJvCheckBox.CMParentColorChanged(var Msg: TMessage);
 begin
@@ -149,8 +140,6 @@ begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
-
-{**************************************************}
 
 procedure TJvCheckBox.CMMouseEnter(var Msg: TMessage);
 begin
@@ -172,8 +161,6 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvCheckBox.CMMouseLeave(var Msg: TMessage);
 begin
   // for D7...
@@ -190,14 +177,10 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
 procedure TJvCheckBox.SetHotFont(const Value: TFont);
 begin
   FHotFont.Assign(Value);
 end;
-
-{**************************************************}
 
 procedure TJvCheckBox.Loaded;
 var
@@ -212,22 +195,16 @@ begin
   end;
 end;
 
-{**************************************************}
-
 function TJvCheckBox.GetCaption: TCaption;
 begin
   Result := inherited Caption;
 end;
-
-{**************************************************}
 
 procedure TJvCheckBox.SetAutoSize(Value: Boolean);
 begin
   FAutoSize := Value;
   SetCaption(Caption);
 end;
-
-{**************************************************}
 
 procedure TJvCheckBox.SetCaption(const Value: TCaption);
 begin
@@ -238,8 +215,6 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvCheckBox.SetAssociated(const Value: TControl);
 begin
   FAssociated := Value;
@@ -247,16 +222,12 @@ begin
     FAssociated.Enabled := Checked;
 end;
 
-{**************************************************}
-
 procedure TJvCheckBox.SetChecked(Value: Boolean);
 begin
   inherited SetChecked(Value);
   if Assigned(FAssociated) then
     FAssociated.Enabled := Value;
 end;
-
-{**************************************************}
 
 procedure TJvCheckBox.Click;
 begin

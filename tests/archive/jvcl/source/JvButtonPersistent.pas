@@ -76,8 +76,6 @@ type
 
 implementation
 
-{***********************************************}
-
 constructor TJvButtonPersistent.Create;
 begin
   inherited Create;
@@ -88,15 +86,11 @@ begin
   FFontEffect := True;
 end;
 
-{***********************************************}
-
 destructor TJvButtonPersistent.Destroy;
 begin
   FFont.Free;
   inherited Destroy;
 end;
-
-{***********************************************}
 
 procedure TJvButtonPersistent.AssignTo(Sender: TPersistent);
 begin
@@ -127,18 +121,17 @@ begin
       TJvSpeedButton(Sender).HotTrack := HotTrack;
       TJvSpeedButton(Sender).HotTrackFont.Assign(FFont);
     end;
-  end;
+  end
+  else
+    // (rom) inherited added
+    inherited AssignTo(Sender);
 end;
-
-{***********************************************}
 
 procedure TJvButtonPersistent.Changed;
 begin
   if Assigned(FOnChanged) then
     FOnChanged(Self);
 end;
-
-{***********************************************}
 
 procedure TJvButtonPersistent.SetCaption(const Value: string);
 begin
@@ -149,8 +142,6 @@ begin
   end;
 end;
 
-{***********************************************}
-
 procedure TJvButtonPersistent.SetEnabled(const Value: Boolean);
 begin
   if FEnabled <> Value then
@@ -159,8 +150,6 @@ begin
     Changed;
   end;
 end;
-
-{***********************************************}
 
 procedure TJvButtonPersistent.SetFlat(const Value: Boolean);
 begin
@@ -171,8 +160,6 @@ begin
   end;
 end;
 
-{***********************************************}
-
 procedure TJvButtonPersistent.SetFont(const Value: TFont);
 begin
   if FFont <> Value then
@@ -181,8 +168,6 @@ begin
     Changed;
   end;
 end;
-
-{***********************************************}
 
 procedure TJvButtonPersistent.SetFontEffect(const Value: Boolean);
 begin
@@ -193,8 +178,6 @@ begin
   end;
 end;
 
-{***********************************************}
-
 procedure TJvButtonPersistent.SetHint(const Value: string);
 begin
   if FHint <> Value then
@@ -204,8 +187,6 @@ begin
   end;
 end;
 
-{***********************************************}
-
 procedure TJvButtonPersistent.SetShowHint(const Value: Boolean);
 begin
   if FShowHint <> Value then
@@ -214,8 +195,6 @@ begin
     Changed;
   end;
 end;
-
-{***********************************************}
 
 procedure TJvButtonPersistent.SetVisible(const Value: Boolean);
 begin

@@ -54,8 +54,6 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvClipboardViewer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -68,8 +66,6 @@ begin
   // (rom) removed a SetClipboardViewer line here
 end;
 
-{**************************************************}
-
 destructor TJvClipboardViewer.Destroy;
 begin
   {$IFDEF COMPILER6_UP}
@@ -81,8 +77,6 @@ begin
   inherited Destroy;
 end;
 
-{**************************************************}
-
 procedure TJvClipboardViewer.EmptyClipboard;
 begin
   OpenClipboard(Application.Handle);
@@ -90,8 +84,6 @@ begin
   Windows.EmptyClipboard;
   CloseClipboard;
 end;
-
-{**************************************************}
 
 procedure TJvClipboardViewer.UpdateClip(var Msg: TWMDrawClipBoard);
 var
@@ -114,8 +106,6 @@ begin
     FOnText(Self, ClipBoard.AsText);
   Msg.Result := 0;
 end;
-
-{**************************************************}
 
 procedure TJvClipboardViewer.WndProc(var Msg: TMessage);
 begin

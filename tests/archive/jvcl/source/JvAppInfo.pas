@@ -62,7 +62,6 @@ type
     property UnAssignedValue: string read FUnAssigned write FUnAssigned;
   end;
 
-
 implementation
 
 uses

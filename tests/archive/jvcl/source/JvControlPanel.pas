@@ -34,7 +34,7 @@ unit JvControlPanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Windows, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, Menus,
   JvTypes, JvButton, JvDirectories, JvFunctions;
 
@@ -63,7 +63,31 @@ type
 
 implementation
 
-{*******************************************************}
+constructor TJvControlPanel.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FDirs := TJvDirectories.Create(Self);
+  FPopup := TPopupMenu.Create(Self);
+end;
+
+destructor TJvControlPanel.Destroy;
+var
+  I: Integer;
+begin
+  FDirs.Free;
+  if Images = nil then
+    for I := 0 to FPopup.Items.Count - 1 do
+      FPopup.Items[I].Bitmap.FreeImage;
+  FPopup.Free;
+  inherited Destroy;
+end;
+
+procedure TJvControlPanel.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  if not (csDesigning in ComponentState) then
+    Refresh;
+end;
 
 procedure TJvControlPanel.AddToPopup(Item: TMenuItem; Path: string);
 var
@@ -98,8 +122,6 @@ begin
   end;
 end;
 
-{*******************************************************}
-
 procedure TJvControlPanel.Click;
 var
   P: TPoint;
@@ -111,40 +133,6 @@ begin
     FPopup.Popup(P.x, P.y);
   end;
 end;
-
-{*******************************************************}
-
-constructor TJvControlPanel.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FDirs := TJvDirectories.Create(Self);
-  FPopup := TPopupMenu.Create(Self);
-end;
-
-{*******************************************************}
-
-procedure TJvControlPanel.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  if not (csDesigning in ComponentState) then
-    Refresh;
-end;
-
-{*******************************************************}
-
-destructor TJvControlPanel.Destroy;
-var
-  I: Integer;
-begin
-  FDirs.Free;
-  if Images = nil then
-    for I := 0 to FPopup.Items.Count - 1 do
-      FPopup.Items[I].Bitmap.FreeImage;
-  FPopup.Free;
-  inherited Destroy;
-end;
-
-{*******************************************************}
 
 procedure TJvControlPanel.Notification(AComponent: TComponent;
   Operation: TOperation);

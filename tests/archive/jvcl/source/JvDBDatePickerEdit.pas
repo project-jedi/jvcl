@@ -23,7 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+
 {$I JVCL.INC}
 
 { A data-aware variation of the DatePickerEdit component.
@@ -43,13 +43,7 @@ unit JvDBDatePickerEdit;
 interface
 
 uses
-  Classes,
-  Controls,
-  Graphics,
-
-  Db,
-  DbCtrls,
-
+  Classes, Controls, Graphics, Db, DbCtrls,
   JvDatePickerEdit;
 
 type
@@ -57,35 +51,28 @@ type
   private
     FDataLink: TFieldDataLink;
     FEnforceRequired: Boolean;
-
     procedure ValidateShowCheckbox; overload;
     function ValidateShowCheckbox(const AValue: Boolean): Boolean; overload;
-
-    function GetDataField: String;
+    function GetDataField: string;
     function GetDataSource: TDataSource;
-    procedure SetDataField(const AValue: String);
+    procedure SetDataField(const AValue: string);
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetEnforceRequired(const AValue: Boolean);
-
   protected
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
-
     function IsLinked: Boolean;
-
     procedure Change; override;
     procedure DoKillFocus(const ANextControl: TWinControl); override;
     procedure SetShowCheckbox(const AValue: Boolean); override;
     procedure UpdateDisplay; override;
     function GetEnableValidation: Boolean; override;
-
-    property DataField : String read GetDataField write SetDataField;
+    property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property EnforceRequired: Boolean read FEnforceRequired write SetEnforceRequired default True;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     function IsEmpty: Boolean; override;
   end;
 
@@ -134,7 +121,6 @@ type
     property ShowCheckbox;
     property TabOrder;
     property Visible;
-
     property OnChange;
     property OnClick;
     property OnCheckClick;
@@ -162,17 +148,10 @@ type
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}Variants,{$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF}
   SysUtils;
-
-{ TLucaCustomDBDatePicker }
-
-procedure TJvCustomDBDatePickerEdit.Change;
-begin
-  if(IsLinked) then
-    FDataLink.Modified;
-  inherited;
-end;
 
 constructor TJvCustomDBDatePickerEdit.Create(AOwner: TComponent);
 begin
@@ -180,7 +159,7 @@ begin
   ControlStyle := ControlStyle + [csReplicatable];
   FEnforceRequired := True;
   FDataLink := TFieldDataLink.Create;
-  with(FDataLink) do
+  with FDataLink do
   begin
     Control := Self;
     OnDataChange := DataChange;
@@ -188,46 +167,53 @@ begin
   end;
 end;
 
+destructor TJvCustomDBDatePickerEdit.Destroy;
+begin
+  FDataLink.OnDataChange := nil;
+  FDataLink.OnUpdateData := nil;
+  FreeAndNil(FDataLink);
+  inherited Destroy;
+end;
+
+procedure TJvCustomDBDatePickerEdit.Change;
+begin
+  if IsLinked then
+    FDataLink.Modified;
+  inherited Change;
+end;
+
 procedure TJvCustomDBDatePickerEdit.DataChange(Sender: TObject);
 begin
-  if(FDataLink.Field <> nil) then
+  if FDataLink.Field <> nil then
     Self.Date := FDataLink.Field.AsDateTime;
 end;
 
-destructor TJvCustomDBDatePickerEdit.Destroy;
+function TJvCustomDBDatePickerEdit.GetDataField: string;
 begin
-  FDataLink.OnDataChange := NIL;
-  FDataLink.OnUpdateData := NIL;
-  FreeAndNil(FDataLink);
-  inherited;
-end;
-
-function TJvCustomDBDatePickerEdit.GetDataField: String;
-begin
-  result := FDataLink.FieldName;
+  Result := FDataLink.FieldName;
 end;
 
 function TJvCustomDBDatePickerEdit.GetDataSource: TDataSource;
 begin
-  result := FDataLink.DataSource;
+  Result := FDataLink.DataSource;
 end;
 
 function TJvCustomDBDatePickerEdit.IsEmpty: Boolean;
 begin
-  if(IsLinked) then
+  if IsLinked then
   begin
-    if(FDataLink.DataSet.State in [dsEdit, dsInsert]) then
-      result := inherited IsEmpty
+    if FDataLink.DataSet.State in [dsEdit, dsInsert] then
+      Result := inherited IsEmpty
     else
-      result := FDataLink.Field.IsNull;
+      Result := FDataLink.Field.IsNull;
   end
   else
-    result := True;
+    Result := True;
 end;
 
 function TJvCustomDBDatePickerEdit.IsLinked: Boolean;
 begin
-  result := Assigned(FDataLink) and Assigned(FDataLink.Field);
+  Result := Assigned(FDataLink) and Assigned(FDataLink.Field);
 end;
 
 procedure TJvCustomDBDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
@@ -238,10 +224,10 @@ begin
     SetFocus;
     raise;
   end;
-  inherited;
+  inherited DoKillFocus(ANextControl);
 end;
 
-procedure TJvCustomDBDatePickerEdit.SetDataField(const AValue: String);
+procedure TJvCustomDBDatePickerEdit.SetDataField(const AValue: string);
 begin
   FDataLink.FieldName := AValue;
   ValidateShowCheckbox;
@@ -266,8 +252,8 @@ end;
 
 procedure TJvCustomDBDatePickerEdit.UpdateData(Sender: TObject);
 begin
-  if(IsLinked) then
-    if(not(Checked)) then
+  if IsLinked then
+    if not Checked then
       FDataLink.Field.Value := NULL
     else
       FDataLink.Field.AsDateTime := Self.Date;
@@ -275,12 +261,12 @@ end;
 
 procedure TJvCustomDBDatePickerEdit.UpdateDisplay;
 begin
-  if(IsLinked) then
-    inherited
+  if IsLinked then
+    inherited UpdateDisplay
   else
   begin
     Checked := False;
-    if not(csDesigning in ComponentState) then
+    if not (csDesigning in ComponentState) then
       Text := EmptyStr;
   end;
 end;
@@ -293,23 +279,23 @@ end;
 function TJvCustomDBDatePickerEdit.ValidateShowCheckbox(
   const AValue: Boolean): Boolean;
 begin
-  result := AValue;
-  if(EnforceRequired) and(IsLinked) then
+  Result := AValue;
+  if EnforceRequired and IsLinked then
   begin
-    if(AValue) and(FDataLink.Field.Required) then
-      result := False;
-
+    if AValue and FDataLink.Field.Required then
+      Result := False;
     AllowNoDate := not FDataLink.Field.Required;
   end;
 end;
 
 function TJvCustomDBDatePickerEdit.GetEnableValidation: Boolean;
 begin
-  result := inherited GetEnableValidation;
+  Result := inherited GetEnableValidation;
   {if we enabled validation for an unlinked control, we'd have validation errors
    pop up just from tabbing over the control, therefore we temporary disable it}
-  if(InternalChanging or Leaving) then
-    result := result and IsLinked;
+  if InternalChanging or Leaving then
+    Result := Result and IsLinked;
 end;
 
 end.
+

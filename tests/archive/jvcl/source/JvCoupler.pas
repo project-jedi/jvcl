@@ -26,6 +26,7 @@ Known Issues:
 * rewrite to use collection so more labels / controls can be coupled?
 * add option to select side? DONE
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvCoupler;
@@ -33,7 +34,7 @@ unit JvCoupler;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
+  Messages, SysUtils, Classes, Controls, StdCtrls,
   {$IFNDEF COMPILER5_UP}
   JvTypes,
   {$ENDIF}
@@ -95,28 +96,24 @@ begin
           Top := FControl.Top - Height - FSpacing;
           Left := FControl.Left;
         end;
-
       AkLeft:
         with FLabel do
         begin
           Top := FControl.Top + trunc(FControl.Height / 2 - Height / 2);
           Left := FControl.Left - Width - FSpacing;
         end;
-
       AkRight:
         with FLabel do
         begin
           Top := FControl.Top + trunc(FControl.Height / 2 - Height / 2);
           Left := FControl.Left + FControl.Width + FSpacing + 2;
         end;
-
       AkBottom:
         with FLabel do
         begin
           Top := FControl.Top + FControl.Height + FSpacing;
           Left := FControl.Left;
         end;
-
     else
       with FLabel do
       begin

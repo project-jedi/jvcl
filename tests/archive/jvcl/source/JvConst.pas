@@ -52,31 +52,31 @@ const
   { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
   PaletteMask = $02000000;
 
-  {$IFDEF VER90}
+  {$IFDEF DELPHI2}
   SDelphiKey = 'Software\Borland\Delphi\2.0';
   {$ENDIF}
-  {$IFDEF VER93}
+  {$IFDEF BCB1}
   SDelphiKey = 'Software\Borland\C++Builder\1.0';
   {$ENDIF}
-  {$IFDEF VER100}
+  {$IFDEF DELPHI3}
   SDelphiKey = 'Software\Borland\Delphi\3.0';
   {$ENDIF}
-  {$IFDEF VER110}
+  {$IFDEF BCB3}
   SDelphiKey = 'Software\Borland\C++Builder\3.0';
   {$ENDIF}
-  {$IFDEF VER120}
+  {$IFDEF DELPHI4}
   SDelphiKey = 'Software\Borland\Delphi\4.0';
   {$ENDIF}
-  {$IFDEF VER125}
+  {$IFDEF BCB4}
   SDelphiKey = 'Software\Borland\C++Builder\4.0';
   {$ENDIF}
-  {$IFDEF VER130}
+  {$IFDEF DELPHI5}
   SDelphiKey = 'Software\Borland\Delphi\5.0';
   {$ENDIF}
-  {$IFDEF VER140}
+  {$IFDEF DELPHI6}
   SDelphiKey = 'Software\Borland\Delphi\6.0';
   {$ENDIF}
-  {$IFDEF VER150}
+  {$IFDEF DELPHI7}
   SDelphiKey = 'Software\Borland\Delphi\7.0';
   {$ENDIF}
 
@@ -99,4 +99,5 @@ uses
 initialization
   Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
   Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
+
 end.

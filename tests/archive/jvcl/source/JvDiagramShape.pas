@@ -28,7 +28,7 @@ unit JvDiagramShape;
 interface
 
 uses
-  Windows, Controls, Classes, Forms, ExtCtrls, Graphics, Messages;
+  Windows, Controls, Classes, ExtCtrls, Graphics;
 
 type
   TJvTextShape = class;
@@ -40,10 +40,6 @@ type
     FCaption: TJvTextShape;
     FSelected: Boolean;
     FWasCovered: Boolean;
-    FAlignment: TAlignment;
-    FRightClickSelect: boolean;
-    FMultiSelect: boolean;
-    function GetCanProcessMouseMsg: Boolean;
   protected
     procedure SetCaption(Value: TJvTextShape); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -51,20 +47,17 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     function GetCustomShapeAtPos(X, Y: Integer): TJvCustomDiagramShape;
-
-    property CanProcessMouseMsg: Boolean read GetCanProcessMouseMsg
+    property CanProcessMouseMsg: Boolean read FCanProcessMouseMsg
       write FCanProcessMouseMsg;
     procedure SetParent(AParent: TWinControl); override;
     procedure SetSelected(Value: Boolean); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    property MultiSelect: boolean read FMultiSelect write FMultiSelect;
+    property MultiSelect: Boolean read FMultiSelect write FMultiSelect;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure AlignCaption(Alignment: TAlignment);
-
     // Class methods to save and load all TJvCustomDiagramShape components
     // that are children of a given control. They are class methods so that an
     // instance of TJvCustomDiagramShape is not required
@@ -73,18 +66,12 @@ type
     class procedure DeleteAllShapes(ParentControl: TWinControl);
     class procedure DeleteSelectedShapes(ParentControl: TWinControl);
     class procedure UnselectAllShapes(ParentControl: TWinControl);
-    class procedure SetMultiSelected(ParentControl: TWinControl; Value: boolean);
-
+    class procedure SetMultiSelected(ParentControl: TWinControl; Value: Boolean);
     property Selected: Boolean read FSelected write SetSelected;
   published
     property Caption: TJvTextShape read FCaption write SetCaption;
-    property RightClickSelect: boolean read FRightClickSelect write FRightClickSelect default true;
-
+    property RightClickSelect: Boolean read FRightClickSelect write FRightClickSelect default True;
     // Make these properties available
-    property PopupMenu;
-    property OnMouseDown;
-    property OnMouseUp;
-    property OnMouseMove;
     property OnClick;
     property OnDblClick;
   end;
@@ -104,10 +91,8 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-
     property Moving: Boolean read FMoving write FMoving;
   public
-
     constructor Create(AOwner: TComponent); override;
   end;
 
@@ -134,7 +119,6 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-
     property SizingMode: TJvSizingMode read FSizingMode write FSizingMode;
     property SizeRectHeight: Integer read FSizeRectHeight write FSizeRectHeight;
     property SizeRectWidth: Integer read FSizeRectWidth write FSizeRectWidth;
@@ -142,34 +126,29 @@ type
     property MinWidth: Integer read FMinWidth write FMinWidth;
   public
     constructor Create(AOwner: TComponent); override;
-
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
   TJvTextShape = class(TJvSizeableShape)
   private
     FText: string;
-    FAutosize: Boolean;
+    FAutoSize: Boolean;
     FFont: TFont;
-
     procedure SetText(Value: string);
     procedure SetFont(Value: TFont);
     procedure FontChanged(Sender: TObject);
   protected
-    procedure SetAutosize(Value: Boolean);
-    {$IFDEF COMPILER6_UP} override;
-    {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure RefreshText;
     procedure SetParent(AParent: TWinControl); override;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
     property Text: string read FText write SetText;
-    property Autosize: Boolean read FAutosize write SetAutosize;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize;
     property Font: TFont read FFont write SetFont;
   end;
 
@@ -177,7 +156,6 @@ type
   private
     FImages: TImageList;
     FImageIndex: Integer;
-
     procedure SetImages(Value: TImageList);
     procedure SetImageIndex(Value: Integer);
   protected
@@ -189,13 +167,19 @@ type
   published
     property Images: TImageList read FImages write SetImages;
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
+    // Make these properties available
+    property PopupMenu;
+    property OnMouseDown;
+    property OnMouseUp;
+    property OnMouseMove;
+    property OnClick;
+    property OnDblClick;
   end;
 
   TJvStandardShape = class(TJvSizeableShape)
   private
     FShapeType: TShapeType;
     FLineColor: TColor;
-
     procedure SetShapeType(Value: TShapeType);
   protected
     procedure Paint; override;
@@ -203,6 +187,7 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property ShapeType: TShapeType read FShapeType write SetShapeType;
+    // (rom) renamed from LineColour
     property LineColor: TColor read FLineColor write FLineColor default clBlack;
   end;
 
@@ -215,7 +200,6 @@ type
     FOffset: Integer; // Distance from top or left of side
   public
     constructor Create;
-
     procedure Assign(Source: TPersistent); override;
     // Gets connection point in parent's coordinates
     function ConnPoint(TerminatorRect: TRect): TPoint;
@@ -244,7 +228,6 @@ type
     FEndTermRect: TRect;
     // Used to track required movement of the caption
     FMidPoint: TPoint;
-
     procedure SetLineWidth(Value: Integer);
     function GetConn(Index: Integer): TJvConnection;
     procedure SetConn(Index: Integer; Value: TJvConnection);
@@ -266,13 +249,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     // Restrict the minimum size
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     // Called when moving one of the connected shapes
     procedure SetBoundingRect;
     procedure SetConnections(TheStartConn, TheEndConn: TJvConnection);
-
     property StartTermRect: TRect index 1 read GetTermRect write SetTermRect;
     property EndTermRect: TRect index 2 read GetTermRect write SetTermRect;
   published
@@ -318,7 +299,6 @@ type
 
   TJvSubCaseArrow = class(TJvConnector)
   protected
-
     procedure DrawArrowHead(ConnPt, TermPt: TPoint);
     procedure DrawEndTerminator; override;
     procedure DrawStartTerminator; override;
@@ -336,11 +316,11 @@ type
 implementation
 
 uses
-  SysUtils, ImgList, Dialogs;
+  SysUtils, ImgList;
 
 type
-  // This type is purely so that can acccess the protected MouseDown method
-  TJvMdControl = class(TControl);
+  // This type is solely for the acccess to the protected MouseDown method
+  TCrackTControl = class(TControl);
 
 var
   FShapeCount: Integer;
@@ -350,9 +330,7 @@ var
 procedure NoLessThan(var Value: Integer; Limit: Integer);
 begin
   if Value < Limit then
-  begin
     Value := Limit;
-  end;
 end;
 
 function RectHeight(ARect: TRect): Integer;
@@ -373,61 +351,49 @@ end;
 
 function Min(A: array of Integer): Integer;
 var
-  i: Integer;
+  I: Integer;
 begin
+  // (rom) the "Purely" comment is wrong
+  // (rom) the function explicitly handles empty arrays
   Result := 0; // Purely to stop compiler warnings
-
-  for i := Low(A) to High(A) do
-  begin
-    if i = Low(A) then
-    begin
-      Result := A[i]
-    end
+  for I := Low(A) to High(A) do
+    if I = Low(A) then
+      Result := A[I]
     else
-      if A[i] < Result then
-    begin
-      Result := A[i];
-    end;
-  end;
+    if A[I] < Result then
+      Result := A[I];
 end;
 
 function Max(A: array of Integer): Integer;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := 0; // Purely to stop compiler warnings
-
-  for i := Low(A) to High(A) do
-  begin
-    if i = Low(A) then
-    begin
-      Result := A[i]
-    end
+  for I := Low(A) to High(A) do
+    if I = Low(A) then
+      Result := A[I]
     else
-      if A[i] > Result then
-    begin
-      Result := A[i];
-    end;
-  end;
+    if A[I] > Result then
+      Result := A[I];
 end;
 
-// ---------------------------- TJvCustomDiagramShape ------------------------------
+//=== TJvCustomDiagramShape ==================================================
 
 constructor TJvCustomDiagramShape.Create(AOwner: TComponent);
 var
   AlreadyUsed: Boolean;
-  i: Integer;
+  I: Integer;
   TempName: string;
 begin
   inherited Create(AOwner);
   FCanProcessMouseMsg := True;
-  FRightClickSelect := true;
-
   FCaption := nil;
   FSelected := False;
   FWasCovered := False;
-  if AOwner = nil then
-    Exit;
+
+  // (rom) this was removed, but should be handled
+  //if AOwner = nil then
+    //Exit;
   // Give the component a name and ensure that it is unique
   repeat
     // Use a local variable to hold the name, so that don't get exceptions
@@ -438,23 +404,20 @@ begin
 
     // Loop through all the components on the form to ensure that this name
     // is not already in use
-    for i := 0 to Owner.ComponentCount - 1 do
-    begin
-      if Owner.Components[i].Name = TempName then
+    for I := 0 to Owner.ComponentCount - 1 do
+      if Owner.Components[I].Name = TempName then
       begin
         // Try the next component name as this one is used already
         AlreadyUsed := True;
         Break;
       end;
-    end;
   until not AlreadyUsed;
-
   Name := TempName;
 end;
 
 destructor TJvCustomDiagramShape.Destroy;
 var
-  i: Integer;
+  I: Integer;
 begin
   FreeAndNil(FCaption);
   // First check that this control has been placed on a form
@@ -462,22 +425,14 @@ begin
   begin
     // Search parent control for TJvConnector components that connect
     // to this component
-    i := 0;
-
-    while i < Parent.ControlCount do
-    begin
-      if (Parent.Controls[i] is TJvConnector) and
-        (TJvConnector(Parent.Controls[i]).IsConnected(Self)) then
-      begin
-        Parent.Controls[i].Free;
-      end
+    I := 0;
+    while I < Parent.ControlCount do
+      if (Parent.Controls[I] is TJvConnector) and
+        (TJvConnector(Parent.Controls[I]).IsConnected(Self)) then
+        Parent.Controls[I].Free
       else
-      begin
-        Inc(i);
-      end;
-    end;
+        Inc(I);
   end;
-
   inherited Destroy;
 end;
 
@@ -485,25 +440,25 @@ procedure TJvCustomDiagramShape.SetCaption(Value: TJvTextShape);
 begin
   if (Value = nil) and Assigned(FCaption) then
   begin
-    FreeAndNil(FCaption);
+    FCaption.Free;
+    FCaption := nil;
   end
   else
-    if (Value <> FCaption) then
+  if Value <> FCaption then
   begin
     FCaption := Value;
     FCaption.Parent := Self.Parent;
-    // Ensure the caption gets aligned correctly. This only needs to happen if
+    // Ensure the caption gets aligned correctly. Ths only needs to happen if
     // the caption has not already been set in place (it will already be in the
     // right place if we are loading this from a file).
     if (FCaption.Left = 0) and (FCaption.Top = 0) then
-      AlignCaption(taLeftJustify);
+      AlignCaption(taCenter);
   end;
 end;
 
 procedure TJvCustomDiagramShape.SetParent(AParent: TWinControl);
 begin
   inherited SetParent(AParent);
-
   if Assigned(FCaption) then
     FCaption.Parent := AParent;
 end;
@@ -511,50 +466,31 @@ end;
 procedure TJvCustomDiagramShape.SetSelected(Value: Boolean);
 begin
   FSelected := Value;
-
   if Assigned(FCaption) then
-  begin
     FCaption.SetSelected(Value);
-  end;
 end;
 
 procedure TJvCustomDiagramShape.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
-  i: Integer;
+  I: Integer;
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-
   if not Assigned(Parent) then
-  begin
     Exit;
-  end;
-  AlignCaption(FAlignment);
-
   // Search parent control for TJvConnector components
-  for i := 0 to Parent.ControlCount - 1 do
-  begin
-    if Parent.Controls[i] is TJvConnector then
-    begin
-      if TJvConnector(Parent.Controls[i]).IsConnected(Self) then
-      begin
+  for I := 0 to Parent.ControlCount - 1 do
+    if Parent.Controls[I] is TJvConnector then
+      if TJvConnector(Parent.Controls[I]).IsConnected(Self) then
         // Resize the connector, but don't draw it yet
-        TJvConnector(Parent.Controls[i]).SetBoundingRect;
-      end;
-    end;
-  end;
+        TJvConnector(Parent.Controls[I]).SetBoundingRect;
 end;
 
 procedure TJvCustomDiagramShape.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-
   if Operation = opRemove then
-  begin
     if AComponent = FCaption then
-    begin
       FCaption := nil;
-    end;
-  end;
 end;
 
 procedure TJvCustomDiagramShape.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -566,8 +502,6 @@ begin
   if CanProcessMouseMsg then
   begin
     BringToFront;
-    if RightClickSelect then
-      Selected := true;
     MouseCapture := True;
     inherited MouseDown(Button, Shift, X, Y);
     Exit;
@@ -595,7 +529,7 @@ begin
     // to the Parent.MouseDown method. Need to convert coordinates to parent's
     // coordinates
     TempPt := Parent.ScreenToClient(ClientToScreen(TempPt));
-    TJvMdControl(Parent).MouseDown(Button, Shift, TempPt.X, TempPt.Y);
+    TCrackTControl(Parent).MouseDown(Button, Shift, TempPt.X, TempPt.Y);
   end;
 end;
 
@@ -603,7 +537,6 @@ procedure TJvCustomDiagramShape.MouseUp(Button: TMouseButton; Shift: TShiftState
   X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
-
   if FWasCovered then
   begin
     // We will lose a mouse click, so replace it
@@ -614,29 +547,24 @@ end;
 
 function TJvCustomDiagramShape.GetCustomShapeAtPos(X, Y: Integer): TJvCustomDiagramShape;
 var
-  i: Integer;
+  I: Integer;
   Pt: TPoint;
 begin
   Result := nil;
-
   if not Assigned(Parent) then
-  begin
     Exit;
-  end;
 
   Pt := Parent.ScreenToClient(ClientToScreen(Point(X, Y)));
 
-  for i := 0 to Parent.ControlCount - 1 do
-  begin
-    if (Parent.Controls[i] <> Self) and
-      (Parent.Controls[i] is TJvCustomDiagramShape) and
-      TJvCustomDiagramShape(Parent.Controls[i]).CanProcessMouseMsg and
-      InRect(Pt.X, Pt.Y, Parent.Controls[i].BoundsRect) then
+  for I := 0 to Parent.ControlCount - 1 do
+    if (Parent.Controls[I] <> Self) and
+      (Parent.Controls[I] is TJvCustomDiagramShape) and
+      TJvCustomDiagramShape(Parent.Controls[I]).CanProcessMouseMsg and
+      InRect(Pt.X, Pt.Y, Parent.Controls[I].BoundsRect) then
     begin
-      Result := TJvCustomDiagramShape(Parent.Controls[i]);
+      Result := TJvCustomDiagramShape(Parent.Controls[I]);
       Exit;
     end;
-  end;
 end;
 
 procedure TJvCustomDiagramShape.AlignCaption(Alignment: TAlignment);
@@ -645,9 +573,7 @@ var
 begin
   FAlignment := Alignment;
   if not Assigned(FCaption) then
-  begin
     Exit;
-  end;
 
   ALeft := Left;
   ATop := Top + Height + 5;
@@ -655,9 +581,12 @@ begin
   AHeight := FCaption.Height;
 
   case Alignment of
-    taLeftJustify: ALeft := Left;
-    taRightJustify: ALeft := Left + Width - 1;
-    taCenter: ALeft := Left + ((Width - FCaption.Width) div 2);
+    taLeftJustify:
+      ALeft := Left;
+    taRightJustify:
+      ALeft := Left + Width - 1;
+    taCenter:
+      ALeft := Left + ((Width - FCaption.Width) div 2);
   end;
   FCaption.SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
@@ -671,7 +600,6 @@ var
 begin
   FS := TFileStream.Create(Filename, fmCreate or fmShareDenyWrite);
   Writer := TWriter.Create(FS, 1024);
-
   try
     Writer.Root := ParentControl.Owner;
     RealName := ParentControl.Name;
@@ -692,10 +620,8 @@ var
   RealName: string;
 begin
   DeleteAllShapes(ParentControl);
-
   FS := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
   Reader := TReader.Create(FS, 1024);
-
   try
     // Save the parent's name, in case we are reading into a different
     // control than we saved the diagram from
@@ -715,68 +641,45 @@ end;
 
 class procedure TJvCustomDiagramShape.DeleteAllShapes(ParentControl: TWinControl);
 var
-  i: Integer;
+  I: Integer;
 begin
   // Delete controls from ParentControl
-  i := 0;
-
-  while i < ParentControl.ControlCount do
-  begin
-    if ParentControl.Controls[i] is TJvCustomDiagramShape then
-    begin
-      ParentControl.Controls[i].Free;
+  I := 0;
+  while I < ParentControl.ControlCount do
+    if ParentControl.Controls[I] is TJvCustomDiagramShape then
+      ParentControl.Controls[I].Free
       // Note that there is no need to increment the counter, because the
       // next component (if any) will now be at the same position in Controls[]
-    end
     else
-    begin
-      Inc(i);
-    end;
-  end;
+      Inc(I);
 end;
 
 class procedure TJvCustomDiagramShape.DeleteSelectedShapes(ParentControl: TWinControl);
 var
-  i: Integer;
+  I: Integer;
 begin
   // Delete controls from ParentControl if they are flagged as selected
-  i := 0;
-
-  while i < ParentControl.ControlCount do
-  begin
-    if (ParentControl.Controls[i] is TJvCustomDiagramShape) and
-      (TJvCustomDiagramShape(ParentControl.Controls[i]).Selected) then
-    begin
-      ParentControl.Controls[i].Free;
+  I := 0;
+  while I < ParentControl.ControlCount do
+    if (ParentControl.Controls[I] is TJvCustomDiagramShape) and
+      (TJvCustomDiagramShape(ParentControl.Controls[I]).Selected) then
+      ParentControl.Controls[I].Free
       // Note that there is no need to increment the counter, because the
       // next component (if any) will now be at the same position in Controls[]
-    end
     else
-    begin
-      Inc(i);
-    end;
-  end;
+      Inc(I);
 end;
 
 class procedure TJvCustomDiagramShape.UnselectAllShapes(ParentControl: TWinControl);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to ParentControl.ControlCount - 1 do
-  begin
-    if ParentControl.Controls[i] is TJvCustomDiagramShape then
-    begin
-      TJvCustomDiagramShape(ParentControl.Controls[i]).Selected := False;
-    end;
-  end;
+  for I := 0 to ParentControl.ControlCount - 1 do
+    if ParentControl.Controls[I] is TJvCustomDiagramShape then
+      TJvCustomDiagramShape(ParentControl.Controls[I]).Selected := False;
 end;
 
-function TJvCustomDiagramShape.GetCanProcessMouseMsg: Boolean;
-begin
-  Result := FCanProcessMouseMsg and Enabled;
-end;
-
-// --------------------------- TJvMoveableShape  ----------------------------
+//=== TJvMoveableShape =======================================================
 
 constructor TJvMoveableShape.Create(AOwner: TComponent);
 begin
@@ -807,53 +710,41 @@ end;
 function TJvMoveableShape.ValidMove(DeltaX, DeltaY: Integer): Boolean;
 begin
   Result := True;
-
   if not Assigned(Parent) then
-  begin
     Exit;
-  end;
 
   if Selected then
-  begin
     Result := (Left + DeltaX >= 0) and
       (Top + DeltaY >= 0) and
       (Left + DeltaX + Width - 1 <
       Parent.ClientRect.Right - Parent.ClientRect.Left) and
       (Top + DeltaY + Height - 1 <
       Parent.ClientRect.Bottom - Parent.ClientRect.Top);
-  end;
 end;
 
 procedure TJvMoveableShape.MoveShapes(DeltaX, DeltaY: Integer);
 var
-  i, Pass: Integer;
+  I, Pass: Integer;
   TempControl: TControl;
 begin
   if not Assigned(Parent) then
-  begin
     Exit;
-  end;
 
   // Do 2 passes through controls. The first one is to check that all
   // movements are valid
   for Pass := 1 to 2 do
   begin
-    for i := 0 to Parent.ControlCount - 1 do
+    for I := 0 to Parent.ControlCount - 1 do
     begin
-      TempControl := Parent.Controls[i];
-
+      TempControl := Parent.Controls[I];
       if TempControl is TJvMoveableShape then
       begin
         if (Pass = 1) and
           (not TJvMoveableShape(TempControl).ValidMove(DeltaX, DeltaY)) then
-        begin
-          Exit;
-        end
+          Exit
         else
-          if (Pass = 2) and TJvMoveableShape(TempControl).Selected then
-        begin
+        if (Pass = 2) and TJvMoveableShape(TempControl).Selected then
           TJvMoveableShape(TempControl).Move(DeltaX, DeltaY);
-        end;
       end;
     end;
   end;
@@ -863,19 +754,12 @@ procedure TJvMoveableShape.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-
   // Only respond to left mouse button events
   if Button <> mbLeft then
-  begin
     Exit;
-  end;
-
   // If not holding down the shift key then not doing multiple selection
-  if not (ssShift in Shift) and not MultiSelect then
-  begin
+  if not (ssShift in Shift) then
     UnselectAllShapes(Parent);
-  end;
-
   // Start moving the component
   StartMove(X, Y);
 end;
@@ -883,7 +767,6 @@ end;
 procedure TJvMoveableShape.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
-
   // Only need to move the component if the left mouse button is being held down
   if not (ssLeft in Shift) then
   begin
@@ -892,40 +775,30 @@ begin
   end;
 
   if Moving then
-  begin
     // Move all the selected shapes
     MoveShapes(X - FOrigin.X, Y - FOrigin.Y);
-  end;
 end;
 
 procedure TJvMoveableShape.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  i: Integer;
+  I: Integer;
   TempControl: TControl;
 begin
   inherited MouseUp(Button, Shift, X, Y);
-
   // Only interested in left mouse button events
   if Button <> mbLeft then
-  begin
     Exit;
-  end;
 
   EndMove;
 
   // If this shape is covering any smaller shapes then send it to the back,
   // so that we can get at the smaller ones
-
   if not Assigned(Parent) then
-  begin
     Exit;
-  end;
-
-  for i := 0 to Parent.ControlCount - 1 do
+  for I := 0 to Parent.ControlCount - 1 do
   begin
-    TempControl := Parent.Controls[i];
-
+    TempControl := Parent.Controls[I];
     if (TempControl <> Self) and
       (TempControl is TJvCustomDiagramShape) and
       TJvCustomDiagramShape(TempControl).CanProcessMouseMsg and
@@ -943,7 +816,7 @@ begin
   end;
 end;
 
-// --------------------------- TJvSizeableShape -----------------------------
+//=== TJvSizeableShape =======================================================
 
 constructor TJvSizeableShape.Create(AOwner: TComponent);
 begin
@@ -969,43 +842,41 @@ end;
 procedure TJvSizeableShape.Paint;
 begin
   inherited Paint;
-
   if not Assigned(Parent) then
-  begin
     Exit;
-  end;
-
   DrawSizingRects;
 end;
 
 function TJvSizeableShape.GetSizeRect(SizeRectType: TJvSizingMode): TRect;
 begin
   case SizeRectType of
-    smTopLeft: Result := Bounds(0, 0, SizeRectWidth, SizeRectHeight);
-    smTop: Result := Bounds(((ClientRect.Right - ClientRect.Left) div 2) -
-        (SizeRectWidth div 2),
-        0,
+    smTopLeft:
+      Result := Bounds(0, 0, SizeRectWidth, SizeRectHeight);
+    smTop:
+      Result := Bounds(((ClientRect.Right - ClientRect.Left) div 2) -
+        (SizeRectWidth div 2), 0, SizeRectWidth, SizeRectHeight);
+    smTopRight:
+      Result := Bounds(ClientRect.Right - SizeRectWidth, 0,
         SizeRectWidth, SizeRectHeight);
-    smTopRight: Result := Bounds(ClientRect.Right - SizeRectWidth, 0,
-        SizeRectWidth, SizeRectHeight);
-    smLeft: Result := Bounds(0,
+    smLeft:
+      Result := Bounds(0, ((ClientRect.Bottom - ClientRect.Top) div 2) -
+        (SizeRectHeight div 2), SizeRectWidth, SizeRectHeight);
+    smRight:
+      Result := Bounds(ClientRect.Right - SizeRectWidth,
         ((ClientRect.Bottom - ClientRect.Top) div 2) -
-        (SizeRectHeight div 2),
+        (SizeRectHeight div 2), SizeRectWidth, SizeRectHeight);
+    smBottomLeft:
+      Result := Bounds(0, ClientRect.Bottom - SizeRectHeight,
         SizeRectWidth, SizeRectHeight);
-    smRight: Result := Bounds(ClientRect.Right - SizeRectWidth,
-        ((ClientRect.Bottom - ClientRect.Top) div 2) -
-        (SizeRectHeight div 2),
+    smBottom:
+      Result := Bounds(((ClientRect.Right - ClientRect.Left) div 2) -
+        (SizeRectWidth div 2), ClientRect.Bottom - SizeRectHeight,
         SizeRectWidth, SizeRectHeight);
-    smBottomLeft: Result := Bounds(0, ClientRect.Bottom - SizeRectHeight,
-        SizeRectWidth, SizeRectHeight);
-    smBottom: Result := Bounds(((ClientRect.Right - ClientRect.Left) div 2) -
-        (SizeRectWidth div 2),
-        ClientRect.Bottom - SizeRectHeight,
-        SizeRectWidth, SizeRectHeight);
-    smBottomRight: Result := Bounds(ClientRect.Right - SizeRectWidth,
-        ClientRect.Bottom - SizeRectHeight,
-        SizeRectWidth, SizeRectHeight);
-    smNone: Result := Bounds(0, 0, 0, 0);
+    smBottomRight:
+      Result := Bounds(ClientRect.Right - SizeRectWidth,
+        ClientRect.Bottom - SizeRectHeight, SizeRectWidth, SizeRectHeight);
+    smNone:
+      Result := Bounds(0, 0, 0, 0);
   end;
 end;
 
@@ -1015,25 +886,18 @@ var
   SMode: TJvSizingMode;
 begin
   if not FSelected or not CanProcessMouseMsg then
-  begin
     Exit;
-  end;
-
   with Canvas do
   begin
     // Draw the sizing rectangles
     OldBrush := TBrush.Create;
-
     try
       OldBrush.Assign(Brush);
       Brush.Style := bsSolid;
       Brush.Color := clBlack;
       Pen.Color := clBlack;
-
       for SMode := smTopLeft to smBottomRight do
-      begin
         FillRect(GetSizeRect(SMode));
-      end;
     finally
       Brush.Assign(OldBrush);
       OldBrush.Free;
@@ -1042,37 +906,24 @@ begin
 end;
 
 procedure TJvSizeableShape.CheckForSizeRects(X, Y: Integer);
+const
+  cCursors: array [TJvSizingMode] of TCursor =
+    (crSizeNWSE, crSizeNS, crSizeNESW, crSizeWE, crSizeWE,
+     crSizeNESW, crSizeNS, crSizeNWSE, crDefault);
 var
   SMode: TJvSizingMode;
 begin
   FSizingMode := smNone;
-
   if not Selected then
-  begin
     Exit;
-  end;
 
   for SMode := smTopLeft to smBottomRight do
-  begin
     if InRect(X, Y, GetSizeRect(SMode)) then
     begin
-      FSizingMode := SMode;
+      SizingMode := SMode;
       Break;
     end;
-  end;
-
-  case FSizingMode of
-    smTopLeft: Cursor := crSizeNWSE;
-    smTop: Cursor := crSizeNS;
-    smTopRight: Cursor := crSizeNESW;
-    smLeft: Cursor := crSizeWE;
-    smRight: Cursor := crSizeWE;
-    smBottomLeft: Cursor := crSizeNESW;
-    smBottom: Cursor := crSizeNS;
-    smBottomRight: Cursor := crSizeNWSE;
-  else
-    Cursor := crDefault;
-  end;
+  Cursor := cCursors[SizingMode];
 end;
 
 procedure TJvSizeableShape.ResizeControl(X, Y: Integer);
@@ -1085,7 +936,6 @@ begin
   H := Height;
   DeltaX := X - FSizeOrigin.X;
   DeltaY := Y - FSizeOrigin.Y;
-
   // Calculate the new boundaries on the control. Also change FSizeOrigin to
   // reflect change in boundaries if necessary.
   case FSizingMode of
@@ -1098,7 +948,6 @@ begin
           L := L + DeltaX;
           W := W - DeltaX;
         end;
-
         // Ensure that don't move the top edge if this would make the
         // control too short
         if (T + DeltaY >= 0) and (H - DeltaY > MinHeight) then
@@ -1107,7 +956,6 @@ begin
           H := H - DeltaY;
         end;
       end;
-
     smTop:
       begin
         if (T + DeltaY >= 0) and (H - DeltaY > MinHeight) then
@@ -1116,20 +964,16 @@ begin
           H := H - DeltaY;
         end;
       end;
-
     smTopRight:
       begin
         W := W + DeltaX;
-
         if (T + DeltaY >= 0) and (H - DeltaY > MinHeight) then
         begin
           T := T + DeltaY;
           H := H - DeltaY;
         end;
-
         FSizeOrigin.X := X;
       end;
-
     smLeft:
       begin
         if (L + DeltaX >= 0) and (W - DeltaX > MinWidth) then
@@ -1138,13 +982,11 @@ begin
           W := W - DeltaX;
         end;
       end;
-
     smRight:
       begin
         W := W + DeltaX;
         FSizeOrigin.X := X;
       end;
-
     smBottomLeft:
       begin
         if (L + DeltaX >= 0) and (W - DeltaX > MinWidth) then
@@ -1152,18 +994,15 @@ begin
           L := L + DeltaX;
           W := W - DeltaX;
         end;
-
         H := H + DeltaY;
         FSizeOrigin.Y := Y;
       end;
-
     smBottom:
       begin
         H := H + DeltaY;
         FSizeOrigin.X := X;
         FSizeOrigin.Y := Y;
       end;
-
     smBottomRight:
       begin
         W := W + DeltaX;
@@ -1171,19 +1010,15 @@ begin
         FSizeOrigin.X := X;
         FSizeOrigin.Y := Y;
       end;
-
     smNone: ;
   end;
-
   SetBounds(L, T, W, H);
 end;
 
 procedure TJvSizeableShape.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  if (FSizingMode = smNone) or
-    (Button <> mbLeft) or
-    (ssShift in Shift) then
+  if (FSizingMode = smNone) or (Button <> mbLeft) or (ssShift in Shift) then
   begin
     // Do moving instead of sizing
     FSizingMode := smNone;
@@ -1202,29 +1037,20 @@ end;
 procedure TJvSizeableShape.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   if Moving then
-  begin
-    inherited MouseMove(Shift, X, Y);
-  end
+    inherited MouseMove(Shift, X, Y)
   else
-    if (FSizingMode <> smNone) and (ssLeft in Shift) then
-  begin
-    ResizeControl(X, Y);
-  end
+  if (FSizingMode <> smNone) and (ssLeft in Shift) then
+    ResizeControl(X, Y)
   else
-  begin
     // Check if over a sizing rectangle
     CheckForSizeRects(X, Y);
-  end;
 end;
 
 procedure TJvSizeableShape.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   if Button = mbLeft then
-  begin
     FSizingMode := smNone;
-  end;
-
   inherited MouseUp(Button, Shift, X, Y);
 end;
 
@@ -1239,12 +1065,12 @@ begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-// ----------------------------- TJvTextShape  ------------------------------
+//=== TJvTextShape ===========================================================
 
 constructor TJvTextShape.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FAutosize := True;
+  FAutoSize := True;
   FText := '';
   FFont := TFont.Create;
   FFont.OnChange := FontChanged;
@@ -1258,21 +1084,19 @@ end;
 
 procedure TJvTextShape.RefreshText;
 var
-  i, Count: Integer;
+  I, Count: Integer;
   TempStr: string;
 begin
   FMinHeight := FSizeRectHeight;
   FMinWidth := FSizeRectWidth;
   TempStr := '';
   Count := 1;
-
-  if FAutosize and Assigned(Parent) then
+  if FAutoSize and Assigned(Parent) then
   begin
     Canvas.Font := Font;
-
-    for i := 1 to Length(FText) do
+    for I := 1 to Length(FText) do
     begin
-      if FText[i] = #10 then
+      if FText[I] = #10 then
       begin
         // Check the width of this line
         FMinWidth := Max([FMinWidth, Canvas.TextWidth(TempStr)]);
@@ -1281,21 +1105,14 @@ begin
         Inc(Count);
       end
       else
-      begin
-        TempStr := TempStr + FText[i];
-      end;
+        TempStr := TempStr + FText[I];
     end;
-
     if Count = 1 then
-    begin
       // In case there is only one line
       FMinWidth := Max([FMinWidth, Canvas.TextWidth(FText)]);
-    end;
-
     // Calculate the height of the text rectangle
     FMinHeight := Max([FMinHeight, Canvas.TextHeight(FText) * Count]);
   end;
-
   SetBounds(Left, Top, FMinWidth, FMinHeight);
 end;
 
@@ -1308,11 +1125,11 @@ begin
   end;
 end;
 
-procedure TJvTextShape.SetAutosize(Value: Boolean);
+procedure TJvTextShape.SetAutoSize(Value: Boolean);
 begin
-  if FAutosize <> Value then
+  if FAutoSize <> Value then
   begin
-    FAutosize := Value;
+    FAutoSize := Value;
     RefreshText;
   end;
 end;
@@ -1338,10 +1155,7 @@ var
   TempRect: TRect;
 begin
   if not Assigned(Parent) then
-  begin
     Exit;
-  end;
-
   Canvas.Font := Font;
   TempRect := ClientRect; // So can pass as a var parameter
   DrawText(Canvas.Handle, PChar(FText), Length(FText), TempRect,
@@ -1359,7 +1173,7 @@ begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-// ---------------------------- TJvBitmapShape ------------------------------
+//=== TJvBitmapShape =========================================================
 
 constructor TJvBitmapShape.Create(AOwner: TComponent);
 begin
@@ -1383,12 +1197,9 @@ begin
   if Value <> FImages then
   begin
     FImages := Value;
-
     if FImages <> nil then
-    begin
       // Set the size of the component to the image size
       SetBounds(Left, Top, FImages.Width, FImages.Height);
-    end;
   end;
 end;
 
@@ -1406,16 +1217,11 @@ var
   OldPen: TPen;
 begin
   inherited Paint;
-
-  if (not Assigned(Parent)) or
-    (not Assigned(FImages)) or
-    (FImageIndex < 0) or
-    (FImageIndex >= FImages.Count) then
-  begin
+  if (not Assigned(Parent)) or (not Assigned(FImages)) or
+    (FImageIndex < 0) or (FImageIndex >= FImages.Count) then
     // The component has not been placed on a form yet, or does not have an
     // associated image
     Exit;
-  end;
 
   // Draw a focus rectangle
   OldPen := Canvas.Pen;
@@ -1423,19 +1229,13 @@ begin
   Canvas.Brush.Style := bsClear;
 
   if Selected then
-  begin
-    Canvas.Pen.Mode := pmNot;
-  end
+    Canvas.Pen.Mode := pmNot
   else
-  begin
     Canvas.Pen.Mode := pmNop;
-  end;
 
-  Canvas.Polyline([Point(0, 0),
-    Point(Width - 1, 0),
-      Point(Width - 1, Height - 1),
-      Point(0, Height - 1),
-      Point(0, 0)]);
+  // (rom) draws a rectangle
+  Canvas.Polyline([Point(0, 0), Point(Width - 1, 0),
+      Point(Width - 1, Height - 1), Point(0, Height - 1), Point(0, 0)]);
   Canvas.Pen := OldPen;
 
   // Draw the bitmap
@@ -1446,23 +1246,17 @@ end;
 procedure TJvBitmapShape.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-
   if Operation = opRemove then
-  begin
     if AComponent = FImages then
-    begin
       FImages := nil;
-    end;
-  end;
 end;
 
-// ---------------------------- TtabdStandardShape ---------------------------
+//=== TJvStandardShape =======================================================
 
 constructor TJvStandardShape.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
-  // Set a default shape and size and colours
+  // Set a default shape and size and colors
   FShapeType := stRectangle;
   Width := 100;
   Height := 60;
@@ -1484,11 +1278,8 @@ var
   S: Integer;
 begin
   inherited Paint;
-
   if not Assigned(Parent) then
-  begin
     Exit;
-  end;
 
   TempRect := ClientRect; // So can pass as a var parameter
   InflateRect(TempRect, -SizeRectWidth, -SizeRectHeight);
@@ -1515,7 +1306,7 @@ begin
   end;
 end;
 
-// ----------------------------- TJvConnection ------------------------------
+//=== TJvConnection ==========================================================
 
 constructor TJvConnection.Create;
 begin
@@ -1534,9 +1325,7 @@ begin
     FOffset := TJvConnection(Source).FOffset;
   end
   else
-  begin
     inherited Assign(Source);
-  end;
 end;
 
 function TJvConnection.ConnPoint(TerminatorRect: TRect): TPoint;
@@ -1549,9 +1338,7 @@ begin
   W := TerminatorRect.Right - TerminatorRect.Left;
 
   if FShape = nil then
-  begin
     Exit;
-  end;
 
   case FSide of
     csLeft:
@@ -1559,140 +1346,120 @@ begin
         X := FShape.Left - W;
         Y := FShape.Top + FOffset;
       end;
-
     csRight:
       begin
         X := FShape.Left + FShape.Width - 1 + W;
         Y := FShape.Top + FOffset;
       end;
-
     csTop:
       begin
         X := FShape.Left + FOffset;
         Y := FShape.Top - W;
       end;
-
     csBottom:
       begin
         X := FShape.Left + FOffset;
         Y := FShape.Top + FShape.Height - 1 + W;
       end;
   end;
-
   Result := Point(X, Y);
 end;
 
 function TJvConnection.TermPoint(TerminatorRect: TRect): TPoint;
-var
-  X, Y: Integer;
 begin
-  Result := Point(0, 0);
-  X := 0;
-  Y := 0;
-
-  if FShape = nil then
-  begin
+  Result.X := 0;
+  Result.Y := 0;
+  if Shape = nil then
     Exit;
+  with Result do
+    case Side of
+      csLeft:
+        begin
+          X := Shape.Left;
+          Y := Shape.Top + Offset;
+        end;
+      csRight:
+        begin
+          X := Shape.Left + Shape.Width - 1;
+          Y := Shape.Top + Offset;
+        end;
+      csTop:
+        begin
+          X := Shape.Left + Offset;
+          Y := Shape.Top;
+        end;
+      csBottom:
+        begin
+          X := Shape.Left + Offset;
+          Y := Shape.Top + Shape.Height - 1;
+        end;
+    else
+      X := 0;
+      Y := 0;
   end;
-
-  case FSide of
-    csLeft:
-      begin
-        X := FShape.Left;
-        Y := FShape.Top + FOffset;
-      end;
-
-    csRight:
-      begin
-        X := FShape.Left + FShape.Width - 1;
-        Y := FShape.Top + FOffset;
-      end;
-
-    csTop:
-      begin
-        X := FShape.Left + FOffset;
-        Y := FShape.Top;
-      end;
-
-    csBottom:
-      begin
-        X := FShape.Left + FOffset;
-        Y := FShape.Top + FShape.Height - 1;
-      end;
-  end;
-
-  Result := Point(X, Y);
 end;
 
 function TJvConnection.LeftMost(TerminatorRect: TRect): TPoint;
 begin
   Result := TermPoint(TerminatorRect);
-
-  if FShape = nil then
-  begin
+  if Shape = nil then
     Exit;
-  end;
-
-  case FSide of
-    csLeft: Result.X := FShape.Left - RectWidth(TerminatorRect);
-    csRight: Result.X := FShape.Left + FShape.Width;
-    csTop,
-      csBottom: Result.X := FShape.Left + FOffset - (RectHeight(TerminatorRect) div 2);
+  case Side of
+    csLeft:
+      Result.X := Shape.Left - RectWidth(TerminatorRect);
+    csRight:
+      Result.X := Shape.Left + Shape.Width;
+    csTop, csBottom:
+      Result.X := Shape.Left + Offset - (RectHeight(TerminatorRect) div 2);
   end;
 end;
 
 function TJvConnection.RightMost(TerminatorRect: TRect): TPoint;
 begin
   Result := TermPoint(TerminatorRect);
-
-  if FShape = nil then
-  begin
+  if Shape = nil then
     Exit;
-  end;
-
-  case FSide of
-    csLeft: Result.X := FShape.Left - 1;
-    csRight: Result.X := FShape.Left + FShape.Width - 1 + RectWidth(TerminatorRect);
-    csTop,
-      csBottom: Result.X := FShape.Left + FOffset + (RectHeight(TerminatorRect) div 2);
+  case Side of
+    csLeft:
+      Result.X := Shape.Left - 1;
+    csRight:
+      Result.X := Shape.Left + Shape.Width - 1 + RectWidth(TerminatorRect);
+    csTop, csBottom:
+      Result.X := Shape.Left + Offset + (RectHeight(TerminatorRect) div 2);
   end;
 end;
 
 function TJvConnection.TopMost(TerminatorRect: TRect): TPoint;
 begin
   Result := TermPoint(TerminatorRect);
-
-  if FShape = nil then
-  begin
+  if Shape = nil then
     Exit;
-  end;
-
-  case FSide of
-    csLeft,
-      csRight: Result.Y := FShape.Top + FOffset - (RectHeight(TerminatorRect) div 2);
-    csTop: Result.Y := FShape.Top - RectWidth(TerminatorRect) - 1;
-    csBottom: Result.Y := FShape.Top + FShape.Height;
+  case Side of
+    csLeft, csRight:
+      Result.Y := Shape.Top + Offset - (RectHeight(TerminatorRect) div 2);
+    csTop:
+      Result.Y := Shape.Top - RectWidth(TerminatorRect) - 1;
+    csBottom:
+      Result.Y := Shape.Top + Shape.Height;
   end;
 end;
 
 function TJvConnection.BottomMost(TerminatorRect: TRect): TPoint;
 begin
   Result := TermPoint(TerminatorRect);
-
-  if FShape = nil then
-  begin
+  if Shape = nil then
     Exit;
-  end;
-
-  case FSide of
-    csLeft,
-      csRight: Result.Y := FShape.Top + FOffset + (RectHeight(TerminatorRect) div 2);
-    csTop: Result.Y := FShape.Top - 1;
-    csBottom: Result.Y := FShape.Top + FShape.Height + RectWidth(TerminatorRect);
+  case Side of
+    csLeft, csRight:
+      Result.Y := Shape.Top + Offset + (RectHeight(TerminatorRect) div 2);
+    csTop:
+      Result.Y := Shape.Top - 1;
+    csBottom:
+      Result.Y := Shape.Top + Shape.Height + RectWidth(TerminatorRect);
   end;
 end;
 
-// ----------------------------- TJvConnector -------------------------------
+//=== TJvConnector ===========================================================
 
 constructor TJvConnector.Create(AOwner: TComponent);
 begin
@@ -1719,18 +1486,13 @@ var
   EndPt: TPoint;
 begin
   inherited Paint;
-
   if not Assigned(Parent) then
-  begin
     Exit;
-  end;
-
   if Assigned(FStartConn.Shape) and Assigned(FEndConn.Shape) then
   begin
     // Draw the terminators (arrows etc)
     DrawStartTerminator;
     DrawEndTerminator;
-
     with Canvas do
     begin
       // Draw the connecting line
@@ -1748,18 +1510,12 @@ end;
 procedure TJvConnector.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-
   if Operation = opRemove then
   begin
-    if Assigned(FStartConn) and (AComponent = FStartConn.FShape) then
-    begin
+    if AComponent = FStartConn.FShape then
       FStartConn.FShape := nil;
-    end;
-
-    if Assigned(FEndConn) and (AComponent = FEndConn.FShape) then
-    begin
+    if AComponent = FEndConn.FShape then
       FEndConn.FShape := nil;
-    end;
   end;
 end;
 
@@ -1779,10 +1535,7 @@ begin
   if Assigned(FCaption) then
   begin
     if (FMidPoint.X = 0) and (FMidPoint.Y = 0) then
-    begin
       FMidPoint := GetMidPoint;
-    end;
-
     NewMidPoint := GetMidPoint;
     // Move the caption relative to the mid point of the connector
     // Not resizing anything, just moving an unconnected shape, so can use
@@ -1825,20 +1578,15 @@ var
   ALeft, ATop, AWidth, AHeight: Integer;
 begin
   if (FStartConn.Shape = nil) or (FEndConn.Shape = nil) then
-  begin
     Exit;
-  end;
-
   ALeft := Min([FStartConn.LeftMost(FStartTermRect).X,
     FEndConn.LeftMost(FEndTermRect).X]);
   ATop := Min([FStartConn.TopMost(FStartTermRect).Y,
     FEndConn.TopMost(FEndTermRect).Y]);
   AWidth := Max([FStartConn.RightMost(FStartTermRect).X,
-    FEndConn.RightMost(FEndTermRect).X]) -
-    ALeft + 2;
+    FEndConn.RightMost(FEndTermRect).X]) - ALeft + 2;
   AHeight := Max([FStartConn.BottomMost(FStartTermRect).Y,
-    FEndConn.BottomMost(FEndTermRect).Y]) -
-    ATop + 2;
+    FEndConn.BottomMost(FEndTermRect).Y]) - ATop + 2;
   CheckSize(AWidth, AHeight);
   Invalidate;
   UpdateBoundsRect(Rect(ALeft, ATop, ALeft + AWidth - 1, ATop + AHeight - 1));
@@ -1849,28 +1597,29 @@ procedure TJvConnector.SetLineWidth(Value: Integer);
 begin
   // Ensure that can always see the line!
   if Value >= 1 then
-  begin
     FLineWidth := Value;
-  end;
 end;
 
 function TJvConnector.GetConn(Index: Integer): TJvConnection;
 begin
-  Result := nil;
-
   case Index of
-    1: Result := FStartConn;
-    2: Result := FEndConn;
+    1:
+      Result := FStartConn;
+    2:
+      Result := FEndConn;
+  else
+    Result := nil;
   end;
 end;
 
 procedure TJvConnector.SetConn(Index: Integer; Value: TJvConnection);
 begin
   case Index of
-    1: FStartConn.Assign(Value);
-    2: FEndConn.Assign(Value);
+    1:
+      FStartConn.Assign(Value);
+    2:
+      FEndConn.Assign(Value);
   end;
-
   SetBoundingRect;
 end;
 
@@ -1883,8 +1632,10 @@ end;
 function TJvConnector.GetTermRect(Index: Integer): TRect;
 begin
   case Index of
-    1: Result := FStartTermRect;
-    2: Result := FEndTermRect;
+    1:
+      Result := FStartTermRect;
+    2:
+      Result := FEndTermRect;
   end;
 end;
 
@@ -1893,8 +1644,10 @@ begin
   if (Value.Right - Value.Left >= 0) and (Value.Bottom - Value.Top >= 0) then
   begin
     case Index of
-      1: FStartTermRect := Value;
-      2: FEndTermRect := Value;
+      1:
+        FStartTermRect := Value;
+      2:
+        FEndTermRect := Value;
     end;
   end;
 end;
@@ -1912,9 +1665,8 @@ end;
 
 function TJvConnector.IsConnected(ConnectedShape: TJvCustomDiagramShape): Boolean;
 begin
-  Result := (FStartConn <> nil) and (FEndConn <> nil) and (ConnectedShape <> nil) and ((FStartConn.Shape =
-    ConnectedShape) or
-    (FEndConn.Shape = ConnectedShape));
+  Result := (FStartConn <> nil) and (FEndConn <> nil) and (ConnectedShape <> nil) and
+    ((FStartConn.Shape = ConnectedShape) or (FEndConn.Shape = ConnectedShape));
 end;
 
 function TJvConnector.GetMidPoint: TPoint;
@@ -1922,19 +1674,15 @@ var
   A, B: TPoint;
 begin
   Result := Point(0, 0);
-
   if (not Assigned(FStartConn)) or (not Assigned(FEndConn)) then
-  begin
     Exit;
-  end;
-
   A := FStartConn.ConnPoint(FStartTermRect);
   B := FEndConn.ConnPoint(FEndTermRect);
   Result := Point(Min([A.X, B.X]) + Abs(A.X - B.X) div 2,
     Min([A.Y, B.Y]) + Abs(A.Y - B.Y) div 2);
 end;
 
-// ------------------------- TJvSingleHeadArrow ---------------------------
+//=== TJvSingleHeadArrow =====================================================
 
 constructor TJvSingleHeadArrow.Create(AOwner: TComponent);
 begin
@@ -1969,7 +1717,7 @@ begin
       Inc(Corner2Pt.Y, RectHeight(EndTermRect) div 2);
     end
     else
-      if ConnPt.X > TermPt.X then
+    if ConnPt.X > TermPt.X then
     begin
       // Draw a left pointing arrow head
       Dec(Corner1Pt.X, 10);
@@ -1978,7 +1726,7 @@ begin
       Inc(Corner2Pt.Y, RectHeight(EndTermRect) div 2);
     end
     else
-      if ConnPt.Y < TermPt.Y then
+    if ConnPt.Y < TermPt.Y then
     begin
       // Draw a down pointing arrow head
       Inc(Corner1Pt.Y, 10);
@@ -1994,7 +1742,6 @@ begin
       Dec(Corner1Pt.X, RectHeight(EndTermRect) div 2);
       Inc(Corner2Pt.X, RectHeight(EndTermRect) div 2);
     end;
-
     Polygon([PointPt, Corner1Pt, Corner2Pt]);
   end;
 end;
@@ -2004,7 +1751,6 @@ var
   ConnPt, TermPt: TPoint;
 begin
   inherited DrawEndTerminator;
-
   if Assigned(FEndConn.Shape) then
   begin
     ConnPt := Convert(FEndConn.ConnPoint(EndTermRect));
@@ -2013,7 +1759,7 @@ begin
   end;
 end;
 
-// ------------------------ TJvSingleHeadOpenDashArrow -------------------------
+//=== TJvSingleHeadOpenDashArrow =============================================
 
 constructor TJvSingleHeadOpenDashArrow.Create(AOwner: TComponent);
 begin
@@ -2022,11 +1768,7 @@ begin
 end;
 
 procedure TJvSingleHeadOpenDashArrow.Paint;
-//var
-//  EndPt: TPoint;
-
 begin
-
   Canvas.Pen.Style := psDash;
   inherited Paint;
   Canvas.Pen.Style := psSolid;
@@ -2059,7 +1801,7 @@ begin
       Inc(Corner2Pt.Y, RectHeight(EndTermRect) div 2);
     end
     else
-      if ConnPt.X > TermPt.X then
+    if ConnPt.X > TermPt.X then
     begin
       // Draw a left pointing arrow head
       Dec(Corner1Pt.X, 10);
@@ -2068,7 +1810,7 @@ begin
       Inc(Corner2Pt.Y, RectHeight(EndTermRect) div 2);
     end
     else
-      if ConnPt.Y < TermPt.Y then
+    if ConnPt.Y < TermPt.Y then
     begin
       // Draw a down pointing arrow head
       Inc(Corner1Pt.Y, 10);
@@ -2084,13 +1826,11 @@ begin
       Dec(Corner1Pt.X, RectHeight(EndTermRect) div 2);
       Inc(Corner2Pt.X, RectHeight(EndTermRect) div 2);
     end;
-
     //    Polyline([Corner1Pt,PointPt,Corner2Pt]);
-    moveto(PointPt.x, PointPt.y);
-    lineto(Corner1Pt.x, Corner1Pt.y);
-    moveto(PointPt.x, PointPt.y);
-    lineto(Corner2Pt.x, Corner2Pt.y);
-
+    MoveTo(PointPt.x, PointPt.y);
+    LineTo(Corner1Pt.x, Corner1Pt.y);
+    MoveTo(PointPt.x, PointPt.y);
+    LineTo(Corner2Pt.x, Corner2Pt.y);
   end;
 end;
 
@@ -2099,23 +1839,20 @@ var
   ConnPt, TermPt: TPoint;
 begin
   inherited DrawEndTerminator;
-
   if Assigned(FEndConn.Shape) then
   begin
     ConnPt := Convert(FEndConn.ConnPoint(EndTermRect));
     TermPt := Convert(FEndConn.TermPoint(EndTermRect));
     DrawArrowHead(ConnPt, TermPt);
   end;
-
 end;
 
-// ------------------------ TJvBluntSingleHeadOpenDashArrow -------------------------
+//=== TJvBluntSingleHeadOpenDashArrow ========================================
 
 constructor TJvBluntSingleHeadOpenDashArrow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   StartTermRect := Rect(0, 0, 10, 10);
-
 end;
 
 procedure TJvBluntSingleHeadOpenDashArrow.DrawStartTerminator;
@@ -2123,15 +1860,10 @@ var
   ConnPt, TermPt: TPoint;
 begin
   inherited DrawStartTerminator;
-
   if not Assigned(FStartConn.Shape) then
-  begin
     Exit;
-  end;
-
   ConnPt := Convert(FStartConn.ConnPoint(StartTermRect));
   TermPt := Convert(FStartConn.TermPoint(StartTermRect));
-
   with Canvas do
   begin
     // Draw a line connecting the Conn and Term points
@@ -2141,7 +1873,7 @@ begin
   end;
 end;
 
-// ------------------------ TJvBluntSingleHeadArrow -------------------------
+//=== TJvBluntSingleHeadArrow ================================================
 
 constructor TJvBluntSingleHeadArrow.Create(AOwner: TComponent);
 begin
@@ -2154,15 +1886,10 @@ var
   ConnPt, TermPt: TPoint;
 begin
   inherited DrawStartTerminator;
-
   if not Assigned(FStartConn.Shape) then
-  begin
     Exit;
-  end;
-
   ConnPt := Convert(FStartConn.ConnPoint(StartTermRect));
   TermPt := Convert(FStartConn.TermPoint(StartTermRect));
-
   with Canvas do
   begin
     // Draw a line connecting the Conn and Term points
@@ -2172,7 +1899,7 @@ begin
   end;
 end;
 
-// --------------------------- TJvSubCaseArrow ---------------------------
+//=== TJvSubCaseArrow ========================================================
 
 constructor TJvSubCaseArrow.Create(AOwner: TComponent);
 begin
@@ -2208,7 +1935,7 @@ begin
       Inc(Corner2Pt.Y, RectHeight(EndTermRect) div 2);
     end
     else
-      if ConnPt.X > TermPt.X then
+    if ConnPt.X > TermPt.X then
     begin
       // Draw a left pointing arrow head
       Dec(Corner1Pt.X, 10);
@@ -2217,7 +1944,7 @@ begin
       Inc(Corner2Pt.Y, RectHeight(EndTermRect) div 2);
     end
     else
-      if ConnPt.Y < TermPt.Y then
+    if ConnPt.Y < TermPt.Y then
     begin
       // Draw a down pointing arrow head
       Inc(Corner1Pt.Y, 10);
@@ -2243,7 +1970,6 @@ var
   ConnPt, TermPt: TPoint;
 begin
   inherited DrawEndTerminator;
-
   if Assigned(FEndConn.Shape) then
   begin
     ConnPt := Convert(FEndConn.ConnPoint(EndTermRect));
@@ -2257,15 +1983,10 @@ var
   ConnPt, TermPt: TPoint;
 begin
   inherited DrawStartTerminator;
-
   if not Assigned(FStartConn.Shape) then
-  begin
     Exit;
-  end;
-
   ConnPt := Convert(FStartConn.ConnPoint(StartTermRect));
   TermPt := Convert(FStartConn.TermPoint(StartTermRect));
-
   with Canvas do
   begin
     // Draw a line connecting the Conn and Term points
@@ -2273,10 +1994,9 @@ begin
     PenPos := ConnPt;
     LineTo(TermPt.X, TermPt.Y);
   end;
-
 end;
 
-// --------------------------- TJvDoubleHeadArrow ---------------------------
+//=== TJvDoubleHeadArrow =====================================================
 
 constructor TJvDoubleHeadArrow.Create(AOwner: TComponent);
 begin
@@ -2289,7 +2009,6 @@ var
   ConnPt, TermPt: TPoint;
 begin
   inherited DrawStartTerminator;
-
   if Assigned(FStartConn.Shape) then
   begin
     ConnPt := Convert(FStartConn.ConnPoint(StartTermRect));
@@ -2302,35 +2021,21 @@ end;
 
 procedure RegisterStorageClasses;
 begin
-  RegisterClasses([TJvCustomDiagramShape,
-    TJvMoveableShape,
-      TJvSizeableShape,
-      TJvConnection,
-      TJvConnector,
-      TJvSingleHeadArrow,
-      TJvBluntSingleHeadArrow,
-      TJvDoubleHeadArrow,
-      TJvBitmapShape,
-      TJvTextShape,
-      TJvStandardShape,
-      TJvSingleHeadOpenDashArrow,
-      TJvBluntSingleHeadOpenDashArrow,
-      TJvSubCaseArrow]);
+  RegisterClasses([TJvCustomDiagramShape, TJvMoveableShape,
+    TJvSizeableShape, TJvConnection, TJvConnector, TJvSingleHeadArrow,
+      TJvBluntSingleHeadArrow, TJvDoubleHeadArrow, TJvBitmapShape,
+      TJvTextShape, TJvStandardShape, TJvSingleHeadOpenDashArrow,
+      TJvBluntSingleHeadOpenDashArrow, TJvSubCaseArrow]);
 end;
 
 class procedure TJvCustomDiagramShape.SetMultiSelected(
-  ParentControl: TWinControl; Value: boolean);
+  ParentControl: TWinControl; Value: Boolean);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to ParentControl.ControlCount - 1 do
-  begin
-    if ParentControl.Controls[i] is TJvCustomDiagramShape then
-    begin
-      TJvCustomDiagramShape(ParentControl.Controls[i]).MultiSelect := Value;
-    end;
-  end;
-
+  for I := 0 to ParentControl.ControlCount - 1 do
+    if ParentControl.Controls[I] is TJvCustomDiagramShape then
+      TJvCustomDiagramShape(ParentControl.Controls[I]).MultiSelect := Value;
 end;
 
 initialization

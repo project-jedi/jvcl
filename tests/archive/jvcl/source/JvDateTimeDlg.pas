@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -27,19 +27,22 @@ Known Issues:
 {$I JVCL.INC}
 
 { Property editors for TDate, TTime and TDateTime data types }
+
 unit JvDateTimeDlg;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, {$IFDEF COMPILER6_UP} Variants, {$ENDIF} Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls;
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF}
+  SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls;
 
 type
   { define the different types of date and time combinations supported by the dialog }
-  TDateSelectType = (dstDate,dstTime,dstDateTime);
+  TDateSelectType = (dstDate, dstTime, dstDateTime);
   { the edit dialog }
-  TfrmSelectDateTimeDlg = class(TForm)
+  TFrmSelectDateTimeDlg = class(TForm)
     dtpDate: TDateTimePicker;
     lblDate: TLabel;
     lblTime: TLabel;
@@ -47,11 +50,8 @@ type
     btnOK: TButton;
     btnCancel: TButton;
     procedure FormCreate(Sender: TObject);
-  private
-    { Private declarations }
   public
-    { Public declarations }
-    class function SelectDateTime(var ADate:TDateTime;AType:TDateSelectType):boolean;
+    class function SelectDateTime(var ADate: TDateTime; AType: TDateSelectType): Boolean;
   end;
 
 resourcestring
@@ -63,45 +63,47 @@ implementation
 
 {$R *.dfm}
 
-{ TfrmSelectDateTimeDlg }
+{ TFrmSelectDateTimeDlg }
 
-class function TfrmSelectDateTimeDlg.SelectDateTime(var ADate: TDateTime;
-  AType: TDateSelectType): boolean;
-var f:TfrmSelectDateTimeDlg;
+class function TFrmSelectDateTimeDlg.SelectDateTime(var ADate: TDateTime;
+  AType: TDateSelectType): Boolean;
+var
+  F: TFrmSelectDateTimeDlg;
 begin
-  f := self.Create(Application);
+  F := Self.Create(Application);
   try
-    f.dtpDate.Date := ADate;
-    f.dtpTime.Time := ADate;
+    F.dtpDate.Date := ADate;
+    F.dtpTime.Time := ADate;
     case AType of
       dstDate:
-      begin
-        f.Caption := SSelectDate;
-        f.lblTime.Visible := false;
-        f.dtpTime.Visible := false;
-        f.Height := f.Height - f.lblTime.Height - f.dtpTime.Height;
-      end;
+        begin
+          F.Caption := SSelectDate;
+          F.lblTime.Visible := False;
+          F.dtpTime.Visible := False;
+          F.Height := F.Height - F.lblTime.Height - F.dtpTime.Height;
+        end;
       dstTime:
-      begin
-        f.Caption := SSelectTime;
-        f.lblDate.Visible := false;
-        f.dtpDate.Visible := false;
-        f.lblTime.Top := f.lblDate.Top;
-        f.dtpTime.Top := f.dtpDate.Top;
-        f.Height := f.Height - f.lblTime.Height - f.dtpTime.Height;
-      end;
+        begin
+          F.Caption := SSelectTime;
+          F.lblDate.Visible := False;
+          F.dtpDate.Visible := False;
+          F.lblTime.Top := F.lblDate.Top;
+          F.dtpTime.Top := F.dtpDate.Top;
+          F.Height := F.Height - F.lblTime.Height - F.dtpTime.Height;
+        end;
     end;
-    Result := f.ShowModal = mrOK;
+    Result := F.ShowModal = mrOK;
     if Result then
-      ADate := trunc(f.dtpDate.Date) + frac(f.dtpTime.Time);
+      ADate := Trunc(F.dtpDate.Date) + Frac(F.dtpTime.Time);
   finally
-    f.Free;
+    F.Free;
   end;
 end;
 
-procedure TfrmSelectDateTimeDlg.FormCreate(Sender: TObject);
+procedure TFrmSelectDateTimeDlg.FormCreate(Sender: TObject);
 begin
   Caption := SSelectDateTime;
 end;
 
 end.
+

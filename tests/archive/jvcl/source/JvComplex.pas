@@ -71,7 +71,8 @@ NOTES:
 
 interface
 
-uses Math, SysUtils;
+uses
+  Math, SysUtils;
 
 type
   TComplex = record

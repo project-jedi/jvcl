@@ -22,19 +22,18 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 
 unit JvDialogActns;
 
-{$IFDEF COMPILER6}
-{$WARN SYMBOL_PLATFORM OFF}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
-
 interface
+
 uses
-  Classes, SysUtils, ActnList, StdActns, JvBaseDlg, JvBrowseFolder, JvSelectDirectory,
-  JvConnectNetwork, JvWinDialogs, JvDialogs, JvPageSetupTitled, JvPageSetup;
+  Classes, SysUtils, ActnList, StdActns,
+  JvBaseDlg, JvBrowseFolder, JvSelectDirectory, JvConnectNetwork,
+  JvWinDialogs, JvDialogs, JvPageSetupTitled, JvPageSetup;
 
 type
   TJvCommonDialogClass = class of TJvCommonDialog;
@@ -110,7 +109,6 @@ type
     property Dialog: TJvSelectDirectory read GetDialog;
   end;
 
-
   TJvConnectNetworkAction = class(TJvCommonDialogAction)
   private
     function GetDialog: TJvNetworkConnect;
@@ -170,7 +168,7 @@ type
   private
     function GetDialog: TJvSaveDialog;
   protected
-    function GetDialogClass: TCommonDialogClass;override;
+    function GetDialogClass: TCommonDialogClass; override;
   published
     property Dialog: TJvSaveDialog read GetDialog;
   end;
@@ -193,25 +191,14 @@ type
     property Dialog: TJvPageSetupTitledDialog read GetDialog;
   end;
 
-
-
 procedure Register;
 
 implementation
+
 uses
   JvActnRes;
 
-procedure Register;
-begin
-  RegisterActions('Jv Dialog',
-    [TJvBrowseFolderAction,TJvSelectDirectoryAction,TJvConnectNetworkAction,TJvFloppyFormatAction,
-    TJvOrganizeFavoritesAction,TJvControlPanelAction,TJvOpenFileAction,TJvSaveFileAction,
-    TJvPageSetupAction,TJvPageSetupTitledAction],
-    // TJvStandardActions is a datamodule with default settings for our actions
-    TJvStandardActions);
-end;
-
-{ TJvCommonDialogAction }
+//=== TJvCommonDialogAction ==================================================
 
 constructor TJvCommonDialogAction.Create(AOwner: TComponent);
 var
@@ -243,8 +230,8 @@ begin
         FOnAccept(Self)
     end
     else
-      if Assigned(FOnCancel) then
-        FOnCancel(Self);
+    if Assigned(FOnCancel) then
+      FOnCancel(Self);
   end;
 end;
 
@@ -253,13 +240,12 @@ begin
   Result := nil;
 end;
 
-function TJvCommonDialogAction.HandlesTarget(
-  Target: TObject): Boolean;
+function TJvCommonDialogAction.HandlesTarget(Target: TObject): Boolean;
 begin
   Result := true;
 end;
 
-{ TJvCommonDialogPAction }
+//=== TJvCommonDialogPAction =================================================
 
 constructor TJvCommonDialogPAction.Create(AOwner: TComponent);
 var
@@ -296,13 +282,12 @@ begin
   Result := nil;
 end;
 
-function TJvCommonDialogPAction.HandlesTarget(
-  Target: TObject): Boolean;
+function TJvCommonDialogPAction.HandlesTarget(Target: TObject): Boolean;
 begin
   Result := true;
 end;
 
-{ TJvBrowseFolderAction }
+//=== TJvBrowseFolderAction ==================================================
 
 function TJvBrowseFolderAction.GetDialog: TJvBrowseFolder;
 begin
@@ -314,7 +299,7 @@ begin
   Result := TJvBrowseFolder;
 end;
 
-  { TJvSelectDirectoryAction }
+//=== TJvSelectDirectoryAction ===============================================
 
 function TJvSelectDirectoryAction.GetDialog: TJvSelectDirectory;
 begin
@@ -326,7 +311,7 @@ begin
   Result := TJvSelectDirectory;
 end;
 
-{ TJvConnectNetworkAction }
+//=== TJvConnectNetworkAction ================================================
 
 function TJvConnectNetworkAction.GetDialog: TJvNetworkConnect;
 begin
@@ -338,7 +323,7 @@ begin
   Result := TJvNetworkConnect;
 end;
 
-{ TJvFloppyFormatAction }
+//=== TJvFloppyFormatAction ==================================================
 
 function TJvFloppyFormatAction.GetDialog: TJvFormatDialog;
 begin
@@ -350,7 +335,7 @@ begin
   Result := TJvFormatDialog;
 end;
 
-{ TJvOrganizeFavoritesAction }
+//=== TJvOrganizeFavoritesAction =============================================
 
 function TJvOrganizeFavoritesAction.GetDialog: TJvOrganizeFavoritesDialog;
 begin
@@ -362,7 +347,7 @@ begin
   Result := TJvOrganizeFavoritesDialog;
 end;
 
-{ TJvControlPanelAction }
+//=== TJvControlPanelAction ==================================================
 
 function TJvControlPanelAction.GetDialog: TJvControlPanelDialog;
 begin
@@ -374,7 +359,7 @@ begin
   Result := TJvControlPanelDialog;
 end;
 
-{ TJvOpenFileAction }
+//=== TJvOpenFileAction ======================================================
 
 function TJvOpenFileAction.GetDialog: TJvOpenDialog;
 begin
@@ -386,7 +371,7 @@ begin
   Result := TJvOpenDialog;
 end;
 
-{ TJvSaveFileAction }
+//=== TJvSaveFileAction ======================================================
 
 function TJvSaveFileAction.GetDialog: TJvSaveDialog;
 begin
@@ -398,7 +383,7 @@ begin
   Result := TJvSaveDialog;
 end;
 
-{ TJvPageSetupAction }
+//=== TJvPageSetupAction =====================================================
 
 function TJvPageSetupAction.GetDialog: TJvPageSetupDialog;
 begin
@@ -410,7 +395,7 @@ begin
   Result := TJvPageSetupDialog;
 end;
 
-{ TJvPageSetupTitledAction }
+//=== TJvPageSetupTitledAction ===============================================
 
 function TJvPageSetupTitledAction.GetDialog: TJvPageSetupTitledDialog;
 begin
@@ -422,4 +407,15 @@ begin
   Result := TJvPageSetupTitledDialog;
 end;
 
+procedure Register;
+begin
+  RegisterActions('Jv Dialog',
+    [TJvBrowseFolderAction, TJvSelectDirectoryAction, TJvConnectNetworkAction, TJvFloppyFormatAction,
+     TJvOrganizeFavoritesAction, TJvControlPanelAction, TJvOpenFileAction, TJvSaveFileAction,
+     TJvPageSetupAction, TJvPageSetupTitledAction],
+    // TJvStandardActions is a datamodule with default settings for our actions
+    TJvStandardActions);
+end;
+
 end.
+

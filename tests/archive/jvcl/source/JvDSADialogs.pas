@@ -440,8 +440,6 @@ begin
   Result := GCheckMarkTexts;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetCheckMarkText(const ID: TDSACheckTextKind): string;
 var
   Idx: Integer;
@@ -453,9 +451,7 @@ begin
     Result := '';
 end;
 
-//--------------------------------------------------------------------------------------------------
-//  TDSAMessageForm
-//--------------------------------------------------------------------------------------------------
+//=== TDSAMessageForm ========================================================
 
 type
   TDSAMessageForm = class(TForm)
@@ -762,9 +758,7 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-//  TDSARegister
-//--------------------------------------------------------------------------------------------------
+//=== TDSARegister ===========================================================
 
 type
   TAddResult = (arAdded, arExists, arDuplicateID, arDuplicateName);
@@ -797,13 +791,17 @@ const
 var
   DSARegister: TDSARegister;
 
+destructor TDSARegister.Destroy;
+begin
+  inherited Destroy;
+  Clear;
+end;
+
 function TDSARegister.AddNew: Integer;
 begin
   Result := Length(FList);
   SetLength(FList, Result + 1);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TDSARegister.Remove(const Index: Integer);
 var
@@ -820,16 +818,12 @@ begin
   SetLength(FList, High(FList));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSARegister.IndexOf(const ID: Integer): Integer;
 begin
   Result := High(FList);
   while (Result > -1) and (FList[Result].ID <> ID) do
     Dec(Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSARegister.IndexOf(const Name: string): Integer;
 begin
@@ -838,24 +832,12 @@ begin
     Dec(Result);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSARegister.IndexOf(const Item: TDSARegItem): Integer;
 begin
   Result := IndexOf(Item.ID);
   if (Result > -1) and not AnsiSameText(FList[Result].Name, Item.Name) then
     Result := -1;
 end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TDSARegister.Destroy;
-begin
-  inherited Destroy;
-  Clear;
-end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSARegister.Add(const Item: TDSARegItem): TAddResult;
 var
@@ -887,8 +869,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSARegister.Add(const ID: Integer; const Name, Description: string;
   const Storage: TDSAStorage; const CheckTextKind: TDSACheckTextKind = ctkShow): TAddResult;
 var
@@ -902,14 +882,10 @@ begin
   Result := Add(TmpItem);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSARegister.Clear;
 begin
   SetLength(FList, 0);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TDSARegister.Delete(const Item: TDSARegItem);
 var
@@ -920,8 +896,6 @@ begin
     Remove(Idx);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSARegister.Delete(const ID: Integer);
 var
   Idx: Integer;
@@ -931,8 +905,6 @@ begin
     Remove(Idx);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSARegister.Delete(const Name: string);
 var
   Idx: Integer;
@@ -941,8 +913,6 @@ begin
   if Idx > -1 then
     Remove(Idx);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSARegister.Locate(const ID: Integer): TDSARegItem;
 var
@@ -955,8 +925,6 @@ begin
     Result := EmptyItem;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSARegister.Locate(const Name: string): TDSARegItem;
 var
   Idx: Integer;
@@ -968,37 +936,39 @@ begin
     Result := EmptyItem;
 end;
 
-//--------------------------------------------------------------------------------------------------
-// TDSAStorage
-//--------------------------------------------------------------------------------------------------
+//=== TDSAStorage ============================================================
+
+constructor TDSAStorage.Create;
+begin
+  inherited Create;
+  FStates := TStack.Create;
+end;
+
+destructor TDSAStorage.Destroy;
+begin
+  FStates.Free;
+  inherited Create;
+end;
 
 procedure TDSAStorage.BeginCustomRead(const DSAInfo: TDSARegItem);
 begin
   FStates.Push(ssCustomRead);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSAStorage.BeginCustomWrite(const DSAInfo: TDSARegItem);
 begin
   FStates.Push(ssCustomWrite);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TDSAStorage.BeginRead(const DSAInfo: TDSARegItem);
 begin
   FStates.Push(ssRead);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSAStorage.BeginWrite(const DSAInfo: TDSARegItem);
 begin
   FStates.Push(ssWrite);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TDSAStorage.EndCustomRead(const DSAInfo: TDSARegItem);
 begin
@@ -1007,16 +977,12 @@ begin
   FStates.Pop;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSAStorage.EndCustomWrite(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssCustomWrite then
     raise EJvDSADialog.Create('Cannot end custom write if not in custom write mode.');
   FStates.Pop;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TDSAStorage.EndRead(const DSAInfo: TDSARegItem);
 begin
@@ -1025,16 +991,12 @@ begin
   FStates.Pop;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSAStorage.EndWrite(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssWrite then
     raise EJvDSADialog.Create('Cannot end write if not in write mode.');
   FStates.Pop;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSAStorage.IsKeyNameAllowed(const Key: string): Boolean;
 begin
@@ -1043,23 +1005,6 @@ begin
   else
     Result := Integer(FStates.Peek) in [Integer(ssCustomRead), Integer(ssCustomWrite)];
 end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TDSAStorage.Create;
-begin
-  inherited Create;
-  FStates := TStack.Create;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TDSAStorage.Destroy;
-begin
-  FStates.Free;
-end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSAStorage.GetState(const DSAInfo: TDSARegItem; out LastResult: Integer;
   const OnCustomData: TDSACustomData = nil): Boolean;
@@ -1086,8 +1031,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSAStorage.SetState(const DSAInfo: TDSARegItem; const DontShowAgain: Boolean;
   const LastResult: Integer; const OnCustomData: TDSACustomData = nil);
 begin
@@ -1112,31 +1055,7 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-// TDSARegStorage
-//--------------------------------------------------------------------------------------------------
-
-procedure TDSARegStorage.CreateKey(const DSAInfo: TDSARegItem);
-begin
-  if not (RegKeyExists(RootKey, Key + '\' + DSAInfo.Name) or (RegCreateKey(RootKey, Key + '\' +
-      DSAInfo.Name, '') = ERROR_SUCCESS)) then
-    raise EJvDSADialog.CreateFmt(sDSARegKeyCreateError, [Key + '\' + DSAInfo.Name]);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TDSARegStorage.GetCheckMarkTextSuffix: string;
-begin
-  Result := '';
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TDSARegStorage.SetCheckMarkTextSuffix(Value: string);
-begin
-end;
-
-//--------------------------------------------------------------------------------------------------
+//=== TDSARegStorage =========================================================
 
 constructor TDSARegStorage.Create(const ARootKey: HKEY; const AKey: string);
 begin
@@ -1145,14 +1064,26 @@ begin
   FKey := AKey;
 end;
 
-//--------------------------------------------------------------------------------------------------
+procedure TDSARegStorage.CreateKey(const DSAInfo: TDSARegItem);
+begin
+  if not (RegKeyExists(RootKey, Key + '\' + DSAInfo.Name) or (RegCreateKey(RootKey, Key + '\' +
+      DSAInfo.Name, '') = ERROR_SUCCESS)) then
+    raise EJvDSADialog.CreateFmt(sDSARegKeyCreateError, [Key + '\' + DSAInfo.Name]);
+end;
+
+function TDSARegStorage.GetCheckMarkTextSuffix: string;
+begin
+  Result := '';
+end;
+
+procedure TDSARegStorage.SetCheckMarkTextSuffix(Value: string);
+begin
+end;
 
 function TDSARegStorage.ReadBool(const DSAInfo: TDSARegItem; const Key: string): Boolean;
 begin
   Result := RegReadBool(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSARegStorage.ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Boolean): Boolean;
@@ -1160,14 +1091,10 @@ begin
   Result := RegReadBoolDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSARegStorage.ReadFloat(const DSAInfo: TDSARegItem; const Key: string): Extended;
 begin
   RegReadBinary(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Result, SizeOf(Extended));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSARegStorage.ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Extended): Extended;
@@ -1176,14 +1103,10 @@ begin
     Result := Default;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSARegStorage.ReadInt64(const DSAInfo: TDSARegItem; const Key: string): Int64;
 begin
   Result := RegReadDWORD(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSARegStorage.ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Int64): Int64;
@@ -1191,14 +1114,10 @@ begin
   Result := RegReadDWORDDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSARegStorage.ReadInteger(const DSAInfo: TDSARegItem; const Key: string): Integer;
 begin
   Result := RegReadInteger(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSARegStorage.ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Integer): Integer;
@@ -1206,14 +1125,10 @@ begin
   Result := RegReadIntegerDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSARegStorage.ReadString(const DSAInfo: TDSARegItem; const Key: string): string;
 begin
   Result := RegReadString(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSARegStorage.ReadStringDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: string): string;
@@ -1221,16 +1136,12 @@ begin
   Result := RegReadStringDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSARegStorage.WriteBool(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Boolean);
 begin
   CreateKey(DSAInfo);
   RegWriteBool(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TDSARegStorage.WriteFloat(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Extended);
@@ -1242,16 +1153,12 @@ begin
   RegWriteBinary(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Temp, SizeOf(Extended));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSARegStorage.WriteInt64(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Int64);
 begin
   CreateKey(DSAInfo);
   RegWriteDWORD(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TDSARegStorage.WriteInteger(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Integer);
@@ -1260,8 +1167,6 @@ begin
   RegWriteInteger(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSARegStorage.WriteString(const DSAInfo: TDSARegItem; const Key: string;
   const Value: string);
 begin
@@ -1269,9 +1174,7 @@ begin
   RegWriteString(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
 end;
 
-//--------------------------------------------------------------------------------------------------
-// TDSAQueueStorage
-//--------------------------------------------------------------------------------------------------
+//=== TDSAValues =============================================================
 
 const
   DSABool = 1;
@@ -1294,13 +1197,28 @@ begin
   Sorted := True;
 end;
 
+//=== TDSAQueueStorage =======================================================
+
+constructor TDSAQueueStorage.Create;
+begin
+  inherited Create;
+  FList := TStringList.Create;
+  TStringList(FList).Sorted := True;
+  FCheckMarkSuffix := 'in the current queue';
+end;
+
+destructor TDSAQueueStorage.Destroy;
+begin
+  Clear;
+  FList.Free;
+  inherited Destroy;
+end;
+
 procedure TDSAQueueStorage.AddDSA(const DSAInfo: TDSARegItem);
 begin
   if FindDSA(DSAInfo) < 0 then
     FList.AddObject(DSAInfo.Name, TDSAValues.Create);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TDSAQueueStorage.DeleteDSA(const Index: Integer);
 begin
@@ -1308,21 +1226,15 @@ begin
   FList.Delete(Index);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSAQueueStorage.FindDSA(const DSAInfo: TDSARegItem): Integer;
 begin
   Result := FList.IndexOf(DSAInfo.Name);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSAQueueStorage.GetCheckMarkTextSuffix: string;
 begin
   Result := FCheckMarkSuffix;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSAQueueStorage.GetDSAValue(const DSAInfo: TDSARegItem; const Key: string;
   const Kind: Integer): string;
@@ -1342,8 +1254,6 @@ begin
   Result := DSAKeys.Values[Key];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSAQueueStorage.HasDSAKey(const DSAInfo: TDSARegItem; const Key: string): Boolean;
 var
   I: Integer;
@@ -1358,15 +1268,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSAQueueStorage.SetCheckMarkTextSuffix(Value: string);
 begin
   if Value <> CheckMarkTextSuffix then
     FCheckMarkSuffix := Value;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TDSAQueueStorage.SetDSAValue(const DSAInfo: TDSARegItem; const Key: string;
   const Kind: Integer; const Value: string);
@@ -1390,34 +1296,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
-constructor TDSAQueueStorage.Create;
-begin
-  inherited Create;
-  FList := TStringList.Create;
-  TStringList(FList).Sorted := True;
-  FCheckMarkSuffix := 'in the current queue';
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TDSAQueueStorage.Destroy;
-begin
-  Clear;
-  FList.Free;
-  inherited Destroy;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSAQueueStorage.Clear;
 begin
   while FList.Count > 0 do
     DeleteDSA(FList.Count - 1);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSAQueueStorage.ReadBool(const DSAInfo: TDSARegItem; const Key: string): Boolean;
 var
@@ -1426,8 +1309,6 @@ begin
   S := GetDSAValue(DSAInfo, Key, DSABool);
   Result := AnsiSameText(S, 'True') or AnsiSameText(S, '1');
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSAQueueStorage.ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Boolean): Boolean;
@@ -1438,15 +1319,11 @@ begin
     Result := Default;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSAQueueStorage.ReadFloat(const DSAInfo: TDSARegItem; const Key: string): Extended;
 begin
   Result := StrToFloat(StringReplace(GetDSAValue(DSAInfo, Key, DSAFloat), ThousandSeparator,
     DecimalSeparator, [rfReplaceAll, rfIgnoreCase]));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSAQueueStorage.ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Extended): Extended;
@@ -1457,14 +1334,10 @@ begin
     Result := Default;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSAQueueStorage.ReadInt64(const DSAInfo: TDSARegItem; const Key: string): Int64;
 begin
   Result := StrToInt64(GetDSAValue(DSAInfo, Key, DSAInt64));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSAQueueStorage.ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Int64): Int64;
@@ -1475,14 +1348,10 @@ begin
     Result := Default;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSAQueueStorage.ReadInteger(const DSAInfo: TDSARegItem; const Key: string): Integer;
 begin
   Result := StrToInt(GetDSAValue(DSAInfo, Key, DSAInt));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSAQueueStorage.ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: Integer): Integer;
@@ -1493,14 +1362,10 @@ begin
     Result := Default;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TDSAQueueStorage.ReadString(const DSAInfo: TDSARegItem; const Key: string): string;
 begin
   Result := GetDSAValue(DSAInfo, Key, DSAString);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TDSAQueueStorage.ReadStringDef(const DSAInfo: TDSARegItem; const Key: string;
   const Default: string): string;
@@ -1511,8 +1376,6 @@ begin
     Result := Default;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSAQueueStorage.WriteBool(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Boolean);
 begin
@@ -1522,15 +1385,11 @@ begin
     SetDSAValue(DSAInfo, Key, DSABool, '0');
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSAQueueStorage.WriteFloat(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Extended);
 begin
   SetDSAValue(DSAInfo, Key, DSAFloat, FloatToStr(Value));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TDSAQueueStorage.WriteInt64(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Int64);
@@ -1538,15 +1397,11 @@ begin
   SetDSAValue(DSAInfo, Key, DSAInt64, IntToStr(Value));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TDSAQueueStorage.WriteInteger(const DSAInfo: TDSARegItem; const Key: string;
   const Value: Integer);
 begin
   SetDSAValue(DSAInfo, Key, DSAInt, IntToStr(Value));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TDSAQueueStorage.WriteString(const DSAInfo: TDSARegItem; const Key: string;
   const Value: string);
@@ -1571,14 +1426,10 @@ const
     (mrYes, mrNo, mrOk, mrCancel, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
      mrYesToAll, 0);
 
-//--------------------------------------------------------------------------------------------------
-
 function DlgCaption(const DlgType: TMsgDlgType): string;
 begin
   Result := Captions[DlgType];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DlgPic(const DlgType: TMsgDlgType): TGraphic;
 begin
@@ -1596,8 +1447,6 @@ begin
     Result := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DlgButtonCaptions(const Buttons: TMsgDlgButtons): TDynStringArray;
 var
   I: Integer;
@@ -1613,8 +1462,6 @@ begin
   end;
   SetLength(Result, I);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DlgButtonResults(const Buttons: TMsgDlgButtons): TDynIntegerArray;
 var
@@ -1632,15 +1479,12 @@ begin
   SetLength(Result, I);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ButtonIndex(const Results: array of Integer; const ResCode: Integer): Integer; overload;
 begin
   Result := High(Results);
   while (Result > -1) and (Results[Result] <> ResCode) do
     Dec(Result);
 end;
-//--------------------------------------------------------------------------------------------------
 
 function ButtonIndex(const Results: array of Integer; const Button: TMsgDlgBtn): Integer; overload;
 begin
@@ -1656,15 +1500,11 @@ begin
   MessageDlg(Msg, mtCustom, [mbOk], 0, Center);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure ShowMessageFmt(const Msg: string; const Params: array of const;
   const Center: TDlgCenterKind = dckScreen);
 begin
   MessageDlg(Format(Msg, Params), mtCustom, [mbOk], 0, Center);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function MessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
   const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
@@ -1682,8 +1522,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MessageDlg(const Caption, Msg: string; const DlgType: TMsgDlgType;
   const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
   const DefaultButton: TMsgDlgBtn = mbDefault;
@@ -1699,8 +1537,6 @@ begin
     TmpPic.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function MessageDlg(const Caption, Msg: string; const Picture: TGraphic;
   const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
@@ -1741,8 +1577,6 @@ begin
     ButtonIndex(BtnResults, HelpButton));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MessageDlgEx(const Msg: string; const DlgType: TMsgDlgType;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
   const Center: TDlgCenterKind = dckScreen; const DefaultButton: Integer = 0;
@@ -1759,8 +1593,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function MessageDlgEx(const Caption, Msg: string; const DlgType: TMsgDlgType;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
   const Center: TDlgCenterKind = dckScreen; const DefaultButton: Integer = 0;
@@ -1776,8 +1608,6 @@ begin
     TmpPic.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function MessageDlgEx(const Caption, Msg: string; const Picture: TGraphic;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
@@ -1803,15 +1633,11 @@ begin
   DSAMessageDlg(DlgID, Msg, mtCustom, [mbOk], 0, Center);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure DSAShowMessageFmt(const DlgID: Integer; const Msg: string; const Params: array of const;
   const Center: TDlgCenterKind = dckScreen);
 begin
   DSAMessageDlg(DlgID, Format(Msg, Params), mtCustom, [mbOk], 0, Center);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DSAMessageDlg(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
   const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
@@ -1829,8 +1655,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string; const DlgType: TMsgDlgType;
   const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
   const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
@@ -1846,8 +1670,6 @@ begin
     TmpPic.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
   const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
@@ -1888,8 +1710,6 @@ begin
     ButtonIndex(BtnResults, HelpButton));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DSAMessageDlgEx(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
   const Center: TDlgCenterKind = dckScreen; const DefaultButton: Integer = 0;
@@ -1905,8 +1725,6 @@ begin
     TmpPic.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string;
   const DlgType: TMsgDlgType; const Buttons: array of string; const Results: array of Integer;
@@ -1924,8 +1742,6 @@ begin
     TmpPic.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
   const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
@@ -1976,14 +1792,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure UnregisterDSA(const DlgID: Integer);
 begin
   DSARegister.Delete(DlgID);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function LocateDSAReg(const DlgID: Integer): TDSARegItem;
 begin
@@ -2001,8 +1813,6 @@ begin
   Result := GetDSAState(DlgID, Dummy);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetDSAState(const DlgID: Integer; out ResCode: Integer;
   const OnCustomData: TDSACustomData = nil): Boolean;
 var
@@ -2014,8 +1824,6 @@ begin
   else
     raise EJvDSADialog.CreateFmt(sDSADialogIDNotFound, [DlgID]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure SetDSAState(const DlgID: Integer; const DontShowAgain: Boolean;
   const LastResult: Integer = mrNone; const OnCustomData: TDSACustomData = nil);
@@ -2038,8 +1846,6 @@ begin
   Result := Length(DSARegister.FList);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DSAItem(const Index: Integer): TDSARegItem;
 begin
   Result := DSARegister.FList[Index];
@@ -2057,8 +1863,6 @@ begin
     raise EJvDSADialog.CreateFmt(sDSADuplicateCTK_ID, [ID]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure UnregisterDSACheckMarkText(const ID: TDSACheckTextKind);
 var
   Idx: Integer;
@@ -2067,8 +1871,6 @@ begin
   if Idx > -1 then
     CheckMarkTexts.Delete(Idx);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetDSACheckMarkText(const ID: TDSACheckTextKind): string;
 begin
@@ -2089,8 +1891,6 @@ begin
   Result := TDSARegStorage(GRegStore);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 var
   GQueueStore: TDSAStorage;
 
@@ -2100,8 +1900,6 @@ begin
     GQueueStore := TDSAQueueStorage.Create;
   Result := TDSAQueueStorage(GQueueStore);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { ShowModal patch }
 
@@ -2139,6 +1937,8 @@ begin
     VirtualProtect(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer)), SizeOf(Pointer), OldProt, OldProt);
   end;
 end;
+
+//=== TPatchedForm ===========================================================
 
 type
   TShowModalMethod = function: Integer of object; // So we can call the original ShowModal method.
@@ -2182,7 +1982,7 @@ begin
         CheckCaption := CheckCaption + '.';
       SetStrProp(JvDSADialog.CheckControl, 'Caption', CheckCaption);
     end;
-    
+
     // Show the dialog by calling the original ShowModal method: setting up the method pointers.
     TMethod(ShowModalMethod).Data := Self;
     TMethod(ShowModalMethod).Code := JvDSADialog.GetOrgShowModalPtr;
@@ -2194,6 +1994,31 @@ begin
   else
     // The dialog is suppressed. Apply the saved state.
     JvDSADialog.ApplySavedState;
+end;
+
+//=== TJvDSADialog ===========================================================
+
+constructor TJvDSADialog.Create(AOwner: TComponent);
+var
+  I: Integer;
+begin
+  if AOwner is TCustomForm then
+  begin
+    I := AOwner.ComponentCount - 1;
+    while (I > -1) and not (AOwner.Components[I] is TJvDSADialog) do
+      Dec(I);
+    if I > -1 then
+      raise EJvDSADialog.Create(sAlreadyDSADialog);
+    inherited Create(AOwner);
+  end
+  else
+    raise EJvDSADialog.Create(sOnlyAllowedOnForms);
+end;
+
+destructor TJvDSADialog.Destroy;
+begin
+  FormUnPatch;
+  inherited Destroy;
 end;
 
 procedure TJvDSADialog.ApplySavedState;
@@ -2305,29 +2130,6 @@ begin
   SetDSAState(DialogID, IsDSAChecked, TCustomForm(Owner).ModalResult, DoUpdateKeys);
 end;
 
-constructor TJvDSADialog.Create(AOwner: TComponent);
-var
-  I: Integer;
-begin
-  if AOwner is TCustomForm then
-  begin
-    I := AOwner.ComponentCount - 1;
-    while (I > -1) and not (AOwner.Components[I] is TJvDSADialog) do
-      Dec(I);
-    if I > -1 then
-      raise EJvDSADialog.Create(sAlreadyDSADialog);
-    inherited Create(AOwner);
-  end
-  else
-    raise EJvDSADialog.Create(sOnlyAllowedOnForms);
-end;
-
-destructor TJvDSADialog.Destroy;
-begin
-  FormUnPatch;
-  inherited Destroy;
-end;
-
 function TJvDSADialog.GetModalResult: Integer;
 begin
   Result := TCustomForm(Owner).ModalResult;
@@ -2362,5 +2164,6 @@ finalization
     FreeAndNil(GQueueStore);
   if GCheckMarkTexts <> nil then
     FreeAndNil(GCheckMarkTexts);
+
 end.
 

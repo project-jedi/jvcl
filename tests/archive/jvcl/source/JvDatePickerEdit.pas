@@ -23,7 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+
 {$I JVCL.INC}
 
 { A replacement for TDateTimePicker which is better suited for keyboard-input by
@@ -40,7 +40,6 @@ Known Issues:
   cases. This feature could be further controlled by the AllowNoDate and
   NoDateShortcut properties.
 
-
  Known issues / not (yet) implemented features:
 
  -the control does (currently) not allow for time entry
@@ -49,7 +48,6 @@ Known Issues:
  -the Min/MaxYear contstraints are currently commented out as they are not
    functional in the current state. they would still require some work to make up
    for two-digit year entries.
-
 }
 
 unit JvDatePickerEdit;
@@ -57,16 +55,8 @@ unit JvDatePickerEdit;
 interface
 
 uses
-  Classes,
-  Controls,
-  Graphics,
-  JvTypes,  
-  JvCalendar,
-  JvDropDownForm,
-  JvCheckedMaskEdit,
-  Messages,
-  ComCtrls,
-  Buttons;
+  Classes, Controls, Graphics, Messages, ComCtrls, Buttons,
+  JvTypes, JvCalendar, JvDropDownForm, JvCheckedMaskEdit;
 
 type
   {Types used to handle and convert between date format strings and EditMasks:}
@@ -77,17 +67,15 @@ type
     Length: Byte;
     Index: Byte;
   end;
-  TJvDateFigures = array[0..2] of TJvDateFigureInfo;
+  TJvDateFigures = array [0..2] of TJvDateFigureInfo;
 
   {A dropdown form with an embedded calendar control.}
   TJvDropCalendar = class(TJvCustomDropDownForm)
   private
     FCal: TJvCustomMonthCalendar;
-
     FOnChange: TNotifyEvent;
     FOnSelect: TNotifyEvent;
     FOnCancel: TNotifyEvent;
-
     procedure CalSelChange(Sender: TObject; StartDate, EndDate: TDateTime);
     procedure CalSelect(Sender: TObject; StartDate, EndDate: TDateTime);
     procedure CalKeyPress(Sender: TObject; var Key: Char);
@@ -97,19 +85,14 @@ type
     procedure DoChange;
     procedure DoSelect;
     procedure DoShow; override;
-
     function GetSelDate: TDateTime;
     procedure SetSelDate(const AValue: TDateTime);
-
   public
     constructor CreateWithAppearance(AOwner: TComponent;
       const AAppearance: TJvMonthCalAppearance);
     destructor Destroy; override;
-
     procedure SetFocus; override;
-
     property SelDate: TDateTime read GetSelDate write SetSelDate;
-
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
@@ -123,85 +106,68 @@ type
     FDate: TDateTime;
     FDateError: Boolean;
     FDateFigures: TJvDateFigures;
-    FDateFormat: String;
+    FDateFormat: string;
     FDropFo: TJvDropCalendar;
     FEnableValidation: Boolean;
-    FMask: String;
+    FMask: string;
     FNoDateShortcut: TShortcut;
-    FNoDateText: String;
+    FNoDateText: string;
     FStoreDate: Boolean;
-
 //    FMinYear: Word;
 //    FMaxYear: Word;
-
     procedure ButClick(Sender: TObject);
     procedure CalChange(Sender: TObject);
     procedure CalDestroy(Sender: TObject);
     procedure CalSelect(Sender: TObject);
-
-    function AttemptTextToDate(const AText: String; var ADate: TDateTime;
+    function AttemptTextToDate(const AText: string; var ADate: TDateTime;
       const AForce: Boolean = False; const ARaise: Boolean = False): Boolean;
-    function DateFormatToEditMask(const ADateFormat: String): String;
-    function DateToText(const ADate: TDateTime): String;
-    procedure ParseFigures(var AFigures: TJvDateFigures; AFormat: String);
+    function DateFormatToEditMask(const ADateFormat: string): string;
+    function DateToText(const ADate: TDateTime): string;
+    procedure ParseFigures(var AFigures: TJvDateFigures; AFormat: string);
     procedure RaiseNoDate;
-
     procedure SetAllowNoDate(const AValue: Boolean);
     procedure SetCalAppearance(const AValue: TJvMonthCalAppearance);
     function GetDate: TDateTime;
     procedure SetDate(const AValue: TDateTime);
-    procedure SetDateFormat(const AValue: String);
+    procedure SetDateFormat(const AValue: string);
     function GetDropped: Boolean;
-    procedure SetNoDateText(const AValue: String);
-
+    procedure SetNoDateText(const AValue: string);
   protected
     function IsDateFormatStored: Boolean;
     function IsNoDateShortcutStored: Boolean;
     function IsNoDateTextStored: Boolean;
-  protected
     procedure Change; override;
     procedure Loaded; override;
     procedure DoKillFocus(const ANextControl: TWinControl); override;
     procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
-
     procedure GetInternalMargins(var ALeft, ARight: Integer); override;
-
     procedure DoCtl3DChanged; override;
     procedure DoEnabledChanged; override;
-
     function GetChecked: Boolean; override;
     procedure SetChecked(const AValue: Boolean); override;
     procedure SetShowCheckbox(const AValue: Boolean); override;
-
     function GetEnableValidation: Boolean; virtual;
-
     procedure UpdateDisplay; virtual;
-
     function ActiveFigure: TJvDateFigureInfo;
-
     procedure CloseUp;
     procedure DropDown;
-
     procedure ClearMask;
     procedure RestoreMask;
-
     property AllowNoDate: Boolean read FAllowNoDate write SetAllowNoDate default True;
     property CalendarAppearance: TJvMonthCalAppearance read FCalAppearance write SetCalAppearance;
     property Date: TDateTime read GetDate write SetDate stored FStoreDate;
-    property DateFormat: String read FDateFormat write SetDateFormat stored IsDateFormatStored;
+    property DateFormat: string read FDateFormat write SetDateFormat stored IsDateFormatStored;
     property Dropped: Boolean read GetDropped;
     property EnableValidation: Boolean read GetEnableValidation write FEnableValidation default True;
 //    property MaxYear: Word read FMaxYear write FMaxYear;
 //    property MinYear: Word read FMinYear write FMinYear;
     property NoDateShortcut: TShortcut read FNoDateShortcut write FNoDateShortcut stored IsNoDateShortcutStored;
-    property NoDateText: String read FNoDateText write SetNoDateText stored IsNoDateTextStored;
+    property NoDateText: string read FNoDateText write SetNoDateText stored IsNoDateTextStored;
     property StoreDate: Boolean read FStoreDate write FStoreDate default False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure Clear; override;
-
     function IsEmpty: Boolean; virtual;
   end;
 
@@ -251,7 +217,6 @@ type
     property StoreDate;
     property TabOrder;
     property Visible;
-
     property OnChange;
     property OnClick;
     property OnCheckClick;
@@ -280,21 +245,65 @@ type
 implementation
 
 uses
-  Menus, //Shortcut
-  Windows,
-  SysUtils,
-  JclStrings,
-  JclGraphUtils;
+  Windows, Menus, SysUtils,
+  JclStrings, JclGraphUtils;
 
 const
   DefaultNoDateShortcut = 'Alt+Del';
 
+//=== TJvCustomDatePickerEdit ================================================
 
-{ TJvCustomDatePickerEdit }
+constructor TJvCustomDatePickerEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FAllowNoDate := True;
+  FDate := SysUtils.Date;
+  FDateError := False;
+  FDropFo := nil;
+  FEnableValidation := True;
+//  FMaxYear := 2900;
+//  FMinYear := 1800;
+  FNoDateShortcut := TextToShortCut(DefaultNoDateShortcut);
+  FNoDateText := '';
+  FStoreDate := False;
+
+  FBut := TSpeedButton.Create(Self);
+  with FBut do
+  begin
+    Parent := Self;
+    Align := alRight;
+    Cursor := crArrow;
+    Flat := True;
+    Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
+    Glyph.Handle := LoadBitmap(0, PChar(OBM_COMBO)); // PChar(32738));
+    OnClick := ButClick;
+    Visible := True;
+  end;
+
+  FCalAppearance := TJvMonthCalAppearance.Create;
+
+  SetDateFormat(ShortDateFormat);
+  EditMask := FMask;
+end;
+
+destructor TJvCustomDatePickerEdit.Destroy;
+begin
+  CloseUp;
+  FBut.OnClick := nil;
+  FreeAndNil(FCalAppearance);
+  inherited Destroy;
+end;
+
+procedure TJvCustomDatePickerEdit.Loaded;
+begin
+  inherited Loaded;
+  UpdateDisplay;
+end;
 
 procedure TJvCustomDatePickerEdit.ButClick(Sender: TObject);
 begin
-  if(Dropped) then
+  if Dropped then
     CloseUp
   else
     DropDown;
@@ -302,7 +311,7 @@ end;
 
 procedure TJvCustomDatePickerEdit.CalChange(Sender: TObject);
 begin
-   Text := DateToText(FDropFo.SelDate);
+  Text := DateToText(FDropFo.SelDate);
 end;
 
 procedure TJvCustomDatePickerEdit.CalSelect(Sender: TObject);
@@ -317,55 +326,13 @@ end;
 
 procedure TJvCustomDatePickerEdit.CloseUp;
 begin
-  if(Dropped) then
+  if Dropped then
   begin
     Date := FDropFo.SelDate;
     FreeAndNil(FDropFo);
   end;
-  if not((Leaving) or(csDestroying in ComponentState)) then
+  if not (Leaving or (csDestroying in ComponentState)) then
     SetFocus;
-end;
-
-constructor TJvCustomDatePickerEdit.Create(AOwner: TComponent);
-begin
-  inherited;
-
-  FAllowNoDate := True;
-  FDate := SysUtils.Date;
-  FDateError := False;
-  FDropFo := NIL;
-  FEnableValidation := True;
-//  FMaxYear := 2900;
-//  FMinYear := 1800;
-  FNoDateShortcut := TextToShortCut(DefaultNoDateShortcut);
-  FNoDateText := EmptyStr;
-  FStoreDate := False;
-
-  FBut := TSpeedButton.Create(Self);
-  with(FBut) do
-  begin
-    Parent := Self;
-    Align := alRight;
-    Cursor := crArrow;
-    Flat := True;
-    Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
-    Glyph.Handle := LoadBitmap(0,PChar(OBM_COMBO)); // 	 PChar(32738));
-    OnClick := ButClick;
-    Visible := True;
-  end;
-
-  FCalAppearance := TJvMonthCalAppearance.Create;
-
-  SetDateFormat(ShortDateFormat);
-  EditMask := FMask;
-end;
-
-destructor TJvCustomDatePickerEdit.Destroy;
-begin
-  CloseUp;
-  FBut.OnClick := NIL;
-  FreeAndNil(FCalAppearance);
-  inherited;
 end;
 
 procedure TJvCustomDatePickerEdit.SetCalAppearance(
@@ -376,13 +343,13 @@ end;
 
 procedure TJvCustomDatePickerEdit.DropDown;
 begin
-  if(not Dropped) then
+  if not Dropped then
   begin
-    if(IsEmpty) then
+    if IsEmpty then
       Self.Date := SysUtils.Date;
 
     FDropFo := TJvDropCalendar.CreateWithAppearance(Self, FCalAppearance);
-    with(FDropFo) do
+    with FDropFo do
     begin
       SelDate := Self.Date;
       OnChange := Self.CalChange;
@@ -394,35 +361,35 @@ begin
   end;
 end;
 
-function TJvCustomDatePickerEdit.DateToText(const ADate: TDateTime): String;
+function TJvCustomDatePickerEdit.DateToText(const ADate: TDateTime): string;
 begin
-  result := FormatDateTime(DateFormat, ADate);
+  Result := FormatDateTime(DateFormat, ADate);
 end;
 
 function TJvCustomDatePickerEdit.GetDate: TDateTime;
 begin
-  result := FDate;
+  Result := FDate;
 end;
 
 function TJvCustomDatePickerEdit.GetDropped: Boolean;
 begin
-  result := Assigned(FDropFo) and not(csDestroying in FDropFo.ComponentState);
+  Result := Assigned(FDropFo) and not (csDestroying in FDropFo.ComponentState);
 end;
 
-procedure TJvCustomDatePickerEdit.GetInternalMargins( var ALeft, ARight: Integer);
+procedure TJvCustomDatePickerEdit.GetInternalMargins(var ALeft, ARight: Integer);
 begin
-  inherited;
+  inherited GetInternalMargins(ALeft, ARight);
   ARight := ARight + FBut.Width;
 end;
 
 function TJvCustomDatePickerEdit.IsEmpty: Boolean;
 begin
-  result := (FDate = 0);
+  Result := (FDate = 0);
 end;
 
 function TJvCustomDatePickerEdit.IsNoDateTextStored: Boolean;
 begin
-  result := (NoDateText <> EmptyStr);
+  Result := (NoDateText <> EmptyStr);
 end;
 
 procedure TJvCustomDatePickerEdit.RaiseNoDate;
@@ -432,31 +399,30 @@ end;
 
 procedure TJvCustomDatePickerEdit.SetAllowNoDate(const AValue: Boolean);
 begin
-  if(AllowNoDate <> AValue) then
+  if AllowNoDate <> AValue then
   begin
     FAllowNoDate := AValue;
 
-    if(AValue and IsEmpty) then
-      if(csDesigning in ComponentState) then
+    if AValue and IsEmpty then
+      if csDesigning in ComponentState then
         Self.Date := SysUtils.Date
       else
         RaiseNoDate;
 
-    if(not AValue) then
+    if not AValue then
       ShowCheckbox := False;
   end;
 end;
 
 procedure TJvCustomDatePickerEdit.SetDate(const AValue: TDateTime);
 begin
-  if(not AllowNoDate) and(AValue = 0) then
+  if (not AllowNoDate) and (AValue = 0) then
     RaiseNoDate;
-
   FDate := AValue;
   UpdateDisplay;
 end;
 
-procedure TJvCustomDatePickerEdit.SetNoDateText(const AValue: String);
+procedure TJvCustomDatePickerEdit.SetNoDateText(const AValue: string);
 begin
   FNoDateText := AValue;
   UpdateDisplay;
@@ -464,34 +430,34 @@ end;
 
 procedure TJvCustomDatePickerEdit.SetShowCheckbox(const AValue: Boolean);
 begin
-  inherited;
-  if(AValue) then
+  inherited SetShowCheckbox(AValue);
+  if AValue then
     AllowNoDate := True;
   UpdateDisplay;
 end;
 
-function TJvCustomDatePickerEdit.AttemptTextToDate(const AText: String;
+function TJvCustomDatePickerEdit.AttemptTextToDate(const AText: string;
   var ADate: TDateTime; const AForce: Boolean; const ARaise: Boolean): Boolean;
 var
-  lFormatBup: String;
+  lFormatBup: string;
   lDate: TDateTime;
   lDummy: Integer;
 begin
-  result := Validate(AText, lDummy);
+  Result := Validate(AText, lDummy);
   {only attempt to convert, if at least the Mask is matched
     - otherwise we'd be swamped by exceptions during input}
-  if(result or AForce) then     
+  if Result or AForce then
   begin
     lDate := ADate;
     lFormatBup := ShortDateFormat;
     try
       ShortDateFormat := Self.DateFormat;
       try
-        ADate := StrToDate( AText);
-        result := True;
+        ADate := StrToDate(AText);
+        Result := True;
       except
-        result := False;
-        if(ARaise) then
+        Result := False;
+        if (ARaise) then
           raise
         else
           ADate := lDate;
@@ -504,14 +470,15 @@ end;
 
 procedure TJvCustomDatePickerEdit.UpdateDisplay;
 begin
-  if(InternalChanging) then Exit;
-  
+  if InternalChanging then
+    Exit;
+
   BeginInternalChange;
   try
     inherited SetChecked(not IsEmpty);
-    if(IsEmpty) then
+    if IsEmpty then
     begin
-      if not(csDesigning in ComponentState) then
+      if not (csDesigning in ComponentState) then
       begin
         ClearMask;
         Text := NoDateText;
@@ -520,7 +487,7 @@ begin
     else
     begin
       RestoreMask;
-      Text:= DateToText( Self.Date)
+      Text := DateToText(Self.Date)
     end;
   finally
     EndInternalChange;
@@ -537,7 +504,7 @@ var
   begin
     BeginInternalChange;
     try
-      SelStart := lActFig.Start-1;
+      SelStart := lActFig.Start - 1;
       SelLength := lActFig.Length;
       SelText := Format('%.*d', [lActFig.Length, AValue]);
     finally
@@ -547,27 +514,28 @@ var
 
   procedure EnforceRange(const AMin, AMax: Word);
   begin
-    if(lFigVal > AMax) then
+    if lFigVal > AMax then
       SetActiveFigVal(AMax)
-    else if(lFigVal < AMin) then
+    else
+    if lFigVal < AMin then
       SetActiveFigVal(AMin);
   end;
 
 begin
-  if(InternalChanging) then
+  if InternalChanging then
     Exit;
 
-  inherited;
+  inherited Change;
 
   FDateError := False;
 
-  if([csDesigning, csDestroying] * ComponentState <> []) then
+  if [csDesigning, csDestroying] * ComponentState <> [] then
     Exit;
 
-  if(Text <> NoDateText) then
+  if Text <> NoDateText then
   begin
     lDate := Self.Date;
-    if(AttemptTextToDate(Text, lDate)) then
+    if AttemptTextToDate(Text, lDate) then
     begin
       BeginInternalChange;
       try
@@ -577,90 +545,87 @@ begin
       end;
     end
     else
-      if(EnableValidation) then
+      if EnableValidation then
+    begin
+      lActFig := ActiveFigure;
+
+      if lActFig.Figure <> dfNone then
       begin
-        lActFig:= ActiveFigure;
-
-        if(lActFig.Figure <> dfNone) then
-        begin
-          lFigVal := StrToIntDef(Trim(Copy(Text, lActFig.Start, lActFig.Length)), 0);
-          if(SelStart = lActFig.Start + lActFig.Length-1) then
-            case lActFig.Figure of
-              dfDay:
-                EnforceRange(1, 31);
-
-              dfMonth:
-                EnforceRange(1, 12);
-
-              dfYear:
+        lFigVal := StrToIntDef(Trim(Copy(Text, lActFig.Start, lActFig.Length)), 0);
+        if SelStart = lActFig.Start + lActFig.Length - 1 then
+          case lActFig.Figure of
+            dfDay:
+              EnforceRange(1, 31);
+            dfMonth:
+              EnforceRange(1, 12);
+            dfYear:
                 {EnforceRange( MinYear, MaxYear)}; //year-validation still under development
-            end;
-        end;
+          end;
       end;
+    end;
   end;
 end;
 
 function TJvCustomDatePickerEdit.IsNoDateShortcutStored: Boolean;
 begin
-  result := (NoDateShortcut <> TextToShortCut(DefaultNoDateShortcut));
+  Result := (NoDateShortcut <> TextToShortCut(DefaultNoDateShortcut));
 end;
 
 procedure TJvCustomDatePickerEdit.CalDestroy(Sender: TObject);
 begin
   CloseUp;
-  FDropFo := NIL;
+  FDropFo := nil;
 end;
 
 procedure TJvCustomDatePickerEdit.ClearMask;
 begin
-  if(EditMask <> EmptyStr) then
+  if EditMask <> '' then
   begin
     FMask := EditMask;
-    if not(csDesigning in ComponentState) then
+    if not (csDesigning in ComponentState) then
       EditMask := EmptyStr;
   end;
 end;
 
 procedure TJvCustomDatePickerEdit.RestoreMask;
 begin
-  if(EditMask = EmptyStr) then
+  if EditMask = EmptyStr then
     EditMask := FMask;
 end;
 
 procedure TJvCustomDatePickerEdit.KeyDown(var AKey: Word; AShift: TShiftState);
 begin
-  if(Text = NoDateText) then
+  if Text = NoDateText then
   begin
     Text := EmptyStr;
     RestoreMask;
   end;
 
-  if ( AllowNoDate)
-  and( Shortcut( AKey, AShift) = NoDateShortcut) then
+  if AllowNoDate and (Shortcut(AKey, AShift) = NoDateShortcut) then
   begin
     Date := 0;
   end
   else
     case AKey of
-      27 :
-      begin    // ESC
-        CloseUp;
-        Reset;
-      end;
+      VK_ESCAPE:
+        begin
+          CloseUp;
+          Reset;
+        end;
       VK_DOWN:
         if AShift = [ssAlt] then
           DropDown;
     end;
-  inherited;
+  inherited KeyDown(AKey, AShift);
 end;
 
 procedure TJvCustomDatePickerEdit.SetChecked(const AValue: Boolean);
 begin
-  if(Checked <> AValue) then
+  if Checked <> AValue then
   begin
-    if(AValue) then
+    if AValue then
     begin
-      if(Self.Date = 0) then
+      if Self.Date = 0 then
         Self.Date := SysUtils.Date;
     end
     else
@@ -673,37 +638,35 @@ end;
 
 function TJvCustomDatePickerEdit.GetChecked: Boolean;
 begin
-  result := not IsEmpty;
+  Result := not IsEmpty;
 end;
 
 function TJvCustomDatePickerEdit.DateFormatToEditMask(
-  const ADateFormat: String): String;
+  const ADateFormat: string): string;
 begin
-  result := ADateFormat;
-
-  StrReplace(result, 'dddddd',      LongDateFormat,  []);
-  StrReplace(result, 'ddddd',       ShortDateFormat, []);
-  StrReplace(result, 'dddd',        '',              []); // unsupported: DoW as full name
-  StrReplace(result, 'ddd',         '',              []); // unsupported: DoW as abbrev
-  StrReplace(result, 'dd',          '00',            []);
-  StrReplace(result, 'd',           '90',            []);
-  StrReplace(result, 'mmmm',        '90',            [rfIgnoreCase]);
-  StrReplace(result, 'mmm',         '00',            [rfIgnoreCase]);
-  StrReplace(result, 'mm',          '00',            [rfIgnoreCase]);
-  StrReplace(result, 'm',           '90',            [rfIgnoreCase]);
-  StrReplace(result, 'yyyy',        '9900',          []);
-  StrReplace(result, 'yy',          '00',            []);
-  StrReplace(result, DateSeparator, '/',             [rfReplaceAll]);
-
-  result := '!' + Trim(result) + ';1;_';
+  Result := ADateFormat;
+  StrReplace(Result, 'dddddd', LongDateFormat, []);
+  StrReplace(Result, 'ddddd', ShortDateFormat, []);
+  StrReplace(Result, 'dddd', '', []); // unsupported: DoW as full name
+  StrReplace(Result, 'ddd', '', []); // unsupported: DoW as abbrev
+  StrReplace(Result, 'dd', '00', []);
+  StrReplace(Result, 'd', '90', []);
+  StrReplace(Result, 'mmmm', '90', [rfIgnoreCase]);
+  StrReplace(Result, 'mmm', '00', [rfIgnoreCase]);
+  StrReplace(Result, 'mm', '00', [rfIgnoreCase]);
+  StrReplace(Result, 'm', '90', [rfIgnoreCase]);
+  StrReplace(Result, 'yyyy', '9900', []);
+  StrReplace(Result, 'yy', '00', []);
+  StrReplace(Result, DateSeparator, '/', [rfReplaceAll]);
+  Result := '!' + Trim(Result) + ';1;_';
 end;
 
 function TJvCustomDatePickerEdit.IsDateFormatStored: Boolean;
 begin
-  result := (FDateFormat <> ShortDateFormat);
+  Result := (FDateFormat <> ShortDateFormat);
 end;
 
-procedure TJvCustomDatePickerEdit.SetDateFormat(const AValue: String);
+procedure TJvCustomDatePickerEdit.SetDateFormat(const AValue: string);
 begin
   FDateFormat := AValue;
   ParseFigures(FDateFigures, FDateFormat);
@@ -715,26 +678,26 @@ end;
 
 function TJvCustomDatePickerEdit.ActiveFigure: TJvDateFigureInfo;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 2 downto 0 do
-    if(SelStart >= FDateFigures[i].Start) then
+  for I := 2 downto 0 do
+    if SelStart >= FDateFigures[I].Start then
     begin
-      result := FDateFigures[i];
+      Result := FDateFigures[I];
       Exit;
     end;
-  result.Figure := dfNone;
+  Result.Figure := dfNone;
 end;
 
 procedure TJvCustomDatePickerEdit.ParseFigures(var AFigures: TJvDateFigures;
-  AFormat: String);
+  AFormat: string);
 var
   i: Integer;
 begin
- {Determines the order and position of the individual figures in the format string.}
+  {Determines the order and position of the individual figures in the format string.}
   AFigures[0].Start := 1;
   AFigures[1].Start := Pos(DateSeparator, AFormat) + 1;
-  AFigures[2].Start := StrLastPos(DateSeparator, AFormat) +1;
+  AFigures[2].Start := StrLastPos(DateSeparator, AFormat) + 1;
 
   AFigures[0].Length := AFigures[1].Start - 2;
   AFigures[1].Length := AFigures[2].Start - AFigures[1].Start - 1;
@@ -742,14 +705,17 @@ begin
 
   AFormat := UpperCase(AFormat);
 
-  for i := 0 to 2 do
+  for I := 0 to 2 do
   begin
-    case AFormat[AFigures[i].Start] of
-      'D' : AFigures[i].Figure:= dfDay;
-      'M' : AFigures[i].Figure:= dfMonth;
-      'Y' : AFigures[i].Figure:= dfYear;
+    case AFormat[AFigures[I].Start] of
+      'D':
+        AFigures[I].Figure := dfDay;
+      'M':
+        AFigures[I].Figure := dfMonth;
+      'Y':
+        AFigures[I].Figure := dfYear;
     end;
-    AFigures[i].Index := i;
+    AFigures[I].Index := I;
   end;
 end;
 
@@ -757,69 +723,60 @@ procedure TJvCustomDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
 var
   lDate: TDateTime;
 begin
-  if (ANextControl <> NIL)
-  and(ANextControl <> FDropFo)
-  and(ANextControl.Owner <> FDropFo) then
-    if(not FDateError) then
+  if (ANextControl <> nil) and (ANextControl <> FDropFo) and
+    (ANextControl.Owner <> FDropFo) then
+    if not FDateError then
     begin
       CloseUp;
-      inherited;
-      if(EnableValidation) then
-        try
-          lDate := Self.Date;
-          if (Text <> NoDateText)
-          and(AttemptTextToDate(Text, lDate, True, True)) then
-            Self.Date:= lDate;
-        except
-          on EConvertError do
-            if not(csDestroying in ComponentState) then
-            begin
-              FDateError := True;
-              SetFocus;
-              raise;
-            end
-            else
-              Self.Date := 0;
-        end;
+      inherited DoKillFocus(ANextControl);
+      if EnableValidation then
+      try
+        lDate := Self.Date;
+        if (Text <> NoDateText) and AttemptTextToDate(Text, lDate, True, True) then
+          Self.Date := lDate;
+      except
+        on EConvertError do
+          if not (csDestroying in ComponentState) then
+          begin
+            FDateError := True;
+            SetFocus;
+            raise;
+          end
+          else
+            Self.Date := 0;
+      end;
     end
     else
-      inherited;
-end;
-
-procedure TJvCustomDatePickerEdit.Loaded;
-begin
-  inherited;
-  UpdateDisplay;
+      inherited DoKillFocus(ANextControl);
 end;
 
 function TJvCustomDatePickerEdit.GetEnableValidation: Boolean;
 begin
-  result := FEnableValidation;
+  Result := FEnableValidation;
 end;
 
 procedure TJvCustomDatePickerEdit.DoCtl3DChanged;
 begin
-  inherited;
+  inherited DoCtl3DChanged;
   FBut.Flat := not Self.Ctl3d;
 end;
 
 procedure TJvCustomDatePickerEdit.DoEnabledChanged;
 begin
-  inherited;
-  if( not(Self.Enabled) and Dropped) then
+  inherited DoEnabledChanged;
+  if not (Self.Enabled) and Dropped then
     CloseUp;
-  FBut.Enabled:= Self.Enabled;
+  FBut.Enabled := Self.Enabled;
 end;
 
-
-{ TLucaDropCalendar }
+//=== TJvDropCalendar ========================================================
 
 constructor TJvDropCalendar.CreateWithAppearance(AOwner: TComponent;
   const AAppearance: TJvMonthCalAppearance);
 begin
   inherited Create(AOwner);
   FCal := TJvMonthCalendar2.CreateWithAppearance(Self, AAppearance);
-  with(TJvMonthCalendar2(FCal)) do
+  with TJvMonthCalendar2(FCal) do
   begin
     Parent := Self;
     ParentFont := True;
@@ -834,14 +791,14 @@ end;
 
 destructor TJvDropCalendar.Destroy;
 begin
-  if(Assigned(FCal)) then
-    with(TJvMonthCalendar2(FCal)) do
+  if Assigned(FCal) then
+    with TJvMonthCalendar2(FCal) do
     begin
-      OnSelChange := NIL;
-      OnSelect := NIL;
-      OnKeyPress := NIL;
+      OnSelChange := nil;
+      OnSelect := nil;
+      OnKeyPress := nil;
     end;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvDropCalendar.CalSelChange(Sender: TObject;
@@ -852,7 +809,7 @@ end;
 
 procedure TJvDropCalendar.DoChange;
 begin
-  if(Assigned(OnChange)) then
+  if Assigned(OnChange) then
     OnChange(Self);
 end;
 
@@ -864,17 +821,19 @@ end;
 
 procedure TJvDropCalendar.DoSelect;
 begin
-  if(Assigned(OnSelect)) then
+  if Assigned(OnSelect) then
     OnSelect(Self);
   Release;
 end;
 
 procedure TJvDropCalendar.CalKeyPress(Sender: TObject; var Key: Char);
 begin
-  MessageBeep( 0);
-  case Key of
-    #13: DoSelect;
-    #27: DoCancel;
+  MessageBeep(0);
+  case Word(Key) of
+    VK_RETURN:
+      DoSelect;
+    VK_ESCAPE:
+      DoCancel;
   else
     DoChange;
   end;
@@ -882,7 +841,7 @@ end;
 
 procedure TJvDropCalendar.DoCancel;
 begin
-  if(Assigned(OnCancel)) then
+  if Assigned(OnCancel) then
     OnCancel(Self)
   else
     Release;
@@ -890,7 +849,7 @@ end;
 
 procedure TJvDropCalendar.DoShow;
 begin
-  inherited;
+  inherited DoShow;
   {in the constructor the calendar will sometimes report the wrong width, so
    we do this here.}
   AutoSize := True;
@@ -898,7 +857,7 @@ end;
 
 function TJvDropCalendar.GetSelDate: TDateTime;
 begin
-  result := TJvMonthCalendar2(FCal).DateFirst;
+  Result := TJvMonthCalendar2(FCal).DateFirst;
 end;
 
 procedure TJvDropCalendar.SetSelDate(const AValue: TDateTime);
@@ -917,7 +876,8 @@ begin
   if FCal.CanFocus then
     FCal.SetFocus
   else
-    inherited;
+    inherited SetFocus;
 end;
 
 end.
+

@@ -53,8 +53,6 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvAutoSizeCompo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -69,7 +67,6 @@ begin
     FForm.OnResize := Resize;
   end;
 end;
-{**************************************************}
 
 destructor TJvAutoSizeCompo.Destroy;
 begin
@@ -78,8 +75,6 @@ begin
   FForm := nil;
   inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvAutoSizeCompo.Resize(Sender: TObject);
 var

@@ -73,7 +73,7 @@ type
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
     procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK; // ain
     {$IFNDEF COMPILER6_UP}
-    function SelectItem(const AnItem: string): Boolean;  // SPM - Ported from D7
+    function SelectItem(const AItem: string): Boolean;  // SPM - Ported from D7
     {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
@@ -189,8 +189,6 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvCustomComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -209,8 +207,6 @@ begin
   FReadOnly := False; // ain
 end;
 
-{**************************************************}
-
 destructor TJvCustomComboBox.Destroy;
 begin
   FMaxPixel.Free;
@@ -218,8 +214,6 @@ begin
   FItemSearchs.Free;
   inherited;
 end;
-
-{**************************************************}
 
 procedure TJvCustomComboBox.Loaded;
 var
@@ -246,8 +240,6 @@ begin
     end;
   end;
 end;
-
-{**************************************************}
 
 procedure TJvCustomComboBox.Change;
 var
@@ -289,23 +281,17 @@ begin
     FAutoSave.SaveValue(Text);
 end;
 
-{**************************************************}
-
 function TJvCustomComboBox.SearchExactString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.SearchExactString(Items, Value, CaseSensitive);
 end;
 
-{**************************************************}
-
 function TJvCustomComboBox.SearchPrefix(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.SearchPrefix(Items, Value, CaseSensitive);
 end;
-
-{**************************************************}
 
 procedure TJvCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 begin
@@ -447,8 +433,6 @@ end;
 
 {$ENDIF COMPILER6_UP}
 
-{**************************************************}
-
 procedure TJvCustomComboBox.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
@@ -456,16 +440,12 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvCustomComboBox.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
-
-{**************************************************}
 
 procedure TJvCustomComboBox.CMMouseEnter(var Msg: TMessage);
 begin
@@ -482,8 +462,6 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvCustomComboBox.CMMouseLeave(var Msg: TMessage);
 begin
   if FOver then
@@ -495,23 +473,17 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
 function TJvCustomComboBox.SearchSubString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.SearchSubString(Items, Value, CaseSensitive);
 end;
 
-{**************************************************}
-
 function TJvCustomComboBox.DeleteExactString(Value: string; All: Boolean;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.DeleteExactString(Items, Value, CaseSensitive);
 end;
-
-{**************************************************}
 
 procedure TJvCustomComboBox.MaxPixelChanged(Sender: TObject);
 var

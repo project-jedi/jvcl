@@ -16,7 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-
 Last Modified: 2002-09-03
 Added editors for JvFooter and JvGroupHeader
 
@@ -27,21 +26,21 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
-
-{ Various property editors }
+{$I WINDOWSONLY.INC}
 
 unit JvDsgnEditors;
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
+
+{ Various property editors }
 
 interface
 
 uses
-  Windows, Forms,  Graphics, ImgList, {$IFDEF COMPILER6_UP} DesignIntf,  DesignEditors, DesignMenus, VCLEditors,{$ELSE} DsgnIntf, {$ENDIF}
+  Windows, Forms, Graphics, ImgList,
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors, DesignMenus, VCLEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF}
   SysUtils, Classes, Dialogs, Controls;
 
 type
@@ -76,7 +75,6 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
-
   TDateTimeExProperty = class(TDateTimeProperty)
   public
     procedure Edit; override;
@@ -97,22 +95,23 @@ type
 
   TJvGroupHeaderEditor = class(TComponentEditor)
   public
-    function GetVerbCount: integer; override;
-    function GetVerb(Index: integer): string; override;
-    procedure ExecuteVerb(Index: integer); override;
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb(Index: Integer); override;
     procedure Edit; override;
   end;
 
   TJvFooterEditor = class(TComponentEditor)
   public
-    function GetVerbCount: integer; override;
-    function GetVerb(Index: integer): string; override;
-    procedure ExecuteVerb(Index: integer); override;
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb(Index: Integer); override;
     procedure Edit; override;
   end;
 
   TShortCutProperty = class(TIntegerProperty)
-    function GetAttributes: TPropertyAttributes;override;
+  public
+    function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
@@ -127,30 +126,28 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
-
     procedure ListMeasureWidth(const Value: string;
       ACanvas: TCanvas; var AWidth: Integer); virtual;
     procedure ListMeasureHeight(const Value: string;
       ACanvas: TCanvas; var AHeight: Integer); virtual;
     procedure ListDrawValue(const Value: string;
       ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean); virtual;
-
     procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean);
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean);
   end;
-{$ENDIF}
+  {$ENDIF}
 
-{$IFDEF COMPILER5}
+  {$IFDEF COMPILER5}
   TJvDefaultImageIndexProperty = class(TIntegerProperty)
   protected
     function ImageList: TCustomImageList; virtual;
   public
-    function GetValue: string;override;
-    procedure SetValue(const Value: string);override;
-    function GetAttributes: TPropertyAttributes;override;
-    procedure GetValues(Proc:TGetStrProc);override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
       var AWidth: Integer); override;
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
@@ -160,15 +157,15 @@ type
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean); override;
   end;
-{$ENDIF}
-
-
-
+  {$ENDIF}
 
 implementation
+
 uses
   FileCtrl, TypInfo, Menus,
   JvTypes, JvGroupHeader, JvFooter, JvStrLEdit, JvDateTimeDlg, JvMaxMin;
+
+//=== TFilenameProperty ======================================================
 
 procedure TFilenameProperty.Edit;
 begin
@@ -176,7 +173,7 @@ begin
   try
     FileName := GetStrValue;
     if Execute then
-       SetStrValue(FileName);
+      SetStrValue(FileName);
   finally
     Free;
   end;
@@ -194,14 +191,15 @@ begin
     Result := '(Filename)';
 end;
 
-{ TPathProperty }
+//=== TPathProperty ==========================================================
 
 procedure TPathProperty.Edit;
-var S:string;
+var
+  S: string;
 begin
   S := GetStrValue;
-   if SelectDirectory(S,[sdAllowCreate, sdPerformCreate, sdPrompt],0) then
-   SetStrValue(S);
+  if SelectDirectory(S, [sdAllowCreate, sdPerformCreate, sdPrompt], 0) then
+    SetStrValue(S);
 end;
 
 function TPathProperty.GetAttributes: TPropertyAttributes;
@@ -215,6 +213,8 @@ begin
   if Result = '' then
     Result := '(Filepath)';
 end;
+
+//=== THintProperty ==========================================================
 
 function THintProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -232,11 +232,13 @@ begin
     Comp := GetComponent(0);
     if Comp is TComponent then
       Caption := TComponent(Comp).Name + '.' + GetName
-    else Caption := GetName;
+    else
+      Caption := GetName;
     Temp := GetStrValue;
     Memo.Lines.Text := Temp;
     UpdateStatus(nil);
-    if ShowModal = mrOk then begin
+    if ShowModal = mrOk then
+    begin
       Temp := Memo.Text;
       while (Length(Temp) > 0) and (Temp[Length(Temp)] < ' ') do
         System.Delete(Temp, Length(Temp), 1);
@@ -247,7 +249,7 @@ begin
   end;
 end;
 
-{ TStringsProperty }
+//=== TStringsProperty =======================================================
 
 procedure TStringsProperty.Edit;
 var
@@ -260,11 +262,13 @@ begin
     Comp := GetComponent(0);
     if Comp is TComponent then
       Caption := TComponent(Comp).Name + '.' + GetName
-    else Caption := GetName;
+    else
+      Caption := GetName;
     Temp := GetStrValue;
     Memo.Lines.Text := Temp;
     UpdateStatus(nil);
-    if ShowModal = mrOk then begin
+    if ShowModal = mrOk then
+    begin
       Temp := Memo.Text;
       while (Length(Temp) > 0) and (Temp[Length(Temp)] < ' ') do
         System.Delete(Temp, Length(Temp), 1);
@@ -277,13 +281,14 @@ end;
 
 function TStringsProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paDialog,paRevertable];
+  Result := [paDialog, paRevertable];
 end;
 
-{ TDirectoryPropertyEditor }
+//=== TDirectoryPropertyEditor ===============================================
 
 procedure TDirectoryPropertyEditor.Edit;
-var S: string;
+var
+  S: string;
 begin
   S := GetStrValue;
   if SelectDirectory(S, [sdAllowCreate, sdPerformCreate, sdPrompt], 0) then
@@ -298,16 +303,16 @@ begin
   Result := [paDialog];
 end;
 
-
-{ TDateTimeProperty }
+//=== TDateTimeExProperty ====================================================
 
 procedure TDateTimeExProperty.Edit;
-var D: TDateTime;
+var
+  D: TDateTime;
 begin
   D := GetFloatValue;
   if D = 0.0 then
     D := Now;
-  if TfrmSelectDateTimeDlg.SelectDateTime(D, dstDateTime) then
+  if TFrmSelectDateTimeDlg.SelectDateTime(D, dstDateTime) then
   begin
     SetFloatValue(D);
     Designer.Modified;
@@ -319,15 +324,16 @@ begin
   Result := inherited GetAttributes + [paDialog];
 end;
 
-{ TDateExProperty }
+//=== TDateExProperty ========================================================
 
 procedure TDateExProperty.Edit;
-var D: TDateTime;
+var
+  D: TDateTime;
 begin
   D := GetFloatValue;
   if D = 0.0 then
     D := Now;
-  if TfrmSelectDateTimeDlg.SelectDateTime(D, dstDate) then
+  if TFrmSelectDateTimeDlg.SelectDateTime(D, dstDate) then
   begin
     SetFloatValue(D);
     Designer.Modified;
@@ -339,15 +345,16 @@ begin
   Result := inherited GetAttributes + [paDialog];
 end;
 
-{ TTimeExProperty }
+//=== TTimeExProperty ========================================================
 
 procedure TTimeExProperty.Edit;
-var D: TDateTime;
+var
+  D: TDateTime;
 begin
   D := GetFloatValue;
   if D = 0.0 then
     D := Now;
-  if TfrmSelectDateTimeDlg.SelectDateTime(D, dstTime) then
+  if TFrmSelectDateTimeDlg.SelectDateTime(D, dstTime) then
   begin
     SetFloatValue(D);
     Designer.Modified;
@@ -359,22 +366,24 @@ begin
   Result := inherited GetAttributes + [paDialog];
 end;
 
-{ TJvGroupHeaderEditor }
+//=== TJvGroupHeaderEditor ===================================================
 
-function TJvGroupHeaderEditor.GetVerbCount: integer;
+function TJvGroupHeaderEditor.GetVerbCount: Integer;
 begin
   Result := 2;
 end;
 
-function TJvGroupHeaderEditor.GetVerb(Index: integer): string;
+function TJvGroupHeaderEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := 'Standard/Flat';
-    1: Result := 'Web';
+    0:
+      Result := 'Standard/Flat';
+    1:
+      Result := 'Web';
   end;
 end;
 
-procedure TJvGroupHeaderEditor.ExecuteVerb(Index: integer);
+procedure TJvGroupHeaderEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
     0:
@@ -400,32 +409,38 @@ begin
   // We don't need to add band on double click
 end;
 
-{ TJvFooterEditor }
+//=== TJvFooterEditor ========================================================
 
-function TJvFooterEditor.GetVerbCount: integer;
+function TJvFooterEditor.GetVerbCount: Integer;
 begin
   Result := 5;
 end;
 
-function TJvFooterEditor.GetVerb(Index: integer): string;
+function TJvFooterEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := 'Add button';
-    1: Result := '-';
-    2: Result := 'MS Office 2000';
-    3: Result := 'MS Enterprise Manager Wizard';
-    4: Result := 'Dialog Mode';
+    0:
+      Result := 'Add button';
+    1:
+      Result := '-';
+    2:
+      Result := 'MS Office 2000';
+    3:
+      Result := 'MS Enterprise Manager Wizard';
+    4:
+      Result := 'Dialog Mode';
   end;
 end;
 
-procedure TJvFooterEditor.ExecuteVerb(Index: integer);
+procedure TJvFooterEditor.ExecuteVerb(Index: Integer);
 var
   FButton: TJvFooterBtn;
-
 begin
   case Index of
-    0: Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50);
-    1: ;
+    0:
+      Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50);
+    1:
+      ;
     2:
       begin
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, 50));
@@ -464,9 +479,10 @@ begin
   // We don't need to add band on double click
 end;
 
-{ TJvDefaultImageIndexProperty }
+//=== TJvDefaultImageIndexProperty ===========================================
 
 {$IFDEF COMPILER6_UP}
+
 function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
 begin
   Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'ImageList'));
@@ -474,7 +490,7 @@ end;
 
 function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList, paSortList, paMultiSelect,paRevertable];
+  Result := [paValueList, paSortList, paMultiSelect, paRevertable];
 end;
 
 function TJvDefaultImageIndexProperty.GetValue: string;
@@ -484,7 +500,7 @@ end;
 
 procedure TJvDefaultImageIndexProperty.SetValue(const Value: string);
 var
-  XValue: integer;
+  XValue: Integer;
 begin
   try
     XValue := strToInt(Value);
@@ -496,72 +512,73 @@ end;
 
 procedure TJvDefaultImageIndexProperty.GetValues(Proc: TGetStrProc);
 var
-  tmp: TCustomImageList;
-  i: integer;
+  Tmp: TCustomImageList;
+  I: Integer;
 begin
-  tmp := ImageList;
-  if Assigned(tmp) then
-    for i := 0 to tmp.Count - 1 do
-      Proc(intToStr(i));
+  Tmp := ImageList;
+  if Assigned(Tmp) then
+    for I := 0 to Tmp.Count - 1 do
+      Proc(intToStr(I));
 end;
 
-procedure TJvDefaultImageIndexProperty.ListMeasureWidth(const Value: string; ACanvas:TCanvas; var AWidth: Integer);
+procedure TJvDefaultImageIndexProperty.ListMeasureWidth(const Value: string; ACanvas: TCanvas; var AWidth: Integer);
 var
-  tmp: TCustomImageList;
+  Tmp: TCustomImageList;
 begin
-  tmp := ImageList;
-  if Assigned(tmp) then
-    AWidth := tmp.Width + ACanvas.TextHeight(Value) + 4;
+  Tmp := ImageList;
+  if Assigned(Tmp) then
+    AWidth := Tmp.Width + ACanvas.TextHeight(Value) + 4;
 end;
 
-procedure TJvDefaultImageIndexProperty.ListMeasureHeight(const Value: string; ACanvas:TCanvas;var AHeight: Integer);
+procedure TJvDefaultImageIndexProperty.ListMeasureHeight(const Value: string; ACanvas: TCanvas; var AHeight: Integer);
 var
-  tmp: TCustomImageList;
+  Tmp: TCustomImageList;
 begin
-  tmp := ImageList;
-  if Assigned(tmp) then
-    AHeight := Max(tmp.Height + 2,ACanvas.TextHeight(Value) + 2);
+  Tmp := ImageList;
+  if Assigned(Tmp) then
+    AHeight := Max(Tmp.Height + 2, ACanvas.TextHeight(Value) + 2);
 end;
 
 procedure TJvDefaultImageIndexProperty.ListDrawValue(const Value: string; ACanvas:
-  TCanvas;const ARect: TRect; ASelected:Boolean);
+  TCanvas; const ARect: TRect; ASelected: Boolean);
 var
-  tmp: TCustomImageList;
-  R:TRect;
+  Tmp: TCustomImageList;
+  R: TRect;
 begin
-  DefaultPropertyListDrawValue(Value,ACanvas,ARect,ASelected);
-  tmp := ImageList;
-  if tmp <> nil then
+  DefaultPropertyListDrawValue(Value, ACanvas, ARect, ASelected);
+  Tmp := ImageList;
+  if Tmp <> nil then
   begin
     R := ARect;
     ACanvas.FillRect(ARect);
-    tmp.Draw(ACanvas,ARect.Left,ARect.Top,StrToInt(Value));
-    OffsetRect(R,tmp.Width + 2,0);
-    DrawText(ACanvas.Handle,PChar(Value),-1,R,0);
- end;
+    Tmp.Draw(ACanvas, ARect.Left, ARect.Top, StrToInt(Value));
+    OffsetRect(R, Tmp.Width + 2, 0);
+    DrawText(ACanvas.Handle, PChar(Value), -1, R, 0);
+  end;
 end;
 
-procedure TJvDefaultImageIndexProperty.PropDrawName(ACanvas: TCanvas; const ARect:
-  TRect;
-  ASelected: Boolean);
+procedure TJvDefaultImageIndexProperty.PropDrawName(ACanvas: TCanvas;
+  const ARect: TRect; ASelected: Boolean);
 begin
   DefaultPropertyDrawName(Self, ACanvas, ARect);
 end;
 
-procedure TJvDefaultImageIndexProperty.PropDrawValue(ACanvas: TCanvas; const ARect:
-  TRect; ASelected: Boolean);
+procedure TJvDefaultImageIndexProperty.PropDrawValue(ACanvas: TCanvas;
+  const ARect: TRect; ASelected: Boolean);
 var
-  tmp: TCustomImageList;
+  Tmp: TCustomImageList;
 begin
-  tmp := ImageList;
-  if (GetVisualValue <> '') and Assigned(tmp) then
+  Tmp := ImageList;
+  if (GetVisualValue <> '') and Assigned(Tmp) then
     ListDrawValue(GetVisualValue, ACanvas, ARect, ASelected)
   else
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
+
 {$ENDIF}
 
 {$IFDEF COMPILER5}
+
 function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
 begin
   Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'ImageList'));
@@ -569,7 +586,7 @@ end;
 
 function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList,paSortList,paMultiselect];
+  Result := [paValueList, paSortList, paMultiselect];
 end;
 
 function TJvDefaultImageIndexProperty.GetValue: string;
@@ -579,10 +596,10 @@ end;
 
 procedure TJvDefaultImageIndexProperty.SetValue(const Value: string);
 var
-  XValue: integer;
+  XValue: Integer;
 begin
   try
-    XValue := strToInt(Value);
+    XValue := StrToInt(Value);
     SetOrdValue(XValue);
   except
     inherited SetValue(Value);
@@ -591,51 +608,51 @@ end;
 
 procedure TJvDefaultImageIndexProperty.GetValues(Proc: TGetStrProc);
 var
-  tmp: TCustomImageList;
-  i: integer;
+  Tmp: TCustomImageList;
+  I: Integer;
 begin
-  tmp := ImageList;
-  if Assigned(tmp) then
-    for i := 0 to tmp.Count - 1 do
-      Proc(intToStr(i));
+  Tmp := ImageList;
+  if Assigned(Tmp) then
+    for I := 0 to Tmp.Count - 1 do
+      Proc(IntToStr(I));
 end;
 
 procedure TJvDefaultImageIndexProperty.ListDrawValue(const Value: string;
   ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
 var
-  tmp: TCustomImageList;
-  R:TRect;
+  Tmp: TCustomImageList;
+  R: TRect;
 begin
-  inherited ListDrawValue(Value,ACanvas,ARect,ASelected);
-  tmp := ImageList;
-  if tmp <> nil then
+  inherited ListDrawValue(Value, ACanvas, ARect, ASelected);
+  Tmp := ImageList;
+  if Tmp <> nil then
   begin
     R := ARect;
     ACanvas.FillRect(ARect);
-    tmp.Draw(ACanvas,ARect.Left,ARect.Top,StrToInt(Value));
-    OffsetRect(R,tmp.Width + 2,0);
-    DrawText(ACanvas.Handle,PChar(Value),-1,R,0);
- end;
+    Tmp.Draw(ACanvas, ARect.Left, ARect.Top, StrToInt(Value));
+    OffsetRect(R, Tmp.Width + 2, 0);
+    DrawText(ACanvas.Handle, PChar(Value), -1, R, 0);
+  end;
 end;
 
 procedure TJvDefaultImageIndexProperty.ListMeasureHeight(const Value: string;
   ACanvas: TCanvas; var AHeight: Integer);
 var
-  tmp: TCustomImageList;
+  Tmp: TCustomImageList;
 begin
-  tmp := ImageList;
-  if Assigned(tmp) then
-    AHeight := Max(tmp.Height + 2,ACanvas.TextHeight(Value) + 2);
+  Tmp := ImageList;
+  if Assigned(Tmp) then
+    AHeight := Max(Tmp.Height + 2, ACanvas.TextHeight(Value) + 2);
 end;
 
 procedure TJvDefaultImageIndexProperty.ListMeasureWidth(const Value: string;
   ACanvas: TCanvas; var AWidth: Integer);
 var
-  tmp: TCustomImageList;
+  Tmp: TCustomImageList;
 begin
-  tmp := ImageList;
-  if Assigned(tmp) then
-    AWidth := tmp.Width + ACanvas.TextHeight(Value) + 4;
+  Tmp := ImageList;
+  if Assigned(Tmp) then
+    AWidth := Tmp.Width + ACanvas.TextHeight(Value) + 4;
 end;
 
 procedure TJvDefaultImageIndexProperty.PropDrawValue(ACanvas: TCanvas;
@@ -644,18 +661,16 @@ begin
 //  if GetVisualValue <> '' then
 //    ListDrawValue(GetVisualValue, ACanvas, ARect, True)
 //  else
-    inherited PropDrawValue(ACanvas, ARect, ASelected);
+  inherited PropDrawValue(ACanvas, ARect, ASelected);
 end;
-
 
 {$ENDIF}
 
-
-{ TShortCutProperty }
+//=== TShortCutProperty ======================================================
 
 function TShortCutProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList, paMultiSelect,paRevertable];
+  Result := [paValueList, paMultiSelect, paRevertable];
 end;
 
 function TShortCutProperty.GetValue: string;
@@ -670,48 +685,50 @@ begin
 end;
 
 procedure TShortCutProperty.GetValues(Proc: TGetStrProc);
-var Key:word;Shift:TShiftState;
+var
+  Key: word;
+  Shift: TShiftState;
 begin
   Proc('(None)');
 
   Shift := [ssCtrl];
   for Key := Ord('A') to Ord('Z') do
-    Proc(ShortCutToText(ShortCut(Key,Shift)));
+    Proc(ShortCutToText(ShortCut(Key, Shift)));
 
-  Shift := [ssAlt,ssCtrl];
+  Shift := [ssAlt, ssCtrl];
   for Key := Ord('A') to Ord('Z') do
-    Proc(ShortCutToText(ShortCut(Key,Shift)));
+    Proc(ShortCutToText(ShortCut(Key, Shift)));
 
   Shift := [];
   for Key := VK_F1 to VK_F10 do
-    Proc(ShortCutToText(ShortCut(Key,Shift)));
+    Proc(ShortCutToText(ShortCut(Key, Shift)));
 
   Shift := [ssCtrl];
   for Key := VK_F1 to VK_F10 do
-    Proc(ShortCutToText(ShortCut(Key,Shift)));
+    Proc(ShortCutToText(ShortCut(Key, Shift)));
 
   Shift := [ssShift];
   for Key := VK_F1 to VK_F10 do
-    Proc(ShortCutToText(ShortCut(Key,Shift)));
+    Proc(ShortCutToText(ShortCut(Key, Shift)));
 
-  Shift := [ssShift,ssCtrl];
+  Shift := [ssShift, ssCtrl];
   for Key := VK_F1 to VK_F10 do
-    Proc(ShortCutToText(ShortCut(Key,Shift)));
+    Proc(ShortCutToText(ShortCut(Key, Shift)));
 
-  Shift := [ssShift,ssAlt,ssCtrl];
+  Shift := [ssShift, ssAlt, ssCtrl];
   for Key := VK_F1 to VK_F10 do
-    Proc(ShortCutToText(ShortCut(Key,Shift)));
+    Proc(ShortCutToText(ShortCut(Key, Shift)));
 
-  Proc(ShortCutToText(ShortCut(VK_INSERT,[])));
-  Proc(ShortCutToText(ShortCut(VK_INSERT,[ssShift])));
-  Proc(ShortCutToText(ShortCut(VK_INSERT,[ssCtrl])));
+  Proc(ShortCutToText(ShortCut(VK_INSERT, [])));
+  Proc(ShortCutToText(ShortCut(VK_INSERT, [ssShift])));
+  Proc(ShortCutToText(ShortCut(VK_INSERT, [ssCtrl])));
 
-  Proc(ShortCutToText(ShortCut(VK_DELETE,[])));
-  Proc(ShortCutToText(ShortCut(VK_DELETE,[ssShift])));
-  Proc(ShortCutToText(ShortCut(VK_DELETE,[ssCtrl])));
+  Proc(ShortCutToText(ShortCut(VK_DELETE, [])));
+  Proc(ShortCutToText(ShortCut(VK_DELETE, [ssShift])));
+  Proc(ShortCutToText(ShortCut(VK_DELETE, [ssCtrl])));
 
-  Proc(ShortCutToText(ShortCut(VK_BACK,[ssAlt])));
-  Proc(ShortCutToText(ShortCut(VK_BACK,[ssAlt,ssShift])));
+  Proc(ShortCutToText(ShortCut(VK_BACK, [ssAlt])));
+  Proc(ShortCutToText(ShortCut(VK_BACK, [ssAlt, ssShift])));
 end;
 
 procedure TShortCutProperty.SetValue(const Value: string);
@@ -724,3 +741,4 @@ begin
 end;
 
 end.
+

@@ -28,88 +28,94 @@ Known Issues:
 
 unit JvEasterEgg;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Menus, JvTypes, JvComponent;
+  Messages, SysUtils, Classes, Controls, Forms,
+  JvComponent;
 
 type
   TJvEasterEgg = class(TJvComponent)
   private
     FActive: Boolean;
-    FOnEgg: TNotifyEvent;
-    FShiftState: TShiftState;
-    FEggs: string;
+    FOnEggFound: TNotifyEvent;
+    FControlKeys: TShiftState;
+    FEgg: string;
     FForm: TCustomForm;
-    FCurstring: string;
-    function NewWndProc(var Msg: TMessage):boolean;
+    FCurString: string;
+    function NewWndProc(var Msg: TMessage): Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property Active: Boolean read FActive write FActive default True;
-    property Egg: string read FEggs write FEggs;
-    property ControlKeys: TShiftState read FShiftState write FShiftState default [ssAlt];
-    property OnEggFound: TNotifyEvent read FOnEgg write FOnEgg;
+    property Egg: string read FEgg write FEgg;
+    property ControlKeys: TShiftState read FControlKeys write FControlKeys default [ssAlt];
+    property OnEggFound: TNotifyEvent read FOnEggFound write FOnEggFound;
   end;
 
 implementation
+
 uses
   JvWndProcHook;
-{**************************************************}
+
+// (rom) added by me. Should go to JCL
+
+function DownCase(Ch: Char): Char;
+begin
+  Result := Ch;
+  case Result of
+    'A'..'Z':
+      Inc(Result, Ord('a') - Ord('A'));
+  end;
+end;
 
 constructor TJvEasterEgg.Create(AOwner: TComponent);
 begin
-  inherited;
-  FForm := GetParentForm(TControl(AOwner));
+  inherited Create(AOwner);
   FActive := True;
-  FShiftState := [ssAlt];
-
+  FControlKeys := [ssAlt];
+  FForm := GetParentForm(TControl(AOwner));
   if (FForm <> nil) and not (csDesigning in ComponentState) then
-    RegisterWndProcHook(FForm,NewWndProc,hoAfterMsg);
+    RegisterWndProcHook(FForm, NewWndProc, hoAfterMsg);
 end;
-
-{**************************************************}
 
 destructor TJvEasterEgg.Destroy;
 begin
   if (FForm <> nil) and not (csDesigning in ComponentState) then
-    UnregisterWndProcHook(FForm,NewWndProc,hoAfterMsg);
-  inherited;
+    UnregisterWndProcHook(FForm, NewWndProc, hoAfterMsg);
+  inherited Destroy;
 end;
 
-{**************************************************}
-
-function TJvEasterEgg.NewWndProc(var Msg: TMessage):boolean;
+function TJvEasterEgg.NewWndProc(var Msg: TMessage): Boolean;
 var
-  shift: TShiftState;
+  Shift: TShiftState;
 begin
-  Result := false;
+  Result := False;
   with Msg do
   begin
     // (rom) simplified
 //    Result := CallWindowProc(FOldWndProc, FForm.Handle, Msg, WParam, LParam);
-    if FActive and (FEggs <> '') then
+    if FActive and (FEgg <> '') then
       case Msg of
         WM_KEYUP, WM_SYSKEYUP:
           begin
-            shift := KeyDataToShiftState(lParam);
-            if shift = FShiftState then
+            Shift := KeyDataToShiftState(LParam);
+            if Shift = FControlKeys then
             begin
-              if ssShift in shift then
-                FCurstring := FCurstring + UpCase(Char(wParam))
+              if ssShift in Shift then
+                FCurString := FCurString + UpCase(Char(WParam))
               else
-                FCurstring := FCurstring + LowerCase(Char(wParam))[1];
-              if FCurstring = FEggs then
+                FCurString := FCurString + DownCase(Char(WParam));
+              if FCurString = FEgg then
               begin
-                if Assigned(FOnEgg) then
-                  FOnEgg(Self);
-                FCurstring := '';
+                if Assigned(FOnEggFound) then
+                  FOnEggFound(Self);
+                FCurString := '';
               end
-              else if Length(FCurstring) >= Length(FEggs) then
-                FCurstring := Copy(FCurstring, 2, Length(FEggs));
+              else
+              if Length(FCurString) >= Length(FEgg) then
+                FCurString := Copy(FCurString, 2, Length(FEgg));
             end;
           end;
       end;
@@ -117,3 +123,4 @@ begin
 end;
 
 end.
+

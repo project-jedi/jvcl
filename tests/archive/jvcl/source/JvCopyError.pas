@@ -31,9 +31,9 @@ unit JvCopyError;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, SysUtils, Classes,
   SetupApi,
-  JvCommonDialogD, JvBaseDlg, JvTypes;
+  JvCommonDialogD, JvTypes;
 
 type
   TJvCopyError = class(TJvCommonDialogD)
@@ -64,8 +64,6 @@ implementation
 uses
   JclSysUtils;
 
-{**************************************************}
-
 constructor TJvCopyError.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -77,8 +75,6 @@ begin
   FTargetFile := '';
   FWin32ErrorCode := 0;
 end;
-
-{**************************************************}
 
 function TJvCopyError.Execute: TDiskRes;
 var

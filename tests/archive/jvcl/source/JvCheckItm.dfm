@@ -41,6 +41,9 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
   Position = poDefaultPosOnly
   OnCreate = FormCreate
   OnShow = FormShow
+  DesignSize = (
+    342
+    260)
   PixelsPerInch = 96
   TextHeight = 13
   object OkBtn: TButton

@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ActnList,
-  JvTypes, JvComponent;
+  JvComponent;
 
 type
   TJvApplication = class(TJvComponent)
@@ -50,7 +50,6 @@ type
     FHint: TNotifyEvent;
     FMessage: TMessageEvent;
     FShortcut: TShortCutEvent;
-
     procedure SetHelp(Value: THelpEvent);
     procedure SetIdle(Value: TIdleEvent);
     procedure SetException(Value: TExceptionEvent);
@@ -64,7 +63,6 @@ type
     procedure SetRestore(Value: TNotifyEvent);
     procedure SetMessage(Value: TMessageEvent);
     procedure SetShortcut(Value: TShortCutEvent);
-
     function GetHint: string;
     procedure SetHint(Value: string);
     function GetColor: TColor;
@@ -108,15 +106,11 @@ type
 
 implementation
 
-{*****************************************************}
-
 procedure TJvApplication.SetException(Value: TExceptionEvent);
 begin
   FException := Value;
   Application.OnException := Value;
 end;
-
-{*****************************************************}
 
 procedure TJvApplication.SetIdle(Value: TIdleEvent);
 begin
@@ -124,15 +118,11 @@ begin
   Application.OnIdle := Value;
 end;
 
-{*****************************************************}
-
 procedure TJvApplication.SetHelp(Value: THelpEvent);
 begin
   FHelp := Value;
   Application.OnHelp := Value;
 end;
-
-{*****************************************************}
 
 procedure TJvApplication.SetShowHint(Value: TShowHintEvent);
 begin
@@ -140,15 +130,11 @@ begin
   Application.OnShowHint := Value;
 end;
 
-{*****************************************************}
-
 procedure TJvApplication.SetActionExecute(Value: TActionEvent);
 begin
   FActionExecute := Value;
   Application.OnActionExecute := Value;
 end;
-
-{*****************************************************}
 
 procedure TJvApplication.SetActionUpdate(Value: TActionEvent);
 begin
@@ -156,15 +142,11 @@ begin
   Application.OnActionUpdate := Value;
 end;
 
-{*****************************************************}
-
 procedure TJvApplication.SetActivate(Value: TNotifyEvent);
 begin
   FActivate := Value;
   Application.OnActivate := Value;
 end;
-
-{*****************************************************}
 
 procedure TJvApplication.SetDeactivate(Value: TNotifyEvent);
 begin
@@ -172,15 +154,11 @@ begin
   Application.OnDeactivate := Value;
 end;
 
-{*****************************************************}
-
 procedure TJvApplication.SetMinimize(Value: TNotifyEvent);
 begin
   FMinimize := Value;
   Application.OnMinimize := Value;
 end;
-
-{*****************************************************}
 
 procedure TJvApplication.SetOnHint(Value: TNotifyEvent);
 begin
@@ -188,15 +166,11 @@ begin
   Application.OnHint := Value;
 end;
 
-{*****************************************************}
-
 procedure TJvApplication.SetRestore(Value: TNotifyEvent);
 begin
   FRestore := Value;
   Application.OnRestore := Value;
 end;
-
-{*****************************************************}
 
 procedure TJvApplication.SetMessage(Value: TMessageEvent);
 begin
@@ -204,119 +178,86 @@ begin
   Application.OnMessage := Value;
 end;
 
-{*****************************************************}
-
 procedure TJvApplication.SetShortcut(Value: TShortCutEvent);
 begin
   FShortcut := Value;
   Application.OnShortcut := Value;
 end;
 
-{*****************************************************}
-
 function TJvApplication.GetHint: string;
 begin
   Result := Application.Hint;
 end;
-
-{*****************************************************}
 
 procedure TJvApplication.SetHint(Value: string);
 begin
   Application.Hint := Value;
 end;
 
-{*****************************************************}
-
 function TJvApplication.GetColor: TColor;
 begin
   Result := Application.HintColor;
 end;
-{*****************************************************}
 
 procedure TJvApplication.SetColor(Value: TColor);
 begin
   Application.HintColor := Value;
 end;
 
-{*****************************************************}
-
 function TJvApplication.GetHidePause: Integer;
 begin
   Result := Application.HintHidePause;
 end;
-
-{*****************************************************}
 
 procedure TJvApplication.SetHidePause(Value: Integer);
 begin
   Application.HintHidePause := Value;
 end;
 
-{*****************************************************}
-
 function TJvApplication.GetHintPause: Integer;
 begin
   Result := Application.HintPause;
 end;
-
-{*****************************************************}
 
 procedure TJvApplication.SetHintPause(Value: Integer);
 begin
   Application.HintPause := Value;
 end;
 
-{*****************************************************}
-
 function TJvApplication.GetHintShort: Boolean;
 begin
   Result := Application.HintShortCuts;
 end;
-
-{*****************************************************}
 
 procedure TJvApplication.SetHintShort(Value: Boolean);
 begin
   Application.HintShortCuts := Value;
 end;
 
-{*****************************************************}
-
 function TJvApplication.GetShort: Integer;
 begin
   Result := Application.HintShortPause;
 end;
-
-{*****************************************************}
 
 procedure TJvApplication.SetShort(Value: Integer);
 begin
   Application.HintShortPause := Value;
 end;
 
-{*****************************************************}
-
 function TJvApplication.GetShow: Boolean;
 begin
   Result := Application.ShowHint;
 end;
-
-{*****************************************************}
 
 procedure TJvApplication.SetShow(Value: Boolean);
 begin
   Application.ShowHint := Value;
 end;
 
-{*****************************************************}
-
 function TJvApplication.GetTitle: string;
 begin
   Result := Application.Title;
 end;
-
-{*****************************************************}
 
 procedure TJvApplication.SetTitle(Value: string);
 begin

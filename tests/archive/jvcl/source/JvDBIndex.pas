@@ -12,7 +12,7 @@ The Original Code is: JvDBIndex.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,26 +29,25 @@ unit JvDBIndex;
 
 interface
 
-
 {$IFDEF WIN32}
-uses SysUtils, Windows, Messages, Classes, Controls, Forms,
-  Graphics, Menus, StdCtrls, ExtCtrls, DB, DBTables;
+uses
+  SysUtils, Messages, Classes, Controls,
+  Graphics, Menus, StdCtrls, DB, DBTables;
 {$ELSE}
-uses SysUtils, WinTypes, WinProcs, Messages, Classes, Controls, Forms,
-  Graphics, Menus, StdCtrls, ExtCtrls, DB, DBTables;
+uses
+  SysUtils, WinTypes, WinProcs, Messages, Classes, Controls,
+  Graphics, Menus, StdCtrls, DB, DBTables;
 {$ENDIF}
 
 type
-
+  // (rom) needs Jv prefix
   TIdxDisplayMode = (dmFieldLabels, dmFieldNames, dmIndexName);
-
-{ TJvDBIndexCombo }
 
   TJvDBIndexCombo = class(TCustomComboBox)
   private
     FDataLink: TDataLink;
     FUpdate: Boolean;
-    FNoIndexItem: String;
+    FNoIndexItem: string;
     FEnableNoIndex: Boolean;
     FChanging: Boolean;
     FDisplayMode: TIdxDisplayMode;
@@ -60,7 +59,7 @@ type
     procedure SetEnableNoIndex(Value: Boolean);
     procedure SetDisplayMode(Value: TIdxDisplayMode);
     procedure ActiveChanged;
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
@@ -72,7 +71,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    { published properties }
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property NoIndexItem: string read GetNoIndexItem write SetNoIndexItem;
     property EnableNoIndex: Boolean read FEnableNoIndex write SetEnableNoIndex default False;
@@ -84,19 +82,19 @@ type
     property Ctl3D;
     property DropDownCount;
     property Font;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-{$ENDIF}
-{$IFDEF WIN32}
-  {$IFNDEF VER90}
+    {$ENDIF}
+    {$IFDEF WIN32}
+    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-  {$ENDIF}
-{$ENDIF}
+    {$ENDIF}
+    {$ENDIF}
     property ItemHeight;
     property ParentCtl3D;
     property ParentFont;
@@ -118,24 +116,27 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-{$IFDEF COMPILER5_UP}
+    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-{$ENDIF}
-{$IFDEF WIN32}
+    {$ENDIF}
+    {$IFDEF WIN32}
     property OnStartDrag;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-{$ENDIF}
+    {$ENDIF}
   end;
 
 implementation
 
-uses {$IFDEF WIN32} Bde, {$ELSE} DbiErrs, DbiTypes, DbiProcs, {$ENDIF}
-  DBConsts, JvStrUtils, JvDBUtils, JvBdeUtils;
+uses
+  {$IFNDEF WIN32}
+  DbiErrs, DbiTypes, DbiProcs,
+  {$ENDIF}
+  JvBdeUtils;
 
-{ TJvKeyDataLink }
+//=== TJvKeyDataLink =========================================================
 
 type
   TJvKeyDataLink = class(TDataLink)
@@ -164,12 +165,14 @@ end;
 
 procedure TJvKeyDataLink.ActiveChanged;
 begin
-  if FCombo <> nil then FCombo.ActiveChanged;
+  if FCombo <> nil then
+    FCombo.ActiveChanged;
 end;
 
 procedure TJvKeyDataLink.DataSetChanged;
 begin
-  if FCombo <> nil then FCombo.ActiveChanged;
+  if FCombo <> nil then
+    FCombo.ActiveChanged;
 end;
 
 procedure TJvKeyDataLink.DataSetScrolled(Distance: Integer);
@@ -177,7 +180,7 @@ begin
   { ignore this data event }
 end;
 
-{ TJvDBIndexCombo }
+//=== TJvDBIndexCombo ========================================================
 
 constructor TJvDBIndexCombo.Create(AOwner: TComponent);
 begin
@@ -200,25 +203,31 @@ end;
 
 procedure TJvDBIndexCombo.SetNoIndexItem(const Value: string);
 begin
-  if Value <> FNoIndexItem then begin
+  if Value <> FNoIndexItem then
+  begin
     FNoIndexItem := Value;
-    if not (csLoading in ComponentState) then ActiveChanged;
+    if not (csLoading in ComponentState) then
+      ActiveChanged;
   end;
 end;
 
 procedure TJvDBIndexCombo.SetEnableNoIndex(Value: Boolean);
 begin
-  if FEnableNoIndex <> Value then begin
+  if FEnableNoIndex <> Value then
+  begin
     FEnableNoIndex := Value;
-    if not (csLoading in ComponentState) then ActiveChanged;
+    if not (csLoading in ComponentState) then
+      ActiveChanged;
   end;
 end;
 
 procedure TJvDBIndexCombo.SetDisplayMode(Value: TIdxDisplayMode);
 begin
-  if (Value <> FDisplayMode) then begin
+  if Value <> FDisplayMode then
+  begin
     FDisplayMode := Value;
-    if not (csLoading in ComponentState) then UpdateList;
+    if not (csLoading in ComponentState) then
+      UpdateList;
   end;
 end;
 
@@ -229,17 +238,21 @@ end;
 
 function TJvDBIndexCombo.GetDataSource: TDataSource;
 begin
-  if FDataLink <> nil then Result := FDataLink.DataSource
-  else Result := nil;
+  if FDataLink <> nil then
+    Result := FDataLink.DataSource
+  else
+    Result := nil;
 end;
 
 procedure TJvDBIndexCombo.SetDataSource(Value: TDataSource);
 begin
   FDataLink.DataSource := Value;
-{$IFDEF WIN32}
-  if Value <> nil then Value.FreeNotification(Self);
-{$ENDIF}
-  if not (csLoading in ComponentState) then ActiveChanged;
+  {$IFDEF WIN32}
+  if Value <> nil then
+    Value.FreeNotification(Self);
+  {$ENDIF}
+  if not (csLoading in ComponentState) then
+    ActiveChanged;
 end;
 
 procedure TJvDBIndexCombo.ActiveChanged;
@@ -250,7 +263,8 @@ begin
     Clear;
     ItemIndex := -1;
   end
-  else UpdateList;
+  else
+    UpdateList;
 end;
 
 procedure TJvDBIndexCombo.Loaded;
@@ -264,29 +278,36 @@ procedure TJvDBIndexCombo.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (FDataLink <> nil) and
-    (AComponent = DataSource) then DataSource := nil;
+    (AComponent = DataSource) then
+    DataSource := nil;
 end;
 
-procedure TJvDBIndexCombo.CMEnabledChanged(var Message: TMessage);
+procedure TJvDBIndexCombo.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
-  if not (csLoading in ComponentState) then ActiveChanged;
+  if not (csLoading in ComponentState) then
+    ActiveChanged;
 end;
 
 function TJvDBIndexCombo.GetIndexFieldName(var AName: string): Boolean;
 begin
   Result := True;
-  if ItemIndex >= 0 then begin
-    if EnableNoIndex and (Items[ItemIndex] = NoIndexItem) then AName := ''
-    else begin
+  if ItemIndex >= 0 then
+  begin
+    if EnableNoIndex and (Items[ItemIndex] = NoIndexItem) then
+      AName := ''
+    else
+    begin
       AName := TIndexDef(Items.Objects[ItemIndex]).Fields;
-      if AName = '' then begin
+      if AName = '' then
+      begin
         AName := TIndexDef(Items.Objects[ItemIndex]).Name;
         Result := False;
       end;
     end;
   end
-  else AName := '';
+  else
+    AName := '';
 end;
 
 procedure TJvDBIndexCombo.FillIndexList(List: TStrings);
@@ -296,17 +317,24 @@ var
   I: Integer;
 begin
   List.Clear;
-  if not FDataLink.Active then Exit;
-  with FDataLink.DataSet as TTable do begin
+  if not FDataLink.Active then
+    Exit;
+  with FDataLink.DataSet as TTable do
+  begin
     for I := 0 to IndexDefs.Count - 1 do
       with IndexDefs[I] do
-        if not (ixExpression in Options) then begin
-          if FDisplayMode = dmIndexName then AFld := Name
-          else begin
+        if not (ixExpression in Options) then
+        begin
+          if FDisplayMode = dmIndexName then
+            AFld := Name
+          else
+          begin
             AFld := '';
             Pos := 1;
-            while Pos <= Length(Fields) do begin
-              if AFld <> '' then AFld := AFld + '; ';
+            while Pos <= Length(Fields) do
+            begin
+              if AFld <> '' then
+                AFld := AFld + '; ';
               case FDisplayMode of
                 dmFieldLabels:
                   AFld := AFld + FieldByName(ExtractFieldName(Fields, Pos)).DisplayLabel;
@@ -315,11 +343,13 @@ begin
               end;
             end;
           end;
-          if List.IndexOf(AFld) < 0 then List.AddObject(AFld, IndexDefs[I]);
+          if List.IndexOf(AFld) < 0 then
+            List.AddObject(AFld, IndexDefs[I]);
         end;
   end;
   if EnableNoIndex then
-    if List.IndexOf(NoIndexItem) < 0 then List.AddObject(NoIndexItem, nil);
+    if List.IndexOf(NoIndexItem) < 0 then
+      List.AddObject(NoIndexItem, nil);
 end;
 
 procedure TJvDBIndexCombo.Change;
@@ -332,22 +362,28 @@ begin
     not (csLoading in ComponentState) then
   begin
     ABookmark := nil;
-    with FDataLink.DataSet as TTable do begin
-      if Database.IsSQLBased then ABookmark := GetBookmark;
+    with FDataLink.DataSet as TTable do
+    begin
+      if Database.IsSQLBased then
+        ABookmark := GetBookmark;
       try
-        if GetIndexFieldName(AName) then begin
+        if GetIndexFieldName(AName) then
+        begin
           IndexFieldNames := AName;
           if (AName = '') and (IndexDefs.Count > 0) then
             IndexName := '';
         end
-        else begin
-          if AName = '' then IndexFieldNames := '';
+        else
+        begin
+          if AName = '' then
+            IndexFieldNames := '';
           IndexName := AName;
         end;
         if (ABookmark <> nil) then
           SetToBookmark(TTable(Self.FDataLink.DataSet), ABookmark);
       finally
-        if ABookmark <> nil then FreeBookmark(ABookmark);
+        if ABookmark <> nil then
+          FreeBookmark(ABookmark);
       end;
     end;
   end;
@@ -364,11 +400,14 @@ procedure TJvDBIndexCombo.UpdateList;
     Result := -1;
     IdxFields := '';
     if Table.IndexFieldNames <> '' then
-      for I := 0 to Table.IndexFieldCount - 1 do begin
-        if IdxFields <> '' then IdxFields := IdxFields + ';';
+      for I := 0 to Table.IndexFieldCount - 1 do
+      begin
+        if IdxFields <> '' then
+          IdxFields := IdxFields + ';';
         IdxFields := IdxFields + Table.IndexFields[I].FieldName;
       end;
-    for I := 0 to Items.Count - 1 do begin
+    for I := 0 to Items.Count - 1 do
+    begin
       if (Items.Objects[I] <> nil) and
         (((IdxFields <> '') and
         (AnsiCompareText(TIndexDef(Items.Objects[I]).Fields, IdxFields) = 0)) or
@@ -386,22 +425,25 @@ procedure TJvDBIndexCombo.UpdateList;
 
 begin
   if Enabled and FDataLink.Active then
+  try
+    Items.BeginUpdate;
     try
-      Items.BeginUpdate;
-      try
-        if FDataLink.DataSet.InheritsFrom(TTable) then begin
-          TTable(FDataLink.DataSet).IndexDefs.Update;
-          FillIndexList(Items);
-          ItemIndex := FindIndex(TTable(FDataLink.DataSet));
-          FChanging := True;
-        end
-        else Items.Clear;
-      finally
-        Items.EndUpdate;
-      end;
+      if FDataLink.DataSet.InheritsFrom(TTable) then
+      begin
+        TTable(FDataLink.DataSet).IndexDefs.Update;
+        FillIndexList(Items);
+        ItemIndex := FindIndex(TTable(FDataLink.DataSet));
+        FChanging := True;
+      end
+      else
+        Items.Clear;
     finally
-      FChanging := False;
+      Items.EndUpdate;
     end;
+  finally
+    FChanging := False;
+  end;
 end;
 
 end.
+

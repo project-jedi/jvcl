@@ -43,7 +43,7 @@ type
 
 implementation
 
-{**************************************************}
+// (rom) use JCL
 
 function ItemIDListCreate(const Allocator: IMalloc; const Size: Integer): PItemIDList;
 begin
@@ -52,8 +52,6 @@ begin
     FillChar(Result^, Size, 0);
 end;
 
-{**************************************************}
-
 function ItemIDListGetNextItem(const ItemIDList: PItemIDList): PItemIDList;
 begin
   if ItemIDList = nil then
@@ -61,8 +59,6 @@ begin
   else
     Result := PItemIDList(Cardinal(ItemIDList) + ItemIDList.mkid.cb);
 end;
-
-{**************************************************}
 
 function ItemIDListGetSize(const ItemIDList: PItemIDList): Cardinal;
 var
@@ -80,8 +76,6 @@ begin
     Inc(Result, 2 * SizeOf(Byte));
   end;
 end;
-
-{**************************************************}
 
 function ItemIDListsConcatenate(const Allocator: IMalloc; const List1, List2: PItemIDList): PItemIDList;
 var
@@ -103,8 +97,6 @@ begin
   Result := NewItemIDList;
 end;
 
-{**************************************************}
-
 function GetPrinterItemIDList(const DeskTopFolder: IShellFolder): PItemIDList;
 begin
   Result := nil;
@@ -112,8 +104,6 @@ begin
     if Failed(SHGetSpecialFolderLocation(0, CSIDL_PRINTERS, Result)) then
       Result := nil;
 end;
-
-{**************************************************}
 
 function GetAddPrinterItem(const Allocator: IMalloc): PItemIDList;
 var
@@ -144,7 +134,7 @@ begin
     end;
 end;
 
-{**************************************************}
+//=== TJvAddPrinterDialog ====================================================
 
 procedure TJvAddPrinterDialog.Execute;
 var

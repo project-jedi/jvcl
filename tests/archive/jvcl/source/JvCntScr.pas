@@ -154,7 +154,6 @@ type
     property OnBeforeScroll: TNotifyEvent read FOnBeforeScroll write FOnBeforeScroll;
   end;
 
-
 implementation
 
 uses

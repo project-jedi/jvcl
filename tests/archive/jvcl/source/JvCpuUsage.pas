@@ -31,7 +31,7 @@ unit JvCpuUsage;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Registry,
+  Windows, SysUtils, Classes, Graphics, Registry,
   JvComponent;
 
 // (rom) the whole component seems to be badly designed
@@ -59,8 +59,6 @@ resourcestring
   RC_PerfStop = 'PerfStats\StopStat';
   RC_PerfStat = 'PerfStats\StatData';
 
-  {*****************************************************}
-
 constructor TJvCpuUsage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -70,8 +68,6 @@ begin
   FRegistry.ReadBinaryData(RC_CpuUsageKey, FValue, SizeOf(FValue));
 end;
 
-{*****************************************************}
-
 destructor TJvCpuUsage.Destroy;
 begin
   FRegistry.OpenKey(RC_PerfStop, False);
@@ -80,8 +76,6 @@ begin
   FRegistry.Free;
   inherited Destroy;
 end;
-
-{*****************************************************}
 
 function TJvCpuUsage.GetUsage: string;
 begin

@@ -31,8 +31,7 @@ unit JvCommonDialogDEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExptIntf,
-  Dialogs, EditIntf, ToolIntf, TypInfo,
+  SysUtils,
   {$IFDEF COMPILER5}
   DsgnIntf,
   {$ENDIF}
@@ -51,8 +50,6 @@ type
 
 implementation
 
-{*************************************************}
-
 procedure TJvCommonDialogDEditor.ExecuteVerb(Index: Integer);
 begin
   with Component as TJvCommonDialogD do
@@ -62,8 +59,6 @@ begin
     end;
 end;
 
-{*************************************************}
-
 function TJvCommonDialogDEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
@@ -71,8 +66,6 @@ begin
       Result := 'Preview...';
   end;
 end;
-
-{*************************************************}
 
 function TJvCommonDialogDEditor.GetVerbCount: Integer;
 begin

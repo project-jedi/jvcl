@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvDBMove.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
 Last Modified: 2002-07-04
 
@@ -27,15 +27,13 @@ description : database batchmove
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
 
 {
  history:
   1.23 - added suport for table names with extensions;
 
-
- Note: All referenced fields MUST be integer 
+ Note: All referenced fields MUST be Integer
 
  Example :
   Source = dbChildCompany
@@ -51,114 +49,111 @@ Known Issues:
   BeforePost = user defined unique generation procedure;
  }
 
-
-
 unit JvDBMove;
 
 interface
 
 uses
-  BDE, Windows, Messages, SysUtils, Classes, DB, DBTables, JvComponent
-  {$IFDEF COMPILER6_UP}, Variants {$ENDIF}
-  ;
+  BDE, SysUtils, Classes, DB, DBTables,
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF}
+  JvComponent;
 
 type
 
   TJvDBMove = class;
   TMoveAction = (maMove, maMap, maIgnore);
 
-  TMoveEvent = procedure(Sender : TJvDBMove; Table : TTable; var Action : TMoveAction) of object;
+  TMoveEvent = procedure(Sender: TJvDBMove; Table: TTable; var Action: TMoveAction) of object;
 
   TJvDBMove = class(TJvComponent)
   private
-    SDatabase : string;
-    DDatabase : string;
-    STable : TTable;
-    DTable : TTable;
-    FTempTableName : string;
-    RTable : TTable; { temporary table }
-    FTables : TStrings;
-    FReferences : TStrings;
-    FMappings : TStrings;
-    FieldRefs : TList;
+    FSource: string;
+    FDestination: string;
+    STable: TTable;
+    DTable: TTable;
+    FTempTable: string;
+    RTable: TTable; { temporary table }
+    FTables: TStrings;
+    FReferences: TStrings;
+    FMappings: TStrings;
+    FieldRefs: TList;
 
-    FProgress : boolean;
-    FRecordCount : integer;
-    FCurrentRecord : integer;
-    FErrorCount : integer;
-    FErrorBlobCount : integer;
-    FMaxPass : integer;
+    FProgress: Boolean;
+    FRecordCount: Integer;
+    FCurrentRecord: Integer;
+    FErrorCount: Integer;
+    FErrorBlobCount: Integer;
+    FMaxPass: Integer;
 
-    FOnMoveRecord : TMoveEvent;
+    FOnMoveRecord: TMoveEvent;
     FOnPostError: TDataSetErrorEvent;
 
     procedure DoMove;
-    procedure SetTables(Value : TStrings);
-    procedure SetReferences(Value : TStrings);
-    procedure SetMappings(Value : TStrings);
+    procedure SetTables(Value: TStrings);
+    procedure SetReferences(Value: TStrings);
+    procedure SetMappings(Value: TStrings);
     procedure CreateTmpTable;
     procedure CompileReferences;
     function Map(const TableName, FieldName: string): string;
     procedure CompatTables;
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Execute;
-    property RecordCount : integer read FRecordCount;
-    property CurrentRecord : integer read FCurrentRecord;
-    property ErrorCount : integer read FErrorCount;
-    property ErrorBlobCount : integer read FErrorBlobCount;
+    property RecordCount: Integer read FRecordCount;
+    property CurrentRecord: Integer read FCurrentRecord;
+    property ErrorCount: Integer read FErrorCount;
+    property ErrorBlobCount: Integer read FErrorBlobCount;
   published
-    property Source : string read SDatabase write SDatabase;
-    property Destination : string read DDatabase write DDatabase;
-    property Tables : TStrings read FTables write SetTables;
-    property TempTable : string read FTempTableName write FTempTableName;
-    property References : TStrings read FReferences write SetReferences;
+    property Source: string read FSource write FSource;
+    property Destination: string read FDestination write FDestination;
+    property Tables: TStrings read FTables write SetTables;
+    property TempTable: string read FTempTable write FTempTable;
+    property References: TStrings read FReferences write SetReferences;
     property Mappings: TStrings read FMappings write SetMappings;
-    property OnMoveRecord : TMoveEvent read FOnMoveRecord write FOnMoveRecord;
-    property OnPostError : TDataSetErrorEvent read FOnPostError write FOnPostError;
-    property Progress : boolean read FProgress write FProgress default false;
+    property OnMoveRecord: TMoveEvent read FOnMoveRecord write FOnMoveRecord;
+    property OnPostError: TDataSetErrorEvent read FOnPostError write FOnPostError;
+    property Progress: Boolean read FProgress write FProgress default False;
   end;
 
-  EJvDBMoveError  = class(EDatabaseError);
+  EJvDBMoveError = class(EDatabaseError);
 
 implementation
 
-uses JvDBUtil;
+uses
+  JvDBUtil;
 
 type
-
-  TFieldRef  = class
+  TFieldRef = class(TObject)
   private
-    STableName : string;
-    SFieldName : string;
-    STableIndex : integer;
-    SFieldIndex : integer;
-    DTFieldIndex : integer;
-    MasterRef : boolean;
-
-    DTableName : string;
-    DFieldName : string;
-    DTableIndex : integer;
-    DFieldIndex : integer;
+    STableName: string;
+    SFieldName: string;
+    STableIndex: Integer;
+    SFieldIndex: Integer;
+    DTFieldIndex: Integer;
+    MasterRef: Boolean;
+    DTableName: string;
+    DFieldName: string;
+    DTableIndex: Integer;
+    DFieldIndex: Integer;
   end;
 
-
-function CmdString(S : string) : boolean;
+function CmdString(S: string): Boolean;
 begin
   S := Trim(S);
   Result := (S <> '') and (S[1] <> ';');
 end;
 
-
-constructor TJvDBMove.Create(AOwner : TComponent);
+constructor TJvDBMove.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTables := TStringList.Create;
   FReferences := TStringList.Create;
   FMappings := TStringList.Create;
   FieldRefs := TList.Create;
-  FTempTableName := '_RATMP1_';
+  FTempTable := '_RATMP1_';
   FMaxPass := 1;
 end;
 
@@ -171,7 +166,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDBMove.SetTables(Value : TStrings);
+procedure TJvDBMove.SetTables(Value: TStrings);
 begin
   FTables.Assign(Value);
   CompatTables;
@@ -179,20 +174,20 @@ end;
 
 procedure TJvDBMove.CompatTables;
 var
-  i: integer;
+  I: Integer;
 begin
- { make compatible with previous version of TJvDBMove }
-  for i := 0 to FTables.Count - 1 do    { Iterate }
-    if FTables[i] <> '' then
-      FTables[i] := Trim(SubStr(FTables[i], 0, '='));
-end;    { CompatTables }
+  { make compatible with previous version of TJvDBMove }
+  for I := 0 to FTables.Count - 1 do
+    if FTables[I] <> '' then
+      FTables[I] := Trim(SubStr(FTables[I], 0, '='));
+end;
 
-procedure TJvDBMove.SetReferences(Value : TStrings);
+procedure TJvDBMove.SetReferences(Value: TStrings);
 begin
   FReferences.Assign(Value);
 end;
 
-procedure TJvDBMove.SetMappings(Value : TStrings);
+procedure TJvDBMove.SetMappings(Value: TStrings);
 begin
   FMappings.Assign(Value);
 end;
@@ -202,24 +197,27 @@ begin
   if FieldName = '' then
   begin
     Result := FMappings.Values[TableName];
-    if Result = '' then Result := TableName;
-  end else
+    if Result = '' then
+      Result := TableName;
+  end
+  else
   begin
     Result := SubStrEnd(FMappings.Values[ChangeFileExt(TableName, '') +
       '.' + FieldName], 0, '.');
-    if Result = '' then Result := FieldName;
-  end;  
+    if Result = '' then
+      Result := FieldName;
+  end;
 end;
 
 procedure TJvDBMove.CreateTmpTable;
 begin
   with RTable do
   begin
-    Active := False;  { The Table component must not be active }
+    Active := False; { The Table component must not be active }
     { First, describe the type of table and give it a name }
-    DatabaseName := DDatabase;
+    DatabaseName := FDestination;
     TableType := ttDefault;
-    TableName := FTempTableName;
+    TableName := FTempTable;
     { Next, describe the fields in the table }
     with FieldDefs do
     begin
@@ -235,7 +233,7 @@ begin
       Clear;
       Add('', 'Table;Field;OldValue', [ixPrimary, ixUnique]);
     end;
-}    { Now that we have specified what we want, create the table }
+   }{ Now that we have specified what we want, create the table }
     CreateTable;
   end;
 end;
@@ -244,17 +242,17 @@ procedure TJvDBMove.Execute;
 
   procedure CalcRecords;
   var
-    i : integer;
+    I: Integer;
   begin
     FRecordCount := 0;
     FCurrentRecord := 0;
-    for i := 0 to FTables.Count - 1 do
-      if CmdString(FTables[i]) then
+    for I := 0 to FTables.Count - 1 do
+      if CmdString(FTables[I]) then
       begin
         STable.Close;
-        STable.TableName := FTables[i];
+        STable.TableName := FTables[I];
         STable.Open;
-        inc(FRecordCount, STable.RecordCount);
+        Inc(FRecordCount, STable.RecordCount);
       end;
   end;
 
@@ -264,10 +262,11 @@ begin
   DTable := TTable.Create(Self);
   RTable := TTable.Create(Self);
   try
-    STable.DatabaseName := SDatabase;
-    DTable.DatabaseName := DDatabase;
+    STable.DatabaseName := FSource;
+    DTable.DatabaseName := FDestination;
     FRecordCount := -1;
-    if FProgress then CalcRecords;
+    if FProgress then
+      CalcRecords;
     CreateTmpTable;
     try
       RTable.Open;
@@ -287,23 +286,23 @@ end;
 
 procedure TJvDBMove.CompileReferences;
 var
-  i, j : integer;
-  S : string;
-  Master, Detail : string;
-  FieldRef : TFieldRef ;
+  I, J: Integer;
+  S: string;
+  Master, Detail: string;
+  FieldRef: TFieldRef;
 begin
   FieldRefs.Clear;
-  for i := 0 to FReferences.Count - 1 do
+  for I := 0 to FReferences.Count - 1 do
   begin
-    S := FReferences[i];
+    S := FReferences[I];
     if CmdString(S) then
     begin
       Detail := SubStr(S, 0, '=');
       Master := SubStr(S, 1, '=');
       if (Detail = '') or (Pos('.', Detail) = 0) or
-         (Master = '') or (Pos('.', Master) = 0) then
-        raise EJvDBMoveError .Create('Invalid reference descriptor');
-      FieldRef := TFieldRef .Create;
+        (Master = '') or (Pos('.', Master) = 0) then
+        raise EJvDBMoveError.Create('Invalid reference descriptor');
+      FieldRef := TFieldRef.Create;
       FieldRef.STableName := Trim(SubStr(Master, 0, '.'));
       FieldRef.SFieldName := Trim(SubStr(Master, 1, '.'));
       FieldRef.DTableName := Trim(SubStr(Detail, 0, '.'));
@@ -313,13 +312,13 @@ begin
       FieldRef.SFieldIndex := -1;
       FieldRef.DFieldIndex := -1;
       FieldRef.DTFieldIndex := -1;
-      FieldRef.MasterRef := true;
-      for j := 0 to FieldRefs.Count - 1 do
-        with TFieldRef (FieldRefs[j]) do
+      FieldRef.MasterRef := True;
+      for J := 0 to FieldRefs.Count - 1 do
+        with TFieldRef(FieldRefs[J]) do
           if Cmp(STableName, FieldRef.STableName) and
-             Cmp(SFieldName, FieldRef.SFieldName) then
+            Cmp(SFieldName, FieldRef.SFieldName) then
           begin
-            FieldRef.MasterRef := false;
+            FieldRef.MasterRef := False;
             break;
           end;
       FieldRefs.Add(FieldRef);
@@ -328,78 +327,79 @@ begin
 end;
 
 procedure TJvDBMove.DoMove;
-
 type
   TRef = record
-    IsRef : boolean;
-    Value : integer;
-    HasRef : boolean;
+    IsRef: Boolean;
+    Value: Integer;
+    HasRef: Boolean;
   end;
 var
-  MasterFields : array[0..1023{Max_Columns}] of TRef;
-  HasMaster, HasDetail : boolean;
-  AllFixups : boolean;
+  MasterFields: array [0..1023 {Max_Columns}] of TRef;
+  HasMaster, HasDetail: Boolean;
+  AllFixups: Boolean;
+  I, TableIndex: Integer;
+ // Er : Integer;
 
-  procedure UpdateRefList(ATableIndex : integer);
+  procedure UpdateRefList(ATableIndex: Integer);
   var
-    i, f : integer;
+    I, F: Integer;
   begin
-    FillChar(MasterFields, sizeof(MasterFields), 0);
-    for i := 0 to FieldRefs.Count - 1 do
-      with TFieldRef (FieldRefs[i]) do
+    FillChar(MasterFields, SizeOf(MasterFields), 0);
+    for I := 0 to FieldRefs.Count - 1 do
+      with TFieldRef(FieldRefs[I]) do
       begin
         if Cmp(STableName, ChangeFileExt(STable.TableName, '')) then
         begin
           STableIndex := ATableIndex;
-          for f := 0 to STable.FieldCount - 1 do
-            if Cmp(SFieldName, STable.Fields[f].FieldName) then
+          for F := 0 to STable.FieldCount - 1 do
+            if Cmp(SFieldName, STable.Fields[F].FieldName) then
             begin
-              SFieldIndex := f;
+              SFieldIndex := F;
               DTFieldIndex := DTable.FieldByName(
                 Map(STable.TableName, STable.Fields[SFieldIndex].FieldName)).Index;
-              MasterFields[f].IsRef := true;
-              HasMaster := true;
+              MasterFields[F].IsRef := True;
+              HasMaster := True;
             end;
         end;
-        if Cmp(Map(DTableName, ''), ChangeFileExt(DTable.TableName,'')) then
+        if Cmp(Map(DTableName, ''), ChangeFileExt(DTable.TableName, '')) then
         begin
           DTableIndex := ATableIndex;
-          for f := 0 to DTable.FieldCount - 1 do
-            if Cmp(Map(DTableName, DFieldName), DTable.Fields[f].FieldName) then
+          for F := 0 to DTable.FieldCount - 1 do
+            if Cmp(Map(DTableName, DFieldName), DTable.Fields[F].FieldName) then
             begin
-              DFieldIndex := f;
-              MasterFields[f].HasRef := true;
-              HasDetail := true;
+              DFieldIndex := F;
+              MasterFields[F].HasRef := True;
+              HasDetail := True;
             end;
         end;
       end;
   end;
 
-  procedure AppendRef(TableIndex : integer);
+  procedure AppendRef(TableIndex: Integer);
   var
-    i : integer;
+    I: Integer;
   begin
-    for i := 0 to FieldRefs.Count - 1 do
-      with TFieldRef (FieldRefs[i]) do
+    for I := 0 to FieldRefs.Count - 1 do
+      with TFieldRef(FieldRefs[I]) do
         if MasterRef and (STableIndex = TableIndex) then
         try
           RTable.AppendRecord([TableIndex + 1, SFieldIndex + 1,
             MasterFields[SFieldIndex].Value,
-            DTable.Fields[DTFieldIndex].AsVariant]);
+              DTable.Fields[DTFieldIndex].AsVariant]);
         except;
 
         end;
   end;
 
-  function FixupRef(TableIndex : integer) : boolean;
+  function FixupRef(TableIndex: Integer): Boolean;
   var
-    i : integer;
+    I: Integer;
   begin
-    for i := 0 to FieldRefs.Count - 1 do
-      with TFieldRef (FieldRefs[i]) do
+    for I := 0 to FieldRefs.Count - 1 do
+      with TFieldRef(FieldRefs[I]) do
         if (DTableIndex = TableIndex) and
-           (DFieldIndex <> -1) and
-           (DTable.Fields[DFieldIndex].AsVariant <> Null) then
+          (DFieldIndex <> -1) and
+          (DTable.Fields[DFieldIndex].AsVariant <> Null) then
         begin
          { DTable.Fields[DFieldIndex].AsVariant :=
             RTable.Lookup('Table;Field;OldValue', VarArrayOf([
@@ -408,54 +408,55 @@ var
               DTable.Fields[DFieldIndex].AsVariant]),
               'NewValue'); }
           if RTable.Locate('Table;Field;OldValue', VarArrayOf([
-              STableIndex + 1,
+            STableIndex + 1,
               SFieldIndex + 1,
               DTable.Fields[DFieldIndex].AsVariant]), []) then
             DTable.Fields[DFieldIndex].AsVariant := RTable['NewValue']
           else
           begin
            // record not found, may be in second pass
-            AllFixups := false;
-            Result := false;
-            inc(FErrorCount);
-            exit;
+            AllFixups := False;
+            Result := False;
+            Inc(FErrorCount);
+            Exit;
           end;
         end;
-    Result := true;
+    Result := True;
   end;
 
-  procedure MoveRecord(TableIndex : integer);
+  procedure MoveRecord(TableIndex: Integer);
 
-    procedure MoveField(FieldIndex : integer);
+    procedure MoveField(FieldIndex: Integer);
     begin
       try
         DTable.FieldByName(Map(STable.TableName,
           STable.Fields[FieldIndex].FieldName)).AsVariant :=
           STable.Fields[FieldIndex].AsVariant;
       except
-        on E : EDBEngineError do
+        on E: EDBEngineError do
           if E.Errors[0].ErrorCode = DBIERR_BLOBMODIFIED then
           begin
-            inc(FErrorCount);
-            inc(FErrorBlobCount);
-          end else
-            raise
+            Inc(FErrorCount);
+            Inc(FErrorBlobCount);
+          end
+          else
+            raise;
       end;
     end;
 
   var
-    f : integer;
-    Action : TMoveAction;
+    F: Integer;
+    Action: TMoveAction;
   begin
     DTable.Append;
     try
-      for f := 0 to STable.FieldCount - 1 do
-        if DTable.FindField(Map(STable.TableName, 
-          STable.Fields[f].FieldName)) <> nil then
+      for F := 0 to STable.FieldCount - 1 do
+        if DTable.FindField(Map(STable.TableName,
+          STable.Fields[F].FieldName)) <> nil then
         begin
-          MoveField(f);
-          if MasterFields[f].IsRef then
-            MasterFields[f].Value := STable.Fields[f].AsInteger;
+          MoveField(F);
+          if MasterFields[F].IsRef then
+            MasterFields[F].Value := STable.Fields[F].AsInteger;
         end;
       Action := maMove;
       if HasDetail and not FixupRef(TableIndex) then
@@ -465,27 +466,28 @@ var
       if HasMaster and (Action in [maMove, maMap]) then
         AppendRef(TableIndex);
       if Action = maMove then
-        try
-          DTable.Post
-        except
-          on E : EAbort do
-          begin
-            DTable.Cancel;
-            inc(FErrorCount);
-          end;
-        end
+      try
+        DTable.Post
+      except
+        on E: EAbort do
+        begin
+          DTable.Cancel;
+          Inc(FErrorCount);
+        end;
+      end
       else
         DTable.Cancel;
     except
-      on E : EAbort do raise
-      else
+      on E: EAbort do
+        raise
+    else
       if DTable.State = dsInsert then
         DTable.Cancel;
      // raise;
     end;
   end;
 
-  procedure MoveTable(TableIndex : integer);
+  procedure MoveTable(TableIndex: Integer);
   begin
     STable.Close;
     DTable.Close;
@@ -497,7 +499,7 @@ var
     while not STable.Eof do
     begin
       try
-        inc(FCurrentRecord);
+        Inc(FCurrentRecord);
         MoveRecord(TableIndex);
       except
         //
@@ -507,31 +509,26 @@ var
     end;
   end;
 
-var
-  i, TableIndex : integer;
- // Er : integer;
 begin
   FCurrentRecord := 0;
   FErrorCount := 0;
   FErrorBlobCount := 0;
-  for i := 0 to FTables.Count - 1 do
-    if CmdString(FTables[i]) then     
+  for I := 0 to FTables.Count - 1 do
+    if CmdString(FTables[I]) then
     begin
      { in Tables list one table can be appear more than once,
        but we must use one TableIndex for all appearance }
-      TableIndex := FTables.IndexOf(FTables[i]);
-     // if (TableIndex = i) or not AllFixups then
+      TableIndex := FTables.IndexOf(FTables[I]);
+     // if (TableIndex = I) or not AllFixups then
       begin
-        AllFixups := true;
+        AllFixups := True;
         MoveTable(TableIndex);
       end;
-     { if TableIndex = i then
+     { if TableIndex = I then
         Er := FErrorCount else
         FErrorCount := Er; }
     end;
 end;
 
-
 end.
-
 

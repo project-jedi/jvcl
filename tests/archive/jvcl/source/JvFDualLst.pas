@@ -35,8 +35,7 @@ uses
   {$ELSE}
   WinTypes, WinProcs,
   {$ENDIF}
-  SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
-  ExtCtrls, Buttons,
+  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   JvxCtrls;
 
 type
@@ -71,13 +70,11 @@ type
     procedure FormCreate(Sender: TObject);
     procedure ListClick(Sender: TObject);
   private
-    { Private declarations }
     function GetShowHelp: Boolean;
     procedure SetShowHelp(Value: Boolean);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
-    { Public declarations }
     procedure SetButtons;
     property ShowHelp: Boolean read GetShowHelp write SetShowHelp default True;
 end;
@@ -89,8 +86,6 @@ uses
   JvVCLUtils, JvBoxProcs;
 
 {$R *.DFM}
-
-{ TJvDualListForm }
 
 procedure TJvDualListForm.CreateParams(var Params: TCreateParams);
 begin
@@ -111,7 +106,7 @@ end;
 
 function TJvDualListForm.GetShowHelp: Boolean;
 begin
-  Result := (HelpBtn.Enabled) and (HelpBtn.Visible);
+  Result := HelpBtn.Enabled and HelpBtn.Visible;
 end;
 
 procedure TJvDualListForm.SetShowHelp(Value: Boolean);
@@ -162,8 +157,8 @@ begin
   SetButtons;
 end;
 
-procedure TJvDualListForm.SrcListDragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
+procedure TJvDualListForm.SrcListDragOver(Sender, Source: TObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   BoxDragOver(SrcList, Source, X, Y, State, Accept, SrcList.Sorted);
   if State = dsDragLeave then
@@ -172,8 +167,8 @@ begin
     (Source as TJvTextListBox).DragCursor := crMultiDrag;
 end;
 
-procedure TJvDualListForm.DstListDragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
+procedure TJvDualListForm.DstListDragOver(Sender, Source: TObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   BoxDragOver(DstList, Source, X, Y, State, Accept, DstList.Sorted);
   if State = dsDragLeave then
@@ -182,8 +177,8 @@ begin
     (Source as TJvTextListBox).DragCursor := crMultiDrag;
 end;
 
-procedure TJvDualListForm.SrcListDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
+procedure TJvDualListForm.SrcListDragDrop(Sender, Source: TObject;
+  X, Y: Integer);
 begin
   if Source = DstList then
     ExclBtnClick(SrcList)
@@ -192,8 +187,8 @@ begin
     BoxMoveFocusedItem(SrcList, SrcList.ItemAtPos(Point(X, Y), True));
 end;
 
-procedure TJvDualListForm.DstListDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
+procedure TJvDualListForm.DstListDragDrop(Sender, Source: TObject;
+  X, Y: Integer);
 begin
   if Source = SrcList then
     IncBtnClick(DstList)

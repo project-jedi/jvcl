@@ -26,7 +26,6 @@ description : Language specific constant for English
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
 
 unit JvDBConst;
@@ -34,8 +33,7 @@ unit JvDBConst;
 interface
 
 const
-
- {TJvDBTreeView}
+  {TJvDBTreeView}
   SDeleteNode             = 'Delete %s ?';
   SDeleteNode2            = 'Delete %s (with all children) ?';
   SMasterFieldEmpty       = '"MasterField" property must be filled';

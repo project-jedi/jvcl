@@ -37,10 +37,17 @@ implementation
 {$R ..\resources\JVCLReg.dcr}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  Dlgs, ToolsApi, ActnList, 
+  SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  ToolsApi, ActnList, Dialogs, ExptIntf,
+  {$IFDEF COMPILER5}
+  DsgnIntf,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ENDIF}
+  FiltEdit,
+  JvDSADialogs, JvComponent,
 
-  JvDSADialogs,JvComponent,
   // About JVCL
   JvJVCLAbout, JvJVCLAboutProperty, JVCLVer,
 
@@ -54,7 +61,7 @@ uses
   JvLabel, JvScrollBar, JvRadioGroup, JvPanel, JvMemo,
 
   // Edits
-{  JvCustomBox, JvFileNameBox, JvDirectoryBox, JvImageBox, JvButtonBox,
+  {  JvCustomBox, JvFileNameBox, JvDirectoryBox, JvImageBox, JvButtonBox,
   JvCalculatorBox, }
   JvTypedEdit, JvFloatEdit,
 
@@ -162,14 +169,6 @@ uses
   JvHtmlParserEditor, JvAlarmsEditor,
   JvBaseDlgEditor, JvCommonDialogDEditor, JvAppletProperty,
 
-  Dialogs, ExptIntf, ToolIntf, ExtDlgs, StdCtrls, Buttons,
-  {$IFDEF COMPILER5}
-  DsgnIntf,
-  {$ENDIF}
-  {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf,
-  {$ENDIF}
-  FiltEdit,
   JvTypes, JvArrowBtn, JvBmpAnim, JvCaptionButton,
   JvColorCombo, JvDriveCtrls, JvFindReplace, JvInstallLabel, JvRollOut, JvScrollPanel,
   JvTransBtn2, JvTimeLine, JvTimeLineEdit, JvShFileOp, JvAppHotKey, JvBalloonHint,
@@ -193,8 +192,6 @@ uses
 
   // Actions
   JvActions;
-
-{******************************************************************************}
 
 procedure RegPropEds;
 begin

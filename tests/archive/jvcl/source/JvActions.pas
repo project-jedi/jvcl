@@ -28,11 +28,11 @@ Known Issues:
 
 unit JvActions;
 
-
 interface
 
 uses
-  Windows, Classes, ActnList, ShellApi, JVCLVer, JCLMapi;
+  Windows, Classes, ActnList, ShellApi,
+  JclMapi;
 
 type
   TJvSendMailOptions = class(TPersistent)
@@ -99,9 +99,7 @@ type
 
 implementation
 
-{ TJvSendMail }
-
-{**************************************************}
+//=== TJvSendMail ============================================================
 
 constructor TJvSendMail.Create(AOwner: TComponent);
 begin
@@ -110,26 +108,18 @@ begin
   FMail := TJvSendMailOptions.Create;
 end;
 
-{**************************************************}
-
 destructor TJvSendMail.Destroy;
 begin
   FMail.Free;
   inherited Destroy;
 end;
 
-{**************************************************}
-
 function TJvSendMail.Execute: Boolean;
 begin
   Result := FMail.Execute;
 end;
 
-{**************************************************}
-
-{ TJvSendMailOptions }
-
-{**************************************************}
+//=== TJvSendMailOptions =====================================================
 
 constructor TJvSendMailOptions.Create;
 begin
@@ -138,64 +128,46 @@ begin
   FMail := TJclEmail.Create;
 end;
 
-{**************************************************}
-
 destructor TJvSendMailOptions.Destroy;
 begin
   FMail.Free;
   inherited Destroy;
 end;
 
-{**************************************************}
-
 function TJvSendMailOptions.Execute: Boolean;
 begin
   Result := Fmail.Send(FShowDialogs);
 end;
-
-{**************************************************}
 
 function TJvSendMailOptions.GetAttachments: TStrings;
 begin
   Result := FMail.Attachments;
 end;
 
-{**************************************************}
-
 function TJvSendMailOptions.GetBody: string;
 begin
   Result := FMail.Body;
 end;
-
-{**************************************************}
 
 function TJvSendMailOptions.GetFindOptions: TJclEmailFindOptions;
 begin
   Result := FMail.FindOptions;
 end;
 
-{**************************************************}
-
 function TJvSendMailOptions.GetHtmlBody: Boolean;
 begin
   Result := FMail.HtmlBody;
 end;
-
-{**************************************************}
 
 function TJvSendMailOptions.GetLogonOptions: TJclEmailLogonOptions;
 begin
   Result := FMail.LogonOptions;
 end;
 
-{**************************************************}
-
 function TJvSendMailOptions.GetReadMsg: TJclEmailReadMsg;
 begin
   Result := FMail.ReadMsg;
 end;
-
-{**************************************************}
 
 function TJvSendMailOptions.GetRecipients: string;
 begin
@@ -205,56 +177,40 @@ begin
     Result := FMail.Recipients.Items[0].Address;
 end;
 
-{**************************************************}
-
 function TJvSendMailOptions.GetSubject: string;
 begin
   Result := FMail.Subject;
 end;
-
-{**************************************************}
 
 function TJvSendMailOptions.GetUserLogged: Boolean;
 begin
   Result := FMail.UserLogged;
 end;
 
-{**************************************************}
-
 procedure TJvSendMailOptions.SetAttachment(const Value: TStrings);
 begin
   FMail.Attachments.Assign(Value);
 end;
-
-{**************************************************}
 
 procedure TJvSendMailOptions.SetBody(const Value: string);
 begin
   FMail.Body := Value;
 end;
 
-{**************************************************}
-
 procedure TJvSendMailOptions.SetFindOptions(const Value: TJclEmailFindOptions);
 begin
   FMail.FindOptions := Value;
 end;
-
-{**************************************************}
 
 procedure TJvSendMailOptions.SetHtmlBody(const Value: Boolean);
 begin
   FMail.HtmlBody := Value;
 end;
 
-{**************************************************}
-
 procedure TJvSendMailOptions.SetLogonOptions(const Value: TJclEmailLogonOptions);
 begin
   FMail.LogonOptions := Value;
 end;
-
-{**************************************************}
 
 procedure TJvSendMailOptions.SetRecipients(const Value: string);
 begin
@@ -262,32 +218,22 @@ begin
   FMail.Recipients.Add(Value);
 end;
 
-{**************************************************}
-
 procedure TJvSendMailOptions.SetSubject(const Value: string);
 begin
   FMail.Subject := Value;
 end;
 
-{**************************************************}
-
-{ TJvWebAction }
-
-{**************************************************}
+//=== TJvWebAction ===========================================================
 
 function TJvWebAction.Execute: Boolean;
 begin
   Result := ShellExecute(0, 'open', PChar(FUrl), nil, nil, SW_SHOW) > 32;
 end;
 
-{**************************************************}
-
 function TJvWebAction.HandlesTarget(Target: TObject): Boolean;
 begin
   Result := True;
 end;
-
-{**************************************************}
 
 procedure TJvWebAction.UpdateTarget(Target: TObject);
 begin

@@ -30,7 +30,7 @@ Known Issues:
 
 {.$DEFINE DEBUG}
 
-unit jvBandObject;
+unit JvBandObject;
 
 interface
 
@@ -180,14 +180,14 @@ begin
   Result := (Sev shl 31) or (Fac shl 16) or Code;
 end;
 
-// Band Object Factory Classes
-
-{ TzCustomBandObjectFactory }
+//=== TzCustomBandObjectFactory ==============================================
 
 function TzCustomBandObjectFactory.GetClassIDString: string;
 begin
   Result := GUIDToString(ClassID);
 end;
+
+//=== TzToolBandObjectFactory ================================================
 
 function MethodToProcedure(Self: TObject; MethodAddr: Pointer): Pointer;
 type
@@ -205,11 +205,11 @@ type
       Target: Pointer;   //          @MethodAddr
     end;
   end;
-
 var
-  Mtp: ^TMethodToProc absolute Result;
+  Mtp: ^TMethodToProc;
 begin
   New(Mtp);
+  Result := Mtp;
   with Mtp^ do
   begin
     PopEAX          := $58;
@@ -222,8 +222,6 @@ begin
     Jump.Target     := MethodAddr;
   end;
 end;
-
-{ TzToolBandObjectFactory }
 
 procedure TzToolBandObjectFactory.UpdateRegistry(Register: Boolean);
 begin
@@ -248,7 +246,7 @@ begin
     inherited;
 end;
 
-{ TzCatBandObjectFactory }
+//=== TzCatBandObjectFactory =================================================
 
 procedure TzCatBandObjectFactory.UpdateRegistry(Register: Boolean);
 var
@@ -273,14 +271,14 @@ begin
     inherited;
 end;
 
-{ TzDeskBandObjectFactory }
+//=== TzDeskBandObjectFactory ================================================
 
 function TzDeskBandObjectFactory.GetImplCatID: TGUID;
 begin
   Result := StringToGUID(CATID_DESKBAND);
 end;
 
-{ TzExplorerBarObjectFactory }
+//=== TzExplorerBarObjectFactory =============================================
 
 function TzExplorerBarObjectFactory.BarSize: string;
 var
@@ -356,23 +354,21 @@ begin
   end;
 end;
 
-{ TzInfoBandObjectFactory }
+//=== TzInfoBandObjectFactory ================================================
 
 function TzInfoBandObjectFactory.GetImplCatID: TGUID;
 begin
   Result := StringToGUID(CATID_INFOBAND);
 end;
 
-{ TzCommBandObjectFactory }
+//=== TzCommBandObjectFactory ================================================
 
 function TzCommBandObjectFactory.GetImplCatID: TGUID;
 begin
   Result := StringToGUID(CATID_COMMBAND);
 end;
 
-// Band Object Classes
-
-{ TzCustomBandObject }
+//=== TzCustomBandObject =====================================================
 
 procedure TzCustomBandObject.AfterConstruction;
 begin
@@ -543,7 +539,7 @@ begin
     end;
     if (dwMask and DBIM_TITLE) <> 0 then
     begin
-      StringToWideChar(Caption, @wszTitle, Length(wszTitle));
+      StringToWideChar(Caption, @wszTitle[0], Length(wszTitle));
       {$IFDEF Debug}
       //zTraceLog('  Dbi.wszTitle=' + Format('%s', [Caption]));
       {$ENDIF}
@@ -820,7 +816,56 @@ begin
   Result := S_FALSE;
 end;
 
-{ TzContextMenuBandObject }
+procedure TzCustomBandObject.BandWndProc(var Msg: TMessage);
+begin
+  if Msg.Msg = WM_PARENTNOTIFY then
+  begin
+    FHasFocus := True;
+    FocusChange(True);
+  end;
+  //if (Msg.Msg >= WM_KEYFIRST) and (Msg.Msg <= WM_KEYLAST) then
+  //  SendMessage(FBandForm.Handle, Msg.Msg, Msg.wParam, Msg.lParam);
+  FSavedWndProc(Msg);
+end;
+
+procedure TzCustomBandObject.FocusChange(HasFocus: Boolean);
+var
+  Obj: IUnknown;
+begin
+  if Site <> nil then
+  begin
+    if Supports(FBandForm, IUnknown, Obj) then
+      Site.OnFocusChangeIS(Obj, HasFocus);
+  end;
+end;
+
+function TzCustomBandObject.MsgHookProc(nCode, wParam, lParam: Integer): Integer;
+var
+ lOk: Boolean;
+begin
+  try
+    if FBandForm <> nil then
+    begin
+      lOk := False;
+      with PMsg(Pointer(lParam))^ do
+      begin
+        if (((message = WM_KEYDOWN) or (message = WM_KEYUP)) and
+          ((wParam = VK_BACK))) then
+          lOk := True
+        else
+        if message = WM_MOUSEMOVE then //Enable Flat effects!
+          Application.HandleMessage;
+      end;
+      if lOk then
+        if IsDialogMessage(FBandForm.Handle, PMsg(Pointer(lParam))^) then
+          PMsg(lParam)^.message := WM_NULL;
+    end;
+  except
+  end;
+  Result := CallNextHookEx(FHook, nCode, wParam, lParam);
+end;
+
+//=== TzContextMenuBandObject ================================================
 
 // IContextMenu
 
@@ -1063,55 +1108,6 @@ begin
         Result := NOERROR;
     end;
   end;
-end;
-
-procedure TzCustomBandObject.BandWndProc(var Msg: TMessage);
-begin
-  if Msg.Msg = WM_PARENTNOTIFY then
-  begin
-    FHasFocus := True;
-    FocusChange(True);
-  end;
-  //if (Msg.Msg >= WM_KEYFIRST) and (Msg.Msg <= WM_KEYLAST) then
-  //  SendMessage(FBandForm.Handle, Msg.Msg, Msg.wParam, Msg.lParam);
-  FSavedWndProc(Msg);
-end;
-
-procedure TzCustomBandObject.FocusChange(HasFocus: Boolean);
-var
-  Obj: IUnknown;
-begin
-  if Site <> nil then
-  begin
-    if Supports(FBandForm, IUnknown, Obj) then
-      Site.OnFocusChangeIS(Obj, HasFocus);
-  end;
-end;
-
-function TzCustomBandObject.MsgHookProc(nCode, wParam, lParam: Integer): Integer;
-var
- lOk: Boolean;
-begin
-  try
-    if FBandForm <> nil then
-    begin
-      lOk := False;
-      with PMsg(Pointer(lParam))^ do
-      begin
-        if (((message = WM_KEYDOWN) or (message = WM_KEYUP)) and
-          ((wParam = VK_BACK))) then
-          lOk := True
-        else
-        if message = WM_MOUSEMOVE then //Enable Flat effects!
-          Application.HandleMessage;
-      end;
-      if lOk then
-        if IsDialogMessage(FBandForm.Handle, PMsg(Pointer(lParam))^) then
-          PMsg(lParam)^.message := WM_NULL;
-    end;    
-  except
-  end;
-  Result := CallNextHookEx(FHook, nCode, wParam, lParam);
 end;
 
 end.

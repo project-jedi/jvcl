@@ -33,18 +33,16 @@ unit JvDBUtils;
 interface
 
 uses
-  Windows, Registry, Classes, SysUtils, DB, IniFiles;
+  Registry, Classes, SysUtils, DB, IniFiles;
 
 type
-
-  { TJvLocateObject }
-
   TJvLocateObject = class(TObject)
   private
     FDataSet: TDataSet;
     FLookupField: TField;
     FLookupValue: string;
-    FLookupExact, FCaseSensitive: Boolean;
+    FLookupExact: Boolean;
+    FCaseSensitive: Boolean;
     FBookmark: TBookmark;
     FIndexSwitch: Boolean;
     procedure SetDataSet(Value: TDataSet);
@@ -69,30 +67,30 @@ type
     property IndexSwitch: Boolean read FIndexSwitch write FIndexSwitch;
   end;
 
-type
   TCreateLocateObject = function: TJvLocateObject;
-const
+
+// (rom) changed to var
+var
   CreateLocateObject: TCreateLocateObject = nil;
+
 function CreateLocate(DataSet: TDataSet): TJvLocateObject;
 
 { Utility routines }
 
 function IsDataSetEmpty(DataSet: TDataSet): Boolean;
 procedure RefreshQuery(Query: TDataSet);
-function DataSetSortedSearch(DataSet: TDataSet; const Value,
-  FieldName: string; CaseInsensitive: Boolean): Boolean;
+function DataSetSortedSearch(DataSet: TDataSet;
+  const Value, FieldName: string; CaseInsensitive: Boolean): Boolean;
 function DataSetSectionName(DataSet: TDataSet): string;
 procedure InternalSaveFields(DataSet: TDataSet; IniFile: TObject;
   const Section: string);
 procedure InternalRestoreFields(DataSet: TDataSet; IniFile: TObject;
   const Section: string; RestoreVisible: Boolean);
-{$IFDEF WIN32}
 function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
 procedure SaveFieldsReg(DataSet: TDataSet; IniFile: TRegIniFile);
 procedure RestoreFieldsReg(DataSet: TDataSet; IniFile: TRegIniFile;
   RestoreVisible: Boolean);
-{$ENDIF WIN32}
 procedure SaveFields(DataSet: TDataSet; IniFile: TIniFile);
 procedure RestoreFields(DataSet: TDataSet; IniFile: TIniFile;
   RestoreVisible: Boolean);
@@ -130,36 +128,37 @@ const
 
 const
   ServerDateFmt: string[50] = sdfStandard16;
-
-{$IFNDEF WIN32}
-type
-  TBlobType = ftBlob..ftGraphic;
-{$ENDIF}
-
-const
   ftBlobTypes = [Low(TBlobType)..High(TBlobType)];
-{$IFDEF COMPILER35_UP}{$NODEFINE ftBlobTypes}{$ENDIF}
+  {$IFDEF COMPILER35_UP}
+  {$NODEFINE ftBlobTypes}
+  {$ENDIF}
 
-{$IFDEF VER110} { C++ Builder 3 or higher }
-{$NODEFINE ftNonTextTypes}
+  {$IFDEF BCB3_UP} { C++ Builder 3 or higher }
+  {$NODEFINE ftNonTextTypes}
   (*$HPPEMIT 'namespace JvDBUtils'*)
   (*$HPPEMIT '{'*)
   (*$HPPEMIT '#define ftNonTextTypes (System::Set<TFieldType, ftUnknown, ftCursor> () \'*)
   (*$HPPEMIT '        << ftBytes << ftVarBytes << ftBlob << ftMemo << ftGraphic \'*)
   (*$HPPEMIT '        << ftFmtMemo << ftParadoxOle << ftDBaseOle << ftTypedBinary << ftCursor )'*)
   (*$HPPEMIT '}'*)
-{$ENDIF}
+  {$ENDIF}
+
 type
   Largeint = Longint;
-{$IFDEF VER110}{$NODEFINE Largeint}{$ENDIF}
+  {$IFDEF BCB3_UP}
+  {$NODEFINE Largeint}
+  {$ENDIF}
 
 procedure _DBError(const Msg: string);
 
 implementation
 
 uses
-  Forms, Controls, Dialogs, Consts, DBConsts, JvxConst, JvVCLUtils, JvFileUtil,
-  JvAppUtils, JvStrUtils, JvMaxMin, JvDateUtil{$IFDEF COMPILER6_UP}, Variants{$ENDIF};
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF}
+  Forms, Controls, Dialogs, DBConsts,
+  JvxConst, JvVCLUtils, JvAppUtils, JvStrUtils, JvMaxMin, JvDateUtil;
 
 { Utility routines }
 
@@ -167,6 +166,8 @@ procedure _DBError(const Msg: string);
 begin
   DatabaseError(Msg);
 end;
+
+// (rom) better use Windows dialogs which are localized
 
 function ConfirmDelete: Boolean;
 begin
@@ -183,8 +184,10 @@ begin
     if DataSet.Modified then
     begin
       case MessageDlg(SConfirmSave, mtConfirmation, mbYesNoCancel, 0) of
-        mrYes: DataSet.Post;
-        mrNo: DataSet.Cancel;
+        mrYes:
+          DataSet.Post;
+        mrNo:
+          DataSet.Cancel;
       else
         SysUtils.Abort;
       end;
@@ -235,8 +238,6 @@ begin
   end;
 end;
 
-{ TJvLocateObject }
-
 procedure TJvLocateObject.SetDataSet(Value: TDataSet);
 begin
   ActiveChanged;
@@ -285,7 +286,7 @@ begin
       Include(Options, loCaseInsensitive);
     if not FLookupExact then
       Include(Options, loPartialKey);
-    if (FLookupValue = '') then
+    if FLookupValue = '' then
       VarClear(Value)
     else
       Value := FLookupValue;
@@ -408,9 +409,9 @@ var
       else
       begin
         S := Field.AsString;
-        if (loPartialKey in Options) then
+        if loPartialKey in Options then
           Delete(S, Length(Value) + 1, MaxInt);
-        if (loCaseInsensitive in Options) then
+        if loCaseInsensitive in Options then
           Result := AnsiCompareText(S, Value) = 0
         else
           Result := AnsiCompareStr(S, Value) = 0;
@@ -439,7 +440,7 @@ begin
   with DataSet do
   begin
     CheckBrowseMode;
-    if BOF and EOF then
+    if Bof and Eof then
       Exit;
   end;
   Fields := TList.Create;
@@ -465,8 +466,8 @@ begin
           end;
         end;
       finally
-        if not Result{$IFDEF COMPILER3_UP} and
-        DataSet.BookmarkValid(PChar(Bookmark)){$ENDIF} then
+        if not Result {$IFDEF COMPILER3_UP} and
+        DataSet.BookmarkValid(PChar(Bookmark)) {$ENDIF} then
           DataSet.Bookmark := Bookmark;
       end;
     finally
@@ -529,18 +530,18 @@ begin
             DataSet.MoveBy(I - CurrentPos);
           CurrentPos := I;
           CurrentValue := GetCurrentStr;
-          if (UpStr(Value) > CurrentValue) then
+          if UpStr(Value) > CurrentValue then
             L := I + 1
           else
           begin
             H := I - 1;
-            if (UpStr(Value) = CurrentValue) then
+            if UpStr(Value) = CurrentValue then
               Result := True;
           end;
-        end; { while }
+        end;
         if Result then
         begin
-          if (L <> CurrentPos) then
+          if L <> CurrentPos then
             DataSet.MoveBy(L - CurrentPos);
           while (L < DataSet.RecordCount) and
             (UpStr(Value) <> GetCurrentStr) do
@@ -593,7 +594,7 @@ begin
       IniWriteString(IniFile, CheckSection(DataSet, Section),
         Name + Fields[I].FieldName,
         Format('%d,%d,%d', [Fields[I].Index, Fields[I].DisplayWidth,
-        Integer(Fields[I].Visible)]));
+          Integer(Fields[I].Visible)]));
     end;
   end;
 end;
@@ -606,7 +607,7 @@ type
     EndIndex: Integer;
   end;
   PFieldArray = ^TFieldArray;
-  TFieldArray = array[0..(65528 div SizeOf(TFieldInfo)) - 1] of TFieldInfo;
+  TFieldArray = array [0..(65528 div SizeOf(TFieldInfo)) - 1] of TFieldInfo;
 const
   Delims = [' ', ','];
 var
@@ -698,12 +699,14 @@ begin
     Result := Format('%s = %s', [FieldName, FormatDateTime(ServerDateFmt,
         Date1)]);
   end
-  else if (Date1 <> NullDate) or (Date2 <> NullDate) then
+  else
+  if (Date1 <> NullDate) or (Date2 <> NullDate) then
   begin
     if Date1 = NullDate then
       Result := Format('%s < %s', [FieldName,
         FormatDateTime(ServerDateFmt, IncDay(Date2, 1))])
-    else if Date2 = NullDate then
+    else
+    if Date2 = NullDate then
       Result := Format('%s > %s', [FieldName,
         FormatDateTime(ServerDateFmt, IncDay(Date1, -1))])
     else
@@ -722,7 +725,8 @@ begin
     if Date1 = NullDate then
       Result := Format('%s < %s', [FieldName,
         FormatDateTime(ServerDateFmt, IncDay(Date2, 1))])
-    else if Date2 = NullDate then
+    else
+    if Date2 = NullDate then
       Result := Format('%s >= %s', [FieldName,
         FormatDateTime(ServerDateFmt, Date1)])
     else
@@ -739,21 +743,19 @@ const
 begin
   Result := TrueExpr;
   if (LowValue = HighValue) and (LowValue <> LowEmpty) then
-  begin
-    Result := Format('%s = %g', [FieldName, LowValue]);
-  end
-  else if (LowValue <> LowEmpty) or (HighValue <> HighEmpty) then
+    Result := Format('%s = %g', [FieldName, LowValue])
+  else
+  if (LowValue <> LowEmpty) or (HighValue <> HighEmpty) then
   begin
     if LowValue = LowEmpty then
       Result := Format('%s %s %g', [FieldName, Operators[Inclusive, 2], HighValue])
-    else if HighValue = HighEmpty then
+    else
+    if HighValue = HighEmpty then
       Result := Format('%s %s %g', [FieldName, Operators[Inclusive, 1], LowValue])
     else
-    begin
       Result := Format('(%s %s %g) AND (%s %s %g)',
         [FieldName, Operators[Inclusive, 2], HighValue,
         FieldName, Operators[Inclusive, 1], LowValue]);
-    end;
   end;
 end;
 
@@ -808,7 +810,8 @@ begin
   end;
   if EmptyValue then
     Result := TrueExpr
-  else if (FieldType = ftDateTime) and Exact then
+  else
+  if (FieldType = ftDateTime) and Exact then
   begin
     DateValue := IncDay(DateValue, 1);
     Result := Format('(%s >= %s) and (%s < %s)', [FieldName, FieldValue,
@@ -867,9 +870,7 @@ begin
     begin
       F := Dest.FindField(Source.Fields[I].FieldName);
       if F <> nil then
-      begin
         F.Value := Source.Fields[I].Value;
-      end;
     end;
   end
   else
@@ -879,9 +880,7 @@ begin
       F := Dest.FindField(Dest.FieldDefs[I].Name);
       FSrc := Source.FindField(Source.FieldDefs[I].Name);
       if (F <> nil) and (FSrc <> nil) then
-      begin
         F.Value := FSrc.Value;
-      end;
     end;
   end;
 end;

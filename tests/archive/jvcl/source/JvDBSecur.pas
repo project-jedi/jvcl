@@ -12,7 +12,7 @@ The Original Code is: JvDBSecur.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,22 +29,23 @@ unit JvDBSecur;
 
 interface
 
-
-uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Messages, Classes, Graphics, Controls, Forms, Dialogs, DB, DBTables,
+uses
+  SysUtils,
+  {$IFNDEF WIN32}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  Classes, DBTables,
   JvxLogin, JvxLoginDlg, JvChPswDlg;
 
 type
   TCheckUserEvent = function(UsersTable: TTable;
     const Password: string): Boolean of object;
 
-{ TJvDBSecurity }
-
   TJvDBSecurity = class(TJvCustomLogin)
   private
     FDatabase: TDatabase;
     FUsersTableName: TFileName;
-    FLoginNameField: String;
+    FLoginNameField: string;
     FSelectAlias: Boolean;
     FOnCheckUser: TCheckUserEvent;
     FOnChangePassword: TChangePasswordEvent;
@@ -73,9 +74,9 @@ type
     property IniFileName;
     property MaxPasswordLen;
     property UpdateCaption;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property UseRegistry;
-{$ENDIF}
+    {$ENDIF}
     property OnCheckUser: TCheckUserEvent read FOnCheckUser write FOnCheckUser;
     property OnChangePassword: TChangePasswordEvent read FOnChangePassword
       write FOnChangePassword;
@@ -87,10 +88,6 @@ type
   end;
 
 implementation
-
-uses JvAppUtils, JvVCLUtils;
-
-{ TJvDBSecurity }
 
 constructor TJvDBSecurity.Create(AOwner: TComponent);
 begin
@@ -108,35 +105,37 @@ end;
 procedure TJvDBSecurity.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = Database) then Database := nil;
+  if (Operation = opRemove) and (AComponent = Database) then
+    Database := nil;
 end;
 
 procedure TJvDBSecurity.Loaded;
 begin
   inherited Loaded;
-  if not (csDesigning in ComponentState) and Active and
-    (Database <> nil) then
+  if not (csDesigning in ComponentState) and Active and (Database <> nil) then
   begin
     Database.LoginPrompt := True;
-    if not Login then begin
+    if not Login then
       TerminateApplication;
-    end;
   end;
 end;
 
 procedure TJvDBSecurity.SetDatabase(Value: TDatabase);
 begin
-  if FDatabase <> Value then begin
+  if FDatabase <> Value then
+  begin
     FDatabase := Value;
-{$IFDEF WIN32}
-    if Value <> nil then Value.FreeNotification(Self);
-{$ENDIF}
+    {$IFDEF WIN32}
+    if Value <> nil then
+      Value.FreeNotification(Self);
+    {$ENDIF}
   end;
 end;
 
 procedure TJvDBSecurity.SetUsersTableName(const Value: TFileName);
 begin
-  if FUsersTableName <> Value then FUsersTableName := Value;
+  if FUsersTableName <> Value then
+    FUsersTableName := Value;
 end;
 
 function TJvDBSecurity.GetLoginNameField: string;
@@ -149,12 +148,13 @@ begin
   FLoginNameField := Value;
 end;
 
-function TJvDBSecurity.DoCheckUser(UsersTable: TTable; const UserName,
-  Password: string): Boolean;
+function TJvDBSecurity.DoCheckUser(UsersTable: TTable;
+  const UserName, Password: string): Boolean;
 var
   SaveLoggedUser: string;
 begin
-  if Assigned(FOnCheckUser) then begin
+  if Assigned(FOnCheckUser) then
+  begin
     SaveLoggedUser := LoggedUser;
     try
       SetLoggedUser(UserName);
@@ -163,7 +163,8 @@ begin
       SetLoggedUser(SaveLoggedUser);
     end;
   end
-  else Result := True;
+  else
+    Result := True;
 end;
 
 function TJvDBSecurity.DoLogin(var UserName: string): Boolean;
@@ -171,7 +172,8 @@ var
   IconClick: TNotifyEvent;
 begin
   IconClick := OnIconDblClick;
-  if Assigned(IconClick) then IconClick := DoIconDblClick;
+  if Assigned(IconClick) then
+    IconClick := DoIconDblClick;
   Result := LoginDialog(Database, AttemptNumber, UsersTableName,
     LoginNameField, MaxPasswordLen, DoCheckUser, IconClick, UserName,
     IniFileName, UseRegistry, SelectAlias);
@@ -185,3 +187,4 @@ begin
 end;
 
 end.
+

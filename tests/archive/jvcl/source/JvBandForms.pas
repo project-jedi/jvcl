@@ -99,7 +99,7 @@ type
     @param ParentWindow   The parent window of the band form.
     @param BandObject     The band object associated with the band form.
     }
-    constructor CreateBandForm(const ParentWindow: HWnd; const BandObject: TComObject);
+    constructor CreateBandForm(const ParentWindow: HWND; const BandObject: TComObject);
     {$IFNDEF T2H}
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     {$ENDIF}
@@ -316,13 +316,7 @@ begin
   Visible := False;
 end;
 
-destructor TJvBandForm.Destroy;
-begin
-  ControlStyle := ControlStyle + [csNoStdEvents];
-  inherited;
-end;
-
-constructor TJvBandForm.CreateBandForm(const ParentWindow: HWnd; const BandObject: TComObject);
+constructor TJvBandForm.CreateBandForm(const ParentWindow: HWND; const BandObject: TComObject);
 var
   Rect: TRect;
 begin
@@ -335,12 +329,18 @@ end;
 
 constructor TJvBandForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
-  inherited;
+  inherited Create(AOwner);
   FBandModeFlags := [bmfVariableHeight];
   FBandIntegralX := 1;
   FBandIntegralY := 1;
   BorderStyle := bsNone;
   Visible := False;
+end;
+
+destructor TJvBandForm.Destroy;
+begin
+  ControlStyle := ControlStyle + [csNoStdEvents];
+  inherited Destroy;
 end;
 
 function TJvBandForm.GetMinSize: TPointL;

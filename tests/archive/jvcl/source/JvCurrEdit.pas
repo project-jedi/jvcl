@@ -12,8 +12,11 @@ The Original Code is: JvCurrEdit.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
+
+Contributor(s):
+  Polaris Software
 
 Last Modified: 2002-07-04
 
@@ -49,7 +52,15 @@ type
     FZeroEmpty: Boolean;
     FFormatOnEditing: Boolean;
     FFormatting: Boolean;
-    FDisplayFormat: String;
+    {$IFDEF COMPILER4_UP} // Polaris
+    FDisplayFormat: string;
+    {$ELSE}
+    FDisplayFormat: PString;
+    {$ENDIF}
+    // Polaris
+    FDecimalPlaceRound: Boolean;
+    procedure SetDecimalPlaceRound(Value: Boolean);
+
     procedure SetFocused(Value: Boolean);
     procedure SetAlignment(Value: TAlignment);
     procedure SetBeepOnError(Value: Boolean);
@@ -67,7 +78,7 @@ type
     function GetText: string;
     procedure SetText(const AValue: string);
     function TextToValText(const AValue: string): string;
-    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
+    //Polaris    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     function IsFormatStored: Boolean;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMEnter(var Msg: TCMEnter); message CM_ENTER;
@@ -76,6 +87,8 @@ type
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
   protected
+    //Polaris up to protected
+    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     {$IFDEF WIN32}
     procedure AcceptValue(const Value: Variant); override;
     {$ELSE}
@@ -101,7 +114,7 @@ type
       default True;
     property CheckOnExit: Boolean read FCheckOnExit write FCheckOnExit default False;
     property GlyphKind default gkDefault;
-    property ButtonWidth default 20;
+    property ButtonWidth default 21; //Polaris 20;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces
       default 2;
     property DisplayFormat: string read GetDisplayFormat write SetDisplayFormat
@@ -113,10 +126,16 @@ type
     property Text: string read GetText write SetText stored False;
     property MaxLength default 0;
     property ZeroEmpty: Boolean read FZeroEmpty write SetZeroEmpty default True;
+    //Polaris
+    property DecimalPlaceRound: Boolean read FDecimalPlaceRound write SetDecimalPlaceRound default False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Clear; {$IFDEF COMPILER5_UP} override; {$ENDIF}
+    {$IFDEF COMPILER5_UP}
+    procedure Clear; override;
+    {$ELSE}
+    procedure Clear;
+    {$ENDIF}
     property AsInteger: Longint read GetAsInteger write SetAsInteger;
     property DisplayText: string read GetDisplayText;
     property PopupVisible;
@@ -129,6 +148,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
+    property Align; //Polaris
+    property DecimalPlaceRound; //Polaris
+
     property Alignment;
     property AutoSelect;
     property AutoSize;
@@ -153,7 +175,7 @@ type
     property ParentBiDiMode;
     {$ENDIF}
     {$IFDEF WIN32}
-    {$IFNDEF VER90}
+    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
     {$ENDIF}
@@ -212,6 +234,9 @@ type
 
   TJvCalcEdit = class(TJvCustomCalcEdit)
   published
+    property Align; //Polaris
+    property DecimalPlaceRound; //Polaris
+
     property Alignment;
     property AutoSelect;
     property AutoSize;
@@ -243,7 +268,7 @@ type
     property ParentBiDiMode;
     {$ENDIF}
     {$IFDEF WIN32}
-    {$IFNDEF VER90}
+    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
     {$ENDIF}
@@ -302,12 +327,15 @@ implementation
 
 uses
   Consts,
-  JvStrUtils, JvVCLUtils, JvMaxMin, JvCalc;
+  JvStrUtils, JvMaxMin, JvCalc;
 
 {$R *.Res}
 
 const
   sCalcBmp = 'JV_CEDITBMP'; { Numeric editor button glyph }
+
+// (rom) changed to var
+var
   CalcBitmap: TBitmap = nil;
 
 type
@@ -316,7 +344,7 @@ type
 function IsValidFloat(const Value: string; var RetValue: Extended): Boolean;
 var
   I: Integer;
-  Buffer: array [0..63] of Char;
+  Buffer: array[0..63] of Char;
 begin
   Result := False;
   for I := 1 to Length(Value) do
@@ -360,14 +388,21 @@ begin
     Result := S[1] + Result;
 end;
 
+//=== TJvCustomNumEdit =======================================================
+
 constructor TJvCustomNumEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csSetCaption];
+  FDecimalPlaceRound := False; // Polaris
   MaxLength := 0;
   FBeepOnError := True;
   FAlignment := taRightJustify;
+  {$IFDEF COMPILER4_UP} // Polaris
   FDisplayFormat := DefaultDisplayFormat;
+  {$ELSE}
+  FDisplayFormat := NewStr(DefaultDisplayFormat);
+  {$ENDIF}
   FDecimalPlaces := 2;
   FZeroEmpty := True;
   inherited Text := '';
@@ -378,7 +413,8 @@ begin
   ControlState := ControlState + [csCreating];
   try
     GlyphKind := gkDefault;
-    ButtonWidth := 20;
+    //Polaris ButtonWidth := 20;
+    ButtonWidth := 21;
   finally
     ControlState := ControlState - [csCreating];
   end;
@@ -387,7 +423,9 @@ end;
 destructor TJvCustomNumEdit.Destroy;
 begin
   FCanvas.Free;
-  //DisposeStr(FDisplayFormat);
+  {$IFNDEF COMPILER4_UP} // Polaris
+  DisposeStr(FDisplayFormat);
+  {$ENDIF}
   if FPopup <> nil then
   begin
     TJvPopupWindow(FPopup).OnCloseUp := nil;
@@ -397,13 +435,25 @@ begin
   inherited Destroy;
 end;
 
+//Polaris
+
+procedure TJvCustomNumEdit.SetDecimalPlaceRound(Value: Boolean);
+begin
+  if FDecimalPlaceRound <> Value then
+  begin
+    FDecimalPlaceRound := Value;
+    SetValue(CheckValue(FValue, False));
+    Invalidate;
+  end;
+end;
+
 function TJvCustomNumEdit.GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap;
 begin
   DestroyNeeded := False;
   if CalcBitmap = nil then
   begin
     CalcBitmap := TBitmap.Create;
-    CalcBitmap.Handle := LoadBitmap(hInstance, sCalcBmp);
+    CalcBitmap.Handle := LoadBitmap(HInstance, sCalcBmp);
   end;
   Result := CalcBitmap;
 end;
@@ -431,7 +481,7 @@ begin
   System.Insert(Key, S, SelStart + 1);
   S := TextToValText(S);
   DecPos := Pos(DecimalSeparator, S);
-  if (DecPos > 0) then
+  if DecPos > 0 then
   begin
     SelStart := Pos('E', UpperCase(S));
     if SelStart > DecPos then
@@ -450,7 +500,7 @@ procedure TJvCustomNumEdit.KeyPress(var Key: Char);
 begin
   if PopupVisible and (UpCase(Key) in ['0'..'9', DecimalSeparator, '.', ',',
     '+', '-', '*', '/', '_', '=', 'C', 'R', 'Q', '%', #8, #13] -
-    [ThousandSeparator]) then
+      [ThousandSeparator]) then
   begin
     TJvPopupWindowHack(FPopup).KeyPress(Key);
     Key := #0;
@@ -509,7 +559,11 @@ procedure TJvCustomNumEdit.SetDisplayFormat(const Value: string);
 begin
   if DisplayFormat <> Value then
   begin
+    {$IFDEF COMPILER4_UP} // Polaris
     FDisplayFormat := Value;
+    {$ELSE}
+    AssignStr(FDisplayFormat, Value);
+    {$ENDIF}
     Invalidate;
     DataChanged;
   end;
@@ -517,7 +571,11 @@ end;
 
 function TJvCustomNumEdit.GetDisplayFormat: string;
 begin
+  {$IFDEF COMPILER4_UP} // Polaris
   Result := FDisplayFormat;
+  {$ELSE}
+  Result := FDisplayFormat^;
+  {$ENDIF}
 end;
 
 procedure TJvCustomNumEdit.SetFocused(Value: Boolean);
@@ -560,6 +618,7 @@ begin
   if FDecimalPlaces <> Value then
   begin
     FDecimalPlaces := Value;
+    SetValue(CheckValue(FValue, False)); // Polaris (?)
     DataChanged;
     Invalidate;
   end;
@@ -593,16 +652,35 @@ begin
   if (FValue = 0.0) and FZeroEmpty then
     EditText := ''
   else
-    EditText := FormatFloat(EditFormat, FValue);
+    EditText := FormatFloat(EditFormat, CheckValue(FValue, False));
 end;
 
 function TJvCustomNumEdit.CheckValue(NewValue: Extended;
   RaiseOnError: Boolean): Extended;
-begin
-  Result := NewValue;
-  if (FMaxValue <> FMinValue) then
+
+  function Sign(Value: Extended): Integer;
   begin
-    if (FMaxValue > FMinValue) then
+    if Value = 0 then
+      Result := 0
+    else
+    if Value < 0 then
+      Result := -1
+    else
+      Result := 1;
+  end;
+
+var
+  DP: Integer;
+begin
+  if FDecimalPlaceRound then
+  begin //Polaris
+    DP := FDecimalPlaces;
+    NewValue := Int(NewValue * Exp(DP * Ln(10)) + Sign(NewValue) * 0.50000001) * Exp(-DP * Ln(10));
+  end;
+  Result := NewValue;
+  if FMaxValue <> FMinValue then
+  begin
+    if FMaxValue > FMinValue then
     begin
       if NewValue < FMinValue then
         Result := FMinValue
@@ -651,11 +729,11 @@ end;
 function TJvCustomNumEdit.GetValue: Extended;
 begin
   if not (csDesigning in ComponentState) then
-    try
-      UpdateData;
-    except
-      FValue := FMinValue;
-    end;
+  try
+    UpdateData;
+  except
+    FValue := FMinValue;
+  end;
   Result := FValue;
 end;
 
@@ -770,6 +848,7 @@ procedure TJvCustomNumEdit.AcceptValue(const Value: string);
 {$ENDIF}
 begin
   inherited AcceptValue(Value);
+  Self.Value := CheckValue(Value, False); //Polaris
 end;
 
 procedure TJvCustomNumEdit.WMPaste(var Msg: TMessage);
@@ -830,8 +909,8 @@ begin
     S := TJvPopupWindow(FPopup).GetPopupText
   else
     S := GetDisplayText;
-{  if not PaintComboEdit(Self, S, FAlignment, FFocused and not PopupVisible,
-    FCanvas, Msg) then inherited;}
+  {  if not PaintComboEdit(Self, S, FAlignment, FFocused and not PopupVisible,
+      FCanvas, Msg) then inherited;}
 end;
 
 procedure TJvCustomNumEdit.CMFontChanged(var Msg: TMessage);
@@ -840,7 +919,7 @@ begin
   Invalidate;
 end;
 
-{ TJvxCurrencyEdit }
+//=== TJvxCurrencyEdit =======================================================
 
 constructor TJvxCurrencyEdit.Create(AOwner: TComponent);
 begin
@@ -883,6 +962,8 @@ begin
   Result := Format('%s;-%s', [Result, Result]);
 end;
 
+//=== TJvCustomCalcEdit ======================================================
+
 constructor TJvCustomCalcEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -908,10 +989,13 @@ end;
 
 {$IFDEF WIN32}
 initialization
+
 finalization
   DestroyLocals;
 {$ELSE}
 initialization
   AddExitProc(DestroyLocals);
 {$ENDIF}
+
 end.
+

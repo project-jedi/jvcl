@@ -31,8 +31,13 @@ unit JvDataEmbeddedEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-    {$IFDEF COMPILER5} DsgnIntf, {$ENDIF} {$IFDEF COMPILER6_UP} DesignEditors, DesignIntf, {$ENDIF}
+  SysUtils, Classes, Dialogs,
+  {$IFDEF COMPILER5}
+  DsgnIntf,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ENDIF}
   JvDataEmbedded;
 
 type
@@ -49,8 +54,6 @@ implementation
 
 const
   ClickToEdit = 'Click to edit...';
-
-{******************************************************}
 
 procedure TJvDataEmbeddedEditor.Edit;
 var
@@ -73,28 +76,20 @@ begin
   end;
 end;
 
-{******************************************************}
-
 function TJvDataEmbeddedEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paSortList];
 end;
-
-{******************************************************}
 
 function TJvDataEmbeddedEditor.GetValue: string;
 begin
   Result := ClickToEdit;
 end;
 
-{******************************************************}
-
 procedure TJvDataEmbeddedEditor.GetValues(Proc: TGetStrProc);
 begin
   SetStrValue(ClickToEdit);
 end;
-
-{******************************************************}
 
 procedure TJvDataEmbeddedEditor.SetValue(const Value: string);
 begin
@@ -102,3 +97,4 @@ begin
 end;
 
 end.
+

@@ -23,18 +23,18 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-If you set AutoComplete in TJvColorComboBox to true and use the same text for
+If you set AutoComplete in TJvColorComboBox to True and use the same text for
 all Custom colors, the inherited Change behaviour from TJvComboBox makes the *first*
 custom color selected, not the last added as it should be thus AutoComplete is
-set to default to false. (p3)
+set to default to False. (p3)
 
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
 
-{ Comboboxes for displaying colors and fonts }
-
 unit JvColorCombo;
+
+{ Comboboxes for displaying colors and fonts }
 
 interface
 
@@ -43,24 +43,23 @@ uses
   Printers, JvComboBox;
 
 type
-  { TJvColorComboBox }
-
-  TJvNewColorEvent = procedure(Sender: TObject; Color: TColor; var DisplayName: string; var AllowAdd: boolean) of object;
-  TJvGetColorNameEvent = procedure(Sender: TObject; Index: integer; Color: TColor; var DisplayName: string) of object;
+  TJvNewColorEvent = procedure(Sender: TObject; Color: TColor; var DisplayName: string; var AllowAdd: Boolean) of
+    object;
+  TJvGetColorNameEvent = procedure(Sender: TObject; Index: Integer; Color: TColor; var DisplayName: string) of object;
   TJvColorComboOption = (coText, coHex, coRGB, coSysColors, coCustomColors);
   TJvColorComboOptions = set of TJvColorComboOption;
 
   TJvColorComboBox = class(TJvCustomComboBox)
   private
     FColorValue: TColor;
-    FCustCnt: integer;
+    FCustCnt: Integer;
     FHiLiteColor: TColor;
     FHiLiteText: TColor;
     FOptions: TJvColorComboOptions;
     FPrefix: string;
     FOther: string;
-    FColWidth: integer;
-    FExecutingDialog:boolean;
+    FColWidth: Integer;
+    FExecutingDialog: Boolean;
     FNewColor: TJvNewColorEvent;
     FOnGetDisplayName: TJvGetColorNameEvent;
     FColorNameMap: TStrings;
@@ -68,10 +67,10 @@ type
     FOnBeforeCustom: TNotifyEvent;
     procedure SetOptions(Value: TJvColorComboOptions);
     procedure SetOther(Value: string);
-    procedure SetColWidth(Value: integer);
+    procedure SetColWidth(Value: Integer);
     procedure SetColorValue(Value: TColor);
-    procedure SetDroppedWidth(Value: integer);
-    function GetDroppedWidth: integer;
+    procedure SetDroppedWidth(Value: Integer);
+    function GetDroppedWidth: Integer;
     procedure ResetItemHeight;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
@@ -83,35 +82,35 @@ type
     procedure Click; override;
 
     function GetColorName(AColor: TColor; const Default: string): string;
-    function DoNewColor(Color: TColor; var DisplayName: string): boolean; virtual;
-    procedure DoGetDisplayName(Index: integer; AColor: TColor; var DisplayName: string); virtual;
-    function DoInsertColor(AIndex: integer; AColor: TColor; var DisplayName: string): boolean; virtual;
+    function DoNewColor(Color: TColor; var DisplayName: string): Boolean; virtual;
+    procedure DoGetDisplayName(Index: Integer; AColor: TColor; var DisplayName: string); virtual;
+    function DoInsertColor(AIndex: Integer; AColor: TColor; var DisplayName: string): Boolean; virtual;
     procedure DoBeforeCustom;
     procedure Change; override;
-    procedure InternalInsertColor(AIndex: integer; AColor: TColor; const DisplayName: string);virtual;
+    procedure InternalInsertColor(AIndex: Integer; AColor: TColor; const DisplayName: string); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
     procedure GetColors; virtual;
-    procedure GetCustomColors(AList:TList);
+    procedure GetCustomColors(AList: TList);
     // Returns the current name for AColor. Note that this implicitly might call the
     // OnGetDisplayName event if the protected GetColorName returns an emtpy string
-    function ColorName(AColor:TColor):string;
+    function ColorName(AColor: TColor): string;
     // returns the index of a specific color or -1 if not found
-    function FindColor(AColor:TColor):integer;
+    function FindColor(AColor: TColor): Integer;
 
     procedure AddColor(AColor: TColor; const DisplayName: string);
-    procedure ChangeColor(AIndex: integer; AColor: TColor; const DisplayName: string);
-    procedure InsertColor(AIndex: integer; AColor: TColor; const DisplayName: string);
+    procedure ChangeColor(AIndex: Integer; AColor: TColor; const DisplayName: string);
+    procedure InsertColor(AIndex: Integer; AColor: TColor; const DisplayName: string);
     property Text;
-    property CustomColorCount: integer read FCustCnt;
+    property CustomColorCount: Integer read FCustCnt;
   published
     property Anchors;
-    property AutoComplete default false;
-{$IFDEF COMPILER6_UP}
+    property AutoComplete default False;
+    {$IFDEF COMPILER6_UP}
     property AutoDropDown;
-{$ENDIF}
+    {$ENDIF}
     property AutoSave;
     property BevelEdges;
     property BevelInner;
@@ -128,12 +127,12 @@ type
     property ColorNameMap: TStrings read FColorNameMap write SetColorNameMap;
     property ColorValue: TColor read FColorValue write SetColorValue default clBlack;
     property ColorDialogText: string read FOther write SetOther;
-    property ColorWidth: integer read FColWidth write SetColWidth default 21;
+    property ColorWidth: Integer read FColWidth write SetColWidth default 21;
 
     property NewColorText: string read FPrefix write SetPrefix;
     property Options: TJvColorComboOptions read FOptions write SetOptions default [coText];
 
-    property DroppedDownWidth: integer read GetDroppedWidth write SetDroppedWidth;
+    property DroppedDownWidth: Integer read GetDroppedWidth write SetDroppedWidth;
     property HiliteColor: TColor read FHiliteColor write FHiLiteColor default clHighLight;
     property HiliteText: TColor read FHiliteText write FHiLiteText default clHighLightText;
     // called before a new color is inserted as a result of displaying the Custom Colors dialog
@@ -178,23 +177,23 @@ type
     property OnStartDrag;
   end;
 
-  { TJvFontComboBox }
-
   //  TFontDialogDevice = (fdScreen, fdPrinter, fdBoth); { already in Dialogs }
   TJvFontComboOption = (foAnsiOnly, foTrueTypeOnly, foFixedPitchOnly,
     foNoOEMFonts, foOEMFontsOnly, foScalableOnly, foWysiWyg, foDisableVerify);
-  // foDisableVerify: if true, allows you to insert a font name that doesn't exist (by assigning to FontName
+  // foDisableVerify: if True, allows you to insert a font name that doesn't exist (by assigning to FontName
   TJvFontComboOptions = set of TJvFontComboOption;
 
   TJvFontComboBox = class(TJvCustomComboBox)
   private
-    TrueTypeBMP, FixBMP, DeviceBMP: TBitmap;
+    TrueTypeBMP: TBitmap;
+    FixBMP: TBitmap;
+    DeviceBMP: TBitmap;
     FDevice: TFontDialogDevice;
     FHiLiteColor: TColor;
     FHiLiteText: TColor;
-    FUseImages: boolean;
+    FUseImages: Boolean;
     FOptions: TJvFontComboOptions;
-    procedure SetUseImages(Value: boolean);
+    procedure SetUseImages(Value: Boolean);
     procedure SetDevice(Value: TFontDialogDevice);
     procedure SetOptions(Value: TJvFontComboOptions);
     procedure ResetItemHeight;
@@ -203,8 +202,8 @@ type
     procedure WMFontChange(var Message: TMessage); message WM_FONTCHANGE;
     function GetFontName: string;
     procedure SetFontName(const Value: string);
-    function GetSorted: boolean;
-    procedure SetSorted(const Value: boolean);
+    function GetSorted: Boolean;
+    procedure SetSorted(const Value: Boolean);
   protected
     procedure GetFonts; virtual;
     procedure Click; override;
@@ -218,10 +217,10 @@ type
     property Text;
   published
     property Anchors;
-    property AutoComplete default false;
-{$IFDEF COMPILER6_UP}
+    property AutoComplete default False;
+    {$IFDEF COMPILER6_UP}
     property AutoDropDown;
-{$ENDIF}
+    {$ENDIF}
     property AutoSave;
     property BevelEdges;
     property BevelInner;
@@ -241,7 +240,7 @@ type
     property HiliteColor: TColor read FHiliteColor write FHiLiteColor default clHighLight;
     property HiliteText: TColor read FHiliteText write FHiLiteText default clHighLightText;
     property Options: TJvFontComboOptions read FOptions write SetOptions default [];
-    property UseImages: boolean read FUseImages write SetUseImages default true;
+    property UseImages: Boolean read FUseImages write SetUseImages default True;
     property ImeMode;
     property ImeName;
     property ParentColor;
@@ -250,7 +249,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
-    property Sorted:boolean read GetSorted write SetSorted;
+    property Sorted: Boolean read GetSorted write SetSorted;
     property TabOrder;
     property TabStop;
     property Visible;
@@ -277,21 +276,21 @@ implementation
 {$R *.RES}
 
 const
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($F0CAA6);
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
-{$ENDIF}
+  {$ENDIF}
 
   ColCount = 20;
   SysColCount = 25;
-  ColorValues: array[1..ColCount] of TColor = (
+  ColorValues: array [1..ColCount] of TColor = (
     clBlack, clMaroon, clGreen, clOlive, clNavy, clPurple, clTeal, clGray,
     clSilver, clRed, clLime, clYellow, clBlue, clFuchsia, clAqua, clWhite,
     clMoneyGreen, clSkyBlue, clCream, clMedGray);
 
-  SysColorValues: array[1..SysColCount] of TColor = (
+  SysColorValues: array [1..SysColCount] of TColor = (
     clScrollBar, clBackground, clActiveCaption, clInactiveCaption, clMenu,
     clWindow, clWindowFrame, clMenuText, clWindowText, clCaptionText, clActiveBorder,
     clInactiveBorder, clAppWorkSpace, clHighlight, clHighlightText, clBtnFace,
@@ -321,14 +320,14 @@ begin
   Result := TM.tmHeight + 1;
 end;
 
-function Max(Val1, Val2: integer): integer;
+function Max(Val1, Val2: Integer): Integer;
 begin
   Result := Val1;
   if Val2 > Val1 then
     Result := Val2;
 end;
 
-function IncludeFont(Options: TJvFontComboOptions; LogFont: TLogFont; FontType: integer): Boolean;
+function IncludeFont(Options: TJvFontComboOptions; LogFont: TLogFont; FontType: Integer): Boolean;
 begin
   Result := True;
   if foAnsiOnly in Options then
@@ -362,7 +361,7 @@ begin
   Result := 1;
 end;
 
-{ TJvColorComboBox }
+// === TJvColorComboBox ======================================================
 
 constructor TJvColorComboBox.Create(AOwner: TComponent);
 begin
@@ -376,43 +375,49 @@ begin
   FOptions := [coText];
   FHiLiteColor := clHighLight;
   FHiLiteText := clHighLightText;
-  AutoComplete := false;
+  AutoComplete := False;
   // make sure that if this is the first time the component is dropped on the form,
   // the default Name/Value map is created (thanks to Brian Cook on the borland NG's):
   if (Owner <> nil) and ([csDesigning, csLoading] * Owner.ComponentState = [csDesigning]) then
     InitColorNames;
 end;
 
+destructor TJvColorComboBox.Destroy;
+begin
+  FColorNameMap.Free;
+  inherited Destroy;
+end;
+
 procedure TJvColorComboBox.GetColors;
 var
-  i: integer;
+  I: Integer;
   ColorName: string;
 begin
   Clear;
   FCustCnt := 0;
-  for i := 1 to ColCount do
+  for I := 1 to ColCount do
   begin
-    ColorName := GetColorName(ColorValues[i], '');
-    InternalInsertColor(Items.Count,ColorValues[i], ColorName);
+    ColorName := GetColorName(ColorValues[I], '');
+    InternalInsertColor(Items.Count, ColorValues[I], ColorName);
   end;
-  if (coSysColors in FOptions) then
-    for i := 1 to SysColCount do
+  if coSysColors in FOptions then
+    for I := 1 to SysColCount do
     begin
-      ColorName := GetColorName(SysColorValues[i], '');
-      InternalInsertColor(Items.Count,SysColorValues[i], ColorName);
+      ColorName := GetColorName(SysColorValues[I], '');
+      InternalInsertColor(Items.Count, SysColorValues[I], ColorName);
     end;
   DoBeforeCustom;
-  if (coCustomColors in FOptions) then
-    InternalInsertColor(Items.Count,$000001, FOther);
+  if coCustomColors in FOptions then
+    InternalInsertColor(Items.Count, $000001, FOther);
   SetColorValue(FColorValue);
 end;
 
-procedure TJvColorComboBox.SetDroppedWidth(Value: integer);
+procedure TJvColorComboBox.SetDroppedWidth(Value: Integer);
 begin
   SendMessage(Handle, CB_SETDROPPEDWIDTH, Value, 0);
 end;
 
-function TJvColorComboBox.GetDroppedWidth: integer;
+function TJvColorComboBox.GetDroppedWidth: Integer;
 begin
   Result := SendMessage(Handle, CB_GETDROPPEDWIDTH, 0, 0);
 end;
@@ -431,28 +436,29 @@ begin
     end
     else if coHex in Value then
       Exclude(FOptions,coRGB); }
-    if (coCustomColors in FOptions) then
-      InternalInsertColor(Items.Count,$000001, FOther);
+    if coCustomColors in FOptions then
+      InternalInsertColor(Items.Count, $000001, FOther);
     Invalidate;
   end;
 end;
 
 procedure TJvColorComboBox.SetOther(Value: string);
-var i: integer;
+var
+  I: Integer;
 begin
   if FOther <> Value then
   begin
-    i := Items.IndexOf(FOther);
-    while i > -1 do
+    I := Items.IndexOf(FOther);
+    while I > -1 do
     begin
-      Items[i] := Value;
-      i := Items.IndexOf(FOther);
+      Items[I] := Value;
+      I := Items.IndexOf(FOther);
     end;
     FOther := Value;
   end;
 end;
 
-procedure TJvColorComboBox.SetColWidth(Value: integer);
+procedure TJvColorComboBox.SetColWidth(Value: Integer);
 begin
   if FColWidth <> Value then
   begin
@@ -463,18 +469,19 @@ end;
 
 procedure TJvColorComboBox.SetColorValue(Value: TColor);
 var
-  i: Integer;
+  I: Integer;
 begin
-  i := FindColor(Value);
-  if i >= 0 then
+  I := FindColor(Value);
+  if I >= 0 then
   begin
     FColorValue := Value;
-    if ItemIndex <> i then
-      ItemIndex := i;
+    if ItemIndex <> I then
+      ItemIndex := I;
     Change;
     Exit;
   end
-  else if (coCustomColors in Options) then
+  else
+  if coCustomColors in Options then
   begin
     InsertColor(Items.Count - 1, Value, Format(FPrefix, [FCustCnt]));
         //      Items.InsertObject(Items.Count, FPrefix + IntToStr(FCustCnt), TObject(Value))
@@ -486,10 +493,10 @@ begin
   FColorValue := Value;
 end;
 
-function TJvColorComboBox.DoNewColor(Color: TColor; var DisplayName: string): boolean;
+function TJvColorComboBox.DoNewColor(Color: TColor; var DisplayName: string): Boolean;
 begin
   if Assigned(FNewColor) then
-    FNewColor(self, Color, DisplayName, Result)
+    FNewColor(Self, Color, DisplayName, Result)
   else
     Result := FindColor(Color) = -1;
   if Result then
@@ -570,7 +577,7 @@ begin
     begin
       S := FOther;
       DoGetDisplayName(Index, TColor(Items.Objects[Index]), S);
-      Brush.Color := self.Color;
+      Brush.Color := Self.Color;
       FillRect(R);
       R.Left := R.Left + 2;
       R.Right := R.Left + TextWidth(S) + 2;
@@ -579,16 +586,19 @@ begin
       SetBkMode(Canvas.Handle, TRANSPARENT);
       DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
     end
-    else if ((coText in FOptions) or (coHex in FOptions) or (coRGB in FOptions)) then
+    else
+    if ((coText in FOptions) or (coHex in FOptions) or (coRGB in FOptions)) then
     begin
       S := Items[Index];
       DoGetDisplayName(Index, TColor(Items.Objects[Index]), S);
-      if (S <> FOther) then
+      if S <> FOther then
       begin
-        if (coHex in FOptions) then
+        if coHex in FOptions then
           S := Format('0x%.6x', [ColorToRGB(TColor(Items.Objects[Index]))])
-        else if (coRGB in Foptions) then
-          S := Format('(%d,%d,%d)', [GetRValue(TColor(Items.Objects[Index])), GetGValue(TColor(Items.Objects[Index])), GetBValue(TColor(Items.Objects[Index]))]);
+        else
+        if coRGB in Foptions then
+          S := Format('(%d,%d,%d)', [GetRValue(TColor(Items.Objects[Index])), GetGValue(TColor(Items.Objects[Index])),
+            GetBValue(TColor(Items.Objects[Index]))]);
       end;
       R.Left := R.Left + FColWidth + 6;
       R.Right := R.Left + TextWidth(S) + 6;
@@ -607,13 +617,16 @@ begin
 end;
 
 procedure TJvColorComboBox.Click;
-var S: string; CD: TColorDialog;
+var
+  S: string;
+  CD: TColorDialog;
 begin
-  if FExecutingDialog then Exit;
+  if FExecutingDialog then
+    Exit;
   if (ItemIndex = Items.Count - 1) and (coCustomColors in FOptions) then
   begin
-    FExecutingDialog := true;
-    CD := TColorDialog.Create(self);
+    FExecutingDialog := True;
+    CD := TColorDialog.Create(Self);
     with CD do
     try
       CD.Color := ColorValue;
@@ -630,10 +643,11 @@ begin
       Free;
     end // with
   end
-  else if ItemIndex >= 0 then
+  else
+  if ItemIndex >= 0 then
     ColorValue := TColor(Items.Objects[ItemIndex]);
   inherited Click;
-  FExecutingDialog := false;
+  FExecutingDialog := False;
 end;
 
 procedure TJvColorComboBox.CMFontChanged(var Message: TMessage);
@@ -655,29 +669,31 @@ end;
 
 procedure TJvColorComboBox.AddColor(AColor: TColor;
   const DisplayName: string);
-var S:string;
+var
+  S: string;
 begin
   S := DisplayName;
-  if DoNewColor(AColor,S) then
+  if DoNewColor(AColor, S) then
     InternalInsertColor(Items.Count - Ord(coCustomColors in Options), AColor, S);
 end;
 
-procedure TJvColorComboBox.DoGetDisplayName(Index: integer; AColor: TColor;
+procedure TJvColorComboBox.DoGetDisplayName(Index: Integer; AColor: TColor;
   var DisplayName: string);
 begin
   if Assigned(FOnGetDisplayName) then
-    FOnGetDisplayName(self, Index, AColor, DisplayName)
+    FOnGetDisplayName(Self, Index, AColor, DisplayName)
   else
     DisplayName := GetColorName(AColor, DisplayName);
 end;
 
-procedure TJvColorComboBox.InsertColor(AIndex: integer; AColor: TColor;
+procedure TJvColorComboBox.InsertColor(AIndex: Integer; AColor: TColor;
   const DisplayName: string);
-var S: string;
+var
+  S: string;
 begin
   S := DisplayName;
   if DoInsertColor(AIndex, AColor, S) then
-    InternalInsertColor(AIndex,AColor,S);
+    InternalInsertColor(AIndex, AColor, S);
 end;
 
 procedure TJvColorComboBox.SetColorNameMap(const Value: TStrings);
@@ -686,30 +702,25 @@ begin
   Invalidate;
 end;
 
-destructor TJvColorComboBox.Destroy;
-begin
-  FColorNameMap.Free;
-  inherited;
-end;
-
 function TJvColorComboBox.GetColorName(AColor: TColor; const Default: string): string;
-var tmp: string;
+var
+  Tmp: string;
 begin
-  if (Default <> '') then
+  if Default <> '' then
   begin
     Result := Default;
     Exit;
   end;
-  tmp := ColorToString(AColor);
-  Result := FColorNameMap.Values[tmp];
+  Tmp := ColorToString(AColor);
+  Result := FColorNameMap.Values[Tmp];
   if Result = '' then
   begin
     if Default = '' then
     begin
-      if (Length(tmp) > 1) and AnsiSameText(tmp[1], 'c') and AnsiSameText(tmp[2], 'l') then
-        Result := Copy(tmp, 3, MaxInt)
+      if (Length(Tmp) > 1) and AnsiSameText(Tmp[1], 'c') and AnsiSameText(Tmp[2], 'l') then
+        Result := Copy(Tmp, 3, MaxInt)
       else
-        Result := tmp;
+        Result := Tmp;
     end
     else
       Result := Default;
@@ -787,26 +798,26 @@ begin
   HandleNeeded;
   if HandleAllocated then
   begin
-    AutoSave.LoadValue(integer(FColorValue));
+    AutoSave.LoadValue(Integer(FColorValue));
     GetColors;
   end;
 end;
 
-function TJvColorComboBox.DoInsertColor(AIndex: integer; AColor: TColor;
-  var DisplayName: string): boolean;
+function TJvColorComboBox.DoInsertColor(AIndex: Integer; AColor: TColor;
+  var DisplayName: string): Boolean;
 begin
-  Result := true;
+  Result := True;
   if Assigned(FOnInsertColor) then
-    FOnInsertColor(self, AColor, DisplayName, Result);
+    FOnInsertColor(Self, AColor, DisplayName, Result);
 end;
 
 procedure TJvColorComboBox.DoBeforeCustom;
 begin
   if Assigned(FOnBeforeCustom) then
-    FOnBeforeCustom(self);
+    FOnBeforeCustom(Self);
 end;
 
-procedure TJvColorComboBox.ChangeColor(AIndex: integer; AColor: TColor;
+procedure TJvColorComboBox.ChangeColor(AIndex: Integer; AColor: TColor;
   const DisplayName: string);
 begin
   // raise Exception ?
@@ -828,12 +839,12 @@ end;
 
 function TJvColorComboBox.ColorName(AColor: TColor): string;
 begin
-  Result := GetColorName(AColor,'');
+  Result := GetColorName(AColor, '');
   if Result = '' then
-    DoGetDisplayName(-1,AColor,Result);
+    DoGetDisplayName(-1, AColor, Result);
 end;
 
-function TJvColorComboBox.FindColor(AColor: TColor): integer;
+function TJvColorComboBox.FindColor(AColor: TColor): Integer;
 begin
   Result := Items.IndexOfObject(TObject(AColor));
   if (coCustomColors in Options) and (Result = Items.Count - 1) then
@@ -841,21 +852,23 @@ begin
 end;
 
 procedure TJvColorComboBox.GetCustomColors(AList: TList);
-var i,j:integer;
+var
+  I, J: Integer;
 begin
-  if (AList = nil) then Exit;
-  j := Ord((coCustomColors in Options));
-  for i := Items.Count - (CustomColorCount + j) to pred(Items.Count - j) do
-    AList.Add(Items.Objects[i]);
+  if AList = nil then
+    Exit;
+  J := Ord((coCustomColors in Options));
+  for I := Items.Count - (CustomColorCount + J) to pred(Items.Count - J) do
+    AList.Add(Items.Objects[I]);
 end;
 
-procedure TJvColorComboBox.InternalInsertColor(AIndex: integer;
+procedure TJvColorComboBox.InternalInsertColor(AIndex: Integer;
   AColor: TColor; const DisplayName: string);
 begin
   Items.InsertObject(AIndex, DisplayName, TObject(AColor));
 end;
 
-{ TJvFontComboBox }
+// === TJvFontComboBox =======================================================
 
 constructor TJvFontComboBox.Create(AOwner: TComponent);
 begin
@@ -866,9 +879,9 @@ begin
   FHiliteColor := clHighLight;
   FHiLiteText := clHighLightText;
   FDevice := fdScreen;
-  FUseImages := true;
+  FUseImages := True;
   Style := csOwnerDrawFixed;
-  AutoComplete := false;
+  AutoComplete := False;
   ResetItemHeight;
 end;
 
@@ -919,7 +932,7 @@ begin
   end;
 end;
 
-procedure TJvFontComboBox.SetUseImages(Value: boolean);
+procedure TJvFontComboBox.SetUseImages(Value: Boolean);
 begin
   if FUseImages <> Value then
   begin
@@ -990,7 +1003,8 @@ begin
     //    aWidth  := 20;
     if (Integer(Items.Objects[Index]) and TRUETYPE_FONTTYPE) <> 0 then
       aBmp := TrueTypeBMP
-    else if (Integer(Items.Objects[Index]) and DEVICE_FONTTYPE) <> 0 then
+    else
+    if (Integer(Items.Objects[Index]) and DEVICE_FONTTYPE) <> 0 then
       aBmp := DeviceBMP
     else
       aBmp := FixBMP;
@@ -1045,7 +1059,8 @@ begin
 end;
 
 procedure TJvFontComboBox.Reset;
-var S: string;
+var
+  S: string;
 begin
   if HandleAllocated then
   begin
@@ -1068,9 +1083,10 @@ begin
 end;
 
 procedure TJvFontComboBox.Loaded;
-var S:string;
+var
+  S: string;
 begin
-  inherited;
+  inherited Loaded;
   HandleNeeded;
   if HandleAllocated then
   begin
@@ -1081,13 +1097,14 @@ begin
   end;
 end;
 
-function TJvFontComboBox.GetSorted: boolean;
+function TJvFontComboBox.GetSorted: Boolean;
 begin
   Result := inherited Sorted;
 end;
 
-procedure TJvFontComboBox.SetSorted(const Value: boolean);
-var S:string;
+procedure TJvFontComboBox.SetSorted(const Value: Boolean);
+var
+  S: string;
 begin
   S := FontName;
   inherited Sorted := Value;

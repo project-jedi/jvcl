@@ -26,13 +26,16 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvDialogs;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  JVCLVer;
 
 type
   TJvOpenDialogAC = (acEdit, acListView);
@@ -40,6 +43,7 @@ type
 
   TJvOpenDialog = class(TOpenDialog)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FActiveControl: TJvOpenDialogAC;
     FActiveStyle: TJvOpenDialogAS;
     FActiveSettingDone: Boolean;
@@ -56,10 +60,9 @@ type
     FHeight: Integer;
     FWidth: Integer;
     FUseUserSize: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure CenterAndSize;
     function DoActiveSetting: Boolean;
-    procedure WMNCDestroy(var Message: TWMNCDestroy); message WM_NCDESTROY;
+    procedure WMNCDestroy(var Msg: TWMNCDestroy); message WM_NCDESTROY;
     procedure SetDefBtnCaption(const Value: string);
     procedure SetFilterLabelCaption(const Value: string);
   protected
@@ -68,11 +71,11 @@ type
     procedure DoShow; override;
     function GetLocalizedSizeCommand: string;
     procedure ParentResize; dynamic;
-    procedure ParentWndProc(var Message: TMessage); virtual;
+    procedure ParentWndProc(var Msg: TMessage); virtual;
     function TaskModalDialog(DialogFunc: Pointer; var DialogData): Bool; override;
     procedure UpdateCaptions;
     procedure UpdateControlPos; dynamic;
-    procedure WndProc(var Message: TMessage); override;
+    procedure WndProc(var Msg: TMessage); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -101,11 +104,11 @@ type
 
   TJvColorDialog = class(TColorDialog)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FColorOkMessage: DWORD;
     FSetRBGMessage: DWORD;
     FOnQueryColor: TJvCDQueryEvent;
-    FAboutJVCL: TJVCLAboutInfo;
-    procedure WMNCDestroy(var Message: TWMNCDestroy); message WM_NCDESTROY;
+    procedure WMNCDestroy(var Msg: TWMNCDestroy); message WM_NCDESTROY;
   protected
     procedure DoClose; override;
     procedure DoShow; override;
@@ -161,7 +164,31 @@ begin
   end;
 end;
 
-{ TJvOpenDialog }
+//=== TJvOpenDialog ==========================================================
+
+constructor TJvOpenDialog.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FActiveControl := acEdit;
+  FActiveStyle := asSmallIcon;
+  FShowPlacesBar := True;
+  FMakeResizeable := GetWindowsVersion in [wvWin95, wvWin95OSR2, wvWinNT4];
+  {$IFDEF COMPILER6_UP}
+  FParentWndInstance := Classes.MakeObjectInstance(ParentWndProc);
+  {$ELSE}
+  FParentWndInstance := MakeObjectInstance(ParentWndProc);
+  {$ENDIF}
+end;
+
+destructor TJvOpenDialog.Destroy;
+begin
+  {$IFDEF COMPILER6_UP}
+  Classes.FreeObjectInstance(FParentWndInstance);
+  {$ELSE}
+  FreeObjectInstance(FParentWndInstance);
+  {$ENDIF}
+  inherited Destroy;
+end;
 
 procedure TJvOpenDialog.CenterAndSize;
 var
@@ -179,22 +206,6 @@ begin
       Width, Height,
       SWP_NOACTIVATE or SWP_NOZORDER);
   end;
-end;
-
-constructor TJvOpenDialog.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FActiveControl := acEdit;
-  FActiveStyle := asSmallIcon;
-  FShowPlacesBar := True;
-  FMakeResizeable := GetWindowsVersion in [wvWin95, wvWin95OSR2, wvWinNT4];
-  FParentWndInstance := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(ParentWndProc);
-end;
-
-destructor TJvOpenDialog.Destroy;
-begin
-  {$IFDEF COMPILER6_UP}Classes.{$ENDIF}FreeObjectInstance(FParentWndInstance);
-  inherited;
 end;
 
 function TJvOpenDialog.DoActiveSetting: Boolean;
@@ -225,7 +236,7 @@ end;
 procedure TJvOpenDialog.DoFolderChange;
 begin
   DoActiveSetting;
-  inherited;
+  inherited DoFolderChange;
 end;
 
 function TJvOpenDialog.DoShareViolation: Boolean;
@@ -258,7 +269,7 @@ begin
     UpdateControlPos;
   end;
   UpdateCaptions;
-  inherited;
+  inherited DoShow;
 end;
 
 function TJvOpenDialog.GetLocalizedSizeCommand: string;
@@ -284,7 +295,7 @@ begin
   UpdateControlPos;
 end;
 
-procedure TJvOpenDialog.ParentWndProc(var Message: TMessage);
+procedure TJvOpenDialog.ParentWndProc(var Msg: TMessage);
 const
   SizeGripRectSize = 15;
 
@@ -329,7 +340,7 @@ const
   end;
 
 begin
-  with Message do
+  with Msg do
   begin
     case Msg of
       {      WM_SIZE:
@@ -384,7 +395,7 @@ end;
 
 function TJvOpenDialog.TaskModalDialog(DialogFunc: Pointer; var DialogData): Bool;
 const
-  PlacesBar: array[Boolean] of DWORD = (OFN_EX_NOPLACESBAR, 0);
+  PlacesBar: array [Boolean] of DWORD = (OFN_EX_NOPLACESBAR, 0);
 //var
 //  DialogData2000: TOpenFileName2000;
 begin
@@ -394,7 +405,7 @@ begin
   begin
     if ActiveStyle = asReport then
       InstallW2kFix;
-    ZeroMemory(@DialogData2000, Sizeof(DialogData2000));
+    FillChar(DialogData2000, Sizeof(DialogData2000), #0);
     DialogData2000.OpenFileName := TOpenFileName(DialogData);
     DialogData2000.OpenFileName.lStructSize := Sizeof(DialogData2000);
     DialogData2000.FlagsEx := PlacesBar[FShowPlacesBar];
@@ -525,17 +536,17 @@ begin
   EndDeferWindowPos(DeferHandle);
 end;
 
-procedure TJvOpenDialog.WMNCDestroy(var Message: TWMNCDestroy);
+procedure TJvOpenDialog.WMNCDestroy(var Msg: TWMNCDestroy);
 begin
   FParentWnd := 0;
   inherited;
 end;
 
-procedure TJvOpenDialog.WndProc(var Message: TMessage);
+procedure TJvOpenDialog.WndProc(var Msg: TMessage);
 const
-  ShareViolResult: array[Boolean] of DWORD = (OFN_SHARENOWARN, OFN_SHAREFALLTHROUGH);
+  ShareViolResult: array [Boolean] of DWORD = (OFN_SHARENOWARN, OFN_SHAREFALLTHROUGH);
 begin
-  with Message do
+  with Msg do
     case Msg of
       WM_ENTERIDLE:
         DoActiveSetting;
@@ -553,13 +564,15 @@ begin
   inherited;
 end;
 
-{ TJvSaveDialog }
+//=== TJvSaveDialog ==========================================================
 
 function TJvSaveDialog.TaskModalDialog(DialogFunc: Pointer; var DialogData): Bool;
 begin
   DialogFunc := @GetSaveFileName;
   Result := inherited TaskModalDialog(DialogFunc, DialogData);
 end;
+
+//=== TJvColorDialog =========================================================
 
 var
   GlobalColorDialog: TJvColorDialog = nil;
@@ -573,11 +586,9 @@ begin
     Result := CallWindowProc(OldColorDialogHookProc, Wnd, Msg, WParam, LParam);
 end;
 
-{ TJvColorDialog }
-
 constructor TJvColorDialog.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FColorOkMessage := RegisterWindowMessage(COLOROKSTRING);
   FSetRBGMessage := RegisterWindowMessage(SETRGBSTRING);
 end;
@@ -585,7 +596,7 @@ end;
 procedure TJvColorDialog.DoClose;
 begin
   GlobalColorDialog := nil;
-  inherited;
+  inherited DoClose;
 end;
 
 function TJvColorDialog.DoQueryColor(Color: TColor): Boolean;
@@ -598,7 +609,7 @@ end;
 procedure TJvColorDialog.DoShow;
 begin
   GlobalColorDialog := Self;
-  inherited;
+  inherited DoShow;
 end;
 
 procedure TJvColorDialog.SelectColor(Color: TColor);
@@ -617,7 +628,7 @@ begin
   Result := inherited TaskModalDialog(DialogFunc, DialogData);
 end;
 
-procedure TJvColorDialog.WMNCDestroy(var Message: TWMNCDestroy);
+procedure TJvColorDialog.WMNCDestroy(var Msg: TWMNCDestroy);
 begin
   inherited;
   OldColorDialogHookProc := nil;

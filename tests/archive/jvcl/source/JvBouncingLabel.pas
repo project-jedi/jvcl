@@ -62,8 +62,6 @@ uses
 resourcestring
   RC_MustBeWinControl = 'Owner must be of type TWinControl';
 
-{**************************************************}
-
 constructor TJvBouncingLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -82,15 +80,11 @@ begin
     raise EJVCLException.Create(RC_MustBeWinControl);
 end;
 
-{**************************************************}
-
 destructor TJvBouncingLabel.Destroy;
 begin
   FTimer.Free;
   inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvBouncingLabel.Bounce(Sender: TObject);
 begin
@@ -153,15 +147,11 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvBouncingLabel.SetBouncing(const Value: Boolean);
 begin
   FBouncing := Value;
   FTimer.Enabled := Value;
 end;
-
-{**************************************************}
 
 procedure TJvBouncingLabel.SetInterval(const Value: Cardinal);
 begin

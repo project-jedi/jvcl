@@ -12,11 +12,11 @@ The Original Code is: JvDbExcpt.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-TJvBdeErrorDlg based on sample form             
-   DELPHI\DEMOS\DB\TOOLS\DBEXCEPT.PAS 
+TJvBdeErrorDlg based on sample form
+   DELPHI\DEMOS\DB\TOOLS\DBEXCEPT.PAS
 
 Last Modified: 2002-07-04
 
@@ -30,17 +30,18 @@ Known Issues:
 
 unit JvDbExcpt;
 
-
-
 interface
 
 uses
-  SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, DB, {$IFDEF COMPILER3_UP} DBTables, {$ENDIF} JvxCtrls,
-  JvComponent;
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls,
+  {$IFDEF COMPILER3_UP}
+  DBTables,
+  {$ENDIF}
+  JvxCtrls, JvComponent;
 
 type
-  TDBErrorEvent = procedure (Error: TDBError; var Msg: string) of object;
+  TDBErrorEvent = procedure(Error: TDBError; var Msg: string) of object;
 
   TJvBdeErrorDlg = class(TForm)
     BasicPanel: TPanel;
@@ -93,26 +94,32 @@ procedure DbErrorIntercept;
 
 implementation
 
-uses {$IFDEF WIN32} Windows, BDE, {$ELSE} WinProcs, WinTypes, DbiErrs,
-  JvStr16, {$ENDIF} Consts, JvxConst, JvVCLUtils;
+uses
+  Consts,
+  {$IFDEF WIN32}
+  Windows, BDE,
+  {$ELSE}
+  WinProcs, WinTypes, DbiErrs,
+  JvStr16,
+  {$ENDIF}
+  JvxConst;
 
 {$R *.DFM}
 
 procedure DbErrorIntercept;
 begin
-  if DbEngineErrorDlg <> nil then DbEngineErrorDlg.Free;
+  if DbEngineErrorDlg <> nil then
+    DbEngineErrorDlg.Free;
   DbEngineErrorDlg := TJvBdeErrorDlg.Create(Application);
 end;
-
-{ TJvBdeErrorDlg }
 
 procedure TJvBdeErrorDlg.ShowException(Sender: TObject; E: Exception);
 begin
   Screen.Cursor := crDefault;
   Application.NormalizeTopMosts;
   try
-    if (E is EDbEngineError) and (DbException = nil)
-      and not Application.Terminated then
+    if (E is EDbEngineError) and (DbException = nil) and
+      not Application.Terminated then
     begin
       DbException := EDbEngineError(E);
       try
@@ -121,10 +128,15 @@ begin
         DbException := nil;
       end;
     end
-    else begin
-      if Assigned(FPrevOnException) then FPrevOnException(Sender, E)
-      else if NewStyleControls then Application.ShowException(E)
-      else MessageDlg(E.Message + '.', mtError, [mbOk], 0);
+    else
+    begin
+      if Assigned(FPrevOnException) then
+        FPrevOnException(Sender, E)
+      else
+      if NewStyleControls then
+        Application.ShowException(E)
+      else
+        MessageDlg(E.Message + '.', mtError, [mbOk], 0);
     end;
   except
     { ignore any exceptions }
@@ -138,23 +150,25 @@ var
   S: string;
   I: Integer;
 begin
-  Back.Enabled := CurItem > 0;
-  Next.Enabled := CurItem < DbException.ErrorCount - 1;
+  Back.Enabled := (CurItem > 0);
+  Next.Enabled := (CurItem < DbException.ErrorCount - 1);
   BDEError := DbException.Errors[CurItem];
   { Fill BDE error information }
   BDELabel.Enabled := True;
   DbResult.Text := IntToStr(BDEError.ErrorCode);
   DbCatSub.Text := Format('[$%s] [$%s]', [IntToHex(BDEError.Category, 2),
-    IntToHex(BDEError.SubCode,  2)]);
+    IntToHex(BDEError.SubCode, 2)]);
   { Fill native error information }
   NativeLabel.Enabled := BDEError.NativeError <> 0;
   if NativeLabel.Enabled then
     NativeResult.Text := IntToStr(BDEError.NativeError)
-  else NativeResult.Clear;
+  else
+    NativeResult.Clear;
   { The message text is common to both BDE and native errors }
   S := Trim(BDEError.Message);
   for I := 1 to Length(S) do
-    if S[I] < ' ' then S[I] := ' ';
+    if S[I] < ' ' then
+      S[I] := ' ';
   {GetErrorMsg(BDEError, S);}
   DbMessageText.Text := Trim(S);
 end;
@@ -163,14 +177,16 @@ procedure TJvBdeErrorDlg.SetShowDetails(Value: Boolean);
 begin
   DisableAlign;
   try
-    if Value then begin
+    if Value then
+    begin
       DetailsPanel.Height := DetailsHeight;
       ClientHeight := DetailsPanel.Height + BasicPanel.Height;
       DetailsBtn.Caption := '<< &' + SDetails;
       CurItem := 0;
       ShowError;
     end
-    else begin
+    else
+    begin
       ClientHeight := BasicPanel.Height;
       DetailsPanel.Height := 0;
       DetailsBtn.Caption := '&' + SDetails + ' >>';
@@ -193,9 +209,9 @@ end;
 
 procedure TJvBdeErrorDlg.FormCreate(Sender: TObject);
 begin
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   BorderIcons := [];
-{$ENDIF}
+  {$ENDIF}
   DetailsHeight := DetailsPanel.Height;
   Icon.Handle := LoadIcon(0, IDI_EXCLAMATION);
   IconImage.Picture.Icon := Icon;
@@ -223,7 +239,8 @@ var
 begin
   if DbException.HelpContext <> 0 then
     HelpContext := DbException.HelpContext
-  else HelpContext := DbErrorHelpCtx;
+  else
+    HelpContext := DbErrorHelpCtx;
   CurItem := 0;
   if (DbException.ErrorCount > 1) and
     (DbException.Errors[1].NativeError <> 0) and
@@ -232,7 +249,8 @@ begin
     (DbException.Errors[0].ErrorCode = DBIERR_INVALIDUSRPASS)) then
     { Unknown username or password }
     ErrNo := 1
-  else ErrNo := 0;
+  else
+    ErrNo := 0;
   S := Trim(DbException.Errors[ErrNo].Message);
   GetErrorMsg(DbException.Errors[ErrNo], S);
   ErrorText.Caption := S;
@@ -259,4 +277,6 @@ end;
 
 initialization
   DbEngineErrorDlg := nil;
+
 end.
+

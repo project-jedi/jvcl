@@ -61,6 +61,7 @@ uses
 { draws a frame when active (MouseEnter)                            }
 type
   TJvColorClickEvent = procedure(Sender: TObject; Button: TMouseButton; Color: TColor) of object;
+
   TJvColorSquare = class(TJvGraphicControl)
   private
     FColor: TColor;
@@ -170,7 +171,7 @@ const
   clSky = TColor($F7CEA5);
   clCream = TColor($F7FFFF);
 
-  Colors: array[1..20] of TColor =
+  Colors: array [1..20] of TColor =
     (clWhite, clBlack, clSilver, clDkGray,
      clRed, clMaroon, clYellow, clOlive,
      clLime, clGreen, clAqua, clTeal,
@@ -182,6 +183,8 @@ begin
   Canvas.MoveTo(X, Y);
   Canvas.LineTo(X2, Y2);
 end;
+
+//=== TJvColorSquare =========================================================
 
 constructor TJvColorSquare.Create(AOwner: TComponent);
 begin
@@ -280,6 +283,8 @@ begin
   if Assigned(FColorClick) then
     FColorClick(Self, Button, Color);
 end;
+
+//=== TJvColorBox ============================================================
 
 constructor TJvColorBox.Create(AOwner: TComponent);
 var
@@ -386,6 +391,8 @@ begin
   { colorsquares }
   DrawColorBoxes;
 end;
+
+//=== TJvCustomDropButton ====================================================
 
 constructor TJvCustomDropButton.Create(AOWner: TComponent);
 begin

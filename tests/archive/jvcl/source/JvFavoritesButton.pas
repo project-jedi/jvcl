@@ -25,23 +25,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 
 unit JvFavoritesButton;
-
-
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF}
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, Menus, Inifiles, ShellApi, imglist,
+  Windows, SysUtils, Classes, Graphics, Controls,
+  StdCtrls, Menus, ShellApi, ImgList,
   JvTypes, JvButton, JvDirectories, JvFunctions;
 
 type
@@ -49,9 +41,9 @@ type
   private
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
-    FOnUrl: TOnUrlClick;
-    FOnPopup: TNotifyEvent;
     FImages: TImageList;
+    FOnUrlClick: TOnUrlClick;
+    FOnPopup: TNotifyEvent;
     procedure UrlClick(Sender: TObject);
   protected
     procedure DeleteItem(Item: TMenuItem; LookTag: Boolean = False);
@@ -60,11 +52,11 @@ type
     procedure DynBuild(Item: TMenuItem; Directory: string);
     procedure AddIconFrom(Path: string);
   public
-    procedure Click; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Click; override;
   published
-    property OnUrlClick: TOnUrlClick read FOnUrl write FOnUrl;
+    property OnUrlClick: TOnUrlClick read FOnUrlClick write FOnUrlClick;
     property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
   end;
 
@@ -73,25 +65,23 @@ implementation
 resourcestring
   RC_EmptyItem = '<Empty>';
 
-  {*******************************************************}
-
 constructor TJvFavoritesButton.Create(AOwner: TComponent);
 var
-  it: TMenuItem;
+  It: TMenuItem;
 begin
-  inherited;
+  inherited Create(AOwner);
   FDirs := TJvDirectories.Create(Self);
 
   //Create Popup
   FPopup := TPopupMenu.Create(Self);
-  it := TMenuItem.Create(FPopup);
-  with it do
+  It := TMenuItem.Create(FPopup);
+  with It do
   begin
     Enabled := False;
     Caption := RC_EmptyItem;
     Tag := 1;
   end;
-  FPopup.Items.Add(it);
+  FPopup.Items.Add(It);
   FPopup.OnPopup := PopupCreate;
 
   //Create Images
@@ -99,142 +89,128 @@ begin
   FImages.Width := 16;
   FImages.Height := 16;
   FImages.DrawingStyle := dsTransparent;
-  FImages.Masked := true;
+  FImages.Masked := True;
   FPopup.Images := FImages;
   AddIconFrom(FDirs.WindowsDirectory);
 end;
-
-{*******************************************************}
 
 destructor TJvFavoritesButton.Destroy;
 begin
   FDirs.Free;
   DeleteItem(FPopup.Items);
   FPopup.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{*******************************************************}
 
 procedure TJvFavoritesButton.Click;
 var
-  p: TPoint;
+  P: TPoint;
 begin
-  inherited;
-  p.x := 0;
-  p.y := Height;
-  p := ClientToScreen(p);
-  FPopup.Popup(p.x, p.y);
+  inherited Click;
+  P.X := 0;
+  P.Y := Height;
+  P := ClientToScreen(P);
+  FPopup.Popup(P.X, P.Y);
   if Assigned(FOnPopup) then
     FOnPopup(Self);
 end;
 
-{*******************************************************}
-
 procedure TJvFavoritesButton.UrlClick(Sender: TObject);
 begin
-  if Assigned(FOnUrl) then
-    FOnUrl(Self, (Sender as TMenuItem).Hint);
+  if Assigned(FOnUrlClick) then
+    FOnUrlClick(Self, (Sender as TMenuItem).Hint);
 end;
-
-{*******************************************************}
 
 procedure TJvFavoritesButton.DeleteItem(Item: TMenuItem; LookTag: Boolean);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := Item.Count - 1 downto 0 do
-    if (not LookTag) or (Item[i].Tag = 0) then
+  for I := Item.Count - 1 downto 0 do
+    if (not LookTag) or (Item[I].Tag = 0) then
     begin
-      DeleteItem(Item[i]);
-      Item[i].Free;
+      DeleteItem(Item[I]);
+      Item[I].Free;
     end;
 end;
-
-{*******************************************************}
 
 procedure TJvFavoritesButton.PopupCreate(Sender: TObject);
 begin
   DynBuild(FPopup.Items, FDirs.Favorites);
 end;
 
-{*******************************************************}
-
 procedure TJvFavoritesButton.DynBuild(Item: TMenuItem; Directory: string);
 var
-  res: Integer;
+  Res: Integer;
   SearchRec: TSearchRec;
-  it, it2: TMenuItem;
-  first: Boolean;
-  FolderIndex:integer;
+  It, It2: TMenuItem;
+  First: Boolean;
+  FolderIndex: Integer;
 begin
   DeleteItem(Item, True);
   if (Directory <> '') and (Directory[Length(Directory)] <> '\') then
     Directory := Directory + '\';
-  res := FindFirst(Directory + '*.*', faAnyFile, SearchRec);
-  first := True;
+  Res := FindFirst(Directory + '*.*', faAnyFile, SearchRec);
+  First := True;
   FolderIndex := 1;
-  while res = 0 do
+  while Res = 0 do
   begin
-    if (SearchRec.FindData.cFilename[0] <> '.') then
+    if SearchRec.FindData.cFilename[0] <> '.' then
     begin
-      if (SearchRec.Attr and faDirectory = faDirectory) then
+      if (SearchRec.Attr and faDirectory) = faDirectory then
       begin
-        if first then
+        if First then
           Item.Items[0].Visible := False;
-        it := TMenuItem.Create(Item);
-        it.Caption := SearchRec.Name;
-        it.Hint := Directory + SearchRec.Name;
-        it.OnClick := DirectoryClick;
-        it.ImageIndex := 0;
-        Item.Insert(FolderIndex,it);
+        It := TMenuItem.Create(Item);
+        It.Caption := SearchRec.Name;
+        It.Hint := Directory + SearchRec.Name;
+        It.OnClick := DirectoryClick;
+        It.ImageIndex := 0;
+        Item.Insert(FolderIndex, It);
         Inc(FolderIndex);
-        it2 := TMenuItem.Create(it);
-        with it2 do
+        It2 := TMenuItem.Create(It);
+        with It2 do
         begin
           Caption := RC_EmptyItem;
           Enabled := False;
           Tag := 1;
         end;
-        it.Add(it2);
+        It.Add(It2);
       end
-      else if UpperCase(ExtractFileExt(SearchRec.Name)) = '.URL' then
+      else
+      if UpperCase(ExtractFileExt(SearchRec.Name)) = '.URL' then
       begin
-        if first then
+        if First then
           Item.Items[0].Visible := False;
         if FImages.Count = 1 then
           AddIconFrom(Directory + SearchRec.Name);
-        it := TMenuItem.Create(Item);
-        it.Caption := ChangeFileExt(SearchRec.Name, '');
-        it.OnClick := UrlClick;
-        it.Hint := Directory + SearchRec.Name;
-        it.ImageIndex := 1;
-        Item.Add(it);
+        It := TMenuItem.Create(Item);
+        It.Caption := ChangeFileExt(SearchRec.Name, '');
+        It.OnClick := UrlClick;
+        It.Hint := Directory + SearchRec.Name;
+        It.ImageIndex := 1;
+        Item.Add(It);
       end;
     end;
-    res := FindNext(SearchRec);
+    Res := FindNext(SearchRec);
   end;
   FindClose(SearchRec);
 end;
-
-{*******************************************************}
 
 procedure TJvFavoritesButton.DirectoryClick(Sender: TObject);
 begin
   DynBuild((Sender as TMenuItem), (Sender as TMenuItem).Hint);
 end;
 
-{*******************************************************}
-
 procedure TJvFavoritesButton.AddIconFrom(Path: string);
 var
   FileInfo: SHFILEINFO;
-  bmp: TBitmap;
+  Bmp: TBitmap;
 begin
   SHGetFileInfo(PChar(Path), 0, FileInfo, SizeOf(FileInfo), SHGFI_ICON or SHGFI_SMALLICON);
-  bmp := IconToBitmap2(FileInfo.hIcon,16,clMenu);
-  FImages.AddMasked(bmp, bmp.TransparentColor);
-  bmp.Free;
+  Bmp := IconToBitmap2(FileInfo.hIcon, 16, clMenu);
+  FImages.AddMasked(Bmp, Bmp.TransparentColor);
+  Bmp.Free;
 end;
 
 end.
+

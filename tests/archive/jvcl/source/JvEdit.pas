@@ -39,20 +39,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
+{$I WINDOWSONLY.INC}
 
 unit JvEdit;
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Dialogs, Forms,
-  JvComponent, JvPropAutoSave, JvMaxPixel, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms,
+  JvCaret, JvComponent, JvPropAutoSave, JvMaxPixel, JVCLVer;
 
 type
   TJvCustomEdit = class(TCustomEdit)
@@ -73,17 +68,18 @@ type
     FAutoSave: TJvAutoSave;
     FMaxPixel: TJvMaxPixel;
     FCaret: TJvCaret;
-    FClipBoardCommands, FOldCommands: TJvClipboardCommands;
+    FClipBoardCommands: TJvClipboardCommands;
+    FOldCommands: TJvClipboardCommands;
     FGroupIndex: Integer;
     FOnKeyDown: TKeyEvent;
-    FProtectPassword: boolean;
+    FProtectPassword: Boolean;
     FStreamedSelLength: Integer;
     FStreamedSelStart: Integer;
     procedure SetCaret(const Value: TJvCaret);
-    procedure CaretChanged(sender: TObject); dynamic;
-    procedure WMSetFocus(var msg: TMessage); message WM_SETFOCUS;
-    procedure WMPaint(var msg: TWMPaint); message WM_PAINT;
-    procedure WMEraseBkGnd(var msg: TWMEraseBkGnd); message WM_ERASEBKGND;
+    procedure CaretChanged(Sender: TObject); dynamic;
+    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    procedure WMEraseBkGnd(var Msg: TWMEraseBkGnd); message WM_ERASEBKGND;
     procedure SetDisabledColor(const Value: TColor); virtual;
     procedure SetDisabledTextColor(const Value: TColor); virtual;
     procedure SetHotTrack(const Value: Boolean);
@@ -98,8 +94,8 @@ type
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMEnabledchanged(var Message: TMessage);
       message CM_ENABLEDCHANGED;
-    function GetReadOnly: boolean;
-    procedure SetReadOnly(const Value: boolean);
+    function GetReadOnly: Boolean;
+    procedure SetReadOnly(const Value: Boolean);
     procedure SetGroupIndex(const Value: Integer);
     procedure UpdateEdit;
     procedure LocalKeyDown(Sender: TObject; var Key: Word;
@@ -107,15 +103,15 @@ type
     procedure SetClipBoardCommands(const Value: TJvClipboardCommands);
     function GetText: string;
     procedure SetText(const Value: string);
-    procedure SetPasswordChar(Value: char);
-    function GetPasswordChar: char;
+    procedure SetPasswordChar(Value: Char);
+    function GetPasswordChar: Char;
   protected
     procedure Change; override;
     procedure MaxPixelChanged(Sender: TObject);
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
   public
-    procedure DefaultHandler(var Msg);override;
+    procedure DefaultHandler(var Msg); override;
     function IsEmpty: Boolean;
     procedure Loaded; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -126,18 +122,19 @@ type
     property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Caret: TJvCaret read FCaret write SetCaret;
-    property ClipBoardCommands: TJvClipboardCommands read FClipBoardCommands write SetClipBoardCommands default [caCopy..caUndo];
+    property ClipBoardCommands: TJvClipboardCommands read FClipBoardCommands write SetClipBoardCommands default
+      [caCopy..caUndo];
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow;
-    property Text:string read GetText write SetText;
-    property PasswordChar:char read GetPasswordChar write SetPasswordChar;
-    // set to true to disable read/write of PasswordChar and read of Text
-    property ProtectPassword:boolean read FProtectPassword write FProtectPassword default false;
+    property Text: string read GetText write SetText;
+    property PasswordChar: Char read GetPasswordChar write SetPasswordChar;
+    // set to True to disable read/write of PasswordChar and read of Text
+    property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
 
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
-    property ReadOnly: boolean read GetReadOnly write SetReadOnly;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -153,12 +150,12 @@ type
     property Align;
     property AutoSave;
     property Alignment;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-{$ENDIF}
+    {$ENDIF}
     property Caret;
     property ClipBoardCommands;
     property DisabledTextColor;
@@ -232,10 +229,9 @@ type
   end;
 
 implementation
+
 uses
   JvMaxMin;
-
-{ TJvCustomEdit }
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin
@@ -248,7 +244,7 @@ begin
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
   ClipBoardCommands := [caCopy..caUndo];
-  FCaret := TJvCaret.Create(self);
+  FCaret := TJvCaret.Create(Self);
   FCaret.OnChanged := CaretChanged;
   FAutoSave := TJvAutoSave.Create(Self);
   FMaxPixel := TJvMaxPixel.Create(Self);
@@ -259,22 +255,30 @@ begin
   inherited OnKeyDown := LocalKeyDown;
 end;
 
+destructor TJvCustomEdit.Destroy;
+begin
+  FAutoSave.Free;
+  FMaxPixel.Free;
+  FCaret.Free;
+  inherited Destroy;
+end;
+
 procedure TJvCustomEdit.LocalKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   UpdateEdit;
-  if Assigned(fOnkeyDown) then
-    fOnkeyDown(Sender, Key, Shift);
+  if Assigned(FOnKeyDown) then
+    FOnKeyDown(Sender, Key, Shift);
 end;
 
 procedure TJvCustomEdit.Loaded;
 var
-  st: string;
+  St: string;
 begin
-  inherited;
-  if FAutoSave.LoadValue(st) then
+  inherited Loaded;
+  if FAutoSave.LoadValue(St) then
   begin
-    Text := st;
+    Text := St;
     if Assigned(FOnRestored) then
       FOnRestored(Self);
   end;
@@ -282,26 +286,18 @@ begin
   SelLength := FStreamedSelLength;
 end;
 
-destructor TJvCustomEdit.Destroy;
-begin
-  FAutoSave.Free;
-  FMaxPixel.Free;
-  FCaret.Free;
-  inherited;
-end;
-
 procedure TJvCustomEdit.Change;
 var
-  st: string;
+  St: string;
 begin
-  inherited;
+  inherited Change;
   if not HasParent then
     Exit;
-  st := Text;
-  FMaxPixel.Test(st, Font);
-  if st <> Text then
+  St := Text;
+  FMaxPixel.Test(St, Font);
+  if St <> Text then
   begin
-    Text := st;
+    Text := St;
     SelStart := Min(SelStart, Length(Text));
   end;
   FAutoSave.SaveValue(Text);
@@ -309,17 +305,18 @@ end;
 
 procedure TJvCustomEdit.CreateParams(var Params: TCreateParams);
 const
-  Styles: array[TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
+  Styles: array [TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or Styles[FAlignment];
-  if (FAlignment <> taLeftJustify) and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS)
-    and (Win32MajorVersion = 4) and (Win32MinorVersion = 0) then
+  if (FAlignment <> taLeftJustify) and (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and
+    (Win32MajorVersion = 4) and (Win32MinorVersion = 0) then
     Params.Style := Params.Style or ES_MULTILINE; // needed for Win95
 end;
 
 procedure TJvCustomEdit.CMMouseEnter(var Msg: TMessage);
-var i, j: integer;
+var
+  I, J: Integer;
 begin
   // for D7...
   if csDesigning in ComponentState then
@@ -330,11 +327,11 @@ begin
     Application.HintColor := FColor;
     if FHotTrack then
     begin
-      i := SelStart;
-      j := SelLength;
+      I := SelStart;
+      J := SelLength;
       Ctl3d := True;
-      SelStart := i;
-      SelLength := j;
+      SelStart := I;
+      SelLength := J;
     end;
     FOver := True;
   end;
@@ -344,7 +341,7 @@ end;
 
 procedure TJvCustomEdit.CMMouseLeave(var Msg: TMessage);
 var
-  i, j: integer;
+  I, J: Integer;
 begin
   // for D7...
   if csDesigning in ComponentState then
@@ -354,11 +351,11 @@ begin
     Application.HintColor := FSaved;
     if FHotTrack then
     begin
-      i := SelStart;
-      j := SelLength;
+      I := SelStart;
+      J := SelLength;
       Ctl3d := False;
-      SelStart := i;
-      SelLength := j;
+      SelStart := I;
+      SelLength := J;
     end;
     FOver := False;
   end;
@@ -388,12 +385,12 @@ end;
 
 function TJvCustomEdit.IsEmpty: Boolean;
 begin
-  Result := Length(Text) = 0;
+  Result := (Length(Text) = 0);
 end;
 
 procedure TJvCustomEdit.SetAlignment(Value: TAlignment);
 begin
-  if (FAlignment <> Value) then
+  if FAlignment <> Value then
   begin
     FAlignment := Value;
     ReCreateWnd;
@@ -402,13 +399,13 @@ end;
 
 procedure TJvCustomEdit.MaxPixelChanged(Sender: TObject);
 var
-  st: string;
+  St: string;
 begin
-  st := Text;
-  FMaxPixel.Test(st, Font);
-  if st <> Text then
+  St := Text;
+  FMaxPixel.Test(St, Font);
+  if St <> Text then
   begin
-    Text := st;
+    Text := St;
     SelStart := Min(SelStart, Length(Text));
   end;
 end;
@@ -433,7 +430,7 @@ begin
   end;
 end;
 
-procedure TJvCustomEdit.WMEraseBkGnd(var msg: TWMEraseBkGnd);
+procedure TJvCustomEdit.WMEraseBkGnd(var Msg: TWMEraseBkGnd);
 var
   Canvas: TCanvas;
 begin
@@ -443,58 +440,58 @@ begin
   begin
     Canvas := TCanvas.Create;
     try
-      Canvas.Handle := msg.DC;
-      SaveDC(msg.DC);
+      Canvas.Handle := Msg.DC;
+      SaveDC(Msg.DC);
       try
         Canvas.Brush.Color := FDisabledColor;
         Canvas.Brush.Style := bsSolid;
-        Canvas.FillRect(clientrect);
-        Msg.result := 1;
+        Canvas.FillRect(ClientRect);
+        Msg.Result := 1;
       finally
-        RestoreDC(msg.DC, -1);
+        RestoreDC(Msg.DC, -1);
       end;
     finally
       Canvas.Free
     end;
-  end; { Else }
+  end;
 end;
 
-function StrFillChar(Ch:char;Length:Cardinal):string;
+function StrFillChar(Ch: Char; Length: Cardinal): string;
 begin
-  SetLength(Result,Length);
+  SetLength(Result, Length);
   if Length > 0 then
-    FillChar(Result[1],Length,Ch);
+    FillChar(Result[1], Length, Ch);
 end;
 
-procedure TJvCustomEdit.WMPaint(var msg: TWMPaint);
+procedure TJvCustomEdit.WMPaint(var Msg: TWMPaint);
 var
   Canvas: TCanvas;
-  ps: TPaintStruct;
-  callEndPaint: Boolean;
+  Ps: TPaintStruct;
+  CallEndPaint: Boolean;
 begin
   if Enabled then
     inherited
   else
   begin
-    callEndPaint := False;
+    CallEndPaint := False;
     Canvas := TCanvas.Create;
     try
-      if msg.DC <> 0 then
+      if Msg.DC <> 0 then
       begin
-        Canvas.Handle := msg.DC;
-        ps.fErase := true;
+        Canvas.Handle := Msg.DC;
+        Ps.fErase := True;
       end
       else
       begin
-        BeginPaint(handle, ps);
-        callEndPaint := true;
-        Canvas.handle := ps.hdc;
+        BeginPaint(Handle, Ps);
+        CallEndPaint := True;
+        Canvas.Handle := Ps.hdc;
       end;
 
-      if ps.fErase then
+      if Ps.fErase then
         Perform(WM_ERASEBKGND, Canvas.handle, 0);
 
-      SaveDC(Canvas.handle);
+      SaveDC(Canvas.Handle);
       try
         Canvas.Brush.Style := bsClear;
         Canvas.Font := Font;
@@ -504,17 +501,17 @@ begin
         else
           Canvas.TextOut(1, 1, StrFillChar(PasswordChar, Length(Text)))
       finally
-        RestoreDC(Canvas.handle, -1);
+        RestoreDC(Canvas.Handle, -1);
       end;
     finally
-      if callEndPaint then
-        EndPaint(handle, ps);
-      Canvas.Free
+      if CallEndPaint then
+        EndPaint(Handle, Ps);
+      Canvas.Free;
     end;
   end;
 end;
 
-procedure TJvCustomEdit.CaretChanged(sender: TObject);
+procedure TJvCustomEdit.CaretChanged(Sender: TObject);
 begin
   FCaret.CreateCaret;
 end;
@@ -524,7 +521,7 @@ begin
   FCaret.Assign(Value);
 end;
 
-procedure TJvCustomEdit.WMSetFocus(var msg: TMessage);
+procedure TJvCustomEdit.WMSetFocus(var Msg: TMessage);
 begin
   inherited;
   FCaret.CreateCaret;
@@ -561,12 +558,12 @@ begin
     inherited;
 end;
 
-function TJvCustomEdit.GetReadOnly: boolean;
+function TJvCustomEdit.GetReadOnly: Boolean;
 begin
   Result := inherited ReadOnly;
 end;
 
-procedure TJvCustomEdit.SetReadOnly(const Value: boolean);
+procedure TJvCustomEdit.SetReadOnly(const Value: Boolean);
 begin
   inherited ReadOnly := Value;
   if Value then
@@ -588,26 +585,17 @@ end;
 
 procedure TJvCustomEdit.UpdateEdit;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for I := 0 to self.Owner.ComponentCount - 1 do
-  begin
-    if (Self.Owner.Components[i] is TJvCustomEdit) then
-    begin
-      if
-        ((Self.Owner.Components[i].Name <> Self.Name)
-        and
-        ((Self.Owner.Components[i] as TJvCustomEdit).GroupIndex <> -1)
-        and
-        ((Self.Owner.Components[i] as TJvCustomEdit).fGroupIndex = Self.FGroupIndex))
-        then
-        (Self.Owner.Components[i] as TJvCustomEdit).Caption := '';
-    end;
-  end;
+  for I := 0 to Self.Owner.ComponentCount - 1 do
+    if Self.Owner.Components[I] is TJvCustomEdit then
+      if ((Self.Owner.Components[I].Name <> Self.Name) and
+        ((Self.Owner.Components[I] as TJvCustomEdit).GroupIndex <> -1) and
+        ((Self.Owner.Components[I] as TJvCustomEdit).fGroupIndex = Self.FGroupIndex)) then
+        (Self.Owner.Components[I] as TJvCustomEdit).Caption := '';
 end;
 
-procedure TJvCustomEdit.SetClipBoardCommands(
-  const Value: TJvClipboardCommands);
+procedure TJvCustomEdit.SetClipBoardCommands(const Value: TJvClipboardCommands);
 begin
   if FClipboardCommands <> Value then
   begin
@@ -621,39 +609,40 @@ begin
   inherited Text := Value;
 end;
 
-function TJvCustomEdit.GetText:string;
-var tmp:boolean;
+function TJvCustomEdit.GetText: string;
+var
+  Tmp: Boolean;
 begin
-  tmp := ProtectPassword;
+  Tmp := ProtectPassword;
   try
-    ProtectPassword := false;
+    ProtectPassword := False;
     Result := inherited Text;
   finally
-    ProtectPassword := tmp;
+    ProtectPassword := Tmp;
   end;
 end;
 
-procedure TJvCustomEdit.SetPasswordChar(Value:char);
+procedure TJvCustomEdit.SetPasswordChar(Value: Char);
 var
-  tmp:boolean;
+  Tmp: Boolean;
 begin
-  tmp := ProtectPassword;
+  Tmp := ProtectPassword;
   try
-    ProtectPassword := false;
+    ProtectPassword := False;
     if HandleAllocated then
       inherited PasswordChar := Char(SendMessage(Handle, EM_GETPASSWORDCHAR, 0, 0));
     inherited PasswordChar := Value;
   finally
-    ProtectPassword := tmp;
+    ProtectPassword := Tmp;
   end;
 end;
 
 procedure TJvCustomEdit.DefaultHandler(var Msg);
 begin
-  if (ProtectPassword) then
+  if ProtectPassword then
     with TMessage(Msg) do
       case Msg of
-        WM_CUT,WM_COPY,WM_GETTEXT, WM_GETTEXTLENGTH, EM_SETPASSWORDCHAR:
+        WM_CUT, WM_COPY, WM_GETTEXT, WM_GETTEXTLENGTH, EM_SETPASSWORDCHAR:
           Result := 0;
       else
         inherited
@@ -662,7 +651,7 @@ begin
     inherited;
 end;
 
-function TJvCustomEdit.GetPasswordChar: char;
+function TJvCustomEdit.GetPasswordChar: Char;
 begin
   if HandleAllocated then
     Result := Char(Sendmessage(Handle, EM_GETPASSWORDCHAR, 0, 0))

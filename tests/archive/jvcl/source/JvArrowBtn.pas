@@ -187,7 +187,6 @@ type
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
-  { utility }
 
 procedure DrawLine(Canvas: TCanvas; X, Y, X2, Y2: Integer);
 begin
@@ -220,7 +219,7 @@ begin
     end;
 end;
 
-{ TGlyphList }
+//=== TGlyphList =============================================================
 
 constructor TGlyphList.CreateSize(AWidth, AHeight: Integer);
 begin
@@ -261,7 +260,7 @@ begin
   end;
 end;
 
-{ TGlyphCache }
+//=== TGlyphCache ============================================================
 
 constructor TGlyphCache.Create;
 begin
@@ -311,6 +310,8 @@ var
   Pattern: TBitmap = nil;
   ButtonCount: Integer = 0;
 
+//=== TButtonGlyph ===========================================================
+
 procedure CreateBrushPattern;
 var
   X, Y: Integer;
@@ -329,8 +330,6 @@ begin
           Pixels[X, Y] := clBtnHighlight; { on even/odd rows }
   end;
 end;
-
-{ TButtonGlyph }
 
 constructor TButtonGlyph.Create;
 var
@@ -722,7 +721,7 @@ begin
   DrawButtonText(Canvas, Caption, Result, State);
 end;
 
-{ TJvArrowButton }
+//=== TJvArrowButton =========================================================
 
 constructor TJvArrowButton.Create(AOwner: TComponent);
 begin

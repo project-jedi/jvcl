@@ -87,8 +87,6 @@ resourcestring
   RC_AniExtension = 'ani';
   RC_AniFilterName = 'ANI Image';
 
-  {**************************************************}
-
 constructor TJvAni.Create;
 begin
   inherited Create;
@@ -107,8 +105,6 @@ begin
   FTimer.Enabled := False;
 end;
 
-{**************************************************}
-
 destructor TJvAni.Destroy;
 begin
   FTimer.Free;
@@ -118,10 +114,8 @@ begin
   FSequence.Free;
   FImages.Free;
   FCurrentIcon.Free;
-
   inherited Destroy;
 end;
-{**************************************************}
 
 procedure TJvAni.Clear;
 begin
@@ -140,8 +134,6 @@ begin
   if not (csDestroying in Application.ComponentState) then
     Changed(Self);
 end;
-
-{**************************************************}
 
 procedure TJvAni.Assign(Source: TPersistent);
 var
@@ -163,56 +155,40 @@ begin
     inherited Assign(Source);
 end;
 
-{**************************************************}
-
 function TJvAni.GetEmpty: Boolean;
 begin
   Result := (FNumberFrames = 0);
 end;
-
-{**************************************************}
 
 procedure TJvAni.SetHeight(Value: Integer);
 begin
   raise EInvalidGraphicOperation.Create(sChangeIconSize);
 end;
 
-{**************************************************}
-
 procedure TJvAni.SetWidth(Value: Integer);
 begin
   raise EInvalidGraphicOperation.Create(sChangeIconSize);
 end;
-
-{**************************************************}
 
 function TJvAni.GetWidth: Integer;
 begin
   Result := FHeader.dwCX;
 end;
 
-{**************************************************}
-
 function TJvAni.GetHeight: Integer;
 begin
   Result := FHeader.dwCY;
 end;
-
-{**************************************************}
 
 procedure TJvAni.LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE);
 begin
   raise EInvalidGraphicOperation.Create(sIconToClipboard);
 end;
 
-{**************************************************}
-
 procedure TJvAni.SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE);
 begin
   raise EInvalidGraphicOperation.Create(sIconToClipboard);
 end;
-
-{**************************************************}
 
 procedure TJvAni.LoadFromStream(Stream: TStream);
 const
@@ -353,8 +329,6 @@ begin
   SetIndex(0);
 end;
 
-{**************************************************}
-
 procedure TJvAni.SaveToStream(Stream: TStream);
 begin
   if GetEmpty then
@@ -362,15 +336,11 @@ begin
   Stream.Write(FImage.Memory^, FImage.Size)
 end;
 
-{**************************************************}
-
 procedure TJvAni.Draw(ACanvas: TCanvas; const Rect: TRect);
 begin
   if FCurrentIcon.Handle <> 0 then
     DrawIcon(ACanvas.Handle, Rect.Left, Rect.Top, FCurrentIcon.Handle);
 end;
-
-{**************************************************}
 
 procedure TJvAni.SetIndex(const Value: Integer);
 type
@@ -415,22 +385,16 @@ begin
     end;
 end;
 
-{**************************************************}
-
 function TJvAni.GetAnimated: Boolean;
 begin
   Result := FTimer.Enabled;
 end;
-
-{**************************************************}
 
 procedure TJvAni.SetAnimated(const Value: Boolean);
 begin
   if Value <> FTimer.Enabled then
     FTimer.Enabled := Value;
 end;
-
-{**************************************************}
 
 procedure TJvAni.Animate(Sender: TObject);
 begin
@@ -440,8 +404,6 @@ begin
   CalcDelay;
   FTimer.Enabled := True;
 end;
-
-{**************************************************}
 
 procedure TJvAni.CalcDelay;
 begin
@@ -460,21 +422,15 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvAni.SetTransparent(Value: Boolean);
 begin
   // Icons are always transparent so animations also
 end;
 
-{**************************************************}
-
 function TJvAni.GetTransparent: Boolean;
 begin
   Result := True;
 end;
-
-{**************************************************}
 
 initialization
   RegisterClass(TJvAni);

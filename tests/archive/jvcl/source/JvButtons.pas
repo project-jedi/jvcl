@@ -30,7 +30,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.Inc}
+{$I JVCL.INC}
 
 unit JvButtons;
 
@@ -261,7 +261,7 @@ type
     function Empty: Boolean;
   end;
 
-  { TJvGlyphList  }
+// == TJvGlyphList ===========================================================
 
 constructor TJvGlyphList.CreateSize(AWidth, AHeight: Integer);
 begin
@@ -311,6 +311,8 @@ begin
   end;
 end;
 
+// == TJvGlyphCache ==========================================================
+
 constructor TJvGlyphCache.Create;
 begin
   inherited Create;
@@ -353,6 +355,8 @@ function TJvGlyphCache.Empty: Boolean;
 begin
   Result := FGlyphLists.Count = 0;
 end;
+
+// == TJvButtonGlyph =========================================================
 
 var
   GlyphCache: TJvGlyphCache = nil;
@@ -1005,6 +1009,8 @@ begin
     Canvas.TextHeight(Caption));
 end;
 
+// == TJvaCaptionButton ======================================================
+
 constructor TJvaCaptionButton.Create(AOwner: TComponent);
 
   function FindButtonPos: Integer;
@@ -1471,6 +1477,95 @@ begin
   end;
 end;
 
+procedure TJvaCaptionButton.DoAfterMsg(Sender: TObject; var Msg: TMessage;
+  var Handled: Boolean);
+begin
+  if Owner = nil then
+    Exit;
+  case Msg.Msg of
+    WM_NCACTIVATE:
+      begin
+        FActive := Boolean(Msg.wParam);
+        Draw;
+      end;
+    WM_SETTEXT, WM_NCPAINT:
+      Draw;
+    WM_SIZE:
+      Resize;
+    WM_SETTINGCHANGE:
+      Changed;
+  end;
+end;
+
+procedure TJvaCaptionButton.DoBeforeMsg(Sender: TObject; var Msg: TMessage;
+  var Handled: Boolean);
+var
+  P: TPoint;
+  OldPress: Boolean;
+begin
+  if Owner = nil then
+    Exit;
+  case Msg.Msg of
+    WM_NCLBUTTONDOWN:
+      if FVisible and
+        MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
+      begin
+        SetCapture((Owner as TForm).Handle);
+        FMouseLButtonDown := True;
+        FPress := True;
+        Handled := True;
+        Draw;
+      end;
+    WM_NCLBUTTONDBLCLK:
+      if FVisible and
+        MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
+      begin
+        { FPress := True;
+          Draw;
+          FPress := False;
+          Draw;}
+        Handled := True;
+      end;
+    WM_LBUTTONUP:
+      if FVisible and FMouseLButtonDown then
+      begin
+        ReleaseCapture;
+        FMouseLButtonDown := False;
+        FPress := False;
+        Draw;
+        P := (Owner as TForm).ClientToScreen(Point(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor));
+        if MouseOnButton(P.X, P.Y) then
+          Click;
+        Handled := True;
+      end;
+    WM_MOUSEMOVE:
+      if FMouseLButtonDown then
+      begin
+        P := (Owner as TForm).ClientToScreen(Point(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor));
+        OldPress := FPress;
+        FPress := MouseOnButton(P.X, P.Y);
+        if OldPress <> FPress then
+          Draw;
+        Handled := True;
+      end;
+    WM_NCHITTEST:
+      if FVisible and
+        MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
+      begin
+        Msg.Result := HTBORDER;
+        Handled := True;
+      end;
+    WM_NCRBUTTONDOWN:
+      { if FVisible and
+          MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
+         WHook.CallOldProc(Msg)
+       else}
+      ;
+  end;
+end;
+
+// == TJvaColorButton ========================================================
+
 constructor TJvaColorButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1597,6 +1692,9 @@ begin
   end;
 
 end;
+
+// == TJvNoFrameButton =======================================================
+
 {$IFDEF OPTIMIZATION_ON}
 {$O+}
 {$ENDIF OPTIMIZATION_ON}
@@ -1701,6 +1799,8 @@ begin
   end;
 end;
 
+//=== TJvHTButton ============================================================
+
 constructor TJvHTButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1713,93 +1813,6 @@ begin
   TJvHTButtonGlyph(FGlyphDrawer).Free;
   FGlyphDrawer := nil;
   inherited Destroy;
-end;
-
-procedure TJvaCaptionButton.DoAfterMsg(Sender: TObject; var Msg: TMessage;
-  var Handled: Boolean);
-begin
-  if Owner = nil then
-    Exit;
-  case Msg.Msg of
-    WM_NCACTIVATE:
-      begin
-        FActive := Boolean(Msg.wParam);
-        Draw;
-      end;
-    WM_SETTEXT, WM_NCPAINT:
-      Draw;
-    WM_SIZE:
-      Resize;
-    WM_SETTINGCHANGE:
-      Changed;
-  end;
-end;
-
-procedure TJvaCaptionButton.DoBeforeMsg(Sender: TObject; var Msg: TMessage;
-  var Handled: Boolean);
-var
-  P: TPoint;
-  OldPress: Boolean;
-begin
-  if Owner = nil then
-    Exit;
-  case Msg.Msg of
-    WM_NCLBUTTONDOWN:
-      if FVisible and
-        MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
-      begin
-        SetCapture((Owner as TForm).Handle);
-        FMouseLButtonDown := True;
-        FPress := True;
-        Handled := True;
-        Draw;
-      end;
-    WM_NCLBUTTONDBLCLK:
-      if FVisible and
-        MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
-      begin
-        { FPress := True;
-          Draw;
-          FPress := False;
-          Draw;}
-        Handled := True;
-      end;
-    WM_LBUTTONUP:
-      if FVisible and FMouseLButtonDown then
-      begin
-        ReleaseCapture;
-        FMouseLButtonDown := False;
-        FPress := False;
-        Draw;
-        P := (Owner as TForm).ClientToScreen(Point(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor));
-        if MouseOnButton(P.X, P.Y) then
-          Click;
-        Handled := True;
-      end;
-    WM_MOUSEMOVE:
-      if FMouseLButtonDown then
-      begin
-        P := (Owner as TForm).ClientToScreen(Point(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor));
-        OldPress := FPress;
-        FPress := MouseOnButton(P.X, P.Y);
-        if OldPress <> FPress then
-          Draw;
-        Handled := True;
-      end;
-    WM_NCHITTEST:
-      if FVisible and
-        MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
-      begin
-        Msg.Result := HTBORDER;
-        Handled := True;
-      end;
-    WM_NCRBUTTONDOWN:
-      { if FVisible and
-          MouseOnButton(TWMNCHitMessage(Msg).XCursor, TWMNCHitMessage(Msg).YCursor) then
-         WHook.CallOldProc(Msg)
-       else}
-      ;
-  end;
 end;
 
 end.

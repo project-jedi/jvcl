@@ -25,23 +25,19 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF}
-{ Components to replace the TDriveComboBox from Borland that also adds a TDriveListBox.
-      Uses the system Iconlist to display driveicons. }
+{$I WINDOWSONLY.INC}
+
 unit JvDriveCtrls;
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
+
+{ Components to replace the TDriveComboBox from Borland that also adds a TDriveListBox.
+  Uses the system Iconlist to display driveicons. }
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  FileCtrl, Dialogs, StdCtrls, ShellApi, ImgList, JvComboBox,
-  JvCtrls, JvListBox, JVCLVer, JvSearchFiles;
+  FileCtrl, StdCtrls, ShellApi, ImgList,
+  JvComboBox, JvListBox, JVCLVer, JvSearchFiles;
 
 type
   TJvDriveType = (dtUnknown, dtRemovable, dtFixed, dtRemote, dtCDROM, dtRamDisk);
@@ -57,49 +53,45 @@ type
 
   TJvDriveCombo = class(TJvCustomComboBox)
   private
-    { Private declarations }
     FDrives: TStrings;
     FImages: TImagelist;
-    FImageWidth: integer;
+    FImageWidth: Integer;
     FImageSize: TJvImageSize;
-    FItemIndex: integer;
-    FOffset: integer;
-    FDrive: char;
+    FItemIndex: Integer;
+    FOffset: Integer;
+    FDrive: Char;
     FDriveTypes: TJvDriveTypes;
-    FSmall, FLarge: integer;
+    FSmall, FLarge: Integer;
     FDisplayName: string;
     FDirList: TJvDirectoryListBox;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure ResetItemHeight;
     procedure SetJvImageSize(Value: TJvImageSize);
-    procedure SetOffset(Value: integer);
+    procedure SetOffset(Value: Integer);
   protected
-    { Protected declarations }
     procedure CreateWnd; override;
-    procedure SetDrive(Value: char);
+    procedure SetDrive(Value: Char);
     procedure SetJvDriveTypes(Value: TJvDriveTypes);
-    procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
+    procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
-    procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
+    procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
     procedure BuildList; virtual;
     procedure Change; override;
-    property Items stored false;
+    property Items stored False;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Refresh; virtual;
   published
-    { Published declarations }
     property Align;
     property BevelInner;
     property BevelOuter;
     property BevelKind;
     property BevelWidth;
-    property Drive: char read FDrive write SetDrive stored false;
+    property Drive: Char read FDrive write SetDrive stored False;
     property DriveTypes: TJvDriveTypes read FDriveTypes write SetJvDriveTypes;
-    property Offset: integer read FOffset write SetOffset;
+    property Offset: Integer read FOffset write SetOffset;
     property ImageSize: TJvImageSize read FImageSize write SetJvImageSize;
     property DisplayName: string read FDisplayName;
     property Color;
@@ -142,52 +134,46 @@ type
     property OnStartDock;
   end;
 
-  { TDriveList }
-
   TJvDriveList = class(TJvCustomListBox)
   private
-    { Private declarations }
     FDrives: TStrings;
     FImages: TImagelist;
-    FImageWidth: integer;
+    FImageWidth: Integer;
     FImageSize: TJvImageSize;
-    FItemIndex: integer;
-    FOffset: integer;
-    FDrive: char;
+    FItemIndex: Integer;
+    FOffset: Integer;
+    FDrive: Char;
     FDriveTypes: TJvDriveTypes;
-    FSmall, FLarge: integer;
+    FSmall, FLarge: Integer;
     FImageAlign: TJvImageAlign;
     FOnChange: TNotifyEvent;
     procedure SetJvImageAlign(Value: TJvImageAlign);
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure ResetItemHeight;
     procedure SetJvImageSize(Value: TJvImageSize);
-    procedure SetOffset(Value: integer);
-    procedure WMSize(var Message: TWMNoParams); message WM_SIZE;
+    procedure SetOffset(Value: Integer);
+    procedure WMSize(var Msg: TWMNoParams); message WM_SIZE;
   protected
-    { Protected declarations }
-    procedure SetDrive(Value: char);
+    procedure SetDrive(Value: Char);
     procedure SetJvDriveTypes(Value: TJvDriveTypes);
-    procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
+    procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
-    procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
+    procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
     procedure BuildList; virtual;
     procedure Change; dynamic;
-    property Items stored false;
-    property Offset: integer read FOffset write SetOffset;
+    property Items stored False;
+    property Offset: Integer read FOffset write SetOffset;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     procedure CreateWnd; override;
     destructor Destroy; override;
     procedure Refresh;
   published
-    { Published declarations }
     property MultiSelect;
     property ScrollBars default ssNone;
     property ImageAlign: TJvImageAlign read FImageAlign write SetJvImageAlign default iaCentered;
-    property Drive: char read FDrive write SetDrive stored false;
+    property Drive: Char read FDrive write SetDrive stored False;
     property DriveTypes: TJvDriveTypes read FDriveTypes write SetJvDriveTypes;
     property ImageSize: TJvImageSize read FImageSize write SetJvImageSize;
     property Align;
@@ -234,33 +220,28 @@ type
     property OnStartDock;
   end;
 
-  { TJvFileListBox }
   TJvFileListBox = class(TFileListBox)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
     FImages: TImageList;
-    FForceFileExtensions: boolean;
+    FForceFileExtensions: Boolean;
     FSearchFiles: TJvSearchFiles;
-    procedure SetForceFileExtensions(const Value: boolean);
+    procedure SetForceFileExtensions(const Value: Boolean);
   protected
-    { Protected declarations }
     procedure DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
-    procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
+    procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure ReadFilenames; override;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property Directory stored false;
-    property Filename stored false;
-    // set this property to true to force the display of filename extensions for all files even if
-    // the user has activated the Explorer option "Don't show extensions for know file types"
-    property ForceFileExtensions: boolean read FForceFileExtensions write SetForceFileExtensions;
+    property Directory stored False;
+    property Filename stored False;
+    // set this property to True to force the display of filename extensions for all files even if
+    // the user has activated the Explorer option "Don't show extensions for known file types"
+    property ForceFileExtensions: Boolean read FForceFileExtensions write SetForceFileExtensions;
     property Columns;
     property BorderStyle;
     property Anchors;
@@ -275,8 +256,6 @@ type
 
   end;
 
-  { TJvDirectoryListBox }
-
   TJvDirectoryListBox = class(TJvCustomListBox)
   private
     FFileList: TJvFileListBox;
@@ -285,20 +264,20 @@ type
     FInSetDir: Boolean;
     FPreserveCase: Boolean;
     FCaseSensitive: Boolean;
-    FAutoExpand: boolean;
+    FAutoExpand: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
-    function GetDrive: char;
+    function GetDrive: Char;
     procedure SetFileListBox(Value: TJvFileListBox);
     procedure SetDirLabel(Value: TLabel);
     procedure SetDirLabelCaption;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure SetDrive(Value: char);
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure SetDrive(Value: Char);
     procedure DriveChange(NewDrive: Char);
     procedure SetDir(const NewDirectory: string);
     procedure SetDirectory(const NewDirectory: string); virtual;
     procedure ResetItemHeight;
     procedure SetDriveCombo(const Value: TJvDriveCombo);
-    procedure SetAutoExpand(const Value: boolean);
+    procedure SetAutoExpand(const Value: Boolean);
   protected
     FImages: TImageList;
     FDirectory: string;
@@ -307,12 +286,11 @@ type
     procedure DblClick; override;
     procedure ReadBitmaps; virtual;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
-    procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
+    procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     function ReadDirectoryNames(const ParentDirectory: string;
       DirectoryList: TStringList): Integer;
     procedure BuildList; virtual;
     procedure KeyPress(var Key: Char); override;
-
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Click; override;
   public
@@ -321,20 +299,19 @@ type
     procedure CreateWnd; override;
     function GetItemPath(Index: Integer): string;
     procedure OpenCurrent;
-    property Drive: Char read GetDrive write SetDrive stored false;
+    property Drive: Char read GetDrive write SetDrive stored False;
     procedure Update; reintroduce;
     property PreserveCase: Boolean read FPreserveCase;
     property CaseSensitive: Boolean read FCaseSensitive;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
-    property AutoExpand: boolean read FAutoExpand write SetAutoExpand default true;
+    property AutoExpand: Boolean read FAutoExpand write SetAutoExpand default True;
     property BorderStyle;
     property BevelInner;
     property BevelOuter;
     property BevelKind;
     property BevelWidth;
-
     property Color;
     property Ctl3D;
     property Directory: string read FDirectory write SetDirectory;
@@ -344,7 +321,6 @@ type
     property Enabled;
     property FileList: TJvFileListBox read FFileList write SetFileListBox;
     property DriveCombo: TJvDriveCombo read FDriveCombo write SetDriveCombo;
-
     property Font;
     property IntegralHeight;
     property ItemHeight;
@@ -393,7 +369,10 @@ const
   cDirPrefix = #32;
 
 function GetItemHeight(Font: TFont): Integer;
-var DC: HDC; SaveFont: HFont; Metrics: TTextMetric;
+var
+  DC: HDC;
+  SaveFont: HFONT;
+  Metrics: TTextMetric;
 begin
   DC := GetDC(0);
   SaveFont := SelectObject(DC, Font.Handle);
@@ -403,20 +382,21 @@ begin
   Result := Metrics.tmHeight;
 end;
 
-function IsValidDriveType(DriveTypes:TJvDriveTypes;DriveType:UINT):boolean;
+function IsValidDriveType(DriveTypes: TJvDriveTypes; DriveType: UINT): Boolean;
 const
-  cDriveMasks:array[TJvDriveType] of UINT = (DRIVE_UNKNOWN, DRIVE_REMOVABLE,DRIVE_FIXED,DRIVE_REMOTE,DRIVE_CDROM,DRIVE_RAMDISK);
-                                            //           0,               2,          3,           4,          5,            6
+  cDriveMasks: array[TJvDriveType] of UINT =
+  (DRIVE_UNKNOWN, DRIVE_REMOVABLE, DRIVE_FIXED, DRIVE_REMOTE, DRIVE_CDROM, DRIVE_RAMDISK);
 var
-  i:TJvDriveType;
+  I: TJvDriveType;
 begin
-  Result := true;
-  for i := Low(TJvDriveType) to High(TJvDriveType) do
-    if (i in DriveTypes) and (DriveType = cDriveMasks[i]) then Exit;
-  Result := false;
+  Result := True;
+  for I := Low(TJvDriveType) to High(TJvDriveType) do
+    if (I in DriveTypes) and (DriveType = cDriveMasks[I]) then
+      Exit;
+  Result := False;
 end;
 
-{ TJvDriveCombo }
+//=== TJvDriveCombo ==========================================================
 
 constructor TJvDriveCombo.Create(AOwner: TComponent);
 begin
@@ -455,10 +435,10 @@ procedure TJvDriveCombo.BuildList;
 var
   Info: TSHFileInfo;
   S: string;
-  Options: integer;
-  ADrive: char;
+  Options: Integer;
+  Drv: Char;
   LastErrorMode: Cardinal;
-  tmp: array[0..104] of char; // 4 chars ('C:\#0') * 26 possible drives + 1 terminating #0 = 105 chars
+  Tmp: array [0..104] of Char; // 4 chars ('C:\#0') * 26 possible drives + 1 terminating #0 = 105 chars
   P: PChar;
 begin
   Items.Clear;
@@ -470,25 +450,25 @@ begin
     Options := Options or SHGFI_LARGEICON;
 
   FImages.Handle := SHGetFileInfo('', 0, Info, SizeOf(TShFileInfo), Options);
-  FImages.ShareImages := true;
-  ADrive := Drive;
+  FImages.ShareImages := True;
+  Drv := Drive;
   LastErrorMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
   try
-    FillChar(tmp[0], sizeof(tmp), #0);
-    GetLogicalDriveStrings(sizeof(tmp), tmp);
-    P := tmp;
+    FillChar(Tmp[0], SizeOf(Tmp), #0);
+    GetLogicalDriveStrings(SizeOf(Tmp), Tmp);
+    P := Tmp;
     while P^ <> #0 do
     begin
-      S := string(P);
+      S := P;
       Inc(P, 4);
-      if IsValidDriveType(DriveTypes,GetDriveType(PChar(S))) then
+      if IsValidDriveType(DriveTypes, GetDriveType(PChar(S))) then
       begin
         SHGetFileInfo(PChar(S), 0, Info, SizeOf(TShFileInfo), SHGFI_DISPLAYNAME or Options);
         Items.AddObject(Trim(Info.szDisplayName), TObject(Info.iIcon));
         FDrives.Add(S[1]);
       end;
     end;
-    SetDrive(ADrive);
+    SetDrive(Drv);
     Update;
   finally
     SetErrorMode(LastErrorMode);
@@ -499,7 +479,7 @@ procedure TJvDriveCombo.CreateWnd;
 begin
   inherited CreateWnd;
   BuildList;
-  if (csDesigning in ComponentState) then
+  if csDesigning in ComponentState then
     SetDrive('C');
 end;
 
@@ -508,26 +488,26 @@ begin
   BuildList;
 end;
 
-procedure TJvDriveCombo.CNDrawItem(var Message: TWMDrawItem);
+procedure TJvDriveCombo.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;
 begin
-  with Message.DrawItemStruct^ do
+  with Msg.DrawItemStruct^ do
   begin
     State := [];
-    if bool(itemState and ODS_CHECKED) then
+    if (itemState and ODS_CHECKED) <> 0 then
       Include(State, odChecked);
-    if bool(itemState and ODS_COMBOBOXEDIT) then
+    if (itemState and ODS_COMBOBOXEDIT) <> 0 then
       Include(State, odComboBoxEdit);
-    if bool(itemState and ODS_DEFAULT) then
+    if (itemState and ODS_DEFAULT) <> 0 then
       Include(State, odDefault);
-    if bool(itemState and ODS_DISABLED) then
+    if (itemState and ODS_DISABLED) <> 0 then
       Include(State, odDisabled);
-    if bool(itemState and ODS_FOCUS) then
+    if (itemState and ODS_FOCUS) <> 0 then
       Include(State, odFocused);
-    if bool(itemState and ODS_GRAYED) then
+    if (itemState and ODS_GRAYED) <> 0 then
       Include(State, odGrayed);
-    if bool(itemState and ODS_SELECTED) then
+    if (itemState and ODS_SELECTED) <> 0 then
       Include(State, odSelected);
     Canvas.Handle := hDC;
     Canvas.Font := Font;
@@ -547,7 +527,7 @@ end;
 
 procedure TJvDriveCombo.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
-  Offset, i: Integer;
+  Offset, I: Integer;
 begin
   //  inherited;
   with Canvas do
@@ -555,8 +535,8 @@ begin
     Offset := FImageWidth + FOffset + FOffset;
     if FImages.Count > 0 then
     begin
-      i := integer(Items.Objects[Index]);
-      FImages.Draw(Canvas, Rect.Left + FOffset, Rect.Top, i);
+      I := Integer(Items.Objects[Index]);
+      FImages.Draw(Canvas, Rect.Left + FOffset, Rect.Top, I);
       Rect.Left := Rect.Left + Offset;
       Rect.Right := Rect.Left + Canvas.TextWidth(Items[Index]) + 6;
     end;
@@ -574,7 +554,7 @@ begin
   Height := ItemHeight;
 end;
 
-procedure TJvDriveCombo.CMFontChanged(var Message: TMessage);
+procedure TJvDriveCombo.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   ResetItemHeight;
@@ -583,12 +563,12 @@ end;
 
 procedure TJvDriveCombo.ResetItemHeight;
 var
-  nuHeight: Integer;
+  NewHeight: Integer;
 begin
-  nuHeight := GetItemHeight(Font);
-  if nuHeight < FImages.Height then
-    nuHeight := FImages.Height;
-  ItemHeight := nuHeight;
+  NewHeight := GetItemHeight(Font);
+  if NewHeight < FImages.Height then
+    NewHeight := FImages.Height;
+  ItemHeight := NewHeight;
 end;
 
 procedure TJvDriveCombo.SetJvDriveTypes(Value: TJvDriveTypes);
@@ -600,30 +580,30 @@ begin
   // SetDrive(FDrive);
 end;
 
-procedure TJvDriveCombo.SetDrive(Value: char);
-var i, j: integer;
+procedure TJvDriveCombo.SetDrive(Value: Char);
+var
+  I, J: Integer;
 begin
-  j := 0;
+  J := 0;
   if FItemIndex <> -1 then
-    j := FItemIndex;
+    J := FItemIndex;
 
   Value := UpCase(Value);
   if FDrive <> Value then
   begin
-    i := FDrives.IndexOf(Value);
-    if i > -1 then
+    I := FDrives.IndexOf(Value);
+    if I > -1 then
     begin
       FDrive := Value;
-      FItemIndex := i;
-      ItemIndex := i;
+      FItemIndex := I;
+      ItemIndex := I;
       if FDirList <> nil then
         FDirList.DriveChange(FDrive);
       Change;
-      Exit;
     end;
   end
   else
-    ItemIndex := j;
+    ItemIndex := J;
 end;
 
 procedure TJvDriveCombo.SetJvImageSize(Value: TJvImageSize);
@@ -652,7 +632,7 @@ begin
   end;
 end;
 
-procedure TJvDriveCombo.SetOffset(Value: integer);
+procedure TJvDriveCombo.SetOffset(Value: Integer);
 begin
   if FOffset <> Value then
   begin
@@ -670,13 +650,13 @@ begin
     FDisplayName := Items[ItemIndex]
   else
     FDisplayName := '';
-  inherited;
+  inherited Change;
 end;
 
-procedure TJvDriveCombo.CNCommand(var Message: TWMCommand);
+procedure TJvDriveCombo.CNCommand(var Msg: TWMCommand);
 begin
   inherited;
-  case Message.NotifyCode of
+  case Msg.NotifyCode of
     {    CBN_EDITCHANGE:
           Change;}
     CBN_SELCHANGE:
@@ -684,7 +664,7 @@ begin
   end;
 end;
 
-{ TJvDriveList }
+//=== TJvDriveList ===========================================================
 
 constructor TJvDriveList.Create(AOwner: TComponent);
 begin
@@ -723,10 +703,11 @@ end;
 
 procedure TJvDriveList.BuildList;
 var
-  Info: TSHFileInfo; S: string;
-  Options: integer;
-  ADrive: char;
-  tmp: array[0..104] of char;
+  Info: TSHFileInfo;
+  S: string;
+  Options: Integer;
+  Drv: Char;
+  Tmp: array [0..104] of Char;
   P: PChar;
   LastErrorMode: Cardinal;
 begin
@@ -744,25 +725,25 @@ begin
     Options := Options or SHGFI_LARGEICON;
 
   FImages.Handle := SHGetFileInfo('', 0, Info, SizeOf(TShFileInfo), Options);
-  FImages.ShareImages := true;
-  FillChar(tmp[0], sizeof(tmp), #0);
-  ADrive := Drive;
+  FImages.ShareImages := True;
+  FillChar(Tmp[0], SizeOf(Tmp), #0);
+  Drv := Drive;
   LastErrorMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
   try
-    GetLogicalDriveStrings(sizeof(tmp), tmp);
-    P := tmp;
+    GetLogicalDriveStrings(SizeOf(Tmp), Tmp);
+    P := Tmp;
     while P^ <> #0 do
     begin
-      S := string(P);
+      S := P;
       Inc(P, 4);
-      if IsValidDriveType(DriveTypes,GetDriveType(PChar(S))) then
+      if IsValidDriveType(DriveTypes, GetDriveType(PChar(S))) then
       begin
         SHGetFileInfo(PChar(S), 0, Info, SizeOf(TShFileInfo), SHGFI_DISPLAYNAME or Options);
         Items.AddObject(Trim(Info.szDisplayName), TObject(Info.iIcon));
         FDrives.Add(S[1]);
       end;
     end;
-    SetDrive(ADrive);
+    SetDrive(Drv);
     Update;
   finally
     SetErrorMode(LastErrorMode);
@@ -773,7 +754,7 @@ procedure TJvDriveList.CreateWnd;
 begin
   inherited CreateWnd;
   BuildList;
-  if (csDesigning in ComponentState) then
+  if csDesigning in ComponentState then
     SetDrive(GetCurrentDir[1]);
 end;
 
@@ -782,26 +763,26 @@ begin
   BuildList;
 end;
 
-procedure TJvDriveList.CNDrawItem(var Message: TWMDrawItem);
+procedure TJvDriveList.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;
 begin
-  with Message.DrawItemStruct^ do
+  with Msg.DrawItemStruct^ do
   begin
     State := [];
-    if bool(itemState and ODS_CHECKED) then
+    if (itemState and ODS_CHECKED) <> 0 then
       Include(State, odChecked);
-    if bool(itemState and ODS_COMBOBOXEDIT) then
+    if (itemState and ODS_COMBOBOXEDIT) <> 0 then
       Include(State, odComboBoxEdit);
-    if bool(itemState and ODS_DEFAULT) then
+    if (itemState and ODS_DEFAULT) <> 0 then
       Include(State, odDefault);
-    if bool(itemState and ODS_DISABLED) then
+    if (itemState and ODS_DISABLED) <> 0 then
       Include(State, odDisabled);
-    if bool(itemState and ODS_FOCUS) then
+    if (itemState and ODS_FOCUS) <> 0 then
       Include(State, odFocused);
-    if bool(itemState and ODS_GRAYED) then
+    if (itemState and ODS_GRAYED) <> 0 then
       Include(State, odGrayed);
-    if bool(itemState and ODS_SELECTED) then
+    if (itemState and ODS_SELECTED) <> 0 then
       Include(State, odSelected);
     Canvas.Handle := hDC;
     Canvas.Font := Font;
@@ -822,7 +803,7 @@ end;
 
 procedure TJvDriveList.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
-  HOffset, i: Integer;
+  HOffset, I: Integer;
   tmpCol: TColor;
   tmpR: TRect;
 begin
@@ -837,8 +818,8 @@ begin
       HOffset := (Rect.Right - Rect.Left) div 2 - FImageWidth div 2;
       if FImages.Count > 0 then
       begin
-        i := integer(Items.Objects[Index]);
-        FImages.Draw(Canvas, HOffset, Rect.Top, i);
+        I := Integer(Items.Objects[Index]);
+        FImages.Draw(Canvas, HOffset, Rect.Top, I);
       end;
       InflateRect(Rect, 1, -6);
       tmpR := Rect;
@@ -854,8 +835,8 @@ begin
     begin
       if FImages.Count > 0 then
       begin
-        i := integer(Items.Objects[Index]);
-        FImages.Draw(Canvas, Rect.Left + FOffset * 2, Rect.Top + FOffset * 2, i);
+        I := Integer(Items.Objects[Index]);
+        FImages.Draw(Canvas, Rect.Left + FOffset * 2, Rect.Top + FOffset * 2, I);
       end;
       tmpR := Rect;
       DrawText(Canvas.Handle, PChar(Items[Index]), -1, tmpR,
@@ -872,11 +853,12 @@ begin
     DrawFocusRect(Canvas.Handle, Rect);
 end;
 
-function Max(Val1, Val2: integer): integer;
+function Max(Val1, Val2: Integer): Integer;
 begin
-  Result := Val1;
   if Val2 > Val1 then
-    Result := Val2;
+    Result := Val2
+  else
+    Result := Val1;
 end;
 
 procedure TJvDriveList.MeasureItem(Index: Integer; var Height: Integer);
@@ -896,7 +878,7 @@ begin
   end;
 end;
 
-procedure TJvDriveList.CMFontChanged(var Message: TMessage);
+procedure TJvDriveList.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   ResetItemHeight;
@@ -916,27 +898,27 @@ begin
   BuildList;
 end;
 
-procedure TJvDriveList.SetDrive(Value: char);
-var i, j: integer;
+procedure TJvDriveList.SetDrive(Value: Char);
+var
+  I, J: Integer;
 begin
-  j := 0;
+  J := 0;
   if FItemIndex <> -1 then
-    j := FItemIndex;
+    J := FItemIndex;
 
   Value := UpCase(Value);
   if FDrive <> Value then
   begin
-    i := FDrives.IndexOf(Value);
-    if i > -1 then
+    I := FDrives.IndexOf(Value);
+    if I > -1 then
     begin
       FDrive := Value;
-      FItemIndex := i;
-      ItemIndex := i;
-      Exit;
+      FItemIndex := I;
+      ItemIndex := I;
     end;
   end
   else
-    ItemIndex := j;
+    ItemIndex := J;
 end;
 
 procedure TJvDriveList.SetJvImageSize(Value: TJvImageSize);
@@ -964,7 +946,7 @@ begin
   end;
 end;
 
-procedure TJvDriveList.SetOffset(Value: integer);
+procedure TJvDriveList.SetOffset(Value: Integer);
 begin
   if FOffset <> Value then
   begin
@@ -973,7 +955,7 @@ begin
   end;
 end;
 
-procedure TJvDriveList.WMSize(var Message: TWMNoParams);
+procedure TJvDriveList.WMSize(var Msg: TWMNoParams);
 begin
   inherited;
   Invalidate;
@@ -988,17 +970,18 @@ begin
     FOnChange(Self);
 end;
 
-procedure TJvDriveList.CNCommand(var Message: TWMCommand);
+procedure TJvDriveList.CNCommand(var Msg: TWMCommand);
 begin
-
   inherited;
-  case Message.NotifyCode of
+  case Msg.NotifyCode of
     {    CBN_EDITCHANGE:
           Change;}
     CBN_SELCHANGE:
       Change;
   end;
 end;
+
+//=== TJvDirectoryListBox ====================================================
 
 function AddPathBackslash(Path: string): string;
 begin
@@ -1034,17 +1017,15 @@ begin
     Result := Path + S;
 end;
 
-{ TJvDirectoryListBox }
-
 constructor TJvDirectoryListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Width := 145;
   Style := lbOwnerDrawFixed;
   Sorted := False;
-  FAutoExpand := true;
+  FAutoExpand := True;
   FImages := TImagelist.Create(self);
-  FImages.ShareImages := true;
+  FImages.ShareImages := True;
   ReadBitmaps;
   GetDir(0, FDirectory);
   ResetItemHeight;
@@ -1056,9 +1037,10 @@ begin
 end;
 
 procedure TJvDirectoryListBox.DriveChange(NewDrive: Char);
-var OldMode: Cardinal;
+var
+  OldMode: Cardinal;
 begin
-  if (UpCase(NewDrive) <> UpCase(Drive)) then
+  if UpCase(NewDrive) <> UpCase(Drive) then
   begin
     if NewDrive <> #0 then
     begin
@@ -1096,7 +1078,8 @@ begin
 end;
 
 procedure TJvDirectoryListBox.SetDir(const NewDirectory: string);
-var OldMode: Cardinal;
+var
+  OldMode: Cardinal;
 begin
   OldMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
   try
@@ -1133,7 +1116,7 @@ begin
   try
     while Status = 0 do
     begin
-      if (SearchRec.Attr and faDirectory = faDirectory) then
+      if (SearchRec.Attr and faDirectory) = faDirectory then
       begin
         if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
         begin
@@ -1164,7 +1147,7 @@ begin
     Items.Clear;
     TempPath := Directory;
     tmpFolder := '';
-    if (Length(TempPath) > 0) then
+    if Length(TempPath) > 0 then
     begin
       if AnsiLastChar(TempPath)^ <> '\' then
       begin
@@ -1174,13 +1157,15 @@ begin
           DirName := Copy(TempPath, 1, BackSlashPos - 1);
           tmpFolder := ConcatPaths(tmpFolder, DirName);
           Delete(TempPath, 1, BackSlashPos);
-          ShGetFileInfo(PChar(tmpFolder), 0, psfi, sizeof(TSHFileInfo), SHGFI_ICON or SHGFI_SMALLICON or SHGFI_OPENICON);
+          ShGetFileInfo(PChar(tmpFolder), 0, psfi, SizeOf(TSHFileInfo), SHGFI_ICON or SHGFI_SMALLICON or
+            SHGFI_OPENICON);
           Items.AddObject(tmpFolder, TObject(psfi.iIcon));
           BackSlashPos := AnsiPos('\', TempPath);
         end;
       end;
       // add the selected dir:
-      ShGetFileInfo(PChar(Directory), 0, psfi, sizeof(TSHFileInfo), SHGFI_ICON or SHGFI_SMALLICON or SHGFI_SELECTED or SHGFI_OPENICON);
+      ShGetFileInfo(PChar(Directory), 0, psfi, SizeOf(TSHFileInfo), SHGFI_ICON or SHGFI_SMALLICON or SHGFI_SELECTED or
+        SHGFI_OPENICON);
       Items.AddObject(Directory, TObject(psfi.iIcon));
     end;
     NewSelect := Items.Count - 1;
@@ -1190,10 +1175,10 @@ begin
       Siblings.Sorted := True;
       { read all the subdir names into Siblings }
       ReadDirectoryNames(Directory, Siblings);
-      for i := 0 to Siblings.Count - 1 do
+      for I := 0 to Siblings.Count - 1 do
       begin
-        ShGetFileInfo(PChar(Siblings[i]), 0, psfi, sizeof(TSHFileInfo), SHGFI_ICON or SHGFI_SMALLICON);
-        Items.AddObject(Siblings[i], TObject(psfi.iIcon));
+        ShGetFileInfo(PChar(Siblings[I]), 0, psfi, SizeOf(TSHFileInfo), SHGFI_ICON or SHGFI_SMALLICON);
+        Items.AddObject(Siblings[I], TObject(psfi.iIcon));
       end;
     finally
       Siblings.Free;
@@ -1206,10 +1191,11 @@ begin
 end;
 
 procedure TJvDirectoryListBox.ReadBitmaps;
-var psfi: TShFileInfo;
+var
+  psfi: TShFileInfo;
 begin
-  FImages.Handle := ShGetFileInfo('', 0, psfi, sizeof(TSHFileInfo), SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
-  FImages.ShareImages := true;
+  FImages.Handle := ShGetFileInfo('', 0, psfi, SizeOf(TSHFileInfo), SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
+  FImages.ShareImages := True;
   FImages.DrawingStyle := dsTransparent;
 end;
 
@@ -1231,7 +1217,8 @@ begin
 end;
 
 function ExtractLastFolder(const S: string): string;
-var P: PChar;
+var
+  P: PChar;
 begin
   Result := S;
   if Length(S) <= 3 then
@@ -1244,11 +1231,11 @@ begin
   Result := P;
 end;
 
-procedure TJvDirectoryListBox.CNDrawItem(var Message: TWMDrawItem);
+procedure TJvDirectoryListBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;
 begin
-  with Message.DrawItemStruct^ do
+  with Msg.DrawItemStruct^ do
   begin
     State := TOwnerDrawState(Lo(itemState));
     Canvas.Handle := hDC;
@@ -1286,8 +1273,8 @@ begin
     else
       dirOffset := Rect.Left + (DirLevel(Items[Index]) + 1) * 4 + 2;
     FImages.Draw(Canvas, dirOffset, (Rect.Top + Rect.Bottom - FImages.Height) div 2,
-      integer(Items.Objects[Index]));
-    ShGetFileInfo(PChar(Items[Index]), 0, psfi, sizeof(TSHFileInfo), SHGFI_DISPLAYNAME);
+      Integer(Items.Objects[Index]));
+    ShGetFileInfo(PChar(Items[Index]), 0, psfi, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME);
     S := psfi.szDisplayName; // (Items[Index]);
 
     tmpR.Left := tmpR.Left + dirOffset + FImages.Width + 2;
@@ -1314,7 +1301,7 @@ begin
   ItemIndex := DirLevel(Directory);
 end;
 
-procedure TJvDirectoryListBox.CMFontChanged(var Message: TMessage);
+procedure TJvDirectoryListBox.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   ResetItemHeight;
@@ -1322,22 +1309,22 @@ end;
 
 procedure TJvDirectoryListBox.ResetItemHeight;
 var
-  nuHeight: Integer;
+  NewHeight: Integer;
 begin
-  nuHeight := GetItemHeight(Font);
-  if nuHeight < (FImages.Height + 1) then
-    nuHeight := FImages.Height + 1;
-  ItemHeight := nuHeight;
+  NewHeight := GetItemHeight(Font);
+  if NewHeight < (FImages.Height + 1) then
+    NewHeight := FImages.Height + 1;
+  ItemHeight := NewHeight;
 end;
 
-function TJvDirectoryListBox.GetDrive: char;
+function TJvDirectoryListBox.GetDrive: Char;
 begin
   Result := FDirectory[1];
 end;
 
-procedure TJvDirectoryListBox.SetDrive(Value: char);
+procedure TJvDirectoryListBox.SetDrive(Value: Char);
 begin
-  if (UpCase(Value) <> UpCase(Drive)) then
+  if UpCase(Value) <> UpCase(Drive) then
     SetDirectory(Format('%s:', [Value]));
 end;
 
@@ -1348,14 +1335,14 @@ begin
   if (Length(NewDirectory) = 0) or (AnsiCompareText(NewDirectory, Directory) = 0) then
     Exit;
   NewDrive := ExtractFileDrive(NewDirectory);
-  if (Length(NewDrive) <> 2) then // we only support single char drives (no UNC's)
+  if Length(NewDrive) <> 2 then // we only support single Char drives (no UNC's)
     Exit;
   //  ProcessPath(NewDirectory, NewDrive, DirPart, FilePart);
   try
     if Drive <> NewDrive[1] then
     begin
       FInSetDir := True;
-      if (FDriveCombo <> nil) then
+      if FDriveCombo <> nil then
         FDriveCombo.Drive := NewDrive[1]
       else
         DriveChange(NewDrive[1]);
@@ -1372,7 +1359,7 @@ end;
 procedure TJvDirectoryListBox.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
-  if (Word(Key) = VK_RETURN) then
+  if Word(Key) = VK_RETURN then
     OpenCurrent;
 end;
 
@@ -1380,13 +1367,15 @@ procedure TJvDirectoryListBox.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) then
+  if Operation = opRemove then
   begin
-    if (AComponent = FFileList) then
+    if AComponent = FFileList then
       FFileList := nil
-    else if (AComponent = FDriveCombo) then
+    else
+    if AComponent = FDriveCombo then
       FDriveCombo := nil
-    else if (AComponent = FDirLabel) then
+    else
+    if AComponent = FDirLabel then
       FDirLabel := nil;
   end;
 end;
@@ -1404,13 +1393,41 @@ begin
   end;
 end;
 
+procedure TJvDirectoryListBox.SetDriveCombo(const Value: TJvDriveCombo);
+begin
+  if FDriveCombo <> nil then
+    FDriveCombo.FDirList := nil;
+  FDriveCombo := Value;
+  if FDriveCombo <> nil then
+  begin
+    FDriveCombo.FDirList := self;
+    FDriveCombo.Drive := Drive;
+    FDriveCombo.FreeNotification(Self);
+  end;
+end;
+
+procedure TJvDirectoryListBox.Click;
+begin
+  if FAutoExpand then
+    OpenCurrent;
+  inherited Click;
+end;
+
+procedure TJvDirectoryListBox.SetAutoExpand(const Value: Boolean);
+begin
+  FAutoExpand := Value;
+end;
+
+//=== TJvFileListBox =========================================================
+
 constructor TJvFileListBox.Create(AOwner: TComponent);
-var shi: TSHFileInfo;
+var
+  shi: TSHFileInfo;
 begin
   inherited Create(AOwner);
   FImages := TImageList.CreateSize(16, 16);
   FImages.ShareImages := True;
-  FImages.Handle := SHGetFileInfo('', 0, shi, sizeof(shi), SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
+  FImages.Handle := SHGetFileInfo('', 0, shi, SizeOf(shi), SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
   FImages.Drawingstyle := dsTransparent;
 
   FSearchFiles := TJvSearchFiles.Create(Self);
@@ -1443,7 +1460,7 @@ const
   SHGFI_OVERLAYINDEX = $00000040;
   {TFileAttr = (ftReadOnly, ftHidden, ftSystem, ftVolumeID, ftDirectory,
     ftArchive, ftNormal);}
-  Attributes: array[TFileAttr] of Word = (FILE_ATTRIBUTE_READONLY, FILE_ATTRIBUTE_HIDDEN,
+  Attributes: array [TFileAttr] of Word = (FILE_ATTRIBUTE_READONLY, FILE_ATTRIBUTE_HIDDEN,
     FILE_ATTRIBUTE_SYSTEM, 0 {faVolumeID}, 0 {faDirectory}, FILE_ATTRIBUTE_ARCHIVE,
     FILE_ATTRIBUTE_READONLY or FILE_ATTRIBUTE_ARCHIVE or FILE_ATTRIBUTE_NORMAL {faNormal});
 var
@@ -1516,7 +1533,7 @@ begin
   end;
 end;
 
-procedure TJvFileListBox.SetForceFileExtensions(const Value: boolean);
+procedure TJvFileListBox.SetForceFileExtensions(const Value: Boolean);
 begin
   if FForceFileExtensions <> Value then
   begin
@@ -1525,11 +1542,11 @@ begin
   end;
 end;
 
-procedure TJvFileListBox.CNDrawItem(var Message: TWMDrawItem);
+procedure TJvFileListBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;
 begin
-  with Message.DrawItemStruct^ do
+  with Msg.DrawItemStruct^ do
   begin
     State := TOwnerDrawState(Lo(itemState));
     Canvas.Handle := hDC;
@@ -1585,31 +1602,6 @@ begin
     if odFocused in State then
       DrawFocusRect(tmpR);
   end;
-end;
-
-procedure TJvDirectoryListBox.SetDriveCombo(const Value: TJvDriveCombo);
-begin
-  if FDriveCombo <> nil then
-    FDriveCombo.FDirList := nil;
-  FDriveCombo := Value;
-  if FDriveCombo <> nil then
-  begin
-    FDriveCombo.FDirList := self;
-    FDriveCombo.Drive := Drive;
-    FDriveCombo.FreeNotification(Self);
-  end;
-end;
-
-procedure TJvDirectoryListBox.Click;
-begin
-  if FAutoExpand then
-    OpenCurrent;
-  inherited;
-end;
-
-procedure TJvDirectoryListBox.SetAutoExpand(const Value: boolean);
-begin
-  FAutoExpand := Value;
 end;
 
 end.

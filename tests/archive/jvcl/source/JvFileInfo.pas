@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -36,68 +36,65 @@ unit JvFileInfo;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ShellAPI, JvComponent, JvTypes;
+  Windows, SysUtils, Classes, Graphics, Controls,
+  ShellAPI,
+  JvComponent, JvTypes;
 
 type
-  TJvExeType=(etNone,etMSDos,etWin16,etWin32,etConsole);
-  TJvIconModifier=(imNormal,imOverlay,imSelected,imOpen,imShellSize,imSmall);
+  TJvExeType = (etNone, etMSDos, etWin16, etWin32, etConsole);
+  TJvIconModifier = (imNormal, imOverlay, imSelected, imOpen, imShellSize, imSmall);
 
   TJvFileInfo = class(TJvComponent)
   private
-    { Private declarations }
-    FLargeImages:TImageList;
-    FSmallImages:TImageList;
-    FFilename:TFilename;
-    FModifier:TJvIconModifier;
+    FLargeImages: TImageList;
+    FSmallImages: TImageList;
+    FFileName: TFileName;
+    FModifier: TJvIconModifier;
     FIcon: TIcon;
-    function GetSmallImages:TImageList;
-    function GetLargeImages:TImageList;
+    function GetSmallImages: TImageList;
+    function GetLargeImages: TImageList;
     procedure SetIcon(const Value: TIcon);
   protected
-    { Protected declarations }
-    FIntDummy:integer;
-    FStrDummy:string;
-    FExeDummy:TJvExeType;
-    FHandleDummy:THandle;
-    function GetIconIndex:integer;
-    function GetDisplayName:string;
-    function GeTJvExeType:TJvExeType;
-    function GetAttributes:integer;
-    function GetIconLocation:string;
-    function GetTypeString:string;
-    function GetIconHandle:THandle;
-    function GetAttrString:string;
-    procedure SetFileName(Value:TFilename);
-    procedure SetModifier(Value:TJvIconModifier);
+    FIntDummy: Integer;
+    FStrDummy: string;
+    FExeDummy: TJvExeType;
+    FHandleDummy: THandle;
+    function GetIconIndex: Integer;
+    function GetDisplayName: string;
+    function GeTJvExeType: TJvExeType;
+    function GetAttributes: Integer;
+    function GetIconLocation: string;
+    function GetTypeString: string;
+    function GetIconHandle: THandle;
+    function GetAttrString: string;
+    procedure SetFileName(Value: TFileName);
+    procedure SetModifier(Value: TJvIconModifier);
   public
-    { Public declarations }
-    property LargeImages:TImageList read FLargeImages;
-    property SmallImages:TImageList read FSmallImages;
-    property IconHandle:THandle read GetIconHandle stored false;
-    property Attributes:integer read GetAttributes stored false;
+    property LargeImages: TImageList read FLargeImages;
+    property SmallImages: TImageList read FSmallImages;
+    property IconHandle: THandle read GetIconHandle stored False;
+    property Attributes: Integer read GetAttributes stored False;
     function GetCustomInformation(Value: string): TFileInformation;
   published
-    { Published declarations }
-    constructor Create(Aowner:TComponent);override;
-    destructor Destroy;override;
-    property Filename:TFilename read FFilename write SetFilename stored false;
-    property Modifier:TJvIconModifier read FModifier write SetModifier default imNormal;
-    property IconIndex:integer read GetIconIndex write FIntDummy stored false;
-    property DisplayName:string read GetDisplayName write FStrDummy stored false;
-    property ExeType:TJvExeType read GeTJvExeType write FExeDummy stored false;
-    property AttrString:string read GetAttrString write FStrDummy stored false;
-    property IconLocation:string read GetIconLocation write FStrDummy stored false;
-    property TypeString:string read GetTypeString write FStrDummy stored false;
-    property Icon:TIcon read FIcon write SetIcon stored false;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property FileName: TFileName read FFileName write SetFileName stored False;
+    property Modifier: TJvIconModifier read FModifier write SetModifier default imNormal;
+    property IconIndex: Integer read GetIconIndex write FIntDummy stored False;
+    property DisplayName: string read GetDisplayName write FStrDummy stored False;
+    property ExeType: TJvExeType read GeTJvExeType write FExeDummy stored False;
+    property AttrString: string read GetAttrString write FStrDummy stored False;
+    property IconLocation: string read GetIconLocation write FStrDummy stored False;
+    property TypeString: string read GetTypeString write FStrDummy stored False;
+    property Icon: TIcon read FIcon write SetIcon stored False;
   end;
 
-
 implementation
+
 uses
   Registry;
-  
-constructor TJvFileInfo.Create(Aowner:TComponent);
+
+constructor TJvFileInfo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FIcon := TIcon.Create;
@@ -106,132 +103,138 @@ begin
     GetLargeImages;
     GetSmallImages;
   end;
-  SetFilename(FFilename);
+  SetFileName(FFileName);
 end;
 
 destructor TJvFileInfo.Destroy;
 begin
-  if Assigned(FLargeImages) then
-    FLargeImages.Free;
-  if Assigned(FSmallImages) then
-    FSmallImages.Free;
+  FLargeImages.Free;
+  FSmallImages.Free;
   FIcon.Free;
   inherited Destroy;
 end;
 
-function TJvFileInfo.GetLargeImages:TImageList;
-var SysIL: THandle; sfi: TSHFileInfo;
+function TJvFileInfo.GetLargeImages: TImageList;
+var
+  SysIL: THandle;
+  Sfi: TSHFileInfo;
 begin
   if not Assigned(FLargeImages) then
     FLargeImages := TImageList.Create(Self);
-  SysIL := SHGetFileInfo('', 0, sfi, SizeOf(sfi),
-     SHGFI_SYSICONINDEX or SHGFI_LARGEICON);
+  SysIL := SHGetFileInfo('', 0, Sfi, SizeOf(TSHFileInfo), SHGFI_SYSICONINDEX or SHGFI_LARGEICON);
   if SysIL <> 0 then
     FLargeImages.Handle := SysIL;
-  FLargeImages.ShareImages := true;
+  FLargeImages.ShareImages := True;
   Result := FLargeImages;
 end;
 
-function TJvFileInfo.GetSmallImages:TImageList;
-var SysIL: THandle; sfi: TSHFileInfo;
+function TJvFileInfo.GetSmallImages: TImageList;
+var
+  SysIL: THandle;
+  Sfi: TSHFileInfo;
 begin
   if not Assigned(FSmallImages) then
     FSmallImages := TImageList.Create(Self);
-  SysIL := SHGetFileInfo('', 0, sfi, SizeOf(sfi),
-     SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
+  SysIL := SHGetFileInfo('', 0, Sfi, SizeOf(TSHFileInfo), SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
   if SysIL <> 0 then
     FSmallImages.Handle := SysIL;
-  FSmallImages.ShareImages := true;
+  FSmallImages.ShareImages := True;
   Result := FSmallImages;
 end;
 
-procedure TJvFileInfo.SetModifier(Value:TJvIconModifier);
+procedure TJvFileInfo.SetModifier(Value: TJvIconModifier);
 begin
   FModifier := Value;
-  GetIconHandle
+  GetIconHandle;
 end;
 
-procedure TJvFileInfo.SetFileName(Value:TFilename);
+procedure TJvFileInfo.SetFileName(Value: TFileName);
 begin
-  FFilename := Value;
+  FFileName := Value;
   GetIconHandle;
 end;
 
 { returns index of icon for filename in the systemlist }
-function TJvFileInfo.GetIconIndex:integer;
-var    sfi: TSHFileInfo;
+
+function TJvFileInfo.GetIconIndex: Integer;
+var
+  Sfi: TSHFileInfo;
 begin
-  SHGetFileInfo(PChar(FFilename), 0, sfi, SizeOf(TSHFileInfo),
-                 SHGFI_SYSICONINDEX);
-  Result := sfi.iIcon;
+  SHGetFileInfo(PChar(FFileName), 0, Sfi, SizeOf(TSHFileInfo), SHGFI_SYSICONINDEX);
+  Result := Sfi.iIcon;
 end;
 
-function TJvFileInfo.GetDisplayName:string;
-var sfi: TSHFileInfo;
+function TJvFileInfo.GetDisplayName: string;
+var
+  Sfi: TSHFileInfo;
 begin
-  SHGetFileInfo(PChar(FFilename), 0, sfi, SizeOf(TSHFileInfo),
-                 SHGFI_DISPLAYNAME);
-  Result := sfi.szDisplayName;
+  SHGetFileInfo(PChar(FFileName), 0, Sfi, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME);
+  Result := Sfi.szDisplayName;
 end;
 
-function TJvFileInfo.GeTJvExeType:TJvExeType;
-var sfi: TSHFileInfo;Res:integer;// sLo,sHi:string;
+function TJvFileInfo.GeTJvExeType: TJvExeType;
+var
+  Sfi: TSHFileInfo;
+  Res: Integer; // sLo,sHi:string;
 begin
   Result := etNone;
-  Res := SHGetFileInfo(PChar(FFilename), 0, sfi, SizeOf(TSHFileInfo),
-                 SHGFI_EXETYPE);
-  if Res = 0 then Exit;
+  Res := SHGetFileInfo(PChar(FFileName), 0, Sfi, SizeOf(TSHFileInfo), SHGFI_EXETYPE);
+  if Res = 0 then
+    Exit;
   case Lo(Res) of
-    77: Result := etMSDos;
-    78: Result := etWin16;
-    80: Result := etWin32;
+    77:
+      Result := etMSDos;
+    78:
+      Result := etWin16;
+    80:
+      Result := etWin32;
   else
     Result := etConsole; { ? }
   end;
 end;
 
-function TJvFileInfo.GetAttributes:integer;
-// var    sfi: TSHFileInfo;
+function TJvFileInfo.GetAttributes: Integer;
+// var    Sfi: TSHFileInfo;
 begin
 { this doesn't work, use "old" method instead }
 {
-  SHGetFileInfo(PChar(FFilename), 0, sfi, SizeOf(TSHFileInfo),
-                 SHGFI_ATTRIBUTES);
-  Result := sfi.dwAttributes;}
-  Result := GetFileAttributes(PChar(FFilename));
+  SHGetFileInfo(PChar(FFileName), 0, Sfi, SizeOf(TSHFileInfo), SHGFI_ATTRIBUTES);
+  Result := Sfi.dwAttributes;}
+  Result := GetFileAttributes(PChar(FFileName));
 end;
 
-function TJvFileInfo.GetAttrString:string;
-var i:integer;
+function TJvFileInfo.GetAttrString: string;
+var
+  I: Integer;
 begin
-  i := GetAttributes;
+  I := GetAttributes;
   Result := '';
-  if boolean(i and FILE_ATTRIBUTE_NORMAL) then
+  if (I and FILE_ATTRIBUTE_NORMAL) <> 0 then
     Exit; { no attributes }
-  if boolean(i and FILE_ATTRIBUTE_ARCHIVE) then
+  if (I and FILE_ATTRIBUTE_ARCHIVE) <> 0 then
     Result := Result + 'A';
-  if boolean(i and FILE_ATTRIBUTE_COMPRESSED) then
+  if (I and FILE_ATTRIBUTE_COMPRESSED) <> 0 then
     Result := Result + 'C';
-  if boolean(i and FILE_ATTRIBUTE_DIRECTORY) then
+  if (I and FILE_ATTRIBUTE_DIRECTORY) <> 0 then
     Result := Result + 'D';
-  if boolean(i and FILE_ATTRIBUTE_HIDDEN) then
+  if (I and FILE_ATTRIBUTE_HIDDEN) <> 0 then
     Result := Result + 'H';
-  if boolean(i and FILE_ATTRIBUTE_READONLY) then
+  if (I and FILE_ATTRIBUTE_READONLY) <> 0 then
     Result := Result + 'R';
-  if boolean(i and FILE_ATTRIBUTE_SYSTEM) then
+  if (I and FILE_ATTRIBUTE_SYSTEM) <> 0 then
     Result := Result + 'S';
 end;
 
-function strTrimAll(const S : String; const Chars : TSysCharSet) : String;
-var i,j:integer;
+function StrTrimAll(const S: string; const Chars: TSysCharSet): string;
+var
+  I: Integer;
 begin
-  j := Length(S);
-  for i := 1 to j do
-    if not (S[i] in Chars) then
-      Result := Result + S[i];
+  for I := 1 to Length(S) do
+    if not (S[I] in Chars) then
+      Result := Result + S[I];
 end;
 
-function AddDot(S:string):string;
+function AddDot(S: string): string;
 begin
   Result := S;
   if (Length(Result) > 0) and (Result[1] <> '.') then
@@ -239,57 +242,63 @@ begin
 end;
 
 function ExpandEnvVar(const Value: string): string;
-var aDest: array[0..MAX_PATH] of char;
+var
+  Dest: array [0..MAX_PATH] of Char;
 begin
-  ExpandEnvironmentStrings(PChar(Value), aDest, MAX_PATH - 1);
-  Result := aDest;
+  ExpandEnvironmentStrings(PChar(Value), Dest, MAX_PATH - 1);
+  Result := Dest;
 end;
 
-function GetAdvancedIconLocation(const Filename:string;var iIcon:integer):string;
-var Reg:TRegistry;Ext,sPath,tmp:string;i:integer;sfi:TShFileInfo;
+function GetAdvancedIconLocation(const FileName: string; var iIcon: Integer): string;
+var
+  Reg: TRegistry;
+  Ext, sPath, Tmp: string;
+  I: Integer;
+  Sfi: TSHFileInfo;
 begin
   // first try the easy way:
-  SHGetFileInfo(PChar(Filename),0,sfi,sizeof(sfi),SHGFI_ICON or SHGFI_ICONLOCATION);
-  Result := sfi.szDisplayName;
+  SHGetFileInfo(PChar(FileName), 0, Sfi, SizeOf(TSHFileInfo), SHGFI_ICON or SHGFI_ICONLOCATION);
+  Result := Sfi.szDisplayName;
   if Result <> '' then
   begin
-    iIcon := sfi.iIcon;
+    iIcon := Sfi.iIcon;
     Exit;
   end;
 
-  if Pos('.',Filename) > 0 then
-    Ext := ExtractFileExt(strTrimAll(Filename,['"','''']))
+  if Pos('.', FileName) > 0 then
+    Ext := ExtractFileExt(StrTrimAll(FileName, ['"', '''']))
   else
-    Ext := AddDot(Filename);
+    Ext := AddDot(FileName);
 
-  if (Length(Ext)  = 0) then Exit;
+  if Length(Ext) = 0 then
+    Exit;
   Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_CLASSES_ROOT;
     // is the key present ?
-    if Reg.OpenKey(Ext,false) then
+    if Reg.OpenKey(Ext, False) then
       // get ID to associated program:
       Result := Reg.ReadString('');
-    if Reg.OpenKey('\' + Result + '\DefaultIcon',false) then
+    if Reg.OpenKey('\' + Result + '\DefaultIcon', False) then
       Result := Reg.ReadString(''); // path (and possibly index) to icon location
     if Length(Result) > 0 then
     begin
-      if Pos('%1',Result) > 0 then
-        Result := Filename; // instance specific icon
-      i := Pos(',',Result);
+      if Pos('%1', Result) > 0 then
+        Result := FileName; // instance specific icon
+      I := Pos(',', Result);
       sPath := '';
-      if i > 0 then
+      if I > 0 then
       begin
-        sPath := Copy(Result,i + 1,MaxInt);
-        Result := Copy(Result,1,i - 1);
+        sPath := Copy(Result, I + 1, MaxInt);
+        Result := Copy(Result, 1, I - 1);
       end;
-      tmp := '';
-      for i := 1 to Length(sPath) do
-        if not (sPath[i] in ['-','0'..'9']) then
+      Tmp := '';
+      for I := 1 to Length(sPath) do
+        if not (sPath[I] in ['-', '0'..'9']) then
           Continue
         else
-          tmp := tmp + sPath[i];
-      iIcon := Abs(StrToIntDef(tmp,0)); // convert to positive index
+          Tmp := Tmp + sPath[I];
+      iIcon := Abs(StrToIntDef(Tmp, 0)); // convert to positive index
     end
   finally
     Reg.Free;
@@ -297,37 +306,39 @@ begin
   Result := ExpandEnvVar(Result); // replace any environment variables in path (like %systemroot%)
 end;
 
-function TJvFileInfo.GetIconLocation:string;
-var sfi: TSHFileInfo;iIcon:integer;
+function TJvFileInfo.GetIconLocation: string;
+var
+  Sfi: TSHFileInfo;
+  iIcon: Integer;
 begin
   { this doesn't seem to work on files, only on directories (always returns an empty string)... }
-  SHGetFileInfo(PChar(FFilename), 0, sfi, SizeOf(TSHFileInfo),
-                 SHGFI_ICONLOCATION);
-    Result := sfi.szDisplayName;
+  SHGetFileInfo(PChar(FFileName), 0, Sfi, SizeOf(TSHFileInfo), SHGFI_ICONLOCATION);
+  Result := Sfi.szDisplayName;
   if Result = '' then
-    Result := strTrimAll(GetAdvancedIconLocation(FFilename,iIcon),['"']);
+    Result := StrTrimAll(GetAdvancedIconLocation(FFileName, iIcon), ['"']);
 end;
 
-function TJvFileInfo.GetTypeString:string;
-var    sfi: TSHFileInfo;
-begin
-  SHGetFileInfo(PChar(FFilename), 0, sfi, SizeOf(TSHFileInfo),
-                 SHGFI_TYPENAME);
-  Result := sfi.szTypeName;
-  if Result = '' then
-    Result := AnsiUpperCase(Copy(ExtractFileExt(FFilename),2,MaxInt)) + ' file';
-end;
-
-function TJvFileInfo.GetIconHandle:THandle;
-const
-  aModifier:array [TJvIconModifier] of integer = (0,SHGFI_LINKOVERLAY,SHGFI_SELECTED,SHGFI_OPENICON,SHGFI_SHELLICONSIZE,SHGFI_SMALLICON);
+function TJvFileInfo.GetTypeString: string;
 var
-  sfi: TSHFileInfo;
+  Sfi: TSHFileInfo;
 begin
-  SHGetFileInfo(PChar(FFilename), 0, sfi, SizeOf(TSHFileInfo),
-                 SHGFI_SYSICONINDEX or SHGFI_ICON or aModifier[FModifier]);
-  Result := sfi.hIcon;
-  FIcon.Handle := sfi.hIcon;
+  SHGetFileInfo(PChar(FFileName), 0, Sfi, SizeOf(TSHFileInfo), SHGFI_TYPENAME);
+  Result := Sfi.szTypeName;
+  if Result = '' then
+    Result := AnsiUpperCase(Copy(ExtractFileExt(FFileName), 2, MaxInt)) + ' file';
+end;
+
+function TJvFileInfo.GetIconHandle: THandle;
+const
+  Modifier: array [TJvIconModifier] of Integer =
+    (0, SHGFI_LINKOVERLAY, SHGFI_SELECTED, SHGFI_OPENICON, SHGFI_SHELLICONSIZE, SHGFI_SMALLICON);
+var
+  Sfi: TSHFileInfo;
+begin
+  SHGetFileInfo(PChar(FFileName), 0, Sfi, SizeOf(TSHFileInfo),
+    SHGFI_SYSICONINDEX or SHGFI_ICON or Modifier[FModifier]);
+  Result := Sfi.hIcon;
+  FIcon.Handle := Sfi.hIcon;
 end;
 
 procedure TJvFileInfo.SetIcon(const Value: TIcon);
@@ -337,25 +348,24 @@ end;
 
 function TJvFileInfo.GetCustomInformation(Value: string): TFileInformation;
 var
-  tmp: SHFILEINFO;
-  flags: Cardinal;
+  Tmp: SHFILEINFO;
+  Flags: Cardinal;
 begin
-  flags := SHGFI_ICONLOCATION;
-  SHGetFileInfo(PChar(Value), 0, tmp, SizeOf(tmp), flags);
-  Result.Location := tmp.szDisplayName;
+  Flags := SHGFI_ICONLOCATION;
+  SHGetFileInfo(PChar(Value), 0, Tmp, SizeOf(SHFILEINFO), Flags);
+  Result.Location := Tmp.szDisplayName;
 
-  flags := SHGFI_DISPLAYNAME + SHGFI_ATTRIBUTES + SHGFI_TYPENAME + SHGFI_SYSICONINDEX;
-  SHGetFileInfo(PChar(Value), 0, tmp, SizeOf(tmp), flags);
-  Result.DisplayName := tmp.szDisplayName;
-  Result.Attributes := tmp.dwAttributes;
-  Result.TypeName := tmp.szTypeName;
-  Result.SysIconIndex := tmp.iIcon;
+  Flags := SHGFI_DISPLAYNAME + SHGFI_ATTRIBUTES + SHGFI_TYPENAME + SHGFI_SYSICONINDEX;
+  SHGetFileInfo(PChar(Value), 0, Tmp, SizeOf(SHFILEINFO), Flags);
+  Result.DisplayName := Tmp.szDisplayName;
+  Result.Attributes := Tmp.dwAttributes;
+  Result.TypeName := Tmp.szTypeName;
+  Result.SysIconIndex := Tmp.iIcon;
 
-  flags := SHGFI_EXETYPE + SHGFI_ICON;
-  Result.ExeType := SHGetFileInfo(PChar(Value), 0, tmp, SizeOf(tmp), flags);
-  Result.Icon := tmp.hIcon;
+  Flags := SHGFI_EXETYPE + SHGFI_ICON;
+  Result.ExeType := SHGetFileInfo(PChar(Value), 0, Tmp, SizeOf(SHFILEINFO), Flags);
+  Result.Icon := Tmp.hIcon;
 end;
 
 end.
-
 

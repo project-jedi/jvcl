@@ -28,14 +28,12 @@ Known Issues:
 
 unit JvDiskPrompt;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, SysUtils, Classes,
   SetupApi,
-  JvCommonDialogD, JvBaseDlg, JvTypes;
+  JvCommonDialogD, JvTypes;
 
 type
   TJvDiskPrompt = class(TJvCommonDialogD)
@@ -64,8 +62,6 @@ implementation
 uses
   JclSysUtils;
 
-{**************************************************}
-
 constructor TJvDiskPrompt.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -76,8 +72,6 @@ begin
   FNewPath := '';
   FStyle := [];
 end;
-
-{**************************************************}
 
 function TJvDiskPrompt.Execute: TDiskRes;
 var

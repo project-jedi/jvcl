@@ -12,7 +12,7 @@ The Original Code is: JvDateUtil.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -24,18 +24,19 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$I JVCL.INC}
-
 
 unit JvDateUtil;
 
-
 interface
- {$IFDEF COMPILER6_UP}
-  uses RTLConsts;
+
+{$IFDEF COMPILER6}
+uses
+  RTLConsts;
+{$ELSE
+{$IFDEF COMPILER7_UP}
+uses
+  SysConst;
 {$ENDIF}
-
-
 
 function CurrentYear: Word;
 function IsLeapYear(AYear: Integer): Boolean;
@@ -54,10 +55,9 @@ function ValidDate(ADate: TDateTime): Boolean;
 procedure DateDiff(Date1, Date2: TDateTime; var Days, Months, Years: Word);
 function MonthsBetween(Date1, Date2: TDateTime): Double;
 function DaysInPeriod(Date1, Date2: TDateTime): Longint;
-  { Count days between Date1 and Date2 + 1, so if Date1 = Date2 result = 1 }
+{ Count days between Date1 and Date2 + 1, so if Date1 = Date2 result = 1 }
 function DaysBetween(Date1, Date2: TDateTime): Longint;
-  { The same as previous but if Date2 < Date1 result = 0 }
-
+{ The same as previous but if Date2 < Date1 result = 0 }
 function IncTime(ATime: TDateTime; Hours, Minutes, Seconds, MSecs: Integer): TDateTime;
 function IncHour(ATime: TDateTime; Delta: Integer): TDateTime;
 function IncMinute(ATime: TDateTime; Delta: Integer): TDateTime;
@@ -96,15 +96,20 @@ function FourDigitYear: Boolean;
 
 const
   CenturyOffset: Byte = 60;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   NullDate: TDateTime = {-693594} 0;
-{$ELSE}
+  {$ELSE}
   NullDate: TDateTime = 0;
-{$ENDIF}
+  {$ENDIF}
 
 implementation
 
-uses SysUtils, {$IFDEF WIN32} Windows, {$ENDIF} Consts, JvStrUtils;
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ENDIF}
+  SysUtils, Consts,
+  JvStrUtils;
 
 function IsLeapYear(AYear: Integer): Boolean;
 begin
@@ -113,11 +118,12 @@ end;
 
 function DaysPerMonth(AYear, AMonth: Integer): Integer;
 const
-  DaysInMonth: array[1..12] of Integer =
-    (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+  DaysInMonth: array [1..12] of Integer =
+  (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 begin
   Result := DaysInMonth[AMonth];
-  if (AMonth = 2) and IsLeapYear(AYear) then Inc(Result); { leap-year Feb is special }
+  if (AMonth = 2) and IsLeapYear(AYear) then
+    Inc(Result); { leap-year Feb is special }
 end;
 
 function FirstDayOfNextMonth: TDateTime;
@@ -126,8 +132,10 @@ var
 begin
   DecodeDate(Date, Year, Month, Day);
   Day := 1;
-  if Month < 12 then Inc(Month)
-  else begin
+  if Month < 12 then
+    Inc(Month)
+  else
+  begin
     Inc(Year);
     Month := 1;
   end;
@@ -140,8 +148,10 @@ var
 begin
   DecodeDate(Date, Year, Month, Day);
   Day := 1;
-  if Month > 1 then Dec(Month)
-  else begin
+  if Month > 1 then
+    Dec(Month)
+  else
+  begin
     Dec(Year);
     Month := 12;
   end;
@@ -186,19 +196,25 @@ var
   Day, Month, Year: Longint;
 begin
   DecodeDate(ADate, Y, M, D);
-  Year := Y; Month := M; Day := D;
+  Year := Y;
+  Month := M;
+  Day := D;
   Inc(Year, Years);
   Inc(Year, Months div 12);
   Inc(Month, Months mod 12);
-  if Month < 1 then begin
+  if Month < 1 then
+  begin
     Inc(Month, 12);
     Dec(Year);
   end
-  else if Month > 12 then begin
+  else
+  if Month > 12 then
+  begin
     Dec(Month, 12);
     Inc(Year);
   end;
-  if Day > DaysPerMonth(Year, Month) then Day := DaysPerMonth(Year, Month);
+  if Day > DaysPerMonth(Year, Month) then
+    Day := DaysPerMonth(Year, Month);
   Result := EncodeDate(Year, Month, Day) + Days + Frac(ADate);
 end;
 
@@ -208,7 +224,8 @@ var
   DtSwap: TDateTime;
   Day1, Day2, Month1, Month2, Year1, Year2: Word;
 begin
-  if Date1 > Date2 then begin
+  if Date1 > Date2 then
+  begin
     DtSwap := Date1;
     Date1 := Date2;
     Date2 := DtSwap;
@@ -218,18 +235,22 @@ begin
   Years := Year2 - Year1;
   Months := 0;
   Days := 0;
-  if Month2 < Month1 then begin
+  if Month2 < Month1 then
+  begin
     Inc(Months, 12);
     Dec(Years);
   end;
   Inc(Months, Month2 - Month1);
-  if Day2 < Day1 then begin
+  if Day2 < Day1 then
+  begin
     Inc(Days, DaysPerMonth(Year1, Month1));
-    if Months = 0 then begin
+    if Months = 0 then
+    begin
       Dec(Years);
       Months := 11;
     end
-    else Dec(Months);
+    else
+      Dec(Months);
   end;
   Inc(Days, Day2 - Day1);
 end;
@@ -255,10 +276,17 @@ var
 begin
   DateDiff(Date1, Date2, D, M, Y);
   Result := 12 * Y + M;
-  if (D > 1) and (D < 7) then Result := Result + 0.25
-  else if (D >= 7) and (D < 15) then Result := Result + 0.5
-  else if (D >= 15) and (D < 21) then Result := Result + 0.75
-  else if (D >= 21) then Result := Result + 1;
+  if (D > 1) and (D < 7) then
+    Result := Result + 0.25
+  else
+  if (D >= 7) and (D < 15) then
+    Result := Result + 0.5
+  else
+  if (D >= 15) and (D < 21) then
+    Result := Result + 0.75
+  else
+  if D >= 21 then
+    Result := Result + 1;
 end;
 
 function IsValidDate(Y, M, D: Word): Boolean;
@@ -283,13 +311,15 @@ function DaysInPeriod(Date1, Date2: TDateTime): Longint;
 begin
   if ValidDate(Date1) and ValidDate(Date2) then
     Result := Abs(Trunc(Date2) - Trunc(Date1)) + 1
-  else Result := 0;
+  else
+    Result := 0;
 end;
 
 function DaysBetween(Date1, Date2: TDateTime): Longint;
 begin
   Result := Trunc(Date2) - Trunc(Date1) + 1;
-  if Result < 0 then Result := 0;
+  if Result < 0 then
+    Result := 0;
 end;
 
 function IncTime(ATime: TDateTime; Hours, Minutes, Seconds,
@@ -297,7 +327,8 @@ function IncTime(ATime: TDateTime; Hours, Minutes, Seconds,
 begin
   Result := ATime + (Hours div 24) + (((Hours mod 24) * 3600000 +
     Minutes * 60000 + Seconds * 1000 + MSecs) / MSecsPerDay);
-  if Result < 0 then Result := Result + 1;
+  if Result < 0 then
+    Result := Result + 1;
 end;
 
 function IncHour(ATime: TDateTime; Delta: Integer): TDateTime;
@@ -325,7 +356,7 @@ begin
   Result := Trunc(ADate);
 end;
 
-function CurrentYear: Word; 
+function CurrentYear: Word;
 var
   SystemTime: TSystemTime;
 begin
@@ -340,7 +371,8 @@ var
   I: Integer;
 begin
   I := Pos;
-  while (I <= Length(S)) and (S[I] = ' ') do Inc(I);
+  while (I <= Length(S)) and (S[I] = ' ') do
+    Inc(I);
   Pos := I;
 end;
 
@@ -360,7 +392,8 @@ begin
     N := N * 10 + (Ord(S[I]) - Ord('0'));
     Inc(I);
   end;
-  if I > Pos then begin
+  if I > Pos then
+  begin
     Pos := I;
     Number := N;
     Result := True;
@@ -371,7 +404,8 @@ function ScanChar(const S: string; var Pos: Integer; Ch: Char): Boolean;
 begin
   Result := False;
   ScanBlanks(S, Pos);
-  if (Pos <= Length(S)) and (S[Pos] = Ch) then begin
+  if (Pos <= Length(S)) and (S[Pos] = Ch) then
+  begin
     Inc(Pos);
     Result := True;
   end;
@@ -380,8 +414,10 @@ end;
 {$IFDEF COMPILER3_UP}
 procedure ScanToNumber(const S: string; var Pos: Integer);
 begin
-  while (Pos <= Length(S)) and not (S[Pos] in ['0'..'9']) do begin
-    if S[Pos] in LeadBytes then Inc(Pos);
+  while (Pos <= Length(S)) and not (S[Pos] in ['0'..'9']) do
+  begin
+    if S[Pos] in LeadBytes then
+      Inc(Pos);
     Inc(Pos);
   end;
 end;
@@ -393,14 +429,19 @@ var
 begin
   Result := DefaultDateOrder;
   I := 1;
-  while I <= Length(DateFormat) do begin
+  while I <= Length(DateFormat) do
+  begin
     case Chr(Ord(DateFormat[I]) and $DF) of
-{$IFDEF COMPILER3_UP}
-      'E': Result := doYMD;
-{$ENDIF}
-      'Y': Result := doYMD;
-      'M': Result := doMDY;
-      'D': Result := doDMY;
+      {$IFDEF COMPILER3_UP}
+      'E':
+        Result := doYMD;
+      {$ENDIF}
+      'Y':
+        Result := doYMD;
+      'M':
+        Result := doMDY;
+      'D':
+        Result := doDMY;
     else
       Inc(I);
       Continue;
@@ -415,7 +456,8 @@ var
   N: Longint;
 begin
   Result := Year;
-  if Result < 100 then begin
+  if Result < 100 then
+  begin
     N := CurrentYear - CenturyOffset;
     Inc(Result, N div 100 * 100);
     if (CenturyOffset > 0) and (Result < N) then
@@ -430,58 +472,86 @@ var
   N1, N2, N3: Longint;
 begin
   Result := False;
-  Y := 0; M := 0; D := 0;
+  Y := 0;
+  M := 0;
+  D := 0;
   DateOrder := GetDateOrder(DateFormat);
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   if ShortDateFormat[1] = 'g' then { skip over prefix text }
     ScanToNumber(S, Pos);
-{$ENDIF COMPILER3_UP}
+  {$ENDIF COMPILER3_UP}
   if not (ScanNumber(S, MaxInt, Pos, N1) and ScanChar(S, Pos, DateSeparator) and
-    ScanNumber(S, MaxInt, Pos, N2)) then Exit;
-  if ScanChar(S, Pos, DateSeparator) then begin
-    if not ScanNumber(S, MaxInt, Pos, N3) then Exit;
+    ScanNumber(S, MaxInt, Pos, N2)) then
+    Exit;
+  if ScanChar(S, Pos, DateSeparator) then
+  begin
+    if not ScanNumber(S, MaxInt, Pos, N3) then
+      Exit;
     case DateOrder of
-      doMDY: begin Y := N3; M := N1; D := N2; end;
-      doDMY: begin Y := N3; M := N2; D := N1; end;
-      doYMD: begin Y := N1; M := N2; D := N3; end;
+      doMDY:
+        begin
+          Y := N3;
+          M := N1;
+          D := N2;
+        end;
+      doDMY:
+        begin
+          Y := N3;
+          M := N2;
+          D := N1;
+        end;
+      doYMD:
+        begin
+          Y := N1;
+          M := N2;
+          D := N3;
+        end;
     end;
     Y := ExpandYear(Y);
   end
-  else begin
+  else
+  begin
     Y := CurrentYear;
-    if DateOrder = doDMY then begin
-      D := N1; M := N2;
+    if DateOrder = doDMY then
+    begin
+      D := N1;
+      M := N2;
     end
-    else begin
-      M := N1; D := N2;
+    else
+    begin
+      M := N1;
+      D := N2;
     end;
   end;
   ScanChar(S, Pos, DateSeparator);
   ScanBlanks(S, Pos);
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   if SysLocale.FarEast and (System.Pos('ddd', ShortDateFormat) <> 0) then
   begin { ignore trailing text }
-    if ShortTimeFormat[1] in ['0'..'9'] then  { stop at time digit }
+    if ShortTimeFormat[1] in ['0'..'9'] then { stop at time digit }
       ScanToNumber(S, Pos)
-    else  { stop at time prefix }
+    else { stop at time prefix }
       repeat
-        while (Pos <= Length(S)) and (S[Pos] <> ' ') do Inc(Pos);
+        while (Pos <= Length(S)) and (S[Pos] <> ' ') do
+          Inc(Pos);
         ScanBlanks(S, Pos);
       until (Pos > Length(S)) or
         (AnsiCompareText(TimeAMString, Copy(S, Pos, Length(TimeAMString))) = 0) or
         (AnsiCompareText(TimePMString, Copy(S, Pos, Length(TimePMString))) = 0);
   end;
-{$ENDIF COMPILER3_UP}
+  {$ENDIF COMPILER3_UP}
   Result := IsValidDate(Y, M, D) and (Pos > Length(S));
 end;
 
 function MonthFromName(const S: string; MaxLen: Byte): Byte;
 begin
   if Length(S) > 0 then
-    for Result := 1 to 12 do begin
+    for Result := 1 to 12 do
+    begin
       if (Length(LongMonthNames[Result]) > 0) and
         (AnsiCompareText(Copy(S, 1, MaxLen),
-        Copy(LongMonthNames[Result], 1, MaxLen)) = 0) then Exit;
+        Copy(LongMonthNames[Result], 1, MaxLen)) = 0) then
+        Exit;
     end;
   Result := 0;
 end;
@@ -495,21 +565,32 @@ begin
   I := Default;
   Ch := UpCase(Ch);
   L := Length(Format);
-  if Length(S) < L then L := Length(S)
-  else if Length(S) > L then Exit;
+  if Length(S) < L then
+    L := Length(S)
+  else
+  if Length(S) > L then
+    Exit;
   J := Pos(MakeStr(Ch, Cnt), AnsiUpperCase(Format));
-  if J <= 0 then Exit;
+  if J <= 0 then
+    Exit;
   Tmp := '';
-  while (UpCase(Format[J]) = Ch) and (J <= L) do begin
-    if S[J] <> ' ' then Tmp := Tmp + S[J];
+  while (UpCase(Format[J]) = Ch) and (J <= L) do
+  begin
+    if S[J] <> ' ' then
+      Tmp := Tmp + S[J];
     Inc(J);
   end;
-  if Tmp = '' then I := Blank
-  else if Cnt > 1 then begin
+  if Tmp = '' then
+    I := Blank
+  else
+  if Cnt > 1 then
+  begin
     I := MonthFromName(Tmp, Length(Tmp));
-    if I = 0 then I := -1;
+    if I = 0 then
+      I := -1;
   end
-  else I := StrToIntDef(Tmp, -1);
+  else
+    I := StrToIntDef(Tmp, -1);
 end;
 
 function ScanDateStr(const Format, S: string; var D, M, Y: Integer): Boolean;
@@ -517,12 +598,14 @@ var
   Pos: Integer;
 begin
   ExtractMask(Format, S, 'm', 3, M, -1, 0); { short month name? }
-  if M = 0 then ExtractMask(Format, S, 'm', 1, M, -1, 0);
+  if M = 0 then
+    ExtractMask(Format, S, 'm', 1, M, -1, 0);
   ExtractMask(Format, S, 'd', 1, D, -1, 1);
   ExtractMask(Format, S, 'y', 1, Y, -1, CurrentYear);
   Y := ExpandYear(Y);
   Result := IsValidDate(Y, M, D);
-  if not Result then begin
+  if not Result then
+  begin
     Pos := 1;
     Result := ScanDate(S, Format, Pos, Y, M, D);
   end;
@@ -533,11 +616,13 @@ function InternalStrToDate(const DateFormat, S: string;
 var
   D, M, Y: Integer;
 begin
-  if S = '' then begin
+  if S = '' then
+  begin
     Date := NullDate;
     Result := True;
   end
-  else begin
+  else
+  begin
     Result := ScanDateStr(DateFormat, S, D, M, Y);
     if Result then
     try
@@ -551,8 +636,11 @@ end;
 function StrToDateFmt(const DateFormat, S: string): TDateTime;
 begin
   if not InternalStrToDate(DateFormat, S, Result) then
-    raise EConvertError.CreateFmt({$IFDEF COMPILER3_UP} SInvalidDate {$ELSE}
-      LoadStr(SInvalidDate) {$ENDIF}, [S]);
+    {$IFDEF COMPILER3_UP}
+    raise EConvertError.CreateFmt(SInvalidDate, [S]);
+    {$ELSE}
+    raise EConvertError.CreateFmt(LoadStr(SInvalidDate), [S]);
+    {$ENDIF}
 end;
 
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
@@ -569,37 +657,52 @@ end;
 
 function DefDateFormat(FourDigitYear: Boolean): string;
 begin
-  if FourDigitYear then begin
+  if FourDigitYear then
+  begin
     case GetDateOrder(ShortDateFormat) of
-      doMDY: Result := 'MM/DD/YYYY';
-      doDMY: Result := 'DD/MM/YYYY';
-      doYMD: Result := 'YYYY/MM/DD';
+      doMDY:
+        Result := 'MM/DD/YYYY';
+      doDMY:
+        Result := 'DD/MM/YYYY';
+      doYMD:
+        Result := 'YYYY/MM/DD';
     end;
   end
-  else begin
+  else
+  begin
     case GetDateOrder(ShortDateFormat) of
-      doMDY: Result := 'MM/DD/YY';
-      doDMY: Result := 'DD/MM/YY';
-      doYMD: Result := 'YY/MM/DD';
+      doMDY:
+        Result := 'MM/DD/YY';
+      doDMY:
+        Result := 'DD/MM/YY';
+      doYMD:
+        Result := 'YY/MM/DD';
     end;
   end;
 end;
 
 function DefDateMask(BlanksChar: Char; FourDigitYear: Boolean): string;
 begin
-  if FourDigitYear then begin
+  if FourDigitYear then
+  begin
     case GetDateOrder(ShortDateFormat) of
-      doMDY, doDMY: Result := '!99/99/9999;1;';
-      doYMD: Result := '!9999/99/99;1;';
+      doMDY, doDMY:
+        Result := '!99/99/9999;1;';
+      doYMD:
+        Result := '!9999/99/99;1;';
     end;
   end
-  else begin
+  else
+  begin
     case GetDateOrder(ShortDateFormat) of
-      doMDY, doDMY: Result := '!99/99/99;1;';
-      doYMD: Result := '!99/99/99;1;';
+      doMDY, doDMY:
+        Result := '!99/99/99;1;';
+      doYMD:
+        Result := '!99/99/99;1;';
     end;
   end;
-  if Result <> '' then Result := Result + BlanksChar;
+  if Result <> '' then
+    Result := Result + BlanksChar;
 end;
 
 {$IFDEF WIN32}
@@ -609,14 +712,15 @@ var
   Buffer: array[0..1023] of Char;
   SystemTime: TSystemTime;
 begin
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   DateTimeToSystemTime(Value, SystemTime);
-{$ELSE}
-  with SystemTime do begin
+  {$ELSE}
+  with SystemTime do
+  begin
     DecodeDate(Value, wYear, wMonth, wDay);
     DecodeTime(Value, wHour, wMinute, wSecond, wMilliseconds);
   end;
-{$ENDIF}
+  {$ENDIF}
   SetString(Result, Buffer, GetDateFormat(GetThreadLocale, DATE_LONGDATE,
     @SystemTime, nil, Buffer, SizeOf(Buffer) - 1));
   Result := TrimRight(Result);
@@ -626,7 +730,8 @@ function FormatLongDateTime(Value: TDateTime): string;
 begin
   if Value <> NullDate then
     Result := FormatLongDate(Value) + FormatDateTime(' tt', Value)
-  else Result := '';
+  else
+    Result := '';
 end;
 
 {$ENDIF WIN32}
@@ -643,3 +748,4 @@ initialization
   FourDigitYear := Pos('YYYY', AnsiUpperCase(ShortDateFormat)) > 0;
 {$ENDIF}
 end.
+

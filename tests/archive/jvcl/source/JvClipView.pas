@@ -40,9 +40,6 @@ uses
   ExtCtrls, Menus;
 
 type
-
-{ TJvCustomClipboardViewer }
-
   TClipboardViewFormat = (cvDefault, cvEmpty, cvUnknown, cvText, cvBitmap,
     cvMetafile, cvPalette, cvOemText, cvPicture, cvComponent, cvIcon);
 
@@ -232,6 +229,8 @@ begin
     Mem.Free;
   end;
 end;
+
+//=== TJvPaletteGrid =========================================================
 
 const
   NumPaletteEntries = 256;
@@ -427,7 +426,7 @@ begin
   UpdateSize;
 end;
 
-{ TJvCustomClipboardViewer }
+//=== TJvCustomClipboardViewer ===============================================
 
 constructor TJvCustomClipboardViewer.Create(AOwner: TComponent);
 begin

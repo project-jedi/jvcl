@@ -52,8 +52,8 @@ implementation
 
 uses
   TypInfo,
-  JvDBLists, JvxConst, JvDBQBE, JvDBFilter, JvDBIndex, JvDBPrgrss,
-  JvxLogin, JvDBSecur, JvQuery, JvVCLUtils, JvDbExcpt, JvDsgn,
+  JvDBLists, JvDBQBE, JvDBFilter, JvDBIndex, JvDBPrgrss,
+  JvDBSecur, JvQuery, JvDsgn,
   {$IFNDEF DelphiPersonalEdition}
   JvSelDSFrm,
   {$ENDIF}
@@ -77,7 +77,7 @@ const
 
 {$IFDEF WIN32}
 
-{ TJvSessionNameProperty }
+//=== TJvSessionNameProperty =================================================
 
 type
   TJvSessionNameProperty = class(TJvDBStringProperty)
@@ -92,7 +92,7 @@ end;
 
 {$ENDIF WIN32}
 
-{ TJvDatabaseNameProperty }
+//=== TJvDatabaseNameProperty ================================================
 
 type
   TJvDatabaseNameProperty = class(TJvDBStringProperty)
@@ -122,7 +122,8 @@ begin
   {$ENDIF}
 end;
 
-{ TJvTableNameProperty }
+//=== TJvTableNameProperty ===================================================
+
 { For TJvFieldList, TJvIndexList components }
 
 type
@@ -144,8 +145,8 @@ end;
 
 {$IFNDEF COMPILER4_UP}
 
-{$IFNDEF VER90}
-{$IFNDEF VER93}
+{$IFNDEF DELPHI2}
+{$IFNDEF BCB1}
 function EditQueryParams(DataSet: TDataSet; List: TParams): Boolean;
 begin
   Result := JvQBndDlg.EditQueryParams(DataSet, List, hcDQuery);
@@ -153,7 +154,7 @@ end;
 {$ENDIF}
 {$ENDIF}
 
-{ TJvParamsProperty }
+//=== TJvParamsProperty ======================================================
 
 type
   TJvParamsProperty = class(TPropertyEditor)
@@ -238,7 +239,8 @@ end;
 
 {$ENDIF COMPILER4_UP}
 
-{ TJvUserTableNameProperty }
+//=== TJvUserTableNameProperty ===============================================
+
 { For TJvDBSecurity component }
 
 type
@@ -263,7 +265,8 @@ begin
   end;
 end;
 
-{ TLoginNameFieldProperty }
+//=== TLoginNameFieldProperty ================================================
+
 { For TJvDBSecurity component }
 
 type
@@ -292,7 +295,7 @@ end;
 
 {$IFNDEF DelphiPersonalEdition}
 
-{ TJvMemoryTableEditor }
+//=== TJvMemoryTableEditor ===================================================
 
 type
   TJvMemoryTableEditor = class(TJvMemDataSetEditor)

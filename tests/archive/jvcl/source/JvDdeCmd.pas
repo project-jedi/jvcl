@@ -33,10 +33,10 @@ interface
 {$I JVCL.INC}
 
 uses
-  DdeMan, Windows, Messages, SysUtils, Classes, JclBase, Forms, JvComponent;
+  DdeMan, Messages, SysUtils, Classes, JclBase, Forms,
+  JvComponent;
 
 type
-
   EJvADCParserError = class(EJclError);
 
   TJvADCBusyEvent = procedure(Sender: TObject; IsBusy: Boolean) of object;
@@ -85,11 +85,13 @@ uses
   JclSysUtils;
 
 resourcestring
-  sErrorCommandStart = 'Invalid command start format';
-  sErrorCommandFormat = 'Invalid command format: %s';
+  SErrorCommandStart = 'Invalid command start format';
+  SErrorCommandFormat = 'Invalid command format: %s';
 
 const
   DdeTopicStr = 'System';
+
+//=== TAppDdeMgr =============================================================
 
 type
   TAppDdeMgr = class(TObject)
@@ -108,8 +110,6 @@ type
 
 var
   AppDdeMgr: TAppDdeMgr = nil;
-
-  { TAppDdeMgr }
 
 constructor TAppDdeMgr.Create;
 begin
@@ -163,7 +163,7 @@ begin
   Commands.Clear;
 end;
 
-{ TJvAppDdeCmd }
+//=== TJvAppDdeCmd ===========================================================
 
 constructor TJvAppDdeCmd.Create(AOwner: TComponent);
 begin
@@ -297,7 +297,9 @@ begin
       if not StartCmd then
       begin
         if S[I] <> '[' then
-          raise EJvADCParserError.CreateResRec(@sErrorCommandStart);
+          {$TYPEDADDRESS OFF}
+          raise EJvADCParserError.CreateResRec(@SErrorCommandStart);
+          {$TYPEDADDRESS ON}
         StartCmd := True;
         StartParams := False;
         StartString := False;
@@ -311,26 +313,30 @@ begin
       begin
         if S[I] = '"' then
           StartString := not StartString
-        else if not StartString then
+        else
+        if not StartString then
         begin
           if (S[I] = ',') and StartParams then
           begin
             Params.Add(Copy(S, ParamsSPos, I - ParamsSPos));
             ParamsSPos := I + 1;
           end
-          else if S[I] = '(' then
+          else
+          if S[I] = '(' then
           begin
             CmdEPos := I - 1;
             StartParams := True;
             ParamsSPos := I + 1;
           end
-          else if (S[I] = ')') and StartParams then
+          else
+          if (S[I] = ')') and StartParams then
           begin
             ParamsEPos := I - 1;
             StartParams := False;
             Params.Add(Copy(S, ParamsSPos, ParamsEPos - ParamsSPos + 1));
           end
-          else if (S[I] = ']') and (not StartParams) then
+          else
+          if (S[I] = ']') and (not StartParams) then
           begin
             if CmdEPos = 0 then
               CmdEPos := I - 1;
@@ -345,7 +351,9 @@ begin
       Inc(I);
     end;
     if StartCmd or StartParams or StartString then
-      raise EJvADCParserError.CreateResRecFmt(@sErrorCommandFormat, [S]);
+      {$TYPEDADDRESS OFF}
+      raise EJvADCParserError.CreateResRecFmt(@SErrorCommandFormat, [S]);
+      {$TYPEDADDRESS ON}
   finally
     Params.Free;
   end;

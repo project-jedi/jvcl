@@ -27,11 +27,11 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+
 unit JvCtrlUtils;
 
 interface
-
-{$I JVCL.INC}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
@@ -385,11 +385,11 @@ var
   FileInfo: TSHFileInfo;
   ImageListHandle: THandle;
 begin
-  ZeroMemory(@FileInfo, Sizeof(FileInfo));
+  FillChar(FileInfo, Sizeof(FileInfo), #0);
   ImageListHandle := SHGetFileInfo('', 0, FileInfo, SizeOf(FileInfo),
     SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
   SendMessage(ListView.Handle, LVM_SETIMAGELIST, LVSIL_SMALL, ImageListHandle);
-  ZeroMemory(@FileInfo, Sizeof(FileInfo));
+  FillChar(FileInfo, Sizeof(FileInfo), #0);
   ImageListHandle := SHGetFileInfo('', 0, FileInfo, SizeOf(FileInfo),
     SHGFI_SYSICONINDEX or SHGFI_LARGEICON);
   SendMessage(ListView.Handle, LVM_SETIMAGELIST, LVSIL_NORMAL, ImageListHandle);

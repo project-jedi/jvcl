@@ -26,27 +26,19 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-unit JvCtrls;
-
 {$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
+unit JvCtrls;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ImgList, ActnList,
-  JclBase,
   JVCLVer, JvListBox;
 
 type
-
   TJvListBox = class(TJvCustomListBox)
   public
     property Count;
@@ -65,7 +57,7 @@ type
     property Enabled;
     property ExtendedSelect;
     property Font;
-    property HorzExtent;
+    property HorizontalExtent;
     property ImeMode;
     property ImeName;
     property IntegralHeight;
@@ -249,8 +241,8 @@ type
 implementation
 
 uses
-  Math, Consts,
-  JclSysUtils, JvFunctions;
+  Consts,
+  JvFunctions;
 
 {$R *.res}
 
@@ -268,6 +260,8 @@ const
 var
   DefaultImgBtnImagesList: TImageList = nil;
 
+//=== TJvImgBtnActionLink ====================================================
+
 procedure TJvImgBtnActionLink.AssignClient(AClient: TObject);
 begin
   inherited AssignClient(AClient);
@@ -284,6 +278,46 @@ procedure TJvImgBtnActionLink.SetImageIndex(Value: Integer);
 begin
   if IsImageIndexLinked then
     FClient.ImageIndex := Value;
+end;
+
+//=== TJvImgBtn ==============================================================
+
+constructor TJvImgBtn.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FCanvas := TCanvas.Create;
+  FAlignment := taCenter;
+  FAnimateInterval := 200;
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange := ImageListChange;
+  FImageIndex := -1;
+  FImageVisible := True;
+  FKind := bkCustom;
+  FLayout := blImageLeft;
+  FMargin := -1;
+  FSpacing := 4;
+  Color := clBtnFace;
+end;
+
+destructor TJvImgBtn.Destroy;
+begin
+  FreeAndNil(FImageChangeLink);
+  FreeAndNil(FCanvas);
+  inherited Destroy;
+end;
+
+procedure TJvImgBtn.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  with Params do
+    Style := Style or BS_OWNERDRAW;
+end;
+
+procedure TJvImgBtn.CreateWnd;
+begin
+  inherited CreateWnd;
+  if FAnimate then
+    StartAnimate;
 end;
 
 procedure TJvImgBtn.ActionChange(Sender: TObject; CheckDefaults: Boolean);
@@ -426,44 +460,6 @@ begin
     itemWidth := Width;
     itemHeight := Height;
   end;
-end;
-
-constructor TJvImgBtn.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FCanvas := TCanvas.Create;
-  FAlignment := taCenter;
-  FAnimateInterval := 200;
-  FImageChangeLink := TChangeLink.Create;
-  FImageChangeLink.OnChange := ImageListChange;
-  FImageIndex := -1;
-  FImageVisible := True;
-  FKind := bkCustom;
-  FLayout := blImageLeft;
-  FMargin := -1;
-  FSpacing := 4;
-  Color := clBtnFace;
-end;
-
-procedure TJvImgBtn.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  with Params do
-    Style := Style or BS_OWNERDRAW;
-end;
-
-procedure TJvImgBtn.CreateWnd;
-begin
-  inherited CreateWnd;
-  if FAnimate then
-    StartAnimate;
-end;
-
-destructor TJvImgBtn.Destroy;
-begin
-  FreeAndNil(FImageChangeLink);
-  FreeAndNil(FCanvas);
-  inherited Destroy;
 end;
 
 procedure TJvImgBtn.DoMouseEnter;

@@ -31,8 +31,8 @@ unit JvCoolBar;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ComCtrls,
-  JvTypes, JVCLVer;
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+  JVCLVer;
 
 type
   TJvCoolBar = class(TCoolBar)
@@ -63,8 +63,6 @@ type
 
 implementation
 
-{***********************************************}
-
 constructor TJvCoolBar.Create(AOwner: TComponent);
 begin
   // (rom) inherited moved up
@@ -73,8 +71,6 @@ begin
   FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
-
-{***********************************************}
 
 procedure TJvCoolBar.MouseEnter(var Msg: TMessage);
 begin
@@ -88,8 +84,6 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvCoolBar.MouseLeave(var Msg: TMessage);
 begin
   Application.HintColor := FSaved;
@@ -98,16 +92,12 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
 procedure TJvCoolBar.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(Self);
 end;
-
-{**************************************************}
 
 procedure TJvCoolBar.CMParentColorChanged(var Msg: TMessage);
 begin

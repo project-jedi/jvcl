@@ -26,7 +26,7 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-* (p3) To make NullDate and NullText maximally useful, set ParseInput to true and handle the
+* (p3) To make NullDate and NullText maximally useful, set ParseInput to True and handle the
   OnUserInput something like this:
     if UserString = '' then
       DateAndTime := JvDateTimePicker1.NullDate;
@@ -37,35 +37,33 @@ Known Issues:
 
 unit JvDateTimePicker;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+  JVCLVer;
 
 type
   TJvDateTimePicker = class(TDateTimePicker)
   private
-    FColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
     FNullText: string;
     FNullDate: TDateTime;
     FDropDownDate: TDate;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
-
+    procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure SetNullDate(const Value: TDateTime);
   protected
-    function WithinDelta(Val1, Val2: TDateTime): boolean; virtual;
-    // returns true if NullDate matches Date or frac(NullDate) matches frac(Time) depending on Kind
-    function CheckNullValue: boolean; virtual;
+    function WithinDelta(Val1, Val2: TDateTime): Boolean; virtual;
+    // returns True if NullDate matches Date or frac(NullDate) matches frac(Time) depending on Kind
+    function CheckNullValue: Boolean; virtual;
     procedure Change; override;
     function MsgSetDateTime(Value: TSystemTime): Boolean; override;
   public
@@ -78,43 +76,41 @@ type
     property NullDate: TDateTime read FNullDate write SetNullDate;
     // The text to display when NullDate = Date/Time
     property NullText: string read FNullText write FNullText;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
-resourcestring
-  SNullText = '(none)';
-
 implementation
+
 uses
   CommCtrl;
 
+resourcestring
+  SNullText = '(none)';
+
 {$IFNDEF COMPILER6_UP}
-function TryStrToDateTime(const S:String;out Value:TDateTime):boolean;
+
+function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
 begin
   try
     Value := StrToDateTime(S);
-    Result := true;
+    Result := True;
   except
-    Result := false;
+    Result := False;
   end;
 end;
 {$ENDIF}
 
-{*****************************************************************}
-
 constructor TJvDateTimePicker.Create(AOwner: TComponent);
 begin
-  inherited;
-  FColor := clInfoBk;
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FNullText := SNullText;
   FDropDownDate := SysUtils.Date;
 end;
-
-{**************************************************}
 
 procedure TJvDateTimePicker.CMParentColorChanged(var Msg: TMessage);
 begin
@@ -123,19 +119,16 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvDateTimePicker.MouseEnter(var Msg: TMessage);
 begin
   FSaved := Application.HintColor;
   // for D7...
-  if csDesigning in ComponentState then Exit;
-  Application.HintColor := FColor;
+  if csDesigning in ComponentState then
+    Exit;
+  Application.HintColor := FHintColor;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvDateTimePicker.MouseLeave(var Msg: TMessage);
 begin
@@ -144,29 +137,29 @@ begin
     FOnMouseLeave(Self);
 end;
 
-function TJvDateTimePicker.WithinDelta(Val1, Val2: TDateTime): boolean;
+function TJvDateTimePicker.WithinDelta(Val1, Val2: TDateTime): Boolean;
 const
   cOneSecond = 1 / 86400;
 begin
-  Result := Abs(frac(Val1) - frac(Val2)) <= cOneSecond;
+  Result := Abs(Frac(Val1) - Frac(Val2)) <= cOneSecond;
 end;
 
-function TJvDateTimePicker.CheckNullValue: boolean;
+function TJvDateTimePicker.CheckNullValue: Boolean;
 begin
-  Result := ((Kind = dtkDate) and (trunc(DateTime) = trunc(NullDate))
-    or ((Kind = dtkTime) and WithinDelta(DateTime, NullDate)));
+  Result := ((Kind = dtkDate) and (Trunc(DateTime) = Trunc(NullDate)) or
+    ((Kind = dtkTime) and WithinDelta(DateTime, NullDate)));
   if Result then
     SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(FNullText)))
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   // (p3) the Format property doesn't exists in D5: what to do?
   else
     SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(Format)));
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvDateTimePicker.SetNullDate(const Value: TDateTime);
 begin
-  FNullDate := trunc(Value);
+  FNullDate := Trunc(Value);
   CheckNullValue;
 end;
 
@@ -178,33 +171,39 @@ end;
 
 procedure TJvDateTimePicker.Change;
 begin
-  inherited;
+  inherited Change;
   CheckNullValue;
 end;
 
-function IsBlankSysTime(const ST: TSystemTime): Boolean;
-type
-  TFast = array[0..3] of DWORD;
+function IsBlankSysTime(const St: TSystemTime): Boolean;
 begin
-  Result := (TFast(ST)[0] or TFast(ST)[1] or TFast(ST)[2] or TFast(ST)[3]) = 0;
+  with St do
+    Result := (wYear = 0) and (wMonth = 0) and
+      (wDayOfWeek = 0) and (wDay = 0) and
+      (wHour = 0) and (wMinute = 0) and
+      (wSecond = 0) and (wMilliseconds = 0);
 end;
 
-procedure TJvDateTimePicker.CNNotify(var Message: TWMNotify);
-var aCal: THandle; st: TSystemTime; DT: TDateTime; AllowChange: boolean;
+procedure TJvDateTimePicker.CNNotify(var Msg: TWMNotify);
+var
+  ACal: THandle;
+  St: TSystemTime;
+  Dt: TDateTime;
+  AllowChange: Boolean;
 begin
-  with Message, NMHdr^ do
+  with Msg, NMHdr^ do
     case code of
       DTN_DROPDOWN:
         begin
           inherited;
           if CheckNullValue then
           begin
-            aCal := DateTime_GetMonthCal(Handle);
-            if aCal <> 0 then
+            ACal := DateTime_GetMonthCal(Handle);
+            if ACal <> 0 then
             begin
-              DateTimeToSystemTime(FDropDownDate, st);
-              if not IsBlankSysTime(st) then
-                MonthCal_SetCurSel(aCal, st);
+              DateTimeToSystemTime(FDropDownDate, St);
+              if not IsBlankSysTime(St) then
+                MonthCal_SetCurSel(ACal, St);
             end;
           end;
         end;
@@ -212,18 +211,17 @@ begin
         begin
           with PNMDateTimeString(NMHdr)^ do
           begin
-
-            if not TryStrToDateTime(pszUserString, DT) then
-              DT := NullDate;
+            if not TryStrToDateTime(pszUserString, Dt) then
+              Dt := NullDate;
             if Assigned(OnUserInput) then
             begin
               AllowChange := True;
-              OnUserInput(Self, pszUserString, DT, AllowChange);
+              OnUserInput(Self, pszUserString, Dt, AllowChange);
               dwFlags := Ord(not AllowChange);
             end
             else
               dwFlags := Ord(False);
-            DateTimeToSystemTime(DT, st);
+            DateTimeToSystemTime(Dt, St);
           end;
         end;
     else

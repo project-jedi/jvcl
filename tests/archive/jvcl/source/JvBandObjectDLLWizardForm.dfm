@@ -15,9 +15,6 @@ object zWizardForm: TzWizardForm
   OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
-  DesignSize = (
-    321
-    289)
   PixelsPerInch = 96
   TextHeight = 16
   object Bevel1: TBevel

@@ -98,7 +98,6 @@ type
     property HotTrack: Boolean read FEffect write SetEffect default False;
     property HorScrollbar: Boolean read FScroll write SetHScroll default True;
     property HintColor: TColor read FColor write FColor default clInfoBk;
-
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -117,8 +116,6 @@ type
     StringSize: Integer;
   end;
 
-{**************************************************}
-
 constructor TJvCheckListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -131,15 +128,11 @@ begin
   FItemSearchs := TJvItemsSearchs.Create;
 end;
 
-{**************************************************}
-
 destructor TJvCheckListBox.Destroy;
 begin
   FItemSearchs.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvCheckListBox.CreateParams(var Params: TCreateParams);
 begin
@@ -150,8 +143,6 @@ begin
     else
       Style := Style xor WS_HSCROLL;
 end;
-
-{***********************************************}
 
 procedure TJvCheckListBox.RefreshH;
 var
@@ -167,8 +158,6 @@ begin
   end;
   SetHScroll(FScroll);
 end;
-
-{***********************************************}
 
 procedure TJvCheckListBox.WndProc(var Msg: TMessage);
 var
@@ -208,16 +197,12 @@ begin
   inherited WndProc(Msg);
 end;
 
-{***********************************************}
-
 procedure TJvCheckListBox.SetHScroll(const Value: Boolean);
 begin
   FScroll := Value;
   if FScroll then
     SendMessage(Handle, LB_SETHORIZONTALEXTENT, FMaxWidth, 0);
 end;
-
-{***********************************************}
 
 procedure TJvCheckListBox.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -226,16 +211,12 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvCheckListBox.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
-
-{**************************************************}
 
 procedure TJvCheckListBox.CMMouseEnter(var Msg: TMessage);
 begin
@@ -253,8 +234,6 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvCheckListBox.WMHScroll(var Msg: TWMHScroll);
 var
@@ -277,16 +256,12 @@ begin
     FOnHScroll(Self);
 end;
 
-{**************************************************}
-
 procedure TJvCheckListBox.WMVScroll(var Msg: TWMVScroll);
 begin
   inherited;
   if Assigned(FOnVScroll) then
     FOnVScroll(Self);
 end;
-
-{**************************************************}
 
 procedure TJvCheckListBox.CMMouseLeave(var Msg: TMessage);
 begin
@@ -301,15 +276,11 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
 function TJvCheckListBox.SearchExactString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.SearchExactString(Items, Value, CaseSensitive);
 end;
-
-{**************************************************}
 
 procedure TJvCheckListBox.SetEffect(const Value: Boolean);
 begin
@@ -318,14 +289,10 @@ begin
     Ctl3d := False;
 end;
 
-{**************************************************}
-
 function TJvCheckListBox.SearchPrefix(Value: string; CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.SearchPrefix(Items, Value, CaseSensitive);
 end;
-
-{**************************************************}
 
 procedure TJvCheckListBox.SelectCancel(var Msg: TMessage);
 begin
@@ -333,23 +300,17 @@ begin
     FOnSelectCancel(Self);
 end;
 
-{**************************************************}
-
 function TJvCheckListBox.SearchSubString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.SearchSubString(Items, Value, CaseSensitive);
 end;
 
-{**************************************************}
-
 function TJvCheckListBox.DeleteExactString(Value: string; All: Boolean;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.DeleteExactString(Items, Value, CaseSensitive);
 end;
-
-{**************************************************}
 
 procedure TJvCheckListBox.SelectAll;
 var
@@ -361,8 +322,6 @@ begin
       Selected[I] := True;
 end;
 
-{**************************************************}
-
 procedure TJvCheckListBox.UnselectAll;
 var
   I: Integer;
@@ -371,8 +330,6 @@ begin
     for I := 0 to Items.Count - 1 do
       Selected[I] := False;
 end;
-
-{**************************************************}
 
 procedure TJvCheckListBox.InvertSelection;
 var
@@ -383,8 +340,6 @@ begin
       Selected[I] := not Selected[I];
 end;
 
-{**************************************************}
-
 procedure TJvCheckListBox.CheckAll;
 var
   I: Integer;
@@ -392,8 +347,6 @@ begin
   for I := 0 to Items.Count - 1 do
     Checked[I] := True;
 end;
-
-{**************************************************}
 
 procedure TJvCheckListBox.UnCheckall;
 var
@@ -403,8 +356,6 @@ begin
     Checked[I] := False;
 end;
 
-{**************************************************}
-
 procedure TJvCheckListBox.InvertCheck;
 var
   I: Integer;
@@ -412,8 +363,6 @@ begin
   for I := 0 to Items.Count - 1 do
     Checked[I] := not Checked[I];
 end;
-
-{**************************************************}
 
 function TJvCheckListBox.GetChecked: TStringList;
 var
@@ -425,8 +374,6 @@ begin
       Result.AddObject(Items[I], Items.Objects[I]);
 end;
 
-{**************************************************}
-
 function TJvCheckListBox.GetUnChecked: TStringList;
 var
   I: Integer;
@@ -437,8 +384,6 @@ begin
       Result.AddObject(Items[I], Items.Objects[I]);
 end;
 
-{**************************************************}
-
 procedure TJvCheckListBox.LoadFromFile(FileName: TFileName);
 var
   Stream: TFileStream;
@@ -447,8 +392,6 @@ begin
   LoadFromStream(Stream);
   Stream.Free;
 end;
-
-{**************************************************}
 
 procedure TJvCheckListBox.LoadFromStream(Stream: TStream);
 var
@@ -468,8 +411,6 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvCheckListBox.SaveToFile(FileName: TFileName);
 var
   Stream: TFileStream;
@@ -478,8 +419,6 @@ begin
   SaveToStream(Stream);
   Stream.Free;
 end;
-
-{**************************************************}
 
 procedure TJvCheckListBox.SaveToStream(Stream: TStream);
 var
@@ -497,8 +436,6 @@ begin
     Stream.Write(Buf, CheckLst.StringSize);
   end;
 end;
-
-{**************************************************}
 
 procedure TJvCheckListBox.DeleteSelected;
 var

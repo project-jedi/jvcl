@@ -94,7 +94,7 @@ begin
       InvalidateCell(Cell.X, Cell.Y);
     end;
   end;
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
 end;
 
 procedure TJvButtonDrawGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -112,7 +112,7 @@ begin
       InvalidateCell(Cell.X, Cell.Y);
     end;
   end;
-  inherited;
+  inherited MouseMove(Shift, X, Y);
 end;
 
 procedure TJvButtonDrawGrid.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -124,7 +124,7 @@ begin
     FCellDown.X := -1;
     FCellDown.Y := -1;
   end;
-  inherited;
+  inherited MouseUp(Button, Shift, X, Y);
 end;
 
 function TJvButtonDrawGrid.SelectCell(ACol, ARow: Integer): Boolean;

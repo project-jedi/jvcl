@@ -12,8 +12,11 @@ The Original Code is: JvDice.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
+
+Contributor(s):
+  Polaris Software
 
 Last Modified: 2002-07-04
 
@@ -25,24 +28,25 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvDice;
 
 interface
 
-
-uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Classes, Graphics, Messages, Controls, Forms, StdCtrls, ExtCtrls, Menus,
-  JvTimer, JvVCLUtils;
+uses
+  SysUtils,
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  Classes, Graphics, Messages, Controls, Forms, Menus,
+  JvTimer;
 
 type
   TJvDiceValue = 1..6;
 
-{ TJvDice }
-
   TJvDice = class(TCustomControl)
   private
-    { Private declarations }
     FActive: Boolean;
     FAutoSize: Boolean;
     FBitmap: TBitmap;
@@ -56,23 +60,25 @@ type
     FValue: TJvDiceValue;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
-    procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure CreateBitmap;
+    {$IFNDEF COMPILER6_UP} // Polaris
+    procedure SetAutoSize(Value: Boolean);
+    {$ENDIF}
     procedure SetInterval(Value: Cardinal);
     procedure SetRotate(Value: Boolean);
     procedure SetShowFocus(Value: Boolean);
     procedure SetValue(Value: TJvDiceValue);
     procedure TimerExpired(Sender: TObject);
   protected
-    { Protected declarations }
- {$IFNDEF COMPILER6_UP}
-    procedure SetAutoSize(Value: Boolean);
-{$ELSE}
-    procedure SetAutoSize(Value: Boolean);  override;
-{$ENDIF}
+    {$IFDEF COMPILER6_UP} // Polaris
+    procedure SetAutoSize(Value: Boolean); override;
+    {$ENDIF}
     function GetPalette: HPALETTE; override;
-    procedure AdjustSize; {$IFDEF COMPILER4_UP} override; {$ENDIF}
+    procedure AdjustSize;
+    {$IFDEF COMPILER4_UP} override;
+    {$ENDIF}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure Paint; override;
@@ -80,12 +86,10 @@ type
     procedure DoStart; dynamic;
     procedure DoStop; dynamic;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure RandomValue;
   published
-    { Published declarations }
     property Align;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property AutoStopInterval: Cardinal read FAutoStopInterval write FAutoStopInterval default 0;
@@ -101,11 +105,11 @@ type
     property Rotate: Boolean read FRotate write SetRotate;
     property ShowFocus: Boolean read FShowFocus write SetShowFocus;
     property ShowHint;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property DragKind;
-{$ENDIF}
+    {$ENDIF}
     property TabOrder;
     property TabStop;
     property Value: TJvDiceValue read FValue write SetValue default 1;
@@ -123,34 +127,32 @@ type
     property OnDragOver;
     property OnDragDrop;
     property OnEndDrag;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property OnStartDrag;
-{$ENDIF}
-{$IFDEF COMPILER5_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-{$ENDIF}
+    {$ENDIF}
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
     property OnStop: TNotifyEvent read FOnStop write FOnStop;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-{$ENDIF}
+    {$ENDIF}
   end;
 
 implementation
 
 {$IFDEF WIN32}
- {$R *.Res}
+{$R *.Res}
 {$ELSE}
- {$R *.R16}
+{$R *.R16}
 {$ENDIF}
 
 const
   ResName: array [TJvDiceValue] of PChar =
-   ('JV_DICE1', 'JV_DICE2', 'JV_DICE3', 'JV_DICE4', 'JV_DICE5', 'JV_DICE6');
-
-{ TJvDice }
+  ('JV_DICE1', 'JV_DICE2', 'JV_DICE3', 'JV_DICE4', 'JV_DICE5', 'JV_DICE6');
 
 constructor TJvDice.Create(AOwner: TComponent);
 begin
@@ -169,14 +171,16 @@ end;
 destructor TJvDice.Destroy;
 begin
   FOnChange := nil;
-  if FBitmap <> nil then FBitmap.Free;
+  FBitmap.Free;
   inherited Destroy;
 end;
 
 function TJvDice.GetPalette: HPALETTE;
 begin
-  if FBitmap <> nil then Result := FBitmap.Palette
-  else Result := 0;
+  if FBitmap <> nil then
+    Result := FBitmap.Palette
+  else
+    Result := 0;
 end;
 
 procedure TJvDice.RandomValue;
@@ -184,46 +188,53 @@ var
   Val: Byte;
 begin
   Val := Random(6) + 1;
-  if Val = Byte(FValue) then begin
-    if Val = 1 then Inc(Val)
-    else Dec(Val);
-  end;
+  if Val = Byte(FValue) then
+    if Val = 1 then
+      Inc(Val)
+    else
+      Dec(Val);
   SetValue(TJvDiceValue(Val));
 end;
 
 procedure TJvDice.DoStart;
 begin
-  if Assigned(FOnStart) then FOnStart(Self);
+  if Assigned(FOnStart) then
+    FOnStart(Self);
 end;
 
 procedure TJvDice.DoStop;
 begin
-  if Assigned(FOnStop) then FOnStop(Self);
+  if Assigned(FOnStop) then
+    FOnStop(Self);
 end;
 
-procedure TJvDice.CMFocusChanged(var Message: TCMFocusChanged);
+procedure TJvDice.CMFocusChanged(var Msg: TCMFocusChanged);
 var
   Active: Boolean;
 begin
-  with Message do Active := (Sender = Self);
-  if Active <> FActive then begin
+  with Msg do
+    Active := (Sender = Self);
+  if Active <> FActive then
+  begin
     FActive := Active;
-    if FShowFocus then Invalidate;
+    if FShowFocus then
+      Invalidate;
   end;
   inherited;
 end;
 
-procedure TJvDice.WMSize(var Message: TWMSize);
+procedure TJvDice.WMSize(var Msg: TWMSize);
 begin
   inherited;
-{$IFNDEF COMPILER4_UP}
+  {$IFNDEF COMPILER4_UP}
   AdjustSize;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvDice.CreateBitmap;
 begin
-  if FBitmap = nil then FBitmap := TBitmap.Create;
+  if FBitmap = nil then
+    FBitmap := TBitmap.Create;
   FBitmap.Handle := LoadBitmap(HInstance, ResName[FValue]);
 end;
 
@@ -231,14 +242,17 @@ procedure TJvDice.AdjustSize;
 var
   MinSide: Integer;
 begin
-  if not (csReading in ComponentState) then begin
+  if not (csReading in ComponentState) then
+  begin
     if AutoSize and Assigned(FBitmap) and (FBitmap.Width > 0) and
       (FBitmap.Height > 0) then
-        SetBounds(Left, Top, FBitmap.Width + 2, FBitmap.Height + 2)
-    else begin
+      SetBounds(Left, Top, FBitmap.Width + 2, FBitmap.Height + 2)
+    else
+    begin
       { Adjust aspect ratio if control size changed }
       MinSide := Width;
-      if Height < Width then MinSide := Height;
+      if Height < Width then
+        MinSide := Height;
       SetBounds(Left, Top, MinSide, MinSide);
     end;
   end;
@@ -247,7 +261,8 @@ end;
 procedure TJvDice.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if (Button = mbLeft) and TabStop and CanFocus then SetFocus;
+  if (Button = mbLeft) and TabStop and CanFocus then
+    SetFocus;
   inherited MouseDown(Button, Shift, X, Y);
 end;
 
@@ -279,11 +294,10 @@ var
 
 begin
   ARect := ClientRect;
-  if FBitmap <> nil then DrawBitmap;
+  if FBitmap <> nil then
+    DrawBitmap;
   if Focused and FShowFocus and TabStop and not (csDesigning in ComponentState) then
-  begin
     Canvas.DrawFocusRect(ARect);
-  end;
 end;
 
 procedure TJvDice.TimerExpired(Sender: TObject);
@@ -292,34 +306,41 @@ var
   Now: Longint;
 begin
   RandomValue;
-  if not FRotate then begin
+  if not FRotate then
+  begin
     FTimer.Free;
     FTimer := nil;
-    if (csDesigning in ComponentState) then begin
+    if csDesigning in ComponentState then
+    begin
       ParentForm := GetParentForm(Self);
-      if ParentForm <> nil then ParentForm.Designer.Modified;
+      if ParentForm <> nil then
+        ParentForm.Designer.Modified;
     end;
     DoStop;
   end
-  else if AutoStopInterval > 0 then begin
+  else
+  if AutoStopInterval > 0 then
+  begin
     Now := GetTickCount;
-{$IFDEF COMPILER4_UP}
-    if (Now - FTickCount >= Integer(AutoStopInterval))
-{$ELSE}
-    if (Now - FTickCount >= AutoStopInterval)
-{$ENDIF}
-      or (Now < FTickCount) then Rotate := False;
+    {$IFDEF COMPILER4_UP}
+    if (Now - FTickCount >= Integer(AutoStopInterval)) or (Now < FTickCount) then
+    {$ELSE}
+    if (Now - FTickCount >= AutoStopInterval) or (Now < FTickCount) then
+    {$ENDIF}
+      Rotate := False;
   end;
 end;
 
 procedure TJvDice.Change;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 procedure TJvDice.SetValue(Value: TJvDiceValue);
 begin
-  if FValue <> Value then begin
+  if FValue <> Value then
+  begin
     FValue := Value;
     CreateBitmap;
     Invalidate;
@@ -329,9 +350,9 @@ end;
 
 procedure TJvDice.SetAutoSize(Value: Boolean);
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   inherited SetAutoSize(Value);
-{$ENDIF}
+  {$ENDIF}
   FAutoSize := Value;
   AdjustSize;
   Invalidate;
@@ -339,19 +360,25 @@ end;
 
 procedure TJvDice.SetInterval(Value: Cardinal);
 begin
-  if FInterval <> Value then begin
+  if FInterval <> Value then
+  begin
     FInterval := Value;
-    if FTimer <> nil then FTimer.Interval := FInterval;
+    if FTimer <> nil then
+      FTimer.Interval := FInterval;
   end;
 end;
 
 procedure TJvDice.SetRotate(Value: Boolean);
 begin
-  if FRotate <> Value then begin
-    if Value then begin
-      if FTimer = nil then FTimer := TJvTimer.Create(Self);
+  if FRotate <> Value then
+  begin
+    if Value then
+    begin
+      if FTimer = nil then
+        FTimer := TJvTimer.Create(Self);
       try
-        with FTimer do begin
+        with FTimer do
+        begin
           OnTimer := TimerExpired;
           Interval := FInterval;
           Enabled := True;
@@ -365,16 +392,20 @@ begin
         raise;
       end;
     end
-    else FRotate := Value;
+    else
+      FRotate := Value;
   end;
 end;
 
 procedure TJvDice.SetShowFocus(Value: Boolean);
 begin
-  if FShowFocus <> Value then begin
+  if FShowFocus <> Value then
+  begin
     FShowFocus := Value;
-    if not (csDesigning in ComponentState) then Invalidate;
+    if not (csDesigning in ComponentState) then
+      Invalidate;
   end;
 end;
 
 end.
+

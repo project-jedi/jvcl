@@ -28,19 +28,16 @@ Known Issues:
 
 unit JvDirectories;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Registry, JvTypes, 
+  Windows, SysUtils, Classes, Registry,
   JvComponent;
 
 type
   TJvDirectories = class(TJvComponent)
   private
-    FBidon: string;
-    buf: array[0..250] of Char;
+    FDummy: string;
     function GetCurrent: string;
     function GetWindowsDirectory: string;
     function GetSystemDirectory: string;
@@ -53,96 +50,95 @@ type
     function CheckLastChar(Value: string): string;
   public
   published
-    property CurrentDirectory: string read GetCurrent write FBidon stored False;
-    property WindowsDirectory: string read GetWindowsDirectory write FBidon stored False;
-    property SystemDirectory: string read GetSystemDirectory write FBidon stored False;
-    property TempPath: string read GetTempPath write Fbidon stored False;
-    property ApplicationData: string index 0 read GetValueAtIndex write FBidon stored False;
-    property Cache: string index 1 read GetValueAtIndex write FBidon stored False;
-    property Cookies: string index 2 read GetValueAtIndex write FBidon stored False;
-    property Desktop: string index 3 read GetValueAtIndex write FBidon stored False;
-    property Favorites: string index 4 read GetValueAtIndex write FBidon stored False;
-    property Fonts: string index 5 read GetValueAtIndex write FBidon stored False;
-    property History: string index 6 read GetValueAtIndex write FBidon stored False;
-    property NetHood: string index 7 read GetValueAtIndex write FBidon stored False;
-    property Personal: string index 8 read GetValueAtIndex write FBidon stored False;
-    property Programs: string index 9 read GetValueAtIndex write FBidon stored False;
-    property ProgramFiles: string read GetProgramFiles write FBidon stored False;
-    property Recent: string index 10 read GetValueAtIndex write FBidon stored False;
-    property SendTo: string index 11 read GetValueAtIndex write FBidon stored False;
-    property StartMenu: string index 12 read GetValueAtIndex write FBidon stored False;
-    property Startup: string index 13 read GetValueAtIndex write FBidon stored False;
-    property Templates: string index 14 read GetValueAtIndex write FBidon stored False;
+    property CurrentDirectory: string read GetCurrent write FDummy stored False;
+    property WindowsDirectory: string read GetWindowsDirectory write FDummy stored False;
+    property SystemDirectory: string read GetSystemDirectory write FDummy stored False;
+    property TempPath: string read GetTempPath write FDummy stored False;
+    property ApplicationData: string index 0 read GetValueAtIndex write FDummy stored False;
+    property Cache: string index 1 read GetValueAtIndex write FDummy stored False;
+    property Cookies: string index 2 read GetValueAtIndex write FDummy stored False;
+    property Desktop: string index 3 read GetValueAtIndex write FDummy stored False;
+    property Favorites: string index 4 read GetValueAtIndex write FDummy stored False;
+    property Fonts: string index 5 read GetValueAtIndex write FDummy stored False;
+    property History: string index 6 read GetValueAtIndex write FDummy stored False;
+    property NetHood: string index 7 read GetValueAtIndex write FDummy stored False;
+    property Personal: string index 8 read GetValueAtIndex write FDummy stored False;
+    property Programs: string index 9 read GetValueAtIndex write FDummy stored False;
+    property ProgramFiles: string read GetProgramFiles write FDummy stored False;
+    property Recent: string index 10 read GetValueAtIndex write FDummy stored False;
+    property SendTo: string index 11 read GetValueAtIndex write FDummy stored False;
+    property StartMenu: string index 12 read GetValueAtIndex write FDummy stored False;
+    property Startup: string index 13 read GetValueAtIndex write FDummy stored False;
+    property Templates: string index 14 read GetValueAtIndex write FDummy stored False;
 
-    property CommonAdminTools:string index 0 read GetCommonIndex write FBidon stored false;
-    property CommonAppData:string index 1 read GetCommonIndex write FBidon stored false;
-    property CommonDesktop:string index 2 read GetCommonIndex write FBidon stored false;
-    property CommonDocuments:string index 3 read GetCommonIndex write FBidon stored false;
-    property CommonPrograms:string index 4 read GetCommonIndex write FBidon stored false;
-    property CommonStartMenu:string index 5 read GetCommonIndex write FBidon stored false;
-    property CommonStartup:string index 6 read GetCommonIndex write FBidon stored false;
-    property CommonTemplates:string index 7 read GetCommonIndex write FBidon stored false;
-    property CommonPersonal:string index 8 read GetCommonIndex write FBidon stored false;
-    
-//    property AllUsersAdminTools:string index 0 read GetAllUsersIndex write FBidon stored false;
-    property AllUsersAppData:string index 1 read GetAllUsersIndex write FBidon stored false;
-    property AllUsersDesktop:string index 2 read GetAllUsersIndex write FBidon stored false;
-    property AllUsersDocuments:string index 3 read GetAllUsersIndex write FBidon stored false;
-    property AllUsersPrograms:string index 4 read GetAllUsersIndex write FBidon stored false;
-    property AllUsersStartMenu:string index 5 read GetAllUsersIndex write FBidon stored false;
-    property AllUsersStartup:string index 6 read GetAllUsersIndex write FBidon stored false;
-    property AllUsersTemplates:string index 7 read GetAllUsersIndex write FBidon stored false;
-    property AllUsersFavorites:string index 9 read GetAllUsersIndex write FBidon stored false;
+    property CommonAdminTools: string index 0 read GetCommonIndex write FDummy stored false;
+    property CommonAppData: string index 1 read GetCommonIndex write FDummy stored false;
+    property CommonDesktop: string index 2 read GetCommonIndex write FDummy stored false;
+    property CommonDocuments: string index 3 read GetCommonIndex write FDummy stored false;
+    property CommonPrograms: string index 4 read GetCommonIndex write FDummy stored false;
+    property CommonStartMenu: string index 5 read GetCommonIndex write FDummy stored false;
+    property CommonStartup: string index 6 read GetCommonIndex write FDummy stored false;
+    property CommonTemplates: string index 7 read GetCommonIndex write FDummy stored false;
+    property CommonPersonal: string index 8 read GetCommonIndex write FDummy stored false;
+
+//    property AllUsersAdminTools:string index 0 read GetAllUsersIndex write FDummy stored false;
+    property AllUsersAppData: string index 1 read GetAllUsersIndex write FDummy stored false;
+    property AllUsersDesktop: string index 2 read GetAllUsersIndex write FDummy stored false;
+    property AllUsersDocuments: string index 3 read GetAllUsersIndex write FDummy stored false;
+    property AllUsersPrograms: string index 4 read GetAllUsersIndex write FDummy stored false;
+    property AllUsersStartMenu: string index 5 read GetAllUsersIndex write FDummy stored false;
+    property AllUsersStartup: string index 6 read GetAllUsersIndex write FDummy stored false;
+    property AllUsersTemplates: string index 7 read GetAllUsersIndex write FDummy stored false;
+    property AllUsersFavorites: string index 9 read GetAllUsersIndex write FDummy stored false;
   end;
 
 implementation
 
 resourcestring
   RC_ShellFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders\';
-  RC_allFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders\'; 
+  RC_allFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders\';
 
 var
-  DirectoryList: array[0..14] of shortstring = ('AppData', 'Cache', 'Cookies', 'Desktop',
-    'Favorites', 'Fonts', 'History', 'NetHood', 'Personal', 'Programs', 'Recent',
+  DirectoryList: array [0..14] of PChar =
+   ('AppData', 'Cache', 'Cookies', 'Desktop', 'Favorites',
+    'Fonts', 'History', 'NetHood', 'Personal', 'Programs', 'Recent',
     'SendTo', 'Start Menu', 'Startup', 'Templates');
-  CommonDirectoryList:array [0..9] of shortstring = 
-  ('Common Administrative Tools','Common AppData','Common  Desktop',
-   'Common  Documents','Common Programs','Common Start Menu',
-   'Common Startup','Common Templates','Personal','Common Favorites');
-
-  {******************************************************}
+  CommonDirectoryList: array [0..9] of PChar =
+   ('Common Administrative Tools', 'Common AppData', 'Common  Desktop',
+    'Common  Documents', 'Common Programs', 'Common Start Menu',
+    'Common Startup', 'Common Templates', 'Personal', 'Common Favorites');
 
 function TJvDirectories.GetCurrent: string;
+var
+  Buffer: array [0..MAX_PATH] of Char;
 begin
-  GetCurrentDirectory(250, buf);
-  Result := CheckLastChar(buf);
+  GetCurrentDirectory(SizeOf(Buffer), Buffer);
+  Result := CheckLastChar(Buffer);
 end;
-
-{******************************************************}
 
 function TJvDirectories.GetWindowsDirectory: string;
+var
+  Buffer: array [0..MAX_PATH] of Char;
 begin
-  Windows.GetWindowsDirectory(buf, 250);
-  Result := CheckLastChar(buf);
+  Windows.GetWindowsDirectory(Buffer, SizeOf(Buffer));
+  Result := CheckLastChar(Buffer);
 end;
-
-{******************************************************}
 
 function TJvDirectories.GetSystemDirectory: string;
+var
+  Buffer: array [0..MAX_PATH] of Char;
 begin
-  Windows.GetSystemDirectory(buf, 250);
-  Result := CheckLastChar(buf);
+  Windows.GetSystemDirectory(Buffer, SizeOf(Buffer));
+  Result := CheckLastChar(Buffer);
 end;
-
-{******************************************************}
 
 function TJvDirectories.GetTempPath: string;
+var
+  Buffer: array [0..MAX_PATH] of Char;
 begin
-  Windows.GetTempPath(250, buf);
-  Result := CheckLastChar(buf);
+  Windows.GetTempPath(SizeOf(Buffer), Buffer);
+  Result := CheckLastChar(Buffer);
 end;
-
-{******************************************************}
 
 function TJvDirectories.GetValueAtIndex(Index: Integer): string;
 begin
@@ -159,8 +155,6 @@ begin
   end;
 end;
 
-{******************************************************}
-
 function TJvDirectories.CheckLastChar(Value: string): string;
 begin
   //Check if the last Char is a \, and add one if necessary
@@ -168,8 +162,6 @@ begin
     Value := Value + '\';
   Result := Value;
 end;
-
-{******************************************************}
 
 function TJvDirectories.GetProgramFiles: string;
 begin
@@ -204,10 +196,11 @@ begin
 end;
 
 function ExpandEnvVar(const Value: string): string;
-var aDest: array[0..MAX_PATH] of char;
+var
+  Buffer: array [0..MAX_PATH] of Char;
 begin
-  ExpandEnvironmentStrings(PChar(Value), aDest, MAX_PATH - 1);
-  Result := aDest;
+  ExpandEnvironmentStrings(PChar(Value), Buffer, MAX_PATH - 1);
+  Result := Buffer;
 end;
 
 function TJvDirectories.GetAllUsersIndex(const Index: Integer): string;
@@ -227,3 +220,4 @@ begin
 end;
 
 end.
+

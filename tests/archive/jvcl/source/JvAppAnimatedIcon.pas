@@ -57,8 +57,6 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvAppAnimatedIcon.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -70,15 +68,11 @@ begin
   FTimer.Enabled := FActive;
 end;
 
-{**************************************************}
-
 destructor TJvAppAnimatedIcon.Destroy;
 begin
   FTimer.Free;
   inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvAppAnimatedIcon.Animate(Sender: TObject);
 begin
@@ -89,23 +83,17 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvAppAnimatedIcon.SetActive(const Value: Boolean);
 begin
   FActive := Value;
   FTimer.Enabled := FActive;
 end;
 
-{**************************************************}
-
 procedure TJvAppAnimatedIcon.SetDelay(const Value: Cardinal);
 begin
   FDelay := Value;
   FTimer.Interval := FDelay;
 end;
-
-{**************************************************}
 
 procedure TJvAppAnimatedIcon.SetIcons(const Value: TImageList);
 begin

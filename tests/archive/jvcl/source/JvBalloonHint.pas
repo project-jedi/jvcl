@@ -24,8 +24,6 @@ located at http://jvcl.sourceforge.net
 Known Issues:
   * Only dropdown shadow for windows xp systems.
   * Only custom animation for windows xp systems, because of use of window region.
-  * Setting ParentWindow causes flickering.
-  * Close button doesn't look the same as the windows shell balloon.
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -101,7 +99,7 @@ type
   protected
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
-    procedure WMEraseBkgnd(var Msg: TWmEraseBkgnd); message WM_ERASEBKGND;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     {$IFNDEF COMPILER6_UP}
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
     {$ENDIF}
@@ -222,7 +220,10 @@ implementation
 
 uses
   SysUtils, CommCtrl, Registry, MMSystem, // needed for sndPlaySound
-  JvMaxMin, JvWndProcHook, JvFunctions, ComCtrls; // needed for GetComCtlVersion
+  {$IFDEF COMPILER7_UP}
+  Themes,
+  {$ENDIF}
+  JvMaxMin, JvWndProcHook, ComCtrls; // needed for GetComCtlVersion
 
 const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);
@@ -347,6 +348,8 @@ begin
 end;
 
 {$ENDIF}
+
+//=== TJvBalloonWindow =======================================================
 
 procedure TJvBalloonWindow.ActivateHint(Rect: TRect; const AHint: string);
 begin
@@ -612,6 +615,7 @@ end;
 procedure TJvBalloonWindow.CMShowingChanged(var Msg: TMessage);
 begin
   { In response of RecreateWnd, SetParentWindow calls, only respond when visible }
+  { Actually only necessairy for TJvBalloonWindow not for TJvBalloonWindowEx }
   if Showing then
     UpdateRegion;
   inherited;
@@ -805,7 +809,7 @@ begin
     system deletes the region handle when it no longer needed. }
 end;
 
-procedure TJvBalloonWindow.WMEraseBkgnd(var Msg: TWmEraseBkgnd);
+procedure TJvBalloonWindow.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 var
   Brush, BrushBlack: HBRUSH;
   Region: HRGN;
@@ -832,7 +836,33 @@ begin
 end;
 {$ENDIF}
 
-{ TJvBalloonHint }
+//=== TJvBalloonHint =========================================================
+
+constructor TJvBalloonHint.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FActive := False;
+  FHint := TJvBalloonWindowEx.Create(Self);
+  FHint.FCtrl := Self;
+  FHint.Visible := False;
+  FOptions := [boShowCloseBtn];
+  FApplicationHintOptions := [ahShowHeaderInHint, ahShowIconInHint];
+  FDefaultIcon := ikInformation;
+  FDefaultBalloonPosition := bpAuto;
+  FDefaultImageIndex := -1;
+  FCustomAnimationTime := 100;
+  FCustomAnimationStyle := atBlend;
+  TGlobalCtrl.Instance.MainCtrl := Self;
+end;
+
+destructor TJvBalloonHint.Destroy;
+begin
+  CancelHint;
+  StopHintTimer;
+  { This will implicitly reset the global HintWindowClass var.: }
+  ApplicationHintOptions := [];
+  inherited Destroy;
+end;
 
 procedure TJvBalloonHint.ActivateHint(ACtrl: TControl; const AHint,
   AHeader: string; const VisibleTime: Integer);
@@ -927,32 +957,12 @@ begin
 
   if GetCapture = FHint.Handle then
     ReleaseCapture;
-  ShowWindow(FHint.Handle, SW_HIDE);
-end;
-
-constructor TJvBalloonHint.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FActive := False;
-  FHint := TJvBalloonWindowEx.Create(Self);
-  FHint.FCtrl := Self;
-  FOptions := [boShowCloseBtn];
-  FApplicationHintOptions := [ahShowHeaderInHint, ahShowIconInHint];
-  FDefaultIcon := ikInformation;
-  FDefaultBalloonPosition := bpAuto;
-  FDefaultImageIndex := -1;
-  FCustomAnimationTime := 100;
-  FCustomAnimationStyle := atBlend;
-  TGlobalCtrl.Instance.MainCtrl := Self;
-end;
-
-destructor TJvBalloonHint.Destroy;
-begin
-  CancelHint;
-  StopHintTimer;
-  { This will implicitly reset the global HintWindowClass var.: }
-  ApplicationHintOptions := [];
-  inherited;
+  { Ensure property Visible is set to False: }
+  FHint.Hide;
+  { If ParentWindow = 0, calling Hide won't trigger the CM_SHOWINGCHANGED message
+    thus ShowWindow/SetWindowPos isn't called. We do it ourselfs: }
+  if FHint.ParentWindow = 0 then
+    ShowWindow(FHint.Handle, SW_HIDE);
 end;
 
 procedure TJvBalloonHint.Hook;
@@ -1165,7 +1175,7 @@ begin
     UnRegisterWndProcHook(FData.RAnchorWindow, HookProc, hoBeforeMsg);
 end;
 
-{ TGlobalCtrl }
+//=== TGlobalCtrl ============================================================
 
 constructor TGlobalCtrl.Create(AOwner: TComponent);
 begin
@@ -1377,7 +1387,7 @@ begin
     FMainCtrl.FreeNotification(Self)
 end;
 
-{ TJvBalloonWindowEx }
+//=== TJvBalloonWindowEx =====================================================
 
 function TJvBalloonWindowEx.CalcHeaderRect(MaxWidth: Integer): TRect;
 begin
@@ -1391,12 +1401,36 @@ begin
 end;
 
 procedure TJvBalloonWindowEx.ChangeCloseState(const AState: Cardinal);
+{$IFDEF COMPILER7_UP}
+var
+  Details: TThemedElementDetails;
+  Button: TThemedToolTip;
+{$ENDIF}
 begin
   if AState <> FCloseState then
   begin
     FCloseState := AState;
-    DrawFrameControl(Canvas.Handle, FCloseBtnRect, DFC_CAPTION, DFCS_TRANSPARENT or
-      DFCS_CAPTIONCLOSE or FCloseState);
+    {$IFDEF COMPILER7_UP}
+    if ThemeServices.ThemesEnabled then
+    begin
+      if (AState and DFCS_PUSHED > 0) and (AState and DFCS_HOT = 0) then
+        Button := tttCloseNormal
+      else
+      if AState and DFCS_PUSHED > 0 then
+        Button := tttClosePressed
+      else
+      if AState and DFCS_HOT > 0 then
+        Button := tttCloseHot
+      else
+        Button := tttCloseNormal;
+
+      Details := ThemeServices.GetElementDetails(Button);
+      ThemeServices.DrawElement(Canvas.Handle, Details, FCloseBtnRect);
+    end
+    else
+    {$ENDIF COMPILER7_UP}
+      DrawFrameControl(Canvas.Handle, FCloseBtnRect, DFC_CAPTION, DFCS_TRANSPARENT or
+        DFCS_CAPTIONCLOSE or FCloseState);
   end;
 end;
 
@@ -1442,7 +1476,18 @@ begin
   CheckPosition(Rect);
 
   if HandleAllocated and IsWindowVisible(Handle) then
-    ShowWindow(Handle, SW_HIDE);
+  begin
+    Hide;
+    if ParentWindow = 0 then
+      ShowWindow(Handle, SW_HIDE);
+  end;
+
+  { This will prevent focusing/unfocusing of the application button on the
+    taskbar when clicking on the balloon window }
+  if FIsAnchored then
+    ParentWindow := Application.Handle
+  else
+    ParentWindow := 0;
 
   UpdateBoundsRect(Rect);
   UpdateRegion;
@@ -1473,17 +1518,13 @@ begin
       because of use of the window region: }
     AnimateWindowProc(Handle, FAnimationTime, CAnimationStyle[FAnimationStyle] or AutoValue);
   end;
-  { This will prevent focusing/unfocusing of the application button on the
-    taskbar when clicking on the balloon window, but will cause flickering
-    when for the first time called because the window will be recreated.
-    Maybe move to TJvBalloonHint.Create although it will implicitly show
-    the window (but with no effect (?) because the size of the window is
-    then 0): }
-  if FIsAnchored then
-    ParentWindow := Application.Handle
-  else
-    ParentWindow := 0;
-  ShowWindow(Handle, SW_SHOWNOACTIVATE);
+
+  { Ensure property Visible is set to True: }
+  Show;
+  { If ParentWindow = 0, calling Show won't trigger the CM_SHOWINGCHANGED message
+    thus ShowWindow/SetWindowPos isn't called. We do it ourselfs: }
+  if ParentWindow = 0 then
+    ShowWindow(Handle, SW_SHOWNOACTIVATE);
   //Invalidate;
 end;
 
@@ -1506,6 +1547,13 @@ begin
   if FShowCloseBtn then
   begin
     FCloseBtnRect := Rect(HintRect.Right - 22, FDeltaY + 5, HintRect.Right - 6, FDeltaY + 21);
+    {$IFDEF COMPILER7_UP}
+    if ThemeServices.ThemesEnabled then
+    begin
+      Dec(FCloseBtnRect.Left);
+      Dec(FCloseBtnRect.Top);
+    end;
+    {$ENDIF}
     ChangeCloseState(DFCS_FLAT);
   end;
 

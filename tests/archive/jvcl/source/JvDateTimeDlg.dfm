@@ -1,10 +1,11 @@
 object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
   Left = 512
   Top = 361
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Select date time'
-  ClientHeight = 157
-  ClientWidth = 256
+  ClientHeight = 144
+  ClientWidth = 254
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -32,7 +33,7 @@ object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
   object dtpDate: TDateTimePicker
     Left = 8
     Top = 24
-    Width = 234
+    Width = 238
     Height = 21
     Anchors = [akLeft, akTop, akRight]
     CalAlignment = dtaLeft
@@ -47,7 +48,7 @@ object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
   object dtpTime: TDateTimePicker
     Left = 8
     Top = 72
-    Width = 234
+    Width = 238
     Height = 21
     Anchors = [akLeft, akTop, akRight]
     CalAlignment = dtaLeft
@@ -60,8 +61,8 @@ object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
     TabOrder = 1
   end
   object btnOK: TButton
-    Left = 77
-    Top = 120
+    Left = 27
+    Top = 107
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -71,8 +72,8 @@ object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
     TabOrder = 2
   end
   object btnCancel: TButton
-    Left = 157
-    Top = 120
+    Left = 147
+    Top = 107
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]

@@ -12,7 +12,7 @@ The Original Code is: JvFileUtil.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Portions Copyright (c) 1998 Ritting Information Systems
@@ -26,26 +26,20 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF}
+{$I WINDOWSONLY.INC}
 
 unit JvFileUtil;
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
 
 interface
 
-uses Windows,
-{$IFDEF COMPILER6_UP}
-RTLConsts,
-{$ENDIF}
-Messages, SysUtils, Classes, Consts, Controls{, JvComponent};
+uses
+  Windows,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF}
+  Messages, SysUtils, Classes, Consts, Controls {, JvComponent};
 
-procedure CopyFile(const FileName, DestName: string;
-  ProgressControl: TControl);
+procedure CopyFile(const FileName, DestName: string; ProgressControl: TControl);
 procedure CopyFileEx(const FileName, DestName: string;
   OverwriteReadOnly, ShellDialog: Boolean; ProgressControl: TControl);
 procedure MoveFile(const FileName, DestName: TFileName);
@@ -87,12 +81,10 @@ function BrowseDirectory(var AFolderName: string; const DlgText: string;
 {$IFDEF WIN32}
 function BrowseComputer(var ComputerName: string; const DlgText: string;
   AHelpContext: THelpContext): Boolean;
-
 function ShortToLongFileName(const ShortName: string): string;
 function ShortToLongPath(const ShortName: string): string;
 function LongToShortFileName(const LongName: string): string;
 function LongToShortPath(const LongName: string): string;
-
 procedure CreateFileLink(const FileName, DisplayName: string; Folder: Integer);
 procedure DeleteFileLink(const DisplayName: string; Folder: Integer);
 {$ENDIF WIN32}
@@ -103,30 +95,35 @@ function IsPathDelimiter(const S: string; Index: Integer): Boolean;
 
 implementation
 
-uses {$IFDEF WIN32} {$IFDEF COMPILER3_UP} ActiveX, ComObj, ShlObj, {$ELSE} Ole2,
-  OleAuto, {$ENDIF} {$ENDIF} JvDateUtil, ShellAPI, FileCtrl, Forms, JvVCLUtils,
-  JvPrgrss, JvFunctions;
+uses
+  {$IFDEF WIN32}
+  {$IFDEF COMPILER3_UP}
+  ActiveX, ComObj, ShlObj,
+  {$ELSE}
+  Ole2,
+  OleAuto,
+  {$ENDIF}
+  {$ENDIF}
+  ShellAPI, FileCtrl, Forms,
+  JvDateUtil, JvVCLUtils, JvPrgrss, JvFunctions;
 
 {$IFDEF WIN32}
 
 {$IFNDEF COMPILER3_UP}
 
 type
-
-{ TSHItemID -- Item ID }
-
+  { TSHItemID -- Item ID }
   PSHItemID = ^TSHItemID;
-  TSHItemID = packed record           { mkid }
-    cb: Word;                         { Size of the ID (including cb itself) }
-    abID: array[0..0] of Byte;        { The item ID (variable length) }
+  TSHItemID = packed record { mkid }
+    cb: Word; { Size of the ID (including cb itself) }
+    abID: array [0..0] of Byte; { The item ID (variable length) }
   end;
 
-{ TItemIDList -- List if item IDs (combined with 0-terminator) }
-
+  { TItemIDList -- List if item IDs (combined with 0-terminator) }
   PItemIDList = ^TItemIDList;
-  TItemIDList = packed record         { idl }
-     mkid: TSHItemID;
-   end;
+  TItemIDList = packed record { idl }
+    mkid: TSHItemID;
+  end;
 
   TFNBFFCallBack = function(Wnd: HWND; uMsg: UINT; lParam, lpData: LPARAM): Integer stdcall;
 
@@ -134,53 +131,48 @@ type
   TBrowseInfo = packed record
     hwndOwner: HWND;
     pidlRoot: PItemIDList;
-    pszDisplayName: LPSTR;  { Return display name of item selected. }
-    lpszTitle: LPCSTR;      { text to go in the banner over the tree. }
-    ulFlags: UINT;          { Flags that control the return stuff }
+    pszDisplayName: LPSTR; { Return display name of item selected. }
+    lpszTitle: LPCSTR; { text to go in the banner over the tree. }
+    ulFlags: UINT; { Flags that control the return stuff }
     lpfn: TFNBFFCallBack;
-    lParam: LPARAM;         { extra info that's passed back in callbacks }
-    iImage: Integer;        { output var: where to return the Image index. }
+    lParam: LPARAM; { extra info that's passed back in callbacks }
+    iImage: Integer; { output var: where to return the Image index. }
   end;
 
 const
+  { Browsing for directory }
+  BIF_RETURNONLYFSDIRS = $0001; { For finding a folder to start document searching }
+  BIF_DONTGOBELOWDOMAIN = $0002; { For starting the Find Computer }
+  BIF_STATUSTEXT = $0004;
+  BIF_RETURNFSANCESTORS = $0008;
 
-{ Browsing for directory }
-
-  BIF_RETURNONLYFSDIRS   = $0001; { For finding a folder to start document searching }
-  BIF_DONTGOBELOWDOMAIN  = $0002; { For starting the Find Computer }
-  BIF_STATUSTEXT         = $0004;
-  BIF_RETURNFSANCESTORS  = $0008;
-
-  BIF_BROWSEFORCOMPUTER  = $1000; { Browsing for Computers }
-  BIF_BROWSEFORPRINTER   = $2000; { Browsing for Printers }
+  BIF_BROWSEFORCOMPUTER = $1000; { Browsing for Computers }
+  BIF_BROWSEFORPRINTER = $2000; { Browsing for Printers }
   BIF_BROWSEINCLUDEFILES = $4000; { Browsing for Everything }
 
-{ message from browser }
+  { message from browser }
+  BFFM_INITIALIZED = 1;
+  BFFM_SELCHANGED = 2;
 
-  BFFM_INITIALIZED       = 1;
-  BFFM_SELCHANGED        = 2;
+  { messages to browser }
+  BFFM_SETSTATUSTEXT = (WM_USER + 100);
+  BFFM_ENABLEOK = (WM_USER + 101);
+  BFFM_SETSELECTION = (WM_USER + 102);
 
-{ messages to browser }
-
-  BFFM_SETSTATUSTEXT      = (WM_USER + 100);
-  BFFM_ENABLEOK           = (WM_USER + 101);
-  BFFM_SETSELECTION       = (WM_USER + 102);
-
-const
-  CSIDL_DRIVES             = $0011;
-  CSIDL_NETWORK            = $0012;
+  CSIDL_DRIVES = $0011;
+  CSIDL_NETWORK = $0012;
 
 function SHBrowseForFolder(var lpbi: TBrowseInfo): PItemIDList; stdcall;
   far; external Shell32 name 'SHBrowseForFolder';
+
 function SHGetPathFromIDList(pidl: PItemIDList; pszPath: LPSTR): BOOL; stdcall;
   far; external Shell32 name 'SHGetPathFromIDList';
+
 function SHGetSpecialFolderLocation(hwndOwner: HWND; nFolder: Integer;
   var ppidl: PItemIDList): HResult; stdcall; far; external Shell32
   name 'SHGetSpecialFolderLocation';
 
 {$ENDIF COMPILER3_UP}
-
-{ TJvBrowseFolderDlg }
 
 type
   TBrowseKind = (bfFolders, bfComputers);
@@ -190,12 +182,12 @@ type
   private
     FDefWndProc: Pointer;
     FHelpContext: THelpContext;
-    FHandle: HWnd;
+    FHandle: HWND;
     FObjectInstance: Pointer;
     FDesktopRoot: Boolean;
     FBrowseKind: TBrowseKind;
     FPosition: TDialogPosition;
-    FText: string;
+    FDialogText: string;
     FDisplayName: string;
     FSelectedName: string;
     FFolderName: string;
@@ -206,11 +198,11 @@ type
     procedure SetOkEnable(Value: Boolean);
     procedure DoInitialized;
     procedure DoSelChanged(Param: PItemIDList);
-    procedure WMNCDestroy(var Message: TWMNCDestroy); message WM_NCDESTROY;
-    procedure WMCommand(var Message: TMessage); message WM_COMMAND;
+    procedure WMNCDestroy(var Msg: TWMNCDestroy); message WM_NCDESTROY;
+    procedure WMCommand(var Msg: TMessage); message WM_COMMAND;
   protected
-    procedure DefaultHandler(var Message); override;
-    procedure WndProc(var Message: TMessage); virtual;
+    procedure DefaultHandler(var Msg); override;
+    procedure WndProc(var Msg: TMessage); virtual;
     function TaskModalDialog(var Info: TBrowseInfo): PItemIDList;
   public
     constructor Create(AOwner: TComponent); override;
@@ -223,7 +215,7 @@ type
   published
     property BrowseKind: TBrowseKind read FBrowseKind write FBrowseKind default bfFolders;
     property DesktopRoot: Boolean read FDesktopRoot write FDesktopRoot default True;
-    property DialogText: string read FText write FText;
+    property DialogText: string read FDialogText write FDialogText;
     property FolderName: string read FFolderName write FFolderName;
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property Position: TDialogPosition read FPosition write FPosition default dpScreenCenter;
@@ -234,7 +226,8 @@ type
 function ExplorerHook(Wnd: HWnd; Msg: UINT; LParam: LPARAM; Data: LPARAM): Integer; stdcall;
 begin
   Result := 0;
-  if Msg = BFFM_INITIALIZED then begin
+  if Msg = BFFM_INITIALIZED then
+  begin
     if TJvBrowseFolderDlg(Data).Position = dpScreenCenter then
       CenterWindow(Wnd);
     TJvBrowseFolderDlg(Data).FHandle := Wnd;
@@ -242,7 +235,9 @@ begin
       Longint(TJvBrowseFolderDlg(Data).FObjectInstance)));
     TJvBrowseFolderDlg(Data).DoInitialized;
   end
-  else if Msg = BFFM_SELCHANGED then begin
+  else
+  if Msg = BFFM_SELCHANGED then
+  begin
     TJvBrowseFolderDlg(Data).FHandle := Wnd;
     TJvBrowseFolderDlg(Data).DoSelChanged(PItemIDList(LParam));
   end;
@@ -251,10 +246,16 @@ end;
 const
   HelpButtonId = $FFFF;
 
+//=== TJvBrowseFolderDlg =====================================================
+
 constructor TJvBrowseFolderDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FObjectInstance := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(WndProc);
+  {$IFDEF COMPILER6_UP}
+  FObjectInstance := Classes.MakeObjectInstance(WndProc);
+  {$ELSE}
+  FObjectInstance := MakeObjectInstance(WndProc);
+  {$ENDIF}
   FDesktopRoot := True;
   FBrowseKind := bfFolders;
   FPosition := dpScreenCenter;
@@ -263,7 +264,12 @@ end;
 
 destructor TJvBrowseFolderDlg.Destroy;
 begin
-  if FObjectInstance <> nil then {$IFDEF COMPILER6_UP}Classes.{$ENDIF}FreeObjectInstance(FObjectInstance);
+  if FObjectInstance <> nil then
+    {$IFDEF COMPILER6_UP}
+    Classes.FreeObjectInstance(FObjectInstance);
+    {$ELSE}
+    FreeObjectInstance(FObjectInstance);
+    {$ENDIF}
   inherited Destroy;
 end;
 
@@ -276,9 +282,11 @@ var
 begin
   if (FBrowseKind = bfComputers) or DirExists(FFolderName) then
     SetSelPath(FFolderName);
-  if FHelpContext <> 0 then begin
+  if FHelpContext <> 0 then
+  begin
     BtnHandle := FindWindowEx(FHandle, 0, SBtn, nil);
-    if (BtnHandle <> 0) then begin
+    if BtnHandle <> 0 then
+    begin
       GetWindowRect(BtnHandle, BtnSize);
       ScreenToClient(FHandle, BtnSize.TopLeft);
       ScreenToClient(FHandle, BtnSize.BottomRight);
@@ -292,27 +300,31 @@ begin
       UpdateWindow(FHandle);
     end;
   end;
-  if Assigned(FOnInitialized) then FOnInitialized(Self);
+  if Assigned(FOnInitialized) then
+    FOnInitialized(Self);
 end;
 
 procedure TJvBrowseFolderDlg.DoSelChanged(Param: PItemIDList);
 var
-  Temp: array[0..MAX_PATH] of Char;
+  Temp: array [0..MAX_PATH] of Char;
 begin
-  if (FBrowseKind = bfComputers) then begin
-    FSelectedName := DisplayName;
-  end
-  else begin
-    if SHGetPathFromIDList(Param, Temp) then begin
+  if FBrowseKind = bfComputers then
+    FSelectedName := DisplayName
+  else
+  begin
+    if SHGetPathFromIDList(Param, Temp) then
+    begin
       FSelectedName := StrPas(Temp);
       SetOkEnable(DirExists(FSelectedName));
     end
-    else begin
+    else
+    begin
       FSelectedName := '';
       SetOkEnable(False);
     end;
   end;
-  if Assigned(FOnSelChanged) then FOnSelChanged(Self);
+  if Assigned(FOnSelChanged) then
+    FOnSelChanged(Self);
 end;
 
 procedure TJvBrowseFolderDlg.SetSelPath(const Path: string);
@@ -323,33 +335,34 @@ end;
 
 procedure TJvBrowseFolderDlg.SetOkEnable(Value: Boolean);
 begin
-  if FHandle <> 0 then SendMessage(FHandle, BFFM_ENABLEOK, 0, Ord(Value));
+  if FHandle <> 0 then
+    SendMessage(FHandle, BFFM_ENABLEOK, 0, Ord(Value));
 end;
 
-procedure TJvBrowseFolderDlg.DefaultHandler(var Message);
+procedure TJvBrowseFolderDlg.DefaultHandler(var Msg);
 begin
   if FHandle <> 0 then
-    with TMessage(Message) do
+    with TMessage(Msg) do
       Result := CallWindowProc(FDefWndProc, FHandle, Msg, WParam, LParam)
-  else inherited DefaultHandler(Message);
+  else
+    inherited DefaultHandler(Msg);
 end;
 
-procedure TJvBrowseFolderDlg.WndProc(var Message: TMessage);
+procedure TJvBrowseFolderDlg.WndProc(var Msg: TMessage);
 begin
-  Dispatch(Message);
+  Dispatch(Msg);
 end;
 
-procedure TJvBrowseFolderDlg.WMCommand(var Message: TMessage);
+procedure TJvBrowseFolderDlg.WMCommand(var Msg: TMessage);
 begin
-  if (Message.wParam = HelpButtonId) and (LongRec(Message.lParam).Hi =
-    BN_CLICKED) and (FHelpContext <> 0) then
-  begin
-    Application.HelpContext(FHelpContext);
-  end
-  else inherited;
+  if (Msg.wParam = HelpButtonId) and (LongRec(Msg.lParam).Hi = BN_CLICKED) and
+    (FHelpContext <> 0) then
+    Application.HelpContext(FHelpContext)
+  else
+    inherited;
 end;
 
-procedure TJvBrowseFolderDlg.WMNCDestroy(var Message: TWMNCDestroy);
+procedure TJvBrowseFolderDlg.WMNCDestroy(var Msg: TWMNCDestroy);
 begin
   inherited;
   FHandle := 0;
@@ -359,11 +372,12 @@ function TJvBrowseFolderDlg.Execute: Boolean;
 var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
-  Temp: array[0..MAX_PATH] of Char;
+  Temp: array [0..MAX_PATH] of Char;
 begin
   if FDesktopRoot and (FBrowseKind = bfFolders) then
     BrowseInfo.pidlRoot := nil
-  else begin
+  else
+  begin
     if FBrowseKind = bfComputers then { root - Network }
       OleCheck(SHGetSpecialFolderLocation(0, CSIDL_NETWORK,
         BrowseInfo.pidlRoot))
@@ -373,10 +387,13 @@ begin
   end;
   try
     SetLength(FDisplayName, MAX_PATH);
-    with BrowseInfo do begin
+    with BrowseInfo do
+    begin
       pszDisplayName := PChar(DisplayName);
-      if DialogText <> '' then lpszTitle := PChar(DialogText)
-      else lpszTitle := nil;
+      if DialogText <> '' then
+        lpszTitle := PChar(DialogText)
+      else
+        lpszTitle := nil;
       if FBrowseKind = bfComputers then
         ulFlags := BIF_BROWSEFORCOMPUTER
       else
@@ -390,26 +407,27 @@ begin
     Result := ItemIDList <> nil;
     if Result then
     try
-      if FBrowseKind = bfFolders then begin
+      if FBrowseKind = bfFolders then
+      begin
         OSCheck(SHGetPathFromIDList(ItemIDList, Temp));
         FFolderName := RemoveBackSlash(StrPas(Temp));
       end
-      else begin
+      else
         FFolderName := DisplayName;
-      end;
       FSelectedName := FFolderName;
       FImageIndex := BrowseInfo.iImage;
     finally
       CoTaskMemFree(ItemIDList);
     end;
   finally
-    if BrowseInfo.pidlRoot <> nil then CoTaskMemFree(BrowseInfo.pidlRoot);
+    if BrowseInfo.pidlRoot <> nil then
+      CoTaskMemFree(BrowseInfo.pidlRoot);
   end;
 end;
 
 function TJvBrowseFolderDlg.TaskModalDialog(var Info: TBrowseInfo): PItemIDList;
 var
-  ActiveWindow: HWnd;
+  ActiveWindow: HWND;
   WindowList: Pointer;
 begin
   ActiveWindow := GetActiveWindow;
@@ -430,19 +448,22 @@ end;
 function BrowseDirectory(var AFolderName: string; const DlgText: string;
   AHelpContext: THelpContext): Boolean;
 begin
-  if NewStyleControls then begin
+  if NewStyleControls then
+  begin
     with TJvBrowseFolderDlg.Create(Application) do
     try
       DialogText := DlgText;
       FolderName := AFolderName;
       HelpContext := AHelpContext;
       Result := Execute;
-      if Result then AFolderName := FolderName;
+      if Result then
+        AFolderName := FolderName;
     finally
       Free;
     end;
   end
-  else Result := SelectDirectory(AFolderName, [], AHelpContext);
+  else
+    Result := SelectDirectory(AFolderName, [], AHelpContext);
 end;
 
 function BrowseComputer(var ComputerName: string; const DlgText: string;
@@ -455,13 +476,14 @@ begin
     FolderName := ComputerName;
     HelpContext := AHelpContext;
     Result := Execute;
-    if Result then ComputerName := FolderName;
+    if Result then
+      ComputerName := FolderName;
   finally
     Free;
   end;
 end;
 
-{ TJvFileOperator }
+//=== TJvFileOperator ========================================================
 
 type
   TFileOperation = (foCopy, foDelete, foMove, foRename);
@@ -506,9 +528,9 @@ end;
 
 function TJvFileOperator.TaskModalDialog(DialogFunc: Pointer; var DialogData): Boolean;
 type
-  TDialogFunc = function(var DialogData): Integer stdcall;
+  TDialogFunc = function(var DialogData): Integer; stdcall;
 var
-  ActiveWindow: HWnd;
+  ActiveWindow: HWND;
   WindowList: Pointer;
 begin
   ActiveWindow := GetActiveWindow;
@@ -523,12 +545,12 @@ end;
 
 function TJvFileOperator.Execute: Boolean;
 const
-  OperTypes: array[TFileOperation] of UINT = (
-    FO_COPY, FO_DELETE, FO_MOVE, FO_RENAME);
-  OperOptions: array[TFileOperFlag] of FILEOP_FLAGS = (
-    FOF_ALLOWUNDO, FOF_CONFIRMMOUSE, FOF_FILESONLY, FOF_MULTIDESTFILES,
-    FOF_NOCONFIRMATION, FOF_NOCONFIRMMKDIR, FOF_RENAMEONCOLLISION,
-    FOF_SILENT, FOF_SIMPLEPROGRESS, FOF_NOERRORUI);
+  OperTypes: array [TFileOperation] of UINT =
+    (FO_COPY, FO_DELETE, FO_MOVE, FO_RENAME);
+  OperOptions: array [TFileOperFlag] of FILEOP_FLAGS =
+    (FOF_ALLOWUNDO, FOF_CONFIRMMOUSE, FOF_FILESONLY, FOF_MULTIDESTFILES,
+     FOF_NOCONFIRMATION, FOF_NOCONFIRMMKDIR, FOF_RENAMEONCOLLISION,
+     FOF_SILENT, FOF_SIMPLEPROGRESS, FOF_NOERRORUI);
 var
   OpStruct: TSHFileOpStruct;
   Flag: TFileOperFlag;
@@ -538,11 +560,14 @@ var
     P: PChar;
   begin
     Result := nil;
-    if S <> '' then begin
+    if S <> '' then
+    begin
       Result := StrCopy(StrAlloc(Length(S) + 2), PChar(S));
       P := Result;
-      while P^ <> #0 do begin
-        if (P^ = ';') or (P^ = '|') then P^ := #0;
+      while P^ <> #0 do
+      begin
+        if (P^ = ';') or (P^ = '|') then
+          P^ := #0;
         Inc(P);
       end;
       Inc(P);
@@ -558,19 +583,23 @@ begin
     if (Application.MainForm <> nil) and
       Application.MainForm.HandleAllocated then
       Wnd := Application.MainForm.Handle
-    else Wnd := Application.Handle;
+    else
+      Wnd := Application.Handle;
     wFunc := OperTypes[Operation];
     pFrom := AllocFileStr(FSource);
     pTo := AllocFileStr(FDestination);
     fFlags := 0;
     for Flag := Low(Flag) to High(Flag) do
-      if Flag in FOptions then fFlags := fFlags or OperOptions[Flag];
+      if Flag in FOptions then
+        fFlags := fFlags or OperOptions[Flag];
     lpszProgressTitle := PChar(FProgressTitle);
     Result := TaskModalDialog(@SHFileOperation, OpStruct);
     FAborted := fAnyOperationsAborted;
   finally
-    if pFrom <> nil then StrDispose(pFrom);
-    if pTo <> nil then StrDispose(pTo);
+    if pFrom <> nil then
+      StrDispose(pFrom);
+    if pTo <> nil then
+      StrDispose(pTo);
   end;
 end;
 
@@ -588,36 +617,33 @@ function NormalDir(const DirName: string): string;
 begin
   Result := DirName;
   if (Result <> '') and
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     not (AnsiLastChar(Result)^ in [':', '\']) then
-{$ELSE}
+    {$ELSE}
     not (Result[Length(Result)] in [':', '\']) then
-{$ENDIF}
-  begin
+    {$ENDIF}
     if (Length(Result) = 1) and (UpCase(Result[1]) in ['A'..'Z']) then
       Result := Result + ':\'
-    else Result := Result + '\';
-  end;
+    else
+      Result := Result + '\';
 end;
 
 function RemoveBackSlash(const DirName: string): string;
 begin
   Result := DirName;
   if (Length(Result) > 1) and
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     (AnsiLastChar(Result)^ = '\') then
-{$ELSE}
+    {$ELSE}
     (Result[Length(Result)] = '\') then
-{$ENDIF}
-  begin
+    {$ENDIF}
     if not ((Length(Result) = 3) and (UpCase(Result[1]) in ['A'..'Z']) and
       (Result[2] = ':')) then
       Delete(Result, Length(Result), 1);
-  end;
 end;
 
-function DirExists(Name: string): Boolean;
 {$IFDEF WIN32}
+function DirExists(Name: string): Boolean;
 var
   Code: Integer;
 begin
@@ -625,10 +651,12 @@ begin
   Result := (Code <> -1) and (FILE_ATTRIBUTE_DIRECTORY and Code <> 0);
 end;
 {$ELSE}
+function DirExists(Name: string): Boolean;
 var
   SR: TSearchRec;
 begin
-  if Name[Length(Name)] = '\' then Dec(Name[0]);
+  if Name[Length(Name)] = '\' then
+    Dec(Name[0]);
   if (Length(Name) = 2) and (Name[2] = ':') then
     Name := Name + '\*.*';
   Result := FindFirst(Name, faDirectory, SR) = 0;
@@ -638,21 +666,23 @@ end;
 
 procedure ForceDirectories(Dir: string);
 begin
-  if Length(Dir) = 0 then Exit;
-{$IFDEF COMPILER3_UP}
+  if Length(Dir) = 0 then
+    Exit;
+  {$IFDEF COMPILER3_UP}
   if (AnsiLastChar(Dir) <> nil) and (AnsiLastChar(Dir)^ = '\') then
-{$ELSE}
+  {$ELSE}
   if Dir[Length(Dir)] = '\' then
-{$ENDIF}
+  {$ENDIF}
     Delete(Dir, Length(Dir), 1);
   if (Length(Dir) < 3) or DirectoryExists(Dir) or
-    (ExtractFilePath(Dir) = Dir) then Exit;
+    (ExtractFilePath(Dir) = Dir) then
+    Exit;
   ForceDirectories(ExtractFilePath(Dir));
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   CreateDir(Dir);
-{$ELSE}
+  {$ELSE}
   MkDir(Dir);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 {$IFDEF WIN32}
@@ -663,48 +693,52 @@ begin
   try
     Source := FileName;
     Destination := DestName;
-    if MoveFile then begin
+    if MoveFile then
+    begin
       if AnsiCompareText(ExtractFilePath(FileName),
         ExtractFilePath(DestName)) = 0 then
         Operation := foRename
-      else Operation := foMove;
+      else
+        Operation := foMove;
     end
-    else Operation := foCopy;
+    else
+      Operation := foCopy;
     if not AllowUndo then
       Options := Options - [flAllowUndo];
     if not Confirmation then
       Options := Options + [flNoConfirmation];
-    if not Execute or Aborted then SysUtils.Abort;
+    if not Execute or Aborted then
+      SysUtils.Abort;
   finally
     Free;
   end;
 end;
 {$ENDIF}
 
-procedure CopyFile(const FileName, DestName: string;
-  ProgressControl: TControl);
+procedure CopyFile(const FileName, DestName: string; ProgressControl: TControl);
 begin
   CopyFileEx(FileName, DestName, False, False, ProgressControl);
 end;
 
 procedure CopyFileEx(const FileName, DestName: string;
   OverwriteReadOnly, ShellDialog: Boolean; ProgressControl: TControl);
+const
+  ChunkSize = 8192;
 var
   CopyBuffer: Pointer;
   Source, Dest: Integer;
   Destination: TFileName;
   FSize, BytesCopied, TotalCopied: Longint;
   Attr: Integer;
-const
-  ChunkSize: Longint = 8192;
 begin
-{$IFDEF WIN32}
-  if NewStyleControls and ShellDialog then begin
+  {$IFDEF WIN32}
+  if NewStyleControls and ShellDialog then
+  begin
     CopyMoveFileShell(FileName, DestName, not OverwriteReadOnly,
       False, False);
     Exit;
   end;
-{$ENDIF}
+  {$ENDIF}
   Destination := DestName;
   if HasAttr(Destination, faDirectory) then
     Destination := NormalDir(Destination) + ExtractFileName(FileName);
@@ -716,13 +750,15 @@ begin
     if Source < 0 then
       raise EFOpenError.CreateFmt(ResStr(SFOpenError), [FileName]);
     try
-      if ProgressControl <> nil then begin
+      if ProgressControl <> nil then
+      begin
         SetProgressMax(ProgressControl, FSize);
         SetProgressMin(ProgressControl, 0);
         SetProgressValue(ProgressControl, 0);
       end;
       ForceDirectories(ExtractFilePath(Destination));
-      if OverwriteReadOnly then begin
+      if OverwriteReadOnly then
+      begin
         Attr := FileGetAttr(Destination);
         if (Attr >= 0) and ((Attr and faReadOnly) <> 0) then
           FileSetAttr(Destination, Attr and not faReadOnly);
@@ -736,7 +772,8 @@ begin
           if BytesCopied = -1 then
             raise EReadError.Create(ResStr(SReadError));
           TotalCopied := TotalCopied + BytesCopied;
-          if BytesCopied > 0 then begin
+          if BytesCopied > 0 then
+          begin
             if FileWrite(Dest, CopyBuffer^, BytesCopied) = -1 then
               raise EWriteError.Create(ResStr(SWriteError));
           end;
@@ -763,9 +800,11 @@ var
   Attr: Integer;
 begin
   Destination := ExpandFileName(DestName);
-  if not RenameFile(FileName, Destination) then begin
+  if not RenameFile(FileName, Destination) then
+  begin
     Attr := FileGetAttr(FileName);
-    if Attr < 0 then Exit;
+    if Attr < 0 then
+      Exit;
     if (Attr and faReadOnly) <> 0 then
       FileSetAttr(FileName, Attr and not faReadOnly);
     CopyFile(FileName, Destination, nil);
@@ -776,11 +815,11 @@ end;
 procedure MoveFileEx(const FileName, DestName: TFileName;
   ShellDialog: Boolean);
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if NewStyleControls and ShellDialog then
     CopyMoveFileShell(FileName, DestName, False, False, True)
   else
-{$ENDIF}
+  {$ENDIF}
     MoveFile(FileName, DestName);
 end;
 
@@ -791,7 +830,8 @@ var
   FindData: TWin32FindData;
 begin
   Handle := FindFirstFile(PChar(FileName), FindData);
-  if Handle <> INVALID_HANDLE_VALUE then begin
+  if Handle <> INVALID_HANDLE_VALUE then
+  begin
     Windows.FindClose(Handle);
     if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) = 0 then
     begin
@@ -809,7 +849,8 @@ var
 begin
   if FindFirst(ExpandFileName(FileName), faAnyFile, SearchRec) = 0 then
     Result := SearchRec.Size
-  else Result := -1;
+  else
+    Result := -1;
   FindClose(SearchRec);
 end;
 {$ENDIF COMPILER4_UP}
@@ -843,12 +884,14 @@ begin
       repeat
 //        if (SearchRec.Name[1] <> '.') and
 //      !!! BUG !!!
-        if (SearchRec.Name <> '.') and
+// (rom) added '..' to complete the fix
+        if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') and
           (SearchRec.Attr and faVolumeID <> faVolumeID) and
           (SearchRec.Attr and faDirectory <> faDirectory) then
         begin
           Result := DeleteFile(ExtractFilePath(FileMask) + SearchRec.Name);
-          if not Result then Break;
+          if not Result then
+            Break;
         end;
       until FindNext(SearchRec) <> 0;
   finally
@@ -867,28 +910,32 @@ end;
 
 function ClearDir(const Path: string; Delete: Boolean): Boolean;
 const
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   FileNotFound = 18;
-{$ELSE}
+  {$ELSE}
   FileNotFound = -18;
-{$ENDIF}
+  {$ENDIF}
 var
   FileInfo: TSearchRec;
   DosCode: Integer;
 begin
   Result := DirExists(Path);
-  if not Result then Exit;
+  if not Result then
+    Exit;
   DosCode := FindFirst(NormalDir(Path) + '*.*', faAnyFile, FileInfo);
   try
-    while DosCode = 0 do begin
+    while DosCode = 0 do
+    begin
 //      if (FileInfo.Name[1] <> '.') and (FileInfo.Attr <> faVolumeID) then
 //      !!! BUG !!!
       if (FileInfo.Name <> '.') and (FileInfo.Name <> '..') and (FileInfo.Attr <> faVolumeID) then
       begin
-        if (FileInfo.Attr and faDirectory = faDirectory) then
+        if (FileInfo.Attr and faDirectory) = faDirectory then
           Result := ClearDir(NormalDir(Path) + FileInfo.Name, Delete) and Result
-        else if (FileInfo.Attr and faVolumeID <> faVolumeID) then begin
-          if (FileInfo.Attr and faReadOnly = faReadOnly) then
+        else
+        if (FileInfo.Attr and faVolumeID) <> faVolumeID then
+        begin
+          if (FileInfo.Attr and faReadOnly) = faReadOnly then
             FileSetAttr(NormalDir(Path) + FileInfo.Name, faArchive);
           Result := DeleteFile(NormalDir(Path) + FileInfo.Name) and Result;
         end;
@@ -906,63 +953,74 @@ begin
   end;
 end;
 
-function GetTempDir: string;
 {$IFDEF WIN32}
+function GetTempDir: string;
 var
-  Buffer: array[0..1023] of Char;
+  Buffer: array [0..MAX_PATH] of Char;
 begin
   SetString(Result, Buffer, GetTempPath(SizeOf(Buffer), Buffer));
+end;
 {$ELSE}
+function GetTempDir: string;
 var
-  Buffer: array[0..255] of Char;
+  Buffer: array [0..255] of Char;
 begin
   GetTempFileName(GetTempDrive(#0), '$', 1, Buffer);
   Result := ExtractFilePath(StrPas(Buffer));
-{$ENDIF}
 end;
+{$ENDIF}
 
-function GetWindowsDir: string;
 {$IFDEF WIN32}
+function GetWindowsDir: string;
 var
-  Buffer: array[0..1023] of Char;
+  Buffer: array [0..MAX_PATH] of Char;
 begin
   SetString(Result, Buffer, GetWindowsDirectory(Buffer, SizeOf(Buffer)));
+end;
 {$ELSE}
+function GetWindowsDir: string;
 begin
   Result[0] := Char(GetWindowsDirectory(@Result[1], 254));
-{$ENDIF}
 end;
+{$ENDIF}
 
-function GetSystemDir: string;
 {$IFDEF WIN32}
+function GetSystemDir: string;
 var
-  Buffer: array[0..1023] of Char;
+  Buffer: array [0..MAX_PATH] of Char;
 begin
   SetString(Result, Buffer, GetSystemDirectory(Buffer, SizeOf(Buffer)));
+end;
 {$ELSE}
+function GetSystemDir: string;
 begin
   Result[0] := Char(GetSystemDirectory(@Result[1], 254));
-{$ENDIF}
 end;
+{$ENDIF}
 
 {$IFDEF WIN32}
 
 function ValidFileName(const FileName: string): Boolean;
+
   function HasAny(const Str, Substr: string): Boolean;
   var
     I: Integer;
   begin
     Result := False;
-    for I := 1 to Length(Substr) do begin
-      if Pos(Substr[I], Str) > 0 then begin
+    for I := 1 to Length(Substr) do
+    begin
+      if Pos(Substr[I], Str) > 0 then
+      begin
         Result := True;
         Break;
       end;
     end;
   end;
+
 begin
   Result := (FileName <> '') and (not HasAny(FileName, '<>"[]|'));
-  if Result then Result := Pos('\', ExtractFileName(FileName)) = 0;
+  if Result then
+    Result := Pos('\', ExtractFileName(FileName)) = 0;
 end;
 
 function FileLock(Handle: Integer; Offset, LockSize: Longint): Integer;
@@ -982,10 +1040,12 @@ begin
 end;
 
 {$IFDEF COMPILER4_UP}
+
 function FileLock(Handle: Integer; Offset, LockSize: Int64): Integer;
 begin
   if LockFile(Handle, Int64Rec(Offset).Lo, Int64Rec(Offset).Hi,
-    Int64Rec(LockSize).Lo, Int64Rec(LockSize).Hi) then Result := 0
+    Int64Rec(LockSize).Lo, Int64Rec(LockSize).Hi) then
+    Result := 0
   else
     Result := GetLastError;
 end;
@@ -993,10 +1053,12 @@ end;
 function FileUnlock(Handle: Integer; Offset, LockSize: Int64): Integer;
 begin
   if UnlockFile(Handle, Int64Rec(Offset).Lo, Int64Rec(Offset).Hi,
-    Int64Rec(LockSize).Lo, Int64Rec(LockSize).Hi) then Result := 0
+    Int64Rec(LockSize).Lo, Int64Rec(LockSize).Hi) then
+    Result := 0
   else
     Result := GetLastError;
 end;
+
 {$ENDIF COMPILER4_UP}
 
 {$ELSE}
@@ -1004,7 +1066,7 @@ end;
 function ValidFileName(const FileName: string): Boolean;
 const
   MaxNameLen = 12; { file name and extension }
-  MaxExtLen  =  4; { extension with point }
+  MaxExtLen = 4; { extension with point }
   MaxPathLen = 79; { full file path in DOS }
 var
   Dir, Name, Ext: TFileName;
@@ -1044,7 +1106,8 @@ begin
   Name := Copy(ExtractFileName(FileName), 1, MaxNameLen);
   Ext := Copy(ExtractFileExt(FileName), 1, MaxExtLen);
   if (Dir + Name <> FileName) or HasAny(Name, ';,=+<>|"[] \') or
-    HasAny(Copy(Ext, 2, 255), ';,=+<>|"[] \.') then Result := False;
+    HasAny(Copy(Ext, 2, 255), ';,=+<>|"[] \.') then
+    Result := False;
 end;
 
 function LockFile(Handle: Integer; StartPos, Length: Longint;
@@ -1086,11 +1149,14 @@ var
   SearchHandle: THandle;
 begin
   SearchHandle := FindFirstFile(PChar(ShortName), Temp);
-  if SearchHandle <> INVALID_HANDLE_VALUE then begin
-    Result := string(Temp.cFileName);
-    if Result = '' then Result := string(Temp.cAlternateFileName);
+  if SearchHandle <> INVALID_HANDLE_VALUE then
+  begin
+    Result := Temp.cFileName;
+    if Result = '' then
+      Result := Temp.cAlternateFileName;
   end
-  else Result := '';
+  else
+    Result := '';
   Windows.FindClose(SearchHandle);
 end;
 
@@ -1100,11 +1166,14 @@ var
   SearchHandle: THandle;
 begin
   SearchHandle := FindFirstFile(PChar(LongName), Temp);
-  if SearchHandle <> INVALID_HANDLE_VALUE then begin
-    Result := string(Temp.cAlternateFileName);
-    if Result = '' then Result := string(Temp.cFileName);
+  if SearchHandle <> INVALID_HANDLE_VALUE then
+  begin
+    Result := Temp.cAlternateFileName;
+    if Result = '' then
+      Result := Temp.cFileName;
   end
-  else Result := '';
+  else
+    Result := '';
   Windows.FindClose(SearchHandle);
 end;
 
@@ -1116,9 +1185,11 @@ begin
   Result := '';
   TempPathPtr := PChar(ShortName);
   LastSlash := StrRScan(TempPathPtr, '\');
-  while LastSlash <> nil do begin
+  while LastSlash <> nil do
+  begin
     Result := '\' + ShortToLongFileName(TempPathPtr) + Result;
-    if LastSlash <> nil then begin
+    if LastSlash <> nil then
+    begin
       LastSlash^ := char(0);
       LastSlash := StrRScan(TempPathPtr, '\');
     end;
@@ -1134,10 +1205,12 @@ begin
   Result := '';
   TempPathPtr := PChar(LongName);
   LastSlash := StrRScan(TempPathPtr, '\');
-  while LastSlash <> nil do begin
+  while LastSlash <> nil do
+  begin
     Result := '\' + LongToShortFileName(TempPathPtr) + Result;
-    if LastSlash <> nil then begin
-      LastSlash^ := char(0);
+    if LastSlash <> nil then
+    begin
+      LastSlash^ := Char(0);
       LastSlash := StrRScan(TempPathPtr, '\');
     end;
   end;
@@ -1145,15 +1218,16 @@ begin
 end;
 
 const
-  IID_IPersistFile: TGUID = (
-    D1:$0000010B;D2:$0000;D3:$0000;D4:($C0,$00,$00,$00,$00,$00,$00,$46));
+  IID_IPersistFile: TGUID =
+    (D1: $0000010B; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
 
 {$IFNDEF COMPILER3_UP}
+
 const
-  IID_IShellLinkA: TGUID = (
-    D1:$000214EE; D2:$0000; D3:$0000; D4:($C0,$00,$00,$00,$00,$00,$00,$46));
-  CLSID_ShellLink: TGUID = (
-    D1:$00021401; D2:$0000; D3:$0000; D4:($C0,$00,$00,$00,$00,$00,$00,$46));
+  IID_IShellLinkA: TGUID =
+    (D1: $000214EE; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
+  CLSID_ShellLink: TGUID =
+    (D1: $00021401; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
 
 type
   IShellLink = class(IUnknown) { sl }
@@ -1178,6 +1252,7 @@ type
     function Resolve(Wnd: HWND; fFlags: DWORD): HResult; virtual; stdcall; abstract;
     function SetPath(pszFile: LPSTR): HResult; virtual; stdcall; abstract;
   end;
+
 {$ENDIF}
 
 const
@@ -1188,8 +1263,8 @@ var
   ShellLink: IShellLink;
   PersistFile: IPersistFile;
   ItemIDList: PItemIDList;
-  FileDestPath: array[0..MAX_PATH] of Char;
-  FileNameW: array[0..MAX_PATH] of WideChar;
+  FileDestPath: array [0..MAX_PATH] of Char;
+  FileNameW: array [0..MAX_PATH] of WideChar;
 begin
   CoInitialize(nil);
   try
@@ -1206,18 +1281,18 @@ begin
         MultiByteToWideChar(CP_ACP, 0, FileDestPath, -1, FileNameW, MAX_PATH);
         OleCheck(PersistFile.Save(FileNameW, True));
       finally
-{$IFDEF COMPILER3_UP}
+        {$IFDEF COMPILER3_UP}
         PersistFile := nil;
-{$ELSE}
+        {$ELSE}
         PersistFile.Release;
-{$ENDIF}
+        {$ENDIF}
       end;
     finally
-{$IFDEF COMPILER3_UP}
+      {$IFDEF COMPILER3_UP}
       ShellLink := nil;
-{$ELSE}
+      {$ELSE}
       ShellLink.Release;
-{$ENDIF}
+      {$ENDIF}
     end;
   finally
     CoUninitialize;
@@ -1228,7 +1303,7 @@ procedure DeleteFileLink(const DisplayName: string; Folder: Integer);
 var
   ShellLink: IShellLink;
   ItemIDList: PItemIDList;
-  FileDestPath: array[0..MAX_PATH] of Char;
+  FileDestPath: array [0..MAX_PATH] of Char;
 begin
   CoInitialize(nil);
   try
@@ -1240,11 +1315,11 @@ begin
       StrCat(FileDestPath, PChar('\' + DisplayName + LinkExt));
       DeleteFile(FileDestPath);
     finally
-{$IFDEF COMPILER3_UP}
+      {$IFDEF COMPILER3_UP}
       ShellLink := nil;
-{$ELSE}
+      {$ELSE}
       ShellLink.Release;
-{$ENDIF}
+      {$ENDIF}
     end;
   finally
     CoUninitialize;
@@ -1261,3 +1336,4 @@ end;
 {$ENDIF}
 
 end.
+

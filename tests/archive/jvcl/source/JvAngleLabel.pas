@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvAngleLabel;
 
-
-
 interface
 
 uses
@@ -52,8 +50,6 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvAngleLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -62,8 +58,6 @@ begin
   Font.Name := 'Arial';
   FAngle := 0;
 end;
-
-{**************************************************}
 
 procedure TJvAngleLabel.DrawText(Flags: Word);
 var
@@ -116,8 +110,6 @@ begin
   Canvas.TextOut(TextX, TextY, Text);
 end;
 
-{**************************************************}
-
 procedure TJvAngleLabel.Paint;
 const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -138,8 +130,6 @@ begin
     DrawText(DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment]);
   end;
 end;
-
-{**************************************************}
 
 procedure TJvAngleLabel.SetAngle(const Value: TAngle);
 begin

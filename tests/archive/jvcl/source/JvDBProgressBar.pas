@@ -33,8 +33,9 @@ unit JvDBProgressBar;
 
 interface
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, JVCLVer,
-  JvProgressBar, DB, DBCtrls;
+  SysUtils, Classes, Controls, ComCtrls,
+  DB, DBCtrls,
+  JvProgressBar;
 
 type
   TJvDBProgressBar = class(TJvProgressBar)
@@ -57,13 +58,11 @@ type
 
 implementation
 
-{ TJvDBProgressBar }
-
 constructor TJvDBProgressBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDataLink := TFieldDataLink.Create;
-  FDataLink.Control := self;
+  FDataLink.Control := Self;
   FDataLink.OnDataChange := DataChange;
 end;
 
@@ -108,3 +107,4 @@ begin
 end;
 
 end.
+

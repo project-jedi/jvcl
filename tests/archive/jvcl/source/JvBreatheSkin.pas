@@ -381,7 +381,7 @@ type
     function GetOnTotalInfo: TNotifyEvent;
     function GetOnTotalTime: TNotifyEvent;
     function GetOnVersion: TNotifyEvent;
-    procedure SetCurrenTTime(const Value: TNotifyEvent);
+    procedure SetCurrentTime(const Value: TNotifyEvent);
     procedure SetOnBitRate(const Value: TNotifyEvent);
     procedure SetOnFrequency(const Value: TNotifyEvent);
     procedure SetOnLayer(const Value: TNotifyEvent);
@@ -426,7 +426,7 @@ type
     property OnVolumeChanging: TNotifyEvent read GetOnVolChanging write SetOnVolChanging;
     property OnPositionChanging: TNotifyEvent read GetOnPosChanging write SetOnPosChanging;
     property OnStatusClick: TNotifyEvent read GetOnStatus write SetOnStatus;
-    property OnCurrenTTimeClick: TNotifyEvent read GetCurrentTime write SetCurrenTTime;
+    property OnCurrenTTimeClick: TNotifyEvent read GetCurrentTime write SetCurrentTime;
     property OnLayerClick: TNotifyEvent read GetOnLayer write SetOnLayer;
     property OnBitRateClick: TNotifyEvent read GetOnBitRate write SetOnBitRate;
     property OnFrequencyClick: TNotifyEvent read GetOnFrequency write SetOnFrequency;
@@ -506,9 +506,114 @@ resourcestring
   RC_DefNothing = '-';
   RC_DefStatus = 'Status';
 
-///////////////////////////////////////////////////////////
-// TJvBreatheSkin
-///////////////////////////////////////////////////////////
+//=== TJvBreatheSkin =========================================================
+
+constructor TJvBreatheSkin.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FSkin := '';
+  FBOptions := TJvBreatheOption.Create(Self);
+  FBOptions.OnChange := OptionsChanged;
+  FTAbout := TStringList.Create;
+
+  // enable painting ;)
+
+  Parent := TWinControl(AOwner);
+
+  FImg := TImage.Create(Self);
+  FImg.AutoSize := True;
+  FImg.Parent := Self;
+  FImg.Left := 0;
+  FImg.Top := 0;
+  FImg.OnMouseDown := EasyFormDown;
+  FImg.OnMouseMove := EasyFormMove;
+
+  FLabels := TJvBreatheLabels.Create(Self);
+  FButtons := TJvBreatheButtons.Create(Self);
+  FButtons.Move.OnMouseMove := MoveFormMove;
+  FButtons.Move.OnMouseDown := MoveFormDown;
+
+  // Sliders
+  FVolume := TJvBreatheVolume.Create(Self);
+  FVolume.FSlider.Left := 0;
+  FVolume.FSlider.Top := 0;
+  FVolume.FSlider.Width := 0;
+  FVolume.FSlider.Height := 0;
+  FVolume.Maximum := 100;
+  FVolume.Position := 100;
+
+  FPosition := TJvBreathePosition.Create(Self);
+  FPosition.FSlider.Left := 0;
+  FPosition.FSlider.Top := 0;
+  FPosition.FSlider.Width := 0;
+  FPosition.FSlider.Height := 0;
+  FPosition.FSlider.Parent := Self;
+
+  // Images
+  FBack := TBitmap.Create;
+  FDeact := TBitmap.Create;
+  FInfo := TBitmap.Create;
+  FMask := TBitmap.Create;
+  FOver := TBitmap.Create;
+  FPosRuler := TBitmap.Create;
+  FPosThumb := TBitmap.Create;
+  FVolRuler := TBitmap.Create;
+  FVolThumb := TBitmap.Create;
+
+  // Labels
+  FLabels.Status.Caption := RC_DefStatus;
+  FLabels.CurrentTime.Caption := RC_DefTotalTime;
+  FLabels.Layer.Caption := RC_DefNothing;
+  FLabels.BitRate.Caption := RC_DefNothing;
+  FLabels.Frequency.Caption := RC_DefNothing;
+  FLabels.Version.Caption := RC_DefVersion;
+  FLabels.SongName.Caption := RC_DefSongName;
+  FLabels.TotalTime.Caption := RC_DefTotalTime;
+  FLabels.TotalInfo.Caption := RC_DefTotalInfo;
+
+  // Load default design
+  InitAllBtn;
+  LoadDefault;
+end;
+
+destructor TJvBreatheSkin.Destroy;
+var
+  h: THandle;
+begin
+  try
+    // Reset the region of the window if not destroying
+    if not (csDestroying in GetParentForm(TControl(Self)).ComponentState) then
+    begin
+      // Enable Caption
+      h := GetParentForm(TControl(Self)).Handle;
+      SetWindowLong(h, GWL_STYLE, GetWindowLong(h, GWL_STYLE) or WS_CAPTION);
+
+      // Use form region
+      SetWindowRgn(h, 0, True);
+    end;
+  except
+  end;
+
+  FBack.Free;
+  FDeact.Free;
+  FInfo.Free;
+  FMask.Free;
+  FOver.Free;
+  FPosRuler.Free;
+  FPosThumb.Free;
+  FVolRuler.Free;
+  FVolThumb.Free;
+
+  FImg.Free;
+  FVolume.Free;
+  FPosition.Free;
+  FBOptions.Free;
+  FLabels.Free;
+  FTAbout.Free;
+  FButtons.Free;
+
+  inherited Destroy;
+end;
 
 procedure TJvBreatheSkin.LoadDefault;
 var
@@ -580,119 +685,6 @@ begin
   DeleteFile(st + '1.Ini');
 end;
 
-{************************************************************}
-
-constructor TJvBreatheSkin.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FSkin := '';
-  FBOptions := TJvBreatheOption.Create(Self);
-  FBOptions.OnChange := OptionsChanged;
-  FTAbout := TStringList.Create;
-
-  // enable painting ;)
-
-  Parent := TWinControl(AOwner);
-
-  FImg := TImage.Create(Self);
-  FImg.AutoSize := True;
-  FImg.Parent := Self;
-  FImg.Left := 0;
-  FImg.Top := 0;
-  FImg.OnMouseDown := EasyFormDown;
-  FImg.OnMouseMove := EasyFormMove;
-
-  FLabels := TJvBreatheLabels.Create(Self);
-  FButtons := TJvBreatheButtons.Create(Self);
-  FButtons.Move.OnMouseMove := MoveFormMove;
-  FButtons.Move.OnMouseDown := MoveFormDown;
-
-  // Sliders
-  FVolume := TJvBreatheVolume.Create(Self);
-  FVolume.FSlider.Left := 0;
-  FVolume.FSlider.Top := 0;
-  FVolume.FSlider.Width := 0;
-  FVolume.FSlider.Height := 0;
-  FVolume.Maximum := 100;
-  FVolume.Position := 100;
-
-  FPosition := TJvBreathePosition.Create(Self);
-  FPosition.FSlider.Left := 0;
-  FPosition.FSlider.Top := 0;
-  FPosition.FSlider.Width := 0;
-  FPosition.FSlider.Height := 0;
-  FPosition.FSlider.Parent := Self;
-
-  // Images
-  FBack := TBitmap.Create;
-  FDeact := TBitmap.Create;
-  FInfo := TBitmap.Create;
-  FMask := TBitmap.Create;
-  FOver := TBitmap.Create;
-  FPosRuler := TBitmap.Create;
-  FPosThumb := TBitmap.Create;
-  FVolRuler := TBitmap.Create;
-  FVolThumb := TBitmap.Create;
-
-  // Labels
-  FLabels.Status.Caption := RC_DefStatus;
-  FLabels.CurrentTime.Caption := RC_DefTotalTime;
-  FLabels.Layer.Caption := RC_DefNothing;
-  FLabels.BitRate.Caption := RC_DefNothing;
-  FLabels.Frequency.Caption := RC_DefNothing;
-  FLabels.Version.Caption := RC_DefVersion;
-  FLabels.SongName.Caption := RC_DefSongName;
-  FLabels.TotalTime.Caption := RC_DefTotalTime;
-  FLabels.TotalInfo.Caption := RC_DefTotalInfo;
-
-  // Load default design
-  InitAllBtn;
-  LoadDefault;
-end;
-
-{************************************************************}
-
-destructor TJvBreatheSkin.Destroy;
-var
-  h: THandle;
-begin
-  try
-    // Reset the region of the window if not destroying
-    if not (csDestroying in GetParentForm(TControl(Self)).ComponentState) then
-    begin
-      // Enable Caption
-      h := GetParentForm(TControl(Self)).Handle;
-      SetWindowLong(h, GWL_STYLE, GetWindowLong(h, GWL_STYLE) or WS_CAPTION);
-
-      // Use form region
-      SetWindowRgn(h, 0, True);
-    end;
-  except
-  end;
-
-  FBack.Free;
-  FDeact.Free;
-  FInfo.Free;
-  FMask.Free;
-  FOver.Free;
-  FPosRuler.Free;
-  FPosThumb.Free;
-  FVolRuler.Free;
-  FVolThumb.Free;
-
-  FImg.Free;
-  FVolume.Free;
-  FPosition.Free;
-  FBOptions.Free;
-  FLabels.Free;
-  FTAbout.Free;
-  FButtons.Free;
-
-  inherited Destroy;
-end;
-
-{************************************************************}
-
 procedure TJvBreatheSkin.InitBtn(Value: TJvImage);
 begin
   Value.Left := 0;
@@ -700,8 +692,6 @@ begin
   Value.Width := 0;
   Value.Height := 0;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.InitAllBtn;
 begin
@@ -720,8 +710,6 @@ begin
   InitBtn(FButtons.FOptions.FButton);
   InitBtn(FButtons.FPlaylist.FButton);
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetSkin(const Value: TFileName);
 var
@@ -808,8 +796,6 @@ begin
     LoadDefault;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.DecoupeOver(Value: TJvImage);
 var
   src: TRect;
@@ -830,8 +816,6 @@ begin
   bmp.Free;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.DecoupeOverAll;
 begin
   DecoupeOver(FButtons.FPlay.FButton);
@@ -850,8 +834,6 @@ begin
   DecoupeOver(FButtons.FPlaylist.FButton);
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.LoadBtn(Ini: TIniFile; Value: TJvImage; Prefix: string);
 begin
   Value.Top := Ini.ReadInteger(RC_Section, Prefix + RC_SufixTop, 0);
@@ -859,8 +841,6 @@ begin
   Value.Width := Ini.ReadInteger(RC_Section, Prefix + RC_SufixWidth, 0);
   Value.Height := Ini.ReadInteger(RC_Section, Prefix + RC_SufixHeight, 0);
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.LoadSlider(Ini: TIniFile; Value: TJvSlider; Prefix: string);
 begin
@@ -870,8 +850,6 @@ begin
   Value.Width := Ini.ReadInteger(RC_Section, Prefix + RC_SufixWidth, 0);
   Value.Height := Ini.ReadInteger(RC_Section, Prefix + RC_SufixHeight, 0);
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.LoadLabel(Ini: TIniFile; Value: TJvBreatheLabel; Prefix: string);
 var
@@ -903,8 +881,6 @@ begin
   Value.Color := Ini.ReadInteger(RC_Section, Prefix + RC_SufixBKColor, clBlack);
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.LoadLabel(Ini: TIniFile; Value: TJvBreatheScrollLabel; Prefix: string);
 var
   i: Integer;
@@ -934,8 +910,6 @@ begin
   Value.Font.Color := Ini.ReadInteger(RC_Section, Prefix + RC_SufixColor, clBlack);
   Value.Color := Ini.ReadInteger(RC_Section, Prefix + RC_SufixBKColor, clBlack);
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.LoadSkin(Value: string);
 var
@@ -987,7 +961,7 @@ begin
     FOnSkinLoaded(Self);
 end;
 
-{*******************************************************}
+// (rom) replace with JCL version
 
 function RegionFromBitmap(Image: TBitmap): HRGN;
 var
@@ -1043,8 +1017,6 @@ begin
   Result := rgn1;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.OptionsChanged(Sender: TObject);
 var
   h: THandle;
@@ -1080,8 +1052,6 @@ begin
     SetWindowRgn(h, 0, True);
   end;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.ShowAbout;
 var
@@ -1137,8 +1107,6 @@ begin
   end;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.MoveFormDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
@@ -1148,8 +1116,6 @@ begin
   if Assigned(FOnMoveDown) then
     FOnMoveDown(Sender, Button, Shift, X, Y);
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.MoveFormMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
@@ -1164,16 +1130,12 @@ begin
     FOnMoveMove(Sender, Shift, X, Y);
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.EasyFormDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   FLastX := X;
   FLastY := Y;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.EasyFormMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
@@ -1185,14 +1147,10 @@ begin
   end;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.Activate;
 begin
   FImg.Picture.Bitmap.Assign(FBack);
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.Deactivate;
 begin
@@ -1200,387 +1158,277 @@ begin
     FImg.Picture.Bitmap.Assign(FDeact);
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetOnExit: TNotifyEvent;
 begin
   Result := FButtons.FExit.OnClick;
 end;
-
-{************************************************************}
 
 function TJvBreatheSkin.GetOnForward: TNotifyEvent;
 begin
   Result := FButtons.FForward.OnClick;
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetOnID3: TNotifyEvent;
 begin
   Result := FButtons.FID3.OnClick;
 end;
-
-{************************************************************}
 
 function TJvBreatheSkin.GetOnMinimize: TNotifyEvent;
 begin
   Result := FButtons.FMinimize.OnClick;
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetOnMove: TNotifyEvent;
 begin
   Result := FButtons.FMove.OnClick;
 end;
-
-{************************************************************}
 
 function TJvBreatheSkin.GetOnNext: TNotifyEvent;
 begin
   Result := FButtons.FNext.OnClick;
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetOnOpen: TNotifyEvent;
 begin
   Result := FButtons.FOpen.OnClick;
 end;
-
-{************************************************************}
 
 function TJvBreatheSkin.GetOnOptions: TNotifyEvent;
 begin
   Result := FButtons.FOptions.OnClick;
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetOnPause: TNotifyEvent;
 begin
   Result := FButtons.FPause.OnClick;
 end;
-
-{************************************************************}
 
 function TJvBreatheSkin.GetOnPlay: TNotifyEvent;
 begin
   Result := FButtons.FPlay.OnClick;
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetOnPlaylist: TNotifyEvent;
 begin
   Result := FButtons.FPlaylist.OnClick;
 end;
-
-{************************************************************}
 
 function TJvBreatheSkin.GetOnPosition: TNotifyEvent;
 begin
   Result := FPosition.FSlider.OnStopChanged;
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetOnPrevious: TNotifyEvent;
 begin
   Result := FButtons.FPrev.OnClick;
 end;
-
-{************************************************************}
 
 function TJvBreatheSkin.GetOnRewind: TNotifyEvent;
 begin
   Result := FButtons.FRewind.OnClick;
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetOnStop: TNotifyEvent;
 begin
   Result := FButtons.FStop.OnClick;
 end;
-
-{************************************************************}
 
 function TJvBreatheSkin.GetOnVolume: TNotifyEvent;
 begin
   Result := FVolume.FSlider.OnStopChanged;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.SetOnExit(const Value: TNotifyEvent);
 begin
   FButtons.FExit.OnClick := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetOnForward(const Value: TNotifyEvent);
 begin
   FButtons.FForward.OnClick := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.SetOnID3(const Value: TNotifyEvent);
 begin
   FButtons.FID3.OnClick := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetOnMinimize(const Value: TNotifyEvent);
 begin
   FButtons.FMinimize.OnClick := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.SetOnMove(const Value: TNotifyEvent);
 begin
   FButtons.FMove.OnClick := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetOnNext(const Value: TNotifyEvent);
 begin
   FButtons.FNext.OnClick := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.SetOnOpen(const Value: TNotifyEvent);
 begin
   FButtons.FOpen.OnClick := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetOnOptions(const Value: TNotifyEvent);
 begin
   FButtons.FOptions.OnClick := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.SetOnPause(const Value: TNotifyEvent);
 begin
   FButtons.FPause.OnClick := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetOnPlay(const Value: TNotifyEvent);
 begin
   FButtons.FPlay.OnClick := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.SetOnPlaylist(const Value: TNotifyEvent);
 begin
   FButtons.FPlayList.OnClick := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetOnPosition(const Value: TNotifyEvent);
 begin
   FPosition.FSlider.OnStopChanged := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.SetOnPrevious(const Value: TNotifyEvent);
 begin
   FButtons.FPrev.OnClick := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetOnRewind(const Value: TNotifyEvent);
 begin
   FButtons.FRewind.OnClick := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.SetOnStop(const Value: TNotifyEvent);
 begin
   FButtons.FStop.OnClick := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetOnVolume(const Value: TNotifyEvent);
 begin
   FVolume.FSlider.OnStopChanged := Value;
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetOnPosChanging: TNotifyEvent;
 begin
   Result := FPosition.FSlider.OnChanged;
 end;
-
-{************************************************************}
 
 function TJvBreatheSkin.GetOnVolChanging: TNotifyEvent;
 begin
   Result := FVolume.FSlider.OnChanged;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.SetOnPosChanging(const Value: TNotifyEvent);
 begin
   FPosition.FSlider.OnChanged := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetOnVolChanging(const Value: TNotifyEvent);
 begin
   FVolume.FSlider.OnChanged := Value;
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetCurrentTime: TNotifyEvent;
 begin
   Result := FLabels.FTime.FLabel.OnClick;
 end;
-
-{************************************************************}
 
 function TJvBreatheSkin.GetOnBitRate: TNotifyEvent;
 begin
   Result := FLabels.FBitRate.FLabel.OnClick;
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetOnFrequency: TNotifyEvent;
 begin
   Result := FLabels.FFrequency.FLabel.OnClick;
 end;
-
-{************************************************************}
 
 function TJvBreatheSkin.GetOnLayer: TNotifyEvent;
 begin
   Result := FLabels.FLayer.FLabel.OnClick;
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetOnSongName: TNotifyEvent;
 begin
   Result := FLabels.FSongName.FLabel.OnClick;
 end;
-
-{************************************************************}
 
 function TJvBreatheSkin.GetOnStatus: TNotifyEvent;
 begin
   Result := FLabels.FStatus.FLabel.OnClick;
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetOnTotalInfo: TNotifyEvent;
 begin
   Result := FLabels.FTotalInfo.FLabel.OnClick;
 end;
-
-{************************************************************}
 
 function TJvBreatheSkin.GetOnTotalTime: TNotifyEvent;
 begin
   Result := FLabels.FTotalTime.FLabel.OnClick;
 end;
 
-{************************************************************}
-
 function TJvBreatheSkin.GetOnVersion: TNotifyEvent;
 begin
   Result := FLabels.FVersion.FLabel.OnClick;
 end;
 
-{************************************************************}
-
-procedure TJvBreatheSkin.SetCurrenTTime(const Value: TNotifyEvent);
+procedure TJvBreatheSkin.SetCurrentTime(const Value: TNotifyEvent);
 begin
   FLabels.FTime.FLabel.OnClick := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetOnBitRate(const Value: TNotifyEvent);
 begin
   FLabels.FBitRate.FLabel.OnClick := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.SetOnFrequency(const Value: TNotifyEvent);
 begin
   FLabels.FFrequency.FLabel.OnClick := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetOnLayer(const Value: TNotifyEvent);
 begin
   FLabels.FLayer.FLabel.OnClick := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.SetOnSongName(const Value: TNotifyEvent);
 begin
   FLabels.FSongName.FLabel.OnClick := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetOnStatus(const Value: TNotifyEvent);
 begin
   FLabels.FStatus.FLabel.OnClick := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.SetOnTotalInfo(const Value: TNotifyEvent);
 begin
   FLabels.FTotalInfo.FLabel.OnClick := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheSkin.SetOnTotalTime(const Value: TNotifyEvent);
 begin
   FLabels.FTotalTime.FLabel.OnClick := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheSkin.SetOnVersion(const Value: TNotifyEvent);
 begin
   FLabels.FVersion.FLabel.OnClick := Value;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvBreatheOption
-///////////////////////////////////////////////////////////
+//=== TJvBreatheOption =======================================================
 
 constructor TJvBreatheOption.Create(AOwner: TComponent);
 begin
@@ -1591,16 +1439,12 @@ begin
   FEasyMove := False;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheOption.SetAutoMove(const Value: Boolean);
 begin
   FAutoMove := Value;
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
-
-{************************************************************}
 
 procedure TJvBreatheOption.SetAutoRegion(const Value: Boolean);
 begin
@@ -1609,16 +1453,12 @@ begin
     FOnChange(Self);
 end;
 
-{************************************************************}
-
 procedure TJvBreatheOption.SetAutoSize(const Value: Boolean);
 begin
   FAutoSize := Value;
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
-
-{************************************************************}
 
 procedure TJvBreatheOption.SetEasyMove(const Value: Boolean);
 begin
@@ -1627,9 +1467,7 @@ begin
     FOnChange(Self);
 end;
 
-///////////////////////////////////////////////////////////
-// TJvBreatheLabels
-///////////////////////////////////////////////////////////
+//=== TJvBreatheLabels =======================================================
 
 constructor TJvBreatheLabels.Create(AOwner: TComponent);
 begin
@@ -1645,8 +1483,6 @@ begin
   FVersion := TJvBreatheLabel.Create(AOwner);
 end;
 
-{************************************************************}
-
 destructor TJvBreatheLabels.Destroy;
 begin
   FStatus.Free;
@@ -1661,9 +1497,7 @@ begin
   inherited Destroy;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvBreatheLabel
-///////////////////////////////////////////////////////////
+//=== TJvBreatheLabel ========================================================
 
 constructor TJvBreatheLabel.Create(AOwner: TComponent);
 begin
@@ -1677,49 +1511,35 @@ begin
   FLabel.ParentShowHint := False;
 end;
 
-{************************************************************}
-
 function TJvBreatheLabel.GetColor: TColor;
 begin
   Result := FLabel.Color;
 end;
-
-{************************************************************}
 
 function TJvBreatheLabel.GetFont: TFont;
 begin
   Result := FLabel.Font;
 end;
 
-{************************************************************}
-
 function TJvBreatheLabel.GetHint: string;
 begin
   Result := FLabel.Hint;
 end;
-
-{************************************************************}
 
 function TJvBreatheLabel.GetPopupMenu: TPopupMenu;
 begin
   Result := FLabel.PopupMenu;
 end;
 
-{************************************************************}
-
 function TJvBreatheLabel.GetShowHint: Boolean;
 begin
   Result := FLabel.ShowHint;
 end;
 
-{************************************************************}
-
 function TJvBreatheLabel.GetTransparent: Boolean;
 begin
   Result := FLabel.Transparent;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheLabel.SetCaption(const Value: string);
 begin
@@ -1727,21 +1547,15 @@ begin
   FLabel.Caption := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheLabel.SetColor(const Value: TColor);
 begin
   FLabel.Color := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheLabel.SetFont(const Value: TFont);
 begin
   FLabel.Font.Assign(Value);
 end;
-
-{************************************************************}
 
 procedure TJvBreatheLabel.SetHeight(const Value: Integer);
 begin
@@ -1749,14 +1563,10 @@ begin
   FLabel.Height := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheLabel.SetHint(const Value: string);
 begin
   FLabel.Hint := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheLabel.SetLeft(const Value: Integer);
 begin
@@ -1764,21 +1574,15 @@ begin
   FLabel.Left := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheLabel.SetPopupMenu(const Value: TPopupMenu);
 begin
   FLabel.PopupMenu := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheLabel.SetShowHint(const Value: Boolean);
 begin
   FLabel.ShowHint := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheLabel.SetTop(const Value: Integer);
 begin
@@ -1786,13 +1590,10 @@ begin
   FLabel.Top := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheLabel.SetTransparent(const Value: Boolean);
 begin
   FLabel.Transparent := Value;
 end;
-{************************************************************}
 
 procedure TJvBreatheLabel.SetWidth(const Value: Integer);
 begin
@@ -1800,9 +1601,7 @@ begin
   FLabel.Width := Value;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvBreatheVolume
-///////////////////////////////////////////////////////////
+//=== TJvBreatheVolume =======================================================
 
 constructor TJvBreatheVolume.Create(AOwner: TComponent);
 begin
@@ -1811,73 +1610,53 @@ begin
   FSlider.Parent := TWinControl(AOwner);
 end;
 
-{************************************************************}
-
 destructor TJvBreatheVolume.Destroy;
 begin
   FSlider.Free;
   inherited Destroy;
 end;
 
-{************************************************************}
-
 function TJvBreatheVolume.GetHint: string;
 begin
   Result := FSlider.Hint;
 end;
-
-{************************************************************}
 
 function TJvBreatheVolume.GetMaximum: Integer;
 begin
   Result := FSlider.Maximum;
 end;
 
-{************************************************************}
-
 function TJvBreatheVolume.GetPosition: Integer;
 begin
   Result := FSlider.Position;
 end;
-
-{************************************************************}
 
 function TJvBreatheVolume.GetShow: Boolean;
 begin
   Result := FSlider.ShowHint;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheVolume.SetHint(const Value: string);
 begin
   FSlider.Hint := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheVolume.SetMaximum(const Value: Integer);
 begin
   FSlider.Maximum := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheVolume.SetPosition(const Value: Integer);
 begin
   FSlider.Position := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheVolume.SetShow(const Value: Boolean);
 begin
   FSlider.ShowHint := Value;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvBreathePosition
-///////////////////////////////////////////////////////////
+//=== TJvBreathePosition =====================================================
 
 constructor TJvBreathePosition.Create(AOwner: TComponent);
 begin
@@ -1886,73 +1665,53 @@ begin
   FSlider.Parent := TWinControl(AOwner);
 end;
 
-{************************************************************}
-
 destructor TJvBreathePosition.Destroy;
 begin
   FSlider.Free;
   inherited Destroy;
 end;
 
-{************************************************************}
-
 function TJvBreathePosition.GetHint: string;
 begin
   Result := FSlider.Hint;
 end;
-
-{************************************************************}
 
 function TJvBreathePosition.GetMaximum: Integer;
 begin
   Result := FSlider.Maximum;
 end;
 
-{************************************************************}
-
 function TJvBreathePosition.GetPosition: Integer;
 begin
   Result := FSlider.Position;
 end;
-
-{************************************************************}
 
 function TJvBreathePosition.GetShow: Boolean;
 begin
   Result := FSlider.ShowHint;
 end;
 
-{************************************************************}
-
 procedure TJvBreathePosition.SetHint(const Value: string);
 begin
   FSlider.Hint := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreathePosition.SetMaximum(const Value: Integer);
 begin
   FSlider.Maximum := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreathePosition.SetPosition(const Value: Integer);
 begin
   FSlider.Position := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreathePosition.SetShow(const Value: Boolean);
 begin
   FSlider.ShowHint := Value;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvBreatheButtons
-///////////////////////////////////////////////////////////
+//=== TJvBreatheButtons ======================================================
 
 constructor TJvBreatheButtons.Create(AOwner: TComponent);
 begin
@@ -1973,8 +1732,6 @@ begin
   FMinimize := TJvBreatheButton.Create(AOwner);
 end;
 
-{************************************************************}
-
 destructor TJvBreatheButtons.Destroy;
 begin
   FPlaylist.Free;
@@ -1994,9 +1751,7 @@ begin
   inherited Destroy;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvBreatheButtons
-///////////////////////////////////////////////////////////
+//=== TJvBreatheButton =======================================================
 
 constructor TJvBreatheButton.Create(AOwner: TComponent);
 begin
@@ -2005,149 +1760,107 @@ begin
   FButton.Parent := TWinControl(AOwner);
 end;
 
-{************************************************************}
-
 function TJvBreatheButton.GetEnabled: Boolean;
 begin
   Result := FButton.Enabled;
 end;
-
-{************************************************************}
 
 function TJvBreatheButton.GetHint: string;
 begin
   Result := FButton.Hint;
 end;
 
-{************************************************************}
-
 function TJvBreatheButton.GetMouseDown: TMouseEvent;
 begin
   Result := FButton.OnMouseDown;
 end;
-
-{************************************************************}
 
 function TJvBreatheButton.GetMouseMove: TMouseMoveEvent;
 begin
   Result := FButton.OnMouseMove;
 end;
 
-{************************************************************}
-
 function TJvBreatheButton.GetMouseUp: TMouseEvent;
 begin
   Result := FButton.OnMouseUp;
 end;
-
-{************************************************************}
 
 function TJvBreatheButton.GetOnClick: TNotifyEvent;
 begin
   Result := FButton.OnClick;
 end;
 
-{************************************************************}
-
 function TJvBreatheButton.GetOnDblClick: TNotifyEvent;
 begin
   Result := FButton.OnDblClick;
 end;
-
-{************************************************************}
 
 function TJvBreatheButton.GetPopupMenu: TPopupMenu;
 begin
   Result := FButton.PopupMenu;
 end;
 
-{************************************************************}
-
 function TJvBreatheButton.GetShowHint: Boolean;
 begin
   Result := FButton.ShowHint;
 end;
-
-{************************************************************}
 
 function TJvBreatheButton.GetVisible: Boolean;
 begin
   Result := FButton.Visible;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheButton.SetEnabled(const Value: Boolean);
 begin
   FButton.Enabled := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheButton.SetHint(const Value: string);
 begin
   FButton.Hint := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheButton.SetMouseDown(const Value: TMouseEvent);
 begin
   FButton.OnMouseDown := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheButton.SetMouseUp(const Value: TMouseEvent);
 begin
   FButton.OnMouseUp := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheButton.SetMouveMove(const Value: TMouseMoveEvent);
 begin
   FButton.OnMouseMove := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheButton.SetOnClick(const Value: TNotifyEvent);
 begin
   FButton.OnClick := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheButton.SetOnDblClick(const Value: TNotifyEvent);
 begin
   FButton.OnDblClick := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheButton.SetPopupMenu(const Value: TPopupMenu);
 begin
   FButton.PopupMenu := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheButton.SetShowHint(const Value: Boolean);
 begin
   FButton.ShowHint := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheButton.SetVisible(const Value: Boolean);
 begin
   FButton.Visible := Value;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvBreatheButtons
-///////////////////////////////////////////////////////////
+//=== TJvBreatheScrollLabel ==================================================
 
 constructor TJvBreatheScrollLabel.Create(AOwner: TComponent);
 begin
@@ -2160,69 +1873,50 @@ begin
   FLabel.ParentShowHint := False;
 end;
 
-{************************************************************}
-
 function TJvBreatheScrollLabel.GetColor: TColor;
 begin
   Result := FLabel.Color;
 end;
-
-{************************************************************}
 
 function TJvBreatheScrollLabel.GetDirection: TLabelDirection;
 begin
   Result := FLabel.ScrollDirection;
 end;
 
-{************************************************************}
-
 function TJvBreatheScrollLabel.GetFont: TFont;
 begin
   Result := FLabel.Font;
 end;
 
-{************************************************************}
-
 function TJvBreatheScrollLabel.GetHint: string;
 begin
   Result := FLabel.Hint;
 end;
-{************************************************************}
 
 function TJvBreatheScrollLabel.GetInterval: Cardinal;
 begin
   Result := FLabel.ScrollInterval;
 end;
 
-{************************************************************}
-
 function TJvBreatheScrollLabel.GetNoGrap: Boolean;
 begin
   Result := FLabel.NoGrap;
 end;
-
-{************************************************************}
 
 function TJvBreatheScrollLabel.GetScrolling: Boolean;
 begin
   Result := FLabel.Scrolling;
 end;
 
-{************************************************************}
-
 function TJvBreatheScrollLabel.GetShowHint: Boolean;
 begin
   Result := FLabel.ShowHint;
 end;
 
-{************************************************************}
-
 function TJvBreatheScrollLabel.GetTransparent: Boolean;
 begin
   Result := FLabel.Transparent;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheScrollLabel.SetCaption(const Value: string);
 begin
@@ -2230,28 +1924,20 @@ begin
   FLabel.Text := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheScrollLabel.SetColor(const Value: TColor);
 begin
   FLabel.Color := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheScrollLabel.SetDirection(const Value: TLabelDirection);
 begin
   FLabel.ScrollDirection := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheScrollLabel.SetFont(const Value: TFont);
 begin
   FLabel.Font := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheScrollLabel.SetHeight(const Value: Integer);
 begin
@@ -2259,21 +1945,15 @@ begin
   FLabel.Height := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheScrollLabel.SetHint(const Value: string);
 begin
   FLabel.Hint := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheScrollLabel.SetInterval(const Value: Cardinal);
 begin
   FLabel.ScrollInterval := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheScrollLabel.SetLeft(const Value: Integer);
 begin
@@ -2281,28 +1961,20 @@ begin
   FLabel.Left := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheScrollLabel.SetNoGrap(const Value: Boolean);
 begin
   FLabel.NoGrap := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheScrollLabel.SetScrolling(const Value: Boolean);
 begin
   FLabel.Scrolling := Value;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheScrollLabel.SetShowHint(const Value: Boolean);
 begin
   FLabel.ShowHint := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheScrollLabel.SetTop(const Value: Integer);
 begin
@@ -2310,14 +1982,10 @@ begin
   FLabel.Top := FTop;
 end;
 
-{************************************************************}
-
 procedure TJvBreatheScrollLabel.SetTransparent(const Value: Boolean);
 begin
   FLabel.Transparent := Value;
 end;
-
-{************************************************************}
 
 procedure TJvBreatheScrollLabel.SetWidth(const Value: Integer);
 begin

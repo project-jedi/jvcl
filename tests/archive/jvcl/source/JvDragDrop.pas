@@ -28,101 +28,91 @@ Known Issues:
 
 unit JvDragDrop;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ShellApi, JvTypes, JvComponent;
+  Windows, Messages, SysUtils, Classes, Controls, ShellApi,
+  JvTypes, JvComponent;
 
 type
   TJvDragDrop = class(TJvComponent)
   private
-    FAccept: Boolean;
+    FAcceptDrag: Boolean;
     FHandle: THandle;
     FFiles: TStringList;
     FOnDrop: TDropEvent;
     procedure DropFiles(Handle: HDrop);
     procedure SetAccept(Value: Boolean);
-    function WndProc(var Msg: TMessage):boolean;
-  protected
+    function WndProc(var Msg: TMessage): Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Files: TStringList read FFiles;
   published
-    property AcceptDrag: Boolean read FAccept write SetAccept default True;
+    property AcceptDrag: Boolean read FAcceptDrag write SetAccept default True;
     property OnDrop: TDropEvent read FOnDrop write FOnDrop;
   end;
 
 implementation
+
 uses
   JvWndProcHook;
 
-{*****************************************************}
-
 constructor TJvDragDrop.Create(AOwner: TComponent);
 begin
-  inherited;
-  FAccept := True;
+  inherited Create(AOwner);
+  FAcceptDrag := True;
   FFiles := TStringList.Create;
   if not (csDesigning in ComponentState) then
   begin
-    if (Owner is TWinControl) then
+    if Owner is TWinControl then
     begin
       FHandle := TWinControl(Owner).Handle;
-      RegisterWndProcHook(TWinControl(Owner),WndProc,hoBeforeMsg);
+      RegisterWndProcHook(TWinControl(Owner), WndProc, hoBeforeMsg);
     end
     else
-      FAccept := False;
+      // (rom) to Loaded? 
+      FAcceptDrag := False;
   end;
-  SetAccept(FAccept);
+  SetAccept(FAcceptDrag);
 end;
-
-{*****************************************************}
 
 destructor TJvDragDrop.Destroy;
 begin
   FFiles.Free;
   if (Owner is TWinControl) and not (csDesigning in ComponentState) then
-    UnregisterWndProcHook(TWinControl(Owner),WndProc,hoBeforeMsg);
-  inherited;
+    UnregisterWndProcHook(TWinControl(Owner), WndProc, hoBeforeMsg);
+  inherited Destroy;
 end;
-
-{*****************************************************}
 
 procedure TJvDragDrop.SetAccept(Value: Boolean);
 begin
-  FAccept := Value;
+  FAcceptDrag := Value;
   if not (csDesigning in ComponentState) then
-    DragAcceptFiles(FHandle, FAccept);
+    DragAcceptFiles(FHandle, FAcceptDrag);
 end;
 
-{*****************************************************}
-
-function TJvDragDrop.WndProc(var Msg: TMessage):boolean;
+function TJvDragDrop.WndProc(var Msg: TMessage): boolean;
 begin
   Result := Msg.Msg = WM_DROPFILES;
   if Result then
     DropFiles(HDrop(Msg.wParam))
 end;
 
-{*****************************************************}
-
 procedure TJvDragDrop.DropFiles(Handle: HDrop);
 var
   pszFileWithPath, pszFile: PChar;
   iFile, iStrLen, iTempLen: Integer;
   MousePt: TPoint;
-  count: Integer;
+  Count: Integer;
 begin
   FFiles.Clear;
   iStrLen := 128;
   pszFileWithPath := StrAlloc(iStrLen);
   pszFile := StrAlloc(iStrLen);
-  count := DragQueryFile(Handle, $FFFFFFFF, pszFile, iStrLen);
+  Count := DragQueryFile(Handle, $FFFFFFFF, pszFile, iStrLen);
   iFile := 0;
-  while iFile < count do
+  while iFile < Count do
   begin
     iTempLen := DragQueryFile(Handle, iFile, nil, 0) + 1;
     if iTempLen > iStrLen then
@@ -145,3 +135,4 @@ begin
 end;
 
 end.
+

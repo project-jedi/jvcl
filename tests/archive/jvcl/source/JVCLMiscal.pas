@@ -27,21 +27,14 @@ Known Issues:
 ----------------------------------------------------------------------------- }
 
 {$I JVCL.INC}
-
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
+{$I WINDOWSONLY.INC}
 
 unit JVCLMiscal;
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, Dlgs,
-  Dialogs, ExptIntf, ToolIntf, ExtDlgs, StdCtrls,
+  Windows, SysUtils, Classes, Dlgs, Dialogs,
   {$IFDEF COMPILER5}
   DsgnIntf,
   {$ENDIF}
@@ -99,18 +92,20 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
-
-
 implementation
 
 uses
   FileCtrl;
+
+//=== TJvNosortEnumProperty ==================================================
 
 function TJvNosortEnumProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := inherited GetAttributes - [paSortList];
 end;
 
+
+//=== TJvOpenDialogEditor ====================================================
 
 procedure TJvOpenDialogEditor.ExecuteVerb(Index: Integer);
 begin
@@ -128,6 +123,8 @@ function TJvOpenDialogEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
+
+//=== TJvMailEditor ==========================================================
 
 procedure TJvMailEditor.Address;
 begin
@@ -174,6 +171,8 @@ begin
   end;
 end;
 
+//=== TJvPerfStatProperty ====================================================
+
 function TJvPerfStatProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList, paSortList, paMultiSelect];
@@ -193,6 +192,8 @@ begin
     Values.Free;
   end;
 end;
+
+//=== TJvExeNameProperty =====================================================
 
 procedure TJvExeNameProperty.Edit;
 begin
@@ -222,6 +223,8 @@ procedure TJvExeNameProperty.OnDialogShow(Sender: TObject);
 begin
   SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, '&Strip file path');
 end;
+
+//=== TJvDirectoryProperty ===================================================
 
 procedure TJvDirectoryProperty.Edit;
 var

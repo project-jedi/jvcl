@@ -54,8 +54,6 @@ implementation
 uses
   JvFunctions;
 
-{*******************************************************}
-
 constructor TJvButtonShaped.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -63,7 +61,11 @@ begin
   FWorking := False;
 end;
 
-{*******************************************************}
+destructor TJvButtonShaped.Destroy;
+begin
+  FShape.Free;
+  inherited Destroy;
+end;
 
 procedure TJvButtonShaped.CreateWnd;
 begin
@@ -73,16 +75,6 @@ begin
     SetShape(Shape);
   end;
 end;
-
-{*******************************************************}
-
-destructor TJvButtonShaped.Destroy;
-begin
-  FShape.Free;
-  inherited Destroy;
-end;
-
-{*******************************************************}
 
 procedure TJvButtonShaped.SetShape(const Value: TBitmap);
 begin

@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvDBLookupTreeView.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
 Last Modified: 2002-07-04
 
@@ -27,7 +27,6 @@ description : db-aware lookup TreeView
 
 Known Issues:
 -----------------------------------------------------------------------------}
-
 
 {$I JVCL.INC}
 
@@ -47,32 +46,32 @@ unit JvDBLookupTreeView;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Dialogs, Forms, Graphics,
-  CommCtrl, ComCtrls, ExtCtrls, Db, dbctrls, JvDBTreeView
-  {$IFDEF COMPILER6_UP}, Variants, VDBConsts {$ENDIF}
-  ;
+  {$IFDEF COMPILER6_UP}
+  Variants, VDBConsts,
+  {$ENDIF}
+  Windows, Messages, SysUtils, Classes, Controls, Forms, Graphics,
+  CommCtrl, ComCtrls, Db,
+  JvDBTreeView;
 
-
-const
-  wm_InClose = wm_User + 1;
-
-type
+// (rom) obviously not used
+//const
+  //WM_INCLOSE = WM_USER + 1;
 
 {********************** Borland **********************}
-{ TDBLookupControl }
 
+type
   TJvDBLookupControl = class;
 
-  TJvDataSourceLink  = class(TDataLink)
+  TJvDataSourceLink = class(TDataLink)
   private
     FDBLookupControl: TJvDBLookupControl;
   protected
-    procedure FocusControl(Field: TFieldRef ); override;
+    procedure FocusControl(Field: TFieldRef); override;
     procedure ActiveChanged; override;
     procedure RecordChanged(Field: TField); override;
   end;
 
-  TJvListSourceLink  = class(TDataLink)
+  TJvListSourceLink = class(TDataLink)
   private
     FDBLookupControl: TJvDBLookupControl;
   protected
@@ -83,8 +82,8 @@ type
   TJvDBLookupControl = class(TCustomControl)
   private
     FLookupSource: TDataSource;
-    FDataLink: TJvDataSourceLink ;
-    FListLink: TJvListSourceLink ;
+    FDataLink: TJvDataSourceLink;
+    FListLink: TJvListSourceLink;
     FDataFieldName: string;
     FKeyFieldName: string;
     FListFieldName: string;
@@ -95,7 +94,7 @@ type
     FListField: TField;
     FListFields: TList;
     FKeyValue: Variant;
-    FUseFilter: boolean;
+    FUseFilter: Boolean;
     FSearchText: string;
     FLookupMode: Boolean;
     FListActive: Boolean;
@@ -125,10 +124,10 @@ type
     procedure SetListSource(Value: TDataSource);
     procedure SetLookupMode(Value: Boolean);
     procedure SetReadOnly(Value: Boolean);
-    procedure WMGetDlgCode(var Message: TMessage); message WM_GETDLGCODE;
-    procedure WMKillFocus(var Message: TMessage); message WM_KILLFOCUS;
-    procedure WMSetFocus(var Message: TMessage); message WM_SETFOCUS;
-    procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
+    procedure WMGetDlgCode(var Msg: TMessage); message WM_GETDLGCODE;
+    procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
+    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
@@ -139,7 +138,7 @@ type
     property ListField: string read FListFieldName write SetListFieldName;
     property ListFieldIndex: Integer read FListFieldIndex write FListFieldIndex default 0;
     property ListSource: TDataSource read GetListSource write SetListSource;
-    property UseFilter: boolean read FUseFilter write FUseFilter;
+    property UseFilter: Boolean read FUseFilter write FUseFilter;
     property ParentColor default False;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property TabStop default True;
@@ -149,13 +148,13 @@ type
     property Field: TField read FDataField;
   end;
 
-  TJvPopupDataList  = class;
+  TJvPopupDataList = class;
 
   TDropDownAlign = (daLeft, daRight, daCenter);
 
   TJvDBLookupTreeViewCombo = class(TJvDBLookupControl)
   private
-    FDataList: TJvPopupDataList ;
+    FDataList: TJvPopupDataList;
     FButtonWidth: Integer;
     FText: string;
 //    FDropDownRows: Integer;
@@ -169,33 +168,33 @@ type
     FLookupMode: Boolean;
     FOnDropDown: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
-{new} FMasterField : string;
-{new} FDetailField : string;
-{new} FIconField : string;
-{new} FStartMasterValue : string;
+    FMasterField: string;      {new}
+    FDetailField: string;      {new}
+    FIconField: string;        {new}
+    FStartMasterValue: string; {new}
     procedure KeyValueChanged; override;
     procedure ListLinkActiveChanged; override;
 {    procedure ListMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);}
     procedure StopTracking;
     procedure TrackButton(X, Y: Integer);
-    procedure CMCancelMode(var Message: TCMCancelMode); message CM_CANCELMODE;
-    procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
-    procedure WMCancelMode(var Message: TMessage); message WM_CANCELMODE;
-    procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
+    procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
+    procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
+    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
   private
-   {$IFDEF COMPILER4_UP}
-    FAutoExpand : boolean;
-    FChangeDelay : integer;
-    FHotTrack : boolean;
-    FRowSelect : boolean;
-    FToolTips : boolean;
+    {$IFDEF COMPILER4_UP}
+    FAutoExpand: Boolean;
+    FChangeDelay: Integer;
+    FHotTrack: Boolean;
+    FRowSelect: Boolean;
+    FToolTips: Boolean;
     FOnCustomDraw: TTVCustomDrawEvent;
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
     FOnGetImageIndex: TTVExpandedEvent;
-   {$ENDIF COMPILER4_UP}
+    {$ENDIF COMPILER4_UP}
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
@@ -224,17 +223,19 @@ type
     property DropDownAlign: TDropDownAlign read FDropDownAlign write FDropDownAlign default daLeft;
 //    property DropDownRows: Integer read FDropDownRows write FDropDownRows default 7;
     property DropDownWidth: Integer read FDropDownWidth write FDropDownWidth default 0;
-{new} property DropDownHeight: Integer read FDropDownHeight write FDropDownHeight default 100;
+    {new}
+    property DropDownHeight: Integer read FDropDownHeight write FDropDownHeight default 100;
+    
     property Enabled;
     property Font;
     property KeyField;
     property ListField;
     property UseFilter;
-
-{new} property MasterField : string read FMasterField write FMasterField;
-{new} property DetailField : string read FDetailField write FDetailField;
-{new} property IconField : string read FIconField write FIconField;
-{new} property StartMasterValue : string read FStartMasterValue write FStartMasterValue;
+    {new}
+    property MasterField: string read FMasterField write FMasterField;
+    property DetailField: string read FDetailField write FDetailField;
+    property IconField: string read FIconField write FIconField;
+    property StartMasterValue: string read FStartMasterValue write FStartMasterValue;
 
     property ListFieldIndex;
     property ListSource;
@@ -263,11 +264,11 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-   {$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-   {$ENDIF COMPILER3_UP}
-   {$IFDEF COMPILER4_UP}
+    {$ENDIF COMPILER3_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property BorderWidth;
@@ -276,33 +277,33 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-    property AutoExpand : boolean read FAutoExpand write FAutoExpand;
-    property ChangeDelay : integer read FChangeDelay write FChangeDelay;
-    property HotTrack : boolean read FHotTrack write FHotTrack;
-    property RowSelect : boolean read FRowSelect write FRowSelect;
-    property ToolTips : boolean read FToolTips write FToolTips;
-    property OnCustomDraw : TTVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
-    property OnCustomDrawItem : TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
-    property OnGetImageIndex : TTVExpandedEvent read FOnGetImageIndex write FOnGetImageIndex;
-   {$ENDIF COMPILER4_UP}
+    property AutoExpand: Boolean read FAutoExpand write FAutoExpand;
+    property ChangeDelay: Integer read FChangeDelay write FChangeDelay;
+    property HotTrack: Boolean read FHotTrack write FHotTrack;
+    property RowSelect: Boolean read FRowSelect write FRowSelect;
+    property ToolTips: Boolean read FToolTips write FToolTips;
+    property OnCustomDraw: TTVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
+    property OnCustomDrawItem: TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
+    property OnGetImageIndex: TTVExpandedEvent read FOnGetImageIndex write FOnGetImageIndex;
+    {$ENDIF COMPILER4_UP}
   end;
 
 {###################### Borland ######################}
 
-  TJvPopupTree  = class(TJvDBTreeView)
+  TJvPopupTree = class(TJvDBTreeView)
   private
-    procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
-    procedure WMSetFocus(var Message: TMessage); message WM_SETFOCUS;
+    procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
+    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
   protected
     procedure DblClick; override;
   end;
 
-  TJvPopupDataList  = class(TWinControl)
+  TJvPopupDataList = class(TWinControl)
   private
-    FTree : TJvPopupTree ;
-    function GetKeyValue : variant;
-    property KeyValue : variant read GetKeyValue;
-   // procedure WMSetFocus(var Message: TMessage); message WM_SETFOCUS;
+    FTree: TJvPopupTree;
+    function GetKeyValue: Variant;
+    property KeyValue: Variant read GetKeyValue;
+   // procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
@@ -312,55 +313,55 @@ type
 
   TJvDBLookupTreeView = class(TJvDBLookupControl)
   private
-    FTree : TJvDBTreeView;
-    FBorderStyle : TBorderStyle;
-    InKeyValueChanged : boolean;
+    FTree: TJvDBTreeView;
+    FBorderStyle: TBorderStyle;
+    InKeyValueChanged: Boolean;
     procedure SetBorderStyle(Value: TBorderStyle);
-    function GetMasterField : string;
+    function GetMasterField: string;
     procedure SetMasterField(Value: string);
-    function GetDetailField : string;
+    function GetDetailField: string;
     procedure SetDetailField(Value: string);
-    function GetStartMasterValue : string;
+    function GetStartMasterValue: string;
     procedure SetStartMasterValue(Value: string);
     function GetIconField: string;
     procedure SetIconField(const Value: string);
     procedure KeyValueChanged; override;
-    procedure WMSetFocus(var Message: TMessage); message WM_SETFOCUS;
+    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
    {Tree}
-    function GetShowButtons : boolean;
-    function GetShowLines : boolean;
-    function GetShowRoot : boolean;
-    function GetReadOnly : boolean;
-    function GetHideSelection : boolean;
-    function GetIndent : integer;
-    procedure SetShowButtons(Value : boolean);
-    procedure SetShowLines(Value : boolean);
-    procedure SetShowRoot(Value : boolean);
-    procedure SetReadOnly(Value : boolean);
-    procedure SetHideSelection(Value : boolean);
-    procedure SetIndent(Value : integer);
-   {$IFDEF COMPILER3_UP}
-    function GetRightClickSelect : boolean;
-    procedure SetRightClickSelect(Value : boolean);
-   {$ENDIF COMPILER3_UP}
-   {$IFDEF COMPILER4_UP}
-    function GetAutoExpand: boolean;
-    function GetChangeDelay: integer;
-    function GetHotTrack: boolean;
+    function GetShowButtons: Boolean;
+    function GetShowLines: Boolean;
+    function GetShowRoot: Boolean;
+    function GetReadOnly: Boolean;
+    function GetHideSelection: Boolean;
+    function GetIndent: Integer;
+    procedure SetShowButtons(Value: Boolean);
+    procedure SetShowLines(Value: Boolean);
+    procedure SetShowRoot(Value: Boolean);
+    procedure SetReadOnly(Value: Boolean);
+    procedure SetHideSelection(Value: Boolean);
+    procedure SetIndent(Value: Integer);
+    {$IFDEF COMPILER3_UP}
+    function GetRightClickSelect: Boolean;
+    procedure SetRightClickSelect(Value: Boolean);
+    {$ENDIF COMPILER3_UP}
+    {$IFDEF COMPILER4_UP}
+    function GetAutoExpand: Boolean;
+    function GetChangeDelay: Integer;
+    function GetHotTrack: Boolean;
     function GetOnGetImageIndex: TTVExpandedEvent;
-    function GetRowSelect: boolean;
-    function GetToolTips: boolean;
-    procedure SetAutoExpand(const Value: boolean);
-    procedure SetChangeDelay(const Value: integer);
-    procedure SetHotTrack(const Value: boolean);
+    function GetRowSelect: Boolean;
+    function GetToolTips: Boolean;
+    procedure SetAutoExpand(const Value: Boolean);
+    procedure SetChangeDelay(const Value: Integer);
+    procedure SetHotTrack(const Value: Boolean);
     procedure SetOnGetImageIndex(const Value: TTVExpandedEvent);
-    procedure SetRowSelect(const Value: boolean);
-    procedure SetToolTips(const Value: boolean);
+    procedure SetRowSelect(const Value: Boolean);
+    procedure SetToolTips(const Value: Boolean);
     function GetOnCustomDraw: TTVCustomDrawEvent;
     function GetOnCustomDrawItem: TTVCustomDrawItemEvent;
     procedure SetOnCustomDraw(const Value: TTVCustomDrawEvent);
     procedure SetOnCustomDrawItem(const Value: TTVCustomDrawItemEvent);
-   {$ENDIF COMPILER4_UP}
+    {$ENDIF COMPILER4_UP}
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure ListLinkActiveChanged; override;
@@ -405,11 +406,11 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-   {$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-   {$ENDIF COMPILER3_UP}
-   {$IFDEF COMPILER4_UP}
+    {$ENDIF COMPILER3_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property BorderWidth;
@@ -419,37 +420,36 @@ type
     property OnEndDock;
     property OnStartDock;
 
-    property AutoExpand : boolean read GetAutoExpand write SetAutoExpand;
-    property ChangeDelay : integer read GetChangeDelay write SetChangeDelay;
-    property HotTrack : boolean read GetHotTrack write SetHotTrack;
-    property RowSelect : boolean read GetRowSelect write SetRowSelect;
-    property ToolTips : boolean read GetToolTips write SetToolTips;
-    property OnCustomDraw : TTVCustomDrawEvent read GetOnCustomDraw write SetOnCustomDraw;
-    property OnCustomDrawItem : TTVCustomDrawItemEvent read GetOnCustomDrawItem write SetOnCustomDrawItem;
-    property OnGetImageIndex : TTVExpandedEvent read GetOnGetImageIndex write SetOnGetImageIndex;
-   {$ENDIF COMPILER4_UP}
-
-   {Tree}
-    property MasterField : string read GetMasterField write SetMasterField;
-    property DetailField : string read GetDetailField write SetDetailField;
-    property IconField : string read GetIconField write SetIconField;
-    property StartMasterValue : string read GetStartMasterValue write SetStartMasterValue;
-    property ShowButtons      : boolean read GetShowButtons      write SetShowButtons;
-    property ShowLines        : boolean read GetShowLines        write SetShowLines;
-    property ShowRoot         : boolean read GetShowRoot         write SetShowRoot;
-    property ReadOnly         : boolean read GetReadOnly         write SetReadOnly;
-   {$IFDEF COMPILER3_UP}
-    property RightClickSelect : boolean read GetRightClickSelect write SetRightClickSelect;
-   {$ENDIF COMPILER3_UP}
-    property HideSelection    : boolean read GetHideSelection    write SetHideSelection;
-    property Indent           : integer read GetIndent           write SetIndent;
+    property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand;
+    property ChangeDelay: Integer read GetChangeDelay write SetChangeDelay;
+    property HotTrack: Boolean read GetHotTrack write SetHotTrack;
+    property RowSelect: Boolean read GetRowSelect write SetRowSelect;
+    property ToolTips: Boolean read GetToolTips write SetToolTips;
+    property OnCustomDraw: TTVCustomDrawEvent read GetOnCustomDraw write SetOnCustomDraw;
+    property OnCustomDrawItem: TTVCustomDrawItemEvent read GetOnCustomDrawItem write SetOnCustomDrawItem;
+    property OnGetImageIndex: TTVExpandedEvent read GetOnGetImageIndex write SetOnGetImageIndex;
+    {$ENDIF COMPILER4_UP}
+    {Tree}
+    property MasterField: string read GetMasterField write SetMasterField;
+    property DetailField: string read GetDetailField write SetDetailField;
+    property IconField: string read GetIconField write SetIconField;
+    property StartMasterValue: string read GetStartMasterValue write SetStartMasterValue;
+    property ShowButtons: Boolean read GetShowButtons write SetShowButtons;
+    property ShowLines: Boolean read GetShowLines write SetShowLines;
+    property ShowRoot: Boolean read GetShowRoot write SetShowRoot;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
+    {$IFDEF COMPILER3_UP}
+    property RightClickSelect: Boolean read GetRightClickSelect write SetRightClickSelect;
+    {$ENDIF COMPILER3_UP}
+    property HideSelection: Boolean read GetHideSelection write SetHideSelection;
+    property Indent: Integer read GetIndent write SetIndent;
   end;
 
 implementation
 
 uses DBConsts;
 
-{ TJvDataSourceLink  }
+//=== TJvDataSourceLink ======================================================
 
 {$IFDEF COMPILER2}
 function GetFieldProperty(DataSet: TDataSet; Control: TComponent;
@@ -461,18 +461,19 @@ begin
 end;
 {$ENDIF COMPILER2}
 
-
-procedure TJvDataSourceLink .ActiveChanged;
+procedure TJvDataSourceLink.ActiveChanged;
 begin
-  if FDBLookupControl <> nil then FDBLookupControl.DataLinkActiveChanged;
+  if FDBLookupControl <> nil then
+    FDBLookupControl.DataLinkActiveChanged;
 end;
 
-procedure TJvDataSourceLink .RecordChanged(Field: TField);
+procedure TJvDataSourceLink.RecordChanged(Field: TField);
 begin
-  if FDBLookupControl <> nil then FDBLookupControl.DataLinkRecordChanged(Field);
+  if FDBLookupControl <> nil then
+    FDBLookupControl.DataLinkRecordChanged(Field);
 end;
 
-procedure TJvDataSourceLink .FocusControl(Field: TFieldRef );
+procedure TJvDataSourceLink.FocusControl(Field: TFieldRef);
 begin
   if (Field^ <> nil) and (Field^ = FDBLookupControl.Field) and
     (FDBLookupControl <> nil) and FDBLookupControl.CanFocus then
@@ -482,19 +483,19 @@ begin
   end;
 end;
 
-{ TJvListSourceLink  }
-
-procedure TJvListSourceLink .ActiveChanged;
+procedure TJvListSourceLink.ActiveChanged;
 begin
-  if FDBLookupControl <> nil then FDBLookupControl.ListLinkActiveChanged;
+  if FDBLookupControl <> nil then
+    FDBLookupControl.ListLinkActiveChanged;
 end;
 
-procedure TJvListSourceLink .DataSetChanged;
+procedure TJvListSourceLink.DataSetChanged;
 begin
-  if FDBLookupControl <> nil then FDBLookupControl.ListLinkDataChanged;
+  if FDBLookupControl <> nil then
+    FDBLookupControl.ListLinkDataChanged;
 end;
 
-{ TJvDBLookupControl }
+//=== TJvDBLookupControl =====================================================
 
 function VarEquals(const V1, V2: Variant): Boolean;
 begin
@@ -505,6 +506,8 @@ begin
   end;
 end;
 
+// (rom) definitely bad implementation two components may concurrently use
+// (rom) the variable
 var
   SearchTickCount: Integer = 0;
 
@@ -512,14 +515,15 @@ constructor TJvDBLookupControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if NewStyleControls then
-    ControlStyle := [csOpaque] else
+    ControlStyle := [csOpaque]
+  else
     ControlStyle := [csOpaque, csFramed];
   ParentColor := False;
   TabStop := True;
   FLookupSource := TDataSource.Create(Self);
-  FDataLink := TJvDataSourceLink .Create;
+  FDataLink := TJvDataSourceLink.Create;
   FDataLink.FDBLookupControl := Self;
-  FListLink := TJvListSourceLink .Create;
+  FListLink := TJvListSourceLink.Create;
   FListLink.FDBLookupControl := Self;
   FListFields := TList.Create;
   FKeyValue := Null;
@@ -544,28 +548,28 @@ end;
 procedure TJvDBLookupControl.CheckNotCircular;
 begin
   if (FDataLink.Active and FDataLink.DataSet.IsLinkedTo(ListSource)) or
-     (FListLink.Active and FListLink.DataSet.IsLinkedTo(DataSource)) then
-  {$IFDEF COMPILER3_UP}
+    (FListLink.Active and FListLink.DataSet.IsLinkedTo(DataSource)) then
+    {$IFDEF COMPILER3_UP}
     DatabaseError(SCircularDataLink);
-  {$ELSE}
+    {$ELSE}
     DatabaseError(LoadStr(SCircularDataLink));
-  {$ENDIF COMPILER3_UP}
+    {$ENDIF COMPILER3_UP}
 end;
 
 procedure TJvDBLookupControl.CheckNotLookup;
 begin
   if FLookupMode then
-  {$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     DatabaseError(SPropDefByLookup);
-  {$ELSE}
+    {$ELSE}
     DatabaseError(LoadStr(SPropDefByLookup));
-  {$ENDIF COMPILER3_UP}
+    {$ENDIF COMPILER3_UP}
   if FDataLink.DataSourceFixed then
-  {$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     DatabaseError(SDataSourceFixed);
-  {$ELSE}
+    {$ELSE}
     DatabaseError(LoadStr(SDataSourceFixed));
-  {$ENDIF COMPILER3_UP}
+    {$ENDIF COMPILER3_UP}
 end;
 
 procedure TJvDBLookupControl.DataLinkActiveChanged;
@@ -586,7 +590,8 @@ procedure TJvDBLookupControl.DataLinkRecordChanged(Field: TField);
 begin
   if (Field = nil) or (Field = FMasterField) then
     if FMasterField <> nil then
-      SetKeyValue(FMasterField.Value) else
+      SetKeyValue(FMasterField.Value)
+    else
       SetKeyValue(Null);
 end;
 
@@ -608,12 +613,18 @@ end;
 
 function TJvDBLookupControl.GetKeyFieldName: string;
 begin
-  if FLookupMode then Result := '' else Result := FKeyFieldName;
+  if FLookupMode then
+    Result := ''
+  else
+    Result := FKeyFieldName;
 end;
 
 function TJvDBLookupControl.GetListSource: TDataSource;
 begin
-  if FLookupMode then Result := nil else Result := FListLink.DataSource;
+  if FLookupMode then
+    Result := nil
+  else
+    Result := FListLink.DataSource;
 end;
 
 function TJvDBLookupControl.GetReadOnly: Boolean;
@@ -656,11 +667,11 @@ begin
     try
       DataSet.GetFieldList(FListFields, FListFieldName);
     except
-     {$IFDEF COMPILER3_UP}
+      {$IFDEF COMPILER3_UP}
       DatabaseErrorFmt(SFieldNotFound, [Self.Name, FListFieldName]);
-     {$ELSE}
+      {$ELSE}
       raise EDatabaseError.CreateFmt(LoadStr(SFieldNotFound), [Self.Name, FListFieldName]);
-     {$ENDIF COMPILER3_UP}
+      {$ENDIF COMPILER3_UP}
     end;
     if FLookupMode then
     begin
@@ -668,11 +679,14 @@ begin
       if FListFields.IndexOf(ResultField) < 0 then
         FListFields.Insert(0, ResultField);
       FListField := ResultField;
-    end else
+    end
+    else
     begin
-      if FListFields.Count = 0 then FListFields.Add(FKeyField);
+      if FListFields.Count = 0 then
+        FListFields.Add(FKeyField);
       if (FListFieldIndex >= 0) and (FListFieldIndex < FListFields.Count) then
-        FListField := FListFields[FListFieldIndex] else
+        FListField := FListFields[FListFieldIndex]
+      else
         FListField := FListFields[0];
     end;
     FListActive := True;
@@ -700,8 +714,10 @@ begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
   begin
-    if (FDataLink <> nil) and (AComponent = DataSource) then DataSource := nil;
-    if (FListLink <> nil) and (AComponent = ListSource) then ListSource := nil;
+    if (FDataLink <> nil) and (AComponent = DataSource) then
+      DataSource := nil;
+    if (FListLink <> nil) and (AComponent = ListSource) then
+      ListSource := nil;
   end;
 end;
 
@@ -712,13 +728,15 @@ var
 begin
   if (FListField <> nil) and (FListField.FieldKind = fkData) and
     (FListField.DataType = ftString) then
-    case Key of
-      #8, #27: FSearchText := '';
-      #32..#255:
+    case Word(Key) of
+      VK_BACK, VK_ESCAPE:
+        FSearchText := '';
+      VK_SPACE..255:
         if CanModify then
         begin
           TickCount := GetTickCount;
-          if TickCount - SearchTickCount > 2000 then FSearchText := '';
+          if TickCount - SearchTickCount > 2000 then
+            FSearchText := '';
           SearchTickCount := TickCount;
           if Length(FSearchText) < 32 then
           begin
@@ -740,7 +758,8 @@ begin
   begin
     if FDataLink.Edit then
       FMasterField.Value := Value;
-  end else
+  end
+  else
     SetKeyValue(Value);
   Repaint;
   Click;
@@ -758,7 +777,8 @@ end;
 procedure TJvDBLookupControl.SetDataSource(Value: TDataSource);
 begin
   FDataLink.DataSource := Value;
-  if Value <> nil then Value.FreeNotification(Self);
+  if Value <> nil then
+    Value.FreeNotification(Self);
 end;
 
 procedure TJvDBLookupControl.SetKeyFieldName(const Value: string);
@@ -793,7 +813,8 @@ procedure TJvDBLookupControl.SetListSource(Value: TDataSource);
 begin
   CheckNotLookup;
   FListLink.DataSource := Value;
-  if Value <> nil then Value.FreeNotification(Self);
+  if Value <> nil then
+    Value.FreeNotification(Self);
 end;
 
 procedure TJvDBLookupControl.SetLookupMode(Value: Boolean);
@@ -806,7 +827,8 @@ begin
       FKeyFieldName := FDataField.LookupKeyFields;
       FLookupMode := True;
       FListLink.DataSource := FLookupSource;
-    end else
+    end
+    else
     begin
       FListLink.DataSource := nil;
       FLookupMode := False;
@@ -821,31 +843,31 @@ begin
   FDataLink.ReadOnly := Value;
 end;
 
-procedure TJvDBLookupControl.WMGetDlgCode(var Message: TMessage);
+procedure TJvDBLookupControl.WMGetDlgCode(var Msg: TMessage);
 begin
-  Message.Result := DLGC_WANTARROWS or DLGC_WANTCHARS;
+  Msg.Result := DLGC_WANTARROWS or DLGC_WANTCHARS;
 end;
 
-procedure TJvDBLookupControl.WMKillFocus(var Message: TMessage);
+procedure TJvDBLookupControl.WMKillFocus(var Msg: TMessage);
 begin
   FFocused := False;
-  Inherited;
+  inherited;
   Invalidate;
 end;
 
-procedure TJvDBLookupControl.WMSetFocus(var Message: TMessage);
+procedure TJvDBLookupControl.WMSetFocus(var Msg: TMessage);
 begin
   FFocused := True;
-  Inherited;
+  inherited;
   Invalidate;
 end;
 
-procedure TJvDBLookupControl.CMGetDataLink(var Message: TMessage);
+procedure TJvDBLookupControl.CMGetDataLink(var Msg: TMessage);
 begin
-  Message.Result := Integer(FDataLink);
+  Msg.Result := Integer(FDataLink);
 end;
 
-{ TDBLookupComboBox }
+//=== TJvDBLookupTreeViewCombo ===============================================
 
 constructor TJvDBLookupTreeViewCombo.Create(AOwner: TComponent);
 begin
@@ -853,7 +875,7 @@ begin
   ControlStyle := ControlStyle + [csReplicatable];
   Width := 145;
   Height := 0;
-  FDataList := TJvPopupDataList .Create(Self);
+  FDataList := TJvPopupDataList.Create(Self);
   FDataList.Visible := False;
   FDataList.Parent := Self;
   FButtonWidth := GetSystemMetrics(SM_CXVSCROLL);
@@ -891,7 +913,8 @@ begin
   begin
     Text := FDataField.DisplayText;
     Alignment := FDataField.Alignment;
-  end else
+  end
+  else
   begin
     Text := FText;
     Alignment := FAlignment;
@@ -904,11 +927,13 @@ begin
   end;
   SetRect(R, 1, 1, W - 1, ClientHeight - 1);
   Canvas.TextRect(R, X, 2, Text);
-  if Selected then Canvas.DrawFocusRect(R);
+  if Selected then
+    Canvas.DrawFocusRect(R);
   SetRect(R, W, 0, ClientWidth, ClientHeight);
   if not FListActive then
     Flags := DFCS_SCROLLCOMBOBOX or DFCS_INACTIVE
-  else if FPressed then
+  else
+    if FPressed then
     Flags := DFCS_SCROLLCOMBOBOX or DFCS_FLAT or DFCS_PUSHED
   else
     Flags := DFCS_SCROLLCOMBOBOX;
@@ -926,12 +951,14 @@ begin
   begin
     FText := FDataField.DisplayText;
     FAlignment := FDataField.Alignment;
-  end else
+  end
+  else
   if FListActive and LocateKey then
   begin
     FText := FListField.DisplayText;
     FAlignment := FListField.Alignment;
-  end else
+  end
+  else
   begin
     FText := '';
     FAlignment := taLeftJustify;
@@ -941,7 +968,7 @@ end;
 
 procedure TJvDBLookupTreeViewCombo.ListLinkActiveChanged;
 begin
-  inherited;
+  inherited ListLinkActiveChanged;
   KeyValueChanged;
 end;
 
@@ -962,9 +989,11 @@ begin
     FDataList.FTree.DataSource := nil;
     Invalidate;
     FSearchText := '';
-    if Accept and CanModify then SelectKeyValue(ListValue);
-    if Assigned(FOnCloseUp) then FOnCloseUp(Self);
-    FPressed := false;
+    if Accept and CanModify then
+      SelectKeyValue(ListValue);
+    if Assigned(FOnCloseUp) then
+      FOnCloseUp(Self);
+    FPressed := False;
     Repaint;
   end;
 end;
@@ -972,19 +1001,21 @@ end;
 procedure TJvDBLookupTreeViewCombo.DropDown;
 var
   P: TPoint;
-  {I,} Y: Integer;
+  {I,}Y: Integer;
   {S: string;}
- {$IFDEF COMPILER4_UP}
+  {$IFDEF COMPILER4_UP}
   OldLong: Longword;
- {$ENDIF COMPILER4_UP}
+  {$ENDIF COMPILER4_UP}
 begin
   if not FListVisible and FListActive then
   begin
-    if Assigned(FOnDropDown) then FOnDropDown(Self);
+    if Assigned(FOnDropDown) then
+      FOnDropDown(Self);
     FDataList.Color := Color;
     FDataList.Font := Font;
     if FDropDownWidth > 0 then
-      FDataList.Width := FDropDownWidth else
+      FDataList.Width := FDropDownWidth
+    else
       FDataList.Width := Width;
     FDataList.Height := FDropDownHeight;
    // FDataList.RowCount := FDropDownRows;
@@ -996,7 +1027,7 @@ begin
     FDataList.FTree.StartMasterValue := FStartMasterValue;
     FDataList.FTree.UseFilter := FUseFilter;
 
-   {$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
    {Source added by Oussama Al-Rifai}
     OldLong := GetWindowLong(FDataList.FTree.Handle, GWL_EXSTYLE);
     if BiDiMode <> bdLeftToRight then
@@ -1008,16 +1039,16 @@ begin
       SetWindowLong(FDataList.FTree.Handle, GWL_EXSTYLE, OldLong and not $00400000);
    {End of source added by Oussama Al-Rifai}
 
-    FDataList.FTree.AutoExpand       := FAutoExpand      ;
-    FDataList.FTree.ChangeDelay      := FChangeDelay     ;
-    FDataList.FTree.HotTrack         := FHotTrack        ;
-    FDataList.FTree.RowSelect        := FRowSelect       ;
-    FDataList.FTree.ToolTips         := FToolTips        ;
-    FDataList.FTree.OnCustomDraw     := FOnCustomDraw    ;
+    FDataList.FTree.AutoExpand := FAutoExpand;
+    FDataList.FTree.ChangeDelay := FChangeDelay;
+    FDataList.FTree.HotTrack := FHotTrack;
+    FDataList.FTree.RowSelect := FRowSelect;
+    FDataList.FTree.ToolTips := FToolTips;
+    FDataList.FTree.OnCustomDraw := FOnCustomDraw;
     FDataList.FTree.OnCustomDrawItem := FOnCustomDrawItem;
-    FDataList.FTree.OnGetImageIndex  := FOnGetImageIndex ;
+    FDataList.FTree.OnGetImageIndex := FOnGetImageIndex;
     FDataList.FTree.ReadOnly := not FDataLink.ReadOnly;
-   {$ENDIF COMPILER4_UP}
+    {$ENDIF COMPILER4_UP}
 
    { for I := 0 to FListFields.Count - 1 do
       S := S + TField(FListFields[I]).FieldName + ';';
@@ -1037,14 +1068,15 @@ begin
 
     P := Parent.ClientToScreen(Point(Left, Top));
     Y := P.Y + Height;
-    if Y + FDataList.Height > Screen.Height then Y := P.Y - FDataList.Height;
+    if Y + FDataList.Height > Screen.Height then
+      Y := P.Y - FDataList.Height;
     case FDropDownAlign of
       daRight: Dec(P.X, FDataList.Width - Width);
       daCenter: Dec(P.X, (FDataList.Width - Width) div 2);
     end;
     FDataList.Left := P.X;
     FDataList.Top := P.Y;
-    FDataList.Visible := true;
+    FDataList.Visible := True;
     SetWindowPos(FDataList.Handle, HWND_TOP, P.X, Y, 0, 0,
       SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
     FListVisible := True;
@@ -1060,21 +1092,28 @@ begin
   if FListActive and ((Key = VK_UP) or (Key = VK_DOWN)) then
     if ssAlt in Shift then
     begin
-      if FListVisible then CloseUp(True) else DropDown;
+      if FListVisible then
+        CloseUp(True)
+      else
+        DropDown;
       Key := 0;
-    end else
-      if not FListVisible then
+    end
+    else
+    if not FListVisible then
+    begin
+      if not LocateKey then
+        FListLink.DataSet.First
+      else
       begin
-        if not LocateKey then
-          FListLink.DataSet.First
+        if Key = VK_UP then
+          Delta := -1
         else
-        begin
-          if Key = VK_UP then Delta := -1 else Delta := 1;
-          FListLink.DataSet.MoveBy(Delta);
-        end;
-        SelectKeyValue(FKeyField.Value);
-        Key := 0;
+          Delta := 1;
+        FListLink.DataSet.MoveBy(Delta);
       end;
+      SelectKeyValue(FKeyField.Value);
+      Key := 0;
+    end;
   if (Key <> 0) and FListVisible then
     // FDataList.KeyDown(Key, Shift);
     SendMessage(FDataList.FTree.Handle, WM_KEYDOWN, Key, 0);
@@ -1084,8 +1123,8 @@ procedure TJvDBLookupTreeViewCombo.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   if FListVisible then
-    if Key in [#13, #27] then
-      CloseUp(Key = #13)
+    if Word(Key) in [VK_RETURN, VK_ESCAPE] then
+      CloseUp(Word(Key) = VK_RETURN)
     else
       FDataList.KeyPress(Key)
   else
@@ -1098,15 +1137,18 @@ begin
   if Button = mbLeft then
   begin
     SetFocus;
-    if not FFocused then Exit;
-    if FListVisible then CloseUp(False) else
-      if FListActive then
-      begin
-        MouseCapture := True;
-        FTracking := True;
-        TrackButton(X, Y);
-        DropDown;
-      end;
+    if not FFocused then
+      Exit;
+    if FListVisible then
+      CloseUp(False)
+    else
+    if FListActive then
+    begin
+      MouseCapture := True;
+      FTracking := True;
+      TrackButton(X, Y);
+      DropDown;
+    end;
   end;
   inherited MouseDown(Button, Shift, X, Y);
 end;
@@ -1155,7 +1197,7 @@ procedure TJvDBLookupTreeViewCombo.TrackButton(X, Y: Integer);
 var
   NewState: Boolean;
 begin
-    Repaint;
+  Repaint;
   NewState := PtInRect(Rect(ClientWidth - FButtonWidth, 0, ClientWidth,
     ClientHeight), Point(X, Y));
   if FPressed <> NewState then
@@ -1165,13 +1207,13 @@ begin
   end;
 end;
 
-procedure TJvDBLookupTreeViewCombo.CMCancelMode(var Message: TCMCancelMode);
+procedure TJvDBLookupTreeViewCombo.CMCancelMode(var Msg: TCMCancelMode);
 begin
-  if (Message.Sender <> Self) and (Message.Sender <> FDataList) then
+  if (Msg.Sender <> Self) and (Msg.Sender <> FDataList) then
     CloseUp(False);
 end;
 
-procedure TJvDBLookupTreeViewCombo.CMCtl3DChanged(var Message: TMessage);
+procedure TJvDBLookupTreeViewCombo.CMCtl3DChanged(var Msg: TMessage);
 begin
   if NewStyleControls then
   begin
@@ -1181,53 +1223,53 @@ begin
   inherited;
 end;
 
-procedure TJvDBLookupTreeViewCombo.CMFontChanged(var Message: TMessage);
+procedure TJvDBLookupTreeViewCombo.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   Height := 0;
 end;
 
-procedure TJvDBLookupTreeViewCombo.CMGetDataLink(var Message: TMessage);
+procedure TJvDBLookupTreeViewCombo.CMGetDataLink(var Msg: TMessage);
 begin
-  Message.Result := Integer(FDataLink);
+  Msg.Result := Integer(FDataLink);
 end;
 
-procedure TJvDBLookupTreeViewCombo.WMCancelMode(var Message: TMessage);
+procedure TJvDBLookupTreeViewCombo.WMCancelMode(var Msg: TMessage);
 begin
   StopTracking;
   inherited;
 end;
 
-procedure TJvDBLookupTreeViewCombo.WMKillFocus(var Message: TWMKillFocus);
+procedure TJvDBLookupTreeViewCombo.WMKillFocus(var Msg: TWMKillFocus);
 begin
   inherited;
-//  if Message.FocusedWnd = FDataList.Handle then SetFocus {else CloseUp(False);}
+//  if Msg.FocusedWnd = FDataList.Handle then SetFocus {else CloseUp(False);}
 end;
 
-{ TPopupRADBTreeView }
+//=== TJvPopupDataList =======================================================
 
-constructor TJvPopupDataList .Create(AOwner: TComponent);
+constructor TJvPopupDataList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable];
-  TabStop := false;
-  FTree := TJvPopupTree .Create(Self);
-  FTree.Parent := self;
+  TabStop := False;
+  FTree := TJvPopupTree.Create(Self);
+  FTree.Parent := Self;
   FTree.Align := alClient;
-  FTree.ReadOnly := true;
+  FTree.ReadOnly := True;
   FTree.BorderStyle := bsNone;
-  FTree.HideSelection := false;
-  FTree.TabStop := false;
+  FTree.HideSelection := False;
+  FTree.TabStop := False;
 //  FTree.OnDblClick := OnDblClick2;
 end;
 
-destructor TJvPopupDataList .Destroy;
+destructor TJvPopupDataList.Destroy;
 begin
   FTree.Free;
   inherited Destroy;
 end;
 
-procedure TJvPopupDataList .CreateParams(var Params: TCreateParams);
+procedure TJvPopupDataList.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do
@@ -1238,81 +1280,83 @@ begin
   end;
 end;
 
-function TJvPopupDataList .GetKeyValue : variant;
+function TJvPopupDataList.GetKeyValue: Variant;
 begin
   if FTree.Selected <> nil then
 //    Result := (FTree.Selected as TJvDBTreeNode).MasterValue
-    Result := FTree.DataSource.DataSet.Lookup(FTree.MasterField, (FTree.Selected as TJvDBTreeNode).MasterValue, (Owner as TJvDBLookupControl).KeyField)
-  else Result := null;
+    Result := FTree.DataSource.DataSet.Lookup(FTree.MasterField,
+      (FTree.Selected as TJvDBTreeNode).MasterValue, (Owner as TJvDBLookupControl).KeyField)
+  else
+    Result := Null;
 end;
 
-
-{ TJvPopupTree  }
+//=== TJvPopupTree ===========================================================
 
 {******* from ComCtl98 unit}
   ////////////////////////////
-  // Jean-Luc Mattei                                                            //
-  // jlucm@club-internet.fr                                                     //
+  // Jean-Luc Mattei        //
+  // jlucm@club-internet.fr //
   ////////////////////////////
 const
-  NM_CUSTOMDRAW         = (NM_FIRST-12);
-  CDDS_PREPAINT         = $000000001;
-  CDRF_NOTIFYITEMDRAW   = $00000020;
-  CDDS_ITEM             = $000010000;
-  CDDS_ITEMPREPAINT     = (CDDS_ITEM OR CDDS_PREPAINT);
-  CDIS_SELECTED  =  $0001;
+  NM_CUSTOMDRAW = (NM_FIRST - 12);
+  CDDS_PREPAINT = $000000001;
+  CDRF_NOTIFYITEMDRAW = $00000020;
+  CDDS_ITEM = $000010000;
+  CDDS_ITEMPREPAINT = (CDDS_ITEM or CDDS_PREPAINT);
+  CDIS_SELECTED = $0001;
 
 type
   PNMCustomDrawInfo = ^TNMCustomDrawInfo;
   TNMCustomDrawInfo = packed record
-    hdr : TNMHDR;
-    dwDrawStage : LONGINT;
-    hdc : HDC;
-    rc : TRect;
-    dwItemSpec : LONGINT;  // this is control specific, but it's how to specify an item.  valid only with CDDS_ITEM bit set
-    uItemState : Cardinal;
-    lItemlParam : Longint;
+    hdr: TNMHDR;
+    dwDrawStage: LONGINT;
+    hdc: HDC;
+    rc: TRect;
+    dwItemSpec: LONGINT; // this is control specific, but it's how to specify an item.  valid only with CDDS_ITEM bit set
+    uItemState: Cardinal;
+    lItemlParam: Longint;
   end;
 {####### from ComCtl98 unit}
 
-procedure TJvPopupTree .CNNotify(var Message: TWMNotify);
+procedure TJvPopupTree.CNNotify(var Msg: TWMNotify);
 begin
-  with Message.NMHdr^ do
+  with Msg.NMHdr^ do
     case code of
       NM_CUSTOMDRAW:
         begin
-          with PNMCustomDrawInfo(Pointer(Message.NMHdr))^ do begin
-            if ( dwDrawStage and CDDS_PREPAINT ) = CDDS_PREPAINT then
-              Message.Result:= CDRF_NOTIFYITEMDRAW;
-            if ( dwDrawStage and CDDS_ITEMPREPAINT ) = CDDS_ITEMPREPAINT then begin
-             if ( uItemstate AND CDIS_SELECTED ) <> 0 then begin
+          with PNMCustomDrawInfo(Pointer(Msg.NMHdr))^ do
+          begin
+            if (dwDrawStage and CDDS_PREPAINT) = CDDS_PREPAINT then
+              Msg.Result := CDRF_NOTIFYITEMDRAW;
+            if (dwDrawStage and CDDS_ITEMPREPAINT) = CDDS_ITEMPREPAINT then
+            begin
+              if (uItemstate and CDIS_SELECTED) <> 0 then
+              begin
                 SetTextColor(hdc, ColorToRGB(clHighLightText));
                 SetBkColor(hdc, ColorToRGB(clHighLight));
               end;
-              Message.Result:= CDRF_NOTIFYITEMDRAW;
+              Msg.Result := CDRF_NOTIFYITEMDRAW;
             end;
           end;
         end;
-      else inherited;
+    else
+      inherited;
     end;
 end;
 
-procedure TJvPopupTree .WMSetFocus(var Message: TMessage);
+procedure TJvPopupTree.WMSetFocus(var Msg: TMessage);
 begin
   inherited;
-  Message.Result := 1;
+  Msg.Result := 1;
   (Owner.Owner as TJvDBLookupTreeViewCombo).SetFocus;
 end;
 
-procedure TJvPopupTree .DblClick;
+procedure TJvPopupTree.DblClick;
 begin
-  (Owner.Owner as TJvDBLookupTreeViewCombo).CloseUp(true);
+  (Owner.Owner as TJvDBLookupTreeViewCombo).CloseUp(True);
 end;
 
-
-
-
-{ TJvDBLookupTreeView }
+//=== TJvDBLookupTreeView ====================================================
 
 type
   TJvDBLookupTreeViewTree = class(TJvDBTreeView)
@@ -1320,7 +1364,7 @@ type
     procedure DataScrolled; override;
     procedure DataChanged; override;
     procedure Change2(Node: TTreeNode); override;
-    procedure DefaultHandler(var Message); override;
+    procedure DefaultHandler(var Msg); override;
   end;
 
 constructor TJvDBLookupTreeView.Create(AOwner: TComponent);
@@ -1328,14 +1372,20 @@ begin
   inherited Create(AOwner);
   FBorderStyle := bsSingle;
   FTree := TJvDBLookupTreeViewTree.Create(Self);
-  FTree.Parent := self;
+  FTree.Parent := Self;
   Width := FTree.Width;
   Height := FTree.Height;
   FTree.Align := alClient;
-  FTree.ReadOnly := true;
+  FTree.ReadOnly := True;
   FTree.BorderStyle := bsNone;
-  FTree.HideSelection := false;
-//  FTree.TabStop := false;
+  FTree.HideSelection := False;
+//  FTree.TabStop := False;
+end;
+
+destructor TJvDBLookupTreeView.Destroy;
+begin
+  FTree.Free;
+  inherited Destroy;
 end;
 
 procedure TJvDBLookupTreeView.CreateParams(var Params: TCreateParams);
@@ -1349,12 +1399,6 @@ begin
         Style := Style or WS_BORDER;
 end;
 
-destructor TJvDBLookupTreeView.Destroy;
-begin
-  FTree.Free;
-  inherited Destroy;
-end;
-
 procedure TJvDBLookupTreeView.SetBorderStyle(Value: TBorderStyle);
 begin
   if FBorderStyle <> Value then
@@ -1364,7 +1408,7 @@ begin
   end;
 end;
 
-function TJvDBLookupTreeView.GetMasterField : string;
+function TJvDBLookupTreeView.GetMasterField: string;
 begin
   Result := FTree.MasterField;
 end;
@@ -1374,7 +1418,7 @@ begin
   FTree.MasterField := Value;
 end;
 
-function TJvDBLookupTreeView.GetDetailField : string;
+function TJvDBLookupTreeView.GetDetailField: string;
 begin
   Result := FTree.DetailField;
 end;
@@ -1394,7 +1438,7 @@ begin
   FTree.IconField := Value;
 end;
 
-function TJvDBLookupTreeView.GetStartMasterValue : string;
+function TJvDBLookupTreeView.GetStartMasterValue: string;
 begin
   Result := FTree.StartMasterValue;
 end;
@@ -1406,150 +1450,117 @@ end;
 
 procedure TJvDBLookupTreeView.ListLinkActiveChanged;
 begin
-  inherited;
+  inherited ListLinkActiveChanged;
   FTree.DataSource := ListSource;
   FTree.ItemField := ListField;
 end;
 
 procedure TJvDBLookupTreeView.KeyValueChanged;
 begin
-  InKeyValueChanged := true;
+  InKeyValueChanged := True;
   try
     TJvDBLookupTreeViewTree(FTree).SelectNode(FKeyValue);
   finally
-    InKeyValueChanged := false;
+    InKeyValueChanged := False;
   end;
 end;
 
-procedure TJvDBLookupTreeView.WMSetFocus(var Message: TMessage);
+procedure TJvDBLookupTreeView.WMSetFocus(var Msg: TMessage);
 begin
   FTree.SetFocus;
 end;
 
 {** Tree}
-function TJvDBLookupTreeView.GetShowButtons : boolean;
+
+function TJvDBLookupTreeView.GetShowButtons: Boolean;
 begin
   Result := FTree.ShowButtons;
 end;
 
-function TJvDBLookupTreeView.GetShowLines : boolean;
+function TJvDBLookupTreeView.GetShowLines: Boolean;
 begin
   Result := FTree.ShowLines;
 end;
 
-function TJvDBLookupTreeView.GetShowRoot : boolean;
+function TJvDBLookupTreeView.GetShowRoot: Boolean;
 begin
   Result := FTree.ShowRoot;
 end;
 
-function TJvDBLookupTreeView.GetReadOnly : boolean;
+function TJvDBLookupTreeView.GetReadOnly: Boolean;
 begin
   Result := FTree.ReadOnly;
 end;
 
 {$IFDEF COMPILER3_UP}
-function TJvDBLookupTreeView.GetRightClickSelect : boolean;
+function TJvDBLookupTreeView.GetRightClickSelect: Boolean;
 begin
   Result := FTree.RightClickSelect;
 end;
 {$ENDIF COMPILER3_UP}
 
-function TJvDBLookupTreeView.GetHideSelection : boolean;
+function TJvDBLookupTreeView.GetHideSelection: Boolean;
 begin
   Result := FTree.HideSelection;
 end;
 
-function TJvDBLookupTreeView.GetIndent : integer;
+function TJvDBLookupTreeView.GetIndent: Integer;
 begin
   Result := FTree.Indent;
 end;
 
-procedure TJvDBLookupTreeView.SetShowButtons(Value : boolean);
+procedure TJvDBLookupTreeView.SetShowButtons(Value: Boolean);
 begin
   FTree.ShowButtons := Value;
 end;
 
-procedure TJvDBLookupTreeView.SetShowLines(Value : boolean);
+procedure TJvDBLookupTreeView.SetShowLines(Value: Boolean);
 begin
   FTree.ShowLines := Value;
 end;
 
-procedure TJvDBLookupTreeView.SetShowRoot(Value : boolean);
+procedure TJvDBLookupTreeView.SetShowRoot(Value: Boolean);
 begin
   FTree.ShowRoot := Value;
 end;
 
-procedure TJvDBLookupTreeView.SetReadOnly(Value : boolean);
+procedure TJvDBLookupTreeView.SetReadOnly(Value: Boolean);
 begin
   FTree.ReadOnly := Value;
 end;
 
 {$IFDEF COMPILER3_UP}
-procedure TJvDBLookupTreeView.SetRightClickSelect(Value : boolean);
+procedure TJvDBLookupTreeView.SetRightClickSelect(Value: Boolean);
 begin
   FTree.RightClickSelect := Value;
 end;
 {$ENDIF COMPILER3_UP}
 
-procedure TJvDBLookupTreeView.SetHideSelection(Value : boolean);
+procedure TJvDBLookupTreeView.SetHideSelection(Value: Boolean);
 begin
   FTree.HideSelection := Value;
 end;
 
-procedure TJvDBLookupTreeView.SetIndent(Value : integer);
+procedure TJvDBLookupTreeView.SetIndent(Value: Integer);
 begin
   FTree.Indent := Value;
 end;
-{## Tree}
-
-
-
-procedure TJvDBLookupTreeViewTree.DataScrolled;
-begin
-end;
-
-procedure TJvDBLookupTreeViewTree.DataChanged;
-begin
-  inherited DataChanged;
-end;
-
-procedure TJvDBLookupTreeViewTree.Change2(Node: TTreeNode);
-begin
-  with Owner as TJvDBLookupTreeView do
-    if not InKeyValueChanged then begin
-      FListLink.DataSet.Locate(MasterField, (Node as TJvDBTreeNode).MasterValue, []);
-      SelectKeyValue(FKeyField.Value);
-      KeyValueChanged;
-    end;
-end;
-
-procedure TJvDBLookupTreeViewTree.DefaultHandler(var Message);
-begin
-  inherited DefaultHandler(Message);
-  with TMessage(Message) do
-    case Msg of
-      WM_KEYDOWN, WM_KEYUP, WM_CHAR,
-      WM_LBUTTONDOWN, WM_LBUTTONUP, WM_RBUTTONDOWN, WM_RBUTTONUP, WM_MBUTTONDOWN, WM_MBUTTONUP,
-      WM_MOUSEMOVE
-       : PostMessage((Owner as TWinControl).Handle, Msg, WParam, LParam);
-    end;
-end;
-
 
 { Translate properties }
 
 {$IFDEF COMPILER4_UP}
-function TJvDBLookupTreeView.GetAutoExpand: boolean;
+
+function TJvDBLookupTreeView.GetAutoExpand: Boolean;
 begin
   Result := FTree.AutoExpand;
 end;
 
-function TJvDBLookupTreeView.GetChangeDelay: integer;
+function TJvDBLookupTreeView.GetChangeDelay: Integer;
 begin
   Result := FTree.ChangeDelay;
 end;
 
-function TJvDBLookupTreeView.GetHotTrack: boolean;
+function TJvDBLookupTreeView.GetHotTrack: Boolean;
 begin
   Result := FTree.HotTrack;
 end;
@@ -1569,27 +1580,27 @@ begin
   Result := FTree.OnGetImageIndex;
 end;
 
-function TJvDBLookupTreeView.GetRowSelect: boolean;
+function TJvDBLookupTreeView.GetRowSelect: Boolean;
 begin
   Result := FTree.RowSelect;
 end;
 
-function TJvDBLookupTreeView.GetToolTips: boolean;
+function TJvDBLookupTreeView.GetToolTips: Boolean;
 begin
   Result := FTree.ToolTips;
 end;
 
-procedure TJvDBLookupTreeView.SetAutoExpand(const Value: boolean);
+procedure TJvDBLookupTreeView.SetAutoExpand(const Value: Boolean);
 begin
   FTree.AutoExpand := Value;
 end;
 
-procedure TJvDBLookupTreeView.SetChangeDelay(const Value: integer);
+procedure TJvDBLookupTreeView.SetChangeDelay(const Value: Integer);
 begin
   FTree.ChangeDelay := Value;
 end;
 
-procedure TJvDBLookupTreeView.SetHotTrack(const Value: boolean);
+procedure TJvDBLookupTreeView.SetHotTrack(const Value: Boolean);
 begin
   FTree.HotTrack := Value;
 end;
@@ -1609,17 +1620,52 @@ begin
   FTree.OnGetImageIndex := Value;
 end;
 
-procedure TJvDBLookupTreeView.SetRowSelect(const Value: boolean);
+procedure TJvDBLookupTreeView.SetRowSelect(const Value: Boolean);
 begin
   FTree.RowSelect := Value;
 end;
 
-procedure TJvDBLookupTreeView.SetToolTips(const Value: boolean);
+procedure TJvDBLookupTreeView.SetToolTips(const Value: Boolean);
 begin
   FTree.ToolTips := Value;
 end;
+
 {$ENDIF COMPILER4_UP}
 {# Translate properties }
 
+//=== TJvDBLookupTreeViewTree ================================================
+
+procedure TJvDBLookupTreeViewTree.DataScrolled;
+begin
+end;
+
+procedure TJvDBLookupTreeViewTree.DataChanged;
+begin
+  inherited DataChanged;
+end;
+
+procedure TJvDBLookupTreeViewTree.Change2(Node: TTreeNode);
+begin
+  with Owner as TJvDBLookupTreeView do
+    if not InKeyValueChanged then
+    begin
+      FListLink.DataSet.Locate(MasterField, (Node as TJvDBTreeNode).MasterValue, []);
+      SelectKeyValue(FKeyField.Value);
+      KeyValueChanged;
+    end;
+end;
+
+procedure TJvDBLookupTreeViewTree.DefaultHandler(var Msg);
+begin
+  inherited DefaultHandler(Msg);
+  with TMessage(Msg) do
+    case Msg of
+      WM_KEYDOWN, WM_KEYUP, WM_CHAR, WM_LBUTTONDOWN, WM_LBUTTONUP,
+      WM_RBUTTONDOWN, WM_RBUTTONUP, WM_MBUTTONDOWN, WM_MBUTTONUP,
+      WM_MOUSEMOVE:
+        PostMessage((Owner as TWinControl).Handle, Msg, WParam, LParam);
+    end;
+end;
 
 end.
+

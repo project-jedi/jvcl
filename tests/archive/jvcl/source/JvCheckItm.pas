@@ -35,14 +35,14 @@ uses
   {$ELSE}
   WinTypes, WinProcs,
   {$ENDIF}
-  Messages, SysUtils, Classes, Controls, Forms, Menus, Graphics,
-  StdCtrls, Dialogs, CheckLst,
+  SysUtils, Classes, Controls, Forms, Menus, Graphics,
+  StdCtrls,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, VCLEditors, DesignEditors,
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  JvPlacemnt, JvxCtrls, ExtCtrls, JvComponent;
+  JvPlacemnt, JvxCtrls, JvComponent;
 
 type
   TJvCheckItemEditor = class(TForm)
@@ -120,6 +120,8 @@ uses
   {$ENDIF}
   JvConst, JvVCLUtils, JvBoxProcs;
 
+//=== TJvCheckItemsProperty ==================================================
+
 function TJvCheckItemsProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog, paReadOnly];
@@ -150,7 +152,7 @@ begin
   end;
 end;
 
-{ TJvCheckItemEditor }
+//=== TJvCheckItemEditor =====================================================
 
 constructor TJvCheckItemEditor.Create(AOwner: TComponent);
 begin

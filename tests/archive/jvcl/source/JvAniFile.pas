@@ -214,6 +214,8 @@ type
     DIBOffset: Longint;
   end;
 
+//=== TJvIconFrame ===========================================================
+
 constructor TJvIconFrame.Create(Index: Integer; Jiff: Longint);
 begin
   inherited Create;
@@ -248,6 +250,8 @@ begin
   else
     inherited Assign(Source);
 end;
+
+//=== TJvAnimatedCursorImage =================================================
 
 constructor TJvAnimatedCursorImage.Create;
 begin

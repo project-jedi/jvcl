@@ -66,7 +66,6 @@ type
     property DropDownMenu: TPopupMenu read FDropMenu write FDropMenu;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
-
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FonMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -75,8 +74,6 @@ type
   end;
 
 implementation
-
-{**************************************************}
 
 constructor TJvButton.Create(AOwner: TComponent);
 begin
@@ -89,16 +86,12 @@ begin
   FOver := False;
 end;
 
-{**************************************************}
-
 destructor TJvButton.Destroy;
 begin
   FHotFont.Free;
   FFontSave.Free;
   inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvButton.Click;
 begin
@@ -110,15 +103,11 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvButton.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or BS_MULTILINE;
 end;
-
-{**************************************************}
 
 procedure TJvButton.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -127,16 +116,12 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvButton.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
-
-{**************************************************}
 
 procedure TJvButton.CMMouseEnter(var Msg: TMessage);
 begin
@@ -158,8 +143,6 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvButton.CMMouseLeave(var Msg: TMessage);
 begin
   if FOver then
@@ -173,8 +156,6 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
-
-{**************************************************}
 
 procedure TJvButton.SetHotFont(const Value: TFont);
 begin

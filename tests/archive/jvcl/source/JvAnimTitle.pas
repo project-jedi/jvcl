@@ -64,8 +64,6 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvAnimTitle.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -85,8 +83,6 @@ begin
   FTimer.OnTimer := AnimateTitle;
 end;
 
-{**************************************************}
-
 destructor TJvAnimTitle.Destroy;
 begin
   FTimer.Free;
@@ -94,8 +90,6 @@ begin
     FForm.Caption := FInitialTitle;
   inherited;
 end;
-
-{**************************************************}
 
 procedure TJvAnimTitle.AnimateTitle(Sender: TObject);
 begin
@@ -136,8 +130,6 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvAnimTitle.ChangeTitle(NewTitle: string);
 begin
   FInitialTitle := NewTitle;
@@ -145,15 +137,11 @@ begin
   FSens := True;
 end;
 
-{**************************************************}
-
 procedure TJvAnimTitle.EnableChange(NewEnable: Boolean);
 begin
   FEnable := NewEnable;
   FTimer.Enabled := FEnable;
 end;
-
-{**************************************************}
 
 procedure TJvAnimTitle.ChangeDelay(NewDelay: Integer);
 begin
