@@ -1839,8 +1839,9 @@ begin
        but as far as I am concerned, it may as well be interpreted as 12.0 }
     if StrRight(lStr, 1) = '.' then
       lStr := lStr + '0';
-
-    Result := StrToFloat(lStr);
+    if not TextToFloat(PChar(lStr), Result, fvExtended) then
+      Result := Def;
+//    Result := StrToFloat(lStr);
   except
     Result := Def;
   end;
@@ -1857,13 +1858,6 @@ begin
     Insert(Key, Result, SelStart + 1);
 end;
 
-{ "window" technique for years to translate 2 digits to 4 digits.
-   The window is 100 years wide
-   The windowsill year is the lower edge of the window
-  A windowsill year of 1900 is equivalent to putting 1900 before every 2-digit year
- if piWindowsillYear is 1940, then 40 is interpreted as 1940, 00 as 2000 and 39 as 2039
- The system default is 1950
-}
 { "window" technique for years to translate 2 digits to 4 digits.
    The window is 100 years wide
    The pivot year is the lower edge of the window
