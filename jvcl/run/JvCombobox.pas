@@ -32,16 +32,18 @@ interface
 
 uses
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, Menus,
-  {$IFDEF USEJVCL}
-  JvCheckListBox,
-  {$ELSE}
-  CheckLst,
-  {$ENDIF USEJVCL}
-  JvJVCLUtils, JvDataProvider, JvMaxPixel, JvExStdCtrls, JvToolEdit;
+  JvCheckListBox, JvExStdCtrls, 
+  {$IFDEF COMPILER5}
+  JvAutoComplete,
+  {$ENDIF COMPILER5}
+  JvJVCLUtils, JvDataProvider, JvMaxPixel, JvToolEdit;
 
 type
   TJvCustomComboBox = class;
 
+  {$IFDEF COMPILER5}
+  TCustomComboBoxStrings = TStrings;
+  {$ENDIF COMPILER5}
   { This class will be used for the Items property of the combo box.
 
     If a provider is active at the combo box, this list will keep the strings stored in an internal
@@ -49,11 +51,7 @@ type
 
     Whenever an item is added to the list the provider will be deactivated and the list will be
     handled by the combo box as usual. }
-  {$IFDEF COMPILER6_UP}
   TJvComboBoxStrings = class(TCustomComboBoxStrings)
-  {$ELSE}
-  TJvComboBoxStrings = class(TStrings)
-  {$ENDIF COMPILER6_UP}
   private
     {$IFDEF COMPILER5}
     FComboBox: TJvCustomComboBox;
@@ -99,8 +97,6 @@ type
     FAutoComplete: Boolean;
     FAutoCompleteCode: TJvComboBoxAutoComplete;
     FAutoDropDown: Boolean;
-    {FLastTime: Cardinal;      // SPM - Ported backward from Delphi 7
-    FFilter: string;          // SPM - ditto}
     FIsDropping: Boolean;
     FOnSelect: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
@@ -115,13 +111,11 @@ type
     FIsFixedHeight: Boolean;
     FMeasureStyle: TJvComboBoxMeasureStyle;
     FLastSetItemHeight: Integer;
-    {$IFDEF VCL}
     FEmptyValue: string;
     FIsEmptyValue: Boolean;
     FEmptyFontColor: TColor;
     FOldFontColor: TColor;
     procedure SetEmptyValue(const Value: string);
-    {$ENDIF VCL}
     procedure MaxPixelChanged(Sender: TObject);
     procedure SetReadOnly(const Value: Boolean); // ain
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
@@ -130,14 +124,12 @@ type
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK; // ain
   protected
-    {$IFDEF VCL}
     function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); virtual;
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure DoEmptyValueEnter; virtual;
     procedure DoEmptyValueExit; virtual;
-    {$ENDIF VCL}
     procedure CreateWnd; override; // ain
     {$IFDEF COMPILER6_UP}
     function GetItemsClass: TCustomComboBoxStringsClass; override;
@@ -157,7 +149,6 @@ type
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
     {$IFDEF COMPILER5}
-    //function SelectItem(const AnItem: string): Boolean;  // SPM - Ported from D7
     procedure CloseUp; dynamic;
     procedure Select; dynamic;
     {$ENDIF COMPILER5}
@@ -185,11 +176,9 @@ type
     {$ENDIF COMPILER5}
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
-    {$IFDEF VCL}
     property Text: TCaption read GetText write SetText;
     property EmptyValue: string read FEmptyValue write SetEmptyValue;
     property EmptyFontColor: TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
-    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -276,10 +265,6 @@ type
   end;
 
   TJvCHBQuoteStyle = (qsNone, qsSingle, qsDouble);
-
-  {$IFNDEF USEJVCL}
-  TJvCheckListBox = TCheckListBox;
-  {$ENDIF USEJVCL}
 
   TJvCheckedComboBox = class(TJvCustomComboEdit)
   private
@@ -1158,11 +1143,9 @@ begin
   {.$ENDIF COMPILER7_UP}
   {$IFDEF COMPILER5}
   FAutoCompleteCode := TJvComboBoxAutoComplete.Create(Self);
-  FAutoCompleteCode.OnAutoComplete := DoDropDown;
+  FAutoCompleteCode.OnDropDown := DoDropDown;
   FAutoCompleteCode.OnChange := DoChange;
   FAutoCompleteCode.OnValueChange := DoValueChange;
-  {FAutoComplete := True;
-  FLastTime := 0;           // SPM - Ported backward from Delphi 7}
   {$ENDIF COMPILER5}
   FSearching := False;
   FMaxPixel := TJvMaxPixel.Create(Self);
@@ -1327,8 +1310,6 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
-
 procedure TJvCustomComboBox.DoEmptyValueEnter;
 begin
   if EmptyValue <> '' then
@@ -1371,8 +1352,6 @@ begin
   inherited DoExit;
   DoEmptyValueExit;
 end;
-
-{$ENDIF VCL}
 
 procedure TJvCustomComboBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
@@ -1528,7 +1507,6 @@ begin
   Result := FMeasureStyle;
 end;
 
-{$IFDEF VCL}
 function TJvCustomComboBox.GetText: TCaption;
 begin
   if FIsEmptyValue then
@@ -1536,7 +1514,6 @@ begin
   else
     Result := inherited Text;
 end;
-{$ENDIF VCL}
 
 function TJvCustomComboBox.HandleFindString(StartIndex: Integer; Value: string;
   ExactMatch: Boolean): Integer;
@@ -1623,100 +1600,14 @@ begin
   if AutoComplete then
     FAutoCompleteCode.AutoComplete(Key);
 end;
-{// SPM - Ported backward from Delphi 7 and modified:
 
-procedure TJvCustomComboBox.KeyPress(var Key: Char);
-var
-  StartPos: DWORD;
-  EndPos: DWORD;
-  OldText: string;
-  SaveText: string;
-  Msg: TMsg;
-  LastByte: Integer;
-
-  function HasSelectedText(var StartPos, EndPos: DWORD): Boolean;
-  begin
-    SendMessage(Handle, CB_GETEDITSEL, Integer(@StartPos), Integer(@EndPos));
-    Result := EndPos > StartPos;
-  end;
-
-  procedure DeleteSelectedText;
-  var
-    StartPos, EndPos: DWORD;
-    OldText: string;
-  begin
-    OldText := Text;
-    SendMessage(Handle, CB_GETEDITSEL, Integer(@StartPos), Integer(@EndPos));
-    Delete(OldText, StartPos + 1, EndPos - StartPos);
-    SendMessage(Handle, CB_SETCURSEL, -1, 0);
-    Text := OldText;
-    SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam(StartPos, StartPos));
-  end;
-
+procedure TJvCustomComboBox.Select;
 begin
-  inherited KeyPress(Key);
-  if not AutoComplete then
-    Exit;
-  if Style in [csDropDown, csSimple] then
-    FFilter := Text
+  if Assigned(FOnSelect) then
+    FOnSelect(Self)
   else
-  begin
-    if GetTickCount - FLastTime >= 500 then
-      FFilter := '';
-    FLastTime := GetTickCount;
-  end;
-  case Ord(Key) of
-    VK_ESCAPE:
-      Exit;
-    VK_BACK:
-      begin
-        if HasSelectedText(StartPos, EndPos) then
-          DeleteSelectedText
-        else
-        if (Style in [csDropDown, csSimple]) and (Length(Text) > 0) then
-        begin
-          SaveText := Text;
-          LastByte := StartPos;
-          while ByteType(SaveText, LastByte) = mbTrailByte do
-            Dec(LastByte);
-          OldText := Copy(SaveText, 1, LastByte - 1);
-          SendMessage(Handle, CB_SETCURSEL, -1, 0);
-          Text := OldText + Copy(SaveText, EndPos + 1, MaxInt);
-          SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam(LastByte - 1, LastByte - 1));
-          FFilter := Text;
-        end
-        else
-        begin
-          while ByteType(FFilter, Length(FFilter)) = mbTrailByte do
-            Delete(FFilter, Length(FFilter), 1);
-          Delete(FFilter, Length(FFilter), 1);
-        end;
-        Key := #0;
-        Change;
-      end;
-  else
-    if HasSelectedText(StartPos, EndPos) then
-      SaveText := Copy(FFilter, 1, StartPos) + Key
-    else
-      SaveText := FFilter + Key;
-
-    if Key in LeadBytes then
-    begin
-      if PeekMessage(Msg, Handle, 0, 0, PM_NOREMOVE) and (Msg.Message = WM_CHAR) then
-      begin
-        if SelectItem(SaveText + Char(Msg.WParam)) then
-        begin
-          PeekMessage(Msg, Handle, 0, 0, PM_REMOVE);
-          Key := #0;
-        end;
-      end;
-    end
-    else
-    if SelectItem(SaveText) then
-      Key := #0;
-  end;
-end;}
-
+    Change;
+end;
 
 {$ENDIF COMPILER5}
 
@@ -1825,60 +1716,10 @@ begin
   Result := TJvItemsSearchs.SearchSubString(Items, Value, CaseSensitive);
 end;
 
-{$IFDEF COMPILER5}
-
-procedure TJvCustomComboBox.Select;
-begin
-  if Assigned(FOnSelect) then
-    FOnSelect(Self)
-  else
-    Change;
-end;
-
-{// SPM - Ported backward from Delphi 7 and modified:
-
-function TJvCustomComboBox.SelectItem(const AnItem: string): Boolean;
-var
-  Idx: Integer;
-  ValueChange: Boolean;
-begin
-  if AnItem = '' then
-  begin
-    Result := False;
-    ItemIndex := -1;
-    Change;
-    Exit;
-  end;
-  Idx := SendMessage(Handle, CB_FINDSTRING, -1, Longint(PChar(AnItem)));
-  Result := (Idx <> CB_ERR);
-  if not Result then
-    Exit;
-  ValueChange := Idx <> ItemIndex;
-  SendMessage(Handle, CB_SETCURSEL, Idx, 0);
-  if Style in [csDropDown, csSimple] then
-  begin
-    Text := AnItem + Copy(GetItemText(Idx), Length(AnItem) + 1, MaxInt);
-    SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam(Length(AnItem), Length(Text)));
-  end
-  else
-  begin
-    ItemIndex := Idx;
-    FFilter := AnItem;
-  end;
-  if ValueChange then
-  begin
-    Click;
-    Select;
-  end;
-end;}
-
-{$ENDIF COMPILER5}
-
 procedure TJvCustomComboBox.SetConsumerService(Value: TJvDataConsumer);
 begin
 end;
 
-{$IFDEF VCL}
 procedure TJvCustomComboBox.SetEmptyValue(const Value: string);
 begin
   FEmptyValue := Value;
@@ -1890,7 +1731,6 @@ begin
       DoEmptyValueExit;
   end;
 end;
-{$ENDIF VCL}
 
 procedure TJvCustomComboBox.SetItemHeight(Value: Integer);
 begin
@@ -1920,12 +1760,10 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
 procedure TJvCustomComboBox.SetText(const Value: TCaption);
 begin
   inherited Text := Value;
 end;
-{$ENDIF VCL}
 
 procedure TJvCustomComboBox.UpdateItemCount;
 var
@@ -1955,7 +1793,7 @@ procedure TJvCustomComboBox.WMInitDialog(var Msg: TWMInitDialog);
 begin
   inherited;
   if (MeasureStyle = cmsAfterCreate) or
-    (IsProviderSelected and ((MeasureStyle <> cmsBeforeDraw) or FIsFixedHeight)) then
+     (IsProviderSelected and ((MeasureStyle <> cmsBeforeDraw) or FIsFixedHeight)) then
     PerformMeasure;
 end;
 
