@@ -76,6 +76,10 @@ type
     function ImageList: TCustomImageList; override;
   end;
 
+  TJvOutlookBarPageImageIndexProperty = class(TJvDefaultImageIndexProperty)
+    function ImageList: TCustomImageList; override;
+  end;
+
 
 implementation
 
@@ -263,5 +267,12 @@ begin
     Result := THackOutlookBar(GetBar).SmallImages;
 end;
 
+
+{ TJvOutlookBarPageImageIndexProperty }
+
+function TJvOutlookBarPageImageIndexProperty.ImageList: TCustomImageList;
+begin
+  Result := THackOutlookBar(THackPages(TJvOutlookBarPage(GetComponent(0)).Collection).Owner).PageImages;
+end;
 
 end.

@@ -91,8 +91,11 @@ begin
     '', TJvOutlookBarPagesPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TJvOutlookBarButtons), TJvOutlookBarPage,
     '', TJvOutlookBarPagesPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(Integer), TJvOutlookBarButton,
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvOutlookBarButton,
     cImageIndex, TJvOutlookBarButtonImageIndexProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvOutlookBarPage,
+    cImageIndex, TJvOutlookBarPageImageIndexProperty);
+
   RegisterPropertyEditor(TypeInfo(TJvColors), TJvHLEditor,
     cColors, TJvHLEditorColorProperty);
   RegisterPropertyEditor(TypeInfo(TJvColors), TJvWideHLEditor,
