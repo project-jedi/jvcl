@@ -86,7 +86,7 @@ type
     procedure DoHeaderImagesChange(Sender: TObject);
     procedure Loaded; override;
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
-    procedure DoEnter; override;
+
     procedure InsertItem(Item: TListItem); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -113,7 +113,7 @@ type
     property ItemPopup[Item: TListItem]: TPopupMenu read GetItemPopup write SetItemPopup;
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
-      
+    procedure SetFocus; override;
   published
     property AutoSelect:boolean read FAutoSelect write FAutoSelect default True;
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
@@ -171,6 +171,7 @@ begin
   FAutoClipboardCopy := True;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := DoHeaderImagesChange;
+  FAutoSelect := true;
 end;
 
 destructor TJvListView.Destroy;
@@ -1058,13 +1059,6 @@ begin
     UpdateHeaderImages(ListView_GetHeader(Handle));
 end;
 
-procedure TJvListView.DoEnter;
-begin
-  if AutoSelect and (Selected = nil) and (Items.Count > 0) then
-    PostMessage(Handle, WM_AUTOSELECT, integer(Items[0]), 1);
-  inherited;
-end;
-
 procedure TJvListView.InsertItem(Item: TListItem);
 begin
   inherited;
@@ -1170,6 +1164,13 @@ begin
     Items[Result].Selected := True;
     Items[Result].Focused := True;
   end;
+end;
+
+procedure TJvListView.SetFocus;
+begin
+  inherited;
+  if AutoSelect and (Selected = nil) and (Items.Count > 0) then
+    PostMessage(Handle, WM_AUTOSELECT, integer(Items[0]), 1);
 end;
 
 end.
