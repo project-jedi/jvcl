@@ -1,5 +1,11 @@
 Changelog for JVCL 3.0
 ======================
+2005-01-30:
+- Added TJvProgramVersionCheck // JFudickar
+  This component gives you the possiblity to check for newer program versions of your application on different locations.
+  There is principle support for Local Network-, HTTP-, FTP- and Database-Locations. This release contains Local Network and 
+  HTTP components (using INDY or ICS)
+- Added Support for SMExport, SMImport and DevExpress cxGrid to the JvDatabase*Actions  
 2005-10-12:
 - Renamed JvImagesViewer.TJvImageItem to JvImagesViewer.TJvPictureItem (TJvImageItem also defined in JvListComb) // peter3
 2005-01-01:
