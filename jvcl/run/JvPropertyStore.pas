@@ -65,8 +65,6 @@ type
     procedure SetAppStore(Value: TJvCustomAppStore);
     procedure Loaded; override;
     procedure DisableAutoLoadDown;
-    procedure TranslatePropertyName(Sender: TJvCustomAppStore; Instance: TPersistent;
-      var Name: string; const Reading: Boolean); virtual;
     procedure LoadData; virtual;
     procedure StoreData; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -422,7 +420,7 @@ begin
   begin
     PropName := GetPropName(Self, Index);
     VisPropName := PropName;
-    TranslatePropertyName(AppStore, Self, visPropName, False);
+    AppStore.TranslatePropertyName(Self, visPropName, False);
     if (FIgnoreProperties.Indexof(PropName) >= 0) then
       Continue;
     if (FIntIgnoreProperties.Indexof(PropName) >= 0) then
@@ -490,7 +488,7 @@ begin
   if Assigned(FOnBeforeLoadProperties) then
     OnBeforeLoadProperties(Self);
   LoadData;
-  AppStore.ReadPersistent(Path, Self, True, False, TranslatePropertyName);
+  AppStore.ReadPersistent(Path, Self, True, False);
   if Assigned(FOnAfterLoadProperties) then
     OnAfterLoadProperties(self);
 end;
@@ -514,7 +512,7 @@ begin
     OnBeforeStoreProperties(self);
   if SaveProperties then
     StoreData;
-  AppStore.WritePersistent(Path, Self, True, CombinedIgnoreList, TranslatePropertyName);
+  AppStore.WritePersistent(Path, Self, True, CombinedIgnoreList);
   if Assigned(FOnAfterStoreProperties) then
     OnAfterStoreProperties(self);
 end;
@@ -524,11 +522,6 @@ begin
 end;
 
 procedure TJvCustomPropertyStore.StoreData;
-begin
-end;
-
-procedure TJvCustomPropertyStore.TranslatePropertyName(Sender: TJvCustomAppStore;
-  Instance: TPersistent; var Name: string; const Reading: Boolean);
 begin
 end;
 
@@ -632,7 +625,7 @@ begin
         else
         if NewObject is TPersistent then
           Sender.ReadPersistent(Sender.ConcatPaths([Path, 'Object' + IntToStr(Index)]),
-            TPersistent(NewObject), True, True, TranslatePropertyName);
+            TPersistent(NewObject), True, True);
       end;
       if Sender.ValueStored(Sender.ConcatPaths([Path, 'Item' + IntToStr(Index)])) then
         ObjectName := Sender.ReadString(Sender.ConcatPaths([Path, 'Item' + IntToStr(Index)]))
@@ -657,7 +650,7 @@ begin
       else
       if Objects[Index] is TPersistent then
         Sender.ReadPersistent(Sender.ConcatPaths([Path, 'Object' + IntToStr(Index)]),
-          TPersistent(Objects[Index]), True, True, TranslatePropertyName);
+          TPersistent(Objects[Index]), True, True);
     end;
     if Sender.ValueStored(Sender.ConcatPaths([Path, 'Item' + IntToStr(Index)])) then
       Strings[Index] := Sender.ReadString(Sender.ConcatPaths([Path, 'Item' + IntToStr(Index)]))
@@ -682,7 +675,7 @@ begin
     else
     if Objects[Index] is TPersistent then
       Sender.WritePersistent(Sender.ConcatPaths([Path, 'Object' + IntToStr(Index)]),
-        TPersistent(Objects[Index]), True, CombinedIgnoreList, TranslatePropertyName);
+        TPersistent(Objects[Index]), True, CombinedIgnoreList);
     if Strings[Index] <> '' then
       Sender.WriteString(Sender.ConcatPaths([Path, 'Item' + IntToStr(Index)]), Strings[Index]);
   end
