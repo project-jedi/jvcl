@@ -240,7 +240,7 @@ begin
   // Ensure the xml file exists
   if not FileExists(XmlFileName) then
   begin
-    ErrMsg := Format('%1 does not exist.', [XmlFileName]);
+    ErrMsg := Format('%s does not exist.', [XmlFileName]);
     Result := False;
     Exit;
   end;
