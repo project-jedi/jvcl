@@ -624,7 +624,13 @@ function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
 {$ENDIF !COMPILER6_UP}
 
 function GetAppHandle: HWND;
-
+// DrawArrow draws a standard arrow in any of four directions and with the specifed color.
+// Rect is the area to draw the arrow in and also defines the size of the arrow
+// Note that this procedure might shrink Rect so that it's width and height is always
+// the same and the width and height are always even, i.e calling with
+// Rect(0,0,12,12) (odd) is the same as calling with Rect(0,0,11,11) (even)
+// Direction defines the direction of the arrow. If Direction is akLeft, the arrow point is
+// pointing to the left
 procedure DrawArrow(Canvas: TCanvas; Rect: TRect; Color: TColor = clBlack; Direction: TAnchorKind = akBottom);
 
 implementation
