@@ -1,0 +1,313 @@
+object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
+  Left = 264
+  Top = 158
+  Width = 333
+  Height = 163
+  VertScrollBar.Range = 158
+  HorzScrollBar.Range = 331
+  ActiveControl = OkBtn
+  BorderIcons = [biSystemMenu]
+  BorderStyle = fbsToolWindow
+  Caption = 'MinMaxInfo'
+  Color = clButton
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'Arial'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  Icon.Data = {
+    0000010001001010100001001000280100001600000028000000100000002000
+    00000100040000000000C0000000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
+    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
+    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
+    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
+    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
+    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
+  ParentFont = False
+  Position = poScreenCenter
+  Scaled = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  PixelsPerInch = 96
+  object Bevel1: TBevel
+    Left = 3
+    Top = 2
+    Width = 328
+    Height = 127
+    Shape = bsFrame
+  end
+  object MaxPosBtn: TSpeedButton
+    Tag = 1
+    Left = 298
+    Top = 9
+    Width = 25
+    Height = 24
+    Hint = 'Set from current'#13#10'form state|'
+    Caption = #172
+    Font.Color = clText
+    Font.Height = 12
+    Font.Name = 'Symbol'
+    Font.Pitch = fpVariable
+    Font.Style = [fsBold]
+    Layout = blGlyphBottom
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    OnClick = SetCurrentBtnClick
+  end
+  object MaxSizeBtn: TSpeedButton
+    Tag = 2
+    Left = 298
+    Top = 38
+    Width = 25
+    Height = 24
+    Hint = 'Set from current'#13#10'form state|'
+    Caption = #172
+    Font.Color = clText
+    Font.Height = 12
+    Font.Name = 'Symbol'
+    Font.Pitch = fpVariable
+    Font.Style = [fsBold]
+    Layout = blGlyphBottom
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    OnClick = SetCurrentBtnClick
+  end
+  object MaxTrackBtn: TSpeedButton
+    Tag = 3
+    Left = 298
+    Top = 67
+    Width = 25
+    Height = 24
+    Hint = 'Set from current'#13#10'form state|'
+    Caption = #172
+    Font.Color = clText
+    Font.Height = 12
+    Font.Name = 'Symbol'
+    Font.Pitch = fpVariable
+    Font.Style = [fsBold]
+    Layout = blGlyphBottom
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    OnClick = SetCurrentBtnClick
+  end
+  object MinTrackBtn: TSpeedButton
+    Tag = 4
+    Left = 298
+    Top = 96
+    Width = 25
+    Height = 24
+    Hint = 'Set from current'#13#10'form state|'
+    Caption = #172
+    Font.Color = clText
+    Font.Height = 12
+    Font.Name = 'Symbol'
+    Font.Pitch = fpVariable
+    Font.Style = [fsBold]
+    Layout = blGlyphBottom
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    OnClick = SetCurrentBtnClick
+  end
+  object Label1: TLabel
+    Left = 108
+    Top = 15
+    Width = 35
+    Height = 13
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Left: '
+  end
+  object Label2: TLabel
+    Left = 204
+    Top = 15
+    Width = 37
+    Height = 13
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Top: '
+  end
+  object Label3: TLabel
+    Left = 14
+    Top = 15
+    Width = 93
+    Height = 14
+    Caption = 'Maximize Position:  '
+  end
+  object Label4: TLabel
+    Left = 108
+    Top = 44
+    Width = 35
+    Height = 13
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Width: '
+  end
+  object Label5: TLabel
+    Left = 204
+    Top = 44
+    Width = 37
+    Height = 13
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Height: '
+  end
+  object Label6: TLabel
+    Left = 14
+    Top = 44
+    Width = 77
+    Height = 14
+    Caption = 'Maximize Size:  '
+  end
+  object Label7: TLabel
+    Left = 108
+    Top = 73
+    Width = 35
+    Height = 13
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Width: '
+  end
+  object Label8: TLabel
+    Left = 204
+    Top = 73
+    Width = 37
+    Height = 13
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Height: '
+  end
+  object Label9: TLabel
+    Left = 14
+    Top = 73
+    Width = 83
+    Height = 14
+    Caption = 'Max Track Size:  '
+  end
+  object Label10: TLabel
+    Left = 108
+    Top = 102
+    Width = 35
+    Height = 13
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Width: '
+  end
+  object Label11: TLabel
+    Left = 204
+    Top = 102
+    Width = 37
+    Height = 13
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Height: '
+  end
+  object Label12: TLabel
+    Left = 14
+    Top = 102
+    Width = 79
+    Height = 14
+    Caption = 'Min Track Size:  '
+  end
+  object OkBtn: TButton
+    Left = 185
+    Top = 135
+    Width = 70
+    Height = 23
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 0
+    OnClick = OkBtnClick
+  end
+  object CancelBtn: TButton
+    Left = 261
+    Top = 135
+    Width = 70
+    Height = 23
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object ClearBtn: TButton
+    Left = 5
+    Top = 135
+    Width = 70
+    Height = 23
+    Caption = '&Clear'
+    TabOrder = 2
+    OnClick = ClearBtnClick
+  end
+  object MaxPosLeftEdit: TSpinEdit
+    Left = 144
+    Top = 10
+    Width = 47
+    Height = 22
+    Max = 32767
+    TabOrder = 3
+  end
+  object MaxPosTopEdit: TSpinEdit
+    Left = 242
+    Top = 10
+    Width = 47
+    Height = 22
+    Max = 32767
+    TabOrder = 4
+  end
+  object MaxSizeWidthEdit: TSpinEdit
+    Left = 144
+    Top = 39
+    Width = 47
+    Height = 22
+    Max = 32767
+    TabOrder = 5
+  end
+  object MaxTrackWidthEdit: TSpinEdit
+    Left = 144
+    Top = 68
+    Width = 47
+    Height = 22
+    Max = 32767
+    TabOrder = 6
+  end
+  object MinTrackWidthEdit: TSpinEdit
+    Left = 144
+    Top = 97
+    Width = 47
+    Height = 22
+    Max = 32767
+    TabOrder = 7
+  end
+  object MaxSizeHeightEdit: TSpinEdit
+    Left = 242
+    Top = 39
+    Width = 47
+    Height = 22
+    Max = 32767
+    TabOrder = 8
+  end
+  object MaxTrackHeightEdit: TSpinEdit
+    Left = 242
+    Top = 68
+    Width = 47
+    Height = 22
+    Max = 32767
+    TabOrder = 9
+  end
+  object MinTrackHeightEdit: TSpinEdit
+    Left = 242
+    Top = 97
+    Width = 47
+    Height = 22
+    Max = 32767
+    TabOrder = 10
+  end
+end

@@ -164,6 +164,7 @@ type
   end;
                   
 type
+(*)
   TJvImageListEditor = class(TComponentEditor)
   private
     procedure SaveAsBitmap(ImageList: TImageList);
@@ -172,7 +173,7 @@ type
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
-
+(*)
 
   TJvWeekDayProperty = class(TEnumProperty)
     function GetAttributes: TPropertyAttributes; override;
@@ -732,7 +733,7 @@ begin
   else
     SetFloatValue(StrToFloat(Value));
 end;
-
+(*)
 procedure TJvImageListEditor.SaveAsBitmap(ImageList: TImageList);
 var
   Bitmap: TBitmap;
@@ -762,8 +763,8 @@ begin
             Canvas.FillRect(Bounds(0, 0, Width, Height));
             for I := 0 to ImageList.Count - 1 do
               ImageList.Draw(Canvas, ImageList.Width * I, 0, I);
-            HandleType := bmDIB;
-            if PixelFormat in [pf15bit, pf16bit] then
+//            HandleType := bmDIB;
+            if PixelFormat in [pf16bit] then
             try
               PixelFormat := pf24bit;
             except
@@ -810,7 +811,7 @@ function TJvImageListEditor.GetVerbCount: Integer;
 begin
   Result := 2;
 end;
-
+(*)
 
 
 //=== TJvWeekDayProperty =====================================================

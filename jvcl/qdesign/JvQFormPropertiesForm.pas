@@ -37,7 +37,7 @@ uses
   SysUtils, Classes,
   
   
-  QControls, QForms, QStdCtrls, QButtons, QExtCtrls, QConsts, Types, ClxEditors,
+  QControls, QForms, QStdCtrls, QButtons, QExtCtrls, QConsts, Types, 
   
   
   RTLConsts, DesignIntf, DesignEditors,
