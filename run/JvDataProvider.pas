@@ -1471,9 +1471,9 @@ begin
   begin
     Provider := Item.Items.Provider;
     if Supports(Provider.SelectedConsumer, IJvDataConsumerItemState, ConsState) then
-      Result := ConsState.Checked(Item);
+      Result := ConsState.Enabled(Item);
     if (Result <> disFalse) and Supports(Item, IJvDataItemStates, ItemState) then
-      Result := ItemState.Checked;
+      Result := ItemState.Enabled;
   end;
 end;
 
@@ -1488,10 +1488,10 @@ begin
   begin
     Provider := Item.Items.Provider;
     if Supports(Provider.SelectedConsumer, IJvDataConsumerItemState, ConsState) then
-      Result := ConsState.Checked(Item);
+      Result := ConsState.Visible(Item);
     if (Result in [disIndetermined, disNotUsed]) and Supports(Item, IJvDataItemStates,
         ItemState) then
-      Result := ItemState.Checked;
+      Result := ItemState.Visible;
   end;
 end;
 
