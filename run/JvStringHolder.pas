@@ -36,8 +36,6 @@ uses
   SysUtils, Classes;
 
 type
-  {$IFDEF COMPILER3_UP}
-
   TJvMacros = class;
   TMacroTextEvent = procedure(Sender: TObject; Data: Variant; var Text: string) of object;
 
@@ -68,22 +66,14 @@ type
     property OnGetText: TMacroTextEvent read FOnGetText write FOnGetText;
   end;
 
-  {$IFDEF COMPILER4_UP}
   TJvMacros = class(TOwnedCollection)
-  {$ELSE}
-  TJvMacros = class(TCollection)
-  {$ENDIF}
   private
     function GetMacroValue(const MacroName: string): Variant;
     procedure SetMacroValue(const MacroName: string; const Value: Variant);
     function GetItem(Index: Integer): TJvMacro;
     procedure SetItem(Index: Integer; Value: TJvMacro);
   public
-    {$IFDEF COMPILER4_UP}
     constructor Create(AOwner: TPersistent);
-    {$ELSE}
-    constructor Create;
-    {$ENDIF}
     procedure AssignValues(Value: TJvMacros);
     procedure AddMacro(Value: TJvMacro);
     procedure RemoveMacro(Value: TJvMacro);
@@ -98,18 +88,14 @@ type
     property MacroValues[const MacroName: string]: Variant read GetMacroValue write SetMacroValue;
   end;
 
-  {$ENDIF COMPILER3_UP}
-
   TJvStrHolder = class(TComponent)
   private
     FStrings: TStrings;
     FXorKey: string;
     FReserved: Integer;
-    {$IFDEF COMPILER3_UP}
     FMacros: TJvMacros;
     FMacroChar: Char;
     FOnExpandMacros: TNotifyEvent;
-    {$ENDIF}
     FOnChange: TNotifyEvent;
     FOnChanging: TNotifyEvent;
     function GetDuplicates: TDuplicates;
@@ -123,47 +109,33 @@ type
     procedure WriteStrings(Writer: TWriter);
     procedure ReadVersion(Reader: TReader);
     procedure WriteVersion(Writer: TWriter);
-    {$IFDEF WIN32}
     function GetCommaText: string;
     procedure SetCommaText(const Value: string);
-    {$ENDIF}
-    {$IFDEF COMPILER3_UP}
     function GetCapacity: Integer;
     procedure SetCapacity(NewCapacity: Integer);
-    {$ENDIF}
-    {$IFDEF COMPILER3_UP}
     procedure SetMacros(Value: TJvMacros);
     procedure RecreateMacros;
     procedure SetMacroChar(Value: Char);
-    {$ENDIF}
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure Changed; dynamic;
     procedure Changing; dynamic;
-    {$IFDEF COMPILER3_UP}
     procedure BeforeExpandMacros; dynamic;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure Clear;
-    {$IFDEF COMPILER3_UP}
     function MacroCount: Integer;
     function MacroByName(const MacroName: string): TJvMacro;
     function ExpandMacros: string;
-    {$ENDIF}
-    {$IFDEF WIN32}
     property CommaText: string read GetCommaText write SetCommaText;
-    {$ENDIF}
   published
-    {$IFDEF COMPILER3_UP}
     property Capacity: Integer read GetCapacity write SetCapacity default 0;
     property MacroChar: Char read FMacroChar write SetMacroChar default '%';
     property Macros: TJvMacros read FMacros write SetMacros;
     property OnExpandMacros: TNotifyEvent read FOnExpandMacros write FOnExpandMacros;
-    {$ENDIF}
     property Duplicates: TDuplicates read GetDuplicates write SetDuplicates
       default dupIgnore;
     property KeyString: string read FXorKey write FXorKey stored False;
@@ -176,15 +148,11 @@ type
 implementation
 
 uses
-  {$IFDEF COMPILER3_UP}
   Consts,
-  {$ENDIF}
   JvJCLUtils, JvTypes;
 
 const
   XorVersion = 1;
-
-{$IFDEF COMPILER3_UP}
 
 function ExtractName(const Items: string; var Pos: Integer): string;
 var
@@ -381,17 +349,10 @@ end;
 
 //=== TJvMacros ==============================================================
 
-{$IFDEF COMPILER4_UP}
 constructor TJvMacros.Create(AOwner: TPersistent);
 begin
   inherited Create(AOwner, TJvMacro);
 end;
-{$ELSE}
-constructor TJvMacros.Create;
-begin
-  inherited Create(TJvMacro);
-end;
-{$ENDIF}
 
 function TJvMacros.IndexOf(const AName: string): Integer;
 begin
@@ -486,7 +447,7 @@ var
   Macros: TJvMacros;
 begin
   Result := Value;
-  Macros := TJvMacros.Create{$IFDEF COMPILER4_UP}(Self.GetOwner){$ENDIF};
+  Macros := TJvMacros.Create(Self.GetOwner);
   try
     CreateMacros(Macros, PChar(Result), SpecialChar, ['.']);
     if DoCreate then
@@ -550,18 +511,14 @@ begin
     List.Add(MacroByName(ExtractName(MacroNames, Pos)));
 end;
 
-{$ENDIF COMPILER3_UP}
-
 //=== TJvStrHolder ===========================================================
 
 constructor TJvStrHolder.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FStrings := TStringList.Create;
-  {$IFDEF COMPILER3_UP}
-  FMacros := TJvMacros.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
+  FMacros := TJvMacros.Create(Self);
   FMacroChar := '%';
-  {$ENDIF}
   TStringList(FStrings).OnChange := StringsChanged;
   TStringList(FStrings).OnChanging := StringsChanging;
 end;
@@ -570,9 +527,7 @@ destructor TJvStrHolder.Destroy;
 begin
   FOnChange := nil;
   FOnChanging := nil;
-  {$IFDEF COMPILER3_UP}
   FMacros.Free;
-  {$ENDIF}
   FStrings.Free;
   inherited Destroy;
 end;
@@ -613,8 +568,6 @@ begin
   FStrings.Clear;
 end;
 
-{$IFDEF WIN32}
-
 function TJvStrHolder.GetCommaText: string;
 begin
   Result := FStrings.CommaText;
@@ -624,10 +577,6 @@ procedure TJvStrHolder.SetCommaText(const Value: string);
 begin
   FStrings.CommaText := Value;
 end;
-
-{$ENDIF WIN32}
-
-{$IFDEF COMPILER3_UP}
 
 function TJvStrHolder.GetCapacity: Integer;
 begin
@@ -709,18 +658,13 @@ begin
   end;
 end;
 
-{$ENDIF COMPILER3_UP}
-
 procedure TJvStrHolder.DefineProperties(Filer: TFiler);
 
   function DoWrite: Boolean;
-  {$IFDEF WIN32}
   var
     I: Integer;
     Ancestor: TJvStrHolder;
-  {$ENDIF}
   begin
-    {$IFDEF WIN32}
     Ancestor := TJvStrHolder(Filer.Ancestor);
     Result := False;
     if (Ancestor <> nil) and (Ancestor.FStrings.Count = FStrings.Count) and
@@ -733,16 +677,12 @@ procedure TJvStrHolder.DefineProperties(Filer: TFiler);
       end
     else
       Result := (FStrings.Count > 0) or (Length(KeyString) > 0);
-    {$ELSE}
-    Result := (FStrings.Count > 0) or (Length(KeyString) > 0);
-    {$ENDIF}
   end;
 
 begin
   inherited DefineProperties(Filer);
   { for backward compatibility }
-  Filer.DefineProperty('InternalVer', ReadVersion, WriteVersion,
-    {$IFDEF WIN32} Filer.Ancestor = nil {$ELSE} False {$ENDIF});
+  Filer.DefineProperty('InternalVer', ReadVersion, WriteVersion, Filer.Ancestor = nil);
   Filer.DefineProperty('StrData', ReadStrings, WriteStrings, DoWrite);
 end;
 
@@ -787,9 +727,7 @@ end;
 
 procedure TJvStrHolder.StringsChanged(Sender: TObject);
 begin
-  {$IFDEF COMPILER3_UP}
   RecreateMacros;
-  {$ENDIF}
   if not (csReading in ComponentState) then
     Changed;
 end;
@@ -807,11 +745,7 @@ begin
   Writer.WriteListBegin;
   Writer.WriteString(KeyString);
   for I := 0 to FStrings.Count - 1 do
-    {$IFDEF WIN32}
     Writer.WriteString(XorEncode(KeyString, FStrings[I]));
-    {$ELSE}
-    Writer.WriteString(XorString(KeyString, FStrings[I]));
-    {$ENDIF}
   Writer.WriteListEnd;
 end;
 
@@ -822,9 +756,7 @@ end;
 
 procedure TJvStrHolder.WriteVersion(Writer: TWriter);
 begin
-  {$IFDEF WIN32}
   Writer.WriteInteger(XorVersion);
-  {$ENDIF}
 end;
 
 end.

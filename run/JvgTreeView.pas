@@ -32,21 +32,9 @@ unit JvgTreeView;
 interface
 
 uses
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   ComCtrls,
-   JvgTypes,
-   JvclVer,
-   CommCtrl,
-   JvgCommClasses{$IFDEF COMPILER4_UP},
-   Imglist,
-   flatSB{$ENDIF};
+   Windows, Messages, SysUtils, Classes, Graphics, Controls,
+   Forms, Dialogs, ComCtrls, CommCtrl, Imglist, FlatSB,
+   JvgTypes, JvclVer, JvgCommClasses;
 
 const
    ITEM_ENABLED               = integer(true);
@@ -126,8 +114,7 @@ type
       property ShowLines;
       property ShowRoot;
       property ReadOnly;
-      {$IFDEF COMPILER3_UP}property RightClickSelect;
-      {$ENDIF}
+      property RightClickSelect;
       property DragMode;
       property HideSelection;
       property Indent;
@@ -176,8 +163,7 @@ type
       property Images;
       property StateImages;
       property Wallpaper;
-      {$IFDEF COMPILER5_UP}property Options;
-      {$ENDIF}
+      property Options;
       property BoldSelection;
       property BevelSelection;
       property HotTrack;
@@ -237,8 +223,7 @@ type
       property ShowLines;
       property ShowRoot;
       property ReadOnly;
-      {$IFDEF COMPILER3_UP}property RightClickSelect;
-      {$ENDIF}
+      property RightClickSelect;
       property DragMode;
       property HideSelection;
       property Indent;
@@ -286,8 +271,7 @@ type
       property ShowHint;
       property Images;
       property Wallpaper;
-      {$IFDEF COMPILER5_UP}property Options;
-      {$ENDIF}
+      property Options;
       property BoldSelection;
       property BevelSelection;
       property HotTrack;
@@ -375,7 +359,6 @@ procedure TJvgCustomTreeView.UpdateFlatScrollBar;
 var
    MinPos, MaxPos             : integer;
 begin
-   {$IFDEF COMPILER5_UP}
    try
       InitializeFlatSB(Handle);
       FlatSB_SetScrollProp(handle, WSB_PROP_VSTYLE, FSB_ENCARTA_MODE, false);
@@ -386,7 +369,6 @@ begin
       FlatSB_SetScrollRange(handle, 1, MinPos, MaxPos, false);
    except
    end;
-   {$ENDIF}
 end;
 
 procedure TJvgCustomTreeView.Paint(var Message: TWMPaint);

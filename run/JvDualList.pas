@@ -97,9 +97,9 @@ begin
   FList2 := TStringList.Create;
   FLabel1Caption := SDualListSrcCaption;
   FLabel2Caption := SDualListDestCaption;
-  OkBtnCaption := ResStr(SOKButton);
-  CancelBtnCaption := ResStr(SCancelButton);
-  HelpBtnCaption := ResStr(SHelpButton);
+  OkBtnCaption := SOKButton;
+  CancelBtnCaption := SCancelButton;
+  HelpBtnCaption := SHelpButton;
 end;
 
 destructor TJvDualListDialog.Destroy;
@@ -141,17 +141,17 @@ end;
 
 function TJvDualListDialog.IsOkBtnCustom: Boolean;
 begin
-  Result := CompareStr(OkBtnCaption, ResStr(SOKButton)) <> 0;
+  Result := CompareStr(OkBtnCaption, SOKButton) <> 0;
 end;
 
 function TJvDualListDialog.IsCancelBtnCustom: Boolean;
 begin
-  Result := CompareStr(CancelBtnCaption, ResStr(SCancelButton)) <> 0;
+  Result := CompareStr(CancelBtnCaption, SCancelButton) <> 0;
 end;
 
 function TJvDualListDialog.IsHelpBtnCustom: Boolean;
 begin
-  Result := CompareStr(HelpBtnCaption, ResStr(SHelpButton)) <> 0;
+  Result := CompareStr(HelpBtnCaption, SHelpButton) <> 0;
 end;
 
 function TJvDualListDialog.Execute: Boolean;
@@ -163,10 +163,8 @@ begin
     with Form do
     begin
       Ctl3D := Self.Ctl3D;
-      {$IFDEF WIN32}
       if NewStyleControls then
         Font.Style := [];
-      {$ENDIF}
       ShowHelp := Self.ShowHelp;
       SrcList.Sorted := Sorted;
       DstList.Sorted := Sorted;

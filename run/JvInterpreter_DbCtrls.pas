@@ -732,8 +732,6 @@ begin
   TDBNavigator(Args.Obj).VisibleButtons := TButtonSet(Word(V2S(Value)))
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read Flat: Boolean }
 
 procedure TDBNavigator_Read_Flat(var Value: Variant; Args: TJvInterpreterArgs);
@@ -747,8 +745,6 @@ procedure TDBNavigator_Write_Flat(const Value: Variant; Args: TJvInterpreterArgs
 begin
   TDBNavigator(Args.Obj).Flat := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read Hints: TStrings }
 
@@ -789,12 +785,10 @@ end;
 
 { property Read SelectedItem: string }
 
-{$IFDEF COMPILER3_UP}
 procedure TDBLookupListBox_Read_SelectedItem(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TDBLookupListBox(Args.Obj).SelectedItem;
 end;
-{$ENDIF COMPILER3_UP}
 
 { property Read BorderStyle: TBorderStyle }
 
@@ -903,8 +897,6 @@ begin
   TDBLookupComboBox(Args.Obj).DropDownWidth := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { TDBRichEdit }
 
 { constructor Create(AOwner: TComponent) }
@@ -983,8 +975,6 @@ procedure TDBRichEdit_Write_ReadOnly(const Value: Variant; Args: TJvInterpreterA
 begin
   TDBRichEdit(Args.Obj).ReadOnly := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 const
@@ -1106,10 +1096,8 @@ begin
     AddSet(TDBNavigator, 'DataSource', TDBNavigator_Write_DataSource, 0, [0]);
     AddGet(TDBNavigator, 'VisibleButtons', TDBNavigator_Read_VisibleButtons, 0, [0], varEmpty);
     AddSet(TDBNavigator, 'VisibleButtons', TDBNavigator_Write_VisibleButtons, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TDBNavigator, 'Flat', TDBNavigator_Read_Flat, 0, [0], varEmpty);
     AddSet(TDBNavigator, 'Flat', TDBNavigator_Write_Flat, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TDBNavigator, 'Hints', TDBNavigator_Read_Hints, 0, [0], varEmpty);
     AddSet(TDBNavigator, 'Hints', TDBNavigator_Write_Hints, 0, [0]);
     AddGet(TDBNavigator, 'ConfirmDelete', TDBNavigator_Read_ConfirmDelete, 0, [0], varEmpty);
@@ -1117,9 +1105,7 @@ begin
     { TDBLookupListBox }
     AddClass(cDbCtrls, TDBLookupListBox, 'TDBLookupListBox');
     AddGet(TDBLookupListBox, 'Create', TDBLookupListBox_Create, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TDBLookupListBox, 'SelectedItem', TDBLookupListBox_Read_SelectedItem, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TDBLookupListBox, 'BorderStyle', TDBLookupListBox_Read_BorderStyle, 0, [0], varEmpty);
     AddSet(TDBLookupListBox, 'BorderStyle', TDBLookupListBox_Write_BorderStyle, 0, [0]);
     AddGet(TDBLookupListBox, 'RowCount', TDBLookupListBox_Read_RowCount, 0, [0], varEmpty);
@@ -1137,7 +1123,6 @@ begin
     AddSet(TDBLookupComboBox, 'DropDownRows', TDBLookupComboBox_Write_DropDownRows, 0, [0]);
     AddGet(TDBLookupComboBox, 'DropDownWidth', TDBLookupComboBox_Read_DropDownWidth, 0, [0], varEmpty);
     AddSet(TDBLookupComboBox, 'DropDownWidth', TDBLookupComboBox_Write_DropDownWidth, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     { TDBRichEdit }
     AddClass(cDbCtrls, TDBRichEdit, 'TDBRichEdit');
     AddGet(TDBRichEdit, 'Create', TDBRichEdit_Create, 1, [varEmpty], varEmpty);
@@ -1151,11 +1136,10 @@ begin
     AddSet(TDBRichEdit, 'DataSource', TDBRichEdit_Write_DataSource, 0, [0]);
     AddGet(TDBRichEdit, 'ReadOnly', TDBRichEdit_Read_ReadOnly, 0, [0], varEmpty);
     AddSet(TDBRichEdit, 'ReadOnly', TDBRichEdit_Write_ReadOnly, 0, [0]);
-    {$ENDIF COMPILER3_UP}
   end;
   RegisterCLasses([TDBEdit, TDBText, TDBCheckBox, TDBComboBox, TDBListBox,
     TDBRadioGroup, TDBMemo, TDBImage, TDBNavigator, TDBLookupListBox,
-      TDBLookupComboBox {$IFDEF COMPILER3_UP}, TDBRichEdit {$ENDIF COMPILER3_UP}]);
+      TDBLookupComboBox, TDBRichEdit]);
 end;
 
 end.

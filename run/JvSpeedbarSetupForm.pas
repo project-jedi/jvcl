@@ -30,11 +30,7 @@ unit JvSpeedbarSetupForm;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF WIN32}
   SysUtils, Messages, Classes, Graphics, Controls, Forms,
   StdCtrls, Grids, ExtCtrls,
   JvxCtrls, JvSpeedBar, JvConsts;
@@ -132,9 +128,7 @@ begin
   try
     if HelpCtx > 0 then
       Editor.HelpContext := HelpCtx;
-    {$IFDEF WIN32}
     Editor.BorderIcons := [biSystemMenu];
-    {$ENDIF}
     Editor.HelpBtn.Visible := (HelpCtx > 0);
     Editor.Show;
     if Editor.WindowState = wsMinimized then
@@ -290,8 +284,7 @@ begin
     if Row < FBar.SectionCount then
     begin
       DrawCellText(Sender as TDrawGrid, Col, Row,
-        FBar.Sections[Row].Caption, Rect, taLeftJustify, vaCenter
-        {$IFDEF COMPILER4_UP}, TDrawGrid(Sender).IsRightToLeft {$ENDIF});
+        FBar.Sections[Row].Caption, Rect, taLeftJustify, vaCenter, TDrawGrid(Sender).IsRightToLeft);
     end;
   end;
 end;
@@ -385,8 +378,8 @@ begin
   if NewStyleControls then
     Font.Style := [];
   { Load string resources }
-  CloseBtn.Caption := ResStr(SOKButton);
-  HelpBtn.Caption := ResStr(SHelpButton);
+  CloseBtn.Caption := SOKButton;
+  HelpBtn.Caption := SHelpButton;
   Caption := SCustomizeSpeedbar;
   CategoriesLabel.Caption := SSpeedbarCategories;
   ButtonsLabel.Caption := SAvailButtons;
@@ -405,8 +398,7 @@ var
 begin
   I := CurrentSection;
   if (I >= 0) and (Row < FBar.ItemsCount(I)) then
-    DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage
-      {$IFDEF COMPILER4_UP}, TDrawGrid(Sender).IsRightToLeft {$ENDIF});
+    DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage, TDrawGrid(Sender).IsRightToLeft);
 end;
 
 procedure TJvSpeedbarSetupWindow.CloseBtnClick(Sender: TObject);

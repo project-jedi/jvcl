@@ -42,9 +42,7 @@ implementation
 uses
   {$IFDEF COMPLIB_VCL}
   Graphics, Controls, Menus,
-  {$IFDEF COMPILER4_UP}
   ImgList,
-  {$ENDIF COMPILER4_UP}
   JvInterpreter_Windows,
   {$ENDIF COMPLIB_VCL}
   {$IFDEF COMPLIB_CLX}
@@ -472,7 +470,6 @@ end;
 
 { constructor CreateParented(ParentWindow: HWnd) }
 
-{$IFDEF COMPILER3_UP}
 procedure TWinControl_CreateParented(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   {$IFDEF COMPLIB_VCL}
@@ -482,7 +479,6 @@ begin
   Value := O2V(TWinControl.CreateParented(V2P(Args.Values[0])));
   {$ENDIF COMPLIB_CLX}
 end;
-{$ENDIF COMPILER3_UP}
 
 { procedure Broadcast(var Message); }
 
@@ -668,8 +664,6 @@ begin
   Value := Integer(TWinControl(Args.Obj).Handle);
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read ParentWindow: HWnd }
 
 procedure TWinControl_Read_ParentWindow(var Value: Variant; Args: TJvInterpreterArgs);
@@ -693,8 +687,6 @@ begin
   TWinControl(Args.Obj).ParentWidget := V2P(Value);
   {$ENDIF COMPLIB_CLX}
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read Showing: Boolean }
 
@@ -895,8 +887,6 @@ end;
 
 {$ENDIF COMPLIB_VCL}
 
-{$IFDEF COMPILER3_UP}
-
 { function GetResource(ResType: TResType; Name: string; Width: Integer; LoadFlags: TLoadResources; MaskColor: TColor): Boolean; }
 
 procedure TCustomImageList_GetResource(var Value: Variant; Args: TJvInterpreterArgs);
@@ -910,8 +900,6 @@ procedure TCustomImageList_GetInstRes(var Value: Variant; Args: TJvInterpreterAr
 begin
 //  Value := TCustomImageList(Args.Obj).GetInstRes(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3], Args.Values[4], Args.Values[5]);
 end;
-
-{$ENDIF COMPILER3_UP}
 
 {  function HandleAllocated: Boolean; }
 
@@ -977,8 +965,6 @@ begin
   Value := TCustomImageList(Args.Obj).ResourceLoad(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { function ResInstLoad(Instance: THandle; ResType: TResType; Name: string; MaskColor: TColor): Boolean; }
 
 procedure TCustomImageList_ResInstLoad(var Value: Variant; Args: TJvInterpreterArgs);
@@ -986,7 +972,6 @@ begin
   Value := TCustomImageList(Args.Obj).ResInstLoad(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3]);
 end;
 
-{$ENDIF COMPILER3_UP}
 {$ENDIF COMPLIB_VCL}
 
 { procedure Replace(Index: Integer; Image, Mask: TBitmap); }
@@ -1163,7 +1148,6 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
-{$IFDEF COMPILER3_UP}
 
 { property Read DesktopFont: Boolean }
 
@@ -1178,8 +1162,6 @@ procedure THackControl_Write_DesktopFont(const Value: Variant; Args: TJvInterpre
 begin
   THackControl(Args.Obj).DesktopFont := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read DragCursor: TCursor }
 
@@ -1380,8 +1362,6 @@ end;
 {$ENDIF COMPLIB_VCL}
 
 {$IFDEF COMPLIB_VCL}
-{$IFDEF COMPILER3_UP}
-
 { property Read ImeMode: TImeMode }
 
 procedure THackWinControl_Read_ImeMode(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1409,8 +1389,6 @@ procedure THackWinControl_Write_ImeName(const Value: Variant; Args: TJvInterpret
 begin
   THackWinControl(Args.Obj).ImeName := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read ParentCtl3D: Boolean }
 
@@ -1702,14 +1680,10 @@ begin
     AddConst(cControls, 'csNoStdEvents', Integer(csNoStdEvents));
     AddConst(cControls, 'csDisplayDragImage', Integer(csDisplayDragImage));
     {$IFDEF COMPLIB_VCL}
-    {$IFDEF COMPILER3_UP}
     AddConst(cControls, 'csReflector', Integer(csReflector));
-    {$ENDIF COMPILER3_UP}
     {$ENDIF COMPLIB_VCL}
-    {$IFDEF COMPILER4_UP}
     AddConst(cControls, 'csActionClient', Integer(csActionClient));
     AddConst(cControls, 'csMenuEvents', Integer(csMenuEvents));
-    {$ENDIF COMPILER4_UP}
     { TMouseButton }
     AddConst(cControls, 'mbLeft', Integer(mbLeft));
     AddConst(cControls, 'mbRight', Integer(mbRight));
@@ -1792,7 +1766,6 @@ begin
     AddGet(TControl, 'Hint', TControl_Read_Hint, 0, [0], varEmpty);
     AddSet(TControl, 'Hint', TControl_Write_Hint, 0, [0]);
     {$IFDEF COMPLIB_VCL}
-    {$IFDEF COMPILER3_UP}
     { TImeMode }
     AddConst(cControls, 'imDisable', Integer(imDisable));
     AddConst(cControls, 'imClose', Integer(imClose));
@@ -1806,14 +1779,11 @@ begin
     AddConst(cControls, 'imChinese', Integer(imChinese));
     AddConst(cControls, 'imSHanguel', Integer(imSHanguel));
     AddConst(cControls, 'imHanguel', Integer(imHanguel));
-    {$ENDIF COMPILER3_UP}
     {$ENDIF COMPLIB_VCL}
     { TWinControl }
     AddClass(cControls, TWinControl, 'TWinControl');
     AddGet(TWinControl, 'Create', TWinControl_Create, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TWinControl, 'CreateParented', TWinControl_CreateParented, 1, [varEmpty], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TWinControl, 'Broadcast', TWinControl_Broadcast, 1, [varByRef], varEmpty);
     AddGet(TWinControl, 'CanFocus', TWinControl_CanFocus, 0, [0], varEmpty);
     AddGet(TWinControl, 'ContainsControl', TWinControl_ContainsControl, 1, [varEmpty], varEmpty);
@@ -1842,12 +1812,10 @@ begin
     AddIGet(TWinControl, 'Controls', TWinControl_Read_Controls, 1, [0], varEmpty);
     AddGet(TWinControl, 'ControlCount', TWinControl_Read_ControlCount, 0, [0], varEmpty);
     AddGet(TWinControl, 'Handle', TWinControl_Read_Handle, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TWinControl, 'ParentWindow', TWinControl_Read_ParentWindow, 0, [0], varEmpty);
     AddSet(TWinControl, 'ParentWindow', TWinControl_Write_ParentWindow, 0, [0]);
     AddGet(TWinControl, 'ParentWidget', TWinControl_Read_ParentWindow, 0, [0], varEmpty);
     AddSet(TWinControl, 'ParentWidget', TWinControl_Write_ParentWindow, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TWinControl, 'Showing', TWinControl_Read_Showing, 0, [0], varEmpty);
     AddGet(TWinControl, 'TabOrder', TWinControl_Read_TabOrder, 0, [0], varEmpty);
     AddSet(TWinControl, 'TabOrder', TWinControl_Write_TabOrder, 0, [0]);
@@ -1867,10 +1835,8 @@ begin
     AddGet(TControl, 'Color', THackControl_Read_Color, 0, [0], varEmpty);
     AddSet(TControl, 'Color', THackControl_Write_Color, 0, [0]);
     {$IFDEF COMPLIB_VCL}
-    {$IFDEF COMPILER3_UP}
     AddGet(TControl, 'DesktopFont', THackControl_Read_DesktopFont, 0, [0], varEmpty);
     AddSet(TControl, 'DesktopFont', THackControl_Write_DesktopFont, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TControl, 'DragCursor', THackControl_Read_DragCursor, 0, [0], varEmpty);
     AddSet(TControl, 'DragCursor', THackControl_Write_DragCursor, 0, [0]);
     {$ENDIF COMPLIB_VCL}
@@ -1901,12 +1867,10 @@ begin
     AddSet(TWinControl, 'Ctl3D', THackWinControl_Write_Ctl3D, 0, [0]);
     AddGet(TWinControl, 'DefWndProc', THackWinControl_Read_DefWndProc, 0, [0], varEmpty);
     AddSet(TWinControl, 'DefWndProc', THackWinControl_Write_DefWndProc, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TWinControl, 'ImeMode', THackWinControl_Read_ImeMode, 0, [0], varEmpty);
     AddSet(TWinControl, 'ImeMode', THackWinControl_Write_ImeMode, 0, [0]);
     AddGet(TWinControl, 'ImeName', THackWinControl_Read_ImeName, 0, [0], varEmpty);
     AddSet(TWinControl, 'ImeName', THackWinControl_Write_ImeName, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TWinControl, 'ParentCtl3D', THackWinControl_Read_ParentCtl3D, 0, [0], varEmpty);
     AddSet(TWinControl, 'ParentCtl3D', THackWinControl_Write_ParentCtl3D, 0, [0]);
     AddGet(TWinControl, 'WindowHandle', THackWinControl_Read_WindowHandle, 0, [0], varEmpty);
@@ -1969,12 +1933,10 @@ begin
     AddGet(TCustomImageList, 'GetImageBitmap', TCustomImageList_GetImageBitmap, 0, [0], varEmpty);
     AddGet(TCustomImageList, 'GetMaskBitmap', TCustomImageList_GetMaskBitmap, 0, [0], varEmpty);
     {$ENDIF COMPLIB_VCL}
-    {$IFDEF COMPILER3_UP}
     AddGet(TCustomImageList, 'GetResource', TCustomImageList_GetResource, 5, [varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty], varEmpty);
     AddGet(TCustomImageList, 'GetInstRes', TCustomImageList_GetInstRes, 6, [varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty, varEmpty], varEmpty);
-    {$ENDIF COMPILER3_UP}
     {$IFDEF COMPLIB_VCL}
     AddGet(TCustomImageList, 'HandleAllocated', TCustomImageList_HandleAllocated, 0, [0], varEmpty);
     {$ENDIF COMPLIB_VCL}
@@ -1993,12 +1955,10 @@ begin
     AddGet(TCustomImageList, 'ResourceLoad', TCustomImageList_ResourceLoad, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
     {$ENDIF COMPLIB_VCL}
-    {$IFDEF COMPILER3_UP}
     {$IFDEF COMPLIB_VCL}
     AddGet(TCustomImageList, 'ResInstLoad', TCustomImageList_ResInstLoad, 4, [varEmpty, varEmpty, varEmpty, varEmpty],
       varEmpty);
     {$ENDIF COMPLIB_VCL}
-    {$ENDIF COMPILER3_UP}
     AddGet(TCustomImageList, 'Replace', TCustomImageList_Replace, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     {$IFDEF COMPLIB_VCL}
     AddGet(TCustomImageList, 'ReplaceIcon', TCustomImageList_ReplaceIcon, 2, [varEmpty, varEmpty], varEmpty);
@@ -2011,7 +1971,6 @@ begin
     AddGet(TCustomImageList, 'Handle', TCustomImageList_Read_Handle, 0, [0], varEmpty);
     AddSet(TCustomImageList, 'Handle', TCustomImageList_Write_Handle, 0, [0]);
     {$ENDIF COMPLIB_VCL}
-    {$IFDEF COMPILER3}
     AddGet(TCustomImageList, 'HideDragImage', TCustomImageList_HideDragImage, 0, [0], varEmpty);
     AddGet(TCustomImageList, 'SetDragImage', TCustomImageList_SetDragImage, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
@@ -2024,9 +1983,7 @@ begin
     AddGet(TCustomImageList, 'DragMove', TCustomImageList_DragMove, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TCustomImageList, 'DragUnlock', TCustomImageList_DragUnlock, 0, [0], varEmpty);
     AddGet(TCustomImageList, 'EndDrag', TCustomImageList_EndDrag, 0, [0], varEmpty);
-    {$ENDIF COMPILER3}
     {$IFDEF COMPLIB_VCL}
-    {$IFDEF COMPILER4_UP}
     AddGet(TDragImageList, 'HideDragImage', TCustomImageList_HideDragImage, 0, [0], varEmpty);
     AddGet(TDragImageList, 'SetDragImage', TCustomImageList_SetDragImage, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TDragImageList, 'ShowDragImage', TCustomImageList_ShowDragImage, 0, [0], varEmpty);
@@ -2038,7 +1995,6 @@ begin
     AddGet(TDragImageList, 'DragMove', TCustomImageList_DragMove, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TDragImageList, 'DragUnlock', TCustomImageList_DragUnlock, 0, [0], varEmpty);
     AddGet(TDragImageList, 'EndDrag', TCustomImageList_EndDrag, 0, [0], varEmpty);
-    {$ENDIF COMPILER4_UP}
     {$ENDIF COMPLIB_VCL}
     { TImageList }
     AddClass(cControls, TImageList, 'TImageList');

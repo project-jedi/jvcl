@@ -31,11 +31,7 @@ unit JvHook;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   SysUtils;
   {, JvComponent}
 
@@ -97,37 +93,21 @@ end;
 
 function SetVirtualMethodAddress(AClass: TClass; AIndex: Integer;
   NewAddress: Pointer): Pointer;
-{$IFDEF WIN32}
 const
   PageSize = SizeOf(Pointer);
-{$ENDIF}
 var
   Table: PPointer;
-  {$IFDEF WIN32}
   SaveFlag: DWORD;
-  {$ELSE}
-  Block: Pointer;
-  {$ENDIF}
 begin
   Table := PPointer(AClass);
   Inc(Table, AIndex - 1);
   Result := Table^;
-  {$IFDEF WIN32}
   if VirtualProtect(Table, PageSize, PAGE_EXECUTE_READWRITE, @SaveFlag) then
   try
     Table^ := NewAddress;
   finally
     VirtualProtect(Table, PageSize, SaveFlag, @SaveFlag);
   end;
-  {$ELSE}
-  PtrRec(Block).Ofs := PtrRec(Table).Ofs;
-  PtrRec(Block).Seg := AllocCSToDSAlias(PtrRec(Table).Seg);
-  try
-    PPointer(Block)^ := NewAddress;
-  finally
-    FreeSelector(PtrRec(Block).Seg);
-  end;
-  {$ENDIF}
 end;
 
 // (rom) reimplemented using GetVirtualMethodCount

@@ -78,9 +78,7 @@ type
     property ExternalCanvas: TCanvas read FExternalCanvas write FExternalCanvas stored False;
     procedure Loaded; override;
   published
-    {$IFDEF COMPILER5_UP}
     property Anchors;
-    {$ENDIF}
     property Align;
     property Height default 50;
     property ParentShowHint;
@@ -198,10 +196,8 @@ var
           R_.Bottom := R_.Top + Lines.Thickness + Integer(Lines.Bold);
         end;
       end;
-      {$IFDEF COMPILER5_UP}
       if Lines.Style = bvSpace then
         BoxSides := [fsdLeft, fsdTop];
-      {$ENDIF}
 
       DrawBoxEx(TargetCanvas.Handle, R_, BoxSides, Lines.Style, bvNone,
         Lines.Bold, 0, True);

@@ -134,10 +134,6 @@ uses
 
 constructor TJvPlugin.Create(AOwner: TComponent);
 begin
-  // (rom) where is inherited Create(AOwner) ?
-  {$IFNDEF COMPILER3}
-  GlobalNameSpace.BeginWrite;
-  {$ENDIF}
   try
     // Create datamodule
     CreateNew(AOwner);
@@ -153,18 +149,10 @@ begin
         raise EResNotFound.CreateFmt('Resource Not Found: %s', [ClassName]);
 
       // (rom) why this ?
-      {$IFNDEF COMPILER3}
-      if OldCreateOrder and Assigned(OnCreate) then
-        OnCreate(Self);
-      {$ELSE}
       if Assigned(OnCreate) then
         OnCreate(Self);
-      {$ENDIF}
     end;
   finally
-    {$IFNDEF COMPILER3}
-    GlobalNameSpace.EndWrite;
-    {$ENDIF}
   end;
 end;
 

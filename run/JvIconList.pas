@@ -30,11 +30,7 @@ unit JvIconList;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   SysUtils, Classes, Graphics;
 
 type
@@ -186,7 +182,6 @@ end;
 
 procedure TJvIconList.DefineProperties(Filer: TFiler);
 
-  {$IFDEF WIN32}
   function DoWrite: Boolean;
   var
     I: Integer;
@@ -206,11 +201,9 @@ procedure TJvIconList.DefineProperties(Filer: TFiler);
     else
       Result := Count > 0;
   end;
-  {$ENDIF}
 
 begin
-  Filer.DefineBinaryProperty('Icons', ReadData, WriteData,
-    {$IFDEF WIN32} DoWrite {$ELSE} Count > 0 {$ENDIF});
+  Filer.DefineBinaryProperty('Icons', ReadData, WriteData, DoWrite);
 end;
 
 function TJvIconList.Get(Index: Integer): TIcon;

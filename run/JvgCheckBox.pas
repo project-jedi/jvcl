@@ -127,9 +127,7 @@ type
     destructor Destroy; override;
 
   published
-    {$IFDEF COMPILER5_UP}
     property Anchors;
-    {$ENDIF}
     property Align;
     property Caption;
     property Enabled;

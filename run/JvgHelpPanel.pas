@@ -75,9 +75,7 @@ TYPE
    PUBLISHED
       PROPERTY Align;
       PROPERTY Alignment;
-      {$IFDEF COMPILER4_UP}
       PROPERTY Anchors;
-      {$ENDIF}
       PROPERTY AutoSize;
       PROPERTY BevelInner STORED true;
       PROPERTY BevelOuter STORED true;
@@ -89,10 +87,8 @@ TYPE
       PROPERTY Color;
       PROPERTY Constraints;
       PROPERTY Ctl3D;
-      {$IFDEF COMPILER4_UP}
       PROPERTY UseDockManager DEFAULT True;
       PROPERTY DockSite;
-      {$ENDIF}
       PROPERTY DragCursor;
       PROPERTY DragKind;
       PROPERTY DragMode;
@@ -113,31 +109,23 @@ TYPE
       PROPERTY OnCanResize;
       PROPERTY OnClick;
       PROPERTY OnConstrainedResize;
-      {$IFDEF COMPILER5_UP}
       PROPERTY OnContextPopup;
-      {$ENDIF}
       PROPERTY OnDockDrop;
       PROPERTY OnDockOver;
       PROPERTY OnDblClick;
       PROPERTY OnDragDrop;
       PROPERTY OnDragOver;
-      {$IFDEF COMPILER4_UP}
       PROPERTY OnEndDock;
-      {$ENDIF}
       PROPERTY OnEndDrag;
       PROPERTY OnEnter;
       PROPERTY OnExit;
-      {$IFDEF COMPILER4_UP}
       PROPERTY OnGetSiteInfo;
-      {$ENDIF}
       PROPERTY OnMouseDown;
       PROPERTY OnMouseMove;
       PROPERTY OnMouseUp;
       PROPERTY OnResize;
-      {$IFDEF COMPILER4_UP}
       PROPERTY OnStartDock;
       PROPERTY OnUnDock;
-      {$ENDIF}
       PROPERTY OnStartDrag;
 
       PROPERTY Expanded: boolean READ FExpanded WRITE SetExpanded DEFAULT false;

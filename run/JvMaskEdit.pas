@@ -414,9 +414,6 @@ const
     (taLeftJustify, taRightJustify, taCenter),
     (taRightJustify, taLeftJustify, taCenter)
   );
-{$IFNDEF COMPILER4UP}
-  UseRightToLeftAlignment = False;
-{$ENDIF}
 var
   Canvas: TControlCanvas;
   Style: Integer;
@@ -437,11 +434,9 @@ begin
       AAlignment := AlignmentValues[UseRightToLeftAlignment, taLeftJustify];
 
     SendMessage(Handle, EM_GETRECT, 0, Integer(@R));
-    {$IFDEF COMPILER4_UP}
     if BiDiMode = bdRightToLeft then
       ButtonWidth := R.Left - 1
     else
-    {$ENDIF COMPILER4_UP}
       ButtonWidth := ClientWidth - R.Right - 2;
     if ButtonWidth < 0 then ButtonWidth := 0;
 

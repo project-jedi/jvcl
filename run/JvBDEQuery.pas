@@ -56,9 +56,6 @@ type
     FStreamPatternChanged: Boolean;
     FPatternChanged: Boolean;
     FOpenStatus: TQueryOpenStatus;
-    {$IFNDEF WIN32}
-    FParamCheck: Boolean;
-    {$ENDIF}
     function GetMacros: TParams;
     procedure SetMacros(Value: TParams);
     procedure SetSQL(Value: TStrings);
@@ -74,20 +71,16 @@ type
     procedure SetRealSQL(Value: TStrings);
     {$ENDIF DEBUG}
   protected
-    {$IFDEF COMPILER3_UP}
     procedure InternalFirst; override;
     function GetRecord(Buffer: PChar; GetMode: TGetMode; DoCheck: Boolean): TGetResult; override;
-    {$ENDIF}
     procedure Loaded; override;
     function CreateHandle: HDBICur; override;
-    procedure OpenCursor{$IFDEF COMPILER3_UP}(InfoQuery: Boolean){$ENDIF}; override;
+    procedure OpenCursor(InfoQuery: Boolean); override;
     procedure Disconnect; override;
-    {$IFDEF COMPILER5_UP}
     { IProviderSupport }
     procedure PSExecute; override;
     function PSGetDefaultOrder: TIndexDef; override;
     function PSGetTableName: string; override;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -97,18 +90,12 @@ type
     procedure OpenOrExec(ChangeLive: Boolean);
     procedure ExecDirect;
     function MacroByName(const Value: string): TParam;
-    {$IFNDEF COMPILER3_UP}
-    function IsEmpty: Boolean;
-    {$ENDIF COMPILER3_UP}
     property MacroCount: Word read GetMacroCount;
     property OpenStatus: TQueryOpenStatus read FOpenStatus;
     {$IFNDEF DEBUG}
     property RealSQL: TStrings read GetRealSQL;
     {$ENDIF DEBUG}
   published
-    {$IFNDEF WIN32}
-    property ParamCheck: Boolean read FParamCheck write FParamCheck default True;
-    {$ENDIF}
     property MacroChar: Char read FMacroChar write SetMacroChar default DefaultMacroChar;
     property SQL: TStrings read FSQLPattern write SetSQL;
     {$IFDEF DEBUG}
@@ -116,8 +103,6 @@ type
     {$ENDIF DEBUG}
     property Macros: TParams read GetMacros write SetMacros;
   end;
-
-  {$IFDEF WIN32}
 
   TRunQueryMode = (rqOpen, rqExecute, rqExecDirect, rqOpenOrExec);
 
@@ -138,8 +123,6 @@ type
       Prepare, CreateSuspended: Boolean);
   end;
 
-  {$ENDIF WIN32}
-
   TScriptAction = (saFail, saAbort, saRetry, saIgnore, saContinue);
 
   TScriptErrorEvent = procedure(Sender: TObject; E: EDatabaseError;
@@ -157,16 +140,12 @@ type
     FBeforeExec: TNotifyEvent;
     FAfterExec: TNotifyEvent;
     FOnScriptError: TScriptErrorEvent;
-    {$IFDEF WIN32}
     function GetSessionName: string;
     procedure SetSessionName(const Value: string);
     function GetDBSession: TSession;
     function GetText: string;
-    {$ENDIF WIN32}
-    {$IFDEF COMPILER4_UP}
     procedure ReadParamData(Reader: TReader);
     procedure WriteParamData(Writer: TWriter);
-    {$ENDIF COMPILER4_UP}
     function GetDatabase: TDatabase;
     function GetDatabaseName: string;
     procedure SetDatabaseName(const Value: string);
@@ -176,9 +155,7 @@ type
     procedure SetParamsList(Value: TParams);
     function GetParamsCount: Cardinal;
   protected
-    {$IFDEF COMPILER4_UP}
     procedure DefineProperties(Filer: TFiler); override;
-    {$ENDIF COMPILER4_UP}
     procedure CheckExecQuery(LineNo, StatementNo: Integer);
     procedure ExecuteScript(StatementNo: Integer); virtual;
   public
@@ -187,24 +164,18 @@ type
     procedure ExecSQL;
     procedure ExecStatement(StatementNo: Integer);
     function ParamByName(const Value: string): TParam;
-    {$IFDEF WIN32}
     property DBSession: TSession read GetDBSession;
     property Text: string read GetText;
-    {$ELSE}
-    function GetText: PChar;
-    {$ENDIF WIN32}
     property Database: TDatabase read GetDatabase;
     property ParamCount: Cardinal read GetParamsCount;
   published
     property DatabaseName: string read GetDatabaseName write SetDatabaseName;
     property IgnoreParams: Boolean read FIgnoreParams write FIgnoreParams default False;
     property SemicolonTerm: Boolean read FSemicolonTerm write FSemicolonTerm default True;
-    {$IFDEF WIN32}
     property SessionName: string read GetSessionName write SetSessionName;
-    {$ENDIF WIN32}
     property Term: Char read FTerm write FTerm default DefaultTermChar;
     property SQL: TStrings read FSQL write SetQuery;
-    property Params: TParams read FParams write SetParamsList{$IFDEF COMPILER4_UP} stored False{$ENDIF};
+    property Params: TParams read FParams write SetParamsList stored False;
     property Transaction: Boolean read FTransaction write FTransaction;
     property BeforeExec: TNotifyEvent read FBeforeExec write FBeforeExec;
     property AfterExec: TNotifyEvent read FAfterExec write FAfterExec;
@@ -303,17 +274,13 @@ begin
         Name := StrPas(StartPos + 1);
       if Assigned(List) then
       begin
-        {$IFDEF COMPILER4_UP}
         if List.FindParam(Name) = nil then
         begin
-        {$ENDIF COMPILER4_UP}
           if Macro then
             List.CreateParam(ftString, Name, ptInput).AsString := TrueExpr
           else
             List.CreateParam(ftUnknown, Name, ptUnknown);
-        {$IFDEF COMPILER4_UP}
         end;
-        {$ENDIF COMPILER4_UP}
       end;
       CurPos^ := CurChar;
       StartPos^ := '?';
@@ -336,16 +303,13 @@ end;
 constructor TJvQuery.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFNDEF WIN32}
-  FParamCheck := True;
-  {$ENDIF WIN32}
   FOpenStatus := qsFailed;
   FSaveQueryChanged := TStringList(inherited SQL).OnChange;
   TStringList(inherited SQL).OnChange := QueryChanged;
   FMacroChar := DefaultMacroChar;
   FSQLPattern := TStringList.Create;
   TStringList(SQL).OnChange := PatternChanged;
-  FMacros := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
+  FMacros := TParams.Create(Self);
 end;
 
 destructor TJvQuery.Destroy;
@@ -363,8 +327,6 @@ begin
   GetMacros; {!! trying this way}
 end;
 
-{$IFDEF COMPILER3_UP}
-
 procedure TJvQuery.InternalFirst;
 begin
   if not (UniDirectional and BOF) then
@@ -380,8 +342,6 @@ begin
   Result := inherited GetRecord(Buffer, GetMode, DoCheck);
 end;
 
-{$ENDIF}
-
 function TJvQuery.CreateHandle: HDBICur;
 begin
   FOpenStatus := qsFailed;
@@ -395,7 +355,7 @@ end;
 procedure TJvQuery.OpenCursor;
 begin
   ExpandMacros;
-  inherited OpenCursor{$IFDEF COMPILER3_UP}(InfoQuery){$ENDIF};
+  inherited OpenCursor(InfoQuery);
 end;
 
 procedure TJvQuery.ExecSQL;
@@ -461,10 +421,6 @@ begin
 end;
 
 procedure TJvQuery.ExecDirect;
-{$IFNDEF WIN32}
-var
-  P: PChar;
-{$ENDIF}
 begin
   CheckInactive;
   SetDBFlag(dbfExecSQL, True);
@@ -472,17 +428,8 @@ begin
     if SQL.Count > 0 then
     begin
       FOpenStatus := qsFailed;
-      {$IFDEF WIN32}
       Check(DbiQExecDirect(DBHandle, qryLangSQL, PChar(inherited SQL.Text),
         nil));
-      {$ELSE}
-      P := inherited SQL.GetText;
-      try
-        Check(DbiQExecDirect(DBHandle, qryLangSQL, P, nil));
-      finally
-        StrDispose(P);
-      end;
-      {$ENDIF WIN32}
       FOpenStatus := qsExecuted;
     end
     else
@@ -562,29 +509,8 @@ begin
 end;
 
 procedure TJvQuery.QueryChanged(Sender: TObject);
-{$IFNDEF WIN32}
-var
-  List: TParams;
-  SaveParams: Boolean;
-{$ENDIF}
 begin
-  {$IFDEF WIN32}
   FSaveQueryChanged(Sender);
-  {$ELSE}
-  SaveParams := not (ParamCheck or (csDesigning in ComponentState));
-  if SaveParams then
-    List := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
-  try
-    if SaveParams then
-      List.Assign(Params);
-    FSaveQueryChanged(Sender);
-    if SaveParams then
-      Params.Assign(List);
-  finally
-    if SaveParams then
-      List.Free;
-  end;
-  {$ENDIF WIN32}
   if not FDisconnectExpected then
   begin
     SQL := inherited SQL;
@@ -615,46 +541,24 @@ end;
 procedure TJvQuery.RecreateMacros;
 var
   List: TParams;
-  {$IFNDEF WIN32}
-  P: PChar;
-  {$ENDIF}
 begin
-  {$IFDEF COMPILER4_UP}
   if not (csReading in ComponentState) then
   begin
-    {$ENDIF COMPILER4_UP}
-    List := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
+    List := TParams.Create(Self);
     try
-      {$IFDEF WIN32}
       CreateMacros(List, PChar(FSQLPattern.Text));
-      {$ELSE}
-      P := FSQLPattern.GetText;
-      try
-        CreateMacros(List, P);
-      finally
-        StrDispose(P);
-      end;
-      {$ENDIF WIN32}
       List.AssignValues(FMacros);
-    {$IFDEF COMPILER4_UP}
       FMacros.Clear;
       FMacros.Assign(List);
     finally
-      {$ELSE}
-      FMacros.Free;
-      FMacros := List;
-    except
-    {$ENDIF COMPILER4_UP}
       List.Free;
     end;
-  {$IFDEF COMPILER4_UP}
   end
   else
   begin
     FMacros.Clear;
     CreateMacros(FMacros, PChar(FSQLPattern.Text));
   end;
-  {$ENDIF COMPILER4_UP}
 end;
 
 procedure TJvQuery.CreateMacros(List: TParams; const Value: PChar);
@@ -714,13 +618,6 @@ begin
   Result := FMacros.ParamByName(Value);
 end;
 
-{$IFNDEF COMPILER3_UP}
-function TJvQuery.IsEmpty: Boolean;
-begin
-  Result := IsDataSetEmpty(Self);
-end;
-{$ENDIF COMPILER3_UP}
-
 function TJvQuery.GetRealSQL: TStrings;
 begin
   try
@@ -730,7 +627,6 @@ begin
   Result := inherited SQL;
 end;
 
-{$IFDEF COMPILER5_UP}
 
 function TJvQuery.PSGetDefaultOrder: TIndexDef;
 begin
@@ -749,8 +645,6 @@ begin
   ExecSQL;
 end;
 
-{$ENDIF COMPILER5_UP}
-
 {$IFDEF DEBUG}
 procedure TJvQuery.SetRealSQL(Value: TStrings);
 begin
@@ -758,8 +652,6 @@ end;
 {$ENDIF DEBUG}
 
 //=== TJvQueryThread =========================================================
-
-{$IFDEF WIN32}
 
 constructor TJvQueryThread.Create(Data: TBDEDataSet; RunMode: TRunQueryMode;
   Prepare, CreateSuspended: Boolean);
@@ -852,8 +744,6 @@ begin
   end;
 end;
 
-{$ENDIF WIN32}
-
 //=== TJvSQLScript ===========================================================
 
 constructor TJvSQLScript.Create(AOwner: TComponent);
@@ -861,7 +751,7 @@ begin
   inherited Create(AOwner);
   FSQL := TStringList.Create;
   TStringList(SQL).OnChange := QueryChanged;
-  FParams := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
+  FParams := TParams.Create(Self);
   FQuery := TJvQuery.Create(Self);
   FSemicolonTerm := True;
   FTerm := DefaultTermChar;
@@ -890,8 +780,6 @@ begin
   FQuery.DatabaseName := Value;
 end;
 
-{$IFDEF WIN32}
-
 function TJvSQLScript.GetSessionName: string;
 begin
   Result := FQuery.SessionName;
@@ -907,17 +795,12 @@ begin
   Result := FQuery.DBSession;
 end;
 
-{$ENDIF WIN32}
-
 procedure TJvSQLScript.CheckExecQuery(LineNo, StatementNo: Integer);
 var
   Done: Boolean;
   Action: TScriptAction;
   I: Integer;
   Param: TParam;
-  {$IFNDEF WIN32}
-  Msg: array [0..255] of Char;
-  {$ENDIF}
   S: string;
 begin
   Done := False;
@@ -939,10 +822,10 @@ begin
       on E: EDatabaseError do
       begin
         Action := saFail;
-        S := Format(ResStr(SParseError), [ResStr(SMsgdlgError), LineNo]);
+        S := Format(SParseError, [SMsgdlgError, LineNo]);
         if E is EDBEngineError then
           TDBError.Create(EDBEngineError(E), 0, LineNo,
-            {$IFDEF WIN32} PChar(S) {$ELSE} StrPCopy(Msg, S) {$ENDIF})
+            PChar(S))
         else
         begin
           if E.Message <> '' then
@@ -974,16 +857,14 @@ var
   IsTrans, SQLFilled, StmtFound: Boolean;
   I, P, CurrStatement: Integer;
 begin
-  IsTrans := FTransaction {$IFNDEF WIN32} and Database.IsSQLBased {$ENDIF}
-  and not TransActive(Database) and (StatementNo < 0);
+  IsTrans := FTransaction
+    and not TransActive(Database) and (StatementNo < 0);
   LastStr := '';
   try
     if IsTrans then
     begin
-      {$IFDEF WIN32}
       if not Database.IsSQLBased then
         Database.TransIsolation := tiDirtyRead;
-      {$ENDIF}
       Database.StartTransaction;
     end;
   except
@@ -1047,11 +928,7 @@ begin
     end;
     if not StmtFound then
     begin
-      {$IFDEF COMPILER3_UP}
       DatabaseError(Format(SListIndexError, [StatementNo]));
-      {$ELSE}
-      DatabaseError(Format('%s: %d', [LoadStr(SListIndexError), StatementNo]));
-      {$ENDIF COMPILER3_UP}
     end;
     if IsTrans then
       Database.Commit;
@@ -1098,58 +975,32 @@ begin
   QueryChanged(nil);
 end;
 
-function TJvSQLScript.GetText: {$IFDEF WIN32} string {$ELSE} PChar {$ENDIF};
+function TJvSQLScript.GetText: string;
 begin
-  {$IFDEF WIN32}
   Result := SQL.Text;
-  {$ELSE}
-  Result := SQL.GetText;
-  {$ENDIF}
 end;
 
 procedure TJvSQLScript.QueryChanged(Sender: TObject);
 var
   List: TParams;
-  {$IFNDEF WIN32}
-  P: PChar;
-  {$ENDIF}
 begin
-  {$IFDEF COMPILER4_UP}
   if not (csReading in ComponentState) then
   begin
-    {$ENDIF COMPILER4_UP}
-    List := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
+    List := TParams.Create(Self);
     try
-      {$IFDEF WIN32}
       CreateParams(List, PChar(Text));
-      {$ELSE}
-      P := GetText;
-      try
-        CreateParams(List, P);
-      finally
-        StrDispose(P);
-      end;
-      {$ENDIF WIN32}
       List.AssignValues(FParams);
-    {$IFDEF COMPILER4_UP}
       FParams.Clear;
       FParams.Assign(List);
     finally
-    {$ELSE}
-      FParams.Free;
-      FParams := List;
-    except
-    {$ENDIF COMPILER4_UP}
       List.Free;
     end;
-  {$IFDEF COMPILER4_UP}
   end
   else
   begin
     FParams.Clear;
     CreateParams(FParams, PChar(Text));
   end;
-  {$ENDIF COMPILER4_UP}
 end;
 
 function TJvSQLScript.ParamByName(const Value: string): TParam;
@@ -1167,7 +1018,6 @@ begin
   Result := FParams.Count;
 end;
 
-{$IFDEF COMPILER4_UP}
 
 procedure TJvSQLScript.DefineProperties(Filer: TFiler);
 begin
@@ -1185,8 +1035,6 @@ procedure TJvSQLScript.WriteParamData(Writer: TWriter);
 begin
   Writer.WriteCollection(Params);
 end;
-
-{$ENDIF COMPILER4_UP}
 
 end.
 

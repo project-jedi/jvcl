@@ -152,7 +152,7 @@ begin
       end;
       PropInfo := GetPropInfo(Control.ClassInfo, PropName);
       if (PropInfo <> nil) and (PropInfo^.PropType^.Kind in
-        [tkInteger, tkFloat {$IFDEF WIN32}, tkVariant {$ENDIF}]) then
+        [tkInteger, tkFloat, tkVariant]) then
       begin
         SetOrdProp(Control, PropInfo, Value);
         Result := True;
@@ -207,20 +207,9 @@ begin
   GetProgressList.SetControlProperty(Control, ppProgress, ProgressValue);
 end;
 
-{$IFNDEF WIN32}
-procedure Finalize; far;
-begin
-  ProgressList.Free;
-end;
-{$ENDIF}
-
 initialization
-{$IFDEF WIN32}
 finalization
   ProgressList.Free;
-{$ELSE}
-  AddExitProc(Finalize);
-{$ENDIF}
 
 end.
 

@@ -42,79 +42,15 @@ interface
 
 uses
   Windows,
-  {$IFDEF COMPILER3_UP}
   ActiveX, ComObj,
-  {$ELSE}
-  Ole2, OleAuto,
-  {$ENDIF}
   CommCtrl, Messages, SysUtils, Classes, Controls, Forms, Graphics, StdCtrls,
   Dialogs, RichEdit, Menus, ComCtrls, JVCLVer;
 
 type
   TRichEditVersion = 1..3;
 
-  {$IFNDEF COMPILER3_UP}
-
-  TCharFormat2A = record
-    cbSize: UINT;
-    dwMask: DWORD;
-    dwEffects: DWORD;
-    yHeight: Longint;
-    yOffset: Longint;
-    crTextColor: TColorRef;
-    bCharSet: Byte;
-    bPitchAndFamily: Byte;
-    szFaceName: array [0..LF_FACESIZE - 1] of AnsiChar;
-    { new fields in version 2.0 }
-    wWeight: Word;          { Font weight (LOGFONT value)             }
-    sSpacing: SmallInt;     { Amount to space between letters         }
-    crBackColor: TColorRef; { Background color                        }
-    lid: LCID;              { Locale ID                               }
-    dwReserved: DWORD;      { Reserved. Must be 0                     }
-    sStyle: SmallInt;       { Style handle                            }
-    wKerning: Word;         { Twip size above which to kern char pair }
-    bUnderlineType: Byte;   { Underline type                          }
-    bAnimation: Byte;       { Animated text like marching ants        }
-    bRevAuthor: Byte;       { Revision author index                   }
-    bReserved1: Byte;
-  end;
-  TCharFormat2 = TCharFormat2A;
-
-  TParaFormat2 = record
-    cbSize: UINT;
-    dwMask: DWORD;
-    wNumbering: Word;
-    wReserved: Word;
-    dxStartIndent: Longint;
-    dxRightIndent: Longint;
-    dxOffset: Longint;
-    wAlignment: Word;
-    cTabCount: SmallInt;
-    rgxTabs: array [0..MAX_TAB_STOPS - 1] of Longint;
-    { new fields in version 2.0 }
-    dySpaceBefore: Longint; { Vertical spacing before paragraph      }
-    dySpaceAfter: Longint;  { Vertical spacing after paragraph       }
-    dyLineSpacing: Longint; { Line spacing depending on Rule         }
-    sStyle: SmallInt;       { Style handle                           }
-    bLineSpacingRule: Byte; { Rule for line spacing (see tom.doc)    }
-    bCRC: Byte;             { Reserved for CRC for rapid searching   }
-    wShadingWeight: Word;   { Shading in hundredths of a per cent    }
-    wShadingStyle: Word;    { Nibble 0: style, 1: cfpat, 2: cbpat    }
-    wNumberingStart: Word;  { Starting value for numbering           }
-    wNumberingStyle: Word;  { Alignment, roman/arabic, (), ), ., etc.}
-    wNumberingTab: Word;    { Space bet 1st indent and 1st-line text }
-    wBorderSpace: Word;     { Space between border and text (twips)  }
-    wBorderWidth: Word;     { Border pen width (twips)               }
-    wBorders: Word;         { Byte 0: bits specify which borders     }
-                            { Nibble 2: border style, 3: color index }
-  end;
-
-  {$ENDIF COMPILER3_UP}
-
   // Polaris
-  //{$IFDEF COMPILER5_UP}
   //  TCharFormat2 = TCharFormat2A;
-  //{$ENDIF}
 
 type
   TJvCustomRichEdit = class;
@@ -133,10 +69,8 @@ type
     FType: TJvAttributeType;
     procedure AssignFont(Font: TFont);
     procedure GetAttributes(var Format: TCharFormat2);
-    {$IFNDEF COMPILER2}
     function GetCharset: TFontCharset;
     procedure SetCharset(Value: TFontCharset);
-    {$ENDIF}
     function GetSubscriptStyle: TSubscriptStyle;
     procedure SetSubscriptStyle(Value: TSubscriptStyle);
     function GetBackColor: TColor;
@@ -175,9 +109,7 @@ type
   public
     constructor Create(AOwner: TJvCustomRichEdit; AttributeType: TJvAttributeType);
     procedure Assign(Source: TPersistent); override;
-    {$IFNDEF COMPILER2}
     property Charset: TFontCharset read GetCharset write SetCharset;
-    {$ENDIF}
     property BackColor: TColor read GetBackColor write SetBackColor;
     property Color: TColor read GetColor write SetColor;
     property ConsistentAttributes: TJvConsistentAttributes read GetConsistentAttributes;
@@ -288,9 +220,7 @@ type
   TRichEditProtectChangeEx = procedure(Sender: TObject; const Msg: TMessage;
     StartPos, EndPos: Integer; var AllowChange: Boolean) of object;
   TRichEditFindErrorEvent = procedure(Sender: TObject; const FindText: string) of object;
-  {$IFDEF COMPILER3_UP}
   TRichEditFindCloseEvent = procedure(Sender: TObject; Dialog: TFindDialog) of object;
-  {$ENDIF}
 
   PRichConversionFormat = ^TRichConversionFormat;
   TRichConversionFormat = record
@@ -332,9 +262,7 @@ type
     FPopupVerbMenu: TPopupMenu;
     FTitle: string;
     FAutoVerbMenu: Boolean;
-    {$IFDEF COMPILER3_UP}
     FAllowInPlace: Boolean;
-    {$ENDIF}
     FDefaultJvConverter: TConversionClass;
     FOnSelChange: TNotifyEvent;
     FOnResizeRequest: TRichEditResizeEvent;
@@ -343,9 +271,7 @@ type
     FOnSaveClipboard: TRichEditSaveClipboard;
     FOnURLClick: TRichEditURLClickEvent;
     FOnTextNotFound: TRichEditFindErrorEvent;
-    {$IFDEF COMPILER3_UP}
     FOnCloseFindDialog: TRichEditFindCloseEvent;
-    {$ENDIF}
     // From JvRichEdit.pas by Sébastien Buysse
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor, FSavedHintColor: TColor;
@@ -361,9 +287,6 @@ type
     function GetLangOptions: TRichLangOptions;
     function GetCanRedo: Boolean;
     function GetCanPaste: Boolean;
-    {$IFNDEF COMPILER35_UP}
-    function GetCanUndo: Boolean;
-    {$ENDIF}
     function GetRedoName: TUndoName;
     function GetUndoName: TUndoName;
     function GetStreamFormat: TRichStreamFormat;
@@ -397,15 +320,11 @@ type
     procedure FindDialogFind(Sender: TObject);
     procedure ReplaceDialogReplace(Sender: TObject);
     procedure SetSelText(const Value: string);
-    {$IFDEF COMPILER3_UP}
     procedure FindDialogClose(Sender: TObject);
     procedure SetUIActive(Active: Boolean);
     procedure CMDocWindowActivate(var Msg: TMessage); message CM_DOCWINDOWACTIVATE;
     procedure CMUIDeactivate(var Msg: TMessage); message CM_UIDEACTIVATE;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
-    {$ENDIF}
     procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
@@ -415,9 +334,7 @@ type
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
-    {$IFDEF COMPILER5_UP}
     procedure WMRButtonUp(var Msg: TMessage); message WM_RBUTTONUP;
-    {$ENDIF}
     // From JvRichEdit.pas by Sébastien Buysse
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
@@ -439,7 +356,6 @@ type
     function SaveClipboard(NumObj, NumChars: Integer): Boolean; dynamic;
     procedure URLClick(const URLText: string; Button: TMouseButton); dynamic;
     procedure SetPlainText(Value: Boolean); virtual;
-    {$IFDEF COMPILER3_UP}
     procedure CloseFindDialog(Dialog: TFindDialog); virtual;
     procedure DoSetMaxLength(Value: Integer); override;
     function GetSelLength: Integer; override;
@@ -448,7 +364,6 @@ type
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
     property AllowInPlace: Boolean read FAllowInPlace write FAllowInPlace default True;
-    {$ENDIF}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property AllowObjects: Boolean read FAllowObjects write SetAllowObjects default True;
     property AutoURLDetect: Boolean read GetAutoURLDetect write SetAutoURLDetect default True;
@@ -480,10 +395,8 @@ type
       write FOnResizeRequest;
     property OnURLClick: TRichEditURLClickEvent read FOnURLClick write FOnURLClick;
     property OnTextNotFound: TRichEditFindErrorEvent read FOnTextNotFound write FOnTextNotFound;
-    {$IFDEF COMPILER3_UP}
     property OnCloseFindDialog: TRichEditFindCloseEvent read FOnCloseFindDialog
       write FOnCloseFindDialog;
-    {$ENDIF}
     // From JvRichEdit.pas by Sébastien Buysse
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -494,7 +407,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Clear; {$IFDEF COMPILER3_UP} override; {$ENDIF}
+    procedure Clear; override;
     procedure SetSelection(StartPos, EndPos: Longint; ScrollCaret: Boolean);
     function GetSelection: TCharRange;
     function GetTextRange(StartPos, EndPos: Longint): string;
@@ -504,10 +417,8 @@ type
     function WordAtCursor: string;
     function FindText(const SearchStr: string;
       StartPos, Length: Integer; Options: TRichSearchTypes): Integer;
-    function GetSelTextBuf(Buffer: PChar; BufSize: Integer): Integer;
-      {$IFDEF COMPILER3_UP} override; {$ENDIF}
-    function GetCaretPos: TPoint;
-      {$IFDEF COMPILER35_UP} override; {$ENDIF}
+    function GetSelTextBuf(Buffer: PChar; BufSize: Integer): Integer;override;
+    function GetCaretPos: TPoint; override;
     function GetCharPos(CharIndex: Integer): TPoint;
     function InsertObjectDialog: Boolean;
     function ObjectPropertiesDialog: Boolean;
@@ -524,11 +435,6 @@ type
     property CanFindNext: Boolean read GetCanFindNext;
     property CanRedo: Boolean read GetCanRedo;
     property CanPaste: Boolean read GetCanPaste;
-    {$IFNDEF COMPILER35_UP}
-    procedure Undo;
-    property CanUndo: Boolean read GetCanUndo;
-    property CaretPos: TPoint read GetCaretPos;
-    {$ENDIF}
     property RedoName: TUndoName read GetRedoName;
     property UndoName: TUndoName read GetUndoName;
     property DefaulTJvConverter: TConversionClass read FDefaultJvConverter
@@ -549,15 +455,11 @@ type
     property AutoURLDetect;
     property AutoVerbMenu;
     property AllowObjects;
-    {$IFDEF COMPILER3_UP}
     property AllowInPlace;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property BorderWidth;
     property DragKind;
-    {$ENDIF}
     property BorderStyle;
     property Color;
     property Ctl3D;
@@ -569,14 +471,10 @@ type
     property HideScrollBars;
     property HintColor;
     property Title;
-    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property Constraints;
     property ParentBiDiMode;
-    {$ENDIF}
     property LangOptions;
     property Lines;
     property MaxLength;
@@ -605,13 +503,9 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -621,11 +515,9 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF COMPILER4_UP}
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    {$ENDIF}
     property OnProtectChange; { obsolete }
     property OnProtectChangeEx;
     property OnResizeRequest;
@@ -633,9 +525,7 @@ type
     property OnSelectionChange;
     property OnStartDrag;
     property OnTextNotFound;
-    {$IFDEF COMPILER3_UP}
     property OnCloseFindDialog;
-    {$ENDIF}
     property OnURLClick;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -651,9 +541,7 @@ var
 implementation
 
 uses
-  {$IFDEF COMPILER3_UP}
   OleCtnrs,
-  {$ENDIF}
   Printers, ComStrs, OleConst, OleDlg, Math,
   JvTypes;
 
@@ -669,235 +557,7 @@ var
 const
   RichEdit10ModuleName = 'RICHED32.DLL';
   RichEdit20ModuleName = 'RICHED20.DLL';
-  {$IFNDEF COMPILER3_UP}
-  RICHEDIT_CLASSA = 'RichEdit20A'; { Richedit 2.0 Window Class }
-  RICHEDIT_CLASSW = 'RichEdit20W'; { Richedit 2.0 Unicode }
-  RICHEDIT_CLASS10A = 'RICHEDIT'; { Richedit 1.0 }
-  RICHEDIT_CLASS = RICHEDIT_CLASSA;
-  {$ENDIF}
 
-{$IFNDEF COMPILER3_UP}
-
-const
-  EM_SETUNDOLIMIT = WM_USER + 82;
-  EM_REDO = WM_USER + 84;
-  EM_CANREDO = WM_USER + 85;
-  EM_GETUNDONAME = WM_USER + 86;
-  EM_GETREDONAME = WM_USER + 87;
-  EM_STOPGROUPTYPING = WM_USER + 88;
-  EM_SETTEXTMODE = WM_USER + 89;
-  EM_GETTEXTMODE = WM_USER + 90;
-
-  { for use with EM_GET/SETTEXTMODE }
-  TM_PLAINTEXT = 1;
-  TM_RICHTEXT = 2; { default behavior }
-  TM_SINGLELEVELUNDO = 4;
-  TM_MULTILEVELUNDO = 8; { default behavior }
-  TM_SINGLECODEPAGE = 16;
-  TM_MULTICODEPAGE = 32; { default behavior }
-
-  EM_AUTOURLDETECT = WM_USER + 91;
-  EM_GETAUTOURLDETECT = WM_USER + 92;
-  EM_SETPALETTE = WM_USER + 93;
-  EM_GETTEXTEX = WM_USER + 94;
-  EM_GETTEXTLENGTHEX = WM_USER + 95;
-
-  EM_SETLANGOPTIONS = WM_USER + 120;
-  EM_GETLANGOPTIONS = WM_USER + 121;
-  EM_GETIMECOMPMODE = WM_USER + 122;
-
-  { Options for EM_SETLANGOPTIONS and EM_GETLANGOPTIONS }
-  IMF_AUTOKEYBOARD = $0001;
-  IMF_AUTOFONT = $0002;
-  IMF_IMECANCELCOMPLETE = $0004; { high completes the comp string when aborting, low cancels. }
-  IMF_IMEALWAYSSENDNOTIFY = $0008;
-
-  { New notifications }
-  EN_OLEOPFAILED = $0709;
-  EN_OBJECTPOSITIONS = $070A;
-  EN_LINK = $070B;
-  EN_DRAGDROPDONE = $070C;
-
-  { Event notification masks }
-  ENM_SCROLLEVENTS = $00000008;
-  ENM_DRAGDROPDONE = $00000010;
-  ENM_LANGCHANGE = $01000000;
-  ENM_OBJECTPOSITIONS = $02000000;
-  ENM_LINK = $04000000;
-
-  { New edit control styles }
-  ES_NOOLEDRAGDROP = $00000008;
-
-const
-  CFM_LINK = $00000020; { Exchange hyperlink extension }
-
-  CFM_EFFECTS = CFM_BOLD or CFM_ITALIC or CFM_UNDERLINE or CFM_COLOR or
-    CFM_STRIKEOUT or CFE_PROTECTED or CFM_LINK;
-  CFM_ALL = CFM_EFFECTS or CFM_SIZE or CFM_FACE or CFM_OFFSET or CFM_CHARSET;
-  PFM_ALL = PFM_STARTINDENT or PFM_RIGHTINDENT or PFM_OFFSET or
-    PFM_ALIGNMENT or PFM_TABSTOPS or PFM_NUMBERING or PFM_OFFSETINDENT;
-
-  { New masks and effects -- a parenthesized asterisk indicates that
-     the data is stored by RichEdit2.0, but not displayed }
-  CFM_SMALLCAPS = $0040; { (*)    }
-  CFM_ALLCAPS = $0080;   { (*)    }
-  CFM_HIDDEN = $0100;    { (*)    }
-  CFM_OUTLINE = $0200;   { (*)    }
-  CFM_SHADOW = $0400;    { (*)    }
-  CFM_EMBOSS = $0800;    { (*)    }
-  CFM_IMPRINT = $1000;   { (*)    }
-  CFM_DISABLED = $2000;
-  CFM_REVISED = $4000;
-
-  CFM_BACKCOLOR = $04000000;
-  CFM_LCID = $02000000;
-  CFM_UNDERLINETYPE = $00800000; { (*)    }
-  CFM_WEIGHT = $00400000;
-  CFM_SPACING = $00200000;       { (*)    }
-  CFM_KERNING = $00100000;       { (*)    }
-  CFM_STYLE = $00080000;         { (*)    }
-  CFM_ANIMATION = $00040000;     { (*)    }
-  CFM_REVAUTHOR = $00008000;
-
-  CFE_LINK = $00000020;
-  CFE_AUTOCOLOR = $40000000; { NOTE: this corresponds to CFM_COLOR, }
-  { which controls it }
-  CFE_SUBSCRIPT = $00010000;   { Superscript and subscript are }
-  CFE_SUPERSCRIPT = $00020000; { mutually exclusive            }
-
-  CFM_SUBSCRIPT = CFE_SUBSCRIPT or CFE_SUPERSCRIPT;
-  CFM_SUPERSCRIPT = CFM_SUBSCRIPT;
-
-  CFM_EFFECTS2 = CFM_EFFECTS or CFM_DISABLED or CFM_SMALLCAPS or CFM_ALLCAPS or
-    CFM_HIDDEN or CFM_OUTLINE or CFM_SHADOW or CFM_EMBOSS or
-    CFM_IMPRINT or CFM_DISABLED or CFM_REVISED or
-    CFM_SUBSCRIPT or CFM_SUPERSCRIPT or CFM_BACKCOLOR;
-
-  CFM_ALL2 = CFM_ALL or CFM_EFFECTS2 or CFM_BACKCOLOR or CFM_LCID or
-    CFM_UNDERLINETYPE or CFM_WEIGHT or CFM_REVAUTHOR or
-    CFM_SPACING or CFM_KERNING or CFM_STYLE or CFM_ANIMATION;
-
-  CFE_SMALLCAPS = CFM_SMALLCAPS;
-  CFE_ALLCAPS = CFM_ALLCAPS;
-  CFE_HIDDEN = CFM_HIDDEN;
-  CFE_OUTLINE = CFM_OUTLINE;
-  CFE_SHADOW = CFM_SHADOW;
-  CFE_EMBOSS = CFM_EMBOSS;
-  CFE_IMPRINT = CFM_IMPRINT;
-  CFE_DISABLED = CFM_DISABLED;
-  CFE_REVISED = CFM_REVISED;
-
-  CFE_AUTOBACKCOLOR = CFM_BACKCOLOR;
-
-  { Underline types }
-  CFU_CF1UNDERLINE = $FF;   { map charformat's bit underline to CF2. }
-  CFU_INVERT = $FE;         { For IME composition fake a selection.  }
-  CFU_UNDERLINEDOTTED = $4; { (*) displayed as ordinary underline    }
-  CFU_UNDERLINEDOUBLE = $3; { (*) displayed as ordinary underline    }
-  CFU_UNDERLINEWORD = $2;   { (*) displayed as ordinary underline    }
-  CFU_UNDERLINE = $1;
-  CFU_UNDERLINENONE = 0;
-
-const
-  { PARAFORMAT 2.0 masks and effects }
-  PFM_SPACEBEFORE = $00000040;
-  PFM_SPACEAFTER = $00000080;
-  PFM_LINESPACING = $00000100;
-  PFM_STYLE = $00000400;
-  PFM_BORDER = $00000800;         { (*)    }
-  PFM_SHADING = $00001000;        { (*)    }
-  PFM_NUMBERINGSTYLE = $00002000; { (*)    }
-  PFM_NUMBERINGTAB = $00004000;   { (*)    }
-  PFM_NUMBERINGSTART = $00008000; { (*)    }
-
-  PFM_RTLPARA = $00010000;
-  PFM_KEEP = $00020000;            { (*)    }
-  PFM_KEEPNEXT = $00040000;        { (*)    }
-  PFM_PAGEBREAKBEFORE = $00080000; { (*)    }
-  PFM_NOLINENUMBER = $00100000;    { (*)    }
-  PFM_NOWIDOWCONTROL = $00200000;  { (*)    }
-  PFM_DONOTHYPHEN = $00400000;     { (*)    }
-  PFM_SIDEBYSIDE = $00800000;      { (*)    }
-
-  PFM_TABLE = $C0000000;           { (*)    }
-
-  { Note: PARAFORMAT has no effects }
-
-  PFM_EFFECTS = PFM_RTLPARA or PFM_KEEP or PFM_KEEPNEXT or PFM_TABLE or
-    PFM_PAGEBREAKBEFORE or PFM_NOLINENUMBER or
-    PFM_NOWIDOWCONTROL or PFM_DONOTHYPHEN or PFM_SIDEBYSIDE or PFM_TABLE;
-
-  PFM_ALL2 = PFM_ALL or PFM_EFFECTS or PFM_SPACEBEFORE or PFM_SPACEAFTER or
-    PFM_LINESPACING or PFM_STYLE or PFM_SHADING or PFM_BORDER or
-    PFM_NUMBERINGTAB or PFM_NUMBERINGSTART or PFM_NUMBERINGSTYLE;
-
-  PFE_RTLPARA = PFM_RTLPARA shr 16;
-  PFE_KEEP = PFM_KEEP shr 16;                       { (*)    }
-  PFE_KEEPNEXT = PFM_KEEPNEXT shr 16;               { (*)    }
-  PFE_PAGEBREAKBEFORE = PFM_PAGEBREAKBEFORE shr 16; { (*)    }
-  PFE_NOLINENUMBER = PFM_NOLINENUMBER shr 16;       { (*)    }
-  PFE_NOWIDOWCONTROL = PFM_NOWIDOWCONTROL shr 16;   { (*)    }
-  PFE_DONOTHYPHEN = PFM_DONOTHYPHEN shr 16;         { (*)    }
-  PFE_SIDEBYSIDE = PFM_SIDEBYSIDE shr 16;           { (*)    }
-
-  PFE_TABLEROW = $C000;     { These 3 options are mutually   }
-  PFE_TABLECELLEND = $8000; {  exclusive and each imply      }
-  PFE_TABLECELL = $4000;    {  that para is part of a table  }
-
-  PFA_JUSTIFY = 4; { New paragraph-alignment option 2.0 (*) }
-
-const
-  SF_UNICODE = $0010; { Unicode file of some kind }
-
-type
-  TFindTextExA = record
-    chrg: TCharRange;
-    lpstrText: PAnsiChar;
-    chrgText: TCharRange;
-  end;
-
-  TObjectPositions = packed record
-    NMHdr: TNMHdr;
-    cObjectCount: Longint;
-    pcpPositions: PLongint;
-  end;
-
-  TENLink = record
-    NMHdr: TNMHdr;
-    Msg: UINT;
-    WParam: WParam;
-    LParam: LParam;
-    chrg: TCharRange;
-  end;
-
-  TENOleOpFailed = packed record
-    NMHdr: TNMHdr;
-    iob: Longint;
-    lOper: Longint;
-    hr: HRESULT;
-  end;
-
-const
-  { flags for the GETTEXTLENGTHEX data structure }
-  GTL_DEFAULT = 0;   { do the default (return # of chars)        }
-  GTL_USECRLF = 1;   { compute answer using CRLFs for paragraphs }
-  GTL_PRECISE = 2;   { compute a precise answer                  }
-  GTL_CLOSE = 4;     { fast computation of a "close" answer      }
-  GTL_NUMCHARS = 8;  { return the number of characters           }
-  GTL_NUMBYTES = 16; { return the number of _bytes_              }
-
-
-type
-  { EM_GETTEXTLENGTHEX info; this struct is passed in the wparam of the msg }
-  TGetTextLengthEx = record
-    Flags: DWORD;   { flags (see GTL_XXX defines)  }
-    codepage: UINT; { code page for translation    }
-  end;
-
-const
-  OLEOP_DOVERB = 1;
-
-{$ENDIF COMPILER3_UP}
 
 const
   FT_DOWN = 1;
@@ -926,17 +586,10 @@ type
   end;
   TTextRange = TTextRangeA;
 
-{$IFDEF COMPILER3_UP}
 function ResStr(const Ident: string): string;
 begin
   Result := Ident;
 end;
-{$ELSE}
-function ResStr(Ident: Cardinal): string;
-begin
-  Result := LoadStr(Ident);
-end;
-{$ENDIF}
 
 const
   AttrFlags: array [TJvAttributeType] of Word =
@@ -1027,8 +680,6 @@ begin
       LParam(@Format));
 end;
 
-{$IFNDEF COMPILER2}
-
 function TJvTextAttributes.GetCharset: TFontCharset;
 var
   Format: TCharFormat2;
@@ -1049,8 +700,6 @@ begin
   end;
   SetAttributes(Format);
 end;
-
-{$ENDIF}
 
 function TJvTextAttributes.GetProtected: Boolean;
 var
@@ -1494,10 +1143,8 @@ begin
       dwEffects := CFE_AUTOCOLOR
     else
       crTextColor := ColorToRGB(Font.Color);
-    {$IFNDEF COMPILER2}
     dwMask := dwMask or CFM_CHARSET;
     bCharSet := Font.Charset;
-    {$ENDIF}
     if GetObject(Font.Handle, SizeOf(LogFont), @LogFont) <> 0 then
     begin
       dwMask := dwMask or DWORD(CFM_WEIGHT);
@@ -1517,9 +1164,7 @@ begin
   if Source is TTextAttributes then
   begin
     Name := TTextAttributes(Source).Name;
-    {$IFDEF COMPILER3_UP}
     Charset := TTextAttributes(Source).Charset;
-    {$ENDIF}
     Style := TTextAttributes(Source).Style;
     Pitch := TTextAttributes(Source).Pitch;
     Color := TTextAttributes(Source).Color;
@@ -1540,9 +1185,7 @@ begin
   begin
     TFont(Dest).Color := Color;
     TFont(Dest).Name := Name;
-    {$IFNDEF COMPILER2}
     TFont(Dest).Charset := Charset;
-    {$ENDIF}
     TFont(Dest).Style := Style;
     TFont(Dest).Size := Size;
     TFont(Dest).Pitch := Pitch;
@@ -1552,9 +1195,7 @@ begin
   begin
     TTextAttributes(Dest).Color := Color;
     TTextAttributes(Dest).Name := Name;
-    {$IFDEF COMPILER3_UP}
     TTextAttributes(Dest).Charset := Charset;
-    {$ENDIF}
     TTextAttributes(Dest).Style := Style;
     TTextAttributes(Dest).Pitch := Pitch;
   end
@@ -1588,19 +1229,15 @@ end;
 
 procedure TJvParaAttributes.SetAttributes(var Paragraph: TParaFormat2);
 begin
-  {$IFDEF COMPILER4_UP}
   FRichEdit.HandleNeeded; { we REALLY need the handle for BiDi }
-  {$ENDIF}
   if FRichEdit.HandleAllocated then
   begin
-    {$IFDEF COMPILER4_UP}
     if FRichEdit.UseRightToLeftAlignment then
       if Paragraph.wAlignment = PFA_LEFT then
         Paragraph.wAlignment := PFA_RIGHT
       else
       if Paragraph.wAlignment = PFA_RIGHT then
         Paragraph.wAlignment := PFA_LEFT;
-    {$ENDIF}
     SendMessage(FRichEdit.Handle, EM_SETPARAFORMAT, 0, LParam(@Paragraph));
   end;
 end;
@@ -2077,9 +1714,6 @@ procedure ReleaseObject(var Obj);
 begin
   if IUnknown(Obj) <> nil then
   begin
-    {$IFNDEF COMPILER3_UP}
-    IUnknown(Obj).Release;
-    {$ENDIF}
     IUnknown(Obj) := nil;
   end;
 end;
@@ -2133,11 +1767,7 @@ begin
   end;
   if (DrawAspect <> OldAspect) or (DrawAspect = DVASPECT_ICON) then
   begin
-    {$IFDEF COMPILER3_UP}
     Result := OleObject.QueryInterface(IOleCache, OleCache);
-    {$ELSE}
-    Result := OleObject.QueryInterface(IID_IOleCache, OleCache);
-    {$ENDIF}
     if Succeeded(Result) then
     try
       if DrawAspect <> OldAspect then
@@ -2204,11 +1834,7 @@ begin
   Result := 0;
   if DrawAspect = DVASPECT_ICON then
   begin
-    {$IFDEF COMPILER3_UP}
     OleObject.QueryInterface(IDataObject, DataObject);
-    {$ELSE}
-    OleObject.QueryInterface(IID_IDataObject, DataObject);
-    {$ENDIF}
     if DataObject <> nil then
     begin
       FormatEtc.cfFormat := CF_METAFILEPICT;
@@ -2248,9 +1874,6 @@ begin
     end
     else
     begin
-      {$IFNDEF COMPILER3_UP}
-      Moniker.AddRef;
-      {$ENDIF}
       Result := Moniker;
     end;
   end;
@@ -2328,8 +1951,6 @@ begin
   Result := WStrToString(P);
 end;
 
-{$IFDEF COMPILER3_UP}
-
 function GetVCLFrameForm(Form: TCustomForm): IVCLFrameForm;
 begin
   if Form.OleFormObject = nil then
@@ -2342,8 +1963,6 @@ begin
   Result := (Form is TForm) and (TForm(Form).FormStyle = fsMDIChild);
 end;
 
-{$ENDIF}
-
 { Clipboard formats }
 
 var
@@ -2353,9 +1972,6 @@ var
   CFRtfNoObjs: Integer;
 
 const
-  {$IFNDEF COMPILER3_UP}
-  CF_RTFNOOBJS = 'Rich Text Format Without Objects';
-  {$ENDIF}
   CF_EMBEDDEDOBJECT = 'Embedded Object';
   CF_LINKSOURCE = 'Link Source';
 
@@ -2441,7 +2057,6 @@ type
    *
    *    The methods herein may just want to be regular Windows messages.
   }
-  {$IFDEF COMPILER3_UP}
   IRichEditOle = interface(IUnknown)
     ['{00020d00-0000-0000-c000-000000000046}']
     function GetClientSite(out clientSite: IOleClientSite): HRESULT; stdcall;
@@ -2466,32 +2081,6 @@ type
     function ImportDataObject(dataobj: IDataObject; cf: TClipFormat;
       hMetaPict: HGLOBAL): HRESULT; stdcall;
   end;
-  {$ELSE}
-  IRichEditOle = class(IUnknown)
-    function GetClientSite(var clientSite: IOleClientSite): HRESULT; virtual; stdcall; abstract;
-    function GetObjectCount: HRESULT; virtual; stdcall; abstract;
-    function GetLinkCount: HRESULT; virtual; stdcall; abstract;
-    function GetObject(iob: Longint; var reobject: TReObject;
-      dwFlags: DWORD): HRESULT; virtual; stdcall; abstract;
-    function InsertObject(var reobject: TReObject): HRESULT; virtual; stdcall; abstract;
-    function ConvertObject(iob: Longint; rclsidNew: TIID;
-      lpstrUserTypeNew: LPCSTR): HRESULT; virtual; stdcall; abstract;
-    function ActivateAs(rclsid: TIID; rclsidAs: TIID): HRESULT; virtual; stdcall; abstract;
-    function SetHostNames(lpstrContainerApp: LPCSTR;
-      lpstrContainerObj: LPCSTR): HRESULT; virtual; stdcall; abstract;
-    function SetLinkAvailable(iob: Longint; fAvailable: BOOL): HRESULT; virtual; stdcall; abstract;
-    function SetDvaspect(iob: Longint; dvaspect: DWORD): HRESULT; virtual; stdcall; abstract;
-    function HandsOffStorage(iob: Longint): HRESULT; virtual; stdcall; abstract;
-    function SaveCompleted(iob: Longint; const stg: IStorage): HRESULT; virtual; stdcall; abstract;
-    function InPlaceDeactivate: HRESULT; virtual; stdcall; abstract;
-    function ContextSensitiveHelp(fEnterMode: BOOL): HRESULT; virtual; stdcall; abstract;
-    function GetClipboardData(var chrg: TCharRange; reco: DWORD;
-      var dataobj: IDataObject): HRESULT; virtual; stdcall; abstract;
-    function ImportDataObject(dataobj: IDataObject; cf: TClipFormat;
-      hMetaPict: HGLOBAL): HRESULT; virtual; stdcall; abstract;
-  end;
-  {$ENDIF}
-
   {
    *  IRichEditOleCallback
    *
@@ -2528,9 +2117,7 @@ type
     FFrameForm: IVCLFrameForm;
     FAccelTable: HAccel;
     FAccelCount: Integer;
-    {$IFDEF COMPILER4_UP}
     FAutoScroll: Boolean;
-    {$ENDIF}
     procedure CreateAccelTable;
     procedure DestroyAccelTable;
     procedure AssignFrame;
@@ -2573,15 +2160,11 @@ end;
 
 destructor TRichEditOleCallback.Destroy;
 begin
-  {$IFDEF COMPILER3_UP}
   DestroyAccelTable;
   FFrameForm := nil;
   FDocForm := nil;
-  {$ENDIF}
   inherited Destroy;
 end;
-
-{$IFDEF COMPILER3_UP}
 
 function TRichEditOleCallback.QueryInterface(const iid: TGUID; out Obj): HRESULT;
 begin
@@ -2637,38 +2220,6 @@ begin
   end;
 end;
 
-{$ELSE}
-
-function TRichEditOleCallback.QueryInterface(const iid: TIID; var Obj): HRESULT;
-begin
-  if IsEqualIID(iid, IID_IUnknown) or
-    IsEqualIID(iid, IID_IRichEditOleCallback) then
-  begin
-    Pointer(Obj) := Self;
-    AddRef;
-    Result := S_OK;
-  end
-  else
-  begin
-    Pointer(Obj) := nil;
-    Result := E_NOINTERFACE;
-  end;
-end;
-
-function TRichEditOleCallback.AddRef: Longint;
-begin
-  Inc(FRefCount);
-  Result := FRefCount;
-end;
-
-function TRichEditOleCallback.Release: Longint;
-begin
-  Dec(FRefCount);
-  Result := FRefCount;
-end;
-
-{$ENDIF COMPILER3_UP}
-
 function TRichEditOleCallback.GetNewStorage(out stg: IStorage): HRESULT;
 begin
   try
@@ -2682,7 +2233,6 @@ end;
 function TRichEditOleCallback.GetInPlaceContext(out Frame: IOleInPlaceFrame; out Doc: IOleInPlaceUIWindow;
   lpFrameInfo: POleInPlaceFrameInfo): HRESULT;
 begin
-  {$IFDEF COMPILER3_UP}
   AssignFrame;
   if Assigned(FFrameForm) and FRichEdit.AllowInPlace then
   begin
@@ -2700,9 +2250,6 @@ begin
   end
   else
     Result := E_NOTIMPL;
-  {$ELSE}
-  Result := E_NOTIMPL;
-  {$ENDIF}
 end;
 
 function TRichEditOleCallback.QueryInsertObject(const clsid: TCLSID; const stg: IStorage;
@@ -2750,7 +2297,6 @@ end;
 
 function TRichEditOleCallback.ShowContainerUI(fShow: BOOL): HRESULT;
 begin
-  {$IFDEF COMPILER3_UP}
   if not fShow then
     AssignFrame;
   if Assigned(FFrameForm) then
@@ -2761,27 +2307,20 @@ begin
       FFrameForm.ClearBorderSpace;
       FRichEdit.SetUIActive(False);
       DestroyAccelTable;
-      {$IFDEF COMPILER4_UP}
       TForm(FFrameForm.Form).AutoScroll := FAutoScroll;
-      {$ENDIF}
       FFrameForm := nil;
       FDocForm := nil;
     end
     else
     begin
-      {$IFDEF COMPILER4_UP}
       FAutoScroll := TForm(FFrameForm.Form).AutoScroll;
       TForm(FFrameForm.Form).AutoScroll := False;
-      {$ENDIF}
       FRichEdit.SetUIActive(True);
     end;
     Result := S_OK;
   end
   else
     Result := E_NOTIMPL;
-  {$ELSE}
-  Result := E_NOTIMPL;
-  {$ENDIF}
 end;
 
 //=== TOleUIObjInfo ==========================================================
@@ -2789,40 +2328,26 @@ end;
 { TOleUIObjInfo - helper interface for Object Properties dialog }
 
 type
-  {$IFDEF COMPILER3_UP}
   TOleUIObjInfo = class(TInterfacedObject, IOleUIObjInfo)
-  {$ELSE}
-  TOleUIObjInfo = class(IOleUIObjInfo)
-  {$ENDIF}
   private
     FRichEdit: TJvCustomRichEdit;
     FReObject: TReObject;
   public
     constructor Create(ARichEdit: TJvCustomRichEdit; ReObject: TReObject);
-    {$IFNDEF COMPILER3_UP}
-    function QueryInterface(const iid: TIID; var obj): HRESULT; override;
-    function AddRef: Longint; override;
-    function Release: Longint; override;
-    {$ENDIF}
     function GetObjectInfo(dwObject: Longint;
       var dwObjSize: Longint; var lpszLabel: PChar;
       var lpszType: PChar; var lpszShortType: PChar;
-      var lpszLocation: PChar): HRESULT;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
+      var lpszLocation: PChar): HRESULT; stdcall;
     function GetConvertInfo(dwObject: Longint; var ClassID: TCLSID;
       var wFormat: Word; var ConvertDefaultClassID: TCLSID;
-      var lpClsidExclude: PCLSID; var cClsidExclude: Longint): HRESULT;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
+      var lpClsidExclude: PCLSID; var cClsidExclude: Longint): HRESULT; stdcall;
     function ConvertObject(dwObject: Longint;
-      const clsidNew: TCLSID): HRESULT;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
+      const clsidNew: TCLSID): HRESULT; stdcall;
     function GetViewInfo(dwObject: Longint; var hMetaPict: HGLOBAL;
-      var dvAspect: Longint; var nCurrentScale: Integer): HRESULT;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
+      var dvAspect: Longint; var nCurrentScale: Integer): HRESULT; stdcall;
     function SetViewInfo(dwObject: Longint; hMetaPict: HGLOBAL;
       dvAspect: Longint; nCurrentScale: Integer;
-      bRelativeToOrig: BOOL): HRESULT;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
+      bRelativeToOrig: BOOL): HRESULT;stdcall;
   end;
 
 constructor TOleUIObjInfo.Create(ARichEdit: TJvCustomRichEdit;
@@ -2832,26 +2357,6 @@ begin
   FRichEdit := ARichEdit;
   FReObject := ReObject;
 end;
-
-{$IFNDEF COMPILER3_UP}
-
-function TOleUIObjInfo.QueryInterface(const iid: TIID; var obj): HRESULT;
-begin
-  Pointer(obj) := nil;
-  Result := E_NOINTERFACE;
-end;
-
-function TOleUIObjInfo.AddRef: Longint;
-begin
-  Result := 0;
-end;
-
-function TOleUIObjInfo.Release: Longint;
-begin
-  Result := 0;
-end;
-
-{$ENDIF COMPILER3_UP}
 
 function TOleUIObjInfo.GetObjectInfo(dwObject: Longint;
   var dwObjSize: Longint; var lpszLabel: PChar;
@@ -2935,65 +2440,38 @@ end;
 { TOleUILinkInfo - helper interface for Object Properties dialog }
 
 type
-  {$IFDEF COMPILER3_UP}
   TOleUILinkInfo = class(TInterfacedObject, IOleUILinkInfo)
-  {$ELSE}
-  TOleUILinkInfo = class(IOleUILinkInfo)
-  {$ENDIF}
   private
     FReObject: TReObject;
     FRichEdit: TJvCustomRichEdit;
     FOleLink: IOleLink;
   public
     constructor Create(ARichEdit: TJvCustomRichEdit; ReObject: TReObject);
-    {$IFNDEF COMPILER3_UP}
-    destructor Destroy; override;
-    function QueryInterface(const iid: TIID; var obj): HRESULT; override;
-    function AddRef: Longint; override;
-    function Release: Longint; override;
-    {$ENDIF}
-    function GetNextLink(dwLink: Longint): Longint;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
+    function GetNextLink(dwLink: Longint): Longint;stdcall;
     function SetLinkUpdateOptions(dwLink: Longint;
-      dwUpdateOpt: Longint): HRESULT;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
+      dwUpdateOpt: Longint): HRESULT;stdcall;
     function GetLinkUpdateOptions(dwLink: Longint;
-      var dwUpdateOpt: Longint): HRESULT;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
+      var dwUpdateOpt: Longint): HRESULT;stdcall;
     function SetLinkSource(dwLink: Longint; pszDisplayName: PChar;
       lenFileName: Longint; var chEaten: Longint;
-      fValidateSource: BOOL): HRESULT;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
+      fValidateSource: BOOL): HRESULT;stdcall;
     function GetLinkSource(dwLink: Longint; var pszDisplayName: PChar;
       var lenFileName: Longint; var pszFullLinkType: PChar;
       var pszShortLinkType: PChar; var fSourceAvailable: BOOL;
-      var fIsSelected: BOOL): HRESULT;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
-    function OpenLinkSource(dwLink: Longint): HRESULT;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
+      var fIsSelected: BOOL): HRESULT;stdcall;
+    function OpenLinkSource(dwLink: Longint): HRESULT;stdcall;
     function UpdateLink(dwLink: Longint; fErrorMessage: BOOL;
-      fErrorAction: BOOL): HRESULT;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
-    function CancelLink(dwLink: Longint): HRESULT;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
+      fErrorAction: BOOL): HRESULT;stdcall;
+    function CancelLink(dwLink: Longint): HRESULT;stdcall;
     function GetLastUpdate(dwLink: Longint;
-      var LastUpdate: TFileTime): HRESULT;
-      {$IFDEF COMPILER3_UP} stdcall {$ELSE} override {$ENDIF};
+      var LastUpdate: TFileTime): HRESULT;stdcall;
   end;
 
-{$IFDEF COMPILER3_UP}
 procedure LinkError(const Ident: string);
 begin
   Application.MessageBox(PChar(Ident), PChar(SLinkProperties),
     MB_OK or MB_ICONSTOP);
 end;
-{$ELSE}
-procedure LinkError(Ident: Integer);
-begin
-  Application.MessageBox(PChar(LoadStr(Ident)),
-    PChar(LoadStr(SLinkProperties)), MB_OK or MB_ICONSTOP);
-end;
-{$ENDIF}
 
 constructor TOleUILinkInfo.Create(ARichEdit: TJvCustomRichEdit;
   ReObject: TReObject);
@@ -3001,38 +2479,8 @@ begin
   inherited Create;
   FReObject := ReObject;
   FRichEdit := ARichEdit;
-  {$IFDEF COMPILER3_UP}
   OleCheck(FReObject.poleobj.QueryInterface(IOleLink, FOleLink));
-  {$ELSE}
-  OleCheck(FReObject.poleobj.QueryInterface(IID_IOleLink, FOleLink));
-  {$ENDIF}
 end;
-
-{$IFNDEF COMPILER3_UP}
-
-destructor TOleUILinkInfo.Destroy;
-begin
-  ReleaseObject(FOleLink);
-  inherited Destroy;
-end;
-
-function TOleUILinkInfo.QueryInterface(const iid: TIID; var obj): HRESULT;
-begin
-  Pointer(obj) := nil;
-  Result := E_NOINTERFACE;
-end;
-
-function TOleUILinkInfo.AddRef: Longint;
-begin
-  Result := 0;
-end;
-
-function TOleUILinkInfo.Release: Longint;
-begin
-  Result := 0;
-end;
-
-{$ENDIF}
 
 function TOleUILinkInfo.GetNextLink(dwLink: Longint): Longint;
 begin
@@ -3587,11 +3035,7 @@ var
   Convert: PRichConversionFormat;
   SaveFormat: TRichStreamFormat;
 begin
-  {$IFNDEF COMPILER2}
   Ext := AnsiLowerCaseFileName(ExtractFileExt(FileName));
-  {$ELSE}
-  Ext := LowerCase(ExtractFileExt(FileName));
-  {$ENDIF}
   System.Delete(Ext, 1, 1);
   Convert := ConversionFormatList;
   while Convert <> nil do
@@ -3629,11 +3073,7 @@ var
   Convert: PRichConversionFormat;
   SaveFormat: TRichStreamFormat;
 begin
-  {$IFNDEF COMPILER2}
   Ext := AnsiLowerCaseFileName(ExtractFileExt(FileName));
-  {$ELSE}
-  Ext := LowerCase(ExtractFileExt(FileName));
-  {$ENDIF}
   System.Delete(Ext, 1, 1);
   Convert := ConversionFormatList;
   while Convert <> nil do
@@ -3720,13 +3160,9 @@ begin
   Width := 185;
   Height := 89;
   AutoSize := False;
-  {$IFDEF COMPILER4_UP}
   DoubleBuffered := False;
-  {$ENDIF}
   FAllowObjects := True;
-  {$IFDEF COMPILER3_UP}
   FAllowInPlace := True;
-  {$ENDIF}
   FAutoVerbMenu := True;
   FHideSelection := True;
   FHideScrollBars := True;
@@ -3747,9 +3183,7 @@ begin
     cpMax := -1;
   end;
   FCallback := TRichEditOleCallback.Create(Self);
-  {$IFDEF COMPILER4_UP}
   Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
-  {$ENDIF}
 end;
 
 destructor TJvCustomRichEdit.Destroy;
@@ -3818,18 +3252,14 @@ begin
   StreamFmt := TJvRichEditStrings(Lines).Format;
   Mode := TJvRichEditStrings(Lines).Mode;
   inherited CreateWnd;
-  {$IFNDEF COMPILER2}
   if (SysLocale.FarEast) and not (SysLocale.PriLangID = LANG_JAPANESE) then
     Font.Charset := GetDefFontCharSet;
-  {$ENDIF}
   Mask := ENM_CHANGE or ENM_SELCHANGE or ENM_REQUESTRESIZE or ENM_PROTECTED;
   if RichEditVersion >= 2 then
     Mask := Mask or ENM_LINK;
   SendMessage(Handle, EM_SETEVENTMASK, 0, Mask);
   SendMessage(Handle, EM_SETBKGNDCOLOR, 0, ColorToRGB(Color));
-  {$IFDEF COMPILER3_UP}
   DoSetMaxLength(MaxLength);
-  {$ENDIF}
   SetWordSelection(FWordSelection);
   if RichEditVersion >= 2 then
   begin
@@ -4047,7 +3477,6 @@ begin
     BoundsRect := Bounds;
 end;
 
-{$IFDEF COMPILER3_UP}
 procedure TJvCustomRichEdit.DoSetMaxLength(Value: Integer);
 begin
   { The rich edit control's default maximum amount of text is 32K }
@@ -4056,7 +3485,6 @@ begin
     Value := $FFFFFF;
   SendMessage(Handle, EM_EXLIMITTEXT, 0, Value);
 end;
-{$ENDIF}
 
 function TJvCustomRichEdit.GetCaretPos: TPoint;
 var
@@ -4067,8 +3495,6 @@ begin
   Result.Y := LineFromChar(Result.X);
   Dec(Result.X, GetLineIndex(-1));
 end;
-
-{$IFDEF COMPILER3_UP}
 
 function TJvCustomRichEdit.GetSelLength: Integer;
 begin
@@ -4087,8 +3513,6 @@ begin
     Result := GetTextRange(cpMin, cpMax);
 end;
 
-{$ENDIF COMPILER3_UP}
-
 function TJvCustomRichEdit.GetSelTextBuf(Buffer: PChar; BufSize: Integer): Integer;
 var
   S: string;
@@ -4100,7 +3524,6 @@ begin
   StrPLCopy(Buffer, S, Result);
 end;
 
-{$IFDEF COMPILER4_UP}
 procedure TJvCustomRichEdit.CMBiDiModeChanged(var Msg: TMessage);
 var
   AParagraph: TParaFormat2;
@@ -4112,7 +3535,6 @@ begin
   AParagraph.wAlignment := Ord(Alignment) + 1;
   Paragraph.SetAttributes(AParagraph);
 end;
-{$ENDIF}
 
 procedure TJvCustomRichEdit.SetHideScrollBars(Value: Boolean);
 begin
@@ -4241,15 +3663,6 @@ begin
     Result := SendMessage(Handle, EM_CANPASTE, 0, 0) <> 0;
 end;
 
-{$IFNDEF COMPILER35_UP}
-function TJvCustomRichEdit.GetCanUndo: Boolean;
-begin
-  Result := False;
-  if HandleAllocated then
-    Result := SendMessage(Handle, EM_CANUNDO, 0, 0) <> 0;
-end;
-{$ENDIF}
-
 function TJvCustomRichEdit.GetRedoName: TUndoName;
 begin
   Result := unUnknown;
@@ -4302,8 +3715,6 @@ begin
     SendMessage(Handle, EM_SCROLLCARET, 0, 0);
 end;
 
-{$IFDEF COMPILER3_UP}
-
 procedure TJvCustomRichEdit.SetSelLength(Value: Integer);
 begin
   with GetSelection do
@@ -4314,8 +3725,6 @@ procedure TJvCustomRichEdit.SetSelStart(Value: Integer);
 begin
   SetSelection(Value, Value, False);
 end;
-
-{$ENDIF COMPILER3_UP}
 
 function TJvCustomRichEdit.GetCharPos(CharIndex: Integer): TPoint;
 var
@@ -4606,12 +4015,10 @@ begin
           CreateStorage(Storage);
           case Data.nSelectedIndex of
             0:
-              OleCheck(OleCreateFromData(Data.lpSrcDataObj,
-                {$IFDEF COMPILER3_UP} IOleObject {$ELSE} IID_IOleObject {$ENDIF},
+              OleCheck(OleCreateFromData(Data.lpSrcDataObj, IOleObject,
                 OLERENDER_DRAW, nil, OleClientSite, Storage, OleObject));
             1:
-              OleCheck(OleCreateLinkFromData(Data.lpSrcDataObj,
-                {$IFDEF COMPILER3_UP} IOleObject {$ELSE} IID_IOleObject {$ENDIF},
+              OleCheck(OleCreateLinkFromData(Data.lpSrcDataObj,IOleObject,
                 OLERENDER_DRAW, nil, OleClientSite, Storage, OleObject));
           end;
           try
@@ -4685,7 +4092,7 @@ begin
         hWndOwner := Handle;
         lpszFile := NameBuffer;
         cchFile := SizeOf(NameBuffer);
-        iid := {$IFDEF COMPILER3_UP} IOleObject {$ELSE}IID_IOleObject {$ENDIF};
+        iid := IOleObject;
         oleRender := OLERENDER_DRAW;
         lpIOleClientSite := OleClientSite;
         lpIStorage := Storage;
@@ -4776,11 +4183,7 @@ begin
       ObjectProps.lpLP := @LinkProps;
       PropSheet.dwSize := SizeOf(PropSheet);
       PropSheet.hWndParent := Handle;
-      {$IFDEF COMPILER3_UP}
       PropSheet.HInstance := MainInstance;
-      {$ELSE}
-      PropSheet.HInstance := HInstance;
-      {$ENDIF}
       DialogCaption := Format(ResStr(SPropDlgCaption),
         [GetFullNameStr(ReObject.poleobj)]);
       PropSheet.pszCaption := PChar(DialogCaption);
@@ -4792,12 +4195,6 @@ begin
       Result := OleUIObjectProperties(ObjectProps) = OLEUI_OK;
     end;
   finally
-    {$IFNDEF COMPILER3_UP}
-    ObjectProps.lpLinkInfo.Free;
-    ObjectProps.lpObjInfo.Free;
-    ReleaseObject(ReObject.polesite);
-    ReleaseObject(ReObject.poleobj);
-    {$ENDIF}
   end;
 end;
 
@@ -4912,7 +4309,6 @@ begin
   inherited;
 end;
 
-{$IFDEF COMPILER5_UP}
 procedure TJvCustomRichEdit.WMRButtonUp(var Msg: TMessage);
 begin
   { RichEd20 does not pass the WM_RBUTTONUP message to defwndproc, }
@@ -4922,7 +4318,6 @@ begin
       ClientToScreen(SmallPointToPoint(TWMMouse(Msg).Pos)))));
   inherited;
 end;
-{$ENDIF}
 
 procedure TJvCustomRichEdit.CNNotify(var Msg: TWMNotify);
 var
@@ -5122,20 +4517,11 @@ begin
   SendMessage(Handle, EM_REDO, 0, 0);
 end;
 
-{$IFNDEF COMPILER35_UP}
-procedure TJvCustomRichEdit.Undo;
-begin
-  SendMessage(Handle, WM_UNDO, 0, 0);
-end;
-{$ENDIF}
-
 procedure TJvCustomRichEdit.StopGroupTyping;
 begin
   if (RichEditVersion >= 2) and HandleAllocated then
     SendMessage(Handle, EM_STOPGROUPTYPING, 0, 0);
 end;
-
-{$IFDEF COMPILER3_UP}
 
 procedure TJvCustomRichEdit.SetUIActive(Active: Boolean);
 var
@@ -5189,8 +4575,6 @@ begin
     {IRichEditOle(FRichEditOle).InPlaceDeactivate};
 end;
 
-{$ENDIF COMPILER3_UP}
-
 { Find & Replace Dialogs }
 
 procedure TJvCustomRichEdit.SetupFindDialog(Dialog: TFindDialog;
@@ -5203,9 +4587,7 @@ begin
     if RichEditVersion = 1 then
       Options := Options + [frHideUpDown, frDown];
     OnFind := FindDialogFind;
-    {$IFDEF COMPILER3_UP}
     OnClose := FindDialogClose;
-    {$ENDIF}
   end;
   if Dialog is TReplaceDialog then
     with TReplaceDialog(Dialog) do
@@ -5384,8 +4766,6 @@ begin
   FLinesUpdating := false;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 procedure TJvCustomRichEdit.FindDialogClose(Sender: TObject);
 begin
   CloseFindDialog(Sender as TFindDialog);
@@ -5397,8 +4777,6 @@ begin
     FOnCloseFindDialog(Self, Dialog);
 end;
 
-{$ENDIF COMPILER3_UP}
-
 { Conversion formats }
 
 procedure AppendConversionFormat(const Ext: string; Plain: Boolean;
@@ -5409,11 +4787,7 @@ begin
   New(NewRec);
   with NewRec^ do
   begin
-    {$IFNDEF COMPILER2}
     Extension := AnsiLowerCaseFileName(Ext);
-    {$ELSE}
-    Extension := LowerCase(Ext);
-    {$ENDIF}
     PlainText := Plain;
     ConversionClass := AClass;
     Next := ConversionFormatList;

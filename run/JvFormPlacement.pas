@@ -72,10 +72,8 @@ type
     FIniSection: string;
     FIniFile: TIniFile;
     FUseRegistry: Boolean;
-    {$IFDEF WIN32}
     FRegIniFile: TRegIniFile;
     FRegistryRoot: TJvRegKey;
-    {$ENDIF WIN32}
     FLinks: TList;
     FOptions: TPlacementOptions;
     FVersion: Integer;
@@ -138,9 +136,7 @@ type
     procedure EraseSections;
     property IniFileObject: TObject read GetIniFile;
     property IniFile: TIniFile read FIniFile;
-    {$IFDEF WIN32}
     property RegIniFile: TRegIniFile read FRegIniFile;
-    {$ENDIF WIN32}
   published
     property Active: Boolean read FActive write FActive default True;
     property IniFileName: string read GetIniFileName write SetIniFileName;
@@ -148,9 +144,7 @@ type
     property MinMaxInfo: TJvWinMinMaxInfo read FWinMinMaxInfo write SetWinMinMaxInfo;
     property Options: TPlacementOptions read FOptions write FOptions default [fpState, fpPosition];
     property PreventResize: Boolean read FPreventResize write SetPreventResize default False;
-    {$IFDEF WIN32}
     property RegistryRoot: TJvRegKey read FRegistryRoot write FRegistryRoot default hkCurrentUser;
-    {$ENDIF WIN32}
     property UseRegistry: Boolean read FUseRegistry write FUseRegistry default False;
     property Version: Integer read FVersion write FVersion default 0;
     property OnSavePlacement: TNotifyEvent read FOnSavePlacement
@@ -159,23 +153,17 @@ type
       write FOnRestorePlacement;
   end;
 
-  {$IFDEF COMPILER3_UP}
   TJvStoredValues = class;
   TJvStoredValue = class;
-  {$ENDIF COMPILER3_UP}
 
   TJvFormStorage = class(TJvFormPlacement)
   private
     FStoredProps: TStrings;
-    {$IFDEF COMPILER3_UP}
     FStoredValues: TJvStoredValues;
-    {$ENDIF COMPILER3_UP}
     procedure SetStoredProps(Value: TStrings);
-    {$IFDEF COMPILER3_UP}
     procedure SeTJvStoredValues(Value: TJvStoredValues);
     function GeTJvStoredValue(const Name: string): Variant;
     procedure SeTJvStoredValue(const Name: string; Value: Variant);
-    {$ENDIF COMPILER3_UP}
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -187,17 +175,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    {$IFDEF WIN32}
     procedure SetNotification;
-    {$ENDIF WIN32}
-    {$IFDEF COMPILER3_UP}
     property StoredValue[const Name: string]: Variant read GeTJvStoredValue write SeTJvStoredValue;
-    {$ENDIF COMPILER3_UP}
   published
     property StoredProps: TStrings read FStoredProps write SetStoredProps;
-    {$IFDEF COMPILER3_UP}
     property StoredValues: TJvStoredValues read FStoredValues write SeTJvStoredValues;
-    {$ENDIF COMPILER3_UP}
   end;
 
   TJvIniLink = class(TPersistent)
@@ -219,8 +201,6 @@ type
     property OnSave: TNotifyEvent read FOnSave write FOnSave;
     property OnLoad: TNotifyEvent read FOnLoad write FOnLoad;
   end;
-
-  {$IFDEF COMPILER3_UP}
 
   TJvStoredValueEvent = procedure(Sender: TJvStoredValue; var Value: Variant) of object;
 
@@ -251,11 +231,7 @@ type
     property OnRestore: TJvStoredValueEvent read FOnRestore write FOnRestore;
   end;
 
-  {$IFDEF COMPILER4_UP}
   TJvStoredValues = class(TOwnedCollection)
-  {$ELSE}
-  TJvStoredValues = class(TCollection)
-  {$ENDIF}
   private
     FStorage: TJvFormPlacement;
     function GetValue(const Name: string): TJvStoredValue;
@@ -265,11 +241,7 @@ type
     function GetItem(Index: Integer): TJvStoredValue;
     procedure SetItem(Index: Integer; StoredValue: TJvStoredValue);
   public
-    {$IFDEF COMPILER4_UP}
     constructor Create(AOwner: TPersistent);
-    {$ELSE}
-    constructor Create;
-    {$ENDIF}
     function IndexOf(const Name: string): Integer;
     procedure SaveValues; virtual;
     procedure RestoreValues; virtual;
@@ -279,7 +251,6 @@ type
     property StoredValue[const Name: string]: Variant read GeTJvStoredValue write SeTJvStoredValue;
   end;
 
-  {$ENDIF COMPILER3_UP}
 
 procedure GetDefaultIniData(Control: TControl; var IniFileName,
   Section: string; UseRegistry: Boolean);
@@ -288,9 +259,7 @@ implementation
 
 uses
   SysUtils,
-  {$IFDEF COMPILER3_UP}
   Consts,
-  {$ENDIF COMPILER3_UP}
   JvJVCLUtils, JvJCLUtils, JvPropsStorage;
 
 const
@@ -315,14 +284,10 @@ begin
         end;
   Section := GetDefaultSection(Control);
   if IniFileName = '' then
-    {$IFDEF WIN32}
     if UseRegistry then
       IniFileName := GetDefaultIniRegKey
     else
       IniFileName := GetDefaultIniName;
-    {$ELSE}
-    IniFileName := GetDefaultIniName;
-    {$ENDIF}
 end;
   
 //=== TJvFormPlacement =======================================================
@@ -588,13 +553,8 @@ end;
 
 procedure TJvFormPlacement.UpdatePlacement;
 const
-  {$IFDEF WIN32}
   Metrics: array [bsSingle..bsSizeToolWin] of Word =
     (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME, SM_CXBORDER, SM_CXFRAME);
-  {$ELSE}
-  Metrics: array [bsSingle..bsDialog] of Word =
-    (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME);
-  {$ENDIF}
 var
   Placement: TWindowPlacement;
 begin
@@ -653,14 +613,10 @@ end;
 
 function TJvFormPlacement.GetIniFile: TObject;
 begin
-  {$IFDEF WIN32}
   if UseRegistry then
     Result := FRegIniFile
   else
     Result := FIniFile;
-  {$ELSE}
-  Result := FIniFile;
-  {$ENDIF WIN32}
 end;
 
 function TJvFormPlacement.GetIniFileName: string;
@@ -668,14 +624,10 @@ begin
   Result := FIniFileName;
   if (Result = '') and not (csDesigning in ComponentState) then
   begin
-    {$IFDEF WIN32}
     if UseRegistry then
       Result := GetDefaultIniRegKey
     else
       Result := GetDefaultIniName;
-    {$ELSE}
-    Result := GetDefaultIniName;
-    {$ENDIF}
   end;
 end;
 
@@ -712,7 +664,6 @@ procedure TJvFormPlacement.SavePlacement;
 begin
   if Owner is TCustomForm then
   begin
-    {$IFDEF WIN32}
     if UseRegistry then
     begin
       if Options * [fpState, fpPosition] <> [] then
@@ -733,15 +684,6 @@ begin
       if (fpActiveControl in Options) and (Form.ActiveControl <> nil) then
         FIniFile.WriteString(IniSection, siActiveCtrl, Form.ActiveControl.Name);
     end;
-    {$ELSE}
-    if Options * [fpState, fpPosition] <> [] then
-    begin
-      WriteFormPlacement(Form, FIniFile, IniSection);
-      FIniFile.WriteBool(IniSection, siVisible, FDestroying);
-    end;
-    if (fpActiveControl in Options) and (Form.ActiveControl <> nil) then
-      FIniFile.WriteString(IniSection, siActiveCtrl, Form.ActiveControl.Name);
-    {$ENDIF}
   end;
   NotifyLinks(poSave);
 end;
@@ -750,12 +692,10 @@ procedure TJvFormPlacement.RestorePlacement;
 begin
   if Owner is TCustomForm then
   begin
-    {$IFDEF WIN32}
     if UseRegistry then
       ReadFormPlacementReg(Form, FRegIniFile, IniSection, fpState in Options,
         fpPosition in Options)
     else
-    {$ENDIF}
       ReadFormPlacement(Form, FIniFile, IniSection, fpState in Options,
         fpPosition in Options);
   end;
@@ -766,14 +706,11 @@ procedure TJvFormPlacement.IniNeeded(ReadOnly: Boolean);
 begin
   if IniFileObject = nil then
   begin
-    {$IFDEF WIN32}
     if UseRegistry then
     begin
       FRegIniFile := TRegIniFile.Create(IniFileName);
-      {$IFDEF COMPILER5_UP}
       if ReadOnly then
         FRegIniFile.Access := KEY_READ;
-      {$ENDIF}
       case FRegistryRoot of
         hkLocalMachine:
           FRegIniFile.RootKey := HKEY_LOCAL_MACHINE;
@@ -790,7 +727,6 @@ begin
         FRegIniFile.OpenKey(FRegIniFile.FileName, not ReadOnly);
     end
     else
-    {$ENDIF}
       FIniFile := TIniFile.Create(IniFileName);
   end;
 end;
@@ -801,9 +737,7 @@ begin
   begin
     IniFileObject.Free;
     FIniFile := nil;
-    {$IFDEF WIN32}
     FRegIniFile := nil;
-    {$ENDIF}
   end;
 end;
 
@@ -1038,24 +972,19 @@ constructor TJvFormStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FStoredProps := TStringList.Create;
-  {$IFDEF COMPILER3_UP}
-  FStoredValues := TJvStoredValues.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF COMPILER4_UP};
+  FStoredValues := TJvStoredValues.Create(Self);
   FStoredValues.Storage := Self;
-  {$ENDIF COMPILER3_UP}
 end;
 
 destructor TJvFormStorage.Destroy;
 begin
   FStoredProps.Free;
   FStoredProps := nil;
-  {$IFDEF COMPILER3_UP}
   FStoredValues.Free;
   FStoredValues := nil;
-  {$ENDIF COMPILER3_UP}
   inherited Destroy;
 end;
 
-{$IFDEF WIN32}
 procedure TJvFormStorage.SetNotification;
 var
   I: Integer;
@@ -1068,17 +997,12 @@ begin
       Component.FreeNotification(Self);
   end;
 end;
-{$ENDIF WIN32}
 
 procedure TJvFormStorage.SetStoredProps(Value: TStrings);
 begin
   FStoredProps.Assign(Value);
-  {$IFDEF WIN32}
   SetNotification;
-  {$ENDIF}
 end;
-
-{$IFDEF COMPILER3_UP}
 
 procedure TJvFormStorage.SeTJvStoredValues(Value: TJvStoredValues);
 begin
@@ -1094,8 +1018,6 @@ procedure TJvFormStorage.SeTJvStoredValue(const Name: string; Value: Variant);
 begin
   StoredValues.StoredValue[Name] := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 procedure TJvFormStorage.Loaded;
 begin
@@ -1131,14 +1053,10 @@ begin
   try
     Section := IniSection;
     OnWriteString := DoWriteString;
-    {$IFDEF WIN32}
     if UseRegistry then
       OnEraseSection := FRegIniFile.EraseSection
     else
       OnEraseSection := FIniFile.EraseSection;
-    {$ELSE}
-    OnEraseSection := FIniFile.EraseSection;
-    {$ENDIF WIN32}
     StoreObjectsProps(Owner, FStoredProps);
   finally
     Free;
@@ -1165,9 +1083,7 @@ procedure TJvFormStorage.SavePlacement;
 begin
   inherited SavePlacement;
   SaveProperties;
-  {$IFDEF COMPILER3_UP}
   StoredValues.SaveValues;
-  {$ENDIF}
 end;
 
 procedure TJvFormStorage.RestorePlacement;
@@ -1175,9 +1091,7 @@ begin
   inherited RestorePlacement;
   FRestored := True;
   RestoreProperties;
-  {$IFDEF COMPILER3_UP}
   StoredValues.RestoreValues;
-  {$ENDIF}
 end;
 
 //=== TJvIniLink =============================================================
@@ -1232,8 +1146,6 @@ begin
 end;
 
 //=== TJvStoredValue =========================================================
-
-{$IFDEF COMPILER3_UP}
 
 constructor TJvStoredValue.Create(Collection: TCollection);
 begin
@@ -1322,17 +1234,10 @@ end;
 
 //=== TJvStoredValues ========================================================
 
-{$IFDEF COMPILER4_UP}
 constructor TJvStoredValues.Create(AOwner: TPersistent);
 begin
   inherited Create(AOwner, TJvStoredValue);
 end;
-{$ELSE}
-constructor TJvStoredValues.Create;
-begin
-  inherited Create(TJvStoredValue);
-end;
-{$ENDIF}
 
 function TJvStoredValues.IndexOf(const Name: string): Integer;
 begin
@@ -1413,8 +1318,6 @@ begin
   for I := 0 to Count - 1 do
     Items[I].Restore;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 end.
 

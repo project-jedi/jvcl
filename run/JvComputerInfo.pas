@@ -332,11 +332,7 @@ end;
 function TJvComputerInfo.GetLoggedOnUser: string;
 var
   Buf: array [0..255] of Char; // too large really, but who knows if it'll change?
-  {$IFDEF COMPILER5_UP}
   Size: Cardinal;
-  {$ELSE}
-  Size: Integer;
-  {$ENDIF}
 begin
   Size := SizeOf(Buf);
   Buf[0] := #0;
@@ -349,11 +345,7 @@ end;
 function TJvComputerInfo.GetRealComputerName: string;
 var
   Buf: array [0..255] of Char; // too large really, but who knows if it'll change?
-  {$IFDEF COMPILER5_UP}
   Size: Cardinal;
-  {$ELSE}
-  Size: Integer;
-  {$ENDIF}
 begin
   Size := SizeOf(Buf);
   Buf[0] := #0;

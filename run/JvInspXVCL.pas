@@ -215,7 +215,6 @@ begin
             raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
           JvxNode.AsInteger := Integer(Value)
         end;
-      {$IFDEF COMPILER5_UP}
       otULong:
         begin
           MinValue := Longword(GetTypeData(TypeInfo).MinValue);
@@ -224,7 +223,6 @@ begin
             raise ERangeError.CreateFmt(SOutOfRange, [MinValue, MaxValue]);
           JvxNode.AsInteger := Integer(Value)
         end;
-      {$ENDIF COMPILER5_UP}
     end;
   end
   else

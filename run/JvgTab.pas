@@ -36,24 +36,9 @@ UNIT JvgTab;
 INTERFACE
 
 USES
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   ComCtrls,
-   JvclVer,
-   CommCtrl,
-   JvgTypes,
-   JvgUtils,
-   JvgDrawTab,
-   JvgTabComm,
-   ExtCtrls,
-   JvgCommClasses{$IFDEF COMPILER4_UP},
-   Imglist{$ENDIF};
+   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+   ComCtrls, ExtCtrls, Imglist,
+   JvclVer, CommCtrl, JvgTypes, JvgUtils, JvgDrawTab, JvgTabComm, JvgCommClasses;
 
 CONST
    TCM_SETTEXTCOLOR           = (TCM_FIRST + 36);

@@ -65,13 +65,8 @@ type
   protected
     procedure Paint; override;
   public
-    {$IFNDEF COMPILER3_UP}
-    procedure ActivateHint(Rect: TRect; const AHint: string); override;
-    {$ENDIF}
-  public
     constructor Create(AOwner: TComponent); override;
-    function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect;
-      {$IFDEF COMPILER3_UP} override; {$ENDIF COMPILER3_UP}
+    function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect;override;
   end;
 
 procedure RegisterHtHints;
@@ -119,15 +114,7 @@ begin
   end;
   if HintWindow.Caption <> Txt then
   begin
-    {$IFDEF COMPILER2}
-    R := Rect(0, 0, Screen.Width, 0);
-    DrawText(HintWindow.Canvas.Handle, PChar(Txt), -1, R, DT_CALCRECT or DT_LEFT or
-      DT_WORDBREAK or DT_NOPREFIX);
-    Inc(R.Right, 6);
-    Inc(R.Bottom, 2);
-    {$ELSE}
     R := HintWindow.CalcHintRect(Screen.Width, Txt, nil);
-    {$ENDIF COMPILER2}
     R.Top := P.Y + 20;
     R.Left := P.X;
     Inc(R.Bottom, R.Top);
@@ -222,17 +209,6 @@ end;
 procedure TJvHTHintWindow.Paint;
 begin
 end;
-
-{$IFNDEF COMPILER3_UP}
-procedure TJvHTHintWindow.ActivateHint(Rect: TRect; const AHint: string);
-var
-  R: TRect;
-begin
-  R := CalcHintRect(Screen.Width, AHint, nil);
-  inherited ActivateHint(Bounds(Rect.Left, Rect.Top, R.Right, R.Bottom + 4),
-    AHint);
-end;
-{$ENDIF}
 
 function TJvHTHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: string;
   AData: Pointer): TRect;

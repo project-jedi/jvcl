@@ -32,22 +32,9 @@ UNIT JvgWinMask;
 INTERFACE
 
 USES
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   ComCtrls,
-   extctrls,
-   JvgTypes,
-   JvComponent,
-   CommCtrl,
-   JvgCommClasses
-   {$IFDEF COMPILER5_UP},
-   Imglist{$ENDIF};
+   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+   Dialogs, ComCtrls, ExtCtrls, CommCtrl, ImgList,
+   JvgTypes, JvComponent, JvgCommClasses;
 
 //const
 

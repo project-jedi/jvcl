@@ -67,15 +67,11 @@ type
     ExceptObj: Exception;
     FPrevOnException: TExceptionEvent;
     FOnErrorMsg: TErrorEvent;
-    {$IFDEF WIN32}
     FHelpFile: string;
-    {$ENDIF}
     procedure GetErrorMsg(var Msg: string);
     procedure ShowError;
     procedure SetShowDetails(Value: Boolean);
-    {$IFDEF WIN32}
     procedure WMHelp(var Msg: TWMHelp); message WM_HELP;
-    {$ENDIF}
   public
     procedure ShowException(Sender: TObject; E: Exception);
     property OnErrorMsg: TErrorEvent read FOnErrorMsg write FOnErrorMsg;
@@ -99,11 +95,7 @@ uses
 
 {$R *.DFM}
 
-{$IFDEF COMPILER3_UP}
 resourcestring
-{$ELSE}
-const
-{$ENDIF}
   SCodeError = '%s.' + CrLf + 'Error Code: %.8x (%1:d).';
   SModuleError = 'Exception in module %s.' + CrLf + '%s';
 
@@ -144,8 +136,6 @@ begin
   Application.RestoreTopMosts;
 end;
 
-{$IFDEF WIN32}
-
 function ConvertAddr(Address: Pointer): Pointer; assembler;
 asm
         TEST    EAX,EAX
@@ -168,53 +158,9 @@ begin
   end
   else
     Integer(LogicalAddress) := Integer(LogicalAddress) - Integer(Info.AllocationBase);
-  {$IFDEF COMPILER3_UP}
   StrLCopy(ModName, AnsiStrRScan(Temp, '\') + 1, SizeOf(ModName) - 1);
-  {$ELSE}
-  StrLCopy(ModName, StrRScan(Temp, '\') + 1, SizeOf(ModName) - 1);
-  {$ENDIF}
   ModuleName := StrPas(ModName);
 end;
-
-{$ELSE}
-
-function ConvertAddr(Address: Pointer): Pointer; assembler;
-asm
-        MOV     AX,Address.Word[0]
-        MOV     DX,Address.Word[2]
-        MOV     CX,DX
-        OR      CX,AX
-        JE      @@1
-        CMP     DX,0FFFFH
-        JE      @@1
-        MOV     ES,DX
-        MOV     DX,ES:Word[0]
-@@1:
-end;
-
-procedure TJvErrorDialog.ErrorInfo(var LogicalAddress: Pointer; var ModuleName: string);
-var
-  GlobalEntry: TGlobalEntry;
-  hMod: THandle;
-  ModName: array [0..15] of Char;
-  Buffer: array [0..255] of Char;
-begin
-  GlobalEntry.dwSize := SizeOf(GlobalEntry);
-  if GlobalEntryHandle(@GlobalEntry, THandle(PtrRec(LogicalAddress).Seg)) then
-    with GlobalEntry do
-    begin
-      hMod := hOwner;
-      if wType in [GT_CODE, GT_DATA, GT_DGROUP] then
-        PtrRec(LogicalAddress).Seg := wData;
-    end
-  else
-    LogicalAddress := ConvertAddr(LogicalAddress);
-  GetModuleFileName(hMod, Buffer, SizeOf(Buffer));
-  StrLCopy(ModName, StrRScan(Buffer, '\') + 1, SizeOf(ModName) - 1);
-  ModuleName := StrPas(ModName);
-end;
-
-{$ENDIF}
 
 procedure TJvErrorDialog.ShowError;
 var
@@ -233,7 +179,6 @@ begin
     S := ReplaceStr(S, #10, CrLf);
   if ExceptObj is EInOutError then
     S := Format(SCodeError, [S, EInOutError(ExceptObj).ErrorCode])
-  {$IFDEF WIN32}
   else
   if ExceptObj is EOleException then
   begin
@@ -249,13 +194,10 @@ begin
   if ExceptObj is EExternalException then
     S := Format(SCodeError, [S,
       EExternalException(ExceptObj).ExceptionRecord^.ExceptionCode])
-  {$ENDIF}
-  {$IFDEF COMPILER3_UP}
   else
   if ExceptObj is {$IFDEF COMPILER6_UP} EOSError {$ELSE} EWin32Error {$ENDIF} then
     S := Format(SCodeError,
      [S, {$IFDEF COMPILER6_UP} EOSError {$ELSE} EWin32Error {$ENDIF} (ExceptObj).ErrorCode])
-  {$ENDIF}
   else
     S := S + '.';
   MessageText.Text := Format(SModuleError, [ModuleName, S]);
@@ -299,7 +241,6 @@ begin
   end;
 end;
 
-{$IFDEF WIN32}
 procedure TJvErrorDialog.WMHelp(var Msg: TWMHelp);
 var
   AppHelpFile: string;
@@ -313,21 +254,16 @@ begin
     Application.HelpFile := AppHelpFile;
   end;
 end;
-{$ENDIF}
 
 procedure TJvErrorDialog.FormCreate(Sender: TObject);
 begin
-  {$IFDEF WIN32}
   BorderIcons := [biSystemMenu, biHelp];
-  {$ELSE}
-  BorderIcons := [];
-  {$ENDIF}
   DetailsHeight := DetailsPanel.Height;
   Icon.Handle := LoadIcon(0, IDI_HAND);
   IconImage.Picture.Icon := Icon;
   { Load string resources }
-  Caption := ResStr(SMsgDlgError);
-  OKBtn.Caption := ResStr(SOKButton);
+  Caption := SMsgDlgError;
+  OKBtn.Caption := SOKButton;
   { Set exception handler }
   FPrevOnException := Application.OnException;
   Application.OnException := ShowException;
@@ -341,15 +277,12 @@ end;
 procedure TJvErrorDialog.FormShow(Sender: TObject);
 var
   S: string;
-  {$IFDEF WIN32}
   ExStyle: Longint;
-  {$ENDIF}
 begin
   if ExceptObj.HelpContext <> 0 then
     HelpContext := ExceptObj.HelpContext
   else
     HelpContext := ErrorDlgHelpCtx;
-  {$IFDEF WIN32}
   if ExceptObj is EOleException then
     FHelpFile := EOleException(ExceptObj).HelpFile
   else
@@ -360,7 +293,6 @@ begin
   else
     ExStyle := ExStyle and not WS_EX_CONTEXTHELP;
   SetWindowLong(Handle, GWL_EXSTYLE, ExStyle);
-  {$ENDIF}
   S := Trim(ExceptObj.Message) + '.';
   GetErrorMsg(S);
   ErrorText.Caption := S;
@@ -375,14 +307,11 @@ end;
 
 procedure TJvErrorDialog.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
-{$IFDEF WIN32}
 var
   Info: THelpInfo;
-{$ENDIF}
 begin
   if (Key = VK_F1) and (HelpContext <> 0) then
   begin
-    {$IFDEF WIN32}
     with Info do
     begin
       cbSize := SizeOf(THelpInfo);
@@ -393,9 +322,6 @@ begin
       GetCursorPos(MousePos);
     end;
     Perform(WM_HELP, 0, Longint(@Info));
-    {$ELSE}
-    Application.HelpContext(HelpContext);
-    {$ENDIF}
   end;
 end;
 

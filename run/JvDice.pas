@@ -34,11 +34,7 @@ interface
 
 uses
   SysUtils,
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   Classes, Graphics, Messages, Controls, Forms, Menus,
   JvTimer;
 
@@ -72,13 +68,9 @@ type
     procedure SetValue(Value: TJvDiceValue);
     procedure TimerExpired(Sender: TObject);
   protected
-    {$IFDEF COMPILER6_UP} // Polaris
     procedure SetAutoSize(Value: Boolean); override;
-    {$ENDIF}
     function GetPalette: HPALETTE; override;
-    procedure AdjustSize;
-    {$IFDEF COMPILER4_UP} override;
-    {$ENDIF}
+    procedure AdjustSize;override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure Paint; override;
@@ -105,11 +97,9 @@ type
     property Rotate: Boolean read FRotate write SetRotate;
     property ShowFocus: Boolean read FShowFocus write SetShowFocus;
     property ShowHint;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property DragKind;
-    {$ENDIF}
     property TabOrder;
     property TabStop;
     property Value: TJvDiceValue read FValue write SetValue default 1;
@@ -127,19 +117,13 @@ type
     property OnDragOver;
     property OnDragDrop;
     property OnEndDrag;
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
     property OnStop: TNotifyEvent read FOnStop write FOnStop;
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
   end;
 
 implementation
@@ -222,9 +206,6 @@ end;
 procedure TJvDice.WMSize(var Msg: TWMSize);
 begin
   inherited;
-  {$IFNDEF COMPILER4_UP}
-  AdjustSize;
-  {$ENDIF}
 end;
 
 procedure TJvDice.CreateBitmap;
@@ -318,11 +299,7 @@ begin
   if AutoStopInterval > 0 then
   begin
     Now := GetTickCount;
-    {$IFDEF COMPILER4_UP}
     if (Now - FTickCount >= Integer(AutoStopInterval)) or (Now < FTickCount) then
-    {$ELSE}
-    if (Now - FTickCount >= AutoStopInterval) or (Now < FTickCount) then
-    {$ENDIF}
       Rotate := False;
   end;
 end;

@@ -39,23 +39,9 @@ unit JvgListBox;
 interface
 
 uses
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   StdCtrls,
-   commctrl,
-   ExtCtrls,
-   JvgTypes,
-   JvgUtils,
-   jvclVer,
-   JvgCommClasses,
-   Jvg3DColors{$IFDEF COMPILER4_UP},
-   Imglist{$ENDIF};
+   Windows, Messages, SysUtils, Classes, Graphics, Controls,
+   Forms, Dialogs, StdCtrls, CommCtrl, ExtCtrls, Imglist,
+   JvgTypes, JvgUtils, JVCLVer, JvgCommClasses, Jvg3DColors;
 
 const
    WordWraps                  : array[Boolean] of Word = (0, DT_WORDBREAK);
@@ -143,18 +129,12 @@ fAboutJVCL: TJVCLAboutInfo;
       property SelCount: integer read GetSelCount;
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
-      {$IFDEF COMPILER4_UP}
       function GetDragImages: TDragImageList; override;
-      {$ELSE}
-      function GetDragImages: TCustomImageList; override;
-      {$ENDIF}
    published
       property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
          False;
 
-      {$IFDEF COMPILER4_UP}
       property Anchors;
-      {$ENDIF}
       property Align;
       property BorderStyle;
       property Color;
@@ -751,13 +731,7 @@ begin
    end;
 end;
 
-{$IFDEF COMPILER4_UP}
-
 function TJvgListBox.GetDragImages: TDragImageList;
-{$ELSE}
-
-function TJvgListBox.GetDragImages: TCustomImageList;
-{$ENDIF}
 begin
    if FDragImage.Count > 0 then
       Result := FDragImage
@@ -1041,12 +1015,10 @@ begin
    State := [];
    if ByteState and ODS_CHECKED <> 0 then
       Include(State, odChecked);        //TOwnerDrawState
-   {$IFDEF COMPILER5_UP}
    if ByteState and ODS_COMBOBOXEDIT <> 0 then
       Include(State, odComboBoxEdit);
    if ByteState and ODS_DEFAULT <> 0 then
       Include(State, odDefault);
-   {$ENDIF}
    if ByteState and ODS_DISABLED <> 0 then
       Include(State, odDisabled);
    if ByteState and ODS_FOCUS <> 0 then

@@ -48,9 +48,7 @@ const
   DefEditBtnWidth = 21;
 
 type
-  {$IFDEF WIN32}
   TFileExt = type string;
-  {$ENDIF}
 
   TCloseUpEvent = procedure(Sender: TObject; Accept: Boolean) of object;
   TPopupAlign = (epaRight, epaLeft);
@@ -62,14 +60,8 @@ type
     procedure WMMouseActivate(var Msg: TMessage); message WM_MOUSEACTIVATE;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
-    {$IFDEF WIN32}
     function GetValue: Variant; virtual; abstract;
     procedure SetValue(const Value: Variant); virtual; abstract;
-    {$ELSE}
-    procedure CreateWnd; override;
-    function GetValue: string; virtual; abstract;
-    procedure SetValue(const Value: string); virtual; abstract;
-    {$ENDIF}
     procedure InvalidateEditor;
     procedure PopupMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -151,19 +143,14 @@ type
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
     procedure CMEnter(var Msg: TMessage); message CM_ENTER;
-    procedure CNCtlColor(var Msg: TMessage); message
-      {$IFDEF WIN32}CN_CTLCOLOREDIT{$ELSE}CN_CTLCOLOR{$ENDIF};
+    procedure CNCtlColor(var Msg: TMessage); message CN_CTLCOLOREDIT;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
     procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
-    {$IFDEF WIN32}
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
-    {$ENDIF}
     (* ++ RDB ++ *)
     procedure UpdateEdit;
     (* -- RDB -- *)
@@ -183,17 +170,10 @@ type
     procedure DoChange; virtual; //virtual Polaris
     procedure SetShowCaret; // Polaris
     procedure SetDirectInput(Value: Boolean); // Polaris
-    {$IFDEF WIN32}
     function AcceptPopup(var Value: Variant): Boolean; virtual;
     procedure AcceptValue(const Value: Variant); virtual;
     procedure SetPopupValue(const Value: Variant); virtual;
     function GetPopupValue: Variant; virtual;
-    {$ELSE}
-    function AcceptPopup(var Value: string): Boolean; virtual;
-    procedure AcceptValue(const Value: string); virtual;
-    procedure SetPopupValue(const Value: string); virtual;
-    function GetPopupValue: string; virtual;
-    {$ENDIF}
     procedure Change; override;
     procedure PopupChange; virtual;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -274,19 +254,13 @@ type
     property Glyph;
     property ButtonWidth;
     property HideSelection;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
-    {$IFDEF WIN32}
-    {$IFNDEF COMPILER2}
     property ImeMode;
     property ImeName;
-    {$ENDIF}
-    {$ENDIF}
     property MaxLength;
     property NumGlyphs;
     property OEMConvert;
@@ -315,16 +289,10 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
     (* ++ RDB ++ *)
     property ClipboardCommands;
     property DisabledTextColor;
@@ -362,10 +330,8 @@ type
     procedure CreateHandle; override;
     procedure DestroyWindowHandle; override;
     function GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap; override;
-    {$IFDEF WIN32}
     function GetLongName: string; virtual; abstract;
     function GetShortName: string; virtual; abstract;
-    {$ENDIF}
     procedure DoAfterDialog(var FileName: string; var Action: Boolean); dynamic;
     procedure DoBeforeDialog(var FileName: string; var Action: Boolean); dynamic;
     procedure ReceptFileDir(const AFileName: string); virtual; abstract;
@@ -373,13 +339,11 @@ type
     procedure DisableSysErrors;
     procedure EnableSysErrors;
     property GlyphKind default gkDefault;
-    property MaxLength{$IFNDEF WIN32}default MaxFileLength{$ENDIF};
+    property MaxLength;
   public
     constructor Create(AOwner: TComponent); override;
-    {$IFDEF WIN32}
     property LongName: string read GetLongName;
     property ShortName: string read GetShortName;
-    {$ENDIF}
   published
     property AcceptFiles: Boolean read FAcceptFiles write SetAcceptFiles default True;
     property OnBeforeDialog: TExecOpenDialogEvent read FOnBeforeDialog
@@ -398,7 +362,7 @@ type
   end;
 
   TFileDialogKind =
-    (dkOpen, dkSave{$IFDEF COMPILER3_UP}, dkOpenPicture, dkSavePicture{$ENDIF});
+    (dkOpen, dkSave, dkOpenPicture, dkSavePicture);
 
   TJvFilenameEdit = class(TJvFileDirEdit)
   private
@@ -431,10 +395,8 @@ type
     procedure ButtonClick; override;
     procedure ReceptFileDir(const AFileName: string); override;
     procedure ClearFileList; override;
-    {$IFDEF WIN32}
     function GetLongName: string; override;
     function GetShortName: string; override;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     property Dialog: TOpenDialog read FDialog;
@@ -475,19 +437,13 @@ type
     property Glyph;
     property ButtonWidth;
     property HideSelection;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
-    {$IFDEF WIN32}
-    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-    {$ENDIF}
-    {$ENDIF}
     property NumGlyphs;
     property ParentColor;
     property ParentCtl3D;
@@ -514,47 +470,33 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
   end;
 
-  {$IFDEF WIN32}
   TDirDialogKind = (dkVCL, dkWin32);
-  {$ENDIF}
 
   TJvDirectoryEdit = class(TJvFileDirEdit)
   private
     FOptions: TSelectDirOpts;
     FInitialDir: string;
-    {$IFDEF WIN32}
     FDialogText: string;
     FDialogKind: TDirDialogKind;
-    {$ENDIF}
   protected
     FMultipleDirs: Boolean; // Polaris (???)
     procedure ButtonClick; override;
     procedure ReceptFileDir(const AFileName: string); override;
-    {$IFDEF WIN32}
     function GetLongName: string; override;
     function GetShortName: string; override;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
   published
     //Polaris
     property Align;
-    {$IFDEF WIN32}
     property DialogKind: TDirDialogKind read FDialogKind write FDialogKind default dkVCL;
     property DialogText: string read FDialogText write FDialogText;
-    {$ENDIF}
     property DialogOptions: TSelectDirOpts read FOptions write FOptions default [];
     property InitialDir: string read FInitialDir write FInitialDir;
     property MultipleDirs: Boolean read FMultipleDirs write FMultipleDirs default False;
@@ -578,19 +520,13 @@ type
     property NumGlyphs;
     property ButtonWidth;
     property HideSelection;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
-    {$IFDEF WIN32}
-    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-    {$ENDIF}
-    {$ENDIF}
     property ParentColor;
     property ParentCtl3D;
     property ParentFont;
@@ -616,16 +552,10 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
   end;
 
   TCalendarStyle = (csPopup, csDialog);
@@ -701,13 +631,9 @@ type
     procedure KeyPress(var Key: Char); override;
     procedure CreateWindowHandle(const Params: TCreateParams); override;
     procedure DestroyWindowHandle; override;
-    {$IFDEF WIN32}
     function AcceptPopup(var Value: Variant): Boolean; override;
     procedure AcceptValue(const Value: Variant); override;
     procedure SetPopupValue(const Value: Variant); override;
-    {$ELSE}
-    function AcceptPopup(var Value: string): Boolean; override;
-    {$ENDIF}
     function GetDateFormat: string;
     procedure ApplyDate(Value: TDateTime); virtual;
     function GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap; override;
@@ -740,9 +666,7 @@ type
     property DateAutoBetween: Boolean read FDateAutoBetween write SetDateAutoBetween default True;
     property MinDate: TDateTime read FMinDate write SetMinDate stored StoreMinDate;
     property MaxDate: TDateTime read FMaxDate write SetMaxDate stored StoreMaxDate;
-    {$IFDEF COMPILER4_UP}
     procedure ValidateEdit; override;
-    {$ENDIF}
     // Polaris
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -790,19 +714,13 @@ type
     property Glyph;
     property ButtonWidth;
     property HideSelection;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
-    {$IFDEF WIN32}
-    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-    {$ENDIF}
-    {$ENDIF}
     property MaxLength;
     property NumGlyphs;
     property ParentColor;
@@ -838,16 +756,10 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
     (* ++ RDB ++ *)
     property ClipboardCommands;
     property DisabledTextColor;
@@ -902,7 +814,6 @@ var
 begin
   with TCustomEditAccess(Editor) do
   begin
-    {$IFDEF WIN32}
     if NewStyleControls then
     begin
       if BorderStyle = bsNone then
@@ -918,7 +829,6 @@ begin
       Result.Y := I;
     end
     else
-    {$ENDIF}
     begin
       if BorderStyle = bsNone then
         I := 0
@@ -949,11 +859,9 @@ var
   R: TRect;
 begin
   SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@R));
-  {$IFDEF COMPILER4_UP}
   if Editor.BiDiMode = bdRightToLeft then
     ButtonWidth := R.Left - 1
   else
-  {$ENDIF COMPILER4_UP}
     ButtonWidth := Editor.ClientWidth - R.Right - 2;
   if ButtonWidth < 0 then ButtonWidth := 0;
 
@@ -972,24 +880,19 @@ var
   DC: HDC;
   PS: TPaintStruct;
   S: string;
-  {$IFDEF COMPILER4_UP}
   ExStyle: DWORD;
 const
   AlignStyle: array[Boolean, TAlignment] of DWORD =
   ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
     (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
-  {$ENDIF}
 begin
   Result := True;
   with TCustomEditAccess(Editor) do
   begin
-    {$IFDEF COMPILER4_UP}
     if UseRightToLeftAlignment then
       ChangeBiDiModeAlignment(AAlignment);
-    {$ENDIF}
-    if StandardPaint{$IFDEF WIN32} and not (csPaintCopy in ControlState){$ENDIF} then
+    if StandardPaint and not (csPaintCopy in ControlState)then
     begin
-      {$IFDEF COMPILER4_UP}
       if SysLocale.MiddleEast and HandleAllocated and (IsRightToLeft) then
       begin { This keeps the right aligned text, right aligned }
         ExStyle := DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) and (not WS_EX_RIGHT) and
@@ -1003,7 +906,6 @@ begin
         if DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) <> ExStyle then
           SetWindowLong(Handle, GWL_EXSTYLE, ExStyle);
       end;
-      {$ENDIF COMPILER4_UP}
       Result := False;
       { return false if we need to use standard paint handler }
       Exit;
@@ -1025,7 +927,7 @@ begin
       with ACanvas do
       begin
         R := ClientRect;
-        if {$IFDEF WIN32} not (NewStyleControls and Ctl3D) and {$ENDIF}(BorderStyle = bsSingle) then
+        if not (NewStyleControls and Ctl3D) and (BorderStyle = bsSingle) then
         begin
           Brush.Color := clWindowFrame;
           FrameRect(R);
@@ -1049,10 +951,8 @@ begin
             ALeft := (ClientWidth - ButtonWidth - AWidth) div 2;
           end;
         end;
-        {$IFDEF COMPILER4_UP}
         if SysLocale.MiddleEast then
           UpdateTextFlags;
-        {$ENDIF}
         if not Enabled then
         begin
           if PS.fErase then
@@ -1087,11 +987,7 @@ constructor TJvEditButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FStandard := True; // Polaris
-  {$IFDEF WIN32}
   ControlStyle := ControlStyle + [csReplicatable];
-  {$ELSE}
-  Style := bsWin31;
-  {$ENDIF}
   ParentShowHint := True;
 end;
 
@@ -1177,11 +1073,7 @@ constructor TJvPopupWindow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FEditor := TWinControl(AOwner);
-  {$IFDEF WIN32}
   ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable, csAcceptsControls];
-  {$ELSE}
-  ControlStyle := ControlStyle + [csAcceptsControls];
-  {$ENDIF}
   Ctl3D := False;
   ParentCtl3D := False;
   Visible := False;
@@ -1195,9 +1087,7 @@ begin
   with Params do
   begin
     Style := WS_POPUP or WS_BORDER or WS_CLIPCHILDREN;
-    {$IFDEF WIN32}
     ExStyle := WS_EX_TOOLWINDOW;
-    {$ENDIF}
     WindowClass.Style := WindowClass.Style or CS_SAVEBITS;
   end;
 end;
@@ -1267,18 +1157,14 @@ end;
 constructor TJvCustomComboEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF COMPILER3_UP}
   ControlStyle := ControlStyle + [csCaptureMouse];
-  {$ENDIF}
   //  AutoSize := False;   // Polaris
   FDirectInput := True;
   FClickKey := scAltDown;
   FPopupAlign := epaRight;
   FBtnControl := TWinControl.Create(Self);
-  {$IFDEF WIN32}
   with FBtnControl do
     ControlStyle := ControlStyle + [csReplicatable];
-  {$ENDIF}
   FBtnControl.Width := DefEditBtnWidth;
   FBtnControl.Height := 17;
   FBtnControl.Visible := True;
@@ -1473,14 +1359,10 @@ begin
       P.X := 0
     else if P.X + FPopup.Width > Screen.Width then
       P.X := Screen.Width - FPopup.Width;
-    {$IFDEF WIN32}
     if Text <> '' then
       SetPopupValue(Text)
     else
       SetPopupValue(NULL);
-    {$ELSE}
-    SetPopupValue(Text);
-    {$ENDIF}
     if CanFocus then
       SetFocus;
     ShowPopup(Point(P.X, Y));
@@ -1495,11 +1377,7 @@ end;
 
 procedure TJvCustomComboEdit.PopupCloseUp(Sender: TObject; Accept: Boolean);
 var
-  {$IFDEF WIN32}
   AValue: Variant;
-  {$ELSE}
-  AValue: string;
-  {$ENDIF}
 begin
   if (FPopup <> nil) and FPopupVisible then
   begin
@@ -1537,13 +1415,7 @@ begin
   inherited Change;
 end;
 
-{$IFDEF WIN32}
-
 function TJvCustomComboEdit.GetPopupValue: Variant;
-{$ELSE}
-
-function TJvCustomComboEdit.GetPopupValue: string;
-{$ENDIF}
 begin
   if FPopup <> nil then
     Result := TJvPopupWindow(FPopup).GetValue
@@ -1551,31 +1423,15 @@ begin
     Result := '';
 end;
 
-{$IFDEF WIN32}
-
 procedure TJvCustomComboEdit.SetPopupValue(const Value: Variant);
-{$ELSE}
-
-procedure TJvCustomComboEdit.SetPopupValue(const Value: string);
-{$ENDIF}
 begin
   if FPopup <> nil then
     TJvPopupWindow(FPopup).SetValue(Value);
 end;
-
-{$IFDEF WIN32}
-
 procedure TJvCustomComboEdit.AcceptValue(const Value: Variant);
 begin
   if Text <> VarToStr(Value) then
   begin
-    {$ELSE}
-
-procedure TJvCustomComboEdit.AcceptValue(const Value: string);
-begin
-  if Text <> Value then
-  begin
-    {$ENDIF}
     Text := Value;
     Modified := True;
     UpdatePopupVisible;
@@ -1583,13 +1439,7 @@ begin
   end;
 end;
 
-{$IFDEF WIN32}
-
 function TJvCustomComboEdit.AcceptPopup(var Value: Variant): Boolean;
-{$ELSE}
-
-function TJvCustomComboEdit.AcceptPopup(var Value: string): Boolean;
-{$ENDIF}
 begin
   Result := True;
 end;
@@ -1812,7 +1662,6 @@ procedure TJvCustomComboEdit.UpdateBtnBounds;
 var
   BtnRect: TRect;
 begin
-  {$IFDEF WIN32}
   if NewStyleControls then
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
@@ -1843,23 +1692,17 @@ begin
     end
   else
     BtnRect := Bounds(Width - FButton.Width, 0, FButton.Width, Height);
-  {$ELSE}
-  BtnRect := Bounds(Width - FButton.Width, 0, FButton.Width, Height);
-  {$ENDIF WIN32}
   with BtnRect do
     FBtnControl.SetBounds(Left, Top, Right - Left, Bottom - Top);
   FButton.Height := FBtnControl.Height;
   SetEditRect;
 end;
 
-{$IFDEF WIN32}
-
 procedure TJvCustomComboEdit.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
   UpdateBtnBounds;
 end;
-{$ENDIF}
 
 procedure TJvCustomComboEdit.WMSize(var Msg: TWMSize);
 var
@@ -2014,15 +1857,12 @@ begin
   SetShowCaret;
 end;
 
-{$IFDEF COMPILER4_UP}
-
 procedure TJvCustomComboEdit.CMBiDiModeChanged(var Msg: TMessage);
 begin
   inherited;
   if FPopup <> nil then
     FPopup.BiDiMode := BiDiMode;
 end;
-{$ENDIF}
 
 procedure TJvCustomComboEdit.SetShowCaret;
 const
@@ -2322,11 +2162,7 @@ var
 begin
   Msg.Result := 0;
   try
-    {$IFDEF WIN32}
     Num := DragQueryFile(Msg.Drop, $FFFFFFFF, nil, 0);
-    {$ELSE}
-    Num := DragQueryFile(Msg.Drop, $FFFF, nil, 0);
-    {$ENDIF}
     if Num > 0 then
     begin
       ClearFileList;
@@ -2382,10 +2218,8 @@ begin
   case FDialogKind of
     dkOpen:
       NewDialog := TOpenDialog.Create(Self);
-    {$IFDEF COMPILER3_UP}
     dkOpenPicture: NewDialog := TOpenPictureDialog.Create(Self);
     dkSavePicture: NewDialog := TSavePictureDialog.Create(Self);
-    {$ENDIF}
   else {dkSave}
     NewDialog := TSaveDialog.Create(Self);
   end;
@@ -2483,10 +2317,8 @@ begin
     ClearFileList;
   end
   else
-    raise EComboEditError.CreateFmt(ResStr(SInvalidFilename), [Value]);
+    raise EComboEditError.CreateFmt(SInvalidFilename, [Value]);
 end;
-
-{$IFDEF WIN32}
 
 function TJvFilenameEdit.GetLongName: string;
 begin
@@ -2497,8 +2329,6 @@ function TJvFilenameEdit.GetShortName: string;
 begin
   Result := LongToShortFileName(FileName);
 end;
-
-{$ENDIF WIN32}
 
 procedure TJvFilenameEdit.ClearFileList;
 begin
@@ -2684,8 +2514,6 @@ begin
     Text := Text + ';' + Temp;
 end;
 
-{$IFDEF WIN32}
-
 function TJvDirectoryEdit.GetLongName: string;
 var
   Temp: string;
@@ -2728,8 +2556,6 @@ begin
   end;
 end;
 
-{$ENDIF WIN32}
-
 //=== TJvCustomDateEdit ======================================================
 
 function NvlDate(DateValue, DefaultValue: TDateTime): TDateTime;
@@ -2762,8 +2588,7 @@ begin
   try
     UpdateFormat;
     {$IFDEF DEFAULT_POPUP_CALENDAR}
-    FPopup := TJvPopupWindow(CreatePopupCalendar(Self,
-      {$IFDEF COMPILER4_UP}BiDiMode, {$ENDIF}
+    FPopup := TJvPopupWindow(CreatePopupCalendar(Self, BiDiMode,
       // Polaris
       FMinDate, FMaxDate));
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
@@ -2923,11 +2748,7 @@ end;
 function TJvCustomDateEdit.FormatSettingsChange(var Msg: TMessage): boolean;
 begin
   Result := false;
-{$IFDEF WIN32}
   if (Msg.Msg = WM_WININICHANGE) and Application.UpdateFormatSettings then
-{$ELSE}
-  if Msg.Msg = WM_WININICHANGE then
-{$ENDIF}
   begin
     GetFormatSettings;
     UpdateMask;
@@ -2992,14 +2813,11 @@ begin
   Result := StrToDateFmtDef(FDateFormat, Text, Result);
 end;
 
-{$IFDEF COMPILER4_UP}
-
 procedure TJvCustomDateEdit.ValidateEdit;
 begin
   if TextStored then
     CheckValidDate;
 end;
-{$ENDIF}
 // Polaris
 
 procedure TJvCustomDateEdit.SetDate(Value: TDateTime);
@@ -3124,8 +2942,7 @@ begin
       csPopup:
         begin
           if FPopup = nil then
-            FPopup := TJvPopupWindow(CreatePopupCalendar(Self
-              {$IFDEF COMPILER4_UP}, BiDiMode{$ENDIF},
+            FPopup := TJvPopupWindow(CreatePopupCalendar(Self, BiDiMode,
               FMinDate, FMaxDate)); // Polaris
           TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
           TJvPopupWindow(FPopup).Color := FPopupColor;
@@ -3259,20 +3076,13 @@ begin
   end;
 end;
 
-{$IFDEF WIN32}
-
 function TJvCustomDateEdit.AcceptPopup(var Value: Variant): Boolean;
-{$ELSE}
-
-function TJvCustomDateEdit.AcceptPopup(var Value: string): Boolean;
-{$ENDIF}
 var
   D: TDateTime;
 begin
   Result := True;
   if Assigned(FOnAcceptDate) then
   begin
-    {$IFDEF WIN32}
     if VarIsNull(Value) or VarIsEmpty(Value) then
       D := NullDate
     else
@@ -3284,25 +3094,11 @@ begin
       else
         D := NullDate;
     end;
-    {$ELSE}
-    if DefaultToday then
-      D := SysUtils.Date
-    else
-      D := NullDate;
-    D := StrToDateDef(Value, D);
-    {$ENDIF}
     FOnAcceptDate(Self, D, Result);
-    {$IFDEF WIN32}
     if Result then
       Value := VarFromDateTime(D);
-    {$ELSE}
-    if Result then
-      Value := FormatDateTime(FDateFormat, D);
-    {$ENDIF}
   end;
 end;
-
-{$IFDEF WIN32}
 
 procedure TJvCustomDateEdit.SetPopupValue(const Value: Variant);
 begin
@@ -3317,8 +3113,6 @@ begin
   if Modified then
     inherited Change;
 end;
-
-{$ENDIF}
 
 //=== TJvCustomDateEdit ======================================================
 
@@ -3386,16 +3180,10 @@ begin
   DateBitmap := nil;
 end;
 
-{$IFDEF WIN32}
 initialization
 
 finalization
   DestroyLocals;
-
-  {$ELSE}
-initialization
-  AddExitProc(DestroyLocals);
-  {$ENDIF}
 
 end.
 

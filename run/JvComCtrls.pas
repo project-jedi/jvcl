@@ -45,9 +45,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, ComCtrls, CommCtrl, StdActns,
-  {$IFDEF COMPILER5_UP}
   Contnrs,
-  {$ENDIF}
   JclBase, JVCLVer;
 
 const
@@ -178,9 +176,7 @@ type
     property TabStop default True;
     property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;

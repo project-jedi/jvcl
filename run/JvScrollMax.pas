@@ -107,9 +107,6 @@ type
     procedure SetZOrder(TopMost: Boolean); override;
     function ScrollMax: TJvScrollMax;
     procedure UpdateSize(ATop: Integer);
-    {$IFDEF COMPILER2}
-    procedure RequestAlign;
-    {$ENDIF COMPILER2}
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     function CollapsedHeight: Integer;
     procedure ChangeScale(M, D: Integer); override;
@@ -150,10 +147,8 @@ type
     property OnDragOver;
     property OnEndDrag;
     property OnStartDrag;
-    {$IFDEF COMPILER4_UP}
     property BiDiMode;
     property ParentBiDiMode;
-    {$ENDIF COMPILER4_UP}
   end;
 
   TJvScrollMaxBands = class(TCustomControl)
@@ -237,11 +232,7 @@ type
     procedure SetOneExpanded(const Value: Boolean);
   protected
     procedure Loaded; override;
-    {$IFDEF COMPILER2}
-    procedure GetChildren(Proc: TGetChildProc); override;
-    {$ELSE}
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
-    {$ENDIF  COMPILER2}
     function GetChildParent: TComponent; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Resize; override;
@@ -293,7 +284,6 @@ type
     property OnDragOver;
     property OnEndDrag;
     property OnStartDrag;
-    {$IFDEF COMPILER4_UP}
   public
     property DockManager;
   published
@@ -313,7 +303,6 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF COMPILER4_UP}
   end;
 
   EJvScrollMaxError = class(Exception);
@@ -523,18 +512,14 @@ end;
 type
   TJvBandBtn = class(TJvNoFrameButton)
   private
-    {$IFDEF COMPILER3_UP}
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
-    {$ENDIF COMPILER3_UP}
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
   end;
 
-{$IFDEF COMPILER3_UP}
 procedure TJvBandBtn.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
   Msg.Result := 1;
 end;
-{$ENDIF COMPILER3_UP}
 
 procedure TJvBandBtn.CMFontChanged(var Msg: TMessage);
 begin
@@ -575,9 +560,7 @@ begin
     NoBorder := False;
     ParentColor := True;
     {o}
-    {$IFDEF COMPILER4_UP}
     FButton.ParentBiDiMode := True;
-    {$ENDIF COMPILER4_UP}
   end;
   Expanded := True;
 end;
@@ -874,14 +857,6 @@ begin
   FButton.Width := Width - FButton.Left * 2;
 end;
 
-{$IFDEF COMPILER2}
-procedure TJvScrollMaxBand.RequestAlign;
-begin
-  if Parent <> nil then
-    Left := Left - 1;
-end;
-{$ENDIF COMPILER2}
-
 procedure TJvScrollMaxBand.Paint;
 var
   R: TRect;
@@ -1108,9 +1083,7 @@ begin
     OnScroll := ScrollBarScroll;
     ParentColor := True;
     Visible := True;
-    {$IFDEF COMPILER3_UP}
     DesignInteractive := True;
-    {$ENDIF COMPILER3_UP}
   end;
 end;
 
@@ -1286,17 +1259,10 @@ begin
   Result := FPnlEdit.ControlCount;
 end;
 
-{$IFDEF COMPILER2}
-procedure TJvScrollMax.GetChildren(Proc: TGetChildProc);
-begin
-  FPnlEdit.GetChildren(Proc);
-end;
-{$ELSE}
 procedure TJvScrollMax.GetChildren(Proc: TGetChildProc; Root: TComponent);
 begin
   FPnlEdit.GetChildren(Proc, Root);
 end;
-{$ENDIF COMPILER2}
 
 function TJvScrollMax.GetChildParent: TComponent;
 begin

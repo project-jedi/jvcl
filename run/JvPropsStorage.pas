@@ -72,18 +72,14 @@ type
     function StoreClassProperty(PropInfo: PPropInfo): string;
     function StoreStringsProperty(PropInfo: PPropInfo): string;
     function StoreComponentProperty(PropInfo: PPropInfo): string;
-    {$IFDEF WIN32}
     function StoreLStringProperty(PropInfo: PPropInfo): string;
     function StoreWCharProperty(PropInfo: PPropInfo): string;
     function StoreVariantProperty(PropInfo: PPropInfo): string;
     procedure LoadLStringProperty(const S: string; PropInfo: PPropInfo);
     procedure LoadWCharProperty(const S: string; PropInfo: PPropInfo);
     procedure LoadVariantProperty(const S: string; PropInfo: PPropInfo);
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     function StoreInt64Property(PropInfo: PPropInfo): string;
     procedure LoadInt64Property(const S: string; PropInfo: PPropInfo);
-    {$ENDIF}
     procedure LoadIntegerProperty(const S: string; PropInfo: PPropInfo);
     procedure LoadCharProperty(const S: string; PropInfo: PPropInfo);
     procedure LoadEnumProperty(const S: string; PropInfo: PPropInfo);
@@ -123,11 +119,7 @@ function CreateStoredItem(const CompName, PropName: string): string;
 function ParseStoredItem(const Item: string; var CompName, PropName: string): Boolean;
 
 const
-  {$IFDEF WIN32}
   sPropNameDelimiter: string = '_';
-  {$ELSE}
-  sPropNameDelimiter: Char = '_';
-  {$ENDIF}
 
 implementation
 
@@ -142,20 +134,9 @@ const
 type
   TCardinalSet = set of 0..SizeOf(Cardinal) * 8 - 1;
 
-{$IFNDEF WIN32}
-function GetEnumName(TypeInfo: PTypeInfo; Value: Integer): string;
-begin
-  Result := TypInfo.GetEnumName(TypeInfo, Value)^;
-end;
-{$ENDIF}
-
 function GetPropType(PropInfo: PPropInfo): PTypeInfo;
 begin
-  {$IFDEF COMPILER3_UP}
   Result := PropInfo^.PropType^;
-  {$ELSE}
-  Result := PropInfo^.PropType;
-  {$ENDIF}
 end;
 
 //=== TJvPropInfoList ========================================================
@@ -301,7 +282,6 @@ begin
   end;
 end;
 
-{$IFDEF WIN32}
 function FindGlobalComponent(const Name: string): TComponent;
 var
   I: Integer;
@@ -320,7 +300,6 @@ begin
   end;
   Result := nil;
 end;
-{$ENDIF}
 
 //=== TJvPropsStorage ========================================================
 
@@ -345,22 +324,14 @@ begin
           Def := StoreEnumProperty(PropInfo);
         tkFloat:
           Def := StoreFloatProperty(PropInfo);
-        {$IFDEF WIN32}
         tkWChar:
           Def := StoreWCharProperty(PropInfo);
         tkLString:
           Def := StoreLStringProperty(PropInfo);
-        {$IFNDEF COMPILER3_UP} { - Delphi 2.0, C++Builder 1.0 }
-        tkLWString:
-          Def := StoreLStringProperty(PropInfo);
-        {$ENDIF}
         tkVariant:
           Def := StoreVariantProperty(PropInfo);
-        {$ENDIF WIN32}
-        {$IFDEF COMPILER4_UP}
         tkInt64:
           Def := StoreInt64Property(PropInfo);
-        {$ENDIF}
         tkString:
           Def := StoreStringProperty(PropInfo);
         tkSet:
@@ -371,10 +342,7 @@ begin
         Exit;
       end;
       if (Def <> '') or (PropInfo^.PropType^.Kind in [tkString, tkClass])
-        {$IFDEF WIN32}
-      or (PropInfo^.PropType^.Kind in [tkLString,
-        {$IFNDEF COMPILER3_UP}tkLWString, {$ENDIF}tkWChar])
-        {$ENDIF WIN32}
+        or (PropInfo^.PropType^.Kind in [tkLString, tkWChar])
       then
         S := Trim(ReadString(Section, GetItemName(PropInfo^.Name), Def))
       else
@@ -388,22 +356,14 @@ begin
           LoadEnumProperty(S, PropInfo);
         tkFloat:
           LoadFloatProperty(S, PropInfo);
-        {$IFDEF WIN32}
         tkWChar:
           LoadWCharProperty(S, PropInfo);
         tkLString:
           LoadLStringProperty(S, PropInfo);
-        {$IFNDEF COMPILER3_UP} { - Delphi 2.0, C++Builder 1.0 }
-        tkLWString:
-          LoadLStringProperty(S, PropInfo);
-        {$ENDIF}
         tkVariant:
           LoadVariantProperty(S, PropInfo);
-        {$ENDIF WIN32}
-        {$IFDEF COMPILER4_UP}
         tkInt64:
           LoadInt64Property(S, PropInfo);
-        {$ENDIF}
         tkString:
           LoadStringProperty(S, PropInfo);
         tkSet:
@@ -432,22 +392,14 @@ begin
         S := StoreEnumProperty(PropInfo);
       tkFloat:
         S := StoreFloatProperty(PropInfo);
-      {$IFDEF WIN32}
       tkLString:
         S := StoreLStringProperty(PropInfo);
-      {$IFNDEF COMPILER3_UP} { - Delphi 2.0, C++Builder 1.0 }
-      tkLWString:
-        S := StoreLStringProperty(PropInfo);
-      {$ENDIF}
       tkWChar:
         S := StoreWCharProperty(PropInfo);
       tkVariant:
         S := StoreVariantProperty(PropInfo);
-      {$ENDIF WIN32}
-      {$IFDEF COMPILER4_UP}
       tkInt64:
         S := StoreInt64Property(PropInfo);
-      {$ENDIF}
       tkString:
         S := StoreStringProperty(PropInfo);
       tkSet:
@@ -457,9 +409,7 @@ begin
     else
       Exit;
     end;
-    if (S <> '') or (PropInfo^.PropType^.Kind in [tkString
-      {$IFDEF WIN32}, tkLString, {$IFNDEF COMPILER3_UP} tkLWString, {$ENDIF}
-      tkWChar {$ENDIF WIN32}]) then
+    if (S <> '') or (PropInfo^.PropType^.Kind in [tkString, tkLString, tkWChar]) then
       WriteString(Section, GetItemName(PropInfo^.Name), Trim(S));
   end;
 end;
@@ -481,11 +431,7 @@ end;
 
 function TJvPropsStorage.StoreFloatProperty(PropInfo: PPropInfo): string;
 const
-  {$IFDEF WIN32}
   Precisions: array [TFloatType] of Integer = (7, 15, 18, 18, 19);
-  {$ELSE}
-  Precisions: array [TFloatType] of Integer = (7, 15, 18, 18);
-  {$ENDIF}
 begin
   Result := ReplaceStr(FloatToStrF(GetFloatProp(FObject, PropInfo), ffGeneral,
     Precisions[GetTypeData(GetPropType(PropInfo))^.FloatType], 0),
@@ -496,8 +442,6 @@ function TJvPropsStorage.StoreStringProperty(PropInfo: PPropInfo): string;
 begin
   Result := GetStrProp(FObject, PropInfo);
 end;
-
-{$IFDEF WIN32}
 
 function TJvPropsStorage.StoreLStringProperty(PropInfo: PPropInfo): string;
 begin
@@ -514,14 +458,10 @@ begin
   Result := GetVariantProp(FObject, PropInfo);
 end;
 
-{$ENDIF}
-
-{$IFDEF COMPILER4_UP}
 function TJvPropsStorage.StoreInt64Property(PropInfo: PPropInfo): string;
 begin
   Result := IntToStr(GetInt64Prop(FObject, PropInfo));
 end;
-{$ENDIF}
 
 function TJvPropsStorage.StoreSetProperty(PropInfo: PPropInfo): string;
 var
@@ -531,7 +471,7 @@ var
 begin
   Result := '[';
   W := GetOrdProp(FObject, PropInfo);
-  TypeInfo := GetTypeData(GetPropType(PropInfo))^.CompType{$IFDEF COMPILER3_UP}^{$ENDIF};
+  TypeInfo := GetTypeData(GetPropType(PropInfo))^.CompType^;
   for I := 0 to SizeOf(TCardinalSet) * 8 - 1 do
     if I in TCardinalSet(W) then
     begin
@@ -620,7 +560,6 @@ begin
   begin
     if Obj is TStrings then
       StoreStringsProperty(PropInfo)
-    {$IFDEF WIN32}
     else
     if Obj is TCollection then
     begin
@@ -639,7 +578,6 @@ begin
         Saver.Free;
       end;
     end
-    {$ENDIF}
     else
     if Obj is TComponent then
     begin
@@ -689,14 +627,10 @@ begin
     DecimalSeparator)));
 end;
 
-{$IFDEF COMPILER4_UP}
 procedure TJvPropsStorage.LoadInt64Property(const S: string; PropInfo: PPropInfo);
 begin
   SetInt64Prop(FObject, PropInfo, StrToInt64Def(S, 0));
 end;
-{$ENDIF}
-
-{$IFDEF WIN32}
 
 procedure TJvPropsStorage.LoadLStringProperty(const S: string; PropInfo: PPropInfo);
 begin
@@ -712,8 +646,6 @@ procedure TJvPropsStorage.LoadVariantProperty(const S: string; PropInfo: PPropIn
 begin
   SetVariantProp(FObject, PropInfo, S);
 end;
-
-{$ENDIF}
 
 procedure TJvPropsStorage.LoadStringProperty(const S: string; PropInfo: PPropInfo);
 begin
@@ -731,7 +663,7 @@ var
   EnumName: string;
 begin
   W := 0;
-  TypeInfo := GetTypeData(GetPropType(PropInfo))^.CompType{$IFDEF COMPILER3_UP}^{$ENDIF};
+  TypeInfo := GetTypeData(GetPropType(PropInfo))^.CompType^;
   Count := WordCount(S, Delims);
   for N := 1 to Count do
   begin
@@ -773,7 +705,6 @@ begin
 end;
 
 procedure TJvPropsStorage.LoadComponentProperty(const S: string; PropInfo: PPropInfo);
-{$IFDEF WIN32}
 var
   RootName, Name: string;
   Root: TComponent;
@@ -804,28 +735,13 @@ begin
   if Root <> nil then
     SetOrdProp(FObject, PropInfo, Longint(Root.FindComponent(Name)));
 end;
-{$ELSE}
-begin
-  if Trim(S) = '' then
-    Exit;
-  if CompareText(SNull, Trim(S)) = 0 then
-  begin
-    SetOrdProp(FObject, PropInfo, Longint(nil));
-    Exit;
-  end;
-  if FOwner <> nil then
-    SetOrdProp(FObject, PropInfo, Longint(FOwner.FindComponent(Trim(S))));
-end;
-{$ENDIF}
 
 procedure TJvPropsStorage.LoadClassProperty(const S: string; PropInfo: PPropInfo);
 var
   Loader: TJvPropsStorage;
   I: Integer;
-  {$IFDEF WIN32}
   Cnt: Integer;
   Recreate: Boolean;
-  {$ENDIF}
   Obj: TObject;
 
   procedure LoadObjectProps(Obj: TObject; const APrefix, ASection: string);
@@ -855,7 +771,6 @@ begin
   begin
     if Obj is TStrings then
       LoadStringsProperty(S, PropInfo)
-    {$IFDEF WIN32}
     else
     if Obj is TCollection then
     begin
@@ -884,7 +799,6 @@ begin
         Loader.Free;
       end;
     end
-    {$ENDIF}
     else
     if Obj is TComponent then
     begin

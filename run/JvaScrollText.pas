@@ -92,11 +92,6 @@ implementation
 uses
   JvJCLUtils, JvDsgnIntf;
 
-{$IFNDEF COMPILER4_UP}
-type
-  Longword = Integer;
-{$ENDIF}
-
 const
   cDelayIncrement = 50;
   cIntToStyle: array [0..3] of TFontStyles = ([], [fsBold], [fsItalic], [fsBold, fsItalic]);

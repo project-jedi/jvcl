@@ -135,14 +135,12 @@ type
     property BevelWidth;
     property BorderWidth;
     property BorderStyle;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property UseDockManager default True;
     property DockSite;
     property DragKind;
     property FullRepaint;
-    {$ENDIF}
     property Color;
     property Ctl3D;
     property Cursor;
@@ -168,13 +166,8 @@ type
     property OnDragDrop;
     property OnEndDrag;
     property OnResize;
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnCanResize;
     property OnConstrainedResize;
     property OnDockDrop;
@@ -183,7 +176,6 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF}
   end;
 
 implementation
@@ -360,8 +352,7 @@ begin
     Registered := True;
   end;
   Caption := TimeToStr(Time);
-  ControlStyle := ControlStyle - [csSetCaption]
-    {$IFDEF WIN32} - [csReplicatable] {$ENDIF};
+  ControlStyle := ControlStyle - [csSetCaption]  - [csReplicatable];
   BevelInner := bvLowered;
   BevelOuter := bvRaised;
   FTimer := TJvTimer.Create(Self);
@@ -525,21 +516,17 @@ begin
 end;
 
 procedure TJvxClock.AlignControls(AControl: TControl; var Rect: TRect);
-{$IFDEF COMPILER4_UP}
 var
   InflateWidth: Integer;
-{$ENDIF}
 begin
   inherited AlignControls(AControl, Rect);
   FClockRect := Rect;
-  {$IFDEF COMPILER4_UP}
   InflateWidth := BorderWidth + 1;
   if BevelOuter <> bvNone then
     Inc(InflateWidth, BevelWidth);
   if BevelInner <> bvNone then
     Inc(InflateWidth, BevelWidth);
   InflateRect(FClockRect, -InflateWidth, -InflateWidth);
-  {$ENDIF}
   with FClockRect do
     CircleClock(Right - Left, Bottom - Top);
   if AutoSize then

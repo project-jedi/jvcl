@@ -39,37 +39,28 @@ type
     FEnabled: Boolean;
     FInterval: Cardinal;
     FOnTimer: TNotifyEvent;
-    FWindowHandle: HWND;
-    {$IFDEF WIN32}
     FSyncEvent: Boolean;
     FThreaded: Boolean;
     FTimerThread: TThread;
     FThreadPriority: TThreadPriority;
     procedure SetThreaded(Value: Boolean);
     procedure SetThreadPriority(Value: TThreadPriority);
-    {$ENDIF}
     procedure SetEnabled(Value: Boolean);
     procedure SetInterval(Value: Cardinal);
     procedure SetOnTimer(Value: TNotifyEvent);
     procedure UpdateTimer;
-    procedure WndProc(var Msg: TMessage);
   protected
     procedure Timer; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    {$IFDEF WIN32}
     procedure Synchronize(Method: TThreadMethod);
-    {$ENDIF}
   published
     property Enabled: Boolean read FEnabled write SetEnabled default True;
     property Interval: Cardinal read FInterval write SetInterval default 1000;
-    {$IFDEF WIN32}
     property SyncEvent: Boolean read FSyncEvent write FSyncEvent default True;
     property Threaded: Boolean read FThreaded write SetThreaded default True;
-    property ThreadPriority: TThreadPriority read FThreadPriority write
-      SetThreadPriority default tpNormal;
-    {$ENDIF}
+    property ThreadPriority: TThreadPriority read FThreadPriority write SetThreadPriority default tpNormal;
     property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
   end;
 
@@ -77,8 +68,6 @@ implementation
 
 uses
   Forms, Consts, JvJVCLUtils;
-
-{$IFDEF WIN32}
 
 //=== TJvTimerThread =========================================================
 
@@ -142,8 +131,6 @@ begin
   until Terminated;
 end;
 
-{$ENDIF}
-
 //=== TJvTimer ===============================================================
 
 constructor TJvTimer.Create(AOwner: TComponent);
@@ -151,18 +138,10 @@ begin
   inherited Create(AOwner);
   FEnabled := True;
   FInterval := 1000;
-  {$IFDEF WIN32}
   FSyncEvent := True;
   FThreaded := True;
   FThreadPriority := tpNormal;
   FTimerThread := TJvTimerThread.Create(Self, False);
-  {$ELSE}
-  {$IFDEF COMPILER6_UP}
-  FWindowHandle := Classes.AllocateHWnd(WndProc)
-  {$ELSE}
-  FWindowHandle := AllocateHWnd(WndProc);
-  {$ENDIF}
-  {$ENDIF}
 end;
 
 destructor TJvTimer.Destroy;
@@ -170,55 +149,17 @@ begin
   Destroying;
   FEnabled := False;
   FOnTimer := nil;
-  {$IFDEF WIN32}
   {TTimerThread(FTimerThread).FOwner := nil;}
   while FTimerThread.Suspended do
     FTimerThread.Resume;
   FTimerThread.Terminate;
-  {if not SyncEvent then FTimerThread.WaitFor;}
-  if FWindowHandle <> 0 then
-  begin
-    {$ENDIF}
-    KillTimer(FWindowHandle, 1);
-    {$IFDEF COMPILER6_UP}
-    Classes.DeallocateHWnd(FWindowHandle);
-    {$ELSE}
-    DeallocateHWnd(FWindowHandle);
-    {$ENDIF}
-    {$IFDEF WIN32}
-  end;
-  {$ENDIF}
   inherited Destroy;
-end;
-
-procedure TJvTimer.WndProc(var Msg: TMessage);
-begin
-  with Msg do
-    if Msg = WM_TIMER then
-    try
-      Timer;
-    except
-      Application.HandleException(Self);
-    end
-    else
-      Result := DefWindowProc(FWindowHandle, Msg, WParam, LParam);
 end;
 
 procedure TJvTimer.UpdateTimer;
 begin
-  {$IFDEF WIN32}
   if FThreaded then
   begin
-    if FWindowHandle <> 0 then
-    begin
-      KillTimer(FWindowHandle, 1);
-      {$IFDEF COMPILER6_UP}
-      Classes.DeallocateHWnd(FWindowHandle);
-      {$ELSE}
-      DeallocateHWnd(FWindowHandle);
-      {$ENDIF}
-      FWindowHandle := 0;
-    end;
     if not FTimerThread.Suspended then
       FTimerThread.Suspend;
     TJvTimerThread(FTimerThread).FInterval := FInterval;
@@ -233,24 +174,7 @@ begin
   begin
     if not FTimerThread.Suspended then
       FTimerThread.Suspend;
-    if FWindowHandle = 0 then
-      {$IFDEF COMPILER6_UP}
-      FWindowHandle := Classes.AllocateHWnd(WndProc)
-      {$ELSE}
-      FWindowHandle := AllocateHWnd(WndProc)
-      {$ENDIF}
-    else
-      KillTimer(FWindowHandle, 1);
-    if (FInterval <> 0) and FEnabled and Assigned(FOnTimer) then
-      if SetTimer(FWindowHandle, 1, FInterval, nil) = 0 then
-        raise EOutOfResources.Create(SNoTimers);
   end;
-  {$ELSE}
-  KillTimer(FWindowHandle, 1);
-  if (FInterval <> 0) and FEnabled and Assigned(FOnTimer) then
-    if SetTimer(FWindowHandle, 1, FInterval, nil) = 0 then
-      raise EOutOfResources.Create(SNoTimers);
-  {$ENDIF}
 end;
 
 procedure TJvTimer.SetEnabled(Value: Boolean);
@@ -270,8 +194,6 @@ begin
     UpdateTimer;
   end;
 end;
-
-{$IFDEF WIN32}
 
 procedure TJvTimer.SetThreaded(Value: Boolean);
 begin
@@ -307,8 +229,6 @@ begin
   else
     Method;
 end;
-
-{$ENDIF}
 
 procedure TJvTimer.SetOnTimer(Value: TNotifyEvent);
 begin

@@ -111,11 +111,7 @@ begin
     OldBrush := Canvas.Brush.Style;
     Canvas.Brush.Style := bsClear;
     Canvas.Pen := Pen;
-    {$IFDEF COMPILER5_UP}
     Canvas.Rectangle(R);
-    {$ELSE}
-    Canvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-    {$ENDIF}
     Canvas.Brush.Style := OldBrush;
     InflateRect(R, -1, -1);
     DrawBitmapExt(Canvas.Handle, FWallpaper, R, 0, 0, fwoTile, fdsDefault, false, 0, 0);

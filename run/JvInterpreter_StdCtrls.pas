@@ -530,7 +530,7 @@ begin
   TScrollBar(Args.Obj).SetParams(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
 
-{$IFDEF COMPILER3_UP}
+
 
 { TCustomStaticText }
 
@@ -550,7 +550,7 @@ begin
   Value := O2V(TStaticText.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{$ENDIF COMPILER3_UP}
+
 
 type
   TJvInterpreterStdCtrlsEvent = class(TJvInterpreterEvent)
@@ -563,11 +563,7 @@ type
 procedure TJvInterpreterStdCtrlsEvent.DrawItemEvent(Control: TWinControl; Index: Integer; Rect: TRect; State:
   TOwnerDrawState);
 begin
-  {$IFDEF COMPILER5_UP}
   CallFunction(nil, [O2V(Control), Index, Rect2Var(Rect), S2V(Word(State))]);
-  {$ELSE}
-  CallFunction(nil, [O2V(Control), Index, Rect2Var(Rect), S2V(Byte(State))]);
-  {$ENDIF}
 end;
 
 procedure TJvInterpreterStdCtrlsEvent.MeasureItemEvent(Control: TWinControl; Index: Integer; var Height: Integer);
@@ -591,12 +587,12 @@ begin
     { TGroupBox }
     AddClass(cStdCtrls, TGroupBox, 'TGroupBox');
     AddGet(TGroupBox, 'Create', TGroupBox_Create, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
+    
     { TTextLayout }
     AddConst(cStdCtrls, 'tlTop', tlTop);
     AddConst(cStdCtrls, 'tlCenter', tlCenter);
     AddConst(cStdCtrls, 'tlBottom', tlBottom);
-    {$ENDIF COMPILER3_UP}
+    
     { TCustomLabel }
     AddClass(cStdCtrls, TCustomLabel, 'TCustomLabel');
     AddGet(TCustomLabel, 'Create', TCustomLabel_Create, 1, [varEmpty], varEmpty);
@@ -730,7 +726,7 @@ begin
     AddClass(cStdCtrls, TScrollBar, 'TScrollBar');
     AddGet(TScrollBar, 'Create', TScrollBar_Create, 1, [varEmpty], varEmpty);
     AddGet(TScrollBar, 'SetParams', TScrollBar_SetParams, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
+    
     { TStaticBorderStyle }
     AddConst(cStdCtrls, 'sbsNone', sbsNone);
     AddConst(cStdCtrls, 'sbsSingle', sbsSingle);
@@ -741,7 +737,7 @@ begin
     { TStaticText }
     AddClass(cStdCtrls, TStaticText, 'TStaticText');
     AddGet(TStaticText, 'Create', TStaticText_Create, 1, [varEmpty], varEmpty);
-    {$ENDIF COMPILER3_UP}
+    
 
     AddHandler(cStdCtrls, 'TDrawItemEvent', TJvInterpreterStdCtrlsEvent, @TJvInterpreterStdCtrlsEvent.DrawItemEvent);
     AddHandler(cStdCtrls, 'TMeasureItemEvent', TJvInterpreterStdCtrlsEvent,
@@ -751,7 +747,7 @@ begin
   RegisterClasses([TGroupBox, TCustomLabel, TLabel, TCustomEdit, TEdit,
     TCustomMemo, TMemo, TCustomComboBox, TComboBox, TButton, TCustomCheckBox,
       TCheckBox, TRadioButton, TCustomListBox, TListBox, TScrollBar
-      {$IFDEF COMPILER3_UP}, TCustomStaticText, TStaticText {$ENDIF COMPILER3_UP}]);
+      , TCustomStaticText, TStaticText]);
 end;
 
 end.

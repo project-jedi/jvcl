@@ -166,9 +166,7 @@ type
     procedure Paint; override;
     property SupressPaint: boolean read FSupressPaint write FSupressPaint;
   published
-    {$IFDEF COMPILER5_UP}
     property Anchors;
-    {$ENDIF}
     property Align;
     property Caption;
     property DragCursor;
@@ -242,9 +240,7 @@ type
     property ExternalCanvas;
     constructor Create(AOwner: TComponent); override;
   published
-    {$IFDEF COMPILER5_UP}
     property Anchors;
-    {$ENDIF}
     property Align;
     property Caption;
     property Color;

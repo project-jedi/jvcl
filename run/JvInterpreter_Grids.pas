@@ -114,12 +114,10 @@ end;
 
 { function MouseCoord(X, Y: Integer): TGridCoord; }
 
-{$IFDEF COMPILER3_UP}
 procedure TCustomGrid_MouseCoord(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Point2Var(TPoint(TCustomGrid(Args.Obj).MouseCoord(Args.Values[0], Args.Values[1])));
 end;
-{$ENDIF}
 
 { TDrawGrid }
 
@@ -235,9 +233,7 @@ begin
     AddConst(cGrids, 'sdDown', sdDown);
     { TCustomGrid }
     AddClass(cGrids, TCustomGrid, 'TCustomGrid');
-    {$IFDEF COMPILER3_UP}
     AddGet(TCustomGrid, 'MouseCoord', TCustomGrid_MouseCoord, 2, [varEmpty, varEmpty], varEmpty);
-    {$ENDIF BCB1}
     { TDrawGrid }
     AddClass(cGrids, TDrawGrid, 'TDrawGrid');
     AddGet(TDrawGrid, 'Create', TDrawGrid_Create, 1, [varEmpty], varEmpty);

@@ -116,13 +116,10 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-    {$IFDEF COMPILER3_UP}
     {$IFDEF COMPLIB_VCL}
     property ImeMode;
     property ImeName;
     {$ENDIF COMPLIB_VCL}
-    {$ENDIF COMPILER3_UP}
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     {$IFDEF COMPLIB_VCL}
     property AutoSize;
@@ -135,7 +132,6 @@ type
     property OnEndDock;
     property OnStartDock;
     {$ENDIF COMPLIB_VCL}
-    {$ENDIF COMPILER4_UP}
   end;
 
   TJvHTComboBox = class(TCustomComboBox)
@@ -205,13 +201,10 @@ type
     property OnKeyUp;
   //  property OnMeasureItem;
     property OnStartDrag;
-    {$IFDEF COMPILER3_UP}
     {$IFDEF COMPLIB_VCL}
     property ImeMode;
     property ImeName;
     {$ENDIF COMPLIB_VCL}
-    {$ENDIF COMPILER3_UP}
-    {$IFDEF COMPILER4_UP}
     {$IFDEF COMPLIB_VCL}
     property AutoSize;
     property BiDiMode;
@@ -223,14 +216,10 @@ type
     property OnEndDock;
     property OnStartDock;
     {$ENDIF COMPLIB_VCL}
-    {$ENDIF COMPILER4_UP}
   end;
 
   TJvHTLabel = class(TCustomLabel)
   private
-    {$IFNDEF COMPILER4_UP}
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
-    {$ENDIF}
     {$IFDEF COMPLIB_VCL}
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     {$ENDIF COMPLIB_VCL}
@@ -238,7 +227,7 @@ type
     {$IFDEF COMPLIB_CLX}
     procedure FontChanged; override;
     {$ENDIF COMPLIB_CLX}
-    procedure AdjustBounds; {$IFDEF COMPILER35_Up} override; {$ENDIF}
+    procedure AdjustBounds; override;
     procedure SetAutoSize(Value: Boolean); override;
     procedure Paint; override;
     procedure Loaded; override;
@@ -273,10 +262,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-    {$IFDEF COMPILER3_UP}
     property Layout;
-    {$ENDIF COMPILER3_UP}
-    {$IFDEF COMPILER4_UP}
     {$IFDEF COMPLIB_VCL}
     property BiDiMode;
     {$ENDIF COMPLIB_VCL}
@@ -287,7 +273,6 @@ type
     property OnEndDock;
     property OnStartDock;
     {$ENDIF COMPLIB_VCL}
-    {$ENDIF COMPILER4_UP}
   end;
 
 procedure ItemHtDrawEx(Canvas: TCanvas; Rect: TRect;
@@ -629,14 +614,6 @@ end;
 
 //=== TJvHTLabel =============================================================
 
-{$IFNDEF COMPILER4_UP}
-procedure TJvHTLabel.CMTextChanged(var Msg: TMessage);
-begin
-  Invalidate;
-  AdjustBounds;
-end;
-{$ENDIF COMPILER4_UP}
-
 {$IFDEF COMPLIB_VCL}
 procedure TJvHTLabel.CMFontChanged(var Msg: TMessage);
 begin
@@ -732,7 +709,6 @@ begin
     begin
       S := Ss[I];
       Rect := ClientRect;
-      {$IFDEF COMPILER3_UP}
       case Layout of
         tlTop:
           Inc(Rect.Top, H * I);
@@ -741,9 +717,6 @@ begin
         tlCenter:
           Rect.Top := (Rect.Bottom - Rect.Top - Ss.Count * H) div 2 + H * I;
       end;
-      {$ELSE}
-      Inc(Rect.Top, H * I);
-      {$ENDIF COMPILER3_UP}
       case Alignment of { }
         taLeftJustify:
           {nothing};

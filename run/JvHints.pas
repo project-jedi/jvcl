@@ -30,11 +30,7 @@ unit JvHints;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   Messages,
   Graphics, Classes, Controls, Forms;
 
@@ -53,9 +49,7 @@ type
     FTileSize: TPoint;
     FRoundFactor: Integer;
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
-    {$IFDEF COMPILER3_UP}
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
-    {$ENDIF}
     function CreateRegion(Shade: Boolean): HRGN;
     procedure FillRegion(Rgn: HRGN; Shade: Boolean);
   protected
@@ -65,12 +59,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ActivateHint(Rect: TRect; const AHint: string); override;
-    {$IFDEF COMPILER3_UP}
     procedure ActivateHintData(Rect: TRect; const AHint: string;
       AData: Pointer); override;
-    {$ENDIF}
-    function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect;
-      {$IFDEF COMPILER3_UP} override; {$ENDIF}
+    function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect;override;
   end;
 
 procedure SetHintStyle(Style: THintStyle; ShadowSize: THintShadowSize;
@@ -130,96 +121,20 @@ begin
 end;
 
 procedure StandardHintFont(AFont: TFont);
-{$IFDEF WIN32}
 var
   NonClientMetrics: TNonClientMetrics;
-{$ENDIF}
 begin
-  {$IFDEF WIN32}
   NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
     AFont.Handle := CreateFontIndirect(NonClientMetrics.lfStatusFont)
   else
   begin
-    AFont.Name := 'MS Sans Serif';
+    AFont.Name := 'MS Shell Dlg 2';
     AFont.Size := 8;
   end;
   AFont.Color := clInfoText;
-  {$ELSE}
-  AFont.Name := 'MS Sans Serif';
-  AFont.Size := 8;
-  AFont.Color := clWindowText;
-  {$ENDIF}
 end;
 
-{$IFDEF WIN32}
-{$IFNDEF COMPILER3_UP}
-function GetCursorHeightMargin: Integer;
-{ Return number of scanlines between the scanline containing cursor hotspot
-  and the last scanline included in the cursor mask. }
-var
-  IconInfo: TIconInfo;
-  BitmapInfoSize: Integer;
-  BitmapBitsSize: Integer;
-  Bitmap: PBitmapInfoHeader;
-  Bits: Pointer;
-  BytesPerScanline, ImageSize: Integer;
-
-  function FindScanline(Source: Pointer; MaxLen: Cardinal;
-    Value: Cardinal): Cardinal; assembler;
-  asm
-            PUSH    ECX
-            MOV     ECX,EDX
-            MOV     EDX,EDI
-            MOV     EDI,EAX
-            POP     EAX
-            REPE    SCASB
-            MOV     EAX,ECX
-            MOV     EDI,EDX
-  end;
-
-begin
-  { Default value is entire icon height }
-  Result := GetSystemMetrics(SM_CYCURSOR);
-  if GetIconInfo(GetCursor, IconInfo) then
-  try
-    GetDIBSizes(IconInfo.hbmMask, BitmapInfoSize, BitmapBitsSize);
-    Bitmap := AllocMem(BitmapInfoSize + BitmapBitsSize);
-    try
-      Bits := Pointer(Longint(Bitmap) + BitmapInfoSize);
-      if GetDIB(IconInfo.hbmMask, 0, Bitmap^, Bits^) and
-        (Bitmap^.biBitCount = 1) then
-      begin
-        { Point Bits to the end of this bottom-up bitmap }
-        with Bitmap^ do
-        begin
-          BytesPerScanline := ((biWidth * biBitCount + 31) and not 31) div 8;
-          ImageSize := biWidth * BytesPerScanline;
-          Bits := Pointer(Integer(Bits) + BitmapBitsSize - ImageSize);
-          { Use the width to determine the height since another mask bitmap
-            may immediately follow }
-          Result := FindScanline(Bits, ImageSize, $FF);
-          { In case the and mask is blank, look for an empty scanline in the
-            xor mask. }
-          if (Result = 0) and (biHeight >= 2 * biWidth) then
-            Result := FindScanline(Pointer(Integer(Bits) - ImageSize),
-              ImageSize, $00);
-          Result := Result div BytesPerScanline;
-        end;
-        Dec(Result, IconInfo.yHotSpot);
-      end;
-    finally
-      FreeMem(Bitmap, BitmapInfoSize + BitmapBitsSize);
-    end;
-  finally
-    if IconInfo.hbmColor <> 0 then
-      DeleteObject(IconInfo.hbmColor);
-    if IconInfo.hbmMask <> 0 then
-      DeleteObject(IconInfo.hbmMask);
-  end;
-end;
-{$ENDIF}
-{$ENDIF}
 
 constructor TJvHintWindow.Create(AOwner: TComponent);
 begin
@@ -242,11 +157,9 @@ begin
   Params.Style := Params.Style and not WS_BORDER;
 end;
 
-{$IFDEF COMPILER3_UP}
 procedure TJvHintWindow.WMNCPaint(var Msg: TMessage);
 begin
 end;
-{$ENDIF}
 
 procedure TJvHintWindow.WMEraseBkgnd(var Msg: TMessage);
 begin
@@ -329,11 +242,7 @@ begin
   if Shade then
   begin
     FImage.Canvas.Brush.Bitmap :=
-      {$IFDEF COMPILER4_UP}
       AllocPatternBitmap(clBtnFace, clWindowText);
-      {$ELSE}
-      CreateTwoColorsBrushPattern(clBtnFace, clWindowText);
-      {$ENDIF}
     FImage.Canvas.Pen.Style := psClear;
   end
   else
@@ -346,23 +255,17 @@ begin
     if not Shade then
     begin
       FImage.Canvas.Brush.Color := Font.Color;
-      {$IFDEF WIN32}
       if (HintStyle = hsRectangle) and not HintTail then
       begin
         DrawEdge(FImage.Canvas.Handle, FRect, BDR_RAISEDOUTER, BF_RECT);
       end
       else
-      {$ENDIF}
         FrameRgn(FImage.Canvas.Handle, Rgn, FImage.Canvas.Brush.Handle, 1, 1);
     end;
   finally
     if Shade then
     begin
-      {$IFDEF COMPILER4_UP}
       FImage.Canvas.Brush.Bitmap := nil;
-      {$ELSE}
-      FImage.Canvas.Brush.Bitmap.Free;
-      {$ENDIF}
       FImage.Canvas.Pen.Style := psSolid;
     end;
     FImage.Canvas.Brush.Color := Color;
@@ -377,18 +280,10 @@ var
   procedure PaintText(R: TRect);
   const
     Flag: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  {$IFNDEF WIN32}
-  var
-    ACaption: array [0..255] of Char;
-  {$ENDIF}
   begin
-    {$IFDEF WIN32}
     DrawText(FImage.Canvas.Handle, PChar(Caption),
-    {$ELSE}
-    DrawText(FImage.Canvas.Handle, StrPCopy(ACaption, Caption),
-    {$ENDIF}
       - 1, R, DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment]
-      {$IFDEF COMPILER4_UP} or DrawTextBiDiModeFlagsReadingOnly {$ENDIF});
+      or DrawTextBiDiModeFlagsReadingOnly);
   end;
 
 begin
@@ -424,15 +319,7 @@ begin
   GetCursorPos(P);
   FPos := hpBottomRight;
   R := CalcHintRect(Screen.Width, AHint, nil);
-  {$IFDEF COMPILER3_UP}
   OffsetRect(R, Rect.Left - R.Left, Rect.Top - R.Top);
-  {$ELSE}
-  {$IFDEF WIN32}
-  OffsetRect(R, P.X, P.Y + GetCursorHeightMargin);
-  {$ELSE}
-  OffsetRect(R, P.X, Rect.Top - R.Top);
-  {$ENDIF WIN32}
-  {$ENDIF}
   Rect := R;
   BoundsRect := Rect;
 
@@ -532,19 +419,12 @@ const
 var
   A: Integer;
   X, Y, Factor: Double;
-  {$IFNDEF WIN32}
-  ACaption: array [0..255] of Char;
-  {$ENDIF}
 begin
   Result := Rect(0, 0, MaxWidth, 0);
   DrawText(Canvas.Handle,
-    {$IFDEF WIN32}
     PChar(AHint),
-    {$ELSE}
-    StrPCopy(ACaption, AHint),
-    {$ENDIF}
     - 1, Result, DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment]
-    {$IFDEF COMPILER4_UP} or DrawTextBiDiModeFlagsReadingOnly {$ENDIF});
+    or DrawTextBiDiModeFlagsReadingOnly);
   Inc(Result.Right, 8);
   Inc(Result.Bottom, 4);
   FRect := Result;
@@ -583,13 +463,11 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER3_UP}
 procedure TJvHintWindow.ActivateHintData(Rect: TRect; const AHint: string;
   AData: Pointer);
 begin
   ActivateHint(Rect, AHint);
 end;
-{$ENDIF}
 
 end.
 

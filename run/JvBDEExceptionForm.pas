@@ -199,9 +199,6 @@ end;
 
 procedure TJvBdeErrorDlg.FormCreate(Sender: TObject);
 begin
-  {$IFNDEF WIN32}
-  BorderIcons := [];
-  {$ENDIF}
   DetailsHeight := DetailsPanel.Height;
   Icon.Handle := LoadIcon(0, IDI_EXCLAMATION);
   IconImage.Picture.Icon := Icon;

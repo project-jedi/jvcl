@@ -145,8 +145,6 @@ begin
   Value := ReadFolders(Args.Values[0], V2O(Args.Values[1]) as TStrings);
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { function TargetFileName(const FileName: TFileName): TFileName; }
 
 procedure JvInterpreter_TargetFileName(var Value: Variant; Args: TJvInterpreterArgs);
@@ -160,8 +158,6 @@ procedure JvInterpreter_ResolveLink(var Value: Variant; Args: TJvInterpreterArgs
 begin
   Value := ResolveLink(Args.Values[0], Args.Values[1], TFileName(TVarData(Args.Values[2]).vString));
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { procedure LoadIcoToImage(ALarge, ASmall: TImageList; const NameRes: string); }
 
@@ -340,15 +336,9 @@ end;
 
 procedure JvInterpreter_ItemHtDrawEx(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPILER5_UP}
   ItemHtDrawEx(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]), TOwnerDrawState(Word(V2S(Args.Values[2]))),
     Args.Values[3], Args.Values[4], string(TVarData(Args.Values[5]).vString), TVarData(Args.Values[6]).vInteger,
     Args.Values[7]);
-  {$ELSE}
-  ItemHtDrawEx(V2O(Args.Values[0]) as TCanvas, Var2Rect(Args.Values[1]), TOwnerDrawState(Byte(V2S(Args.Values[2]))),
-    Args.Values[3], Args.Values[4], string(TVarData(Args.Values[5]).vString), TVarData(Args.Values[6]).vInteger,
-    Args.Values[7]);
-  {$ENDIF}
 end;
 
 { function ItemHtDraw(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState; const Text: string; const HideSelColor: Boolean): string; }
@@ -991,11 +981,9 @@ begin
     AddFun(cJvUtils, 'SaveTextFile', JvInterpreter_SaveTextFile, 2, [varEmpty, varString], varEmpty);
     AddFun(cJvUtils, 'ReadFolder', JvInterpreter_ReadFolder, 3, [varEmpty, varEmpty, varObject], varEmpty);
     AddFun(cJvUtils, 'ReadFolders', JvInterpreter_ReadFolders, 2, [varEmpty, varObject], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddFun(cJvUtils, 'TargetFileName', JvInterpreter_TargetFileName, 1, [varEmpty], varEmpty);
     AddFun(cJvUtils, 'ResolveLink', JvInterpreter_ResolveLink, 3, [varEmpty, varEmpty, varEmpty or varByRef],
       varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddFun(cJvUtils, 'LoadIcoToImage', JvInterpreter_LoadIcoToImage, 3, [varObject, varObject, varString], varEmpty);
     AddFun(cJvUtils, 'RATextOut', JvInterpreter_RATextOut, 4, [varObject, varEmpty, varEmpty, varString], varEmpty);
     AddFun(cJvUtils, 'RATextOutEx', JvInterpreter_RATextOutEx, 5, [varObject, varEmpty, varEmpty, varString,

@@ -30,11 +30,7 @@ unit JvGrids;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   Messages, Classes, Controls, Graphics, StdCtrls, Forms, Grids,
   JvConsts, JvFormPlacement;
 
@@ -46,10 +42,8 @@ type
   TFixedCellClickEvent = procedure(Sender: TObject; ACol, ARow: Longint) of object;
   TFixedCellCheckEvent = procedure(Sender: TObject; ACol, ARow: Longint;
     var Enabled: Boolean) of object;
-  {$IFDEF WIN32}
   {$IFDEF COMPILER6_UP}
   TInplaceEditStyle = TEditStyle; //(ieSimple, ieEllipsis, iePickList);
-
 const
   ieSimple = esSimple;
   ieEllipsis = esEllipsis;
@@ -65,7 +59,6 @@ type
     PickList: TStrings) of object;
   TEditStyleEvent = procedure(Sender: TObject; ACol, ARow: Longint;
     var Style: TInplaceEditStyle) of object;
-  {$ENDIF}
 
   TJvDrawGrid = class(TDrawGrid)
   private
@@ -97,13 +90,11 @@ type
     FOver: Boolean;
     FOnHScroll: TNotifyEvent;
     FOnVScroll: TNotifyEvent;
-    {$IFDEF WIN32}
     FOnGetEditAlign: TEditAlignEvent;
     FOnEditButtonClick: TNotifyEvent;
     FOnGetPicklist: TPicklistEvent;
     FOnGetEditStyle: TEditStyleEvent;
     FDrawButtons: boolean;
-    {$ENDIF}
     function GetStorage: TJvFormPlacement;
     procedure SetStorage(Value: TJvFormPlacement);
     procedure IniSave(Sender: TObject);
@@ -117,9 +108,7 @@ type
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
-    {$IFDEF WIN32}
     procedure WMRButtonUp(var Msg: TWMMouse); message WM_RBUTTONUP;
-    {$ENDIF}
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -155,15 +144,12 @@ type
     procedure DoFixedCellClick(ACol, ARow: Longint); dynamic;
     procedure CheckFixedCellButton(ACol, ARow: Longint;
       var Enabled: Boolean); dynamic;
-    {$IFDEF WIN32}
     procedure EditButtonClick; dynamic;
     function GetEditAlignment(ACol, ARow: Longint): TAlignment; dynamic;
     function GetEditStyle(ACol, ARow: Longint):
-      {$IFDEF COMPILER6_UP}TEditStyle; override;
-    {$ELSE}TInplaceEditStyle; dynamic;
+      {$IFDEF COMPILER6_UP}TEditStyle; override;{$ELSE}TInplaceEditStyle; dynamic;
     {$ENDIF}
     procedure GetPicklist(ACol, ARow: Longint; Picklist: TStrings); dynamic;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -198,12 +184,10 @@ type
     property OnGetEditLimit: TEditLimitEvent read FOnGetEditLimit write FOnGetEditLimit;
     property OnEditChange: TNotifyEvent read FOnEditChange write FOnEditChange;
     property OnShowEditor: TEditShowEvent read FOnShowEditor write FOnShowEditor;
-    {$IFDEF WIN32}
     property OnGetEditAlign: TEditAlignEvent read FOnGetEditAlign write FOnGetEditAlign;
     property OnGetEditStyle: TEditStyleEvent read FOnGetEditStyle write FOnGetEditStyle;
     property OnGetPicklist: TPicklistEvent read FOnGetPicklist write FOnGetPicklist;
     property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick write FOnEditButtonClick;
-    {$ENDIF}
 
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -220,18 +204,12 @@ uses
   JvJVCLUtils;
 
 const
-  {$IFDEF WIN32}
   MaxCustomExtents = MaxListSize;
-  {$ELSE}
-  MaxCustomExtents = 65520 div SizeOf(Integer);
-  {$ENDIF}
   MaxShortInt = High(ShortInt);
 
 type
   PIntArray = ^TIntArray;
   TIntArray = array[0..MaxCustomExtents] of Integer;
-
-  {$IFDEF WIN32}
 
 type
   TJvPopupListBox = class;
@@ -301,9 +279,7 @@ begin
   begin
     Style := Style or WS_BORDER;
     ExStyle := WS_EX_TOOLWINDOW or WS_EX_TOPMOST;
-    {$IFDEF COMPILER4_UP}
     AddBiDiModeExStyle(ExStyle);
-    {$ENDIF}
     WindowClass.Style := CS_SAVEBITS;
   end;
 end;
@@ -358,7 +334,7 @@ end;
 
 procedure TJvInplaceEdit.CreateParams(var Params: TCreateParams);
 const
-  Alignments: array[TAlignment] of {$IFDEF COMPILER4_UP}Cardinal{$ELSE}Longint{$ENDIF} =
+  Alignments: array[TAlignment] of Cardinal =
   (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
@@ -375,10 +351,8 @@ begin
     Dec(R.Right, FButtonWidth);
   SendMessage(Handle, EM_SETRECTNP, 0, LongInt(@R));
   SendMessage(Handle, EM_SCROLLCARET, 0, 0);
-  {$IFDEF COMPILER3_UP}
   if SysLocale.FarEast then
     SetImeCompositionWindow(Font, R.Left, R.Top);
-  {$ENDIF}
 end;
 
 procedure TJvInplaceEdit.CloseUp(Accept: Boolean);
@@ -669,7 +643,6 @@ end;
 
 procedure TJvInplaceEdit.WMKillFocus(var Msg: TMessage);
 begin
-  {$IFDEF COMPILER3_UP}
   if not SysLocale.FarEast then
     inherited
   else
@@ -680,9 +653,6 @@ begin
     if THandle(Msg.WParam) <> TJvDrawGrid(Grid).Handle then
       ActivateKeyboardLayout(Screen.DefaultKbLayout, KLF_ACTIVATE);
   end;
-  {$ELSE}
-  inherited;
-  {$ENDIF}
   CloseUp(False);
 end;
 
@@ -730,13 +700,6 @@ begin
   end;
   inherited;
 end;
-
-{$ELSE}
-
-type
-  TJvInplaceEdit = class(TInplaceEdit);
-
-  {$ENDIF WIN32}
 
   //=== TJvDrawGrid ===========================================================
 
@@ -825,15 +788,13 @@ end;
 procedure TJvDrawGrid.DrawStr(ARect: TRect; const S: string;
   Align: TAlignment);
 begin
-  DrawCellTextEx(Self, 0, 0, S, ARect, Align, vaCenter, False
-    {$IFDEF COMPILER4_UP}, IsRightToLeft{$ENDIF});
+  DrawCellTextEx(Self, 0, 0, S, ARect, Align, vaCenter, False, IsRightToLeft);
 end;
 
 procedure TJvDrawGrid.DrawMultiline(ARect: TRect; const S: string;
   Align: TAlignment);
 begin
-  DrawCellTextEx(Self, 0, 0, S, ARect, Align, vaTopJustify, True
-    {$IFDEF COMPILER4_UP}, IsRightToLeft{$ENDIF});
+  DrawCellTextEx(Self, 0, 0, S, ARect, Align, vaTopJustify, True, IsRightToLeft);
 end;
 
 procedure TJvDrawGrid.InvalidateCell(ACol, ARow: Longint);
@@ -842,17 +803,8 @@ begin
 end;
 
 procedure TJvDrawGrid.InvalidateCol(ACol: Longint);
-{$IFNDEF WIN32}
-var
-  I: Longint;
-  {$ENDIF}
 begin
-  {$IFDEF WIN32}
   inherited InvalidateCol(ACol);
-  {$ELSE}
-  for I := 0 to RowCount - 1 do
-    inherited InvalidateCell(ACol, I);
-  {$ENDIF}
 end;
 
 procedure TJvDrawGrid.InvalidateRow(ARow: Longint);
@@ -1288,7 +1240,6 @@ begin
   end;
   if FDefaultDrawing and (gdFixed in AState) and Ctl3D then
   begin
-    {$IFDEF WIN32}
     FrameFlags1 := 0;
     FrameFlags2 := 0;
     if goFixedVertLine in Options then
@@ -1313,33 +1264,6 @@ begin
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
     end;
-    {$ELSE}
-    with Canvas do
-    begin
-      Pen.Color := clBtnHighlight;
-      if FFixedCellsButtons then
-      begin
-        if Down then
-        begin
-          Pen.Color := clBtnShadow;
-          with ARect do
-          begin
-            PolyLine([Point(Left, Bottom - 1), Point(Left, Top),
-              Point(Right, Top)]);
-            Inc(Left, 2);
-            Inc(Top, 2);
-          end;
-        end
-        else
-          Frame3D(Canvas, ARect, clBtnHighlight, clBtnShadow, 1);
-      end
-      else
-      begin
-        Polyline([Point(ARect.Left, ARect.Bottom - 1), ARect.TopLeft,
-          Point(ARect.Right, ARect.Top)]);
-      end;
-    end;
-    {$ENDIF WIN32}
   end;
   if FDefaultDrawing and not (csDesigning in ComponentState) and
     (gdFocused in AState) and
@@ -1347,8 +1271,6 @@ begin
     not (goRowSelect in Options) then
     DrawFocusRect(Canvas.Handle, ARect);
 end;
-
-{$IFDEF WIN32}
 
 procedure TJvDrawGrid.WMRButtonUp(var Msg: TWMMouse);
 begin
@@ -1358,14 +1280,10 @@ begin
     with Msg do
       MouseUp(mbRight, KeysToShiftState(Keys), XPos, YPos);
 end;
-{$ENDIF}
 
 procedure TJvDrawGrid.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 var
   Cell: TGridCoord;
-  {$IFNDEF WIN32}
-  Form: TForm;
-  {$ENDIF}
 begin
   if FFixedCellsButtons then
   begin
@@ -1374,18 +1292,10 @@ begin
     if ((Cell.X >= 0) and (Cell.X < FixedCols)) or
       ((Cell.Y >= 0) and (Cell.Y < FixedRows)) then
     begin
-      {$IFDEF WIN32}
       SendCancelMode(Self);
-      {$ELSE}
-      Form := GetParentForm(Self);
-      if Form <> nil then
-        Form.SendCancelMode(Self);
-      {$ENDIF}
       if csCaptureMouse in ControlStyle then
         MouseCapture := True;
-      {$IFDEF WIN32}
       if not (csNoStdEvents in ControlStyle) then
-        {$ENDIF}
         with Msg do
           MouseDown(mbLeft, KeysToShiftState(Keys) - [ssDouble], XPos, YPos);
       Exit;
@@ -1416,15 +1326,9 @@ end;
 
 function TJvDrawGrid.CreateEditor: TInplaceEdit;
 begin
-  {$IFDEF WIN32}
   Result := TJvInplaceEdit.Create(Self);
-  {$ELSE}
-  Result := inherited CreateEditor;
-  {$ENDIF}
   TEdit(Result).OnChange := EditChanged;
 end;
-
-{$IFDEF WIN32}
 
 function TJvDrawGrid.GetEditAlignment(ACol, ARow: Longint): TAlignment;
 begin
@@ -1451,8 +1355,6 @@ begin
   if Assigned(FOnEditButtonClick) then
     FOnEditButtonClick(Self);
 end;
-
-{$ENDIF}
 
 procedure TJvDrawGrid.CMCtl3DChanged(var Msg: TMessage);
 begin

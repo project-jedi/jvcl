@@ -93,9 +93,7 @@ type
     function GetDataSource: TDataSource;
     procedure SetDataSource(Value: TDataSource);
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
-    {$IFDEF COMPILER4_UP}
     procedure SetMirror(Value: Boolean);
-    {$ENDIF COMPILER4_UP}
     {**** Drag'n'Drop ****}
     procedure TimerDnDTimer(Sender: TObject);
   protected
@@ -154,9 +152,7 @@ type
     property PersistentNode: Boolean read FPersistentNode write FPersistentNode;
     property SelectedIndex: Integer read FSelectedIndex write FSelectedIndex default 1;
     property UseFilter: Boolean read FUseFilter write FUseFilter;
-    {$IFDEF COMPILER4_UP}
     property Mirror: Boolean read FMirror write SetMirror;
-    {$ENDIF COMPILER4_UP}
     property Items;
   end;
 
@@ -178,8 +174,7 @@ type
     FMasterValue: Variant;
   public
     procedure SetMasterValue(AValue: Variant);
-    procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode);
-      {$IFNDEF COMPILER2} override; {$ENDIF}
+    procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode);override;
     property MasterValue: Variant read FMasterValue;
   end;
 
@@ -200,9 +195,7 @@ type
     property ShowLines;
     property ShowRoot;
     property ReadOnly;
-    {$IFDEF COMPILER3_UP}
     property RightClickSelect;
-    {$ENDIF COMPILER3_UP}
     property DragMode;
     property HideSelection;
     property Indent;
@@ -249,7 +242,6 @@ type
     property ShowHint;
     property Images;
     property StateImages;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property AutoExpand;
     property BiDiMode;
@@ -266,7 +258,6 @@ type
     property OnEndDock;
     property OnStartDock;
     property Mirror;
-    {$ENDIF COMPILER4_UP}
   end;
 
   EJvDBTreeViewError = class(ETreeViewError);
@@ -275,11 +266,6 @@ implementation
 
 uses
   JvDBConsts;
-
-{$IFNDEF COMPILER4_UP}
-type
-  LongWord = Longint;
-{$ENDIF}
 
 // (rom) moved to implementation and removed type
 // (rom) never rely on assignable consts
@@ -308,7 +294,6 @@ begin
     Result := VarAsType(V, VarType);
 end;
 
-{$IFDEF COMPILER4_UP}
 procedure MirrorControl(Control: TWinControl; RightToLeft: Boolean);
 var
   OldLong: Longword;
@@ -323,7 +308,6 @@ begin
     SetWindowLong(Control.Handle, GWL_EXSTYLE, OldLong and not $00400000);
   Control.Repaint;
 end;
-{$ENDIF COMPILER4_UP}
 
 //=== TJvDBTreeViewDataLink ==================================================
 
@@ -373,9 +357,6 @@ begin
     Free
   else
     inherited MoveTo(Destination, Mode);
-  {$IFDEF COMPILER2}
-  Destination.HasChildren := True;
-  {$ENDIF}
   TV.FPersistentNode := PersistNode;
 end;
 
@@ -1281,14 +1262,12 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER4_UP}
 procedure TCustomJvDBTreeView.SetMirror(Value: Boolean);
 begin
   if Value and SysLocale.MiddleEast and not (csDesigning in ComponentState) then
     MirrorControl(Self, Value);
   FMirror := Value;
 end;
-{$ENDIF COMPILER4_UP}
 
 end.
 

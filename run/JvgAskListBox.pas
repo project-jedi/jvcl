@@ -923,12 +923,10 @@ begin
   State := [];
   if ByteState and ODS_CHECKED <> 0 then
     Include(State, odChecked); //TOwnerDrawState
-  {$IFDEF COMPILER5_UP}
   if ByteState and ODS_COMBOBOXEDIT <> 0 then
     Include(State, odComboBoxEdit);
   if ByteState and ODS_DEFAULT <> 0 then
     Include(State, odDefault);
-  {$ENDIF}
   if ByteState and ODS_DISABLED <> 0 then
     Include(State, odDisabled);
   if ByteState and ODS_FOCUS <> 0 then

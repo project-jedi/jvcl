@@ -30,11 +30,7 @@ unit JvSplashWindow;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   JvAnimatedImage;
 
@@ -139,9 +135,7 @@ begin
     begin
       Animation.Glyph := Graphic as TBitmap;
       Animation.Visible := True;
-      {$IFDEF COMPILER3_UP}
       Animation.AsyncDrawing := True;
-      {$ENDIF}
       Animation.Active := True;
     end
     else
@@ -174,16 +168,12 @@ end;
 procedure TJvSplashWindow.SetMessageText(const Value: string);
 var
   TextRect: TRect;
-  {$IFNDEF WIN32}
-  C: array [0..255] of Char;
-  {$ENDIF WIN32}
   VertOff: Integer;
 begin
   TextRect := Rect(FTextMessage.Left, 0, Max(Screen.Width div 2 - 64,
     defTextWidth), 0);
   DrawText(Canvas.Handle,
-    {$IFDEF WIN32} PChar(Value), {$ELSE}StrPCopy(C, Value), {$ENDIF WIN32}
-    - 1, TextRect, DT_CALCRECT or DT_WORDBREAK);
+    PChar(Value), - 1, TextRect, DT_CALCRECT or DT_WORDBREAK);
   VertOff := (ClientHeight div 2) - ((TextRect.Bottom - TextRect.Top) div 2);
   if VertOff < 0 then
     VertOff := 10;

@@ -334,9 +334,7 @@ type
   TJvInterpreterVarList = class(TList)
   public
     destructor Destroy; override;
-    procedure Clear;
-{$IFDEF COMPILER35_UP} override;
-{$ENDIF}
+    procedure Clear;override;
     procedure AddVar(UnitName, Identifier, Typ: string; VTyp: Word;
       const Value: Variant; DataType: IJvInterpreterDataType);
     function FindVar(const UnitName, Identifier: string): TJvInterpreterVar;
@@ -1024,16 +1022,9 @@ implementation
 
 uses
   TypInfo,
-{$IFNDEF COMPILER3_UP}
-  Ole2, { IUnknown in Delphi 2 }
-{$ENDIF}
 {$IFDEF JvInterpreter_OLEAUTO}
   OleConst,
-{$IFDEF COMPILER3_UP}
   ActiveX, ComObj,
-{$ELSE}
-  OleAuto,
-{$ENDIF COMPILER3_UP}
 {$ENDIF JvInterpreter_OLEAUTO}
   JvInterpreterConst, JvJVCLUtils, JvJCLUtils;
 
@@ -1207,27 +1198,6 @@ type
     EventClass: TJvInterpreterEventClass;
     Code: Pointer;
   end;
-
-{$IFDEF COMPILER2}
-
-  { TJvStringStream  - reduced implementation from Delphi 3 classes.pas }
-  TJvStringStream = class(TStream)
-  private
-    FDataString: string;
-    FPosition: Integer;
-  protected
-    procedure SetSize(NewSize: Longint);
-  public
-    constructor Create(const AString: string);
-    function Read(var Buffer; Count: Longint): Longint; override;
-    function Write(const Buffer; Count: Longint): Longint; override;
-    function Seek(Offset: Longint; Origin: Word): Longint; override;
-  end;
-
-  PDouble = ^Double;
-  PSmallInt = ^SmallInt;
-
-{$ENDIF COMPILER2}
 
 {$IFDEF COMPLIB_CLX}
 type
@@ -1532,71 +1502,6 @@ begin
   List.Clear;
 end;
 
-//=== TJvStringStream ========================================================
-
-{$IFNDEF COMPILER3_UP}
-
-constructor TJvStringStream.Create(const AString: string);
-begin
-  inherited Create;
-  FDataString := AString;
-end;
-
-function TJvStringStream.Read(var Buffer; Count: Longint): Longint;
-begin
-  Result := Length(FDataString) - FPosition;
-  if Result > Count then
-    Result := Count;
-  Move(PChar(@FDataString[FPosition + 1])^, Buffer, Result);
-  Inc(FPosition, Result);
-end;
-
-function TJvStringStream.Write(const Buffer; Count: Longint): Longint;
-begin
-  Result := Count;
-  SetLength(FDataString, (FPosition + Result));
-  Move(Buffer, PChar(@FDataString[FPosition + 1])^, Result);
-  Inc(FPosition, Result);
-end;
-
-function TJvStringStream.Seek(Offset: Longint; Origin: Word): Longint;
-begin
-  case Origin of
-    soFromBeginning:
-      FPosition := Offset;
-    soFromCurrent:
-      FPosition := FPosition + Offset;
-    soFromEnd:
-      FPosition := Length(FDataString) - Offset;
-  end;
-  Result := FPosition;
-end;
-
-procedure TJvStringStream.SetSize(NewSize: Longint);
-begin
-  SetLength(FDataString, NewSize);
-  if FPosition > NewSize then
-    FPosition := NewSize;
-end;
-
-{$ENDIF}
-
-{$IFNDEF COMPILER3_UP}
-
-function AnsiStrIComp(S1, S2: PChar): Integer;
-begin
-  Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE, S1, -1,
-    S2, -1) - 2;
-end;
-
-function AnsiStrLIComp(S1, S2: PChar; MaxLen: Cardinal): Integer;
-begin
-  Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-    S1, MaxLen, S2, MaxLen) - 2;
-end;
-
-{$ENDIF COMPILER3_UP}
-
 // (rom) JvUtil added to uses and funtions deleted
 
 function Cmp(const S1, S2: string): Boolean;
@@ -1689,10 +1594,8 @@ end;
 {************* Some code from Delphi's OleAuto unit **************}
 
 const
-{$IFDEF COMPILER3_UP}
   { Maximum number of dispatch arguments }
   MaxDispArgs = 64;
-{$ENDIF COMPILER3_UP}
 
   { Special variant type codes }
   varStrArg = $0048;
@@ -1734,11 +1637,7 @@ begin
   R := Dispatch.GetIDsOfNames(GUID_NULL, @NameRefs, NameCount,
     LOCALE_SYSTEM_DEFAULT, DispIDs);
   if R <> 0 then
-{$IFDEF COMPILER3_UP}
     raise EOleError.CreateFmt(SNoMethod, [Names]);
-{$ELSE}
-    raise EOleError.CreateResFmt(SNoMethod, [Names]);
-{$ENDIF COMPILER3_UP}
 end;
 
 { Central call dispatcher }
@@ -1751,11 +1650,7 @@ begin
   GetIDsOfNames(IDispatch(Dispatch), Names, CallDesc^.NamedArgCount + 1, PDispIDList(@DispIDs[0]));
   if Result <> nil then
     VarClear(Result^);
-{$IFDEF COMPILER3_UP}
   DispatchInvoke(IDispatch(Dispatch), CallDesc, PDispIDList(@DispIDs[0]), ParamTypes, Result);
-{$ELSE}
-  DispInvoke(Dispatch, CallDesc, PDispIDList(@DispIDs[0]), ParamTypes, Result);
-{$ENDIF COMPILER3_UP}
 end;
 
 {################## from OleAuto unit ##################}
@@ -2445,9 +2340,6 @@ end;
 
 destructor TJvInterpreterVarList.Destroy;
 begin
-{$IFNDEF COMPILER4_UP}
-  Clear;
-{$ENDIF}
   inherited Destroy;
 end;
 
@@ -4446,7 +4338,7 @@ begin
       Value := Char(GetOrdProp(Args.Obj, PropInf));
     tkFloat:
       Value := GetFloatProp(Args.Obj, PropInf);
-    tkString, tkLString{$IFDEF COMPILER3_UP}, tkWString{$ENDIF COMPILER3_UP}:
+    tkString, tkLString, tkWString:
       Value := GetStrProp(Args.Obj, PropInf);
     tkClass:
       Value := O2V(TObject(GetOrdProp(Args.Obj, PropInf)));
@@ -4490,7 +4382,7 @@ begin
       SetOrdProp(Args.Obj, PropInf, Integer(string(Value)[1]));
     tkFloat:
       SetFloatProp(Args.Obj, PropInf, Value);
-    tkString, tkLString{$IFDEF COMPILER3_UP}, tkWString{$ENDIF COMPILER3_UP}:
+    tkString, tkLString, tkWString:
       SetStrProp(Args.Obj, PropInf, VarToStr(Value));
     tkClass:
       SetOrdProp(Args.Obj, PropInf, Integer(V2O(Value)));
@@ -4782,11 +4674,7 @@ end;
 
 procedure TJvInterpreterExpression.Parse;
 begin
-{$IFNDEF COMPILER2}
   FPStream.Size := 0;
-{$ELSE}
-  (FPStream as TJvStringStream).SetSize(0);
-{$ENDIF}
   FPStream.Position := 0;
   Parser.Init;
   repeat

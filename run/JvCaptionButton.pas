@@ -59,7 +59,9 @@ unit JvCaptionButton;
 interface
 
 uses
-  Windows, Messages, Classes, Graphics, Controls, Forms, {$IFDEF COMPILER6_UP}Types, {$ENDIF}ActnList, ImgList,
+  Windows, Messages, Classes, Graphics, Controls, Forms,
+  {$IFDEF COMPILER6_UP}Types,{$ENDIF}
+  ActnList, ImgList,
   JvComponent, JvWndProcHook;
 
 type

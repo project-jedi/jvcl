@@ -30,11 +30,7 @@ unit JvSplit;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   Classes, Controls, ExtCtrls, Forms, Graphics,
   JvComponent;
 
@@ -98,16 +94,14 @@ type
     property ControlFirst: TControl read FControlFirst write SetControlFirst;
     property ControlSecond: TControl read FControlSecond write SetControlSecond;
     property Align: TAlign read GetAlign write SetAlign default alNone;
-    {$IFDEF COMPILER4_UP}
     property Constraints;
-    {$ENDIF}
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
     property BorderStyle;
     property Enabled;
     property Color;
-    property Ctl3D {$IFDEF WIN32} default False {$ENDIF};
+    property Ctl3D default False;
     property Cursor read GetCursor stored False;
     property TopLeftLimit: Integer read FTopLeftLimit write FTopLeftLimit default 20;
     property BottomRightLimit: Integer read FBottomRightLimit write FBottomRightLimit default 20;
@@ -158,9 +152,7 @@ begin
   FControlFirst := nil;
   FControlSecond := nil;
   ParentCtl3D := False;
-  {$IFDEF WIN32}
   Ctl3D := False;
-  {$ENDIF}
 end;
 
 procedure TJvxSplitter.Loaded;
@@ -537,10 +529,8 @@ begin
     else
     begin
       FControlFirst := Value;
-      {$IFDEF WIN32}
       if Value <> nil then
         Value.FreeNotification(Self);
-      {$ENDIF}
     end;
     UpdateState;
   end;
@@ -555,10 +545,8 @@ begin
     else
     begin
       FControlSecond := Value;
-      {$IFDEF WIN32}
       if Value <> nil then
         Value.FreeNotification(Self);
-      {$ENDIF}
     end;
     UpdateState;
   end;

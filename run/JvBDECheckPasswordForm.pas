@@ -124,8 +124,8 @@ begin
   OldPswdLabel.Caption := SOldPasswordLabel;
   NewPswdLabel.Caption := SNewPasswordLabel;
   ConfirmLabel.Caption := SConfirmPasswordLabel;
-  OkBtn.Caption := ResStr(SOKButton);
-  CancelBtn.Caption := ResStr(SCancelButton);
+  OkBtn.Caption := SOKButton;
+  CancelBtn.Caption := SCancelButton;
 end;
 
 procedure TJvChPswdForm.ClearEdits;
@@ -164,9 +164,7 @@ begin
         if Table <> nil then
         begin
           Table.DatabaseName := Database.DatabaseName;
-          {$IFDEF WIN32}
           Table.SessionName := Database.SessionName;
-          {$ENDIF}
           Table.TableName := UsersTableName;
           Table.IndexFieldNames := UserNameField;
           Table.Open;

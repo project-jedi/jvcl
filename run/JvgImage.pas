@@ -104,9 +104,7 @@ type
     //    procedure RepaintBackground;//...for users
 
   published
-    {$IFDEF COMPILER5_UP}
     property Anchors;
-    {$ENDIF}
     property Align;
     property Color;
     property DragCursor;

@@ -32,18 +32,8 @@ unit JvgProgress;
 interface
 
 uses
-  Windows,
-  Messages,
-  Classes,
-  Controls,
-  Graphics,
-  SysUtils,
-  JvgTypes,
-  JvgCommClasses,
-  JvgUtils,
-  JVComponent,
-  ExtCtrls{$IFDEF COMPILER5_UP},
-  Imglist{$ENDIF};
+  Windows, Messages, Classes, Controls, Graphics, SysUtils, ExtCtrls, Imglist,
+  JvgTypes, JvgCommClasses, JvgUtils, JvComponent;
 type
 
   TJvgProgress = class(TJvGraphicControl)
@@ -86,9 +76,7 @@ type
     destructor Destroy; override;
 
   published
-    {$IFDEF COMPILER5_UP}
     property Anchors;
-    {$ENDIF}
     property Align;
     property Caption;
     property Font;

@@ -52,12 +52,10 @@ type
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
     FColor: TColor;
-    {$IFDEF COMPILER4_UP}
     FBiDiMode: TBiDiMode; {o}
     FParentBiDiMode: Boolean;
     procedure SetBiDiMode(Value: TBiDiMode);
     procedure SetParentBiDiMode(Value: Boolean);
-    {$ENDIF COMPILER4_UP}
     procedure GlyphChanged(Sender: TObject);
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
@@ -88,10 +86,8 @@ type
     function DrawExternal(AGlyph: TBitmap; ANumGlyphs: TNumGlyphs; AColor: TColor; IgnoreOld: Boolean;
       Canvas: TCanvas; const Client: TRect; const Offset: TPoint; const Caption: string;
       Layout: TButtonLayout; Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean): TRect;
-    {$IFDEF COMPILER4_UP}
     property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode;
     property ParentBiDiMode: Boolean read FParentBiDiMode write SetParentBiDiMode;
-    {$ENDIF COMPILER4_UP}
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property Color: TColor read FColor write SetColor;
@@ -243,9 +239,6 @@ type
   public
     constructor CreateSize(AWidth, AHeight: Integer);
     destructor Destroy; override;
-    {$IFDEF COMPILER2}
-    function Add(Image, Mask: TBitmap): Integer;
-    {$ENDIF COMPILER2}
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
     procedure Delete(Index: Integer);
     property Count: Integer read FCount;
@@ -286,15 +279,6 @@ begin
   end;
   FUsed[Result] := True;
 end;
-
-{$IFDEF COMPILER2}
-function TJvGlyphList.Add(Image, Mask: TBitmap): Integer;
-begin
-  Result := AllocateIndex;
-  Replace(Result, Image, Mask);
-  Inc(FCount);
-end;
-{$ENDIF COMPILER2}
 
 function TJvGlyphList.AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
 begin
@@ -435,7 +419,6 @@ begin
 end;
 
 {O}
-{$IFDEF COMPILER4_UP}
 
 procedure TJvButtonGlyph.SetBiDiMode(Value: TBiDiMode);
 begin
@@ -455,8 +438,6 @@ begin
     Invalidate;
   end;
 end;
-
-{$ENDIF COMPILER4_UP}
 
 procedure TJvButtonGlyph.SetGlyph(Value: TBitmap);
 var
@@ -496,143 +477,7 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER2}
-function TJvButtonGlyph.CreateButtonGlyph(State: TButtonState): Integer;
-const
-  ROP_DSPDxax = $00E20746;
-var
-  TmpImage, MonoBmp: TBitmap;
-  IWidth, IHeight: Integer;
-  IRect, ORect: TRect;
-  I: TButtonState;
-  DestDC: HDC;
-begin
-  if (State = bsDown) and (NumGlyphs < 3) then
-    State := bsUp;
-  Result := FIndexs[State];
-  if Result <> -1 then
-    Exit;
-  if (FOriginal.Width or FOriginal.Height) = 0 then
-    Exit;
-  IWidth := FOriginal.Width div FNumGlyphs;
-  IHeight := FOriginal.Height;
-  if FGlyphList = nil then
-  begin
-    if GlyphCache = nil then
-      GlyphCache := TJvGlyphCache.Create;
-    FGlyphList := GlyphCache.GetList(IWidth, IHeight);
-  end;
-  TmpImage := TBitmap.Create;
-  try
-    TmpImage.Width := IWidth;
-    TmpImage.Height := IHeight;
-    IRect := Rect(0, 0, IWidth, IHeight);
-    TmpImage.Canvas.Brush.Color := clBtnFace;
-    I := State;
-    if Ord(I) >= NumGlyphs then
-      I := bsUp;
-    ORect := Rect(Ord(I) * IWidth, 0, (Ord(I) + 1) * IWidth, IHeight);
-    case State of
-      bsUp, bsDown:
-        begin
-          TmpImage.Canvas.BrushCopy(IRect, FOriginal, ORect, FTransparentColor);
-          FIndexs[State] := TJvGlyphList(FGlyphList).Add(TmpImage, nil);
-        end;
-      bsExclusive:
-        begin
-          TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage, FTransparentColor);
-        end;
-      bsDisabled:
-        begin
-          MonoBmp := TBitmap.Create;
-          try
-            if NumGlyphs > 1 then
-              with TmpImage.Canvas do
-              begin
-                { Change white & gray to clBtnHighlight and clBtnShadow }
-                CopyRect(IRect, FOriginal.Canvas, ORect);
-                MonoBmp.Width := IWidth;
-                MonoBmp.Height := IHeight;
-                MonoBmp.Monochrome := True;
 
-                { Convert white to clBtnHighlight }
-                FOriginal.Canvas.Brush.Color := clWhite;
-                MonoBmp.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-                Brush.Color := clBtnHighlight;
-                DestDC := Handle;
-                SetTextColor(DestDC, clBlack);
-                SetBkColor(DestDC, clWhite);
-                BitBlt(DestDC, 0, 0, IWidth, IHeight,
-                  MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-
-                { Convert gray to clBtnShadow }
-                FOriginal.Canvas.Brush.Color := clGray;
-                MonoBmp.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-                Brush.Color := clBtnShadow;
-                DestDC := Handle;
-                SetTextColor(DestDC, clBlack);
-                SetBkColor(DestDC, clWhite);
-                BitBlt(DestDC, 0, 0, IWidth, IHeight,
-                  MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-
-                { Convert transparent color to clBtnFace }
-                FOriginal.Canvas.Brush.Color := ColorToRGB(FTransparentColor);
-                MonoBmp.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-                Brush.Color := clBtnFace;
-                DestDC := Handle;
-                SetTextColor(DestDC, clBlack);
-                SetBkColor(DestDC, clWhite);
-                BitBlt(DestDC, 0, 0, IWidth, IHeight,
-                  MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-              end
-            else
-            begin
-              { Create a disabled version }
-              with MonoBmp do
-              begin
-                Assign(FOriginal);
-                Canvas.Brush.Color := clBlack;
-                Width := IWidth;
-                if Monochrome then
-                begin
-                  Canvas.Font.Color := clWhite;
-                  Monochrome := False;
-                  Canvas.Brush.Color := clWhite;
-                end;
-                Monochrome := True;
-              end;
-              with TmpImage.Canvas do
-              begin
-                Brush.Color := clBtnFace;
-                FillRect(IRect);
-                Brush.Color := clBtnHighlight;
-                SetTextColor(Handle, clBlack);
-                SetBkColor(Handle, clWhite);
-                BitBlt(Handle, 1, 1, IWidth, IHeight,
-                  MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-                Brush.Color := clBtnShadow;
-                SetTextColor(Handle, clBlack);
-                SetBkColor(Handle, clWhite);
-                BitBlt(Handle, 0, 0, IWidth, IHeight,
-                  MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-              end;
-            end;
-            FIndexs[State] := TJvGlyphList(FGlyphList).Add(TmpImage, nil);
-          finally
-            MonoBmp.Free;
-          end;
-        end;
-    end;
-  finally
-    TmpImage.Free;
-  end;
-  Result := FIndexs[State];
-  FOriginal.Dormant;
-end;
-{$ENDIF COMPILER2}
-
-{$IFDEF COMPILER3_UP}
 function TJvButtonGlyph.CreateButtonGlyph(State: TButtonState): Integer;
 const
   ROP_DSPDxax = $00E20746;
@@ -772,7 +617,6 @@ begin
   Result := FIndexs[State];
   FOriginal.Dormant;
 end;
-{$ENDIF COMPILER3_UP}
 
 procedure TJvButtonGlyph.DrawButtonGlyph(Canvas: TCanvas; const GlyphPos: TPoint;
   State: TButtonState; Transparent: Boolean);
@@ -800,10 +644,8 @@ var
 begin
   Flags := 0;
   {O}
-  {$IFDEF COMPILER4_UP}
   if FBiDiMode <> bdLeftToRight then
     Flags := DT_RTLREADING;
-  {$ENDIF COMPILER4_UP}
   with Canvas do
   begin
     Brush.Style := bsClear;
@@ -1741,7 +1583,7 @@ var
   PaintRect: TRect;
   Offset: TPoint;
 begin
-  if {$IFNDEF COMPILER2} Flat and {$ENDIF} not NoBorder then
+  if Flat and not NoBorder then
     inherited Paint
   else
   begin
@@ -1749,13 +1591,8 @@ begin
     PaintRect := Rect(0, 0, Width, Height);
     if not NoBorder then
     begin
-      {$IFDEF COMPILER4_UP}
       DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
         FillStyles[Transparent] or BF_RECT);
-      {$ELSE}
-      DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
-        FillStyles[True {Transparent}] or BF_RECT);
-      {$ENDIF COMPILER4_UP}
       InflateRect(PaintRect, -1, -1);
     end;
     Canvas.Brush.Style := bsSolid;
@@ -1783,9 +1620,7 @@ begin
       Offset.Y := 0;
     end;
     {O}
-    {$IFDEF COMPILER4_UP}
     FGlyphDrawer.BiDiMode := BiDiMode;
-    {$ENDIF COMPILER4_UP}
     FGlyphDrawer.DrawExternal(Glyph, NumGlyphs, Color, True, Canvas, PaintRect, Offset, Caption, Layout, Margin,
       Spacing, FState, False {True});
   end;

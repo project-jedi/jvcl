@@ -53,11 +53,9 @@ type
     procedure SetDataField(const NewFieldName: string); { Assigns new field. }
     procedure SetDataSource(NewSource: TDataSource); { Assigns new data source. }
     procedure CMExit(var Msg: TCMExit); message CM_EXIT; { called to update data }
-    {$IFDEF WIN32}
     procedure CMGetDataLink(var Msg: TMessage); message CM_GetDataLink;
     procedure SetReadOnly(Value: Boolean);
     procedure SetOnChange(const Value: TNotifyEvent);
-    {$ENDIF}
   protected
     procedure DoChange(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -181,24 +179,20 @@ begin
   FFieldDataLink.FieldName := NewFieldName;
 end;
 
-{$IFDEF WIN32}
 procedure TJvDBSpinEdit.CMGetDataLink(var Msg: TMessage);
 begin
   Msg.Result := Longint(FFieldDataLink);
 end;
-{$ENDIF}
 
 procedure TJvDBSpinEdit.SetDataSource(NewSource: TDataSource); { Assigns new data source. }
 begin
   { FFieldDataLink is built in TJvDBSpinEdit.Create; there's no need to check to see if it's assigned. }
   FFieldDataLink.DataSource := NewSource;
-  {$IFDEF WIN32}
   { Tell the new DataSource that our TJvDBSpinEdit component should be notified
     (using the Notification method) if the DataSource is ever removed from
     a data module or form that is different than the owner of this control. }
   if NewSource <> nil then
     NewSource.FreeNotification(Self);
-  {$ENDIF}
 end;
 
 {$IFDEF READONLY}

@@ -33,27 +33,16 @@ interface
 
 uses
   SysUtils,
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   Messages, Classes, Graphics, Controls, Forms,
-  {$IFDEF COMPILER4_UP}
   ActnList,
-  {$ENDIF}
   JvComponent;
 
 const
-  {$IFDEF WIN32}
   DefHintColor = clInfoBk;
   DefHintPause = 500;
   DefHintShortPause = DefHintPause div 10;
   DefHintHidePause = DefHintPause * 5;
-  {$ELSE}
-  DefHintColor = $80FFFF;
-  DefHintPause = 800;
-  {$ENDIF}
 
 type
   TJvAppEvents = class(TJvComponent)
@@ -65,15 +54,10 @@ type
     FShowHint: Boolean;
     FCanvas: TCanvas;
     FUpdateFormatSettings: Boolean;
-    {$IFDEF WIN32}
     FHintShortPause: Integer;
     FHintHidePause: Integer;
     FShowMainForm: Boolean;
-    {$ENDIF}
-    {$IFDEF COMPILER3_UP}
     FUpdateMetricSettings: Boolean;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     FHintShortCuts: Boolean;
     FBiDiMode: TBiDiMode;
     FMouseDragImmediate: Boolean;
@@ -81,11 +65,8 @@ type
     FOnActionExecute: TActionEvent;
     FOnActionUpdate: TActionEvent;
     FOnShortCut: TShortCutEvent;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     FBiDiKeyboard: string;
     FNonBiDiKeyboard: string;
-    {$ENDIF}
     FOnPaintIcon: TNotifyEvent;
     FOnActivate: TNotifyEvent;
     FOnDeactivate: TNotifyEvent;
@@ -110,19 +91,14 @@ type
     procedure SetShowHint(Value: Boolean);
     function GetUpdateFormatSettings: Boolean;
     procedure SetUpdateFormatSettings(Value: Boolean);
-    {$IFDEF WIN32}
     function GetHintShortPause: Integer;
     function GetHintHidePause: Integer;
     function GetShowMainForm: Boolean;
     procedure SetHintShortPause(Value: Integer);
     procedure SetHintHidePause(Value: Integer);
     procedure SetShowMainForm(Value: Boolean);
-    {$ENDIF WIN32}
-    {$IFDEF COMPILER3_UP}
     function GetUpdateMetricSettings: Boolean;
     procedure SetUpdateMetricSettings(Value: Boolean);
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     function GetHintShortCuts: Boolean;
     function GetBiDiMode: TBiDiMode;
     procedure SetHintShortCuts(Value: Boolean);
@@ -131,13 +107,10 @@ type
     function GetMouseDragThreshold: Integer;
     procedure SetMouseDragImmediate(Value: Boolean);
     procedure SetMouseDragThreshold(Value: Integer);
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     function GetBiDiKeyboard: string;
     function GetNonBiDiKeyboard: string;
     procedure SetBiDiKeyboard(const Value: string);
     procedure SetNonBiDiKeyboard(const Value: string);
-    {$ENDIF}
   protected
     procedure Loaded; override;
     procedure PaintIcon; virtual;
@@ -154,19 +127,14 @@ type
     property ShowHint: Boolean read GetShowHint write SetShowHint default True;
     property UpdateFormatSettings: Boolean read GetUpdateFormatSettings
       write SetUpdateFormatSettings default True;
-    {$IFDEF WIN32}
     property HintShortPause: Integer read GetHintShortPause write SetHintShortPause
       default DefHintShortPause;
     property HintHidePause: Integer read GetHintHidePause write SetHintHidePause
       default DefHintHidePause;
     property ShowMainForm: Boolean read GetShowMainForm write SetShowMainForm
       default True;
-    {$ENDIF}
-    {$IFDEF COMPILER3_UP}
     property UpdateMetricSettings: Boolean read GetUpdateMetricSettings
       write SetUpdateMetricSettings default True;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property HintShortCuts: Boolean read GetHintShortCuts write SetHintShortCuts
       default True;
     property BiDiMode: TBiDiMode read GetBiDiMode write SetBiDiMode
@@ -178,11 +146,8 @@ type
     property OnActionExecute: TActionEvent read FOnActionExecute write FOnActionExecute;
     property OnActionUpdate: TActionEvent read FOnActionUpdate write FOnActionUpdate;
     property OnShortCut: TShortCutEvent read FOnShortCut write FOnShortCut;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     property BiDiKeyboard: string read GetBiDiKeyboard write SetBiDiKeyboard;
     property NonBiDiKeyboard: string read GetNonBiDiKeyboard write SetNonBiDiKeyboard;
-    {$ENDIF}
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
     property OnException: TExceptionEvent read FOnException write FOnException;
@@ -218,11 +183,9 @@ type
     FOnShowHint: TShowHintEvent;
     FOnActiveControlChange: TNotifyEvent;
     FOnActiveFormChange: TNotifyEvent;
-    {$IFDEF COMPILER4_UP}
     FOnActionExecute: TActionEvent;
     FOnActionUpdate: TActionEvent;
     FOnShortCut: TShortCutEvent;
-    {$ENDIF}
     procedure AddEvents(App: TJvAppEvents);
     procedure RemoveEvents(App: TJvAppEvents);
     procedure ClearEvents;
@@ -241,11 +204,9 @@ type
       var HintInfo: THintInfo);
     procedure DoActiveControlChange(Sender: TObject);
     procedure DoActiveFormChange(Sender: TObject);
-    {$IFDEF COMPILER4_UP}
     procedure DoActionExecute(Action: TBasicAction; var Handled: Boolean);
     procedure DoActionUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure DoShortCut(var Msg: TWMKey; var Handled: Boolean);
-    {$ENDIF}
   public
     constructor Create;
     destructor Destroy; override;
@@ -280,11 +241,9 @@ begin
     Application.OnMinimize := nil;
     Application.OnRestore := nil;
     Application.OnShowHint := nil;
-    {$IFDEF COMPILER4_UP}
     Application.OnActionExecute := nil;
     Application.OnActionUpdate := nil;
     Application.OnShortCut := nil;
-    {$ENDIF}
     if Screen <> nil then
     begin
       Screen.OnActiveControlChange := nil;
@@ -310,14 +269,12 @@ begin
       FOnMinimize := Application.OnMinimize;
       FOnRestore := Application.OnRestore;
       FOnShowHint := Application.OnShowHint;
-      {$IFDEF COMPILER4_UP}
       FOnActionExecute := Application.OnActionExecute;
       FOnActionUpdate := Application.OnActionUpdate;
       FOnShortCut := Application.OnShortCut;
       Application.OnActionExecute := DoActionExecute;
       Application.OnActionUpdate := DoActionUpdate;
       Application.OnShortCut := DoShortCut;
-      {$ENDIF}
       Application.OnActivate := DoActivate;
       Application.OnDeactivate := DoDeactivate;
       Application.OnException := DoException;
@@ -545,7 +502,6 @@ begin
     FOnActiveFormChange(Sender);
 end;
 
-{$IFDEF COMPILER4_UP}
 
 procedure TJvAppEventList.DoActionExecute(Action: TBasicAction;
   var Handled: Boolean);
@@ -594,8 +550,6 @@ begin
     FOnShortCut(Msg, Handled);
 end;
 
-{$ENDIF COMPILER4_UP}
-
 //=== TJvAppEvents ===========================================================
 
 // (rom) changed to var
@@ -611,20 +565,14 @@ begin
   FHintColor := DefHintColor;
   FHintPause := DefHintPause;
   FShowHint := True;
-  {$IFDEF COMPILER3_UP}
   FUpdateMetricSettings := True;
-  {$ENDIF}
-  {$IFDEF WIN32}
   FHintShortPause := DefHintShortPause;
   FHintHidePause := DefHintHidePause;
   FShowMainForm := True;
-  {$ENDIF}
-  {$IFDEF COMPILER4_UP}
   FHintShortCuts := True;
   FBiDiMode := bdLeftToRight;
   FMouseDragImmediate := True;
   FMouseDragThreshold := 5;
-  {$ENDIF}
   FUpdateFormatSettings := True;
   if not (csDesigning in ComponentState) then
     Application.HookMainWindow(MessageHook);
@@ -691,29 +639,12 @@ begin
   case Msg.Msg of
     WM_WININICHANGE:
       begin
-        {$IFNDEF WIN32}
-        if UpdateFormatSettings then
-          GetFormatSettings;
-        {$ELSE}
-        {$IFNDEF COMPILER3_UP}
-        if Application.ShowHint then
-        begin
-          Application.ShowHint := False;
-          Application.ShowHint := True;
-        end;
-        {$ENDIF}
-        {$ENDIF}
         try
           SettingsChanged;
         except
           Application.HandleException(Self);
         end;
       end;
-    {$IFNDEF WIN32}
-    WM_ENDSESSION:
-      if WordBool(Msg.wParam) then
-        Halt;
-    {$ENDIF}
     WM_PAINT:
       if Assigned(FOnPaintIcon) and IsIconic(Application.Handle) then
       begin
@@ -770,26 +701,19 @@ end;
 
 function TJvAppEvents.GetUpdateFormatSettings: Boolean;
 begin
-  {$IFDEF WIN32}
   if csDesigning in ComponentState then
     Result := FUpdateFormatSettings
   else
     Result := Application.UpdateFormatSettings;
-  {$ELSE}
-  Result := FUpdateFormatSettings;
-  {$ENDIF}
 end;
 
 procedure TJvAppEvents.SetUpdateFormatSettings(Value: Boolean);
 begin
   FUpdateFormatSettings := Value;
-  {$IFDEF WIN32}
   if not (csDesigning in ComponentState) then
     Application.UpdateFormatSettings := Value;
-  {$ENDIF}
 end;
 
-{$IFDEF WIN32}
 
 function TJvAppEvents.GetHintShortPause: Integer;
 begin
@@ -836,10 +760,6 @@ begin
     Application.ShowMainForm := Value;
 end;
 
-{$ENDIF WIN32}
-
-{$IFDEF COMPILER3_UP}
-
 function TJvAppEvents.GetUpdateMetricSettings: Boolean;
 begin
   if csDesigning in ComponentState then
@@ -854,10 +774,6 @@ begin
   if not (csDesigning in ComponentState) then
     Application.UpdateMetricSettings := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
-
-{$IFDEF COMPILER4_UP}
 
 function TJvAppEvents.GetHintShortCuts: Boolean;
 begin
@@ -919,10 +835,6 @@ begin
     Application.BiDiMode := Value;
 end;
 
-{$ENDIF COMPILER4_UP}
-
-{$IFDEF COMPILER5_UP}
-
 function TJvAppEvents.GetBiDiKeyboard: string;
 begin
   if csDesigning in ComponentState then
@@ -931,7 +843,7 @@ begin
     Result := Application.BiDiKeyboard;
 end;
 
-function TJvAppEvents.GetNonBiDiKeyboard: string; 
+function TJvAppEvents.GetNonBiDiKeyboard: string;
 begin
   if csDesigning in ComponentState then
     Result := FNonBiDiKeyboard
@@ -953,8 +865,6 @@ begin
     Application.NonBiDiKeyboard := Value;
 end;
 
-{$ENDIF COMPILER5_UP}
-
 procedure TJvAppEvents.UpdateAppProps;
 begin
   if not (csDesigning in ComponentState) then
@@ -964,16 +874,11 @@ begin
       HintColor := FHintColor;
       HintPause := FHintPause;
       ShowHint := FShowHint;
-      {$IFDEF WIN32}
       HintShortPause := FHintShortPause;
       HintHidePause := FHintHidePause;
       ShowMainForm := FShowMainForm;
       UpdateFormatSettings := FUpdateFormatSettings;
-      {$ENDIF}
-      {$IFDEF COMPILER3_UP}
       UpdateMetricSettings := FUpdateMetricSettings;
-      {$ENDIF}
-      {$IFDEF COMPILER4_UP}
       HintShortCuts := FHintShortCuts;
       BiDiMode := FBiDiMode;
       with Mouse do
@@ -981,11 +886,8 @@ begin
         DragImmediate := FMouseDragImmediate;
         DragThreshold := FMouseDragThreshold;
       end;
-      {$ENDIF}
-      {$IFDEF COMPILER5_UP}
       BiDiKeyboard := FBiDiKeyboard;
       NonBiDiKeyboard := FNonBiDiKeyboard;
-      {$ENDIF}
     end;
   end;
 end;
@@ -1000,10 +902,7 @@ begin
 end;
 
 initialization
-{$IFDEF WIN32}
+
 finalization
   DestroyLocals;
-{$ELSE}
-  AddExitProc(DestroyLocals);
-{$ENDIF}
 end.

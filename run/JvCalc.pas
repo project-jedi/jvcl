@@ -108,12 +108,8 @@ type
   end;
 
 function CreateCalculatorForm(AOwner: TComponent; AHelpContext: THelpContext): TJvCalculatorForm;
-{$IFDEF COMPILER4_UP}
 function CreatePopupCalculator(AOwner: TComponent;
   ABiDiMode: TBiDiMode = bdLeftToRight): TWinControl;
-{$ELSE}
-function CreatePopupCalculator(AOwner: TComponent): TWinControl;
-{$ENDIF}
 procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
   ABeepOnError: Boolean);
 
@@ -121,16 +117,9 @@ implementation
 
 uses
   Math,
-  {$IFNDEF WIN32}
-  JvStr16,
-  {$ENDIF}
   JvJVCLUtils, JvJCLUtils, JvToolEdit;
 
-{$IFDEF WIN32}
 {$R ..\resources\JvCalc.res}
-{$ELSE}
-{$R ..\resources\JvCalc.R16}
-{$ENDIF}
 
 const
   SCalculator = 'Calculator';
@@ -146,17 +135,13 @@ type
   TCalcPanelLayout = (clDialog, clPopup);
 
 procedure SetDefaultFont(AFont: TFont; Layout: TCalcPanelLayout);
-{$IFDEF WIN32}
 var
   NonClientMetrics: TNonClientMetrics;
-{$ENDIF}
 begin
-  {$IFDEF WIN32}
   NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
     AFont.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont)
   else
-  {$ENDIF}
     with AFont do
     begin
       Color := clWindowText;
@@ -180,10 +165,8 @@ begin
   with Result do
   try
     HelpContext := AHelpContext;
-    {$IFDEF WIN32}
     if HelpContext <> 0 then
       BorderIcons := BorderIcons + [biHelp];
-    {$ENDIF}
     if Screen.PixelsPerInch <> 96 then
     begin { scale to screen res }
       ScaleBy(Screen.PixelsPerInch, 96);
@@ -214,9 +197,7 @@ type
 constructor TJvCalcButton.CreateKind(AOwner: TComponent; AKind: TCalcBtnKind);
 begin
   inherited Create(AOwner);
-  {$IFDEF WIN32}
   ControlStyle := ControlStyle + [csReplicatable];
-  {$ENDIF}
   FKind := AKind;
   if FKind in [cbNum0..cbClr] then
     Tag := Ord(Kind) - 1
@@ -396,10 +377,8 @@ const
     4 {Sub}, 5 {Add}, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1 {Ok}, 0 {Cancel});
 begin
   inherited Create(AOwner);
-  {$IFDEF WIN32}
   if ALayout = clPopup then
     ControlStyle := ControlStyle + [csReplicatable];
-  {$ENDIF}
   ParentColor := False;
   Color := clBtnFace;
   if ALayout = clDialog then
@@ -838,9 +817,7 @@ constructor TJvLocCalculator.Create(AOwner: TComponent);
 begin
   inherited CreateLayout(AOwner, clPopup);
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
-  {$IFDEF WIN32}
   ControlStyle := ControlStyle + [csReplicatable];
-  {$ENDIF}
   Enabled := False;
   TabStop := False;
 end;
@@ -857,9 +834,7 @@ begin
   with Params do
   begin
     Style := Style and not (WS_TABSTOP or WS_DISABLED);
-    {$IFDEF COMPILER4_UP}
     AddBiDiModeExStyle(ExStyle);
-    {$ENDIF}
   end;
 end;
 
@@ -873,24 +848,15 @@ type
     procedure ResultClick(Sender: TObject);
   protected
     procedure KeyPress(var Key: Char); override;
-    {$IFDEF WIN32}
     function GetValue: Variant; override;
     procedure SetValue(const Value: Variant); override;
-    {$ELSE}
-    function GetValue: string; override;
-    procedure SetValue(const Value: string); override;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     function GetPopupText: string; override;
   end;
 
-{$IFDEF COMPILER4_UP}
 function CreatePopupCalculator(AOwner: TComponent;
   ABiDiMode: TBiDiMode = bdLeftToRight): TWinControl;
-{$ELSE}
-function CreatePopupCalculator(AOwner: TComponent): TWinControl;
-{$ENDIF}
 begin
   Result := TJvPopupCalculator.Create(AOwner);
   if (AOwner <> nil) and not (csDesigning in AOwner.ComponentState) and
@@ -901,9 +867,7 @@ begin
       font back to the original info. }
     TJvPopupCalculator(Result).FCalcPanel.ParentFont := True;
     SetDefaultFont(TJvPopupCalculator(Result).Font, clPopup);
-    {$IFDEF COMPILER4_UP}
     Result.BiDiMode := ABiDiMode;
-    {$ENDIF}
   end;
 end;
 
@@ -953,8 +917,6 @@ begin
   inherited KeyPress(Key);
 end;
 
-{$IFDEF WIN32}
-
 function TJvPopupCalculator.GetValue: Variant;
 begin
   if csDesigning in ComponentState then
@@ -993,54 +955,6 @@ begin
       FOperator := '=';
     end;
 end;
-
-{$ELSE}
-
-function TJvPopupCalculator.GetValue: string;
-var
-  D: Double;
-begin
-  if (csDesigning in ComponentState) or (FCalcPanel = nil) then
-    Result := '0'
-  else
-  begin
-    if FCalcPanel.FStatus <> csError then
-    begin
-      { to raise exception on error }
-      FCalcPanel.DisplayValue := FCalcPanel.DisplayValue;
-      D := FCalcPanel.DisplayValue;
-    end
-    else
-    begin
-      if FCalcPanel.FBeepOnError then
-        MessageBeep(0);
-      D := 0;
-    end;
-    Result := FloatToStrF(D, ffGeneral, Max(2, FCalcPanel.FPrecision), 0);
-  end;
-end;
-
-procedure TJvPopupCalculator.SetValue(const Value: string);
-begin
-  if not (csDesigning in ComponentState) then
-  begin
-    with FCalcPanel do
-    begin
-      if Value = '' then
-        DisplayValue := 0
-      else
-      try
-        DisplayValue := StrToFloat(Value);
-      except
-        DisplayValue := 0;
-      end;
-      FStatus := csFirst;
-      FOperator := '=';
-    end;
-  end;
-end;
-
-{$ENDIF}
 
 function TJvPopupCalculator.GetPopupText: string;
 begin

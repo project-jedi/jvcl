@@ -651,7 +651,6 @@ end;
 
 procedure TJvWindowHook.DefineProperties(Filer: TFiler);
 
-  {$IFDEF WIN32}
   function DoWrite: Boolean;
   begin
     if Assigned(Filer.Ancestor) then
@@ -659,12 +658,10 @@ procedure TJvWindowHook.DefineProperties(Filer: TFiler);
     else
       Result := IsForm;
   end;
-  {$ENDIF}
 
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineProperty('IsForm', ReadForm, WriteForm,
-    {$IFDEF WIN32} DoWrite {$ELSE} IsForm {$ENDIF});
+  Filer.DefineProperty('IsForm', ReadForm, WriteForm,DoWrite);
 end;
 
 destructor TJvWindowHook.Destroy;

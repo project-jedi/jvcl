@@ -88,9 +88,7 @@ type
     property TabWidth;
     property Visible;
     property OnClick;
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;

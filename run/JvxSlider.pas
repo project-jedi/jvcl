@@ -30,11 +30,7 @@ unit JvxSlider;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   Controls, ExtCtrls, Classes, Graphics, Messages, Menus,
   JVCLVer;
 
@@ -212,11 +208,9 @@ type
     property TabStop default True;
     property Value;
     property Visible;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property DragKind;
-    {$ENDIF}
     property OnChange;
     property OnChanged;
     property OnDrawPoints;
@@ -233,18 +227,12 @@ type
     property OnDragOver;
     property OnDragDrop;
     property OnEndDrag;
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
   end;
 
   TJvSliderImages = class;
@@ -367,10 +355,8 @@ begin
     inherited
   else
   begin
-    {$IFDEF COMPILER3_UP}
     Canvas.Lock;
     try
-    {$ENDIF}
       MemDC := GetDC(0);
       MemBitmap := CreateCompatibleBitmap(MemDC, ClientWidth, ClientHeight);
       ReleaseDC(0, MemDC);
@@ -397,11 +383,9 @@ begin
         DeleteDC(MemDC);
         DeleteObject(MemBitmap);
       end;
-    {$IFDEF COMPILER3_UP}
     finally
       Canvas.Unlock;
     end;
-    {$ENDIF}
   end;
 end;
 
@@ -411,18 +395,14 @@ var
   TopColor, BottomColor, TransColor: TColor;
   HighlightThumb: Boolean;
   P: TPoint;
-  {$IFDEF WIN32}
   Offset: Integer;
-  {$ENDIF}
 begin
-  {$IFDEF WIN32}
   if csPaintCopy in ControlState then
   begin
     Offset := GetOffsetByValue(GetSliderValue);
     P := GetThumbPosition(Offset);
   end
   else
-  {$ENDIF}
     P := Point(FThumbRect.Left, FThumbRect.Top);
   R := GetClientRect;
   if BevelStyle <> bvNone then
@@ -464,11 +444,9 @@ begin
     else
       InternalDrawPoints(Canvas, Increment, 3, 5);
   end;
-  {$IFDEF WIN32}
   if csPaintCopy in ControlState then
     HighlightThumb := not Enabled
   else
-  {$ENDIF}
     HighlightThumb := FThumbDown or not Enabled;
   DrawThumb(Canvas, P, HighlightThumb);
 end;
@@ -736,7 +714,6 @@ end;
 
 procedure TJvCustomSlider.DefineProperties(Filer: TFiler);
 
-  {$IFDEF WIN32}
   function DoWrite: Boolean;
   begin
     if Assigned(Filer.Ancestor) then
@@ -744,13 +721,11 @@ procedure TJvCustomSlider.DefineProperties(Filer: TFiler);
     else
       Result := FUserImages <> [];
   end;
-  {$ENDIF}
 
 begin
   if Filer is TReader then
     inherited DefineProperties(Filer);
-  Filer.DefineBinaryProperty('UserImages', ReadUserImages, WriteUserImages,
-    {$IFDEF WIN32} DoWrite {$ELSE} FUserImages <> [] {$ENDIF});
+  Filer.DefineBinaryProperty('UserImages', ReadUserImages, WriteUserImages,DoWrite);
 end;
 
 procedure TJvCustomSlider.ReadUserImages(Stream: TStream);
@@ -855,7 +830,7 @@ begin
   begin
     FOrientation := Value;
     Sized;
-    if ComponentState * [csLoading {$IFDEF WIN32}, csUpdating {$ENDIF}] = [] then
+    if ComponentState * [csLoading, csUpdating] = [] then
       SetBounds(Left, Top, Height, Width);
   end;
 end;
@@ -901,7 +876,7 @@ procedure TJvCustomSlider.SetIncrement(Value: Longint);
 begin
   if not (csReading in ComponentState) and ((Value > MaxValue - MinValue) or
     (Value < 1)) then
-    raise EJVCLException.CreateFmt(ResStr(SOutOfRange), [1, MaxValue - MinValue]);
+    raise EJVCLException.CreateFmt(SOutOfRange, [1, MaxValue - MinValue]);
   if (Value > 0) and (FIncrement <> Value) then
   begin
     FIncrement := Value;
@@ -1138,11 +1113,7 @@ begin
   if not (csDesigning in ComponentState) and PtInRect(FThumbRect,
     ScreenToClient(P)) then
   begin
-    {$IFDEF WIN32}
     Windows.SetCursor(Screen.Cursors[crHand]);
-    {$ELSE}
-    WinProcs.SetCursor(Screen.Cursors[crHand]);
-    {$ENDIF}
   end
   else
     inherited;

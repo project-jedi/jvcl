@@ -424,13 +424,8 @@ begin
       InternetSetStatusCallback(hHostConnection, PFNInternetStatusCallback(@DownloadCallBack));
       //Request the file
       // (rom) any difference here?
-      {$IFDEF D5}
       hDownload := HttpOpenRequest(hHostConnection, 'GET', PChar(FileName), 'HTTP/1.0', PChar(FReferer),
         nil, INTERNET_FLAG_RELOAD, 0);
-      {$ELSE}
-      hDownload := HttpOpenRequest(hHostConnection, 'GET', PChar(FileName), 'HTTP/1.0', PChar(FReferer),
-        nil, INTERNET_FLAG_RELOAD, 0);
-      {$ENDIF}
       FCriticalSection.Leave;
 
       if hDownload = nil then

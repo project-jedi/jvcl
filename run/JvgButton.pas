@@ -32,12 +32,9 @@ unit JvgButton;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls,
-  {$IFDEF COMPILER5_UP}
-  Imglist,
-  {$ENDIF}
-  JvComponent,
-  JvgTypes, JvgUtils, JvgCommClasses;
+  Windows, Messages, SysUtils, Classes, Graphics,
+  Controls, Forms, Dialogs, ExtCtrls,  Imglist,
+  JvComponent, JvgTypes, JvgUtils, JvgCommClasses;
 
 type
   TDrawMode = (dmUseImageList, dmAutoCtrl3D, dmAutoFlat, dmAutoShadow);

@@ -76,19 +76,13 @@ type
     property Ctl3D;
     property DropDownCount;
     property Font;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
-    {$IFDEF WIN32}
-    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-    {$ENDIF}
-    {$ENDIF}
     property ItemHeight;
     property ParentCtl3D;
     property ParentFont;
@@ -110,24 +104,14 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
   end;
 
 implementation
-
 uses
-  {$IFNDEF WIN32}
-  DbiErrs, DbiTypes, DbiProcs,
-  {$ENDIF}
   JvBdeUtils;
 
 //=== TJvKeyDataLink =========================================================
@@ -241,10 +225,8 @@ end;
 procedure TJvDBIndexCombo.SetDataSource(Value: TDataSource);
 begin
   FDataLink.DataSource := Value;
-  {$IFDEF WIN32}
   if Value <> nil then
     Value.FreeNotification(Self);
-  {$ENDIF}
   if not (csLoading in ComponentState) then
     ActiveChanged;
 end;

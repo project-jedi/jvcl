@@ -165,8 +165,6 @@ begin
   Value := O2V(TScrollingWinControl.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { procedure DisableAutoRange; }
 
 procedure TScrollingWinControl_DisableAutoRange(var Value: Variant; Args: TJvInterpreterArgs);
@@ -180,8 +178,6 @@ procedure TScrollingWinControl_EnableAutoRange(var Value: Variant; Args: TJvInte
 begin
   TScrollingWinControl(Args.Obj).EnableAutoRange;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { procedure ScrollInView(AControl: TControl); }
 
@@ -240,13 +236,6 @@ procedure TScrollBox_Write_BorderStyle(const Value: Variant; Args: TJvInterprete
 begin
   TScrollBox(Args.Obj).BorderStyle := Value;
 end;
-
-{ TCustomForm }
-
-{$IFNDEF COMPILER3_UP}
-type
-  TCustomForm = TForm;
-{$ENDIF COMPILER3_UP}
 
 { function CloseQuery: Boolean; }
 
@@ -405,8 +394,6 @@ begin
   TCustomForm(Args.Obj).DropTarget := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read HelpFile: string }
 
 procedure TCustomForm_Read_HelpFile(var Value: Variant; Args: TJvInterpreterArgs);
@@ -420,8 +407,6 @@ procedure TCustomForm_Write_HelpFile(const Value: Variant; Args: TJvInterpreterA
 begin
   TCustomForm(Args.Obj).HelpFile := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read KeyPreview: Boolean }
 
@@ -574,12 +559,10 @@ end;
 
 { property Read ActiveCustomForm: TCustomForm }
 
-{$IFDEF COMPILER3_UP}
 procedure TScreen_Read_ActiveCustomForm(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TScreen(Args.Obj).ActiveCustomForm);
 end;
-{$ENDIF COMPILER3_UP}
 
 { property Read ActiveForm: TForm }
 
@@ -587,8 +570,6 @@ procedure TScreen_Read_ActiveForm(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TScreen(Args.Obj).ActiveForm);
 end;
-
-{$IFDEF COMPILER3_UP}
 
 { property Read CustomFormCount: Integer }
 
@@ -603,8 +584,6 @@ procedure TScreen_Read_CustomForms(var Value: Variant; Args: TJvInterpreterArgs)
 begin
   Value := O2V(TScreen(Args.Obj).CustomForms[Args.Values[0]]);
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read Cursor: TCursor }
 
@@ -654,8 +633,6 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
-{$IFDEF COMPILER3_UP}
-
 { property Read IconFont: TFont }
 
 procedure TScreen_Read_IconFont(var Value: Variant; Args: TJvInterpreterArgs);
@@ -670,7 +647,6 @@ begin
   TScreen(Args.Obj).IconFont := V2O(Value) as TFont;
 end;
 
-{$ENDIF COMPILER3_UP}
 {$ENDIF COMPLIB_VCL}
 
 { property Read Fonts: TStrings }
@@ -695,7 +671,6 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
-{$IFDEF COMPILER3_UP}
 
 { property Read Imes: TStrings }
 
@@ -718,7 +693,6 @@ begin
   Value := Integer(TScreen(Args.Obj).DefaultKbLayout);
 end;
 
-{$ENDIF COMPILER3_UP}
 {$ENDIF COMPLIB_VCL}
 
 { property Read Height: Integer }
@@ -856,12 +830,10 @@ end;
 { procedure NormalizeAllTopMosts; }
 
 {$IFDEF COMPLIB_VCL}
-{$IFDEF COMPILER3_UP}
 procedure TApplication_NormalizeAllTopMosts(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TApplication(Args.Obj).NormalizeAllTopMosts;
 end;
-{$ENDIF COMPILER3_UP}
 {$ENDIF COMPLIB_VCL}
 
 { procedure NormalizeTopMosts; }
@@ -922,12 +894,10 @@ end;
 
 { property Read CurrentHelpFile: string }
 
-{$IFDEF COMPILER3_UP}
 procedure TApplication_Read_CurrentHelpFile(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TApplication(Args.Obj).CurrentHelpFile;
 end;
-{$ENDIF COMPILER3_UP}
 
 {$IFDEF COMPLIB_VCL}
 
@@ -1143,8 +1113,6 @@ begin
   TApplication(Args.Obj).UpdateFormatSettings := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read UpdateMetricSettings: Boolean }
 
 procedure TApplication_Read_UpdateMetricSettings(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1159,7 +1127,6 @@ begin
   TApplication(Args.Obj).UpdateMetricSettings := Value;
 end;
 
-{$ENDIF COMPILER3_UP}
 {$ENDIF COMPLIB_VCL}
 
 { Application global variable }
@@ -1235,12 +1202,10 @@ end;
 
 { function ForegroundTask: Boolean; }
 
-{$IFDEF COMPILER3_UP}
 procedure JvInterpreter_ForegroundTask(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := ForegroundTask;
 end;
-{$ENDIF COMPILER3_UP}
 
 {$ENDIF COMPLIB_VCL}
 
@@ -1316,10 +1281,8 @@ begin
     { TScrollingWinControl }
     AddClass(cForms, TScrollingWinControl, 'TScrollingWinControl');
     AddGet(TScrollingWinControl, 'Create', TScrollingWinControl_Create, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TScrollingWinControl, 'DisableAutoRange', TScrollingWinControl_DisableAutoRange, 0, [0], varEmpty);
     AddGet(TScrollingWinControl, 'EnableAutoRange', TScrollingWinControl_EnableAutoRange, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TScrollingWinControl, 'ScrollInView', TScrollingWinControl_ScrollInView, 1, [varEmpty], varEmpty);
     AddGet(TScrollingWinControl, 'HorzScrollBar', TScrollingWinControl_Read_HorzScrollBar, 0, [0], varEmpty);
     AddSet(TScrollingWinControl, 'HorzScrollBar', TScrollingWinControl_Write_HorzScrollBar, 0, [0]);
@@ -1401,9 +1364,7 @@ begin
     AddConst(cForms, 'fsActivated', Integer(fsActivated));
     {$ENDIF COMPILER5_UP}
     { TCustomForm }
-    {$IFDEF COMPILER3_UP}
     AddClass(cForms, TCustomForm, 'TCustomForm');
-    {$ENDIF COMPILER3_UP}
     AddGet(TCustomForm, 'Close', TCustomForm_Close, 0, [0], varEmpty);
     AddGet(TCustomForm, 'CloseQuery', TCustomForm_CloseQuery, 0, [0], varEmpty);
     AddGet(TCustomForm, 'DefocusControl', TCustomForm_DefocusControl, 2, [varEmpty, varEmpty], varEmpty);
@@ -1433,10 +1394,8 @@ begin
     AddGet(TCustomForm, 'Canvas', TCustomForm_Read_Canvas, 0, [0], varEmpty);
     AddGet(TCustomForm, 'DropTarget', TCustomForm_Read_DropTarget, 0, [0], varEmpty);
     AddSet(TCustomForm, 'DropTarget', TCustomForm_Write_DropTarget, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TCustomForm, 'HelpFile', TCustomForm_Read_HelpFile, 0, [0], varEmpty);
     AddSet(TCustomForm, 'HelpFile', TCustomForm_Write_HelpFile, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TCustomForm, 'KeyPreview', TCustomForm_Read_KeyPreview, 0, [0], varEmpty);
     AddSet(TCustomForm, 'KeyPreview', TCustomForm_Write_KeyPreview, 0, [0]);
     AddGet(TCustomForm, 'Menu', TCustomForm_Read_Menu, 0, [0], varEmpty);
@@ -1472,14 +1431,10 @@ begin
     AddClass(cForms, TScreen, 'TScreen');
     AddGet(TScreen, 'Create', TScreen_Create, 1, [varEmpty], varEmpty);
     AddGet(TScreen, 'ActiveControl', TScreen_Read_ActiveControl, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TScreen, 'ActiveCustomForm', TScreen_Read_ActiveCustomForm, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TScreen, 'ActiveForm', TScreen_Read_ActiveForm, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TScreen, 'CustomFormCount', TScreen_Read_CustomFormCount, 0, [0], varEmpty);
     AddGet(TScreen, 'CustomForms', TScreen_Read_CustomForms, 1, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TScreen, 'Cursor', TScreen_Read_Cursor, 0, [0], varEmpty);
     AddSet(TScreen, 'Cursor', TScreen_Write_Cursor, 0, [0]);
     AddGet(TScreen, 'Cursors', TScreen_Read_Cursors, 1, [0], varEmpty);
@@ -1487,21 +1442,17 @@ begin
     AddGet(TScreen, 'DataModules', TScreen_Read_DataModules, 1, [0], varEmpty);
     AddGet(TScreen, 'DataModuleCount', TScreen_Read_DataModuleCount, 0, [0], varEmpty);
     {$IFDEF COMPLIB_VCL}
-    {$IFDEF COMPILER3_UP}
     AddGet(TScreen, 'IconFont', TScreen_Read_IconFont, 0, [0], varEmpty);
     AddSet(TScreen, 'IconFont', TScreen_Write_IconFont, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     {$ENDIF COMPLIB_VCL}
     AddGet(TScreen, 'Fonts', TScreen_Read_Fonts, 0, [0], varEmpty);
     AddGet(TScreen, 'FormCount', TScreen_Read_FormCount, 0, [0], varEmpty);
     AddIGet(TScreen, cForms, TScreen_Read_Forms, 1, [0], varEmpty); // ivan_ra
-    {$IFDEF COMPILER3_UP}
     {$IFDEF COMPLIB_VCL}
     AddGet(TScreen, 'Imes', TScreen_Read_Imes, 0, [0], varEmpty);
     AddGet(TScreen, 'DefaultIme', TScreen_Read_DefaultIme, 0, [0], varEmpty);
     AddGet(TScreen, 'DefaultKbLayout', TScreen_Read_DefaultKbLayout, 0, [0], varEmpty);
     {$ENDIF COMPLIB_VCL}
-    {$ENDIF COMPILER3_UP}
     AddGet(TScreen, 'Height', TScreen_Read_Height, 0, [0], varEmpty);
     AddGet(TScreen, 'PixelsPerInch', TScreen_Read_PixelsPerInch, 0, [0], varEmpty);
     AddGet(TScreen, 'Width', TScreen_Read_Width, 0, [0], varEmpty);
@@ -1527,9 +1478,7 @@ begin
     AddGet(TApplication, 'MessageBox', TApplication_MessageBox, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TApplication, 'Minimize', TApplication_Minimize, 0, [0], varEmpty);
     {$IFDEF COMPLIB_VCL}
-    {$IFDEF COMPILER3_UP}
     AddGet(TApplication, 'NormalizeAllTopMosts', TApplication_NormalizeAllTopMosts, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     {$ENDIF COMPLIB_VCL}
     AddGet(TApplication, 'NormalizeTopMosts', TApplication_NormalizeTopMosts, 0, [0], varEmpty);
     AddGet(TApplication, 'ProcessMessages', TApplication_ProcessMessages, 0, [0], varEmpty);
@@ -1539,9 +1488,7 @@ begin
     AddGet(TApplication, 'ShowException', TApplication_ShowException, 1, [varEmpty], varEmpty);
     AddGet(TApplication, 'Terminate', TApplication_Terminate, 0, [0], varEmpty);
     AddGet(TApplication, 'Active', TApplication_Read_Active, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TApplication, 'CurrentHelpFile', TApplication_Read_CurrentHelpFile, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     {$IFDEF COMPLIB_VCL}
     AddGet(TApplication, 'DialogHandle', TApplication_Read_DialogHandle, 0, [0], varEmpty);
     AddSet(TApplication, 'DialogHandle', TApplication_Write_DialogHandle, 0, [0]);
@@ -1574,10 +1521,8 @@ begin
     {$IFDEF COMPLIB_VCL}
     AddGet(TApplication, 'UpdateFormatSettings', TApplication_Read_UpdateFormatSettings, 0, [0], varEmpty);
     AddSet(TApplication, 'UpdateFormatSettings', TApplication_Write_UpdateFormatSettings, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TApplication, 'UpdateMetricSettings', TApplication_Read_UpdateMetricSettings, 0, [0], varEmpty);
     AddSet(TApplication, 'UpdateMetricSettings', TApplication_Write_UpdateMetricSettings, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     {$ENDIF COMPLIB_VCL}
 
     AddFun(cForms, 'Application', JvInterpreter_Application, 0, [0], varEmpty);
@@ -1593,9 +1538,7 @@ begin
     {$IFDEF COMPLIB_VCL}
     AddFun(cForms, 'KeysToShiftState', JvInterpreter_KeysToShiftState, 1, [varEmpty], varEmpty);
     AddFun(cForms, 'KeyDataToShiftState', JvInterpreter_KeyDataToShiftState, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddFun(cForms, 'ForegroundTask', JvInterpreter_ForegroundTask, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     {$ENDIF COMPLIB_VCL}
 
     AddHandler(cForms, 'TCloseEvent', TJvInterpreterFormsEvent, @TJvInterpreterFormsEvent.CloseEvent);

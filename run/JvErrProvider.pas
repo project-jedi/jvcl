@@ -40,7 +40,7 @@ unit JvErrProvider;
 
 interface
 uses
-  Windows, SysUtils, {$IFDEF COMPILER5_UP}ImgList, {$ENDIF}
+  Windows, SysUtils, ImgList,
   Messages, Classes, Controls, Graphics, JvComponent;
 
 type

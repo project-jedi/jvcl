@@ -35,9 +35,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Forms, ShellAPI, SyncObjs,
-  {$IFDEF COMPILER5_UP}
   Contnrs,
-  {$ENDIF}
   JclBase, JclStrings,
   JvComponent;
 

@@ -30,11 +30,7 @@ unit JvTimerList;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   Messages, Classes {, JvComponent};
 
 const
@@ -67,12 +63,7 @@ type
     procedure TimerWndProc(var Msg: TMessage);
     procedure UpdateTimer;
   protected
-    {$IFDEF WIN32}
-    procedure GetChildren(Proc: TGetChildProc {$IFDEF COMPILER3_UP};
-      Root: TComponent {$ENDIF}); override;
-    {$ELSE}
-    procedure WriteComponents(Writer: TWriter); override;
-    {$ENDIF WIN32}
+    procedure GetChildren(Proc: TGetChildProc;Root: TComponent); override;
     procedure DoTimer(Event: TJvTimerEvent); dynamic;
     function NextHandle: THandle; virtual;
   public
@@ -114,22 +105,13 @@ type
     procedure SetRepeatCount(Value: Integer);
     procedure SetEnabled(Value: Boolean);
     procedure SetInterval(Value: Longint);
-    {$IFNDEF WIN32}
-    procedure SetParentList(Value: TJvTimerList);
-    {$ENDIF WIN32}
   protected
-    {$IFDEF WIN32}
     procedure SetParentComponent(Value: TComponent); override;
-    {$ELSE}
-    procedure ReadState(Reader: TReader); override;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function HasParent: Boolean; override;
-    {$IFDEF WIN32}
     function GetParentComponent: TComponent; override;
-    {$ENDIF}
     property AsSeconds: Cardinal read GetAsSeconds write SetAsSeconds;
     property Handle: THandle read FHandle;
     property ExecCount: Integer read FExecCount;
@@ -150,15 +132,7 @@ uses
 
 const
   MinInterval = 100; { 0.1 sec }
-  {$IFDEF COMPILER4_UP}
   MaxTimerInterval: Longint = High(Longint);
-  {$ELSE}
-  MaxTimerInterval: Longint = High(Cardinal);
-  {$ENDIF}
-  {$IFNDEF WIN32}
-  // (rom) is this correct?
-  INVALID_HANDLE_VALUE = 0;
-  {$ENDIF}
 
 // (rom) changed to var
 var
@@ -185,22 +159,10 @@ begin
   inherited Destroy;
 end;
 
-{$IFNDEF WIN32}
-procedure TJvTimerEvent.SetParentList(Value: TJvTimerList);
-begin
-  if FParentList <> nil then
-    FParentList.RemoveItem(Self);
-  if Value <> nil then
-    Value.AddItem(Self);
-end;
-{$ENDIF}
-
 function TJvTimerEvent.HasParent: Boolean;
 begin
   Result := True;
 end;
-
-{$IFDEF WIN32}
 
 function TJvTimerEvent.GetParentComponent: TComponent;
 begin
@@ -214,17 +176,6 @@ begin
   if (Value <> nil) and (Value is TJvTimerList) then
     TJvTimerList(Value).AddItem(Self);
 end;
-
-{$ELSE}
-
-procedure TJvTimerEvent.ReadState(Reader: TReader);
-begin
-  inherited ReadState(Reader);
-  if Reader.Parent is TJvTimerList then
-    SetParentList(TJvTimerList(Reader.Parent));
-end;
-
-{$ENDIF WIN32}
 
 procedure TJvTimerEvent.SetEnabled(Value: Boolean);
 begin
@@ -368,31 +319,14 @@ begin
   end;
 end;
 
-{$IFDEF WIN32}
-procedure TJvTimerList.GetChildren(Proc: TGetChildProc {$IFDEF COMPILER3_UP};
-  Root: TComponent {$ENDIF});
+procedure TJvTimerList.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
   I: Integer;
 begin
-  inherited GetChildren(Proc {$IFDEF COMPILER3_UP}, Root {$ENDIF});
+  inherited GetChildren(Proc, Root);
   for I := 0 to FEvents.Count - 1 do
     Proc(TJvTimerEvent(FEvents[I]));
 end;
-{$ELSE}
-procedure TJvTimerList.WriteComponents(Writer: TWriter);
-var
-  I: Integer;
-  Item: TJvTimerEvent;
-begin
-  inherited WriteComponents(Writer);
-  for I := 0 to FEvents.Count - 1 do
-  begin
-    Item := TJvTimerEvent(FEvents[I]);
-    if Item.Owner = Writer.Root then
-      Writer.WriteComponent(Item);
-  end;
-end;
-{$ENDIF WIN32}
 
 procedure TJvTimerList.Sort;
 var
@@ -686,7 +620,7 @@ begin
         if SetTimer(FWndHandle, 1, FTimerInterval, nil) = 0 then
         begin
           Deactivate;
-          raise EOutOfResources.Create(ResStr(SNoTimers));
+          raise EOutOfResources.Create(SNoTimers);
         end;
     end;
   end;

@@ -35,9 +35,7 @@ interface
 
 uses
   Windows, Classes, SysUtils,
-  {$IFDEF COMPILER5_UP}
   Contnrs,
-  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF}

@@ -28,11 +28,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{$IFDEF COMPILER4_UP}
 {$DEFINE RA_QR3H}
-{$ELSE}
-{$DEFINE RA_QR2}
-{$ENDIF}
 
 // {$IFDEF RA_QR2}
 // {$DEFINE COMPILER3}
@@ -52,14 +48,8 @@ implementation
 
 uses
   SysUtils, Classes, Controls, Forms, Graphics, Db,
-  {$IFDEF COMPILER3_UP}
   QrPrntr, Quickrpt, QrCtrls,
-  {$ELSE}
-  Quickrep,
-  {$ENDIF}
   JvInterpreterFm;
-
-{$IFDEF COMPILER3_UP}
 
 procedure JvInterpreterRunReportPreview(const FileName: string);
 var
@@ -751,11 +741,7 @@ end;
 procedure TQRCustomBand_ExpandBand(var Value: Variant; Args: TJvInterpreterArgs);
 var
   NewTop: extended;
-  {$IFDEF COMPILER3}
-  param2: extended;
-  {$ELSE} {D4}
   param2: Boolean;
-  {$ENDIF}
 begin
   NewTop := Args.Values[1];
   param2 := Args.Values[2];
@@ -1539,24 +1525,6 @@ begin
   TQuickRep(Args.Obj).QRPrinter := V2O(Value) as TQRPrinter;
 end;
 
-{$IFDEF COMPILER3}
-
-{ property Read RecordCount: integer }
-
-procedure TQuickRep_Read_RecordCount(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := TQuickRep(Args.Obj).RecordCount;
-end;
-
-{ property Read RecordNumber: integer }
-
-procedure TQuickRep_Read_RecordNumber(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := TQuickRep(Args.Obj).RecordNumber;
-end;
-
-{$ENDIF COMPILER3}
-
 { property Read RotateBands: integer }
 
 procedure TQuickRep_Read_RotateBands(var Value: Variant; Args: TJvInterpreterArgs);
@@ -2069,154 +2037,6 @@ begin
   PrintRecord := Args.Values[0];
 end;
 
-{$ELSE}
-
-{ TQRController }
-
-{ procedure AddSub(aController: TQRController); }
-
-procedure TQRController_AddSub(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  TQRController(Args.Obj).AddSub(V2O(Args.Values[0]) as TQRController);
-end;
-
-{ property Read SubData: TList }
-
-procedure TQRController_Read_SubData(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := O2V(TQRController(Args.Obj).SubData);
-end;
-
-{ TQuickReport }
-
-{ procedure NewPage; }
-
-procedure TQuickReport_NewPage(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  TQuickReport(Args.Obj).NewPage;
-end;
-
-{ procedure Prepare; }
-
-procedure TQuickReport_Prepare(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  TQuickReport(Args.Obj).Prepare;
-end;
-
-{ procedure Preview; }
-
-procedure TQuickReport_Preview(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  TQuickReport(Args.Obj).Preview;
-end;
-
-{ procedure Print; }
-
-procedure TQuickReport_Print(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  TQuickReport(Args.Obj).Print;
-end;
-
-{ property Read PageHeight: integer }
-
-procedure TQuickReport_Read_PageHeight(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := TQuickReport(Args.Obj).PageHeight;
-end;
-
-{ property Read PageWidth: integer }
-
-procedure TQuickReport_Read_PageWidth(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := TQuickReport(Args.Obj).PageWidth;
-end;
-
-{ property Read PageNumber: integer }
-
-procedure TQuickReport_Read_PageNumber(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := TQuickReport(Args.Obj).PageNumber;
-end;
-
-{ property Read RecordCount: integer }
-
-procedure TQuickReport_Read_RecordCount(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := TQuickReport(Args.Obj).RecordCount;
-end;
-
-{ property Read RecordNo: integer }
-
-procedure TQuickReport_Read_RecordNo(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := TQuickReport(Args.Obj).RecordNo;
-end;
-
-type
-  { TQROnNeedDataEvent = procedure (Sender : TObject; var MoreData : Boolean) of object;
-  TQRNotifyOperationEvent = procedure (Sender : TObject; Operation : TQRNotifyOperation) of object;
-  TQRBandBeforePrintEvent = procedure (Sender : TQRCustomBand; var PrintBand : Boolean) of object;
-  TQRBandAfterPrintEvent = procedure (Sender : TQRCustomBand; BandPrinted : Boolean) of object;
-  TQRNotifyEvent = procedure (Sender : TQuickrep) of object;
-  TQRReportBeforePrintEvent = procedure (Sender : TQuickRep; var PrintReport : Boolean) of object;
-  TQRFilterEvent = procedure (var PrintRecord : Boolean) of object; }
-
-  TJvInterpreterQuickrptEvent = class(TJvInterpreterEvent)
-  private
-    procedure QROnNeedDataEvent(Sender: TObject; var MoreData: Boolean);
-//    procedure QRNotifyOperationEvent(Sender : TObject; Operation : TQRNotifyOperation);
-    procedure QRBandBeforePrintEvent(Sender: TQRBand; var PrintBand: Boolean);
-    procedure QRBandAfterPrintEvent(Sender: TQRBand; BandPrinted: Boolean);
-    procedure QRNotifyEvent(Sender: TQuickReport);
-    procedure QRReportBeforePrintEvent(Sender: TQuickReport; var PrintReport: Boolean);
-    procedure QRFilterEvent(var PrintRecord: boolean);
-  end;
-
-procedure TJvInterpreterQuickrptEvent.QROnNeedDataEvent(Sender: TObject; var MoreData: Boolean);
-begin
-  CallFunction(nil, [O2V(Sender), MoreData]);
-  MoreData := Args.Values[1];
-end;
-
-(*
-procedure TJvInterpreterQuickrptEvent.QRNotifyOperationEvent(Sender : TObject; Operation : TQRNotifyOperation);
-begin
-  CallFunction(nil, [O2V(Sender), Operation]);
-end;
-*)
-
-procedure TJvInterpreterQuickrptEvent.QRBandBeforePrintEvent(Sender: TQRBand; var PrintBand: Boolean);
-begin
-  CallFunction(nil, [O2V(Sender), PrintBand]);
-  PrintBand := Args.Values[1];
-end;
-
-procedure TJvInterpreterQuickrptEvent.QRBandAfterPrintEvent(Sender: TQRBand; BandPrinted: Boolean);
-begin
-  CallFunction(nil, [O2V(Sender), BandPrinted]);
-end;
-
-procedure TJvInterpreterQuickrptEvent.QRNotifyEvent(Sender: TQuickReport);
-begin
-  CallFunction(nil, [O2V(Sender)]);
-end;
-
-procedure TJvInterpreterQuickrptEvent.QRReportBeforePrintEvent(Sender: TQuickReport; var PrintReport: Boolean);
-begin
-  CallFunction(nil, [O2V(Sender), PrintReport]);
-  PrintReport := Args.Values[1];
-end;
-
-procedure TJvInterpreterQuickrptEvent.QRFilterEvent(var PrintRecord: boolean);
-begin
-  CallFunction(nil, [PrintRecord]);
-  PrintRecord := Args.Values[0];
-end;
-
-{$ENDIF}
-
-{$IFDEF COMPILER3_UP}
-
 { Delphi 3, 4 and CBuilder 3 }
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
@@ -2473,10 +2293,6 @@ begin
     AddGet(TQuickRep, 'Printer', TQuickRep_Read_Printer, 0, [0], varEmpty);
     AddGet(TQuickRep, 'QRPrinter', TQuickRep_Read_QRPrinter, 0, [0], varEmpty);
     AddSet(TQuickRep, 'QRPrinter', TQuickRep_Write_QRPrinter, 0, [0]);
-    {$IFDEF COMPILER3}
-    AddGet(TQuickRep, 'RecordCount', TQuickRep_Read_RecordCount, 0, [0], varEmpty);
-    AddGet(TQuickRep, 'RecordNumber', TQuickRep_Read_RecordNumber, 0, [0], varEmpty);
-    {$ENDIF COMPILER3}
     AddGet(TQuickRep, 'RotateBands', TQuickRep_Read_RotateBands, 0, [0], varEmpty);
     AddSet(TQuickRep, 'RotateBands', TQuickRep_Write_RotateBands, 0, [0]);
     AddGet(TQuickRep, 'State', TQuickRep_Read_State, 0, [0], varEmpty);
@@ -2548,27 +2364,6 @@ begin
     AddSet(TQRCompositeReport, 'PrinterSettings', TQRCompositeReport_Write_PrinterSettings, 0, [0]);
     AddGet(TQRCompositeReport, 'ReportTitle', TQRCompositeReport_Read_ReportTitle, 0, [0], varEmpty);
     AddSet(TQRCompositeReport, 'ReportTitle', TQRCompositeReport_Write_ReportTitle, 0, [0]);
-    {$IFDEF COMPILER3}
-    { THandleOperation }
-    AddConst(cQuickrpt, 'hoCreate', hoCreate);
-    AddConst(cQuickrpt, 'hoParent', hoParent);
-    AddConst(cQuickrpt, 'hoDestroy', hoDestroy);
-    AddConst(cQuickrpt, 'hoMove', hoMove);
-    AddConst(cQuickrpt, 'hoShow', hoShow);
-    AddConst(cQuickrpt, 'hoHide', hoHide);
-    { TQRPrintOrder }
-    AddConst(cQuickrpt, 'qrColByCol', qrColByCol);
-    AddConst(cQuickrpt, 'qrRowByRow', qrRowByRow);
-    { TQR1PaperSize }
-    AddConst(cQuickrpt, 'qrpDefault', qrpDefault);
-    AddConst(cQuickrpt, 'qrpLetter', qrpLetter);
-    AddConst(cQuickrpt, 'qrpLegal', qrpLegal);
-    AddConst(cQuickrpt, 'qrpA3', qrpA3);
-    AddConst(cQuickrpt, 'qrpA4', qrpA4);
-    AddConst(cQuickrpt, 'qrpA5', qrpA5);
-    AddConst(cQuickrpt, 'qrpCustom', qrpCustom);
-    {$ENDIF COMPILER3}
-
     AddHandler(cQuickrpt, 'TQROnNeedDataEvent', TJvInterpreterQuickrptEvent,
       @TJvInterpreterQuickrptEvent.QROnNeedDataEvent);
     AddHandler(cQuickrpt, 'TQRNotifyOperationEvent', TJvInterpreterQuickrptEvent,
@@ -2589,49 +2384,6 @@ begin
       TQRPreview]);
 end;
 
-{$ELSE}
-
-{ Delphi 2 and CBuilder 1 }
-
-procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
-const
-  cQuickRep = 'QuickRep';
-begin
-  with JvInterpreterAdapter do
-  begin
-    { TQRController }
-    AddClass(cQuickRep, TQRController, 'TQRController');
-    AddGet(TQRController, 'AddSub', TQRController_AddSub, 1, [varEmpty], varEmpty);
-    AddGet(TQRController, 'SubData', TQRController_Read_SubData, 0, [0], varEmpty);
-    { TQuickReport }
-    AddClass(cQuickRep, TQuickReport, 'TQuickReport');
-    AddGet(TQuickReport, 'NewPage', TQuickReport_NewPage, 0, [0], varEmpty);
-    AddGet(TQuickReport, 'Prepare', TQuickReport_Prepare, 0, [0], varEmpty);
-    AddGet(TQuickReport, 'Preview', TQuickReport_Preview, 0, [0], varEmpty);
-    AddGet(TQuickReport, 'Print', TQuickReport_Print, 0, [0], varEmpty);
-    AddGet(TQuickReport, 'PageHeight', TQuickReport_Read_PageHeight, 0, [0], varEmpty);
-    AddGet(TQuickReport, 'PageWidth', TQuickReport_Read_PageWidth, 0, [0], varEmpty);
-    AddGet(TQuickReport, 'PageNumber', TQuickReport_Read_PageNumber, 0, [0], varEmpty);
-    AddGet(TQuickReport, 'RecordCount', TQuickReport_Read_RecordCount, 0, [0], varEmpty);
-    AddGet(TQuickReport, 'RecordNo', TQuickReport_Read_RecordNo, 0, [0], varEmpty);
-
-    AddHandler(cQuickRep, 'TQROnNeedDataEvent', TJvInterpreterQuickrptEvent,
-      @TJvInterpreterQuickrptEvent.QROnNeedDataEvent);
-    // AddHandler(cQuickRep, 'TQRNotifyOperationEvent', TJvInterpreterQuickrptEvent, @TJvInterpreterQuickrptEvent.QRNotifyOperationEvent, nil);
-    AddHandler(cQuickRep, 'TQRBandBeforePrintEvent', TJvInterpreterQuickrptEvent,
-      @TJvInterpreterQuickrptEvent.QRBandBeforePrintEvent);
-    AddHandler(cQuickRep, 'TQRBandAfterPrintEvent', TJvInterpreterQuickrptEvent,
-      @TJvInterpreterQuickrptEvent.QRBandAfterPrintEvent);
-    AddHandler(cQuickRep, 'TQRNotifyEvent', TJvInterpreterQuickrptEvent, @TJvInterpreterQuickrptEvent.QRNotifyEvent);
-    AddHandler(cQuickRep, 'TQRReportBeforePrintEvent', TJvInterpreterQuickrptEvent,
-      @TJvInterpreterQuickrptEvent.QRReportBeforePrintEvent);
-    AddHandler(cQuickRep, 'TQRFilterEvent', TJvInterpreterQuickrptEvent, @TJvInterpreterQuickrptEvent.QRFilterEvent);
-  end;
-  RegisterClasses([TQuickReport, TQRBand, TQRLabel, TQRSysData, TQRDBText,
-    TQRLabel, TQRMemo, TQRGroup, TQRPreview, TQRDBCalc, TQRDetailLink]);
-end;
-
-{$ENDIF}
 
 initialization
   JvInterpreterRunReportPreviewProc := JvInterpreterRunReportPreview;
