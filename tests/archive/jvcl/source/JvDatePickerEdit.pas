@@ -150,8 +150,8 @@ type
     procedure UpdateDisplay; virtual;
     function ValidateDate(const ADate: TDateTime): Boolean; virtual;
     function ActiveFigure: TJvDateFigureInfo;
-    procedure CloseUp;
-    procedure DropDown;
+    procedure CloseUp; virtual;
+    procedure DropDown; virtual;
     procedure ClearMask;
     procedure RestoreMask;
     property AllowNoDate: Boolean read FAllowNoDate write SetAllowNoDate default True;

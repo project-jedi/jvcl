@@ -58,12 +58,19 @@ type
     procedure SetDataField(const AValue: string);
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetEnforceRequired(const AValue: Boolean);
+    procedure WMCut(var AMessage: TMessage); message WM_CUT;
+    procedure WMPaste(var AMessage: TMessage); message WM_PASTE;
+    procedure WMUndo(var AMessage: TMessage); message WM_UNDO;
+    procedure CMGetDataLink(var AMessage: TMessage); message CM_GETDATALINK;
   protected
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     function IsLinked: Boolean;
     procedure Change; override;
     procedure DoKillFocus(const ANextControl: TWinControl); override;
+    procedure DropDown; override;
+    function EditCanModify: Boolean; override;
+    procedure SetChecked(const AValue: Boolean); override;
     procedure SetShowCheckbox(const AValue: Boolean); override;
     procedure UpdateDisplay; override;
     function GetEnableValidation: Boolean; override;
@@ -301,7 +308,51 @@ end;
 
 function TJvCustomDBDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
 begin
-  result := (not IsLinked) or (FDataLink.DataSet.IsEmpty) or (inherited ValidateDate(ADate));
+  result := (not IsLinked) or (FDataLink.DataSet.IsEmpty)
+    or ((not Focused) and (FDataLink.DataSet.State = dsInsert) and FDataLink.Field.IsNull)
+    or (inherited ValidateDate(ADate));
+end;
+
+procedure TJvCustomDBDatePickerEdit.CMGetDataLink(var AMessage: TMessage);
+begin
+  AMessage.Result := Integer(FDataLink);
+end;
+
+procedure TJvCustomDBDatePickerEdit.DropDown;
+begin
+  if EditCanModify then
+    inherited DropDown;
+end;
+
+function TJvCustomDBDatePickerEdit.EditCanModify: Boolean;
+begin
+  result := (not IsLinked) or FDataLink.Edit;
+end;
+
+procedure TJvCustomDBDatePickerEdit.SetChecked(const AValue: Boolean);
+begin
+  if EditCanModify then
+    inherited SetChecked(AValue)
+  else
+    UpdateDisplay;
+end;
+
+procedure TJvCustomDBDatePickerEdit.WMCut(var AMessage: TMessage);
+begin
+  if EditCanModify then
+    inherited;
+end;
+
+procedure TJvCustomDBDatePickerEdit.WMPaste(var AMessage: TMessage);
+begin
+  if EditCanModify then
+    inherited;
+end;
+
+procedure TJvCustomDBDatePickerEdit.WMUndo(var AMessage: TMessage);
+begin
+  if EditCanModify then
+    inherited;
 end;
 
 end.
