@@ -51,9 +51,9 @@ interface
 // (rom) enable for functions only in HID.DLL of Windows XP
 { $ DEFINE WINXP}
 
-(*$HPPEMIT ''*)
-(*$HPPEMIT '#include "hidsdi.h"'*)
-(*$HPPEMIT ''*)
+(* $ HPPEMIT ''*)
+(* $ HPPEMIT '#include "hidsdi.h"'*)
+(* $ HPPEMIT ''*)
 
 uses
   Windows;
@@ -67,59 +67,59 @@ type
 
   // (rom) from WINNT.H
   NTSTATUS = Longint;
-  {$EXTERNALSYM NTSTATUS}
+  { $ EXTERNALSYM NTSTATUS}
 
 // FACILITY_HID_ERROR_CODE defined in ntstatus.h
 const
   FACILITY_HID_ERROR_CODE = $11;
-  {$EXTERNALSYM FACILITY_HID_ERROR_CODE}
+  { $ EXTERNALSYM FACILITY_HID_ERROR_CODE}
 
   //
   // Define NT Status codes with Facility Code of FACILITY_HID_ERROR_CODE
   // (rom)                                           vv
   HIDP_STATUS_SUCCESS                  = NTSTATUS($00110000);
-  {$EXTERNALSYM HIDP_STATUS_SUCCESS}
+  { $ EXTERNALSYM HIDP_STATUS_SUCCESS}
   HIDP_STATUS_NULL                     = NTSTATUS($80110001);
-  {$EXTERNALSYM HIDP_STATUS_NULL}
+  { $ EXTERNALSYM HIDP_STATUS_NULL}
   HIDP_STATUS_INVALID_PREPARSED_DATA   = NTSTATUS($C0110001);
-  {$EXTERNALSYM HIDP_STATUS_INVALID_PREPARSED_DATA}
+  { $ EXTERNALSYM HIDP_STATUS_INVALID_PREPARSED_DATA}
   HIDP_STATUS_INVALID_REPORT_TYPE      = NTSTATUS($C0110002);
-  {$EXTERNALSYM HIDP_STATUS_INVALID_REPORT_TYPE}
+  { $ EXTERNALSYM HIDP_STATUS_INVALID_REPORT_TYPE}
   HIDP_STATUS_INVALID_REPORT_LENGTH    = NTSTATUS($C0110003);
-  {$EXTERNALSYM HIDP_STATUS_INVALID_REPORT_LENGTH}
+  { $ EXTERNALSYM HIDP_STATUS_INVALID_REPORT_LENGTH}
   HIDP_STATUS_USAGE_NOT_FOUND          = NTSTATUS($C0110004);
-  {$EXTERNALSYM HIDP_STATUS_USAGE_NOT_FOUND}
+  { $ EXTERNALSYM HIDP_STATUS_USAGE_NOT_FOUND}
   HIDP_STATUS_VALUE_OUT_OF_RANGE       = NTSTATUS($C0110005);
-  {$EXTERNALSYM HIDP_STATUS_VALUE_OUT_OF_RANGE}
+  { $ EXTERNALSYM HIDP_STATUS_VALUE_OUT_OF_RANGE}
   HIDP_STATUS_BAD_LOG_PHY_VALUES       = NTSTATUS($C0110006);
-  {$EXTERNALSYM HIDP_STATUS_BAD_LOG_PHY_VALUES}
+  { $ EXTERNALSYM HIDP_STATUS_BAD_LOG_PHY_VALUES}
   HIDP_STATUS_BUFFER_TOO_SMALL         = NTSTATUS($C0110007);
-  {$EXTERNALSYM HIDP_STATUS_BUFFER_TOO_SMALL}
+  { $ EXTERNALSYM HIDP_STATUS_BUFFER_TOO_SMALL}
   HIDP_STATUS_INTERNAL_ERROR           = NTSTATUS($C0110008);
-  {$EXTERNALSYM HIDP_STATUS_INTERNAL_ERROR}
+  { $ EXTERNALSYM HIDP_STATUS_INTERNAL_ERROR}
   HIDP_STATUS_I8042_TRANS_UNKNOWN      = NTSTATUS($C0110009);
-  {$EXTERNALSYM HIDP_STATUS_I8042_TRANS_UNKNOWN}
+  { $ EXTERNALSYM HIDP_STATUS_I8042_TRANS_UNKNOWN}
   HIDP_STATUS_INCOMPATIBLE_REPORT_ID   = NTSTATUS($C011000A);
-  {$EXTERNALSYM HIDP_STATUS_INCOMPATIBLE_REPORT_ID}
+  { $ EXTERNALSYM HIDP_STATUS_INCOMPATIBLE_REPORT_ID}
   HIDP_STATUS_NOT_VALUE_ARRAY          = NTSTATUS($C011000B);
-  {$EXTERNALSYM HIDP_STATUS_NOT_VALUE_ARRAY}
+  { $ EXTERNALSYM HIDP_STATUS_NOT_VALUE_ARRAY}
   HIDP_STATUS_IS_VALUE_ARRAY           = NTSTATUS($C011000C);
-  {$EXTERNALSYM HIDP_STATUS_IS_VALUE_ARRAY}
+  { $ EXTERNALSYM HIDP_STATUS_IS_VALUE_ARRAY}
   HIDP_STATUS_DATA_INDEX_NOT_FOUND     = NTSTATUS($C011000D);
-  {$EXTERNALSYM HIDP_STATUS_DATA_INDEX_NOT_FOUND}
+  { $ EXTERNALSYM HIDP_STATUS_DATA_INDEX_NOT_FOUND}
   HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE  = NTSTATUS($C011000E);
-  {$EXTERNALSYM HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE}
+  { $ EXTERNALSYM HIDP_STATUS_DATA_INDEX_OUT_OF_RANGE}
   HIDP_STATUS_BUTTON_NOT_PRESSED       = NTSTATUS($C011000F);
-  {$EXTERNALSYM HIDP_STATUS_BUTTON_NOT_PRESSED}
+  { $ EXTERNALSYM HIDP_STATUS_BUTTON_NOT_PRESSED}
   HIDP_STATUS_REPORT_DOES_NOT_EXIST    = NTSTATUS($C0110010);
-  {$EXTERNALSYM HIDP_STATUS_REPORT_DOES_NOT_EXIST}
+  { $ EXTERNALSYM HIDP_STATUS_REPORT_DOES_NOT_EXIST}
   HIDP_STATUS_NOT_IMPLEMENTED          = NTSTATUS($C0110020);
-  {$EXTERNALSYM HIDP_STATUS_NOT_IMPLEMENTED}
+  { $ EXTERNALSYM HIDP_STATUS_NOT_IMPLEMENTED}
   //
   // We blundered this status code.
   //
   HIDP_STATUS_I8242_TRANS_UNKNOWN      = HIDP_STATUS_I8042_TRANS_UNKNOWN;
-  {$EXTERNALSYM HIDP_STATUS_I8242_TRANS_UNKNOWN}
+  { $ EXTERNALSYM HIDP_STATUS_I8242_TRANS_UNKNOWN}
 
   // Special Link collection values for using the query functions
   //
@@ -128,9 +128,9 @@ const
   // Unspecifies, references all collections in the link collection tree.
 
   HIDP_LINK_COLLECTION_ROOT        = -1;
-  {$EXTERNALSYM HIDP_LINK_COLLECTION_ROOT}
+  { $ EXTERNALSYM HIDP_LINK_COLLECTION_ROOT}
   HIDP_LINK_COLLECTION_UNSPECIFIED =  0;
-  {$EXTERNALSYM HIDP_LINK_COLLECTION_UNSPECIFIED}
+  { $ EXTERNALSYM HIDP_LINK_COLLECTION_UNSPECIFIED}
 
   // A bitmap of the current shift state of the keyboard when using the
   // below keyboard usages to i8042 translation function.
@@ -165,7 +165,7 @@ type
     size:           ULONG;
     RingBufferSize: ULONG;
   end;
-  {$EXTERNALSYM HIDD_CONFIGURATION}
+  { $ EXTERNALSYM HIDD_CONFIGURATION}
   THIDDConfiguration = HIDD_CONFIGURATION;
 
   PHIDDAttributes = ^THIDDAttributes;
@@ -178,18 +178,18 @@ type
     // Additional fields will be added to the end of this structure.
     //
   end;
-  {$EXTERNALSYM HIDD_ATTRIBUTES}
+  { $ EXTERNALSYM HIDD_ATTRIBUTES}
   THIDDAttributes = HIDD_ATTRIBUTES;
 
   PHIDPPreparsedData = Pointer;
 
 const
   HidP_Input   = 0;
-  {$EXTERNALSYM HidP_Input}
+  { $ EXTERNALSYM HidP_Input}
   HidP_Output  = 1;
-  {$EXTERNALSYM HidP_Output}
+  { $ EXTERNALSYM HidP_Output}
   HidP_Feature = 2;
-  {$EXTERNALSYM HidP_Feature}
+  { $ EXTERNALSYM HidP_Feature}
 
 type
   PHIDPReportType = ^THIDPReportType;
@@ -198,9 +198,9 @@ type
 const
   // Produce Make or Break Codes
   HidP_Keyboard_Break = 0;
-  {$EXTERNALSYM HidP_Keyboard_Break}
+  { $ EXTERNALSYM HidP_Keyboard_Break}
   HidP_Keyboard_Make  = 1;
-  {$EXTERNALSYM HidP_Keyboard_Make}
+  { $ EXTERNALSYM HidP_Keyboard_Make}
 type
   PHIDPKeyboardDirection = ^THIDPKeyboardDirection;
   THIDPKeyboardDirection = DWORD;
@@ -210,7 +210,7 @@ type
     Usage:     TUsage;
     UsagePage: TUsage;
   end;
-  {$EXTERNALSYM USAGE_AND_PAGE}
+  { $ EXTERNALSYM USAGE_AND_PAGE}
   TUsageAndPage = USAGE_AND_PAGE;
 
   PHIDPButtonCaps = ^THIDPButtonCaps;
@@ -244,7 +244,7 @@ type
         DesignatorIndex,  Reserved3,
         DataIndex,        Reserved4:     Word );
   end;
-  {$EXTERNALSYM HIDP_BUTTON_CAPS}
+  { $ EXTERNALSYM HIDP_BUTTON_CAPS}
   THIDPButtonCaps = HIDP_BUTTON_CAPS;
 
   PHIDPValueCaps = ^THIDPValueCaps;
@@ -291,7 +291,7 @@ type
         DesignatorIndex,  Reserved3,
         DataIndex,        Reserved4:     Word );
   end;
-  {$EXTERNALSYM HIDP_VALUE_CAPS}
+  { $ EXTERNALSYM HIDP_VALUE_CAPS}
   THIDPValueCaps = HIDP_VALUE_CAPS;
 
 //
@@ -358,7 +358,7 @@ type
     Reserved:         Word;    // (rom) bitfields
     UserContext:      Pointer; // The user can hang his coat here.
   end;
-  {$EXTERNALSYM HIDP_LINK_COLLECTION_NODE}
+  { $ EXTERNALSYM HIDP_LINK_COLLECTION_NODE}
   THIDPLinkCollectionNode = HIDP_LINK_COLLECTION_NODE;
 
 //
@@ -406,7 +406,7 @@ type
     NumberFeatureValueCaps:    Word;
     NumberFeatureDataIndices:  Word;
   end;
-  {$EXTERNALSYM HIDP_CAPS}
+  { $ EXTERNALSYM HIDP_CAPS}
   THIDPCaps = HIDP_CAPS;
 
   PHIDPData = ^THIDPData;
@@ -418,7 +418,7 @@ type
     1: (On_:      ByteBool);   // for buttons MUST BE TRUE for buttons.
                                // (rom) name change On is reserved in Pascal
   end;
-  {$EXTERNALSYM HIDP_DATA}
+  { $ EXTERNALSYM HIDP_DATA}
   THIDPData = HIDP_DATA;
 
 // The HIDP_DATA structure is used with HidP_GetData and HidP_SetData
@@ -444,7 +444,7 @@ type
     Reserved: array [0..2] of BYTE;
     BitField: DWORD;
   end;
-  {$EXTERNALSYM HIDP_UNKNOWN_TOKEN}
+  { $ EXTERNALSYM HIDP_UNKNOWN_TOKEN}
   THIDPUnknownToken = HIDP_UNKNOWN_TOKEN;
 
   PHIDPExtendedAttributes = ^THIDPExtendedAttributes;
@@ -455,7 +455,7 @@ type
     // ... Additional attributes
     Data:              array [0..0] of ULONG; // variableLength  DO NOT ACCESS THIS FIELD
   end;
-  {$EXTERNALSYM HIDP_EXTENDED_ATTRIBUTES}
+  { $ EXTERNALSYM HIDP_EXTENDED_ATTRIBUTES}
   THIDPExtendedAttributes = HIDP_EXTENDED_ATTRIBUTES;
 
   // (rom) callback function type for HidP_TranslateUsagesToI8042ScanCodes param
@@ -478,14 +478,14 @@ type
 function HidD_Hello(Buffer: PChar; BufferLength: ULONG): ULONG; stdcall;
 
 procedure HidD_GetHidGuid(var HidGuid: TGUID) stdcall;
-{$EXTERNALSYM HidD_GetHidGuid}
+{ $ EXTERNALSYM HidD_GetHidGuid}
 
 function HidD_GetPreparsedData(HidDeviceObject: THandle;
   var PreparsedData: PHIDPPreparsedData): LongBool; stdcall;
-{$EXTERNALSYM HidD_GetPreparsedData}
+{ $ EXTERNALSYM HidD_GetPreparsedData}
 
 function HidD_FreePreparsedData(PreparsedData: PHIDPPreparsedData): LongBool; stdcall;
-{$EXTERNALSYM HidD_FreePreparsedData}
+{ $ EXTERNALSYM HidD_FreePreparsedData}
 
 // Routine Description:
 //     Get the configuration information for this Hid device
@@ -507,7 +507,7 @@ function HidD_FreePreparsedData(PreparsedData: PHIDPPreparsedData): LongBool; st
 
 function HidD_GetConfiguration(HidDeviceObject: THandle;
   var HidConfig: THIDDConfiguration; Size: Integer): LongBool; stdcall;
-{$EXTERNALSYM HidD_GetConfiguration}
+{ $ EXTERNALSYM HidD_GetConfiguration}
 
 // Routine Description:
 //    Set the configuration information for this Hid device...
@@ -533,7 +533,7 @@ function HidD_GetConfiguration(HidDeviceObject: THandle;
 
 function HidD_SetConfiguration(HidDeviceObject: THandle;
   const HidConfig: THIDDConfiguration; Size: Integer): LongBool; stdcall;
-{$EXTERNALSYM HidD_SetConfiguration}
+{ $ EXTERNALSYM HidD_SetConfiguration}
 
 // Routine Description:
 //     Flush the input queue for the given HID device.
@@ -548,7 +548,7 @@ function HidD_SetConfiguration(HidDeviceObject: THandle;
 //    FALSE otherwise  -- Use GetLastError() to get extended error information
 
 function HidD_FlushQueue(HidDeviceObject: THandle): LongBool; stdcall;
-{$EXTERNALSYM HidD_FlushQueue}
+{ $ EXTERNALSYM HidD_FlushQueue}
 
 // Routine Description:
 //     Retrieve a feature report from a HID device.
@@ -570,7 +570,7 @@ function HidD_FlushQueue(HidDeviceObject: THandle): LongBool; stdcall;
 
 function HidD_GetFeature(HidDeviceObject: THandle;
   var Report; Size: Integer): LongBool; stdcall;
-{$EXTERNALSYM HidD_GetFeature}
+{ $ EXTERNALSYM HidD_GetFeature}
 
 // Routine Description:
 //     Send a feature report to a HID device.
@@ -590,7 +590,7 @@ function HidD_GetFeature(HidDeviceObject: THandle;
 
 function HidD_SetFeature(HidDeviceObject: THandle;
   var Report; Size: Integer): LongBool; stdcall;
-{$EXTERNALSYM HidD_SetFeature}
+{ $ EXTERNALSYM HidD_SetFeature}
 
 // Routine Description:
 //     This function returns the number of input buffers used by the specified
@@ -610,7 +610,7 @@ function HidD_SetFeature(HidDeviceObject: THandle;
 
 function HidD_GetNumInputBuffers(HidDeviceObject: THandle;
   var NumBufs: Integer): LongBool; stdcall;
-{$EXTERNALSYM HidD_GetNumInputBuffers}
+{ $ EXTERNALSYM HidD_GetNumInputBuffers}
 
 // Routine Description:
 //     This function sets the number of input buffers used by the specified
@@ -630,7 +630,7 @@ function HidD_GetNumInputBuffers(HidDeviceObject: THandle;
 
 function HidD_SetNumInputBuffers(HidDeviceObject: THandle;
   NumBufs: Integer): LongBool; stdcall;
-{$EXTERNALSYM HidD_SetNumInputBuffers}
+{ $ EXTERNALSYM HidD_SetNumInputBuffers}
 
 // Routine Description:
 //     Given a handle to a valid Hid Class Device Object, retrieve the preparsed
@@ -653,7 +653,7 @@ function HidD_SetNumInputBuffers(HidDeviceObject: THandle;
 
 function HidD_GetAttributes(HidDeviceObject: THandle;
   var HidAttrs: THIDDAttributes): LongBool; stdcall;
-{$EXTERNALSYM HidD_GetAttributes}
+{ $ EXTERNALSYM HidD_GetAttributes}
 
 // Routine Description:
 //     This function retrieves the manufacturer string from the specified
@@ -674,7 +674,7 @@ function HidD_GetAttributes(HidDeviceObject: THandle;
 
 function HidD_GetManufacturerString(HidDeviceObject: THandle;
   Buffer: PWideChar; BufferLength: Integer): LongBool; stdcall;
-{$EXTERNALSYM HidD_GetManufacturerString}
+{ $ EXTERNALSYM HidD_GetManufacturerString}
 
 // Routine Description:
 //     This function retrieves the product string from the specified
@@ -695,7 +695,7 @@ function HidD_GetManufacturerString(HidDeviceObject: THandle;
 
 function HidD_GetProductString(HidDeviceObject: THandle;
   Buffer: PWideChar; BufferLength: Integer): LongBool; stdcall;
-{$EXTERNALSYM HidD_GetProductString}
+{ $ EXTERNALSYM HidD_GetProductString}
 
 // Routine Description:
 //     This function retrieves the serial number string from the specified
@@ -716,7 +716,7 @@ function HidD_GetProductString(HidDeviceObject: THandle;
 
 function HidD_GetSerialNumberString(HidDeviceObject: THandle;
   Buffer: PWideChar; BufferLength: Integer): LongBool; stdcall;
-{$EXTERNALSYM HidD_GetSerialNumberString}
+{ $ EXTERNALSYM HidD_GetSerialNumberString}
 
 // Routine Description:
 //     This function retrieves the raw physical descriptor for the specified
@@ -737,7 +737,7 @@ function HidD_GetSerialNumberString(HidDeviceObject: THandle;
 
 function HidD_GetPhysicalDescriptor(HidDeviceObject: THandle;
   var Buffer; BufferLength: Integer): LongBool; stdcall;
-{$EXTERNALSYM HidD_GetPhysicalDescriptor}
+{ $ EXTERNALSYM HidD_GetPhysicalDescriptor}
 
 // Routine Description:
 //     This function retrieves a string from the specified Hid device that is
@@ -760,7 +760,7 @@ function HidD_GetPhysicalDescriptor(HidDeviceObject: THandle;
 
 function HidD_GetIndexedString(HidDeviceObject: THandle;
   Index: Integer; Buffer: PWideChar; BufferLength: Integer): LongBool; stdcall;
-{$EXTERNALSYM HidD_GetIndexedString}
+{ $ EXTERNALSYM HidD_GetIndexedString}
 
 // Routine Description:
 //    Returns a list of capabilities of a given hid device as described by its
@@ -781,17 +781,17 @@ function HidD_GetIndexedString(HidDeviceObject: THandle;
 
 function HidD_GetInputReport(HidDeviceObject: THandle;
   Buffer: Pointer; BufferLength: ULONG): LongBool; stdcall;
-{$EXTERNALSYM HidD_GetInputReport}
+{ $ EXTERNALSYM HidD_GetInputReport}
 
 function HidD_SetOutputReport(HidDeviceObject: THandle;
   Buffer: Pointer; BufferLength: ULONG): LongBool; stdcall;
-{$EXTERNALSYM HidD_SetOutputReport}
+{ $ EXTERNALSYM HidD_SetOutputReport}
 
 {$ENDIF}
 
 function HidP_GetCaps(PreparsedData: PHIDPPreparsedData;
   var Capabilities: THIDPCaps): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_GetCaps}
+{ $ EXTERNALSYM HidP_GetCaps}
 
 // Routine Description:
 //    Return a list of PHIDP_LINK_COLLECTION_NODEs used to describe the link
@@ -811,17 +811,17 @@ function HidP_GetCaps(PreparsedData: PHIDPPreparsedData;
 
 function HidP_GetLinkCollectionNodes(LinkCollectionNodes: PHIDPLinkCollectionNode;
   var LinkCollectionNodesLength: ULONG; PreparsedData: PHIDPPreparsedData): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_GetLinkCollectionNodes}
+{ $ EXTERNALSYM HidP_GetLinkCollectionNodes}
 
 function HidP_GetSpecificButtonCaps(ReportType: THIDPReportType;
   UsagePage: TUsage; LinkCollection: Word; Usage: TUsage; ButtonCaps: PHIDPButtonCaps;
   var ButtonCapsLength: Word; PreparsedData: PHIDPPreparsedData): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_GetSpecificButtonCaps}
+{ $ EXTERNALSYM HidP_GetSpecificButtonCaps}
 
 function HidP_GetSpecificValueCaps(ReportType: THIDPReportType; UsagePage: TUsage;
   LinkCollection: Word; Usage: TUsage; ValueCaps: PHIDPValueCaps;
   var ValueCapsLength: Word; PreparsedData: PHIDPPreparsedData): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_GetSpecificValueCaps}
+{ $ EXTERNALSYM HidP_GetSpecificValueCaps}
 
 // Routine Description:
 // 
@@ -868,7 +868,7 @@ function HidP_GetSpecificValueCaps(ReportType: THIDPReportType; UsagePage: TUsag
 function HidP_GetData(ReportType: THIDPReportType; DataList: PHIDPData;
   var DataLength: ULONG; PreparsedData: PHIDPPreparsedData;
   var Report; ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_GetData}
+{ $ EXTERNALSYM HidP_GetData}
 
 // Routine Description:
 // 
@@ -933,7 +933,7 @@ function HidP_GetData(ReportType: THIDPReportType; DataList: PHIDPData;
 function HidP_SetData(ReportType: THIDPReportType; DataList: PHIDPData;
   var DataLength: ULONG; PreparsedData: PHIDPPreparsedData;
   var Report; ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_SetData}
+{ $ EXTERNALSYM HidP_SetData}
 
 // Routine Description:
 // 
@@ -954,7 +954,7 @@ function HidP_SetData(ReportType: THIDPReportType; DataList: PHIDPData;
 
 function HidP_MaxDataListLength(ReportType: THIDPReportType;
   PreparsedData: PHIDPPreparsedData): ULONG; stdcall;
-{$EXTERNALSYM HidP_MaxDataListLength}
+{ $ EXTERNALSYM HidP_MaxDataListLength}
 
 // Routine Description:
 //     This function returns the binary values (buttons) that are set in a HID
@@ -1028,13 +1028,13 @@ function HidP_GetUsages(ReportType: THIDPReportType; UsagePage: TUsage;
   LinkCollection: Word; UsageList: PUsage; var UsageLength: ULONG;
   PreparsedData: PHIDPPreparsedData; var Report;
   ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_GetUsages}
+{ $ EXTERNALSYM HidP_GetUsages}
 
 function HidP_GetButtons(ReportType: THIDPReportType; UsagePage: TUsage;
   LinkCollection: Word; UsageList: PUsage; var UsageLength: ULONG;
   PreparsedData: PHIDPPreparsedData; var Report;
   ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_GetButtons}
+{ $ EXTERNALSYM HidP_GetButtons}
 
 // Routine Description:
 //     This function returns the binary values (buttons) in a HID report.
@@ -1100,13 +1100,13 @@ function HidP_GetUsagesEx(ReportType: THIDPReportType; LinkCollection: Word;
   UsageList: PUsageAndPage; var UsageLength: ULONG;
   PreparsedData: PHIDPPreparsedData; var Report;
   ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_GetUsagesEx}
+{ $ EXTERNALSYM HidP_GetUsagesEx}
 
 function HidP_GetButtonsEx(ReportType: THIDPReportType; LinkCollection: Word;
   UsageList: PUsageAndPage; var UsageLength: ULONG;
   PreparsedData: PHIDPPreparsedData; var Report;
   ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_GetButtonsEx}
+{ $ EXTERNALSYM HidP_GetButtonsEx}
 
 // Routine Description:
 //     This function sets binary values (buttons) in a report.  Given an
@@ -1188,13 +1188,13 @@ function HidP_SetUsages(ReportType: THIDPReportType; UsagePage: TUsage;
   LinkCollection: Word; UsageList: PUsage; var UsageLength: ULONG;
   PreparsedData: PHIDPPreparsedData; var Report;
   ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_SetUsages}
+{ $ EXTERNALSYM HidP_SetUsages}
 
 function HidP_SetButtons(ReportType: THIDPReportType; UsagePage: TUsage;
   LinkCollection: Word; ButtonList: PUsage; var ButtonLength: ULONG;
   PreparsedData: PHIDPPreparsedData; var Report;
   ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_SetButtons}
+{ $ EXTERNALSYM HidP_SetButtons}
 
 // Routine Description:
 //     This function unsets (turns off) binary values (buttons) in the report.  Given
@@ -1275,13 +1275,13 @@ function HidP_UnsetUsages(ReportType: THIDPReportType; UsagePage: TUsage;
   LinkCollection: Word; UsageList: PUsage; var UsageLength: ULONG;
   PreparsedData: PHIDPPreparsedData; var Report;
   ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_UnsetUsages}
+{ $ EXTERNALSYM HidP_UnsetUsages}
 
 function HidP_UnsetButtons(ReportType: THIDPReportType; UsagePage: TUsage;
   LinkCollection: Word; ButtonList: PUsage; var ButtonLength: ULONG;
   PreparsedData: PHIDPPreparsedData; var Report;
   ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_UnsetButtons}
+{ $ EXTERNALSYM HidP_UnsetButtons}
 
 // Routine Description:
 //     This function returns the maximum number of usages that a call to
@@ -1308,11 +1308,11 @@ function HidP_UnsetButtons(ReportType: THIDPReportType; UsagePage: TUsage;
 
 function HidP_MaxUsageListLength(ReportType: THIDPReportType; UsagePage: TUsage;
   PreparsedData: PHIDPPreparsedData): ULONG; stdcall;
-{$EXTERNALSYM HidP_MaxUsageListLength}
+{ $ EXTERNALSYM HidP_MaxUsageListLength}
 
 function HidP_MaxButtonListLength(ReportType: THIDPReportType; UsagePage: TUsage;
   PreparsedData: PHIDPPreparsedData): ULONG; stdcall;
-{$EXTERNALSYM HidP_MaxButtonListLength}
+{ $ EXTERNALSYM HidP_MaxButtonListLength}
 
 // Description
 //     HidP_GetUsageValue retrieves the value from the HID Report for the usage
@@ -1376,7 +1376,7 @@ function HidP_GetUsageValue(ReportType: THIDPReportType; UsagePage: TUsage;
   LinkCollection: Word; Usage: TUsage; var UsageValue: ULONG;
   PreparsedData: PHIDPPreparsedData; var Report;
   ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_GetUsageValue}
+{ $ EXTERNALSYM HidP_GetUsageValue}
 
 // Description
 //     HidP_GetScaledUsageValue retrieves a UsageValue from the HID report packet
@@ -1463,7 +1463,7 @@ function HidP_GetScaledUsageValue(ReportType: THIDPReportType; UsagePage: TUsage
   LinkCollection: Word; Usage: TUsage; var UsageValue: Integer;
   PreparsedData: PHIDPPreparsedData; var Report;
   ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_GetScaledUsageValue}
+{ $ EXTERNALSYM HidP_GetScaledUsageValue}
 
 // Routine Descripton:
 //     A usage value array occurs when the last usage in the list of usages
@@ -1557,7 +1557,7 @@ function HidP_GetUsageValueArray(ReportType: THIDPReportType; UsagePage: TUsage;
   LinkCollection: Word; Usage: TUsage; UsageValue: PChar;
   UsageValueByteLength: Word; PreparsedData: PHIDPPreparsedData;
   var Report; ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_GetUsageValueArray}
+{ $ EXTERNALSYM HidP_GetUsageValueArray}
 
 // Description:
 //     HidP_SetUsageValue inserts a value into the HID Report Packet in the field
@@ -1630,7 +1630,7 @@ function HidP_SetUsageValue(ReportType: THIDPReportType; UsagePage: TUsage;
   LinkCollection: Word; Usage: TUsage; UsageValue: ULONG;
   PreparsedData: PHIDPPreparsedData; var Report;
   ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_SetUsageValue}
+{ $ EXTERNALSYM HidP_SetUsageValue}
 
 // Description:
 //     HidP_SetScaledUsageValue inserts the UsageValue into the HID report packet
@@ -1716,7 +1716,7 @@ function HidP_SetScaledUsageValue(ReportType: THIDPReportType; UsagePage: TUsage
   LinkCollection: Word; Usage: TUsage; UsageValue: Integer;
   PreparsedData: PHIDPPreparsedData; var Report;
   ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_SetScaledUsageValue}
+{ $ EXTERNALSYM HidP_SetScaledUsageValue}
 
 // Routine Descripton:
 //     A usage value array occurs when the last usage in the list of usages
@@ -1814,7 +1814,7 @@ function HidP_SetUsageValueArray(ReportType: THIDPReportType; UsagePage: TUsage;
   LinkCollection: Word; Usage: TUsage; UsageValue: PChar;
   UsageValueByteLength: Word; PreparsedData: PHIDPPreparsedData;
   var Report; ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_SetUsageValueArray}
+{ $ EXTERNALSYM HidP_SetUsageValueArray}
 
 // Routine Description:
 //     This function will return the difference between a two lists of usages
@@ -1840,7 +1840,7 @@ function HidP_SetUsageValueArray(ReportType: THIDPReportType; UsagePage: TUsage;
 function HidP_UsageListDifference(PreviousUsageList: PUsage;
   CurrentUsageList: PUsage; BreakUsageList: PUsage;
   MakeUsageList: PUsage; UsageListLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_UsageListDifference}
+{ $ EXTERNALSYM HidP_UsageListDifference}
 
 // (rom) these two functions are prototyped in hidpi.h
 // (rom) but are missing in all HID.DLL versions
@@ -1848,21 +1848,21 @@ function HidP_UsageListDifference(PreviousUsageList: PUsage;
 // function HidP_UsageAndPageListDifference(PreviousUsageList: PUsageAndPage;
 //   CurrentUsageList: PUsageAndPage; BreakUsageList: PUsageAndPage;
 //   MakeUsageList: PUsageAndPage; UsageListLength: ULONG):NTSTATUS; stdcall;
-// {$EXTERNALSYM HidP_UsageAndPageListDifference}
+// { $ EXTERNALSYM HidP_UsageAndPageListDifference}
 
 // function HidP_TranslateUsageAndPagesToI8042ScanCodes(ChangedUsageList: PUsageAndPage;
 //   UsageListLength: ULONG; KeyAction: THIDPKeyboardDirection;
 //   var ModifierState: THIDPKeyboardModifierState;
 //   InsertCodesProcedure: THIDPInsertScanCodes;
 //   InsertCodesContext: Pointer): NTSTATUS; stdcall;
-// {$EXTERNALSYM HidP_TranslateUsageAndPagesToI8042ScanCodes}
+// { $ EXTERNALSYM HidP_TranslateUsageAndPagesToI8042ScanCodes}
 
 function HidP_TranslateUsagesToI8042ScanCodes(ChangedUsageList: PUsage;
   UsageListLength: ULONG; KeyAction: THIDPKeyboardDirection;
   var ModifierState: THIDPKeyboardModifierState;
   InsertCodesProcedure: THIDPInsertScanCodes;
   InsertCodesContext: Pointer): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_TranslateUsagesToI8042ScanCodes}
+{ $ EXTERNALSYM HidP_TranslateUsagesToI8042ScanCodes}
 
 // Description:
 //     Given a data index from the value or button capabilities of a given control
@@ -1894,7 +1894,7 @@ function HidP_GetExtendedAttributes(ReportType: THIDPReportType;
   DataIndex: Word; PreparsedData: PHIDPPreparsedData;
   Attributes: PHIDPExtendedAttributes;
   var LengthAttributes: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_GetExtendedAttributes}
+{ $ EXTERNALSYM HidP_GetExtendedAttributes}
 
 // Routine Description:
 // 
@@ -1928,7 +1928,7 @@ function HidP_GetExtendedAttributes(ReportType: THIDPReportType;
 function HidP_InitializeReportForID(ReportType: THIDPReportType;
   ReportID: BYTE; PreparsedData: PHIDPPreparsedData;
   var Report; ReportLength: ULONG): NTSTATUS; stdcall;
-{$EXTERNALSYM HidP_InitializeReportForID}
+{ $ EXTERNALSYM HidP_InitializeReportForID}
 
 {$ENDIF}
 
