@@ -21,6 +21,11 @@ Known Issues:
 
 {$I jedi.inc}
 
+{$IFNDEF JEDI_INC}
+ALERT_jedi_inc_incompatible
+// secure against old versions of jedi.inc.
+{$ENDIF !JEDI_INC}
+
 {$IFDEF QUnit}
  {$UNDEF VCL}
  {$DEFINE VisualCLX}

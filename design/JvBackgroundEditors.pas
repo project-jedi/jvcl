@@ -25,7 +25,7 @@ Known Issues:
 
 unit JvBackgroundEditors;
 
-{$I jedi.inc}
+{$I jvcl.inc}
 
 interface
 
