@@ -50,10 +50,11 @@ type
     FLastUpdate: Integer; // 0: no Update, 1: Update #1, 2: Update #3, ...
     FDcpDir: string;
     FBplDir: string;
-    FSearchPath: string;
+    FSearchPaths: string;
     FKnownPackages: TStrings;
     FIsJVCLInstalled: Boolean;
     FIsJCLInstalled: Boolean;
+    FJCLDir: string;
 
     FCompileFor: Boolean;
     FNeedsUpdate: Boolean;
@@ -61,6 +62,7 @@ type
     FBuild: Boolean;
     FDeveloperInstall: Boolean;
     FInstallJcl: Boolean;
+    FJCLNeedsDcp: Boolean;
 
     function GetSymbol: string;
     function GetMajorVersion: Integer;
@@ -77,6 +79,8 @@ type
     function GetIsDelphi: Boolean;
     function GetJVCLDirName: string;
     procedure AddRemoveJCLPaths(Add: Boolean);
+    function GetJCLPackageDir: string;
+    function GetJCLPackageXmlDir: string;
   protected
     procedure ClearPalette(reg: TRegistry; const Name: string);
     procedure DoClearJVCLPalette;
@@ -116,7 +120,11 @@ type
     property JVCLDirName: string read GetJVCLDirName; // directory in Packages\
     property LibDir: string read GetLibDir; // relative to $(JVCL)
 
-    property SearchPaths: string read FSearchPath;
+    property JCLDir: string read FJCLDir; // directory where JCL is installed or the global JCLDir
+    property JCLPackageDir: string read GetJCLPackageDir;
+    property JCLPackageXmlDir: string read GetJCLPackageXmlDir;
+    property JCLNeedsDcp: Boolean read FJCLNeedsDcp;
+    property SearchPaths: string read FSearchPaths;
     property BplDir: string read FBplDir;
     property DcpDir: string read FDcpDir;
     property KnownPackages: TStrings read FKnownPackages;
@@ -250,13 +258,15 @@ var
   JVCLPackageDir: string;
   JVCLPackageXmlDir: string;
 
-  JCLDir: string;
-  JCLPackageDir: string;
-  JCLPackageXmlDir: string; // only runtime packages
+  JCLPairInstallation: Boolean; // JCL source is in $(JVCL)..\JCL
+  xJCLDir: string;
+  xJCLPackageDir: string;
+  xJCLPackageXmlDir: string; // only runtime packages
 
 procedure SplitPaths(const Paths: string; List: TStrings);
 function CombinePaths(List: TStrings): string;
-function StartsWith(const Text, StartText: string): Boolean;
+function StartsWith(const Text, StartText: string; CaseInsensitive: Boolean = False): Boolean;
+function EndsWith(const Text, EndText: string; CaseInsensitive: Boolean): Boolean;
 function ReadStringFromFile(const Filename: string): string;
 function SubStr(const Text: string; StartIndex, EndIndex: Integer): string;
 function IsDelphiRunning: Boolean;
@@ -337,15 +347,15 @@ begin
    // prefix is added in BuildHelpers.CreateDelphiPackageForBCB
     if Target.MajorVersion < 6 then LibVer := '50' else LibVer := '';
 
-    Item := TPackageInfo.Create('Jcl' + LibVer + '-R', JCLPackageXmlDir, Result);
+    Item := TPackageInfo.Create('Jcl' + LibVer + '-R', Target.JCLPackageXmlDir, Result);
     Result.FItems.Add(Item);
 
     if Target.MajorVersion > 5 then
     begin
-      Item := TPackageInfo.Create('JclVcl-R', JCLPackageXmlDir, Result);
+      Item := TPackageInfo.Create('JclVcl-R', Target.JCLPackageXmlDir, Result);
       Result.FItems.Add(Item);
 
-      Item := TPackageInfo.Create('JclVClx-R', JCLPackageXmlDir, Result);
+      Item := TPackageInfo.Create('JclVClx-R', Target.JCLPackageXmlDir, Result);
       Result.FItems.Add(Item);
     end;
   except
@@ -478,7 +488,7 @@ begin
   SetLength(Result, Length(Result) - 1);
 end;
 
-function StartsWith(const Text, StartText: string): Boolean;
+function StartsWith(const Text, StartText: string; CaseInsensitive: Boolean = False): Boolean;
 var
   Len, i: Integer;
 begin
@@ -486,11 +496,49 @@ begin
   Len := Length(StartText);
   if Len > Length(Text) then
     Exit;
-  for i := 0 to Len do
-    if Text[i] <> StartText[i] then
-      Exit;
+  if CaseInsensitive then
+  begin
+    for i := 1 to Len do
+      if UpCase(Text[i]) <> UpCase(StartText[i]) then
+        Exit;
+  end
+  else
+  begin
+    for i := 1 to Len do
+      if Text[i] <> StartText[i] then
+        Exit;
+  end;
   Result := True;
 end;
+
+function EndsWith(const Text, EndText: string; CaseInsensitive: Boolean): Boolean;
+var
+  Len, i, x: Integer;
+begin
+  Result := False;
+  Len := Length(EndText);
+  x := Length(Text);
+  if Len > x then
+    Exit;
+  if CaseInsensitive then
+  begin
+    for i := Len downto 1 do
+      if UpCase(Text[x]) <> UpCase(EndText[i]) then
+        Exit
+      else
+        Dec(x);
+  end
+  else
+  begin
+    for i := Len downto 1 do
+      if Text[x] <> EndText[i] then
+        Exit
+      else
+        Dec(x);
+  end;
+  Result := True;
+end;
+
 
 function ReadStringFromFile(const Filename: string): string;
 var
@@ -746,7 +794,7 @@ var
   i: Integer;
   JCLDirList: array of string;
 begin
-  if JCLDir = '' then Exit;
+  if not JCLPairInstallation then Exit;
 
   reg := TRegistry.Create;
   try
@@ -912,7 +960,7 @@ end;
 
 procedure TTargetInfo.JclRegistryInstall;
 begin
-  if JCLDir <> '' then
+  if JCLPairInstallation then
     AddRemoveJCLPaths(True);
 end;
 
@@ -934,6 +982,7 @@ var
   reg: TRegistry;
   i: Integer;
   JclFileName, JclFileNameNoVer: string;
+  List: TStrings;
 begin
   reg := TRegistry.Create;
   try
@@ -973,9 +1022,9 @@ begin
           FBplDir := RootDir + '\Projects\Bpl';
 
         if reg.ValueExists('Search Path') then
-          FSearchPath := ExpandDirMacros(reg.ReadString('Search Path'))
+          FSearchPaths := ExpandDirMacros(reg.ReadString('Search Path'))
         else
-          FSearchPath := ExpandDirMacros('$(DELPHI)\Lib;$(DELPHI)\Bin;$(DELPHI)\Imports;$(DELPHI)\Projects\Bpl');
+          FSearchPaths := ExpandDirMacros('$(DELPHI)\Lib;$(DELPHI)\Bin;$(DELPHI)\Imports;$(DELPHI)\Projects\Bpl');
         reg.CloseKey;
       end;
     end;
@@ -992,17 +1041,47 @@ begin
   else
     JclFileName := 'CJcl' + IntToStr(MajorVersion) + '0';
   JclFileNameNoVer := Copy(JclFileName, 1, Length(JclFileName) - 2);
-  FIsJCLInstalled := (FileExists(FBplDir + '\' + JclFileName + '.bpl')) and
-                     (FileExists(FBplDir + '\' + JclFileName + '.dcp') or
-                      FileExists(FBplDir + '\' + JclFileNameNoVer + '.dcp') or
-                      FileExists(FDcpDir + '\' + JclFileName + '.dcp') or
-                      FileExists(FDcpDir + '\' + JclFileNameNoVer + '.dcp') );
+  FIsJCLInstalled := FileExists(FBplDir + '\' + JclFileName + '.bpl');
+  FJCLNeedsDcp := not (
+    FileExists(FBplDir + '\' + JclFileName + '.dcp') or
+    FileExists(FBplDir + '\' + JclFileNameNoVer + '.dcp') or
+    FileExists(FDcpDir + '\' + JclFileName + '.dcp') or
+    FileExists(FDcpDir + '\' + JclFileNameNoVer + '.dcp')
+  );
+
+ // find JCL directory or use the JCL shipped with this JVCL (if available) 
+  FJCLDir := xJCLDir;
+  if FIsJCLInstalled then
+  begin
+    List := TStringList.Create;
+    try
+      SplitPaths(FSearchPaths, List);
+      for i := 0 to List.Count - 1 do
+        if EndsWith(List[i], '\lib\' + JclDirName + '\obj', True) then
+        begin
+          FJCLDir := ExpandDirMacros(List[i]);
+          FJCLDir := ExtractFileDir(FJCLDir); // -> $(JCL)\lib\xx
+          FJCLDir := ExtractFileDir(FJCLDir); // -> $(JCL)\lib
+          FJCLDir := ExtractFileDir(FJCLDir); // -> $(JCL)
+          Break;
+        end
+        else if EndsWith(List[i], '\jcl\source\common', True) then
+        begin
+          FJCLDir := ExpandDirMacros(List[i]);
+          FJCLDir := ExtractFileDir(FJCLDir); // -> $(JCL)\source
+          FJCLDir := ExtractFileDir(FJCLDir); // -> $(JCL)
+          Break;
+        end;
+    finally
+      List.Free;
+    end;
+  end;
 
  // Jcl is not installed and we have a JCL directory
   FInstallJcl := ((not IsJCLInstalled) or (IsOldJVCLInstalled <> 0))
-                 and (JCLDir <> '');
+                 and (JCLPairInstallation);
 
-  FCompileFor := FCompileFor and not ((not FIsJCLInstalled) and (JCLDir = ''));
+  FCompileFor := FCompileFor and not ((not FIsJCLInstalled) and (not JCLPairInstallation));
 end;
 
 function TTargetInfo.GetDisplayName: string;
@@ -1161,6 +1240,16 @@ end;
 function TTargetInfo.GetJVCLDirName: string;
 begin
   Result := GetPackageGroupDir(Self);
+end;
+
+function TTargetInfo.GetJCLPackageDir: string;
+begin
+  Result := JCLDir + '\packages';
+end;
+
+function TTargetInfo.GetJCLPackageXmlDir: string;
+begin
+  Result := JCLPackageDir + '\xml';
 end;
 
 { TTargetList }
@@ -1553,17 +1642,19 @@ initialization
   JVCLPackageDir := JVCLDir + '\packages';
   JVCLPackageXmlDir := JVCLPackageDir + '\xml';
 
-  JCLDir := ExtractFileDir(JVCLDir) + '\jcl';
-  if DirectoryExists(JCLDir) then
+  xJCLDir := ExtractFileDir(JVCLDir) + '\jcl';
+  if DirectoryExists(xJCLDir) then
   begin
-    JCLPackageDir := JCLDir + '\packages';
-    JCLPackageXmlDir := JCLPackageDir + '\xml'; 
+    JCLPairInstallation := True;
+    xJCLPackageDir := xJCLDir + '\packages';
+    xJCLPackageXmlDir := xJCLPackageDir + '\xml';
   end
   else
   begin
-    JCLDir := '';
-    JCLPackageDir := '';
-    JCLPackageXmlDir := '';
+    JCLPairInstallation := False;
+    xJCLDir := '';
+    xJCLPackageDir := '';
+    xJCLPackageXmlDir := '';
   end;
 
   TargetList := TTargetList.Create;

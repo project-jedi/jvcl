@@ -472,7 +472,7 @@ begin
     Prefix := '';
 
   if IsJcl then
-    Filename := JCLPackageDir + '\' + Package.Target.JclDirName + '\'
+    Filename := Package.Target.JCLPackageDir + '\' + Package.Target.JclDirName + '\'
   else
     Filename := JVCLPackageDir + '\' + Package.Target.JVCLDirName + '\';
   Filename := Filename + Prefix + Package.DisplayName + '.dpk';
