@@ -58,8 +58,8 @@ type
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
 
-    procedure Add(Time: string;Title: string; Description: string='');overload;
-    procedure Add(Title: string);overload;
+    procedure Add(const Time, Title: string; const Description: string);overload;
+    procedure Add(const Title: string; const Description: string='');overload;
     procedure Delete(Index: Integer);
     procedure Clear;
     function Count: Integer;
@@ -77,7 +77,7 @@ uses
   JvFormLog;
 
 {*******************************************************}
-procedure TJvLogFile.Add(Time, Title, Description: string);
+procedure TJvLogFile.Add(const Time, Title, Description: string);
 var
  LogRecord: TLogRecord;
 begin
@@ -88,9 +88,9 @@ begin
   FList.Add(LogRecord);
 end;
 {*******************************************************}
-procedure TJvLogFile.Add(Title: string);
+procedure TJvLogFile.Add(const Title, Description: string);
 begin
-  Add(DateTimeToStr(Now),Title);
+  Add(DateTimeToStr(Now), Title, Description);
 end;
 {*******************************************************}
 procedure TJvLogFile.Clear;
@@ -135,19 +135,22 @@ var
  Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName,fmOpenRead or fmShareDenyWrite);
-  LoadFromStream(Stream);
-  Stream.Free;
+  try
+    LoadFromStream(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 {*******************************************************}
 procedure TJvLogFile.LoadFromStream(Stream: TStream);
 var
- i,j: Integer;
- LogRecord: TLogRecord;
- Found: boolean;
+  i, j, L: Integer;
+  LogRecord: TLogRecord;
+  Found: boolean;
 begin
   Clear;
   with TStringList.Create do
-  begin
+  try
     LoadFromStream(Stream);
     for i:=0 to Count-1 do
     begin
@@ -160,42 +163,42 @@ begin
         LogRecord.Free;
         Continue;
       end;
-      LogRecord.Time := Copy(Strings[i],j+1,Length(Strings[i]));
+      LogRecord.Time := Copy(Strings[i], j+1, MaxInt);
       j := pos(']',LogRecord.Time);
       if j=0 then
       begin
         LogRecord.Free;
         Continue;
       end;
-      LogRecord.Title := Copy(LogRecord.Time,j+1,Length(LogRecord.Time));
-      LogRecord.Time := Copy(LogRecord.Time,1,j-1);
+      LogRecord.Title := Copy(LogRecord.Time, j+1, MaxInt);
+      System.Delete(LogRecord.Time, j, MaxInt);
 
       //Extract title and description
       j := 1;
+      L := Length(LogRecord.Title);
       Found := false;
-      while (j<Length(LogRecord.Title)) and not(Found) do
+      while (j <= L) and not Found do
       begin
         if LogRecord.Title[j]='>' then
         begin
-          if (j+1<Length(LogRecord.Title)) and (LogRecord.Title[j+1]='>') then
-            inc(j,2)
+          if (j < L) and (LogRecord.Title[j+1]='>') then
+            Inc(j, 2)
           else
             Found := true;
         end
         else
-          inc(j);
+          Inc(j);
       end;
-      if not(Found) then
-      begin
-        LogRecord.Free;
-        Continue;
-      end;
-      LogRecord.Description := Copy(LogRecord.Title,j+1,Length(LogRecord.Title));
-      LogRecord.Title := Copy(LogRecord.Title,1,j-1);
+      // if there's '>', get description field, otherwise assume there's no description
+      if Found then
+        LogRecord.Description := Copy(LogRecord.Title, j+1, MaxInt);
+      // if j = L (nothing was found), then nothing is deleted,
+      // otherwise everything is deleted starting with '>' found
+      System.Delete(LogRecord.Title, j, L);
       LogRecord.Title := StringReplace(LogRecord.Title,'>>','>',[rfReplaceAll]);
       FList.Add(LogRecord);
     end;
-
+  finally
     Free;
   end;
 end;
@@ -205,20 +208,27 @@ var
  Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName,fmCreate or fmShareExclusive);
-  SaveToStream(Stream);
-  Stream.Free;
+  try
+    SaveToStream(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 {*******************************************************}
 procedure TJvLogFile.SaveToStream(Stream: TStream);
 var
- i: Integer;
+  i: Integer;
+  St: string;
 begin
   with TStringList.Create do
-  begin
+  try
     for i:=0 to FList.Count-1 do
       with TLogRecord(FList.Items[i]) do
-        Add('['+Time+']'+StringReplace(Title,'>','>>',[rfReplaceAll])+'>'+Description);
-    SaveToStream(Stream);
+      begin
+        St := '['+Time+']'+StringReplace(Title,'>','>>',[rfReplaceAll])+'>'+Description+#13#10;
+        Stream.WriteBuffer(Pointer(St)^, Length(St));
+      end;
+  finally
     Free;
   end;
 end;
@@ -228,7 +238,7 @@ var
  i: Integer;
 begin
   with TfoLog.Create(nil) do
-  begin
+  try
     Caption := Title;
     with buListView1 do
     begin
@@ -249,6 +259,7 @@ begin
     ShowModal;
     if Assigned(FOnClose) then
       FOnClose(self);
+  finally
     Free;
   end;
 end;
