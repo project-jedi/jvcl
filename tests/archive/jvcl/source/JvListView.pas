@@ -84,6 +84,8 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(AOwner: TComponent); override;
+    function GetColumnsOrder: string;
+    procedure SetColumnsOrder(const Order: string);
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
@@ -963,5 +965,57 @@ begin
   Items.EndUpdate;
 end;
 {$ENDIF}
+
+{**************************************************}
+
+function TJvListView.GetColumnsOrder: string;
+var
+  res: array[0..100] of Integer;
+  i: Integer;
+begin
+  ListView_GetColumnOrderArray(Columns.Owner.Handle,Columns.Count,@res);
+  result := '';
+  for i:=0 to Columns.Count - 1 do
+  begin
+    if result <> '' then
+      result := result+',';
+    result := result + IntToStr(res[i]) + '=' + IntToStr(Columns[i].Width);
+  end;
+end;
+
+{**************************************************}
+
+procedure TJvListView.SetColumnsOrder(const Order: string);
+var
+  res: array[0..100] of Integer;
+  i,j: Integer;
+  st: string;
+begin
+  for i:=0 to 100 do
+    res[i] := 0;
+  with TStringList.Create do
+  try
+    CommaText := Order;
+    i := 0;
+    while Count>0 do
+    begin
+      st := Strings[0];
+      j := pos('=',st);
+      if (j<>0) and (i<Columns.Count) then
+      begin
+        Columns[i].Width := StrToIntDef(Copy(st, j+1, Length(st)),Columns[i].Width);
+        st := Copy(st,1,j-1);
+      end;
+      res[i] := StrToIntDef(st,0);
+      Delete(0);
+      inc(i);
+    end;
+    ListView_SetColumnOrderArray(Columns.Owner.Handle,Columns.Count,@res);
+  finally
+    Free;
+  end;
+end;
+
+{**************************************************}
 
 end.
