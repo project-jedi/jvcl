@@ -1,108 +1,63 @@
-## Locked by Peter Thörnqvist
+## Needs review (not spell checked)
 ----------------------------------------------------------------------------------------------------
 @@JvDialogActns.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the TJvDialogActns component.
+  Contains several actions that uses JVCL dialogs.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist.
-All
-----------------------------------------------------------------------------------------------------
-@@Register
-<TITLE Register procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderAction
 Summary
-  Write here a summary (1 line)
+  Displays a Browse For Folder dialog.
 Description
-  Write here a description
+  Use the TJvBrowseForFolderAction as an alternate way of displaying a Browse For Folder dialog. The action
+  internally uses the TJvBrowseFoFolderDialog to implement the functionality.
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderAction.Dialog
 Summary
-  Write here a summary (1 line)
+  Reference to the dialog displayed by the action.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Dialog to access the internal instance of the dialog this action uses.
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogAction
 Summary
-  Write here a summary (1 line)
+  Base action for actions that display a dialog based on a common dialog.
 Description
-  Write here a description
+  Derive new actions from TJvCommonDialogAction when the action displays a dialog descendant from TCommonDialog.
+  TJvCommonDialogAction implements some behavior common to all TCommonDialog descendants. Override these
+  methods to change the behavior or add additional functionality.
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogAction.BeforeExecute
 Summary
-  Write here a summary (1 line)
+  Called just before the action is executed.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Override BeforeExecute to perform special processing just before the action is executed.
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogAction.ExecuteResult
 Summary
-  Write here a summary (1 line)
+  Specifies the return value from the dialog.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCommonDialogAction.ExecuteTarget
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Target - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCommonDialogAction.HandlesTarget
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Target - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  \Read ExecuteResult to determine the return value of the dialog. The meaning of the return value
+  is dependant on the actual dialog implementation. Normally, a return value of true means success and
+  a return value of false means failure.
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogAction.OnAccept
 Summary
-  Write here a summary (1 line)
+  Occurs when the ExecuteResult of the action is true.
 Description
-  Write here a description
+  Write a handler for the OnAccept event to take specific action when ExecuteResult returns true.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ExecuteResult, OnCancel
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogAction.OnCancel
 Summary
-  Write here a summary (1 line)
+  Occurs when the ExecuteResult of the action is false.
 Description
-  Write here a description
+  Write a handler for OnCancel to take specific action when ExecuteResult is false.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ExecuteResult, OnAccept
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogClass
 Summary
@@ -112,251 +67,156 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogFAction
 Summary
-  Write here a summary (1 line)
+  Base action for actions that displays a dialog derived from TJvCommonDialogF.
 Description
-  Write here a description
+  Derive a new action from TJvCommonDialogFAction when the action should display a dialog
+  descendant from TJvCommonDialogF. A TJvCommonDialogF dialog is a dialog component
+  that returns a boolean value from it's Execute function.
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogFAction.AfterExecute
 Summary
-  Write here a summary (1 line)
+  Called after the associated dialog has closed.
 Description
-  Write here a description
+  Override AfterExecute to take specific actions when the action has executed it's dialog.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BeforeExecute
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogFAction.BeforeExecute
 Summary
-  Write here a summary (1 line)
+  Called before the associated dialog is shown.
 Description
-  Write here a description
+  Override AfterExecute to take specific actions before the action executes it's dialog.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCommonDialogFAction.ExecuteTarget
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Target - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCommonDialogFAction.HandlesTarget
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Target - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCommonDialogFClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  BeforeExecute
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogPAction
 Summary
-  Write here a summary (1 line)
+  Base action for actions that displays a dialog derived from TJvCommonDialogP.
 Description
-  Write here a description
+  Derive a new action from TJvCommonDialogPAction when the action should display a dialog
+  descendant from TJvCommonDialogF. A TJvCommonDialogP dialog is a dialog component
+  that has a procedure for it's Execute method (doesn't return a value).
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogPAction.AfterExecute
 Summary
-  Write here a summary (1 line)
+  Called after the associated dialog has closed.
 Description
-  Write here a description
+  Override AfterExecute to take specific actions when the action has executed it's dialog.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BeforeExecute
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogPAction.BeforeExecute
 Summary
-  Write here a summary (1 line)
+  Called before the associated dialog is shown.
 Description
-  Write here a description
+  Override AfterExecute to take specific actions before the action executes it's dialog.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCommonDialogPAction.ExecuteTarget
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Target - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCommonDialogPAction.HandlesTarget
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Target - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCommonDialogPClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  BeforeExecute
 ----------------------------------------------------------------------------------------------------
 @@TJvConnectNetworkAction
 Summary
-  Write here a summary (1 line)
+  Action that displays the TJvConnectNetwork dialog.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvConnectNetworkAction.Dialog
 Summary
-  Write here a summary (1 line)
+  Reference to the dialog displayed by the action.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Dialog to access the internal instance of the dialog this action uses.
 ----------------------------------------------------------------------------------------------------
 @@TJvControlPanelAction
 Summary
-  Write here a summary (1 line)
+  Action that displays the TJvControlPanel dialog.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvControlPanelAction.Dialog
 Summary
-  Write here a summary (1 line)
+  Reference to the dialog displayed by the action.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Dialog to access the internal instance of the dialog this action uses.
 ----------------------------------------------------------------------------------------------------
 @@TJvFloppyFormatAction
 Summary
-  Write here a summary (1 line)
+  Action that displays the TJvFloppyFormat dialog.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvFloppyFormatAction.Dialog
 Summary
-  Write here a summary (1 line)
+  Reference to the dialog displayed by the action.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Dialog to access the internal instance of the dialog this action uses.
 ----------------------------------------------------------------------------------------------------
 @@TJvOpenFileAction
 Summary
-  Write here a summary (1 line)
+  Action that displays the TJvOpenDialog dialog.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvOpenFileAction.Dialog
 Summary
-  Write here a summary (1 line)
+  Reference to the dialog displayed by the action.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Dialog to access the internal instance of the dialog this action uses.
 ----------------------------------------------------------------------------------------------------
 @@TJvOrganizeFavoritesAction
 Summary
-  Write here a summary (1 line)
+  Action that displays the TJvOrganizeFavorites dialog.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvOrganizeFavoritesAction.Dialog
 Summary
-  Write here a summary (1 line)
+  Reference to the dialog displayed by the action.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Dialog to access the internal instance of the dialog this action uses.
 ----------------------------------------------------------------------------------------------------
 @@TJvPageSetupAction
 Summary
-  Write here a summary (1 line)
+  Action that displays the TJvPageSetup dialog.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvPageSetupAction.Dialog
 Summary
-  Write here a summary (1 line)
+  Reference to the dialog displayed by the action.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Dialog to access the internal instance of the dialog this action uses.
 ----------------------------------------------------------------------------------------------------
 @@TJvPageSetupTitledAction
 Summary
-  Write here a summary (1 line)
+  Action that displays the TJvPageSetupTitled dialog.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvPageSetupTitledAction.Dialog
 Summary
-  Write here a summary (1 line)
+  Reference to the dialog displayed by the action.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Dialog to access the internal instance of the dialog this action uses.
 ----------------------------------------------------------------------------------------------------
 @@TJvSaveFileAction
 Summary
-  Write here a summary (1 line)
+  Action that displays the TJvSaveDialog dialog.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvSaveFileAction.Dialog
 Summary
-  Write here a summary (1 line)
+  Reference to the dialog displayed by the action.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Dialog to access the internal instance of the dialog this action uses.
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectoryAction
 Summary
-  Write here a summary (1 line)
+  Action that displays the TJvSelectDirectory dialog.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectoryAction.Dialog
 Summary
-  Write here a summary (1 line)
+  Reference to the dialog displayed by the action.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Dialog to access the internal instance of the dialog this action uses.

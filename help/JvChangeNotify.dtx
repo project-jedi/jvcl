@@ -10,15 +10,19 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@ActionsToString
 <TITLE ActionsToString function>
+
 Summary
-  Converts an action to it's string representation.
+Converts an action to it's string representation.
+
 Description
-  Call ActionsToString to convert a set of TJvChangeAction items to a user friendly string. 
+Call ActionsToString to convert a set of TJvChangeAction
+items to a user friendly string.
+
 Parameters
-  Actions - The actions to convert.
-Return Value
-  Returns a user friendly string describing a set of actions.
-----------------------------------------------------------------------------------------------------
+Actions :  The actions to convert.
+Returns
+\Returns a user friendly string describing a set of actions.
+
 @@TJvChangeAction
 <TITLE TJvChangeAction type>
 Summary
@@ -119,7 +123,7 @@ Description
 Return value
   A new instance of TJvChangeItem.
 See Also
-  ASsign, Delete
+  Assign, Delete
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeItems.Items
 Summary
@@ -183,9 +187,10 @@ See Also
 Summary
   Contains a list of monitored directories.
 Description
-  Use Noticiations to manage the directories that should be monitored by the component. To manage the Notifications
-  at design time, click the Notifications property in the Object Inspector to display the Collection Editor. To manage
-  Notifications at runtime, use Notifications.Add and Notifications.Delete to add and remove items.
+  Use Notifiations to manage the directories that should be monitored by the component. To manage the
+  Notifications at design time, click the Notifications property in the Object Inspector to display the
+  Collection Editor. To manage Notifications at runtime, use Notifications.Add and Notifications.Delete
+  to add and remove items.
 See Also
   TJvChangeItems
 ----------------------------------------------------------------------------------------------------
@@ -193,8 +198,7 @@ See Also
 Summary
   Occurs when a change has been detected in a monitored directory.
 Description
-  \Write a handler for this event to take specific action when a change has occurred in a monitored directory. For example,
-  use this event to update a list of changed files or folders displayed to the user.
+  \Write a handler for this event to take specific action when a change has occurred in a monitored directory.   For example, use this event to update a list of changed files or folders displayed to the user.
 Parameters
   Sender  - The object that triggered the event
   Dir     - The directory where the change occurred
@@ -205,15 +209,14 @@ Summary
   Internal thread class for checking the monitored directories.
 Description
   TJvChangeThread is used by the TJvChangeNotify component to periodically check the monitored folders
-  for any detected changes. Do not create instacnes of this class, it is only intended to be used
+  for any detected changes. Do not create instances of this class, it is only intended to be used
   by the TJvChangeNotify component.
 ----------------------------------------------------------------------------------------------------
 @@TJvChangeThread.OnChangeNotify
 Summary
   Occurs when a change has been detected.
 Description
-  Do not write an event handler for this event. An event handler is automatically assigned by the TJvChangeNotify
-  component when the thread is created.
+  Do not write an event handler for this event. An event handler is automatically assigned by the   TJvChangeNotify component when the thread is created.
 Parameters
   Sender - The object that triggered the event.
   Index  - The index of the item in \Notifications that has detected a change.

@@ -13,10 +13,10 @@ Summary
   A treeview control that can display checkboxes and radiobuttons.
 Description
   Use TJvCheckTreeView when you need to display checkboxes and/or radiobuttons in a treeview. TJvCheckTreeView 
-  can display and automatically handle the check/uncheck logic for radiobuttons as well as checkboxes. In addition,
-  not all nodes in the treeview need to have checkboxes or radiobuttons. You can freely mix and match checkboxes, 
-  radiobuttons and "empty" items on every level in the treeview. You can use your own checkbox images
-  by assigning an imagelist to the StateImages property containing the images you want to use. 
+  can display and automatically handle the check/uncheck logic for radiobuttons as well as checkboxes. 
+  In addition, not all nodes in the treeview need to have checkboxes or radiobuttons. You can freely mix and 
+  match checkboxes, radiobuttons and "empty" items on every level in the treeview. You can use your own 
+  checkbox images by assigning an imagelist to the StateImages property containing the images you want to use. 
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckTreeView.CheckBox
 Summary
@@ -55,8 +55,8 @@ Summary
 Description
   \Write an OnChanging event handler to selectively prevent the user to toggle specific nodes.
 
-  The OnToggling event is called when a node is about to be toggled on or off. Set AllowChange to False, to prevent
-  the node to be toggled. The Node parameter specifies the node that is about to be toggled.
+  The OnToggling event is called when a node is about to be toggled on or off. Set AllowChange to False, to 
+  prevent the node to be toggled. The Node parameter specifies the node that is about to be toggled.
 See Also
   OnToggled
 ----------------------------------------------------------------------------------------------------
@@ -72,9 +72,10 @@ See Also
 Summary
   Class used to store checkbox options in a TJvCheckBoxTreeView.
 Description
-  The TJvTreeViewCheckBoxOptions class is the class used to store checkbox option settings in the TJvCheckTreeView
-  components CheckBoxOptions property. Since this property is a class, it is displayed as a nested property set in
-  the Object Inspector. An instance of this class is created autmatically by the treeview. Do not create instances of this class yourself.
+  The TJvTreeViewCheckBoxOptions class is the class used to store checkbox option settings in the 
+  TJvCheckTreeView components CheckBoxOptions property. Since this property is a class, it is displayed 
+  as a nested property set in the Object Inspector. An instance of this class is created autmatically 
+  by the treeview. Do not create instances of this class yourself.
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewCheckBoxOptions.CascadeLevels
 Summary
@@ -143,12 +144,14 @@ See Also
 Summary
   References the treeview that created and maintains this object.
 Description
-  TreeView is a reference to the Treeview the options are acting upon. Developers should normally not alter this property.
+  TreeView is a reference to the Treeview the options are acting upon. Developers should normally not 
+  alter this property.
 ----------------------------------------------------------------------------------------------------
 @@TJvTVCascadeOption
 <TITLE TJvTVCascadeOption type>
 Summary
-  TJvTVCascadeOption is an enumeration used to determine how checks are propagated when toggling a checkbox node on or off.
+  TJvTVCascadeOption is an enumeration used to determine how checks are propagated when toggling a 
+  checkbox node on or off.
 Description
   TJvTVCascadeOption
 @@TJvTVCascadeOption.poOnCheck
