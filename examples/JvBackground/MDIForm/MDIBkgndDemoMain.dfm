@@ -26,14 +26,6 @@ object MDIMainForm: TMDIMainForm
     Align = alRight
     TabOrder = 0
   end
-  object Panel1: TPanel
-    Left = 120
-    Top = 400
-    Width = 185
-    Height = 41
-    Caption = 'Panel1'
-    TabOrder = 1
-  end
   object MainMenu1: TMainMenu
     Left = 40
     Top = 8
@@ -1185,11 +1177,10 @@ object MDIMainForm: TMDIMainForm
     Image.TransparentColor = 50331647
     Image.TransparentMode = tmFixed
     Image.ShiftMode = smColumns
-    Image.Zigzag = True
+    Image.ZigZag = True
     Clients.Clients = (
       'MDIMainForm'
-      'DemoFrame1'
-      'Panel1')
+      'DemoFrame1')
     Left = 12
     Top = 8
   end

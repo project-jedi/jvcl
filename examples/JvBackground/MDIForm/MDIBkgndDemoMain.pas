@@ -14,7 +14,6 @@ type
     OpenDialog: TOpenDialog;
     Background: TJvBackground;
     DemoFrame1: TDemoFrame;
-    Panel1: TPanel;
     procedure ImageLoadClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -54,7 +53,6 @@ end;
 procedure TMDIMainForm.FormCreate(Sender: TObject);
 begin
   OpenDialog.Filter := GraphicFilter(TGraphic);
-  Panel1.Brush.Style := bsClear;
 end;
 
 end.
