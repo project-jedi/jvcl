@@ -14,6 +14,7 @@ var
   respbuf: string;
   spb, thd: string;
   Len: Word;
+  FLibrary:TUIBLibrary;
 
 begin
   if (ParamCount <> 2) then
@@ -24,6 +25,8 @@ begin
     halt(1);
   end;
 
+  FLibrary := TUIBLibrary.Create;
+  try
   spb := spb + isc_spb_version;
   spb := spb + isc_spb_current_version;
 
@@ -35,7 +38,7 @@ begin
   spb := spb + char(strlen (pass));
   spb := spb + pass;
 
-  ServiceAttach('service_mgr', svc_handle, spb);
+  FLibrary.ServiceAttach('service_mgr', svc_handle, spb);
   try
     thd := thd + isc_action_svc_backup;
 
@@ -52,12 +55,12 @@ begin
     thd := thd + isc_spb_verbose;
 
     Writeln('Attach succeed');
-    ServiceStart(svc_handle, thd);
+    FLibrary.ServiceStart(svc_handle, thd);
     SetLength(respbuf, 1024);
 
     while true do
     begin
-      ServiceQuery(svc_handle, '', isc_info_svc_line, respbuf);
+      FLibrary.ServiceQuery(svc_handle, '', isc_info_svc_line, respbuf);
       if (respbuf[1] <> isc_info_svc_line) then
       begin
         WriteLn('Invalid line.');
@@ -69,9 +72,13 @@ begin
         Break;
     end;
   finally
-    ServiceDetach(svc_handle);
+    FLibrary.ServiceDetach(svc_handle);
     writeln('Press enter to continue.');
     Readln;
   end;
+  finally
+    FLibrary.Free;
+  end;
+
 
 end.

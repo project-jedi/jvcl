@@ -38,61 +38,66 @@ uses
 {$APPTYPE CONSOLE}
 
 const
-  sel_str = 'SELECT department, mngr_no, location, head_dept '+
-      'FROM department WHERE head_dept in ("100", "900", "600")';
+  sel_str = 'SELECT department, mngr_no, location, head_dept ' +
+    'FROM department WHERE head_dept in ("100", "900", "600")';
 
 var
-  DB     : IscDbHandle = nil;         // database handle
-  trans  : IscTrHandle  = nil;        // transaction handle
+  DB: IscDbHandle = nil; // database handle
+  trans: IscTrHandle = nil; // transaction handle
 
-  i     : integer;
-  stmt  : IscStmtHandle = nil;
-  sqlda : TSQLResult;
-  empdb : string;
-
+  i: integer;
+  stmt: IscStmtHandle = nil;
+  sqlda: TSQLResult;
+  empdb: string;
+  FLibrary: TUIBLibrary;
 begin
+  FLibrary := TUIBLibrary.Create;
+  try
+    if (ParamCount > 1) then
+      empdb := ParamStr(1) else
+      empdb := 'D:\Unified Interbase\demo\Database\employee.db';
 
-  if (ParamCount > 1) then
-    empdb := ParamStr(1) else
-    empdb := 'D:\Unified Interbase\demo\Database\employee.db';
-
-  AttachDatabase(empdb, DB, 'user_name=SYSDBA;password=masterkey');
+    FLibrary.AttachDatabase(empdb, DB, 'user_name=SYSDBA;password=masterkey');
 
   (* Allocate SQLDA of an arbitrary size. *)
-  sqlda := TSQLResult.Create;
-  try
-    TransactionStart(trans,DB);
+    sqlda := TSQLResult.Create;
+    try
+      FLibrary.TransactionStart(trans, DB);
 
     (* Allocate a statement. *)
-    DSQLAllocateStatement(DB, stmt);
+      FLibrary.DSQLAllocateStatement(DB, stmt);
 
     (* Prepare the statement. *)
-    DSQLPrepare(trans, stmt, sel_str,1, sqlda);  // automaticaly change sqlda size  and describe if necessary
+      FLibrary.DSQLPrepare(trans, stmt, sel_str, 1, sqlda); // automaticaly change sqlda size  and describe if necessary
 
     (* This is a select statement, print more information about it. *)
 
-    writeln('Query Type:  SELECT');
+      writeln('Query Type:  SELECT');
 
-    writeln(format('Number of columns selected:  %d', [sqlda.FieldCount]));
+      writeln(format('Number of columns selected:  %d', [sqlda.FieldCount]));
 
     (* List column names, types, and lengths. *)
-    for i := 0 to sqlda.FieldCount - 1 do
-    begin
-      writeln(format('Column SQL name  : %s', [sqlda.sqlname[i]]));
-      writeln(format('Column Alias name: %s', [sqlda.AliasName[i]]));
-      writeln(format('Column Rel name  : %s', [sqlda.RelName[i]]));
-      writeln(format('Column Own name  : %s', [sqlda.OwnName[i]]));
-      writeln(format('Column type      : %d', [sqlda.sqltype[i]]));
-      writeln(format('Column length    : %d', [sqlda.sqllen[i]]));
-      Writeln('');
+      for i := 0 to sqlda.FieldCount - 1 do
+      begin
+        writeln(format('Column SQL name  : %s', [sqlda.sqlname[i]]));
+        writeln(format('Column Alias name: %s', [sqlda.AliasName[i]]));
+        writeln(format('Column Rel name  : %s', [sqlda.RelName[i]]));
+        writeln(format('Column Own name  : %s', [sqlda.OwnName[i]]));
+        writeln(format('Column type      : %d', [sqlda.sqltype[i]]));
+        writeln(format('Column length    : %d', [sqlda.sqllen[i]]));
+        Writeln('');
+      end;
+
+      FLibrary.DSQLFreeStatement(stmt, DSQL_drop);
+
+      FLibrary.TransactionCommit(trans);
+      FLibrary.DetachDatabase(DB);
+    finally
+      sqlda.free;
     end;
-
-    DSQLFreeStatement(stmt, DSQL_drop);
-
-    TransactionCommit(trans);
-    DetachDatabase(DB);
+    readln;
   finally
-    sqlda.free;
+    FLibrary.Free;
   end;
-  readln;
 end.
+

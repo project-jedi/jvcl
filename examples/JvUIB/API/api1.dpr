@@ -40,53 +40,59 @@ uses
   JvUIBLib;
 
 const
-  create_tbl  = 'CREATE TABLE dbinfo (when_created DATE)';
+  create_tbl = 'CREATE TABLE dbinfo (when_created DATE)';
   insert_date = 'INSERT INTO dbinfo VALUES (''NOW'')';
 
 var
-  newdb  : IscDbHandle = nil;          (* database handle *)
-  trans  : IscTrHandle = nil;          (* transaction handle *)
-  create_db : string;                  (* 'create database' statement *)
-  new_dbname: String;
+  newdb: IscDbHandle = nil; (* database handle *)
+  trans: IscTrHandle = nil; (* transaction handle *)
+  create_db: string; (* 'create database' statement *)
+  new_dbname: string;
+  FLibrary: TUIBLibrary;
 
 begin
-  if (ParamCount > 1) then
-    new_dbname := ParamStr(1)
-  else
-    new_dbname := ExtractFilePath(ParamStr(0))+'new.gdb';
+  FLibrary := TUIBLibrary.Create;
+  try
+    if (ParamCount > 1) then
+      new_dbname := ParamStr(1)
+    else
+      new_dbname := ExtractFilePath(ParamStr(0)) + 'new.gdb';
     if FileExists(new_dbname) then DeleteFile(new_dbname);
 
   // Construct a 'create database' statement.
   // The database name could have been passed as a parameter.
-  create_db := format('CREATE DATABASE "%s" USER "SYSDBA" PASSWORD "masterkey"' ,[new_dbname]);
+    create_db := format('CREATE DATABASE "%s" USER "SYSDBA" PASSWORD "masterkey"', [new_dbname]);
 
   // Create a new database.
   // The database handle is zero.
-  DSQLExecuteImmediate(newdb, trans, create_db, 1, nil);
+    FLibrary.DSQLExecuteImmediate(newdb, trans, create_db, 1, nil);
 
-  WriteLn(format('Created database ''%s''.',[new_dbname]));
+    WriteLn(format('Created database ''%s''.', [new_dbname]));
 
   // Connect to the new database and create a sample table.
   (* newdb will be set to null on success *)
-  DetachDatabase(newdb);
+    FLibrary.DetachDatabase(newdb);
 
-  AttachDatabase(new_dbname, newdb, 'user_name = SYSDBA; password = masterkey');
+    FLibrary.AttachDatabase(new_dbname, newdb, 'user_name = SYSDBA; password = masterkey');
 
   (* Create a sample table. *)
-  TransactionStart(trans, newdb);
-  DSQLExecuteImmediate(newdb, trans, create_tbl, 1, nil);
+    FLibrary.TransactionStart(trans, newdb);
+    FLibrary.DSQLExecuteImmediate(newdb, trans, create_tbl, 1, nil);
 
   //isc_commit_transaction(@status, @trans);
-  TransactionCommit(trans);
+    FLibrary.TransactionCommit(trans);
 
   (* Insert 1 row into the new table. *)
-  TransactionStart(trans, newdb);
-  DSQLExecuteImmediate(newdb, trans, insert_date, 1, nil);
-  TransactionCommit(trans);
+    FLibrary.TransactionStart(trans, newdb);
+    FLibrary.DSQLExecuteImmediate(newdb, trans, insert_date, 1, nil);
+    FLibrary.TransactionCommit(trans);
 
-  WriteLn('Successfully accessed the newly created database.');
+    WriteLn('Successfully accessed the newly created database.');
 
-  DetachDatabase(newdb);
-  ReadLn;
+    FLibrary.DetachDatabase(newdb);
+    ReadLn;
+  finally
+    FLibrary.Free;
+  end;
 end.
 

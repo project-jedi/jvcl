@@ -35,52 +35,58 @@ uses
   JvUIBLib;
 
 var
-  sel_str      : string;
-  blob_handle  : IscBlobHandle = nil;
-  DB           : IscDbHandle = nil;    // database handle
-  trans        : IscTrHandle = nil;    // transaction handle
-  stmt         : IscStmtHandle = nil;  // statement handle
-  sqlda        : TSQLResult;
-  empdb        : string;
+  sel_str: string;
+  blob_handle: IscBlobHandle = nil;
+  DB: IscDbHandle = nil; // database handle
+  trans: IscTrHandle = nil; // transaction handle
+  stmt: IscStmtHandle = nil; // statement handle
+  sqlda: TSQLResult;
+  empdb: string;
   str: string;
+  FLibrary: TUIBLibrary;
 begin
+  FLibrary := TUIBLibrary.Create;
+  try
+    if (ParamCount > 1) then
+      empdb := ParamStr(1) else
+      empdb := 'D:\Unified Interbase\demo\Database\employee.db';
 
-  if (ParamCount > 1) then
-    empdb := ParamStr(1) else
-    empdb := 'D:\Unified Interbase\demo\Database\employee.db';
+    sel_str := 'SELECT proj_name, proj_desc, product FROM project WHERE ' +
+      'product IN ("software", "hardware", "other") ORDER BY proj_name';
 
-  sel_str := 'SELECT proj_name, proj_desc, product FROM project WHERE '+
-     'product IN ("software", "hardware", "other") ORDER BY proj_name';
+    FLibrary.AttachDatabase(empdb, DB, 'user_name=SYSDBA;password=masterkey');
 
-  AttachDatabase(empdb, DB, 'user_name=SYSDBA;password=masterkey');
+    FLibrary.TransactionStart(trans, DB);
 
-  TransactionStart(trans, DB);
+    FLibrary.DSQLAllocateStatement(DB, stmt);
 
-  DSQLAllocateStatement(DB, stmt);
+    sqlda := TSQLResult.Create(3);
 
-  sqlda := TSQLResult.Create(3);
+    FLibrary.DSQLPrepare(trans, stmt, sel_str, 1, sqlda);
 
-  DSQLPrepare(trans, stmt, sel_str, 1, sqlda);
-
-  DSQLExecute(trans, stmt, 1);
+    FLibrary.DSQLExecute(trans, stmt, 1);
 
   (*
    *    For each project in the select statement, get and display
    *    project descriptions.
    *)
 
-  while  DSQLFetch(stmt, 1, sqlda) do //sqlda
-  begin
-    writeln(format('PROJECT:  %s   TYPE:  %s', [sqlda.AsString[0], sqlda.AsString[2]]));
-    BlobOpen(DB, trans, blob_handle, sqlda.AsQuad[1]);
-    str := BlobReadString(blob_handle);
-    WriteLn(str);
-    BlobClose(blob_handle);
-  end;
-  DSQLFreeStatement(stmt, DSQL_close);
-  TransactionCommit(trans);
-  DetachDatabase(DB);
-  sqlda.Free;
+    while FLibrary.DSQLFetch(stmt, 1, sqlda) do //sqlda
+    begin
+      writeln(format('PROJECT:  %s   TYPE:  %s', [sqlda.AsString[0], sqlda.AsString[2]]));
+      FLibrary.BlobOpen(DB, trans, blob_handle, sqlda.AsQuad[1]);
+      str := FLibrary.BlobReadString(blob_handle);
+      WriteLn(str);
+      FLibrary.BlobClose(blob_handle);
+    end;
+    FLibrary.DSQLFreeStatement(stmt, DSQL_close);
+    FLibrary.TransactionCommit(trans);
+    FLibrary.DetachDatabase(DB);
+    sqlda.Free;
 
-  readln;
+    readln;
+  finally
+    FLibrary.Free;
+  end;
 end.
+

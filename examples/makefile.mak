@@ -53,19 +53,9 @@ RAHLEdPropDlgTest.exe ColorHintsTest.exe JvInterpreterTest.exe SampleProject1.ex
 JvInterpreterEndUser.exe MDIapp.exe RANotepad.exe
 #---------------------------------------------------------------------------------------------------
 uib: \
-#api1.exe \
-#api2.exe \
-#api3.exe \
-#api4.exe \
-#api5.exe \
-#api6.exe \
-#api7.exe \
-#api8.exe \
-#api10.exe \
-#StartBackup.exe \
-#StartRestore.exe \
-#Client.exe \
-#Server.exe \
+api1.exe api2.exe api3.exe api4.exe api5.exe api6.exe api7.exe api8.exe api10.exe \
+StartBackup.exe StartRestore.exe \
+#Client.exe #Server.exe \
 UIB.dll Backup.exe Restore.exe BlobStream.exe BlobSample.exe cursor.exe DataPump.exe MetaData.exe \
 Query.exe QuickScript.exe Script.exe StoredProc.exe QueryStream.exe
 #---------------------------------------------------------------------------------------------------

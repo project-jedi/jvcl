@@ -54,6 +54,7 @@ var
   flag1 : Smallint = 0;
   sqlda : TSQLParams;
   empdb : String;
+  FLibrary: TUIBLibrary;
 
 (*
  *  Get the department and percent parameters.
@@ -72,18 +73,22 @@ end;
 
 
 begin
+  FLibrary := TUIBLibrary.Create;
+  try
 
   if (ParamCount > 1) then
     empdb := ParamStr(1) else
     empdb := 'D:\Unified Interbase\demo\Database\employee.db';
 
-  AttachDatabase(empdb, DB, 'user_name=SYSDBA;password=masterkey');
+  FLibrary.AttachDatabase(empdb, DB, 'user_name=SYSDBA;password=masterkey');
 
   (* Allocate an input SQLDA.  There are two unknown parameters. *)
   sqlda := TSQLParams.Create;
   try
-    sqlda.AddDouble; // percent_inc
-    sqlda.AddString; // dept_no
+    sqlda.AddFieldType('0', uftFloat);
+    sqlda.AddFieldType('1',uftVarchar);
+//!!!    sqlda.AddDouble; // percent_inc
+//!!!    sqlda.AddString; // dept_no
 
     (*
      *  Get the next department-percent increase input pair.
@@ -93,11 +98,11 @@ begin
       sqlda.AsDouble[0] := percent_inc;
       sqlda.AsString[1] := dept_no;
       Writeln(Format('Increasing budget for department:  %s  by %5.2f percent.',[dept_no, percent_inc]));
-      TransactionStart(trans, DB);
+      FLibrary.TransactionStart(trans, DB);
 
       (* Update the budget. *)
       try
-        DSQLExecuteImmediate(DB, trans, updstr, 1, sqlda);
+        FLibrary.DSQLExecuteImmediate(DB, trans, updstr, 1, sqlda);
       except
         on E: EUIBError do
         begin
@@ -107,13 +112,13 @@ begin
             if (E.sqlcode = -625) then
             begin
               writeln('Exceeded budget limit -- not updated.');
-              TransactionRollback(trans);
+              FLibrary.TransactionRollback(trans);
               continue;
             end;
             (* Undo all changes, in case of an error. *)
           end else
           begin
-            TransactionRollback(trans);
+            FLibrary.TransactionRollback(trans);
             raise;
           end;
         end;
@@ -122,13 +127,16 @@ begin
       (* Save each department's update independently.
       ** Change to CommitTransaction to see changes
        *)
-      TransactionRollback(trans);
+      FLibrary.TransactionRollback(trans);
     end;
 
-    DetachDatabase(DB);
+    FLibrary.DetachDatabase(DB);
   finally
     sqlda.Free;
   end;
   Readln;
+  finally
+    FLibrary.Free;
+  end;
 end.
 
