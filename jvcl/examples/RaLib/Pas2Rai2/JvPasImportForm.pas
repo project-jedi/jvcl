@@ -36,14 +36,11 @@ type
     procedure FormCreate(Sender: TObject);
     procedure bParamsClick(Sender: TObject);
     procedure bAddToRegClick(Sender: TObject);
-  private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
 var
-  PasImport: TJvPasImport ;
+  PasImport: TJvPasImport;
 
 implementation
 
@@ -405,15 +402,12 @@ const
       varDouble: Result := 'varDouble';
       varString: Result := 'varString';
       varDate: Result := 'varDate';
-      varObject: Result := 'varObject';
+    else
+      if (VType = varObject) or (lbClasses.Items.IndexOf(ParamType) > -1) or
+        (RClasses.IndexOf(ParamType) > -1) then
+        Result := 'varObject'
       else
-      begin
-        if (lbClasses.Items.IndexOf(ParamType) > -1) or
-           (RClasses.IndexOf(ParamType) > -1) then
-          Result := 'varObject'
-        else
-          Result := 'varEmpty';
-      end;
+        Result := 'varEmpty';
     end;
   end;
 
