@@ -562,6 +562,7 @@ resourcestring
 //=== JvFindReplace.pas ======================================================
 resourcestring
   RsNotFound = 'Search string ''%s'' not found';
+  RsXOccurencesReplaced = '%d occurence(s) of ''%s'' were replaced';
   RsReplaceCaption = 'Replace';
   RsFindCaption = 'Find';
 
