@@ -1,4 +1,31 @@
-{.$DEFINE TestContexts}
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvColorProvider.pas, released on 2003-07-18.
+
+The Initial Developer of the Original Code is Marcel Bestebroer
+Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
+Bestebroer
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-09-17
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
 
 unit JvColorProvider;
 
@@ -11,10 +38,6 @@ uses
 type
   TJvColorProvider = class(TJvCustomDataProvider)
   protected
-    {$IFDEF TestContexts}
-    class function ContextsClass: TJvDataContextsClass; override;
-    class function ContextsManagerClass: TJvDataContextsManagerClass; override;
-    {$ENDIF TestContexts}
     class function ItemsClass: TJvDataItemsClass; override;
     function ConsumerClasses: TClassArray; override;
   public
@@ -146,12 +169,6 @@ type
     function AvgItemSize(ACanvas: TCanvas): TSize; override;
     function GetConsumerSettings: IJvColorProviderSettings;
   end;
-
-  {$IFDEF TestContexts}
-  TJvColorDataContextsManager = class(TJvBaseDataContextsManager)
-    function New: IJvDataContext; override;
-  end;
-  {$ENDIF TestContexts}
 
   TOpenConsumerServiceExt = class(TJvDataConsumerAggregatedObject);
 
@@ -373,19 +390,6 @@ begin
 end;
 
 //===TJvColorProvider===============================================================================
-
-{$IFDEF TestContexts}
-class function TJvColorProvider.ContextsClass: TJvDataContextsClass;
-begin
-  Result := TJvDataContexts;
-end;
-
-class function TJvColorProvider.ContextsManagerClass: TJvDataContextsManagerClass;
-begin
-  Result := nil; //TJvColorDataContextsManager;
-end;
-
-{$ENDIF TestContexts}
 
 class function TJvColorProvider.ItemsClass: TJvDataItemsClass;
 begin
@@ -652,15 +656,6 @@ begin
   Supports(Items.GetProvider.SelectedConsumer, IJvColorProviderSettings, Result);
 end;
 
-{$IFDEF TestContexts}
-//===TJvColorDataContextsManager====================================================================
-
-function TJvColorDataContextsManager.New: IJvDataContext;
-begin
-  Result := Add(TJvManagedDataContext.Create(ContextsImpl, 'New context'));
-end;
-{$ENDIF TestContexts}
-
 //===TJvColorProviderSettings=======================================================================
 
 function TJvColorProviderSettings.Get_ColorBoxSettings: TJvColorProviderColorBoxSettings;
@@ -702,7 +697,4 @@ end;
 
 initialization
   RegisterClasses([TJvColorProviderSettings]);
-{$IFDEF TestContexts}
-  RegisterClasses([TJvColorDataContextsManager]);
-{$ENDIF TestContexts}
 end.
