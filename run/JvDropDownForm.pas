@@ -123,6 +123,7 @@ begin
   {$ENDIF VisualCLX}
   Font := TCustomEditAccessProtected(AOwner).Font;
 
+  Position := poDesigned; // required for D2005
   FEntering := True;
   FLeaving := False;
   FCloseOnLeave := True;
