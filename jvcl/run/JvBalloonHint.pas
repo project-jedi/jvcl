@@ -1150,10 +1150,9 @@ begin
         FHint.RestoreTopMost;
     WM_CLOSE:
       CancelHint;
-    WM_EXITSIZEMOVE:
+    WM_NCACTIVATE, WM_EXITSIZEMOVE:
       { (rb) Weird behaviour of windows ? }
-      if fsModal in FData.RAnchorWindow.FormState then
-        FHint.RestoreTopMost;
+      FHint.RestoreTopMost;
   end;
 end;
 
