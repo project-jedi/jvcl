@@ -47,6 +47,7 @@ type
     FTitle: string;
   public
     constructor Create(AOwner: TComponent); override;
+    function Execute: Boolean; override;
   published
     property ClassicDialog: Boolean read FClassicDialog write FClassicDialog default True;
     property Directory: string read FDirectory;
@@ -54,7 +55,6 @@ type
     property InitialDir: string read FInitialDir write FInitialDir;
     property Options: TSelectDirOpts read FOptions write FOptions default [sdAllowCreate, sdPerformCreate, sdPrompt];
     property Title: string read FTitle write FTitle;
-    function Execute: Boolean; override;
   end;
 
 implementation

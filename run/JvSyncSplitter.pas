@@ -31,7 +31,8 @@ unit JvSyncSplitter;
 interface
 
 uses
-  Messages, SysUtils, Classes, Controls, ExtCtrls, JvSplitter;
+  Messages, SysUtils, Classes, Controls, ExtCtrls,
+  JvSplitter;
 
 type
   TJvSyncSplitter = class(TJvSplitter)
@@ -54,12 +55,12 @@ uses
   JvTypes;
 
 resourcestring
-  eInvalidPartner = 'TJvSyncSplitter.SetPartner: cannot set Partner to Self!';
+  SInvalidPartner = 'TJvSyncSplitter.SetPartner: cannot set Partner to Self!';
 
 procedure TJvSyncSplitter.Notification(AComponent: TComponent; Operation: TOperation);
 begin
-  if (Operation = opRemove) and (aComponent = FPartner) then
-    FPartner := nil;
+  if (Operation = opRemove) and (AComponent = Partner) then
+    Partner := nil;
   inherited Notification(AComponent, Operation);
 end;
 
@@ -68,20 +69,20 @@ begin
   if Value <> Self then
     FPartner := Value
   else
-    raise EJVCLException.Create(eInvalidPartner);
+    raise EJVCLException.Create(SInvalidPartner);
 end;
 
 procedure TJvSyncSplitter.WndProc(var Msg: TMessage);
 begin
-  if Assigned(FPartner) and not FForcedSize then
+  if Assigned(FPartner) and not ForcedSize then
     case Msg.Msg of
       WM_MOUSEFIRST..WM_MOUSELAST:
         begin
-          FPartner.FForcedSize := True;
+          Partner.ForcedSize := True;
           try
-            FPartner.Perform(Msg.Msg, Msg.WParam, Msg.LParam);
+            Partner.Perform(Msg.Msg, Msg.WParam, Msg.LParam);
           finally
-            FPartner.FForcedSize := False;
+            Partner.ForcedSize := False;
           end;
         end;
     end;

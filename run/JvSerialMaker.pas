@@ -37,17 +37,17 @@ uses
 type
   TJvSerialMaker = class(TJvComponent)
   private
-    FUsername: string;
+    FUserName: string;
     FBase: Integer;
     FSerial: string;
     FDummy: string;
-    procedure ChangeUser(User: string);
-    procedure ChangeBase(Base: Integer);
+    procedure ChangeUser(AUserName: string);
+    procedure ChangeBase(ABase: Integer);
   public
-    function GiveSerial(Base: Integer; Username: string): string;
-    function SerialIsCorrect(Base: Integer; Username: string; Serial: string): Boolean;
+    function GiveSerial(ABase: Integer; AUserName: string): string;
+    function SerialIsCorrect(ABase: Integer; AUserName: string; Serial: string): Boolean;
   published
-    property Username: string read FUsername write ChangeUser;
+    property UserName: string read FUserName write ChangeUser;
     property Base: Integer read FBase write ChangeBase;
     { Do not store dummies }
     property Serial: string read FSerial write FDummy stored False;
@@ -58,45 +58,41 @@ implementation
 resourcestring
   sError = 'Error';
 
-procedure TJvSerialMaker.ChangeUser(User: string);
+procedure TJvSerialMaker.ChangeUser(AUserName: string);
 begin
-  FUsername := User;
-  FSerial := GiveSerial(FBase, FUsername);
+  FUserName := AUserName;
+  FSerial := GiveSerial(Base, AUserName);
 end;
 
-procedure TJvSerialMaker.ChangeBase(Base: Integer);
+procedure TJvSerialMaker.ChangeBase(ABase: Integer);
 begin
-  FBase := Base;
-  FSerial := GiveSerial(FBase, FUsername);
+  FBase := ABase;
+  FSerial := GiveSerial(ABase, UserName);
 end;
 
-function TJvSerialMaker.GiveSerial(Base: Integer; Username: string): string;
+function TJvSerialMaker.GiveSerial(ABase: Integer; AUserName: string): string;
 var
-  S: string;
   A: Integer;
 begin
-  S := sError;
-  if (Base <> 0) and (Username <> '') then
+  if (ABase <> 0) and (AUserName <> '') then
   begin
-    A := Base * Length(Username) + Ord(Username[1]) * 666;
-    S := IntToStr(A) + '-';
-    A := Base * Ord(Username[1]) * 123;
-    S := S + IntToStr(A) + '-';
-    A := Base + (Length(Username) * Ord(Username[1])) * 6613;
-    S := S + IntToStr(A);
-  end;
-  Result := S;
+    A := ABase * Length(AUserName) + Ord(AUserName[1]) * 666;
+    Result := IntToStr(A) + '-';
+    A := ABase * Ord(AUserName[1]) * 123;
+    Result := Result + IntToStr(A) + '-';
+    A := ABase + (Length(AUserName) * Ord(AUserName[1])) * 6613;
+    Result := Result + IntToStr(A);
+  end
+  else
+    Result := SError;
 end;
 
-function TJvSerialMaker.SerialIsCorrect(Base: Integer; Username: string; Serial: string): Boolean;
+function TJvSerialMaker.SerialIsCorrect(ABase: Integer; AUserName: string; Serial: string): Boolean;
 begin
-  if Username = '' then
-    Result := False
+  if (AUserName <> '') and (ABase <> 0) then
+    Result := Serial = GiveSerial(ABase, AUserName)
   else
-  if Base = 0 then
-    Result := False
-  else
-    Result := Serial = GiveSerial(Base, Username);
+    Result := False;
 end;
 
 end.

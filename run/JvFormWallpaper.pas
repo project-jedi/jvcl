@@ -32,12 +32,11 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls,
-  JVCLVer;
+  JVCLVer, JvComponent;
 
 type
-  TJvFormWallpaper = class(TGraphicControl)
+  TJvFormWallpaper = class(TJvGraphicControl)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FImage: TPicture;
     procedure SetImage(Value: TPicture);
     procedure FormPaint(Sender: TObject);
@@ -47,7 +46,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align default alClient;
     property Image: TPicture read FImage write SetImage;
   end;

@@ -23,10 +23,11 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I jvcl.inc}
+
+{$I JVCL.INC}
+
 unit JvSALMath;
 
-// SAL math package
 interface
 
 uses
@@ -36,100 +37,93 @@ uses
 type
   TJvSALMath = class(TComponent)
   private
-    { Private declarations }
-    sal: TJvSAL;
-  protected
-    { Protected declarations }
+    FSal: TJvSAL;
   public
-    { Public declarations }
-    procedure AddProcedures(aSal: TJvSAL);
-    procedure xSin;
-    procedure xArcSin;
-    procedure xCos;
-    procedure xArcCos;
-    procedure xTan;
-    procedure xArcTan;
-    procedure xPi;
-    procedure xExp;
-    procedure xLn;
-
-  published
-    { Published declarations }
+    procedure AddProcedures(ASal: TJvSAL);
+    procedure XSin;
+    procedure XArcSin;
+    procedure XCos;
+    procedure XArcCos;
+    procedure XTan;
+    procedure XArcTan;
+    procedure XPi;
+    procedure XExp;
+    procedure XLn;
   end;
 
 implementation
 
-  { TJvSALMathBasic }
-
-procedure TJvSALMath.AddProcedures(aSal: TJvSAL);
+procedure TJvSALMath.AddProcedures(ASal: TJvSAL);
 begin
-  sal := aSal;
-  sal.AddProcedure('sin', xsin, nil);
-  sal.AddProcedure('cos', xcos, nil);
-  sal.AddProcedure('tan', xtan, nil);
-  sal.AddProcedure('arcsin', xsin, nil);
-  sal.AddProcedure('arccos', xcos, nil);
-  sal.AddProcedure('arctan', xtan, nil);
-  sal.AddProcedure('pi', xpi, nil);
-  sal.AddProcedure('exp', xpi, nil);
-  sal.AddProcedure('ln', xpi, nil);
+  FSal := ASal;
+  FSal.AddProcedure('sin', XSin, nil);
+  FSal.AddProcedure('cos', XCos, nil);
+  FSal.AddProcedure('tan', XTan, nil);
+  // (rom) using XSin, XCos, XTan looks suspicious. Incomplete?
+  FSal.AddProcedure('arcsin', XSin, nil);
+  FSal.AddProcedure('arccos', XCos, nil);
+  FSal.AddProcedure('arctan', XTan, nil);
+  FSal.AddProcedure('pi', XPi, nil);
+  // (rom) using XPi looks suspicious. Incomplete?
+  FSal.AddProcedure('exp', XPi, nil);
+  FSal.AddProcedure('ln', XPi, nil);
 end;
 
-procedure TJvSALMath.xSin;
+procedure TJvSALMath.XSin;
 var
-  v1: variant;
+  V1: Variant;
 begin
-  v1 := sal.pop;
-  v1 := sin(v1);
-  sal.push(v1);
+  V1 := FSal.Pop;
+  V1 := Sin(V1);
+  FSal.Push(V1);
 end;
 
-procedure TJvSALMath.xCos;
+procedure TJvSALMath.XCos;
 var
-  v1: variant;
+  V1: Variant;
 begin
-  v1 := sal.pop;
-  v1 := cos(v1);
-  sal.push(v1);
+  V1 := FSal.Pop;
+  V1 := Cos(V1);
+  FSal.Push(V1);
 end;
 
-procedure TJvSALMath.xTan;
+procedure TJvSALMath.XTan;
 var
-  v1: variant;
+  V1: Variant;
 begin
-  v1 := sal.pop;
-  v1 := tan(v1);
-  sal.push(v1);
+  V1 := FSal.Pop;
+  V1 := Tan(V1);
+  FSal.Push(V1);
 end;
 
-procedure TJvSALMath.xPi;
+procedure TJvSALMath.XPi;
 begin
-  sal.push(pi);
+  FSal.Push(Pi);
 end;
 
-procedure TJvSALMath.xArcCos;
+procedure TJvSALMath.XArcCos;
 begin
-  sal.push(arccos(sal.pop));
+  FSal.Push(ArcCos(FSal.Pop));
 end;
 
-procedure TJvSALMath.xArcSin;
+procedure TJvSALMath.XArcSin;
 begin
-  sal.push(arcsin(sal.pop));
+  FSal.Push(ArcSin(FSal.Pop));
 end;
 
-procedure TJvSALMath.xArcTan;
+procedure TJvSALMath.XArcTan;
 begin
-  sal.push(arctan(sal.pop));
+  FSal.Push(ArcTan(FSal.Pop));
 end;
 
-procedure TJvSALMath.xExp;
+procedure TJvSALMath.XExp;
 begin
-  sal.push(exp(sal.pop));
+  FSal.Push(Exp(FSal.Pop));
 end;
 
-procedure TJvSALMath.xLn;
+procedure TJvSALMath.XLn;
 begin
-  sal.push(ln(sal.pop));
+  FSal.Push(Ln(FSal.Pop));
 end;
 
 end.

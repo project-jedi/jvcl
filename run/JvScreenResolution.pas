@@ -56,7 +56,7 @@ uses
   RTLConsts,
   {$ELSE}
   Consts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvTypes;
 
 function TJvScreenResolution.GetCount: Integer;

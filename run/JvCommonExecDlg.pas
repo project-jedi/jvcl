@@ -31,7 +31,7 @@ unit JvCommonExecDlg;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, SysUtils, Classes, Controls, Forms,
   JvBaseDlg, JvTypes;
 
 type
@@ -51,7 +51,7 @@ begin
   if AOwner is TWinControl then
     FOwnerWindow := (AOwner as TWinControl).Handle
   else
-    FOwnerWindow := 0;
+    FOwnerWindow := HWND_DESKTOP;
 end;
 
 end.

@@ -37,15 +37,15 @@ uses
 type
   TJvRGBToHTML = class(TJvComponent)
   private
-    FHtml: string;
-    FColor: TColor;
-    procedure SetColor(const Value: TColor);
-    procedure SetHtml(const Value: string);
+    FHTMLColor: string;
+    FRGBColor: TColor;
+    procedure SetRGBColor(const Value: TColor);
+    procedure SetHTMLColor(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property RGBColor: TColor read FColor write SetColor default clBlack;
-    property HTMLColor: string read FHtml write SetHtml;
+    property RGBColor: TColor read FRGBColor write SetRGBColor default clBlack;
+    property HTMLColor: string read FHTMLColor write SetHTMLColor;
   end;
 
 function RgbToHtml(Value: TColor): string;
@@ -55,30 +55,30 @@ implementation
 function RgbToHtml(Value: TColor): string;
 begin
   with TJvRGBToHTML.Create(nil) do
-  begin
-    RgbColor := Value;
-    Result := HtmlColor;
-    Free;
-  end;
+    try
+      RGBColor := Value;
+      Result := HtmlColor;
+    finally
+      Free;
+    end;
 end;
 
 constructor TJvRGBToHTML.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FColor := clBlack;
-  FHtml := '000000';
+  RGBColor := clBlack;
 end;
 
-procedure TJvRGBToHTML.SetColor(const Value: TColor);
+procedure TJvRGBToHTML.SetRGBColor(const Value: TColor);
 var
   Clr: TColor;
 begin
-  FColor := Value;
+  FRGBColor := Value;
   Clr := ColorToRGB(Value);
-  FHtml := IntToHex(GetRValue(Clr), 2) + IntToHex(GetGValue(Clr), 2) + IntToHex(GetBValue(Clr), 2);
+  FHTMLColor := IntToHex(GetRValue(Clr), 2) + IntToHex(GetGValue(Clr), 2) + IntToHex(GetBValue(Clr), 2);
 end;
 
-procedure TJvRGBToHTML.SetHtml(const Value: string);
+procedure TJvRGBToHTML.SetHTMLColor(const Value: string);
 var
   C: TColor;
   R, G, B: Byte;
@@ -90,9 +90,8 @@ begin
       G := StrToInt('$' + Copy(Value, 3, 2));
       B := StrToInt('$' + Copy(Value, 5, 2));
       C := RGB(R, G, B);
-      FColor := C;
-
-      FHtml := Value;
+      FRGBColor := C;
+      FHTMLColor := Value;
     end;
   except
   end;
