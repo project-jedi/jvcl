@@ -57,7 +57,7 @@ type
     StepNum: Integer;
     FOnFinished: TNotifyEvent;
     {$IFDEF VisualCLX}
-    FAutoSize: boolean;
+    FAutoSize: Boolean;
     {$ENDIF VisualCLX}
     procedure PictureChanged(Sender: TObject);
     procedure SetPicture1(Value: TPicture);
@@ -81,7 +81,7 @@ type
     property DragCursor;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    property AutoSize: boolean read FAutoSize write SetAutoSize;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize;
     {$ENDIF VisualCLX}
     property DragMode;
     property Enabled;

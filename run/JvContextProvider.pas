@@ -161,7 +161,7 @@ function TContextItems.GetContexts: IJvDataContexts;
 var
   ParentCtx: IJvDataContext;
 begin
-  if (GetParent <> nil) then
+  if GetParent <> nil then
   begin
     if Supports(GetParent, IJvDataContext, ParentCtx) then
       Supports(ParentCtx, IJvDataContexts, Result);

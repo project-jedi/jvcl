@@ -45,7 +45,7 @@ uses
   JvDsgnConsts,
   JvPlugin, JvPluginManager, JvPluginWizard, JvPluginParamsForm;
 
-{$R ..\resources\JvPluginReg.dcr}
+{$R ..\Resources\JvPluginReg.dcr}
 
 procedure Register;
 begin

@@ -25,6 +25,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+
 unit JvDBGridExportEditors;
 
 interface
@@ -42,22 +43,22 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
-    function GetValue: String; override;
-    procedure SetValue(const Value: String); override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
   end;
 
 implementation
-uses
-  SysUtils, JvDBGridExport;
 
-{ TDBGridExportWordFormatProperty }
+uses
+  SysUtils,
+  JvDBGridExport, JvDsgnConsts;
 
 function TDBGridExportWordFormatProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList, paMultiSelect, paRevertable];
 end;
 
-function TDBGridExportWordFormatProperty.GetValue: String;
+function TDBGridExportWordFormatProperty.GetValue: string;
 begin
   if not IntToWordGridFormatIdent(GetOrdValue, Result) then
     Result := IntToStr(GetOrdValue);
@@ -68,13 +69,15 @@ begin
   GetWordGridFormatValues(Proc);
 end;
 
-procedure TDBGridExportWordFormatProperty.SetValue(const Value: String);
-var i:integer;
+procedure TDBGridExportWordFormatProperty.SetValue(const Value: string);
+var
+  N: Integer;
 begin
-  if WordGridFormatIdentToInt(Value,i) then
-    SetOrdValue(i)
+  if WordGridFormatIdentToInt(Value, N) then
+    SetOrdValue(N)
   else
-    raise Exception.Create('Invalid property value');
+    raise Exception.Create(RsEInvalidPropertyValue);
 end;
 
 end.
+

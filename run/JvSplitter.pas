@@ -108,7 +108,6 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
-
 procedure TJvSplitter.Paint;
 var
   Bmp: TBitmap;
@@ -138,7 +137,6 @@ begin
   else
     inherited Paint;
 end;
-
 {$ENDIF JVCLThemesEnabled}
 
 end.

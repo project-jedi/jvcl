@@ -47,7 +47,7 @@ uses
   JvMailEditor, JvHTMLParserEditor, JvUrlListGrabber, JvUrlGrabbers,
   JvUrlListGrabberEditors;
 
-{$R ..\resources\JvNetReg.dcr}
+{$R ..\Resources\JvNetReg.dcr}
 
 procedure Register;
 begin

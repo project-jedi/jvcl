@@ -147,7 +147,7 @@ end;
 
 function TJvBaseDesign.DesignerFormName: string;
 begin
-  Result := 'JEDI-VCL Editor';
+  Result := RsBaseDesignFormName;
 end;
 
 function TJvBaseDesign.AutoStoreSettings: Boolean;

@@ -1230,6 +1230,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomDialButton.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
@@ -1249,6 +1250,7 @@ begin
   FBitmapInvalid := True;
   Invalidate;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvCustomDialButton.SetPointerSize(Value: Integer);

@@ -45,7 +45,7 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TJvDataEmbeddedMainForm.Button1Click(Sender: TObject);
 begin

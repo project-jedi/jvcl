@@ -135,7 +135,7 @@ begin
   FText.Width := Width;
   FText.Height := Height;
   {$IFDEF VCL}
-  FText.Borderstyle := sbsNone;
+  FText.BorderStyle := sbsNone;
   {$ENDIF VCL}
   FText.TabStop := False;
   FText.Enabled := FSelectable;

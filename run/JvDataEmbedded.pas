@@ -38,7 +38,6 @@ type
   TJvDataEmbedded = class(TComponent)
   private
     FAboutJVCL: TJVCLAboutInfo; // (ahuser) removed JvComponent dependency for easy CLX usage
-
     FStream: TMemoryStream;
     function GetSize: Integer;
     procedure WriteData(Stream: TStream);
@@ -88,9 +87,7 @@ end;
 
 function TJvDataEmbedded.GetStream: TStream;
 begin
-  // (p3) memory leak?
-  Result := TMemoryStream.Create;
-  Result.CopyFrom(FStream, 0);
+  Result := FStream;
   Result.Position := 0;
 end;
 

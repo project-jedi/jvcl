@@ -55,7 +55,7 @@ uses
   JvGroupHeaderEditor, JvFooterEditor, JvSpeedbarForm, JvDsgnEditors,
   JvTransparentButtonEditors, JvRollOutEditor;
 
-{$R ..\resources\JvCtrlsReg.dcr}
+{$R ..\Resources\JvCtrlsReg.dcr}
 
 procedure Register;
 begin
@@ -81,8 +81,8 @@ begin
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(TJvLabelBehaviorName), TJvBehaviorLabel, 'Behavior', TJvLabelBehaviorProperty);
   RegisterPropertyEditor(TypeInfo(TCursor), TJvxSplitter, 'Cursor', nil);
-  //RegisterPropertyEditor(TypeInfo(TDateTime),TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
-  //RegisterPropertyEditor(TypeInfo(TDateTime),TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
+  //RegisterPropertyEditor(TypeInfo(TDateTime), TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
+  //RegisterPropertyEditor(TypeInfo(TDateTime), TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', TStringProperty);
 
   RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'ActiveIndex', TJvTBImagesProperty);
@@ -103,7 +103,7 @@ begin
   RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
   RegisterClass(TJvScrollMaxBand);
   RegisterClass(TJvFooterBtn);
-  RegisterActions('JVCL',[TJvRollOutAction],nil);
+  RegisterActions(RsJVCLActionsCategory, [TJvRollOutAction], nil);
 end;
 
 end.
