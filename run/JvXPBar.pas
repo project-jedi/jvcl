@@ -405,7 +405,7 @@ type
     property RollStep: TJvXPBarRollStep read FRollStep write FRollStep default 3;
     property ShowLinkCursor: Boolean read FShowLinkCursor write FShowLinkCursor default True;
     property ShowRollButton: Boolean read FShowRollButton write SetShowRollButton default True;
-    property ShowItemFrame: boolean read FShowItemFrame write FShowItemFrame;
+    property ShowItemFrame: boolean read FShowItemFrame write FShowItemFrame default False;
 
     property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange write
       FAfterCollapsedChange;
