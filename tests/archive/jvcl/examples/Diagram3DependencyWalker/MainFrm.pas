@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   JvDiagramShape, Dialogs, ComCtrls, Menus, ImgList, StdCtrls, ExtCtrls,
-  ActnList, PersistSettings, DepWalkConsts, ToolWin, Buttons;
+  ActnList, PersistSettings, DepWalkConsts, ToolWin, Buttons, PersistForm;
 
 type
 (*
@@ -17,7 +17,7 @@ type
     procedure Save(Storage: TCustomIniFile);
   end;
  *)
-  TfrmMain = class(TForm, IUnknown, IPersistSettings)
+  TfrmMain = class(TfrmPersistable)
     StatusBar1: TStatusBar;
     mmMain: TMainMenu;
     File1: TMenuItem;
@@ -39,7 +39,7 @@ type
     Add1: TMenuItem;
     Delete1: TMenuItem;
     Edit1: TMenuItem;
-    Sort1: TMenuItem;
+    mnuSort: TMenuItem;
     N2: TMenuItem;
     Skiplist1: TMenuItem;
     Add2: TMenuItem;
@@ -125,6 +125,9 @@ type
     ParseUnit2: TMenuItem;
     N9: TMenuItem;
     N11: TMenuItem;
+    acUnitView: TAction;
+    ViewSource1: TMenuItem;
+    ViewSource2: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure sbMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -156,21 +159,22 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure acParseUnitExecute(Sender: TObject);
     procedure acOptionsExecute(Sender: TObject);
+    procedure acUnitViewExecute(Sender: TObject);
   private
     { Private declarations }
     FPrintFormat: TPrintFormat;
     FFileShapes, FSearchPaths: TStringlist;
     FInitialDir: string;
     FLeft, FTop: integer;
-    FSelected:TJvCustomDiagramShape;
-    FOffsetX,FOffsetY:integer;
-    FReload:boolean;
-    FIntfLineColor,FImplLineColor,FIntfSelColor,FImplSelColor:TColor;
+    FSelected: TJvCustomDiagramShape;
+    FOffsetX, FOffsetY: integer;
+    FReload: boolean;
+    FIntfLineColor, FImplLineColor, FIntfSelColor, FImplSelColor: TColor;
     procedure LoadSettings;
     procedure SaveSettings;
-    function FindUnit(const Filename:string;const DefaultExt:string='.pas'):string;
+    function FindUnit(const Filename: string; const DefaultExt: string = '.pas'): string;
     procedure GetSearchPaths;
-    function GetPersistStorage:TPersistSettings;
+    function GetPersistStorage: TPersistStorage;
     procedure Clear;
     procedure CreatePrintOut(Strings: TStrings; AFormat: TPrintFormat = pfText);
     function GetFileShape(const Filename: string): TJvBitmapShape;
@@ -185,13 +189,13 @@ type
     procedure DoShapeClick(Sender: TObject);
     procedure SortItems(ATag: integer; AList: TList; InvertedSort: boolean);
 
-    {IPersistSettings}
-    procedure Load(Storage: TPersistSettings);
-    procedure Save(Storage: TPersistSettings);
     procedure CreateDiagramBitmap(Bmp: TBitmap);
     procedure HighlightConnectors(AShape: TJvCustomDiagramShape);
     procedure DoShapeMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+  protected
+    procedure Load(Storage: TPersistStorage);override;
+    procedure Save(Storage: TPersistStorage);override;
   public
     { Public declarations }
   end;
@@ -203,14 +207,14 @@ implementation
 uses
   JCLParseUses,
   Clipbrd,
-  IniFiles, 
+  IniFiles,
   StatsFrm,
   ShellAPI,
   PrintFrm,
   Registry,
-  {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
   JvFunctions,
-  {$ENDIF}
+{$ENDIF}
   OptionsFrm;
 
 
@@ -279,6 +283,7 @@ end;
 // utility functions
 
 // (3) shows a message box with Yes and No buttons
+
 function YesNo(const ACaption, AMsg: string): boolean;
 begin
   Result := MessageBox(GetFocus, PChar(AMsg), PChar(ACaption),
@@ -286,6 +291,7 @@ begin
 end;
 
 // suspend/resumes the drawing of a TWinControl
+
 procedure SuspendRedraw(AControl: TWinControl; Suspend: boolean);
 begin
   AControl.Perform(WM_SETREDRAW, Ord(not Suspend), 0);
@@ -294,6 +300,7 @@ begin
 end;
 
 // (p3) copy Strings.Objects to TList
+
 procedure CopyObjects(Strings: TStrings; AList: TList);
 var
   i: integer;
@@ -303,6 +310,7 @@ begin
 end;
 
 // (p3) returns the number of links that are connected to AShape
+
 function GetNumLinksTo(AShape: TJvCustomDiagramShape): integer;
 var
   i: integer;
@@ -315,6 +323,7 @@ begin
 end;
 
 // (p3) returns the number of links that are connected from AShape
+
 function GetNumLinksFrom(AShape: TJvCustomDiagramShape): integer;
 var
   i: integer;
@@ -327,6 +336,7 @@ begin
 end;
 
 // (p3) retrievs the shapes that AShape is connected to and store their name and pointers in Strings
+
 procedure UsesUnits(AShape: TJvCustomDiagramShape; Strings: TStrings; const Ext: string = cPascalExt);
 var i: integer;
 begin
@@ -369,6 +379,7 @@ begin
 end;
 
 // TList sorting functions:
+
 function NameCompare(Item1, Item2: Pointer): integer;
 begin
   Result := CompareText(
@@ -411,11 +422,49 @@ end;
 
 { TfrmMain }
 
+{ IPersistSettings }
+
+procedure TfrmMain.Load(Storage: TPersistStorage);
+begin
+  // DO NOT LOCALIZE!
+  if not FReload then
+    inherited;
+  FReload := true;
+  acInvertSort.Checked := Storage.ReadBool(ClassName, 'InvertSort', false);
+  FInitialDir := Storage.ReadString(ClassName, 'InitialDir', '');
+  pnlSkipList.Width := Storage.ReadInteger(ClassName, 'vertSplitter', pnlSkipList.Width);
+  if not acViewStatusBar.Checked = Storage.ReadBool(ClassName, acViewStatusBar.Name, acViewStatusBar.Checked) then
+    acViewStatusBar.Execute; // toggle to other state
+  if not acViewToolbar.Checked = Storage.ReadBool(ClassName, acViewToolbar.Name, acViewToolbar.Checked) then
+    acViewToolbar.Execute;
+  if not acViewSkipList.Checked = Storage.ReadBool(ClassName, acViewSkipList.Name, acViewSkipList.Checked) then
+    acViewSkipList.Execute;
+
+  FOffsetX := Storage.ReadInteger('Options', 'ShapeWidth', 100);
+  FOffsetY := Storage.ReadInteger('Options', 'ShapeHeight', 100);
+  FIntfLineColor := Storage.ReadInteger('Options', 'IntfColor', clBlack);
+  FIntfSelColor := Storage.ReadInteger('Options', 'IntfSelColor', clRed);
+  FImplLineColor := Storage.ReadInteger('Options', 'ImplColor', clBtnShadow);
+  FImplSelColor := Storage.ReadInteger('Options', 'ImplSelColor', clBlue);
+end;
+
+procedure TfrmMain.Save(Storage: TPersistStorage);
+begin
+  inherited;
+  Storage.WriteBool(ClassName, 'InvertSort', acInvertSort.Checked);
+  Storage.WriteString(ClassName, 'InitialDir', FInitialDir);
+  Storage.WriteInteger(ClassName, 'vertSplitter', pnlSkipList.Width);
+  Storage.WriteBool(ClassName, acViewStatusBar.Name, acViewStatusBar.Checked);
+  Storage.WriteBool(ClassName, acViewToolbar.Name, acViewToolbar.Checked);
+  Storage.WriteBool(ClassName, acViewSkipList.Name, acViewSkipList.Checked);
+end;
+
 // main form utility functions
 
 // (p3) highlights the connectors (arrows) going to and from AShape
-procedure TfrmMain.HighlightConnectors(AShape:TJvCustomDiagramShape);
-var i:integer;C:TJvConnector;Changed:boolean;
+
+procedure TfrmMain.HighlightConnectors(AShape: TJvCustomDiagramShape);
+var i: integer; C: TJvConnector; Changed: boolean;
 begin
   Changed := false;
   for i := 0 to AShape.Parent.ControlCount - 1 do
@@ -456,6 +505,7 @@ end;
 
 // (p3) returns an existing or new shape
 // Filename is checked against unique list
+
 function TfrmMain.GetFileShape(const Filename: string): TJvBitmapShape;
 var
   i: integer;
@@ -492,6 +542,7 @@ end;
 
 // (p3) connects two shapes with a single head arrow pointing towards EndShape
 // colors differently depending on if it's interface link or an implementation link
+
 procedure TfrmMain.Connect(StartShape, EndShape: TJvCustomDiagramShape; IsInterface: boolean);
 var
   arr: TJvSingleHeadArrow;
@@ -558,6 +609,11 @@ begin
       Result := false;
       ErrorMessage := E.Message + #13#10 + SCheckPaths;
     end;
+    on E: Exception do
+    begin
+      Result := false;
+      ErrorMessage := E.Message;
+    end;
   end;
 end;
 
@@ -569,7 +625,7 @@ var
   FS: TJvBitmapShape;
   i: integer;
   AFilename, ErrMsg: string;
-  b:boolean;
+  b: boolean;
 begin
   AFilename := FindUnit(Filename);
   if InSkipList(AFilename) then
@@ -588,13 +644,13 @@ begin
     for i := 0 to AUsesIntf.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
-      Connect(FS, GetFileShape(AUsesIntf[i]),true);
+      Connect(FS, GetFileShape(AUsesIntf[i]), true);
       Inc(FTop, FOffsetY);
     end;
     for i := 0 to AUsesImpl.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
-      Connect(FS, GetFileShape(AUsesImpl[i]),false);
+      Connect(FS, GetFileShape(AUsesImpl[i]), false);
       Inc(FTop, FOffsetY);
     end;
   finally
@@ -629,12 +685,13 @@ end;
 
 // (p3) tries to find Filename and return it's full path and filename
 // if it fails, the original Filename is returned instead
-function TfrmMain.FindUnit(const Filename: string;const DefaultExt:string='.pas'): string;
-var i:integer;
+
+function TfrmMain.FindUnit(const Filename: string; const DefaultExt: string = '.pas'): string;
+var i: integer;
 begin
   Result := ExpandUNCFileName(Filename);
   if FileExists(Result) then Exit;
-  Result := ChangeFileExt(Result,DefaultExt);
+  Result := ChangeFileExt(Result, DefaultExt);
   if FileExists(Result) then Exit;
   Result := ExtractFilePath(dlgSelectFiles.FileName) + ExtractFileName(Result);
   if FileExists(Result) then Exit;
@@ -668,6 +725,9 @@ end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
+  // (p3) Set GetPersistStorage as the handler for this apps storage:
+  SetStorageHandler(GetPersistStorage);
+
   FFileShapes := TStringlist.Create;
   FFileShapes.Sorted := true;
   FFileShapes.Duplicates := dupError;
@@ -725,7 +785,7 @@ begin
     begin
       FLeft := cStartX;
       if i = 0 then
-        Inc(FTop, cStartY)  // first row
+        Inc(FTop, cStartY) // first row
       else
         Inc(FTop, FOffsetY);
     end;
@@ -863,29 +923,16 @@ begin
 end;
 
 procedure TfrmMain.LoadSettings;
-var Ini: TPersistSettings;
 begin
   LoadSkipList;
-  Ini := GetPersistStorage;
-  try
-    PersistSettings.LoadComponents(self, Ini);
-  finally
-    Ini.Free;
-  end;
+  AutoLoad(self);
   Application.HintShortCuts := true;
 end;
 
 procedure TfrmMain.SaveSettings;
-var Ini: TPersistSettings;
 begin
   SaveSkipList;
-  Ini := GetPersistStorage;
-  try
-    PersistSettings.SaveComponents(self, Ini);
-    Ini.UpdateFile;
-  finally
-    Ini.Free;
-  end;
+  AutoSave(self);
 end;
 
 function Max(Val1, Val2: integer): integer;
@@ -899,7 +946,7 @@ end;
 
 procedure PaintScrollBox(sb: TScrollBox; Canvas: TCanvas);
 var sbPos: TPoint;
-    tmpPos: integer;
+  tmpPos: integer;
 begin
   sbPos.X := sb.HorzScrollBar.Position;
   sbPos.Y := sb.VertScrollBar.Position;
@@ -939,27 +986,29 @@ begin
 end;
 
 procedure TfrmMain.GetSearchPaths;
-var ini:TCustomIniFile;
+var ini: TCustomIniFile;
 begin
   FreeAndNil(FSearchPaths);
   FSearchPaths := TStringlist.Create;
-  ini := GetPersistStorage;
+  ini := GetStorage;
   try
-    ini.ReadSection('Options.Paths',FSearchPaths);
+    ini.ReadSection('Library Paths', FSearchPaths);
   finally
     ini.Free;
   end;
 end;
-// (p3) return the type of TCUstomIniFile we are currently using
-// could easily be changed to use registry or storing in a different location
-function TfrmMain.GetPersistStorage: TPersistSettings;
+
+// (p3) create and return the type of TPersistStorage we are currently using
+function TfrmMain.GetPersistStorage: TPersistStorage;
 begin
-  Result := TPersistSettings(TMemIniFile.Create(ChangeFileExt(Application.ExeName, cIniFileExt)));
+  Result := TPersistStorage(TMemIniFile.Create(ChangeFileExt(Application.ExeName, cIniFileExt)));
+  // ...could just as well have been:
+//  Result := TPersistStorage(TRegistryIniFile.Create('\Software\JEDI\JVCL\Demos\Dependency Walker'));
 end;
 
 // main form event handlers (normal, run-time assigned) and actions
 
-// (p3) bring the Shape up so we can see it
+// (p3) bring the Shape to the front so we can see it
 procedure TfrmMain.DoShapeClick(Sender: TObject);
 begin
   TJvBitmapShape(Sender).BringToFront;
@@ -967,7 +1016,8 @@ begin
 end;
 
 // (p3) highlight the shapes connectors when it is selected
-procedure TfrmMain.DoShapeMouseDown(Sender:TObject;Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+
+procedure TfrmMain.DoShapeMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   FSelected := Sender as TJvCustomDiagramShape;
   if Button = mbLeft then
@@ -1083,8 +1133,11 @@ end;
 
 procedure TfrmMain.acNewExecute(Sender: TObject);
 begin
-  if YesNo(SConfirmDelete, SClearDiagramPrompt) then
+  if YesNo(SConfirmClear, SClearDiagramPrompt) then
+  begin
     Clear;
+    LoadSettings;
+  end;
 end;
 
 procedure TfrmMain.alMainUpdate(Action: TBasicAction;
@@ -1094,18 +1147,22 @@ begin
   acNew.Enabled := sb.ControlCount > 0;
   acFind.Enabled := acNew.Enabled;
   acReport.Enabled := acNew.Enabled;
+  acCopy.Enabled   := acNew.Enabled;
+  acSaveBMP.Enabled := acCopy.Enabled;
+  mnuSort.Enabled   := sb.ControlCount > 1;
 
   acDelShape.Enabled := FSelected <> nil;
   acUnitStats.Enabled := acDelShape.Enabled;
   acAddToSkipList.Enabled := acDelShape.Enabled;
   acParseUnit.Enabled := acDelShape.Enabled;
+  acUnitView.Enabled := acDelShape.Enabled;
 end;
 
 procedure TfrmMain.acUnitStatsExecute(Sender: TObject);
 var
   AShape: TJvCustomDiagramShape;
-  i:integer;
-  S:string;
+  i: integer;
+  S: string;
   UsedByStrings, UsesStrings: TStringlist;
 begin
   AShape := FSelected;
@@ -1161,16 +1218,19 @@ const
 var
   S: TStringlist;
   AFileName: string;
-  Ini:TPersistSettings;
+  Ini: TPersistStorage;
 begin
-  S := TStringlist.Create;
-  Ini := GetPersistStorage;
+  if not TfrmPrint.Execute then Exit;
+  Ini := GetStorage;
   try
-    if not TfrmPrint.Execute(Ini) then
-      Exit;
-    WaitCursor;
-    Ini.UpdateFile;
     FPrintFormat := TPrintFormat(Ini.ReadInteger('Printing', 'Print Format', Ord(FPrintFormat)));
+  finally
+    Ini.Free;
+  end;
+
+  WaitCursor;
+  S := TStringlist.Create;
+  try
     CreatePrintOut(S, FPrintFormat);
     if S.Count > 0 then
     begin
@@ -1181,7 +1241,6 @@ begin
     end;
   finally
     S.Free;
-    Ini.Free;
   end;
 end;
 
@@ -1260,16 +1319,16 @@ end;
 
 procedure TfrmMain.acCopyExecute(Sender: TObject);
 var
-  AFormat : Word;
-  b:TBitmap;
-  AData:Cardinal;
-  APalette : HPALETTE;
+  AFormat: Word;
+  b: TBitmap;
+  AData: Cardinal;
+  APalette: HPALETTE;
 begin
   b := TBitmap.Create;
   try
     CreateDiagramBitmap(b);
-    b.SaveToClipboardFormat(AFormat,AData,APalette);
-    Clipboard.SetAsHandle(AFormat,AData);
+    b.SaveToClipboardFormat(AFormat, AData, APalette);
+    Clipboard.SetAsHandle(AFormat, AData);
   finally
     b.Free;
   end;
@@ -1280,7 +1339,7 @@ begin
   with TSaveDialog.Create(nil) do
   try
     if Execute then
-      TJvCustomDiagramShape.SaveToFile(Filename,sb);
+      TJvCustomDiagramShape.SaveToFile(Filename, sb);
   finally
     Free;
   end;
@@ -1293,7 +1352,7 @@ begin
     if Execute then
     begin
       FFileShapes.Clear;
-      TJvCustomDiagramShape.LoadFromFile(Filename,sb);
+      TJvCustomDiagramShape.LoadFromFile(Filename, sb);
       // TODO: update FFileShapes list with new items
       // NB! loading a saved diagram looses the info about interface/implementation uses!
     end;
@@ -1309,102 +1368,60 @@ begin
   if FSelected <> nil then
     FSelected.Selected := false;
   FSelected := nil;
+  if sb.CanFocus then sb.SetFocus;
 end;
 
 // (p3) do a recursive parse of a unit
+
 procedure TfrmMain.acParseUnitExecute(Sender: TObject);
-var Errors:TStringList;i:integer;
+var Errors: TStringList; i: integer;
 begin
   WaitCursor;
   i := FFileShapes.IndexOfObject(FSelected);
   if i < 0 then
   begin
     if FSelected <> nil then
-      ShowMessageFmt(SFileNotFoundFmt,[FSelected.Caption.Text])
+      ShowMessageFmt(SFileNotFoundFmt, [FSelected.Caption.Text])
     else
       ShowMessage(SUnitNotFound);
     Exit;
   end;
-
   Errors := TStringlist.Create;
   try
-    ParseUnit(FFileShapes[i],Errors);
-      if Errors.Count > 0 then
-      begin
-        ShowMessageFmt(SParseErrorsFmt, [Errors.Text]);
+    ParseUnit(FFileShapes[i], Errors);
+    if Errors.Count > 0 then
+    begin
+      ShowMessageFmt(SParseErrorsFmt, [Errors.Text]);
         // copy to clipboard as well
-        Clipboard.SetTextBuf(PChar(Errors.Text));
-      end;
+      Clipboard.SetTextBuf(PChar(Errors.Text));
+    end;
   finally
     Errors.Free;
   end;
 end;
 
 procedure TfrmMain.acOptionsExecute(Sender: TObject);
-var Ini: TPersistSettings;
 begin
-  Ini := GetPersistStorage;
-  try
-    if TfrmOptions.Execute(Ini) then
-    begin
-      Ini.UpdateFile;
-      FreeAndNil(FSearchPaths);
+  if TfrmOptions.Execute then
+  begin
+    FreeAndNil(FSearchPaths);
+    if sb.ControlCount = 0 then
+      LoadSettings
+    else
       ShowMessage(SRestartForNewOptions);
-    end;
-  finally
-    Ini.Free;
   end;
 end;
 
-procedure TfrmMain.Load(Storage: TPersistSettings);
+
+procedure TfrmMain.acUnitViewExecute(Sender: TObject);
+var AFilename: string;
 begin
-  // DO NOT LOCALIZE!
-  if not FReload then
-  begin
-    Top := Storage.ReadInteger(ClassName, 'Top', (Screen.Height - ClientHeight) div 2);
-    Left := Storage.ReadInteger(ClassName, 'Left', (Screen.Width - ClientWidth) div 2);
-    Width := Storage.ReadInteger(ClassName, 'Width', Width);
-    Height := Storage.ReadInteger(ClassName, 'Height', Height);
-    FReload := true;
-  end;
-  acInvertSort.Checked := Storage.ReadBool(ClassName, 'InvertSort', false);
-  FInitialDir := Storage.ReadString(ClassName, 'InitialDir', '');
-  pnlSkipList.Width := Storage.ReadInteger(ClassName, 'vertSplitter', pnlSkipList.Width);
-  if not acViewStatusBar.Checked = Storage.ReadBool(ClassName, acViewStatusBar.Name, acViewStatusBar.Checked) then
-    acViewStatusBar.Execute; // toggle to other state
-  if not acViewToolbar.Checked = Storage.ReadBool(ClassName, acViewToolbar.Name, acViewToolbar.Checked) then
-    acViewToolbar.Execute;
-  if not acViewSkipList.Checked = Storage.ReadBool(ClassName, acViewSkipList.Name, acViewSkipList.Checked) then
-    acViewSkipList.Execute;
-
-  FOffsetX := Storage.ReadInteger('Options','ShapeHeight',100);
-  FOffsetY := Storage.ReadInteger('Options','ShapeHeight',100);
-  FIntfLineColor := Storage.ReadInteger('Options','IntfColor',clBlack);
-  FIntfSelColor := Storage.ReadInteger('Options','IntfSelColor',clRed);
-  FImplLineColor := Storage.ReadInteger('Options','ImplColor',clBtnShadow);
-  FImplSelColor := Storage.ReadInteger('Options','ImplSelColor',clBlue);
-
+  AFilename := FindUnit(FSelected.Caption.Text);
+  if FileExists(AFilename) then
+    ShellExecute(Handle, 'open', PChar(AFilename), nil, nil, SW_SHOWNORMAL)
+  else
+    ShowMessageFmt(SFileNotFoundFmt, [AFilename]);
 end;
-
-procedure TfrmMain.Save(Storage: TPersistSettings);
-begin
-  // DO NOT LOCALIZE!
-  if not IsZoomed(Handle) and not IsIconic(Application.Handle) then
-  begin
-    Storage.WriteInteger(ClassName, 'Top', Top);
-    Storage.WriteInteger(ClassName, 'Left', Left);
-    Storage.WriteInteger(ClassName, 'Width', Width);
-    Storage.WriteInteger(ClassName, 'Height', Height);
-  end;
-
-  Storage.WriteBool(ClassName, 'InvertSort', acInvertSort.Checked);
-  Storage.WriteString(ClassName, 'InitialDir', FInitialDir);
-  Storage.WriteInteger(ClassName, 'vertSplitter', pnlSkipList.Width);
-  Storage.WriteBool(ClassName, acViewStatusBar.Name, acViewStatusBar.Checked);
-  Storage.WriteBool(ClassName, acViewToolbar.Name, acViewToolbar.Checked);
-  Storage.WriteBool(ClassName, acViewSkipList.Name, acViewSkipList.Checked);
-end;
-
 
 end.
 

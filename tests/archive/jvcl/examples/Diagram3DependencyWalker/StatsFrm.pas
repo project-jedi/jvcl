@@ -4,10 +4,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, PersistSettings;
+  Dialogs, StdCtrls, ComCtrls, PersistForm, PersistSettings;
 
 type
-  TfrmUnitStats = class(TForm, IPersistSettings)
+  TfrmUnitStats = class(TfrmPersistable)
     Label1: TLabel;
     edName: TEdit;
     Label2: TLabel;
@@ -17,11 +17,9 @@ type
     btnOK: TButton;
   private
     { Private declarations }
-    procedure Load(Storage:TPersistSettings);
-    procedure Save(Storage:TPersistSettings);
   public
     { Public declarations }
-    class procedure Execute(const UnitName:string;UsedByStrings,UsesStrings:TStrings);
+    class procedure Execute(const UnitName: string; UsedByStrings, UsesStrings: TStrings);
   end;
 
 
@@ -33,32 +31,27 @@ implementation
 
 class procedure TfrmUnitStats.Execute(const UnitName: string; UsedByStrings,
   UsesStrings: TStrings);
+var Storage: TPersistStorage;
 begin
   with self.Create(Application) do
   try
-    Caption := Format(Caption,[ExtractFilename(UnitName)]);
-    edName.Text := UnitName;
-    reUsed.Lines := UsedByStrings;
-    reUses.Lines := UsesStrings;
-    ShowModal;
+    Storage := GetStorage;
+    try
+      Load(Storage);
+      Caption := Format(Caption, [ExtractFilename(UnitName)]);
+      edName.Text := UnitName;
+      reUsed.Lines := UsedByStrings;
+      reUses.Lines := UsesStrings;
+      ShowModal;
+      Save(Storage);
+    finally
+      Storage.Free;
+    end;
   finally
     Free;
   end;
 end;
 
-procedure TfrmUnitStats.Load(Storage: TPersistSettings);
-begin
-  Top := Storage.ReadInteger(ClassName, 'Top', (Screen.Height - ClientHeight) div 2);
-  Left := Storage.ReadInteger(ClassName, 'Left', (Screen.Width - ClientWidth) div 2);
-end;
-
-procedure TfrmUnitStats.Save(Storage: TPersistSettings);
-begin
-  if not IsZoomed(Handle) and not IsIconic(Application.Handle) then
-  begin
-    Storage.WriteInteger(ClassName, 'Top', Top);
-    Storage.WriteInteger(ClassName, 'Left', Left);
-  end;
-end;
 
 end.
+

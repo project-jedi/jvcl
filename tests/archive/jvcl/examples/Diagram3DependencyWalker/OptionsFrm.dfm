@@ -1,7 +1,7 @@
 object frmOptions: TfrmOptions
   Left = 405
   Top = 179
-  ActiveControl = cbIntfColor
+  ActiveControl = lvPaths
   BorderStyle = bsDialog
   Caption = 'Options'
   ClientHeight = 367
@@ -43,7 +43,7 @@ object frmOptions: TfrmOptions
     Top = 5
     Width = 318
     Height = 315
-    ActivePage = tabGeneral
+    ActivePage = tabPaths
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
     object tabGeneral: TTabSheet
@@ -55,7 +55,7 @@ object frmOptions: TfrmOptions
         Height = 81
         Anchors = [akLeft, akTop, akRight]
         Caption = ' Shapes '
-        TabOrder = 1
+        TabOrder = 0
         object Label1: TLabel
           Left = 16
           Top = 24
@@ -96,7 +96,7 @@ object frmOptions: TfrmOptions
         Height = 191
         Anchors = [akLeft, akTop, akRight, akBottom]
         Caption = ' Connectors '
-        TabOrder = 0
+        TabOrder = 1
         object Label3: TLabel
           Left = 16
           Top = 24
@@ -448,6 +448,7 @@ object frmOptions: TfrmOptions
             WidthType = (
               -2)
           end>
+        HideSelection = False
         MultiSelect = True
         ReadOnly = True
         RowSelect = True

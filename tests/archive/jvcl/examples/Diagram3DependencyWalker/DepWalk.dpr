@@ -6,7 +6,8 @@ uses
   StatsFrm in 'StatsFrm.pas' {frmUnitStats},
   PrintFrm in 'PrintFrm.pas' {frmPrint},
   DepWalkConsts in 'DepWalkConsts.pas',
-  OptionsFrm in 'OptionsFrm.pas' {frmOptions};
+  OptionsFrm in 'OptionsFrm.pas' {frmOptions},
+  PersistForm in 'PersistForm.pas' {frmPersistable};
 
 {$R *.res}
 

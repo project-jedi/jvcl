@@ -6,7 +6,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvCombobox, JvColorCombo, ComCtrls, ActnList, ExtCtrls,
-  JvBaseDlg, JvBrowseFolder, PersistSettings, Menus;
+  JvBaseDlg, JvBrowseFolder, PersistForm, PersistSettings, Menus;
 
 type
   // a TEdit that doesn't allow pasting of non-numeric text if ES_NUMBER is in GWL_STYLE
@@ -15,7 +15,7 @@ type
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
   end;
 
-  TfrmOptions = class(TForm, IUnknown, IPersistSettings)
+  TfrmOptions = class(TfrmPersistable)
     btnOK: TButton;
     btnCancel: TButton;
     pcOptions: TPageControl;
@@ -106,12 +106,12 @@ type
     procedure ListViewAddPath(const S: string);
     procedure ListViewAddPaths(Version: integer; ForDelphi: boolean);
     procedure ListViewAddSystemPaths;
-
-    procedure Load(Storage: TPersistSettings);
-    procedure Save(Storage: TPersistSettings);
+  protected
+    procedure Load(Storage: TPersistStorage);override;
+    procedure Save(Storage: TPersistStorage);override;
   public
     { Public declarations }
-    class function Execute(Storage: TPersistSettings): boolean;
+    class function Execute: boolean;
   end;
 
 
@@ -120,7 +120,7 @@ uses
 {$IFNDEF COMPILER6_UP}
   FileCtrl,
 {$ENDIF }
-  Registry;
+  JclSysInfo, Registry;
 
 {$R *.DFM}
 
@@ -192,28 +192,20 @@ begin
   StrTokenize(S, [';'], Strings);
 end;
 
-procedure GetSystemPaths(Strings:TStrings);
-var lpBuffer:PChar;nSize:Cardinal;
+procedure GetSystemPaths(Strings: TStrings);
+var S: string;
 begin
-  nSize := GetEnvironmentVariable('PATH',nil,0);
-  if nSize > 0 then
-  begin
-    lpBuffer := AllocMem(nSize);
-    try
-      GetEnvironmentVariable('PATH',lpBuffer,nSize);
-      strTokenize(lpBuffer,[';'],Strings);
-    finally
-      FreeMem(lpBuffer);
-    end;
-  end;
+  JclSysInfo.GetEnvironmentVar('PATH', S, true);
+  strTokenize(S, [';'], Strings);
 end;
 { TEdit }
 
 {$UNDEF RPLUS}
 {$IFOPT R+}
-  {$R-}
-  {$DEFINE RPLUS}
+{$R-}
+{$DEFINE RPLUS}
 {$ENDIF}
+
 procedure TEdit.WMPaste(var Msg: TMessage);
 var S: string; V, C: integer;
 begin
@@ -227,8 +219,8 @@ begin
   end;
 end;
 {$IFDEF RPLUS}
-  {$UNDEF RPLUS}
-  {$R+}
+{$UNDEF RPLUS}
+{$R+}
 {$ENDIF}
 
 procedure MakeEditNumeric(EditHandle: integer);
@@ -238,14 +230,24 @@ end;
 
 { TfrmOptions }
 
-class function TfrmOptions.Execute(Storage: TPersistSettings): boolean;
+class function TfrmOptions.Execute: boolean;
+var Storage: TPersistStorage;
 begin
   with self.Create(Application) do
   try
     pcOptions.ActivePageIndex := 0;
-    Load(Storage);
-    Result := ShowModal = mrOK;
-    if Result then Save(Storage);
+    Storage := PersistSettings.GetStorage;
+    try
+      Load(Storage);
+      Result := ShowModal = mrOK;
+      if Result then
+      begin
+        Save(Storage);
+        Storage.UpdateFile;
+      end;
+    finally
+      Storage.Free;
+    end;
   finally
     Free;
   end;
@@ -276,19 +278,31 @@ begin
 end;
 
 procedure TfrmOptions.acDeleteExecute(Sender: TObject);
-var i: integer;
+var i, j: integer;
 begin
+  j := lvPaths.Items.Count;
   for i := lvPaths.Items.Count - 1 downto 0 do
     if lvPaths.Items[i].Selected then
+    begin
       lvPaths.Items[i].Delete;
+      j := i;
+    end;
+  if (j >= 0) and (j < lvPaths.Items.Count) then
+  begin
+    lvPaths.Items[j].MakeVisible(true);
+    lvPaths.Items[j].Selected := true;
+    lvPaths.Items[j].Focused := true;
+  end;
+  if lvPaths.CanFocus then lvPaths.SetFocus;
 end;
 
-procedure TfrmOptions.Load(Storage: TPersistSettings);
+procedure TfrmOptions.Load(Storage: TPersistStorage);
 var S: TStringlist; i: integer;
 begin
-// TODO
-  edShapeHeight.Text := Storage.ReadString('Options', 'ShapeHeight', '50');
-  edShapeWidth.Text := Storage.ReadString('Options', 'ShapeWidth', '100');
+  inherited;
+
+  edShapeHeight.Text := IntToStr(Storage.ReadInteger('Options', 'ShapeHeight', 50));
+  edShapeWidth.Text := IntToStr(Storage.ReadInteger('Options', 'ShapeWidth', 100));
   cbIntfColor.ColorValue := Storage.ReadInteger('Options', 'IntfColor', clBlack);
   cbIntfSelColor.ColorValue := Storage.ReadInteger('Options', 'IntfSelColor', clRed);
   cbImplColor.ColorValue := Storage.ReadInteger('Options', 'ImplColor', clBtnShadow);
@@ -302,13 +316,12 @@ begin
   finally
     S.Free;
   end;
-  Top := Storage.ReadInteger(ClassName, 'Top', (Screen.Height - ClientHeight) div 2);
-  Left := Storage.ReadInteger(ClassName, 'Left', (Screen.Width - ClientWidth) div 2);
 end;
 
-procedure TfrmOptions.Save(Storage: TPersistSettings);
+procedure TfrmOptions.Save(Storage: TPersistStorage);
 var i: integer;
 begin
+  inherited;
   i := StrToIntDef(edShapeHeight.Text, 50);
   if i < 40 then i := 40;
   Storage.WriteInteger('Options', 'ShapeHeight', i);
@@ -324,16 +337,11 @@ begin
   Storage.EraseSection('Options.Paths');
   for i := 0 to lvPaths.Items.Count - 1 do
     Storage.WriteString('Options.Paths', lvPaths.Items[i].Caption, '');
-  if not IsZoomed(Handle) and not IsIconic(Application.Handle) then
-  begin
-    Storage.WriteInteger(ClassName, 'Top', Top);
-    Storage.WriteInteger(ClassName, 'Left', Left);
-  end;
 end;
 
 procedure TfrmOptions.ListViewAddPath(const S: string);
 begin
-  if lvPaths.FindCaption(0, S, false, true, true) = nil then
+  if (S <> '') and (lvPaths.FindCaption(0, S, false, true, true) = nil) then
     lvPaths.Items.Add.Caption := S;
 end;
 
@@ -430,7 +438,7 @@ begin
 end;
 
 procedure TfrmOptions.ListViewAddSystemPaths;
-var S:TStringlist;i:integer;
+var S: TStringlist; i: integer;
 begin
   S := TStringlist.Create;
   try
@@ -443,21 +451,21 @@ begin
 end;
 
 procedure TfrmOptions.acSelectAllExecute(Sender: TObject);
-var i:integer;
+var i: integer;
 begin
   for i := 0 to lvPaths.Items.Count - 1 do
     lvPaths.Items[i].Selected := true;
 end;
 
 procedure TfrmOptions.acInvertSelectExecute(Sender: TObject);
-var i:integer;
+var i: integer;
 begin
   for i := 0 to lvPaths.Items.Count - 1 do
     lvPaths.Items[i].Selected := not lvPaths.Items[i].Selected;
 end;
 
 procedure TfrmOptions.acUnselectAllExecute(Sender: TObject);
-var i:integer;
+var i: integer;
 begin
   for i := 0 to lvPaths.Items.Count - 1 do
     lvPaths.Items[i].Selected := false;

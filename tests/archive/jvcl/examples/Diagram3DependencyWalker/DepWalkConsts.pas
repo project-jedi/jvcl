@@ -28,17 +28,19 @@ resourcestring
   SAddSkipListTitle = 'Add unit to skiplist';
   SAddSkipListCaption =  'Unit name:';
   SConfirmDelete = 'Confirm delete';
+  SConfirmClear  = 'Confirm clear';
+  
   SDelSelItemsPrompt = 'Delete selected items?';
   SDelSelItemFmt = 'Remove "%s" from diagram?';
   SCheckPaths    = 'Check your paths in the options dialog and try again.';
 
   SAboutText = 'Dependency Walker Demo - part of JVCL (http://jvcl.sourceforge.net)';
-  SClearDiagramPrompt = 'Clear diagram?';
+  SClearDiagramPrompt = 'Clear and create new diagram?';
 
   SFindTitle = 'Find';
   SFindNameColon = 'Name:';
   SFindNotFoundFmt = '"%s" not found.';
-  SRestartForNewOptions = 'Restart the program for the changed options to take effect';
+  SRestartForNewOptions = 'The new settings will not take effect until you create a new diagram (Ctrl+N).';
   SFileNotFoundFmt      = 'Unit %s not found.';
   SUnitNotFound = 'Unit not found.';
 

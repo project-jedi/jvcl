@@ -4,22 +4,23 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, DepWalkConsts, PersistSettings;
+  Dialogs, StdCtrls, DepWalkConsts, PersistForm, PersistSettings;
 
 type
-  TfrmPrint = class(TForm, IPersistSettings)
+  TfrmPrint = class(TfrmPersistable)
     Label1: TLabel;
     cbFormat: TComboBox;
     btnOK: TButton;
     btnCancel: TButton;
   private
     { Private declarations }
+  protected
     { IPersistSettings}
-    procedure Load(Storage:TPersistSettings);
-    procedure Save(Storage:TPersistSettings);
+    procedure Load(Storage:TPersistStorage);override;
+    procedure Save(Storage:TPersistStorage);override;
   public
     { Public declarations }
-    class function Execute(Options:TPersistSettings):boolean;
+    class function Execute:boolean;
   end;
 
 
@@ -29,34 +30,38 @@ implementation
 
 { TfrmPrint }
 
-class function TfrmPrint.Execute(Options:TPersistSettings): boolean;
+class function TfrmPrint.Execute: boolean;
+var Storage:TPersistStorage;
 begin
   with self.Create(Application) do
   try
-    Load(Options);
-    Result := ShowModal = mrOK;
-    if Result then
-      Save(Options);
+    Storage := GetStorage;
+    try
+      Load(Storage);
+      Result := ShowModal = mrOK;
+      if Result then
+      begin
+        Save(Storage);
+        Storage.UpdateFile;
+      end;
+    finally
+      Storage.Free;
+    end;
   finally
     Free;
   end;
 end;
 
-procedure TfrmPrint.Load(Storage: TPersistSettings);
+procedure TfrmPrint.Load(Storage: TPersistStorage);
 begin
+  inherited;
   cbFormat.ItemIndex := Storage.ReadInteger('Printing','Print Format',0);
-  Top := Storage.ReadInteger(ClassName, 'Top', (Screen.Height - ClientHeight) div 2);
-  Left := Storage.ReadInteger(ClassName, 'Left', (Screen.Width - ClientWidth) div 2);
 end;
 
-procedure TfrmPrint.Save(Storage: TPersistSettings);
+procedure TfrmPrint.Save(Storage: TPersistStorage);
 begin
+  inherited;
   Storage.WriteInteger('Printing','Print Format',cbFormat.ItemIndex);
-  if not IsZoomed(Handle) and not IsIconic(Application.Handle) then
-  begin
-    Storage.WriteInteger(ClassName, 'Top', Top);
-    Storage.WriteInteger(ClassName, 'Left', Left);
-  end;
 end;
 
 end.
