@@ -28,7 +28,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvHTHintEditor;
+unit JvHTHintForm;
 
 interface
 

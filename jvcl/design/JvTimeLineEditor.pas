@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvTimeLineEdit;
+unit JvTimeLineEditor;
 
 { Property editor(s) for the @link(TJvTimeLine) component }
 

@@ -28,7 +28,7 @@ Known Issues:
 
 { Property editors for TDate, TTime and TDateTime data types }
 
-unit JvDateTimeDlg;
+unit JvDateTimeForm;
 
 interface
 

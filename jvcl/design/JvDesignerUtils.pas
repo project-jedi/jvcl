@@ -28,7 +28,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvaDsgn;
+unit JvDesignerUtils;
 
 interface
 

@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvOLBEditor;
+unit JvOutlookBarForm;
 
 interface
 
