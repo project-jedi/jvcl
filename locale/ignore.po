@@ -675,3 +675,36 @@ msgstr ""
 msgid " (VBR)"
 msgstr ""
 
+msgid "AutoHide"
+msgstr ""
+
+msgid "HeaderText"
+msgstr ""
+
+msgid "FooterText"
+msgstr ""
+
+msgid "Helvetica"
+msgstr ""
+
+msgid "adobe-helvetica"
+msgstr ""
+
+msgid "Jv Docking"
+msgstr ""
+
+msgid "JVCL Dock Server Component"
+msgstr ""
+
+msgid "JVCL Dock Client Component"
+msgstr ""
+
+msgid "JVCL Dock Style Component"
+msgstr ""
+
+msgid "GetMode???"
+msgstr ""
+
+msgid "2.0.1"
+msgstr ""
+
