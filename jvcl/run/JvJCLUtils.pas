@@ -6329,7 +6329,7 @@ begin
   LastError := GetLastError;
   if LastError <> 0 then
   begin
-    St := Format(SWin32Error, [LastError, SysErrorMessage(LastError)]);
+    St := Format({$IFDEF COMPILER6_UP}SOSError{$ELSE}SWin32Error{$ENDIF}, [LastError, SysErrorMessage(LastError)]);
     if Text <> '' then
       St := Text + ':' + St;
     raise {$IFDEF COMPILER6_UP} EOSError.Create(St); {$ELSE} EWin32Error.Create(St); {$ENDIF}

@@ -660,7 +660,6 @@ uses
   JvConsts, JvProgressUtils;
 
 resourcestring
-  SWin32Error = 'Win32 Error.  Code: %d.'#10'%s';
   RsNotForMdi = 'MDI forms are not allowed';
 
 const

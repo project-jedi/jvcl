@@ -269,12 +269,13 @@ end;
 
 //{ Проверка вхождения точки в примоугольник. границы не считаются }
 { Checks if point is inside rect. Rect's borders are not part of rect [translated] }
-
+{ // (andreas) make Delphi 5 compiler happy
 function IsPointInRect(P: TPoint; R: TRect): boolean;
 begin
   Result := PtInRect(R,P);
 //  Result := (P.x > R.Left) and (P.x < R.Right) and (P.y > R.Top) and (P.y < R.Bottom);
 end;
+}
 
 //{ Длина примоугольника }
 { Rect's width [translated] }
