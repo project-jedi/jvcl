@@ -227,6 +227,7 @@ type
     {$ENDIF}
     procedure CreateXPMenu;          //
     procedure CreateToolForm;        // create everything
+    procedure DefaultDockLayout;
     procedure LoadDockInfo;
     procedure LoadToolFormLayout;    // load previous layout
     procedure SaveToolFormLayout;    // save current layout
@@ -239,10 +240,11 @@ var
   MSDN2002: TMSDN2002;
 
 implementation
-
-uses XPMenu, ContentsFormUnit, FavoritesFormUnit, IndexFormUnit,
+uses
+  XPMenu, ContentsFormUnit, FavoritesFormUnit, IndexFormUnit,
   IndexResultFormUnit, SearchFormUnit, SearchResultFormUnit;
-
+const
+  cStorageFilename = 'DockLayout.ini';
 type
   TAccessWinControl = class(TWinControl);
 
@@ -274,26 +276,75 @@ procedure TMSDN2002.LoadDockInfo;
 begin
   CreateXPMenu;
   CreateToolForm;
-  LoadToolFormLayout;
+  if not FileExists(ExtractFilePath(Application.ExeName) + cStorageFilename) then
+    DefaultDockLayout
+  else
+    LoadToolFormLayout;
+end;
+
+procedure TMSDN2002.DefaultDockLayout;
+begin
+
+  TJvDockVSNETPanel(lbDockServer1.RightDockPanel).Width := 180;
+  TJvDockVSNETPanel(lbDockServer1.LeftDockPanel).Width := 180;
+  TJvDockVSNETPanel(lbDockServer1.BottomDockPanel).Height := 100;
+
+  ContentsForm.Width := 180;
+  ContentsForm.Top := 10000;
+  ContentsForm.Visible := true;
+  ContentsForm.ManualDock(lbDockServer1.RightDockPanel,nil, alNone);
+  TJvDockVSNETPanel(lbDockServer1.RightDockPanel).DoAutoHideControl(ContentsForm);
+
+  FavoritesForm.Width := 180;
+  FavoritesForm.Top := 10000;
+  FavoritesForm.Visible := true;
+  FavoritesForm.ManualDock(FavoritesForm,nil,alNone);
+  TJvDockVSNETPanel(lbDockServer1.RightDockPanel).DoAutoHideControl(FavoritesForm);
+
+  IndexForm.Width := 180;
+  IndexForm.Top := 10000;
+  IndexForm.Visible := true;
+  IndexForm.ManualDock(IndexForm,lbDockServer1.LeftDockPanel,alLeft);
+  TJvDockVSNETPanel(lbDockServer1.LeftDockPanel).DoAutoHideControl(IndexForm);
+
+  IndexResultForm.Width := 180;
+  IndexResultForm.Top := 10000;
+  IndexResultForm.Visible := true;
+  IndexResultForm.ManualDock(IndexResultForm,lbDockServer1.LeftDockPanel,alLeft);
+  TJvDockVSNETPanel(lbDockServer1.LeftDockPanel).DoAutoHideControl(IndexResultForm);
+
+  SearchForm.Height := 100;
+  SearchForm.Top := 10000;
+  SearchForm.Visible := true;
+  SearchForm.ManualDock(SearchForm,lbDockServer1.BottomDockPanel,alBottom);
+  TJvDockVSNETPanel(lbDockServer1.BottomDockPanel).DoAutoHideControl(SearchForm);
+
+  SearchResultForm.Height := 100;
+  SearchResultForm.Top := 10000;
+  SearchResultForm.Visible := true;
+  SearchResultForm.ManualDock(SearchResultForm,lbDockServer1.BottomDockPanel,alBottom);
+  TJvDockVSNETPanel(lbDockServer1.BottomDockPanel).DoAutoHideControl(SearchResultForm);
 end;
 
 procedure TMSDN2002.LoadToolFormLayout;
 begin
   {$IFDEF USEJVCL}
-  JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + 'DockLayout.ini';
+  JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + cStorageFilename;
+  JvAppStorage.Reload; // !!!
   LoadDockTreeFromAppStorage(JvAppStorage);
   {$ELSE}
-  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockLayout.ini');
+  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + cStorageFilename);
   {$ENDIF}
 end;
 
 procedure TMSDN2002.SaveToolFormLayout;
 begin
   {$IFDEF USEJVCL}
-  JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + 'DockLayout.ini';
+  JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + cStorageFilename;
   SaveDockTreeToAppStorage(JvAppStorage);
+  JvAppStorage.Flush;  // !!!
   {$ELSE}
-  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockLayout.ini');
+  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + cStorageFilename);
   {$ENDIF}
 end;
 
