@@ -313,9 +313,6 @@ type
   TJvCustomHTLabel = class(TJvExCustomLabel)
   private
     FHyperLinkClick: THyperLinkClick;
-    {$IFDEF VisualCLX}
-    FCanvas: TCanvas;
-    {$ENDIF VisualCLX}
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -327,21 +324,11 @@ type
     procedure Loaded; override;
     {$IFDEF VisualCLX}
     procedure TextChanged; override;  // handles autosize
-    property Canvas;
     {$ENDIF VisualCLX}
     property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
-  public
-    {$IFDEF VisualCLX}
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    {$ENDIF VisualCLX}
   end;
 
   TJvHTLabel = class(TJvCustomHTLabel)
-  {$IFDEF VisualCLX}
-  public
-    property Canvas;
-  {$ENDIF VisualCLX}
   published
     property Align;
     // property Alignment;  // Kaczkowski
@@ -1074,19 +1061,6 @@ end;
 //=== { TJvCustomHTLabel } ===================================================
 
 {$IFDEF VisualCLX}
-
-constructor TJvCustomHTLabel.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
-end;
-
-destructor TJvCustomHTLabel.Destroy;
-begin
-  inherited Destroy;
-  FCanvas.Free; // the destructor may handle invalidate events
-end;
 
 procedure TJvCustomHTLabel.TextChanged;
 begin
