@@ -22,7 +22,6 @@ type
     EditPHONE: TJvDBMaskEdit;
     procedure EditNAMEAcceptNewValue(Sender: TObject;
       oldValue: String; var newValue: String; var Accept, Post: Boolean);
-    procedure EditNAMEClick(Sender: TObject);
     procedure EditNAMEKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure EditNAMEExit(Sender: TObject);
@@ -51,13 +50,6 @@ begin
     exit;
  end;
  Post := true; // A valid name is posted automatically, no need to click Post button.
-end;
-
-procedure TForm1.EditNAMEClick(Sender: TObject);
-var
- X:Integer;
-begin
- X:=1;
 end;
 
 procedure TForm1.EditNAMEKeyDown(Sender: TObject; var Key: Word;
