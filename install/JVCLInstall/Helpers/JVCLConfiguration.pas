@@ -198,6 +198,15 @@ begin
       Items[I].Enabled := Value;
       Exit;
     end;
+  Add('');
+  Add('{%missing%}');
+  Add('{ JVCL DEVELOPER INFO: This option is missing, please update the jvclbase.inc file. }');
+  if Value then
+    Add('{$DEFINE ' + Index + '}')
+  else
+    Add('{.$DEFINE ' + Index + '}');
+  Parse;
+  Modified := True;
 end;
 
 function TJVCLConfig.GetItemCount: Integer;
@@ -250,7 +259,7 @@ var
 begin
   S := Trim(RemoveCommentBrackets(Token.Value));
 
-  if IsDirective(S, '%hidden%') then
+  if IsDirective(S, '%hidden%') or IsDirective(S, '%missing%') then
     FNextHidden := True;
 
   if IsDirective(S, '$IFDEF') or IsDirective(S, '$IF') or       // do not localize
