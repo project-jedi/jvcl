@@ -8,7 +8,7 @@ uses
   StdCtrls, JvListBox, JvCtrls, JvCoolBar, JvSplitter, JvStatusBar,
   JvComCtrls, JvControlBar, ImgList, ActnList, FileWrapper, AppEvnts,
   JvComponent, JvMRUList, JvFormPlacement, JvAppStorage, JvAppRegistryStorage,
-  JvMRUManager;
+  JvMRUManager, JvExComCtrls, JvExExtCtrls, JvExStdCtrls;
 
 type
   TfrmMain = class(TForm)
@@ -62,7 +62,7 @@ type
     shCaptionHider: TShape;
     mnuView: TMenuItem;
     mnuToolBar: TMenuItem;
-    Fileinfo1: TMenuItem;
+    mnuFileInfo: TMenuItem;
     actToolBar: TAction;
     actFileInfo: TAction;
     mnuSaveAs: TMenuItem;
@@ -80,8 +80,12 @@ type
     memPreText: TMemo;
     jvmRecentFiles: TJvMRUList;
     sepAfterMRU: TMenuItem;
-    JvAppRegistryStore: TJvAppRegistryStorage;
+    JvAppRegistryStorage: TJvAppRegistryStorage;
     JvFormStorage: TJvFormStorage;
+    actRaw: TAction;
+    actElements: TAction;
+    mnuRawText: TMenuItem;
+    mnuElements: TMenuItem;
     procedure actExitExecute(Sender: TObject);
     procedure actOpenExecute(Sender: TObject);
     procedure actSaveExecute(Sender: TObject);
@@ -108,6 +112,8 @@ type
     procedure memJVCLInfoChange(Sender: TObject);
     procedure memPreTextChange(Sender: TObject);
     procedure tshRawShow(Sender: TObject);
+    procedure actRawExecute(Sender: TObject);
+    procedure actElementsExecute(Sender: TObject);
   private
     { Private declarations }
     FFileWrapper : TFileWrapper;
@@ -365,10 +371,13 @@ begin
     menuItem.Tag := i;
     parentItem.Insert(mruStartIndex, menuItem);
   end;
+  if jvmRecentFiles.GetItemsCount > 0 then
+    sepAfterMRU.Visible := True;
+    //parentItem.Items[mruEndIndex].Visible := True;
 end;
 
 constructor TfrmMain.Create(AOwner: TComponent);
-begin                    
+begin
   inherited;
 
   jvmRecentFiles.Open;
@@ -410,6 +419,16 @@ begin
   // keep track of recent files
   jvmRecentFiles.AddString(FileName);
   updateMRUMenu(mnuOpen);
+end;
+
+procedure TfrmMain.actRawExecute(Sender: TObject);
+begin
+  jpcEdit.ActivePage := tshRaw;
+end;
+
+procedure TfrmMain.actElementsExecute(Sender: TObject);
+begin
+  jpcEdit.ActivePage := tshElements;
 end;
 
 end.
