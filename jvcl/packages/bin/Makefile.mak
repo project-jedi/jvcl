@@ -90,6 +90,7 @@ GeneratePackages:
         cd $(DEVTOOLS_BACK)
         echo [Generating: Delphi Packages]
         $(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(EDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
+        IF NOT $(MASTEREDITION)! == ! $(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(MASTEREDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
 
 ################################################################################
 pg.exe: Templates GeneratePackages
@@ -119,6 +120,7 @@ Templates:
 -N1"$(HPPDIR)"
 -N2"$(UNITOUTDIR)\obj"
 | > ..\$(PKGDIR)\template.cfg
+        @IF NOT $(MASTEREDITION)! == ! @copy ..\$(PKGDIR)\template.cfg $(PKGDIR_MASTEREDITION)\template.cfg 
 
 ################################################################################
 Compile: Bpg2Make.exe
