@@ -113,6 +113,11 @@ resourcestring
   { various editors }
   SJvEditorString = 'Click to edit...';
 
+  { JvID3_ component editor }
+  SID3FrameEditor = 'Frame edi&tor...';
+  SID3RemoveTag = '&Remove tag...';
+  SID3CommitTag = '&Commit...';
+
 implementation
 
 end.

@@ -157,10 +157,32 @@ resourcestring
 
   { Polaris patch }
   SDateMinLimit           = 'Enter a date before "%s"';
-  SDateMaxLimit           = 'Enter a date after "%s"'; 
+  SDateMaxLimit           = 'Enter a date after "%s"';
   SDateOutOfRange         = '%s - Enter a date between "%s" and "%s"';
   SDateOutOfMin           = '%s - Enter a date after "%s"';
   SDateOutOfMax           = '%s - Enter a date before "%s"';
+
+  { JvID3_ }
+
+  SID3FrameNotFound          = 'Frame not found';
+  SID3UnknownEncoding        = 'Unknown encoding';
+  SID3UnknownVersion         = 'Unknown version';
+  SID3DuplicateFrame         = 'Frame is a duplicate of another frame in the tag.';
+  SID3AlreadyContainsFrame   = 'Tag already contains a ''%s'' frame.';
+  SID3ControllerNotActive    = 'Controller is not active';
+  SID3EncodingNotSupported   = 'Encoding not supported in this version.';
+  SID3VersionNotSupported    = 'Version not supported.';
+  SID3NoController           = 'No controller specified.';
+  SID3InvalidLanguageValue   = '''%s'' is an invalid language value.';
+  SID3InvalidPartInSetValue  = '''%s'' is an invalid ''part in set'' value.';
+  SID3InvalidTimeValue       = '''%s'' is an invalid time value.'#13'Value must be of format ''HHMM''.';
+  SID3InvalidDateValue       = '''%s'' is an invalid date value.'#13'Value must be of format ''DDMM''.';
+  SID3ValueTooBig            = '''%d'' is an invalid value. Value is too big.';
+  SID3StringTooLong          = '''%s'' is an invalid value. String is too long.';
+  SID3InvalidCharinList      = 'Invalid char ''%s'' in string ''%s'' in list.';
+  SID3InvalidFrameClass      = 'Frame class ''%s'' can''t be used to represent frame ID ''%s''';
+  SID3FrameIDNotSupported    = 'Frame ID ''%s'' not supported by this frame';
+  SID3FrameIDStrNotSupported = 'Frame ID string ''%s'' not supported by this frame';
 
 implementation
 
