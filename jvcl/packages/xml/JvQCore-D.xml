@@ -31,7 +31,7 @@
     <File Name="..\..\qdesign\JvQDsgnEditors.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qdesign\JvQIDEZoom.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qdesign\JvQJVCLAboutEditor.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qdesign\JvQPaintBoxEditor.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQPaintBoxEditor.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qdesign\JvQProviderToolbarFrame.pas" Targets="d7clx" Formname="fmeJvProviderToolbar: TFrame" Condition=""/>
     <File Name="..\..\qdesign\JvQDsgnTypes.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qdesign\JvQColorProviderDsgnTreeFrame.pas" Targets="" Formname="fmeJvColorProviderDsgnTree: TFrame" Condition=""/>
