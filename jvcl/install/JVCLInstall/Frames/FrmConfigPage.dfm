@@ -311,21 +311,6 @@ object FrameConfigPage: TFrameConfigPage
       OnClick = CheckBoxDeveloperInstallClick
     end
   end
-  object CheckBoxCompileJclDcp: TCheckBox
-    Left = 272
-    Top = 248
-    Width = 241
-    Height = 17
-    Hint = 
-      'Deactivate this option if you do not want the installer to'#13#10'comp' +
-      'ile/update the JCL .dcp files that are required for'#13#10'C++Builder ' +
-      'installation.'
-    Caption = 'Co&mpile JCL .dcp files for C++Builder'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 4
-    OnClick = CheckBoxCompileJclDcpClick
-  end
   object CheckBoxVerbose: TCheckBox
     Left = 272
     Top = 200
@@ -361,7 +346,7 @@ object FrameConfigPage: TFrameConfigPage
     Height = 22
     Style = csOwnerDrawFixed
     ItemHeight = 16
-    TabOrder = 5
+    TabOrder = 4
     OnChange = ComboBoxTargetIDEChange
     OnDrawItem = ComboBoxTargetIDEDrawItem
   end
@@ -374,7 +359,7 @@ object FrameConfigPage: TFrameConfigPage
     Caption = 'Edit jvcl%s%d.inc'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 6
+    TabOrder = 5
     OnClick = BtnEditJvclIncClick
   end
   object PanelBk: TPanel
@@ -383,7 +368,7 @@ object FrameConfigPage: TFrameConfigPage
     Width = 78
     Height = 22
     BevelOuter = bvNone
-    TabOrder = 7
+    TabOrder = 6
     object LblOptionsFor: TLabel
       Left = 8
       Top = 4
