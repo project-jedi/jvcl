@@ -38,7 +38,7 @@ unit JvXPBar;
 interface
 
 uses
-  Forms, Windows, Messages, Classes, Controls, Graphics,
+  Windows, Messages, Classes, Controls, Graphics, Forms,
   SysUtils, ImgList, ActnList,
   JvXPCore, JvXPCoreUtils;
 
@@ -46,17 +46,12 @@ type
   { Warning: Never change order of enumeration because of
              hardcoded type casts!
              (rom) removed those hardcoded typecasts }
-  TJvXPBarRollDirection = (
-    rdExpand,
-    rdCollapse
-    );
+  TJvXPBarRollDirection = (rdExpand, rdCollapse);
 
-  TJvXPBarRollMode = (
-    rmFixed, // (default)
-    rmShrink
-    );
+  TJvXPBarRollMode = (rmFixed, rmShrink); // rmFixed is default
 
-  TJvXPBarHitTest = (
+  TJvXPBarHitTest =
+    (
     htNone, // mouse is inside non-supported rect
     htHeader, // mouse is inside header
     htRollButton // mouse is inside rollbutton
@@ -85,8 +80,9 @@ type
   TJvXPBarOnItemClickEvent = procedure(Sender: TObject; Item: TJvXPBarItem) of object;
 
   TJvXPBarItemActionLink = class(TActionLink)
-  protected
+  private
     FClient: TJvXPBarItem;
+  protected
     procedure AssignClient(AClient: TObject); override;
     function IsCaptionLinked: Boolean; override;
     function IsEnabledLinked: Boolean; override;
@@ -100,6 +96,7 @@ type
     procedure SetImageIndex(Value: Integer); override;
     procedure SetVisible(Value: Boolean); override;
     procedure SetOnExecute(Value: TNotifyEvent); override;
+    property Client: TJvXPBarItem read FClient write FClient;
   end;
 
   TJvXPBarItemActionLinkClass = class of TJvXPBarItemActionLink;
@@ -227,7 +224,6 @@ type
     constructor Create;
     procedure Change;
   published
-
     property BodyColor: TColor read FBodyColor write SetBodyColor default $00F7DFD6;
     property GradientFrom: TColor read FGradientFrom write SetGradientFrom default clWhite;
     property GradientTo: TColor read FGradientTo write SetGradientTo default $00F7D7C6;
@@ -298,8 +294,8 @@ type
     procedure DoColorsChange(Sender: TObject);
     procedure DoDrawItem(const Index: Integer; State: TJvXPDrawState); virtual;
     procedure Paint; override;
-    procedure WMAfterXPBarCollapse(var Msg: TMessage);
-      message WM_XPBARAFTERCOLLAPSE;
+    procedure EndUpdate; override;
+    procedure WMAfterXPBarCollapse(var Msg: TMessage); message WM_XPBARAFTERCOLLAPSE;
     property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
     property Colors: TJvXPBarColors read FColors write SetColors;
     property Font: TFont read FFont write SetFont stored IsFontStored;
@@ -330,7 +326,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetHitTestAt(X, Y: Integer): TJvXPBarHitTest;
-    procedure EndUpdate; override;
     procedure Click; override;
     property Height default 46;
     property VisibleItems: TJvXPBarVisibleItems read FVisibleItems;
@@ -378,6 +373,9 @@ const
   FC_HEADER_HEIGHT = 34;
   FC_ITEM_MARGIN = 8;
 
+resourcestring
+  RsUntitled = 'untitled';
+
 function SortByIndex(Item1, Item2: Pointer): Integer;
 var
   Idx1, Idx2: Integer;
@@ -386,7 +384,8 @@ begin
   Idx2 := TCollectionItem(Item2).Index;
   if Idx1 < Idx2 then
     Result := -1
-  else if Idx1 = Idx2 then
+  else
+  if Idx1 = Idx2 then
     Result := 0
   else
     Result := 1;
@@ -396,79 +395,79 @@ end;
 
 procedure TJvXPBarItemActionLink.AssignClient(AClient: TObject);
 begin
-  FClient := AClient as TJvXPBarItem;
+  Client := AClient as TJvXPBarItem;
 end;
 
 function TJvXPBarItemActionLink.IsCaptionLinked: Boolean;
 begin
   Result := inherited IsCaptionLinked and
-    (FClient.Caption = (Action as TCustomAction).Caption);
+    (Client.Caption = (Action as TCustomAction).Caption);
 end;
 
 function TJvXPBarItemActionLink.IsEnabledLinked: Boolean;
 begin
   Result := inherited IsEnabledLinked and
-    (FClient.Enabled = (Action as TCustomAction).Enabled);
+    (Client.Enabled = (Action as TCustomAction).Enabled);
 end;
 
 function TJvXPBarItemActionLink.IsHintLinked: Boolean;
 begin
   Result := inherited IsHintLinked and
-    (FClient.Hint = (Action as TCustomAction).Hint);
+    (Client.Hint = (Action as TCustomAction).Hint);
 end;
 
 function TJvXPBarItemActionLink.IsImageIndexLinked: Boolean;
 begin
   Result := inherited IsImageIndexLinked and
-    (FClient.ImageIndex = (Action as TCustomAction).ImageIndex);
+    (Client.ImageIndex = (Action as TCustomAction).ImageIndex);
 end;
 
 function TJvXPBarItemActionLink.IsVisibleLinked: Boolean;
 begin
   Result := inherited IsVisibleLinked and
-    (FClient.Visible = (Action as TCustomAction).Visible);
+    (Client.Visible = (Action as TCustomAction).Visible);
 end;
 
 function TJvXPBarItemActionLink.IsOnExecuteLinked: Boolean;
 begin
   Result := inherited IsOnExecuteLinked and
-    JvXPMethodsEqual(TMethod(FClient.OnClick), TMethod(Action.OnExecute));
+    JvXPMethodsEqual(TMethod(Client.OnClick), TMethod(Action.OnExecute));
 end;
 
 procedure TJvXPBarItemActionLink.SetCaption(const Value: string);
 begin
   if IsCaptionLinked then
-    FClient.Caption := Value;
+    Client.Caption := Value;
 end;
 
 procedure TJvXPBarItemActionLink.SetEnabled(Value: Boolean);
 begin
   if IsEnabledLinked then
-    FClient.Enabled := Value;
+    Client.Enabled := Value;
 end;
 
 procedure TJvXPBarItemActionLink.SetHint(const Value: string);
 begin
   if IsHintLinked then
-    FClient.Hint := Value;
+    Client.Hint := Value;
 end;
 
 procedure TJvXPBarItemActionLink.SetImageIndex(Value: Integer);
 begin
   if IsImageIndexLinked then
-    FClient.ImageIndex := Value;
+    Client.ImageIndex := Value;
 end;
 
 procedure TJvXPBarItemActionLink.SetVisible(Value: Boolean);
 begin
   if IsVisibleLinked then
-    FClient.Visible := Value;
+    Client.Visible := Value;
 end;
 
 procedure TJvXPBarItemActionLink.SetOnExecute(Value: TNotifyEvent);
 begin
   if IsOnExecuteLinked then
-    FClient.OnClick := Value;
+    Client.OnClick := Value;
 end;
 
 //===TJvXPBarItem ============================================================
@@ -516,7 +515,7 @@ var
 begin
   DisplayName := FCaption;
   if DisplayName = '' then
-    DisplayName := 'untitled';
+    DisplayName := RsUntitled;
   ItemName := FName;
   if ItemName <> '' then
     DisplayName := DisplayName + ' [' + ItemName + ']';
@@ -530,9 +529,11 @@ begin
   Result := nil;
   if Assigned(FImageList) then
     Result := FImageList
-  else if Assigned(Action) and Assigned(TAction(Action).ActionList.Images) then
+  else
+  if Assigned(Action) and Assigned(TAction(Action).ActionList.Images) then
     Result := TAction(Action).ActionList.Images
-  else if Assigned(FWinXPBar.FImageList) then
+  else
+  if Assigned(FWinXPBar.FImageList) then
     Result := FWinXPBar.FImageList;
 end;
 
@@ -544,13 +545,13 @@ begin
     begin
       if not CheckDefaults or (Self.Caption = '') then
         Self.Caption := Caption;
-      if not CheckDefaults or (Self.Enabled = True) then
+      if not CheckDefaults or Self.Enabled then
         Self.Enabled := Enabled;
       if not CheckDefaults or (Self.Hint = '') then
         Self.Hint := Hint;
       if not CheckDefaults or (Self.ImageIndex = -1) then
         Self.ImageIndex := ImageIndex;
-      if not CheckDefaults or (Self.Visible = True) then
+      if not CheckDefaults or Self.Visible then
         Self.Visible := Visible;
       if not CheckDefaults or not Assigned(Self.OnClick) then
         Self.OnClick := OnExecute;
@@ -578,9 +579,9 @@ begin
     Tag := TJvXPBarItem(Source).Tag;
     Visible := TJvXPBarItem(Source).Visible;
     OnClick := TJvXPBarItem(Source).OnClick;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 function TJvXPBarItem.IsCaptionStored: Boolean;
@@ -634,7 +635,8 @@ begin
     FActionLink.Free;
     FActionLink := nil;
     FWinXPBar.InternalRedraw; // redraw image
-  end else
+  end
+  else
   begin
     if FActionLink = nil then
       FActionLink := GetActionLinkClass.Create(Self);
@@ -1185,9 +1187,10 @@ begin
       DoDrawItem(FHoverIndex, [dsHighlight]);
       if FShowLinkCursor then
         Cursor := crHandPoint;
-    end else
-      if FShowLinkCursor then
-        Cursor := crDefault;
+    end
+    else
+    if FShowLinkCursor then
+      Cursor := crDefault;
   end;
   inherited;
 end;
@@ -1474,7 +1477,7 @@ begin
           Bitmap.Handle := LoadBitmap(hInstance, PChar('EXPAND' + IntToStr(Index)))
         else
           Bitmap.Handle := LoadBitmap(hInstance, PChar('COLLAPSE' + IntToStr(Index)));
-        Bitmap.Transparent := true;
+        Bitmap.Transparent := True;
         Draw(Rect.Right - 24, Rect.Top + 5, Bitmap);
       finally
         Bitmap.Free;

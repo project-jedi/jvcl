@@ -35,7 +35,8 @@ uses
   {$IFDEF COMPILER6_UP}
   TypInfo,
   {$ENDIF COMPILER6_UP}
-  Windows, Classes, Controls, Graphics, StdCtrls, JvXPCore, JvXPCoreUtils;
+  Windows, Classes, Controls, Graphics, StdCtrls,
+  JvXPCore, JvXPCoreUtils;
 
 type
   TJvXPPaintEvent = procedure(Sender: TObject; Rect: TRect; ACanvas: TCanvas;
@@ -88,6 +89,7 @@ type
     {$ENDIF COMPILER6_UP}
     procedure HookMouseDown; override;
     procedure HookPosChanged; override;
+    procedure Paint; override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property BoundColor: TColor read FBoundColor write SetBoundColor default clGray;
@@ -116,7 +118,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Paint; override;
   end;
 
   TJvXPContainer = class(TJvXPCustomContainer)
@@ -151,15 +152,7 @@ type
 
 implementation
 
-{ TJvXPCustomContainer }
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.Create
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
+//=== TJvXPCustomContainer ===================================================
 
 constructor TJvXPCustomContainer.Create(AOwner: TComponent);
 begin
@@ -184,27 +177,11 @@ begin
   FWordWrap := False;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.Destroy
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvXPCustomContainer.Destroy;
 begin
   FGlyph.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.CreateParams
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: var Params: TCreateParams
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomContainer.CreateParams(var Params: TCreateParams);
 begin
@@ -213,71 +190,39 @@ begin
     WindowClass.Style := WindowClass.Style and not (CS_HREDRAW or CS_VREDRAW);
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.HookEnabledChanged
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 {$IFDEF COMPILER6_UP}
 procedure TJvXPCustomContainer.HookEnabledChanged;
+const
+ cEnabled = 'Enabled';
 var
-  i: Integer;
+  I: Integer;
 begin
-  inherited;
+  inherited HookEnabledChanged;
   if FEnabledMode = emAffectChilds then
-  for i := 0 to ControlCount - 1 do
-    if IsPublishedProp(Controls[i], 'Enabled') then
-      SetPropValue(Controls[i], 'Enabled', Enabled);
+    for I := 0 to ControlCount - 1 do
+      if IsPublishedProp(Controls[I], cEnabled) then
+        SetPropValue(Controls[I], cEnabled, Enabled);
   if Assigned(FOnEnabledChanged) then
     FOnEnabledChanged(Self);
 end;
 {$ENDIF COMPILER6_UP}
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.HookMouseDown
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomContainer.HookMouseDown;
 begin
-  case FFocusable of
-    True:
-      inherited;
-    False:
-      begin
-        DrawState := DrawState + [dsClicked];
-        InternalRedraw;
-      end;
+  if FFocusable then
+    inherited HookMouseDown
+  else
+  begin
+    DrawState := DrawState + [dsClicked];
+    InternalRedraw;
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.HookPosChanged
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomContainer.HookPosChanged;
 begin
-  inherited;
+  inherited HookPosChanged;
   InternalRedraw;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.AdjustClientRect
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: var Rect: TRect
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomContainer.AdjustClientRect(var Rect: TRect);
 begin
@@ -286,14 +231,6 @@ begin
   if not FGlyph.Empty then
     Inc(Rect.Left, FGlyph.Width);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.SetAlignment
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: Value: TAlignment
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomContainer.SetAlignment(Value: TAlignment);
 begin
@@ -304,14 +241,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.SetBoundColor
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: Value: TColor
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomContainer.SetBoundColor(Value: TColor);
 begin
   if Value <> FBoundColor then
@@ -320,14 +249,6 @@ begin
     InternalRedraw;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.SetBoundLines
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: Value: TJvXPBoundLines
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomContainer.SetBoundLines(Value: TJvXPBoundLines);
 begin
@@ -339,14 +260,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.SetBorderWidth
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: Value: TBorderWidth
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomContainer.SetBorderWidth(Value: TBorderWidth);
 begin
   if Value <> FBorderWidth then
@@ -356,14 +269,6 @@ begin
     InternalRedraw;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.SetEnabledMode
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: Value: TJvXPEnabledMode
-  Result:    None
------------------------------------------------------------------------------}
 
 {$IFDEF COMPILER6_UP}
 procedure TJvXPCustomContainer.SetEnabledMode(Value: TJvXPEnabledMode);
@@ -376,14 +281,6 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.SetGlyph
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: Value: TBitmap
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomContainer.SetGlyph(Value: TBitmap);
 begin
   if Value <> FGlyph then
@@ -394,14 +291,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.SetGlyphLayout
-  Author:    mh
-  Date:      22-Aug-2002
-  Arguments: Value: TJvXPGlyphLayout
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomContainer.SetGlyphLayout(Value: TJvXPGlyphLayout);
 begin
   if FGlyphLayout <> Value then
@@ -411,14 +300,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.SetLayout
-  Author:    mh
-  Date:      22-Aug-2002
-  Arguments: Value: TTextLayout
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomContainer.SetLayout(Value: TTextLayout);
 begin
   if FLayout <> Value then
@@ -427,14 +308,6 @@ begin
     InternalRedraw;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.SetShowBoundLines
-  Author:    M. Hoffmann
-  Date:      03-Feb-2003
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomContainer.SetShowBoundLines(Value: Boolean);
 begin
@@ -446,14 +319,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.SetShowCaption
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomContainer.SetShowCaption(Value: Boolean);
 begin
   if Value <> FShowCaption then
@@ -462,14 +327,6 @@ begin
     InternalRedraw;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.SetSpacing
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: Value: Byte
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomContainer.SetSpacing(Value: Byte);
 begin
@@ -480,14 +337,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.SetWordWrap
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomContainer.SetWordWrap(Value: Boolean);
 begin
   if Value <> FWordWrap then
@@ -497,19 +346,21 @@ begin
   end;
 end;
 
-procedure dxDrawText(AParent: TJvXPCustomControl; ACaption: string; AFont: TFont;
+procedure DxDrawText(AParent: TJvXPCustomControl; ACaption: string; AFont: TFont;
   AAlignment: TAlignment; ALayout: TTextLayout; AWordWrap: Boolean; var ARect: TRect);
+const
+  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
+var
+  DrawStyle: LongInt;
+  CalcRect: TRect;
+
   procedure DoDrawText(Handle: THandle; ACaption: string; var ARect: TRect;
     Flags: Integer);
   begin
     DrawText(Handle, PChar(ACaption), -1, ARect, Flags);
   end;
-const
-  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
-var
-  DrawStyle: LongInt;
-  CalcRect: TRect;
+
 begin
   with AParent, Canvas do
   begin
@@ -529,14 +380,6 @@ begin
     DoDrawText(Handle, ACaption, ARect, DrawStyle);
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomContainer.Paint
-  Author:    mh
-  Date:      20-Aug-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomContainer.Paint;
 var
@@ -579,7 +422,7 @@ begin
         MoveTo(Rect.Right, Rect.Top);
         LineTo(Rect.Right, Rect.Bottom);
       end;
-      dxDrawText(Self, Caption, Font, FAlignment, FLayout, FWordWrap, Rect);
+      DxDrawText(Self, Caption, Font, FAlignment, FLayout, FWordWrap, Rect);
       //JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, False, FAlignment,
       //  FWordWrap, Rect);
     end;

@@ -35,26 +35,19 @@ uses
   JvXPCore, JvXPCoreUtils, TypInfo;
 
 type
-{ TJvXPCustomButtonActionLink }
-
   TJvXPCustomButtonActionLink = class(TWinControlActionLink)
   protected
-    { Protected declarations }
     function IsImageIndexLinked: Boolean; override;
     procedure AssignClient(AClient: TObject); override;
     procedure SetImageIndex(Value: Integer); override;
   public
-    { Public declarations }
     destructor Destroy; override;
   end;
-
-{ TJvXPCustomButton }
 
   TJvXPLayout = (blGlyphLeft, blGlyphRight, blGlyphTop, blGlyphBottom);
 
   TJvXPCustomButton = class(TJvXPCustomStyleControl)
   private
-    { Private declarations }
     FAutoGray: Boolean;
     FBgGradient: TBitmap;
     FCancel: Boolean;
@@ -71,10 +64,9 @@ type
     FSmoothEdges: Boolean;
     FSpacing: Byte;
     FWordWrap: Boolean;
-    procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
+    procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
     procedure ImageListChange(Sender: TObject);
   protected
-    { Protected declarations }
     function GetActionLinkClass: TControlActionLinkClass; override;
     function IsSpecialDrawState(IgnoreDefault: Boolean = False): Boolean;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
@@ -90,14 +82,11 @@ type
     procedure SetSpacing(Value: Byte); virtual;
     procedure SetWordWrap(Value: Boolean); virtual;
     procedure Paint; override;
+    procedure HookResized; override;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure HookResized; override;
   published
-    { Published declarations }
-
     // common properties.
     property Action;
     property Caption;
@@ -121,31 +110,21 @@ type
     property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
   end;
 
-{ TJvXPButton }
-
   TJvXPButton = class(TJvXPCustomButton);
 
-{ TJvXPToolType }
-
-  TJvXPToolType = (ttArrowLeft, ttArrowRight, ttClose, ttMaximize, ttMinimize,
-    ttPopup, ttRestore);
-
-{ TJvXPCustomToolButton }
+  TJvXPToolType =
+    (ttArrowLeft, ttArrowRight, ttClose, ttMaximize, ttMinimize, ttPopup, ttRestore);
 
   TJvXPCustomToolButton = class(TJvXPCustomStyleControl)
   private
-    { Private declarations }
     FToolType: TJvXPToolType;
   protected
-    { Protected declarations }
     procedure SetToolType(Value: TJvXPToolType); virtual;
     procedure Paint; override;
-  public
-    { Public declarations }
-    constructor Create(AOwner: TComponent); override;
     procedure HookResized; override;
+  public
+    constructor Create(AOwner: TComponent); override;
   published
-    { Published declarations }
     property Enabled;
     property Color default clBlack;
     property Height default 15;
@@ -153,21 +132,17 @@ type
     property Width default 15;
   end;
 
-{ TJvXPToolButton }
-
   TJvXPToolButton = class(TJvXPCustomToolButton);
 
 implementation
 
-{ TJvXPCustomButtonActionLink }
+//=== TJvXPCustomButtonActionLink ============================================
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButtonActionLink.AssignClient
-  Author:    mh
-  Date:      09-Apr-2002
-  Arguments: AClient: TObject
-  Result:    None
------------------------------------------------------------------------------}
+destructor TJvXPCustomButtonActionLink.Destroy;
+begin
+  TJvXPCustomButton(FClient).Invalidate;
+  inherited Destroy;
+end;
 
 procedure TJvXPCustomButtonActionLink.AssignClient(AClient: TObject);
 begin
@@ -175,40 +150,10 @@ begin
   FClient := AClient as TJvXPCustomButton;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButtonActionLink.Destroy
-  Author:    mh
-  Date:      12-Apr-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
-destructor TJvXPCustomButtonActionLink.Destroy;
-begin
-  TJvXPCustomButton(FClient).Invalidate;
-  inherited;
-end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButtonActionLink.IsImageIndexLinked
-  Author:    mh
-  Date:      09-Apr-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
-
 function TJvXPCustomButtonActionLink.IsImageIndexLinked: Boolean;
 begin
   Result := True;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButtonActionLink.SetImageIndex
-  Author:    mh
-  Date:      09-Apr-2002
-  Arguments: Value: Integer
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButtonActionLink.SetImageIndex(Value: Integer);
 begin
@@ -217,19 +162,11 @@ begin
   (FClient as TJvXPCustomButton).Invalidate;
 end;
 
-{ TJvXPCustomButton }
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.Create
-  Author:    mh
-  Date:      21-Feb-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
+//=== TJvXPCustomButton ======================================================
 
 constructor TJvXPCustomButton.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
 
   // set default properties.
   ControlStyle := ControlStyle - [csDoubleClicks];
@@ -259,14 +196,6 @@ begin
   FHlGradient := TBitmap.Create; // Highlight gradient
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.Destroy
-  Author:    mh
-  Date:      21-Feb-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvXPCustomButton.Destroy;
 begin
   FBgGradient.Free;
@@ -277,37 +206,21 @@ begin
   FImageChangeLink.OnChange := nil;
   FImageChangeLink.Free;
   FImageChangeLink := nil;
-  inherited;
+  inherited Destroy;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.GetActionLinkClass
-  Author:    mh
-  Date:      09-Apr-2002
-  Arguments: None
-  Result:    TControlActionLinkClass
------------------------------------------------------------------------------}
 
 function TJvXPCustomButton.GetActionLinkClass: TControlActionLinkClass;
 begin
   Result := TJvXPCustomButtonActionLink;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.CMDialogKey
-  Author:    mh
-  Date:      22-Feb-2002
-  Arguments: var Message: TCMDialogKey
-  Result:    None
------------------------------------------------------------------------------}
-
-procedure TJvXPCustomButton.CMDialogKey(var Message: TCMDialogKey);
+procedure TJvXPCustomButton.CMDialogKey(var Msg: TCMDialogKey);
 begin
   inherited;
-  with Message do
-    if (((CharCode = VK_RETURN) and (Focused or (FDefault and not (IsSibling))))
-      or ((CharCode = VK_ESCAPE) and FCancel) and (KeyDataToShiftState(KeyData) = []))
-      and CanFocus then
+  with Msg do
+    if (((CharCode = VK_RETURN) and (Focused or (FDefault and not (IsSibling)))) or
+      ((CharCode = VK_ESCAPE) and FCancel) and (KeyDataToShiftState(KeyData) = [])) and
+      CanFocus then
     begin
       Click;
       Result := 1;
@@ -316,31 +229,14 @@ begin
       inherited;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.SetAutoGray
-  Author:    mh
-  Date:      12-Apr-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomButton.SetAutoGray(Value: Boolean);
 begin
   if Value <> FAutoGray then
   begin
     FAutoGray := Value;
-    if not IsLocked then
-      Invalidate;
+    LockedInvalidate;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.SetDefault
-  Author:    mh
-  Date:      22-Feb-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButton.SetDefault(Value: Boolean);
 begin
@@ -348,160 +244,80 @@ begin
   begin
     FDefault := Value;
     with GetParentForm(Self) do
-      Perform(CM_FOCUSCHANGED, 0, LongInt(ActiveControl));
+      Perform(CM_FOCUSCHANGED, 0, Longint(ActiveControl));
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.SetGlyph
-  Author:    mh
-  Date:      22-Feb-2002
-  Arguments: Value: TPicture
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButton.SetGlyph(Value: TBitmap);
 begin
   FGlyph.Assign(Value);
-  if not IsLocked then
-    Invalidate;
+  LockedInvalidate;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.SetLayout
-  Author:    mh
-  Date:      12-Apr-2002
-  Arguments: Value: TJvXPLayout
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButton.SetLayout(Value: TJvXPLayout);
 begin
   if Value <> FLayout then
   begin
     FLayout := Value;
-    if not IsLocked then
-      Invalidate;
+    LockedInvalidate;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.SetShowAccelChar
-  Author:    mh
-  Date:      22-Feb-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButton.SetShowAccelChar(Value: Boolean);
 begin
   if Value <> FShowAccelChar then
   begin
     FShowAccelChar := Value;
-    if not IsLocked then
-      Invalidate;
+    LockedInvalidate;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.SetShowFocusRect
-  Author:    mh
-  Date:      22-Feb-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButton.SetShowFocusRect(Value: Boolean);
 begin
   if Value <> FShowFocusRect then
   begin
     FShowFocusRect := Value;
-    if not IsLocked then
-      Invalidate;
+    LockedInvalidate;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.SetSmoothEdges
-  Author:    mh
-  Date:      05-Jul-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButton.SetSmoothEdges(Value: Boolean);
 begin
   if Value <> FSmoothEdges then
   begin
     FSmoothEdges := Value;
-    if not IsLocked then
-      Invalidate;
+    LockedInvalidate;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.SetSpacing
-  Author:    mh
-  Date:      11-Apr-2002
-  Arguments: Value: Integer
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButton.SetSpacing(Value: Byte);
 begin
   if Value <> FSpacing then
   begin
     FSpacing := Value;
-    if not IsLocked then
-      Invalidate;
+    LockedInvalidate;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.SetWordWrap
-  Author:    mh
-  Date:      29-Apr-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButton.SetWordWrap(Value: Boolean);
 begin
   if Value <> FWordWrap then
   begin
     FWordWrap := Value;
-    if not IsLocked then
-      Invalidate;
+    LockedInvalidate;
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.ImageListChange
-  Author:    mh
-  Date:      09-Apr-2002
-  Arguments: Sender: TObject
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomButton.ImageListChange(Sender: TObject);
 begin
-  if Assigned(Action) and (Sender is TCustomImageList)
-    and Assigned(TAction(Action).ActionList.Images)
-    and ((TAction(Action).ImageIndex < (TAction(Action).ActionList.Images.Count))) then
+  if Assigned(Action) and (Sender is TCustomImageList) and
+    Assigned(TAction(Action).ActionList.Images) and
+    ((TAction(Action).ImageIndex < (TAction(Action).ActionList.Images.Count))) then
     FImageIndex := TAction(Action).ImageIndex
   else
     FImageIndex := -1;
-  if not IsLocked then
-    Invalidate;
+  LockedInvalidate;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.KeyDown
-  Author:    mh
-  Date:      22-Feb-2002
-  Arguments: var Key: Word; Shift: TShiftState
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButton.KeyDown(var Key: Word; Shift: TShiftState);
 begin
@@ -510,20 +326,12 @@ begin
     DrawState := DrawState + [dsHighlight];
     HookMouseDown;
   end;
-  inherited;
+  inherited KeyDown(Key, Shift);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.KeyUp
-  Author:    mh
-  Date:      22-Feb-2002
-  Arguments: var Key: Word; Shift: TShiftState
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButton.KeyUp(var Key: Word; Shift: TShiftState);
 var
-  cPos: TPoint;
+  Pos: TPoint;
 begin
   //
   // it's not possible to call the 'HookMouseUp' or 'HookMouseLeave' methods,
@@ -531,25 +339,16 @@ begin
   //
   if dsClicked in DrawState then
   begin
-    GetCursorPos(cPos);
-    cPos := ScreenToClient(cPos);
-    if not PtInRect(Bounds(0, 0, Width, Height), cPos) then
+    GetCursorPos(Pos);
+    Pos := ScreenToClient(Pos);
+    if not PtInRect(Bounds(0, 0, Width, Height), Pos) then
       DrawState := DrawState - [dsHighlight];
     DrawState := DrawState - [dsClicked];
-    if not IsLocked then
-      Invalidate;
+    LockedInvalidate;
     Click;
   end;
-  inherited;
+  inherited KeyUp(Key, Shift);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.IsSpecialDrawState
-  Author:    mh
-  Date:      22-Feb-2002
-  Arguments: None
-  Result:    Boolean
------------------------------------------------------------------------------}
 
 function TJvXPCustomButton.IsSpecialDrawState(IgnoreDefault: Boolean = False): Boolean;
 begin
@@ -560,14 +359,6 @@ begin
   if not IgnoreDefault then
     Result := Result or (FDefault and CanFocus) and not IsSibling;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.ActionChange
-  Author:    mh
-  Date:      09-Apr-2002
-  Arguments: Sender: TObject; CheckDefaults: Boolean
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
@@ -581,18 +372,9 @@ begin
       if (ActionList <> nil) and (ActionList.Images <> nil) and
         (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
         FImageIndex := ImageIndex;
-      if not IsLocked then
-        Invalidate;
+      LockedInvalidate;
     end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.HookResized
-  Author:    mh
-  Date:      22-Feb-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButton.HookResized;
 const
@@ -601,7 +383,7 @@ const
 var
   Offset: Integer;
 begin
-  inherited;
+  inherited HookResized;
 
   // calculate offset.
   Offset := 4 * (Integer(IsSpecialDrawState(True)));
@@ -627,18 +409,8 @@ begin
   JvXPCreateGradientRect(Width - 2, Height - 2, dxColor_Btn_Enb_HlFrom_WXP,
     dxColor_Btn_Enb_HlTo_WXP, ColSteps, gsTop, Dithering, FHlGradient);
 
-  // redraw.
-  if not IsLocked then
-    Invalidate;
+  LockedInvalidate;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomButton.Paint
-  Author:    mh
-  Date:      21-Feb-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomButton.Paint;
 var
@@ -703,7 +475,7 @@ begin
     end;
 
     // set drawing flags.
-    Flags := {DT_VCENTER or }DT_END_ELLIPSIS;
+    Flags := {DT_VCENTER or } DT_END_ELLIPSIS;
     if FWordWrap then
       Flags := Flags or DT_WORDBREAK;
 
@@ -784,15 +556,7 @@ begin
   end;
 end;
 
-{ TJvXPCustomToolButton }
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomToolButton.Create
-  Author:    mh
-  Date:      16-Aug-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
+// TJvXPCustomToolButton =====================================================
 
 constructor TJvXPCustomToolButton.Create(AOwner: TComponent);
 begin
@@ -803,45 +567,20 @@ begin
   HookResized;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomToolButton.HookResized
-  Author:    mh
-  Date:      16-Aug-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomToolButton.HookResized;
 begin
   Height := 15;
   Width := 15;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomToolButton.SetToolType
-  Author:    mh
-  Date:      16-Aug-2002
-  Arguments: Value: TJvXPToolType
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure TJvXPCustomToolButton.SetToolType(Value: TJvXPToolType);
 begin
   if Value <> FToolType then
   begin
     FToolType := Value;
-    if not IsLocked then
-      Invalidate;
+    LockedInvalidate;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomToolButton.Paint
-  Author:    mh
-  Date:      16-Aug-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomToolButton.Paint;
 var
