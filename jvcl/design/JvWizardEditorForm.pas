@@ -55,7 +55,13 @@ uses
   QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, DesignWindows,
+  DesignIntf, DesignEditors,
+  {$IFDEF VCL}
+  DesignWindows,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  ClxDesignWindows,
+  {$ENDIF VisualCLX}
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
@@ -89,7 +95,12 @@ type
     procedure Edit; override;
   end;
 
+  {$IFDEF VCL}
   TJvWizardPageListEditor = class(TDesignWindow)
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  TJvWizardPageListEditor = class(TClxDesignWindow)
+  {$ENDIF VisualCLX}
     tbrWizardPages: TToolBar;
     lbxWizardPages: TListBox;
     btnAddWelcomePage: TToolButton;
@@ -140,6 +151,9 @@ type
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override;
+    {$IFDEF VisualCLX}
+    function UniqueName(Component: TComponent): string; override;
+    {$ENDIF VisualCLX}
     {$ELSE}
     procedure ComponentDeleted(Component: IPersistent); override;
     function UniqueName(Component: TComponent): string; override;
@@ -438,7 +452,19 @@ begin
     UpdatePageList(lbxWizardPages.ItemIndex);
 end;
 
+{$IFDEF VisualCLX}
+function TJvWizardPageListEditor.UniqueName(Component: TComponent): string;
+begin
+  Result := Designer.UniqueName(Component.ClassName);
+end;
+{$ENDIF VisualCLX}
+
 {$ELSE}
+
+function TJvWizardPageListEditor.UniqueName(Component: TComponent): string;
+begin
+  Result := Designer.UniqueName(Component.ClassName);
+end;
 
 procedure TJvWizardPageListEditor.ComponentDeleted(Component: IPersistent);
 begin
@@ -459,11 +485,6 @@ procedure TJvWizardPageListEditor.FormModified;
 begin
   if not (csDestroying in ComponentState) then
     UpdatePageList(lbxWizardPages.ItemIndex);
-end;
-
-function TJvWizardPageListEditor.UniqueName(Component: TComponent): string;
-begin
-  Result := Designer.UniqueName(Component.ClassName);
 end;
 
 {$ENDIF COMPILER6_UP}
