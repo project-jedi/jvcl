@@ -122,7 +122,7 @@ type
   
   TJvCustomSpinEdit = class(TJvExCustomComboMaskEdit) 
   private
-    FShowButton : Boolean;
+    FShowButton: Boolean;
     FCheckMaxValue: Boolean;
     FCheckMinValue: Boolean;
     FCheckOptions: TJvCheckOptions;
@@ -219,8 +219,7 @@ type
 
     property AsInteger: Longint read GetAsInteger write SetAsInteger default 0;
     property Text;
-    property Alignment: TAlignment read FAlignment write SetAlignment
-      default taLeftJustify;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property ArrowKeys: Boolean read FArrowKeys write SetArrowKeys default True;
     property ButtonKind: TSpinButtonKind read FButtonKind write SetButtonKind default bkDiagonal;
     property Decimal: Byte read FDecimal write SetDecimal default 2;
@@ -235,10 +234,9 @@ type
       default  vtInteger ;
     property Value: Extended read GetValue write SetValue stored IsValueStored;
     property Thousands: Boolean read FThousands write SetThousands default False;
+    property ShowButton: Boolean read FShowButton write SetShowButton default True;
     property OnBottomClick: TNotifyEvent read FOnBottomClick write FOnBottomClick;
     property OnTopClick: TNotifyEvent read FOnTopClick write FOnTopClick;
-
-    property ShowButton : Boolean read FShowButton write SetShowButton default True;
   end;
 
   TJvSpinEdit = class(TJvCustomSpinEdit)
@@ -267,6 +265,7 @@ type
     property Increment;
     property MaxValue;
     property MinValue;
+    property ShowButton;
     property ValueType;
     property Value;
     property OnBottomClick;
@@ -311,13 +310,14 @@ type
     property OnMouseWheelUp;
     property HideSelection; 
     property ClipboardCommands;
-
-    property ShowButton;
   end;
 
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QConsts,
   JvQThemes, 
   JvQJCLUtils, JvQJVCLUtils, JvQConsts, JvQResources, JvQToolEdit;
@@ -873,7 +873,6 @@ end;
 
 function TJvCustomSpinEdit.GetButtonWidth: Integer;
 begin
-
   if ShowButton then
   begin
     if FUpDown <> nil then
@@ -885,9 +884,7 @@ begin
       Result := DefBtnWidth;
   end
   else
-  begin
     Result := 0;
-  end;
 end;
 
 function TJvCustomSpinEdit.GetMinHeight: Integer;
@@ -960,7 +957,7 @@ begin
   end;
   Result := (Key in ValidChars) or (Key < #32);
   if not FEditorEnabled and Result and ((Key >= #32) or
-    (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE))) then
+    (Key = BackSpace) or (Key = Del)) then
     Result := False;
 end;
 
@@ -1013,11 +1010,11 @@ begin
   if Key <> #0 then
   begin
     inherited KeyPress(Key);
-    if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) then
+    if (Key = Cr) or (Key = Esc) then
     begin
       { must catch and remove this, since is actually multi-line }  
       TCustomFormAccessProtected(GetParentForm(Self)).WantKey(Integer(Key), [], Key); 
-      if Key = Char(VK_RETURN) then
+      if Key = Cr then
         Key := #0;
     end;
   end;
@@ -1042,45 +1039,43 @@ begin
   FUpDown.Free;
   FUpDown := nil;
   if ShowButton then
-  begin
-  if GetButtonKind = bkStandard then
-  begin
-    FUpDown := TJvUpDown.Create(Self);
-    with TJvUpDown(FUpDown) do
+    if GetButtonKind = bkStandard then
     begin
-      Visible := True;
-      //Polaris
-      SetBounds(0, 1, DefBtnWidth, Self.Height);
-      if BiDiMode = bdRightToLeft then
-        Align := alLeft
-      else
-        Align := alRight;  
-      Parent := Self.ClientArea; 
-      OnClick := UpDownClick;
-    end;
-  end
-  else
-  begin
-    FBtnWindow := TWinControl.Create(Self);
-    FBtnWindow.Visible := True;  
-    FBtnWindow.Parent := Self.ClientArea; 
-    if FButtonKind <> bkClassic then
-      FBtnWindow.SetBounds(0, 0, DefBtnWidth, Height)
+      FUpDown := TJvUpDown.Create(Self);
+      with TJvUpDown(FUpDown) do
+      begin
+        Visible := True;
+        //Polaris
+        SetBounds(0, 1, DefBtnWidth, Self.Height);
+        if BiDiMode = bdRightToLeft then
+          Align := alLeft
+        else
+          Align := alRight;  
+        Parent := Self.ClientArea; 
+        OnClick := UpDownClick;
+      end;
+    end
     else
-      FBtnWindow.SetBounds(0, 0, Height, Height); 
-    FBtnWindow.Align := alRight; 
-    FButton := TJvSpinButton.Create(Self);
-    FButton.Visible := True;
-    if FButtonKind = bkClassic then
-      FButton.FButtonStyle := sbsClassic;
-    FButton.Parent := FBtnWindow;
-    FButton.FocusControl := Self;
-    FButton.OnTopClick := UpClick;
-    FButton.OnBottomClick := DownClick;
-    //Polaris
-//    FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
-  end;
-  end;
+    begin
+      FBtnWindow := TWinControl.Create(Self);
+      FBtnWindow.Visible := True;  
+      FBtnWindow.Parent := Self.ClientArea; 
+      if FButtonKind <> bkClassic then
+        FBtnWindow.SetBounds(0, 0, DefBtnWidth, Height)
+      else
+        FBtnWindow.SetBounds(0, 0, Height, Height); 
+      FBtnWindow.Align := alRight; 
+      FButton := TJvSpinButton.Create(Self);
+      FButton.Visible := True;
+      if FButtonKind = bkClassic then
+        FButton.FButtonStyle := sbsClassic;
+      FButton.Parent := FBtnWindow;
+      FButton.FocusControl := Self;
+      FButton.OnTopClick := UpClick;
+      FButton.OnBottomClick := DownClick;
+      //Polaris
+      FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
+    end;
 end;
 
 procedure TJvCustomSpinEdit.ResizeButton;
@@ -1186,7 +1181,7 @@ begin
   SetValue(Value);
 end;
 
-procedure TJvCustomSpinEdit.SetShowButton(Value : Boolean);
+procedure TJvCustomSpinEdit.SetShowButton(Value: Boolean);
 begin
   if FShowButton <> Value then
   begin
@@ -2083,7 +2078,7 @@ begin
         DisabledBitmap.Free;
       end;
     end;
-    SelectClipRgn(Handle, NullHandle);
+    SelectClipRgn(Handle, 0);
 
     X := (Width - ADownArrow.Width) div 2;
     Y := R1.Top + (I - ADownArrow.Height) div 2;
@@ -2198,5 +2193,21 @@ begin
     FList.Insert(Index, TSpinButtonBitmaps.Create(Self, Width, Height, AButtonStyle, ACustomGlyphs));
   Result := TSpinButtonBitmaps(FList[Index]);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

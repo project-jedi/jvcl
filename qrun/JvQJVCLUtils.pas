@@ -1433,9 +1433,12 @@ begin
       Height := Bitmap.Height;
       Width := Bitmap.Width;
       R := Bounds(0, 0, Width, Height);
-      Canvas.Brush.Color := NewColor;
-      Canvas.FillRect(R);  
-      DrawBitmapTransparent(Canvas, 0, 0, Bitmap, Color); 
+      with Canvas do
+      begin
+        Brush.Color := NewColor;
+        FillRect(R);
+        BrushCopy(Canvas, R, Bitmap, R, Color);
+      end;
     end;
   except
     Result.Free;

@@ -388,11 +388,11 @@ begin
     begin
       I := SaveDC(Handle);
       try 
-        Start;
+        Start; 
         with FTxtRect do
           MoveWindowOrg(Handle, -Left, -Top);
         Brush.Color := Self.Color;
-        PaintClient(FMemoryImage.Canvas, FPaintRect);
+        PaintClient(FMemoryImage.Canvas, FPaintRect); 
         Stop; 
       finally
         RestoreDC(Handle, I);

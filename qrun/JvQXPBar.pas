@@ -109,6 +109,7 @@ type
 
   TJvXPBarOnDrawItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
     Rect: TRect; State: TJvXPDrawState; Item: TJvXPBarItem; Bitmap: TBitmap) of object;
+  TJvXPBarOwnerDrawEvent = procedure(Sender: TObject; ACanvas: TCanvas; var ARect: TRect) of object;
 
   TJvXPBarOnItemClickEvent = procedure(Sender: TObject; Item: TJvXPBarItem) of object;
 
@@ -343,6 +344,9 @@ type
     FShowItemFrame: Boolean;
     FRoundedItemFrame: Integer;  // DS
     FTopSpace: Integer;
+    FOwnerDraw: Boolean;
+    FOnDrawBackground: TJvXPBarOwnerDrawEvent;
+    FOnDrawHeader: TJvXPBarOwnerDrawEvent;
     function IsFontStored: Boolean;
     procedure FontChange(Sender: TObject);
     procedure SetCollapsed(Value: Boolean);
@@ -366,6 +370,7 @@ type
     function GetRollWidth: Integer;
     procedure SetHeaderRounded(const Value: Boolean);
     procedure SetTopSpace(const Value: Integer);
+    procedure SetOwnerDraw(const Value: Boolean);
   protected  
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override; 
@@ -395,6 +400,7 @@ type
     property HeaderFont: TFont read FHeaderFont write SetHeaderFont stored IsFontStored;
     property HeaderHeight: Integer read FHeaderHeight write SetHeaderHeight default 28;
     property HeaderRounded: Boolean read FHeaderRounded write SetHeaderRounded default True;
+    property OwnerDraw: Boolean read FOwnerDraw write SetOwnerDraw;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default True;
     property HotTrackColor: TColor read FHotTrackColor write SetHotTrackColor default $00FF7C35;
     property Icon: TIcon read FIcon write SetIcon;
@@ -419,6 +425,8 @@ type
     property OnCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FOnCollapsedChange write FOnCollapsedChange;
     property OnCanChange: TJvXPBarOnCanChangeEvent read FOnCanChange write FOnCanChange;
     property OnDrawItem: TJvXPBarOnDrawItemEvent read FOnDrawItem write FOnDrawItem;
+    property OnDrawBackground: TJvXPBarOwnerDrawEvent read FOnDrawBackground write FOnDrawBackground;
+    property OnDrawHeader: TJvXPBarOwnerDrawEvent read FOnDrawHeader write FOnDrawHeader;
     property OnItemClick: TJvXPBarOnItemClickEvent read FOnItemClick write FOnItemClick;
     procedure AdjustClientRect(var Rect: TRect); override;
     // show hints for individual items in the list
@@ -449,6 +457,7 @@ type
     property HeaderRounded;
     property HotTrack;
     property HotTrackColor;
+    property OwnerDraw;
     property Icon;
     property ImageList;
     property ItemHeight;
@@ -466,6 +475,8 @@ type
     property OnCollapsedChange;
     property OnCanChange;
     property OnDrawItem;
+    property OnDrawBackground;
+    property OnDrawHeader;
     property OnItemClick;
 
     //property BevelInner;
@@ -520,16 +531,19 @@ procedure RoundedFrame(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer
 
 implementation
 
-uses  
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}  
   JvQJCLUtils, JvQResources, 
   QMenus;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvXPBar.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvXPBar.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 
 
@@ -728,7 +742,8 @@ begin
   if Sender is TCustomAction then
     with TCustomAction(Sender) do
     begin
-      Update; 
+      if not (csLoading in ComponentState) then
+        Update; 
       if not CheckDefaults or (Self.Caption = '') or (Self.Caption = Self.Name) then
         Self.Caption := Caption;
       if not CheckDefaults or (Self.Checked = False) then
@@ -791,7 +806,7 @@ begin
         if ShowItemFrame then
         begin
           Brush.Color := lBar.Colors.CheckedColor;
-          if lBar.RoundedItemFrame>0 then
+          if lBar.RoundedItemFrame > 0 then
             RoundedFrame(ACanvas, Rect, lBar.Colors.CheckedFrameColor, lBar.RoundedItemFrame)
           else
           begin
@@ -809,7 +824,7 @@ begin
     if (ItemCaption = '') and ((csDesigning in lBar.ComponentState) or (lBar.ControlCount = 0)) then
       ItemCaption := Format('(%s %d)', [RsUntitled, Index]);
     Inc(Rect.Left, 20);
-    SetBkMode(Handle, QWindows.TRANSPARENT); 
+    SetBkMode(ACanvas.Handle, QWindows.TRANSPARENT); 
     DrawText(ACanvas, ItemCaption, -1, Rect, DT_SINGLELINE or
       DT_VCENTER or DT_END_ELLIPSIS); 
   end;
@@ -1837,8 +1852,11 @@ begin
     if HasImages then
       FVisibleItems[Index].Images.GetBitmap(FVisibleItems[Index].ImageIndex, Bitmap);
     Bitmap.Transparent := True;
-    if Assigned(FOnDrawItem) then
-      FOnDrawItem(Self, Canvas, ItemRect, State, FVisibleItems[Index], Bitmap)
+    if OwnerDraw then
+    begin
+      if Assigned(FOnDrawItem) then
+        FOnDrawItem(Self, Canvas, ItemRect, State, FVisibleItems[Index], Bitmap);
+    end
     else
       FVisibleItems[Index].DrawItem(Self, Canvas, ItemRect, State, ShowItemFrame, Bitmap);
   finally
@@ -1849,53 +1867,63 @@ end;
 
 procedure TJvXPCustomWinXPBar.Paint;
 var
-  Rect: TRect;
+  ARect: TRect;
   Bitmap: TBitmap;
   Index, I: Integer;
   OwnColor: TColor;
-begin
-  with Canvas do
+  procedure DoDrawBackground(ACanvas: TCanvas; var R: TRect);
+  begin 
+    ACanvas.Brush.Color := TJvXPWinControl(Parent).Color;
+    { fill non-client area }
+    with R do
+      ACanvas.FillRect(Bounds(Left, Top, Right - Left, FTopSpace)); 
+    ACanvas.Brush.Color := FColors.BodyColor; //$00F7DFD6;
+    Inc(R.Top, FTopSpace + FHeaderHeight);
+    if OwnerDraw then
+    begin
+      if Assigned(FOnDrawBackground) then
+        FOnDrawBackground(Self, ACanvas, R);
+    end
+    else
+      ACanvas.FillRect(R);
+  end;
+
+  procedure DoDrawHeader(ACanvas: TCanvas; var R: TRect);
   begin
-    { get client rect }
-    Rect := GetClientRect;
-
-    { fill non-client area } 
-    Brush.Color := TJvXPWinControl(Parent).Color;
-    with Rect do
-      FillRect(Bounds(Left, Top, Right - Left, FTopSpace)); 
-    Inc(Rect.Top, FTopSpace + FHeaderHeight);
-    Brush.Color := FColors.BodyColor; //$00F7DFD6;
-    FillRect(Rect);
-    Dec(Rect.Top, FHeaderHeight);
-
-    { draw header }  
-    FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
-      32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal); 
-
-    { draw frame... }
-    Brush.Color := FColors.FBorderColor;
-    FrameRect( Canvas,  Rect);
-
-    if FHeaderRounded then
+    Dec(R.Top, FHeaderHeight);
+    R.Bottom := R.Top + FHeaderHeight;
+    if OwnerDraw then
     begin
-      OwnColor := TJvXPWinControl(Parent).Color;
-      Pixels[0, Rect.Top] := OwnColor;
-      Pixels[0, Rect.Top + 1] := OwnColor;
-      Pixels[1, Rect.Top] := OwnColor;
-      Pixels[1, Rect.Top + 1] := FColors.FBorderColor;
-      Pixels[Width - 1, Rect.Top] := OwnColor;
-      Pixels[Width - 2, Rect.Top] := OwnColor;
-      Pixels[Width - 1, Rect.Top + 1] := OwnColor;
-      Pixels[Width - 2, Rect.Top + 1] := FColors.FBorderColor;
-    end;
+      ACanvas.Brush.Color := FColors.FBorderColor;
+      if Assigned(FOnDrawHeader) then
+        FOnDrawHeader(Self, ACanvas, R);
+    end
+    else
+    begin  
+      FillGradient(ACanvas.Handle, Bounds(0, R.Top, Width, FHeaderHeight),
+        32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal); 
 
-    { draw Button }
-    if FShowRollButton and (Width >= 115) then
-    begin
-      Bitmap := TBitmap.Create;
-      try
-        if Assigned(FRollImages) then
-        begin
+      { draw frame... }
+      ACanvas.Brush.Color := FColors.FBorderColor; FrameRect(ACanvas, R);
+
+      if FHeaderRounded then
+      begin
+        OwnColor := TJvXPWinControl(Parent).Color;
+        ACanvas.Pixels[0, R.Top] := OwnColor;
+        ACanvas.Pixels[0, R.Top + 1] := OwnColor;
+        ACanvas.Pixels[1, R.Top] := OwnColor;
+        ACanvas.Pixels[1, R.Top + 1] := FColors.FBorderColor;
+        ACanvas.Pixels[Width - 1, R.Top] := OwnColor;
+        ACanvas.Pixels[Width - 2, R.Top] := OwnColor;
+        ACanvas.Pixels[Width - 1, R.Top + 1] := OwnColor;
+        ACanvas.Pixels[Width - 2, R.Top + 1] := FColors.FBorderColor;
+      end;
+      if FShowRollButton and (Width >= 115) then
+      begin
+        Bitmap := TBitmap.Create;
+        try
+          if Assigned(FRollImages) then
+          begin
           // format:
           // 0 - normal collapsed
           // 1 - normal expanded
@@ -1903,73 +1931,87 @@ begin
           // 3 - hot expanded
           // 4 - down collapsed
           // 5 - down expanded
-          Index := 0; // normal
-          if FHitTest = htRollButton then
-          begin
-            if dsHighlight in DrawState then
-              Index := 2; // hot
-            if (dsClicked in DrawState) and (dsHighlight in DrawState) then
-              Index := 4; // down
-          end;
-          if not FCollapsed then
-            Inc(Index);
-          if Index >= FRollImages.Count then
-            Index := Ord(not FCollapsed);
-          FRollImages.GetBitmap(Index, Bitmap);
-        end
-        else
-        begin
-          Index := 0;
-          if FHitTest = htRollButton then
-          begin
-            if dsHighlight in DrawState then
-              Index := 1; // hot
-            if (dsClicked in DrawState) and (dsHighlight in DrawState) then
-              Index := 2; // down
-          end;
-          if FCollapsed then
-            Bitmap.LoadFromResourceName(hInstance, 'XPEXPAND' + IntToStr(Index))
+            Index := 0; // normal
+            if FHitTest = htRollButton then
+            begin
+              if dsHighlight in DrawState then
+                Index := 2; // hot
+              if (dsClicked in DrawState) and (dsHighlight in DrawState) then
+                Index := 4; // down
+            end;
+            if not FCollapsed then
+              Inc(Index);
+            if Index >= FRollImages.Count then
+              Index := Ord(not FCollapsed);
+            FRollImages.GetBitmap(Index, Bitmap);
+          end
           else
-            Bitmap.LoadFromResourceName(hInstance, 'XPCOLLAPSE' + IntToStr(Index));
+          begin
+            Index := 0;
+            if FHitTest = htRollButton then
+            begin
+              if dsHighlight in DrawState then
+                Index := 1; // hot
+              if (dsClicked in DrawState) and (dsHighlight in DrawState) then
+                Index := 2; // down
+            end;
+            if FCollapsed then
+              Bitmap.LoadFromResourceName(hInstance, 'XPEXPAND' + IntToStr(Index))
+            else
+              Bitmap.LoadFromResourceName(hInstance, 'XPCOLLAPSE' + IntToStr(Index));
+          end;
+          Bitmap.Transparent := True;
+          ACanvas.Draw(R.Right - 24, R.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
+        finally
+          Bitmap.Free;
         end;
-        Bitmap.Transparent := True;
-        Draw(Rect.Right - 24, Rect.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
-      finally
-        Bitmap.Free;
+        Dec(R.Right, 25);
       end;
-      Dec(Rect.Right, 25);
+      Inc(R.Left, 22);
+      ACanvas.Pen.Color := FColors.SeparatorColor;
+      JvXPDrawLine(ACanvas, 1, ARect.Top + FHeaderHeight, Width - 1, ARect.Top + FHeaderHeight);
+      if not FIcon.Empty then
+      begin
+        ACanvas.Draw(2, 0, FIcon);
+        Inc(R.Left, 16);
+      end;
+      Dec(ARect.Right, 25);
     end;
 
     { draw seperator line }
-    Pen.Color := FColors.SeparatorColor;
-    JvXPDrawLine(Canvas, 1, Rect.Top + FHeaderHeight, Width - 1, Rect.Top + FHeaderHeight);
+    ACanvas.Pen.Color := FColors.SeparatorColor;
+    JvXPDrawLine(ACanvas, 1, ARect.Top + FHeaderHeight, Width - 1, ARect.Top + FHeaderHeight);
 
     { draw icon }
-    Inc(Rect.Left, 22);
+    Inc(ARect.Left, 22);
     if not FIcon.Empty then
     begin
-      Draw(2, 1, FIcon);
-      Inc(Rect.Left, 16);
+      ACanvas.Draw(2, 1, FIcon);
+      Inc(ARect.Left, 16);
     end;
-
-    { draw caption }
-    SetBkMode(Handle, TRANSPARENT);
-    Font.Assign(FHeaderFont);
+    SetBkMode(ACanvas.Handle, TRANSPARENT);
+    ACanvas.Font.Assign(FHeaderFont);
     if FHotTrack and (dsHighlight in DrawState) and (FHitTest <> htNone) and (FHotTrackColor <> clNone) then
-      Font.Color := FHotTrackColor;
-    Rect.Bottom := Rect.Top + FHeaderHeight;
-    Dec(Rect.Right, 3); 
-    DrawText(Canvas, Caption, -1, Rect, DT_SINGLELINE or DT_VCENTER or
+      ACanvas.Font.Color := FHotTrackColor;
+    ARect.Bottom := ARect.Top + FHeaderHeight;
+    Dec(ARect.Right, 3); 
+    DrawText(ACanvas, Caption, -1, ARect, DT_SINGLELINE or DT_VCENTER or
       DT_END_ELLIPSIS or DT_NOPREFIX); 
-    { draw visible items }
-    Brush.Color := FColors.BodyColor;
-    if not FCollapsed or FRolling then
-      for I := 0 to FVisibleItems.Count - 1 do
-        if FVisibleItems[I].Checked then
-          DoDrawItem(I, [dsClicked])
-        else
-          DoDrawItem(I, []);
   end;
+begin
+  { get client rect }
+  ARect := GetClientRect;
+  DoDrawBackground(Canvas, ARect);
+  { draw header }
+  DoDrawHeader(Canvas, ARect);
+  { draw visible items }
+  Canvas.Brush.Color := FColors.BodyColor;
+  if not FCollapsed or FRolling then
+    for I := 0 to FVisibleItems.Count - 1 do
+      if FVisibleItems[I].Checked then
+        DoDrawItem(I, [dsClicked])
+      else
+        DoDrawItem(I, []);
 end;
 
 procedure TJvXPCustomWinXPBar.WMAfterXPBarCollapse(var Msg: TMessage);
@@ -2198,7 +2240,30 @@ begin
     InternalRedraw;
   end;
 end;
+procedure TJvXPCustomWinXPBar.SetOwnerDraw(const Value: Boolean);
+begin
+  if FOwnerDraw <> Value then
+  begin
+    FOwnerDraw := Value;
+    Invalidate;
+  end;
+end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

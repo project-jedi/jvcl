@@ -46,7 +46,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  QWindows, QGraphics, QControls, QExtCtrls, QDialogs,
+  QWindows, QGraphics, QControls, QExtCtrls, QDialogs, QTypes,
   JvQTypes;
 
 type

@@ -68,6 +68,11 @@ procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 begin
   Result := (Method1.Code = Method2.Code) and (Method1.Data = Method2.Data);
@@ -131,10 +136,8 @@ begin
   CalculateGradientBand;
 
   with Bitmap.Canvas do
-  begin
-    {$IFDEF LINUX}
-    Start;  // required for Linux, but causes AV under windows
-    {$ENDIF LINUX}
+  begin 
+    Start; 
     Brush.Color := StartColor;
     FillRect(Bounds(0, 0, AWidth, AHeight));
     if Style in [gsLeft, gsRight] then
@@ -155,11 +158,11 @@ begin
                   XX := iBndS + Random(xLoop);
                   if (XX < AWidth) and (XX > -1) then
                     with Row[XX] do
-                    begin
+                    begin  
                       rgbRed := GetRValue(GBand[iLoop - 1]);
                       rgbGreen := GetGValue(GBand[iLoop - 1]);
                       rgbBlue := GetBValue(GBand[iLoop - 1]);
-                      rgbReserved := 0;
+                      rgbReserved := 0; 
                     end;
                 end;
             end;
@@ -186,11 +189,11 @@ begin
               for xLoop := 0 to DitherDepth - 1 do
               if xLoop < AWidth  then
                 with Row[xLoop] do
-                begin
+                begin  
                   rgbRed := GetRValue(GBand[iLoop - 1]);
                   rgbGreen := GetGValue(GBand[iLoop - 1]);
                   rgbBlue := GetBValue(GBand[iLoop - 1]);
-                  rgbReserved := 0;
+                  rgbReserved := 0; 
                 end;
               end;
           end;
@@ -198,10 +201,8 @@ begin
       for xLoop := 0 to AWidth div DitherDepth do
         CopyRect(Bounds(xLoop * DitherDepth, 0, DitherDepth, AHeight),
           Bitmap.Canvas, Bounds(0, 0, DitherDepth, AHeight));
-    end;
-    {$IFDEF LINUX}
-    Stop;  // required for Linux, but causes AV under windows
-    {$ENDIF LINUX}
+    end; 
+    Stop; 
   end;
 end;
 
@@ -338,11 +339,8 @@ begin
     Bitmap.Dormant; 
     with ColorMap.Canvas do
     begin
-      Brush.Color := AColor;  
-      FillRect(Rect);
-      Bitmap.TransparentColor := clBlack;
-      Bitmap.Transparent := True;
-      Draw(0,0, Bitmap); 
+      Brush.Color := AColor;
+      BrushCopy(ColorMap.Canvas, Rect, Bitmap, Rect, clBlack);
     end; 
     Bitmap.FreeImage;
     Bitmap.Assign(ColorMap);
@@ -391,6 +389,22 @@ begin
   OffsetRect(Rect, DX, (OH - Rect.Bottom) div 2);
   JvXPRenderText(AParent, ACanvas, AText, AFont, AEnabled, AShowAccelChar, Rect, Flags);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 
