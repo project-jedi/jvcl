@@ -36,15 +36,13 @@ unit JvColorButton;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Graphics, Controls, Forms, StdCtrls, Dialogs, ExtCtrls, Buttons, Menus,
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls, Dialogs, ExtCtrls,
+  Buttons, Menus,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls, QButtons,
-  QMenus,
+  QMenus, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvColorBox;

@@ -16,14 +16,15 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2004-01-06
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Modifications:
   2/11/2000 Added the Align and AutoSize property (Request of Brad T.)
-
+  2004/01/06 VisualCLX compatibilty
+  
 Known Issues:
 -----------------------------------------------------------------------------}
 
@@ -34,8 +35,14 @@ unit JvGammaPanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Dialogs,
   ExtCtrls, StdCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, Types,
+  {$ENDIF}
   JvTypes, JvComponent;
 
 type
@@ -57,7 +64,9 @@ type
     FForegroundColorImg: TImage;
     FBackgroundColorImg: TImage;
     FOnChangeColor: TJvChangeColorEvent;
+    {$IFDEF VCL}
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    {$ENDIF}
     procedure ChangeColor(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ColorSeek(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure Exchange(Sender: TObject);
@@ -65,6 +74,10 @@ type
     procedure SetBackgroundColor(const Value: TColor);
     procedure Color1Click(Sender: TObject);
     procedure Color2Click(Sender: TObject);
+  {$IFDEF VisualCLX}
+  protected
+    procedure AdjustSize; override;
+  {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -82,7 +95,12 @@ implementation
 uses
   JvResources;
 
+{$IFDEF WINDOWS}
 {$R ..\resources\JvGammaPanel.res}
+{$ENDIF}
+{$IFDEF LINUX}
+{$R ../Resources/JvGammaPanel.res}
+{$ENDIF}
 
 constructor TJvGammaPanel.Create(AOwner: TComponent);
 begin
@@ -371,7 +389,12 @@ begin
     FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvGammaPanel.AdjustSize;
+{$ENDIF}
+{$IFDEF VCL}
 procedure TJvGammaPanel.WMSize(var Msg: TWMSize);
+{$ENDIF}
 begin
   Width := 65;
   Height := 250;
