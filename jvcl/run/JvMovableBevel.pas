@@ -44,11 +44,15 @@ type
     FStartX: Integer;
     FStartY: Integer;
     FStartPoint: TPoint;
-    FMoving: Boolean; // If True then we are moving the object around.
     FMinSize: Integer;
+    FMoving: Boolean; // If True then we are moving the object around.
     FSizing: Boolean; // if True then we are sizing the object;
     FDirection: TJvBevelScrollTextDirection;
     FBorderSize: Byte;
+    FOnMoving:TNotifyEvent;
+    FOnMoved:TNotifyEvent;
+    FOnSizing:TNotifyEvent;
+    FOnSized:TNotifyEvent;
   protected
     procedure DoMove(Shift: TShiftState; DeltaX, DeltaY: Integer);
     procedure DoSize(Shift: TShiftState; DeltaX, DeltaY: Integer);
@@ -64,6 +68,10 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property BorderSize: Byte read FBorderSize write FBorderSize default 4;
+    property OnMoving:TNotifyEvent read FOnMoving write FOnMoving;
+    property OnSizing:TNotifyEvent read FOnSizing write FOnSizing;
+    property OnMoved:TNotifyEvent read FOnMoved write FOnMoved;
+    property OnSized:TNotifyEvent read FOnSized write FOnSized;
   end;
 
 implementation
@@ -229,22 +237,29 @@ begin
   inherited MouseMove(Shift, X, Y);
 end;
 
-procedure TJvMovableBevel.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TJvMovableBevel.MouseDown(Button: TMouseButton; Shift:
+TShiftState; X, Y: Integer);
 begin
   if FDirection > tdNone then
-    FSizing := True
+  begin
+    FSizing := True;
+    if Assigned(FOnSizing) then FOnSizing(Self);
+  end
   else
+  begin
     FMoving := True;
+    if Assigned(FOnMoving) then FOnMoving(Self);
+  end;
   FStartPoint := Point(Left, Top);
   FStartX := X;
   FStartY := Y;
   inherited MouseDown(Button, Shift, X, Y);
 end;
 
-procedure TJvMovableBevel.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+
+procedure TJvMovableBevel.MouseUp(Button: TMouseButton; Shift: TShiftState;
+X, Y: Integer);
 begin
-  FMoving := False;
-  FSizing := False;
   SelectCursor(X, Y);
   FStartX := 0;
   FStartY := 0;
@@ -259,7 +274,14 @@ begin
     Width := Abs(Width);
   end;
   inherited MouseUp(Button, Shift, X, Y);
+  if FMoving and Assigned(FOnMoved) then
+    FOnMoved(Self);
+  if FSizing and Assigned(FOnSized) then
+    FOnSized(Self);
+  FMoving := False;
+  FSizing := False;
 end;
+
 
 //Procedure TJvMovableBevel.SelectCursor(X, Y: Longint);
 //begin
