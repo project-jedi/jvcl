@@ -184,7 +184,7 @@ begin
   FCharWidth := 5;
   FCharHeight := 6;
   FPicture := TPicture.Create;
-  FPicture.Bitmap.LoadFromResourceName(HInstance, 'WINAMP1');
+  FPicture.Bitmap.LoadFromResourceName(HInstance, 'JvWinampLabelPICTURE');
   FBitmap := TBitmap.Create;
   with FBitmap do
   begin

@@ -1126,14 +1126,14 @@ type
   {$HINTS ON}
 
 const
-  sDirBmp = 'JV_SEDITBMP';  { Directory editor button glyph }
-  sFileBmp = 'JV_FEDITBMP';  { Filename editor button glyph }
-  sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
+  sDirBmp = 'JvDirectoryEditGLYPH';    { Directory editor button glyph }
+  sFileBmp = 'JvFilenameEditGLYPH';    { Filename editor button glyph }
+  sDateBmp = 'JvCustomDateEditGLYPH';  { Date editor button glyph }
 
   {$IFDEF JVCLThemesEnabled}
-  // (rb) should/can these be put in a seperate resource file?
-  sDirXPBmp = 'JV_SEDITXPBMP';
-  sFileXPBmp = 'JV_FEDITXPBMP';
+  // (rb) should/can these be put in a separate resource file?
+  sDirXPBmp = 'JvDirectoryEditXPGLYPH';
+  sFileXPBmp = 'JvFilenameEditXPGLYPH';
   {$ENDIF JVCLThemesEnabled}
 
 {$IFDEF VCL}

@@ -873,9 +873,9 @@ type
   {$HINTS ON}
 
 const
-  sDirBmp = 'JV_SEDITBMP';  { Directory editor button glyph }
-  sFileBmp = 'JV_FEDITBMP';  { Filename editor button glyph }
-  sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
+  sDirBmp = 'JvDirectoryEditGLYPH';  { Directory editor button glyph }
+  sFileBmp = 'JvFilenameEditGLYPH';  { Filename editor button glyph }
+  sDateBmp = 'JvCustomDateEditGLYPH';  { Date editor button glyph }
  
 
 
