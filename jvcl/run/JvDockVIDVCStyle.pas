@@ -273,7 +273,7 @@ type
     property CaptionLeftOffset: Integer read FCaptionLeftOffset write SetCaptionLeftOffset;
     property CaptionRightOffset: Integer read FCaptionRightOffset write SetCaptionRightOffset;
   public
-    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;ADockStyle:TComponent ); override;
+    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass; ADockStyle: TComponent); override;
   end;
 
   TJvDockVIDVCTabPageControl = class;
@@ -1202,7 +1202,7 @@ end;
 //=== { TJvDockVIDVCTree } ===================================================
 
 constructor TJvDockVIDVCTree.Create(DockSite: TWinControl;
-  DockZoneClass: TJvDockZoneClass;ADockStyle:TComponent);
+  DockZoneClass: TJvDockZoneClass; ADockStyle: TComponent);
 begin
   inherited Create(DockSite, DockZoneClass, ADockStyle);
   FDropOnZone := nil;

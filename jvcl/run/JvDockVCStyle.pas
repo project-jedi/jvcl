@@ -31,8 +31,7 @@ interface
 
 uses
   Windows, Messages, Classes, Graphics, Controls,
-  JvDockControlForm, JvDockSupportControl, JvDockTree,
-  JvDockAdvTree;
+  JvDockControlForm, JvDockSupportControl, JvDockTree, JvDockAdvTree;
 
 type
   TJvDockVCConjoinServerOption = class(TJvDockBasicConjoinServerOption)
@@ -168,7 +167,7 @@ type
     procedure ShiftZone(Zone: TJvDockZone); override;
     procedure SplitterMouseUp; override;
   public
-    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;ADockStyle:TComponent); override;
+    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass; ADockStyle: TComponent); override;
   end;
 
   TJvDockVCDragDockObject = class(TJvDockDragDockObject)
@@ -295,7 +294,8 @@ var
   end;
 
 begin
-  DockOver := ((PreviousState = dsDragEnter) and (CurrentState = dsDragMove) and (not Erase or (PreviousTarget <> nil))) or
+  DockOver :=
+    ((PreviousState = dsDragEnter) and (CurrentState = dsDragMove) and (not Erase or (PreviousTarget <> nil))) or
     ((PreviousState = dsDragMove) and (CurrentState = dsDragMove)) or
     ((PreviousState = dsDragMove) and (CurrentState = dsDragLeave) and Erase);
 
@@ -371,10 +371,11 @@ begin
   if State = dsDragMove then
   begin
     DropAlign := Source.DropAlign;
-    Source.DropOnControl := JvDockManager.GetDockEdge(Source.EraseDockRect, Source.DragPos, DropAlign, Source.Control);
+    Source.DropOnControl := JvDockManager.GetDockEdge(Source.EraseDockRect,
+      Source.DragPos, DropAlign, Source.Control);
     Source.DropAlign := DropAlign;
 
-    SysCaptionHeight := Integer(Source.Control.Floating) * JvDockGetSysCaptionHeight;
+    SysCaptionHeight := Ord(Source.Control.Floating) * JvDockGetSysCaptionHeight;
 
     PanelScreenRect := BoundsRect;
     MapWindowPoints(Parent.Handle, 0, PanelScreenRect, 2);
@@ -506,7 +507,7 @@ begin
   PanelScreenRect := BoundsRect;
   MapWindowPoints(Parent.Handle, 0, PanelScreenRect, 2);
 
-  SysCaptionHeight := Integer(Source.Control.Floating) * JvDockGetSysCaptionHeight;
+  SysCaptionHeight := Ord(Source.Control.Floating) * JvDockGetSysCaptionHeight;
 
   GetDockSize;
 
@@ -772,7 +773,8 @@ end;
 
 //=== { TJvDockVCTree } ======================================================
 
-constructor TJvDockVCTree.Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;ADockStyle:TComponent);
+constructor TJvDockVCTree.Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;
+  ADockStyle: TComponent);
 begin
   inherited Create(DockSite, DockZoneClass, ADockStyle);
   Version := RsDockVCDockTreeVersion;
@@ -846,8 +848,7 @@ begin
   SizePos := TempPos;
 end;
 
-procedure TJvDockVCTree.ControlVisibilityChanged(Control: TControl;
-  Visible: Boolean);
+procedure TJvDockVCTree.ControlVisibilityChanged(Control: TControl; Visible: Boolean);
 begin
   inherited ControlVisibilityChanged(Control, Visible);
 end;
@@ -938,10 +939,9 @@ begin
     HintStr := RsDockVCDockTreeExpandBtnHint;
 end;
 
-procedure TJvDockVCTree.DrawDockGrabber(Control: TControl;
-  const ARect: TRect);
+procedure TJvDockVCTree.DrawDockGrabber(Control: TControl; const ARect: TRect);
 var
-  lbVCDockZone: TJvDockVCZone;
+  VCDockZone: TJvDockVCZone;
   DrawRect: TRect;
   {$IFDEF JVCLThemesEnabled}
   Details: TThemedElementDetails;
@@ -953,24 +953,25 @@ var
   var
     ADockClient: TJvDockClient;
   begin
-    if lbVCDockZone <> nil then
+    if VCDockZone <> nil then
     begin
       ADockClient := FindDockClient(Control);
-      if (ADockClient <> nil) and (not ADockClient.EnableCloseButton) then
+      if (ADockClient <> nil) and not ADockClient.EnableCloseButton then
         Exit;
       {$IFDEF JVCLThemesEnabled}
       if ThemeServices.ThemesAvailable and ThemeServices.ThemesEnabled then
       begin
         CurrentThemeTypeBtn := twSmallCloseButtonNormal;
-        if lbVCDockZone.CloseBtnDown then
+        if VCDockZone.CloseBtnDown then
           CurrentThemeTypeBtn := twSmallCloseButtonPushed;
         Details := ThemeServices.GetElementDetails(CurrentThemeTypeBtn);
-        ThemeServices.DrawElement(Canvas.Handle, Details, Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight));
+        ThemeServices.DrawElement(Canvas.Handle, Details, Rect(Left, Top,
+          Left + ButtonWidth, Top + ButtonHeight));
       end
       else
-        {$ENDIF JVCLThemesEnabled}
+      {$ENDIF JVCLThemesEnabled}
         DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
-          Top + ButtonHeight), DFC_CAPTION, DFCS_CAPTIONCLOSE or Integer(lbVCDockZone.CloseBtnDown) * DFCS_PUSHED)
+          Top + ButtonHeight), DFC_CAPTION, DFCS_CAPTIONCLOSE or Ord(VCDockZone.CloseBtnDown) * DFCS_PUSHED);
     end;
   end;
 
@@ -981,16 +982,16 @@ var
       (0, DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT, 0, 0);
     {$IFDEF JVCLThemesEnabled}
     ArrowOrientTheme: array [TAlign] of TThemedScrollBar =
-      (tsScrollBarDontCare, tsArrowBtnUpNormal, tsArrowBtnDownNormal, tsArrowBtnLeftNormal,
-       tsArrowBtnRightNormal, tsScrollBarDontCare, tsScrollBarDontCare);
+     (tsScrollBarDontCare, tsArrowBtnUpNormal, tsArrowBtnDownNormal, tsArrowBtnLeftNormal,
+      tsArrowBtnRightNormal, tsScrollBarDontCare, tsScrollBarDontCare);
     {$ENDIF JVCLThemesEnabled}
     {$ELSE}
     ArrowOrient: array [TAlign] of DWORD =
-    (0, DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT, 0);
+      (0, DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT, 0);
     {$IFDEF JVCLThemesEnabled}
     ArrowOrientTheme: array [TAlign] of TThemedScrollBar =
-      (tsScrollBarDontCare, tsArrowBtnUpNormal, tsArrowBtnDownNormal, tsArrowBtnLeftNormal,
-       tsArrowBtnRightNormal, tsScrollBarDontCare);
+     (tsScrollBarDontCare, tsArrowBtnUpNormal, tsArrowBtnDownNormal, tsArrowBtnLeftNormal,
+      tsArrowBtnRightNormal, tsScrollBarDontCare);
     {$ENDIF JVCLThemesEnabled}
     {$ENDIF COMPILER6_UP}
     CurrArrow: array [Boolean, TDockOrientation] of TAlign =
@@ -999,16 +1000,16 @@ var
     InActive: Boolean;
     IsMaximum: Boolean;
   begin
-    if lbVCDockZone <> nil then
+    if VCDockZone <> nil then
     begin
-      InActive := not ((lbVCDockZone.ParentZone.Orientation <> DockSiteOrientation) and
-        (lbVCDockZone.ParentZone.VisibleChildCount >= 2));
-      IsMaximum := lbVCDockZone.ZoneSizeStyle in [zssMaximum];
+      InActive := not ((VCDockZone.ParentZone.Orientation <> DockSiteOrientation) and
+        (VCDockZone.ParentZone.VisibleChildCount >= 2));
+      IsMaximum := VCDockZone.ZoneSizeStyle in [zssMaximum];
       {$IFDEF JVCLThemesEnabled}
       if ThemeServices.ThemesAvailable and ThemeServices.ThemesEnabled then
       begin
         CurrentThemeTypeSB := ArrowOrientTheme[CurrArrow[IsMaximum, DockSiteOrientation]];
-        if lbVCDockZone.ExpandButtonDown then
+        if VCDockZone.ExpandButtonDown then
           CurrentThemeTypeSB := TThemedScrollBar(Ord(CurrentThemeTypeSB) + 2);
         if InActive then
           CurrentThemeTypeSB := TThemedScrollBar(Ord(CurrentThemeTypeSB) + 3);
@@ -1020,7 +1021,8 @@ var
         DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
           Top + ButtonHeight), DFC_SCROLL,
           ArrowOrient[CurrArrow[IsMaximum, DockSiteOrientation]] +
-          Cardinal(InActive) * (DFCS_INACTIVE) + Cardinal(lbVCDockZone.ExpandButtonDown) * DFCS_PUSHED);
+            Cardinal(Ord(InActive)) * DFCS_INACTIVE +
+            Cardinal(Ord(VCDockZone.ExpandButtonDown)) * DFCS_PUSHED);
     end;
   end;
 
@@ -1041,7 +1043,7 @@ var
   end;
 
 begin
-  lbVCDockZone := TJvDockVCZone(FindControlZone(Control));
+  VCDockZone := TJvDockVCZone(FindControlZone(Control));
   DrawRect := ARect;
   Canvas.Brush.Color := TWinControlAccessProtected(DockSite).Color;
   Canvas.FillRect(DrawRect);
@@ -1049,23 +1051,27 @@ begin
     case GrabbersPosition of
       gpLeft:
         begin
-          DrawExpendBotton(Left + BorderWidth + LeftOffset, Top + TopOffset + ButtonHeight + ButtonSplitter +
-            BorderWidth);
+          DrawExpendBotton(Left + BorderWidth + LeftOffset,
+            Top + TopOffset + ButtonHeight + ButtonSplitter + BorderWidth);
           DrawCloseButton(Left + BorderWidth + LeftOffset, Top + TopOffset + BorderWidth);
-          DrawGrabberLine(Left + BorderWidth + LeftOffset + 3, Top + 2 * ButtonHeight + TopOffset + ButtonSplitter +
-            BottomOffset + BorderWidth + 3, Left + BorderWidth + LeftOffset + 5, Bottom - BorderWidth - 2);
-          DrawGrabberLine(Left + BorderWidth + LeftOffset + 7, Top + 2 * ButtonHeight + TopOffset + ButtonSplitter +
-            BottomOffset + BorderWidth + 3, Left + BorderWidth + LeftOffset + 9, Bottom - BorderWidth - 2);
+          DrawGrabberLine(Left + BorderWidth + LeftOffset + 3,
+            Top + 2 * ButtonHeight + TopOffset + ButtonSplitter + BottomOffset + BorderWidth + 3,
+            Left + BorderWidth + LeftOffset + 5, Bottom - BorderWidth - 2);
+          DrawGrabberLine(Left + BorderWidth + LeftOffset + 7,
+            Top + 2 * ButtonHeight + TopOffset + ButtonSplitter + BottomOffset + BorderWidth + 3,
+            Left + BorderWidth + LeftOffset + 9, Bottom - BorderWidth - 2);
         end;
       gpTop:
         begin
-          DrawExpendBotton(Right - LeftOffset - 2 * ButtonWidth - ButtonSplitter - BorderWidth, Top + TopOffset +
-            BorderWidth);
+          DrawExpendBotton(Right - LeftOffset - 2 * ButtonWidth - ButtonSplitter - BorderWidth,
+            Top + TopOffset + BorderWidth);
           DrawCloseButton(Right - LeftOffset - ButtonWidth - BorderWidth, Top + TopOffset + BorderWidth);
-          DrawGrabberLine(Left + BorderWidth, Top + BorderWidth + TopOffset + 3, Right - 2 * ButtonWidth - RightOffset -
-            ButtonSplitter - LeftOffset - BorderWidth - 3, Top + BorderWidth + TopOffset + 5);
-          DrawGrabberLine(Left + BorderWidth, Top + BorderWidth + TopOffset + 7, Right - 2 * ButtonWidth - RightOffset -
-            ButtonSplitter - LeftOffset - BorderWidth - 3, Top + BorderWidth + TopOffset + 9);
+          DrawGrabberLine(Left + BorderWidth, Top + BorderWidth + TopOffset + 3,
+            Right - 2 * ButtonWidth - RightOffset - ButtonSplitter - LeftOffset - BorderWidth - 3,
+            Top + BorderWidth + TopOffset + 5);
+          DrawGrabberLine(Left + BorderWidth, Top + BorderWidth + TopOffset + 7,
+            Right - 2 * ButtonWidth - RightOffset - ButtonSplitter - LeftOffset - BorderWidth - 3,
+            Top + BorderWidth + TopOffset + 9);
         end;
       gpBottom:
         begin
@@ -1157,8 +1163,8 @@ begin
   DropDockSize := DockRectangles[TempOrient, True] - DockRectangles[TempOrient, False];
 end;
 
-function TJvDockVCTree.GetDropOnControl(Orient: TDockOrientation; Zone: TJvDockZone; DockRect: TRect;
-  var DropAlign: TAlign; Control: TControl): TControl;
+function TJvDockVCTree.GetDropOnControl(Orient: TDockOrientation; Zone: TJvDockZone;
+  DockRect: TRect; var DropAlign: TAlign; Control: TControl): TControl;
 var
   TempZone: TJvDockZone;
   Scale: Double;
@@ -1228,7 +1234,8 @@ begin
   end;
 end;
 
-function TJvDockVCTree.GetDropOnZone(Orient: TDockOrientation; DockRect: TRect; var DropAlign: TAlign): TJvDockZone;
+function TJvDockVCTree.GetDropOnZone(Orient: TDockOrientation; DockRect: TRect;
+  var DropAlign: TAlign): TJvDockZone;
 var
   TempZone: TJvDockZone;
   Scale: Double;
@@ -1468,7 +1475,7 @@ var
   ChildCount: Integer;
   AverageSize: Integer;
 begin
-  ChildCount := Parent.VisibleChildCount - Integer((Exclude <> nil) and (Exclude.ParentZone = Parent));
+  ChildCount := Parent.VisibleChildCount - Ord((Exclude <> nil) and (Exclude.ParentZone = Parent));
   if ChildCount = 0 then Exit; 
   AverageSize := DockSiteSizeAlternate div ChildCount;
   Assert(AverageSize > 0);
@@ -1650,7 +1657,7 @@ begin
   BeforeVisibleZone := BeforeClosestVisibleZone;
   AfterVisibleZone := AfterClosestVisibleZone;
 
-  BorderSize := TJvDockVCTree(Tree).BorderWidth * Integer(AfterClosestVisibleZone = nil);
+  BorderSize := TJvDockVCTree(Tree).BorderWidth * Ord(AfterClosestVisibleZone = nil);
 
   if ParentZone.Orientation <> TJvDockVCTree(Tree).DockSiteOrientation then
   begin
@@ -1862,20 +1869,20 @@ begin
     if BeforeClosestVisibleZone = nil then
     begin
       PrevShift := 0;
-      NextShift := (2 * Integer(Insert) - 1) * (DockSize + BorderWidth);
+      NextShift := (2 * Ord(Insert) - 1) * (DockSize + BorderWidth);
 
-      ZoneLimit := Integer(Insert) * (DockSize + BorderWidth);
+      ZoneLimit := Ord(Insert) * (DockSize + BorderWidth);
       if ParentZone.VisibleChildCount = 2 then
         NextSibling.ZoneLimit := TempSize;
     end
     else
     if AfterClosestVisibleZone = nil then
     begin
-      PrevShift := (2 * Integer(Insert) - 1) * (DockSize + BorderWidth);
+      PrevShift := (2 * Ord(Insert) - 1) * (DockSize + BorderWidth);
       NextShift := 0;
       begin
         if ParentZone.ChildCount = 2 then
-          PrevSibling.ZoneLimit := TempSize - Integer(Insert) * PrevShift
+          PrevSibling.ZoneLimit := TempSize - Ord(Insert) * PrevShift
         else
           PrevSibling.ZoneLimit := PrevSibling.ZoneLimit - PrevShift;
       end;
@@ -1883,11 +1890,11 @@ begin
     end
     else
     begin
-      PrevShift := (2 * Integer(Insert) - 1) * Round((PrevSibling.ZoneLimit) * (DockSize + BorderWidth) / (TempSize -
-        Integer(not Insert) * (DockSize + BorderWidth)));
-      NextShift := (2 * Integer(Insert) - 1) * DockSize - PrevShift;
+      PrevShift := (2 * Ord(Insert) - 1) * Round((PrevSibling.ZoneLimit) *
+        (DockSize + BorderWidth) / (TempSize - Ord(not Insert) * (DockSize + BorderWidth)));
+      NextShift := (2 * Ord(Insert) - 1) * DockSize - PrevShift;
       PrevSibling.ZoneLimit := PrevSibling.ZoneLimit - PrevShift;
-      ZoneLimit := Integer(Insert) * (DockSize + BorderWidth) + PrevSibling.ZoneLimit;
+      ZoneLimit := Ord(Insert) * (DockSize + BorderWidth) + PrevSibling.ZoneLimit;
     end;
 
     if PrevShift <> 0 then
@@ -1992,7 +1999,7 @@ begin
   BeforeVisibleZone := BeforeClosestVisibleZone;
   AfterVisibleZone := AfterClosestVisibleZone;
 
-  BorderSize := TJvDockVCTree(Tree).BorderWidth * Integer(AfterClosestVisibleZone = nil);
+  BorderSize := TJvDockVCTree(Tree).BorderWidth * Ord(AfterClosestVisibleZone = nil);
 
   if ParentZone.Orientation <> TJvDockVCTree(Tree).DockSiteOrientation then
   begin
