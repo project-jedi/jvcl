@@ -34,7 +34,7 @@ uses
   JvAppStore, JvFormPlacement, JvAppStoreSelectList;
 
 type
-  TJvFormStorageSelectList = class(TJvAppStoreSelectList)
+  TJvFormStorageSelectList = class (TJvAppStoreSelectList)
   private
     FFormStorage: TJvFormStorage;
   protected
@@ -123,4 +123,3 @@ begin
 end;
 
 end.
-

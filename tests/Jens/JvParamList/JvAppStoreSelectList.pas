@@ -37,7 +37,7 @@ uses
 type
   TJvAppStoreSelectListOperation = (sloLoad, sloStore, sloManage);
 
-  TJvAppStoreSelectList = class(TJvComponent)
+  TJvAppStoreSelectList = class (TJvComponent)
   private
     FSelectDialog: TForm;
     FListBox: TWinControl;
@@ -51,7 +51,7 @@ type
     FDynControlEngine: TJvDynControlEngine;
     FSelectList: TStringList;
     FOperation: TJvAppStoreSelectListOperation;
-    FCheckEntries: Boolean;
+    FCheckEntries: boolean;
   protected
     function GetSelectList: TStrings; virtual;
     procedure SetSelectList(const Value: TStrings); virtual;
@@ -87,7 +87,7 @@ type
   published
     property AppStore: TJvCustomAppStore read GetAppStore write SetAppStore;
     property SelectPath: string read FSelectPath write SetSelectPath;
-    property CheckEntries: Boolean read FCheckEntries write FCheckEntries default True;
+    property CheckEntries: boolean read FCheckEntries write FCheckEntries default true;
   end;
 
 implementation
@@ -99,10 +99,10 @@ resourcestring
   SLoadSettings = 'Load Settings';
   SSaveSettings = 'Save Settings';
   SDeleteSettings = 'Delete Settings';
-  SOk = '&Ok';
+  SOk     = '&Ok';
   SCancel = '&Cancel';
-  SLoad = '&Load';
-  SSave = '&Save';
+  SLoad   = '&Load';
+  SSave   = '&Save';
   SDelete = '&Delete';
 
   SDynControlEngineNotDefined = 'TJvAppStoreSelectList.CreateDialog: DynControlEngine not defined!';
@@ -110,8 +110,8 @@ resourcestring
 constructor TJvAppStoreSelectList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FSelectList := TStringList.Create;
-  FCheckEntries := True;
+  FSelectList   := TStringList.Create;
+  FCheckEntries := true;
   FSelectDialog := nil;
 end;
 
@@ -171,7 +171,7 @@ procedure TJvAppStoreSelectList.DialogOnOkButtonClick(Sender: TObject);
 var
   Value: string;
 begin
-  Value := IComboBoxData.Value;
+  Value := IComboBoxData.ControlValue;
   if Operation <> sloStore then
     if SelectList.IndexOf(Value) >= 0 then
       SelectDialog.ModalResult := mrOk;
@@ -184,27 +184,27 @@ end;
 
 procedure TJvAppStoreSelectList.DialogOnListBoxChange(Sender: TObject);
 var
-  Index: Integer;
+  Index: integer;
 begin
-  Index := IListBoxData.Value;
-  if (Index >= 0) and (Index < IListBoxItems.Items.Count) then
-    IComboBoxData.Value := IListBoxItems.Items[Index];
+  Index := IListBoxData.ControlValue;
+  if (Index >= 0) and (Index < IListBoxItems.ControlItems.Count) then
+    IComboBoxData.ControlValue := IListBoxItems.ControlItems[Index];
 end;
 
 procedure TJvAppStoreSelectList.SelectFormDestroying(Sender: TObject);
 begin
   FIComboBoxItems := nil;
-  FIComboBoxData := nil;
-  FIListBoxItems := nil;
-  FIListBoxData := nil;
+  FIComboBoxData  := nil;
+  FIListBoxItems  := nil;
+  FIListBoxData   := nil;
 end;
 
 procedure TJvAppStoreSelectList.CreateDialog(AOperation: TJvAppStoreSelectListOperation; ACaption: string = '');
 var
   MainPanel, ButtonPanel, ListBoxPanel, ComboBoxPanel: TWinControl;
   OkButton, CancelButton: tWinControl;
-  ITmpPanel: IJVDynControlPanel;
-  ITmpControl: IJvDynControl;
+  ITmpPanel:    IJVDynControlPanel;
+  ITmpControl:  IJvDynControl;
   ITmpComboBox: IJvDynControlComboBox;
 begin
   if not Assigned(DynControlEngine) then
@@ -221,7 +221,7 @@ begin
     DefaultMonitor := dmActiveForm;
     FormStyle := fsNormal;
     BorderStyle := bsDialog;
-    Position := poScreenCenter;
+    Position  := poScreenCenter;
     OnDestroy := SelectFormDestroying;
   end;
 
@@ -237,20 +237,19 @@ begin
         SelectDialog.Caption := SDeleteSettings;
     end;
 
-  MainPanel := DynControlEngine.CreatePanelControl(Self, SelectDialog, 'MainPanel', '', alClient);
+  MainPanel   := DynControlEngine.CreatePanelControl(Self, SelectDialog, 'MainPanel', '', alClient);
   ButtonPanel := DynControlEngine.CreatePanelControl(Self, SelectDialog, 'ButtonPanel', '', alBottom);
 
-  OkButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'OkButton', SOk, '', DialogOnOkButtonClick, True, False);
+  OkButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'OkButton', SOk, '', DialogOnOkButtonClick, true, false);
   if Operation <> sloStore then
     OkButton.Enabled := SelectList.Count > 0;
-  CancelButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'CancelButton', SCancel, '',
-    DialogOnCancelButtonClick, False, True);
+  CancelButton := DynControlEngine.CreateButton(Self, ButtonPanel, 'CancelButton', SCancel, '', DialogOnCancelButtonClick, false, true);
   ButtonPanel.Height := OkButton.Height + 10;
   CancelButton.Top := 5;
   CancelButton.Left := ButtonPanel.Width - 5 - CancelButton.Width;
   CancelButton.Anchors := [akTop, akRight];
-  OkButton.Top := 5;
-  OkButton.Left := CancelButton.Left - 10 - OkButton.Width;
+  OkButton.Top     := 5;
+  OkButton.Left    := CancelButton.Left - 10 - OkButton.Width;
   OkButton.Anchors := [akTop, akRight];
 
   ComboBoxPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ComboBoxPanel', '', alBottom);
@@ -270,18 +269,18 @@ begin
   if not Supports(ComboBox, IJvDynControlData, FIComboBoxData) then
     raise EIntfCastError.Create(SIntfCastError);
 
-  IComboBoxItems.ControlSetSorted(True);
+  IComboBoxItems.ControlSetSorted(true);
   if Supports(ComboBox, IJvDynControlComboBox, ITmpComboBox) then
     case AOperation of
       sloLoad:
-        ITmpComboBox.ControlSetNewEntriesAllowed(False);
+        ITmpComboBox.ControlSetNewEntriesAllowed(false);
       sloStore:
-        ITmpComboBox.ControlSetNewEntriesAllowed(True);
+        ITmpComboBox.ControlSetNewEntriesAllowed(true);
       sloManage:
-        ITmpComboBox.ControlSetNewEntriesAllowed(False);
+        ITmpComboBox.ControlSetNewEntriesAllowed(false);
     end;
 
-  IComboBoxData.Value := '';
+  IComboBoxData.ControlValue := '';
 
   ListBox := DynControlEngine.CreateListBoxControl(Self, ListBoxPanel, 'ListBox', SelectList);
   Supports(ListBox, IJvDynControlItems, FIListBoxItems);
@@ -295,7 +294,7 @@ begin
       ControlSetOnDblClick(DialogOnOkButtonClick);
 
   ComboBoxPanel.Height := ComboBox.Height + 10;
-  ListBox.Align := alClient;
+  ListBox.Align  := alClient;
   ComboBox.Align := alClient;
 
   if not Supports(OkButton, IJvDynControl, ITmpControl) then
@@ -321,25 +320,25 @@ begin
     begin
       case AOperation of
         sloLoad:
-          Result := SelectPath + PathDelim + IComboBoxData.Value;
+          Result := SelectPath + PathDelim + IComboBoxData.ControlValue;
         sloStore:
+        begin
+          if SelectList.IndexOf(IComboBoxData.ControlValue) < 0 then
           begin
-            if SelectList.IndexOf(IComboBoxData.Value) < 0 then
-            begin
-              SelectList.Add(IComboBoxData.Value);
-              StoreSelectList;
-            end;
-            Result := SelectPath + PathDelim + IComboBoxData.Value;
+            SelectList.Add(IComboBoxData.ControlValue);
+            StoreSelectList;
           end;
+          Result := SelectPath + PathDelim + IComboBoxData.ControlValue;
+        end;
         sloManage:
+        begin
+          if SelectList.IndexOf(IComboBoxData.ControlValue) >= 0 then
           begin
-            if SelectList.IndexOf(IComboBoxData.Value) >= 0 then
-            begin
-              SelectList.Delete(SelectList.IndexOf(IComboBoxData.Value));
-              StoreSelectList;
-            end;
-            Result := SelectPath + PathDelim + IComboBoxData.Value;
+            SelectList.Delete(SelectList.IndexOf(IComboBoxData.ControlValue));
+            StoreSelectList;
           end;
+          Result := SelectPath + PathDelim + IComboBoxData.ControlValue;
+        end;
       end;
     end;
   finally
@@ -354,11 +353,11 @@ end;
 
 procedure TJvAppStoreSelectList.LoadSelectList;
 var
-  I: Integer;
+  I: integer;
 begin
   if Assigned(AppStore) then
   begin
-    AppStore.ReadStringList(SelectPath, FSelectList, True);
+    AppStore.ReadStringList(SelectPath, FSelectList, true);
     if CheckEntries then
       for I := FSelectList.Count - 1 downto 0 do
         if not AppStore.PathExists(SelectPath + PathDelim + FSelectList[I]) then
@@ -368,7 +367,7 @@ end;
 
 procedure TJvAppStoreSelectList.StoreSelectList;
 var
-  I: Integer;
+  I: integer;
 begin
   if Assigned(AppStore) then
   //  if CheckEntries then
@@ -379,4 +378,3 @@ begin
 end;
 
 end.
-

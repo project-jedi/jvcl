@@ -17,8 +17,8 @@ uses
   {$ENDIF}
   ExtCtrls, JvFormPlacement, JvComponent, JvAppStore,
   JvAppRegistryStore, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
-  JvCombobox, CheckLst, cxCheckListBox, ShlObj, cxShellCommon,
-  cxShellComboBox, cxButtonEdit, ExtDlgs, JvImage;
+  JvCombobox, CheckLst, cxCheckListBox, ShlObj, ExtDlgs, JvImage,
+  JvMaskEdit, JvSpin, JvBaseEdits;
 
 type
   TForm1 = class(TForm)
@@ -48,6 +48,11 @@ type
     BitBtn2: TBitBtn;
     HistoryEnabledCheckBox: TCheckBox;
     Image1: TImage;
+    JvImage1: TJvImage;
+    Image2: TImage;
+    DevExpCxStyleGroupBox: TGroupBox;
+    ShadowCheckBox: TCheckBox;
+    ThickLinesCheckBox: TCheckBox;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -119,6 +124,11 @@ begin
         Else
           cxProperties.LookAndFeel.Kind := lfStandard;
         End;
+        CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
+        if ThickLinesCheckBox.Checked then
+          CxProperties.StyleController.Style.BorderStyle := ebsThick
+        else
+          CxProperties.StyleController.Style.BorderStyle := ebsNone;
       End;
     {$ENDIF}
     Parameter := tjvEditParameter.Create(ParameterList);
@@ -141,6 +151,22 @@ begin
     Begin
       SearchName := 'IntegerTest';
       Caption := 'IntegerTest';
+    End;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvIntegerEditParameter.Create(ParameterList);
+    With tjvIntegerEditParameter(Parameter) Do
+    Begin
+      SearchName := 'IntegerTestCalc';
+      Caption := 'IntegerTest Calc';
+      EditorType := netCalculate;
+    End;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvIntegerEditParameter.Create(ParameterList);
+    With tjvIntegerEditParameter(Parameter) Do
+    Begin
+      SearchName := 'IntegerTestSpin';
+      Caption := 'IntegerTest Spin';
+      EditorType := netSpin;
     End;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvFileNameParameter.Create(ParameterList);
@@ -198,8 +224,8 @@ begin
       SearchName := 'PictureTest';
       Caption := 'PictureTest';
 //      AutoSize := True;
-      Height := 220;
-      Width := 280;
+      Height := 180;
+      Width := 240;
     End;
     ParameterList.AddParameter(Parameter);
     ParameterList.AutoHeight := AutoHeightCheckBox.Checked;
@@ -229,7 +255,13 @@ begin
   {$IFNDEF INCLUDE_DEVEXP_CX}
   Button4.Enabled := False;
   DevExpCxLookAndFeelRadioGroup.Enabled := FALSE;
+  DevExpCxStyleGroupBox.Enabled := FALSE;
+  ShadowCheckBox.Enabled := FALSE;
+  ThickLinesCheckBox.Enabled := FALSE;
   {$ENDIF}
+  JvImage1.Picture.Assign(Image1.Picture);
+  JvImage1.Invalidate;
+  Image2.Picture.Assign(Image1.Picture);
 end;
 
 procedure TForm1.BitBtn1Click(Sender: TObject);
@@ -273,6 +305,11 @@ begin
     Else
       cxProperties.LookAndFeel.Kind := lfStandard;
     End;
+    CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
+    if ThickLinesCheckBox.Checked then
+      CxProperties.StyleController.Style.BorderStyle := ebsThick
+    else
+      CxProperties.StyleController.Style.BorderStyle := ebsSingle;
   End;
   {$ENDIF}
 end;

@@ -37,7 +37,7 @@ type
    (jctLabel,jctStaticText, jctPanel, jctScrollBox,
     jctEdit, jctCheckBox, jctComboBox, jctGroupBox, jctImage, jctRadioGroup,
     jctMemo, jctListBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit,
-    jctIntegerEdit, jctDoubleEdit, jctDirectoryEdit, jctFileNameEdit,
+    jctCalculateEdit, jctSpinEdit, jctDirectoryEdit, jctFileNameEdit,
     jctButton, jctForm);
 
   TJvDynControlEngine = class(TPersistent)
@@ -87,9 +87,9 @@ type
       AControlName: string): TWinControl; virtual;
     function CreateTimeControl(AOwner: TComponent; AParentControl: TWinControl;
       AControlName: string): TWinControl; virtual;
-    function CreateIntegerControl(AOwner: TComponent; AParentControl: TWinControl;
+    function CreateCalculateControl(AOwner: TComponent; AParentControl: TWinControl;
       AControlName: string): TWinControl; virtual;
-    function CreateDoubleControl(AOwner: TComponent; AParentControl: TWinControl;
+    function CreateSpinControl(AOwner: TComponent; AParentControl: TWinControl;
       AControlName: string): TWinControl; virtual;
     function CreateDirectoryControl(AOwner: TComponent; AParentControl: TWinControl;
       AControlName: string): TWinControl; virtual;
@@ -100,6 +100,8 @@ type
       AOnClick: TNotifyEvent; ADefault: Boolean = False;
       ACancel: Boolean = False): TButton; virtual;
     function CreateForm(ACaption: string; AHint: string): TCustomForm; virtual;
+
+    function IsControlTypeRegistered (const ADynControlType: TJvDynControlType) : Boolean;
 
     procedure RegisterControl(const ADynControlType: TJvDynControlType;
       AControlClass: TControlClass); virtual;
@@ -169,6 +171,11 @@ begin
   inherited Destroy;
 end;
 
+function TJvDynControlEngine.IsControlTypeRegistered (const ADynControlType: TJvDynControlType) : Boolean;
+begin
+  Result := Assigned(FRegisteredControlTypes[ADynControlType]);
+end;
+
 procedure TJvDynControlEngine.RegisterControl(const ADynControlType: TJvDynControlType;
   AControlClass: TControlClass);
 var
@@ -192,7 +199,7 @@ begin
       Valid := Valid and
         Supports(AControlClass, IJvDynControlItems) and
         Supports(AControlClass, IJvDynControlData);
-    jctEdit, jctIntegerEdit, jctDoubleEdit, jctFilenameEdit, jctDirectoryEdit,
+    jctEdit, jctCalculateEdit, jctSpinEdit, jctFilenameEdit, jctDirectoryEdit,
     jctCheckBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit:
       Valid := Valid and Supports(AControlClass, IJvDynControlData);
   end;
@@ -470,9 +477,9 @@ begin
   with DynCtrl do
     ControlSetCaption(ACaption);
   with DynCtrl as IJvDynControlItems do
-    Items := AItems;
+    ControlItems := AItems;
   with DynCtrl as IJvDynControlData do
-    Value := AItemIndex;
+    ControlValue := AItemIndex;
 end;
 
 //function TJvDynControlEngine.CreatePageControlControl(AOwner : TComponent; AParentControl : TWinControl; AControlName : string) : TWinControl;
@@ -516,16 +523,16 @@ begin
   Result := TWinControl(CreateControl(jctTimeEdit, AOwner, AParentControl, AControlName));
 end;
 
-function TJvDynControlEngine.CreateIntegerControl(AOwner: TComponent;
+function TJvDynControlEngine.CreateCalculateControl(AOwner: TComponent;
   AParentControl: TWinControl; AControlName: string): TWinControl;
 begin
-  Result := TWinControl(CreateControl(jctIntegerEdit, AOwner, AParentControl, AControlName));
+  Result := TWinControl(CreateControl(jctCalculateEdit, AOwner, AParentControl, AControlName));
 end;
 
-function TJvDynControlEngine.CreateDoubleControl(AOwner: TComponent;
+function TJvDynControlEngine.CreateSpinControl(AOwner: TComponent;
   AParentControl: TWinControl; AControlName: string): TWinControl;
 begin
-  Result := TWinControl(CreateControl(jctDoubleEdit, AOwner, AParentControl, AControlName));
+  Result := TWinControl(CreateControl(jctSpinEdit, AOwner, AParentControl, AControlName));
 end;
 
 function TJvDynControlEngine.CreateDirectoryControl(AOwner: TComponent;
