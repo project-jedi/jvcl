@@ -470,6 +470,46 @@ type
     function GetInterface(const IID: TGUID; out Obj): Boolean; virtual;
   end;
 
+  // Basic context list
+  TJvBaseContexts = class(TExtensibleInterfacedPersistent, IJvDataContexts)
+  private
+    FProvider: IJvDataProvider;
+  protected
+    procedure DoAddContext(Context: IJvDataContext); virtual; abstract;
+    procedure DoDeleteContext(Index: Integer); virtual; abstract;
+    procedure DoRemoveContext(Context: IJvDataContext); virtual; abstract;
+    procedure DoClearContexts; virtual; abstract;
+    function Provider: IJvDataProvider;
+    function GetCount: Integer; virtual; abstract;
+    function GetContext(Index: Integer): IJvDataContext; virtual; abstract;
+    function GetContextByName(Name: string): IJvDataContext; virtual; abstract;
+  public
+    constructor Create(AProvider: IJvDataProvider); virtual;
+  end;
+
+(*  // Basic context list manager
+  TJvBaseContextsManager = class(TAggregatedPersistentEx, IJvDataContextsManager)
+  protected
+    function Contexts: IJvDataContexts;
+    function ContextsImpl: TJvBaseContexts;
+    function Add(Context: IJvDataContext): IJvDataContext;
+    function New: IJvDataContext; virtual; abstract;
+    procedure Delete(Context: IJvDataContext);
+    procedure Clear;
+  end;
+
+  // Basic context
+  TJvBaseContext = class(TExtensibleInterfacedPersistent, IJvDataContext)
+  private
+    FContexts: IJvDataContexts;
+  protected
+    function ContextsImpl: TJvBaseContexts;
+    function Contexts: IJvDataContexts;
+    function Name: string; virtual; abstract;
+  public
+    constructor Create(AContexts: IJvDataContexts); virtual;
+  end;*)
+
 // Helper routines
 { Locate nearest IJvDataItems* implementation for a specific item. }
 function DP_FindItemsIntf(AItem: IJvDataItem; IID: TGUID; out Obj): Boolean;
@@ -2584,6 +2624,19 @@ begin
   Result := inherited GetInterface(IID, Obj) or (FDataItemsImpl.GetInterface(IID, Obj));
 end;
 
+//===TJvBaseContexts================================================================================
+
+function TJvBaseContexts.Provider: IJvDataProvider;
+begin
+  Result := FProvider;
+end;
+
+constructor TJvBaseContexts.Create(AProvider: IJvDataProvider);
+begin
+  inherited Create;
+  FProvider := AProvider;
+end;
+
 { TJvDataConsumer }
 
 procedure TJvDataConsumer.SetProvider(Value: IJvDataProvider);
@@ -3073,7 +3126,7 @@ begin
     begin
       if (ConsumerImpl.ProviderIntf = nil) then
       begin
-        if (VCLComponent <> nil) and (csLoading in Consumer.VCLComponent.ComponentState) then
+        if (Consumer.VCLComponent <> nil) and (csLoading in Consumer.VCLComponent.ComponentState) then
         begin
           FItemID := Value;
           NotifyFixups;
