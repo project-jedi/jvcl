@@ -42,6 +42,9 @@ uses
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF}
+  {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+  Graphics, ExtCtrls,
+  {$ENDIF}
   {$IFDEF USE_JV_GIF}
   JvGIF, JvGIFCtrl,
   {$ENDIF}

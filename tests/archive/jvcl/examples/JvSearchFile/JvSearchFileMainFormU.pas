@@ -37,6 +37,7 @@ type
     procedure OptionsChange(Sender: TObject);
     procedure Sort1Click(Sender: TObject);
     procedure Clear1Click(Sender: TObject);
+    procedure JvSearchFile1Progress(Sender: TObject);
   private
     { Private declarations }
     procedure AddSearchTextToComboBox;
@@ -165,6 +166,11 @@ begin
   with cbContainText do
     if (Text <> '') and (Items.IndexOf(Text) < 0) then
         Items.Add(Text);
+end;
+
+procedure TJvSearchFileMainForm.JvSearchFile1Progress(Sender: TObject);
+begin
+  Application.ProcessMessages;
 end;
 
 end.

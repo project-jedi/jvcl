@@ -11,8 +11,5 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TImageWindowMainForm, ImageWindowMainForm);
-  Application.CreateForm(TImageWindowMainForm, ImageWindowMainForm);
-  Application.CreateForm(TImageWindowChild2, ImageWindowChild2);
-  Application.CreateForm(TImageWindowChild1, ImageWindowChild1);
   Application.Run;
 end.

@@ -55,8 +55,7 @@ var
 begin
 
   transFileName := ExtractFilePath(Application.ExeName);
-  StrReplace(transFileName,'\bin', '', [rfIgnoreCase]);
-  transFileName := transFileName + 'examples\JvTranslator\Translations\French.xml';
+  transFileName := transFileName + 'French.xml';
   if not FileExists(transFileName) then
     MessageDlg('File not found: ' + transFileName, mtError, [mbOK], 0)
   else
@@ -69,8 +68,7 @@ var
 begin
 
   transFileName := ExtractFilePath(Application.ExeName);
-  StrReplace(transFileName,'\bin', '', [rfIgnoreCase]);
-  transFileName := transFileName + 'examples\JvTranslator\Translations\English.xml';
+  transFileName := transFileName + 'English.xml';
   if not FileExists(transFileName) then
     MessageDlg('File not found: ' + transFileName, mtError, [mbOK], 0)
   else

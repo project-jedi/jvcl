@@ -1,9 +1,10 @@
 object RessourcesForm: TRessourcesForm
   Left = 281
   Top = 5
-  Width = 558
-  Height = 548
+  BorderStyle = bsSingle
   Caption = 'Ressources'
+  ClientHeight = 518
+  ClientWidth = 550
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -51,7 +52,7 @@ object RessourcesForm: TRessourcesForm
   end
   object JvHotLink9: TJvHotLink
     Left = 64
-    Top = 178
+    Top = 162
     Width = 55
     Height = 16
     Cursor = crHandPoint
@@ -86,13 +87,12 @@ object RessourcesForm: TRessourcesForm
   object Label9: TLabel
     Left = 64
     Top = 117
-    Width = 375
-    Height = 39
+    Width = 341
+    Height = 26
     Caption = 
-      'In the Thread '#39'VCL Hell'#39' of the JVCL newsgroup was some helper f' +
-      'or the IDE'#13#10'mentioned. Because the JVCL contains very many comps' +
-      ' they are really usefull.'#13#10'They are both free and with install p' +
-      'rogram but without source.'
+      'Two Delphi IDE plugins which solve the "IDE Hell" of too many pa' +
+      'lettes.'#13#10'They are both free and with install program but without' +
+      ' source.'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -102,12 +102,12 @@ object RessourcesForm: TRessourcesForm
   end
   object Label12: TLabel
     Left = 64
-    Top = 193
-    Width = 253
+    Top = 177
+    Width = 258
     Height = 26
     Caption = 
-      'You don'#180't know it? Then you have to take a look!'#13#10'It'#180's OpenSourc' +
-      'e. Many screenshoots on the web site.'
+      'You do not know it yet? Then you have to take a look!'#13#10'It is Ope' +
+      'nSource. Many screenshoots on the website.'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -138,7 +138,7 @@ object RessourcesForm: TRessourcesForm
   end
   object Label3: TLabel
     Left = 48
-    Top = 241
+    Top = 225
     Width = 112
     Height = 16
     Caption = 'some JEDI links'
@@ -151,11 +151,11 @@ object RessourcesForm: TRessourcesForm
   end
   object JvHotLink2: TJvHotLink
     Left = 64
-    Top = 259
-    Width = 129
+    Top = 243
+    Width = 136
     Height = 16
     Cursor = crHandPoint
-    Caption = 'Project JEDI hompage'
+    Caption = 'Project JEDI homepage'
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -172,7 +172,7 @@ object RessourcesForm: TRessourcesForm
   end
   object JvHotLink3: TJvHotLink
     Left = 64
-    Top = 275
+    Top = 259
     Width = 212
     Height = 16
     Cursor = crHandPoint
@@ -193,7 +193,7 @@ object RessourcesForm: TRessourcesForm
   end
   object Label4: TLabel
     Left = 48
-    Top = 313
+    Top = 297
     Width = 85
     Height = 16
     Caption = 'TurboPower'
@@ -206,13 +206,13 @@ object RessourcesForm: TRessourcesForm
   end
   object Label5: TLabel
     Left = 64
-    Top = 331
-    Width = 300
+    Top = 347
+    Width = 283
     Height = 39
     Caption = 
-      'As you perhaps already knows has TurboPower discontinues its'#13#10're' +
-      'tail business .. "and release their award winning component'#13#10'lib' +
-      'raries as open source".'
+      'As you perhaps already know TurboPower discontinues its'#13#10'retail ' +
+      'business .. "and releases its award winning component'#13#10'libraries' +
+      ' as open source".'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -222,7 +222,7 @@ object RessourcesForm: TRessourcesForm
   end
   object JvHotLink4: TJvHotLink
     Left = 64
-    Top = 373
+    Top = 317
     Width = 132
     Height = 16
     Cursor = crHandPoint
@@ -243,11 +243,11 @@ object RessourcesForm: TRessourcesForm
   end
   object JvHotLink6: TJvHotLink
     Left = 64
-    Top = 389
-    Width = 154
+    Top = 333
+    Width = 161
     Height = 16
     Cursor = crHandPoint
-    Caption = 'TurboPower at sourceforge'
+    Caption = 'TurboPower at SourceForge'
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -264,7 +264,7 @@ object RessourcesForm: TRessourcesForm
   end
   object Label6: TLabel
     Left = 48
-    Top = 417
+    Top = 409
     Width = 134
     Height = 16
     Caption = 'Developer Express'
@@ -277,13 +277,13 @@ object RessourcesForm: TRessourcesForm
   end
   object Label7: TLabel
     Left = 64
-    Top = 435
+    Top = 459
     Width = 257
     Height = 39
     Caption = 
-      'Yes I admit it has NOTHING to do with OpenSource or'#13#10'JEDI but th' +
-      'e commerical Delphi components of'#13#10'Developer Express are just im' +
-      'pressive ...'
+      'Yes I admit it has NOTHING to do with OpenSource or'#13#10'JEDI, but t' +
+      'he commerical Delphi components of'#13#10'Developer Express are just i' +
+      'mpressive ...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -293,7 +293,7 @@ object RessourcesForm: TRessourcesForm
   end
   object JvHotLink7: TJvHotLink
     Left = 64
-    Top = 477
+    Top = 429
     Width = 172
     Height = 16
     Cursor = crHandPoint
@@ -314,7 +314,7 @@ object RessourcesForm: TRessourcesForm
   end
   object JvHotLink8: TJvHotLink
     Left = 64
-    Top = 493
+    Top = 445
     Width = 283
     Height = 16
     Cursor = crHandPoint
@@ -334,5 +334,18 @@ object RessourcesForm: TRessourcesForm
     Url = 
       'http://www.devexpress.com/downloads/demo/ExpressQuantumGridSuite' +
       '4.zip'
+  end
+  object Label8: TLabel
+    Left = 371
+    Top = 40
+    Width = 94
+    Height = 16
+    Caption = 'Ralf Grenzing'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
 end

@@ -26,6 +26,7 @@ type
     Label7: TLabel;
     JvHotLink7: TJvHotLink;
     JvHotLink8: TJvHotLink;
+    Label8: TLabel;
   end;
 
 var
