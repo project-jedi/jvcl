@@ -683,13 +683,11 @@ begin
 
   if Assigned(FOwner) then
       FOwner.NotifyOptionsChange; // Fire event before we auto-format graph. Allows some customization to occur here.
-
-
 end;
 
 procedure TJvChartOptions.SetYMax(newYmax: Double);
-var
- wasUpdating:Boolean;
+//var
+//  wasUpdating:Boolean;
 begin
   if newYMax = Self.FYMax then
     Exit;
@@ -721,12 +719,10 @@ begin
     YGap := YMax / YValueCount;
   end;
 
-
   //finally
   //    FUpdating := wasUpdating; //restore.
   //end;
   //FOwner.NotifyOptionsChange;
-
 end;
 
 procedure TJvChartOptions.SetXStartOffset(Offset: Integer);
