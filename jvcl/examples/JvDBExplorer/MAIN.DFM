@@ -5,6 +5,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
   Height = 237
   Caption = 'Database Explorer'
   Color = clAppWorkSpace
+  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
@@ -36,6 +37,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
     00010000000100000001000000010000000100000001F0000001F0000001F000
     0001F0000001F0000001FF000001FF000001FF000001FF000001FF0000030100}
   Menu = MainMenu1
+  OldCreateOrder = True
   Position = poDefault
   WindowMenu = WindowMenu
   OnCreate = FormCreate
@@ -48,6 +50,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
     Width = 64
     Height = 13
     Caption = 'SQL Font'
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
     Font.Name = 'Courier'
@@ -124,6 +127,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
         Align = alClient
         Alignment = taCenter
         AutoSize = False
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
@@ -152,6 +156,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
         Align = alClient
         Alignment = taCenter
         AutoSize = False
+        Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
@@ -169,6 +174,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
     Top = 0
     Width = 472
     Height = 29
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
@@ -193,23 +199,23 @@ object DBExplorerMainForm: TDBExplorerMainForm
       Height = 22
       TabOrder = 0
     end
-    object SpeedbarSection1: TjvSpeedbarSection
+    object SpeedbarSection1: TJvSpeedBarSection
       Caption = 'Database'
     end
-    object SpeedbarSection2: TjvSpeedbarSection
+    object SpeedbarSection2: TJvSpeedBarSection
       Caption = 'Utilities'
     end
-    object SpeedbarSection3: TjvSpeedbarSection
+    object SpeedbarSection3: TJvSpeedBarSection
       Caption = 'Tools'
     end
-    object SpeedbarSection4: TjvSpeedbarSection
+    object SpeedbarSection4: TJvSpeedBarSection
       Caption = 'Help'
     end
-    object SpeedItem1: TjvSpeedItem
+    object SpeedItem1: TJvSpeedItem
       Caption = 'Open Database'
       Glyph.Data = {
         66010000424D6601000000000000760000002800000014000000140000000100
-        040000000000F000000000000000000000000000000000000000000000000000
+        040000000000F000000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
         33333333000030000000003333333333000030F77777080333333333000030F7
@@ -228,12 +234,12 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = FileOpenItemClick
       SectionName = 'Database'
     end
-    object CloseButton: TjvSpeedItem
+    object CloseButton: TJvSpeedItem
       Caption = 'Close Database'
       Enabled = False
       Glyph.Data = {
         66010000424D6601000000000000760000002800000014000000140000000100
-        040000000000F000000000000000000000000000000000000000000000000000
+        040000000000F000000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
         33333333000030000000003333333333000030F77777080333333333000030F7
@@ -252,11 +258,11 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = FileCloseItemClick
       SectionName = 'Database'
     end
-    object SpeedItem3: TjvSpeedItem
+    object SpeedItem3: TJvSpeedItem
       Caption = 'Exit'
       Glyph.Data = {
         66010000424D6601000000000000760000002800000014000000140000000100
-        040000000000F000000000000000000000000000000000000000000000000000
+        040000000000F000000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
         33333333000088888888888888833338000088888888888888F3F38800008888
@@ -275,12 +281,12 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = FileExitItemClick
       SectionName = 'Database'
     end
-    object PackBtn: TjvSpeedItem
+    object PackBtn: TJvSpeedItem
       Caption = 'Pack Table'
       Enabled = False
       Glyph.Data = {
         F6000000424DF600000000000000760000002800000010000000100000000100
-        0400000000008000000000000000000000000000000000000000000000000000
+        0400000000008000000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00DDDDDDDDDDDD
         DDDDDDDDDD000000000DDDDDDDDDDD00DDDDDDDDDDD0000000D0DDDDDD078787
@@ -294,12 +300,12 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = PackTableClick
       SectionName = 'Utilities'
     end
-    object DeleteBtn: TjvSpeedItem
+    object DeleteBtn: TJvSpeedItem
       Caption = 'Delete Table'
       Enabled = False
       Glyph.Data = {
         DE010000424DDE01000000000000760000002800000024000000120000000100
-        0400000000006801000000000000000000000000000000000000000000000000
+        0400000000006801000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
         333333333333333333333333000033338833333333333333333F333333333333
@@ -322,12 +328,12 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = DeleteTableClick
       SectionName = 'Utilities'
     end
-    object EmptyBtn: TjvSpeedItem
+    object EmptyBtn: TJvSpeedItem
       Caption = 'Empty Table'
       Enabled = False
       Glyph.Data = {
         42010000424D4201000000000000760000002800000011000000110000000100
-        040000000000CC00000000000000000000000000000000000000000000000000
+        040000000000CC00000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
         3333300000003333333333133333300000003333333331133333100000003333
@@ -344,12 +350,12 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = EmptyTableClick
       SectionName = 'Utilities'
     end
-    object RenameBtn: TjvSpeedItem
+    object RenameBtn: TJvSpeedItem
       Caption = 'Rename Table'
       Enabled = False
       Glyph.Data = {
         F6000000424DF600000000000000760000002800000010000000100000000100
-        0400000000008000000000000000000000000000000000000000000000000000
+        0400000000008000000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333000000
         83333333330AAAAA00833333330AAAAAA2033333330AAAAA2A20333333000000
@@ -363,12 +369,12 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = RenameTableClick
       SectionName = 'Utilities'
     end
-    object ExportBtn: TjvSpeedItem
+    object ExportBtn: TJvSpeedItem
       Caption = 'Export Data'
       Enabled = False
       Glyph.Data = {
         4E010000424D4E01000000000000760000002800000012000000120000000100
-        040000000000D800000000000000000000000000000010000000000000000000
+        040000000000D800000000000000000000001000000010000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333303333333
         3333330000003333003000000000000000003800000078888888800000008000
@@ -386,12 +392,12 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = ExportClick
       SectionName = 'Utilities'
     end
-    object ImportBtn: TjvSpeedItem
+    object ImportBtn: TJvSpeedItem
       Caption = 'Import Data'
       Enabled = False
       Glyph.Data = {
         4E010000424D4E01000000000000760000002800000012000000120000000100
-        040000000000D800000000000000000000000000000010000000000000000000
+        040000000000D800000000000000000000001000000010000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
         3333330000000000000000033333330000000788888888033333330000000F77
@@ -409,12 +415,12 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = ImportClick
       SectionName = 'Utilities'
     end
-    object PrintBtn: TjvSpeedItem
+    object PrintBtn: TJvSpeedItem
       Caption = 'Print Data'
       Enabled = False
       Glyph.Data = {
         66010000424D6601000000000000760000002800000014000000140000000100
-        040000000000F000000000000000000000000000000000000000000000000000
+        040000000000F000000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00DDDDDDDDDDDD
         DDDDDDDD0000DDDDDDDDDDDDDDDDDDDD0000DDDDD8888888888DDDDD0000DDDD
@@ -431,11 +437,11 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = PrintDataClick
       SectionName = 'Utilities'
     end
-    object SQLMonitorBtn: TjvSpeedItem
+    object SQLMonitorBtn: TJvSpeedItem
       Caption = 'SQL Monitor'
       Glyph.Data = {
         F6000000424DF600000000000000760000002800000010000000100000000100
-        0400000000008000000000000000000000000000000000000000000000000000
+        0400000000008000000000000000000000001000000000000000000000000000
         8000008000000080800080000000800080008080000080808000C0C0C0000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00100000000010
         000110FFFFFFF010BB0110F0F0F0F010000110FFFFFFF010BB0110F0F0F00000
@@ -448,12 +454,12 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = SQLMonitorItemClick
       SectionName = 'Utilities'
     end
-    object RepairBtn: TjvSpeedItem
+    object RepairBtn: TJvSpeedItem
       Caption = 'Check Paradox Tables'
       Enabled = False
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
-        0400000000000001000000000000000000000000000000000000000000000000
+        0400000000000001000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
         333333333333333333333333333333333333333FF33333333FF3330033333333
@@ -471,14 +477,14 @@ object DBExplorerMainForm: TDBExplorerMainForm
       Top = 4
       SectionName = 'Utilities'
     end
-    object SpeedItem4: TjvSpeedItem
+    object SpeedItem4: TJvSpeedItem
       AllowAllUp = True
       Caption = 'Sync Pages'
       GroupIndex = 1
       Down = True
       Glyph.Data = {
         42010000424D4201000000000000760000002800000011000000110000000100
-        040000000000CC00000000000000000000000000000000000000000000000000
+        040000000000CC00000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
         3333300000000000000033333333300000000FFFFFF033333333300000000F88
@@ -496,13 +502,13 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = AutoActivateItemClick
       SectionName = 'Tools'
     end
-    object SpeedItem2: TjvSpeedItem
+    object SpeedItem2: TJvSpeedItem
       AllowAllUp = True
       Caption = 'Show System Tables'
       GroupIndex = 2
       Glyph.Data = {
         66010000424D6601000000000000760000002800000014000000140000000100
-        040000000000F000000000000000000000000000000000000000000000000000
+        040000000000F000000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
         3333333300003333333333333333333300003333330000000333333300003331
@@ -521,14 +527,14 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = SystemTablesItemClick
       SectionName = 'Tools'
     end
-    object KeepConnectionsSpd: TjvSpeedItem
+    object KeepConnectionsSpd: TJvSpeedItem
       AllowAllUp = True
       Caption = 'Keep Connections'
       GroupIndex = 3
       Down = True
       Glyph.Data = {
         42010000424D4201000000000000760000002800000011000000110000000100
-        040000000000CC00000000000000000000000000000000000000000000000000
+        040000000000CC00000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333338888888
         8888800000003333383333333333800000003333383333333333800000003333
@@ -545,11 +551,11 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = KeepConnectionsItemClick
       SectionName = 'Tools'
     end
-    object OptionsBtn: TjvSpeedItem
+    object OptionsBtn: TJvSpeedItem
       Caption = 'Options'
       Glyph.Data = {
         F6000000424DF600000000000000760000002800000010000000100000000100
-        0400000000008000000000000000000000000000000000000000000000000000
+        0400000000008000000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
         333300000000000033330FFFFFFFFFF033330F00F00000F033330FFFFFFFFFF0
@@ -564,11 +570,11 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = OptionsClick
       SectionName = 'Tools'
     end
-    object SpeedItem5: TjvSpeedItem
+    object SpeedItem5: TJvSpeedItem
       Caption = 'Customize JvSpeedbar'
       Glyph.Data = {
         66010000424D6601000000000000760000002800000014000000140000000100
-        040000000000F000000000000000000000000000000000000000000000000000
+        040000000000F000000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
         7777777700007777777777777777777700007F88888888888888888800007F78
@@ -587,11 +593,11 @@ object DBExplorerMainForm: TDBExplorerMainForm
       OnClick = CustomizeToolbarItemClick
       SectionName = 'Tools'
     end
-    object SpeedItem6: TjvSpeedItem
+    object SpeedItem6: TJvSpeedItem
       Caption = 'About'
       Glyph.Data = {
         66010000424D6601000000000000760000002800000014000000140000000100
-        040000000000F000000000000000000000000000000000000000000000000000
+        040000000000F000000000000000000000001000000000000000000000000000
         80000080000000808000800000008000800080800000C0C0C000808080000000
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
         3333333300003333333333333333333300003333333800008333333300003333
@@ -624,6 +630,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
     StoredProps.Strings = (
       'SQLFontContainer.Font'
       'JvSpeedbar.Options')
+    StoredValues = <>
     Left = 60
     Top = 36
   end
@@ -633,7 +640,6 @@ object DBExplorerMainForm: TDBExplorerMainForm
     object File1: TMenuItem
       Caption = '&Database'
       Hint = 'Databases related commands'
-      ShortCut = 0
       object FileOpenItem: TMenuItem
         Caption = '&Open...'
         Hint = 'Open an existing database'
@@ -644,44 +650,37 @@ object DBExplorerMainForm: TDBExplorerMainForm
         Caption = 'Reopen'
         Enabled = False
         Hint = 'Reopen the specified database'
-        ShortCut = 0
       end
       object FileCloseItem: TMenuItem
         Caption = '&Close'
         Hint = 'Close current database'
-        ShortCut = 0
         OnClick = FileCloseItemClick
       end
       object TablesSessionMenu: TMenuItem
         Caption = '&Tables Session'
         Enabled = False
         Hint = 'Tables session transaction management'
-        ShortCut = 0
         object TabPasswordItem: TMenuItem
           Caption = 'Passwords...'
           Hint = 'Add and remove main session passwords'
-          ShortCut = 0
           OnClick = PasswordItemClick
         end
         object StartTransItem: TMenuItem
           Caption = '&Start Transaction'
           Enabled = False
           Hint = 'Start Transaction on current database'
-          ShortCut = 0
           OnClick = StartTransItemClick
         end
         object CommitItem: TMenuItem
           Caption = '&Commit'
           Enabled = False
           Hint = 'Commit changes to database'
-          ShortCut = 0
           OnClick = CommitItemClick
         end
         object RollbackItem: TMenuItem
           Caption = '&Rollback'
           Enabled = False
           Hint = 'Rolback changes'
-          ShortCut = 0
           OnClick = RollbackItemClick
         end
       end
@@ -689,49 +688,41 @@ object DBExplorerMainForm: TDBExplorerMainForm
         Caption = '&Query Session'
         Enabled = False
         Hint = 'Query session transaction management'
-        ShortCut = 0
         object QryPasswordItem: TMenuItem
           Caption = 'Passwords...'
           Enabled = False
           Hint = 'Add and remove query session passwords'
-          ShortCut = 0
           OnClick = PasswordItemClick
         end
         object StartTransQueryItem: TMenuItem
           Caption = '&Start Transaction'
           Enabled = False
           Hint = 'Start Transaction on current database'
-          ShortCut = 0
           OnClick = StartTransItemClick
         end
         object CommitQueryItem: TMenuItem
           Caption = '&Commit'
           Enabled = False
           Hint = 'Commit changes to database'
-          ShortCut = 0
           OnClick = CommitItemClick
         end
         object RollbackQueryItem: TMenuItem
           Caption = '&Rollback'
           Enabled = False
           Hint = 'Rolback changes'
-          ShortCut = 0
           OnClick = RollbackItemClick
         end
       end
       object N1: TMenuItem
         Caption = '-'
-        ShortCut = 0
       end
       object BdePropsItem: TMenuItem
         Caption = 'P&roperties'
         Hint = 'Database Engine Properties'
-        ShortCut = 0
         OnClick = BdePropsItemClick
       end
       object N5: TMenuItem
         Caption = '-'
-        ShortCut = 0
       end
       object FileExitItem: TMenuItem
         Caption = 'E&xit'
@@ -742,102 +733,86 @@ object DBExplorerMainForm: TDBExplorerMainForm
     end
     object UtilitiesMenu: TMenuItem
       Caption = '&Utilities'
-      ShortCut = 0
       object TraceSQLItem: TMenuItem
         Caption = 'Trace SQL'
         Hint = 'Trace BDE callings to SQL server'
-        ShortCut = 0
         OnClick = TraceSQLItemClick
       end
       object SQLMonitorItem: TMenuItem
         Caption = 'SQL Monitor'
         Hint = 'Show SQL monitor'
-        ShortCut = 0
         OnClick = SQLMonitorItemClick
       end
       object ClearTraceItem: TMenuItem
         Caption = 'Clear trace buffer'
         Hint = 'Clear SQL trace buffer'
-        ShortCut = 0
         OnClick = ClearTraceItemClick
       end
       object N4: TMenuItem
         Caption = '-'
-        ShortCut = 0
       end
       object PackTableItem: TMenuItem
         Caption = '&Pack Table'
         Enabled = False
         Hint = 'Pack Paradox or DBase table'
-        ShortCut = 0
         OnClick = PackTableClick
       end
       object DeleteTableItem: TMenuItem
         Caption = '&Delete Table'
         Enabled = False
         Hint = 'Delete selected table'
-        ShortCut = 0
         OnClick = DeleteTableClick
       end
       object EmptyTableItem: TMenuItem
         Caption = '&Empty Table'
         Enabled = False
         Hint = 'Empty selected table'
-        ShortCut = 0
         OnClick = EmptyTableClick
       end
       object ReindexItem: TMenuItem
         Caption = 'Re&index Table'
         Enabled = False
         Hint = 'Reindex Paradox or DBase table'
-        ShortCut = 0
         OnClick = ReindexItemClick
       end
       object RenameTableItem: TMenuItem
         Caption = '&Rename Table'
         Enabled = False
         Hint = 'Rename selected table'
-        ShortCut = 0
         OnClick = RenameTableClick
       end
       object ExportTableItem: TMenuItem
         Caption = 'E&xport Data'
         Enabled = False
         Hint = 'Export data to dBase, ASCII or Paradox format'
-        ShortCut = 0
         OnClick = ExportClick
       end
       object ImportDataItem: TMenuItem
         Caption = 'I&mport Data'
         Enabled = False
         Hint = 'Import data from dBase or Paradox format'
-        ShortCut = 0
         OnClick = ImportClick
       end
       object PrintDataItem: TMenuItem
         Caption = 'Pri&nt Data'
         Enabled = False
         Hint = 'Print data'
-        ShortCut = 0
         OnClick = PrintDataClick
       end
       object CheckPXSubMenu: TMenuItem
         Caption = '&Check Paradox Tables'
         Enabled = False
         Hint = 'Check and repair Paradox tables'
-        ShortCut = 0
         object CheckPXItem: TMenuItem
           Caption = '&Single Table'
           Enabled = False
           Hint = 'Check and repair single Paradox table'
-          ShortCut = 0
           OnClick = CheckPXItemClick
         end
         object CheckPXAllItem: TMenuItem
           Caption = '&All Tables'
           Enabled = False
           Hint = 'Check all Paradox Tables in database'
-          ShortCut = 0
           OnClick = CheckPXItemClick
         end
       end
@@ -845,108 +820,91 @@ object DBExplorerMainForm: TDBExplorerMainForm
     object Options1: TMenuItem
       Caption = 'T&ools'
       Hint = 'Configuration settings'
-      ShortCut = 0
       object AutoActivateItem: TMenuItem
         Caption = '&Sync Pages'
         Checked = True
         Hint = 'Automatic open table on navigate'
-        ShortCut = 0
         OnClick = AutoActivateItemClick
       end
       object SystemTablesItem: TMenuItem
         Caption = 'System &Tables'
         Hint = 'Show system tables'
-        ShortCut = 0
         OnClick = SystemTablesItemClick
       end
       object KeepConnectionsItem: TMenuItem
         Caption = '&Keep Connections'
         Checked = True
         Hint = 'Keep database connections'
-        ShortCut = 0
         OnClick = KeepConnectionsItemClick
       end
       object N3: TMenuItem
         Caption = '-'
-        ShortCut = 0
       end
       object OptionsItem: TMenuItem
         Caption = '&Options...'
         Hint = 'Preferences'
-        ShortCut = 0
         OnClick = OptionsClick
       end
       object CustomizeSpeedbar: TMenuItem
         Caption = '&Customize JvSpeedbar...'
         Hint = 'Customize JvSpeedbar'
-        ShortCut = 0
         OnClick = CustomizeToolbarItemClick
       end
       object UserHelpItem: TMenuItem
         Caption = 'User &Help Files...'
         Hint = 'Configure items that can be added on the Help menu'
-        ShortCut = 0
         OnClick = UserHelpItemClick
       end
       object FlatButtonsItem: TMenuItem
         Caption = '&Flat JvSpeedbar Buttons'
         Hint = 'Add or remove the 3D-border when the button is unselected'
-        ShortCut = 0
         OnClick = FlatButtonsItemClick
       end
     end
     object WindowMenu: TMenuItem
       Caption = '&Window'
       Hint = 'Window related commands such as Tile and Cascade'
-      ShortCut = 0
       object WindowCascadeItem: TMenuItem
         Caption = '&Cascade'
         Hint = 'Arrange windows so they overlap'
-        ShortCut = 0
         OnClick = WindowCascadeItemClick
       end
       object WindowTileItem: TMenuItem
         Caption = 'Tile &Horizontal'
         Hint = 'Arrange windows side by side'
-        ShortCut = 0
         OnClick = WindowTileItemClick
       end
       object WindowTileVerticalItem: TMenuItem
         Caption = 'Tile &Vertical'
         Hint = 'Arrange windows stacked vertically'
-        ShortCut = 0
         OnClick = WindowTileItemClick
       end
       object N2: TMenuItem
         Caption = '-'
-        ShortCut = 0
       end
       object WindowArrangeItem: TMenuItem
         Caption = '&Arrange Icons'
         Hint = 'Arrange window icons at bottom of main window'
-        ShortCut = 0
         OnClick = WindowArrangeItemClick
       end
       object WindowMinimizeItem: TMenuItem
         Caption = '&Minimize All'
         Hint = 'Minimize all windows'
-        ShortCut = 0
         OnClick = WindowMinimizeItemClick
       end
     end
     object Help1: TMenuItem
       Caption = '&Help'
       Hint = 'Help topics'
-      ShortCut = 0
       object HelpAboutItem: TMenuItem
         Caption = '&About'
         Hint = 'About Database Explorer'
-        ShortCut = 0
         OnClick = HelpAboutItemClick
       end
     end
   end
   object ClosedDatabases: TJvMRUManager
+    Duplicates = dupIgnore
     Capacity = 15
     IniStorage = FormPlacement
     RecentMenu = ReopenItem
@@ -962,6 +920,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
     Top = 36
   end
   object HelpList: TJvMRUManager
+    Duplicates = dupIgnore
     AutoEnable = False
     Capacity = 20
     IniStorage = FormPlacement

@@ -2,8 +2,7 @@ program CsvDataDemo;
 
 uses
   Forms,
-  CsvDataSourceDemoFm in 'CsvDataSourceDemoFm.pas' {CsvDataSourceForm},
-  JvCsvData in '..\JvCsvData.Pas';
+  CsvDataSourceDemoFm in 'CsvDataSourceDemoFm.pas' {CsvDataSourceForm};
 
 {$R *.res}
 

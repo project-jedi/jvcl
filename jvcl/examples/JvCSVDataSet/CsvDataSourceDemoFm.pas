@@ -32,8 +32,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, DB, Grids, DBGrids, ExtCtrls, DBCtrls, JvCsvData, StdCtrls,
-  JvCsvParse, ComCtrls;
+  Dialogs, DB, Grids, DBGrids, ExtCtrls, DBCtrls, StdCtrls,
+  ComCtrls, JvCSVParse, JvCsvData;
 
 
 type

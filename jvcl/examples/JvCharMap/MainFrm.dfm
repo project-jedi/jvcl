@@ -222,9 +222,9 @@ object Form1: TForm1
         'clNone=None'
         'clDefault=Default')
       ColorDialogText = 'Custom...'
+      DroppedDownWidth = 100
       NewColorText = 'Custom'
       Options = [coText, coCustomColors]
-      DroppedDownWidth = 100
       TabOrder = 11
     end
     object cbFont: TJvFontComboBox
@@ -232,6 +232,7 @@ object Form1: TForm1
       Top = 126
       Width = 97
       Height = 22
+      DroppedDownWidth = 97
       FontName = 'System'
       ItemIndex = 0
       Sorted = False
