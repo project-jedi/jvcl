@@ -9,7 +9,14 @@ procedure Register;
 implementation
 
 uses
-  Classes, Controls, ComCtrls, Forms, Dialogs, TypInfo, SysUtils,
+  Classes, Controls, ComCtrls, Forms,
+  {$IFDEF WINDOWS}
+  Dialogs,
+  {$ENDIF WINDOWS}
+  {$IFDEF LINUX}
+  QDialogs,
+  {$ENDIF LINUX}
+  TypInfo, SysUtils,
   ToolsAPI;
 
 var
