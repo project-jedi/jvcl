@@ -21,9 +21,24 @@ Last Modified: 2003-10-28
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  This unit includes several visual logic blocks that can be used without any programming.
+  It is the start of a whole series of simulation blocks.
+
+  There is a string seperation between the visual part and functionality.
+
+  The user creates and removes blocks; joins and moves them.
+
+  The functionality is created every 50 msec in the onTimer event of TJvSimLogicBox.
+
+  No programming is required, just drop a TJvLogicBox in the corner of a form and Build the program.
+
+  All the rest is up to the user.
+
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I jvcl.inc}
+
+{$I JVCL.INC}
 
 unit JvSimLogic;
 
@@ -32,43 +47,29 @@ interface
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, Extctrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, QExtCtrls, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvClxUtils, JvTypes;
-  
-{ Copyright 2000 by Jan Verhoeven
-This unit includes several visual logic blocks that can be used without any programming.
-It is the start of a whole series of simulation blocks.
-
-There is a string seperation between the visual part and functionality.
-
-The user creates and removes blocks; joins and moves them.
-
-The functionality is created every 50 msec in the onTimer event of TJvSimLogicBox.
-
-No programming is required, just drop a TJvLogicBox in the corner of a form and Build the program.
-
-All the rest is up to the user.
-}
 
 type
   TJvLogic = class;
 
-  TjanGateStyle = (jgsDI, jgsDO);
+  TJvGateStyle = (jgsDI, jgsDO);
   TJvLogicFunc = (jlfAND, jlfOR, jlfNOT);
-  TjanGate = record
-    Style: TjanGateStyle;
-    State: boolean;
+  TJvGate = record
+    Style: TJvGateStyle;
+    State: Boolean;
     Active: Boolean;
-    pos: TPoint;
+    Pos: TPoint;
   end;
 
-  TPointX = class(TPersistent)
+  TJvPointX = class(TPersistent)
   private
-    FX, FY: Integer;
+    FX: Integer;
+    FY: Integer;
   public
     function Point: TPoint;
     procedure SetPoint(const Pt: TPoint);
@@ -78,96 +79,93 @@ type
     property Y: Integer read FY write FY;
   end;
 
-  TjanConMode = (jcmTL, jcmTR, jcmBR, jcmBL);
-  TjanConPos = (jcpTL, jcpTR, jcpBR, jcpBL);
-  TjanConShape = (jcsTLBR, jcsTRBL);
+  TJvConMode = (jcmTL, jcmTR, jcmBR, jcmBL);
+  TJvConPos = (jcpTL, jcpTR, jcpBR, jcpBL);
+  TJvConShape = (jcsTLBR, jcsTRBL);
 
   TJvSIMConnector = class(TGraphicControl)
   private
-    { Private declarations }
-    mdp: TPoint;
-    oldp: TPoint;
-    ConAnchor: TPoint;
-    ConOffset: TPoint;
-    ConMode: TjanConMode;
-    ConHot: TjanConPos;
-    doMove: boolean;
-    doEdge: boolean;
-    DisCon: Tcontrol;
-    DisConI: integer;
-    Mode: TjanConMode;
-    Shape: TjanConShape;
-    conSize: integer;
-    conPos: TjanConPos;
-    Edge: extended;
+    FMdp: TPoint;
+    FOldp: TPoint;
+    FConAnchor: TPoint;
+    FConOffset: TPoint;
+    FConMode: TJvConMode;
+    FConHot: TJvConPos;
+    FDoMove: Boolean;
+    FDoEdge: Boolean;
+    FDisCon: TControl;
+    FDisConI: Integer;
+    FMode: TJvConMode;
+    FShape: TJvConShape;
+    FConSize: Integer;
+    FConPos: TJvConPos;
+    FEdge: Extended;
+
     FFromLogic: TJvLogic;
     FToLogic: TJvLogic;
-    FFromGate: integer;
-    FToGate: integer;
-    FFromPoint: TPointX;
-    FToPoint: TPointX;
+    FFromGate: Integer;
+    FToGate: Integer;
+    FFromPoint: TJvPointX;
+    FToPoint: TJvPointX;
     procedure SetFromLogic(const Value: TJvLogic);
     procedure SetToLogic(const Value: TJvLogic);
-    procedure SetFromGate(const Value: integer);
-    procedure SetToGate(const Value: integer);
-    procedure SetFromPoint(const Value: TPointX);
-    procedure SetToPoint(const Value: TPointX);
-    procedure DisConnectFinal;
+    procedure SetFromGate(const Value: Integer);
+    procedure SetToGate(const Value: Integer);
+    procedure SetFromPoint(const Value: TJvPointX);
+    procedure SetToPoint(const Value: TJvPointX);
+    procedure DisconnectFinal;
   protected
-    { Protected declarations }
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure paint; override;
+    procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure DoMouseDown(x, y: integer);
-    procedure DoMouseMove(dx, dy: integer);
-    procedure AnchorCorner(logTL: TPoint; ACorner: TjanConMode);
-    procedure MoveConnector(logTL: TPoint);
+    procedure DoMouseDown(X, Y: Integer);
+    procedure DoMouseMove(dx, dy: Integer);
+    procedure AnchorCorner(LogTL: TPoint; ACorner: TJvConMode);
+    procedure MoveConnector(LogTL: TPoint);
     procedure Connect;
-    procedure DisConnect;
+    procedure Disconnect;
   published
-    { Published declarations }
     property FromLogic: TJvLogic read FFromLogic write SetFromLogic;
-    property FromGate: integer read FFromGate write SetFromGate;
-    property FromPoint: TPointX read FFromPoint write SetFromPoint;
+    property FromGate: Integer read FFromGate write SetFromGate;
+    property FromPoint: TJvPointX read FFromPoint write SetFromPoint;
     property ToLogic: TJvLogic read FToLogic write SetToLogic;
-    property ToGate: integer read FToGate write SetToGate;
-    property ToPoint: TPointX read FToPoint write SetToPoint;
+    property ToGate: Integer read FToGate write SetToGate;
+    property ToPoint: TJvPointX read FToPoint write SetToPoint;
   end;
 
   TJvLogic = class(TGraphicControl)
   private
-    doMove: boolean;
-    doStyle: boolean;
-    StyleDown: boolean;
-    mdp: TPoint;
-    oldp: TPoint;
-    FGates: array[0..5] of TjanGate;
-    Connectors: TList;
-    newLeft: integer;
-    newTop: integer;
-    FOutPut1: boolean;
-    FInput2: boolean;
-    FOutPut3: boolean;
-    FInput3: boolean;
-    FOutPut2: boolean;
-    FInput1: boolean;
+    FDoMove: Boolean;
+    FDoStyle: Boolean;
+    FStyleDown: Boolean;
+    FMdp: TPoint;
+    FOldp: TPoint;
+    FGates: array [0..5] of TJvGate;
+    FConnectors: TList;
+    FNewLeft: Integer;
+    FNewTop: Integer;
+    FInput1: Boolean;
+    FInput2: Boolean;
+    FInput3: Boolean;
+    FOutput1: Boolean;
+    FOutput2: Boolean;
+    FOutput3: Boolean;
     FLogicFunc: TJvLogicFunc;
-    function GetGate(Index: Integer): TjanGate;
+    function GetGate(Index: Integer): TJvGate;
     procedure AnchorConnectors;
     procedure MoveConnectors;
-    procedure PaintLed(index: integer);
-    procedure SetInput1(const Value: boolean);
-    procedure SetInput2(const Value: boolean);
-    procedure SetInput3(const Value: boolean);
-    procedure SetOutPut1(const Value: boolean);
-    procedure SetOutPut2(const Value: boolean);
-    procedure SetOutPut3(const Value: boolean);
+    procedure PaintLed(Index: Integer);
+    procedure SetInput1(const Value: Boolean);
+    procedure SetInput2(const Value: Boolean);
+    procedure SetInput3(const Value: Boolean);
+    procedure SetOutput1(const Value: Boolean);
+    procedure SetOutput2(const Value: Boolean);
+    procedure SetOutput3(const Value: Boolean);
     procedure SetLogicFunc(const Value: TJvLogicFunc);
     procedure OutCalc;
   protected
@@ -179,39 +177,39 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
-    property Gates[index: integer]: TjanGate read GetGate;
+    property Gates[Index: Integer]: TJvGate read GetGate;
   published
-    property Input1: boolean read FInput1 write SetInput1;
-    property Input2: boolean read FInput2 write SetInput2;
-    property Input3: boolean read FInput3 write SetInput3;
-    property OutPut1: boolean read FOutPut1 write SetOutPut1;
-    property OutPut2: boolean read FOutPut2 write SetOutPut2;
-    property OutPut3: boolean read FOutPut3 write SetOutPut3;
+    property Input1: Boolean read FInput1 write SetInput1;
+    property Input2: Boolean read FInput2 write SetInput2;
+    property Input3: Boolean read FInput3 write SetInput3;
+    property Output1: Boolean read FOutput1 write SetOutput1;
+    property Output2: Boolean read FOutput2 write SetOutput2;
+    property Output3: Boolean read FOutput3 write SetOutput3;
     property LogicFunc: TJvLogicFunc read FLogicFunc write SetLogicFunc;
   end;
 
   TJvSimReverse = class(TGraphicControl)
   private
-    doMove: boolean;
-    mdp: TPoint;
-    oldp: TPoint;
-    FGates: array[0..3] of TjanGate;
-    Connectors: TList;
-    newLeft: integer;
-    newTop: integer;
-    FOutPut1: boolean;
-    FInput1: boolean;
-    FOutPut3: boolean;
-    FOutPut2: boolean;
-    function GetGate(Index: Integer): TjanGate;
+    FDoMove: Boolean;
+    FMdp: TPoint;
+    FOldp: TPoint;
+    FGates: array [0..3] of TJvGate;
+    FConnectors: TList;
+    FNewLeft: Integer;
+    FNewTop: Integer;
+    FInput1: Boolean;
+    FOutput1: Boolean;
+    FOutput2: Boolean;
+    FOutput3: Boolean;
+    function GetGate(Index: Integer): TJvGate;
     procedure AnchorConnectors;
     procedure MoveConnectors;
-    procedure PaintLed(index: integer);
-    procedure SetInput1(const Value: boolean);
-    procedure SetOutPut1(const Value: boolean);
+    procedure PaintLed(Index: Integer);
+    procedure SetInput1(const Value: Boolean);
+    procedure SetOutput1(const Value: Boolean);
     procedure OutCalc;
-    procedure SetOutPut2(const Value: boolean);
-    procedure SetOutPut3(const Value: boolean);
+    procedure SetOutput2(const Value: Boolean);
+    procedure SetOutput3(const Value: Boolean);
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -221,28 +219,28 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
-    property Gates[index: integer]: TjanGate read GetGate;
+    property Gates[Index: Integer]: TJvGate read GetGate;
   published
-    property Input1: boolean read FInput1 write SetInput1;
-    property OutPut1: boolean read FOutPut1 write SetOutPut1;
-    property OutPut2: boolean read FOutPut2 write SetOutPut2;
-    property OutPut3: boolean read FOutPut3 write SetOutPut3;
+    property Input1: Boolean read FInput1 write SetInput1;
+    property Output1: Boolean read FOutput1 write SetOutput1;
+    property Output2: Boolean read FOutput2 write SetOutput2;
+    property Output3: Boolean read FOutput3 write SetOutput3;
   end;
 
   TJvSimButton = class(TGraphicControl)
   private
-    doMove: boolean;
-    mdp: TPoint;
-    oldp: TPoint;
-    Connectors: TList;
-    FDown: boolean;
-    FDepressed: boolean;
-    newLeft: integer;
-    newTop: integer;
+    FDoMove: Boolean;
+    FMdp: TPoint;
+    FOldp: TPoint;
+    FConnectors: TList;
+    FDown: Boolean;
+    FDepressed: Boolean;
+    FNewLeft: Integer;
+    FNewTop: Integer;
     procedure AnchorConnectors;
     procedure MoveConnectors;
-    procedure PaintLed(pt: TPoint; lit: boolean);
-    procedure SetDown(const Value: boolean);
+    procedure PaintLed(Pt: TPoint; Lit: Boolean);
+    procedure SetDown(const Value: Boolean);
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -253,25 +251,25 @@ type
     destructor Destroy; override;
     procedure Paint; override;
   published
-    property Down: boolean read FDown write SetDown;
+    property Down: Boolean read FDown write SetDown;
   end;
 
   TJvSimLight = class(TGraphicControl)
   private
-    doMove: boolean;
-    mdp: TPoint;
-    oldp: TPoint;
-    Connectors: TList;
-    FLit: boolean;
-    FOnColor: TColor;
-    FOffColor: TColor;
-    newleft: integer;
-    newtop: integer;
+    FDoMove: Boolean;
+    FMdp: TPoint;
+    FOldp: TPoint;
+    FConnectors: TList;
+    FLit: Boolean;
+    FColorOn: TColor;
+    FColorOff: TColor;
+    FNewLeft: Integer;
+    FNewTop: Integer;
     procedure AnchorConnectors;
     procedure MoveConnectors;
-    procedure SetLit(const Value: boolean);
-    procedure SetOffColor(const Value: TColor);
-    procedure SetOnColor(const Value: TColor);
+    procedure SetLit(const Value: Boolean);
+    procedure SetColorOff(const Value: TColor);
+    procedure SetColorOn(const Value: TColor);
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -282,50 +280,50 @@ type
     destructor Destroy; override;
     procedure Paint; override;
   published
-    property Lit: boolean read FLit write SetLit;
-    property OnColor: TColor read FOnColor write SetOnColor;
-    property OffColor: TColor read FOffColor write SetOffColor;
+    property Lit: Boolean read FLit write SetLit;
+    property ColorOn: TColor read FColorOn write SetColorOn;
+    property ColorOff: TColor read FColorOff write SetColorOff;
   end;
 
-  TjanSimBin = class(TGraphicControl)
+  TJvSimBin = class(TGraphicControl)
   private
-    bmBin: Tbitmap;
+    FBmpBin: TBitmap;
   protected
-    procedure resize; override;
+    procedure Resize; override;
   public
-    constructor create(AOwner: Tcomponent); override;
-    destructor destroy; override;
-    procedure paint; override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Paint; override;
   published
   end;
 
   TJvSimLogicBox = class(TGraphicControl)
   private
-    cpu: TTimer;
-    bmCon: Tbitmap;
-    RCon: TRect;
-    DCon: boolean;
-    bmLogic: Tbitmap;
-    RLogic: TRect;
-    DLogic: boolean;
-    bmButton: Tbitmap;
-    RButton: TRect;
-    DButton: boolean;
-    bmLight: Tbitmap;
-    RLight: TRect;
-    DLight: boolean;
-    bmRev: Tbitmap;
-    RRev: TRect;
-    DRev: boolean;
-    bmBin: TBitmap;
-    procedure cpuOnTimer(sender: TObject);
+    FCpu: TTimer;
+    FBmpCon: TBitmap;
+    FRCon: TRect;
+    FDCon: Boolean;
+    FBmpLogic: TBitmap;
+    FRLogic: TRect;
+    FDLogic: Boolean;
+    FBmpButton: TBitmap;
+    FRButton: TRect;
+    FDButton: Boolean;
+    FBmpLight: TBitmap;
+    FRLight: TRect;
+    FDLight: Boolean;
+    FBmpRev: TBitmap;
+    FRRev: TRect;
+    FDRev: Boolean;
+    FBmpBin: TBitmap;
+    procedure CpuOnTimer(Sender: TObject);
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure resize; override;
+    procedure Resize; override;
     procedure Loaded; override;
   public
-    constructor create(AOwner: Tcomponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
   published
@@ -339,1073 +337,81 @@ implementation
 {$R ../Resources/JvSimImages.res}
 {$ENDIF}
 
-{ TPointX }
+// general bin procedure
 
-procedure TPointX.Assign(Source: TPersistent);
+procedure BinCheck(AControl: TControl);
+var
+  Wc: TWinControl;
+  I: Integer;
+  R, Rb: TRect;
+  Keep: Boolean;
 begin
-  if Source is TPointX then
-  begin
-    FX := TPointX(Source).FX;
-    FY := TPointX(Source).FY;
-  end
-  else
-    inherited;
+  // check for TJvSimLogicBox
+  Wc := AControl.Parent;
+  R := AControl.BoundsRect;
+  Keep := False;
+  for I := 0 to Wc.ControlCount - 1 do
+    if Wc.Controls[I] is TJvSimLogicBox then
+    begin
+      Rb := Wc.Controls[I].BoundsRect;
+      Rb.Left := Rb.Right - 32;
+      if PtInRect(Rb, Point(R.Left, R.Top)) then
+        Break
+      else
+      if PtInRect(Rb, Point(R.Right, R.Top)) then
+        Break
+      else
+      if PtInRect(Rb, Point(R.Right, R.Bottom)) then
+        Break
+      else
+      if PtInRect(Rb, Point(R.Left, R.Bottom)) then
+        Break
+      else
+        Keep := True;
+    end;
+  if not Keep then
+    AControl.Free;
 end;
 
-function TPointX.Point: TPoint;
+//=== TJvPointX ==============================================================
+
+procedure TJvPointX.Assign(Source: TPersistent);
+begin
+  if Source is TJvPointX then
+  begin
+    FX := TJvPointX(Source).X;
+    FY := TJvPointX(Source).Y;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+function TJvPointX.Point: TPoint;
 begin
   Result.X := FX;
   Result.Y := FY;
 end;
 
-procedure TPointX.SetPoint(const Pt: TPoint);
+procedure TJvPointX.SetPoint(const Pt: TPoint);
 begin
   FX := Pt.X;
   FY := Pt.Y;
 end;
 
-procedure BinCheck(Acontrol: Tcontrol);
-// general bin procedure
-var
-  wc: TWinControl;
-  i: integer;
-  R, Rb: TRect;
-  keep: boolean;
-begin
-  // check for TJvSimLogicBox
-  wc := AControl.parent;
-  R := AControl.boundsrect;
-  keep := false;
-  for i := 0 to wc.ControlCount - 1 do
-    if (wc.controls[i] is TJvSimLogicBox) then
-    begin
-      Rb := wc.controls[i].BoundsRect;
-      Rb.left := Rb.right - 32;
-      if ptinrect(Rb, point(R.left, R.top)) then
-        break
-      else if ptinrect(Rb, point(R.right, R.top)) then
-        break
-      else if ptinrect(Rb, point(R.right, R.bottom)) then
-        break
-      else if ptinrect(Rb, point(R.left, R.bottom)) then
-        break
-      else
-        keep := true;
-    end;
-  if not keep then AControl.free;
-end;
-
-{ TJvSIMConnector }
+//=== TJvSIMConnector ========================================================
 
 constructor TJvSIMConnector.Create(AOwner: TComponent);
 begin
-  inherited;
-  width := 100;
-  height := 50;
-  mode := jcmTL;
-  shape := jcsTLBR;
-  conSize := 8;
-  conPos := jcpTL;
-  Edge := 0.5;
-  FFromPoint := TPointX.Create;
-  FToPoint := TPointX.Create;
-end;
-
-procedure TJvSIMConnector.DoMouseDown(x, y: integer);
-var
-  p: Tpoint;
-  Rtl, Rbr, Rtr, Rbl: TRect;
-  d: integer;
-begin
-  doMove := false;
-  doEdge := false;
-  d := conSize;
-  oldp := point(x, y);
-  Rtl := rect(0, 0, d, d);
-  Rbr := rect(width - 1 - d, height - 1 - d, width - 1, height - 1);
-  Rtr := rect(width - 1 - d, 0, width - 1, d);
-  Rbl := rect(0, height - 1 - d, d, height - 1);
-  p := point(x, y);
-  if ptinrect(Rtl, p) and (shape = jcsTLBR) then
-  begin
-    mode := jcmTL;
-    mdp := point(x, y);
-  end
-  else if ptinrect(Rtr, p) and (shape = jcsTRBL) then
-  begin
-    mode := jcmTR;
-    mdp := point(width - x, y);
-  end
-  else if ptinrect(Rbr, p) and (shape = jcsTLBR) then
-  begin
-    mode := jcmBR;
-    mdp := point(width - x, height - y);
-  end
-  else if ptinrect(Rbl, p) and (shape = jcsTRBL) then
-  begin
-    mode := jcmBL;
-    mdp := point(x, height - y);
-  end
-  else if (abs(x - round(Edge * width)) < 10) then
-  begin
-    doEdge := true;
-  end
-  else
-  begin
-    doMove := true;
-    mdp := point(x, y);
-    SetFromLogic(nil);
-    SetToLogic(nil);
-  end;
-  if not doEdge then
-    DisConnect;
-
-end;
-
-procedure TJvSIMConnector.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-begin
-  doMouseDown(x, y);
-end;
-
-procedure TJvSIMConnector.DoMouseMove(dx, dy: integer);
-var
-  p: Tpoint;
-  d, d2, nw, nh: integer;
-  x, y: integer;
-begin
-  x := dx + oldp.x;
-  y := dy + oldp.y;
-  oldp := point(x, y);
-  p := clienttoscreen(point(x, y));
-  p := parent.ScreenToClient(p);
-  d := conSize;
-  d2 := d div 2;
-  if doEdge then
-  begin
-    Edge := x / width;
-    invalidate;
-  end
-  else if doMove then
-  begin
-    left := p.x - mdp.x;
-    top := p.y - mdp.y;
-  end
-  else
-  begin
-    case mode of
-      jcmTL:
-        begin
-          left := p.x - mdp.x;
-          top := p.y - mdp.y;
-          nw := width + (mdp.x - X);
-          if nw < d2 then
-          begin
-            left := left + nw - d;
-            width := -nw + d + d;
-            mode := jcmTR;
-            shape := jcsTRBL;
-            case conPos of
-              jcpTL: conPos := jcpTR;
-              jcpBR: conPos := jcpBL;
-            end;
-            Edge := 1 - Edge;
-          end
-          else
-            width := nw;
-          nh := height + (mdp.y - Y);
-          if nh < d2 then
-          begin
-            top := top + nh - d;
-            height := -nh + d + d;
-            mode := jcmBL;
-            shape := jcsTRBL;
-            case conPos of
-              jcpTL: conPos := jcpBL;
-              jcpBR: conPos := jcpTR;
-            end;
-          end
-          else
-            height := nh;
-        end;
-      jcmTR:
-        begin
-          top := p.y - mdp.y;
-          nw := X + mdp.x;
-          if nw < d2 then
-          begin
-            left := left + nw - d;
-            width := -nw + d + d;
-            mode := jcmTL;
-            shape := jcsTLBR;
-            case conPos of
-              jcpTR: conPos := jcpTL;
-              jcpBL: conPos := jcpBR;
-            end;
-            Edge := 1 - Edge;
-          end
-          else
-            width := nw;
-          nh := height + (mdp.y - Y);
-          if nh < d2 then
-          begin
-            top := top + nh - d;
-            height := -nh + d + d;
-            mode := jcmBR;
-            shape := jcsTLBR;
-            case conPos of
-              jcpTR: conPos := jcpBR;
-              jcpBL: conPos := jcpTL;
-            end;
-          end
-          else
-            height := nh;
-        end;
-      jcmBR:
-        begin
-          nw := X + mdp.x;
-          if nw < d2 then
-          begin
-            left := left + nw - d;
-            width := -nw + d + d;
-            mode := jcmBL;
-            shape := jcsTRBL;
-            case conPos of
-              jcpBR: conPos := jcpBL;
-              jcpTL: conPos := jcpTR;
-            end;
-            Edge := 1 - Edge;
-          end
-          else
-            width := nw;
-          nh := Y + mdp.y;
-          if nh < d2 then
-          begin
-            top := top + nh - d;
-            height := -nh + d + d;
-            mode := jcmTR;
-            shape := jcsTRBL;
-            case conPos of
-              jcpBR: conPos := jcpTR;
-              jcpTL: conPos := jcpBL;
-            end;
-          end
-          else
-            height := nh;
-        end;
-      jcmBL:
-        begin
-          left := p.x - mdp.x;
-          nw := width + (mdp.x - x);
-          if nw < d2 then
-          begin
-            left := left + nw - d;
-            width := -nw + d + d;
-            mode := jcmBR;
-            shape := jcsTLBR;
-            case conPos of
-              jcpBL: conPos := jcpBR;
-              jcpTR: conPos := jcpTL;
-            end;
-            Edge := 1 - Edge;
-          end
-          else
-            width := nw;
-          nh := Y + mdp.y;
-          if nh < d2 then
-          begin
-            top := top + nh - d;
-            height := -nh + d + d;
-            mode := jcmTL;
-            shape := jcsTLBR;
-            case conPos of
-              jcpBL: conPos := jcpTL;
-              jcpTR: conPos := jcpBR;
-            end;
-          end
-          else
-            height := nh;
-        end;
-    end;
-  end;
-end;
-
-procedure TJvSIMConnector.MouseMove(Shift: TShiftState; X, Y: Integer);
-begin
-  if (ssleft in shift) then
-  begin
-    doMouseMove(x - oldp.x, y - oldp.y);
-  end;
-end;
-
-procedure TJvSIMConnector.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-begin
-  if not doEdge then
-    DisConnectFinal;
-  BinCheck(self);
-end;
-
-procedure TJvSIMConnector.DisConnectFinal;
-begin
-  if DisCon = nil then exit;
-  if (Discon is TJvSimLight) then
-  begin
-    TJvSimLight(Discon).lit := false;
-  end
-  else if (DisCon is TJvLogic) then
-  begin
-    if DisConI = 1 then
-      TJvLogic(DisCon).input1 := false
-    else if DisConI = 2 then
-      TJvLogic(DisCon).input2 := false
-    else if DisConI = 3 then
-      TJvLogic(DisCon).input3 := false
-  end;
-end;
-
-procedure TJvSIMConnector.Notification(AComponent: TComponent;
-  Operation: TOperation);
-begin
-  if (operation = opremove) and (AComponent = FFromLogic) then
-    SetFromLogic(nil);
-  if (operation = opremove) and (AComponent = FToLogic) then
-    SetToLogic(nil);
-end;
-
-procedure TJvSIMConnector.paint;
-var
-  d, d2, w2, xw, yh: integer;
-begin
-  d := conSize;
-  d2 := d div 2;
-  w2 := round(Edge * width);
-  xw := width - 1;
-  yh := height - 1;
-
-  with canvas do
-  begin
-    brush.color := cllime;
-    case shape of
-      jcsTLBR:
-        // a connector is drawn depending in the conPos
-        begin
-          // start new code
-          case conPos of
-            jcpTL: // draw regular connector
-              begin
-                moveto(d, d2);
-                lineto(w2, d2);
-                lineto(w2, yh - d2);
-                lineto(xw - d, yh - d2);
-                brush.color := clred;
-                rectangle(0, 0, d, d);
-                brush.color := cllime;
-                rectangle(xw - d, yh - d, xw, yh);
-              end;
-            jcpBR:
-              begin
-                moveto(d, d2);
-                lineto(xw - d2, d2);
-                lineto(xw - d2, yh - d);
-                brush.color := cllime;
-                rectangle(0, 0, d, d);
-                brush.color := clred;
-                rectangle(xw - d, yh - d, xw, yh);
-              end;
-          end;
-          // end new code
-             {   moveto(d,d2);
-                lineto(w2,d2);
-                lineto(w2,yh-d2);
-                lineto(xw-d,yh-d2);
-                case conPos of
-                  jcpTL: brush.color:=clred;
-                  else brush.color:=cllime;
-                end;
-                rectangle(0,0,d,d);
-                case conPos of
-                  jcpBR: brush.color:=clred;
-                  else brush.color:=cllime;
-                end;
-                rectangle(xw-d,yh-d,xw,yh);}
-        end;
-      jcsTRBL:
-        begin
-          // start new code
-          case conPos of
-            jcpTR: // draw reverted connector
-              begin
-                moveto(xw - d2, d);
-                lineto(xw - d2, yh - d2);
-                lineto(d, yh - d2);
-                brush.color := clred;
-                rectangle(xw - d, 0, xw, d);
-                brush.color := cllime;
-                rectangle(0, yh - d, d, yh);
-              end;
-            jcpBL: // draw regular connector
-              begin
-                moveto(xw - d, d2);
-                lineto(w2, d2);
-                lineto(w2, yh - d2);
-                lineto(d - 1, yh - d2);
-                brush.color := cllime;
-                rectangle(xw - d, 0, xw, d);
-                brush.color := clred;
-                rectangle(0, yh - d, d, yh);
-              end;
-          end;
-          // end new code
-          {      moveto(xw-d,d2);
-                lineto(w2,d2);
-                lineto(w2,yh-d2);
-                lineto(d-1,yh-d2);
-                case conPos of
-                  jcpTR: brush.color:=clred;
-                  else brush.color:=cllime;
-                end;
-                rectangle(xw-d,0,xw,d);
-                case conPos of
-                  jcpBL: brush.color:=clred;
-                  else brush.color:=cllime;
-                end;
-                rectangle(0,yh-d,d,yh);}
-        end;
-    end; // case
-  end; //canvas
-end;
-
-procedure TJvSIMConnector.SetFromGate(const Value: integer);
-begin
-  FFromGate := Value;
-end;
-
-procedure TJvSIMConnector.SetFromLogic(const Value: TJvLogic);
-begin
-  FFromLogic := Value;
-end;
-
-procedure TJvSIMConnector.SetToGate(const Value: integer);
-begin
-  FToGate := Value;
-end;
-
-procedure TJvSIMConnector.SetToLogic(const Value: TJvLogic);
-begin
-  FToLogic := Value;
-end;
-
-procedure TJvSIMConnector.SetFromPoint(const Value: TPointX);
-begin
-  if Assigned(Value) then
-    FFromPoint.Assign(Value);
-end;
-
-procedure TJvSIMConnector.SetToPoint(const Value: TPointX);
-begin
-  if Assigned(Value) then
-    FToPoint.Assign(Value);
-end;
-
-procedure TJvSIMConnector.AnchorCorner(logTL: TPoint; ACorner: TjanConMode);
-var
-  Rc: TRect;
-begin
-  ConMode := ACorner;
-  Rc := boundsrect;
-  ConHot := ConPos;
-  case Acorner of
-    jcmTL:
-      begin
-        ConOffset := point(Rc.left - logTL.x, Rc.top - logTL.y);
-        ConAnchor := parent.ScreenToClient(clienttoscreen(point(width, height)));
-      end;
-    jcmTR:
-      begin
-        ConOffset := point(Rc.Right - logTL.x, Rc.top - logTL.y);
-        ConAnchor := parent.ScreenToClient(clienttoscreen(point(0, height)));
-      end;
-    jcmBR:
-      begin
-        ConOffset := point(Rc.Right - logTL.x, Rc.bottom - logTL.y);
-        ConAnchor := parent.ScreenToClient(clienttoscreen(point(0, 0)));
-      end;
-    jcmBL:
-      begin
-        ConOffset := point(Rc.left - logTL.x, Rc.bottom - logTL.y);
-        ConAnchor := parent.ScreenToClient(clienttoscreen(point(width, 0)));
-      end;
-  end;
-end;
-
-procedure TJvSIMConnector.MoveConnector(logTL: TPoint);
-var
-  nw, nh: integer;
-  d: integer;
-  nc: Tpoint;
-begin
-  d := conSize;
-//  d2 := d div 2;
-  nc := point(LogTL.x + ConOffset.x, logTL.y + ConOffset.y);
-  case conMode of
-    jcmTL:
-      begin
-        nw := conAnchor.x - nc.x;
-        if nw < d then
-        begin
-          left := conAnchor.x - d;
-          width := -nw + d + d;
-        end
-        else
-        begin
-          left := nc.x;
-          width := ConAnchor.x - left;
-        end;
-        nh := ConAnchor.y - nc.y;
-
-        // adjust new hot position
-        if (nw < d) and (not (nh < d)) then
-        begin
-          case conHot of
-            jcpTL: conPos := jcpTR;
-            jcpBR: conPos := jcpBL;
-          end;
-          shape := jcsTRBL;
-        end
-        else if (nw < d) and (nh < d) then
-        begin
-          case conHot of
-            jcpTL: conPos := jcpBR;
-            jcpBR: conPos := jcpTL;
-          end;
-          shape := jcsTLBR;
-        end
-        else if (not nw < d) and (nh < d) then
-        begin
-          case conHot of
-            jcpTL: conPos := jcpBL;
-            jcpBR: conPos := jcpTR;
-          end;
-          shape := jcsTRBL;
-        end
-        else
-        begin
-          case conHot of
-            jcpTL: conPos := jcpTL;
-            jcpBR: conPos := jcpBR;
-          end;
-          shape := jcsTLBR;
-        end;
-        // end of adjust TL new hot
-        if nh < d then
-        begin
-          top := ConAnchor.y - d;
-          height := -nh + d + d;
-        end
-        else
-        begin
-          top := nc.y;
-          height := ConAnchor.y - Top;
-        end;
-      end;
-    jcmTR:
-      begin
-        nw := nc.x - ConAnchor.x;
-        if nw <= 0 then
-        begin
-          left := conAnchor.x + nw - d;
-          width := -nw + d + d;
-        end
-        else if nw <= d then
-        begin
-          left := nc.x - d;
-          width := -nw + d + d;
-        end
-        else
-        begin
-          width := nw;
-        end;
-        nh := ConAnchor.y - nc.y;
-        // adjust TR new hot position
-        if (nw < d) and (not (nh < d)) then
-        begin
-          case conHot of
-            jcpTR: conPos := jcpTL;
-            jcpBL: conPos := jcpBR;
-          end;
-          shape := jcsTLBR;
-        end
-        else if (nw < d) and (nh < d) then
-        begin
-          case conHot of
-            jcpTR: conPos := jcpBL;
-            jcpBL: conPos := jcpTR;
-          end;
-          shape := jcsTRBL;
-        end
-        else if (not nw < d) and (nh < d) then
-        begin
-          case conHot of
-            jcpTR: conPos := jcpBR;
-            jcpBL: conPos := jcpTL;
-          end;
-          shape := jcsTLBR;
-        end
-        else
-        begin
-          case conHot of
-            jcpTR: conPos := jcpTR;
-            jcpBL: conPos := jcpBL;
-          end;
-          shape := jcsTRBL;
-        end;
-        // end of adjust TR new hot
-        if nh < d then
-        begin
-          top := ConAnchor.y - d;
-          height := -nh + d + d;
-        end
-        else
-        begin
-          top := ConAnchor.y - nh;
-          height := nh;
-        end;
-      end;
-    jcmBR:
-      begin
-        nw := nc.x - ConAnchor.x;
-        if nw <= 0 then
-        begin
-          left := nc.x - d;
-          width := -nw + d + d;
-        end
-        else if nw <= d then
-        begin
-          left := nc.x - d;
-          width := -nw + d + d;
-        end
-        else
-        begin
-          width := nw;
-        end;
-        nh := nc.y - ConAnchor.y;
-        // adjust BR new hot position
-        if (nw < d) and (not (nh < d)) then
-        begin
-          case conHot of
-            jcpBR: conPos := jcpBL;
-            jcpTL: conPos := jcpTR;
-          end;
-          shape := jcsTRBL;
-        end
-        else if (nw < d) and (nh < d) then
-        begin
-          case conHot of
-            jcpBR: conPos := jcpTL;
-            jcpTL: conPos := jcpBR;
-          end;
-          shape := jcsTLBR;
-        end
-        else if (not nw < d) and (nh < d) then
-        begin
-          case conHot of
-            jcpBR: conPos := jcpTR;
-            jcpTL: conPos := jcpBL;
-          end;
-          shape := jcsTRBL;
-        end
-        else
-        begin
-          case conHot of
-            jcpBR: conPos := jcpBR;
-            jcpTL: conPos := jcpTL;
-          end;
-          shape := jcsTLBR;
-        end;
-        // end of adjust BR new hot
-        if nh < d then
-        begin
-          top := ConAnchor.y + nh - d;
-          height := -nh + d + d;
-        end
-        else
-        begin
-          height := nh;
-        end;
-      end;
-    jcmBL:
-      begin
-        nw := conAnchor.x - nc.x;
-        if nw < d then
-        begin
-          left := conAnchor.x - d;
-          width := -nw + d + d;
-        end
-        else
-        begin
-          left := ConAnchor.x - nw;
-          width := nw;
-        end;
-        nh := nc.y - ConAnchor.y;
-        // adjust BL new hot position
-        if (nw < d) and (not (nh < d)) then
-        begin
-          case conHot of
-            jcpBL: conPos := jcpBR;
-            jcpTR: conPos := jcpTL;
-          end;
-          shape := jcsTLBR;
-        end
-        else if (nw < d) and (nh < d) then
-        begin
-          case conHot of
-            jcpBL: conPos := jcpTR;
-            jcpTR: conPos := jcpBL;
-          end;
-          shape := jcsTRBL;
-        end
-        else if (not nw < d) and (nh < d) then
-        begin
-          case conHot of
-            jcpBL: conPos := jcpTL;
-            jcpTR: conPos := jcpBR;
-          end;
-          shape := jcsTLBR;
-        end
-        else
-        begin
-          case conHot of
-            jcpBL: conPos := jcpBL;
-            jcpTR: conPos := jcpTR;
-          end;
-          shape := jcsTRBL;
-        end;
-        // end of adjust BL new hot
-        if nh < d then
-        begin
-          top := ConAnchor.y + nh - d;
-          height := -nh + d + d;
-        end
-        else
-        begin
-          height := nh;
-        end;
-      end;
-  end;
-end;
-
-procedure TJvSIMConnector.Connect;
-var
-  Pi, Po: TPoint;
-  R: Trect;
-  d, d2, xw, yh: integer;
-  wc: TWinControl;
-  Vi: boolean;
-  sBut: TJvSimButton;
-  sLog: TJvLogic;
-  sLight: TJvSimLight;
-  sRev: TJvSimReverse;
-  pl: TPoint;
-
-  // convert a corner point to a parent point
-
-  function pp(x, y: integer): TPoint;
-  var
-    p: Tpoint;
-  begin
-    p := point(x, y);
-    p := clienttoscreen(p);
-    result := wc.ScreenToClient(p);
-  end;
-
-  function getvi: boolean;
-  var
-    ii: integer;
-  begin
-    result := true;
-    for ii := 0 to wc.ControlCount - 1 do
-    begin
-      if (wc.controls[ii] is TJvSimButton) then
-      begin
-        R := wc.Controls[ii].BoundsRect;
-        inflaterect(R, d, 0);
-        if ptinrect(R, Pi) then
-        begin
-          sBut := TJvSimButton(wc.controls[ii]);
-          Vi := sBut.Down;
-          exit;
-        end;
-      end
-      else if (wc.controls[ii] is TJvSimReverse) then
-      begin
-        R := wc.Controls[ii].BoundsRect;
-        inflaterect(R, d, d);
-        if ptinrect(R, Pi) then
-        begin
-          sRev := TJvSimReverse(wc.controls[ii]);
-          // now check if p is the output area
-          pl := SRev.Gates[1].pos;
-          R := rect(sRev.left + pl.x, sRev.top - d, sRev.left + pl.x + 12, sRev.Top + pl.y + 12);
-          if ptinrect(R, Pi) and SRev.Gates[1].Active then
-          begin // output
-            vi := SRev.OutPut1;
-            exit;
-          end;
-          pl := SRev.Gates[2].pos;
-          R := rect(sRev.left - d, sRev.top + pl.y, sRev.left + pl.x + 12, sRev.Top + pl.y + 12);
-          if ptinrect(R, Pi) and SRev.Gates[2].Active then
-          begin // output
-            vi := SRev.OutPut2;
-            exit;
-          end;
-          pl := SRev.Gates[3].pos;
-          R := rect(sRev.left + pl.x, sRev.top + pl.y, sRev.left + pl.x + 12, sRev.top + sRev.height + d);
-          if ptinrect(R, Pi) and SRev.Gates[3].Active then
-          begin // output
-            vi := SRev.OutPut3;
-            exit;
-          end;
-        end;
-      end
-      else if (wc.controls[ii] is TJvLogic) then
-      begin
-        R := wc.Controls[ii].BoundsRect;
-        inflaterect(R, d, 0);
-        if ptinrect(R, Pi) then
-        begin
-          sLog := TJvLogic(wc.controls[ii]);
-          // now check if p is in one of the 3 output area's
-          R := rect(sLog.left + 33, sLog.top, sLog.left + slog.Width + ConSize, sLog.Top + 22);
-          if ptinrect(R, Pi) and SLog.Gates[3].Active then
-          begin // output is gate 3
-            vi := SLog.OutPut1;
-            exit;
-          end;
-          R := rect(sLog.left + 33, sLog.top + 23, sLog.left + slog.Width + ConSize, sLog.Top + 44);
-          if ptinrect(R, Pi) and SLog.Gates[4].Active then
-          begin // output is gate 4
-            vi := SLog.OutPut2;
-            exit;
-          end;
-          R := rect(sLog.left + 33, sLog.top + 45, sLog.left + slog.Width + ConSize, sLog.Top + 64);
-          if ptinrect(R, Pi) and SLog.Gates[5].Active then
-          begin // output is gate 5
-            vi := SLog.OutPut3;
-            exit;
-          end;
-        end;
-      end;
-    end;
-    result := false;
-  end;
-
-  procedure setVo;
-  var
-    ii: integer;
-  begin
-    for ii := 0 to wc.ControlCount - 1 do
-    begin
-      if (wc.controls[ii] is TJvSimLight) then
-      begin
-        R := wc.Controls[ii].BoundsRect;
-        inflaterect(R, d, 0);
-        if ptinrect(R, Po) then
-        begin
-          sLight := TJvSimLight(wc.controls[ii]);
-          SLight.Lit := Vi;
-          exit;
-        end;
-      end
-      else if (wc.controls[ii] is TJvSimReverse) then
-      begin
-        R := wc.Controls[ii].BoundsRect;
-        inflaterect(R, d, 0);
-        if ptinrect(R, Po) then
-        begin
-          sRev := TJvSimReverse(wc.controls[ii]);
-          // now check if p is in the input area
-          pl := SRev.Gates[0].pos;
-          R := rect(sRev.left + pl.x, sRev.top + pl.y, sRev.left + sRev.width + d, sRev.top + pl.y + 12);
-          if ptinrect(R, Po) and SRev.Gates[0].Active then
-          begin // input
-            SRev.Input1 := vi;
-            exit;
-          end;
-        end;
-      end
-      else if (wc.controls[ii] is TJvLogic) then
-      begin
-        R := wc.Controls[ii].BoundsRect;
-        inflaterect(R, d, 0);
-        if ptinrect(R, Po) then
-        begin
-          sLog := TJvLogic(wc.controls[ii]);
-          // now check if p is in one of the 3 input area's
-          R := rect(sLog.left - d, sLog.top, sLog.left + 32, sLog.Top + 22);
-          if ptinrect(R, Po) and SLog.Gates[0].Active then
-          begin // input is gate 0
-            SLog.Input1 := vi;
-            exit;
-          end;
-          R := rect(sLog.left - d, sLog.top + 23, sLog.left + 32, sLog.Top + 44);
-          if ptinrect(R, Po) and SLog.Gates[1].Active then
-          begin // input is gate 1
-            SLog.input2 := vi;
-            exit;
-          end;
-          R := rect(sLog.left - d, sLog.top + 45, sLog.left + 32, sLog.Top + 64);
-          if ptinrect(R, Po) and SLog.Gates[2].Active then
-          begin // input is gate 2
-            SLog.Input3 := vi;
-            exit;
-          end;
-        end;
-      end;
-    end;
-  end;
-
-begin
-  // connect input and output using the conPos
-  d2 := conSize div 2;
-  d := conSize;
-  xw := width - 1;
-  yh := height - 1;
-  wc := parent;
-  case conPos of
-    jcpTL:
-      begin
-        Pi := pp(d2, d2);
-        Po := pp(xw - d2, yh - d2);
-      end;
-    jcpTR:
-      begin
-        Pi := pp(xw - d2, d2);
-        Po := pp(d2, yh - d2);
-      end;
-    jcpBR:
-      begin
-        Pi := pp(xw - d2, yh - d2);
-        Po := pp(d2, d2);
-      end;
-    jcpBL:
-      begin
-        Pi := pp(d2, yh - d2);
-        Po := pp(xw - d2, d2);
-      end;
-  end;
-  // get input Vi
-  if getvi then setvo;
-end;
-
-procedure TJvSIMConnector.DisConnect;
-var
-  Pi, Po: TPoint;
-  R: Trect;
-  d, d2, xw, yh: integer;
-  wc: TWinControl;
-  sLog: TJvLogic;
-  sLight: TJvSimLight;
-
-  // convert a corner point to a parent point
-
-  function pp(x, y: integer): TPoint;
-  var
-    p: Tpoint;
-  begin
-    p := point(x, y);
-    p := clienttoscreen(p);
-    result := wc.ScreenToClient(p);
-  end;
-
-  procedure setVo;
-  var
-    ii: integer;
-  begin
-    for ii := 0 to wc.ControlCount - 1 do
-    begin
-      if (wc.controls[ii] is TJvSimLight) then
-      begin
-        R := wc.Controls[ii].BoundsRect;
-        inflaterect(R, d, 0);
-        if ptinrect(R, Po) then
-        begin
-          sLight := TJvSimLight(wc.controls[ii]);
-          DisCon := sLight;
-          //SLight.Lit:=false;
-          exit;
-        end;
-      end
-      else if (wc.controls[ii] is TJvLogic) then
-      begin
-        R := wc.Controls[ii].BoundsRect;
-        inflaterect(R, d, 0);
-        if ptinrect(R, Po) then
-        begin
-          sLog := TJvLogic(wc.controls[ii]);
-          // now check if p is in one of the 3 input area's
-          R := rect(sLog.left - d, sLog.top, sLog.left + 32, sLog.Top + 22);
-          if ptinrect(R, Po) and SLog.Gates[0].Active then
-          begin // input is gate 0
-            DisCon := sLog;
-            DisConI := 1;
-            //            SLog.Input1:=false;
-            exit;
-          end;
-          R := rect(sLog.left - d, sLog.top + 23, sLog.left + 32, sLog.Top + 44);
-          if ptinrect(R, Po) and SLog.Gates[1].Active then
-          begin // input is gate 1
-            DisCon := sLog;
-            DisConI := 2;
-            //            SLog.input2:=false;
-            exit;
-          end;
-          R := rect(sLog.left - d, sLog.top + 45, sLog.left + 32, sLog.Top + 64);
-          if ptinrect(R, Po) and SLog.Gates[2].Active then
-          begin // input is gate 2
-            DisCon := sLog;
-            DisConI := 3;
-            //            SLog.Input3:=false;
-            exit;
-          end;
-        end;
-      end;
-    end;
-  end;
-
-begin
-  // connect input and output using the conPos
-  DisCon := nil;
-  disConI := 0;
-  d2 := conSize div 2;
-  d := conSize;
-  xw := width - 1;
-  yh := height - 1;
-  wc := parent;
-  case conPos of
-    jcpTL:
-      begin
-        Pi := pp(d2, d2);
-        Po := pp(xw - d2, yh - d2);
-      end;
-    jcpTR:
-      begin
-        Pi := pp(xw - d2, d2);
-        Po := pp(d2, yh - d2);
-      end;
-    jcpBR:
-      begin
-        Pi := pp(xw - d2, yh - d2);
-        Po := pp(d2, d2);
-      end;
-    jcpBL:
-      begin
-        Pi := pp(d2, yh - d2);
-        Po := pp(xw - d2, d2);
-      end;
-  end;
-  // clear logic inputs and lights
-  setvo;
+  inherited Create(AOwner);
+  Width := 100;
+  Height := 50;
+  FMode := jcmTL;
+  FShape := jcsTLBR;
+  FConSize := 8;
+  FConPos := jcpTL;
+  FEdge := 0.5;
+  FFromPoint := TJvPointX.Create;
+  FToPoint := TJvPointX.Create;
 end;
 
 destructor TJvSIMConnector.Destroy;
@@ -1415,440 +421,1511 @@ begin
   inherited Destroy;
 end;
 
-{ TJvLogic }
+procedure TJvSIMConnector.DoMouseDown(X, Y: Integer);
+var
+  P: TPoint;
+  Rtl, Rbr, Rtr, Rbl: TRect;
+  D: Integer;
+begin
+  FDoMove := False;
+  FDoEdge := False;
+  D := FConSize;
+  FOldp := Point(X, Y);
+  Rtl := Rect(0, 0, D, D);
+  Rbr := Rect(Width - 1 - D, Height - 1 - D, Width - 1, Height - 1);
+  Rtr := Rect(Width - 1 - D, 0, Width - 1, D);
+  Rbl := Rect(0, Height - 1 - D, D, Height - 1);
+  P := Point(X, Y);
+  if PtInRect(Rtl, P) and (FShape = jcsTLBR) then
+  begin
+    FMode := jcmTL;
+    FMdp := Point(X, Y);
+  end
+  else
+  if PtInRect(Rtr, P) and (FShape = jcsTRBL) then
+  begin
+    FMode := jcmTR;
+    FMdp := Point(Width - X, Y);
+  end
+  else
+  if PtInRect(Rbr, P) and (FShape = jcsTLBR) then
+  begin
+    FMode := jcmBR;
+    FMdp := Point(Width - X, Height - Y);
+  end
+  else
+  if PtInRect(Rbl, P) and (FShape = jcsTRBL) then
+  begin
+    FMode := jcmBL;
+    FMdp := Point(X, Height - Y);
+  end
+  else
+  if Abs(X - Round(FEdge * Width)) < 10 then
+    FDoEdge := True
+  else
+  begin
+    FDoMove := True;
+    FMdp := Point(X, Y);
+    SetFromLogic(nil);
+    SetToLogic(nil);
+  end;
+  if not FDoEdge then
+    Disconnect;
+end;
+
+procedure TJvSIMConnector.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  DoMouseDown(X, Y);
+end;
+
+procedure TJvSIMConnector.DoMouseMove(dx, dy: Integer);
+var
+  P: TPoint;
+  D, d2, nw, nh: Integer;
+  X, Y: Integer;
+begin
+  X := dx + FOldp.X;
+  Y := dy + FOldp.Y;
+  FOldp := Point(X, Y);
+  P := ClientToScreen(Point(X, Y));
+  P := Parent.ScreenToClient(P);
+  D := FConSize;
+  d2 := D div 2;
+  if FDoEdge then
+  begin
+    FEdge := X / Width;
+    Invalidate;
+  end
+  else
+  if FDoMove then
+  begin
+    Left := P.X - FMdp.X;
+    Top := P.Y - FMdp.Y;
+  end
+  else
+  begin
+    case FMode of
+      jcmTL:
+        begin
+          Left := P.X - FMdp.X;
+          Top := P.Y - FMdp.Y;
+          nw := Width + (FMdp.X - X);
+          if nw < d2 then
+          begin
+            Left := Left + nw - D;
+            Width := -nw + D + D;
+            FMode := jcmTR;
+            FShape := jcsTRBL;
+            case FConPos of
+              jcpTL:
+                FConPos := jcpTR;
+              jcpBR:
+                FConPos := jcpBL;
+            end;
+            FEdge := 1 - FEdge;
+          end
+          else
+            Width := nw;
+          nh := Height + (FMdp.Y - Y);
+          if nh < d2 then
+          begin
+            Top := Top + nh - D;
+            Height := -nh + D + D;
+            FMode := jcmBL;
+            FShape := jcsTRBL;
+            case FConPos of
+              jcpTL:
+                FConPos := jcpBL;
+              jcpBR:
+                FConPos := jcpTR;
+            end;
+          end
+          else
+            Height := nh;
+        end;
+      jcmTR:
+        begin
+          Top := P.Y - FMdp.Y;
+          nw := X + FMdp.X;
+          if nw < d2 then
+          begin
+            Left := Left + nw - D;
+            Width := -nw + D + D;
+            FMode := jcmTL;
+            FShape := jcsTLBR;
+            case FConPos of
+              jcpTR:
+                FConPos := jcpTL;
+              jcpBL:
+                FConPos := jcpBR;
+            end;
+            FEdge := 1 - FEdge;
+          end
+          else
+            Width := nw;
+          nh := Height + (FMdp.Y - Y);
+          if nh < d2 then
+          begin
+            Top := Top + nh - D;
+            Height := -nh + D + D;
+            FMode := jcmBR;
+            FShape := jcsTLBR;
+            case FConPos of
+              jcpTR:
+                FConPos := jcpBR;
+              jcpBL:
+                FConPos := jcpTL;
+            end;
+          end
+          else
+            Height := nh;
+        end;
+      jcmBR:
+        begin
+          nw := X + FMdp.X;
+          if nw < d2 then
+          begin
+            Left := Left + nw - D;
+            Width := -nw + D + D;
+            FMode := jcmBL;
+            FShape := jcsTRBL;
+            case FConPos of
+              jcpBR:
+                FConPos := jcpBL;
+              jcpTL:
+                FConPos := jcpTR;
+            end;
+            FEdge := 1 - FEdge;
+          end
+          else
+            Width := nw;
+          nh := Y + FMdp.Y;
+          if nh < d2 then
+          begin
+            Top := Top + nh - D;
+            Height := -nh + D + D;
+            FMode := jcmTR;
+            FShape := jcsTRBL;
+            case FConPos of
+              jcpBR:
+                FConPos := jcpTR;
+              jcpTL:
+                FConPos := jcpBL;
+            end;
+          end
+          else
+            Height := nh;
+        end;
+      jcmBL:
+        begin
+          Left := P.X - FMdp.X;
+          nw := Width + (FMdp.X - X);
+          if nw < d2 then
+          begin
+            Left := Left + nw - D;
+            Width := -nw + D + D;
+            FMode := jcmBR;
+            FShape := jcsTLBR;
+            case FConPos of
+              jcpBL:
+                FConPos := jcpBR;
+              jcpTR:
+                FConPos := jcpTL;
+            end;
+            FEdge := 1 - FEdge;
+          end
+          else
+            Width := nw;
+          nh := Y + FMdp.Y;
+          if nh < d2 then
+          begin
+            Top := Top + nh - D;
+            Height := -nh + D + D;
+            FMode := jcmTL;
+            FShape := jcsTLBR;
+            case FConPos of
+              jcpBL:
+                FConPos := jcpTL;
+              jcpTR:
+                FConPos := jcpBR;
+            end;
+          end
+          else
+            Height := nh;
+        end;
+    end;
+  end;
+end;
+
+procedure TJvSIMConnector.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  if ssLeft in Shift then
+    DoMouseMove(X - FOldp.X, Y - FOldp.Y);
+end;
+
+procedure TJvSIMConnector.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  if not FDoEdge then
+    DisconnectFinal;
+  BinCheck(Self);
+end;
+
+procedure TJvSIMConnector.DisconnectFinal;
+begin
+  if FDisCon = nil then
+    Exit;
+  if FDisCon is TJvSimLight then
+    TJvSimLight(FDisCon).Lit := False
+  else
+  if FDisCon is TJvLogic then
+  begin
+    if FDisConI = 1 then
+      TJvLogic(FDisCon).Input1 := False
+    else
+    if FDisConI = 2 then
+      TJvLogic(FDisCon).Input2 := False
+    else
+    if FDisConI = 3 then
+      TJvLogic(FDisCon).Input3 := False
+  end;
+end;
+
+procedure TJvSIMConnector.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  if (Operation = opRemove) and (AComponent = FromLogic) then
+    FromLogic := nil;
+  if (Operation = opRemove) and (AComponent = ToLogic) then
+    ToLogic := nil;
+end;
+
+procedure TJvSIMConnector.Paint;
+var
+  D, d2, w2, xw, yh: Integer;
+begin
+  D := FConSize;
+  d2 := D div 2;
+  w2 := Round(FEdge * Width);
+  xw := Width - 1;
+  yh := Height - 1;
+
+  with Canvas do
+  begin
+    Brush.Color := clLime;
+    case FShape of
+      jcsTLBR:
+        // a connector is drawn depending in the FConPos
+        begin
+          // start new code
+          case FConPos of
+            jcpTL: // Draw regular connector
+              begin
+                MoveTo(D, d2);
+                LineTo(w2, d2);
+                LineTo(w2, yh - d2);
+                LineTo(xw - D, yh - d2);
+                Brush.Color := clRed;
+                Rectangle(0, 0, D, D);
+                Brush.Color := clLime;
+                Rectangle(xw - D, yh - D, xw, yh);
+              end;
+            jcpBR:
+              begin
+                MoveTo(D, d2);
+                LineTo(xw - d2, d2);
+                LineTo(xw - d2, yh - D);
+                Brush.Color := clLime;
+                Rectangle(0, 0, D, D);
+                Brush.Color := clRed;
+                Rectangle(xw - D, yh - D, xw, yh);
+              end;
+          end;
+          // end new code
+             {   MoveTo(D,d2);
+                LineTo(w2,d2);
+                LineTo(w2,yh-d2);
+                LineTo(xw-D,yh-d2);
+                case FConPos of
+                  jcpTL: Brush.Color:=clRed;
+                  else Brush.Color:=clLime;
+                end;
+                Rectangle(0,0,D,D);
+                case FConPos of
+                  jcpBR: Brush.Color:=clRed;
+                  else Brush.Color:=clLime;
+                end;
+                Rectangle(xw-D,yh-D,xw,yh);}
+        end;
+      jcsTRBL:
+        begin
+          // start new code
+          case FConPos of
+            jcpTR: // Draw reverted connector
+              begin
+                MoveTo(xw - d2, D);
+                LineTo(xw - d2, yh - d2);
+                LineTo(D, yh - d2);
+                Brush.Color := clRed;
+                Rectangle(xw - D, 0, xw, D);
+                Brush.Color := clLime;
+                Rectangle(0, yh - D, D, yh);
+              end;
+            jcpBL: // Draw regular connector
+              begin
+                MoveTo(xw - D, d2);
+                LineTo(w2, d2);
+                LineTo(w2, yh - d2);
+                LineTo(D - 1, yh - d2);
+                Brush.Color := clLime;
+                Rectangle(xw - D, 0, xw, D);
+                Brush.Color := clRed;
+                Rectangle(0, yh - D, D, yh);
+              end;
+          end;
+          // end new code
+          {      MoveTo(xw-D,d2);
+                LineTo(w2,d2);
+                LineTo(w2,yh-d2);
+                LineTo(D-1,yh-d2);
+                case FConPos of
+                  jcpTR: Brush.Color:=clRed;
+                  else Brush.Color:=clLime;
+                end;
+                Rectangle(xw-D,0,xw,D);
+                case FConPos of
+                  jcpBL: Brush.Color:=clRed;
+                  else Brush.Color:=clLime;
+                end;
+                Rectangle(0,yh-D,D,yh);}
+        end;
+    end;
+  end;
+end;
+
+procedure TJvSIMConnector.SetFromGate(const Value: Integer);
+begin
+  FFromGate := Value;
+end;
+
+procedure TJvSIMConnector.SetFromLogic(const Value: TJvLogic);
+begin
+  FFromLogic := Value;
+end;
+
+procedure TJvSIMConnector.SetToGate(const Value: Integer);
+begin
+  FToGate := Value;
+end;
+
+procedure TJvSIMConnector.SetToLogic(const Value: TJvLogic);
+begin
+  FToLogic := Value;
+end;
+
+procedure TJvSIMConnector.SetFromPoint(const Value: TJvPointX);
+begin
+  if Assigned(Value) then
+    FFromPoint.Assign(Value);
+end;
+
+procedure TJvSIMConnector.SetToPoint(const Value: TJvPointX);
+begin
+  if Assigned(Value) then
+    FToPoint.Assign(Value);
+end;
+
+procedure TJvSIMConnector.AnchorCorner(LogTL: TPoint; ACorner: TJvConMode);
+var
+  Rc: TRect;
+begin
+  FConMode := ACorner;
+  Rc := BoundsRect;
+  FConHot := FConPos;
+  case ACorner of
+    jcmTL:
+      begin
+        FConOffset := Point(Rc.Left - LogTL.X, Rc.Top - LogTL.Y);
+        FConAnchor := Parent.ScreenToClient(ClientToScreen(Point(Width, Height)));
+      end;
+    jcmTR:
+      begin
+        FConOffset := Point(Rc.Right - LogTL.X, Rc.Top - LogTL.Y);
+        FConAnchor := Parent.ScreenToClient(ClientToScreen(Point(0, Height)));
+      end;
+    jcmBR:
+      begin
+        FConOffset := Point(Rc.Right - LogTL.X, Rc.Bottom - LogTL.Y);
+        FConAnchor := Parent.ScreenToClient(ClientToScreen(Point(0, 0)));
+      end;
+    jcmBL:
+      begin
+        FConOffset := Point(Rc.Left - LogTL.X, Rc.Bottom - LogTL.Y);
+        FConAnchor := Parent.ScreenToClient(ClientToScreen(Point(Width, 0)));
+      end;
+  end;
+end;
+
+procedure TJvSIMConnector.MoveConnector(LogTL: TPoint);
+var
+  nw, nh: Integer;
+  D: Integer;
+  nc: TPoint;
+begin
+  D := FConSize;
+//  d2 := D div 2;
+  nc := Point(LogTL.X + FConOffset.X, LogTL.Y + FConOffset.Y);
+  case FConMode of
+    jcmTL:
+      begin
+        nw := FConAnchor.X - nc.X;
+        if nw < D then
+        begin
+          Left := FConAnchor.X - D;
+          Width := -nw + D + D;
+        end
+        else
+        begin
+          Left := nc.X;
+          Width := FConAnchor.X - Left;
+        end;
+        nh := FConAnchor.Y - nc.Y;
+
+        // adjust new hot position
+        if (nw < D) and not (nh < D) then
+        begin
+          case FConHot of
+            jcpTL:
+              FConPos := jcpTR;
+            jcpBR:
+              FConPos := jcpBL;
+          end;
+          FShape := jcsTRBL;
+        end
+        else
+        if (nw < D) and (nh < D) then
+        begin
+          case FConHot of
+            jcpTL:
+              FConPos := jcpBR;
+            jcpBR:
+              FConPos := jcpTL;
+          end;
+          FShape := jcsTLBR;
+        end
+        else
+        if (not nw < D) and (nh < D) then
+        begin
+          case FConHot of
+            jcpTL:
+              FConPos := jcpBL;
+            jcpBR:
+              FConPos := jcpTR;
+          end;
+          FShape := jcsTRBL;
+        end
+        else
+        begin
+          case FConHot of
+            jcpTL:
+              FConPos := jcpTL;
+            jcpBR:
+              FConPos := jcpBR;
+          end;
+          FShape := jcsTLBR;
+        end;
+        // end of adjust TL new hot
+        if nh < D then
+        begin
+          Top := FConAnchor.Y - D;
+          Height := -nh + D + D;
+        end
+        else
+        begin
+          Top := nc.Y;
+          Height := FConAnchor.Y - Top;
+        end;
+      end;
+    jcmTR:
+      begin
+        nw := nc.X - FConAnchor.X;
+        if nw <= 0 then
+        begin
+          Left := FConAnchor.X + nw - D;
+          Width := -nw + D + D;
+        end
+        else
+        if nw <= D then
+        begin
+          Left := nc.X - D;
+          Width := -nw + D + D;
+        end
+        else
+          Width := nw;
+        nh := FConAnchor.Y - nc.Y;
+        // adjust TR new hot position
+        if (nw < D) and (not (nh < D)) then
+        begin
+          case FConHot of
+            jcpTR:
+              FConPos := jcpTL;
+            jcpBL:
+              FConPos := jcpBR;
+          end;
+          FShape := jcsTLBR;
+        end
+        else
+        if (nw < D) and (nh < D) then
+        begin
+          case FConHot of
+            jcpTR:
+              FConPos := jcpBL;
+            jcpBL:
+              FConPos := jcpTR;
+          end;
+          FShape := jcsTRBL;
+        end
+        else
+        if (not nw < D) and (nh < D) then
+        begin
+          case FConHot of
+            jcpTR:
+              FConPos := jcpBR;
+            jcpBL:
+              FConPos := jcpTL;
+          end;
+          FShape := jcsTLBR;
+        end
+        else
+        begin
+          case FConHot of
+            jcpTR:
+              FConPos := jcpTR;
+            jcpBL:
+              FConPos := jcpBL;
+          end;
+          FShape := jcsTRBL;
+        end;
+        // end of adjust TR new hot
+        if nh < D then
+        begin
+          Top := FConAnchor.Y - D;
+          Height := -nh + D + D;
+        end
+        else
+        begin
+          Top := FConAnchor.Y - nh;
+          Height := nh;
+        end;
+      end;
+    jcmBR:
+      begin
+        nw := nc.X - FConAnchor.X;
+        if nw <= 0 then
+        begin
+          Left := nc.X - D;
+          Width := -nw + D + D;
+        end
+        else
+        if nw <= D then
+        begin
+          Left := nc.X - D;
+          Width := -nw + D + D;
+        end
+        else
+          Width := nw;
+        nh := nc.Y - FConAnchor.Y;
+        // adjust BR new hot position
+        if (nw < D) and (not (nh < D)) then
+        begin
+          case FConHot of
+            jcpBR:
+              FConPos := jcpBL;
+            jcpTL:
+              FConPos := jcpTR;
+          end;
+          FShape := jcsTRBL;
+        end
+        else
+        if (nw < D) and (nh < D) then
+        begin
+          case FConHot of
+            jcpBR:
+              FConPos := jcpTL;
+            jcpTL:
+              FConPos := jcpBR;
+          end;
+          FShape := jcsTLBR;
+        end
+        else
+        if (not nw < D) and (nh < D) then
+        begin
+          case FConHot of
+            jcpBR:
+              FConPos := jcpTR;
+            jcpTL:
+              FConPos := jcpBL;
+          end;
+          FShape := jcsTRBL;
+        end
+        else
+        begin
+          case FConHot of
+            jcpBR:
+              FConPos := jcpBR;
+            jcpTL:
+              FConPos := jcpTL;
+          end;
+          FShape := jcsTLBR;
+        end;
+        // end of adjust BR new hot
+        if nh < D then
+        begin
+          Top := FConAnchor.Y + nh - D;
+          Height := -nh + D + D;
+        end
+        else
+          Height := nh;
+      end;
+    jcmBL:
+      begin
+        nw := FConAnchor.X - nc.X;
+        if nw < D then
+        begin
+          Left := FConAnchor.X - D;
+          Width := -nw + D + D;
+        end
+        else
+        begin
+          Left := FConAnchor.X - nw;
+          Width := nw;
+        end;
+        nh := nc.Y - FConAnchor.Y;
+        // adjust BL new hot position
+        if (nw < D) and (not (nh < D)) then
+        begin
+          case FConHot of
+            jcpBL:
+              FConPos := jcpBR;
+            jcpTR:
+              FConPos := jcpTL;
+          end;
+          FShape := jcsTLBR;
+        end
+        else
+        if (nw < D) and (nh < D) then
+        begin
+          case FConHot of
+            jcpBL:
+              FConPos := jcpTR;
+            jcpTR:
+              FConPos := jcpBL;
+          end;
+          FShape := jcsTRBL;
+        end
+        else
+        if (not nw < D) and (nh < D) then
+        begin
+          case FConHot of
+            jcpBL:
+              FConPos := jcpTL;
+            jcpTR:
+              FConPos := jcpBR;
+          end;
+          FShape := jcsTLBR;
+        end
+        else
+        begin
+          case FConHot of
+            jcpBL:
+              FConPos := jcpBL;
+            jcpTR:
+              FConPos := jcpTR;
+          end;
+          FShape := jcsTRBL;
+        end;
+        // end of adjust BL new hot
+        if nh < D then
+        begin
+          Top := FConAnchor.Y + nh - D;
+          Height := -nh + D + D;
+        end
+        else
+          Height := nh;
+      end;
+  end;
+end;
+
+procedure TJvSIMConnector.Connect;
+var
+  Pi, Po: TPoint;
+  R: Trect;
+  D, d2, xw, yh: Integer;
+  Wc: TWinControl;
+  Vi: Boolean;
+  sBut: TJvSimButton;
+  sLog: TJvLogic;
+  sLight: TJvSimLight;
+  sRev: TJvSimReverse;
+  pl: TPoint;
+
+  // convert a corner point to a Parent point
+
+  function ParentPoint(X, Y: Integer): TPoint;
+  var
+    P: TPoint;
+  begin
+    P := Point(X, Y);
+    P := ClientToScreen(P);
+    Result := Wc.ScreenToClient(P);
+  end;
+
+  function GetVi: Boolean;
+  var
+    J: Integer;
+  begin
+    Result := True;
+    for J := 0 to Wc.ControlCount - 1 do
+    begin
+      if Wc.Controls[J] is TJvSimButton then
+      begin
+        R := Wc.Controls[J].BoundsRect;
+        InflateRect(R, D, 0);
+        if PtInRect(R, Pi) then
+        begin
+          sBut := TJvSimButton(Wc.Controls[J]);
+          Vi := sBut.Down;
+          Exit;
+        end;
+      end
+      else
+      if Wc.Controls[J] is TJvSimReverse then
+      begin
+        R := Wc.Controls[J].BoundsRect;
+        InflateRect(R, D, D);
+        if PtInRect(R, Pi) then
+        begin
+          sRev := TJvSimReverse(Wc.Controls[J]);
+          // now check if P is the output area
+          pl := SRev.Gates[1].Pos;
+          R := Rect(sRev.Left + pl.X, sRev.Top - D, sRev.Left + pl.X + 12, sRev.Top + pl.Y + 12);
+          if PtInRect(R, Pi) and SRev.Gates[1].Active then
+          begin // output
+            vi := SRev.Output1;
+            Exit;
+          end;
+          pl := SRev.Gates[2].Pos;
+          R := Rect(sRev.Left - D, sRev.Top + pl.Y, sRev.Left + pl.X + 12, sRev.Top + pl.Y + 12);
+          if PtInRect(R, Pi) and SRev.Gates[2].Active then
+          begin // output
+            vi := SRev.Output2;
+            Exit;
+          end;
+          pl := SRev.Gates[3].Pos;
+          R := Rect(sRev.Left + pl.X, sRev.Top + pl.Y, sRev.Left + pl.X + 12, sRev.Top + sRev.Height + D);
+          if PtInRect(R, Pi) and SRev.Gates[3].Active then
+          begin // output
+            vi := SRev.Output3;
+            Exit;
+          end;
+        end;
+      end
+      else
+      if Wc.Controls[J] is TJvLogic then
+      begin
+        R := Wc.Controls[J].BoundsRect;
+        InflateRect(R, D, 0);
+        if PtInRect(R, Pi) then
+        begin
+          sLog := TJvLogic(Wc.Controls[J]);
+          // now check if P is in one of the 3 output area's
+          R := Rect(sLog.Left + 33, sLog.Top, sLog.Left + slog.Width + FConSize, sLog.Top + 22);
+          if PtInRect(R, Pi) and SLog.Gates[3].Active then
+          begin // output is gate 3
+            vi := SLog.Output1;
+            Exit;
+          end;
+          R := Rect(sLog.Left + 33, sLog.Top + 23, sLog.Left + slog.Width + FConSize, sLog.Top + 44);
+          if PtInRect(R, Pi) and SLog.Gates[4].Active then
+          begin // output is gate 4
+            vi := SLog.Output2;
+            Exit;
+          end;
+          R := Rect(sLog.Left + 33, sLog.Top + 45, sLog.Left + slog.Width + FConSize, sLog.Top + 64);
+          if PtInRect(R, Pi) and SLog.Gates[5].Active then
+          begin // output is gate 5
+            vi := SLog.Output3;
+            Exit;
+          end;
+        end;
+      end;
+    end;
+    Result := False;
+  end;
+
+  procedure SetVo;
+  var
+    J: Integer;
+  begin
+    for J := 0 to Wc.ControlCount - 1 do
+    begin
+      if (Wc.Controls[J] is TJvSimLight) then
+      begin
+        R := Wc.Controls[J].BoundsRect;
+        InflateRect(R, D, 0);
+        if PtInRect(R, Po) then
+        begin
+          sLight := TJvSimLight(Wc.Controls[J]);
+          SLight.Lit := Vi;
+          Exit;
+        end;
+      end
+      else
+      if Wc.Controls[J] is TJvSimReverse then
+      begin
+        R := Wc.Controls[J].BoundsRect;
+        InflateRect(R, D, 0);
+        if PtInRect(R, Po) then
+        begin
+          sRev := TJvSimReverse(Wc.Controls[J]);
+          // now check if P is in the input area
+          pl := SRev.Gates[0].Pos;
+          R := Rect(sRev.Left + pl.X, sRev.Top + pl.Y, sRev.Left + sRev.Width + D, sRev.Top + pl.Y + 12);
+          if PtInRect(R, Po) and SRev.Gates[0].Active then
+          begin // input
+            SRev.Input1 := vi;
+            Exit;
+          end;
+        end;
+      end
+      else
+      if Wc.Controls[J] is TJvLogic then
+      begin
+        R := Wc.Controls[J].BoundsRect;
+        InflateRect(R, D, 0);
+        if PtInRect(R, Po) then
+        begin
+          sLog := TJvLogic(Wc.Controls[J]);
+          // now check if P is in one of the 3 input area's
+          R := Rect(sLog.Left - D, sLog.Top, sLog.Left + 32, sLog.Top + 22);
+          if PtInRect(R, Po) and SLog.Gates[0].Active then
+          begin // input is gate 0
+            SLog.Input1 := vi;
+            Exit;
+          end;
+          R := Rect(sLog.Left - D, sLog.Top + 23, sLog.Left + 32, sLog.Top + 44);
+          if PtInRect(R, Po) and SLog.Gates[1].Active then
+          begin // input is gate 1
+            SLog.input2 := vi;
+            Exit;
+          end;
+          R := Rect(sLog.Left - D, sLog.Top + 45, sLog.Left + 32, sLog.Top + 64);
+          if PtInRect(R, Po) and SLog.Gates[2].Active then
+          begin // input is gate 2
+            SLog.Input3 := vi;
+            Exit;
+          end;
+        end;
+      end;
+    end;
+  end;
+
+begin
+  // connect input and output using the FConPos
+  d2 := FConSize div 2;
+  D := FConSize;
+  xw := Width - 1;
+  yh := Height - 1;
+  Wc := Parent;
+  case FConPos of
+    jcpTL:
+      begin
+        Pi := ParentPoint(d2, d2);
+        Po := ParentPoint(xw - d2, yh - d2);
+      end;
+    jcpTR:
+      begin
+        Pi := ParentPoint(xw - d2, d2);
+        Po := ParentPoint(d2, yh - d2);
+      end;
+    jcpBR:
+      begin
+        Pi := ParentPoint(xw - d2, yh - d2);
+        Po := ParentPoint(d2, d2);
+      end;
+    jcpBL:
+      begin
+        Pi := ParentPoint(d2, yh - d2);
+        Po := ParentPoint(xw - d2, d2);
+      end;
+  end;
+  // get input Vi
+  if GetVi then
+    SetVo;
+end;
+
+procedure TJvSIMConnector.Disconnect;
+var
+  Pi, Po: TPoint;
+  R: TRect;
+  D, d2, xw, yh: Integer;
+  Wc: TWinControl;
+  sLog: TJvLogic;
+  sLight: TJvSimLight;
+
+  // convert a corner point to a Parent point
+
+  function ParentPoint(X, Y: Integer): TPoint;
+  var
+    P: TPoint;
+  begin
+    P := Point(X, Y);
+    P := ClientToScreen(P);
+    Result := Wc.ScreenToClient(P);
+  end;
+
+  procedure SetVo;
+  var
+    J: Integer;
+  begin
+    for J := 0 to Wc.ControlCount - 1 do
+    begin
+      if Wc.Controls[J] is TJvSimLight then
+      begin
+        R := Wc.Controls[J].BoundsRect;
+        InflateRect(R, D, 0);
+        if PtInRect(R, Po) then
+        begin
+          sLight := TJvSimLight(Wc.Controls[J]);
+          FDisCon := sLight;
+          //SLight.Lit:=False;
+          Exit;
+        end;
+      end
+      else
+      if Wc.Controls[J] is TJvLogic then
+      begin
+        R := Wc.Controls[J].BoundsRect;
+        InflateRect(R, D, 0);
+        if PtInRect(R, Po) then
+        begin
+          sLog := TJvLogic(Wc.Controls[J]);
+          // now check if P is in one of the 3 input area's
+          R := Rect(sLog.Left - D, sLog.Top, sLog.Left + 32, sLog.Top + 22);
+          if PtInRect(R, Po) and SLog.Gates[0].Active then
+          begin // input is gate 0
+            FDisCon := sLog;
+            FDisConI := 1;
+            //            SLog.Input1:=False;
+            Exit;
+          end;
+          R := Rect(sLog.Left - D, sLog.Top + 23, sLog.Left + 32, sLog.Top + 44);
+          if PtInRect(R, Po) and SLog.Gates[1].Active then
+          begin // input is gate 1
+            FDisCon := sLog;
+            FDisConI := 2;
+            //            SLog.input2:=False;
+            Exit;
+          end;
+          R := Rect(sLog.Left - D, sLog.Top + 45, sLog.Left + 32, sLog.Top + 64);
+          if PtInRect(R, Po) and SLog.Gates[2].Active then
+          begin // input is gate 2
+            FDisCon := sLog;
+            FDisConI := 3;
+            //            SLog.Input3:=False;
+            Exit;
+          end;
+        end;
+      end;
+    end;
+  end;
+
+begin
+  // connect input and output using the FConPos
+  FDisCon := nil;
+  FDisConI := 0;
+  d2 := FConSize div 2;
+  D := FConSize;
+  xw := Width - 1;
+  yh := Height - 1;
+  Wc := Parent;
+  case FConPos of
+    jcpTL:
+      begin
+        Pi := ParentPoint(d2, d2);
+        Po := ParentPoint(xw - d2, yh - d2);
+      end;
+    jcpTR:
+      begin
+        Pi := ParentPoint(xw - d2, d2);
+        Po := ParentPoint(d2, yh - d2);
+      end;
+    jcpBR:
+      begin
+        Pi := ParentPoint(xw - d2, yh - d2);
+        Po := ParentPoint(d2, d2);
+      end;
+    jcpBL:
+      begin
+        Pi := ParentPoint(d2, yh - d2);
+        Po := ParentPoint(xw - d2, d2);
+      end;
+  end;
+  // clear logic inputs and lights
+  SetVo;
+end;
+
+//=== TJvLogic ===============================================================
 
 constructor TJvLogic.Create(AOwner: TComponent);
 var
-  i: integer;
+  I: Integer;
 begin
-  inherited;
-  width := 65;
-  height := 65;
+  inherited Create(AOwner);
+  Width := 65;
+  Height := 65;
   // initialize Gates
-  FGates[0].pos := point(1, 10);
-  FGates[1].pos := point(1, 28);
-  FGates[2].pos := point(1, 46);
-  FGates[3].pos := point(52, 10);
-  FGates[4].pos := point(52, 28);
-  FGates[5].pos := point(52, 46);
-  for i := 0 to 5 do
-    FGates[i].State := false;
-  for i := 0 to 2 do
+  FGates[0].Pos := Point(1, 10);
+  FGates[1].Pos := Point(1, 28);
+  FGates[2].Pos := Point(1, 46);
+  FGates[3].Pos := Point(52, 10);
+  FGates[4].Pos := Point(52, 28);
+  FGates[5].Pos := Point(52, 46);
+  for I := 0 to 5 do
+    FGates[I].State := False;
+  for I := 0 to 2 do
   begin
-    FGates[i].style := jgsDI;
-    FGates[i + 3].style := jgsDO;
+    FGates[I].Style := jgsDI;
+    FGates[I + 3].Style := jgsDO;
   end;
   FLogicFunc := jlfAND;
-  FGates[0].Active := true;
-  FGates[1].Active := false;
-  FGates[2].Active := true;
-  FGates[3].Active := false;
-  FGates[4].Active := true;
-  FGates[5].Active := false;
-  connectors := TList.create;
+  FGates[0].Active := True;
+  FGates[1].Active := False;
+  FGates[2].Active := True;
+  FGates[3].Active := False;
+  FGates[4].Active := True;
+  FGates[5].Active := False;
+  FConnectors := TList.Create;
 end;
 
-function TJvLogic.GetGate(Index: Integer): TjanGate;
+destructor TJvLogic.Destroy;
 begin
-  result := FGates[index];
+  FConnectors.Free;
+  inherited Destroy;
 end;
 
-procedure TJvLogic.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+function TJvLogic.GetGate(Index: Integer): TJvGate;
+begin
+  Result := FGates[Index];
+end;
+
+procedure TJvLogic.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 var
   R: TRect;
 begin
-  doMove := false;
-  doStyle := false;
-  StyleDown := false;
-  mdp := point(x, y);
-  R := clientRect;
-  inflateRect(R, -15, -15);
-  doStyle := ptinrect(R, mdp);
-  doMove := not doStyle;
-  oldp := point(x, y);
-  if doMove then
+  FDoMove := False;
+  FDoStyle := False;
+  FStyleDown := False;
+  FMdp := Point(X, Y);
+  R := ClientRect;
+  InflateRect(R, -15, -15);
+  FDoStyle := PtInRect(R, FMdp);
+  FDoMove := not FDoStyle;
+  FOldp := Point(X, Y);
+  if FDoMove then
     AnchorConnectors;
-  if doStyle then
+  if FDoStyle then
   begin
-    StyleDown := true;
-    invalidate;
+    FStyleDown := True;
+    Invalidate;
   end;
 end;
 
 procedure TJvLogic.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-  p: TPoint;
+  P: TPoint;
 begin
-  p := clienttoscreen(point(x, y));
-  p := parent.ScreenToClient(p);
-  if (ssleft in shift) then
+  P := ClientToScreen(Point(X, Y));
+  P := Parent.ScreenToClient(P);
+  if ssLeft in Shift then
   begin
-    if doMove then
+    if FDoMove then
     begin
-      newleft := p.x - mdp.x;
-      newtop := p.y - mdp.y;
+      FNewLeft := P.X - FMdp.X;
+      FNewTop := P.Y - FMdp.Y;
       MoveConnectors;
-      left := newleft;
-      top := newtop;
+      Left := FNewLeft;
+      Top := FNewTop;
     end
   end;
 end;
 
 procedure TJvLogic.AnchorConnectors;
 var
-  wc: TWincontrol;
-  i: integer;
-  con: TJvSIMConnector;
+  Wc: TWinControl;
+  I: Integer;
+  Con: TJvSIMConnector;
   R, Rc: TRect;
-  p: TPoint;
+  P: TPoint;
 begin
-  wc := parent;
-  connectors.Clear;
-  R := boundsrect;
-  inflateRect(R, 8, 0);
-  p := point(left, top);
-  for i := 0 to wc.ControlCount - 1 do
-    if (wc.controls[i] is TJvSIMConnector) then
+  Wc := Parent;
+  FConnectors.Clear;
+  R := BoundsRect;
+  InflateRect(R, 8, 0);
+  P := Point(Left, Top);
+  for I := 0 to Wc.ControlCount - 1 do
+    if Wc.Controls[I] is TJvSIMConnector then
     begin
-      con := TJvSIMConnector(wc.controls[i]);
+      Con := TJvSIMConnector(Wc.Controls[I]);
       // check for corners in bounds
-      Rc := con.BoundsRect;
+      Rc := Con.BoundsRect;
       // TL
-      if ptinrect(R, point(Rc.left, Rc.top)) then
+      if PtInRect(R, Point(Rc.Left, Rc.Top)) then
       begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmTL);
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmTL);
       end
-        // TR
-      else if ptinrect(R, point(Rc.right, Rc.top)) then
+      // TR
+      else
+      if PtInRect(R, Point(Rc.Right, Rc.Top)) then
       begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmTR);
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmTR);
       end
-        // BR
-      else if ptinrect(R, point(Rc.right, Rc.bottom)) then
+      // BR
+      else
+      if PtInRect(R, Point(Rc.Right, Rc.Bottom)) then
       begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmBR);
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmBR);
       end
-        // BL
-      else if ptinrect(R, point(Rc.left, Rc.bottom)) then
+      // BL
+      else
+      if PtInRect(R, Point(Rc.Left, Rc.Bottom)) then
       begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmBL);
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmBL);
       end
     end;
 end;
 
-procedure TJvLogic.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvLogic.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
-  StyleDown := false;
-  if doStyle then
+  FStyleDown := False;
+  if FDoStyle then
   begin
-    doStyle := false;
+    FDoStyle := False;
     case FLogicFunc of
-      jlfAND: LogicFunc := jlfOR;
-      jlfOR: LogicFunc := jlfNOT;
-      jlfNOT: LogicFunc := jlfAND;
+      jlfAND:
+        LogicFunc := jlfOR;
+      jlfOR:
+        LogicFunc := jlfNOT;
+      jlfNOT:
+        LogicFunc := jlfAND;
     end;
   end;
-  BinCheck(self);
+  BinCheck(Self);
 end;
 
-procedure TJvLogic.PaintLed(index: integer);
+procedure TJvLogic.PaintLed(Index: Integer);
 var
-  surfcol, litcol: Tcolor;
-  p: Tpoint;
-  x, y: integer;
-  lit: boolean;
+  SurfCol, LitCol: TColor;
+  P: TPoint;
+  X, Y: Integer;
+  Lit: Boolean;
 begin
-  if not Gates[index].Active then exit;
-  p := Gates[index].pos;
-  x := p.x;
-  y := p.y;
-  if index = 0 then
-    lit := FInput1
-  else if index = 1 then
-    lit := Finput2
-  else if index = 2 then
-    lit := Finput3
-  else if index = 3 then
-    lit := Foutput1
-  else if index = 4 then
-    lit := Foutput2
-  else if index = 5 then
-    lit := Foutput3
+  if not Gates[Index].Active then
+    Exit;
+  P := Gates[Index].Pos;
+  X := P.X;
+  Y := P.Y;
+  if Index = 0 then
+    Lit := FInput1
   else
-    lit := false;
-  if lit then
+  if Index = 1 then
+    Lit := FInput2
+  else
+  if Index = 2 then
+    Lit := FInput3
+  else
+  if Index = 3 then
+    Lit := FOutput1
+  else
+  if Index = 4 then
+    Lit := FOutput2
+  else
+  if Index = 5 then
+    Lit := FOutput3
+  else
+    Lit := False;
+  if Lit then
   begin
-    if Gates[index].Style = jgsDI then
-      surfcol := cllime
+    if Gates[Index].Style = jgsDI then
+      SurfCol := clLime
     else
-      surfcol := clred;
-    litcol := clwhite
+      SurfCol := clRed;
+    LitCol := clwhite
   end
   else
   begin
-    if Gates[index].Style = jgsDI then
+    if Gates[Index].Style = jgsDI then
     begin
-      surfcol := clgreen;
-      litcol := cllime;
+      SurfCol := clGreen;
+      LitCol := clLime;
     end
     else
     begin
-      surfcol := clmaroon;
-      litcol := clred;
+      SurfCol := clMaroon;
+      LitCol := clRed;
     end;
   end;
   with Canvas do
   begin
-    brush.color := clsilver;
-    fillrect(rect(x, y, x + 12, y + 13));
-    brush.style := bsclear;
-    pen.color := clgray;
-    ellipse(x, y, x + 12, y + 13);
-    pen.color := clblack;
-    brush.color := surfcol;
-    ellipse(x + 1, y + 1, x + 11, y + 12);
-    pen.color := clwhite;
-    arc(x + 1, y + 1, x + 11, y + 12, x + 0, y + 12, x + 12, y + 0);
-    pen.color := litcol;
-    arc(x + 3, y + 3, x + 8, y + 9, x + 5, y + 0, x + 0, y + 8);
+    Brush.Color := clSilver;
+    FillRect(Rect(X, Y, X + 12, Y + 13));
+    Brush.Style := bsClear;
+    Pen.Color := clgray;
+    Ellipse(X, Y, X + 12, Y + 13);
+    Pen.Color := clBlack;
+    Brush.Color := SurfCol;
+    Ellipse(X + 1, Y + 1, X + 11, Y + 12);
+    Pen.Color := clWhite;
+    Arc(X + 1, Y + 1, X + 11, Y + 12, X + 0, Y + 12, X + 12, Y + 0);
+    Pen.Color := LitCol;
+    Arc(X + 3, Y + 3, X + 8, Y + 9, X + 5, Y + 0, X + 0, Y + 8);
   end;
 end;
 
 procedure TJvLogic.Paint;
 var
-  i: integer;
+  I: Integer;
   R: TRect;
-  s: string;
+  S: string;
 begin
-  with canvas do
+  with Canvas do
   begin
-    brush.color := clsilver;
+    Brush.Color := clSilver;
     R := ClientRect;
-    Fillrect(R);
-    Frame3D(canvas, R, clbtnhighlight, clbtnshadow, 1);
-    //     Frame3D(canvas,R,clbtnshadow,clbtnhighlight,1);
-    brush.color := clred;
-    for i := 0 to 5 do
-      PaintLed(i);
+    FillRect(R);
+    Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
+    //     Frame3D(Canvas,R,clBtnShadow,clBtnHighlight,1);
+    Brush.Color := clRed;
+    for I := 0 to 5 do
+      PaintLed(I);
     R := ClientRect;
-    inflaterect(R, -15, -15);
-    if StyleDown then
-      Frame3D(canvas, R, clbtnshadow, clbtnhighlight, 1)
+    InflateRect(R, -15, -15);
+    if FStyleDown then
+      Frame3D(Canvas, R, clBtnShadow, clBtnHighlight, 1)
     else
-      Frame3D(canvas, R, clbtnhighlight, clbtnshadow, 1);
-    // draw caption
+      Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
+    // Draw caption
     case FLogicFunc of
-      jlfAND: s := 'AND'; // do not localize
-      jlfOR: s := 'OR'; // do not localize
-      jlfNOT: s := 'NOT'; // do not localize
+      jlfAND:
+        S := 'AND'; // do not localize
+      jlfOR:
+        S := 'OR'; // do not localize
+      jlfNOT:
+        S := 'NOT'; // do not localize
     end;
-    brush.style := bsclear;
-    ClxDrawText(Canvas, s, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+    Brush.Style := bsClear;
+    ClxDrawText(Canvas, S, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
   end;
 end;
 
 procedure TJvLogic.Resize;
 begin
-  width := 65;
-  height := 65;
-end;
-
-destructor TJvLogic.Destroy;
-begin
-  Connectors.Free;
-  inherited;
-
+  Width := 65;
+  Height := 65;
 end;
 
 procedure TJvLogic.MoveConnectors;
 var
-  i: integer;
-  con: TJvSIMConnector;
+  I: Integer;
+  Con: TJvSIMConnector;
 begin
-  if connectors.Count = 0 then exit;
-  for i := 0 to connectors.count - 1 do
+  for I := 0 to FConnectors.Count - 1 do
   begin
-    con := TJvSIMConnector(connectors[i]);
-    con.MoveConnector(point(newleft, newtop));
+    Con := TJvSIMConnector(FConnectors[I]);
+    Con.MoveConnector(Point(FNewLeft, FNewTop));
   end;
 end;
 
 procedure TJvLogic.OutCalc;
 begin
   case FLogicFunc of
-    jlfAND: OutPut2 := Input1 and Input3;
-    jlfOR: OutPut2 := Input1 or Input3;
-    jlfNOT: OutPut2 := not Input2;
+    jlfAND:
+      Output2 := Input1 and Input3;
+    jlfOR:
+      Output2 := Input1 or Input3;
+    jlfNOT:
+      Output2 := not Input2;
   end;
 
 end;
 
-procedure TJvLogic.SetInput1(const Value: boolean);
+procedure TJvLogic.SetInput1(const Value: Boolean);
 begin
-  if value <> FInput1 then
+  if Value <> FInput1 then
   begin
     FInput1 := Value;
-    invalidate;
+    Invalidate;
     OutCalc;
   end;
 end;
 
-procedure TJvLogic.SetInput2(const Value: boolean);
+procedure TJvLogic.SetInput2(const Value: Boolean);
 begin
-  if value <> FInput2 then
+  if Value <> FInput2 then
   begin
     FInput2 := Value;
-    invalidate;
+    Invalidate;
     OutCalc;
   end;
-
 end;
 
-procedure TJvLogic.SetInput3(const Value: boolean);
+procedure TJvLogic.SetInput3(const Value: Boolean);
 begin
-  if value <> FInput3 then
+  if Value <> FInput3 then
   begin
     FInput3 := Value;
-    invalidate;
+    Invalidate;
     OutCalc;
   end;
 end;
 
-procedure TJvLogic.SetOutPut1(const Value: boolean);
+procedure TJvLogic.SetOutput1(const Value: Boolean);
 begin
-  if value <> FOutput1 then
+  if Value <> FOutput1 then
   begin
-    FOutPut1 := Value;
-    invalidate;
+    FOutput1 := Value;
+    Invalidate;
   end;
 end;
 
-procedure TJvLogic.SetOutPut2(const Value: boolean);
+procedure TJvLogic.SetOutput2(const Value: Boolean);
 begin
-  if value <> FOutput2 then
+  if Value <> FOutput2 then
   begin
-    FOutPut2 := Value;
-    invalidate;
+    FOutput2 := Value;
+    Invalidate;
   end;
-
 end;
 
-procedure TJvLogic.SetOutPut3(const Value: boolean);
+procedure TJvLogic.SetOutput3(const Value: Boolean);
 begin
-  if value <> FOutput3 then
+  if Value <> FOutput3 then
   begin
-    FOutPut3 := Value;
-    invalidate;
+    FOutput3 := Value;
+    Invalidate;
   end;
-
 end;
 
 procedure TJvLogic.SetLogicFunc(const Value: TJvLogicFunc);
 begin
-  if value <> FLogicFunc then
+  if Value <> FLogicFunc then
   begin
     FLogicFunc := Value;
     case FLogicFunc of
       jlfAND:
         begin
-          FGates[0].Active := true;
-          FGates[1].Active := false;
-          FGates[2].Active := true;
-          FGates[3].Active := false;
-          FGates[4].Active := true;
-          FGates[5].Active := false;
+          FGates[0].Active := True;
+          FGates[1].Active := False;
+          FGates[2].Active := True;
+          FGates[3].Active := False;
+          FGates[4].Active := True;
+          FGates[5].Active := False;
         end;
       jlfOR:
         begin
-          FGates[0].Active := true;
-          FGates[1].Active := false;
-          FGates[2].Active := true;
-          FGates[3].Active := false;
-          FGates[4].Active := true;
-          FGates[5].Active := false;
+          FGates[0].Active := True;
+          FGates[1].Active := False;
+          FGates[2].Active := True;
+          FGates[3].Active := False;
+          FGates[4].Active := True;
+          FGates[5].Active := False;
         end;
       jlfNOT:
         begin
-          FGates[0].Active := false;
-          FGates[1].Active := true;
-          FGates[2].Active := false;
-          FGates[3].Active := false;
-          FGates[4].Active := true;
-          FGates[5].Active := false;
+          FGates[0].Active := False;
+          FGates[1].Active := True;
+          FGates[2].Active := False;
+          FGates[3].Active := False;
+          FGates[4].Active := True;
+          FGates[5].Active := False;
         end;
     end;
-    invalidate;
+    Invalidate;
     OutCalc;
   end;
 end;
 
-{ TJvSimButton }
-
-procedure TJvSimButton.AnchorConnectors;
-var
-  wc: TWincontrol;
-  i: integer;
-  con: TJvSIMConnector;
-  R, Rc: TRect;
-  p: TPoint;
-begin
-  wc := parent;
-  connectors.Clear;
-  R := boundsrect;
-  inflateRect(R, 8, 8);
-  p := point(left, top);
-  for i := 0 to wc.ControlCount - 1 do
-    if (wc.controls[i] is TJvSIMConnector) then
-    begin
-      con := TJvSIMConnector(wc.controls[i]);
-      // check for corners in bounds
-      Rc := con.BoundsRect;
-      // TL
-      if ptinrect(R, point(Rc.left, Rc.top)) then
-      begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmTL);
-      end
-        // TR
-      else if ptinrect(R, point(Rc.right, Rc.top)) then
-      begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmTR);
-      end
-        // BR
-      else if ptinrect(R, point(Rc.right, Rc.bottom)) then
-      begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmBR);
-      end
-        // BL
-      else if ptinrect(R, point(Rc.left, Rc.bottom)) then
-      begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmBL);
-      end
-    end;
-end;
+//=== TJvSimButton ===========================================================
 
 constructor TJvSimButton.Create(AOwner: TComponent);
 begin
-  inherited;
-  FDown := false;
-  width := 65;
-  height := 65;
-  connectors := TList.create;
+  inherited Create(AOwner);
+  FDown := False;
+  Width := 65;
+  Height := 65;
+  FConnectors := TList.Create;
 end;
 
 destructor TJvSimButton.Destroy;
 begin
-  connectors.free;
-  inherited;
+  FConnectors.Free;
+  inherited Destroy;
+end;
+
+procedure TJvSimButton.AnchorConnectors;
+var
+  Wc: TWinControl;
+  I: Integer;
+  Con: TJvSIMConnector;
+  R, Rc: TRect;
+  P: TPoint;
+begin
+  Wc := Parent;
+  FConnectors.Clear;
+  R := BoundsRect;
+  InflateRect(R, 8, 8);
+  P := Point(Left, Top);
+  for I := 0 to Wc.ControlCount - 1 do
+    if Wc.Controls[I] is TJvSIMConnector then
+    begin
+      Con := TJvSIMConnector(Wc.Controls[I]);
+      // check for corners in bounds
+      Rc := Con.BoundsRect;
+      // TL
+      if PtInRect(R, Point(Rc.Left, Rc.Top)) then
+      begin
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmTL);
+      end
+      // TR
+      else
+      if PtInRect(R, Point(Rc.Right, Rc.Top)) then
+      begin
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmTR);
+      end
+      // BR
+      else
+      if PtInRect(R, Point(Rc.Right, Rc.Bottom)) then
+      begin
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmBR);
+      end
+      // BL
+      else
+      if PtInRect(R, Point(Rc.Left, Rc.Bottom)) then
+      begin
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmBL);
+      end
+    end;
 end;
 
 procedure TJvSimButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -1856,34 +1933,35 @@ procedure TJvSimButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   R: TRect;
 begin
-  mdp := point(x, y);
-  R := clientRect;
-  inflateRect(R, -15, -15);
-  doMove := not (ptinrect(R, mdp));
-  FDepressed := not doMove;
-  oldp := point(x, y);
-  if doMove then
+  FMdp := Point(X, Y);
+  R := ClientRect;
+  InflateRect(R, -15, -15);
+  FDoMove := not PtInRect(R, FMdp);
+  FDepressed := not FDoMove;
+  FOldp := Point(X, Y);
+  if FDoMove then
     AnchorConnectors
   else
-    invalidate;
+    Invalidate;
 end;
 
 procedure TJvSimButton.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-  p: TPoint;
+  P: TPoint;
 begin
-  if FDepressed then exit;
-  p := clienttoscreen(point(x, y));
-  p := parent.ScreenToClient(p);
-  if (ssleft in shift) then
+  if FDepressed then
+    Exit;
+  P := ClientToScreen(Point(X, Y));
+  P := Parent.ScreenToClient(P);
+  if ssLeft in Shift then
   begin
-    if doMove then
+    if FDoMove then
     begin
-      newleft := p.x - mdp.x;
-      newtop := p.y - mdp.y;
+      FNewLeft := P.X - FMdp.X;
+      FNewTop := P.Y - FMdp.Y;
       MoveConnectors;
-      left := newleft;
-      top := newtop;
+      Left := FNewLeft;
+      Top := FNewTop;
     end
   end;
 end;
@@ -1892,243 +1970,246 @@ procedure TJvSimButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   R: TRect;
-  p: Tpoint;
+  P: TPoint;
 begin
-  FDepressed := false;
-  p := point(x, y);
-  R := clientRect;
-  inflateRect(R, -15, -15);
-  if ptinrect(R, p) then
+  FDepressed := False;
+  P := Point(X, Y);
+  R := ClientRect;
+  InflateRect(R, -15, -15);
+  if PtInRect(R, P) then
   begin
     Down := not FDown;
   end
   else
-    BinCheck(self);
+    BinCheck(Self);
 end;
 
 procedure TJvSimButton.MoveConnectors;
 var
-  i: integer;
-  con: TJvSIMConnector;
+  I: Integer;
+  Con: TJvSIMConnector;
 begin
-  if connectors.Count = 0 then exit;
-  for i := 0 to connectors.count - 1 do
+  for I := 0 to FConnectors.Count - 1 do
   begin
-    con := TJvSIMConnector(connectors[i]);
-    con.MoveConnector(point(newleft, newtop));
+    Con := TJvSIMConnector(FConnectors[I]);
+    Con.MoveConnector(Point(FNewLeft, FNewTop));
   end;
 end;
 
 procedure TJvSimButton.Paint;
 var
-  p: Tpoint;
+  P: TPoint;
   R: TRect;
 begin
-  with canvas do
+  with Canvas do
   begin
-    brush.color := clsilver;
+    Brush.Color := clSilver;
     R := ClientRect;
-    Fillrect(R);
-    Frame3D(canvas, R, clbtnhighlight, clbtnshadow, 1);
-    inflaterect(R, -15, -15);
+    FillRect(R);
+    Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
+    InflateRect(R, -15, -15);
     if FDepressed or FDown then
-      Frame3D(canvas, R, clbtnshadow, clbtnhighlight, 1)
+      Frame3D(Canvas, R, clBtnShadow, clBtnHighlight, 1)
     else
-      Frame3D(canvas, R, clbtnhighlight, clbtnshadow, 1);
-    p := point((width div 2) - 6, (height div 2) - 6);
-    PaintLed(p, FDown);
+      Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
+    P := Point((Width div 2) - 6, (Height div 2) - 6);
+    PaintLed(P, FDown);
   end;
 end;
 
-procedure TJvSimButton.PaintLed(pt: TPoint; lit: boolean);
+procedure TJvSimButton.PaintLed(Pt: TPoint; Lit: Boolean);
 var
-  surfcol, litcol: Tcolor;
-  x, y: integer;
+  SurfCol, LitCol: Tcolor;
+  X, Y: Integer;
 begin
-  x := pt.x;
-  y := pt.y;
-  if lit then
+  X := Pt.X;
+  Y := Pt.Y;
+  if Lit then
   begin
-    surfcol := clred;
-    litcol := clwhite
+    SurfCol := clRed;
+    LitCol := clWhite
   end
   else
   begin
-    surfcol := clmaroon;
-    litcol := clred;
+    SurfCol := clMaroon;
+    LitCol := clRed;
   end;
   with Canvas do
   begin
-    brush.color := clsilver;
-    fillrect(rect(x, y, x + 12, y + 13));
-    brush.style := bsclear;
-    pen.color := clgray;
-    ellipse(x, y, x + 12, y + 13);
-    pen.color := clblack;
-    brush.color := surfcol;
-    ellipse(x + 1, y + 1, x + 11, y + 12);
-    pen.color := clwhite;
-    arc(x + 1, y + 1, x + 11, y + 12, x + 0, y + 12, x + 12, y + 0);
-    pen.color := litcol;
-    arc(x + 3, y + 3, x + 8, y + 9, x + 5, y + 0, x + 0, y + 8);
+    Brush.Color := clSilver;
+    FillRect(Rect(X, Y, X + 12, Y + 13));
+    Brush.Style := bsClear;
+    Pen.Color := clGray;
+    Ellipse(X, Y, X + 12, Y + 13);
+    Pen.Color := clBlack;
+    Brush.Color := SurfCol;
+    Ellipse(X + 1, Y + 1, X + 11, Y + 12);
+    Pen.Color := clWhite;
+    Arc(X + 1, Y + 1, X + 11, Y + 12, X + 0, Y + 12, X + 12, Y + 0);
+    Pen.Color := LitCol;
+    Arc(X + 3, Y + 3, X + 8, Y + 9, X + 5, Y + 0, X + 0, Y + 8);
   end;
 end;
 
 procedure TJvSimButton.Resize;
 begin
-  width := 65;
-  height := 65;
+  Width := 65;
+  Height := 65;
 end;
 
-procedure TJvSimButton.SetDown(const Value: boolean);
+procedure TJvSimButton.SetDown(const Value: Boolean);
 begin
-  if value <> FDown then
+  if Value <> FDown then
   begin
     FDown := Value;
-    FDepressed := value;
-    invalidate;
+    FDepressed := Value;
+    Invalidate;
   end;
 end;
 
-procedure TJvSimLight.AnchorConnectors;
-var
-  wc: TWincontrol;
-  i: integer;
-  con: TJvSIMConnector;
-  R, Rc: TRect;
-  p: TPoint;
-begin
-  wc := parent;
-  connectors.Clear;
-  R := boundsrect;
-  inflateRect(R, 8, 8);
-  p := point(left, top);
-  for i := 0 to wc.ControlCount - 1 do
-    if (wc.controls[i] is TJvSIMConnector) then
-    begin
-      con := TJvSIMConnector(wc.controls[i]);
-      // check for corners in bounds
-      Rc := con.BoundsRect;
-      // TL
-      if ptinrect(R, point(Rc.left, Rc.top)) then
-      begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmTL);
-      end
-        // TR
-      else if ptinrect(R, point(Rc.right, Rc.top)) then
-      begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmTR);
-      end
-        // BR
-      else if ptinrect(R, point(Rc.right, Rc.bottom)) then
-      begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmBR);
-      end
-        // BL
-      else if ptinrect(R, point(Rc.left, Rc.bottom)) then
-      begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmBL);
-      end
-    end;
-end;
+//=== TJvSimLight ============================================================
 
 constructor TJvSimLight.Create(AOwner: TComponent);
 begin
-  inherited;
-  FLit := false;
-  width := 65;
-  height := 65;
-  FOnColor := clLime;
-  FOffColor := Clgreen;
-  connectors := TList.create;
+  inherited Create(AOwner);
+  FLit := False;
+  Width := 65;
+  Height := 65;
+  FColorOn := clLime;
+  FColorOff := clGreen;
+  FConnectors := TList.Create;
 end;
 
 destructor TJvSimLight.Destroy;
 begin
-  inherited;
-  connectors.free;
+  FConnectors.Free;
+  inherited Destroy;
+end;
+
+procedure TJvSimLight.AnchorConnectors;
+var
+  Wc: TWinControl;
+  I: Integer;
+  Con: TJvSIMConnector;
+  R, Rc: TRect;
+  P: TPoint;
+begin
+  Wc := Parent;
+  FConnectors.Clear;
+  R := BoundsRect;
+  InflateRect(R, 8, 8);
+  P := Point(Left, Top);
+  for I := 0 to Wc.ControlCount - 1 do
+    if Wc.Controls[I] is TJvSIMConnector then
+    begin
+      Con := TJvSIMConnector(Wc.Controls[I]);
+      // check for corners in bounds
+      Rc := Con.BoundsRect;
+      // TL
+      if PtInRect(R, Point(Rc.Left, Rc.Top)) then
+      begin
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmTL);
+      end
+      // TR
+      else
+      if PtInRect(R, Point(Rc.Right, Rc.Top)) then
+      begin
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmTR);
+      end
+      // BR
+      else
+      if PtInRect(R, Point(Rc.Right, Rc.Bottom)) then
+      begin
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmBR);
+      end
+      // BL
+      else
+      if PtInRect(R, Point(Rc.Left, Rc.Bottom)) then
+      begin
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmBL);
+      end
+    end;
 end;
 
 procedure TJvSimLight.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  mdp := point(x, y);
-  doMove := true;
-  oldp := point(x, y);
-  AnchorConnectors
+  FMdp := Point(X, Y);
+  FDoMove := True;
+  FOldp := Point(X, Y);
+  AnchorConnectors;
 end;
 
 procedure TJvSimLight.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-  p: TPoint;
+  P: TPoint;
 begin
-  p := clienttoscreen(point(x, y));
-  p := parent.ScreenToClient(p);
-  if (ssleft in shift) then
+  P := ClientToScreen(Point(X, Y));
+  P := Parent.ScreenToClient(P);
+  if ssLeft in Shift then
   begin
-    if doMove then
+    if FDoMove then
     begin
-      newleft := p.x - mdp.x;
-      newtop := p.y - mdp.y;
+      FNewLeft := P.X - FMdp.X;
+      FNewTop := P.Y - FMdp.Y;
       MoveConnectors;
-      left := newleft;
-      top := newtop;
+      Left := FNewLeft;
+      Top := FNewTop;
     end
   end;
 end;
 
-procedure TJvSimLight.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvSimLight.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
-  BinCheck(self);
+  BinCheck(Self);
 end;
 
 procedure TJvSimLight.MoveConnectors;
 var
-  i: integer;
-  con: TJvSIMConnector;
+  I: Integer;
+  Con: TJvSIMConnector;
 begin
-  if connectors.Count = 0 then exit;
-  for i := 0 to connectors.count - 1 do
+  for I := 0 to FConnectors.Count - 1 do
   begin
-    con := TJvSIMConnector(connectors[i]);
-    con.MoveConnector(point(newleft, newtop));
+    Con := TJvSIMConnector(FConnectors[I]);
+    Con.MoveConnector(Point(FNewLeft, FNewTop));
   end;
 end;
 
 procedure TJvSimLight.Paint;
 var
-  tlpoly, brpoly: array[0..2] of TPoint;
-  xw, yh: integer;
+  TlPoly, BrPoly: array [0..2] of TPoint;
+  xw, yh: Integer;
   R: Trect;
-  hiColor, loColor, surfcol: Tcolor;
+  HiColor, LoColor, SurfCol: TColor;
 
-  procedure drawframe;
+  procedure DrawFrame;
   begin
-    //   rgn :=  CreatePolygonRgn(tlpoly,3,WINDING);
+    //   rgn :=  CreatePolygonRgn(TlPoly,3,WINDING);
     //   SelectClipRgn(Canvas.handle,rgn);
-    with canvas do
+    with Canvas do
     begin
-      brush.color := surfCol;
-      pen.color := hiColor;
-      pen.Width := 2;
+      Brush.Color := SurfCol;
+      Pen.Color := HiColor;
+      Pen.Width := 2;
       Ellipse(15, 15, xw - 15, yh - 15);
     end;
     //   SelectClipRgn(Canvas.handle,0);
     //   DeleteObject(rgn);
-    //   rgn :=  CreatePolygonRgn(brpoly,3,WINDING);
+    //   rgn :=  CreatePolygonRgn(BrPoly,3,WINDING);
     //   SelectClipRgn(Canvas.handle,rgn);
-    with canvas do
+    with Canvas do
     begin
-      brush.color := surfCol;
-      pen.color := loColor;
-      pen.Width := 2;
-      arc(15, 15, xw - 15, yh - 15, 0, yh, xw, 0);
-      pen.width := 1;
+      Brush.Color := SurfCol;
+      Pen.Color := LoColor;
+      Pen.Width := 2;
+      Arc(15, 15, xw - 15, yh - 15, 0, yh, xw, 0);
+      Pen.Width := 1;
     end;
     //   SelectClipRgn(Canvas.handle,0);
     //   DeleteObject(rgn);
@@ -2136,412 +2217,419 @@ var
 
 begin
   if Lit then
-    surfcol := Oncolor
+    SurfCol := ColorOn
   else
-    surfcol := OffColor;
-  canvas.brush.style := bssolid;
-  R := clientRect;
-  canvas.brush.color := clsilver;
-  canvas.FillRect(R);
-  frame3D(canvas, R, clbtnhighlight, clbtnshadow, 1);
-  xw := width - 1;
-  yh := height - 1;
-//  cr := width div 4;
-//  x4 := width div 4;
+    SurfCol := ColorOff;
+  Canvas.Brush.Style := bsSolid;
+  R := ClientRect;
+  Canvas.Brush.Color := clSilver;
+  Canvas.FillRect(R);
+  Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
+  xw := Width - 1;
+  yh := Height - 1;
+//  cr := Width div 4;
+//  x4 := Width div 4;
   // topleft region
-  tlpoly[0] := point(left, top + yh);
-  tlpoly[1] := point(left, top);
-  tlpoly[2] := point(left + xw, top);
-  // bottom right region
-  brpoly[0] := point(left + xw, top);
-  brpoly[1] := point(left + xw, top + yh);
-  brpoly[2] := point(left, top + yh);
-  canvas.pen.style := pssolid;
-  hiColor := clbtnhighlight;
-  locolor := clbtnshadow;
-  drawframe;
+  TlPoly[0] := Point(Left, Top + yh);
+  TlPoly[1] := Point(Left, Top);
+  TlPoly[2] := Point(Left + xw, Top);
+  // Bottom Right region
+  BrPoly[0] := Point(Left + xw, Top);
+  BrPoly[1] := Point(Left + xw, Top + yh);
+  BrPoly[2] := Point(Left, Top + yh);
+  Canvas.Pen.Style := pssolid;
+  HiColor := clBtnHighlight;
+  LoColor := clBtnShadow;
+  DrawFrame;
 end;
 
 procedure TJvSimLight.Resize;
 begin
-  width := 65;
-  height := 65;
+  Width := 65;
+  Height := 65;
 end;
 
-procedure TJvSimLight.SetLit(const Value: boolean);
+procedure TJvSimLight.SetLit(const Value: Boolean);
 begin
-  if value <> FLit then
+  if Value <> FLit then
   begin
     FLit := Value;
-    invalidate;
+    Invalidate;
   end;
 end;
 
-procedure TJvSimLight.SetOffColor(const Value: TColor);
+procedure TJvSimLight.SetColorOff(const Value: TColor);
 begin
-  if value <> FOffColor then
+  if Value <> FColorOff then
   begin
-    FOffColor := Value;
-    invalidate;
+    FColorOff := Value;
+    Invalidate;
   end;
 end;
 
-procedure TJvSimLight.SetOnColor(const Value: TColor);
+procedure TJvSimLight.SetColorOn(const Value: TColor);
 begin
-  if value <> FonColor then
+  if Value <> FColorOn then
   begin
-    FOnColor := Value;
-    invalidate;
+    FColorOn := Value;
+    Invalidate;
   end;
 end;
 
-{ TjanSimBin }
+//=== TJvSimBin ==============================================================
 
-constructor TjanSimBin.create(AOwner: Tcomponent);
+constructor TJvSimBin.Create(AOwner: TComponent);
 begin
-  inherited;
-  width := 65;
-  height := 65;
-  bmBin := tbitmap.create;
-  bmBin.LoadFromResourceName(HInstance, 'RBIN'); // do not localize
+  inherited Create(AOwner);
+  Width := 65;
+  Height := 65;
+  FBmpBin := TBitmap.Create;
+  FBmpBin.LoadFromResourceName(HInstance, 'RBIN'); // do not localize
 end;
 
-destructor TjanSimBin.destroy;
+destructor TJvSimBin.Destroy;
 begin
-  bmBin.free;
-  inherited;
-
+  FBmpBin.Free;
+  inherited Destroy;
 end;
 
-procedure TjanSimBin.paint;
+procedure TJvSimBin.Paint;
 var
-  Rf: trect;
+  Rf: TRect;
 begin
-  Rf := clientrect;
-  canvas.Brush.color := clsilver;
-  canvas.fillrect(rect(0, 0, width, height));
-  frame3D(canvas, Rf, clbtnhighlight, clbtnshadow, 1);
-  canvas.draw(16, 16, bmBin);
+  Rf := ClientRect;
+  Canvas.Brush.Color := clSilver;
+  Canvas.FillRect(Rect(0, 0, Width, Height));
+  Frame3D(Canvas, Rf, clBtnHighlight, clBtnShadow, 1);
+  Canvas.Draw(16, 16, FBmpBin);
 end;
 
-procedure TjanSimBin.resize;
+procedure TJvSimBin.Resize;
 begin
-  inherited;
-  width := 65;
-  height := 65;
+  inherited Resize;
+  Width := 65;
+  Height := 65;
 end;
 
-{ TJvSimLogicBox }
+//=== TJvSimLogicBox =========================================================
 
-procedure TJvSimLogicBox.cpuOnTimer(sender: TObject);
-var
-  wc: TWinControl;
-  i: integer;
+constructor TJvSimLogicBox.Create(AOwner: TComponent);
 begin
-  wc := parent;
-  // reset inputs
-{  for i:=0 to wc.ControlCount-1 do
-    if (wc.controls[i] is TJvLogic) then
-    begin
-      sLogic:=TJvLogic(wc.controls[i]);
-      for j:=0 to 2 do
-        sLogic.FGates[j].State:=false;
-    end
-    else if (wc.controls[i] is TJvSimLight) then
-    begin
-      sLight:=TJvSimLight(wc.controls[i]);
-      sLight.Lit:=false;
-    end;}
-  // make connections
-  for i := 0 to wc.ControlCount - 1 do
-    if (wc.controls[i] is TJvSIMConnector) then
-      TJvSIMConnector(wc.controls[i]).connect;
-end;
-
-constructor TJvSimLogicBox.create(AOwner: Tcomponent);
-begin
-  inherited;
-  width := 130;
-  height := 65;
-  bmCon := TBitmap.create;
-  bmLogic := TBitmap.create;
-  bmButton := TBitmap.create;
-  bmLight := TBitmap.create;
-  bmRev := TBitmap.create;
-  bmCon.LoadFromResourceName(HInstance, 'RCON'); // do not localize
-  bmLogic.LoadFromResourceName(HInstance, 'RLOGIC'); // do not localize
-  bmButton.LoadFromResourceName(HInstance, 'RBUTTON'); // do not localize
-  bmLight.LoadFromResourceName(HInstance, 'RLIGHT'); // do not localize
-  bmRev.LoadFromResourceName(HInstance, 'RREV'); // do not localize
-  bmBin := tbitmap.create;
-  bmBin.LoadFromResourceName(HInstance, 'RBIN'); // do not localize
-  RCon := rect(0, 0, 32, 32);
-  RLogic := rect(33, 0, 64, 32);
-  RButton := rect(0, 33, 32, 64);
-  RLight := rect(33, 33, 64, 64);
-  RRev := rect(65, 0, 97, 32);
-  DCon := false;
-  DLogic := false;
-  DButton := false;
-  DLight := false;
-  DRev := false;
-  cpu := TTimer.Create(self);
-  cpu.Enabled := false;
-  cpu.OnTimer := cpuOnTimer;
-  cpu.Interval := 50;
+  inherited Create(AOwner);
+  Width := 130;
+  Height := 65;
+  FBmpCon := TBitmap.Create;
+  FBmpLogic := TBitmap.Create;
+  FBmpButton := TBitmap.Create;
+  FBmpLight := TBitmap.Create;
+  FBmpRev := TBitmap.Create;
+  FBmpBin := TBitmap.Create;
+  FBmpCon.LoadFromResourceName(HInstance, 'RCON'); // do not localize
+  FBmpLogic.LoadFromResourceName(HInstance, 'RLOGIC'); // do not localize
+  FBmpButton.LoadFromResourceName(HInstance, 'RBUTTON'); // do not localize
+  FBmpLight.LoadFromResourceName(HInstance, 'RLIGHT'); // do not localize
+  FBmpRev.LoadFromResourceName(HInstance, 'RREV'); // do not localize
+  FBmpBin.LoadFromResourceName(HInstance, 'RBIN'); // do not localize
+  FRCon := Rect(0, 0, 32, 32);
+  FRLogic := Rect(33, 0, 64, 32);
+  FRButton := Rect(0, 33, 32, 64);
+  FRLight := Rect(33, 33, 64, 64);
+  FRRev := Rect(65, 0, 97, 32);
+  FDCon := False;
+  FDLogic := False;
+  FDButton := False;
+  FDLight := False;
+  FDRev := False;
+  FCpu := TTimer.Create(Self);
+  FCpu.Enabled := False;
+  FCpu.OnTimer := CpuOnTimer;
+  FCpu.Interval := 50;
 end;
 
 destructor TJvSimLogicBox.Destroy;
 begin
-  cpu.free;
-  bmCon.free;
-  bmLogic.free;
-  bmButton.free;
-  bmLight.free;
-  bmRev.free;
-  bmBin.free;
-  inherited;
-
+  FCpu.Free;
+  FBmpCon.Free;
+  FBmpLogic.Free;
+  FBmpButton.Free;
+  FBmpLight.Free;
+  FBmpRev.Free;
+  FBmpBin.Free;
+  inherited Destroy;
 end;
 
 procedure TJvSimLogicBox.Loaded;
 begin
-  inherited;
-  cpu.Enabled := true;
+  inherited Loaded;
+  FCpu.Enabled := True;
+end;
+
+procedure TJvSimLogicBox.CpuOnTimer(Sender: TObject);
+var
+  Wc: TWinControl;
+  I: Integer;
+begin
+  Wc := Parent;
+  // reset inputs
+{  for I:=0 to Wc.ControlCount-1 do
+    if (Wc.Controls[I] is TJvLogic) then
+    begin
+      sLogic:=TJvLogic(Wc.Controls[I]);
+      for j:=0 to 2 do
+        sLogic.FGates[j].State:=False;
+    end
+    else if (Wc.Controls[I] is TJvSimLight) then
+    begin
+      sLight:=TJvSimLight(Wc.Controls[I]);
+      sLight.Lit:=False;
+    end;}
+  // make connections
+  for I := 0 to Wc.ControlCount - 1 do
+    if Wc.Controls[I] is TJvSIMConnector then
+      TJvSIMConnector(Wc.Controls[I]).Connect;
 end;
 
 procedure TJvSimLogicBox.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
-  p: TPoint;
+  P: TPoint;
 begin
-  p := point(x, y);
-  DCon := false;
-  DLogic := false;
-  DButton := false;
-  DLight := false;
-  if ptinrect(RCon, p) then
-    Dcon := true
-  else if ptinrect(RLogic, p) then
-    DLogic := true
-  else if ptinrect(RButton, p) then
-    DButton := true
-  else if ptinrect(RLight, p) then
-    DLight := true
-  else if ptinrect(RRev, p) then
-    DRev := true;
-  invalidate;
+  P := Point(X, Y);
+  FDCon := False;
+  FDLogic := False;
+  FDButton := False;
+  FDLight := False;
+  if PtInRect(FRCon, P) then
+    FDCon := True
+  else
+  if PtInRect(FRLogic, P) then
+    FDLogic := True
+  else
+  if PtInRect(FRButton, P) then
+    FDButton := True
+  else
+  if PtInRect(FRLight, P) then
+    FDLight := True
+  else
+  if PtInRect(FRRev, P) then
+    FDRev := True;
+  Invalidate;
 end;
 
 procedure TJvSimLogicBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  wc: TWinControl;
-  l, t: integer;
+  Wc: TWinControl;
+  l, t: Integer;
 begin
-  wc := parent;
-  l := left;
-  t := top + height + 10;
-  if Dcon then
-    with TJvSIMConnector.create(wc) do
+  Wc := Parent;
+  l := Left;
+  t := Top + Height + 10;
+  if FDCon then
+    with TJvSIMConnector.Create(Wc) do
     begin
-      parent := wc;
-      left := l;
-      top := t;
+      Parent := Wc;
+      Left := l;
+      Top := t;
     end
-  else if DLogic then
-    with TJvLogic.create(wc) do
+  else
+  if FDLogic then
+    with TJvLogic.Create(Wc) do
     begin
-      parent := wc;
-      left := l;
-      top := t;
+      Parent := Wc;
+      Left := l;
+      Top := t;
     end
-  else if DButton then
-    with TJvSimButton.create(wc) do
+  else
+  if FDButton then
+    with TJvSimButton.Create(Wc) do
     begin
-      parent := wc;
-      left := l;
-      top := t;
+      Parent := Wc;
+      Left := l;
+      Top := t;
     end
-  else if DLight then
-    with TJvSimLight.create(wc) do
+  else
+  if FDLight then
+    with TJvSimLight.Create(Wc) do
     begin
-      parent := wc;
-      left := l;
-      top := t;
+      Parent := Wc;
+      Left := l;
+      Top := t;
     end
-  else if DRev then
-    with TJvSimReverse.Create(wc) do
+  else
+  if FDRev then
+    with TJvSimReverse.Create(Wc) do
     begin
-      parent := wc;
-      left := l;
-      top := t;
+      Parent := Wc;
+      Left := l;
+      Top := t;
     end;
-  DCon := false;
-  DLogic := false;
-  DButton := false;
-  DLight := false;
-  DRev := false;
-  invalidate;
+  FDCon := False;
+  FDLogic := False;
+  FDButton := False;
+  FDLight := False;
+  FDRev := False;
+  Invalidate;
 end;
 
 procedure TJvSimLogicBox.Paint;
 var
   Rb: TRect;
 begin
-  with canvas do
+  with Canvas do
   begin
-    brush.color := clsilver;
-    fillrect(clientrect);
-    Rb := RCon;
-    if not DCon then
-      frame3D(canvas, Rb, clbtnhighlight, clbtnshadow, 1)
+    Brush.Color := clSilver;
+    FillRect(ClientRect);
+    Rb := FRCon;
+    if not FDCon then
+      Frame3D(Canvas, Rb, clBtnHighlight, clBtnShadow, 1)
     else
-      frame3D(canvas, Rb, clbtnshadow, clbtnhighlight, 1);
-    draw(4, 4, bmCon);
-    Rb := RLogic;
-    if not DLogic then
-      frame3D(canvas, Rb, clbtnhighlight, clbtnshadow, 1)
+      Frame3D(Canvas, Rb, clBtnShadow, clBtnHighlight, 1);
+    Draw(4, 4, FBmpCon);
+    Rb := FRLogic;
+    if not FDLogic then
+      Frame3D(Canvas, Rb, clBtnHighlight, clBtnShadow, 1)
     else
-      frame3D(canvas, Rb, clbtnshadow, clbtnhighlight, 1);
-    draw(36, 4, bmLogic);
-    Rb := RButton;
-    if not DButton then
-      frame3D(canvas, Rb, clbtnhighlight, clbtnshadow, 1)
+      Frame3D(Canvas, Rb, clBtnShadow, clBtnHighlight, 1);
+    Draw(36, 4, FBmpLogic);
+    Rb := FRButton;
+    if not FDButton then
+      Frame3D(Canvas, Rb, clBtnHighlight, clBtnShadow, 1)
     else
-      frame3D(canvas, Rb, clbtnshadow, clbtnhighlight, 1);
-    draw(4, 36, bmButton);
-    Rb := RLight;
-    if not DLight then
-      frame3D(canvas, Rb, clbtnhighlight, clbtnshadow, 1)
+      Frame3D(Canvas, Rb, clBtnShadow, clBtnHighlight, 1);
+    Draw(4, 36, FBmpButton);
+    Rb := FRLight;
+    if not FDLight then
+      Frame3D(Canvas, Rb, clBtnHighlight, clBtnShadow, 1)
     else
-      frame3D(canvas, Rb, clbtnshadow, clbtnhighlight, 1);
-    draw(36, 36, bmLight);
-    Rb := RRev;
-    if not DRev then
-      frame3D(canvas, Rb, clbtnhighlight, clbtnshadow, 1)
+      Frame3D(Canvas, Rb, clBtnShadow, clBtnHighlight, 1);
+    Draw(36, 36, FBmpLight);
+    Rb := FRRev;
+    if not FDRev then
+      Frame3D(Canvas, Rb, clBtnHighlight, clBtnShadow, 1)
     else
-      frame3D(canvas, Rb, clbtnshadow, clbtnhighlight, 1);
-    draw(Rb.left + 3, Rb.top + 3, bmRev);
+      Frame3D(Canvas, Rb, clBtnShadow, clBtnHighlight, 1);
+    Draw(Rb.Left + 3, Rb.Top + 3, FBmpRev);
 
-    // draw bin
-    draw(100, 16, bmBin);
+    // Draw bin
+    Draw(100, 16, FBmpBin);
   end;
-
 end;
 
-procedure TJvSimLogicBox.resize;
+procedure TJvSimLogicBox.Resize;
 begin
-  width := 130;
-  height := 65;
-
+  Width := 130;
+  Height := 65;
 end;
 
-{ TJvSimReverse }
-
-procedure TJvSimReverse.AnchorConnectors;
-var
-  wc: TWincontrol;
-  i: integer;
-  con: TJvSIMConnector;
-  R, Rc: TRect;
-  p: TPoint;
-begin
-  wc := parent;
-  connectors.Clear;
-  R := boundsrect;
-  inflateRect(R, 8, 0);
-  p := point(left, top);
-  for i := 0 to wc.ControlCount - 1 do
-    if (wc.controls[i] is TJvSIMConnector) then
-    begin
-      con := TJvSIMConnector(wc.controls[i]);
-      // check for corners in bounds
-      Rc := con.BoundsRect;
-      // TL
-      if ptinrect(R, point(Rc.left, Rc.top)) then
-      begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmTL);
-      end
-        // TR
-      else if ptinrect(R, point(Rc.right, Rc.top)) then
-      begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmTR);
-      end
-        // BR
-      else if ptinrect(R, point(Rc.right, Rc.bottom)) then
-      begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmBR);
-      end
-        // BL
-      else if ptinrect(R, point(Rc.left, Rc.bottom)) then
-      begin
-        connectors.Add(con);
-        con.AnchorCorner(p, jcmBL);
-      end
-    end;
-end;
+//=== TJvSimReverse ==========================================================
 
 constructor TJvSimReverse.Create(AOwner: TComponent);
 var
-  i: integer;
+  I: Integer;
 begin
-  inherited;
-  width := 42;
-  height := 42;
+  inherited Create(AOwner);
+  Width := 42;
+  Height := 42;
   // initialize Gates
-  FGates[0].pos := point(28, 14);
-  FGates[1].pos := point(14, 1);
-  FGates[2].pos := point(1, 14);
-  FGates[3].pos := point(14, 28);
-  for i := 0 to 3 do
+  FGates[0].Pos := Point(28, 14);
+  FGates[1].Pos := Point(14, 1);
+  FGates[2].Pos := Point(1, 14);
+  FGates[3].Pos := Point(14, 28);
+  for I := 0 to 3 do
   begin
-    FGates[i].State := false;
-    FGates[i].Active := true;
-    FGates[i].style := jgsDO;
+    FGates[I].State := False;
+    FGates[I].Active := True;
+    FGates[I].Style := jgsDO;
   end;
-  FGates[0].style := jgsDI;
-  connectors := TList.create;
+  FGates[0].Style := jgsDI;
+  FConnectors := TList.Create;
 end;
 
 destructor TJvSimReverse.Destroy;
 begin
-  Connectors.Free;
-  inherited;
+  FConnectors.Free;
+  inherited Destroy;
 end;
 
-function TJvSimReverse.GetGate(Index: Integer): TjanGate;
+procedure TJvSimReverse.AnchorConnectors;
+var
+  Wc: TWinControl;
+  I: Integer;
+  Con: TJvSIMConnector;
+  R, Rc: TRect;
+  P: TPoint;
 begin
-  result := FGates[index];
+  Wc := Parent;
+  FConnectors.Clear;
+  R := BoundsRect;
+  InflateRect(R, 8, 0);
+  P := Point(Left, Top);
+  for I := 0 to Wc.ControlCount - 1 do
+    if Wc.Controls[I] is TJvSIMConnector then
+    begin
+      Con := TJvSIMConnector(Wc.Controls[I]);
+      // check for corners in bounds
+      Rc := Con.BoundsRect;
+      // TL
+      if PtInRect(R, Point(Rc.Left, Rc.Top)) then
+      begin
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmTL);
+      end
+        // TR
+      else
+      if PtInRect(R, Point(Rc.Right, Rc.Top)) then
+      begin
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmTR);
+      end
+        // BR
+      else
+      if PtInRect(R, Point(Rc.Right, Rc.Bottom)) then
+      begin
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmBR);
+      end
+        // BL
+      else
+      if PtInRect(R, Point(Rc.Left, Rc.Bottom)) then
+      begin
+        FConnectors.Add(Con);
+        Con.AnchorCorner(P, jcmBL);
+      end
+    end;
+end;
+
+function TJvSimReverse.GetGate(Index: Integer): TJvGate;
+begin
+  Result := FGates[Index];
 end;
 
 procedure TJvSimReverse.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  mdp := point(x, y);
-  oldp := point(x, y);
-  doMove := true;
+  FMdp := Point(X, Y);
+  FOldp := Point(X, Y);
+  FDoMove := True;
   AnchorConnectors;
 end;
 
 procedure TJvSimReverse.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-  p: TPoint;
+  P: TPoint;
 begin
-  p := clienttoscreen(point(x, y));
-  p := parent.ScreenToClient(p);
-  if (ssleft in shift) then
+  P := ClientToScreen(Point(X, Y));
+  P := Parent.ScreenToClient(P);
+  if ssLeft in Shift then
   begin
-    if doMove then
+    if FDoMove then
     begin
-      newleft := p.x - mdp.x;
-      newtop := p.y - mdp.y;
+      FNewLeft := P.X - FMdp.X;
+      FNewTop := P.Y - FMdp.Y;
       MoveConnectors;
-      left := newleft;
-      top := newtop;
+      Left := FNewLeft;
+      Top := FNewTop;
     end
   end;
 end;
@@ -2549,156 +2637,160 @@ end;
 procedure TJvSimReverse.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  BinCheck(self);
+  BinCheck(Self);
 end;
 
 procedure TJvSimReverse.MoveConnectors;
 var
-  i: integer;
-  con: TJvSIMConnector;
+  I: Integer;
+  Con: TJvSIMConnector;
 begin
-  if connectors.Count = 0 then exit;
-  for i := 0 to connectors.count - 1 do
+  for I := 0 to FConnectors.Count - 1 do
   begin
-    con := TJvSIMConnector(connectors[i]);
-    con.MoveConnector(point(newleft, newtop));
+    Con := TJvSIMConnector(FConnectors[I]);
+    Con.MoveConnector(Point(FNewLeft, FNewTop));
   end;
 end;
 
 procedure TJvSimReverse.OutCalc;
 begin
   Output1 := Input1;
-  OutPut2 := input1;
-  Output3 := input1;
+  Output2 := Input1;
+  Output3 := Input1;
 end;
 
 procedure TJvSimReverse.Paint;
 var
-  i: integer;
+  I: Integer;
   R: TRect;
-  poly: array[0..2] of TPoint;
+  Poly: array [0..2] of TPoint;
 begin
-  with canvas do
+  with Canvas do
   begin
-    brush.color := clsilver;
+    Brush.Color := clSilver;
     R := ClientRect;
-    Fillrect(R);
-    Frame3D(canvas, R, clbtnhighlight, clbtnshadow, 1);
-    brush.color := clred;
-    for i := 0 to 3 do
-      PaintLed(i);
+    FillRect(R);
+    Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
+    Brush.Color := clRed;
+    for I := 0 to 3 do
+      PaintLed(I);
     R := ClientRect;
     // paint triangle
-    poly[0] := point(14, 20);
-    poly[1] := point(26, 14);
-    poly[2] := point(26, 26);
-    pen.style := psclear;
-    brush.color := clblack;
-    polygon(poly);
-    pen.style := pssolid;
+    Poly[0] := Point(14, 20);
+    Poly[1] := Point(26, 14);
+    Poly[2] := Point(26, 26);
+    Pen.Style := psClear;
+    Brush.Color := clBlack;
+    Polygon(Poly);
+    Pen.Style := psSolid;
   end;
 end;
 
-procedure TJvSimReverse.PaintLed(index: integer);
+procedure TJvSimReverse.PaintLed(Index: Integer);
 var
-  surfcol, litcol: Tcolor;
-  p: Tpoint;
-  x, y: integer;
-  lit: boolean;
+  SurfCol, LitCol: Tcolor;
+  P: TPoint;
+  X, Y: Integer;
+  Lit: Boolean;
 begin
-  if not Gates[index].Active then exit;
-  p := Gates[index].pos;
-  x := p.x;
-  y := p.y;
-  if index = 0 then
-    lit := FInput1
-  else if index = 1 then
-    lit := Foutput1
-  else if index = 2 then
-    lit := FOutput2
-  else if index = 3 then
-    lit := FOutput3
+  if not Gates[Index].Active then
+    Exit;
+  P := Gates[Index].Pos;
+  X := P.X;
+  Y := P.Y;
+  if Index = 0 then
+    Lit := Input1
   else
-    lit := false;
-  if lit then
+  if Index = 1 then
+    Lit := Output1
+  else
+  if Index = 2 then
+    Lit := Output2
+  else
+  if Index = 3 then
+    Lit := Output3
+  else
+    Lit := False;
+  if Lit then
   begin
-    if Gates[index].Style = jgsDI then
-      surfcol := cllime
+    if Gates[Index].Style = jgsDI then
+      SurfCol := clLime
     else
-      surfcol := clred;
-    litcol := clwhite
+      SurfCol := clRed;
+    LitCol := clWhite;
   end
   else
   begin
-    if Gates[index].Style = jgsDI then
+    if Gates[Index].Style = jgsDI then
     begin
-      surfcol := clgreen;
-      litcol := cllime;
+      SurfCol := clGreen;
+      LitCol := clLime;
     end
     else
     begin
-      surfcol := clmaroon;
-      litcol := clred;
+      SurfCol := clMaroon;
+      LitCol := clRed;
     end;
   end;
   with Canvas do
   begin
-    brush.color := clsilver;
-    fillrect(rect(x, y, x + 12, y + 13));
-    brush.style := bsclear;
-    pen.color := clgray;
-    ellipse(x, y, x + 12, y + 13);
-    pen.color := clblack;
-    brush.color := surfcol;
-    ellipse(x + 1, y + 1, x + 11, y + 12);
-    pen.color := clwhite;
-    arc(x + 1, y + 1, x + 11, y + 12, x + 0, y + 12, x + 12, y + 0);
-    pen.color := litcol;
-    arc(x + 3, y + 3, x + 8, y + 9, x + 5, y + 0, x + 0, y + 8);
+    Brush.Color := clSilver;
+    FillRect(Rect(X, Y, X + 12, Y + 13));
+    Brush.Style := bsClear;
+    Pen.Color := clGray;
+    Ellipse(X, Y, X + 12, Y + 13);
+    Pen.Color := clBlack;
+    Brush.Color := SurfCol;
+    Ellipse(X + 1, Y + 1, X + 11, Y + 12);
+    Pen.Color := clWhite;
+    Arc(X + 1, Y + 1, X + 11, Y + 12, X + 0, Y + 12, X + 12, Y + 0);
+    Pen.Color := LitCol;
+    Arc(X + 3, Y + 3, X + 8, Y + 9, X + 5, Y + 0, X + 0, Y + 8);
   end;
 end;
 
 procedure TJvSimReverse.Resize;
 begin
-  width := 42;
-  height := 42;
+  Width := 42;
+  Height := 42;
 end;
 
-procedure TJvSimReverse.SetInput1(const Value: boolean);
+procedure TJvSimReverse.SetInput1(const Value: Boolean);
 begin
-  if value <> FInput1 then
+  if Value <> FInput1 then
   begin
     FInput1 := Value;
-    invalidate;
+    Invalidate;
     OutCalc;
   end;
 end;
 
-procedure TJvSimReverse.SetOutPut1(const Value: boolean);
+procedure TJvSimReverse.SetOutput1(const Value: Boolean);
 begin
-  if value <> FOutput1 then
+  if Value <> FOutput1 then
   begin
-    FOutPut1 := Value;
-    invalidate;
+    FOutput1 := Value;
+    Invalidate;
   end;
 end;
 
-procedure TJvSimReverse.SetOutPut2(const Value: boolean);
+procedure TJvSimReverse.SetOutput2(const Value: Boolean);
 begin
-  if value <> FOutput2 then
+  if Value <> FOutput2 then
   begin
-    FOutPut2 := Value;
-    invalidate;
+    FOutput2 := Value;
+    Invalidate;
   end;
 end;
 
-procedure TJvSimReverse.SetOutPut3(const Value: boolean);
+procedure TJvSimReverse.SetOutput3(const Value: Boolean);
 begin
-  if value <> FOutput3 then
+  if Value <> FOutput3 then
   begin
-    FOutPut3 := Value;
-    invalidate;
+    FOutput3 := Value;
+    Invalidate;
   end;
 end;
 
 end.
+
