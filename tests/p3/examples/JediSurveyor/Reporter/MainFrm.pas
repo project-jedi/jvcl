@@ -486,7 +486,6 @@ var
   C, R: TStringlist;
   function ConvertCRLFToBR(const S: string): string;
   begin
-//    Result := StringReplace(Result,MakeString(cDelimChar, cDelimLength),'<hr>',[rfReplaceAll]);
     Result := StringReplace(S, '\n', '<br>', [rfReplaceAll]);
     Result := StringReplace(Result, #13#10, '<br>', [rfReplaceAll]);
   end;

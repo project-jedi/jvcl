@@ -4,13 +4,13 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, ActnList, JvDialogs, Menus, JvRichEd;
+  Dialogs, StdCtrls, ComCtrls, ActnList, JvDialogs, Menus, JvMemo;
 
 type
   TfrmComment = class(TForm)
     btnOK: TButton;
     btnCancel: TButton;
-    reComments: TJvRichEdit;
+    reComments: TJvMemo;
     alCommentFrm: TActionList;
     acOK: TAction;
     acCancel: TAction;

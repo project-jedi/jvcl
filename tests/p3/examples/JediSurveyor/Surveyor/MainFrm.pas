@@ -6,8 +6,8 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, JvScrollBox, ComCtrls, JvProgressBar,
   JvBevel, Buttons, JvBitBtn, JvFooter, JvComponent, JvSurveyIntf,
-  JvDialogs, JvRichEd, ImgList, JvImageWindow, ActnList, JvActions, JvLinkLabel,
-  JvRadioButton, JvCheckBox, Menus;
+  JvDialogs, ImgList, JvImageWindow, ActnList, JvActions, JvLinkLabel,
+  JvRadioButton, JvCheckBox, JvMemo, Menus;
 
 type
   TfrmMain = class(TForm)
@@ -460,17 +460,18 @@ begin
 end;
 
 procedure TfrmMain.CreateFreeFormPage(Index:integer);
-var RE:TJvRichEdit;
+var RE:TJvMemo;
 begin
   ClearScrollBox;
-  RE := TJvRichEdit.Create(self);
+  RE := TJvMemo.Create(self);
   with RE do
   begin
+    WordWrap := false;
     Parent := sbSurvey;
     SetBounds(cStartOffset, cStartOffset,
       sbSurvey.ClientWidth - cStartOffset * 2, sbSurvey.ClientHeight - cStartOffset * 2);
     Anchors := [akLeft..akBottom];
-    PlainText := true;
+//    PlainText := true;
     ScrollBars := ssBoth;
     if FSurvey.Items[FPageIndex].Responses = '' then
       Lines.Text := DecodeChoice(FSurvey.Items[Index].Choices,stFreeForm)
@@ -543,7 +544,7 @@ begin
   // create a file name from the input filename, username, current date and time
   // and add a path
   Result := ChangeFileExt(ExtractFileName(Filename), '') +
-    DefaultStr(FSurvey.SurveyTaker.UserName, GetLocalUserName) +
+    DefaultStr(GetLocalUserName,GetLocalComputerName) +
     FormatDateTime('yyyyMMddhhnnss', Now) + cResponseFileExt;
   //  ShowMessage(Result);
 end;

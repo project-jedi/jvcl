@@ -257,7 +257,10 @@ begin
     end;
     N := N.getNextSibling;
   end;
-
+  FSurvey.SurveyTaker.ID := '';
+  FSurvey.SurveyTaker.UserName := '';
+  FSurvey.SurveyTaker.MailAddress := '';
+  FSurvey.SurveyTaker.Notes := '';
   FSurvey.SaveToFile(Filename,Format);
   self.Filename := Filename;
   Modified := false;

@@ -3,8 +3,7 @@ program jsr;
 uses
   Forms,
   MainFrm in 'MainFrm.pas' {frmMain},
-  JvSurveyImpl in '..\common\JvSurveyImpl.pas',
-  CommentsFrm in 'CommentsFrm.pas' {frmComments};
+  JvSurveyImpl in '..\common\JvSurveyImpl.pas';
 
 {$R *.RES}
 

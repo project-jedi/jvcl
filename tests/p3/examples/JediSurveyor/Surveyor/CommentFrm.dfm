@@ -37,17 +37,21 @@ object frmComment: TfrmComment
     ModalResult = 2
     TabOrder = 2
   end
-  object reComments: TJvRichEdit
+  object reComments: TJvMemo
     Left = 6
     Top = 6
     Width = 361
     Height = 246
+    AutoSize = False
+    MaxLines = 0
+    HideCaret = False
     Anchors = [akLeft, akTop, akRight, akBottom]
-    PlainText = True
     PopupMenu = popEdit
+    ReadOnly = False
+    ScrollBars = ssBoth
     TabOrder = 0
     WantTabs = True
-    WordWrap = False
+    Wordwrap = False
   end
   object alCommentFrm: TActionList
     Left = 84
