@@ -47,6 +47,7 @@ type
     FOnCheckClick: TNotifyEvent;
     procedure CheckClick(Sender: TObject);
     function GetShowCheckBox: Boolean;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
   protected
     procedure DoCheckClick; dynamic;
     procedure DoCtl3DChanged; dynamic;
@@ -306,6 +307,11 @@ procedure TJvCustomCheckedMaskEdit.DoCheckClick;
 begin
   if Assigned(FOnCheckClick) then
     FOnCheckClick(Self);
+end;
+
+procedure TJvCustomCheckedMaskEdit.CMCtl3DChanged(var Msg: TMessage);
+begin
+  DoCtl3DChanged;
 end;
 
 procedure TJvCustomCheckedMaskEdit.DoCtl3DChanged;
