@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-09-05
+- Added FloatValue to TJvSimpleXML, defaults to 0.0 if Value is not a floating point number // obones
 2004-09-04
 - Added new component TJvMultiStringHolder and TJvLookupAutoComplete // ahuser
 2004-09-02
