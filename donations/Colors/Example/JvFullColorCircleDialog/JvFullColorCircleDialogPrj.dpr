@@ -2,12 +2,12 @@ program JvFullColorCircleDialogPrj;
 
 uses
   Forms,
-  JvFullColorCircleDialogMainForm in 'JvFullColorCircleDialogMainForm.pas' {Form1};
+  JvFullColorCircleDialogMainForm in 'JvFullColorCircleDialogMainForm.pas' {FormMain};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TFormMain, FormMain);
   Application.Run;
 end.
