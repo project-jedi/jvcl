@@ -9,7 +9,7 @@ Copyright=Copyright (c) 2002 project JEDI. All rights reserved.
 Type=1
 
 [Source Files]
-Count=12
+Count=18
 File0=..\..\jvcl\source\JvAlarms.pas
 File1=..\..\jvcl\source\JvAlignedEdit.pas
 File2=..\..\jvcl\source\JvAlignListbox.pas
@@ -22,12 +22,18 @@ File8=..\..\jvcl\source\JvAppHotKey.pas
 File9=..\..\jvcl\source\JvArrow.pas
 File10=..\..\jvcl\source\JvAutoSizeCompo.pas
 File11=..\..\jvcl\source\JvSafeMode.pas
+File12=..\..\jvcl\source\JvScreenCanvas.pas
+File13=..\..\jvcl\source\JvScrollBar.pas
+File14=..\..\jvcl\source\JvScrollBox.pas
+File15=..\..\jvcl\source\JvScrollEvStringGrid.pas
+File16=..\..\jvcl\source\JvScrollingLabel.pas
+File17=..\..\jvcl\source\JvSearchFile.pas
 
 [Source Include Directories]
 Count=0
 
 [Description Files]
-Count=25
+Count=31
 File0=JvAlarms.dtx
 File1=JvAlignedEdit.dtx
 File2=JvAlignListbox.dtx
@@ -53,6 +59,12 @@ File21=JVCL.Grp.Lists.dtx
 File22=JVCL.Grp.Miscel.dtx
 File23=JVCL.Main.dtx
 File24=JvSafeMode.dtx
+File25=JvScreenCanvas.dtx
+File26=JvScrollBar.dtx
+File27=JvScrollBox.dtx
+File28=JvScrollEvStringGrid.dtx
+File29=JvScrollingLabel.dtx
+File30=JvSearchFile.dtx
 
 [Description Include Directories]
 Count=2
@@ -250,7 +262,7 @@ ID105=TJvAutoSizeCompo.Destroy
 Count=0
 
 [Filters]
-CurrentID={C81B476F-5DE3-416C-A73A-9674B8ECC110}
+CurrentID={D3A588E0-9472-11D3-BDD1-0080C8BA053D}
 
 [Disabled Filters]
 Count=0
@@ -1771,19 +1783,20 @@ Visible_0=1
 ShowDocumentation=1
 
 [{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Symbol Reference TOC]
-Showing_1=0
-Showing_5=0
-Showing_6=0
-Showing_7=0
-Showing_8=0
+Showing_1=1
+Showing_5=1
+Showing_6=1
+Showing_7=1
+Showing_8=1
 Showing_9=0
-Showing_10=0
-Showing_11=0
+Showing_10=1
+Showing_11=1
 
 [{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Basic]
 OutputFile=output\WinHELP\JVCL.rtf
 HLPFilename=
 CreatePrintableDocumentation=0
+HelpCompiler=..\..\..\..\..\Program Files\Borland\Delphi6\help\tools\hcrtf.exe
 
 [{C81B476F-5DE3-416C-A73A-9674B8ECC110}\Help Project]
 HelpProjectFileAutomatic=1

@@ -1,67 +1,129 @@
-================================================================
+----------------------------------------------------------------------------------------------------
+@@$TJvScrollEvStringGrid
+<TITLE TJvScrollEvStringGrid overview>
+<GROUP JVCL.Miscel>
+----------------------------------------------------------------------------------------------------
 @@JvScrollEvStringGrid.pas
-Note:
-<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
-
-C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
-
-Conditions:
-The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
-
-Author:
-Peter Below
-
-Version:
-1.20 Beta
-
-================================================================
-@@TJvScrollEvStringGrid
-
-================================================================
-@@TJvScrollEvStringGrid.FAboutJVCL
-
-================================================================
-@@TJvScrollEvStringGrid.FAfterHScroll
-
-================================================================
-@@TJvScrollEvStringGrid.FAfterVScroll
-
-================================================================
-@@TJvScrollEvStringGrid.FBeforeHScroll
-
-================================================================
-@@TJvScrollEvStringGrid.FBeforeVScroll
-
-================================================================
-@@TJvScrollEvStringGrid.DoAfterScroll@Cardinal@Integer
-
-================================================================
-@@TJvScrollEvStringGrid.DoBeforeScroll@Cardinal@Integer
-
-================================================================
-@@TJvScrollEvStringGrid.WMHScroll@TWMHScroll
-
-================================================================
-@@TJvScrollEvStringGrid.WMVScroll@TWMVScroll
-
-================================================================
-@@TJvScrollEvStringGrid.AboutJVCL
-
-================================================================
-@@TJvScrollEvStringGrid.OnAfterHScroll
-
-================================================================
-@@TJvScrollEvStringGrid.OnAfterVScroll
-
-================================================================
-@@TJvScrollEvStringGrid.OnBeforeHScroll
-
-================================================================
-@@TJvScrollEvStringGrid.OnBeforeVScroll
-
-================================================================
+Summary
+  Contains the JvScrollEvStringGrid component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Peter Below
+----------------------------------------------------------------------------------------------------
 @@TAfterScrollEvent
-
-================================================================
+<COMBINEWITH OnAfterHScroll>
+<COMBINEWITH OnAfterVScroll>
+----------------------------------------------------------------------------------------------------
 @@TBeforeScrollEvent
-
+<COMBINEWITH OnBeforeHScroll>
+<COMBINEWITH OnBeforeVScroll>
+----------------------------------------------------------------------------------------------------
+@@TJvScrollEvStringGrid
+<GROUP TJvScrollEvStringGrid>
+Summary
+  TJvScrollEvStringGrid represents a string grid that can respond to scroll events.
+Description
+  Use TJvScrollEvStringGrid if you want a string grid that can respond when the user scrolls the
+  scrolls bars of the string grid.
+  
+  Check scrollcode in the scroll events to take specific actions depending on the type of scroll 
+  request.
+  
+  Prevent users from scrolling the grid by settings allowScroll to False in the OnBeforeHScroll or 
+  OnBeforeVScroll event.
+----------------------------------------------------------------------------------------------------
+@@TJvScrollEvStringGrid.AboutJVCL
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvScrollEvStringGrid.DoAfterScroll
+Summary
+  Responds when the user stops scrolling.
+Description
+  DoAfterScroll is called automatically when the user stops scrolling. It will trigger the OnAfterHScroll
+  or the OnAfterVScroll event, depending on the value of msg.  
+Parameters
+  msg        - Represents the parameters of the Windows message that informs the grid of the event.
+  scrollcode - Specifies a scroll bar value that indicates the user's scrolling request. 
+               This can be one of the following values:
+                 SB_BOTTOM, SB_ENDSCROLL, SB_LINEDOWN, SB_LINEUP, SB_PAGEDOWN, SB_PAGEUP, 
+                 SB_THUMBPOSITION, SB_THUMBTRACK or SB_TOP.
+See Also
+  DoBeforeScroll, OnAfterHScroll, OnAfterVScroll
+----------------------------------------------------------------------------------------------------
+@@TJvScrollEvStringGrid.DoBeforeScroll
+Summary
+  Responds when the user starts scrolling. 
+Description
+  DoBeforeScroll is called automatically when the user starts scrolling. It will trigger the OnBeforeHScroll
+  or the OnBeforeVScroll event, depending on the value of msg.
+  
+  The result value of DoBeforeScroll is False, if allowScroll is set to False in OnBeforeHScroll or in
+  OnBeforeVScroll; otherwise it is True.
+Parameters
+  msg        - Represents the parameters of the Windows message that informs the grid of the event.
+  scrollcode - Specifies a scroll bar value that indicates the user's scrolling request. 
+               This can be one of the following values:
+                 SB_BOTTOM, SB_ENDSCROLL, SB_LINEDOWN, SB_LINEUP, SB_PAGEDOWN, SB_PAGEUP, 
+                 SB_THUMBPOSITION, SB_THUMBTRACK or SB_TOP.
+See Also
+  DoAfterScroll, OnBeforeHScroll, OnBeforeVScroll
+----------------------------------------------------------------------------------------------------
+@@TJvScrollEvStringGrid.OnAfterHScroll
+Summary
+  Occurs when the user stops scrolling the horizontal scroll bar.
+Description
+  Write an OnAfterHScroll event handler to take specific action immediately after the user 
+  scrolled the horizontal scroll bar.
+  
+  scrollcode specifies a scroll bar value that indicates the user's scrolling request. 
+  This can be one of the following values:
+    SB_BOTTOM, SB_ENDSCROLL, SB_LINEDOWN, SB_LINEUP, SB_PAGEDOWN, SB_PAGEUP, 
+    SB_THUMBPOSITION, SB_THUMBTRACK or SB_TOP.
+See Also
+  OnAfterVScroll, OnBeforeHScroll, OnBeforeVScroll
+----------------------------------------------------------------------------------------------------
+@@TJvScrollEvStringGrid.OnAfterVScroll
+Summary
+  Occurs when the user stops scrolling the vertical scroll bar.
+Description
+  Write an OnAfterVScroll event handler to take specific action immediately after the user 
+  scrolled the vertical scroll bar.
+  
+  scrollcode specifies a scroll bar value that indicates the user's scrolling request. 
+  This can be one of the following values:
+    SB_BOTTOM, SB_ENDSCROLL, SB_LINEDOWN, SB_LINEUP, SB_PAGEDOWN, SB_PAGEUP, 
+    SB_THUMBPOSITION, SB_THUMBTRACK or SB_TOP.
+See Also
+  OnAfterHScroll, OnBeforeHScroll, OnBeforeVScroll
+----------------------------------------------------------------------------------------------------
+@@TJvScrollEvStringGrid.OnBeforeHScroll
+Summary
+  Occurs when the user starts scrolling the horizontal scroll bar.
+Description
+  Write an OnBeforeHScroll event handler to take specific action immediately before the user 
+  scrolls the horizontal scroll bar.
+  
+  scrollcode specifies a scroll bar value that indicates the user's scrolling request. 
+  This can be one of the following values:
+    SB_BOTTOM, SB_ENDSCROLL, SB_LINEDOWN, SB_LINEUP, SB_PAGEDOWN, SB_PAGEUP, 
+    SB_THUMBPOSITION, SB_THUMBTRACK or SB_TOP.
+  
+  Use allowScroll to prevent the user from horizontally scrolling the grid.
+See Also
+  OnAfterHScroll, OnAfterVScroll, OnBeforeVScroll
+----------------------------------------------------------------------------------------------------
+@@TJvScrollEvStringGrid.OnBeforeVScroll
+Summary
+  Occurs when the user starts scrolling the horizontal scroll bar.
+Description
+  Write an OnBeforeVScroll event handler to take specific action immediately before the user 
+  scrolls the vertical scroll bar.
+  
+  scrollcode specifies a scroll bar value that indicates the user's scrolling request. 
+  This can be one of the following values:
+    SB_BOTTOM, SB_ENDSCROLL, SB_LINEDOWN, SB_LINEUP, SB_PAGEDOWN, SB_PAGEUP, 
+    SB_THUMBPOSITION, SB_THUMBTRACK or SB_TOP.
+  
+  Use allowScroll to prevent the user from vertically scrolling the grid.
+See Also
+  OnAfterHScroll, OnAfterVScroll, OnBeforeHScroll

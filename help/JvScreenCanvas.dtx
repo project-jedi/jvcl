@@ -1,65 +1,75 @@
-================================================================
+@@$TJvScreenCanvas
+<TITLE TJvScreenCanvas overview>
+<GROUP JVCL.Miscel>
+----------------------------------------------------------------------------------------------------
 @@JvScreenCanvas.pas
-Note:
-<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
-
-C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
-
-Conditions:
-The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
-
-Author:
-Sebastien Buysse
-
-Version:
-1.20 Beta
-
-================================================================
+<GROUP JVCL.FileRef>
+Summary
+  Contains the TJvScreenCanvas component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Sébastien Buysse
+----------------------------------------------------------------------------------------------------
 @@TJvScreenCanvas
-Description:
-This is the easiest way to read/write pixels from the screen !
-
-================================================================
-@@TJvScreenCanvas.FBidon
-
-================================================================
-@@TJvScreenCanvas.FCanvas
-
-================================================================
-@@TJvScreenCanvas.FPainting
-
-================================================================
+<GROUP TJvScreenCanvas>
+Summary
+  TJvScreenCanvas enables you to draw on the screen.
+Description
+  Use a TJvScreenCanvas component to draw on the screen.
+  
+  Use the Canvas property for the drawing operations. Call BeginPaint before using the Canvas property, 
+  and call EndPaint to signal the end of any drawing operation. Read properties Width and Height to
+  determine the size of the screen.
+----------------------------------------------------------------------------------------------------
 @@TJvScreenCanvas.BeginPaint
-Description:
-Call this before to acces the Canvas property !!!
+Summary
+  Initializes the canvas for a drawing operation.
+Description
+  Call BeginPaint before using the Canvas property to draw on the screen.
 
-================================================================
-@@TJvScreenCanvas.Create@TComponent
-
-================================================================
-@@TJvScreenCanvas.EndPaint
-Description:
-Call this after the acces to the Canvas property !!!
-
-================================================================
-@@TJvScreenCanvas.GetCanvas
-
-================================================================
-@@TJvScreenCanvas.GetHeight
-
-================================================================
-@@TJvScreenCanvas.GetWidth
-
-================================================================
+  Each call to BeginPaint must be matched by a corresponding call to EndPaint when the
+  drawing operation is complete.
+Parameters
+  None.
+See Also
+  Canvas, EndPaint
+----------------------------------------------------------------------------------------------------
 @@TJvScreenCanvas.Canvas
+Summary
+  Provides access to the drawing area of the screen.
+Description
+  TJvScreenCanvas allows drawing on the screen by providing a TCanvas object for this purpose. Drawing 
+  on the canvas effectively modifies the screen image pixels. Any canvas operation is valid - not just
+  Draw and StretchDraw - including line drawing, rectangles, and circles.
 
-================================================================
+  A canvas object is created automatically for TJvScreenCanvas by calling BeginPaint, and the property 
+  is read-only.
+See Also
+  BeginPaint, EndPaint, Height, Width
+----------------------------------------------------------------------------------------------------
+@@TJvScreenCanvas.EndPaint
+Summary
+  Signals the end of a drawing operation.
+Description
+  Call EndPaint to signal the end of any drawing operation that you preceded by a call to the 
+  BeginPaint method.  
+Parameters
+  None.
+See Also
+  BeginPaint, Canvas
+----------------------------------------------------------------------------------------------------
 @@TJvScreenCanvas.Height
-Description:
-This is the height of the screen
-
-================================================================
+Summary
+  Indicates the vertical size of the screen in pixels.
+Description
+  Read Height to learn the size of the user’s screen in pixels.
+See Also
+  Width
+----------------------------------------------------------------------------------------------------
 @@TJvScreenCanvas.Width
-Description:
-This is the width of the screen
-
+Summary
+  Indicates the horizontal size of the screen in pixels.
+Description
+  Read Width to learn the size of the user’s screen in pixels.
+See Also
+  Height
