@@ -56,13 +56,13 @@ object FrameConfigPage: TFrameConfigPage
       Width = 225
       Height = 17
       Hint = 
-        'Activate this if you have Mike Lischke'#39's Theme Manager'#13#10'(<c:blue' +
+        'Activate this if you have Mike Lischke'#39's Theme Manager'#13#10'(<c:navy' +
         '>http://www.lischke-online.de<c:black>) installed and available ' +
         'and'#13#10'you are using <b>Delphi/BCB 6</b> or below. The ThemeManage' +
         'r'#13#10'package must be compiled as "<b>never-build package</b>". The' +
         #13#10'ThemeManager package must be in the BPL directory.'#13#10'For more i' +
         'nformation see <b>readme.htm</b>'#13#10#13#10'<b>For Delphi 7 this option ' +
-        'is allways enabled even if'#13#10'it is not enabled here.</b>'
+        'is always enabled even if'#13#10'it is not enabled here.</b>'
       Caption = '&XP Theming (not for Delphi 7)'
       ParentShowHint = False
       ShowHint = True
@@ -89,7 +89,7 @@ object FrameConfigPage: TFrameConfigPage
       Width = 225
       Height = 17
       Hint = 
-        'Enable this if you want to use the dxgettext'#13#10'(<c:blue>http://dx' +
+        'Enable this if you want to use the dxgettext'#13#10'(<c:navy>http://dx' +
         'gettext.sourceforge.net<c:black>) translation tool.'#13#10#13#10'<c:red>Th' +
         'e gnugettext.pas unit will be added to the contains list'#13#10'of the' +
         ' JvCore-R package. That means that you cannot add'#13#10'it to another' +
@@ -218,7 +218,7 @@ object FrameConfigPage: TFrameConfigPage
         'Check this option if you do not want to register'#13#10'the designtime' +
         ' package into the IDE.'
       AllowGrayed = True
-      Caption = '&Compile only'
+      Caption = 'No IDE registration'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
@@ -310,7 +310,8 @@ object FrameConfigPage: TFrameConfigPage
       Height = 17
       Hint = 
         'Activate this option if the installer should generate'#13#10'detailed ' +
-        'map-files for each package.'
+        'map-files for each package.'#13#10#13#10'Map files are used for debug purp' +
+        'oses, e.g. JclDebug'#13#10'could use them.'
       AllowGrayed = True
       Caption = 'Genera&te Map files'
       ParentShowHint = False
