@@ -82,9 +82,9 @@ EMPTYLINE
     procedure VisibleChanged; override;
     function HintShow(var HintInfo : THintInfo): Boolean; override;
     procedure WndProc(var Mesg: TMessage); dynamic;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property DragCursor: TCursor read FDragCursor write FDragCursor default crDefault; { not implemented }
     property DragKind: TDragKind read FDragKind write FDragKind  default dkDrag; { not implemented }
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     procedure Dispatch(var Message); override;
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -122,13 +122,15 @@ EMPTYLINE
 //
 //  used by WinCustomControl, WinControl, CustomControl, EditControl
 //
-(*$DEFINE JV_DECL_WINCUSTOMCONTROL
-  { QWinCustomControl }
+(*$DEFINE JV_DECL_WINCONTROL
+  { QWinControl }
   private
-    FNativeKeys: TInputKeys;
+    FDesktopFont: Boolean;
     FDoubleBuffered: Boolean;
     FInternalFontChanged: TNotifyEvent;
+    FNativeKeys: TInputKeys;
     procedure OnFontChanged(Sender: TObject);
+    procedure SetDesktopFont(Value: Boolean);
   protected
     procedure CreateWidget; override;
     procedure CreateWnd; virtual;
@@ -143,7 +145,7 @@ EMPTYLINE
     procedure RecreateWnd;
     procedure ShowingChanged; override;
     function WidgetFlags: Integer; override;
-    property InternalFontChanged: TNotifyEvent read FInternalFontChanged;
+    property DesktopFont: Boolean read FDesktopFont write SetDesktopFont default false;
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -152,23 +154,19 @@ EMPTYLINE
 *)
 
 //
-// WidgetControls without a Paint method.
+// WidgetControls with a Canvas but no Paint method.
 //
-(*$DEFINE JV_DECL_WINCONTROL_PAINT
-  { QWinControl Paint }
-  protected
-    procedure Paint; virtual;
-*)
-
 (*$DEFINE JV_WINCUSTOMCONTROL_BEGIN(ClassName)
   { QWinCustomControl }
   TJvEx##ClassName = class(T##ClassName)
   JV_DECL_CONTROL
-  JV_DECL_WINCUSTOMCONTROL
-  JV_DECL_WINCONTROL_PAINT
+  JV_DECL_WINCONTROL
 *)
 
 (*$DEFINE JV_WINCUSTOMCONTROL_END(ClassName)
+  { QWinCustomControl Paint }
+  protected
+    procedure Paint; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -187,27 +185,23 @@ EMPTYLINE
 //
 // WidgetControls without a Canvas property.
 //
-(*$DEFINE JV_DECL_WINCONTROL
-  { QWinControl }
-  private
-    FCanvas: TCanvas;
-  protected
-    property Canvas: TCanvas read FCanvas;
-*)
-
 (*$DEFINE JV_WINCONTROL_BEGIN(ClassName)
   { QWinControl Begin }
   TJvEx##ClassName = class(T##ClassName)
   JV_DECL_CONTROL
-  JV_DECL_WINCUSTOMCONTROL
-  JV_DECL_WINCONTROL_PAINT
   JV_DECL_WINCONTROL
 *)
 
 (*$DEFINE JV_WINCONTROL_END(ClassName)
+  { QWinControl }
+  private
+    FCanvas: TCanvas;
+  protected
+    procedure Paint; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property Canvas: TCanvas read FCanvas;
   end;
 
   { QWinControl }
@@ -222,7 +216,7 @@ EMPTYLINE
 *)
 
 //
-// WidgetControls with a Paint method.
+// WidgetControls with a Paint method & Canvas property.
 //
 
 (*$DEFINE JV_CUSTOMCONTROL_BEGIN(ClassName)
@@ -266,27 +260,13 @@ EMPTYLINE
       write SetClipboardCommands default [caCopy..caUndo];
 *)
 
-(*$DEFINE JV_DECL_CUSTOMEDITCONTROL
+(*$DEFINE JV_DECL_CUSTOMEDIT
   { QCustomEdit }
   private
-    FFrameControl: TFrameControl;
-    procedure GetParent: TWidgetControl;
-    procedure GetBorderStyle: TBorderStyle;
-    procedure SetBorderStyle(Value: TBorderStyle);
+    FInplaceEdit: TFrameControl;
   protected
-    procedure BorderStyleChanged; dynamic;
-    procedure HandleNeeded; override;
-    function GetClientOrigin: TPoint; override;
-    procedure AdjustForClient((var ARect: TRect); override;
-    function GetClientRect: TRect; override;
-    function GetPaintDevice: QPaintDeviceH; override;
-    function GetParentWidget: QWidgetH; override;
-    procedure SetParent(const AControl: TControl); override;
-    function GetClientOrigin: TPoint; override;
-  public
-    property Parent: TWidgetControl read GetParent write SetParent;
-  published
-    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle;
+    procedure OnEnter; override;
+    procedure OnExit; override;
 *)
 
 (*$DEFINE JV_EDITCONTROL_BEGIN(ClassName)
@@ -294,15 +274,19 @@ EMPTYLINE
   TJvEx##ClassName = class(T##ClassName)
   JV_DECL_CONTROL
   JV_DECL_WINCUSTOMCONTROL
-  JV_DECL_WINCONTROL_PAINT
-  JV_DECL_WINCONTROL
   JV_DECL_EDITCONTROL
 *)
 
 (*$DEFINE JV_EDITCONTROL_END(ClassName)
+  { QEditControl }
+  private
+    FCanvas: TCanvas;
+  protected
+    procedure Paint; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property Canvas: TCanvas read FCanvas;
   end;
 
   { QEditControl }
@@ -372,6 +356,39 @@ end;
  EMPTYLINE
 *)
 
+(*$DEFINE JV_IMPL_CONTROL_MESSAGES
+    { Control Messages }
+      CM_PARENTSHOWHINTCHANGED,
+      CM_PARENTCOLORCHANGED,
+      CM_PARENTFONTCHANGED,
+      CM_RECREATEWINDOW:
+      begin
+        inherited Dispatch(Mesg);
+        Exit;
+      end;
+
+      WM_GETTEXTLENGTH: Result := Length(GetText);
+
+      CM_FOCUSCHANGED: FocusChanged;
+
+      CM_HITTEST: if inherited HitTest(XPos, YPos) then
+                    Result := HTCLIENT;
+
+*)
+(*
+      CM_KEYDOWN:
+      begin
+        with TCMKeyDown do
+        begin
+          Msg := CM_;
+          CharCode := TCMKeyDown(Mesg).Key;
+          KeyData := ShiftStateToKeyData(TCMKeyDown(Mesg).Shift));
+          Handled := false;
+
+        end;
+
+*)
+
 (*$DEFINE JV_IMPL_CONTROL(ClassName)
 procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
 begin
@@ -379,6 +396,17 @@ begin
   begin
     case Msg of
       JV_IMPL_CONTROL_MESSAGES
+
+      CM_HINTSHOW:
+      begin
+        case FHintColor of
+          clNone   : HintInfo^.HintColor := Application.HintColor;
+	  clDefault: HintInfo^.HintColor := GetHintColor(Parent);
+        else
+          HintInfo^.HintColor := FHintcolor;   
+        end;
+        Handled := HintShow(HintInfo^);
+      end;
     end;
   end;
   if Mesg.Result = 0 then
@@ -390,6 +418,12 @@ begin
   Perform(CM_FONTCHANGED, 0, 0);
   inherited FontChanged;
 end;
+
+procedure TJvEx##ClassName.FocusChanged;
+begin
+  { notification }
+end;
+
  EMPTYLINE
 *)
 
@@ -405,11 +439,6 @@ procedure TJvEx##ClassName.EnabledChanged;
 begin
   Perform(CM_ENABLEDCHANGED, 0, 0);
   inherited EnabledChanged;
-end;
-
-procedure TJvEx##ClassName.FocusChanged;
-begin
-  { notification }
 end;
 
 procedure TJvEx##ClassName.TextChanged;
@@ -468,19 +497,6 @@ end;
   EMPTYLINE
 *) // MACRO END JV_IMPL_CONTROL
 
-
-(*$DEFINE JV_IMPL_CONTROL_MESSAGES
-    { Control Messages }
-      CM_HITTEST: if inherited HitTest(XPos, YPos) then
-                    Result := HTCLIENT;
-      CM_HINTSHOW:
-      begin
-        HintInfo^.HintColor := GetHintColor(Parent);
-        Handled := inherited HintShow(HintInfo^);
-      end;
-*)
-
-
 (*$DEFINE JV_CONTROL_IMPL(ClassName)
 JV_IMPL_CONTROL_CREATE(ClassName)
 JV_IMPL_CONTROL(ClassName)
@@ -514,21 +530,22 @@ EMPTYLINE
 
 (*$DEFINE JV_IMPL_WINCONTROL_MESSAGES
       { WinControl Messages }
-      WM_GETDLGCODE       : Result := InputKeysToDlgCodes(InputKeys);
-      WM_KILLFOCUS        : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS         : DoSetFocus(FocusedWnd);
+      WM_GETDLGCODE   : Result := InputKeysToDlgCodes(InputKeys);
+      WM_KILLFOCUS    : DoKillFocus(FocusedWnd);
+      WM_SETFOCUS     : DoSetFocus(FocusedWnd);
+      CM_FONTCHANGED  : FInternalFontChanged(Font);
 
-      CM_FOCUSCHANGED:
+      CM_HINTSHOW: 
       begin
-        NotifyControls(CM_FOCUSCHANGED);
-        FocusChanged;
+        HintInfo^.HintColor := GetHintcolor(Self);   
+        Handled := HintShow(HintInfo^);
       end;
 
       WM_ERASEBKGND:
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam)
+          Handled := DoEraseBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -568,7 +585,6 @@ end;
 procedure TJvEx##ClassName.DoSetFocus(PreviousWnd: QWidgetH);
 begin
   { notification }
-  Perform(CM_GOTFOCUS, 0 ,0);
 end;
 
 procedure TJvEx##ClassName.DoKillFocus(NextWnd: QWidgetH);
@@ -579,28 +595,29 @@ end;
 procedure TJvEx##ClassName.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
-  inherited;
+  inherited DoEnter;
 end;
 
-procedure TJvEx##ClassName.LostFocus;
+procedure TJvEx##ClassName.FocusChanged;
+begin
+  NotifyControls(FocusChanged);
+end;
+
+procedure TJvEx##ClassName.DoExit;
 begin
   Perform(CM_LEAVE, 0 ,0);
-  inherited;
+  inherited DoExit;
 end;
 
 procedure TJvEx##ClassName.SetFocus;
 var
   PreviousWnd: QWidgetH;
-  NextWnd: QWidgetH;
 begin
   PreviousWnd := GetFocusedWnd(Self);
   inherited SetFocus;
-  NextWnd := GetFocusedWnd(Self);
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and (NextWnd = Handle)
-  then
+  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
     SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  NextWnd := GetFocusedWnd(Self);
-  if (NextWnd = Handle) and (PreviousWnd <> Handle) then
+  if Focused and (PreviousWnd <> Handle) then
     SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
 end;
 
@@ -640,6 +657,15 @@ begin
     Paint;
   finally
     TControlCanvas(Canvas).StopPaint;
+  end;
+end;
+
+procedure TJvEx##ClassName.CMSysFontChanged(var Message: TMessage);
+begin
+  if FDesktopFont then
+  begin
+    Font.Assign(Value)
+    FDesktopFont := True;
   end;
 end;
 
@@ -794,25 +820,9 @@ begin
   FEditRect := Msg.Rect^;
 end;
 
-procedure TJvEx##ClassName.VisibleChanged;
+function TJvEx##ClassName.GetBorderStyle: TBorderStyle;
 begin
-  inherited VisibleChanged;
-  FFrameControl.Visible := Visible;
-end;
-
-function TJvEx##ClassName.GetPaintDevice: QPaintDeviceH;
-begin
-  Result := QWidget_to_QPaintDevice(FFrameControl.Handle);
-end;
-
-procedure TJvEx##ClassName.GetParent: TWidgetControl;
-begin
-  Result := FFrameControl.Parent;
-end;
-
-procedure TJvEx##ClassName.SetParent(const AControl: TControl);
-begin
-  FFrameControl.Parent := AControl;
+  Result := FFrameControl.BorderStyle;
 end;
 
 function TJvEx##ClassName.GetClientOrigin: TPoint;
@@ -825,9 +835,51 @@ begin
   Result := FFrameControl.GetClientRect;
 end;
 
-procedure TJvEx##ClassName.AdjustForClient;
+procedure TJvEx##ClassName.SetBorderStyle(Value: TBorderStyle);
 begin
-  FFrameControl.AdjustForClient;
+  if Value <> FFrameControl.BorderStyle then
+  begin
+    FFrameControl.BorderStyle := Value;
+    PostMessage(Handle, CM_BorderStyleChanged, 0 , 0);
+  end;
+end;
+
+function TFrameControl.GetHandle: QFrameH;
+begin
+  HandleNeeded;
+  Result := QFrameH(FHandle);
+end;
+
+procedure TJvEx##ClassName.GetParent: TWidgetControl;
+begin
+  Result := FFrameControl.Parent;
+end;
+
+procedure TJvEx##ClassName.VisibleChanged;
+begin
+  inherited VisibleChanged;
+  FFrameControl.Visible := Visible;
+end;
+
+function TJvEx##ClassName.GetPaintDevice: QPaintDeviceH;
+begin
+  Result := QWidget_to_QPaintDevice(FFrameControl.Handle);
+end;
+
+procedure TJvEx##ClassName.SetParent(const AControl: TControl);
+begin
+  FFrameControl.Parent := AControl;
+  inherited SetParent(FFrameControl);
+end;
+
+procedure TJvEx##ClassName.GetParent: TControl;
+begin
+  Result := FFrameControl.Parent;
+end;
+
+procedure TJvEx##ClassName.AdjustForClient(var ARect: TRect);
+begin
+  FFrameControl.AdjustForClient(ARect);
 end;
 
 function TJvEx##ClassName.GetParentWidget: QWidgetH;
@@ -839,20 +891,6 @@ procedure TJvEx##ClassName.HandleNeeded;
 begin
   FFrameControl.HandleNeeded;
   inherited HandleNeeded;
-end;
-
-function TJvEx##ClassName.GetBorderStyle: TBorderStyle;
-begin
-  Result := FFrameControl.BorderStyle;
-end;
-
-procedure TJvEx##ClassName.SetBorderStyle(Value: TBorderStyle);
-begin
-  if Value <> FFrameControl.BorderStyle then
-  begin
-    FFrameControl.BorderStyle := Value;
-    PostMessage(Handle, CM_BorderStyleChanged, 0 , 0);
-  end;
 end;
 
 procedure TJvEx##ClassName.CMBorderStyleChanged(var Message: TMessage);
@@ -878,16 +916,6 @@ end;
 function TJvEx##ClassName.GetAlign: TAlign;
 begin
   Result := FFrameControl.Align;
-end;
-
-function TJvEx##ClassName.GetClientOrigin: TPoint;
-begin
-  Result := FFrameControl.GetClientOrigin;
-end;
-
-function TJvEx##ClassName.GetClientRect: TRect;
-begin
-  Result := FFrameControl.GetClientRect;
 end;
 
 *) // end of JV_IMPL_CUSTOMEDIT
@@ -920,12 +948,47 @@ begin
   Font.OnChange := OnFontChanged;
   FHintColor := clDefault;
   FDoubleBuffered := True;
-  FFrameControl := TFrameControl.Create(self);
-  FFrameControl.Width := Width;
-  FFrameControl.Height := Heigth;
   CREATE_CUSTOMCODE
 end;
 *) // end of JV_IMPL_CUSTOMEDIT_CREATE
+
+(*$DEFINE JV_IMPL_CUSTOMEDIT_PAINT(ClassName)
+{ WinControl Paint }
+procedure TJvEx##ClassName.Paint;
+var
+  TextFlags: integer;
+  Region, OldRegion: QRegionH;
+begin
+
+  if Focused then
+  begin
+    TControlCanvas(Canvas).StopPaint;
+    inherited Painting(Handle, QPainter_clipRegion(Canvas.Handle));
+    TControlCanvas(Canvas).StartPaint;
+  end
+  else
+  begin
+    Region := CreateRectangularRegion(FEditRect);
+
+    SubstractRegion(Region, QPainter_clipRegion(Canvas.Handle), Region);
+    if not QRegion_Empty(Region) then
+    begin
+      TControlCanvas(Canvas).StopPaint;
+      inherited Painting(Handle, Region);
+      TControlCanvas(Canvas).StartPaint;
+    end;
+    case Alignment of
+      taLeftJustify  : TextFlags := AlignLeft;
+      taRightJustify : TextFlags := AlignRight;
+      taCenter       : TextFlags := AlignHCenter;
+    else
+      TextFlags := 0;
+    end;
+    Canvas.TextRect(FEditRect, FEditRect.Left, FEditRect.Top, Text, TextFlags);
+  end;
+end;
+ EMPTYLINE
+*)
 
 (*$DEFINE JV_EDITCONTROL_IMPL(ClassName)
 JV_IMPL_WINCONTROL_CREATE(ClassName)
@@ -943,7 +1006,7 @@ begin
   inherited CreateNew(AOwner, Dummy);
   FWindowProc := WndProc;
   FHintColor := clDefault;
-//  FDoubleBuffered := True;
+  FDoubleBuffered := False;
   FInternalFontChanged := Font.OnChange;
   Font.OnChange := OnFontChanged;
   CREATE_CUSTOMCODE
