@@ -120,6 +120,7 @@ TJvDBSecurity
 TJvDBSpinEdit
 TJvDBStatusLabel
 TJvDBTreeView
+TJvDBUltimGrid
 TJvDeleteError
 TJvDesktopAlert
 TJvDesktopAlertStack
@@ -247,6 +248,7 @@ TJvgQRLabel
 TJvGradient
 TJvGradientCaption
 TJvGradientHeaderPanel
+TJvGradientProgressBar
 TJvgReport
 TJvgReportParamsEditor
 TJvGridFilter
@@ -319,6 +321,7 @@ TJvLogic
 TJvLoginDialog
 TJvLookOut
 TJvLookOutButton
+TJvLookupAutoComplete
 TJvMail
 TJvMainMenu
 TJvMarkupLabel
@@ -328,6 +331,7 @@ TJvMemo
 TJvMemoryData
 TJvMergeManager
 TJvMonthCalendar
+TJvMonthCalendar2
 TJvMouseGesture
 TJvMouseGestureHook
 TJvMovableBevel
@@ -341,6 +345,7 @@ TJvMTThread
 TJvMTThreadToThread
 TJvMTThreadToVCL
 TJvMTVCLToThread
+TJvMultiStringHolder
 TJvNavIconButton
 TJvNavigationPane
 TJvNavPanelButton
@@ -530,6 +535,7 @@ TJvXPButton
 TJvXPCheckBox
 TJvXPContainer
 TJvXPMenuItemPainter
+TJvXPProgressBar
 TJvXPStyleManager
 TJvXPToolButton
 TJvxSlider
