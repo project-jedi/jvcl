@@ -112,6 +112,8 @@
   DELPHI5      Defined when compiling with Delphi 5
   DELPHI6      Defined when compiling with Delphi 6
   DELPHI7      Defined when compiling with Delphi 7
+  DELPHI8      Defined when compiling with Delphi 8
+  DELPHI9      Defined when compiling with Delphi 9
   DELPHI1_UP   Defined when compiling with Delphi 1 or higher
   DELPHI2_UP   Defined when compiling with Delphi 2 or higher
   DELPHI3_UP   Defined when compiling with Delphi 3 or higher
@@ -119,6 +121,8 @@
   DELPHI5_UP   Defined when compiling with Delphi 5 or higher
   DELPHI6_UP   Defined when compiling with Delphi 6 or higher
   DELPHI7_UP   Defined when compiling with Delphi 7 or higher
+  DELPHI8_UP   Defined when compiling with Delphi 8 or higher
+  DELPHI9_UP   Defined when compiling with Delphi 9 or higher
 
 
 - Kylix Versions
@@ -148,6 +152,8 @@
   DELPHICOMPILER5     Defined when compiling with Delphi 5
   DELPHICOMPILER6     Defined when compiling with Delphi 6 or Kylix 1, 2 or 3
   DELPHICOMPILER7     Defined when compiling with Delphi 7
+  DELPHICOMPILER8     Defined when compiling with Delphi 8
+  DELPHICOMPILER9     Defined when compiling with Delphi 9
   DELPHICOMPILER1_UP  Defined when compiling with Delphi 1 or higher
   DELPHICOMPILER2_UP  Defined when compiling with Delphi 2 or higher
   DELPHICOMPILER3_UP  Defined when compiling with Delphi 3 or higher
@@ -155,6 +161,8 @@
   DELPHICOMPILER5_UP  Defined when compiling with Delphi 5 or higher
   DELPHICOMPILER6_UP  Defined when compiling with Delphi 6 or Kylix 1, 2 or 3 or higher
   DELPHICOMPILER7_UP  Defined when compiling with Delphi 7 or higher
+  DELPHICOMPILER8_UP  Defined when compiling with Delphi 8 or higher
+  DELPHICOMPILER9_UP  Defined when compiling with Delphi 9 or higher
 
 
 - C++ Builder Versions
@@ -195,6 +203,8 @@
   COMPILER5     Defined when compiling with Delphi 5 or C++ Builder 5
   COMPILER6     Defined when compiling with Delphi 6 or C++ Builder 6
   COMPILER7     Defined when compiling with Delphi 7
+  COMPILER8     Defined when compiling with Delphi 8
+  COMPILER9     Defined when compiling with Delphi 9
   COMPILER1_UP  Defined when compiling with Delphi 1 or higher
   COMPILER2_UP  Defined when compiling with Delphi 2 or C++ Builder 1 or higher
   COMPILER3_UP  Defined when compiling with Delphi 3 or higher
@@ -203,6 +213,8 @@
   COMPILER5_UP  Defined when compiling with Delphi 5 or C++ Builder 5 or higher
   COMPILER6_UP  Defined when compiling with Delphi 6 or C++ Builder 6 or higher
   COMPILER7_UP  Defined when compiling with Delphi 7
+  COMPILER8_UP  Defined when compiling with Delphi 8
+  COMPILER9_UP  Defined when compiling with Delphi 9
 
 
 - RTL Versions
@@ -227,6 +239,8 @@
   RTL130_UP     Defined when compiling with Delphi 5 or C++ Builder 5 or later
   RTL140_UP     Defined when compiling with Delphi 6, Kylix 1, 2 or 3 or C++ Builder 6 or later
   RTL150_UP     Defined when compiling with Delphi 7 or later
+  RTL160_UP     Defined when compiling with Delphi 8 or later
+  RTL170_UP     Defined when compiling with Delphi 9 or later
 
 
 - Feature Directives
@@ -1000,11 +1014,14 @@
 
 // for Delphi/BCB trial versions remove the point from the line below
 {.$UNDEF SUPPORTS_WEAKPACKAGEUNIT}
-{$ENDIF JEDI_INC}
+{$ENDIF ~JEDI_INC}
 
 // History:
 
 // $Log$
+// Revision 1.10  2004/08/09 06:40:54  marquardt
+// add JvWStrUtils.pas as JclWideStrings.pas to JCL
+//
 // Revision 1.9  2004/08/08 20:13:05  peter3
 // - Missing ENDIF added
 //

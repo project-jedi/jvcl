@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-08-09
+- JvWStrUtils.pas moved to JCL as JclWideStrings.pas // (rom)
 2004-08-06
 - The JvUrlGrabbers now have a Port property and more events that can be triggered. /// obones
 2004-07-27
