@@ -13,10 +13,10 @@ Properties:
 [Public] 
 
 AsCurrency: Currency
-The value as an Currency
+The value as a Currency
 
-AsFloat: Integer
-The value as an Double
+AsFloat: Double
+The value as a Double
 
 AsInteger: Integer
 The value as an integer
@@ -40,7 +40,7 @@ dfCurrency may only have up to 4 decimals.
 
 DisplayFormat: enumerated type
 dfAlphabetic, dfAlphaNumeric, dfBinary, dfCheckChars, dfCurrency, dfCustom, dfFloat, dfHex, dfInteger, dfNonCheckChars, dfNone, dfOctal, dfPercent, dfScientific, dfYear
-Controls the key that can be entered, and how the display is formatted.
+Controls the keys that can be entered, and how the display is formatted.
 Modifies CheckChars to the appropriate characters to check. 
 Changing DisplayFormat triggers a re-Validation of the Text.
 

@@ -1,26 +1,32 @@
 object JvThumbnailMainForm: TJvThumbnailMainForm
-  Left = 293
-  Top = 118
-  Width = 789
-  Height = 614
+  Left = 106
+  Top = 59
+  Width = 893
+  Height = 647
   Caption = 'JvThumbView Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 430
+  Constraints.MinWidth = 760
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
+  Position = poDesktopCenter
+  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 781
-    Height = 560
+    Width = 885
+    Height = 589
     ActivePage = TabSheet1
     Align = alClient
+    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'ThumbView Component'
@@ -28,13 +34,13 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
         Left = 153
         Top = 46
         Width = 3
-        Height = 486
+        Height = 515
         Cursor = crHSplit
       end
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 773
+        Width = 877
         Height = 46
         Align = alTop
         TabOrder = 0
@@ -230,7 +236,7 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
         Left = 0
         Top = 46
         Width = 153
-        Height = 486
+        Height = 515
         Align = alLeft
         BevelOuter = bvNone
         Caption = 'Panel2'
@@ -239,7 +245,7 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
           Left = 0
           Top = 0
           Width = 153
-          Height = 295
+          Height = 324
           Hint = 
             'Set the directory property to the directory where your images lo' +
             'cated and wach the thumbview creating this thumbs'
@@ -253,7 +259,7 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
         end
         object RadioGroup1: TRadioGroup
           Left = 0
-          Top = 295
+          Top = 324
           Width = 153
           Height = 86
           Hint = 
@@ -272,7 +278,7 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
         end
         object RadioGroup2: TRadioGroup
           Left = 0
-          Top = 381
+          Top = 410
           Width = 153
           Height = 105
           Hint = 
@@ -294,16 +300,16 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
       object Panel3: TPanel
         Left = 156
         Top = 46
-        Width = 617
-        Height = 486
+        Width = 721
+        Height = 515
         Align = alClient
         BevelOuter = bvNone
         Caption = 'Panel3'
         TabOrder = 2
         object Panel4: TPanel
           Left = 0
-          Top = 470
-          Width = 617
+          Top = 499
+          Width = 721
           Height = 16
           Hint = 
             'Read the selectedFile property to get the path+filename of the s' +
@@ -317,8 +323,8 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
         object THumbview1: TJvThumbView
           Left = 0
           Top = 0
-          Width = 617
-          Height = 470
+          Width = 721
+          Height = 499
           HorzScrollBar.Tracking = True
           VertScrollBar.Tracking = True
           Align = alClient
@@ -356,8 +362,8 @@ object JvThumbnailMainForm: TJvThumbnailMainForm
   end
   object Panel5: TPanel
     Left = 0
-    Top = 560
-    Width = 781
+    Top = 589
+    Width = 885
     Height = 24
     Align = alBottom
     BorderWidth = 2

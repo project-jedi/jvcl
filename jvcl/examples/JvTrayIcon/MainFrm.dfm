@@ -1,18 +1,25 @@
 object frmMain: TfrmMain
   Left = 548
   Top = 124
-  Width = 410
-  Height = 454
   BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'JvTrayIcon Demo'
+  ClientHeight = 420
+  ClientWidth = 402
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnShow = FormShow
+  DesignSize = (
+    402
+    420)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
@@ -23,6 +30,9 @@ object frmMain: TfrmMain
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Tray Icon Options '
     TabOrder = 0
+    DesignSize = (
+      385
+      361)
     object Label1: TLabel
       Left = 16
       Top = 56

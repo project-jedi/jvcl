@@ -1,21 +1,27 @@
 object TransBtnFormMain: TTransBtnFormMain
   Left = 430
   Top = 182
-  BorderIcons = [biSystemMenu, biMinimize, biMaximize, biHelp]
-  BorderStyle = bsDialog
+  BorderIcons = [biSystemMenu, biMinimize, biHelp]
+  BorderStyle = bsSingle
   Caption = 'TransparentButton Example Program'
   ClientHeight = 355
   ClientWidth = 528
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
+  Position = poDesktopCenter
+  Scaled = False
   OnActivate = FormActivate
   OnKeyPress = FormKeyPress
   OnPaint = FormPaint
+  DesignSize = (
+    528
+    355)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -59,6 +65,7 @@ object TransBtnFormMain: TTransBtnFormMain
     Height = 293
     ActivePage = TabSheet1
     Anchors = [akLeft, akTop, akRight, akBottom]
+    TabIndex = 0
     TabOrder = 0
     OnChange = PageControl1Change
     object TabSheet1: TTabSheet

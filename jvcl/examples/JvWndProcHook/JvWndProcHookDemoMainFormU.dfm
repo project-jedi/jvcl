@@ -5,12 +5,18 @@ object JvWndProcHookDemoMainForm: TJvWndProcHookDemoMainForm
   Height = 533
   Caption = 'JvCaptionButton Demo'
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
+  DesignSize = (
+    645
+    499)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

@@ -2,15 +2,23 @@ object frmMain: TfrmMain
   Left = 191
   Top = 107
   Width = 543
-  Height = 382
+  Height = 393
   Caption = 'TJvUrlListGrabber demo'
   Color = clBtnFace
+  Constraints.MinHeight = 390
+  Constraints.MinWidth = 540
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
+  DesignSize = (
+    535
+    359)
   PixelsPerInch = 96
   TextHeight = 13
   object lblExpl: TLabel
@@ -79,8 +87,7 @@ object frmMain: TfrmMain
     Left = 415
     Top = 228
     Width = 113
-    Height = 121
-    Anchors = [akTop, akRight, akBottom]
+    Height = 125
     Caption = ' Design time use '
     TabOrder = 2
     object btnGoDesign: TButton
@@ -115,7 +122,7 @@ object frmMain: TfrmMain
     Left = 4
     Top = 188
     Width = 389
-    Height = 161
+    Height = 162
     Anchors = [akLeft, akTop, akRight, akBottom]
     Lines.Strings = (
       'http://jvcl.sf.net')

@@ -8,13 +8,19 @@ object Form1: TForm1
   Color = clBtnFace
   Constraints.MinHeight = 370
   Constraints.MinWidth = 440
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnResize = FormResize
+  DesignSize = (
+    432
+    343)
   PixelsPerInch = 96
   TextHeight = 13
   object JvUninstallComboBox1: TJvUninstallComboBox

@@ -665,10 +665,7 @@ procedure TPhotoOpMain.FormCreate(Sender: TObject);
 var
    DataPath: string;
 begin
-   DataPath := ExtractFilePath(Application.ExeName);
-   if DataPath[Length(DataPath)] <> '\' then
-      DataPath := DataPath + '\';
-   DataPath := DataPath + 'Data';
+   DataPath := '..\examples\JvTimeFramework\PhotoOp\Data\';
    dbUTF.Params.Add('PATH=' + DataPath);
 end;
 
