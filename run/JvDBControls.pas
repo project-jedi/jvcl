@@ -1907,7 +1907,7 @@ begin
     EditText := DisplayText;
     try
       if EditText <> '' then
-        if (StrToFloat(EditText) = 0) and ZeroEmpty then
+        if (StrToFloat(TextToValText(EditText)) = 0) and ZeroEmpty then
           EditText := '';
     except
     end;
