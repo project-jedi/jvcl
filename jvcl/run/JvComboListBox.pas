@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-10-09
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -28,6 +26,7 @@ Description:
   TPopupMenu to the DropdownMenu property and it will be shown when the user clicks the
   combobox button.
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}

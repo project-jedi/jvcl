@@ -13,8 +13,6 @@ The Original Code is: JvCustomItemViewer.PAS, released on 2003-12-01.
 The Initial Developer of the Original Code is: Peter Thörnqvist
 All Rights Reserved.
 
-Last Modified: 2003-12-27
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -28,6 +26,7 @@ Known Issues:
  * drag'n'drop edge scrolling - DONE (almost, needs some tweaks to look good as well)
  * icons don't scale, should be handled differently - DONE (explicitly calls DrawIconEx)
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

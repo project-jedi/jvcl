@@ -16,14 +16,13 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-07-12
-
 You may Thumb the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
   This file contains (most likely) greek comments.
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

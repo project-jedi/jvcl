@@ -18,8 +18,6 @@ Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Burov Dmitry, translation of russian text.
 
-Last Modified:  2003-01-15
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -29,6 +27,7 @@ Description:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

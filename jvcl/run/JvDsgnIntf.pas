@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-10-25
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -25,6 +23,7 @@ description : interface to design-time routines
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

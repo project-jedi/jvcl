@@ -20,8 +20,6 @@ Portions created by Dmitry Osinovsky and Olga Kobzar are
 Copyright (C) 2003 ProgramBank Ltd.
 All Rights Reserved.
 
-Last Modified: 2003-04-10
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -31,6 +29,7 @@ description : JVCL Interpreter version 2
 Known Issues:
    String fields in records binded from Delphi don't work
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

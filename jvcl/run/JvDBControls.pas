@@ -18,8 +18,6 @@ All Rights Reserved.
 Contributor(s):
   Polaris Software
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -34,6 +32,7 @@ Known Issues:
         You can use it as a generic editor control inside a control grid.
           -- Warren Postma (warrenpstma@hotmail.com)
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

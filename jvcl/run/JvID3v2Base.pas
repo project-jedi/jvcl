@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-04-16
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -27,6 +25,7 @@ Known Issues:
   * Some tags are not supported, see var DefaultFrameClasses. Values nil in that
     list indicate not supported frames.
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -17,13 +17,12 @@ All Rights Reserved.
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
                 Alexander Samusenko[sandx@chat.ru].
 
-Last Modified: 2001-09-20
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

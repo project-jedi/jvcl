@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-02-06
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -59,6 +57,7 @@ Maciej Kaczkowski:
   [*] procedure ItemHtDrawEx - rewrited
   [*] function ItemHtPlain - optimized
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

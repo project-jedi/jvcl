@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-02-01
-
 You may retrieve the latest version of this file at the Project JEDI's
 JVCL home page, located at http://jvcl.sourceforge.net
 
@@ -27,6 +25,7 @@ Known Issues:
   <b>Name:</b><i><FIELD="contact"></i>, <b>Company:</b><i><FIELD="Company"></i>
 - The fieldname *must* be double-quoted!
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -18,7 +18,6 @@ All Rights Reserved.
 Contributor(s): Debbie Gregory <Debbie.Gregory@cmsis.com>
                 Marcel van Brakel <brakelm@bart.nl>.
 
-Last Modified: May 14, 2000
 Current Version: 0.50
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -26,6 +25,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -18,13 +18,12 @@ Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 Extracted from JvImageThread and saved to a new unit by Peter Thörnqvist
 
-Last Modified: 2002-06-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

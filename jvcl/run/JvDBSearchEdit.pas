@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-02-26
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -27,6 +25,7 @@ Description:
 // DB Component to find record with Edit
 // Free modified and corrected component TDBSearchEdit from Alexander Burlakov
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -19,8 +19,6 @@ Contributor(s):
   Polaris Software
   Andreas Hausladen
 
-Last Modified: 2004-02-09
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -29,6 +27,7 @@ Known Issues:
        example DecimalPlaces/Decimal, CheckMinValue (name indicates action?
        maybe better: TJvValidateEdit's HasMinValue) etc.
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

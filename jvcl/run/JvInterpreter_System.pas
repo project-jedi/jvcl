@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):  peter Fischer-Haase <pfischer@ise-online.de> commented as "pfh"
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -25,6 +23,7 @@ Description : JVCL Interpreter version 2
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

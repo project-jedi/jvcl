@@ -17,8 +17,6 @@ All Rights Reserved.
 Contributor(s):
   marcelb - renaming TJvDialButton, adding on/off state and on/off color for pointer.
 
-Last Modified: 2002-07-16
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -27,6 +25,7 @@ Description:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

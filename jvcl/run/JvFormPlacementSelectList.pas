@@ -11,13 +11,12 @@ the specific language governing rights and limitations under the License.
 The Initial Developers of the Original Code is: Jens Fudickar
 All Rights Reserved.
 
-Last Modified: 2003-12-17
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
