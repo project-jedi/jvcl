@@ -449,48 +449,44 @@ begin
   if [csDesigning, csDestroying] * ComponentState <> [] then
     Exit;
 
-  try
-    if Text <> NoDateText then
+  if Text <> NoDateText then
+  begin
+    lDate := Self.Date;
+    if AttemptTextToDate(Text, lDate) then
     begin
-      lDate := Self.Date;
-      if AttemptTextToDate(Text, lDate) then
-      begin
-        BeginInternalChange;
-        try
-          Self.Date := lDate
-        finally
-          EndInternalChange;
-        end;
-      end
-      else
-      if (not FDeleting) and EnableValidation then
-      begin
-        lActFig := ActiveFigure;
-
-        if lActFig.Figure <> dfNone then
-        begin
-          lFigVal := StrToIntDef(Trim(Copy(Text, lActFig.Start, lActFig.Length)), 0);
-          //only enforce range if the cursor is at the end of the current figure:
-          if SelStart = lActFig.Start + lActFig.Length - 1 then
-            case lActFig.Figure of
-              dfDay:
-                EnforceRange(1, 31);
-              dfMonth:
-                EnforceRange(1, 12);
-              dfYear:
-                {EnforceRange( MinYear, MaxYear)}; //year-validation still under development
-            end;
-        end;
-        {make sure querying the date in an OnChange event handler always reflects
-         the current contents of the control and not just the last valid value.}
-        lDate := 0;
-        AttemptTextToDate(Text, lDate, lActFig.Index = High(TJvDateFigures));
-        if AlwaysReturnEditDate then
-          FDate := lDate;
+      BeginInternalChange;
+      try
+        Self.Date := lDate
+      finally
+        EndInternalChange;
       end;
+    end
+    else
+    if (not FDeleting) and EnableValidation then
+    begin
+      lActFig := ActiveFigure;
+
+       if lActFig.Figure <> dfNone then
+      begin
+        lFigVal := StrToIntDef(Trim(Copy(Text, lActFig.Start, lActFig.Length)), 0);
+        //only enforce range if the cursor is at the end of the current figure:
+        if SelStart = lActFig.Start + lActFig.Length - 1 then
+          case lActFig.Figure of
+            dfDay:
+              EnforceRange(1, 31);
+            dfMonth:
+              EnforceRange(1, 12);
+            dfYear:
+              {EnforceRange( MinYear, MaxYear)}; //year-validation still under development
+          end;
+      end;
+      {make sure querying the date in an OnChange event handler always reflects
+       the current contents of the control and not just the last valid value.}
+      lDate := 0;
+      AttemptTextToDate(Text, lDate, lActFig.Index = High(TJvDateFigures));
+      if AlwaysReturnEditDate then
+        FDate := lDate;
     end;
-  finally
-    FDeleting := False;
   end;
   inherited Change;
 end;
@@ -772,7 +768,12 @@ begin
 end;
 
 procedure TJvCustomDatePickerEdit.KeyDown(var AKey: Word; AShift: TShiftState);
+var
+  // Indicates whether FDeleting is set here from False to True.
+  DeleteSetHere: Boolean;
 begin
+  DeleteSetHere := False;
+
   if Text = NoDateText then
   begin
     Text := '';
@@ -794,9 +795,13 @@ begin
         if AShift = [ssAlt] then
           DropDown;
       VK_BACK, VK_CLEAR, VK_DELETE, VK_EREOF, VK_OEM_CLEAR:
-        FDeleting := True;
+        begin
+          DeleteSetHere := not FDeleting;
+          FDeleting := True;
+        end;
     end;
   inherited KeyDown(AKey, AShift);
+  FDeleting := FDeleting and not DeleteSetHere;
 end;
 
 procedure TJvCustomDatePickerEdit.KeyPress(var Key: Char);
