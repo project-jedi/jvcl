@@ -34,7 +34,7 @@
     <File Name="..\..\run\JvFormPlacement.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormPlacementSelectList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvHidControllerClass.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvJoystick.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvJoystick.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvMRUList.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvMRUManager.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvNTEventLog.pas" Targets="windows" Formname="" Condition=""/>
@@ -61,8 +61,9 @@
     <File Name="..\..\common\SetupApi.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\qcommon\QSetupApi.pas" Targets="D7clx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppXMLStorage.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvComputerInfoEx.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvComputerInfoEx.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQSystemColors.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qcommon\QRas32.pas" Targets="D7clx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQComputerInfoEx.pas" Targets="D7clx" Formname="" Condition=""/>
   </Contains>
 </Package>
