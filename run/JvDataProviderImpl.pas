@@ -814,6 +814,7 @@ type
 
   TJvDataConsumerAggregatedObject = class(TAggregatedPersistentEx)
   protected
+    StreamedInWithoutProvider: Boolean;
     { Called when the Provider/Context are set and NotifyFixups has been called earlier. It doesn't
       matter which sub service called NotifyFixups, all services are notified if the
       provider/context are set. }
@@ -3539,7 +3540,7 @@ begin
       I := 0;
       while I < ExtensionCount do
       begin
-        if Extension(I).KeepOnProviderChange then
+        if Extension(I).StreamedInWithoutProvider or Extension(I).KeepOnProviderChange then
         begin
           Extension(I).ProviderChanged;
           Inc(I);
@@ -3826,6 +3827,7 @@ end;
 
 procedure TJvDataConsumerAggregatedObject.Changed;
 begin
+  StreamedInWithoutProvider := ConsumerImpl.ProviderIntf = nil;
   ConsumerImpl.Changed;
 end;
 
