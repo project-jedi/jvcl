@@ -62,7 +62,8 @@ implementation
 
 uses
   SysUtils,
-  JclRTTI;
+  JclRTTI,
+  JvSegmentedLEDDisplayMappingForm;
 
 //===TJvTClassProperty==============================================================================
 
@@ -125,6 +126,7 @@ begin
   case Index of
     0: AddDigit;
     1: RemoveDigit;
+    3: EditSLDMapping(Display, Designer);
   end;
 end;
 
@@ -133,12 +135,14 @@ begin
   case Index of
     0: Result := 'Add digit';
     1: Result := 'Remove digit';
+    2: Result := '-';
+    3: Result := 'Edit mapping...';
   end;
 end;
 
 function TJvSegmentedLEDDisplayEditor.GetVerbCount: Integer;
 begin
-  Result := 2;
+  Result := 4;
 end;
 
 {$IFDEF COMPILER6_UP}

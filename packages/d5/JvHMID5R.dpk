@@ -11,7 +11,7 @@ package JvHMID5R;
 {$LOCALSYMBOLS ON}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION ON}
+{$OPTIMIZATION OFF}
 {$OVERFLOWCHECKS OFF}
 {$RANGECHECKS OFF}
 {$REFERENCEINFO ON}
@@ -34,6 +34,7 @@ requires
 contains
   JvSegmentedLEDDisplay in '..\..\run\JvSegmentedLEDDisplay.pas',
   JvLED in '..\..\run\JvLED.pas',
-  JvDialButton in '..\..\run\JvDialButton.pas';
+  JvDialButton in '..\..\run\JvDialButton.pas',
+  JvSegmentedLEDDisplayMapperFrame in '..\..\run\JvSegmentedLEDDisplayMapperFrame.pas' {fmeJvSegmentedLEDDisplayMapper: TFrame};
 
 end.
