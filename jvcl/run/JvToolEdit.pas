@@ -155,7 +155,6 @@ type
   TJvCustomComboEdit = class(TJvExCustomComboMaskEdit)
   {$ENDIF VisualCLX}
   private
-    FOnButtonClick: TNotifyEvent;
     FClickKey: TShortCut;
     FReadOnly: Boolean;
     FDirectInput: Boolean;
@@ -214,6 +213,8 @@ type
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
     {$ENDIF JVCLThemesEnabled}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
+  private
+    FOnButtonClick: TNotifyEvent;
     {$ENDIF VCL}
   protected
     FButton: TJvEditButton; // Polaris
@@ -221,8 +222,10 @@ type
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
     FPopup: TWinControl;
+    {$IFDEF COMPILER6_UP}
     procedure CustomAlignPosition(Control: TControl; var NewLeft, NewTop, NewWidth,
       NewHeight: Integer; var AlignRect: TRect; AlignInfo: TAlignInfo); override;
+    {$ENDIF COMPILER6_UP}
     procedure DoClearText; override;
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
@@ -309,7 +312,7 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
 
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
-    public
+  public
     //    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
     //      AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
@@ -1841,7 +1844,11 @@ begin
   FBtnControl.Parent := Self.ClientArea;
   {$ENDIF VisualCLX}
   //FBtnControl.Anchors := [akRight, akTop, akBottom];
+  {$IFDEF COMPILER6_UP}
   FBtnControl.Align := alCustom;
+  {$ELSE}
+  FBtnControl.Align := alRight;
+  {$ENDIF COMPILER6_UP}
   FButton := TJvEditButton.Create(Self);
   FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
   FButton.Visible := True;
@@ -4634,6 +4641,7 @@ end;
 //  UpdateMargins;
 //end;
 
+{$IFDEF COMPILER6_UP}
 procedure TJvCustomComboEdit.CustomAlignPosition(Control: TControl;
   var NewLeft, NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect;
   AlignInfo: TAlignInfo);
@@ -4641,6 +4649,7 @@ begin
   if Control = FBtnControl then
     UpdateBtnBounds(NewLeft, NewTop, NewWidth, NewHeight);
 end;
+{$ENDIF COMPILER6_UP}
 
 initialization
 
