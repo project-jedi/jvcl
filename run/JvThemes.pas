@@ -1154,10 +1154,13 @@ end;
 { Delphi 5 and 6 need WindowProc hooks }
 
 type
+  THookStatus = (hsNone, hsInWndProc, hsDelete);
+
   TThemeHook = class(TObject)
   public
     FControl: TControl;
-    FStatus: (thsNone, thsInWndProc, thsDelete);
+    FStatus: THookStatus;
+    FWndProcCount: Integer;
     FDead: Boolean;
     FThemeStyle: TThemeStyle;
     FOrgWndProc: TWndMethod;
@@ -1271,7 +1274,7 @@ begin
       if Result.Control = Control then
       begin
         Result.FDead := False;
-        if not (csDesigning in Result.FControl.ComponentState) then
+        if (Result.FControl <> nil) and not (csDesigning in Result.FControl.ComponentState) then
           if Result.FControl is TGraphicControl then
             Result.FControl.FreeNotification(ThemeHookComponent);
         FDeadList.Extract(Result);
@@ -1302,24 +1305,26 @@ end;
 
 destructor TThemeHook.Destroy;
 begin
-  FControl.RemoveFreeNotification(ThemeHookComponent);
+  if FControl <> nil then
+    FControl.RemoveFreeNotification(ThemeHookComponent);
   inherited Destroy;
 end;
 
 procedure TThemeHook.DeleteHook;
 begin
-  if FStatus = thsInWndProc then
-    FStatus := thsDelete;
-  if FStatus = thsDelete then
-    Exit;
-  if not (csDesigning in FControl.ComponentState) then
+  if (FControl <> nil) and not (csDesigning in FControl.ComponentState) then
   begin
     if TMethod(FControl.WindowProc).Code = @TThemeHook.WndProc then
       FControl.WindowProc := FOrgWndProc
-    else
+    else if not (TMethod(FControl.WindowProc).Code = TMethod(FOrgWndProc).Code) then
       FDead := True; // keep WndProc
     FControl.RemoveFreeNotification(ThemeHookComponent);
+    FControl := nil;
   end;
+  if FStatus = hsInWndProc then
+    FStatus := hsDelete;
+  if FStatus = hsDelete then
+    Exit;
   if not FDead then
     ThemeHooks.RecreationList.Remove(FControl);
   ThemeHooks.Enter;
@@ -1380,18 +1385,21 @@ begin
         ThemedCtlColorStatic(TWMCtlColorStatic(Msg), Handled);
   end;
 
-  FStatus := thsInWndProc;
+
+  Inc(FWndProcCount);
   try
+    FStatus := hsInWndProc;
     if not Handled then
       FOrgWndProc(Msg);
   finally
-    if FStatus = thsDelete then
+    Dec(FWndProcCount);
+    if (FStatus = hsDelete) and (FWndProcCount <= 0) then
     begin
-      FStatus := thsNone;
+      FStatus := hsNone;
       DeleteHook;
+      if Msg.Msg = WM_DESTROY then
+        Msg.Msg := 0;
     end
-    else
-      FStatus := thsNone;
   end;
 
   case Msg.Msg of

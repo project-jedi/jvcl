@@ -673,7 +673,7 @@ begin
       PenPos := RecallPenPos;
     end;
   finally
-    Canvas.Stop;;
+    Canvas.Stop;
   end;
   {$ENDIF VisualCLX}
 end;
