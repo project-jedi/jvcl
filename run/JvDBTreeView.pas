@@ -15,8 +15,9 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
+Peter Zolja
 
-Last Modified: 2002-07-04
+Last Modified: 2003-11-13
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
