@@ -543,9 +543,9 @@ begin
   try
     repeat
       Ext := AnsiLowerCase(ExtractFileExt(sr.Name));
-      if (Ext = '.bpl') then
+      if (Ext = '.bpl') or (Ext = '.dcp') then
         MoveFile(Dir + '\' + sr.Name, Target.BplDir + '\' + sr.Name)
-      else if (Ext = '.bpi') or (Ext = '.dcp') or (Ext = '.lib') then
+      else if (Ext = '.bpi') or (Ext = '.lib') then
         MoveFile(Dir + '\' + sr.Name, Target.DcpDir + '\' + sr.Name)
       else if (Ext = '.tds') then
         DeleteFile(Dir + '\' + sr.Name);
