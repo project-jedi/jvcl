@@ -1,0 +1,65 @@
+object SimpleMainForm: TSimpleMainForm
+  Left = 313
+  Top = 145
+  Width = 545
+  Height = 542
+  HorzScrollBar.Range = 185
+  ActiveControl = JvInspector1
+  Caption = 'JvInspector simple example'
+  Color = clButton
+  Constraints.MinHeight = 150
+  Constraints.MinWidth = 250
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  ParentFont = False
+  Position = poDesktopCenter
+  Scaled = False
+  OnShow = FormShow
+  PixelsPerInch = 96
+  object JvInspector1: TJvInspector
+    Left = 0
+    Top = 0
+    Width = 360
+    Height = 542
+    DoubleBuffered = True
+    Align = alClient
+    BandWidth = 150
+    BevelOuter = bvLowered
+    RelativeDivider = True
+    Divider = 50
+    ItemHeight = 16
+    Painter = JvInspectorBorlandPainter1
+    ReadOnly = False
+    UseBands = False
+    WantTabs = False
+  end
+  object Panel1: TPanel
+    Left = 360
+    Top = 0
+    Width = 185
+    Height = 542
+    Align = alRight
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 4
+      Top = 8
+      Width = 163
+      Height = 104
+      Caption = 
+        'To Use Inspector you need a painter component and the inspector ' +
+        'itself. Set the inspector'#39's painter property, then add some item' +
+        's. In this example, see AddComponent for the simplest way to ins' +
+        'pect a component at runtime.'
+      WordWrap = True
+    end
+  end
+  object JvInspectorBorlandPainter1: TJvInspectorBorlandPainter
+    DrawNameEndEllipsis = False
+    Left = 194
+    Top = 102
+  end
+end
