@@ -1,12 +1,13 @@
 <html><head>
     <title>Release Notes for JEDI VCL</title><LINK href="default.css" type=text/css rel=STYLESHEET ></HEAD>
 <body>
-<h2>Release Notes for JEDI VCL</H2>
+<h1>Release Notes for JEDI VCL</h1>
 <p>
 <hr>
 
 <p></P>
-<h3>Other release notes included in this distribution</H3>
+<h2>Other release notes included in this distribution</h2>
+<p>&nbsp;</p>
 <ul>
   <li>Install. Contains information on how to install JVCL.
   <li>License. Contains information on the JVCL usage and 
@@ -15,7 +16,9 @@
   your applications from previous versions of JVCL and/or previous versions 
   of&nbsp;components that has been added&nbsp;in this&nbsp;release of 
 JVCL.</LI></UL>
-<h3>Changes in this version</H3>
+<h3>&nbsp;</H3>
+<h2>Changes in this version</h2>
+<p>&nbsp;</p>
 <h4>New folder structure</H4>
 <p>The files in JVCL is arranged according to a new folder 
 structure.&nbsp;Previous versions of JVCL put all source files into one folder 
@@ -23,14 +26,26 @@ and all packages into another. The number of units in JVCL has forced us to
 divide this further in the current version. The current folder structure looks 
 like this:</P>
 <p>&lt;JVCL&gt;</P>
-<p>&nbsp; \design - contains units only used at 
-design-time</P>
-<p>&nbsp; \run&nbsp;&nbsp;&nbsp;&nbsp; - contains units 
-used at run-time</P>
+<p>&nbsp; &lt;root&gt; - contains important documents, like this readme&nbsp;</P>
+<p>&nbsp; \archive - old components (not installed) for those cases where you
+are unable to migrate to a newer version or replacement&nbsp;</P>
+<p>&nbsp; \bin - output folder for binaries (from \examples)</P>
 <p>&nbsp; \common - contains common units, like API 
 translations, INC files and the like</P>
-<p>&nbsp; \resources - contains res, dcr and other resource 
-files used at either run or design time</P>
+<p>&nbsp; \converter - DAT files for JVCLConvert (in \devtools\JVCLConvert)</P>
+<p>&nbsp; \dcu - output folder for dcu files (from \examples)</P>
+<p>&nbsp; \design - contains units only used at 
+design-time</P>
+<p>&nbsp; \devtools - contains the sources for various useful tools</P>
+<p>&nbsp; \Dict - dictionary files for TJvSpellChecker</P>
+<p>&nbsp; \examples - all available demos</P>
+<p>&nbsp; \help - contains the help file(s)</P>
+<p>&nbsp; \images - original images and rc files for the palette icons</P>
+<p>&nbsp; \Includes - C/C++ include files for UIB</P>
+<p>&nbsp; \install - source scripts and utilities for the installer</P>
+<p>&nbsp; \lib5 - dcu output for D5 packages</P>
+<p>&nbsp; \lib6 - dcu output for D6 packages</P>
+<p>&nbsp; \lib7 - dcu output for D7 packages</P>
 <p>&nbsp; \packages </P>
 <p>&nbsp;&nbsp;&nbsp; \d5 - packages for Delphi 5</P>
 <p>&nbsp;&nbsp;&nbsp; \d6 - packages for Delphi 6</P>
@@ -39,8 +54,13 @@ files used at either run or design time</P>
 <p>&nbsp;&nbsp;&nbsp; \c6 - packages for C++Builder 6</P>
 <p>&nbsp;&nbsp;&nbsp; \k2 - packages for Kylix 2</P>
 <p>&nbsp;&nbsp;&nbsp; \k3 - packages for&nbsp;Kylix 3</P>
-<p>Depending on which distribution of JVCL you download, 
-there might be additional folders and files.</P>
+<p>&nbsp; \Resources - contains res, dcr and other resource 
+files used at either run or design time</P>
+<p>&nbsp; \run&nbsp;&nbsp;&nbsp;&nbsp; - contains units 
+used at run-time</P>
+<p>&nbsp;</P>
+<p>Depending on which distribution of JVCL you download, all folders and files
+might not be included.</P>
 <p>&nbsp;</p>
 <h4>Theming</h4>
 <p>Several visual JVCL controls supports XP theming (more will likely be added 
@@ -374,10 +394,18 @@ available:</P>
       <p>TJvSpecialImage</P>
       <p>TJvSpecialProgress</P>
       <p>TJvStarfield</P>
-      <p>TJvWaititngGradient</P>
-      <p>TJvWaititngProgress</P>
+      <p>TJvWaitingGradient</P>
+      <p>TJvWaitingProgress</P>
       <p>TJvWavePlayer</P></TD>
     <td>JvCore, JvCmp, JvCtrls, JvSystem</TD></TR>
+  <tr>
+    <td>JvHMI</TD>
+    <td>HMI Components</TD>
+    <td>
+      TJvLED
+      <p>TJvSegmentedLEDDisplay</p>
+      <p>TJvDialButton</TD>
+    <td>JvCore</TD></TR>
   <tr>
     <td>JvNet</TD>
     <td>Network and Internet technology components</TD>
@@ -608,7 +636,7 @@ available:</P>
     <td>
       <p>TJvValidators</P>
       <p>TJvValidationSummary</P>
-      <p>TJvErrorProvider</P></TD>
+      <p>TJvErrorIndicator</P></TD>
     <td>JvCore</TD></TR>
   <tr>
     <td>JvUIB</TD>
@@ -644,7 +672,9 @@ available:</P>
       TJvTFUniversalPrinter<br>
       TJvTFDaysPrinter</TD>
     <td>JvCore (if UseJVCL is defined, which it is by default)</TD></TR></TABLE>
+<h4>&nbsp;</H4>
 <h4>New components added</H4>
+<p>&nbsp;</p>
 <p>The following new components and libraries has been 
 added since JVCL 2.10:</P>
 <ul>
@@ -652,25 +682,33 @@ added since JVCL 2.10:</P>
   <li>Jans Delphi Components 
   <li>The UIB Interbase/Firebird Database Components 
   <li>Print Preview components 
-  <li>Validators and Error Provider components 
+  <li>Validator components 
   <li>K Wizard component and RouteMaps</LI> 
   <li>UIL Time Framework 2.0</LI> 
+  <li>TJvErrorIndicator</LI> 
   <li>TJvXMLDatabase</LI> 
   <li>TJvMouseGesture</LI> 
   <li>TJvAVICapture</LI> 
-  <li>TJvBlinkingLED</LI></UL>
+  <li>TJvBlinkingLED</LI> 
+  <li>TJvAppInstances</LI> 
+  <li>TJvImageList</LI> 
+  <li>TJvColorProvider</LI> 
+  <li>TJvSegmentedLED</LI> 
+  <li>TJvComboListBox</LI> 
+  <li>TJvSpellChecker</LI></UL>
 <p>&nbsp;</P>
 <h4>Components deprecated, renamed, removed or changed </H4>
-<p>The following components have been removed, renamed or are deprecated (i.e they will most likely disappear in the near 
-future) since JVCL 2.10:<br></P>
-<h5>Removed</H5>
+<p>Below follows a list of components that have been removed, renamed or are deprecated
+since JVCL 2.10 (i.e they will most likely disappear in the near 
+future).</P>
+<h5>Removed Components</H5>
 <blockquote>
 <p>TJvBreatheSkin, TJvCommandEdit, TJvCoupler, TJvCPUUsage, 
 TJvHighLighter, TJvMemoryInfos, TJvMousePositionner, TJvNagScreen, 
-TJvPerforated, TJvPopupMemo,TJvAutoSave, TJvRegAuto, </P>
+TJvPerforated, TJvPopupMemo,TJvAutoSave, TJvRegAuto, TJvCurrencyEdit,
+TJvxCurrencyEdit, TJvFloatEdit, TJvFloatEdit2,&nbsp; </P>
 </blockquote>
-<p>&nbsp;</P>
-<h5>Renamed</H5>
+<h5>Renamed Components</H5>
 <blockquote>
 <p>The following units and classes have been renamed in 
 this version:</P>
@@ -955,10 +993,19 @@ this version:</P>
     <td>JvCsvDataEditor</TD></TR>
   <tr>
     <td>JvCsvDataDefStrDsgn</TD>
-    <td>JvCsvDataForm</TD></TR></TABLE>
-<h5>Deprecated</H5>
-<p>TJvControlPanelButton<br>TJvStartMenuButton<br>TJvFavoritesButton<br>TJvRecentMenuButton</P>
-<h5>Changed</h5>
+    <td>JvCsvDataForm</TD></TR>
+  <tr>
+    <td>JvErrProvider</TD>
+    <td>JvErrorIndicator</TD></TR>
+  <tr>
+    <td>JvRadioControl</TD>
+    <td>JvDialButton</TD></TR></TABLE>
+<h5>Deprecated Components</H5>
+<blockquote>
+<p>TJvControlPanelButton, TJvStartMenuButton, TJvFavoritesButton, TJvRecentMenuButton</P>
+</blockquote>
+<h5>Changed Components</h5>
+<blockquote>
 <p>TJvComputerInfo has been changed from TComponent to TObject. This change was
 done to promote safety since there was a risk that the streaming of published
 properties could modify important registry values on the end-users computer. To
@@ -969,13 +1016,19 @@ name as the former TJvComputerInfo component) to the form and create the class
 dynamically. You should now be able to use the class without any adverse
 side-effects. For more details, see the comments at the top of
 JvComputerInfo.pas.</P>
+<p>&nbsp;</P>
+</blockquote>
 <h4>Naming convention changed</H4>
+<p>&nbsp;</p>
 <p>To keep JVCL consistent, we have adopted a new naming 
 standard. The naming&nbsp;standard in JVCL&nbsp;affects both classes, types and 
 unit names. The following section explains the new naming convention enforced in 
 JVCL:</P>
 <blockquote dir=ltr style="MARGIN-RIGHT: 0px">
+  <p>&nbsp;</P>
+</BLOCKQUOTE>
   <p><strong>General</STRONG></P>
+<blockquote dir=ltr style="MARGIN-RIGHT: 0px">
   <ul>
     <li>All files have a "Jv" prefix (capital "J", lower 
     case "v") and we use "Camel Casing" for the file name (JvLikeThisForExample.pas).&nbsp; 
@@ -991,36 +1044,46 @@ JVCL:</P>
     <li>All image file names are in ALL UPPER CASE (TJVALARM.BMP)</LI> 
     <li>All include file names are in ALL UPPER CASE (JVCL.INC)</LI></UL>
   <p>&nbsp;</P>
+</BLOCKQUOTE>
   <p><strong>Using the word "Form" in 
   filenames</STRONG></P>
+<blockquote dir=ltr style="MARGIN-RIGHT: 0px">
   <p>All forms (units with DFM's) are suffixed with the 
   word "Form" regardless of whether they contain a dialog or a form (i.e JvDualListForm.pas). The word 
   "Form" can also be used as a prefix if the component in the unit is acting 
   upon a form without being one itself (i.e JvFormMagnet.pas) </P>
   <p>&nbsp;</P>
+</BLOCKQUOTE>
   <p><strong>Using the word "Dialog" 
   in filenames</STRONG></P>
+<blockquote dir=ltr style="MARGIN-RIGHT: 0px">
   <p>The word "Dialog" in a unit name signifies that the 
   unit contains a component that has no UI at designtime but shows a form or 
   dialog at run time (i.e JvObjectPickerDialog.pas). At the moment, "Dlg" and 
   "Dlgs" are accepted but their use is discouraged. </P>
   <p>&nbsp;</P>
+</BLOCKQUOTE>
   <p><strong>Using the words "Const" 
   and "Consts" in filenames</STRONG></P>
+<blockquote dir=ltr style="MARGIN-RIGHT: 0px">
   <p>The words "Const" and "Consts" are only used in units 
   that contains just type, resourcestring and const declarations and no code (i.e
   JvConsts.pas). 
   </P>
   <p><strong></STRONG>&nbsp;</P>
+</BLOCKQUOTE>
   <p><strong>Using the words "Util" 
   and "Utils" in filenames</STRONG></P>
+<blockquote dir=ltr style="MARGIN-RIGHT: 0px">
   <p>The word "Util" and "Utils" are only used in units 
   that contains support routines and classes of more general use (i.e
   JvJVCLUtils.pas). Classes in 
   util type units should never be installable. </P>
   <p>&nbsp;</P>
+</BLOCKQUOTE>
   <p><strong>Design time 
   editors</STRONG></P>
+<blockquote>
   <p>Units containing designtime editors should have the 
   same base name as the component they are primarily used to edit and an 
   "Editor" or "Editors" suffix, i.e a property editor unit for the 
@@ -1052,8 +1115,10 @@ JVCL:</P>
   for a package (see below). This minimizes confusion and clutter and maximizes reuse, loose 
   coupling and simplifies maintenance and future restructuring. </P>
   <p><strong></STRONG>&nbsp;</P>
+</blockquote>
   <p><strong>Registration 
   units</STRONG></P>
+<blockquote dir=ltr style="MARGIN-RIGHT: 0px">
   <p>Each design package have it's own registration unit 
   with a Register procedure. The unit is named with the same base name as the 
   package but with a "Reg" suffix (i.e the reg file for the &quot;JvCore&quot; design 
@@ -1066,8 +1131,10 @@ JVCL:</P>
   dcr file extension (i.e the palette icons for components registered in 
   JvCoreReg.pas is in \resources\JvCoreReg.dcr). </P>
   <p>&nbsp;</P>
+</BLOCKQUOTE>
   <p><strong>Palette images color 
   coding</STRONG></P>
+<blockquote dir=ltr style="MARGIN-RIGHT: 0px">
   <p>All component icons have a common background and an 
   upper case yellow "J" in a rectangle in the bottom right corner of the image. 
   The background color of the&nbsp;rectangle identifies the type of component 
@@ -1084,7 +1151,8 @@ JVCL:</P>
   <p><strong>Navy</STRONG> - data 
   consumers (data provider aware components)</P>
   <p>&nbsp;</P></BLOCKQUOTE>
-<h3>Getting involved in JVCL development</H3>
+<h2>Getting involved in JVCL development</h2>
+<p>&nbsp;</p>
 <p>If you want to help out making JVCL better or bigger or 
 just plain cooler, there are several ways in which you can help out.&nbsp; Here 
 are some of the things we need your help on:</P>
@@ -1096,12 +1164,14 @@ are some of the things we need your help on:</P>
   <li>Donate time fixing bugs</LI></UL>
 <p>&nbsp;</P>
 <h4>Donate components and other source code</H4>
+<p>&nbsp;</p>
 <p>JVCL accepts donations from developers as long as the 
 components fulfill the requirements set up by the JEDI and JVCL teams. To read 
 more about these requirements, visit the page <a 
 href="http://jvcl.sourceforge.net/donate.htm">http://jvcl.sourceforge.net/donate.htm</A></P>
 <p>&nbsp;</P>
 <h4>Donate time writing help</H4>
+<p>&nbsp;</p>
 <p>You can also donate your time by writing help for the 
 components already in JVCL. We currently use Doc-o-Matic to create the finished 
 help files but the actual help sources are plain text files in a simple to 
@@ -1109,14 +1179,18 @@ understand format. We can provide you with auto-generated templates with all
 classes, properties, types etc already inserted. The "only" thing left to do is 
 fill in the actual help text for the help items. If you are interested in 
 writing help, contact us. </P>
+<h4>&nbsp;</H4>
 <h4>Donate time writing demos</H4>
+<p>&nbsp;</p>
 <p>One of the best ways of getting to know a new component 
 is to see the source code of a demo using it and although we have a lot of demos 
 in JVCL, we still need more and some of the existing demos needs to be "beefed 
 up". Many developers create test apps to try out a new component before putting 
 it to use in their real projects so if you have such a demo or is interested in 
 making more full blown demos for JVCL, contact us.</P>
+<h4>&nbsp;</H4>
 <h4>Donate time fixing bugs</H4>
+<p>&nbsp;</p>
 <p>If you want to help fix bugs in JVCL, go to Mantis and 
 check the bug reports there. You can post replies as well as fixes directly in 
 the bug report. One of the JVCL developers will pick up the report/fix and 
@@ -1124,8 +1198,9 @@ update the CVS repository if the fix is satisfactory. If you report and fix a
 lot of bugs, you might even get developer access to CVS so you can update the 
 JVCL files directly.</P>
 <h3>&nbsp;</H3>
-<h3>Getting in touch with JVCL developers and other 
-users</H3>
+<h2>Getting in touch with JVCL developers and other 
+users</h2>
+<p>&nbsp;</p>
 <p>You can get in touch with the JVCL team and/or other 
 JVCL users in one of the following manners:</P>
 <ul>
