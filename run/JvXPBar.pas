@@ -1664,7 +1664,7 @@ begin
   if FHitTest = htRollButton then
   begin
     Rect := GetHitTestRect(htRollButton);
-    {$IFDEF VisualCLX} QWindows.{$ENDIF}InvalidateRect(Handle, @Rect, False);
+    Windows.InvalidateRect(Handle, @Rect, False);
   end;
 end;
 
@@ -1693,7 +1693,7 @@ begin
   if FHitTest <> OldHitTest then
   begin
     Rect := Bounds(0, 5, Width, FHeaderHeight); // header
-    {$IFDEF VisualCLX} QWindows.{$ENDIF}InvalidateRect(Handle, @Rect, False);
+    Windows.InvalidateRect(Handle, @Rect, False);
     if FShowLinkCursor then
     begin
       if FHitTest <> htNone then
