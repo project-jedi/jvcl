@@ -9,7 +9,7 @@
 cls
 if %1!==! goto help
 
-if NOT "%DELDIR%!"=="!" goto next
+if NOT %DELDIR%!=="!" goto next
 if %2!==! goto help
 SET DELDIR=%2
 :next
@@ -24,16 +24,16 @@ if NOT !%DIR2%==! SET PACKAGE=%DIR2% Packages
 SET DCPDIR=%ROOT%\Projects\Bpl
 
 SET MAKE=%ROOT%\bin\make.exe
-if EXIST "%MAKE%" goto hasmake
+if EXIST %MAKE% goto hasmake
   SET MAKE=make
   SET ROOT=
   SET DCPDIR=
 :hasmake
 
 cd ..\devtools
-if NOT EXIST bin\MakeDOF.exe  "%MAKE%" -s MakeDOF.exe
-if NOT EXIST bin\MakeCFG.exe  "%MAKE%" -s MakeCFG.exe
-if NOT EXIST bin\Bpg2Make.exe "%MAKE%" -s Bpg2Make.exe
+if NOT EXIST bin\MakeDOF.exe  %MAKE% -s MakeDOF.exe
+if NOT EXIST bin\MakeCFG.exe  %MAKE% -s MakeCFG.exe
+if NOT EXIST bin\Bpg2Make.exe %MAKE% -s Bpg2Make.exe
 cd bin
 
 REM echo.
@@ -50,7 +50,7 @@ cd ..\..\packages
 
 ..\devtools\bin\Bpg2Make.exe "%PACKAGE%.bpg"
 
-"%MAKE%" -f "%PACKAGE%.mak" %4 %5 %6 %7 %8 %9
+%MAKE% -f "%PACKAGE%.mak" %4 %5 %6 %7 %8 %9
 
 IF ERRORLEVEL 1 GOTO error
 echo.
