@@ -59,8 +59,13 @@ type
     property Anchors;
     property Color default clWindow;
     property Constraints;
-    property DragKind;
+    {$IFDEF VCL}
     property DragCursor;
+    property DragKind;
+    property OnCanResize;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
     property DragMode;
     property Hint;
     property ParentColor default False;
@@ -68,14 +73,12 @@ type
     property ParentShowHint;
     property ShowHint;
 
-    property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
@@ -85,7 +88,6 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     {$ENDIF COMPILER6_UP}
-    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -254,7 +256,8 @@ begin
       end;
     end;
     ACanvas.Brush.Color := AColor;
-    ACanvas.BrushCopy(ClientRect, Bmp, ClientRect, clFuchsia);
+    with ACanvas do
+      BrushCopy({$IFDEF VisualCLX}ACanvas,{$ENDIF} ClientRect, Bmp, ClientRect, clFuchsia);
   finally
     Bmp.Free;
   end;
