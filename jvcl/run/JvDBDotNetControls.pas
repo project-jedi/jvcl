@@ -40,10 +40,13 @@ interface
 
 uses
   Forms, Classes, Windows, Messages, Graphics, Controls, StdCtrls,
-  ComCtrls, Mask, DBCtrls, CheckLst
+  ComCtrls, Mask, DBCtrls,
   {$IFDEF USEJVCL}
-  , JvDBFindEdit, JVCLVer
-  {$ENDIF USEJVCL};
+  CheckLst,
+  JvDBFindEdit, JVCLVer;
+  {$ELSE}
+  CheckLst;
+  {$ENDIF USEJVCL}
 
 type
   TJvDotNetDBEdit = class(TDBEdit)
@@ -130,6 +133,7 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   {$ENDIF USEJVCL}
   end;
+
   {$IFDEF USEJVCL}
   TJvDotNetDBFindEdit = class(TJvDBFindEdit)
   private
@@ -252,14 +256,13 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
+//=== TJvDotNetDBFindEdit ====================================================
 
 {$IFDEF USEJVCL}
 
-{ TJvDotNetDBFindEdit }
-
 constructor TJvDotNetDBFindEdit.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FOldWindowProc := WindowProc;
   WindowProc := InternalWindowProc;
 end;
@@ -267,7 +270,7 @@ end;
 destructor TJvDotNetDBFindEdit.Destroy;
 begin
   WindowProc := FOldWindowProc;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvDotNetDBFindEdit.InternalWindowProc(var Msg: TMessage);
@@ -275,6 +278,7 @@ begin
   FOldWindowProc(Msg);
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
+
 {$ENDIF USEJVCL}
 {$ENDIF DelphiPersonalEdition}
 

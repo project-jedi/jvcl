@@ -128,7 +128,6 @@ type
     destructor Destroy; override;
   end;
 
-
   {$IFDEF USEJVCL}
   TJvDotNetMemo = class(TJvMemo)
   {$ELSE}
@@ -185,6 +184,7 @@ type
   end;
 
   {$IFDEF USEJVCL}
+
   TJvDotNetFilenameEdit = class(TJvFilenameEdit)
   private
     FHighlighted: Boolean;
@@ -194,6 +194,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
   TJvDotNetDirectoryEdit = class(TJvDirectoryEdit)
   private
     FHighlighted: Boolean;
@@ -203,6 +204,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
+
   {$ENDIF USEJVCL}
 
   TJvDotNetButton = class(TButton)
@@ -249,6 +251,8 @@ begin
   FOldWindowProc(Msg);
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
+
+//=== TJvDotNetEdit ==========================================================
 
 constructor TJvDotNetEdit.Create(AOwner: TComponent);
 begin
@@ -437,9 +441,9 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-//=== TJvDotNetFilenameEdit ==================================================
-
 {$IFDEF USEJVCL}
+
+//=== TJvDotNetFilenameEdit ==================================================
 
 constructor TJvDotNetFilenameEdit.Create(AOwner: TComponent);
 begin
