@@ -84,7 +84,7 @@ type
     SizeDirection: Integer;
     FExternalCanvas: TCanvas;
     Cursors: array[1..8] of TCursor;
-    bmp: TBitmap;
+    Bmp: TBitmap;
     Report: TJvgReport;
 
     procedure SetSelected(Value: Boolean);
@@ -109,19 +109,19 @@ type
     procedure SetFixed(Value: Word);
     function IsContainOLE: Boolean;
 
-    procedure WMMouseMove(var Message: TWMMouse); message WM_MOUSEMOVE;
-    procedure WMLMouseDown(var Message: TWMMouse); message WM_LBUTTONDOWN;
-    procedure WMLMouseUp(var Message: TWMMouse); message WM_LBUTTONUP;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    procedure WMMouseMove(var Msg: TWMMouse); message WM_MOUSEMOVE;
+    procedure WMLMouseDown(var Msg: TWMMouse); message WM_LBUTTONDOWN;
+    procedure WMLMouseUp(var Msg: TWMMouse); message WM_LBUTTONUP;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   {$IFDEF USEJVCL}
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure FontChanged; override;
   {$ELSE}
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
   protected
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
@@ -312,8 +312,8 @@ end;
 
 destructor TJvgReportItem.Destroy;
 begin
-  if Assigned(bmp) then
-    bmp.Free;
+  if Assigned(Bmp) then
+    Bmp.Free;
   if Assigned(OLEContainer) then
   begin
     OLEContainer.DestroyObject;
@@ -352,7 +352,7 @@ const
     ftaRightJustify, ftaCenter, ftaBroadwise);
   //  SysAlignments: array[TglAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER, 0);
 var
-  i, L, T: Integer;
+  I, L, T: Integer;
   sPrintText: string;
   R_, Client_Rect, RCalc: TRect;
 begin
@@ -361,10 +361,10 @@ begin
   begin
 
     if Canvas = Self.Canvas then
-      Client_Rect := Rect(0, 0, Width, height)
+      Client_Rect := Rect(0, 0, Width, Height)
     else
     begin
-      Client_Rect := Bounds(Left, Top, Width, height);
+      Client_Rect := Bounds(Left, Top, Width, Height);
       Canvas.Font := Self.Canvas.Font;
       Canvas.Font.Color := 0;
     end;
@@ -434,12 +434,12 @@ begin
     begin
       if Assigned(OLEContainer) then
         OLEContainer.Visible := False;
-      if bmp = nil then
+      if Bmp = nil then
       begin
-        bmp := TBitmap.Create;
-        bmp.LoadFromFile(OLELinkToFile);
+        Bmp := TBitmap.Create;
+        Bmp.LoadFromFile(OLELinkToFile);
       end;
-      BitBlt(Canvas.Handle, L, T, bmp.width, bmp.height, bmp.Canvas.handle,
+      BitBlt(Canvas.Handle, L, T, Bmp.Width, Bmp.Height, Bmp.Canvas.Handle,
         0, 0, SRCCOPY);
     end;
 
@@ -464,8 +464,8 @@ begin
       R[7] := Rect(0, Height div 2 - S, DS, Height div 2 + S + 1); //...left-center
       R[8] := Rect(Width - DS, Height div 2 - S, Width, Height div 2 + S + 1); //...right-center
 
-      for i := 1 to 8 do
-        Rectangle(R[i].Left, R[i].Top, R[i].Right, R[i].Bottom);
+      for I := 1 to 8 do
+        Rectangle(R[I].Left, R[I].Top, R[I].Right, R[I].Bottom);
     end;
   end;
   if Assigned(OLEContainer) then
@@ -502,14 +502,14 @@ begin
   //  SetCursor( Screen.Cursors[crDefault] );
 end;
 
-procedure TJvgReportItem.WMMouseMove(var Message: TWMMouse);
+procedure TJvgReportItem.WMMouseMove(var Msg: TWMMouse);
 var
-  i, dX, dY, nLeft, nTop, nWidth, nHeight: Integer;
+  I, dX, dY, nLeft, nTop, nWidth, nHeight: Integer;
   pt: TPoint;
 begin
   inherited;
   if Fixed = 0 then
-    with Message do
+    with Msg do
     begin
       pt.x := Pos.x;
       pt.y := Pos.y;
@@ -517,8 +517,8 @@ begin
       begin
         dX := Pos.x - DownPos.x;
         dY := Pos.y - DownPos.y;
-        inc(pos.x, 4);
-        inc(pos.y, 4);
+        Inc(Pos.x, 4);
+        Inc(Pos.y, 4);
         nLeft := Left;
         nTop := Top;
         nWidth := Width;
@@ -600,11 +600,11 @@ begin
         end;
       end
       else
-        for i := 1 to 8 do
-          if PtInRect(R[i], pt) then
+        for I := 1 to 8 do
+          if PtInRect(R[I], pt) then
           begin
-            Cursor := Cursors[i];
-            SizeDirection := i;
+            Cursor := Cursors[I];
+            SizeDirection := I;
             Exit;
           end;
     end;
@@ -612,23 +612,24 @@ begin
   //  SetCursor( Screen.Cursors[crDefault] );
 end;
 
-procedure TJvgReportItem.WMLMouseDown(var Message: TWMMouse);
+procedure TJvgReportItem.WMLMouseDown(var Msg: TWMMouse);
 begin
-  DownPos.x := Message.Pos.x;
-  DownPos.y := Message.Pos.y;
+  DownPos.x := Msg.Pos.x;
+  DownPos.y := Msg.Pos.y;
   //DownPos := ClientToScreen(DownPos);
   fSizing := Cursor <> crDefault;
   inherited;
 end;
 
-{procedure TJvgReportItem.WMRMouseDown(var Message: TWMMouse);
+{procedure TJvgReportItem.WMRMouseDown(var Msg: TWMMouse);
 begin
-  DownPos.x := Message.Pos.x; DownPos.y := Message.Pos.y;
+  DownPos.x := Msg.Pos.x;
+  DownPos.y := Msg.Pos.y;
   if Assigned(PopupMenu)
-  inherited;
+    inherited;
 end;}
 
-procedure TJvgReportItem.WMLMouseUp(var Message: TWMMouse);
+procedure TJvgReportItem.WMLMouseUp(var Msg: TWMMouse);
 begin
   fSizing := False;
   inherited;
@@ -652,7 +653,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvgReportItem.WMSize(var Message: TWMSize);
+procedure TJvgReportItem.WMSize(var Msg: TWMSize);
 begin
   inherited;
   // if Assigned(OnResize) then OnResize(Self);
@@ -660,19 +661,19 @@ end;
 
 {$IFNDEF USEJVCL}
 
-procedure TJvgReportItem.CMMouseEnter(var Message: TMessage);
+procedure TJvgReportItem.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
-  MouseEnter(TControl(Message.LParam));
+  MouseEnter(TControl(Msg.LParam));
 end;
 
-procedure TJvgReportItem.CMMouseLeave(var Message: TMessage);
+procedure TJvgReportItem.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
-  MouseLeave(TControl(Message.LParam));
+  MouseLeave(TControl(Msg.LParam));
 end;
 
-procedure TJvgReportItem.CMFontChanged(var Message: TMessage);
+procedure TJvgReportItem.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   FontChanged;
@@ -804,7 +805,7 @@ begin
   begin
     if not Assigned(Parent) then
       Exit;
-    OLEContainer := TOLEContainer.Create(parent.parent);
+    OLEContainer := TOLEContainer.Create(Parent.Parent);
     OLEContainer.AutoVerbMenu := False;
     OLEContainer.BorderStyle := bsNone;
     OLEContainer.Color := clWhite;
@@ -931,7 +932,7 @@ end;}
 
 procedure TJvgReport.PaintTo(Canvas: TCanvas);
 var
-  i: Integer;
+  I: Integer;
 begin
   OwnerWnd := nil;
   ParentWnd := nil;
@@ -941,8 +942,8 @@ begin
   //  ParamTypes.Clear;
   ComponentList.Clear;
   CreateReport(ParentWnd, False);
-  for i := 0 to ComponentList.Count - 1 do
-    TJvgReportItem(ComponentList[i]).PaintTo(Canvas);
+  for I := 0 to ComponentList.Count - 1 do
+    TJvgReportItem(ComponentList[I]).PaintTo(Canvas);
 end;
 
 procedure TJvgReport.PreviewTo(Window: TWinControl);
@@ -960,7 +961,7 @@ end;
 
 procedure TJvgReport.Print;
 var
-  i: Integer;
+  I: Integer;
   ScreenDC: HDC;
   HS, WS, HP, WP: Integer;
 begin
@@ -985,25 +986,25 @@ begin
 
     ReleaseDC(0, ScreenDC);
 
-    for i := 0 to ComponentList.Count - 1 do
+    for I := 0 to ComponentList.Count - 1 do
     begin
-      TJvgReportItem(ComponentList[i]).Left :=
-        MulDiv(TJvgReportItem(ComponentList[i]).Left, WP, WS);
-      TJvgReportItem(ComponentList[i]).Top :=
-        MulDiv(TJvgReportItem(ComponentList[i]).Top, HP, HS);
-      TJvgReportItem(ComponentList[i]).Width :=
-        MulDiv(TJvgReportItem(ComponentList[i]).Width, WP, WS);
-      TJvgReportItem(ComponentList[i]).Height :=
-        MulDiv(TJvgReportItem(ComponentList[i]).Height, HP, HS);
-      TJvgReportItem(ComponentList[i]).PenWidth :=
-        MulDiv(TJvgReportItem(ComponentList[i]).PenWidth, HP, HS);
+      TJvgReportItem(ComponentList[I]).Left :=
+        MulDiv(TJvgReportItem(ComponentList[I]).Left, WP, WS);
+      TJvgReportItem(ComponentList[I]).Top :=
+        MulDiv(TJvgReportItem(ComponentList[I]).Top, HP, HS);
+      TJvgReportItem(ComponentList[I]).Width :=
+        MulDiv(TJvgReportItem(ComponentList[I]).Width, WP, WS);
+      TJvgReportItem(ComponentList[I]).Height :=
+        MulDiv(TJvgReportItem(ComponentList[I]).Height, HP, HS);
+      TJvgReportItem(ComponentList[I]).PenWidth :=
+        MulDiv(TJvgReportItem(ComponentList[I]).PenWidth, HP, HS);
     end;
 
-    for i := 0 to ComponentList.Count - 1 do
-      with TJvgReportItem(ComponentList[i]) do
+    for I := 0 to ComponentList.Count - 1 do
+      with TJvgReportItem(ComponentList[I]) do
       begin
         PaintTo(Printer.Canvas);
-        if ContainOle then
+        if ContainOLE then
           OLEContainer.PaintTo(Printer.Canvas.Handle, Left, Top);
       end;
     Printer.EndDoc;
@@ -1017,10 +1018,10 @@ end;
 
 procedure TJvgReport.ClearReport;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to ComponentList.Count - 1 do
-    TJvgReportItem(ComponentList[i]).Free;
+  for I := 0 to ComponentList.Count - 1 do
+    TJvgReportItem(ComponentList[I]).Free;
   ComponentList.Count := 0;
 end;
 
@@ -1028,16 +1029,16 @@ procedure TJvgReport.CreateReport(ParentWnd: TWinControl; fNeedClearOwner:
   Boolean);
 var
   ms: TMemoryStream;
-  p: TParser;
-  c: char;
+  P: TParser;
+  c: Char;
   Compon: TComponent;
   sName, sClassName: string;
   S1, S2: string;
 
   procedure N2T;
   begin
-    p.NextToken;
-    p.NextToken;
+    P.NextToken;
+    P.NextToken;
   end;
 
   procedure Create_Object(sClassName, sName: string);
@@ -1053,132 +1054,132 @@ var
     if B = nil then
       Exit;
     ComponentList.Add(B);
-    c := p.NextToken;
-    while not p.TokenSymbolIs('end') do
-      with p do
+    c := P.NextToken;
+    while not P.TokenSymbolIs('end') do
+      with P do
       begin
         case c of
           '+':
             begin
-              p.NextToken;
-              b.Text := b.Text + TokenString;
+              P.NextToken;
+              B.Text := B.Text + TokenString;
             end;
           toSymbol:
             begin
               if TokenString = 'Left' then
               begin
                 N2T;
-                b.Left := TokenInt;
+                B.Left := TokenInt;
               end;
               if TokenString = 'Top' then
               begin
                 N2T;
-                b.Top := TokenInt;
+                B.Top := TokenInt;
               end;
               if TokenString = 'Width' then
               begin
                 N2T;
-                b.Width := TokenInt;
+                B.Width := TokenInt;
               end;
               if TokenString = 'Height' then
               begin
                 N2T;
-                b.Height := TokenInt;
+                B.Height := TokenInt;
               end;
               if TokenString = 'Text' then
               begin
                 N2T;
-                b.Text := TokenString;
+                B.Text := TokenString;
               end;
               if TokenString = 'BkColor' then
               begin
                 N2T;
-                b.BkColor := TokenInt;
+                B.BkColor := TokenInt;
               end;
               if TokenString = 'BvColor' then
               begin
                 N2T;
-                b.BvColor := TokenInt;
+                B.BvColor := TokenInt;
               end;
               if TokenString = 'Transparent' then
               begin
                 N2T;
-                b.Transparent := TokenInt;
+                B.Transparent := TokenInt;
               end;
               if TokenString = 'Alignment' then
               begin
                 N2T;
-                b.Alignment := TokenInt;
+                B.Alignment := TokenInt;
               end;
               if TokenString = 'SideLeft' then
               begin
                 N2T;
-                b.SideLeft := TokenInt;
+                B.SideLeft := TokenInt;
               end;
               if TokenString = 'SideTop' then
               begin
                 N2T;
-                b.SideTop := TokenInt;
+                B.SideTop := TokenInt;
               end;
               if TokenString = 'SideRight' then
               begin
                 N2T;
-                b.SideRight := TokenInt;
+                B.SideRight := TokenInt;
               end;
               if TokenString = 'SideBottom' then
               begin
                 N2T;
-                b.SideBottom := TokenInt;
+                B.SideBottom := TokenInt;
               end;
               if TokenString = 'PenStyle' then
               begin
                 N2T;
-                b.PenStyle := TokenInt;
+                B.PenStyle := TokenInt;
               end;
               if TokenString = 'PenWidth' then
               begin
                 N2T;
-                b.PenWidth := TokenInt;
+                B.PenWidth := TokenInt;
               end;
               if TokenString = 'CompName' then
               begin
                 N2T;
-                b.CompName := TokenString;
+                B.CompName := TokenString;
               end;
               if TokenString = 'FName' then
               begin
                 N2T;
-                b.FName := TokenString;
+                B.FName := TokenString;
               end;
               if TokenString = 'FSize' then
               begin
                 N2T;
-                b.FSize := TokenInt;
+                B.FSize := TokenInt;
               end;
               if TokenString = 'FColor' then
               begin
                 N2T;
-                b.FColor := TokenInt;
+                B.FColor := TokenInt;
               end;
               if TokenString = 'FStyle' then
               begin
                 N2T;
-                b.FStyle := TokenInt;
+                B.FStyle := TokenInt;
               end;
               if TokenString = 'OLELinkToFile' then
               begin
                 N2T;
-                b.OLELinkToFile := TokenString;
+                B.OLELinkToFile := TokenString;
               end;
               if TokenString = 'OLESizeMode' then
               begin
                 N2T;
-                b.OLESizeMode := TokenInt;
+                B.OLESizeMode := TokenInt;
               end;
               if TokenString = 'Fixed' then
               begin
                 N2T;
-                b.Fixed := TokenInt;
+                B.Fixed := TokenInt;
               end;
             end;
         end;
@@ -1202,7 +1203,7 @@ var
 
   procedure ClearOwner;
   var
-    i: Integer;
+    I: Integer;
   begin
     //    ParamNames.Clear;
     //    ParamMasks.Clear;
@@ -1212,15 +1213,15 @@ var
     if Assigned(ParentWnd) then
     begin
       with ParentWnd do
-        for i := ControlCount - 1 downto 0 do
-          if Controls[i] is TJvgReportItem then
-            RemoveControl(Controls[i]);
+        for I := ControlCount - 1 downto 0 do
+          if Controls[I] is TJvgReportItem then
+            RemoveControl(Controls[I]);
       with OwnerWnd do
-        for i := ComponentCount - 1 downto 0 do
+        for I := ComponentCount - 1 downto 0 do
         begin
-          if Components[i] is TJvgReportItem then
+          if Components[I] is TJvgReportItem then
           begin
-            Compon := Components[i];
+            Compon := Components[I];
             RemoveComponent(Compon);
             Compon.Free;
           end;
@@ -1237,9 +1238,9 @@ begin
   ms := TMemoryStream.Create;
   FReportList.SaveToStream(ms);
   ms.Position := 0;
-  p := TParser.Create(ms);
-  c := p.Token;
-  with p do
+  P := TParser.Create(ms);
+  c := P.Token;
+  with P do
     repeat
       if TokenSymbolIs('object') then //...only noname objects!
       begin
@@ -1257,7 +1258,7 @@ begin
       c := NextToken;
     until c = toEOF;
 
-  p.Free;
+  P.Free;
   ms.Free;
 end;
 
@@ -1274,16 +1275,16 @@ end;
 
 procedure TJvgReport.SetUnicalName(laBevel: TJvgReportItem);
 var
-  i: Integer;
+  I: Integer;
 
   function ComponentExists(No: Integer): Boolean;
   var
-    i: Integer;
+    I: Integer;
   begin
     Result := False;
-    for i := 0 to OwnerWnd.ComponentCount - 1 do
-      if OwnerWnd.Components[i] is TJvgReportItem then
-        if TJvgReportItem(OwnerWnd.Components[i]).CompName = 'Component' +
+    for I := 0 to OwnerWnd.ComponentCount - 1 do
+      if OwnerWnd.Components[I] is TJvgReportItem then
+        if TJvgReportItem(OwnerWnd.Components[I]).CompName = 'Component' +
           IntToStr(No) then
         begin
           Result := True;
@@ -1291,11 +1292,11 @@ var
         end;
   end;
 begin
-  i := 0;
+  I := 0;
   repeat
-    inc(i);
-  until not ComponentExists(i);
-  laBevel.CompName := 'Component' + IntToStr(i);
+    Inc(I);
+  until not ComponentExists(I);
+  laBevel.CompName := 'Component' + IntToStr(I);
 end;
 
 procedure TJvgReport.AnalyzeParams(Item: TJvgReportItem; DefName: string);
@@ -1308,7 +1309,7 @@ var
   function ExtractParam(Item: TJvgReportItem; var SrchPos: Integer; var
     ParamName: string; var ParamType: TJvgReportParamKind): Boolean;
   var
-    i, j: Integer;
+    I, J: Integer;
     f: Boolean;
     Text: string;
   begin
@@ -1317,8 +1318,8 @@ var
     if Length(Text) = 0 then
       Exit;
     f := False;
-    for i := SrchPos to Length(Text) - 1 do
-      if Text[i] = '#' then
+    for I := SrchPos to Length(Text) - 1 do
+      if Text[I] = '#' then
       begin
         f := True;
         Break;
@@ -1326,35 +1327,35 @@ var
 
     if not f then
       Exit;
-    if Text[i - 1] = '{' then
+    if Text[I - 1] = '{' then
       ParamType := gptEdit
     else
-    if Text[i - 1] = '<' then
+    if Text[I - 1] = '<' then
       ParamType := gptRadio
     else
-    if Text[i - 1] = '[' then
+    if Text[I - 1] = '[' then
       ParamType := gptCheck
     else
       ParamType := gptUnknown;
 
     if not f or (ParamType = gptUnknown) then
       Exit;
-    SrchPos := i + 1;
+    SrchPos := I + 1;
     f := False;
-    for i := SrchPos to Length(Text) do
-      if (Text[i] = '}') or (Text[i] = ']') or (Text[i] = '>') then
+    for I := SrchPos to Length(Text) do
+      if (Text[I] = '}') or (Text[I] = ']') or (Text[I] = '>') then
       begin
         f := True;
         Break;
       end;
     if not f then
       Exit;
-    ParamName := copy(Text, SrchPos, i - SrchPos);
+    ParamName := copy(Text, SrchPos, I - SrchPos);
 
-    j := ParamNames.IndexOf(ParamName);
-    if j <> -1 then
-      Item.PrintText := copy(Text, 0, SrchPos - 3) + ParamValues[j] +
-        copy(Text, i + 1, 255);
+    J := ParamNames.IndexOf(ParamName);
+    if J <> -1 then
+      Item.PrintText := copy(Text, 0, SrchPos - 3) + ParamValues[J] +
+        copy(Text, I + 1, 255);
 
     Result := True;
   end;
@@ -1399,14 +1400,14 @@ end;
 
 function TJvgReport.SetParam(const sParamName, sParamValue: string): Boolean;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := False;
-  i := ParamNames.IndexOf(sParamName);
-  if i <> -1 then
+  I := ParamNames.IndexOf(sParamName);
+  if I <> -1 then
   begin
     Result := True;
-    ParamValues[i] := sParamValue;
+    ParamValues[I] := sParamValue;
   end;
 end;
 

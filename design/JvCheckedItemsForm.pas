@@ -295,7 +295,7 @@ begin
   with TJvCheckItemEditor.Create(Application) do
   try
     FEdit.Text := '';
-    FComboBox.ItemIndex := Integer(cbUnChecked);
+    FComboBox.ItemIndex := Integer(cbUnchecked);
     FEnableBox.Checked := True;
     if ShowModal = mrOk then
     begin

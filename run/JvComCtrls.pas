@@ -539,8 +539,8 @@ type
     property SelectedCount: Integer read GetSelectedCount;
     function GetBold(Node: TTreeNode): Boolean;
     procedure SetBold(Node: TTreeNode; Value: Boolean);
-    function GetChecked(Node: TTreenode): Boolean;
-    procedure SetChecked(Node: TTreenode; Value: Boolean);
+    function GetChecked(Node: TTreeNode): Boolean;
+    procedure SetChecked(Node: TTreeNode; Value: Boolean);
     procedure SetNodePopup(Node: TTreeNode; Value: TPopupMenu);
     function GetNodePopup(Node: TTreeNode): TPopupMenu;
     procedure InsertMark(Node: TTreeNode; MarkAfter: Boolean); // TVM_SETINSERTMARK
@@ -822,7 +822,7 @@ end;
 procedure TJvIPAddress.AdjustHeight;
 var
   DC: HDC;
-  SaveFont: HFont;
+  SaveFont: HFONT;
   //  I: Integer;
   //  R: TRect;
   Metrics: TTextMetric;
@@ -1534,23 +1534,23 @@ end;
 function TJvPageControl.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 var
-  thistab, tab: TTabSheet;
-  forwrd: Boolean;
+  ThisTab, Tab: TTabSheet;
+  Forwrd: Boolean;
 begin
   Result := False;
   if HandleGlobalTab and not FormKeyPreview and (Key = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
   begin
-    thistab := ActivePage;
-    forwrd := GetKeyState(VK_SHIFT) >= 0;
-    tab := thistab;
+    ThisTab := ActivePage;
+    Forwrd := GetKeyState(VK_SHIFT) >= 0;
+    Tab := ThisTab;
     repeat
-      tab := FindNextPage(tab, forwrd, True);
-    until (tab = nil) or tab.Enabled or (tab = thistab);
-    if tab <> thistab then
+      Tab := FindNextPage(Tab, Forwrd, True);
+    until (Tab = nil) or Tab.Enabled or (Tab = ThisTab);
+    if Tab <> ThisTab then
     begin
       if CanChange then
       begin
-        ActivePage := tab;
+        ActivePage := Tab;
         Result := True;
         Change;
       end;
@@ -1644,8 +1644,8 @@ begin
     inherited;
     Exit;
   end;
-  hi.pt.x := Msg.XPos;
-  hi.pt.y := Msg.YPos;
+  hi.pt.X := Msg.XPos;
+  hi.pt.Y := Msg.YPos;
   hi.flags := 0;
   TabIndex := Perform(TCM_HITTEST, 0, Longint(@hi));
   I := 0;
@@ -1697,7 +1697,7 @@ end;
 function TJvPageControl.HintShow(var HintInfo: THintInfo): Boolean;
 var
   TabNo: Integer;
-  Tab: TTabsheet;
+  Tab: TTabSheet;
 begin
   Result := inherited HintShow(HintInfo);
 
@@ -2120,7 +2120,7 @@ begin
   Result := TJvTreeNode(Node).Bold;
 end;
 
-function TJvTreeView.GetChecked(Node: TTreenode): Boolean;
+function TJvTreeView.GetChecked(Node: TTreeNode): Boolean;
 begin
   Result := TJvTreeNode(Node).Checked;
 end;
@@ -2300,7 +2300,7 @@ begin
   RecreateWnd;
 end;
 
-procedure TJvTreeView.SetChecked(Node: TTreenode; Value: Boolean);
+procedure TJvTreeView.SetChecked(Node: TTreeNode; Value: Boolean);
 begin
   TJvTreeNode(Node).Checked := Value;
 end;
@@ -2378,20 +2378,20 @@ begin
     case NMHdr^.code of
       NM_CLICK, NM_RCLICK:
         begin
-          Node := GetNodeAt(x, y);
+          Node := GetNodeAt(X, Y);
           if Assigned(Node) then
             Selected := Node
           else
           begin
             if FCheckBoxes then
             begin
-              Node := GetNodeAt(x + 16, y);
+              Node := GetNodeAt(X + 16, Y);
               if Assigned(Node) then
                 Selected := Node
             end;
           end;
           if (Selected <> nil) and (NMHdr^.code = NM_RCLICK) then
-            TJvTreeNode(Selected).PopupMenu.Popup(Mouse.CursorPos.x, Mouse.CursorPos.y);
+            TJvTreeNode(Selected).PopupMenu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
         end;
       TVN_SELCHANGEDA, TVN_SELCHANGEDW:
         begin
@@ -2411,7 +2411,6 @@ begin
               end;
             end;
         end;
-
     end;
 end;
 
@@ -2577,7 +2576,7 @@ procedure TJvTreeView.DoMenuChange(Sender: TObject; Source: TMenuItem;
   Rebuild: Boolean);
 begin
   if Assigned(FOldMenuChange) then
-    FoldMenuChange(Sender, Source, Rebuild);
+    FOldMenuChange(Sender, Source, Rebuild);
   RebuildFromMenu;
 end;
 

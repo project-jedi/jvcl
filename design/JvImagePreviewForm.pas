@@ -183,22 +183,22 @@ procedure TImageForm.FileListBoxClick(Sender: TObject);
 var
   FileExt: string;
 begin
-  FileExt := UpperCase(ExtractFileExt(FileListBox.Filename));
+  FileExt := UpperCase(ExtractFileExt(FileListBox.FileName));
   try
     StartWait;
     try
-      Image.Picture.LoadFromFile(FileListBox.Filename);
+      Image.Picture.LoadFromFile(FileListBox.FileName);
     finally
       StopWait;
     end;
     {$IFDEF MSWINDOWS}
     ImageName.Caption := Format('%s (%d x %d)',
-      [AnsiLowerCase(ExtractFilename(FileListBox.Filename)),
+      [AnsiLowerCase(ExtractFilename(FileListBox.FileName)),
        Image.Picture.Width, Image.Picture.Height]);
     {$ENDIF MSWINDOWS}
     {$IFDEF LINUX}
     ImageName.Caption := Format('%s (%d x %d)',
-      [ExtractFilename(FileListBox.Filename),
+      [ExtractFilename(FileListBox.FileName),
        Image.Picture.Width, Image.Picture.Height]);
     {$ENDIF LINUX}
   except

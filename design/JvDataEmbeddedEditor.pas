@@ -91,7 +91,7 @@ begin
     Result := RsLoadFromFileEllipsis;
 end;
 
-function TJvDataEmbeddedComponentEditor.GetVerbCount: integer;
+function TJvDataEmbeddedComponentEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;

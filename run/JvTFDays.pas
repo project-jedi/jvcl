@@ -224,23 +224,23 @@ type
 
   TJvTFSelecTJvTFApptEvent = procedure(Sender: TObject; OldSel, NewSel: TJvTFAppt) of object;
 
-  TJvTFDrawApptEvent = procedure(Sender: TObject; aCanvas: TCanvas; aRect: TRect;
+  TJvTFDrawApptEvent = procedure(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
     Appt: TJvTFAppt; Selected: Boolean) of object;
 
-  TJvTFDrawGrabHandleEvent = procedure(Sender: TObject; aCanvas: TCanvas;
-    aRect: TRect; Appt: TJvTFAppt; TopHandle: Boolean) of object;
+  TJvTFDrawGrabHandleEvent = procedure(Sender: TObject; ACanvas: TCanvas;
+    ARect: TRect; Appt: TJvTFAppt; TopHandle: Boolean) of object;
 
-  TJvTFDrawDataCellEvent = procedure(Sender: TObject; aCanvas: TCanvas; aRect: TRect;
+  TJvTFDrawDataCellEvent = procedure(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
     Col, Row: Integer) of object;
 
   TJvTFDaysCorner = (agcTopLeft, agcTopRight, agcBottomLeft, agcBottomRight);
-  TJvTFDrawCornerEvent = procedure(Sender: TObject; aCanvas: TCanvas; aRect: TRect;
+  TJvTFDrawCornerEvent = procedure(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
     Corner: TJvTFDaysCorner) of object;
 
-  TJvTFDrawHdrEvent = procedure(Sender: TObject; aCanvas: TCanvas; aRect: TRect;
+  TJvTFDrawHdrEvent = procedure(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
     Index: Integer; Selected: Boolean) of object;
 
-  TJvTFDrawApptBarEvent = procedure(Sender: TObject; aCanvas: TCanvas;
+  TJvTFDrawApptBarEvent = procedure(Sender: TObject; ACanvas: TCanvas;
     Appt: TJvTFAppt; Col: Integer; BarRect, TimeStampRect: TRect) of object;
 
   TJvTFFailEditorEvent = procedure(Sender: TObject; Col: Integer; Appt: TJvTFAppt;
@@ -287,7 +287,7 @@ type
     property Location[Row, Col: Integer]: TJvTFAppt read GetLocation;
     procedure Refresh;
     function HasAppt(Appt: TJvTFAppt): Boolean;
-    procedure Dump(fname: TFileName); // used for debugging only
+    procedure Dump(AName: TFileName); // used for debugging only
   end;
 
   TJvTFDaysOption = (agoSizeCols, agoSizeRows, agoSizeColHdr, agoSizeRowHdr,
@@ -350,7 +350,7 @@ type
 
   TJvTFDaysScrollBar = class(TScrollBar)
   protected
-    procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
     procedure CreateWnd; override;
     function GetLargeChange: Integer; virtual;
     procedure SetLargeChange(Value: Integer); virtual;
@@ -768,7 +768,7 @@ type
     FBorderStyle: TBorderStyle;
     FHitTest: TPoint;
     FVisibleScrollBars: TJvTFVisibleScrollBars;
-    FDitheredBackground: boolean;
+    FDitheredBackground: Boolean;
 
    // row, col layout
     FGranularity: Integer;
@@ -878,7 +878,7 @@ type
 
     {$IFDEF VCL}
     // internal stuff
-    procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     {$ENDIF VCL}
     procedure SetBorderStyle(Value: TBorderStyle);
@@ -941,14 +941,14 @@ type
 
     procedure SetOptions(Value: TJvTFDaysOptions);
     procedure SeTJvTFHintProps(Value: TJvTFHintProps);
-    procedure DrawDither(aCanvas: TCanvas; aRect: TRect; Color1, Color2: TColor);
+    procedure DrawDither(ACanvas: TCanvas; ARect: TRect; Color1, Color2: TColor);
 
     {$IFDEF Jv_TIMEBLOCKS}
    // ok
     procedure SetWeekend(Value: TTFDaysOfWeek);
    // ok
     procedure SetWeekendColor(Value: TColor);
-    procedure SetDitheredBackground(const Value: boolean);
+    procedure SetDitheredBackground(const Value: Boolean);
     {$ENDIF Jv_TIMEBLOCKS}
   protected
     FState: TJvTFDaysState;
@@ -990,86 +990,86 @@ type
 
    // All painting routines
     procedure Paint; override;
-    procedure DrawDataCell(aCanvas: TCanvas; ColIndex, RowIndex: Integer);
-    procedure DrawEmptyColHdr(aCanvas: TCanvas);
-    procedure DrawAppt(aCanvas: TCanvas; Col: Integer; Appt: TJvTFAppt;
+    procedure DrawDataCell(ACanvas: TCanvas; ColIndex, RowIndex: Integer);
+    procedure DrawEmptyColHdr(ACanvas: TCanvas);
+    procedure DrawAppt(ACanvas: TCanvas; Col: Integer; Appt: TJvTFAppt;
       StartRow, EndRow: Integer);
-    procedure DrawApptDetail(aCanvas: TCanvas; aRect: TRect; Appt: TJvTFAppt;
+    procedure DrawApptDetail(ACanvas: TCanvas; ARect: TRect; Appt: TJvTFAppt;
       Selected: Boolean; Col, StartRow, EndRow: Integer);
-    procedure DrawApptBar(aCanvas: TCanvas; Appt: TJvTFAppt; BarRect: TRect;
+    procedure DrawApptBar(ACanvas: TCanvas; Appt: TJvTFAppt; BarRect: TRect;
       Col, StartRow, EndRow: Integer);
     function CalcTimeStampRect(Appt: TJvTFAppt; BarRect: TRect;
       Col, StartRow, EndRow: Integer): TRect;
-    procedure DrawTimeStamp(aCanvas: TCanvas; TimeStampRect: TRect);
-    procedure DrawPics(aCanvas: TCanvas; var aRect: TRect; Appt: TJvTFAppt);
-    procedure CreatePicDrawList(aRect: TRect; Appt: TJvTFAppt; DrawList: TList);
-    procedure FilterPicDrawList(aRect: TRect; DrawList: TList;
+    procedure DrawTimeStamp(ACanvas: TCanvas; TimeStampRect: TRect);
+    procedure DrawPics(ACanvas: TCanvas; var ARect: TRect; Appt: TJvTFAppt);
+    procedure CreatePicDrawList(ARect: TRect; Appt: TJvTFAppt; DrawList: TList);
+    procedure FilterPicDrawList(ARect: TRect; DrawList: TList;
       var PicsHeight: Integer);
     procedure ClearPicDrawList(DrawList: TList);
-    procedure DrawListPics(aCanvas: TCanvas; var aRect: TRect; DrawList: TList);
-    procedure DrawGrabLines(aCanvas: TCanvas; LineTop, LineLeft,
+    procedure DrawListPics(ACanvas: TCanvas; var ARect: TRect; DrawList: TList);
+    procedure DrawGrabLines(ACanvas: TCanvas; LineTop, LineLeft,
       LineRight: Integer);
-    procedure DrawGrabHandle(aCanvas: TCanvas; aRect: TRect;
+    procedure DrawGrabHandle(ACanvas: TCanvas; ARect: TRect;
       anAppt: TJvTFAppt; TopHandle: Boolean);
-    procedure DrawCorner(aCanvas: TCanvas; Corner: TJvTFDaysCorner);
-    procedure DrawRowHdr(aCanvas: TCanvas; Index: Integer);
-   //procedure DrawColHdr(aCanvas: TCanvas; Index: Integer);
-    function GetTallestColTitle(aCanvas: TCanvas): Integer;
+    procedure DrawCorner(ACanvas: TCanvas; Corner: TJvTFDaysCorner);
+    procedure DrawRowHdr(ACanvas: TCanvas; Index: Integer);
+   //procedure DrawColHdr(ACanvas: TCanvas; Index: Integer);
+    function GetTallestColTitle(ACanvas: TCanvas): Integer;
 
     procedure GetApptDrawInfo(DrawInfo: TJvTFDaysApptDrawInfo;
       anAppt: TJvTFAppt; Attr: TJvTFDaysApptAttr);
 
     {$IFDEF Jv_TIMEBLOCKS}
    // ok to REPLACE old DrawFrame
-    procedure DrawFrame(aCanvas: TCanvas; aRect: TRect; Draw3D: Boolean;
+    procedure DrawFrame(ACanvas: TCanvas; ARect: TRect; Draw3D: Boolean;
       FrameColour: TColor);
     {$ELSE}
     // obsolete
-    //procedure DrawFrame(aCanvas: TCanvas; aRect: TRect; Draw3D: Boolean);
+    //procedure DrawFrame(ACanvas: TCanvas; ARect: TRect; Draw3D: Boolean);
     {$ENDIF Jv_TIMEBLOCKS}
 
-    procedure DrawAppts(aCanvas: TCanvas; DrawAll: Boolean);
-    procedure AdjustForMargins(var aRect: TRect);
-    procedure CanDrawWhat(aCanvas: TCanvas; ApptRect: TRect; PicsHeight: Integer;
+    procedure DrawAppts(ACanvas: TCanvas; DrawAll: Boolean);
+    procedure AdjustForMargins(var ARect: TRect);
+    procedure CanDrawWhat(ACanvas: TCanvas; ApptRect: TRect; PicsHeight: Integer;
       var CanDrawText, CanDrawPics: Boolean);
-    procedure ManualFocusRect(aCanvas: TCanvas; aRect: TRect);
+    procedure ManualFocusRect(ACanvas: TCanvas; ARect: TRect);
    // Fancy painting routines
-    procedure DrawFancyRowHdrs(aCanvas: TCanvas);
-    procedure DrawMinor(aCanvas: TCanvas; aRect: TRect; RowNum: Integer;
+    procedure DrawFancyRowHdrs(ACanvas: TCanvas);
+    procedure DrawMinor(ACanvas: TCanvas; ARect: TRect; RowNum: Integer;
       const LabelStr: string; TickLength: Integer; Selected: Boolean);
     function GetMinorLabel(RowNum: Integer): string;
     function GetMinorTickLength: Integer; virtual;
     function GetMajorTickLength: Integer; virtual;
-    procedure DrawGroupHdrs(aCanvas: TCanvas);
-   //procedure DrawGroupHdr(aCanvas: TCanvas; aCol: Integer);
-    procedure DrawColGroupHdr(aCanvas: TCanvas; Index: Integer;
+    procedure DrawGroupHdrs(ACanvas: TCanvas);
+   //procedure DrawGroupHdr(ACanvas: TCanvas; aCol: Integer);
+    procedure DrawColGroupHdr(ACanvas: TCanvas; Index: Integer;
       IsGroupHdr: Boolean);
 
     {$IFDEF Jv_TIMEBLOCKS}
    // ok
-    procedure DrawBlockHdr(aCanvas: TCanvas; BlockIndex: Integer);
+    procedure DrawBlockHdr(ACanvas: TCanvas; BlockIndex: Integer);
    // ok
-    procedure FillBlockHdrDeadSpace(aCanvas: TCanvas);
+    procedure FillBlockHdrDeadSpace(ACanvas: TCanvas);
    // REMOVE, replaced by CalcTextPos in JvTFUtils
-   //procedure CalcTextPos(var aRect: TRect; aAngle: Integer; aTxt: String);
+   //procedure CalcTextPos(var ARect: TRect; aAngle: Integer; aTxt: String);
    // REMOVE, replaced by DrawAngleText in JvTFUtils
-   //procedure DrawAngleText(aCanvas: TCanvas; aRect: TRect; aAngle: Integer;
+   //procedure DrawAngleText(ACanvas: TCanvas; ARect: TRect; aAngle: Integer;
     //aTxt: String);
     {$ENDIF Jv_TIMEBLOCKS}
 
    // message handlers
     procedure Resize; override;
 
-    procedure WMEraseBkgnd(var Message: TMessage); message WM_ERASEBKGND;
-    procedure WMSetCursor(var Message: TWMSetCursor); message WM_SETCURSOR;
-    procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
-    procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
+    procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
+    procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
+    procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
     procedure CNRequestRefresh(var Msg: TCNRequestRefresh); message CN_REQUESTREFRESH;
-    procedure WMTimer(var Message: TWMTimer); message WM_TIMER;
+    procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
 
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
 
    // internal routines
     procedure Loaded; override;
@@ -1207,9 +1207,9 @@ type
     function VisibleCols: Integer;
     function FullVisibleCols: Integer;
     function RowToTime(RowNum: Integer): TTime;
-    function TimeToRow(aTime: TTime): Integer;
-    procedure TimeToTop(aTime: TTime);
-    function AdjustEndTime(aTime: TTime): TTime; dynamic;
+    function TimeToRow(ATime: TTime): Integer;
+    procedure TimeToTop(ATime: TTime);
+    function AdjustEndTime(ATime: TTime): TTime; dynamic;
     function RowStartsHour(RowNum: Integer): Boolean;
     function RowEndsHour(RowNum: Integer): Boolean;
     function RowEndTime(RowNum: Integer): TTime;
@@ -1266,7 +1266,7 @@ type
     function GroupHdrIsSelected(aCol: Integer): Boolean;
 
     {$IFDEF Jv_TIMEBLOCKS}
-   // ok
+    // ok
     function BlockHdrIsSelected(aRow: Integer): Boolean;
     {$ENDIF Jv_TIMEBLOCKS}
 
@@ -1276,11 +1276,9 @@ type
 
     function GetApptDispColor(Appt: TJvTFAppt; Selected: Boolean): TColor;
   published
-    property DitheredBackground: boolean read FDitheredBackground write SetDitheredBackground default true;
-    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
-      default bsSingle;
-
-   // grid layout properties
+    property DitheredBackground: Boolean read FDitheredBackground write SetDitheredBackground default True;
+    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
+    // grid layout properties
     property AutoSizeCols: Boolean read FAutoSizeCols write SetAutoSizeCols default True;
     property Granularity: Integer read FGranularity write SetGranularity default 30;
     property ColHdrHeight: Integer read FColHdrHeight write SetColHdrHeight default 25;
@@ -1585,52 +1583,52 @@ type
     FApptsDrawn: Integer;
     FValidPageInfo: Boolean;
     procedure SetMeasure(Value: TJvTFPrinterMeasure); override;
-    procedure DrawBody(aCanvas: TCanvas; aRect: TRect; PageNum: Integer); override;
+    procedure DrawBody(ACanvas: TCanvas; ARect: TRect; PageNum: Integer); override;
 
     procedure Loaded; override;
 
    // Drawing routines
-    procedure DrawCorner(aCanvas: TCanvas);
-    procedure DrawFrame(aCanvas: TCanvas; aRect: TRect; Draw3D: Boolean);
-    procedure DrawEmptyColHdr(aCanvas: TCanvas; PageInfo: TJvTFDaysPageInfo);
-   //procedure DrawColHdr(aCanvas: TCanvas; Index: Integer;
+    procedure DrawCorner(ACanvas: TCanvas);
+    procedure DrawFrame(ACanvas: TCanvas; ARect: TRect; Draw3D: Boolean);
+    procedure DrawEmptyColHdr(ACanvas: TCanvas; PageInfo: TJvTFDaysPageInfo);
+   //procedure DrawColHdr(ACanvas: TCanvas; Index: Integer;
     //PageInfo: TJvTFDaysPageInfo);
-    procedure DrawColGroupHdr(aCanvas: TCanvas; Index: Integer;
+    procedure DrawColGroupHdr(ACanvas: TCanvas; Index: Integer;
       PageInfo: TJvTFDaysPageInfo; IsGroupHdr: Boolean);
-    procedure DrawRowHdr(aCanvas: TCanvas; Index: Integer;
+    procedure DrawRowHdr(ACanvas: TCanvas; Index: Integer;
       PageInfo: TJvTFDaysPageInfo);
-    procedure DrawGroupHdrs(aCanvas: TCanvas; PageInfo: TJvTFDaysPageInfo);
+    procedure DrawGroupHdrs(ACanvas: TCanvas; PageInfo: TJvTFDaysPageInfo);
 
-    procedure DrawFancyRowHdrs(aCanvas: TCanvas; PageInfo: TJvTFDaysPageInfo);
-    procedure DrawMinor(aCanvas: TCanvas; aRect: TRect; RowNum: Integer;
+    procedure DrawFancyRowHdrs(ACanvas: TCanvas; PageInfo: TJvTFDaysPageInfo);
+    procedure DrawMinor(ACanvas: TCanvas; ARect: TRect; RowNum: Integer;
       const LabelStr: string; TickLength: Integer);
     function GetMinorLabel(RowNum: Integer; PageInfo: TJvTFDaysPageInfo): string;
-    function GetMinorTickLength(aCanvas: TCanvas): Integer; virtual;
+    function GetMinorTickLength(ACanvas: TCanvas): Integer; virtual;
     function GetMajorTickLength: Integer; virtual;
 
-    procedure DrawDataCell(aCanvas: TCanvas; ColIndex, RowIndex: Integer;
+    procedure DrawDataCell(ACanvas: TCanvas; ColIndex, RowIndex: Integer;
       PageInfo: TJvTFDaysPageInfo);
-    procedure DrawAppts(aCanvas: TCanvas; DrawAll: Boolean;
+    procedure DrawAppts(ACanvas: TCanvas; DrawAll: Boolean;
       PageInfo: TJvTFDaysPageInfo);
-    procedure PrintBitmap(aCanvas: TCanvas; SourceRect, DestRect: TRect;
+    procedure PrintBitmap(ACanvas: TCanvas; SourceRect, DestRect: TRect;
       aBitmap: TBitmap);
-    procedure DrawAppt(aCanvas: TCanvas; Col: Integer; Appt: TJvTFAppt;
+    procedure DrawAppt(ACanvas: TCanvas; Col: Integer; Appt: TJvTFAppt;
       StartRow, EndRow: Integer; PageInfo: TJvTFDaysPageInfo);
-    procedure DrawApptDetail(aCanvas: TCanvas; aRect: TRect; Appt: TJvTFAppt;
+    procedure DrawApptDetail(ACanvas: TCanvas; ARect: TRect; Appt: TJvTFAppt;
       Col, StartRow, EndRow: Integer);
-    procedure DrawApptBar(aCanvas: TCanvas; Appt: TJvTFAppt; BarRect: TRect;
+    procedure DrawApptBar(ACanvas: TCanvas; Appt: TJvTFAppt; BarRect: TRect;
       Col, StartRow, EndRow: Integer);
     function CalcTimeStampRect(Appt: TJvTFAppt; BarRect: TRect;
       Col, StartRow, EndRow: Integer): TRect;
-    procedure DrawTimeStamp(aCanvas: TCanvas; TimeStampRect: TRect);
+    procedure DrawTimeStamp(ACanvas: TCanvas; TimeStampRect: TRect);
     procedure GetApptDrawInfo(DrawInfo: TJvTFDaysApptDrawInfo; Appt: TJvTFAppt);
 
-    procedure CreatePicDrawList(aRect: TRect; Appt: TJvTFAppt; DrawList: TList);
-    procedure FilterPicDrawList(aRect: TRect; DrawList: TList;
+    procedure CreatePicDrawList(ARect: TRect; Appt: TJvTFAppt; DrawList: TList);
+    procedure FilterPicDrawList(ARect: TRect; DrawList: TList;
       var PicsHeight: Integer);
-    procedure CanDrawWhat(aCanvas: TCanvas; ApptRect: TRect;
+    procedure CanDrawWhat(ACanvas: TCanvas; ApptRect: TRect;
       PicsHeight: Integer; var CanDrawText, CanDrawPics: Boolean);
-    procedure DrawListPics(aCanvas: TCanvas; var aRect: TRect; DrawList: TList);
+    procedure DrawListPics(ACanvas: TCanvas; var ARect: TRect; DrawList: TList);
     procedure ClearPicDrawList(DrawList: TList);
 
     function GetDataWidth(ShowRowHdr: Boolean): Integer;
@@ -1652,7 +1650,7 @@ type
     destructor Destroy; override;
     procedure SetProperties(aJvTFDays: TJvTFDays); dynamic;
     function RowCount: Integer;
-    function TimeToRow(aTime: TTime): Integer;
+    function TimeToRow(ATime: TTime): Integer;
     function RowToTime(RowNum: Integer): TTime;
     function RowToHour(RowNum: Integer): Word;
     function RowStartsHour(RowNum: Integer): Boolean;
@@ -1660,7 +1658,7 @@ type
     function HourStartRow(Hour: Word): Integer;
     function HourEndRow(Hour: Word): Integer;
     function RowEndTime(RowNum: Integer): TTime;
-    function AdjustEndTime(aTime: TTime): TTime;
+    function AdjustEndTime(ATime: TTime): TTime;
     function DaysPageLayout: TJvTFDaysPrinterPageLayout;
     function CellRect(Col, Row: Integer; PageInfo: TJvTFDaysPageInfo): TRect;
     function GetApptRect(Col: Integer; Appt: TJvTFAppt;
@@ -1806,20 +1804,20 @@ begin
   Result := Rect(0, 0, 0, 0);
 end;
 
-function RectWidth(aRect: TRect): Integer;
+function RectWidth(ARect: TRect): Integer;
 begin
-  Result := aRect.Right - aRect.Left;
+  Result := ARect.Right - ARect.Left;
 end;
 
-function RectHeight(aRect: TRect): Integer;
+function RectHeight(ARect: TRect): Integer;
 begin
-  Result := aRect.Bottom - aRect.Top;
+  Result := ARect.Bottom - ARect.Top;
 end;
 
 // DEF TIMEBLOCK (not conditionally compiled, just marked for reference)
 // the type of VAlign was orginally TVertAlignment
 
-procedure DrawTxt(aCanvas: TCanvas; aRect: TRect;
+procedure DrawTxt(ACanvas: TCanvas; ARect: TRect;
   const Txt: string; HAlign: TAlignment; VAlign: TJvTFVAlignment);
 var
   TxtWidth,
@@ -1829,23 +1827,23 @@ var
 begin
   TxtLeft := 0;
   TxtTop := 0;
-  TxtWidth := aCanvas.TextWidth(Txt);
-  TxtHeight := aCanvas.TextHeight('Wq');
+  TxtWidth := ACanvas.TextWidth(Txt);
+  TxtHeight := ACanvas.TextHeight('Wq');
 
   case HAlign of
-    taLeftJustify: TxtLeft := aRect.Left;
-    taCenter: TxtLeft := aRect.Left +
-      RectWidth(aRect) div 2 - TxtWidth div 2;
-    taRightJustify: TxtLeft := aRect.Right - TxtWidth;
+    taLeftJustify: TxtLeft := ARect.Left;
+    taCenter: TxtLeft := ARect.Left +
+      RectWidth(ARect) div 2 - TxtWidth div 2;
+    taRightJustify: TxtLeft := ARect.Right - TxtWidth;
   end;
 
   case VAlign of
-    vaTop: TxtTop := aRect.Top;
-    vaCenter: TxtTop := aRect.Top + RectHeight(aRect) div 2 - TxtHeight div 2;
-    vaBottom: TxtTop := aRect.Bottom - TxtHeight;
+    vaTop: TxtTop := ARect.Top;
+    vaCenter: TxtTop := ARect.Top + RectHeight(ARect) div 2 - TxtHeight div 2;
+    vaBottom: TxtTop := ARect.Bottom - TxtHeight;
   end;
 
-  aCanvas.TextRect(aRect, TxtLeft, TxtTop, Txt);
+  ACanvas.TextRect(ARect, TxtLeft, TxtTop, Txt);
 end;
 
 function Greater(I1, I2: Integer): Integer;
@@ -2592,7 +2590,7 @@ begin
   end;
 end;
 
-procedure TJvTFApptMap.Dump(fname: TFileName);
+procedure TJvTFApptMap.Dump(AName: TFileName);
 var
   DumpData: TStringList;
 begin
@@ -2600,7 +2598,7 @@ begin
   DumpData := TStringList.Create;
   try
     FData.Dump(DumpData);
-    DumpData.SaveToFile(fname);
+    DumpData.SaveToFile(AName);
   finally
     DumpData.Free;
   end;
@@ -2789,9 +2787,9 @@ begin
   Ctl3D := False;
 end;
 
-procedure TJvTFDaysScrollBar.CMDesignHitTest(var Message: TCMDesignHitTest);
+procedure TJvTFDaysScrollBar.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
-  Message.Result := 1;
+  Msg.Result := 1;
 end;
 
 procedure TJvTFDaysScrollBar.CreateWnd;
@@ -4331,7 +4329,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvTFDays.CMCtl3DChanged(var Message: TMessage);
+procedure TJvTFDays.CMCtl3DChanged(var Msg: TMessage);
 begin
   if NewStyleControls and (FBorderStyle = bsSingle) then
     RecreateWnd;
@@ -4520,7 +4518,7 @@ end;
 
 procedure TJvTFDays.SetGranularity(Value: Integer);
 var
-  aTime: TTime;
+  ATime: TTime;
   MaxRowHeight,
     I: Integer;
 begin
@@ -4550,14 +4548,14 @@ begin
     EnsureBlockRules(Value, TimeBlockProps.BlockGran, TimeBlockProps.DayStart);
     {$ENDIF Jv_TIMEBLOCKS}
 
-    aTime := RowToTime(TopRow);
+    ATime := RowToTime(TopRow);
     FGranularity := Value;
     ClearSelection;
     if not (csLoading in ComponentState) then
     begin
       for I := 0 to Cols.Count - 1 do
         Cols[I].RefreshMap;
-      TopRow := TimeToRow(aTime);
+      TopRow := TimeToRow(ATime);
       CheckSBVis;
       CheckSBParams;
       Invalidate;
@@ -5061,11 +5059,11 @@ end;
 {$IFNDEF Jv_TIMEBLOCKS}
 // OBSOLETE
 {
-Procedure TJvTFDays.DrawDataCell(aCanvas: TCanvas; ColIndex, RowIndex: Integer);
+Procedure TJvTFDays.DrawDataCell(ACanvas: TCanvas; ColIndex, RowIndex: Integer);
 Var
   SelFrameRect,
   FocusRect,
-  aRect: TRect;
+  ARect: TRect;
   I,
   PrimeStartRow,
   PrimeEndRow,
@@ -5074,7 +5072,7 @@ Var
   IsPrimeTimeCell: Boolean;
 begin
   // Calc the cell rect
-  With aRect do
+  With ARect do
    begin
     Left := RowHdrWidth;
     For I := LeftCol to ColIndex - 1 do
@@ -5100,21 +5098,21 @@ begin
    FOnShadeCell(Self, ColIndex, RowIndex, CellColor);
 
   if IsPrimeTimeCell and (CellColor = PrimeTime.Color) then
-   Windows.StretchBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
-                RectHeight(aRect), PrimeTime.FFillPic.Canvas.Handle,
+   Windows.StretchBlt(ACanvas.Handle, ARect.Left, ARect.Top, RectWidth(ARect),
+                RectHeight(ARect), PrimeTime.FFillPic.Canvas.Handle,
                 0, 0, PrimeTime.FFillPic.Width,
                 PrimeTime.FFillPic.Height, SRCCOPY)
   else
   if (CellColor <> Color) then
    begin
-    aCanvas.Brush.Color := CellColor;
-    aCanvas.FillRect(aRect);
+    ACanvas.Brush.Color := CellColor;
+    ACanvas.FillRect(ARect);
    end;
 
   if CellIsSelected(Point(ColIndex, RowIndex)) then
    if (SelCellAttr.Style = scsFrame) then
     begin
-      SelFrameRect := aRect;
+      SelFrameRect := ARect;
       FrameOffset := -(SelCellAttr.FrameWidth div 2);
       Windows.InflateRect(SelFrameRect, FrameOffset, FrameOffset);
 
@@ -5124,7 +5122,7 @@ begin
         Dec(SelFrameRect.Bottom);
        end;
 
-      With aCanvas do
+      With ACanvas do
        begin
         Pen.Color := SelCellAttr.Color;
         Pen.Width := SelCellAttr.FrameWidth;
@@ -5190,7 +5188,7 @@ begin
    if (SelCellAttr.Style = scsCombo) and
         (FSelStart.X = ColIndex) and (FSelStart.Y = RowIndex) then
     begin
-      SelFrameRect := aRect;
+      SelFrameRect := ARect;
       FrameOffset := -(SelCellAttr.FrameWidth div 2);
       Windows.InflateRect(SelFrameRect, FrameOffset, FrameOffset);
 
@@ -5200,7 +5198,7 @@ begin
         Dec(SelFrameRect.Bottom);
        end;
 
-      With aCanvas do
+      With ACanvas do
        begin
         Pen.Color := SelCellAttr.Color;
         Pen.Width := SelCellAttr.FrameWidth;
@@ -5213,33 +5211,33 @@ begin
     end
    else
     begin
-      aCanvas.Brush.Color := SelCellAttr.Color;
-      aCanvas.FillRect(aRect);
+      ACanvas.Brush.Color := SelCellAttr.Color;
+      ACanvas.FillRect(ARect);
     end;
 
   if (ColIndex = FocusedCol) and (RowIndex = FocusedRow) and Focused then
    begin
-    FocusRect := aRect;
+    FocusRect := ARect;
     Windows.InflateRect(FocusRect, -1, -1);
     Dec(FocusRect.Bottom);
     Dec(FocusRect.Right);
-    ManualFocusRect(aCanvas, FocusRect);
+    ManualFocusRect(ACanvas, FocusRect);
    end;
 
   // Draw a line across the bottom and down the right side
-  With aCanvas do
+  With ACanvas do
    begin
     Pen.Color := GridLineColor;
     Pen.Width := 1;
 
-    MoveTo(aRect.Left, aRect.Bottom - 1);
-    LineTo(aRect.Right, aRect.Bottom - 1);
-    MoveTo(aRect.Right - 1, aRect.Top);
-    LineTo(aRect.Right - 1, aRect.Bottom);
+    MoveTo(ARect.Left, ARect.Bottom - 1);
+    LineTo(ARect.Right, ARect.Bottom - 1);
+    MoveTo(ARect.Right - 1, ARect.Top);
+    LineTo(ARect.Right - 1, ARect.Bottom);
    end;
 
   if Assigned(FOnDrawDataCell) then
-   FOnDrawDataCell(Self, aCanvas, aRect, ColIndex, RowIndex);
+   FOnDrawDataCell(Self, ACanvas, ARect, ColIndex, RowIndex);
 end;
 }
 {$ENDIF Jv_TIMEBLOCKS}
@@ -5247,11 +5245,11 @@ end;
 {$IFDEF Jv_TIMEBLOCKS}
 // ok
 
-procedure TJvTFDays.DrawDataCell(aCanvas: TCanvas; ColIndex, RowIndex: Integer);
+procedure TJvTFDays.DrawDataCell(ACanvas: TCanvas; ColIndex, RowIndex: Integer);
 var
   SelFrameRect,
     FocusRect,
-    aRect: TRect;
+    ARect: TRect;
   I,
     PrimeStartRow,
     PrimeEndRow,
@@ -5267,7 +5265,7 @@ var
 
 begin
   // Calc the cell rect
-  with aRect do
+  with ARect do
   begin
     //block Left := RowHdrWidth;
     Left := CalcBlockRowHdrsWidth;
@@ -5297,8 +5295,8 @@ begin
     FOnShadeCell(Self, ColIndex, RowIndex, CellColor);
 
   if IsWeekend(ColIndex) and (CellColor = WeekendColor) then
-    Windows.StretchBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
-      RectHeight(aRect), FWeekendFillPic.Canvas.Handle,
+    Windows.StretchBlt(ACanvas.Handle, ARect.Left, ARect.Top, RectWidth(ARect),
+      RectHeight(ARect), FWeekendFillPic.Canvas.Handle,
       0, 0, FWeekendFillPic.Width,
       FWeekendFillPic.Height, SRCCOPY)
   else
@@ -5308,8 +5306,8 @@ begin
       DrawDither(ACanvas, ARect, CellColor, clWhite)
     else
     begin
-      Windows.StretchBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
-        RectHeight(aRect), PrimeTime.FFillPic.Canvas.Handle,
+      Windows.StretchBlt(ACanvas.Handle, ARect.Left, ARect.Top, RectWidth(ARect),
+        RectHeight(ARect), PrimeTime.FFillPic.Canvas.Handle,
         0, 0, PrimeTime.FFillPic.Width,
         PrimeTime.FFillPic.Height, SRCCOPY)
     end;
@@ -5317,20 +5315,20 @@ begin
   else
   if (CellColor <> Color) then
   begin
-    aCanvas.Brush.Color := CellColor;
-    aCanvas.FillRect(aRect);
+    ACanvas.Brush.Color := CellColor;
+    ACanvas.FillRect(ARect);
   end;
 
   {
   if IsWeekend(ColIndex) then
-   Windows.StretchBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
-                RectHeight(aRect), FWeekendFillPic.Canvas.Handle,
+   Windows.StretchBlt(ACanvas.Handle, ARect.Left, ARect.Top, RectWidth(ARect),
+                RectHeight(ARect), FWeekendFillPic.Canvas.Handle,
                 0, 0, FWeekendFillPic.Width,
                 FWeekendFillPic.Height, SRCCOPY)
   else
   if (RowIndex >= PrimeStartRow) and (RowIndex <= PrimeEndRow) then
-   Windows.StretchBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
-                RectHeight(aRect), PrimeTime.FFillPic.Canvas.Handle,
+   Windows.StretchBlt(ACanvas.Handle, ARect.Left, ARect.Top, RectWidth(ARect),
+                RectHeight(ARect), PrimeTime.FFillPic.Canvas.Handle,
                 0, 0, PrimeTime.FFillPic.Width,
                 PrimeTime.FFillPic.Height, SRCCOPY);
   }
@@ -5338,7 +5336,7 @@ begin
   if CellIsSelected(Point(ColIndex, RowIndex)) then
     if (SelCellAttr.Style = scsFrame) then
     begin
-      SelFrameRect := aRect;
+      SelFrameRect := ARect;
       FrameOffset := -(SelCellAttr.FrameWidth div 2);
       Windows.InflateRect(SelFrameRect, FrameOffset, FrameOffset);
 
@@ -5348,7 +5346,7 @@ begin
         Dec(SelFrameRect.Bottom);
       end;
 
-      with aCanvas do
+      with ACanvas do
       begin
         Pen.Color := SelCellAttr.Color;
         Pen.Width := SelCellAttr.FrameWidth;
@@ -5414,7 +5412,7 @@ begin
     if (SelCellAttr.Style = scsCombo) and
       (FSelStart.X = ColIndex) and (FSelStart.Y = RowIndex) then
     begin
-      SelFrameRect := aRect;
+      SelFrameRect := ARect;
       FrameOffset := -(SelCellAttr.FrameWidth div 2);
       Windows.InflateRect(SelFrameRect, FrameOffset, FrameOffset);
 
@@ -5424,7 +5422,7 @@ begin
         Dec(SelFrameRect.Bottom);
       end;
 
-      with aCanvas do
+      with ACanvas do
       begin
         Pen.Color := SelCellAttr.Color;
         Pen.Width := SelCellAttr.FrameWidth;
@@ -5437,29 +5435,29 @@ begin
     end
     else
     begin
-      aCanvas.Brush.Color := SelCellAttr.Color;
-      aCanvas.FillRect(aRect);
+      ACanvas.Brush.Color := SelCellAttr.Color;
+      ACanvas.FillRect(ARect);
     end;
 
   if (ColIndex = FocusedCol) and (RowIndex = FocusedRow) and Focused then
   begin
-    FocusRect := aRect;
+    FocusRect := ARect;
     Windows.InflateRect(FocusRect, -1, -1);
     Dec(FocusRect.Bottom);
     Dec(FocusRect.Right);
-    ManualFocusRect(aCanvas, FocusRect);
+    ManualFocusRect(ACanvas, FocusRect);
   end;
 
   // Draw a line across the bottom and down the right side
-  with aCanvas do
+  with ACanvas do
   begin
     Pen.Color := GridLineColor;
     Pen.Width := 1;
 
-    MoveTo(aRect.Left, aRect.Bottom - 1);
-    LineTo(aRect.Right, aRect.Bottom - 1);
-    MoveTo(aRect.Right - 1, aRect.Top);
-    LineTo(aRect.Right - 1, aRect.Bottom);
+    MoveTo(ARect.Left, ARect.Bottom - 1);
+    LineTo(ARect.Right, ARect.Bottom - 1);
+    MoveTo(ARect.Right - 1, ARect.Top);
+    LineTo(ARect.Right - 1, ARect.Bottom);
 
     if TimeBlocks.Count > 0 then
     begin
@@ -5467,8 +5465,8 @@ begin
       if RowIndex = BlockStart - 1 then
       begin
         Pen.Color := TimeBlockProps.DataDivColor;
-        MoveTo(aRect.Left, aRect.Bottom - 1);
-        LineTo(aRect.Right, aRect.Bottom - 1);
+        MoveTo(ARect.Left, ARect.Bottom - 1);
+        LineTo(ARect.Right, ARect.Bottom - 1);
       end;
 
       TimeBlockIndex := RowToTimeBlock(RowIndex);
@@ -5478,8 +5476,8 @@ begin
         if BlockEnd = RowIndex then
         begin
           Pen.Color := TimeBlockProps.DataDivColor;
-          MoveTo(aRect.Left, aRect.Bottom - 1);
-          LineTo(aRect.Right, aRect.Bottom - 1);
+          MoveTo(ARect.Left, ARect.Bottom - 1);
+          LineTo(ARect.Right, ARect.Bottom - 1);
         end;
       end;
     end;
@@ -5487,9 +5485,9 @@ begin
 
   // Col Buffer start
   // Draw the column buffer
-  with aCanvas do
+  with ACanvas do
   begin
-    BufferRect := aRect;
+    BufferRect := ARect;
     BufferRect.Right := BufferRect.Left + ApptBar.Width; // + 10 to simulate buffer
 
     Brush.Color := clWhite;
@@ -5504,15 +5502,15 @@ begin
   // Col buffer end
 
   if Assigned(FOnDrawDataCell) then
-    FOnDrawDataCell(Self, aCanvas, aRect, ColIndex, RowIndex);
+    FOnDrawDataCell(Self, ACanvas, ARect, ColIndex, RowIndex);
 end;
 {$ENDIF Jv_TIMEBLOCKS}
 
-procedure TJvTFDays.DrawEmptyColHdr(aCanvas: TCanvas);
+procedure TJvTFDays.DrawEmptyColHdr(ACanvas: TCanvas);
 var
-  aRect: TRect;
+  ARect: TRect;
 begin
-  with aRect do
+  with ARect do
   begin
     {$IFDEF Jv_TIMEBLOCKS}
     // ok
@@ -5527,17 +5525,17 @@ begin
     Bottom := CalcGroupColHdrsHeight;
   end;
 
-  with aCanvas do
+  with ACanvas do
   begin
     Brush.Color := HdrAttr.Color;
-    FillRect(aRect);
+    FillRect(ARect);
     Pen.Color := clGray;
-    MoveTo(aRect.Left, aRect.Bottom - 1);
-    LineTo(aRect.Right, aRect.Bottom - 1);
+    MoveTo(ARect.Left, ARect.Bottom - 1);
+    LineTo(ARect.Right, ARect.Bottom - 1);
   end;
 end;
 
-procedure TJvTFDays.DrawAppt(aCanvas: TCanvas; Col: Integer;
+procedure TJvTFDays.DrawAppt(ACanvas: TCanvas; Col: Integer;
   Appt: TJvTFAppt; StartRow, EndRow: Integer);
 var
   ApptRect: TRect;
@@ -5551,9 +5549,9 @@ begin
   // Printer bug, fixed
   ClipRgn := Windows.CreateRectRgn(RowHdrWidth, CalcGroupColHdrsHeight,
     ClientWidth, ClientHeight);
-  Windows.SelectClipRgn(aCanvas.Handle, ClipRgn);
-  DrawApptDetail(aCanvas, ApptRect, Appt, Appt = SelAppt, Col, StartRow, EndRow);
-  Windows.SelectClipRgn(aCanvas.Handle, 0);
+  Windows.SelectClipRgn(ACanvas.Handle, ClipRgn);
+  DrawApptDetail(ACanvas, ApptRect, Appt, Appt = SelAppt, Col, StartRow, EndRow);
+  Windows.SelectClipRgn(ACanvas.Handle, 0);
   Windows.DeleteObject(ClipRgn);
 end;
 
@@ -5594,12 +5592,12 @@ begin
     BarRect.Top;
 end;
 
-procedure TJvTFDays.DrawTimeStamp(aCanvas: TCanvas; TimeStampRect: TRect);
+procedure TJvTFDays.DrawTimeStamp(ACanvas: TCanvas; TimeStampRect: TRect);
 var
   OldColor: TColor;
   StampLeft: Integer;
 begin
-  with aCanvas do
+  with ACanvas do
     case ApptBar.TimeStampStyle of
       tssFullI:
         begin
@@ -5660,14 +5658,14 @@ begin
     end;
 end;
 
-procedure TJvTFDays.DrawApptBar(aCanvas: TCanvas; Appt: TJvTFAppt;
+procedure TJvTFDays.DrawApptBar(ACanvas: TCanvas; Appt: TJvTFAppt;
   BarRect: TRect; Col, StartRow, EndRow: Integer);
 var
   OldColor: TColor;
   TimeStampRect: TRect;
   Attr: TJvTFDaysApptAttr;
 begin
-  with aCanvas do
+  with ACanvas do
   begin
     if Appt <> SelAppt then
       Attr := ApptAttr
@@ -5696,14 +5694,14 @@ begin
     // Draw Time Stamp
     TimeStampRect := CalcTimeStampRect(Appt, BarRect, Col, StartRow, EndRow);
     if ApptBar.TimeStampStyle <> tssNone then
-      DrawTimeStamp(aCanvas, TimeStampRect);
+      DrawTimeStamp(ACanvas, TimeStampRect);
 
     if Assigned(FOnDrawApptBar) then
-      FOnDrawApptBar(Self, aCanvas, Appt, Col, BarRect, TimeStampRect);
+      FOnDrawApptBar(Self, ACanvas, Appt, Col, BarRect, TimeStampRect);
   end;
 end;
 
-procedure TJvTFDays.DrawApptDetail(aCanvas: TCanvas; aRect: TRect;
+procedure TJvTFDays.DrawApptDetail(ACanvas: TCanvas; ARect: TRect;
   Appt: TJvTFAppt; Selected: Boolean; Col, StartRow, EndRow: Integer);
 var
   TheFrameRect,
@@ -5722,7 +5720,7 @@ var
   Attr: TJvTFDaysApptAttr;
   DrawInfo: TJvTFDaysApptDrawInfo;
 begin
-  with aCanvas do
+  with ACanvas do
   begin
     if Appt <> SelAppt then
       Attr := ApptAttr
@@ -5747,9 +5745,9 @@ begin
     if not CanDrawAppt then
       Exit;
 
-    FillRect(aRect);
+    FillRect(ARect);
 
-    TheFrameRect := aRect;
+    TheFrameRect := ARect;
     Windows.InflateRect(TheFrameRect, -(Attr.FrameWidth div 2),
       -(Attr.FrameWidth div 2));
 
@@ -5770,8 +5768,8 @@ begin
     end;
 
     // Only go through the following work if all details must be drawn
-//    if (RectHeight(aRect) > Thresholds.DetailHeight) and
-//      (RectWidth(aRect) > Thresholds.DetailWidth) then
+//    if (RectHeight(ARect) > Thresholds.DetailHeight) and
+//      (RectWidth(ARect) > Thresholds.DetailWidth) then
     begin
       Windows.InflateRect(TheFrameRect, -(Attr.FrameWidth div 2),
         -(Attr.FrameWidth div 2));
@@ -5784,7 +5782,7 @@ begin
         Windows.SubtractRect(BarRect, TheFrameRect, DetailRect);
         Dec(BarRect.Bottom);
 
-        DrawApptBar(aCanvas, Appt, BarRect, Col, StartRow, EndRow);
+        DrawApptBar(ACanvas, Appt, BarRect, Col, StartRow, EndRow);
       end;
 
       TxtRect := DetailRect;
@@ -5796,11 +5794,11 @@ begin
         CreatePicDrawList(TxtRect, Appt, DrawList);
         FilterPicDrawList(TxtRect, DrawList, PicsHeight);
         // Calc'ing text height and width in CanDrawWhat
-        CanDrawWhat(aCanvas, TxtRect, PicsHeight, CanDrawText, CanDrawPics);
+        CanDrawWhat(ACanvas, TxtRect, PicsHeight, CanDrawText, CanDrawPics);
 
         if CanDrawPics then
         begin
-          DrawListPics(aCanvas, TxtRect, DrawList);
+          DrawListPics(ACanvas, TxtRect, DrawList);
           Inc(TxtRect.Left, PicsHeight); // Tim
         end;
       finally
@@ -5823,47 +5821,47 @@ begin
           //PTxt := StrNew(PChar(Txt));
         PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
         StrPCopy(PTxt, Txt);
-        Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
+        Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
         StrDispose(PTxt);
       end;
     end;
 
     if Assigned(FOnDrawAppt) then
-      FOnDrawAppt(Self, aCanvas, aRect, Appt, Selected);
+      FOnDrawAppt(Self, ACanvas, ARect, Appt, Selected);
 
     if Selected then
     begin
        { OLD 3D HANDLES CODE
        if agoMoveAppt in Options then
-        DrawGrabLines(aCanvas, aRect.Top + 0, aRect.Left + 2,
-                  aRect.Right - 3);
+        DrawGrabLines(ACanvas, ARect.Top + 0, ARect.Left + 2,
+                  ARect.Right - 3);
        if agoSizeAppt in Options then
-        DrawGrabLines(aCanvas, aRect.Bottom - GrabHandles.Height,
-                  aRect.Left + 2, aRect.Right - 3);
+        DrawGrabLines(ACanvas, ARect.Bottom - GrabHandles.Height,
+                  ARect.Left + 2, ARect.Right - 3);
        }
        // move grab handles
       if agoMoveAppt in Options then
       begin
-//          HandleRect := Rect(aRect.Left + 2, aRect.Top, aRect.Right - 3,
-//                      aRect.Top + GrabHandles.Height);
-//          DrawGrabHandle(aCanvas, HandleRect, Appt, True);
+//          HandleRect := Rect(ARect.Left + 2, ARect.Top, ARect.Right - 3,
+//                      ARect.Top + GrabHandles.Height);
+//          DrawGrabHandle(ACanvas, HandleRect, Appt, True);
         HandleRect := GetTopGrabHandleRect(Col, Appt);
-        DrawGrabHandle(aCanvas, HandleRect, Appt, True);
+        DrawGrabHandle(ACanvas, HandleRect, Appt, True);
       end;
       if agoSizeAppt in Options then
       begin
-//          HandleRect := Rect(aRect.Left + 2,
-//                      aRect.Bottom - GrabHandles.Height,
-//                      aRect.Right - 3, aRect.Bottom);
-//          DrawGrabHandle(aCanvas, HandleRect, Appt, False);
+//          HandleRect := Rect(ARect.Left + 2,
+//                      ARect.Bottom - GrabHandles.Height,
+//                      ARect.Right - 3, ARect.Bottom);
+//          DrawGrabHandle(ACanvas, HandleRect, Appt, False);
         HandleRect := GetBottomGrabHandleRect(Col, Appt);
-        DrawGrabHandle(aCanvas, HandleRect, Appt, False);
+        DrawGrabHandle(ACanvas, HandleRect, Appt, False);
       end;
     end;
   end;
 end;
 
-procedure TJvTFDays.DrawPics(aCanvas: TCanvas; var aRect: TRect; Appt: TJvTFAppt);
+procedure TJvTFDays.DrawPics(ACanvas: TCanvas; var ARect: TRect; Appt: TJvTFAppt);
 var
   I,
     PicAdjust,
@@ -5875,7 +5873,7 @@ var
   CustomImageMap: TJvTFCustomImageMap;
 begin
   PicAdjust := 0;
-  NextPicLeft := aRect.Left;
+  NextPicLeft := ARect.Left;
 
   if (agoShowPics in Options) and Assigned(ScheduleManager.CustomImages) then
   begin
@@ -5885,7 +5883,7 @@ begin
     for I := 0 to CustomImageMap.Count - 1 do
     begin
       ImageIndex := CustomImageMap[I];
-      ImageList.Draw(aCanvas, NextPicLeft, aRect.Top, ImageIndex);
+      ImageList.Draw(ACanvas, NextPicLeft, ARect.Top, ImageIndex);
       Inc(NextPicLeft, ImageList.Width + 2);
     end;
 
@@ -5904,7 +5902,7 @@ begin
       ImageIndex := ImageMap.AlarmEnabled;
       if ImageIndex > -1 then
       begin
-        ImageList.Draw(aCanvas, NextPicLeft, aRect.Top, ImageIndex);
+        ImageList.Draw(ACanvas, NextPicLeft, ARect.Top, ImageIndex);
         Inc(NextPicLeft, ImageList.Width + 2);
       end
     end
@@ -5913,7 +5911,7 @@ begin
       ImageIndex := ImageMap.AlarmDisabled;
       if ImageIndex > -1 then
       begin
-        ImageList.Draw(aCanvas, NextPicLeft, aRect.Top, ImageIndex);
+        ImageList.Draw(ACanvas, NextPicLeft, ARect.Top, ImageIndex);
         Inc(NextPicLeft, ImageList.Width + 2);
       end;
     end;
@@ -5921,13 +5919,13 @@ begin
     ImageIndex := ImageMap.Shared;
     if Appt.Shared and (ImageIndex > -1) then
     begin
-      ImageList.Draw(aCanvas, NextPicLeft, aRect.Top, ImageIndex);
+      ImageList.Draw(ACanvas, NextPicLeft, ARect.Top, ImageIndex);
       Inc(NextPicLeft, ImageList.Width + 2);
     end;
 
     if Appt.Modified and (ImageMap.Modified > -1) then
     begin
-      ImageList.Draw(aCanvas, NextPicLeft, aRect.Top, ImageMap.Modified);
+      ImageList.Draw(ACanvas, NextPicLeft, ARect.Top, ImageMap.Modified);
       Inc(NextPicLeft, ImageList.Width + 2);
     end;
 
@@ -5935,10 +5933,10 @@ begin
       PicAdjust := ImageList.Height + 2;
   end;
 
-  Inc(aRect.Top, PicAdjust);
+  Inc(ARect.Top, PicAdjust);
 end;
 
-procedure TJvTFDays.CreatePicDrawList(aRect: TRect; Appt: TJvTFAppt;
+procedure TJvTFDays.CreatePicDrawList(ARect: TRect; Appt: TJvTFAppt;
   DrawList: TList);
 var
   I,
@@ -5969,7 +5967,7 @@ var
 //  MAIN ROUTINE
 ///////////////////////
 begin
-  NextPicLeft := aRect.Left;
+  NextPicLeft := ARect.Left;
 
   if (agoShowPics in Options) and Assigned(ScheduleManager.CustomImages) then
   begin
@@ -5979,7 +5977,7 @@ begin
     for I := 0 to CustomImageMap.Count - 1 do
     begin
       ImageIndex := CustomImageMap[I];
-      AddToList(ImageList, ImageIndex, NextPicLeft, aRect.Top);
+      AddToList(ImageList, ImageIndex, NextPicLeft, ARect.Top);
       Inc(NextPicLeft, ImageList.Width + 2);
     end;
   end;
@@ -5994,7 +5992,7 @@ begin
       ImageIndex := ImageMap.AlarmEnabled;
       if ImageIndex > -1 then
       begin
-        AddToList(ImageList, ImageIndex, NextPicLeft, aRect.Top);
+        AddToList(ImageList, ImageIndex, NextPicLeft, ARect.Top);
         Inc(NextPicLeft, ImageList.Width + 2);
       end
     end
@@ -6003,7 +6001,7 @@ begin
       ImageIndex := ImageMap.AlarmDisabled;
       if ImageIndex > -1 then
       begin
-        AddToList(ImageList, ImageIndex, NextPicLeft, aRect.Top);
+        AddToList(ImageList, ImageIndex, NextPicLeft, ARect.Top);
         Inc(NextPicLeft, ImageList.Width + 2);
       end;
     end;
@@ -6011,13 +6009,13 @@ begin
     ImageIndex := ImageMap.Shared;
     if Appt.Shared and (ImageIndex > -1) then
     begin
-      AddToList(ImageList, ImageIndex, NextPicLeft, aRect.Top);
+      AddToList(ImageList, ImageIndex, NextPicLeft, ARect.Top);
       Inc(NextPicLeft, ImageList.Width + 2);
     end;
 
     if Appt.Modified and (ImageMap.Modified > -1) then
     begin
-      AddToList(ImageList, ImageMap.Modified, NextPicLeft, aRect.Top);
+      AddToList(ImageList, ImageMap.Modified, NextPicLeft, ARect.Top);
        // The following line generates a compiler hint so comment out,
        //  but leave here as reminder in case method is expanded.
        //Inc(NextPicLeft, ImageList.Width + 2);
@@ -6025,7 +6023,7 @@ begin
   end;
 end;
 
-procedure TJvTFDays.FilterPicDrawList(aRect: TRect; DrawList: TList;
+procedure TJvTFDays.FilterPicDrawList(ARect: TRect; DrawList: TList;
   var PicsHeight: Integer);
 var
   I,
@@ -6040,7 +6038,7 @@ begin
   if Thresholds.PicsAllOrNone then
   begin
     DrawInfo := TJvTFDrawPicInfo(DrawList[DrawList.Count - 1]);
-    if DrawInfo.PicLeft + DrawInfo.ImageList.Width >= aRect.Right then
+    if DrawInfo.PicLeft + DrawInfo.ImageList.Width >= ARect.Right then
     begin
       while DrawList.Count > 0 do
       begin
@@ -6051,7 +6049,7 @@ begin
   end;
 
   PicsHeight := 0;
-  NextPicLeft := aRect.Left;
+  NextPicLeft := ARect.Left;
   I := 0;
   while I < DrawList.Count do
   begin
@@ -6060,8 +6058,8 @@ begin
     begin
       DrawIt := True;
 //      if Thresholds.WholePicsOnly and
-//        ((PicLeft + ImageList.Width >= aRect.Right) or
-//        (PicTop + ImageList.Height >= aRect.Bottom)) then
+//        ((PicLeft + ImageList.Width >= ARect.Right) or
+//        (PicTop + ImageList.Height >= ARect.Bottom)) then
 //        DrawIt := False;
 
       if DrawIt then
@@ -6093,7 +6091,7 @@ begin
   end;
 end;
 
-procedure TJvTFDays.DrawListPics(aCanvas: TCanvas; var aRect: TRect;
+procedure TJvTFDays.DrawListPics(ACanvas: TCanvas; var ARect: TRect;
   DrawList: TList);
 var
   I: Integer;
@@ -6103,16 +6101,16 @@ begin
   begin
     DrawInfo := TJvTFDrawPicInfo(DrawList[I]);
     with DrawInfo do
-      ImageList.Draw(aCanvas, PicLeft, PicTop, ImageIndex);
+      ImageList.Draw(ACanvas, PicLeft, PicTop, ImageIndex);
   end;
 end;
 
-procedure TJvTFDays.DrawGrabLines(aCanvas: TCanvas; LineTop, LineLeft,
+procedure TJvTFDays.DrawGrabLines(ACanvas: TCanvas; LineTop, LineLeft,
   LineRight: Integer);
 begin
   // This draws the 3D grab handles, which have been replaced by flat style
   // handles.  This remains as reference for possible future comeback as option.
-  with aCanvas do
+  with ACanvas do
   begin
     Pen.Width := 1;
     Pen.Color := clWhite;
@@ -6141,74 +6139,74 @@ begin
   end
 end;
 
-procedure TJvTFDays.DrawGrabHandle(aCanvas: TCanvas; aRect: TRect;
+procedure TJvTFDays.DrawGrabHandle(ACanvas: TCanvas; ARect: TRect;
   anAppt: TJvTFAppt; TopHandle: Boolean);
 begin
-  with aCanvas do
+  with ACanvas do
   begin
     Pen.Color := clBlack;
     Pen.Width := 1;
     Brush.Color := GrabHandles.Color;
-    Rectangle(aRect.Left, aRect.Top, aRect.Right, aRect.Bottom);
+    Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
   end;
   if Assigned(FOnDrawGrabHandle) then
-    FOnDrawGrabHandle(Self, aCanvas, aRect, anAppt, TopHandle);
+    FOnDrawGrabHandle(Self, ACanvas, ARect, anAppt, TopHandle);
 end;
 
-procedure TJvTFDays.DrawCorner(aCanvas: TCanvas; Corner: TJvTFDaysCorner);
+procedure TJvTFDays.DrawCorner(ACanvas: TCanvas; Corner: TJvTFDaysCorner);
 var
-  aRect: TRect;
+  ARect: TRect;
   CornerLeft: Integer;
 begin
   case Corner of
-   //group agcTopLeft   : aRect := Rect(0, 0, RowHdrWidth, ColHdrHeight);
+   //group agcTopLeft   : ARect := Rect(0, 0, RowHdrWidth, ColHdrHeight);
     agcTopLeft:
       {$IFDEF Jv_TIMEBLOCKS}
     // ok
-      aRect := Rect(0, 0, CalcBlockRowHdrsWidth, CalcGroupColHdrsHeight);
+      ARect := Rect(0, 0, CalcBlockRowHdrsWidth, CalcGroupColHdrsHeight);
     {$ELSE}
     // remove
-    //  aRect := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight);
+    //  ARect := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight);
       {$ENDIF Jv_TIMEBLOCKS}
 
       agcTopRight:
       begin
         CornerLeft := Lesser(CellRect(RightCol, -1).Right,
           ClientWidth - FVScrollBar.Width);
-      //group aRect := Rect(CornerLeft, 0, ClientWidth, ColHdrHeight);
-        aRect := Rect(CornerLeft, 0, ClientWidth, CalcGroupColHdrsHeight);
+      //group ARect := Rect(CornerLeft, 0, ClientWidth, ColHdrHeight);
+        ARect := Rect(CornerLeft, 0, ClientWidth, CalcGroupColHdrsHeight);
       end;
 
     agcBottomLeft:
       {$IFDEF Jv_TIMEBLOCKS}
     // ok
-      aRect := Rect(0, ClientHeight - FHScrollBar.Height,
+      ARect := Rect(0, ClientHeight - FHScrollBar.Height,
         CalcBlockRowHdrsWidth, ClientHeight);
     {$ELSE}
     // remove
-    //  aRect := Rect(0,  ClientHeight - FHScrollBar.Height,
+    //  ARect := Rect(0,  ClientHeight - FHScrollBar.Height,
       //        RowHdrWidth, ClientHeight);
       {$ENDIF Jv_TIMEBLOCKS}
 
-      agcBottomRight: aRect := Rect(ClientWidth - FVScrollBar.Width - 1,
+      agcBottomRight: ARect := Rect(ClientWidth - FVScrollBar.Width - 1,
         ClientHeight - FHScrollBar.Height - 1,
         ClientWidth, ClientHeight);
   end;
 
-  with aCanvas do
+  with ACanvas do
   begin
     Brush.Color := HdrAttr.Color;
-    FillRect(aRect);
+    FillRect(ARect);
 
     if HdrAttr.Frame3D then
       {$IFDEF Jv_TIMEBLOCKS}
       // ok
-      DrawFrame(aCanvas, aRect,
+      DrawFrame(ACanvas, ARect,
         not ((Corner = agcTopLeft) and not HdrAttr.Frame3D),
         GridLineColor)
         {$ELSE}
       // remove
-      //DrawFrame(aCanvas, aRect,
+      //DrawFrame(ACanvas, ARect,
        //      not ((Corner = agcTopLeft) and not HdrAttr.Frame3D))
       {$ENDIF Jv_TIMEBLOCKS}
     else
@@ -6218,55 +6216,55 @@ begin
           if RowHdrType = rhFancy then
           begin
             Pen.Color := FancyRowHdrAttr.TickColor;
-            MoveTo(aRect.Right - 1, aRect.Top);
-            LineTo(aRect.Right - 1, aRect.Bottom - 1);
-            MoveTo(aRect.Left, aRect.Bottom - 1);
-            LineTo(aRect.Right, aRect.Bottom - 1);
+            MoveTo(ARect.Right - 1, ARect.Top);
+            LineTo(ARect.Right - 1, ARect.Bottom - 1);
+            MoveTo(ARect.Left, ARect.Bottom - 1);
+            LineTo(ARect.Right, ARect.Bottom - 1);
           end
           else
             {$IFDEF Jv_TIMEBLOCKS}
            // ok
-            DrawFrame(aCanvas, aRect, False, GridLineColor);
+            DrawFrame(ACanvas, ARect, False, GridLineColor);
         {$ELSE}
            // remove
-           //DrawFrame(aCanvas, aRect, False);
+           //DrawFrame(ACanvas, ARect, False);
             {$ENDIF Jv_TIMEBLOCKS}
 
             agcTopRight:
           begin
             Pen.Color := clGray;
-            MoveTo(aRect.Left, aRect.Bottom - 1);
-            LineTo(aRect.Right, aRect.Bottom - 1);
+            MoveTo(ARect.Left, ARect.Bottom - 1);
+            LineTo(ARect.Right, ARect.Bottom - 1);
             if VirtualCellRect(RightCol, -1).Right >
               ClientWidth - FVScrollBar.Width then
             begin
-              MoveTo(ClientWidth - FVScrollBar.Width, aRect.Top);
-              LineTo(ClientWidth - FVScrollBar.Width, aRect.Bottom - 1);
+              MoveTo(ClientWidth - FVScrollBar.Width, ARect.Top);
+              LineTo(ClientWidth - FVScrollBar.Width, ARect.Bottom - 1);
             end;
           end;
         agcBottomLeft:
           begin
             Pen.Color := clGray;
-            MoveTo(aRect.Right - 1, aRect.Top);
-            LineTo(aRect.Right - 1, aRect.Bottom);
-            MoveTo(aRect.Left, aRect.Top);
-            LineTo(aRect.Right - 1, aRect.Top);
+            MoveTo(ARect.Right - 1, ARect.Top);
+            LineTo(ARect.Right - 1, ARect.Bottom);
+            MoveTo(ARect.Left, ARect.Top);
+            LineTo(ARect.Right - 1, ARect.Top);
           end;
       end;
     end;
 
     if Assigned(FOnDrawCorner) then
-      FOnDrawCorner(Self, aCanvas, aRect, Corner);
+      FOnDrawCorner(Self, ACanvas, ARect, Corner);
   end;
 end;
 
-procedure TJvTFDays.DrawRowHdr(aCanvas: TCanvas; Index: Integer);
+procedure TJvTFDays.DrawRowHdr(ACanvas: TCanvas; Index: Integer);
 var
-  aRect: TRect;
+  ARect: TRect;
   UseAttr: TJvTFDaysHdrAttr;
   Txt: string;
 begin
-  with aRect do
+  with ARect do
   begin
     {$IFDEF Jv_TIMEBLOCKS}
     // ok
@@ -6297,34 +6295,34 @@ begin
   else
     UseAttr := HdrAttr;
 
-  aCanvas.Brush.Color := UseAttr.Color;
-  aCanvas.Font.Assign(UseAttr.Font);
+  ACanvas.Brush.Color := UseAttr.Color;
+  ACanvas.Font.Assign(UseAttr.Font);
 
-  DrawTxt(aCanvas, aRect, Txt, taCenter, vaCenter);
+  DrawTxt(ACanvas, ARect, Txt, taCenter, vaCenter);
 
   if (Index = FocusedRow) and Focused then
   begin
-    Windows.InflateRect(aRect, -2, -2);
-    ManualFocusRect(aCanvas, aRect);
-    Windows.InflateRect(aRect, 2, 2);
+    Windows.InflateRect(ARect, -2, -2);
+    ManualFocusRect(ACanvas, ARect);
+    Windows.InflateRect(ARect, 2, 2);
   end;
 
   {$IFDEF Jv_TIMEBLOCKS}
   // ok
-  DrawFrame(aCanvas, aRect, UseAttr.Frame3D, UseAttr.FrameColor);
+  DrawFrame(ACanvas, ARect, UseAttr.Frame3D, UseAttr.FrameColor);
   {$ELSE}
   // remove
-  //DrawFrame(aCanvas, aRect, UseAttr.Frame3D);
+  //DrawFrame(ACanvas, ARect, UseAttr.Frame3D);
   {$ENDIF Jv_TIMEBLOCKS}
 
   if Assigned(FOnDrawRowHdr) then
-    FOnDrawRowHdr(Self, aCanvas, aRect, Index, RowIsSelected(Index));
+    FOnDrawRowHdr(Self, ACanvas, ARect, Index, RowIsSelected(Index));
 end;
 
 {
-procedure TJvTFDays.DrawColHdr(aCanvas: TCanvas; Index: Integer);
+procedure TJvTFDays.DrawColHdr(ACanvas: TCanvas; Index: Integer);
 var
-  aRect,
+  ARect,
   TxtRect,
   CalcRect: TRect;
   Txt: String;
@@ -6334,7 +6332,7 @@ var
   TxtHt,
   TxtRectHt: Integer;
 begin
-  aRect := CellRect(Index, -1);
+  ARect := CellRect(Index, -1);
 
   //Txt := Copy(Cols[Index].Title, 1, Length(Cols[Index].Title));
   Txt := Cols[Index].Title;
@@ -6344,8 +6342,8 @@ begin
   else
    UseAttr := HdrAttr;
 
-  aCanvas.Brush.Color := UseAttr.Color;
-  aCanvas.Font.Assign(UseAttr.Font);
+  ACanvas.Brush.Color := UseAttr.Color;
+  ACanvas.Font.Assign(UseAttr.Font);
 
   Flags := DT_NOPREFIX or DT_CENTER;
   Case ColTitleStyle of
@@ -6358,8 +6356,8 @@ begin
    ctsHide       : Flags := Flags or DT_SINGLELINE or DT_VCENTER;
   end;
 
-  aCanvas.FillRect(aRect);
-  TxtRect := aRect;
+  ACanvas.FillRect(ARect);
+  TxtRect := ARect;
   Windows.InflateRect(TxtRect, -2, -2);
   CalcRect := TxtRect;
 
@@ -6367,7 +6365,7 @@ begin
   if (ColTitleStyle = ctsMultiClip) or
     (ColTitleStyle = ctsMultiEllipsis) then
    begin
-    TxtHt := Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect,
+    TxtHt := Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect,
                       Flags or DT_CALCRECT);
 
     if TxtHt < RectHeight(TxtRect) then
@@ -6381,33 +6379,33 @@ begin
   else
   if (ColTitleStyle = ctsHide) then
    begin
-    Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
+    Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
     if RectWidth(CalcRect) > RectWidth(TxtRect) then
       PTxt := '';
    end;
 
-  Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
+  Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
 
   if (Index = FocusedCol) and Focused then
    begin
-    CalcRect := aRect;
+    CalcRect := ARect;
     Windows.InflateRect(CalcRect, -2, -2);
-    ManualFocusRect(aCanvas, CalcRect);
+    ManualFocusRect(ACanvas, CalcRect);
     {
     if Windows.IsRectEmpty(TxtRect) then
       Windows.InflateRect(TxtRect, 5, 5);
-    ManualFocusRect(aCanvas, TxtRect);
+    ManualFocusRect(ACanvas, TxtRect);
     }
 {   end;
 
-  DrawFrame(aCanvas, aRect, UseAttr.Frame3D);
+  DrawFrame(ACanvas, ARect, UseAttr.Frame3D);
 
   if Assigned(FOnDrawColHdr) then
-   FOnDrawColHdr(Self, aCanvas, aRect, Index, ColIsSelected(Index));
+   FOnDrawColHdr(Self, ACanvas, ARect, Index, ColIsSelected(Index));
 end;
 }
 
-function TJvTFDays.GetTallestColTitle(aCanvas: TCanvas): Integer;
+function TJvTFDays.GetTallestColTitle(ACanvas: TCanvas): Integer;
 // returns height in pixels of tallest col title
 //  assumes word wrap and bounds all of title
 var
@@ -6415,7 +6413,7 @@ var
     Tallest,
     ColLeft,
     TxtHt: Integer;
-  aRect: TRect;
+  ARect: TRect;
   TheCol: TJvTFDaysCol;
   Txt: string;
   PTxt: PChar;
@@ -6435,24 +6433,24 @@ begin
     TheCol := Cols[I];
 
     // Just set top (0), left, and bottom (ColHdrHeight) for now.
-    //group aRect := Rect(ColLeft, 0, 0, ColHdrHeight);
-    aRect := Rect(ColLeft, CalcGroupHdrHeight, 0, CalcGroupColHdrsHeight);
+    //group ARect := Rect(ColLeft, 0, 0, ColHdrHeight);
+    ARect := Rect(ColLeft, CalcGroupHdrHeight, 0, CalcGroupColHdrsHeight);
     // Set right by adding this col's width to the left value
-    aRect.Right := aRect.Left + TheCol.Width;
-    aRect := CellRect(I, -1);
-    Windows.InflateRect(aRect, -2, -2);
+    ARect.Right := ARect.Left + TheCol.Width;
+    ARect := CellRect(I, -1);
+    Windows.InflateRect(ARect, -2, -2);
 
     Txt := Copy(TheCol.Title, 1, Length(TheCol.Title));
 
     if ColIsSelected(I) then
     begin
-      aCanvas.Brush.Color := SelHdrAttr.Color;
-      aCanvas.Font.Assign(SelHdrAttr.Font);
+      ACanvas.Brush.Color := SelHdrAttr.Color;
+      ACanvas.Font.Assign(SelHdrAttr.Font);
     end
     else
     begin
-      aCanvas.Brush.Color := HdrAttr.Color;
-      aCanvas.Font.Assign(HdrAttr.Font);
+      ACanvas.Brush.Color := HdrAttr.Color;
+      ACanvas.Font.Assign(HdrAttr.Font);
     end;
 
     // All parameters now specified.  Now calc text height.
@@ -6460,7 +6458,7 @@ begin
     StrPCopy(PTxt, Txt);
 
     Flags := DT_NOPREFIX or DT_WORDBREAK or DT_CENTER or DT_CALCRECT;
-    TxtHt := Windows.DrawText(aCanvas.Handle, PTxt, -1, aRect, Flags);
+    TxtHt := Windows.DrawText(ACanvas.Handle, PTxt, -1, ARect, Flags);
     StrDispose(PTxt);
 
     if TxtHt > Tallest then
@@ -6474,11 +6472,11 @@ end;
 {$IFNDEF Jv_TIMEBLOCKS}
 // remove
 {
-procedure TJvTFDays.DrawFrame(aCanvas: TCanvas; aRect: TRect; Draw3D: Boolean);
+procedure TJvTFDays.DrawFrame(ACanvas: TCanvas; ARect: TRect; Draw3D: Boolean);
 var
   OldPenColor: TColor;
 begin
-  With aCanvas, aRect do
+  With ACanvas, ARect do
    begin
     OldPenColor := Pen.Color;
 
@@ -6507,7 +6505,7 @@ end;
 }
 {$ENDIF Jv_TIMEBLOCKS}
 
-procedure TJvTFDays.DrawAppts(aCanvas: TCanvas; DrawAll: Boolean);
+procedure TJvTFDays.DrawAppts(ACanvas: TCanvas; DrawAll: Boolean);
 var
   FromCol,
     ToCol,
@@ -6557,7 +6555,7 @@ begin
           CalcStartEndRows(Appt, SchedDate, ApptStartRow, ApptEndRow);
 
           if (ApptStartRow <= ToRow) and (ApptEndRow >= FromRow) then
-            DrawAppt(aCanvas, Col, Appt, ApptStartRow, ApptEndRow);
+            DrawAppt(ACanvas, Col, Appt, ApptStartRow, ApptEndRow);
         end;
       end;
 
@@ -6567,33 +6565,33 @@ begin
         CalcStartEndRows(TempSelAppt, SchedDate, ApptStartRow, ApptEndRow);
 
         if (ApptStartRow <= ToRow) and (ApptEndRow >= FromRow) then
-          DrawAppt(aCanvas, Col, TempSelAppt, ApptStartRow, ApptEndRow);
+          DrawAppt(ACanvas, Col, TempSelAppt, ApptStartRow, ApptEndRow);
       end;
     end;
 end;
 
-procedure TJvTFDays.AdjustForMargins(var aRect: TRect);
+procedure TJvTFDays.AdjustForMargins(var ARect: TRect);
 begin
   // Make room for side margins and grab handles
 // Changed by TIM:
-//  Windows.InflateRect(aRect, -2, -2);
-  Windows.InflateRect(aRect, -1, -1);
+//  Windows.InflateRect(ARect, -2, -2);
+  Windows.InflateRect(ARect, -1, -1);
 
 // Commented out by Tim:
 //  if agoMoveAppt in Options then
-//   Inc(aRect.Top, GrabHandles.Height - 1);
+//   Inc(ARect.Top, GrabHandles.Height - 1);
 //  if agoSizeAppt in Options then
-//   Dec(aRect.Bottom, GrabHandles.Height - 1);
+//   Dec(ARect.Bottom, GrabHandles.Height - 1);
 end;
 
-procedure TJvTFDays.CanDrawWhat(aCanvas: TCanvas; ApptRect: TRect;
+procedure TJvTFDays.CanDrawWhat(ACanvas: TCanvas; ApptRect: TRect;
   PicsHeight: Integer; var CanDrawText, CanDrawPics: Boolean);
 //var
 //  TextHeightThreshold,
 //    TextWidthThreshold: Integer;
 begin
-//  TextHeightThreshold := CanvasMaxTextHeight(aCanvas) * Thresholds.TextHeight;
-//  TextWidthThreshold := aCanvas.TextWidth('Bi') div 2 * Thresholds.TextWidth;
+//  TextHeightThreshold := CanvasMaxTextHeight(ACanvas) * Thresholds.TextHeight;
+//  TextWidthThreshold := ACanvas.TextWidth('Bi') div 2 * Thresholds.TextWidth;
 
 //  if TextHeightThreshold + PicsHeight < RectHeight(ApptRect) then
 //  begin
@@ -6625,60 +6623,60 @@ begin
     CanDrawText := False;
 end;
 
-procedure TJvTFDays.ManualFocusRect(aCanvas: TCanvas; aRect: TRect);
+procedure TJvTFDays.ManualFocusRect(ACanvas: TCanvas; ARect: TRect);
 var
   Mark: Boolean;
   I: Integer;
   OldPenMode: TPenMode;
 begin
-  OldPenMode := aCanvas.Pen.Mode;
-  aCanvas.Pen.Mode := pmNot;
+  OldPenMode := ACanvas.Pen.Mode;
+  ACanvas.Pen.Mode := pmNot;
 
   Mark := True;
 
   // Top side
-  for I := aRect.Left to aRect.Right - 1 do
+  for I := ARect.Left to ARect.Right - 1 do
   begin
     if Mark then
-      aCanvas.Pixels[I, aRect.Top] := clBlack;
+      ACanvas.Pixels[I, ARect.Top] := clBlack;
     Mark := not Mark;
   end;
 
   // Right side
-  for I := aRect.Top + 1 to aRect.Bottom - 1 do
+  for I := ARect.Top + 1 to ARect.Bottom - 1 do
   begin
     if Mark then
-      aCanvas.Pixels[aRect.Right - 1, I] := clBlack;
+      ACanvas.Pixels[ARect.Right - 1, I] := clBlack;
     Mark := not Mark;
   end;
 
   // Bottom side
-  for I := aRect.Right - 2 downto aRect.Left do
+  for I := ARect.Right - 2 downto ARect.Left do
   begin
     if Mark then
-      aCanvas.Pixels[I, aRect.Bottom - 1] := clBlack;
+      ACanvas.Pixels[I, ARect.Bottom - 1] := clBlack;
     Mark := not Mark;
   end;
 
   // Left side
-  for I := aRect.Bottom - 2 downto aRect.Top + 1 do
+  for I := ARect.Bottom - 2 downto ARect.Top + 1 do
   begin
     if Mark then
-      aCanvas.Pixels[aRect.Left, I] := clBlack;
+      ACanvas.Pixels[ARect.Left, I] := clBlack;
     Mark := not Mark;
   end;
 
-  aCanvas.Pen.Mode := OldPenMode;
+  ACanvas.Pen.Mode := OldPenMode;
 end;
 
-procedure TJvTFDays.DrawFancyRowHdrs(aCanvas: TCanvas);
+procedure TJvTFDays.DrawFancyRowHdrs(ACanvas: TCanvas);
 var
   I,
     J,
     MajorTickLength,
     MinorTickLength,
     TickLength: Integer;
-  aRect: TRect;
+  ARect: TRect;
   aLabel: string;
   PTxt: PChar;
   PrevHour,
@@ -6718,21 +6716,21 @@ begin
 
     CurrHrSel := CurrHrSel or Selected;
 
-    aRect := CellRect(-1, I);
+    ARect := CellRect(-1, I);
     aLabel := GetMinorLabel(I);
     if not RowEndsHour(I) then
       TickLength := MinorTickLength
     else
       TickLength := MajorTickLength;
 
-    DrawMinor(aCanvas, aRect, I, aLabel, TickLength, Selected);
+    DrawMinor(ACanvas, ARect, I, aLabel, TickLength, Selected);
 
     // Draw Major if needed
     if Switch and (Granularity <> 60) then
     begin
       if I <> TopRow + 1 then
       begin
-        with aRect do
+        with ARect do
         begin
           {$IFDEF Jv_TIMEBLOCKS}
             // ok
@@ -6774,21 +6772,21 @@ begin
         end;
 
         if PrevHrSel then
-          aCanvas.Font.Assign(SelFancyRowHdrAttr.MajorFont)
+          ACanvas.Font.Assign(SelFancyRowHdrAttr.MajorFont)
         else
-          aCanvas.Font.Assign(FancyRowHdrAttr.MajorFont);
+          ACanvas.Font.Assign(FancyRowHdrAttr.MajorFont);
 
-        aCanvas.Brush.Style := bsClear;
+        ACanvas.Brush.Style := bsClear;
 
         PTxt := StrAlloc((Length(aLabel) + 4) * SizeOf(Char));
         StrPCopy(PTxt, aLabel);
 
-        Windows.DrawText(aCanvas.Handle, PTxt, -1, aRect,
+        Windows.DrawText(ACanvas.Handle, PTxt, -1, ARect,
           DT_NOPREFIX or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
         StrDispose(PTxt);
 
         if Assigned(FOnDrawMajorRowHdr) then
-          FOnDrawMajorRowHdr(Self, aCanvas, aRect, I - 1, PrevHrSel);
+          FOnDrawMajorRowHdr(Self, ACanvas, ARect, I - 1, PrevHrSel);
 
         FirstMajor := False;
       end;
@@ -6798,7 +6796,7 @@ begin
   end;
 end;
 
-procedure TJvTFDays.DrawMinor(aCanvas: TCanvas; aRect: TRect; RowNum: Integer;
+procedure TJvTFDays.DrawMinor(ACanvas: TCanvas; ARect: TRect; RowNum: Integer;
   const LabelStr: string; TickLength: Integer; Selected: Boolean);
 var
   Attr: TJvTFDaysFancyRowHdrAttr;
@@ -6807,42 +6805,42 @@ var
   PTxt: PChar;
 begin
   // do the background shading
-  aCanvas.Brush.Color := FancyRowHdrAttr.Color;
-  aCanvas.FillRect(aRect);
+  ACanvas.Brush.Color := FancyRowHdrAttr.Color;
+  ACanvas.FillRect(ARect);
 
-  MinorRect := aRect;
+  MinorRect := ARect;
   MinorRect.Left := (MinorRect.Right - GetMinorTickLength) div 2;
 
   if Selected then
   begin
     Attr := SelFancyRowHdrAttr;
     // Shade the minor rect if selected
-    aCanvas.Brush.Color := Attr.Color;
-    aCanvas.FillRect(MinorRect);
+    ACanvas.Brush.Color := Attr.Color;
+    ACanvas.FillRect(MinorRect);
   end
   else
     Attr := FancyRowHdrAttr;
 
-  with aCanvas do
+  with ACanvas do
   begin
     // draw the right border line
     Pen.Color := Attr.TickColor;
-    MoveTo(aRect.Right - 1, aRect.Top);
-    LineTo(aRect.Right - 1, aRect.Bottom);
+    MoveTo(ARect.Right - 1, ARect.Top);
+    LineTo(ARect.Right - 1, ARect.Bottom);
 
     // now draw the tick
-    MoveTo(aRect.Right - 5, aRect.Bottom - 1);
-    LineTo(aRect.Right - 5 - TickLength, aRect.Bottom - 1);
+    MoveTo(ARect.Right - 5, ARect.Bottom - 1);
+    LineTo(ARect.Right - 5 - TickLength, ARect.Bottom - 1);
   end;
 
   // set up a 2 pel margin on the right and bottom sides
-  TxtRect := aRect;
+  TxtRect := ARect;
   TxtRect.Right := TxtRect.Right - 6;
   TxtRect.Bottom := TxtRect.Bottom - 2;
 
   // now draw the LabelStr right aligned
-  aCanvas.Font.Assign(Attr.MinorFont);
-  aCanvas.Brush.Style := bsClear;
+  ACanvas.Font.Assign(Attr.MinorFont);
+  ACanvas.Brush.Style := bsClear;
 
   PTxt := StrAlloc((Length(LabelStr) + 4) * SizeOf(Char));
   StrPCopy(PTxt, LabelStr);
@@ -6851,16 +6849,16 @@ begin
   if (RowNum = FocusedRow) and Focused then
   begin
     Windows.InflateRect(MinorRect, -2, -2);
-    MinorRect.Left := MinorRect.Right - aCanvas.TextWidth(LabelStr) - 2;
-    ManualFocusRect(aCanvas, MinorRect);
+    MinorRect.Left := MinorRect.Right - ACanvas.TextWidth(LabelStr) - 2;
+    ManualFocusRect(ACanvas, MinorRect);
   end;
 
-  Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect,
+  Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect,
     DT_SINGLELINE or DT_RIGHT or DT_NOPREFIX or DT_VCENTER);
   StrDispose(PTxt);
 
   if Assigned(FOnDrawMinorRowHdr) then
-    FOnDrawMinorRowHdr(Self, aCanvas, aRect, RowNum, Selected);
+    FOnDrawMinorRowHdr(Self, ACanvas, ARect, RowNum, Selected);
 end;
 
 function TJvTFDays.GetMinorLabel(RowNum: Integer): string;
@@ -6950,12 +6948,12 @@ begin
   inherited Resize;
 end;
 
-procedure TJvTFDays.WMEraseBkgnd(var Message: TMessage);
+procedure TJvTFDays.WMEraseBkgnd(var Msg: TMessage);
 begin
-  Message.Result := LRESULT(False);
+  Msg.Result := LRESULT(False);
 end;
 
-procedure TJvTFDays.CMFontChanged(var Message: TMessage);
+procedure TJvTFDays.CMFontChanged(var Msg: TMessage);
 begin
   HdrAttr.ParentFontChanged;
   SelHdrAttr.ParentFontChanged;
@@ -6964,7 +6962,7 @@ begin
   inherited;
 end;
 
-procedure TJvTFDays.CMEnabledChanged(var Message: TMessage);
+procedure TJvTFDays.CMEnabledChanged(var Msg: TMessage);
 begin
   FVScrollBar.Enabled := Enabled;
   FHScrollBar.Enabled := Enabled;
@@ -6972,33 +6970,37 @@ begin
 
   if Enabled and FNeedCheckSBParams then
   begin
-    // This is needed because of a TScrollBar bug.  if the Max or LargeChange
+    // This is needed because of a TScrollBar bug. If the Max or LargeChange
     //  properties are changed while the scrollbar is disabled, the
     //  scrollbar will magically enable itself.  Very frustrating.  Anyway...
-    //  This check and call to CheckSBParams will workaround the problem.
+    //  This check and call to CheckSBParams will work around the problem.
     //  See TJvTFDays.CheckSBParams for other part of workaround.
     FNeedCheckSBParams := False;
     CheckSBParams;
   end;
 end;
 
-procedure TJvTFDays.WMSetCursor(var Message: TWMSetCursor);
+procedure TJvTFDays.WMSetCursor(var Msg: TWMSetCursor);
 var
   Cur: HCURSOR;
   Coord: TJvTFDaysCoord;
 begin
   Cur := 0;
 
-  with Message do
+  with Msg do
   begin
-    if (HitTest = HTCLIENT) then
+    if HitTest = HTCLIENT then
     begin
       Coord := PtToCell(FHitTest.X, FHitTest.Y);
       case CanDragWhat(Coord) of
-        agsSizeCol, agsSizeRowHdr: Cur := Screen.Cursors[crHSplit];
-        agsSizeRow, agsSizeColHdr: Cur := Screen.Cursors[crVSplit];
-        agsSizeAppt: Cur := Screen.Cursors[crSizeNS];
-        agsMoveAppt: Cur := Screen.Cursors[crDrag];
+        agsSizeCol, agsSizeRowHdr:
+          Cur := Screen.Cursors[crHSplit];
+        agsSizeRow, agsSizeColHdr:
+          Cur := Screen.Cursors[crVSplit];
+        agsSizeAppt:
+          Cur := Screen.Cursors[crSizeNS];
+        agsMoveAppt:
+          Cur := Screen.Cursors[crDrag];
       end;
     end;
   end;
@@ -7009,21 +7011,21 @@ begin
     inherited;
 end;
 
-procedure TJvTFDays.WMNCHitTest(var Message: TWMNCHitTest);
+procedure TJvTFDays.WMNCHitTest(var Msg: TWMNCHitTest);
 begin
-  DefaultHandler(Message);
-  FHitTest := ScreenToClient(SmallPointToPoint(Message.Pos));
+  DefaultHandler(Msg);
+  FHitTest := ScreenToClient(SmallPointToPoint(Msg.Pos));
 end;
 
-procedure TJvTFDays.CMDesignHitTest(var Message: TCMDesignHitTest);
+procedure TJvTFDays.CMDesignHitTest(var Msg: TCMDesignHitTest);
 var
   TempState: TJvTFDaysState;
   Coord: TJvTFDaysCoord;
 begin
-  Coord := PtToCell(Message.Pos.X, Message.Pos.Y);
+  Coord := PtToCell(Msg.Pos.X, Msg.Pos.Y);
 
   TempState := CanDragWhat(Coord);
-  Message.Result := Longint(BOOL(TempState <> agsNormal));
+  Msg.Result := Longint(TempState <> agsNormal);
 end;
 
 procedure TJvTFDays.CNRequestRefresh(var Msg: TCNRequestRefresh);
@@ -7601,9 +7603,9 @@ var
     //      SUBORDINATE ROUTINE
     ////////////////////////////////////////////////////
 
-  procedure DrawFrame(aRect: TRect);
+  procedure DrawFrame(ARect: TRect);
   begin
-    with aRect, Canvas do
+    with ARect, Canvas do
     begin
       MoveTo(Left, Top);
       LineTo(Right - 2, Top);
@@ -7930,7 +7932,7 @@ begin
           // WHY AM I CALLING RefreshControls HERE?????
             ScheduleManager.RefreshConnections(Appt);
             Appt.SetStartEnd(Appt.StartDate, Appt.StartTime,
-              Trunc(NewEndDt), Frac(NewEndDT));
+              Trunc(NewEndDT), Frac(NewEndDT));
             ScheduleManager.RefreshConnections(Appt);
           end;
         end;
@@ -8406,7 +8408,7 @@ begin
   inherited DestroyApptNotification(anAppt);
 end;
 
-procedure TJvTFDays.CMMouseLeave(var Message: TMessage);
+procedure TJvTFDays.CMMouseLeave(var Msg: TMessage);
 begin
   FHint.ReleaseHandle;
   inherited;
@@ -9784,7 +9786,7 @@ begin
     Result := EncodeTime(23, 59, 59, 999);
 end;
 
-function TJvTFDays.TimeToRow(aTime: TTime): Integer;
+function TJvTFDays.TimeToRow(ATime: TTime): Integer;
 var
   TotalMins: Integer;
   WorkHours,
@@ -9794,7 +9796,7 @@ var
   H, M, S, MS: Word;
   Offset: Integer;
 begin
-  DecodeTime(aTime, WorkHours, WorkMins, WorkSecs, WorkMSecs);
+  DecodeTime(ATime, WorkHours, WorkMins, WorkSecs, WorkMSecs);
 
   // Convert the given time to minutes
   DecodeTime(GridStartTime, H, M, S, MS);
@@ -9807,14 +9809,14 @@ begin
     Dec(Result);
 end;
 
-procedure TJvTFDays.TimeToTop(aTime: TTime);
+procedure TJvTFDays.TimeToTop(ATime: TTime);
 begin
-  TopRow := TimeToRow(aTime);
+  TopRow := TimeToRow(ATime);
 end;
 
-function TJvTFDays.AdjustEndTime(aTime: TTime): TTime;
+function TJvTFDays.AdjustEndTime(ATime: TTime): TTime;
 begin
-  Result := Frac(Frac(aTime) - Frac(EncodeTime(0, 0, 1, 0)));
+  Result := Frac(Frac(ATime) - Frac(EncodeTime(0, 0, 1, 0)));
 end;
 
 function TJvTFDays.RowStartsHour(RowNum: Integer): Boolean;
@@ -10760,7 +10762,7 @@ begin
   FHintProps.Assign(Value);
 end;
 
-procedure TJvTFDays.DrawDither(aCanvas: TCanvas; aRect: TRect; Color1,
+procedure TJvTFDays.DrawDither(ACanvas: TCanvas; ARect: TRect; Color1,
   Color2: TColor);
 var
   DitherBitmap: TBitmap;
@@ -10772,7 +10774,7 @@ begin
   try
     // create dithered bitmap
 //    DitherBitmap.Width := RectWidth(ARect);
-//    DitherBitmap.Height := RectHeight(aRect);
+//    DitherBitmap.Height := RectHeight(ARect);
     DitherBitmap.Width := 8;
     DitherBitmap.Height := 8;
 
@@ -10784,30 +10786,30 @@ begin
           DitherBitmap.Canvas.Pixels[I, J] := Color2;
 
     // copy bitmap into canvas
-//    ClipRgn := Windows.CreateRectRgn(aRect.Left, aRect.Top, aRect.Right + 1, aRect.Bottom + 1);
+//    ClipRgn := Windows.CreateRectRgn(ARect.Left, ARect.Top, ARect.Right + 1, ARect.Bottom + 1);
 //    try
-//      Windows.SelectClipRgn(aCanvas.Handle, ClipRgn);
-//      TL.X := aRect.Left;
-//      while (TL.X <= aRect.Right) do
+//      Windows.SelectClipRgn(ACanvas.Handle, ClipRgn);
+//      TL.X := ARect.Left;
+//      while (TL.X <= ARect.Right) do
 //      begin
-//        TL.Y := aRect.Top;
-//        while (TL.Y <= aRect.Bottom) do
+//        TL.Y := ARect.Top;
+//        while (TL.Y <= ARect.Bottom) do
 //        begin
-//          Windows.BitBlt(aCanvas.Handle, TL.X, TL.Y, DitherBitmap.Width, DitherBitmap.Height,
+//          Windows.BitBlt(ACanvas.Handle, TL.X, TL.Y, DitherBitmap.Width, DitherBitmap.Height,
 //            DitherBitmap.Canvas.Handle, 0, 0, SRCCOPY);
 //          TL.Y := TL.Y + DitherBitmap.Height;
 //        end;
 //        TL.X := TL.X + DitherBitmap.Width;
 //      end;
 //    finally
-//      Windows.SelectClipRgn(aCanvas.Handle, 0);
+//      Windows.SelectClipRgn(ACanvas.Handle, 0);
 //      Windows.DeleteObject(ClipRgn);
 //    end;
 
     ACanvas.Brush.Bitmap := DitherBitmap;
-    aCanvas.FillRect(ARect);
+    ACanvas.FillRect(ARect);
 
-//      Windows.BitBlt(aCanvas.Handle, aRect.Left, aRect.Top, DitherBitmap.Width, DitherBitmap.Height,
+//      Windows.BitBlt(ACanvas.Handle, ARect.Left, ARect.Top, DitherBitmap.Width, DitherBitmap.Height,
 //        DitherBitmap.Canvas.Handle, 0, 0, SRCCOPY);
   finally
     DitherBitmap.Free;
@@ -10885,7 +10887,7 @@ begin
   end;
 end;
 
-procedure TJvTFDays.DrawGroupHdrs(aCanvas: TCanvas);
+procedure TJvTFDays.DrawGroupHdrs(ACanvas: TCanvas);
 var
   CurrGroup: string;
   I: Integer;
@@ -10893,12 +10895,12 @@ begin
   if (CalcGroupHdrHeight > 0) and (Cols.Count > 0) then
   begin
     CurrGroup := Cols[LeftCol].GroupTitle;
-    DrawColGroupHdr(aCanvas, LeftCol, True);
+    DrawColGroupHdr(ACanvas, LeftCol, True);
     for I := LeftCol + 1 to RightCol do
       if Cols[I].GroupTitle <> CurrGroup then
       begin
         CurrGroup := Cols[I].GroupTitle;
-        DrawColGroupHdr(aCanvas, I, True);
+        DrawColGroupHdr(ACanvas, I, True);
       end;
   end;
 end;
@@ -10977,36 +10979,36 @@ begin
 end;
 
 {
-procedure TJvTFDays.DrawGroupHdr(aCanvas: TCanvas; aCol: Integer);
+procedure TJvTFDays.DrawGroupHdr(ACanvas: TCanvas; aCol: Integer);
 var
-  aRect: TRect;
+  ARect: TRect;
   Attr: TJvTFDaysHdrAttr;
 begin
-  aRect := VirtualGroupHdrRect(aCol);
+  ARect := VirtualGroupHdrRect(aCol);
   if GroupHdrIsSelected(aCol) then
    Attr := SelGroupHdrAttr
   else
    Attr := GroupHdrAttr;
 
-  With aCanvas do
+  With ACanvas do
    begin
     Font.Assign(Attr.Font);
     Brush.Color := Attr.Color;
-    FillRect(aRect);
+    FillRect(ARect);
 
     {
     Brush.Color := clWhite;
-    FillRect(aRect);
+    FillRect(ARect);
     Pen.Color := clBlack;
-    MoveTo(aRect.Left, aRect.Top);
-    LineTo(aRect.Right - 1, aRect.Bottom - 1);
-    MoveTo(aRect.Right - 1, aRect.Top);
-    LineTo(aRect.Left, aRect.Bottom - 1);
+    MoveTo(ARect.Left, ARect.Top);
+    LineTo(ARect.Right - 1, ARect.Bottom - 1);
+    MoveTo(ARect.Right - 1, ARect.Top);
+    LineTo(ARect.Left, ARect.Bottom - 1);
     }
     {
-    MoveTo(aRect.Right - 1, aRect.Top);
-    LineTo(aRect.Right - 1, aRect.Bottom - 1);
-    LineTo(aRect.Left, aRect.Bottom - 1);
+    MoveTo(ARect.Right - 1, ARect.Top);
+    LineTo(ARect.Right - 1, ARect.Bottom - 1);
+    LineTo(ARect.Left, ARect.Bottom - 1);
     }
 {   end;
 end;
@@ -11041,10 +11043,10 @@ begin
   end;
 end;
 
-procedure TJvTFDays.DrawColGroupHdr(aCanvas: TCanvas; Index: Integer;
+procedure TJvTFDays.DrawColGroupHdr(ACanvas: TCanvas; Index: Integer;
   IsGroupHdr: Boolean);
 var
-  aRect,
+  ARect,
     TxtRect,
     CalcRect,
     TxtBounds: TRect;
@@ -11057,8 +11059,8 @@ var
 begin
   if IsGroupHdr then
   begin
-    aRect := VirtualGroupHdrRect(Index);
-    aRect.Left := Greater(aRect.Left, GetDataAreaRect.Left);
+    ARect := VirtualGroupHdrRect(Index);
+    ARect.Left := Greater(ARect.Left, GetDataAreaRect.Left);
     Txt := Copy(Cols[Index].GroupTitle, 1, Length(Cols[Index].GroupTitle));
     if GroupHdrIsSelected(Index) then
       UseAttr := SelGroupHdrAttr
@@ -11067,7 +11069,7 @@ begin
   end
   else
   begin
-    aRect := CellRect(Index, -1);
+    ARect := CellRect(Index, -1);
     //Txt := Copy(Cols[Index].Title, 1, Length(Cols[Index].Title));
     Txt := Copy(Cols[Index].Title, 1, Length(Cols[Index].Title));
     if ColIsSelected(Index) then
@@ -11076,8 +11078,8 @@ begin
       UseAttr := HdrAttr;
   end;
 
-  aCanvas.Brush.Color := UseAttr.Color;
-  aCanvas.Font.Assign(UseAttr.Font);
+  ACanvas.Brush.Color := UseAttr.Color;
+  ACanvas.Font.Assign(UseAttr.Font);
 
   Flags := DT_NOPREFIX or DT_CENTER;
   case ColTitleStyle of
@@ -11090,8 +11092,8 @@ begin
     ctsHide: Flags := Flags or DT_SINGLELINE or DT_VCENTER;
   end;
 
-  aCanvas.FillRect(aRect);
-  TxtRect := aRect;
+  ACanvas.FillRect(ARect);
+  TxtRect := ARect;
   Windows.InflateRect(TxtRect, -2, -2);
   CalcRect := TxtRect;
 
@@ -11106,7 +11108,7 @@ begin
   if (ColTitleStyle = ctsMultiClip) or
     (ColTitleStyle = ctsMultiEllipsis) then
   begin
-    TxtHt := Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect,
+    TxtHt := Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect,
       Flags or DT_CALCRECT);
     // "reset" PTxt
     StrPCopy(PTxt, Txt);
@@ -11122,7 +11124,7 @@ begin
   else
   if (ColTitleStyle = ctsHide) then
   begin
-    Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
+    Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
     if RectWidth(CalcRect) > RectWidth(TxtRect) then
       StrPCopy(PTxt, '');
   end
@@ -11130,8 +11132,8 @@ begin
   // okay to leave
   else
   if (ColTitleStyle = ctsRotated) then
-   //DrawAngleText(aCanvas, TxtRect, UseAttr.TitleRotation, Txt);
-    DrawAngleText(aCanvas, TxtRect, TxtBounds, UseAttr.TitleRotation,
+   //DrawAngleText(ACanvas, TxtRect, UseAttr.TitleRotation, Txt);
+    DrawAngleText(ACanvas, TxtRect, TxtBounds, UseAttr.TitleRotation,
       taCenter, vaCenter, Txt);
   {$ELSE}
   // remove
@@ -11141,42 +11143,42 @@ begin
     {$IFDEF Jv_TIMEBLOCKS}
   // okay to leave
     if ColTitleStyle <> ctsRotated then
-      Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
+      Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
   {$ELSE}
   // remove
-  //Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
+  //Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
     {$ENDIF Jv_TIMEBLOCKS}
 
     StrDispose(PTxt);
 
   if not IsGroupHdr and (Index = FocusedCol) and Focused then
   begin
-    CalcRect := aRect;
+    CalcRect := ARect;
     Windows.InflateRect(CalcRect, -2, -2);
-    ManualFocusRect(aCanvas, CalcRect);
+    ManualFocusRect(ACanvas, CalcRect);
     {
     if Windows.IsRectEmpty(TxtRect) then
       Windows.InflateRect(TxtRect, 5, 5);
-    ManualFocusRect(aCanvas, TxtRect);
+    ManualFocusRect(ACanvas, TxtRect);
     }
   end;
 
   {$IFDEF Jv_TIMEBLOCKS}
   // okay to leave
-  DrawFrame(aCanvas, aRect, UseAttr.Frame3D, UseAttr.FrameColor);
+  DrawFrame(ACanvas, ARect, UseAttr.Frame3D, UseAttr.FrameColor);
   {$ELSE}
   // remove
-  //DrawFrame(aCanvas, aRect, UseAttr.Frame3D);
+  //DrawFrame(ACanvas, ARect, UseAttr.Frame3D);
   {$ENDIF Jv_TIMEBLOCKS}
 
   if IsGroupHdr then
   begin
     if Assigned(FOnDrawGroupHdr) then
-      FOnDrawGroupHdr(Self, aCanvas, aRect, Index, GroupHdrIsSelected(Index));
+      FOnDrawGroupHdr(Self, ACanvas, ARect, Index, GroupHdrIsSelected(Index));
   end
   else
   if Assigned(FOnDrawColHdr) then
-    FOnDrawColHdr(Self, aCanvas, aRect, Index, ColIsSelected(Index));
+    FOnDrawColHdr(Self, ACanvas, ARect, Index, ColIsSelected(Index));
 end;
 
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -11219,9 +11221,9 @@ begin
     FWeekendFillPic.Height));
 end;
 
-procedure TJvTFDays.DrawBlockHdr(aCanvas: TCanvas; BlockIndex: Integer);
+procedure TJvTFDays.DrawBlockHdr(ACanvas: TCanvas; BlockIndex: Integer);
 var
-  aRect,
+  ARect,
     HdrPicRect,
     TxtBounds: TRect;
   StartRow,
@@ -11233,10 +11235,10 @@ var
 begin
   TimeBlock := TimeBlocks[BlockIndex];
   GetTimeBlockStartEnd(BlockIndex, StartRow, EndRow);
-  //aRect := VirtualBlockHdrRect(StartRow);
-  aRect := CellRect(gcGroupHdr, StartRow);
+  //ARect := VirtualBlockHdrRect(StartRow);
+  ARect := CellRect(gcGroupHdr, StartRow);
   HdrPicRect := VirtualBlockHdrRect(StartRow);
-  ClipIt := HdrPicRect.Top < aRect.Top;
+  ClipIt := HdrPicRect.Top < ARect.Top;
 
   Windows.OffsetRect(HdrPicRect, -HdrPicRect.Left, -HdrPicRect.Top);
 
@@ -11250,7 +11252,7 @@ begin
     else
       Attr := TimeBlockProps.BlockHdrAttr;
 
-   //With aCanvas do
+   //With ACanvas do
     with HdrPic.Canvas do
     begin
       Brush.Color := Attr.Color;
@@ -11275,18 +11277,18 @@ begin
     end;
 
     if ClipIt then
-      HdrPicRect.Top := HdrPicRect.Bottom - RectHeight(aRect);
+      HdrPicRect.Top := HdrPicRect.Bottom - RectHeight(ARect);
 
-    Windows.BitBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
-      RectHeight(aRect), HdrPic.Canvas.Handle, 0, HdrPicRect.Top, SRCCOPY);
+    Windows.BitBlt(ACanvas.Handle, ARect.Left, ARect.Top, RectWidth(ARect),
+      RectHeight(ARect), HdrPic.Canvas.Handle, 0, HdrPicRect.Top, SRCCOPY);
   finally
     HdrPic.Free;
   end;
 end;
 
-procedure TJvTFDays.FillBlockHdrDeadSpace(aCanvas: TCanvas);
+procedure TJvTFDays.FillBlockHdrDeadSpace(ACanvas: TCanvas);
 var
-  aRect: TRect;
+  ARect: TRect;
   StartRow,
     EndRow: Integer;
 
@@ -11296,17 +11298,17 @@ var
 
   procedure FillIt;
   begin
-    with aCanvas do
+    with ACanvas do
     begin
             //Brush.Color := TimeBlockProps.BlockHdrAttr.Color;
       Brush.Color := TimeBlockProps.OffTimeColor;
-      FillRect(aRect);
+      FillRect(ARect);
 
       Pen.Color := TimeBlockProps.BlockHdrAttr.FrameColor;
-      MoveTo(aRect.Right - 1, aRect.Top);
-      LineTo(aRect.Right - 1, aRect.Bottom);
-      MoveTo(aRect.Left, aRect.Bottom - 1);
-      LineTo(aRect.Right, aRect.Bottom - 1);
+      MoveTo(ARect.Right - 1, ARect.Top);
+      LineTo(ARect.Right - 1, ARect.Bottom);
+      MoveTo(ARect.Left, ARect.Bottom - 1);
+      LineTo(ARect.Right, ARect.Bottom - 1);
     end;
   end;
 
@@ -11315,14 +11317,14 @@ begin
   if TimeBlocks.Count = 0 then
     Exit;
 
-  aRect.Left := 0;
-  aRect.Right := CalcBlockHdrWidth;
+  ARect.Left := 0;
+  ARect.Right := CalcBlockHdrWidth;
 
   GetTimeBlockStartEnd(0, StartRow, EndRow);
   if StartRow > TopRow then
   begin
-    aRect.Top := CalcGroupColHdrsHeight;
-    aRect.Bottom := Lesser(VirtualBlockHdrRect(StartRow).Top,
+    ARect.Top := CalcGroupColHdrsHeight;
+    ARect.Bottom := Lesser(VirtualBlockHdrRect(StartRow).Top,
       GetDataAreaRect.Bottom);
     FillIt;
   end;
@@ -11330,9 +11332,9 @@ begin
   GetTimeBlockStartEnd(TimeBlocks.Count - 1, StartRow, EndRow);
   if EndRow < BottomRow then
   begin
-    aRect.Top := Greater(VirtualBlockHdrRect(EndRow).Bottom,
+    ARect.Top := Greater(VirtualBlockHdrRect(EndRow).Bottom,
       GetDataAreaRect.Top);
-    aRect.Bottom := GetDataAreaRect.Bottom;
+    ARect.Bottom := GetDataAreaRect.Bottom;
     FillIt;
   end;
 end;
@@ -11344,7 +11346,7 @@ end;
 // He can be reached at jlingner att t-online dott de           //
 //////////////////////////////////////////////////////////////////
 {
-procedure TJvTFDays.CalcTextPos(var aRect: TRect; aAngle: Integer;
+procedure TJvTFDays.CalcTextPos(var ARect: TRect; aAngle: Integer;
   aTxt: String);
 //==========================================================================
 // Calculate text pos. depend. on: Font, Escapement, Alignment and length
@@ -11358,7 +11360,7 @@ var
    SaveRect: TRect;
 begin
   aAngle := aAngle div 10;
-  SaveRect := aRect;
+  SaveRect := ARect;
 
   StrPCopy(cStr, aTxt);
   DC := GetDC(0);
@@ -11393,22 +11395,22 @@ begin
     x := Trunc(Size.cy * sin((360-aAngle)*Pi/180));
     y := 0;
    end;
-  aRect.Top := aRect.Top + y;
-  aRect.Left := aRect.Left + x;
+  ARect.Top := ARect.Top + y;
+  ARect.Left := ARect.Left + x;
 
   x := Abs(Trunc(Size.cx * cos(aAngle*Pi/180))) + Abs(Trunc(Size.cy * sin(aAngle*Pi/180)));
   y := Abs(Trunc(Size.cx * sin(aAngle*Pi/180))) + Abs(Trunc(Size.cy * cos(aAngle*Pi/180)));
 
   //Mike:
-  aRect.Left := aRect.Left + ((RectWidth(SaveRect) - X) div 2); // align center
-  //aRect.Left := aRect.Left + RectWidth(SaveRect) - X; // align right
-  aRect.Top := aRect.Top + ((RectHeight(SaveRect) - Y) div 2); // align center
-  //aRect.Top := aRect.Top + RectHeight(SaveRect) - Y; // align bottom
+  ARect.Left := ARect.Left + ((RectWidth(SaveRect) - X) div 2); // align center
+  //ARect.Left := ARect.Left + RectWidth(SaveRect) - X; // align right
+  ARect.Top := ARect.Top + ((RectHeight(SaveRect) - Y) div 2); // align center
+  //ARect.Top := ARect.Top + RectHeight(SaveRect) - Y; // align bottom
 end;
 }
 
 {
-procedure TJvTFDays.DrawAngleText(aCanvas: TCanvas; aRect: TRect;
+procedure TJvTFDays.DrawAngleText(ACanvas: TCanvas; ARect: TRect;
   aAngle: Integer; aTxt: String);
 var
   LogFont: TLogFont;
@@ -11417,29 +11419,29 @@ var
   PTxt: PChar;
   ClipRgn: HRgn;
 begin
-  TxtRect := aRect;
+  TxtRect := ARect;
   CalcTextPos(TxtRect, aAngle, aTxt);
 
-  Windows.GetObject(aCanvas.Font.Handle, SizeOf(LogFont), @LogFont);
+  Windows.GetObject(ACanvas.Font.Handle, SizeOf(LogFont), @LogFont);
   LogFont.lfEscapement := aAngle;
   LogFont.lfOrientation := LogFont.lfEscapement;
-  aCanvas.Font.Handle := CreateFontIndirect(LogFont);
+  ACanvas.Font.Handle := CreateFontIndirect(LogFont);
 
   Flags := DT_NOPREFIX or DT_LEFT or DT_TOP or DT_NOCLIP or DT_SINGLELINE;
 
   PTxt := StrAlloc((Length(aTxt) + 4) * SizeOf(Char));
   StrPCopy(PTxt, aTxt);
 
-  ClipRgn := Windows.CreateRectRgn(aRect.Left, aRect.Top,
-                        aRect.Right, aRect.Bottom);
-  Windows.SelectClipRgn(aCanvas.Handle, ClipRgn);
+  ClipRgn := Windows.CreateRectRgn(ARect.Left, ARect.Top,
+                        ARect.Right, ARect.Bottom);
+  Windows.SelectClipRgn(ACanvas.Handle, ClipRgn);
 
-  Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
+  Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
 
-  Windows.SelectClipRgn(aCanvas.Handle, 0);
+  Windows.SelectClipRgn(ACanvas.Handle, 0);
   Windows.DeleteObject(ClipRgn);
   StrDispose(PTxt);
-  aCanvas.Font.Handle := 0;
+  ACanvas.Font.Handle := 0;
 end;
 }
 
@@ -11598,12 +11600,12 @@ begin
   end;
 end;
 
-procedure TJvTFDays.DrawFrame(aCanvas: TCanvas; aRect: TRect; Draw3D: Boolean;
+procedure TJvTFDays.DrawFrame(ACanvas: TCanvas; ARect: TRect; Draw3D: Boolean;
   FrameColour: TColor);
 var
   OldPenColor: TColor;
 begin
-  with aCanvas, aRect do
+  with ACanvas, ARect do
   begin
     OldPenColor := Pen.Color;
 
@@ -11719,13 +11721,11 @@ begin
   end;
 end;
 
-procedure TJvTFDays.WMTimer(var Message: TWMTimer);
+procedure TJvTFDays.WMTimer(var Msg: TWMTimer);
 var
-  I,
-    TempWidth: Integer;
+  I, TempWidth: Integer;
   PtInfo: TJvTFDaysCoord;
-  OldTopRow,
-    OldLeftCol: Integer;
+  OldTopRow, OldLeftCol: Integer;
   X, Y: Integer;
 begin
   if Cols.Count = 0 then
@@ -12050,7 +12050,7 @@ begin
   end;
 end;
 
-procedure TJvTFDays.SetDitheredBackground(const Value: boolean);
+procedure TJvTFDays.SetDitheredBackground(const Value: Boolean);
 begin
   FDitheredBackground := Value;
   Refresh;
@@ -12058,9 +12058,9 @@ end;
 
 { TJvTFDaysPrinter }
 
-function TJvTFDaysPrinter.AdjustEndTime(aTime: TTime): TTime;
+function TJvTFDaysPrinter.AdjustEndTime(ATime: TTime): TTime;
 begin
-  Result := Frac(Frac(aTime) - Frac(EncodeTime(0, 0, 1, 0)));
+  Result := Frac(Frac(ATime) - Frac(EncodeTime(0, 0, 1, 0)));
 end;
 
 procedure TJvTFDaysPrinter.CalcPageColInfo(ShowRowHdrs: Boolean;
@@ -12207,14 +12207,14 @@ begin
     EndRow := RowCount - 1;
 end;
 
-procedure TJvTFDaysPrinter.CanDrawWhat(aCanvas: TCanvas; ApptRect: TRect;
+procedure TJvTFDaysPrinter.CanDrawWhat(ACanvas: TCanvas; ApptRect: TRect;
   PicsHeight: Integer; var CanDrawText, CanDrawPics: Boolean);
 var
   TextHeightThreshold,
     TextWidthThreshold: Integer;
 begin
-  TextHeightThreshold := aCanvas.TextHeight('Wq') * Thresholds.TextHeight;
-  TextWidthThreshold := aCanvas.TextWidth('Bi') div 2 * Thresholds.TextWidth;
+  TextHeightThreshold := ACanvas.TextHeight('Wq') * Thresholds.TextHeight;
+  TextWidthThreshold := ACanvas.TextWidth('Bi') div 2 * Thresholds.TextWidth;
 
   if TextHeightThreshold + PicsHeight < RectHeight(ApptRect) then
   begin
@@ -12237,7 +12237,7 @@ begin
     CanDrawPics := False;
   end;
 
-  if not ShowPicS then
+  if not ShowPics then
     CanDrawPics := False;
   if not ShowText then
     CanDrawText := False;
@@ -12392,7 +12392,7 @@ begin
   FPageLayout := TJvTFDaysPrinterPageLayout.Create(Self);
 end;
 
-procedure TJvTFDaysPrinter.CreatePicDrawList(aRect: TRect; Appt: TJvTFAppt;
+procedure TJvTFDaysPrinter.CreatePicDrawList(ARect: TRect; Appt: TJvTFAppt;
   DrawList: TList);
 var
   I,
@@ -12424,7 +12424,7 @@ var
 //  MAIN ROUTINE
 ///////////////////////
 begin
-  NextPicLeft := aRect.Left;
+  NextPicLeft := ARect.Left;
 
   if ShowPics and Assigned(ScheduleManager.CustomImages) then
   begin
@@ -12435,7 +12435,7 @@ begin
     for I := 0 to CustomImageMap.Count - 1 do
     begin
       ImageIndex := CustomImageMap[I];
-      AddToList(ImageList, ImageIndex, NextPicLeft, aRect.Top);
+      AddToList(ImageList, ImageIndex, NextPicLeft, ARect.Top);
       Inc(NextPicLeft, PicWidth);
     end;
   end;
@@ -12451,7 +12451,7 @@ begin
       ImageIndex := ImageMap.AlarmEnabled;
       if ImageIndex > -1 then
       begin
-        AddToList(ImageList, ImageIndex, NextPicLeft, aRect.Top);
+        AddToList(ImageList, ImageIndex, NextPicLeft, ARect.Top);
         Inc(NextPicLeft, PicWidth);
       end
     end
@@ -12460,7 +12460,7 @@ begin
       ImageIndex := ImageMap.AlarmDisabled;
       if ImageIndex > -1 then
       begin
-        AddToList(ImageList, ImageIndex, NextPicLeft, aRect.Top);
+        AddToList(ImageList, ImageIndex, NextPicLeft, ARect.Top);
         Inc(NextPicLeft, PicWidth);
       end;
     end;
@@ -12468,7 +12468,7 @@ begin
     ImageIndex := ImageMap.Shared;
     if Appt.Shared and (ImageIndex > -1) then
     begin
-      AddToList(ImageList, ImageIndex, NextPicLeft, aRect.Top);
+      AddToList(ImageList, ImageIndex, NextPicLeft, ARect.Top);
        // The following line generates a compiler hint so comment out,
        //  but leave here as reminder in case method is expanded.
        //Inc(NextPicLeft, ImageList.Width + 2);
@@ -12477,7 +12477,7 @@ begin
     { don't show modified pic in printed page
     if Appt.Modified and (ImageMap.Modified > -1) then
       begin
-       AddToList(ImageList, ImageMap.Modified, NextPicLeft, aRect.Top);
+       AddToList(ImageList, ImageMap.Modified, NextPicLeft, ARect.Top);
        // The following line generates a compiler hint so comment out,
        //  but leave here as reminder in case method is expanded.
        //Inc(NextPicLeft, ImageList.Width + 2);
@@ -12525,7 +12525,7 @@ end;
  * of research and trial and error.
  ****************************************************************************}
 
-procedure TJvTFDaysPrinter.PrintBitmap(aCanvas: TCanvas; SourceRect,
+procedure TJvTFDaysPrinter.PrintBitmap(ACanvas: TCanvas; SourceRect,
   DestRect: TRect; aBitmap: TBitmap);
 var
   BitmapHeader: pBitmapInfo;
@@ -12540,7 +12540,7 @@ begin
   GetMem(BitmapImage, ImageSize);
   try
     GetDIB(aBitmap.Handle, aBitmap.Palette, BitmapHeader^, BitmapImage^);
-    StretchDIBits(aCanvas.Handle,
+    StretchDIBits(ACanvas.Handle,
       DestRect.Left, DestRect.Top,
       DestRect.Right - DestRect.Left,
       DestRect.Bottom - DestRect.Top,
@@ -12557,7 +12557,7 @@ begin
   end;
 end;
 
-procedure TJvTFDaysPrinter.DrawAppt(aCanvas: TCanvas; Col: Integer;
+procedure TJvTFDaysPrinter.DrawAppt(ACanvas: TCanvas; Col: Integer;
   Appt: TJvTFAppt; StartRow, EndRow: Integer; PageInfo: TJvTFDaysPageInfo);
 var
   ApptRect,
@@ -12590,9 +12590,9 @@ begin
     DataRect.Right + BodyLeft,
     DataRect.Bottom + BodyTop);
 
-  Windows.SelectClipRgn(aCanvas.Handle, ClipRgn);
-  DrawApptDetail(aCanvas, ApptRect, Appt, Col, StartRow, EndRow);
-  Windows.SelectClipRgn(aCanvas.Handle, 0);
+  Windows.SelectClipRgn(ACanvas.Handle, ClipRgn);
+  DrawApptDetail(ACanvas, ApptRect, Appt, Col, StartRow, EndRow);
+  Windows.SelectClipRgn(ACanvas.Handle, 0);
   Windows.DeleteObject(ClipRgn);
   // Printer bug end, fixed
 end;
@@ -12634,13 +12634,13 @@ begin
     BarRect.Top;
 end;
 
-procedure TJvTFDaysPrinter.DrawTimeStamp(aCanvas: TCanvas;
+procedure TJvTFDaysPrinter.DrawTimeStamp(ACanvas: TCanvas;
   TimeStampRect: TRect);
 var
   OldColor: TColor;
   StampLeft: Integer;
 begin
-  with aCanvas do
+  with ACanvas do
     case ApptBar.TimeStampStyle of
       tssFullI:
         begin
@@ -12661,7 +12661,7 @@ begin
        // Printer bug, fixed
           StampLeft := TimeStampRect.Left + RectWidth(TimeStampRect) div 2;
           MoveTo(StampLeft, TimeStampRect.Top + 1);
-          LineTo(StampLeft, TimeStamprect.Bottom - 1);
+          LineTo(StampLeft, TimeStampRect.Bottom - 1);
 
           Pen.Width := 1;
 
@@ -12706,13 +12706,13 @@ begin
     end;
 end;
 
-procedure TJvTFDaysPrinter.DrawApptBar(aCanvas: TCanvas; Appt: TJvTFAppt;
+procedure TJvTFDaysPrinter.DrawApptBar(ACanvas: TCanvas; Appt: TJvTFAppt;
   BarRect: TRect; Col, StartRow, EndRow: Integer);
 var
   OldColor: TColor;
   TimeStampRect: TRect;
 begin
-  with aCanvas do
+  with ACanvas do
   begin
     // Fill Bar Color
     OldColor := Brush.Color;
@@ -12733,15 +12733,15 @@ begin
     // Draw Time Stamp
     TimeStampRect := CalcTimeStampRect(Appt, BarRect, Col, StartRow, EndRow);
     if ApptBar.TimeStampStyle <> tssNone then
-      DrawTimeStamp(aCanvas, TimeStampRect);
+      DrawTimeStamp(ACanvas, TimeStampRect);
 
     if Assigned(FOnDrawApptBar) then
-      FOnDrawApptBar(Self, aCanvas, Appt, Col, BarRect, TimeStampRect);
+      FOnDrawApptBar(Self, ACanvas, Appt, Col, BarRect, TimeStampRect);
   end;
 end;
 
 {
-procedure TJvTFDaysPrinter.DrawApptBar(aCanvas: TCanvas; Appt: TJvTFAppt;
+procedure TJvTFDaysPrinter.DrawApptBar(ACanvas: TCanvas; Appt: TJvTFAppt;
   BarRect: TRect; Col, StartRow, EndRow: Integer);
 var
   OldColor: TColor;
@@ -12752,7 +12752,7 @@ var
   StartPercent,
   EndPercent: Double;
 begin
-  With aCanvas do
+  With ACanvas do
    begin
     // Fill Bar Color
     OldColor := Brush.Color;
@@ -12893,7 +12893,7 @@ begin
 end;
 }
 
-procedure TJvTFDaysPrinter.DrawApptDetail(aCanvas: TCanvas; aRect: TRect;
+procedure TJvTFDaysPrinter.DrawApptDetail(ACanvas: TCanvas; ARect: TRect;
   Appt: TJvTFAppt; Col, StartRow, EndRow: Integer);
 var
   TheFrameRect,
@@ -12910,7 +12910,7 @@ var
   DrawList: TList;
   DrawInfo: TJvTFDaysApptDrawInfo;
 begin
-  with aCanvas do
+  with ACanvas do
   begin
     DrawInfo := TJvTFDaysApptDrawInfo.Create;
     try
@@ -12931,11 +12931,11 @@ begin
       Exit;
 
     //Brush.Color := GetApptDispColor(Appt);
-    FillRect(aRect);
+    FillRect(ARect);
 
     //Pen.Color := ApptAttr.FrameColor;
     //Pen.Width := ApptAttr.FrameWidth;
-    TheFrameRect := aRect;
+    TheFrameRect := ARect;
     Windows.InflateRect(TheFrameRect, -(ApptAttr.FrameWidth div 2),
       -(ApptAttr.FrameWidth div 2));
 
@@ -12956,8 +12956,8 @@ begin
     end;
 
     // Only go through the following work if all details must be drawn
-    if (RectHeight(aRect) > Thresholds.DetailHeight) and
-      (RectWidth(aRect) > Thresholds.DetailWidth) then
+    if (RectHeight(ARect) > Thresholds.DetailHeight) and
+      (RectWidth(ARect) > Thresholds.DetailWidth) then
     begin
       Windows.InflateRect(TheFrameRect, -(ApptAttr.FrameWidth div 2),
         -(ApptAttr.FrameWidth div 2));
@@ -12969,7 +12969,7 @@ begin
         Inc(DetailRect.Left, ApptBar.Width);
         Windows.SubtractRect(BarRect, TheFrameRect, DetailRect);
         Dec(BarRect.Bottom);
-        DrawApptBar(aCanvas, Appt, BarRect, Col, StartRow, EndRow);
+        DrawApptBar(ACanvas, Appt, BarRect, Col, StartRow, EndRow);
       end;
 
       TxtRect := DetailRect;
@@ -12984,11 +12984,11 @@ begin
         CreatePicDrawList(TxtRect, Appt, DrawList);
         FilterPicDrawList(TxtRect, DrawList, PicsHeight);
         // Calc'ing text height and width in CanDrawWhat
-        CanDrawWhat(aCanvas, TxtRect, PicsHeight, CanDrawText, CanDrawPics);
+        CanDrawWhat(ACanvas, TxtRect, PicsHeight, CanDrawText, CanDrawPics);
 
         if CanDrawPics then
         begin
-          DrawListPics(aCanvas, TxtRect, DrawList);
+          DrawListPics(ACanvas, TxtRect, DrawList);
           Inc(TxtRect.Top, PicsHeight);
         end;
       finally
@@ -13011,17 +13011,17 @@ begin
           //PTxt := StrNew(PChar(Txt));
         PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
         StrPCopy(PTxt, Txt);
-        Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
+        Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
         StrDispose(PTxt);
       end;
     end;
 
     if Assigned(FOnDrawAppt) then
-      FOnDrawAppt(Self, aCanvas, aRect, Appt, False);
+      FOnDrawAppt(Self, ACanvas, ARect, Appt, False);
   end;
 end;
 
-procedure TJvTFDaysPrinter.DrawAppts(aCanvas: TCanvas; DrawAll: Boolean;
+procedure TJvTFDaysPrinter.DrawAppts(ACanvas: TCanvas; DrawAll: Boolean;
   PageInfo: TJvTFDaysPageInfo);
 var
   FromCol,
@@ -13074,7 +13074,7 @@ begin
 
         if (ApptStartRow <= ToRow) and (ApptEndRow >= FromRow) then
         begin
-          DrawAppt(aCanvas, Col, Appt, ApptStartRow, ApptEndRow, PageInfo);
+          DrawAppt(ACanvas, Col, Appt, ApptStartRow, ApptEndRow, PageInfo);
           Inc(FApptsDrawn);
           if Assigned(FOnApptProgress) then
             FOnApptProgress(Self, FApptsDrawn, ApptCount);
@@ -13087,13 +13087,12 @@ begin
   end;
 end;
 
-procedure TJvTFDaysPrinter.DrawBody(aCanvas: TCanvas; aRect: TRect;
+procedure TJvTFDaysPrinter.DrawBody(ACanvas: TCanvas; ARect: TRect;
   PageNum: Integer);
 var
   SaveMeasure: TJvTFPrinterMeasure;
   PageInfo: TJvTFDaysPageInfo;
-  I,
-    J: Integer;
+  I, J: Integer;
 begin
   if Aborted then
     Exit;
@@ -13103,39 +13102,39 @@ begin
 
   PageInfo := TJvTFDaysPageInfo(FPageInfoList.Objects[PageNum - 1]);
 
-  with aCanvas do
+  with ACanvas do
   begin
     Brush.Color := Self.Color;
-    FillRect(aRect);
+    FillRect(ARect);
 
-    DrawCorner(aCanvas);
+    DrawCorner(ACanvas);
 
     if PageInfo.ShowColHdr then
     begin
       if (Cols.Count = 0) then
-        DrawEmptyColHdr(aCanvas, PageInfo)
+        DrawEmptyColHdr(ACanvas, PageInfo)
       else
       begin
-        DrawGroupHdrs(aCanvas, PageInfo);
+        DrawGroupHdrs(ACanvas, PageInfo);
         for I := PageInfo.StartCol to PageInfo.EndCol do
         begin
           if Aborted then
             Break;
-            //DrawColHdr(aCanvas, I, PageInfo);
-          DrawColGroupHdr(aCanvas, I, PageInfo, False);
+            //DrawColHdr(ACanvas, I, PageInfo);
+          DrawColGroupHdr(ACanvas, I, PageInfo, False);
         end;
       end;
     end;
 
     if PageInfo.ShowRowHdr then
       if RowHdrType = rhFancy then
-        DrawFancyRowHdrs(aCanvas, PageInfo)
+        DrawFancyRowHdrs(ACanvas, PageInfo)
       else
         for I := PageInfo.StartRow to PageInfo.EndRow do
         begin
           if Aborted then
             Break;
-          DrawRowHdr(aCanvas, I, PageInfo);
+          DrawRowHdr(ACanvas, I, PageInfo);
         end;
 
     for I := PageInfo.StartRow to PageInfo.EndRow do
@@ -13143,11 +13142,11 @@ begin
       begin
         if Aborted then
           Break;
-        DrawDataCell(aCanvas, J, I, PageInfo);
+        DrawDataCell(ACanvas, J, I, PageInfo);
       end;
 
     if not (csDesigning in ComponentState) and not Aborted then
-      DrawAppts(aCanvas, False, PageInfo);
+      DrawAppts(ACanvas, False, PageInfo);
   end;
 
   Measure := SaveMeasure;
@@ -13156,10 +13155,10 @@ begin
 end;
 
 {
-procedure TJvTFDaysPrinter.DrawColHdr(aCanvas: TCanvas; Index: Integer;
+procedure TJvTFDaysPrinter.DrawColHdr(ACanvas: TCanvas; Index: Integer;
   PageInfo: TJvTFDaysPageInfo);
 var
-  aRect,
+  ARect,
   TxtRect,
   CalcRect: TRect;
   Txt: String;
@@ -13168,13 +13167,13 @@ var
   TxtHt,
   TxtRectHt: Integer;
 begin
-  aRect := CellRect(Index, -1, PageInfo);
+  ARect := CellRect(Index, -1, PageInfo);
 
   //Txt := Copy(Cols[Index].Title, 1, Length(Cols[Index].Title));
   Txt := Cols[Index].Title;
 
-  aCanvas.Brush.Color := HdrAttr.Color;
-  aCanvas.Font.Assign(HdrAttr.Font);
+  ACanvas.Brush.Color := HdrAttr.Color;
+  ACanvas.Font.Assign(HdrAttr.Font);
 
   Flags := DT_NOPREFIX or DT_CENTER;
   Case ColTitleStyle of
@@ -13187,8 +13186,8 @@ begin
    ctsHide       : Flags := Flags or DT_SINGLELINE or DT_VCENTER;
   end;
 
-  aCanvas.FillRect(aRect);
-  TxtRect := aRect;
+  ACanvas.FillRect(ARect);
+  TxtRect := ARect;
   Windows.InflateRect(TxtRect, -2, -2);
   CalcRect := TxtRect;
 
@@ -13199,7 +13198,7 @@ begin
   if (ColTitleStyle = ctsMultiClip) or
     (ColTitleStyle = ctsMultiEllipsis) then
    begin
-    TxtHt := Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect,
+    TxtHt := Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect,
                       Flags or DT_CALCRECT);
 
     if TxtHt < RectHeight(TxtRect) then
@@ -13213,63 +13212,63 @@ begin
   else
   if (ColTitleStyle = ctsHide) then
    begin
-    Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
+    Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
     if RectWidth(CalcRect) > RectWidth(TxtRect) then
       StrPCopy(PTxt, '');
    end;
 
-  Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
+  Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
   StrDispose(PTxt);
 
-  DrawFrame(aCanvas, aRect, HdrAttr.Frame3D);
+  DrawFrame(ACanvas, ARect, HdrAttr.Frame3D);
 
   if Assigned(FOnDrawColHdr) then
-   FOnDrawColHdr(Self, aCanvas, aRect, Index, False);
+   FOnDrawColHdr(Self, ACanvas, ARect, Index, False);
 end;
 }
 
-procedure TJvTFDaysPrinter.DrawCorner(aCanvas: TCanvas);
+procedure TJvTFDaysPrinter.DrawCorner(ACanvas: TCanvas);
 var
-  aRect: TRect;
+  ARect: TRect;
 begin
-  //group aRect := Rect(0, 0, RowHdrWidth, ColHdrHeight);
-  aRect := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight);
-  with aCanvas do
+  //group ARect := Rect(0, 0, RowHdrWidth, ColHdrHeight);
+  ARect := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight);
+  with ACanvas do
   begin
     Brush.Color := HdrAttr.Color;
-    FillRect(aRect);
+    FillRect(ARect);
 
     if HdrAttr.Frame3D then
-      DrawFrame(aCanvas, aRect, HdrAttr.Frame3D)
+      DrawFrame(ACanvas, ARect, HdrAttr.Frame3D)
     else
     begin
       if RowHdrType = rhFancy then
       begin
         Pen.Color := FancyRowHdrAttr.TickColor;
-        MoveTo(aRect.Right - 1, aRect.Top);
-        LineTo(aRect.Right - 1, aRect.Bottom - 1);
-        MoveTo(aRect.Left, aRect.Bottom - 1);
-        LineTo(aRect.Right, aRect.Bottom - 1);
+        MoveTo(ARect.Right - 1, ARect.Top);
+        LineTo(ARect.Right - 1, ARect.Bottom - 1);
+        MoveTo(ARect.Left, ARect.Bottom - 1);
+        LineTo(ARect.Right, ARect.Bottom - 1);
       end
       else
-        DrawFrame(aCanvas, aRect, False);
+        DrawFrame(ACanvas, ARect, False);
     end;
 
     if Assigned(FOnDrawCorner) then
-      FOnDrawCorner(Self, aCanvas, aRect, agcTopLeft);
+      FOnDrawCorner(Self, ACanvas, ARect, agcTopLeft);
   end;
 end;
 
-procedure TJvTFDaysPrinter.DrawDataCell(aCanvas: TCanvas; ColIndex,
+procedure TJvTFDaysPrinter.DrawDataCell(ACanvas: TCanvas; ColIndex,
   RowIndex: Integer; PageInfo: TJvTFDaysPageInfo);
 var
-  aRect: TRect;
+  ARect: TRect;
   PrimeStartRow,
     PrimeEndRow: Integer;
   CellColor: TColor;
 begin
   // Calc the cell rect
-  with aRect do
+  with ARect do
   begin
     if PageInfo.ShowRowHdr then
       Left := RowHdrWidth
@@ -13307,34 +13306,34 @@ begin
     FOnShadeCell(Self, ColIndex, RowIndex, CellColor);
 
   if CellColor <> Color then
-    with aCanvas do
+    with ACanvas do
     begin
       Brush.Color := CellColor;
-      FillRect(aRect);
+      FillRect(ARect);
     end;
 
   // Draw a line across the bottom and down the right side
-  with aCanvas do
+  with ACanvas do
   begin
     Pen.Color := GridLineColor;
     Pen.Width := 1;
 
-    MoveTo(aRect.Left, aRect.Bottom - 1);
-    LineTo(aRect.Right, aRect.Bottom - 1);
-    MoveTo(aRect.Right - 1, aRect.Top);
-    LineTo(aRect.Right - 1, aRect.Bottom - 1);
+    MoveTo(ARect.Left, ARect.Bottom - 1);
+    LineTo(ARect.Right, ARect.Bottom - 1);
+    MoveTo(ARect.Right - 1, ARect.Top);
+    LineTo(ARect.Right - 1, ARect.Bottom - 1);
   end;
 
   if Assigned(FOnDrawDataCell) then
-    FOnDrawDataCell(Self, aCanvas, aRect, ColIndex, RowIndex);
+    FOnDrawDataCell(Self, ACanvas, ARect, ColIndex, RowIndex);
 end;
 
-procedure TJvTFDaysPrinter.DrawEmptyColHdr(aCanvas: TCanvas;
+procedure TJvTFDaysPrinter.DrawEmptyColHdr(ACanvas: TCanvas;
   PageInfo: TJvTFDaysPageInfo);
 var
-  aRect: TRect;
+  ARect: TRect;
 begin
-  with aRect do
+  with ARect do
   begin
     Left := RowHdrWidth;
     Top := 0;
@@ -13343,24 +13342,24 @@ begin
     Bottom := CalcGroupColHdrsHeight;
   end;
 
-  with aCanvas do
+  with ACanvas do
   begin
     Brush.Color := HdrAttr.Color;
-    FillRect(aRect);
+    FillRect(ARect);
     Pen.Color := clGray;
-    MoveTo(aRect.Left, aRect.Bottom - 1);
-    LineTo(aRect.Right, aRect.Bottom - 1);
+    MoveTo(ARect.Left, ARect.Bottom - 1);
+    LineTo(ARect.Right, ARect.Bottom - 1);
   end;
 end;
 
-procedure TJvTFDaysPrinter.DrawFancyRowHdrs(aCanvas: TCanvas;
+procedure TJvTFDaysPrinter.DrawFancyRowHdrs(ACanvas: TCanvas;
   PageInfo: TJvTFDaysPageInfo);
 var
   I,
     MajorTickLength,
     MinorTickLength,
     TickLength: Integer;
-  aRect: TRect;
+  ARect: TRect;
   aLabel: string;
   PTxt: PChar;
   PrevHour,
@@ -13369,7 +13368,7 @@ var
     Switch: Boolean;
 begin
   MajorTickLength := GetMajorTickLength;
-  MinorTickLength := GetMinorTickLength(aCanvas);
+  MinorTickLength := GetMinorTickLength(ACanvas);
 
   FirstMajor := True;
   PrevHour := RowToHour(PageInfo.StartRow);
@@ -13379,21 +13378,21 @@ begin
 
     Switch := (CurrentHour <> PrevHour) or (I = PageInfo.EndRow);
 
-    aRect := CellRect(-1, I, PageInfo);
+    ARect := CellRect(-1, I, PageInfo);
     aLabel := GetMinorLabel(I, PageInfo);
     if not RowEndsHour(I) then
       TickLength := MinorTickLength
     else
       TickLength := MajorTickLength;
 
-    DrawMinor(aCanvas, aRect, I, aLabel, TickLength);
+    DrawMinor(ACanvas, ARect, I, aLabel, TickLength);
 
     // Draw Major if needed
     if Switch and (Granularity <> 60) then
     begin
       if I <> PageInfo.StartRow + 1 then
       begin
-        with aRect do
+        with ARect do
         begin
           Left := 0;
           Right := RowHdrWidth - MinorTickLength;
@@ -13426,19 +13425,19 @@ begin
               aLabel := aLabel + 'p';
         end;
 
-        aCanvas.Font.Assign(FancyRowHdrAttr.MajorFont);
-        aCanvas.Brush.Style := bsClear;
+        ACanvas.Font.Assign(FancyRowHdrAttr.MajorFont);
+        ACanvas.Brush.Style := bsClear;
 
         PTxt := StrAlloc((Length(aLabel) + 4) * SizeOf(Char));
         StrPCopy(PTxt, aLabel);
 
-        Windows.DrawText(aCanvas.Handle, PTxt, -1, aRect,
+        Windows.DrawText(ACanvas.Handle, PTxt, -1, ARect,
           DT_NOPREFIX or DT_SINGLELINE or DT_CENTER or
           DT_VCENTER);
         StrDispose(PTxt);
 
         if Assigned(FOnDrawMajorRowHdr) then
-          FOnDrawMajorRowHdr(Self, aCanvas, aRect, I - 1, False);
+          FOnDrawMajorRowHdr(Self, ACanvas, ARect, I - 1, False);
 
         FirstMajor := False;
       end;
@@ -13448,12 +13447,12 @@ begin
   end;
 end;
 
-procedure TJvTFDaysPrinter.DrawFrame(aCanvas: TCanvas; aRect: TRect;
+procedure TJvTFDaysPrinter.DrawFrame(ACanvas: TCanvas; ARect: TRect;
   Draw3D: Boolean);
 var
   OldPenColor: TColor;
 begin
-  with aCanvas, aRect do
+  with ACanvas, ARect do
   begin
     OldPenColor := Pen.Color;
 
@@ -13479,8 +13478,8 @@ begin
   end;
 end;
 
-procedure TJvTFDaysPrinter.DrawListPics(aCanvas: TCanvas;
-  var aRect: TRect; DrawList: TList);
+procedure TJvTFDaysPrinter.DrawListPics(ACanvas: TCanvas;
+  var ARect: TRect; DrawList: TList);
 var
   I: Integer;
   DrawInfo: TJvTFDrawPicInfo;
@@ -13488,7 +13487,7 @@ var
   DestRect: TRect;
 begin
   Pic := TBitmap.Create;
-  Pic.Canvas.Brush.Color := aCanvas.Brush.Color;
+  Pic.Canvas.Brush.Color := ACanvas.Brush.Color;
   try
     for I := 0 to DrawList.Count - 1 do
     begin
@@ -13507,14 +13506,14 @@ begin
         Bottom := DrawInfo.PicTop +
           ScreenToPrinter(DrawInfo.ImageList.Height + 2, False);
       end;
-      PrintBitmap(aCanvas, Rect(0, 0, Pic.Width, Pic.Height), DestRect, Pic);
+      PrintBitmap(ACanvas, Rect(0, 0, Pic.Width, Pic.Height), DestRect, Pic);
     end;
   finally
     Pic.Free;
   end;
 end;
 
-procedure TJvTFDaysPrinter.DrawMinor(aCanvas: TCanvas; aRect: TRect;
+procedure TJvTFDaysPrinter.DrawMinor(ACanvas: TCanvas; ARect: TRect;
   RowNum: Integer; const LabelStr: string; TickLength: Integer);
 var
   MinorRect,
@@ -13522,51 +13521,51 @@ var
   PTxt: PChar;
 begin
   // do the background shading
-  aCanvas.Brush.Color := FancyRowHdrAttr.Color;
-  aCanvas.FillRect(aRect);
+  ACanvas.Brush.Color := FancyRowHdrAttr.Color;
+  ACanvas.FillRect(ARect);
 
-  MinorRect := aRect;
-  MinorRect.Left := MinorRect.Right - GetMinorTickLength(aCanvas);
+  MinorRect := ARect;
+  MinorRect.Left := MinorRect.Right - GetMinorTickLength(ACanvas);
 
-  with aCanvas do
+  with ACanvas do
   begin
     // draw the right border line
     Pen.Color := FancyRowHdrAttr.TickColor;
-    MoveTo(aRect.Right - 1, aRect.Top);
-    LineTo(aRect.Right - 1, aRect.Bottom);
+    MoveTo(ARect.Right - 1, ARect.Top);
+    LineTo(ARect.Right - 1, ARect.Bottom);
 
     // now draw the tick
-    MoveTo(aRect.Right - 1, aRect.Bottom - 1);
-    LineTo(aRect.Right - 1 - TickLength, aRect.Bottom - 1);
+    MoveTo(ARect.Right - 1, ARect.Bottom - 1);
+    LineTo(ARect.Right - 1 - TickLength, ARect.Bottom - 1);
   end;
 
   // set up a 2 pel margin on the right and bottom sides
-  TxtRect := aRect;
+  TxtRect := ARect;
   TxtRect.Right := TxtRect.Right - 2;
   TxtRect.Bottom := TxtRect.Bottom - 2;
 
   // now draw the LabelStr right aligned
-  aCanvas.Font.Assign(FancyRowHdrAttr.MinorFont);
-  aCanvas.Brush.Style := bsClear;
+  ACanvas.Font.Assign(FancyRowHdrAttr.MinorFont);
+  ACanvas.Brush.Style := bsClear;
 
   PTxt := StrAlloc((Length(LabelStr) + 4) * SizeOf(Char));
   StrPCopy(PTxt, LabelStr);
 
-  Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect,
+  Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect,
     DT_SINGLELINE or DT_RIGHT or DT_NOPREFIX or DT_VCENTER);
   StrDispose(PTxt);
 
   if Assigned(FOnDrawMinorRowHdr) then
-    FOnDrawMinorRowHdr(Self, aCanvas, aRect, RowNum, False);
+    FOnDrawMinorRowHdr(Self, ACanvas, ARect, RowNum, False);
 end;
 
-procedure TJvTFDaysPrinter.DrawRowHdr(aCanvas: TCanvas; Index: Integer;
+procedure TJvTFDaysPrinter.DrawRowHdr(ACanvas: TCanvas; Index: Integer;
   PageInfo: TJvTFDaysPageInfo);
 var
-  aRect: TRect;
+  ARect: TRect;
   Txt: string;
 begin
-  with aRect do
+  with ARect do
   begin
     Left := 0;
     if PageInfo.ShowColHdr then
@@ -13581,15 +13580,15 @@ begin
 
   Txt := FormatDateTime(TimeFormat, RowToTime(Index));
 
-  aCanvas.Brush.Color := HdrAttr.Color;
-  aCanvas.Font.Assign(HdrAttr.Font);
+  ACanvas.Brush.Color := HdrAttr.Color;
+  ACanvas.Font.Assign(HdrAttr.Font);
 
-  DrawTxt(aCanvas, aRect, Txt, taCenter, vaCenter);
+  DrawTxt(ACanvas, ARect, Txt, taCenter, vaCenter);
 
-  DrawFrame(aCanvas, aRect, HdrAttr.Frame3D);
+  DrawFrame(ACanvas, ARect, HdrAttr.Frame3D);
 
   if Assigned(FOnDrawRowHdr) then
-    FOnDrawRowHdr(Self, aCanvas, aRect, Index, False);
+    FOnDrawRowHdr(Self, ACanvas, ARect, Index, False);
 end;
 
 procedure TJvTFDaysPrinter.EnsureRow(RowNum: Integer);
@@ -13598,7 +13597,7 @@ begin
     raise EJvTFPrinterError.CreateResFmt(@RsEInvalidRowd, [RowNum]);
 end;
 
-procedure TJvTFDaysPrinter.FilterPicDrawList(aRect: TRect;
+procedure TJvTFDaysPrinter.FilterPicDrawList(ARect: TRect;
   DrawList: TList; var PicsHeight: Integer);
 var
   I,
@@ -13617,7 +13616,7 @@ begin
     DrawInfo := TJvTFDrawPicInfo(DrawList[DrawList.Count - 1]);
     PicRight := DrawInfo.PicLeft + ScreenToPrinter(DrawInfo.ImageList.Width,
       True);
-    if PicRight >= aRect.Right then
+    if PicRight >= ARect.Right then
     begin
       while DrawList.Count > 0 do
       begin
@@ -13628,7 +13627,7 @@ begin
   end;
 
   PicsHeight := 0;
-  NextPicLeft := aRect.Left;
+  NextPicLeft := ARect.Left;
   I := 0;
   while I < DrawList.Count do
   begin
@@ -13639,8 +13638,8 @@ begin
       PicBottom := PicTop + ScreenToPrinter(ImageList.Height + 2, False);
       DrawIt := True;
 
-      if Thresholds.WholePicsOnly and (PicRight >= aRect.Right) or
-        (PicBottom >= aRect.Bottom) then
+      if Thresholds.WholePicsOnly and (PicRight >= ARect.Right) or
+        (PicBottom >= ARect.Bottom) then
         DrawIt := False;
 
       if DrawIt then
@@ -13833,16 +13832,16 @@ begin
   Result := FormatDateTime(aTimeFormat, RowToTime(RowNum));
 end;
 
-function TJvTFDaysPrinter.GetMinorTickLength(aCanvas: TCanvas): Integer;
+function TJvTFDaysPrinter.GetMinorTickLength(ACanvas: TCanvas): Integer;
 var
   TempFont: TFont;
 begin
   TempFont := TFont.Create;
   try
-    TempFont.Assign(aCanvas.Font);
-    aCanvas.Font.Assign(FancyRowHdrAttr.MinorFont);
-    Result := aCanvas.TextWidth('22:22a');
-    aCanvas.Font.Assign(TempFont);
+    TempFont.Assign(ACanvas.Font);
+    ACanvas.Font.Assign(FancyRowHdrAttr.MinorFont);
+    Result := ACanvas.TextWidth('22:22a');
+    ACanvas.Font.Assign(TempFont);
   finally
     TempFont.Free;
   end;
@@ -14222,7 +14221,7 @@ begin
   FThresholds.Assign(Value);
 end;
 
-function TJvTFDaysPrinter.TimeToRow(aTime: TTime): Integer;
+function TJvTFDaysPrinter.TimeToRow(ATime: TTime): Integer;
 var
   TotalMins: Integer;
   WorkHours,
@@ -14232,7 +14231,7 @@ var
   H, M, S, MS: Word;
   Offset: Integer;
 begin
-  DecodeTime(aTime, WorkHours, WorkMins, WorkSecs, WorkMSecs);
+  DecodeTime(ATime, WorkHours, WorkMins, WorkSecs, WorkMSecs);
 
   // Convert the given time to minutes
   DecodeTime(GridStartTime, H, M, S, MS);
@@ -14325,10 +14324,10 @@ begin
   Cols.UpdateTitles;
 end;
 
-procedure TJvTFDaysPrinter.DrawColGroupHdr(aCanvas: TCanvas;
+procedure TJvTFDaysPrinter.DrawColGroupHdr(ACanvas: TCanvas;
   Index: Integer; PageInfo: TJvTFDaysPageInfo; IsGroupHdr: Boolean);
 var
-  aRect,
+  ARect,
     TxtRect,
     CalcRect: TRect;
   Txt: string;
@@ -14340,19 +14339,19 @@ var
 begin
   if IsGroupHdr then
   begin
-    aRect := VirtualGroupHdrRect(Index, PageInfo);
+    ARect := VirtualGroupHdrRect(Index, PageInfo);
     Txt := Cols[Index].GroupTitle;
     UseAttr := GroupHdrAttr;
   end
   else
   begin
-    aRect := CellRect(Index, -1, PageInfo);
+    ARect := CellRect(Index, -1, PageInfo);
     Txt := Cols[Index].Title;
     UseAttr := HdrAttr;
   end;
 
-  aCanvas.Brush.Color := UseAttr.Color;
-  aCanvas.Font.Assign(UseAttr.Font);
+  ACanvas.Brush.Color := UseAttr.Color;
+  ACanvas.Font.Assign(UseAttr.Font);
 
   Flags := DT_NOPREFIX or DT_CENTER;
   case ColTitleStyle of
@@ -14365,8 +14364,8 @@ begin
     ctsHide: Flags := Flags or DT_SINGLELINE or DT_VCENTER;
   end;
 
-  aCanvas.FillRect(aRect);
-  TxtRect := aRect;
+  ACanvas.FillRect(ARect);
+  TxtRect := ARect;
   Windows.InflateRect(TxtRect, -2, -2);
   CalcRect := TxtRect;
 
@@ -14376,7 +14375,7 @@ begin
   if (ColTitleStyle = ctsMultiClip) or
     (ColTitleStyle = ctsMultiEllipsis) then
   begin
-    TxtHt := Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect,
+    TxtHt := Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect,
       Flags or DT_CALCRECT);
 
     if TxtHt < RectHeight(TxtRect) then
@@ -14390,27 +14389,27 @@ begin
   else
   if (ColTitleStyle = ctsHide) then
   begin
-    Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
+    Windows.DrawText(ACanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
     if RectWidth(CalcRect) > RectWidth(TxtRect) then
       StrPCopy(PTxt, '');
   end;
 
-  Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
+  Windows.DrawText(ACanvas.Handle, PTxt, -1, TxtRect, Flags);
   StrDispose(PTxt);
 
-  DrawFrame(aCanvas, aRect, HdrAttr.Frame3D);
+  DrawFrame(ACanvas, ARect, HdrAttr.Frame3D);
 
   if IsGroupHdr then
   begin
     if Assigned(FOnDrawGroupHdr) then
-      FOnDrawGroupHdr(Self, aCanvas, aRect, Index, False);
+      FOnDrawGroupHdr(Self, ACanvas, ARect, Index, False);
   end
   else
   if Assigned(FOnDrawColHdr) then
-    FOnDrawColHdr(Self, aCanvas, aRect, Index, False);
+    FOnDrawColHdr(Self, ACanvas, ARect, Index, False);
 end;
 
-procedure TJvTFDaysPrinter.DrawGroupHdrs(aCanvas: TCanvas;
+procedure TJvTFDaysPrinter.DrawGroupHdrs(ACanvas: TCanvas;
   PageInfo: TJvTFDaysPageInfo);
 var
   CurrGroup: string;
@@ -14419,12 +14418,12 @@ begin
   if CalcGroupHdrHeight > 0 then
   begin
     CurrGroup := Cols[PageInfo.StartCol].GroupTitle;
-    DrawColGroupHdr(aCanvas, PageInfo.StartCol, PageInfo, True);
+    DrawColGroupHdr(ACanvas, PageInfo.StartCol, PageInfo, True);
     for I := PageInfo.StartCol + 1 to PageInfo.EndCol do
       if Cols[I].GroupTitle <> CurrGroup then
       begin
         CurrGroup := Cols[I].GroupTitle;
-        DrawColGroupHdr(aCanvas, I, PageInfo, True);
+        DrawColGroupHdr(ACanvas, I, PageInfo, True);
       end;
   end;
 end;

@@ -171,7 +171,7 @@ var
 begin
   for I := Low(TLogicRule) to High(TLogicRule) do
   begin
-    cbRule.items.Add(LogicRuleLabels[I]);
+    cbRule.Items.Add(LogicRuleLabels[I]);
     Item := NewItem(LogicRuleLabels[I], 0, False, True, nil, 255, '');
     pmRule.Items.Add(Item);
   end;

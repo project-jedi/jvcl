@@ -306,7 +306,7 @@ uses
   Dlgs, JvDateTimeForm,
   {$ENDIF VCL}
   {$IFDEF LINUX}
-	JvQRegistryIniFile,
+  JvQRegistryIniFile,
   {$ENDIF LINUX}
   JvTypes, JvStringsForm, JvDsgnConsts, JvConsts;
 
@@ -324,10 +324,10 @@ begin
   if E = Low(Longint) then
     Result := RsMinLong
   else
-  if E = High(ShortInt) then
+  if E = High(Shortint) then
     Result := RsMaxShort
   else
-  if E = Low(ShortInt) then
+  if E = Low(Shortint) then
     Result :=RsMinShort
   else
   if E = High(Word) then
@@ -502,7 +502,6 @@ function TJvStringsProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog, paRevertable];
 end;
-
 
 //=== { TJvStringsProperty } =================================================
 
@@ -1128,7 +1127,7 @@ end;
 
 const
   { context ids for the Color Editor, from VCLEditors }
-  hcDColorEditor      = 25010;
+  hcDColorEditor = 25010;
 
 procedure TColorPropertyEx.Edit;
 var
@@ -1153,7 +1152,7 @@ var
     {$IFDEF LINUX}
     IniFile := TJvRegistryIniFile.Create(sDelphiKey);
     try
-      if IniFile.OpenKey(SCustomColors, false) then
+      if IniFile.OpenKey(SCustomColors, False) then
       begin
         IniFile.ReadSectionValues(ColorDialog.CustomColors);
         IniFile.CloseKey;
@@ -1162,7 +1161,7 @@ var
       { Ignore errors reading values }
     end;
     {$ENDIF LINUX}
-	end;
+  end;
 
   procedure SaveCustomColors;
   var
@@ -1172,7 +1171,7 @@ var
     {$IFDEF LINUX}
     if IniFile <> nil then
     with IniFile, ColorDialog do
-      if OpenKey(SCustomColors, true) then
+      if OpenKey(SCustomColors, True) then
       begin
         for I := 0 to CustomColors.Count - 1 do
         begin
@@ -1200,7 +1199,7 @@ var
             WriteString(SCustomColors, S, CustomColors.Values[S]);
           end;
         end;
-     {$ENDIF MSWINDOWS}
+    {$ENDIF MSWINDOWS}
   end;
 
 begin
@@ -1245,6 +1244,9 @@ end;
 
 procedure TColorPropertyEx.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
+var
+  Right: Integer;
+  OldPenColor, OldBrushColor: TColor;
 
   function ColorToBorderColor(AColor: TColor): TColor;
   type
@@ -1265,9 +1267,7 @@ procedure TColorPropertyEx.ListDrawValue(const Value: string; ACanvas: TCanvas;
     else
       Result := AColor;
   end;
-var
-  Right: Integer;
-  OldPenColor, OldBrushColor: TColor;
+
 begin
   Right := (ARect.Bottom - ARect.Top) {* 2} + ARect.Left;
   if ACanvas = nil then exit;
@@ -1342,6 +1342,7 @@ procedure DefaultPropertyListDrawValue(const Value: string; Canvas: TCanvas;
 begin
   Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Value);
 end;
+
 {$ENDIF VisualCLX}
 
 end.

@@ -139,7 +139,7 @@ begin
 
   if ListBoxFields.ItemIndex >= 0 then
   begin
-    SelectedText := ListBoxFields.Items[ListboxFields.ItemIndex];
+    SelectedText := ListBoxFields.Items[ListBoxFields.ItemIndex];
     Count := StrSplit(SelectedText, ':', Chr(0), SubFields, 2); // Look for Colon
   end
   else
@@ -342,7 +342,7 @@ begin
   try
     FUpdating := True;
     ListBoxFields.Items.Add(S);
-    ListboxFields.ItemIndex := -1; // make sure no new item is selected, so we can add another.
+    ListBoxFields.ItemIndex := -1; // make sure no new item is selected, so we can add another.
     UpdateCsvStr;
     EditFieldName.Text := '';
     ActiveControl := EditFieldName;
@@ -424,10 +424,10 @@ begin
     Exit; // can't move an invalid item up, or item 0
   // swap selected, with selected-1 (moves selected item up)
   FUpdating := True;
-  TempStr := ListboxFields.Items[Selected - 1];
-  ListboxFields.Items[Selected - 1] := ListboxFields.Items[Selected];
-  ListboxFields.Items[Selected] := TempStr;
-  ListboxFields.ItemIndex := ListboxFields.ItemIndex - 1;
+  TempStr := ListBoxFields.Items[Selected - 1];
+  ListBoxFields.Items[Selected - 1] := ListBoxFields.Items[Selected];
+  ListBoxFields.Items[Selected] := TempStr;
+  ListBoxFields.ItemIndex := ListBoxFields.ItemIndex - 1;
   UpdateCsvStr;
   FUpdating := False;
 end;
@@ -445,10 +445,10 @@ begin
 
   // swap selected, with selected+1 (moves selected item down)
   FUpdating := True;
-  TempStr := ListboxFields.Items[Selected + 1];
-  ListboxFields.Items[Selected + 1] := ListboxFields.Items[Selected];
-  ListboxFields.Items[Selected] := TempStr;
-  ListboxFields.ItemIndex := ListboxFields.ItemIndex + 1;
+  TempStr := ListBoxFields.Items[Selected + 1];
+  ListBoxFields.Items[Selected + 1] := ListBoxFields.Items[Selected];
+  ListBoxFields.Items[Selected] := TempStr;
+  ListBoxFields.ItemIndex := ListBoxFields.ItemIndex + 1;
   UpdateCsvStr;
   FUpdating := False;
 end;
@@ -461,8 +461,8 @@ begin
   if Item < 0 then
     Exit; // can't delete, nothing selected.
   FUpdating := True;
-  ListboxFields.Items.Delete(Item);
-  ListboxFields.ItemIndex := -1;
+  ListBoxFields.Items.Delete(Item);
+  ListBoxFields.ItemIndex := -1;
   UpdateCsvStr;
   FUpdating := False;
 end;

@@ -193,7 +193,7 @@ end;
 
 procedure TJvgMultipleResourceEdit.FormCreate(Sender: TObject);
 begin
-  ControlsList := TList.create;
+  ControlsList := TList.Create;
 end;
 
 procedure TJvgMultipleResourceEdit.FormDestroy(Sender: TObject);

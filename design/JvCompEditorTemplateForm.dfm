@@ -45,9 +45,6 @@ object JvgCompEditorTemplate: TJvgCompEditorTemplate
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      504
-      53)
     object btnCancel1: TButton
       Left = 418
       Top = 14

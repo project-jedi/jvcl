@@ -242,7 +242,7 @@ begin
     Pen.Color := Brush.Color;
     Rectangle(ARect.Left, ARect.Top, vRight, ARect.Bottom);
     IdentToUnlitColor(Value, Integer(TmpColor));
-    Brush.Color := TMpColor;
+    Brush.Color := TmpColor;
     Pen.Color := JvColorToBorderColor(ColorToRGB(Brush.Color), ASelected);
     Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, ARect.Bottom - 1);
     Brush.Color := vOldBrushColor;

@@ -703,7 +703,7 @@ begin
           if FrameName = '' then
             FrameName := Format('<%s>', [Controller.Frames[I].Name]);
           FrameName := FrameName + ' - ' + cFrameDescriptions[Frame.FrameID];
-          FrameListbox.Items.AddObject(FrameName, Frame);
+          FrameListBox.Items.AddObject(FrameName, Frame);
         end;
       end;
 
@@ -826,7 +826,7 @@ begin
   begin
     if FileName = '' then
     begin
-      MessageDlg(RSID3Err_NoFileSpecified, mtError, [mbOK], 0);
+      MessageDlg(RsID3Err_NoFileSpecified, mtError, [mbOK], 0);
       Exit;
     end;
 
@@ -931,7 +931,7 @@ var
   procedure DrawRect(Item: Integer);
   begin
     if Item <> -1 then
-      with FramelistBox do
+      with FrameListBox do
         Canvas.DrawFocusRect(ItemRect(Item));
     FFocusRectItem := Item;
   end;
