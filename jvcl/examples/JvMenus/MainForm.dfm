@@ -95,8 +95,7 @@ object frmMain: TfrmMain
       
         'This also allows you to write your own Item Painter to suit your' +
         ' needs. To see an '
-      
-        'example of this, please have a look at the TJvRichedit demo')
+      'example of this, please have a look at the TJvRichedit demo')
     ReadOnly = True
     TabOrder = 5
   end
@@ -128,6 +127,7 @@ object frmMain: TfrmMain
     end
     object Other1: TMenuItem
       Caption = '&Other'
+      ImageIndex = 1
       object Sub11: TMenuItem
         Caption = 'Sub1'
         object Hello1: TMenuItem
