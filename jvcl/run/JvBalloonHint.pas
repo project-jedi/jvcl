@@ -36,6 +36,9 @@ uses
   Windows, Controls, Classes, Graphics, Messages, Forms, ImgList,
   JvComponent;
 
+const
+  CJvBallonHintVisibleTimeDefault = 5000;
+
 type
   TJvStemSize = (ssSmall, ssNormal, ssLarge);
   TJvIconKind = (ikCustom, ikNone, ikApplication, ikError, ikInformation, ikQuestion, ikWarning);
@@ -101,11 +104,11 @@ type
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     {$IFNDEF COMPILER6_UP}
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure CreateParams(var Params: TCreateParams); override;
     {$IFDEF COMPILER6_UP}
     procedure NCPaint(DC: HDC); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure Paint; override;
 
     function CreateRegion: HRGN;
@@ -223,16 +226,16 @@ type
     destructor Destroy; override;
 
     procedure ActivateHint(ACtrl: TControl; const AHint: string; const AHeader: string = '';
-      const VisibleTime: Integer = 5000); overload;
+      const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault); overload;
     procedure ActivateHint(ACtrl: TControl; const AHint: string; const AImageIndex: TImageIndex;
-      const AHeader: string = ''; const VisibleTime: Integer = 5000); overload;
+      const AHeader: string = ''; const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault); overload;
     procedure ActivateHint(ACtrl: TControl; const AHint: string; const AIconKind: TJvIconKind;
-      const AHeader: string = ''; const VisibleTime: Integer = 5000); overload;
+      const AHeader: string = ''; const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault); overload;
     procedure ActivateHintPos(AAnchorWindow: TCustomForm; AAnchorPosition: TPoint;
-      const AHeader, AHint: string; const VisibleTime: Integer = 5000;
+      const AHeader, AHint: string; const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault;
       const AIconKind: TJvIconKind = ikInformation; const AImageIndex: TImageIndex = -1);
     procedure ActivateHintRect(ARect: TRect; const AHeader, AHint: string;
-      const VisibleTime: Integer = 5000; const AIconKind: TJvIconKind = ikInformation;
+      const VisibleTime: Integer = CJvBallonHintVisibleTimeDefault; const AIconKind: TJvIconKind = ikInformation;
       const AImageIndex: TImageIndex = -1);
     procedure CancelHint;
   published
@@ -265,7 +268,8 @@ type
 implementation
 
 uses
-  SysUtils, CommCtrl, Registry, Math, MMSystem, // needed for sndPlaySound
+  SysUtils, CommCtrl, Registry, Math,
+  MMSystem, // needed for sndPlaySound
   ComCtrls, // needed for GetComCtlVersion
   JvThemes, JvWndProcHook;
 
@@ -339,12 +343,12 @@ const
   {$EXTERNALSYM SPI_GETTOOLTIPFADE}
 
 type
-  TAnimateWindowProc = function(HWND: HWND; dwTime: DWORD; dwFlags: DWORD): BOOL; stdcall;
+  TAnimateWindowProc = function(hWnd: HWND; dwTime: DWORD; dwFlags: DWORD): BOOL; stdcall;
 
 var
   AnimateWindowProc: TAnimateWindowProc = nil;
 
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 function IsWinXP_UP: Boolean;
 begin
@@ -354,15 +358,12 @@ begin
 end;
 
 {$IFDEF COMPILER6_UP}
-
 function InternalClientToParent(AControl: TControl; const Point: TPoint;
   AParent: TWinControl): TPoint;
 begin
   Result := AControl.ClientToParent(Point, AParent);
 end;
-
 {$ELSE}
-
 function InternalClientToParent(AControl: TControl; const Point: TPoint;
   AParent: TWinControl): TPoint;
 var
@@ -391,7 +392,6 @@ begin
   if LParent = nil then
     raise EInvalidOperation.CreateFmt(SParentGivenNotAParent, [AControl.Name]);
 end;
-
 {$ENDIF COMPILER6_UP}
 
 //=== TJvBalloonWindow =======================================================
@@ -480,8 +480,10 @@ begin
   end;
 
   case FCurrentPosition of
-    bpLeftDown, bpRightDown: FDeltaY := FTipHeight;
-    bpLeftUp, bpRightUp: FDeltaY := 0;
+    bpLeftDown, bpRightDown:
+      FDeltaY := FTipHeight;
+    bpLeftUp, bpRightUp:
+      FDeltaY := 0;
   end;
 end;
 
@@ -652,8 +654,10 @@ begin
   end;
 
   case FCurrentPosition of
-    bpLeftDown, bpRightDown: FDeltaY := FTipHeight;
-    bpLeftUp, bpRightUp: FDeltaY := 0;
+    bpLeftDown, bpRightDown:
+      FDeltaY := FTipHeight;
+    bpLeftUp, bpRightUp:
+      FDeltaY := 0;
   end;
 end;
 
@@ -674,7 +678,6 @@ end;
 constructor TJvBalloonWindow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
 end;
 
@@ -683,7 +686,6 @@ const
   CS_DROPSHADOW = $00020000;
 begin
   inherited CreateParams(Params);
-
   { Drop shadow in combination with custom animation may cause blurry effect,
     no solution.
   }
@@ -811,7 +813,7 @@ procedure TJvBalloonWindow.NCPaint(DC: HDC);
 begin
   { Do nothing, thus prevent TJvHintWindow from drawing }
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvBalloonWindow.Paint;
 var
@@ -885,7 +887,7 @@ procedure TJvBalloonWindow.WMNCPaint(var Msg: TMessage);
 begin
   { Do nothing, thus prevent TJvHintWindow from drawing }
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 //=== TJvBalloonHint =========================================================
 
@@ -1050,7 +1052,7 @@ begin
     Classes.DeallocateHWnd(FHandle);
     {$ELSE}
     DeallocateHWnd(FHandle);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
 
   TGlobalCtrl.Instance.Remove(Self);
 
@@ -1064,7 +1066,7 @@ begin
     FHandle := Classes.AllocateHWnd(WndProc);
     {$ELSE}
     FHandle := AllocateHWnd(WndProc);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   Result := FHandle;
 end;
 
@@ -1275,10 +1277,8 @@ end;
 
 procedure TJvBalloonHint.SetOptions(const Value: TJvBalloonOptions);
 begin
-  if Value = FOptions then
-    Exit;
-
-  FOptions := Value;
+  if Value <> FOptions then
+    FOptions := Value;
 end;
 
 procedure TJvBalloonHint.SetUseBalloonAsApplicationHint(
@@ -1323,18 +1323,13 @@ begin
         ApplicationHandleException(Self);
       {$ELSE}
       Application.HandleException(Self);
-      {$ENDIF}
+      {$ENDIF COMPILER6_UP}
     end
     else
       Result := DefWindowProc(Handle, Msg, WParam, LParam);
 end;
 
 //=== TGlobalCtrl ============================================================
-
-procedure TGlobalCtrl.Add(ABalloonHint: TJvBalloonHint);
-begin
-  FCtrls.Add(ABalloonHint);
-end;
 
 constructor TGlobalCtrl.Create(AOwner: TComponent);
 begin
@@ -1371,6 +1366,11 @@ begin
   FDefaultImages.Free;
   FCtrls.Free;
   inherited Destroy;
+end;
+
+procedure TGlobalCtrl.Add(ABalloonHint: TJvBalloonHint);
+begin
+  FCtrls.Add(ABalloonHint);
 end;
 
 procedure TGlobalCtrl.DrawHintImage(Canvas: TCanvas; X, Y: Integer; const ABkColor: TColor);
@@ -1635,7 +1635,7 @@ procedure TJvBalloonWindowEx.ChangeCloseState(const AState: Cardinal);
 var
   Details: TThemedElementDetails;
   Button: TThemedToolTip;
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
 begin
   if AState <> FCloseState then
   begin
@@ -1784,7 +1784,7 @@ begin
     ShowWindow(Handle, SW_SHOWNOACTIVATE);
   {$IFNDEF COMPILER6_UP}
   Invalidate;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvBalloonWindowEx.MoveWindow(NewPos: TPoint);
@@ -1828,7 +1828,7 @@ begin
       Dec(FCloseBtnRect.Left);
       Dec(FCloseBtnRect.Top);
     end;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     ChangeCloseState(DFCS_FLAT);
   end;
 
@@ -1929,6 +1929,7 @@ begin
     inherited;
 end;
 
+{$IFNDEF COMPILER6_UP}
 procedure InitD5Controls;
 var
   UserHandle: HMODULE;
@@ -1937,12 +1938,15 @@ begin
   if UserHandle <> 0 then
     @AnimateWindowProc := GetProcAddress(UserHandle, 'AnimateWindow');
 end;
+{$ENDIF COMPILER6_UP}
 
 initialization
   {$IFNDEF COMPILER6_UP}
   InitD5Controls;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
+
 finalization
   FreeAndNil(GGlobalCtrl);
+
 end.
 

@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: jvBandForms.PAS, released on 2001-07-10.
+The Original Code is: kvBandForms.PAS, released on 2001-07-10.
 
 The Initial Developer of the Original Code is Chiang Seng Chang <cs@ctzen.com>
 Portions created by Chiang Seng Chang are Copyright (C) 2001 Chiang Seng Chang.
@@ -31,8 +31,9 @@ unit JvBandForms;
 interface
 
 uses
-  Classes, Forms, Controls, Windows, Messages, Menus,
-  ComObj;
+  Classes, Forms, Controls, Windows, Messages, Menus, ComObj;
+
+// (rom) T2H IFDEFs should be removed
 
 type
   {:Band object mode flag.
@@ -81,12 +82,12 @@ type
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     property _BandObject: TComObject read FBandObject;
-    {$ENDIF}
+    {$ENDIF T2H}
   public
     {$IFNDEF T2H}
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    {$ENDIF}
+    {$ENDIF T2H}
     {:Band form constructor.
     Use this constructor to create a band form.<br>
     The band object wizard generates code which calls this constructor
@@ -102,7 +103,7 @@ type
     constructor CreateBandForm(const ParentWindow: HWND; const BandObject: TComObject);
     {$IFNDEF T2H}
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
-    {$ENDIF}
+    {$ENDIF T2H}
     {:Returns the minimum size of the band form in a TPointL structure.
     Minimum size is obtained from in the properties Constraints.MinWidth and
     Constraints.MinHeight.<br>
@@ -152,7 +153,7 @@ type
     //  property MDIChildCount;
     //  property MDIChildren;
     //  property TileMode;
-    {$ENDIF}
+    {$ENDIF T2H}
   published
     {:Specifies the band object's mode flags.
     Used by IDeskBand::GetBandInfo.
@@ -294,7 +295,7 @@ type
     property OnShow;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF}
+    {$ENDIF T2H}
   end;
 
 implementation
@@ -314,6 +315,7 @@ begin
   FormStyle := fsNormal;
   Position := poDesigned;
   Visible := False;
+  // (rom) "ParentFont := False;" missing?
 end;
 
 constructor TJvBandForm.CreateBandForm(const ParentWindow: HWND; const BandObject: TComObject);
@@ -389,13 +391,11 @@ end;
 procedure TJvBandForm.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   case Operation of
     opRemove:
-      begin
-        if AComponent = FBandContextMenu then
-          FBandContextMenu := nil;
-      end;
+      if AComponent = FBandContextMenu then
+        FBandContextMenu := nil;
   end;
 end;
 
