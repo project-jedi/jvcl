@@ -371,6 +371,7 @@ begin
   BlindCopy.Clear;
   CarbonCopy.Clear;
   Recipient.Clear;
+  Attachment.Clear;
   Subject := '';
   with FReadedMail do
   begin
