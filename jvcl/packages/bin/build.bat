@@ -19,34 +19,38 @@ if EXIST xml cd bin
 
 if "%1" == "all" goto ALL
 
-buildtarget.exe %1 -s %2 %3 %4 %5 %6 %7 %8 %9
+buildtarget.exe -MAKE -s %1 %2 %3 %4 %5 %6 %7 %8 %9
 goto END
 
 :ALL
 echo.
 
 echo ################################ BCB 5 #########################################
-buildtarget.exe c5 -s %2 %3 %4
+buildtarget.exe c5 -MAKE -s %2 %3 %4
 if ERRORLEVEL 1 pause
 echo.
 
 echo ################################ BCB 6 #########################################
-buildtarget.exe c6 -s %2 %3 %4
+buildtarget.exe c6 -MAKE -s %2 %3 %4
 if ERRORLEVEL 1 pause
 echo.
 
 echo ############################### Delphi 5 #######################################
-buildtarget.exe d5 -s %2 %3 %4
+buildtarget.exe d5 -MAKE -s %2 %3 %4
 if ERRORLEVEL 1 pause
 echo.
 
 echo ############################### Delphi 6 #######################################
-buildtarget.exe d6 -s %2 %3 %4
+buildtarget.exe d6 -MAKE -s %2 %3 %4
 if ERRORLEVEL 1 pause
 echo.
 
 echo ############################### Delphi 7 #######################################
-buildtarget.exe d7 -s %2 %3 %4
+buildtarget.exe d7 -MAKE -s %2 %3 %4
+if ERRORLEVEL 1 pause
+
+echo ############################# Delphi 7 CLX #####################################
+buildtarget.exe d7clx -MAKE -s %2 %3 %4
 if ERRORLEVEL 1 pause
 
 :END
