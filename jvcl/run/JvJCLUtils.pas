@@ -62,7 +62,10 @@ uses
   {$IFDEF VisualCLX}
   Qt, QWindows, QStdCtrls, 
   {$ENDIF VisualCLX}
-  StrUtils, TypInfo;
+  {$IFDEF HAS_UNIT_STRUTILS}
+  StrUtils,
+  {$ENDIF HAS_UNIT_STRUTILS}
+  TypInfo;
 
 const
   {$IFDEF MSWINDOWS}
