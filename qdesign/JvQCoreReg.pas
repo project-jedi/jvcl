@@ -78,14 +78,18 @@ begin
     TJvAppRegistryStorage,
     {$ENDIF MSWINDOWS}
     TJvAppIniFileStorage]);
+  RegisterComponents(RsPaletteDialog, [TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog]);
 
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCLX', TJVCLAboutDialogProperty);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'DirectoryName', TJvDirectoryProperty);
-  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Hint', TJvHintProperty);
-  RegisterPropertyEditor(TypeInfo(TCaption), BaseClass, '', TJvHintProperty);
+  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
+  RegisterPropertyEditor(TypeInfo(widestring), BaseClass, '', TJvHintProperty);
+//  RegisterPropertyEditor(TypeInfo(widestring), BaseClass, 'Hint', TJvHintProperty);
+//  RegisterPropertyEditor(TypeInfo(TCaption), BaseClass, '', TJvHintProperty);
+  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Text', TJvHintProperty);
 
   RegisterPropertyEditor(TypeInfo(Integer), BaseClass, '', TJvIntegerProperty);
   RegisterPropertyEditor(TypeInfo(Shortint), BaseClass, '', TJvIntegerProperty);
@@ -115,7 +119,6 @@ begin
   RegisterActions(RsJVCLActionsCategory, [TJvSendMailAction, TJvWebAction], TJvStandardActions);
   RegisterZoom;
 
-  RegisterComponents(RsPaletteDialog, [TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog]);
 
   end;
 
