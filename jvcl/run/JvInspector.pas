@@ -6387,7 +6387,7 @@ begin
     begin
       FEditCtrlDestroying := True;
       try
-        if Inspector.CanFocus then
+        if Inspector.CanFocus and EditCtrl.Focused then
           Inspector.SetFocus;
         {$IFDEF VCL}
         EditCtrl.WindowProc := Edit_WndProc;
