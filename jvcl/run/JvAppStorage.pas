@@ -134,6 +134,9 @@ type
     FOnEncryptPropertyValue: TJvAppStorageCryptEvent;
     FOnDecryptPropertyValue: TJvAppStorageCryptEvent;
     FCryptEnabledStatus: Integer;
+    FAutoFlush: Boolean;
+    FUpdateCount:integer;
+    function GetUpdating: boolean;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     //Returns the property count of an instance
@@ -298,11 +301,22 @@ type
 
     function EncryptPropertyValue (Value : String) : String;
     function DecryptPropertyValue (Value : String) : String;
-
+    
     property SubStorages: TJvAppSubStorages read FSubStorages write SetSubStorages;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    // (p3) moved Flush, Reload and AutoFlush to the base storage because users
+    // should be able to call Flush and Reload as needed without being dependant on whether
+    // the spcific storage implements it or not. Also made them virtual - if Flush and Reload
+    // doesn't make sense for a specific storage, it shouldn't have to implement them 
+    procedure Flush; virtual;
+    procedure Reload; virtual;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    property Updating:boolean read GetUpdating;
+    property AutoFlush : Boolean read FAutoFlush write FAutoFlush default False;
 
     class function ConcatPaths(const Paths: array of string): string;
     { Resolve a path to it's actual used storage backend and root path. }
@@ -594,7 +608,6 @@ type
   // derived class or Flush would access a deleted object
   TJvCustomAppMemoryFileStorage = class(TJvCustomAppStorage)
   protected
-    FAutoFlush: Boolean;
     FFileName: TFileName;
     FLocation: TFileLocation;
     FLoadedFinished: Boolean;
@@ -613,7 +626,6 @@ type
     property FileName: TFileName read FFileName write SetFileName;
     property Location: TFileLocation read FLocation write SetLocation default flExeFile;
 
-    property AutoFlush : Boolean read FAutoFlush write FAutoFlush default False;
 
     property OnGetFileName: TJvAppStorageGetFileNameEvent
       read FOnGetFileName write FOnGetFileName;
@@ -623,10 +635,6 @@ type
 
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-
-    procedure Flush; virtual; abstract;
-    procedure Reload; virtual; abstract;
 
     property FullFileName: TFileName read GetFullFileName;
   end;
@@ -848,6 +856,7 @@ end;
 constructor TJvCustomAppStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FAutoFlush := False;
   FStorageOptions := GetStorageOptionsClass.Create;
   FSubStorages := TJvAppSubStorages.Create(Self);
   FCryptEnabledStatus := 0;
@@ -855,9 +864,20 @@ end;
 
 destructor TJvCustomAppStorage.Destroy;
 begin
+  Flush;
   FreeAndNil(FSubStorages);
   FreeAndNil(FStorageOptions);
   inherited Destroy;
+end;
+
+procedure TJvCustomAppStorage.Flush;
+begin
+  // do nothing
+end;
+
+procedure TJvCustomAppStorage.Reload;
+begin
+  // do nothing
 end;
 
 procedure TJvCustomAppStorage.Notification(AComponent: TComponent; Operation: TOperation);
@@ -2253,24 +2273,13 @@ constructor TJvCustomAppMemoryFileStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLocation := flExeFile;
-  FAutoFlush := False;
   FLoadedFinished := False;
-end;
-
-destructor TJvCustomAppMemoryFileStorage.Destroy;
-begin
-  Flush;
-  inherited Destroy;
 end;
 
 procedure TJvCustomAppMemoryFileStorage.Loaded;
 begin
-  try
-    inherited loaded;
-  finally
-    FLoadedFinished := True;
-  end;
-  Reload;
+  inherited Loaded;
+  FLoadedFinished := True;
 end;
 
 function TJvCustomAppMemoryFileStorage.DoGetFileName: TFileName;
@@ -2314,7 +2323,7 @@ begin
   if FFileName <> Value then
   begin
     FFileName := Value;
-    if FLoadedFinished then
+    if FLoadedFinished and not Updating then
       Reload;
   end;
 end;
@@ -2324,9 +2333,36 @@ begin
   if FLocation <> Value then
   begin
     FLocation := Value;
-    if FLoadedFinished then
+    if FLoadedFinished and not Updating then
       Reload;
   end;
+end;
+
+
+procedure TJvCustomAppStorage.Loaded;
+begin
+  inherited;
+  if not Updating then
+    Reload;
+end;
+
+procedure TJvCustomAppStorage.BeginUpdate;
+begin
+  Inc(FUpdateCount);
+end;
+
+procedure TJvCustomAppStorage.EndUpdate;
+begin
+  Dec(FUpdateCount);
+  if not Updating and AutoFlush then
+    Flush;
+  if FUpdateCount < 0 then
+    FUpdateCount := 0;
+end;
+
+function TJvCustomAppStorage.GetUpdating: boolean;
+begin
+  Result := FUpdateCount <> 0;
 end;
 
 end.

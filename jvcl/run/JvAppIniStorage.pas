@@ -91,9 +91,6 @@ type
   // and publishes a few properties for them to be
   // used by the user in the IDE
   TJvAppIniFileStorage = class (TJvCustomAppIniStorage)
-  protected
-    procedure WriteValue(const Section, Key, Value: string); override;
-    procedure RemoveValue(const Section, Key: string); override;
   public
     procedure Flush; override;
     procedure Reload; override;
@@ -382,6 +379,7 @@ begin
     if Section = '' then
       raise EJVCLAppStorageError.Create(RsEWriteValueFailed);
     IniFile.WriteString(Section, Key, Value);
+    if AutoFlush and not Updating then Flush;
   end;
 end;
 
@@ -415,9 +413,15 @@ begin
   if IniFile <> nil then
   begin
     if IniFile.ValueExists(Section, Key) then
-      IniFile.DeleteKey(Section, Key)
+    begin
+      IniFile.DeleteKey(Section, Key);
+      if AutoFlush and not Updating then Flush;
+    end
     else if IniFile.SectionExists(Section + '\' + Key) then
+    begin
       IniFile.EraseSection(Section + '\' + Key);
+      if AutoFlush and not Updating then Flush;
+    end;
   end;
 end;
 
@@ -511,22 +515,10 @@ end;
 
 procedure TJvAppIniFileStorage.Reload;
 begin
-  if FileExists(FullFileName) then
+  if FileExists(FullFileName) and not Updating then
     IniFile.Rename(FullFileName, True);
 end;
 
-procedure TJvAppIniFileStorage.RemoveValue(const Section, Key: string);
-begin
-  inherited;
-  if AutoFlush then Flush;
-end;
-
-procedure TJvAppIniFileStorage.WriteValue(const Section, Key,
-  Value: string);
-begin
-  inherited;
-  if AutoFlush then Flush;
-end;
 
 end.
 
