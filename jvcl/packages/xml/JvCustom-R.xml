@@ -60,7 +60,7 @@
     <File Name="..\..\run\JvImagelistViewer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvOwnerDrawViewer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvEditorCommon.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvWideEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvWideHLEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUnicodeEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUnicodeHLEditor.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
