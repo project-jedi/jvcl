@@ -70,7 +70,8 @@ EXTRARESDIRS=.
 DCCOPT=-Q -M
 !endif
 
-MAKE = "$(ROOT)\bin\make.exe" -$(MAKEFLAGS)
+MAKE = "$(ROOT)\bin\make.exe" -l+
+# -$(MAKEFLAGS)
 DCC = "$(ROOT)\bin\dcc32.exe" $(DCCOPT)
 
 #-------------------------------------------------------------------------------
@@ -97,12 +98,12 @@ default: \
 ################################################################################
 BuildJCLdcpFiles:
 	# for C++ targets compile JCL .dcp files
-	IF EXIST "$(ROOT)\bin\bcc32.exe" IF NOT EXIST "$(DCPDIR)\CJcl*.dcp" $(MAKE) -s -f MakeJCLDcp4BCB.mak
+	IF EXIST "$(ROOT)\bin\bcc32.exe" IF NOT EXIST "$(DCPDIR)\CJcl*.dcp" $(MAKE) $(QUIET) -f MakeJCLDcp4BCB.mak
 
 ################################################################################
 BuildJCLdcpFilesForce:
 	# for C++ targets compile JCL .dcp files
-	IF EXIST "$(ROOT)\bin\bcc32.exe" $(MAKE) -s -f MakeJCLDcp4BCB.mak
+	IF EXIST "$(ROOT)\bin\bcc32.exe" $(MAKE) $(QUIET) -f MakeJCLDcp4BCB.mak
 
 ################################################################################
 Resources:
@@ -114,7 +115,7 @@ Resources:
 Bpg2Make.exe:
 	@echo [Compiling: Bpg2Make.exe]
 	@cd $(DEVTOOLS)
-	$(MAKE) -f makefile.mak -s Bpg2Make.exe
+	$(MAKE) -f makefile.mak $(QUIET) Bpg2Make.exe
 	@cd $(DEVTOOLS_BACK)
 	$(DEVTOOLS)\bin\Bpg2Make.exe "..\$(PKGDIR) Packages.bpg"
 
@@ -124,7 +125,7 @@ GeneratePackages:
 	@cd $(DEVTOOLS)
 	#-SET C5PFLAGS=
 	#if $(VERSION)==5 SET C5PFLAGS=-LUvcl50
-	$(MAKE) -f makefile.mak -s pg.exe
+	$(MAKE) $(QUITE) -f makefile.mak pg.exe
 	#-SET C5PFLAGS=
 	@cd $(DEVTOOLS_BACK)
 	echo [Generating: JVCL Packages]
@@ -166,7 +167,7 @@ configfile:
 ################################################################################
 Templates:
 	@echo [Generating: Templates]
-	@$(MAKE) -f makefile.mak "-DCFG=$(CFGFILE)" configfile
+	@$(MAKE) $(QUIET) -f makefile.mak "-DCFG=$(CFGFILE)" configfile
 	#
 	@echo -LE"$(BPLDIR)">>"$(CFGFILE)"
 	@echo -LN"$(DCPDIR)">>"$(CFGFILE)"
@@ -186,7 +187,7 @@ Compile: Bpg2Make.exe CompilePackages
 CompilePackages:
 	@echo [Compiling: Packages]
 	@cd $(JVCLPACKAGEDIR)
-	$(MAKE) -f "$(PKGDIR) Packages.mak" $(MAKEOPTIONS) $(TARGETS)
+	$(MAKE) $(QUIET) -f "$(PKGDIR) Packages.mak" $(MAKEOPTIONS) $(TARGETS)
 	@cd bin
 
 ################################################################################
@@ -201,7 +202,7 @@ Clean:
 ################################################################################
 Installer:
 	@echo [Compiling: Installer]
-	$(MAKE) "-DCFG=..\..\install\JVCLInstall\JVCLInstall.cfg" configfile
+	$(MAKE) $(QUITE) "-DCFG=..\..\install\JVCLInstall\JVCLInstall.cfg" configfile
 	@cd ..\..\install\JVCLInstall
 	#
 	@echo -E"$(JVCLROOT)\bin">>JVCLInstall.cfg

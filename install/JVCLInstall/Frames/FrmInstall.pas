@@ -132,49 +132,47 @@ end;
 
 procedure TFrameInstall.EvCaptureLine(const Text: string;
   var Aborted: Boolean);
+
+var
+  Line: string;
+
+  procedure SetFont(Styles: TFontStyles; Color: TColor = clNone);
+  begin
+    RichEditLog.SelStart := RichEditLog.SelStart - Length(Line) - 2;
+    RichEditLog.SelLength := Length(Line);
+    if Color <> clNone then
+      RichEditLog.SelAttributes.Color := Color;
+    RichEditLog.SelAttributes.Style := Styles;
+    RichEditLog.SelLength := 0;
+  end;
+
 var
   LText: string;
 begin
   Aborted := FAborted;
-  RichEditLog.Lines.Add(Text);
+  Line := Text;
+  if (Text <> '') and (Text[1] = #1) then
+    Delete(Line, 1, 1);
+  RichEditLog.Lines.Add(Line);
   if Text <> '' then
   begin
-    if Text[1] = '[' then
-    begin
-      RichEditLog.SelStart := RichEditLog.SelStart - Length(Text) - 2;
-      RichEditLog.SelLength := Length(Text);
-      RichEditLog.SelAttributes.Style := [fsBold];
-      RichEditLog.SelLength := 0;
-    end
+    if Text[1] = #1 then
+      SetFont([fsBold], clGray)
+    else
+    if (Text[1] = #9) and not StartsWith(Text, #9'Loaded ') then
+      SetFont([], clGray)
+    else if Text[1] = '[' then
+      SetFont([fsBold])
+    else if Text = RsPackagesAreUpToDate then
+      SetFont([], clTeal)
     else if HasText(Text, ['hint: ', 'hinweis: ', 'suggestion: ']) then // do not localize
-    begin
-      RichEditLog.SelStart := RichEditLog.SelStart - Length(Text) - 2;
-      RichEditLog.SelLength := Length(Text);
-      RichEditLog.SelAttributes.Color := clGreen;
-      RichEditLog.SelLength := 0;
-    end
+      SetFont([], clGreen)
     else if HasText(Text, ['warning: ', 'warnung: ', 'avertissement: ']) then // do not localize
-    begin
-      RichEditLog.SelStart := RichEditLog.SelStart - Length(Text) - 2;
-      RichEditLog.SelLength := Length(Text);
-      RichEditLog.SelAttributes.Color := clMaroon;
-      RichEditLog.SelLength := 0;
-    end
+      SetFont([], clMaroon)
     else if HasText(Text, ['error: ', 'fehler: ', 'erreur: ']) then // do not localize
-    begin
-      RichEditLog.SelStart := RichEditLog.SelStart - Length(Text) - 2;
-      RichEditLog.SelLength := Length(Text);
-      RichEditLog.SelAttributes.Color := clRed;
-      RichEditLog.SelLength := 0;
-    end
+      SetFont([], clRed)
     else if HasText(Text, ['fatal: ']) then // do not localize
-    begin
-      RichEditLog.SelStart := RichEditLog.SelStart - Length(Text) - 2;
-      RichEditLog.SelLength := Length(Text);
-      RichEditLog.SelAttributes.Color := clRed;
-      RichEditLog.SelAttributes.Style := [fsBold];
-      RichEditLog.SelLength := 0;
-    end
+      SetFont([fsBold], clRed)
     else
     begin
       LText := TrimLeft(Text);
@@ -182,10 +180,7 @@ begin
          StartsWith(LText, 'Borland ', True) or // do not localize
          StartsWith(LText, 'Copyright ', True) then // do not localize
       begin
-        RichEditLog.SelStart := RichEditLog.SelStart - Length(Text) - 2;
-        RichEditLog.SelLength := Length(Text);
-        RichEditLog.SelAttributes.Style := [fsItalic];
-        RichEditLog.SelLength := 0;
+        SetFont([fsItalic]);
       end
     end;
   end;
@@ -303,7 +298,11 @@ begin
     LblTarget.Caption := Format(RsError, [LblTarget.Hint]);
     BtnDetails.Visible := False;
     RichEditLog.Visible := True;
-    MessageDlg(RsCompileError + #10#10 + AbortReason, mtError, [mbOk], 0);
+    if AbortReason <> '' then
+      AbortReason := RsInstallError + #10#10 + AbortReason
+    else
+      AbortReason := RsInstallError;
+    MessageDlg(AbortReason, mtError, [mbOk], 0);
   end
   else
     LblTarget.Caption := RsComplete;

@@ -78,7 +78,7 @@ resourcestring
  // FrmInstall.pas
 resourcestring
   RsErrorOpeningFile = 'Error opening the file.';
-  RsCompileError = 'An error occured while compiling the packages.';
+  RsInstallError = 'An error occured.';
   RsComplete = 'Complete.';
   RsError = '%s - Error';
   RsCompiling = 'Compiling: %s';

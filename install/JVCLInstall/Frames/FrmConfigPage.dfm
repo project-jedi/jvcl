@@ -61,7 +61,7 @@ object FrameConfigPage: TFrameConfigPage
         #13#10'ThemeManager package must be in the BPL directory.'#13#10'For more i' +
         'nformation see <b>readme.htm</b>'#13#10#13#10'<b>For Delphi 7 this option ' +
         'is allways enabled even if'#13#10'it is not enabled here.</b>'
-      Caption = 'XP Theming (not for Delphi 7)'
+      Caption = '&XP Theming (not for Delphi 7)'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
@@ -75,7 +75,7 @@ object FrameConfigPage: TFrameConfigPage
       Hint = 
         'Enable this if you want to register property and component'#13#10'edit' +
         'ors included in JVCL (for non-JVCL components as well).'
-      Caption = 'Register global design editors'
+      Caption = '&Register global design editors'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
@@ -92,7 +92,7 @@ object FrameConfigPage: TFrameConfigPage
         'e gnugettext.pas unit will be added to the contains list'#13#10'of the' +
         ' JvCore-R package. That means that you cannot add'#13#10'it to another' +
         ' package.'
-      Caption = 'dxgettext support'
+      Caption = 'dxgettext &support'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
@@ -106,7 +106,7 @@ object FrameConfigPage: TFrameConfigPage
       Hint = 
         'Enable this option if you want to register the GIF image'#13#10'Graphi' +
         'c Extensions for Open/Save dialogs.'
-      Caption = 'Register JvGif for .gif'
+      Caption = 'Register Jv&Gif for .gif'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
@@ -120,7 +120,7 @@ object FrameConfigPage: TFrameConfigPage
       Hint = 
         'Disable this if you want some packages that are not yet'#13#10'complet' +
         'ely integrated to JVCL to be stand alone packages.'
-      Caption = 'Use JVCL for all packages'
+      Caption = '&Use JVCL for all packages'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 4
@@ -159,7 +159,7 @@ object FrameConfigPage: TFrameConfigPage
         'Activate this option if you are a JVCL developer.'#13#10'This adds the' +
         ' \run, \common and \design directory to the library paths.'
       AllowGrayed = True
-      Caption = 'JVCL Developer installation'
+      Caption = '&JVCL Developer installation'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 4
@@ -174,7 +174,7 @@ object FrameConfigPage: TFrameConfigPage
         'Remove all JVCL components from the component palettes in'#13#10'order' +
         ' to reinstall in a proper order.'
       AllowGrayed = True
-      Caption = 'Clean JVCL component palettes'
+      Caption = 'Clean JVCL component &palettes'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
@@ -201,7 +201,7 @@ object FrameConfigPage: TFrameConfigPage
         'compiling the modified files.'#13#10#13#10'<c:red><b>WARNING for BCB users' +
         ':</b>'#13#10'This could take up to 10 minutes.'
       AllowGrayed = True
-      Caption = 'Build packages'
+      Caption = 'B&uild packages'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
@@ -216,7 +216,7 @@ object FrameConfigPage: TFrameConfigPage
         'Check this option if you do not want to register'#13#10'the designtime' +
         ' package into the IDE.'
       AllowGrayed = True
-      Caption = 'Compile only'
+      Caption = '&Compile only'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
@@ -232,7 +232,7 @@ object FrameConfigPage: TFrameConfigPage
       inherited LblCaption: TLabel
         Left = 7
         Width = 68
-        Caption = '&BPL Directory:'
+        Caption = 'BP&L Directory:'
       end
       inherited Bevel: TBevel
         Width = 309
@@ -307,8 +307,17 @@ object FrameConfigPage: TFrameConfigPage
     Top = 176
     Width = 241
     Height = 17
-    Caption = 'Compile JCL .dcp files if necessary'
+    Caption = 'Co&mpile JCL .dcp files if necessary'
     TabOrder = 2
+    OnClick = CheckBoxCompileJclDcpClick
+  end
+  object CheckBoxVerbose: TCheckBox
+    Left = 272
+    Top = 200
+    Width = 241
+    Height = 17
+    Caption = '&Verbose compiler output'
+    TabOrder = 3
     OnClick = CheckBoxCompileJclDcpClick
   end
   object ImageListTargets: TImageList

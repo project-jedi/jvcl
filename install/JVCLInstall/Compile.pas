@@ -74,11 +74,13 @@ type
     FOnResourceProgress: TResourceProgressEvent;
     FOnProjectProgress: TProjectProgressEvent;
     FOnProgress: TProgressEvent;
+
     FAbortReason: string;
+    FQuiet: string;
+  protected
     function Make(TargetConfig: ITargetConfig; const Args: string;
       CaptureLine: TCaptureLine; StartDir: string = ''): Integer;
 
-  protected
     procedure CaptureLine(const Line: string; var Aborted: Boolean); virtual;
     procedure CaptureLineGetCompileCount(const Line: string; var Aborted: Boolean);
     procedure CaptureLinePackageCompilation(const Line: string; var Aborted: Boolean);
@@ -126,6 +128,9 @@ const
 
 var
   Compiler: TJVCLCompiler = nil;
+
+resourcestring
+  RsPackagesAreUpToDate = 'Packages are up to date';
 
 implementation
 
@@ -286,7 +291,15 @@ function TJVCLCompiler.Make(TargetConfig: ITargetConfig; const Args: string;
 begin
   if StartDir = '' then
     StartDir := Data.JVCLPackagesDir + '\bin';
-  Result := CaptureExecute('"' + TargetConfig.Target.Make + '"', Args,
+
+  if Data.Verbose then
+  begin
+    // output command line
+    if Assigned(CaptureLine) then
+      CaptureLine(#1 + '"' + TargetConfig.Target.Make + '" -l+ ' + Args, FAborted);
+  end;
+
+  Result := CaptureExecute('"' + TargetConfig.Target.Make + '"', '-l+ ' + Args,
                            StartDir, CaptureLine);
   if Result < 0 then // command not found
     MessageBox(0, PChar(Format(RsCommandNotFound,
@@ -407,7 +420,7 @@ begin
 
       try
        // copy template for PackageGenerator
-        if Make(Data.TargetConfig[i], Args + ' -s Templates', CaptureLine) <> 0 then
+        if Make(Data.TargetConfig[i], Args + FQuiet + ' Templates', CaptureLine) <> 0 then
         begin
           AbortReason := RsErrorGeneratingTemplates;
           Exit;
@@ -420,7 +433,7 @@ begin
         DoPackageProgress(nil, RsCompilingJCL, 2, 3);
 
        // compile dcp files
-        if Make(Data.TargetConfig[i], Args + ' -s Compile', CaptureLine) <> 0 then
+        if Make(Data.TargetConfig[i], Args + FQuiet + ' Compile', CaptureLine) <> 0 then
         begin
           if FileExists(ErrorFileName) then
           begin
@@ -438,7 +451,7 @@ begin
         end;
       finally
        // clean
-        Make(Data.TargetConfig[i], Args + ' -s CleanJcl', CaptureLine);
+        Make(Data.TargetConfig[i], Args + FQuiet + ' CleanJcl', CaptureLine);
 
         DeleteFile(ErrorFileName);
       end;
@@ -465,6 +478,11 @@ var
   TargetConfigs: array of TTargetConfig;
 begin
   Result := True;
+  if Data.Verbose then
+    FQuiet := ''
+  else
+    FQuiet := ' -s';
+    
   AbortReason := '';
   if Data.CompileJclDcp then
     Result := PrepareJCL(Force);
@@ -538,7 +556,7 @@ begin
         TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], False);
 
     if Result or not CmdOptions.KeepFiles then
-      Make(TargetConfig, '-s Clean', CaptureLine);
+      Make(TargetConfig, FQuiet + ' Clean', CaptureLine);
     if Result then
       CaptureLine('[Finished JVCL for VCL installation]', Aborted);
   end;
@@ -557,7 +575,7 @@ begin
         TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], False);
 
     if Result or not CmdOptions.KeepFiles then
-      Make(TargetConfig, '-s Clean', CaptureLine);
+      Make(TargetConfig, FQuiet + ' Clean', CaptureLine);
     if Result then
       CaptureLine('[Finished JVCL for CLX installation]', Aborted);
   end;
@@ -643,9 +661,18 @@ begin
 
    // setup environment variables
     if TargetConfig.Build then
-      SetEnvironmentVariable('DCCOPT', '-Q -M -B')
+    begin
+      SetEnvironmentVariable('DCCOPT', '-Q -M -B');
+     // especially for BCB generated make file
+      SetEnvironmentVariable('DCC', PChar('"' + TargetConfig.Target.RootDir + '\bin\dcc32.exe" -Q -M -B'));
+    end
     else
+    begin
       SetEnvironmentVariable('DCCOPT', '-Q -M');
+     // especially for BCB generated make file
+      SetEnvironmentVariable('DCC', PChar('"' + TargetConfig.Target.RootDir + '\bin\dcc32.exe" -Q -M'));
+    end;
+    SetEnvironmentVariable('QUIET', Pointer(Copy(FQuiet, 2, MaxInt))); // make command line option " -s"
 
     SetEnvironmentVariable('TARGETS', nil); // we create our own makefile so do not allow a user defined TARGETS envvar
     SetEnvironmentVariable('MASTEREDITION', nil);
@@ -660,8 +687,10 @@ begin
       SetEnvironmentVariable('UNITOUTDIR', Pointer(TargetConfig.UnitOutDir));
     SetEnvironmentVariable('BPLDIR', Pointer(TargetConfig.BplDir));
     SetEnvironmentVariable('DCPDIR', Pointer(TargetConfig.DcpDir));
-    SetEnvironmentVariable('LIBDIR', Pointer(TargetConfig.DcpDir));
-    SetEnvironmentVariable('HPPDIR', Pointer(TargetConfig.HPPDir));
+    SetEnvironmentVariable('LIBDIR', Pointer(TargetConfig.DcpDir));  // for BCB
+    SetEnvironmentVariable('HPPDIR', Pointer(TargetConfig.HppDir)); // for BCB
+    SetEnvironmentVariable('BPILIBDIR', Pointer(TargetConfig.DcpDir)); // for BCB
+
 
    // add dxgettext unit directory
     if Data.JVCLConfig.Enabled['USE_DXGETTEXT'] then
@@ -745,13 +774,15 @@ begin
       begin
         DoPackageProgress(nil, '', 0, FPkgCount);
         // compile packages
-        if Make(TargetConfig, Args + ' CompilePackages', CaptureLinePackageCompilation) <> 0 then
+        if Make(TargetConfig, Args + FQuiet + ' CompilePackages', CaptureLinePackageCompilation) <> 0 then
         begin
           AbortReason := RsErrorCompilingPackages;
           Exit;
         end;
         DoPackageProgress(nil, '', FPkgCount, FPkgCount);
-      end;
+      end
+      else
+        CaptureLine(RsPackagesAreUpToDate, FAborted);
     end;
   finally
 {**}DoProjectProgress(RsFinished, ProjectMax, ProjectMax);
@@ -789,7 +820,7 @@ begin
     Lines.Add('!endif');
     Lines.Add('');
     Lines.Add('BPR2MAK = "$(ROOT)\bin\bpr2mak" -t..\BCB.bmk');
-    Lines.Add('MAKE = "$(ROOT)\bin\make" -$(MAKEFLAGS)');
+    Lines.Add('MAKE = "$(ROOT)\bin\make" -l+'{-$(MAKEFLAGS)'});
     Lines.Add('DCC = "$(ROOT)\bin\dcc32.exe" $(DCCOPT)');
     Lines.Add('');
     if AutoDepend then
@@ -894,12 +925,12 @@ begin
             end;
           end;
         end;
-        Lines.Add(#9'@$(BPR2MAK) $&.bpk');
+        Lines.Add(#9'$(BPR2MAK) $&.bpk');
         Lines.Add(#9'@echo.');                 // prevent the "......Borland De"
-        Lines.Add(#9'@$(MAKE) -f $&.mak');
+        Lines.Add(#9'$(MAKE) -f $&.mak');
       end
       else
-        Lines.Add(#9'@$(DCC) $&.dpk');
+        Lines.Add(#9'$(DCC) $&.dpk');
       Lines.Add(#9'@cd ' + GetReturnPath(Pkg.RelSourceDir));
       Lines.Add('');
     end;
