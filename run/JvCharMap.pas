@@ -339,6 +339,7 @@ type
   end;
 
 implementation
+
 uses
   Math;
 
@@ -416,7 +417,7 @@ end;
 //=== TShadowWindow ==========================================================
 
 type
-  TDynamicSetLayeredWindowAttributes = function(Hwnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
+  TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
 
 procedure TShadowWindow.CreateHandle;
 var
@@ -490,11 +491,11 @@ begin
 
   FCharRange := TJvCharMapRange.Create;
   //  FCharRange.Filter := ufUndefined;
-  //  FCharRange.SetRange($21,$FF);
+  //  FCharRange.SetRange($21, $FF);
   FCharRange.OnChange := DoRangeChange;
-  FCharPanel := TCharZoomPanel.Create(self);
+  FCharPanel := TCharZoomPanel.Create(Self);
   FCharPanel.Visible := False;
-  FCharPanel.Parent := self;
+  FCharPanel.Parent := Self;
 
   Options := [goVertLine, goHorzLine, {goDrawFocusSelected, } goThumbTracking];
   FShowZoomPanel := True;
@@ -581,7 +582,7 @@ end;
 procedure TJvCustomCharMap.DoSelectChar(AChar: WideChar);
 begin
   if Assigned(FOnSelectChar) then
-    FOnSelectChar(self, AChar);
+    FOnSelectChar(Self, AChar);
 end;
 
 procedure TJvCustomCharMap.DrawCell(ACol, ARow: Integer; ARect: TRect;
@@ -594,51 +595,51 @@ begin
     Exit;
   FDrawing := True;
   try
-  {$IFDEF COMPILER6_UP}
-  inherited DrawCell(ACol, ARow, ARect, AState);
-  {$ENDIF COMPILER6_UP}
-  AChar := GetChar(ACol, ARow);
-  Canvas.Brush.Color := Color;
-  Canvas.Font := Font;
-  Canvas.Pen.Color := Font.Color;
-  if SelectCell(ACol, ARow) and IsValidChar(AChar) then
-  begin
-    if AState * [gdSelected, gdFocused] <> [] then
+    {$IFDEF COMPILER6_UP}
+    inherited DrawCell(ACol, ARow, ARect, AState);
+    {$ENDIF COMPILER6_UP}
+    AChar := GetChar(ACol, ARow);
+    Canvas.Brush.Color := Color;
+    Canvas.Font := Font;
+    Canvas.Pen.Color := Font.Color;
+    if SelectCell(ACol, ARow) and IsValidChar(AChar) then
     begin
-      Canvas.Pen.Color := Font.Color;
-      if not ShowZoomPanel then
+      if AState * [gdSelected, gdFocused] <> [] then
       begin
-        Canvas.Brush.Color := clHighlight;
+        Canvas.Pen.Color := Font.Color;
+        if not ShowZoomPanel then
+        begin
+          Canvas.Brush.Color := clHighlight;
+          Canvas.FillRect(ARect);
+        end;
+        InflateRect(ARect, -1, -1);
+        Canvas.Rectangle(ARect);
+        InflateRect(ARect, 1, 1);
+      end
+      else
         Canvas.FillRect(ARect);
-      end;
-      InflateRect(ARect, -1, -1);
-      Canvas.Rectangle(ARect);
-      InflateRect(ARect, 1, 1);
+      if not ShowZoomPanel and (AState * [gdSelected, gdFocused] <> []) then
+        Canvas.Font.Color := clHighlightText;
+      SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
+      WideDrawText(Canvas, AChar, ARect,
+        DT_SINGLELINE or DT_CENTER or DT_VCENTER or DT_NOPREFIX);
     end
     else
-      Canvas.FillRect(ARect);
-    if not ShowZoomPanel and (AState * [gdSelected, gdFocused] <> []) then
-      Canvas.Font.Color := clHighlightText;
-    SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-    WideDrawText(Canvas, AChar, ARect,
-      DT_SINGLELINE or DT_CENTER or DT_VCENTER or DT_NOPREFIX);
-  end
-  else
-  if HighlightInvalid then
-  begin
-    LineColor := clSilver;
-    if ColorToRGB(Color) = clSilver then
-      LineColor := clGray;
-    Canvas.Pen.Color := Color;
-    Canvas.Brush.Color := LineColor;
-    Canvas.Brush.Style := bsBDiagonal;
-//    InflateRect(ARect,1,1);
-    Canvas.Rectangle(ARect);
-    Canvas.Brush.Style := bsSolid;
-  end;
-  finally
-    FDrawing := False;
-  end;
+    if HighlightInvalid then
+    begin
+      LineColor := clSilver;
+      if ColorToRGB(Color) = clSilver then
+        LineColor := clGray;
+      Canvas.Pen.Color := Color;
+      Canvas.Brush.Color := LineColor;
+      Canvas.Brush.Style := bsBDiagonal;
+      // InflateRect(ARect,1,1);
+      Canvas.Rectangle(ARect);
+      Canvas.Brush.Style := bsSolid;
+    end;
+    finally
+      FDrawing := False;
+    end;
 end;
 
 function TJvCustomCharMap.GetChar(ACol, ARow: Integer): WideChar;
@@ -655,14 +656,14 @@ begin
   Result := GetChar(Col, Row);
 end;
 
-function TJvCustomCharMap.GetCharInfo(ACol, ARow: Integer; InfoType: Cardinal):
-  Cardinal;
+function TJvCustomCharMap.GetCharInfo(ACol, ARow: Integer;
+  InfoType: Cardinal): Cardinal;
 begin
   Result := GetCharInfo(GetChar(ACol, ARow), InfoType);
 end;
 
-function TJvCustomCharMap.GetCharInfo(AChar: WideChar; InfoType: Cardinal):
-  Cardinal;
+function TJvCustomCharMap.GetCharInfo(AChar: WideChar;
+  InfoType: Cardinal): Cardinal;
 var
   ACharInfo: Cardinal;
 begin
@@ -711,7 +712,7 @@ begin
   end;
 
   if Assigned(FOnValidateChar) then
-    FOnValidateChar(self, AChar, Result);
+    FOnValidateChar(Self, AChar, Result);
 end;
 
 procedure TJvCustomCharMap.KeyDown(var Key: Word; Shift: TShiftState);
@@ -1104,7 +1105,7 @@ var
 begin
   if not (csDesigning in ComponentState) and not Assigned(FOldWndProc) then
   begin
-    F := GetParentForm(self);
+    F := GetParentForm(Self);
     if F <> nil then
     begin
       FOldWndProc := F.WindowProc;
@@ -1148,13 +1149,13 @@ begin
             end;
           SC_RESTORE, SC_MAXIMIZE:
             if (Visible or FWasVisible) and
-              IsWindowVisible(GetParentForm(self).Handle) then
+              IsWindowVisible(GetParentForm(Self).Handle) then
               with TJvCharMap(Parent) do
                 ShowCharPanel(Col, Row);
         end;
       WM_WINDOWPOSCHANGED:
         if (Visible or FWasVisible) and
-          IsWindowVisible(GetParentForm(self).Handle) then
+          IsWindowVisible(GetParentForm(Self).Handle) then
           with TJvCharMap(Parent) do
             ShowCharPanel(Col, Row);
     end;
@@ -1198,7 +1199,7 @@ var
 begin
   if not (csDesigning in ComponentState) and Assigned(FOldWndProc) then
   begin
-    F := GetParentForm(self);
+    F := GetParentForm(Self);
     if F <> nil then
       F.WindowProc := FOldWndProc;
   end;

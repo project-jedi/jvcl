@@ -277,7 +277,7 @@ uses
   Consts, Math,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvTypes, JvThemes;
 
-{$R ..\resources\JvxSlider.res}
+{$R ..\Resources\JvxSlider.res}
 
 //=== TJvCustomSlider ========================================================
 

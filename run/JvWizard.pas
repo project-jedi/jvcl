@@ -678,10 +678,10 @@ type
     procedure ImageChanged(Sender: TObject);
     {$IFDEF VCL}
     // (ahuser) Do not convert to JvExVCL: This package is USEJVCL'ed
-    procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+    procedure WMEraseBkgnd(var Msg: TWmEraseBkgnd); message WM_ERASEBKGND;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     {$ENDIF VCL}
     function GetSubtitle: TJvWizardPageTitle;
     function GetTitle: TJvWizardPageTitle;
@@ -835,9 +835,9 @@ type
     procedure RepositionButtons;
     procedure UpdateButtonsStatus;
     {$IFDEF VCL}
-    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
-    procedure WMGetDlgCode(var Message: TWMGetDlgCode); message WM_GETDLGCODE;
-    procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
+    procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
     {$ENDIF VCL}
     function FindNextEnabledPage(PageIndex: Integer; const Step: Integer = 1;
       CheckDisable: Boolean = True): TJvWizardCustomPage;  // Nonn
@@ -2370,7 +2370,7 @@ end;
 procedure TJvWizardCustomPage.EnabledChanged;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-procedure TJvWizardCustomPage.CMEnabledChanged(var Message: TMessage);
+procedure TJvWizardCustomPage.CMEnabledChanged(var Msg: TMessage);
 {$ENDIF VCL}
 var
   NextPage: TJvWizardCustomPage;
@@ -2401,7 +2401,7 @@ end;
 procedure TJvWizardCustomPage.TextChanged;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-procedure TJvWizardCustomPage.CMTextChanged(var Message: TMessage);
+procedure TJvWizardCustomPage.CMTextChanged(var Msg: TMessage);
 {$ENDIF VCL}
 begin
   Invalidate;
@@ -2415,7 +2415,7 @@ end;
 procedure TJvWizardCustomPage.FontChanged;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-procedure TJvWizardCustomPage.CMFontChanged(var Message: TMessage);
+procedure TJvWizardCustomPage.CMFontChanged(var Msg: TMessage);
 {$ENDIF VCL}
 begin
   FHeader.AdjustTitleFont;
@@ -2471,9 +2471,9 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvWizardCustomPage.WMEraseBkgnd(var Message: TWmEraseBkgnd);
+procedure TJvWizardCustomPage.WMEraseBkgnd(var Msg: TWmEraseBkgnd);
 begin
-  Message.Result := 1;
+  Msg.Result := 1;
 end;
 {$ENDIF VCL}
 
@@ -3002,11 +3002,11 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvWizard.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+procedure TJvWizard.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-  Message.Result := 1;
+  Msg.Result := 1;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 procedure TJvWizard.Paint;
 var
@@ -3106,14 +3106,14 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvWizard.CMDesignHitTest(var Message: TCMDesignHitTest);
+procedure TJvWizard.CMDesignHitTest(var Msg: TCMDesignHitTest);
 var
   Pt: TPoint;
 begin
-  Pt := SmallPointToPoint(Message.Pos);
+  Pt := SmallPointToPoint(Msg.Pos);
   if Assigned(FActivePage) and PtInRect(FActivePage.BoundsRect, Pt) then
   begin
-    Message.Result := 1;
+    Msg.Result := 1;
   end;
 end;
 {$ENDIF VCL}
@@ -3133,9 +3133,9 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvWizard.WMGetDlgCode(var Message: TWMGetDlgCode);
+procedure TJvWizard.WMGetDlgCode(var Msg: TWMGetDlgCode);
 begin
-  Message.Result := DLGC_WANTALLKEYS or DLGC_WANTARROWS;
+  Msg.Result := DLGC_WANTALLKEYS or DLGC_WANTARROWS;
 end;
 {$ENDIF VCL}
 

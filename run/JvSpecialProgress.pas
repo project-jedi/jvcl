@@ -246,13 +246,13 @@ procedure TJvSpecialProgress.MouseEnter(Control: TControl);
 begin
   FSavedHintColor := Application.HintColor;
   Application.HintColor := FHintColor;
-  inherited; // trigger event
+  inherited MouseEnter(Control);
 end;
 
 procedure TJvSpecialProgress.MouseLeave(Control: TControl);
 begin
   Application.HintColor := FSavedHintColor;
-  inherited; // trigger event
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvSpecialProgress.Paint;

@@ -2393,7 +2393,7 @@ begin
   FYFont.Color := Options.AxisFont.Color;
   FYFont.Handle := FYFontHandle;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 procedure TJvChart.MyHeader(strText: string);
 {var

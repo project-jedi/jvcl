@@ -321,7 +321,7 @@ implementation
 uses
   Consts, JvJVCLUtils, JvThemes;
 
-{$R ..\resources\JvTMTimeLine.res}
+{$R ..\Resources\JvTMTimeLine.res}
 
 const
   cMagic = 'Jv.TMTIMELINE1';

@@ -77,7 +77,7 @@ type
       var HintInfo: THintInfo);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure DoShowHint(var HintStr: widestring; var CanShow: Boolean;
+    procedure DoShowHint(var HintStr: WideString; var CanShow: Boolean;
       var HintInfo: THintInfo);
     {$ENDIF VisualCLX}
     procedure MakeHTML(AList: TStringList; Border, Filter: Boolean);
@@ -225,7 +225,7 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-procedure TJvYearGrid.DoShowHint(var HintStr: widestring; var CanShow: Boolean;
+procedure TJvYearGrid.DoShowHint(var HintStr: WideString; var CanShow: Boolean;
   var HintInfo: THintInfo);
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
@@ -786,9 +786,10 @@ begin
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  // (rom) i doubt that ShellExecute is a Linux function
   ShellExecute(HWND_DESKTOP, 'open', PChar(Command),
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
-  {$ENDIF LINUX}
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvYearGrid.SetHTMLFontName(const Value: string);

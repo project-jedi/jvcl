@@ -348,7 +348,7 @@ implementation
 uses
   Math;
 
-{$R ..\resources\JvOutlookBar.res}
+{$R ..\Resources\JvOutlookBar.res}
 
 const
   cButtonLeftOffset = 4;

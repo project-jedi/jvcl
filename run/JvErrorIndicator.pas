@@ -47,7 +47,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QImgList, QControls, QGraphics, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -212,7 +212,12 @@ uses
   {$ENDIF VCL}
   JvTypes, JvResources;
 
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvErrorIndicator.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvErrorIndicator.res}
+{$ENDIF LINUX}
 
 const
   cDefBlinkCount = 5;
@@ -238,7 +243,7 @@ type
 constructor TJvErrorIndicator.Create(AComponent: TComponent);
 {$IFDEF VisualCLX}
 var
-  ico: TIcon;
+  Ico: TIcon;
 {$ENDIF VisualCLX}
 begin
   inherited Create(AComponent);
@@ -248,10 +253,10 @@ begin
     LoadImage(hInstance, PChar('JVERRORINDICATORICON'), IMAGE_ICON, 16, 16, 0));
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  ico := TIcon.Create ;
-  ico.LoadFromResourceName(hInstance, 'JVERRORINDICATORICON');
-  FDefaultImage.assign(ico);
-  ico.Free;
+  Ico := TIcon.Create;
+  Ico.LoadFromResourceName(hInstance, 'JVERRORINDICATORICON');
+  FDefaultImage.Assign(Ico);
+  Ico.Free;
   {$ENDIF VisualCLX}
   FBlinkStyle := ebsBlinkIfDifferentError;
   FBlinkRate := 250;
@@ -272,15 +277,15 @@ end;
 
 function TJvErrorIndicator.Add(AControl: TControl): Integer;
 var
-  ci: TJvErrorControl;
+  Ci: TJvErrorControl;
 begin
   Result := IndexOf(AControl);
   if (Result < 0) and (AControl <> nil) then
   begin
-    ci := TJvErrorControl.Create(Self);
-    ci.Control := AControl;
-    //    ci.Name := ci.Control.Name + '_ErrorControl';
-    Result := FControls.Add(ci);
+    Ci := TJvErrorControl.Create(Self);
+    Ci.Control := AControl;
+    //    Ci.Name := Ci.Control.Name + '_ErrorControl';
+    Result := FControls.Add(Ci);
   end;
 end;
 
@@ -301,8 +306,7 @@ begin
     raise EJVCLException.Create(RsEControlNotFoundInGetError);
 end;
 
-function TJvErrorIndicator.GetImageAlignment(
-  AControl: TControl): TJvErrorImageAlignment;
+function TJvErrorIndicator.GetImageAlignment(AControl: TControl): TJvErrorImageAlignment;
 var
   I: Integer;
 begin
@@ -381,7 +385,7 @@ procedure TJvErrorIndicator.SetError(AControl: TControl;
   const Value: string);
 var
   I: Integer;
-  ei: TJvErrorControl;
+  Ei: TJvErrorControl;
 begin
   StopThread;
   if AControl = nil then
@@ -391,13 +395,13 @@ begin
     else
       for I := 0 to Count - 1 do
       begin
-        ei := Controls[I];
-        if ((ei.Error <> Value) and (BlinkStyle = ebsBlinkIfDifferentError)) or (BlinkStyle = ebsAlwaysBlink) then
-          ei.BlinkCount := cDefBlinkCount
+        Ei := Controls[I];
+        if ((Ei.Error <> Value) and (BlinkStyle = ebsBlinkIfDifferentError)) or (BlinkStyle = ebsAlwaysBlink) then
+          Ei.BlinkCount := cDefBlinkCount
         else
         if BlinkStyle = ebsNeverBlink then
-          ei.BlinkCount := 0;
-        ei.Error := Value;
+          Ei.BlinkCount := 0;
+        Ei.Error := Value;
       end;
   end
   else
@@ -409,22 +413,22 @@ begin
         Delete(I)
       else
       begin
-        ei := Controls[I];
-        if ((ei.Error <> Value) and (BlinkStyle = ebsBlinkIfDifferentError))
+        Ei := Controls[I];
+        if ((Ei.Error <> Value) and (BlinkStyle = ebsBlinkIfDifferentError))
           or (BlinkStyle = ebsAlwaysBlink) then
         begin
-          ei.Error := Value;
-          ei.BlinkCount := cDefBlinkCount;
-          ei.Visible := (csDesigning in ComponentState);
+          Ei.Error := Value;
+          Ei.BlinkCount := cDefBlinkCount;
+          Ei.Visible := (csDesigning in ComponentState);
           if (FUpdateCount = 0) and (FBlinkThread = nil) then
             StartThread;
         end
         else
         if BlinkStyle = ebsNeverBlink then
         begin
-          ei.BlinkCount := 0;
-          ei.Error := Value;
-          ei.Visible := (Value <> '');
+          Ei.BlinkCount := 0;
+          Ei.Error := Value;
+          Ei.Visible := (Value <> '');
         end;
       end;
       UpdateControls;
@@ -472,23 +476,23 @@ end;
 
 procedure TJvErrorIndicator.UpdateControls;
 var
-  I, ii: Integer;
+  I, J: Integer;
   IL: TCustomImageList;
 begin
   if Images <> nil then
   begin
     IL := Images;
-    ii := ImageIndex;
+    J := ImageIndex;
   end
   else
   begin
     IL := FDefaultImage;
-    ii := 0;
+    J := 0;
   end;
   for I := 0 to Count - 1 do
   begin
     Controls[I].Images := IL;
-    Controls[I].ImageIndex := ii;
+    Controls[I].ImageIndex := J;
   end;
 end;
 
@@ -706,7 +710,7 @@ begin
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     Images.Draw(Canvas, 0, 0, ImageIndex);
-    {$ENDIF}
+    {$ENDIF VisualCLX}
 end;
 
 procedure TJvErrorControl.SetError(const Value: string);

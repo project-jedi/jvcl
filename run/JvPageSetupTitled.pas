@@ -56,8 +56,8 @@ type
 
 implementation
 
-{.$R ..\resources\JvPageSetupTitledRus.res}
-{$R ..\resources\JvPageSetupTitledEng.res}
+{.$R ..\Resources\JvPageSetupTitledRus.res}
+{$R ..\Resources\JvPageSetupTitledEng.res}
 
 uses
   Windows, Forms, SysUtils, CommDlg;

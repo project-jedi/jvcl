@@ -85,7 +85,7 @@ uses
   JvConsts,
   JvgTypes, JvgUtils;
 
-{$R ..\resources\JvgHint.res}
+{$R ..\Resources\JvgHint.res}
 
 {$IFNDEF USEJVCL}
 resourcestring

@@ -375,7 +375,8 @@ function TJvTransparentButtonActionLink.IsCheckedLinked: Boolean;
 begin
   if FClient is TJvTransparentButton then
     Result := inherited IsCheckedLinked and (TJvTransparentButton(FClient).Down = (Action as TCustomAction).Checked)
-  else if FClient is TJvTransparentButton2 then
+  else
+  if FClient is TJvTransparentButton2 then
     Result := inherited IsCheckedLinked and (TJvTransparentButton2(FClient).Down = (Action as TCustomAction).Checked)
   else
     Result := false;
@@ -392,6 +393,7 @@ procedure TJvTransparentButtonActionLink.SetGroupIndex(Value: Integer);
 begin
   //
 end;
+
 {$ENDIF COMPILER6_UP}
 
 procedure TJvTransparentButtonActionLink.SetChecked(Value: Boolean);
@@ -405,12 +407,12 @@ begin
   end;
 end;
 
-{ TJvTransparentButton }
+//=== TJvTransparentButton ===================================================
 
 constructor TJvTransparentButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  AllowAllUp := true;
+  AllowAllUp := True;
   FNumGlyphs := 1;
   FAutoGray := True;
   FShowPressed := True;
@@ -709,7 +711,7 @@ begin
   SetTextColor(HDC, OldCol);
 end;
 
-{ aRect contains the bitmap bounds }
+{ ARect contains the bitmap bounds }
 
 procedure TJvTransparentButton.DrawTheText(ARect: TRect; Canvas: TCanvas);
 var
@@ -881,11 +883,12 @@ begin
   Result := TJvTransparentButtonActionLink;
 end;
 
-{ TJvTransparentButton2 }
+//=== TJvTransparentButton2 ==================================================
+
 constructor TJvTransparentButton2.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  AllowAllUp := true;
+  AllowAllUp := True;
   FHiFont := TFont.Create;
   FHiFont.Assign(Font);
   FAutoGray := True;
@@ -925,7 +928,7 @@ end;
 procedure TJvTransparentButton2.AddGlyphs;
 var
   Bmp: TBitmap;
-  Icon:HICON;
+  Icon: HICON;
 begin
   Bmp := TBitmap.Create;
   try
@@ -1222,9 +1225,9 @@ begin
 
     TmpRect := Rect(1, 1, Width - 1, Height - 1);
 
-    if (bsMouseDown in MouseStates)  then
+    if bsMouseDown in MouseStates then
     begin
-      if not (FrameStyle = fsNone) then
+      if FrameStyle <> fsNone then
       begin
         InflateRect(TmpRect, 1, 1);
         case FrameStyle of
@@ -1271,7 +1274,7 @@ begin
             Frame3D(Canvas, TmpRect, clBtnFace, clBtnShadow, BorderWidth);
           end;
         fsExplorer:
-          if (bsMouseInside in MouseStates) then
+          if bsMouseInside in MouseStates then
             Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, BorderWidth);
         fsIndent:
           Frame3D(Canvas, TmpRect, clBtnShadow, clBtnHighlight, BorderWidth);
@@ -1288,7 +1291,6 @@ begin
       InflateRect(TmpRect, 1, 1);
       DrawTheText(TmpRect, Canvas);
     end;
-
   end;
 end;
 
@@ -1336,7 +1338,7 @@ begin
   end;
 end;
 
-{ aRect contains the bitmap bounds }
+{ ARect contains the bitmap bounds }
 
 procedure TJvTransparentButton2.DrawTheText(ARect: TRect; Canvas: TCanvas);
 var
@@ -1444,7 +1446,7 @@ end;
 
 procedure TJvTransparentButton2.Notification(AComponent: TComponent; Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if Operation = opRemove then
   begin
     if AComponent = FGrayList then
@@ -1461,7 +1463,7 @@ end;
 procedure TJvTransparentButton2.ActionChange(Sender: TObject;
   CheckDefaults: Boolean);
 begin
-  inherited;
+  inherited ActionChange(Sender, CheckDefaults);
   if Sender is TCustomAction then
     with TCustomAction(Sender) do
     begin

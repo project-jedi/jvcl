@@ -48,7 +48,7 @@ const
   cButtonWidth = 22;
 
 type
- // (ahuser) TJvColorDialog is not registered as component
+  // (ahuser) TJvColorDialog is not registered as component
   TJvColorDialog = class(TColorDialog)
   published
     property OnShow;
@@ -173,6 +173,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvColorForm.WMActivate(var Msg: TWMActivate);
 begin
   inherited;
@@ -185,17 +186,19 @@ begin
   inherited CreateParams(Params);
   Params.Style := Params.Style and not WS_CAPTION;
 end;
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+
 function TJvColorForm.WidgetFlags: Integer;
 begin
-  Result := inherited WidgetFlags and not Integer(WidgetFlags_WStyle_Title) or
-                      Integer(WidgetFlags_WType_Popup);
+  Result := inherited WidgetFlags and
+    not Integer(WidgetFlags_WStyle_Title) or Integer(WidgetFlags_WType_Popup);
 end;
 
 type
-  TJvOpenWidgetControl = class(TWidgetControl);
+  TOpenWidgetControl = class(TWidgetControl);
 
 function TJvColorForm.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
@@ -206,7 +209,7 @@ begin
       FormDeactivate(Self);
     QEventType_Hide:
       if FOwner is TJvColorButton then
-        TJvOpenWidgetControl(FOwner).MouseUp(mbLeft, [ssLeft], 0, 0);
+        TOpenWidgetControl(FOwner).MouseUp(mbLeft, [ssLeft], 0, 0);
     QEventType_Close:
       begin
         QCloseEvent_ignore(QCloseEventH(Event)); // do not close
@@ -217,6 +220,7 @@ begin
   end;
   Result := inherited EventFilter(Sender, Event);
 end;
+
 {$ENDIF VisualCLX}
 
 procedure TJvColorForm.DoColorClick(Sender: TObject);

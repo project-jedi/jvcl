@@ -37,7 +37,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, QGraphics, QControls, QWindows,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvImageDrawThread, JvComponent;
 
 type

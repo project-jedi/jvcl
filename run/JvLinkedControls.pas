@@ -53,9 +53,9 @@ type
   protected
     function GetDisplayName: string; override;
   public
-    procedure Assign(Source: TPersistent);override;
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent);override;
   published
     property Control: TControl read FControl write SetControl;
     property Options: TJvLinkedControlsOptions read FOptions write SetOptions default [loLinkChecked, loLinkEnabled];
@@ -87,23 +87,10 @@ type
 
 implementation
 
-// TODO -cRESOURCESTRING -oJVCL: move to JvResources
-resourcestring
-  RsEOwnerLinkError = 'Cannot link to owner control';
-  
-{ TJvLinkedControl }
+uses
+  JvResources;
 
-procedure TJvLinkedControl.Assign(Source: TPersistent);
-begin
-  if (Source <> Self) and (Source is TJvLinkedControl) then
-  begin
-    Control := TJvLinkedControl(Source).Control;
-    Options := TJvLinkedControl(Source).Options;
-    Changed(False);
-  end
-  else
-    inherited Assign(Source);
-end;
+//=== TJvLinkedControl =======================================================
 
 constructor TJvLinkedControl.Create(Collection: TCollection);
 begin
@@ -121,6 +108,18 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvLinkedControl.Assign(Source: TPersistent);
+begin
+  if (Source <> Self) and (Source is TJvLinkedControl) then
+  begin
+    Control := TJvLinkedControl(Source).Control;
+    Options := TJvLinkedControl(Source).Options;
+    Changed(False);
+  end
+  else
+    inherited Assign(Source);
+end;
+
 function TJvLinkedControl.GetDisplayName: string;
 begin
   if Control <> nil then
@@ -131,7 +130,7 @@ end;
 
 procedure TJvLinkedControl.SetControl(const Value: TControl);
 begin
-  if (FControl <> Value) then
+  if FControl <> Value then
   begin
     if (FOwnerControl = nil) and (Collection is TJvLinkedControls) then
       FOwnerControl := TJvLinkedControls(Collection).FControl;
@@ -167,7 +166,14 @@ begin
   end;
 end;
 
-{ TJvLinkedControls }
+//=== TJvLinkedControls ======================================================
+
+constructor TJvLinkedControls.Create(AControl: TControl);
+begin
+  inherited Create(AControl, TJvLinkedControl);
+  FControl := AControl;
+  FRestoreEnabled := True;
+end;
 
 function TJvLinkedControls.Add: TJvLinkedControl;
 begin
@@ -176,15 +182,16 @@ begin
 end;
 
 procedure TJvLinkedControls.Assign(Source: TPersistent);
-var i:Integer;
+var
+  I: Integer;
 begin
   if (Source <> Self) and (Source is TJvLinkedControls) then
   begin
     BeginUpdate;
     try
       Clear;
-      for i := 0 to TJvLinkedControls(Source).Count - 1 do
-        Add.Assign(TJvLinkedControls(Source)[i]);
+      for I := 0 to TJvLinkedControls(Source).Count - 1 do
+        Add.Assign(TJvLinkedControls(Source)[I]);
       RestoreEnabled := TJvLinkedControls(Source).RestoreEnabled;
     finally
       EndUpdate;
@@ -194,30 +201,24 @@ begin
     inherited Assign(Source);
 end;
 
-constructor TJvLinkedControls.Create(AControl: TControl);
-begin
-  inherited Create(AControl, TJvLinkedControl);
-  FControl := AControl;
-  FRestoreEnabled := True;
-end;
-
 function TJvLinkedControls.GetItems(Index: Integer): TJvLinkedControl;
 begin
   Result := TJvLinkedControl(inherited Items[Index]);
 end;
 
 procedure TJvLinkedControls.Notification(AComponent: TComponent; Operation: TOperation);
-var i:Integer;
+var
+  I: Integer;
 begin
-  // make sure the owning controls isn't being destroyed.
+  // make sure the owning control isn't being destroyed
   if Assigned(FControl) and (csDestroying in FControl.ComponentState) then
     Exit;
   BeginUpdate;
   try
     if (AComponent is TControl) and (Operation = opRemove) then
-      for i := 0 to Count - 1 do
-        if Items[i].Control = AComponent then
-          Items[i].Control := nil;
+      for I := 0 to Count - 1 do
+        if Items[I].Control = AComponent then
+          Items[I].Control := nil;
   finally
     EndUpdate;
   end;
@@ -234,7 +235,8 @@ begin
   inherited Update(Item);
   if Item <> nil then
     TJvLinkedControl(Item).FOwnerControl := FControl;
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 end.

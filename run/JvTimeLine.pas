@@ -477,7 +477,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvJVCLUtils, JvThemes;
 
-{$R ..\resources\JvTimeLine.res}
+{$R ..\Resources\JvTimeLine.res}
 
 const
   FDayLineLength = 4;

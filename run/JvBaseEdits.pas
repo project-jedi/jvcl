@@ -318,7 +318,7 @@ uses
   Math, JvJCLUtils, JvCalc, JvConsts, JvResources;
 
 {$IFDEF MSWINDOWS}
-{$R ..\resources\JvBaseEdits.res}
+{$R ..\Resources\JvBaseEdits.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 {$R ../Resources/JvBaseEdits.res}

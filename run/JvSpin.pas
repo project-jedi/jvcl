@@ -409,7 +409,7 @@ uses
   {$ENDIF JVCLThemesEnabled}
   JvJCLUtils, JvConsts, JvResources;
 
-{$R ..\resources\JvSpin.Res}
+{$R ..\Resources\JvSpin.Res}
 
 const
   sSpinUpBtn = 'JVSPINUP';

@@ -1077,6 +1077,10 @@ resourcestring
   RsEBitCountNotImplemented = 'BitmapToMemoryStream: bit count not implemented';
   RsECantGetShortCut = 'Target FileName for ShortCut %s not available';
 
+//=== JvLinkedControls.pas ===================================================
+resourcestring
+  RsEOwnerLinkError = 'Cannot link to owner control';
+
 //=== JvLinkLabel.pas ========================================================
 resourcestring
   RsEUnableToLocateMode = 'Unable to locate specified node';

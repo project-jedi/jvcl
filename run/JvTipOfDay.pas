@@ -157,7 +157,7 @@ uses
   Windows, ExtCtrls, JvButton, Dialogs, SysUtils,
   JvWndProcHook, JvResources;
 
-{$R ..\resources\JvTipOfDay.res}
+{$R ..\Resources\JvTipOfDay.res}
 
 type
   TControlAccess = class(TControl);

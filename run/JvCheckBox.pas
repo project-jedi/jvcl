@@ -38,9 +38,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, StdCtrls,
-  {$ELSE}
-  Types, QWindows, Qt, QGraphics, QControls, QForms, QStdCtrls,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QWindows, Qt, QGraphics, QControls, QForms, QStdCtrls,
+  {$ENDIF VisualCLX}
   JvTypes, JvExStdCtrls, JvLinkedControls;
 
 type
@@ -273,9 +274,6 @@ var
   AWidth, AHeight: Integer;
   ASize: TSize;
   R: TRect;
-  {$IFDEF VisualCLX}
-  ws : WideString;
-  {$ENDIF}
 begin
   if (Parent = nil) or not AutoSize or (csDestroying in ComponentState) or
     (csLoading in ComponentState) then
@@ -291,13 +289,14 @@ begin
     {$IFDEF VCL}
     DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
-    {$ELSE}
-    FCanvas.start;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FCanvas.Start;
     RequiredState(Fcanvas, [csHandleValid, csFontValid]);
     DrawTextW(FCanvas.Handle, PWideChar(Caption), -1, R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
     FCanvas.Stop;
-    {$ENDIF VCL}
+    {$ENDIF VisualCLX}
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
   end
@@ -409,7 +408,7 @@ procedure TJvCheckBox.CheckLinkedControls;
 var
   I: Integer;
 begin
-  if (LinkedControls <> nil) then
+  if LinkedControls <> nil then
     for I := 0 to LinkedControls.Count - 1 do
       with LinkedControls[I] do
         if Control <> nil then

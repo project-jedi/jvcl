@@ -3089,7 +3089,7 @@ begin
     Clip.Transparent := true;
     Clip.TransparentColor := RangeTransColor;
     Canvas.Draw(X,Y, Clip);
-    {$ENDIF}
+    {$ENDIF VisualCLX}
     myDraw := False;
   end;
   if Shape = 'cube1' then
