@@ -175,6 +175,7 @@ type
     property BorderWidth: Cardinal read FBorderSize write SetBorderWidth default 1;
     property Caption;
     property Color;
+    property DropDownMenu;
     property Down;
     property Enabled;
     property Font;
