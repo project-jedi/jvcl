@@ -1155,7 +1155,7 @@ begin
     olbsLarge:
       if LargeImages <> nil then
       begin
-        Result.Top := Result.Bottom + Pages[PageIndex].Font.Height;
+        Result.Top := Result.Bottom + Pages[PageIndex].Font.Height - 2;
         OffsetRect(Result,0,-4);
       end;
     olbsSmall:
