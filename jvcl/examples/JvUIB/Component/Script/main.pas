@@ -56,6 +56,7 @@ const
   NodeInfos: array[TSQLNodeType] of string =
    ('List',
     'Select',
+    'Alter Exception',
     'Alter Table',
     'Alter Trigger',
     'Alter Procedure',
