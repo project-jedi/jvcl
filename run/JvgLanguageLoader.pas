@@ -192,23 +192,38 @@ begin
               { Specific handling of some certain classes [translated] }
               if PropObject is TStrings then
               begin
-                for J := 0 to (PropObject as TStrings).Count - 1 do
-                  TStrings(PropObject)[J] :=
-                    TranslateString(TStrings(PropObject)[J]);
+                TStrings(PropObject).BeginUpdate;
+                try
+                  for J := 0 to TStrings(PropObject).Count - 1 do
+                    TStrings(PropObject)[J] :=
+                      TranslateString(TStrings(PropObject)[J]);
+                finally
+                  TStrings(PropObject).EndUpdate;
+                end;
               end
               else
               if PropObject is TTreeNodes then
               begin
-                for J := 0 to (PropObject as TTreeNodes).Count - 1 do
-                  TTreeNodes(PropObject).Item[J].Text :=
-                    TranslateString(TTreeNodes(PropObject).Item[J].Text);
+                TTreeNodes(PropObject).BeginUpdate;
+                try
+                  for J := 0 to TTreeNodes(PropObject).Count - 1 do
+                    TTreeNodes(PropObject).Item[J].Text :=
+                      TranslateString(TTreeNodes(PropObject).Item[J].Text);
+                finally
+                  TTreeNodes(PropObject).EndUpdate;
+                end;
               end
               else
               if PropObject is TListItems then
               begin
-                for J := 0 to (PropObject as TListItems).Count - 1 do
-                  TListItems(PropObject).Item[J].Caption :=
-                    TranslateString(TListItems(PropObject).Item[J].Caption);
+                TListItems(PropObject).BeginUpdate;
+                try
+                  for J := 0 to TListItems(PropObject).Count - 1 do
+                    TListItems(PropObject).Item[J].Caption :=
+                      TranslateString(TListItems(PropObject).Item[J].Caption);
+                finally
+                  TListItems(PropObject).EndUpdate;
+                end;
               end;
               //{ Здесь можно добавить обработку остальных классов }
               { And here may be added more specific handlers for certain other

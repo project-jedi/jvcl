@@ -346,12 +346,17 @@ end;
 
 procedure TJvDBLoginDialog.FillParams(LoginParams: TStrings);
 begin
-  LoginParams.Values[szUSERNAME] := GetUserName;
-  LoginParams.Values[szPASSWORD] := FDialog.PasswordEdit.Text;
-  if CheckDatabaseChange then
-  begin
-    LoginParams.Values[szSERVERNAME] := Copy(FDialog.UserNameEdit.Text,
-      Pos('@', FDialog.UserNameEdit.Text) + 1, MaxInt)
+  LoginParams.BeginUpdate;
+  try
+    LoginParams.Values[szUSERNAME] := GetUserName;
+    LoginParams.Values[szPASSWORD] := FDialog.PasswordEdit.Text;
+    if CheckDatabaseChange then
+    begin
+      LoginParams.Values[szSERVERNAME] := Copy(FDialog.UserNameEdit.Text,
+        Pos('@', FDialog.UserNameEdit.Text) + 1, MaxInt)
+    end;
+  finally
+    LoginParams.EndUpdate;
   end;
 end;
 

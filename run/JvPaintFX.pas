@@ -174,12 +174,11 @@ resourcestring
   RsSourceBitmapTooSmall = 'Source bitmap too small';
 
 const
-{$IFDEF VisualCLX}
-  pf24bit = pf32bit; // VisualCLX does not support pf24bit
+  {$IFDEF VisualCLX}
   bpp = 4;
-{$ELSE}
+  {$ELSE}
   bpp = 3;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 
 function TrimInt(N, Min, Max: Integer): Integer;
 begin
@@ -207,10 +206,11 @@ end;
 
 function ConvertColor(Value: Integer): TColor;
 const
-  Colors: array[0..15] of TColor = (
+  Colors: array [0..15] of TColor =
+   (
     clBlack, clNavy, clGreen, clAqua, clRed, clPurple, clMaroon, clSilver,
     clGray, clBlue, clLime, clOlive, clFuchsia, clTeal, clYellow, clWhite
-  );
+   );
 begin
   if (Value < 0) or (Value > High(Colors)) then
     Result := clWhite

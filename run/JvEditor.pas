@@ -231,8 +231,8 @@ type
 
   TJvCompletion = class(TJvCompletionBase)
   private
-    FIdentifiers: TStrings;
-    FTemplates: TStrings;
+    FIdentifiers: TStringList;
+    FTemplates: TStringList;
     FCaretChar: Char;
     FCRLF: string;
     FSeparator: string;
@@ -1026,8 +1026,8 @@ begin
           end;
         end;
         SetCaretInternal(X, Y);
-      end; // #13
-  end; // case
+      end;
+  end;
 end;
 
 procedure TJvCustomEditor.SelectWordOnCaret;
@@ -2577,8 +2577,10 @@ end;
 function TJvCompletion.GetStrings(Index: Integer): TStrings;
 begin
   case Index of
-    0: Result := FIdentifiers;
-    1: Result := FTemplates;
+    0:
+      Result := FIdentifiers;
+    1:
+      Result := FTemplates;
   else
     Result := nil;
   end;
@@ -2587,8 +2589,10 @@ end;
 procedure TJvCompletion.SetStrings(Index: Integer; AValue: TStrings);
 begin
   case Index of
-    0: FIdentifiers.Assign(AValue);
-    1: FTemplates.Assign(AValue);
+    0:
+      FIdentifiers.Assign(AValue);
+    1:
+      FTemplates.Assign(AValue);
   end;
 end;
 

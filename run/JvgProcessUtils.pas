@@ -76,16 +76,21 @@ var
   hSnapshot: THandle;
   Pe32: TProcessEntry32;
 begin
-  SList.Clear;
-  hSnapshot := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-  Pe32.dwSize := SizeOf(TProcessEntry32);
+  SList.BeginUpdate;
+  try
+    SList.Clear;
+    hSnapshot := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    Pe32.dwSize := SizeOf(TProcessEntry32);
 
-  if Process32First(hSnapshot, Pe32) then
-    repeat
-      SList.Add(Format('%x, %x: %s', [Pe32.th32ProcessID, Pe32.th32ParentProcessID, Pe32.szExeFile]));
-    until not Process32Next(hSnapshot, Pe32);
+    if Process32First(hSnapshot, Pe32) then
+      repeat
+        SList.Add(Format('%x, %x: %s', [Pe32.th32ProcessID, Pe32.th32ParentProcessID, Pe32.szExeFile]));
+      until not Process32Next(hSnapshot, Pe32);
 
-  CloseHandle(hSnapshot);
+    CloseHandle(hSnapshot);
+  finally
+    SList.EndUpdate;
+  end;
 end;
 
 procedure KillProcessByName(Name: string);

@@ -140,7 +140,7 @@ type
   private
     FJvHLEditor: TJvCustomEditorBase;
     FStorage: TJvFormStorage;
-    FColorSamples: TStrings;
+    FColorSamples: TStringList;
     FHighlighterCombo: boolean;
     FActivePage: TJvHLEdActivePage;
     FReadFrom: TJvHLEdReadFrom;
@@ -284,7 +284,7 @@ constructor TJvHLEdPropDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHighlighterCombo := true;
-  FColorSamples := TStringlist.Create;
+  FColorSamples := TStringList.Create;
   FColorSamples.Text := GetHardCodedExamples;
   FPages := [epEditor, epColors];
 end;

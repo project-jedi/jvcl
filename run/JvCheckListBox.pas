@@ -52,7 +52,6 @@ type
     FScroll: Boolean;
     FOnHScroll: TNotifyEvent;
     FOnVScroll: TNotifyEvent;
-    FItemSearchs: TJvItemsSearchs;
     procedure SetHScroll(const Value: Boolean);
     procedure RefreshH;
     procedure SetHotTrack(const Value: Boolean);
@@ -117,12 +116,10 @@ begin
   FOver := False;
   FScroll := True;
   // ControlStyle := ControlStyle + [csAcceptsControls];
-  FItemSearchs := TJvItemsSearchs.Create;
 end;
 
 destructor TJvCheckListBox.Destroy;
 begin
-  FItemSearchs.Free;
   inherited Destroy;
 end;
 
@@ -263,7 +260,7 @@ end;
 function TJvCheckListBox.SearchExactString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
-  Result := FItemSearchs.SearchExactString(Items, Value, CaseSensitive);
+  Result := TJvItemsSearchs.SearchExactString(Items, Value, CaseSensitive);
 end;
 
 procedure TJvCheckListBox.SetHotTrack(const Value: Boolean);
@@ -275,7 +272,7 @@ end;
 
 function TJvCheckListBox.SearchPrefix(Value: string; CaseSensitive: Boolean): Integer;
 begin
-  Result := FItemSearchs.SearchPrefix(Items, Value, CaseSensitive);
+  Result := TJvItemsSearchs.SearchPrefix(Items, Value, CaseSensitive);
 end;
 
 procedure TJvCheckListBox.LBNSelCancel(var Msg: TMessage);
@@ -287,13 +284,13 @@ end;
 function TJvCheckListBox.SearchSubString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
-  Result := FItemSearchs.SearchSubString(Items, Value, CaseSensitive);
+  Result := TJvItemsSearchs.SearchSubString(Items, Value, CaseSensitive);
 end;
 
 function TJvCheckListBox.DeleteExactString(Value: string; All: Boolean;
   CaseSensitive: Boolean): Integer;
 begin
-  Result := FItemSearchs.DeleteExactString(Items, Value, CaseSensitive);
+  Result := TJvItemsSearchs.DeleteExactString(Items, Value, CaseSensitive);
 end;
 
 procedure TJvCheckListBox.SelectAll;

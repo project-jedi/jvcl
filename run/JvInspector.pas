@@ -217,7 +217,7 @@ type
     FSelecting: Boolean;
     FTopIndex: Integer;
     FUseBands: Boolean;
-    FVisibleList: TStrings;
+    FVisibleList: TStringList;
     FWantTabs: Boolean;
     {$IFDEF VisualCLX}
     FHorzScrollBar: TScrollBar;
@@ -2906,7 +2906,7 @@ begin
   finally
     ItemStack.Free;
   end;
-  TStringList(FVisibleList).CustomSort(ListCompare);
+  FVisibleList.CustomSort(ListCompare);
   if OldSel <> nil then
     SelectedIndex := FVisibleList.IndexOfObject(OldSel);
   CalcImageHeight;
@@ -7430,7 +7430,7 @@ end;
 function TJvInspectorClassItem.GetDisplayValue: string;
 var
   Obj: TObject;
-  SL: TStrings;
+  SL: TStringList;
   I: Integer;
 begin
   Obj := TObject(Data.AsOrdinal);
@@ -7498,7 +7498,7 @@ end;
 
 procedure TJvInspectorClassItem.SetDisplayValue(const Value: string);
 var
-  SL: TStrings;
+  SL: TStringList;
   I: Integer;
 begin
   if Value = '' then
@@ -8325,7 +8325,7 @@ begin
       Result := Result + '(' + GetTypeData(Data.TypeInfo).ClassType.ClassName + ')';
   end
   else
-    Result := TStrings(Obj).Text
+    Result := TStrings(Obj).Text;
 end;
 
 procedure TJvInspectorTStringsItem.Edit;
@@ -10652,7 +10652,7 @@ class function TJvInspectorINIFileData.New(const AParent: TJvCustomInspectorItem
   const ASection: string; const AINIFile: TCustomIniFile;
   const AOnAddKey: TJvInspConfKeyEvent): TJvInspectorItemInstances;
 var
-  SL: TStrings;
+  SL: TStringList;
   I: Integer;
   KeyName: string;
   KeyTypeInfo: PTypeInfo;
@@ -10701,7 +10701,7 @@ class function TJvInspectorINIFileData.New(const AParent: TJvCustomInspectorItem
   const AOnAddKey: TJvInspConfKeyEvent): TJvInspectorItemInstances;
 var
   TmpLst: TJvInspectorItemInstances;
-  SL: TStrings;
+  SL: TStringList;
   I: Integer;
   CatName: string;
   CatItem: TJvInspectorCustomCategoryItem;

@@ -892,6 +892,7 @@ var
   Parser: TJvIParser;
   Token: string;
 begin
+  Ss.BeginUpdate;
   Ss.Clear;
   Parser := TJvIParser.Create;
   try
@@ -905,6 +906,7 @@ begin
     end;
   finally
     Parser.Free;
+    Ss.EndUpdate;
   end;
 end;
 
@@ -913,6 +915,7 @@ var
   Parser: TJvIParserW;
   Token: WideString;
 begin
+  Ss.BeginUpdate;
   Ss.Clear;
   Parser := TJvIParserW.Create;
   try
@@ -926,6 +929,7 @@ begin
     end;
   finally
     Parser.Free;
+    Ss.EndUpdate;
   end;
 end;
 

@@ -446,7 +446,7 @@ procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
 var
   vText, vM, TagPrp, Prp, tempLink: string;
   vCount: Integer;
-  vStr:   Tstrings;
+  vStr:   TstringList;
   Selected: Boolean;
   Alignment: TAlignment;
   Trans, IsLink: Boolean;
@@ -749,7 +749,7 @@ end;
 // Kaczkowski - begin
 function ItemHTHeight(Canvas: TCanvas; const Text: string):Integer;
 var
-  str: Tstrings;
+  str: TstringList;
 begin
   try
     str := TstringList.Create;

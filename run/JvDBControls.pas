@@ -588,8 +588,8 @@ type
     procedure SetStyle(Value: TDBLabelStyle);
     procedure SetShowOptions(Value: TDBLabelOptions);
     procedure SetGlyphAlign(Value: TGlyphAlign);
-    procedure SetCaptions(Value: TStrings);
     function GetCaptions: TStrings;
+    procedure SetCaptions(Value: TStrings);
     procedure SetCalcCount(Value: Boolean);
   protected
     procedure Loaded; override;

@@ -463,10 +463,10 @@ type
     function IsValidClient(Client: IJvDataConsumerClientNotify): Boolean; override;
   end;
 
-  TJvColorProviderColorAdderRegister = class
+  TJvColorProviderColorAdderRegister = class(TObject)
   private
     FDefaultAdder: Integer;
-    FList: TStrings;
+    FList: TStringList;
     FMinimumKeep: Integer;
     FDefaultAfterClear: Integer;
     FNotifiers: TList;

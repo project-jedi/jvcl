@@ -1443,12 +1443,17 @@ var
   TgtStore: TJvCustomAppStorage;
   TgtPath: string;
 begin
-  ResolvePath(Path + '\*', TgtStore, TgtPath);
-  Delete(TgtPath, Length(TgtPath) - 1, 2);
-  if ClearFirst then
-    SL.Clear;
-  TgtStore.FStoreSL := SL;
-  Result := TgtStore.ReadList(TgtPath, TgtStore.ReadSLItem);
+  SL.BeginUpdate;
+  try
+    ResolvePath(Path + '\*', TgtStore, TgtPath);
+    Delete(TgtPath, Length(TgtPath) - 1, 2);
+    if ClearFirst then
+      SL.Clear;
+    TgtStore.FStoreSL := SL;
+    Result := TgtStore.ReadList(TgtPath, TgtStore.ReadSLItem);
+  finally
+    SL.EndUpdate;
+  end;
 end;
 
 procedure TJvCustomAppStorage.WriteStringList(const Path: string; const SL: TStrings);

@@ -100,8 +100,8 @@ type
   { TColor item editor. Will render the color in a box, together with the name/value }
   TJvInspectorColorItem = class(TJvCustomInspectorItem)
   private
-    FColors: TStrings;
-    FStdColors: TStrings;
+    FColors: TStringList;
+    FStdColors: TStringList;
     FIncludeStdColors: Boolean;
   protected
     procedure AddStdColor(const S: string);
@@ -465,7 +465,7 @@ end;
 
 function TJvInspectorColorItem.GetDisplayValue: string;
 var
-  TempSL: TStrings;
+  TempSL: TStringList;
   I: Integer;
 begin
   TempSL := TStringList.Create;
@@ -501,7 +501,7 @@ end;
 
 procedure TJvInspectorColorItem.SetDisplayValue(const Value: string);
 var
-  SL: TStrings;
+  SL: TStringList;
   I: Integer;
 begin
   SL := TStringList.Create;
@@ -538,7 +538,7 @@ begin
   FColors := TStringList.Create;
   FStdColors := TStringList.Create;
   GetColorValues(AddStdColor);
-  TStringList(FStdColors).Sort;
+  FStdColors.Sort;
   IncludeStdColors := True;
   Flags := [iifVisible, iifValueList, iifAllowNonListValues, iifOwnerDrawListVariable];
 end;
@@ -862,9 +862,14 @@ procedure TJvInspectorTImageIndexItem.GetValueList(const Strings: TStrings);
 var
   I: Integer;
 begin
-  Strings.AddObject('-1', TObject(-1000));
-  for I := 0 to FImageList.Count - 1 do
-    Strings.AddObject(IntToStr(I), TObject(I));
+  Strings.BeginUpdate;
+  try
+    Strings.AddObject('-1', TObject(-1000));
+    for I := 0 to FImageList.Count - 1 do
+      Strings.AddObject(IntToStr(I), TObject(I));
+  finally
+    Strings.EndUpdate;
+  end;
 end;
 
 procedure TJvInspectorTImageIndexItem.SetDisplayValue(const Value: string);

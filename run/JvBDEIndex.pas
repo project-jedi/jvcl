@@ -287,40 +287,45 @@ var
   Pos: Integer;
   I: Integer;
 begin
-  List.Clear;
-  if not FDataLink.Active then
-    Exit;
-  with FDataLink.DataSet as TTable do
-  begin
-    for I := 0 to IndexDefs.Count - 1 do
-      with IndexDefs[I] do
-        if not (ixExpression in Options) then
-        begin
-          if FDisplayMode = dmIndexName then
-            AFld := Name
-          else
+  List.BeginUpdate;
+  try
+    List.Clear;
+    if not FDataLink.Active then
+      Exit;
+    with FDataLink.DataSet as TTable do
+    begin
+      for I := 0 to IndexDefs.Count - 1 do
+        with IndexDefs[I] do
+          if not (ixExpression in Options) then
           begin
-            AFld := '';
-            Pos := 1;
-            while Pos <= Length(Fields) do
+            if FDisplayMode = dmIndexName then
+              AFld := Name
+            else
             begin
-              if AFld <> '' then
-                AFld := AFld + '; ';
-              case FDisplayMode of
-                dmFieldLabels:
-                  AFld := AFld + FieldByName(ExtractFieldName(Fields, Pos)).DisplayLabel;
-                dmFieldNames:
-                  AFld := AFld + FieldByName(ExtractFieldName(Fields, Pos)).FieldName;
+              AFld := '';
+              Pos := 1;
+              while Pos <= Length(Fields) do
+              begin
+                if AFld <> '' then
+                  AFld := AFld + '; ';
+                case FDisplayMode of
+                  dmFieldLabels:
+                    AFld := AFld + FieldByName(ExtractFieldName(Fields, Pos)).DisplayLabel;
+                  dmFieldNames:
+                    AFld := AFld + FieldByName(ExtractFieldName(Fields, Pos)).FieldName;
+                end;
               end;
             end;
+            if List.IndexOf(AFld) < 0 then
+              List.AddObject(AFld, IndexDefs[I]);
           end;
-          if List.IndexOf(AFld) < 0 then
-            List.AddObject(AFld, IndexDefs[I]);
-        end;
+    end;
+    if EnableNoIndex then
+      if List.IndexOf(NoIndexItem) < 0 then
+        List.AddObject(NoIndexItem, nil);
+  finally
+    List.EndUpdate;
   end;
-  if EnableNoIndex then
-    if List.IndexOf(NoIndexItem) < 0 then
-      List.AddObject(NoIndexItem, nil);
 end;
 
 procedure TJvDBIndexCombo.Change;

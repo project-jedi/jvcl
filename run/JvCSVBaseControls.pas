@@ -60,7 +60,7 @@ type
     procedure DoCursorChange;
     procedure SetCSVFileName(const Value: string);
     procedure SetCSVFieldNames(const Value: TStrings);
-    procedure DisPlayFields(NameValues: TStrings);
+    procedure DisplayFields(NameValues: TStrings);
   protected
     procedure DoCursorChanged(NameValues: TStrings; FieldCount: Integer); virtual;
   public
@@ -459,14 +459,14 @@ begin
   NameValues := TStringList.Create;
   try
     RecordGet(NameValues);
-    DisPlayFields(NameValues);
+    DisplayFields(NameValues);
     DoCursorChanged(NameValues, NameValues.Count);
   finally
     NameValues.Free;
   end;
 end;
 
-procedure TJvCSVBase.DisPlayFields(NameValues: TStrings);
+procedure TJvCSVBase.DisplayFields(NameValues: TStrings);
 var
   Aform: TForm;
   i, Index: Integer;

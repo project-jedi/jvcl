@@ -68,11 +68,11 @@ type
     {$ENDIF COMPILER6_UP}
   end;
 
-  TUnlitColorProperty = class(TColorProperty{$IFDEF COMPILER6_UP}, ICustomPropertyDrawing, ICustomPropertyListDrawing {$ENDIF})
-  {$IFDEF COMPILER6_UP}
+  TUnlitColorProperty = class(TColorProperty {$IFDEF COMPILER6_UP}, ICustomPropertyDrawing, ICustomPropertyListDrawing {$ENDIF})
+    {$IFDEF COMPILER6_UP}
     procedure ICustomPropertyListDrawing.ListDrawValue = ListDrawValue;
     procedure ICustomPropertyDrawing.PropDrawValue = PropDrawValue;
-  {$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER6_UP}
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
