@@ -1,0 +1,92 @@
+----------------------------------------------------------------------------------------------------
+@@$TJvDateTimePicker
+<GROUP JVCL.Miscel>
+<TITLE TJvDateTimePicker: overview>
+Description
+  This component is derived from the VCL DateTimePicker. Its enhanced in that it offers events for
+  mouse entering and leaving as well as the OnParentColorChanged event which gets triggered when the
+  color of the components parent changes. Further it provides a hint color property which can be
+  used to set the background color of the components hint box.
+----------------------------------------------------------------------------------------------------
+@@JvDateTimePicker.pas
+Summary
+  Contains all code for the JvDateTimePicker component.
+<INCLUDE JVCL.Main.UnitText.inc>
+Author
+  Sébastien Buysse
+----------------------------------------------------------------------------------------------------
+@@TJvDateTimePicker
+<TITLEIMG TJvDateTimePicker>
+<GROUP TJvDateTimePicker>
+Summary
+  Use this component to let the user input a date or time.
+Description
+  This component is derived from the VCL DateTimePicker. Its enhanced in that it offers events for
+  mouse entering and leaving as well as the OnParentColorChanged event which gets triggered when the
+  color of the components parent changes. Further it provides a hint color property which can be
+  used to set the background color of the components hint box.
+----------------------------------------------------------------------------------------------------
+@@TJvDateTimePicker.AboutJVCL
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvDateTimePicker.DropDownDate
+Summary
+  Indicates the initial date to display when the calendar illustration is shown and Date or Time equals
+  NullDate.
+Description
+  Use DropDownDate to specify an initial date that is shown in the drop-down calendar illustration,
+  when Date or Time - depending on the Kind property - equals NullDate.
+  
+  For example, if Kind is set to dtkDate, Date and NullDate are set to 1-1-2000, DropDownDate 
+  is set to 2-2-2002 and NullDate equals '(None)', then the text '(None)' is shown in the edit box. 
+  If the user drops down the calendar illustration then the date 2-2-2002 is highlighted.
+----------------------------------------------------------------------------------------------------
+@@TJvDateTimePicker.HintColor
+Summary
+  Use this porperty to define the background color of the components hint box.
+Description
+  Use this porperty to define the background color of the components hint box.
+----------------------------------------------------------------------------------------------------
+@@TJvDateTimePicker.NullDate
+Summary
+  Indicates the date or time that represents an empty "null" value.
+Description
+  Use NullDate to specify a date or time - depending on the Kind property - that represents an
+  empty "null" value. If the user entered a date or time equal to nulldate, thus the Date or Time 
+  property is equal to NullDate, then the string represented by NullText is displayed.
+See Also
+  DropDownDate, NullText
+----------------------------------------------------------------------------------------------------
+@@TJvDateTimePicker.NullText
+Summary
+  Indicates the text to display when Date or Time equals NullDate.
+Description
+  Use NullText to specify a date or time - depending on the Kind property - that represents the
+  text to display when Date or Time equals NullDate. If the user entered a date or time equal to 
+  nulldate, thus the Date or Time property is equal to NullDate, then the string represented by 
+  NullText is displayed.
+See Also
+  DropDownDate
+----------------------------------------------------------------------------------------------------
+@@TJvDateTimePicker.OnMouseEnter
+Summary
+  Use this event to react to the mouse pointer entering the component.
+Description
+  You can assign a method to this event that gets triggered when the user enters the component with
+  the mouse pointer.
+----------------------------------------------------------------------------------------------------
+@@TJvDateTimePicker.OnMouseLeave
+Summary
+  Use this event to react to the mouse pointer leaving the component.
+Description
+  You can assign a method to this event that gets triggered when the user leaves the component with
+  the mouse pointer.
+----------------------------------------------------------------------------------------------------
+@@TJvDateTimePicker.OnParentColorChange
+Summary
+  Use this event to react to a change of the parents backgroundcolor.
+Description
+  You can assign a method to this event that gets triggered whenever the color of the components
+  parent changes.
+----------------------------------------------------------------------------------------------------
+
