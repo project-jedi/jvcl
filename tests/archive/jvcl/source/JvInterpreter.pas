@@ -14,9 +14,9 @@ The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov
 Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s):
+Contributor(s): Dmitry Osinovsky, Peter Thornqvist, Olga Kobzar
 
-Last Modified: 2002-07-04
+Last Modified: 2003-04-10
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -150,8 +150,9 @@ Known Issues:
 Upcoming JVCL 3.00
    - interface (IInterface, IUnknown) method call support, see AddIntfGet
    - fixed record bugs with Delphi 6
-   - fixed OLE bugs (with Delphi 6 at least)
+   - fixed OLE bugs
    - record declaration support
+   - introduced data type system for variables and record fields initializations
    - major code cleanups
 }
 
@@ -213,6 +214,13 @@ type
 
   POpenArray = ^TOpenArray;
   TOpenArray = array[0..cJvInterpreterMaxArgs] of TVarRec;
+
+  TJvInterpreterRecField = record
+    Identifier: string;
+    Offset: Integer;
+    Typ: Word;
+    DataType: IJvInterpreterDataType;
+  end;
 
   TJvInterpreterArgs = class(TObject)
   private
@@ -361,14 +369,6 @@ type
     ['{8C5E4071-65AB-11D7-B235-00A0D2043DC7}']
     procedure Init(var V: Variant);
     function GetTyp: Word;
-  end;
-
-
-  TJvInterpreterRecField = record
-    Identifier: string;
-    Offset: Integer;
-    Typ: Word;
-    DataType: IJvInterpreterDataType;
   end;
 
   TCallConvention = set of (ccFastCall, ccStdCall, ccCDecl, ccDynamic,
