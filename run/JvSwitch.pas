@@ -35,7 +35,7 @@ uses
   Windows, Messages, Graphics, Controls, Forms, Menus,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QMenus, QWindows,
+  Qt, Types, QGraphics, QControls, QForms, QMenus, QWindows,
   {$ENDIF VisualCLX}
   JvComponent;
 
@@ -357,7 +357,7 @@ end;
 procedure TJvSwitch.Paint;
 var
   ARect: TRect;
-  Text: array [0..255] of Char;
+  Text: string;
   FontHeight: Integer;
 
   procedure DrawBitmap(Bmp: TBitmap);
@@ -409,28 +409,44 @@ var
 
 begin
   ARect := GetClientRect;
-  with Canvas do
-  begin
-    Font := Self.Font;
-    Brush.Color := Self.Color;
-    DrawThemedBackground(Self, Canvas, ARect);
-    if not Enabled and (FDisableBitmaps[FStateOn] <> nil) then
-      DrawBitmap(FDisableBitmaps[FStateOn])
-    else
-      DrawBitmap(FBitmaps[FStateOn]);
-    if FTextPosition <> tpNone then
+  {$IFDEF VisualCLX}
+  Canvas.Start;
+  try
+  {$ENDIF VisualCLX}
+    with Canvas do
     begin
-      FontHeight := TextHeight('W');
-      with ARect do
+      Font := Self.Font;
+      Brush.Color := Self.Color;
+      DrawThemedBackground(Self, Canvas, ARect);
+      if not Enabled and (FDisableBitmaps[FStateOn] <> nil) then
+        DrawBitmap(FDisableBitmaps[FStateOn])
+      else
+        DrawBitmap(FBitmaps[FStateOn]);
+      if FTextPosition <> tpNone then
       begin
-        Top := ((Bottom + Top) - FontHeight) shr 1;
-        Bottom := Top + FontHeight;
+        FontHeight := TextHeight('W');
+        with ARect do
+        begin
+          Top := ((Bottom + Top) - FontHeight) shr 1;
+          Bottom := Top + FontHeight;
+        end;
+        Text := Caption;
+        DrawText(Handle, PChar(Text), Length(Caption), ARect,
+          DT_EXPANDTABS or DT_VCENTER or DT_CENTER);
       end;
-      StrPCopy(Text, Caption);
-      DrawText(Handle, Text, StrLen(Text), ARect,
-        DT_EXPANDTABS or DT_VCENTER or DT_CENTER);
     end;
+  {$IFDEF VisualCLX}
+    if BorderStyle = bsSingle then
+    begin
+      Canvas.Pen.Color := clBlack;
+      Canvas.Pen.Mode := pmCopy;
+      Canvas.Brush.Style := bsClear;
+      Canvas.Rectangle(ClientRect);
+    end;
+  finally
+    Canvas.Stop;
   end;
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvSwitch.DoOn;
