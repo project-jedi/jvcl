@@ -226,7 +226,7 @@ begin
     TJvgLabel,
       TJvgFlyingText,
       TJvgDigits,
-      TJvgStaticText
+      TJvgStaticTextLabel
       ]);
 
   RegisterComponents('Jv MultiMedia', [
