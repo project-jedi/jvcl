@@ -178,7 +178,7 @@ begin
 end;
 
 procedure TfrmMain.LoadData(Node: TTreeNode);
-var item:IJvSurveyItem;li:TListItem;S,T:TStringlist;i:integer;
+var item:IJvSurveyItem;li:TListItem;S:TStringlist;i:integer;
 begin
   if (Node = nil) or not FileExists(Filename) then Exit;
   if Node.Parent = nil then // root

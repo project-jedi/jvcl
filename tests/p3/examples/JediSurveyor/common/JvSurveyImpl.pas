@@ -457,15 +457,14 @@ begin
     Title := Node.Properties.Value('Title', '');
     ResultHREF := Node.Properties.Value('HREF', 'http://delphi-jedi.org');
     ReleaseDate := StrToDate(Node.Properties.Value('ReleaseDate', DateToStr(Date)));
-    ExpiryDate := StrToDate(Node.Properties.Value('ExpiryDate', DateToStr(Date + 36000)));
+    ExpiryDate := StrToDate(Node.Properties.Value('ExpiryDate', DateToStr(Date + 100)));
     Description := Node.Properties.Value('Description', '');
   end
   else if AnsiSameText(Node.Name, 'SURVEYTAKER') then
   begin
     SurveyTaker.ID := Node.Properties.Value('id', '');
-    SurveyTaker.UserName := Node.Properties.Value('username', GetLocalUserName);
-    SurveyTaker.MailAddress := Node.Properties.Value('mailto', SurveyTaker.UserName + '@' + SurveyTaker.UserName +
-      '.com');
+    SurveyTaker.UserName := Node.Properties.Value('username', SurveyTaker.UserName);
+    SurveyTaker.MailAddress := Node.Properties.Value('mailto',SurveyTaker.MailAddress);
     SurveyTaker.Notes := Node.Value;
   end
   else if AnsiSameText(Node.Name, 'RECIPIENT') then
@@ -496,6 +495,10 @@ begin
       raise EJvSurveyError.CreateFmt(SErrInvalidFileFormatFmt, [Filename]);
     FLastItem.Responses := Node.Value;
   end;
+  // set up defaults
+  SurveyTaker.UserName := GetLocalUserName;
+  SurveyTaker.MailAddress := Format('%s@%s.com',[GetLocalUserName,GetLocalComputerName]);
+
   for i := 0 to Node.Items.Count - 1 do
     ParseXML(Node.Items[i]);
 end;
