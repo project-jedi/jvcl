@@ -1,7 +1,7 @@
 program JvOutlookBarCustomDrawDemo;
 
 uses
-  Forms,
+  QForms,
   MainFrm in 'MainFrm.pas' {Form1};
 
 {$R *.res}
