@@ -609,8 +609,9 @@ begin
     // clear background.
     Rect := GetClientRect;
     Brush.Color := Self.Color;
+    {$IFDEF VCL}
     FillRect(Rect);
-
+    {$ENDIF VCL}
     // draw gradient borders.
     if IsSpecialDrawState then
     begin
@@ -620,11 +621,12 @@ begin
           Bitmap.Assign(FHlGradient)
         else
           Bitmap.Assign(FFcGradient);
-        {$IFDEF VCL}
-        BitBlt(Handle, 1, 1, Width, Height, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
-        {$ENDIF VCL}
         {$IFDEF VisualCLX}
-        Draw(1, 1, Bitmap);
+        Bitmap.Canvas.Start;
+        {$ENDIF VisualCLX}
+        BitBlt(Handle, 1, 1, Width, Height, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
+        {$IFDEF VisualCLX}
+        Bitmap.Canvas.Stop;
         {$ENDIF VisualCLX}
       finally
         Bitmap.Free;
@@ -635,22 +637,26 @@ begin
     if not ((dsHighlight in DrawState) and (dsClicked in DrawState)) then
     begin
       Offset := 2 * Integer(IsSpecialDrawState);
-      {$IFDEF VCL}
+      {$IFDEF VisualCLX}
+      FBgGradient.Canvas.start;
+      {$ENDIF VisualCLX}
       BitBlt(Handle, 1 + Offset, 1 + Offset, Width - 3 * Offset, Height - 3 * Offset,
         FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
-      {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      Draw(1 + Offset, 1 + Offset, FBgGradient);
+      FBgGradient.Canvas.Stop;
       {$ENDIF VisualCLX}
     end
     // ...or click gradient.
     else
-      {$IFDEF VCL}
-      BitBlt(Handle, 1, 1, Width, Height, FCkGradient.Canvas.Handle, 0, 0, SRCCOPY);
-      {$ENDIF VCL}
+    begin
       {$IFDEF VisualCLX}
-       Draw(1, 1, FCkGradient);
+      FCkGradient.Canvas.Start;
       {$ENDIF VisualCLX}
+      BitBlt(Handle, 1, 1, Width, Height, FCkGradient.Canvas.Handle, 0, 0, SRCCOPY);
+      {$IFDEF VisualCLX}
+      FCkGradient.Canvas.Stop;
+      {$ENDIF VisualCLX}
+    end;
     // draw border lines.
     if Enabled then
       Pen.Color := dxColor_Btn_Enb_Border_WXP
