@@ -827,9 +827,6 @@ begin
   HasImages := self.Images <> nil;
   with ACanvas do
   begin
-    {$IFDEF VisualCLX}
-    Start;
-    {$ENDIF VisualCLX}
     Font.Assign(lBar.Font);
     Brush.Color := lBar.Colors.BodyColor;
     if not ShowItemFrame then
@@ -890,10 +887,8 @@ begin
     {$ENDIF VCL}
 
     {$IFDEF VisualCLX}
-    SetPainterFont(Handle, Font);
-    DrawTextW(Handle, PWideChar(ItemCaption), -1, Rect, DT_SINGLELINE or
+    DrawTextW(ACanvas, PWideChar(ItemCaption), -1, Rect, DT_SINGLELINE or
       DT_VCENTER or DT_END_ELLIPSIS);
-    Stop;
     {$ENDIF VisualCLX}
   end;
 end;
