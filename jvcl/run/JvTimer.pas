@@ -155,9 +155,9 @@ begin
   FInterval := 1000;
   FSyncEvent := True;
   FThreaded := True;
-  {$IFDEF WINDOWS}
+  {$IFDEF MSWINDOWS}
   FThreadPriority := tpNormal;
-  {$ENDIF WINDOWS}
+  {$ENDIF MSWINDOWS}
   FTimerThread := TJvTimerThread.Create(Self, False);
 end;
 

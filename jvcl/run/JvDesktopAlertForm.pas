@@ -38,10 +38,10 @@ uses
   Windows, Messages, Graphics, Controls, Forms, Dialogs, ImgList, ExtCtrls,
   ActnList, Menus, StdCtrls,
   {$ENDIF VCL}
-  {$IFDEF VisuaLCLX}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, QImgList, QExtCtrls, QActnList,
   QMenus, QStdCtrls, Types, QWindows,
-  {$ENDIF VisuaLCLX}
+  {$ENDIF VisualCLX}
   JvButton, JvComponent, JvLabel;
 
 const
