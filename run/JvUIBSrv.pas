@@ -313,7 +313,7 @@ begin
         scInvokeMethod:
           InvokeMethod;
       else
-        // TODO Deconnecter
+        // TODO Disconnect
       end;
     end;
   except

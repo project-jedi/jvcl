@@ -31,9 +31,10 @@
 {                                                                              }
 {******************************************************************************}
 
-unit JvUIBSQLParser;
-{$I JVCL.INC}
+{$I jvcl.inc}
 {$I JvUIB.inc}
+
+unit JvUIBSQLParser;
 
 interface
 uses
