@@ -33,38 +33,38 @@ interface
 uses
   Windows, Messages, Classes, Controls, Graphics, JvComponent, JvgTypes, JVCLVer,
   JvgCommClasses, JvgUtils, ExtCtrls;
-  
+
 type
   TJvgSplitter = class(TSplitter)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHotTrack: boolean;
     FTrackCount: integer;
-    fActive: boolean;
+    FActive: boolean;
     FDisplace: boolean;
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure WMMouseDblClick(var Message: TMessage); message
-      WM_LBUTTONDBLCLK;
+    procedure WMMouseDblClick(var Message: TMessage); message WM_LBUTTONDBLCLK;
     procedure SetTrackCount(const Value: integer);
     procedure UpdateControlSize;
     function FindControl: TControl;
-    procedure PrepareMarcs(Align: TAlign; var pt1, pt2, pt3, pt4, pt5,
-      pt6: TPoint);
-    procedure SetDisplace(const Value: boolean);
-  protected
+    procedure PrepareMarcs(Align: TAlign; var pt1, pt2, pt3, pt4, pt5, pt6: TPoint);
+    procedure SetDisplace(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HotTrack: boolean read FHotTrack write FHotTrack default true;
-    property TrackCount: integer read FTrackCount write SetTrackCount default
-      20;
-    property Displace: boolean read FDisplace write SetDisplace default true;
+    property HotTrack: boolean read FHotTrack write FHotTrack default True;
+    property TrackCount: integer read FTrackCount write SetTrackCount default 20;
+    property Displace: boolean read FDisplace write SetDisplace default True;
   end;
 
 implementation
+
+uses
+  JvThemes;
+
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 
 procedure TJvgSplitter.Paint;
@@ -77,24 +77,29 @@ begin
   with Canvas do
   begin
 
-    Brush.Color := self.Color;
-    FillRect(ClientRect);
+    Brush.Color := Self.Color;
+    DrawThemedBackground(Self, Canvas, ClientRect);
 
     if (Align = alBottom) or (Align = alTop) then
     begin
-      R1 := classes.Bounds((Width - FTrackCount * 4) div 2, 0, 3, 3);
-      R2 := classes.Bounds((Width - FTrackCount * 4) div 2, 3, 3, 3);
+      R1 := Classes.Bounds((Width - FTrackCount * 4) div 2, 0, 3, 3);
+      R2 := Classes.Bounds((Width - FTrackCount * 4) div 2, 3, 3, 3);
     end
     else
     begin
-      R1 := classes.Bounds(0, (Height - FTrackCount * 4) div 2, 3, 3);
-      R2 := classes.Bounds(3, (Height - FTrackCount * 4) div 2, 3, 3);
+      R1 := Classes.Bounds(0, (Height - FTrackCount * 4) div 2, 3, 3);
+      R2 := Classes.Bounds(3, (Height - FTrackCount * 4) div 2, 3, 3);
     end;
 
     for i := 0 to FTrackCount - 1 do
     begin
-      if fActive and HotTrack then
-        sColor := 0
+{$IFDEF JVCLThemesEnabled}
+      if FActive and HotTrack and ThemeServices.ThemesEnabled then
+        sColor := RGB(100, 100, 100)
+      else
+{$ENDIF}
+      if FActive and HotTrack then
+        sColor := clBlack
       else
         sColor := clBtnShadow;
 
@@ -118,7 +123,7 @@ begin
     if FDisplace then
     begin
       PrepareMarcs(Align, pt1, pt2, pt3, pt4, pt5, pt6);
-      if fActive then
+      if FActive then
         Canvas.Brush.Color := clGray
       else
         Canvas.Brush.Color := clWhite;
@@ -128,8 +133,7 @@ begin
   end;
 end;
 
-procedure TJvgSplitter.PrepareMarcs(Align: TAlign; var pt1, pt2, pt3, pt4, pt5,
-  pt6: TPoint);
+procedure TJvgSplitter.PrepareMarcs(Align: TAlign; var pt1, pt2, pt3, pt4, pt5, pt6: TPoint);
 begin
   case Align of
     alRight:
@@ -204,20 +208,21 @@ end;
 procedure TJvgSplitter.CMMouseEnter(var Message: TMessage);
 begin
   inherited;
-  fActive := true;
-  Paint;
+  FActive := true;
+  Invalidate;
 end;
 
 procedure TJvgSplitter.CMMouseLeave(var Message: TMessage);
 begin
   inherited;
-  fActive := false;
-  Paint;
+  FActive := false;
+  Invalidate;
 end;
 
 constructor TJvgSplitter.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
+  IncludeThemeStyle(Self, [csParentBackground]);
   //..defaults
   Width := 6;
   FHotTrack := true;
@@ -246,7 +251,7 @@ var
 begin
   FControl := FindControl;
   if not Assigned(FControl) then
-    exit;
+    Exit;
   begin
     if (FKeepSize = 0) then
     begin
@@ -255,7 +260,6 @@ begin
           begin
             FKeepSize := FControl.Width;
             FControl.Width := FNewSize;
-
           end;
         alTop:
           begin
@@ -267,8 +271,7 @@ begin
             FKeepSize := FControl.Width;
             Parent.DisableAlign;
             try
-              FControl.Left := FControl.Left + (FControl.Width -
-                FNewSize);
+              FControl.Left := FControl.Left + (FControl.Width - FNewSize);
               FControl.Width := FNewSize;
             finally
               Parent.EnableAlign;
@@ -279,8 +282,7 @@ begin
             fKeepSize := FControl.Height;
             Parent.DisableAlign;
             try
-              FControl.Top := FControl.Top + (FControl.Height -
-                FNewSize);
+              FControl.Top := FControl.Top + (FControl.Height - FNewSize);
               FControl.Height := FNewSize;
             finally
               Parent.EnableAlign;
@@ -303,8 +305,7 @@ begin
           begin
             Parent.DisableAlign;
             try
-              FControl.Left := FControl.Left + (FControl.Width -
-                FKeepSize);
+              FControl.Left := FControl.Left + (FControl.Width - FKeepSize);
               FControl.Width := FKeepSize;
             finally
               Parent.EnableAlign;
@@ -314,8 +315,7 @@ begin
           begin
             Parent.DisableAlign;
             try
-              FControl.Top := FControl.Top + (FControl.Height -
-                FKeepSize);
+              FControl.Top := FControl.Top + (FControl.Height - FKeepSize);
               FControl.Height := FKeepSize;
             finally
               Parent.EnableAlign;
@@ -369,7 +369,7 @@ begin
   Result := nil;
 end;
 
-procedure TJvgSplitter.SetDisplace(const Value: boolean);
+procedure TJvgSplitter.SetDisplace(const Value: Boolean);
 begin
   FDisplace := Value;
   Invalidate;

@@ -180,6 +180,10 @@ type
   end;
 
 implementation
+
+uses
+  JvThemes;
+
 {$R ..\Resources\JvgCheckBox.res}
 
 //________________________________________________________ Methods _
@@ -190,6 +194,7 @@ begin
   ControlStyle := [csCaptureMouse, csOpaque, csClickEvents, csSetCaption,
     csReplicatable];
   //  ControlStyle := ControlStyle + [csOpaque, csReplicatable];
+  IncludeThemeStyle(Self, [csParentBackground]);
 
   //  FGlyphOn := TBitmap.Create;
   //  FGlyphOff := TBitmap.Create;
@@ -529,8 +534,11 @@ begin
         DisabledMaskColor);
   end;
 
-  BitBlt(Canvas.Handle, 0, 0, Img.Width, Img.Height, Img.Canvas.Handle, 0, 0,
-    SRCCOPY);
+{  BitBlt(Canvas.Handle, 0, 0, Img.Width, Img.Height, Img.Canvas.Handle, 0, 0,
+    SRCCOPY);}
+  Img.Transparent := True;
+  Img.TransparentMode := tmAuto;
+  Canvas.Draw(0, 0, Img);
 
   fSuppressCMFontChanged := false;
   fOnlyTextStyleChanged := false;
@@ -811,6 +819,10 @@ begin
   if FTransparent = Value then
     exit;
   FTransparent := Value;
+  if FTransparent then
+    ExcludeThemeStyle(Self, [csParentBackground])
+  else
+    IncludeThemeStyle(Self, [csParentBackground]);
   Repaint;
 end;
 
@@ -855,6 +867,13 @@ begin
     FGlyphOn.LoadFromResourceName(hInstance, 'ON');
     FGlyphOff.LoadFromResourceName(hInstance, 'OFF');
     FGlyphDisabled.LoadFromResourceName(hInstance, 'DISABLED');
+
+    FGlyphOn.Transparent := True;
+    FGlyphOn.TransparentMode := tmAuto;
+    FGlyphOff.Transparent := True;
+    FGlyphOff.TransparentMode := tmAuto;
+    FGlyphDisabled.Transparent := True;
+    FGlyphDisabled.TransparentMode := tmAuto;
   end;
 
 end;
