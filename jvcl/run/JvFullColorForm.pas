@@ -36,7 +36,7 @@ uses
   JvSpin, JvExStdCtrls, JvCombobox, JvColorCombo;
 
 type
-  TJvFullColorFrm = class(TJvBaseFullColorForm)
+  TJvFullColorFrm = class(TForm)
     LabelColorSpace: TLabel;
     GroupBoxSettings: TGroupBox;
     ScrollBarAxis0: TScrollBar;
@@ -80,6 +80,9 @@ type
     FUpdating: Boolean;
     FExpanded: Boolean;
     FExpandedWidth: Integer;
+    FFullColor: TJvFullColor;
+    FOptions: TJvFullColorDialogOptions;
+    FOnApply: TNotifyEvent;
     FScrollBarAxes: array [TJvAxisIndex] of TScrollBar;
     FSpinEditAxes: array [TJvAxisIndex] of TJvSpinEdit;
     FLabelAxes: array [TJvAxisIndex] of TLabel;
@@ -88,13 +91,18 @@ type
   protected
     procedure UpdateColorValue;
     procedure UpdateColorSpace;
-    procedure SetFullColor(const Value: TJvFullColor); override;
-    procedure SetOptions(const Value: TJvFullColorDialogOptions); override;
+    procedure SetFullColor(const Value: TJvFullColor);
+    procedure SetOptions(const Value: TJvFullColorDialogOptions);
     procedure Loaded; override;
     property Expanded: Boolean read FExpanded;
   public
+    constructor Create(AOwner: TComponent; AFullColor: TJvFullColor;
+      AOptions: TJvFullColorDialogOptions); reintroduce;
     procedure Expand;
     procedure Collapse;
+    property Options: TJvFullColorDialogOptions read FOptions write SetOptions;
+    property FullColor: TJvFullColor read FFullColor write SetFullColor;
+    property OnApply: TNotifyEvent read FOnApply write FOnApply;
   end;
 
 implementation
@@ -113,6 +121,14 @@ uses
 function AxisIndexFromTag(ATag: Integer): TJvAxisIndex;
 begin
   Result := TJvAxisIndex(ATag and $03);
+end;
+
+constructor TJvFullColorFrm.Create(AOwner: TComponent;
+  AFullColor: TJvFullColor; AOptions: TJvFullColorDialogOptions);
+begin
+  inherited Create(AOwner);
+  FOptions := AOptions;
+  FFullColor := AFullColor;
 end;
 
 procedure TJvFullColorFrm.FormCreate(Sender: TObject);
@@ -393,7 +409,7 @@ end;
 
 procedure TJvFullColorFrm.SetFullColor(const Value: TJvFullColor);
 begin
-  inherited SetFullColor(Value);
+  FFullColor := Value;
   if not FUpdating then
   begin
     with ColorSpaceManager do
@@ -407,7 +423,7 @@ var
   LVisible: Boolean;
   LColor: TColor;
 begin
-  inherited SetOptions(Value);
+  FOptions := Value;
 
   if foFullOpen in Options then
     Expand
@@ -470,15 +486,9 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
     );
-{$ENDIF UNITVERSIONING}
 
 initialization
-  FullColorFormClass := TJvFullColorFrm;
-  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
-
-{$IFDEF UNITVERSIONING}
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
