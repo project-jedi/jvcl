@@ -32,6 +32,24 @@
     <Package Name="vcljpg" Targets="C6,C6p" Condition=""/>
     <Package Name="dataclx" Targets="K3" Condition=""/>
     <Package Name="visualdbclx" Targets="allclx" Condition=""/>
+    <Package Name="SMExportC5" Targets="c5, c5s" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportC6" Targets="c6, c6p" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD5" Targets="d5, d5p" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD6" Targets="d6, d6p" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD7" Targets="d7, d7p" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD2005" Targets="d9" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMImportC5" Targets="c5, c5s" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportC6" Targets="c6, c6p" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD5" Targets="d5, d5p" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD6" Targets="d6, d6p" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD7" Targets="d7, d7p" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD2005" Targets="d9" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="cxGridVCLC5" Targets="c5, c5s" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxGridVCLC6" Targets="c6, c6p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxGridVCLD5" Targets="d5, d5p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxGridVCLD6" Targets="d6, d6p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxGridVCLD7" Targets="d7, d7p" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxGridD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="all" Formname="" Condition=""/>
