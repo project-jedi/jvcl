@@ -103,9 +103,11 @@ type
     FReadOnly: Boolean; // ain
     FConsumerSvc: TJvDataConsumer;
     FProviderWasActive: Boolean;
+    FIsFixedHeight: Boolean;
     procedure MaxPixelChanged(Sender: TObject);
     procedure SetReadOnly(const Value: Boolean); // ain
     procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
+    procedure CNMeasureItem(var Message: TWMMeasureItem); message CN_MEASUREITEM;
   protected
     procedure Change; override;
     procedure CreateWnd; override; // ain
@@ -141,6 +143,7 @@ type
     {$IFNDEF COMPILER6_UP}
     property IsDropping: Boolean read FIsDropping write FIsDropping;
     {$ENDIF COMPILER6_UP}
+    property IsFixedHeight: Boolean read FIsFixedHeight;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -681,10 +684,11 @@ begin
     if IsProviderSelected then
     try
       Provider.Enter;
-      if (Index = -1) and Supports(Provider.ProviderIntf, IJvDataItemsRenderer, ItemsRenderer) then
+      if ((Index = -1) or IsFixedHeight) and
+          Supports(Provider.ProviderIntf, IJvDataItemsRenderer, ItemsRenderer) then
         tmpSize := ItemsRenderer.AvgItemSize(Canvas)
       else
-      if Index <> -1 then
+      if (Index <> -1) and not IsFixedHeight then
       begin
         if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
         begin
@@ -693,7 +697,7 @@ begin
             tmpSize := ItemRenderer.Measure(Canvas)
           else
           if DP_FindItemsRenderer(Item, ItemsRenderer) then
-            tmPSize := ItemsRenderer.MeasureItem(Canvas, Item);
+            tmpSize := ItemsRenderer.MeasureItem(Canvas, Item);
         end;
       end;
       if tmpSize.cy > Height then
@@ -1094,6 +1098,16 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
+procedure TJvCustomComboBox.CNMeasureItem(var Message: TWMMeasureItem);
+begin
+  with Message.MeasureItemStruct^ do
+  begin
+    itemHeight := Self.ItemHeight;
+    if (Self.Style = csOwnerDrawVariable) or IsProviderSelected then
+      MeasureItem(itemID, Integer(itemHeight));
+  end;
+end;
+
 procedure TJvCustomComboBox.SetReadOnly(const Value: Boolean);
 begin
   if FReadOnly <> Value then
@@ -1107,7 +1121,12 @@ procedure TJvCustomComboBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   if IsProviderSelected then
-    Params.Style := Params.Style and not (CBS_SORT or CBS_HASSTRINGS) or CBS_OWNERDRAWVARIABLE;
+  begin
+    Params.Style := Params.Style and not (CBS_SORT or CBS_HASSTRINGS);
+    if Params.Style and (CBS_OWNERDRAWVARIABLE or CBS_OWNERDRAWFIXED) = 0 then
+      Params.Style := Params.Style or CBS_OWNERDRAWFIXED;
+    FIsFixedHeight := (Params.Style and CBS_OWNERDRAWVARIABLE) = 0;
+  end;
 end;
 
 procedure TJvCustomComboBox.CreateWnd;
