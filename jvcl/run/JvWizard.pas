@@ -644,7 +644,7 @@ type
   published
     property BorderWidth: Word read FBorderWidth write SetBorderWidth default 7;
     property Color default clBtnFace;
-    property Visible;
+    property Visible default False;
   end;
 
   TJvWizardPageClickEvent = procedure(Sender: TObject; var Stop: Boolean) of object;
