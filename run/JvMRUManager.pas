@@ -51,9 +51,24 @@ type
   TAccelDelimiter = (adTab, adSpace);
   TRecentMode = (rmInsert, rmAppend);
 
+  TJvRecentStrings = class(TStringList)
+  private
+    FMaxSize: Integer;
+    FMode: TRecentMode;
+    procedure SetMaxSize(Value: Integer);
+  public
+    constructor Create;
+    function Add(const S: string): Integer; override;
+    procedure AddStrings(Strings: TStrings); override;
+    procedure DeleteExceed;
+    procedure Remove(const S: string);
+    property MaxSize: Integer read FMaxSize write SetMaxSize;
+    property Mode: TRecentMode read FMode write FMode;
+  end;
+
   TJvMRUManager = class(TJvComponent)
   private
-    FList: TStrings;
+    FStrings: TJvRecentStrings;
     FItems: TList;
     FIniLink: TJvIniLink;
     FSeparateSize: Word;
@@ -95,6 +110,7 @@ type
     procedure InternalSave(const Section: string);
     procedure SetDuplicates(const Value: TDuplicates);
     procedure DoDuplicateFixUp;
+    function GetStrings: TStrings;
   protected
     procedure Change; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -120,7 +136,7 @@ type
     procedure SaveToAppStorage(const AppStorage: TJvCustomAppStorage; const Path: string);
     procedure Load;
     procedure Save;
-    property Strings: TStrings read FList;
+    property Strings: TStrings read GetStrings;
   published
     // Duplicates works just as for TStrings, but the list doesn't need to be sorted
     property Duplicates: TDuplicates read FDuplicates write SetDuplicates;
@@ -151,22 +167,6 @@ type
     property OnGetItemInfo: TGetItemInfoEvent read FOnItemInfo write FOnItemInfo;
   end;
 
-  TJvRecentStrings = class(TStringList)
-  private
-    FMaxSize: Integer;
-    FMode: TRecentMode;
-    procedure SetMaxSize(Value: Integer);
-  public
-    constructor Create;
-    function Add(const S: string): Integer; override;
-    procedure AddStrings(Strings: TStrings); override;
-    procedure DeleteExceed;
-    procedure Remove(const S: string);
-    property MaxSize: Integer read FMaxSize write SetMaxSize;
-    property Mode: TRecentMode read FMode write FMode;
-  end;
-
-
 implementation
 
 uses
@@ -182,9 +182,9 @@ const
 constructor TJvMRUManager.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FList := TJvRecentStrings.Create;
+  FStrings := TJvRecentStrings.Create;
   FItems := TList.Create;
-  TJvRecentStrings(FList).OnChange := ListChanged;
+  FStrings.OnChange := ListChanged;
   FIniLink := TJvIniLink.Create;
   FIniLink.OnSave := IniSave;
   FIniLink.OnLoad := IniLoad;
@@ -198,8 +198,8 @@ destructor TJvMRUManager.Destroy;
 begin
   ClearRecentMenu;
   FIniLink.Free;
-  TJvRecentStrings(FList).OnChange := nil;
-  FList.Free;
+  FStrings.OnChange := nil;
+  FStrings.Free;
   FItems.Free;
   FItems := nil;
   inherited Destroy;
@@ -210,6 +210,11 @@ begin
   inherited Notification(AComponent, Operation);
   if (AComponent = RecentMenu) and (Operation = opRemove) then
     RecentMenu := nil;
+end;
+
+function TJvMRUManager.GetStrings: TStrings;
+begin
+  Result := FStrings;
 end;
 
 procedure TJvMRUManager.GetItemData(var Caption: string; var ShortCut: TShortCut;
@@ -232,34 +237,34 @@ begin
   if Sender is TMenuItem then
   begin
     I := TMenuItem(Sender).Tag;
-    if (I >= 0) and (I < FList.Count) then
+    if (I >= 0) and (I < Strings.Count) then
     try
-      DoClick(FList[I], TMenuItem(Sender).Caption, Longint(FList.Objects[I]));
+      DoClick(Strings[I], TMenuItem(Sender).Caption, Longint(Strings.Objects[I]));
     finally
       if RemoveOnSelect then
-        Remove(FList[I]);
+        Remove(Strings[I]);
     end;
   end;
 end;
 
 function TJvMRUManager.GetCapacity: Integer;
 begin
-  Result := TJvRecentStrings(FList).MaxSize;
+  Result := FStrings.MaxSize;
 end;
 
 procedure TJvMRUManager.SetCapacity(Value: Integer);
 begin
-  TJvRecentStrings(FList).MaxSize := Value;
+  FStrings.MaxSize := Value;
 end;
 
 function TJvMRUManager.GetMode: TRecentMode;
 begin
-  Result := TJvRecentStrings(FList).Mode;
+  Result := FStrings.Mode;
 end;
 
 procedure TJvMRUManager.SetMode(Value: TRecentMode);
 begin
-  TJvRecentStrings(FList).Mode := Value;
+  FStrings.Mode := Value;
 end;
 
 function TJvMRUManager.GetStorage: TJvFormPlacement;
@@ -316,26 +321,26 @@ procedure TJvMRUManager.Add(const RecentName: string; UserData: Longint);
 var
   I: Integer;
 begin
-  if not (Duplicates = dupAccept) and (FList.IndexOf(RecentName) > -1) then
+  if not (Duplicates = dupAccept) and (Strings.IndexOf(RecentName) > -1) then
   begin
     if Duplicates = dupError then
       raise EJVCLException.Create(RsEDuplicatesNotAllowedInMRUList);
   end
   else
   begin
-    I := TJvRecentStrings(FList).Add(RecentName);
-    FList.Objects[I] := TObject(UserData);
+    I := FStrings.Add(RecentName);
+    Strings.Objects[I] := TObject(UserData);
   end;
 end;
 
 procedure TJvMRUManager.Clear;
 begin
-  FList.Clear;
+  Strings.Clear;
 end;
 
 procedure TJvMRUManager.Remove(const RecentName: string);
 begin
-  TJvRecentStrings(FList).Remove(RecentName);
+  FStrings.Remove(RecentName);
 end;
 
 procedure TJvMRUManager.AddMenuItem(Item: TMenuItem);
@@ -357,16 +362,16 @@ begin
   Tmp := AutoUpdate;
   try
     AutoUpdate := False;
-    I := FList.Count - 1;
+    I := Strings.Count - 1;
     while I >= 0 do
     begin
       // we don't raise an error here even if Duplicates is dupError
-      J := FList.IndexOf(FList[I]);
+      J := Strings.IndexOf(Strings[I]);
       while (J > -1) and (J <> I) do
       begin
-        FList.Delete(J);
+        Strings.Delete(J);
         Dec(I);
-        J := FList.IndexOf(FList[I]);
+        J := Strings.IndexOf(Strings[I]);
       end;
       Dec(I);
     end;
@@ -391,15 +396,15 @@ begin
   DoBeforeUpdate;
   if Assigned(FRecentMenu) then
   begin
-    if (FList.Count > 0) and (FRecentMenu.Count > 0) then
+    if (Strings.Count > 0) and (FRecentMenu.Count > 0) then
       AddMenuItem(NewLine);
-    for I := 0 to FList.Count - 1 do
+    for I := 0 to Strings.Count - 1 do
     begin
       if (FSeparateSize > 0) and (I > 0) and (I mod FSeparateSize = 0) then
         AddMenuItem(NewLine);
-      S := FList[I];
+      S := Strings[I];
       ShortCut := scNone;
-      GetItemData(S, ShortCut, Longint(FList.Objects[I]));
+      GetItemData(S, ShortCut, Longint(Strings.Objects[I]));
       Item := NewItem(GetShortHint(S), ShortCut, False, True,
         MenuItemClick, 0, '');
       Item.Hint := GetLongHint(S);
@@ -538,11 +543,11 @@ var
   AMode: TRecentMode;
 begin
   AMode := Mode;
-  FList.BeginUpdate;
+  Strings.BeginUpdate;
   try
-    FList.Clear;
+    Strings.Clear;
     Mode := rmInsert;
-    for I := TJvRecentStrings(FList).MaxSize - 1 downto 0 do
+    for I := FStrings.MaxSize - 1 downto 0 do
     begin
       S := '';
       UserData := 0;
@@ -552,7 +557,7 @@ begin
     end;
   finally
     Mode := AMode;
-    FList.EndUpdate;
+    Strings.EndUpdate;
   end;
 end;
 
@@ -561,8 +566,8 @@ var
   I: Integer;
 begin
   AppStorage.DeleteSubTree(Path);
-  for I := 0 to FList.Count - 1 do
-    DoWriteItem(AppStorage, Path, I, FList[I], Longint(FList.Objects[I]));
+  for I := 0 to Strings.Count - 1 do
+    DoWriteItem(AppStorage, Path, I, Strings[I], Longint(Strings.Objects[I]));
 end;
 
 procedure TJvMRUManager.Load;
@@ -591,9 +596,9 @@ procedure TJvMRUManager.RemoveInvalid;
 var
   I: Integer;
 begin
-  for I := FList.Count - 1 downto 0 do
-    if not FileExists(FList[I]) then
-      FList.Delete(I);
+  for I := Strings.Count - 1 downto 0 do
+    if not FileExists(Strings[I]) then
+      Strings.Delete(I);
 end;
 
 procedure TJvMRUManager.GetItemInfo(Item: TMenuItem);

@@ -99,17 +99,6 @@ type
     property OnProgress: TOnProgressEvent read FOnProgress write FOnProgress;
   end;
 
-implementation
-
-uses
-  Windows, Forms, SysUtils, StdCtrls, Math,
-  JvProgressUtils;
-
-const
-  cbQRYPROGRESS = cbRESERVED4;
-
-//=== TJvDBCallback ==========================================================
-
 type
   TJvDBCallbackEvent = function(CBInfo: Pointer): CBRType of object;
   TJvDBCallbackChain = (dcOnlyOnce, dcChain, dcReplace);
@@ -136,6 +125,15 @@ type
     destructor Destroy; override;
   end;
 
+implementation
+
+uses
+  Windows, Forms, SysUtils, StdCtrls, Math,
+  JvProgressUtils;
+
+const
+  cbQRYPROGRESS = cbRESERVED4;
+
 function BdeCallBack(CallType: CBType; Data: Longint; CBInfo: Pointer): CBRType; stdcall;
 begin
   if Data <> 0 then
@@ -145,6 +143,8 @@ begin
   else
     Result := cbrUSEDEF;
 end;
+
+//=== TJvDBCallback ==========================================================
 
 constructor TJvDBCallback.Create(AOwner: TObject; CBType: CBType;
   CBBufSize: Cardinal; CallbackEvent: TJvDBCallbackEvent;

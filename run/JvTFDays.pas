@@ -116,8 +116,8 @@ type
 
   TJvTFDaysTemplates = (agtNone, agtLinear, agtComparative);
 
-  TJvTFListMoveEvent = procedure(Sender: TObject; CurIndex, NewIndex: Integer)
-    of object;
+  TJvTFListMoveEvent = procedure(Sender: TObject; CurIndex, NewIndex: Integer) of object;
+
   TJvTFCompNamesList = class(TStringList)
   private
     FOnMove: TJvTFListMoveEvent;
@@ -131,14 +131,15 @@ type
   private
     FActiveTemplate: TJvTFDaysTemplates;
     FCompDate: TDate;
-    FCompNames: TStrings;
+    FCompNames: TJvTFCompNamesList;
     FLinearDayCount: Integer;
     FLinearEndDate: TDate;
     FLinearName: string;
     FLinearStartDate: TDate;
     FShortTitles: Boolean;
     FUpdatingGrid: Boolean;
-   // Property Access Methods
+    // Property Access Methods
+    function GetCompNames: TStrings;
     procedure SetActiveTemplate(Value: TJvTFDaysTemplates);
     procedure SetCompDate(Value: TDate);
     procedure SetCompNames(Value: TStrings);
@@ -173,7 +174,7 @@ type
        write SetActiveTemplate default agtNone;
 
     property CompDate: TDate read FCompDate write SetCompDate;
-    property CompNames: TStrings read FCompNames write SetCompNames;
+    property CompNames: TStrings read GetCompNames write SetCompNames;
 
     property IgnoreNav: Boolean read FIgnoreNav write FIgnoreNav default False;
     property LinearDayCount: Integer read FLinearDayCount
@@ -1901,8 +1902,8 @@ begin
   FGrid := anApptGrid;
 
   FCompNames := TJvTFCompNamesList.Create;
-  TJvTFCompNamesList(FCompNames).OnChange := CompNamesChanged;
-  TJvTFCompNamesList(FCompNames).OnMove := CompNamesMoved;
+  FCompNames.OnChange := CompNamesChanged;
+  FCompNames.OnMove := CompNamesMoved;
 
   FLinearStartDate := Date;
   FLinearEndDate := Date;
@@ -1914,6 +1915,8 @@ end;
 
 destructor TJvTFDaysTemplate.Destroy;
 begin
+  FCompNames.OnChange := nil;
+  FCompNames.OnMove := nil;
   FCompNames.Free;
   inherited Destroy;
 end;
@@ -1947,6 +1950,11 @@ begin
 
     DoDateChangedEvent;
   end;
+end;
+
+function TJvTFDaysTemplate.GetCompNames: TStrings;
+begin
+  Result := FCompNames;
 end;
 
 procedure TJvTFDaysTemplate.SetCompNames(Value: TStrings);
@@ -2074,7 +2082,7 @@ begin
       // remove any unneeded cols
       I := 0;
       while I < FGrid.Cols.Count do
-        if FCompNames.IndexOf(FGrid.Cols[I].SchedName) = -1 then
+        if CompNames.IndexOf(FGrid.Cols[I].SchedName) = -1 then
           FGrid.Cols[I].Free
         else
         begin
@@ -2137,9 +2145,9 @@ begin
     FLinearStartDate := TJvTFDaysTemplate(Source).LinearStartDate;
     FLinearEndDate := TJvTFDaysTemplate(Source).LinearEndDate;
     FLinearDayCount := TJvTFDaysTemplate(Source).LinearDayCount;
-    TStringList(FCompNames).OnChange := nil;
+    FCompNames.OnChange := nil;
     FCompNames.Assign(TJvTFDaysTemplate(Source).CompNames);
-    TStringList(FCompNames).OnChange := CompNamesChanged;
+    FCompNames.OnChange := CompNamesChanged;
     FCompDate := TJvTFDaysTemplate(Source).CompDate;
     FActiveTemplate := TJvTFDaysTemplate(Source).ActiveTemplate;
     FShortTitles := TJvTFDaysTemplate(Source).ShortTitles;

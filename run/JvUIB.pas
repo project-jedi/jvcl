@@ -127,7 +127,7 @@ TJvUIBComponent = class(TComponent)
     FLiBraryName: TFileName;
     FDbHandle: IscDbHandle;
     FHandleShared: boolean;
-    FParams: TStrings;
+    FParams: TStringList;
     FDatabaseName: TFileName;
     FAfterConnect: TNotifyEvent;
     FAfterDisconnect: TNotifyEvent;
@@ -141,6 +141,7 @@ TJvUIBComponent = class(TComponent)
     procedure WriteParamString(Param: String; Value: String);
     function ReadParamInteger(Param: String; Default: Integer): Integer;
     procedure WriteParamInteger(Param: String; Value: Integer);
+    function GetParams: TStrings;
     procedure SetParams(const Value: TStrings);
     procedure SetDatabaseName(const Value: TFileName);
     procedure SetConnected(const Value: Boolean);
@@ -183,8 +184,8 @@ TJvUIBComponent = class(TComponent)
     property TransactionsCount: Cardinal read GetTransactionsCount;
     property Lib: TUIBLibrary read FLibrary;
   published
-    { DataBase connection parametters. }
-    property Params: TStrings read FParams write SetParams;
+    { DataBase connection parameters. }
+    property Params: TStrings read GetParams write SetParams;
     { Database file name. }
     property DatabaseName: TFileName read FDatabaseName write SetDatabaseName;
     { Connect or disconnect a database. }
@@ -390,7 +391,7 @@ TJvUIBComponent = class(TComponent)
     FFetchBlobs: boolean;
     FBufferChunks: Cardinal;
     FQuickScript: boolean;
-    FSQL: TStrings;
+    FSQL: TStringList;
     FParsedSQL: string;
     FParameter: TSQLParams;
     FParseParams: boolean;
@@ -398,6 +399,7 @@ TJvUIBComponent = class(TComponent)
     FStatementType: TUIBStatementType;
     function GetPlan: string;
     function GetStatementType: TUIBStatementType;
+    function GetSQL: TStrings;
     procedure SetSQL(const Value: TStrings);
     procedure DoSQLChange(Sender: TObject);
     function GetFields: TSQLResult;
@@ -486,7 +488,7 @@ TJvUIBComponent = class(TComponent)
     property RowsAffected: Cardinal read GetRowsAffected;
 
   published
-    property SQL: TStrings read FSQL write SetSQL;
+    property SQL: TStrings read GetSQL write SetSQL;
     property Transaction: TJvUIBTransaction read FTransaction write SetTransaction;
     property DataBase: TJvUIBDataBase read FDataBase write SetDataBase;
     property OnError: TEndTransMode read FOnError write FOnError default etmRollback;
@@ -513,11 +515,12 @@ TJvUIBComponent = class(TComponent)
   TJvUIBScript = class(TJvUIBComponent)
   private
     FQuery: TJvUIBQuery;
-    FScript: TStrings;
+    FScript: TStringList;
     FAutoDDL: boolean;
     FOnParse: TOnParse;
-    procedure SetTransaction(const Value: TJvUIBTransaction);
     function GetTransaction: TJvUIBTransaction;
+    procedure SetTransaction(const Value: TJvUIBTransaction);
+    function GetScript: TStrings;
     procedure SetScript(const Value: TStrings);
   public
     constructor Create(AOwner: TComponent); override;
@@ -525,7 +528,7 @@ TJvUIBComponent = class(TComponent)
     procedure ExecuteScript;
   published
     property Transaction: TJvUIBTransaction read GetTransaction write SetTransaction;
-    property Script: TStrings read FScript write SetScript;
+    property Script: TStrings read GetScript write SetScript;
     property AutoDDL: boolean read FAutoDDL write FAutoDDL default True;
     property OnParse: TOnParse read FOnParse write FOnParse;
   end;
@@ -566,9 +569,10 @@ TJvUIBComponent = class(TComponent)
 
   TJvUIBBackupRestore = class(TJvUIBService)
   private
-    FBackupFiles: TStrings;
+    FBackupFiles: TStringList;
     FDatabase: TFileName;
     FOnVerbose: TVerboseEvent;
+    function GetBackupFiles: TStrings;
     procedure SetBackupFiles(const Value: TStrings);
     function CreateStartSPB: string; virtual; abstract;
   public
@@ -576,7 +580,7 @@ TJvUIBComponent = class(TComponent)
     destructor Destroy; override;
     procedure Run;
   published
-    property BackupFiles: TStrings read FBackupFiles write SetBackupFiles;
+    property BackupFiles: TStrings read GetBackupFiles write SetBackupFiles;
     property Database: TFileName read FDatabase write FDatabase;
     property OnVerbose: TVerboseEvent read FOnVerbose write FOnVerbose;
   end;
@@ -667,7 +671,7 @@ begin
   try
     Connected := False;
     ClearTransactions;
-    TStringList(FParams).Free;
+    FParams.Free;
     ClearExceptions;
     FExceptions.Free;
   finally
@@ -766,10 +770,10 @@ var
 begin
   Lock;
   try
-    I := FParams.IndexOfName(Param);
+    I := Params.IndexOfName(Param);
     if I >= 0 then
     begin
-      Result := Copy(FParams[I], Length(Param) + 2, Maxint);
+      Result := Copy(Params[I], Length(Param) + 2, Maxint);
       Exit;
     end;
     Result := Default;
@@ -808,7 +812,7 @@ begin
           if Assigned(BeforeConnect) then BeforeConnect(Self);
           FLibrary.Load(FLiBraryName);
           if not FHandleShared then
-            AttachDatabase(FDatabaseName, FDbHandle, FParams.Text, #13);
+            AttachDatabase(FDatabaseName, FDbHandle, Params.Text, #13);
           if Assigned(AfterConnect) then AfterConnect(Self);
         end;
       False :
@@ -870,6 +874,11 @@ begin
     Result := 0;
 end;
 
+function TJvUIBDataBase.GetParams: TStrings;
+begin
+  Result := FParams;
+end;
+
 procedure TJvUIBDataBase.SetParams(const Value: TStrings);
 begin
   FParams.Assign(Value);
@@ -903,11 +912,11 @@ begin
   Lock;
   try
     S := Param + '=' + Value;
-    I := FParams.IndexOfName(Param);
+    I := Params.IndexOfName(Param);
     if I >= 0 then
-      FParams[I] := S
+      Params[I] := S
     else
-      FParams.Add(S);
+      Params.Add(S);
   finally
     UnLock;
   end;
@@ -1262,7 +1271,7 @@ begin
     try
     if (FQuickScript or (not FParseParams)) then
       FStatementType := DSQLPrepare(FTransaction.FTrHandle, FStHandle,
-        FSQL.Text, FTransaction.FSQLDialect, FSQLResult) else
+        SQL.Text, FTransaction.FSQLDialect, FSQLResult) else
       FStatementType := DSQLPrepare(FTransaction.FTrHandle, FStHandle,
         FParsedSQL, FTransaction.FSQLDialect, FSQLResult);
       FCursorName := 'C' + inttostr(Integer(FStHandle));
@@ -1340,13 +1349,13 @@ var
 begin
   BeginTransaction;
   if FQuickScript then
-    for i := 0 to FSQL.Count - 1 do
+    for i := 0 to SQL.Count - 1 do
     begin
-      ExecuteQuery(FSQL.Strings[i], nil);
+      ExecuteQuery(SQL.Strings[i], nil);
     end else
       if FParseParams then
         ExecuteQuery(FParsedSQL, FParameter) else
-        ExecuteQuery(FSQL.Text, FParameter);
+        ExecuteQuery(SQL.Text, FParameter);
   FCurrentState := qsExecImme;
 end;
 
@@ -1379,6 +1388,11 @@ begin
   inherited;
 end;
 
+function TJvUIBStatement.GetSQL: TStrings;
+begin
+  Result := FSQL;
+end;
+
 procedure TJvUIBStatement.SetSQL(const Value: TStrings);
 begin
   FSQL.Assign(Value);
@@ -1407,7 +1421,7 @@ procedure TJvUIBStatement.DoSQLChange(Sender: TObject);
 begin
   InternalClose(etmStayIn, True);
   if (not FQuickScript or FParseParams) then
-    FParsedSQL := FParameter.Parse(FSQL.Text);
+    FParsedSQL := FParameter.Parse(SQL.Text);
 end;
 
 function TJvUIBStatement.GetFields: TSQLResult;
@@ -1448,7 +1462,7 @@ begin
     Transaction := TJvUIBTransaction(AOwner) else
     FTransaction := nil;
   FSQL         := TStringList.Create;
-  TStringList(FSQL).OnChange := DoSQLChange;
+  FSQL.OnChange := DoSQLChange;
   FCachedFetch := True;
   FetchBlobs   := False;
   FQuickScript := False;
@@ -1819,7 +1833,7 @@ var
 begin
   InternalClose(etmStayIn, True);
   r := 0;
-  TStringList(FSQL).OnChange := nil;
+  FSQL.OnChange := nil;
   try
     Params.Clear;
     FParsedSQL :=
@@ -1892,18 +1906,18 @@ begin
         if r > 0 then
           begin
             FParsedSQL := 'SELECT * FROM ' + StoredProc + FParsedSQL;
-            FSQL.Text  := 'SELECT * FROM ' + StoredProc + Str;
+            SQL.Text  := 'SELECT * FROM ' + StoredProc + Str;
           end else
           begin
             FParsedSQL := 'EXECUTE PROCEDURE ' + StoredProc + FParsedSQL;
-            FSQL.Text  := 'EXECUTE PROCEDURE ' + StoredProc + Str;
+            SQL.Text  := 'EXECUTE PROCEDURE ' + StoredProc + Str;
           end;
       end else
         begin
           if r > 0 then
             FParsedSQL := 'SELECT * FROM ' + StoredProc else
             FParsedSQL := 'EXECUTE PROCEDURE ' + StoredProc;
-          FSQL.Text := FParsedSQL;
+          SQL.Text := FParsedSQL;
         end;
     except
       FParsedSQL := '';
@@ -1913,7 +1927,7 @@ begin
     end;
   finally
     InternalClose(etmStayIn, True);
-    TStringList(FSQL).OnChange := DoSQLChange;
+    FSQL.OnChange := DoSQLChange;
   end;
 end;
 
@@ -2486,6 +2500,11 @@ begin
   inherited;
 end;
 
+function TJvUIBBackupRestore.GetBackupFiles: TStrings;
+begin
+  Result := FBackupFiles;
+end;
+
 procedure TJvUIBBackupRestore.SetBackupFiles(const Value: TStrings);
 begin
   FBackupFiles.Assign(Value);
@@ -2529,7 +2548,7 @@ var
   function GetValue(Index: Integer): string;
   begin
     if Index >= 0 then
-      Result := Copy(FBackupFiles.Strings[Index], Length(FBackupFiles.Names[Index]) + 2, MaxInt) else
+      Result := Copy(BackupFiles.Strings[Index], Length(BackupFiles.Names[Index]) + 2, MaxInt) else
       Result := '';
   end;
 begin
@@ -2542,11 +2561,11 @@ begin
   Result := Result + PChar(@Len)[0] + PChar(@Len)[1];
   Result := Result + FDatabase;
 
-  for i := 0 to FBackupFiles.Count - 1 do
+  for i := 0 to BackupFiles.Count - 1 do
   begin
-    FileName := FBackupFiles.Names[i];
+    FileName := BackupFiles.Names[i];
     if FileName = '' then
-      FileName := FBackupFiles[i];
+      FileName := BackupFiles[i];
     if FileName <> '' then
     begin
       // Backup file
@@ -2590,9 +2609,9 @@ begin
   // backup service   ibservices
   Result := isc_action_svc_restore;
 
-  for i := 0 to FBackupFiles.Count - 1 do
+  for i := 0 to BackupFiles.Count - 1 do
   begin
-    FileName := FBackupFiles[i];
+    FileName := BackupFiles[i];
     if FileName <> '' then
     begin
       // Backup file
@@ -2670,7 +2689,7 @@ var
   end;
 
 begin
-  FStream := TStringStream.Create(FScript.Text);
+  FStream := TStringStream.Create(Script.Text);
   Lexer := TUIBLexer.Create(FStream);
   Grammar := TUIBGrammar.Create(Lexer);
   try
@@ -2803,14 +2822,19 @@ begin
   Result := FQuery.Transaction;
 end;
 
-procedure TJvUIBScript.SetScript(const Value: TStrings);
-begin
-  FScript.Assign(Value);
-end;
-
 procedure TJvUIBScript.SetTransaction(const Value: TJvUIBTransaction);
 begin
   FQuery.Transaction := Value;
+end;
+
+function TJvUIBScript.GetScript: TStrings;
+begin
+  Result := FScript;
+end;
+
+procedure TJvUIBScript.SetScript(const Value: TStrings);
+begin
+  FScript.Assign(Value);
 end;
 
 end.

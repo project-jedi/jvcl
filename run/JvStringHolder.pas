@@ -90,7 +90,7 @@ type
 
   TJvStrHolder = class(TComponent)
   private
-    FStrings: TStrings;
+    FStrings: TStringList;
     FXorKey: string;
     FReserved: Integer;
     FMacros: TJvMacros;
@@ -102,6 +102,7 @@ type
     procedure SetDuplicates(Value: TDuplicates);
     function GetSorted: Boolean;
     procedure SetSorted(Value: Boolean);
+    function GetStrings: TStrings;
     procedure SetStrings(Value: TStrings);
     procedure StringsChanged(Sender: TObject);
     procedure StringsChanging(Sender: TObject);
@@ -140,7 +141,7 @@ type
       default dupIgnore;
     property KeyString: string read FXorKey write FXorKey stored False;
     property Sorted: Boolean read GetSorted write SetSorted default False;
-    property Strings: TStrings read FStrings write SetStrings stored False;
+    property Strings: TStrings read GetStrings write SetStrings stored False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
   end;
@@ -519,8 +520,8 @@ begin
   FStrings := TStringList.Create;
   FMacros := TJvMacros.Create(Self);
   FMacroChar := '%';
-  TStringList(FStrings).OnChange := StringsChanged;
-  TStringList(FStrings).OnChanging := StringsChanging;
+  FStrings.OnChange := StringsChanged;
+  FStrings.OnChanging := StringsChanging;
 end;
 
 destructor TJvStrHolder.Destroy;
@@ -528,6 +529,8 @@ begin
   FOnChange := nil;
   FOnChanging := nil;
   FMacros.Free;
+  FStrings.OnChange := nil;
+  FStrings.OnChanging := nil;
   FStrings.Free;
   inherited Destroy;
 end;
@@ -565,27 +568,27 @@ end;
 
 procedure TJvStrHolder.Clear;
 begin
-  FStrings.Clear;
+  Strings.Clear;
 end;
 
 function TJvStrHolder.GetCommaText: string;
 begin
-  Result := FStrings.CommaText;
+  Result := Strings.CommaText;
 end;
 
 procedure TJvStrHolder.SetCommaText(const Value: string);
 begin
-  FStrings.CommaText := Value;
+  Strings.CommaText := Value;
 end;
 
 function TJvStrHolder.GetCapacity: Integer;
 begin
-  Result := FStrings.Capacity;
+  Result := Strings.Capacity;
 end;
 
 procedure TJvStrHolder.SetCapacity(NewCapacity: Integer);
 begin
-  FStrings.Capacity := NewCapacity;
+  Strings.Capacity := NewCapacity;
 end;
 
 procedure TJvStrHolder.BeforeExpandMacros;
@@ -602,7 +605,7 @@ end;
 procedure TJvStrHolder.RecreateMacros;
 begin
   if not (csReading in ComponentState) then
-    Macros.ParseString(FStrings.Text, True, MacroChar);
+    Macros.ParseString(Strings.Text, True, MacroChar);
 end;
 
 procedure TJvStrHolder.SetMacroChar(Value: Char);
@@ -631,7 +634,7 @@ var
   Found: Boolean;
 begin
   BeforeExpandMacros;
-  Result := FStrings.Text;
+  Result := Strings.Text;
   for I := Macros.Count - 1 downto 0 do
   begin
     Macro := Macros[I];
@@ -667,16 +670,16 @@ procedure TJvStrHolder.DefineProperties(Filer: TFiler);
   begin
     Ancestor := TJvStrHolder(Filer.Ancestor);
     Result := False;
-    if (Ancestor <> nil) and (Ancestor.FStrings.Count = FStrings.Count) and
-      (KeyString = Ancestor.KeyString) and (FStrings.Count > 0) then
-      for I := 0 to FStrings.Count - 1 do
+    if (Ancestor <> nil) and (Ancestor.Strings.Count = Strings.Count) and
+      (KeyString = Ancestor.KeyString) and (Strings.Count > 0) then
+      for I := 0 to Strings.Count - 1 do
       begin
-        Result := CompareText(FStrings[I], Ancestor.FStrings[I]) <> 0;
+        Result := CompareText(Strings[I], Ancestor.Strings[I]) <> 0;
         if Result then
           Break;
       end
     else
-      Result := (FStrings.Count > 0) or (Length(KeyString) > 0);
+      Result := (Strings.Count > 0) or (Length(KeyString) > 0);
   end;
 
 begin
@@ -688,12 +691,12 @@ end;
 
 function TJvStrHolder.GetSorted: Boolean;
 begin
-  Result := TStringList(FStrings).Sorted;
+  Result := FStrings.Sorted;
 end;
 
 function TJvStrHolder.GetDuplicates: TDuplicates;
 begin
-  Result := TStringList(FStrings).Duplicates;
+  Result := FStrings.Duplicates;
 end;
 
 procedure TJvStrHolder.ReadStrings(Reader: TReader);
@@ -701,23 +704,28 @@ begin
   Reader.ReadListBegin;
   if not Reader.EndOfList then
     KeyString := Reader.ReadString;
-  FStrings.Clear;
+  Strings.Clear;
   while not Reader.EndOfList do
     if FReserved >= XorVersion then
-      FStrings.Add(XorDecode(KeyString, Reader.ReadString))
+      Strings.Add(XorDecode(KeyString, Reader.ReadString))
     else
-      FStrings.Add(XorString(KeyString, Reader.ReadString));
+      Strings.Add(XorString(KeyString, Reader.ReadString));
   Reader.ReadListEnd;
 end;
 
 procedure TJvStrHolder.SetDuplicates(Value: TDuplicates);
 begin
-  TStringList(FStrings).Duplicates := Value;
+  FStrings.Duplicates := Value;
 end;
 
 procedure TJvStrHolder.SetSorted(Value: Boolean);
 begin
-  TStringList(FStrings).Sorted := Value;
+  FStrings.Sorted := Value;
+end;
+
+function TJvStrHolder.GetStrings: TStrings;
+begin
+  Result := FStrings;
 end;
 
 procedure TJvStrHolder.SetStrings(Value: TStrings);
@@ -744,8 +752,8 @@ var
 begin
   Writer.WriteListBegin;
   Writer.WriteString(KeyString);
-  for I := 0 to FStrings.Count - 1 do
-    Writer.WriteString(XorEncode(KeyString, FStrings[I]));
+  for I := 0 to Strings.Count - 1 do
+    Writer.WriteString(XorEncode(KeyString, Strings[I]));
   Writer.WriteListEnd;
 end;
 

@@ -61,10 +61,11 @@ type
     FPicName: string;
     FPicIndex: Integer;
     FPicPoint: TPoint;
-    FHints: Tstrings;
+    FHints: TStringList;
+    function GetHints: TStrings;
     procedure SetPicName(const Value: string);
     procedure SetPicIndex(Value: Integer);
-    procedure SetHints(Value: Tstrings);
+    procedure SetHints(Value: TStrings);
   protected
     function GetDisplayName: string; override;
     procedure Change; virtual;
@@ -78,7 +79,7 @@ type
   published
     property PicName: string read FPicName write SetPicName;
     property PicIndex: Integer read FPicIndex write SetPicIndex;
-    property Hints: Tstrings read FHints write SetHints;
+    property Hints: TStrings read GetHints write SetHints;
   end;
 
   TJvTFCellPics = class(TCollection)
@@ -469,10 +470,11 @@ type
 
     FHintProps: TJvTFHintProps;
 
-    FSchedNames: Tstrings;
+    FSchedNames: TStringList;
 
     FSelAppt: TJvTFAppt;
 
+    function GetSchedNames: TStrings;
     procedure SetBorderStyle(Value: TBorderStyle);
 
     procedure SetRowCount(Value: Integer);
@@ -487,7 +489,7 @@ type
     procedure SeTJvTFCellPics(Value: TCustomImageList);
 
     procedure SeTJvTFHintProps(Value: TJvTFHintProps);
-    procedure SetSchedNames(Value: Tstrings);
+    procedure SetSchedNames(Value: TStrings);
 
     procedure SetSelAppt(Value: TJvTFAppt);
   protected
@@ -648,7 +650,7 @@ type
     property HintProps: TJvTFHintProps read FHintProps
       write SeTJvTFHintProps;
 
-    property SchedNames: Tstrings read FSchedNames write SetSchedNames;
+    property SchedNames: TStrings read GetSchedNames write SetSchedNames;
 
     property OnDrawTitle: TJvTFGlanceDrawTitleEvent read FOnDrawTitle
       write FOnDrawTitle;
@@ -1431,8 +1433,8 @@ begin
 
   FPaintBuffer := TBitmap.Create;
 
-  FSchedNames := TstringList.Create;
-  TstringList(FSchedNames).OnChange := SchedNamesChange;
+  FSchedNames := TStringList.Create;
+  FSchedNames.OnChange := SchedNamesChange;
 
   FCells := TJvTFGlanceCells.Create(Self);
   StartDate := Date;
@@ -1509,7 +1511,7 @@ begin
   FHint.Free;
   FHintProps.Free;
 
-  TstringList(FSchedNames).OnChange := nil;
+  FSchedNames.OnChange := nil;
   FSchedNames.Free;
 
   Viewer := nil;
@@ -2838,7 +2840,12 @@ begin
   inherited;
 end;
 
-procedure TJvTFCustomGlance.SetSchedNames(Value: Tstrings);
+function TJvTFCustomGlance.GetSchedNames: TStrings;
+begin
+  Result := FSchedNames;
+end;
+
+procedure TJvTFCustomGlance.SetSchedNames(Value: TStrings);
 begin
   FSchedNames.Assign(Value);
   // SchedNamesChange will run
@@ -3879,15 +3886,15 @@ end;
 
 constructor TJvTFCellPic.Create(Collection: TCollection);
 begin
-  inherited;
+  inherited Create(Collection);
   FPicIndex := -1;
-  FHints := TstringList.Create;
+  FHints := TStringList.Create;
 end;
 
 destructor TJvTFCellPic.Destroy;
 begin
   FHints.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvTFCellPic.GetDisplayName: string;
@@ -3903,7 +3910,12 @@ begin
   Result := TJvTFCellPics(Collection);
 end;
 
-procedure TJvTFCellPic.SetHints(Value: Tstrings);
+function TJvTFCellPic.GetHints: TStrings;
+begin
+  Result := FHints;
+end;
+
+procedure TJvTFCellPic.SetHints(Value: TStrings);
 begin
   FHints.Assign(Value);
 end;

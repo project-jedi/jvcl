@@ -166,14 +166,15 @@ type
     FLastChangeAfter: TDateTime;
     FLastChangeAfterFT: TFileTime;
     FSearchTypes: TJvSearchTypes;
-    FFileMasks: TStrings;
-    FCaseFileMasks: TStrings;
+    FFileMasks: TStringList;
+    FCaseFileMasks: TStringList;
     FFileMaskSeperator: Char;
     FAttributes: TJvSearchAttributes;
     procedure FileMasksChange(Sender: TObject);
     function GetFileMask: string;
     function GetMaxSize: Int64;
     function GetMinSize: Int64;
+    function GetFileMasks: TStrings;
     function IsLastChangeAfterStored: Boolean;
     function IsLastChangeBeforeStored: Boolean;
     procedure SetAttributes(const Value: TJvSearchAttributes);
@@ -202,7 +203,7 @@ type
       stored IsLastChangeAfterStored;
     property LastChangeBefore: TDateTime read FLastChangeBefore write SetLastChangeBefore
       stored IsLastChangeBeforeStored;
-    property FileMasks: TStrings read FFileMasks write SetFileMasks;
+    property FileMasks: TStrings read GetFileMasks write SetFileMasks;
   end;
 
   TJvSearchFiles = class(TJvComponent)
@@ -218,8 +219,8 @@ type
     FOnAbort: TNotifyEvent;
     FOnError: TJvSearchFilesError;
     FOnProgress: TNotifyEvent;
-    FDirs: TStrings;
-    FFiles: TStrings;
+    FDirectories: TStringList;
+    FFiles: TStringList;
     FFindData: TWin32FindData;
     FAborting: Boolean;
     FErrorResponse: TJvErrorResponse;
@@ -231,6 +232,8 @@ type
     FRecurseDepth: Integer;
     function GetIsRootDirValid: Boolean;
     function GetIsDepthAllowed(const ADepth: Integer): Boolean;
+    function GetDirectories: TStrings;
+    function GetFiles: TStrings;
     procedure SetDirParams(const Value: TJvSearchParams);
     procedure SetFileParams(const Value: TJvSearchParams);
     procedure SetOptions(const Value: TJvSearchOptions);
@@ -254,8 +257,8 @@ type
     procedure Abort;
     function Search: Boolean;
     property FindData: TWin32FindData read FFindData;
-    property Files: TStrings read FFiles;
-    property Directories: TStrings read FDirs;
+    property Files: TStrings read GetFiles;
+    property Directories: TStrings read GetDirectories;
     property IsRootDirValid: Boolean read GetIsRootDirValid;
     property Searching: Boolean read FSearching;
     property TotalDirectories: Integer read FTotalDirectories;
@@ -303,7 +306,7 @@ constructor TJvSearchFiles.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FFiles := TStringList.Create;
-  FDirs := TStringList.Create;
+  FDirectories := TStringList.Create;
   FDirParams := TJvSearchParams.Create;
   FFileParams := TJvSearchParams.Create;
 
@@ -317,7 +320,7 @@ end;
 destructor TJvSearchFiles.Destroy;
 begin
   FFiles.Free;
-  FDirs.Free;
+  FDirectories.Free;
   FFileParams.Free;
   FDirParams.Free;
   inherited Destroy;
@@ -385,7 +388,7 @@ begin
       DirName := APath + cFileName;
 
     if not (soOwnerData in Options) then
-      FDirs.Add(DirName);
+      Directories.Add(DirName);
 
     Int64Rec(FileSize).Lo := nFileSizeLow;
     Int64Rec(FileSize).Hi := nFileSizeHigh;
@@ -412,7 +415,7 @@ begin
       FileName := APath + cFileName;
 
     if not (soOwnerData in Options) then
-      FFiles.Add(FileName);
+      Files.Add(FileName);
 
     Int64Rec(FileSize).Lo := nFileSizeLow;
     Int64Rec(FileSize).Hi := nFileSizeHigh;
@@ -563,13 +566,23 @@ begin
     RaiseLastOSError;
 end;
 
+function TJvSearchFiles.GetDirectories: TStrings;
+begin
+  Result := FDirectories;
+end;
+
+function TJvSearchFiles.GetFiles: TStrings;
+begin
+  Result := FFiles;
+end;
+
 procedure TJvSearchFiles.Init;
 begin
   FTotalFileSize := 0;
   FTotalDirectories := 0;
   FTotalFiles := 0;
-  FDirs.Clear;
-  FFiles.Clear;
+  Directories.Clear;
+  Files.Clear;
   FAborting := False;
 end;
 
@@ -688,21 +701,21 @@ begin
 
     if soSorted in ChangedOptions then
     begin
-      TStringList(FDirs).Sorted := soSorted in FOptions;
-      TStringList(FFiles).Sorted := soSorted in FOptions;
+      FDirectories.Sorted := soSorted in FOptions;
+      FFiles.Sorted := soSorted in FOptions;
     end;
 
     if soAllowDuplicates in ChangedOptions then
     begin
       if soAllowDuplicates in FOptions then
       begin
-        TStringList(FDirs).Duplicates := dupAccept;
-        TStringList(FFiles).Duplicates := dupAccept;
+        FDirectories.Duplicates := dupAccept;
+        FFiles.Duplicates := dupAccept;
       end
       else
       begin
-        TStringList(FDirs).Duplicates := dupIgnore;
-        TStringList(FFiles).Duplicates := dupIgnore;
+        FDirectories.Duplicates := dupIgnore;
+        FFiles.Duplicates := dupIgnore;
       end;
     end;
     // soStripDirs; soIncludeSubDirs; soOwnerData
@@ -800,7 +813,7 @@ begin
   inherited Create;
   FAttributes := TJvSearchAttributes.Create;
   FFileMasks := TStringList.Create;
-  TStringList(FFileMasks).OnChange := FileMasksChange;
+  FFileMasks.OnChange := FileMasksChange;
   FCaseFileMasks := TStringList.Create;
 
   { defaults }
@@ -906,7 +919,7 @@ end;
 
 function TJvSearchParams.GetFileMask: string;
 begin
-  Result := JclStrings.StringsToStr(FFileMasks, FileMaskSeperator);
+  Result := JclStrings.StringsToStr(FileMasks, FileMaskSeperator);
 end;
 
 function TJvSearchParams.GetMaxSize: Int64;
@@ -919,6 +932,11 @@ function TJvSearchParams.GetMinSize: Int64;
 begin
   Int64Rec(Result).Lo := FMinSizeLow;
   Int64Rec(Result).Hi := FMinSizeHigh;
+end;
+
+function TJvSearchParams.GetFileMasks: TStrings;
+begin
+  Result := FFileMasks;
 end;
 
 function TJvSearchParams.IsLastChangeAfterStored: Boolean;
@@ -938,7 +956,7 @@ end;
 
 procedure TJvSearchParams.SetFileMask(const Value: string);
 begin
-  JclStrings.StrToStrings(Value, FileMaskSeperator, FFileMasks);
+  JclStrings.StrToStrings(Value, FileMaskSeperator, FileMasks);
 end;
 
 procedure TJvSearchParams.SetFileMasks(const Value: TStrings);
@@ -1006,7 +1024,7 @@ procedure TJvSearchParams.UpdateCaseMasks;
 var
   I: Integer;
 begin
-  FCaseFileMasks.Assign(FFileMasks);
+  FCaseFileMasks.Assign(FileMasks);
 
   if not (stFileMaskCaseSensitive in SearchTypes) then
     for I := 0 to FCaseFileMasks.Count - 1 do

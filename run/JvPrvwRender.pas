@@ -78,8 +78,9 @@ type
   private
     FFinished: boolean;
     FCurrentRow: integer;
-    FStrings: TStrings;
+    FStrings: TStringList;
     FFont: TFont;
+    function GetStrings: TStrings;
     procedure SetStrings(const Value: TStrings);
     procedure SetFont(const Value: TFont);
   protected
@@ -91,7 +92,7 @@ type
     function CreatePreview(Append: boolean): boolean; override;
   published
     property PrintPreview;
-    property Strings: TStrings read FStrings write SetStrings;
+    property Strings: TStrings read GetStrings write SetStrings;
     property Font: TFont read FFont write SetFont;
   end;
 
@@ -428,7 +429,7 @@ end;
 constructor TJvPreviewRenderStrings.Create(AOwner: TComponent);
 begin
   inherited;
-  FStrings := TStringlist.Create;
+  FStrings := TStringList.Create;
   FFont := TFont.Create;
 end;
 
@@ -464,10 +465,10 @@ begin
     GetTextMetrics(Canvas.Handle, tm);
     IncValue := CanvasMaxTextHeight(Canvas) + tm.tmInternalLeading + tm.tmExternalLeading;
     ARect.Bottom := ARect.Top + IncValue;
-    for i := FCurrentRow to FStrings.Count - 1 do
+    for i := FCurrentRow to Strings.Count - 1 do
     begin
       ARect.Right := PrintRect.Right;
-      S := FStrings[i];
+      S := Strings[i];
       IncValue := DrawText(Canvas.Handle, PChar(S), Length(S), ARect, DT_CALCRECT or DT_NOPREFIX or DT_EXPANDTABS or DT_WORDBREAK or DT_LEFT or DT_TOP);
       if ARect.Right > PrintRect.Right then
       begin
@@ -492,6 +493,11 @@ end;
 procedure TJvPreviewRenderStrings.SetFont(const Value: TFont);
 begin
   FFont.Assign(Value);
+end;
+
+function TJvPreviewRenderStrings.GetStrings: TStrings;
+begin
+  Result := FStrings;
 end;
 
 procedure TJvPreviewRenderStrings.SetStrings(const Value: TStrings);
