@@ -834,6 +834,8 @@ begin
         I := Length(NewValue);
         while (I > Ps) and (NewValue[I] = '0') do
           Dec(I);
+        if Ps = I then
+          Dec(I); // skip decimal separator (Ivo Bauer)
         S := FDisplayPrefix + Copy(NewValue, 1, I) + FDisplaySuffix;
       end;
     end;
