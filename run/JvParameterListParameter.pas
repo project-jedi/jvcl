@@ -114,11 +114,16 @@ type
   TJvArrangeParameter = class(TJvNoDataParameter)
   private
     FArrangeSettings: TJvArrangeSettings;
+    FParentControl: TWinControl;
   protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
+    function GetParentControl : TWinControl;
   public
     constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
+    procedure ArrangeControls;
+    property ParentControl: TWinControl read GetParentControl write fParentControl;
   published
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Color;
@@ -148,15 +153,13 @@ type
 
   TJvGroupBoxParameter = class(TJvArrangeParameter)
   private
-    FGroupBox: TWinControl;
   protected
     function GetParameterNameExt: string; override;
-    procedure SetEnabled(Value: Boolean); override;
-    procedure SetVisible(Value: Boolean); override;
-    procedure SetHeight(Value: Integer); override;
-    procedure SetWidth(Value: Integer); override;
-    procedure SetTabOrder(Value: Integer); override;
-    property GroupBox: TWinControl read FGroupBox write FGroupBox;
+//    procedure SetEnabled(Value: Boolean); override;
+//    procedure SetVisible(Value: Boolean); override;
+//    procedure SetHeight(Value: Integer); override;
+//    procedure SetWidth(Value: Integer); override;
+//    procedure SetTabOrder(Value: Integer); override;
   public
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   end;
@@ -887,10 +890,33 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvArrangeParameter.ArrangeControls;
+begin
+  if Assigned(FParentControl) and
+     (FParentControl is TJvPanel) then
+    TJvPanel(FParentControl).ArrangeControls;
+end;
+
 procedure TJvArrangeParameter.SetArrangeSettings(Value: TJvArrangeSettings);
 begin
   FArrangeSettings.Assign(Value);
 end;
+
+procedure TJvArrangeParameter.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = FParentControl) and (Operation = opRemove) then
+    FParentControl := nil;
+end;
+
+function TJvArrangeParameter.GetParentControl : TWinControl;
+begin
+  if Assigned(FParentControl) then
+    Result := FParentControl
+  else
+    Result := WinControl;
+end;
+
 
 //=== { TJvPanelParameter } ==================================================
 
@@ -945,52 +971,52 @@ procedure TJvGroupBoxParameter.CreateWinControlOnParent(ParameterParent: TWinCon
 var
   Panel: TJvPanel;
 begin
-  GroupBox := DynControlEngine.CreateGroupBoxControl(Self, ParameterParent,
+  WinControl := DynControlEngine.CreateGroupBoxControl(Self, ParameterParent,
     GetParameterName, Caption);
   Panel := TJvPanel.Create(ParameterParent.Owner);
-  WinControl := Panel;
+  ParentControl := Panel;
   Panel.Name := GetParameterName;
   Panel.ArrangeSettings := ArrangeSettings;
   Panel.Bevelinner := bvNone;
   Panel.BevelOuter := bvNone;
-  Panel.Parent := GroupBox;
+  Panel.Parent := WinControl;
   Panel.Align := alClient;
   Panel.Visible := True;
   Panel.Caption := '';
   Panel.Color := Color;
 end;
 
-procedure TJvGroupBoxParameter.SetEnabled(Value: Boolean);
-begin
-  inherited SetEnabled(Value);
-  if Assigned(GroupBox) then
-    GroupBox.Enabled := Value;
-end;
-
-procedure TJvGroupBoxParameter.SetVisible(Value: Boolean);
-begin
-  inherited SetVisible(Value);
-  if Assigned(GroupBox) then
-    GroupBox.Visible := Value;
-end;
-
-procedure TJvGroupBoxParameter.SetHeight(Value: Integer);
-begin
-  if Assigned(GroupBox) then
-    GroupBox.Height := Value;
-end;
-
-procedure TJvGroupBoxParameter.SetWidth(Value: Integer);
-begin
-  if Assigned(GroupBox) then
-    GroupBox.Width := Value;
-end;
-
-procedure TJvGroupBoxParameter.SetTabOrder(Value: Integer);
-begin
-  if Assigned(GroupBox) then
-    GroupBox.TabOrder := Value;
-end;
+//procedure TJvGroupBoxParameter.SetEnabled(Value: Boolean);
+//begin
+//  inherited SetEnabled(Value);
+//  if Assigned(Wincontrol) then
+//    Wincontrol.Enabled := Value;
+//end;
+//
+//procedure TJvGroupBoxParameter.SetVisible(Value: Boolean);
+//begin
+//  inherited SetVisible(Value);
+//  if Assigned(Wincontrol) then
+//    Wincontrol.Visible := Value;
+//end;
+//
+//procedure TJvGroupBoxParameter.SetHeight(Value: Integer);
+//begin
+//  if Assigned(GroupBox) then
+//    GroupBox.Height := Value;
+//end;
+//
+//procedure TJvGroupBoxParameter.SetWidth(Value: Integer);
+//begin
+//  if Assigned(GroupBox) then
+//    GroupBox.Width := Value;
+//end;
+//
+//procedure TJvGroupBoxParameter.SetTabOrder(Value: Integer);
+//begin
+//  if Assigned(GroupBox) then
+//    GroupBox.TabOrder := Value;
+//end;
 
 //=== { TJvListParameter } ===================================================
 
@@ -1018,22 +1044,24 @@ begin
     ItemIndex := I
   else
     ItemIndex := -1;
+  if not VariantAsItemIndex then
+    Inherited SetAsVariant (Value);
 end;
 
 function TJvListParameter.GetAsString: string;
 begin
-  if (ItemIndex >= 0) and (ItemIndex < ItemList.Count) then
-    Result := ItemList[ItemIndex]
+  if VariantAsItemIndex then
+    if (ItemIndex >= 0) and (ItemIndex < ItemList.Count) then
+      Result := ItemList[ItemIndex]
+    else
+      Result := ''
   else
-    Result := ''
+    Result := Inherited GetAsString;
 end;
 
 procedure TJvListParameter.SetAsInteger(Value: Integer);
 begin
-  if (Value >= 0) and (Value < ItemList.Count) then
-    ItemIndex := Value
-  else
-    ItemIndex := -1;
+  ItemIndex := Value
 end;
 
 function TJvListParameter.GetAsInteger: Integer;
@@ -1043,21 +1071,25 @@ end;
 
 procedure TJvListParameter.SetAsVariant(Value: Variant);
 begin
-  if VariantAsItemIndex then
-    if VarType(Value) in [varSmallInt, varInteger, varByte
-      {$IFDEF COMPILER6_UP}, varShortInt, varWord, varLongWord {$ENDIF}] then
-      ItemIndex := Value
-    else
-      inherited SetAsString(Value)
+  if VarIsNull (Value) then
+    ItemIndex := -1
   else
-    inherited SetAsString(Value);
+    if VariantAsItemIndex then
+      if VarType(Value) in [varSmallInt, varInteger, varByte
+        {$IFDEF COMPILER6_UP}, varShortInt, varWord, varLongWord {$ENDIF}] then
+        ItemIndex := Value
+      else
+        SetAsString(Value)
+    else
+      SetAsString(Value);
 end;
 
 function TJvListParameter.GetAsVariant: Variant;
 begin
   Result := inherited GetAsVariant;
-  if VarToStr(Result) = '-1' then
-    Result := NULL;
+  if VariantAsItemIndex then
+    if VarToStr(Result) = '-1' then
+      Result := NULL;
 end;
 
 function TJvListParameter.GetItemList: TStrings;
@@ -1074,16 +1106,27 @@ end;
 
 procedure TJvListParameter.SetItemIndex(Value: Integer);
 begin
-  if Value >= ItemList.Count then
-    FItemIndex := ItemList.Count - 1
+  if Assigned(ItemList) then
+  begin
+    if Value >= ItemList.Count then
+      FItemIndex := ItemList.Count - 1
+    else
+      FItemIndex := Value;
+    if VariantAsItemIndex then
+      inherited SetAsVariant(FItemIndex)
+    else if (FItemIndex >= 0) and (FItemIndex < ItemList.Count) then
+      inherited SetAsVariant(ItemList[FItemIndex])
+    else
+      inherited SetAsVariant('');
+  end
   else
-    FItemIndex := Value;
-  if VariantAsItemIndex then
-    inherited SetAsVariant(FItemIndex)
-  else if (Value >= 0) and (Value < ItemList.Count) then
-    inherited SetAsVariant(ItemList[Value])
-  else
-    inherited SetAsVariant('');
+  begin
+    FItemIndex := -1;
+    if VariantAsItemIndex then
+      inherited SetAsVariant(FItemIndex)
+    else
+      inherited SetAsVariant('');
+  end;
 end;
 
 function TJvListParameter.GetWinControlData: Variant;
@@ -1146,10 +1189,10 @@ end;
 procedure TJvListParameter.GetData;
 begin
   inherited GetData;
-  if Assigned(WinControl) then
-    ItemIndex := ItemList.IndexOf(AsString)
-  else
-    ItemIndex := -1;
+//  if Assigned(WinControl) then
+//    ItemIndex := ItemList.IndexOf(Inherited GetAsString)
+//  else
+//    ItemIndex := -1;
 end;
 
 procedure TJvListParameter.SetData;
@@ -1707,7 +1750,6 @@ procedure TJvDoubleEditParameter.CreateWinControl(AParameterParent: TWinControl)
 var
   DynCtrlEdit: IJvDynControlEdit;
 begin
-  WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
   if (EditorType = netCalculate) and DynControlEngine.IsControlTypeRegistered(jctCalculateEdit) then
     WinControl := DynControlEngine.CreateCalculateControl(Self, AParameterParent, GetParameterName)
   else if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then

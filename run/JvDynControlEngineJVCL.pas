@@ -34,7 +34,7 @@ uses
   JvMaskEdit, JvDateTimePicker, JvBitBtn, JvCheckBox, JvBaseEdits,
   JvLabel, JvListBox, JvMemo, JvPanel, JvRadioGroup, JvToolEdit,
   JvScrollBox, JvStaticText, JvComboBox, JvImage, JvSpin, JvCheckListBox,
-  JvDynControlEngine, JvDynControlEngineIntf;
+  JvDynControlEngine, JvDynControlEngineIntf, JvGroupBox;
 
 type
   TJvDynControlJVCLMaskEdit = class(TJvMaskEdit, IUnknown, IJvDynControl,
@@ -398,6 +398,17 @@ type
     procedure ControlSetNewEntriesAllowed(Value: Boolean);
   end;
 
+  TJvDynControlJVCLGroupBox = class (TJvGroupBox, IUnknown, IJvDynControl)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+  end;
+
   TJvDynControlJVCLPanel = class(TJvPanel, IUnknown, IJvDynControl,
     IJvDynControlPanel)
   public
@@ -505,6 +516,7 @@ var
 
 procedure TJvDynControlJVCLMaskEdit.ControlSetDefaultProperties;
 begin
+  Button.Visible := False;
 end;
 
 procedure TJvDynControlJVCLMaskEdit.ControlSetReadOnly(Value: Boolean);
@@ -1674,6 +1686,36 @@ begin
     Style := csDropDownList;
 end;
 
+//=== { TJvDynControlJVCLGroupBox } ==============================================
+
+procedure TJvDynControlJVCLGroupBox.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlJVCLGroupBox.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlJVCLGroupBox.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlJVCLGroupBox.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlJVCLGroupBox.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlJVCLGroupBox.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+
 //=== { TJvDynControlJVCLPanel } =============================================
 
 procedure TJvDynControlJVCLPanel.ControlSetDefaultProperties;
@@ -1948,6 +1990,7 @@ begin
   RegisterControl(jctStaticText, TJvDynControlJVCLStaticText);
   RegisterControl(jctButton, TJvDynControlJVCLButton);
   RegisterControl(jctScrollBox, TJvDynControlJVCLScrollBox);
+  RegisterControl(jctGroupBox, TJvDynControlJVCLGroupBox);
   RegisterControl(jctPanel, TJvDynControlJVCLPanel);
   RegisterControl(jctImage, TJvDynControlVCLImage);
   RegisterControl(jctCheckBox, TJvDynControlJVCLCheckBox);

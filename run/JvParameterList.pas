@@ -155,6 +155,7 @@ type
     function GetWinControl: TWinControl;
     function GetWinControlData: Variant; virtual;
     procedure SetWinControlData(Value: Variant); virtual;
+    procedure SetSearchName (Value : string);
 
     procedure SetEnabled(Value: Boolean); virtual;
     procedure SetVisible(Value: Boolean); virtual;
@@ -192,13 +193,13 @@ type
     property AsVariant: Variant read GetAsVariant write SetAsVariant;
     {this name is used to identify the parameter in the parameterlist,
      this value must be defined before inserting into the parameterlist }
-    property SearchName: string read FSearchName write FSearchName;
+    property SearchName: string read FSearchName write SetSearchName;
     {should this value be saved by the parameterlist }
     property StoreValueToAppStorage: Boolean read FStoreValueToAppStorage write FStoreValueToAppStorage;
     {should this value be crypted before save }
     property StoreValueCrypted: Boolean read FStoreValueCrypted write FStoreValueCrypted;
     {the searchname of the parentparameter. The parameter must be a
-     descent of TJvPanelParameter or TTabControlParamter. If the
+     descent of TJvGroupBoxParameter, TJvPanelParameter or TTabControlParamter. If the
      parent parameter is a TJvTabControlParameter, then the ParentParameterName must be
      "searchname.tabname" of the TJvTabControlParameter}
     property ParentParameterName: string read FParentParameterName write FParentParameterName;
@@ -283,7 +284,7 @@ type
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
-    function GetParentByName(MainParent: TWinControl; const SearchName: string): TWinControl;
+    function GetParentByName(MainParent: TWinControl; const ASearchName: string): TWinControl;
     function GetCount: Integer;
 
     procedure SetParameters(Index: Integer; Value: TJvBaseParameter);
@@ -320,7 +321,7 @@ type
     {returns True id the parameter identified by the Searchname exists}
     function ExistsParameter(const ASearchName: string): Boolean;
     {returns the parameter identified by index-position}
-    function ParamByIndex(AIndex: Integer): TJvBaseParameter;
+    function ParameterByIndex(AIndex: Integer): TJvBaseParameter;
     {executes a dialog to enter all Parameter-Data,
      returns True when ok-button pressed}
     function ShowParameterDialog: Boolean;
@@ -811,6 +812,11 @@ begin
     end;
 end;
 
+procedure TJvBaseParameter.SetSearchName (Value : string);
+begin
+  fSearchName := Trim(Value);
+end;
+
 function TJvBaseParameter.GetDynControlEngine: TJvDynControlEngine;
 begin
   Result := nil;
@@ -905,15 +911,17 @@ end;
 
 procedure TJvBaseParameter.GetData;
 begin
-  FValue := Null;
+  AsVariant := Null;
   if Assigned(WinControl) then
-    FValue := WinControlData;
+//    FValue := WinControlData;
+    AsVariant := WinControlData;
 end;
 
 procedure TJvBaseParameter.SetData;
 begin
   if Assigned(WinControl) then
-    WinControlData := FValue;
+//    WinControlData := FValue;
+    WinControlData := AsVariant;
 end;
 
 procedure TJvBaseParameter.Assign(Source: TPersistent);
@@ -1036,14 +1044,14 @@ var
 begin
   Result := nil;
   for I := 0 to Count - 1 do
-    if UpperCase(Parameters[I].SearchName) = UpperCase(ASearchName) then
+    if UpperCase(Parameters[I].SearchName) = UpperCase(Trim(ASearchName)) then
     begin
       Result := Parameters[I];
       Break;
     end;
 end;
 
-function TJvParameterList.ParamByIndex(AIndex: Integer): TJvBaseParameter;
+function TJvParameterList.ParameterByIndex(AIndex: Integer): TJvBaseParameter;
 begin
   Result := Parameters[AIndex];
 end;
@@ -1346,33 +1354,32 @@ begin
   end;
 end;
 
-function TJvParameterList.GetParentByName(MainParent: TWinControl; const SearchName: string): TWinControl;
+function TJvParameterList.GetParentByName(MainParent: TWinControl; const ASearchName: string): TWinControl;
 var
   Parameter: TJvBaseParameter;
   I: Integer;
 begin
   Result := MainParent;
-  if (SearchName = '') or not Assigned(MainParent) then
+  if (Trim(ASearchName) = '') or not Assigned(MainParent) then
     Exit;
   for I := 0 to Count - 1 do
     if Parameters[I].Visible then
-      //      if Parameters[I] is TJvTabControlParameter then
+      if UpperCase(Parameters[I].SearchName) = UpperCase(Trim(ASearchName)) then
+      begin
+        Parameter := Parameters[I];
+        if Parameter is TJvArrangeParameter then
+        begin
+          Result := TJvArrangeParameter(Parameter).ParentControl;
+          Break;
+        end;
+      end;
+      //      else if Parameters[I] is TJvTabControlParameter then
       //        for J := 0 to TJvTabControlParameter(Parameters[I]).Tabs.Count - 1 do
      //          if Uppercase(Parameters[I].SearchName + '.' + TJvTabControlParameter(Parameters[I]).Tabs[J]) = Uppercase(SearchName) then
      //          begin
      //            Result := TWinControl(TJvTabControlParameter(Parameters[I]).TabWinControls.Objects[J]);
      //            break;
      //          end   {*** IF Uppercase(TJvBaseParameter(Objects[I]).SearchName) = Uppercase(ASearchName) THEN ***}
-     //          else
-    else if UpperCase(Parameters[I].SearchName) = UpperCase(SearchName) then
-    begin
-      Parameter := Parameters[I];
-      if Parameter is TJvArrangeParameter then
-      begin
-        Result := TWinControl(Parameter.WinControl);
-        Break;
-      end;
-    end;
 end;
 
 procedure TJvParameterList.HistoryLoadClick(Sender: TObject);
@@ -1474,9 +1481,9 @@ var
   IEnable: Integer;
 begin
   for I := 0 to Count - 1 do
-    if Assigned(ParamByIndex(I).WinControl) then
+    if Assigned(ParameterByIndex(I).WinControl) then
     begin
-      Parameter := ParamByIndex(I);
+      Parameter := ParameterByIndex(I);
       IEnable := GetEnableDisableReasonState(Parameter.DisableReasons, Parameter.EnableReasons);
       case IEnable of
         -1:
@@ -1555,6 +1562,10 @@ begin
           GetParentByName(ArrangePanel, Parameters[I].ParentParameterName));
         Parameters[I].WinControlData := Parameters[I].AsVariant;
       end;
+    for I := 0 to Count - 1 do
+      if Parameters[I].Visible and
+         (Parameters[I] is TJvArrangeParameter) then
+        TJvArrangeParameter(Parameters[I]).ArrangeControls;
     HandleEnableDisable;
     //    for I := 0 to Count - 1 do
     //      if Parameters[I].Visible then
