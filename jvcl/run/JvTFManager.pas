@@ -45,7 +45,7 @@ uses
   {$IFDEF USEJVCL}
   JvComponent,
   {$ENDIF USEJVCL}
-  JvTFUtils;
+  JvTFUtils, JvTypes;
 
 const
   CN_REQUESTREFRESH = $BD01;
@@ -710,12 +710,7 @@ type
   public
     constructor Create(anApptCtrl: TJvTFControl); reintroduce;
     destructor Destroy; override;
-    {$IFDEF VCL}
-    procedure ActivateHint(Rect: TRect; const AHint: string); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure ActivateHint(Rect: TRect; const AHint: WideString); override;
-    {$ENDIF VisualCLX}
+    procedure ActivateHint(Rect: TRect; const AHint: THintString); override;
     procedure ApptHint(Appt: TJvTFAppt; X, Y: Integer;
       ShowDatesTimes, ShowDesc, FormattedDesc: Boolean); virtual;
     procedure StartEndHint(StartDate, EndDate: TDate; StartTime, EndTime: TTime;
@@ -3769,12 +3764,7 @@ begin
 end;
 {$ENDIF VCL}
 
-{$IFDEF VCL}
-procedure TJvTFHint.ActivateHint(Rect: TRect; const AHint: string);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvTFHint.ActivateHint(Rect: TRect; const AHint: WideString);
-{$ENDIF VisualCLX}
+procedure TJvTFHint.ActivateHint(Rect: TRect; const AHint: THintString);
 begin
   PrepTimer(False);
   inherited;

@@ -137,13 +137,7 @@ type
     function IsImageIndexLinked: Boolean; override;
     function IsOnExecuteLinked: Boolean; override;
     function IsShortCutLinked: Boolean; override;
-
-    {$IFDEF VCL}
-    procedure SetHint(const Value: string); override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure SetHint(const Value: WideString); override;
-    {$ENDIF VisualCLX}
+    procedure SetHint(const Value: THintString); override;
     procedure SetImageIndex(Value: Integer); override;
     procedure SetOnExecute(Value: TNotifyEvent); override;
     procedure SetShortCut(Value: TShortCut); override;
@@ -2729,20 +2723,11 @@ begin
     ((FClient as TJvCustomComboEdit).ClickKey = (Action as TCustomAction).ShortCut);
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomComboEditActionLink.SetHint(const Value: string);
+procedure TJvCustomComboEditActionLink.SetHint(const Value: THintString);
 begin
   if IsHintLinked then
     (FClient as TJvCustomComboEdit).ButtonHint := Value;
 end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvCustomComboEditActionLink.SetHint(const Value: WideString);
-begin
-  if IsHintLinked then
-    (FClient as TJvCustomComboEdit).ButtonHint := Value;
-end;
-{$ENDIF VisualCLX}
 
 procedure TJvCustomComboEditActionLink.SetImageIndex(Value: Integer);
 begin

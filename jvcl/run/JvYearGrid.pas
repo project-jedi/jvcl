@@ -39,7 +39,8 @@ uses
   QGraphics, QControls, QForms, QDialogs, QGrids, QMenus, QClipbrd, Types,
   QWindows,
   {$ENDIF VisualCLX}
-  SysUtils, Classes;
+  SysUtils, Classes,
+  JvTypes;
 
 {$HPPEMIT '#define TDate Controls::TDate'}
 
@@ -72,14 +73,8 @@ type
     FBookMarkColor: TColor;
     FYearData: array [0..37, 0..12] of TYearData;
     FYearFile: string;
-    {$IFDEF VCL}
-    procedure DoShowHint(var HintStr: string; var CanShow: Boolean;
+    procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
       var HintInfo: THintInfo);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure DoShowHint(var HintStr: WideString; var CanShow: Boolean;
-      var HintInfo: THintInfo);
-    {$ENDIF VisualCLX}
     procedure MakeHTML(AList: TStringList; Border, Filter: Boolean);
     procedure SetHTMLBorder(const Value: Boolean);
     procedure SetGridYear(const Value: Integer);
@@ -149,7 +144,7 @@ type
 implementation
 
 uses
-  JvConsts, JvTypes, JvResources, JvYearGridEditForm;
+  JvConsts, JvResources, JvYearGridEditForm;
 
 const
   TodayFontColor = clWhite;
@@ -224,14 +219,8 @@ begin
   end;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvYearGrid.DoShowHint(var HintStr: WideString; var CanShow: Boolean;
+procedure TJvYearGrid.DoShowHint(var HintStr: THintString; var CanShow: Boolean;
   var HintInfo: THintInfo);
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
-procedure TJvYearGrid.DoShowHint(var HintStr: string; var CanShow: Boolean;
-  var HintInfo: THintInfo);
-{$ENDIF VCL}
 var
   ACol, ARow, X, Y: Integer;
   S, DS: string;
