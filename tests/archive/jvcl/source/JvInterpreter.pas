@@ -423,44 +423,44 @@ type
       Data: Pointer); dynamic;
     procedure AddExtUnit(Identifer: string); dynamic;
     procedure AddExtUnitEx(Identifer: string; Data: Pointer); dynamic;
-    procedure AddClass(UnitName: string; ClassType: TClass; Identifer: string);
+    procedure AddClass(UnitName: string; AClassType: TClass; Identifer: string);
       dynamic;
-    procedure AddClassEx(UnitName: string; ClassType: TClass; Identifer: string;
+    procedure AddClassEx(UnitName: string; AClassType: TClass; Identifer: string;
       Data: Pointer); dynamic;
-    procedure AddGet(ClassType: TClass; Identifer: string;
+    procedure AddGet(AClassType: TClass; Identifer: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word); dynamic;
-    procedure AddGetEx(ClassType: TClass; Identifer: string;
+    procedure AddGetEx(AClassType: TClass; Identifer: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word; Data: Pointer); dynamic;
-    procedure AddSet(ClassType: TClass; Identifer: string;
+    procedure AddSet(AClassType: TClass; Identifer: string;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word); dynamic;
-    procedure AddSetEx(ClassType: TClass; Identifer: string;
+    procedure AddSetEx(AClassType: TClass; Identifer: string;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word; Data: Pointer); dynamic;
-    procedure AddIGet(ClassType: TClass; Identifer: string;
+    procedure AddIGet(AClassType: TClass; Identifer: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word); dynamic;
-    procedure AddIGetEx(ClassType: TClass; Identifer: string;
+    procedure AddIGetEx(AClassType: TClass; Identifer: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word; Data: Pointer); dynamic;
-    procedure AddISet(ClassType: TClass; Identifer: string;
+    procedure AddISet(AClassType: TClass; Identifer: string;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word); dynamic;
-    procedure AddISetEx(ClassType: TClass; Identifer: string;
+    procedure AddISetEx(AClassType: TClass; Identifer: string;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word; Data: Pointer); dynamic;
-    procedure AddIDGet(ClassType: TClass;
+    procedure AddIDGet(AClassType: TClass;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word); dynamic;
-    procedure AddIDGetEx(ClassType: TClass;
+    procedure AddIDGetEx(AClassType: TClass;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word; Data: Pointer); dynamic;
-    procedure AddIDSet(ClassType: TClass;
+    procedure AddIDSet(AClassType: TClass;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word); dynamic;
-    procedure AddIDSetEx(ClassType: TClass;
+    procedure AddIDSetEx(AClassType: TClass;
       SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer;
       ParamTypes: array of Word; Data: Pointer); dynamic;
     procedure AddFun(UnitName: string; Identifer: string;
@@ -470,10 +470,10 @@ type
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word; Data: Pointer); dynamic;
     { function AddDGet under construction - don't use it }
-    procedure AddDGet(ClassType: TClass; Identifer: string;
+    procedure AddDGet(AClassType: TClass; Identifer: string;
       GetFunc: Pointer; ParamCount: Integer; ParamTypes: array of Word;
       ResTyp: Word; CallConvention: TCallConvention); dynamic;
-    procedure AddDGetEx(ClassType: TClass; Identifer: string;
+    procedure AddDGetEx(AClassType: TClass; Identifer: string;
       GetFunc: Pointer; ParamCount: Integer; ParamTypes: array of Word;
       ResTyp: Word; CallConvention: TCallConvention; Data: Pointer); dynamic;
     procedure AddRec(UnitName: string; Identifer: string; RecordSize: Integer;
@@ -515,9 +515,9 @@ type
       EventClass: TJvInterpreterEventClass; Code: Pointer); dynamic;
     procedure AddHandlerEx(UnitName: string; Identifer: string;
       EventClass: TJvInterpreterEventClass; Code: Pointer; Data: Pointer); dynamic;
-    procedure AddEvent(UnitName: string; ClassType: TClass;
+    procedure AddEvent(UnitName: string; AClassType: TClass;
       Identifer: string); dynamic;
-    procedure AddEventEx(UnitName: string; ClassType: TClass;
+    procedure AddEventEx(UnitName: string; AClassType: TClass;
       Identifer: string; Data: Pointer); dynamic;
     procedure AddSrcVar(UnitName: string; Identifer, Typ: string; VTyp: Word;
       const Value: Variant); dynamic;
@@ -956,7 +956,7 @@ type
 
   TJvInterpreterMethod = class(TJvInterpreterIdentifer)
   private
-    ClassType: TClass;
+    FClassType: TClass;
     ParamCount: TParamCount;
     ParamTypes: TTypeArray; { varInteger, varString, .. }
     ResTyp: Word; { varInteger, varString, .. }
@@ -971,7 +971,7 @@ type
 
   TJvInterpreterClass = class(TJvInterpreterIdentifer)
   private
-    ClassType: TClass;
+    FClassType: TClass;
   end;
 
   TJvInterpreterConst = class(TJvInterpreterIdentifer)
@@ -2432,25 +2432,25 @@ begin
     Exit;
   for i := 0 to Source.FGetList.Count - 1 do
     with TJvInterpreterMethod(Source.FGetList[i]) do
-      AddGetEx(ClassType, Identifer, Func, ParamCount, ParamTypes, ResTyp, Data);
+      AddGetEx(FClassType, Identifer, Func, ParamCount, ParamTypes, ResTyp, Data);
   for i := 0 to Source.FSetList.Count - 1 do
     with TJvInterpreterMethod(Source.FSetList[i]) do
-      AddSetEx(ClassType, Identifer, Func, ParamCount, ParamTypes, Data);
+      AddSetEx(FClassType, Identifer, Func, ParamCount, ParamTypes, Data);
   for i := 0 to Source.FIGetList.Count - 1 do
     with TJvInterpreterMethod(Source.FIGetList[i]) do
-      AddIGetEx(ClassType, Identifer, Func, ParamCount, ParamTypes, ResTyp, Data);
+      AddIGetEx(FClassType, Identifer, Func, ParamCount, ParamTypes, ResTyp, Data);
   for i := 0 to Source.FISetList.Count - 1 do
     with TJvInterpreterMethod(Source.FISetList[i]) do
-      AddISetEx(ClassType, Identifer, Func, ParamCount, ParamTypes, Data);
+      AddISetEx(FClassType, Identifer, Func, ParamCount, ParamTypes, Data);
   for i := 0 to Source.FIDGetList.Count - 1 do
     with TJvInterpreterMethod(Source.FIDGetList[i]) do
-      AddIDGetEx(ClassType, Func, ParamCount, ParamTypes, ResTyp, Data);
+      AddIDGetEx(FClassType, Func, ParamCount, ParamTypes, ResTyp, Data);
   for i := 0 to Source.FIDSetList.Count - 1 do
     with TJvInterpreterMethod(Source.FIDSetList[i]) do
-      AddIDSetEx(ClassType, Func, ParamCount, ParamTypes, Data);
+      AddIDSetEx(FClassType, Func, ParamCount, ParamTypes, Data);
   for i := 0 to Source.FDGetList.Count - 1 do
     with TJvInterpreterDMethod(Source.FDGetList[i]) do
-      AddDGetEx(ClassType, Identifer, Func, ParamCount, ParamTypes, ResTyp,
+      AddDGetEx(FClassType, Identifer, Func, ParamCount, ParamTypes, ResTyp,
         CallConvention, Data);
   for i := 0 to Source.FFunList.Count - 1 do
     with TJvInterpreterMethod(Source.FFunList[i]) do
@@ -2460,7 +2460,7 @@ begin
       AddExtUnitEx(Identifer, Data);
   for i := 0 to Source.FClassList.Count - 1 do
     with TJvInterpreterClass(Source.FClassList[i]) do
-      AddClassEx(UnitName, ClassType, Identifer, Data);
+      AddClassEx(UnitName, FClassType, Identifer, Data);
   for i := 0 to Source.FConstList.Count - 1 do
     with TJvInterpreterConst(Source.FConstList[i]) do
       AddConstEx(UnitName, Identifer, Value, Data);
@@ -2485,7 +2485,7 @@ begin
       AddHandlerEx(UnitName, Identifer, EventClass, Code, Data);
   for i := 0 to Source.FEventList.Count - 1 do
     with TJvInterpreterClass(Source.FEventList[i]) do
-      AddEventEx(UnitName, ClassType, Identifer, Data);
+      AddEventEx(UnitName, FClassType, Identifer, Data);
   for i := 0 to Source.FOnGetList.Count - 1 do
     AddOnGet(TJvInterpreterGetValue(PMethod(Source.FOnGetList[i])^));
   for i := 0 to Source.FOnSetList.Count - 1 do
@@ -2555,40 +2555,40 @@ begin
   FExtUnitList.Add(JvInterpreterUnit);
 end;
 
-procedure TJvInterpreterAdapter.AddClass(UnitName: string; ClassType: TClass;
+procedure TJvInterpreterAdapter.AddClass(UnitName: string; AClassType: TClass;
   Identifer: string);
 begin
-  AddClassEx(UnitName, ClassType, Identifer, nil);
+  AddClassEx(UnitName, AClassType, Identifer, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddClassEx(UnitName: string; ClassType: TClass;
+procedure TJvInterpreterAdapter.AddClassEx(UnitName: string; AClassType: TClass;
   Identifer: string; Data: Pointer);
 var
   JvInterpreterClass: TJvInterpreterClass;
 begin
   JvInterpreterClass := TJvInterpreterClass.Create;
-  JvInterpreterClass.ClassType := ClassType;
+  JvInterpreterClass.FClassType := AClassType;
   JvInterpreterClass.Identifer := Identifer;
   JvInterpreterClass.Data := Data;
   FClassList.Add(JvInterpreterClass);
   FSorted := False; // Ivan_ra
 end;
 
-procedure TJvInterpreterAdapter.AddGet(ClassType: TClass; Identifer: string;
+procedure TJvInterpreterAdapter.AddGet(AClassType: TClass; Identifer: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word);
 begin
-  AddGetEx(ClassType, Identifer, GetFunc, ParamCount, ParamTypes, ResTyp, nil);
+  AddGetEx(AClassType, Identifer, GetFunc, ParamCount, ParamTypes, ResTyp, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddGetEx(ClassType: TClass; Identifer: string;
+procedure TJvInterpreterAdapter.AddGetEx(AClassType: TClass; Identifer: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word; Data: Pointer);
 var
   JvInterpreterMethod: TJvInterpreterMethod;
 begin
   JvInterpreterMethod := TJvInterpreterMethod.Create;
-  JvInterpreterMethod.ClassType := ClassType;
+  JvInterpreterMethod.FClassType := AClassType;
   JvInterpreterMethod.Identifer := Identifer;
   JvInterpreterMethod.Func := @GetFunc;
   JvInterpreterMethod.ParamCount := ParamCount;
@@ -2599,21 +2599,21 @@ begin
   FSorted := False; // Ivan_ra
 end;
 
-procedure TJvInterpreterAdapter.AddIGet(ClassType: TClass; Identifer: string;
+procedure TJvInterpreterAdapter.AddIGet(AClassType: TClass; Identifer: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word);
 begin
-  AddIGetEx(ClassType, Identifer, GetFunc, ParamCount, ParamTypes, ResTyp, nil);
+  AddIGetEx(AClassType, Identifer, GetFunc, ParamCount, ParamTypes, ResTyp, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddIGetEx(ClassType: TClass; Identifer: string;
+procedure TJvInterpreterAdapter.AddIGetEx(AClassType: TClass; Identifer: string;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word; Data: Pointer);
 var
   JvInterpreterMethod: TJvInterpreterMethod;
 begin
   JvInterpreterMethod := TJvInterpreterMethod.Create;
-  JvInterpreterMethod.ClassType := ClassType;
+  JvInterpreterMethod.FClassType := AClassType;
   JvInterpreterMethod.Identifer := Identifer;
   JvInterpreterMethod.Func := @GetFunc;
   JvInterpreterMethod.ParamCount := ParamCount;
@@ -2624,21 +2624,21 @@ begin
   FSorted := False; // Ivan_ra
 end;
 
-procedure TJvInterpreterAdapter.AddIDGet(ClassType: TClass;
+procedure TJvInterpreterAdapter.AddIDGet(AClassType: TClass;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word);
 begin
-  AddIDGetEx(ClassType, GetFunc, ParamCount, ParamTypes, ResTyp, nil);
+  AddIDGetEx(AClassType, GetFunc, ParamCount, ParamTypes, ResTyp, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddIDGetEx(ClassType: TClass;
+procedure TJvInterpreterAdapter.AddIDGetEx(AClassType: TClass;
   GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word; Data: Pointer);
 var
   JvInterpreterMethod: TJvInterpreterMethod;
 begin
   JvInterpreterMethod := TJvInterpreterMethod.Create;
-  JvInterpreterMethod.ClassType := ClassType;
+  JvInterpreterMethod.FClassType := AClassType;
   JvInterpreterMethod.Func := @GetFunc;
   JvInterpreterMethod.ParamCount := ParamCount;
   JvInterpreterMethod.ResTyp := ResTyp;
@@ -2647,22 +2647,22 @@ begin
   FIDGetList.Add(JvInterpreterMethod);
 end;
 
-procedure TJvInterpreterAdapter.AddDGet(ClassType: TClass; Identifer: string;
+procedure TJvInterpreterAdapter.AddDGet(AClassType: TClass; Identifer: string;
   GetFunc: Pointer; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word; CallConvention: TCallConvention);
 begin
-  AddDGetEx(ClassType, Identifer, GetFunc, ParamCount, ParamTypes, ResTyp,
+  AddDGetEx(AClassType, Identifer, GetFunc, ParamCount, ParamTypes, ResTyp,
     CallConvention, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddDGetEx(ClassType: TClass; Identifer: string;
+procedure TJvInterpreterAdapter.AddDGetEx(AClassType: TClass; Identifer: string;
   GetFunc: Pointer; ParamCount: Integer; ParamTypes: array of Word;
   ResTyp: Word; CallConvention: TCallConvention; Data: Pointer);
 var
   JvInterpreterMethod: TJvInterpreterDMethod;
 begin
   JvInterpreterMethod := TJvInterpreterDMethod.Create;
-  JvInterpreterMethod.ClassType := ClassType;
+  JvInterpreterMethod.FClassType := AClassType;
   JvInterpreterMethod.Identifer := Identifer;
   JvInterpreterMethod.Func := GetFunc;
   JvInterpreterMethod.ParamCount := ParamCount;
@@ -2673,20 +2673,20 @@ begin
   FDGetList.Add(JvInterpreterMethod);
 end;
 
-procedure TJvInterpreterAdapter.AddSet(ClassType: TClass; Identifer: string;
+procedure TJvInterpreterAdapter.AddSet(AClassType: TClass; Identifer: string;
   SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer; ParamTypes: array of Word);
 begin
-  AddSetEx(ClassType, Identifer, SetFunc, ParamCount, ParamTypes, nil);
+  AddSetEx(AClassType, Identifer, SetFunc, ParamCount, ParamTypes, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddSetEx(ClassType: TClass; Identifer: string;
+procedure TJvInterpreterAdapter.AddSetEx(AClassType: TClass; Identifer: string;
   SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer; ParamTypes: array of Word;
   Data: Pointer);
 var
   JvInterpreterMethod: TJvInterpreterMethod;
 begin
   JvInterpreterMethod := TJvInterpreterMethod.Create;
-  JvInterpreterMethod.ClassType := ClassType;
+  JvInterpreterMethod.FClassType := AClassType;
   JvInterpreterMethod.Identifer := Identifer;
   JvInterpreterMethod.Func := @SetFunc;
   JvInterpreterMethod.ParamCount := ParamCount;
@@ -2696,20 +2696,20 @@ begin
   FSorted := False; // Ivan_ra
 end;
 
-procedure TJvInterpreterAdapter.AddISet(ClassType: TClass; Identifer: string;
+procedure TJvInterpreterAdapter.AddISet(AClassType: TClass; Identifer: string;
   SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer; ParamTypes: array of Word);
 begin
-  AddISetEx(ClassType, Identifer, SetFunc, ParamCount, ParamTypes, nil);
+  AddISetEx(AClassType, Identifer, SetFunc, ParamCount, ParamTypes, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddISetEx(ClassType: TClass; Identifer: string;
+procedure TJvInterpreterAdapter.AddISetEx(AClassType: TClass; Identifer: string;
   SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer; ParamTypes: array of Word;
   Data: Pointer);
 var
   JvInterpreterMethod: TJvInterpreterMethod;
 begin
   JvInterpreterMethod := TJvInterpreterMethod.Create;
-  JvInterpreterMethod.ClassType := ClassType;
+  JvInterpreterMethod.FClassType := AClassType;
   JvInterpreterMethod.Identifer := Identifer;
   JvInterpreterMethod.Func := @SetFunc;
   JvInterpreterMethod.ParamCount := ParamCount;
@@ -2719,20 +2719,20 @@ begin
   FSorted := False; // Ivan_ra
 end;
 
-procedure TJvInterpreterAdapter.AddIDSet(ClassType: TClass;
+procedure TJvInterpreterAdapter.AddIDSet(AClassType: TClass;
   SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer; ParamTypes: array of Word);
 begin
-  AddIDSetEx(ClassType, SetFunc, ParamCount, ParamTypes, nil);
+  AddIDSetEx(AClassType, SetFunc, ParamCount, ParamTypes, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddIDSetEx(ClassType: TClass;
+procedure TJvInterpreterAdapter.AddIDSetEx(AClassType: TClass;
   SetFunc: TJvInterpreterAdapterSetValue; ParamCount: Integer; ParamTypes: array of Word;
   Data: Pointer);
 var
   JvInterpreterMethod: TJvInterpreterMethod;
 begin
   JvInterpreterMethod := TJvInterpreterMethod.Create;
-  JvInterpreterMethod.ClassType := ClassType;
+  JvInterpreterMethod.FClassType := AClassType;
   JvInterpreterMethod.Func := @SetFunc;
   JvInterpreterMethod.ParamCount := ParamCount;
   JvInterpreterMethod.Data := Data;
@@ -2947,13 +2947,13 @@ begin
   FEventHandlerList.Add(JvInterpreterEventDesc);
 end;
 
-procedure TJvInterpreterAdapter.AddEvent(UnitName: string; ClassType: TClass;
+procedure TJvInterpreterAdapter.AddEvent(UnitName: string; AClassType: TClass;
   Identifer: string);
 begin
-  AddEventEx(UnitName, ClassType, Identifer, nil);
+  AddEventEx(UnitName, AClassType, Identifer, nil);
 end;
 
-procedure TJvInterpreterAdapter.AddEventEx(UnitName: string; ClassType: TClass;
+procedure TJvInterpreterAdapter.AddEventEx(UnitName: string; AClassType: TClass;
   Identifer: string; Data: Pointer);
 var
   JvInterpreterEvent: TJvInterpreterClass;
@@ -2963,7 +2963,7 @@ begin
   begin
     UnitName := UnitName;
     Identifer := Identifer;
-    ClassType := ClassType;
+    FClassType := AClassType;
     Data := Data;
   end;
   FEventList.Add(JvInterpreterEvent);
@@ -3081,9 +3081,9 @@ function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Id
         JvInterpreterMethod := TJvInterpreterMethod(FGetList[i]);
         if Assigned(JvInterpreterMethod.Func) and
           (((Args.ObjTyp = varObject) and
-          (Args.Obj is JvInterpreterMethod.ClassType)) or
+          (Args.Obj is JvInterpreterMethod.FClassType)) or
           ((Args.ObjTyp = varClass) and
-          (TClass(Args.Obj) = JvInterpreterMethod.ClassType))) {?!} then
+          (TClass(Args.Obj) = JvInterpreterMethod.FClassType))) {?!} then
         begin
           Args.Identifer := Identifer;
           CheckAction(Expression, Args, JvInterpreterMethod.Data);
@@ -3116,9 +3116,9 @@ function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Id
         JvInterpreterMethod := TJvInterpreterMethod(FIGetList[i]);
         if Assigned(JvInterpreterMethod.Func) and
           (((Args.ObjTyp = varObject) and
-          (Args.Obj is JvInterpreterMethod.ClassType)) or
+          (Args.Obj is JvInterpreterMethod.FClassType)) or
           ((Args.ObjTyp = varClass) and
-          (TClass(Args.Obj) = JvInterpreterMethod.ClassType))) {?!} then
+          (TClass(Args.Obj) = JvInterpreterMethod.FClassType))) {?!} then
         begin
           Args.Identifer := Identifer;
           CheckAction(Expression, Args, JvInterpreterMethod.Data);
@@ -3154,9 +3154,9 @@ function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Id
       Func := JvInterpreterMethod.Func;
       if Assigned(JvInterpreterMethod.Func) and
         (((Args.ObjTyp = varObject) and
-        (Args.Obj is JvInterpreterMethod.ClassType)) { or
+        (Args.Obj is JvInterpreterMethod.FClassType)) { or
           ((Args.ObjTyp = varClass) and
-          (TClass(Args.Obj) = JvInterpreterMethod.ClassType))}) and
+          (TClass(Args.Obj) = JvInterpreterMethod.FClassType))}) and
         Cmp(JvInterpreterMethod.Identifer, Identifer) then
       begin
         Args.Identifer := Identifer;
@@ -3313,7 +3313,7 @@ function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Id
     begin
       JvInterpreterClass := TJvInterpreterClass(FClassList[i]);
       if Args.Count = 0 then
-        Value := C2V(JvInterpreterClass.ClassType)
+        Value := C2V(JvInterpreterClass.FClassType)
       else
       if Args.Count = 1 then
       { typecasting }
@@ -3541,7 +3541,7 @@ var
     begin
       JvInterpreterMethod := TJvInterpreterMethod(FSetList[i]);
       if Assigned(JvInterpreterMethod.Func) and
-        (Args.Obj is JvInterpreterMethod.ClassType) and
+        (Args.Obj is JvInterpreterMethod.FClassType) and
         Cmp(JvInterpreterMethod.Identifer, Identifer) then
       begin
         Args.Identifer := Identifer;
@@ -3565,7 +3565,7 @@ var
       begin
         JvInterpreterMethod := TJvInterpreterMethod(FISetList[i]);
         if Assigned(JvInterpreterMethod.Func) and
-          (Args.Obj is JvInterpreterMethod.ClassType) and
+          (Args.Obj is JvInterpreterMethod.FClassType) and
           Cmp(JvInterpreterMethod.Identifer, Identifer) then
         begin
           Args.Identifer := Identifer;
@@ -3695,7 +3695,7 @@ function TJvInterpreterAdapter.GetElement(Expression: TJvInterpreterExpression;
     for i := 0 to FIDGetList.Count - 1 do { Iterate }
     begin
       JvInterpreterMethod := TJvInterpreterMethod(FIDGetList[i]);
-      if Obj is JvInterpreterMethod.ClassType then
+      if Obj is JvInterpreterMethod.FClassType then
       begin
         Args.Obj := Obj;
         CheckAction(Expression, Args, JvInterpreterMethod.Data);
@@ -3734,7 +3734,7 @@ function TJvInterpreterAdapter.SetElement(Expression: TJvInterpreterExpression;
     for i := 0 to FIDSetList.Count - 1 do { Iterate }
     begin
       JvInterpreterMethod := TJvInterpreterMethod(FIDSetList[i]);
-      if Obj is JvInterpreterMethod.ClassType then
+      if Obj is JvInterpreterMethod.FClassType then
       begin
         Args.Obj := Obj;
         CheckAction(Expression, Args, JvInterpreterMethod.Data);
@@ -4043,7 +4043,7 @@ begin
   for i := 0 to FEventList.Count - 1 do
   begin
     JvInterpreterClass := TJvInterpreterClass(FEventList[i]);
-    if (Obj is JvInterpreterClass.ClassType) and
+    if (Obj is JvInterpreterClass.FClassType) and
       Cmp(JvInterpreterClass.Identifer, Identifer) then
     begin
       Result := True;
