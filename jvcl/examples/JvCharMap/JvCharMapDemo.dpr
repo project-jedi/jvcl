@@ -2,12 +2,12 @@ program JvCharMapDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {Form1};
+  JvCharMapMainFrmU in 'JvCharMapMainFrmU.pas' {JvCharMapMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvCharMapMainFrm, JvCharMapMainFrm);
   Application.Run;
 end.

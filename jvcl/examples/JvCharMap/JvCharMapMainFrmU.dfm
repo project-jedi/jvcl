@@ -1,4 +1,4 @@
-object Form1: TForm1
+object JvCharMapMainFrm: TJvCharMapMainFrm
   Left = 313
   Top = 123
   Width = 647
@@ -16,6 +16,9 @@ object Form1: TForm1
   OldCreateOrder = False
   ShowHint = True
   OnCreate = FormCreate
+  DesignSize = (
+    639
+    403)
   PixelsPerInch = 96
   TextHeight = 13
   object lblChars: TLabel
@@ -28,13 +31,16 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Top = 244
+    Top = 247
     Width = 639
     Height = 156
     Align = alBottom
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 0
+    DesignSize = (
+      639
+      156)
     object Label1: TLabel
       Left = 8
       Top = 8
@@ -79,9 +85,9 @@ object Form1: TForm1
       Caption = '&Locale:'
     end
     object btnFont: TButton
-      Left = 216
-      Top = 126
-      Width = 75
+      Left = 286
+      Top = 124
+      Width = 57
       Height = 25
       Caption = '&Font...'
       TabOrder = 13
@@ -113,11 +119,8 @@ object Form1: TForm1
       Width = 15
       Height = 21
       Associate = edStart
-      Min = 0
       Max = 32767
-      Position = 0
       TabOrder = 1
-      Wrap = False
     end
     object edEnd: TEdit
       Left = 96
@@ -134,11 +137,8 @@ object Form1: TForm1
       Width = 15
       Height = 21
       Associate = edEnd
-      Min = 0
       Max = 32767
-      Position = 0
       TabOrder = 3
-      Wrap = False
     end
     object edCols: TEdit
       Left = 192
@@ -155,16 +155,14 @@ object Form1: TForm1
       Width = 15
       Height = 21
       Associate = edCols
-      Min = 0
       Max = 32767
       Position = 1
       TabOrder = 5
-      Wrap = False
     end
     object cbColor: TJvColorComboBox
       Left = 8
       Top = 126
-      Width = 100
+      Width = 113
       Height = 20
       ColorNameMap.Strings = (
         'clBlack=Black'
@@ -222,17 +220,18 @@ object Form1: TForm1
         'clNone=None'
         'clDefault=Default')
       ColorDialogText = 'Custom...'
-      DroppedDownWidth = 100
+      DroppedDownWidth = 113
       NewColorText = 'Custom'
       Options = [coText, coCustomColors]
       TabOrder = 11
     end
     object cbFont: TJvFontComboBox
-      Left = 112
-      Top = 126
-      Width = 97
+      Left = 128
+      Top = 125
+      Width = 153
       Height = 22
-      DroppedDownWidth = 97
+      DroppedDownWidth = 153
+      MaxMRUCount = 0
       FontName = 'System'
       ItemIndex = 0
       Sorted = False
@@ -317,8 +316,6 @@ object Form1: TForm1
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    MinFontSize = 0
-    MaxFontSize = 0
     Left = 48
     Top = 192
   end
