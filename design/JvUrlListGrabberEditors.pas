@@ -42,7 +42,11 @@ type
   TJvUrlGrabberDefaultPropertiesListEditor = class (TClassProperty)
   public
     function GetAttributes : TPropertyAttributes; override;
+    {$IFDEF COMPILER6_UP}
     procedure GetProperties(Proc: TGetPropProc); override;
+    {$ELSE}
+    procedure GetProperties(Proc: TGetPropEditProc); override;
+    {$ENDIF}
   end;
 
   TJvUrlGrabberDefaultPropertiesEditor = class (TClassProperty)
@@ -52,8 +56,9 @@ type
 
 implementation
 
-uses TypInfo,
-     JvUrlListGrabber, JvUrlGrabbers;
+uses
+  TypInfo,
+  JvUrlListGrabber, JvUrlGrabbers;
 
 { TJvUrlGrabberDefaultPropertiesListEditor }
 
@@ -62,25 +67,32 @@ begin
   Result := [paSubProperties, paReadOnly];
 end;
 
-procedure TJvUrlGrabberDefaultPropertiesListEditor.GetProperties(
-  Proc: TGetPropProc);
+{$IFDEF COMPILER6_UP}
+procedure TJvUrlGrabberDefaultPropertiesListEditor.GetProperties(Proc: TGetPropProc);
+{$ELSE}
+procedure TJvUrlGrabberDefaultPropertiesListEditor.GetProperties(Proc: TGetPropEditProc);
+{$ENDIF}
 var
   UrlListGrabber : TJvUrlListGrabber;
   i : Integer;
+  {$IFDEF COMPILER6_UP}
   Components: IDesignerSelections;
+  {$ELSE}
+  Components: TDesignerSelectionList;
+  {$ENDIF}
 begin
   inherited;
 
   UrlListGrabber := TJvUrlListGrabber(GetComponent(0));
   for i := 0 to UrlListGrabber.DefaultGrabbersProperties.Count - 1 do
   begin
+    {$IFDEF COMPILER6_UP}
     Components := CreateSelectionList;
-    Components.Add(
-      {$IFNDEF COMPILER6_UP}MakeIPersistent({$ENDIF}
-        UrlListGrabber.DefaultGrabbersProperties.Items[i].EditorTrick
-      {$IFNDEF COMPILER6_UP}){$ENDIF}
-    );
+    {$ELSE}
+    Components := TDesignerSelectionList.Create;
+    {$ENDIF}
 
+    Components.Add(UrlListGrabber.DefaultGrabbersProperties.Items[i].EditorTrick);
     GetComponentProperties(Components, tkAny, Designer, Proc);
   end;
 end;
