@@ -1,7 +1,7 @@
 object frmOptions: TfrmOptions
-  Left = 405
-  Top = 179
-  ActiveControl = lvPaths
+  Left = 531
+  Top = 176
+  ActiveControl = edShapeWidth
   BorderStyle = bsDialog
   Caption = 'Options'
   ClientHeight = 367
@@ -43,7 +43,7 @@ object frmOptions: TfrmOptions
     Top = 5
     Width = 318
     Height = 315
-    ActivePage = tabPaths
+    ActivePage = tabGeneral
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
     object tabGeneral: TTabSheet

@@ -1,8 +1,8 @@
 object frmPersistable: TfrmPersistable
-  Left = 234
-  Top = 107
-  Width = 322
-  Height = 258
+  Left = 528
+  Top = 187
+  Width = 190
+  Height = 175
   Caption = 'frmPersistable'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

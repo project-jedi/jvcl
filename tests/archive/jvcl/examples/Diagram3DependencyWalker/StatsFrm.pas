@@ -44,6 +44,7 @@ begin
       reUses.Lines := UsesStrings;
       ShowModal;
       Save(Storage);
+      Storage.UpdateFile;
     finally
       Storage.Free;
     end;

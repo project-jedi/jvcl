@@ -128,6 +128,8 @@ type
     acUnitView: TAction;
     ViewSource1: TMenuItem;
     ViewSource2: TMenuItem;
+    acSortIntfImpl: TAction;
+    byINterfaceImplementation1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure sbMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -170,14 +172,14 @@ type
     FOffsetX, FOffsetY: integer;
     FReload: boolean;
     FIntfLineColor, FImplLineColor, FIntfSelColor, FImplSelColor: TColor;
+    function GetPersistStorage:TPersistStorage;
     procedure LoadSettings;
     procedure SaveSettings;
     function FindUnit(const Filename: string; const DefaultExt: string = '.pas'): string;
     procedure GetSearchPaths;
-    function GetPersistStorage: TPersistStorage;
     procedure Clear;
     procedure CreatePrintOut(Strings: TStrings; AFormat: TPrintFormat = pfText);
-    function GetFileShape(const Filename: string): TJvBitmapShape;
+    function GetFileShape(const Filename: string;var IsNew:boolean): TJvBitmapShape;
     procedure ParseUnits(Files, Errors: TStrings);
     procedure ParseUnit(const Filename: string; Errors: TStrings);
     function GetUses(const Filename: string; AUsesIntf, AUsesImpl: TStrings; var ErrorMessage: string): boolean;
@@ -206,6 +208,7 @@ var
 implementation
 uses
   JCLParseUses,
+  DepWalkUtils,
   Clipbrd,
   IniFiles,
   StatsFrm,
@@ -219,41 +222,6 @@ uses
 
 
 {$R *.dfm}
-
-type
-  // (p3) class that changes and restores the screen cursor automatically
-  TChangeCursor = class(TInterfacedObject)
-  private
-    FOldCursor: TCursor;
-  public
-    constructor Create(NewCursor: TCursor);
-    destructor Destroy; override;
-  end;
-
-{ TChangeCursor }
-
-constructor TChangeCursor.Create(NewCursor: TCursor);
-begin
-  inherited Create;
-  FOldCursor := Screen.Cursor;
-  Screen.Cursor := NewCursor;
-end;
-
-destructor TChangeCursor.Destroy;
-begin
-  Screen.Cursor := FOldCursor;
-  inherited;
-end;
-
-function WaitCursor: IUnknown;
-begin
-  Result := TChangeCursor.Create(crHourGlass);
-end;
-
-function ChangeCursor(NewCursor: TCursor): IUnknown;
-begin
-  Result := TChangeCursor.Create(NewCursor);
-end;
 
 (*
 { TListBox }
@@ -281,23 +249,6 @@ end;
 *)
 
 // utility functions
-
-// (3) shows a message box with Yes and No buttons
-
-function YesNo(const ACaption, AMsg: string): boolean;
-begin
-  Result := MessageBox(GetFocus, PChar(AMsg), PChar(ACaption),
-    MB_YESNO or MB_ICONQUESTION or MB_TASKMODAL) = IDYES;
-end;
-
-// suspend/resumes the drawing of a TWinControl
-
-procedure SuspendRedraw(AControl: TWinControl; Suspend: boolean);
-begin
-  AControl.Perform(WM_SETREDRAW, Ord(not Suspend), 0);
-  if not Suspend then
-    RedrawWindow(AControl.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or RDW_INVALIDATE or RDW_UPDATENOW or RDW_ALLCHILDREN);
-end;
 
 // (p3) copy Strings.Objects to TList
 
@@ -420,6 +371,17 @@ begin
   Result := -MinLinksFromCompare(Item1, Item2);
 end;
 
+function SortIntfCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := TJvBitmapShape(Item1).ImageIndex - TJvBitmapShape(Item2).ImageIndex;
+end;
+
+function SortImplCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := -SortIntfCompare(Item1,Item2);
+end;
+
+
 { TfrmMain }
 
 { IPersistSettings }
@@ -506,15 +468,17 @@ end;
 // (p3) returns an existing or new shape
 // Filename is checked against unique list
 
-function TfrmMain.GetFileShape(const Filename: string): TJvBitmapShape;
+function TfrmMain.GetFileShape(const Filename: string;var IsNew:boolean): TJvBitmapShape;
 var
   i: integer;
   AFilename: string;
 begin
   AFilename := FindUnit(Filename);
   i := FFileShapes.IndexOf(AFilename);
+  IsNew := false;
   if i < 0 then
   begin
+    IsNew := true;
     Result := TJvBitmapShape.Create(self);
     Result.Images := il32;
     Result.ImageIndex := cUnitUsedImageIndex; // always set "used" as default
@@ -625,33 +589,35 @@ var
   FS: TJvBitmapShape;
   i: integer;
   AFilename, ErrMsg: string;
-  b: boolean;
+  b,IsNew: boolean;
 begin
   AFilename := FindUnit(Filename);
   if InSkipList(AFilename) then
     Exit;
   AUsesIntf := TStringlist.Create;
   AUsesImpl := TStringlist.Create;
-  FTop := cStartY;
   try
     b := GetUses(AFilename, AUsesIntf, AUsesImpl, ErrMsg);
     if not b and (Errors <> nil) then
       Errors.Add(Format('%s: %s', [AFilename, ErrMsg]));
-    FS := GetFileShape(AFilename);
+    FS := GetFileShape(AFilename, IsNew);
     if b then
       FS.ImageIndex := cUnitParsedImageIndex; // this is a parsed file
-    Inc(FLeft, FOffsetX);
+    if IsNew then
+      Inc(FLeft, FOffsetX);
     for i := 0 to AUsesIntf.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
-      Connect(FS, GetFileShape(AUsesIntf[i]), true);
-      Inc(FTop, FOffsetY);
+      Connect(FS, GetFileShape(AUsesIntf[i],IsNew), true);
+      if IsNew then
+        Inc(FTop, FOffsetY);
     end;
     for i := 0 to AUsesImpl.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
-      Connect(FS, GetFileShape(AUsesImpl[i]), false);
-      Inc(FTop, FOffsetY);
+      Connect(FS, GetFileShape(AUsesImpl[i],IsNew), false);
+      if IsNew then
+        Inc(FTop, FOffsetY);
     end;
   finally
     AUsesIntf.Free;
@@ -664,7 +630,7 @@ end;
 
 procedure TfrmMain.ParseUnits(Files, Errors: TStrings);
 var
-  i: integer;
+  i, aCount: integer;
 begin
   WaitCursor;
   SuspendRedraw(sb, true);
@@ -673,9 +639,11 @@ begin
     begin
       StatusBar1.Panels[0].Text := Files[i];
       StatusBar1.Update;
-      if i > 0 then
-        Inc(FLeft, FOffsetX);
+      aCount := FFileShapes.Count;
+      FTop := cStartY;
       ParseUnit(Files[i], Errors);
+      if aCount < FFileShapes.Count then
+        Inc(FLeft,FOffsetX);
     end;
   finally
     SuspendRedraw(sb, false);
@@ -715,6 +683,7 @@ procedure TfrmMain.Clear;
 // var i: integer;
 begin
   WaitCursor;
+  FreeAndNil(FSearchPaths);
   FFileShapes.Clear;
   TJvCustomDiagramShape.DeleteAllShapes(sb);
   FLeft := cStartX;
@@ -725,9 +694,7 @@ end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
-  // (p3) Set GetPersistStorage as the handler for this apps storage:
   SetStorageHandler(GetPersistStorage);
-
   FFileShapes := TStringlist.Create;
   FFileShapes.Sorted := true;
   FFileShapes.Duplicates := dupError;
@@ -793,6 +760,7 @@ begin
     FS.SetBounds(FLeft, FTop, FS.Width, FS.Height);
     Inc(FLeft, FOffsetX);
   end;
+  Dec(FLeft, FOffsetX);
 end;
 
 function iff(Condition: boolean; TrueValue, FalseValue: integer): integer;
@@ -821,6 +789,11 @@ begin
         AList.Sort(MaxLinksFromCompare)
       else
         AList.Sort(MinLinksFromCompare);
+    3:
+      if InvertedSort then
+        AList.Sort(SortImplCompare)
+      else
+        AList.Sort(SortIntfCompare);
   else
     Exit; // no sorting
   end;
@@ -999,12 +972,6 @@ begin
 end;
 
 // (p3) create and return the type of TPersistStorage we are currently using
-function TfrmMain.GetPersistStorage: TPersistStorage;
-begin
-  Result := TPersistStorage(TMemIniFile.Create(ChangeFileExt(Application.ExeName, cIniFileExt)));
-  // ...could just as well have been:
-//  Result := TPersistStorage(TRegistryIniFile.Create('\Software\JEDI\JVCL\Demos\Dependency Walker'));
-end;
 
 // main form event handlers (normal, run-time assigned) and actions
 
@@ -1374,7 +1341,7 @@ end;
 // (p3) do a recursive parse of a unit
 
 procedure TfrmMain.acParseUnitExecute(Sender: TObject);
-var Errors: TStringList; i: integer;
+var Errors: TStringList; i,aCount: integer;
 begin
   WaitCursor;
   i := FFileShapes.IndexOfObject(FSelected);
@@ -1388,6 +1355,9 @@ begin
   end;
   Errors := TStringlist.Create;
   try
+    FTop := cStartY;
+    aCount := FFileShapes.Count;
+    Inc(FLeft, FOffsetX); // start new row
     ParseUnit(FFileShapes[i], Errors);
     if Errors.Count > 0 then
     begin
@@ -1395,6 +1365,8 @@ begin
         // copy to clipboard as well
       Clipboard.SetTextBuf(PChar(Errors.Text));
     end;
+    if aCount = FFileShapes.Count then // nothing happended, so reset FLeft
+      Dec(FLeft, FOffsetX); 
   finally
     Errors.Free;
   end;
@@ -1421,6 +1393,13 @@ begin
     ShellExecute(Handle, 'open', PChar(AFilename), nil, nil, SW_SHOWNORMAL)
   else
     ShowMessageFmt(SFileNotFoundFmt, [AFilename]);
+end;
+
+function TfrmMain.GetPersistStorage: TPersistStorage;
+begin
+  Result := TPersistStorage(TMemIniFile.Create(ChangeFileExt(Application.ExeName, cIniFileExt)));
+  // ...could just as well have been:
+//  Result := TPersistStorage(TRegistryIniFile.Create('\Software\JEDI\JVCL\Demos\Dependency Walker'));
 end;
 
 end.

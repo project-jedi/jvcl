@@ -120,84 +120,11 @@ uses
 {$IFNDEF COMPILER6_UP}
   FileCtrl,
 {$ENDIF }
-  JclSysInfo, Registry;
+  DepWalkUtils, Registry;
 
 {$R *.DFM}
 
-procedure strTokenize(const S: string; Delims: TSysCharSet; Results: TStrings);
-var I, J: integer; tmp: string;
-begin
-  I := 1;
-  J := 1;
-  while true do
-  begin
-    while (I <= Length(S)) and not (S[i] in Delims) do
-      Inc(I);
-    tmp := trim(Copy(S, J, I - J));
-    if tmp <> '' then
-      Results.Add(tmp);
-    if (I <= Length(S)) and (S[I] in Delims) then
-      Inc(I); // skip the delimiter
-    J := I;
-    if i > Length(S) then
-      Break;
-  end;
-end;
 
-function GetBorlandLibPath(Version: integer; ForDelphi: boolean): string;
-const
-  cLibPath: array[boolean] of PChar = ('\Software\Borland\C++Builder\%d.0\Library',
-    '\Software\Borland\Delphi\%d.0\Library');
-var ALibPath: string;
-begin
-  ALibPath := Format(cLibPath[ForDelphi], [Version]);
-  with TRegistry.Create do // defaults to HKCU - just what we want
-  try
-    if OpenKeyReadOnly(ALibPath) and ValueExists('Search Path') then
-      Result := ReadString('Search Path')
-    else
-      Result := '';
-  finally
-    Free;
-  end;
-end;
-
-function GetExpandedLibRoot(Version: integer; ForDelphi: boolean): string;
-const
-  cLibPath: array[boolean] of PChar = ('\Software\Borland\C++Builder\%d.0',
-    '\Software\Borland\Delphi\%d.0');
-var ALibPath: string;
-begin
-  ALibPath := Format(cLibPath[ForDelphi], [Version]);
-  with TRegistry.Create do
-  try
-    RootKey := HKEY_LOCAL_MACHINE;
-    if OpenKeyReadOnly(ALibPath) and ValueExists('RootDir') then
-      Result := ReadString('RootDir')
-    else
-      Result := '';
-  finally
-    Free;
-  end;
-end;
-
-procedure GetPathList(Version: integer; ForDelphi: boolean; Strings: TStrings);
-const
-  cRootDirMacro: array[boolean] of PChar = ('$(BCB)', '$(DELPHI)');
-var S, T: string;
-begin
-  S := GetBorlandLibPath(Version, ForDelphi);
-  T := GetExpandedLibRoot(Version, ForDelphi);
-  S := StringReplace(S, cRootDirMacro[ForDelphi], T, [rfReplaceAll, rfIgnoreCase]);
-  StrTokenize(S, [';'], Strings);
-end;
-
-procedure GetSystemPaths(Strings: TStrings);
-var S: string;
-begin
-  JclSysInfo.GetEnvironmentVar('PATH', S, true);
-  strTokenize(S, [';'], Strings);
-end;
 { TEdit }
 
 {$UNDEF RPLUS}
@@ -222,11 +149,6 @@ end;
 {$UNDEF RPLUS}
 {$R+}
 {$ENDIF}
-
-procedure MakeEditNumeric(EditHandle: integer);
-begin
-  SetWindowLong(EditHandle, GWL_STYLE, GetWindowLong(EditHandle, GWL_STYLE) or ES_NUMBER);
-end;
 
 { TfrmOptions }
 
@@ -310,7 +232,7 @@ begin
   lvPaths.Items.Clear;
   S := TStringlist.Create;
   try
-    Storage.ReadSection('Options.Paths', S);
+    Storage.ReadSection('Library Paths', S);
     for i := 0 to S.Count - 1 do
       ListViewAddPath(S[i]);
   finally
@@ -334,9 +256,9 @@ begin
   Storage.WriteInteger('Options', 'ImplColor', cbImplColor.ColorValue);
   Storage.WriteInteger('Options', 'ImplSelColor', cbImplSelColor.ColorValue);
 
-  Storage.EraseSection('Options.Paths');
+  Storage.EraseSection('Library Paths');
   for i := 0 to lvPaths.Items.Count - 1 do
-    Storage.WriteString('Options.Paths', lvPaths.Items[i].Caption, '');
+    Storage.WriteString('Library Paths', lvPaths.Items[i].Caption, '');
 end;
 
 procedure TfrmOptions.ListViewAddPath(const S: string);

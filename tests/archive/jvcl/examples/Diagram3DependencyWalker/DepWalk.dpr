@@ -7,7 +7,8 @@ uses
   PrintFrm in 'PrintFrm.pas' {frmPrint},
   DepWalkConsts in 'DepWalkConsts.pas',
   OptionsFrm in 'OptionsFrm.pas' {frmOptions},
-  PersistForm in 'PersistForm.pas' {frmPersistable};
+  PersistForm in 'PersistForm.pas' {frmPersistable},
+  DepWalkUtils in 'DepWalkUtils.pas';
 
 {$R *.res}
 

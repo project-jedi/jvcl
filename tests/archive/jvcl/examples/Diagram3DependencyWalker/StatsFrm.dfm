@@ -4,7 +4,7 @@ object frmUnitStats: TfrmUnitStats
   BorderStyle = bsDialog
   Caption = 'Statistics for "%s"'
   ClientHeight = 293
-  ClientWidth = 329
+  ClientWidth = 258
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,6 +12,7 @@ object frmUnitStats: TfrmUnitStats
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDefault
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -41,7 +42,7 @@ object frmUnitStats: TfrmUnitStats
   object edName: TEdit
     Left = 8
     Top = 32
-    Width = 311
+    Width = 240
     Height = 21
     Anchors = [akLeft, akTop, akRight]
     Color = clBtnFace
@@ -51,7 +52,7 @@ object frmUnitStats: TfrmUnitStats
   object reUsed: TRichEdit
     Left = 8
     Top = 88
-    Width = 311
+    Width = 240
     Height = 65
     Anchors = [akLeft, akTop, akRight]
     Color = clBtnFace
@@ -64,7 +65,7 @@ object frmUnitStats: TfrmUnitStats
   object reUses: TRichEdit
     Left = 8
     Top = 176
-    Width = 311
+    Width = 240
     Height = 71
     Anchors = [akLeft, akTop, akRight, akBottom]
     Color = clBtnFace
@@ -75,7 +76,7 @@ object frmUnitStats: TfrmUnitStats
     WordWrap = False
   end
   object btnOK: TButton
-    Left = 127
+    Left = 92
     Top = 263
     Width = 75
     Height = 25
