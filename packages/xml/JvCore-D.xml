@@ -51,5 +51,7 @@
     <File Name="..\..\design\JvColorProviderDsgnTreeFrame.pas" Targets="all" Formname="fmeJvColorProviderDsgnTree: TFrame" Condition=""/>
     <File Name="..\..\design\JvColorProviderAddDialogForm.pas" Targets="all" Formname="frmAddColor" Condition=""/>
     <File Name="..\..\design\JvActnResForm.pas" Targets="all" Formname="JvStandardActions: TDataModule" Condition=""/>
+    <File Name="..\..\design\JvBackgroundEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBackgroundEditForm.pas" Targets="allbutclx" Formname="JvBackgroundClientsEditor" Condition=""/>
   </Contains>
 </Package>

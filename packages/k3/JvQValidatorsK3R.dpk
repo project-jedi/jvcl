@@ -30,7 +30,7 @@ package JvQValidatorsK3R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCLX Validators and Error Indicator Components'}
+{$DESCRIPTION ''}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 {$DEFINE ANIMATE}

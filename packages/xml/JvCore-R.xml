@@ -69,6 +69,7 @@
     <File Name="..\..\common\JvWStrUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="gnugettext.pas" Targets="all" Formname="" Condition="USE_DXGETTEXT"/>
     <File Name="..\..\common\JvFinalize.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBackgrounds.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\qcommon\QWindows.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qcommon\QExtDlgs.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qcommon\QToolWin.pas" Targets="allclx" Formname="" Condition=""/>
