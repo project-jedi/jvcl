@@ -511,7 +511,7 @@ type
     procedure SetWordWrap(const Value: boolean);
   protected
     procedure UpdatePageList;
-    procedure SetParent({$IFDEF VisualCLX}const{$ENDIF}AParent: TWinControl); override;
+    procedure SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl); override;
     procedure SetPageIndex(Value: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property NavPanel: TJvNavPanelButton read FNavPanel;
