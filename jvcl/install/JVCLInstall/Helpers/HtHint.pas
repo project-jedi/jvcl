@@ -203,8 +203,10 @@ begin
       end
       else
       // next lines were added
-      if (Text[I] = Chr(13)) and Cmp1(string(Chr(10))) then
+      if (Text[I] = #13) or (Text[I] = #10) then
       begin
+        if Text[i] = #13 then
+          Cmp1(string(#10));
         // new line
         Draw(M1);
         PlainItem := PlainItem + M1;
