@@ -83,7 +83,7 @@ isu:
 Removes unused entries from dfn files (used in translations). Operates on the current folder and all subfolders, creates no backup files and has no command line options
 
 ErrLook:
-=======
+========
 A Delphi clone of Visual Studio's ErrLook utility (to look up error codes) with some enhancements. See the supplied help file for more info. NOTE: needs the HTMLHlp.pas from http://delphi-jedi.org (API Library Files)
 
 dc:
@@ -98,3 +98,17 @@ where <options> can be:
 -i - replace in-line (output overwrites input). If not given, output uses input's filename but with a "txt" extension
 -s - recurse into sub-folders
 -f<filename> - read skiplist from <filename>, REQUIRED. Do not preceed filename with spaces!
+
+dxgettextResstr:
+================
+Extracts all dxgettext compatile "_(string)" to resourcestrings. The program has an interative and an
+automatic mode.
+
+Command-line:
+
+dxgettextResstr.exe <options> <directory>
+
+where <options> can be:
+-S - include sub directory
+-Q - silent mode (non-interactive mode)
+-1 - generate one single resourcestring include file.
