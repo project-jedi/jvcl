@@ -88,6 +88,7 @@ function PrepareDcpBpg(const MakeFilename: string; Files: TStrings;
 procedure CreateDelphiPackageForBCB(Package: TPackageInfo; Files: TStrings; IsJcl: Boolean);
 procedure MoveBCBFiles(const Dir: string; Target: TTargetInfo);
 procedure MoveHPPFiles(const Paths, StartDir: string; Target: TTargetInfo);
+procedure DeleteDcuFiles(const Directory, StartDir: string);
 
 const
   JclIncludePaths = '..\..\source\common';
@@ -617,7 +618,7 @@ begin
         if FindFirst(Dir + '\*.hpp', faAnyFile and not faDirectory, sr) = 0 then
         try
           repeat
-            MoveFile(Dir + '\' + sr.Name, DestDir + '\' + sr.Name)
+            MoveFile(Dir + '\' + sr.Name, DestDir + '\' + sr.Name);
           until FindNext(sr) <> 0;
         finally
           FindClose(sr);
@@ -626,6 +627,25 @@ begin
     end;
   finally
     List.Free;
+  end;
+end;
+
+procedure DeleteDcuFiles(const Directory, StartDir: string);
+var
+  sr: TSearchRec;
+  Dir: string;
+begin
+  Dir := GetAbsoluteDir(StartDir, Directory);
+  if not DirectoryExists(Dir) then
+    Exit;
+
+  if FindFirst(Dir + '\Jcl*.dcu', faAnyFile and not faDirectory, sr) = 0 then
+  try        
+    repeat
+      DeleteFile(Dir + '\' + sr.Name);
+    until FindNext(sr) <> 0;
+  finally
+    FindClose(sr);
   end;
 end;
 
