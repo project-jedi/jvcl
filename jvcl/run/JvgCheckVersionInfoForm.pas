@@ -34,13 +34,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, ComCtrls, Buttons,
-  JvgSpeedButton, JvgWizardHeader, JvgShadow, JvgSmallFontsDefense,
-  JvComponent, JvExControls;
+  JvComponent; // for TJvForm
 
 type
   TJvgfCheckVersionInfo = class(TJvForm)
-    JvgWizardHeader: TJvgWizardHeader;
-    sbNext: TJvgSpeedButton;
+    sbNext: TButton;
     Bevel1: TBevel;
     Label1: TLabel;
     Label2: TLabel;
@@ -53,10 +51,13 @@ type
     Label5: TLabel;
     Shape1: TShape;
     lURL: TLabel;
-    glSmallFontsDefence1: TJvgSmallFontsDefense;
     Label7: TLabel;
     reComments: TRichEdit;
-    glShadow1: TJvgShadow;
+    Panel1: TPanel;
+    Label6: TLabel;
+    Label8: TLabel;
+    Image1: TImage;
+    Bevel2: TBevel;
     procedure sbNextClick(Sender: TObject);
     procedure lURLClick(Sender: TObject);
   private

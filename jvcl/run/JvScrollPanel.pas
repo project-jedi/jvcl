@@ -116,7 +116,7 @@ type
     procedure ArrangeChildren;
     procedure SetupArrows;
   protected
-    procedure Visiblechanged; override;
+    procedure VisibleChanged; override;
     procedure EnabledChanged; override;
     procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
