@@ -775,7 +775,7 @@ Description
   If you have defined a Key for this table, and the keys are unique, then this property defines whether
   or not two keys that differ only by their case would be allowed. For example, if the key field was
   ID, and was a string, then having two records, one with key 'ABC' and one with key 'Abc', then adding
-  the second would cause a a key access violation.
+  the second would cause a key access violation.
 See Also
   CsvKeyDef CsvUniqueKeys FindByCsvKey
 
@@ -1112,7 +1112,7 @@ Description
   Retrieve a User data (pointer) value previously set by SetUserData. This value is NOT saved as part
   of the CSV file.
 Parameters
-  RecNo - Record number (0=first record,1=next one,2..,3..,... -1=last record)
+  RecNo - Record number (0=first record, 1=next one, 2.., 3.., ... -1=last record)
 Return value
   Returns pointer. If UserData has not been set, or recno is out of range, returns nil.
 See Also

@@ -341,9 +341,9 @@ See Also
 @@HexBytes
 <TITLE HexBytes function>
 Summary
-  Transforms a buffer into an hexadecimal string representation.
+  Transforms a buffer into a hexadecimal string representation.
 Description
-  HexBytes transforms the specified buffer into an hexadecimal string repesentation.
+  HexBytes transforms the specified buffer into a hexadecimal string repesentation.
 
   Each byte in the buffer will be represented by two hexadecimal digits in the resulting string, making
   the result string exactly twice the specified length.
@@ -714,9 +714,9 @@ Description
   that's not the case. If the name is unique it will call the (abstract) DoSetName method to actually
   set the new name.
 
-  You should never instantiate an TJvBaseDataContext object to provide an implementation for the
-  IJvDataContext interface. Instead you should a derivative that implements the Name method, such as
-  the TJvDataContext class.
+  You should never instantiate a TJvBaseDataContext object to provide an implementation for the
+  IJvDataContext interface. Instead you should use a derivative that implements the Name method, such
+  as the TJvDataContext class.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataContext.Contexts
@@ -932,7 +932,7 @@ Description
 Summary
   Provides access to the context list.
 Description
-  Contexts provides access to the <LINK IJvDataContexts, context list> (as an reference to the
+  Contexts provides access to the <LINK IJvDataContexts, context list> (as a reference to the
   interface) managed by this object.
 See Also
   TJvBaseDataContextsManager.ContextsImpl, IJvDataContexts
@@ -972,7 +972,7 @@ Description
   The class also defines a dummy property for the filing system, so it is able to store the optional
   sub items of an item.
 See Also
-  IJvDataContexSensitive
+  IJvDataContextSensitive
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.ContextDestroying
@@ -1019,10 +1019,15 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.GetItems
 <ALIAS IJvDataItem.GetItems>
-
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.ID
-<ALIAS IJvDataItem.ID>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.Implementer
@@ -1041,7 +1046,7 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.IsEqualToAncestor
-<ALIAS IJvDataContexSensitive.IsEqualToAncestor>
+<ALIAS IJvDataContextSensitive.IsEqualToAncestor>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.IsParentOf
@@ -1078,7 +1083,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.RevertToAncestor
-<ALIAS IJvDataContexSensitive.RevertToAncestor>
+<ALIAS IJvDataContextSensitive.RevertToAncestor>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseDataItem.SetID

@@ -1,5 +1,6 @@
 ##Package: Core
 ##Status: Completed (I)
+##Skip: TJvAppRegistryStorage.Root
 ----------------------------------------------------------------------------------------------------
 @@JvAppRegistryStorage.pas
 Summary
@@ -22,8 +23,8 @@ Description
   As a descendant of TJvCustomAppStorage, it provides in the standard interface for storing data (such
   as settings, form positions and sizes, etc). This data will be stored in the registry.
 
-  The component publishes the <LINK TJvCustomAppStorage.RootPath, RootPath> property and introduces a
-  new property RegRoot to specify which registry root key should be used (HKEY_CURRENT_USER,
+  The component publishes the <LINK TJvCustomAppStorage.Root, Root> property and introduces a new
+  property RegRoot to specify which registry root key should be used (HKEY_CURRENT_USER,
   HKEY_LOCAL_MACHINE, etc).
 
   All the abstract access methods are implemented.
@@ -34,16 +35,6 @@ Summary
   Specifies the registry root HKEY to use.
 Description
   RegRoot specifies the registry root HKEY to use. It defaults to HKEY_CURRENT_USER.
-
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStorage.Root
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppRegistryStorage.UseOldDefaultRoot

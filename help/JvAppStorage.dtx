@@ -509,19 +509,20 @@ Description
   component interface, other components don't need to worry about how their information is stored or
   where it is stored.
 
-  Data is referenced much like a file on an Operating System. The storage system uses paths and uses
+  Data is referenced much like a file on an Operating \System. The storage system uses paths and uses
   the concept of folders and values (much like folders and files on an OS). The storage component can
-  specify a <LINK Root, root path> that is to serve as the absolute root of the storage (i.e. the
-  storage can not reference anything that is not a child of this root path). Components and user code
-  can specify paths that are either relative to a <LINK Path, previously set path> or relative to the
-  <LINK Root, root folder>.
+  specify a <LINK TJvCustomAppStorage.Root, root path> that is to serve as the absolute root of the
+  storage (i.e. the storage can not reference anything that is not a child of this root path).
+  Components and user code can specify paths that are either relative to a <LINK
+  TJvCustomAppStorage.Path, previously set path> or relative to the <LINK TJvCustomAppStorage.Root,
+  root folder>.
 
   Folder names consisting solely of '.' (dot) characters are used to reference folders above the
   current one. Using one dot refers to the current folder. Every additional dot goes up one level in
-  the storage tree. Example: if the current path is set to 'MyFolder1\MyFolder1.1\MyFolder1.1.1', a
-  path specified as '..\MyFolder1.1.2' would translate into 'MyFolder1\MyFolder1.1\MyFolder1.1.2' and a
-  path specified as '...\MyFolder1.2\MyFolder1.2.1' or '..\..\MyFolder1.2\MyFolder1.2.1' would
-  translate into 'MyFolder1\MyFolder1.2\MyFolder1.2.1'.
+  the storage tree. Example: if the current path is set to 'MyFolder1\\MyFolder1.1\\MyFolder1.1.1', a
+  path specified as '..\\MyFolder1.1.2' would translate into 'MyFolder1\\MyFolder1.1\\MyFolder1.1.2'
+  and a path specified as '...\\MyFolder1.2\\MyFolder1.2.1' or '..\\..\\MyFolder1.2\\MyFolder1.2.1'
+  would translate into 'MyFolder1\\MyFolder1.2\\MyFolder1.2.1'.
 
   In addition you can link other storages into the storage tree, where each sub storage would be
   accessible through a specific path. This allows one to use a single storage to access both generic
@@ -572,15 +573,15 @@ Description
 
   Below is a table of examples with different paths and their resulting value:
   <TABLE>
-    Paths                                          Result
-    =============================================  ==============================
-    'MyFolder1' and 'MyFolder2'                    MyFolder1\MyFolder2
-    'MyFolder1\MyFolder2' and '..\MyFolder3'       MyFolder1\MyFolder3
-    'MyFolder1\MyFolder2' and '\MyFolder4'         MyFolder4
-    'MyFolder1\MyFolder2', '\MyFolder4',
-      '\MyFolder5\MyFolder6\MyFolder7\MyFolder8',
-      '...\MyFolder9\MyFolder10' and
-    '..\MyFolder11'                                MyFolder5\MyFolder9\MyFolder11
+    Paths                                              Result
+    =================================================  ================================
+    'MyFolder1' and 'MyFolder2'                        MyFolder1\\MyFolder2
+    'MyFolder1\\MyFolder2' and '..\\MyFolder3'         MyFolder1\\MyFolder3
+    'MyFolder1\\MyFolder2' and '\\MyFolder4'           MyFolder4
+    'MyFolder1\\MyFolder2', '\\MyFolder4',             MyFolder5\\MyFolder9\\MyFolder11
+      '\\MyFolder5\\MyFolder6\\MyFolder7\\MyFolder8',
+      '...\\MyFolder9\\MyFolder10' and
+      '..\\MyFolder11'
   </TABLE>
 Parameters
   Paths - List of paths to combine into one.
@@ -1131,7 +1132,7 @@ Description
   The returned value is the number of strings read.
 Parameters
   Path       - Path (relative to the current path) of the value to read.
-  SL         - \String list in which to store the strings from the storage.
+  SL         - String list in which to store the strings from the storage.
   ClearFirst - Flag to indicate if the string list should be cleared before reading commences.
   ItemName   - Description for this parameter
 See Also
@@ -1520,7 +1521,7 @@ Description
   <B>Item<I>x</I></B> format where <I>x</I> is the 0-based index of the item.
 Parameters
   Path     - Path (relative to the current path) where the strings are to be stored.
-  SL       - \String list to store.
+  SL       - String list to store.
   ItemName - Description for this parameter
 See Also
   TJvCustomAppStorage.ReadStringList, TJvCustomAppStorage.WriteBinary,
