@@ -1325,6 +1325,7 @@ resourcestring
 resourcestring
   RsJvPatcherEditorComparingFilesd = 'Jv - Patcher Editor: Comparing files %d%%';
   RsJvPatcherEditorEndStep = 'Jv - Patcher Editor: end step ...';
+  RsErrJvPatcherEditorInvalidFilename = 'Invalid filename(s). Please specify valid filenames for both source and destination and try again.';
 
 //=== JvPcx.pas ==============================================================
 resourcestring
