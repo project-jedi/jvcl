@@ -1,0 +1,5 @@
+[Directories]
+OutputDir=..\
+UnitOutputDir=..\lib
+PackageDLLOutputDir=..\lib
+PackageDCPOutputDir=..\lib
