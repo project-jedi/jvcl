@@ -106,7 +106,7 @@ begin
     OpenKey(RC_RunOnceKey, False);
     // (rom) should be improved to use variable key
     // (rom) to allow registering more than one app
-    WriteString('ToRun', App);
+    WriteString(App, App);
     Free;
   end;
 end;
