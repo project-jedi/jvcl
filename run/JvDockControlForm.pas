@@ -139,6 +139,9 @@ type
   public
     procedure GetDockedControls(WinControls: TList); override;
     procedure DockDrop(Source: TDragDockObject; X, Y: Integer); override;
+    { (rb) ADVTree is accessible via property TWinControl.DockManager, duplicating
+           it here might give dangling references, see for example code in
+           TWinControl.SetDockSite }
     property ADVTree: TJvDockAdvTree read FADVTree write FADVTree;
     // NEW! Link allows AdvPanel to scan this tree to enumerate items currently docked to it. It also contains items docked to other places, so be careful!
   end;
@@ -1876,12 +1879,12 @@ var
   function ShowDockPanel(Client: TWinControl): TWinControl;
   begin
     Result := Client;
-    if Client <> nil then
-      if Client.HostDockSite is TJvDockPanel then
-      begin
-        TJvDockPanel(Client.HostDockSite).ShowDockPanel(True, Client, sdfDockPanel);
-        Result := nil;
-      end;
+    if Assigned(Client) and (Client.HostDockSite is TJvDockPanel) then
+    begin
+      ShowClient(nil, Client);
+      TJvDockPanel(Client.HostDockSite).ShowDockPanel(True, Client, sdfDockPanel);
+      Result := nil;
+    end;
   end;
 
   function ShowTabDockHost(Client: TWinControl): TWinControl;
@@ -1889,25 +1892,26 @@ var
     I: Integer;
   begin
     Result := Client;
-    if Client <> nil then
+    if Assigned(Client) and (Client.HostDockSite is TJvDockTabPageControl) then
     begin
       ShowClient(nil, Client);
-      if Client.HostDockSite is TJvDockTabPageControl then
+
+      with TJvDockTabPageControl(Client.HostDockSite) do
+        for I := 0 to Count - 1 do
+          if Pages[I].Controls[0] = Client then
+          begin
+            Pages[I].Show;
+            Break;
+          end;
+      if (Client.HostDockSite <> nil) and not (Client.HostDockSite is TJvDockPanel) then
       begin
-        with TJvDockTabPageControl(Client.HostDockSite) do
-          for I := 0 to Count - 1 do
-            if Pages[I].Controls[0] = Client then
-            begin
-              Pages[I].Show;
-              Break;
-            end;
-        if (Client.HostDockSite <> nil) and not (Client.HostDockSite is TJvDockPanel) then
-        begin
-          Result := Client.HostDockSite.Parent;
-          ShowClient(Client, Result);
-          if (Result <> nil) and (Result.HostDockSite is TJvDockTabPageControl) then
-            Result := ShowTabDockHost(Result);
-        end;
+        Result := Client.HostDockSite.Parent;
+        ShowClient(Client, Result);
+        if (Result <> nil) and (Result.HostDockSite is TJvDockTabPageControl) then
+          { (rb) never called AFAICS }
+          Result := ShowTabDockHost(Result)
+        else
+          ShowClient(nil, Result);
       end;
     end;
   end;
@@ -1915,18 +1919,18 @@ var
   function ShowConjoinDockHost(Client: TWinControl): TWinControl;
   begin
     Result := Client;
-    if Client <> nil then
+    if Assigned(Client) and Assigned(Client.HostDockSite) and not (Client.HostDockSite is TJvDockPanel) then
     begin
       ShowClient(nil, Client);
-      if (Client.HostDockSite <> nil) and not (Client.HostDockSite is TJvDockPanel) then
+      if Client.HostDockSite.Parent <> nil then
       begin
-        if Client.HostDockSite.Parent <> nil then
-        begin
-          Result := Client.HostDockSite.Parent;
-          ShowClient(Client, Result);
-          if (Result <> nil) and (Result.HostDockSite is TJvDockConjoinPanel) then
-            Result := ShowConjoinDockHost(Result);
-        end;
+        Result := Client.HostDockSite.Parent;
+        ShowClient(Client, Result);
+        if (Result <> nil) and (Result.HostDockSite is TJvDockConjoinPanel) then
+          { (rb) never called AFAICS }
+          Result := ShowConjoinDockHost(Result)
+        else
+          ShowClient(nil, Result);
       end;
     end;
   end;
@@ -1949,8 +1953,12 @@ var
 begin
   TmpDockWindow := DockWindow;
   repeat
+    { Show single floating window }
+    if Assigned(DockWindow) and (DockWindow.HostDockSite = nil) then
+      ShowClient(nil, DockWindow);
     DockWindow := ShowTabDockHost(DockWindow);
     DockWindow := ShowConjoinDockHost(DockWindow);
+    { Show docked window }
     DockWindow := ShowDockPanel(DockWindow);
   until (DockWindow = nil) or (DockWindow.Parent = nil);
   ShowPopupPanel(TmpDockWindow);
@@ -2146,6 +2154,7 @@ end;
 
 procedure TJvDockAdvPanel.GetDockedControls(WinControls: TList); //override;
 begin
+  { (rb) Same result could be get via iterating property TWinControl.DockClients }
   Assert(Assigned(WinControls));
   if Assigned(FADVTree) then
   begin
@@ -4109,7 +4118,14 @@ end;
 procedure TJvDockConjoinPanel.CMUnDockClient(var Msg: TCMUnDockClient);
 begin
   inherited;
-  if (DockClientCount = 2) and (VisibleDockClientCount = 1) then
+  { Panel can be closed when
+     * DockClientCount <= 1:
+        One hidden form left that is freed. Call originates from TControl.Destroy
+     * DockClientCount=2 and VisibleDockClientCount=1
+        Two forms left, one is freed. Call originates from TControl.Destroy or
+        TJvDockManager.DoUnDock etc.
+  }
+  if (DockClientCount <= 1) or ((DockClientCount = 2) and (VisibleDockClientCount = 1)) then
     PostMessage(ParentForm.Handle, WM_CLOSE, 0, 0);
   if VisibleDockClientCount <= 2 then
     JvDockControlForm.UpdateCaption(Self, Msg.Client);

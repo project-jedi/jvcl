@@ -3137,6 +3137,8 @@ begin
     FUndockingPage := Page;
     Msg.Client.Align := alNone;
   end;
+  if (VisibleDockClientCount = 1) or (DockClientCount <= 2) then
+    PostMessage(Parent.Handle, WM_CLOSE, 0, 0);
 end;
 
 procedure TJvDockPageControl.DeleteTab(Page: TJvDockTabSheet; Index: Integer);
