@@ -581,8 +581,14 @@ begin
   if not FColorsForm.Visible then
   begin
     FArrowButton.Down := False;
+  {$IFDEF VCL}
+     FMainButton.Perform(CM_MOUSELEAVE, 0, 0);
+     FArrowButton.Perform(CM_MOUSELEAVE, 0, 0);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
     TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton);
     TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton);
+  {$ENDIF VisualCLX}
   end
 end;
 
@@ -619,8 +625,15 @@ begin
   if FColorsForm.ToolWindowStyle then
   begin
     FArrowButton.Down := False;
+  {$IFDEF VCL}
+     FMainButton.Perform(CM_MOUSELEAVE, 0, 0);
+     FArrowButton.Perform(CM_MOUSELEAVE, 0, 0);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}      
     TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton);
     TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton);
+  {$ENDIF VisualCLX}
+
   end;
 end;
 
@@ -628,8 +641,14 @@ procedure TJvCustomOfficeColorButton.DoButtonMouseEnter(Sender: TObject);
 begin
   if FFlat and Enabled then
   begin
+  {$IFDEF VCL}
+    FMainButton.Perform(CM_MOUSEENTER, 0, 0);
+    FArrowButton.Perform(CM_MOUSEENTER, 0, 0);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
     TColorSpeedButtonAccessProtected(FMainButton).MouseEnter(FMainButton);
     TColorSpeedButtonAccessProtected(FArrowButton).MouseEnter(FArrowButton);
+  {$ENDIF VisualCLX}
   end;
 end;
 
@@ -640,17 +659,31 @@ begin
     if Sender = FMainButton then
     begin
       if FColorsForm.Visible then
+      {$IFDEF VCL}
+         FMainButton.Perform(CM_MOUSEENTER, 0, 0)
+       else
+         FArrowButton.Perform(CM_MOUSELEAVE, 0, 0);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
         TColorSpeedButtonAccessProtected(FMainButton).MouseEnter(FMainButton)
-      else
+       else
         TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton);
+      {$ENDIF VisualCLX}
     end
     else
     if Sender = FArrowButton then
     begin
       if not FColorsForm.Visible then
+      {$IFDEF VCL}
+         FMainButton.Perform(CM_MOUSELEAVE, 0, 0)
+       else
+         FArrowButton.Perform(CM_MOUSEENTER, 0, 0);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
         TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton)
       else
         TColorSpeedButtonAccessProtected(FArrowButton).MouseEnter(FArrowButton);
+      {$ENDIF VisualCLX}
     end;
   end;
 end;
