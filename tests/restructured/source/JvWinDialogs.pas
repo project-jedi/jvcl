@@ -16,6 +16,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck
 
+
 Last Modified: 2002-05-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -339,7 +340,7 @@ type
   end;
 
   // Tools routines
-function GetSpecialFolderPath(FolderName: string; CanCreate: Boolean): string;
+function GetSpecialFolderPath(const FolderName: string; CanCreate: Boolean): string;
 procedure AddToRecentDocs(const Filename: string);
 procedure ClearRecentDocs;
 function ExtractIconFromFile(FileName: string; Index: integer): HIcon;
@@ -745,32 +746,29 @@ begin
   FDrive := ord(FDriveChar) - ord('A');
 end;
 
-function GetSpecialFolderPath(FolderName: string; CanCreate: Boolean): string;
+function GetSpecialFolderPath(const FolderName: string; CanCreate: Boolean): string;
 var
-  Filepath: array[0..MAX_PATH] of Char;
   Folder: Integer;
   Found: Boolean;
   i: Integer;
   PIDL: PItemIDList;
   buf: array[0..MAX_PATH] of Char;
-
 begin
   Found := false;
   Folder := 0;
   Result := EmptyStr;
-  for i := 0 to 29 do
+  for i := Low(SpecialFolders) to High(SpecialFolders) do
   begin
-    if (UpperCase(FolderName) = UpperCase(SpecialFolders[i].Name)) then
+    if AnsiCompareText(FolderName,SpecialFolders[i].Name) = 0 then
     begin
       Folder := SpecialFolders[i].ID;
       Found := True;
-      break;
+      Break;
     end;
   end;
   if not Found then
-    exit;
+    Exit;
   { Get path of selected location }
-
 
  {JPR}
   if Succeeded(SHGetSpecialFolderLocation(0, Folder, PIDL)) then
