@@ -40,8 +40,7 @@ procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapt
 implementation
 
 uses
-  Classes,
-  JvRegAuto;
+  Classes;
 
 { TJvRegAuto }
 
