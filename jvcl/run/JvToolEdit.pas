@@ -299,6 +299,8 @@ type
 
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
   public
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+      AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoClick;
@@ -2437,6 +2439,14 @@ begin
     Invalidate;
     {$ENDIF VisualCLX}
   end;
+end;
+
+procedure TJvCustomComboEdit.SetBounds(ALeft, ATop, AWidth,
+  AHeight: Integer);
+begin
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight); 
+  if HandleAllocated then
+    SetEditRect;
 end;
 
 procedure TJvCustomComboEdit.SetButtonFlat(const Value: Boolean);
