@@ -235,6 +235,10 @@ resourcestring
   sCanNotTakeSqrtOf = 'can not take sqrt of 0';
   sNotAllowedIns = '0 not allowed in %s';
   sNeedMinimumOfSidesIns = 'need minimum of 3 sides in %s';
+  sMaximumSidesExceededIns = 'maximum 12 sides exceeded in %s';
+  sTokenExpected = 'token expected';
+  ssDoesNotExist = '%s does not exist';
+  sDivisionByZeroNotAllowedInIn = 'division by zero not allowed in in-';
 
 implementation
 
@@ -1981,13 +1985,13 @@ var
   a, ta: real;
   pt: tpoint;
 begin
-  Result := _('invalid integer in %s', ['star']);
+  Result := Format(sInvalidIntegerIns, ['star']);
   if not (getnum(n) and getnum(s)) then Exit;
-  Result := _('0 not allowed in %s', ['star']);
+  Result := Format(sNotAllowedIns, ['star']);
   if (n = 0) or (s = 0) then Exit;
-  Result := _('need minimum of 3 sides in %s', ['star']);
+  Result := Format(sNeedMinimumOfSidesIns, ['star']);
   if (n < 3) then Exit;
-  Result := _('maximum 12 sides exceeded in %s', ['star']);
+  Result := Format(sMaximumSidesExceededIns, ['star']);
   if (n > 12) then Exit;
   am := 1;
   case n of
@@ -2017,7 +2021,7 @@ function TJvTurtle.txlineto: string;
 var
   x, y, x0, y0: integer;
 begin
-  Result := _('invalid integer in %s', ['lineto']);
+  Result := Format(sInvalidIntegerIns, ['lineto']);
   if getnum(x) and getnum(y) then
   begin
     x0 := Fposition.x;
@@ -2033,7 +2037,7 @@ function TJvTurtle.txroundrect: string;
 var
   x1, y1, x2, y2, rx, ry: integer;
 begin
-  Result := _('invalid integer in %s', ['roundrect']);
+  Result := Format(sInvalidIntegerIns, ['roundrect']);
   if getnum(x2) and getnum(y2) and getnum(rx) and getnum(ry) then
   begin
     x1 := Fposition.x;
@@ -2075,7 +2079,7 @@ begin
     Result := '';
   end
   else
-    Result := _('token expected');
+    Result := sTokenExpected;
 end;
 
 function TJvTurtle.IsVar(tex: string): boolean;
@@ -2107,10 +2111,10 @@ begin
     if index >= 0 then
       pot.values[token] := inttostr(strtoint(pot.values[token]) + num)
     else
-      Result := _('%s does not exist', [token]);
+      Result := Format(ssDoesNotExist, [token]);
   end
   else
-    Result := _('token expected');
+    Result := sTokenExpected;
 end;
 
 function TJvTurtle.txindiv: string;
@@ -2126,10 +2130,10 @@ begin
     if index >= 0 then
       pot.values[token] := inttostr(strtoint(pot.values[token]) - num)
     else
-      Result := _('%s does not exist', [token]);
+      Result := Format(ssDoesNotExist, [token]);
   end
   else
-    Result := _('token expected');
+    Result := sTokenExpected;
 end;
 
 function TJvTurtle.txinmult: string;
@@ -2145,10 +2149,10 @@ begin
     if index >= 0 then
       pot.values[token] := inttostr(strtoint(pot.values[token]) * num)
     else
-      Result := _('%s does not exist', [token]);
+      Result := Format(ssDoesNotExist, [token]);
   end
   else
-    Result := _('token expected');
+    Result := sTokenExpected;
 end;
 
 function TJvTurtle.txinsub: string;
@@ -2159,7 +2163,7 @@ begin
   if not npop(Result, num) then Exit;
   if num = 0 then
   begin
-    Result := _('division by zero not allowed in in-');
+    Result := sDivisionByZeroNotAllowedInIn;
     Exit;
   end;
   if gettoken(token) then
@@ -2169,10 +2173,10 @@ begin
     if index >= 0 then
       pot.values[token] := inttostr(strtoint(pot.values[token]) div num)
     else
-      Result := _('%s does not exist', [token]);
+      Result := Format(ssDoesNotExist, [token]);
   end
   else
-    Result := _('token expected');
+    Result := sTokenExpected;
 end;
 
 function TJvTurtle.txindec: string;
@@ -2187,10 +2191,10 @@ begin
     if index >= 0 then
       pot.values[token] := inttostr(strtoint(pot.values[token]) - 1)
     else
-      Result := _('%s does not exist', [token]);
+      Result := Format(ssDoesNotExist, [token]);
   end
   else
-    Result := _('token expected');
+    Result := sTokenExpected;
 end;
 
 function TJvTurtle.txininc: string;
@@ -2205,10 +2209,10 @@ begin
     if index >= 0 then
       pot.values[token] := inttostr(strtoint(pot.values[token]) + 1)
     else
-      Result := _('%s does not exist', [token]);
+      Result := Format(ssDoesNotExist, [token]);
   end
   else
-    Result := _('token expected');
+    Result := sTokenExpected;
 end;
 
 end.
