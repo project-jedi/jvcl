@@ -90,7 +90,7 @@ type
 implementation
 
 uses
-  JvJCLUtils, JvDsgnIntf;
+  JvJCLUtils, JvDsgnIntf, JvThemes;
 
 const
   cDelayIncrement = 50;
@@ -99,6 +99,7 @@ const
 constructor TJvaScrollText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  IncludeThemeStyle(Self, [csParentBackground]);
   FForeImage := TImage.Create(nil);
   FBackImage := TImage.Create(nil);
   FFontMaskImage := TImage.Create(nil);

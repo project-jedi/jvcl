@@ -65,12 +65,16 @@ type
 
 implementation
 
+uses
+  JvThemes;
+
 constructor TJvPageScroller.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  IncludeThemeStyle(Self, [csParentBackground]);
 end;
 
 procedure TJvPageScroller.MouseEnter(var Msg: TMessage);

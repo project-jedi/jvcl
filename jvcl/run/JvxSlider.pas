@@ -275,7 +275,7 @@ implementation
 
 uses
   Consts, Forms, SysUtils, Math,
-  JvJVCLUtils, JvConsts, JvTypes;
+  JvJVCLUtils, JvConsts, JvTypes, JvThemes;
 
 {$R ..\resources\JvxSlider.res}
 
@@ -293,6 +293,7 @@ begin
   ControlState := ControlState + [csCreating];
   ControlStyle := [csClickEvents, csCaptureMouse, csAcceptsControls,
     csDoubleClicks, csOpaque];
+  IncludeThemeStyle(Self, [csParentBackground]);
   Width := 150;
   Height := 40;
   FNumThumbStates := 2;
@@ -419,7 +420,7 @@ begin
     with Canvas do
     begin
       Brush.Color := Color;
-      FillRect(R);
+      DrawThemedBackground(Self, Canvas, R);
     end;
   if FRuler.Width > 0 then
   begin
