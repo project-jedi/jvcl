@@ -158,8 +158,10 @@ type
     procedure SetText(const AValue: TCaption);
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
   protected
+    procedure AcceptValue(const Value: Variant); override;
     function IsNoDateShortcutStored: Boolean;
     function IsNoDateTextStored: Boolean;
+    procedure PopupChange; override;
     procedure Change; override;
     procedure Loaded; override;
     procedure CreateWnd; override;
@@ -205,6 +207,9 @@ type
     class function DefaultImageIndex: TImageIndex; override;
     procedure Clear; override;
     function IsEmpty: Boolean; virtual;
+
+    function HasValidDate: Boolean;
+
     property EditMask: string read GetEditMask write SetEditMask;
     property Text: TCaption read GetText write SetText;
   end;
@@ -335,6 +340,23 @@ const
 
 //=== { TJvCustomDatePickerEdit } ============================================
 
+procedure TJvCustomDatePickerEdit.AcceptValue(const Value: Variant);
+var
+  TextBefore : string;
+  TmpDate : TDateTime; 
+begin
+  TextBefore := Text;
+  inherited AcceptValue(Value);
+
+  // Inherited AcceptValue will change the base class Text property, thus not calling
+  // our SetText method. As a result, we must set the date in this case 
+  if Text <> TextBefore then
+  begin
+    AttemptTextToDate(Text, TmpDate, False);
+    Self.Date := TmpDate;
+  end;
+end;
+
 function TJvCustomDatePickerEdit.ActiveFigure: TJvDateFigureInfo;
 var
   I: Integer;
@@ -392,7 +414,8 @@ end;
 procedure TJvCustomDatePickerEdit.CalChange(Sender: TObject);
 begin
   if FPopup is TJvDropCalendar then
-    Text := DateToText(TJvDropCalendar(FPopup).SelDate);
+    //Text := DateToText(TJvDropCalendar(FPopup).SelDate);
+    Date := TJvDropCalendar(FPopup).SelDate;
 end;
 
 procedure TJvCustomDatePickerEdit.CalCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -452,7 +475,7 @@ begin
   if [csDesigning, csDestroying] * ComponentState <> [] then
     Exit;
 
-  if Text <> NoDateText then
+  if (Text <> NoDateText) and (Text <> '') then
   begin
     lDate := Self.Date;
     if AttemptTextToDate(Text, lDate) then
@@ -488,7 +511,7 @@ begin
       lDate := 0;
       AttemptTextToDate(Text, lDate, lActFig.Index = High(TJvDateFigures));
       if AlwaysReturnEditDate then
-        FDate := lDate;
+        Self.Date := lDate;
     end;
   end;
   inherited Change;
@@ -753,12 +776,22 @@ begin
   end;
 end;
 
+function TJvCustomDatePickerEdit.HasValidDate: Boolean;
+var
+  TmpDate : TDateTime;
+begin
+  Result := AttemptTextToDate(Text, TmpDate, False, False);
+end;
+
 procedure TJvCustomDatePickerEdit.HidePopup;
 begin
-  inherited;
-{  if (FPopup is TJvDropCalendar) and not (csDestroying in FPopup.ComponentState) then
-    TJvDropCalendar(FPopup).Release;}
-  //FPopup := nil;
+//  inherited;
+  if FPopup is TJvDropCalendar then
+  begin
+    TJvDropCalendar(FPopup).Hide;
+    if Assigned(OnPopupHidden) then
+      OnPopupHidden(Self);
+  end;
 end;
 
 function TJvCustomDatePickerEdit.IsEmpty: Boolean;
@@ -874,6 +907,12 @@ begin
   end;
 end;
 
+procedure TJvCustomDatePickerEdit.PopupChange;
+begin
+  inherited PopupChange;
+  DoChange;
+end;
+
 procedure TJvCustomDatePickerEdit.RaiseNoDate;
 begin
   raise EJVCLException.CreateResFmt(@RsEMustHaveADate, [Name]);
@@ -927,6 +966,7 @@ end;
 
 procedure TJvCustomDatePickerEdit.SetChecked(const AValue: Boolean);
 begin
+  inherited SetChecked(AValue);
   if Checked <> AValue then
   begin
     if AValue then
@@ -944,8 +984,13 @@ end;
 
 procedure TJvCustomDatePickerEdit.SetDate(const AValue: TDateTime);
 begin
-  if ValidateDate(AValue) then
+  if (FDate <> AValue) and ValidateDate(AValue) then
+  begin
     FDate := AValue;
+    if AValue <> 0 then
+      Checked := True;
+    DoChange;
+  end;
   UpdateDisplay;
 end;
 
