@@ -9,7 +9,8 @@ uses
   ParserTypes in 'ParserTypes.pas',
   MainCtrl in 'MainCtrl.pas',
   InputDlg in 'InputDlg.pas' {frmInput},
-  EditNiceNameDlg in 'EditNiceNameDlg.pas' {frmEditNiceName};
+  EditNiceNameDlg in 'EditNiceNameDlg.pas' {frmEditNiceName},
+  UnitStatusDlg in 'UnitStatusDlg.pas' {frmUnitStatus};
 
 {$R *.res}
 

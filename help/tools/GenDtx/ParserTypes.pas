@@ -16,13 +16,14 @@ type
   TMethodType = (mtNormal, mtConstructor, mtDestructor);
   TDirective = (diAbstract, diCdecl, diDynamic, diObject, diOf, diOverload,
     diOverride, diPascal, diRegister, diReintroduce, diSafecall, diStdcall,
-    diVirtual);
+    diVirtual, diAssembler);
   TDirectives = set of TDirective;
 
 const
   CDirectives: array[TDirective] of string =
   ('abstract', 'cdecl', 'dynamic', 'object', 'of', 'overload', 'override',
-    'pascal', 'register', 'reintroduce', 'safecall', 'stdcall', 'virtual');
+    'pascal', 'register', 'reintroduce', 'safecall', 'stdcall', 'virtual',
+    'assembler');
 
 type
   TAbstractItem = class;

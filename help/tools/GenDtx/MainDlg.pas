@@ -6,41 +6,59 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ActnList,
 
-  ParserTypes, MainCtrl, Settings, JvComponent, JvProgressComponent;
+  ParserTypes, MainCtrl, Settings, JvComponent, JvProgressComponent,
+  ComCtrls, ToolWin, ExtCtrls;
 
 type
   TForm1 = class(TForm)
     lsbMessages: TListBox;
-    lblInDirDesc: TLabel;
-    lblOutDirDesc: TLabel;
-    lblInDir: TLabel;
-    lblOutDir: TLabel;
-    btnSettings: TButton;
-    lsbSource: TListBox;
-    lsbDest: TListBox;
-    btnInclude: TButton;
-    btnIncludeAll: TButton;
-    btnExclude: TButton;
-    btnExcludeAll: TButton;
     ActionList1: TActionList;
     actIncludeAll: TAction;
     actExcludeAll: TAction;
     actInclude: TAction;
     actExclude: TAction;
     actSettings: TAction;
-    btnProcess: TButton;
     actProcess: TAction;
-    Button1: TButton;
     actSave: TAction;
-    chbDontIncludeIgnoredFiles: TCheckBox;
-    Button2: TButton;
     actAddToIgnoreList: TAction;
     OpenDialog1: TOpenDialog;
-    JvProgressComponent1: TJvProgressComponent;
+    actAddToCompletedList: TAction;
+    actUnitStatus: TAction;
+    Panel1: TPanel;
+    lsbSource: TListBox;
+    btnInclude: TButton;
+    btnIncludeAll: TButton;
+    btnExclude: TButton;
+    btnExcludeAll: TButton;
+    lsbDest: TListBox;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
+    ToolButton2: TToolButton;
+    ToolButton3: TToolButton;
+    Panel2: TPanel;
+    lblInDirDesc: TLabel;
+    lblPasDir: TLabel;
+    lblOutDirDesc: TLabel;
+    lblGeneratedDtxDir: TLabel;
+    Button2: TButton;
+    Button3: TButton;
+    ToolBar2: TToolBar;
+    ToolButton4: TToolButton;
+    ToolButton5: TToolButton;
+    ToolButton6: TToolButton;
+    actShowCompleted: TAction;
+    actShowIgnored: TAction;
+    actShowOther: TAction;
+    ToolButton7: TToolButton;
+    ToolButton8: TToolButton;
+    actRefresh: TAction;
+    Label1: TLabel;
+    lblRealDtxDir: TLabel;
+    ToolButton9: TToolButton;
+    actShowGenerated: TAction;
     { Form }
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     { Actions }
     procedure actIncludeExecute(Sender: TObject);
     procedure actIncludeAllExecute(Sender: TObject);
@@ -55,17 +73,32 @@ type
     procedure actProcessUpdate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure actSaveExecute(Sender: TObject);
-    procedure chbDontIncludeIgnoredFilesClick(Sender: TObject);
     procedure actAddToIgnoreListExecute(Sender: TObject);
+    procedure actAddToCompletedListExecute(Sender: TObject);
+    procedure actUnitStatusExecute(Sender: TObject);
+    procedure actShowCompletedExecute(Sender: TObject);
+    procedure actShowIgnoredExecute(Sender: TObject);
+    procedure actShowOtherExecute(Sender: TObject);
+    procedure actShowCompletedUpdate(Sender: TObject);
+    procedure actShowIgnoredUpdate(Sender: TObject);
+    procedure actShowOtherUpdate(Sender: TObject);
+    procedure actRefreshExecute(Sender: TObject);
+    procedure actShowGeneratedExecute(Sender: TObject);
+    procedure actShowGeneratedUpdate(Sender: TObject);
   private
     FMainCtrl: TMainCtrl;
   protected
     procedure MoveSelected(List: TCustomListBox; Items: TStrings);
+    procedure MoveSelectedToCompletedList(List: TCustomListBox);
+    procedure MoveSelectedToIgnoredList(List: TCustomListBox);
     procedure SetItem(List: TListBox; Index: Integer);
     function GetFirstSelection(List: TCustomListBox): Integer;
 
     procedure SettingsChanged(Sender: TObject; ChangeType: TSettingsChangeType);
     procedure UpdateLabels;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
 var
@@ -74,7 +107,7 @@ var
 implementation
 
 uses
-  JclFileUtils, SettingsDlg, DelphiParser;
+  JclFileUtils, SettingsDlg, DelphiParser, UnitStatusDlg;
 
 {$R *.dfm}
 
@@ -203,8 +236,9 @@ procedure TForm1.UpdateLabels;
 begin
   with TSettings.Instance do
   begin
-    lblInDir.Caption := InDir;
-    lblOutDir.Caption := OutDir;
+    lblPasDir.Caption := PasDir;
+    lblGeneratedDtxDir.Caption := GeneratedDtxDir;
+    lblRealDtxDir.Caption := RealDtxDir;
   end;
 end;
 
@@ -230,27 +264,20 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  FMainCtrl := TMainCtrl.Create;
   FMainCtrl.SkipList := lsbSource.Items;
   FMainCtrl.ProcessList := lsbDest.Items;
   FMainCtrl.MessagesList := lsbMessages.Items;
 
-  FMainCtrl.UpdateSourceFiles;
+  FMainCtrl.RefreshFiles;
 
   TSettings.Instance.RegisterObserver(Self, SettingsChanged);
-end;
-
-procedure TForm1.FormDestroy(Sender: TObject);
-begin
-  TSettings.Instance.UnRegisterObserver(Self);
-  FMainCtrl.Free;
 end;
 
 procedure TForm1.SettingsChanged(Sender: TObject;
   ChangeType: TSettingsChangeType);
 begin
   case ChangeType of
-    ctInDirectory, ctOutDirectory:
+    ctPasDirectory, ctGeneratedDtxDirectory, ctRealDtxDirectory:
       UpdateLabels;
   end;
 end;
@@ -283,32 +310,128 @@ begin
   end;
 end;
 
-procedure TForm1.chbDontIncludeIgnoredFilesClick(Sender: TObject);
+procedure TForm1.actAddToIgnoreListExecute(Sender: TObject);
+var
+  Index: Integer;
 begin
-  FMainCtrl.IgnoreFiles := chbDontIncludeIgnoredFiles.Checked;
+  Index := GetFirstSelection(lsbDest);
+  MoveSelectedToIgnoredList(lsbDest);
+  SetItem(lsbDest, Index);
 end;
 
-procedure TForm1.actAddToIgnoreListExecute(Sender: TObject);
+procedure TForm1.actAddToCompletedListExecute(Sender: TObject);
+var
+  Index: Integer;
+begin
+  Index := GetFirstSelection(lsbDest);
+  MoveSelectedToCompletedList(lsbDest);
+  SetItem(lsbDest, Index);
+end;
+
+procedure TForm1.actUnitStatusExecute(Sender: TObject);
+begin
+  TfrmUnitStatus.Execute(FMainCtrl);
+end;
+
+procedure TForm1.actShowCompletedExecute(Sender: TObject);
+begin
+  FMainCtrl.ShowCompletedFiles := not FMainCtrl.ShowCompletedFiles;
+end;
+
+procedure TForm1.actShowIgnoredExecute(Sender: TObject);
+begin
+  FMainCtrl.ShowIgnoredFiles := not FMainCtrl.ShowIgnoredFiles;
+end;
+
+procedure TForm1.actShowOtherExecute(Sender: TObject);
+begin
+  FMainCtrl.ShowOtherFiles := not FMainCtrl.ShowOtherFiles;
+end;
+
+procedure TForm1.actShowCompletedUpdate(Sender: TObject);
+begin
+  if Sender is TAction then
+    TAction(Sender).Checked := FMainCtrl.ShowCompletedFiles;
+end;
+
+procedure TForm1.actShowIgnoredUpdate(Sender: TObject);
+begin
+  if Sender is TAction then
+    TAction(Sender).Checked := FMainCtrl.ShowIgnoredFiles;
+end;
+
+procedure TForm1.actShowOtherUpdate(Sender: TObject);
+begin
+  if Sender is TAction then
+    TAction(Sender).Checked := FMainCtrl.ShowOtherFiles
+end;
+
+constructor TForm1.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FMainCtrl := TMainCtrl.Create;
+end;
+
+destructor TForm1.Destroy;
+begin
+  TSettings.Instance.UnRegisterObserver(Self);
+  FMainCtrl.Free;
+
+  inherited Destroy;
+end;
+
+procedure TForm1.actRefreshExecute(Sender: TObject);
+begin
+  FMainCtrl.RefreshFiles;
+end;
+
+procedure TForm1.MoveSelectedToCompletedList(List: TCustomListBox);
 var
   I: Integer;
 begin
-  with lsbDest do
+  with List do
   begin
     Items.BeginUpdate;
     try
-      for I := Count - 1 downto 0 do
+      for I := Items.Count - 1 downto 0 do
         if Selected[I] then
-        begin
-          TSettings.Instance.IgnoredUnits.Add(Items[I]);
-          if FMainCtrl.IgnoreFiles then
-            Items.Delete(I);
-        end;
+          FMainCtrl.AddToCompletedList(Items[I]);
     finally
       Items.EndUpdate;
     end;
   end;
 
-  TSettings.Instance.Save;
+  TSettings.Instance.SaveUnitStatus(usCompleted);
+end;
+
+procedure TForm1.MoveSelectedToIgnoredList(List: TCustomListBox);
+var
+  I: Integer;
+begin
+  with List do
+  begin
+    Items.BeginUpdate;
+    try
+      for I := Items.Count - 1 downto 0 do
+        if Selected[I] then
+          FMainCtrl.AddToIgnoreList(Items[I]);
+    finally
+      Items.EndUpdate;
+    end;
+  end;
+
+  TSettings.Instance.SaveUnitStatus(usIgnored);
+end;
+
+procedure TForm1.actShowGeneratedExecute(Sender: TObject);
+begin
+  FMainCtrl.ShowGeneratedFiles := not FMainCtrl.ShowGeneratedFiles;
+end;
+
+procedure TForm1.actShowGeneratedUpdate(Sender: TObject);
+begin
+  if Sender is TAction then
+    TAction(Sender).Checked := FMainCtrl.ShowGeneratedFiles;
 end;
 
 end.

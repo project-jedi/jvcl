@@ -21,7 +21,7 @@ object frmSettings: TfrmSettings
     Top = 8
     Width = 535
     Height = 283
-    ActivePage = tshRegisteredClasses
+    ActivePage = tshFiles
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
     object tshFiles: TTabSheet
@@ -39,53 +39,78 @@ object frmSettings: TfrmSettings
       object lblOutDirDesc: TLabel
         Left = 8
         Top = 64
-        Width = 67
+        Width = 120
         Height = 13
-        Caption = '*.dtx directory:'
+        Caption = 'Generated *.dtx directory:'
       end
-      object edtInDir: TEdit
+      object Label1: TLabel
+        Left = 8
+        Top = 112
+        Width = 92
+        Height = 13
+        Caption = 'Real *.dtx directory:'
+      end
+      object edtPasDir: TEdit
         Left = 8
         Top = 32
         Width = 471
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
-        Text = 'edtInDir'
+        Text = 'edtPasDir'
       end
-      object edtOutDir: TEdit
+      object edtGeneratedDtxDir: TEdit
         Left = 8
         Top = 80
         Width = 471
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 1
-        Text = 'edtOutDir'
+        Text = 'edtGeneratedDtxDir'
       end
-      object btnSelectInDir: TButton
+      object btnPasDir: TButton
         Left = 478
         Top = 32
         Width = 25
-        Height = 25
-        Action = actSelectInDir
+        Height = 21
+        Action = actSelectPasDir
         Anchors = [akTop, akRight]
         TabOrder = 2
       end
-      object btnSelectOutDir: TButton
+      object btnGeneratedDtxDir: TButton
         Left = 478
         Top = 80
         Width = 25
-        Height = 25
-        Action = actSelectOutDir
+        Height = 21
+        Action = actSelectGeneratedDtxDir
         Anchors = [akTop, akRight]
         TabOrder = 3
       end
       object chbOverwriteExisting: TCheckBox
         Left = 8
-        Top = 120
+        Top = 168
         Width = 113
         Height = 17
         Caption = 'Overwrite Existing'
         TabOrder = 4
+      end
+      object edtRealDtxDir: TEdit
+        Left = 8
+        Top = 128
+        Width = 471
+        Height = 21
+        Anchors = [akLeft, akTop, akRight]
+        TabOrder = 5
+        Text = 'edtOutDir'
+      end
+      object btnRealDtxDir: TButton
+        Left = 478
+        Top = 128
+        Width = 25
+        Height = 21
+        Action = actSelectGeneratedDtxDir
+        Anchors = [akTop, akRight]
+        TabOrder = 6
       end
     end
     object tshOutput: TTabSheet
@@ -421,13 +446,13 @@ object frmSettings: TfrmSettings
       Caption = '&Apply'
       OnExecute = actApplyExecute
     end
-    object actSelectInDir: TAction
+    object actSelectPasDir: TAction
       Caption = '...'
-      OnExecute = actSelectInDirExecute
+      OnExecute = actSelectPasDirExecute
     end
-    object actSelectOutDir: TAction
+    object actSelectGeneratedDtxDir: TAction
       Caption = '...'
-      OnExecute = actSelectOutDirExecute
+      OnExecute = actSelectGeneratedDtxDirExecute
     end
     object actAdd: TAction
       Caption = '&Add'
@@ -493,6 +518,22 @@ object frmSettings: TfrmSettings
       Category = 'IgnoredUnits'
       Caption = 'Load'
       OnExecute = actIgnoredUnits_LoadExecute
+    end
+    object actDocumentedUnits_Add: TAction
+      Category = 'DocumentedUnits'
+      Caption = 'Add'
+    end
+    object actDocumentedUnits_Delete: TAction
+      Category = 'DocumentedUnits'
+      Caption = 'Delete'
+    end
+    object actDocumentedUnits_Load: TAction
+      Category = 'DocumentedUnits'
+      Caption = 'Load'
+    end
+    object actSelectRealDtxDir: TAction
+      Caption = '...'
+      OnExecute = actSelectRealDtxDirExecute
     end
   end
   object JvBrowseForFolderDialog1: TJvBrowseForFolderDialog

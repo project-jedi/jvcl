@@ -22,12 +22,12 @@ type
     tshFiles: TTabSheet;
     lblInDirDesc: TLabel;
     lblOutDirDesc: TLabel;
-    edtInDir: TEdit;
-    edtOutDir: TEdit;
-    btnSelectInDir: TButton;
-    btnSelectOutDir: TButton;
-    actSelectInDir: TAction;
-    actSelectOutDir: TAction;
+    edtPasDir: TEdit;
+    edtGeneratedDtxDir: TEdit;
+    btnPasDir: TButton;
+    btnGeneratedDtxDir: TButton;
+    actSelectPasDir: TAction;
+    actSelectGeneratedDtxDir: TAction;
     chbOverwriteExisting: TCheckBox;
     tshOutput: TTabSheet;
     tbcOutputTypes: TTabControl;
@@ -77,11 +77,18 @@ type
     Button11: TButton;
     actRegisteredClasses_Load: TAction;
     actIgnoredUnits_Load: TAction;
+    actDocumentedUnits_Add: TAction;
+    actDocumentedUnits_Delete: TAction;
+    actDocumentedUnits_Load: TAction;
+    Label1: TLabel;
+    edtRealDtxDir: TEdit;
+    btnRealDtxDir: TButton;
+    actSelectRealDtxDir: TAction;
     procedure actOKExecute(Sender: TObject);
     procedure actCancelExecute(Sender: TObject);
     procedure actApplyExecute(Sender: TObject);
-    procedure actSelectInDirExecute(Sender: TObject);
-    procedure actSelectOutDirExecute(Sender: TObject);
+    procedure actSelectPasDirExecute(Sender: TObject);
+    procedure actSelectGeneratedDtxDirExecute(Sender: TObject);
     procedure actAddExecute(Sender: TObject);
     procedure actDeleteExecute(Sender: TObject);
     procedure actDeleteUpdate(Sender: TObject);
@@ -102,6 +109,7 @@ type
     procedure actIgnoredUnits_DeleteExecute(Sender: TObject);
     procedure actIgnoredUnits_LoadExecute(Sender: TObject);
     procedure actRegisteredClasses_LoadExecute(Sender: TObject);
+    procedure actSelectRealDtxDirExecute(Sender: TObject);
   private
     FSettings: TSettings;
     FCurrentTab: Integer;
@@ -168,8 +176,9 @@ begin
 
   with FSettings do
   begin
-    edtInDir.Text := InDir;
-    edtOutDir.Text := OutDir;
+    edtPasDir.Text := PasDir;
+    edtGeneratedDtxDir.Text := GeneratedDtxDir;
+    edtRealDtxDir.Text := RealDtxDir;
     chbOverwriteExisting.Checked := OverwriteExisting;
   end;
   pgcSettings.ActivePage := tshFiles;
@@ -178,7 +187,8 @@ begin
   FCurrentFor := CDefault;
 
   edtDefaultNiceName.Text := FSettings.DefaultNiceName;
-  lsbIgnoredUnits.Items.Assign(FSettings.IgnoredUnits);
+  lsbIgnoredUnits.Items.Assign(FSettings.UnitsStatus[usIgnored]);
+  {lsbDocumentedUnits.Items.Assign(FSettings.DocumentedUnits);}
   lsbRegisteredClasses.Items.Assign(FSettings.RegisteredClasses);
 
   UpdateNiceNames;
@@ -201,7 +211,9 @@ begin
   with TSettings.Instance do
   begin
     Assign(FSettings);
-    Save;
+    SaveSettings;
+    SaveUnitStatus(usIgnored);
+    SaveRegisteredClasses;
   end;
 end;
 
@@ -221,23 +233,23 @@ begin
   Uitvoeren;
 end;
 
-procedure TfrmSettings.actSelectInDirExecute(Sender: TObject);
+procedure TfrmSettings.actSelectPasDirExecute(Sender: TObject);
 begin
   with JvBrowseForFolderDialog1 do
   begin
-    Directory := edtInDir.Text;
+    Directory := edtPasDir.Text;
     if Execute then
-      edtInDir.Text := Directory;
+      edtPasDir.Text := Directory;
   end;
 end;
 
-procedure TfrmSettings.actSelectOutDirExecute(Sender: TObject);
+procedure TfrmSettings.actSelectGeneratedDtxDirExecute(Sender: TObject);
 begin
   with JvBrowseForFolderDialog1 do
   begin
-    Directory := edtOutDir.Text;
+    Directory := edtGeneratedDtxDir.Text;
     if Execute then
-      edtOutDir.Text := Directory;
+      edtGeneratedDtxDir.Text := Directory;
   end;
 end;
 
@@ -380,8 +392,9 @@ procedure TfrmSettings.SaveFiles;
 begin
   with FSettings do
   begin
-    InDir := edtInDir.Text;
-    OutDir := edtOutDir.Text;
+    PasDir := edtPasDir.Text;
+    GeneratedDtxDir := edtGeneratedDtxDir.Text;
+    RealDtxDir := edtRealDtxDir.Text;
     OverwriteExisting := chbOverwriteExisting.Checked;
   end;
 end;
@@ -638,12 +651,22 @@ end;
 
 procedure TfrmSettings.SaveIgnoredUnits;
 begin
-  FSettings.IgnoredUnits.Assign(lsbIgnoredUnits.Items);
+  FSettings.UnitsStatus[usIgnored] := lsbIgnoredUnits.Items;
 end;
 
 procedure TfrmSettings.SaveRegisteredClasses;
 begin
   FSettings.RegisteredClasses.Assign(lsbRegisteredClasses.Items);
+end;
+
+procedure TfrmSettings.actSelectRealDtxDirExecute(Sender: TObject);
+begin
+  with JvBrowseForFolderDialog1 do
+  begin
+    Directory := edtRealDtxDir.Text;
+    if Execute then
+      edtRealDtxDir.Text := Directory;
+  end;
 end;
 
 end.

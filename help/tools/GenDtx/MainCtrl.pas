@@ -26,8 +26,19 @@ type
     FParsedError: Integer;
     FProcessList: TStrings;
     FMessagesList: TStrings;
-    FIgnoreFiles: Boolean;
-    procedure SetIgnoreFiles(const Value: Boolean);
+
+    FShowOtherFiles: Boolean;
+    FShowIgnoredFiles: Boolean;
+    FShowCompletedFiles: Boolean;
+
+    FAllSkipFiles: TStringList;
+    FAllProcessFiles: TStringList;
+    FShowGeneratedFiles: Boolean;
+
+    procedure SetShowCompletedFiles(const Value: Boolean);
+    procedure SetShowIgnoredFiles(const Value: Boolean);
+    procedure SetShowOtherFiles(const Value: Boolean);
+    procedure SetShowGeneratedFiles(const Value: Boolean);
   protected
     procedure DoMessage(const Msg: string);
     procedure WriteDtx(ATypeList: TTypeList);
@@ -39,20 +50,31 @@ type
     procedure ProcessItem(const AFileName: string);
     procedure Process;
 
+    procedure RefreshFiles;
+    procedure RefreshSkipFiles;
+    procedure RefreshProcessFiles;
+    procedure FilterFiles(AllList, FilteredList: TStrings);
+
     procedure UpdateSourceFiles;
-    procedure RemoveIgnoredFiles;
+
+    procedure AddToIgnoreList(const S: string);
+    procedure AddToCompletedList(const S: string);
 
     property SkipList: TStrings read FSkipList write FSkipList;
     property ProcessList: TStrings read FProcessList write FProcessList;
     property MessagesList: TStrings read FMessagesList write FMessagesList;
-    property IgnoreFiles: Boolean read FIgnoreFiles write SetIgnoreFiles;
+
+    property ShowCompletedFiles: Boolean read FShowCompletedFiles write SetShowCompletedFiles;
+    property ShowIgnoredFiles: Boolean read FShowIgnoredFiles write SetShowIgnoredFiles;
+    property ShowGeneratedFiles: Boolean read FShowGeneratedFiles write SetShowGeneratedFiles;
+    property ShowOtherFiles: Boolean read FShowOtherFiles write SetShowOtherFiles;
   end;
 
 implementation
 
 uses
   SysUtils,
-  JclFileUtils, JvProgressComponent,
+  JclFileUtils, JvProgressDialog,
   DelphiParser;
 
 function GetClassInfoStr(AItem: TAbstractItem): string;
@@ -85,30 +107,6 @@ function GetDescriptionStr(AItem: TAbstractItem): string;
 begin
   Result := CDescriptionDescription + AItem.AddDescriptionString;
 end;
-
-(*function CanCombine(AItem: TAbstractItem): Boolean;
-var
-  S: string;
-begin
-  Result := AItem.DelphiType = dtType;
-  if not Result then
-    Exit;
-
-  S := AItem.ValueString;
-
-  Result := (S > '') and
-    (
-    ((StrLIComp(PChar(S), 'set of', 6) = 0) and (StrLIComp(PChar(S), 'set of (', 8) <> 0))
-    or (S[1] = '^'));
-end;*)
-
-(*function GetCombineWithStr(AItem: TAbstractItem): string;
-begin
-  if AITem.CombineWithString > '' then
-    Result := Format('<COMBINEWITH %s>', [AItem.CombineWithString])
-  else
-    Result := '';
-end;*)
 
 function GetCombineStr(AItem: TAbstractItem): string;
 begin
@@ -163,15 +161,69 @@ end;
 
 { TMainCtrl }
 
+procedure TMainCtrl.AddToCompletedList(const S: string);
+var
+  I: Integer;
+begin
+  TSettings.Instance.AddToUnitStatus(usCompleted, S);
+
+  if not ShowCompletedFiles then
+  begin
+    I := SkipList.IndexOf(S);
+    if I >= 0 then
+      SkipList.Delete(I);
+    I := ProcessList.IndexOf(S);
+    if I >= 0 then
+      ProcessList.Delete(I);
+  end;
+end;
+
+procedure TMainCtrl.AddToIgnoreList(const S: string);
+var
+  I: Integer;
+begin
+  TSettings.Instance.AddToUnitStatus(usIgnored, S);
+  if not ShowIgnoredFiles then
+  begin
+    I := SkipList.IndexOf(S);
+    if I >= 0 then
+      SkipList.Delete(I);
+    I := ProcessList.IndexOf(S);
+    if I >= 0 then
+      ProcessList.Delete(I);
+  end;
+end;
+
 constructor TMainCtrl.Create;
 begin
   TSettings.Instance.RegisterObserver(Self, SettingsChanged);
-  FIgnoreFiles := True;
+
+  FAllSkipFiles := TStringList.Create;
+  with FAllSkipFiles do
+  begin
+    Sorted := True;
+    Duplicates := dupIgnore;
+    CaseSensitive := False;
+  end;
+  FAllProcessFiles := TStringList.Create;
+  with FAllProcessFiles do
+  begin
+    Sorted := True;
+    Duplicates := dupIgnore;
+    CaseSensitive := False;
+  end;
+
+  FShowGeneratedFiles := True;
+  FShowOtherFiles := False;
+  FShowIgnoredFiles := False;
+  FShowCompletedFiles := False;
 end;
 
 destructor TMainCtrl.Destroy;
 begin
   TSettings.Instance.UnRegisterObserver(Self);
+  FAllSkipFiles.Free;
+  FAllProcessFiles.Free;
   inherited;
 end;
 
@@ -181,35 +233,80 @@ begin
     MessagesList.Add(Msg);
 end;
 
+procedure TMainCtrl.FilterFiles(AllList, FilteredList: TStrings);
+var
+  I: Integer;
+  LIsCompletedUnit: Boolean;
+  LIsIgnoredUnit: Boolean;
+  LIsGeneratedUnit: Boolean;
+  LDoAdd: Boolean;
+begin
+  AllList.AddStrings(FilteredList);
+
+  FilteredList.BeginUpdate;
+  try
+    FilteredList.Clear;
+    for I := 0 to AllList.Count - 1 do
+      with TSettings.Instance do
+      begin
+        LIsCompletedUnit := False;
+        LIsIgnoredUnit := False;
+        LIsGeneratedUnit := False;
+
+        if ShowCompletedFiles or ShowOtherFiles then
+          LIsCompletedUnit := IsUnitFrom(usCompleted, AllList[I]);
+        LDoAdd := ShowCompletedFiles and LIsCompletedUnit;
+        if not LDoAdd then
+        begin
+          if ShowIgnoredFiles or ShowOtherFiles then
+            LIsIgnoredUnit := IsUnitFrom(usIgnored, AllList[I]);
+          LDoAdd := ShowIgnoredFiles and LIsIgnoredUnit;
+          if not LDoAdd then
+          begin
+            if ShowGeneratedFiles or ShowOtherFiles then
+              LIsGeneratedUnit := IsUnitFrom(usGenerated, AllList[I]);
+            LDoAdd := (ShowGeneratedFiles and LIsGeneratedUnit) or
+              (ShowOtherFiles and not LIsCompletedUnit and not LIsIgnoredUnit and not LIsGeneratedUnit);
+          end;
+        end;
+        if LDoAdd then
+          FilteredList.Add(AllList[I])
+      end;
+  finally
+    FilteredList.EndUpdate;
+  end;
+end;
+
 procedure TMainCtrl.Process;
 var
   I: Integer;
   Dir: string;
-  ProgressDlg: TJvProgressComponent;
+  ProgressDlg: TJvProgressDialog;
 begin
   if not Assigned(ProcessList) then
     Exit;
-  Dir := IncludeTrailingPathDelimiter(TSettings.Instance.InDir);
+  Dir := IncludeTrailingPathDelimiter(TSettings.Instance.PasDir);
   FParsedOK := 0;
   FParsedError := 0;
 
-  ProgressDlg := TJvProgressComponent.Create(nil);
+  ProgressDlg := TJvProgressDialog.Create(nil);
   try
-    ProgressDlg.ProgressMin := 0;
-    ProgressDlg.ProgressMax := ProcessList.Count;
+    ProgressDlg.Min := 0;
+    ProgressDlg.Max := ProcessList.Count;
     ProgressDlg.Caption := 'Progress';
-    ProgressDlg.Execute;
+    ProgressDlg.Show;
 
     for I := 0 to ProcessList.Count - 1 do
     begin
-      ProgressDlg.InfoLabel := ProcessList[I];
-      ProgressDlg.ProgressPosition := I;
+      ProgressDlg.Text := ProcessList[I];
+      ProgressDlg.Position := I;
       ProcessItem(Dir + ProcessList[I]);
     end;
 
     DoMessage(Format('Errors %d OK %d Total %d',
       [FParsedError, FParsedOK, FParsedError + FParsedOK]));
   finally
+    ProgressDlg.Hide;
     ProgressDlg.Free;
   end;
 end;
@@ -236,7 +333,45 @@ begin
   end;
 end;
 
-procedure TMainCtrl.RemoveIgnoredFiles;
+procedure TMainCtrl.RefreshFiles;
+var
+  AllFiles: TStringList;
+  I, Index: Integer;
+begin
+  AllFiles := TStringList.Create;
+  try
+    BuildFileList(IncludeTrailingPathDelimiter(TSettings.Instance.PasDir) +
+      '*.pas', faAnyFile, AllFiles);
+
+    for I := FAllSkipFiles.Count - 1 downto 0 do
+    begin
+      Index := AllFiles.IndexOf(FAllSkipFiles[I]);
+      if Index < 0 then
+        FAllSkipFiles.Delete(I)
+      else
+        AllFiles.Delete(Index);
+    end;
+
+    for I := FAllProcessFiles.Count - 1 downto 0 do
+    begin
+      Index := AllFiles.IndexOf(FAllProcessFiles[I]);
+      if Index < 0 then
+        FAllProcessFiles.Delete(I)
+      else
+        AllFiles.Delete(Index);
+    end;
+
+    for I := 0 to AllFiles.Count - 1 do
+      FAllProcessFiles.Add(AllFiles[I]);
+
+    RefreshSkipFiles;
+    RefreshProcessFiles;
+  finally
+    AllFiles.Free;
+  end;
+end;
+
+{procedure TMainCtrl.RemoveIgnoredFiles;
 var
   I: Integer;
 begin
@@ -246,7 +381,8 @@ begin
       BeginUpdate;
       try
         for I := Count - 1 downto 0 do
-          if TSettings.Instance.IsIgnoredUnit(Strings[I]) then
+          if (FIgnoreFiles and TSettings.Instance.IsIgnoredUnit(Strings[I])) or
+            (FIgnoreCompletedFiles and TSettings.Instance.IsCompletedUnit(Strings[I])) then
             Delete(I);
       finally
         EndUpdate;
@@ -259,15 +395,28 @@ begin
       BeginUpdate;
       try
         for I := Count - 1 downto 0 do
-          if TSettings.Instance.IsIgnoredUnit(Strings[I]) then
+          if (FIgnoreFiles and TSettings.Instance.IsIgnoredUnit(Strings[I])) or
+            (FIgnoreCompletedFiles and TSettings.Instance.IsCompletedUnit(Strings[I])) then
             Delete(I);
       finally
         EndUpdate;
       end;
     end;
-end;
+end;}
 
-procedure TMainCtrl.SetIgnoreFiles(const Value: Boolean);
+{procedure TMainCtrl.SetIgnoreCompletedFiles(const Value: Boolean);
+begin
+  if Value = FIgnoreCompletedFiles then
+    Exit;
+
+  FIgnoreCompletedFiles := Value;
+  if FIgnoreCompletedFiles then
+    RemoveIgnoredFiles
+  else
+    UpdateSourceFiles;
+end;}
+
+{procedure TMainCtrl.SetIgnoreFiles(const Value: Boolean);
 begin
   if Value = FIgnoreFiles then
     Exit;
@@ -277,20 +426,71 @@ begin
     RemoveIgnoredFiles
   else
     UpdateSourceFiles;
+end;}
+
+procedure TMainCtrl.RefreshProcessFiles;
+begin
+  FilterFiles(FAllProcessFiles, ProcessList);
+end;
+
+procedure TMainCtrl.RefreshSkipFiles;
+begin
+  FilterFiles(FAllSkipFiles, SkipList);
+end;
+
+procedure TMainCtrl.SetShowCompletedFiles(const Value: Boolean);
+begin
+  if FShowCompletedFiles <> Value then
+  begin
+    FShowCompletedFiles := Value;
+    RefreshSkipFiles;
+    RefreshProcessFiles;
+  end;
+end;
+
+procedure TMainCtrl.SetShowGeneratedFiles(const Value: Boolean);
+begin
+  if FShowGeneratedFiles <> Value then
+  begin
+    FShowGeneratedFiles := Value;
+    RefreshSkipFiles;
+    RefreshProcessFiles;
+  end;
+end;
+
+procedure TMainCtrl.SetShowIgnoredFiles(const Value: Boolean);
+begin
+  if FShowIgnoredFiles <> Value then
+  begin
+    FShowIgnoredFiles := Value;
+    RefreshSkipFiles;
+    RefreshProcessFiles;
+  end;
+end;
+
+procedure TMainCtrl.SetShowOtherFiles(const Value: Boolean);
+begin
+  if FShowOtherFiles <> Value then
+  begin
+    FShowOtherFiles := Value;
+    RefreshSkipFiles;
+    RefreshProcessFiles;
+  end;
 end;
 
 procedure TMainCtrl.SettingsChanged(Sender: TObject;
   ChangeType: TSettingsChangeType);
 begin
   case ChangeType of
-    ctInDirectory: UpdateSourceFiles;
-    ctOutDirectory: ;
+    ctPasDirectory: UpdateSourceFiles;
+    ctGeneratedDtxDirectory: ;
+    ctRealDtxDirectory: ;
   end;
 end;
 
 procedure TMainCtrl.UpdateSourceFiles;
 begin
-  if Assigned(SkipList) then
+  {if Assigned(SkipList) then
     SkipList.Clear;
 
   if not Assigned(ProcessList) then
@@ -301,11 +501,11 @@ begin
     BuildFileList(IncludeTrailingPathDelimiter(TSettings.Instance.InDir) +
       '*.pas', faAnyFile, ProcessList);
 
-    if IgnoreFiles then
+    if IgnoreFiles or IgnoreCompletedFiles then
       RemoveIgnoredFiles;
   finally
     ProcessList.EndUpdate;
-  end;
+  end;}
 end;
 
 procedure TMainCtrl.WriteDtx(ATypeList: TTypeList);
@@ -437,7 +637,7 @@ var
 var
   I: Integer;
 begin
-  FileName := IncludeTrailingPathDelimiter(TSettings.Instance.OutDir) +
+  FileName := IncludeTrailingPathDelimiter(TSettings.Instance.GeneratedDtxDir) +
     ChangeFileExt(ExtractFileName(ATypeList.FileName), '.dtx');
   if FileExists(FileName) and not TSettings.Instance.OverwriteExisting then
     Exit;

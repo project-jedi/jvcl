@@ -15,14 +15,22 @@ type
   TOutputTypeStrs = array[TOutputType] of string;
   TOutputTypeStrings = array[TOutputType] of TStringList;
 
-  TSettingsChangeType = (ctInDirectory, ctOutDirectory);
+  TSettingsChangeType = (ctPasDirectory, ctGeneratedDtxDirectory, ctRealDtxDirectory);
   TSettingsChangeEvent = procedure(Sender: TObject;
     ChangeType: TSettingsChangeType) of object;
+  TUnitStatus = (usCompleted, usIgnored, usGenerated, usOther);
 
+const
+  CRegisteredClassesFileName = 'RegisteredClasses.txt';
+  CUnitStatusFileName: array[TUnitStatus] of string = (
+    'Completed units.txt', 'Ignored units.txt', 'Generated units.txt',
+    'Other units.txt');
+
+type
   TSettings = class(TPersistent)
   private
-    FInDir: string;
-    FOutDir: string;
+    FPasDir: string;
+    FGeneratedDtxDir: string;
     FOutputTypeDefaults: TOutputTypeStrs;
     FOutputTypeDesc: TOutputTypeStrings;
     FOutputTypeStrings: TOutputTypeStrings;
@@ -30,7 +38,6 @@ type
     FNiceNameDesc: TStringList;
     FOverwriteExisting: Boolean;
     FOutputTypeEnabled: TOutputTypeBool;
-    FIgnoredUnits: TStringList;
     FRegisteredClasses: TStringList;
 
     { Observer }
@@ -38,19 +45,24 @@ type
     FChangeEvents: TList;
     FDefaultNiceName: string;
     FAcceptCompilerDirectives: TStrings;
+    FUnitsStatus: array[TUnitStatus] of TStrings;
+    FRealDtxDir: string;
 
-    procedure SetInDir(const Value: string);
-    procedure SetOutDir(const Value: string);
-    procedure SetOverwriteExisting(const Value: Boolean);
-    function GetOutputTypeDefaults(const OutputType: TOutputType): string;
-    procedure SetOutputTypeDefaults(const OutputType: TOutputType; const Value: string);
-    function GetOutputTypeDesc(const OutputType: TOutputType): TStringList;
-    function GetOutputTypeStrings(const OutputType: TOutputType): TStringList;
-    function GetNiceName(const AClassName: string): string;
-    function GetOutputTypeEnabled(const OutputTYpe: TOutputType): Boolean;
-    procedure SetOutputTypeEnabled(const OutputTYpe: TOutputType; const Value: Boolean);
-    procedure SetAcceptCompilerDirectives(const Value: TStrings);
     function GetFileName: string;
+    function GetNiceName(const AClassName: string): string;
+    function GetOutputTypeDefaults(const OutputType: TOutputType): string;
+    function GetOutputTypeDesc(const OutputType: TOutputType): TStringList;
+    function GetOutputTypeEnabled(const OutputTYpe: TOutputType): Boolean;
+    function GetOutputTypeStrings(const OutputType: TOutputType): TStringList;
+    function GetUnitsStatus(const AUnitStatus: TUnitStatus): TStrings;
+    procedure SetAcceptCompilerDirectives(const Value: TStrings);
+    procedure SetGeneratedDtxDir(const Value: string);
+    procedure SetOutputTypeDefaults(const OutputType: TOutputType; const Value: string);
+    procedure SetOutputTypeEnabled(const OutputTYpe: TOutputType; const Value: Boolean);
+    procedure SetOverwriteExisting(const Value: Boolean);
+    procedure SetPasDir(const Value: string);
+    procedure SetRealDtxDir(const Value: string);
+    procedure SetUnitsStatus(const AUnitStatus: TUnitStatus; const Value: TStrings);
   protected
     procedure DoEvent(ChangeType: TSettingsChangeType);
 
@@ -61,8 +73,16 @@ type
 
     class function Instance: TSettings;
 
-    procedure Load;
-    procedure Save;
+    procedure LoadAll;
+    procedure LoadSettings;
+    procedure LoadRegisteredClasses;
+    procedure LoadUnitStatus(const AUnitStatus: TUnitStatus);
+    procedure LoadUnitStatusAll;
+    procedure SaveAll;
+    procedure SaveSettings;
+    procedure SaveRegisteredClasses;
+    procedure SaveUnitStatus(const AUnitStatus: TUnitStatus);
+    procedure SaveUnitStatusAll;
 
     procedure RegisterObserver(Observer: TObject; Event: TSettingsChangeEvent = nil); virtual;
     procedure UnRegisterObserver(Observer: TObject); virtual;
@@ -71,12 +91,15 @@ type
     procedure Assign(Source: TPersistent); override;
 
     function IsRegisteredClass(const S: string): Boolean;
-    function IsIgnoredUnit(const S: string): Boolean;
+    procedure AddToUnitStatus(const AUnitStatus: TUnitStatus; const AFileName: string);
+    function IsUnitFrom(const AUnitStatus: TUnitStatus; const AFileName: string): Boolean;
 
-    property IgnoredUnits: TStringList read FIgnoredUnits;
     property RegisteredClasses: TStringList read FRegisteredClasses;
-    property InDir: string read FInDir write SetInDir;
-    property OutDir: string read FOutDir write SetOutDir;
+
+    property PasDir: string read FPasDir write SetPasDir;
+    property GeneratedDtxDir: string read FGeneratedDtxDir write SetGeneratedDtxDir;
+    property RealDtxDir: string read FRealDtxDir write SetRealDtxDir;
+
     property OverwriteExisting: Boolean read FOverwriteExisting write
       SetOverwriteExisting;
     property OutputTypeDefaults[const OutputType: TOutputType]: string read
@@ -94,6 +117,7 @@ type
       FDefaultNiceName;
     property AcceptCompilerDirectives: TStrings read FAcceptCompilerDirectives write
       SetAcceptCompilerDirectives;
+    property UnitsStatus[const AUnitStatus: TUnitStatus]: TStrings read GetUnitsStatus write SetUnitsStatus;
 
     property NiceName[const AClassName: string]: string read GetNiceName;
 
@@ -130,11 +154,14 @@ const
 procedure TSettings.Assign(Source: TPersistent);
 var
   OutputType: TOutputType;
+  UnitStatus: TUnitStatus;
 begin
   if Source is TSettings then
   begin
-    InDir := TSettings(Source).InDir;
-    OutDir := TSettings(Source).OutDir;
+    PasDir := TSettings(Source).PasDir;
+    GeneratedDtxDir := TSettings(Source).GeneratedDtxDir;
+    RealDtxDir := TSettings(Source).RealDtxDir;
+
     OverwriteExisting := TSettings(Source).OverwriteExisting;
     for OutputType := Low(TOutputType) to High(TOutputType) do
     begin
@@ -148,7 +175,9 @@ begin
     FNiceNameClass.Assign(TSettings(Source).FNiceNameClass);
     FNiceNameDesc.Assign(TSettings(Source).FNiceNameDesc);
     FRegisteredClasses.Assign(TSettings(Source).FRegisteredClasses);
-    FIgnoredUnits.Assign(TSettings(Source).FIgnoredUnits);
+    for UnitStatus := Low(TUnitStatus) to High(TUnitStatus) do
+      FUnitsStatus[UnitStatus].Assign(TSettings(Source).FUnitsStatus[UnitStatus]);
+
     FDefaultNiceName := TSettings(Source).FDefaultNiceName;
     FAcceptCompilerDirectives.Assign(TSettings(Source).FAcceptCompilerDirectives);
   end
@@ -159,6 +188,7 @@ end;
 constructor TSettings.Create;
 var
   OutputType: TOutputType;
+  UnitStatus: TUnitStatus;
 begin
   inherited Create;
 
@@ -171,12 +201,15 @@ begin
   end;
   FNiceNameClass := TStringList.Create;
   FNiceNameDesc := TStringList.Create;
-  FIgnoredUnits := TStringList.Create;
-  with FIgnoredUnits do
+  for UnitStatus := Low(TUnitStatus) to High(TUnitStatus) do
   begin
-    Sorted := True;
-    Duplicates := dupIgnore;
-    CaseSensitive := False;
+    FUnitsStatus[UnitStatus] := TStringList.Create;
+    with FUnitsStatus[UnitStatus] as TStringList do
+    begin
+      Sorted := True;
+      Duplicates := dupIgnore;
+      CaseSensitive := False;
+    end;
   end;
 
   FRegisteredClasses := TStringList.Create;
@@ -198,6 +231,7 @@ end;
 destructor TSettings.Destroy;
 var
   OutputType: TOutputType;
+  UnitStatus: TUnitStatus;
 begin
   FreeAndNil(FChangeEvents);
   FreeAndNil(FObservers);
@@ -208,7 +242,8 @@ begin
   end;
   FNiceNameClass.Free;
   FNiceNameDesc.Free;
-  FIgnoredUnits.Free;
+  for UnitStatus := Low(TUnitStatus) to High(TUnitStatus) do
+    FUnitsStatus[UnitStatus].Free;
   FRegisteredClasses.Free;
   FAcceptCompilerDirectives.Free;
   inherited Destroy;
@@ -276,14 +311,9 @@ begin
   if not Assigned(GInstance) then
   begin
     GInstance := TSettings.Create;
-    GInstance.Load;
+    GInstance.LoadAll;
   end;
   Result := GInstance;
-end;
-
-function TSettings.IsIgnoredUnit(const S: string): Boolean;
-begin
-  Result := FIgnoredUnits.IndexOf(S) >= 0;
 end;
 
 function TSettings.IsRegisteredClass(const S: string): Boolean;
@@ -339,8 +369,10 @@ begin
   IniFile := TMemIniFile.Create(FileName);
   Stream := TStringStream.Create('');
   try
-    InDir := IniFile.ReadString('Directories', 'InDir', '');
-    OutDir := IniFile.ReadString('Directories', 'OutDir', '');
+    PasDir := IniFile.ReadString('Directories', 'PasDir', '');
+    GeneratedDtxDir := IniFile.ReadString('Directories', 'GeneratedDtxDir', '');
+    RealDtxDir := IniFile.ReadString('Directories', 'RealDtxDir', '');
+
     OverwriteExisting := IniFile.ReadBool('Options', 'OverwriteExisting', OverwriteExisting);
     DefaultNiceName := IniFile.ReadString('Options', 'DefaultNiceName', DefaultNiceName);
 
@@ -354,8 +386,9 @@ begin
       FOutputTypeEnabled[OutputType] := IniFile.ReadBool(Section, 'Enabled', FOutputTypeEnabled[OutputType]);
     end;
 
-    ReadList('RegisteredClasses', 'Count', 'Item', FRegisteredClasses);
-    ReadList('IgnoredUnits', 'Count', 'Item', FIgnoredUnits);
+    {ReadList('RegisteredClasses', 'Count', 'Item', FRegisteredClasses);}
+    {ReadList('IgnoredUnits', 'Count', 'Item', FIgnoredUnits);}
+    {ReadList('DocumentedUnits', 'Count', 'Item', FDocumentedUnits);}
     ReadList('NiceNames', 'Count', 'Item', FNiceNameClass);
     ReadList('NiceNameDescs', 'Count', 'Item', FNiceNameDesc);
     ReadList('AcceptCompilerDirectives', 'Count', 'Item', FAcceptCompilerDirectives);
@@ -375,9 +408,12 @@ end;
 procedure TSettings.Reset;
 var
   OutputType: TOutputType;
+  UnitStatus: TUnitStatus;
 begin
-  FInDir := '';
-  FOutDir := '';
+  FPasDir := '';
+  FGeneratedDtxDir := '';
+  FRealDtxDir := '';
+
   FOverwriteExisting := False;
   for OutputType := Low(TOutputType) to High(TOutputType) do
   begin
@@ -388,13 +424,16 @@ begin
   end;
   FNiceNameClass.Clear;
   FNiceNameDesc.Clear;
-  FIgnoredUnits.Clear;
+  {FIgnoredUnits.Clear;}
+  {FDocumentedUnits.Clear;}
   FRegisteredClasses.Clear;
+  for UnitStatus := Low(TUnitStatus) to High(TUnitStatus) do
+    FUnitsStatus[UnitStatus].Clear;
   FAcceptCompilerDirectives.Clear;
   FDefaultNiceName := '<xxx>';
 end;
 
-procedure TSettings.Save;
+procedure TSettings.SaveSettings;
 var
   IniFile: TMemIniFile;
   Stream: TStringStream;
@@ -432,8 +471,9 @@ begin
   IniFile := TMemIniFile.Create(ChangeFileExt(FileName, '.INI'));
   Stream := TStringStream.Create('');
   try
-    IniFile.WriteString('Directories', 'InDir', InDir);
-    IniFile.WriteString('Directories', 'OutDir', OutDir);
+    IniFile.WriteString('Directories', 'PasDir', PasDir);
+    IniFile.WriteString('Directories', 'GeneratedDtxDir', GeneratedDtxDir);
+    IniFile.WriteString('Directories', 'RealDtxDir', RealDtxDir);
     IniFile.WriteBool('Options', 'OverwriteExisting', OverwriteExisting);
     IniFile.WriteString('Options', 'DefaultNiceName', DefaultNiceName);
 
@@ -447,8 +487,6 @@ begin
       IniFile.WriteBool(Section, 'Enabled', FOutputTypeEnabled[OutputType]);
     end;
 
-    WriteList('RegisteredClasses', 'Count', 'Item', FRegisteredClasses);
-    WriteList('IgnoredUnits', 'Count', 'Item', FIgnoredUnits);
     WriteList('NiceNames', 'Count', 'Item', FNiceNameClass);
     WriteList('NiceNameDescs', 'Count', 'Item', FNiceNameDesc);
     WriteList('AcceptCompilerDirectives', 'Count', 'Item', FAcceptCompilerDirectives);
@@ -465,21 +503,21 @@ begin
   FAcceptCompilerDirectives.Assign(Value);
 end;
 
-procedure TSettings.SetInDir(const Value: string);
+procedure TSettings.SetPasDir(const Value: string);
 begin
-  if Value <> FInDir then
+  if Value <> FPasDir then
   begin
-    FInDir := Value;
-    DoEvent(ctInDirectory);
+    FPasDir := Value;
+    DoEvent(ctPasDirectory);
   end;
 end;
 
-procedure TSettings.SetOutDir(const Value: string);
+procedure TSettings.SetGeneratedDtxDir(const Value: string);
 begin
-  if Value <> FOutDir then
+  if Value <> FGeneratedDtxDir then
   begin
-    FOutDir := Value;
-    DoEvent(ctOutDirectory);
+    FGeneratedDtxDir := Value;
+    DoEvent(ctGeneratedDtxDirectory);
   end;
 end;
 
@@ -512,11 +550,112 @@ begin
   end;
 end;
 
-procedure TSettings.Load;
+procedure TSettings.LoadSettings;
 begin
   Reset;
   if FileExists(FileName) then
     DoLoad;
+end;
+
+procedure TSettings.SaveAll;
+begin
+  SaveSettings;
+  SaveUnitStatusAll;
+  SaveRegisteredClasses;
+end;
+
+procedure TSettings.SaveRegisteredClasses;
+begin
+  FRegisteredClasses.SaveToFile(CRegisteredClassesFileName);
+end;
+
+procedure TSettings.LoadAll;
+begin
+  LoadSettings;
+  LoadRegisteredClasses;
+  LoadUnitStatusAll
+end;
+
+procedure TSettings.LoadRegisteredClasses;
+begin
+  FRegisteredClasses.LoadFromFile(CRegisteredClassesFileName);
+end;
+
+procedure TSettings.SaveUnitStatusAll;
+var
+  UnitStatus: TUnitStatus;
+begin
+  for UnitStatus := Low(TUnitStatus) to High(TUnitStatus) do
+    SaveUnitStatus(UnitStatus);
+end;
+
+procedure TSettings.SaveUnitStatus(const AUnitStatus: TUnitStatus);
+begin
+  FUnitsStatus[AUnitStatus].SaveToFile(
+    ExtractFilePath(Application.ExeName) + CUnitStatusFileName[AUnitStatus]);
+end;
+
+function TSettings.GetUnitsStatus(
+  const AUnitStatus: TUnitStatus): TStrings;
+begin
+  Result := FUnitsStatus[AUnitStatus];
+end;
+
+procedure TSettings.SetUnitsStatus(const AUnitStatus: TUnitStatus;
+  const Value: TStrings);
+begin
+  FUnitsStatus[AUnitStatus].Assign(Value);
+end;
+
+procedure TSettings.LoadUnitStatus(const AUnitStatus: TUnitStatus);
+var
+  LFileName: string;
+begin
+  LFileName := ExtractFilePath(Application.ExeName) + CUnitStatusFileName[AUnitStatus];
+  if FileExists(LFileName) then
+    FUnitsStatus[AUnitStatus].LoadFromFile(LFileName);
+end;
+
+procedure TSettings.LoadUnitStatusAll;
+var
+  UnitStatus: TUnitStatus;
+begin
+  for UnitStatus := Low(TUnitStatus) to High(TUnitStatus) do
+    LoadUnitStatus(UnitStatus);
+end;
+
+procedure TSettings.SetRealDtxDir(const Value: string);
+begin
+  if Value <> FRealDtxDir then
+  begin
+    FRealDtxDir := Value;
+    DoEvent(ctRealDtxDirectory);
+  end;
+end;
+
+procedure TSettings.AddToUnitStatus(const AUnitStatus: TUnitStatus; const AFileName: string);
+var
+  LUnitStatus: TUnitStatus;
+  I: Integer;
+  LFileName: string;
+begin
+  LFileName := ChangeFileExt(AFileName, '');
+
+  for LUnitStatus := Low(TUnitStatus) to High(TUnitStatus) do
+    if LUnitStatus = AUnitStatus then
+      UnitsStatus[LUnitStatus].Add(LFileName)
+    else
+    begin
+      I := UnitsStatus[LUnitStatus].IndexOf(LFileName);
+      if I >= 0 then
+        UnitsStatus[LUnitStatus].Delete(I);
+    end;
+end;
+
+function TSettings.IsUnitFrom(const AUnitStatus: TUnitStatus;
+  const AFileName: string): Boolean;
+begin
+  Result := UnitsStatus[AUnitStatus].IndexOf(ChangeFileExt(AFileName, '')) >= 0
 end;
 
 initialization
