@@ -38,7 +38,7 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   Classes,
-  JvAppStorage, JvSimpleXml;
+  JvAppStorage, JvPropertyStore, JvSimpleXml;
 
 type
 
@@ -127,6 +127,14 @@ type
     property SubStorages;
     property OnGetFileName;
   end;
+
+procedure StorePropertyStoreToXmlFile (iPropertyStore : TJvCustomPropertyStore;
+                                       const iFileName : string;
+                                       const iAppStoragePath : string = '');
+procedure LoadPropertyStoreFromXmlFile (iPropertyStore : TJvCustomPropertyStore;
+                                        const iFileName : string;
+                                        const iAppStoragePath : string = '');
+
 
 implementation
 
@@ -729,6 +737,66 @@ procedure TJvAppXMLFileStorage.Reload;
 begin
   if FileExists(FullFileName) and not IsUpdating then
     Xml.LoadFromFile(FullFileName);
+end;
+
+//=== { Common procedures } ===============================================
+
+procedure StorePropertyStoreToXmlFile (iPropertyStore : TJvCustomPropertyStore;
+                                       const iFileName : string;
+                                       const iAppStoragePath : string = '');
+Var
+  AppStorage : TJvAppXmlFileStorage;
+  SaveAppStorage : TJvCustomAppStorage;
+  SaveAppStoragePath : string;
+begin
+  if not Assigned(iPropertyStore) then
+    exit;
+  AppStorage := TJvAppXmlFileStorage.Create(Nil);
+  try
+    AppStorage.Location := flCustom;
+    AppStorage.FileName := iFileName;
+    SaveAppStorage := iPropertyStore.AppStorage;
+    SaveAppStoragePath := iPropertyStore.AppStoragePath;
+    try
+      iPropertyStore.AppStoragePath := iAppStoragePath;
+      iPropertyStore.AppStorage := AppStorage;
+      iPropertyStore.StoreProperties;
+    finally
+      iPropertyStore.AppStoragePath := SaveAppStoragePath;
+      iPropertyStore.AppStorage := SaveAppStorage;
+    end;
+  finally
+    AppStorage.Free;
+  end;
+end;
+
+procedure LoadPropertyStoreFromXmlFile (iPropertyStore : TJvCustomPropertyStore;
+                                        const iFileName : string;
+                                        const iAppStoragePath : string = '');
+Var
+  AppStorage : TJvAppXmlFileStorage;
+  SaveAppStorage : TJvCustomAppStorage;
+  SaveAppStoragePath : string;
+begin
+  if not Assigned(iPropertyStore) then
+    exit;
+  AppStorage := TJvAppXmlFileStorage.Create(Nil);
+  try
+    AppStorage.Location := flCustom;
+    AppStorage.FileName := iFileName;
+    SaveAppStorage := iPropertyStore.AppStorage;
+    SaveAppStoragePath := iPropertyStore.AppStoragePath;
+    try
+      iPropertyStore.AppStoragePath := iAppStoragePath;
+      iPropertyStore.AppStorage := AppStorage;
+      iPropertyStore.LoadProperties;
+    finally
+      iPropertyStore.AppStoragePath := SaveAppStoragePath;
+      iPropertyStore.AppStorage := SaveAppStorage;
+    end;
+  finally
+    AppStorage.Free;
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}

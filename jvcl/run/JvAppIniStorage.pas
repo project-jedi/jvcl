@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Classes, IniFiles,
-  JvAppStorage;
+  JvAppStorage, JvPropertyStore;
 
 type
   TJvAppIniStorageOptions = class(TJvAppStorageOptions)
@@ -128,6 +128,14 @@ type
     property SubStorages;
     property OnGetFileName;
   end;
+
+
+procedure StorePropertyStoreToIniFile (iPropertyStore : TJvCustomPropertyStore;
+                                       const iFileName : string;
+                                       const iAppStoragePath : string = '');
+procedure LoadPropertyStoreFromIniFile (iPropertyStore : TJvCustomPropertyStore;
+                                        const iFileName : string;
+                                        const iAppStoragePath : string = '');
 
 implementation
 
@@ -654,6 +662,67 @@ begin
   if FileExists(FullFileName) and not IsUpdating then
     IniFile.Rename(FullFileName, True);
 end;
+
+//=== { Common procedures } ===============================================
+
+procedure StorePropertyStoreToIniFile (iPropertyStore : TJvCustomPropertyStore;
+                                       const iFileName : string;
+                                       const iAppStoragePath : string = '');
+Var
+  AppStorage : TJvAppIniFileStorage;
+  SaveAppStorage : TJvCustomAppStorage;
+  SaveAppStoragePath : string;
+begin
+  if not Assigned(iPropertyStore) then
+    exit;
+  AppStorage := TJvAppIniFileStorage.Create(Nil);
+  try
+    AppStorage.Location := flCustom;
+    AppStorage.FileName := iFileName;
+    SaveAppStorage := iPropertyStore.AppStorage;
+    SaveAppStoragePath := iPropertyStore.AppStoragePath;
+    try
+      iPropertyStore.AppStoragePath := iAppStoragePath;
+      iPropertyStore.AppStorage := AppStorage;
+      iPropertyStore.StoreProperties;
+    finally
+      iPropertyStore.AppStoragePath := SaveAppStoragePath;
+      iPropertyStore.AppStorage := SaveAppStorage;
+    end;
+  finally
+    AppStorage.Free;
+  end;
+end;
+
+procedure LoadPropertyStoreFromIniFile (iPropertyStore : TJvCustomPropertyStore;
+                                        const iFileName : string;
+                                        const iAppStoragePath : string = '');
+Var
+  AppStorage : TJvAppIniFileStorage;
+  SaveAppStorage : TJvCustomAppStorage;
+  SaveAppStoragePath : string;
+begin
+  if not Assigned(iPropertyStore) then
+    exit;
+  AppStorage := TJvAppIniFileStorage.Create(Nil);
+  try
+    AppStorage.Location := flCustom;
+    AppStorage.FileName := iFileName;
+    SaveAppStorage := iPropertyStore.AppStorage;
+    SaveAppStoragePath := iPropertyStore.AppStoragePath;
+    try
+      iPropertyStore.AppStoragePath := iAppStoragePath;
+      iPropertyStore.AppStorage := AppStorage;
+      iPropertyStore.LoadProperties;
+    finally
+      iPropertyStore.AppStoragePath := SaveAppStoragePath;
+      iPropertyStore.AppStorage := SaveAppStorage;
+    end;
+  finally
+    AppStorage.Free;
+  end;
+end;
+
 
 {$IFDEF UNITVERSIONING}
 const
