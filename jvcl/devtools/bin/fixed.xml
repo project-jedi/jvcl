@@ -13,6 +13,11 @@
 <exclude name="./jvcl/lib/d7/**" />
 <exclude name="./jvcl/lib/k3/**" />
 <exclude name="./jvcl/**/*.zip" />
+<exclude name="./jvcl/JvQ*/**" />
+<exclude name="./jvcl/Q*/**" />
+<exclude name="./jvcl/qcommon/**" />
+<exclude name="./jvcl/qdesign/**" />
+<exclude name="./jvcl/qrun/**" />
 <include name="./jvcl/common/jvcl.inc" />
 <include name="./jvcl/common/jedi.inc" />
 <include name="./jvcl/common/linuxonly.inc" />
