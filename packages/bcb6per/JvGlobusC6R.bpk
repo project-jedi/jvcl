@@ -57,7 +57,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvGlobusC6R.cpp"/>
     <INCLUDEPATH value="..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="C:\Prog\delphi6\Lib\JCL\dcu;..\..\run;..\..\dcu;..\..\resources;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="..\..\run;..\..\dcu;..\..\resources;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
