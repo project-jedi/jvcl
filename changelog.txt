@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2004-07-13
+- TJvStrToHtml now always encodes known special characters as HTML named entities. 
+  It still understands numerical entities when decoding  // obones
+- TJvDateEdit now has a published Date property  // obones
 2004-06-26
 - Added Flat property to combo edits, replaces Ctl3D // remkobonte
 2004-06-13
