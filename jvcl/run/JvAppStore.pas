@@ -16,8 +16,9 @@ Bestebroer
 All Rights Reserved.
 
 Contributor(s):
+  Jens Fudickar
 
-Last Modified: 2003-09-05
+Last Modified: 2003-11-13
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -65,62 +66,61 @@ type
   TJvCustomAppStore = class;
 
   TAppStoreListItem = procedure(Sender: TJvCustomAppStore; const Path: string;
-    const Index: integer) of object;
-  TAppStoreListDelete = procedure(Sender: TJvCustomAppStore;
-    const Path: string; const First, Last: integer) of object;
-
-  TJvAppStoreOptionsDefinition = (asodString, asodInteger, asodList);
+    const Index: Integer) of object;
+  TAppStoreListDelete = procedure(Sender: TJvCustomAppStore; const Path: string;
+    const First, Last: Integer) of object;
 
   TJvAppStoreOptions = class(TPersistent)
   private
-    fBooleanAsString: boolean;
-    fBooleanStringTrueValues: string;
-    fBooleanStringFalseValues: string;
-    fEnumerationStoreOption: TJvAppStoreOptionsDefinition;
-    fSetStoreOption: TJvAppStoreOptionsDefinition;
-    fDateTimeAsString: boolean;
-    fFloatAsString: boolean;
-//    fDateTimeFormat : String;
-    fDefaultIfReadConvertError: boolean;
-    fDefaultIfValueNotExist: boolean;
-    procedure SetBooleanAsString(Value: boolean);
-    procedure SetBooleanStringTrueValues(Value: string);
-    procedure SetBooleanStringFalseValues(Value: string);
-    function IsValueListString(Value, List: string): boolean;
+    FBooleanAsString: Boolean;
+    FBooleanStringTrueValues: string;
+    FBooleanStringFalseValues: string;
+    FEnumAsStr: Boolean;
+    FSetAsStr: Boolean;
+    FDateTimeAsString: Boolean;
+    FFloatAsString: Boolean;
+    FDefaultIfReadConvertError: Boolean;
+    FDefaultIfValueNotExists: Boolean;
+  protected
+    procedure SetBooleanAsString(Value: Boolean); virtual;
+    procedure SetBooleanStringTrueValues(Value: string); virtual;
+    procedure SetBooleanStringFalseValues(Value: string); virtual;
+    procedure SetEnumAsStr(Value: Boolean); virtual;
+    procedure SetSetAsStr(Value: Boolean); virtual;
+    procedure SetDateTimeAsStr(Value: Boolean); virtual;
+    procedure SetFloatAsStr(Value: Boolean); virtual;
+    procedure SetDefaultIfReadConvertError(Value: Boolean); virtual;
+    procedure SetDefaultIfValueNotExists(Value: Boolean); virtual;
+    function IsValueListString(Value, List: string): Boolean; virtual;
   public
     constructor Create;
     function DefaultTrueString: string;
     function DefaultFalseString: string;
-    function IsValueTrueString(Value: string): boolean;
-    function IsValueFalseString(Value: string): boolean;
+    function IsValueTrueString(Value: string): Boolean;
+    function IsValueFalseString(Value: string): Boolean;
   published
-    property BooleanStringTrueValues: string
-      Read fBooleanStringTrueValues Write SetBooleanStringTrueValues;
-    property BooleanStringFalseValues: string
-      Read fBooleanStringFalseValues Write SetBooleanStringFalseValues;
-    property BooleanAsString: boolean Read fBooleanAsString
-      Write SetBooleanAsString default true;
-    property EnumerationStoreOption: TJvAppStoreOptionsDefinition
-      Read fEnumerationStoreOption Write fEnumerationStoreOption default asodString;
-    property SetStoreOption: TJvAppStoreOptionsDefinition
-      Read fSetStoreOption Write fSetStoreOption default asodList;
-    property DateTimeAsString: boolean Read fDateTimeAsString
-      Write fDateTimeAsString default true;
-    property FloatAsString: boolean Read fFloatAsString Write fFloatAsString;
-//    property DateTimeFormat : String read fDateTimeFormat write fDateTimeFormat ;
-    property DefaultIfReadConvertError: boolean
-      Read fDefaultIfReadConvertError Write fDefaultIfReadConvertError default false;
-    property DefaultIfValueNotExist: boolean
-      Read fDefaultIfValueNotExist Write fDefaultIfValueNotExist default true;
+    property BooleanStringTrueValues: string read FBooleanStringTrueValues
+      write SetBooleanStringTrueValues;
+    property BooleanStringFalseValues: string read FBooleanStringFalseValues
+      write SetBooleanStringFalseValues;
+    property BooleanAsString: Boolean read FBooleanAsString write SetBooleanAsString default True;
+    property EnumerationAsString: Boolean read FEnumAsStr write SetEnumAsStr default True;
+    property SetAsString: Boolean read FSetAsStr write SetSetAsStr default False;
+    property DateTimeAsString: Boolean read FDateTimeAsString write SetDateTimeAsStr default True;
+    property FloatAsString: Boolean read FFloatAsString write SetFloatAsStr default False;
+    property DefaultIfReadConvertError: Boolean read FDefaultIfReadConvertError
+      write SetDefaultIfReadConvertError default False;
+    property DefaultIfValueNotExists: Boolean read FDefaultIfValueNotExists
+      write SetDefaultIfValueNotExists default True;
   end;
+
+  TJvAppStoreOptionsClass = class of TJvAppStoreOptions;
 
   TAppStoreEnumOption  = (
     aeoFolders,           // report folders
     aeoValues,            // report values
-    aeoReportListAsValue,
- // report list as value (a list is actually a folder containing a Count and Item? values)
-    aeoReportRelative,
-    // report all found folders and values relative to the requested path (otherwise relative to the Root path)
+    aeoReportListAsValue, // report list as value (a list is actually a folder containing a Count and Item? values)
+    aeoReportRelative,    // report all found folders and values relative to the requested path (otherwise relative to the Root path)
     aeoRecursive);        // scan sub folders as well
   TAppStoreEnumOptions = set of TAppStoreEnumOption;
 
@@ -129,14 +129,14 @@ type
     FRoot: string;
     FCurPath: string;
     FStoreSL: TStrings;
-    fStoreOptions: TJvAppStoreOptions;
+    FStoreOptions: TJvAppStoreOptions;
   protected
     //Returns the property count of an instance
-    function GetPropCount(Instance: TPersistent): integer;
+    function GetPropCount(Instance: TPersistent): Integer;
     //Returns the property name of an instance at a certain index
-    function GetPropName(Instance: TPersistent; Index: integer): string;
-
-
+    function GetPropName(Instance: TPersistent; Index: Integer): string;
+    { Retrive the class that holds the storage options and format settings. }
+    class function GetStoreOptionsClass: TJvAppStoreOptionsClass; virtual;
     { Split the specified path into an absolute path and a value name (the last item in the path
       string). Just a helper for all the storage methods. }
     procedure SplitKeyPath(const Path: string; out Key, ValueName: string); virtual;
@@ -154,19 +154,19 @@ type
     function GetAbsPath(Path: string): string;
     { StringList item reader used by ReadStringList in the call to ReadList. }
     procedure ReadSLItem(Sender: TJvCustomAppStore; const Path: string;
-      const Index: integer);
+      const Index: Integer);
     { StringList item writer used by WriteStringList in the call to WriteList. }
     procedure WriteSLItem(Sender: TJvCustomAppStore; const Path: string;
-      const Index: integer);
+      const Index: Integer);
     { StringList item deleter used by WriteStringList in the call to WriteList. }
     procedure DeleteSLItems(Sender: TJvCustomAppStore; const Path: string;
-      const First, Last: integer);
+      const First, Last: Integer);
     { Enum all folders in the specified folder. }
     procedure EnumFolders(const Path: string; const Strings: TStrings;
-      const ReportListAsValue: boolean = true); virtual; abstract;
+      const ReportListAsValue: Boolean = True); virtual; abstract;
     { Enum all values below in the specified folder. }
     procedure EnumValues(const Path: string; const Strings: TStrings;
-      const ReportListAsValue: boolean = true); virtual; abstract;
+      const ReportListAsValue: Boolean = True); virtual; abstract;
     { Internal retrieval of GetStoredValues. Is used to handle recursiveness. }
     procedure InternalGetStoredValues(const PrefixPath, SearchPath: string;
       const Strings: TStrings; const Options: TAppStoreEnumOptions);
@@ -186,45 +186,38 @@ type
     { Retrieves the specified Integer value. If the value is not found, the Default will be
       returned. If the value is not an Integer (or can't be converted to an Integer an EConvertError
       exception will be raised. }
-    function ReadIntegerInt(const Path: string; Default: integer = 0): integer;
-      virtual; abstract;
+    function ReadIntegerInt(const Path: string; Default: Integer = 0): Integer; virtual; abstract;
     { Stores an Integer value. }
-    procedure WriteIntegerInt(const Path: string; Value: integer); virtual; abstract;
+    procedure WriteIntegerInt(const Path: string; Value: Integer); virtual; abstract;
     { Retrieves the specified Extended value. If the value is not found, the Default will be
       returned. If the value is not an Extended (or can't be converted to an Extended an
       EConvertError exception will be raised.}
-    function ReadFloatInt(const Path: string; Default: extended = 0): extended;
-      virtual; abstract;
+    function ReadFloatInt(const Path: string; Default: Extended = 0): Extended; virtual; abstract;
     { Stores an Extended value. }
-    procedure WriteFloatInt(const Path: string; Value: extended); virtual; abstract;
+    procedure WriteFloatInt(const Path: string; Value: Extended); virtual; abstract;
     { Retrieves the specified string value. If the value is not found, the Default will be
       returned. If the value is not a string (or can't be converted to a string an EConvertError
       exception will be raised. }
-    function ReadStringInt(const Path: string; Default: string = ''): string;
-      virtual; abstract;
+    function ReadStringInt(const Path: string; Default: string = ''): string; virtual; abstract;
     { Stores an string value. }
     procedure WriteStringInt(const Path: string; Value: string); virtual; abstract;
     { Retrieves the specified TDateTime value. If the value is not found, the Default will be
       returned. If the value is not a TDateTime (or can't be converted to an TDateTime an
       EConvertError exception will be raised. }
-    function ReadDateTimeInt(const Path: string;
-      Default: TDateTime = 0): TDateTime; virtual;
+    function ReadDateTimeInt(const Path: string; Default: TDateTime = 0): TDateTime; virtual;
     { Stores a TDateTime value. }
     procedure WriteDateTimeInt(const Path: string; Value: TDateTime); virtual;
     { Retrieves the specified Boolean value. If the value is not found, the Default will be
       returned. If the value is not a Boolean (or can't be converted to an Boolean an
       EConvertError exception will be raised. }
-    function ReadBooleanInt(const Path: string; Default: boolean = true): boolean;
-      virtual;
+    function ReadBooleanInt(const Path: string; Default: Boolean = True): Boolean; virtual;
     { Stores a Boolean value. }
-    procedure WriteBooleanInt(const Path: string; Value: boolean); virtual;
+    procedure WriteBooleanInt(const Path: string; Value: Boolean); virtual;
     { Retrieves the specified value into a buffer. The result holds the number of bytes actually
       retrieved. }
-    function ReadBinaryInt(const Path: string; var Buf; BufSize: integer): integer;
-      virtual; abstract;
+    function ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer; virtual; abstract;
     { Stores a buffer. }
-    procedure WriteBinaryInt(const Path: string; const Buf; BufSize: integer);
-      virtual; abstract;
+    procedure WriteBinaryInt(const Path: string; const Buf; BufSize: Integer); virtual; abstract;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -232,14 +225,13 @@ type
 
     class function ConcatPaths(const Paths: array of string): string;
     { Determines if the path represents a folder }
-    function IsFolder(Path: string; ListIsValue: boolean = true): boolean;
-      virtual; abstract;
+    function IsFolder(Path: string; ListIsValue: Boolean = True): Boolean; virtual; abstract;
     { Determines if the specified path exists }
-    function PathExists(const Path: string): boolean; virtual; abstract;
+    function PathExists(const Path: string): Boolean; virtual; abstract;
     { Determines if the specified value is stored }
-    function ValueStored(const Path: string): boolean; virtual; abstract;
+    function ValueStored(const Path: string): Boolean; virtual; abstract;
     { Determines if the specified list is stored }
-    function ListStored(const Path: string): boolean; virtual;
+    function ListStored(const Path: string): Boolean; virtual;
     { Deletes the specified value. If the value wasn't stored, nothing will happen. }
     procedure DeleteValue(const Path: string); virtual; abstract;
     { Deletes all values and sub folders of the specified folder including the folder itself. }
@@ -247,15 +239,15 @@ type
     { Retrieves the specified Integer value. If the value is not found, the Default will be
       returned. If the value is not an Integer (or can't be converted to an Integer an EConvertError
       exception will be raised. }
-    function ReadInteger(const Path: string; Default: integer = 0): integer; virtual;
+    function ReadInteger(const Path: string; Default: Integer = 0): Integer; virtual;
     { Stores an Integer value. }
-    procedure WriteInteger(const Path: string; Value: integer); virtual;
+    procedure WriteInteger(const Path: string; Value: Integer); virtual;
     { Retrieves the specified Extended value. If the value is not found, the Default will be
       returned. If the value is not an Extended (or can't be converted to an Extended an
       EConvertError exception will be raised.}
-    function ReadFloat(const Path: string; Default: extended = 0): extended; virtual;
+    function ReadFloat(const Path: string; Default: Extended = 0): Extended; virtual;
     { Stores an Extended value. }
-    procedure WriteFloat(const Path: string; Value: extended); virtual;
+    procedure WriteFloat(const Path: string; Value: Extended); virtual;
     { Retrieves the specified string value. If the value is not found, the Default will be
       returned. If the value is not a string (or can't be converted to a string an EConvertError
       exception will be raised. }
@@ -265,69 +257,66 @@ type
     { Retrieves the specified TDateTime value. If the value is not found, the Default will be
       returned. If the value is not a TDateTime (or can't be converted to an TDateTime an
       EConvertError exception will be raised. }
-    function ReadDateTime(const Path: string; Default: TDateTime = 0): TDateTime;
-      virtual;
+    function ReadDateTime(const Path: string; Default: TDateTime = 0): TDateTime; virtual;
     { Stores a TDateTime value. }
     procedure WriteDateTime(const Path: string; Value: TDateTime); virtual;
     { Retrieves the specified value into a buffer. The result holds the number of bytes actually
       retrieved. }
-    function ReadBinary(const Path: string; var Buf; BufSize: integer): integer;
-      virtual;
+    function ReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; virtual;
     { Stores a buffer. }
-    procedure WriteBinary(const Path: string; const Buf; BufSize: integer); virtual;
+    procedure WriteBinary(const Path: string; const Buf; BufSize: Integer); virtual;
     { Retrieves the specified list. Caller provides a callback method that will read the individual
       items. ReadList will first determine the number of items to read and calls the specified
       method for each item. }
-    function ReadList(const Path: string; const OnReadItem: TAppStoreListItem): integer;
-      virtual;
+    function ReadList(const Path: string; const OnReadItem: TAppStoreListItem): Integer; virtual;
     { Stores a list of items. The number of items is stored first. For each item the provided
       item write method is called. Any additional items in the list (from a previous write) will be
       removed by the optionally provided delete method. }
-    procedure WriteList(const Path: string; const ItemCount: integer;
+    procedure WriteList(const Path: string; const ItemCount: Integer;
       const OnWriteItem: TAppStoreListItem;
       const OnDeleteItems: TAppStoreListDelete = nil); virtual;
     { Retrieves a string list. The string list is optionally cleared before reading starts. The
       result value is the number of items read. Uses ReadList with internally provided methods to
       do the actual reading. }
     function ReadStringList(const Path: string; const SL: TStrings;
-      const ClearFirst: boolean = true): integer; virtual;
+      const ClearFirst: Boolean = True): Integer; virtual;
     { Stores a string list. Uses WriteList with internally provided methods to do the actual
       storing. }
     procedure WriteStringList(const Path: string; const SL: TStrings); virtual;
-    { Retrieves a enumeration. If the value is not found, the Default will be
-      returned. }
+    { Retrieves an enumeration. If the value is not found, the Default will be returned. }
     procedure ReadEnumeration(const Path: string; const TypeInfo: PTypeInfo;
       const Default; out Value); virtual;
-    { Stores a Enumeration }
+    { Stores an enumeration }
     procedure WriteEnumeration(const Path: string; const TypeInfo: PTypeInfo;
       const Value); virtual;
-    { Retrieves a enumeration set. If the value is not found, the Default will be
-      returned. }
-    procedure ReadSet(const Path: string; const TypeInfo: PTypeInfo;
-      const Default; out Value); virtual;
-    { Stores a enumeration set }
-    procedure WriteSet(const Path: string; const TypeInfo: PTypeInfo;
-      const Value); virtual;
+    { Retrieves a set. If the value is not found, the Default will be returned. }
+    procedure ReadSet(const Path: string; const TypeInfo: PTypeInfo; const Default;
+      out Value); virtual;
+    { Stores a set. }
+    procedure WriteSet(const Path: string; const TypeInfo: PTypeInfo; const Value); virtual;
     { Retrieves the specified Boolean value. If the value is not found, the Default will be
-      returned. If the value is not an Boolean (or can't be converted to an Boolean an EConvertError
+      returned. If the value is not an Boolean (or can't be converted to a Boolean an EConvertError
       exception will be raised. }
-    function ReadBoolean(const Path: string; Default: boolean = true): boolean; virtual;
+    function ReadBoolean(const Path: string; Default: Boolean = True): Boolean; virtual;
     { Stores an Boolean value
       The value is stored as String TRUE/FALSE. }
-    procedure WriteBoolean(const Path: string; Value: boolean); virtual;
-    { Retrieves a TPersistent-Object with all of its published Properties }
+    procedure WriteBoolean(const Path: string; Value: Boolean); virtual;
+    { Retrieves a TPersistent-Object with all of its published properties }
     function ReadPersistent(const Path: string; const PersObj: TPersistent;
-      const Recursive: boolean = true; const ClearFirst: boolean = true): PTypeInfo;
-    { Stores a TPersistent-Object with all of its published Properties}
+      const Recursive: Boolean = True; const ClearFirst: Boolean = True): PTypeInfo;
+    { Stores a TPersistent-Object with all of its published properties}
     procedure WritePersistent(const Path: string; const PersObj: TPersistent;
-      const Recursive: boolean = true);
+      const Recursive: Boolean = True);
 
+    { Translates a Char value to a (valid) key name. Used by the set storage methods. }
+    function GetCharName(Ch: Char): string; virtual;
+    { Translates an Integer value to a key name. Used by the set storage methods. }
+    function GetIntName(Value: Integer): string; virtual;
     { Enumerate a list of stored values and/or folder below the specified path, optionally scanning
       sub folders as well. The associated object is an integer specifying what the string
       represents: 1: Folder; 2: Value; 3: Both }
     procedure GetStoredValues(const Path: string; const Strings: TStrings;
-      const Options: TAppStoreEnumOptions =
-      [aeoValues, aeoReportListAsValue, aeoRecursive]);
+      const Options: TAppStoreEnumOptions = [aeoValues, aeoReportListAsValue, aeoRecursive]);
     { Root of any values to be read/written. This value is combined with the path given in one of
       the Read*/Write* methods to determine the actual key used. It's always relative to the value
       of Root (which is an absolute path) }
@@ -349,8 +338,8 @@ uses
 
 procedure UpdateGlobalPath(GlobalPaths, NewPaths: TStrings);
 var
-  I: integer;
-  J: integer;
+  I: Integer;
+  J: Integer;
 begin
   for I := 0 to NewPaths.Count - 1 do
   begin
@@ -374,12 +363,12 @@ function OptimizePaths(Paths: array of string): string;
 var
   GlobalPaths: TStrings;
   CurPaths: TStrings;
-  Index: integer;
+  Index: Integer;
 begin
   if Length(Paths) <> 0 then
   begin
     GlobalPaths := nil;
-    CurPaths    := nil;
+    CurPaths := nil;
     try
       GlobalPaths := TStringList.Create;
       CurPaths := TStringList.Create;
@@ -387,11 +376,11 @@ begin
       while (Index > 0) and (StrLeft(Paths[Index], 1) <> '\') do
         Dec(Index);
       repeat
-        StrToStrings(Paths[Index], '\', CurPaths, false);
+        StrToStrings(Paths[Index], '\', CurPaths, False);
         UpdateGlobalPath(GlobalPaths, CurPaths);
         Inc(Index);
       until Index > High(Paths);
-      Result := StringsToStr(GlobalPaths, '\', false);
+      Result := StringsToStr(GlobalPaths, '\', False);
     finally
       CurPaths.Free;
       GlobalPaths.Free;
@@ -401,89 +390,129 @@ begin
     Result := '';
 end;
 
-//-----------------------------------------------------------------------------
-//===TJvAppStoreOptions==============================================================================
+//===TJvAppStoreOptions=============================================================================
+
 constructor TJvAppStoreOptions.Create;
 begin
   inherited Create;
   BooleanStringTrueValues := 'TRUE, YES, Y';
   BooleanStringFalseValues := 'FALSE, NO, N';
-  BooleanAsString  := true;
-  EnumerationStoreOption := asodString;
-  SetStoreOption   := asodList;
-  DateTimeAsString := true;
-//  DateTimeFormat := 'dd.mm.yyyy hh:nn:ss';
-  DefaultIfReadConvertError := false;
-  DefaultIfValueNotExist := true;
+  BooleanAsString := True;
+  EnumerationAsString := True;
+  SetAsString := False;
+  DateTimeAsString := True;
+  DefaultIfReadConvertError := False;
+  DefaultIfValueNotExists := True;
 end;
 
-function TJvAppStoreOptions.IsValueListString(Value, List: string): boolean;
+function TJvAppStoreOptions.IsValueListString(Value, List: string): Boolean;
 var
-  sl: TStringList;
+  SL: TStringList;
 begin
-  sl := TStringList.Create;
+  SL := TStringList.Create;
   try
-    sl.CommaText := Uppercase(List);
-    Result := sl.IndexOf(Uppercase(Value)) >= 0;
+    SL.CommaText := Uppercase(List);
+    Result := SL.IndexOf(Uppercase(Value)) >= 0;
   finally
-    sl.Free;
+    SL.Free;
   end;
 end;
 
 function TJvAppStoreOptions.DefaultTrueString: string;
+var
+  I: Integer;
 begin
-  Result := trim(Copy(fBooleanStringTrueValues, 1,
-    Pos(',', fBooleanStringTrueValues) - 1));
+  I := Pos(',', FBooleanStringTrueValues);
+  if I = 0 then
+    I := Length(FBooleanStringTrueValues) + 1;
+  Result := Trim(Copy(FBooleanStringTrueValues, 1, I - 1));
 end;
 
 function TJvAppStoreOptions.DefaultFalseString: string;
+var
+  I: Integer;
 begin
-  Result := trim(Copy(fBooleanStringFalseValues, 1,
-    Pos(',', fBooleanStringFalseValues) - 1));
+  I := Pos(',', FBooleanStringFalseValues);
+  if I = 0 then
+    I := Length(FBooleanStringFalseValues) + 1;
+  Result := Trim(Copy(FBooleanStringFalseValues, 1, I - 1));
 end;
 
-function TJvAppStoreOptions.IsValueTrueString(Value: string): boolean;
+function TJvAppStoreOptions.IsValueTrueString(Value: string): Boolean;
 begin
-  Result := IsValueListString(Value, fBooleanStringTrueValues);
+  Result := IsValueListString(Value, FBooleanStringTrueValues);
 end;
 
-function TJvAppStoreOptions.IsValueFalseString(Value: string): boolean;
+function TJvAppStoreOptions.IsValueFalseString(Value: string): Boolean;
 begin
-  Result := IsValueListString(Value, fBooleanStringFalseValues);
+  Result := IsValueListString(Value, FBooleanStringFalseValues);
 end;
 
-procedure TJvAppStoreOptions.SetBooleanAsString(Value: boolean);
+procedure TJvAppStoreOptions.SetBooleanAsString(Value: Boolean);
 begin
-  fBooleanAsString := Value and (DefaultTrueString <> '') and (DefaultFalseString <> '');
+  FBooleanAsString := Value and (DefaultTrueString <> '') and (DefaultFalseString <> '');
 end;
 
 procedure TJvAppStoreOptions.SetBooleanStringTrueValues(Value: string);
 begin
-  fBooleanStringTrueValues := Value;
-  fBooleanAsString := fBooleanAsString and (DefaultTrueString <> '')
+  FBooleanStringTrueValues := Value;
+  FBooleanAsString := FBooleanAsString and (DefaultTrueString <> '')
 end;
 
 procedure TJvAppStoreOptions.SetBooleanStringFalseValues(Value: string);
 begin
-  fBooleanStringFalseValues := Value;
-  fBooleanAsString := fBooleanAsString and (DefaultFalseString <> '')
+  FBooleanStringFalseValues := Value;
+  FBooleanAsString := FBooleanAsString and (DefaultFalseString <> '')
 end;
 
-//-----------------------------------------------------------------------------
+procedure TJvAppStoreOptions.SetEnumAsStr(Value: Boolean);
+begin
+  FEnumAsStr := Value;
+end;
+
+procedure TJvAppStoreOptions.SetSetAsStr(Value: Boolean);
+begin
+  FSetAsStr := Value;
+end;
+
+procedure TJvAppStoreOptions.SetDateTimeAsStr(Value: Boolean);
+begin
+  FDateTimeAsString := Value;
+end;
+
+procedure TJvAppStoreOptions.SetFloatAsStr(Value: Boolean);
+begin
+  FFloatAsString := Value;
+end;
+
+procedure TJvAppStoreOptions.SetDefaultIfReadConvertError(Value: Boolean);
+begin
+  FDefaultIfReadConvertError := Value;
+end;
+
+procedure TJvAppStoreOptions.SetDefaultIfValueNotExists(Value: Boolean);
+begin
+  FDefaultIfValueNotExists := Value;
+end;
+
 //===TJvCustomAppStore==============================================================================
 
 constructor TJvCustomAppStore.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fStoreOptions := TJvAppStoreOptions.Create;
+  FStoreOptions := TJvAppStoreOptions.Create;
 end;
 
 destructor TJvCustomAppStore.Destroy;
 begin
-  fStoreOptions.Free;
+  FreeAndNil(FStoreOptions);
   inherited Destroy;
 end;
 
+class function TJvCustomAppStore.GetStoreOptionsClass: TJvAppStoreOptionsClass;
+begin
+  Result := TJvAppStoreOptions;
+end;
 
 procedure TJvCustomAppStore.SplitKeyPath(const Path: string; out Key, ValueName: string);
 var
@@ -519,19 +548,19 @@ begin
 end;
 
 procedure TJvCustomAppStore.ReadSLItem(Sender: TJvCustomAppStore;
-  const Path: string; const Index: integer);
+  const Path: string; const Index: Integer);
 begin
   Sender.FStoreSL.Add(Sender.ReadString(Path + '\Item' + IntToStr(Index)));
 end;
 
 procedure TJvCustomAppStore.WriteSLItem(Sender: TJvCustomAppStore;
-  const Path: string; const Index: integer);
+  const Path: string; const Index: Integer);
 begin
   Sender.WriteString(Path + '\Item' + IntToStr(Index), Sender.FStoreSL[Index]);
 end;
 
 procedure TJvCustomAppStore.DeleteSLItems(Sender: TJvCustomAppStore;
-  const Path: string; const First, Last: integer);
+  const Path: string; const First, Last: Integer);
 var
   I: integer;
 begin
@@ -543,9 +572,9 @@ procedure TJvCustomAppStore.InternalGetStoredValues(const PrefixPath, SearchPath
   const Strings: TStrings; const Options: TAppStoreEnumOptions);
 var
   TempList: TStrings;
-  I: integer;
+  I: Integer;
   S: string;
-  PrevIdx: integer;
+  PrevIdx: Integer;
 begin
   TempList := TStringList.Create;
   try
@@ -563,7 +592,7 @@ begin
           PrevIdx := Strings.IndexOf(S);
           if PrevIdx > -1 then
             Strings.Objects[PrevIdx] :=
-              TObject(integer(Strings.Objects[PrevIdx]) or aptValue)
+              TObject(Integer(Strings.Objects[PrevIdx]) or aptValue)
           else
             Strings.AddObject(S, TObject(aptValue));
         end;
@@ -572,7 +601,7 @@ begin
     if (aeoFolders in Options) or (aeoRecursive in Options) then
     begin
       TempList.Clear;
-      EnumFolders(SearchPath, TempList, false);
+      EnumFolders(SearchPath, TempList, False);
       for I := 0 to TempList.Count - 1 do
       begin
         if (aeoFolders in Options) and IsFolder(SearchPath + '\' +
@@ -581,7 +610,7 @@ begin
           PrevIdx := Strings.IndexOf(PrefixPath + TempList[I]);
           if PrevIdx > -1 then
             Strings.Objects[PrevIdx] :=
-              TObject(integer(Strings.Objects[PrevIdx]) or aptFolder)
+              TObject(Integer(Strings.Objects[PrevIdx]) or aptFolder)
           else
             Strings.AddObject(PrefixPath + TempList[I], TObject(aptFolder));
         end;
@@ -608,46 +637,33 @@ end;
 
 procedure TJvCustomAppStore.SetStoreOptions(Value: TJvAppStoreOptions);
 begin
-  if (Value <> nil) and (Value <> fStoreOptions) then
-    fStoreOptions.Assign(Value);
+  if (Value <> nil) and (Value <> FStoreOptions) then
+    FStoreOptions.Assign(Value);
 end;
 
-class function TJvCustomAppStore.NameIsListItem(Name: string): boolean;
+class function TJvCustomAppStore.NameIsListItem(Name: string): Boolean;
 var
-  NameStart: pchar;
+  NameStart: PChar;
 begin
   NameStart := AnsiStrRScan(pchar(Name), '\');
   if NameStart = nil then
-    NameStart := pchar(Name);
+    NameStart := PChar(Name);
   Result := (AnsiStrLIComp(NameStart, 'Item', 4) = 0) and (NameStart[4] in ['0' .. '9']);
 end;
 
 class function TJvCustomAppStore.ConcatPaths(const Paths: array of string): string;
 begin
   Result := OptimizePaths(Paths);
-{  Result := '';
-  for I := Low(Paths) to High(Paths) do
-    if (Paths[I] <> '') then
-    begin
-      if (AnsiLastChar(Result) <> '\') and (Paths[I][1] <> '\') then
-        Result := Result + '\';
-      Result := Result + Paths[I];
-    end;}
 end;
 
-function TJvCustomAppStore.ListStored(const Path: string): boolean;
+function TJvCustomAppStore.ListStored(const Path: string): Boolean;
 begin
   Result := ValueStored(Path + '\' + 'Count');
 end;
 
-//-----------------------------------------------------------------------------
-//=== TJvCustomAppStore-Read/write Functions==============================================================================
-//=== Integer
-
-function TJvCustomAppStore.ReadInteger(const Path: string;
-  Default: integer = 0): integer;
+function TJvCustomAppStore.ReadInteger(const Path: string; Default: Integer): Integer;
 begin
-  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExist then
+  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
   begin
     Result := Default;
     Exit;
@@ -663,17 +679,14 @@ begin
   end;
 end;
 
-procedure TJvCustomAppStore.WriteInteger(const Path: string; Value: integer);
+procedure TJvCustomAppStore.WriteInteger(const Path: string; Value: Integer);
 begin
   WriteIntegerInt(Path, Value);
 end;
 
- //-----------------------------------------------------------------------------
- //=== Float
-function TJvCustomAppStore.ReadFloat(const Path: string;
-  Default: extended = 0): extended;
+function TJvCustomAppStore.ReadFloat(const Path: string; Default: Extended): Extended;
 begin
-  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExist then
+  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
   begin
     Result := Default;
     Exit;
@@ -702,7 +715,7 @@ begin
   end;
 end;
 
-procedure TJvCustomAppStore.WriteFloat(const Path: string; Value: extended);
+procedure TJvCustomAppStore.WriteFloat(const Path: string; Value: Extended);
 begin
   if StoreOptions.FloatAsString then
     WriteStringInt(Path, FloatToStr(Value))
@@ -710,11 +723,9 @@ begin
     WriteFloatInt(Path, Value);
 end;
 
- //-----------------------------------------------------------------------------
- //=== String
-function TJvCustomAppStore.ReadString(const Path: string; Default: string = ''): string;
+function TJvCustomAppStore.ReadString(const Path: string; Default: string): string;
 begin
-  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExist then
+  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
   begin
     Result := Default;
     Exit;
@@ -735,23 +746,17 @@ begin
   WriteStringInt(Path, Value);
 end;
 
- //-----------------------------------------------------------------------------
- //=== Binary
-function TJvCustomAppStore.ReadBinary(const Path: string; var Buf;
-  BufSize: integer): integer;
+function TJvCustomAppStore.ReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
 begin
   Result := ReadBinaryInt(Path, Buf, BufSize);
 end;
 
-procedure TJvCustomAppStore.WriteBinary(const Path: string; const Buf; BufSize: integer);
+procedure TJvCustomAppStore.WriteBinary(const Path: string; const Buf; BufSize: Integer);
 begin
   WriteBinaryInt(Path, Buf, BufSize);
 end;
 
- //-----------------------------------------------------------------------------
- //=== DateTime
-function TJvCustomAppStore.ReadDateTimeInt(const Path: string;
-  Default: TDateTime = 0): TDateTime;
+function TJvCustomAppStore.ReadDateTimeInt(const Path: string; Default: TDateTime): TDateTime;
 begin
   Result := ReadFloat(Path, Default);
 end;
@@ -761,10 +766,9 @@ begin
   WriteFloat(Path, Value);
 end;
 
-function TJvCustomAppStore.ReadDateTime(const Path: string;
-  Default: TDateTime): TDateTime;
+function TJvCustomAppStore.ReadDateTime(const Path: string; Default: TDateTime): TDateTime;
 begin
-  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExist then
+  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
   begin
     Result := Default;
     Exit;
@@ -820,12 +824,11 @@ begin
   WriteInteger(Path, Ord(Value));
 end;
 
-function TJvCustomAppStore.ReadBoolean(const Path: string;
-  Default: boolean = true): boolean;
+function TJvCustomAppStore.ReadBoolean(const Path: string; Default: Boolean): Boolean;
 var
   Value: string;
 begin
-  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExist then
+  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
   begin
     Result := Default;
     Exit;
@@ -852,7 +855,7 @@ begin
   end;
 end;
 
-procedure TJvCustomAppStore.WriteBoolean(const Path: string; Value: boolean);
+procedure TJvCustomAppStore.WriteBoolean(const Path: string; Value: Boolean);
 begin
   if StoreOptions.BooleanAsString then
     if Value then
@@ -864,20 +867,20 @@ begin
 end;
 
 function TJvCustomAppStore.ReadList(const Path: string;
-  const OnReadItem: TAppStoreListItem): integer;
+  const OnReadItem: TAppStoreListItem): Integer;
 var
-  I: integer;
+  I: Integer;
 begin
   Result := ReadInteger(Path + '\Count');
   for I := 0 to Result - 1 do
     OnReadItem(Self, Path, I);
 end;
 
-procedure TJvCustomAppStore.WriteList(const Path: string; const ItemCount: integer;
+procedure TJvCustomAppStore.WriteList(const Path: string; const ItemCount: Integer;
   const OnWriteItem: TAppStoreListItem; const OnDeleteItems: TAppStoreListDelete);
 var
-  PrevListCount: integer;
-  I: integer;
+  PrevListCount: Integer;
+  I: Integer;
 begin
   PrevListCount := ReadInteger(Path + '\Count');
   WriteInteger(Path + '\Count', ItemCount);
@@ -887,8 +890,8 @@ begin
     OnDeleteItems(Self, Path, ItemCount, PrevListCount - 1);
 end;
 
-function TJvCustomAppStore.ReadStringList(const Path: string;
-  const SL: TStrings; const ClearFirst: boolean): integer;
+function TJvCustomAppStore.ReadStringList(const Path: string; const SL: TStrings;
+  const ClearFirst: Boolean): Integer;
 begin
   if ClearFirst then
     SL.Clear;
@@ -917,14 +920,14 @@ begin
   end;
 end;
 
-procedure TJvCustomAppStore.ReadEnumeration(const Path: string;
-  const TypeInfo: PTypeInfo; const Default; out Value);
+procedure TJvCustomAppStore.ReadEnumeration(const Path: string; const TypeInfo: PTypeInfo;
+  const Default; out Value);
 var
   OrdValue: Integer;
 begin
   if TypeInfo.Kind <> tkEnumeration then
     raise EJVCLException.Create('Not an enumeration type.');
-  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExist then
+  if not ValueStored(Path) and StoreOptions.DefaultIfValueNotExists then
   begin
     CopyEnumValue(Default, Value, GetTypeData(TypeInfo).OrdType);
     Exit;
@@ -968,35 +971,110 @@ begin
   end;
 end;
 
-procedure TJvCustomAppStore.WriteEnumeration(const Path: string;
-  const TypeInfo: PTypeInfo; const Value);
-begin
-  case StoreOptions.EnumerationStoreOption of
-    asodString:
-      WriteString(Path, GetEnumName(TypeInfo, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType)));
-    asodList, // Storing an enumeration as a list seems inapropiate, so I interpreted it as Integer
-    asodInteger:
-      WriteInteger(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType));
-  end;
-end;
-
-procedure TJvCustomAppStore.ReadSet(const Path: string; const TypeInfo: PTypeInfo;
-  const Default; out Value);
-var
-  StrValue: string;
-begin
-  StrValue := ReadString(Path, JclSetToStr(TypeInfo, Default, true));
-  JclStrToSet(TypeInfo, Value, StrValue);
-end;
-
-procedure TJvCustomAppStore.WriteSet(const Path: string; const TypeInfo: PTypeInfo;
+procedure TJvCustomAppStore.WriteEnumeration(const Path: string; const TypeInfo: PTypeInfo;
   const Value);
 begin
+  if StoreOptions.EnumerationAsString then
+    WriteString(Path, GetEnumName(TypeInfo, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType)))
+  else
+    WriteInteger(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType));
+end;
+
+procedure TJvCustomAppStore.ReadSet(const Path: string; const TypeInfo: PTypeInfo; const Default;
+  out Value);
+var
+  Lst: TStrings;
+  I: Integer;
+begin
+  if PathExists(Path) then
+  begin
+    Lst := TStringList.Create;
+    try
+      with (JclTypeInfo(TypeInfo) as IJclSetTypeInfo).BaseType as IJclOrdinalRangeTypeInfo do
+      begin
+        case GetTypeKind of
+          tkEnumeration:
+            begin
+              with ((JclTypeInfo(TypeInfo) as IJclSetTypeInfo).BaseType as
+                  IJclEnumerationTypeInfo) do
+                for I := GetMinValue to GetMaxValue do
+                  if ReadBoolean(ConcatPaths([Path, GetNames(I)]), False) then
+                    Lst.Add(GetNames(I));
+              (JclTypeInfo(TypeInfo) as IJclSetTypeInfo).SetAsList(Value, Lst);
+            end;
+          tkChar:
+            begin
+              JclStrToSet(TypeInfo, Value, ''); // empty out value
+              for I := GetMinValue to GetMaxValue do
+                if ReadBoolean(ConcatPaths([Path, GetCharName(Chr(I))]), False) then
+                  Include(TIntegerSet(Value), I);
+            end;
+          tkInteger:
+            begin
+              for I := GetMinValue to GetMaxValue do
+                if ReadBoolean(ConcatPaths([Path, GetIntName(I)]), False) then
+                  Lst.Add(IntToStr(I));
+              (JclTypeInfo(TypeInfo) as IJclSetTypeInfo).SetAsList(Value, Lst);
+            end;
+          else
+            raise EJVCLException.Create('Unknown base type for given set.');
+        end;
+      end;
+    finally
+      FreeAndNil(Lst);
+    end;
+  end
+  else // It's stored as a string value or not stored at all
+    JclStrToSet(TypeInfo, Value, ReadString(Path, JclSetToStr(TypeInfo, Default, True)));
+end;
+
+procedure TJvCustomAppStore.WriteSet(const Path: string; const TypeInfo: PTypeInfo; const Value);
+var
+  Lst: TStrings;
+  I: Integer;
+begin
+  if StoreOptions.SetAsString then
+    WriteString(Path, JclSetToStr(TypeInfo, Value, True))
+  else
+  begin
+    Lst := TStringList.Create;
+    try
+      with (JclTypeInfo(TypeInfo) as IJclSetTypeInfo).BaseType as IJclOrdinalRangeTypeInfo do
+      begin
+        case GetTypeKind of
+          tkEnumeration:
+            begin
+              (JclTypeInfo(TypeInfo) as IJclSetTypeInfo).GetAsList(Value, False, Lst);
+              with ((JclTypeInfo(TypeInfo) as IJclSetTypeInfo).BaseType as
+                  IJclEnumerationTypeInfo) do
+                for I := GetMinValue to GetMaxValue do
+                  WriteBoolean(ConcatPaths([Path, GetNames(I)]),
+                    Lst.IndexOf(GetNames(I)) > - 1);
+            end;
+          tkChar:
+            begin
+              for I := GetMinValue to GetMaxValue do
+                WriteBoolean(ConcatPaths([Path, GetCharName(Chr(I))]), I in TIntegerSet(Value));
+            end;
+          tkInteger:
+            begin
+              (JclTypeInfo(TypeInfo) as IJclSetTypeInfo).GetAsList(Value, False, Lst);
+              for I := GetMinValue to GetMaxValue do
+                WriteBoolean(ConcatPaths([Path, GetIntName(I)]),
+                  Lst.IndexOf(IntToStr(I)) > - 1);
+            end;
+          else
+            raise EJVCLException.Create('Unknown base type for given set.');
+        end;
+      end;
+    finally
+      FreeAndNil(Lst);
+    end;
+  end;
   WriteString(Path, JclSetToStr(TypeInfo, Value, true));
 end;
 
-//Returns the number of properties of a given object
-function TJvCustomAppStore.GetPropCount(Instance: TPersistent): integer;
+function TJvCustomAppStore.GetPropCount(Instance: TPersistent): Integer;
 var
   Data: PTypeData;
 begin
@@ -1004,33 +1082,31 @@ begin
   Result := Data^.PropCount;
 end;
 
-//Returns the property name of an instance at a certain index
-function TJvCustomAppStore.GetPropName(Instance: TPersistent; Index: integer): string;
+function TJvCustomAppStore.GetPropName(Instance: TPersistent; Index: Integer): string;
 var
   PropList: PPropList;
   PropInfo: PPropInfo;
-  Data:     PTypeData;
+  Data: PTypeData;
 begin
   Result := '';
-  Data   := GetTypeData(Instance.Classinfo);
+  Data := GetTypeData(Instance.ClassInfo);
   GetMem(PropList, Data^.PropCount * Sizeof(PPropInfo));
   try
     GetPropInfos(Instance.ClassInfo, PropList);
     PropInfo := PropList^[Index];
-    Result   := PropInfo^.Name;
+    Result := PropInfo^.Name;
   finally
     FreeMem(PropList, Data^.PropCount * Sizeof(PPropInfo));
   end;
 end;
 
-function TJvCustomAppStore.ReadPersistent(const Path: string;
-  const PersObj: TPersistent; const Recursive: boolean = true;
-  const ClearFirst: boolean = true): PTypeInfo;
+function TJvCustomAppStore.ReadPersistent(const Path: string; const PersObj: TPersistent;
+  const Recursive, ClearFirst: Boolean): PTypeInfo;
 var
-  Index:    integer;
+  Index: Integer;
   PropName: string;
   PropPath: string;
-
+  TmpValue: Integer;
 begin
   Result := nil;
   if not Assigned(PersObj) then
@@ -1042,39 +1118,48 @@ begin
     case PropType(PersObj, PropName) of
       tkLString,
       tkWString,
-      tkString: SetStrProp(PersObj, PropName, ReadString(PropPath,
-          GetStrProp(PersObj, PropName)));
-//      tkEnumeration: SetEnumProp(PersObj, GetPropInfo(PersObj,PropName),  ReadEnumeration (PropPath, PropType(PersObj,PropName), PropName));
-//      tkSet : SetSetPropt (PersObj, GetPropInfo(PersObj,PropName),  ReadSet (PropPath, PropType(PersObj,PropName), GetEnumProp(PersObj,PropName));
-      tkEnumeration,
-      tkset,
+      tkString:
+        SetStrProp(PersObj, PropName, ReadString(PropPath, GetStrProp(PersObj, PropName)));
+      tkEnumeration:
+        begin
+          TmpValue := GetOrdProp(PersObj, PropName);
+          ReadEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
+          SetOrdProp(PersObj, PropName, TmpValue);
+        end;
+      tkSet:
+        begin
+          TmpValue := GetOrdProp(PersObj, PropName);
+          ReadSet(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue, TmpValue);
+          SetOrdProp(PersObj, PropName, TmpValue);
+        end;
       tkChar,
-      tkInteger: WriteInteger(PropPath, GetOrdProp(PersObj, PropName));
-      tkInt64: WriteString(PropPath, IntToStr(GetInt64Prop(PersObj, PropName)));
-      tkFloat: WriteString(PropPath, FloatToStr(GetFloatProp(PersObj, PropName)));
+      tkInteger:
+        WriteInteger(PropPath, GetOrdProp(PersObj, PropName));
+      tkInt64:
+        WriteString(PropPath, IntToStr(GetInt64Prop(PersObj, PropName)));
+      tkFloat:
+        WriteFloat(PropPath, GetFloatProp(PersObj, PropName));
       tkClass:
-      begin
-        if (TPersistent(GetOrdProp(PersObj, PropName)) is TStrings) then
-          ReadStringList(PropPath, TStrings(GetOrdProp(PersObj, PropName)), true)
-        else if (TPersistent(GetOrdProp(PersObj, PropName)) is TPersistent) and
-          Recursive then
-          ReadPersistent(PropPath, TPersistent(GetOrdProp(PersObj, PropName)),
-            Recursive);
-      end;   {*** tkClass: ***}
-    end;   {*** case PropType(PersObj,PropName) of ***}
+        begin
+          if (TPersistent(GetOrdProp(PersObj, PropName)) is TStrings) then
+            ReadStringList(PropPath, TStrings(GetOrdProp(PersObj, PropName)), True)
+          else if (TPersistent(GetOrdProp(PersObj, PropName)) is TPersistent) and Recursive then
+            ReadPersistent(PropPath, TPersistent(GetOrdProp(PersObj, PropName)), True);
+        end;
+    end;
   end;
 end;
 
-procedure TJvCustomAppStore.WritePersistent(const Path: string;
-  const PersObj: TPersistent; const Recursive: boolean = true);
+procedure TJvCustomAppStore.WritePersistent(const Path: string; const PersObj: TPersistent;
+  const Recursive: Boolean);
 var
-  Index:    integer;
+  Index: Integer;
   PropName: string;
   PropPath: string;
-
+  TmpValue: Integer;
 begin
-  if not assigned(PersObj) then
-    exit;
+  if not Assigned(PersObj) then
+    Exit;
   for Index := 0 to GetPropCount(PersObj) - 1 do
   begin
     PropName := GetPropName(PersObj, Index);
@@ -1082,33 +1167,54 @@ begin
     case PropType(PersObj, PropName) of
       tkLString,
       tkWString,
-      tkString: WriteString(PropPath, GetStrProp(PersObj, PropName));
-//      tkEnumeration: WriteEnumeration (PropPath, PropType(PersObj,PropName), GetOrdProp(PersObj,PropName));
-//      tkSet : WriteSet (PropPath, PropType(PersObj,PropName), GetOrdProp(PersObj,PropName));
-      tkEnumeration,
-      tkset,
+      tkString:
+        WriteString(PropPath, GetStrProp(PersObj, PropName));
+      tkEnumeration:
+        begin
+          TmpValue := GetOrdProp(PersObj, PropName);
+          WriteEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
+        end;
+      tkSet:
+        begin
+          TmpValue := GetOrdProp(PersObj, PropName);
+          WriteSet(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
+        end;
       tkChar,
-      tkInteger: WriteInteger(PropPath, GetOrdProp(PersObj, PropName));
-      tkInt64: WriteString(PropPath, IntToStr(GetInt64Prop(PersObj, PropName)));
-      tkFloat: WriteString(PropPath, FloatToStr(GetFloatProp(PersObj, PropName)));
+      tkInteger:
+        WriteInteger(PropPath, GetOrdProp(PersObj, PropName));
+      tkInt64:
+        WriteString(PropPath, IntToStr(GetInt64Prop(PersObj, PropName)));
+      tkFloat:
+        WriteFloat(PropPath, GetFloatProp(PersObj, PropName));
       tkClass:
       begin
         if (TPersistent(GetOrdProp(PersObj, PropName)) is TStrings) then
           WriteStringList(PropPath, TStrings(GetOrdProp(PersObj, PropName)))
-        else if (TPersistent(GetOrdProp(PersObj, PropName)) is TPersistent) and
-          Recursive then
-          WritePersistent(PropPath, TPersistent(GetOrdProp(PersObj, PropName)),
-            Recursive);
-      end;   {*** tkClass: ***}
-    end;   {*** case PropType(PersObj,PropName) of ***}
+        else if (TPersistent(GetOrdProp(PersObj, PropName)) is TPersistent) and Recursive then
+          WritePersistent(PropPath, TPersistent(GetOrdProp(PersObj, PropName)), True);
+      end;
+    end;  
   end;
+end;
+
+function TJvCustomAppStore.GetCharName(Ch: Char): string;
+begin
+  if Ch in ['!' .. 'z'] then
+    Result := 'Char_' + Ch
+  else
+    Result := 'Char#' + IntToStr(Ord(Ch));
+end;
+
+function TJvCustomAppStore.GetIntName(Value: Integer): string;
+begin
+  Result := 'Int_' + IntToStr(Value);
 end;
 
 procedure TJvCustomAppStore.GetStoredValues(const Path: string;
   const Strings: TStrings; const Options: TAppStoreEnumOptions);
 var
   SearchPath: string;
-  I: integer;
+  I: Integer;
 begin
   Strings.BeginUpdate;
   try
