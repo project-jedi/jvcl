@@ -38,11 +38,15 @@ interface
 
 uses
   SysUtils, Classes,
-  
+
   
   Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,
   
   JvQComponent, JvQExControls;
+
+resourcestring
+  SInvalidImage = 'Invalid Image';
+
 
 type
   TDate = TDateTime;
@@ -232,7 +236,7 @@ type
     property LeftButton;
     
   published
-    property AboutJVCL;
+//    property AboutJVCL;
     // gets / sets the borderstyle of the control and the scroll-buttons
     property BorderStyle;
     // gets / sets the width of the buttons
@@ -324,7 +328,7 @@ type
 implementation
 
 uses
-  Consts,
+  QConsts,
   JvQJVCLUtils, JvQThemes;
 
 {$R ../Resources/JvTMTimeLine.res}

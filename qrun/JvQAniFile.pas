@@ -107,7 +107,7 @@ type
 implementation
 
 uses
-  Consts, Math,
+  QConsts, Math,
   JvQJVCLUtils, JvQJCLUtils, JvQIconList, JvQConsts, JvQResources;
 
 function PadUp(Value: Longint): Longint;
