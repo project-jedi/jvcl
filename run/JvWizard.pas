@@ -645,6 +645,8 @@ type
     var ARect: TRect) of object;
   TJvWizardChangePageEvent = procedure(Sender: TObject;
     const FromPage: TJvWizardCustomPage) of object;
+  TJvWizardChangingPageEvent = procedure(Sender: TObject;
+    const ToPage: TJvWizardCustomPage) of object;
 
   { YW - Wizard Custom Page }
   TJvWizardCustomPage = class(TCustomControl)
@@ -800,7 +802,7 @@ type
     FOnSelectFirstPage: TJvWizardSelectPageEvent;
     FOnSelectLastPage: TJvWizardSelectPageEvent;
     FOnActivePageChanged: TNotifyEvent;
-    FOnActivePageChanging: TJvWizardChangePageEvent;
+    FOnActivePageChanging: TJvWizardChangingPageEvent;
     FHeaderImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
     FAutoHideButtonBar: boolean;
@@ -844,7 +846,7 @@ type
     procedure RemovePage(Page: TJvWizardCustomPage);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetButtonControlClass(AKind: TJvWizardButtonKind): TJvWizardButtonControlClass; virtual;
-    procedure DoActivePageChanging(NewPage: TJvWizardCustomPage); dynamic; 
+    procedure DoActivePageChanging(ToPage: TJvWizardCustomPage); dynamic; 
     procedure DoActivePageChanged; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
@@ -894,7 +896,7 @@ type
     property OnCancelButtonClick: TNotifyEvent index bkCancel read GetButtonClick write SetButtonClick;
     property OnHelpButtonClick: TNotifyEvent index bkHelp read GetButtonClick write SetButtonClick;
     property OnActivePageChanged: TNotifyEvent read FOnActivePageChanged write FOnActivePageChanged;
-    property OnActivePageChanging: TJvWizardChangePageEvent read FOnActivePageChanging write FOnActivePageChanging;
+    property OnActivePageChanging: TJvWizardChangingPageEvent read FOnActivePageChanging write FOnActivePageChanging;
 
     property Color;
     property Font;
@@ -3195,10 +3197,10 @@ begin
     FOnActivePageChanged(Self);
 end;
 
-procedure TJvWizard.DoActivePageChanging(NewPage: TJvWizardCustomPage);
+procedure TJvWizard.DoActivePageChanging(ToPage: TJvWizardCustomPage);
 begin
   if Assigned(FOnActivePageChanging) then
-    FOnActivePageChanging(Self, NewPage);
+    FOnActivePageChanging(Self, ToPage);
 end;
 
 end.
