@@ -617,11 +617,13 @@ begin
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 {
-procedure TJvBaseThumbView.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvBaseThumbView.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  inherited;
-  Msg.Result := 0;
-end;}
+  //Result :=
+    inherited DoPaintBackground(Canvas, Param);
+  Result := False;
+end;
+}
 
 //=== TFileName ==============================================================
 
