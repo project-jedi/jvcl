@@ -50,6 +50,7 @@ type
     FButtonShape: TJvButtonShapes;
     xp, yp: integer;
     FFlatArrow: boolean;
+    FAntiAlias: boolean;
     procedure CMMouseLeave(var Message: TMessage); message CM_MouseLeave;
     procedure CMMouseEnter(var Message: TMessage); message CM_MouseEnter;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
@@ -77,6 +78,9 @@ type
     procedure CNDrawItemRevPentagon(var Msg: TWMDrawItem);
     procedure CNDrawItemHex(var Msg: TWMDrawItem);
     procedure CNDrawItemDiamond(var Msg: TWMDrawItem);
+    procedure SetButton(ALeft, ATop, AWidth, AHeight: Integer);
+    procedure DoAntiAlias(Bmp:TBitmap);
+    procedure SetAntiAlias(const Value: boolean);
   protected
     procedure SetRegionOctagon(ALeft, ATop, AWidth, AHeight: Integer);
     procedure SetRegionTriangleDown(ALeft, ATop, AWidth, AHeight: Integer);
@@ -103,6 +107,7 @@ type
   published
     property ButtonShape: TJvButtonShapes read FButtonShape write SetButtonShape;
     property Color;
+    property AntiAlias:boolean read FAntiAlias write SetAntiAlias default false;
     property HotColor: TColor read FHotColor write SetHotColor;
     property Flat: boolean read FFlat write SetFlat;
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor;
@@ -123,6 +128,7 @@ implementation
 constructor TJvShapedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FAntiAlias := false;
   bm := Tbitmap.create;
   SetBounds(Left, Top, 65, 65);
   FCanvas := TCanvas.Create;
@@ -148,29 +154,11 @@ end;
 procedure TJvShapedButton.CreateWnd;
 begin
   inherited CreateWnd;
-  case FButtonShape of
-    jvSLeftArrow: SetRegionLeftArrow(Left, Top, Width, Height);
-    jvRightArrow: SetRegionRightArrow(Left, Top, Width, Height);
-    jvSRound: SetRegionRound(Left, Top, Width, Height);
-    jvSHex: SetRegionHex(Left, Top, Width, Height);
-    jvSOctagon: SetRegionOctagon(Left, Top, Width, Height);
-    jvSPar: SetRegionPar(Left, Top, Width, Height);
-    jvSDiamond: SetRegionDiamond(Left, Top, Width, Height);
-    jvSTriangleUp: SetRegionTriangleUp(Left, Top, Width, Height);
-    jvSTriangleDown: SetRegionTriangleDown(Left, Top, Width, Height);
-    jvSTriangleLeft: SetRegionTriangleLeft(Left, Top, Width, Height);
-    jvSTriangleRight: SetRegionTriangleRight(Left, Top, Width, Height);
-    jvSPentagon: SetRegionPentagon(Left, Top, Width, Height);
-    JvSRevPentagon: SetRegionRevPentagon(Left, Top, Width, Height);
-    jvSRing: SetRegionRing(Left, Top, Width, Height);
-  end;
-
+  SetButton(Left, Top, Width, Height);
 end;
 
-procedure TJvShapedButton.SetBounds(ALeft, ATop,
-  AWidth, AHeight: Integer);
+procedure TJvShapedButton.SetButton(ALeft, ATop,AWidth, AHeight: Integer);
 begin
-  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if HandleAllocated then
   begin
     case FButtonShape of
@@ -190,6 +178,13 @@ begin
       jvSRing: SetRegionRing(aLeft, aTop, aWidth, aHeight);
     end;
   end;
+end;
+
+procedure TJvShapedButton.SetBounds(ALeft, ATop,
+  AWidth, AHeight: Integer);
+begin
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+  SetButton(ALeft, ATop, AWidth, AHeight);
 end;
 
 procedure TJvShapedButton.CNDrawItem(var Msg: TWMDrawItem);
@@ -436,7 +431,7 @@ begin
       polyline(polyBR);
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
     InflateRect(Rect, -Width div 5, -Height div 5);
     if OdsDown then
@@ -640,7 +635,7 @@ begin
       polyline(polyBR);
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
     InflateRect(Rect, -Width div 5, -Height div 5);
     if OdsDown then
@@ -784,7 +779,7 @@ begin
       polyline(polyBR);
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
     InflateRect(Rect, -Width div 5, -Height div 5);
     if OdsDown then
@@ -926,7 +921,7 @@ begin
       polyline(polyBR);
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
     InflateRect(Rect, -Width div 5, -Height div 5);
     if OdsDown then
@@ -1068,7 +1063,7 @@ begin
       polyline(polyBR);
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
     InflateRect(Rect, -Width div 5, -Height div 5);
     if OdsDown then
@@ -1215,7 +1210,7 @@ begin
       polyline(polyBR);
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
     InflateRect(Rect, -Width div 5, -Height div 5);
     if OdsDown then
@@ -1265,11 +1260,11 @@ var
   poly: array[0..3] of Tpoint;
   x2, y2: integer;
 begin
-  x2 := width div 2;
-  y2 := Aheight div 2;
+  x2 := AWidth div 2;
+  y2 := AHeight div 2;
   poly[0] := point(x2, 0);
-  poly[1] := point(Awidth, y2);
-  poly[2] := point(x2, y2);
+  poly[1] := point(AWidth, y2);
+  poly[2] := point(x2, AHeight);
   poly[3] := point(0, y2);
   hRegion := CreatePolygonRgn(poly, 4, WINDING);
   SetWindowRgn(Handle, hRegion, True);
@@ -1381,9 +1376,9 @@ var
   rgn1, rgn2, rgn3: Hrgn;
   x4, y4: integer;
 begin
-  x4 := AWidth div 4;
-  y4 := aheight div 4;
-  rgn1 := CreateEllipticRgn(0, 0, AWidth, AHeight);
+  x4 := AWidth div 4 ;
+  y4 := AHeight div 4;
+  rgn1 := CreateEllipticRgn(0, 0, AWidth+1, AHeight+1);
   rgn2 := CreateEllipticRgn(x4, y4, AWidth - x4, AHeight - x4);
   rgn3 := 0; // Remove Warning
   Combinergn(rgn3, rgn1, rgn2, RGN_XOR);
@@ -1554,7 +1549,7 @@ begin
       polyline(polyBR);
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
     InflateRect(Rect, -Width div 5, -Height div 5);
     if OdsDown then
@@ -1712,7 +1707,7 @@ begin
       polyline(polyBR);
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
     InflateRect(Rect, -Width div 5, -Height div 5);
     if OdsDown then
@@ -1751,8 +1746,6 @@ begin
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   R := ClientRect;
   Ri := Rect(R.left + x4, R.top + y4, R.right - x4, R.bottom - y4);
-  Dec(R.Right);
-  Dec(R.Bottom);
   with Msg.DrawItemStruct^ do
   begin
     OdsDown := itemState and ODS_SELECTED <> 0;
@@ -1774,6 +1767,8 @@ begin
       Brush.Style := bsSolid;
       FillRect(R);
     end;
+    Dec(R.Right);
+    Dec(R.Bottom);
     // do not fill any more
     Brush.Style := bsClear;
     // draw border if default
@@ -1863,7 +1858,7 @@ begin
 
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
 {    InflateRect (Rect, - Width div 5, - Height div 5);
     if OdsDown then
@@ -1976,7 +1971,7 @@ begin
         Rect.Right, Rect.Top); // end
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
     InflateRect(Rect, -Width div 5, -Height div 5);
     if OdsDown then
@@ -2127,7 +2122,7 @@ begin
       polyline(polyBR);
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
     InflateRect(Rect, -Width div 5, -Height div 5);
     if OdsDown then
@@ -2277,7 +2272,7 @@ begin
       polyline(polyBR);
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
     InflateRect(Rect, -Width div 5, -Height div 5);
     if OdsDown then
@@ -2432,7 +2427,7 @@ begin
       polyline(polyBR);
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
     InflateRect(Rect, -Width div 5, -Height div 5);
     if OdsDown then
@@ -2579,7 +2574,7 @@ begin
       polyline(polyBR);
     end;
     // smooth edges
-    antialias(bm);
+    DoAntiAlias(bm);
     // draw the caption
     InflateRect(Rect, -Width div 5, -Height div 5);
     if OdsDown then
@@ -2604,6 +2599,21 @@ begin
   Fcanvas.Draw(0, 0, bm);
   FCanvas.Handle := 0;
   Msg.Result := 1; // message handled
+end;
+
+procedure TJvShapedButton.DoAntiAlias(Bmp: TBitmap);
+begin
+  if Antialias then
+    JvButtonUtils.AntiAlias(Bmp);
+end;
+
+procedure TJvShapedButton.SetAntiAlias(const Value: boolean);
+begin
+  if FAntiAlias <> Value then
+  begin
+    FAntiAlias := Value;
+    Invalidate;
+  end;
 end;
 
 end.
