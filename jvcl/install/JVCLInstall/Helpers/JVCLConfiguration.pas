@@ -192,7 +192,7 @@ procedure TJVCLConfig.SetEnabled(Index: string; const Value: Boolean);
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
+  for I := 0 to ItemCount - 1 do
     if CompareText(Index, Items[I].Name) = 0 then
     begin
       Items[I].Enabled := Value;
