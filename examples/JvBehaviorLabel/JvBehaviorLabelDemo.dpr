@@ -2,12 +2,12 @@ program JvBehaviorLabelDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {Form1};
+  JvBehaviorLblMainFrmU in 'JvBehaviorLblMainFrmU.pas' {JvBehaviorLblMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvBehaviorLblMainFrm, JvBehaviorLblMainFrm);
   Application.Run;
 end.
