@@ -134,6 +134,7 @@ resourcestring
   RsGeneratingResources = 'Generating resources...';
   RsCompilingPackages = 'Compiling packages...';
   RsFinished = 'Finished.';
+  RsCompilingJCL = 'Compiling JCL dcp files...';
 
 const
   CommonDependencyFiles: array[0..3] of string = (
@@ -326,24 +327,31 @@ begin
       DeleteFile(ErrorFileName);
 
       // Are the .dcp files newer than the .bpk files
-      if (not Force) and FileExists(Data.Targets[i].BplDir + '\CJcl.dcp') and
+      if (not Force) and (not Data.TargetConfig[i].Build) and
+          FileExists(Data.Targets[i].BplDir + '\CJcl.dcp') and
+          FileExists(Data.Targets[i].BplDir + '\CJclVcl.dcp') and
          (FileAge(Data.Targets[i].BplDir + '\CJcl.dcp') >= FileAge(TargetXmlDir + '\Jcl-R.xml')) then
         Continue;
 
       SetEnvironmentVariable('JCLROOT', PChar(Data.TargetConfig[i].JCLDir));
       Args := Format('-f MakeJCLDcp4BCB.mak -DVERSION=%d', [Data.Targets[i].Version]);
 
+      DoTargetProgress(Data.TargetConfig[i], 0, 100);
+      DoPackageProgress(nil, RsCompilingJCL, 0, 3);
+
      // copy template for PackageGenerator
-      if CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' Templates',
+      if CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' -s Templates',
                         Data.JVCLPackagesDir + '\bin', CaptureLine) <> 0 then
         Exit;
+      DoPackageProgress(nil, RsCompilingJCL, 1, 3);
 
      // generate packages
       Result := GeneratePackages('JCL', 'c' + IntToStr(Data.Targets[i].Version),
         Data.TargetConfig[i].JCLDir + '\packages');
+      DoPackageProgress(nil, RsCompilingJCL, 2, 3);
 
      // compile dcp files
-      if CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' -a Compile',
+      if CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' -s Compile',
                         Data.JVCLPackagesDir + '\bin', CaptureLine) <> 0 then
       begin
         if FileExists(ErrorFileName) then
@@ -360,6 +368,8 @@ begin
         Exit;
       end;
       DeleteFile(ErrorFileName);
+      DoTargetProgress(Data.TargetConfig[i], 0, 100);
+      DoPackageProgress(nil, '', 0, 100);
     end;
   end;
   Result := True;

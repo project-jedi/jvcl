@@ -146,7 +146,11 @@ begin
    // remove old pages
     Index := JvWizard.ActivePageIndex;
     while Index + 1 < JvWizard.PageCount do
+    begin
+     // First remove ActionList from the frame (bug in VCL).
+      DestroyPage(JvWizard.WizardPages[JvWizard.PageCount - 1] as TJvWizardInteriorPage);
       JvWizard.WizardPages[JvWizard.PageCount - 1].Free;
+    end;
 
     Page := nil;
     while Inst <> nil do

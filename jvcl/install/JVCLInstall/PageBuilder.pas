@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms, Graphics, StdCtrls, ExtCtrls,
-  ComCtrls,
+  ComCtrls, ActnList,
   JvWizard,
   Core;
 
@@ -151,12 +151,26 @@ begin
 end;
 
 procedure DestroyPage(Page: TJvWizardInteriorPage);
+
+  procedure RemoveActionLists(Owner: TComponent);
+  var
+    i: Integer;
+  begin
+    for i := Owner.ComponentCount - 1 downto 0 do
+      RemoveActionLists(Owner.Components[i]);
+    if (Owner is TCustomActionList) then
+      Owner.Free;
+  end;
+
 var
   Panel: TPanel;
 begin
   Panel := TPanel(Page.FindComponent('piPageClient'));
   if Panel <> nil then
+  begin
+    RemoveActionLists(Panel); // Bug in VCL does not remove the action list from the frame's actionlist list.
     Panel.Free;
+  end;
 end;
 
 function CreateSingleChooseControls(Parent: TWinControl; Inst: ISingleChoosePage;
