@@ -144,7 +144,7 @@ end;
 
 procedure TfrmMain.actSaveExecute(Sender: TObject);
 begin
-  //
+  FFileWrapper.Save;
 end;
 
 destructor TfrmMain.Destroy;
@@ -244,7 +244,7 @@ begin
           actNextItem.Execute;
           Key := 0;
         end;
-      VK_RIGHT:
+{      VK_RIGHT:
         begin
           jpcEdit.ActivePageIndex := 1;
           Key := 0;
@@ -253,7 +253,7 @@ begin
         begin
           jpcEdit.ActivePageIndex := 0;
           Key := 0;
-        end;
+        end;}
     end;
   end;
 end;
