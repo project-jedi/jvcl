@@ -167,7 +167,7 @@ uses
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  WordWraps: array[boolean] of Word = (0, DT_WORDBREAK);
+//  WordWraps: array[boolean] of Word = (0, DT_WORDBREAK); make Delphi 5 compiler happy // andreas
 
 //=== TJvSecretPanel =========================================================
 

@@ -202,12 +202,12 @@ type
     FHKEY: HKEY;
     FProperties: TStrings;
     function GetProperties: TStrings;
-    procedure SetProperties(const Value: TStrings);
+//    procedure SetProperties(const Value: TStrings); make Delphi 5 compiler happy // andreas
   public
     destructor Destroy; override;
     property HKey: HKEY read FHKEY write FHKEY;
     property Section: string read FSection write FSection;
-    property Properties: TStrings read GetProperties write SetProperties;
+    property Properties: TStrings read GetProperties {write SetProperties // make Delphi 5 compiler happy // andreas};
   end;
 
 procedure GetUninstallApps(DisplayModes: TJvUCBDisplayModes; Strings: TStrings; ShowAll: boolean);
@@ -525,12 +525,13 @@ begin
   Result := FProperties;
 end;
 
+{ make Delphi 5 compiler happy // andreas
 procedure TUninstallInfo.SetProperties(const Value: TStrings);
 begin
   if FProperties = nil then
     FProperties := TStringlist.Create;
   FProperties.Assign(Value);
-end;
+end;}
 
 end.
 
