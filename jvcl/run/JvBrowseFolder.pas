@@ -99,7 +99,7 @@ type
     fdMyComputer, { CSIDL_DRIVES }
     fdFonts, { CSIDL_FONTS }
     fdNetHood, { CSIDL_NETHOOD }
-    fdNetWork, { CSIDL_NETWORK }
+    fdNetwork, { CSIDL_NETWORK }
     fdPersonal, { CSIDL_PERSONAL }
     fdPrinters, { CSIDL_PRINTERS }
     fdPrograms, { CSIDL_PROGRAMS }
