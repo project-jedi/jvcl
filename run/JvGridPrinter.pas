@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2004-01-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -24,15 +24,20 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvGridPrinter;
 
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms,
-  Grids, Printers;
+  {$IFDEF VCL}
+  Windows, Controls, Forms, Grids, Printers,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QGrids, QPrinters,
+  {$ENDIF}
+  SysUtils, Classes;
 
 type
   TJvPrintMode = (pmPrint, pmPreview, pmPageCount);

@@ -27,15 +27,19 @@ Known Issues:
 
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvGridFilter;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  Forms, Grids;
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Grids,
+  {$ELSE}
+  QGraphics, QControls, QForms, QGrids,
+  {$ENDIF}
+  SysUtils, Classes;
 
 type
   TJvGridFilter = class(TComponent)
