@@ -34,14 +34,14 @@ uses
 
 type
   TFormMain = class(TForm)
-    Button1: TButton;
+    BtnExecute: TButton;
     ProgressBar: TProgressBar;
     LblProgress: TLabel;
     EditOutDir: TJvDirectoryEdit;
     EditSingleFile: TJvFilenameEdit;
     RBtnSingleFile: TRadioButton;
     RBtnAll: TRadioButton;
-    Button2: TButton;
+    BtnQuit: TButton;
     Label1: TLabel;
     Label2: TLabel;
     EditJVCLDir: TJvDirectoryEdit;
@@ -50,8 +50,8 @@ type
     CheckBoxKeepLines: TCheckBox;
     CheckBoxUnixLineBreaks: TCheckBox;
     CheckBoxForceOverwrite: TCheckBox;
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+    procedure BtnExecuteClick(Sender: TObject);
+    procedure BtnQuitClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { Private-Deklarationen }
@@ -70,10 +70,11 @@ uses
 
 {$R *.dfm}
 
-procedure TFormMain.Button1Click(Sender: TObject);
+procedure TFormMain.BtnExecuteClick(Sender: TObject);
 var
   Converter: TConverter;
   JVCLConverter: TJVCLConverter;
+  Sr: TSearchRec;
 begin
   if RBtnSingleFile.Checked then
   begin
@@ -85,7 +86,18 @@ begin
       JVCLConverter.UnixLineBreak := CheckBoxUnixLineBreaks.Checked;
       JVCLConverter.ForceOverwrite := CheckBoxForceOverwrite.Checked;
 
-      JVCLConverter.ParsePasFile(EditSingleFile.Text);
+      if DirectoryExists(EditSingleFile.Text) then
+      begin
+        if FindFirst(EditSingleFile.Text + PathDelim + '*.pas', faAnyFile and not faDirectory, Sr) = 0 then
+        begin
+          repeat
+            JVCLConverter.ParsePasFile(EditSingleFile.Text + PathDelim + Sr.Name);
+          until FindNext(sr) <> 0;
+          FindClose(sr);
+        end;
+      end
+      else
+        JVCLConverter.ParsePasFile(EditSingleFile.Text);
       ShowMessage('Finished.');
     finally
       JVCLConverter.Free;
@@ -117,7 +129,7 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure TFormMain.Button2Click(Sender: TObject);
+procedure TFormMain.BtnQuitClick(Sender: TObject);
 begin
   Close;
 end;
