@@ -47,7 +47,7 @@ uses Classes,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts,
+  JvDsgnConsts,
   JvgReportEditorForm, JvgAlignForm, JvgAlignFunction, JvgReportParamEditorForm,
   JvgBitBtn, JvgRuler, JvgReport, JvgCaption, JvgCGI, JvgReportParamsEditor,
   JvgReportParamsForm, JvgRichEditUtils, JvgCommClasses, JvgRttiUtils,

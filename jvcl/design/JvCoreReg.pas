@@ -40,7 +40,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvTypes, JvConsts, JvDsgnConsts, JvJCLUtils, JVCLVer, JvComponent,
+  JvTypes, JvDsgnConsts, JvJCLUtils, JVCLVer, JvComponent,
   JvActions, JvActnResForm, JvJVCLAboutForm, JvDsgnEditors, JvIDEZoom,
   JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor,
   JvContextProvider, JvAppRegistryStore, JvAppIniStore, JvColorProvider,

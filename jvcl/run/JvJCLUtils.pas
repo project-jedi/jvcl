@@ -980,8 +980,8 @@ const
 
 resourcestring
   // (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
-  SPropertyNotExists  = 'Property "%s" does not exist';
-  SInvalidPropertyType = 'Property "%s" has invalid type';
+  RsPropertyNotExists  = 'Property "%s" does not exist';
+  RsInvalidPropertyType = 'Property "%s" has invalid type';
 
   SPivotLessThanZero = 'JvFunctions.MakeYear4Digit: Pivot < 0';
 
@@ -3340,10 +3340,10 @@ var
 begin
   PropInf := GetPropInfo(Obj.ClassInfo, PropName);
   if PropInf = nil then
-    raise Exception.CreateFmt(SPropertyNotExists, [PropName]);
+    raise Exception.CreateFmt(RsPropertyNotExists, [PropName]);
   if not (PropInf^.PropType^.Kind in
     [tkString, tkLString, tkWString]) then
-    raise Exception.CreateFmt(SInvalidPropertyType, [PropName]);
+    raise Exception.CreateFmt(RsInvalidPropertyType, [PropName]);
   Result := GetStrProp(Obj, PropInf);
 end;
 
@@ -3353,10 +3353,10 @@ var
 begin
   PropInf := GetPropInfo(Obj.ClassInfo, PropName);
   if PropInf = nil then
-    raise Exception.CreateFmt(SPropertyNotExists, [PropName]);
+    raise Exception.CreateFmt(RsPropertyNotExists, [PropName]);
   if not (PropInf^.PropType^.Kind in
     [tkInteger, tkChar, tkWChar, tkEnumeration, tkClass]) then
-    raise Exception.CreateFmt(SInvalidPropertyType, [PropName]);
+    raise Exception.CreateFmt(RsInvalidPropertyType, [PropName]);
   Result := GetOrdProp(Obj, PropInf);
 end;
 
@@ -3366,9 +3366,9 @@ var
 begin
   PropInf := GetPropInfo(Obj.ClassInfo, PropName);
   if PropInf = nil then
-    raise Exception.CreateFmt(SPropertyNotExists, [PropName]);
+    raise Exception.CreateFmt(RsPropertyNotExists, [PropName]);
   if not (PropInf^.PropType^.Kind = tkMethod) then
-    raise Exception.CreateFmt(SInvalidPropertyType, [PropName]);
+    raise Exception.CreateFmt(RsInvalidPropertyType, [PropName]);
   Result := GetMethodProp(Obj, PropInf);
 end;
 

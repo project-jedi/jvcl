@@ -27,7 +27,8 @@ interface
 
 uses
   Classes,
-  JvMtComponents, JvConsts;
+  JvDsgnConsts,
+  JvMtComponents;
 
 procedure Register;
 

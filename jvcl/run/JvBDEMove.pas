@@ -306,7 +306,7 @@ begin
       Master := SubStr(S, 1, '=');
       if (Detail = '') or (Pos('.', Detail) = 0) or
         (Master = '') or (Pos('.', Master) = 0) then
-        raise EJvDBMoveError.Create(SInvalidReferenceDescriptor);
+        raise EJvDBMoveError.Create(RsEInvalidReferenceDescriptor);
       FieldRef := TFieldRef.Create;
       FieldRef.STableName := Trim(SubStr(Master, 0, '.'));
       FieldRef.SFieldName := Trim(SubStr(Master, 1, '.'));

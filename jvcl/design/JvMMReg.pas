@@ -41,7 +41,8 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts, JvAni, JvAnimate, JvBmpAnimator, JvPicClip, JvIconList,
+  JvDsgnConsts,
+  JvAni, JvAnimate, JvBmpAnimator, JvPicClip, JvIconList,
   JvEasterEgg, JvGradient, JvGradientHeaderPanel, JvId3v1, JvId3v2,
   JvImageRotate, JvImageTransform, JvImageWindow, JvPcx, JvStarfield,
   JvWaitingGradient, JvWaitingProgress, JvWavePlayer, JvSpecialProgress,

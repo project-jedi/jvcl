@@ -75,7 +75,7 @@ implementation
 
 uses
   Messages, Consts, Forms, Buttons, StdCtrls, Grids, ExtCtrls, Math,
-  JvThemes, JvConsts, JvToolEdit, JvJVCLUtils;
+  JvThemes, JvConsts, JvResources, JvToolEdit, JvJVCLUtils;
 
 {$R ..\resources\JvPickDate.res}
 
@@ -1216,7 +1216,7 @@ begin
   {$ELSE}
   inherited CreateNew(AOwner);
   {$ENDIF BCB}
-  Caption := SDateDlgTitle;
+  Caption := RsDateDlgCaption;
   BorderStyle := bsToolWindow;
   BorderIcons := [biSystemMenu];
   ClientHeight := 158; // Polaris

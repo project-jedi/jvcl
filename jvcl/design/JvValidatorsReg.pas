@@ -44,7 +44,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts,
+  JvDsgnConsts,
   JvErrorIndicator, JvValidators, JvValidatorsEditorForm, JvDsgnEditors;
 
 procedure Register;

@@ -42,7 +42,8 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   ToolsAPI,
-  JvConsts, JvPlugin, JvPluginManager, JvPluginWizard, JvPluginParamsForm;
+  JvDsgnConsts,
+  JvPlugin, JvPluginManager, JvPluginWizard, JvPluginParamsForm;
 
 {$R ..\resources\JvPluginReg.dcr}
 

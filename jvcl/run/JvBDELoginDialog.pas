@@ -104,7 +104,7 @@ implementation
 uses
   Windows, Registry, BDE,
   IniFiles, Graphics,
-  JvJVCLUtils, JvTypes, JvConsts;
+  JvJVCLUtils, JvTypes, JvResources;
 
 const
   keyLastLoginUserName = 'LastUser';
@@ -283,7 +283,7 @@ begin
   if (Database = nil) or not Assigned(LoginParams) then
     Exit;
   if ShowDBName then
-    FDialog.AppTitleLabel.Caption := Format(SDatabaseName, [Database.DatabaseName]);
+    FDialog.AppTitleLabel.Caption := Format(RsDatabaseName, [Database.DatabaseName]);
   FDialog.UserNameEdit.Text := LoginParams.Values[szUSERNAME];
   CurrSession := Sessions.CurrentSession;
   try
@@ -402,10 +402,10 @@ begin
         begin
           Result := CheckUser(Table);
           if not Result then
-            raise EDatabaseError.Create(SInvalidUserName);
+            raise EDatabaseError.Create(RsEInvalidUserName);
         end
         else
-          raise EDatabaseError.Create(SInvalidUserName);
+          raise EDatabaseError.Create(RsEInvalidUserName);
       except
         Application.HandleException(Self);
       end;

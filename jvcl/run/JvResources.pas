@@ -43,61 +43,87 @@ resourcestring
   sStackUnderflow = 'stack underflow';
   sReturnStackUnderflow = 'return stack underflow';
   sNotImplemented = 'not implemented';
+  RsDateDlgCaption = 'Select a Date';
+  RsEDelSubTreeNotImplemented = 'DeleteSubTreeInt has not been implemented yet';
+  { Polaris patch }
+  RsEDateOutOfRange = '%s - Enter a date between "%s" and "%s"';
+  RsEDateOutOfMin = '%s - Enter a date after "%s"';
+  RsEDateOutOfMax = '%s - Enter a date before "%s"';
+
+  RsEID3NoController = 'No controller specified.';
+  RsDatabaseName = 'Database name: %s';
 
 //=== JvAni.pas ==============================================================
 resourcestring
-  RC_AniFilterName = 'ANI Image';
-  SInvalidAnimatedIconImage = 'Animated icon image is not valid';
+  RsAniExtension = 'ani';
+  RsAniFilterName = 'ANI Image';
+  RsEInvalidAnimatedIconImage = 'Invalid animated icon image';
 
 //=== JvAniFile.pas ==========================================================
 resourcestring
-  SWriteStreamNotImplemented = 'TJvAnimatedCursorImage.WriteStream not implemented';
+  RsEWriteStreamNotImplemented = 'TJvAnimatedCursorImage.WriteStream not implemented';
 
 //=== JvAppInfo.pas ==========================================================
 resourcestring
-  SInvalidPropertyFmt = 'Invalid property: %s';
-  SNoPathSpecified = 'No path specified';
+  RsEInvalidPropertyFmt = 'Invalid property: %s';
+  RsENoPathSpecified = 'No path specified';
 
 //=== JvAppIniStore.pas ======================================================
 resourcestring
-  SReadValueFailed = 'TJvAppINIFileStore.ReadValue: Section undefined';
-  SWriteValueFailed = 'TJvAppINIFileStore.WriteValue: Section undefined';
-  SDelSubTreeNotImplemented = 'TJvAppINIFileStore.DeleteSubTreeInt has not been implemented yet';
+  RsEReadValueFailed = 'TJvAppINIFileStore.ReadValue: Section undefined';
+  RsEWriteValueFailed = 'TJvAppINIFileStore.WriteValue: Section undefined';
 
 //=== JvAppRegistryStore.pas =================================================
 resourcestring
-  SUnableToCreateKey = 'Unable to create key ''%s''';
-  SErrorEnumeratingRegistry = 'Error enumerating registry.';
+  RsEUnableToCreateKey = 'Unable to create key ''%s''';
+  RsEEnumeratingRegistry = 'Error enumerating registry.';
 
 //=== JvAppStore.pas =========================================================
 resourcestring
-  SInvalidType = 'Invalid type';
-  SUnknownBaseType = 'Unknown base type for given set';
-  SInvalidPath = 'Invalid path';
-  SNotAUniqueRootPath = '''%s'' is not a unique root path';
-  SCircularReferenceOfStorages = 'Circular reference of storages';
+  RsEInvalidType = 'Invalid type';
+  RsEUnknownBaseType = 'Unknown base type for given set';
+  RsEInvalidPath = 'Invalid path';
+  RsENotAUniqueRootPath = '''%s'' is not a unique root path';
+  RsECircularReferenceOfStorages = 'Circular reference of storages';
+
+//=== JvAppXmlStore.pas ======================================================
+resourcestring
+  RsENodeCannotBeEmpty = 'The node must be given a name';
 
 //=== JvAVICapture.pas =======================================================
 resourcestring
-  SNotConnected = 'Not connected';
-  SErrorMessagePrefix = 'Error #';
-  SInvalidDriverIndex = '%d is an invalid driver index. The maximum value is %d';
+  RsNotConnected = 'Not connected';
+  RsErrorMessagePrefix = 'Error #';
+  RsEInvalidDriverIndex = '%d is an invalid driver index. The maximum value is %d';
 
 //=== JvBalloonHint.pas ======================================================
 resourcestring
-  SParentRequired = 'Control ''%s'' has no parent window';
-  SParentGivenNotAParent = 'Parent given is not a parent of ''%s''';
+  RsEParentRequired = 'Control ''%s'' has no parent window';
+  RsEParentGivenNotAParent = 'Parent given is not a parent of ''%s''';
+
+//=== JvBaseEdits.pas ========================================================
+resourcestring
+  RsEOutOfRangeXFloat = 'Value must be between %.*f and %.*f';
+
+//=== JvBDEFilter.pas ========================================================
+resourcestring
+  RsECaptureFilter = 'Cannot perform this operation when controls are captured';
+  RsENotCaptureFilter = 'Cannot perform this operation when controls are not captured';
+
+//=== JvBDELoginDialog.pas ===================================================
+resourcestring
+  RsEInvalidUserName = 'Invalid user name or password';
 
 //=== JvBDEMove.pas ==========================================================
 resourcestring
-  SInvalidReferenceDescriptor = 'Invalid reference descriptor';
+  RsEInvalidReferenceDescriptor = 'Invalid reference descriptor';
 
 //=== JvBdeUtils.pas =========================================================
 resourcestring
-  STableNotInExclusiveMode = 'Table must be opened in exclusive mode to add passwords';
-  STableNotOpen = 'Table must be opened to pack';
-  STableNotOpenExclusively = 'Table must be opened exclusively to pack';
-  SNoParadoxDBaseTable = 'Table must be either of Paradox or dBASE type to pack';
+  RsETableNotInExclusiveMode = 'Table must be opened in exclusive mode to add passwords';
+  RsETableNotOpen = 'Table must be opened to pack';
+  RsETableNotOpenExclusively = 'Table must be opened exclusively to pack';
+  RsENoParadoxDBaseTable = 'Table must be either of Paradox or dBASE type to pack';
 
 //=== JvBehaviorLabel.pas ====================================================
 resourcestring
@@ -296,7 +322,8 @@ resourcestring
   sProviderIsNoIJvDataConsumer = 'Provider property of ''%s'' does not point to a IJvDataConsumer.';
   SComponentIsNotDataConsumer = 'Component ''%s'' is not a data consumer.';
   sCannotAddNil = 'Cannot add a nil pointer.';
-  sConsumerNoSupportIJvDataConsumerClientNotify = 'Consumer does not support the ''IJvDataConsumerClientNotify'' interface.';
+  sConsumerNoSupportIJvDataConsumerClientNotify =
+    'Consumer does not support the ''IJvDataConsumerClientNotify'' interface.';
   sNotifierNoSupprtIJvDataConsumer = 'Notifier does not support the ''IJvDataConsumer'' interface.';
 
 //=== JvDatePickerEdit.pas ===================================================
@@ -307,6 +334,15 @@ resourcestring
 resourcestring
   SNullText = '(none)';
 
+//=== JvDBControls.pas =======================================================
+resourcestring
+  RsInactiveData = 'Closed';
+  RsBrowseData = 'Browse';
+  RsEditData = 'Edit';
+  RsInsertData = 'Insert';
+  RsSetKeyData = 'Search';
+  RsCalcFieldsData = 'Calculate';
+
 //=== JvDBLookup.pas =========================================================
 resourcestring
   sInvalidFormatNotAllowed = 'Invalid format: % not allowed';
@@ -315,7 +351,8 @@ resourcestring
 //=== JvDBQueryParamsForm.pas ================================================
 resourcestring
   // (p3) copied from bdeconst so we don't have to include the entire BDE for three strings...
-  SDataTypes = ';String;SmallInt;Integer;Word;Boolean;Float;Currency;BCD;Date;Time;DateTime;;;;Blob;Memo;Graphic;;;;;Cursor;';
+  SDataTypes =
+    ';String;SmallInt;Integer;Word;Boolean;Float;Currency;BCD;Date;Time;DateTime;;;;Blob;Memo;Graphic;;;;;Cursor;';
   SParamEditor = '%s%s%s Parameters';
   SInvalidParamFieldType = 'Must have a valid field type selected';
 
@@ -412,7 +449,7 @@ resourcestring
 //=== JvFixedEditPopUp.pas ===================================================
 resourcestring
   SDefaultPopUpUndo = '&Undo';
-  SDefaultPopUpCut  = 'Cu&t';
+  SDefaultPopUpCut = 'Cu&t';
   SDefaultPopUpCopy = '&Copy';
   SDefaultPopUpPaste = '&Paste';
   SDefaultPopUpDelete = '&Delete';
@@ -481,10 +518,10 @@ resourcestring
   sDSOUnknownKeys = 'DSO unknown key %s';
 
 //=== Jvg3DColors.pas ========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sOnlyOneInstanceOfTJvg3DLocalColors = 'Cannot create more than one instance of TJvg3DLocalColors component';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvGammaPanel.pas =======================================================
 resourcestring
@@ -502,32 +539,32 @@ resourcestring
   RC_DefaultR = 'R : ---';
 
 //=== JvgAskListBox.pas ======================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sYes = 'yes';
   sNo = 'no';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgButton.pas ==========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgCaption.pas =========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgCheckVersionInfoForm.pas ============================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sNoNewerVersionOfProgramAvailable = 'No newer version of program available';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgConstSysRequirements.pas ============================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
 (* RUSSIAN
   ERR_VideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
@@ -536,45 +573,48 @@ resourcestring
   ERR_SystemFont = 'В системе должен быть установлен %s шрифт. Измените вид шрифта в свойствах экрана.';
   ERR_OSPlatform = 'Для работы программы необходима операционная система %s.';
 *)
-  ERR_VideoVRefreshRate = 'The monitor refresh rate should be %d Hertz or higher. Change monitor refresh rate in Monitor Control Panel.';
-  ERR_GraphicResolution = 'The screen resolution should be equal %s pixels or higher. Change screen resolution in Monitor Control Panel.';
-  ERR_ColorDepth = 'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
+  ERR_VideoVRefreshRate =
+    'The monitor refresh rate should be %d Hertz or higher. Change monitor refresh rate in Monitor Control Panel.';
+  ERR_GraphicResolution =
+    'The screen resolution should be equal %s pixels or higher. Change screen resolution in Monitor Control Panel.';
+  ERR_ColorDepth =
+    'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
   ERR_SystemFont = 'In system the small font should be established. Change to small fonts in Monitor Control Panel.';
   ERR_OSPlatform = 'The program requires %s or better.';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvGenetic.pas ==========================================================
 resourcestring
   RC_NoTest = 'TJvGenetic: OnTestMember must be assigned';
 
 //=== JvgExportComponents.pas ================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sDataSetIsUnassigned = 'DataSet is unassigned';
   sSaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgHelpPanel.pas =======================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   SHelp = ' help ';
   SOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgHint.pas ============================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sOnlyOneInstanceOfTJvgHint = 'Cannot create more than one instance of TJvgHint component';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgHTTPVersionInfo.pas =================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgLogics.pas ==========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sEqualTo = 'equal to';
   sStartingWith = 'starting with';
@@ -584,39 +624,39 @@ resourcestring
   sNotEmpty = 'not empty';
   sStep = 'Step ';
   sComments = 'Comments';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgMailSlots.pas =======================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sTJvgMailSlotServerErrorCreatingChan = 'TJvgMailSlotServer: Error creating channel!';
   sTJvgMailSlotServerErrorGatheringInf = 'TJvgMailSlotServer: Error gathering information!';
   sTJvgMailSlotServerErrorReadingMessa = 'TJvgMailSlotServer: Error reading message!';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgProgress.pas ========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sProgressd = 'progress...[%d%%]';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgQPrintPreviewForm.pas ===============================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sPagedOfd = 'Page %d of %d';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvGradientHeaderPanel.pas ==============================================
 resourcestring
   RC_YourTextHere = 'Put your text here ...';
 
 //=== JvgReport.pas ==========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sOLELinkedObjectNotFound = 'OLE: Linked object not found.';
   sError = 'Error';
   sErrorReadingComponent = 'Error reading component.';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvGridPreviewForm.pas ==================================================
 resourcestring
@@ -631,20 +671,21 @@ resourcestring
   SPrintOptionsTimeFormat = 'h:nn am/pm';
 
 //=== JvgSingleInstance.pas ==================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
-  sOneInstanceOfThisProgramIsAlreadyRu = 'One instance of this program is already running. A second instance launch is not allowed.';
+  sOneInstanceOfThisProgramIsAlreadyRu =
+    'One instance of this program is already running. A second instance launch is not allowed.';
   sSecondInstanceLaunchOfs = 'Second instance launch of %s';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgSmallFontsDefense.pas ===============================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgUtils.pas ===========================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   sRightBracketsNotFound = 'Right brackets not found';
   sRightBracketHavntALeftOnePosd = 'Right bracket havn''t a left one. Pos: %d';
@@ -653,10 +694,10 @@ resourcestring
   sDuplicateSignsAtPos = 'Duplicate signs at. Pos:';
   sExpressionStringIsEmpty = 'Expression string is empty.';
   sObjectMemoryLeak = 'object memory leak';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvgXMLSerializer.pas ===================================================
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
 resourcestring
   (*
   ERR_OpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
@@ -666,7 +707,7 @@ resourcestring
   ERR_OpenXMLTagNotFound = 'Open tag not found: <%s>';
   ERR_CloseXMLTagNotFound = 'Close tag not found: </%s>';
   ERR_UnknownProperty = 'Unknown property: %s';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 //=== JvHint.pas =============================================================
 resourcestring
@@ -705,6 +746,25 @@ resourcestring
   STagTooBig = 'Tag is too big';
   SValueTooBig = 'Can''t write value in v2.2; too big';
   SNotReading = 'Not reading';
+
+  RsEID3FrameNotFound = 'Frame not found';
+  RsEID3UnknownEncoding = 'Unknown encoding';
+  RsEID3UnknownVersion = 'Unknown version';
+  RsEID3DuplicateFrame = 'Frame is a duplicate of another frame in the tag.';
+  RsEID3AlreadyContainsFrame = 'Tag already contains a ''%s'' frame.';
+  RsEID3ControllerNotActive = 'Controller is not active';
+  RsEID3EncodingNotSupported = 'Encoding not supported in this version.';
+  RsEID3VersionNotSupported = 'Version not supported.';
+  RsEID3InvalidLanguageValue = '''%s'' is an invalid language value.';
+  RsEID3InvalidPartInSetValue = '''%s'' is an invalid ''part in set'' value.';
+  RsEID3InvalidTimeValue = '''%s'' is an invalid time value.'#13'Value must be of format ''HHMM''.';
+  RsEID3InvalidDateValue = '''%s'' is an invalid date value.'#13'Value must be of format ''DDMM''.';
+  RsEID3ValueTooBig = '''%d'' is an invalid value. Value is too big.';
+  RsEID3StringTooLong = '''%s'' is an invalid value. String is too long.';
+  RsEID3InvalidCharinList = 'Invalid char ''%s'' in string ''%s'' in list.';
+  RsEID3InvalidFrameClass = 'Frame class ''%s'' can''t be used to represent frame ID ''%s''';
+  RsEID3FrameIDNotSupported = 'Frame ID ''%s'' not supported by this frame';
+  RsEID3FrameIDStrNotSupported = 'Frame ID string ''%s'' not supported by this frame';
 
 //=== JvId3v2Types.pas =======================================================
 resourcestring
@@ -826,6 +886,7 @@ resourcestring
   RsNotForMdi = 'MDI forms are not allowed';
   SPixelFormatNotImplemented = 'BitmapToMemoryStream: pixel format not implemented';
   SBitCountNotImplemented = 'BitmapToMemoryStream: bit count not implemented';
+  RsECantGetShortCut = 'Target FileName for ShortCut %s not available';
 
 //=== JvLinkLabel.pas ========================================================
 resourcestring
@@ -856,6 +917,16 @@ resourcestring
 //=== JvListView.pas =========================================================
 resourcestring
   sTooManyColumns = 'TJvListView.GetColumnsOrder: too many columns';
+
+//=== JvLoginForm.pas ========================================================
+resourcestring
+  RsRegistrationCaption = 'Registration';
+  RsAppTitleLabel = 'Application "%s"';
+  RsHintLabel = 'Type your user name and password';
+  RsUserNameLabel = '&User name:';
+  RsPasswordLabel = '&Password:';
+  RsUnlockCaption = 'Unlock application';
+  RsUnlockHint = 'Type your password';
 
 //=== JvMail.pas =============================================================
 resourcestring
@@ -917,10 +988,10 @@ resourcestring
   RsSelectionIndexOutOfBounds = '%d is not a valid selection index';
 
 //=== JvPageListTreeView.pas =================================================
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
 resourcestring
   SInterfaceNotSupported = '%s does not support the %s interface';
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 
 //=== JvPageSetup.pas ========================================================
 resourcestring
@@ -1045,8 +1116,10 @@ resourcestring
 //=== JvSchedEvtStore.pas ====================================================
 resourcestring
   sStructureStackIsEmpty = 'Structure stack is empty.';
-  sScheduleIsActiveReadingANewSchedule = 'Schedule is active. Reading a new schedule can only be done on inactive schedules.';
-  sScheduleIsActiveStoringOfAScheduleC = 'Schedule is active. Storing of a schedule can only be done on inactive schedules.';
+  sScheduleIsActiveReadingANewSchedule =
+    'Schedule is active. Reading a new schedule can only be done on inactive schedules.';
+  sScheduleIsActiveStoringOfAScheduleC =
+    'Schedule is active. Storing of a schedule can only be done on inactive schedules.';
   sNotImplemented_ = 'not implemented.';
   sNotASchedule = 'Not a schedule.';
   sUnknownScheduleVersions = 'Unknown schedule version ($%s)';
@@ -1091,9 +1164,9 @@ resourcestring
 
 //=== JvSimpleXml.pas ========================================================
 resourcestring
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
 //  SInvalidBoolean = '''%s'' is not a valid Boolean value'; make Delphi 5 compiler happy // andreas
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
   sInvalidXMLElementUnexpectedCharacte =
     'Invalid XML Element: Unexpected character in properties declaration ("%s" found).';
   sInvalidXMLElementUnexpectedCharacte_ =
@@ -1155,20 +1228,20 @@ resourcestring
   sMapColNotFoundForAppointment = 'Map col not found for appointment';
   sCorruptAppointmentMap = 'Corrupt appointment map';
   sGridGranularityCannotBeGreater = 'Grid granularity cannot be greater ' +
-            'then the time block granularity';
+    'then the time block granularity';
   sTimeBlockGranularityMustBeEvenly = 'Time block granularity must be evenly ' +
-            'divisible by the grid granularity';
+    'divisible by the grid granularity';
   sTimeBlocksMustBeginExactlyOn = 'Time blocks must begin exactly on ' +
-            'a grid time division';
+    'a grid time division';
   sGridEndTimeCannotBePriorToGridStart = 'GridEndTime cannot be prior to GridStartTime';
   sGridStartTimeCannotBeAfterGridEndTi = 'GridStartTime cannot be after GridEndTime';
   sInvalidRowd = 'Invalid row (%d)';
   sThereIsNoDataToPrint = 'There is no data to print';
   sNoPageInfoExists = 'No page info exists.  ' +
-         'Document must be prepared';
+    'Document must be prepared';
   sATimeBlockNameCannotBeNull = 'A time block name cannot be null';
   sAnotherTimeBlockWithTheName = 'Another time block with the name ' +
-            '"%s" already exists';
+    '"%s" already exists';
   sATimeBlockWithTheNamesDoesNotExist = 'A time block with the name "%s" does not exist';
 
 //=== JvTFGantt.pas ==========================================================
@@ -1194,42 +1267,42 @@ resourcestring
 //=== JvTFManager.pas ========================================================
 resourcestring
   sCouldNotCreateCustomImageMap = 'Could not create CustomImageMap.  ' +
-      'Appointment not assigned';
+    'Appointment not assigned';
   sCouldNotCreateAppointmentObject = 'Could not create Appointment object.  ' +
-      'ScheduleManager not assigned';
+    'ScheduleManager not assigned';
   sScheduleManagerNotificationFailedSc = 'ScheduleManager notification failed.  ScheduleManager not assigned';
   sScheduleNotificationFailed = 'Schedule notification failed.  ' +
-      'Schedule not assigned';
+    'Schedule not assigned';
   sInvalidStartAndEndTimes = 'Invalid start and end times';
   sInvalidStartAndEndDates = 'Invalid start and end dates';
   sAppointmentNotificationFailed = 'Appointment notification failed.  ' +
-      'Appointment not assigned';
+    'Appointment not assigned';
   sCouldNotCreateNewAppointment = 'Could not create new appointment. ' +
-      'Appointment with given ID already exists';
+    'Appointment with given ID already exists';
   sInvalidTriggerForRefreshControls = 'Invalid Trigger for RefreshControls';
   sInvalidScopeInReconcileRefresh = 'Invalid Scope in ReconcileRefresh';
   sCouldNotRetrieveSchedule = 'Could not retrieve schedule.  ' +
-        'ScheduleManager not assigned';
+    'ScheduleManager not assigned';
   sCouldNotReleaseSchedule = 'Could not release schedule.  ' +
-        'ScheduleManager not assigned';
+    'ScheduleManager not assigned';
   sCouldNotCreateADocumentBecauseA = 'Could not create a document because a ' +
-      'document already exists';
+    'document already exists';
   sCouldNotFinishDocumentBecauseNo = 'Could not finish document because no ' +
-      'document has been created';
+    'document has been created';
   sDocumentDoesNotExist = 'Document does not exist';
   sDocumentPagesCannotBeAccessedIf = 'Document pages cannot be accessed if ' +
-      'printing directly to the printer';
+    'printing directly to the printer';
   sDocumentPagesAreInaccessibleUntil = 'Document pages are inaccessible until ' +
-      'the document has been finished';
+    'the document has been finished';
   sCouldNotRetrievePageCount = 'Could not retrieve page count ' +
-        'because document does not exist';
+    'because document does not exist';
   sOnlyAFinishedDocumentCanBePrinted = 'Only a finished document can be printed';
   sThereAreNoPagesToPrint = 'There are no pages to print';
   sDocumentMustBeFinishedToSaveToFile = 'Document must be Finished to save to file';
   sThisPropertyCannotBeChangedIfA = 'This property cannot be changed if a ' +
-      'document exists';
+    'document exists';
   sCouldNotCreateTJvTFPrinterPageLayou = 'Could not create TJvTFPrinterPageLayout ' +
-      'because aPrinter must be assigned';
+    'because aPrinter must be assigned';
   sInvalidFooterHeightd = 'Invalid Footer Height (%d)';
   sInvalidHeaderHeightd = 'Invalid Header Height (%d)';
 
@@ -1271,6 +1344,19 @@ resourcestring
   RC_TipsTitle = 'Tips and Tricks';
   RC_TipsHeaderText = 'Did you know...';
   RC_TipsCheckBoxText = '&Show Tips on Startup';
+
+//=== JvToolEdit.pas =========================================================
+resourcestring
+  RsBrowseCaption = 'Browse';
+  {$IFDEF MSWINDOWS}
+  RsDefaultFilter = 'All files (*.*)|*.*';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  RsDefaultFilter = 'All files (*)|*';
+  {$ENDIF LINUX}
+  { Polaris patch }
+  RsEDateMinLimit = 'Enter a date before "%s"';
+  RsEDateMaxLimit = 'Enter a date after "%s"';
 
 //=== JvTurtle.pas ===========================================================
 resourcestring
@@ -1388,3 +1474,4 @@ resourcestring
 implementation
 
 end.
+

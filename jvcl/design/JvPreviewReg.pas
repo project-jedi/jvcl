@@ -52,7 +52,8 @@ implementation
 
 uses
   Classes,
-  JvPrvwDoc, JvPrvwRender, JvConsts, JvDsgnConsts;
+  JvDsgnConsts,
+  JvPrvwDoc, JvPrvwRender;
 
 {$R ..\resources\JvPreviewReg.dcr}
 

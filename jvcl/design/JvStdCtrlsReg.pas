@@ -42,7 +42,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts,
+  JvDsgnConsts,
   JvSpin, JvEdit, JvRichEdit, JvProgressBar, JvDateTimePicker, JvDatePickerEdit,
   JvCheckedMaskEdit, JvMaskEdit, JvCalendar, JvBaseEdits, JvCalc, JvToolEdit,
   JvxSlider, JvBevel, JvCheckBox, JvSpeedButton, JvTextListBox, JvSecretPanel,

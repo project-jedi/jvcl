@@ -871,7 +871,7 @@ implementation
 
 uses
   SysUtils, Dialogs, DbConsts, Math,
-  JvDBUtils, JvTypes, JvJVCLUtils, JvCalc, JvConsts;
+  JvDBUtils, JvTypes, JvJVCLUtils, JvCalc, JvResources;
 
 {$R ..\resources\JvDBCtrl.res}
 
@@ -3202,15 +3202,15 @@ begin
       begin
         if ((MinDate <> NullDate) and (MaxDate <> NullDate) and
           ((Value < MinDate) or (Value > MaxDate))) then
-          raise Exception.CreateFmt(SDateOutOfRange, [FormatDateTime(GetDateFormat, Value),
+          raise EJVCLException.CreateFmt(RsEDateOutOfRange, [FormatDateTime(GetDateFormat, Value),
             FormatDateTime(GetDateFormat, MinDate), FormatDateTime(GetDateFormat, MaxDate)])
         else
         if ((MinDate <> NullDate) and (Value < MinDate)) then
-          raise Exception.CreateFmt(SDateOutOfMin, [FormatDateTime(GetDateFormat, Value),
+          raise EJVCLException.CreateFmt(RsEDateOutOfMin, [FormatDateTime(GetDateFormat, Value),
             FormatDateTime(GetDateFormat, MinDate)])
         else
         if ((MaxDate <> NullDate) and (Value > MaxDate)) then
-          raise Exception.CreateFmt(SDateOutOfMax, [FormatDateTime(GetDateFormat, Value),
+          raise EJVCLException.CreateFmt(RsEDateOutOfMax, [FormatDateTime(GetDateFormat, Value),
             FormatDateTime(GetDateFormat, MaxDate)]);
       end;
       Result := True;
@@ -4058,8 +4058,8 @@ end;
 
 function TJvDBStatusLabel.GetCaption(State: TDataSetState): string;
 const
-  StrIds: array [TDBStatusKind] of string = (SInactiveData, SBrowseData,
-    SEditData, SInsertData, SSetKeyData, SCalcFieldsData);
+  StrIds: array [TDBStatusKind] of string = (RsInactiveData, RsBrowseData,
+    RsEditData, RsInsertData, RsSetKeyData, RsCalcFieldsData);
 var
   Kind: TDBStatusKind;
 begin

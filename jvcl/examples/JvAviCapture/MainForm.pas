@@ -44,7 +44,7 @@ begin
   try
     AviCap.DriverIndex := 0;
   except
-    on EInvalidDriverIndex do
+    on EInvalidDriverIndexError do
       ShowMessage('No device found. Verify your connection and configuration.');
   end;
 end;

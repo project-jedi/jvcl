@@ -271,7 +271,7 @@ begin
   with TOpenDialog.Create(Application) do
     try
       Options := [ofHideReadOnly, ofFileMustExist];
-      DefaultExt := RC_AniExtension;
+      DefaultExt := RsAniExtension;
       Filter := srAniCurFilter;
       if Execute then
       begin
@@ -694,7 +694,7 @@ end;
 
 procedure TJvAnimatedCursorImage.WriteStream(Stream: TStream; WriteSize: Boolean);
 begin
-  raise EJVCLException.Create(SWriteStreamNotImplemented);
+  raise EJVCLException.Create(RsEWriteStreamNotImplemented);
 end;
 
 procedure TJvAnimatedCursorImage.LoadFromStream(Stream: TStream);

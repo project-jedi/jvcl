@@ -93,9 +93,6 @@ implementation
 uses
   JvResources;
 
-const
-  RC_AniExtension = 'ani';
-
 constructor TJvAni.Create;
 begin
   inherited Create;
@@ -176,12 +173,12 @@ end;
 
 procedure TJvAni.SetHeight(Value: Integer);
 begin
-  raise EInvalidGraphicOperation.Create(sChangeIconSize);
+  raise EInvalidGraphicOperation.Create(SChangeIconSize);
 end;
 
 procedure TJvAni.SetWidth(Value: Integer);
 begin
-  raise EInvalidGraphicOperation.Create(sChangeIconSize);
+  raise EInvalidGraphicOperation.Create(SChangeIconSize);
 end;
 
 function TJvAni.GetWidth: Integer;
@@ -198,12 +195,12 @@ end;
 
 procedure TJvAni.LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE);
 begin
-  raise EInvalidGraphicOperation.Create(sIconToClipboard);
+  raise EInvalidGraphicOperation.Create(SIconToClipboard);
 end;
 
 procedure TJvAni.SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE);
 begin
-  raise EInvalidGraphicOperation.Create(sIconToClipboard);
+  raise EInvalidGraphicOperation.Create(SIconToClipboard);
 end;
 
 {$ENDIF VCL}
@@ -226,7 +223,7 @@ var
 
   procedure Error;
   begin
-    raise EInvalidGraphic.Create(SInvalidAnimatedIconImage);
+    raise EInvalidGraphic.Create(RsEInvalidAnimatedIconImage);
   end;
 
   function ReadByte: Byte;
@@ -348,7 +345,7 @@ end;
 procedure TJvAni.SaveToStream(Stream: TStream);
 begin
   if GetEmpty then
-    raise EInvalidGraphicOperation.Create(sInvalidImage);
+    raise EInvalidGraphicOperation.Create(SInvalidImage);
   Stream.Write(FImage.Memory^, FImage.Size)
 end;
 
@@ -470,7 +467,7 @@ end;
 
 initialization
   RegisterClass(TJvAni);
-  TPicture.RegisterFileFormat(RC_AniExtension, RC_AniFilterName, TJvAni);
+  TPicture.RegisterFileFormat(RsAniExtension, RsAniFilterName, TJvAni);
 
 finalization
   TPicture.UnregisterGraphicClass(TJvAni);

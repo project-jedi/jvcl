@@ -41,7 +41,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts, JvDsgnConsts,
+  JvDsgnConsts,
   JvBaseDlg, JvFindReplace, JvDSADialogs, JvTipOfDay, JvWinDialogs,
   JvAddPrinter, JvCommonDialogD, JvCommonExecDlg,
   {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns

@@ -41,7 +41,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvTypes, JvConsts,
+  JvTypes, JvDsgnConsts,
   JvStringListToHTML, JvFormToHTML, JvFTPGrabber, JvHTMLParser, JvHTTPGrabber,
   JvMultiHTTPGrabber, JvRGBToHTML, JvRichEditToHTML, JvStrToHTML, JvMail,
   JvMailEditor, JvHTMLParserEditor, JvUrlListGrabber, JvUrlGrabbers,
