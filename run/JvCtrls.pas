@@ -569,7 +569,7 @@ begin
     begin
       FCanvas.Brush.Color := Color;
       FCanvas.FillRect(R); // (p3) TWinControls don't support Transparent anyway 
-      if FMouseInControl or FIsFocused then
+      if FMouseInControl or FIsFocused or (csDesigning in ComponentState) then
       begin
         if IsDown then
           Frame3D(FCanvas, R, clBtnShadow, clBtnHighlight, 1)
