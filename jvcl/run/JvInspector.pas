@@ -722,7 +722,7 @@ type
     procedure EditMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); virtual;
     {$IFDEF VCL}
-    procedure Edit_WndProc(var Message: TMessage); virtual;
+    procedure Edit_WndProc(var Msg: TMessage); virtual;
     {$ENDIF VCL}
     function GetAutoUpdate: Boolean; virtual;
     function GetBaseCategory: TJvInspectorCustomCategoryItem; virtual;
@@ -3579,7 +3579,7 @@ begin
 //        Position := Round(IdxToY(TopIndex) / ScFactor);
         if ImageHeight > ClientHeight then
           Max := ImageHeight-Clientheight;
-        LargeChange := self.ClientHeight;
+        LargeChange := Self.ClientHeight;
         Position := IdxToY(TopIndex);
       except
         on E: Exception do ShowMessage(E.Message);
@@ -3774,8 +3774,8 @@ begin
   inherited Create(AOwner);
   {$IFDEF VisualCLX}
   ControlStyle := ControlStyle - [csAcceptsControls, csNoFocus];
-  FHorzScrollBar := TScrollBar.Create(self);
-  FVertScrollBar := TScrollBar.Create(self);
+  FHorzScrollBar := TScrollBar.Create(Self);
+  FVertScrollBar := TScrollBar.Create(Self);
 
   FHorzScrollBar.Parent := Self;
   FHorzScrollBar.Visible := False;
@@ -5157,7 +5157,7 @@ begin
     InvalidateItem;
     {$IFDEF VCL}
     Windows.SetFocus(EditCtrl.Handle);
-    {$ENDIF}
+    {$ENDIF VCL}
     {$IFDEF VisualCLX}
     EditCtrl.SetFocus;
     {$ENDIF VisualCLX}
@@ -5167,7 +5167,7 @@ end;
 
 procedure TJvCustomInspectorItem.Edit;
 var
-  displayStr:String;
+  DisplayStr: string;
 begin
   //
   // Overload this virtual method to define what happens when item is
@@ -5176,23 +5176,24 @@ begin
   // and then catch the JvInspector.OnItemEdit event.
   //
   if Assigned(FInspector) then
-      if Assigned(FInspector.FOnItemEdit) then begin
-             {$IFDEF VCL}
-              if FEditCtrl.Text <> FData.AsString then begin 
-                 FEditChanged := true;
-                 //NEW: make sure latest changes in the EditControl are updated before we invoke the edit button.
-                 // This is VCL-only because right now it looks like a post message is the primary way the Edit button
-                 // notifies the inspector of a new edit value being accepted.
-                 OnInternalEditControlExiting(FInspector);
-                 Application.ProcessMessages; // Ugly, but necessary.
-              end;
-             {$ENDIF}
-            displayStr := FData.AsString;
-            FInspector.FOnItemEdit(FInspector,Self,displayStr);
-            if displayStr <> Self.FData.AsString then begin
-                FData.SetAsString(displayStr); // modified!
-            end;
+    if Assigned(FInspector.FOnItemEdit) then
+    begin
+      {$IFDEF VCL}
+      if FEditCtrl.Text <> FData.AsString then
+      begin
+        FEditChanged := True;
+        //NEW: make sure latest changes in the EditControl are updated before we invoke the edit button.
+        // This is VCL-only because right now it looks like a post message is the primary way the Edit button
+        // notifies the inspector of a new edit value being accepted.
+        OnInternalEditControlExiting(FInspector);
+        Application.ProcessMessages; // Ugly, but necessary.
       end;
+      {$ENDIF VCL}
+      DisplayStr := FData.AsString;
+      FInspector.FOnItemEdit(FInspector, Self, DisplayStr);
+      if DisplayStr <> Self.FData.AsString then
+        FData.SetAsString(DisplayStr); // modified!
+    end;
 end;
 
 procedure TJvCustomInspectorItem.EditChange(Sender: TObject);
@@ -5274,7 +5275,7 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvCustomInspectorItem.Edit_WndProc(var Message: TMessage);
+procedure TJvCustomInspectorItem.Edit_WndProc(var Msg: TMessage);
 var
   ExecInherited: Boolean;
   PostToInsp: Boolean;
@@ -5282,74 +5283,59 @@ var
 
   function LeftRightCanNavigate: Boolean;
   begin
-    Result := (
-      (Message.WParam = VK_LEFT) and (
-      (EditCtrl.SelLength = Length(EditCtrl.Text)) or
-      (EditCtrl.SelStart < 1)
-      )
-      ) or (
-      (Message.WParam = VK_RIGHT) and (
-      (EditCtrl.SelLength = Length(EditCtrl.Text)) or
-      (EditCtrl.SelStart >= Length(EditCtrl.Text))
-      )
-      );
+    Result :=
+      ((Msg.WParam = VK_LEFT) and ((EditCtrl.SelLength = Length(EditCtrl.Text)) or (EditCtrl.SelStart < 1))) or
+      ((Msg.WParam = VK_RIGHT) and ((EditCtrl.SelLength = Length(EditCtrl.Text)) or (EditCtrl.SelStart >= Length(EditCtrl.Text))));
   end;
 
   function TabNavigate: Boolean;
   begin
-    Result := Inspector.WantTabs and (Message.WParam = VK_TAB);
+    Result := Inspector.WantTabs and (Msg.WParam = VK_TAB);
   end;
 
 begin
   ExecInherited := True;
-  case Message.Msg of
+  case Msg.Msg of
     WM_KEYDOWN, WM_SYSKEYDOWN, WM_CHAR:
       begin
         if iifValueList in Flags then
-          with TWMKey(Message) do
+        begin
+          DoDropDownKeys(TWMKeyDown(Msg).CharCode, KeyDataToShiftState(TWMKeyDown(Msg).KeyData));
+          if TWMKeyDown(Msg).CharCode <> 0 then
           begin
-            DoDropDownKeys(CharCode, KeyDataToShiftState(KeyData));
-            if (CharCode <> 0) then
-            begin
-              if DroppedDown then
-                with TMessage(Message) do
-                  SendMessage(ListBox.Handle, Msg, WParam, LParam);
-              if not (iifAllowNonListValues in Flags) or
-                ((Msg = WM_KEYDOWN) and
-                (TWMKeyDown(Message).CharCode in [VK_UP, VK_DOWN])) then
-                ExecInherited := False;
-            end;
+            if DroppedDown then
+              SendMessage(ListBox.Handle, Msg.Msg, Msg.WParam, Msg.LParam);
+            if not (iifAllowNonListValues in Flags) or
+              ((Msg.Msg = WM_KEYDOWN) and
+              (TWMKeyDown(Msg).CharCode in [VK_UP, VK_DOWN])) then
+              ExecInherited := False;
           end;
+        end;
         PostToInsp :=
-          (Message.Msg = WM_KEYDOWN) and (
-          (KeyDataToShiftState(Message.LParam) = []) and (
-          (Message.WParam in [VK_NEXT, VK_PRIOR]) or (
-          not DroppedDown and
-          (Message.WParam in [VK_DOWN, VK_UP])
-          ) or LeftRightCanNavigate)
-          ) or TabNavigate;
+          (Msg.Msg = WM_KEYDOWN) and ((KeyDataToShiftState(Msg.LParam) = []) and
+          ((Msg.WParam in [VK_NEXT, VK_PRIOR]) or
+            (not DroppedDown and (Msg.WParam in [VK_DOWN, VK_UP])) or LeftRightCanNavigate)) or TabNavigate;
         if PostToInsp then
         begin
-          PostMessage(Inspector.Handle, Message.Msg, Message.WParam, Message.LParam);
-          Message.Result := 1;
+          PostMessage(Inspector.Handle, Msg.Msg, Msg.WParam, Msg.LParam);
+          Msg.Result := 1;
           ExecInherited := False;
         end;
       end;
   end;
-  if (Message.Msg = WM_CHAR) and (Message.WParam = 13) then begin
+  if (Msg.Msg = WM_CHAR) and (Msg.WParam = 13) then
+  begin
     ExecInherited := False;
-{$ifdef VCL}
     GetEditCtrl.SelectAll;
-    FEditChanged := true; // sets a flag that a change should be accepted whenever focus shifts away!
-{$endif}
+    FEditChanged := True; // sets a flag that a change should be accepted whenever focus shifts away!
   end;
   if ExecInherited and (@EditWndPrc <> nil) then
-    EditWndPrc(Message);
-  case Message.Msg of
+    EditWndPrc(Msg);
+  case Msg.Msg of
     WM_GETDLGCODE:
       begin
         if Inspector.WantTabs then
-          Message.Result := Message.Result or DLGC_WANTTAB;
+          Msg.Result := Msg.Result or DLGC_WANTTAB;
       end;
   end;
 end;
@@ -6413,25 +6399,28 @@ end;
 
 // PROTECTED
 //NEW: prevent lost data entry if focus shifts away, and that change of focus causes a refresh of the inspector!
-{$ifdef VCL}
+
+{$IFDEF VCL}
 procedure TJvCustomInspectorItem.OnInternalEditControlExiting(Sender:TObject);
 var
  Edit:TCustomEdit;
- Message: TMessage;
+ Msg: TMessage;
 begin
  Edit := GetEditCtrl;
- if not Assigned(Edit) then exit;
+ if not Assigned(Edit) then
+   Exit;
  // Write change, if any. This is a first stab:
- if FEditChanged then begin
-    FEditChanged := false;
-    Message.Msg    := WM_KEYDOWN;
-    Message.LParam := 0;
-    Message.WParam := VK_DOWN;
-    PostMessage(Inspector.Handle, Message.Msg, Message.WParam, Message.LParam);
-    Message.Result := 1;
+ if FEditChanged then
+ begin
+    FEditChanged := False;
+    Msg.Msg := WM_KEYDOWN;
+    Msg.LParam := 0;
+    Msg.WParam := VK_DOWN;
+    PostMessage(Inspector.Handle, Msg.Msg, Msg.WParam, Msg.LParam);
+    Msg.Result := 1;
  end;
 end;
-{$endif}
+{$ENDIF VCL}
 
 procedure TJvCustomInspectorItem.InitEdit;
 var
@@ -6474,12 +6463,12 @@ begin
         Edit.OnKeyUp := Inspector.FOnKeyUp;
       if Assigned(Inspector.FOnKeyPress) then
         Edit.OnKeyPress := Inspector.FOnKeyPress;
-{$ifdef VCL}
+      {$IFDEF VCL}
       //NEW: prevent lost data entry if focus shifts away, and that change of focus causes a refresh of the inspector!
       // VCL only, requires PostMessage
       Edit.OnExit := OnInternalEditControlExiting;
-      FEditChanged :=false;      
-{$endif}
+      FEditChanged := False;
+      {$ENDIF VCL}
       SetEditCtrl(Edit);
 
     end;

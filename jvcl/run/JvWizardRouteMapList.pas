@@ -35,23 +35,22 @@ unit JvWizardRouteMapList;
 interface
 uses
   SysUtils, Classes,
-  {$IFDEF USEJVCL}
-  JvTypes, JvConsts,
-  JvJVCLUtils,
-  {$ENDIF}
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, Types, QWindows,
   {$ENDIF VisualCLX}
+  {$IFDEF USEJVCL}
+  JvTypes, JvConsts, JvJVCLUtils,
+  {$ENDIF USEJVCL}
   JvWizard;
 
 {$IFNDEF USEJVCL}
- {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
 const
   clCream = TColor($F0FBFF);
- {$ENDIF !COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 {$ENDIF !USEJVCL}
 
 type
@@ -114,10 +113,10 @@ type
     destructor Destroy; override;
   published
     property ActiveFont: TFont read FActiveFont write SetActiveFont;
-{$IFDEF USEJVCL}
+    {$IFDEF USEJVCL}
     property ActiveFontOptions: TJvTrackFontOptions read FActiveFontOptions write SetActiveFontOptions default
       DefaultTrackFontOptions;
-{$ENDIF}
+    {$ENDIF USEJVCL}
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property Clickable: Boolean read FClickable write FClickable default True;
     property Color default $00C08000;
@@ -129,10 +128,10 @@ type
     property HotTrack: Boolean read FHotTrack write FHotTrack default True;
 
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
-{$IFDEF USEJVCL}
+    {$IFDEF USEJVCL}
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
-{$ENDIF}
+    {$ENDIF USEJVCL}
     property IncludeDisabled: Boolean read FIncludeDisabled write SetIncludeDisabled default False;
     property ItemColor: TColor read FItemColor write SetItemColor default clCream;
     property ItemHeight: Integer read FItemHeight write SetItemHeight default 25;
@@ -146,11 +145,9 @@ type
 
 implementation
 
-{ TJvWizardRouteMapList }
-
 constructor TJvWizardRouteMapList.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FActiveFont := TFont.Create;
   FActiveFont.Style := [fsBold];
   FActiveFont.OnChange := DoFontChange;
@@ -158,10 +155,10 @@ begin
   FHotTrackFont.Color := clNavy;
   FHotTrackFont.Style := [fsUnderline];
   FHotTrackFont.OnChange := DoFontChange;
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
   FActiveFontOptions := DefaultTrackFontOptions;
   FHotTrackFontOptions := DefaultTrackFontOptions;
-{$ENDIF}
+  {$ENDIF USEJVCL}
   Color := $00C08000;
   FHotTrackCursor := crHandPoint;
   FVertOffset := 8;
@@ -177,12 +174,12 @@ begin
   FHotTrackBorder := 2;
 end;
 
-procedure TJvWizardRouteMapList.MouseMove(Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvWizardRouteMapList.MouseMove(Shift: TShiftState;
+  X, Y: Integer);
 var
   P: TJvWizardCustomPage;
 begin
-  inherited;
+  inherited MouseMove(Shift, X, Y);
   if Clickable and HotTrack then
   begin
     P := PageAtPos(Point(X, Y));
@@ -193,7 +190,8 @@ begin
       Cursor := FHotTrackCursor;
       Refresh;
     end
-    else if (Cursor <> FOldCursor) then
+    else
+    if Cursor <> FOldCursor then
     begin
       Cursor := FOldCursor;
       Refresh;
@@ -204,20 +202,21 @@ end;
 function TJvWizardRouteMapList.PageAtPos(Pt: TPoint): TJvWizardCustomPage;
 var
   R: TRect;
-  i: Integer;
+  I: Integer;
 begin
   Result := nil;
-  if not Clickable then Exit;
+  if not Clickable then
+    Exit;
   R := ClientRect;
   InflateRect(R, -HorzOffset, -VertOffset);
   R.Bottom := R.Top + ItemHeight;
-  for i := 0 to PageCount - 1 do
+  for I := 0 to PageCount - 1 do
   begin
-    if Pages[i].Enabled or IncludeDisabled then
+    if Pages[I].Enabled or IncludeDisabled then
     begin
       if PtInRect(R, Pt) then
       begin
-        Result := Pages[i];
+        Result := Pages[I];
         Exit;
       end;
       OffsetRect(R, 0, ItemHeight);
@@ -227,7 +226,7 @@ end;
 
 procedure TJvWizardRouteMapList.Paint;
 var
-  i: Integer;
+  I: Integer;
   R: TRect;
   P: TPoint;
 begin
@@ -238,22 +237,24 @@ begin
   P := ScreenToClient(P);
   R := ClientRect;
   Canvas.Rectangle(R);
-  if ItemHeight <= 0 then Exit;
+  if ItemHeight <= 0 then
+    Exit;
   InflateRect(R, -HorzOffset, -VertOffset);
   R.Bottom := R.Top + ItemHeight;
-  for i := 0 to PageCount - 1 do
-    if Pages[i].Enabled or IncludeDisabled then
+  for I := 0 to PageCount - 1 do
+    if Pages[I].Enabled or IncludeDisabled then
     begin
-      DrawPageItem(Canvas, R, P, i);
+      DrawPageItem(Canvas, R, P, I);
       OffsetRect(R, 0, ItemHeight);
-      if R.Bottom >= ClientHeight - 2 then Exit;
+      if R.Bottom >= ClientHeight - 2 then
+        Exit;
     end;
 end;
 
 procedure TJvWizardRouteMapList.DrawPageItem(ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer);
 const
-  cAlignment: array[TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  cWordWrap: array[Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
+  cAlignment: array [TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  cWordWrap: array [Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
 var
   DefaultDraw: Boolean;
   ATop, ALeft: Integer;
@@ -267,9 +268,11 @@ begin
     ACanvas.Font := Font;
     if Assigned(Wizard) and (Pages[PageIndex] = Wizard.ActivePage) then
       ACanvas.Font := ActiveFont
-    else if PtInRect(ARect, MousePos) and Pages[PageIndex].Enabled and HotTrack then
+    else
+    if PtInRect(ARect, MousePos) and Pages[PageIndex].Enabled and HotTrack then
       ACanvas.Font := HotTrackFont
-    else if not Pages[PageIndex].Enabled then
+    else
+    if not Pages[PageIndex].Enabled then
       ACanvas.Font.Color := clGrayText;
     ACanvas.Brush.Color := ItemColor;
     ACanvas.Pen.Color := Color;
@@ -435,10 +438,10 @@ end;
 procedure TJvWizardRouteMapList.CMFontChanged(var Message: TMessage);
 begin
   inherited;
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
   UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   UpdateTrackFont(ActiveFont, Font, FActiveFontOptions);
-{$ENDIF}
+  {$ENDIF USEJVCL}
 end;
 
 procedure TJvWizardRouteMapList.SetAlignment(const Value: TAlignment);
@@ -523,6 +526,8 @@ begin
     UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   end;
 end;
-{$ENDIF}
+
+{$ENDIF USEJVCL}
+
 end.
 

@@ -36,7 +36,7 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Controls, Buttons, Graphics, ExtCtrls, Forms, ImgList,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,
   {$ENDIF VisualCLX}

@@ -96,7 +96,6 @@ type
   TFinalizeItem = class(TObject)
   public
     Next: TFinalizeItem;
-
     constructor Create(const AUnitName: string);
   end;
 
@@ -105,7 +104,6 @@ type
     UnitName: string;
     Items: TFinalizeItem;
     Next: TFinalizeUnitItem;
-
     constructor Create(AUnitName: string; ANext: TFinalizeUnitItem);
     destructor Destroy; override;
   end;
@@ -113,7 +111,7 @@ type
 var
   FinalizeUnitList: TFinalizeUnitItem = nil;
 
-{ TFinalizeItem }
+//=== TFinalizeItem ==========================================================
 
 constructor TFinalizeItem.Create(const AUnitName: string);
 var
@@ -137,7 +135,7 @@ begin
 end;
 
 
-{ TFinalizeUnitItem }
+//=== TFinalizeUnitItem ======================================================
 
 constructor TFinalizeUnitItem.Create(AUnitName: string; ANext: TFinalizeUnitItem);
 begin
@@ -169,7 +167,6 @@ begin
  // Normally FinalizeUnitList should be nil because the units should call
  // FinalizeUnit() in their finalization section.
   while FinalizeUnitList <> nil do
-  begin
     try
       while FinalizeUnitList <> nil do
       begin
@@ -180,7 +177,6 @@ begin
     except
       // ignore, we are in the finalization section
     end;
-  end;
 end;
 
 procedure FinalizeUnit(const UnitName: string);
@@ -207,9 +203,12 @@ begin
   end;
 end;
 
+//============================================================================
 
-// -----------------------------------------------------------------------------
 type
+  PObject = ^TObject;
+  PPointer = ^Pointer;
+
   TFinalizeProcItem = class(TFinalizeItem)
   private
     FFinalizeProc: TFinalizeProc;
@@ -228,7 +227,7 @@ type
 
   TFinalizeObjectNilItem = class(TFinalizeItem)
   private
-    FReference: ^TObject;
+    FReference: PObject;
   public
     constructor Create(const AUnitName: string; var AReference: TObject);
     destructor Destroy; override;
@@ -236,7 +235,7 @@ type
 
   TFinalizeFreeAndNilItem = class(TFinalizeItem)
   private
-    FReference: ^TObject;
+    FReference: PObject;
   public
     constructor Create(const AUnitName: string; var AReference: TObject);
     destructor Destroy; override;
@@ -252,13 +251,13 @@ type
 
   TFinalizeMemoryNilItem = class(TFinalizeItem)
   private
-    FPtr: ^Pointer;
+    FPtr: PPointer;
   public
     constructor Create(const AUnitName: string; var APtr: Pointer);
     destructor Destroy; override;
   end;
 
-{ TFinalizeProcItem }
+//=== TFinalizeProcItem ======================================================
 
 constructor TFinalizeProcItem.Create(const AUnitName: string;
   AFinalizeProc: TFinalizeProc);
@@ -269,12 +268,12 @@ end;
 
 destructor TFinalizeProcItem.Destroy;
 begin
-  FFinalizeProc();
+  FFinalizeProc;
   inherited Destroy;
 end;
 
 
-{ TFinalizeObjectItem }
+//=== TFinalizeObjectItem ====================================================
 
 constructor TFinalizeObjectItem.Create(const AUnitName: string;
   AInstance: TObject);
@@ -290,7 +289,7 @@ begin
 end;
 
 
-{ TFinalizeObjectNilItem }
+//=== TFinalizeObjectNilItem =================================================
 
 constructor TFinalizeObjectNilItem.Create(const AUnitName: string;
   var AReference: TObject);
@@ -307,7 +306,7 @@ begin
 end;
 
 
-{ TFinalizeFreeAndNilItem }
+//=== TFinalizeFreeAndNilItem ================================================
 
 constructor TFinalizeFreeAndNilItem.Create(const AUnitName: string;
   var AReference: TObject);
@@ -327,7 +326,7 @@ begin
 end;
 
 
-{ TFinalizeMemoryItem }
+//=== TFinalizeMemoryItem ====================================================
 
 constructor TFinalizeMemoryItem.Create(const AUnitName: string; APtr: Pointer);
 begin
@@ -343,7 +342,7 @@ begin
 end;
 
 
-{ TFinalizeMemoryNilItem }
+//=== TFinalizeMemoryNilItem =================================================
 
 constructor TFinalizeMemoryNilItem.Create(const AUnitName: string;
   var APtr: Pointer);
@@ -362,8 +361,7 @@ begin
   inherited Destroy;
 end;
 
-
-// -----------------------------------------------------------------------------
+//============================================================================
 
 procedure AddFinalizeProc(const UnitName: string; FinalizeProc: TFinalizeProc);
 begin

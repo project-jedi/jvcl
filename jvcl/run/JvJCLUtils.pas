@@ -6709,7 +6709,7 @@ begin
       [LastError, SysErrorMessage(LastError)]);
     if Text <> '' then
       St := Text + ':' + St;
-    raise {$IFDEF COMPILER6_UP}EOSError{$ELSE}EWin32Error{$ENDIF}.Create(St);
+    raise {$IFDEF COMPILER6_UP} EOSError{$ELSE} EWin32Error{$ENDIF}.Create(St);
   end;
 end;
 

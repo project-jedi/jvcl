@@ -173,7 +173,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QForms, QControls, QDialogs,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvConsts, JvResources, JvTypes, JvJVCLUtils, JvJCLUtils;
 
 { Utility routines }

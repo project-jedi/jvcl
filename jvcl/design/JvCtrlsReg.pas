@@ -51,8 +51,8 @@ uses
   JvTransparentButton, JvSpeedbarSetupForm, JvColorForm, JvDsgnIntf,
   JvImageDrawThread, JvWinampLabel, JvPlaylist, JvComponentPanel, JvButtons,
   JvCaptionPanel, JvScrollMax, JvUninstallControls, JvMovableBevel,
-  JvComboListBox, JvCharMap, JvOfficeColorButton, JvOfficeColorPanel, JvNetscapeSplitter,
-  JvScrollMaxEditor, JvBehaviorLabelEditor,
+  JvComboListBox, JvCharMap, JvOfficeColorButton, JvOfficeColorPanel,
+  JvNetscapeSplitter, JvScrollMaxEditor, JvBehaviorLabelEditor,
   JvGroupHeaderEditor, JvFooterEditor, JvSpeedbarForm, JvDsgnEditors,
   JvTransparentButtonEditors, JvRollOutEditor;
 
@@ -83,14 +83,14 @@ begin
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(TJvLabelBehaviorName), TJvBehaviorLabel, 'Behavior', TJvLabelBehaviorProperty);
   RegisterPropertyEditor(TypeInfo(TCursor), TJvxSplitter, 'Cursor', nil);
-  //RegisterPropertyEditor(TypeInfo(TDateTime), TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
-  //RegisterPropertyEditor(TypeInfo(TDateTime), TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
+  // RegisterPropertyEditor(TypeInfo(TDateTime), TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
+  // RegisterPropertyEditor(TypeInfo(TDateTime), TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', TStringProperty);
 
-  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'ActiveIndex', TJvTBImagesProperty);
-  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'DisabledIndex', TJvTBImagesProperty);
-  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'DownIndex', TJvTBImagesProperty);
-  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'GrayIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(Integer), TJvTransparentButton2, 'ActiveIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(Integer), TJvTransparentButton2, 'DisabledIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(Integer), TJvTransparentButton2, 'DownIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(Integer), TJvTransparentButton2, 'GrayIndex', TJvTBImagesProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvRollOutImageOptions, '', TJvRollOutOptionsImagesProperty);
 
   RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
@@ -100,7 +100,7 @@ begin
   RegisterComponentEditor(TJvImageListBox, TJvStringsEditor);
   RegisterComponentEditor(TJvImageComboBox, TJvStringsEditor);
   RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
-  //  RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
+  // RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
 
   RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
   RegisterClass(TJvScrollMaxBand);

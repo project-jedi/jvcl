@@ -2018,7 +2018,7 @@ begin
         begin
           ImageRect := GetImageRect(AImages, R);
           { YW - R is the area where the title and subtitle paint to. }
-          AImages.Draw(ACanvas, ImageRect.Left, ImageRect.Top, FImageIndex{$IFDEF VCL}, True{$ENDIF});
+          AImages.Draw(ACanvas, ImageRect.Left, ImageRect.Top, FImageIndex {$IFDEF VCL}, True {$ENDIF});
         end;
       end;
       { YW - Draw Title }

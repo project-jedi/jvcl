@@ -37,7 +37,7 @@ uses
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   ActnList,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QActnList,
   {$ENDIF VisualCLX}
@@ -98,7 +98,7 @@ type
     property MailOptions: TJvSendMailOptions read FMailOptions write FMailOptions;
   end;
 
-  {$ENDIF WINDOWS}
+  {$ENDIF MSWINDOWS}
 
   TJvWebAction = class(TAction)
   private
@@ -240,7 +240,7 @@ begin
   Mailer.Subject := Value;
 end;
 
-{$ENDIF WINDOWS}
+{$ENDIF MSWINDOWS}
 
 //=== TJvWebAction ===========================================================
 
