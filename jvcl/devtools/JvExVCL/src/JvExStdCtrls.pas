@@ -85,6 +85,7 @@ type
   {$ENDIF VCL}
   
   {$IFDEF VisualCLX}
+
   TJvExCheckBox = class(TJvExCustomCheckBox)
   published
     property Action;
@@ -205,7 +206,6 @@ type
     property OnStartDrag;
   end;
 
-
   TJvExListBox = class(TJvExCustomListBox)
   published
     property Style; { Must be published before Items }
@@ -307,7 +307,8 @@ type
     property OnMouseUp;
     property OnStartDrag;
   end;
-{$ENDIF VisualCLX}
+
+  {$ENDIF VisualCLX}
 
 implementation
 

@@ -97,7 +97,7 @@ type
   XMLSerializerException = class(Exception);
   EJvgXMLOpenTagNotFoundException = class(XMLSerializerException);
   EJvgXMLCloseTagNotFoundException = class(XMLSerializerException);
-  EJvgXMLUncknownPropertyException = class(XMLSerializerException);
+  EJvgXMLUnknownPropertyException = class(XMLSerializerException);
 
   TJvgXMLSerializerException = class of XMLSerializerException;
 
@@ -124,7 +124,7 @@ type
     procedure Check(Expr: Boolean; const Msg: string; E: TJvgXMLSerializerException);
     procedure WriteOutStream(const Value: string);
   protected
-    procedure SerializeInternal(Component: TObject; Level: integer = 1);
+    procedure SerializeInternal(Component: TObject; Level: Integer = 1);
     procedure DeSerializeInternal(Component: TObject;
       ComponentTagName: string; ParentBlockEnd: PChar = nil);
     procedure GenerateDTDInternal(Component: TObject; DTDList: TStrings;
@@ -264,16 +264,15 @@ end;
     XML string into output Stream via .WriteOutStream() method
 }
 
-procedure TJvgXMLSerializer.SerializeInternal(Component: TObject; Level: integer
-  = 1);
+procedure TJvgXMLSerializer.SerializeInternal(Component: TObject; Level: Integer = 1);
 var
   PropInfo: PPropInfo;
   TypeInf, PropTypeInf: PTypeInfo;
   TypeData: PTypeData;
-  i, j: integer;
+  I, J: Integer;
   AName, PropName, sPropValue: string;
   PropList: PPropList;
-  NumProps: word;
+  NumProps: Word;
   PropObject: TObject;
 
   //{ Добавляет открывающий тег с заданным именем }
@@ -303,6 +302,7 @@ var
   begin
     WriteOutStream(Value);
   end;
+
 begin
   //  Result := '';
 
@@ -318,21 +318,21 @@ begin
     { Getting list of properties  [translated] }
     GetPropInfos(TypeInf, PropList);
 
-    for i := 0 to NumProps - 1 do
+    for I := 0 to NumProps - 1 do
     begin
-      PropName := PropList^[i]^.Name;
+      PropName := PropList^[I]^.Name;
 
-      PropTypeInf := PropList^[i]^.PropType^;
-      PropInfo := PropList^[i];
+      PropTypeInf := PropList^[I]^.PropType^;
+      PropInfo := PropList^[I];
 
       //{ Хочет ли свойство, чтобы его сохранили ? }
       { Does the property wish to be saved?  [translated] }
       if not IsStoredProp(Component, PropInfo) then
-        continue;
+        Continue;
 
       case PropTypeInf^.Kind of
         tkInteger, tkChar, tkEnumeration, tkFloat, tkString, tkSet,
-          tkWChar, tkLString, tkWString, tkVariant:
+        tkWChar, tkLString, tkWString, tkVariant:
           begin
             //{ Получение значения свойства }
             { Getting property's value  [translated] }
@@ -341,11 +341,10 @@ begin
             //{ Проверяем на пустое значение и значение по умолчанию }
             { Checking if value is empty or is default  [translated] }
             if ExcludeEmptyValues and (sPropValue = '') then
-              continue;
-            if ExcludeDefaultValues and (PropTypeInf^.Kind in
-              ORDINAL_TYPES)
-              and (sPropValue = IntToStr(PropInfo.Default)) then
-              continue;
+              Continue;
+            if ExcludeDefaultValues and (PropTypeInf^.Kind in ORDINAL_TYPES) and
+              (sPropValue = IntToStr(PropInfo.Default)) then
+              Continue;
 
             //{ Замена спецсимволов }
             { special characters placeholders  [translated] }
@@ -395,14 +394,14 @@ begin
                   addOpenTag(PropName);
 
                 SerializeInternal(PropObject, Level);
-                for j := 0 to (PropObject as TCollection).Count - 1 do
+                for J := 0 to (PropObject as TCollection).Count - 1 do
                 begin
                   //{ Контейнерный тег по имени класса }
                   { Container-tag with name of the class  [translated] }
-                  addOpenTag(TCollection(PropObject).Items[j].ClassName);
-                  SerializeInternal(TCollection(PropObject).Items[j],
+                  addOpenTag(TCollection(PropObject).Items[J].ClassName);
+                  SerializeInternal(TCollection(PropObject).Items[J],
                     Level);
-                  addCloseTag(TCollection(PropObject).Items[j].ClassName, True);
+                  addCloseTag(TCollection(PropObject).Items[J].ClassName, True);
                 end;
 
                 if WrapCollections then
@@ -495,23 +494,23 @@ var
   TagName, TagValue, TagValueEnd: PChar;
   TypeInf: PTypeInfo;
   TypeData: PTypeData;
-  PropIndex: integer;
+  PropIndex: Integer;
   AName: string;
   PropList: PPropList;
-  NumProps: word;
+  NumProps: Word;
 
   //{ Поиск у объекта свойства с заданным именем }
   { Searching object for property with given name  [translated] }
 
-  function FindProperty(TagName: PChar): integer;
+  function FindProperty(TagName: PChar): Integer;
   var
-    i: integer;
+    I: Integer;
   begin
     Result := -1;
-    for i := 0 to NumProps - 1 do
-      if CompareStr(PropList^[i]^.Name, TagName) = 0 then
+    for I := 0 to NumProps - 1 do
+      if CompareStr(PropList^[I]^.Name, TagName) = 0 then
       begin
-        Result := i;
+        Result := I;
         Break;
       end;
   end;
@@ -554,7 +553,7 @@ var
         JBE     @@2             // если длина подсроки больше длине строки - выход
         MOV     EDI,EBX         // EDI  - начало строки Str1
         LEA     EBX,[ESI-1]     // EBX - длина сравнения строк
-@@1:    MOV     ESI,EDX         // ESI - смещение строки Str2
+  @@1:  MOV     ESI,EDX         // ESI - смещение строки Str2
         LODSB                   // загужаем первый символ подстроки в AL
         REPNE   SCASB           // ищем этот символ в строке EDI
         JNE     @@2             // если символ не обнаружен - на выход
@@ -567,8 +566,8 @@ var
         JNE     @@1             // если строки различны - ищем следующее совпадение первого символа
         LEA     EAX,[EDI-1]
         JMP     @@3
-@@2:    XOR     EAX,EAX
-@@3:    POP     EBX
+  @@2:  XOR     EAX,EAX
+  @@3:  POP     EBX
         POP     ESI
         POP     EDI
   end;
@@ -626,34 +625,33 @@ begin
       //{ быстрый поиск угловых скобок }
       { fast search for "<" and ">"  [translated] }
       asm
-        mov CL, '<'
-        mov EDX, Pointer(TagEnd)
-        dec EDX
-@@1:    inc EDX
-        mov AL, byte[EDX]
-        cmp AL, CL
-        jne @@1
-        mov TagStart, EDX
+        MOV CL, '<'
+        MOV EDX, Pointer(TagEnd)
+        DEC EDX
+  @@1:  INC EDX
+        MOV AL, Byte[EDX]
+        CMP AL, CL
+        JNE @@1
+        MOV TagStart, EDX
 
-        mov CL, '>'
-@@2:    inc EDX
-        mov AL, byte[EDX]
-        cmp AL, CL
-        jne @@2
-        mov TagEnd, EDX
+        MOV CL, '>'
+  @@2:  INC EDX
+        MOV AL, Byte[EDX]
+        CMP AL, CL
+        JNE @@2
+        MOV TagEnd, EDX
       end;
 
       GetMem(TagName, TagEnd - TagStart + 1);
       try
-
         //{ TagName - имя тега }
         { Tag Name - Tag Name  [translated] }
         StrLCopy(TagName, TagStart + 1, TagEnd - TagStart - 1);
 
         //{ TagEnd - закрывающий тег }
         { TagEnd - Closing tag   [translated] }
-        TagEnd := StrPosExt(TagEnd, PChar('</' + TagName + '>'), BufferEnd -
-          TagEnd + 3 + Length(TagName) { = BufferLength});
+        TagEnd := StrPosExt(TagEnd, PChar('</' + TagName + '>'),
+          BufferEnd - TagEnd + 3 + Length(TagName) { = BufferLength});
 
         //Inc(TagStart, Length('</' + TagName + '>')-1);
 
@@ -667,15 +665,13 @@ begin
         PropIndex := FindProperty(TagName);
 
         if not WrapCollections and (PropIndex = -1) then
-        begin
-          PropIndex := FindProperty(PChar(TagName + 's'));
-        end
+          PropIndex := FindProperty(PChar(TagName + 's'))
         else
           TokenPtr := TagStart;
 
         if not IgnoreUnknownTags then
           Check(PropIndex <> -1, Format(RsUnknownProperty, [TagName]),
-            EJvgXMLUncknownPropertyException);
+            EJvgXMLUnknownPropertyException);
 
         if PropIndex <> -1 then
           SetPropertyValue(Component, PropList^[PropIndex], TagValue,
@@ -719,49 +715,45 @@ var
   PropTypeInf: PTypeInfo;
   PropObject: TObject;
   CollectionItem: TCollectionItem;
-  sValue: string;
-  charTmp: char;
+  SValue: string;
+  TmpChar: Char;
 begin
   PropTypeInf := PropInfo.PropType^;
 
   case PropTypeInf^.Kind of
     tkInteger, tkChar, tkEnumeration, tkFloat, tkString, tkSet,
-      tkWChar, tkLString, tkWString, tkVariant:
+    tkWChar, tkLString, tkWString, tkVariant:
       begin
         //{ имитируем zero terminated string }
         { simulates zero terminated string  [translated] }
-        charTmp := ValueEnd[0];
+        TmpChar := ValueEnd[0];
         ValueEnd[0] := #0;
-        sValue := StrPas(Value);
-        ValueEnd[0] := charTmp;
+        SValue := StrPas(Value);
+        ValueEnd[0] := TmpChar;
 
         // Замена спецсимволов. Актуально только для XML,
         // сохраненного с помощью этого компонента
         { Replacing specific characters (compatible only with that very component)  [translated] }
         if FReplaceReservedSymbols then
         begin
-          sValue := StringReplace(sValue, '&lt;', '<', [rfReplaceAll]);
-          sValue := StringReplace(sValue, '&gt;', '>', [rfReplaceAll]);
-          // sValue := StringReplace(sValue, '&', '&', [rfReplaceAll]);
+          SValue := StringReplace(SValue, '&lt;', '<', [rfReplaceAll]);
+          SValue := StringReplace(SValue, '&gt;', '>', [rfReplaceAll]);
+          // SValue := StringReplace(SValue, '&', '&', [rfReplaceAll]);
         end;
 
         //{ Замена разделителя на системный }
         { Changing delimiter to system-wide  [translated] }
         if PropTypeInf^.Kind = tkFloat then
-        begin
           if DecimalSeparator = ',' then
-            sValue := StringReplace(sValue, '.', DecimalSeparator,
-              [rfReplaceAll])
+            SValue := StringReplace(SValue, '.', DecimalSeparator, [rfReplaceAll])
           else
-            sValue := StringReplace(sValue, ',', DecimalSeparator,
-              [rfReplaceAll]);
-        end;
+            SValue := StringReplace(SValue, ',', DecimalSeparator, [rfReplaceAll]);
 
         //{ Для корректного преобразования парсером tkSet нужны угловые скобки }
         { tkSet parser needs "<" and ">" for correct transformation  [translated] }
         if PropTypeInf^.Kind = tkSet then
-          sValue := '[' + sValue + ']';
-        SetPropValue(Component, PropInfo^.Name, sValue);
+          SValue := '[' + SValue + ']';
+        SetPropValue(Component, PropInfo^.Name, SValue);
       end;
     tkClass:
       begin
@@ -774,11 +766,11 @@ begin
           //{ Текстовые списки }
           { text lists  [translated] }
           begin
-            charTmp := ValueEnd[0];
+            TmpChar := ValueEnd[0];
             ValueEnd[0] := #0;
-            sValue := StrPas(Value);
-            ValueEnd[0] := charTmp;
-            TStrings(PropObject).CommaText := sValue;
+            SValue := StrPas(Value);
+            ValueEnd[0] := TmpChar;
+            TStrings(PropObject).CommaText := SValue;
           end
           else
           if PropObject is TCollection then
@@ -867,27 +859,28 @@ var
   PropInfo: PPropInfo;
   TypeInf, PropTypeInf: PTypeInfo;
   TypeData: PTypeData;
-  i: integer;
+  I: Integer;
   AName, PropName, TagContent: string;
   PropList: PPropList;
-  NumProps: word;
+  NumProps: Word;
   PropObject: TObject;
 const
   PCDATA = '#PCDATA';
 
   procedure addElement(const ElementName: string; Data: string);
   var
-    s: string;
+    S: string;
   begin
     if DTDList.IndexOf(ElementName) <> -1 then
       exit;
     DTDList.Add(ElementName);
-    s := '<!ELEMENT ' + ElementName + ' ';
+    S := '<!ELEMENT ' + ElementName + ' ';
     if Data = '' then
       Data := PCDATA;
-    s := s + '(' + Data + ')>'#13#10;
-    Stream.Write(PChar(s)[0], Length(s));
+    S := S + '(' + Data + ')>'#13#10;
+    Stream.Write(PChar(S)[0], Length(S));
   end;
+
 begin
   { Playing with RTTI }
   TypeInf := Component.ClassInfo;
@@ -902,12 +895,12 @@ begin
     GetPropInfos(TypeInf, PropList);
     TagContent := '';
 
-    for i := 0 to NumProps - 1 do
+    for I := 0 to NumProps - 1 do
     begin
-      PropName := PropList^[i]^.Name;
+      PropName := PropList^[I]^.Name;
 
-      PropTypeInf := PropList^[i]^.PropType^;
-      PropInfo := PropList^[i];
+      PropTypeInf := PropList^[I]^.PropType^;
+      PropInfo := PropList^[I];
 
       //{ Пропустить не поддерживаемые типы }
       { Skip types that are not supported [translated] }
@@ -921,25 +914,23 @@ begin
 
       case PropTypeInf^.Kind of
         tkInteger, tkChar, tkFloat, tkString,
-          tkWChar, tkLString, tkWString, tkVariant, tkEnumeration, tkSet:
-          begin
-            //{ Перевод в DTD. Для данных типов модель содержания - #PCDATA }
-            { conversion to DTD. Theese types will have #PCDATA model of content [translated] }
-            addElement(PropName, PCDATA);
-          end;
+        tkWChar, tkLString, tkWString, tkVariant, tkEnumeration, tkSet:
+          //{ Перевод в DTD. Для данных типов модель содержания - #PCDATA }
+          { conversion to DTD. Theese types will have #PCDATA model of content [translated] }
+          addElement(PropName, PCDATA);
         //{ код был бы полезен при использовании атрибутов }
         { Code might be useful when using attributes  [translated] }
         {
         tkEnumeration:
         begin
           TypeData:= GetTypeData(GetTypeData(PropTypeInf)^.BaseType^);
-          s := '';
-          for j := TypeData^.MinValue to TypeData^.MaxValue do
+          S := '';
+          for J := TypeData^.MinValue to TypeData^.MaxValue do
           begin
-            if s <> '' then s := s + '|';
-            s := s + GetEnumName(PropTypeInf, j);
+            if S <> '' then S := S + '|';
+            S := S + GetEnumName(PropTypeInf, J);
           end;
-          addElement(PropName, s);
+          addElement(PropName, S);
         end;
         }
         tkClass:
@@ -966,8 +957,7 @@ begin
     begin
       if TagContent <> '' then
         TagContent := TagContent + '|';
-      TagContent := TagContent + (Component as
-        TCollection).ItemClass.ClassName + '*';
+      TagContent := TagContent + (Component as TCollection).ItemClass.ClassName + '*';
     end;
 
     //{ Добавляем модель содержания для элемента }

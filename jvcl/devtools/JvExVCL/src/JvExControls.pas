@@ -261,7 +261,7 @@ procedure CustomControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
 procedure WidgetControl_ColorChanged(Instance: TWidgetControl);
 
 // support for PaintTo & PaintWindow
-procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: integer);
+procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: Integer);
 
 function WidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
   Shift: TShiftState; const KeyText: WideString; InheritedValue: Boolean): Boolean;
@@ -705,7 +705,7 @@ type
   TCustomEditAccessProtected = class(TCustomEdit);
   TCustomMaskEditAccessProtected = class(TCustomMaskEdit);
 
-procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: integer);
+procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: Integer);
 var
   PixMap: QPixmapH;
 begin
@@ -1229,9 +1229,8 @@ begin
     Code.Jmp := $E9;
     Code.Offset := Integer(HookProc) - (Integer(ProcAddress) + 1) - SizeOf(Code);
 
-   { The strange thing is that something overwrites the $e9 with a "PUSH xxx" }
-    if WriteProtectedMemory(Pointer(Cardinal(ProcAddress) + 1), Code,
-         SizeOf(Code)) then
+    { The strange thing is that something overwrites the $e9 with a "PUSH xxx" }
+    if WriteProtectedMemory(Pointer(Cardinal(ProcAddress) + 1), Code, SizeOf(Code)) then
     begin
       FlushInstructionCache(GetCurrentProcess, ProcAddress, SizeOf(Code));
       Result := True;
@@ -1267,7 +1266,7 @@ var
 
 procedure OrgSetAutoSize(Instance: TControl; Value: Boolean);
 asm
-  dd    0, 0, 0, 0  // 16 Bytes
+        DD    0, 0, 0, 0  // 16 Bytes
 end;
 
 procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
@@ -1344,7 +1343,8 @@ begin
   PSetCode := @SetCode;
 
   if (PGetCode^.Sign = GetCodeSign) and
-     (PSetCode^.Sign1 = SetCodeSign1) and (PSetCode^.Sign2 = SetCodeSign2) then
+    (PSetCode^.Sign1 = SetCodeSign1) and
+    (PSetCode^.Sign2 = SetCodeSign2) then
   begin
     AutoSizeOffset := PGetCode^.Offset;
     TControl_SetAutoSize := GetRelocAddress(
@@ -1358,7 +1358,7 @@ end;
 
 function CallSetFocusedControl(Instance: TCustomForm; Control: TWidgetControl): Boolean;
 asm
-  dd    0, 0, 0, 0  // 16 Bytes
+        DD    0, 0, 0, 0  // 16 Bytes
 end;
 
 function SetFocusedControlHook(Instance: TCustomForm; Control: TWidgetControl): Boolean;
@@ -1432,7 +1432,6 @@ var
 
 {$ENDIF VisualCLX}
 
-
 initialization
   {$IFDEF COMPILER5}
   InitHookVars;
@@ -1440,9 +1439,8 @@ initialization
   {$ENDIF COMPILER5}
 
   {$IFDEF VisualCLX}
-  
-//  InstallProcHook(@TCustomForm.SetFocusedControl, @SetFocusedControlHook,
-//    @CallSetFocusedControl);
+  //InstallProcHook(@TCustomForm.SetFocusedControl, @SetFocusedControlHook,
+  //  @CallSetFocusedControl);
   InstallProcHook(@TCustomEdit.CutToClipboard, @CutToClipboardHook,
     @CallCutToClipboard);
   InstallProcHook(@TCustomEdit.CopyToClipboard, @CopyToClipboardHook,
@@ -1450,15 +1448,12 @@ initialization
   InstallProcHook(@TCustomEdit.PasteFromClipboard, @PasteFromClipboardHook,
     @CallPasteFromClipboard);
   {$IFDEF COMPILER7}
-  InstallProcHook(@TCustomEdit.Undo, @UndoHook,
-    @CallUndo);
+  InstallProcHook(@TCustomEdit.Undo, @UndoHook, @CallUndo);
   {$ELSE}
   {$IF declared(PatchedVCLX)}
-  InstallProcHook(@TCustomEdit.Undo, @UndoHook,
-    @CallUndo);
+  InstallProcHook(@TCustomEdit.Undo, @UndoHook, @CallUndo);
   {$IFEND}
   {$ENDIF COMPILER7}
-
   {$ENDIF VisualCLX}
 
 finalization
@@ -1467,7 +1462,6 @@ finalization
   {$ENDIF COMPILER5}
 
   {$IFDEF VisualCLX}
-
   UninstallProcHook(@CallCutToClipboard);
   UninstallProcHook(@CallCopyToClipboard);
   UninstallProcHook(@CallPasteFromClipboard);
@@ -1478,8 +1472,7 @@ finalization
   UninstallProcHook(@CallUndo);
   {$IFEND}
   {$ENDIF COMPILER7}
-//  UninstallProcHook(@CallSetFocusedControl);
-
+  //UninstallProcHook(@CallSetFocusedControl);
   {$ENDIF VisualCLX}
 
 end.

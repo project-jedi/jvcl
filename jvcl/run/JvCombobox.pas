@@ -1392,7 +1392,7 @@ begin
   if (MeasureStyle = cmsBeforeDraw) and not FIsFixedHeight then
   begin
     NewHeight := FLastSetItemHeight;
-    if (odComboBoxEdit in State) then
+    if odComboBoxEdit in State then
       HeightIndex := -1
     else
       HeightIndex := Index;
@@ -1954,8 +1954,8 @@ end;
 procedure TJvCustomComboBox.WMInitDialog(var Msg: TWMInitDialog);
 begin
   inherited;
-  if (MeasureStyle = cmsAfterCreate) or (IsProviderSelected and
-      ((MeasureStyle <> cmsBeforeDraw) or FIsFixedHeight)) then
+  if (MeasureStyle = cmsAfterCreate) or
+    (IsProviderSelected and ((MeasureStyle <> cmsBeforeDraw) or FIsFixedHeight)) then
     PerformMeasure;
 end;
 

@@ -371,11 +371,6 @@ type
 
 implementation
 
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
-
 { The CONSTRUCTOR_CODE macro is used to extend the constructor by the macro
   content. }
 {$UNDEF CONSTRUCTOR_CODE}
@@ -773,7 +768,7 @@ end;
 
 procedure TJvExCustomMaskEdit.DoBeepOnError;
 begin
-  if BeepOnError then
+  if FBeepOnError then
     SysUtils.Beep;
 end;
 
@@ -1174,7 +1169,7 @@ end;
 
 procedure TJvExMaskEdit.DoBeepOnError;
 begin
-  if BeepOnError then
+  if FBeepOnError then
     SysUtils.Beep;
 end;
 
@@ -1185,20 +1180,4 @@ end;
 
 
 {$UNDEF CONSTRUCTOR_CODE} // undefine at file end
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
-
 end.

@@ -94,7 +94,7 @@ begin
   Value := O2V(TJvCustomEditor.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{ procedure SetLeftTop(ALeftCol, ATopRow: integer); }
+{ procedure SetLeftTop(ALeftCol, ATopRow: Integer); }
 
 procedure TRACustomEditor_SetLeftTop(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -129,21 +129,21 @@ begin
   TJvCustomEditor(Args.Obj).DeleteSelected;
 end;
 
-{ function CalcCellRect(const X, Y: integer): TRect; }
+{ function CalcCellRect(const X, Y: Integer): TRect; }
 
 procedure TRACustomEditor_CalcCellRect(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Rect2Var(TJvCustomEditor(Args.Obj).CalcCellRect(Args.Values[0], Args.Values[1]));
 end;
 
-{ procedure SetCaret(X, Y: integer); }
+{ procedure SetCaret(X, Y: Integer); }
 
 procedure TRACustomEditor_SetCaret(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TJvCustomEditor(Args.Obj).SetCaret(Args.Values[0], Args.Values[1]);
 end;
 
-{ procedure CaretFromPos(const Pos: integer; var X, Y: integer); }
+{ procedure CaretFromPos(const Pos: Integer; var X, Y: Integer); }
 
 procedure TRACustomEditor_CaretFromPos(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -151,14 +151,14 @@ begin
     TVarData(Args.Values[2]).vInteger);
 end;
 
-{ function PosFromCaret(const X, Y: integer): integer; }
+{ function PosFromCaret(const X, Y: Integer): Integer; }
 
 procedure TRACustomEditor_PosFromCaret(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).PosFromCaret(Args.Values[0], Args.Values[1]);
 end;
 
-{ procedure PaintCaret(const bShow: boolean); }
+{ procedure PaintCaret(const bShow: Boolean); }
 
 procedure TRACustomEditor_PaintCaret(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -263,140 +263,140 @@ begin
   TJvCustomEditor(Args.Obj).EndCompound;
 end;
 
-{ property Read LeftCol: integer }
+{ property Read LeftCol: Integer }
 
 procedure TRACustomEditor_Read_LeftCol(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).LeftCol;
 end;
 
-{ property Read TopRow: integer }
+{ property Read TopRow: Integer }
 
 procedure TRACustomEditor_Read_TopRow(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).TopRow;
 end;
 
-{ property Read VisibleColCount: integer }
+{ property Read VisibleColCount: Integer }
 
 procedure TRACustomEditor_Read_VisibleColCount(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).VisibleColCount;
 end;
 
-{ property Read VisibleRowCount: integer }
+{ property Read VisibleRowCount: Integer }
 
 procedure TRACustomEditor_Read_VisibleRowCount(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).VisibleRowCount;
 end;
 
-{ property Read LastVisibleCol: integer }
+{ property Read LastVisibleCol: Integer }
 
 procedure TRACustomEditor_Read_LastVisibleCol(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).LastVisibleCol;
 end;
 
-{ property Read LastVisibleRow: integer }
+{ property Read LastVisibleRow: Integer }
 
 procedure TRACustomEditor_Read_LastVisibleRow(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).LastVisibleRow;
 end;
 
-{ property Read Cols: integer }
+{ property Read Cols: Integer }
 
 procedure TRACustomEditor_Read_Cols(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).Cols;
 end;
 
-{ property Write Cols(Value: integer) }
+{ property Write Cols(Value: Integer) }
 
 procedure TRACustomEditor_Write_Cols(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TJvCustomEditor(Args.Obj).Cols := Value;
 end;
 
-{ property Read Rows: integer }
+{ property Read Rows: Integer }
 
 procedure TRACustomEditor_Read_Rows(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).Rows;
 end;
 
-{ property Write Rows(Value: integer) }
+{ property Write Rows(Value: Integer) }
 
 procedure TRACustomEditor_Write_Rows(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TJvCustomEditor(Args.Obj).Rows := Value;
 end;
 
-{ property Read CaretX: integer }
+{ property Read CaretX: Integer }
 
 procedure TRACustomEditor_Read_CaretX(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).CaretX;
 end;
 
-{ property Write CaretX(Value: integer) }
+{ property Write CaretX(Value: Integer) }
 
 procedure TRACustomEditor_Write_CaretX(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TJvCustomEditor(Args.Obj).CaretX := Value;
 end;
 
-{ property Read CaretY: integer }
+{ property Read CaretY: Integer }
 
 procedure TRACustomEditor_Read_CaretY(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).CaretY;
 end;
 
-{ property Write CaretY(Value: integer) }
+{ property Write CaretY(Value: Integer) }
 
 procedure TRACustomEditor_Write_CaretY(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TJvCustomEditor(Args.Obj).CaretY := Value;
 end;
 
-{ property Read Modified: boolean }
+{ property Read Modified: Boolean }
 
 procedure TRACustomEditor_Read_Modified(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).Modified;
 end;
 
-{ property Write Modified(Value: boolean) }
+{ property Write Modified(Value: Boolean) }
 
 procedure TRACustomEditor_Write_Modified(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TJvCustomEditor(Args.Obj).Modified := Value;
 end;
 
-{ property Read SelStart: integer }
+{ property Read SelStart: Integer }
 
 procedure TRACustomEditor_Read_SelStart(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).SelStart;
 end;
 
-{ property Write SelStart(Value: integer) }
+{ property Write SelStart(Value: Integer) }
 
 procedure TRACustomEditor_Write_SelStart(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TJvCustomEditor(Args.Obj).SelStart := Value;
 end;
 
-{ property Read SelLength: integer }
+{ property Read SelLength: Integer }
 
 procedure TRACustomEditor_Read_SelLength(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TJvCustomEditor(Args.Obj).SelLength;
 end;
 
-{ property Write SelLength(Value: integer) }
+{ property Write SelLength(Value: Integer) }
 
 procedure TRACustomEditor_Write_SelLength(const Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -447,7 +447,7 @@ begin
   Value := O2V(TJvCustomEditor(Args.Obj).UndoBuffer);
 end;
 
-{ property Read Recording: boolean }
+{ property Read Recording: Boolean }
 
 procedure TRACustomEditor_Read_Recording(var Value: Variant; Args: TJvInterpreterArgs);
 begin

@@ -2348,6 +2348,7 @@ type
   {$ENDIF VCL}
   
   {$IFDEF VisualCLX}
+
   TJvExCheckBox = class(TJvExCustomCheckBox)
   published
     property Action;
@@ -2468,7 +2469,6 @@ type
     property OnStartDrag;
   end;
 
-
   TJvExListBox = class(TJvExCustomListBox)
   published
     property Style; { Must be published before Items }
@@ -2570,14 +2570,10 @@ type
     property OnMouseUp;
     property OnStartDrag;
   end;
-{$ENDIF VisualCLX}
+
+  {$ENDIF VisualCLX}
 
 implementation
-
-{$IFDEF UNITVERSIONING}
-uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
 {$IFDEF VCL}
 procedure TJvExCustomGroupBox.Dispatch(var Msg);
@@ -8117,21 +8113,5 @@ end;
 {$ENDIF VCL}
 
 {$UNDEF CONSTRUCTOR_CODE} // undefine at file end
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\run'
-  );
-
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
 
 end.
