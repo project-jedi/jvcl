@@ -486,9 +486,17 @@ resourcestring
 //=== JvDBGrid.pas ===========================================================
 resourcestring
   RsJvDBGridSelectTitle = 'Select columns';
+  RsJvDBGridSelectOption = '[With the real field name]';
   RsJvDBGridSelectOK = '&OK';
   RsJvDBGridSelectWarning = 'At least one column must be visible!';
-  RsEJvDBGridControlPropertyNotAssigned = 'JvDbControls.EditControls property Control not assigned'; // wpostma.
+  RsEJvDBGridControlPropertyNotAssigned = 'JvDBGrid.EditControls: property Control not assigned';
+
+//=== JvDBUltimGrid.pas ===========================================================
+resourcestring
+  RsEJvDBGridBadFieldKind = 'Cannot sort a binary or special field';
+  RsEJvDBGridIndexPropertyMissing = 'Cannot sort. An index property is missing';
+  RsEJvDBGridIndexMissing  = 'Cannot sort. The corresponding index is missing';
+  RsEJvDBGridUserSortNotAssigned = 'Cannot sort. OnUserSort is not assigned';
 
 //=== JvDBGridExport.pas =====================================================
 resourcestring

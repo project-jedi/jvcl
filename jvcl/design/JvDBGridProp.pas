@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDBGridProp.PAS, released on 2004-07-09.
 
-The Initial Developer of the Original Code is John Doe.
-Portions created by John Doe are Copyright (C) 2004 John Doe.
+The Initial Developer of the Original Code is Frédéric Leneuf-Magaud.
+Portions created by Frédéric Leneuf-Magaud are Copyright (C) 2004 Frédéric Leneuf-Magaud.
 All Rights Reserved.
 
 Contributor(s):
@@ -37,7 +37,7 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   StdCtrls, Buttons, Graphics,
-  JvDBGrid;
+  JvDBGrid, TypInfo;
 
 type
   TJvDBGridControlsEditor = class(TPropertyEditor)
@@ -142,7 +142,8 @@ begin
     lbSelected.Items.Add(JvDBGridControls.Items[I].FieldName);
   for I := 0 to Grid.Owner.ComponentCount - 1 do
     if Grid.Owner.Components[I] is TWinControl then
-      cbControl.Items.Add(Grid.Owner.Components[I].Name);
+      if IsPublishedProp(Grid.Owner.Components[I], 'DataField') then
+        cbControl.Items.Add(Grid.Owner.Components[I].Name);
   lbSelectedClick(lbSelected);
 end;
 

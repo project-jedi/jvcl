@@ -31,18 +31,19 @@ interface
 
 uses
   Windows, Classes, Controls, Forms, StdCtrls, Dialogs, CheckLst, ExtCtrls,
-  DB, DBGrids,
-  JvDBGrid;
+  DB, DBGrids, JvDBGrid;
 
 type
   TfrmSelectColumn = class(TForm)
     Panel1: TPanel;
     clbList: TCheckListBox;
+    cbWithFieldName: TCheckBox;
     ButtonOK: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormDestroy(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure cbClick(Sender: TObject);
     procedure clbListClickCheck(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
   private
@@ -66,7 +67,7 @@ type
 implementation
 
 uses
-  JvConsts;
+  JvConsts, Sysutils;
 
 {$IFDEF VCL}
 {$R *.dfm}
@@ -116,12 +117,14 @@ end;
 procedure TfrmSelectColumn.FormActivate(Sender: TObject);
 var
   I, J: Integer;
+  ColumnTitle: string;
   lColumn: TColumn;
 begin
   if Assigned(FJvDBGrid) then
     with FJvDBGrid do
     begin
       clbList.Items.Clear;
+      cbWithFieldName.Hide;
       if (FSelectColumn = scDatabase) and Assigned(DataSource) and Assigned(DataSource.Dataset) then
       begin
         with DataSource.Dataset do
@@ -130,7 +133,15 @@ begin
             lColumn := GetColumn(Fields[I]);
             if Assigned(lColumn) then
             begin
-               J := clbList.Items.AddObject(Fields[I].DisplayLabel, TObject(lColumn.Index));
+              ColumnTitle := lColumn.Title.Caption;
+              if not AnsiSameText(ColumnTitle, Fields[I].FieldName) then
+              begin
+                if not cbWithFieldName.Visible then
+                  cbWithFieldName.Show;
+                if cbWithFieldName.State = cbChecked then
+                  ColumnTitle := ColumnTitle + ' [' + Fields[I].FieldName + ']';
+              end;
+              J := clbList.Items.AddObject(ColumnTitle, TObject(lColumn.Index));
               clbList.Checked[J] := lColumn.Visible and Fields[I].Visible;
             end;
           end;
@@ -139,7 +150,15 @@ begin
       begin
         for I := 0 to Columns.Count - 1 do
         begin
-          J := clbList.Items.AddObject(FJvDBGrid.Columns[I].FieldName, TObject(I));
+          ColumnTitle := FJvDBGrid.Columns[I].Title.Caption;
+          if not AnsiSameText(ColumnTitle, FJvDBGrid.Columns[I].FieldName) then
+          begin
+            if not cbWithFieldName.Visible then
+              cbWithFieldName.Show;
+            if cbWithFieldName.State = cbChecked then
+              ColumnTitle := ColumnTitle + ' [' + FJvDBGrid.Columns[I].FieldName + ']';
+          end;
+          J := clbList.Items.AddObject(ColumnTitle, TObject(I));
           clbList.Checked[J] := FJvDBGrid.Columns[I].Visible;
         end;
       end;
@@ -147,6 +166,11 @@ begin
         clbList.ItemIndex := 0;
     end;
   ResizeForm;
+end;
+
+procedure TfrmSelectColumn.cbClick(Sender: TObject);
+begin
+  FormActivate(Self);
 end;
 
 function TfrmSelectColumn.GetColumn(AField: TField): TColumn;

@@ -709,7 +709,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  SysUtils, Controls, Forms,
+  SysUtils, Controls, Forms, 
   {$IFDEF COMPILER5}
   JvJVCLUtils,
   {$ENDIF COMPILER5}
@@ -4295,7 +4295,7 @@ begin
   OutputDebugString(PChar('MatchFieldCount=' + IntToStr(MatchFieldCount)));
   {$ENDIF DEBUGINFO_ON}
   if MatchFieldCount = 0 then
-    JvCsvDatabaseError(FTableName, RsETimeTConvError);
+    JvCsvDatabaseError(DataSet.Name, RsENoFieldNamesMatch);
   Result := 0;
   DataSet.First;
   if (not Active) and (not LoadsFromFile) then

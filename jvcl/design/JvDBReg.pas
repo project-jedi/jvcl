@@ -46,7 +46,7 @@ uses
   {$ENDIF JV_MIDAS}
   JvMemoryDataset, JvDBDatePickerEdit, JvDBDateTimePicker, JvDBLookupTreeView,
   JvDBProgressBar, JvDBRichEdit, JvDBSpinEdit, JvDBTreeView, JvDBLookup,
-  JvCsvData, JvDBCombobox, JvDBControls, JvDBGrid, JvDBRadioPanel,
+  JvCsvData, JvDBCombobox, JvDBControls, JvDBGrid, JvDBUltimGrid, JvDBRadioPanel,
   JvDBGridExport, JvDBLookupComboEdit, JvDBHTLabel, JvDBSearchEdit,
   JvDBSearchComboBox, JvAppDBStorage, JvDBFindEdit, JvDBImage, JvDBEditors,
   JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridProp, JvCsvDataEditor;
@@ -69,9 +69,9 @@ const
   cLookupField = 'LookupField';
   cSectionField = 'SectionField';
   cValueField = 'ValueField';
-  //cRowsHeight = 'RowsHeight';
-  //cStartMasterValue = 'StartMasterValue';
   cEditControls = 'EditControls';
+  cSortedField = 'SortedField';
+  cSortMarker = 'SortMarker';
 begin
   RegisterComponents(RsPaletteDBNonVisual, [TJvMemoryData,
     TJvCSVDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF},
@@ -81,12 +81,11 @@ begin
     TJvDBDateTimePicker, TJvDBProgressBar, TJvDBRichEdit, TJvDBSpinEdit,
     TJvDBLookupList, TJvDBLookupCombo, TJvDBLookupEdit, TJvDBRadioPanel,
     TJvDBCombobox, TJvDBTreeView, TJvDBLookupTreeViewCombo, TJvDBLookupTreeView,
-    TJvDBGrid, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit, TJvDBMaskEdit,
-    TJvDBStatusLabel, TJvDBLookupComboEdit, TJvDBHTLabel, TJvDBSearchEdit,
-    TJvDBSearchComboBox, TJvDBFindEdit, TJvDBImage]);
+    TJvDBGrid, TJvDBUltimGrid, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit,
+    TJvDBMaskEdit, TJvDBStatusLabel, TJvDBLookupComboEdit, TJvDBHTLabel,
+    TJvDBSearchEdit, TJvDBSearchComboBox, TJvDBFindEdit, TJvDBImage]);
   RegisterComponents(RsPalettePersistence, [TJvAppDBStorage]);
 
-  //RegisterPropertyEditor(TypeInfo(Integer), TJvDBGrid, cRowsHeight, nil);
   RegisterPropertyEditor(TypeInfo(string), TJvLookupControl, cLookupField, TJvLookupSourceProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupEdit, cLookupField, TJvLookupSourceProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cItemField, TJvDataFieldProperty);
@@ -107,9 +106,11 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cSectionField, TJvDataFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cKeyField, TJvDataFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cValueField, TJvDataFieldProperty);
-  RegisterPropertyEditor(TypeInfo(TJvDBGridControls), TJvDBGrid, cEditControls, TJvDBGridControlsEditor);
   RegisterPropertyEditor(TypeInfo(string), TJvCsvDataSet, 'CsvFieldDef', TJvCsvDefStrProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCsvDataSet, 'FileName', TJvFilenameProperty);
+  RegisterPropertyEditor(TypeInfo(TJvDBGridControls), TJvDBGrid, cEditControls, TJvDBGridControlsEditor);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBUltimGrid, cSortedField, nil);
+  RegisterPropertyEditor(TypeInfo(TSortMarker), TJvDBUltimGrid, cSortMarker, nil);
 
   RegisterComponentEditor(TJvMemoryData, TJvMemDataSetEditor);
 end;
