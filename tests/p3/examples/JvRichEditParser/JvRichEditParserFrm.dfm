@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
-  Left = 213
-  Top = 107
+  Left = 347
+  Top = 126
   Width = 619
-  Height = 533
+  Height = 641
   BorderWidth = 2
   Caption = 'JvRichEditParser demo'
   Color = clBtnFace
@@ -15,33 +15,38 @@ object frmMain: TfrmMain
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
-    Left = 271
-    Top = 0
-    Width = 5
-    Height = 461
-    Cursor = crHSplit
+    Left = 0
+    Top = 271
+    Width = 607
+    Height = 5
+    Cursor = crVSplit
+    Align = alTop
   end
   object reOriginal: TRichEdit
     Left = 0
     Top = 0
-    Width = 271
-    Height = 461
-    Align = alLeft
+    Width = 607
+    Height = 271
+    Align = alTop
+    HideScrollBars = False
     ScrollBars = ssBoth
     TabOrder = 0
+    WordWrap = False
   end
   object reParsed: TRichEdit
-    Left = 276
-    Top = 0
-    Width = 331
-    Height = 461
+    Left = 0
+    Top = 276
+    Width = 607
+    Height = 293
     Align = alClient
+    HideScrollBars = False
     ScrollBars = ssBoth
     TabOrder = 1
+    WordWrap = False
   end
   object Panel1: TPanel
     Left = 0
-    Top = 461
+    Top = 569
     Width = 607
     Height = 41
     Align = alBottom
@@ -52,7 +57,7 @@ object frmMain: TfrmMain
       Top = 10
       Width = 75
       Height = 25
-      Caption = 'Parse'
+      Caption = '&Parse'
       TabOrder = 0
       OnClick = btnParseClick
     end
@@ -61,9 +66,27 @@ object frmMain: TfrmMain
       Top = 10
       Width = 75
       Height = 25
-      Caption = 'Load...'
+      Caption = 'L&oad...'
       TabOrder = 1
       OnClick = btnLoadClick
+    end
+    object btnRecreate: TButton
+      Left = 192
+      Top = 10
+      Width = 75
+      Height = 25
+      Caption = '&Recreate'
+      TabOrder = 2
+      OnClick = btnRecreateClick
+    end
+    object chkWordwrap: TCheckBox
+      Left = 282
+      Top = 14
+      Width = 97
+      Height = 17
+      Caption = '&Wordwrap'
+      TabOrder = 3
+      OnClick = chkWordwrapClick
     end
   end
   object OpenDialog1: TOpenDialog
