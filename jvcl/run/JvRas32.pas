@@ -31,8 +31,14 @@ unit JvRas32;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Forms,
-  Ras32,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Controls, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Qt, QControls, QForms,
+  {$ENDIF VCL}
+  Windows, Messages, Ras32, // Messages must be after QControls
   JvComponent, JvTypes;
 
 type
@@ -170,7 +176,12 @@ begin
   if RASEvent = 0 then
     RASEvent := WM_RASDialEvent;
   if AOwner is TWinControl then
+    {$IFDEF VCL}
     FPHandle := (AOwner as TWinControl).Handle
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FPHandle := QWidget_winid((AOwner as TWinControl).Handle)
+    {$ENDIF VisuaLCLX}
   else
     // (rom) is this safe?
     FPHandle := GetForegroundWindow;

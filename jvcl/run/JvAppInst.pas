@@ -31,7 +31,14 @@ unit JvAppInst;
 interface
 
 uses
-  Windows, Messages, SysUtils, Forms, Classes,
+  Windows, Messages, SysUtils,
+  {$IFDEF VCL}
+  Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms,
+  {$ENDIF VIsualCLX}
+  Classes,
   { Classes must be after Forms for Delphi 5 compatibility. }
   JclAppInst;
 
@@ -112,6 +119,20 @@ const
 
 type
   TOpenJclAppInstances = class(TJclAppInstances);
+  {$IFDEF VisualCLX}
+  TPrivateComponent = class(TPersistent, IInterface, IInterfaceComponentReference)
+  protected
+    FOwner: TComponent;
+    FName: TComponentName;
+    FTag: Longint;
+    FComponents: TList;
+  public
+    function _AddRef: Integer; virtual; stdcall; abstract;
+    function _Release: Integer; virtual; stdcall; abstract;
+    function GetComponent: TComponent; virtual; abstract;
+    function QueryInterface(const IID: TGUID; out Obj): HRESULT; virtual; stdcall; abstract;
+  end;
+  {$ENDIF VisualCLX}
 
 var
   FirstJvAppInstance: Boolean = True;
@@ -147,7 +168,7 @@ procedure TJvAppInstances.Check;
 begin
   if Active and not (csDesigning in ComponentState) then
     if MaxInstances > 0 then
-      if AppInstances.InstanceCount > MaxInstances then
+      //if AppInstances.InstanceCount > MaxInstances then
       begin
         if GetIsRemoteInstanceActive then
         begin
@@ -159,12 +180,17 @@ begin
 
          // terminate this process (Form.OnCreate is not executed yet)
 
+          {$IFDEF VCL}
           { DoneApplication destroys all formulars in the Forms unit's
             finalization section. At that moment the OnDestroy events are fired.
             To prevent this we set the Application variable to nil. Because
             KillInstance uses halt() to terminate this does not raise any access
             violation. }
           Application := nil;
+          {$ENDIF VCL}
+          {$IFDEF VisualCLX}
+          FreeAndNil(TPrivateComponent(Application).FComponents);
+          {$ENDIF VisualCLX}
           AppInstances.KillInstance;
         end;
       end;

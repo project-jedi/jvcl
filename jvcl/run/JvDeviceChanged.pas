@@ -31,7 +31,7 @@ unit JvDeviceChanged;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Forms, DBT,
+  Windows, Messages, SysUtils, Classes, DBT,
   JvComponent;
 
 type

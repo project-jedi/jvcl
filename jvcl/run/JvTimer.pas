@@ -106,12 +106,7 @@ end;
 procedure TJvTimerThread.HandleException;
 begin
   if not (FException is EAbort) then
-  begin
-    if Assigned(Application.OnException) then
-      Application.OnException(Self, FException)
-    else
-      Application.ShowException(FException);
-  end;
+    Application.HandleException(Self);
 end;
 
 procedure TJvTimerThread.Execute;

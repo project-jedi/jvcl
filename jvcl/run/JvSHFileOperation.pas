@@ -35,7 +35,13 @@ unit JvSHFileOperation;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Dialogs, ShellAPI,
+  Windows, ShellAPI, SysUtils, Classes,
+  {$IFDEF VCL}
+  Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Qt, QControls,
+  {$ENDIF VisualCLX}
   JvBaseDlg;
 
 const
@@ -244,7 +250,12 @@ end;
 function TJvSHFileOperation.GetWinHandle: THandle;
 begin
   if Owner is TWinControl then
+    {$IFDEF VCL}
     Result := TWinControl(Owner).Handle
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Result := QWidget_winId(TWinControl(Owner).Handle)
+    {$ENDIF VisualCLX}
   else
     Result := GetForegroundWindow;
 end;

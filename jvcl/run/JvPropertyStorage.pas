@@ -288,25 +288,6 @@ begin
   end;
 end;
 
-function FindGlobalComponent(const Name: string): TComponent;
-var
-  I: Integer;
-begin
-  for I := 0 to Screen.FormCount - 1 do
-  begin
-    Result := Screen.Forms[I];
-    if CompareText(Name, Result.Name) = 0 then
-      Exit;
-  end;
-  for I := 0 to Screen.DataModuleCount - 1 do
-  begin
-    Result := Screen.DataModules[I];
-    if CompareText(Name, Result.Name) = 0 then
-      Exit;
-  end;
-  Result := nil;
-end;
-
 //=== TJvPropertyStorage ========================================================
 
 function TJvPropertyStorage.GetItemName(const APropName: string): string;

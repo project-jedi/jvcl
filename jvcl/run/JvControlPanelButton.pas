@@ -27,6 +27,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvControlPanelButton;
 
@@ -35,13 +36,13 @@ interface
 uses
   Windows, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, Menus,
-  JvTypes, JvButton, JvDirectories, JvJVCLUtils;
+  JvTypes, JvButton, JvComputerInfoEx, JvJVCLUtils;
 
 type
   TJvControlPanelButton = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;
-    FDirs: TJvDirectories;
+    FDirs: TJvSystemFolders;
     FOnLinkClick: TJvLinkClickEvent;
     FImages: TImageList;
     procedure AddToPopup(Item: TMenuItem; Path: string);
@@ -65,7 +66,7 @@ implementation
 constructor TJvControlPanelButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDirs := TJvDirectories.Create(Self);
+  FDirs := TJvSystemFolders.Create;
   FPopup := TPopupMenu.Create(Self);
 end;
 
@@ -150,7 +151,7 @@ var
 begin
   while FPopup.Items.Count > 0 do
     FPopup.Items.Delete(0);
-  St := FDirs.SystemDirectory;
+  St := FDirs.System;
   if St[Length(St)] <> '\' then
     St := St + '\';
   FPopup.Images := Images;

@@ -31,6 +31,12 @@ interface
 
 uses
   Windows, Messages,
+  {$IFDEF VCL}
+  Forms, Clipbrd,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms,
+  {$ENDIF VisualCLX}
   SysUtils, Classes, JvComponent;
 
 type
@@ -60,7 +66,6 @@ function LoadClipboardFromStream(Stream: TStream): Word;
 implementation
 
 uses
-  Forms, Clipbrd,
   JvJVCLUtils;
 
 procedure SaveClipboardToStream(Format: Word; Stream: TStream);

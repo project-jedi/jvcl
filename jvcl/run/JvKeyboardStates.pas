@@ -31,7 +31,13 @@ unit JvKeyboardStates;
 interface
 
 uses
-  Windows, SysUtils, Classes, ExtCtrls,
+  Windows, SysUtils, Classes,
+  {$IFDEF VCL}
+  ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QExtCtrls,
+  {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 
 type
