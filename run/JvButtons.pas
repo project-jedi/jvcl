@@ -259,7 +259,7 @@ implementation
 
 uses
   Math,
-  JvHtControls, JvDsgnIntf, JvResources, JvTypes;
+  JvHtControls, JvDsgnIntf, JvConsts, JvResources, JvTypes;
 
 type
   TJvGlyphList = class(TImageList)
@@ -510,8 +510,6 @@ end;
 
 
 function TJvButtonGlyph.CreateButtonGlyph(State: TButtonState): Integer;
-const
-  ROP_DSPDxax = $00E20746;
 var
   TmpImage, DDB, MonoBmp: TBitmap;
   IWidth, IHeight: Integer;

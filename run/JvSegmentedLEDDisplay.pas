@@ -380,7 +380,7 @@ implementation
 
 uses
   Controls, SysUtils,
-  JclGraphUtils, JvThemes, JvResources;
+  JclGraphUtils, JvThemes, JvConsts, JvResources;
 
 {$R ..\resources\JvSegmentedLEDDisplay.res}
 
@@ -1537,7 +1537,7 @@ begin
       begin
         Inc(ControlItem);
         OrdValue := 0;
-        while ControlItem[0] in ['0' .. '9'] do
+        while ControlItem[0] in DigitSymbols do
         begin
           if OrdValue >= 100 then
             OrdValue := OrdValue mod 100;

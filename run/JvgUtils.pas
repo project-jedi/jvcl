@@ -1050,8 +1050,6 @@ var
   DRect, SRect: TRect;
   MonoBMP, OldBMP: HBitmap;
   MonoDC: HDC;
-const
-  ROP_DSPDxax = $00E20746;
 begin
   if (Bitmap.Width or Bitmap.Height) = 0 then Exit;
   IWidth := Bitmap.Width;

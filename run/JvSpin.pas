@@ -395,7 +395,7 @@ uses
   {$IFDEF JVCLThemesEnabled}
   UxTheme, {$IFNDEF COMPILER7_UP}TmSchema,{$ENDIF}
   {$ENDIF}
-  JvJCLUtils, JvTypes, JvResources;
+  JvJCLUtils, JvConsts, JvResources;
 
 {$R ..\resources\JvSpin.Res}
 

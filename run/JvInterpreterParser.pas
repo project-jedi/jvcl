@@ -474,7 +474,7 @@ begin
             else
               Point := True
           else
-          if (Ci < '0') or (Ci > '9') then
+          if not (Ci in StConstSymbols10) then
             goto NotNumber { not number }
         end;
         if Point then

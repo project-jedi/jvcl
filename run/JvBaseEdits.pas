@@ -293,7 +293,7 @@ implementation
 
 uses
   Consts, Math,
-  JvJCLUtils, JvCalc, JvResources;
+  JvJCLUtils, JvCalc, JvConsts, JvResources;
 
 {$R ..\resources\JvBaseEdits.res}
 
@@ -736,7 +736,7 @@ begin
   while I <= Length(Result) do
   begin
     X := Result[I];
-    if (X = DecimalSeparator) or (X = '-') or ((X >= '0') and (X <= '9')) then
+    if (X = DecimalSeparator) or (X = '-') or (X in DigitSymbols) then
     begin
       I := I + 1;
       Continue;

@@ -1194,7 +1194,7 @@ uses
   Forms,
   {$ENDIF COMPILER6_UP}
   JclBase, JclFileUtils, JclLogic, JclDateTime,
-  JvResources;
+  JvConsts, JvResources;
 
 type
   TJvID3StringList = class(TStringList)
@@ -1932,7 +1932,7 @@ var
     I := 1;
     while I <= Length(FrameName) do
     begin
-      if FrameName[I] in ['A'..'Z', 'a'..'z', '_', '0'..'9'] then
+      if FrameName[I] in IdentifierSymbols then
         Inc(I)
       else
       if FrameName[I] in LeadBytes then
@@ -1944,7 +1944,7 @@ var
 
 begin
   CrunchFrameName;
-  if (FrameName = '') or (FrameName[1] in ['0'..'9']) then
+  if (FrameName = '') or (FrameName[1] in DigitSymbols) then
   begin
     if FrameClass <> nil then
       FrameName := FrameClass.ClassName + FrameName
@@ -8054,7 +8054,7 @@ begin
   Day := 0;
   Result := 0;
 
-  while (Result < 8) and InFrame(P) and (P^ in ['0'..'9']) do
+  while (Result < 8) and InFrame(P) and (P^ in DigitSymbols) do
   begin
     { Use Day as temp variable }
     Day := Day * 10 + Ord(P^) - Ord('0');
@@ -9090,7 +9090,7 @@ begin
       Inc(BusyWith);
     end
     else
-    if S[I] in ['0'..'9'] then
+    if S[I] in DigitSymbols then
       TimeArray[tkSec] := TimeArray[tkSec] * 10 + Ord(S[I]) - Ord('0')
     else
       Break;

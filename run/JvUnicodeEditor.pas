@@ -5151,10 +5151,10 @@ var
           FTabPos[Length(S)] := True;
         while i <= Length(S) do { Iterate }
         begin
-          if CharInSetW(S[i], StIdSymbols) then
+          if CharInSetW(S[i], IdentifierSymbols) then
           begin
             FTabPos[i - 1] := True;
-            while (i <= Length(S)) and CharInSetW(S[i], StIdSymbols) do
+            while (i <= Length(S)) and CharInSetW(S[i], IdentifierSymbols) do
               Inc(i);
           end;
           Inc(i);

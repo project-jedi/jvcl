@@ -110,7 +110,7 @@ begin
   begin
     Temp := Field.FieldName;
     for I := Length(Temp) downto 1 do
-      if not (Temp[I] in StIdSymbols) then
+      if not (Temp[I] in IdentifierSymbols) then
         System.Delete(Temp, I, 1);
     if (Temp = '') or not IsValidIdent(Temp) then
     begin

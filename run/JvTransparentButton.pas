@@ -32,7 +32,8 @@ interface
 
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, CommCtrl,
-  ExtCtrls, Menus, Forms, ImgList, ActnList, JvComponent, Buttons, JvButton;
+  ExtCtrls, Menus, Forms, ImgList, ActnList, Buttons,
+  JvComponent, JvButton;
 
 type
   TJvFrameStyle = (fsRegular, fsIndent, fsExplorer, fsNone, fsLight, fsDark, fsMono);
@@ -234,6 +235,9 @@ type
 
 implementation
 
+uses
+  JvConsts;
+
 { create a grayed version of a color bitmap }
 { SLOW! don't use in realtime! }
 
@@ -276,8 +280,6 @@ end;
 reduced to a few colors. Used by BWBitmap }
 
 procedure DisabledBitmap(Bmp: TBitmap);
-const
-  ROP_DSPDxax = $00E20746;
 var
   MonoBmp, TmpImage: TBitmap;
   W, H: Integer;
