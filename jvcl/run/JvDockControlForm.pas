@@ -3826,7 +3826,7 @@ begin
   ACount := Count;
 
   Stream.Write(ACount, SizeOf(ACount));
-  for I := ACount - 1 downto 0 do
+  for I := 0 to ACount - 1 do
   begin
     if Pages[I].ControlCount > 0 then
     begin
