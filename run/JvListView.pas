@@ -72,8 +72,10 @@ type
     procedure SetHeaderImages(const Value: TCustomImageList);
     procedure UpdateHeaderImages(HeaderHandle: Integer);
     procedure WmAutoSelect(var Message:TMessage); message WM_AUTOSELECT;
+    {$IFNDEF COMPILER6_UP}
     function GetItemIndex: integer;
     procedure SetItemIndex(const Value: integer);
+    {$ENDIF !COMPILER6_UP}
   protected
     function CreateListItem: TListItem; override;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
