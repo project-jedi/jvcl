@@ -6,7 +6,7 @@
   <C5Libs>wininet.lib</C5Libs>
   <C6Libs>wininet.lib</C6Libs>
   <Requires>
-    <Package Name="JvCore-R" Targets="allclx" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
