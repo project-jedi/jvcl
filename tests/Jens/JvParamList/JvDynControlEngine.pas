@@ -35,7 +35,7 @@ uses
 type
   TJvDynControlType =
    (jctLabel,jctStaticText, jctPanel, jctScrollBox,
-    jctEdit, jctCheckbox, jctComboBox, jctGroupBox, jctImage, jctRadioGroup,
+    jctEdit, jctCheckBox, jctComboBox, jctGroupBox, jctImage, jctRadioGroup,
     jctMemo, jctListBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit,
     jctIntegerEdit, jctDoubleEdit, jctDirectoryEdit, jctFileNameEdit,
     jctButton, jctForm);
@@ -308,7 +308,7 @@ begin
         Result := GetInt64Prop(APersistent, PropName);
        {$ELSE}
         Result := Null;
-       {$ENDIF}
+       {$ENDIF COMPILER6_UP}
       tkFloat:
         Result := GetFloatProp(APersistent, PropName);
       tkClass:
@@ -469,9 +469,9 @@ begin
     raise EIntfCastError.Create(SIntfCastError);
   with DynCtrl do
     ControlSetCaption(ACaption);
-  with DynCtrl as iJvDynControlItems do
+  with DynCtrl as IJvDynControlItems do
     Items := AItems;
-  with DynCtrl as iJvDynControlData do
+  with DynCtrl as IJvDynControlData do
     Value := AItemIndex;
 end;
 
@@ -494,7 +494,7 @@ begin
   Result := TWinControl(CreateControl(jctListBox, AOwner, AParentControl, AControlName));
   if not Supports(Result, IJvDynControl, DynCtrl) then
     raise EIntfCastError.Create(SIntfCastError);
-  with DynCtrl as iJvDynControlItems do
+  with DynCtrl as IJvDynControlItems do
     ControlSetItems(AItems);
 end;
 

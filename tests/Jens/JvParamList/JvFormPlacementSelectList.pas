@@ -30,11 +30,11 @@ unit JvFormPlacementSelectList;
 interface
 
 uses
-  Classes, JvAppStore,
-  JvFormPlacement, JvAppStoreSelectList;
+  Classes,
+  JvAppStore, JvFormPlacement, JvAppStoreSelectList;
 
 type
-  TJvFormStorageSelectList = class (TJvAppStoreSelectList)
+  TJvFormStorageSelectList = class(TJvAppStoreSelectList)
   private
     FFormStorage: TJvFormStorage;
   protected
@@ -49,7 +49,7 @@ type
     procedure RestoreFormStorage(ACaption: string = '');
     procedure SaveFormStorage(ACaption: string = '');
   published
-    property FormStorage: TJvFormStorage Read GetFormStorage Write SetFormStorage;
+    property FormStorage: TJvFormStorage read GetFormStorage write SetFormStorage;
   end;
 
 implementation
@@ -123,3 +123,4 @@ begin
 end;
 
 end.
+
