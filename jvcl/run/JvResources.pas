@@ -157,6 +157,8 @@ resourcestring
   RsEPathDoesntExists = 'Path ''%s'' does not exists';
   RsENotABooleanValue = '''%s'' is not a valid boolean value';
   RsENodeNameCannotContainSpaces = 'XML Node names cannot contain white space and the WhiteSpaceReplacement property is empty. Please set the WhiteSpaceReplacementProperty to a non empty value.';
+  RsEWhiteSpaceReplacementCannotContainSpaces =
+    'The WhiteSpaceReplacement property cannot contain any white spaces.';
 
 //=== JvAVICapture.pas =======================================================
 resourcestring
