@@ -302,7 +302,12 @@ end;
 procedure TJvItemsPanel.Grow;
 begin
   if AutoGrow and (Items.Count > 0) then
-    Height := Items.Count * ItemHeight
+  begin
+    if Orientation = poVertical then
+      Height := Items.Count * ItemHeight
+    else
+      Width := Items.Count * ItemHeight;
+  end
   else
     Invalidate;
 end;

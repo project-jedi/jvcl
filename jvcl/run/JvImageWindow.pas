@@ -65,7 +65,7 @@ type
     procedure SetBackColor(Value: TColor);
     procedure SetFrontColor(Value: TColor);
     procedure SetGridColor(Value: TColor);
-    procedure SetJvMargin(Value: TJvMargin);
+    procedure SetMargin(Value: TJvMargin);
     procedure SetColCount(Value: TJvPositive);
     procedure SetImageCount(Value: Integer);
     procedure SetShowFrame(Value: Boolean);
@@ -97,7 +97,7 @@ type
     //    property Filled: Boolean read FFilled write SetFilled default False;
     property FrontColor: TColor read FFrontColor write SetFrontColor default clWindowText;
     property Ghost: Boolean read FGhost write SetGhost;
-    property Margin: TJvMargin read FMargin write SetJvMargin default 2;
+    property Margin: TJvMargin read FMargin write SetMargin default 2;
     property ColCount: TJvPositive read FColCount write SetColCount default 4;
     property ImageCount: Integer read FImageCount write SetImageCount default 0;
     property ImageList: TImageList read FImageList write SetImageList;
@@ -127,9 +127,7 @@ type
 
   TJvImageSquare = class(TJvGraphicControl)
   private
-    FHiColor: TColor;
-    FBackColor: TColor;
-    TmpColor: TColor;
+    FHiColor, TmpColor, FBackColor: TColor;
     FBorderStyle: TBorderStyle;
     FImageList: TImageList;
     FIndex: Integer;
@@ -138,7 +136,6 @@ type
     FDown: Boolean;
     FShowClick: Boolean;
     FImageChangeLink: TChangeLink;
-    procedure SetBkColor(Value: TColor);
     procedure SetHiColor(Value: TColor);
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure SetIndex(Value: Integer);
@@ -146,6 +143,8 @@ type
     procedure ImageListChange(Sender: Tobject);
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    function GetColor: TColor;
+    procedure SetColor(const Value: TColor);
   protected
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -156,14 +155,15 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property HiColor: TColor read FHiColor write SetHiColor default clActiveCaption;
-    property BackColor: TColor read FBackColor write SetBkColor default clWindow;
+    property Color: TColor read GetColor write SetColor default clWindow;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
+    property HiColor: TColor read FHiColor write SetHiColor default clActiveCaption;
     property ImageList: TImageList read FImageList write SetImageList;
     property ImageIndex: Integer read FIndex write SetIndex default 0;
     property ShowClick: Boolean read FShowClick write FShowClick default False;
     property Width default 36;
     property Height default 36;
+
     property Align;
     property Anchors;
     property Action;
@@ -176,8 +176,8 @@ type
     property ParentShowHint;
     property Hint;
     property ShowHint;
-    property OnEnter: TNotifyEvent read FOnEnter write FOnEnter;
-    property OnExit: TNotifyEvent read FOnExit write FOnExit;
+    property OnMouseEnter: TNotifyEvent read FOnEnter write FOnEnter;
+    property OnMouseLeave: TNotifyEvent read FOnExit write FOnExit;
     property OnClick;
     property OnMouseDown;
     property OnMouseMove;
@@ -497,7 +497,7 @@ begin
   end;
 end;
 
-procedure TJvImageWindow.SetJvMargin(Value: TJvMargin);
+procedure TJvImageWindow.SetMargin(Value: TJvMargin);
 begin
   if FMargin <> Value then
   begin
@@ -586,8 +586,9 @@ constructor TJvImageSquare.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHiColor := clActiveCaption;
+  Color := clWindow;
+  TmpColor := clWindow;
   FBackColor := clWindow;
-  TmpColor := FBackColor;
   FIndex := 0;
   FDown := False;
   FShowClick := False;
@@ -668,16 +669,6 @@ begin
   end;
 end;
 
-procedure TJvImageSquare.SetBkColor(Value: TColor);
-begin
-  if FBackColor <> Value then
-  begin
-    FBackColor := Value;
-    TmpColor := FBackColor;
-    Repaint;
-  end;
-end;
-
 procedure TJvImageSquare.SetHiColor(Value: TColor);
 begin
   if FHiColor <> Value then
@@ -734,6 +725,7 @@ end;
 procedure TJvImageSquare.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
+  if (csDesigning in ComponentState) then Exit;
   if Assigned(FOnEnter) then
     FOnEnter(Self);
   if ColorToRGB(TmpColor) <> ColorToRGB(FHiColor) then
@@ -746,6 +738,7 @@ end;
 procedure TJvImageSquare.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
+  if (csDesigning in ComponentState) then Exit;
   FDown := False;
   if Assigned(FOnExit) then
     FOnExit(Self);
@@ -755,6 +748,20 @@ begin
     Repaint;
   end;
 end;
+
+function TJvImageSquare.GetColor: TColor;
+begin
+  Result := inherited Color;
+end;
+
+procedure TJvImageSquare.SetColor(const Value: TColor);
+begin
+  inherited Color := Value;
+  FBackColor := Value;
+  TmpColor := Value;
+  Repaint;
+end;
+
 
 end.
 
