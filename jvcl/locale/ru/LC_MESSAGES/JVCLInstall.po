@@ -1431,6 +1431,30 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Домашняя страница Jedi Visual Component Library в Интерненте"
 
+#  FramePackageSelection..PopupMenuPackages..N2..Caption
+#~ msgid "-"
+#~ msgstr "-"
+
+#  FrameDirEditBrowse..BtnDirBrowse..Caption
+#~ msgid "..."
+#~ msgstr "..."
+
+#  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
+#~ msgid "http://projectjedi.sourceforge.net"
+#~ msgstr "http://projectjedi.sourceforge.net"
+
+#  Programmer's name for it: RsComponentPalettePrefix
+#~ msgid "TJv"
+#~ msgstr "TJv"
+
+#  FrameConfigPage..GroupBoxJvclInc..Caption
+#~ msgid " Global options for all IDEs "
+#~ msgstr " Общие параметры для всех платформ: "
+
+#  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage..Caption
+#~ msgid "dxgettext &support (not required)"
+#~ msgstr "Поддержка dxgettext (не обязательно)"
+
 #  FormJvclIncConfig..Label1....AutoSize
 #~ msgid "jvcl.inc changes are global to all installed Delphi/BCB versions."
 #~ msgstr "Изменения jvcl.inc глобально для всех установленных версий Delphi/BCB."
@@ -1446,27 +1470,3 @@ msgstr "Домашняя страница Jedi Visual Component Library в Ин�
 #~ "<c:red>Модуль gnugettext.pas должен быть включен\n"
 #~ "в пакет JvCore-R. Это означает что Вы не сможете использовать\n"
 #~ "этот модуль в других пакетах."
-
-#  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage..Caption
-#~ msgid "dxgettext &support (not required)"
-#~ msgstr "Поддержка dxgettext (не обязательно)"
-
-#  FrameConfigPage..GroupBoxJvclInc..Caption
-#~ msgid " Global options for all IDEs "
-#~ msgstr " Общие параметры для всех платформ: "
-
-#  Programmer's name for it: RsComponentPalettePrefix
-#~ msgid "TJv"
-#~ msgstr "TJv"
-
-#  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
-#~ msgid "http://projectjedi.sourceforge.net"
-#~ msgstr "http://projectjedi.sourceforge.net"
-
-#  FrameDirEditBrowse..BtnDirBrowse..Caption
-#~ msgid "..."
-#~ msgstr "..."
-
-#  FramePackageSelection..PopupMenuPackages..N2..Caption
-#~ msgid "-"
-#~ msgstr "-"

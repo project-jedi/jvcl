@@ -1272,9 +1272,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Jedi Visual Component Library Homepage"
 
-#~ msgid "dxgettext &support (not required)"
-#~ msgstr "dxgettext &потдръжка (незадължителна)"
-
 #~ msgid ""
 #~ "http://dxgettext.sourceforge.net|Download from <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
 #~ "<c:red>The gnugettext.pas unit will be added to the contains list\n"
@@ -1312,6 +1309,9 @@ msgstr "Jedi Visual Component Library Homepage"
 
 #~ msgid "LblComment"
 #~ msgstr "LblComment"
+
+#~ msgid "dxgettext &support (not required)"
+#~ msgstr "dxgettext &потдръжка (незадължителна)"
 
 #~ msgid "LblInfo"
 #~ msgstr "LblInfo"

@@ -1289,10 +1289,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Homepage Jedi Visual Component Library"
 
-#  FrameInstall..LblInfo..Caption
-#~ msgid "LblInfo"
-#~ msgstr "LblInfo"
-
 #  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage....Cursor
 #~ msgid ""
 #~ "http://dxgettext.sourceforge.net|Download from <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
@@ -1340,6 +1336,10 @@ msgstr "Homepage Jedi Visual Component Library"
 #  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
 #~ msgid "http://projectjedi.sourceforge.net"
 #~ msgstr "http://projectjedi.sourceforge.net"
+
+#  FrameInstall..LblInfo..Caption
+#~ msgid "LblInfo"
+#~ msgstr "LblInfo"
 
 #  FrameUninstall..LblFilename..Caption
 #~ msgid "LblFilename"
