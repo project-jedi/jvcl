@@ -7,9 +7,12 @@ uses Classes;
 type
   TGenerateCallback = procedure (msg : string);
 
+// YOU MUST CALL THIS PROCEDURE BEFORE ANYOTHER IN THIS FILE
+procedure LoadConfig(XmlFileName : string; IncFileName : string);
+
 procedure Generate(packages : TStrings; targets : TStrings; path, prefix, format : string; callback : TGenerateCallback; makeDof : Boolean = False);
 
-procedure EnumerateTargets(Path : string; targets : TStrings);
+procedure EnumerateTargets(targets : TStrings);
 
 procedure EnumeratePackages(Path : string; packages : TStrings);
 
@@ -21,9 +24,131 @@ var
 implementation
 
 uses Windows, SysUtils, JclSysUtils, JclStrings, JclFileUtils, JvSimpleXml,
-    ShellApi, JclDateTime;
+    ShellApi, JclDateTime, Contnrs;
 
-var GCallBack : TGenerateCallBack;
+type
+  TTarget = class (TObject)
+  private
+    FName  : string;
+    FDir   : string;
+    FPName : string;
+    FPDir  : string;
+    FEnv   : string;
+    FVer   : string;
+    function GetDir: string;
+    function GetEnv: string;
+    function GetPDir: string;
+    function GetVer: string;
+  public
+    constructor Create(Node : TJvSimpleXmlElem); overload;
+
+    property Name  : string read FName;
+    property Dir   : string read GetDir;
+    property PName : string read FPName;
+    property PDir  : string read GetPDir;
+    property Env   : string read GetEnv;
+    property Ver   : string read GetVer;
+  end;
+
+  TTargetList = class (TObjectList)
+  private
+    function GetItemsByName(name: string): TTarget;
+    function GetItems(index: integer): TTarget;
+    procedure SetItems(index: integer; const Value: TTarget);
+  public
+    constructor Create(Node : TJvSimpleXmlElem); overload;
+
+    property Items[index : integer] : TTarget read GetItems write SetItems;
+    property ItemsByName[name : string] : TTarget read GetItemsByName; default;
+  end;
+
+  TAlias = class (TObject)
+  private
+    FValue: string;
+    FName: string;
+    FValueAsTStrings : TStringList;
+    function GetValueAsTStrings: TStrings;
+  public
+    constructor Create(Node : TJvSimpleXmlElem); overload;
+    destructor Destroy; override;
+
+    property Name  : string read FName;
+    property Value : string read FValue;
+    property ValueAsTStrings : TStrings read GetValueAsTStrings;
+  end;
+
+  TAliasList = class (TObjectList)
+  private
+    function GetItemsByName(name: string): TAlias;
+    function GetItems(index: integer): TAlias;
+    procedure SetItems(index: integer; const Value: TAlias);
+  public
+    constructor Create(Node : TJvSimpleXmlElem); overload;
+
+    property Items[index : integer] : TAlias read GetItems write SetItems;
+    property ItemsByName[name : string] : TAlias read GetItemsByName; default;
+  end;
+
+  TDefinesList = class (TStringList)
+  public
+    constructor Create(incfile : TStringList); overload;
+  end;
+
+var
+  GCallBack   : TGenerateCallBack;
+  TargetList  : TTargetList;
+  AliasList   : TAliasList;
+  DefinesList : TDefinesList;
+
+procedure LoadConfig(XmlFileName : string; IncFileName : string);
+var
+  xml : TJvSimpleXml;
+  Node : TJvSimpleXmlElem;
+  i : integer;
+  all : string;
+  target : TTarget;
+
+  incfile : TStringList;
+begin
+  FreeAndNil(TargetList);
+  FreeAndNil(AliasList);
+  // read the xml config file
+  xml := TJvSimpleXml.Create(nil);
+  try
+    xml.LoadFromFile(XmlFileName);
+    Node := xml.Root.Items.ItemNamed['targets'];
+    TargetList := TTargetList.Create(Node);
+    Node := xml.Root.Items.ItemNamed['aliases'];
+    AliasList := TAliasList.Create(Node);
+
+    // create the 'all' alias
+    all := '';
+    for i := 0 to TargetList.Count-1 do
+    begin
+      Target := TargetList.Items[i];
+      all := all + Target.Name + ',';
+      if Target.PName <> '' then
+        all := all + Target.PName + ',';
+    end;
+    all := Copy(all, 1, length(all)-1);
+    Node.Items[0].Properties.ItemNamed['name'].Value := 'all';
+    Node.Items[0].Properties.ItemNamed['value'].Value := all;
+    AliasList.Add(TAlias.Create(Node.Items[0]));
+  finally
+    xml.Free;
+  end;
+
+  FreeAndNil(DefinesList);
+  // read the include file
+  incfile := TStringList.Create;
+  try
+    if FileExists(IncFileName) then
+      incfile.LoadFromFile(IncFileName);
+    DefinesList := TDefinesList.Create(incfile);
+  finally
+    incfile.free;
+  end;
+end;
 
 procedure SendMsg(Msg : string);
 begin
@@ -31,112 +156,58 @@ begin
     GCallBack(Msg);
 end;
 
-function targetToSuffix(target : string) : string;
+function GetPersoTarget(Target : string) : string;
 begin
-  target := StrUpper(target);
-  if target = 'BCB6' then Result := 'C6'
-  else if target = 'BCB6PER' then Result := 'C6'
-  else if target = 'BCB5' then Result := 'C5'
-  else if target = 'D5' then Result := 'D5'
-  else if target = 'D5STD' then Result := 'D5'
-  else if target = 'D6' then Result := 'D6'
-  else if target = 'D6PER' then Result := 'D6'
-  else if target = 'D7' then Result := 'D7'
-  else if target = 'D7PER' then Result := 'D7'
-  else if target = 'K2' then Result := 'K2'
-  else if target = 'K3' then Result := 'K3';
+  if TargetList[Target] <> nil then
+    Result := TargetList[Target].PName
+  else
+    Result := Target;
 end;
 
-function suffixToTarget(suffix : string) : string;
+function GetNonPersoTarget(PersoTarget : string) : string;
 var
-  tmpSuffix : string;
+  i : integer;
+  Target : TTarget;
 begin
-  tmpSuffix := StrUpper(suffix);
-  if tmpSuffix = 'C6' then Result := 'bcb6'
-  else if tmpSuffix = 'C6P' then Result := 'bcb6'
-  else if tmpSuffix = 'C5' then Result := 'bcb5'
-  else if tmpSuffix = 'D5S' then Result := 'd5'
-  else if tmpSuffix = 'D6P' then Result := 'd6'
-  else if tmpSuffix = 'D7P' then Result := 'd7'
-  else Result := suffix;
-end;
-
-function ShortTarget(target : string) : string;
-begin
-  target := StrUpper(target);
-  if target = 'BCB6' then Result := 'C6'
-  else if target = 'BCB6PER' then Result := 'C6p'
-  else if target = 'BCB5' then Result := 'C5'
-  else if target = 'D5' then Result := 'D5'
-  else if target = 'D5STD' then Result := 'D5s'
-  else if target = 'D6' then Result := 'D6'
-  else if target = 'D6PER' then Result := 'D6p'
-  else if target = 'D7' then Result := 'D7'
-  else if target = 'D7PER' then Result := 'D7p'
-  else if target = 'K2' then Result := 'K2'
-  else if target = 'K3' then Result := 'K3';
-end;
-
-function GetPersoTarget(target : string) : string;
-begin
-  target := StrUpper(target);
-  if target = 'BCB6' then Result := 'bcb6per'
-  else if target = 'BCB6PER' then Result := ''
-  else if target = 'BCB5' then Result := ''
-  else if target = 'D5' then Result := 'd5std'
-  else if target = 'D5STD' then Result := ''
-  else if target = 'D6' then Result := 'd6per'
-  else if target = 'D6PER' then Result := ''
-  else if target = 'D7' then Result := 'd7per'
-  else if target = 'D7PER' then Result := ''
-  else if target = 'K2' then Result := ''
-  else if target = 'K3' then Result := '';
-end;
-
-function GetNonPersoTarget(target : string) : string;
-begin
-  target := StrUpper(target);
-  if target = 'BCB6' then Result := 'bcb6'
-  else if target = 'BCB6PER' then Result := 'bcb6'
-  else if target = 'BCB5' then Result := 'bcb5'
-  else if target = 'D5' then Result := 'd5'
-  else if target = 'D5STD' then Result := 'd5'
-  else if target = 'D6' then Result := 'd6'
-  else if target = 'D6PER' then Result := 'd6'
-  else if target = 'D7' then Result := 'd7'
-  else if target = 'D7PER' then Result := 'd7'
-  else if target = 'K2' then Result := 'k2'
-  else if target = 'K3' then Result := 'k3';
-end;
-
-procedure EnsureTargets(targets : TStrings);
-var
-  validTargets : TStringList;
-  i : Integer;
-begin
-  validTargets := TStringList.Create;
-  try
-    // ensure uniqueness in expanded list
-    validTargets.Sorted := True;
-    validTargets.CaseSensitive := False;
-    validTargets.Duplicates := dupIgnore;
-
-    for i := 0 to targets.Count - 1 do
-    begin
-      validTargets.Add(suffixToTarget(targets[i]));
-    end;
-
-    // assign the values back into the caller
-    targets.Clear;
-    targets.Assign(validTargets);
-  finally
-    validTargets.Free;
+  Result := PersoTarget;
+  i := 0;
+  while (i < TargetList.Count) and (Result = PersoTarget) do
+  begin
+    Target := TargetList.Items[i];
+    if Target.PName = PersoTarget then
+      Result := Target.Name;
+    Inc(i);
   end;
+end;
+
+function DirToTarget(dir : string) : string;
+var
+  i : integer;
+  Target : TTarget;
+begin
+  Result := '';
+  i := 0;
+  while (i < TargetList.Count) and (Result = '') do
+  begin
+    Target := TargetList.Items[i];
+    if Target.Dir = dir then
+      Result := Target.Name
+    else if Target.PDir = dir then
+      Result := Target.Name;
+    Inc(i);
+  end;
+end;
+
+function TargetToDir(target : string) : string;
+begin
+  if Assigned(TargetList[target]) then
+    Result := TargetList[target].Dir
+  else
+    Result := TargetList[GetNonPersoTarget(target)].Dir;
 end;
 
 function ExpandPackageName(Name, target, prefix, format : string) : string;
 var
-  Suffix : string;
   Env : string;
   Ver : string;
   Typ : string;
@@ -157,9 +228,8 @@ begin
   else
     formatNoLibsuffix := formatGeneral;
 
-  Suffix := TargetToSuffix(target);
-  Env := Suffix[1];
-  Ver := Suffix[2];
+  Env := TargetList[GetNonPersoTarget(target)].Env;
+  Ver := TargetList[GetNonPersoTarget(target)].Ver;
   Typ := Copy(Name, Length(Name), 1);
   Name := Copy(Name, Length(Prefix)+1, Pos('-', Name)-Length(Prefix)-1);
 
@@ -206,8 +276,8 @@ begin
       StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
                    ',',
                    targets);
-      Result := (targets.IndexOf(ShortTarget(persoTarget)) = -1) and
-                (targets.IndexOf(ShortTarget(target)) > -1);
+      Result := (targets.IndexOf(persoTarget) = -1) and
+                (targets.IndexOf(target) > -1);
     finally
       targets.Free;
     end;
@@ -229,8 +299,8 @@ begin
       StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
                    ',',
                    targets);
-      Result := (targets.IndexOf(ShortTarget(persoTarget)) > -1) and
-                (targets.IndexOf(ShortTarget(target)) = -1);
+      Result := (targets.IndexOf(persoTarget) > -1) and
+                (targets.IndexOf(target) = -1);
     finally
       targets.Free;
     end;
@@ -238,14 +308,34 @@ begin
 end;
 
 function EnsureCondition(line : string; Node : TJvSimpleXmlElem; target : string) : string;
+var
+  Condition : string;
 begin
-  // if there is a condition and the target supports it
-  // Currently, only Delphi targets support conditions
-  if (Node.Properties.ItemNamed['Condition'].Value <> '') and
-     (StrUpper(target)[1] = 'D') then
+  Condition := Node.Properties.ItemNamed['Condition'].Value;
+  // if there is a condition
+  if (Condition <> '') then
   begin
-    Result := '{$IFDEF ' + Node.Properties.ItemNamed['Condition'].Value + '}'#13#10 +
-            line + '{$ENDIF}';
+    // Only Delphi targets directly support conditions
+    if (TargetList[GetNonPersoTarget(target)].Env = 'd') then
+    begin
+      Result := '{$IFDEF ' + Condition + '}'#13#10 +
+              line + '{$ENDIF}';
+    end
+    // if we have a C++ Builder target, the only way to enforce the
+    // condition is by looking for it in the DefinesList. If it
+    // is there, the line is left untouched. If not, the line
+    // is emptied, thus enforcing the absence of the condition 
+    else if (TargetList[GetNonPersoTarget(target)].Env = 'c') then
+    begin
+      if DefinesList.IndexOf(Condition) > -1 then
+        Result := line
+      else
+        Result := '';
+    end
+    // The last possibility is a Kylix target and we are yet to decide
+    // what to do with that. For now, don't touch the line
+    else
+      Result := line;
   end
   else
     Result := line;
@@ -266,8 +356,8 @@ begin
   // first ensure we only have backslashes
   StrReplace(Name, '/', '\', [rfReplaceAll]);
 
-  // and if the target is kylix, replace all them by forward slashes
-  if target[1] = 'k' then
+  // and if the environment is kylix, replace all them by forward slashes
+  if TargetList[GetNonPersoTarget(target)].Env = 'k' then
     StrReplace(Name, '\', '/', [rfReplaceAll]);
 end;
 
@@ -345,6 +435,7 @@ procedure ExpandTargets(targets : TStrings);
 var
   expandedTargets : TStringList;
   i : Integer;
+  Alias : TAlias;
 begin
   expandedTargets := TStringList.Create;
   try
@@ -355,41 +446,9 @@ begin
 
     for i := 0 to targets.Count - 1 do
     begin
-      if SameText(targets[i], 'all') then
-        StrToStrings('c5,c6,c6p,d5,d5s,d6,d6p,d7,d7p,k2,k3', ',', expandedTargets)
-      else if SameText(targets[i], 'windows') then
-      begin
-        expandedTargets.Add('c5');
-        expandedTargets.Add('c6');
-        expandedTargets.Add('c6p');
-        expandedTargets.Add('d5');
-        expandedTargets.Add('d5s');
-        expandedTargets.Add('d6');
-        expandedTargets.Add('d6p');
-        expandedTargets.Add('d7');
-        expandedTargets.Add('d7p');
-      end
-      else if SameText(targets[i], 'linux') or
-              SameText(targets[i], 'kylix') then
-      begin
-        expandedTargets.Add('k2');
-        expandedTargets.Add('k3');
-      end
-      else if SameText(targets[i], 'delphi') then
-      begin
-        expandedTargets.Add('d5');
-        expandedTargets.Add('d5s');
-        expandedTargets.Add('d6');
-        expandedTargets.Add('d6p');
-        expandedTargets.Add('d7');
-        expandedTargets.Add('d7p');
-      end
-      else if SameText(targets[i], 'bcb') then
-      begin
-        expandedTargets.Add('c5');
-        expandedTargets.Add('c6');
-        expandedTargets.Add('c6p');
-      end
+      Alias := AliasList[targets[i]];
+      if Assigned(Alias) then
+        expandedTargets.AddStrings(Alias.ValueAsTStrings)
       else
         expandedTargets.Add(trim(targets[i]));
     end;
@@ -412,7 +471,7 @@ begin
                  ',', targets);
     ExpandTargets(targets);
     targets.CaseSensitive := False;
-    Result := (targets.IndexOf(ShortTarget(target)) > -1);
+    Result := (targets.IndexOf(target) > -1);
   finally
     targets.Free;
   end;
@@ -431,7 +490,6 @@ end;
 function ApplyTemplateAndSave(path, target, package, extension, prefix, format : string; template : TStrings; xml : TJvSimpleXml; templateDate, xmlDate : TDateTime; xmlName : string) : string;
 var
   OutFileName : string;
-  packSuffix : string;
   oneLetterType : string;
   reqPackName : string;
   incFileName : string;
@@ -446,12 +504,12 @@ var
   I : Integer;
   j : Integer;
   tmpStr : string;
+  bcbId : string;
   bcblibs : string;
   bcblibsList : TStringList;
   containsSomething : Boolean; // true if package will contain something
   repeatSectionUsed : Boolean; // true if at least one repeat section was used
 begin
-  packSuffix := targetToSuffix(target);
   outFile := TStringList.Create;
   bcblibsList := TStringList.Create;
   Result := '';
@@ -473,221 +531,215 @@ begin
       oneLetterType := 'r';
     end;
 
-    OutFileName := path + target + PathSeparator +
+    OutFileName := path + TargetToDir(target) + PathSeparator +
                    ExpandPackageName(OutFileName, target, prefix, format)+
                    Extension;
 
-    // Process the file, only if the template or the xml are newer
-    // than the output file. If that output file doesn't exist,
-    // create it too
-//    if not FileExists(OutFileName) or
-//      (FileDateToDateTime(FileAge(OutFileName)) < templateDate) or
-//      (FileDateToDateTime(FileAge(OutFileName)) < xmlDate) then
+    // get the nodes
+    requiredNode := rootNode.Items.ItemNamed['requires'];
+    containsNode := rootNode.Items.ItemNamed['contains'];
+
+    // read the lines of the templates and do some replacements
+    i := 0;
+    while i < template.Count do
     begin
-      // get the nodes
-      requiredNode := rootNode.Items.ItemNamed['requires'];
-      containsNode := rootNode.Items.ItemNamed['contains'];
-
-      // read the lines of the templates and do some replacements
-      i := 0;
-      while i < template.Count do
+      curLine := template[i];
+      if Trim(curLine) = '<%%% START REQUIRES %%%>' then
       begin
-        curLine := template[i];
-        if Trim(curLine) = '<%%% START REQUIRES %%%>' then
+        Inc(i);
+        repeatSectionUsed := True;
+        repeatLines := '';
+        while(Trim(template[i]) <> '<%%% END REQUIRES %%%>') do
         begin
+          repeatLines := repeatLines + template[i] + #13#10;
           Inc(i);
-          repeatSectionUsed := True;
-          repeatLines := '';
-          while(Trim(template[i]) <> '<%%% END REQUIRES %%%>') do
-          begin
-            repeatLines := repeatLines + template[i] + #13#10;
-            Inc(i);
-          end;
-          for j := 0 to requiredNode.Items.Count -1 do
-          begin
-            packageNode := requiredNode.Items[j];
-            // if this required package is to be included for this target
-            if IsIncluded(packageNode, target) then
-            begin
-              tmpStr := repeatLines;
-              reqPackName := BuildPackageName(packageNode, target, prefix, format);
-              StrReplace(tmpStr, '%NAME%', reqPackName, [rfReplaceAll]);
-              containsSomething := True;
-              outFile.Text := outFile.Text +
-                              EnsureCondition(tmpStr, packageNode, target);
-            end;
-
-            // if this required package is not in the associated 'perso'
-            // target or only in the 'perso' target then return the
-            // 'perso' target name. 'perso' either means 'per' or
-            // 'std'
-            if IsNotInPerso(packageNode, target) or
-               IsOnlyInPerso(packageNode, target) then
-              Result := GetPersoTarget(target);
-          end;
-          // if the last character in the output file is
-          // a comma, then remove it. This possible comma will
-          // be followed by a carriage return so we look
-          // at the third character starting from the end
-          tmpStr := outFile.Text;
-          if tmpStr[Length(tmpStr)-2] = ',' then
-            outFile.Text := Copy(tmpStr, 1, Length(tmpStr) - 3) + #13#10;
-        end
-        else if Trim(curLine) = '<%%% START FILES %%%>' then
+        end;
+        for j := 0 to requiredNode.Items.Count -1 do
         begin
-          Inc(i);
-          repeatSectionUsed := True;
-          repeatLines := '';
-          while(Trim(template[i]) <> '<%%% END FILES %%%>') do
+          packageNode := requiredNode.Items[j];
+          // if this required package is to be included for this target
+          if IsIncluded(packageNode, target) then
           begin
-            repeatLines := repeatLines + template[i] + #13#10;
-            Inc(i);
+            tmpStr := repeatLines;
+            reqPackName := BuildPackageName(packageNode, target, prefix, format);
+            StrReplace(tmpStr, '%NAME%', reqPackName, [rfReplaceAll]);
+            containsSomething := True;
+            outFile.Text := outFile.Text +
+                            EnsureCondition(tmpStr, packageNode, target);
           end;
 
-          for j := 0 to containsNode.Items.Count -1 do
+          // if this required package is not in the associated 'perso'
+          // target or only in the 'perso' target then return the
+          // 'perso' target name. 'perso' either means PName
+          if IsNotInPerso(packageNode, target) or
+             IsOnlyInPerso(packageNode, target) then
+            Result := GetPersoTarget(target);
+        end;
+        // if the last character in the output file is
+        // a comma, then remove it. This possible comma will
+        // be followed by a carriage return so we look
+        // at the third character starting from the end
+        tmpStr := outFile.Text;
+        if tmpStr[Length(tmpStr)-2] = ',' then
+          outFile.Text := Copy(tmpStr, 1, Length(tmpStr) - 3) + #13#10;
+      end
+      else if Trim(curLine) = '<%%% START FILES %%%>' then
+      begin
+        Inc(i);
+        repeatSectionUsed := True;
+        repeatLines := '';
+        while(Trim(template[i]) <> '<%%% END FILES %%%>') do
+        begin
+          repeatLines := repeatLines + template[i] + #13#10;
+          Inc(i);
+        end;
+
+        for j := 0 to containsNode.Items.Count -1 do
+        begin
+          fileNode := containsNode.Items[j];
+          // if this included file is to be included for this target
+          if IsIncluded(fileNode, target) then
           begin
-            fileNode := containsNode.Items[j];
-            // if this included file is to be included for this target
-            if IsIncluded(fileNode, target) then
+            tmpStr := repeatLines;
+            incFileName := fileNode.Properties.ItemNamed['Name'].Value;
+            ApplyFormName(fileNode, tmpStr, target);
+            containsSomething := True;
+            outFile.Text := outFile.Text +
+                            EnsureCondition(tmpStr, fileNode, target);
+          end;
+
+          // if this included file is not in the associated 'perso'
+          // target or only in the 'perso' target then return the
+          // 'perso' target name. 'perso' either means 'per' or
+          // 'std'
+          if IsNotInPerso(fileNode, target) or
+             IsOnlyInPerso(fileNode, target) then
+            Result := GetPersoTarget(target);
+        end;
+        // if the last character in the output file is
+        // a comma, then remove it. This possible comma will
+        // be followed by a carriage return so we look
+        // at the third character starting from the end
+        tmpStr := outFile.Text;
+        if tmpStr[Length(tmpStr)-2] = ',' then
+          outFile.Text := Copy(tmpStr, 1, Length(tmpStr) - 3) + #13#10;
+      end
+      else if Trim(curLine) = '<%%% START FORMS %%%>' then
+      begin
+        Inc(i);
+        repeatSectionUsed := True;
+        repeatLines := '';
+        while(Trim(template[i]) <> '<%%% END FORMS %%%>') do
+        begin
+          repeatLines := repeatLines + template[i] + #13#10;
+          Inc(i);
+        end;
+
+        for j := 0 to containsNode.Items.Count -1 do
+        begin
+          fileNode := containsNode.Items[j];
+          // if this included file is to be included for this target
+          // and there is a form associated to the file
+          if IsIncluded(fileNode, target) then
+          begin
+            containsSomething := True;
+            if (fileNode.Properties.ItemNamed['FormName'].Value <> '') then
             begin
               tmpStr := repeatLines;
-              incFileName := fileNode.Properties.ItemNamed['Name'].Value;
               ApplyFormName(fileNode, tmpStr, target);
-              containsSomething := True;
-              outFile.Text := outFile.Text +
-                              EnsureCondition(tmpStr, fileNode, target);
-            end;
-
-            // if this included file is not in the associated 'perso'
-            // target or only in the 'perso' target then return the
-            // 'perso' target name. 'perso' either means 'per' or
-            // 'std'
-            if IsNotInPerso(fileNode, target) or
-               IsOnlyInPerso(fileNode, target) then
-              Result := GetPersoTarget(target);
-          end;
-          // if the last character in the output file is
-          // a comma, then remove it. This possible comma will
-          // be followed by a carriage return so we look
-          // at the third character starting from the end
-          tmpStr := outFile.Text;
-          if tmpStr[Length(tmpStr)-2] = ',' then
-            outFile.Text := Copy(tmpStr, 1, Length(tmpStr) - 3) + #13#10;
-        end
-        else if Trim(curLine) = '<%%% START FORMS %%%>' then
-        begin
-          Inc(i);
-          repeatSectionUsed := True;
-          repeatLines := '';
-          while(Trim(template[i]) <> '<%%% END FORMS %%%>') do
-          begin
-            repeatLines := repeatLines + template[i] + #13#10;
-            Inc(i);
-          end;
-
-          for j := 0 to containsNode.Items.Count -1 do
-          begin
-            fileNode := containsNode.Items[j];
-            // if this included file is to be included for this target
-            // and there is a form associated to the file
-            if IsIncluded(fileNode, target) then
-            begin
-              containsSomething := True;
-              if (fileNode.Properties.ItemNamed['FormName'].Value <> '') then
-              begin
-                tmpStr := repeatLines;
-                ApplyFormName(fileNode, tmpStr, target);
-                outFile.Text := outFile.Text + tmpStr;
-              end;
-            end;
-
-            // if this included file is not in the associated 'perso'
-            // target or only in the 'perso' target then return the
-            // 'perso' target name. 'perso' either means 'per' or
-            // 'std'
-            if IsNotInPerso(fileNode, target) or
-               IsOnlyInPerso(fileNode, target) then
-              Result := GetPersoTarget(target);
-          end;
-        end
-        else if Trim(curLine) = '<%%% START LIBS %%%>' then
-        begin
-          Inc(i);
-          repeatLines := '';
-          while(Trim(template[i]) <> '<%%% END LIBS %%%>') do
-          begin
-            repeatLines := repeatLines + template[i] + #13#10;
-            Inc(i);
-          end;
-
-          // read libs as a string of comma separated value
-          bcblibs :=  rootNode.Items.ItemNamed[packSuffix+'Libs'].Value;
-          if bcblibs <> '' then
-          begin
-            StrToStrings(bcblibs, ',', bcblibsList);
-            for j := 0 to bcbLibsList.Count - 1 do
-            begin
-              tmpStr := repeatLines;
-              StrReplace(tmpStr, '%FILENAME%', bcblibsList[j], [rfReplaceAll]);
-              StrReplace(tmpStr, '%UNITNAME%', GetUnitName(bcblibsList[j]), [rfReplaceAll]);
               outFile.Text := outFile.Text + tmpStr;
             end;
           end;
-        end
-        else
-        begin
-          StrReplace(curLine, '%NAME%',
-                     PathExtractFileNameNoExt(OutFileName),
-                     [rfReplaceAll]);
-          StrReplace(curLine, '%XMLNAME%',
-                     ExtractFileName(xmlName),
-                     [rfReplaceAll]);
-          StrReplace(curLine, '%DESCRIPTION%',
-                     rootNode.Items.ItemNamed['Description'].Value,
-                     [rfReplaceAll]);
-          StrReplace(curLine, '%C5PFLAGS%',
-                     rootNode.Items.ItemNamed['C5PFlags'].Value,
-                     [rfReplaceAll]);
-          StrReplace(curLine, '%C6PFLAGS%',
-                     rootNode.Items.ItemNamed['C6PFlags'].Value,
-                     [rfReplaceAll]);
-          StrReplace(curLine, '%TYPE%',
-                     Iff(rootNode.Properties.ItemNamed['Design'].BoolValue,
-                        'DESIGN', 'RUN'),
-                     [rfReplaceAll]);
-          StrReplace(curLine, '%DATETIME%',
-                      FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
-                      [rfReplaceAll]);
-          StrReplace(curLine, '%type%', OneLetterType, [rfReplaceAll]);
-          outFile.Add(curLine);
+
+          // if this included file is not in the associated 'perso'
+          // target or only in the 'perso' target then return the
+          // 'perso' target name. 'perso' either means PName
+          if IsNotInPerso(fileNode, target) or
+             IsOnlyInPerso(fileNode, target) then
+            Result := GetPersoTarget(target);
         end;
+      end
+      else if Trim(curLine) = '<%%% START LIBS %%%>' then
+      begin
         Inc(i);
-      end;
+        repeatLines := '';
+        while(Trim(template[i]) <> '<%%% END LIBS %%%>') do
+        begin
+          repeatLines := repeatLines + template[i] + #13#10;
+          Inc(i);
+        end;
 
-      if not repeatSectionUsed then
+        // read libs as a string of comma separated value
+        bcbId := TargetList[GetNonPersoTarget(target)].Env+TargetList[GetNonPersoTarget(target)].Ver;
+        bcblibs :=  rootNode.Items.ItemNamed[bcbId+'Libs'].Value;
+        if bcblibs <> '' then
+        begin
+          StrToStrings(bcblibs, ',', bcblibsList);
+          for j := 0 to bcbLibsList.Count - 1 do
+          begin
+            tmpStr := repeatLines;
+            StrReplace(tmpStr, '%FILENAME%', bcblibsList[j], [rfReplaceAll]);
+            StrReplace(tmpStr, '%UNITNAME%', GetUnitName(bcblibsList[j]), [rfReplaceAll]);
+            outFile.Text := outFile.Text + tmpStr;
+          end;
+        end;
+      end
+      else
       begin
-        // if no repeat section was used, we must check manually
-        // that at least one file or package is to be used by
-        // the given target. This will then force the generation
-        // of the output file (Useful for cfg templates for instance).
-
-        for j := 0 to requiredNode.Items.Count -1 do
-          if IsIncluded(requiredNode.Items[j], target) then
-            containsSomething := True;
-
-        for j := 0 to containsNode.Items.Count -1 do
-          if IsIncluded(containsNode.Items[j], target) then
-            containsSomething := True;
+        StrReplace(curLine, '%NAME%',
+                   PathExtractFileNameNoExt(OutFileName),
+                   [rfReplaceAll]);
+        StrReplace(curLine, '%XMLNAME%',
+                   ExtractFileName(xmlName),
+                   [rfReplaceAll]);
+        StrReplace(curLine, '%DESCRIPTION%',
+                   rootNode.Items.ItemNamed['Description'].Value,
+                   [rfReplaceAll]);
+        StrReplace(curLine, '%C5PFLAGS%',
+                   rootNode.Items.ItemNamed['C5PFlags'].Value,
+                   [rfReplaceAll]);
+        StrReplace(curLine, '%C6PFLAGS%',
+                   rootNode.Items.ItemNamed['C6PFlags'].Value,
+                   [rfReplaceAll]);
+        StrReplace(curLine, '%TYPE%',
+                   Iff(rootNode.Properties.ItemNamed['Design'].BoolValue,
+                      'DESIGN', 'RUN'),
+                   [rfReplaceAll]);
+        StrReplace(curLine, '%DATETIME%',
+                    FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
+                    [rfReplaceAll]);
+        StrReplace(curLine, '%type%', OneLetterType, [rfReplaceAll]);
+        outFile.Add(curLine);
       end;
+      Inc(i);
+    end;
 
-      if containsSomething and
-         (not FileExists(OutFileName) or
-          (FileDateToDateTime(FileAge(OutFileName)) < templateDate) or
-          (FileDateToDateTime(FileAge(OutFileName)) < xmlDate)) then
-      begin
-        SendMsg(#9#9'Saving ' + ExtractFileName(OutFileName) + ' for ' + target);
-        outFile.SaveToFile(OutFileName);
-      end;
+    if not repeatSectionUsed then
+    begin
+      // if no repeat section was used, we must check manually
+      // that at least one file or package is to be used by
+      // the given target. This will then force the generation
+      // of the output file (Useful for cfg templates for instance).
+
+      for j := 0 to requiredNode.Items.Count -1 do
+        if IsIncluded(requiredNode.Items[j], target) then
+          containsSomething := True;
+
+      for j := 0 to containsNode.Items.Count -1 do
+        if IsIncluded(containsNode.Items[j], target) then
+          containsSomething := True;
+    end;
+
+    // Save the file, only if the template or the xml are newer
+    // than the output file. If that output file doesn't exist,
+    // create it too
+    if containsSomething and
+       (not FileExists(OutFileName) or
+        (FileDateToDateTime(FileAge(OutFileName)) < templateDate) or
+        (FileDateToDateTime(FileAge(OutFileName)) < xmlDate)) then
+    begin
+      SendMsg(#9#9'Writing ' + ExtractFileName(OutFileName) + ' for ' + target);
+      outFile.SaveToFile(OutFileName);
     end;
   finally
     bcblibsList.Free;
@@ -711,14 +763,14 @@ begin
   GCallBack := CallBack;
   path := StrEnsureSuffix(PathSeparator, path);
   // for all targets
-  EnsureTargets(targets);
+//  EnsureTargets(targets);
   i := 0;
   while i < targets.Count do
   begin
     target := targets[i];
     SendMsg('Generating packages for ' + target);
     // find all template files for that target
-    if FindFirst(path+target+PathSeparator+'template.*', 0, rec) = 0 then
+    if FindFirst(path+TargetToDir(target)+PathSeparator+'template.*', 0, rec) = 0 then
     begin
       repeat
         template := TStringList.Create;
@@ -727,7 +779,7 @@ begin
           // apply the template for all packages
           for j := 0 to packages.Count-1 do
           begin
-            templateFileName := path+target+PathSeparator+rec.Name;
+            templateFileName := path+TargetToDir(target)+PathSeparator+rec.Name;
             template.LoadFromFile(templateFileName);
             xml := TJvSimpleXml.Create(nil);
             try
@@ -752,14 +804,14 @@ begin
               // named the same as the current one in the perso
               // directory then use it instead
               if (persoTarget <> '') and
-                 DirectoryExists(path+persoTarget) then
+                 DirectoryExists(path+TargetToDir(persoTarget)) then
               begin
                 templateTime := FileDateToDateTime(rec.Time);
-                if FileExists(path+persoTarget+PathSeparator+rec.Name) then
+                if FileExists(path+TargetToDir(persoTarget)+PathSeparator+rec.Name) then
                 begin
                   SendMsg(#9+persoTarget+ ' template will be used for ' + packages[j]);
-                  template.LoadFromFile(path+persoTarget+PathSeparator+rec.Name);
-                  templateTime := FileDateToDateTime(FileAge(path+persoTarget+PathSeparator+rec.Name));
+                  template.LoadFromFile(path+TargetToDir(persoTarget)+PathSeparator+rec.Name);
+                  templateTime := FileDateToDateTime(FileAge(path+TargetToDir(persoTarget)+PathSeparator+rec.Name));
                 end;
 
                 ApplyTemplateAndSave(
@@ -802,25 +854,15 @@ begin
   end;
 end;
 
-procedure EnumerateTargets(Path : string; targets : TStrings);
+procedure EnumerateTargets(targets : TStrings);
 var
-  rec : TSearchRec;
+  i : integer;
 begin
-  targets.Clear;
-  if FindFirst(StrEnsureSuffix(PathSeparator, Path)+'*.*', faDirectory, rec) = 0 then
+  targets.clear;
+  for i := 0 to TargetList.Count - 1 do
   begin
-    repeat
-      if ((rec.Attr and faDirectory) <> 0) and
-        (rec.Name[1] <> '.') and
-        (rec.Name <> 'xml') and
-        (rec.Name <> 'CVS') and
-        StrIsDigit(rec.Name[Length(Rec.Name)]) then
-      begin
-        targets.Add(ExtractFileName(rec.Name));
-      end;
-    until FindNext(rec) <> 0;
+    targets.Add(TargetList.Items[I].Name);
   end;
-  FindClose(rec);
 end;
 
 procedure EnumeratePackages(Path : string; packages : TStrings);
@@ -837,7 +879,187 @@ begin
   FindClose(rec);
 end;
 
+{ TTarget }
+
+constructor TTarget.Create(Node: TJvSimpleXmlElem);
+begin
+  inherited Create;
+  FName := StrLower(Node.Properties.ItemNamed['name'].Value);
+  if Assigned(Node.Properties.ItemNamed['dir']) then
+    FDir := Node.Properties.ItemNamed['dir'].Value;
+  if Assigned(Node.Properties.ItemNamed['pname']) then
+    FPName := StrLower(Node.Properties.ItemNamed['pname'].Value);
+  if Assigned(Node.Properties.ItemNamed['pdir']) then
+    FPDir := Node.Properties.ItemNamed['pdir'].Value;
+  if Assigned(Node.Properties.ItemNamed['env']) then
+    FEnv := StrUpper(Node.Properties.ItemNamed['env'].Value)[1];
+  if Assigned(Node.Properties.ItemNamed['ver']) then
+    FVer := StrLower(Node.Properties.ItemNamed['ver'].Value)[1];
+end;
+
+function TTarget.GetDir: string;
+begin
+  if FDir <> '' then
+    Result := FDir
+  else
+    Result := Name;
+end;
+
+function TTarget.GetEnv: string;
+begin
+  if FEnv <> '' then
+    Result := FEnv
+  else
+    Result := StrUpper(Name[1]);
+end;
+
+function TTarget.GetPDir: string;
+begin
+  if FPDir <> '' then
+    Result := FPDir
+  else
+    Result := FPName;
+end;
+
+function TTarget.GetVer: string;
+begin
+  if FVer <> '' then
+    Result := FVer
+  else if Length(Name)>1 then
+    Result := StrLower(Name[2])
+  else
+    Result := '';
+end;
+
+{ TTargetList }
+
+constructor TTargetList.Create(Node: TJvSimpleXmlElem);
+var
+  i : integer;
+begin
+  inherited Create(True);
+  for i := 0 to Node.Items.Count - 1 do
+  begin
+    Add(TTarget.Create(Node.Items[i]));
+  end;
+end;
+
+function TTargetList.GetItems(index: integer): TTarget;
+begin
+  Result := TTarget(inherited Items[index]);
+end;
+
+function TTargetList.GetItemsByName(name: string): TTarget;
+var
+  i : integer;
+begin
+  Result := nil;
+  i := 0;
+  while (i < count) and (Result = nil) do
+  begin
+    if SameText(TTarget(Items[i]).Name, name) then
+      Result := TTarget(Items[i]);
+    Inc(i);
+  end;
+end;
+
+procedure TTargetList.SetItems(index: integer; const Value: TTarget);
+begin
+  inherited Items[index] := Value;
+end;
+
+{ TAlias }
+
+constructor TAlias.Create(Node: TJvSimpleXmlElem);
+begin
+  inherited Create;
+  FName := StrLower(Node.Properties.ItemNamed['name'].Value);
+  FValue := StrLower(Node.Properties.ItemNamed['value'].Value);
+  FValueAsTStrings := nil;
+end;
+
+destructor TAlias.Destroy;
+begin
+  FValueAsTStrings.Free;
+  inherited;
+end;
+
+function TAlias.GetValueAsTStrings: TStrings;
+begin
+  if not Assigned(FValueAsTStrings) then
+    FValueAsTStrings := TStringList.Create;
+
+  StrToStrings(Value, ',', FValueAsTStrings, false);
+  Result := FValueAsTStrings;
+end;
+
+{ TAliasList }
+
+constructor TAliasList.Create(Node: TJvSimpleXmlElem);
+var
+  i : integer;
+begin
+  inherited Create(True);
+  for i := 0 to Node.Items.Count - 1 do
+  begin
+    Add(TAlias.Create(Node.Items[i]));
+  end;
+end;
+
+function TAliasList.GetItems(index: integer): TAlias;
+begin
+  Result := TAlias(inherited Items[index]);
+end;
+
+function TAliasList.GetItemsByName(name: string): TAlias;
+var
+  i : integer;
+begin
+  Result := nil;
+  i := 0;
+  while (i < count) and (Result = nil) do
+  begin
+    if SameText(TAlias(Items[i]).Name, name) then
+      Result := TAlias(Items[i]);
+    Inc(i);
+  end;
+end;
+
+procedure TAliasList.SetItems(index: integer; const Value: TAlias);
+begin
+  inherited Items[index] := Value;
+end;
+
+{ TDefinesList }
+
+constructor TDefinesList.Create(incfile: TStringList);
+var
+  i : integer;
+  curLine : string;
+begin
+  inherited Create;
+
+  for i := 0 to incfile.Count-1 do
+  begin
+    curLine := incfile[i];
+    if Copy(curLine, 1, 8) = '{$DEFINE' then
+    begin
+      Add(Copy(curLine, 10, Length(curLine)-10));
+    end;
+  end;
+end;
+
 initialization
   StartupDir := GetCurrentDir;
+
+// ensure the lists are not assigned
+  TargetList := nil;
+  AliasList := nil;
+  DefinesList := nil;
+
+finalization
+  TargetList.Free;
+  AliasList.Free;
+  DefinesList.Free;
 
 end.
