@@ -303,7 +303,7 @@ begin
 
   with FResBitmap do
   begin
-    //	if FTransparent then Canvas.Brush.Color := FTransparentColor
+    // if FTransparent then Canvas.Brush.Color := FTransparentColor
     Canvas.Brush.Color := clBtnFace;
     Canvas.Brush.Style := bsSolid;
     Canvas.FillRect(Bounds(0, 0, Width, Height));

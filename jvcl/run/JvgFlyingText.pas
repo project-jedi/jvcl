@@ -632,8 +632,8 @@ begin
         FBackgrBitmap.Canvas.Handle);
     //________________________________PrepareBackground____end
   //    if (FResBitmap.Width or FResBitmap.Height)<>0 then
-  //	BitBlt( FBackgrBitmap.Canvas.Handle, 0, 0,
-  //		Width, Height, canvas.Handle, 0, 0, SRCCOPY);
+  //      BitBlt( FBackgrBitmap.Canvas.Handle, 0, 0,
+  //        Width, Height, canvas.Handle, 0, 0, SRCCOPY);
   end;
 
   //  if FTransparent then ShowWindow(Handle,SW_SHOW);

@@ -28,10 +28,10 @@ Known Issues:
 
 {
 History:
-	2003-09-28 by Winston Feng
-		Add WM_SESSIONEND message handler, TaskbarRestart message handler to:
-			Clean the trayicon when session ends.
-			Restore the trayicon when session restart.
+  2003-09-28 by Winston Feng
+    Add WM_SESSIONEND message handler, TaskbarRestart message handler to:
+      Clean the trayicon when session ends.
+      Restore the trayicon when session restart.
     Remove the old unsuccessful DoCheckCrash method.
 }
 
@@ -217,7 +217,7 @@ end;
 
 constructor TJvTrayIcon.Create(AOwner: TComponent);
 begin
-	inherited Create(AOwner);
+  inherited Create(AOwner);
   FIcon := TIcon.Create;
   FIcon.OnChange := IconChanged;
   FApplicationVisible := True;
@@ -268,7 +268,7 @@ end;
 
 function TJvTrayIcon.AcceptBalloons: Boolean;
 begin
-	//Balloons are only accepted with shell32.dll 5.0+
+  // Balloons are only accepted with shell32.dll 5.0+
   Result := GetShellVersion >= $00050000;
 end;
 

@@ -369,10 +369,10 @@ begin
   Canvas.Font.Assign(_Style.Font);
   if IsDown then offset := 1 else offset := 0;
   ExtTextOutExt(Canvas.Handle, R.Left+offset+(R.Right - R.Left -Canvas.TextWidth(Caption)) div 2, R.Top+offset+(R.Bottom - R.Top - Canvas.TextHeight(Caption)) div 2, R, Caption,
-  		 TextStyle, false{ fcoDelineatedText in Options},
-		 false, _Style.Font.Color, _Style.DelineateColor,
-		 _Style.HighlightColor, _Style.ShadowColor,
-		 nil, _Style.TextGradient, _Style.Font );
+    TextStyle, false { fcoDelineatedText in Options},
+    false, _Style.Font.Color, _Style.DelineateColor,
+    _Style.HighlightColor, _Style.ShadowColor,
+    nil, _Style.TextGradient, _Style.Font );
 
   R := ClientRect;
   Canvas.Brush.Color := 0;
@@ -384,8 +384,8 @@ begin
 
   if Assigned(Glyph) then
     CreateBitmapExt( Canvas.Handle, Glyph, ClientRect, (Width - Glyph.Width - Canvas.TextWidth(Caption))div 2 + integer(IsDown) - 1-Spacing, 1+(Height - Glyph.Height)div 2 + integer(IsDown),
-		     fwoNone, fdsDefault,
-		     true, GetTransparentColor(Glyph, ftcLeftBottomPixel), 0 );
+      fwoNone, fdsDefault,
+      true, GetTransparentColor(Glyph, ftcLeftBottomPixel), 0 );
 
 end;
 

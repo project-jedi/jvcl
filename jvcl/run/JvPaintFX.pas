@@ -123,10 +123,10 @@ type
     class procedure SplitRound(Src, Dst: TBitmap; Amount: Integer; Style: TLightBrush);
     class procedure Tile(Src, Dst: TBitmap; Amount: Integer);
     // Interpolator
-    // Src:	Source bitmap
-    // Dst:	Destination bitmap
-    // Filter:	Weight calculation filter
-    // AWidth:	Relative sample radius
+    // Src: Source bitmap
+    // Dst: Destination bitmap
+    // Filter: Weight calculation filter
+    // AWidth: Relative sample radius
     class procedure Stretch(Src, Dst: TBitmap; Filter: TFilterProc; AWidth: Single);
     class procedure Grow(Src1, Src2, Dst: TBitmap; Amount: Single; X, Y: Integer);
     class procedure Invert(Src: TBitmap);
@@ -1627,11 +1627,9 @@ begin
   Bmp.Free;
 end;
 
-// -----------------------------------------------------------------------------
-//
-//			Interpolator
-//
-// -----------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Interpolator
+// ---------------------------------------------------------------------------
 type
   // Contributor for a pixel
   TContributor = record

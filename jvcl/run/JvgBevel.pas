@@ -193,7 +193,7 @@ var
       else {fldHorizontal:}
         begin
           R_.Top := MulDiv(I, Height, Lines.Count + 1);
-          //	  if I = 1 then Dec( R_.Top, Lines.Thickness );
+          // if I = 1 then Dec( R_.Top, Lines.Thickness );
           R_.Bottom := R_.Top + Lines.Thickness + Ord(Lines.Bold);
         end;
       end;
