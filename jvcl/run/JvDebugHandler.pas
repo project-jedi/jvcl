@@ -121,7 +121,7 @@ uses
   JclDebug, JclHookExcept;
 
 type
-  TJclDebugHandler = Class(TComponent)
+  TJvDebugHandler = Class(TComponent)
   Private
     FExceptionLogging: Boolean;
     FStackTrackingEnable: Boolean;
@@ -155,14 +155,19 @@ type
 
 implementation
 
-procedure TJclDebugHandler.HandleUnKnownException(Sender: TObject; E: Exception);
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
+procedure TJvDebugHandler.HandleUnKnownException(Sender: TObject; E: Exception);
 begin
   ExceptionNotifier(E, ExceptAddr, False);
   if Assigned(FOldExceptionHandler) then
     FOldExceptionHandler(Sender, E);
 end;
 
-procedure TJclDebugHandler.SetUnhandled(Value: Boolean);
+procedure TJvDebugHandler.SetUnhandled(Value: Boolean);
 begin
   if FUnhandledExceptionsOnly <> Value then
   begin
@@ -185,7 +190,7 @@ begin
   end;
 end;
 
-procedure TJclDebugHandler.SetStackTracking(Value: Boolean);
+procedure TJvDebugHandler.SetStackTracking(Value: Boolean);
 begin
   if Value <> FStackTrackingEnable Then
   begin
@@ -197,7 +202,7 @@ begin
   end;
 end;
 
-constructor TJclDebugHandler.Create(AOwner: TComponent);
+constructor TJvDebugHandler.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FExceptionLogging := True;
@@ -207,7 +212,7 @@ begin
   Loaded;
 end;
 
-destructor TJclDebugHandler.Destroy;
+destructor TJvDebugHandler.Destroy;
 begin
   JclStopExceptionTracking;
   JclRemoveExceptNotifier(ExceptionNotifier);
@@ -215,7 +220,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclDebugHandler.ExceptionNotifier(ExceptObj: TObject; ExceptAddr: Pointer;
+procedure TJvDebugHandler.ExceptionNotifier(ExceptObj: TObject; ExceptAddr: Pointer;
   OSException: Boolean);
 var
   I: Integer;
@@ -286,7 +291,7 @@ begin
   end;
 end;
 
-procedure TJclDebugHandler.Loaded;
+procedure TJvDebugHandler.Loaded;
 begin
   if not FIsLoaded Then
   begin
@@ -305,6 +310,22 @@ begin
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 
