@@ -2776,8 +2776,10 @@ end;
 {$endif}
 
 destructor TJvDockBasicStyle.Destroy;
+{$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
 var
  t:Integer;
+{$endif}
 begin
   if not (csDesigning in ComponentState) then
   begin

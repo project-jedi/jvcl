@@ -1764,7 +1764,9 @@ var
   uFormat: UINT;
   ActiveControl: TControl;
   ShowCloseButtonOnGrabber:Boolean;
+{$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
   TabServerOption:TJvDockVIDTabServerOption;
+{$endif}
 begin
   Assert(Assigned(Control));
   ShowCloseButtonOnGrabber := true;
