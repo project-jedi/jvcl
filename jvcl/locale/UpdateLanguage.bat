@@ -46,5 +46,5 @@ echo     be used as the directory name where to find jvcl.po
 echo     for the given language
 
 :end
-del /q tmp?.txt
+if exist tmp1.txt del /q tmp?.txt
 set LANGUAGE=
