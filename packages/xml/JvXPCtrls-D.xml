@@ -13,6 +13,7 @@
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
+    <Package Name="JvStdCtrls-D" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvXPCtrlsReg.pas" Targets="all" Formname="" Condition=""/>

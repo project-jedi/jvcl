@@ -23,6 +23,7 @@
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
+    <Package Name="JvStdCtrls-D" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvLookoutEditor.pas" Targets="all" Formname="" Condition=""/>

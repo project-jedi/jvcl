@@ -18,6 +18,7 @@
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="JvStdCtrls-D" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvPageLinkEditorForm.pas" Targets="all" Formname="frmJvTreeViewLinksEditor" Condition=""/>
