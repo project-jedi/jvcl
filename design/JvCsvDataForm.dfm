@@ -5,6 +5,8 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   Height = 333
   Caption = 'JvCsvDataSet.CSVFieldDef Editor'
   Color = clBtnFace
+  Constraints.MinHeight = 333
+  Constraints.MinWidth = 442
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -24,6 +26,9 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
+  DesignSize = (
+    434
+    303)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -116,15 +121,6 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
     Width = 27
     Height = 13
     Caption = 'Fields'
-  end
-  object Label6: TLabel
-    Left = 93
-    Top = 272
-    Width = 240
-    Height = 13
-    Anchors = [akLeft, akBottom]
-    AutoSize = False
-    Caption = 'Delphi Jedi Project (www.delphi-jedi.org)'
   end
   object Bevel1: TBevel
     Left = 228

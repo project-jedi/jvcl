@@ -57,14 +57,11 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-resourcestring
-  sMappingDoesNotExistForThisColorProv = 'Mapping does not exist for this color provider.';
-
 implementation
 
 uses
   SysUtils, TypInfo,
-  JvDataProvider, JvColorProviderDesignerForm;
+  JvDataProvider, JvColorProviderDesignerForm, JvDsgnConsts;
 
 //===TJvColorProviderMappingProperty================================================================
 
@@ -79,7 +76,7 @@ var
 begin
   I := GetOrdValue;
   if I = -1 then
-    Result := '(none)'
+    Result := SNone
   else
     Result := (GetConsumerImpl.ProviderIntf as IJvColorProvider).Get_Mapping(I).Name;
 end;
@@ -88,7 +85,7 @@ procedure TJvColorProviderMappingProperty.SetValue(const Value: string);
 var
   I: Integer;
 begin
-  if AnsiSameStr(Value, '(none)') or (Value = '') then
+  if AnsiSameStr(Value, SNone) or (Value = '') then
     SetOrdValue(-1)
   else
   begin
@@ -96,7 +93,7 @@ begin
     begin
       I := IndexOfMappingName(Value);
       if I < 0 then
-        raise EPropertyError.Create(sMappingDoesNotExistForThisColorProv);
+        raise EPropertyError.Create(SMappingDoesNotExistForThisColorProv);
       SetOrdValue(I);
     end;
   end;
@@ -131,7 +128,7 @@ end;
 function TJvColorProviderEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := 'Designer...'
+    Result := SDesigner
   else
    inherited GetVerb(Index);
 end;

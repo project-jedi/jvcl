@@ -31,7 +31,60 @@ unit JvDsgnConsts;
 interface
 
 resourcestring
-//===DataProvider design time constants=============================================================
+  //=== strings used by several editors ======================================
+  SPreview = 'Preview...';
+  SDesigner = 'Designer...';
+  SNone = '(none)';
+  SHelp = 'Help';
+  SConfirm = 'Confirm?';
+
+  //=== JvAVICaptureEditors.pas ==============================================
+  SDisconnected = 'Disconnected';
+  SdIsNotWithinTheValidRangeOfdd = '%d is not within the valid range of %d..%d';
+
+  //=== JvBandObjectDLLWizard.pas ============================================
+  SCreatesABandObjectDLLProject = 'Creates a Band Object DLL Project.';
+  SBandObjectDLLWizard = 'Band Object DLL Wizard';
+
+  //=== JvBandObjectDLLWizardForm.pas ========================================
+  SBandNameHasToBeAValidIdentifier = 'Band name has to be a valid identifier!';
+  SPleaseEnterBandDescription = 'Please enter band description!';
+
+  //=== JvChangeNotifyEditor.pas =============================================
+  SEditProperty = 'Notifications...';
+
+  //=== JvCheckedItemsForm.pas ===============================================
+  SItemEditor = 'Item editor';
+  SEnabled = 'Enabled';
+
+  //=== JvColorProviderEditors.pas ===========================================
+  SMappingDoesNotExistForThisColorProv = 'Mapping does not exist for this color provider.';
+
+  //=== JvCsvDataEditor.pas ==================================================
+  SJvCsvDataSetSelectCSVFileToOpen = 'JvCsvDataSet - Select CSV File to Open';
+
+  //=== JvCsvDataForm.pas ====================================================
+  SMustTypeAValidFieldNameAndSelectAFi =
+    'Must type a valid field name and select a field type. ' +
+    'Field name must start with a letter A-Z and consist of letters and numbers only. ' +
+    'All field names will be converted to uppercase before being used.';
+  SAddFailed = 'Add Failed';
+  SsFieldNameIsNotAValidIdentifier = '%s: Field name is not a valid identifier';
+  SCantAddTwoFieldsWithTheSameNameSele =
+    'Can''t add two fields with the same name! Select existing item and click ''Modify'' button to change its properties.';
+  SUpdateFailed = 'Update Failed';
+  SNoItemIsSelectedInTheFieldsListYouC = 'No item is selected in the fields list. You can''t update nothing.';
+  SModifyingTheCurrentlySelectedItemWo =
+    'Modifying the currently selected item would create two items with the same name.';
+
+  //=== JvDataConsumerContextSelectForm.pas ==================================
+  SConsumerDoesNotSupportContextSelect = 'Consumer does not support context selection.';
+  SIJvDataConsumerProviderIsNotSupported = 'IJvDataConsumerProvider is not supported by the specified consumer.';
+
+  //=== JvDataConsumerItemSelectForm.pas =====================================
+  SDataProviderItemSelector = 'DataProvider Item Selector';
+
+  //=== DataProvider design time constants ===================================
   SDataProviderDesignerCaption = 'Editing %s%s...';
   SDataProviderContextManCaption = 'Editing contexts for ''%s''...';
   SDataItemRootID = 'ROOT';
@@ -44,7 +97,7 @@ resourcestring
   SDataProviderDeleteErrorReason = 'Unable to delete item; %s.';
 
   SDataProviderNoManOrDsgn = 'neither IJvDataItemsManagement nor IJvDataItemsDesigner are supported';
-  SDataProviderNoSubItems = 'item doesn''t support IJvDataItems';
+  SDataProviderNoSubItems = 'item does not support IJvDataItems';
   SDataProviderNoMan = 'IJvDataItemsManagement is not supported';
 
 implementation

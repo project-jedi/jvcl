@@ -53,8 +53,11 @@ type
 
 implementation
 
-resourcestring
-  SEditProperty = 'Notifications...';
+uses
+  JvDsgnConsts;
+
+const
+  cNotifications = 'Notifications';  // do not localize
 
 {$IFDEF COMPILER6_UP}
 procedure TJvChangeNotifyEditor.EditProperty(const Prop: IProperty; var Cont: Boolean);
@@ -62,7 +65,7 @@ var
   PropName: string;
 begin
   PropName := Prop.GetName;
-  if SameText(PropName, 'Notifications') then // do not localize
+  if SameText(PropName, cNotifications) then
   begin
     Prop.Edit;
     Cont := False;
@@ -74,7 +77,7 @@ var
   PropName: string;
 begin
   PropName := PropertyEditor.GetName;
-  if SameText(PropName, 'Notifications') then // do not localize
+  if SameText(PropName, cNotifications) then // do not localize
   begin
     PropertyEditor.Edit;
     Cont := False;

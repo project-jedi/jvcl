@@ -52,17 +52,15 @@ type
   end;
 
 
-resourcestring
-  sBandNameHasToBeAValidIdentifier = 'Band name has to be a valid identifier!';
-  sPleaseEnterBandDescription = 'Please enter band description!';
-  sHelp = 'Help';
-
 implementation
+
+uses
+  JvDsgnConsts;
 
 {$R *.DFM}
 
 resourcestring
-  cHelpText = sLineBreak +
+  SHelpText = sLineBreak +
     'Band Name' + sLineBreak +
     'Enter a band name, e.g. MyBand.' + sLineBreak +
     'This will be the class name of the band object.' + sLineBreak +
@@ -82,7 +80,7 @@ begin
     if not IsValidIdent(Text) then
     begin
       SetFocus;
-      raise Exception.Create(sBandNameHasToBeAValidIdentifier);
+      raise Exception.Create(SBandNameHasToBeAValidIdentifier);
     end;
   end;
   with EditBandDesc do
@@ -91,7 +89,7 @@ begin
     if Text = '' then
     begin
       SetFocus;
-      raise Exception.Create(sPleaseEnterBandDescription);
+      raise Exception.Create(SPleaseEnterBandDescription);
     end;
   end;
   ModalResult := mrOK;
@@ -106,7 +104,7 @@ begin
   try
     with HelpForm do
     begin
-      Caption := Self.Caption + ' ' + sHelp;
+      Caption := Self.Caption + ' ' + SHelp;
       BorderStyle := bsDialog;
       Top := Self.Top + Self.Height div 2;
       Left := Self.Left + Self.Width div 2;
@@ -119,7 +117,7 @@ begin
       Parent := HelpForm;
       Align := alClient;
       ReadOnly := True;
-      Text := cHelpText;
+      Text := SHelpText;
     end;
     HelpForm.ShowModal;
   finally

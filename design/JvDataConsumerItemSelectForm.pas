@@ -33,9 +33,13 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvBaseDsgnForm, JvProviderTreeListFrame, StdCtrls, ExtCtrls,
-  {$IFNDEF COMPILER6_UP} DsgnIntf, {$ELSE} DesignIntf, DesignEditors, {$ENDIF}
-  JvDataProvider, JvDataProviderImpl;
+  StdCtrls, ExtCtrls,
+  {$IFNDEF COMPILER6_UP}
+  DsgnIntf,
+  {$ELSE}
+  DesignIntf, DesignEditors,
+  {$ENDIF COMPILER6_UP}
+  JvBaseDsgnForm, JvProviderTreeListFrame, JvDataProvider, JvDataProviderImpl;
 
 type
   TfrmJvDataConsumerItemSelect = class(TJvBaseDesign)
@@ -48,14 +52,12 @@ type
     procedure btnCancelClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
-    { Private declarations }
     FConsumer: TJvDataConsumer;
-    FDesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF};
+    FDesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF};
   protected
-    { Protected declarations }
     function GetConsumer: TJvDataConsumer;
     procedure SetConsumer(Value: TJvDataConsumer);
-    procedure SetDesigner(Value: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF});
+    procedure SetDesigner(Value: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF});
     procedure SelectionChanged(Sender: TObject);
     procedure UpdateViewList;
     procedure UpdateConsumerSvc;
@@ -64,19 +66,17 @@ type
     function DesignerFormName: string; override;
     function AutoStoreSettings: Boolean; override;
   public
-    { Public declarations }
     property Consumer: TJvDataConsumer read GetConsumer write SetConsumer;
-    property Designer: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF} read FDesigner write SetDesigner;
+    property Designer: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF} read FDesigner write SetDesigner;
   end;
 
 procedure DataConsumerSelectItem(AConsumer: TJvDataConsumer;
-  ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF});
-
-
-resourcestring
-  sDataProviderItemSelector = 'DataProvider Item Selector';
+  ADesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF});
 
 implementation
+
+uses
+  JvDsgnConsts;
 
 {$R *.DFM}
 
@@ -84,15 +84,12 @@ function IsConsumerItemSelectForm(Form: TJvBaseDesign; const Args: array of cons
 begin
   Result := Form is TfrmJvDataConsumerItemSelect;
   if Result then
-  begin
     with (Form as TfrmJvDataConsumerItemSelect) do
-      Result := (Consumer = Args[0].VObject) and
-        (Pointer(Designer) = Args[1].VInterface);
-  end;
+      Result := (Consumer = Args[0].VObject) and (Pointer(Designer) = Args[1].VInterface);
 end;
 
 procedure DataConsumerSelectItem(AConsumer: TJvDataConsumer;
-  ADesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF});
+  ADesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF});
 var
   Form: TfrmJvDataConsumerItemSelect;
 begin
@@ -103,16 +100,15 @@ begin
     try
       Form.Consumer := AConsumer;
       Form.Designer := ADesigner;
-    except
+    finally
       FreeAndNil(Form);
-      raise;
     end;
   end;
   Form.Show;
   Form.BringToFront;
 end;
 
-//===TfrmJvDataConsumerItemSelect===================================================================
+//=== TfrmJvDataConsumerItemSelect ===========================================
 
 function TfrmJvDataConsumerItemSelect.GetConsumer: TJvDataConsumer;
 begin
@@ -166,13 +162,11 @@ begin
         ViewList.RebuildView;
       fmeTreeList.lvProvider.Items.Count := ViewList.Count;
       if Supports(Consumer as IJvDataConsumer, IJvDataConsumerItemSelect, ItemSelect) then
-      begin
         if ItemSelect.GetItem <> nil then
         begin
           ViewList.ExpandTreeTo(ItemSelect.GetItem);
           fmeTreeList.SelectItemID(ItemSelect.GetItem.GetID);
         end;
-      end;
     finally
       fmeTreeList.Provider.Leave;
     end;
@@ -214,15 +208,13 @@ procedure TfrmJvDataConsumerItemSelect.Notification(AComponent: TComponent; Oper
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
-  begin
     if (Consumer <> nil) and (TOpenConsumer(Consumer).VCLComponent = AComponent) then
       Consumer := nil;
-  end;
 end;
 
 function TfrmJvDataConsumerItemSelect.DesignerFormName: string;
 begin
-  Result := sDataProviderItemSelector;
+  Result := SDataProviderItemSelector;
 end;
 
 function TfrmJvDataConsumerItemSelect.AutoStoreSettings: Boolean;
@@ -246,14 +238,12 @@ end;
 
 procedure TfrmJvDataConsumerItemSelect.btnCancelClick(Sender: TObject);
 begin
-  inherited;
   Close;
 end;
 
 procedure TfrmJvDataConsumerItemSelect.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-  inherited;
   if Action in [caHide, caFree] then
     Consumer := nil;
 end;

@@ -63,15 +63,11 @@ type
     function GetValue: string; override;
   end;
 
-resourcestring
-  sDisconnected = 'Disconnected';
-  sdIsNotWithinTheValidRangeOfdd = '%d is not within the valid range of %d..%d';
-
 implementation
 
 uses
   Controls,
-  JvVirtualKeyEditorForm;
+  JvVirtualKeyEditorForm, JvDsgnConsts;
 
 //=== TJvDriverIndexEditor ===================================================
 
@@ -112,7 +108,7 @@ var
 begin
   Index := GetOrdValue;
   if Index = -1 then
-    Result := IntToStr(GetOrdValue) + ' - ' + sDisconnected
+    Result := IntToStr(GetOrdValue) + ' - ' + SDisconnected
   else
     Result := IntToStr(GetOrdValue) + ' - ' + FDrivers[GetOrdValue];
 end;
@@ -121,7 +117,7 @@ procedure TJvDriverIndexEditor.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
 begin
-  Proc('-1 - ' + sDisconnected);
+  Proc('-1 - ' + SDisconnected);
   for I := 0 to FDrivers.Count - 1 do
     Proc(IntToStr(I) + ' - ' + FDrivers[I]);
 end;
@@ -138,7 +134,7 @@ begin
   if (NewIndex >= -1) and (NewIndex < FDrivers.Count) then
     SetOrdValue(NewIndex)
   else
-    raise ERangeError.CreateFmt(sdIsNotWithinTheValidRangeOfdd,
+    raise ERangeError.CreateFmt(SdIsNotWithinTheValidRangeOfdd,
       [NewIndex, -1, FDrivers.Count - 1]);
 end;
 
