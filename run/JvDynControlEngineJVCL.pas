@@ -1357,6 +1357,7 @@ end;
 
 procedure TJvDynControlJVCLRadioGroup.ControlSetCaption(const Value: string);
 begin
+  Caption := Value;
 end;
 
 procedure TJvDynControlJVCLRadioGroup.ControlSetTabOrder(Value: Integer);
