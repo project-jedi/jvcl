@@ -60,23 +60,23 @@ implementation
 uses
   JvJVCLUtils, JvJCLUtils, JvBrowseFolder, JvConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 function EditFolderList(Folders: TStrings): Boolean;
 var
-  i: Integer;
+  I: Integer;
 begin
   with TJvDirectoryListDialog.Create(Application) do
   try
     if Assigned(Folders) then
-      for i := 0 to Folders.Count - 1 do
-        DirectoryList.Items.Add.Caption := Folders[i];
+      for I := 0 to Folders.Count - 1 do
+        DirectoryList.Items.Add.Caption := Folders[I];
     Result := ShowModal = mrOK;
     if Result and Assigned(Folders) then
     begin
       Folders.Clear;
-      for i := 0 to DirectoryList.Items.Count - 1 do
-        Folders.Add(DirectoryList.Items[i].Caption);
+      for I := 0 to DirectoryList.Items.Count - 1 do
+        Folders.Add(DirectoryList.Items[I].Caption);
     end;
   finally
     Free;

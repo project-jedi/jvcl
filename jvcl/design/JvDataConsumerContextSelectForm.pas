@@ -55,7 +55,7 @@ implementation
 uses
   JvContextProvider, JvTypes, JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 function ConsumerSelectContext(AConsumer: IJvDataConsumer): Boolean;
 var

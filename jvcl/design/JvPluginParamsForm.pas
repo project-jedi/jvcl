@@ -58,15 +58,12 @@ type
     procedure FormShow(Sender: TObject);
   end;
 
-var
-  frmPluginParams: TfrmPluginParams;
-
 implementation
 
 uses
   JvTypes, JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TfrmPluginParams.SettingsChanged(Sender: TObject);
 

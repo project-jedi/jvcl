@@ -1,4 +1,3 @@
-{:JvBandObject wizard form.       }
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -56,7 +55,7 @@ implementation
 uses
   JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TzWizardForm.OKClick(Sender: TObject);
 begin

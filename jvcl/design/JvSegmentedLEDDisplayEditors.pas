@@ -89,7 +89,11 @@ implementation
 uses
   SysUtils,
   JclRTTI,
-  JvSegmentedLEDDisplayMappingForm, JvDsgnConsts;
+  JvSegmentedLEDDisplayMappingForm, JvDsgnConsts, JvColorEditor;
+
+const
+  cDefaultBackground = 'clDefaultBackground';
+  cDefaultLitColor = 'clDefaultLitColor';
 
 //=== TJvTClassProperty ======================================================
 
@@ -116,7 +120,7 @@ begin
     for I := 0 to Count - 1 do
       Proc(TClass(Items[I]).ClassName);
   finally
-    DigitClassList.UnlockList
+    DigitClassList.UnlockList;
   end;
 end;
 
@@ -196,9 +200,9 @@ function TUnlitColorProperty.GetValue: string;
 begin
   case GetOrdValue of
     clDefaultBackground:
-      Result := 'clDefaultBackground';
+      Result := cDefaultBackground;
     clDefaultLitColor:
-      Result := 'clDefaultLitColor';
+      Result := cDefaultLitColor;
   else
     Result := inherited GetValue;
   end;
@@ -207,8 +211,8 @@ end;
 procedure TUnlitColorProperty.GetValues(Proc: TGetStrProc);
 begin
   inherited GetValues(Proc);
-  Proc('clDefaultBackground');
-  Proc('clDefaultLitColor');
+  Proc(cDefaultBackground);
+  Proc(cDefaultLitColor);
 end;
 
 procedure TUnlitColorProperty.SetValue(const Value: string);
@@ -223,26 +227,6 @@ end;
 
 procedure TUnlitColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
-
-  function ColorToBorderColor(AColor: TColor): TColor;
-  type
-    TColorQuad = record
-      Red: Byte;
-      Green: Byte;
-      Blue: Byte;
-      Alpha: Byte;
-    end;
-  begin
-    if (TColorQuad(AColor).Red > 192) or (TColorQuad(AColor).Green > 192) or
-      (TColorQuad(AColor).Blue > 192) then
-      Result := clBlack
-    else
-    if ASelected then
-      Result := clWhite
-    else
-      Result := AColor;
-  end;
-
 var
   vRight: Integer;
   vOldPenColor, vOldBrushColor, TmpColor: TColor;
@@ -257,7 +241,7 @@ begin
     Rectangle(ARect.Left, ARect.Top, vRight, ARect.Bottom);
     IdentToUnlitColor(Value, Integer(TmpColor));
     Brush.Color := TMpColor;
-    Pen.Color := ColorToBorderColor(ColorToRGB(Brush.Color));
+    Pen.Color := JvColorToBorderColor(ColorToRGB(Brush.Color), ASelected);
     Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, ARect.Bottom - 1);
     Brush.Color := vOldBrushColor;
     Pen.Color := vOldPenColor;

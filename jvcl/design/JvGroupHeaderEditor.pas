@@ -37,7 +37,7 @@ uses
   DesignIntf, DesignEditors, DesignMenus, VCLEditors;
   {$ELSE}
   DsgnIntf;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
 type
   TJvGroupHeaderEditor = class(TComponentEditor)

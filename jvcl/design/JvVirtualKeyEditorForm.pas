@@ -47,9 +47,6 @@ type
     property EditingFrame: TJvVirtualKeySelectionFrame read FEditingFrame;
   end;
 
-var
-  frmJvVirtualKeyEditor: TfrmJvVirtualKeyEditor;
-
 implementation
 
 {$R *.dfm}

@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvWizardAboutInfoForm.PAS, released on 2002-02-25.
+The Original Code is: JvWizardAboutInfoForm.PAS, released on 2002-01-25.
 
 The Initial Developer of the Original Code is William Yu Wei.
 Portions created by William Yu Wei are Copyright (C) 2001 William Yu Wei.
@@ -44,7 +44,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
-  {$IFDEF COMPILER6_UP}DesignIntf, DesignEditors;{$ELSE}DsgnIntf;{$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors;
+  {$ELSE}
+  DsgnIntf;
+  {$ENDIF COMPILER6_UP}
 
 const
   JvWizard_VERSIONSTRING = 'Version 1.70';
@@ -78,18 +82,18 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
+
+//=== TJvWizardAboutDialogProperty ===========================================
 
 procedure TJvWizardAboutDialogProperty.Edit;
-var
-  Dialog: TJvWizardAboutDialog;
 begin
-  Dialog := TJvWizardAboutDialog.Create(nil);
-  try
-    Dialog.ShowModal;
-  finally
-    Dialog.Free;
-  end;
+  with TJvWizardAboutDialog.Create(nil) do
+    try
+      ShowModal;
+    finally
+      Free;
+    end;
 end;
 
 function TJvWizardAboutDialogProperty.GetAttributes: TPropertyAttributes;
@@ -102,7 +106,7 @@ begin
   Result := JvWizard_VERSIONSTRING;
 end;
 
-{ TJvWizardAboutDialog }
+//=== TJvWizardAboutDialog ===================================================
 
 procedure TJvWizardAboutDialog.btnOKClick(Sender: TObject);
 begin
@@ -117,11 +121,8 @@ end;
 
 procedure TJvWizardAboutDialog.CreateParams(var Params: TCreateParams);
 begin
-	inherited CreateParams(Params);
-  with Params do
-  begin
-    Style := (Style or WS_POPUP) and (not WS_DLGFRAME);
-  end;
+  inherited CreateParams(Params);
+  Params.Style := (Params.Style or WS_POPUP) and (not WS_DLGFRAME);
 end;
 
 procedure TJvWizardAboutDialog.Panel1MouseDown(Sender: TObject;

@@ -339,6 +339,8 @@ resourcestring
   SPaletteInterpreter = 'Jv Interpreter';
   SPaletteGlobusComponents1 = 'JVCL Globus Components 1';
   SPaletteGlobusComponents2 = 'JVCL Globus Components 2';
+  SPaletteValidators = 'Jv Validators';
+  SPaletteWizard = 'Jv Wizard';
 
   { for RegisterActions }
   srJVCLActions     = 'JVCL';

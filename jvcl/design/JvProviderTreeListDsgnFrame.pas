@@ -34,7 +34,11 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, ImgList, Menus, ActnList,
-  {$IFNDEF COMPILER6_UP} DsgnIntf, {$ELSE} DesignIntf, DesignEditors, {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   JvDataProvider, JvProviderTreeListFrame, JvDsgnTypes;
 
 type
@@ -88,22 +92,22 @@ type
 implementation
 
 uses
-  Commctrl,
+  CommCtrl,
   JvTypes, JvDsgnConsts, JvConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 function TfmeJvProviderTreeListDsgn.DoBeforeNew(Kind: Integer): Boolean;
 begin
   Result := True;
-  if @FBeforeNewItem <> nil then
-    BeforeNewItem(Self, Kind, Result);
+  if Assigned(FBeforeNewItem) then
+    FBeforeNewItem(Self, Kind, Result);
 end;
 
 procedure TfmeJvProviderTreeListDsgn.DoAfterNew(Item: IJvDataItem);
 begin
-  if @FAfterNewItem <> nil then
-    AfterNewItem(Self, Item);
+  if Assigned(FAfterNewItem) then
+    FAfterNewItem(Self, Item);
 end;
 
 procedure TfmeJvProviderTreeListDsgn.UpdateActionStates;
@@ -132,20 +136,16 @@ begin
   begin
     Item := GetDataItem(lvProvider.Selected.Index);
     if (Item <> nil) and Supports(Item, IJvDataItems, Items) then
-    begin
       if Supports(Items, IJvDataItemsManagement, Man) then
         Supports(Items, IJvDataItemsDesigner, Dsgn);
-    end;
-    if (Item <> nil) then
+    if Item <> nil then
       Item.GetItems.QueryInterface(IJvDataItemsManagement, ParentMan);
   end
   else
   begin
     if Supports(Provider.ProviderIntf, IJvDataItems, Items) then
-    begin
       if Supports(Items, IJvDataItemsManagement, Man) then
         Supports(Items, IJvDataItemsDesigner, Dsgn);
-    end;
   end;
 
   // Update action states
@@ -195,7 +195,8 @@ begin
         Exit;
       Item := Dsgn.NewByKind(TMenuItem(Sender).Tag);
     end
-    else if Supports(Items, IJvDataItemsManagement, Mangr) then
+    else
+    if Supports(Items, IJvDataItemsManagement, Mangr) then
     begin
       if not DoBeforeNew(-1) then
         Exit;
@@ -302,7 +303,6 @@ end;
 procedure TfmeJvProviderTreeListDsgn.alDesignUpdate(Action: TBasicAction;
   var Handled: Boolean);
 begin
-  inherited;
   if Action = aiAddItem then
     UpdateActionStates;
 end;
@@ -310,7 +310,6 @@ end;
 procedure TfmeJvProviderTreeListDsgn.lvProviderEditing(Sender: TObject;
   Item: TListItem; var AllowEdit: Boolean);
 begin
-  inherited;
   AllowEdit := aiRename.Enabled and aiRename.Visible;
 end;
 

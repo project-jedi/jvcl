@@ -112,7 +112,7 @@ uses
   Consts, Buttons,
   JvConsts, JvDsgnTypes;
 
-{$R *.DFM}
+{$R *.dfm}
 
 {$D-}
 

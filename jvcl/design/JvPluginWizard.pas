@@ -28,7 +28,7 @@ Known Issues:
  Todo : I don't know why but IDE does not not navigate correctly here...
  Todo : Creates code with #10#13 instead of the other way ound (#13#10 is correct)
 
- Versionhistory :
+ History:
 
  V 09 : inserted TYPE-decaration, IDE navigation works now
         rewrote ProjectCreate (100 times), seems to work now except a AV when
@@ -150,15 +150,16 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  JclFileUtils,
   JvPlugin, JvPluginParamsForm, JvDsgnConsts;
 
 {$R ..\resources\JvPluginWiz.res}
 
 const
-  CRLF = sLineBreak;
+  CrLf = sLineBreak;
+  CrLf2 = CrLf + CrLf;
   cPlgPrefix = 'Plg';
   cPluginPrefix = 'Plugin';
-  cDirSep = '\';
 
 (* make Delphi 5 compiler happy // andreas
 function GetFormEditorFromModule(
@@ -265,9 +266,9 @@ function TJvPluginProjectCreator.GetFileName: string;
 begin
   { 0 = dll; 1 = dpk }
   if PlugType = 0 then
-    Result := GetCurrentDir + cDirSep + cPlgPrefix + PlugName + '.dpr'
+    Result := GetCurrentDir + PathSeparator + cPlgPrefix + PlugName + '.dpr'
   else
-    Result := GetCurrentDir + cDirSep + cPlgPrefix + PlugName + '.dpk';
+    Result := GetCurrentDir + PathSeparator + cPlgPrefix + PlugName + '.dpk';
 end;
 
 function TJvPluginProjectCreator.GetOptionFileName: string;
@@ -312,32 +313,34 @@ var
 begin
   { 0 = dll; 1 = dpk }
   if PlugType = 0 then
-    S := 'library ' + ProjectName + ';' + CRLF +
-      CRLF +
-      'uses' + CRLF +
-      '  ShareMem;' + CRLF +
-      CRLF +
-      'exports' + CRLF +
-      '  RegisterPlugin;' + CRLF +
-      CRLF +
-      'begin' + CRLF +
+    S := 'library ' + ProjectName + ';' + CrLf +
+      CrLf +
+      'uses' + CrLf +
+      '  ShareMem;' + CrLf +
+      CrLf +
+      'exports' + CrLf +
+      '  RegisterPlugin;' + CrLf +
+      CrLf +
+      'begin' + CrLf +
       'end.'
   else // Package-Library
-    S := 'package ' + ProjectName + ';' + CRLF + CRLF +
-      '{$DESCRIPTION ''JEDI Plugin Package''}' + CRLF +
-      '{$RUNONLY}' + CRLF +
-      '{$IMPLICITBUILD ON}' + CRLF + CRLF +
-      'requires' + CRLF +
+    S := 'package ' + ProjectName + ';' + CrLf2 +
+
+      '{$DESCRIPTION ''JEDI Plugin Package''}' + CrLf +
+      '{$RUNONLY}' + CrLf +
+      '{$IMPLICITBUILD ON}' + CrLf2 +
+
+      'requires' + CrLf +
       {$IFDEF COMPILER5}
-      '  vcl50,' + CRLF + '  JvCoreD5R;' +
+      '  vcl50,' + CrLf + '  JvCoreD5R;' + CrLf2 +
       {$ENDIF COMPILER5}
       {$IFDEF COMPILER6}
-      '  vcl,' + CRLF + '  JvCoreD6R;' +
+      '  vcl,' + CrLf + '  JvCoreD6R;' + CrLf2 +
       {$ENDIF COMPILER6}
       {$IFDEF COMPILER7}
-      '  vcl,' + CRLF + '  JvCoreD7R;' +
+      '  vcl,' + CrLf + '  JvCoreD7R;' + CrLf2 +
       {$ENDIF COMPILER7}
-      CRLF + CRLF + 'end.';
+      'end.';
 
   Result := TJvOTAFile.Create(S);
 end;
@@ -544,7 +547,7 @@ end;
 
 function TJvPluginModuleCreator.GetFormName: string;
 begin
-  Result := 'Plugin' + PlugName;
+  Result := cPluginPrefix + PlugName;
 end;
 
 {*****************************************************************************
@@ -566,7 +569,7 @@ end;
 
 function TJvPluginModuleCreator.GetImplFileName: string;
 begin
-  Result := GetCurrentDir + cDirSep + cPluginPrefix + PlugName + '.pas'
+  Result := GetCurrentDir + PathSeparator + cPluginPrefix + PlugName + '.pas'
 end;
 
 {*****************************************************************************
@@ -799,43 +802,43 @@ begin
   TypeName := PlugName;
 
   Source :=
-    'unit ' + ModuleIdent + ';' + CRLF + CRLF +
+    'unit ' + ModuleIdent + ';' + CrLf2 +
 
-    'interface' + CRLF + CRLF +
+    'interface' + CrLf2 +
 
     // (rom) fixed missing "," after "Controls"
-    'uses' + CRLF +
-    '  Windows, Messages, SysUtils, Classes, Dialogs, Forms,' + CRLF +
-    '  Controls,' + CRLF +
-    '  JvPlugin;' + CRLF + CRLF +
+    'uses' + CrLf +
+    '  Windows, Messages, SysUtils, Classes, Dialogs, Forms,' + CrLf +
+    '  Controls,' + CrLf +
+    '  JvPlugin;' + CrLf2 +
 
-    'type' + CRLF +
-    '  ' + ClassNameOfPlugin + ' = class(T' + Ancestor + ')' + CRLF +
-    //    '  T' + TypeName + ' = class(T' + Ancestor + ')' + CRLF +
-    '  private' + CRLF +
-    '    ' + SPrivateDeclarations + CRLF +
-    '  public' + CRLF +
-    '    ' + SPublicDeclarations + CRLF +
-    '  end;' + CRLF + CRLF +
+    'type' + CrLf +
+    '  ' + ClassNameOfPlugin + ' = class(T' + Ancestor + ')' + CrLf +
+    //    '  T' + TypeName + ' = class(T' + Ancestor + ')' + CrLf +
+    '  private' + CrLf +
+    '    ' + SPrivateDeclarations + CrLf +
+    '  public' + CrLf +
+    '    ' + SPublicDeclarations + CrLf +
+    '  end;' + CrLf2 +
 
-    //  'function RegisterPlugin: T' + TypeName + '; stdcall;' + CRLF + CRLF;
-    'function RegisterPlugin: TJvPlugin; stdcall;' + CRLF + CRLF;
+    //  'function RegisterPlugin: T' + TypeName + '; stdcall;' + CrLf2;
+    'function RegisterPlugin: TJvPlugin; stdcall;' + CrLf2;
 
   { 0 = dll; 1 = dpk }
   if PlugType <> 0 then
-    Source := Source + 'exports RegisterPlugin;' + CRLF + CRLF;
+    Source := Source + 'exports RegisterPlugin;' + CrLf2;
 
   Source := Source +
-    'implementation' + CRLF + CRLF +
+    'implementation' + CrLf2 +
 
-    '{$R *.DFM}' + CRLF + CRLF +
+    '{$R *.dfm}' + CrLf2 +
 
-  SIMPORTANTNOTEIfYouChangeTheNameOfTh + sLineBreak +
-    'function RegisterPlugin: TJvPlugin;' + CRLF + CRLF +
-    'begin' + CRLF +
-    '  Result := ' + ClassNameOfPlugin + '.Create(nil);' + CRLF +
+  SIMPORTANTNOTEIfYouChangeTheNameOfTh + CrLf +
+    'function RegisterPlugin: TJvPlugin;' + CrLf +
+    'begin' + CrLf +
+    '  Result := ' + ClassNameOfPlugin + '.Create(nil);' + CrLf +
     //    '  Result := T' + TypeName + '.Create(nil);' + CrLf +
-    'end;' + CRLF + CRLF +
+    'end;' + CrLf2 +
 
     'end.';
 

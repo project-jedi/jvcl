@@ -35,7 +35,7 @@ uses
   SysUtils, Classes, ActnList, ImgList,
   {$IFNDEF COMPILER6_UP}
   Forms,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Controls;
 
 type

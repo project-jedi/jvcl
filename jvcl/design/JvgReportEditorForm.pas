@@ -266,7 +266,7 @@ implementation
 uses
   JvgTypes, JvgUtils, JvgAlignFunction, JvgAlignForm, JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 const
   IGNORE_VALUE = 65536;
@@ -469,7 +469,7 @@ begin
   //if TControl(Sender).Tag = 0 then Exit;
 {  DrawFocusRect( TControl(Sender).Parent.Handle, FocusRect );
   R := Rect( 0, 0, Screen.Width, Screen.Height );
-  ClipCursor( @R );
+  ClipCursor(@R);
   TControl(Sender).Left := TControl(Sender).Left + X - FControlPos.X;
   TControl(Sender).Top := TControl(Sender).Top + Y - FControlPos.Y;
   if TControl(Sender).Tag = 2 then//...was moved

@@ -66,7 +66,7 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TJvgCompEditorTemplate.FormShow(Sender: TObject);
 begin

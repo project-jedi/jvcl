@@ -98,7 +98,7 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 // (rom) needs explanation
 {$D-}
@@ -136,7 +136,7 @@ begin
     end;
     CheckList.Items := TStrings(GetOrdValue);
     if ShowModal = mrOk then
-      SetOrdValue(LongInt(CheckList.Items));
+      SetOrdValue(Longint(CheckList.Items));
   finally
     Free;
   end;

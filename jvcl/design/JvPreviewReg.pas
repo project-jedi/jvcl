@@ -59,14 +59,6 @@ uses
 type
   TJvHackCustomPreviewer = class(TJvCustomPreviewRenderer);
 
-procedure Register;
-begin
-  RegisterComponents(SPalettePrintPreview, [TJvPreviewControl,
-    TJvPreviewRenderRichEdit, TJvPreviewRenderStrings,
-    TJvPreviewRenderGraphics, TJvPreviewRenderControl, TJvPreviewPrinter]);
-  RegisterComponentEditor(TJvCustomPreviewRenderer, TJvPreviewerEditor);
-end;
-
 procedure TJvPreviewerEditor.ExecuteVerb(Index: Integer);
 var
   Pv: TJvCustomPreviewControl;
@@ -96,6 +88,14 @@ end;
 function TJvPreviewerEditor.GetVerbCount: Integer;
 begin
   Result := 2;
+end;
+
+procedure Register;
+begin
+  RegisterComponents(SPalettePrintPreview, [TJvPreviewControl,
+    TJvPreviewRenderRichEdit, TJvPreviewRenderStrings,
+    TJvPreviewRenderGraphics, TJvPreviewRenderControl, TJvPreviewPrinter]);
+  RegisterComponentEditor(TJvCustomPreviewRenderer, TJvPreviewerEditor);
 end;
 
 end.

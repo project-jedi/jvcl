@@ -36,8 +36,8 @@ uses
   DesignIntf, DesignEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
-  JVBaseDsgnForm, JvSegmentedLEDDisplayMapperFrame, JvSegmentedLEDDisplay,
+  {$ENDIF COMPILER6_UP}
+  JvBaseDsgnForm, JvSegmentedLEDDisplayMapperFrame, JvSegmentedLEDDisplay,
   JvBaseDsgnFrame, JvDsgnTypes;
 
 type
@@ -82,7 +82,7 @@ uses
   Registry,
   JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 const
   cLastOpenFolder = 'LastOpenFolder';

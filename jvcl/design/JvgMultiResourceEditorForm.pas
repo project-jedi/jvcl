@@ -70,7 +70,7 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 function TJvgResourcesProperty.GetAttributes: TPropertyAttributes;
 begin

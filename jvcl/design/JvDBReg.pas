@@ -47,7 +47,7 @@ uses
   JvCsvData, JvDBCombobox, JvDBControls, JvDBRadioPanel, JvDBEditors,
   {$IFDEF JV_MIDAS}
   JvDBRemoteLogin,
-  {$ENDIF}
+  {$ENDIF JV_MIDAS}
   JvDBMemDatasetEditor, JvDBLookupComboEdit;
 
 {$R ..\resources\JvDBReg.dcr}

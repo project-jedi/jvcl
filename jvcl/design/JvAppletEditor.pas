@@ -32,10 +32,10 @@ interface
 
 uses
   Windows, Classes, Controls, Forms, Dialogs,
-  {$IFNDEF COMPILER6_UP}
-  DsgnIntf;
-  {$ELSE}
+  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors;
+  {$ELSE}
+  DsgnIntf;
   {$ENDIF COMPILER6_UP}
 
 type
@@ -58,7 +58,8 @@ implementation
 
 uses
   SysUtils,
-  JvWinDialogs, JclSysInfo, JvJCLUtils, JvJVCLUtils;
+  JclSysInfo,
+  JvWinDialogs, JvJCLUtils, JvJVCLUtils;
 
 var
   FApplets: TStringList = nil;

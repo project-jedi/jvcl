@@ -78,7 +78,7 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 {procedure SetEnabledState(WC: TWinControl; State: Boolean);
 var

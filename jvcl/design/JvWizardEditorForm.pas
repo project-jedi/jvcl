@@ -148,7 +148,7 @@ implementation
 uses
   JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure ShowWizardPageListEditor(Designer: IDesigner; AWizard: TJvWizard);
 var
@@ -565,8 +565,8 @@ begin
   end;
 end;
 
-procedure TJvWizardPageListEditor.actWizardPagesUpdate(
-  Action: TBasicAction; var Handled: Boolean);
+procedure TJvWizardPageListEditor.actWizardPagesUpdate(Action: TBasicAction;
+  var Handled: Boolean);
 begin
   acMoveUp.Enabled := lbxWizardPages.ItemIndex > 0;
   acMoveDown.Enabled :=

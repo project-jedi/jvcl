@@ -113,7 +113,7 @@ implementation
 uses
   JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 const
   cLocalColor = $E0E0E0;

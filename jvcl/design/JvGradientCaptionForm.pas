@@ -110,7 +110,7 @@ implementation
 uses
   JvJVCLUtils, JvBoxProcs, JvConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 function EditGradientCaption(Component: TJvGradientCaption;
   ADesigner: IDesigner): Boolean;

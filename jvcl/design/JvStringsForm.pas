@@ -68,9 +68,10 @@ type
 implementation
 
 uses
-  SysUtils, LibHelp, JvDsgnConsts;
+  SysUtils, LibHelp,
+  JvDsgnConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TJvStrEditDlg.FileOpen(Sender: TObject);
 begin

@@ -23,19 +23,21 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
 
 unit JvPerfStatEditor;
 
 interface
+
 uses
   Windows, SysUtils, Classes, Dlgs, Dialogs,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvPerfMon95;
 
 type
@@ -46,8 +48,6 @@ type
   end;
 
 implementation
-
-//=== TJvPerfStatProperty ====================================================
 
 function TJvPerfStatProperty.GetAttributes: TPropertyAttributes;
 begin

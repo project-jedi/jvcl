@@ -33,8 +33,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvBaseDsgnToolbarFrame, ComCtrls, ActnList, Menus, ImgList, ToolWin,
-  ExtCtrls;
+  ComCtrls, ActnList, Menus, ImgList, ToolWin, ExtCtrls,
+  JvBaseDsgnToolbarFrame;
 
 type
   TfmeJvStdToolbarDesign = class(TfmeJvBaseToolbarDesign)
@@ -50,16 +50,11 @@ type
     tbMoveUp: TToolButton;
     tbMoveDown: TToolButton;
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
-
-var
-  fmeJvStdToolbarDesign: TfmeJvStdToolbarDesign;
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 end.

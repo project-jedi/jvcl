@@ -79,7 +79,6 @@ uses
 //=== TJvTFGridLayoutCategory ================================================
 
 {$IFDEF COMPILER5}
-
 class function TJvTFGridLayoutCategory.Name: string;
 begin
   Result := SGridLayout;
@@ -89,7 +88,6 @@ end;
 //=== TJvTFCustomDrawCategory ================================================
 
 {$IFDEF COMPILER5}
-
 class function TJvTFCustomDrawCategory.Name: string;
 begin
   Result := SCustomDraw;
@@ -105,10 +103,10 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteTimeFramework, [TJvTFScheduleManager, TJvTFUniversalPrinter]);
+  RegisterComponents(SPaletteTimeFramework, [TJvTFScheduleManager,
+    TJvTFUniversalPrinter]);
 //  RegisterPropertyEditor(TypeInfo(string), TJvTFControl, 'Version', TutfVersionEditor);
 //  RegisterPropertyEditor(TypeInfo(string), TJvTFScheduleManager, 'Version', TutfVersionEditor);
-
   RegisterComponents(SPaletteTimeFramework, [TJvTFGlanceTextViewer, TJvTFMonths,
     TJvTFWeeks, TJvTFAlarm]);
 //  RegisterPropertyEditor(TypeInfo(TJvTFGlanceCells), '', 'Cells',
@@ -116,7 +114,7 @@ begin
 
   // register a nil property editor for now, so cells cannot be added,
   // deleted, or moved at design time... BAD THINGS HAPPEN
-  RegisterPropertyEditor(typeinfo(TJvTFGlanceCells), TJvTFMonths, 'Cells', nil);
+  RegisterPropertyEditor(TypeInfo(TJvTFGlanceCells), TJvTFMonths, 'Cells', nil);
   RegisterComponents(SPaletteTimeFramework, [TJvTFDays, TJvTFDaysPrinter]);
   {$IFDEF COMPILER5}
   RegisterPropertiesInCategory(TVisualCategory, ['StateImages', 'CustomImages',
@@ -141,10 +139,10 @@ begin
     'Options']);
   RegisterPropertiesInCategory(TDragNDropCategory, ['GrabHandles', 'Options']);
   RegisterPropertiesInCategory(TJvTFGridLayoutCategory, ['OnDateChanged',
-    'OnDateChanging', 'OnDeleteAppt', 'OnDeleteSchedule', 'OnGranularityChanged',
-    'OnGranularityChanging', 'OnInsertAppt', 'OnInsertSchedule', 'OnMoveCol',
-    'OnSizeCol', 'OnSizeColHdr', 'OnSizeRow', 'OnSizeRowHdr',
-    'OnFocusedColChanged', 'OnFocusedRowChanged']);
+    'OnDateChanging', 'OnDeleteAppt', 'OnDeleteSchedule',
+    'OnGranularityChanged', 'OnGranularityChanging', 'OnInsertAppt',
+    'OnInsertSchedule', 'OnMoveCol', 'OnSizeCol', 'OnSizeColHdr', 'OnSizeRow',
+    'OnSizeRowHdr', 'OnFocusedColChanged', 'OnFocusedRowChanged']);
   RegisterPropertiesInCategory(TInputCategory, ['OnDeleteAppt',
     'OnDeleteSchedule', 'OnFailEditor', 'OnInsertAppt', 'OnInsertSchedule',
     'OnQuickEntry', 'OnFocusedColChanged', 'OnFocusedRowChanged',

@@ -11,8 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvProviderToolbarFrame.pas, released on --.
 
 The Initial Developer of the Original Code is Marcel Bestebroer
-Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
-Bestebroer
+Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel Bestebroer
 All Rights Reserved.
 
 Contributor(s):
@@ -33,8 +32,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvStdToolbarDsgnFrame, StdCtrls, ActnList, Menus, ImgList, ComCtrls,
-  ToolWin, ExtCtrls;
+  StdCtrls, ActnList, Menus, ImgList, ComCtrls, ToolWin, ExtCtrls,
+  JvStdToolbarDsgnFrame;
 
 type
   TfmeJvProviderToolbar = class(TfmeJvStdToolbarDesign)
@@ -43,17 +42,14 @@ type
     cbContexts: TComboBox;
     procedure tbrToolbarResize(Sender: TObject);
     procedure pnlContextsResize(Sender: TObject);
-  private
-    { Private declarations }
   protected
     procedure ResizeContextsComboBox; dynamic;
   public
-    { Public declarations }
   end;
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TfmeJvProviderToolbar.ResizeContextsComboBox;
 begin
@@ -63,13 +59,11 @@ end;
 
 procedure TfmeJvProviderToolbar.tbrToolbarResize(Sender: TObject);
 begin
-  inherited;
   ResizeContextsComboBox;
 end;
 
 procedure TfmeJvProviderToolbar.pnlContextsResize(Sender: TObject);
 begin
-  inherited;
   cbContexts.Top := (pnlContexts.ClientHeight - cbContexts.Height) div 2;
 end;
 

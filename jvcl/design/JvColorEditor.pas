@@ -56,6 +56,7 @@ function JvIdentToColor(const Ident: string; var Color: Longint): Boolean;
 function JvColorToString(Color: TColor): string;
 function JvStringToColor(S: string): TColor;
 procedure JvGetColorValues(Proc: TGetStrProc);
+function JvColorToBorderColor(AColor: TColor; ASelected: Boolean): TColor;
 
 implementation
 
@@ -121,6 +122,31 @@ begin
     Proc(StrPas(Colors[I].Name));
 end;
 
+function JvColorToBorderColor(AColor: TColor; ASelected: Boolean): TColor;
+const
+  cBlackLevel = 192;
+type
+  TColorQuad = record
+    Red: Byte;
+    Green: Byte;
+    Blue: Byte;
+    Alpha: Byte;
+  end;
+begin
+  // (rom) > or >= ?
+  if (TColorQuad(AColor).Red > cBlackLevel) or
+    (TColorQuad(AColor).Green > cBlackLevel) or
+    (TColorQuad(AColor).Blue > cBlackLevel) then
+    Result := clBlack
+  else
+  if ASelected then
+    Result := clWhite
+  else
+    Result := AColor;
+end;
+
+// === TJvColorProperty ======================================================
+
 function TJvColorProperty.GetValue: string;
 var
   Color: TColor;
@@ -133,8 +159,6 @@ begin
       Color := clInfoBk;
   Result := JvColorToString(Color);
 end;
-
-// === TJvColorProperty ======================================================
 
 procedure TJvColorProperty.GetValues(Proc: TGetStrProc);
 begin
@@ -151,29 +175,6 @@ procedure TJvColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
 var
   Rght: Integer;
   OldPenColor, OldBrushColor: TColor;
-
-  function ColorToBorderColor(AColor: TColor): TColor;
-  const
-    cBlackLevel = 192;
-  type
-    TColorQuad = record
-      Red: Byte;
-      Green: Byte;
-      Blue: Byte;
-      Alpha: Byte;
-    end;
-  begin
-    // (rom) > or >= ?
-    if (TColorQuad(AColor).Red > cBlackLevel) or (TColorQuad(AColor).Green > cBlackLevel) or
-      (TColorQuad(AColor).Blue > cBlackLevel) then
-      Result := clBlack
-    else
-    if ASelected then
-      Result := clWhite
-    else
-      Result := AColor;
-  end;
-
 begin
   Rght := (ARect.Bottom - ARect.Top) + ARect.Left;
   with ACanvas do
@@ -183,7 +184,7 @@ begin
     Pen.Color := Brush.Color;
     Rectangle(ARect.Left, ARect.Top, Rght, ARect.Bottom);
     Brush.Color := JvStringToColor(Value);
-    Pen.Color := ColorToBorderColor(ColorToRGB(Brush.Color));
+    Pen.Color := JvColorToBorderColor(ColorToRGB(Brush.Color), ASelected);
     Rectangle(ARect.Left + 1, ARect.Top + 1, Rght - 1, ARect.Bottom - 1);
     Brush.Color := OldBrushColor;
     Pen.Color := OldPenColor;

@@ -32,12 +32,12 @@ interface
 {$IFNDEF DelphiPersonalEdition}
 
 uses
-  SysUtils, Classes, Controls, Forms, DB, StdCtrls,
+  Windows, SysUtils, Classes, Controls, Forms, DB, StdCtrls,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvDsgnTypes;
 
 type
@@ -65,11 +65,10 @@ implementation
 
 uses
   TypInfo,
-  DsnDbCst,
-  DSDesign,
+  DsnDbCst, DSDesign,
   JvJVCLUtils, JvConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 function SelectDataSet(ADesigner: IJvFormDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
 begin
@@ -88,13 +87,12 @@ begin
           Result := FDesigner.GetComponent(Items[ItemIndex]) as TDataSet;
           {$ELSE}
           Result := FDesigner.Form.FindComponent(Items[ItemIndex]) as TDataSet;
-          {$ENDIF}
+          {$ENDIF COMPILER6_UP}
       end;
   finally
     Free;
   end;
 end;
-
 
 //=== TJvSelectDataSetForm ===================================================
 
@@ -109,7 +107,7 @@ procedure TJvSelectDataSetForm.FillDataSetList(ExcludeDataSet: TDataSet);
 var
   I: Integer;
   Component: TComponent;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 begin
   DataSetList.Items.BeginUpdate;
   try
@@ -126,7 +124,7 @@ begin
       if (Component is TDataSet) and (Component <> ExcludeDataSet) then
         AddDataSet(Component.Name);
     end;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     with DataSetList do
     begin
       if Items.Count > 0 then
@@ -148,11 +146,11 @@ end;
 procedure TJvSelectDataSetForm.DataSetListKeyPress(Sender: TObject;
   var Key: Char);
 begin
-  if (Key = #13) and (DataSetList.ItemIndex >= 0) then
+  if (Ord(Key) = VK_RETURN) and (DataSetList.ItemIndex >= 0) then
     ModalResult := mrOk;
 end;
 
-{$ENDIF}
+{$ENDIF DelphiPersonalEdition}
 
 end.
 

@@ -42,7 +42,7 @@ uses
   DesignEditors, DesignIntf;
   {$ELSE}
   DsgnIntf;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
 type
   TJvTreeItemsProperty = class(TClassProperty)
@@ -313,6 +313,7 @@ var
   il: TCustomImageList;
   i: Integer;
 begin
+  // keep in mind that Self is class here not object
   f := Self.Create(Application);
   try
     f.FTreeView := TreeView;

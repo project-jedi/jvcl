@@ -50,21 +50,21 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-
 implementation
 
 uses
   ColnEdit, Controls,
-  JclSchedule, JvConsts, JvDsgnConsts;
+  JclSchedule,
+  JvConsts, JvDsgnConsts;
 
 
-//=== TJvSchedulePropertyEditor ================================================
+//=== TJvSchedulePropertyEditor ==============================================
 
 procedure TJvSchedulePropertyEditor.Edit;
 begin
   with TfrmScheduleEditor.Create(nil) do
   try
-    Schedule := IJclSchedule({TEventSchedule(}GetOrdValue){.Schedule};
+    Schedule := IJclSchedule({TEventSchedule(} GetOrdValue) {.Schedule};
     if ShowModal = mrOk then
       Self.Modified;
   finally
@@ -82,7 +82,7 @@ begin
   Result := '(IJclSchedule)';
 end;
 
-//=== TJvSchedEventComponentEditor =============================================
+//=== TJvSchedEventComponentEditor ===========================================
 
 procedure TJvSchedEventComponentEditor.ExecuteVerb(Index: Integer);
 begin

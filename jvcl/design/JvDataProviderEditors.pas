@@ -61,10 +61,10 @@ type
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
-    {$IFNDEF COMPILER6_UP}
-    procedure PrepareItem(Index: Integer; const AItem: TMenuItem); override;
-    {$ELSE}
+    {$IFDEF COMPILER6_UP}
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
+    {$ELSE}
+    procedure PrepareItem(Index: Integer; const AItem: TMenuItem); override;
     {$ENDIF COMPILER6_UP}
   end;
 
@@ -200,7 +200,9 @@ begin
   Svc := GetConsumerServiceAt(Index);
   if Svc <> nil then
   begin
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
+    Svc.Provider := Value;
+    {$ELSE}
     if Value <> nil then
     begin
       if not Supports(Value, IInterfaceComponentReference, CompRef) then
@@ -210,8 +212,6 @@ begin
     else
       ProvComp := nil;
     Svc.Provider := ProvComp;
-    {$ELSE}
-    Svc.Provider := Value;
     {$ENDIF COMPILER6_UP}
     Modified;
   end;
@@ -527,10 +527,10 @@ begin
   Result := 2;
 end;
 
-{$IFNDEF COMPILER6_UP}
-procedure TJvProviderEditor.PrepareItem(Index: Integer; const AItem: TMenuItem);
-{$ELSE}
+{$IFDEF COMPILER6_UP}
 procedure TJvProviderEditor.PrepareItem(Index: Integer; const AItem: IMenuItem);
+{$ELSE}
+procedure TJvProviderEditor.PrepareItem(Index: Integer; const AItem: TMenuItem);
 {$ENDIF COMPILER6_UP}
 begin
   case Index of

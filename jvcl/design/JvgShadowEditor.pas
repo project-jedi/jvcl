@@ -38,7 +38,7 @@ uses
   DesignIntf, DesignWindows, DesignEditors;
   {$ELSE}
   DsgnIntf;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
 type
   TJvgShadowEditor = class(TComponentEditor)
