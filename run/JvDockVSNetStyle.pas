@@ -313,7 +313,7 @@ type
   public
     // Can't put 'override' this one because signature is different!
     // But it MUST have DockStyle in the constructor now! -Wpostma!
-    constructor Create(AOwner: TComponent); override; 
+    constructor Create(AOwner: TComponent); override;
 
     procedure ShowDockPanel(MakeVisible: Boolean; Client: TControl;
       PanelSizeFrom: TJvDockSetDockPanelSizeFrom); override;
@@ -321,7 +321,10 @@ type
     property VSChannel: TJvDockVSChannel read GetVSChannel;
     { Owner }
     property VSNETDockPanel: TJvDockVSNETPanel read FVSNETDockPanel {write SetVSNETDockPanel};
-    { Dock Style }
+    { (rb) don't know why this property is necessary; DockStyle is accessible via
+           DockServer.DockStyle; what happens if the DockStyle of the server is
+           changed at run-time?
+    }
     property DockStyle: TComponent read FDockStyle write FDockStyle; {Actually of type TJvDockBasicStyle }
   end;
 
@@ -1460,7 +1463,11 @@ begin
   if (Pane <> nil) and (ActiveDockForm <> Pane.FDockForm) then
   begin
     HidePopupPanel(FActivePane);
-    Pane.FDockForm.Visible := True;
+    { !! Setting visible to true here is too early and causes Align problems.
+         Visibility is anyway set by FVSPopupPanel.JvDockManager.ShowSingleControl
+         call.
+    }
+    //    Pane.FDockForm.Visible := True;
     PopupPanelAnimate.PopupForm(Self, Pane.FWidth);
     if (Pane.FDockForm <> nil) and (Pane.FDockForm.HostDockSite.Parent is TJvDockTabHostForm) then
     begin
