@@ -68,6 +68,60 @@ object MailExampleMainForm: TMailExampleMainForm
     Caption = '&CC:'
     FocusControl = CcEdit
   end
+  object ClientsListView: TListView
+    Left = 104
+    Top = 335
+    Width = 450
+    Height = 89
+    Anchors = [akLeft, akRight, akBottom]
+    Columns = <
+      item
+        Caption = 'KeyValue'
+        Width = 80
+      end
+      item
+        Caption = 'Client'
+        Width = 80
+      end
+      item
+        Caption = 'Path'
+        Width = 240
+      end>
+    ColumnClick = False
+    HideSelection = False
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 9
+    ViewStyle = vsReport
+    OnCustomDrawItem = ClientsListViewCustomDrawItem
+    OnSelectItem = ClientsListViewSelectItem
+  end
+  object DownloadsListView: TListView
+    Left = 104
+    Top = 335
+    Width = 450
+    Height = 89
+    Anchors = [akLeft, akRight, akBottom]
+    Columns = <
+      item
+        Caption = 'Subject'
+        Width = 300
+      end
+      item
+        Caption = 'From'
+        Width = 80
+      end
+      item
+        Caption = 'Date'
+        Width = 240
+      end>
+    ColumnClick = False
+    HideSelection = False
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 10
+    ViewStyle = vsReport
+  end
   object ClientTypeGroupBox: TGroupBox
     Left = 8
     Top = 331
@@ -75,7 +129,7 @@ object MailExampleMainForm: TMailExampleMainForm
     Height = 93
     Anchors = [akLeft, akBottom]
     Caption = '&Client type'
-    TabOrder = 5
+    TabOrder = 8
     object AutomaticRadioBtn: TRadioButton
       Left = 8
       Top = 16
@@ -105,34 +159,6 @@ object MailExampleMainForm: TMailExampleMainForm
       TabOrder = 2
       OnClick = AutomaticRadioBtnClick
     end
-  end
-  object ClientsListView: TListView
-    Left = 104
-    Top = 335
-    Width = 450
-    Height = 89
-    Anchors = [akLeft, akRight, akBottom]
-    Columns = <
-      item
-        Caption = 'KeyValue'
-        Width = 80
-      end
-      item
-        Caption = 'Client'
-        Width = 80
-      end
-      item
-        Caption = 'Path'
-        Width = 240
-      end>
-    ColumnClick = False
-    HideSelection = False
-    ReadOnly = True
-    RowSelect = True
-    TabOrder = 6
-    ViewStyle = vsReport
-    OnCustomDrawItem = ClientsListViewCustomDrawItem
-    OnSelectItem = ClientsListViewSelectItem
   end
   object ToEdit: TEdit
     Left = 48
@@ -167,7 +193,7 @@ object MailExampleMainForm: TMailExampleMainForm
     Height = 25
     Anchors = [akTop, akRight]
     Caption = '&Send'
-    TabOrder = 7
+    TabOrder = 6
     OnClick = SendBtnClick
   end
   object AttachmentMemo: TMemo
@@ -187,7 +213,7 @@ object MailExampleMainForm: TMailExampleMainForm
     Height = 25
     Anchors = [akTop, akRight]
     Caption = '&Attach'
-    TabOrder = 8
+    TabOrder = 7
     OnClick = AttachBtnClick
   end
   object CcEdit: TEdit
@@ -197,6 +223,16 @@ object MailExampleMainForm: TMailExampleMainForm
     Height = 21
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 1
+  end
+  object DownloadBtn: TButton
+    Left = 464
+    Top = 48
+    Width = 75
+    Height = 25
+    Anchors = [akTop, akRight]
+    Caption = 'Download'
+    TabOrder = 5
+    OnClick = DownloadBtnClick
   end
   object JvMail1: TJvMail
     BlindCopy = <>
