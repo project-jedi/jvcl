@@ -29,7 +29,7 @@ unit JvConsts;
 interface
 
 uses
-  SysUtils, Classes, Controls, Graphics, Windows;
+  SysUtils, Classes, Forms, Controls, Graphics, Windows;
 
 {$IFDEF VisualCLX}
 const
@@ -39,7 +39,17 @@ const
   clMedGray = TColor($A4A0A0);
 {$ENDIF VisualCLX}
 
+{$IFDEF VCL}
+  { (asn) added to simplify VCL code sharing = less IFDEF's }
 const
+  fbsDialog = bsDialog;
+  fbsSingle = bsSingle;
+  fbsNone	= bsNone;
+  fbsSizeable = bsSizeable;
+  fbsToolWindow = bsToolWindow;
+  fbsSizeToolWin = bsSizeToolWin;
+{$ENDIF VCL}
+
   { JvEditor }
   JvEditorCompletionChars = #8 + '0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
 
