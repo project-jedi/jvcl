@@ -8,7 +8,7 @@ echo. to use the Delphi 5 make).
 echo. Defaults to: make.exe (whatever that is on your system), always build.
 echo.
 rem pause
-SET JVCLMAKE=make.exe -B -f
+SET JVCLMAKE=make.exe -B -i -f 
 echo. Making all examples (get some coffee, this takes a while!):
 echo.
-%JVCLMAKE% makefile.mak
+%JVCLMAKE% makefile.mak 
