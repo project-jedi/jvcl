@@ -73,6 +73,7 @@ type
     FTag: Integer;
     FDown: Boolean;
     FEnabled: boolean;
+    FAutoToggle: Boolean;
     procedure SetCaption(const Value: TCaption);
     procedure SetImageIndex(const Value: TImageIndex);
     procedure SetDown(const Value: Boolean);
@@ -90,6 +91,7 @@ type
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
     property Tag: Integer read FTag write FTag;
     property Down: Boolean read FDown write SetDown default False;
+    property AutoToggle: Boolean read FAutoToggle write FAutoToggle;
     property Enabled: boolean read FEnabled write SetEnabled default True;
   end;
 
@@ -672,6 +674,7 @@ begin
     Caption := TJvOutlookBarButton(Source).Caption;
     ImageIndex := TJvOutlookBarButton(Source).ImageIndex;
     Down := TJvOutlookBarButton(Source).Down;
+    AutoToggle := TJvOutlookBarButton(Source).AutoToggle;
     Tag := TJvOutlookBarButton(Source).Tag;
     Enabled := TJvOutlookBarButton(Source).Enabled;
     Change;
@@ -1555,8 +1558,9 @@ begin
                   else
                     Canvas.Font.Color := clGrayText;
                 end;
+                InflateRect(R3, -4, 0);
                 DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
-                  DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP);
+                  DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP or DT_EDITCONTROL);
               finally
                 Canvas.Font.Color := SavedColor;
               end;
@@ -1943,7 +1947,12 @@ end;
 procedure TJvCustomOutlookBar.DoButtonClick(Index: Integer);
 begin
   if (Index > -1) and Assigned(FOnButtonClick) then
+  begin
+    with ActivePage.Buttons[Index] do
+      if AutoToggle then
+        Down := not Down;
     FOnButtonClick(Self, Index);
+  end;
 end;
 
 procedure TJvCustomOutlookBar.SetActivePageIndex(const Value: Integer);
