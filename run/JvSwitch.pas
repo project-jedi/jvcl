@@ -149,11 +149,7 @@ implementation
 uses
   JvVCLUtils;
 
-{$IFDEF WIN32}
-{$R *.Res}
-{$ELSE}
-{$R *.R16}
-{$ENDIF}
+{$R ..\resources\JvSwitch.res}
 
 const
   ResName: array [Boolean] of PChar = ('JV_SWITCH_OFF', 'JV_SWITCH_ON');

@@ -71,7 +71,7 @@ implementation
 uses
   Consts;
 
-{$R *.dfm}
+{$R *.DFM}
 
 { TfrmProgress }
 

@@ -80,11 +80,7 @@ uses
   {$ENDIF}
   JvxCtrls, JvxRConst, JvToolEdit, JvVCLUtils, JvStrUtils;
 
-{$IFDEF WIN32}
-{$R *.Res}
-{$ELSE}
-{$R *.R16}
-{$ENDIF}
+{$R ..\resources\JvPickDate.res}
 
 const
   SBtnGlyphs: array [0..3] of PChar =

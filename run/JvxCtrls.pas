@@ -956,11 +956,7 @@ function CheckBitmap: TBitmap;
 
 implementation
 
-{$IFDEF WIN32}
-{$R *.Res}
-{$ELSE}
-{$R *.R16}
-{$ENDIF}
+{$R ..\resources\JvxCtrls.res}
 
 uses
   SysUtils, Consts, Math,

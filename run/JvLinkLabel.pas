@@ -181,7 +181,7 @@ type
 
 implementation
 
-{$R *.res}
+{$R ..\resources\JvLinkLabel.res}
 
 const
   crNewLinkHand = 1;

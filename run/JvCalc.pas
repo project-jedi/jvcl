@@ -127,9 +127,9 @@ uses
   JvVCLUtils, JvStrUtils, JvToolEdit;
 
 {$IFDEF WIN32}
-{$R *.Res}
+{$R ..\resources\JvCalc.res}
 {$ELSE}
-{$R *.R16}
+{$R ..\resources\JvCalc.R16}
 {$ENDIF}
 
 const

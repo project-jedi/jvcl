@@ -277,7 +277,7 @@ uses
   {$ENDIF}
   JvFunctions;
 
-{$R *.res}
+{$R ..\resources\JvCtrls.res}
 
 resourcestring
   RsLBVirtualCantBeSorted = 'ListBox doesn''t allow sorting in virtual mode';

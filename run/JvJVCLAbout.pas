@@ -94,7 +94,7 @@ implementation
 uses
   JvFunctions;
 
-{$R *.dfm}
+{$R *.DFM}
 
 const
   cOptions = 'Options';
