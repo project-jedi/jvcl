@@ -16,10 +16,9 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-02-08
-
 Known Issues:
 ----------------------------------------------------------------------------}
+// $Id$
 
 unit QExtDlgs;
 

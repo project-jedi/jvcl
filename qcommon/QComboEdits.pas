@@ -17,8 +17,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-01-23
-
 The TCustomComboEdit and TCustomComboMaskEdit controls allow the usage of an
 edit rect and other client controls.
 
@@ -28,6 +26,7 @@ Usage:
 
 Known Issues:
 ----------------------------------------------------------------------------}
+// $Id$
 
 unit QComboEdits;
 interface
