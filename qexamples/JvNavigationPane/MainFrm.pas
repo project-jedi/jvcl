@@ -11,7 +11,7 @@ interface
 uses
   QWindows, QMessages, SysUtils, Classes, Types, QGraphics, QControls, QForms,
   QDialogs, QStdCtrls, JvQOutlookBar, QComCtrls, QCheckLst, JvQComponent,
-  JvQNavigationPane, QImgList, QMenus, JvQPageList, JclWin32, JvQExControls, QExtCtrls,
+  JvQNavigationPane, QImgList, QMenus, JvQPageList, {JclWin32,} JvQExControls, QExtCtrls,
   JvQExExtCtrls, QExtDlgs, QTypes, QMonthCalendar;
 
 type
@@ -68,8 +68,10 @@ var
   Form1: TForm1;
 
 implementation
+{$IFDEF VCL}
 uses
   CommCtrl;
+{$ENDIF VCL}
 
 {$R *.xfm}
 
