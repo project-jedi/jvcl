@@ -89,9 +89,15 @@ type
     destructor Destroy; override;
 
     function GetFilenames(List: TStrings): Integer;
+      // GetFilenames returns the HDROP Filenames. (same as TJvDragDrop).
+      // Returnvalue: number of filenames
+
     function GetFileDescrNames(List: TStrings): Integer;
+      // GetFileDescrNames returns the File Descriptor file names (not available for Explorer drag/drop)
     function GetFileDescrCount: Integer;
+      // GetFileDescrCount returns the number of File Descroptor file names.
     function GetFileContent(Index: Integer; Stream: TStream): Boolean;
+      // GetFileContent returns the file content of the File Descriptor
 
     property DataObject: IDataObject read FDataObject;
   published
@@ -371,6 +377,7 @@ constructor TJvDropTarget.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FAcceptDrag := True;
+  FStreamedAcceptDrag := True;
 
   InitFormatEtc;
 end;
