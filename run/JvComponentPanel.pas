@@ -119,12 +119,12 @@ type
 
 implementation
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 {$R ..\Resources\JvComponentPanel.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvComponentPanel.res}
-{$ENDIF LINUX}
+{$ENDIF VisualCLX}
 
 constructor TJvComponentPanel.Create(AOwner: TComponent);
 begin
