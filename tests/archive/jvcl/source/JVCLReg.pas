@@ -38,7 +38,8 @@ implementation
 {$R ..\resources\JVCLReg.dcr}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, Dlgs, ToolsApi,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  Dlgs, ToolsApi, ActnList, 
 
   JvDSADialogs,
   //About JVCL
@@ -631,10 +632,15 @@ begin
 
 end;
 
-  procedure RegExperts;
-  begin
-   RegisterLibraryExpert(TJvPluginWizard.Create);
-  end;
+procedure RegExperts;
+begin
+  RegisterLibraryExpert(TJvPluginWizard.Create);
+end;
+
+procedure RegActions;
+begin
+  RegisterActions('JVCL',[TJvSendMail, TJvWebAction],nil);
+end;
 
 procedure Register;
 begin
@@ -642,6 +648,7 @@ begin
   RegPropEds;
   RegCompEds;
   RegExperts;
+  RegActions;
   RegisterClass(TJvLookOutPage);
   RegisterClass(TJvFooterBtn);
 end;
