@@ -56,7 +56,7 @@ type
     property Directory: string read FDirectory write FDirectory;
     // ... or a special folder to start in
     property SpecialFolder: TJvSpecialFolder read FSpecial write FSpecial default sfMyComputer;
-    // set to True to sue SpecialFolder instead of Directory
+    // set to True to use SpecialFolder instead of Directory
     property UseSpecialFolder: Boolean read FUseSpecialFolder write FUseSpecialFolder;
   end;
 
@@ -107,8 +107,8 @@ begin
       Sei.lpFile := PChar(StartIn);
     Result := ShellExecuteEx(@Sei);
   finally
-    pMalloc._Release;
-    pMalloc := nil;
+    PMalloc._Release;
+    PMalloc := nil;
   end;
 end;
 

@@ -35,18 +35,17 @@ interface
 implementation
 
 uses
-  JvInterpreter_System, JvInterpreter_SysUtils, JvInterpreter_Classes, JvInterpreter_Graphics,
-  JvInterpreter_Controls, JvInterpreter_Dialogs,
+  JvInterpreter_System, JvInterpreter_SysUtils, JvInterpreter_Classes,
+  JvInterpreter_Graphics, JvInterpreter_Controls, JvInterpreter_Dialogs,
   {$IFDEF VCL}
   JvInterpreter_Windows,
-  JvInterpreter_StdCtrls, JvInterpreter_ComCtrls, JvInterpreter_ExtCtrls, JvInterpreter_Forms,
-  JvInterpreter_Menus, JvInterpreter_Grids,
+  JvInterpreter_StdCtrls, JvInterpreter_ComCtrls, JvInterpreter_ExtCtrls,
+  JvInterpreter_Forms, JvInterpreter_Menus, JvInterpreter_Grids,
   {$IFNDEF DelphiPersonalEdition}
-  JvInterpreter_Db, JvInterpreter_DBTables, JvInterpreter_DbCtrls, JvInterpreter_DbGrids,
-  JvInterpreter_Quickrpt,
+  JvInterpreter_Db, JvInterpreter_DBTables, JvInterpreter_DbCtrls,
+  JvInterpreter_DbGrids, JvInterpreter_Quickrpt,
   {$ENDIF}
-  JvInterpreter_JvEditor,
-  JvInterpreterFm,
+  JvInterpreter_JvEditor, JvInterpreterFm,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   JvInterpreter_Types,
@@ -79,7 +78,7 @@ initialization
   JvInterpreter_DbGrids.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
   JvInterpreter_Quickrpt.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
-  {$ENDIF}
+  {$ENDIF DelphiPersonalEdition}
 
   JvInterpreter_JvEditor.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 

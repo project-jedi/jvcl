@@ -98,8 +98,8 @@ procedure TJvTransparentPanel.Paint;
 begin
   if csDesigning in ComponentState then
     inherited Paint;
-      // would need to draw frame and optional caption here
-// do NOT call inherited, the control fills its client area if you do!
+    // would need to draw frame and optional caption here
+  // do NOT call inherited, the control fills its client area if you do!
 end;
 
 procedure TJvTransparentPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);

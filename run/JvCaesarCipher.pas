@@ -56,6 +56,9 @@ type
 
 implementation
 
+const
+  cBufferSize = 1024;
+
 function TJvCaesarCipher.CryptByte(Ch, N: Byte): Byte;
 var
   J: Integer;
@@ -64,7 +67,7 @@ begin
   if J < 0 then
     J := 256 - J
   else
-    if J > 256 then
+  if J > 256 then
     J := J - 256;
   Result := J;
 end;
@@ -111,13 +114,13 @@ end;
 
 function TJvCaesarCipher.DecodeStream(Value: TStream): TStream;
 var
-  Buffer: array [0..1024] of Byte;
+  Buffer: array [0..cBufferSize] of Byte;
   I, Count: Integer;
 begin
   Result := TMemoryStream.Create;
   while Value.Position < Value.Size do
   begin
-    Count := Value.Read(Buffer, 1024);
+    Count := Value.Read(Buffer, cBufferSize);
     for I := 0 to Count - 1 do
       Buffer[I] := CryptByte(Buffer[I], -Fn);
     Result.Write(Buffer, Count);
@@ -126,13 +129,13 @@ end;
 
 function TJvCaesarCipher.EncodeStream(Value: TStream): TStream;
 var
-  Buffer: array [0..1024] of Byte;
+  Buffer: array [0..cBufferSize] of Byte;
   I, Count: Integer;
 begin
   Result := TMemoryStream.Create;
   while Value.Position < Value.Size do
   begin
-    Count := Value.Read(Buffer, 1024);
+    Count := Value.Read(Buffer, cBufferSize);
     for I := 0 to Count - 1 do
       Buffer[I] := CryptByte(Buffer[I], Fn);
     Result.Write(Buffer, Count);

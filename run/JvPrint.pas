@@ -65,7 +65,7 @@ begin
   //let's print
   if Assigned(FOnBeginPrint) then
     FOnBeginPrint(Self);
-  line := 0;
+  Line := 0;
   Printer.BeginDoc;
   Pagenum := 1;
   for I := 0 to Value.Count - 1 do

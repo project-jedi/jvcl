@@ -96,7 +96,7 @@ end;
 procedure TJvTabControl.CMDialogKey(var Msg: TWMKey);
 begin
   if (Msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) and
-    IsChild(handle, Windows.getFocus) then
+    IsChild(Handle, Windows.GetFocus) then
   begin
     if GetKeyState(VK_SHIFT) < 0 then
     begin

@@ -56,6 +56,8 @@ type
     procedure Refresh(Sender: TObject);
     property AutoRefresh: Boolean read FAutoRefresh write SetAuto default False;
     property RefreshDelay: Integer read FRefreshDelay write SetRefreshDelay;
+    // (rom) i am not sure if these properties should be string
+    // (rom) it limits the component to display purposes
     property TotalMemory: string read FTotalMemory write FDummy stored False;
     property FreeMemory: string read FfreeMemory write FDummy  stored False;
     property NumberOfPages: string read FTotalPages write FDummy  stored False;
