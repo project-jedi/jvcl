@@ -67,26 +67,16 @@ var
   JvID3v1MainForm: TJvID3v1MainForm;
 
 implementation
-{$IFDEF COMPILER6_UP}
+
 uses
-  DateUtils;
-{$ENDIF}  
+  JclStrings;
 
 {$R *.dfm}
-
-{$IFNDEF COMPILER6_UP}
-function AnsiDeQuotedStr(S:string;Quote:Char):string;
-var P:PChar;
-begin
-  P := PChar(S);
-  Result := AnsiExtractQuotedStr(P,Quote);
-end;
-{$ENDIF}
 
 procedure TJvID3v1MainForm.ChangeFileNameTo(S: string);
 begin
   JvFilenameEdit1.Text := S;
-  S := AnsiDeQuotedStr(S, '"');
+  S := StrTrimQuotes(S);
   JvFilenameEdit1.Hint := S;
   JvId3v11.FileName := S;
   UpdateCtrls;
