@@ -335,10 +335,10 @@ begin
 
  if Pass AND (x > 1) then
     for y := 1 to x-1 do begin
-      if NOT ( ( (s1[y] >= 'a') AND (s1[y] <= 'z') ) OR
+      if NOT (( ( (s1[y] >= 'a') AND (s1[y] <= 'z') ) OR
            ( (s1[y] >= 'A') AND (s1[y] <= 'Z') ) OR
            ( (s1[y] >= '0') AND (s1[y] <= '9') ) ) OR
-           ( (s1[y] = '_' ) )
+           ( (s1[y] = '_' ) ))
       then begin
           Pass := FALSE;
           result := Pass;
