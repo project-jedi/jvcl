@@ -34,8 +34,7 @@ interface
 uses
   Windows, Messages, Classes, Graphics, Controls,
   {$IFDEF VisualCLX}
-  Qt,
-  JvQConsts,
+  Qt, JvQConsts,
   {$ENDIF VisualCLX}
   JvComponent;
 
@@ -65,13 +64,11 @@ type
 
 implementation
 
-{$IFDEF VCL}
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Forms, StdCtrls;
-{$ENDIF VCL}
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvEnterTab.res}
@@ -153,15 +150,11 @@ procedure TJvEnterAsTab.Paint;
 begin
   if not (csDesigning in ComponentState) then
     Exit;
-  Canvas.Brush.Color := clBtnFace;
-  {$IFDEF VCL}
-  Canvas.BrushCopy(ClientRect, FBmp, ClientRect, clFuchsia);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FBmp.Transparent := True;
-  FBmp.TransparentColor := clFuchsia;
-  Canvas.StretchDraw(ClientRect, FBmp);
-  {$ENDIF VisualCLX}
+  with Canvas do
+  begin
+    Brush.Color := clBtnFace;
+    BrushCopy({$IFDEF VisualCLX}Canvas,{$ENDIF} ClientRect, FBmp, ClientRect, clFuchsia);
+  end;
 end;
 
 procedure TJvEnterAsTab.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
