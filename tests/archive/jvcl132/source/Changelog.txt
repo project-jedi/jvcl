@@ -1,3 +1,6 @@
+2002-07-01
+- TJvTrayIcon: Fixed the problem of non closing popup menus
+
 2002-06-28
 - TJvAlarms - fixed "OnAlarm never fires" bug
 
