@@ -36,6 +36,7 @@ type
     udButtonWidth: TUpDown;
     OpenDialog1: TOpenDialog;
     btnLoadText: TButton;
+    Splitter1: TSplitter;
     procedure JvClipboardViewer1Image(Sender: TObject; Image: TBitmap);
     procedure JvClipboardViewer1Text(Sender: TObject; Text: string);
     procedure btnCopyTextClick(Sender: TObject);
@@ -64,7 +65,6 @@ implementation
 uses
   Math, Clipbrd;
 
-
 {$R *.dfm}
 
 function Max(Values: array of integer): integer;
@@ -82,8 +82,12 @@ var
   P: TPicture;
 begin
   P := TPicture.Create;
-  P.Bitmap.Assign(Image);
-  LB.AddImage(P);
+  try
+    P.Assign(Image);
+    LB.InsertImage(0,P);
+  finally
+    P.Free; // AddImage creates a copy, so we can free this instance
+  end;
 //  LB.ItemHeight := Max(LB.ItemHeight, B.Height + 8);
   udItemHeight.Position := LB.ItemHeight;
   Caption := Format('Count: %d', [LB.Items.Count]);
@@ -91,7 +95,7 @@ end;
 
 procedure TForm1.JvClipboardViewer1Text(Sender: TObject; Text: string);
 begin
-  LB.AddText(StringReplace(Text, #13#10, ' ', [rfReplaceAll]));
+  LB.InsertText(0,StringReplace(Text, #13#10, ' ', [rfReplaceAll]));
   Caption := Format('Clipboard count: %d', [LB.Items.Count]);
 end;
 
@@ -130,11 +134,11 @@ begin
   LB.Width := 200;
   LB.Parent := self;
   LB.DropDownMenu := PopupMenu1;
+  Splitter1.Left := LB.Left - 10;
   cbDrawStyle.ItemIndex := Ord(LB.DrawStyle);
   LB.ItemHeight := udItemHeight.Position;
   udButtonWidth.Position := LB.ButtonWidth;
 end;
-
 
 procedure TForm1.Paste1Click(Sender: TObject);
 begin
@@ -167,7 +171,8 @@ begin
 end;
 
 procedure TForm1.PopupMenu1Popup(Sender: TObject);
-var i:integer;
+var
+  i: integer;
 begin
   for i := 0 to PopupMenu1.Items.Count - 1 do
     if PopupMenu1.Items[i].GroupIndex = 1 then

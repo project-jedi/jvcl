@@ -46,6 +46,15 @@ object Form1: TForm1
     Caption = 'Button &Width:'
     FocusControl = edButtonWidth
   end
+  object Splitter1: TSplitter
+    Left = 772
+    Top = 0
+    Width = 3
+    Height = 436
+    Cursor = crHSplit
+    Align = alRight
+    AutoSnap = False
+  end
   object Memo1: TMemo
     Left = 16
     Top = 32
