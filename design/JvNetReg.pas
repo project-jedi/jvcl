@@ -65,6 +65,10 @@ begin
     TJvHTMLParser, 'Parser', TJvHTMLParserEditor);
   RegisterPropertyEditor(TypeInfo(TJvUrlGrabberIndex),
     TJvUrlListGrabber, '', TJvUrlGrabberIndexProperty);
+  RegisterPropertyEditor(TypeInfo(TJvUrlGrabberDefaultPropertiesList),
+    TJvUrlListGrabber, '', TJvUrlGrabberDefaultPropertiesListEditor);
+  RegisterPropertyEditor(TypeInfo(TJvCustomUrlGrabberDefaultProperties),
+    TJvUrlGrabberDefPropEdTrick, '', TJvUrlGrabberDefaultPropertiesEditor);
 
   RegisterComponentEditor(TJvMail, TJvMailEditor);
 end;
