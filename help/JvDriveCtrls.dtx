@@ -248,6 +248,39 @@ Description
 See Also
   DriveTypes
 ----------------------------------------------------------------------------------------------------
+@@TJvDriveList.DriveCount
+Summary
+  Specifies the number of drives in the control.
+Description
+  Use DriveCount to determine the number of items displayed in the control. DriveCoutn can be used in
+  conjuction with Drives to iterate the list of drives.
+See Also
+  Drives
+----------------------------------------------------------------------------------------------------
+@@TJvDriveList.Drives
+Summary
+  Provides indexed access to the drives in the control.
+Description
+  Use Drives to access a specific drive in the list based on it's index. Valid indices range from 0 to
+  DriveCount - 1. For example, when MultiSelect is true, you can use Drives and DriveCount to create a
+  list of drives the user has selected:
+  <AUTOLINK OFF>
+  <CODE>
+  var
+    i:integer;
+    S:string;
+  begin
+    S := '';
+    for i := 0 to JvDriveList.DriveCount - 1 do
+      if JvDriveList.Selected[i] then
+        S := S + JvDriveList.Drives[i] + #13#10;
+    ShowMessageFmt('You selected the following drives:'#13#10'%s',[S]);
+  end;
+  </CODE>
+  <AUTOLINK ON>
+See Also
+  DriveCount
+----------------------------------------------------------------------------------------------------
 @@TJvDriveList.DriveTypes
 Summary
   Specifies what drive types to show in the list.
