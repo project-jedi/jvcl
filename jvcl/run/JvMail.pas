@@ -34,7 +34,9 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms,
-  Mapi, JclBase, JclMapi, JvComponent;
+  Mapi,
+  JclBase, JclMapi,
+  JvComponent;
 
 type
   TJvMail = class;
@@ -178,8 +180,9 @@ implementation
 uses
   JvConsts, JvResources;
 
-function PExtractFileName(const AFileName: string): PChar;
 // Same as ExtractFileName, except it returns a pointer to a position in AFileName.
+
+function PExtractFileName(const AFileName: string): PChar;
 var
   I: Integer;
 begin
@@ -298,6 +301,30 @@ end;
 
 //=== TJvMail ================================================================
 
+constructor TJvMail.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FAttachment := TStringList.Create;
+  FBody := TStringList.Create;
+  FBlindCopy := TJvMailRecipients.Create(Self, MAPI_BCC);
+  FCarbonCopy := TJvMailRecipients.Create(Self, MAPI_CC);
+  FRecipient := TJvMailRecipients.Create(Self, MAPI_TO);
+  FLongMsgId := True;
+  FLogonOptions := [loLogonUI, loNewSession];
+  FReadOptions := [roFifo, roPeek];
+end;
+
+destructor TJvMail.Destroy;
+begin
+  FreeSimpleMapi;
+  FreeAndNil(FAttachment);
+  FreeAndNil(FBody);
+  FreeAndNil(FBlindCopy);
+  FreeAndNil(FCarbonCopy);
+  FreeAndNil(FRecipient);
+  inherited Destroy;
+end;
+
 function TJvMail.Address(const Caption: string; EditFields: Integer): Boolean;
 var
   NewRecipCount: ULONG;
@@ -329,17 +356,13 @@ begin
   GetSimpleMapi;
   FSimpleMapi.LoadClientLib;
   if not FSimpleMapi.ClientLibLoaded then
-{$TYPEDADDRESS OFF}
     raise EJclMapiError.CreateResRec(@RsNoClientInstalled);
-{$TYPEDADDRESS ON}
 end;
 
 procedure TJvMail.CheckUserLogged;
 begin
   if not UserLogged then
-{$TYPEDADDRESS OFF}
     raise EJclMapiError.CreateResRec(@RsNoUserLogged);
-{$TYPEDADDRESS ON}
 end;
 
 procedure TJvMail.Clear;
@@ -359,19 +382,6 @@ begin
   FreeMapiMessage;
 end;
 
-constructor TJvMail.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FAttachment := TStringList.Create;
-  FBody := TStringList.Create;
-  FBlindCopy := TJvMailRecipients.Create(Self, MAPI_BCC);
-  FCarbonCopy := TJvMailRecipients.Create(Self, MAPI_CC);
-  FRecipient := TJvMailRecipients.Create(Self, MAPI_TO);
-  FLongMsgId := True;
-  FLogonOptions := [loLogonUI, loNewSession];
-  FReadOptions := [roFifo, roPeek];
-end;
-
 procedure TJvMail.CreateMapiMessage;
 
   procedure MakeAttachments;
@@ -384,9 +394,7 @@ procedure TJvMail.CreateMapiMessage;
       for I := 0 to Attachment.Count - 1 do
       begin
         if not FileExists(Attachment[I]) then
-{$TYPEDADDRESS OFF}
           raise EJclMapiError.CreateResRecFmt(@RsAttachmentNotFound, [Attachment[I]]);
-{$TYPEDADDRESS ON}
         FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
         FAttachArray[I].lpszFileName := PExtractFileName(Attachment[I]);
@@ -426,9 +434,7 @@ var
     for I := 0 to RecipList.Count - 1 do
     begin
       if not RecipList[I].Valid then
-{$TYPEDADDRESS OFF}
         raise EJclMapiError.CreateResRecFmt(@RsRecipNotValid, [RecipList[I].GetNamePath]);
-{$TYPEDADDRESS ON}
       FillChar(FRecipArray[RecipIndex], SizeOf(TMapiRecipDesc), #0);
       with FRecipArray[RecipIndex], RecipList[I] do
       begin
@@ -489,17 +495,6 @@ begin
   end;
 end;
 
-destructor TJvMail.Destroy;
-begin
-  FreeSimpleMapi;
-  FreeAndNil(FAttachment);
-  FreeAndNil(FBody);
-  FreeAndNil(FBlindCopy);
-  FreeAndNil(FCarbonCopy);
-  FreeAndNil(FRecipient);
-  inherited Destroy;
-end;
-
 function TJvMail.ErrorCheck(Res: DWORD): DWORD;
 begin
   if Assigned(FOnError) then
@@ -520,7 +515,7 @@ end;
 
 function TJvMail.FindNextMail: Boolean;
 var
-  MsgID: array[0..512] of AnsiChar;
+  MsgID: array [0..512] of AnsiChar;
   Flags, Res: ULONG;
 begin
   CheckUserLogged;
@@ -690,7 +685,7 @@ end;
 
 function TJvMail.SaveMail(const MessageID: string): string;
 var
-  MsgID: array[0..512] of AnsiChar;
+  MsgID: array [0..512] of AnsiChar;
   Flags: ULONG;
 begin
   Result := '';

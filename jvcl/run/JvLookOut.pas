@@ -314,7 +314,7 @@ type
     procedure SetHighlightFont(Value: TFont);
     procedure SetImageSize(Value: TJvImageSize);
     procedure SetParentImageSize(Value: Boolean);
-    procedure SetBitmap(Value: TBitmap);{$IFDEF VisualCLX}reintroduce;{$ENDIF}
+    procedure SetBitmap(Value: TBitmap); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
     procedure SetCaption(Value: TCaption);
     procedure SetMargin(Value: Integer);
     procedure SetButton(Index: Integer; Value: TJvLookOutButton);
@@ -503,14 +503,13 @@ type
 
 implementation
 
-{$IFDEF VCL}
 uses
+  {$IFDEF VCL}
   ActnList;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-uses
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QActnList;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 
 const
   cSpeed = 20;
@@ -911,8 +910,7 @@ end;
 
 destructor TJvCustomLookOutButton.Destroy;
 begin
-  if Assigned(FEdit) then
-    FEdit.Free;
+  FEdit.Free;
   FLargeImageChangeLink.Free;
   FSmallImageChangeLink.Free;
   FHighlightFont.Free;
@@ -1647,8 +1645,7 @@ end;
 
 destructor TJvLookOutPage.Destroy;
 begin
-  if Assigned(FEdit) then
-    FEdit.Free;
+  FEdit.Free;
   FUpArrow.Free;
   FDownArrow.Free;
   FBitmap.Free;
