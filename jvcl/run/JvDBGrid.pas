@@ -1089,6 +1089,7 @@ var
   IndexDefs: TIndexDefs;
   lIndexName: string;
   Descending:boolean;
+  IndexFound: boolean; // FBC
 
   function GetIndexOf(aFieldName: string; var aIndexName: string; var Descending: boolean): boolean;
   var
@@ -1109,6 +1110,7 @@ var
   end;
 
 begin
+  IndexFound := false;
   // Lionel, Peter
   if AutoSort and IsPublishedProp(DataSource.DataSet, 'IndexDefs')
     and IsPublishedProp(DataSource.DataSet, 'IndexName') then
@@ -1116,8 +1118,10 @@ begin
   else
     IndexDefs := nil;
   if Assigned(IndexDefs) then
+  begin
     if GetIndexOf(AField.FieldName, lIndexName, Descending) then
     begin
+      IndexFound := true;  
       SortedField := AField.FieldName;
       { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
       // (p3) this should maybe be the other way around?      
@@ -1126,9 +1130,32 @@ begin
         SetStrProp(DataSource.DataSet, 'IndexName', lIndexName);
       except
       end;
+      
+    end;  // End Lionel
+  end; 
+  //--------------------------------------------------------------------------
+  // FBC: 2004-02-18
+  // Following code handles the sortmarker if no Index is found.
+  // the actual data-sorting must be implemented by the user in
+  // event OnTitleBtnClick.
+  //--------------------------------------------------------------------------
+  if not IndexFound then
+  begin
+    if SortedField = AField.FieldName then
+    begin
+      case self.SortMarker of
+        smUp:   self.SortMarker := smDown;
+        smDown: self.SortMarker := smUp;
+      end;  
+    end
+    else
+    begin
+      SortedField := AField.FieldName;
+      self.SortMarker  := smUp;
     end;
-  // End Lionel
-
+  end;
+  // end FBC
+  // end Lionel
   if Assigned(FOnTitleBtnClick) then
     FOnTitleBtnClick(Self, ACol, AField);
 end;
