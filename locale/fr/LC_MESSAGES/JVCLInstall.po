@@ -101,11 +101,18 @@ msgid "An error occured while compiling the packages."
 msgstr "Une erreur est survenue lors de la compilation des paquets."
 
 #. Programmer's name for it: RsCommandNotFound
+#: Compile.pas:175
+msgid ""
+"Command could not be executed.\n"
+"\n"
+"\n"
+"Cmdline: %s\n"
+msgid_plural "Start directory: %s"
+msgstr[0] ""
+
 #. ExceptionDialog..OkBtn..Caption
 #. FormJvclIncConfig..BtnOk..Caption
-#: Compile.pas:175
-#: Debug/ExceptionDlg.dfm:43
-#: Helpers/MainConfig.dfm:127
+#: Debug/ExceptionDlg.dfm:43 Helpers/MainConfig.dfm:127
 msgid "&OK"
 msgstr "&Ok"
 
@@ -517,8 +524,7 @@ msgstr ""
 
 #. FrameConfigPage..BtnEditJvclInc..Caption
 #. Programmer's name for it: RsEditJvclInc
-#: Frames/FrmConfigPage.dfm:374
-#: InstallerConsts.pas:168
+#: Frames/FrmConfigPage.dfm:374 InstallerConsts.pas:168
 msgid "Edit jvcl%s%d.inc"
 msgstr "Editer jvcl%s%d.inc"
 
@@ -620,8 +626,7 @@ msgstr "Réinitialiser la sélection de paquets à l'EDI standard."
 
 #. FormCompile..Caption
 #. Programmer's name for it: RsCompiling
-#: FrmCompile.dfm:6
-#: FrmCompile.pas:127
+#: FrmCompile.dfm:6 FrmCompile.pas:127
 msgid "Compiling"
 msgstr "Compilation"
 
@@ -671,8 +676,7 @@ msgstr "Projet :"
 
 #. FormCompile..PanelClient..LblStatus..Caption
 #. Programmer's name for it: RsThereAreErrors
-#: FrmCompile.dfm:177
-#: FrmCompile.pas:130
+#: FrmCompile.dfm:177 FrmCompile.pas:130
 msgid "There are errors."
 msgstr "Il y a des erreurs."
 
@@ -737,8 +741,7 @@ msgstr "Ouvrir dans &Notepad"
 
 #. FormMain..JvWizard..ButtonHelp.Caption
 #. Programmer's name for it: STR_HELPBTN
-#: Helpers/AHCompBrowseFolderDlg.pas:122
-#: Main.dfm:49
+#: Helpers/AHCompBrowseFolderDlg.pas:122 Main.dfm:49
 msgid "&Help"
 msgstr "&Aide"
 
@@ -792,8 +795,7 @@ msgstr ""
 
 #. FormMain..Caption
 #. Programmer's name for it: RsInstallerName
-#: InstallerConsts.pas:50
-#: Main.dfm:6
+#: InstallerConsts.pas:50 Main.dfm:6
 msgid "JVCL 3  Installation"
 msgstr "Installation de JVCL 3"
 
@@ -873,8 +875,7 @@ msgstr "Un erreur est survenue."
 
 #. Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
-#: InstallerConsts.pas:85
-#: JVCLData.pas:309
+#: InstallerConsts.pas:85 JVCLData.pas:309
 msgid "Complete."
 msgstr "Terminé."
 
@@ -1314,4 +1315,3 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 #: Main.dfm:64
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Site Web Jedi Visual Component Library"
-
