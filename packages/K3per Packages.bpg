@@ -6,7 +6,7 @@ ROOT = /usr/local/Kylix3
 endif
 #------------------------------------------------------------------------------
 MAKE = make -$(MAKEFLAGS) -f$**
-DCC =dcc $<
+DCC =dcc -I../common -U../common:../qcommon:../qdesign:../qrun -R../Resources -N../lib/k3
 #------------------------------------------------------------------------------
 PROJECTS = bplJvQ3rdK3R.so                               \
   bplJvQCoreK3R.so bplJvQCoreK3D.so                      \
@@ -33,13 +33,13 @@ default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
 bplJvQ3rdK3R.so: k3/JvQ3rdK3R.dpk
-	$(DCC)
+	$(DCC) k3/JvQ3rdK3R.dpk
 
 bplJvQCoreK3R.so: k3/JvQCoreK3R.dpk
-	$(DCC)
+	$(DCC) k3/JvQCoreK3R.dpk
 
 bplJvQCoreK3D.so: k3/JvQCoreK3D.dpk
-	$(DCC)
+	$(DCC) k3/JvQCoreK3D.dpk
 
 bplJvQSystemK3R.so: k3/JvQSystemK3R.dpk
 	$(DCC)
@@ -147,6 +147,9 @@ bplJvQInspectorK3R.so: k3per/JvQInspectorK3R.dpk
 	$(DCC)
 
 bplJvQInspectorK3D.so: k3/JvQInspectorK3D.dpk
+	$(DCC)
+
+bplJvQDotNetCtrlsK3R.so: k3/JvQDotNetCtrlsK3R.dpk
 	$(DCC)
 
 

@@ -8,28 +8,18 @@ endif
 MAKE = make -$(MAKEFLAGS) -f$**
 DCC =dcc $<
 #------------------------------------------------------------------------------
-PROJECTS = bplJvQ3rdK3R.so                              \
-  bplJvQCoreK3R.so bplJvQCoreK3D.so                     \
-  bplJvQSystemK3R.so bplJvQSystemK3D.so                 \
-  bplJvQStdCtrlsK3R.so bplJvQStdCtrlsK3D.so             \
-  bplJvQCtrlsK3R.so bplJvQCtrlsK3D.so                   \
-  bplJvQCmpK3R.so bplJvQCmpK3D.so                       \
-  bplJvQCustomK3R.so bplJvQCustomK3D.so                 \
-  bplJvQDlgsK3R.so bplJvQDlgsK3D.so                     \
-  bplJvQCryptK3R.so bplJvQCryptK3D.so                   \
-  bplJvQMMK3R.so bplJvQMMK3D.so                         \
-  bplJvQAppFrmK3R.so bplJvQAppFrmK3D.so                 \
-  bplJvQJansK3R.so bplJvQJansK3D.so                     \
-  bplJvQWizardK3R.so bplJvQWizardK3D.so                 \
-  bplJvQManagedThreadsK3R.so bplJvQManagedThreadsK3D.so \
-  bplJvQUIBK3R.so bplJvQUIBK3D.so                       \
-  bplJvQHMIK3R.so bplJvQHMIK3D.so                       \
-  bplJvQNetK3R.so bplJvQNetK3D.so                       \
-  bplJvQPageCompsK3R.so bplJvQPageCompsK3D.so           \
-  bplJvQEDIK3R.so bplJvQEDIK3D.so                       \
-  bplJvQXPCtrlsK3R.so bplJvQXPCtrlsK3D.so               \
-  bplJvQInspectorK3R.so bplJvQInspectorK3D.so           \
-  bplJvQDBK3R.so bplJvQDBK3D.so
+PROJECTS = bplJvQ3rdK3R.so bplJvQCoreK3R.so bplJvQCoreK3D.so bplJvQSystemK3R.so \
+  bplJvQSystemK3D.so bplJvQStdCtrlsK3R.so bplJvQStdCtrlsK3D.so bplJvQCtrlsK3R.so \
+  bplJvQCtrlsK3D.so bplJvQCmpK3R.so bplJvQCmpK3D.so bplJvQCustomK3R.so \
+  bplJvQCustomK3D.so bplJvQDlgsK3R.so bplJvQDlgsK3D.so bplJvQCryptK3R.so \
+  bplJvQCryptK3D.so bplJvQMMK3R.so bplJvQMMK3D.so bplJvQAppFrmK3R.so \
+  bplJvQAppFrmK3D.so bplJvQJansK3R.so bplJvQJansK3D.so bplJvQWizardK3R.so \
+  bplJvQWizardK3D.so bplJvQManagedThreadsK3R.so bplJvQManagedThreadsK3D.so \
+  bplJvQUIBK3R.so bplJvQUIBK3D.so bplJvQHMIK3R.so bplJvQHMIK3D.so bplJvQNetK3R.so \
+  bplJvQNetK3D.so bplJvQPageCompsK3R.so bplJvQPageCompsK3D.so bplJvQEDIK3R.so \
+  bplJvQEDIK3D.so bplJvQXPCtrlsK3R.so bplJvQXPCtrlsK3D.so bplJvQInspectorK3R.so \
+  bplJvQInspectorK3D.so bplJvQDBK3R.so bplJvQDBK3D.so bplJvQValidatorsK3R.so \
+  bplJvQValidatorsK3D.so
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -161,6 +151,12 @@ bplJvQDBK3R.so: k3/JvQDBK3R.dpk
 	$(DCC)
 
 bplJvQDBK3D.so: k3/JvQDBK3D.dpk
+	$(DCC)
+
+bplJvQValidatorsK3R.so: k3/JvQValidatorsK3R.dpk
+	$(DCC)
+
+bplJvQValidatorsK3D.so: k3/JvQValidatorsK3D.dpk
 	$(DCC)
 
 
