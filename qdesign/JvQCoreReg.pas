@@ -34,6 +34,10 @@ unit JvQCoreReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
+{$DEFINE USEWINDOWS}
+{$ENDIF MSWINDOWS}
+
 procedure Register;
 
 implementation
@@ -43,7 +47,7 @@ uses
   QControls, QStdCtrls, QExtCtrls, Types, QGraphics, QActnList, QImgList, QDialogs, 
   QTypes,  
   DesignEditors, DesignIntf, 
-  JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVCLXVer, JvQComponent, JvQActions,
+  JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVCLVer, JvQComponent, JvQActions,
   JvQActnResForm, JvQJVCLAboutForm, JvQIDEZoom, JvQBaseDlg,
   JvQDataProvider, JvQDataProviderIntf, JvQColorProvider, JvQContextProvider,
   JvQDsgnEditors, JvQJVCLAboutEditor, JvQBaseDlgEditor, JvQColorEditor,

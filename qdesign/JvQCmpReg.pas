@@ -34,14 +34,18 @@ unit JvQCmpReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
+{$DEFINE USEWINDOWS}
+{$ENDIF MSWINDOWS}
+
 procedure Register;
 
 implementation
 
 uses
   Classes,
-  QControls,
-  DesignEditors, DesignIntf,
+  QControls, 
+  DesignEditors, DesignIntf, 
   JvQDsgnConsts,
   {$IFDEF USEWINDOWS}
   JvQCreateProcess, JvQWinHelp,
@@ -60,12 +64,11 @@ uses
 {$ENDIF LINUX}
 
 procedure Register;
-begin
-  {$IFDEF MSWINDOWS}
+begin 
   GroupDescendentsWith(TJvDataEmbedded, TControl);
   GroupDescendentsWith(TJvStrHolder, TControl);
-  GroupDescendentsWith(TJvPageManager, TControl);
-  {$ENDIF MSWINDOWS}
+  GroupDescendentsWith(TJvPageManager, TControl); 
+
   RegisterComponents(RsPaletteNonVisual, [TJvAlarms, TJvConverter,
     TJvDataEmbedded,
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
@@ -73,7 +76,7 @@ begin
     TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile]);
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [TJvCreateProcess, TJvWinHelp]);
-  {$ENDIF USWINDOWS}
+  {$ENDIF USEWINDOWS}
 
 
   {$IFDEF USEWINDOWS}

@@ -42,7 +42,7 @@ uses
   QControls, QForms, QToolWin,
   QMenus, QActnList, QComCtrls, QImgList, 
   DesignEditors, DesignIntf, DesignMenus, QDesignWindows, 
-  JvQOutlookBar, QTypes, QExtCtrls;
+  JvQOutlookBar;
 
 type
   TFrmOLBEditor = class(TDesignWindow)
@@ -545,7 +545,7 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 begin
-  with TJvRegistryIniFile.Create(HKEY_CURRENT_USER) do
+  with TJvRegistryFile.Create(HKEY_CURRENT_USER) do
   try
     if OpenKey(GetRegPath, True) then
     try

@@ -36,8 +36,7 @@ interface
 
 uses
   Classes, 
-  DesignIntf, DesignEditors,  
-  ClxEditors,  
+  DesignIntf, DesignEditors, CLXEditors, 
   JvQCSVBaseControls;
 
 type
@@ -55,8 +54,8 @@ type
 
 implementation
 
-uses  
-  QForms, QDialogs; 
+uses
+  QForms, QDialogs;
 
 //=== TCSVFileNameProperty ===================================================
 
