@@ -177,7 +177,7 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvAppSubStorage.SeTJvAppStorage
+@@TJvAppSubStorage.SetAppStorage
 Summary
   Write here a summary (1 line)
 Description
@@ -411,7 +411,7 @@ Description
   to an INI file in the current users home directory), making the access to the settings easier to
   use. Not all storages may surface this linking mechanism, but most do.
 
-  You should not instantiate a TJvCustomAppStorage but rather one of it's descendants.
+  You should not instantiate a TJvCustomAppStorage but rather one of its descendants.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppStorage.ConcatPaths
 Summary
@@ -439,7 +439,7 @@ Parameters
 Summary
   Deletes the specified folder/value and any sub folders.
 Description
-  DeleteSubTree will remove the specified folder and it's sub folders and all values. If the
+  DeleteSubTree will remove the specified folder and its sub folders and all values. If the
   specified path refers to a value, the value will be deleted.
 Parameters
   Path - Path (relative to the current path) of the sub tree to delete.
@@ -522,7 +522,7 @@ Summary
   Determines if the specified path is a folder.
 Description
   IsFolder determines if the specified path refers to a folder or a value. The specified path is
-  considered to be a folder is:
+  considered to be a folder if:
 
   * It has sub folders or values
   * ListIsValue is False or if it's True the path does not refer to a list (a folder is considered
@@ -830,7 +830,7 @@ Summary
   Resolves the specified path to a target storage and target path.
 Description
   ResolvePath will resolve the specified path into a storage backend and path to use. The storage
-  returned might be itself, one of it's sub stores or a sub store at an even deeper level. In any
+  returned might be itself, one of its sub stores or a sub store at an even deeper level. In any
   case, the returned store and path will no longer reference to any other sub store.
 
   ResolvePath will take the specified path, prefixing it with the currently set path and
