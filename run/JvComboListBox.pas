@@ -130,9 +130,6 @@ type
     property Font;
     property HotTrack;
     property HintColor;
-    property ImeMode;
-    property ImeName;
-    property IntegralHeight;
     property ItemHeight default 21;
     property ItemIndex default -1;
     property Items;
