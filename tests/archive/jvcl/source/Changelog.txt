@@ -1,13 +1,29 @@
+2002-12-24
+- Properly separated a TJvCustomMaskEdit out of TJvMaskEdit at last
+- Made TJvCustomCheckedMaskEdit a descendant of TJvCustomMaskEdit
+- Streamlined the focus change event interfaces in TJvCustomMaskEdit and descendants and related compos:
+  [ATTENTION! Streaming Interface change!]
+  Renamed events  OnLoseFocus > OnKillFocus
+                  OnGetFocus  > OnSetFocus
+  Renamed methods LoseFocus   > DoKillFocus
+                  GetFocus    > DoSetFocus
+- Added focus change events to TJvCustomMonthCalendar //ogiesen
+
 2002-12-21
  Added JvBallonHint // remko
+
 2002-11-19
 - Added Transparent and Multiline property to JvPanel. // peter3, pongtawat
+
 2002-11-18
 - Major changes to examples to compile with D5. Also added all projects except DynamicLoad and DBTree to JVCLDemos.bpg and makefile.mak // peter3
+
 2002-11-16:
 - Added undo capability and several new properties to JvMaskEdit // rbraasem
+
 2002-11-05
 - Moved JvTextContainer to \archive: duplicates TJvStrHolder with less functionality // peter3
+
 2002-11-04
 - As has been discussed on the NG in mid-October, decoupled TJvCustomMonthCalendar from its appearance properties for the benefit of TJvDatePickerEdit which could now expose all the relevant appearance-related properties of its dropdown calendar while still retaining its create-on-demand model without having to manage duplicated data. At this stage the designtime interface of TJvMonthCalendar2 remains completely intact. In the future it might be considered to drop the individual appearance-related properties in favour of exposing the Appearance instance directly. //ogiesen
 
