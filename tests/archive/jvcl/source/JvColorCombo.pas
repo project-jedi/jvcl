@@ -396,7 +396,7 @@ begin
       end;
     end;
     if (coCustomColors in Options) then
-      Items.InsertObject(Items.Count - 1,FPrefix + IntToStr(FCustCnt),TObject(Value))
+      Items.InsertObject(Items.Count,FPrefix + IntToStr(FCustCnt),TObject(Value))
     else
       Items.AddObject(FPrefix + IntToStr(FCustCnt),TObject(Value));
     Inc(FCustCnt);
@@ -487,8 +487,7 @@ begin
     finally
       Brush.Color := aColor;
     end;
-    if (coText in FOptions) or (coHex in FOptions) or (coRGB in FOptions) or
-      ((coCustomColors in FOptions) and (Index = Items.Count - 1)) then
+    if (not (coCustomColors in FOptions) and (Index = Items.Count - 1)) or ((coText in FOptions) or (coHex in FOptions) or (coRGB in FOptions)) then
 //    if (FOption in [coText,coHex,coRGB]) or (FCustomColor and (Index = Items.Count - 1)) then
     begin
       S := Items[Index];
@@ -500,6 +499,18 @@ begin
           S := Format('(%d,%d,%d)',[GetRValue(TColor(Items.Objects[Index])),GetGValue(TColor(Items.Objects[Index])),GetBValue(TColor(Items.Objects[Index]))]);
       end;
 
+      R.Left := R.Left + FColWidth + 6;
+      R.Right := R.Left + TextWidth(S) + 6;
+      FillRect(R);
+      OffsetRect(R,2,0);
+      SetBkMode(Canvas.Handle,TRANSPARENT);
+      DrawText(Canvas.Handle, PChar(S), -1, R, DT_SINGLELINE or
+        DT_VCENTER or DT_NOPREFIX);
+      OffsetRect(R,-2,0);
+    end
+    else if (coCustomColors in FOptions) and (Index = Items.Count - 1) then
+    begin
+      S := FOther;
       R.Left := R.Left + FColWidth + 6;
       R.Right := R.Left + TextWidth(S) + 6;
       FillRect(R);
