@@ -260,9 +260,11 @@ type
 
 
 {
-  2 dummies for ... VCL
+  Dummies for ... VCL
  asn: AFAIK use of RightToLeft or LeftToRight is automatic
 }
+const
+  BiDiMode: TBiDiMode = bdLeftToRight; // asn: var?
 function DrawTextBiDiModeFlagsReadingOnly: Longint;
 function DrawTextBiDiModeFlags(Flags: Longint): Longint;
 procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
@@ -8367,6 +8369,7 @@ finalization
   WaitObjectList.Free;
   {$ENDIF LINUX}
 end.
+
 
 
 
