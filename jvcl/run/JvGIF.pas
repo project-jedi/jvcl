@@ -34,7 +34,7 @@ uses
   Windows,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   SysUtils, Classes, Graphics;
 
 const
@@ -209,7 +209,7 @@ type
 
   TGIFData = class(TSharedImage)
   private
-    FComment: TStrings;
+    FComment: TStringList;
     FAspectRatio: Byte;
     FBitsPerPixel: Byte;
     FColorResBits: Byte;
@@ -269,6 +269,10 @@ begin
   raise EInvalidGraphicOperation.Create(Msg) at ReturnAddr;
 end;
 
+{$IFDEF RANGECHECKS_ON}
+{$R+}
+{$ENDIF RANGECHECKS_ON}
+
 //=== TSharedImage ===========================================================
 
 const
@@ -285,40 +289,36 @@ const
   HASH_TABLE_SIZE = 17777;
   MAX_LOOP_COUNT = 30000;
 
-  CHR_EXT_INTRODUCER = '!';
+  CHR_EXT_INTRODUCER  = '!';
   CHR_IMAGE_SEPARATOR = ',';
-  CHR_TRAILER = ';'; { indicates the end of the GIF Data stream }
+  CHR_TRAILER         = ';'; { indicates the end of the GIF Data stream }
 
   { Image descriptor bit masks }
-
   ID_LOCAL_COLOR_TABLE = $80; { set if a local color table follows }
-  ID_INTERLACED = $40; { set if image is interlaced }
-  ID_SORT = $20; { set if color table is sorted }
-  ID_RESERVED = $0C; { reserved - must be set to $00 }
-  ID_COLOR_TABLE_SIZE = $07; { Size of color table as above }
+  ID_INTERLACED        = $40; { set if image is interlaced }
+  ID_SORT              = $20; { set if color table is sorted }
+  ID_RESERVED          = $0C; { reserved - must be set to $00 }
+  ID_COLOR_TABLE_SIZE  = $07; { Size of color table as above }
 
   { Logical screen descriptor packed field masks }
-
   LSD_GLOBAL_COLOR_TABLE = $80; { set if global color table follows L.S.D. }
-  LSD_COLOR_RESOLUTION = $70; { Color resolution - 3 bits }
-  LSD_SORT = $08; { set if global color table is sorted - 1 bit }
-  LSD_COLOR_TABLE_SIZE = $07; { Size of global color table - 3 bits }
+  LSD_COLOR_RESOLUTION   = $70; { Color resolution - 3 bits }
+  LSD_SORT               = $08; { set if global color table is sorted - 1 bit }
+  LSD_COLOR_TABLE_SIZE   = $07; { Size of global color table - 3 bits }
                                 { Actual Size = 2^value+1    - value is 3 bits }
 
   { Graphic control extension packed field masks }
-
-  GCE_TRANSPARENT = $01; { whether a transparency Index is given }
-  GCE_USER_INPUT = $02; { whether or not user input is expected }
+  GCE_TRANSPARENT     = $01; { whether a transparency Index is given }
+  GCE_USER_INPUT      = $02; { whether or not user input is expected }
   GCE_DISPOSAL_METHOD = $1C; { the way in which the graphic is to be treated after being displayed }
-  GCE_RESERVED = $E0; { reserved - must be set to $00 }
+  GCE_RESERVED        = $E0; { reserved - must be set to $00 }
 
   { Application extension }
-
   AE_LOOPING = $01; { looping Netscape extension }
 
   GIFColors: array [TGIFBits] of Word = (2, 4, 8, 16, 32, 64, 128, 256);
 
-function ColorsToBits(ColorCount: Word): Byte; near;
+function ColorsToBits(ColorCount: Word): Byte;
 var
   I: TGIFBits;
 begin
@@ -346,7 +346,7 @@ begin
     Result := pf24bit;
 end;
 
-function ItemToRGB(Item: TGIFColorItem): Longint; near;
+function ItemToRGB(Item: TGIFColorItem): Longint;
 begin
   with Item do
     Result := RGB(Red, Green, Blue);
@@ -422,8 +422,8 @@ type
 
 const
   ExtLabels: array [TExtensionType] of Byte = ($F9, $01, $FF, $FE);
-  LoopExtNS: string [11] = 'NETSCAPE2.0';
-  LoopExtAN: string [11] = 'ANIMEXTS1.0';
+  LoopExtNS: string[11] = 'NETSCAPE2.0';
+  LoopExtAN: string[11] = 'ANIMEXTS1.0';
 
 type
   TGraphicControlExtension = packed record
@@ -3008,11 +3008,13 @@ end;
 initialization
   CF_GIF := RegisterClipboardFormat('GIF Image');
   RegisterClasses([TJvGIFFrame, TJvGIFImage]);
-{$IFDEF USE_Jv_GIF}
+{$IFDEF USE_JV_GIF}
   TPicture.RegisterFileFormat('gif', RsGIFImage, TJvGIFImage);
   TPicture.RegisterClipboardFormat(CF_GIF, TJvGIFImage);
+
 finalization
   TPicture.UnRegisterGraphicClass(TJvGIFImage);
-{$ENDIF}
+{$ENDIF USE_JV_GIF}
+
 end.
 

@@ -41,7 +41,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, 
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   Classes;
 
 type
