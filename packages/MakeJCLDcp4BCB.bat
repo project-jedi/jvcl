@@ -66,12 +66,16 @@ cd ..\packages
 copy /D /Y .\jcldcpdpk%VERSION%.tpl "%JCLDIR%\packages\c%VERSION%\template.dpk"
 
 : generate the packages from the xml files
+
 ..\devtools\bin\pg -m=JCL -p="%JCLDIR%\Packages" -t=c%VERSION% -x=..\devtools\bin\pgEdit.xml
 
-cd %JCLDIR%\packages\c6
+cd %JCLDIR%\packages\c%VERSION%
 
+echo %JCLDIR%
+echo %ROOT%
+echo %VERSION%
 : compile the generated packages
-for %%f in ("%JCLDIR%\packages\c%VERSION%\C*.dpk") do %ROOT%\bin\dcc32 -I"%JCLDIR%\source\common" -U"%JCLDIR%\source\common" -U"%JCLDIR%\source\windows" -U"%JCLDIR%\source\vcl" -U"%JCLDIR%\source\visclx" "%%f"
+for %%f in ("C*.dpk") do %ROOT%\bin\dcc32 -I"..\..\source" -I"..\..\source\common" -U"..\..\source\common" -U"..\..\source\windows" -U"..\..\source\vcl" -U"%JCLDIR%\source\visclx" "%%f"
 
 : copy the resulting files where they should go
 for %%f in (*.dcp) do xcopy /y %%f "%DCPDIR%\"
@@ -81,8 +85,8 @@ echo.
 echo Cleaning...
 del /f /q C*.dcp
 del /f /q C*.bpl
-del /f /q "%JCLDIR%\packages\c%VERSION%\*.dpk"
-del /f /q "%JCLDIR%\packages\c%VERSION%\*.dcu"
+del /f /q *.dpk
+del /f /q *.dcu
 echo.
 echo The JCL DCP files were successfuly created for the JVCL
 echo.
