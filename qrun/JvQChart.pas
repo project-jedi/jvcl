@@ -652,9 +652,7 @@ implementation
 
 uses
   Math, // VCL math: function isNan, constant NaN.
-  {$IFDEF COMPILER5}
-  JclMath, // function isNan for Delphi 5  (ahuser)
-  {$ENDIF COMPILER5}
+  
   JvQJVCLUtils,
   JvQConsts,
   JvQResources;
@@ -1511,21 +1509,21 @@ end;
 // with the chart, and highlight one row in the chart.
 procedure TJvChart.PaintCursor;
 var
- Y1,Y2,X1,X2 : Integer;
+ X : Integer;
  XPixelGap   : Double;
 begin
   with inherited Canvas do begin 
             Pen.Color := Options.CursorColor;
             Pen.Style := Options.CursorStyle;
 
-            Y1 := Options.YStartOffset;
             XPixelGap := ( ((Options.XEnd-2) - Options.XStartOffset ) /
                            (Options.XValueCount-1) );
 
-            X1 := Round(Options.XStartOffset + (XPixelGap * FCursorPosition) );
+            X := Round(Options.XStartOffset + (XPixelGap * FCursorPosition) );
 
-            MoveTo( {x} X1, {y} Y1);
-            LineTo( {x} X1, {y} FXAxisPosition-1);
+            // Vertical line along X position:
+            MoveTo( {x} X, {y} Options.YStartOffset);
+            LineTo( {x} X, {y} FXAxisPosition-1);
   end;
 end;
 
@@ -2231,8 +2229,8 @@ var
       if Result >= (yOrigin - 1) then
         Result := Round(yOrigin) - 1  // hit the top of the chart
       else
-      if Result < 1 + (yOrigin - (Options.YEnd - PenAxisOpt.YPixelGap)) then
-        Result := 1 + Round(yOrigin - (Options.YEnd - PenAxisOpt.YPixelGap));
+      if Result < (Options.YStartOffset-2) then
+            Result := Options.YStartOffset-2; // Not quite good enough, but better than before.
     end;
 
 
@@ -3284,6 +3282,9 @@ var
 
   strWidth,strHeight: Integer;
 begin
+
+   ChartCanvas.Font.Color := Font.Color; // March 2004 Fixed.
+
     // scan and set nWidth,nLineH
     nWidth := 100; // minimum 100 pixel hint box width.
     nLineH := 8; // minimum 8 pixel line height for hints.

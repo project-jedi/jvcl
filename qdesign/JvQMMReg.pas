@@ -35,7 +35,7 @@ procedure Register;
 implementation
 
 uses
-  Classes, 
+  Classes,
 
   DesignEditors, DesignIntf,
 
@@ -47,8 +47,10 @@ uses
   {$ENDIF MSWINDOWS}
   JvQImageRotate, JvQImageTransform, JvQImageSquare, JvQStarfield,
   JvQWaitingGradient, JvQWaitingProgress, JvQSpecialProgress,
-  JvQSlider, JvQAnimatedImage, JvQSpecialImage,
-  JvQIconListForm {, JvQPictureEditors,  JvQPictureEditForm};
+  JvQSlider, JvQAnimatedImage, JvQSpecialImage, JvQAnimatedEditor,
+  JvQIconListForm, JvQColorTrackBar
+  {$IFDEF LINUX}, JvQPictureEditors,  JvQPictureEditForm {$ENDIF}
+  ;
 
 
 {$R ../Resources/JvMMReg.dcr}
@@ -60,7 +62,7 @@ begin
     TJvImageSquare, TJvStarfield,
     TJvAnimatedImage, TJvSpecialImage]);
   RegisterComponents(RsPaletteBarPanel, [TJvGradientHeaderPanel, TJvGradient,
-    TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress]);
+    TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress, TJvColorTrackBar]);
   {$IFDEF MSWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [TJvID3v1, TJvID3v2, TJvWavePlayer]);
   {$ENDIF MSWINDOWS}
@@ -71,8 +73,10 @@ begin
 //  RegisterPropertyEditor(TypeInfo(TJvQtKey), nil, '', TJvQtKeyEditor);
 //  RegisterPropertyEditor(TypeInfo(TJvID3FileInfo), nil, '', TJvID3FileInfoEditor);
 
-//  RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
-//  RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
+  RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
+  {$IFDEF LINUX}
+  RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
+  {$ENDIF LINUX}
 //  RegisterComponentEditor(TJvID3Controller, TJvID3ControllerEditor);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterPropertyEditor(TypeInfo(TPicture),TObject,'',TJvPictProperty);

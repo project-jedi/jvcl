@@ -94,6 +94,7 @@ type
     procedure DeactivateActiveLinkNode;
     procedure HandleDynamicNode(out Source: string; const Node: TDynamicNode);
     procedure SetCaption(const Value: TCaption);
+    function GetCaption: TCaption;
     function GetTransparent: Boolean;
     function IsActiveLinkNodeClicked: Boolean;
     procedure SetAutoHeight(const Value: Boolean);

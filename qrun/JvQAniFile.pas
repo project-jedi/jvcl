@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -91,7 +91,8 @@ type
     procedure LoadFromStream(Stream: TStream); virtual;
     procedure SaveToStream(Stream: TStream); virtual;
     procedure LoadFromFile(const FileName: string); virtual;
-    
+    procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
+      DecreaseColors, Vertical: Boolean); // DecreaseBMPColors does nothing under VisualCLX
     property IconCount: Integer read GetIconCount;
     property FrameCount: Integer read GetFrameCount;
     property Icons[Index: Integer]: TIcon read GetIcons;
@@ -107,7 +108,7 @@ type
 implementation
 
 uses
-  QConsts, Math,
+  Consts, Math,
   JvQJVCLUtils, JvQJCLUtils, JvQIconList, JvQConsts, JvQResources;
 
 function PadUp(Value: Longint): Longint;
@@ -115,7 +116,14 @@ begin
   Result := Value + (Value mod 2); // Up Value to nearest word boundary
 end;
 
+procedure DecreaseBMPColors(Bmp: TBitmap; Colors: Integer);
 
+
+begin
+  // TODO
+end;
+
+end;
 
 function GetDInColors(BitCount: Word): Integer;
 begin
@@ -367,7 +375,9 @@ begin
   else
   if Dest is TBitmap then
   begin
-    
+    if IconCount > 0 then
+      AssignToBitmap(TBitmap(Dest), TBitmap(Dest).Canvas.Brush.Color, True, False)
+    else
       Dest.Assign(nil);
   end
   else
@@ -766,7 +776,51 @@ begin
       
 end;
 
-
+procedure TJvAnimatedCursorImage.AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
+  DecreaseColors, Vertical: Boolean);
+var
+  I: Integer;
+  Temp: TBitmap;
+  Idx: Integer;
+  R: TRect;
+begin
+  Temp := TBitmap.Create;
+  try
+    if FIcons.Count > 0 then
+    begin
+      with Temp do
+      begin
+        Monochrome := False;
+        Canvas.Brush.Color := BackColor;
+        if Vertical then
+        begin
+          Width := Icons[0].Width;
+          Height := Icons[0].Height * FrameCount;
+        end
+        else
+        begin
+          Width := Icons[0].Width * FrameCount;
+          Height := Icons[0].Height;
+        end;
+        Canvas.FillRect(Bounds(0, 0, Width, Height));
+        Idx := Index;
+        for I := 0 to FrameCount - 1 do
+        begin
+          Index := I;
+          R := Rect(Frames[I].Icon.Width * I * Ord(not Vertical),
+            Frames[I].Icon.Height * I * Ord(Vertical), 0, 0);
+          Draw(Canvas, R);
+        end;
+        Index := Idx;
+      end;
+      if DecreaseColors then
+        DecreaseBMPColors(Temp, Max(OriginalColors, 16));
+    end;
+    Bitmap.Assign(Temp);
+  finally
+    Temp.Free;
+  end;
+end;
 
 end.
 

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -117,6 +117,10 @@ type
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;
     
+    procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
+      DecreaseColors, Vertical: Boolean);
+    procedure AssignIconsToBitmap(Bitmap: TBitmap; BackColor: TColor;
+      DecreaseColors, Vertical: Boolean);
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
     property Animated: Boolean read GetAnimated write SetAnimated;
     property Author: string read GetAuthor;
@@ -178,6 +182,12 @@ begin
   Result := Value + (Value mod 2); // Up Value to nearest word boundary
 end;
 
+procedure DecreaseBMPColors(Bmp: TBitmap; Colors: Integer);
+
+
+begin
+  // TODO
+end;
 
 
 function GetDInColors(BitCount: Word): Integer;
@@ -399,7 +409,9 @@ begin
   else
   if Dest is TBitmap then
   begin
-    
+    if FrameCount > 0 then
+      AssignToBitmap(TBitmap(Dest), TBitmap(Dest).Canvas.Brush.Color, True, False)
+    else
       Dest.Assign(nil);
   end
   else
@@ -946,7 +958,97 @@ begin
       
 end;
 
+procedure TJvAni.AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
+  DecreaseColors, Vertical: Boolean);
+var
+  I: Integer;
+  Temp: TBitmap;
+  Idx: Integer;
+  R: TRect;
+begin
+  Temp := TBitmap.Create;
+  try
+    if FIcons.Count > 0 then
+    begin
+      with Temp do
+      begin
+        Monochrome := False;
+        Canvas.Brush.Color := BackColor;
+        if Vertical then
+        begin
+          Width := Icons[0].Width;
+          Height := Icons[0].Height * FrameCount;
+        end
+        else
+        begin
+          Width := Icons[0].Width * FrameCount;
+          Height := Icons[0].Height;
+        end;
+        Canvas.FillRect(Bounds(0, 0, Width, Height));
+        Idx := Index;
+        for I := 0 to FrameCount - 1 do
+        begin
+          Index := I;
+          R := Rect(Frames[I].Icon.Width * I * Ord(not Vertical),
+            Frames[I].Icon.Height * I * Ord(Vertical), 0, 0);
+          Draw(Canvas, R);
+        end;
+        Index := Idx;
+      end;
+      if DecreaseColors then
+        DecreaseBMPColors(Temp, Max(OriginalColors, 16));
+    end;
+    Bitmap.Assign(Temp);
+  finally
+    Temp.Free;
+  end;
+end;
 
+procedure TJvAni.AssignIconsToBitmap(Bitmap: TBitmap; BackColor: TColor;
+  DecreaseColors, Vertical: Boolean);
+var
+  I: Integer;
+  Temp: TBitmap;
+  Idx: Integer;
+  R: TRect;
+begin
+  Temp := TBitmap.Create;
+  try
+    if FIcons.Count > 0 then
+    begin
+      with Temp do
+      begin
+        Monochrome := False;
+        Canvas.Brush.Color := BackColor;
+        if Vertical then
+        begin
+          Width := Icons[0].Width;
+          Height := Icons[0].Height * IconCount;
+        end
+        else
+        begin
+          Width := Icons[0].Width * IconCount;
+          Height := Icons[0].Height;
+        end;
+        Canvas.FillRect(Bounds(0, 0, Width, Height));
+        Idx := Index;
+        for I := 0 to IconCount - 1 do
+        begin
+          Index := I;
+          R := Rect(Icons[I].Width * I * Ord(not Vertical),
+            Icons[I].Height * I * Ord(Vertical), 0, 0);
+          Draw(Canvas, R);
+        end;
+        Index := Idx;
+      end;
+      if DecreaseColors then
+        DecreaseBMPColors(Temp, Max(OriginalColors, 16));
+    end;
+    Bitmap.Assign(Temp);
+  finally
+    Temp.Free;
+  end;
+end;
 
 initialization
   Classes.RegisterClass(TJvAni);

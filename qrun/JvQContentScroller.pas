@@ -44,13 +44,13 @@ uses
   SysUtils, Classes,
   
   
-  Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, QTypes,
+  Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, QTypes, QWindows,
   
   JvQComponent;
 
 type
   TJvContentScrollDirection = (sdUp, sdDown);
-  TJvScrollAmount = 1..MaxWord;
+  TJvScrollAmount = 1..MaxInt;
 
   TJvContentScroller = class(TJvCustomPanel)
   private

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -139,7 +139,10 @@ implementation
 uses
   JvQJVCLUtils, JvQThemes;
 
-{$R ../Resources/JvSwitch.res}
+
+
+{$R ../Resources/JvSwitch.Res}
+
 
 const
   ResName: array [Boolean] of PChar = ('JV_SWITCH_OFF', 'JV_SWITCH_ON');
