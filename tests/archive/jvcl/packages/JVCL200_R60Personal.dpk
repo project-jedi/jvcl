@@ -315,6 +315,7 @@ contains
   JvKeyboardStates in '..\source\jvkeyboardStates.pas',
   JvObjPickerComp in '..\source\JvObjPickerComp.pas',
   JvListBox in '..\source\JvListBox.pas',
-  JvImageDrawThread in '..\source\JvImageDrawThread.pas';
+  JvImageDrawThread in '..\source\JvImageDrawThread.pas',
+  JvHidControllerClass in '..\source\JvHidControllerClass.pas';
 
 end.
