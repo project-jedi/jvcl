@@ -1,0 +1,99 @@
+object Form1: TForm1
+  Left = 478
+  Top = 390
+  Width = 338
+  Height = 159
+  VertScrollBar.Range = 141
+  HorzScrollBar.Range = 325
+  ActiveControl = JvButtonBox1
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = fbsSingle
+  Caption = 'Edits demo'
+  Color = clButton
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  Icon.Data = {
+    0000010001001010100001001000280100001600000028000000100000002000
+    00000100040000000000C0000000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
+    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
+    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
+    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
+    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
+    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
+  ParentFont = False
+  Position = poDesktopCenter
+  Scaled = False
+  OnShow = FormShow
+  PixelsPerInch = 96
+  object JvGradient1: TJvGradient
+    Left = 0
+    Top = 0
+    Width = 338
+    Height = 159
+    StartColor = clNormalHighlight
+    EndColor = clWhite
+  end
+  object JvFilenameBox1: TJvFilenameEdit
+    Left = 18
+    Top = 8
+    Width = 307
+    Height = 21
+    DoubleBuffered = False
+    AddQuotes = False
+    FilterIndex = 0
+    ButtonFlat = False
+    Color = clBase
+    TabOrder = 0
+  end
+  object JvDirectoryBox1: TJvDirectoryEdit
+    Left = 18
+    Top = 34
+    Width = 307
+    Height = 21
+    DoubleBuffered = False
+    ButtonFlat = False
+    Color = clBase
+    TabOrder = 1
+  end
+  object JvButtonBox1: TJvComboEdit
+    Left = 18
+    Top = 120
+    Width = 307
+    Height = 21
+    DoubleBuffered = False
+    ButtonFlat = False
+    Color = clBase
+    ImageKind = ikEllipsis
+    TabOrder = 3
+    OnButtonClick = JvButtonBox1ButtonClick
+  end
+  object JvDateEdit1: TJvDateEdit
+    Left = 18
+    Top = 61
+    Width = 307
+    Height = 21
+    DoubleBuffered = False
+    ButtonFlat = False
+    Color = clBase
+    PopupColor = clBase
+    TabOrder = 2
+  end
+  object JvCalcEdit1: TJvCalcEdit
+    Left = 18
+    Top = 88
+    Width = 307
+    Height = 26
+    DoubleBuffered = False
+    AutoSize = False
+    Color = clBase
+    FormatOnEditing = True
+    TabOrder = 4
+  end
+end

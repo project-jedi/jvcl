@@ -29,9 +29,10 @@ unit fEdits;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Mask,
-  JvEdit, JvToolEdit, JvBaseEdits, JvExMask;
+  QWindows, SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QMask,
+  JvQEdit, JvQToolEdit, JvQBaseEdits, JvQExMask, QComboEdits,
+  JvQExComboEdits, JvQExControls, JvQComponent, JvQGradient;
 
 type
   TForm1 = class(TForm)
@@ -40,7 +41,9 @@ type
     JvDateEdit1: TJvDateEdit;
     JvButtonBox1: TJvComboEdit;
     JvCalcEdit1: TJvCalcEdit;
+    JvGradient1: TJvGradient;
     procedure JvButtonBox1ButtonClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
   public
   end;
@@ -50,11 +53,24 @@ var
 
 implementation
 
-{$R *.dfm}
+{$R *.xfm}
 
 procedure TForm1.JvButtonBox1ButtonClick(Sender: TObject);
 begin
   ShowMessage('Button clicked');
+end;
+
+procedure TForm1.FormShow(Sender: TObject);
+var
+  i: integer;
+begin
+ for i := 0 to ControlCount-1 do
+   with Controls[i] do
+   begin
+     Hint := classname;
+     ShowHint := true;
+   end;
+
 end;
 
 end.

@@ -1,10 +1,10 @@
 program JvEdits;
 
 uses
-  Forms,
+  QForms,
   fEdits in 'fEdits.pas' {Form1};
 
-{$R *.RES}
+{$R *.res}
 
 begin
   Application.Initialize;
