@@ -154,14 +154,14 @@ type
 
     function GetDays(Year, Month: Word): string;
     procedure SetDays(Year, Month: Word; Value: string);
-    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure WMGetDlgCode(var Msg: TMessage); message WM_GETDLGCODE;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
   protected
+    procedure ColorChanged; override;
+    procedure FontChanged; override;
     procedure ConstrainedResize(var MinWidth: Integer;
       var MinHeight: Integer; var MaxWidth: Integer;
       var MaxHeight: Integer); override;
@@ -910,15 +910,15 @@ begin
   Change;
 end;
 
-procedure TJvCustomMonthCalendar.CMColorChanged(var Msg: TMessage);
+procedure TJvCustomMonthCalendar.ColorChanged;
 begin
-  inherited;
+  inherited ColorChanged;
   InvalidateRect(Handle, nil, True);
 end;
 
-procedure TJvCustomMonthCalendar.CMFontChanged(var Msg: TMessage);
+procedure TJvCustomMonthCalendar.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
 //  if HandleAllocated then
 //    Perform(WM_SIZE,0,0);
   InvalidateRect(Handle, nil, True);

@@ -101,7 +101,7 @@ type
     FCaptionOffsetLarge: Integer;
     {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
     FAnchorPos: TPoint;
-    {$ENDIF}
+    {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
     procedure SetCaptionFont(Value: TFont);
     procedure SetCaptionColor(Value: TColor);
     procedure SetFlat(Value: Boolean);
@@ -125,7 +125,7 @@ type
     function CanStartDrag: Boolean; virtual;
     procedure DoLeaveDrag; virtual;
     procedure WMNCLButtonUp(var Msg: TWMNCLButtonUp); message WM_NCLBUTTONUP;
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
+    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -726,7 +726,7 @@ begin
     Left := Left + X - FAnchorPos.X;
     Top := Top + Y - FAnchorPos.Y;
   end;
-  {$ENDIF}
+  {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
 end;
 
 procedure TJvCaptionPanel.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -749,7 +749,7 @@ begin
     FAnchorPos := Point(X, Y);
     {$ELSE}
     Perform(WM_SYSCOMMAND, SC_DRAGMOVE, 0);
-    {$ENDIF}
+    {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
   end;
 end;
 
@@ -773,7 +773,7 @@ begin
     MouseUp(mbLeft, [], Msg.XCursor, Msg.YCursor);
 end;
 
-procedure TJvCaptionPanel.CMDenySubClassing(var Msg: TMessage);
+procedure TJvCaptionPanel.CMDenySubClassing(var Msg: TCMDenySubClassing);
 begin
   Msg.Result := 1;
 end;
@@ -781,7 +781,6 @@ end;
 procedure TJvCaptionPanel.SetOutlookLook(const Value: Boolean);
 begin
   FOutlookLook := Value;
-
   if FOutlookLook then
   begin
     FCaptionOffsetSmall := 0;

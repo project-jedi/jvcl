@@ -36,8 +36,17 @@ unit JvColorButton;
 interface
 
 uses
-  Windows, Messages, Forms, SysUtils, Classes, Graphics, Controls,
-  Dialogs, ExtCtrls, StdCtrls, Buttons, Menus,
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  Graphics, Controls, Forms, StdCtrls, Dialogs, ExtCtrls, Buttons, Menus,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls, QButtons,
+  QMenus,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JvColorBox;
 
 type
@@ -47,12 +56,14 @@ type
     FIsDown: Boolean;
     FOtherCaption: string;
     FOnChange: TNotifyEvent;
-    FOptions: TColorDialogOptions;
     FCustomColors: TStrings;
     FEdgeWidth: Integer;
     FColor: TColor;
-    procedure SetEdgeWidth(Value: Integer);
+    {$IFDEF VCL}
+    FOptions: TColorDialogOptions;
     procedure SetOptions(Value: TColorDialogOptions);
+    {$ENDIF VCL}
+    procedure SetEdgeWidth(Value: Integer);
     procedure SetCustomColors(Value: TStrings);
     procedure SetOtherCaption(Value: string);
     procedure SetColor(const Value: TColor);
@@ -71,7 +82,9 @@ type
     property ArrowWidth;
     property OtherCaption: string read FOtherCaption write SetOtherCaption;
     property EdgeWidth: Integer read FEdgeWidth write SetEdgeWidth default 4;
+    {$IFDEF VCL}
     property Options: TColorDialogOptions read FOptions write SetOptions;
+    {$ENDIF VCL}
     property CustomColors: TStrings read FCustomColors write SetCustomColors;
     property Color: TColor read FColor write SetColor default clBlack;
     property Enabled;
@@ -100,14 +113,16 @@ constructor TJvColorButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   TabStop := False;
+  {$IFDEF VCL}
   FOptions := [];
+  {$ENDIF VCL}
   FCustomColors := TStringList.Create;
   Color := clBlack;
   FEdgeWidth := 4;
   Width := 42;
   Height := 21;
-  FColorForm := TJvClrFrm.CreateNew(Self);
-  TJvClrFrm(FColorForm).SetButton(Self);
+  FColorForm := TJvColorForm.CreateNew(Self);
+  TJvColorForm(FColorForm).SetButton(Self);
   FOtherCaption := RsOtherCaption;
   FColorForm.Visible := False;
 end;
@@ -125,9 +140,11 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   if (Button <> mbLeft) or not Enabled or not Assigned(FColorForm) then
     Exit;
-  with TJvClrFrm(FColorForm) do
+  with TJvColorForm(FColorForm) do
   begin
+    {$IFDEF VCL}
     ColorDialog.Options := FOptions;
+    {$ENDIF VCL}
     OtherBtn.Caption := FOtherCaption;
     ColorDialog.CustomColors.Assign(FCustomColors);
     if ArrowWidth = 0 then
@@ -187,11 +204,13 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvColorButton.SetOptions(Value: TColorDialogOptions);
 begin
   if FOptions <> Value then
     FOptions := Value;
 end;
+{$ENDIF VCL}
 
 procedure TJvColorButton.SetCustomColors(Value: TStrings);
 begin

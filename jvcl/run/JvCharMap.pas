@@ -26,17 +26,19 @@ Known Issues:
   only shows the first subrange
 
 -----------------------------------------------------------------------------}
+
 {$I jvcl.inc}
+
 unit JvCharMap;
 
 interface
 uses
-  Windows, Messages, Controls, SysUtils, Classes, Grids,
-  JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids,
+  JVCLVer, JvComponent, JvExGrids;
 
 type
   TJvCharMapValidateEvent = procedure(Sender: TObject; AChar: WideChar; var
-    Valid: boolean) of object;
+    Valid: Boolean) of object;
   TJvCharMapSelectedEvent = procedure(Sender: TObject; AChar: WideChar) of
     object;
   TJvCharMapUnicodeFilter = (
@@ -137,7 +139,7 @@ type
     ufCJKUnifiedIdeographsExtensionB,
     ufCJKCompatibilityIdeographsSupplement,
     ufTags
-    );
+  );
 
   TJvCharMapRange = class(TPersistent)
   private
@@ -155,138 +157,118 @@ type
     constructor Create;
   published
     // Setting Filter to ufUndefined, resets StartChar and EndChar to their previous values
-    property Filter: TJvCharMapUnicodeFilter read FFilter write SetFilter default
-      ufUndefined;
-    property StartChar: Cardinal read GetStartChar write SetStartChar default
-      33;
+    property Filter: TJvCharMapUnicodeFilter read FFilter write SetFilter default ufUndefined;
+    property StartChar: Cardinal read GetStartChar write SetStartChar default 33;
     property EndChar: Cardinal read GetEndChar write SetEndChar default 255;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
-{$IFDEF COMPILER6_UP}
-  TJvCustomCharMap = class(TCustomDrawGrid)
-{$ELSE}
-  TJvCustomCharMap = class(TCustomGrid)
-{$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  TJvCustomCharMap = class(TJvExCustomDrawGrid)
+  {$ELSE}
+  TJvCustomCharMap = class(TJvExCustomGrid)
+  {$ENDIF COMPILER6_UP}
   private
     FCharPanel: TCustomControl;
-    FShowZoomPanel: boolean;
+    FShowZoomPanel: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
-    FMouseIsDown: boolean;
+    FMouseIsDown: Boolean;
     FCharRange: TJvCharMapRange;
     procedure SetCharRange(const Value: TJvCharMapRange);
-    procedure SetPanelVisible(const Value: boolean);
+    procedure SetPanelVisible(const Value: Boolean);
     function GetCharacter: WideChar;
-    function GetColumns: integer;
-    procedure SetColumns(const Value: integer);
-    procedure SetShowZoomPanel(const Value: boolean);
-    function GetPanelVisible: boolean;
+    function GetColumns: Integer;
+    procedure SetColumns(const Value: Integer);
+    procedure SetShowZoomPanel(const Value: Boolean);
+    function GetPanelVisible: Boolean;
   private
     FAutoSizeHeight,
     FAutoSizeWidth,
-    FDrawing: boolean;
+    FDrawing: Boolean;
     FLocale: LCID;
     FOnValidateChar: TJvCharMapValidateEvent;
-    FShowShadow: boolean;
-    FShadowSize: integer;
+    FShowShadow: Boolean;
+    FShadowSize: Integer;
     FOnSelectChar: TJvCharMapSelectedEvent;
-    FHighlightInvalid: boolean;
-    procedure SetAutoSizeHeight(const Value: boolean);
-    procedure SetAutoSizeWidth(const Value: boolean);
+    FHighlightInvalid: Boolean;
+    procedure SetAutoSizeHeight(const Value: Boolean);
+    procedure SetAutoSizeWidth(const Value: Boolean);
     procedure SetLocale(const Value: LCID);
-    procedure SetShowShadow(const Value: boolean);
-    procedure SetShadowSize(const Value: integer);
-    procedure SetHighlightInvalid(const Value: boolean);
+    procedure SetShowShadow(const Value: Boolean);
+    procedure SetShadowSize(const Value: Integer);
+    procedure SetHighlightInvalid(const Value: Boolean);
   protected
-    procedure ShowCharPanel(ACol, ARow: integer); virtual;
+    procedure ShowCharPanel(ACol, ARow: Integer); virtual;
     procedure RecalcCells; virtual;
     procedure AdjustSize; reintroduce;
     procedure CreateHandle; override;
-    procedure DrawCell(ACol, ARow: Integer; ARect: TRect; AState:
-      TGridDrawState); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
-      Integer);
-      override;
+    procedure DrawCell(ACol, ARow: Integer; ARect: TRect; AState: TGridDrawState); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-      override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
 
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
-      override;
-    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
-      override;
-    function InGridRange(ACol, ARow:integer):boolean;virtual;
-    function InCharRange(AChar:WideChar):boolean;virtual;
+    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
+    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
+    function InGridRange(ACol, ARow:Integer):Boolean;virtual;
+    function InCharRange(AChar:WideChar):Boolean;virtual;
     function SelectCell(ACol, ARow: Longint): Boolean; override;
 
-    function GetChar(ACol, ARow: integer): WideChar; virtual;
-    function GetCharInfo(ACol, ARow: integer; InfoType: Cardinal): Cardinal;
-      overload; virtual;
-    function GetCharInfo(AChar: WideChar; InfoType: Cardinal): Cardinal;
-      overload; virtual;
-    function IsValidChar(AChar: WideChar): boolean; virtual;
+    function GetChar(ACol, ARow: Integer): WideChar; virtual;
+    function GetCharInfo(ACol, ARow: Integer; InfoType: Cardinal): Cardinal; overload; virtual;
+    function GetCharInfo(AChar: WideChar; InfoType: Cardinal): Cardinal; overload; virtual;
+    function IsValidChar(AChar: WideChar): Boolean; virtual;
     procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
     procedure WMHScroll(var Message: TWMHScroll); message WM_HSCROLL;
 
-    procedure CMFontchanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure FontChanged; override;
     procedure DoRangeChange(Sender: TObject);
     procedure DoSelectChar(AChar: WideChar); virtual;
-    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd);
-      message WM_ERASEBKGND;
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function CellSize: TSize;
-{$IFNDEF COMPILER6_UP}
+    {$IFNDEF COMPILER6_UP}
     procedure MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
-{$ENDIF}
+    {$ENDIF COMPILER6_UP}
 
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer; AHeight:
-      Integer); override;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+      AHeight: Integer); override;
   protected
     // The locale to use when looking up character info and translating codepages to Unicode.
     // Only effective on non-NT OS's (NT doesn't use codepages)
-    property Locale: LCID read FLocale write SetLocale default
-      LOCALE_USER_DEFAULT;
+    property Locale: LCID read FLocale write SetLocale default LOCALE_USER_DEFAULT;
     // The currently selected character
     property Character: WideChar read GetCharacter;
     // Shows/Hides the zoom panel
-    property PanelVisible: boolean read GetPanelVisible write SetPanelVisible
-      stored false;
+    property PanelVisible: Boolean read GetPanelVisible write SetPanelVisible stored False;
     // Determines whether the zoom panel is automatically shown when the user clicks a cell in the grid
-    // To actually show the zoom panel, set PanelVisible := true at run-time (or click a cell in the grid)
-    property ShowZoomPanel: boolean read FShowZoomPanel write SetShowZoomPanel
-      default true;
+    // To actually show the zoom panel, set PanelVisible := True at run-time (or click a cell in the grid)
+    property ShowZoomPanel: Boolean read FShowZoomPanel write SetShowZoomPanel default True;
 
     // Determines whether the zoom panel has a shadow or not
-    property ShowShadow: boolean read FShowShadow write SetShowShadow default
-      true;
+    property ShowShadow: Boolean read FShowShadow write SetShowShadow default True;
     // Determines the number of pixels the shadow is offset from the zoom panel.
     // On W2k/XP and with D6+, the shadow is alpha blended (semi-transparent)
-    property ShadowSize: integer read FShadowSize write SetShadowSize default 2;
+    property ShadowSize: Integer read FShadowSize write SetShadowSize default 2;
 
     // The range of characters to dispay in the grid
     property CharRange: TJvCharMapRange read FCharRange write SetCharRange;
     // Determines whether the width of the grid is auto adjusted to it' s content
-    property AutoSizeWidth: boolean read FAutoSizeWidth write SetAutoSizeWidth
-      default false;
+    property AutoSizeWidth: Boolean read FAutoSizeWidth write SetAutoSizeWidth default False;
     // Determines whether the height of the grid is auto adjusted to it' s content
-    property AutoSizeHeight: boolean read FAutoSizeHeight write SetAutoSizeHeight
-      default false;
+    property AutoSizeHeight: Boolean read FAutoSizeHeight write SetAutoSizeHeight default False;
     // The number of columns in the grid. Rows are adjusted automatically. Min. value is 1
-    property Columns: integer read GetColumns write SetColumns default 20;
-    property HighlightInvalid:boolean read FHighlightInvalid write SetHighlightInvalid default true;
+    property Columns: Integer read GetColumns write SetColumns default 20;
+    property HighlightInvalid:Boolean read FHighlightInvalid write SetHighlightInvalid default True;
     // Event that is called every time the grid needs to check if a character is valid.
     // If the character is invalid, it won't be drawn
-    property OnValidateChar: TJvCharMapValidateEvent read FOnValidateChar write
-      FOnValidateChar;
+    property OnValidateChar: TJvCharMapValidateEvent read FOnValidateChar write FOnValidateChar;
     // Event that is called every time the selection has changed
-    property OnSelectChar: TJvCharMapSelectedEvent read FOnSelectChar write
-      FOnSelectChar;
+    property OnSelectChar: TJvCharMapSelectedEvent read FOnSelectChar write FOnSelectChar;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
-      False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvCharMap = class(TJvCustomCharMap)
@@ -310,7 +292,7 @@ type
     property Anchors;
     property BiDiMode;
     property BorderStyle;
-    property DoubleBuffered default true;
+    property DoubleBuffered default True;
     property Color;
     property Constraints;
     property DragCursor;
@@ -336,9 +318,9 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property OnTopLeftChanged;
-{$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property OnEndDock;
     property OnEndDrag;
     property OnEnter;
@@ -358,20 +340,18 @@ type
   end;
 
 implementation
-uses
-  Forms, Graphics;
 
 const
   cShadowAlpha = 100;
 
 type
-  TAccessCanvas = class(TCanvas);
+  TOpenCanvas = class(TCanvas);
 
 procedure WideDrawText(Canvas: TCanvas; const Text: WideString; ARect: TRect;
   uFormat: Cardinal);
 begin
-  // (p3) TAccessCanvas bit stolen from Troy Wolbrink's TNT controls (not that it makes any difference AFAICS)
-  with TAccessCanvas(Canvas) do
+  // (p3) TOpenCanvas bit stolen from Troy Wolbrink's TNT controls (not that it makes any difference AFAICS)
+  with TOpenCanvas(Canvas) do
   begin
     Changing;
     RequiredState([csHandleValid, csFontValid, csBrushValid]);
@@ -383,89 +363,82 @@ begin
 end;
 
 type
-  TShadowWindow = class(TCustomControl)
+  TShadowWindow = class(TJvCustomControl)
   private
     procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
-
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateHandle; override;
-    procedure CMVisiblechanged(var Message: TMessage);
-      message CM_VISIBLECHANGED;
+    procedure VisibleChanged; override;
   public
-    property Visible default false;
+    property Visible default False;
     property Color default clBlack;
     constructor Create(AOwner: TComponent); override;
   end;
 
-  TCharZoomPanel = class(TCustomControl)
+  TCharZoomPanel = class(TJvCustomControl)
   private
     FShadow: TShadowWindow;
     FCharacter: WideChar;
     FEndChar: Cardinal;
     FOldWndProc: TWndMethod;
-    FWasVisible: boolean;
-    FShowShadow: boolean;
-    FShadowSize: integer;
+    FWasVisible: Boolean;
+    FShowShadow: Boolean;
+    FShadowSize: Integer;
     procedure SetCharacter(const Value: WideChar);
     procedure FormWindowProc(var Message: TMessage);
     procedure HookWndProc;
     procedure UnhookWndProc;
     procedure UpdateShadow;
-    procedure SetShowShadow(const Value: boolean);
-    procedure SetShadowSize(const Value: integer);
+    procedure SetShowShadow(const Value: Boolean);
+    procedure SetShadowSize(const Value: Integer);
   protected
-
     procedure Paint; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
-    procedure CMVisiblechanged(var Message: TMessage); message
-      CM_VISIBLECHANGED;
     procedure WMGetDlgCode(var Message: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
-    procedure CMFontchanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure VisibleChanged; override;
+    procedure FontChanged; override;
 
     procedure CreateHandle; override;
-    procedure WMWindowPosChanged(var Message: TWMWindowPosChanged);
-      message WM_WINDOWPOSCHANGED;
+    procedure WMWindowPosChanged(var Message: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
     procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Character: WideChar read FCharacter write SetCharacter;
-    property ShowShadow: boolean read FShowShadow write SetShowShadow default
-      true;
-    property ShadowSize: integer read FShadowSize write SetShadowSize;
+    property ShowShadow: Boolean read FShowShadow write SetShowShadow default True;
+    property ShadowSize: Integer read FShadowSize write SetShadowSize;
   end;
 
   { TShadowWindow }
 
 procedure TShadowWindow.CreateHandle;
 begin
-  inherited;
-{$IFDEF COMPILER6_UP}
+  inherited CreateHandle;
+  {$IFDEF COMPILER6_UP}
   if HandleAllocated then
   begin
     SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or
       WS_EX_LAYERED);
     SetLayeredWindowAttributes(Handle, 0, cShadowAlpha, LWA_ALPHA);
   end;
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 
 constructor TShadowWindow.Create(AOwner: TComponent);
 begin
-  inherited;
-  ControlStyle := [csFixedHeight, csFixedWidth, csNoDesignVisible,
-    csNoStdEvents];
+  inherited Create(AOwner);
+  ControlStyle := [csFixedHeight, csFixedWidth, csNoDesignVisible, csNoStdEvents];
   Color := clBlack;
-  Visible := false;
+  Visible := False;
 end;
 
 procedure TShadowWindow.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
+  inherited CreateParams(Params);
   with Params do
   begin
     Style := WS_POPUP;
@@ -478,31 +451,30 @@ begin
   Message.Result := HTTRANSPARENT;
 end;
 
-procedure TShadowWindow.CMVisiblechanged(var Message: TMessage);
+procedure TShadowWindow.VisibleChanged;
 begin
-  inherited;
+  inherited VisibleChanged;
   // make sure shadow is beneath zoom panel
   if Visible and (Parent <> nil) then
-    SetWindowPos(Handle, TWinControl(Owner).Handle, 0, 0, 0, 0, SWP_NOACTIVATE
-      or
-      SWP_NOMOVE or SWP_NOSIZE or SWP_NOOWNERZORDER);
+    SetWindowPos(Handle, TWinControl(Owner).Handle, 0, 0, 0, 0,
+      SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE or SWP_NOOWNERZORDER);
 end;
 
 { TJvCustomCharMap }
 
 procedure TJvCustomCharMap.AdjustSize;
 var
-  AWidth, AHeight: integer;
+  AWidth, AHeight: Integer;
 begin
   if HandleAllocated and (ColCount > 0) and (RowCount > 0) then
   begin
     AWidth := DefaultColWidth * (ColCount) + ColCount;
     AHeight := DefaultRowHeight * (RowCount) + RowCount;
-    if AutoSizeWidth and (ClientWidth <> AWidth) and (Align in [alNone, alLeft,
-      alRight]) then
+    if AutoSizeWidth and (ClientWidth <> AWidth) and
+       (Align in [alNone, alLeft, alRight]) then
       ClientWidth := AWidth;
-    if AutoSizeHeight and (ClientHeight <> AHeight) and (Align in [alNone,
-      alTop, alBottom]) then
+    if AutoSizeHeight and (ClientHeight <> AHeight) and
+       (Align in [alNone, alTop, alBottom]) then
       ClientHeight := AHeight;
   end;
 end;
@@ -513,71 +485,71 @@ begin
   Result.cy := DefaultRowHeight;
 end;
 
-procedure TJvCustomCharMap.CMFontchanged(var Message: TMessage);
+procedure TJvCustomCharMap.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   if AutoSize then AdjustSize;
   RecalcCells;
 end;
 
 constructor TJvCustomCharMap.Create(AOwner: TComponent);
 begin
-  inherited;
-  DoubleBuffered := true;
-  //  DefaultDrawing := false;
-  //  VirtualView := true;
+  inherited Create(AOwner);
+  DoubleBuffered := True;
+  //  DefaultDrawing := False;
+  //  VirtualView := True;
 
   FCharRange := TJvCharMapRange.Create;
   //  FCharRange.Filter := ufUndefined;
   //  FCharRange.SetRange($21,$FF);
   FCharRange.OnChange := DoRangeChange;
   FCharPanel := TCharZoomPanel.Create(self);
-  FCharPanel.Visible := false;
+  FCharPanel.Visible := False;
   FCharPanel.Parent := self;
 
   Options := [goVertLine, goHorzLine, {goDrawFocusSelected, } goThumbTracking];
-  FShowZoomPanel := true;
+  FShowZoomPanel := True;
   DefaultRowHeight := abs(Font.Height) + 12;
   DefaultColWidth := DefaultRowHeight - 5;
   FLocale := LOCALE_USER_DEFAULT;
-  FShowShadow := true;
+  FShowShadow := True;
   FShadowSize := 2;
-  FHighlightInvalid := true;
+  FHighlightInvalid := True;
   Columns := 20;
 end;
 
 procedure TJvCustomCharMap.CreateHandle;
 begin
-  inherited;
+  inherited CreateHandle;
   RecalcCells;
 end;
 
 destructor TJvCustomCharMap.Destroy;
 begin
   FCharRange.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvCustomCharMap.DoMouseWheelDown(Shift: TShiftState;
   MousePos: TPoint): Boolean;
 begin
-  // ignore the return value, because inherited always returns true
+  // ignore the return value, because inherited always returns True
   inherited DoMouseWheelDown(Shift, MousePos);
   Result := PanelVisible and SelectCell(Col, Row);
   if Result then
     ShowCharPanel(Col, Row);
-  Result := true;
+  Result := True;
 end;
 
 function TJvCustomCharMap.DoMouseWheelUp(Shift: TShiftState;
   MousePos: TPoint): Boolean;
 begin
-  // ignore the return value, because inherited always returns true
+  // ignore the return value, because inherited always returns True
   inherited DoMouseWheelUp(Shift, MousePos);
   Result := PanelVisible and SelectCell(Col, Row);
   if Result then
     ShowCharPanel(Col, Row);
-  Result := true;
+  Result := True;
 end;
 
 procedure TJvCustomCharMap.DoRangeChange(Sender: TObject);
@@ -599,11 +571,11 @@ var
   LineColor:TColor;
 begin
   if FDrawing then Exit;
-  FDrawing := true;
+  FDrawing := True;
   try
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   inherited;
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
   AChar := GetChar(ACol, ARow);
   Canvas.Brush.Color := Color;
   Canvas.Font := Font;
@@ -643,11 +615,11 @@ begin
     Canvas.Brush.Style := bsSolid;
   end;
   finally
-    FDrawing := false;
+    FDrawing := False;
   end;
 end;
 
-function TJvCustomCharMap.GetChar(ACol, ARow: integer): WideChar;
+function TJvCustomCharMap.GetChar(ACol, ARow: Integer): WideChar;
 begin
   if (ARow < 0) or (ACol < 0) then
     Result := WideChar(0)
@@ -661,7 +633,7 @@ begin
   Result := GetChar(Col, Row);
 end;
 
-function TJvCustomCharMap.GetCharInfo(ACol, ARow: integer; InfoType: Cardinal):
+function TJvCustomCharMap.GetCharInfo(ACol, ARow: Integer; InfoType: Cardinal):
   Cardinal;
 begin
   Result := GetCharInfo(GetChar(ACol, ARow), InfoType);
@@ -690,25 +662,25 @@ begin
   end;
 end;
 
-function TJvCustomCharMap.GetColumns: integer;
+function TJvCustomCharMap.GetColumns: Integer;
 begin
   Result := ColCount;
 end;
 
-function TJvCustomCharMap.GetPanelVisible: boolean;
+function TJvCustomCharMap.GetPanelVisible: Boolean;
 begin
-  if (FCharPanel <> nil) and (Parent <> nil) and not (csDesigning in
-    ComponentState) then
+  if (FCharPanel <> nil) and (Parent <> nil) and
+     not (csDesigning in ComponentState) then
     Result := FCharPanel.Visible
   else
-    Result := false;
+    Result := False;
 end;
 
-function TJvCustomCharMap.IsValidChar(AChar: WideChar): boolean;
+function TJvCustomCharMap.IsValidChar(AChar: WideChar): Boolean;
 var
   ACharInfo: Cardinal;
 begin
-  Result := false;
+  Result := False;
   if (AChar >= WideChar(CharRange.StartChar)) and (AChar <=
     WideChar(CharRange.EndChar)) then
   begin
@@ -722,7 +694,7 @@ end;
 
 procedure TJvCustomCharMap.KeyDown(var Key: Word; Shift: TShiftState);
 var
-  ACol, ARow: integer;
+  ACol, ARow: Integer;
 begin
   // store previous location
   ACol := Col;
@@ -736,7 +708,7 @@ begin
       if not (ssAlt in Shift) then
         PanelVisible := not PanelVisible;
     VK_ESCAPE:
-      PanelVisible := false;
+      PanelVisible := False;
     VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT, VK_HOME, VK_END:
       if PanelVisible then
         ShowCharPanel(Col, Row);
@@ -782,13 +754,13 @@ procedure TJvCustomCharMap.MouseDown(Button: TMouseButton; Shift: TShiftState;
   Y: Integer);
 var
   GC: TGridCoord;
-  ACol, ARow: integer;
+  ACol, ARow: Integer;
 begin
   inherited;
-  //  MouseCapture := true;
+  //  MouseCapture := True;
   if Button = mbLeft then
   begin
-    FMouseIsDown := true;
+    FMouseIsDown := True;
     GC := MouseCoord(X, Y);
     MouseToCell(X, Y, ACol, ARow);
     if SelectCell(ACol, ARow) then
@@ -801,7 +773,7 @@ end;
 
 procedure TJvCustomCharMap.MouseMove(Shift: TShiftState; X, Y: Integer);
 //var
-//  ACol, ARow: integer;
+//  ACol, ARow: Integer;
 begin
   inherited;
   {  if (csLButtonDown in ControlState) then
@@ -813,7 +785,6 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-
 procedure TJvCustomCharMap.MouseToCell(X, Y: Integer; var ACol,
   ARow: Integer);
 var
@@ -823,17 +794,17 @@ begin
   ACol := Coord.X;
   ARow := Coord.Y;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvCustomCharMap.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 var
-  ACol, ARow: integer;
+  ACol, ARow: Integer;
 begin
   inherited;
   if (Button = mbLeft) and FMouseIsDown then
   begin
-    FMouseIsDown := false;
+    FMouseIsDown := False;
     MouseToCell(X, Y, ACol, ARow);
     if SelectCell(ACol, ARow) then
       ShowCharPanel(ACol, ARow)
@@ -843,19 +814,19 @@ begin
   end;
 end;
 
-function TJvCustomCharMap.InCharRange(AChar: WideChar): boolean;
+function TJvCustomCharMap.InCharRange(AChar: WideChar): Boolean;
 begin
   Result := (AChar >= WideChar(CharRange.StartChar)) and (AChar <= WideChar(CharRange.EndChar));
 end;
 
-function TJvCustomCharMap.InGridRange(ACol, ARow: integer): boolean;
+function TJvCustomCharMap.InGridRange(ACol, ARow: Integer): Boolean;
 begin
   Result := (ACol >= 0) and (ARow >= 0) and (ACol < ColCount) and (ARow < RowCount);
 end;
 
 procedure TJvCustomCharMap.RecalcCells;
 var
-  ACells, ARows: integer;
+  ACells, ARows: Integer;
 begin
   if not HandleAllocated then Exit;
   FixedCols := 0;
@@ -890,7 +861,7 @@ begin
   end;
 end;
 
-procedure TJvCustomCharMap.SetAutoSizeHeight(const Value: boolean);
+procedure TJvCustomCharMap.SetAutoSizeHeight(const Value: Boolean);
 begin
   if FAutoSizeHeight <> Value then
   begin
@@ -900,7 +871,7 @@ begin
   end;
 end;
 
-procedure TJvCustomCharMap.SetAutoSizeWidth(const Value: boolean);
+procedure TJvCustomCharMap.SetAutoSizeWidth(const Value: Boolean);
 begin
   if FAutoSizeWidth <> Value then
   begin
@@ -916,7 +887,7 @@ begin
   RecalcCells;
   if HandleAllocated and PanelVisible and ((ClientHeight < DefaultRowHeight) or
     (ClientWidth < DefaultColWidth)) then
-    PanelVisible := false;
+    PanelVisible := False;
 end;
 
 procedure TJvCustomCharMap.SetCharRange(const Value: TJvCharMapRange);
@@ -924,7 +895,7 @@ begin
   //  FCharRange := Value;
 end;
 
-procedure TJvCustomCharMap.SetColumns(const Value: integer);
+procedure TJvCustomCharMap.SetColumns(const Value: Integer);
 begin
   if Value > 0 then
   begin
@@ -933,7 +904,7 @@ begin
   end;
 end;
 
-procedure TJvCustomCharMap.SetHighlightInvalid(const Value: boolean);
+procedure TJvCustomCharMap.SetHighlightInvalid(const Value: Boolean);
 begin
   if FHighlightInvalid <> Value then
   begin
@@ -951,7 +922,7 @@ begin
   end;
 end;
 
-procedure TJvCustomCharMap.SetPanelVisible(const Value: boolean);
+procedure TJvCustomCharMap.SetPanelVisible(const Value: Boolean);
 begin
   if (PanelVisible <> Value) and not (csDesigning in ComponentState) then
   begin
@@ -959,7 +930,7 @@ begin
   end;
 end;
 
-procedure TJvCustomCharMap.SetShadowSize(const Value: integer);
+procedure TJvCustomCharMap.SetShadowSize(const Value: Integer);
 begin
   if FShadowSize <> Value then
   begin
@@ -969,7 +940,7 @@ begin
   end;
 end;
 
-procedure TJvCustomCharMap.SetShowShadow(const Value: boolean);
+procedure TJvCustomCharMap.SetShowShadow(const Value: Boolean);
 begin
   if FShowShadow <> Value then
   begin
@@ -979,30 +950,30 @@ begin
   end;
 end;
 
-procedure TJvCustomCharMap.SetShowZoomPanel(const Value: boolean);
+procedure TJvCustomCharMap.SetShowZoomPanel(const Value: Boolean);
 begin
   if FShowZoomPanel <> Value then
   begin
     FShowZoomPanel := Value;
     if not FShowZoomPanel then
-      PanelVisible := false;
+      PanelVisible := False;
   end;
 end;
 
-procedure TJvCustomCharMap.ShowCharPanel(ACol, ARow: integer);
+procedure TJvCustomCharMap.ShowCharPanel(ACol, ARow: Integer);
 var
   R: TRect;
   P: TPoint;
 begin
   if not ShowZoomPanel or not SelectCell(ACol, ARow) then
   begin
-    PanelVisible := false;
+    PanelVisible := False;
     Exit;
   end;
   R := CellRect(ACol, ARow);
   Selection := TGridRect(Rect(ACol, ARow, ACol, ARow));
 {$IFDEF COMPILER6_UP}
-  FocusCell(ACol, ARow, false);
+  FocusCell(ACol, ARow, False);
 {$ELSE}
   Col := ACol;
   Row := ARow;
@@ -1015,7 +986,7 @@ begin
   FCharPanel.Left := P.X;
   FCharPanel.Top := P.Y;
   if not PanelVisible then
-    PanelVisible := true;
+    PanelVisible := True;
 end;
 
 procedure TJvCustomCharMap.WMEraseBkgnd(var Message: TWMEraseBkgnd);
@@ -1055,23 +1026,23 @@ end;
 
 { TCharZoomPanel }
 
-procedure TCharZoomPanel.CMFontchanged(var Message: TMessage);
+procedure TCharZoomPanel.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   // (p3) height should be quite larger than Font.Height and Width a little more than that
   Height := abs(Font.Height) * 4;
   Width := MulDiv(Height, 110, 100);
 end;
 
-procedure TCharZoomPanel.CMVisiblechanged(var Message: TMessage);
+procedure TCharZoomPanel.VisibleChanged;
 begin
-  inherited;
+  inherited VisibleChanged;
   if Visible and CanFocus then
     SetFocus;
   if ShowShadow then
     FShadow.Visible := Visible
   else
-    FShadow.Visible := false;
+    FShadow.Visible := False;
 end;
 
 constructor TCharZoomPanel.Create(AOwner: TComponent);
@@ -1080,13 +1051,13 @@ begin
   ControlStyle := ControlStyle + [csNoDesignVisible, csOpaque];
   SetBounds(0, 0, 52, 48);
   FShadow := TShadowWindow.Create(AOwner);
-  ShowShadow := true;
+  ShowShadow := True;
   FShadowSize := 2;
 end;
 
 procedure TCharZoomPanel.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
+  inherited CreateParams(Params);
   with Params do
   begin
     Style := WS_BORDER or WS_POPUP;
@@ -1097,7 +1068,7 @@ end;
 destructor TCharZoomPanel.Destroy;
 begin
   UnHookWndProc;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TCharZoomPanel.HookWndProc;
@@ -1120,7 +1091,7 @@ begin
   case Key of
     VK_ESCAPE:
       begin
-        Visible := false;
+        Visible := False;
         if Parent.CanFocus then Parent.SetFocus;
       end;
     VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN:
@@ -1145,7 +1116,7 @@ begin
           SC_MINIMIZE:
             begin
               FWasVisible := Visible;
-              Visible := false;
+              Visible := False;
             end;
           SC_RESTORE, SC_MAXIMIZE:
             if (Visible or FWasVisible) and
@@ -1226,12 +1197,11 @@ end;
 
 procedure TCharZoomPanel.CreateHandle;
 begin
-  inherited;
+  inherited CreateHandle;
   HookWndProc;
 end;
 
-procedure TCharZoomPanel.WMWindowPosChanged(
-  var Message: TWMWindowPosChanged);
+procedure TCharZoomPanel.WMWindowPosChanged(var Message: TWMWindowPosChanged);
 begin
   inherited;
   UpdateShadow;
@@ -1239,7 +1209,7 @@ end;
 
 procedure TCharZoomPanel.SetParent(AParent: TWinControl);
 begin
-  inherited;
+  inherited SetParent(AParent);
   if not (csDestroying in ComponentState) then
   begin
     if FShadow <> nil then
@@ -1248,7 +1218,7 @@ begin
   end;
 end;
 
-procedure TCharZoomPanel.SetShowShadow(const Value: boolean);
+procedure TCharZoomPanel.SetShowShadow(const Value: Boolean);
 begin
   if FShowShadow <> Value then
   begin
@@ -1271,11 +1241,11 @@ begin
       FShadow.Visible := Visible;
     end
     else
-      FShadow.Visible := false;
+      FShadow.Visible := False;
   end;
 end;
 
-procedure TCharZoomPanel.SetShadowSize(const Value: integer);
+procedure TCharZoomPanel.SetShadowSize(const Value: Integer);
 begin
   if FShadowSize <> Value then
   begin
@@ -1293,7 +1263,7 @@ end;
 
 constructor TJvCharMapRange.Create;
 begin
-  inherited;
+  inherited Create;
   FFilter := ufUndefined;
   FStartChar := 33;
   FEndChar := 255;

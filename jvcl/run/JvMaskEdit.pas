@@ -34,16 +34,16 @@ unit JvMaskEdit;
 interface
 
 uses
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows, Messages,
-{$ENDIF}
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Graphics, Controls, Mask, Forms,
-{$ENDIF}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Types, QGraphics, QControls, QMask, QForms,
-{$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent, JvTypes, JVCLVer, JvCaret, JvToolEdit, JvExMask;
 
 type
@@ -55,7 +55,7 @@ type
     {$IFDEF VCL}
     FOnSetFocus: TJvFocusChangeEvent;
     FOnKillFocus: TJvFocusChangeEvent;
-    {$ENDIF}
+    {$ENDIF VCL}
     FSaved: TColor;
     FHintColor: TColor;
     FOver: Boolean;
@@ -86,7 +86,9 @@ type
     procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
     procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
-    {$ENDIF}
+    procedure DoKillFocus(const ANextControl: TWinControl); virtual;
+    procedure DoSetFocus(const APreviousControl: TWinControl); virtual;
+    {$ENDIF VCL}
     procedure EnabledChanged; override;
     procedure MouseEnter(Control :TControl); override;
     procedure MouseLeave(Control :TControl); override;
@@ -95,12 +97,8 @@ type
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    {$ENDIF}
+    {$ENDIF VisualCLX}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    {$IFDEF VCL}
-    procedure DoKillFocus(const ANextControl: TWinControl); virtual;
-    procedure DoSetFocus(const APreviousControl: TWinControl); virtual;
-    {$ENDIF VCL}
     procedure SetCaret(const Value: TJvCaret);
     procedure SetDisabledColor(const Value: TColor); virtual;
     procedure SetDisabledTextColor(const Value: TColor); virtual;
@@ -109,14 +107,14 @@ type
     procedure NotifyIfChanged;
     procedure Change; override;
   public
+    {$IFDEF VCL}
+    procedure DefaultHandler(var Msg); override;
+    {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure CopyToClipboard; override;
     procedure CutToClipboard; override;
     procedure PasteFromClipboard; override;
     {$ENDIF VisualCLX}
-    {$IFDEF VCL}
-    procedure DefaultHandler(var Msg); override;
-    {$ENDIF VCL}
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -135,8 +133,7 @@ type
       write SetClipboardCommands default [caCopy..caUndo];
     property DisabledTextColor: TColor read FDisabledTextColor write
       SetDisabledTextColor default clGrayText;
-    property DisabledColor: TColor read FDisabledColor write SetDisabledColor
-      default clWindow;
+    property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
 
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
@@ -214,7 +211,7 @@ type
     property OnKillFocus;
     property OnStartDock;
     property OnEndDock;
-    {$ENDIF}
+    {$ENDIF VCL}
     property OnStartDrag;
   end;
 
@@ -272,7 +269,7 @@ begin
       Ctl3D := True;
       {$ELSE}
       BorderStyle := bsSunken3d;
-      {$ENDIF}
+      {$ENDIF VCL}
     FOver := True;
   end;
   inherited MouseEnter(Control);
@@ -290,7 +287,7 @@ begin
       Ctl3D := False;
       {$ELSE}
       BorderStyle := bsSingle; // maybe bsNone
-      {$ENDIF}
+      {$ENDIF VCL}
     FOver := False;
   end;
   inherited MouseLeave(Control);
@@ -304,7 +301,7 @@ begin
     Ctl3D := False;
     {$ELSE}
     BorderStyle := bsSingle; // maybe bsNone
-    {$ENDIF}
+    {$ENDIF VCL}
 end;
 
 procedure TJvCustomMaskEdit.CaretChanged(Sender: TObject);
@@ -373,7 +370,7 @@ end;
 procedure TJvCustomMaskEdit.WMCopy(var Msg: TWMCopy);
 {$ELSE}
 procedure TJvCustomMaskEdit.CopyTopClipboard;
-{$ENDIF}
+{$ENDIF VCL}
 begin
   if caCopy in ClipboardCommands then
     inherited;
@@ -383,7 +380,7 @@ end;
 procedure TJvCustomMaskEdit.WMCut(var Msg: TWMCut);
 {$ELSE}
 procedure TJvCustomMaskEdit.CutToClipboard;
-{$ENDIF}
+{$ENDIF VCL}
 begin
   if caCut in ClipboardCommands then
     inherited;
@@ -393,7 +390,7 @@ end;
 procedure TJvCustomMaskEdit.WMPaste(var Msg: TWMPaste);
 {$ELSE}
 procedure TJvCustomMaskEdit.PasteFromClipboard;
-{$ENDIF}
+{$ENDIF VCL}
 begin
   if caPaste in ClipboardCommands then
     inherited;
@@ -406,7 +403,7 @@ begin
   if caUndo in ClipboardCommands then
     inherited;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.WMPaint(var Msg: TWMPaint);
@@ -494,7 +491,7 @@ begin
     TControlCanvas(Canvas).StopPaint;
   end;
 end;
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
@@ -520,13 +517,13 @@ begin
         Free;
       end;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.WMSetFocus(var Msg: TMessage);
 {$ELSE}
 procedure TJvCustomMaskEdit.DoEnter;
-{$ENDIF}
+{$ENDIF VCL}
 begin
   FEntering := True;
   try
@@ -534,7 +531,7 @@ begin
     FCaret.CreateCaret;
     {$IFDEF VCL}
     DoSetFocus(FindControl(Msg.WParam));
-    {$ENDIF}
+    {$ENDIF VCL}
   finally
     FEntering := False;
   end;
@@ -544,7 +541,7 @@ end;
 procedure TJvCustomMaskEdit.WMKillFocus(var Msg: TMessage);
 {$ELSE}
 procedure TJvCustomMaskEdit.DoExit;
-{$ENDIF}
+{$ENDIF VCL}
 begin
   FLeaving := True;
   try
@@ -552,7 +549,7 @@ begin
     inherited;
     {$IFDEF VCL}
     DoKillFocus(FindControl(Msg.WParam));
-    {$ENDIF}
+    {$ENDIF VCL}
   finally
     FLeaving := False;
   end;
@@ -624,7 +621,7 @@ begin
   if Assigned(FOnSetFocus) then
     FOnSetFocus(Self, APreviousControl);
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 procedure TJvCustomMaskEdit.Change;
 begin

@@ -32,15 +32,16 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages,  Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, Types, JvTypes,
+  Types, QGraphics, QControls, QForms, QDialogs, JvTypes,
   {$ENDIF VisualCLX}
-  SysUtils, Classes;
+  SysUtils, Classes,
+  JvComponent;
 
 type
-  TJvBitmapButton = class(TGraphicControl)
+  TJvBitmapButton = class(TJvGraphicControl)
   private
     FBitmap: TBitmap;
     FLighter: TBitmap;
@@ -71,17 +72,12 @@ type
     procedure UpdateBitmaps;
     procedure SetDarkerFontColor(const Value: TColor);
     procedure SetLighterFontColor(const Value: TColor);
-    {$IFDEF VCL}
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    {$ENDIF VCL}
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure Click; override;
-    {$IFDEF VisualCLX}
     procedure MouseLeave(AControl: TControl); override;
-    {$ENDIF VisualCLX}
+    procedure Click; override;
     procedure Loaded; override;
     procedure Resize; override;
   public
@@ -303,12 +299,7 @@ begin
   end;
 end;
 
-{$IFDEF VisualCLX}
 procedure TJvBitmapButton.MouseLeave(AControl: TControl);
-{$ENDIF}
-{$IFDEF VCL}
-procedure TJvBitmapButton.CMMouseLeave(var Msg: TMessage);
-{$ENDIF}
 begin
   FMouseOver := False;
   Repaint;
