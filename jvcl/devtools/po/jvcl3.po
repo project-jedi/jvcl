@@ -7,8 +7,8 @@
 msgid ""
 msgstr "#-#-#-#-#  ..\\..\\run\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-10-04 01:32\n"
-"PO-Revision-Date: 2003-10-04 01:32\n"
+"POT-Creation-Date: 2003-10-04 19:45\n"
+"PO-Revision-Date: 2003-10-04 19:45\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,8 +16,8 @@ msgstr "#-#-#-#-#  ..\\..\\run\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "X-Generator: Dxgettext 1.1.1\n"
 "#-#-#-#-#  ..\\..\\design\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-10-04 01:31\n"
-"PO-Revision-Date: 2003-10-04 01:31\n"
+"POT-Creation-Date: 2003-10-04 19:44\n"
+"PO-Revision-Date: 2003-10-04 19:44\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,8 +25,8 @@ msgstr "#-#-#-#-#  ..\\..\\run\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "X-Generator: Dxgettext 1.1.1\n"
 "#-#-#-#-#  ..\\..\\common\\default.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-10-04 01:31\n"
-"PO-Revision-Date: 2003-10-04 01:31\n"
+"POT-Creation-Date: 2003-10-04 19:44\n"
+"PO-Revision-Date: 2003-10-04 19:44\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4127,6 +4127,9 @@ msgstr ""
 msgid "Jv Wizard"
 msgstr ""
 
+msgid "Version 1.70"
+msgstr ""
+
 msgid "JvWizard, the easy to use Wizard VCL "
 "component"
 msgstr ""
@@ -4149,7 +4152,127 @@ msgstr ""
 msgid "Delete selected page(s)"
 msgstr ""
 
+msgid "Disconnected"
+msgstr ""
+
+msgid "%d is not within the valid range of "
+"%d..%d"
+msgstr ""
+
+msgid "Creates a Band Object DLL Project."
+msgstr ""
+
+msgid "Band Object DLL Wizard"
+msgstr ""
+
+msgid "Band name has to be a valid identifier!"
+msgstr ""
+
+msgid "Please enter band description!"
+msgstr ""
+
+msgid "Band Name\n"
+"Enter a band name, e.g. MyBand.\n"
+"This will be the class name of the band object.\n"
+"No need to prefix it with 'T' as it will be generated.Description\n"
+"Enter a menuitem text, e.g. &My Band\n"
+"This text will appear in the Explorer Bar or Toolbars menu.Band Type\n"
+"Select the type of band object to create."
+msgstr ""
+
+msgid "Preview..."
+msgstr ""
+
 msgid "Notifications..."
+msgstr ""
+
+msgid "Item editor"
+msgstr ""
+
+msgid "Enabled"
+msgstr ""
+
+msgid "Mapping does not exist for this color "
+"provider."
+msgstr ""
+
+msgid "JvCsvDataSet - Select CSV File to Open"
+msgstr ""
+
+msgid "You haven't actually changed anything. If you made changes and didn't "
+"click Modify, the changes have not been made yet. (Click no, to go "
+"back.) \n"
+"Are you sure you want to close the CSV Fields editor? "
+msgstr ""
+
+msgid "Confirm?"
+msgstr ""
+
+msgid "Must type a valid field name and select a field type. Field name must "
+"start with a letter A-Z and consist of letters and numbers only. All "
+"field names will be converted to uppercase before being "
+"used."
+msgstr ""
+
+msgid "Add Failed"
+msgstr ""
+
+msgid "%s: Field name is not a valid identifier"
+msgstr ""
+
+msgid "Can't add two fields with the same name! Select existing item and "
+"click 'Modify' button to change its "
+"properties."
+msgstr ""
+
+msgid "Update Failed"
+msgstr ""
+
+msgid "No item is selected in the fields list. You can't update "
+"nothing."
+msgstr ""
+
+msgid "Modifying the currently selected item would create two items with the "
+"same name."
+msgstr ""
+
+msgid "Consumer does not support context selection."
+msgstr ""
+
+msgid "IJvDataConsumerProvider is not supported by the specified "
+"consumer."
+msgstr ""
+
+msgid "DataProvider Item Selector"
+msgstr ""
+
+msgid "DataProvider Context Manager"
+msgstr ""
+
+msgid "All Files (*.*)|*.*"
+msgstr ""
+
+msgid "DataProvider Designer"
+msgstr ""
+
+msgid "Internal error: unable to retrieve context "
+"list."
+msgstr ""
+
+msgid "Specified provider is not a TComponent "
+"descendant."
+msgstr ""
+
+msgid "Tree designer..."
+msgstr ""
+
+msgid "Context manager..."
+msgstr ""
+
+msgid "Invalid verb#: %d"
+msgstr ""
+
+msgid "<unknown>"
 msgstr ""
 
 msgid "Select Date"
@@ -4198,10 +4321,83 @@ msgstr ""
 msgid "IJvDataItemsManagement is not supported"
 msgstr ""
 
+msgid "All files (*.*)|*.*"
+msgstr ""
+
+msgid "&Strip file path"
+msgstr ""
+
+msgid "Executable files (*.exe)|*.exe|All files "
+"(*.*)|*.*"
+msgstr ""
+
 msgid "Items"
 msgstr ""
 
 msgid "%s Editor..."
+msgstr ""
+
+msgid "Add button"
+msgstr ""
+
+msgid "MS Office 2000"
+msgstr ""
+
+msgid "MS Enterprise Manager Wizard"
+msgstr ""
+
+msgid "Dialog Mode"
+msgstr ""
+
+msgid "Edit component list..."
+msgstr ""
+
+msgid "RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt"
+msgstr ""
+
+msgid "Load RTF file"
+msgstr ""
+
+msgid "Preview RTF text"
+msgstr ""
+
+msgid "Edit &Label..."
+msgstr ""
+
+msgid "Logic Element: %s"
+msgstr ""
+
+msgid "[ not defined ]"
+msgstr ""
+
+msgid "Edit component..."
+msgstr ""
+
+msgid "Edit report..."
+msgstr ""
+
+msgid "Preview report..."
+msgstr ""
+
+msgid "Delete object?"
+msgstr ""
+
+msgid "Confirm"
+msgstr ""
+
+msgid "Page Preview"
+msgstr ""
+
+msgid "Edit params..."
+msgstr ""
+
+msgid "Standard/Flat"
+msgstr ""
+
+msgid "Web"
+msgstr ""
+
+msgid "Update all edit control"
 msgstr ""
 
 msgid "Please select \"JvHLEditor\" first"
@@ -4210,10 +4406,61 @@ msgstr ""
 msgid "Cannot edit"
 msgstr ""
 
+msgid "Execute"
+msgstr ""
+
+msgid "Commit?"
+msgstr ""
+
+msgid "Zoom Edit Window"
+msgstr ""
+
+msgid "All files"
+msgstr ""
+
+msgid "Version %s"
+msgstr ""
+
+msgid "Add page"
+msgstr ""
+
+msgid "Activate"
+msgstr ""
+
+msgid "Add Button"
+msgstr ""
+
+msgid "Scroll Up"
+msgstr ""
+
+msgid "Scroll Down"
+msgstr ""
+
+msgid "Add Page"
+msgstr ""
+
+msgid "Next Page"
+msgstr ""
+
+msgid "Previous Page"
+msgstr ""
+
+msgid "Send"
+msgstr ""
+
+msgid "Address"
+msgstr ""
+
 msgid "OutlookBar Editor..."
 msgstr ""
 
+msgid "Designer is nil in FormClosed"
+msgstr ""
+
 msgid "Editing %s"
+msgstr ""
+
+msgid "Create link to page %d"
 msgstr ""
 
 msgid "%s does not support the required interface "
@@ -4232,16 +4479,95 @@ msgstr ""
 msgid "&Delete Page"
 msgstr ""
 
+msgid "Load picture"
+msgstr ""
+
+msgid "Save picture as"
+msgstr ""
+
+msgid "The settings above will create the following project:\n"
+"\n* A project called Plg%0:s.%1:s\n"
+"* A unit called Plugin%0:s, containing the data module "
+"T%0:s."
+msgstr ""
+
+msgid "Jv Plugin Wizard"
+msgstr ""
+
+msgid "Projects"
+msgstr ""
+
+msgid "New Plugin"
+msgstr ""
+
+msgid "{ Private declarations }"
+msgstr ""
+
+msgid "{ Public declarations }"
+msgstr ""
+
+msgid "// IMPORTANT NOTE: If you change the name of the Plugin container,\n"
+"// you must set the type below to the same type. (Delphi changes\n"
+"// the declaration, but not the procedure itself. Both the return\n"
+"// type and the type created must be the same as the declared type "
+"above."
+msgstr ""
+
+msgid "JEDI Plugin Wizard"
+msgstr ""
+
+msgid "Create Preview"
+msgstr ""
+
+msgid "Clear Preview"
+msgstr ""
+
+msgid "Invalid schedule settings found."
+msgstr ""
+
+msgid "Stop"
+msgstr ""
+
+msgid "Event editor..."
+msgstr ""
+
+msgid "Add Band"
+msgstr ""
+
+msgid "Add digit"
+msgstr ""
+
+msgid "Remove digit"
+msgstr ""
+
+msgid "Edit mapping..."
+msgstr ""
+
+msgid "Segmented LED Display Mapping Editor"
+msgstr ""
+
 msgid "Line"
 msgstr ""
 
 msgid "Lines"
 msgstr ""
 
+msgid "Grid Layout"
+msgstr ""
+
+msgid "Custom Draw"
+msgstr ""
+
+msgid "Items Editor..."
+msgstr ""
+
 msgid "Events..."
 msgstr ""
 
-msgid "Preview..."
+msgid "Links Editor..."
+msgstr ""
+
+msgid "JvValidators Items Editor..."
 msgstr ""
 
 msgid "Page List ..."
@@ -4251,12 +4577,6 @@ msgid "New Welcome Page"
 msgstr ""
 
 msgid "New Interior Page"
-msgstr ""
-
-msgid "Next Page"
-msgstr ""
-
-msgid "Previous Page"
 msgstr ""
 
 msgid "Delete Page"
@@ -4275,9 +4595,6 @@ msgid "RegAuto property is not assigned"
 msgstr ""
 
 msgid "Browse"
-msgstr ""
-
-msgid "All files (*.*)|*.*"
 msgstr ""
 
 msgid "Select a Date"
