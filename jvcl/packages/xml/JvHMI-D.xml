@@ -3,9 +3,13 @@
   <Description>JVCL HMI Controls design time unit</Description>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50</C5PFlags>
   <C6PFlags>-LUDesignIde</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvHMI-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="C6,C6p" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
