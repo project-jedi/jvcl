@@ -622,7 +622,6 @@ procedure TJvgExportXML.Execute;
 var
   RecNo, RecCount: Integer;
   XML: TJvSimpleXML;
-  Root: TJvSimpleXMLElemClassic;
   Header: TJvSimpleXMLElemClassic;
   Table: TJvSimpleXMLElemClassic;
   Field: TJvSimpleXMLElemClassic;
@@ -671,12 +670,12 @@ begin
   Records := CreateNode('Records', XML.Root);
   XMLRecord := CreateNode('Record', Records);
   DataSet.First;
-  RecCount := 0;
+  RecNo := 0;
   while not DataSet.EOF do
   begin
     Inc(RecNo);
     XMLRecord := CreateNode('Record', Records);
-    XMLRecord.Properties.Add('Nr', RecCount);
+    XMLRecord.Properties.Add('Nr', RecNo);
     AllowExportRecord := true;
     if Assigned(OnExportRecord) then
       OnExportRecord(self, AllowExportRecord);
