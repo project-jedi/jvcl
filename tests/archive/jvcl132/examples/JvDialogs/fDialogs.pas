@@ -6,51 +6,27 @@ uses
   JvCopyError, JvCommonDialogD, JvDiskPrompt, JvProgressDlg, JvCalculator,
   JvSerialDlg, JvLoginDlg, JvExchListboxes, JvFatalAppExit, JvMessageBeep,
   JvMessageBox, JvPasswordForm, JvDisconnectNetwork, JvConnectNetwork,
-  JvAddPrinter, JvOpenAs, JvInputBox, JvSelectDirectory, JvBaseDlg,
-  JvShellAbout, JvBrowseFolder, JvFindFiles, JvFormatDrive,
-  JvSaveDialog2, JvOpenDialog2, JvOutOfSpaceDlg, JvOutOfMemoryDlg,
-  JvObjectPropertiesDlg, JvFindComputerDlg, JvRunDlg, JvChooseIconDlg,
-  JvRestartDlg, JvShutdownDlg, JvComponent
-  //, JvDialogs
+  JvInputBox, JvSelectDirectory, JvBaseDlg,
+  JvFindFiles, JvComponent
+  , JvWinDialogs
+//  ,  JvAddPrinter
+  ,  ComCtrls, JvBrowseFolder,
+  JvPageSetupTitled, JvPageSetup, JvAddPrinter
   ;
 
 type
   TForm1 = class(TForm)
-    JvFormatDrive1: TJvFormatDrive;
-    Button1: TButton;
-    Button2: TButton;
+    JvFormatDrive1: TJvFormatDialog;
     JvFindFiles1: TJvFindFiles;
-    JvBrowseFolder1: TJvBrowseFolder;
-    Button3: TButton;
-    Button4: TButton;
-    Button5: TButton;
-    Button6: TButton;
-    Button7: TButton;
-    Button8: TButton;
-    JvShellAbout1: TJvShellAbout;
+    JvBrowseFolder1: TJvBrowseFolderDialog; //TJvShellAbout;
     JvSelectDirectory1: TJvSelectDirectory;
     JvInputBox1: TJvInputBox;
-    JvOpenAs1: TJvOpenAs;
-    Button9: TButton;
-    Button10: TButton;
-    Button11: TButton;
-    Button12: TButton;
-    Button13: TButton;
-    Button14: TButton;
-    Button15: TButton;
-    JvAddPrinter1: TJvAddPrinter;
     JvConnectNetwork1: TJvConnectNetwork;
     JvDisconnectNetwork1: TJvDisconnectNetwork;
     JvPasswordForm1: TJvPasswordForm;
     JvMessageBox1: TJvMessageBox;
     JvMessageBeep1: TJvMessageBeep;
     JvFatalAppExit1: TJvFatalAppExit;
-    Button16: TButton;
-    Button17: TButton;
-    Button18: TButton;
-    Button19: TButton;
-    Button20: TButton;
-    Button21: TButton;
     JvExchListboxes1: TJvExchListboxes;
     JvLoginDlg1: TJvLoginDlg;
     JvSerialDlg1: TJvSerialDlg;
@@ -58,37 +34,78 @@ type
     JvProgressDlg1: TJvProgressDlg;
     JvDiskPrompt1: TJvDiskPrompt;
     JvCopyError1: TJvCopyError;
-    Button22: TButton;
-    Button23: TButton;
     JvDeleteError1: TJvDeleteError;
     JvRenameError1: TJvRenameError;
-    JvShutdownDlg1: TJvShutdownDlg;
-    JvRestartDlg1: TJvRestartDlg;
-    JvChooseIconDlg1: TJvChooseIconDlg;
-    JvRunDlg1: TJvRunDlg;
-    JvFindComputerDlg1: TJvFindComputerDlg;
-    JvObjectPropertiesDlg1: TJvObjectPropertiesDlg;
-    JvOutOfMemoryDlg1: TJvOutOfMemoryDlg;
-    JvOutOfSpaceDlg1: TJvOutOfSpaceDlg;
-    JvOpenDialog1: TJvOpenDialog2;
-    JvSaveDialog1: TJvSaveDialog2;
-    Button24: TButton;
+    JvShutdownDlg1: TJvExitWindowsDialog;
+    JvShellAboutDialog1: TJvShellAboutDialog;
+    JvAddHardwareDialog1: TJvAddHardwareDialog;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Button1: TButton;
+    Button2: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    Button8: TButton;
+    Button9: TButton;
+    Button10: TButton;
+    Button32: TButton;
+    Button33: TButton;
     Button25: TButton;
+    Button24: TButton;
     Button26: TButton;
     Button27: TButton;
     Button28: TButton;
     Button29: TButton;
     Button30: TButton;
     Button31: TButton;
-    Button32: TButton;
-    Button33: TButton;
+    Button11: TButton;
+    Button12: TButton;
+    Button13: TButton;
+    Button14: TButton;
+    Button16: TButton;
+    Button17: TButton;
+    Button18: TButton;
+    Button19: TButton;
+    Button20: TButton;
+    Button21: TButton;
+    Button22: TButton;
+    Button23: TButton;
+    JvChooseIconDlg1: TJvChangeIconDialog;
+    JvRunDlg1: TJvRunDialog;
+    JvFindComputerDlg1: TJvComputerNameDialog;
+    JvObjectPropertiesDlg1: TJvObjectPropertiesDialog;
+    JvOutOfMemoryDlg1: TJvOutOfMemoryDialog;
+    JvOutOfSpaceDlg1: TJvDiskFullDialog;
+    JvOpenDialog1: TJvOpenDialog2000;
+    JvSaveDialog1: TJvSaveDialog2000;
+    Button15: TButton;
+    Button34: TButton;
+    Button6: TButton;
+    JvPageSetupDialog1: TJvPageSetupDialog;
+    JvPageSetupTitledDialog1: TJvPageSetupTitledDialog;
+    JvBrowseFolder2: TJvBrowseFolder;
+    Button35: TButton;
+    JvOrganizeFavoritesDialog1: TJvOrganizeFavoritesDialog;
+    JvControlPanelDialog1: TJvControlPanelDialog;
+    JvAppletDialog1: TJvAppletDialog;
+    JvNewLinkDialog1: TJvNewLinkDialog;
+    JvOpenWithDialog1: TJvOpenWithDialog;
+    JvAddPrinterDialog1: TJvAddPrinterDialog;
+    Button36: TButton;
+    Button37: TButton;
+    Button38: TButton;
+    Button39: TButton;
+    Button40: TButton;
+    Button3: TButton;
+    Button7: TButton;
+    Button41: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
-    procedure Button7Click(Sender: TObject);
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
@@ -115,6 +132,14 @@ type
     procedure Button31Click(Sender: TObject);
     procedure Button32Click(Sender: TObject);
     procedure Button33Click(Sender: TObject);
+    procedure Button35Click(Sender: TObject);
+    procedure Button39Click(Sender: TObject);
+    procedure Button38Click(Sender: TObject);
+    procedure Button36Click(Sender: TObject);
+    procedure Button37Click(Sender: TObject);
+    procedure Button40Click(Sender: TObject);
+    procedure Button7Click(Sender: TObject);
+    procedure Button41Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -127,7 +152,7 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  JvFormatDrive1.FormatDrive('a')
+  JvFormatDrive1.Execute;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -142,7 +167,7 @@ end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 begin
-  JvShellAbout1.ShowModal;
+  JvShellAboutDialog1.execute;
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -155,14 +180,10 @@ begin
   JvInputBox1.Execute;
 end;
 
-procedure TForm1.Button7Click(Sender: TObject);
-begin
-  JvOpenAs1.Execute;
-end;
-
 procedure TForm1.Button8Click(Sender: TObject);
 begin
-  JvAddPrinter1.Execute;
+{ TODO : BUG - This routine doesn't work }
+//JvAddPrinterDialog1.execute;
 end;
 
 procedure TForm1.Button9Click(Sender: TObject);
@@ -256,7 +277,7 @@ end;
 
 procedure TForm1.Button25Click(Sender: TObject);
 begin
-  JvRestartDlg1.Execute;
+  JvAddHardwareDialog1.Execute;
 end;
 
 procedure TForm1.Button26Click(Sender: TObject);
@@ -275,7 +296,10 @@ begin
 end;
 
 procedure TForm1.Button29Click(Sender: TObject);
+var St : string;
 begin
+  St := GetSpecialFolderpath('My Computer',false);
+  JvObjectPropertiesDlg1.ObjectName := St;
   JvObjectPropertiesDlg1.Execute;
 end;
 
@@ -297,6 +321,58 @@ end;
 procedure TForm1.Button33Click(Sender: TObject);
 begin
   JvSaveDialog1.Execute;
+end;
+
+procedure TForm1.Button35Click(Sender: TObject);
+begin
+  JvBrowseFolder2.Execute;
+end;
+
+procedure TForm1.Button39Click(Sender: TObject);
+begin
+JvOrganizeFavoritesDialog1.execute;
+end;
+
+procedure TForm1.Button38Click(Sender: TObject);
+var
+  WinDir: array [0..255] of char;
+  FileToFind: string;
+begin
+  GetWindowsDirectory(WinDir, SizeOf(WinDir));
+
+JvOpenDialog1.Filter := 'Applet files (*.cpl)|*.cpl';
+JvOpenDialog1.InitialDir:= ExtractFileDrive(StrPas(WinDir));
+if JvOpenDialog1.Execute then
+begin
+JvAppletDialog1.AppletName:= JvOpenDialog1.FileName;
+JvAppletDialog1.Execute;
+end;
+
+end;
+
+procedure TForm1.Button36Click(Sender: TObject);
+begin
+JvControlPanelDialog1.Execute;
+end;
+
+procedure TForm1.Button37Click(Sender: TObject);
+begin
+JvNewLinkDialog1.Execute;
+end;
+
+procedure TForm1.Button40Click(Sender: TObject);
+begin
+JvOpenWithDialog1.Execute;
+end;
+
+procedure TForm1.Button7Click(Sender: TObject);
+begin
+JvPageSetupDialog1.Execute;
+end;
+
+procedure TForm1.Button41Click(Sender: TObject);
+begin
+JvPageSetupTitledDialog1.Execute;
 end;
 
 end.

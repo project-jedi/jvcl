@@ -29,8 +29,7 @@ package JVCL100_D50;
 requires
   JVCL100_R50,
   Vcldb50,
-  vcl50,
-  djcl50;
+  vcl50;
 
 contains
   JVCLReg in '..\Source\JVCLReg.pas',

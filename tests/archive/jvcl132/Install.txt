@@ -1,13 +1,17 @@
-Install notes for JEDI-VCL (JVCL) for Delphi 6
-======================================
+Install notes for JEDI-VCL (JVCL) Version 1.30 for Delphi 6
+===========================================
+
+(NOTE: this release does NOT support Delphi 5. Any help to make it D5-compatible will be appreciated)
+
 
 1) IMPORTANT - in order to use JVCL, you need to have JCL (JEDI Code Library) INSTALLED on your computer. JCL is available from http://sourceforge.net/projects/jcl/
 
-2) Unzip the JVCL files to a subdirectory of your choice 
+2) Unzip the JVCL files to a subdirectory of your choice (IMPORTANT: it should be a sibling to the JCL subdirectory)
 
 3) In Delphi open the appropriate design package that is in the "Packages" subdirectory. 
     a) for Delphi 6 it's "JVCL100_D6.dpk" 
     b) for Delphi 6 Personal it's "JVCL100_D60Personal.dpk"
+
 
 4) Click on the "Install" button
 

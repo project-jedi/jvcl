@@ -11,44 +11,117 @@ ROOT = $(MAKEDIR)\..
 SRC = ..\..\Source
 DCU = ..\..\Dcu
 BIN = ..\..\Bin
+JCL = ..\..\..\JCL\source
 DRC = $&.drc
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(SRC) -n$(DCU) -r$(SRC) -q -u$(SRC) -w
-DCCU = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(SRC) -n$(DCU) -q -w $**
+DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(SRC) -i$(DCU) -n$(DCU) -r$(SRC) -q -u$(SRC) -u$(JCL) -w
+DCCU = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(SRC) -i$(DCU) -n$(DCU) -q -w $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
 default: \
-  UseCase.exe \
-  WebMapper.exe \
-  JvAniProj.exe \
-  JvBrowserFolder.exe \
-  JvClipboardViewerProj.exe \
-  JvDataEmbeddedProj.exe \
-  JvDialogs.exe \
-  JvEdits.exe \
-  JvInstallProj.exe \
-  JvLinkLabelDemo.exe \
-  JvMousePositionnerProj.exe \
-  JvMruList.exe \
-  JvOutlookPanelProj.exe \
-  JvPlayListProj.exe \
-  JvScreenCaptureProj.exe \
-  JvSearchFileProj.exe \
-  JvSystemPopupProj.exe \
-  JvThreadProj.exe \
-  JvTreeViewAsMenu.exe \
-  JvWindowsTitleProj.exe \
-  JvZoomProj.exe
+ArrowButtonDemo.exe \
+BmpAnimDemo.exe \
+CaptionButtonDemo.exe \
+ChangeNotifyDemo.exe \
+ColorButtonDemo.exe \
+ContentScrollerDemo.exe \
+DBDTPDemo.exe \
+FileDirDemo.exe \
+FindReplaceDemo.exe \
+ImageWindowDemo.exe \
+Install2LabelDemo.exe \
+JvAniProj.exe \
+JvBrowserFolder.exe \
+JvClipboardViewerProj.exe \
+JvDataEmbeddedProj.exe \
+JvDialogs.exe \
+JvEdits.exe \
+JvHtmlParserProj.exe \
+JvLinkLabelDemo.exe \
+JvMousePositionnerProj.exe \
+JvMruList.exe \
+JvOutlookPanelProj.exe \
+JvPlayListProj.exe \
+JvScreenCaptureProj.exe \
+JvSearchFileProj.exe \
+JvSystemPopupProj.exe \
+JvThreadProj.exe \
+JvTreeViewAsMenu.exe \
+JvWinDialogsDemo.exe \
+JvWindowsTitleProj.exe \
+JvZoomProj.exe \
+ListCombDemo.exe \
+MonthCalendarDemo.exe \
+OLBarDemo.exe \
+ProfilerDemo.exe \
+RegEditDemo.exe \
+ScrollWinDemo.exe \
+SimpleTLTest1.exe \
+TimeLineDemo.exe \
+TipsDemo.exe \
+TransparentButtonDemo.exe \
+UseCase.exe \
+WebMapper.exe \
+AppDdeCmdExample.exe \
+ControlsExample.exe \
+CreateProcessExample.exe \ 
+EvnironmentList.exe \
+MailExample.exe
 #---------------------------------------------------------------------------------------------------
 
-UseCase.exe: Diagram2UseCaseEditor\UseCase.dpr
-  cd Diagram2UseCaseEditor
+ArrowButtonDemo.exe: ArrowButton\ArrowButtonDemo.dpr
+  cd ArrowButton
   $(DCC) $&.dpr
   cd ..
 
-WebMapper.exe: Diagram1WebSiteScanner\WebMapper.dpr
-  cd Diagram1WebSiteScanner
+BmpAnimDemo.exe: BMPAnim\BmpAnimDemo.dpr
+  cd BMPAnim
+  $(DCC) $&.dpr
+  cd ..
+
+CaptionButtonDemo.exe: CaptionBtn\CaptionButtonDemo.dpr
+  cd CaptionBtn
+  $(DCC) $&.dpr
+  cd ..
+
+ChangeNotifyDemo.exe: ChangeNotification\ChangeNotifyDemo.dpr
+  cd ChangeNotification
+  $(DCC) $&.dpr
+  cd ..
+
+ColorButtonDemo.exe: ColorBtn\ColorButtonDemo.dpr
+  cd ColorBtn
+  $(DCC) $&.dpr
+  cd ..
+
+ContentScrollerDemo.exe: ContentScroller\ContentScrollerDemo.dpr
+  cd ContentScroller
+  $(DCC) $&.dpr
+  cd ..
+
+DBDTPDemo.exe: JvDBDateTimePicker\DBDTPDemo.dpr
+  cd JvDBDateTimePicker
+  $(DCC) $&.dpr
+  cd ..
+
+FileDirDemo.exe: FileListBox\FileDirDemo.dpr
+  cd FileListBox
+  $(DCC) $&.dpr
+  cd ..
+
+FindReplaceDemo.exe: FindReplace\FindReplaceDemo.dpr
+  cd FindReplace
+  $(DCC) $&.dpr
+  cd ..
+
+ImageWindowDemo.exe: ImageWindow\ImageWindowDemo.dpr
+  cd ImageWindow
+  $(DCC) $&.dpr
+  cd ..
+
+InstallLabelDemo.exe: InstallLabel\InstallLabelDemo.dpr
+  cd InstallLabel
   $(DCC) $&.dpr
   cd ..
 
@@ -62,6 +135,11 @@ JvBrowserFolder.exe: JvBrowseFolder\JvBrowserFolder.dpr
   $(DCC) $&.dpr
   cd ..
 
+Install2LabelDemo.exe: InstallLabel\Install2LabelDemo.dpr
+  cd InstallLabel
+  $(DCC) $&.dpr
+  cd ..
+
 JvClipboardViewerProj.exe: JvClipboardViewer\JvClipboardViewerProj.dpr
   cd JvClipboardViewer
   $(DCC) $&.dpr
@@ -69,11 +147,6 @@ JvClipboardViewerProj.exe: JvClipboardViewer\JvClipboardViewerProj.dpr
 
 JvDataEmbeddedProj.exe: JvDataEmbedded\JvDataEmbeddedProj.dpr
   cd JvDataEmbedded
-  $(DCC) $&.dpr
-  cd ..
-
-DBDTPDemo.exe: JvDBDateTimePicker\DBDTPDemo.dpr
-  cd JvDBDateTimePicker
   $(DCC) $&.dpr
   cd ..
 
@@ -87,8 +160,8 @@ JvEdits.exe: JvEdits\JvEdits.dpr
   $(DCC) $&.dpr
   cd ..
 
-JvInstallProj.exe: JvInstall\JvInstallProj.dpr
-  cd JvInstall
+JvHTMLParserProj.exe: JvHTMLParser\JvHTMLParserProj.dpr
+  cd JvHTMLParser
   $(DCC) $&.dpr
   cd ..
 
@@ -142,6 +215,11 @@ JvTreeViewAsMenu.exe: JvTreeViewAsMenu\JvTreeViewAsMenu.dpr
   $(DCC) $&.dpr
   cd ..
 
+JvWinDialogsDemo.exe: JvWinDialogs\JvWinDialogsDemo.dpr
+  cd JvWinDialogs
+  $(DCC) $&.dpr
+  cd ..
+
 JvWindowsTitleProj.exe: JvWindowsTitle\JvWindowsTitleProj.dpr
   cd JvWindowsTitle
   $(DCC) $&.dpr
@@ -151,3 +229,88 @@ JvZoomProj.exe: JvZoom\JvZoomProj.dpr
   cd JvZoom
   $(DCC) $&.dpr
   cd ..
+
+ListCombDemo.exe: ListComb\ListCombDemo.dpr
+  cd ListComb
+  $(DCC) $&.dpr
+  cd ..
+
+MonthCalendarDemo.exe: MonthCalendar\MonthCalendarDemo.dpr
+  cd MonthCalendar
+  $(DCC) $&.dpr
+  cd ..
+
+OLBarDemo.exe: OLBar\OLBarDemo.dpr
+  cd OLBar
+  $(DCC) $&.dpr
+  cd ..
+
+ProfilerDemo.exe: Profiler32\ProfilerDemo.dpr
+  cd Profiler32
+  $(DCC) $&.dpr
+  cd ..
+
+RegEditDemo.exe: RegTV\RegEditDemo.dpr
+  cd RegTV
+  $(DCC) $&.dpr
+  cd ..
+
+ScrollWinDemo.exe: ScrollWin\ScrollWinDemo.dpr
+  cd ScrollWin
+  $(DCC) $&.dpr
+  cd ..
+
+SimpleTLTest1.exe: TMTimeLine\SimpleTLTest1.dpr
+  cd TMTimeLine
+  $(DCC) $&.dpr
+  cd ..
+
+TimeLineDemo.exe: TimeLine\TimeLineDemo.dpr
+  cd TimeLine
+  $(DCC) $&.dpr
+  cd ..
+
+TipsDemo.exe: TipOfDay\TipsDemo.dpr
+  cd TipOfDay
+  $(DCC) $&.dpr
+  cd ..
+
+TransparentButtonDemo.exe: TransBtn\TransparentButtonDemo.dpr
+  cd TransBtn
+  $(DCC) $&.dpr
+  cd ..
+
+UseCase.exe: Diagram2UseCaseEditor\UseCase.dpr
+  cd Diagram2UseCaseEditor
+  $(DCC) $&.dpr
+  cd ..
+
+WebMapper.exe: Diagram1WebSiteScanner\WebMapper.dpr
+  cd Diagram1WebSiteScanner
+  $(DCC) $&.dpr
+  cd ..
+
+AppDdeCmdExample.exe: AppDdeCmdExample\AppDdeCmdExample.dpr
+  cd AppDdeCmdExample
+  $(DCC) $&.dpr
+  cd ..
+  
+ControlsExample.exe: ControlsExample\ControlsExample.dpr
+  cd ControlsExample
+  $(DCC) $&.dpr
+  cd ..
+  
+CreateProcessExample.exe: CreateProcessExample\CreateProcessExample.dpr
+  cd CreateProcessExample
+  $(DCC) $&.dpr
+  cd ..
+  
+EvnironmentList.exe: EvnironmentList\EvnironmentList.dpr
+  cd EvnironmentList
+  $(DCC) $&.dpr
+  cd ..
+  
+MailExample.exe: MailExample\MailExample.dpr
+  cd MailExample
+  $(DCC) $&.dpr
+  cd ..        

@@ -1,8 +1,8 @@
 object Form1: TForm1
-  Left = 245
-  Top = 290
-  Width = 691
-  Height = 375
+  Left = 223
+  Top = 158
+  Width = 564
+  Height = 425
   Caption = 'Form1'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,350 +13,422 @@ object Form1: TForm1
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object Button1: TButton
-    Left = 6
-    Top = 4
-    Width = 115
-    Height = 25
-    Caption = 'Format Dialog '
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 0
+    Width = 556
+    Height = 398
+    ActivePage = TabSheet1
+    Align = alClient
     TabOrder = 0
-    OnClick = Button1Click
+    object TabSheet1: TTabSheet
+      Caption = 'Windows Dialogs'
+      object Button1: TButton
+        Left = 6
+        Top = 4
+        Width = 115
+        Height = 25
+        Caption = 'Format Drive A:'
+        TabOrder = 0
+        OnClick = Button1Click
+      end
+      object Button2: TButton
+        Left = 6
+        Top = 41
+        Width = 115
+        Height = 25
+        Caption = 'Find Files'
+        TabOrder = 1
+        OnClick = Button2Click
+      end
+      object Button4: TButton
+        Left = 6
+        Top = 124
+        Width = 115
+        Height = 25
+        Caption = 'Shell About'
+        TabOrder = 2
+        OnClick = Button4Click
+      end
+      object Button5: TButton
+        Left = 6
+        Top = 154
+        Width = 115
+        Height = 25
+        Caption = 'Select directory'
+        TabOrder = 3
+        OnClick = Button5Click
+      end
+      object Button8: TButton
+        Left = 6
+        Top = 229
+        Width = 115
+        Height = 25
+        Caption = 'Add a printer'
+        TabOrder = 4
+        OnClick = Button8Click
+      end
+      object Button9: TButton
+        Left = 6
+        Top = 266
+        Width = 115
+        Height = 25
+        Caption = 'Connect Network'
+        TabOrder = 5
+        OnClick = Button9Click
+      end
+      object Button10: TButton
+        Left = 6
+        Top = 304
+        Width = 115
+        Height = 25
+        Caption = 'Disconnect network'
+        TabOrder = 6
+        OnClick = Button10Click
+      end
+      object Button32: TButton
+        Left = 140
+        Top = 2
+        Width = 115
+        Height = 25
+        Caption = 'Open Dialog'
+        TabOrder = 7
+        OnClick = Button32Click
+      end
+      object Button33: TButton
+        Left = 140
+        Top = 35
+        Width = 115
+        Height = 25
+        Caption = 'Save Dialog'
+        TabOrder = 8
+        OnClick = Button33Click
+      end
+      object Button25: TButton
+        Left = 140
+        Top = 101
+        Width = 115
+        Height = 25
+        Caption = 'Add Hardware'
+        TabOrder = 9
+        OnClick = Button25Click
+      end
+      object Button24: TButton
+        Left = 140
+        Top = 68
+        Width = 115
+        Height = 25
+        Caption = 'Shutdown Dlg'
+        TabOrder = 10
+        OnClick = Button24Click
+      end
+      object Button26: TButton
+        Left = 140
+        Top = 134
+        Width = 115
+        Height = 25
+        Caption = 'Choose Icon'
+        TabOrder = 11
+        OnClick = Button26Click
+      end
+      object Button27: TButton
+        Left = 140
+        Top = 168
+        Width = 115
+        Height = 25
+        Caption = 'Run Dlg'
+        TabOrder = 12
+        OnClick = Button27Click
+      end
+      object Button28: TButton
+        Left = 140
+        Top = 201
+        Width = 115
+        Height = 25
+        Caption = 'Find Computer'
+        TabOrder = 13
+        OnClick = Button28Click
+      end
+      object Button29: TButton
+        Left = 140
+        Top = 234
+        Width = 115
+        Height = 25
+        Caption = 'Object Properties'
+        TabOrder = 14
+        OnClick = Button29Click
+      end
+      object Button30: TButton
+        Left = 140
+        Top = 267
+        Width = 115
+        Height = 25
+        Caption = 'Out Of Memory Dlg'
+        TabOrder = 15
+        OnClick = Button30Click
+      end
+      object Button31: TButton
+        Left = 140
+        Top = 301
+        Width = 115
+        Height = 25
+        Caption = 'Disk C:\ Full Dialog'
+        TabOrder = 16
+        OnClick = Button31Click
+      end
+      object Button15: TButton
+        Left = 422
+        Top = 342
+        Width = 115
+        Height = 25
+        Caption = 'Fatal exit'
+        TabOrder = 17
+        OnClick = Button15Click
+      end
+      object Button35: TButton
+        Left = 6
+        Top = 95
+        Width = 115
+        Height = 25
+        Caption = 'Browse for folder 2'
+        TabOrder = 18
+        OnClick = Button35Click
+      end
+      object Button36: TButton
+        Left = 268
+        Top = 109
+        Width = 115
+        Height = 25
+        Caption = 'Control Panel Dialog'
+        TabOrder = 19
+        OnClick = Button36Click
+      end
+      object Button37: TButton
+        Left = 268
+        Top = 37
+        Width = 115
+        Height = 25
+        Caption = 'New Shortcut Dialog'
+        TabOrder = 20
+        OnClick = Button37Click
+      end
+      object Button38: TButton
+        Left = 268
+        Top = 69
+        Width = 115
+        Height = 25
+        Caption = 'Applet Dialog'
+        TabOrder = 21
+        OnClick = Button38Click
+      end
+      object Button39: TButton
+        Left = 268
+        Top = 141
+        Width = 115
+        Height = 25
+        Caption = 'Favorites'
+        TabOrder = 22
+        OnClick = Button39Click
+      end
+      object Button40: TButton
+        Left = 268
+        Top = 5
+        Width = 115
+        Height = 25
+        Caption = 'OpenWith Dialog'
+        TabOrder = 23
+        OnClick = Button40Click
+      end
+      object Button3: TButton
+        Left = 6
+        Top = 71
+        Width = 115
+        Height = 25
+        Caption = 'Browse for folder'
+        TabOrder = 24
+        OnClick = Button3Click
+      end
+      object Button7: TButton
+        Left = 268
+        Top = 173
+        Width = 115
+        Height = 25
+        Caption = 'Page Setup'
+        TabOrder = 25
+        OnClick = Button7Click
+      end
+      object Button41: TButton
+        Left = 268
+        Top = 205
+        Width = 115
+        Height = 25
+        Caption = 'Page Setup Titled'
+        TabOrder = 26
+        OnClick = Button41Click
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Other Dialogs'
+      ImageIndex = 1
+      object Button11: TButton
+        Left = 10
+        Top = 12
+        Width = 115
+        Height = 25
+        Caption = 'Password'
+        TabOrder = 0
+        OnClick = Button11Click
+      end
+      object Button12: TButton
+        Left = 10
+        Top = 45
+        Width = 115
+        Height = 25
+        Caption = 'Message Box'
+        TabOrder = 1
+        OnClick = Button12Click
+      end
+      object Button13: TButton
+        Left = 10
+        Top = 79
+        Width = 115
+        Height = 25
+        Caption = 'Message Beep'
+        TabOrder = 2
+        OnClick = Button13Click
+      end
+      object Button14: TButton
+        Left = 10
+        Top = 112
+        Width = 115
+        Height = 25
+        Caption = 'Exchange listboxes'
+        TabOrder = 3
+        OnClick = Button14Click
+      end
+      object Button16: TButton
+        Left = 10
+        Top = 147
+        Width = 115
+        Height = 25
+        Caption = 'Login'
+        TabOrder = 4
+        OnClick = Button16Click
+      end
+      object Button17: TButton
+        Left = 10
+        Top = 179
+        Width = 115
+        Height = 25
+        Caption = 'Serial'
+        TabOrder = 5
+        OnClick = Button17Click
+      end
+      object Button18: TButton
+        Left = 10
+        Top = 212
+        Width = 115
+        Height = 25
+        Caption = 'Calculator'
+        TabOrder = 6
+        OnClick = Button18Click
+      end
+      object Button19: TButton
+        Left = 10
+        Top = 245
+        Width = 115
+        Height = 25
+        Caption = 'Progress Dlg'
+        TabOrder = 7
+        OnClick = Button19Click
+      end
+      object Button20: TButton
+        Left = 10
+        Top = 279
+        Width = 115
+        Height = 25
+        Caption = 'Disk Prompt'
+        TabOrder = 8
+        OnClick = Button20Click
+      end
+      object Button21: TButton
+        Left = 138
+        Top = 78
+        Width = 115
+        Height = 25
+        Caption = 'Copy Error'
+        TabOrder = 9
+        OnClick = Button21Click
+      end
+      object Button22: TButton
+        Left = 138
+        Top = 10
+        Width = 115
+        Height = 25
+        Caption = 'Delete Error'
+        TabOrder = 10
+        OnClick = Button22Click
+      end
+      object Button23: TButton
+        Left = 140
+        Top = 43
+        Width = 115
+        Height = 25
+        Caption = 'Rename Error'
+        TabOrder = 11
+        OnClick = Button23Click
+      end
+      object Button34: TButton
+        Left = 486
+        Top = 374
+        Width = 115
+        Height = 25
+        Caption = 'Fatal exit'
+        TabOrder = 12
+        OnClick = Button15Click
+      end
+      object Button6: TButton
+        Left = 14
+        Top = 314
+        Width = 115
+        Height = 25
+        Caption = 'Input box'
+        TabOrder = 13
+        OnClick = Button6Click
+      end
+    end
   end
-  object Button2: TButton
-    Left = 6
-    Top = 37
-    Width = 115
-    Height = 25
-    Caption = 'Find Files'
-    TabOrder = 1
-    OnClick = Button2Click
-  end
-  object Button3: TButton
-    Left = 6
-    Top = 71
-    Width = 115
-    Height = 25
-    Caption = 'Browse for folder'
-    TabOrder = 2
-    OnClick = Button3Click
-  end
-  object Button4: TButton
-    Left = 6
-    Top = 104
-    Width = 115
-    Height = 25
-    Caption = 'Shell About'
-    TabOrder = 3
-    OnClick = Button4Click
-  end
-  object Button5: TButton
-    Left = 6
-    Top = 137
-    Width = 115
-    Height = 25
-    Caption = 'Select directory'
-    TabOrder = 4
-    OnClick = Button5Click
-  end
-  object Button6: TButton
-    Left = 6
-    Top = 171
-    Width = 115
-    Height = 25
-    Caption = 'Input box'
-    TabOrder = 5
-    OnClick = Button6Click
-  end
-  object Button7: TButton
-    Left = 6
-    Top = 204
-    Width = 115
-    Height = 25
-    Caption = 'Open As'
-    TabOrder = 6
-    OnClick = Button7Click
-  end
-  object Button8: TButton
-    Left = 6
-    Top = 237
-    Width = 115
-    Height = 25
-    Caption = 'Add a printer'
-    TabOrder = 7
-    OnClick = Button8Click
-  end
-  object Button9: TButton
-    Left = 6
-    Top = 271
-    Width = 115
-    Height = 25
-    Caption = 'Connect Network'
-    TabOrder = 8
-    OnClick = Button9Click
-  end
-  object Button10: TButton
-    Left = 6
-    Top = 304
-    Width = 115
-    Height = 25
-    Caption = 'Disconnect network'
-    TabOrder = 9
-    OnClick = Button10Click
-  end
-  object Button11: TButton
-    Left = 138
-    Top = 4
-    Width = 115
-    Height = 25
-    Caption = 'Password'
-    TabOrder = 10
-    OnClick = Button11Click
-  end
-  object Button12: TButton
-    Left = 138
-    Top = 37
-    Width = 115
-    Height = 25
-    Caption = 'Message Box'
-    TabOrder = 11
-    OnClick = Button12Click
-  end
-  object Button13: TButton
-    Left = 138
-    Top = 71
-    Width = 115
-    Height = 25
-    Caption = 'Message Beep'
-    TabOrder = 12
-    OnClick = Button13Click
-  end
-  object Button14: TButton
-    Left = 138
-    Top = 104
-    Width = 115
-    Height = 25
-    Caption = 'Exchange listboxes'
-    TabOrder = 13
-    OnClick = Button14Click
-  end
-  object Button15: TButton
-    Left = 566
-    Top = 318
-    Width = 115
-    Height = 25
-    Caption = 'Fatal exit'
-    TabOrder = 14
-    OnClick = Button15Click
-  end
-  object Button16: TButton
-    Left = 138
-    Top = 139
-    Width = 115
-    Height = 25
-    Caption = 'Login'
-    TabOrder = 15
-    OnClick = Button16Click
-  end
-  object Button17: TButton
-    Left = 138
-    Top = 171
-    Width = 115
-    Height = 25
-    Caption = 'Serial'
-    TabOrder = 16
-    OnClick = Button17Click
-  end
-  object Button18: TButton
-    Left = 138
-    Top = 204
-    Width = 115
-    Height = 25
-    Caption = 'Calculator'
-    TabOrder = 17
-    OnClick = Button18Click
-  end
-  object Button19: TButton
-    Left = 138
-    Top = 237
-    Width = 115
-    Height = 25
-    Caption = 'Progress Dlg'
-    TabOrder = 18
-    OnClick = Button19Click
-  end
-  object Button20: TButton
-    Left = 138
-    Top = 271
-    Width = 115
-    Height = 25
-    Caption = 'Disk Prompt'
-    TabOrder = 19
-    OnClick = Button20Click
-  end
-  object Button21: TButton
-    Left = 138
-    Top = 302
-    Width = 115
-    Height = 25
-    Caption = 'Copy Error'
-    TabOrder = 20
-    OnClick = Button21Click
-  end
-  object Button22: TButton
-    Left = 266
-    Top = 2
-    Width = 115
-    Height = 25
-    Caption = 'Delete Error'
-    TabOrder = 21
-    OnClick = Button22Click
-  end
-  object Button23: TButton
-    Left = 268
-    Top = 35
-    Width = 115
-    Height = 25
-    Caption = 'Rename Error'
-    TabOrder = 22
-    OnClick = Button23Click
-  end
-  object Button24: TButton
-    Left = 268
-    Top = 71
-    Width = 115
-    Height = 25
-    Caption = 'Shutdown Dlg'
-    TabOrder = 23
-    OnClick = Button24Click
-  end
-  object Button25: TButton
-    Left = 268
-    Top = 103
-    Width = 115
-    Height = 25
-    Caption = 'Restart Dlg'
-    TabOrder = 24
-    OnClick = Button25Click
-  end
-  object Button26: TButton
-    Left = 266
-    Top = 139
-    Width = 115
-    Height = 25
-    Caption = 'Choose Icon'
-    TabOrder = 25
-    OnClick = Button26Click
-  end
-  object Button27: TButton
-    Left = 266
-    Top = 171
-    Width = 115
-    Height = 25
-    Caption = 'Run Dlg'
-    TabOrder = 26
-    OnClick = Button27Click
-  end
-  object Button28: TButton
-    Left = 266
-    Top = 205
-    Width = 115
-    Height = 25
-    Caption = 'Find Computer'
-    TabOrder = 27
-    OnClick = Button28Click
-  end
-  object Button29: TButton
-    Left = 266
-    Top = 237
-    Width = 115
-    Height = 25
-    Caption = 'Object Properties'
-    TabOrder = 28
-    OnClick = Button29Click
-  end
-  object Button30: TButton
-    Left = 264
-    Top = 271
-    Width = 115
-    Height = 25
-    Caption = 'Out Of Memory Dlg'
-    TabOrder = 29
-    OnClick = Button30Click
-  end
-  object Button31: TButton
-    Left = 264
-    Top = 301
-    Width = 115
-    Height = 25
-    Caption = 'Out Of Space Dlg'
-    TabOrder = 30
-    OnClick = Button31Click
-  end
-  object Button32: TButton
-    Left = 396
-    Top = 2
-    Width = 115
-    Height = 25
-    Caption = 'Open Dialog'
-    TabOrder = 31
-    OnClick = Button32Click
-  end
-  object Button33: TButton
-    Left = 398
-    Top = 35
-    Width = 115
-    Height = 25
-    Caption = 'Save Dialog'
-    TabOrder = 32
-    OnClick = Button33Click
-  end
-  object JvFormatDrive1: TJvFormatDrive
-    Left = 616
-    Top = 10
+  object JvFormatDrive1: TJvFormatDialog
+    FormatType = ftFull
+    DriveChar = 'A'
+    Left = 104
+    Top = 474
   end
   object JvFindFiles1: TJvFindFiles
     Drive = 'C'
-    Left = 644
-    Top = 92
+    Left = 612
+    Top = 44
   end
-  object JvBrowseFolder1: TJvBrowseFolder
-    Options = [odNewDialogStyle]
-    Position = fpScreenCenter
-    RootDirectory = fdRootFolder
-    Left = 644
-    Top = 120
-  end
-  object JvShellAbout1: TJvShellAbout
-    Handle = 3151600
-    Text = 'Place your text here'
-    Title = 'BuyPin Software'
-    Left = 644
-    Top = 146
+  object JvBrowseFolder1: TJvBrowseFolderDialog
+    Left = 196
+    Top = 368
   end
   object JvSelectDirectory1: TJvSelectDirectory
     Options = []
-    Left = 644
-    Top = 174
+    Left = 20
+    Top = 422
   end
   object JvInputBox1: TJvInputBox
-    Left = 644
-    Top = 204
-  end
-  object JvOpenAs1: TJvOpenAs
-    Left = 646
-    Top = 232
-  end
-  object JvAddPrinter1: TJvAddPrinter
-    Left = 618
-    Top = 38
+    Left = 620
+    Top = 164
   end
   object JvConnectNetwork1: TJvConnectNetwork
-    Left = 614
-    Top = 70
+    Left = 110
+    Top = 422
   end
   object JvDisconnectNetwork1: TJvDisconnectNetwork
-    Left = 616
-    Top = 94
+    Left = 168
+    Top = 422
   end
   object JvPasswordForm1: TJvPasswordForm
     Title = 'Enter password'
@@ -364,22 +436,22 @@ object Form1: TForm1
     CancelCaption = '&Cancel'
     LabelCaption = 'Password'
     PasswordChar = '*'
-    Left = 618
-    Top = 122
+    Left = 538
+    Top = 146
   end
   object JvMessageBox1: TJvMessageBox
     Options = []
-    Left = 618
-    Top = 148
+    Left = 538
+    Top = 204
   end
   object JvMessageBeep1: TJvMessageBeep
     Style = msBeep
-    Left = 616
-    Top = 176
+    Left = 544
+    Top = 264
   end
   object JvFatalAppExit1: TJvFatalAppExit
-    Left = 618
-    Top = 204
+    Left = 402
+    Top = 324
   end
   object JvExchListboxes1: TJvExchListboxes
     FirstCaption = 'First Column'
@@ -387,96 +459,137 @@ object Form1: TForm1
     Button1Caption = '&Add'
     Button2Caption = '&Remove'
     Title = 'Listbox Editor'
-    Left = 616
+    Left = 624
     Top = 232
   end
   object JvLoginDlg1: TJvLoginDlg
     FirstLabel = 'Username'
     SecondLabel = 'Password'
     Title = 'Enter login'
-    Left = 590
-    Top = 234
+    Left = 534
+    Top = 42
   end
   object JvSerialDlg1: TJvSerialDlg
     FirstLabel = 'Name'
     SecondLabel = 'Serial'
     Title = 'Enter Serial'
-    Left = 590
-    Top = 206
+    Left = 614
+    Top = 102
   end
   object JvCalculator1: TJvCalculator
     Title = 'Calculator'
-    Left = 590
-    Top = 178
+    Left = 462
+    Top = 298
   end
   object JvProgressDlg1: TJvProgressDlg
     Text = 'Progress'
     AutoTimeLeft = True
-    Left = 590
-    Top = 150
+    Left = 462
+    Top = 246
   end
   object JvDiskPrompt1: TJvDiskPrompt
     Style = []
-    Left = 590
-    Top = 122
+    Left = 454
+    Top = 194
   end
   object JvCopyError1: TJvCopyError
     Style = []
-    Left = 590
-    Top = 94
+    Left = 454
+    Top = 142
   end
   object JvDeleteError1: TJvDeleteError
     Style = []
-    Left = 590
-    Top = 66
+    Left = 454
+    Top = 90
   end
   object JvRenameError1: TJvRenameError
     Style = []
-    Left = 590
-    Top = 38
+    Left = 454
+    Top = 46
   end
-  object JvShutdownDlg1: TJvShutdownDlg
-    RestartType = rsLogoff
-    Left = 544
-    Top = 14
+  object JvShutdownDlg1: TJvExitWindowsDialog
+    Left = 16
+    Top = 366
   end
-  object JvRestartDlg1: TJvRestartDlg
-    Left = 546
-    Top = 48
+  object JvShellAboutDialog1: TJvShellAboutDialog
+    Left = 32
+    Top = 472
   end
-  object JvChooseIconDlg1: TJvChooseIconDlg
+  object JvAddHardwareDialog1: TJvAddHardwareDialog
+    Left = 88
+    Top = 368
+  end
+  object JvChooseIconDlg1: TJvChangeIconDialog
     IconIndex = 0
-    Left = 548
-    Top = 78
+    Left = 180
+    Top = 478
   end
-  object JvRunDlg1: TJvRunDlg
-    Left = 548
-    Top = 108
+  object JvRunDlg1: TJvRunDialog
+    Left = 236
+    Top = 468
   end
-  object JvFindComputerDlg1: TJvFindComputerDlg
-    Left = 548
-    Top = 138
+  object JvFindComputerDlg1: TJvComputerNameDialog
+    Left = 36
+    Top = 538
   end
-  object JvObjectPropertiesDlg1: TJvObjectPropertiesDlg
-    FileName = 'c:\autoexec.bat'
-    Left = 548
-    Top = 166
+  object JvObjectPropertiesDlg1: TJvObjectPropertiesDialog
+    ObjectType = sdPathObject
+    Left = 108
+    Top = 534
   end
-  object JvOutOfMemoryDlg1: TJvOutOfMemoryDlg
-    Left = 550
-    Top = 192
+  object JvOutOfMemoryDlg1: TJvOutOfMemoryDialog
+    Left = 182
+    Top = 536
   end
-  object JvOutOfSpaceDlg1: TJvOutOfSpaceDlg
-    Drive = 'c'
-    Left = 554
-    Top = 220
+  object JvOutOfSpaceDlg1: TJvDiskFullDialog
+    DriveChar = 'C'
+    Left = 258
+    Top = 532
   end
-  object JvOpenDialog1: TJvOpenDialog2
-    Left = 554
-    Top = 250
+  object JvOpenDialog1: TJvOpenDialog2000
+    Left = 274
+    Top = 394
   end
-  object JvSaveDialog1: TJvSaveDialog2
-    Left = 556
-    Top = 274
+  object JvSaveDialog1: TJvSaveDialog2000
+    Left = 292
+    Top = 482
+  end
+  object JvPageSetupDialog1: TJvPageSetupDialog
+    Left = 544
+    Top = 320
+  end
+  object JvPageSetupTitledDialog1: TJvPageSetupTitledDialog
+    Left = 616
+    Top = 288
+  end
+  object JvBrowseFolder2: TJvBrowseFolder
+    RootDirectory = fdRootFolder
+    Left = 616
+    Top = 336
+  end
+  object JvOrganizeFavoritesDialog1: TJvOrganizeFavoritesDialog
+    Left = 448
+    Top = 424
+  end
+  object JvControlPanelDialog1: TJvControlPanelDialog
+    Left = 536
+    Top = 416
+  end
+  object JvAppletDialog1: TJvAppletDialog
+    Left = 448
+    Top = 480
+  end
+  object JvNewLinkDialog1: TJvNewLinkDialog
+    DestinationFolder = 'C:\'
+    Left = 536
+    Top = 480
+  end
+  object JvOpenWithDialog1: TJvOpenWithDialog
+    Left = 632
+    Top = 424
+  end
+  object JvAddPrinterDialog1: TJvAddPrinterDialog
+    Left = 312
+    Top = 288
   end
 end
