@@ -1,5 +1,32 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvAnimatedEditor.PAS, released on 2002-05-26.
+
+The Initial Developer of the Original Code is John Doe.
+Portions created by John Doe are Copyright (C) 2003 John Doe.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-11-09
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
+
 unit JvOutlookBarEditors;
 
 interface
@@ -52,16 +79,12 @@ type
 
 
 implementation
+
 uses
-  JvOutlookBarForm;
+  JvOutlookBarForm, JvDsgnConsts;
 
 type
   THackOutlookBar = class(TJvCustomOutlookBar);
-
-resourcestring
-  SOLEditor = 'OutlookBar Editor...';
-
-
 
 procedure ShowEditor(Designer: IDesigner; OutlookBar: TJvCustomOutlookBar);
 var
@@ -70,16 +93,12 @@ var
 begin
   AEditor := nil;
   for I := 0 to Screen.FormCount - 1 do
-  begin
     if Screen.Forms[I] is TFrmOLBEditor then
-    begin
       if TFrmOLBEditor(Screen.Forms[I]).OutlookBar = OutlookBar then
       begin
         AEditor := TFrmOLBEditor(Screen.Forms[I]);
         Break;
       end;
-    end;
-  end;
   // Show the editor
   if Assigned(AEditor) then
   begin
@@ -95,7 +114,7 @@ begin
       AEditor.Designer := Designer;
       {$ELSE}
       AEditor.Designer := Designer as IFormDesigner;
-      {$ENDIF}
+      {$ENDIF COMPILER6_UP}
       AEditor.OutlookBar := OutlookBar;
       AEditor.Show;
     except
@@ -126,7 +145,7 @@ begin
   if GetComponent(0) is TJvCustomOutlookBar then
     Result := TJvCustomOutlookBar(GetComponent(0))
   else
-    if GetComponent(0) is TJvOutlookBarPage then
+  if GetComponent(0) is TJvOutlookBarPage then
     Result := THackOutlookBar(THackPages(TJvOutlookBarPage(GetComponent(0)).Collection).GetOwner)
   else
     Result := nil;
@@ -192,7 +211,7 @@ begin
   if I < 0 then
     Result := ''
   else
-    if I < THackOutlookBar(OL).Pages.Count then
+  if I < THackOutlookBar(OL).Pages.Count then
     Result := THackOutlookBar(OL).Pages[I].Caption
   else
     Result := inherited GetValue;

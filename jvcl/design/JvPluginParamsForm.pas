@@ -64,13 +64,7 @@ var
 implementation
 
 uses
-  JvTypes;
-
-resourcestring
-  SInfoText = 'The settings above will create the following project:' +
-    sLineBreak + sLineBreak +
-    '* A project called Plg%0:s.%1:s' + sLineBreak +
-    '* A unit called Plugin%0:s, containing the data module T%0:s.';
+  JvTypes, JvDsgnConsts;
 
 {$R *.DFM}
 
@@ -84,7 +78,7 @@ procedure TfrmPluginParams.SettingsChanged(Sender: TObject);
   end;
 
 begin
-  lblCreateInfo.Caption := Format(SInfoText, [edtPluginName.Text, RbToPrjExt]);
+  lblCreateInfo.Caption := Format(SPluginParamsFormInfoText, [edtPluginName.Text, RbToPrjExt]);
   butOK.Enabled := Trim(edtPluginName.Text) <> '';
   edtPluginUID.Text := 'JVCL.' + edtPluginHostProject.Text + '.Plg' + edtPluginName.Text;
 end;

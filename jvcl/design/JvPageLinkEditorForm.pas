@@ -22,26 +22,28 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
------------------------------------------------------------------------------}
-{$I JVCL.INC}
-{$I WINDOWSONLY.INC}
-unit JvPageLinkEditorForm;
-{
 Changes:
 2002-10-22:
   changed the way a parent/child PageIndex is assigned so that it matches the
   actual component using this editor
-}
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+{$I WINDOWSONLY.INC}
+
+unit JvPageLinkEditorForm;
+
 interface
 
 uses
-  Windows, Forms, Classes, SysUtils, Controls, StdCtrls, ExtCtrls, ComCtrls, ActnList,
+  Windows, Forms, Classes, SysUtils, Controls, StdCtrls, ExtCtrls, ComCtrls,
+  ActnList, Menus,
   {$IFDEF COMPILER6_UP}
   DesignEditors, Variants, DesignIntf,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
-  JvPageListTreeView, Menus, JvComponent;
+  {$ENDIF COMPILER6_UP}
+  JvPageListTreeView, JvComponent;
 
 type
   { a property editor for the PageLinks property of TJvCustomPageListTreeView}
@@ -74,37 +76,36 @@ type
       var Handled: Boolean);
     procedure FormResize(Sender: TObject);
   private
-    { Private declarations }
     FTreeView:TCustomTreeView;
-    procedure CreatePopUpItem(Index: integer);
+    procedure CreatePopUpItem(Index: Integer);
     procedure DoPopClick(Sender: TObject);
     procedure AssignComponents(TreeView: TCustomTreeView; const PageList: IPageList);
     procedure AssignToComponents(TreeView: TCustomTreeView; const PageList: IPageList);
   public
-    { Public declarations }
-    class function Edit(TreeView: TCustomTreeView; const PageList: IPageList): boolean;
+    class function Edit(TreeView: TCustomTreeView; const PageList: IPageList): Boolean;
   end;
 
-procedure ShowPageLinkEditor(TreeView:TJvCustomPageListTreeView);
-
-
-resourcestring
-  sCreateLinkToPaged = 'Create link to page %d';
+procedure ShowPageLinkEditor(TreeView: TJvCustomPageListTreeView);
 
 implementation
+
+uses
+  JvDsgnConsts;
+
+{$R *.dfm}
 
 type
   THackTreeView = class(TJvCustomPageListTreeView);
 
-  { TJvPageLinksProperty }
-
-procedure ShowPageLinkEditor(TreeView:TJvCustomPageListTreeView);
+procedure ShowPageLinkEditor(TreeView: TJvCustomPageListTreeView);
 begin
   if TfrmJvTreeViewLinksEditor.Edit(TreeView,
-     {$IFDEF COMPILER6_UP}TreeView.PageList{$ELSE}TreeView.PageListIntf{$ENDIF})
-      and (THackTreeView(TreeView).Items.Count > 0) then
-         THackTreeView(TreeView).Items.GetFirstNode.Expand(false);
+    {$IFDEF COMPILER6_UP} TreeView.PageList {$ELSE} TreeView.PageListIntf {$ENDIF}) and
+    (THackTreeView(TreeView).Items.Count > 0) then
+    THackTreeView(TreeView).Items.GetFirstNode.Expand(False);
 end;
+
+//=== TJvPageLinksProperty ===================================================
 
 procedure TJvPageLinksProperty.Edit;
 begin
@@ -116,31 +117,24 @@ begin
   Result := [paDialog, paReadOnly];
 end;
 
-{$R *.dfm}
+//=== TfrmJvTreeViewLinksEditor ==============================================
 
 function GetStrippedText(const AText: string): string;
-var i: integer;
+var
+  I: Integer;
 begin
   Result := AText;
-  for i := Length(AText) downto 1 do
-    if AText[i] = '(' then
+  for I := Length(AText) downto 1 do
+    if AText[I] = '(' then
     begin
-      Result := Copy(AText, 1, i - 2);
+      Result := Copy(AText, 1, I - 2);
       Break;
     end;
 end;
 
-function GetNewTreeText(const AText: string; Index: integer): string;
-var i: integer;
+function GetNewTreeText(const AText: string; Index: Integer): string;
 begin
-  Result := AText;
-  for i := Length(AText) downto 1 do
-    if AText[i] = '(' then
-    begin
-      Result := Copy(AText, 1, i - 2);
-      Break;
-    end;
-  Result := Format('%s (%d)', [Result, Index])
+  Result := Format('%s (%d)', [GetStrippedText(AText), Index])
 end;
 
 procedure TfrmJvTreeViewLinksEditor.DoPopClick(Sender: TObject);
@@ -153,63 +147,67 @@ begin
   end;
 end;
 
-procedure TfrmJvTreeViewLinksEditor.CreatePopUpItem(Index: integer);
-var m: TMenuItem;
+procedure TfrmJvTreeViewLinksEditor.CreatePopUpItem(Index: Integer);
+var
+  m: TMenuItem;
 begin
   m := TMenuItem.Create(popTree);
-  m.Caption := Format(sCreateLinkToPaged, [Index]);
+  m.Caption := Format(SCreateLinkToPaged, [Index]);
   m.Tag := Index;
   if Index < 10 then
     m.ShortCut := ShortCut(Ord('0') + Index, [ssCtrl])
-  else if (Index >= 10) and (Index < 36) then
+  else
+  if (Index >= 10) and (Index < 36) then
     m.ShortCut := ShortCut(Ord('A') + Index - 10, [ssCtrl]);
   m.OnClick := DoPopClick;
   popTree.Items.Add(m);
 end;
 
-procedure TfrmJvTreeViewLinksEditor.AssignComponents(TreeView: TCustomTreeView; const PageList: IPageList);
+procedure TfrmJvTreeViewLinksEditor.AssignComponents(TreeView: TCustomTreeView;
+  const PageList: IPageList);
 var
   N1: TJvPageIndexNode;
   N2: TTreeNode;
-  i: integer;
+  I: Integer;
 begin
   tvItems.Items.Clear;
   FTreeView := TreeView;
   if TreeView <> nil then
   begin
     tvItems.Items.Assign(THackTreeView(TreeView).Items);
-    tvItems.ShowButtons := true; // THackTreeView(TreeView).ShowButtons;
+    tvItems.ShowButtons := True; // THackTreeView(TreeView).ShowButtons;
   end;
   if TreeView is TJvCustomPageListTreeView then
   begin
     N1 := THackTreeView(TreeView).Items.GetFirstNode as TJvPageIndexNode;
-    N2 := tvItems.Items.getFirstNode;
+    N2 := tvItems.Items.GetFirstNode;
     while Assigned(N1) and Assigned(N2) do
     begin
       N2.Data := Pointer(N1.PageIndex);
       N2.Text := Format('%s (%d)', [N1.Text, N1.PageIndex]);
-      N1 := TJvPageIndexNode(N1.getNext);
-      N2 := N2.getNext;
+      N1 := TJvPageIndexNode(N1.GetNext);
+      N2 := N2.GetNext;
     end;
   end;
 
   lbPages.Items.Clear;
   popTree.Items.Clear;
   if PageList <> nil then
-    for i := 0 to PageList.getPageCount - 1 do
+    for I := 0 to PageList.GetPageCount - 1 do
     begin
-      lbPages.Items.Add(Format('%s (%d)',[PageList.getPageCaption(i),i]));
-      CreatePopUpItem(i);
+      lbPages.Items.Add(Format('%s (%d)', [PageList.GetPageCaption(I), I]));
+      CreatePopUpItem(I);
     end;
 
   if tvItems.Items.Count > 0 then
   begin
-    tvItems.Items[0].Selected := true;
-    tvItems.Items[0].Expand(false);
+    tvItems.Items[0].Selected := True;
+    tvItems.Items[0].Expand(False);
   end;
 end;
 
-procedure TfrmJvTreeViewLinksEditor.AssignToComponents(TreeView: TCustomTreeView; const PageList: IPageList);
+procedure TfrmJvTreeViewLinksEditor.AssignToComponents(TreeView: TCustomTreeView;
+  const PageList: IPageList);
 var
   N1: TJvPageIndexNode;
   N2: TTreeNode;
@@ -219,13 +217,13 @@ begin
   if TreeView is TJvCustomPageListTreeView then
   begin
     N1 := THackTreeView(TreeView).Items.GetFirstNode as TJvPageIndexNode;
-    N2 := tvItems.Items.getFirstNode;
+    N2 := tvItems.Items.GetFirstNode;
     while Assigned(N1) and Assigned(N2) do
     begin
-      N1.PageIndex := integer(N2.Data);
+      N1.PageIndex := Integer(N2.Data);
       N1.Text := GetStrippedText(N2.Text);
-      N1 := TJvPageIndexNode(N1.getNext);
-      N2 := N2.getNext;
+      N1 := TJvPageIndexNode(N1.GetNext);
+      N2 := N2.GetNext;
     end;
   end;
 end;
@@ -233,35 +231,35 @@ end;
 procedure TfrmJvTreeViewLinksEditor.tvItemsChange(Sender: TObject;
   Node: TTreeNode);
 begin
-  if (Node <> nil) then
-  begin
+  if Node <> nil then
     if Node is TJvPageIndexNode then
       lbPages.ItemIndex := TJvPageIndexNode(Node).PageIndex
     else
-      lbPages.ItemIndex := integer(Node.Data);
-  end;
+      lbPages.ItemIndex := Integer(Node.Data);
 end;
 
 procedure TfrmJvTreeViewLinksEditor.acLinkExecute(Sender: TObject);
-var N: TTreeNode;
+var
+  N: TTreeNode;
 begin
   N := tvItems.Selected;
   N.Data := Pointer(lbPages.ItemIndex);
   if FTreeView is TJvCustomSettingsTreeView then
   begin
     // make the editor behave like the component
-    if (N.Parent <> nil) and (N.Parent.getFirstChild = N) then
+    if (N.Parent <> nil) and (N.Parent.GetFirstChild = N) then
     begin
       N.Parent.Data := Pointer(lbPages.ItemIndex);
       N.Parent.Text := GetNewTreeText(N.Parent.Text, lbPages.ItemIndex);
     end
-    else if N.HasChildren then
+    else
+    if N.HasChildren then
     begin
-      N.getFirstChild.Data := Pointer(lbPages.ItemIndex);
-      N.getFirstChild.Text := GetNewTreeText(N.getFirstChild.Text, lbPages.ItemIndex);
+      N.GetFirstChild.Data := Pointer(lbPages.ItemIndex);
+      N.GetFirstChild.Text := GetNewTreeText(N.GetFirstChild.Text, lbPages.ItemIndex);
     end;
   end;
-  if (N is TJvPageIndexNode) then
+  if N is TJvPageIndexNode then
     TJvPageIndexNode(N).PageIndex := lbPages.ItemIndex;
   N.Text := GetNewTreeText(N.Text, lbPages.ItemIndex);
 end;
@@ -278,9 +276,9 @@ begin
 end;
 
 class function TfrmJvTreeViewLinksEditor.Edit(TreeView: TCustomTreeView;
-  const PageList: IPageList): boolean;
+  const PageList: IPageList): Boolean;
 begin
-  with self.Create(Application) do
+  with Self.Create(Application) do
   try
     AssignComponents(TreeView, PageList);
     Result := ShowModal = mrOK;

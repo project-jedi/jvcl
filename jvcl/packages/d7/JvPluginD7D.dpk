@@ -28,6 +28,7 @@ package JvPluginD7D;
 
 requires
   JvCoreD7R,
+  JvCoreD7D,
   designide,
   JvPluginD7R;
 

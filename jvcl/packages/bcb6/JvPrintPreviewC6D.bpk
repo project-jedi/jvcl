@@ -41,7 +41,7 @@ Known Issues:
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi designide.bpi vcl.bpi JvPrintPreviewC6R.bpi CJCL60.bpi vclx.bpi 
-      JvCoreC6R.bpi"/>
+      JvCoreC6R.bpi JvCoreC6D.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design"/>
     <PATHRC value=".;"/>

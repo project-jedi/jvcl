@@ -37,7 +37,7 @@ uses
   DesignEditors, DesignIntf;
   {$ELSE}
   DsgnIntf;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
 type
   { a component editor that shows the 'Tip of the Day' dialog }
@@ -49,14 +49,11 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-resourcestring
-  SEditProperty = 'Preview...';
-
 implementation
 
 uses
   SysUtils,
-  JvTipOfDay;
+  JvTipOfDay, JvDsgnConsts;
 
 procedure TJvTipOfDayEditor.Edit;
 var
@@ -69,7 +66,7 @@ begin
   if Component is TJvTipOfDay then
     with TJvTipOfDay(Component) do
     begin
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
       SavedOptions := Options;
       Options := [toShowOnStartUp];
       try
@@ -91,7 +88,7 @@ end;
 function TJvTipOfDayEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := SEditProperty
+    Result := SPreviewEllipsis
   else
     Result := '';
 end;

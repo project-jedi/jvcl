@@ -36,7 +36,7 @@ uses
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Classes,
   JvColorProvider, JvDataProviderEditors;
 
@@ -63,7 +63,7 @@ uses
   SysUtils, TypInfo,
   JvDataProvider, JvColorProviderDesignerForm, JvDsgnConsts;
 
-//===TJvColorProviderMappingProperty================================================================
+//=== TJvColorProviderMappingProperty ========================================
 
 function TJvColorProviderMappingProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -110,11 +110,11 @@ begin
   end;
 end;
 
-//===TJvColorProviderEditor=========================================================================
+//=== TJvColorProviderEditor =================================================
 
 procedure TJvColorProviderEditor.Edit;
 begin
-  ExecuteVerb(0)
+  ExecuteVerb(0);
 end;
 
 procedure TJvColorProviderEditor.ExecuteVerb(Index: Integer);
@@ -128,7 +128,7 @@ end;
 function TJvColorProviderEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := SDesigner
+    Result := SDesignerEllipsis
   else
    inherited GetVerb(Index);
 end;

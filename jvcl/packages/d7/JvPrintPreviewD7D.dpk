@@ -30,7 +30,8 @@ requires
   rtl,
   designide,
   vclx,
-  JvPrintPreviewD7R;
+  JvPrintPreviewD7R,
+  JvCoreD7D;
 
 contains
   JvPreviewReg in '..\..\design\JvPreviewReg.pas';

@@ -1,3 +1,29 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvAnimatedEditor.PAS, released on 2002-05-26.
+
+The Initial Developer of the Original Code is John Doe.
+Portions created by John Doe are Copyright (C) 2003 John Doe.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-11-09
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvSegmentedLEDDisplayEditors;
@@ -10,7 +36,7 @@ uses
   DesignEditors, DesignIntf, DesignMenus, VCLEditors, 
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvSegmentedLEDDisplay;
 
 type
@@ -42,36 +68,30 @@ type
     {$ENDIF COMPILER6_UP}
   end;
 
-  TUnlitColorProperty = class(TColorProperty{$IFDEF COMPILER6_UP}, ICustomPropertyDrawing, ICustomPropertyListDrawing{$ENDIF})
+  TUnlitColorProperty = class(TColorProperty{$IFDEF COMPILER6_UP}, ICustomPropertyDrawing, ICustomPropertyListDrawing {$ENDIF})
   {$IFDEF COMPILER6_UP}
     procedure ICustomPropertyListDrawing.ListDrawValue = ListDrawValue;
     procedure ICustomPropertyDrawing.PropDrawValue = PropDrawValue;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean); {$IFNDEF COMPILER6_UP}override;{$ENDIF}
+      const ARect: TRect; ASelected: Boolean); {$IFNDEF COMPILER6_UP} override; {$ENDIF}
     {$IFDEF COMPILER6_UP}
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
     {$ENDIF COMPILER6_UP}
   end;
-
-
-resourcestring
-  sAddDigit = 'Add digit';
-  sRemoveDigit = 'Remove digit';
-  sEditMapping = 'Edit mapping...';
 
 implementation
 
 uses
   SysUtils,
   JclRTTI,
-  JvSegmentedLEDDisplayMappingForm;
+  JvSegmentedLEDDisplayMappingForm, JvDsgnConsts;
 
-//===TJvTClassProperty==============================================================================
+//=== TJvTClassProperty ======================================================
 
 function TJvTClassProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -85,7 +105,7 @@ begin
     SetLength(Result, Length(Result) - 4);
 end;
 
-//===TJvSegmentedLEDDigitClassProperty==============================================================
+//=== TJvSegmentedLEDDigitClassProperty ======================================
 
 procedure TJvSegmentedLEDDigitClassProperty.GetValues(Proc: TGetStrProc);
 var
@@ -100,10 +120,10 @@ begin
   end;
 end;
 
+//=== TJvSegmentedLEDDisplayEditor ===========================================
+
 type
   TOpenDisplay = class(TJvCustomSegmentedLEDDisplay);
-
-//===TJvSegmentedLEDDisplayEditor===================================================================
 
 function TJvSegmentedLEDDisplayEditor.Display: TJvCustomSegmentedLEDDisplay;
 begin
@@ -130,19 +150,26 @@ end;
 procedure TJvSegmentedLEDDisplayEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-    0: AddDigit;
-    1: RemoveDigit;
-    3: EditSLDMapping(Display, Designer);
+    0:
+      AddDigit;
+    1:
+      RemoveDigit;
+    3:
+      EditSLDMapping(Display, Designer);
   end;
 end;
 
 function TJvSegmentedLEDDisplayEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := sAddDigit;
-    1: Result := sRemoveDigit;
-    2: Result := '-'; // do not localize
-    3: Result := sEditMapping;
+    0:
+      Result := SAddDigit;
+    1:
+      Result := SRemoveDigit;
+    2:
+      Result := '-'; // do not localize
+    3:
+      Result := SEditMappingEllipsis;
   end;
 end;
 
@@ -163,7 +190,7 @@ begin
     AItem.Enabled := False;
 end;
 
-//===TUnlitColorProperty============================================================================
+//=== TUnlitColorProperty ====================================================
 
 function TUnlitColorProperty.GetValue: string;
 begin
@@ -196,24 +223,26 @@ end;
 
 procedure TUnlitColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
+
   function ColorToBorderColor(AColor: TColor): TColor;
   type
     TColorQuad = record
-      Red,
-      Green,
-      Blue,
+      Red: Byte;
+      Green: Byte;
+      Blue: Byte;
       Alpha: Byte;
     end;
   begin
-    if (TColorQuad(AColor).Red > 192) or
-       (TColorQuad(AColor).Green > 192) or
-       (TColorQuad(AColor).Blue > 192) then
+    if (TColorQuad(AColor).Red > 192) or (TColorQuad(AColor).Green > 192) or
+      (TColorQuad(AColor).Blue > 192) then
       Result := clBlack
-    else if ASelected then
+    else
+    if ASelected then
       Result := clWhite
     else
       Result := AColor;
   end;
+
 var
   vRight: Integer;
   vOldPenColor, vOldBrushColor, TmpColor: TColor;
@@ -244,7 +273,7 @@ procedure TUnlitColorProperty.PropDrawValue(ACanvas: TCanvas; const ARect: TRect
   ASelected: Boolean);
 begin
   if GetVisualValue <> '' then
-    ListDrawValue(GetVisualValue, ACanvas, ARect, True{ASelected})
+    ListDrawValue(GetVisualValue, ACanvas, ARect, True {ASelected})
   else
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;

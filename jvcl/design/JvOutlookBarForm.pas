@@ -117,32 +117,26 @@ type
     function UniqueName(Component: TComponent): string; override;
     procedure FormClosed(AForm: TCustomForm); override;
     procedure FormModified; override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
-
-
-
-
-resourcestring
-  sDesignerIsNilInFormClosed = 'Designer is nil in FormClosed';
 
 implementation
 
 uses
-  Registry, Dialogs;
+  Registry, Dialogs,
+  JvConsts, JvDsgnConsts;
 
 {$R *.dfm}
 
 const
   cJvOutlookBar = 'TJvOutlookBar';
+  cWidth = 'Width';
+  cHeight = 'Height';
+  cTextLabels = 'TextLabels';
+  cToolBar = 'ToolBar';
 
 type
   THackOutlookBar = class(TJvCustomOutlookBar);
-resourcestring
-  SFmtCaption = 'Editing %s';
-  SCaption = 'OutlookBar Editor';
-
-
 
 //=== TFrmOLBEditor ==========================================================
 
@@ -162,7 +156,7 @@ begin
   if OutlookBar <> nil then
     Caption := Format(SFmtCaption, [GetFullPathName(OutlookBar)])
   else
-    Caption := SCaption;
+    Caption := SOutlookBarCaption;
 end;
 
 function TFrmOLBEditor.GetEditState: TEditState;
@@ -188,7 +182,7 @@ begin
     Close;
   end
   else
-    if Item is TTreeNode then
+  if Item is TTreeNode then
     DeleteItem(Item);
 end;
 
@@ -214,7 +208,7 @@ end;
 
 procedure TFrmOLBEditor.FormClosed(AForm: TCustomForm);
 begin
-  Assert(Designer <> nil, sDesignerIsNilInFormClosed);
+  Assert(Designer <> nil, SDesignerIsNilInFormClosed);
   if AForm = Designer.Form then
   begin
     Designer := nil;
@@ -232,7 +226,8 @@ function TFrmOLBEditor.UniqueName(Component: TComponent): string;
 begin
   Result := Designer.UniqueName(Component.ClassName);
 end;
-{$ENDIF}
+
+{$ENDIF COMPILER6_UP}
 
 procedure TFrmOLBEditor.SelectItem(Node: TTreeNode);
 begin
@@ -241,7 +236,7 @@ begin
     if TObject(Node.Data) is TJvOutlookBarPage then
       THackOutlookBar(OutlookBar).ActivePageIndex := TJvOutlookBarPage(Node.Data).Index
     else
-      if TObject(Node.Data) is TJvOutlookBarButton then
+    if TObject(Node.Data) is TJvOutlookBarButton then
     begin
       THackOutlookBar(OutlookBar).ActivePageIndex := TJvOutlookBarPage(Node.Parent.Data).Index;
       Node.Parent.Expand(False);
@@ -288,7 +283,7 @@ begin
   try
     while Assigned(N) do
     begin
-      if (N = Item) then
+      if N = Item then
       begin
         N2 := FindNextNode(N);
         N.Data := nil;
@@ -340,12 +335,15 @@ end;
 
 procedure TFrmOLBEditor.alActionsUpdate(Action: TBasicAction;
   var Handled: Boolean);
+var
+ Sel: Boolean;
 begin
-  acNewButton.Enabled := tvItems.Selected <> nil;
-  acDelete.Enabled := tvItems.Selected <> nil;
-  acUp.Enabled := (tvItems.Selected <> nil) and (tvItems.Selected.getPrevSibling <> nil);
-  acDown.Enabled := (tvItems.Selected <> nil) and (tvItems.Selected.getNextSibling <> nil);
-  acUpdate.Enabled := Screen.ActiveForm = self;
+  Sel := tvItems.Selected <> nil;
+  acNewButton.Enabled := Sel;
+  acDelete.Enabled := Sel;
+  acUp.Enabled := Sel and (tvItems.Selected.GetPrevSibling <> nil);
+  acDown.Enabled := Sel and (tvItems.Selected.GetNextSibling <> nil);
+  acUpdate.Enabled := Screen.ActiveForm = Self;
 end;
 
 procedure TFrmOLBEditor.acNewPageExecute(Sender: TObject);
@@ -385,7 +383,7 @@ begin
     if pr is TJvOutlookBarPage then
       THackOutlookBar(OutlookBar).Pages.Delete(TJvOutlookBarPage(pr).Index)
     else
-      if pr is TJvOutlookBarButton then
+    if pr is TJvOutlookBarButton then
     begin
       P := TJvOutlookBarPage(N.Parent.Data);
       P.Buttons.Delete(TJvOutlookBarButton(pr).Index);
@@ -404,7 +402,8 @@ end;
 
 class function TFrmOLBEditor.GetButtonName(OLBar: TJvCustomOutlookBar): string;
 const
-  cTemplate = 'JvOutlookBarButton%d';
+  cPrefix = 'JvOutlookBarButton';
+  cTemplate = cPrefix + '%d';
 var
   K: Integer;
   Tmp: string;
@@ -422,7 +421,7 @@ var
   end;
 
 begin
-  Result := 'JvOutlookBarButton';
+  Result := cPrefix;
   if OLBar <> nil then
     for K := 1 to MaxInt - 1 do
     begin
@@ -437,7 +436,8 @@ end;
 
 class function TFrmOLBEditor.GetPageName(OLBar: TJvCustomOutlookBar): string;
 const
-  cTemplate = 'JvOutlookBarPage%d';
+  cPrefix = 'JvOutlookBarPage';
+  cTemplate = cPrefix + '%d';
 var
   K: Integer;
   Tmp: string;
@@ -454,7 +454,7 @@ var
   end;
 
 begin
-  Result := 'JvOutlookPage';
+  Result := cPrefix;
   if OLBar <> nil then
     for K := 1 to MaxInt - 1 do
     begin
@@ -484,7 +484,7 @@ begin
           N2 := N;
       end
       else
-        if TObject(N.Data) is TJvOutlookBarButton then
+      if TObject(N.Data) is TJvOutlookBarButton then
       begin
         N.Text := TJvOutlookBarButton(N.Data).Caption;
         if N.Selected then
@@ -564,11 +564,11 @@ begin
   try
     R.RootKey := HKEY_CURRENT_USER;
     R.OpenKey(GetRegPath, True);
-    // Width,Height,TextLabels
-    R.WriteInteger(cJvOutlookBar, 'Width', Width);
-    R.WriteInteger(cJvOutlookBar, 'Height', Height);
-    R.WriteBool(cJvOutlookBar, 'TextLabels', acShowTextLabels.Checked);
-    R.WriteBool(cJvOutlookBar, 'ToolBar', acToolBar.Checked);
+    // Width, Height, TextLabels
+    R.WriteInteger(cJvOutlookBar, cWidth, Width);
+    R.WriteInteger(cJvOutlookBar, cHeight, Height);
+    R.WriteBool(cJvOutlookBar, cTextLabels, acShowTextLabels.Checked);
+    R.WriteBool(cJvOutlookBar, cToolBar, acToolBar.Checked);
   finally
     R.Free;
   end;
@@ -582,12 +582,12 @@ begin
   try
     R.RootKey := HKEY_CURRENT_USER;
     R.OpenKey(GetRegPath, True);
-    // Width,Height,TextLabels
-    Width := R.ReadInteger(cJvOutlookBar, 'Width', Width);
-    Height := R.ReadInteger(cJvOutlookBar, 'Height', Height);
-    acToolBar.Checked := not R.ReadBool(cJvOutlookBar, 'ToolBar', True);
+    // Width, Height, TextLabels
+    Width := R.ReadInteger(cJvOutlookBar, cWidth, Width);
+    Height := R.ReadInteger(cJvOutlookBar, cHeight, Height);
+    acToolBar.Checked := not R.ReadBool(cJvOutlookBar, cToolBar, True);
     acToolBar.Execute;
-    acShowTextLabels.Checked := not R.ReadBool(cJvOutlookBar, 'TextLabels', False);
+    acShowTextLabels.Checked := not R.ReadBool(cJvOutlookBar, cTextLabels, False);
     acShowTextLabels.Execute; // toggles
   finally
     R.Free;
@@ -600,14 +600,10 @@ const
 begin
   {$IFDEF COMPILER6_UP}
   Result := Designer.GetBaseRegKey + cRegKey;
+  {$ELSE}
+  // (rom) simplified and bugfixed
+  Result := SDelphiKey + cRegKey;
   {$ENDIF}
-  {$IFDEF DELPHI5}
-  Result := '\Software\Borland\Delphi\5.0\' + cRegKey;
-  {$ENDIF}
-  {$IFDEF BCB5}
-  Result := '\Software\Borland\C++Builder\5.0\' + cRegKey;
-  {$ENDIF}
-  // previous versions (4.0-1.0) not supported
 end;
 
 procedure TFrmOLBEditor.SwitchItems(Node1, Node2: TTreeNode);
@@ -645,7 +641,6 @@ begin
   acToolBar.Checked := not acToolBar.Checked;
   tbTop.Visible := acToolBar.Checked;
 end;
-
 
 end.
 

@@ -330,7 +330,7 @@ begin
     0:
       Result := SEditReport;
     1:
-      Result := SPreviewReport;
+      Result := SPreviewReportEllipsis;
   end;
 end;
 

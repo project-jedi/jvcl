@@ -40,7 +40,7 @@ Known Issues:
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi JvTimeFrameworkC6R.bpi"/>
+    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi JvTimeFrameworkC6R.bpi JvCoreC6D.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design"/>
     <PATHRC value=".;"/>

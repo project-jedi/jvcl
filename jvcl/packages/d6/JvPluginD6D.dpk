@@ -28,6 +28,7 @@ package JvPluginD6D;
 
 requires
   JvCoreD6R,
+  JvCoreD6D,
   designide,
   JvPluginD6R;
 

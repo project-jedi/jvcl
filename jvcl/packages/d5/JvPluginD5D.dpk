@@ -28,6 +28,7 @@ package JvPluginD5D;
 
 requires
   JvCoreD5R,
+  JvCoreD5D,
   JvPluginD5R;
 
 contains

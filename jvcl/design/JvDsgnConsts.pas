@@ -38,8 +38,8 @@ uses
 
 resourcestring
   //=== strings used by several editors ======================================
-  SPreview = 'Preview...';
-  SDesigner = 'Designer...';
+  SPreviewEllipsis = 'Preview...';
+  SDesignerEllipsis = 'Designer...';
   SNone = '(none)';
   SHelp = 'Help';
   SConfirm = 'Confirm?';
@@ -68,11 +68,17 @@ resourcestring
     'Select the type of band object to create.';
 
   //=== JvChangeNotifyEditor.pas =============================================
-  SEditProperty = 'Notifications...';
+  SNotificationsEllipsis = 'Notifications...';
 
   //=== JvCheckedItemsForm.pas ===============================================
   SItemEditor = 'Item editor';
   SEnabled = 'Enabled';
+
+  //=== JvColorProviderDesignerForm.pas ======================================
+  SSystemColors = 'System colors';
+  SStandardColors = 'Standard colors';
+  SCustomColorsEllipsis = 'Custom colors...';
+  SColorMsg = 'Copy standard and system colors from the default context?';
 
   //=== JvColorProviderEditors.pas ===========================================
   SMappingDoesNotExistForThisColorProv = 'Mapping does not exist for this color provider.';
@@ -114,8 +120,8 @@ resourcestring
 
   //=== JvDataProviderEditors.pas ============================================
   SSpecifiedProviderIsNotATComponentDe = 'Specified provider is not a TComponent descendant';
-  STreeDesigner = 'Tree designer...';
-  SContextManager = 'Context manager...';
+  STreeDesignerEllipsis = 'Tree designer...';
+  SContextManagerEllipsis = 'Context manager...';
   SInvalidVerbd = 'Invalid verb#: %d';
 
   //=== JvDataProviderItemDesign.pas =========================================
@@ -131,7 +137,7 @@ resourcestring
   SStripFilePath = '&Strip file path';
   SExecutableFilesExeExeAllFiles = 'Executable files (*.exe)|*.exe|All files (*.*)|*.*';
   SItems = 'Items';
-  SFmtEditProperty = '%s Editor...';
+  SFmtEditEllipsis = '%s Editor...';
 
   //=== JvFooterEditor.pas ===================================================
   SAddButtonText = 'Add button';
@@ -142,7 +148,7 @@ resourcestring
   SNext = 'Next';
 
   //=== JvgComponentListEditorForm.pas =======================================
-  SEditComponentList = 'Edit component list...';
+  SEditComponentListEllipsis = 'Edit component list...';
 
   //=== JvgHelpPanelEditor.pas ===============================================
   SRTFAndTextFilesrtftxtrtftxt = 'RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt';
@@ -160,16 +166,16 @@ resourcestring
   //=== JvgLogicsEditorForm.pas ==============================================
   SCaption = 'Caption';
   SComments = 'Comments';
-  SEditComponent = 'Edit component...';
+  SEditComponentEllipsis = 'Edit component...';
 
   //=== JvgReportEditorForm.pas ==============================================
   SEditReport = 'Edit report...';
-  SPreviewReport = 'Preview report...';
+  SPreviewReportEllipsis = 'Preview report...';
   SDeleteObject = 'Delete object?';
   SPagePreview = 'Page Preview';
 
   //=== JvgReportParamsForm.pas ==============================================
-  SEditParams = 'Edit params...';
+  SEditParamsEllipsis = 'Edit params...';
 
   //=== JvGroupHeaderEditor.pas ==============================================
   SStandardFlat = 'Standard/Flat';
@@ -190,7 +196,7 @@ resourcestring
   SZoomEditWindow = 'Zoom Edit Window';
 
   //=== JvImagePreviewForm.pas ===============================================
-  SPreviewText = 'Preview';
+  SPreview = 'Preview';
 
   //=== JvJVCLAboutEditor.pas ================================================
   SVersions = 'Version %s';
@@ -204,6 +210,79 @@ resourcestring
   SAddPage_ = 'Add Page';
   SNextPage = 'Next Page';
   SPreviousPage = 'Previous Page';
+
+  //=== JvMailEditor.pas =====================================================
+  SSend = 'Send';
+  SAddress = 'Address';
+
+  //=== JvOutlookBarEditors.pas ==============================================
+  SOLEditor = 'OutlookBar Editor...';
+
+  //=== JvOutlookBarForm.pas =================================================
+  SDesignerIsNilInFormClosed = 'Designer is nil in FormClosed';
+  SFmtCaption = 'Editing %s';
+  SOutlookBarCaption = 'OutlookBar Editor';
+
+  //=== JvPageLinkEditor.pas =================================================
+  SCreateLinkToPaged = 'Create link to page %d';
+
+  //=== JvPageListTreeViewReg.pas ============================================
+  SFmtInterfaceNotSupported = '%s does not support the required interface (%s)';
+  SNextPageAmp = 'Ne&xt Page';
+  SPrevPage = '&Previous Page';
+  SNewPage = '&New Page';
+  SDelPage = '&Delete Page';
+
+  //=== JvPictureEditForm.pas ================================================
+  SLoadPicture = 'Load picture';
+  SSavePictureAs = 'Save picture as';
+
+  //=== JvPluginParamsForm.pas ===============================================
+  SPluginParamsFormInfoText =
+    'The settings above will create the following project:' +
+    sLineBreak + sLineBreak +
+    '* A project called Plg%0:s.%1:s' + sLineBreak +
+    '* A unit called Plugin%0:s, containing the data module T%0:s.';
+
+  //=== JvPreviewReg.pas =====================================================
+  SCreatePreview = 'Create Preview';
+  SClearPreview = 'Clear Preview';
+
+  //=== JvScheduleEditorForm.pas =============================================
+  SInvalidScheduleSettingsFound = 'Invalid schedule settings found.';
+  SStop = 'Stop';
+  SRun = 'Run';
+
+  //=== JvScheduleEditors.pas ================================================
+  SEventEditor = 'Event editor...';
+
+  //=== JvScrollMaxEditor.pas ================================================
+  SAddBand = 'Add Band';
+
+  //=== JvSegmentedLEDDisplayEditors.pas =====================================
+  SAddDigit = 'Add digit';
+  SRemoveDigit = 'Remove digit';
+  SEditMappingEllipsis = 'Edit mapping...';
+
+  //=== JvSegmentedLEDDisplayMappingForm.pas =================================
+  SSegmentedLEDDisplayMappingEditor = 'Segmented LED Display Mapping Editor';
+
+  //=== JvSegmentedLEDDisplayMappingForm.pas =================================
+  STextFilter =
+    'Text files (*.TXT)|*.TXT|Config files (*.SYS;*.INI)|*.SYS;*.INI|Batch files (*.BAT)|*.BAT|All files (*.*)|*.*';
+  //  STextFilter = 'Text files (*.txt)|*.txt|Config files (*.sys;*.ini)|*.sys;*.ini|Batch files (*.bat)|*.bat|All files (*.*)|*.*';
+  SSingleLine = 'Line';
+  SMultipleLines = 'Lines';
+
+  //=== JvTimeFrameworkReg.pas ===============================================
+  SGridLayout = 'Grid Layout';
+  SCustomDraw = 'Custom Draw';
+
+  //=== JvTimeLineEditor.pas =================================================
+  SItemsEditorEllipsis = 'Items Editor...';
+
+  //=== JvTimerListEditor.pas ================================================
+  SEventsEllipsis = 'Events...';
 
   //=== DataProvider design time constants ===================================
   SDataProviderDesignerCaption = 'Editing %s%s...';

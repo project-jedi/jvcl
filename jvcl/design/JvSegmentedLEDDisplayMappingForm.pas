@@ -1,19 +1,49 @@
-unit JvSegmentedLEDDisplayMappingForm;
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvAnimatedEditor.PAS, released on 2002-05-26.
+
+The Initial Developer of the Original Code is John Doe.
+Portions created by John Doe are Copyright (C) 2003 John Doe.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-11-09
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+
+unit JvSegmentedLEDDisplayMappingForm;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, 
-  {$IFNDEF COMPILER6_UP} DsgnIntf, {$ELSE} DesignIntf, DesignEditors, {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF}
   JVBaseDsgnForm, JvSegmentedLEDDisplayMapperFrame, JvSegmentedLEDDisplay,
   JvBaseDsgnFrame;
 
 type
   {$IFDEF COMPILER6_UP}
   IFormDesigner = IDesigner;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   TfrmJvSLDMappingEditor = class(TJvBaseDesign)
     fmeMapper: TfmeJvSegmentedLEDDisplayMapper;
     lblDigitClassCaption: TLabel;
@@ -29,7 +59,6 @@ type
     btnOK: TButton;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
-    { Private declarations }
     FDesigner: IFormDesigner;
     function GetDisplay: TJvCustomSegmentedLEDDisplay;
     procedure SetDisplay(Value: TJvCustomSegmentedLEDDisplay);
@@ -43,7 +72,6 @@ type
     procedure UpdateInfo(Sender: TObject);
     procedure MappingChanged(Sender: TObject);
   public
-    { Public declarations }
     procedure Loaded; override;
     property Designer: IFormDesigner read FDesigner write SetDesigner;
     property Display: TJvCustomSegmentedLEDDisplay read GetDisplay write SetDisplay;
@@ -51,26 +79,25 @@ type
 
 procedure EditSLDMapping(ADisplay: TJvCustomSegmentedLEDDisplay; ADesigner: IFormDesigner);
 
-
-resourcestring
-  sSegmentedLEDDisplayMappingEditor = 'Segmented LED Display Mapping Editor';
-
 implementation
+
+uses
+  Registry,
+  JvDsgnConsts;
 
 {$R *.DFM}
 
-uses
-  Registry;
+const
+  cLastOpenFolder = 'LastOpenFolder';
+  cLastSaveFolder = 'LastSaveFolder';
 
 function IsSLDMappingEditForm(Form: TJvBaseDesign; const Args: array of const): Boolean;
 begin
   Result := Form is TfrmJvSLDMappingEditor;
   if Result then
-  begin
     with (Form as TfrmJvSLDMappingEditor) do
       Result := (Pointer(Display) = Args[0].VObject) and
         (Pointer(Designer) = Args[1].VInterface);
-  end;
 end;
 
 procedure EditSLDMapping(ADisplay: TJvCustomSegmentedLEDDisplay; ADesigner: IFormDesigner);
@@ -93,7 +120,7 @@ begin
   Form.BringToFront;
 end;
 
-//===TfrmJvSLDMappingEditor=========================================================================
+//=== TfrmJvSLDMappingEditor =================================================
 
 function TfrmJvSLDMappingEditor.GetDisplay: TJvCustomSegmentedLEDDisplay;
 begin
@@ -114,7 +141,7 @@ end;
 
 function TfrmJvSLDMappingEditor.DesignerFormName: string;
 begin
-  Result := sSegmentedLEDDisplayMappingEditor;
+  Result := SSegmentedLEDDisplayMappingEditor;
 end;
 
 function TfrmJvSLDMappingEditor.AutoStoreSettings: Boolean;
@@ -130,8 +157,8 @@ begin
     LazyWrite := False;
     if OpenKey(GetRegKey, True) then
     try
-      WriteString('LastOpenFolder', fmeMapper.LastOpenFolder);
-      WriteString('LastSaveFolder', fmeMapper.LastSaveFolder);
+      WriteString(cLastOpenFolder, fmeMapper.LastOpenFolder);
+      WriteString(cLastSaveFolder, fmeMapper.LastSaveFolder);
     finally
       CloseKey;
     end;
@@ -147,10 +174,10 @@ begin
   try
     if OpenKey(GetRegKey, False) then
     try
-      if ValueExists('LastOpenFolder') then
-        fmeMapper.LastOpenFolder := ReadString('LastOpenFolder');
-      if ValueExists('LastSaveFolder') then
-        fmeMapper.LastSaveFolder := ReadString('LastSaveFolder');
+      if ValueExists(cLastOpenFolder) then
+        fmeMapper.LastOpenFolder := ReadString(cLastOpenFolder);
+      if ValueExists(cLastSaveFolder) then
+        fmeMapper.LastSaveFolder := ReadString(cLastSaveFolder);
     finally
       CloseKey;
     end;
@@ -220,6 +247,7 @@ procedure TfrmJvSLDMappingEditor.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
   CanClose := fmeMapper.CanClose;
+  // (rom) this seems silly
   if CanClose then
     inherited;
 end;

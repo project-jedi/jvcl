@@ -29,6 +29,7 @@ package JvTimeFrameworkD6D;
 requires
   rtl,
   JvTimeFrameworkD6R,
+  JvCoreD6D,
   designide;
 
 contains
