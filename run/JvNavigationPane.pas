@@ -1280,6 +1280,10 @@ begin
   FColors := TJvNavPanelColors.Create;
   FColors.OnChange := DoColorsChange;
   FParentStyleManager := True;
+  {$IFDEF VisualCLX}
+  ParentFont := false;
+  ParentColor := false;
+  {$ENDIF VisualCLX}
 end;
 
 destructor TJvIconPanel.Destroy;
