@@ -14,82 +14,70 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Displays a dialog box for errors encountered when copying a file
 Description
-  Write here a description
+  This component is used to display a dialog box encountered when copying a file during a setup
+  routine. It is a wrapper for the SetupCopyError API call.
 ----------------------------------------------------------------------------------------------------
 @@TJvCopyError.DiskName
 Summary
-  Write here a summary (1 line)
+  The name of the disk to prompt for
 Description
-  Write here a description
+  This property contains the name of the disk the user will be prompted for.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PathToSource
 ----------------------------------------------------------------------------------------------------
 @@TJvCopyError.Execute
 Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
+  Shows the dialog box 
 Description
-  Write here a description
+  This method shows the SetupCopyError dialog box
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This method returns dsSuccess if the file has been found, dsCancel if the user pressed "Cancel",
+  dsSkipFile if the user pressed "Skip File", and dsError if an error occurred.
 ----------------------------------------------------------------------------------------------------
 @@TJvCopyError.NewPath
 Summary
-  Write here a summary (1 line)
+  Contains the path chosen by the user
 Description
-  Write here a description
+  This property contains the new path chosen by the user in the dialog box.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PathToSource,SourceFile
 ----------------------------------------------------------------------------------------------------
 @@TJvCopyError.PathToSource
 Summary
-  Write here a summary (1 line)
+  Default path to look for the file
 Description
-  Write here a description
+  This property contains the initial contents for the combo box used to hold the user-selected path.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DiskName
 ----------------------------------------------------------------------------------------------------
 @@TJvCopyError.SourceFile
 Summary
-  Write here a summary (1 line)
+  File to look for
 Description
-  Write here a description
+  This property contains the file that the user needs to provide the location for.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  NewPath,PathToSource
 ----------------------------------------------------------------------------------------------------
 @@TJvCopyError.Style
 Summary
-  Write here a summary (1 line)
+  Flags used for modifying the dialog box
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  These flags modify how the dialog box is presented to the user.
 ----------------------------------------------------------------------------------------------------
 @@TJvCopyError.TargetFile
 Summary
-  Write here a summary (1 line)
+  The target file for the copy operation
 Description
-  Write here a description
+  This property contains the destination file of the copy operation.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Win32ErrorCode
 ----------------------------------------------------------------------------------------------------
 @@TJvCopyError.Win32ErrorCode
 Summary
-  Write here a summary (1 line)
+  Error code from the copy operation
 Description
-  Write here a description
+  This property contains the Windows error code that occurred in the copy operation.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TargetFile
