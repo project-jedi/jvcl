@@ -43,6 +43,7 @@ type
     ArrowButton1: TJvArrowButton;
     ArrowButton2: TJvArrowButton;
     ImageList1: TImageList;
+    procedure Close1Click(Sender: TObject);
   private
   public
   end;
@@ -53,5 +54,10 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TArrowButtonMainForm.Close1Click(Sender: TObject);
+begin
+  Close;
+end;
 
 end.

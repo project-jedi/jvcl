@@ -109,7 +109,7 @@ begin
   if chbShowHeaderInHint.Checked then
     JvBalloonHint1.ApplicationHintOptions := JvBalloonHint1.ApplicationHintOptions + [ahShowHeaderInHint]
   else
-    JvBalloonHint1.ApplicationHintOptions := JvBalloonHint1.ApplicationHintOptions - [ahShowHeaderInHint]
+    JvBalloonHint1.ApplicationHintOptions := JvBalloonHint1.ApplicationHintOptions - [ahShowHeaderInHint];
 end;
 
 procedure TJvBalloonHintMainForm.chbShowIconInHintClick(Sender: TObject);

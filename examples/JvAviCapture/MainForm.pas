@@ -92,36 +92,36 @@ procedure TfrmMain.btnSourceClick(Sender: TObject);
 begin
   if not AviCap.ShowDialog(vdSource) then
     Application.MessageBox('Your driver doesn''t provide this dialog '+
-                           'or you are not connected to a driver',
-                           'Unable to show dialog',
-                           MB_ICONINFORMATION);
+      'or you are not connected to a driver',
+      'Unable to show dialog',
+      MB_ICONINFORMATION);
 end;
 
 procedure TfrmMain.btnFormatClick(Sender: TObject);
 begin
   if not AviCap.ShowDialog(vdFormat) then
     Application.MessageBox('Your driver doesn''t provide this dialog '+
-                           'or you are not connected to a driver',
-                           'Unable to show dialog',
-                           MB_ICONINFORMATION);
+      'or you are not connected to a driver',
+      'Unable to show dialog',
+      MB_ICONINFORMATION);
 end;
 
 procedure TfrmMain.btnDisplayClick(Sender: TObject);
 begin
   if not AviCap.ShowDialog(vdDisplay) then
     Application.MessageBox('Your driver doesn''t provide this dialog '+
-                           'or you are not connected to a driver',
-                           'Unable to show dialog',
-                           MB_ICONINFORMATION);
+      'or you are not connected to a driver',
+      'Unable to show dialog',
+      MB_ICONINFORMATION);
 end;
 
 procedure TfrmMain.btnCompressionClick(Sender: TObject);
 begin
   if not AviCap.ShowDialog(vdCompression) then
     Application.MessageBox('Your driver doesn''t provide this dialog '+
-                           'or you are not connected to a driver',
-                           'Unable to show dialog',
-                           MB_ICONINFORMATION);
+      'or you are not connected to a driver',
+      'Unable to show dialog',
+      MB_ICONINFORMATION);
 end;
 
 end.
