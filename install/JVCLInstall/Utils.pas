@@ -97,9 +97,13 @@ begin
           if S <> '' then
           begin
             { Delete the environment variable }
-            if (S <> 'TEMP') and (S <> 'ComSpec') and (S <> 'OS') and
-               (S <> 'PATHEXT') and (S <> 'windir') and (S <> 'systemroot') then
-              SetEnvironmentVariable(PChar(S), nil);
+            if not (
+              SameText(S, 'TEMP') or  SameText(S, 'ComSpec') or SameText(S ,'OS') or
+              SameText(S, 'PATHEXT') or SameText(S, 'windir') or SameText(S, 'SystemRoot') or
+              SameText(S, 'SystemDrive') or
+              SameText(S, 'INSTALLOPTIONS') or SameText(S, 'LANG')
+              ) then
+             SetEnvironmentVariable(PChar(S), nil);
           end;
 
           Inc(P);

@@ -785,6 +785,7 @@ var
   AutoDepend: Boolean;
   TargetConfig: ITargetConfig;
   DccOpt: string;
+  Path: string;
 
   function GetProjectIndex: Integer;
   begin
@@ -833,7 +834,13 @@ begin
     if TargetConfig.GenerateMapFiles then
       DccOpt := DccOpt + ' -GD';
 
-    SetEnvironmentVariable('PATH', PChar(GetWindowsDir + ';' + GetSystemDir + ';' + TargetConfig.Target.RootDir));
+    Path := GetWindowsDir + ';' + GetSystemDir + ';' + GetWindowsDir + '\Command';
+    if TargetConfig.DcpDir <> TargetConfig.BplDir then
+      Path := TargetConfig.Target.RootDir + ';' + TargetConfig.BplDir + ';' + TargetConfig.DcpDir + ';' + Path
+    else
+      Path := TargetConfig.Target.RootDir + ';' + TargetConfig.BplDir + ';' + Path;
+
+    SetEnvironmentVariable('PATH', PChar(Path));
     SetEnvironmentVariable('DCCOPT', Pointer(DccOpt));
     // especially for BCB generated make file
     SetEnvironmentVariable('DCC', PChar('"' + TargetConfig.Target.RootDir + '\bin\dcc32.exe" ' + DccOpt));
