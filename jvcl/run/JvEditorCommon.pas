@@ -816,7 +816,7 @@ type
     procedure GetBracketHighlightAttr(Line: Integer; var Attrs: TLineAttrs); virtual;
     procedure HighlightBrackets; virtual;
     procedure GetBracketHighlightingWords(var Direction: Integer;
-      var Start, Stop: AnsiString; var CaseSensitive: Boolean); virtual;
+      const Start: AnsiString; var Stop: AnsiString; var CaseSensitive: Boolean); virtual;
     function FontCacheFind(LA: TLineAttr): TFont;
     procedure FontCacheClear;
     procedure InsertChar(const Key: Word); virtual; abstract;
@@ -2720,6 +2720,7 @@ begin
     FSelection.IsSelected := False;
     FSelection.Selecting := False;
   end;
+  HighlightBrackets;
 end;
 
 procedure TJvCustomEditorBase.Changed;
@@ -3028,13 +3029,12 @@ begin
 
   PaintCaret(False);
   try
-    if Assigned(OnKeyPress) then
+    if Assigned(OnKeyPress) then // do the inherited action
     begin
       Ch := Char(Key);
       OnKeyPress(Self, Ch);
       Key := Char(Ch);
     end;
-    // inherited KeyPress(Key);
     Command(Ord(Key));
   finally
     PaintCaret(True);
@@ -3054,7 +3054,6 @@ begin
   FSelection.Selecting := False;
   Completion.CloseUp(False);
   Mouse2Caret(X, Y, XX, YY);
-  //if (XX = FCaretX) and (YY = FCaretY) then Exit;
 
   PaintCaret(False);
   if (Button = mbLeft) and not (ssShift in Shift) then
@@ -3413,10 +3412,12 @@ begin
   end
   else {1 :}
   begin
+    {$IFDEF VCL}
     if Value then
       SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or ES_READONLY)
     else
       SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) and not ES_READONLY);
+    {$ENDIF VCL}
     if FReadOnly <> Value then
     begin
       FReadOnly := Value;
@@ -4044,6 +4045,62 @@ begin
   end;
 end;
 
+{ *****************************************************************************}
+{ CompareInStrInternal and CompareInTextInternal are only used by
+  HighlightBrackets(). They are too special in their parameters and should not
+  be moved to JvJCLUtils.pas. }
+
+function CompareInStrInternal(const S: AnsiString; Index: Integer; const SubStr: AnsiString; LenSubStr: Integer): Boolean;
+ { Index is zero based for speed optimization }
+var
+  J, I, EndIndex: Integer;
+begin
+  Result := False;
+  EndIndex := Index + LenSubStr - 1;
+  if EndIndex < Length(S) then
+  begin
+    J := 0;
+    for I := Index to EndIndex do
+    begin
+      if S[I + 1] <> SubStr[J + 1] then
+        Exit;
+      Inc(J);
+    end;
+    Result := True;
+  end;
+end;
+
+function CompareInTextInternal(const S: AnsiString; Index: Integer; const SubStr: AnsiString; LenSubStr: Integer): Boolean;
+ { Index is zero based for speed optimization }
+ { SubStr is always in lowercase }
+var
+  I, J, EndIndex: Integer;
+  Ch: AnsiChar;
+begin
+  Result := False;
+  EndIndex := Index + LenSubStr - 1;
+  if EndIndex < Length(S) then
+  begin
+    J := 0;
+    for I := Index to EndIndex do
+    begin
+      Ch := S[I + 1];
+      if not (Ch in ['A'..'Z']) then
+      begin
+        if Ch <> SubStr[J + 1] then
+          Exit
+      end
+      else
+      begin
+        if Char(Byte(Ch) - Ord('A') + Ord('a')) <> SubStr[J + 1] then
+          Exit;
+      end;
+      Inc(J);
+    end;
+    Result := True;
+  end;
+end;
+
 procedure TJvCustomEditorBase.HighlightBrackets;
 const
   Separators: TSysCharSet = [#0, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
@@ -4056,9 +4113,9 @@ var
   SearchEnd: AnsiString;
   SearchOpen: Integer;
   CaseSensitive: Boolean;
-  CmpProc: function(const Str1, Str2: PChar; MaxLen: Cardinal): Integer;
-  IsCharCmp: Boolean;
-  LenSearchEnd, LenSearchStart: Integer;
+  IsBracketCompare: Boolean;
+  LenSearchEnd, LenSearchStart, LenText: Integer;
+  CmpProc: function(const S: AnsiString; Index: Integer; const SubStr: AnsiString; LenSubStr: Integer): Boolean;
 begin
   X := CaretX;
   Y := CaretY;
@@ -4082,7 +4139,7 @@ begin
   begin
     SearchDir := 0; // nothing to search
     CaseSensitive := False;
-    IsCharCmp := True;
+    IsBracketCompare := True;
 
     // obtain search direction and end-char
     if Text[X + 1] in ['(', '{', '[', '<'] then
@@ -4110,7 +4167,7 @@ begin
     end
     else
     begin
-      IsCharCmp := False;
+      IsBracketCompare := False;
       // Text search
       SearchStart := GetAnsiWordOnCaret;
       while (X >= 0) and not (Text[X + 1] in Separators) do
@@ -4120,20 +4177,25 @@ begin
       GetBracketHighlightingWords(SearchDir, SearchStart, SearchEnd, CaseSensitive);
     end;
 
-    if SearchDir <> 0 then
+    if (SearchDir <> 0) and (SearchStart <> '') and (SearchEnd <> '') then
     begin
       BracketHighlighting.FStart.TopLeft := Point(X + 1, Y);
       BracketHighlighting.FStart.BottomRight := Point(X + 1 + Length(SearchStart) - 1, Y);
-      PaintLine(Y);
-
-      if CaseSensitive then
-        CmpProc := StrLComp
-      else
-        CmpProc := StrLIComp;
 
       SearchOpen := 1;
+      LenText := Length(Text);
       LenSearchStart := Length(SearchStart);
       LenSearchEnd := Length(SearchEnd);
+
+      if (not CaseSensitive) and not IsBracketCompare then
+      begin
+        SearchStart := LowerCase(SearchStart); // not AnsiLowerCase, because CompareInText uses LoCase
+        SearchEnd := LowerCase(SearchEnd);     // not AnsiLowerCase, because CompareInText uses LoCase
+        CmpProc := CompareInTextInternal;
+      end
+      else
+        CmpProc := CompareInStrInternal;
+
       repeat
         Inc(X, SearchDir);
 
@@ -4141,9 +4203,8 @@ begin
         if X < 0 then
         begin
           Dec(Y);
-          if Y < 0 then
+          if (Y < 0) or not GetAnsiTextLine(Y, Text) then
             Break;
-          GetAnsiTextLine(Y, Text);
           X := Length(Text) - 1;
           if X < 0 then
             Continue;
@@ -4159,9 +4220,9 @@ begin
             Continue;
         end;
 
-        if IsCharCmp then // it is faster to compare one char 
+        if IsBracketCompare then // it is faster to compare one char
         begin
-          if Text[X + 1] = SearchEnd[1] then 
+          if Text[X + 1] = SearchEnd[1] then
           begin
             Dec(SearchOpen);
             if SearchOpen = 0 then
@@ -4179,46 +4240,55 @@ begin
         else
         begin
           // word pairs
-          if CmpProc(PChar(Text) + X, Pointer(SearchEnd), LenSearchEnd) = 0 then // case sensitive
+          if CmpProc(Text, X, SearchEnd, LenSearchEnd) then // case sensitive
           begin
             if ((X = 0) or (Text[X + 1 - 1] in Separators)) and
-               ((X + 1 + LenSearchEnd < Length(Text)) or (Text[X + 1 + LenSearchEnd] in Separators)) then
+               ((X + 1 + LenSearchEnd < LenText) or (Text[X + 1 + LenSearchEnd] in Separators)) then
             begin
               Dec(SearchOpen);
               if SearchOpen = 0 then
               begin
+                // found
                 BracketHighlighting.FStop.TopLeft := Point(X + 1, Y);
                 BracketHighlighting.FStop.BottomRight := Point(X + 1 + Length(SearchEnd) - 1, Y);
-                PaintLine(Y);
                 Break;
               end;
             end;
           end
           else
-          if CmpProc(PChar(Text) + X, Pointer(SearchStart), LenSearchStart) = 0 then // case sensitive
+          if CmpProc(Text, X, SearchStart, LenSearchStart) then // case sensitive
           begin
             if ((X = 0) or (Text[X + 1 - 1] in Separators)) and
-               ((X + 1 + LenSearchStart < Length(Text)) or (Text[X + 1 + LenSearchStart] in Separators)) then
+               ((X + 1 + LenSearchStart < LenText) or (Text[X + 1 + LenSearchStart] in Separators)) then
               Inc(SearchOpen);
           end;
         end;
       until False;
+
+      { Do only highlight if start and stop are found }
+      if BracketHighlighting.FStop.Left = -1 then
+        BracketHighlighting.FStart.Left := -1 // invalidate
+      else
+      begin
+        PaintLine(BracketHighlighting.FStart.Top);
+        PaintLine(BracketHighlighting.FStop.Top);
+      end;
     end;
   end;
 end;
 
 procedure TJvCustomEditorBase.GetBracketHighlightingWords(var Direction: Integer;
-  var Start, Stop: AnsiString; var CaseSensitive: Boolean);
+  const Start: AnsiString; var Stop: AnsiString; var CaseSensitive: Boolean);
 var
   I, Ps: Integer;
   S: string;
-  CmpProc: function(const S1, S2: string): Integer; 
+  CmpProc: function(const S1, S2: AnsiString): Integer;
 begin
   CaseSensitive := BracketHighlighting.CaseSensitiveWordPairs;
   if CaseSensitive then
-    CmpProc := CompareStr
+    CmpProc := AnsiCompareStr
   else
-    CmpProc := CompareText;
+    CmpProc := AnsiCompareText;
 
   for I := 0 to BracketHighlighting.WordPairs.Count - 1 do
   begin
@@ -4248,14 +4318,14 @@ function TJvCustomEditorBase.FontCacheFind(LA: TLineAttr): TFont;
 var
   I: Integer;
 begin
- // find the font instance
+  // find the font instance
   for I := 0 to FFontCache.Count - 1 do
   begin
     Result := TFont(FFontCache.Items[I]);
     if (Result.Style = LA.Style) and (Result.Color = LA.FC) then
        Exit;
   end;
- // create a new font instance
+  // create a new font instance
   Result := TFont.Create;
   Result.Assign(FEditorClient.Canvas.Font); // copy default font
   Result.Style := LA.Style;
@@ -4365,14 +4435,12 @@ begin
     SetCaretPos(R.Left - 1, R.Top + 1);
   end;
 
-  if Assigned(FOnChangeStatus) and ((FCaretX <> X) or (FCaretY <> Y)) then
+  if (FCaretX <> X) or (FCaretY <> Y) then
   begin
     FCaretX := X;
     FCaretY := Y;
     StatusChanged;
   end;
-  FCaretX := X;
-  FCaretY := Y;
 end;
 
 procedure TJvCustomEditorBase.NotUndoable;
