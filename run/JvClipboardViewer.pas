@@ -24,15 +24,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvClipboardViewer;
 
 interface
 
 uses
-  SysUtils,
-  Windows, Messages, Classes, Graphics, Controls, Clipbrd, Forms, StdCtrls,
-  ExtCtrls, Menus;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Clipbrd, Forms,
+  StdCtrls, ExtCtrls, Menus, Grids;
 
 type
   TClipboardViewFormat = (cvDefault, cvEmpty, cvUnknown, cvText, cvBitmap,
@@ -80,7 +80,6 @@ type
   published
     property Color default clWindow;
     property ParentColor default False;
-
   end;
 
   TJvClipboardViewer = class(TJvCustomClipboardViewer)
@@ -105,7 +104,7 @@ function ClipboardFormatToView(Value: Word): TClipboardViewFormat;
 implementation
 
 uses
-  Grids, Math,
+  Math,
   JvJVCLUtils, JvJCLUtils, JvResources;
 
 { Utility routines }

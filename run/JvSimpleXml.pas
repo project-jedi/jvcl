@@ -31,13 +31,17 @@ unit JvSimpleXML;
 interface
 
 uses
-  SysUtils, Classes, IniFiles, JvComponent{$IFDEF COMPILER6_UP}, Variants{$ENDIF};
+  SysUtils, Classes, IniFiles,
+  {$IFDEF COMPILER6_UP}
+  Variants
+  {$ENDIF COMPILER6_UP},
+  JvComponent;
 
 type
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   THashedStringList = class(TStringlist);
   THandle = Longword;
-{$ENDIF}
+  {$ENDIF !COMPILER6_UP}
   TJvSimpleXML = class;
   TJvSimpleXMLInvalid = class(Exception);
   TJvSimpleXMLElem = class;
@@ -375,7 +379,7 @@ function XmlCreate(const AXml: TJvSimpleXMLElem): Variant; Overload;
 function XmlCreate: Variant; Overload;
 function VarXml: TVarType;
 
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 function SimpleXmlEncode(const S: string): string;
 // NB! This procedure has changed from passing in a var string to returning
 // a string. Previously, you used code like this to decode an XML string:
@@ -401,12 +405,12 @@ const
 var
   {$IFDEF COMPILER6_UP}
   XmlVariant: TXmlVariant = nil;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   GSorts: TList = nil;
   {$IFNDEF COMPILER6_UP}
   TrueBoolStrs: array of string;
   FalseBoolStrs: array of string;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 
 {$IFNDEF COMPILER6_UP}
 
@@ -503,7 +507,7 @@ begin
     Result := cSimpleBoolStrs[B];
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 function SimpleXmlEncode(const S: string): string;
 const
@@ -2933,15 +2937,15 @@ begin
 end;
 
 initialization
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   XmlVariant := TXmlVariant.Create;
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
   GSorts := TList.Create;
 
 finalization
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   FreeAndNil(XmlVariant);
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
   FreeAndNil(GSorts);
 
 end.

@@ -44,7 +44,13 @@ unit JvThreadTimer;
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Types, QWindows,
+  {$ENDIF LINUX}
+  SysUtils, Classes,
   JvTypes, JvComponent;
 
 type

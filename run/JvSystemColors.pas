@@ -37,7 +37,7 @@ uses
   Windows, Graphics,
   {$ELSE}
   QWindows, QGraphics,
-  {$ENDIF}
+  {$ENDIF VCL}
   JvTypes, JvComponent;
 
 type
@@ -73,7 +73,7 @@ type
     property Window: TColor index 23 read GetColor write SetColor stored False;
     property WindowFrame: TColor index 24 read GetColor write SetColor stored False;
     property WindowText: TColor index 25 read GetColor write SetColor stored False;
-    {$ENDIF}
+    {$ENDIF VCL}
     {$IFDEF VisualCLX}
     Property NormalForeground: TColor index 0 read GetColor write SetColor stored False;
     Property NormalButton: TColor index 1 read GetColor write SetColor stored False;
@@ -132,7 +132,7 @@ const
     COLOR_INACTIVECAPTION, COLOR_INACTIVECAPTIONTEXT, COLOR_INFOBK, //16
     COLOR_INFOTEXT, COLOR_MENU, COLOR_MENUTEXT, COLOR_SCROLLBAR, //19
     COLOR_WINDOW, COLOR_WINDOWFRAME, COLOR_WINDOWTEXT); //23
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   ColorArray: array[0..41] of TColor = (
     clNormalForeground, clNormalButton, clNormalLight, clNormalMidlight, clNormalDark, clNormalMid,
@@ -146,7 +146,7 @@ const
     clActiveForeground, clActiveButton, clActiveLight, clActiveMidlight, clActiveDark, clActiveMid,
     clActiveText, clActiveBrightText, clActiveButtonText, clActiveBase, clActiveBackground,
     clActiveShadow, clActiveHighlight, clActiveHighlightedText);
-  {$ENDIF}
+  {$ENDIF VisualCLX}
 
 procedure TJvSystemColors.SetColor(Index: Integer; Value: TColor);
 var
