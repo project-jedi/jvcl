@@ -1,4 +1,4 @@
-package JvQWizardD7R;
+package JvQInspectorD7R;
 {$R *.res}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
@@ -21,18 +21,17 @@ package JvQWizardD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCLX Wizard Run Time Package'}
+{$DESCRIPTION 'JVCLX Inspector Components Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
+{$DEFINE ANIMATE}
 
 requires
-  JvQCoreD7R;
+  JvQSystemD7R,
+  dbrtl;
 
 contains
-  JvQWizardCommon in '..\..\qrun\JvQWizardCommon.pas',
-  JvQWizardRouteMapNodes in '..\..\qrun\JvQWizardRouteMapNodes.pas',
-  JvQWizardRouteMapSteps in '..\..\qrun\JvQWizardRouteMapSteps.pas',
-  JvQWizard in '..\..\qrun\JvQWizard.pas',
-  JvQWizardRouteMapList in '..\..\qrun\JvQWizardRouteMapList.pas';
+  JvQInspector in '..\..\qrun\JvQInspector.pas',
+  JvQInspExtraEditors in '..\..\qrun\JvQInspExtraEditors.pas';
 
 end.

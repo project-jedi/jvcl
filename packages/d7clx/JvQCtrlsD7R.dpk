@@ -27,8 +27,7 @@ package JvQCtrlsD7R;
 
 requires
   JvQCoreD7R,
-  JvQStdCtrlsD7R,
-  JvQSystemD7R;
+  JvQStdCtrlsD7R;
 
 contains
   JvQClock in '..\..\qrun\JvQClock.pas',
