@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-07-18
+Last Modified: 2004-04-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -307,6 +307,8 @@ var
   ParentList: IJvDataItems;
 begin
   case AReason of
+    pcrDestroy:
+      ClientProvider := nil;
     pcrContextAdd:
       begin
         { Source contains the IJvDataContext where the context is added to or nil if the new
