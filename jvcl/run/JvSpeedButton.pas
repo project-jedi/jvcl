@@ -106,7 +106,8 @@ type
     procedure TimerExpired(Sender: TObject);
     procedure UpdateExclusive;
 
-    procedure CMButtonPressed(var Msg: TMessage); message CM_JVBUTTONPRESSED;
+    procedure CMButtonPressed(var Msg: TMessage); message CM_JVBUTTONPRESSED; // CLX compatible
+
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
