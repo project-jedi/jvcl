@@ -1,0 +1,450 @@
+@@$TJvInspector
+<GROUP JVCL.Miscel>
+<TITLE TJvInspector overview>
+  TJvInspector is a Data Inspector. A Data Inspector is much like the Object Inspector you see in
+  the Borland products. The Data Inspector, however, is not limited to inspect the published
+  properties of a class. It provides you with the possiblity to inspect various data kinds.
+
+  * Inspect virtually any data *
+  The abstract data class can be derived to get data from any source you can think of. For instance,
+  you can derive a data class to get/set the data by using events. Included in the package are data
+  classes to inspect published properties, variables, TDataSources, INI-files and event-based data
+  access as well as some internal structures to provide access to individual set members.
+
+  * Customized painting/editing for various data types. *
+  The base item class is capable of just painting the item and edit it's string representation.
+  Derived classes could provide different editing and/or displaying methods. Included in the package
+  are item classes to display and edit data for the following types:
+    *   Strings (either short, long or wide).
+    *   Ordinals (all integer derived types. Will use the IntegerConst registration).
+    *   Characters (Char or WChar. Non-displayable characters are displayed as #\<ASCII code\>).
+    *   Enumerations (uses a drop-down list).
+    *   Classes (Displayes published properties).
+    *   Components (can be assigned by scanning a list of owner components, like forms and data
+        modules, for suitable components).
+    *   Int64 values.
+    *   Floats (Single, Double or Extended).
+    *   Sets (will allow direct value editing and/or show/edit member items). Opposed to the Object
+        Inspector, JvInspector can handle any set, regardles of it's size (ofcourse published set
+        properties can be no more 32 bits (4 bytes), but variable sets can be upto 32 bytes).
+  In addition the following item's are included:
+    *   TFont item (will show an ellipsis which will show the font dialog when clicked).
+    *   TFont.Name (will show an enumerated list of available fonts. Names are shown in the actual
+        font).
+    *   Booleans (Boolean, BYTEBOOL, WORDBOOL, LONGBOOL. Will use a checkmark to show/edit the
+        value).
+    *   TCaption (technically not an item, but the registration of this type will set the auto
+        update flag for this string item).
+  * Advanced type registration. *
+  For each data class a registration list can be created. When the data class needs to create the
+  item, it will get the first applicable registration list and looks for a match. After that, it
+  will go up the chain of derived data classes to find another registration list and will look for
+  other matches. When matches are found, there match values are compared. The highest match value
+  wins. When multiple registration items return the same match value, the first one found wins. The
+  abstract data class provides a list which is filled on initialization of the unit with type kind
+  registration items (default editors).
+
+  * Item categories *
+  Each item can be categorized but only in one category. Categories can be nested. An item category
+  is derived from the base item class.
+
+  * Support for custom paint styles *
+  The control uses Painter components to do the actual painting. For each style a new descendant of
+  the base painter component can be created. The current version supports two paint styles: Borland
+  style and .NET/Visual Studio style.
+  
+  * Support for multi value rows *
+  JvInspector allows you to add rows with more than one value. The different values are shown as 
+  separate columns in a single row. The widths of the columns are specified as percentages of the
+  total width. You can also have some or all columns sized equally.
+  
+  * Support for multi column inspector *
+  Besides support for items with multiple columns, you can also divide the control into sizable 
+  columns.
+----------------------------------------------------------------------------------------------------
+@@JvInspector.pas
+<GROUP JVCL.FileRef>
+Summary
+  Contains a data inspector.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Marcel Bestebroer
+----------------------------------------------------------------------------------------------------
+@@$TJvInspector.Ctrl
+<TITLE Inspector control>
+<GROUP TJvInspector>
+  Choose one of the topics for information on the inspector components.
+----------------------------------------------------------------------------------------------------
+@@$TJvInspector.Item
+<TITLE Inspector items>
+<GROUP TJvInspector>
+  Choose one of the topics for information on the inspector item classes.
+----------------------------------------------------------------------------------------------------
+@@$TJvInspector.Data
+<TITLE Inspector data layers>
+<GROUP TJvInspector>
+  Choose one of the topics for information on the inspector data layers.
+----------------------------------------------------------------------------------------------------
+@@$TJvInspector.Paint
+<TITLE Inspector painters>
+<GROUP TJvInspector>
+  Choose one of the topics for information on the inspector painter components.
+----------------------------------------------------------------------------------------------------
+@@$TJvInspector.Item.Reg
+<TITLE Inspector item registration>
+<GROUP TJvInspector.Item>
+  Choose one of the topics for information on the inspector item registration classes.
+----------------------------------------------------------------------------------------------------
+@@$TJvInspector.Base
+<TITLE Inspector exceptions\, classes\, constants and types>
+<GROUP TJvInspector>
+  Choose one of the topics for help on the various exceptions, helper classes and types used by the
+  JvInspector control.
+----------------------------------------------------------------------------------------------------
+@@EJvInspector
+<GROUP TJvInspector.Base>
+Summary
+  JvInspector base exception class
+Description
+  EJvInspector is the base exception class used by the JvInspector package.
+  This exception class is used when exceptions occur within the
+  TJvCustomInspector and descendant classes.
+
+  There are three descendant exception classes (EJvInspectorData,
+  EJvInspectorItem and EJvInspectorReg).
+----------------------------------------------------------------------------------------------------
+@@EJvInspectorData
+<GROUP TJvInspector.Base>
+Summary
+  Inspector data exception class.
+Description
+  Exception class for exceptions occuring in the TJvCustomInspectorData class or one of it's
+  descendants.
+----------------------------------------------------------------------------------------------------
+@@EJvInspectorItem
+<GROUP TJvInspector.Base>
+Summary
+  Inspector item exception class.
+Description
+  Exception class for exceptions occuring in the TJvCustomInspectorItem class or one of it's
+  descendants.
+----------------------------------------------------------------------------------------------------
+@@EJvInspectorReg
+<GROUP TJvInspector.Base>
+Summary
+  Inspector registration exception class.
+Description
+  Exception class for exception occuring in the TJvInspectorRegister class or in the
+  TJvCustomInspectorRegItem class or one of it's descendants.
+----------------------------------------------------------------------------------------------------
+@@TInspectorComponentFlag
+<GROUP TJvInspector.Base>
+Summary
+  Flags used for the TComponent type inspector items.
+Description
+  TInspectorComponentFlag are the available flags for TComponent type inspector item.
+@@TInspectorComponentFlag.icfShowOwnerNames
+  Indicates if owner names should be displayed.
+@@TInspectorComponentFlag.icfNoShowFirstOwnerName
+  Indicates wether the name of the first owner in the list should be suppressed.
+@@TInspectorComponentFlag.icfSortComponents
+  Indicates wether components are sorted alphabetically withing their owner.
+@@TInspectorComponentFlag.icfSortOwners
+  Indicates wether owners are sorted alphabetically.
+@@TInspectorComponentFlag.icfKeepFirstOwnerAsFirst
+  Indicates wether the first owner in the list should stay the first after sorting.
+----------------------------------------------------------------------------------------------------
+@@TInspectorComponentFlags
+<COMBINE TInspectorComponentFlag>
+----------------------------------------------------------------------------------------------------
+@@TInspectorClassFlag
+<GROUP TJvInspector.Base>
+Summary
+  Flags used for class type inspector items.
+Description
+  TInspectorClassFlag holds the flags for class type inspector items.
+@@TInspectorClassFlag.icfCreateMemberItems
+  Create member items for the class instance.
+@@TInspectorClassFlag.icfShowClassName
+  Show the class name, instead of the default component name.
+----------------------------------------------------------------------------------------------------
+@@TInspectorClassFlags
+<COMBINE TInspectorClassFlag>
+----------------------------------------------------------------------------------------------------
+@@TInspectorItemFlag
+<GROUP TJvInspector.Base>
+Summary
+  Item flags
+Description
+  TInspectorItemFlag is the flag type for inspector items.
+@@TInspectorItemFlag.iifAllowNonListValues
+  The item can accept any value, including values that are not in the pick list. This value is only
+  of use when iifValueList is also specified.
+@@TInspectorItemFlag.iifAutoUpdate
+  Any change to the edit control is immediately applied to the underlaying data object.
+@@TInspectorItemFlag.iifEditButton
+  The item uses an edit button to perform additional editing functionality.
+@@TInspectorItemFlag.iifEditFixed
+  When specified locks the edit control. This flag is useful when you need an edit button to do the
+  editing but the value should not be directly editable.
+@@TInspectorItemFlag.iifExpanded
+  Indicates the expanded state of the item. The item's Expanded property maps directly onto this
+  flag.
+@@TInspectorItemFlag.iifHidden
+  Indicates wether the item is hidden. Hidden means that the item itself is never shown, but it's
+  sub items can be, depending on the iifExpanded and iifVisible flags.
+@@TInspectorItemFlag.iifMultiLine
+  Indicates wether or not the item is a multiline edit.
+@@TInspectorItemFlag.iifOwnerDrawListFixed
+  The pick list should be owner drawn with a fixed height. This flag can only be used when
+  iifValueList is also specified. In addition, this flag and iifOwnerDrawListVariable are mutually
+  exclusive (this is handled by the item itself).
+@@TInspectorItemFlag.iifOwnerDrawListVariable
+  The pick list should be owner drawn with a variable height. This flag can only be used when
+  iifValueList is also specified. In addition, this flag and iifOwnerDrawListFixed are mutually
+  exclusive (this is handled by the item itself).
+@@TInspectorItemFlag.iifQualifiedNames
+  Indicates whether or not the sub-items will use qualified names (ie. ParentName.ChildName).
+@@TInspectorItemFlag.iifReadonly
+  Indicates whether or not the item is read-only.
+@@TInspectorItemFlag.iifValueList
+  Indicates wheter or not the item uses a value list to edit the item (ie. uses a combobox to edit
+  the value).
+@@TInspectorItemFlag.iifVisible
+  Indicates whether or not the item is visible. The Visible property maps directly onto this flags.
+----------------------------------------------------------------------------------------------------
+@@TInspectorItemFlags
+<COMBINE TInspectorItemFlag>
+----------------------------------------------------------------------------------------------------
+@@TInspectorPaintRect
+<GROUP TJvInspector.Base>
+Summary
+  Specific paint rectangle
+Description
+  TInspectorPaintRect enumerates the different painting rectangles for an item. The painter object
+  will set these rectangles for each item when it gets painted.
+@@TInspectorPaintRect.iprItem
+  Item rectangle. This rectangle holds the rectangle that encompasses the entire item.
+@@TInspectorPaintRect.iprButtonArea
+  The rectangle that contains the button. Note that this area might not be completely filled by the
+  button.
+@@TInspectorPaintRect.iprBtnSrcRect
+  The rectangle in the button image that should be painted. The rectangle could be empty if no
+  button is to be painted.
+@@TInspectorPaintRect.iprBtnDstRect
+  The rectangle within the button area where the button is to be drawn. The rectangle could be empty
+  if no button is to be painted.
+@@TInspectorPaintRect.iprNameArea
+  The rectangle the name is to be painted in. Note that this area might not be filled completely.
+@@TInspectorPaintRect.iprName
+  The rectangle for the name. This rectangle will fall in the iprNameArea rectangle.
+@@TInspectorPaintRect.iprValueArea
+  The rectangle the value or editor and button are to be painted in. Note that this area might not
+  be filled completely.
+@@TInspectorPaintRect.iprValue
+  The rectangle for the value. This rectangle will fall in the iprValueArea rectangle.
+@@TInspectorPaintRect.iprEditValue
+  The rectangle for the editor. This rectangle will fall in the iprValueArea. If the item has an
+  edit button, the rectangle will have a right margin 1 left of the button's left rectangle. The
+  rectangle will be empty if the item is not in edit mode.
+@@TInspectorPaintRect.iprEditButton
+  The rectangle for the dropdown or ellipses button. This rectangle will be at the right margin of
+  the iprValueArea. The rectangle will be empty if the item is not in edit mode or if the item
+  doesn't require a button.
+@@TInspectorPaintRect.iprUser1
+  First user rectangle. Usage depends on the individual item types.
+@@TInspectorPaintRect.iprUser2
+  Second user rectangle. Usage depends on the individual item types.
+@@TInspectorPaintRect.iprUser3
+  Third user rectangle. Usage depends on the individual item types.
+@@TInspectorPaintRect.iprUser4
+  Forth user rectangle. Usage depends on the individual item types.
+@@TInspectorPaintRect.iprUser5
+  Fifth user rectangle. Usage depends on the individual item types.
+@@TInspectorPaintRect.iprUser6
+  Sixth user rectangle. Usage depends on the individual item types.
+----------------------------------------------------------------------------------------------------
+@@TInspectorSetFlag
+<GROUP TJvInspector.Base>
+Summary
+  Set item flags.
+Description
+  TInspectorSetFlag holds the flags for set inspector item.
+@@TInspectorSetFlag.isfCreateMemberItems
+  Indicates that for each item in the set, a member item is created as a boolean value.
+@@TInspectorSetFlag.isfEditString
+  Indicates the string representing the set value can be edited.
+----------------------------------------------------------------------------------------------------
+@@TInspectorSetFlags
+<COMBINE TInspectorSetFlag>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorItemSizing
+<GROUP TJvInspector.Base>
+Summary
+  Contains item row sizing settings.
+Description
+  TJvInspectorItemSizing is used in the RowSizing property of TJvCustomInspectorItem and its
+  descendants. It specifies the minimum height and sizing steps for an item's height for resizing
+  purposes. An item's height will never me smaller then the minimum height and always increments in
+  sizing steps.
+
+  When the sizing steps (specified by the SizingFactor property) equals 0 (or irsNoReSize), an item
+  cannot be resized and will always have a height of the inspector's ItemHeight (Note: when
+  SizingFactor equals irsNoReSize, MinHeight will be set to irsItemHeight).
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorItemSizing.MinHeight
+Summary
+  The minimum height the item can be resized to.
+Description
+  MinHeight indicates the minimum height an item can be resized to. MinHeight can be any value or
+  one of the following constants:
+  <TABLE>
+  Constant          Meaning
+  --------          -------
+  irsItemHeight     Item will have a minimum height equal to the inspector's ItemHeight property.
+  irsNameHeight     Item will have a minimum height equal to the height of the text 'Wy' rendered in
+                      the item's name font.
+  irsValueHeight    Item will have a minimum height equal to the height of the text 'Wy' rendered in
+                      the item's value font.
+  irsNoReSize       Resizing will be turned of. Setting MinHeight to this value will set
+                      SizingFactor to irsNoReSize while MinHeight will be set to irsItemHeight.
+  </TABLE>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorItemSizing.Sizable
+Summary
+  Determines if the item can be resized by the UI.
+Description
+  Sizable is a flag that indicates if the item can be resized by the user by dragging the bottom of
+  the item. If Sizable if False, the item can not be resized by the user (it can be resized through
+  code), otherwise the user can drag the item to resize it.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorItemSizing.SizingFactor
+Summary
+  The sizing increments to use when resizing an item.
+Description
+  SizingFactor indicates the increments used when resizing an item. An item's height will be a
+  multiple of this value added to it's minimum height. SizingFactor can be any value or one of the
+  following constants:
+  <TABLE>
+  Constant          Meaning
+  --------          -------
+  irsItemHeight     Item will resize in steps of the inspector's ItemHeight property.
+  irsNameHeight     Item will resize in steps of the height of the text 'Wy' rendered in the item's
+                      name font.
+  irsValueHeight    Item will resize in steps of the height of the text 'Wy' rendered in the item's
+                      value font.
+  irsNoReSize       Resizing will be turned of. Setting SizingFactor to this value will set
+                      MinHeight to irsItemHeight.
+  </TABLE>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundColumn
+<GROUP TJvInspector.Item>
+Summary
+  Holds column information for a compound item.
+Description
+  The TJvInspectorCompoundColumn class is used by the TJvInspectorCompoundItem class to represent a
+  column. The class provides properties to get/set the item associated with the column, it's width
+  as it is displayed and the width it is set to.
+
+  Do not create instances of TJvInspectorCompoundColumn, use TJvInspectorCompoundItem.AddColumn to
+  add columns to a compound item.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundColumn.Create
+Summary
+  Instantiates a new column.
+Description
+  Create instantiates a new column. The parameters will initialize the column to use the given item,
+  initializing it's Width to 0.
+Parameters
+  AParent - Compound item the column belongs too.
+  AItem -   The item that is to be associated with the column. The item must be a child of Parent,
+            and will be moved out of the child list.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundColumn.Item
+Summary
+  The item associated with the column.
+Description
+  Item is the inspector item the column represents. Read Item to determine the current item for this
+  column, or set it to a new item.
+
+  When setting the Item, the previous item (if any) will be moved back to the child list of the
+  compound item. The new item (if any) will be moved out of the child list of the compound item.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundColumn.Parent
+Summary
+  The compound item that owns this column.
+Description
+  Parent is the compound item that owns this column and is therefor the parent of the associated
+  item.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundColumn.Width
+Summary
+  The (display) width of the column.
+Description
+  Width indicates the width of the column as it is displayed. The width is represented as a
+  percentage. Read Width to determine the width of the item as it is displayed or set it to a
+  desired new width.
+
+  Setting Width to 0 will result in whatever space the column can get. When multiple columns have a
+  width of 0, the available space will be equally distributed among those columns.
+Notes
+  When setting Width, you actually set WidthSet. Width will then be determined based on the other
+  columns (ie. it might not be the value you have set it to).
+See Also
+  WidthSet
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundColumn.WidthSet
+Summary
+  The set width of the column.
+Description
+  WidthSet indicates the width the columm has been set to. The width is represented as a percentage.
+  Note that the width of the column might not be this value. WidthSet indicates what the ideal width
+  should be.
+
+  A width to 0 will result in whatever space the column can get. When multiple columns have a width
+  of 0, the available space will be equally distributed among those columns.
+----------------------------------------------------------------------------------------------------
+@@TInspectorItemSortKind
+<GROUP TJvInspector.Base>
+Summary
+  The sort types.
+Description
+  The TInspectorItemSortKind type defines the various sort types available. This type is used by the
+  SortKind property of an inspector item.
+@@TInspectorItemSortKind.iskNone
+  No sort order. All items are displayed in the order they are added.
+@@TInspectorItemSortKind.iskName
+  Items are sorted alphabetically by their DisplayName.
+@@TInspectorItemSortKind.iskManual
+  Items are sorted by their DisplayIndex.
+@@TInspectorItemSortKind.iskCustom
+  Items are sorted using an OnCompare event to dermine the order.
+----------------------------------------------------------------------------------------------------
+@@TJvInspConfSectionEvent
+Summary
+  Event generated before a configuration section is added.
+Description
+  The TJvInspConfSectionEvent event is called just before a configuration section is parsed.
+
+  Write a handler for this event to change the display name of the section or to prevent this
+  section from being added.
+Parameters
+  SectionName - Name of the section to be parsed on entry. Change this parameter to it's display
+                name.
+  Parse -       Initially set to True. Set it to False to prevent this section from being added.
+----------------------------------------------------------------------------------------------------
+@@TJvInspConfKeyEvent
+Summary
+  Event generated before a configuration key is added.
+Description
+  The TJvInspConfKeyEvent event is called just before a configuration key is added.
+
+  Write a handler for this event to change the display name of the key or to prevent this key from
+  being added.
+Parameters
+  SectionName - Name of the section the key is in.
+  ItemName -    Name of the key to be added on entry. Change this parameter to it's display name.
+  ATypeInfo -   Initially set to the type info of the string type. Change this parameter to whatever
+                the key represents.
+  Allow -       Initially set to True. Set it to False to prevent this key from being added.
+----------------------------------------------------------------------------------------------------
