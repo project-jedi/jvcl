@@ -117,6 +117,8 @@ type
     Property ActiveShadow: TColor index 49 read GetColor write SetColor stored False;
     Property ActiveHighlight: TColor index 40 read GetColor write SetColor stored False;
     Property ActiveHighlightedText: TColor index 41 read GetColor write SetColor stored False;
+    Property HintColor: TColor index 42 read GetColor write SetColor stored False;
+    Property DeskTopBackgroundColor:  TColor index 43 read GetColor write SetColor stored False;
     {$ENDIF VisualCLX}
   end;
 
@@ -134,7 +136,7 @@ const
     COLOR_WINDOW, COLOR_WINDOWFRAME, COLOR_WINDOWTEXT); //23
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  ColorArray: array[0..41] of TColor = (
+  ColorArray: array[0..43] of TColor = (
     clNormalForeground, clNormalButton, clNormalLight, clNormalMidlight, clNormalDark, clNormalMid,
     clNormalText, clNormalBrightText, clNormalButtonText, clNormalBase, clNormalBackground,
     clNormalShadow, clNormalHighlight, clNormalHighlightedText,
@@ -145,7 +147,8 @@ const
 
     clActiveForeground, clActiveButton, clActiveLight, clActiveMidlight, clActiveDark, clActiveMid,
     clActiveText, clActiveBrightText, clActiveButtonText, clActiveBase, clActiveBackground,
-    clActiveShadow, clActiveHighlight, clActiveHighlightedText);
+    clActiveShadow, clActiveHighlight, clActiveHighlightedText,
+    clInfoBk, clDesktop );
   {$ENDIF VisualCLX}
 
 procedure TJvSystemColors.SetColor(Index: Integer; Value: TColor);
