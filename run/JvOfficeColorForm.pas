@@ -49,6 +49,15 @@ const
   Tag_DragBarHeight = 9;
   Tag_DragBarSpace = 10;
 
+  {$IFDEF VCL}
+  JvDefaultSubDragBarActiveColor = clActiveCaption;
+  JvDefaultSubDragBarInactiveColor = clInactiveCaption;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  JvDefaultSubDragBarActiveColor = TColor($999999);
+  JvDefaultSubDragBarInactiveColor = TColor($996666);
+  {$ENDIF VisualCLX}
+
 type
   {$IFDEF VCL}
   TJvSubDragBar = class(TJvLabel)
@@ -172,12 +181,7 @@ begin
     FOwnerForm := Self;
     AutoSize := False;
     Caption := '';
-    {$IFDEF VCL}
-    Color := clActiveCaption;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Color := $999999;
-    {$ENDIF VisualCLX}
+    Color := JvDefaultSubDragBarActiveColor;
     Height := MinDragBarHeight;
     ShowHint := True;
     Hint := FDragBarHint;
@@ -434,24 +438,14 @@ end;
 procedure TJvSubDragBar.MouseEnter(Control: TControl);
 begin
   inherited MouseEnter(Control);
-  {$IFDEF VCL}
-  Color := clActiveCaption;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Color := $996666;
-  {$ENDIF VisualCLX}
+  Color := JvDefaultSubDragBarActiveColor;
   Cursor := crSizeAll;
 end;
 
 procedure TJvSubDragBar.MouseLeave(Control: TControl);
 begin
   inherited MouseLeave(Control);
-  {$IFDEF VCL}
-  Color := clInactiveCaption;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Color := $999999;
-  {$ENDIF VisualCLX}
+  Color := JvDefaultSubDragBarInactiveColor;
   Cursor := crDefault;
 end;
 

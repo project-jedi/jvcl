@@ -1830,7 +1830,8 @@ end;
 
 procedure TJvWizardPageTitle.PaintTo(ACanvas: TCanvas; var ARect: TRect);
 const
-  Alignments: array[TAlignment] of Integer = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  Alignments: array [TAlignment] of Integer = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  cOutlineColor = TColor($00FFD8CE);
 var
   ATextRect: TRect;
 begin
@@ -1855,7 +1856,7 @@ begin
       begin
         Pen.Style := psDot;
         Pen.Mode := pmXor;
-        Pen.Color := $00FFD8CE;
+        Pen.Color := cOutlineColor;
         Brush.Style := bsClear;
         Rectangle(ATextRect.Left, ATextRect.Top, ATextRect.Right,
           ATextRect.Bottom);

@@ -926,6 +926,7 @@ begin
 
       Highlight := ColorToRGB(clBtnHighlight);
       Face := ColorToRGB(Color);
+      // darking the color by halving each color part value
       Shadow := (ColorToRGB(Color) and $00FEFEFE) shr 1;
 
       for I := 0 to Size do

@@ -30,12 +30,11 @@ unit JvDockGlobals;
 interface
 
 uses
-  Messages,
+  Messages, Graphics,
   JvDockControlForm, JvDockInfo, JvDockSupportControl;
 
 const
   RsDockBaseDockTreeVersion = $00040000;
-
   RsDockVCDockTreeVersion = $00040010;
 
   DefExpandoRect = 10;
@@ -57,9 +56,9 @@ const
 
   DefaultVSNETGrabberSize = 19;
   MaxActivePaneWidth = 100;
-  VSNETPageInactiveFontColor = $00525552;
-  VSNETPageInactiveSheetColor = $00EFF3F7;
-  JvDockXorColor = $00FFD8CE;
+  VSNETPageInactiveFontColor = TColor($00525552);
+  VSNETPageInactiveSheetColor = TColor($00EFF3F7);
+  JvDockXorColor = TColor($00FFD8CE);
 
 resourcestring
   {$IFNDEF USEJVCL}

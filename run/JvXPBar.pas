@@ -87,14 +87,14 @@ const
   { color constants.
   }
 
-//        dxColor_CheckedColorXP :=  $00c9b4e2;
-//        dxColor_CheckedColorXP :=  $00d9c1bb;
-//        dxColor_CheckedColorXP :=  $00e8ccae;
+//        dxColor_CheckedColorXP :=  TColor($00c9b4e2);
+//        dxColor_CheckedColorXP :=  TColor($00d9c1bb);
+//        dxColor_CheckedColorXP :=  TColor($00e8ccae);
 
-  dxColor_FocusedColorXP = $00D8ACB0;
-  dxColor_CheckedColorXP = $00D9C1BB;
+  dxColor_FocusedColorXP = TColor($00D8ACB0);
+  dxColor_CheckedColorXP = TColor($00D9C1BB);
   {$IFDEF VisualCLX}
-  clHotLight = clActiveHighLight;
+  clHotLight = clActiveHighlight;
   {$ENDIF VisualCLX}
 
   dxColor_FocusedFrameColorXP = clHotLight;
@@ -315,10 +315,10 @@ type
     property FocusedColor: TColor read FFocusedColor write SetFocusedColor default dxColor_FocusedColorXP;
     property CheckedFrameColor: TColor read FCheckedFrameColor write SetCheckedFrameColor default dxColor_CheckedFrameColorXP;
     property FocusedFrameColor: TColor read FFocusedFrameColor write SetFocusedFrameColor default dxColor_FocusedFrameColorXP;
-    property BodyColor: TColor read FBodyColor write SetBodyColor default $00F7DFD6;
+    property BodyColor: TColor read FBodyColor write SetBodyColor default TColor($00F7DFD6);
     property GradientFrom: TColor read FGradientFrom write SetGradientFrom default clWhite;
-    property GradientTo: TColor read FGradientTo write SetGradientTo default $00F7D7C6;
-    property SeparatorColor: TColor read FSeparatorColor write SetSeparatorColor default $00F7D7C6;
+    property GradientTo: TColor read FGradientTo write SetGradientTo default TColor($00F7D7C6);
+    property SeparatorColor: TColor read FSeparatorColor write SetSeparatorColor default TColor($00F7D7C6);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -1332,11 +1332,11 @@ var
 {$ENDIF JVCLThemesEnabled}
 begin
   inherited Create;
-  FBodyColor := $00F7DFD6;
+  FBodyColor := TColor($00F7DFD6);
   FBorderColor := clWhite;
   FGradientFrom := clWhite;
-  FGradientTo := $00F7D7C6;
-  FSeparatorColor := $00F7D7C6;
+  FGradientTo := TColor($00F7D7C6);
+  FSeparatorColor := TColor($00F7D7C6);
   FCheckedColor := dxColor_CheckedColorXP;
   FFocusedColor := dxColor_FocusedColorXP;
   FCheckedFrameColor := dxColor_CheckedFrameColorXP;
