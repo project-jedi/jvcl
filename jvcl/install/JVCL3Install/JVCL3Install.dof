@@ -46,7 +46,7 @@ UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=..\..\common;..\..\run
-Packages=vcl;rtl;vclx;VclSmp;vclshlctrls;PackageOthers;Misc;ThemeManager6;VirtualTreesD6;DJcl;AHComps;visualclx;Indy60;JvAppFrmD6R;JvStdCtrlsD6R;JvCmpD6R;JvCoreD6R;JvCtrlsD6R;JvCustomD6R;JvMMD6R;JvPageCompsD6R;JvSystemD6R;vcldb;dbrtl;vclie;IcsDel60;FlatStyle_D5;bdertl;teeui;teedb;tee;vcldbx;visualdbclx;dbexpress;dclOffice2k;DelphiX_for6;xmlrtl;inet;inetdbbde;inetdbxpress;adortl;dsnap;cds;bdecds;ibxpress;dbxcds;qrpt;teeqr;inetdb
+Packages=vcl;rtl;vclx;VclSmp;vclshlctrls;PackageOthers;Misc;ThemeManager6;VirtualTreesD6;DJcl;AHComps;visualclx;indy;JvAppFrmD6R;JvStdCtrlsD6R;JvCmpD6R;JvCoreD6R;JvCtrlsD6R;JvCustomD6R;JvMMD6R;JvPageCompsD6R;JvSystemD6R;vcldb;dbrtl;vclie;IcsDel60;FlatStyle_D5;bdertl;teeui;teedb;tee;vcldbx;visualdbclx;dbexpress;dclOffice2k;DelphiX_for6;xmlrtl;inet;inetdbbde;inetdbxpress;adortl;dsnap;cds;bdecds;ibxpress;dbxcds;qrpt;teeqr;inetdb
 Conditionals=PATCHED_VCLX
 DebugSourceDirs=
 UsePackages=0
@@ -75,7 +75,7 @@ DLL=0
 Locale=1031
 CodePage=1252
 [Excluded Packages]
-c:\borland\delphi6\Bin\dclsoap60.bpl=Borland Soap-Komponenten
+d:\programme\borland\delphi6\Bin\dclsoap60.bpl=Borland SOAP Components
 [HistoryLists\hlConditionals]
 Count=1
 Item0=PATCHED_VCLX
