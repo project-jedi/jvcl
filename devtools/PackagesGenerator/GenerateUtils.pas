@@ -174,6 +174,13 @@ begin
     StrReplace(Lines, '}', '', [rfReplaceAll]);
     StrReplace(Lines, '/*', '', [rfReplaceAll]);
     StrReplace(Lines, '*/', '', [rfReplaceAll]);
+    StrReplace(Lines, '%FORMNAME%', '', [rfReplaceAll]);
+    StrReplace(Lines, '%FORMTYPE%', '', [rfReplaceAll]);
+    StrReplace(Lines, '%FORMNAMEANDTYPE%', '', [rfReplaceAll]);
+    StrReplace(Lines, '%FORMPATHNAME%', '', [rfReplaceAll]);
+    StrReplace(Lines, '%Unitname%',
+               StrProper(GetUnitName(incFileName)),
+               [rfReplaceAll]);
   end
   else
   begin
@@ -211,7 +218,7 @@ begin
   packSuffix := targetToSuffix(target);
   outFile := TStringList.Create;
 
-  SendMsg('Applying template to ' + package + ' in ' + target);
+  SendMsg(#9#9'Applying to ' + package);
 
   try
     // read the xml file
@@ -326,10 +333,13 @@ begin
         begin
           fileNode := containsNode.Items[j];
           // if this included file is to be included for this target
-          if fileNode.Properties.ItemNamed[ShortTarget(target)].Value <> '' then
+          if (fileNode.Properties.ItemNamed[ShortTarget(target)].Value <> '') and
+            (fileNode.Properties.ItemNamed['FormName'].Value <> '') then
           begin
             tmpStr := repeatLines;
             ApplyFormName(fileNode, tmpStr);
+            outFile.Text := outFile.Text +
+                            EnsureCondition(tmpStr, fileNode, target);
           end;
         end;
       end
@@ -375,7 +385,7 @@ var
   rec : TSearchRec;
   i : Integer;
   j : Integer;
-  xmlFileName : string;
+  templateFileName : string;
   xml : TJvSimpleXml;
   template : TStringList;
 begin
@@ -384,17 +394,19 @@ begin
   // for all targets
   for i := 0 to targets.Count - 1 do
   begin
+    SendMsg('Generating packages for ' + targets[i]);
     // find all template files for that target
     if FindFirst(path+targets[i]+'\template.*', 0, rec) = 0 then
     begin
       repeat
         template := TStringList.Create;
         try
+          SendMsg(#9'Loaded '+rec.Name);
           // apply the template for all packages
           for j := 0 to packages.Count -1 do
           begin
-            xmlFileName := path+targets[i]+'\'+rec.Name;
-            template.LoadFromFile(xmlFileName);
+            templateFileName := path+targets[i]+'\'+rec.Name;
+            template.LoadFromFile(templateFileName);
             xml := TJvSimpleXml.Create(nil);
             try
               xml.LoadFromFile(path+'xml\'+packages[j]+'.xml');
@@ -405,7 +417,7 @@ begin
                                    template,
                                    xml,
                                    FileDateToDateTime(rec.Time),
-                                   FileDateToDateTime(FileAge(xmlFileName))); 
+                                   FileDateToDateTime(FileAge(path+'xml\'+packages[j]+'.xml'))); 
             finally
               xml.Free;
             end;

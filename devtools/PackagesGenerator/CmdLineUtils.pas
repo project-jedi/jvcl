@@ -12,6 +12,10 @@ uses Classes, SysUtils, GenerateUtils, JclStrings;
 procedure Help;
 begin
   WriteLn('pg - JVCL Package generator');
+  WriteLn;
+  WriteLn(#9'-h'#9#9'prints this help message');
+  WriteLn(#9'-p=PATH'#9#9'the path to packages');
+  WriteLn(#9'-t=TARGETS'#9'comma separated list of targets or the word all');
 end;
 
 procedure Error(Msg : string);

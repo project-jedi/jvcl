@@ -59,6 +59,7 @@ object frmMain: TfrmMain
       Background.Visible = False
       TabOrder = 0
       OnClick = jlbListClick
+      OnMouseDown = jlbListMouseDown
     end
   end
   object jcbMain: TJvControlBar
@@ -202,7 +203,7 @@ object frmMain: TfrmMain
       502)
     object lblDependencies: TLabel
       Left = 12
-      Top = 112
+      Top = 132
       Width = 69
       Height = 13
       Alignment = taRightJustify
@@ -210,7 +211,7 @@ object frmMain: TfrmMain
     end
     object lblFiles: TLabel
       Left = 60
-      Top = 304
+      Top = 328
       Width = 21
       Height = 13
       Alignment = taRightJustify
@@ -267,81 +268,99 @@ object frmMain: TfrmMain
       TabOrder = 3
       OnChange = ledDescriptionChange
     end
-    object jsgDependencies: TJvStringGrid
-      Left = 92
-      Top = 56
-      Width = 545
-      Height = 129
-      Anchors = [akLeft, akTop, akRight]
-      ColCount = 14
-      DefaultColWidth = 40
-      DefaultRowHeight = 18
-      FixedCols = 0
-      RowCount = 2
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor]
-      PopupMenu = jpmGridPopup
-      TabOrder = 4
-      OnSetEditText = jsgDependenciesSetEditText
-      Alignment = taLeftJustify
-      FixedFont.Charset = DEFAULT_CHARSET
-      FixedFont.Color = clWindowText
-      FixedFont.Height = -11
-      FixedFont.Name = 'MS Sans Serif'
-      FixedFont.Style = []
-      OnExitCell = jsgDependenciesExitCell
-      OnGetCellAlignment = jsgDependenciesGetCellAlignment
-    end
-    object jsgFiles: TJvStringGrid
-      Left = 92
-      Top = 188
-      Width = 545
-      Height = 245
-      Anchors = [akLeft, akTop, akRight]
-      ColCount = 14
-      DefaultColWidth = 40
-      DefaultRowHeight = 18
-      FixedCols = 0
-      RowCount = 2
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor]
-      PopupMenu = jpmGridPopup
-      TabOrder = 5
-      OnSetEditText = jsgFilesSetEditText
-      Alignment = taLeftJustify
-      FixedFont.Charset = DEFAULT_CHARSET
-      FixedFont.Color = clWindowText
-      FixedFont.Height = -11
-      FixedFont.Name = 'MS Sans Serif'
-      FixedFont.Style = []
-      OnExitCell = jsgDependenciesExitCell
-      OnGetCellAlignment = jsgDependenciesGetCellAlignment
-    end
     object ledC5PFlags: TLabeledEdit
       Left = 92
-      Top = 436
+      Top = 448
       Width = 545
       Height = 21
-      Anchors = [akLeft, akTop, akRight]
+      Anchors = [akLeft, akRight, akBottom]
       EditLabel.Width = 71
       EditLabel.Height = 13
       EditLabel.Caption = 'BCB5 PFLAGS'
       LabelPosition = lpLeft
       LabelSpacing = 8
-      TabOrder = 6
+      TabOrder = 4
       OnChange = ledC5PFlagsChange
     end
     object ledC6PFlags: TLabeledEdit
       Left = 92
-      Top = 460
+      Top = 472
       Width = 545
       Height = 21
-      Anchors = [akLeft, akTop, akRight]
+      Anchors = [akLeft, akRight, akBottom]
       EditLabel.Width = 71
       EditLabel.Height = 13
       EditLabel.Caption = 'BCB6 PFLAGS'
       LabelPosition = lpLeft
       LabelSpacing = 8
-      TabOrder = 7
+      TabOrder = 5
       OnChange = ledC6PFlagsChange
+    end
+    object pnlDepAndFiles: TPanel
+      Left = 92
+      Top = 56
+      Width = 545
+      Height = 389
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      BevelOuter = bvNone
+      TabOrder = 6
+      object sptDepAndFiles: TSplitter
+        Left = 0
+        Top = 165
+        Width = 545
+        Height = 4
+        Cursor = crVSplit
+        Align = alTop
+        OnMoved = sptDepAndFilesMoved
+      end
+      object jsgFiles: TJvStringGrid
+        Left = 0
+        Top = 169
+        Width = 545
+        Height = 220
+        Align = alClient
+        ColCount = 14
+        DefaultColWidth = 40
+        DefaultRowHeight = 18
+        FixedCols = 0
+        RowCount = 2
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor]
+        PopupMenu = jpmGridPopup
+        TabOrder = 0
+        OnSetEditText = jsgFilesSetEditText
+        Alignment = taLeftJustify
+        FixedFont.Charset = DEFAULT_CHARSET
+        FixedFont.Color = clWindowText
+        FixedFont.Height = -11
+        FixedFont.Name = 'MS Sans Serif'
+        FixedFont.Style = []
+        OnExitCell = jsgDependenciesExitCell
+        OnGetCellAlignment = jsgDependenciesGetCellAlignment
+      end
+      object jsgDependencies: TJvStringGrid
+        Left = 0
+        Top = 0
+        Width = 545
+        Height = 165
+        Align = alTop
+        ColCount = 14
+        DefaultColWidth = 40
+        DefaultRowHeight = 18
+        FixedCols = 0
+        RowCount = 2
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor]
+        PopupMenu = jpmGridPopup
+        TabOrder = 1
+        OnSetEditText = jsgDependenciesSetEditText
+        Alignment = taLeftJustify
+        FixedFont.Charset = DEFAULT_CHARSET
+        FixedFont.Color = clWindowText
+        FixedFont.Height = -11
+        FixedFont.Name = 'MS Sans Serif'
+        FixedFont.Style = []
+        OnExitCell = jsgDependenciesExitCell
+        OnGetCellAlignment = jsgDependenciesGetCellAlignment
+      end
     end
   end
   object jmmMain: TJvMainMenu
