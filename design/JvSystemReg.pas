@@ -94,7 +94,7 @@ begin
     TJvSHFileOperation, TJvChangeNotify, TJvAppInstances, TJvNTEventLog,
     TJvScreenSaver, TJvNTEventLog, TJvScreenSaver, TJvJoystick, TJvSoundControl,
     {TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories, these are not needed - included in JvComputerInfoEx instead}
-    TJvPerfStat95, TJvComputerInfoEx, TJclDebugHandler]);
+    TJvPerfStat95, TJvComputerInfoEx, TJvDebugHandler]);
   RegisterComponents(RsPaletteInternetWork, [TJvRas32, TJvCommStatus]);
   {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [
