@@ -119,7 +119,6 @@ begin
       if Controls[I] is TWinControl then
         UpdateFonts(Controls[I] as TWinControl);
     end;
-
 end;
 
 end.

@@ -208,6 +208,8 @@ begin
   HW.ActivateHint(R, Caption);
 end;
 
+//=== TJvgHintWindow =========================================================
+
 constructor TJvgHintWindow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

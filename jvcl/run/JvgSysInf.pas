@@ -104,6 +104,8 @@ end;
 
 procedure TJvgSysInfo.Loaded;
 begin
+  // (rom) added inherited Loaded
+  inherited Loaded;
   Refresh;
 end;
 

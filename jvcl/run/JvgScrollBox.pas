@@ -29,6 +29,7 @@ Known Issues:
 unit JvgScrollBox;
 
 interface
+
 uses
   Windows, Messages, Classes, SysUtils, Controls, Graphics, Forms, ExtCtrls,
   JVCLVer,

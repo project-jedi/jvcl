@@ -324,7 +324,6 @@ begin
   FGradient.OnChanged := Value;
 end;
 
-
 //=== TJvgTabsWallpaper ======================================================
 
 constructor TJvgTabsWallpaper.Create;

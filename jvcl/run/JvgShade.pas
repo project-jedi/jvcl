@@ -36,7 +36,6 @@ uses
   JvgTypes, JvgUtils, JvComponent, JvgCommClasses;
 
 type
-
   TJvgShade = class(TJvCustomPanel)
   private
     FImage: TBitmap;
@@ -75,7 +74,7 @@ end;
 
 destructor TJvgShade.Destroy;
 begin
-  Image.Free;
+  FImage.Free;
   inherited Destroy;
 end;
 

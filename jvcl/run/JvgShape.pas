@@ -33,8 +33,8 @@ interface
 uses
   Windows, Messages, Classes, Controls, Graphics, ExtCtrls,
   JvgTypes, JvgUtils;
-type
 
+type
   TJvgShape = class(TShape)
   private
     FOnMouseLeave: TNotifyEvent;
@@ -59,18 +59,6 @@ type
 
 implementation
 
-procedure TJvgShape.CMMouseEnter(var Msg: TMessage);
-begin
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvgShape.CMMouseLeave(var Msg: TMessage);
-begin
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-end;
-
 constructor TJvgShape.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -81,6 +69,18 @@ destructor TJvgShape.Destroy;
 begin
   FWallpaper.Free;
   inherited Destroy;
+end;
+
+procedure TJvgShape.CMMouseEnter(var Msg: TMessage);
+begin
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvgShape.CMMouseLeave(var Msg: TMessage);
+begin
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
 end;
 
 function TJvgShape.GetWallpaper: TBitmap;

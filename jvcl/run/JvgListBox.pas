@@ -203,7 +203,6 @@ type
   public
     property Checked[Index: Integer]: TCheckBoxState read GetChecked write SetChecked;
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   end;
 
 implementation
@@ -939,15 +938,10 @@ end;
 
 constructor TJvgCheckListBox.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FCheckWidth := 14;
   FCheckHeight := 14;
   FLeftIndent := 22;
-end;
-
-destructor TJvgCheckListBox.Destroy;
-begin
-  inherited;
 end;
 
 procedure TJvgCheckListBox.CNDrawItem(var Message: TWMDrawItem);
@@ -1047,7 +1041,7 @@ begin
       cbChecked: Items.Objects[Index] := Pointer(cbUnchecked);
       cbGrayed: ;
     end;
-    invalidate;
+    Invalidate;
   end;
 end;
 

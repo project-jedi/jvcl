@@ -36,7 +36,7 @@ uses
 type
   {$IFNDEF COMPILER6_UP}
   PByte = ^Byte;
-  {$ENDIF  COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
   TJvTestMember = function(Sender: TObject; Index: Integer; Member: PByte): Byte of object;
 
   TJvGenetic = class(TJvComponent)
@@ -54,7 +54,6 @@ type
     function Generate(Father, Mother: PByte; Size: Integer): PByte;
     function Mutate(Value: Byte): Byte;
     function DoCrossover: Boolean;
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

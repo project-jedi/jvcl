@@ -85,7 +85,6 @@ type
     property ShowMultiValues: Boolean read FShowMultiValues write SetShowMultiValues;
   public
     constructor Create(ItemClass: TCollectionItemClass);
-    destructor Destroy; override;
     function Add: TJvgGridItem;
     function Insert(Index: Integer): TJvgGridItem;
 
@@ -138,11 +137,6 @@ constructor TJvgGridItems.Create(ItemClass: TCollectionItemClass);
 begin
   inherited Create(ItemClass);
   FShowMultiValues := True;
-end;
-
-destructor TJvgGridItems.Destroy;
-begin
-  inherited Destroy;
 end;
 
 function TJvgGridItems.Add: TJvgGridItem;
