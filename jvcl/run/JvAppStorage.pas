@@ -2313,9 +2313,9 @@ begin
   try
     Tmp.RootPath := RootPath;
     Tmp.AppStorage := AppStorage;
-  // (rom) leak fixed by changing except to finally
-  finally
+  except
     FreeAndNil(Tmp);
+    raise;
   end;
 end;
 
