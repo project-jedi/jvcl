@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms,
-  JvFormImage, JvBaseDlg, JvTypes;
+  JvImageForm, JvBaseDlg, JvTypes;
 
 type
   TJvImageDlg = class(TJvCommonDialogP)

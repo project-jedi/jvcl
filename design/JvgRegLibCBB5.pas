@@ -45,7 +45,7 @@ uses Classes,
   JvgHint, Jvg3DColors, JvgCaption, JvgProgress, JvgHShape, JvgSplit, JvgJump,
   JvgDigits, JvgGroupBox, JvgImage, JvgShadow, JvgListBox, JvgAskListBox, JvgScrollBox, JvgGraphicButton, { JvgQRLabel,}
   JvgBitBtn, JvgRuler, JvgStringGrid, JvgProcess, JvgSysInf, {JvgShape,}
-  {JvgReport, JvgReportEditor,} JvgMailSlots, JvgExceptionHandler, JvgSpeedButton,
+  {JvgReport, JvgReportEditorForm,} JvgMailSlots, JvgExceptionHandler, JvgSpeedButton,
   JvgSingleInstance, JvgHelpPanel, JvgStringContainer, JvgSysRequirements,
   JvgSmallFontsDefence, JvgWizardHeader, JvgXMLSerializer,
   {JvgExportComponents, } JvgShadowEditor, JvgHelpPanelEditor
@@ -56,7 +56,7 @@ uses Classes,
   JvgPropertyCenter,
   JvgGridHeaderControl,
   JvgCrossTable,
-  JvgReportParamEditor,
+  JvgReportParamsForm,
   JvgComponentListEditor,
   geGHC,
   JvgLogics, JvgLogicsEditor,

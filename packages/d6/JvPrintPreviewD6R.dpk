@@ -24,7 +24,7 @@ package JvPrintPreviewD6R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Print Preview Components'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   rtl,

@@ -24,13 +24,13 @@ package JvAppFrmD5D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Application and Form Components Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvAppFrmD5R;
 
 contains
   JvAppFrmReg in '..\..\design\JvAppFrmReg.pas',
-  JvFormWallpaperEditor in '..\..\design\JvFormWallpaperEditor.pas';
+  JvWallpaperEditFormor in '..\..\design\JvWallpaperEditFormor.pas';
 
 end.

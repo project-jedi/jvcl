@@ -23,7 +23,7 @@ package JvCoreD5R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Core Runtime Package'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   DJCL50,
@@ -41,10 +41,10 @@ contains
   JvProgressUtils in '..\..\run\JvProgressUtils.pas',
   JvAutoSave in '..\..\run\JvAutoSave.pas',
   JvBaseDlg in '..\..\run\JvBaseDlg.pas',
-  JvJVCLAbout in '..\..\run\JvJVCLAbout.pas' {JvJVCLAboutForm},
+  JvJVCLAboutForm in '..\..\run\JvJVCLAboutForm.pas' {JvJVCLAboutForm},
   JvActions in '..\..\run\JvActions.pas',
   JvMouseTimer in '..\..\run\JvMouseTimer.pas',
   JvDsgnIntf in '..\..\run\JvDsgnIntf.pas',
-  JvActnRes in '..\..\design\JvActnRes.pas' {JvStandardActions: TDataModule};
+  JvActnResForm in '..\..\design\JvActnResForm.pas' {JvStandardActions: TDataModule};
 
 end.

@@ -38,7 +38,7 @@ uses
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ENDIF}
-  JvFormAlarms;
+  JvAlarmsForm;
 
 type
   TJvAlarmsEditor = class(TClassProperty)

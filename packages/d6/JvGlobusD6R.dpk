@@ -23,7 +23,7 @@ package JvGlobusD6R;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'GVCL - Globus VCL Extention Library'}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   vcl,

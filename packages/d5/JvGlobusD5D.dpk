@@ -25,7 +25,7 @@ package JvGlobusD5D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL - Globus Extension Library'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   vcl50,
@@ -46,16 +46,16 @@ requires
 contains
   JvgRegLibDelphi in '..\..\design\JvgRegLibDelphi.pas',
   JvCompEditorTemplateForm in '..\..\design\JvCompEditorTemplateForm.pas' {JvgCompEditorTemplate},
-  JvgLabelEditor in '..\..\design\JvgLabelEditor.pas' {JvgLabelEditorDlg},
-  JvgReportEditor in '..\..\design\JvgReportEditor.pas',
-  JvgReportParamEditor in '..\..\design\JvgReportParamEditor.pas',
-  JvgReportParamEditorForm in '..\..\design\JvgReportParamEditorForm.pas',
+  JvgLabelEditorForm in '..\..\design\JvgLabelEditorForm.pas' {JvgLabelEditorFormDlg},
+  JvgReportEditorForm in '..\..\design\JvgReportEditorForm.pas',
+  JvgReportParamsForm in '..\..\design\JvgReportParamsForm.pas',
+  JvgReportParamsForm in '..\..\design\JvgReportParamsForm.pas',
   JvgShadowEditor in '..\..\design\JvgShadowEditor.pas',
   JvgCompDescription in '..\..\design\JvgCompDescription.pas',
   JvgComponentListEditorForm in '..\..\design\JvgComponentListEditorForm.pas',
   JvgPropertyCenter in '..\..\design\JvgPropertyCenter.pas',
   JvgHelpPanelEditor in '..\..\design\JvgHelpPanelEditor.pas',
-  JvgRTFPreviewEditor in '..\..\design\JvgRTFPreviewEditor.pas',
+  JvgRTFPreviewEditorForm in '..\..\design\JvgRTFPreviewEditorForm.pas',
   JvgLogicsEditorForm in '..\..\design\JvgLogicsEditorForm.pas',
   JvgLogicItemEditorForm in '..\..\design\JvgLogicItemEditorForm.pas',
   JvgMultiResourceEditorForm in '..\..\design\JvgMultiResourceEditorForm.pas' {JvgMultipleResourceEdit},

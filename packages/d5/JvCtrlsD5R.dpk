@@ -24,7 +24,7 @@ package JvCtrlsD5R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Controls Runtime Package'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCoreD5R,

@@ -24,7 +24,7 @@ package JvStdCtrlsD7D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Standard Controls Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvStdCtrlsD7R,

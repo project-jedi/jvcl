@@ -24,7 +24,7 @@ package JvAppFrmD7D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Application and Form Components Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvAppFrmD7R,
@@ -44,7 +44,7 @@ requires
 
 contains
   JvAppFrmReg in '..\..\design\JvAppFrmReg.pas',
-  JvFormWallpaperEditor in '..\..\design\JvFormWallpaperEditor.pas',
+  JvWallpaperEditForm in '..\..\design\JvWallpaperEditForm.pas',
   JvGradientCaptionForm in '..\..\design\JvGradientCaptionForm.pas' {GradCaptionsEditor};
 
 end.

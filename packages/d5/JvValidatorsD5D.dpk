@@ -24,7 +24,7 @@ package JvValidatorsD5D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Validators and Error Provider Components Design-Time Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvValidatorsD5R,
@@ -32,7 +32,7 @@ requires
   JvCoreD5D;
 
 contains
-  JvValidatorsEditor in '..\..\design\JvValidatorsEditor.pas' {frmValidatorsEditor},
+  JvValidatorsEditorForm in '..\..\design\JvValidatorsEditorForm.pas' {frmValidatorsEditor},
   JvValidatorsReg in '..\..\design\JvValidatorsReg.pas';
 
 end.

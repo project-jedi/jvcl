@@ -24,7 +24,7 @@ package JvDlgsD6R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Dialog Controls Runtime Package'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCoreD6R,
@@ -40,7 +40,7 @@ contains
   JvCommonExecDlg in '..\..\run\JvCommonExecDlg.pas',
   JvDialogActns in '..\..\run\JvDialogActns.pas',
   JvDialogs in '..\..\run\JvDialogs.pas',
-  JvProgressForm in '..\..\run\JvProgressForm.pas',
+  JvProgressComponent in '..\..\run\JvProgressComponent.pas',
   JvPageSetupTitled in '..\..\run\JvPageSetupTitled.pas',
   JvPageSetup in '..\..\run\JvPageSetup.pas',
   JvConnectNetwork in '..\..\run\JvConnectNetwork.pas',
@@ -53,11 +53,11 @@ contains
   JvObjectPickerDialog in '..\..\run\JvObjectPickerDialog.pas',
   JvLoginForm in '..\..\run\JvLoginForm.pas' {JvLoginForm},
   JvImageDlg in '..\..\run\JvImageDlg.pas',
-  JvFormImage in '..\..\run\JvFormImage.pas' {FormImg},
+  JvImageForm in '..\..\run\JvImageForm.pas' {FormImg},
   JvFormProgress in '..\..\run\JvFormProgress.pas' {FormProg},
   JvExceptionForm in '..\..\run\JvExceptionForm.pas',
   JvProgressDialog in '..\..\run\JvProgressDialog.pas',
-  JvProgressFrm in '..\..\run\JvProgressFrm.pas' {frmProgress},
+  JvProgressComponent in '..\..\run\JvProgressComponent.pas' {frmProgress},
   JvDualList in '..\..\run\JvDualList.pas',
   JvDualListForm in '..\..\run\JvDualListForm.pas';
 

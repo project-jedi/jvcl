@@ -24,7 +24,7 @@ package JvBandsD6R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Band Objects Runtime Package'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCoreD6R;

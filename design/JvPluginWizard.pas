@@ -279,7 +279,7 @@ begin
     S := 'package ' + ProjectName + ';' + CrLf + CrLf +
       '{$DESCRIPTION ''JEDI Plugin Package''}' + CrLf +
       '{$RUNONLY}' + CrLf +
-      '{$IMPLICITBUILD ON}' + CrLf + CrLf +
+      '{$IMPLICITBUILD OFF}' + CrLf + CrLf +
       'requires' + CrLf +
     {$IFDEF COMPILER5}
     '  vcl50,' + CrLf + '  JVCL200_R50;' +

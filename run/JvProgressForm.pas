@@ -8,25 +8,23 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvDlg.PAS, released on 2002-07-04.
+The Original Code is: JvProgressComponent.PAS, released on 2003-03-31.
 
-The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov
+The Initial Developer of the Original Code is Peter Thörnqvist.
+Portions created by Peter Thörnqvist are Copyright (c) 2003 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):                
-Zinvob
-boerema
+Contributor(s):
 
-Last Modified: 2003-03-17
+Last Modified: 2003-03-31
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-components  : TProgressForm
-description : dialog components
-
 Known Issues:
+
+Description:
+- This form is used by JvProgressDialog.pas
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -36,252 +34,210 @@ unit JvProgressForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes,
-  Controls, Forms, StdCtrls, ComCtrls, JvComponent;
+  Windows, SysUtils, Forms, Graphics, ExtCtrls, StdCtrls, Controls, ComCtrls,
+  Classes;
 
 type
-  TJvProgressForm = class(TJvComponent)
+  TJvPrivateProgressUpdate = procedure (Sender:TObject; var AMin, AMax, APosition, AInterval:integer;
+    var ACaption,ALabel:string; AnImage:TPicture; var AContinue:boolean) of object;
+  TfrmProgress = class(TForm)
+    pbProgress: TProgressBar;
+    imProgress: TImage;
+    Label1: TLabel;
+    btnCancel: TButton;
+    tmProgress: TTimer;
+    procedure tmProgressTimer(Sender: TObject);
+    procedure btnCancelClick(Sender: TObject);
+    procedure FormPaint(Sender: TObject);
   private
-    FForm: TForm;
-    FProgressBar: TProgressBar;
-    FLabel1: TLabel;
-    FCaption: TCaption;
-    FInfoLabel: TCaption;
-    FOnShow: TNotifyEvent;
-    FCancel: Boolean;
-    FProgressMin: Integer;
-    FProgressMax: Integer;
-    FProgressStep: Integer;
-    FProgressPosition: Integer;
-    FException: Exception;
-    procedure SetCaption(ACaption: TCaption);
-    procedure SetInfoLabel(ACaption: TCaption);
-    procedure FormOnShow(Sender: TObject);
-    procedure FormOnCancel(Sender: TObject);
-    procedure SetProgress(Index: Integer; AValue: Integer);
+    { Private declarations }
+    FOnProgress:TJvPrivateProgressUpdate;
+    FOnCancel:TNotifyEvent;
+    FCancelled:boolean;
+    function DoProgress:boolean;
+    procedure DoCancel;
+
+    procedure AdjustComponents;
+    procedure RemoveCaption;
+    procedure AddCaption;
   public
-    destructor Destroy; override;
-    procedure Execute;
-    procedure ProgressStepIt;
-    property Cancel: Boolean read FCancel;
-  published
-    property Caption: TCaption read FCaption write SetCaption;
-    property InfoLabel: TCaption read FInfoLabel write SetInfoLabel;
-    property ProgressMin: Integer index 0 read FProgressMin write SetProgress;
-    property ProgressMax: Integer index 1 read FProgressMax write SetProgress;
-    property ProgressStep: Integer index 2 read FProgressStep write SetProgress;
-    property ProgressPosition: Integer index 3 read FProgressPosition write SetProgress;
-    property OnShow: TNotifyEvent read FOnShow write FOnShow;
+    { Public declarations }
+    class function Execute(frm:TfrmProgress;const ACaption,ALabel:string;
+      AImage:TPicture=nil;ATransparent:boolean=false;AMin:integer=0;AMax:integer=100;APosition:integer=0;AInterval:integer=200;ShowCancel:boolean=false;AOnProgress:TJvPrivateProgressUpdate=nil;AOnCancel:TNotifyEvent=nil):boolean;
+    function ShowModal: Integer; override;
   end;
 
 implementation
-
 uses
-  JvConsts;
+  Consts;
 
-{$IFNDEF BCB3}
+{$R *.DFM}
 
-function ChangeTopException(E: TObject): TObject;
-type
-  PRaiseFrame = ^TRaiseFrame;
-  TRaiseFrame = record
-    NextRaise: PRaiseFrame;
-    ExceptAddr: Pointer;
-    ExceptObject: TObject;
-    //ExceptionRecord: PExceptionRecord;
-  end;
+{ TfrmProgress }
+
+class function TfrmProgress.Execute(frm:TfrmProgress;const ACaption, ALabel: string;
+  AImage: TPicture; ATransparent:boolean;AMin, AMax, APosition, AInterval: integer;ShowCancel:boolean;AOnProgress:TJvPrivateProgressUpdate;AOnCancel:TNotifyEvent): boolean;
+var DoModal:boolean;
 begin
-  { CBuilder 3 Warning !}
-  { if linker error occured with message "unresolved external 'System::RaiseList'" try
-    comment this function implementation, compile,
-    then uncomment and compile again. }
-{$IFDEF COMPLIB_VCL}
-  {$IFDEF COMPILER6_UP}
-  {$WARN SYMBOL_DEPRECATED OFF}
-  {$ENDIF}
-  if RaiseList <> nil then
+  if frm = nil then
   begin
-    Result := PRaiseFrame(RaiseList)^.ExceptObject;
-    PRaiseFrame(RaiseList)^.ExceptObject := E
+    frm := self.Create(Application);
+    DoModal := true;
   end
   else
-    Result := nil;
-{$ENDIF COMPLIB_VCL}
-{$IFDEF LINUX}
-  // XXX: changing exception in stack frame is not supported on Kylix
-  Writeln('ChangeTopException');
-  Result := E;
-{$ENDIF LINUX}
-end;
-{$ENDIF BCB3}
-
-{##################### From JvUtils unit #####################}
-
-type
-  TJvProgressFormForm = class(TForm)
-  private
-    procedure WMUser1(var Msg: TMessage); message WM_USER + 1;
-  end;
-
-procedure TJvProgressForm.Execute;
-begin
-{$IFDEF CBUILDER}
-  if not Assigned(FForm) then
-    FForm := TJvProgressFormForm.CreateNew(Self, 1);
-{$ELSE}
-  if not Assigned(FForm) then
-    FForm := TJvProgressFormForm.CreateNew(Self);
-{$ENDIF}
+    DoModal := false;
   try
-    FForm.Caption := Caption;
-    with FForm do
-    begin
-      ClientWidth := 307;
-      ClientHeight := 98;
-      BorderStyle := bsDialog;
-      Position := poScreenCenter;
-      FProgressBar := TProgressBar.Create(FForm);
-    end;
-    with FProgressBar do
-    begin
-      Parent := FForm;
-      if FProgressMin > Max then
-      begin
-        Max := FProgressMax;
-        Min := FProgressMin;
-      end
-      else
-      begin
-        Min := FProgressMin;
-        Max := FProgressMax;
-      end;
-      SetBounds(8, 38, 292, 18);
-      if FProgressStep = 0 then
-        FProgressStep := 1;
-      Step := FProgressStep;
-      Position := FProgressPosition;
-    end;
-    FLabel1 := TLabel.Create(FForm);
-    with FLabel1 do
-    begin
-      Parent := FForm;
-      Caption := '';
-      AutoSize := False;
-      SetBounds(8, 8, 293, 13);
-    end;
-    with TButton.Create(FForm) do
-    begin
-      Parent := FForm;
-      Caption := SCancel;
-      SetBounds(116, 67, 75, 23);
-      OnClick := FormOnCancel;
-    end;
-    FCancel := False;
-    if Assigned(FOnShow) then
-    begin
-      FForm.OnShow := FormOnShow;
-      FException := nil;
-      FForm.ShowModal;
-      if FException <> nil then
-        raise FException;
-    end
+    frm.Caption := ACaption;
+    frm.Label1.Caption := ALabel;
+    frm.pbProgress.Min := AMin;
+    frm.pbProgress.Max := AMax;
+    frm.pbProgress.Position := APosition;
+    frm.FOnProgress := AOnProgress;
+    frm.imProgress.Picture := AImage;
+    frm.imProgress.Transparent := ATransparent;
+    frm.tmProgress.Interval := AInterval;
+    frm.tmProgress.Enabled := AInterval > 0;
+    frm.btnCancel.Visible := ShowCancel;
+    frm.btnCancel.Caption := SCancelButton;
+    frm.FOnCancel := AOnCancel;
+    frm.AdjustComponents;
+    if DoModal then
+      Result := frm.ShowModal <> mrCancel
     else
-      FForm.Show;
-  finally
-    if Assigned(FOnShow) then
-      FreeAndNil(FForm);
-  end;
-end;
-
-procedure TJvProgressForm.FormOnShow(Sender: TObject);
-begin
-  PostMessage(FForm.Handle, WM_USER + 1, integer(self), 0);
-end;
-
-procedure TJvProgressForm.FormOnCancel(Sender: TObject);
-begin
-  FCancel := True;
-end;
-
-procedure TJvProgressFormForm.WMUser1(var Msg: TMessage);
-begin
-  Application.ProcessMessages;
-  try
-    try
-      (TJvProgressForm(Msg.WParam)).FOnShow(Self);
-//      (Owner as TJvProgressForm).FOnShow(Self);
-    except
-      on E: Exception do
-      begin
-{$IFNDEF BCB3}
-        (Owner as TJvProgressForm).FException := E;
-        ChangeTopException(nil);
-{$ENDIF BCB3}
-{$IFDEF BCB3}
-        (Owner as TJvProgressForm).FException := Exception.Create(E.Message);
-{$ENDIF BCB3}
-      end;
+    begin
+      Result := false;
+      frm.Show;
     end;
   finally
+    if DoModal then
+      FreeAndNil(frm);
+  end;
+end;
+
+function TfrmProgress.DoProgress: boolean;
+var AMin,AMax, APosition,AInterval:integer;ACaption,ALabel:string;
+begin
+  Result := false;
+  if FCancelled then Exit;
+  Result := true;
+  tmProgress.Enabled := false;
+  if Assigned(FOnProgress) then
+  begin
+    AMin := pbProgress.Min;
+    AMax := pbProgress.Max;
+    APosition := pbProgress.Position;
+    AInterval := tmProgress.Interval;
+    ACaption := Caption;
+    ALabel    := Label1.Caption;
+    FOnProgress(self,AMin,AMax,APosition,AInterval,ACaption,ALabel,imProgress.Picture,Result);
+    pbProgress.Min := AMin;
+    pbProgress.Max := AMax;
+    pbProgress.Position := APosition;
+    tmProgress.Interval := AInterval;
+    tmProgress.Enabled := AInterval > 0;
+    Caption := ACaption;
+    Label1.Caption := ALabel;
+    AdjustComponents;
+    Update;
+  end;
+  if not tmProgress.Enabled or not Result then
+  begin
+    ModalResult := mrCancel;
+    Close;
+  end;
+end;
+procedure TfrmProgress.AddCaption;
+var WindowLong:Cardinal;
+begin
+  WindowLong := GetWindowLong(Handle, GWL_STYLE);
+  if WindowLong and WS_CAPTION = 0 then
+  begin
+    SetWindowLong(Handle, GWL_STYLE, WindowLong or WS_CAPTION);
+    BorderStyle := bsToolWindow;
+    Height := Height + GetSystemMetrics(SM_CYCAPTION);
+    Top := Top + GetSystemMetrics(SM_CYCAPTION);
+    Update;
+  end;
+end;
+
+procedure TfrmProgress.RemoveCaption;
+var WindowLong:Cardinal;
+begin
+  WindowLong := GetWindowLong(Handle, GWL_STYLE);
+  if WindowLong and WS_CAPTION = WS_CAPTION then
+  begin
+    BorderStyle := bsDialog;
+    SetWindowLong(Handle, GWL_STYLE, WindowLong and not WS_CAPTION);
+    Height := Height - GetSystemMetrics(SM_CYCAPTION);
+    Top := Top - GetSystemMetrics(SM_CYCAPTION);
+    Update;
+  end;
+end;
+
+function TfrmProgress.ShowModal: Integer;
+begin
+  // (p3) put topmost but only if not debugging
+  {$IFOPT D-}
+    SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+  {$ENDIF}
+  if not tmProgress.Enabled then
+    DoProgress; // call at least once
+  Result := inherited ShowModal;
+end;
+
+procedure TfrmProgress.tmProgressTimer(Sender: TObject);
+begin
+  if FCancelled then Exit;
+  if not DoProgress or not tmProgress.Enabled then
+  begin
     ModalResult := mrOk;
+    Close;
   end;
 end;
 
-procedure TJvProgressForm.SetCaption(ACaption: TCaption);
+procedure TfrmProgress.btnCancelClick(Sender: TObject);
 begin
-  FCaption := ACaption;
-  if FForm <> nil then
-    FForm.Caption := FCaption;
+  FCancelled := true;
+  DoCancel;
 end;
 
-procedure TJvProgressForm.SetInfoLabel(ACaption: TCaption);
+procedure TfrmProgress.AdjustComponents;
+var Offset:integer;
 begin
-  FInfoLabel := ACaption;
-  if FForm <> nil then
-    FLabel1.Caption := ACaption;
-end;
-
-procedure TJvProgressForm.SetProgress(Index: Integer; AValue: Integer);
-begin
-  case Index of
-    0:
-      begin
-        FProgressMin := AValue;
-        if FForm <> nil then
-          FProgressBar.Min := FProgressMin;
-      end;
-    1:
-      begin
-        FProgressMax := AValue;
-        if FForm <> nil then
-          FProgressBar.Max := FProgressMax;
-      end;
-    2:
-      begin
-        FProgressStep := AValue;
-        if FForm <> nil then
-          FProgressBar.Step := FProgressStep;
-      end;
-    3:
-      begin
-        FProgressPosition := AValue;
-        if FForm <> nil then
-          FProgressBar.Position := FProgressPosition;
-      end;
+  if Caption = '' then RemoveCaption else AddCaption; 
+  if (imProgress.Picture = nil) or (imProgress.Picture.Graphic = nil)
+    or imProgress.Picture.Graphic.Empty then
+      Offset := 12
+    else
+    begin
+      Offset := imProgress.Top + imProgress.Height + 12;
+      if ClientWidth - imProgress.Left * 2 < imProgress.Width then
+        ClientWidth := imProgress.Width + imProgress.Left * 2;
+    end;
+  Label1.Top := Offset;
+  Offset := Label1.Top + Label1.Height + 8;
+  pbProgress.Top := Offset;
+  Offset := pbProgress.Top + pbProgress.Height + 16;
+  if btnCancel.Visible then
+  begin
+    btnCancel.Top := pbProgress.Top + pbProgress.Height + 16;
+    Offset := btnCancel.Top + btnCancel.Height + 16;
   end;
+  ClientHeight := Offset;
 end;
 
-procedure TJvProgressForm.ProgressStepIt;
+procedure TfrmProgress.DoCancel;
 begin
-  if FForm <> nil then
-    FProgressBar.StepIt;
+  if Assigned(FOnCancel) then FOnCancel(self);
+  ModalResult := mrCancel;
+  Close;
 end;
 
-destructor TJvProgressForm.Destroy;
+procedure TfrmProgress.FormPaint(Sender: TObject);
 begin
-  FForm.Free;
-  inherited Destroy;
+  if (imProgress.Picture.Graphic <> nil) and not imProgress.Picture.Graphic.Empty then
+    Canvas.Draw(imProgress.Left,imProgress.Top,imProgress.Picture.Graphic);
 end;
+
 
 end.
-

@@ -16,7 +16,7 @@ uses
   {$ENDIF COMPILER6_UP}
   ActnList, JvBaseDlg, JvFindReplace,
   JvDSADialogs, JvTipOfDay, JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvCommonExecDlg,
-  JvDialogActns, JvActnRes, JvDialogs, JvProgressForm, JvPageSetupTitled, JvPageSetup, JvConnectNetwork,
+  JvDialogActns, JvActnResForm, JvDialogs, JvProgressComponent, JvPageSetupTitled, JvPageSetup, JvConnectNetwork,
   JvSelectDirectory, JvCopyError, JvDeleteError, JvRenameError, JvDiskPrompt, JvFindFiles,
   JvImageDlg, JvLoginForm, JvDualList, JvProgressDialog,
   JvAppletEditor, JvObjectPickerDialog, JvBaseDlgEditor, JvCommonDialogDEditor, JvTipOfDayEditor;
@@ -39,7 +39,7 @@ begin
      TJvTipOfDay, TJvFindReplace,
      TJvImageDlg, TJvDSADialog, TJvLoginDialog,
      TJvDiskPrompt, TJvCopyError, TJvDeleteError, TJvRenameError,
-     TJvProgressDialog, TJvProgressForm
+     TJvProgressDialog, TJvProgressComponent
     ]);
 
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, 'AppletName', TJvAppletNameProperty);

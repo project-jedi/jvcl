@@ -1,4 +1,4 @@
-object jvSpellerF: TJvSpellerF
+object JvSpellerFormF: TJvSpellerFormF
   Left = 306
   Top = 251
   BorderStyle = bsDialog

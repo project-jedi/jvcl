@@ -22,7 +22,7 @@ uses
   JvTransparentButton, JvTransLED, JvxClock, JvSpeedbarSetupForm,
   JvColorForm, JvDsgnIntf, JvImageDrawThread, JvRegAuto, JvWinampLabel, JvPlaylist, JvComponentPanel,
   JvButtons, JvCaptionPanel, JvScrollMax, JvUninstallControls, JvMovableBevel,
-  JvRegAutoEditor, JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor, JvFooterEditor,
+  JvRegAutoEditorForm, JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor, JvFooterEditor,
   JvSpeedbarForm,
   JvDsgnEditors;
 

@@ -24,7 +24,7 @@ package JvDBD6D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Database Components Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvDBD6R,

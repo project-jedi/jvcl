@@ -105,7 +105,7 @@ procedure Register;
 implementation
 uses
   Forms, ComCtrls, Controls, SysUtils, TypInfo, Consts,
-  JvPageLinkEditor, JvTreeItemsEditor;
+  JvPageLinkEditorForm, JvTreeItemsEditorForm;
 
 resourcestring
   SFmtInterfaceNotSupported = '%s does not support the required interface (%s)';

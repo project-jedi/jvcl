@@ -24,7 +24,7 @@ package JvNetD7D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Network Components Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvNetD7R,
@@ -35,6 +35,6 @@ contains
   JvNetReg in '..\..\design\JvNetReg.pas',
   JvMailEditor in '..\..\design\JvMailEditor.pas',
   JvHtmlParserEditor in '..\..\design\JvHTMLParserEditor.pas',
-  JvFormParser in '..\..\run\JvFormParser.pas' {FormParsers};
+  JvParserForm in '..\..\run\JvParserForm.pas' {FormParsers};
 
 end.

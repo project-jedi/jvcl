@@ -33,7 +33,7 @@ procedure Register;
 
 implementation
 uses
-  Classes, JvErrProvider, JvValidators, JvValidatorsEditor, JvDsgnEditors,
+  Classes, JvErrProvider, JvValidators, JvValidatorsEditorForm, JvDsgnEditors,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf
   {$ELSE}

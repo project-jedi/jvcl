@@ -38,7 +38,7 @@ uses
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ENDIF}
-  JvFormPatch;
+  JvPatchForm;
 
 type
   TJvPatcherEditor = class(TClassProperty)

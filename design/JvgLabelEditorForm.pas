@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvgLabelEditor.PAS, released on 2003-01-15.
+The Original Code is: JvgLabelEditorForm.PAS, released on 2003-01-15.
 
 The Initial Developer of the Original Code is Michael Beck [mbeck@bigfoot.com]
 Portions created by Michael Beck are Copyright (C) 2003 Michael Beck
@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 {$I JVCL.INC}
-unit JvgLabelEditor;
+unit JvgLabelEditorForm;
 
 interface
 
@@ -189,7 +189,7 @@ var
 implementation
 
 {$R *.dfm}
-{$R ..\Resources\JvgLabelEditor.res}
+{$R ..\Resources\JvgLabelEditorForm.res}
 
 procedure TJvgLabelEditor.ExecuteVerb(Index: Integer);
 var

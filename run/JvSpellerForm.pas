@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvSpeller.PAS, released on 2002-06-15.
+The Original Code is: JvSpellerForm.PAS, released on 2002-06-15.
 
 The Initial Developer of the Original Code is Jan Verhoeven [jan1.verhoeven@wxs.nl]
 Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
@@ -25,7 +25,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
-unit JvSpeller;
+unit JvSpellerForm;
 
 interface
 

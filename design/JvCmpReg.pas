@@ -17,7 +17,7 @@ uses
   JvAlarms, JvConverter, JvDataEmbedded, JvCreateProcess,
   JvEnterTab, JvMergeManager, JvPageManager, JvPatchFile,
   JvStringHolder, JvTimeLimit, JvWinHelp, JvTranslator, JvPrint, JvEasterEgg,
-  JvDataEmbeddedEditor, JvPatcherEditor, JvProfiler32,
+  JvDataEmbeddedEditor, JvPatcherEditor, JvProfilerForm,
   JvAlarmsEditor, JvPageManagerForm,
   JvDsgnEditors;
 

@@ -23,7 +23,7 @@ package JvSystemD5R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL System Runtime Package'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCoreD5R,

@@ -43,7 +43,7 @@ uses Classes, DsgnIntf,
   JvgBevel, JvgButton, JvgCheckBox, JvgCaption, JvgDigits, JvgFlyingText, JvgGroupBox, JvgImage, JvgJump,
   JvgLabel, JvgListBox, JvgAskListBox, JvgPage, JvgProgress, JvgTab, JvgScrollBox, JvgTreeView, JvgShadow,
   JvgHint, Jvg3DColors, JvgProcess, JvgStringGrid, JvgEdit, JvgRuler, JvgCrossTable, JvgDBGrid, JvgVertDBGrid, JvgStringContainer,
-  JvgMultiResources, JvgMultiResourceEditor, JvgSysInf, JvgPropertyCenter, JvgComponentListEditor, JvgReport, JvgReportEditor, JvgReportParamEditor, JvgGraphicButton,
+  JvgMultiResources, JvgMultiResourceEditor, JvgSysInf, JvgPropertyCenter, JvgComponentListEditor, JvgReport, JvgReportEditorForm, JvgReportParamsForm, JvgGraphicButton,
   JvgQRLabel, JvgBitBtn, JvgHShape, JvgSmallFontsDefence;
 
 procedure Register;

@@ -7,7 +7,7 @@ uses Classes, JvMarkupLabel, JvMarkupViewer, JvSAL, JvSticker, JvSALCORE, JvSALM
   JvYearGrid, JvTracker, JvAirBrush, JvGridFilter, JvGridPrinter,
   JvJanTreeView, JvArrayButton, JvForth, JvTurtle, JvPaintFX, JvDrawImage,
   JvBitmapButton, JvSimScope, JvSimIndicator, JvSimPID, JvSIMPIDLinker,
-  JvSimLogic, JvSpeller, JvShapedButton, JvCSVBaseControls, JvCSVBaseEditor,
+  JvSimLogic, JvSpellerForm, JvShapedButton, JvCSVBaseControls, JvCSVBaseEditor,
     {$IFDEF COMPILER6_UP}
    DesignIntf, DesignEditors, VCLEditors
   {$ELSE}

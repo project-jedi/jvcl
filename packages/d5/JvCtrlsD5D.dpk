@@ -24,7 +24,7 @@ package JvCtrlsD5D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Controls Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCtrlsD5R,
@@ -35,7 +35,7 @@ requires
 contains
   JvCtrlsReg in '..\..\design\JvCtrlsReg.pas',
   JvBehaviorLabelEditor in '..\..\design\JvBehaviorLabelEditor.pas',
-  JvRegAutoEditor in '..\..\design\JvRegAutoEditor.pas' {JvRegEditor},
+  JvRegAutoEditorForm in '..\..\design\JvRegAutoEditorForm.pas' {JvRegEditor},
   JvScrollMaxEditor in '..\..\design\JvScrollMaxEditor.pas',
   JvFooterEditor in '..\..\design\JvFooterEditor.pas',
   JvGroupHeaderEditor in '..\..\design\JvGroupHeaderEditor.pas',

@@ -24,7 +24,7 @@ package JvPageCompsD6D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Page Style Components Design Package for Delphi 6'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   rtl,
@@ -34,8 +34,8 @@ requires
   JvCoreD6D;
 
 contains
-  JvTreeItemsEditor in '..\..\design\JvTreeItemsEditor.pas' {frmTreeViewItems},
+  JvTreeItemsEditorForm in '..\..\design\JvTreeItemsEditorForm.pas' {frmTreeViewItems},
   JvPageListTreeViewReg in '..\..\design\JvPageListTreeViewReg.pas',
-  JvPageLinkEditor in '..\..\design\JvPageLinkEditor.pas' {frmJvTreeViewLinksEditor};
+  JvPageLinkEditorForm in '..\..\design\JvPageLinkEditorForm.pas' {frmJvTreeViewLinksEditor};
 
 end.

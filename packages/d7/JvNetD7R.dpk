@@ -24,7 +24,7 @@ package JvNetD7R;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Network Components Runtime Package'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCoreD7R;

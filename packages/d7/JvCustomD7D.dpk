@@ -24,7 +24,7 @@ package JvCustomD7D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Custom Controls Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvCustomD7R,

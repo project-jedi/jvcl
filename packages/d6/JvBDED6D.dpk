@@ -24,7 +24,7 @@ package JvBDED6D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL BDE Components Designtime Package'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
   JvBDED6R,
