@@ -739,20 +739,20 @@ function DrawDisabledText(DC: HDC; lpString: PWideChar;
 var
   OldCol: Integer;
 begin
+  {$IFDEF VCL}
   OldCol := SetTextColor(DC, ColorToRGB(clBtnHighlight));
   OffsetRect(lpRect, 1, 1);
-  {$IFDEF VCL}
   DrawText(DC, lpString, nCount, lpRect, uFormat);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  DrawTextW(DC, lpString, nCount, lpRect, uFormat);
-  {$ENDIF VisualCLX}
   OffsetRect(lpRect, -1, -1);
   SetTextColor(DC, ColorToRGB(clBtnShadow));
-  {$IFDEF VCL}
   Result := DrawText(DC, lpString, nCount, lpRect, uFormat);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  OldCol := SetTextColor(DC, ColorToRGB(clNormalLight));
+  OffsetRect(lpRect, 1, 1);
+  DrawTextW(DC, lpString, nCount, lpRect, uFormat);
+  OffsetRect(lpRect, -1, -1);
+  SetTextColor(DC, ColorToRGB(clNormalDark));
   Result := DrawTextW(DC, lpString, nCount, lpRect, uFormat);
   {$ENDIF VisualCLX}
   SetTextColor(DC, OldCol);
@@ -1497,13 +1497,7 @@ begin
   if ((bsMouseDown in MouseStates)) and FShowPressed then
     OffsetRect(TmpRect, 1, 1);
 
-
-  {$IFDEF VCL}
   SetBkMode(DC, Windows.TRANSPARENT);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SetBkMode(DC, QWindows.TRANSPARENT);
-  {$ENDIF VisualCLX}
   if not Enabled then
   begin
     SetTextColor(DC, ColorToRGB(clBtnHighlight));
@@ -1513,7 +1507,7 @@ begin
     DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags);
+    DrawText(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags);
     {$ENDIF VisualCLX}
     OffsetRect(TmpRect, -1, -1);
     SetTextColor(DC, ColorToRGB(clBtnShadow));
@@ -1528,7 +1522,7 @@ begin
   DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags);
+  DrawText(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags);
   {$ENDIF VisualCLX}
 end;
 
