@@ -207,10 +207,10 @@ type
     property Color;
     property Constraints;
     property CriticalPoints;
-    property DecimalPlaces default 0;
     property DisabledColor;
     property DisabledTextColor;
     property DisplayFormat default dfInteger;
+    property DecimalPlaces default 0; // (chrislatta) Must be after DisplayFormat to stream properly
     property DisplayPrefix;
     property DisplaySuffix;
     property DragMode;
@@ -933,9 +933,12 @@ end;
 
 procedure TJvCustomValidateEdit.DoValueChanged;
 begin
-  if Assigned(FOnValueChanged) and (EnterText <> FEditText) then
-    FOnValueChanged(Self);
-  EnterText := FEditText;
+  try
+    if Assigned(FOnValueChanged) and (EnterText <> FEditText) then
+      FOnValueChanged(Self);
+  finally
+    EnterText := FEditText;
+  end;
 end;
 
 {procedure TJvCustomValidateEdit.CMChanged(var Message: TMessage);}
