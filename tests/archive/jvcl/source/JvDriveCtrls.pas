@@ -46,7 +46,7 @@ uses
   JvCtrls, JvListBox, JVCLVer, JvSearchFiles;
 
 type
-  TJvDriveType = (dtRemovable, dtFixed, dtRemote, dtCDROM, dtRamDisk);
+  TJvDriveType = (dtUnknown, dtRemovable, dtFixed, dtRemote, dtCDROM, dtRamDisk);
   TJvDriveTypes = set of TJvDriveType;
 
 const
@@ -405,6 +405,19 @@ begin
   Result := Metrics.tmHeight;
 end;
 
+function IsValidDriveType(DriveTypes:TJvDriveTypes;DriveType:UINT):boolean;
+const
+  cDriveMasks:array[TJvDriveType] of UINT = (DRIVE_UNKNOWN, DRIVE_REMOVABLE,DRIVE_FIXED,DRIVE_REMOTE,DRIVE_CDROM,DRIVE_RAMDISK);
+                                            //           0,               2,          3,           4,          5,            6
+var
+  i:TJvDriveType;
+begin
+  Result := true;
+  for i := Low(TJvDriveType) to High(TJvDriveType) do
+    if (i in DriveTypes) and (DriveType = cDriveMasks[i]) then Exit;
+  Result := false;
+end;
+
 { TJvDriveCombo }
 
 constructor TJvDriveCombo.Create(AOwner: TComponent);
@@ -470,9 +483,12 @@ begin
     begin
       S := string(P);
       Inc(P, 4);
-      SHGetFileInfo(PChar(S), 0, Info, SizeOf(TShFileInfo), SHGFI_DISPLAYNAME or Options);
-      Items.AddObject(Trim(Info.szDisplayName), TObject(Info.iIcon));
-      FDrives.Add(S[1]);
+      if IsValidDriveType(DriveTypes,GetDriveType(PChar(S))) then
+      begin
+        SHGetFileInfo(PChar(S), 0, Info, SizeOf(TShFileInfo), SHGFI_DISPLAYNAME or Options);
+        Items.AddObject(Trim(Info.szDisplayName), TObject(Info.iIcon));
+        FDrives.Add(S[1]);
+      end;
     end;
     SetDrive(ADrive);
     Update;
@@ -741,9 +757,12 @@ begin
     begin
       S := string(P);
       Inc(P, 4);
-      SHGetFileInfo(PChar(S), 0, Info, SizeOf(TShFileInfo), SHGFI_DISPLAYNAME or Options);
-      Items.AddObject(Trim(Info.szDisplayName), TObject(Info.iIcon));
-      FDrives.Add(S[1]);
+      if IsValidDriveType(DriveTypes,GetDriveType(PChar(S))) then
+      begin
+        SHGetFileInfo(PChar(S), 0, Info, SizeOf(TShFileInfo), SHGFI_DISPLAYNAME or Options);
+        Items.AddObject(Trim(Info.szDisplayName), TObject(Info.iIcon));
+        FDrives.Add(S[1]);
+      end;
     end;
     SetDrive(ADrive);
     Update;
