@@ -64,17 +64,17 @@ type
     miSep2: TMenuItem;
     miRename: TMenuItem;
     ilIdentList: TImageList;
-    procedure aiAddItemExecute(Sender: TObject);
-    procedure aiDeleteExecute(Sender: TObject);
-    procedure aiClearExecute(Sender: TObject);
-    procedure aiMoveUpExecute(Sender: TObject);
-    procedure aiMoveDownExecute(Sender: TObject);
+    procedure aiAddItemExecute(Sender: TObject); dynamic;
+    procedure aiDeleteExecute(Sender: TObject); dynamic;
+    procedure aiClearExecute(Sender: TObject); dynamic;
+    procedure aiMoveUpExecute(Sender: TObject); dynamic;
+    procedure aiMoveDownExecute(Sender: TObject); dynamic;
     procedure alDesignUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure lvProviderEditing(Sender: TObject; Item: TListItem;
-      var AllowEdit: Boolean);
+      var AllowEdit: Boolean); dynamic;
     procedure lvProviderEdited(Sender: TObject; Item: TListItem;
-      var S: String);
-    procedure aiRenameExecute(Sender: TObject);
+      var S: String); dynamic;
+    procedure aiRenameExecute(Sender: TObject); dynamic;
   private
     FBeforeNewItem: TDsgFmeBeforeNewItem;
     FAfterNewItem: TDsgFmeAfterNewItem;
@@ -310,6 +310,7 @@ end;
 procedure TfmeJvProviderTreeListDsgn.lvProviderEditing(Sender: TObject;
   Item: TListItem; var AllowEdit: Boolean);
 begin
+  UpdateActionStates;
   AllowEdit := aiRename.Enabled and aiRename.Visible;
 end;
 

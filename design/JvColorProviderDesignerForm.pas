@@ -41,7 +41,8 @@ uses
   {$ENDIF COMPILER6_UP}
   JvBaseDsgnForm, JvProviderTreeListFrame, JvComponent,
   JvDataProvider, JvDataProviderImpl, JvContextProvider,
-  JvProviderTreeListDsgnFrame, JvColorProvider, JvDsgnTypes;
+  JvProviderTreeListDsgnFrame, JvColorProvider, JvDsgnTypes,
+  JvColorProviderDsgnTreeFrame;
 
 type
   TfrmJvColorProviderDesigner = class(TJvBaseDesign)
@@ -50,7 +51,7 @@ type
     lblContext: TLabel;
     dpContexts: TJvContextProvider;
     btnOK: TButton;
-    fmeColors: TfmeJvProviderTreeListDsgn;
+    fmeColors: TfmeJvColorProviderDsgnTree;
     fmeMappings: TfmeJvProviderTreeListDsgn;
     fmeContexts: TfmeJvProviderTreeListDsgn;
     dpColorMapping: TJvColorMappingProvider;

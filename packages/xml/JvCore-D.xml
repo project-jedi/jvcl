@@ -46,5 +46,7 @@
     <File Name="..\..\design\JvPaintBoxEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvProviderToolbarFrame.pas" Targets="all" Formname="fmeJvProviderToolbar: TFrame" Condition=""/>
     <File Name="..\..\design\JvDsgnTypes.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvColorProviderDsgnTreeFrame.pas" Targets="all" Formname="fmeJvColorProviderDsgnTree: TFrame" Condition=""/>
+    <File Name="..\..\design\JvColorProviderAddDialogForm.pas" Targets="all" Formname="frmAddColor" Condition=""/>
   </Contains>
 </Package>

@@ -38,7 +38,7 @@ inherited frmJvColorProviderDesigner: TfrmJvColorProviderDesigner
     TabOrder = 3
     OnClick = btnOKClick
   end
-  inline fmeColors: TfmeJvProviderTreeListDsgn
+  inline fmeColors: TfmeJvColorProviderDsgnTree
     Left = 5
     Top = 20
     Width = 245
