@@ -621,6 +621,7 @@ object FormMain: TFormMain
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
+      OnClick = CheckBoxOptThemingClick
     end
     object CheckBoxOptDxgettext: TCheckBox
       Left = 8
@@ -634,6 +635,7 @@ object FormMain: TFormMain
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
+      OnClick = CheckBoxOptThemingClick
     end
     object CheckBoxOptJvGIF: TCheckBox
       Left = 8
@@ -647,6 +649,7 @@ object FormMain: TFormMain
       ParentShowHint = False
       ShowHint = True
       TabOrder = 4
+      OnClick = CheckBoxOptThemingClick
     end
   end
   object CheckBoxDeveloperInstall: TCheckBox
