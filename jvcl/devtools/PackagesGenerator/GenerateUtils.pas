@@ -40,7 +40,7 @@ var
 implementation
 
 uses Windows, SysUtils, JclSysUtils, JclStrings, JclFileUtils, JvSimpleXml,
-    ShellApi, JclDateTime, Contnrs, FileUtils;
+    ShellApi, JclDateTime, Contnrs, FileUtils, JclLogic;
 
 type
   TTarget = class (TObject)
@@ -505,6 +505,7 @@ begin
   try
     // ensure uniqueness in expanded list
     expandedTargets.Sorted := True;
+// CaseSensitive doesn't exist in D5 and the default is False anyway
 //    expandedTargets.CaseSensitive := False;
     expandedTargets.Duplicates := dupIgnore;
 
@@ -550,6 +551,7 @@ begin
     StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
                  ',', targets);
     ExpandTargets(targets);
+// CaseSensitive doesn't exist in D5 and the default is False anyway
 //    targets.CaseSensitive := False;
     Result := (targets.IndexOf(target) > -1);
   finally
@@ -567,7 +569,7 @@ begin
   Result := FileTimeToDateTime(fileTime);
 end;
 
-function ApplyTemplateAndSave(path, target, package, extension, prefix, format : string; template : TStrings; xml : TJvSimpleXml; templateName, xmlName : string) : string;
+function ApplyTemplateAndSave(path, target, package, extension, prefix, format : string; template : TStrings; xml : TJvSimpleXml; templateName, xmlName : string; mostRecentFileDate : TDateTime) : string;
 var
   OutFileName : string;
   oneLetterType : string;
@@ -828,13 +830,11 @@ begin
         end;
     end;
 
-    // Save the file, only if the template or the xml are newer
-    // than the output file. If that output file doesn't exist,
-    // create it too
+    // Save the file, if it contains something, and it
+    // doesn't exist or it's older than the most recent file
     if containsSomething and
        (not FileExists(OutFileName) or
-        (FileDateToDateTime(FileAge(OutFileName)) < FileDateToDateTime(FileAge(templateName))) or
-        (FileDateToDateTime(FileAge(OutFileName)) < FileDateToDateTime(FileAge(xmlName)))) then
+        (FileDateToDateTime(FileAge(OutFileName)) < mostRecentFileDate)) then
     begin
       SendMsg(#9#9'Writing ' + ExtractFileName(OutFileName) + ' for ' + target);
 
@@ -853,6 +853,14 @@ begin
     bcblibsList.Free;
     outFile.Free;
   end;
+end;
+
+function Max(d1, d2 : TDateTime): TDateTime;
+begin
+  if d1 > d2 then
+    Result := d1
+  else
+    Result := d2;
 end;
 
 function IsBinaryFile(const Filename: string): Boolean;
@@ -885,8 +893,11 @@ var
   persoTarget : string;
   target : string;
 
+  mostRecentFileDate : TDateTime;
+
   incfile : TStringList;
 begin
+  mostRecentFileDate := 0;
   LoadConfig(XmlFileName, ModelName);
 
   FreeAndNil(DefinesList);
@@ -896,7 +907,10 @@ begin
   incfile := TStringList.Create;
   try
     if FileExists(IncFileName) then
+    begin
       incfile.LoadFromFile(IncFileName);
+      mostRecentFileDate := FileDateToDateTime(FileAge(IncFileName));
+    end;
     DefinesList := TDefinesList.Create(incfile);
   finally
     incfile.free;
@@ -940,12 +954,14 @@ begin
               template.Clear
             else
               template.LoadFromFile(templateName);
+            mostRecentFileDate := Max(mostRecentFileDate, FileDateToDateTime(FileAge(templateName)));
 
             xml := TJvSimpleXml.Create(nil);
             try
               xml.Options := [sxoAutoCreate];
               xmlName := path+'xml'+PathSeparator+packages[j]+'.xml';
               xml.LoadFromFile(xmlName);
+              mostRecentFileDate := Max(mostRecentFileDate, FileDateToDateTime(FileAge(xmlName)));
               persoTarget := ApplyTemplateAndSave(
                                    path,
                                    target,
@@ -956,7 +972,8 @@ begin
                                    template,
                                    xml,
                                    templateName,
-                                   xmlName);
+                                   xmlName,
+                                   mostRecentFileDate);
 
               // if the generation requested a perso target to be done
               // then generate it now. If we find a template file
@@ -973,6 +990,7 @@ begin
                     template.Clear
                   else
                     template.LoadFromFile(templateName);
+                  mostRecentFileDate := Max(mostRecentFileDate, FileDateToDateTime(FileAge(templateName)));
                 end;
 
                 ApplyTemplateAndSave(
@@ -985,7 +1003,8 @@ begin
                    template,
                    xml,
                    templateName,
-                   xmlName);
+                   xmlName,
+                   mostRecentFileDate);
               end;
             finally
               xml.Free;
