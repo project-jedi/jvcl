@@ -127,7 +127,7 @@ procedure HideFormCaption(FormHandle: THandle; Hide: boolean);
 // where @n = zero-based index of the applet to start (if there is more than one
 // m is the zero-based index of the tab to display
 procedure LaunchCpl(FileName: string);
-{$IFNDEF DelphiPersonalEdition}
+
 {
   GetControlPanelApplets retrieves information about all control panel applets in a specified folder.
   APath is the path to the folder to search and AMask is the filename mask (containing wildcards if necessary) to use.
@@ -152,7 +152,7 @@ function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; I
   The function returns true if any Control Panel Applets were found in AFilename (i.e if items were added to Strings)
 }
 function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
-{$ENDIF}
+
 
 // execute a program without waiting
 procedure Exec(FileName, Parameters, Directory: string);
@@ -312,7 +312,6 @@ function ExcludeTrailingPathDelimiter(const APath: string): string;
 implementation
 uses
   Forms, Registry, ExtCtrls,
-{$IFNDEF DelphiPersonalEdition}Cpl, {$ENDIF}
 {$IFDEF COMPILER6_UP}Types, {$ENDIF}MMSystem,
   ShlObj, CommCtrl,
   { jvcl} JvDirectories,
@@ -831,7 +830,43 @@ begin
   //  WinExec(PChar(RC_RunCpl + FileName), SW_SHOWNORMAL);
 end;
 
-{$IFNDEF DelphiPersonalEdition}
+// just enough to make our code tick without the cpl unit
+
+type
+  TCPLInfo = packed record
+     idIcon: Integer;  // icon resource id, provided by CPlApplet()
+     idName: Integer;  // name string res. id, provided by CPlApplet()
+     idInfo: Integer;  // info string res. id, provided by CPlApplet()
+     lData : Longint;  // user defined data
+  end;
+
+  TNewCPLInfoW = packed record
+    dwSize:        DWORD;   // similar to the commdlg
+    dwFlags:       DWORD;
+    dwHelpContext: DWORD;   // help context to use
+    lData:         Longint; // user defined data
+    hIcon:         HICON;   // icon to use, this is owned by CONTROL.EXE (may be deleted)
+    szName:        array[0..31] of WideChar;    // short name
+    szInfo:        array[0..63] of WideChar;    // long name (status line)
+    szHelpFile:    array[0..127] of WideChar;   // path to help file to use
+  end;
+  TNewCPLInfoA = packed record
+    dwSize:        DWORD;   // similar to the commdlg
+    dwFlags:       DWORD;
+    dwHelpContext: DWORD;   // help context to use
+    lData:         Longint; // user defined data
+    hIcon:         HICON;   // icon to use, this is owned by CONTROL.EXE (may be deleted)
+    szName:        array[0..31] of AnsiChar;    // short name
+    szInfo:        array[0..63] of AnsiChar;    // long name (status line)
+    szHelpFile:    array[0..127] of AnsiChar;   // path to help file to use
+  end;
+const
+  CPL_INIT = 1;
+  CPL_GETCOUNT = 2;
+  CPL_INQUIRE = 3;
+  CPL_EXIT = 7;
+  CPL_NEWINQUIRE = 8;
+
 resourcestring
   RC_CplAddress = 'CPlApplet';
 
@@ -933,7 +968,7 @@ begin
   SysUtils.FindClose(F);
   Result := Strings.Count > 0;
 end;
-{$ENDIF}
+
 
 procedure Exec(FileName, Parameters, Directory: string);
 var
