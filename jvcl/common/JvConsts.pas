@@ -29,7 +29,7 @@ unit JvConsts;
 interface
 
 uses
-  SysUtils, Controls, Graphics, Windows;
+  SysUtils, Classes, Controls, Graphics, Windows;
 
 {$IFDEF VisualCLX}
 const
@@ -246,6 +246,10 @@ const
 
 const
   SC_DRAGMOVE = $F012;
+
+const
+  KeyboardShiftStates = [ssShift, ssAlt, ssCtrl];
+  MouseShiftStates = [ssLeft, ssRight, ssMiddle, ssDouble];
 
 implementation
 

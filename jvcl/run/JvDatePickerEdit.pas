@@ -161,7 +161,7 @@ type
     procedure Loaded; override;
     procedure CreateWnd; override;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); override;
-    procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure CreatePopup; override;
     procedure HidePopup; override;
@@ -314,7 +314,7 @@ uses
   {$IFDEF COMPILER5}
   JvJCLUtils, // StrToXxxDef
   {$ENDIF COMPILER5}
-  JvTypes, JvResources;
+  JvConsts, JvTypes, JvResources;
 
 const
   DateMaskSuffix = '!;1;_';
@@ -766,7 +766,7 @@ begin
   Result := (NoDateText <> '');
 end;
 
-procedure TJvCustomDatePickerEdit.KeyDown(var AKey: Word; AShift: TShiftState);
+procedure TJvCustomDatePickerEdit.KeyDown(var Key: Word; Shift: TShiftState);
 var
   // Indicates whether FDeleting is set here from False to True.
   DeleteSetHere: Boolean;
@@ -779,12 +779,11 @@ begin
     RestoreMask;
   end;
 
-  if AllowNoDate and (ShortCut(AKey, AShift) = NoDateShortcut) then
-  begin
-    Date := 0;
-  end
+  if AllowNoDate and (ShortCut(Key, Shift) = NoDateShortcut) then
+    Date := 0
   else
-    case AKey of
+  if Shift * KeyboardShiftStates = [] then
+    case Key of
 //      VK_ESCAPE:
 //        begin
 //          CloseUp;
@@ -799,7 +798,7 @@ begin
           FDeleting := True;
         end;
     end;
-  inherited KeyDown(AKey, AShift);
+  inherited KeyDown(Key, Shift);
   FDeleting := FDeleting and not DeleteSetHere;
 end;
 

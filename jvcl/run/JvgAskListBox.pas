@@ -21,6 +21,14 @@ Rob den Braasem [rbraasem att xs4all dott nl]
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  ListBox-based component  that  provides  convenient  interface  for
+  realization of the different  tests for users.  Component  is  very
+  useful during setup and install processes.
+  Items  captions align in one of 9 positions.  Component can display
+  glyphs on own items and fill background  with  bitmap.  You can set
+  different fonts  for  selected  item  and  for  other  list  items.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
@@ -30,14 +38,6 @@ unit JvgAskListBox;
 {$I jvcl.inc}
 
 interface
-
-{ ListBox-based component  that provides  convenient  interface  for
- realization of the different  tests for users.  Component  is  very
- useful during setup and install processes.
- Items  captions align in one of 9 positions.  Component can display
- glyphs on own items and fill background  with  bitmap.  You can set
- different fonts  for  selected  item  and  for  other  list  items.
-}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
@@ -78,7 +78,6 @@ type
     FButtons: TStringList;
     FButtonWidth: Word;
     FOptions: TglAskLBOptions;
-    //'''''''''''''''''''''''''''''''''''''''''
     WallpaperBmp: TBitmap;
     TmpBitmap: TBitmap;
     BtnRect: TRect;

@@ -490,11 +490,8 @@ type
     FImageChangeLink: TChangeLink;
     FFlushing: Boolean;
     FDestroying: Boolean;
-
     FSchedBatch: TStringList;
-
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-
     procedure ConnectControl(ApptCtrl: TJvTFControl);
     procedure DisconnectControl(ApptCtrl: TJvTFControl);
     procedure ConnectComponent(Comp: TJvTFComponent);
@@ -662,12 +659,9 @@ type
     constructor Create(AOwner: TJvTFControl);
     procedure Assign(Source: TPersistent); override;
   published
-    property HintColor: TColor read FHintColor write SetHintColor
-      default clDefault;
-    property HintHidePause: Integer read FHintHidePause write SetHintHidePause
-      default -1;
-    property HintPause: Integer read FHintPause write SetHintPause
-      default -1;
+    property HintColor: TColor read FHintColor write SetHintColor default clDefault;
+    property HintHidePause: Integer read FHintHidePause write SetHintHidePause default -1;
+    property HintPause: Integer read FHintPause write SetHintPause default -1;
   end;
 
   TJvTFHintType = (shtAppt, shtStartEnd, shtCell, shtObj);
@@ -727,7 +721,7 @@ type
     property RefProps: TJvTFHintProps read FRefProps write FRefProps;
   end;
 
-  TJvTFDragInfo = class
+  TJvTFDragInfo = class(TObject)
   private
     FApptCtrl: TJvTFControl;
     FSchedule: TJvTFSched;
@@ -742,9 +736,9 @@ type
 
   {$IFDEF USEJVCL}
   TJvTFComponent = class(TJvComponent)
-    {$ELSE}
+  {$ELSE}
   TJvTFComponent = class(TComponent)
-    {$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
   private
     FScheduleManager: TJvTFScheduleManager;
     FSchedules: TStringList;
@@ -785,9 +779,9 @@ type
 
   {$IFDEF USEJVCL}
   TJvTFControl = class(TJvCustomControl)
-    {$ELSE}
+  {$ELSE}
   TJvTFControl = class(TCustomControl)
-    {$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
   private
     FScheduleManager: TJvTFScheduleManager;
     FSchedules: TStringList;
@@ -906,7 +900,6 @@ type
     FPageCount: Integer; // NOTE: SEE GetPageCount !!
     FConvertingProps: Boolean;
     FAborted: Boolean;
-
     procedure SetMarginOffset(Index: Integer; Value: Integer); // always in pixels
     function GetMarginOffset(Index: Integer): Integer; // always in pixels
     function GetUnprintable: TJvTFMargins; // always in pixels
@@ -1001,9 +994,7 @@ type
     FDWN_Thursday: string;
     FDWN_Friday: string;
     FDWN_Saturday: string;
-
     FOnChange: TNotifyEvent;
-
     procedure SetDWN(Index: Integer; const Value: string);
     function GetDWN(Index: Integer): string;
     procedure SetSource(Value: TJvTFDWNameSource);
@@ -1014,8 +1005,7 @@ type
     procedure Assign(Source: TPersistent); override;
     function GetDWName(DWIndex: Integer): string;
   published
-    property Source: TJvTFDWNameSource read FSource write SetSource
-      default dwnsSysShort;
+    property Source: TJvTFDWNameSource read FSource write SetSource default dwnsSysShort;
     property DWN_Sunday: string index 1 read GetDWN write SetDWN;
     property DWN_Monday: string index 2 read GetDWN write SetDWN;
     property DWN_Tuesday: string index 3 read GetDWN write SetDWN;
@@ -1061,10 +1051,10 @@ uses
   {$ENDIF USEJVCL}
   {$IFDEF VisualCLX}
   QDialogs, QForms;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
-Dialogs, Forms;
-{$ENDIF VCL}
+  {$ENDIF VisualCLX}
+  {$IFDEF VCL}
+  Dialogs, Forms;
+  {$ENDIF VCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -1107,7 +1097,7 @@ resourcestring
     'because aPrinter must be assigned';
   RsEInvalidFooterHeightd = 'Invalid Footer Height (%d)';
   RsEInvalidHeaderHeightd = 'Invalid Header Height (%d)';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 function AdjustEndTime(ATime: TTime): TTime;
 begin

@@ -759,7 +759,7 @@ resourcestring
   RsECellCannotBeSplit = 'Cell cannot be split';
   RsEASubcellCannotBeSplit = 'A subcell cannot be split';
   RsGlanceMainTitle = '(Title)';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== { TJvTFGlanceCell } ====================================================
 

@@ -473,7 +473,7 @@ procedure TJvImageListItem.SetKind(AKind: TJvImageListItemKind);
 begin
   // (usc) remove when MappedResourceBitmap support is finished
   if AKind = ikMappedResourceBitmap then
-    raise EJvImageListError.CreateFmt(RsNotSupportedItemKind, ['ikMappedResourceBitmap']);
+    raise EJvImageListError.CreateResFmt(@RsNotSupportedItemKind, ['ikMappedResourceBitmap']);
 
   if FKind <> AKind then
   begin

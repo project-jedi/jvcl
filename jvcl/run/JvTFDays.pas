@@ -1777,7 +1777,7 @@ resourcestring
   RsEAnotherTimeBlockWithTheName = 'Another time block with the name ' +
     '"%s" already exists';
   RsEATimeBlockWithTheNamesDoesNotExist = 'A time block with the name "%s" does not exist';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //Type
   // DEF TIMEBLOCK (not conditionally compiled, just marked for reference)

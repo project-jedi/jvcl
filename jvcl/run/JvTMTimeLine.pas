@@ -45,11 +45,6 @@ uses
   {$ENDIF BCB}
   JvComponent, JvExControls;
 
-{$IFDEF VisualCLX}
-resourcestring
-  SInvalidImage = 'Invalid Image';
-{$ENDIF VisualCLX}
-
 type
   TJvTLSelFrame = class(TPersistent)
   private
@@ -345,6 +340,11 @@ uses
 {$IFDEF LINUX}
 {$R ../Resources/JvTMTimeLine.res}
 {$ENDIF LINUX}
+
+{$IFDEF VisualCLX}
+resourcestring
+  SInvalidImage = 'Invalid Image';
+{$ENDIF VisualCLX}
 
 const
   cMagic = 'Jv.TMTIMELINE1';

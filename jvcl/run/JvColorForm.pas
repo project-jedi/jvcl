@@ -99,8 +99,8 @@ type
 implementation
 
 uses
-  ExtCtrls, 
-  JvColorButton;
+  ExtCtrls,
+  JvConsts, JvColorButton;
 
 constructor TJvColorForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
@@ -245,7 +245,7 @@ end;
 procedure TJvColorForm.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then
+  if (Key = VK_ESCAPE) and (Shift * KeyboardShiftStates = []) then
   begin
     Hide;
     ModalResult := mrCancel;
