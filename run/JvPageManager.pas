@@ -32,10 +32,10 @@ interface
 uses
   {$IFDEF VCL}
   Controls, Forms, StdCtrls, ExtCtrls, ActnList,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QForms, QStdCtrls, QExtCtrls, QActnList,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 type
@@ -327,9 +327,7 @@ begin
   if DestroyHandles then
     DormantPages;
   if (FPageOwner <> nil) and (FPageHistory.Count = 0) then
-  begin
     FPageHistory.AddPageIndex(FPageOwner.PageIndex);
-  end;
   CheckBtnEnabled;
 end;
 
@@ -425,9 +423,7 @@ var
 begin
   inherited GetChildren(Proc, Root);
   for I := 0 to FPageProxies.Count - 1 do
-  begin
     Proc(TJvPageProxy(FPageProxies.Items[I]));
-  end;
 end;
 
 procedure TJvPageManager.SetDestroyHandles(Value: Boolean);
@@ -462,6 +458,7 @@ end;
 
 procedure TJvPageManager.SetPageProxies(Value: TList);
 begin
+  // without this method the ObjectInspector will not show the property  
 end;
 
 function TJvPageManager.GetProxyIndex(const PageName: string): Integer;
@@ -519,9 +516,7 @@ begin
   begin
     Index := GetProxyIndex(PageNames[I]);
     if Index <> -1 then
-    begin
       FPageProxies.Move(Index, I);
-    end;
   end;
 end;
 
@@ -553,18 +548,14 @@ function TJvPageManager.GetPageCount: Integer;
 begin
   Result := 0;
   if FPageOwner <> nil then
-  begin
     Result := FPageOwner.Pages.Count;
-  end;
 end;
 
 function TJvPageManager.GetPageName(Index: Integer): string;
 begin
   Result := '';
   if (FPageOwner <> nil) and (Index < PageCount) then
-  begin
     Result := FPageOwner.Pages[Index];
-  end;
 end;
 
 function TJvPageManager.FindFreePage: string;
@@ -687,9 +678,7 @@ var
 begin
   ProxyIndex := GetProxyIndex(PageOwner.Pages.Strings[Page]);
   if ProxyIndex <> PageNull then
-  begin
     TJvPageProxy(FPageProxies.Items[ProxyIndex]).PageLeave(Next);
-  end;
 end;
 
 procedure TJvPageManager.PageShow(Page: Integer; Next: Boolean);
@@ -698,9 +687,7 @@ var
 begin
   ProxyIndex := GetProxyIndex(PageOwner.Pages.Strings[Page]);
   if ProxyIndex <> PageNull then
-  begin
     TJvPageProxy(FPageProxies.Items[ProxyIndex]).PageShow(Next);
-  end;
 end;
 
 procedure TJvPageManager.PageHide(Page: Integer; Next: Boolean);
@@ -709,9 +696,7 @@ var
 begin
   ProxyIndex := GetProxyIndex(PageOwner.Pages.Strings[Page]);
   if ProxyIndex <> PageNull then
-  begin
     TJvPageProxy(FPageProxies.Items[ProxyIndex]).PageHide(Next);
-  end;
 end;
 
 procedure TJvPageManager.PageChanged;
@@ -843,9 +828,7 @@ begin
   if Value < FHistoryCapacity then
   begin
     for I := 0 to Count - Value do
-    begin
       DeleteHistoryItem(0);
-    end;
   end;
   FHistoryCapacity := Value;
 end;
@@ -861,13 +844,9 @@ var
   Item: TJvPageHistoryItem;
 begin
   for I := Count - 1 downto Current + 1 do
-  begin
     DeleteHistoryItem(I);
-  end;
   for I := 0 to Count - HistoryCapacity do
-  begin
     DeleteHistoryItem(0);
-  end;
   if Count < HistoryCapacity then
   begin
     Item := TJvPageHistoryItem.Create;
@@ -896,9 +875,7 @@ var
   I: Integer;
 begin
   for I := Count - 1 downto 0 do
-  begin
     DeleteHistoryItem(I);
-  end;
 end;
 
 end.

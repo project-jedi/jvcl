@@ -37,7 +37,12 @@ unit JvMouseTimer;
 interface
 
 uses
-  Controls;
+  {$IFDEF VCL}
+  Windows, Controls, ExtCtrls,
+  {$ELSE}
+  Types, QWindows, QControls, QExtCtrls,
+  {$ENDIF VCL}
+  SysUtils;
 
 type
   IMouseTimer = interface
@@ -50,14 +55,13 @@ function MouseTimer: IMouseTimer;
 
 implementation
 
-uses
-  Windows, SysUtils, ExtCtrls;
-
 type
+  TOpenControl = class(TControl);
+
   TJvMouseTimer = class(TInterfacedObject, IMouseTimer)
   private
     FTimer: TTimer;
-    FCurrentControl: TControl;
+    FCurrentControl: TOpenControl;
     procedure TimerTick(Sender: TObject);
   protected
     { Methods of the IMouseTimer interface }
@@ -100,11 +104,15 @@ begin
   FTimer.Enabled := False;
   if FCurrentControl <> nil then
   try
+    {$IFDEF VCL}
     FCurrentControl.Perform(CM_MOUSELEAVE, 0, 0);
+    {$ELSE}
+    FCurrentControl.MouseLeave(FCurrentControl);
+    {$ENDIF VCL}
   except
     { Ignore exception in case control has been destroyed already }
   end;
-  FCurrentControl := AControl;
+  FCurrentControl := TOpenControl(AControl);
   if FCurrentControl <> nil then
     FTimer.Enabled := True;
 end;
@@ -135,7 +143,11 @@ begin
       if Assigned(FCurrentControl.Parent) then
         MapWindowPoints(FCurrentControl.Parent.Handle, HWND_DESKTOP, R, 2);
       if not PtInRect(R, Pt) then
+        {$IFDEF VCL}
         FCurrentControl.Perform(CM_MOUSELEAVE, 0, 0);
+        {$ELSE}
+        FCurrentControl.MouseLeave(FCurrentControl);
+        {$ENDIF VCL}
     end;
   except
     Detach(FCurrentControl);

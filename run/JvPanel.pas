@@ -35,7 +35,13 @@ unit JvPanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QWindows, QGraphics, QControls, QForms, QExtCtrls,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JVCLVer, JvThemes, JvComponent;
 
 type
@@ -83,8 +89,6 @@ type
   private
     FHintColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     FTransparent: Boolean;
@@ -126,12 +130,16 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
-    procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
     procedure AdjustSize; override;
+    {$IFDEF VCL}
+    procedure CreateParams(var Params: TCreateParams); override;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    {$ELSE}
+    procedure BoundsChanged; override;
+    {$ENDIF VCL}
+    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
 
     procedure Loaded; override;
     procedure Resize; override;
@@ -150,7 +158,9 @@ type
     property ArrangeWidth: Integer read FArrangeWidth;
     property ArrangeHeight: Integer read FArrangeHeight;
 
+    {$IFDEF VCL}
     property DockManager;
+    {$ENDIF VCL}
   published
     property Sizeable: Boolean read FSizeable write SetSizeable default False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
@@ -159,8 +169,8 @@ type
     property MultiLine: Boolean read FMultiLine write SetMultiLine;
     property FlatBorder: Boolean read FFlatBorder write SetFlatBorder default False;
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor default clBtnShadow;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
 
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
@@ -171,29 +181,38 @@ type
     property Align;
     property Alignment;
     property Anchors;
+    {$IFDEF VCL}
     property AutoSize;
+    property BiDiMode;
+    property UseDockManager default True;
+    property DockSite;
+    property DragCursor;
+    property DragKind;
+    property FullRepaint;
+    property Locked;
+    property ParentBiDiMode;
+    property OnCanResize;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnEndDock;
+    property OnGetSiteInfo;
+    property OnStartDock;
+    property OnUnDock;
+    {$ENDIF VCL}
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
-    property BiDiMode;
     property BorderWidth;
     property BorderStyle;
     property Caption;
     property Color;
     property Constraints;
-    property UseDockManager default True;
-    property DockSite;
-    property DragCursor;
-    property DragKind;
     property DragMode;
     property Enabled;
-    property FullRepaint;
     property Font;
-    property Locked;
-    property ParentBiDiMode;
-    {$IFDEF COMPILER7_UP}
+    {$IFDEF JVCLThemesEnabled}
     property ParentBackground;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -202,28 +221,20 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
-    property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
-    property OnDockDrop;
-    property OnDockOver;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnGetSiteInfo;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
-    property OnStartDock;
     property OnStartDrag;
-    property OnUnDock;
-
   end;
 
 implementation
@@ -307,7 +318,6 @@ begin
   end;
 end;
 
-
 procedure TJvArrangeSettings.Assign(Source: TPersistent);
 var A: TJvArrangeSettings;
 begin
@@ -358,6 +368,7 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF VCL}
 procedure TJvPanel.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -374,6 +385,7 @@ begin
     ControlStyle := ControlStyle + [csOpaque];
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvPanel.Paint;
 var
@@ -388,14 +400,18 @@ begin
   if FFlatBorder then
   begin
     Canvas.Brush.Color := FFlatBorderColor;
+    {$IFDEF VCL}
     Canvas.FrameRect(ClientRect);
+    {$ELSE}
+    FrameRect(Canvas, ClientRect);
+    {$ENDIF VCL}
     Canvas.Brush.Color := Color;
   end
   else
     DrawBorders;
   Self.DrawCaption;
   if Sizeable then
-  {$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
     begin
       ThemeServices.DrawElement(Canvas.Handle, ThemeServices.GetElementDetails(tsGripper),
@@ -404,7 +420,7 @@ begin
              ClientWidth - BevelWidth - 2, ClientHeight - BevelWidth - 2));
     end
     else
-  {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     with Canvas do
     begin
       Font.Name := 'Marlett';
@@ -416,7 +432,11 @@ begin
       X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
       Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
       if Transparent then
+        {$IFDEF VCL}
         SetBkMode(Handle, Windows.TRANSPARENT);
+        {$ELSE}
+        SetBkMode(Handle, QWindows.TRANSPARENT);
+        {$ENDIF VCL}
       TextOut(X, Y, 'o');
     end;
 end;
@@ -426,7 +446,7 @@ begin
   inherited AdjustSize;
   if Transparent then
   begin
-   // (andreas) That is the only way to draw the border of the contained control.
+   // (ahuser) That is the only way to draw the border of the contained control.
     Width := Width + 1;
     Width := Width - 1;
   end;
@@ -477,7 +497,11 @@ begin
   begin
     if Caption <> '' then
     begin
+      {$IFDEF VCL}
       SetBkMode(Handle, Windows.TRANSPARENT);
+      {$ELSE}
+      SetBkMode(Handle, QWindows.TRANSPARENT);
+      {$ENDIF VCL}
       Font := Self.Font;
       ATextRect := GetClientRect;
       InflateRect(ATextRect, -BorderWidth, -BorderWidth);
@@ -490,7 +514,11 @@ begin
       Flags := DT_EXPANDTABS or WordWrap[MultiLine] or Alignments[Alignment];
       Flags := DrawTextBiDiModeFlags(Flags);
       //calculate required rectangle size
+      {$IFDEF VCL}
       DrawText(Canvas.Handle, PChar(Caption), -1, ATextRect, Flags or DT_CALCRECT);
+      {$ELSE}
+      DrawTextW(Canvas.Handle, PWideChar(Caption), -1, ATextRect, Flags or DT_CALCRECT);
+      {$ENDIF VCL}
       // adjust the rectangle placement
       OffsetRect(ATextRect, 0, -ATextRect.Top + (Height - (ATextRect.Bottom - ATextRect.Top)) div 2);
       case Alignment of
@@ -503,9 +531,15 @@ begin
       if not Enabled then
         Font.Color := clGrayText;
       //draw text
+      {$IFDEF VCL}
       if Transparent then
         SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
       DrawText(Canvas.Handle, PChar(Caption), -1, ATextRect, Flags);
+      {$ELSE}
+      if Transparent then
+        SetBkMode(Canvas.Handle, QWindows.TRANSPARENT);
+      DrawTextW(Canvas.Handle, PWideChar(Caption), -1, ATextRect, Flags);
+      {$ENDIF VCL}
     end;
   end;
 end;
@@ -533,14 +567,12 @@ begin
       Color := HotColor;
       MouseTimer.Attach(Self);
     end;
+    inherited MouseEnter(Control);
   end;
-  inherited MouseEnter(Control);
 end;
 
 procedure TJvPanel.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
@@ -550,8 +582,8 @@ begin
       Color := FOldColor;
       MouseTimer.Detach(Self);
     end;
+    inherited MouseLeave(Control);
   end;
-  inherited MouseLeave(Control);
 end;
 
 procedure TJvPanel.SetTransparent(const Value: Boolean);
@@ -559,7 +591,12 @@ begin
   if Value <> FTransparent then
   begin
     FTransparent := Value;
+    {$IFDEF VCL}
     RecreateWnd;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Masked := FTransparent;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -581,6 +618,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvPanel.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   if Transparent then
@@ -588,8 +626,9 @@ begin
   else
     inherited;
 end;
+{$ENDIF VCL}
 
-procedure TJvPanel.CMDenySubClassing(var Msg: TMessage);
+procedure TJvPanel.CMDenySubClassing(var Msg: TCMDenySubClassing);
 begin
   Msg.Result := 1; 
 end;
@@ -614,7 +653,7 @@ begin
 {  if Transparent and Visible and Assigned(Parent) and Parent.HandleAllocated and HandleAllocated then
     RedrawWindow(Parent.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or RDW_INVALIDATE
       or RDW_ERASENOW or RDW_UPDATENOW or RDW_ALLCHILDREN); }
-  inherited;
+  inherited Invalidate;
 end;
 
 procedure TJvPanel.SetHotColor(const Value: TColor);
@@ -700,7 +739,11 @@ begin
   if Transparent then Invalidate;
 end;
 
+{$IFDEF VCL}
 procedure TJvPanel.WMSize(var Message: TWMSize);
+{$ELSE}
+procedure TJvPanel.BoundsChanged;
+{$ENDIF VCL}
 begin
   inherited;
   if FArrangeSettings.AutoArrange then
@@ -711,7 +754,7 @@ procedure TJvPanel.Resize;
 begin
   if FArrangeSettings.AutoArrange then
     ArrangeControls;
-  inherited;
+  inherited Resize;
 end;
 
 procedure TJvPanel.EnableArrange;
@@ -849,7 +892,11 @@ begin
     FArrangeWidth := ControlMaxX + 2 * FArrangeSettings.BorderLeft;
     FArrangeHeight := ControlMaxY + 2 * FArrangeSettings.BorderTop;
     if OldHeight <> Height then
+      {$IFDEF VCL}
       SendMessage(GetFocus, WM_PAINT, 0, 0);
+      {$ELSE}
+      UpdateWindow(GetFocus);
+      {$ENDIF VCL}
   finally
     FArrangeControlActive := False;
   end;

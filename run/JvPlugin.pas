@@ -38,7 +38,13 @@ unit JvPlugin;
 interface
 
 uses
-  SysUtils, Forms, Classes, Graphics;
+  SysUtils,
+  {$IFDEF VCL}
+  Forms, Graphics,
+  {$ELSE}
+  QForms, QGraphics,
+  {$ENDIF VCL}
+  Classes;
 
 type
   TPluginMessageEvent = procedure(Sender: TObject; APluginMessage: Longint; AMessageText: string) of object;

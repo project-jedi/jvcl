@@ -76,7 +76,16 @@ unit JvPluginManager;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics,
+  {$IFDEF MSWINDOWS}
+  Windows,           // (ahuser) do not move to VCL
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  Graphics, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QWindows, QGraphics, QForms,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JvComponent, JvPlugin; // reduced to the min
 
 const
@@ -176,10 +185,9 @@ type
 implementation
 
 uses
-  Forms,
   {$IFNDEF COMPILER6_UP}
   JvJCLUtils, // for IncludeTrailingPathDelimiter (only <D6)
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvResources;
 
 const

@@ -31,8 +31,13 @@ unit JvPageScroller;
 interface
 
 uses
-  SysUtils, Classes,
+  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ComCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QComCtrls,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JVCLVer, JvExComCtrls;
 
 type
@@ -83,20 +88,18 @@ begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     FOver := True;
+    inherited MouseEnter(AControl);
   end;
-  inherited MouseEnter(AControl);
 end;
 
 procedure TJvPageScroller.MouseLeave(AControl: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     FOver := False;
     Application.HintColor := FSaved;
+    inherited MouseLeave(AControl);
   end;
-  inherited MouseLeave(AControl);
 end;
 
 procedure TJvPageScroller.ParentColorChanged;
