@@ -140,12 +140,15 @@ var
   var
     I, J: Integer;
   begin
-    for I := 0 to Elem.Items.Count - 1 do
-    begin
-      J := Elem.Items[I].Properties.IntValue('Index', MaxInt);
-      if J < TStrings(Obj).Count then
-        TStrings(Obj).Strings[J] := Elem.Items[I].Properties.Value('Value');
-    end;
+    if (Elem.Items.Count > 0) and (Elem.Items[0] is TJvSimpleXmlElemCData) then
+      TStrings(obj).Text := Elem.Items[0].Value
+    else
+      for I := 0 to Elem.Items.Count - 1 do
+      begin
+        J := Elem.Items[I].Properties.IntValue('Index', MaxInt);
+        if J < TStrings(Obj).Count then
+          TStrings(Obj).Strings[J] := Elem.Items[I].Properties.Value('Value');
+      end;
   end;
 
   procedure TransTreeNodes(const Obj: TObject; const Elem: TJvSimpleXmlElem);
