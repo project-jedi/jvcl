@@ -70,6 +70,14 @@ resourcestring
   RsPasteItem = 'E&infügen';
   RsDeleteItem = '&Löschen';
   RsSelectAllItem = 'Alles &markieren';
+
+  DUTCH:
+  RsUndoItem = '&Ongedaan maken';
+  RsCutItem = 'K&nippen';
+  RsCopyItem = '&Kopiëren';
+  RsPasteItem = '&Plakken';
+  RsDeleteItem = '&Wissen';
+  RsSelectAllItem = '&Alles selecteren';
   }
 
   RsEmptyItem = '<Empty>';
@@ -1659,7 +1667,8 @@ resourcestring
   RsClSkyBlue = 'Sky blue';
   RsClCream = 'Cream';
   RsClMedGray = 'Medium gray';
-
+  {$IFDEF VCL}
+  // windows system colors
   RsClScrollBar = 'Scrollbar';
   RsClBackground = 'Desktop background';
   RsClActiveCaption = 'Active window title bar';
@@ -1685,6 +1694,73 @@ resourcestring
   RsCl3DLight = 'Highlight 3D elements';
   RsClInfoText = 'Tooltip text';
   RsClInfoBk = 'Tooltip background';
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+// VisualCLX system colors
+  RsClText = 'Edit text';
+  RsClForeground = 'Window text';
+  RsClBrightText = 'Bright text';
+  RsClButtonText = 'Button text';
+  RsClHighlightedText = 'Selection text';
+  RsClHighlight = 'Selection background';
+  RsClBackground = 'Window background';
+  RsClBase = 'Edit background';
+  RsClLight = 'Light 3D elements';
+  RsClMidlight = 'Medium Light 3D elements';
+  RsClButton = 'Button face';
+  RsClMid  = 'Light Shadow 3D elements';
+  RsClShadow = 'Shadow 3D elements';
+  RsClDark = 'Dark Shadow 3D elements';
+
+  RsClNormalText ='Normal edit text';
+  RsClNormalForeground ='Normal window text';
+  RsClNormalBrightText ='Normal bright text';
+  RsClNormalButtonText ='Normal button text';
+  RsClNormalHighlightedText ='Normal selection text';
+  RsClNormalHighlight ='Normal selection background';
+  RsClNormalBackground ='Normal window background';
+  RsClNormalBase ='Normal edit background';
+  RsClNormalLight ='Normal light 3D elements';
+  RsClNormalMidlight ='Normal medium light 3D elements';
+  RsClNormalButton ='Normal button face';
+  RsClNormalMid  ='Normal light shadow 3D elements';
+  RsClNormalShadow ='Normal shadow 3D elements';
+  RsClNormalDark ='Normal dark shadow 3D elements';
+
+  RsClDisabledText ='Disabled edit text';
+  RsClDisabledForeground ='Disabled window text';
+  RsClDisabledBrightText ='Disabled bright text';
+  RsClDisabledButtonText ='Disabled button text';
+  RsClDisabledHighlightedText ='Disabled selection text';
+  RsClDisabledHighlight ='Disabled selection background';
+  RsClDisabledBackground ='Disabled window background';
+  RsClDisabledBase ='Disabled edit background';
+  RsClDisabledLight ='Disabled light 3D elements';
+  RsClDisabledMidlight ='Disabled medium light 3D elements';
+  RsClDisabledButton ='Disabled button face';
+  RsClDisabledMid  ='Disabled light shadow 3D elements';
+  RsClDisabledShadow ='Disabled shadow 3D elements';
+  RsClDisabledDark ='Disabled dark shadow 3D elements';
+
+  RsClActiveText ='Active edit text';
+  RsClActiveForeground ='Active window text';
+  RsClActiveBrightText ='Active bright text';
+  RsClActiveButtonText ='Active button text';
+  RsClActiveHighlightedText ='Active selection text';
+  RsClActiveHighlight ='Active selection background';
+  RsClActiveBackground ='Active window background';
+  RsClActiveBase ='Active edit background';
+  RsClActiveLight ='Active light 3D elements';
+  RsClActiveMidlight ='Active medium light 3D elements';
+  RsClActiveButton ='Active button face';
+  RsClActiveMid  ='Active light shadow 3D elements';
+  RsClActiveShadow ='Active shadow 3D elements';
+  RsClActiveDark ='Active dark shadow 3D elements';
+  // non standard colors introduced in QWindows.pas
+  RsClDesktop = 'Desktop background';
+  RsClInfoBk = 'Tooltip background';
+  {$ENDIF VisualCLX}
+
 
 //=== JvUrlListGrabber.pas ===================================================
 resourcestring

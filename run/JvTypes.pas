@@ -39,7 +39,7 @@ uses
   Windows, Messages, Controls, Forms, Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QTypes, Types, QControls, QForms, QGraphics,
+  Qt, QTypes, Types, QControls, QForms, QGraphics, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvConsts, JvResources;
@@ -96,56 +96,15 @@ type
     Result: Longint;
   end;
 
-  {$IFDEF VisualCLX}
-
-  //  HWND = QWidgetH;
-  HCURSOR = QCursorH;
-  TControlClass = class of TControl;
-
-  TMinMaxInfo = packed record
-    ptReserved: TPoint;
-    ptMaxSize: TPoint;
-    ptMaxPosition: TPoint;
-    ptMinTrackSize: TPoint;
-    ptMaxTrackSize: TPoint;
-  end;
-
-  PWindowPlacement = ^TWindowPlacement;
-  TWindowPlacement = packed record
-    length: Cardinal;
-    flags: Integer;
-    showCmd: Integer; // SW_Xxx
-    ptMinPosition: TPoint;
-    ptMaxPosition: TPoint;
-    rcNormalPosition: TRect;
-  end;
-
-  TTime = TDateTime;
-  TDate = TDateTime;
-
-  TRGBQuad = packed record
-    rgbBlue: Byte;
-    rgbGreen: Byte;
-    rgbRed: Byte;
-    rgbReserved: Byte;
-  end;
-
-  TRGBTriple = packed record
-    rgbtBlue: Byte;
-    rgbtGreen: Byte;
-    rgbtRed: Byte;
-  end;
-
-  TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit
-
-  {$ELSE}
-
+  {$IFDEF VCL}
   TJvRGBTriple = packed record
     rgbBlue: Byte;
     rgbGreen: Byte;
     rgbRed: Byte;
   end;
-
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit
   {$ENDIF VisualCLX}
 
   PJvRGBArray = ^TJvRGBArray;
@@ -353,7 +312,12 @@ type
 
 const
   ColCount = 20;
+  {$IFDEF VCL}
   SysColCount = 25;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  SysColCount = 58;
+  {$ENDIF VisualCLX}
   ColorValues: array [0 .. ColCount - 1] of TDefColorItem = (
     (Value: clBlack;      Constant: 'clBlack';      Description: RsClBlack),
     (Value: clMaroon;     Constant: 'clMaroon';     Description: RsClMaroon),
@@ -374,10 +338,11 @@ const
     (Value: clMoneyGreen; Constant: 'clMoneyGreen'; Description: RsClMoneyGreen),
     (Value: clSkyBlue;    Constant: 'clSkyBlue';    Description: RsClSkyBlue),
     (Value: clCream;      Constant: 'clCream';      Description: RsClCream),
-    (Value: clMedGray;    Constant: 'clMedGray';    Description: RsClMedGray)   
+    (Value: clMedGray;    Constant: 'clMedGray';    Description: RsClMedGray)
   );
 
   SysColorValues: array [0 .. SysColCount - 1] of TDefColorItem = (
+  {$IFDEF VCL}
     (Value: clScrollBar;           Constant: 'clScrollBar';           Description: RsClScrollBar),
     (Value: clBackground;          Constant: 'clBackground';          Description: RsClBackground),
     (Value: clActiveCaption;       Constant: 'clActiveCaption';       Description: RsClActiveCaption),
@@ -402,7 +367,73 @@ const
     (Value: cl3DDkShadow;          Constant: 'cl3DDkShadow';          Description: RsCl3DDkShadow),
     (Value: cl3DLight;             Constant: 'cl3DLight';             Description: RsCl3DLight),
     (Value: clInfoText;            Constant: 'clInfoText';            Description: RsClInfoText),
-    (Value: clInfoBk;              Constant: 'clInfoBk';              Description: RsClInfoBk)             
+    (Value: clInfoBk;              Constant: 'clInfoBk';              Description: RsClInfoBk)
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+    (Value: clForeground;              Constant: 'clForeground';              Description: RsClForeground),
+    (Value: clButton;                  Constant: 'clButton';                  Description: RsClButton),
+    (Value: clLight;                   Constant: 'clLight';                   Description: RsClLight),
+    (Value: clMidlight;                Constant: 'clMidlight';                Description: RsClMidlight),
+    (Value: clDark;                    Constant: 'clDark';                    Description: RsClDark),
+    (Value: clMid;                     Constant: 'clMid';                     Description: RsClMid),
+    (Value: clText;                    Constant: 'clText';                    Description: RsClText),
+    (Value: clBrightText;              Constant: 'clBrightText';              Description: RsClBrightText),
+    (Value: clButtonText;              Constant: 'clButtonText';              Description: RsClButtonText),
+    (Value: clBase;                    Constant: 'clBase';                    Description: RsClBase),
+    (Value: clBackground;              Constant: 'clBackground';              Description: RsClBackground),
+    (Value: clShadow;                  Constant: 'clShadow';                  Description: RsClShadow),
+    (Value: clHighlight;               Constant: 'clHighlight';               Description: RsClHighlight),
+    (Value: clHighlightedText;         Constant: 'clHighlightedText';         Description: RsClHighlightedText),
+
+    (Value: clNormalForeground;        Constant: 'clNormalForeground';        Description: RsClNormalForeground),
+    (Value: clNormalButton;            Constant: 'clNormalButton';            Description: RsClNormalButton),
+    (Value: clNormalLight;             Constant: 'clNormalLight';             Description: RsClNormalLight),
+    (Value: clNormalMidlight;          Constant: 'clNormalMidlight';          Description: RsClNormalMidlight),
+    (Value: clNormalDark;              Constant: 'clNormalDark';              Description: RsClNormalDark),
+    (Value: clNormalMid;               Constant: 'clNormalMid';               Description: RsClNormalMid),
+    (Value: clNormalText;              Constant: 'clNormalText';              Description: RsClNormalText),
+    (Value: clNormalBrightText;        Constant: 'clNormalBrightText';        Description: RsClNormalBrightText),
+    (Value: clNormalButtonText;        Constant: 'clNormalButtonText';        Description: RsClNormalButtonText),
+    (Value: clNormalBase;              Constant: 'clNormalBase';              Description: RsClNormalBase),
+    (Value: clNormalBackground;        Constant: 'clNormalBackground';        Description: RsClNormalBackground),
+    (Value: clNormalShadow;            Constant: 'clNormalShadow';            Description: RsClNormalShadow),
+    (Value: clNormalHighlight;         Constant: 'clNormalHighlight';         Description: RsClNormalHighlight),
+    (Value: clNormalHighlightedText;   Constant: 'clNormalHighlightedText';   Description: RsClNormalHighlightedText),
+
+    (Value: clActiveForeground;        Constant: 'clActiveForeground';        Description: RsClActiveForeground),
+    (Value: clActiveButton;            Constant: 'clActiveButton';            Description: RsClActiveButton),
+    (Value: clActiveLight;             Constant: 'clActiveLight';             Description: RsClActiveLight),
+    (Value: clActiveMidlight;          Constant: 'clActiveMidlight';          Description: RsClActiveMidlight),
+    (Value: clActiveDark;              Constant: 'clActiveDark';              Description: RsClActiveDark),
+    (Value: clActiveMid;               Constant: 'clActiveMid';               Description: RsClActiveMid),
+    (Value: clActiveText;              Constant: 'clActiveText';              Description: RsClActiveText),
+    (Value: clActiveBrightText;        Constant: 'clActiveBrightText';        Description: RsClActiveBrightText),
+    (Value: clActiveButtonText;        Constant: 'clActiveButtonText';        Description: RsClActiveButtonText),
+    (Value: clActiveBase;              Constant: 'clActiveBase';              Description: RsClActiveBase),
+    (Value: clActiveBackground;        Constant: 'clActiveBackground';        Description: RsClActiveBackground),
+    (Value: clActiveShadow;            Constant: 'clActiveShadow';            Description: RsClActiveShadow),
+    (Value: clActiveHighlight;         Constant: 'clActiveHighlight';         Description: RsClActiveHighlight),
+    (Value: clActiveHighlightedText;   Constant: 'clActiveHighlightedText';   Description: RsClActiveHighlightedText),
+
+    (Value: clDisabledForeground;      Constant: 'clDisabledForeground';      Description: RsClDisabledForeground),
+    (Value: clDisabledButton;          Constant: 'clDisabledButton';          Description: RsClDisabledButton),
+    (Value: clDisabledLight;           Constant: 'clDisabledLight';           Description: RsClDisabledLight),
+    (Value: clDisabledMidlight;        Constant: 'clDisabledMidlight';        Description: RsClDisabledMidlight),
+    (Value: clDisabledDark;            Constant: 'clDisabledDark';            Description: RsClDisabledDark),
+    (Value: clDisabledMid;             Constant: 'clDisabledMid';             Description: RsClDisabledMid),
+    (Value: clDisabledText;            Constant: 'clDisabledText';            Description: RsClDisabledText),
+    (Value: clDisabledBrightText;      Constant: 'clDisabledBrightText';      Description: RsClDisabledBrightText),
+    (Value: clDisabledButtonText;      Constant: 'clDisabledButtonText';      Description: RsClDisabledButtonText),
+    (Value: clDisabledBase;            Constant: 'clDisabledBase';            Description: RsClDisabledBase),
+    (Value: clDisabledBackground;      Constant: 'clDisabledBackground';      Description: RsClDisabledBackground),
+    (Value: clDisabledShadow;          Constant: 'clDisabledShadow';          Description: RsClDisabledShadow),
+    (Value: clDisabledHighlight;       Constant: 'clDisabledHighlight';       Description: RsClDisabledHighlight),
+    (Value: clDisabledHighlightedText; Constant: 'clDisabledHighlightedText'; Description: RsClDisabledHighlightedText),
+
+    (Value: clDesktop;                 Constant: 'clDesktop';                 Description: RsClDesktop),
+    (Value: clInfoBk;                  Constant: 'clInfoBk';                  Description: RsClInfoBk)
+
+  {$ENDIF}
   );
 
 implementation
