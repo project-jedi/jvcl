@@ -6800,6 +6800,10 @@ function IsSetupApiLoaded: Boolean;
 function LoadSetupApi: Boolean;
 procedure UnloadSetupApi;
 
+{$IFDEF SETUPAPI_LINKONREQUEST}
+function GetSetupApiHandle:HINST;
+{$endif}
+
 implementation
 
 uses
@@ -6813,6 +6817,13 @@ var
   SetupApiLib: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
   SetupApiLoadCount: Integer = 0;
 {$ENDIF SETUPAPI_LINKONREQUEST}
+
+{$IFDEF SETUPAPI_LINKONREQUEST}
+function GetSetupApiHandle:HINST;
+begin
+  result := HINST(SetupApiLib);
+end;
+{$endif}
 
 function IsSetupApiLoaded: Boolean;
 begin
