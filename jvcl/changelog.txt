@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-11-10:
+- PackageGenerator thought to be complete. Testing starts // olivier
 2003-11-09:
 - Started creation of PackageGenerator, still some work to do // olivier
 2003-11-08:
