@@ -41,7 +41,6 @@ uses
   JvQEDIDBBuffering{, JvEDITCPServer, JvEDITCPClient};
 
 
-
 {$R ../Resources/JvEDIDBBufferingReg.dcr}
 
 

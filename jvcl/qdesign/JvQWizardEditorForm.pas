@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -21,13 +21,12 @@ All Rights Reserved.
 Contributor(s):
 Peter Thörnqvist - converted to JVCL naming conventions on 2003-07-11
 
-Last Modified: 2003-02-22
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {*****************************************************************************
   Purpose:   Jv Wizard Component Editor
@@ -54,15 +53,16 @@ uses
   
   
   QGraphics, QControls, QForms, QDialogs, Types, QTypes,
-  QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus, QWindows,
+  QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,
   
-
-  DesignIntf, DesignEditors, ClxDesignWindows,
-
-
+  
+  DesignIntf, DesignEditors,
+  
+  
+  ClxDesignWindows,
+  
+  
   JvQWizard;
-
-{$DEFINE USEJVCL}
 
 type
   TJvWizardActivePageProperty = class(TComponentProperty)
@@ -143,6 +143,9 @@ type
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override;
+    
+    function UniqueName(Component: TComponent): string; override;
+    
     
     function GetEditState: TEditState; override;
   end;
@@ -431,6 +434,13 @@ begin
   if not (csDestroying in ComponentState) then
     UpdatePageList(lbxWizardPages.ItemIndex);
 end;
+
+
+function TJvWizardPageListEditor.UniqueName(Component: TComponent): string;
+begin
+  Result := Designer.UniqueName(Component.ClassName);
+end;
+
 
 
 

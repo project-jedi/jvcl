@@ -33,7 +33,10 @@ requires
   visualclx,
   rtl,
   JvQCoreD7R,
-  DJcl;
+  DJcl,
+  clxdesigner,
+  DJclVClx,
+  JvQSystemD7R;
 
 contains
   JvQPatcherEditor in '..\..\qdesign\JvQPatcherEditor.pas',

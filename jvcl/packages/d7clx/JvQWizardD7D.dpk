@@ -31,9 +31,12 @@ requires
   JvQCoreD7D,
   rtl,
   designide,
-  visualclx;
+  visualclx,
+  clxdesigner,
+  DJclVClx;
 
 contains
-  JvQWizardReg in '..\..\qdesign\JvQWizardReg.pas';
+  JvQWizardReg in '..\..\qdesign\JvQWizardReg.pas',
+  JvQWizardEditorForm in '..\..\qdesign\JvQWizardEditorForm.pas' {JvWizardPageListEditor};
 
 end.

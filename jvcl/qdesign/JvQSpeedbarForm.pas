@@ -148,8 +148,8 @@ type
     procedure CMSpeedBarChanged(var Msg: TMessage); message CM_SPEEDBARCHANGED;
   protected
     procedure Activated; override;
-    function UniqueName(Component: TComponent): string; override;
   public
+    function UniqueName(Component: TComponent): string; override;
     
     procedure ItemsModified(const Designer: IDesigner); override;
     procedure DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean); override;
