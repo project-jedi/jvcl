@@ -174,10 +174,16 @@ msgstr ""
 msgid "Arial"
 msgstr ""
 
+msgid "Verdana"
+msgstr ""
+
 msgid "qrp"
 msgstr ""
 
 msgid "lblpages"
+msgstr ""
+
+msgid "LblErrorReason"
 msgstr ""
 
 msgid "Pascal"
