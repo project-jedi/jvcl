@@ -181,7 +181,7 @@ const
   clPrivateCream = TColor($F7FFFF);
 
   Colors: array [1..20] of TColor =
-  (clWhite, clBlack, clSilver, clDkGray,
+   (clWhite, clBlack, clSilver, clDkGray,
     clRed, clMaroon, clYellow, clOlive,
     clLime, clGreen, clAqua, clTeal,
     clBlue, clNavy, clFuchsia, clPurple,
@@ -409,7 +409,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and Enabled then
     Invalidate;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvCustomDropButton.MouseLeave(Control: TControl);
@@ -418,7 +418,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and Enabled then
     Invalidate;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvCustomDropButton.Paint;
@@ -469,13 +469,13 @@ begin
   inherited;
   Invalidate;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 {$IFDEF VCL}
 procedure TJvCustomDropButton.WMSize(var Msg: TWMSize);
 {$ELSE}
 procedure TJvCustomDropButton.BoundsChanged;
-{$ENDIF}
+{$ENDIF VCL}
 begin
   inherited;
   Invalidate;

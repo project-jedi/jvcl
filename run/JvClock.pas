@@ -263,7 +263,7 @@ end;
 function LightColor(Color: TColor): TColor;
 var
   L: Longint;
-  C: array[1..3] of Byte;
+  C: array [1..3] of Byte;
   I: Byte;
 begin
   L := ColorToRGB(Color);
@@ -479,7 +479,7 @@ var
 begin
   DecodeTime(FAlarm, Hour, Min, Sec, MSec);
   DecodeTime(ATime, AHour, AMin, ASec, MSec);
-  Result := {FAlarmWait and}(Hour = AHour) and (Min = AMin) and
+  Result := {FAlarmWait and} (Hour = AHour) and (Min = AMin) and
     (ASec >= Sec) and (ASec <= Sec + AlarmSecDelay);
 end;
 
@@ -543,7 +543,7 @@ procedure TJvClock.SetAutoSize(Value: Boolean);
 begin
   {$IFDEF COMPILER6_UP}
   inherited SetAutoSize(Value);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   FAutoSize := Value;
   if FAutoSize then
   begin
