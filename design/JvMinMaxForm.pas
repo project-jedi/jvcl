@@ -30,14 +30,8 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows,  Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Buttons, Mask, Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, Types,
-  QStdCtrls, QExtCtrls, QButtons, QMask, QConsts,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, VCLEditors, DesignEditors,
   {$ELSE}
@@ -100,12 +94,7 @@ function EditMinMaxInfo(AComponent: TJvFormPlacement): Boolean;
 
 implementation
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 procedure MakeIntEdit(Edit: TCustomEdit);
 begin

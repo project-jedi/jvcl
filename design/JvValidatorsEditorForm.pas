@@ -31,22 +31,10 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ToolWin, StdCtrls, Menus, ActnList, ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QTypes, QExtCtrls, QDialogs, QComCtrls,
-  QToolWin, QStdCtrls, QMenus, QActnList, QImgList, ClxDesignWindows,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf,
-  {$IFDEF VCL}
-  DesignWindows,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QDesignWindows,
-  {$ENDIF VisualCLX}
+  DesignEditors, DesignIntf, DesignWindows,
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}

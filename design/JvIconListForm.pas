@@ -29,20 +29,10 @@ unit JvIconListForm;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Forms, Controls, Dialogs, Graphics,
+  Classes, Windows, Messages, Forms, Controls, Dialogs, Graphics,
   StdCtrls, ExtCtrls, ExtDlgs, ImgList, ComCtrls, ToolWin,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms, QControls, QDialogs, QStdCtrls, QExtCtrls, QExtDlgs,
-  QImgList, QComCtrls, QGraphics, QToolWin, ClxEditors,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, DesignEditors,
-  {$IFDEF VCL}
-  VCLEditors,
-  {$ENDIF VCL}
+  RTLConsts, DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF COMPILER6_UP}

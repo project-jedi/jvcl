@@ -30,18 +30,9 @@ unit JvID3v2DefineForm;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QStdCtrls, Types, ClxDesignWindows,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls,
   {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf, DesignMenus,
-  {$IFDEF VCL}
-  DesignWindows,
-  {$ENDIF VCL}
+  DesignEditors, DesignIntf, DesignMenus, DesignWindows,
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}

@@ -30,18 +30,9 @@ unit JVHLEditEditor;
 interface
 
 uses
-  Classes, SysUtils,
-  {$IFDEF VCL}
-  Windows, Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QWindows,
-  {$ENDIF VisualCLX}
+  Classes, SysUtils, Windows, Controls,
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, PropertyCategories,
-  {$IFDEF VCL}
-  VCLEditors,
-  {$ENDIF VCL}
+  DesignIntf, DesignEditors, PropertyCategories, VCLEditors,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}

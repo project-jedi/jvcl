@@ -42,13 +42,7 @@ unit JvWizardAboutInfoForm;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QStdCtrls, QExtCtrls, QGraphics, QControls, QForms, QDialogs,
-  {$ENDIF VisualCLX}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}

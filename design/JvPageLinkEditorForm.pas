@@ -36,15 +36,8 @@ unit JvPageLinkEditorForm;
 interface
 
 uses
-  Classes, SysUtils,
-  {$IFDEF VCL}
-  Windows, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls,
+  Classes, SysUtils, Windows, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls,
   ActnList, Menus,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms, QControls, QStdCtrls, QExtCtrls, QComCtrls,
-  QActnList, QMenus,
-  {$ENDIF VisualCLX}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}

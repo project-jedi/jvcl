@@ -31,14 +31,8 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
-  FileCtrl, Buttons,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QStdCtrls, QFileCtrls, QExtCtrls, QControls, QButtons,
-  {$ENDIF VisualCLX}
-  JvPicClip, JvFormPlacement, JvAppStorage,
+  FileCtrl, Buttons, JvPicClip, JvFormPlacement, JvAppStorage,
   {$IFDEF MSWINDOWS}
   JvAppRegistryStorage,
   {$ENDIF MSWINDOWS}

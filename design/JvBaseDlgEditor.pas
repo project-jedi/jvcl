@@ -31,13 +31,7 @@ unit JvBaseDlgEditor;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, Types, QGraphics, QControls, QForms, QDialogs,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, Dialogs,
   TypInfo,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,

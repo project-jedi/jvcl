@@ -31,15 +31,10 @@ unit JvActnResForm;
 interface
 
 uses
-  {$IFDEF VCL}
   ActnList, ImgList, Controls,
   {$IFNDEF COMPILER6_UP}
   Forms,
   {$ENDIF COMPILER6_UP}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QActnList, QImgList, QControls, QForms,
-  {$ENDIF VisualCLX}
   SysUtils, Classes, StdActns,
   JvActions;
 

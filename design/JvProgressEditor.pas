@@ -31,17 +31,9 @@ interface
 
 uses
   Classes, SysUtils,
-  {$IFDEF VCL}
   Windows, Controls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QControls, QForms,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  {$IFDEF VCL}
-  VCLEditors,
-  {$ENDIF VCL}
-  RTLConsts, DesignIntf, DesignEditors;
+  VCLEditors, RTLConsts, DesignIntf, DesignEditors;
   {$ELSE}
   DsgnIntf;
   {$ENDIF COMPILER6_UP}
@@ -58,12 +50,7 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
   Consts, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts, QDialogs,
-  {$ENDIF VisualCLX}
   JvConsts, JvProgressUtils;
 
 procedure TJvProgressControlProperty.CheckComponent(const AName: string);

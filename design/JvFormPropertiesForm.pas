@@ -30,18 +30,9 @@ unit JvFormPropertiesForm;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Controls, Forms, StdCtrls, Buttons, ExtCtrls, Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QButtons, QExtCtrls, QConsts, Types,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Controls, Forms, StdCtrls, Buttons, ExtCtrls, Consts,
   {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, DesignEditors,
-  {$IFDEF VCL}
-  VCLEditors,
-  {$ENDIF VCL}
+  RTLConsts, DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}

@@ -31,7 +31,6 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Controls, Forms, ToolWin,
   Menus, ActnList, ComCtrls, ImgList,
   {$IFDEF COMPILER6_UP}
@@ -39,12 +38,6 @@ uses
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QControls, QForms, QToolWin,
-  QMenus, QActnList, QComCtrls, QImgList,
-  DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows,
-  {$ENDIF VisualCLX}
   JvDsgnEditors, JvOutlookBar;
 
 type

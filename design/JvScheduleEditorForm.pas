@@ -31,12 +31,10 @@ interface
 
 uses
   SysUtils, Classes,
+  Controls, Forms, StdCtrls, ComCtrls, ExtCtrls, 
   {$IFDEF VCL}
-  Controls, Forms, StdCtrls, ComCtrls, ExtCtrls, AppEvnts,
+  AppEvnts,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QComCtrls, QExtCtrls, Types,
-  {$ENDIF VisualCLX}
   JclSchedule;
 
 type
