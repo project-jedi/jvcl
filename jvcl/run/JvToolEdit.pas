@@ -1909,7 +1909,7 @@ end;
 
 function TJvCustomComboEdit.GetDirectInput: Boolean;
 begin
-  Result := FDirectInput;
+  Result := FDirectInput and not ReadOnly;
 end;
 
 procedure TJvCustomComboEdit.SetDirectInput(Value: Boolean);
