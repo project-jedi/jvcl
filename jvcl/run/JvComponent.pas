@@ -34,7 +34,7 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  StdCtrls, Controls, ExtCtrls, Forms, CheckLst, ComCtrls,
+  Windows, Messages, StdCtrls, Controls, ExtCtrls, Forms, CheckLst, ComCtrls,
   {$ELSE}
   QStdCtrls,  QExtCtrls, QControls, QForms, QCheckLst, QComCtrls, Types,
   {$ENDIF VCL}
@@ -57,6 +57,17 @@ type
   TJvGraphicControl = class(TGraphicControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
+  {$IFDEF VCL}
+    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+  protected
+    procedure MouseEnter(Control: TControl); dynamic;
+    procedure MouseLeave(Control: TControl); dynamic;
+
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+  {$ENDIF VCL}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -85,6 +96,17 @@ type
   TJvCustomControl = class(TCustomControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
+  {$IFDEF VCL}
+    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+  protected
+    procedure MouseEnter(Control: TControl); dynamic;
+    procedure MouseLeave(Control: TControl); dynamic;
+
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+  {$ENDIF VCL}
   {$IFDEF JVCLThemesEnabledD56}
   private
     function GetParentBackground: Boolean;
@@ -99,6 +121,17 @@ type
   TJvWinControl = class(TWinControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
+  {$IFDEF VCL}
+    FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+  protected
+    procedure MouseEnter(Control: TControl); dynamic;
+    procedure MouseLeave(Control: TControl); dynamic;
+
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+  {$ENDIF VCL}
   {$IFDEF JVCLThemesEnabledD56}
   private
     function GetParentBackground: Boolean;
@@ -184,5 +217,88 @@ begin
   TranslateComponent(Self);
 end;
 {$ENDIF USE_DXGETTEXT}
+
+
+{$IFDEF VCL}
+
+{ TJvGraphicControl }
+
+procedure TJvGraphicControl.CMMouseEnter(var Msg: TMessage);
+begin
+  inherited;
+  MouseEnter(Self);
+end;
+
+procedure TJvGraphicControl.CMMouseLeave(var Msg: TMessage);
+begin
+  inherited;
+  MouseLeave(Self);
+end;
+
+procedure TJvGraphicControl.MouseEnter(Control: TControl);
+begin
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvGraphicControl.MouseLeave(Control: TControl);
+begin
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
+{ TJvWinControl }
+
+procedure TJvWinControl.CMMouseEnter(var Msg: TMessage);
+begin
+  inherited;
+  MouseEnter(Self);
+end;
+
+procedure TJvWinControl.CMMouseLeave(var Msg: TMessage);
+begin
+  inherited;
+  MouseLeave(Self);
+end;
+
+procedure TJvWinControl.MouseEnter(Control: TControl);
+begin
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvWinControl.MouseLeave(Control: TControl);
+begin
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
+{ TJvCustomControl }
+
+procedure TJvCustomControl.CMMouseEnter(var Msg: TMessage);
+begin
+  inherited;
+  MouseEnter(Self);
+end;
+
+procedure TJvCustomControl.CMMouseLeave(var Msg: TMessage);
+begin
+  inherited;
+  MouseLeave(Self);
+end;
+
+procedure TJvCustomControl.MouseEnter(Control: TControl);
+begin
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvCustomControl.MouseLeave(Control: TControl);
+begin
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
+{$ENDIF VCL}
 
 end.
