@@ -1175,8 +1175,11 @@ end;
 
 function VarIsInt(Value: Variant): Boolean;
 begin
-  Result := FindVarData(Value)^.VType in [varSmallInt, varInteger, varShortInt,
-    varByte, varWord, varLongWord, varInt64];
+  Result := VarType(Value) in [varByte,
+    {$IFDEF COMPILER6_UP}
+    varShortInt, varWord, varLongWord, {varInt64,}
+    {$ENDIF COMPILER6_UP}
+    varSmallInt, varInteger];
 end;
 
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
