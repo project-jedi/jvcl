@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
 "POT-Creation-Date: 2004-12-18 18:02\n"
-"PO-Revision-Date: 2004-12-18 13:16+0100\n"
+"PO-Revision-Date: 2004-12-18 19:04+0100\n"
 "Last-Translator: Peter Thörnqvist <peter3@peter3.com>\n"
 "Language-Team: JVCL Localization\n"
 "MIME-Version: 1.0\n"
@@ -124,7 +124,6 @@ msgstr "Fel uppstod när mallar för %s mappen genererades."
 #  this must not be the doubt of the installer
 #  Programmer's name for it: RsErrorCompilingPackages
 #. this must not be the doubt of the installer
-#. Programmer's name for it: RsErrorCompilingPackages
 #: Compile.pas:173
 msgid "An error occured while compiling the packages."
 msgstr "Fel uppstod när paketen kompilerades."
@@ -136,8 +135,11 @@ msgid ""
 "\n"
 "\n"
 "Cmdline: %s\n"
-msgid_plural "Start directory: %s"
-msgstr[0] ""
+msgstr ""
+"Kommandot kunde inte köras.\n"
+"\n"
+"\n"
+"Kommando: %s\n"
 
 #  FrameConfigPage..LblBCBGuide....Cursor
 #. FrameConfigPage..LblBCBGuide....Cursor
@@ -642,8 +644,8 @@ msgstr "Återställ paketurvalet till standard för IDE:n."
 
 #  Programmer's name for it: RsCompiling
 #. FormCompile..Caption
-#. Programmer's name for it: RsCompiling
-#: FrmCompile.dfm:6 FrmCompile.pas:127
+#: FrmCompile.dfm:6
+#: FrmCompile.pas:127
 msgid "Compiling"
 msgstr "Kompilerar"
 
@@ -690,8 +692,8 @@ msgid "Project:"
 msgstr "Projekt:"
 
 #. FormCompile..PanelClient..LblStatus..Caption
-#. Programmer's name for it: RsThereAreErrors
-#: FrmCompile.dfm:178 FrmCompile.pas:130
+#: FrmCompile.dfm:178
+#: FrmCompile.pas:130
 msgid "There are errors."
 msgstr "Fel rapporterades."
 
@@ -758,8 +760,8 @@ msgstr "Öppna i &Anteckningar"
 
 #  Programmer's name for it: STR_HELPBTN
 #. FormMain..JvWizard..ButtonHelp.Caption
-#. Programmer's name for it: STR_HELPBTN
-#: Helpers/AHCompBrowseFolderDlg.pas:119 Main.dfm:49
+#: Helpers/AHCompBrowseFolderDlg.pas:119
+#: Main.dfm:49
 msgid "&Help"
 msgstr "&Hjälp"
 
@@ -836,8 +838,8 @@ msgstr ""
 #  FormMain..Caption
 #  Programmer's name for it: RsInstallerName
 #. FormMain..Caption
-#. Programmer's name for it: RsInstallerName
-#: InstallerConsts.pas:50 Main.dfm:6
+#: InstallerConsts.pas:50
+#: Main.dfm:6
 msgid "JVCL 3  Installation"
 msgstr "JVCL 3  Installation"
 
@@ -884,7 +886,6 @@ msgid "Uninstall JVCL|Uninstall all JVCL packages and unregister them from the D
 msgstr "Avinstallera JVCL|Avinstallerar alla JVCL paket och avregistrerar dem i IDE:n."
 
 #. the button's width is set to 8+TextWidth+8
-#. Programmer's name for it: RsShowMPL
 #: InstallerConsts.pas:61
 msgid "Show MPL 1.1"
 msgstr "Visa MPL 1.1"
@@ -892,7 +893,6 @@ msgstr "Visa MPL 1.1"
 #  PgUninstall.pas
 #  Programmer's name for it: RsUninstallPageTitle
 #. PgUninstall.pas
-#. Programmer's name for it: RsUninstallPageTitle
 #: InstallerConsts.pas:73
 msgid "Uninstalling JVCL 3"
 msgstr "Avinstallera JVCL 3"
@@ -904,7 +904,6 @@ msgid "Uninstalling the JVCL 3 from the selected Delphi and C++Builder versions"
 msgstr "Avinstallerar JVCL från markerade Delphi- och BCB-versioner."
 
 #. FrmDirEditBrowse.pas
-#. Programmer's name for it: RsSelectDir
 #: InstallerConsts.pas:78
 msgid "Please select the directory below:"
 msgstr "Välj katalog nedan:"
@@ -918,7 +917,6 @@ msgstr "Ingen mapp"
 #  FrmInstall.pas
 #  Programmer's name for it: RsErrorOpeningFile
 #. FrmInstall.pas
-#. Programmer's name for it: RsErrorOpeningFile
 #: InstallerConsts.pas:83
 msgid "Error opening the file."
 msgstr "Kan inte öppna filen."
@@ -932,8 +930,8 @@ msgstr "Ett fel uppstod."
 #  Programmer's name for it: RsComplete
 #  Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
-#. Programmer's name for it: RsComplete
-#: InstallerConsts.pas:85 JVCLData.pas:297
+#: InstallerConsts.pas:85
+#: JVCLData.pas:297
 msgid "Complete."
 msgstr "Klar."
 
@@ -950,7 +948,6 @@ msgid "Compiling: %s"
 msgstr "Kompilerar: %s"
 
 #. FrmCompileMessages.pas
-#. Programmer's name for it: RsCompilerHint
 #: InstallerConsts.pas:91
 msgid "Hint"
 msgstr "Meddelande"
@@ -975,7 +972,6 @@ msgstr "Fatalt"
 #  FrmPackageSelection.pas
 #  Programmer's name for it: RsSelectTargetIDE
 #. FrmPackageSelection.pas
-#. Programmer's name for it: RsSelectTargetIDE
 #: InstallerConsts.pas:98
 msgid "Select an IDE"
 msgstr "Välj en IDE"
@@ -995,7 +991,6 @@ msgstr "Innehåller:"
 #  FrmUninstall.pas
 #  Programmer's name for it: RsDeletingFile
 #. FrmUninstall.pas
-#. Programmer's name for it: RsDeletingFile
 #: InstallerConsts.pas:104
 msgid "Deleting %s"
 msgstr "Tar bort %s"
@@ -1003,7 +998,6 @@ msgstr "Tar bort %s"
 #  PgInstall.pas
 #  Programmer's name for it: RsInstallPageTitle
 #. PgInstall.pas
-#. Programmer's name for it: RsInstallPageTitle
 #: InstallerConsts.pas:108
 msgid "Compiling packages"
 msgstr "Kompilerar paket"
@@ -1017,7 +1011,6 @@ msgstr "De markerade paketen kompileras för de valda Delphi- och BCB-versionern
 #  PgPackageSelection.pas
 #  Programmer's name for it: RsPackageSelectionPageTitle
 #. PgPackageSelection.pas
-#. Programmer's name for it: RsPackageSelectionPageTitle
 #: InstallerConsts.pas:113
 msgid "Select packages"
 msgstr "Välj paket"
@@ -1031,7 +1024,6 @@ msgstr "Välj en IDE från listan och markera de paket du vill installera för d
 #  PgSummary.pas
 #  Programmer's name for it: RsSummaryPageTitle
 #. PgSummary.pas
-#. Programmer's name for it: RsSummaryPageTitle
 #: InstallerConsts.pas:118
 msgid "Summary"
 msgstr "Summering"
@@ -1177,7 +1169,6 @@ msgstr "JVCL 3-filer"
 #  PgConfig.pas
 #  Programmer's name for it: RsConfigPageTitle
 #. PgConfig.pas
-#. Programmer's name for it: RsConfigPageTitle
 #: InstallerConsts.pas:154
 msgid "Configuration"
 msgstr "Konfiguration"
@@ -1191,7 +1182,6 @@ msgstr "Välj kompileringsalternativ och globala inställningar för alla Delphi
 #  FrmConfigPage.pas
 #  Programmer's name for it: RsAllTargets
 #. FrmConfigPage.pas
-#. Programmer's name for it: RsAllTargets
 #: InstallerConsts.pas:159
 msgid "All versions"
 msgstr "Alla versioner"
@@ -1221,7 +1211,6 @@ msgstr "Kan inte öppna readme.htm"
 #  PgIDESelection.pas
 #  Programmer's name for it: RsSelectionPageTitle
 #. PgIDESelection.pas
-#. Programmer's name for it: RsSelectionPageTitle
 #: InstallerConsts.pas:172
 msgid "Choose IDE targets"
 msgstr "Välj IDE"
@@ -1272,7 +1261,6 @@ msgstr "JCL %s eller senare krävs"
 #  http://jcl.sourceforge.net
 #  Programmer's name for it: RsDownloadOrSelectJclDir
 #. http://jcl.sourceforge.net
-#. Programmer's name for it: RsDownloadOrSelectJclDir
 #: InstallerConsts.pas:182
 msgid "Download or select a JCL directory.|http://homepages.borland.com/jedi/jcl/"
 msgstr "Ladda ner eller välj en JCL-mapp|http://homepages.borland.com/jedi/jcl/"
@@ -1318,7 +1306,6 @@ msgstr "Ange installationskatalog för JCL..."
 #  Main.pas
 #  Programmer's name for it: RsBtnInstall
 #. Main.pas
-#. Programmer's name for it: RsBtnInstall
 #: InstallerConsts.pas:193
 msgid "&Install"
 msgstr "&Installera"
@@ -1426,51 +1413,3 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Hemsida för Jedi Visual Component Library"
 
-#  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
-#~ msgid "http://projectjedi.sourceforge.net"
-#~ msgstr "http://projectjedi.sourceforge.net"
-
-#~ msgid "TJv"
-#~ msgstr "TJv"
-
-#~ msgid "LblTarget"
-#~ msgstr "LblTarget"
-
-#~ msgid "LblOpenFile"
-#~ msgstr "LblOpenFile"
-
-#~ msgid "LblInfo"
-#~ msgstr "LblInfo"
-
-#~ msgid "LblFilename"
-#~ msgstr "LblFilename"
-
-#~ msgid "LblComment"
-#~ msgstr "LblComment"
-
-#~ msgid "LblCaption"
-#~ msgstr "LblCaption"
-
-#~ msgid "-"
-#~ msgstr "-"
-
-#  FrameDirEditBrowse..BtnJCLDirBrowse..Caption
-#~ msgid "..."
-#~ msgstr "..."
-
-#~ msgid "Arial"
-#~ msgstr "Arial"
-
-#~ msgid "LblErrorReason"
-#~ msgstr "LblErrorReason"
-
-#~ msgid "Verdana"
-#~ msgstr "Verdana"
-
-#  FormMain..JvWizard..ButtonHelp.Caption
-#  FormMain..JvWizard..ButtonHelp.Caption
-#~ msgid "&Hilfe"
-#~ msgstr "&Hjälp"
-
-#~ msgid "MS Sans Serif"
-#~ msgstr "MS Sans Serif"
