@@ -19,8 +19,9 @@ Michael Beck [mbeck@bigfoot.com].
 Anthony Steele [asteele@iafrica.com]
 Peter Thörnqvist [peter3@peter3.com]
 cginzel [cginzel@hotmail.com]
+Remko Bonte
 
-Last Modified: 2002-11-18
+Last Modified: 2003-02-19
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -41,7 +42,7 @@ uses
 {$IFNDEF COMPILER6_UP}
 type
   EOSError = class(EWin32Error);
-{$ENDIF}
+  {$ENDIF}
 
 // Transform an icon to a bitmap
 function IconToBitmap(Ico: HICON): TBitmap;
@@ -117,7 +118,6 @@ procedure HideFormCaption(FormHandle: THandle; Hide: Boolean);
 // m is the zero-based index of the tab to display
 procedure LaunchCpl(FileName: string);
 
-{$IFNDEF DelphiPersonalEdition}
 {
   GetControlPanelApplets retrieves information about all control panel applets in a specified folder.
   APath is the Path to the folder to search and AMask is the filename mask (containing wildcards if necessary) to use.
@@ -142,8 +142,6 @@ function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; I
   The function returns True if any Control Panel Applets were found in AFilename (i.e if items were added to Strings)
 }
 function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
-
-{$ENDIF}
 
 // execute a program without waiting
 procedure Exec(FileName, Parameters, Directory: string);
@@ -305,9 +303,6 @@ implementation
 
 uses
   Forms, Registry, ExtCtrls,
-  {$IFNDEF DelphiPersonalEdition}
-  Cpl,
-  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF}
@@ -333,7 +328,7 @@ const
 var
   ShellVersion: Integer;
 
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
 
 procedure RaiseLastOSError;
 begin
@@ -491,7 +486,7 @@ begin
     if r = Max then
       h := (60 * (g - b)) div Delta
     else
-    if g = Max then
+      if g = Max then
       h := 120 + (60 * (b - r)) div Delta
     else
       h := 240 + (60 * (r - g)) div Delta;
@@ -791,10 +786,56 @@ begin
   //  WinExec(PChar(RC_RunCpl + FileName), SW_SHOWNORMAL);
 end;
 
-{$IFNDEF DelphiPersonalEdition}
+const
+  {$EXTERNALSYM WM_CPL_LAUNCH}
+  WM_CPL_LAUNCH = (WM_USER + 1000);
+  {$EXTERNALSYM WM_CPL_LAUNCHED}
+  WM_CPL_LAUNCHED = (WM_USER + 1001);
 
-resourcestring
-  RC_CplAddress = 'CPlApplet';
+{ (p3) just define enough to make the Cpl unnecessary for us (for the benefit of PE users) }
+  cCplAddress = 'CPlApplet';
+  CPL_INIT = 1;
+  {$EXTERNALSYM CPL_INIT}
+  CPL_GETCOUNT = 2;
+  {$EXTERNALSYM CPL_GETCOUNT}
+  CPL_INQUIRE = 3;
+  {$EXTERNALSYM CPL_INQUIRE}
+  CPL_EXIT = 7;
+  {$EXTERNALSYM CPL_EXIT}
+  CPL_NEWINQUIRE = 8;
+  {$EXTERNALSYM CPL_NEWINQUIRE}
+
+type
+  TCPLApplet = function(hwndCPl: THandle; uMsg: DWORD;
+    lParam1, lParam2: Longint): Longint; stdcall;
+
+  TCPLInfo = packed record
+    idIcon: Integer;
+    idName: Integer;
+    idInfo: Integer;
+    lData: Longint;
+  end;
+
+  TNewCPLInfoA = packed record
+    dwSize: DWORD;
+    dwFlags: DWORD;
+    dwHelpContext: DWORD;
+    lData: Longint;
+    hIcon: HICON;
+    szName: array[0..31] of AnsiChar;
+    szInfo: array[0..63] of AnsiChar;
+    szHelpFile: array[0..127] of AnsiChar;
+  end;
+  TNewCPLInfoW = packed record
+    dwSize: DWORD;
+    dwFlags: DWORD;
+    dwHelpContext: DWORD;
+    lData: Longint;
+    hIcon: HICON;
+    szName: array[0..31] of WideChar;
+    szInfo: array[0..63] of WideChar;
+    szHelpFile: array[0..127] of WideChar;
+  end;
 
 function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
 var
@@ -815,7 +856,7 @@ begin
     Exit;
   TmpCount := Strings.Count;
   try
-    @CplCall := GetProcAddress(hLib, PChar(RC_CplAddress));
+    @CplCall := GetProcAddress(hLib, PChar(cCplAddress));
     if @CplCall = nil then
       Exit;
     CplCall(GetFocus, CPL_INIT, 0, 0); // Init the *.cpl file
@@ -897,8 +938,6 @@ begin
   Result := Strings.Count > 0;
 end;
 
-{$ENDIF}
-
 procedure Exec(FileName, Parameters, Directory: string);
 var
   Operation: string;
@@ -910,8 +949,8 @@ end;
 
 procedure ExecuteAndWait(FileName: string; Visibility: Integer);
 var
-  zAppName: array [0..512] of Char;
-  zCurDir: array [0..255] of Char;
+  zAppName: array[0..512] of Char;
+  zCurDir: array[0..255] of Char;
   WorkDir: string;
   StartupInfo: TStartupInfo;
   ProcessInfo: TProcessInformation;
@@ -998,7 +1037,7 @@ end;
 procedure HideStartBtn(Visible: Boolean);
 var
   Tray, Child: HWND;
-  C: array [0..127] of Char;
+  C: array[0..127] of Char;
   S: string;
 begin
   Tray := FindWindow(PChar(RC_ShellName), nil);
@@ -1240,7 +1279,7 @@ end;
 
 function EnumWindowsProc(Handle: THandle; lParam: TStrings): Boolean; stdcall;
 var
-  St: array [0..256] of Char;
+  St: array[0..256] of Char;
   St2: string;
 begin
   if IsWindowVisible(Handle) then
@@ -1362,20 +1401,20 @@ begin
   if lStr = '' then
     Result := Def
   else
-    try
+  try
       { the string '-' fails StrToFloat, but it can be interpreted as 0  }
-      if StrRight(lStr, 1) = '-' then
-        lStr := lStr + '0';
+    if StrRight(lStr, 1) = '-' then
+      lStr := lStr + '0';
 
       { a string that ends in a '.' such as '12.' fails StrToFloat,
        but as far as I am concerned, it may as well be interpreted as 12.0 }
-      if StrRight(lStr, 1) = '.' then
-        lStr := lStr + '0';
+    if StrRight(lStr, 1) = '.' then
+      lStr := lStr + '0';
 
-      Result := StrToFloat(lStr);
-    except
-      Result := Def;
-    end;
+    Result := StrToFloat(lStr);
+  except
+    Result := Def;
+  end;
 end;
 
 function GetChangedText(const Text: string; SelStart, SelLength: Integer; Key: Char): string;
@@ -1483,7 +1522,7 @@ begin
       end;
     end
     else
-    if not CharIsMoney(Ch) then
+      if not CharIsMoney(Ch) then
     begin
       Result := False;
       Break;
@@ -1527,16 +1566,16 @@ begin
     if Ch = ':' then
       Inc(liColons)
     else
-    if Ch = AnsiForwardSlash then
+      if Ch = AnsiForwardSlash then
       Inc(liSlashes)
     else
-    if Ch = AnsiSpace then
+      if Ch = AnsiSpace then
       Inc(liSpaces)
     else
-    if CharIsDigit(Ch) then
+      if CharIsDigit(Ch) then
       Inc(liDigits)
     else
-    if CharIsAlpha(Ch) then
+      if CharIsAlpha(Ch) then
       Inc(liAlpha)
     else
     begin
@@ -1598,7 +1637,7 @@ end;
 
 function StringToBoolean(const Ps: string): Boolean;
 const
-  TRUE_STRINGS: array [1..5] of string = ('True', 't', 'y', 'yes', '1');
+  TRUE_STRINGS: array[1..5] of string = ('True', 't', 'y', 'yes', '1');
 var
   liLoop: Integer;
 begin
@@ -1685,7 +1724,7 @@ end;
 
 function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
 var
-  b: array [0..MAX_PATH] of Char;
+  b: array[0..MAX_PATH] of Char;
   R: TRect;
 begin
   StrCopy(b, PChar(Filename));
