@@ -25,6 +25,7 @@ JvPrvwDoc
 JvPrvwRender
 JvRenameError
 JvStringListToHtml
+JvToolBar
 JvTranslator
 JvTransparentButton
 JvVirtualKeySelectionFrame

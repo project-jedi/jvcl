@@ -88,7 +88,6 @@ JvTimeLine
 JvTimerList
 JvTipOfDay
 JvTMTimeLine
-JvToolBar
 JvTransLED
 JvTrayIcon
 JvUninstallControls
