@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Maciej Kaczkowski
 
-Last Modified: 2004-01-06
+Last Modified: 2004-02-02
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -110,7 +110,7 @@ uses
   Windows, Messages, Graphics, Controls, StdCtrls, ShellAPI, Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, Qt, QGraphics, QControls, QStdCtrls,
+  Types, Qt, QGraphics, QControls, QStdCtrls, QWindows,
   {$ENDIF VisualCLX}
   JvExStdCtrls;
 
@@ -323,14 +323,10 @@ type
     procedure FontChanged; override;
     procedure AdjustBounds; {$IFDEF VCL} override; {$ENDIF}
     procedure SetAutoSize(Value: Boolean); override;
-    {$IFDEF VCL}
     procedure Paint; override;
-    {$ELSE}
-    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure Paint; virtual;
-    {$ENDIF VCL}
     procedure Loaded; override;
     {$IFDEF VisualCLX}
+    procedure TextChanged; override;  // handles autosize
     property Canvas;
     {$ENDIF VisualCLX}
     property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
@@ -342,6 +338,10 @@ type
   end;
 
   TJvHTLabel = class(TJvCustomHTLabel)
+  {$IFDEF VisualCLX}
+  public
+    property Canvas;
+  {$ENDIF VisualCLX}
   published
     property Align;
 //    property Alignment;  // Kaczkowski
@@ -356,9 +356,6 @@ type
     property OnEndDock;
     property OnStartDock;
     {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    property Canvas;
-    {$ENDIF VisualCLX}
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -537,8 +534,14 @@ var
         end;
       if not CalcWidth then
       begin
+        {$IFDEF VCL}
         if trans then
           Canvas.Brush.Style := bsClear; // for transparent
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        if not trans then
+          Canvas.FillRect(Rect);  // for opaque ( transparent = false )
+        {$ENDIF}
         Canvas.TextOut(Rect.Left, Rect.Top, M);
       end;
       Rect.Left := Rect.Left + Width;
@@ -923,11 +926,9 @@ begin
       Canvas.Font.Color := Font.Color;
     if IsHyperLink(Canvas, R, State, Items[I], X, Y, LinkName) then
     begin
-      {$IFDEF VCL}
       if (Pos('://', LinkName) > 0) or // ftp:// http:// e2k://
          (Pos('MAILTO:', UpperCase(LinkName)) > 0) then // ex: mailto:name@server.com
         ShellExecute(0, 'open', PChar(LinkName), nil, nil, SW_NORMAL);
-      {$ENDIF VCL}
       if Assigned(FHyperLinkClick) then
         FHyperLinkClick(Self, LinkName);
     end;
@@ -1043,6 +1044,16 @@ begin
   FCanvas.Free; // the destructor may handle invalidate events
 end;
 
+procedure TJvCustomHTLabel.TextChanged;
+begin
+  if Autosize then
+  begin
+    Height := ItemHtHeight(Canvas, Caption);
+    Width := ItemHtWidth(Canvas, ClientRect, [], Caption)+ 2;
+  end;
+  Invalidate;
+end;
+(*)
 procedure TJvCustomHTLabel.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
 //  TControlCanvas(FCanvas).StartPaint;
@@ -1055,6 +1066,7 @@ begin
 //    TControlCanvas(FCanvas).StopPaint;
   end;
 end;
+(*)
 {$ENDIF VisualCLX}
 
 procedure TJvCustomHTLabel.FontChanged;
@@ -1098,7 +1110,7 @@ begin
     {$ELSE}
     Canvas.Font.Assign(Font);
     Rect.Bottom := ItemHTHeight(Canvas, Caption);
-    MaxWidth := ItemHTWidth(Canvas, Bounds(0, 0, 0, 0), [], Caption);
+    MaxWidth := ItemHTWidth(Canvas, Bounds(0, 0, 0, 0), [], Caption)+2;
     {$ENDIF VCL}
     Rect.Right := Rect.Left + MaxWidth;
     X := Left;
@@ -1187,11 +1199,9 @@ begin
   end;
   if IsHyperLink(Canvas, R, Caption, X, Y, LinkName) then
   begin
-    {$IFDEF VCL}
     if (Pos('://', LinkName) > 0) or // ftp:// http:// e2k://
        (Pos('MAILTO:', UpperCase(LinkName)) > 0) then // ex: mailto:name@server.com
       ShellExecute(0, 'open', PChar(LinkName), nil, nil, SW_NORMAL);
-    {$ENDIF VCL}
     if Assigned(FHyperLinkClick) then
       FHyperLinkClick(Self, LinkName);
   end;
