@@ -47,7 +47,7 @@ type
     Url: string; DataSize: Integer) of object;
   TJvDoneFileEvent = procedure(Sender: TObject; UserData: Integer; FileName: string;
     FileSize: Integer; Url: string) of object;
-  TJvDoneStreamEvent = procedure(Sender: TObject; UserData: Integer; Stream: TMemoryStream;
+  TJvDoneStreamEvent = procedure(Sender: TObject; UserData: Integer; Stream: TStream;
     StreamSize: Integer; Url: string) of object;
   TJvProgressEvent = procedure(Sender: TObject; UserData: Integer; Position: Integer;
     TotalSize: Integer; Url: string; var Continue: Boolean) of object;
@@ -135,6 +135,8 @@ type
     procedure Error;
   public
     constructor Create(Value: Pointer);
+    destructor Destroy; override;
+
   end;
 
   TJvMultiDateHttpThread = class(TThread)
@@ -158,6 +160,7 @@ type
   PRequestInfos = ^TRequestInfos;
   TRequestInfos = record
     Url: string;
+    Filename:string;
     OutputMode: TJvOutputMode;
     hSession: HINTERNET;
     hHostConnect: HINTERNET;
@@ -168,7 +171,7 @@ type
     UserData: Integer;
   end;
 
-//=== TJvMultiHttpGrabber ====================================================
+  //=== TJvMultiHttpGrabber ====================================================
 
 constructor TJvMultiHttpGrabber.Create(AOwner: TComponent);
 begin
@@ -315,6 +318,7 @@ begin
 
   Infos := New(PRequestInfos);
   Infos^.Url := Url;
+  Infos^.Filename := Filename;
   Infos^.OutputMode := OutputMode;
   Infos^.UserData := UserData;
   Infos^.Grabber := Self;
@@ -370,32 +374,37 @@ begin
 
     StopConnection(FInfos);
     Dispose(FInfos);
-    // Free; // (p3) FreeOnTerminate set when creating, so don't free here
+//    Free; // (p3) FreeOnTerminate is set when creating, so don't free here
   end;
 end;
 
 procedure TJvMultiHttpGrabber.ThreadTerminated(Sender: TObject);
+var
+  TT: TJvMultiHttpThread;
 begin
-  with Sender as TJvMultiHttpThread do
-  begin
-    with PRequestInfos(FInfos)^ do
-      if (FStream <> nil) and (FStream.Size > 0) then
-        if OutputMode = omStream then
-        begin
-          if Assigned(FOnDoneStream) then
-            FOnDoneStream(Self, UserData, FStream, FStream.Size, Url);
-        end
-        else
-        begin
-          FStream.SaveToFile(FileName);
-          if Assigned(FOnDoneFile) then
-            FOnDoneFile(Self, UserData, FFileName, FStream.Size, Url);
-        end;
+  TT := Sender as TJvMultiHttpThread; // need this for debugging purposes
+  try
+    if (TT.FStream <> nil) and (TT.FStream.Size > 0) then
+    begin
+      if OutputMode = omStream then
+      begin
+        if Assigned(FOnDoneStream) then
+          FOnDoneStream(Self, PRequestInfos(TT.FInfos)^.UserData, TT.FStream, TT.FStream.Size, PRequestInfos(TT.FInfos)^.Url);
+      end
+      else
+      begin
+        TT.FStream.SaveToFile(PRequestInfos(TT.FInfos)^.FileName);
+        if Assigned(FOnDoneFile) then
+          FOnDoneFile(Self, PRequestInfos(TT.FInfos)^.UserData, PRequestInfos(TT.FInfos)^.FileName, TT.FStream.Size, PRequestInfos(TT.FInfos)^.Url);
+      end;
+    end;
 
-    StopConnection(FInfos);
-    Dispose(FInfos);
+    StopConnection(PRequestInfos(TT.FInfos));
+    Dispose(PRequestInfos(TT.FInfos));
+    Dec(FCount);
+  finally
+//    TT.Free; // (p3) FreeOnTerminate is set when creating, so don't free here
   end;
-  Dec(FCount);
 end;
 
 //=== TJvMultiHttpThread =====================================================
@@ -407,6 +416,12 @@ begin
   FPosition := 0;
   FContinue := True;
   FStream := nil;
+end;
+
+destructor TJvMultiHttpThread.Destroy;
+begin
+  FreeAndNil(FStream);
+  inherited;
 end;
 
 procedure TJvMultiHttpThread.Error;
@@ -425,55 +440,51 @@ var
   BytesRead: DWORD;
   dLength, dReserved, dSize: DWORD;
 begin
-  // (rom) secure thread against exceptions
-  FStream := nil;
+  // (p3) avoid memory leaks
+  FreeAndNil(FStream);
   try
-    try
-      Infos := PRequestInfos(FInfos);
+    Infos := PRequestInfos(FInfos);
 
-      //Send the request
-      if not HttpSendRequest(Infos^.hRequest, nil, 0, nil, 0) then
-      begin
-        Synchronize(Error);
-        Exit;
-      end;
-
-      //Get the Size
-      dLength := SizeOf(dSize);
-      dReserved := 0;
-      if HttpQueryInfo(Infos^.hRequest, HTTP_QUERY_CONTENT_LENGTH or HTTP_QUERY_FLAG_NUMBER,
-        @dSize, dLength, dReserved) then
-      begin
-        Infos^.FileSize := dSize;
-      end
-      else
-        Infos^.FileSize := -1;
-
-      //Download the stuff
-      Synchronize(Progress);
-      if not FContinue then
-        Exit;
-
-      FStream := TMemoryStream.Create;
-      repeat
-        if not InternetReadFile(Infos^.hRequest, @Buffer[0], SizeOf(Buffer), BytesRead) then
-          BytesRead := 0
-        else
-        begin
-          Inc(FPosition, BytesRead);
-          FStream.Write(buffer, BytesRead);
-          Synchronize(Progress);
-          if not FContinue then
-            Exit;
-        end;
-      until BytesRead = 0;
-      FStream.Position := 0;
-    except
+    //Send the request
+    if not HttpSendRequest(Infos^.hRequest, nil, 0, nil, 0) then
+    begin
+      Synchronize(Error);
+      Exit;
     end;
-  finally
-    FStream.Free;
-    FStream := nil;
+
+    //Get the Size
+    dLength := SizeOf(dSize);
+    dReserved := 0;
+    if HttpQueryInfo(Infos^.hRequest, HTTP_QUERY_CONTENT_LENGTH or HTTP_QUERY_FLAG_NUMBER,
+      @dSize, dLength, dReserved) then
+    begin
+      Infos^.FileSize := dSize;
+    end
+    else
+      Infos^.FileSize := -1;
+
+    //Download the stuff
+    Synchronize(Progress);
+    if not FContinue then
+      Exit;
+
+    FStream := TMemoryStream.Create;
+    repeat
+      if not InternetReadFile(Infos^.hRequest, @Buffer[0], SizeOf(Buffer), BytesRead) then
+        BytesRead := 0
+      else
+      begin
+        Inc(FPosition, BytesRead);
+        FStream.Write(buffer, BytesRead);
+        Synchronize(Progress);
+        if not FContinue then
+          Exit;
+      end;
+    until BytesRead = 0;
+    FStream.Position := 0;
+  except
   end;
+  Terminate;
 end;
 
 procedure TJvMultiHttpThread.Progress;
