@@ -126,8 +126,8 @@ implementation
 
 const
   // (p3) fixed as suggested by Remko Bonte
-  Row1: string[31] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ"@¿';
-  Row2: string[31] = '0123456789. :()-''!_+\/[]^&%.=$#';
+  Row1: string[31] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ"@ ';
+  Row2: string[31] = '0123456789._:()-''!_+\/[]^&%.=$#';
   Row3: string[31] = 'ÂÖÄ?* ';
 
 resourcestring
@@ -336,11 +336,11 @@ var
 begin
   Ch := UpCase(Ch);
   index := Pos(Ch, Row1);
-  if index = -1 then
+  if index = 0 then
     index := Pos(Ch, Row2);
-  if index = -1 then
+  if index = 0 then
     index := Pos(Ch, Row3);
-  if index = -1 then
+  if index = 0 then
     Result := GetCol(' ')
   else
     // (p3) fixed as suggested by Remko Bonte
