@@ -21,7 +21,7 @@ All Rights Reserved.
 Contributor(s):
   Andrei Prygounkov <a.prygounkov@gmx.de>, author of TJvaCaptionButton.
   Remko Bonte [remkobonte@myrealbox.com], theme support, actions
-  Oliver Giesen [ogware@gmx.net], caption hints.
+  Olivier Sannier [obones@meloo.com], caption hints.
 
 Last Modified: 2003-06-15
 
@@ -294,7 +294,7 @@ uses
   {$ELSE}
   ThemeSrv,
   {$ENDIF COMPILER7_UP}
-  UxTheme,
+  UxTheme, JvVCLUtils,
   {$ENDIF JVCLThemesEnabled}
   JvDsgnIntf;
 
@@ -437,6 +437,7 @@ begin
   ExStyle := GetWindowLong(Wnd, GWL_EXSTYLE);
   FHasSmallCaption := ExStyle and WS_EX_TOOLWINDOW = WS_EX_TOOLWINDOW;
   {$IFDEF JVCLThemesEnabled}
+  FCaptionActive := (GetActiveWindow = Wnd) and IsForegroundTask;
   DoThemed := IsThemed;
   {$ENDIF}
 
@@ -503,7 +504,7 @@ begin
             Inc(FDefaultButtonLeft, FDefaultButtonWidth + 2 * CSpaceBetweenButtons);
         end;
       end
-      else 
+      else
       { 4c. If it have CONTEXTHELP button, avoid it. }
       if ExStyle and WS_EX_CONTEXTHELP = WS_EX_CONTEXTHELP then
         Inc(FDefaultButtonLeft, FDefaultButtonWidth + CSpaceBetweenButtons);
