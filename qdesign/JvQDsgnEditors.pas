@@ -45,10 +45,10 @@ uses
 
   DsnConst,
 
-  {FiltEdit, }RTLConsts, DesignIntf, DesignEditors, DesignMenus,
+  {FiltEdit, } RTLConsts, DesignIntf, DesignEditors, DesignMenus,
 
 
-  ClxEditors,
+  ClxEditors, ClxImgEdit, 
 
 
   Types, Classes, SysUtils;
@@ -276,9 +276,9 @@ uses
   TypInfo, Math,
   
   
-  QFileCtrls, QConsts,
+  QFileCtrls, QConsts, Registry,
   
-  JvQTypes, JvQStringsForm, JvQDateTimeForm, JvQDsgnConsts;
+  JvQTypes, JvQStringsForm, JvQDsgnConsts;
 
 function ValueName(E: Extended): string;
 begin
@@ -806,7 +806,7 @@ end;
 
 procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
 begin
-  SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(RsStripFilePath));
+//  SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(RsStripFilePath));
 end;
 
 //=== TJvExeNameProperty =====================================================
@@ -887,8 +887,9 @@ begin
             Canvas.FillRect(Bounds(0, 0, Width, Height));
             for I := 0 to ImageList.Count - 1 do
               ImageList.Draw(Canvas, ImageList.Width * I, 0, I);
-            HandleType := bmDIB;
-            if PixelFormat in [pf15bit, pf16bit] then
+
+//            HandleType := bmDIB;
+            if PixelFormat in [{pf15bit, }pf16bit] then
             try
               PixelFormat := pf24bit;
             except
@@ -979,8 +980,13 @@ end;
 
 //=== TJvQColorProperty ======================================================
 
+const
+  { context ids for the Color Editor, from VCLEditors}
+  hcDColorEditor      = 25010;
 
-
+var
+  BaseRegistryKey:string = '';
+  
 procedure TJvQColorProperty.Edit;
 var
   ColorDialog: TColorDialog;
@@ -1025,7 +1031,7 @@ begin
     GetCustomColors;
     ColorDialog.Color := GetOrdValue;
     ColorDialog.HelpContext := hcDColorEditor;
-    ColorDialog.Options := [cdShowHelp];
+//    ColorDialog.Options := [cdShowHelp];
     if ColorDialog.Execute then
       SetOrdValue(ColorDialog.Color);
     SaveCustomColors;

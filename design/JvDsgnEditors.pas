@@ -49,7 +49,7 @@ uses
   VCLEditors,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  ClxEditors,
+  ClxEditors, ClxImgEdit,
   {$ENDIF VisualCLX}
   {$ELSE}
   LibIntf, DsgnIntf,
@@ -308,11 +308,12 @@ uses
   TypInfo, Math,
   {$IFDEF VCL}
   FileCtrl, Dlgs, Consts,
+  JvDateTimeForm, 
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QFileCtrls, QConsts,
+  QFileCtrls, QConsts, Registry,
   {$ENDIF VisualCLX}
-  JvTypes, JvStringsForm, JvDateTimeForm, JvDsgnConsts;
+  JvTypes, JvStringsForm, JvDsgnConsts;
 
 function ValueName(E: Extended): string;
 begin
@@ -919,7 +920,9 @@ end;
 
 procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
 begin
+  {$IFDEF VCL}
   SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(RsStripFilePath));
+  {$ENDIF VCL}
 end;
 
 //=== TJvExeNameProperty =====================================================
@@ -1000,8 +1003,13 @@ begin
             Canvas.FillRect(Bounds(0, 0, Width, Height));
             for I := 0 to ImageList.Count - 1 do
               ImageList.Draw(Canvas, ImageList.Width * I, 0, I);
+            {$IFDEF VCL}
             HandleType := bmDIB;
             if PixelFormat in [pf15bit, pf16bit] then
+            {$ENDIF VCL}
+            {$IFDEF VisualCLX}
+            if PixelFormat = pf16bit then
+            {$ENDIF VisualCLX}
             try
               PixelFormat := pf24bit;
             except
@@ -1123,6 +1131,10 @@ end;
 
 {$IFDEF VisualCLX}
 
+const
+  { context ids for the Color Editor, from VCLEditors }
+  hcDColorEditor      = 25010;
+
 procedure TJvQColorProperty.Edit;
 var
   ColorDialog: TColorDialog;
@@ -1167,7 +1179,7 @@ begin
     GetCustomColors;
     ColorDialog.Color := GetOrdValue;
     ColorDialog.HelpContext := hcDColorEditor;
-    ColorDialog.Options := [cdShowHelp];
+//    ColorDialog.Options := [cdShowHelp];
     if ColorDialog.Execute then
       SetOrdValue(ColorDialog.Color);
     SaveCustomColors;

@@ -41,7 +41,8 @@ uses
   DesignEditors, DesignIntf,
 
   JvQDsgnConsts, JvQTypes, JvQWStrUtils,
-  JvQEdit, JvQProgressBar, JvQTransparentPanel, JvQSecretPanel,
+  JvQEdit, JvQProgressBar, JvQTransparentPanel,
+  
   JvQMaskEdit, JvQBaseEdits, JvQCalc, JvQToolEdit,
   JvQBevel, JvQCheckBox, JvQSpeedButton,
   JvQGroupBox, JvQHeaderControl,
@@ -74,7 +75,7 @@ begin
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvTimeSpin]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [TJvGauge, TJvTabControl, TJvControlBar,
-    TJvGroupBox, TJvHeaderControl, TJvPanel, TJvSecretPanel, TJvBevel, TJvStatusBar,
+    TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel, TJvStatusBar,
     TJvTransparentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvLabel]);
 //  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
