@@ -54,7 +54,7 @@ unit JvJCLUtils;
 }
 
 interface
-// (p3) note: this unit should only contain JCL compatible routines (no Forms etc)
+// (p3) note: this unit should only contain JCL compatible routines ( no Forms etc)
 // and no JVCL units!
 
 uses
@@ -665,6 +665,7 @@ function FindNotBlankCharPos(const S: string): Integer;
 function FindNotBlankCharPosW(const S: WideString): Integer;
 function AnsiChangeCase(const S: string): string;
 function WideChangeCase(const S: string): string;
+function StringStartsWith(const Str, SubStr: string): Boolean;
 function StringEndsWith(const Str, SubStr: string): Boolean;
 function ExtractFilePath2(const FileName: string): string;
 {end JvStrUtils}
@@ -1010,7 +1011,7 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QConsts,
-  {$ENDIF VisualCLX}
+  {$ENDIF VCL}
   JclStrings, JclSysInfo;
 
 const
@@ -5921,6 +5922,21 @@ begin
       Result[I] := Down[I]
     else
       Result[I] := Up[I];
+end;
+
+function StringStartsWith(const Str, SubStr: string): Boolean;
+var
+  P: PChar;
+  L, L2: Integer;
+begin
+  P := PChar(Str);
+  L := Length(SubStr);
+  L2 := Length(Str);
+  if L > L2 then
+    Result := False
+  else
+    Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
+      P, L, PChar(SubStr), L) = 2;
 end;
 
 function StringEndsWith(const Str, SubStr: string): Boolean;
