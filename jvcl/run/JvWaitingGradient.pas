@@ -31,12 +31,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Graphics, Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QWindows,
-  {$ENDIF VisualCLX}
   JvImageDrawThread, JvComponent;
 
 type

@@ -33,12 +33,7 @@ unit JvTracker;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QExtCtrls, Types, QWindows,
-  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent;
 

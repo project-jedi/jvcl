@@ -34,12 +34,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Controls, Buttons, Graphics, ExtCtrls, Forms, ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QControls, QButtons, QGraphics, QExtCtrls, QForms, QImgList, QWindows,
-  {$ENDIF VisualCLX}
   {$IFDEF BCB}
   JvTypes, // TDate / TTime macros
   {$ENDIF BCB}
@@ -326,12 +321,7 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   JvJVCLUtils, JvThemes;
 
 {$IFDEF MSWINDOWS}

@@ -31,16 +31,8 @@ unit JvTFManager;
 interface
 
 uses
-  Classes, SysUtils,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
-  Controls, Messages, Graphics, ImgList, ExtCtrls, Printers,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QGraphics, QImgList, QExtCtrls, QPrinters, Types, QWindows,
-  {$ENDIF VisualCLX}
+  Classes, SysUtils, Windows, Controls, Messages,
+  Graphics, ImgList, ExtCtrls, Printers,
   {$IFDEF USEJVCL}
   JvComponent, JvTypes,
   {$ENDIF USEJVCL}

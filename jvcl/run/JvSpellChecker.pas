@@ -34,13 +34,7 @@ unit JvSpellChecker;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Controls, Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Controls, Messages,
   JvSpellIntf, JvComponent;
 
 type

@@ -29,12 +29,9 @@ unit JvPicClip;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Windows, Graphics, Controls,
-  {$ENDIF VCL}
+  Classes, Windows, Graphics, Controls,
   {$IFDEF VisualCLX}
-  QWindows, QGraphics, QControls, Types, QImgList,
+  QImgList,
   {$ENDIF VisualCLX}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,

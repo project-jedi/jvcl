@@ -35,12 +35,7 @@ unit JvProgressComponent;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Controls, Forms, StdCtrls, ComCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows, QTypes, QControls, QForms, QStdCtrls, QComCtrls,
-  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent;
 

@@ -43,10 +43,10 @@ uses
   ThemeSrv,
   {$ENDIF COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  Controls, StdCtrls, Graphics, Buttons,
   {$ENDIF VCL}
+  Controls, StdCtrls, Graphics, Buttons,
   {$IFDEF VisualCLX}
-  QControls, QForms, QGraphics, QButtons, Types, QWindows,
+  QWindows, QForms, // Mouse
   {$ENDIF VisualCLX}
   JvFinalize;
 
@@ -1785,7 +1785,6 @@ begin
 end;
 
 {$ENDIF JVCLThemesEnabled}
-
 
 {$IFDEF JVCLThemesEnabled}
 

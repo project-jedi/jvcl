@@ -29,13 +29,7 @@ unit JvMergeManager;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Controls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms,
-  {$ENDIF VisualCLX}
+  Classes, Controls, Forms,
   JvJVCLUtils, JvComponent;
 
 type

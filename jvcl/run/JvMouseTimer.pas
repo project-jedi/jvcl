@@ -36,12 +36,7 @@ unit JvMouseTimer;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Controls, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows, QControls, QExtCtrls,
-  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 type

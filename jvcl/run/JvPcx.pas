@@ -37,11 +37,9 @@ uses
   {$IFDEF LINUX}
   QWindows,
   {$ENDIF LINUX}
-  {$IFDEF VCL}
   Graphics, Controls, Forms,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, Qt, QGraphics, QControls,
+  Qt,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvTypes, JvJCLUtils;

@@ -58,12 +58,9 @@ unit JvMouseGesture;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
+  SysUtils, Classes, Windows, Messages,
   {$IFDEF VisualCLX}
-  Qt, QControls, QForms, Types, QWindows,
+  Qt, QControls, QForms,
   {$ENDIF VisualCLX}
   JvComponent;
 

@@ -88,13 +88,7 @@ unit JvProgressDialog;
 interface
 
 uses
-  Classes, SysUtils,
-  {$IFDEF VCL}
-  Graphics, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QForms,
-  {$ENDIF VisualCLX}
+  Classes, SysUtils, Graphics, Forms,
   JvBaseDlg;
 
 type
@@ -178,12 +172,7 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
   Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls,
-  {$ENDIF VisualCLX}
   JvProgressForm, JvJVCLUtils;
 
 constructor TJvProgressDialog.Create(AOwner: TComponent);

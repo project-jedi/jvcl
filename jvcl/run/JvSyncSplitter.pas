@@ -30,13 +30,7 @@ unit JvSyncSplitter;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Messages, Controls, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Qt, QControls, QExtCtrls, Types, QWindows,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Messages, Controls, ExtCtrls,
   JvSplitter;
 
 type

@@ -30,13 +30,7 @@ unit JvWinampLabel;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QTypes, Types, QGraphics, QControls, QStdCtrls, QWindows,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Messages, Graphics, Controls, StdCtrls,
   JvExStdCtrls;
 
 type

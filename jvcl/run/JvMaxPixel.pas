@@ -30,14 +30,7 @@ unit JvMaxPixel;
 interface
 
 uses
-  SysUtils,
-  {$IFDEF VCL}
-  Graphics, Controls, 
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, 
-  {$ENDIF VisualCLX}
-  Classes;
+  SysUtils, Graphics, Controls, Classes;
 
 type
   TJvMaxPixel = class(TPersistent)

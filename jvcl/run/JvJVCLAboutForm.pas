@@ -34,13 +34,11 @@ uses
   Windows,
   JclWin32,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes, IniFiles,
+  SysUtils, Classes, IniFiles, Messages, Controls, Forms, StdCtrls, ExtCtrls,
+  Dialogs, Buttons,
   {$IFDEF VCL}
-  Messages, Controls, Forms, StdCtrls, ExtCtrls, Dialogs, Buttons, jpeg,
+  Jpeg,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons, QWindows,
-  {$ENDIF VisualCLX}
   JclSysInfo,
   JVCLVer, JvBaseDlg, JvComponent;
 

@@ -35,12 +35,7 @@ unit JvValidateEdit;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Controls, Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QTypes, QControls, QGraphics, Types, QWindows,
-  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvEdit;
 

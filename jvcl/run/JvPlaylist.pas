@@ -30,13 +30,7 @@ unit JvPlaylist;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Messages, Controls, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QStdCtrls, Types, QWindows,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Messages, Controls, StdCtrls,
   JvCtrls, JvListBox;
 
 type

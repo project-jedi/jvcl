@@ -30,13 +30,7 @@ unit JvPrint;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Graphics, Printers,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QPrinters,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Graphics, Printers,
   JvTypes, JvComponent;
 
 type

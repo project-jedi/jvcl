@@ -30,13 +30,7 @@ unit JvSpacer;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Graphics, Controls, Forms, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QExtCtrls,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   JvComponent;
 
 type

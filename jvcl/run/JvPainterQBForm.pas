@@ -30,15 +30,8 @@ unit JvPainterQBForm;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls,
+  SysUtils, Classes, Windows, Messages, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, Menus, ComCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QTypes, QGraphics, QControls, Types,
-  QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QComCtrls, QWindows,
-  {$ENDIF VisualCLX}
   JvDrawImage, JvComponent;
 
 type

@@ -33,13 +33,7 @@ unit JvTipOfDay;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Graphics, Controls, Messages, Forms, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QStdCtrls,
-  {$ENDIF VisualCLX}
+  Classes, Graphics, Controls, Messages, Forms, StdCtrls,
   JvAppStorage, JvBaseDlg, JvButtonPersistent, JvSpeedButton, JvTypes;
   
 type
@@ -326,6 +320,7 @@ begin
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
       OnHide := FormHide ;  // onclose
+      FormStyle := fsStayOnTop;
       Show ;  // Shown non modal
     except
       Free;

@@ -41,12 +41,7 @@ unit JvWizardCommon;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Controls, Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QGraphics, QWindows,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}

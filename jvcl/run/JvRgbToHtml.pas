@@ -30,13 +30,7 @@ unit JvRgbToHtml;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QGraphics,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Graphics,
   JvComponent;
 
 type

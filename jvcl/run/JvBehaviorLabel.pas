@@ -43,14 +43,7 @@ unit JvBehaviorLabel;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QTypes, Types,
-  {$ENDIF VisualCLX}
-  Controls, ExtCtrls,
+  Classes, Windows, Messages, Controls, ExtCtrls,
   JvExStdCtrls;
 
 type
@@ -322,7 +315,7 @@ type
     function GetLabelText: string; override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    function GetLabelText: WideString; override;
+    function GetText: TCaption; override;
     {$ENDIF VisualCLX}
     property Behavior: TJvLabelBehaviorName read FBehavior write SetBehavior stored BehaviorStored;
     property Caption;
@@ -563,16 +556,23 @@ end;
 
 {$IFDEF VCL}
 function TJvCustomBehaviorLabel.GetLabelText: string;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-function TJvCustomBehaviorLabel.GetLabelText: WideString;
-{$ENDIF VisualCLX}
 begin
   if UseEffectText then
     Result := EffectText
   else
     Result := inherited GetLabelText;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+function TJvCustomBehaviorLabel.GetText: TCaption;
+begin
+  if UseEffectText then
+    Result := EffectText
+  else
+    Result := inherited GetText;
+end;
+{$ENDIF VisualCLX}
 
 function TJvCustomBehaviorLabel.BehaviorStored: Boolean;
 begin

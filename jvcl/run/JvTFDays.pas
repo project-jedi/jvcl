@@ -47,14 +47,8 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QImgList, QWindows, Types,
-  {$ENDIF VisualCLX}
   JvTFManager, JvTFSparseMatrix, JvTFUtils;
 
 // (ahuser) do not convert to JvExVCL. This package is USEJVCL'ed

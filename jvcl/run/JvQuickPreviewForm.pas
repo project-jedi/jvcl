@@ -30,13 +30,7 @@ unit JvQuickPreviewForm;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Controls, Forms, Dialogs, Buttons, ExtCtrls, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QControls, QForms, QDialogs, QButtons, QExtCtrls, QStdCtrls,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Controls, Forms, Dialogs, Buttons, ExtCtrls, StdCtrls,
   JvDrawImage, JvComponent;
 
 type

@@ -33,12 +33,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ExtCtrls, // for Frame3D
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QExtCtrls, QWindows, Types,
-  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -240,9 +235,10 @@ begin
     {$IFDEF VCL}
     BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight,
       FBuffer.Canvas.Handle, 0, 0, SRCCOPY);
-    {$ENDIF VCL}  
+    {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    Canvas.Draw(0,0, FBuffer);
+    BitBlt(Canvas, 0, 0, ClientWidth, ClientHeight,
+      FBuffer.Canvas, 0, 0, SRCCOPY);
     {$ENDIF VisualCLX}
   end;
 end;
@@ -450,12 +446,7 @@ begin
   if Y < 0 then
     Y := 0;
 
-  {$IFDEF VCL}
   SetBkMode(FBuffer.Canvas.Handle, Windows.TRANSPARENT);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SetBkMode(FBuffer.Canvas.Handle, TRANSPARENT);
-  {$ENDIF VisualCLX}
   //    FBuffer.Canvas.Brush.Color := clNone;
   //    FBuffer.Canvas.Brush.Style := bsClear;
   FBuffer.Canvas.TextOut(X, Y, S);

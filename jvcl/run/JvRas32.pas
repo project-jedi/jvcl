@@ -31,15 +31,15 @@ unit JvRas32;
 interface
 
 uses
-  SysUtils, Classes,
-  Controls, Forms,
+  SysUtils, Classes, Controls, Forms,
   {$IFDEF VisualCLX}
-  Qt,
+  Qt, QRas32,
+  {$ENDIF VisualCLX}
+  {$IFDEF VCL}
+  Ras32,
   {$ENDIF VCL}
-  {$IFDEF MSWINDOWS}
   Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  Ras32, // Messages must be after QControls
+   // Messages must be after QControls
   JvComponent, JvTypes;
 
 type
