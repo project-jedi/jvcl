@@ -156,7 +156,7 @@ type
 
   end;
 
-  TJvgLogics = class(TCollection)
+  TJvgLogics = class(TOwnedCollection)
   private
     FResult: string;
     FDictionary: TStrings;
@@ -173,7 +173,7 @@ type
   public
     TraceItem: TJvgLogicElement;
 
-    constructor Create(ItemClass: TCollectionItemClass);
+    constructor Create(AOwner:TPersistent; ItemClass: TCollectionItemClass);
     destructor Destroy; override;
     procedure Loaded;
 
@@ -206,7 +206,7 @@ type
     property FalseResult: string read FFalseResult write FFalseResult;
   end;
 
-  TJvgLogicVariants = class(TCollection)
+  TJvgLogicVariants = class(TOwnedCollection)
   private
     function GetItem(Index: Integer): TJvgLogicVariant;
     procedure SetItem(Index: Integer; Value: TJvgLogicVariant);
@@ -234,7 +234,7 @@ type
     property Color: TColor read FColor write FColor;
   end;
 
-  TJvgCommentAreas = class(TCollection)
+  TJvgCommentAreas = class(TOwnedCollection)
   private
     function GetItem(Index: Integer): TJvgCommentArea;
     procedure SetItem(Index: Integer; Value: TJvgCommentArea);
@@ -260,7 +260,7 @@ begin
   Caption := sStep + IntToStr(ID);
   FNextElementID := -1;
   FNextFalseElementID := -1;
-  FLogicVariants := TJvgLogicVariants.Create(TJvgLogicVariant);
+  FLogicVariants := TJvgLogicVariants.Create(Collection, TJvgLogicVariant);
 end;
 
 destructor TJvgLogicElement.Destroy;
@@ -281,9 +281,9 @@ begin
     end;
 end;
 
-constructor TJvgLogics.Create(ItemClass: TCollectionItemClass);
+constructor TJvgLogics.Create(AOwner:TPersistent; ItemClass: TCollectionItemClass);
 begin
-  inherited Create(ItemClass);
+  inherited Create(AOwner, ItemClass);
   FDictionary := TStringList.Create;
 end;
 
@@ -377,8 +377,8 @@ end;
 constructor TJvgLogicProducer.Create(AOwner: TComponent);
 begin
   inherited;
-  FLogics := TJvgLogics.Create(TJvgLogicElement);
-  FCommentAreas := TJvgCommentAreas.Create(TJvgCommentArea);
+  FLogics := TJvgLogics.Create(self, TJvgLogicElement);
+  FCommentAreas := TJvgCommentAreas.Create(self, TJvgCommentArea);
 end;
 
 destructor TJvgLogicProducer.Destroy;
