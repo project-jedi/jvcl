@@ -26,7 +26,7 @@ description : TJvCsvDataSet data access component. Design time unit - editor for
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvCsvDataForm;
 

@@ -1,7 +1,7 @@
 unit MainFrm;
 
 interface
-{$I JVCL.INC}
+{$I jvcl.inc}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Mask, ExtCtrls, ImgList, ComCtrls, Menus,

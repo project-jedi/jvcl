@@ -28,8 +28,8 @@ Changes:
   the 0-th item for the state imagelist isn't drawn to alert the user to this fact
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
-{$I WINDOWSONLY.INC}
+{$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvTreeItemsEditorForm;
 

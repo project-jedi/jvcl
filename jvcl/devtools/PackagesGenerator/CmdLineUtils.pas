@@ -122,7 +122,7 @@ begin
       format := '%p%n%e%v%t';
 
     if incfile = '' then
-      incfile := '..'+PathSeparator+'..'+PathSeparator+'common'+PathSeparator+'JVCL.INC';}
+      incfile := '..'+PathSeparator+'..'+PathSeparator+'common'+PathSeparator+'jvcl.inc';}
 
     LoadConfig(xmlconfig, modelName);
 

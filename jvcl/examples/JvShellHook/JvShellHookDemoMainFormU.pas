@@ -1,6 +1,6 @@
 unit JvShellHookDemoMainFormU;
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 interface
 

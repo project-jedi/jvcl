@@ -497,7 +497,7 @@ object FormMain: TFormMain
     Top = 312
     Width = 209
     Height = 145
-    Caption = ' JVCL.INC - Options (global) '
+    Caption = ' jvcl.inc - Options (global) '
     TabOrder = 2
     object BtnAdvancedOptions: TBitBtn
       Left = 104

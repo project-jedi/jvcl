@@ -1,4 +1,4 @@
-{$INCLUDE JVCL.INC}
+{$INCLUDE jvcl.inc}
 unit fReports;
 
 interface

@@ -1,6 +1,6 @@
 unit JvShFileOperationMainFormU;
 
-{$I JVCL.inc}
+{$I jvcl.inc}
 
 interface
 

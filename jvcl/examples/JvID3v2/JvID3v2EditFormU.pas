@@ -1,5 +1,5 @@
 unit JvID3v2EditFormU;
-{$I JVCL.INC}
+{$I jvcl.inc}
 interface
 
 uses

@@ -2,7 +2,7 @@ unit Main;
 
 interface
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,

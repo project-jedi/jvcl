@@ -2,7 +2,7 @@ unit MainForm;
 { NOTE: to run this demo, compile the packages MyLabelPackage.dpk and JvInterpreter_MyLabelPackage.dpk (in this folder)
   and move the generated bpl/dcp files to the demos output folder (this is by default the jvcl\bin folder) }
 
-{$INCLUDE JVCL.INC}
+{$INCLUDE jvcl.inc}
 
 interface
 

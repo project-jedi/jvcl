@@ -1,5 +1,5 @@
 unit OtherStandAlone;
-{$I JVCL.INC}
+{$I jvcl.inc}
 interface
 
 uses
