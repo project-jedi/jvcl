@@ -1684,8 +1684,8 @@ begin
   case Msg.Msg of
     {$IFDEF JVCLThemesEnabled}
     WM_THEMECHANGED,
-    CM_SYSCOLORCHANGE:
     {$ENDIF}
+    CM_SYSCOLORCHANGE:
       begin
         FNeedRecalculate := True;
         {$IFDEF JVCLThemesEnabled}
