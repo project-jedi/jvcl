@@ -506,6 +506,7 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils,
+  JvDynControlEngineVCLDB,
   JvDynControlEngineTools, JvDynControlEngineJVCL, JvConsts, JvJCLUtils;
 
 var
@@ -2009,7 +2010,7 @@ begin
 end;
 
 type
-  TJvDynControlEngineJVCLDB = class(TJvDynControlEngineDB)
+  TJvDynControlEngineJVCLDB = class(TJvDynControlEngineVCLDB)
   public
     procedure RegisterControls; override;
   end;

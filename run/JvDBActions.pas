@@ -133,6 +133,16 @@ type
       ADataComponent: TComponent); override;
   end;
 
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+  TJvDatabaseActionDevExpCxGridEngine = class(TJvDatabaseActionBaseEngine)
+  private
+  protected
+    function GetDataSource(ADataComponent: TComponent): TDataSource; override;
+  public
+    function Supports(ADataComponent: TComponent): Boolean; override;
+  end;
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+
   TJvDatabaseExecuteEvent = procedure(Sender: TObject; DataEngine: TJvDatabaseActionBaseEngine;
     DataComponent: TComponent) of object;
   TJvDatabaseExecuteDataSourceEvent = procedure(Sender: TObject; DataSource: TDataSource) of object;
@@ -343,7 +353,17 @@ type
     procedure ExecuteTarget(Target: TObject); override;
   end;
 
+  TJvDatabaseActionEngineList = class(TList)
+  public
+    destructor Destroy; override;
+    procedure RegisterEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
+    function GetEngine(AComponent: TComponent): TJvDatabaseActionBaseEngine;
+    function Supports (AComponent: TComponent) : Boolean;
+  end;
+
 procedure RegisterActionEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
+
+function RegisteredDatabaseActionEngineList : TJvDatabaseActionEngineList;
 
 implementation
 
@@ -351,19 +371,15 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+  cxGrid, cxGridCustomTableView, cxGridDBDataDefinitions,
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   SysUtils, DBGrids, Grids,
   JvResources, JvParameterList, JvParameterListParameter;
 
-type
-  TJvDatabaseActionEngineList = class(TList)
-  public
-    destructor Destroy; override;
-    procedure RegisterEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
-    function GetEngine(AComponent: TComponent): TJvDatabaseActionBaseEngine;
-  end;
 
 var
-  RegisteredActionEngineList: TJvDatabaseActionEngineList;
+  IntRegisteredActionEngineList: TJvDatabaseActionEngineList;
 
 //=== { TJvDatabaseActionList } ==============================================
 
@@ -647,7 +663,10 @@ begin
   Dialog := TJvDynControlDataSourceEditDialog.Create;
   try
     AOptions.SetOptionsToDialog(Dialog);
-    Dialog.DataSource := GetDataSource(ADataComponent);
+    if Dialog.DynControlEngineDB.SupportsDataComponent(ADataComponent) then
+      Dialog.DataComponent := ADataComponent
+    else
+      Dialog.DataComponent := GetDataSource(ADataComponent);
     Dialog.ShowDialog;
   finally
     Dialog.Free;
@@ -725,13 +744,54 @@ begin
   try
     AOptions.SetOptionsToDialog(Dialog);
     FCurrentDataComponent := ADataComponent;
-    Dialog.DataSource := GetDataSource(ADataComponent);
+    if Dialog.DynControlEngineDB.SupportsDataComponent(ADataComponent) then
+      Dialog.DataComponent := ADataComponent
+    else
+      Dialog.DataComponent := GetDataSource(ADataComponent);
     Dialog.OnCreateDataControlsEvent := OnCreateDataControls;
     Dialog.ShowDialog;
   finally
     Dialog.Free;
   end;
 end;
+
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+//=== { TJvDatabaseActionDevExpCxGridEngine } ======================================
+
+function TJvDatabaseActionDevExpCxGridEngine.GetDataSource(ADataComponent: TComponent): TDataSource;
+begin
+  if Assigned(ADataComponent) then
+    if (ADataComponent is TcxGrid) then
+      if (TcxGrid(ADataComponent).ActiveView is TcxCustomGridTableView) and
+         (TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView).DataController is TcxGridDBDataController) then
+        Result := TcxGridDBDataController(TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView).DataController).Datasource
+      else
+        Result := nil
+    else if ADataComponent is TcxCustomGridTableView then
+      if TcxCustomGridTableView(ADataComponent).DataController is TcxGridDBDataController then
+        Result := TcxGridDBDataController(TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView).DataController).Datasource
+      else
+        Result := nil
+    else
+      Result := Inherited GetDataSource(ADataComponent)
+  else
+    Result := nil;
+end;
+
+function TJvDatabaseActionDevExpCxGridEngine.Supports(ADataComponent: TComponent): Boolean;
+begin
+  if Assigned(ADataComponent) then
+    if ADataComponent is TcxGrid then
+      Result := (TcxGrid(ADataComponent).ActiveView is TcxCustomGridTableView) and
+                (TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView).DataController is TcxGridDBDataController)
+    else if ADataComponent is TcxCustomGridTableView then
+      Result := TcxCustomGridTableView(ADataComponent).DataController is TcxGridDBDataController
+    else
+      Result := False
+  else
+    Result := False;
+end;
+{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
 
 //=== { TJvDatabaseBaseAction } ==============================================
 
@@ -763,8 +823,8 @@ begin
   FDataComponent := Value;
   if FDataComponent <> nil then
     FDataComponent.FreeNotification(Self);
-  if Assigned(RegisteredActionEngineList) then
-    FDataEngine := RegisteredActionEngineList.GetEngine(FDataComponent)
+  if Assigned(IntRegisteredActionEngineList) then
+    FDataEngine := IntRegisteredActionEngineList.GetEngine(FDataComponent)
   else
     FDataEngine := nil;
 end;
@@ -1381,23 +1441,33 @@ begin
     end;
 end;
 
+function TJvDatabaseActionEngineList.Supports (AComponent: TComponent) : Boolean;
+begin
+  Result := Assigned(GetEngine(AComponent));
+end;
+
 //=== { Global } =============================================================
+
+function RegisteredDatabaseActionEngineList : TJvDatabaseActionEngineList;
+begin
+  Result := IntRegisteredActionEngineList;
+end;
 
 procedure RegisterActionEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
 begin
-  if Assigned(RegisteredActionEngineList) then
-    RegisteredActionEngineList.RegisterEngine(AEngineClass);
+  if Assigned(IntRegisteredActionEngineList) then
+    IntRegisteredActionEngineList.RegisterEngine(AEngineClass);
 end;
 
 procedure CreateActionEngineList;
 begin
-  RegisteredActionEngineList := TJvDatabaseActionEngineList.Create;
+  IntRegisteredActionEngineList := TJvDatabaseActionEngineList.Create;
 end;
 
 procedure DestroyActionEngineList;
 begin
-  if Assigned(RegisteredActionEngineList) then
-    RegisteredActionEngineList.Free;
+  if Assigned(IntRegisteredActionEngineList) then
+    IntRegisteredActionEngineList.Free;
 end;
 
 {$IFDEF UNITVERSIONING}
@@ -1414,6 +1484,9 @@ initialization
   CreateActionEngineList;
   RegisterActionEngine(TJvDatabaseActionBaseEngine);
   RegisterActionEngine(TJvDatabaseActionDBGridEngine);
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+  RegisterActionEngine(TJvDatabaseActionDevExpCxGridEngine);
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
 
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
