@@ -834,6 +834,11 @@ const
   BF_FLAT = $4000;    { For flat rather than 3D borders }
   BF_MONO = $8000;    { For monochrome borders }
 
+type
+  THackCanvas = class(TCanvas);
+
+procedure RequiredState(ACanvas: TCanvas; State: TCanvasState);
+
 { limited implementation of }
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
@@ -3925,9 +3930,15 @@ begin
   end;
 end;
 
+procedure RequiredState(ACanvas: TCanvas; State: TCanvasState);
+begin
+  THackCanvas(Acanvas).RequiredState(State);
+end;
+
 procedure TextOutAngle(ACanvas: TCanvas; Angle, Left, Top: Integer; Text: WideString);
 begin
   ACanvas.Start;
+  RequiredState(ACanvas, [csHandleValid, csFontValid]);
   TextOutAngle(ACanvas.Handle, Angle, Left, Top, Text);
   ACanvas.Stop;
 end;
