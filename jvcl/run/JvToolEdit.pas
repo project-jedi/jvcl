@@ -233,9 +233,11 @@ type
     property Button;
   published
     //Polaris
+
     property Align;
     property Alignment;
     property AutoSelect;
+    property AutoSize;
     property BorderStyle;
     property ButtonHint;
     property ButtonFlat;
@@ -346,6 +348,7 @@ type
     property ShortName: string read GetShortName;
   published
     property AcceptFiles: Boolean read FAcceptFiles write SetAcceptFiles default True;
+    property AutoSize;
     property OnBeforeDialog: TExecOpenDialogEvent read FOnBeforeDialog
       write FOnBeforeDialog;
     property OnAfterDialog: TExecOpenDialogEvent read FOnAfterDialog
@@ -404,6 +407,7 @@ type
   published
     //Polaris
     property Align;
+    property AutoSize;
     property DialogKind: TFileDialogKind read FDialogKind write SetDialogKind
       default dkOpen;
     property DefaultExt: TFileExt read GetDefaultExt write SetDefaultExt;
@@ -495,6 +499,7 @@ type
   published
     //Polaris
     property Align;
+    property AutoSize;
     property DialogKind: TDirDialogKind read FDialogKind write FDialogKind default dkVCL;
     property DialogText: string read FDialogText write FDialogText;
     property DialogOptions: TSelectDirOpts read FOptions write FOptions default [];
@@ -693,6 +698,7 @@ type
     property Align;
     // Polaris
     property AutoSelect;
+    property AutoSize;
     property BlanksChar;
     property BorderStyle;
     property ButtonHint;
@@ -1756,7 +1762,8 @@ begin
       I := Metrics.tmHeight;
     I := I div 4 + GetSystemMetrics(SM_CYBORDER) * 4;
   end;
-  Height := Metrics.tmHeight + I;
+  if Height < Metrics.tmHeight + I then
+    Height := Metrics.tmHeight + I;
 end;
 
 function TJvCustomComboEdit.GetTextHeight: Integer;
