@@ -204,8 +204,19 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-
   {$ENDIF USEJVCL}
+
+  TJvDotNetButton = class(TButton)
+  private
+    FHighlighted: Boolean;
+    FOldWindowProc: TWndMethod;
+    procedure InternalWindowProc(var Msg: TMessage);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property Color;
+  end;
 
 (* TJvDotNetCustomControl = class(TWinControl)
   published
@@ -471,5 +482,29 @@ begin
 end;
 
 {$ENDIF USEJVCL}
+
+{ TJvDotNetButton }
+
+constructor TJvDotNetButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FOldWindowProc := WindowProc;
+  WindowProc := InternalWindowProc;
+end;
+
+destructor TJvDotNetButton.Destroy;
+begin
+  WindowProc := FOldWindowProc;
+  inherited Destroy;
+end;
+
+procedure TJvDotNetButton.InternalWindowProc(var Msg: TMessage);
+begin
+  // (p3) this doesn't work 100% when tabbing into the button
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
+  if Msg.Msg = CM_MOUSELEAVE then
+    Invalidate; // redraw 3D border
+end;
 
 end.
