@@ -617,6 +617,11 @@ begin
   if Result and (FOldSize > NewSize) then
   begin
     DockPanel := DockServer.DockPanelWithAlign[Align];
+    if DockPanel = nil then
+    begin
+      Result := False;
+      Exit;
+    end;
     Limit := DockPanel.JvDockManager.GetDockClientLimit(JvDockGetControlOrient(DockPanel),
       Align in [alLeft, alTop]);
     MinSize := DockPanel.JvDockManager.MinSize;
@@ -642,11 +647,14 @@ var
   DockPanel: TJvDockPanel;
 begin
   DockPanel := DockServer.DockPanelWithAlign[Align];
-  DockPanel.JvDockManager.BeginResizeDockSite;
-  try
-    inherited MouseUp(Button, Shift, X, Y);
-  finally
-    DockPanel.JvDockManager.EndResizeDockSite;
+  if Assigned(DockPanel) then
+  begin
+    DockPanel.JvDockManager.BeginResizeDockSite;
+    try
+      inherited MouseUp(Button, Shift, X, Y);
+    finally
+      DockPanel.JvDockManager.EndResizeDockSite;
+    end;
   end;
 end;
 
@@ -740,19 +748,19 @@ end;
 procedure TJvDockVCStyle.SetDockBaseControl(IsCreate: Boolean;
   DockBaseControl: TJvDockBaseControl);
 var
-  DockClient: TJvDockClient;
+  ADockClient: TJvDockClient;
 begin
   if DockBaseControl is TJvDockClient then
   begin
-    DockClient := TJvDockClient(DockBaseControl);
+    ADockClient := TJvDockClient(DockBaseControl);
     if IsCreate then
     begin
-      FOldEachOtherDock := DockClient.EachOtherDock;
-      DockClient.EachOtherDock := False;
-      DockClient.DirectDrag := True;
+      FOldEachOtherDock := ADockClient.EachOtherDock;
+      ADockClient.EachOtherDock := False;
+      ADockClient.DirectDrag := True;
     end
     else
-      DockClient.EachOtherDock := FOldEachOtherDock;
+      ADockClient.EachOtherDock := FOldEachOtherDock;
   end;
 end;
 
@@ -1416,6 +1424,7 @@ var
   AverageSize: Integer;
 begin
   ChildCount := Parent.VisibleChildCount - Integer((Exclude <> nil) and (Exclude.ParentZone = Parent));
+  if ChildCount = 0 then Exit; 
   AverageSize := DockSiteSizeAlternate div ChildCount;
   Assert(AverageSize > 0);
   Zone := TJvDockVCZone(Parent.FirstVisibleChildZone);

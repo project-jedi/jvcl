@@ -818,7 +818,7 @@ begin
   begin
     if (DockManager = nil) and DockSite and UseDockManager then
       Result := TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelTreeClass.Create(
-        Self, TJvDockPanel(Self).DockServer.DockStyle.ConjoinPanelZoneClass) as IJvDockManager
+        Self, TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelZoneClass) as IJvDockManager
     else
       Result := DockManager;
   end
@@ -2149,7 +2149,7 @@ end;
 procedure TJvDockManager.DoDockDrop(Source: TJvDockDragDockObject; Pos: TPoint);
 var
   Target: TWinControl;
-  DockClient: TJvDockClient;
+  ADockClient: TJvDockClient;
 begin
   if Source.DragTarget <> nil then
   begin
@@ -2160,9 +2160,9 @@ begin
       else
       if Target is TForm then
       begin
-        DockClient := FindDockClient(Target);
-        if DockClient <> nil then
-          DockClient.FormDockDrop(Source, X, Y);
+        ADockClient := FindDockClient(Target);
+        if ADockClient <> nil then
+          ADockClient.FormDockDrop(Source, X, Y);
       end;
   end;
 end;
@@ -2170,7 +2170,7 @@ end;
 function TJvDockManager.DoDockOver(DragState: TDragState): Boolean;
 var
   Target: TControl;
-  DockClient: TJvDockClient;
+  ADockClient: TJvDockClient;
 begin
   Result := True;
   if DragObject.DragTarget <> nil then
@@ -2182,56 +2182,56 @@ begin
       else
       if Target is TForm then
       begin
-        DockClient := FindDockClient(Target);
-        if DockClient <> nil then
-          DockClient.FormDockOver(DragObject, X, Y, DragState, Result);
+        ADockClient := FindDockClient(Target);
+        if ADockClient <> nil then
+          ADockClient.FormDockOver(DragObject, X, Y, DragState, Result);
       end;
   end;
 end;
 
 procedure TJvDockManager.DoEndDrag(Target: TObject; X, Y: Integer);
 var
-  DockClient: TJvDockClient;
+  ADockClient: TJvDockClient;
 begin
   if Target is TJvDockCustomControl then
     TJvDockCustomControl(Target).CustomEndDock(Target, X, Y)
   else
   if Target is TForm then
   begin
-    DockClient := FindDockClient(TControl(Target));
-    if DockClient <> nil then
-      DockClient.FormEndDock(Target, X, Y);
+    ADockClient := FindDockClient(TControl(Target));
+    if ADockClient <> nil then
+      ADockClient.FormEndDock(Target, X, Y);
   end;
 end;
 
 procedure TJvDockManager.DoGetDockEdge(Target: TControl; MousePos: TPoint; var DropAlign: TAlign);
 var
-  DockClient: TJvDockClient;
+  ADockClient: TJvDockClient;
 begin
   if Target is TJvDockCustomControl then
     TJvDockCustomControl(Target).CustomGetDockEdge(DragObject, MousePos, DropAlign)
   else
   if Target is TForm then
   begin
-    DockClient := FindDockClient(Target);
-    if DockClient <> nil then
-      DockClient.FormGetDockEdge(DragObject, MousePos, DropAlign);
+    ADockClient := FindDockClient(Target);
+    if ADockClient <> nil then
+      ADockClient.FormGetDockEdge(DragObject, MousePos, DropAlign);
   end;
 end;
 
 procedure TJvDockManager.DoGetSiteInfo(Target, Client: TControl;
   var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
 var
-  DockClient: TJvDockClient;
+  ADockClient: TJvDockClient;
 begin
   if Target is TJvDockCustomControl then
     TJvDockCustomControl(Target).CustomGetSiteInfo(DragObject, Client, InfluenceRect, MousePos, CanDock)
   else
   if Target is TForm then
   begin
-    DockClient := FindDockClient(Target);
-    if DockClient <> nil then
-      DockClient.FormGetSiteInfo(DragObject, Client, InfluenceRect, MousePos, CanDock);
+    ADockClient := FindDockClient(Target);
+    if ADockClient <> nil then
+      ADockClient.FormGetSiteInfo(DragObject, Client, InfluenceRect, MousePos, CanDock);
   end
   else
     CanDock := False;

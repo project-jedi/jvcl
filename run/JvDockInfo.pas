@@ -305,9 +305,12 @@ begin
         begin
           CurrTreeZone := TreeZone;
           TmpDockPanel := TJvDockServer(DockBaseControl).DockPanelWithAlign[I];
-          CreateZoneAndAddInfoFromApp(TmpDockPanel);
-          if TmpDockPanel is TJvDockVSNETPanel then
-            CreateZoneAndAddInfoFromApp(TJvDockVSNETPanel(TmpDockPanel).VSChannel.VSPopupPanel);
+          if Assigned(TmpDockPanel) then
+          begin
+            CreateZoneAndAddInfoFromApp(TmpDockPanel);
+            if TmpDockPanel is TJvDockVSNETPanel then
+              CreateZoneAndAddInfoFromApp(TJvDockVSNETPanel(TmpDockPanel).VSChannel.VSPopupPanel);
+          end;
           CurrTreeZone := TreeZone.GetParentZone;
         end;
       end;
