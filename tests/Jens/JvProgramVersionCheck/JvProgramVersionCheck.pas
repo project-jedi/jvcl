@@ -27,228 +27,269 @@ unit JvProgramVersionCheck;
 
 interface
 
-Uses Classes, JvPropertyStore, JvAppStorage, JvAppIniStorage,
+Uses Classes, JvPropertyStore, JvAppStorage, JvAppIniStorage, JvComponent,
      JvParameterList, JvThread, JvThreadDialog;
 
 
 type
-  tJvProgramVersionCustomLocation = class;
+  TJvProgramReleaseType = (prtProduction, prtBeta, prtAlpha);
 
-  tJvProgramReleaseType = (prtProduction, prtBeta, prtAlpha);
+  TJvRemoteVersionOperation = (rvoIgnore, rvoCopy, rvoCopyInstall);
 
-  tJvRemoteVersionOperation = (rvoIgnore, rvoCopy, rvoCopyInstall);
-  TJvLoadFileFromRemoteEvent = function (iProgramVersionLocation: tJvProgramVersionCustomLocation; const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string; iBaseThread : TJvBaseThread) : string of object;
-
-  tJvProgramVersionsStringList = class(tStringList)
+  TJvProgramVersionsStringList = class(tStringList)
   public
     procedure Sort; override;
   end;
 
-  tJvProgramVersionInfo = class(tJvCustomPropertyStore)
+  TJvProgramVersionInfo = class(tJvCustomPropertyStore)
   private
-    fVersionDescription : tStringList;
-    fProgramSize : Integer;
-    fProgramVersion : string;
-    fProgramLocationPath : string;
-    fProgramLocationFileName : string;
-    fProgramReleaseType : tJvProgramReleaseType;
-    fProgramReleaseDate : tDateTime;
+    FVersionDescription : tStringList;
+    FProgramSize : Integer;
+    FProgramVersion : string;
+    FProgramLocationPath : string;
+    FProgramLocationFileName : string;
+    FProgramReleaseType : TJvProgramReleaseType;
+    FProgramReleaseDate : tDateTime;
+    FDownloadPasswordRequired : Boolean;
   protected
   public
-    constructor create (AOwner: TComponent); override;
-    destructor destroy; override;
+    constructor Create (AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Clear; override;
     function ProgramVersionReleaseType : string;
     function ProgramSizeString : string;
     function ProgramVersionInfo : string;
   published
-    property ProgramLocationPath : string read fProgramLocationPath write fProgramLocationPath;
-    property ProgramLocationFileName : string read fProgramLocationFileName write fProgramLocationFileName;
-    property ProgramVersion : string read fProgramVersion write fProgramVersion;
-    property VersionDescription : tStringList read fVersionDescription write fVersionDescription;
-    property ProgramReleaseType : tJvProgramReleaseType read fProgramReleaseType write fProgramReleaseType;
-    property ProgramSize : Integer read fProgramSize write fProgramSize;
-    property ProgramReleaseDate : tDateTime read fProgramReleaseDate write fProgramReleaseDate ;
+    property ProgramLocationPath : string read FProgramLocationPath write FProgramLocationPath;
+    property ProgramLocationFileName : string read FProgramLocationFileName write FProgramLocationFileName;
+    property ProgramVersion : string read FProgramVersion write FProgramVersion;
+    property VersionDescription : tStringList read FVersionDescription write FVersionDescription;
+    property ProgramReleaseType : TJvProgramReleaseType read FProgramReleaseType write FProgramReleaseType;
+    property ProgramSize : Integer read FProgramSize write FProgramSize;
+    property ProgramReleaseDate : tDateTime read FProgramReleaseDate write FProgramReleaseDate ;
+    property DownloadPasswordRequired : Boolean read FDownloadPasswordRequired write FDownloadPasswordRequired default false;
   end;
 
-  tJvProgramVersionInfoReleaseArray = array[tJvProgramReleaseType] of  tJvProgramVersionInfo;
+  TJvProgramVersionInfoReleaseArray = array[TJvProgramReleaseType] of  TJvProgramVersionInfo;
 
-  tJvProgramVersionHistory = class(tJvCustomPropertyListStore)
+  TJvProgramVersionHistory = class(TJvCustomPropertyListStore)
   private
-    fCurrentProductionVersion : string;
-    fCurrentBetaVersion : string;
-    fCurrentAlphaVersion : string;
-    fCurrentProgramVersion : tJvProgramVersionInfoReleaseArray;
+    FCurrentProductionVersion : string;
+    FCurrentBetaVersion : string;
+    FCurrentAlphaVersion : string;
+    FCurrentProgramVersion : TJvProgramVersionInfoReleaseArray;
   protected
     function CreateObject: TObject; override;
     function CreateItemList : tStringList; override;
-    function GetProgramVersion (Index : Integer) : tJvProgramVersionInfo;
-    function GetCurrentProgramVersion (Index : tJvProgramReleaseType) : tJvProgramVersionInfo;
-    function SearchCurrentProgramVersion (iProgramReleaseType : TJvProgramReleaseType) : tJvProgramVersionInfo;
-    property ProgramVersion[Index: Integer]: tJvProgramVersionInfo read GetProgramVersion;
+    function GetProgramVersion (Index : Integer) : TJvProgramVersionInfo;
+    function GetCurrentProgramVersion (Index : TJvProgramReleaseType) : TJvProgramVersionInfo;
+    function SearchCurrentProgramVersion (iProgramReleaseType : TJvProgramReleaseType) : TJvProgramVersionInfo;
+    property ProgramVersion[Index: Integer]: TJvProgramVersionInfo read GetProgramVersion;
     function GetCurrentProductionProgramVersion : string;
     function GetCurrentBetaProgramVersion : string;
     function GetCurrentAlphaProgramVersion : string;
   public
-    constructor create (AOwner : TComponent); override;
+    constructor Create (AOwner : TComponent); override;
     procedure LoadData; override;
     procedure RecalculateCurrentProgramVersions;
-    property CurrentProgramVersion [Index :tJvProgramReleaseType] : tJvProgramVersionInfo read GetCurrentProgramVersion;
-    function AllowedCurrentProgramVersion (iAllowedReleaseType : tJvProgramReleaseType) : tJvProgramVersionInfo;
+    property CurrentProgramVersion [Index :TJvProgramReleaseType] : TJvProgramVersionInfo read GetCurrentProgramVersion;
+    function AllowedCurrentProgramVersion (iAllowedReleaseType : TJvProgramReleaseType) : TJvProgramVersionInfo;
     function GetVersionsDescription (const iFromVersion, iToVersion : string) : string;
   published
-    property CurrentProductionProgramVersion : string read GetCurrentProductionProgramVersion write fCurrentProductionVersion;
-    property CurrentBetaProgramVersion : string read GetCurrentBetaProgramVersion write fCurrentBetaVersion;
-    property CurrentAlphaProgramVersion : string read GetCurrentAlphaProgramVersion  write fCurrentAlphaVersion;
+    property CurrentProductionProgramVersion : string read GetCurrentProductionProgramVersion write FCurrentProductionVersion;
+    property CurrentBetaProgramVersion : string read GetCurrentBetaProgramVersion write FCurrentBetaVersion;
+    property CurrentAlphaProgramVersion : string read GetCurrentAlphaProgramVersion  write FCurrentAlphaVersion;
   end;
 
-  tJvProgramVersionCustomLocation = class(tJvCustomPropertyStore)
+  TJvProgramVersionCustomLocation = class(tPersistent)
   private
-    fOnLoadFileFromRemote : TJvLoadFileFromRemoteEvent;
-    fDownloadStatus : string;
+    FOwner: TComponent;
+    FDownloadStatus : string;
+    FDownloadThreaded: Boolean;
   protected
     procedure SetDownloadStatus (Value : string);
+    property Owner: TComponent read FOwner;
   public
-    constructor create (AOwner : TComponent); override;
+    constructor Create (AOwner : TComponent); virtual;
     function LoadFileFromRemote (const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string; iBaseThread : TJvBaseThread) : string; virtual;
-    property DownloadStatus : string read fDownloadStatus write fDownloadStatus;
+    property DownloadStatus : string read FDownloadStatus write FDownloadStatus;
   published
-    property OnLoadFileFromRemote : TJvLoadFileFromRemoteEvent read fOnLoadFileFromRemote write fOnLoadFileFromRemote;
+    property DownloadThreaded: Boolean read FDownloadThreaded write FDownloadThreaded;
   end;
 
-  tJvProgramVersionCustomFileBasedLocation = class(tJvProgramVersionCustomLocation)
+  TJvProgramVersionCustomFileBasedLocation = class(TJvProgramVersionCustomLocation)
   private
-    fLocationPathVersion : string;
+    FVersionInfoLocationPath : string;
+    FVersionInfoFilename : string;
   protected
   public
   published
-    property LocationPathVersion : string read fLocationPathVersion write fLocationPathVersion;
+    property VersionInfoLocationPath : string read FVersionInfoLocationPath write FVersionInfoLocationPath;
+    property VersionInfoFilename : string read FVersionInfoFilename write FVersionInfoFilename;
   end;
 
-  tJvProgramVersionNetworkLocation =  class(tJvProgramVersionCustomFileBasedLocation)
+  TJvProgramVersionNetworkLocation =  class(TJvProgramVersionCustomFileBasedLocation)
   private
   protected
-    property OnLoadFileFromRemote;
  public
     function LoadFileFromRemote (const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string; iBaseThread : TJvBaseThread) : string; override;
   published
   end;
 
-  tJvProgramVersionInternetLocation =  class(tJvProgramVersionCustomFileBasedLocation)
+  TJvProgramVersionProxySettings = class(tPersistent)
   private
-    fProxyServer : string;
-    fProxyPort: Integer;
-  protected
-  public
+    FServer : string;
+    FPort: Integer;
+    FUsername: string;
+    FPassword: string;
   published
-    property ProxyServer : string read fProxyServer write fProxyServer;
-    property ProxyPort: Integer read fProxyPort write fProxyPort;
-  end;
-
-  tJvProgramVersionDatabaseLocation =  class(tJvProgramVersionCustomLocation)
-  private
-    fServerName : string;
-    fUsername   : string;
-    fPasswort   : string;
-    fSelectStatementVersion : string;
-  protected
-  public
-  published
-    property ServerName : string read fServerName write fServerName;
-    property Username   : string read fUsername write fUsername;
-    property Passwort   : string read fPasswort write fPasswort;
-    property SelectStatementVersion : string read fSelectStatementVersion write fSelectStatementVersion;
+    property Server : string read FServer write FServer;
+    property Port: Integer read FPort write FPort;
+    property Username: string read FUsername write FUsername;
+    property Password: string read FPassword write FPassword;
   end;
 
 
-  tJvProgramVersionLocationType = (pvltNetwork, pvltDatabase,
+  TJvProgramVersionInternetLocation =  class(TJvProgramVersionCustomFileBasedLocation)
+  private
+    FProxySettings: TJvProgramVersionProxySettings;
+    FPasswordRequired: Boolean;
+  protected
+  public
+    constructor Create (AOwner : TComponent); override;
+    destructor Destroy; override;
+  published
+    property ProxySettings: TJvProgramVersionProxySettings read FProxySettings write FProxySettings;
+    property PasswordRequired: Boolean read FPasswordRequired write FPasswordRequired;
+  end;
+
+  TJvProgramVersionHTTPLocation = class;
+  TJvLoadFileFromRemoteHTTPEvent = function (iProgramVersionLocation: TJvProgramVersionHTTPLocation; const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string) : string of object;
+
+  TJvProgramVersionHTTPLocation =  class(TJvProgramVersionInternetLocation)
+  private
+    FOnLoadFileFromRemote: TJvLoadFileFromRemoteHTTPEvent;
+  protected
+  public
+    function LoadFileFromRemote (const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string; iBaseThread : TJvBaseThread) : string; override;
+  published
+    property OnLoadFileFromRemote: TJvLoadFileFromRemoteHTTPEvent read FOnLoadFileFromRemote write FOnLoadFileFromRemote;
+  end;
+
+  TJvProgramVersionFTPLocation = class;
+  TJvLoadFileFromRemoteFTPEvent = function (iProgramVersionLocation: TJvProgramVersionFTPLocation; const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string) : string of object;
+  TJvProgramVersionFTPLocation =  class(TJvProgramVersionInternetLocation)
+  private
+    FOnLoadFileFromRemote: TJvLoadFileFromRemoteFTPEvent;
+  protected
+  public
+    function LoadFileFromRemote (const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string; iBaseThread : TJvBaseThread) : string; override;
+  published
+    property OnLoadFileFromRemote: TJvLoadFileFromRemoteFTPEvent read FOnLoadFileFromRemote write FOnLoadFileFromRemote;
+  end;
+
+  TJvProgramVersionDatabaseLocation = class;
+  TJvLoadFileFromRemoteDatabaseEvent = function (iProgramVersionLocation: TJvProgramVersionDatabaseLocation; const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string) : string of object;
+  TJvProgramVersionDatabaseLocation =  class(TJvProgramVersionCustomLocation)
+  private
+    FServerName : string;
+    FUsername   : string;
+    FPasswort   : string;
+    FSelectStatementVersion : string;
+    FOnLoadFileFromRemote: TJvLoadFileFromRemoteDatabaseEvent;
+  protected
+  public
+    function LoadFileFromRemote (const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string; iBaseThread : TJvBaseThread) : string; override;
+  published
+    property ServerName : string read FServerName write FServerName;
+    property Username   : string read FUsername write FUsername;
+    property Passwort   : string read FPasswort write FPasswort;
+    property SelectStatementVersion : string read FSelectStatementVersion write FSelectStatementVersion;
+    property OnLoadFileFromRemote: TJvLoadFileFromRemoteDatabaseEvent read FOnLoadFileFromRemote write FOnLoadFileFromRemote;
+  end;
+
+  TJvProgramVersionLocationType = (pvltNetwork, pvltDatabase,
                                    pvltFTP, pvltHTTP);
-  tJvProgramVersionLocationTypes = set of tJvProgramVersionLocationType;
+  TJvProgramVersionLocationTypes = set of TJvProgramVersionLocationType;
 
-  tJvProgramVersionCheckOptions = class(tJvCustomPropertyStore)
+  TJvProgramVersionLocations = class(TPersistent)
   private
-    fAllowedReleaseType : tJvProgramReleaseType;
+    FNetwork : TJvProgramVersionNetworkLocation;
+    FHTTP : TJvProgramVersionHTTPLocation;
+    FFTP : TJvProgramVersionFTPLocation;
+    FDatabase : TJvProgramVersionDatabaseLocation;
+  public
+    constructor Create (AOwner : TComponent); virtual;
+    destructor Destroy; override;
+  published
+    property Network : TJvProgramVersionNetworkLocation read FNetwork write FNetwork;
+    property HTTP : TJvProgramVersionHTTPLocation read FHTTP write FHTTP;
+    property FTP : TJvProgramVersionFTPLocation read FFTP write FFTP;
+    property Database : TJvProgramVersionDatabaseLocation read FDatabase write FDatabase;
+  end;
+
+  TJvProgramVersionCheck = class(tJvCustomPropertyStore)
+  private
+    // Internal
+    FThread : TJvThread;
+    FThreadDialog : TJvThreadAnimateDialog;
+    // Thread Communication
+    fExecuteVersionInfo: TJvProgramVersionInfo;
+    fExecuteOperation : TJvRemoteVersionOperation;
+    fExecuteDownloadInstallFilename: string;
+    FRemoteAppStorage : TJvAppIniFileStorage;
+    //Property Variables
+    FRemoteProgramVersionHistory : TJvProgramVersionHistory;
+    FLocations: TJvProgramVersionLocations;
+    FAllowedReleaseType : TJvProgramReleaseType;
     fLastCheck : tDateTime;
     fCheckFrequency : Integer;
-    fLocationType : tJvProgramVersionLocationType;
-    fNetworkLocation : tJvProgramVersionNetworkLocation;
-    fHTTPLocation : tJvProgramVersionInternetLocation;
-    fFTPLocation : tJvProgramVersionInternetLocation;
-    fDatabaseLocation : tJvProgramVersionDatabaseLocation;
-    fSupportedLocationTypes : tJvProgramVersionLocationTypes;
-    fShowDownloadDialog : Boolean;
+    fLocationType : TJvProgramVersionLocationType;
     fLocalDirectory : string;
     fLocalInstallerFileName : string;
     fLocalVersionInfoFileName : string;
+    FSupportedLocationTypes : TJvProgramVersionLocationTypes;
   protected
-    procedure CheckLocalDirectory;
-    procedure SetSupportedLocationTypes (Value : tJvProgramVersionLocationTypes );
-  public
-    constructor create (AOwner : TComponent); override;
-    destructor destroy; override;
-    procedure LoadProperties; override;
-    function LoadRemoteVersionInfoFile : Boolean;
-    function LoadRemoteInstallerFile (iProgramVersionInfo : TJvProgramVersionInfo;iBaseThread : TJvBaseThread) : string;
-  published
-    property AllowedReleaseType : tJvProgramReleaseType read fAllowedReleaseType write fAllowedReleaseType default prtProduction;
-    property LastCheck : tDateTime read fLastCheck write fLastCheck;
-    property CheckFrequency : Integer read fCheckFrequency write fCheckFrequency;
-    property LocationType : tJvProgramVersionLocationType read fLocationType write fLocationType;
-    property NetworkLocation : tJvProgramVersionNetworkLocation read fNetworkLocation write fNetworkLocation;
-    property HTTPLocation : tJvProgramVersionInternetLocation read fHTTPLocation write fHTTPLocation;
-    property FTPLocation : tJvProgramVersionInternetLocation read fFTPLocation write fFTPLocation;
-    property DatabaseLocation : tJvProgramVersionDatabaseLocation read fDatabaseLocation write fDatabaseLocation;
-    property SupportedLocationTypes : tJvProgramVersionLocationTypes read fSupportedLocationTypes write SetSupportedLocationTypes default [pvltNetwork];
-    property ShowDownloadDialog : Boolean read fShowDownloadDialog write fShowDownloadDialog default true;
-    property LocalDirectory : string read fLocalDirectory write fLocalDirectory;
-    property LocalInstallerFileName : string read fLocalInstallerFileName write fLocalInstallerFileName;
-    property LocalVersionInfoFileName : string read fLocalVersionInfoFileName write fLocalVersionInfoFileName;
-  end;
-
-  tJvProgramVersionCheck = class(tComponent)
-  private
-    fRemoteAppStorage : TJvAppIniFileStorage;
-    fAppStorage : TJvCustomAppStorage;
-    fAppStoragePath : string;
-    fCloseAfterInstallStarted : Boolean;
-    fProgramVersionCheckOptions : tJvProgramVersionCheckOptions;
-    fMinRequiredVersion : string;
-    fRemoteProgramVersionHistory : tJvProgramVersionHistory;
-    fThread : TJvThread;
-    fThreadDialog : TJvThreadAnimateDialog;
-    fExecuteVersionInfo: tJvProgramVersionInfo;
-    fExecuteOperation : tJvRemoteVersionOperation;
-    fExecuteDownloadInstallFilename: string;
-  protected
-    procedure SetAppStorage (Value : TJvCustomAppStorage);
-    procedure SetAppStoragePath (Value : string);
+    procedure StoreData; override;
+    procedure LoadData; override;
+    procedure SetLocations (Value : TJvProgramVersionLocations);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function  GetAllowedRemoteProgramVersion : string;
     function  GetAllowedRemoteProgramVersionReleaseType : string;
-    function  IsRemoteProgramVersionReleaseTypeNewer (iReleaseType : tJvProgramReleaseType) : Boolean;
+    function  IsRemoteProgramVersionReleaseTypeNewer (iReleaseType : TJvProgramReleaseType) : Boolean;
     procedure StoreRemoteVersionInfoToFile;
     function  CurrentFileVersion : string;
     function  CurrentApplicationName : string;
     function  IsRemoteProgramVersionNewer : Boolean;
-    procedure ShowProgramVersionsDescription (const iFromVersion, iToVersion : string);
-    function  GetRemoteVersionOperation (Var ReleaseType : tJvProgramReleaseType) : tJvRemoteVersionOperation;
     procedure DownloadThreadOnExecute(Sender: TObject; Params: Pointer);
     procedure DownloadThreadOnFinishAll(Sender : TObject);
     procedure VersionInfoButtonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter) ;
-    function  DownloadInstallerFromRemote : boolean;
     procedure SetThreadInfo (const Info : string);
-    property  RemoteAppStorage : TJvAppIniFileStorage read fRemoteAppStorage;
+    property  RemoteAppStorage : TJvAppIniFileStorage read FRemoteAppStorage;
+    procedure CheckLocalDirectory;
+    function LoadRemoteVersionInfoFile : String;
+    function LoadRemoteInstallerFile (iProgramVersionInfo : TJvProgramVersionInfo;iBaseThread : TJvBaseThread) : string;
   public
     constructor Create (AOwner : TComponent); override;
-    destructor destroy; override;
+    destructor Destroy; override;
     procedure Execute ;
-    property  RemoteProgramVersionHistory : tJvProgramVersionHistory read fRemoteProgramVersionHistory write fRemoteProgramVersionHistory;
+    procedure DownloadInstallerFromRemote;
+    procedure ShowProgramVersionsDescription (const iFromVersion, iToVersion : string);
+    function  GetRemoteVersionOperation (Var ReleaseType : TJvProgramReleaseType) : TJvRemoteVersionOperation;
+    property  RemoteProgramVersionHistory : TJvProgramVersionHistory read FRemoteProgramVersionHistory write FRemoteProgramVersionHistory;
+    property  LastCheck : tDateTime read fLastCheck write fLastCheck;
   published
-    property AppStorage : TJvCustomAppStorage read fAppStorage write SetAppStorage;
-    property AppStoragePath : string read fAppStoragePath write SetAppStoragePath;
-    property CloseAfterInstallStarted : Boolean read fCloseAfterInstallStarted write fCloseAfterInstallStarted default true;
-    property MinRequiredVersion : string read fMinRequiredVersion write fMinRequiredVersion;
-    property ProgramVersionCheckOptions : tJvProgramVersionCheckOptions read fProgramVersionCheckOptions ;
+    property SupportedLocationTypes : TJvProgramVersionLocationTypes read FSupportedLocationTypes write FSupportedLocationTypes default [pvltNetwork];
+    property AllowedReleaseType : TJvProgramReleaseType read FAllowedReleaseType write FAllowedReleaseType default prtProduction;
+    property CheckFrequency : Integer read fCheckFrequency write fCheckFrequency;
+    property LocationType : TJvProgramVersionLocationType read fLocationType write fLocationType;
+    property LocalDirectory : string read fLocalDirectory write fLocalDirectory;
+    property LocalInstallerFileName : string read fLocalInstallerFileName write fLocalInstallerFileName;
+    property LocalVersionInfoFileName : string read fLocalVersionInfoFileName write fLocalVersionInfoFileName;
+    property Locations: TJvProgramVersionLocations read FLocations write SetLocations;
+    property AboutJVCL;
+    property AppStorage;
+    property AppStoragePath;
   end;
 
 implementation
@@ -267,11 +308,12 @@ uses
   {$ENDIF UNIX}
   JclFileUtils, JclShell,
   JvDSADialogs,
-  JvParameterListParameter;
+  JvParameterListParameter, JvUrlListGrabber, JvUrlGrabbers;
 
 Const cProgramVersion = 'Program Version ';
+      cLastCheck = 'LastCheck';
 
-resourcestring
+      resourcestring
   RsPVCReleaseTypeAlpha = 'Alpha';
   RsPVCReleaseTypeBeta = 'Beta';
   RsPVCReleaseTypeProduction = 'Produktion';
@@ -348,39 +390,41 @@ function VersionNumberSortCompare(List: TStringList; Index1, Index2: Integer): I
 Var
   s1, s2 : string;
 begin
-  s1 := tJvProgramVersionInfo(List.Objects[Index1]).ProgramVersion;
-  s2 := tJvProgramVersionInfo(List.Objects[Index2]).ProgramVersion;
+  s1 := TJvProgramVersionInfo(List.Objects[Index1]).ProgramVersion;
+  s2 := TJvProgramVersionInfo(List.Objects[Index2]).ProgramVersion;
   Result := CompareVersionNumbers (s1, s2);
 end;
 
-procedure tJvProgramVersionsStringList.Sort;
+procedure TJvProgramVersionsStringList.Sort;
 begin
   CustomSort (VersionNumberSortCompare);
 end;
 
 //=== { tJvProgramVersionInfo } =========================================
 
-constructor tJvProgramVersionInfo.create (AOwner : TComponent);
+constructor TJvProgramVersionInfo.create (AOwner : TComponent);
 begin
   inherited Create(AOwner);
-  fVersionDescription := tStringList.Create;
+  FVersionDescription := tStringList.Create;
+  IgnoreLastLoadTime := True;
+  FDownloadPasswordRequired := False;
 end;
 
-destructor tJvProgramVersionInfo.destroy;
+destructor TJvProgramVersionInfo.destroy;
 begin
-  FreeAndNil(fVersionDescription);
+  FreeAndNil(FVersionDescription);
   Inherited Destroy;
 end;
 
-procedure tJvProgramVersionInfo.Clear;
+procedure TJvProgramVersionInfo.Clear;
 begin
-  if Assigned(fVersionDescription) then
-    fVersionDescription.Clear;
-  fProgramVersion := '';
-  fProgramReleaseType := prtProduction;
+  if Assigned(FVersionDescription) then
+    FVersionDescription.Clear;
+  FProgramVersion := '';
+  FProgramReleaseType := prtProduction;
 end;
 
-function tJvProgramVersionInfo.ProgramVersionReleaseType : string;
+function TJvProgramVersionInfo.ProgramVersionReleaseType : string;
 begin
   Case ProgramReleaseType of
     prtBeta  : Result := trim(ProgramVersion + ' '+RsPVCReleaseTypeBeta);
@@ -390,7 +434,7 @@ begin
   end;
 end;
 
-function tJvProgramVersionInfo.ProgramSizeString : string;
+function TJvProgramVersionInfo.ProgramSizeString : string;
 begin
   if ProgramSize <= 0 then
     Result := ''
@@ -405,7 +449,7 @@ begin
 
 end;
 
-function tJvProgramVersionInfo.ProgramVersionInfo  : string;
+function TJvProgramVersionInfo.ProgramVersionInfo  : string;
 begin
   Result := ProgramVersionReleaseType;
   if (ProgramSize > 0) then
@@ -414,34 +458,35 @@ end;
 
 //=== { tJvProgramVersionHistory } =========================================
 
-constructor tJvProgramVersionHistory.create (AOwner : TComponent);
+constructor TJvProgramVersionHistory.create (AOwner : TComponent);
 begin
   inherited Create(AOwner);
   DeleteBeforeStore := True;
   ItemName := cProgramVersion;
+  IgnoreLastLoadTime := True;
   IgnoreProperties.Add('Duplicates');
   IgnoreProperties.Add('Sorted');
 end;
 
-procedure tJvProgramVersionHistory.RecalculateCurrentProgramVersions;
-var prt : tJvProgramReleaseType;
+procedure TJvProgramVersionHistory.RecalculateCurrentProgramVersions;
+var prt : TJvProgramReleaseType;
 begin
-  for prt := low(tJvProgramReleaseType) to High(tJvProgramReleaseType) do
-    fCurrentProgramVersion[prt] := SearchCurrentProgramVersion(prt);
+  for prt := low(TJvProgramReleaseType) to High(TJvProgramReleaseType) do
+    FCurrentProgramVersion[prt] := SearchCurrentProgramVersion(prt);
 end;
 
-procedure tJvProgramVersionHistory.LoadData;
+procedure TJvProgramVersionHistory.LoadData;
 begin
   Inherited LoadData;
   Items.Sort;
   RecalculateCurrentProgramVersions;
 end;
 
-function tJvProgramVersionHistory.AllowedCurrentProgramVersion (iAllowedReleaseType : tJvProgramReleaseType) : tJvProgramVersionInfo;
-var prt : tJvProgramReleaseType;
+function TJvProgramVersionHistory.AllowedCurrentProgramVersion (iAllowedReleaseType : TJvProgramReleaseType) : TJvProgramVersionInfo;
+var prt : TJvProgramReleaseType;
 begin
-  result := nil;
-  prt := Low(tJvProgramReleaseType);
+  Result := nil;
+  prt := Low(TJvProgramReleaseType);
   while prt <= iAllowedReleaseType do
   begin
     if Result = nil then
@@ -454,16 +499,16 @@ begin
   end;
 end;
 
-function tJvProgramVersionHistory.GetProgramVersion (Index : Integer) : tJvProgramVersionInfo;
+function TJvProgramVersionHistory.GetProgramVersion (Index : Integer) : TJvProgramVersionInfo;
 begin
   if Assigned(Objects[Index]) and
-     (Objects[Index] IS tJvProgramVersionInfo) then
-    Result := tJvProgramVersionInfo(Objects[Index])
+     (Objects[Index] IS TJvProgramVersionInfo) then
+    Result := TJvProgramVersionInfo(Objects[Index])
   else
     Result := nil;
 end;
 
-function tJvProgramVersionHistory.SearchCurrentProgramVersion (iProgramReleaseType : TJvProgramReleaseType) : tJvProgramVersionInfo;
+function TJvProgramVersionHistory.SearchCurrentProgramVersion (iProgramReleaseType : TJvProgramReleaseType) : TJvProgramVersionInfo;
 Var i : Integer;
 begin
   Result := nil;
@@ -477,22 +522,22 @@ begin
             Result := ProgramVersion[i];
 end;
 
-function tJvProgramVersionHistory.GetCurrentProgramVersion (Index : tJvProgramReleaseType) : tJvProgramVersionInfo;
+function TJvProgramVersionHistory.GetCurrentProgramVersion (Index : TJvProgramReleaseType) : TJvProgramVersionInfo;
 begin
-  Result := fCurrentProgramVersion [Index];
+  Result := FCurrentProgramVersion [Index];
 end;
 
-function tJvProgramVersionHistory.CreateObject: TObject;
+function TJvProgramVersionHistory.CreateObject: TObject;
 begin
-  Result := tJvProgramVersionInfo.Create(Self);
+  Result := TJvProgramVersionInfo.Create(Self);
 end;
 
-function tJvProgramVersionHistory.CreateItemList : tStringList;
+function TJvProgramVersionHistory.CreateItemList : tStringList;
 begin
-  Result := tJvProgramVersionsStringList.Create;
+  Result := TJvProgramVersionsStringList.Create;
 end;
 
-function tJvProgramVersionHistory.GetCurrentProductionProgramVersion : string;
+function TJvProgramVersionHistory.GetCurrentProductionProgramVersion : string;
 begin
   if Assigned(CurrentProgramVersion[prtProduction]) then
     Result := CurrentProgramVersion[prtProduction].ProgramVersion
@@ -500,7 +545,7 @@ begin
     Result := '';
 end;
 
-function tJvProgramVersionHistory.GetCurrentBetaProgramVersion : string;
+function TJvProgramVersionHistory.GetCurrentBetaProgramVersion : string;
 begin
   if Assigned(CurrentProgramVersion[prtBeta]) then
     Result := CurrentProgramVersion[prtBeta].ProgramVersion
@@ -508,7 +553,7 @@ begin
     Result := '';
 end;
 
-function tJvProgramVersionHistory.GetCurrentAlphaProgramVersion : string;
+function TJvProgramVersionHistory.GetCurrentAlphaProgramVersion : string;
 begin
   if Assigned(CurrentProgramVersion[prtAlpha]) then
     Result := CurrentProgramVersion[prtAlpha].ProgramVersion
@@ -516,7 +561,7 @@ begin
     Result := '';
 end;
 
-function tJvProgramVersionHistory.GetVersionsDescription (const iFromVersion, iToVersion : string) : string;
+function TJvProgramVersionHistory.GetVersionsDescription (const iFromVersion, iToVersion : string) : string;
 var i : integer;
 begin
   Result := '';
@@ -535,32 +580,30 @@ end;
 
 //=== { tJvProgramVersionCustomLocation } =========================================
 
-constructor tJvProgramVersionCustomLocation.create (AOwner : TComponent);
+constructor TJvProgramVersionCustomLocation.create (AOwner : TComponent);
 begin
-  inherited create(AOwner);
-  fDownloadStatus := '';
+  inherited create;
+  FOwner := AOwner;
+  FDownloadStatus := '';
+//  IgnoreLastLoadTime := True;
 end;
 
-function tJvProgramVersionCustomLocation.LoadFileFromRemote (const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string; iBaseThread : TJvBaseThread) : string;
+function TJvProgramVersionCustomLocation.LoadFileFromRemote (const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string; iBaseThread : TJvBaseThread) : string;
 begin
   DownloadStatus := RsPVCDownloading;
-  if Assigned(OnLoadFileFromRemote) then
-    Result := OnLoadFileFromRemote(self, iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName, iBaseThread)
-  else
-    Result := '';
 end;
 
-procedure tJvProgramVersionCustomLocation.SetDownloadStatus (Value : string);
+procedure TJvProgramVersionCustomLocation.SetDownloadStatus (Value : string);
 begin
-  fDownloadStatus := Value;
+  FDownloadStatus := Value;
   if Assigned(Owner) and
-     Assigned(Owner.Owner) and
-     (Owner.Owner is tJvProgramVersionCheck) then
-       tJvProgramVersionCheck(Owner.Owner).SetThreadInfo(Value);
+     (Owner is TJvProgramVersionCheck) then
+       TJvProgramVersionCheck(Owner).SetThreadInfo(Value);
 end;
+
 //=== { tJvProgramVersionNetworkLocation } =========================================
 
-function tJvProgramVersionNetworkLocation.LoadFileFromRemote (const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string; iBaseThread : TJvBaseThread) : string;
+function TJvProgramVersionNetworkLocation.LoadFileFromRemote (const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string; iBaseThread : TJvBaseThread) : string;
 
   Function FileExistsNoDir (iFilename : string) : boolean;
   begin
@@ -585,170 +628,153 @@ begin
           else
             Result := PathAppend(iLocalPath, iLocalFileName)
         else
-          result := '';
+          Result := '';
 
 end;
 
-//=== { tJvProgramVersionCheckOptions } =========================================
-
-constructor tJvProgramVersionCheckOptions.create (AOwner : TComponent);
+//=== { tJvProgramVersionHTTPLocation } =========================================
+constructor TJvProgramVersionInternetLocation.create (AOwner : TComponent);
 begin
   inherited create(AOwner);
-  DeleteBeforeStore := True;
-  IgnoreLastLoadTime := True;
-  fSupportedLocationTypes := [pvltNetwork];
-  fLocationType := pvltNetWork;
-  fNetworkLocation := tJvProgramVersionNetworkLocation.Create(Self);
-  fHTTPLocation := tJvProgramVersionInternetLocation.Create(Self);
-  fFTPLocation := tJvProgramVersionInternetLocation.Create(Self);
-  fDatabaseLocation := tJvProgramVersionDatabaseLocation.Create(Self);
-  fAllowedReleaseType := prtProduction;
-  fShowDownloadDialog := true;
-  fLocalInstallerFileName := '';
-  fLocalVersionInfoFileName := 'versioninfo.ini';
-  IgnoreProperties.Add('LocalInstallerFileName');
-  IgnoreProperties.Add('LocalVersionInfoFileName');
-  IgnoreProperties.Add('SupportedLocationTypes');
+  FProxySettings:= TJvProgramVersionProxySettings.Create;
 end;
 
-destructor tJvProgramVersionCheckOptions.destroy;
+destructor TJvProgramVersionInternetLocation.Destroy;
 begin
-  fNetworkLocation.Free;
-  fHTTPLocation.Free;
-  fFTPLocation.Free;
-  fDatabaseLocation.Free;
+  FreeAndNil (FProxySettings);
+  Inherited Destroy;
+end;
+
+//=== { tJvProgramVersionHTTPLocation } =========================================
+
+function TJvProgramVersionHTTPLocation.LoadFileFromRemote (const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string; iBaseThread : TJvBaseThread) : string;
+begin
+  Result := '';
+  if Assigned(OnLoadFileFromRemote) then
+    Result := OnLoadFileFromRemote(Self, iRemotePath, iRemoteFilename, iLocalPath, iLocalFileName);
+end;
+
+//=== { tJvProgramVersionFTPLocation } =========================================
+
+function TJvProgramVersionFTPLocation.LoadFileFromRemote (const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string; iBaseThread : TJvBaseThread) : string;
+begin
+  Result := '';
+  if Assigned(OnLoadFileFromRemote) then
+    Result := OnLoadFileFromRemote(Self, iRemotePath, iRemoteFilename, iLocalPath, iLocalFileName);
+end;
+
+//=== { tJvProgramVersionDatabaseLocation } =========================================
+
+function TJvProgramVersionDatabaseLocation.LoadFileFromRemote (const iRemotePath, iRemoteFileName, iLocalPath, iLocalFileName: string; iBaseThread : TJvBaseThread) : string;
+begin
+  Result := '';
+  if Assigned(OnLoadFileFromRemote) then
+    Result := OnLoadFileFromRemote(Self, iRemotePath, iRemoteFilename, iLocalPath, iLocalFileName);
+end;
+
+//=== { TJvProgramVersionLocations } =========================================
+
+constructor TJvProgramVersionLocations.create (AOwner : TComponent);
+begin
+  inherited create;
+  FNetwork := TJvProgramVersionNetworkLocation.Create(AOwner);
+  FHTTP := TJvProgramVersionHTTPLocation.Create(AOwner);
+  FFTP := TJvProgramVersionFTPLocation.Create(AOwner);
+  FDatabase := TJvProgramVersionDatabaseLocation.Create(AOwner);
+end;
+
+destructor TJvProgramVersionLocations.destroy;
+begin
+  FNetwork.Free;
+  FHTTP.Free;
+  FFTP.Free;
+  FDatabase.Free;
   inherited destroy;
 end;
 
-procedure tJvProgramVersionCheckOptions.LoadProperties;
-begin
-  inherited LoadProperties;
-  if not (LocationType in SupportedLocationTypes) then
-    LocationType := pvltNetWork;
-  CheckLocalDirectory;
-end;
-
-procedure tJvProgramVersionCheckOptions.CheckLocalDirectory;
-begin
-  LocalDirectory := trim(LocalDirectory);
-  if LocalDirectory <> '' then
-    if not DirectoryExists(LocalDirectory) then
-      if not ForceDirectories(LocalDirectory) then
-        LocalDirectory := '';
-end;
-
-function tJvProgramVersionCheckOptions.LoadRemoteVersionInfoFile : Boolean;
-begin
-  Case LocationType of
-    pvltDatabase : Result := DatabaseLocation.LoadFileFromRemote(DatabaseLocation.SelectStatementVersion, LocalVersionInfoFileName, LocalDirectory, LocalVersionInfoFileName, nil) <> '';
-    pvltHTTP : Result := HTTPLocation.LoadFileFromRemote(HTTPLocation.LocationPathVersion, LocalVersionInfoFileName, LocalDirectory, LocalVersionInfoFileName, nil) <> '';
-    pvltFTP : Result := FTPLocation.LoadFileFromRemote(FTPLocation.LocationPathVersion, LocalVersionInfoFileName, LocalDirectory, LocalVersionInfoFileName, nil) <> '';
-  else
-    Result := NetworkLocation.LoadFileFromRemote(NetworkLocation.LocationPathVersion, LocalVersionInfoFileName, LocalDirectory, LocalVersionInfoFileName, nil) <> '';
-  end;
-end;
-
-function tJvProgramVersionCheckOptions.LoadRemoteInstallerFile (iProgramVersionInfo : TJvProgramVersionInfo;iBaseThread : TJvBaseThread) : String;
-begin
-//  sleep(5000);
-  if Assigned(iProgramVersionInfo) then
-    Case LocationType of
-      pvltDatabase : Result := DatabaseLocation.LoadFileFromRemote(iProgramVersionInfo.ProgramLocationPath, iProgramVersionInfo.ProgramLocationFileName, LocalDirectory, LocalInstallerFileName, iBaseThread);
-      pvltHTTP : Result := HTTPLocation.LoadFileFromRemote(iProgramVersionInfo.ProgramLocationPath, iProgramVersionInfo.ProgramLocationFileName, LocalDirectory, LocalInstallerFileName, iBaseThread);
-      pvltFTP : Result := FTPLocation.LoadFileFromRemote(iProgramVersionInfo.ProgramLocationPath, iProgramVersionInfo.ProgramLocationFileName, LocalDirectory, LocalInstallerFileName, iBaseThread);
-    else
-      Result := NetworkLocation.LoadFileFromRemote(iProgramVersionInfo.ProgramLocationPath, iProgramVersionInfo.ProgramLocationFileName, LocalDirectory, LocalInstallerFileName, iBaseThread);
-    end
-  else
-    Result := '';
-end;
-
-procedure tJvProgramVersionCheckOptions.SetSupportedLocationTypes (Value : tJvProgramVersionLocationTypes );
-begin
-  if not (pvltNetwork IN Value) then
-    Value := Value + [pvltNetwork];
-  fSupportedLocationTypes := Value;
-  if IgnoreProperties.IndexOf('DatabaseLocation') >= 0 then
-    IgnoreProperties.Delete(IgnoreProperties.IndexOf('DatabaseLocation'));
-  if IgnoreProperties.IndexOf('FTPLocation') >= 0 then
-    IgnoreProperties.Delete(IgnoreProperties.IndexOf('FTPLocation'));
-  if IgnoreProperties.IndexOf('HTTPLocation') >= 0 then
-    IgnoreProperties.Delete(IgnoreProperties.IndexOf('HTTPLocation'));
-  if not (pvltDatabase IN Value) then
-    IgnoreProperties.Add('DatabaseLocation');
-  if not (pvltFTP IN Value) then
-    IgnoreProperties.Add('FTPLocation');
-  if not (pvltHTTP IN Value) then
-    IgnoreProperties.Add('HTTPLocation');
-end;
 
 //=== { tJvProgramVersionCheck } =========================================
 
-constructor tJvProgramVersionCheck.Create (AOwner : TComponent);
+constructor TJvProgramVersionCheck.Create (AOwner : TComponent);
 begin
   Inherited Create(AOwner);
-  fRemoteProgramVersionHistory := tJvProgramVersionHistory.Create(self);
-  fRemoteProgramVersionHistory.IgnoreLastLoadTime := True;
-  fRemoteAppStorage := TJvAppIniFileStorage.Create(self);
-  fRemoteAppStorage.Location := flCustom;
-  fRemoteAppStorage.ReadOnly := True;
-  fRemoteAppStorage.AutoReload := True;
-  fRemoteAppStorage.DefaultSection := 'Version';
-  with fRemoteAppStorage.StorageOptions do
+  FRemoteProgramVersionHistory := TJvProgramVersionHistory.Create(self);
+  FRemoteProgramVersionHistory.IgnoreLastLoadTime := True;
+  FRemoteAppStorage := TJvAppIniFileStorage.Create(self);
+  FRemoteAppStorage.Location := flCustom;
+  FRemoteAppStorage.ReadOnly := True;
+  FRemoteAppStorage.AutoReload := True;
+  FRemoteAppStorage.DefaultSection := 'Version';
+  with FRemoteAppStorage.StorageOptions do
   begin
     SetAsString := True;
     FloatAsString := True;
     DefaultIfReadConvertError := True;
     DateTimeAsString := True;
   end;
-  fRemoteProgramVersionHistory.AppStorage := fRemoteAppStorage;
-  fProgramVersionCheckOptions := tJvProgramVersionCheckOptions.Create(self);
-  fCloseAfterInstallStarted := true;
-  fThread := TJvThread.Create(self);
-  fThread.Exclusive := True;
-  fThread.RunOnCreate := True;
-  fThread.FreeOnTerminate := True;
-  fThreadDialog := TJvThreadAnimateDialog.Create(self);
-  fThreadDialog.DialogOptions.ShowDialog := True;
-  fThreadDialog.DialogOptions.ShowCancelButton := True;
-  fThreadDialog.DialogOptions.ShowElapsedTime := True;
-  TJvThreadAnimateDialogOptions(fThreadDialog.DialogOptions).commonAvi := aviCopyFile;
-  fThread.ThreadDialog := fThreadDialog;
+  FRemoteProgramVersionHistory.AppStorage := FRemoteAppStorage;
+  FThread := TJvThread.Create(self);
+  FThread.Exclusive := True;
+  FThread.RunOnCreate := True;
+  FThread.FreeOnTerminate := True;
+  FThreadDialog := TJvThreadAnimateDialog.Create(self);
+  FThreadDialog.DialogOptions.ShowDialog := True;
+  FThreadDialog.DialogOptions.ShowCancelButton := True;
+  FThreadDialog.DialogOptions.ShowElapsedTime := True;
+  TJvThreadAnimateDialogOptions(FThreadDialog.DialogOptions).commonAvi := aviCopyFile;
+  FThread.ThreadDialog := FThreadDialog;
+
+  DeleteBeforeStore := True;
+  IgnoreLastLoadTime := True;
+  IgnoreProperties.Add('LocalInstallerFileName');
+  IgnoreProperties.Add('LocalVersionInfoFileName');
+  IgnoreProperties.Add('SupportedLocationTypes');
+  IgnoreProperties.Add('RemoteAppStorage');
+
+  FSupportedLocationTypes := [pvltNetwork];
+  FLocations:= TJvProgramVersionLocations.Create(self);
+  fLocationType := pvltNetWork;
+  FAllowedReleaseType := prtProduction;
+  fLocalInstallerFileName := '';
+  fLocalVersionInfoFileName := 'versioninfo.ini';
+
 end;
 
-destructor tJvProgramVersionCheck.destroy;
+destructor TJvProgramVersionCheck.destroy;
 begin
-  FreeAndNil(fThreadDialog);
-  FreeAndNil(fThread);
-  FreeAndNil(fProgramVersionCheckOptions);
-  FreeAndNil(fRemoteAppStorage);
+  FreeAndNil(FLocations);
+  FreeAndNil(FThreadDialog);
+  FreeAndNil(FThread);
+  FreeAndNil(FRemoteAppStorage);
   Inherited Destroy;
 end;
 
-procedure tJvProgramVersionCheck.SetAppStorage (Value : TJvCustomAppStorage);
+procedure TJvProgramVersionCheck.SetLocations (Value : TJvProgramVersionLocations);
 begin
-  fAppStorage := Value;
-  fProgramVersionCheckOptions.AppStorage := Value;
-  fProgramVersionCheckOptions.LoadProperties;
+  FLocations.Network.Assign(Value.Network);
+  FLocations.HTTP.Assign(Value.HTTP);
+  FLocations.FTP.Assign(Value.FTP);
+  FLocations.Database.Assign(Value.Database);
 end;
 
-procedure tJvProgramVersionCheck.SetAppStoragePath (Value : string);
+procedure TJvProgramVersionCheck.StoreData;
 begin
-  fAppStoragePath := Value;
-  fProgramVersionCheckOptions.AppStoragePath := Value;
-  fProgramVersionCheckOptions.LoadProperties;
+  Inherited StoreData;
+  AppStorage.WriteDateTime(AppStorage.ConcatPaths([AppStoragePath, cLastCheck]), LastCheck);
 end;
 
-PROCEDURE tJvProgramVersionCheck.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TJvProgramVersionCheck.LoadData;
 begin
-  IF Operation = opRemove THEN
-  begin
-    IF (AComponent = fAppStorage) THEN
-      fAppStorage := NIL;
-  end;
+  Inherited LoadData;
+  LastCheck := AppStorage.ReadDateTime(AppStorage.ConcatPaths([AppStoragePath, cLastCheck]), LastCheck);
 end;
 
-function tJvProgramVersionCheck.CurrentFileVersion : string;
+procedure TJvProgramVersionCheck.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  Inherited Notification(AComponent, Operation);
+end;
+
+function TJvProgramVersionCheck.CurrentFileVersion : string;
 VAR FileVersionInfo   : TJclFileVersionInfo;
 BEGIN
   FileVersionInfo := TJclFileVersionInfo.Create (ParamStr(0));
@@ -764,7 +790,7 @@ BEGIN
   end;
 end;
 
-function tJvProgramVersionCheck.CurrentApplicationName : string;
+function TJvProgramVersionCheck.CurrentApplicationName : string;
 VAR FileVersionInfo   : TJclFileVersionInfo;
 BEGIN
   FileVersionInfo := TJclFileVersionInfo.Create (ParamStr(0));
@@ -782,12 +808,12 @@ BEGIN
   end;
 end;
 
-function tJvProgramVersionCheck.IsRemoteProgramVersionNewer : Boolean;
+function TJvProgramVersionCheck.IsRemoteProgramVersionNewer : Boolean;
 begin
-  Result:= CompareVersionNumbers (CurrentFileVersion,GetAllowedRemoteProgramVersion) = 1;
+  Result:= CompareVersionNumbers (CurrentFileVersion, GetAllowedRemoteProgramVersion) = 1;
 end;
 
-function tJvProgramVersionCheck.IsRemoteProgramVersionReleaseTypeNewer (iReleaseType : tJvProgramReleaseType) : Boolean;
+function TJvProgramVersionCheck.IsRemoteProgramVersionReleaseTypeNewer (iReleaseType : TJvProgramReleaseType) : Boolean;
 begin
   if Assigned(RemoteProgramVersionHistory.CurrentProgramVersion[iReleaseType]) then
     Result:= CompareVersionNumbers (CurrentFileVersion, RemoteProgramVersionHistory.CurrentProgramVersion[iReleaseType].ProgramVersion) = 1
@@ -795,7 +821,7 @@ begin
     Result := False;
 end;
 
-procedure tJvProgramVersionCheck.ShowProgramVersionsDescription (const iFromVersion, iToVersion : string);
+procedure TJvProgramVersionCheck.ShowProgramVersionsDescription (const iFromVersion, iToVersion : string);
 Var ParameterList : TJvParameterList;
     Parameter : TJvBaseParameter;
 begin
@@ -819,8 +845,8 @@ begin
   end;
 end;
 
-procedure tJvProgramVersionCheck.VersionInfoButtonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter) ;
-var prt : tJvProgramReleaseType;
+procedure TJvProgramVersionCheck.VersionInfoButtonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter) ;
+var prt : TJvProgramReleaseType;
 begin
   prt := low(prt);
   Inc (prt,Parameter.Tag);
@@ -829,11 +855,11 @@ begin
       ShowProgramVersionsDescription (CurrentFileVersion, CurrentProgramVersion[prt].ProgramVersion);
 end;
 
-function  tJvProgramVersionCheck.GetRemoteVersionOperation (Var ReleaseType : tJvProgramReleaseType) : tJvRemoteVersionOperation;
+function  TJvProgramVersionCheck.GetRemoteVersionOperation (Var ReleaseType : TJvProgramReleaseType) : TJvRemoteVersionOperation;
 Var ParameterList : TJvParameterList;
     GroupParameter : TJvGroupBoxParameter;
     Parameter : TJvBaseParameter;
-    prt : tJvProgramReleaseType;
+    prt : TJvProgramReleaseType;
 begin
   Result := rvoIgnore;
   ParameterList := TJvParameterList.Create(self);
@@ -859,31 +885,32 @@ begin
     end;
     ParameterList.AddParameter(GroupParameter);
     for prt := high(prt) downto low(prt) do
-    if CompareVersionNumbers(CurrentFileVersion, RemoteProgramVersionHistory.CurrentProgramVersion[prt].ProgramVersion) > 0 then
-      begin
-        Parameter := TJvBaseParameter(TJvRadioButtonParameter.Create(ParameterList));
-        with Parameter Do
-        begin
-          ParentParameterName := 'GroupBox';
-          SearchName := 'RadioButton'+inttostr(ord(prt));
-          Caption := RemoteProgramVersionHistory.CurrentProgramVersion[prt].ProgramVersionInfo;
-          Width := 250;
-          AsBoolean:= GroupParameter.Height <= 10;
-        end;
-        ParameterList.AddParameter(Parameter);
-        Parameter := TJvBaseParameter(TJvButtonParameter.Create(ParameterList));
-        with TJvButtonParameter(Parameter) Do
-        begin
-          ParentParameterName := 'GroupBox';
-          SearchName := 'VersionButtonInfo'+inttostr(ord(prt));
-          Caption := 'Info';
-          Width := 80;
-          Tag := Ord(prt);
-          OnButtonClick := VersionInfoButtonClick;
-        end;
-        ParameterList.AddParameter(Parameter);
-        GroupParameter.Height := GroupParameter.Height + 25;
-      end;
+      if prt <= AllowedReleaseType then
+        if CompareVersionNumbers(CurrentFileVersion, RemoteProgramVersionHistory.CurrentProgramVersion[prt].ProgramVersion) > 0 then
+          begin
+            Parameter := TJvBaseParameter(TJvRadioButtonParameter.Create(ParameterList));
+            with Parameter Do
+            begin
+              ParentParameterName := 'GroupBox';
+              SearchName := 'RadioButton'+inttostr(ord(prt));
+              Caption := RemoteProgramVersionHistory.CurrentProgramVersion[prt].ProgramVersionInfo;
+              Width := 250;
+              AsBoolean:= GroupParameter.Height <= 10;
+            end;
+            ParameterList.AddParameter(Parameter);
+            Parameter := TJvBaseParameter(TJvButtonParameter.Create(ParameterList));
+            with TJvButtonParameter(Parameter) Do
+            begin
+              ParentParameterName := 'GroupBox';
+              SearchName := 'VersionButtonInfo'+inttostr(ord(prt));
+              Caption := 'Info';
+              Width := 80;
+              Tag := Ord(prt);
+              OnButtonClick := VersionInfoButtonClick;
+            end;
+            ParameterList.AddParameter(Parameter);
+            GroupParameter.Height := GroupParameter.Height + 25;
+          end;
     Parameter := TJvBaseParameter(TJvRadioGroupParameter.Create(ParameterList));
     with TJvRadioGroupParameter(Parameter) Do
     begin
@@ -919,18 +946,18 @@ begin
   end;
 end;
 
-procedure tJvProgramVersionCheck.DownloadThreadOnExecute(Sender: TObject; Params: Pointer);
+procedure TJvProgramVersionCheck.DownloadThreadOnExecute(Sender: TObject; Params: Pointer);
 begin
   if Assigned(fExecuteVersionInfo) then
   begin
-    fExecuteDownloadInstallFilename := ProgramVersionCheckOptions.LoadRemoteInstallerFile (fExecuteVersionInfo, fThread.LastThread);
+    fExecuteDownloadInstallFilename := LoadRemoteInstallerFile (fExecuteVersionInfo, FThread.LastThread);
     if (fExecuteDownloadInstallFilename <> '') and
         not FileExists(fExecuteDownloadInstallFilename) then
       fExecuteDownloadInstallFilename := '';
   end;
 end;
 
-procedure tJvProgramVersionCheck.DownloadThreadOnFinishAll(Sender : TObject);
+procedure TJvProgramVersionCheck.DownloadThreadOnFinishAll(Sender : TObject);
 begin
   if fExecuteDownloadInstallFilename = '' then
     MessageDlg(RsPVCFileDownloadNotSuccessfull, mtError, [mbOK], 0)
@@ -947,61 +974,60 @@ begin
       end;
 end;
 
-function  tJvProgramVersionCheck.DownloadInstallerFromRemote : boolean;
+procedure TJvProgramVersionCheck.DownloadInstallerFromRemote;
 begin
   if Assigned(fExecuteVersionInfo) then
   begin
-    fThread.OnExecute := DownloadThreadOnExecute;
-    fThread.OnFinishAll := DownloadThreadOnFinishAll;
-    fThread.Execute(self);
+    FThread.OnExecute := DownloadThreadOnExecute;
+    FThread.OnFinishAll := DownloadThreadOnFinishAll;
+    FThread.Execute(self);
   end;
 end;
 
-procedure tJvProgramVersionCheck.SetThreadInfo (const Info : string);
+procedure TJvProgramVersionCheck.SetThreadInfo (const Info : string);
 begin
-  if Assigned(fThreadDialog) then
-    fThreadDialog.DialogOptions.InfoText := Info;
+  if Assigned(FThreadDialog) then
+    FThreadDialog.DialogOptions.InfoText := Info;
 end;
 
-function  tJvProgramVersionCheck.GetAllowedRemoteProgramVersion : string;
+function  TJvProgramVersionCheck.GetAllowedRemoteProgramVersion : string;
 begin
-  if Assigned(RemoteProgramVersionHistory.AllowedCurrentProgramVersion(ProgramVersionCheckOptions.AllowedReleaseType)) then
-    Result := RemoteProgramVersionHistory.AllowedCurrentProgramVersion(ProgramVersionCheckOptions.AllowedReleaseType).ProgramVersion
+  if Assigned(RemoteProgramVersionHistory.AllowedCurrentProgramVersion(AllowedReleaseType)) then
+    Result := RemoteProgramVersionHistory.AllowedCurrentProgramVersion(AllowedReleaseType).ProgramVersion
   else
     Result := '';
 end;
 
-function  tJvProgramVersionCheck.GetAllowedRemoteProgramVersionReleaseType : string;
+function  TJvProgramVersionCheck.GetAllowedRemoteProgramVersionReleaseType : string;
 begin
-  if Assigned(RemoteProgramVersionHistory.AllowedCurrentProgramVersion(ProgramVersionCheckOptions.AllowedReleaseType)) then
-    Result := RemoteProgramVersionHistory.AllowedCurrentProgramVersion(ProgramVersionCheckOptions.AllowedReleaseType).ProgramVersionReleaseType
+  if Assigned(RemoteProgramVersionHistory.AllowedCurrentProgramVersion(AllowedReleaseType)) then
+    Result := RemoteProgramVersionHistory.AllowedCurrentProgramVersion(AllowedReleaseType).ProgramVersionReleaseType
   else
     Result := '';
 end;
 
-procedure tJvProgramVersionCheck.StoreRemoteVersionInfoToFile;
+procedure TJvProgramVersionCheck.StoreRemoteVersionInfoToFile;
 begin
-  fRemoteAppStorage.ReadOnly := False;
+  FRemoteAppStorage.ReadOnly := False;
   RemoteProgramVersionHistory.StoreProperties;
-  fRemoteAppStorage.Flush;
-  fRemoteAppStorage.ReadOnly := True;
+  FRemoteAppStorage.Flush;
+  FRemoteAppStorage.ReadOnly := True;
 end;
 
-procedure tJvProgramVersionCheck.Execute ;
-var ReleaseType : tJvProgramReleaseType;
+procedure TJvProgramVersionCheck.Execute ;
+var ReleaseType : TJvProgramReleaseType;
 begin
   fExecuteVersionInfo:= nil;
-  with ProgramVersionCheckOptions do
+  LoadProperties;
+  if (LastCheck < now-CheckFrequency) then
   begin
-    ProgramVersionCheckOptions.LoadProperties;
-    if (ProgramVersionCheckOptions.LastCheck < now-ProgramVersionCheckOptions.CheckFrequency) then
+    AllowedReleaseType := prtAlpha;
+    LastCheck:= Now;
+    RemoteAppStorage.FileName := LoadRemoteVersionInfoFile;
+    if RemoteAppStorage.FileName <> '' then
     begin
-      ProgramVersionCheckOptions.AllowedReleaseType := prtAlpha;
-      ProgramVersionCheckOptions.LastCheck:= Now;
-      ProgramVersionCheckOptions.LoadRemoteVersionInfoFile;
-      RemoteAppStorage.FileName := PathAppend(ProgramVersionCheckOptions.LocalDirectory, ProgramVersionCheckOptions.LocalVersionInfoFileName);
       RemoteProgramVersionHistory.LoadProperties;
-      ProgramVersionCheckOptions.StoreProperties;
+      StoreProperties;
       StoreRemoteVersionInfoToFile;
       if IsRemoteProgramVersionNewer then
       begin
@@ -1013,6 +1039,43 @@ begin
     end;
   end;
 end;
+
+procedure TJvProgramVersionCheck.CheckLocalDirectory;
+begin
+  LocalDirectory := trim(LocalDirectory);
+  if LocalDirectory <> '' then
+    if not DirectoryExists(LocalDirectory) then
+      if not ForceDirectories(LocalDirectory) then
+        LocalDirectory := '';
+end;
+
+function TJvProgramVersionCheck.LoadRemoteVersionInfoFile : String;
+begin
+  Case LocationType of
+    pvltDatabase : Result := Locations.Database.LoadFileFromRemote(Locations.Database.SelectStatementVersion, '', LocalDirectory, LocalVersionInfoFileName, nil);
+    pvltHTTP : Result := Locations.HTTP.LoadFileFromRemote(Locations.HTTP.VersionInfoLocationPath, Locations.HTTP.VersionInfoFilename, LocalDirectory, LocalVersionInfoFileName, nil);
+    pvltFTP : Result := Locations.FTP.LoadFileFromRemote(Locations.FTP.VersionInfoLocationPath, Locations.FTP.VersionInfoFilename, LocalDirectory, LocalVersionInfoFileName, nil);
+  else
+    Result := Locations.Network.LoadFileFromRemote(Locations.Network.VersionInfoLocationPath, Locations.Network.VersionInfoFilename, LocalDirectory, LocalVersionInfoFileName, nil);
+  end;
+end;
+
+function TJvProgramVersionCheck.LoadRemoteInstallerFile (iProgramVersionInfo : TJvProgramVersionInfo;iBaseThread : TJvBaseThread) : String;
+begin
+//  sleep(5000);
+  if Assigned(iProgramVersionInfo) then
+    Case LocationType of
+      pvltDatabase : Result := Locations.Database.LoadFileFromRemote(iProgramVersionInfo.ProgramLocationPath, iProgramVersionInfo.ProgramLocationFileName, LocalDirectory, LocalInstallerFileName, iBaseThread);
+      pvltHTTP : Result := Locations.HTTP.LoadFileFromRemote(iProgramVersionInfo.ProgramLocationPath, iProgramVersionInfo.ProgramLocationFileName, LocalDirectory, LocalInstallerFileName, iBaseThread);
+      pvltFTP : Result := Locations.FTP.LoadFileFromRemote(iProgramVersionInfo.ProgramLocationPath, iProgramVersionInfo.ProgramLocationFileName, LocalDirectory, LocalInstallerFileName, iBaseThread);
+    else
+      Result := Locations.Network.LoadFileFromRemote(iProgramVersionInfo.ProgramLocationPath, iProgramVersionInfo.ProgramLocationFileName, LocalDirectory, LocalInstallerFileName, iBaseThread);
+    end
+  else
+    Result := '';
+end;
+
+
 
 {$IFDEF UNITVERSIONING}
 const
