@@ -51,8 +51,7 @@
     <File Name="..\..\run\JvScrollText.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpacer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpeedbar.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSpeedbarSetupForm.pas" Targets="allbutclx" Formname="JvSpeedbarSetupWindow" Condition=""/>
-    <File Name="..\..\qrun\JvQSpeedbarSetupForm.pas" Targets="allclx" Formname="JvSpeedbarSetupWindow" Condition=""/>
+    <File Name="..\..\run\JvSpeedbarSetupForm.pas" Targets="all" Formname="JvSpeedbarSetupWindow" Condition=""/>
     <File Name="..\..\run\JvSplit.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSplitter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSwitch.pas" Targets="all" Formname="" Condition=""/>
