@@ -48,8 +48,13 @@ unit JvSimScope;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ExtCtrls;
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QExtCtrls,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes;
 
 type
   TJvScopeLine = class(TCollectionItem)

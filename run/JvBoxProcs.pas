@@ -30,7 +30,13 @@ unit JvBoxProcs;
 interface
 
 uses
-  Classes, Controls, StdCtrls;
+  {$IFDEF VCL}
+  Controls, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QStdCtrls, Types, QWindows,
+  {$ENDIF VisualCLX}
+  Classes;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);
 procedure BoxMoveAllItems(SrcList, DstList: TWinControl);
@@ -46,17 +52,28 @@ function BoxCanDropItem(List: TWinControl; X, Y: Integer;
 
 implementation
 
+{$IFDEF VCL}
 uses
   Windows, Graphics,
   JvxCheckListBox;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+uses
+  QGraphics;
+
+const
+  LB_ERR = -1;
+{$ENDIF VisualCLX}
 
 function BoxItems(List: TWinControl): TStrings;
 begin
   if List is TCustomListBox then
     Result := TCustomListBox(List).Items
+  {$IFDEF VCL}
   else
   if List is TJvxCustomListBox then
     Result := TJvxCustomListBox(List).Items
+  {$ENDIF VCL}
   else
     Result := nil;
 end;
@@ -65,9 +82,11 @@ function BoxGetSelected(List: TWinControl; Index: Integer): Boolean;
 begin
   if List is TCustomListBox then
     Result := TCustomListBox(List).Selected[Index]
+  {$IFDEF VCL}
   else
   if List is TJvxCustomListBox then
     Result := TJvxCustomListBox(List).Selected[Index]
+  {$ENDIF VCL}
   else
     Result := False;
 end;
@@ -76,18 +95,22 @@ procedure BoxSetSelected(List: TWinControl; Index: Integer; Value: Boolean);
 begin
   if List is TCustomListBox then
     TCustomListBox(List).Selected[Index] := Value
+  {$IFDEF VCL}
   else
   if List is TJvxCustomListBox then
     TJvxCustomListBox(List).Selected[Index] := Value;
+  {$ENDIF VCL}
 end;
 
 function BoxGetItemIndex(List: TWinControl): Integer;
 begin
   if List is TCustomListBox then
     Result := TCustomListBox(List).ItemIndex
+  {$IFDEF VCL}
   else
   if List is TJvxCustomListBox then
     Result := TJvxCustomListBox(List).ItemIndex
+  {$ENDIF VCL}
   else
     Result := LB_ERR;
 end;
@@ -96,18 +119,22 @@ procedure BoxSetItemIndex(List: TWinControl; Index: Integer);
 begin
   if List is TCustomListBox then
     TCustomListBox(List).ItemIndex := Index
+  {$IFDEF VCL}
   else
   if List is TJvxCustomListBox then
     TJvxCustomListBox(List).ItemIndex := Index;
+  {$ENDIF VCL}
 end;
 
 function BoxMultiSelect(List: TWinControl): Boolean;
 begin
   if List is TCustomListBox then
     Result := TListBox(List).MultiSelect
+  {$IFDEF VCL}
   else
   if List is TJvxCustomListBox then
     Result := TJvxCheckListBox(List).MultiSelect
+  {$ENDIF VCL}
   else
     Result := False;
 end;
@@ -116,9 +143,11 @@ function BoxSelCount(List: TWinControl): Integer;
 begin
   if List is TCustomListBox then
     Result := TCustomListBox(List).SelCount
+  {$IFDEF VCL}
   else
   if List is TJvxCustomListBox then
     Result := TJvxCustomListBox(List).SelCount
+  {$ENDIF VCL}
   else
     Result := 0;
 end;
@@ -128,9 +157,11 @@ function BoxItemAtPos(List: TWinControl; Pos: TPoint;
 begin
   if List is TCustomListBox then
     Result := TCustomListBox(List).ItemAtPos(Pos, Existing)
+  {$IFDEF VCL}
   else
   if List is TJvxCustomListBox then
     Result := TJvxCustomListBox(List).ItemAtPos(Pos, Existing)
+  {$ENDIF VCL}
   else
     Result := LB_ERR;
 end;
@@ -139,9 +170,11 @@ function BoxItemRect(List: TWinControl; Index: Integer): TRect;
 begin
   if List is TCustomListBox then
     Result := TCustomListBox(List).ItemRect(Index)
+  {$IFDEF VCL}
   else
   if List is TJvxCustomListBox then
     Result := TJvxCustomListBox(List).ItemRect(Index)
+  {$ENDIF VCL}
   else
     FillChar(Result, SizeOf(Result), 0);
 end;
@@ -223,9 +256,11 @@ begin
         begin
           NewIndex := BoxItems(DstList).AddObject(BoxItems(SrcList).Strings[I],
             BoxItems(SrcList).Objects[I]);
+          {$IFDEF VCL}
           if (SrcList is TJvxCheckListBox) and (DstList is TJvxCheckListBox) then
             TJvxCheckListBox(DstList).State[NewIndex] :=
               TJvxCheckListBox(SrcList).State[I];
+          {$ENDIF VCL}
           BoxItems(SrcList).Delete(I);
         end
         else
@@ -246,9 +281,12 @@ begin
   begin
     NewIndex := BoxItems(DstList).AddObject(BoxItems(SrcList)[I],
       BoxItems(SrcList).Objects[I]);
+    {$IFDEF VCL}
     if (SrcList is TJvxCheckListBox) and (DstList is TJvxCheckListBox) then
       TJvxCheckListBox(DstList).State[NewIndex] :=
         TJvxCheckListBox(SrcList).State[I];
+    {$ENDIF VCL}
+
   end;
   BoxItems(SrcList).Clear;
   BoxSetItem(SrcList, 0);
@@ -293,7 +331,10 @@ var
 
 begin
   if Source <> List then
-    Accept := (Source is TWinControl) or (Source is TJvxCustomListBox)
+    Accept := (Source is TWinControl)
+              {$IFDEF VCL}
+              or (Source is TJvxCustomListBox)
+              {$ENDIF}
   else
   begin
     if Sorted then

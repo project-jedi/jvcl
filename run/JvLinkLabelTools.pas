@@ -42,6 +42,9 @@ uses
   {$IFDEF VCL}
   Windows,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QWindows,
+  {$ENDIF VisualCLX}
   JvTypes;
 
 type
@@ -194,12 +197,7 @@ end;
 
 class function TWebTools.OpenWebPage(const URI: string): Boolean;
 begin
-  {$IFDEF MSWINDOWS}
   Result := ShellExecute(0, 'open', PChar(URI), nil, nil, SW_SHOWNORMAL) > 32;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  Result := libc.system(PChar(GetEnvironmentVariable('BROWSER') + ' ' + URI+'&'))<> -1;
-  {$ENDIF LINUX}
 end;
 
 //=== TOwnerPointerList ======================================================

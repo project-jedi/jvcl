@@ -39,7 +39,7 @@ uses
   Windows, Messages, Graphics, Forms, Controls, StdCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QForms, QControls, QStdCtrls, Types, QWindows,
+  QGraphics, QForms, QControls, QStdCtrls, Types, QWindows, QTypes,
   {$ENDIF VisualCLX}
   JvComponent, JvMarkupCommon;
 

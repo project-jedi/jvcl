@@ -36,7 +36,7 @@ uses
   Controls, Forms, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QExtCtrls,
+  QControls, QForms, QExtCtrls, QImgList, QGraphics,
   {$ENDIF VisualCLX}
   JvComponent;
 
@@ -90,11 +90,23 @@ begin
 end;
 
 procedure TJvFormAnimatedIcon.Animate(Sender: TObject);
+{$IFDEF VisualCLX}
+var
+  bmp: TBitmap;
+{$ENDIF VisualCLX}
 begin
   if (FIcons <> nil) and (FIcons.Count <> 0) then
   begin
     FNumber := (FNumber + 1) mod FIcons.Count;
+    {$IFDEF VCL}
     FIcons.GetIcon(FNumber, TForm(FForm).Icon);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    bmp := TBitmap.Create ;
+    FIcons.GetBitmap(FNumber, bmp);
+    TForm(FForm).Icon.Assign(bmp);
+    bmp.Free;
+    {$ENDIF VisualCLX}
   end;
 end;
 

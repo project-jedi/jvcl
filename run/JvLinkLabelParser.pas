@@ -40,7 +40,13 @@ unit JvLinkLabelParser;
 interface
 
 uses
-  Classes, SysUtils, Graphics,
+  Classes, SysUtils,
+  {$IFDEF VCL}
+  Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics,
+  {$ENDIF VisualCLX}
   JvLinkLabelTree, JvLinkLabelTools;
 
 type

@@ -39,7 +39,7 @@ uses
   Windows, Messages, Controls, Classes, Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QControls, QClasses, QGraphics,
+  QWindows, QControls, Classes, QGraphics, Types,
   {$ENDIF VisualCLX}
   JvComponent;
 
@@ -54,6 +54,10 @@ type
     FStatus: Boolean;
     FOnChange: TNotifyEvent;
     FInterval: Cardinal;
+    {$IFDEF VisualCLX}
+    FAutosize: boolean;
+    procedure SetAutoSize(value: Boolean);
+    {$ENDIF}
     procedure SetColorOn(Value: TColor);
     procedure SetColorOff(Value: TColor);
     procedure SetInterval(Value: Cardinal);
@@ -71,6 +75,9 @@ type
     property ColorOff: TColor read FColorOff write SetColorOff default clRed;
     property Interval: Cardinal read FInterval write SetInterval default 1000;
     property Status: Boolean read GetStatus write SetStatus default True;
+    {$IFDEF VisualCLX}
+    property AutoSize: Boolean read FAutoSize write SetAutoSize;
+    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -83,11 +90,15 @@ type
     property Align;
     property Anchors;
     property AutoSize;
+    {$IFDEF VCL}
+    property DragCursor;
+    property DragKind;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
     property ColorOn;
     property ColorOff;
     property Constraints;
-    property DragCursor;
-    property DragKind;
     property DragMode;
     property Height default 17;
     property Interval;
@@ -102,12 +113,10 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -158,6 +167,9 @@ begin
   ColorOff := clRed;
   Active := False;
   Status := True;
+  {$IFDEF VisualCLX}
+  FAutoSize := True;
+  {$ENDIF VisualCLX}
 end;
 
 destructor TJvCustomLED.Destroy;
@@ -271,6 +283,19 @@ begin
   else
     inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
+
+{$IFDEF VisualCLX}
+procedure TJvCustomLED.SetAutoSize(value: boolean);
+begin
+  if value <> FAutosize then
+  begin
+    FAutoSize := value;
+    if FAutoSize
+    then
+      SetBounds(Left, Top, Width, Height);
+  end;
+end;
+{$ENDIF VisualCLX}
 
 //=== TBlinkThread ===========================================================
 

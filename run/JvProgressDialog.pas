@@ -87,7 +87,13 @@ unit JvProgressDialog;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Forms,
+  Classes, SysUtils,
+  {$IFDEF VCL}
+  Graphics, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QForms,
+  {$ENDIF VisualCLX}
   JvBaseDlg;
 
 type

@@ -36,7 +36,7 @@ uses
   Controls, Forms, StdCtrls, Mask,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QMask, JvQToolEdit,
+  QControls, QForms, QStdCtrls, QMask, 
   {$ENDIF VisualCLX}
   JvToolEdit, JvComponent;
 

@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvAlignListbox.PAS, released on 2000-11-22.
+The Original Code is: JvSpacer.PAS, released on 2000-11-22.
 
 The Initial Developer of the Original Code is Peter Below <100113.1101@compuserve.com>
 Portions created by Peter Below are Copyright (C) 2000 Peter Below.
@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2000-mm-dd
+Last Modified: 2004-02-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,7 +31,13 @@ unit JvSpacer;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, Forms, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QExtCtrls,
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -49,12 +55,14 @@ type
     property BevelOuter default bvNone;
     property BorderStyle default bsNone;
     property Color;
+    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
+    property OnCanResize;
+    {$ENDIF VCL}
     property DragMode;
     property ParentColor;
     property Visible;
-    property OnCanResize;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
