@@ -52,6 +52,8 @@ type
   end;
 
 implementation
+uses
+  MultiMon, JvMaxMin;
 
 resourcestring
   RC_FormPlace = 'Software\BuyPin\FormPlace\';
@@ -101,10 +103,70 @@ end;
 
 {**************************************************}
 
+function MinMonitorLeft:integer;
+var i:integer;
+begin
+  Result := 0;
+  with Screen do
+    for i := 0 to MonitorCount - 1 do
+      Result := Min(Result,Monitors[i].Left);
+end;
+
+function MaxMonitorRight:integer;
+var i:integer;
+begin
+  with Screen do
+  begin
+    Result := Width;
+    for i := 0 to MonitorCount - 1 do
+      Result := Max(Result,Monitors[i].Left + Monitors[i].Width);
+  end;
+end;
+
+function MinMonitorTop:integer;
+var i:integer;
+begin
+  with Screen do
+  begin
+    Result := 0;
+    for i := 0 to MonitorCount - 1 do
+      Result := Min(Result,Monitors[i].Top);
+  end;
+end;
+
+function MaxMonitorBottom:integer;
+var i:integer;
+begin
+  with Screen do
+  begin
+    Result := Height;
+    for i := 0 to MonitorCount - 1 do
+      Result := Max(Result,Monitors[i].Top + Monitors[i].Height);
+  end;
+end;
+
+function MonitorFromPoint(APoint:TPoint):TMonitor;
+{$IFNDEF COMPILER6_UP}var H:HMONITOR;i:integer;{$ENDIF}
+begin
+  {$IFDEF COMPILER6_UP}
+  Result := Screen.MonitorFromPoint(APoint);
+  {$ELSE}
+  H := MultiMon.MonitorFromPoint(APoint,MONITOR_DEFAULTTOPRIMARY);
+  Result := nil;
+  for i := 0 to Screen.MonitorCount - 1 do
+    if Screen.Monitors[i].Handle = H then
+      begin
+        Result := Screen.Monitors[i];
+        Exit;
+      end;
+  {$ENDIF}
+end;
+
 procedure TJvFormPlace.Rememb(Sender: TObject);
 var
   nam: string;
   fleft, ftop, fwidth, fheight: Integer;
+  M:TMonitor;
 begin
   Ftimer.Enabled := False;
   if FBoolean then
@@ -159,12 +221,22 @@ begin
           fheight := ReadInteger(nam + '_height')
         else
           fheight := Screen.Height + 1;
-        if (fleft > Screen.Width) or (ftop > Screen.Height) or (fleft < 0) or (ftop < 0) then
+        if (fleft > MaxMonitorRight) or (ftop > MaxMonitorBottom) or
+          (fleft < MinMonitorLeft) or (ftop < MinMonitorTop) then
         begin
           fwidth := FForm.Width;
           fheight := FForm.Height;
-          fleft := (Screen.Width - fwidth) div 2;
-          ftop := (Screen.Height - fheight) div 2;
+          M := MonitorFromPoint(Point(fleft,ftop));
+          if M <> nil then
+          begin
+            fleft := M.Left + (M.Width - fwidth) div 2;
+            ftop := M.Top + (M.Height - fheight) div 2;
+          end
+          else
+          begin
+            fleft := (Screen.Width - fwidth) div 2;
+            ftop := (Screen.Height - fheight) div 2;
+          end;
         end;
       end;
       FForm.Left := fleft;
