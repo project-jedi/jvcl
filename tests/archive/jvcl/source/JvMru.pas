@@ -32,11 +32,7 @@ Known Issues:
 {      http://www.geocities.com/SiliconValley/4942      }
 {*******************************************************}
 
-(* Those are modifed original JvMru and JvHMru units together and TJvMruList
-component. I changed them separately before, but...
-I can't say why this changes were rejected, so - let it be the separate component.
-Anyway they still are under MPL 1.1 and are welcome to be integrated into JVCL.
-
+(*
 the_Arioch@nm.ru
 
 Changes are:
@@ -53,15 +49,12 @@ Changes are:
  8) added UseUnicode property - if List is of string type then it will use WideString methods
  9) added WantUnicode property - it will set UseUnicode respecting to used platform
 10) some storage modifiers added for published property
-xx) why keep UnicodeAvailable in every component? I iwsh Delphi could map
+xx) why keep UnicodeAvailable in every component? I wish Delphi could map
     property to a global variable :(
 *)
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JEDI.INC}
+{$I JVCL.INC}
 
 unit JvMru;
-
-{$OBJEXPORTALL On}
 
 interface
 
@@ -118,8 +111,8 @@ type
     procedure NeedUnicode;
     procedure DoEnumText; virtual;
     procedure DoUnicodeEnumText; virtual;
+    // Arioch: even DataSize can be retained later from properties - but let 'em be.
     procedure DoEnumData(DataSize: integer); virtual;
-    // Arioch:: even DataSize can be retained later from properties - but let 'em be.
   public
     procedure Close;
     procedure Open;
@@ -737,7 +730,7 @@ initialization
       AddMRUStringW := GetProcAddress(hComCtlDll, PChar(401));
       FindMRUStringW := GetProcAddress(hComCtlDll, PChar(402));
       EnumMRUListW := GetProcAddress(hComCtlDll, PChar(403));
-    end (* else  Since TurboPascal 7.0 allthe global vars are filled with Zero'es at the start, yes?
+    end (* else  Since TurboPascal 7.0 all the global vars are filled with Zero'es at the start, yes?
     begin
       CreateMRUListW := nil;
       AddMRUStringW := nil;
