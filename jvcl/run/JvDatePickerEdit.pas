@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Peter Thörnqvist.
 
-Last Modified: 2004-03-03
+Last Modified: 2004-03-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -53,7 +53,7 @@ Known Issues:
 unit JvDatePickerEdit;
 
 interface
-
+                                                                       
 uses
   Classes, Controls, Graphics, Messages, ComCtrls, Buttons,
   JvTypes, JvCalendar, JvDropDownForm, JvCheckedMaskEdit, JvButton;
@@ -120,6 +120,8 @@ type
     FStoreDate: Boolean;
     FAlwaysReturnEditDate: Boolean;
     FEmptyMaskText: string;
+    FStoreDateFormat: Boolean;
+    FDateSeparator: Char;
     //    FMinYear: Word;
     //    FMaxYear: Word;
     procedure ButtonClick(Sender: TObject);
@@ -127,12 +129,14 @@ type
     procedure CalDestroy(Sender: TObject);
     procedure CalSelect(Sender: TObject);
     procedure CalCloseQuery(Sender: TObject; var CanClose: Boolean);
-    function IsEmptyMaskText(const AText: string): Boolean; //TODO: make IsEmptyMaskText protected
     function AttemptTextToDate(const AText: string; var ADate: TDateTime;
       const AForce: Boolean = False; const ARaise: Boolean = False): Boolean;
     function DateFormatToEditMask(var ADateFormat: string): string;
     function DateToText(const ADate: TDateTime): string;
-    procedure ParseFigures(var AFigures: TJvDateFigures; AFormat: string);
+    function DetermineDateSeparator(AFormat: string): Char;
+    procedure ResetDateFormat;
+    procedure FindSeparators(var AFigures: TJvDateFigures; const AText: string; const AGetLengths: Boolean = True);
+    procedure ParseFigures(var AFigures: TJvDateFigures; AFormat: string; const AMask: string);
     procedure RaiseNoDate;
     procedure SetAllowNoDate(const AValue: Boolean);
     procedure SetCalAppearance(const AValue: TJvMonthCalAppearance);
@@ -141,15 +145,21 @@ type
     procedure SetDateFormat(const AValue: string);
     function GetDropped: Boolean;
     procedure SetNoDateText(const AValue: string);
+    procedure SetDateSeparator(const AValue: Char);
+    function GetEditMask: string;
+    procedure SetEditMask(const AValue: string);
+    function GetText: TCaption;
+    procedure SetText(const AValue: TCaption);
+    procedure WMPaste(var Message: TMessage); message WM_PASTE;
   protected
-    function IsDateFormatStored: Boolean;
     function IsNoDateShortcutStored: Boolean;
     function IsNoDateTextStored: Boolean;
     procedure Change; override;
     procedure Loaded; override;
-
+    procedure CreateWnd; override;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); override;
     procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
+    procedure KeyPress(var Key: Char); override;
     procedure GetInternalMargins(var ALeft, ARight: Integer); override;
     procedure DoCtl3DChanged; override;
     procedure EnabledChanged; override;
@@ -164,11 +174,13 @@ type
     procedure DropDown; virtual;
     procedure ClearMask;
     procedure RestoreMask;
-    property AllowNoDate: Boolean read FAllowNoDate write SetAllowNoDate default True;
+    function IsEmptyMaskText(const AText: string): Boolean;
+    property AllowNoDate: Boolean read FAllowNoDate write SetAllowNoDate;
     property AlwaysReturnEditDate: Boolean read FAlwaysReturnEditDate write FAlwaysReturnEditDate default True;
     property CalendarAppearance: TJvMonthCalAppearance read FCalAppearance write SetCalAppearance;
     property Date: TDateTime read GetDate write SetDate stored FStoreDate;
-    property DateFormat: string read FDateFormat write SetDateFormat stored IsDateFormatStored;
+    property DateFormat: string read FDateFormat write SetDateFormat stored FStoreDateFormat;
+    property DateSeparator: Char read FDateSeparator write SetDateSeparator stored FStoreDateFormat;
     property Dropped: Boolean read GetDropped;
     property EnableValidation: Boolean read GetEnableValidation write FEnableValidation default True;
     //    property MaxYear: Word read FMaxYear write FMaxYear;
@@ -176,12 +188,14 @@ type
     property NoDateShortcut: TShortcut read FNoDateShortcut write FNoDateShortcut stored IsNoDateShortcutStored;
     property NoDateText: string read FNoDateText write SetNoDateText stored IsNoDateTextStored;
     property StoreDate: Boolean read FStoreDate write FStoreDate default False;
-    procedure CreateWnd; override;
+    property StoreDateFormat: Boolean read FStoreDateFormat write FStoreDateFormat default False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear; override;
     function IsEmpty: Boolean; virtual;
+    property EditMask: string read GetEditMask write SetEditMask;
+    property Text: TCaption read GetText write SetText;
   end;
 
   TJvDatePickerEdit = class(TJvCustomDatePickerEdit)
@@ -204,6 +218,7 @@ type
     property Cursor;
     property Date;
     property DateFormat;
+    property DateSeparator;
     property DisabledColor;
     property DisabledTextColor;
     property DragCursor;
@@ -227,6 +242,7 @@ type
     property ShowHint;
     property ShowCheckbox;
     property StoreDate;
+    property StoreDateFormat;
     property TabOrder;
     property Visible;
     property OnChange;
@@ -262,6 +278,9 @@ uses
 
 //=== TJvCustomDatePickerEdit ================================================
 
+const
+  DateMaskSuffix = '!;1;_';
+
 constructor TJvCustomDatePickerEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -278,6 +297,7 @@ begin
   FNoDateShortcut := TextToShortCut(RsDefaultNoDateShortcut);
   FNoDateText := '';
   FStoreDate := False;
+  FStoreDateFormat := False;
 
   FButtonHolder := TWinControl.Create(Self);
   with FButtonHolder do
@@ -390,8 +410,17 @@ begin
 end;
 
 function TJvCustomDatePickerEdit.DateToText(const ADate: TDateTime): string;
+var
+  OldSep: Char;
 begin
-  Result := FormatDateTime(FInternalDateFormat, ADate);
+  OldSep := SysUtils.DateSeparator;
+  // without this a slash would always be converted to SysUtils.DateSeparator
+  SysUtils.DateSeparator := Self.DateSeparator;
+  try
+    Result := FormatDateTime(FInternalDateFormat, ADate);
+  finally
+    SysUtils.DateSeparator := OldSep;
+  end;
 end;
 
 function TJvCustomDatePickerEdit.GetDate: TDateTime;
@@ -484,6 +513,7 @@ function TJvCustomDatePickerEdit.AttemptTextToDate(const AText: string;
   var ADate: TDateTime; const AForce: Boolean; const ARaise: Boolean): Boolean;
 var
   OldFormat: string;
+  OldSeparator: Char;
   OldDate: TDateTime;
   Dummy: Integer;
 begin
@@ -494,13 +524,15 @@ begin
   begin
     OldDate := ADate;
     OldFormat := ShortDateFormat;
+    OldSeparator := SysUtils.DateSeparator;
     try
+      SysUtils.DateSeparator := FDateSeparator;
       ShortDateFormat := FInternalDateFormat;
       try
         if AllowNoDate and IsEmptyMaskText(AText) then
           ADate := 0.0
         else
-          ADate := StrToDate(AText);
+          ADate := StrToDate(StrRemoveChars(AText, [' ']));
         Result := True;
       except
         Result := False;
@@ -510,6 +542,7 @@ begin
           ADate := OldDate;
       end;
     finally
+      SysUtils.DateSeparator := OldSeparator;
       ShortDateFormat := OldFormat;
     end;
   end;
@@ -709,26 +742,45 @@ begin
   StrReplace(ADateFormat, 'MMM', 'M', []);
   Result := ADateFormat;
   StrReplace(Result, 'dd', '00', []);
-  StrReplace(Result, 'd', '90', []);
+  StrReplace(Result, 'd', '09', []);
   StrReplace(Result, 'MM', '00', []);
-  StrReplace(Result, 'M', '90', []);
-  StrReplace(Result, 'yyyy', '9900', []);
+  StrReplace(Result, 'M', '09', []);
+  StrReplace(Result, 'yyyy', '0099', []);
   StrReplace(Result, 'yy', '00', []);
-//  StrReplace(Result, DateSeparator, '/', [rfReplaceAll]);
-  Result := '!' + Trim(Result) + ';1;_';
+  StrReplace(Result, ' ', '_', []);
+  Result := Trim(Result) + DateMaskSuffix;
 end;
 
-function TJvCustomDatePickerEdit.IsDateFormatStored: Boolean;
+function TJvCustomDatePickerEdit.DetermineDateSeparator(AFormat: string): Char;
 begin
-  Result := (FDateFormat <> ShortDateFormat);
+  AFormat := StrRemoveChars(Trim(AFormat), ['d', 'M', 'y']);
+  if Length(AFormat) > 0 then
+    Result := AFormat[1]
+  else
+    Result := SysUtils.DateSeparator;
 end;
 
 procedure TJvCustomDatePickerEdit.SetDateFormat(const AValue: string);
 begin
   FDateFormat := AValue;
+  if FDateFormat = EmptyStr then
+    FDateFormat := ShortDateFormat;
+  DateSeparator := DetermineDateSeparator(FDateFormat); //calls ResetDateFormat implicitly
+  if FDateFormat <> ShortDateFormat then
+    FStoreDateFormat := True;
+end;
+
+procedure TJvCustomDatePickerEdit.SetDateSeparator(const AValue: Char);
+begin
+  FDateSeparator := AValue;
+  ResetDateFormat;
+end;
+
+procedure TJvCustomDatePickerEdit.ResetDateFormat;
+begin
   FInternalDateFormat := FDateFormat;
   FMask := DateFormatToEditMask(FInternalDateFormat);
-  ParseFigures(FDateFigures, FInternalDateFormat);
+  ParseFigures(FDateFigures, FInternalDateFormat, FMask);
   BeginInternalChange;
   try
     EditMask := EmptyStr;
@@ -754,25 +806,40 @@ begin
   Result.Figure := dfNone;
 end;
 
+procedure TJvCustomDatePickerEdit.FindSeparators(var AFigures: TJvDateFigures;
+  const AText: string; const AGetLengths: Boolean);
+begin
+  //TODO 3 : make up for escaped characters in EditMask
+  AFigures[0].Start := 1;
+  AFigures[1].Start := Pos(DateSeparator, AText) + 1;
+  AFigures[2].Start := StrLastPos(DateSeparator, AText) + 1;
+
+  if AGetLengths then
+  begin
+    AFigures[0].Length := AFigures[1].Start - 2;
+    AFigures[1].Length := AFigures[2].Start - AFigures[1].Start - 1;
+    AFigures[2].Length := Length(AText) - AFigures[2].Start + 1;
+  end;
+end;
+
 procedure TJvCustomDatePickerEdit.ParseFigures(var AFigures: TJvDateFigures;
-  AFormat: string);
+  AFormat: string; const AMask: string);
 var
   i: Integer;
+  DummyFigures: TJvDateFigures;
 begin
-  {Determines the order and position of the individual figures in the format string.}
-  AFigures[0].Start := 1;
-  AFigures[1].Start := Pos(DateSeparator, AFormat) + 1;
-  AFigures[2].Start := StrLastPos(DateSeparator, AFormat) + 1;
-
-  AFigures[0].Length := AFigures[1].Start - 2;
-  AFigures[1].Length := AFigures[2].Start - AFigures[1].Start - 1;
-  AFigures[2].Length := Length(AFormat) - AFigures[2].Start + 1;
+  {Determine the position of the individual figures in the mask string.}
+  FindSeparators(AFigures, AMask);
+  AFigures[2].Length := AFigures[2].Length - Length(DateMaskSuffix);
 
   AFormat := UpperCase(AFormat);
 
+  {Determine the order of the individual figures in the format string.}
+  FindSeparators(DummyFigures, AFormat, False);
+
   for I := 0 to 2 do
   begin
-    case AFormat[AFigures[I].Start] of
+    case AFormat[DummyFigures[I].Start] of
       'D':
         AFigures[I].Figure := dfDay;
       'M':
@@ -788,8 +855,8 @@ procedure TJvCustomDatePickerEdit.DoKillFocusEvent(const ANextControl: TWinContr
 var
   lDate: TDateTime;
 begin
-  if (ANextControl <> nil) and (ANextControl <> FDropFo) and
-    (ANextControl.Owner <> FDropFo) then
+  if (ANextControl = nil) or ((ANextControl <> FDropFo) and
+    (ANextControl.Owner <> FDropFo)) then
     if not FDateError then
     begin
       CloseUp;
@@ -844,6 +911,94 @@ function TJvCustomDatePickerEdit.IsEmptyMaskText(const AText: string): Boolean;
 begin
   Result := AnsiSameStr(AText, FEmptyMaskText);
 end;
+
+
+function TJvCustomDatePickerEdit.GetEditMask: string;
+begin
+  Result := inherited EditMask;
+end;
+
+{ The only purpose of the following overrides is to overcome a known issue in
+  Mask.pas where it is impossible to use the slash character in an EditMask if
+  SysUtils.DateSeparator is set to something else even if the slash was escaped
+  as a literal. By inheritance the following methods all end up eventually in
+  Mask.MaskIntlLiteralToChar which performs the unwanted conversion. By
+  temporarily setting SysUtils.DateSeparator we could circumvent this. }
+
+procedure TJvCustomDatePickerEdit.SetEditMask(const AValue: string);
+var
+  OldSep: Char;
+begin
+  OldSep := SysUtils.DateSeparator;
+  SysUtils.DateSeparator := Self.DateSeparator;
+  try
+    inherited EditMask := AValue;
+  finally
+    SysUtils.DateSeparator := OldSep;
+  end;
+end;
+
+function TJvCustomDatePickerEdit.GetText: TCaption;
+var
+  OldSep: Char;
+begin
+  OldSep := SysUtils.DateSeparator;
+  SysUtils.DateSeparator := Self.DateSeparator;
+  try
+    Result := inherited Text;
+  finally
+    SysUtils.DateSeparator := OldSep;
+  end;
+end;
+
+procedure TJvCustomDatePickerEdit.SetText(const AValue: TCaption);
+var
+  OldSep: Char;
+begin
+  OldSep := SysUtils.DateSeparator;
+  SysUtils.DateSeparator := Self.DateSeparator;
+  try
+    inherited Text := AValue;
+  finally
+    SysUtils.DateSeparator := OldSep;
+  end;
+end;
+
+procedure TJvCustomDatePickerEdit.KeyPress(var Key: Char);
+var
+  OldSep: Char;
+begin
+  { this makes the transition easier for users used to non-mask-aware edit controls 
+    as they could continue typing the separator character without the cursor 
+    auto-advancing to the next figure when they don't expect it : }
+  if (Key = Self.DateSeparator) and (Text[SelStart] = Self.DateSeparator) then
+  begin
+    Key := #0;
+    Exit;
+  end;
+
+  OldSep := SysUtils.DateSeparator;
+  SysUtils.DateSeparator := Self.DateSeparator;
+  try
+    inherited KeyPress(Key);
+  finally
+    SysUtils.DateSeparator := OldSep;
+  end;
+end;
+
+procedure TJvCustomDatePickerEdit.WMPaste(var Message: TMessage);
+var
+  OldSep: Char;
+begin
+  OldSep := SysUtils.DateSeparator;
+  SysUtils.DateSeparator := Self.DateSeparator;
+  try
+    inherited;
+  finally
+    SysUtils.DateSeparator := OldSep;
+  end;
+end;
+
 
 //=== TJvDropCalendar ========================================================
 
