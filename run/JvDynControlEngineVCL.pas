@@ -1570,7 +1570,11 @@ begin
   {$IFDEF COMPILER6_UP}
   {$IFDEF VCL}
   Result := Header[Index];
+  {$ELSE}
+  Result := False;
   {$ENDIF VCL}
+  {$ELSE}
+  Result := False;
   {$ENDIF COMPILER6_UP}
 end;
 
