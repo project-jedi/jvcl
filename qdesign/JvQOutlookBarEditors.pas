@@ -42,7 +42,7 @@ uses
   JvQDsgnEditors, JvQOutlookBar;
 
 type
-  TJvOutlookBarActivePageEditor = class(TIntegerProperty)
+  TJvOutlookBarActivePageProperty = class(TIntegerProperty)
   private
     function GetOL: TJvCustomOutlookBar;
   protected
@@ -55,14 +55,14 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
-  TJvOutlookBarComponentEditor = class(TComponentEditor)
+  TJvOutlookBarEditor = class(TComponentEditor)
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
 
-  TJvOutlookBarPagesPropertyEditor = class(TPropertyEditor)
+  TJvOutlookBarPagesProperty = class(TPropertyEditor)
   private
     function GetOutlookBar: TJvCustomOutlookBar;
   public
@@ -125,14 +125,14 @@ begin
   end;
 end;
 
-//=== { TJvOutlookBarPagesPropertyEditor } ===================================
+//=== { TJvOutlookBarPagesProperty } =========================================
 
-procedure TJvOutlookBarPagesPropertyEditor.Edit;
+procedure TJvOutlookBarPagesProperty.Edit;
 begin
   ShowEditor(Designer, GetOutlookBar);
 end;
 
-function TJvOutlookBarPagesPropertyEditor.GetAttributes: TPropertyAttributes;
+function TJvOutlookBarPagesProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog, paReadOnly];
 end;
@@ -141,7 +141,7 @@ type
   THackPages = class(TJvOutlookBarPages);
   THackButtons = class(TJvOutlookBarButtons);
 
-function TJvOutlookBarPagesPropertyEditor.GetOutlookBar: TJvCustomOutlookBar;
+function TJvOutlookBarPagesProperty.GetOutlookBar: TJvCustomOutlookBar;
 begin
   if GetComponent(0) is TJvCustomOutlookBar then
     Result := TJvCustomOutlookBar(GetComponent(0))
@@ -152,14 +152,14 @@ begin
     Result := nil;
 end;
 
-function TJvOutlookBarPagesPropertyEditor.GetValue: string;
+function TJvOutlookBarPagesProperty.GetValue: string;
 begin
   Result := Format('(%s)', [GetPropType^.Name]);
 end;
 
-//=== { TJvOutlookBarComponentEditor } =======================================
+//=== { TJvOutlookBarEditor } ================================================
 
-procedure TJvOutlookBarComponentEditor.ExecuteVerb(Index: Integer);
+procedure TJvOutlookBarEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
     0:
@@ -169,7 +169,7 @@ begin
   end;
 end;
 
-function TJvOutlookBarComponentEditor.GetVerb(Index: Integer): string;
+function TJvOutlookBarEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
@@ -179,24 +179,24 @@ begin
   end;
 end;
 
-function TJvOutlookBarComponentEditor.GetVerbCount: Integer;
+function TJvOutlookBarEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
 
-//=== { TJvOutlookBarActivePageEditor } ======================================
+//=== { TJvOutlookBarActivePageProperty } ====================================
 
-procedure TJvOutlookBarActivePageEditor.Edit;
+procedure TJvOutlookBarActivePageProperty.Edit;
 begin
   inherited Edit;
 end;
 
-function TJvOutlookBarActivePageEditor.GetAttributes: TPropertyAttributes;
+function TJvOutlookBarActivePageProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList, paSortList, paRevertable];
 end;
 
-function TJvOutlookBarActivePageEditor.GetOL: TJvCustomOutlookBar;
+function TJvOutlookBarActivePageProperty.GetOL: TJvCustomOutlookBar;
 begin
   if GetComponent(0) is TJvCustomOutlookBar then
     Result := TJvCustomOutlookBar(GetComponent(0))
@@ -204,7 +204,7 @@ begin
     Result := nil;
 end;
 
-function TJvOutlookBarActivePageEditor.GetValue: string;
+function TJvOutlookBarActivePageProperty.GetValue: string;
 var
   I: Integer;
 begin
@@ -218,7 +218,7 @@ begin
     Result := inherited GetValue;
 end;
 
-procedure TJvOutlookBarActivePageEditor.GetValues(Proc: TGetStrProc);
+procedure TJvOutlookBarActivePageProperty.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
 begin
@@ -226,7 +226,7 @@ begin
     Proc(THackOutlookBar(OL).Pages[I].Caption);
 end;
 
-procedure TJvOutlookBarActivePageEditor.SetValue(const Value: string);
+procedure TJvOutlookBarActivePageProperty.SetValue(const Value: string);
 var
   I: Integer;
 begin

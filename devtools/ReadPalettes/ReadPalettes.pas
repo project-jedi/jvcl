@@ -10,12 +10,12 @@ implementation
 
 uses
   Classes, Controls, ComCtrls, Forms,
-  {$IFDEF MSWINDOWS}
+  {$IFDEF VCL}
   Dialogs,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QDialogs,
-  {$ENDIF UNIX}
+  {$ENDIF VisualCLX}
   TypInfo, SysUtils, ActnList,
   DesignIntf, ToolsAPI;
 
@@ -29,6 +29,7 @@ var
   ActionsList: TStringList;
   PackageWizardList: TStringList;
   RegisterClassList: TStringList;
+  FullRegisterClassList: TStringList;
 
   OldSpyRegisterPropertyEditor: TRegisterPropertyEditorProc;
   OldSpyRegisterComponentEditor: TRegisterComponentEditorProc;
@@ -57,7 +58,7 @@ var
 begin
   List.Sorted := False;
   for I := 0 to List.Count - 1 do
-    List[I] := Format('%u;%s', [I, List[I]]);
+    List[I] := Format('%u;%s', [I+1, List[I]]);
 end;
 
 procedure AddPackageNames(List: TStringList);
@@ -108,7 +109,7 @@ var
   PaletteTab: TTabControl;
   Palette: TCustomControl;
   PropInfo: PPropInfo;
-  I, J, N: Integer;
+  I, J: Integer;
   PalToolCount: Integer;
   OldPaletteIndex, OldToolIndex: Integer;
   SelectedToolName: string;
@@ -125,8 +126,6 @@ begin
   PropInfo := GetPropInfo(Palette.ClassInfo, 'SelectedIndex');
   OldToolIndex := GetOrdProp(Palette, PropInfo);
 
-  N := 1;
-  VisibleComponentList.Add('"ID";"Palette";"Component";"FileName";"JVCLPackage"');
   for I := 0 to PaletteTab.Tabs.Count - 1 do
   begin
     PaletteTab.TabIndex := I;
@@ -144,11 +143,8 @@ begin
         UnitName := ''
       else
         UnitName := GetTypeData(LClass.ClassInfo).UnitName + '.pas';
-      if Pos('Jv', PaletteTab.Tabs[I]) = 1 then
-      begin
-        VisibleComponentList.Add(Format('%u;"%s";"%s";"%s"', [N, PaletteTab.Tabs[I], SelectedToolName, UnitName]));
-        Inc(N);
-      end;
+      if (Pos('Jv', PaletteTab.Tabs[I]) = 1) or (Pos('JV', PaletteTab.Tabs[I]) = 1) then
+        VisibleComponentList.Add(Format('"%s";"%s";"%s"', [SelectedToolName, PaletteTab.Tabs[I], UnitName]));
     end;
   end;
   PaletteTab.TabIndex := OldPaletteIndex;
@@ -165,9 +161,17 @@ type
   end;
 
 procedure TCarrier.GetClassCallback(AClass: TPersistentClass);
+var
+  UnitName: string;
 begin
   if Pos('TJv', AClass.ClassName) = 1 then
-    RegisterClassList.Add(Format('"%s"', [AClass.ClassName]));
+  begin
+    if AClass.ClassInfo = nil then
+      UnitName := ''
+    else
+      UnitName := GetTypeData(AClass.ClassInfo).UnitName + '.pas';
+    RegisterClassList.Add(Format('"%s";"%s"', [AClass.ClassName, UnitName]));
+  end;
 end;
 
 procedure ReadRegisterClass;
@@ -218,8 +222,8 @@ begin
       UnitName := ''
     else
       UnitName := GetTypeData(ComponentBaseClass.ClassInfo).UnitName + '.pas';
-    CustomModuleList.Add(Format('%u;"%s";"%s";"%s"',
-      [Group, ComponentBaseClass.ClassName, CustomModuleClass.ClassName, UnitName]));
+    CustomModuleList.Add(Format('"%s";"%s";"%s"',
+      [ComponentBaseClass.ClassName, CustomModuleClass.ClassName, UnitName]));
   end;
 end;
 
@@ -255,31 +259,27 @@ begin
     else
       UnitName := GetTypeData(AClasses[I].ClassInfo).UnitName + '.pas';
     if Assigned(Resource) then
-      ActionsList.Add(Format('"%s";"%s";"%s";"%s"', [CategoryName, AClasses[I].ClassName, Resource.ClassName, UnitName]))
+      ActionsList.Add(Format('"%s";"%s";"%s";"%s"', [AClasses[I].ClassName, CategoryName, Resource.ClassName, UnitName]))
     else
-      ActionsList.Add(Format('"%s";"%s";"";"%s"', [CategoryName, AClasses[I].ClassName, UnitName]));
+      ActionsList.Add(Format('"%s";"%s";"";"%s"', [AClasses[I].ClassName, CategoryName, UnitName]));
   end;
 end;
 
-procedure CleanNoIconList;
+procedure CleanList(DeleterList, DeletedList: TStringList);
 var
-  I, N: Integer;
-  F, S: string;
+  I, J: Integer;
+  S: string;
 begin
-  for I := 0 to ActionsList.Count - 1 do
+  for I := 0 to DeleterList.Count - 1 do
   begin
-    N := Pos(';', ActionsList[I]);
-    S := Copy(ActionsList[I], N + 1, Length(ActionsList[I]));
-    N := Pos(';', S);
-    F := Copy(S, 1, N - 1);
-    S := Copy(S, N + 1, Length(S));
-    N := Pos(';', S);
-    S := Copy(S, N + 1, Length(S));
-    N := Pos(';', S);
-    S := Copy(S, N + 1, Length(S));
-    F := F + ';' + S;
-    if NoIconList.Find(F, N) then
-      NoIconList.Delete(N);
+    J := Pos(';', DeleterList[I]);
+    S := Copy(DeleterList[I], 1, J - 1);
+    for J := 0 to DeletedList.Count - 1 do
+      if Pos(S, DeletedList[J]) = 1 then
+      begin
+        DeletedList.Delete(J);
+        Break;
+      end;
   end;
 end;
 
@@ -351,6 +351,9 @@ initialization
   PackageWizardList.Duplicates := dupIgnore;
   PackageWizardList.Sorted := True;
   RegisterClassList := TStringList.Create;
+  RegisterClassList.Duplicates := dupIgnore;
+  RegisterClassList.Sorted := True;
+  FullRegisterClassList := TStringList.Create;
 
   OldSpyRegisterPropertyEditor := RegisterPropertyEditorProc;
   RegisterPropertyEditorProc := SpyRegisterPropertyEditor;
@@ -373,9 +376,15 @@ finalization
   RegisterActionsProc := OldSpyRegisterActions;
   LibraryWizardProc := OldSpyRegisterPackageWizard;
 
-  CleanNoIconList;
+  CleanList(ActionsList, NoIconList);
   ReadRegisterClass;
+  FullRegisterClassList.Assign(RegisterClassList);
+  CleanList(VisibleComponentList, RegisterClassList);
+  CleanList(NoIconList, RegisterClassList);
+  CleanList(ActionsList, RegisterClassList);
+  CleanList(CustomModuleList, RegisterClassList);
 
+  AddIDs(VisibleComponentList);
   AddIDs(PropertyEditorList);
   AddIDs(ComponentEditorList);
   AddIDs(CustomModuleList);
@@ -383,19 +392,24 @@ finalization
   AddIDs(ActionsList);
   AddIDs(PackageWizardList);
   AddIDs(RegisterClassList);
+  AddIDs(FullRegisterClassList);
 
   AddPackageNames(CustomModuleList);
   AddPackageNames(NoIconList);
   AddPackageNames(ActionsList);
   AddPackageNames(VisibleComponentList);
+  AddPackageNames(RegisterClassList);
+  AddPackageNames(FullRegisterClassList);
 
+  VisibleComponentList.Insert(0, '"ID";"Component";"Palette";"FileName";"JVCLPackage"');
   PropertyEditorList.Insert(0, '"ID";"PropertyType_Name";"ComponentClass_ClassName";"PropertyName";"EditorClass_ClassName"');
   ComponentEditorList.Insert(0, '"ID";"ComponentClass_ClassName";"ComponentEditor_ClassName"');
-  CustomModuleList.Insert(0, '"ID";"Group";"ComponentBaseClass_ClassName";"CustomModuleClass_ClassName";"FileName";"JVCLPackage"');
+  CustomModuleList.Insert(0, '"ID";"ComponentBaseClass_ClassName";"CustomModuleClass_ClassName";"FileName";"JVCLPackage"');
   NoIconList.Insert(0, '"ID";"ClassName";"FileName";"JVCLPackage"');
-  ActionsList.Insert(0, '"ID";"CategoryName";"ClassName";"Resource_ClassName";"FileName";"JVCLPackage"');
+  ActionsList.Insert(0, '"ID";"ClassName";"CategoryName";"Resource_ClassName";"FileName";"JVCLPackage"');
   PackageWizardList.Insert(0, '"ID";"WizardName";"WizardIDString"');
-  RegisterClassList.Insert(0, '"ID";"ClassName"');
+  RegisterClassList.Insert(0, '"ID";"ClassName";"FileName";"JVCLPackage"');
+  FullRegisterClassList.Insert(0, '"ID";"ClassName";"FileName";"JVCLPackage"');
   SaveFile('JVCL Visible Components.csv', VisibleComponentList);
   SaveFile('JVCL Property Editors.csv', PropertyEditorList);
   SaveFile('JVCL Component Editors.csv', ComponentEditorList);
@@ -404,6 +418,7 @@ finalization
   SaveFile('JVCL Actions.csv', ActionsList);
   SaveFile('JVCL Package Wizards.csv', PackageWizardList);
   SaveFile('JVCL Registered Classes.csv', RegisterClassList);
+  SaveFile('JVCL All Registered Classes.csv', FullRegisterClassList);
   FreeAndNil(VisibleComponentList);
   FreeAndNil(AllComponentList);
   FreeAndNil(PropertyEditorList);
@@ -413,5 +428,6 @@ finalization
   FreeAndNil(ActionsList);
   FreeAndNil(PackageWizardList);
   FreeAndNil(RegisterClassList);
+  FreeAndNil(FullRegisterClassList);
 
 end.

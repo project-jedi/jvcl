@@ -67,7 +67,7 @@ begin
   RegisterComponents(RsPaletteXPControls, [TJvXPProgressBar]);
   {$ENDIF USEJVCL}
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvXPBarItem, 'ImageIndex',
-    TJvXPItemImageIndexPropertyEditor);
+    TJvXPItemImageIndexProperty);
   RegisterComponentEditor(TJvXPBar, TJvXPBarItemEditor);
 end;
 

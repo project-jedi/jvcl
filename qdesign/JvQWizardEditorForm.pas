@@ -37,7 +37,7 @@ Known Issues:
   Date(mm/dd/yy)   Comments
   ---------------------------------------------------------------------------
   01/29/2002       Initial create
-                   1) Move TJvWizardActivePageProperty, TJvWizardComponentEditor
+                   1) Move TJvWizardActivePageProperty, TJvWizardEditor
                       class from JvWizardReg to here
                    2) TJvWizardPageListProperty added
                       TJvWizardPageList dialog form added
@@ -65,7 +65,7 @@ type
   end;
 
   // JvWizard Component Local Menu Editor
-  TJvWizardComponentEditor = class(TComponentEditor)
+  TJvWizardEditor = class(TComponentEditor)
   protected
     function GetWizard: TJvWizard; virtual;
     procedure AddPage(Page: TJvWizardCustomPage);
@@ -206,9 +206,9 @@ begin
   end;
 end;
 
-//=== { TJvWizardComponentEditor } ===========================================
+//=== { TJvWizardEditor } ====================================================
 
-procedure TJvWizardComponentEditor.AddPage(Page: TJvWizardCustomPage);
+procedure TJvWizardEditor.AddPage(Page: TJvWizardCustomPage);
 begin
   Page.Parent := Wizard;
   Page.Wizard := Wizard;
@@ -217,7 +217,7 @@ begin
   Designer.Modified;
 end;
 
-procedure TJvWizardComponentEditor.AddInteriorPage;
+procedure TJvWizardEditor.AddInteriorPage;
 var
   Page: TJvWizardInteriorPage;
 begin
@@ -231,7 +231,7 @@ begin
   end;
 end;
 
-procedure TJvWizardComponentEditor.AddWelcomePage;
+procedure TJvWizardEditor.AddWelcomePage;
 var
   Page: TJvWizardWelcomePage;
 begin
@@ -245,7 +245,7 @@ begin
   end;
 end;
 
-procedure TJvWizardComponentEditor.ExecuteVerb(Index: Integer);
+procedure TJvWizardEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
     0:
@@ -268,7 +268,7 @@ begin
   end;
 end;
 
-function TJvWizardComponentEditor.GetWizard: TJvWizard;
+function TJvWizardEditor.GetWizard: TJvWizard;
 begin
   if Component is TJvWizard then
     Result := TJvWizard(Component)
@@ -276,7 +276,7 @@ begin
     Result := TJvWizard(TJvWizardCustomPage(Component).Wizard);
 end;
 
-function TJvWizardComponentEditor.GetVerb(Index: Integer): string;
+function TJvWizardEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
@@ -294,12 +294,12 @@ begin
   end;
 end;
 
-function TJvWizardComponentEditor.GetVerbCount: Integer;
+function TJvWizardEditor.GetVerbCount: Integer;
 begin
   Result := 6;
 end;
 
-procedure TJvWizardComponentEditor.NextPage(Step: Integer);
+procedure TJvWizardEditor.NextPage(Step: Integer);
 var
   Page: TJvWizardCustomPage;
 begin

@@ -75,10 +75,10 @@ begin
   RegisterClasses([TJvSettingsTreeView, TJvPageListTreeView, TJvPageList, TJvStandardPage]);
   RegisterComponentEditor(TJvCustomPageList, TJvCustomPageEditor);
   RegisterComponentEditor(TJvCustomPage, TJvCustomPageEditor); 
-  RegisterComponentEditor(TCustomTreeView, TJvTreeViewComponentEditor);
-  RegisterComponentEditor(TJvCustomPageListTreeView, TJvPageTreeViewComponentEditor);
+  RegisterComponentEditor(TCustomTreeView, TJvTreeViewEditor);
+  RegisterComponentEditor(TJvCustomPageListTreeView, TJvPageTreeViewEditor);
   // register for the standard TTreeView as well
-  //  RegisterComponentEditor(TTreeView, TJvTreeViewComponentEditor);
+  //  RegisterComponentEditor(TTreeView, TJvTreeViewEditor);
   RegisterPropertyEditor(TypeInfo(TJvPageLinks),
     TJvCustomPageListTreeView, '', TJvPageLinksProperty);
   RegisterPropertyEditor(TypeInfo(TJvCustomPage),

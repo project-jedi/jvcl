@@ -38,14 +38,14 @@ uses
   JvQScheduleEditorForm, JvQScheduledEvents;
 
 type
-  TJvSchedulePropertyEditor = class(TPropertyEditor)
+  TJvScheduleProperty = class(TPropertyEditor)
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
   end;
 
-  TJvSchedEventComponentEditor = class(TComponentEditor)
+  TJvSchedEventEditor = class(TComponentEditor)
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -64,9 +64,9 @@ uses
   JvQConsts, JvQDsgnConsts;
 
 
-//=== TJvSchedulePropertyEditor ==============================================
+//=== TJvScheduleProperty ====================================================
 
-procedure TJvSchedulePropertyEditor.Edit;
+procedure TJvScheduleProperty.Edit;
 begin
   with TfrmScheduleEditor.Create(nil) do
   try
@@ -78,30 +78,30 @@ begin
   end;
 end;
 
-function TJvSchedulePropertyEditor.GetAttributes: TPropertyAttributes;
+function TJvScheduleProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog, paReadOnly];
 end;
 
-function TJvSchedulePropertyEditor.GetValue: string;
+function TJvScheduleProperty.GetValue: string;
 begin
   Result := '(IJclSchedule)';
 end;
 
-//=== TJvSchedEventComponentEditor ===========================================
+//=== TJvSchedEventEditor ====================================================
 
-procedure TJvSchedEventComponentEditor.ExecuteVerb(Index: Integer);
+procedure TJvSchedEventEditor.ExecuteVerb(Index: Integer);
 begin
   ShowCollectionEditorClass(Designer, TCollectionEditor, Component,
     TJvCustomScheduledEvents(Component).Events, 'Events');
 end;
 
-function TJvSchedEventComponentEditor.GetVerb(Index: Integer): string;
+function TJvSchedEventEditor.GetVerb(Index: Integer): string;
 begin
   Result := RsEventEditor;
 end;
 
-function TJvSchedEventComponentEditor.GetVerbCount: Integer;
+function TJvSchedEventEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;

@@ -42,7 +42,7 @@ uses
   JvDataEmbedded;
 
 type
-  TJvDataEmbeddedComponentEditor = class(TComponentEditor)
+  TJvDataEmbeddedEditor = class(TComponentEditor)
   private
     procedure LoadDataFromFile(Comp: TJvDataEmbedded);
     procedure ViewAsText;
@@ -64,7 +64,7 @@ uses
   {$ENDIF VCL}
   JclFileUtils;
 
-procedure TJvDataEmbeddedComponentEditor.LoadDataFromFile(Comp: TJvDataEmbedded);
+procedure TJvDataEmbeddedEditor.LoadDataFromFile(Comp: TJvDataEmbedded);
 var
   Stream: TFileStream;
   MemStream: TMemoryStream;
@@ -90,7 +90,7 @@ begin
     end;
 end;
 
-procedure TJvDataEmbeddedComponentEditor.ExecuteVerb(Index: Integer);
+procedure TJvDataEmbeddedEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
   0:
@@ -102,7 +102,7 @@ begin
   end;
 end;
 
-function TJvDataEmbeddedComponentEditor.GetVerb(Index: Integer): string;
+function TJvDataEmbeddedEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
   0:
@@ -114,13 +114,13 @@ begin
   end;
 end;
 
-function TJvDataEmbeddedComponentEditor.GetVerbCount: Integer;
+function TJvDataEmbeddedEditor.GetVerbCount: Integer;
 begin
   Result := 3;
 end;
 
 {$IFDEF COMPILER6_UP}
-procedure TJvDataEmbeddedComponentEditor.PrepareItem(Index: Integer;
+procedure TJvDataEmbeddedEditor.PrepareItem(Index: Integer;
   const AItem: IMenuItem);
 begin
   inherited;
@@ -131,7 +131,7 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-procedure TJvDataEmbeddedComponentEditor.ViewAsText;
+procedure TJvDataEmbeddedEditor.ViewAsText;
 var
   F:TFileStream;
   S:string;

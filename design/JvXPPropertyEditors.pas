@@ -74,7 +74,7 @@ type
   end;
   {$ENDIF VisualCLX}
 
-  TJvXPItemImageIndexPropertyEditor = class(TJvXPCustomImageIndexPropertyEditor)
+  TJvXPItemImageIndexProperty = class(TJvXPCustomImageIndexPropertyEditor)
   public
     function GetImageListAt(Index: Integer): TCustomImageList; override;
   end;
@@ -181,9 +181,9 @@ end;
 
 {$ENDIF VCL}
 
-//=== { TJvXPItemImageIndexPropertyEditor } ==================================
+//=== { TJvXPItemImageIndexProperty } ========================================
 
-function TJvXPItemImageIndexPropertyEditor.GetImageListAt(Index: Integer): TCustomImageList;
+function TJvXPItemImageIndexProperty.GetImageListAt(Index: Integer): TCustomImageList;
 var
   Item: TPersistent;
 begin

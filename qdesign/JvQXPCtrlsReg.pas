@@ -61,7 +61,7 @@ begin
     TJvXPButton, TJvXPToolButton, TJvXPCheckBox]); 
   RegisterComponents(RsPaletteXPControls, [TJvXPProgressBar]); 
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvXPBarItem, 'ImageIndex',
-    TJvXPItemImageIndexPropertyEditor);
+    TJvXPItemImageIndexProperty);
   RegisterComponentEditor(TJvXPBar, TJvXPBarItemEditor);
 end;
 

@@ -41,7 +41,7 @@ uses
   JvQParserForm;
 
 type
-  TJvHtmlParserEditor = class(TClassProperty)
+  TJvHTMLParserProperty = class(TClassProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
@@ -55,27 +55,27 @@ implementation
 uses
   QControls, QDialogs, JvQDsgnConsts;
 
-function TJvHtmlParserEditor.GetAttributes: TPropertyAttributes;
+function TJvHTMLParserProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paReadOnly];
 end;
 
-function TJvHtmlParserEditor.GetValue: string;
+function TJvHTMLParserProperty.GetValue: string;
 begin
   Result := RsJvEditorString; // GetStrValue;
 end;
 
-procedure TJvHtmlParserEditor.SetValue(const Value: string);
+procedure TJvHTMLParserProperty.SetValue(const Value: string);
 begin
   SetStrValue(RsJvEditorString);
 end;
 
-procedure TJvHtmlParserEditor.GetValues(Proc: TGetStrProc);
+procedure TJvHTMLParserProperty.GetValues(Proc: TGetStrProc);
 begin
   SetStrValue(RsJvEditorString);
 end;
 
-procedure TJvHtmlParserEditor.Edit;
+procedure TJvHTMLParserProperty.Edit;
 var
   Dlg: TJvHTMLParserForm;
   Res: TStrings;

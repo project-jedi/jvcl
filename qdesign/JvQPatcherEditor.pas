@@ -40,7 +40,7 @@ uses
   JvQPatchForm;
 
 type
-  TJvPatcherEditor = class(TClassProperty)
+  TJvPatcherProperty = class(TClassProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
@@ -53,12 +53,12 @@ implementation
 uses
   JvQDsgnConsts;
 
-function TJvPatcherEditor.GetAttributes: TPropertyAttributes;
+function TJvPatcherProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paSortList];
 end;
 
-procedure TJvPatcherEditor.Edit;
+procedure TJvPatcherProperty.Edit;
 var
   Dlg: TPatchFrm;
   Res: TStringList;
@@ -77,14 +77,14 @@ begin
   end;
 end;
 
-procedure TJvPatcherEditor.SetValue(const Value: string);
+procedure TJvPatcherProperty.SetValue(const Value: string);
 begin
   inherited SetValue(Value);
   if Value = '' then
     TStrings(GetOrdValue).Clear;
 end;
 
-function TJvPatcherEditor.GetValue: string;
+function TJvPatcherProperty.GetValue: string;
 begin
   if TStrings(GetOrdValue).Count = 0 then
     Result := RsNone
