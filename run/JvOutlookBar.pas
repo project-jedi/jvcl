@@ -72,10 +72,12 @@ type
     FCaption: TCaption;
     FTag: Integer;
     FDown: Boolean;
+    FEnabled: boolean;
     procedure SetCaption(const Value: TCaption);
     procedure SetImageIndex(const Value: Integer);
     procedure SetDown(const Value: Boolean);
     procedure Change;
+    procedure SetEnabled(const Value: boolean);
   protected
     function GetDisplayName: string; override;
   public
@@ -88,9 +90,7 @@ type
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
     property Tag: Integer read FTag write FTag;
     property Down: Boolean read FDown write SetDown default False;
-    // TODO
-    // property Enabled;
-    // propery Visible;
+    property Enabled: boolean read FEnabled write SetEnabled default True;
   end;
 
   TJvOutlookBarButtons = class(TOwnedCollection)
@@ -125,6 +125,7 @@ type
     FDownFont: TFont;
     FImageIndex: Integer;
     FAlignment: TAlignment;
+    FEnabled: boolean;
     procedure SetButtonSize(const Value: TJvBarButtonSize);
     procedure SetCaption(const Value: TCaption);
     procedure SetColor(const Value: TColor);
@@ -144,12 +145,11 @@ type
     function GetDownIndex: Integer;
     procedure SetDownButton(Value: TJvOutlookBarButton);
     procedure SetDownIndex(Value: Integer);
+    procedure SetEnabled(const Value: boolean);
   protected
-    procedure DoPictureChange(Sender:TObject);
+    procedure DoPictureChange(Sender: TObject);
     function GetDisplayName: string; override;
     { TODO: implement ImageIndex and Alignment }
-    property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
-    property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
   public
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
@@ -158,20 +158,20 @@ type
     property DownButton: TJvOutlookBarButton read GetDownButton write SetDownButton;
     property DownIndex: Integer read GetDownIndex write SetDownIndex;
   published
+    property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property Buttons: TJvOutlookBarButtons read FButtons write SetButtons;
-    property Caption: TCaption read FCaption write SetCaption;
-    property Picture: TPicture read FPicture write SetPicture;
-    property Color: TColor read FColor write SetColor;
-    property Font: TFont read FFont write SetFont;
-    property DownFont: TFont read FDownFont write SetDownFont;
     property ButtonSize: TJvBarButtonSize read FButtonSize write SetButtonSize;
+    property Caption: TCaption read FCaption write SetCaption;
+    property Color: TColor read FColor write SetColor;
+    property DownFont: TFont read FDownFont write SetDownFont;
+    property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
+    property Font: TFont read FFont write SetFont;
+    property Picture: TPicture read FPicture write SetPicture;
     property ParentButtonSize: Boolean read FParentButtonSize write SetParentButtonSize default True;
     property ParentFont: Boolean read FParentFont write SetParentFont default False;
     property ParentColor: Boolean read FParentColor write SetParentColor;
     property TopButtonIndex: Integer read FTopButtonIndex write SetTopButtonIndex;
-    // TODO
-    // property Enabled;
-    // propery Visible;
+    property Enabled: boolean read FEnabled write SetEnabled default True;
   end;
 
   TJvOutlookBarPages = class(TOwnedCollection)
@@ -208,10 +208,11 @@ type
     FPages: TJvOutlookBarPages;
     FLargeChangeLink: TChangeLink;
     FSmallChangeLink: TChangeLink;
+    FPageChangeLink: TChangeLink;
     FActivePageIndex: Integer;
     FButtonSize: TJvBarButtonSize;
-    FSmallImages: TImageList;
-    FLargeImages: TImageList;
+    FSmallImages: TCustomImageList;
+    FLargeImages: TCustomImageList;
     FPageButtonHeight: Integer;
     FBorderStyle: TBorderStyle;
     FNextActivePage: Integer;
@@ -231,12 +232,14 @@ type
     FOnEditButton: TOutlookBarEditCaption;
     FOnEditPage: TOutlookBarEditCaption;
     FOnCustomDraw: TJvOutlookBarCustomDrawEvent;
+    FPageImages: TCustomImageList;
     procedure SetPages(const Value: TJvOutlookBarPages);
     procedure DoChangeLinkChange(Sender: TObject);
     procedure SetActivePageIndex(const Value: Integer);
     procedure SetButtonSize(const Value: TJvBarButtonSize);
-    procedure SetLargeImages(const Value: TImageList);
-    procedure SetSmallImages(const Value: TImageList);
+    procedure SetLargeImages(const Value: TCustomImageList);
+    procedure SetSmallImages(const Value: TCustomImageList);
+    procedure SetPageImages(const Value: TCustomImageList);
     procedure SetPageButtonHeight(const Value: Integer);
     procedure SetBorderStyle(const Value: TBorderStyle);
 {$IFDEF JVCLThemesEnabled}
@@ -244,7 +247,7 @@ type
 {$ENDIF JVCLThemesEnabled}
     function DrawTopPages: Integer;
     procedure DrawCurrentPage(PageIndex: Integer);
-    procedure DrawPageButton(R: TRect; Pressed: Boolean);
+    procedure DrawPageButton(R: TRect; Index: integer; Pressed: Boolean);
     procedure DrawBottomPages(StartIndex: Integer);
     procedure DrawButtons(Index: Integer);
     procedure DrawArrowButtons(Index: Integer);
@@ -283,7 +286,7 @@ type
     function DoPageChanging(Index: Integer): Boolean; virtual;
     procedure DoPageChange(Index: Integer); virtual;
     procedure DoButtonClick(Index: Integer); virtual;
-    procedure DoContextPopup({$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint; var Handled: Boolean); override;
+    procedure DoContextPopup({$IFDEF VisualCLX}const{$ENDIF}MousePos: TPoint; var Handled: Boolean); override;
     function DoDrawBackGround: boolean;
     function DoDrawPage(ARect: TRect; Index: integer): boolean;
     function DoDrawPageButton(ARect: TRect; Index: integer; Down: boolean): boolean;
@@ -305,8 +308,9 @@ type
     property Font;
     property Color default clBtnShadow;
     property Pages: TJvOutlookBarPages read FPages write SetPages;
-    property LargeImages: TImageList read FLargeImages write SetLargeImages;
-    property SmallImages: TImageList read FSmallImages write SetSmallImages;
+    property LargeImages: TCustomImageList read FLargeImages write SetLargeImages;
+    property SmallImages: TCustomImageList read FSmallImages write SetSmallImages;
+    property PageImages: TCustomImageList read FPageImages write SetPageImages;
     property ButtonSize: TJvBarButtonSize read FButtonSize write SetButtonSize default olbsLarge;
     property PageButtonHeight: Integer read FPageButtonHeight write SetPageButtonHeight default 19;
     property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex default 0;
@@ -331,6 +335,7 @@ type
     property Pages;
     property LargeImages;
     property SmallImages;
+    property PageImages;
     property ButtonSize;
     property PageButtonHeight;
     property ActivePageIndex;
@@ -345,12 +350,12 @@ type
     property OnEditPage;
     property Action;
     property Anchors;
-    {$IFDEF VCL}
+{$IFDEF VCL}
     property BiDiMode;
     property ParentBiDiMode;
     property DragCursor;
     property DragKind;
-    {$ENDIF VCL}
+{$ENDIF VCL}
     property BorderStyle;
     property Color;
     property Constraints;
@@ -403,9 +408,9 @@ type
   TJvOutlookBarEdit = class(TCustomEdit)
   private
     FCanvas: TControlCanvas;
-    {$IFDEF VCL}
+{$IFDEF VCL}
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
-    {$ENDIF VCL}
+{$ENDIF VCL}
     procedure EditAccept;
     procedure EditCancel;
     function GetCanvas: TCanvas;
@@ -640,6 +645,7 @@ end;
 constructor TJvOutlookBarButton.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
+  FEnabled := True;
 end;
 
 destructor TJvOutlookBarButton.Destroy;
@@ -668,6 +674,7 @@ begin
     ImageIndex := TJvOutlookBarButton(Source).ImageIndex;
     Down := TJvOutlookBarButton(Source).Down;
     Tag := TJvOutlookBarButton(Source).Tag;
+    Enabled := TJvOutlookBarButton(Source).Enabled;
     Change;
   end
   else
@@ -725,6 +732,15 @@ begin
       for i := 0 to TJvOutlookBarButtons(Collection).Count - 1 do
         if TJvOutlookBarButtons(Collection).Items[i] <> Self then
           TJvOutlookBarButtons(Collection).Items[i].Down := False;
+    Change;
+  end;
+end;
+
+procedure TJvOutlookBarButton.SetEnabled(const Value: boolean);
+begin
+  if FEnabled <> Value then
+  begin
+    FEnabled := Value;
     Change;
   end;
 end;
@@ -806,6 +822,7 @@ begin
   FPicture.OnChange := DoPictureChange;
   FAlignment := taCenter;
   FImageIndex := -1;
+  FEnabled := True;
   if (Collection <> nil) and (TJvOutlookBarPages(Collection).Owner <> nil) then
   begin
     FButtonSize := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).Owner).ButtonSize;
@@ -844,6 +861,7 @@ begin
     ButtonSize := TJvOutlookBarPage(Source).ButtonSize;
     ParentButtonSize := TJvOutlookBarPage(Source).ParentButtonSize;
     ParentColor := TJvOutlookBarPage(Source).ParentColor;
+    Enabled := TJvOutlookBarPage(Source).Enabled;
     Buttons.Clear;
     for i := 0 to TJvOutlookBarPage(Source).Buttons.Count - 1 do
       Buttons.Add.Assign(TJvOutlookBarPage(Source).Buttons[i]);
@@ -908,6 +926,15 @@ procedure TJvOutlookBarPage.SetFont(const Value: TFont);
 begin
   FFont.Assign(Value);
   FParentFont := False;
+end;
+
+procedure TJvOutlookBarPage.SetEnabled(const Value: boolean);
+begin
+  if FEnabled <> Value then
+  begin
+    FEnabled := Value;
+    Change;
+  end;
 end;
 
 procedure TJvOutlookBarPage.SetPicture(const Value: TPicture);
@@ -1210,6 +1237,8 @@ begin
   FLargeChangeLink.OnChange := DoChangeLinkChange;
   FSmallChangeLink := TChangeLink.Create;
   FSmallChangeLink.OnChange := DoChangeLinkChange;
+  FPageChangeLink := TChangeLink.Create;
+  FPageChangeLink.OnChange := DoChangeLinkChange;
   FEdit := TJvOutlookBarEdit.CreateInternal(Self, Self, nil);
   FEdit.Top := -1000;
   // set up defaults
@@ -1236,6 +1265,7 @@ begin
   FEdit.Free;
   FLargeChangeLink.Free;
   FSmallChangeLink.Free;
+  FPageChangeLink.Free;
   FPages.Free;
   inherited Destroy;
 end;
@@ -1274,17 +1304,23 @@ begin
       LargeImages := nil;
     if AComponent = FSmallImages then
       SmallImages := nil;
+    if AComponent = FPageImages then
+      PageImages := nil;
   end;
 end;
 
-procedure TJvCustomOutlookBar.DrawPageButton(R: TRect; Pressed: Boolean);
+procedure TJvCustomOutlookBar.DrawPageButton(R: TRect; Index: integer; Pressed: Boolean);
+var
+  SavedDC, ATop: Integer;
+  SavedColor: TColor;
+  Flags: Cardinal;
 begin
+  ATop := R.Top;
+  Flags := DT_CENTER or DT_VCENTER or DT_SINGLELINE;
   if Pressed then
   begin
     if BorderStyle = bsNone then
-    begin
-      Frame3D(Canvas, R, clBtnShadow, clBtnHighlight, 1);
-    end
+      Frame3D(Canvas, R, clBtnShadow, clBtnHighlight, 1)
     else
     begin
       Frame3D(Canvas, R, cl3DDkShadow, clBtnHighlight, 1);
@@ -1294,14 +1330,66 @@ begin
   else
   begin
     if BorderStyle = bsNone then
-    begin
-      Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
-    end
+      Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1)
     else
     begin
       Frame3D(Canvas, R, clBtnHighlight, cl3DDkShadow, 1);
       Frame3D(Canvas, R, clBtnFace, clBtnShadow, 1);
     end;
+  end;
+  if Assigned(PageImages) and (Pages[Index].ImageIndex >= 0) and (Pages[Index].ImageIndex < PageImages.Count) then
+  begin
+    SavedDC := SaveDC(Canvas.Handle);
+    try
+      case Pages[Index].Alignment of
+        taLeftJustify:
+          begin
+            PageImages.Draw(Canvas, 4, ATop + 1, Pages[Index].ImageIndex, Pages[Index].Enabled);
+            Inc(R.Left, PageImages.Width + 8);
+          end;
+        taCenter: // draw images to the left but don't offset the text
+          begin
+            PageImages.Draw(Canvas, 4, ATop + 2, Pages[Index].ImageIndex, Pages[Index].Enabled);
+          end;
+        taRightJustify:
+          begin
+            PageImages.Draw(Canvas, R.Right - PageImages.Width - 4, ATop + 2,
+              Pages[Index].ImageIndex, Pages[Index].Enabled);
+            Dec(R.Right, PageImages.Width + 8);
+          end;
+      end;
+    finally
+      RestoreDC(Canvas.Handle, SavedDC);
+    end;
+  end
+  else
+    case Pages[Index].Alignment of
+      taLeftJustify:
+        begin
+          Flags := DT_LEFT or DT_VCENTER or DT_SINGLELINE;
+          Inc(R.Left, 2);
+        end;
+      taRightJustify:
+        begin
+          Flags := DT_RIGHT or DT_VCENTER or DT_SINGLELINE;
+          Dec(R.Right, 2);
+        end;
+    end;
+  SetBkMode(Canvas.Handle, TRANSPARENT);
+  OffsetRect(R, 0, -1);
+  SavedColor := Canvas.Font.Color;
+  try
+    if not Pages[Index].Enabled then
+    begin
+      OffsetRect(R, 1, 1);
+      Canvas.Font.Color := clWhite;
+      DrawText(Canvas.Handle, PChar(Pages[Index].Caption), -1, R, Flags);
+      OffsetRect(R, -1, -1);
+      Canvas.Font.Color := clGrayText;
+    end;
+    DrawText(Canvas.Handle, PChar(Pages[Index].Caption), -1, R, Flags);
+  finally
+    Canvas.Font.Color := SavedColor;
   end;
 end;
 
@@ -1363,13 +1451,7 @@ begin
         Canvas.Brush.Color := clBtnFace;
         Canvas.FillRect(R);
       end;
-      DrawPageButton(R, FPressedPageBtn = I);
-      OffsetRect(R, 0, -1);
-      SetBkMode(Canvas.Handle, TRANSPARENT);
-      // TODO: add Pages[I].ImageIndex and Pages[I].Alignment to the equation
-      DrawText(Canvas.Handle, PChar(Pages[I].Caption), -1, R,
-        DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-      OffsetRect(R, 0, 1);
+      DrawPageButton(R, I, FPressedPageBtn = I);
     end;
     OffsetRect(R, 0, PageButtonHeight);
     if I >= ActivePageIndex then
@@ -1386,6 +1468,8 @@ var
   I, H: Integer;
   R, R2, R3: TRect;
   C: TColor;
+  SavedDC: integer;
+  SavedColor: TColor;
 {$IFDEF JVCLThemesEnabled}
   ThemedColor: Cardinal;
   Details: TThemedElementDetails;
@@ -1429,20 +1513,56 @@ begin
         case Pages[Index].ButtonSize of
           olbsLarge:
             begin
-              if LargeImages <> nil then
-                LargeImages.Draw(Canvas, R.Left + ((R.Right - R.Left) - LargeImages.Width) div 2, R.Top + 4,
-                  Pages[Index].Buttons[I].ImageIndex);
-              R3 := GetButtonTextRect(ActivePageIndex, I);
-              DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
-                DT_EXPANDTABS or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+              SavedColor := Canvas.Font.Color;
+              try
+                SavedDC := SaveDC(Canvas.Handle);
+                try
+                  if LargeImages <> nil then
+                    LargeImages.Draw(Canvas, R.Left + ((R.Right - R.Left) - LargeImages.Width) div 2, R.Top + 4,
+                      Pages[Index].Buttons[I].ImageIndex, Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
+                finally
+                  RestoreDC(Canvas.Handle, SavedDC);
+                end;
+                R3 := GetButtonTextRect(ActivePageIndex, I);
+                SetBkMode(Canvas.Handle, TRANSPARENT);
+                if not Pages[Index].Enabled or not Pages[Index].Buttons[I].Enabled then
+                begin
+                  if ColorToRGB(Pages[Index].Color) = ColorToRGB(clGrayText) then
+                    Canvas.Font.Color := clBtnFace
+                  else
+                    Canvas.Font.Color := clGrayText;
+                end;
+                DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
+                  DT_EXPANDTABS or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+              finally
+                Canvas.Font.Color := SavedColor;
+              end;
             end;
           olbsSmall:
             begin
-              if SmallImages <> nil then
-                SmallImages.Draw(Canvas, R.Left + 2, R.Top + 2, Pages[Index].Buttons[I].ImageIndex);
-              R3 := GetButtonTextRect(ActivePageIndex, I);
-              DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
-                DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP);
+              SavedColor := Canvas.Font.Color;
+              try
+                SavedDC := SaveDC(Canvas.Handle);
+                try
+                  if SmallImages <> nil then
+                    SmallImages.Draw(Canvas, R.Left + 2, R.Top + 2, Pages[Index].Buttons[I].ImageIndex, Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
+                finally
+                  RestoreDC(Canvas.Handle, SavedDC);
+                end;
+                R3 := GetButtonTextRect(ActivePageIndex, I);
+                SetBkMode(Canvas.Handle, TRANSPARENT);
+                if not Pages[Index].Enabled or not Pages[Index].Buttons[I].Enabled then
+                begin
+                  if ColorToRGB(Pages[Index].Color) = ColorToRGB(clGrayText) then
+                    Canvas.Font.Color := clBtnFace
+                  else
+                    Canvas.Font.Color := clGrayText;
+                end;
+                DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
+                  DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP);
+              finally
+                Canvas.Font.Color := SavedColor;
+              end;
             end;
         end;
       OffsetRect(R, 0, H);
@@ -1484,6 +1604,8 @@ begin
     BtmButton.SetBounds(ClientWidth - 20, R.Bottom - 20, 16, 16)
   else if csDesigning in ComponentState then
     BtmButton.Top := -1000;
+  TopButton.Enabled := TopButton.Visible and Pages[Index].Enabled;
+  BtmButton.Enabled := BtmButton.Visible and Pages[Index].Enabled;
 end;
 
 function TJvCustomOutlookBar.DrawPicture(R: TRect; Picture: TPicture): Boolean;
@@ -1597,12 +1719,7 @@ begin
         Canvas.Brush.Color := clBtnFace;
         Canvas.FillRect(R);
       end;
-      DrawPageButton(R, FPressedPageBtn = I);
-      OffsetRect(R, 0, -1);
-      SetBkMode(Canvas.Handle, TRANSPARENT);
-      DrawText(Canvas.Handle, PChar(Pages[I].Caption), -1, R,
-        DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-      OffsetRect(R, 0, 1);
+      DrawPageButton(R, I, FPressedPageBtn = I);
     end;
     OffsetRect(R, 0, -PageButtonHeight);
   end;
@@ -1879,7 +1996,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOutlookBar.SetLargeImages(const Value: TImageList);
+procedure TJvCustomOutlookBar.SetLargeImages(const Value: TCustomImageList);
 begin
   if FLargeImages <> Value then
   begin
@@ -1906,7 +2023,7 @@ begin
   FPages.Assign(Value); // Assign calls Invalidate
 end;
 
-procedure TJvCustomOutlookBar.SetSmallImages(const Value: TImageList);
+procedure TJvCustomOutlookBar.SetSmallImages(const Value: TCustomImageList);
 begin
   if FSmallImages <> Value then
   begin
@@ -1964,7 +2081,7 @@ begin
   if Button = mbRight then
     Exit;
   P := GetPageButtonAtPos(Point(X, Y));
-  if (P <> nil) and (P.Index <> FNextActivePage) then
+  if (P <> nil) and (P.Enabled) and (P.Index <> FNextActivePage) then
   begin
     FNextActivePage := P.Index;
     if FNextActivePage <> ActivePageIndex then
@@ -1976,13 +2093,13 @@ begin
   end
   else
   begin
-    if FNextActivePage > -1 then
+    if (FNextActivePage > -1) and Pages[FNextActivePage].Enabled then
       RedrawRect(GetPageButtonRect(FNextActivePage));
     FNextActivePage := -1;
     FPressedPageBtn := -1;
   end;
   B := GetButtonAtPos(Point(X, Y));
-  if B <> nil then
+  if (B <> nil) and B.Enabled and (Pages[ActivePageIndex].Enabled) then
   begin
     FLastButtonIndex := B.Index;
     FPressedButtonIndex := B.Index;
@@ -2034,7 +2151,7 @@ begin
       FPressedPageBtn := -1;
     end;
   end
-  else if (P <> nil) and (P.Index <> ActivePageIndex) then
+  else if (P <> nil) and (P.Index <> ActivePageIndex) and P.Enabled then
   begin
     if P.Index = FNextActivePage then
     begin
@@ -2045,7 +2162,7 @@ begin
   end;
   // TODO: check for button highlight
   B := GetButtonAtPos(Point(X, Y));
-  if B <> nil then
+  if (B <> nil) and B.Enabled and (Pages[ActivePageIndex].Enabled) then
   begin
     if B.Index <> FLastButtonIndex then
     begin
@@ -2195,7 +2312,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOutlookBar.DoContextPopup({$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint;
+procedure TJvCustomOutlookBar.DoContextPopup({$IFDEF VisualCLX}const{$ENDIF}MousePos: TPoint;
   var Handled: Boolean);
 var
   P: TPersistent;
@@ -2369,6 +2486,19 @@ end;
 procedure TJvOutlookBarPage.DoPictureChange(Sender: TObject);
 begin
   Change;
+end;
+
+procedure TJvCustomOutlookBar.SetPageImages(const Value: TCustomImageList);
+begin
+  if FPageImages <> Value then
+  begin
+    if Assigned(FPageImages) then
+      FPageImages.UnRegisterChanges(FPageChangeLink);
+    FPageImages := Value;
+    if Assigned(FPageImages) then
+      FPageImages.RegisterChanges(FPageChangeLink);
+    Invalidate;
+  end;
 end;
 
 end.
