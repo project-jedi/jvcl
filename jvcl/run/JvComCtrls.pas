@@ -1027,7 +1027,7 @@ constructor TJvTrackBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FColor := clInfoBk;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   FToolTipSide := tsLeft;
   FShowRange := True;
 end;
@@ -1252,7 +1252,7 @@ begin
   FColor := clInfoBk;
   FOver := False;
   FCheckBoxes := False;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   FSelectedList := TObjectList.Create(False);
   // Since IsCustomDrawn method is not virtual we have to assign ancestor's
   // OnCustomDrawItem event to enable custom drawing

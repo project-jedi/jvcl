@@ -101,7 +101,7 @@ begin
   FFontSave := TFont.Create;
   FOver := false;
   FHintColor := clInfoBk;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   FHotTrackFontOptions := DefaultTrackFontOptions;
   FAutoSize := true;
   FWordWrap := true;

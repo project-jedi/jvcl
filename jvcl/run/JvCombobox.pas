@@ -534,7 +534,7 @@ begin
   FLastTime := 0;           // SPM - Ported backward from Delphi 7
   {$ENDIF}
   FSearching := False;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   FOver := False;
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;

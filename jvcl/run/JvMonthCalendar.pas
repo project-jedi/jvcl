@@ -65,7 +65,7 @@ constructor TJvMonthCalendar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
 procedure TJvMonthCalendar.CMParentColorChanged(var Msg: TMessage);

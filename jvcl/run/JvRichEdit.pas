@@ -2468,7 +2468,8 @@ var
   DC: HDC;
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csAcceptsControls] - [csSetCaption];
+  // ControlStyle := ControlStyle + [csAcceptsControls] - [csSetCaption];
+  ControlStyle := ControlStyle - [csSetCaption];
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
   FHintColor := clInfoBk;
   FSelAttributes := TJvTextAttributes.Create(Self, atSelected);

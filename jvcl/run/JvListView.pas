@@ -198,7 +198,7 @@ begin
   FSortOnClick := True;
   FLast := -1;
   FAutoClipboardCopy := True;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
 procedure TJvListView.WMNotify(var Msg: TWMNotify);

@@ -769,7 +769,7 @@ end;
 constructor TJvImageListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   SetBounds(0, 0, 121, 97);
   FItems := TJvImageItems.Create(Self);
   FItems.FStrings := inherited Items;

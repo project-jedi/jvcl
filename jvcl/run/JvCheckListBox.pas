@@ -125,7 +125,7 @@ begin
   FColor := clInfoBk;
   FOver := False;
   FScroll := True;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   FItemSearchs := TJvItemsSearchs.Create;
 end;
 

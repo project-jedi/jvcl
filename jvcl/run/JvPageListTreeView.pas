@@ -1252,7 +1252,7 @@ end;
 
 constructor TJvCustomPageList.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls];
   IncludeThemeStyle(Self, [csParentBackground]);
   FPages := TList.Create;

@@ -876,7 +876,7 @@ begin
   FHotTrack := False;
   FHintColor := clInfoBk;
   FOver := False;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  // ControlStyle := ControlStyle + [csAcceptsControls];
   FItemSearchs := TJvItemsSearchs.Create;
 end;
 
