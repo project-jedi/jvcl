@@ -373,6 +373,8 @@ type
     function GetParameterNameExt: string; override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
     procedure SetWinControlProperties; override;
+    function GetWinControlData: Variant; override;
+    procedure SetWinControlData(Value: Variant); override;
   public
     procedure GetData; override;
     procedure SetData; override;
@@ -1140,7 +1142,7 @@ var
   Index: Integer;
 begin
   if Assigned(JvDynControlData) then
-    Index := ItemList.IndexOf(JvDynControlData.ControlValue)
+    Index:= JvDynControlData.ControlValue
   else
     Index := -1;
   if VariantAsItemIndex then
@@ -1288,6 +1290,34 @@ begin
     ITmpComboBox.ControlSetNewEntriesAllowed(NewEntriesAllowed);
   if Supports(WinControl, IJvDynControlItems, ITmpItems) then
     ITmpItems.ControlSetSorted(Sorted);
+end;
+
+function TJvComboBoxParameter.GetWinControlData: Variant;
+var
+  Index: Integer;
+begin
+  if Assigned(JvDynControlData) then
+    Index:= ItemList.IndexOf(JvDynControlData.ControlValue)
+  else
+    Index := -1;
+  if VariantAsItemIndex then
+    Result := Index
+  else
+  if (Index >= 0) and (Index < ItemList.Count) then
+    Result := ItemList[Index]
+  else
+    Result := JvDynControlData.ControlValue;
+end;
+
+procedure TJvComboBoxParameter.SetWinControlData(Value: Variant);
+var
+  Index: Integer;
+begin
+  if Assigned(JvDynControlData) then
+    if VariantAsItemIndex then
+      JvDynControlData.ControlValue := ItemList[Value]
+    else
+      JvDynControlData.ControlValue := Value;
 end;
 
 //=== { TJvListBoxParameter } ================================================
