@@ -428,9 +428,9 @@ end;
 
 function TJvCustomDatabaseItems.GetItemName: string;
 const
-  sObjListNameField = 'NAME';
-  sFileNameField = 'FILENAME';
-  sTabListExtField = 'EXTENSION';
+  cObjListNameField = 'NAME';
+  cFileNameField = 'FILENAME';
+  cTabListExtField = 'EXTENSION';
 var
   Temp: string;
   Field: TField;
@@ -439,15 +439,15 @@ begin
   if not Active then
     Exit;
   if FItemType = dtFiles then
-    Field := FindField(sFileNameField)
+    Field := FindField(cFileNameField)
   else
-    Field := FindField(sObjListNameField);
+    Field := FindField(cObjListNameField);
   if Field = nil then
     Exit;
   Result := Field.AsString;
   if FItemType in [dtTables, dtFiles] then
   begin
-    Field := FindField(sTabListExtField);
+    Field := FindField(cTabListExtField);
     if Field = nil then
       Exit;
     Temp := Field.AsString;

@@ -83,7 +83,7 @@ type
 implementation
 
 uses
-  JvResources;
+  JvConsts, JvResources;
 
 const
   SPFILENOTIFY_CabinetINFO    = $00000010;
@@ -316,8 +316,8 @@ var
   SetupIterateCabinet: TSetupIterateCabinet;
 begin
   SetupIterateCabinet := GetProcAddress(FDll, cSetupIterateCabinet);
-  if DestPath[Length(DestPath)] <> '\' then
-    DestPath := DestPath + '\';
+  if DestPath[Length(DestPath)] <> PathDelim then
+    DestPath := DestPath + PathDelim;
   FDestPath := DestPath;
   Result := SetupIterateCabinet(PChar(FFileName), 0, CExtract, @Self);
 end;
@@ -327,8 +327,8 @@ var
   SetupIterateCabinet: TSetupIterateCabinet;
 begin
   SetupIterateCabinet := GetProcAddress(FDll, cSetupIterateCabinet);
-  if DestPath[Length(DestPath)] <> '\' then
-    DestPath := DestPath + '\';
+  if DestPath[Length(DestPath)] <> PathDelim then
+    DestPath := DestPath + PathDelim;
   FDestPath := DestPath + FileName;
   Result := SetupIterateCabinet(PChar(FFileName), 0, CExtract, @Self);
 end;

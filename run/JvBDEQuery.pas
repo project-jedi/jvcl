@@ -196,14 +196,9 @@ uses
 
 { Parse SQL utility routines }
 
-function NameDelimiter(C: Char; Delims: TCharSet): Boolean;
+function NameDelimiters(C: Char; Delims: TCharSet): Boolean;
 begin
-  Result := (C in [' ', ',', ';', ')', #13, #10]) or (C in Delims);
-end;
-
-function IsLiteral(C: Char): Boolean;
-begin
-  Result := C in ['''', '"'];
+  Result := NameDelimiter(C) or (C in Delims);
 end;
 
 procedure CreateQueryParams(List: TParams; const Value: PChar; Macro: Boolean;
@@ -253,7 +248,7 @@ begin
     if (CurChar = SpecialChar) and not Literal and ((CurPos + 1)^ <> SpecialChar) then
     begin
       StartPos := CurPos;
-      while (CurChar <> #0) and (Literal or not NameDelimiter(CurChar, Delims)) do
+      while (CurChar <> #0) and (Literal or not NameDelimiters(CurChar, Delims)) do
       begin
         Inc(CurPos);
         CurChar := CurPos^;
@@ -585,7 +580,7 @@ var
       repeat
         P := Pos(MacroChar + Param.Name, Result);
         Found := (P > 0) and ((Length(Result) = P + Length(Param.Name)) or
-          NameDelimiter(Result[P + Length(Param.Name) + 1], ['.']));
+          NameDelimiters(Result[P + Length(Param.Name) + 1], ['.']));
         if Found then
         begin
           LiteralChars := 0;

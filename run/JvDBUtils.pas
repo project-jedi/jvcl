@@ -154,6 +154,8 @@ type
   Largeint = Longint;
   {$NODEFINE Largeint}
 
+function NameDelimiter(C: Char): Boolean;
+function IsLiteral(C: Char): Boolean;
 procedure _DBError(const Msg: string);
 
 implementation
@@ -163,9 +165,19 @@ uses
   Variants,
   {$ENDIF}
   Forms, Controls, Dialogs, DBConsts, Math,
-  JvResources, JvTypes, JvJVCLUtils, JvJCLUtils;
+  JvConsts, JvResources, JvTypes, JvJVCLUtils, JvJCLUtils;
 
 { Utility routines }
+
+function NameDelimiter(C: Char): Boolean;
+begin
+  Result := C in [' ', ',', ';', ')', '.', Cr, Lf];
+end;
+
+function IsLiteral(C: Char): Boolean;
+begin
+  Result := C in ['''', '"'];
+end;
 
 procedure _DBError(const Msg: string);
 begin

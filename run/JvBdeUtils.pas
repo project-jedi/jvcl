@@ -943,7 +943,7 @@ begin
     SaveIndexFieldNames := TStringList.Create;
 end;
 
-procedure ReleaseSaveIndexies;
+procedure ReleaseSaveIndices;
 begin
   if SaveIndexFieldNames <> nil then
   begin
@@ -974,7 +974,7 @@ begin
     finally
       SaveIndexFieldNames.Delete(SaveIndexFieldNames.Count - 1);
       if SaveIndexFieldNames.Count = 0 then
-        ReleaseSaveIndexies;
+        ReleaseSaveIndices;
     end;
   end;
 end;
@@ -1600,7 +1600,7 @@ var
     Rem := False;
     while (Length(S) > 0) do
     begin
-      if (S[1] in [' ', #13, #10]) then
+      if (S[1] in [' ', Cr, Lf]) then
         Delete(S, 1, 1)
       else
       if Rem then
@@ -1668,7 +1668,7 @@ begin
           begin
             S1 := Q;
             N2 := 0;
-            while (Length(S1) > 0) and (S1[1] in [' ', #13, #10]) do
+            while (Length(S1) > 0) and (S1[1] in [' ', Cr, Lf]) do
             begin
               Delete(S1, 1, 1);
               Inc(N2);
@@ -2212,7 +2212,7 @@ begin
     Y := 0;
     while I <= Pos do
     begin
-      if S[I] = #13 then
+      if S[I] = Cr then
       begin
         Inc(Y);
         iB := I + 1
@@ -2223,12 +2223,12 @@ begin
   end;
 end;
 {####################### from JvStrUtil unit #######################}
-{ end JvDBUtil }
+
 initialization
   JvDBUtils.CreateLocateObject := CreateDbLocate;
   
 finalization
-  ReleaseSaveIndexies;
+  ReleaseSaveIndices;
 
 end.
 

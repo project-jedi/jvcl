@@ -44,6 +44,7 @@ const
 
   { various units }
   DigitSymbols = ['0'..'9'];
+  SignSymbols = ['+', '-'];
   IdentifierUppercaseLetters = ['A'..'Z'];
   IdentifierLowercaseLetters = ['a'..'z'];
   HexadecimalUppercaseLetters = ['A'..'F'];
@@ -180,7 +181,11 @@ const
   CrLf = #13#10;
   Cr = #13;
   Lf = #10;
+  Backspace = #8;
   Tab = #9;
+  Esc = #27;
+  CtrlC = ^C;
+  CtrlV = ^V;
   {$IFDEF MSWINDOWS}
   RegPathDelim = '\';
   PathDelim = '\';

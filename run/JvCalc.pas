@@ -117,13 +117,9 @@ implementation
 
 uses
   Math,
-  JvJVCLUtils, JvJCLUtils, JvToolEdit;
+  JvJVCLUtils, JvJCLUtils, JvToolEdit, JvConsts, JvResources;
 
 {$R ..\resources\JvCalc.res}
-
-const
-  SCalculator = 'Calculator';
-  SError = 'Error';
 
 type
   TCalcBtnKind =
@@ -274,7 +270,7 @@ const
   (X: - 1; Y: - 1), (X: - 1; Y: - 1), (X: - 1; Y: - 1),
   (X: - 1; Y: - 1), (X: - 1; Y: - 1)));}
 
-  ResultKeys = [#13, '=', '%'];
+  ResultKeys = [Cr, '=', '%'];
 
 function CreateCalcBtn(AParent: TWinControl; AKind: TCalcBtnKind;
   AOnClick: TNotifyEvent; ALayout: TCalcPanelLayout): TJvCalcButton;
@@ -501,7 +497,7 @@ end;
 procedure TJvCalculatorPanel.Error;
 begin
   FStatus := csError;
-  SetText(SError);
+  SetText(RsError);
   if FBeepOnError then
     MessageBeep(0);
   if Assigned(FOnError) then
@@ -618,7 +614,7 @@ begin
             MessageBeep(0);
         end;
       end;
-    #8:
+    Backspace:
       begin
         CheckFirst;
         if (Length(FText) = 1) or ((Length(FText) = 2) and (FText[1] = '-')) then
@@ -628,7 +624,7 @@ begin
       end;
     '_':
       SetDisplay(-GetDisplay);
-    '+', '-', '*', '/', '=', '%', #13:
+    '+', '-', '*', '/', '=', '%', Cr:
       begin
         if FStatus = csValid then
         begin
@@ -656,11 +652,11 @@ begin
           if Assigned(FOnResult) then
             FOnResult(Self);
       end;
-    #27, 'C':
+    Esc, 'C':
       Clear;
-    ^C:
+    CtrlC:
       Copy;
-    ^V:
+    CtrlV:
       Paste;
   end;
 end;
@@ -693,10 +689,10 @@ begin
   if Key in [DecimalSeparator, '.', ','] then
     Key := '.'
   else
-  if Key = #13 then
+  if Key = Cr then
     Key := '='
   else
-  if Key = #27 then
+  if Key = Esc then
     Key := 'C';
   BtnTag := Pos(UpCase(Key), ButtonChars) - 1;
   if BtnTag >= 0 then
@@ -980,7 +976,7 @@ end;
 constructor TJvCalculator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FTitle := SCalculator;
+  FTitle := RsCalculatorCaption;
   FCtl3D := True;
   FPrecision := DefCalcPrecision;
   FBeepOnError := True;
@@ -1005,7 +1001,7 @@ end;
 
 function TJvCalculator.TitleStored: Boolean;
 begin
-  Result := Title <> SCalculator;
+  Result := Title <> RsCalculatorCaption;
 end;
 
 function TJvCalculator.GetDisplay: Double;
@@ -1085,7 +1081,7 @@ begin
   {$ENDIF BCB}
   BorderIcons := [biSystemMenu];
   BorderStyle := bsDialog;
-  Caption := SCalculator;
+  Caption := RsCalculatorCaption;
   ClientHeight := 159;
   ClientWidth := 242;
   SetDefaultFont(Font, clDialog);
@@ -1093,8 +1089,8 @@ begin
   PixelsPerInch := 96;
   Position := poScreenCenter;
   OnKeyPress := FormKeyPress;
-  Items[0] := NewItem('&Copy', scCtrl + vk_Insert, False, True, CopyItemClick, 0, '');
-  Items[1] := NewItem('&Paste', scShift + vk_Insert, False, True, PasteItemClick, 0, '');
+  Items[0] := NewItem(RsCopyItem, scCtrl + vk_Insert, False, True, CopyItemClick, 0, '');
+  Items[1] := NewItem(RsPasteItem, scShift + vk_Insert, False, True, PasteItemClick, 0, '');
   FPasteItem := Items[1];
   Popup := NewPopupMenu(Self, 'PopupMenu', paLeft, True, Items);
   Popup.OnPopup := PopupMenuPopup;

@@ -47,6 +47,10 @@ resourcestring
   RsDatabaseName = 'Database name: %s';
   RsDataItemRenderHasNoText = '(item doesn''t support the IJvDataItemText interface)';
 
+  RsBackButtonCaption = '< &Back';
+  RsPrevButtonCaption = '< &Prev';
+  RsNextButtonCaption = '&Next >';
+
   RsEErrorSetupDll = 'Unable to find SetupApi.dll';
   RsEInternalError = 'internal error';
   RsEUnterminatedStringNears = 'unterminated string near %s';
@@ -139,8 +143,6 @@ resourcestring
   SBDEErrorLabel = 'BDE Error';
   SServerErrorLabel = 'Server Error';
   SErrorMsgLabel = 'Error message';
-  SNextButton = '&Next';
-  SPrevButton = '&Prev';
 
 //=== JvBDELoginDialog.pas ===================================================
 resourcestring
@@ -172,6 +174,13 @@ resourcestring
 //=== JvButtons.pas ==========================================================
 resourcestring
   RsEOwnerMustBeForm = '%s owner must be a TForm';
+
+//=== JvCalculator.pas =======================================================
+resourcestring
+  RsCalculatorCaption = 'Calculator';
+  RsError = 'Error';
+  RsCopyItem = '&Copy';
+  RsPasteItem = '&Paste';
 
 //=== JvCalendar.pas =========================================================
 resourcestring
@@ -1565,8 +1574,6 @@ resourcestring
 resourcestring
   RsFirstButtonCaption = 'To &Start Page';
   RsLastButtonCaption = 'To &Last Page';
-  RsBackButtonCaption = '< &Back';
-  RsNextButtonCaption = '&Next >';
   RsFinishButtonCaption = '&Finish';
   RsWelcome = 'Welcome';
   RsTitle = 'Title';
