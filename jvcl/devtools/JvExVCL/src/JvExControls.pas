@@ -149,11 +149,9 @@ procedure Control_ControlsListChanged(Instance: TControl; Control: TControl;
 procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
 {$ENDIF COMPILER5}
 
-procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolean;
-  var FSavedHintColor: TColor; FHintColor: TColor; var Event: TNotifyEvent);
+procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolean; var Event: TNotifyEvent);
 
-procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean;
-  var FSavedHintColor: TColor; var Event: TNotifyEvent);
+procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; var Event: TNotifyEvent);
 
 function DefaultDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
 
@@ -523,8 +521,7 @@ begin
     InheritMsgEx(Instance, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
 
-procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolean;
-  var FSavedHintColor: TColor; FHintColor: TColor; var Event: TNotifyEvent);
+procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolean; var Event: TNotifyEvent);
 begin
   // (HEG) VCL: Control is nil iff Instance is the control that the mouse has left.
   // Otherwise this is just a notification that the mouse entered
@@ -532,17 +529,13 @@ begin
   if (Control = nil) and not FMouseOver and not (csDesigning in Instance.ComponentState) then
   begin
     FMouseOver := True;
-    FSavedHintColor := Application.HintColor;
-    if FHintColor <> clNone then
-      Application.HintColor := FHintColor;
     if Assigned(Event) then
       Event(Instance);
   end;
   InheritMsgEx(Instance, CM_MOUSEENTER, 0, Integer(Control));
 end;
 
-procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean;
-  var FSavedHintColor: TColor; var Event: TNotifyEvent);
+procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolean; var Event: TNotifyEvent);
 begin
   // (HEG) Control is nil iff Instance is the control that the mouse has left.
   // Otherwise this is just a notification that the mouse left
@@ -550,7 +543,6 @@ begin
   if (Control = nil) and FMouseOver and not (csDesigning in Instance.ComponentState) then
   begin
     FMouseOver := False;
-    Application.HintColor := FSavedHintColor;
     if Assigned(Event) then
       Event(Instance);
   end;
