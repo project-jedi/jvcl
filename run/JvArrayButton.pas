@@ -38,12 +38,12 @@ uses
   Types, QGraphics, QControls, QForms, QExtCtrls, QButtons,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JvClxUtils;
+  JvClxUtils, JvComponent;
 
 type
   TArrayButtonClicked = procedure(ACol, ARow: Integer) of object;
 
-  TJvArrayButton = class(TGraphicControl)
+  TJvArrayButton = class(TJvGraphicControl)
   private
     FPtDown: TPoint;
     FPushDown: boolean;
@@ -97,7 +97,7 @@ type
       var CanShow: Boolean; var HintInfo: THintInfo);
 
     {this procedure can be used in response to a Application.OnShowHint event
-     button hints are stored in the hints property from arry top-left to array bottom right
+     button hints are stored in the hints property from array top-left to array bottom right
      in your application create a seperate onshowhint event Handler
      within that Handler test HintInfo.HintControl is this object. If it is dispatch to this objects doShowHint.
      In the formcreate event handler include:

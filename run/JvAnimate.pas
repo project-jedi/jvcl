@@ -33,13 +33,13 @@ unit JvAnimate;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF VCL}
   Messages, Graphics, Controls, Forms, ComCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QComCtrls,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
   JvThemes, JVCLVer;
 
 type
@@ -48,28 +48,29 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
+    FOver: Boolean;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     {$IFDEF VCL}
-    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     {$ENDIF VCL}
   protected
     {$IFDEF VCL}
-    procedure DoMouseEnter(var Msg: TMessage);
-    procedure DoMouseLeave(var Msg: TMessage);
-    procedure DoParentColorChange(var Msg: TMessage);
+    procedure MouseEnter(AControl: TControl); dynamic;
+    procedure MouseLeave(AControl: TControl); dynamic;
+    procedure ParentColorChanged; dynamic;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
-    procedure DoMouseEnter;
-    procedure DoMouseLeave;
-    procedure DoParentColorChange;
     {$ENDIF VisualCLX}
+    procedure DoMouseEnter(AControl: TControl);
+    procedure DoMouseLeave(AControl: TControl);
+    procedure DoParentColorChange;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -78,14 +79,14 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyUp;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
     property OnStartDrag;
     property OnResize;
     property OnMouseDown;
@@ -99,35 +100,66 @@ constructor TJvAnimate.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
-  // ControlStyle := ControlStyle + [csAcceptsControls];
+  FOver := False;
   IncludeThemeStyle(Self, [csParentBackground]);
 end;
 
 {$IFDEF VCL}
-procedure TJvAnimate.DoParentColorChange(var Msg: TMessage);
-{$ELSE}
-procedure TJvAnimate.DoParentColorChange;
-{$ENDIF VCL}
+procedure TJvAnimate.CMMouseEnter(var Msg: TMessage);
 begin
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
+  inherited;
+  MouseEnter(Self);
+end;
+{$ENDIF VCL}
+
+procedure TJvAnimate.MouseEnter(AControl: TControl);
+begin
+  {$IFDEF VisualCLX}
+  inherited MouseEnter(AControl);
+  {$ENDIF VisualCLX}
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if not FOver then
+  begin
+    FSaved := Application.HintColor;
+    Application.HintColor := FHintColor;
+    FOver := True;
+  end;
+  DoMouseEnter(AControl);
 end;
 
-{$IFDEF VCL}
-procedure TJvAnimate.DoMouseEnter(var Msg: TMessage);
-{$ELSE}
 procedure TJvAnimate.DoMouseEnter;
-{$ENDIF VCL}
 begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
 {$IFDEF VCL}
-procedure TJvAnimate.DoMouseLeave(var Msg: TMessage);
-{$ELSE}
-procedure TJvAnimate.DoMouseLeave;
+procedure TJvAnimate.CMMouseLeave(var Msg: TMessage);
+begin
+  inherited;
+  MouseLeave(Self);
+end;
 {$ENDIF VCL}
+
+procedure TJvAnimate.MouseLeave(AControl: TControl);
+begin
+  {$IFDEF VisualCLX}
+  inherited MouseLeave(AControl);
+  {$ENDIF VisualCLX}
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if FOver then
+  begin
+    FOver := False;
+    Application.HintColor := FSaved;
+  end;
+  DoMouseLeave(AControl);
+end;
+
+procedure TJvAnimate.DoMouseLeave;
 begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
@@ -135,45 +167,24 @@ end;
 
 {$IFDEF VCL}
 procedure TJvAnimate.CMParentColorChanged(var Msg: TMessage);
-{$ELSE}
-procedure TJvAnimate.ParentColorChanged;
-{$ENDIF VCL}
 begin
   inherited;
-  {$IFDEF VCL}
-  DoParentColorChange(Msg);
-  {$ELSE}
+  ParentColorChanged;
+end;
+{$ENDIF VCL}
+
+procedure TJvAnimate.ParentColorChanged;
+begin
+  {$IFDEF VisualCLX}
+  inherited ParentColorChanged;
+  {$ENDIF VisualCLX}
   DoParentColorChange;
-  {$ENDIF VCL}
 end;
 
-{$IFDEF VCL}
-procedure TJvAnimate.MouseEnter(var Msg: TMessage);
-{$ELSE}
-procedure TJvAnimate.MouseEnter(AControl: TControl);
-{$ENDIF VCL}
+procedure TJvAnimate.DoParentColorChange;
 begin
-  FSaved := Application.HintColor;
-  Application.HintColor := FHintColor;
-  {$IFDEF VCL}
-  DoMouseEnter(Msg);
-  {$ELSE}
-  DoMouseEnter;
-  {$ENDIF VCL}
-end;
-
-{$IFDEF VCL}
-procedure TJvAnimate.MouseLeave(var Msg: TMessage);
-{$ELSE}
-procedure TJvAnimate.MouseLeave(AControl: TControl);
-{$ENDIF VCL}
-begin
-  Application.HintColor := FSaved;
-  {$IFDEF VCL}
-  DoMouseLeave(Msg);
-  {$ELSE}
-  DoMouseLeave;
-  {$ENDIF VCL}
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
 end;
 
 end.
