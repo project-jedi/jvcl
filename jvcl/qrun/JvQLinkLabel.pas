@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -123,17 +123,17 @@ type
     property Renderer: IRenderer read FRenderer;
     property Caption: TCaption read FCaption write SetCaption;
     property Text: TStrings read GetText write SetText;
-    property Transparent: Boolean read GetTransparent write SetTransparent;
-    property Layout: TTextLayout read FLayout write SetLayout;                // Bianconi
-    property LinkColor: TColor read GetLinkColor write SetLinkColor;
-    property LinkColorClicked: TColor read GetLinkColorClicked write SetLinkColorClicked;
-    property LinkColorHot: TColor read GetLinkColorHot write SetLinkColorHot;
+    property Transparent: Boolean read GetTransparent write SetTransparent default False;
+    property Layout: TTextLayout read FLayout write SetLayout default tlTop;                // Bianconi
+    property LinkColor: TColor read GetLinkColor write SetLinkColor default clBlue;
+    property LinkColorClicked: TColor read GetLinkColorClicked write SetLinkColorClicked default clRed;
+    property LinkColorHot: TColor read GetLinkColorHot write SetLinkColorHot default clPurple;
     property LinkCursor : TCursor read GetLinkCursor write SetLinkCursor default crHandPoint;
-    property LinkStyle: TFontStyles read GetLinkStyle write SetLinkStyle;
-    property HotLinks: Boolean read FHotLinks write FHotLinks;
-    property AutoHeight: Boolean read FAutoHeight write SetAutoHeight;
-    property MarginWidth: Integer read FMarginWidth write SetMarginWidth;
-    property MarginHeight: Integer read FMarginHeight write SetMarginHeight;
+    property LinkStyle: TFontStyles read GetLinkStyle write SetLinkStyle default [fsUnderLine];
+    property HotLinks: Boolean read FHotLinks write FHotLinks default False;
+    property AutoHeight: Boolean read FAutoHeight write SetAutoHeight default True;
+    property MarginWidth: Integer read FMarginWidth write SetMarginWidth default 0;
+    property MarginHeight: Integer read FMarginHeight write SetMarginHeight default 0;
     property OnDynamicTagInit: TDynamicTagInitEvent read FOnDynamicTagInit write FOnDynamicTagInit;
     property OnCaptionChanged: TNotifyEvent read FOnCaptionChanged write FOnCaptionChanged;
     property OnLinkClick: TLinkClickEvent read FOnLinkClick write FOnLinkClick;
@@ -172,12 +172,14 @@ type
     
     property DragMode;
     property Font;
+    property Height default 17;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
     property Visible;
+    property Width default 160;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -566,13 +568,18 @@ begin
   end;
 end;
 
+function TJvCustomLinkLabel.GetCaption: TCaption;
+begin
+  Result := inherited Caption;
+end;
+
 procedure TJvCustomLinkLabel.SetCaption(const Value: TCaption);
 begin
-  if Value <> FCaption then
+  if Value <> Caption then
   begin
-    FCaption := Value;
+    inherited Caption := Value;
     Text.Clear;
-    Text.Add(FCaption);
+    Text.Add(Value);
 
     FActiveLinkNode := nil; // We're about to free the tree containing the node it's pointing to
     FNodeTree.Free;
@@ -627,16 +634,22 @@ end;
 
 procedure TJvCustomLinkLabel.SetMarginHeight(const Value: Integer);
 begin
-  FMarginHeight := Value;
-  Resize;
-  Invalidate;
+  if FMarginHeight <> Value then
+  begin
+    FMarginHeight := Value;
+    Resize;
+    Invalidate;
+  end;
 end;
 
 procedure TJvCustomLinkLabel.SetMarginWidth(const Value: Integer);
 begin
+  if FMarginWidth <> Value then
+  begin
   FMarginWidth := Value;
   Resize;
   Invalidate;
+  end;
 end;
 
 function TJvCustomLinkLabel.GetText: TStrings;

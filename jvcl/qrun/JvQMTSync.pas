@@ -40,7 +40,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  Libc,
+  Libc, QWindows,
   {$ENDIF LINUX}
   JvQMTConsts;
 
@@ -323,12 +323,22 @@ end;
 
 procedure TMTSimpleEvent.ResetEvent;
 begin
+  {$IFDEF MSWINDOWS}
   Windows.ResetEvent(FHandle);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  QWindows.ResetEvent(FHandle);
+  {$ENDIF LINUX}
 end;
 
 procedure TMTSimpleEvent.SetEvent;
 begin
+  {$IFDEF MSWINDOWS}
   Windows.SetEvent(FHandle);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  QWindows.SetEvent(FHandle);
+  {$ENDIF LINUX}
 end;
 
 end.
