@@ -89,7 +89,7 @@ begin
       { TJvgGraph, } TJvgTreeView, TJvgCheckTreeView, TJvgSplitter, TJvgShadow,
       TJvgShade, TJvgButton, {TJvgImageGroup, }TJvgProgress, TJvgTransparentMemo,
       {TJvgWinMask, } TJvgGroupBox, TJvgBitmapImage, TJvgListBox, TJvgCheckListBox,
-      TJvgAskListBox, TJvgScrollBox, TJvgStringGrid, TJvgSpeedButton,
+      TJvgAskListBox, TJvgScrollBox, TJvgStringGrid, TJvgSpeedButton, TJvgExtSpeedButton,
       TJvgWizardHeader, TJvgCaption]);
 
   RegisterComponents('JVCL Globus Components 2', [TJvgCheckBox,
