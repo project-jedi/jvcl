@@ -198,7 +198,6 @@ var
   it, it2: TMenuItem;
   first: Boolean;
   bmp: TBitmap;
-  w: Word;
 
   function GetPathImage(const APath: string): TBitmap;
   var
@@ -246,7 +245,6 @@ begin
         it.Caption := ChangeFileExt(SearchRec.Name, '');
         it.OnClick := UrlClick;
         it.Hint := Directory + SearchRec.Name;
-        w := 0;
         bmp := GetPathImage(it.Hint);
         it.Bitmap.Assign(bmp);
         bmp.Free;
