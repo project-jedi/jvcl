@@ -1359,13 +1359,13 @@ end;
 procedure TJvParameterList.ResizeDialogAfterArrange(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
 begin
   if (Width <= 0) or (ArrangeSettings.AutoSize in [asWidth, asBoth]) then
-    if ArrangePanel.Width+ RightPanel.Width > TForm(ParameterDialog).ClientWidth then
-      if ArrangePanel.Width + RightPanel.Width > MaxWidth then
+    if ArrangePanel.Width > TForm(ParameterDialog).ClientWidth then
+      if ArrangePanel.Width > MaxWidth then
         TForm(ParameterDialog).ClientWidth := MaxWidth
       else
-        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+ RightPanel.Width+5
+        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+5
     else
-      TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+ RightPanel.Width+5;
+      TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+5;
   if Assigned(HistoryPanel) and
      (TForm(ParameterDialog).ClientWidth < HistoryPanel.Width) then
     TForm(ParameterDialog).ClientWidth := HistoryPanel.Width
@@ -1397,6 +1397,26 @@ begin
         BottomPanel.Height := OkButton.Height + 6 + 2;
       end;
   CheckScrollBoxAutoScroll;
+end;
+
+procedure TJvParameterList.CheckScrollBoxAutoScroll;
+begin
+  if not Assigned(ScrollBox) then
+    Exit;
+  if not Assigned(ArrangePanel) then
+    Exit;
+  RightPanel.Visible := False;
+  ScrollBox.AutoScroll := False;
+  if (ArrangePanel.Width >= (TForm(ParameterDialog).ClientWidth)) or
+     (ArrangePanel.Height > (TForm(ParameterDialog).ClientHeight-BottomPanel.Height))then
+  begin
+    RightPanel.Visible := True;
+    TForm(ParameterDialog).ClientWidth := TForm(ParameterDialog).ClientWidth + RightPanel.Width+4;
+    ScrollBox.AutoScroll := True;
+  end;
+//  if (ArrangePanel.Height > (ScrollBox.Height+3)) {OR
+///  (ArrangePanel.Height > MaxHeight) }then
+//    ScrollBox.AutoScroll := True;
 end;
 
 function TJvParameterList.ShowParameterDialog: Boolean;
@@ -1670,25 +1690,6 @@ begin
   ArrangePanel.ArrangeControls;
 end;
 
-procedure TJvParameterList.CheckScrollBoxAutoScroll;
-begin
-  if not Assigned(ScrollBox) then
-    Exit;
-  if not Assigned(ArrangePanel) then
-    Exit;
-  RightPanel.Visible := False;
-  ScrollBox.AutoScroll := False;
-  if ArrangePanel.Width > (ScrollBox.Width+3) then
-  begin
-    ArrangePanel.Align := alTop;
-    RightPanel.Visible := True;
-    TForm(ParameterDialog).ClientWidth := TForm(ParameterDialog).ClientWidth + RightPanel.Width;
-    ScrollBox.AutoScroll := True;
-  end;
-  if (ArrangePanel.Height > (ScrollBox.Height+3)) {OR
-  (ArrangePanel.Height > MaxHeight) }then
-    ScrollBox.AutoScroll := True;
-end;
 
 procedure TJvParameterList.DestroyWinControls;
 begin
