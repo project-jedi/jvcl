@@ -36,11 +36,11 @@ interface
 uses
   SysUtils, Classes,
   QWindows, Types, QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QButtons, QGrids, QMenus, QMessages, 
+  QStdCtrls, QButtons, QGrids, QMenus, QMessages,
   DesignIntf, DesignEditors,
-  QDesignWindows,
+  QDesignWindows, 
   {$IFDEF MSWINDOWS}
-  JvQAppRegistryStorage,
+//  JvAppRegistryStorage,
   {$ENDIF MSWINDOWS}
   JvQSpeedButton, JvQSpeedBar, JvQFormPlacement,
   JvQConsts, JvQComponent, JvQAppStorage, QTypes;
@@ -72,8 +72,6 @@ type
     CopyMenu: TMenuItem;
     PasteMenu: TMenuItem;
     CutMenu: TMenuItem;
-    FormPlacement1: TJvFormStorage;
-    AppStorage: TJvAppRegistryStorage;
     procedure DelSectionClick(Sender: TObject);
     procedure AddButtonClick(Sender: TObject);
     procedure RemoveButtonClick(Sender: TObject);
@@ -981,7 +979,7 @@ begin
   FDrag := False;
   if NewStyleControls then
     Font.Style := [];
-  AppStorage.Root := SDelphiKey;
+ // AppStorage.Root := SDelphiKey;
 end;
 
 procedure TJvSpeedbarEditor.FormDestroy(Sender: TObject);
