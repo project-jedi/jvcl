@@ -29,9 +29,6 @@ object frmMain: TfrmMain
     BevelOuter = bvLowered
     Color = clWindow
     TabOrder = 0
-    DesignSize = (
-      604
-      87)
     object lblTitle: TLabel
       Left = 12
       Top = 7
@@ -97,9 +94,6 @@ object frmMain: TfrmMain
     Width = 604
     Height = 46
     Align = alBottom
-    DesignSize = (
-      604
-      46)
     object JvBevel1: TJvBevel
       Left = 0
       Top = 0

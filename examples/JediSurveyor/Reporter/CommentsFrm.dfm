@@ -13,9 +13,6 @@ object frmComments: TfrmComments
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
-  DesignSize = (
-    404
-    354)
   PixelsPerInch = 96
   TextHeight = 13
   object reComments: TJvRichEdit
