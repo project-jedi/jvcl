@@ -13,13 +13,12 @@ The Original Code is: JvDiagramShape.PAS, released on 2002-03-22.
 Original Developer: Jim Cooper <jcooper@tabdee.ltd.uk>
 Contributor(s): Michael Beck <mbeck1@compuserve.com>
 
-Last Modified: 2002-03-25
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

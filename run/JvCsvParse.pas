@@ -16,7 +16,6 @@ All Rights Reserved.
 
 Contributor(s):  Warren Postma (warrenpstma@hotmail.com)
 
-Last Modified: 2003-07-29 by Warren Postma - New features (Sorting, Indexing, UserData)
                Changed StrSplit Function (has one new parameter).
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -37,6 +36,7 @@ Description:
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

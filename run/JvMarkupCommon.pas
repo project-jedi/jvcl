@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2003-07-17
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -25,6 +23,7 @@ Known Issues:
   * Classes extracted from JvMarkupLabel and JvMarkupViewer (duplicates)
   
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

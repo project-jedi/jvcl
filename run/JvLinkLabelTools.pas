@@ -16,7 +16,6 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2002-01-06;
 Current Version: 2.00
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -30,6 +29,7 @@ Description:
 Known Issues:
   Please see the accompanying documentation.
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

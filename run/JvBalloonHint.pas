@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-7-27
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -25,6 +23,7 @@ Known Issues:
   * Only dropdown shadow for windows xp systems.
   * Only custom animation for windows xp systems, because of use of window region.
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -17,13 +17,12 @@ All Rights Reserved.
 
 Contributor(s): none to date.
 
-Last Modified: 2004-01-17
-
 You may retrieve the latest version of this file at the Connection Manager
 home page, located at http://cnxmanager.sourceforge.net
 
 Known Issues: none to date.
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}

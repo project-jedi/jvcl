@@ -17,8 +17,6 @@ All Rights Reserved.
 Contributor(s):
   Maciej Kaczkowski
 
-Last Modified: 2004-02-02
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -98,6 +96,7 @@ Maciej Kaczkowski:
       when alignement is not left (need to rebuild the ItemHTDrawEx draw
       function)
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

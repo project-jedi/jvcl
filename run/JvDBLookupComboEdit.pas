@@ -17,8 +17,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-09-18
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -38,6 +36,7 @@ inherit it with JVCL3 from JvDBLookupEdit, the specified errors occur.
 
 Michael Habbe [2003-10-20]
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -16,8 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-03-14
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -26,6 +24,7 @@ Known Issues:
 Description:
   A TGraphic that can display cursors
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

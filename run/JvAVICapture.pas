@@ -16,7 +16,6 @@ All Rights Reserved.
 
 Contributor(s): none to date
 
-Last Modified: 2004-02-03;
 Current Version: 0.4
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -32,6 +31,7 @@ Description: This unit defines a component that you can drop on any form or
 
 Known Issues: none known
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}

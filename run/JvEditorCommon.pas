@@ -20,11 +20,10 @@ Andreas Hausladen
 Peter Thörnqvist
 Remko Bonte
 
-Last Modified: 2004-01-25
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 -----------------------------------------------------------------------------}
+// $Id$
 { history
  (JVCL Library versions) :
   1.00:

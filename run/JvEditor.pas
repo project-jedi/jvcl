@@ -20,8 +20,6 @@ Andreas Hausladen
 Peter Thörnqvist
 Remko Bonte
 
-Last Modified: 2003-09-20
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -32,6 +30,7 @@ Known Issues:
   Some russian comments were translated to english; these comments are marked
   with [translated]
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

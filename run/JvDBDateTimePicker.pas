@@ -17,8 +17,6 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: September 9, 2000
-Last Modified: October 18, 2000 Add Handler Event OnCloseUp and OnDropDown
                by Eko Subagio
 Current Version: 1.00
 
@@ -28,6 +26,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
   (rom) comments should be ripped by the help writer
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 

@@ -53,6 +53,7 @@ Description:
 Known Issues:
   - Port to Kylix for hook class
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
