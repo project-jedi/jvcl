@@ -28,6 +28,37 @@
     <Package Name="visualclx" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
+    <File Name="..\..\run\JvExButtons.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExCheckLst.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExComCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExControls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExExtCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExForms.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExGrids.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExMask.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExStdCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvJVCLAboutForm.pas" Targets="allbutclx" Formname="JvJVCLAboutForm" Condition=""/>
+    <File Name="..\..\run\JVCLVer.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQExButtons.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQExCheckLst.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQExComboEdits.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQExComCtrls.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQExControls.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQExExtCtrls.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQExForms.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQExGrids.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qun\JvQExMask.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQExStdCtrls.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQJVCLAboutForm.pas" Targets="allclx" Formname="JvJVCLAboutForm" Condition=""/>
+    <File Name="..\..\qrun\JVCLXVer.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QWindows.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QMessages.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QExtDlgs.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QToolWin.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QComboEdits.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QNotebook.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QComCtrlsEx.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QWinCursors.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\common\JvConsts.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorProvider.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvComponent.pas" Targets="all" Formname="" Condition=""/>
@@ -39,8 +70,6 @@
     <File Name="..\..\run\JvDynControlEngineVCL.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDsgnIntf.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvJCLUtils.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvJVCLAboutForm.pas" Targets="allbutclx" Formname="JvJVCLAboutForm" Condition=""/>
-    <File Name="..\..\qrun\JvQJVCLAboutForm.pas" Targets="allclx" Formname="JvJVCLAboutForm" Condition=""/>
     <File Name="..\..\run\JvJVCLUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMaxPixel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMouseTimer.pas" Targets="all" Formname="" Condition=""/>
@@ -57,31 +86,11 @@
     <File Name="..\..\run\JvAppStorageSelectList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseDlg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCaret.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JVCLXVer.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JVCLVer.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvResources.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExControls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExStdCtrls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExExtCtrls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExComCtrls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExForms.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExCheckLst.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExMask.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExGrids.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExButtons.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvClipbrd.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAutoComplete.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\common\JvFinalize.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBackgrounds.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQExComboEdits.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QWindows.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QMessages.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QExtDlgs.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QToolWin.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QComboEdits.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QNotebook.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QComCtrlsEx.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qcommon\QWinCursors.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQRegistryIniFile.pas" Targets="linux" Formname="" Condition=""/>
   </Contains>
 </Package>
