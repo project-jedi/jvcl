@@ -1,6 +1,6 @@
 @echo off
-echo. Create JVCL PO template file 
-echo. Requires dxgettext from http://dxgettext.sf.net
+echo.Create JVCL PO template file 
+echo.Requires dxgettext from http://dxgettext.sf.net
 dxgettext -q -b ..\..\common --delphi
 dxgettext -q -b ..\..\design --delphi
 dxgettext -q -b ..\..\run --delphi
