@@ -843,7 +843,7 @@ begin
       FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
     else
       FButtonRect := Rect(BevelWidth, BevelWidth, FButtonHeight + BevelWidth, Height - BevelWidth);
-    ReAlign;
+    Realign;
     RedrawControl(True);
   end;
 end;
@@ -853,7 +853,7 @@ begin
   if FChildOffset <> Value then
   begin
     FChildOffset := Value;
-    ReAlign;
+    Realign;
     //    R := ClientRect;
     //    AlignControls(nil,R);
   end;

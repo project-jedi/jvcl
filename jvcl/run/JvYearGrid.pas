@@ -219,8 +219,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure LoadYear(Filename: string = '');
-    procedure SaveYear(Filename: string = '');
+    procedure LoadYear(FileName: string = '');
+    procedure SaveYear(FileName: string = '');
 
     function GetSelDateText: string;
     procedure SetSelDateText(AText: string);
@@ -402,7 +402,7 @@ begin
   {$IFDEF USEJVCL}
   FCellMargins.Free;
   {$ENDIF USEJVCL}
-  inherited destroy;
+  inherited Destroy;
 end;
 
 procedure TJvYearGrid.DrawCell(ACol, ARow: Integer;
@@ -537,7 +537,7 @@ begin
   end;
 end;
 
-procedure TJvYearGrid.SaveYear(Filename: string);
+procedure TJvYearGrid.SaveYear(FileName: string);
 var
   MonthIndex, DayIndex: Integer;
   YList, DList: TStringList;
@@ -565,16 +565,16 @@ begin
       YList.Append(DList.CommaText);
     end;
   end;
-  if Filename = '' then
+  if FileName = '' then
     YList.SaveToFile(FYearFile)
   else
-    YList.SaveToFile(Filename);
+    YList.SaveToFile(FileName);
 
   DList.Free;
-  Ylist.Free;
+  YList.Free;
 end;
 
-procedure TJvYearGrid.LoadYear(Filename: string);
+procedure TJvYearGrid.LoadYear(FileName: string);
 var
   MonthIndex, DayIndex, Index: Integer;
   YList, DList: TStringList;
@@ -582,10 +582,10 @@ var
 begin
   YList := TStringList.Create;
   DList := TStringList.Create;
-  if Filename = '' then
+  if FileName = '' then
     YList.LoadFromFile(FYearFile)
   else
-    YList.LoadFromFile(Filename);
+    YList.LoadFromFile(FileName);
 
   Index := 0;
   for MonthIndex := 0 to 12 do
@@ -1241,7 +1241,7 @@ begin
     end;
   end
   else
-    Scrollbars := FSavedScrollBars;
+    ScrollBars := FSavedScrollBars;
 
   FAutoSize := Value;
   AdjustBounds;   

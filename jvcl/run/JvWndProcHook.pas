@@ -901,7 +901,7 @@ begin
   end;
 end;
 
-procedure TJvWindowHook.UnhookControl;
+procedure TJvWindowHook.UnHookControl;
 begin
   SetActive(False);
 end;

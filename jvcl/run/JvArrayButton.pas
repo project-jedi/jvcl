@@ -177,7 +177,7 @@ begin
   begin
     FPushDown := True;
     MouseToCell(X, Y, Col, Row);
-    FptDown := Point(Col, Row);
+    FPtDown := Point(Col, Row);
     Invalidate;
   end;
 end;
@@ -189,8 +189,8 @@ begin
   begin
     FPushDown := False;
     Invalidate;
-    if Assigned(FOnArraybuttonClicked) then
-      OnArrayButtonClicked(FptDown.X, FptDown.Y);
+    if Assigned(FOnArrayButtonClicked) then
+      OnArrayButtonClicked(FPtDown.X, FPtDown.Y);
   end
 end;
 
@@ -274,7 +274,7 @@ var
     {$ENDIF JVCLThemesEnabled}
     begin
       DrawBackground(BackColor);
-      Frame3D(Self.Canvas, R, clblack, clBtnHighlight, 1);
+      Frame3D(Self.Canvas, R, clBlack, clBtnHighlight, 1);
     end;
     if Cap <> '' then
       DrawText(Canvas, Cap, -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
@@ -306,7 +306,7 @@ begin
       if (csDesigning in ComponentState) then
         DrawUp
       else
-      if (FptDown.X = Col) and (FptDown.Y = Row) then
+      if (FPtDown.X = Col) and (FPtDown.Y = Row) then
       begin
         if FPushDown then
           DrawDown

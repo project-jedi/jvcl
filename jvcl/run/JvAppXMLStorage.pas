@@ -545,15 +545,15 @@ begin
   if StartNode <> nil then
     Node := StartNode
   else
-    Node := XML.Root;
+    Node := Xml.Root;
 
   try
     try
       StrToStrings(Path, '\', NodeList, False);
       for I := 0 to NodeList.Count - 1 do
       begin
-        if Assigned(Node.Items.ItemNamed[NodeList[i]]) then
-          Node := Node.Items.ItemNamed[NodeList[i]]
+        if Assigned(Node.Items.ItemNamed[NodeList[I]]) then
+          Node := Node.Items.ItemNamed[NodeList[I]]
         else
           Exit;
       end;

@@ -1304,7 +1304,7 @@ type
   protected
     procedure ThemedPaint(var Msg: TWMPaint; var Handled: Boolean);
     procedure ThemedNCPaint(var Msg: TWMNCPaint);
-    procedure ThemedEraseBkGnd(var Msg: TWMEraseBkGnd; var Handled: Boolean);
+    procedure ThemedEraseBkgnd(var Msg: TWMEraseBkgnd; var Handled: Boolean);
     procedure ThemedCtlColorStatic(var Msg: TWMCtlColorStatic; var Handled: Boolean);
   public
     constructor Create(AControl: TControl);
@@ -1529,7 +1529,7 @@ begin
         ThemedPaint(TWMPaint(Msg), Handled);
     WM_ERASEBKGND:
       if ThemeServices.ThemesEnabled then
-        ThemedEraseBkGnd(TWMEraseBkGnd(Msg), Handled);
+        ThemedEraseBkgnd(TWMEraseBkgnd(Msg), Handled);
     CN_CTLCOLORSTATIC, CN_CTLCOLORBTN:
       if ThemeServices.ThemesEnabled then
         ThemedCtlColorStatic(TWMCtlColorStatic(Msg), Handled);
@@ -1584,7 +1584,7 @@ begin
     end;
 end;
 
-procedure TThemeHook.ThemedEraseBkGnd(var Msg: TWMEraseBkGnd; var Handled: Boolean);
+procedure TThemeHook.ThemedEraseBkgnd(var Msg: TWMEraseBkgnd; var Handled: Boolean);
 begin
   if ThemeHooks.FEraseBkgndHooked then
     Exit;
@@ -1607,7 +1607,7 @@ begin
   begin
     if Control is TWinControl then
     begin
-      ThemedEraseBkGnd(TWMEraseBkGnd(Msg), Handled);
+      ThemedEraseBkgnd(TWMEraseBkgnd(Msg), Handled);
       Msg.Result := GetStockObject(NULL_BRUSH);
     end;
   end;

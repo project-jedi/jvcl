@@ -145,7 +145,7 @@ begin
           IntToStr(CurrCol^.Data));
         CurrCol := CurrCol^.Link;
       end;
-      Currrow := PSMQuantum(CurrRow^.Data);
+      CurrRow := PSMQuantum(CurrRow^.Data);
     end;
   finally
     DumpList.EndUpdate;

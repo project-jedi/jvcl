@@ -41,7 +41,7 @@ uses
 
 
 type
-  TRequestBackGroundEvent = procedure(Sender: TObject; Background: string) of object;
+  TRequestBackgroundEvent = procedure(Sender: TObject; Background: string) of object;
   TRequestFilterEvent = procedure(Sender: TObject; Filter: string) of object;
   TRequestImageSizeEvent = procedure(Sender: TObject; var ARect: TRect) of object;
 
@@ -67,7 +67,7 @@ type
     FAngleMark: Integer;
     FImageRect: TRect;
     FOnRepaintRequest: TNotifyEvent;
-    FOnRequestBackGround: TRequestBackGroundEvent;
+    FOnRequestBackground: TRequestBackgroundEvent;
     FOnRequestImageSize: TRequestImageSizeEvent;
     FOnRequestFilter: TRequestFilterEvent;
     function GetToken(var Token: string): Boolean;
@@ -201,7 +201,7 @@ type
     procedure SetOnRepaintRequest(const Value: TNotifyEvent);
     procedure SetMark(const Value: TPoint);
     procedure SetArea(const Value: TRect);
-    procedure SetOnRequestBackGround(const Value: TRequestBackGroundEvent);
+    procedure SetOnRequestBackground(const Value: TRequestBackgroundEvent);
     procedure SetOnRequestImageSize(const Value: TRequestImageSizeEvent);
     procedure SetOnRequestFilter(const Value: TRequestFilterEvent);
   protected
@@ -227,7 +227,7 @@ type
     destructor Destroy; override;
   published
     property OnRepaintRequest: TNotifyEvent read FOnRepaintRequest write SetOnRepaintRequest;
-    property OnRequestBackGround: TRequestBackGroundEvent read FOnRequestBackGround write SetOnRequestBackGround;
+    property OnRequestBackground: TRequestBackgroundEvent read FOnRequestBackground write SetOnRequestBackground;
     property OnRequestFilter: TRequestFilterEvent read FOnRequestFilter write SetOnRequestFilter;
     property OnRequestImageSize: TRequestImageSizeEvent read FOnRequestImageSize write SetOnRequestImageSize;
   end;
@@ -788,7 +788,7 @@ var
 begin
   if not Assigned(FCanvas) then
     Exit;
-  RAngle := Heading * 2 * pi / 360;
+  RAngle := Heading * 2 * Pi / 360;
   dX := ADistance * Cos(RAngle);
   dY := ADistance * Sin(RAngle);
   NewPoint := Point(Variant(Position.X + dX), Variant(Position.Y - dY));
@@ -1370,14 +1370,14 @@ begin
 end;
 {$ENDIF VCL}
 
-procedure TJvTurtle.SetOnRequestBackGround(const Value: TRequestBackGroundEvent);
+procedure TJvTurtle.SetOnRequestBackground(const Value: TRequestBackgroundEvent);
 begin
-  FOnRequestBackGround := Value;
+  FOnRequestBackground := Value;
 end;
 
 procedure TJvTurtle.DoRequestBackground;
 begin
-  if Assigned(FOnRequestBackGround) then
+  if Assigned(FOnRequestBackground) then
     FOnRequestBackground(Self, FBackground);
 end;
 

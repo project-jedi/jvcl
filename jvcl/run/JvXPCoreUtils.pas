@@ -95,7 +95,7 @@ var
   iLoop, xLoop, yLoop, XX, YY: Integer;
   iBndS, iBndE: Integer;
   GBand: TGradientBand;
-  Row: pRGBTripleArray;
+  Row: PRGBTripleArray;
 
   procedure CalculateGradientBand;
   var
@@ -288,7 +288,7 @@ procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
     DrawText(ACanvas.Handle, PChar(AText), -1, Rect, Flags);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    SetPenColor(ACanvas.handle, ACanvas.Font.Color);
+    SetPenColor(ACanvas.Handle, ACanvas.Font.Color);
     DrawText(ACanvas.Handle, WideString(AText), -1, Rect, Flags);
     {$ENDIF VisualCLX}
   end;

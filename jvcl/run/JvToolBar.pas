@@ -137,7 +137,7 @@ begin
     end;
   end;
   for I := 0 to FMenu.Items.Count - 1 do
-    Buttons[i].MenuItem := FMenu.Items[I];
+    Buttons[I].MenuItem := FMenu.Items[I];
 end;
 {$ENDIF COMPILER6_UP}
 

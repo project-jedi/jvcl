@@ -3125,7 +3125,8 @@ var
   AEnabledButtonSet: TJvWizardButtonSet;
   AVisibleButtonSet: TJvWizardButtonSet;
 begin
-  if not assigned(Parent) then exit;
+  if not Assigned(Parent) then
+    Exit;
   AEnabledButtonSet := [bkCancel];
   AVisibleButtonSet := [bkBack, bkNext, bkCancel];
   if Assigned(FActivePage) then
@@ -3185,7 +3186,8 @@ var
   end;
 
 begin
-  if not assigned(Parent) then exit;
+  if not Assigned(Parent) then
+    Exit;
   if FButtonBarHeight > ciButtonHeight then
   begin
     AButtonSet := [bkBack, bkNext, bkCancel];

@@ -86,14 +86,13 @@ begin
   FList.Free;
 end;
 
-procedure TFoWallpaperChooser.SearchFile1Found(Sender: TObject;
-  Path: string);
+procedure TFoWallpaperChooser.SearchFile1Found(Sender: TObject; Path: string);
 var
   Btn: TSpeedButton;
 begin
   Btn := TSpeedButton.Create(ScrollBox1);
   Btn.Parent := ScrollBox1;
-  Btn.Flat := true;
+  Btn.Flat := True;
   Btn.ShowHint := True;
   Btn.Hint := ChangeFileExt(ExtractFileName(Path), '');
   try

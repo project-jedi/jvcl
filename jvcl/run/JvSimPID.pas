@@ -118,7 +118,7 @@ begin
   Color := clWhite;
   MVColor := clRed;
   SPColor := clLime;
-  CVcolor := clYellow;
+  CVColor := clYellow;
   Direct := False;
   Manual := False;
   Active := False;

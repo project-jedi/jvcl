@@ -79,7 +79,7 @@ type
   end;
 
   TJvCustomTextValidateEvent = procedure(Sender: TObject; Key: Char;
-    const AText: string; const Pos: Integer; var IsValid: boolean) of object;
+    const AText: string; const Pos: Integer; var IsValid: Boolean) of object;
 
   TJvCustomValidateEdit = class(TJvCustomEdit)
   private
@@ -140,7 +140,7 @@ type
     // procedure CMChanged(var Message: TMessage); message CM_CHANGED;
     {$ENDIF VCL}
   protected
-    function IsValidChar(const S: string; Key: Char; Posn: Integer): boolean; virtual;
+    function IsValidChar(const S: string; Key: Char; Posn: Integer): Boolean; virtual;
     function MakeValid(ParseString: string): string;virtual;
     procedure Change; override; // (ahuser) CM_CHANGED is only called by TCustomEdit.Change
     procedure DoKillFocus(FocusedWnd: HWND); override;
@@ -652,7 +652,7 @@ begin
 end;
 
 function TJvCustomValidateEdit.IsValidChar(const S: string;
-  Key: Char; Posn: Integer): boolean;
+  Key: Char; Posn: Integer): Boolean;
 var
   iPosE: Integer;
 begin
@@ -724,7 +724,7 @@ begin
     Key := 0;
     EditText := EnterText;
     SelStart := 0;
-    SelLength := length(FEditText);
+    SelLength := Length(FEditText);
   end;
   inherited KeyDown(Key, Shift);
 end;
@@ -774,7 +774,7 @@ begin
   if FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfHex, dfInteger,
     dfOctal, dfPercent, dfScientific, dfYear] then
   begin
-    EnForceMaxValue;
+    EnforceMaxValue;
     EnforceMinValue;
   end;
 //  ChangeText(FEditText); 
@@ -842,7 +842,7 @@ function TJvCustomValidateEdit.ScientificStrToFloat(SciString: string): Double;
 var
   I: Cardinal;
   sMantissa, sExponent: string;
-  bInExp: boolean;
+  bInExp: Boolean;
 begin
   if Pos('E', UpperCase(SciString)) = 0 then
     Result := StrToFloatDef(SciString, 0)

@@ -707,8 +707,8 @@ begin
       end;
       FBandForm := CreateBandForm(ParentWnd);
 
-      FSavedWndProc := FBandform.WindowProc;
-      FBandform.WindowProc := BandWndProc;
+      FSavedWndProc := FBandForm.WindowProc;
+      FBandForm.WindowProc := BandWndProc;
 
       FHook := SetWindowsHookEx(WH_GETMESSAGE,
         MethodToProcedure(Self, Self.MethodAddress('MsgHookProc')), HInstance, GetCurrentThreadID);

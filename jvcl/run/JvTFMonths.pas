@@ -325,7 +325,7 @@ begin
       end;
 
       Txt := DWNames.GetDWName(DOWToBorl(CurrDOW));
-      if SplitSatSun and (CurrDow = dowSaturday) then
+      if SplitSatSun and (CurrDOW = dowSaturday) then
       begin
         IncDOW(CurrDOW, 1);
         Txt := Txt + '/' + DWNames.GetDWName(DOWToBorl(CurrDOW));
