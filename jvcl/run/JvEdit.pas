@@ -479,14 +479,17 @@ procedure TJvCustomEdit.DoEmptyValueEnter;
 begin
   if EmptyValue <> '' then
   begin
-    if FIsEmptyValue then
+    if (inherited Text = EmptyValue) then
     begin
-      Text := '';
+      inherited Text := '';
       FIsEmptyValue := False;
       if not (csDesigning in ComponentState) then
         Font.Color := FOldFontColor;
     end;
-  end;
+  end
+  else
+    if not (csDesigning in ComponentState) then
+      Font.Color := FOldFontColor;
 end;
 
 procedure TJvCustomEdit.DoEmptyValueExit;
@@ -599,23 +602,22 @@ function TJvCustomEdit.GetText: TCaption;
 var
   Tmp: Boolean;
 begin
-  if FIsEmptyValue then
-    Result := ''
-  else
-  begin
-    Tmp := ProtectPassword;
-    try
-      ProtectPassword := False;
-      {$IFDEF VCL}
-      Result := inherited Text;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      Result := inherited GetText;
-      {$ENDIF VisualCLX}
-    finally
-      ProtectPassword := Tmp;
-    end;
+  Tmp := ProtectPassword;
+  try
+    ProtectPassword := False;
+    {$IFDEF VCL}
+    Result := inherited Text;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Result := inherited GetText;
+    {$ENDIF VisualCLX}
+
+  finally
+    ProtectPassword := Tmp;
   end;
+
+  if (Result = EmptyValue) and (EmptyValue <> '') then
+    Result := '';
 end;
 
 
@@ -638,6 +640,7 @@ end;
 procedure TJvCustomEdit.Loaded;
 begin
   inherited Loaded;
+  FOldFontColor := Font.Color;
   SelStart := FStreamedSelStart;
   SelLength := FStreamedSelLength;
 end;
@@ -855,14 +858,21 @@ end;
 
 procedure TJvCustomEdit.SetText(const Value: TCaption);
 begin
-  inherited Text := Value;
-  if FIsEmptyValue <> (Value = '') then
+  if (csLoading in ComponentState) then
   begin
-    FIsEmptyValue := (Value = '');
-    if not FIsEmptyValue then
-      Font.Color := FOldFontColor
-    else
-     Font.Color := FEmptyFontColor;
+    inherited Text := Value;
+    Exit;
+  end;
+  FIsEmptyValue := (Value = '');
+  if not FIsEmptyValue then
+  begin
+    Font.Color := FOldFontColor;
+    inherited Text := Value;
+  end
+  else
+  begin
+    Font.Color := FEmptyFontColor;
+    inherited Text := EmptyValue;
   end;
 end;
 
