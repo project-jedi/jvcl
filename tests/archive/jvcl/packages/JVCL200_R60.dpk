@@ -236,7 +236,6 @@ contains
   JvWinampLabel in '..\source\JvWinampLabel.pas',
   JvWinHelp in '..\source\JvWinHelp.pas',
   JvXorCipher in '..\source\JvXorCipher.pas',
-  JvZlibMultiple in '..\source\JvZlibMultiple.pas',
   JvZoom in '..\source\JvZoom.pas',
   JvBMPListBox in '..\source\JvBMPListBox.pas',
   JvButtonDrawGrid in '..\source\JvButtonDrawGrid.pas',
@@ -415,7 +414,6 @@ contains
   JvDSADialogs in '..\Source\JvDSADialogs.pas',
   JvBandForms in '..\Source\JvBandForms.pas',
   JvBandUtils in '..\Source\JvBandUtils.pas',
-  JvBandWindows in '..\Source\JvBandWindows.pas',
   JvBandObject in '..\Source\JvBandObject.pas',
   JvComponentPanel in '..\Source\JvComponentPanel.pas',
   JvDlg in '..\Source\JvDlg.pas',
@@ -482,6 +480,7 @@ contains
   JvSchedEvtStore in '..\source\JvSchedEvtStore.pas',
   JvWndProcHook in '..\source\JvWndProcHook.pas',
   JvxConst in '..\source\JvxConst.pas',
-  JvTransLED in '..\source\JvTransLED.pas';
+  JvTransLED in '..\source\JvTransLED.pas',
+  JvJVCLAbout in '..\source\JvJVCLAbout.pas' {JvJVCLAboutForm};
 
 end.

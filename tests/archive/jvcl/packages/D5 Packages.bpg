@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = DJCL50.bpl JVCL200_R50.bpl JVCL200_D50.bpl 
+PROJECTS = DJCL50.bpl JVCL200_R50.bpl JVCL200_D50.bpl JvErrProviderDemo.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -21,6 +21,9 @@ JVCL200_R50.bpl: JVCL200_R50.dpk
   $(DCC)
 
 DJCL50.bpl: ..\..\JCL\packages\DJCL50.dpk
+  $(DCC)
+
+JvErrProviderDemo.exe: ..\examples\JvErrorProvider\JvErrProviderDemo.dpr
   $(DCC)
 
 

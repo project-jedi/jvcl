@@ -96,7 +96,6 @@ contains
   JvFormWallpaperEditor in '..\source\JvFormWallpaperEditor.pas',
   JvIcoLEdit in '..\source\JvIColEdit.pas' {IconListDialog},
   JvGradEdit in '..\source\JvGradedit.pas' {GradCaptionsEditor},
-  JvJVCLAbout in '..\source\JvJVCLAbout.pas' {JvJVCLAboutForm},
   JvMinMaxEd in '..\source\JvMinMaxEd.pas' {MinMaxInfoEditDialog},
   JvPgMngrEd in '..\source\JvPgMngrEd.pas' {JvProxyEditor},
   JvPictEdit in '..\source\JvPictEdit.pas' {PictureEditDialog},
@@ -112,6 +111,7 @@ contains
   JvActions in '..\source\JvActions.pas',
   JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
   JvDialogActns in '..\source\JvDialogActns.pas',
-  JvTransLedReg in '..\source\JvTransLEDReg.pas';
+  JvTransLedReg in '..\source\JvTransLEDReg.pas',
+  JvJVCLAboutProperty in '..\source\JvJVCLAboutProperty.pas';
 
 end.

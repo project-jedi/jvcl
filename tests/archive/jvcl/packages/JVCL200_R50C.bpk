@@ -138,7 +138,7 @@
       ..\lib5\JvThumbImage.obj ..\lib5\JvBaseThumbnail.obj 
       ..\lib5\JvThumbviews.obj ..\lib5\jvThumbNails.obj 
       ..\lib5\JvMovableBevel.obj ..\lib5\JvaScrollText.obj 
-      ..\lib5\JvBandWindows.obj ..\lib5\JvBandForms.obj ..\lib5\JvBandObject.obj 
+      ..\lib5\JvBandForms.obj ..\lib5\JvBandObject.obj 
       ..\lib5\JvBandUtils.obj ..\lib5\JvButtons.obj 
       ..\lib5\JvCheckedMaskEdit.obj ..\lib5\JvComponentPanel.obj 
       ..\lib5\JvCtlConst.obj ..\lib5\JvDatePickerEdit.obj ..\lib5\JvDBUtil.obj 

@@ -358,7 +358,6 @@ USEUNIT("..\source\JvThumbviews.pas");
 USEUNIT("..\source\jvThumbNails.pas");
 USEUNIT("..\source\JvMovableBevel.pas");
 USEUNIT("..\source\JvaScrollText.pas");
-USEUNIT("..\source\JvBandWindows.pas");
 USEUNIT("..\source\JvBandForms.pas");
 USEUNIT("..\source\JvBandObject.pas");
 USEUNIT("..\source\JvBandUtils.pas");
