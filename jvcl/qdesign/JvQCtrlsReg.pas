@@ -59,7 +59,7 @@ uses
   JvQFooter, JvQGroupHeader, JvQHint,
   JvQHtControls,
   JvQItemsPanel,
-
+  JvQRollOut,
   JvQScrollText, JvQSpacer,
   JvQSwitch,
   JvQColorForm, JvQDsgnIntf,
@@ -67,7 +67,12 @@ uses
   JvQButtons, JvQCaptionPanel, JvQMovableBevel
   ;
 
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCtrlsReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvCtrlsReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin
@@ -75,7 +80,7 @@ begin
     TJvHTButton, TJvSpacer, TJvSwitch, TJvColorBox, TJvColorSquare,
     TJvDropButton]);
   RegisterComponents(RsPaletteBarPanel, [TJvCaptionPanel,
-    TJvItemsPanel, TJvMovableBevel, TJvFooter, TJvGroupHeader,
+    TJvItemsPanel, TJvMovableBevel, TJvRollOut, TJvFooter, TJvGroupHeader,
     TJvComponentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel,
 
@@ -107,12 +112,12 @@ begin
 //  RegisterComponentEditor(TJvImageListBox, TJvStringsEditor);
 //  RegisterComponentEditor(TJvImageComboBox, TJvStringsEditor);
 //  RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
-  //  RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
+//    RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
 
 //  RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
 //  RegisterClass(TJvScrollMaxBand);
   RegisterClass(TJvFooterBtn);
-//  RegisterActions(RsJVCLActionsCategory, [TJvRollOutAction], nil);
+  RegisterActions(RsJVCLActionsCategory, [TJvRollOutAction], nil);
 end;
 
 end.

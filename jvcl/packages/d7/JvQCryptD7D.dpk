@@ -28,7 +28,6 @@ package JvQCryptD7D;
 requires
   JvQCryptD7R,
   rtl,
-  visualclx,
   JvQCoreD7D;
 
 contains

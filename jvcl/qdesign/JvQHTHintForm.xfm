@@ -41,12 +41,13 @@ object JvHintEditor: TJvHintEditor
     Caption = 'Hint'
   end
   object HintLabel: TLabel
-    Left = 245
+    Left = 176
     Top = 8
-    Width = 164
-    Height = 28
+    Width = 233
+    Height = 25
     Alignment = taRightJustify
     Anchors = [akTop, akRight]
+    AutoSize = False
     Caption = 'Drag mouse over this label to see hint'
     WordWrap = True
   end
