@@ -118,8 +118,6 @@ type
     procedure GetLineAttr(var Str: string; Line, ColBeg, ColEnd: Integer); virtual;
     function DoCommand(ACommand: TEditCommand; var X, Y: Integer;
       var CaretUndo: Boolean): Boolean; override;
-    { triggers when Lines changes }
-    procedure DoLinesChange(Sender: TObject); virtual;
     { TextModified is called when the editor content has changed. }
     procedure TextModified(ACaretX, ACaretY: Integer; Action: TModifiedAction;
       const Text: string); dynamic;
@@ -1434,12 +1432,6 @@ begin
         SelText := AnsiChangeCase(SelText);
   end;
   Result := False;
-end;
-
-procedure TJvCustomEditor.DoLinesChange(Sender: TObject);
-begin
-  Modified := True;
-//  TextModified(-1, -1, maAll, '');
 end;
 
 function TJvCustomEditor.GetSelText: string;

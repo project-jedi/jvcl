@@ -124,7 +124,6 @@ type
     procedure GetLineAttr(var Str: WideString; Line, ColBeg, ColEnd: Integer); virtual;
     function DoCommand(ACommand: TEditCommand; var X, Y: Integer;
       var CaretUndo: Boolean): Boolean; override;
-
     { TextModified is called when the editor content has changed. }
     procedure TextModified(ACaretX, ACaretY: Integer; Action: TModifiedAction;
       const Text: WideString); dynamic;
@@ -723,6 +722,7 @@ begin
   inherited Create(AOwner);
   FLines := TJvEditorWideStrings.Create;
   FLines.FJvEditor := Self;
+  FLines.OnChange := DoLinesChange;
   Completion := TJvWideCompletion.Create(Self);
 end;
 

@@ -707,6 +707,8 @@ type
     function GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean; virtual; abstract;
     function GetAnsiWordOnCaret: AnsiString; virtual; abstract;
 
+    { triggers when Lines changes }
+    procedure DoLinesChange(Sender: TObject); virtual;
     procedure ReLine; virtual; abstract;
     procedure TextAllChangedInternal(Unselect: Boolean); virtual;
 
@@ -2740,6 +2742,11 @@ begin
     FSelection.Selecting := False;
   end;
   HighlightBrackets;
+end;
+
+procedure TJvCustomEditorBase.DoLinesChange(Sender: TObject);
+begin
+  Changed;
 end;
 
 procedure TJvCustomEditorBase.Changed;
