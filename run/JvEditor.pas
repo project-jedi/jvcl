@@ -16,8 +16,11 @@ All Rights Reserved.
 
 Contributor(s):
 Burov Dmitry, translation of russian text.
+Andreas Hausladen
+Peter Thörnqvist
+Remko Bonte
 
-Last Modified: 2002-07-04
+Last Modified: 2003-07-14
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -185,7 +188,11 @@ Known Issues:
     - fixed bug: in readonly mode [Return] does nothing
     - added BlockOverwrite property
     - added PeristentBlocks
-
+  2.10.4 (changed by peter3, andreas)
+    - fixed bug where pressing Enter/Return while the completition list is open inserts a line break (andreas)
+    - fixed GetNextWordPosEx (andreas)
+    - added default popupmenu if none assigned (JvFixedEditPopup)
+    - added handling of WM_CLEAR, WM_GETTEXTLENGTH, EM_SETREADONLY, EM_SETSEL, EM_GETSEL and EM_CANUNDO
 }
 
 {$IFDEF COMPLIB_VCL}
@@ -197,14 +204,14 @@ Known Issues:
 {$ENDIF}
 
 {$IFDEF VisualCLX}
-  VisualCLX is not implemented yet.
+  VisualCLX is not implemented yet
 {$ENDIF}
 
 unit JvEditor;
 
 interface
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
   ExtCtrls, StdCtrls, Clipbrd, JvJCLUtils;
 
 const
@@ -525,7 +532,6 @@ type
     FCursorBeyondEOF: Boolean;
     FBlockOverwrite: Boolean;
     FPersistentBlocks: Boolean;
-
     FHideCaret: Boolean;
 
     { non-visual attributes - properties }
@@ -565,6 +571,16 @@ type
     procedure WMCopy(var Msg: TMessage); message WM_COPY;
     procedure WMCut(var Msg: TMessage); message WM_CUT;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
+    procedure WMUndo(var Msg: TMessage); message WM_UNDO;
+
+    // (p3) added to be compatible with JvFixedEditPopup
+    procedure WMClear(var Msg: TMessage); message WM_CLEAR;
+    procedure EMSetReadOnly(var Msg: TMessage); message EM_SETREADONLY;
+    procedure EMSetSelection(var Msg:TMessage); message EM_SETSEL;
+    procedure EMGetSelection(var Msg:TMessage); message EM_GETSEL;
+    procedure EMCanUndo(var Msg:TMessage); message EM_CANUNDO;
+    procedure WMGetTextLength(var Msg:TMessage); message WM_GETTEXTLENGTH;
+
 
     procedure UpdateEditorSize;
     procedure DoCompletionIdentifier(var Cancel: Boolean);
@@ -677,6 +693,7 @@ type
     procedure BookmarkChanged(BookMark: Integer); dynamic;
     procedure CompletionIdentifier(var Cancel: Boolean); dynamic;
     procedure CompletionTemplate(var Cancel: Boolean); dynamic;
+    function GetPopupMenu: TPopupMenu; override;
     { TextModified is called when the editor content has changed. }
     procedure TextModified(ACaretX, ACaretY: Integer; Action: TModifiedAction;
       const Text: string); dynamic;
@@ -745,6 +762,7 @@ type
     property GroupUndo: Boolean read FGroupUndo write FGroupUndo default True;
     property UndoAfterSave: Boolean read FUndoAfterSave write FUndoAfterSave;
     property Recording: Boolean read FRecording;
+
   public { published in descendants }
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Lines: TStrings read GetLines write SetLines;
@@ -1057,7 +1075,7 @@ implementation
 
 uses
   Consts, Math,
-  JvConsts, JvTypes;
+  JvConsts, JvTypes, JvFixedEditPopup;
 
 type
   TJvCaretUndo = class(TUndo)
@@ -2569,7 +2587,10 @@ begin
   if FCompletion.FVisible then
   begin
     if FCompletion.DoKeyDown(Key, Shift) then
+    begin
+      IgnoreKeyPress := true;
       Exit;
+    end;
   end
   else
     FCompletion.FTimer.Enabled := False;
@@ -5076,11 +5097,15 @@ procedure TJvCustomEditor.SetMode(Index: Integer; Value: Boolean);
 var
   PB: ^Boolean;
 begin
-  case Index of
-    0:
-      PB := @FInsertMode;
+  if Index = 0 then
+    PB := @FInsertMode
   else {1 :}
+  begin
     PB := @FReadOnly;
+    if Value then
+      SetWindowLong(Handle,GWL_STYLE,GetWindowLong(Handle,GWL_STYLE) or ES_READONLY)
+    else
+      SetWindowLong(Handle,GWL_STYLE,GetWindowLong(Handle,GWL_STYLE) and not ES_READONLY);
   end;
   if PB^ <> Value then
   begin
@@ -5369,6 +5394,14 @@ end;
 procedure TJvCustomEditor.CompletionIdentifier(var Cancel: Boolean);
 begin
   {abstract}
+end;
+
+function TJvCustomEditor.GetPopupMenu: TPopupMenu;
+begin
+  if Assigned(PopupMenu) then
+    Result := PopupMenu
+  else
+    Result := FixedDefaultEditPopUp(self);
 end;
 
 procedure TJvCustomEditor.CompletionTemplate(var Cancel: Boolean);
@@ -6319,47 +6352,32 @@ function GetNextWordPosEx(const Text: string; StartIndex: Integer;
 var
   Len: Integer;
 begin
-  Result := '';
-  iBeg := 0;
-  iEnd := 0;
   Len := Length(Text);
-  if (StartIndex < 1) then StartIndex := 1;
-  if StartIndex > Len then Exit;
-
-  iBeg := StartIndex;
-  if Text[iBeg] in (Separators - [' ']) then
-  begin
-    iEnd := iBeg;
+  Result := '';
+  if (StartIndex < 1) or (StartIndex > Len) then
     Exit;
-  end
-  else
-  begin
-    if Text[iBeg] = ' ' then
-    begin
-     // go right
-      iBeg := StartIndex;
-      while (iBeg <= Len) and (Text[iBeg] in Separators) do Inc(iBeg);
-      if iBeg > Len then
-      begin
-        iBeg := 1;
-        iEnd := Len;
-        Exit; // nothing else to do, return ''
-      end;
-    end
+  if (Text[StartIndex] in Separators) and
+     ((StartIndex < 1) or (Text[StartIndex - 1] in Separators)) then
+    Inc(StartIndex);
+  iBeg := StartIndex;
+  while iBeg >= 1 do
+    if Text[iBeg] in Separators then
+      Break
     else
-    begin
-     // go left
-      iBeg := StartIndex;
-      while (iBeg > 0) and (not (Text[iBeg] in Separators)) do Dec(iBeg);
-      if iBeg = 0 then
-      begin
-        iBeg := 1;
-        iEnd := Len;
-        Exit; // nothing else to do, return ''
-      end;
-      Inc(iBeg);
-    end;
-  end;
+      Dec(iBeg);
+  Inc(iBeg);
+  iEnd := StartIndex;
+  while iEnd <= Len do
+    if Text[iEnd] in Separators then
+      Break
+    else
+      Inc(iEnd);
+  Dec(iEnd);                                 // <-- missing line
+  if iEnd >= iBeg then
+    Result := Copy(Text, iBeg, iEnd - iBeg)
+  else
+    Result := Text[StartIndex];
+end;
 
  // go right
   iEnd := iBeg;
@@ -6850,6 +6868,62 @@ begin
   end;
 end;
 
+
+procedure TJvCustomEditor.EMCanUndo(var Msg: TMessage);
+begin
+  Msg.Result := Ord(FUndoBuffer.CanUndo);
+end;
+
+procedure TJvCustomEditor.EMGetSelection(var Msg: TMessage);
+var
+   LSelStart, LSelEnd: Integer;
+begin
+   LSelStart := SelStart;
+   LSelEnd := SelStart + SelLength;
+   if Pointer(Msg.WParam) <> nil then
+     PLongint(Msg.WParam)^ := LSelStart;
+   if Pointer(Msg.LParam) <> nil then
+     PLongint(Msg.LParam)^ := LSelEnd;
+   if (LSelEnd > 65.535) or (LSelStart > 65.535) then
+     Msg.Result := -1
+   else
+   begin
+     Msg.ResultLo := LongRec(LSelStart).Lo;
+     Msg.ResultHi := LongRec(LSelEnd).Lo;
+   end;
+end;
+
+procedure TJvCustomEditor.EMSetReadOnly(var Msg: TMessage);
+begin
+  ReadOnly := Msg.WParam = 1;
+end;
+
+procedure TJvCustomEditor.EMSetSelection(var Msg: TMessage);
+begin
+  if (Msg.wParam = 0) and (Msg.LParam = -1) then
+    SelectAll
+  else
+  begin
+    SelStart := Msg.wParam;
+    SelLength := Msg.lParam;
+  end;
+end;
+
+procedure TJvCustomEditor.WMClear(var Msg: TMessage);
+begin
+  if not ReadOnly then
+    SelText := '';
+end;
+
+procedure TJvCustomEditor.WMUndo(var Msg: TMessage);
+begin
+  FUndoBuffer.Undo;
+end;
+
+procedure TJvCustomEditor.WMGetTextLength(var Msg: TMessage);
+begin
+  Msg.Result := GetTextLen;
+end;
 
 end.
 
