@@ -227,59 +227,13 @@ function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): L
 function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 //function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 
+type
+  TApplicationHook = function(Sender: QObjectH; Event: QEventH): Boolean of object;
+
+procedure InstallApplicationHook(Hook: TApplicationHook); // not threadsafe
+procedure UninstallApplicationHook(Hook: TApplicationHook); // not threadsafe
 
 implementation
-
-type
-  TQtObject = class(TObject)
-  private
-    FHandle: QObjectH;
-    FHooks: QObject_hookH;
-  protected
-    function MainEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; virtual;
-  public
-    constructor Create(const AName: string = '');
-    destructor Destroy; override;
-    property Handle: QObjectH read FHandle;
-    property Hooks: QObject_hookH read FHooks;
-  end;
-
-constructor TQtObject.Create(const AName: string = '');
-var
-  Method: TMethod;
-begin
-  inherited Create;
-  FHandle := QObject_create(nil, Pointer(AName));
-  FHooks := QObject_hook_create(FHandle);
-  TEventFilterMethod(Method) := MainEventFilter;
-  Qt_hook_hook_events(FHooks, Method);
-end;
-
-destructor TQtObject.Destroy;
-begin
-  QObject_hook_destroy(FHooks);
-  QObject_destroy(FHandle);
-  inherited Destroy;
-end;
-
-function TQtObject.MainEventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-begin
-  try
-    Result := EventFilter(Sender, Event);
-  except
-    on E: Exception do
-    begin
-      Application.ShowException(E);
-      Result := False;
-    end;
-  end;
-end;
-
-function TQtObject.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-begin
-  Result := False; // default handling
-end;
 
 const
   QEventType_CMDispatchMessagePost = QEventType(Integer(QEventType_ClxUser) - 1);
@@ -293,9 +247,19 @@ type
     Msg: TMessage;
   end;
 
+  PApplicationHookItem = ^TApplicationHookItem;
+  TApplicationHookItem = record
+    Proc: TApplicationHook;
+  end;
+
+var
+  AppHookList: TList = nil;
+  AppEventFilterHook: QObject_hookH = nil;
+
 function AppEventFilter(App: TApplication; Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Msg: PMessageData;
+  i: Integer;
 begin
   try
     Result := False;
@@ -328,6 +292,15 @@ begin
           end;
       end;
     end;
+
+    if Assigned(AppHookList) then
+    begin
+      Result := True;
+      for i := AppHookList.Count - 1 downto 0 do
+        if PApplicationHookItem(AppHookList[i]).Proc(Sender, Event) then
+          Exit;
+      Result := False;
+    end;
   except
     on E: Exception do
     begin
@@ -336,9 +309,6 @@ begin
     end;
   end;
 end;
-
-var
-  AppEventFilterHook: QObject_hookH = nil;
 
 procedure InstallAppEventFilter;
 var
@@ -453,10 +423,64 @@ begin
   end;
 end;
 
+procedure InstallApplicationHook(Hook: TApplicationHook);
+var
+  Item: PApplicationHookItem;
+begin
+  if Assigned(Hook) then
+  begin
+    UninstallApplicationHook(Hook);
+    New(Item);
+    Item.Proc := Hook;
+
+    if not Assigned(AppHookList) then
+      AppHookList := TList.Create;
+    AppHookList.Add(Item); // the last item is the first that is handled.
+
+    InstallAppEventFilter;
+  end;
+end;
+
+procedure UninstallApplicationHook(Hook: TApplicationHook);
+var
+  i: Integer;
+  Item: PApplicationHookItem;
+begin
+  if AppHookList <> nil then
+  begin
+    for i := AppHookList.Count - 1 downto 0 do
+    begin
+      Item := AppHookList[i];
+      if @Item.Proc = @Hook then
+      begin
+        Dispose(Item);
+        AppHookList.Delete(i);
+      end;
+    end;
+    if AppHookList.Count = 0 then
+      FreeAndNil(AppHookList);
+  end;
+end;
+
+procedure FinalizeAppHookList;
+var
+  i: Integer;
+  Item: PApplicationHookItem;
+begin
+  for i := 0 to AppHookList.Count - 1 do
+  begin
+    Item := AppHookList[i];
+    Dispose(Item);
+  end;
+  FreeAndNil(AppHookList);
+end;
+
 initialization
 
 finalization
   if Assigned(AppEventFilterHook) then
     QObject_hook_destroy(AppEventFilterHook);
+  if Assigned(AppHookList) then
+    FinalizeAppHookList;
 
 end.
