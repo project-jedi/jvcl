@@ -7269,7 +7269,7 @@ begin
       second thread that produces a timeout by releasing the semaphore. }
     TimeoutThread := TEventTimeoutThread.Create(Self, Integer(Timeout));
   try
-    case FEvent.WaitFor(Timeout) of
+    case FEvent.WaitFor(INFINITE) of
       wrSignaled:
         Result := WAIT_OBJECT_0;
       wrTimeout:
