@@ -32,7 +32,6 @@ requires
 
 contains
   JvJVCLAboutProperty in '..\..\design\JvJVCLAboutProperty.pas',
-  JvActions in '..\..\design\JvActions.pas',
   JvActnRes in '..\..\design\JvActnRes.pas' {JvStandardActions: TDataModule},
   JvxDConst in '..\..\design\JvxDConst.pas',
   JvCoreReg in '..\..\design\JvCoreReg.pas';

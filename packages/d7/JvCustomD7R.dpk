@@ -29,7 +29,9 @@ requires
   rtl,
   vcl,
   vclx,
-  vcljpg;
+  vcljpg,
+  JvCoreD7R,
+  DJCL70;
 
 contains
   JvTrayIcon in '..\..\run\JvTrayIcon.pas',

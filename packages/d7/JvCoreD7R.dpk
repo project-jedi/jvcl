@@ -29,7 +29,10 @@ requires
   rtl,
   vcl,
   vclx,
-  DJCL70;
+  DJCL70,
+  vcljpg,
+  designide,
+  vclactnband;
 
 contains
   JvWndProcHook in '..\..\run\JvWndProcHook.pas',
@@ -52,6 +55,7 @@ contains
   JvDirectories in '..\..\run\JvDirectories.pas',
   JvBaseDlg in '..\..\run\JvBaseDlg.pas',
   JvJVCLAbout in '..\..\run\JvJVCLAbout.pas' {JvJVCLAboutForm},
-  JvTimer in '..\..\run\JvTimer.pas';
+  JvTimer in '..\..\run\JvTimer.pas',
+  JvActions in '..\..\design\JvActions.pas';
 
 end.

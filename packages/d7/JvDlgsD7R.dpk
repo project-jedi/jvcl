@@ -29,7 +29,10 @@ requires
   rtl,
   vcljpg,
   vcl,
-  vclx;
+  vclx,
+  JvCoreD7D,
+  JvCoreD7R,
+  DJCL70;
 
 contains
   JvDSADialogs in '..\..\run\JvDSADialogs.pas',
