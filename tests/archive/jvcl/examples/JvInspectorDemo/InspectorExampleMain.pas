@@ -4,13 +4,14 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvInspector, IniFiles, TypInfo, JvComponent;
+  JvInspector, IniFiles, TypInfo, JvComponent, ImgList;
 
 type
   TfrmInspector = class(TForm)
     JvInspector1: TJvInspector;
     JvInspectorBorlandPainter1: TJvInspectorBorlandPainter;
     JvInspectorDotNETPainter1: TJvInspectorDotNETPainter;
+    TestImageList: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure JvInspector1AfterItemCreate(Sender: TObject; const Item: TJvCustomInspectorItem);
@@ -61,6 +62,7 @@ var
   LastName: string = 'Bestebroer';
   VerInfoStr: string = JVCL_VERSIONSTRING;
   ADate: TDateTime;
+  ImgIdx: TImageIndex;
 
 { TfrmInspector }
 
@@ -163,6 +165,7 @@ end;
 procedure TfrmInspector.AddVarious;
 var
   InspCat: TJvInspectorCustomCategoryItem;
+  NewItem: TJvCustomInspectorItem;
 begin
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'Various tests.';
@@ -175,6 +178,13 @@ begin
   TJvInspectorVarData.New(InspCat, 'First', TypeInfo(string), FirstName).DisplayName := 'Copy of first name';
   TJvInspectorVarData.New(InspCat, 'Initial', TypeInfo(string), Initial).DisplayName := 'Copy of initial';
   TJvInspectorVarData.New(InspCat, 'Last', TypeInfo(string), LastName).DisplayName := 'Copy of last name';
+
+  { Add an ImageIndex test item }
+  NewItem := TJvInspectorVarData.New(InspCat, 'ImageIndex', TypeInfo(TImageIndex), ImgIdx);
+  if NewItem is TJvInspectorTImageIndexItem then
+    (NewItem as TJvInspectorTImageIndexItem).ImageList := TestImageList;
+//  NewItem.RowSizing.MinHeight := 24;
+
   InspCat.Expanded := True;
 end;
 
@@ -348,6 +358,7 @@ initialization
   TJvInspectorAlignItem.RegisterAsDefaultItem;
   TJvInspectorAnchorsItem.RegisterAsDefaultItem;
   TJvInspectorColorItem.RegisterAsDefaultItem;
+  TJvInspectorTImageIndexItem.RegisterAsDefaultItem;
 
 finalization
   RemoveTypeInfo(GeneratedTestEnum);
