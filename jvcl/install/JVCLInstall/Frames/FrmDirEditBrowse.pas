@@ -44,9 +44,10 @@ type
     LblCaption: TLabel;
     Bevel: TBevel;
     EditDirectory: TEdit;
-    BtnJCLDirBrowse: TButton;
-    procedure BtnJCLDirBrowseClick(Sender: TObject);
+    BtnDirBrowse: TButton;
+    procedure BtnDirBrowseClick(Sender: TObject);
     procedure EditDirectoryEnter(Sender: TObject);
+    procedure EditDirectoryClick(Sender: TObject);
   private
     FOnChange: TDirEditChangeEvent;
     FUserData: TObject;
@@ -88,16 +89,16 @@ begin
   Result.Parent := Client;
   Result.Height := 50;
   Result.EditDirectory.Text := Dir;
-  Result.BtnJCLDirBrowse.Hint := AButtonHint;
+  Result.BtnDirBrowse.Hint := AButtonHint;
 end;
 
-procedure TFrameDirEditBrowse.BtnJCLDirBrowseClick(Sender: TObject);
+procedure TFrameDirEditBrowse.BtnDirBrowseClick(Sender: TObject);
 var
   Dir: string;
 begin
-  if BtnJCLDirBrowse.Tag <> 0 then
+  if BtnDirBrowse.Tag <> 0 then
     Exit; // no multiple execution
-  BtnJCLDirBrowse.Tag := 1;
+  BtnDirBrowse.Tag := 1;
   try
     Dir := EditDirectory.Text;
     if BrowseDirectory(Dir) then
@@ -108,7 +109,7 @@ begin
         EditDirectory.Text := Dir;
     end;
   finally
-    BtnJCLDirBrowse.Tag := 0;
+    BtnDirBrowse.Tag := 0;
   end;
 end;
 
@@ -117,7 +118,7 @@ begin
   FEmpty := False;
   with TBrowseFolderDialog.Create(Application) do
   try
-    DialogText := RsSelectJCLDir;
+    DialogText := RsSelectDir;
     FolderName := AFolderName;
     OnCustomize := DoCustomize;
     OnCommand := DoCommand;
@@ -139,21 +140,35 @@ const
   SBtn = 'BUTTON'; // do not localize
 var
   BtnHandle, HelpBtn, BtnFont: THandle;
-  BtnSize: TRect;
+  BtnRect: TRect;
+  CaptionSize: TSize;
+  BtnCaption: string;
+  DC: HDC;
 begin
   if AllowEmpty then
   begin
     BtnHandle := FindWindowEx(Handle, 0, SBtn, nil);
     if (BtnHandle <> 0) then
     begin
-      GetWindowRect(BtnHandle, BtnSize);
-      Windows.ScreenToClient(Handle, BtnSize.TopLeft);
-      Windows.ScreenToClient(Handle, BtnSize.BottomRight);
+      // We need the witdh of the text at runtime because it gets localized
+      BtnCaption := RsNoDirectoryButton;
+      DC := GetWindowDC(BtnHandle);
+      GetTextExtentPoint32(DC, PChar(BtnCaption), Length(BtnCaption), CaptionSize);
+      ReleaseDC(BtnHandle, DC);
+
+      // And we need the BtnRect to get the right top and height for the button
+      GetWindowRect(BtnHandle, BtnRect);
+      Windows.ScreenToClient(Handle, BtnRect.TopLeft);
+      Windows.ScreenToClient(Handle, BtnRect.BottomRight);
+      
       BtnFont := SendMessage(Handle, WM_GETFONT, 0, 0);
-      HelpBtn := CreateWindow(SBtn, PChar(RsNoDirectoryButton),
+
+      // Create the button
+      HelpBtn := CreateWindow(SBtn, PChar(BtnCaption),
         WS_CHILD or WS_CLIPSIBLINGS or WS_VISIBLE or BS_PUSHBUTTON or WS_TABSTOP,
-        12, BtnSize.Top, BtnSize.Right - BtnSize.Left, BtnSize.Bottom - BtnSize.Top,
+        12, BtnRect.Top, CaptionSize.cx, BtnRect.Bottom-BtnRect.Top,
         Handle, NoDirectoryButtonId, HInstance, nil);
+        
       if BtnFont <> 0 then
         SendMessage(HelpBtn, WM_SETFONT, BtnFont, MakeLParam(1, 0));
       UpdateWindow(Handle);
@@ -176,7 +191,12 @@ end;
 
 procedure TFrameDirEditBrowse.EditDirectoryEnter(Sender: TObject);
 begin
-  BtnJCLDirBrowse.Click;
+  BtnDirBrowse.Click;
+end;
+
+procedure TFrameDirEditBrowse.EditDirectoryClick(Sender: TObject);
+begin
+  BtnDirBrowse.Click;
 end;
 
 end.

@@ -71,6 +71,7 @@ type
     procedure LblDxgettextHomepageClick(Sender: TObject);
     procedure LblBCBGuideClick(Sender: TObject);
     procedure CheckBoxCompileJclDcpClick(Sender: TObject);
+    procedure FrameDirEditBrowseHPPBtnJCLDirBrowseClick(Sender: TObject);
   private
     FInitializing: Integer;
     FInstaller: TInstaller;
@@ -427,6 +428,13 @@ begin
   Filename := Installer.Data.JVCLDir + '\' + SInstallHTM;
   if not OpenAtAnchor(Filename, SBCBGuideAnchor) then
     MessageDlg(Format(RsCannotOpen, [Filename]), mtError, [mbOk], 0);
+end;
+
+procedure TFrameConfigPage.FrameDirEditBrowseHPPBtnJCLDirBrowseClick(
+  Sender: TObject);
+begin
+  FrameDirEditBrowseHPP.BtnDirBrowseClick(Sender);
+
 end;
 
 end.
