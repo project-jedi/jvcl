@@ -37,7 +37,7 @@ uses
   {$ENDIF MSWINDOWS}
   SysUtils, Classes, IniFiles,
   {$IFDEF VCL}
-  Controls, Forms, StdCtrls, ExtCtrls, Dialogs, Buttons, Jpeg,
+  Controls, Forms, StdCtrls, ExtCtrls, Dialogs, Buttons, jpeg,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons,

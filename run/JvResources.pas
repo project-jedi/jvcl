@@ -315,6 +315,37 @@ resourcestring
   sInTheCurrentQueue = 'in the current queue';
   sJvDSADialogPatchErrorJvDSADialogCom = 'JvDSADialog patch error: JvDSADialog component not found.';
 
+  sDSARegKeyCreateError = 'Unable to create key %s';
+  sDSADuplicateID = 'DSA dialog with ID ''%d'' is already assigned to another dialog name.';
+  sDSADuplicateName = 'DSA dialog named ''%s'' is already assigned to another dialog ID.';
+  sDSADialogIDNotFound = 'DSA dialog %d does not exist.';
+  sDSADuplicateCTK_ID = 'CheckMarkText ID %d already registered.';
+  sDSADialogIDNotStored = 'DSA dialog %d has not been stored.';
+  sDSAKeyNotFound = 'Key %s does not exist.';
+  sDSAKeyNoAccessAs = 'Key %s cannot be accessed as %s.';
+
+  sDSAAccessBool = 'Boolean';
+  sDSAAccessFloat = 'Float';
+  sDSAAccessInt64 = 'Int64';
+  sDSAAccessInt = 'Integer';
+  sDSAAccessString = 'string';
+
+  sDSActkShowText = 'Don''t show this dialog again';
+  sDSActkAskText = 'Don''t ask me again';
+  sDSActkWarnText = 'Don''t warn me again';
+
+  sDSAStateValueName = 'DSA_State'; // do not localize
+  sDSAStateLastResultName = 'LastResult'; // do not localize
+
+  sCtrlHasNoCheckedProp = 'The specified control has no "Checked" property.';
+  sCtrlHasNoCaptionProp = 'The specified control has no "Caption" property.';
+  sDialogIDChangeOnlyInDesign = 'The dialog ID can only be changed at design time.';
+  sOnlyAllowedOnForms = 'TJvDSADialog is only allowed on forms.';
+  sAlreadyDSADialog = 'The form already has a TJvDSADialog component.';
+  sCntdwnText = 'This dialog is closing in %d %s.';
+  sCntdwnSecText = 'second';
+  sCntdwnSecsText = 'seconds';
+
 //=== JvErrorIndicator.pas ===================================================
 resourcestring
   sControlNotFoundInGetError = 'Control not found in GetError';
@@ -408,8 +439,10 @@ resourcestring
   sDSOUnknownKeys = 'DSO unknown key %s';
 
 //=== Jvg3DColors.pas ========================================================
+{$IFDEF USEJVCL}
 resourcestring
   sOnlyOneInstanceOfTJvg3DLocalColors = 'Cannot create more than one instance of TJvg3DLocalColors component';
+{$ENDIF USEJVCL}
 
 //=== JvGammaPanel.pas =======================================================
 resourcestring
@@ -427,23 +460,32 @@ resourcestring
   RC_DefaultR = 'R : ---';
 
 //=== JvgAskListBox.pas ======================================================
+{$IFDEF USEJVCL}
 resourcestring
   sYes = 'yes';
   sNo = 'no';
+{$ENDIF USEJVCL}
 
 //=== JvgButton.pas ==========================================================
+{$IFDEF USEJVCL}
 resourcestring
   sErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
+{$ENDIF USEJVCL}
 
 //=== JvgCaption.pas =========================================================
+{$IFDEF USEJVCL}
 resourcestring
   sOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
+{$ENDIF USEJVCL}
 
 //=== JvgCheckVersionInfoForm.pas ============================================
+{$IFDEF USEJVCL}
 resourcestring
   sNoNewerVersionOfProgramAvailable = 'No newer version of program available';
+{$ENDIF USEJVCL}
 
 //=== JvgConstSysRequirements.pas ============================================
+{$IFDEF USEJVCL}
 resourcestring
 (* RUSSIAN
   ERR_VideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
@@ -457,30 +499,40 @@ resourcestring
   ERR_ColorDepth = 'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
   ERR_SystemFont = 'In system the small font should be established. Change to small fonts in Monitor Control Panel.';
   ERR_OSPlatform = 'The program requires %s or better.';
+{$ENDIF USEJVCL}
 
 //=== JvGenetic.pas ==========================================================
 resourcestring
   RC_NoTest = 'TJvGenetic: OnTestMember must be assigned';
 
 //=== JvgExportComponents.pas ================================================
+{$IFDEF USEJVCL}
 resourcestring
   sDataSetIsUnassigned = 'DataSet is unassigned';
   sSaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
+{$ENDIF USEJVCL}
 
 //=== JvgHelpPanel.pas =======================================================
+{$IFDEF USEJVCL}
 resourcestring
   SHelp = ' help ';
   SOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
+{$ENDIF USEJVCL}
 
 //=== JvgHint.pas ============================================================
+{$IFDEF USEJVCL}
 resourcestring
-  sCannotCreateMoreThanOneInstanceOfTJ = 'Cannot create more than one instance of TJvgHint component';
+  sOnlyOneInstanceOfTJvgHint = 'Cannot create more than one instance of TJvgHint component';
+{$ENDIF USEJVCL}
 
 //=== JvgHTTPVersionInfo.pas =================================================
+{$IFDEF USEJVCL}
 resourcestring
   sUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
+{$ENDIF USEJVCL}
 
 //=== JvgLogics.pas ==========================================================
+{$IFDEF USEJVCL}
 resourcestring
   sEqualTo = 'equal to';
   sStartingWith = 'starting with';
@@ -488,29 +540,41 @@ resourcestring
   sContains = 'contains';
   sIsContainedWithin = 'is contained within';
   sNotEmpty = 'not empty';
+  sStep = 'Step ';
+  sComments = 'Comments';
+{$ENDIF USEJVCL}
 
 //=== JvgMailSlots.pas =======================================================
+{$IFDEF USEJVCL}
 resourcestring
   sTJvgMailSlotServerErrorCreatingChan = 'TJvgMailSlotServer: Error creating channel!';
   sTJvgMailSlotServerErrorGatheringInf = 'TJvgMailSlotServer: Error gathering information!';
   sTJvgMailSlotServerErrorReadingMessa = 'TJvgMailSlotServer: Error reading message!';
+{$ENDIF USEJVCL}
 
 //=== JvgProgress.pas ========================================================
+{$IFDEF USEJVCL}
 resourcestring
   sProgressd = 'progress...[%d%%]';
+{$ENDIF USEJVCL}
 
 //=== JvgQPrintPreviewForm.pas ===============================================
+{$IFDEF USEJVCL}
 resourcestring
   sPagedOfd = 'Page %d of %d';
+{$ENDIF USEJVCL}
 
 //=== JvGradientHeaderPanel.pas ==============================================
 resourcestring
   RC_YourTextHere = 'Put your text here ...';
 
 //=== JvgReport.pas ==========================================================
+{$IFDEF USEJVCL}
 resourcestring
   sOLELinkedObjectNotFound = 'OLE: Linked object not found.';
+  sError = 'Error';
   sErrorReadingComponent = 'Error reading component.';
+{$ENDIF USEJVCL}
 
 //=== JvGridPreviewForm.pas ==================================================
 resourcestring
@@ -525,15 +589,20 @@ resourcestring
   SPrintOptionsTimeFormat = 'h:nn am/pm';
 
 //=== JvgSingleInstance.pas ==================================================
+{$IFDEF USEJVCL}
 resourcestring
   sOneInstanceOfThisProgramIsAlreadyRu = 'One instance of this program is already running. A second instance launch is not allowed.';
   sSecondInstanceLaunchOfs = 'Second instance launch of %s';
+{$ENDIF USEJVCL}
 
 //=== JvgSmallFontsDefense.pas ===============================================
+{$IFDEF USEJVCL}
 resourcestring
   sTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
+{$ENDIF USEJVCL}
 
 //=== JvgUtils.pas ===========================================================
+{$IFDEF USEJVCL}
 resourcestring
   sRightBracketsNotFound = 'Right brackets not found';
   sRightBracketHavntALeftOnePosd = 'Right bracket havn''t a left one. Pos: %d';
@@ -541,8 +610,10 @@ resourcestring
   sDuplicateSignsPos = 'Duplicate signs. Pos:';
   sDuplicateSignsAtPos = 'Duplicate signs at. Pos:';
   sExpressionStringIsEmpty = 'Expression string is empty.';
+{$ENDIF USEJVCL}
 
 //=== JvgXMLSerializer.pas ===================================================
+{$IFDEF USEJVCL}
 resourcestring
   (*
   ERR_OpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
@@ -552,6 +623,7 @@ resourcestring
   ERR_OpenXMLTagNotFound = 'Open tag not found: <%s>';
   ERR_CloseXMLTagNotFound = 'Close tag not found: </%s>';
   ERR_UnknownProperty = 'Unknown property: %s';
+{$ENDIF USEJVCL}
 
 //=== JvHint.pas =============================================================
 resourcestring
@@ -653,12 +725,6 @@ resourcestring
   sSearch = 'Search';
   sSearchFor = 'Search for:';
   sNoMoresFound = 'No more %s found';
-
-//=== JvJCLUtils.pas =========================================================
-resourcestring
-  // (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
-  SPropertyNotExists    = 'Property "%s" does not exist';
-  SInvalidPropertyType  = 'Property "%s" has invalid type';
 
 //=== JvJoystick.pas =========================================================
 resourcestring
@@ -807,6 +873,9 @@ resourcestring
   ssTotalElapsedTimedms = '%s -  total elapsed time: %d (ms)';
   sTextFormatsasctxtinfdocAllFiles = 'Text formats|*.asc;*.txt;*.inf;*.doc|All files|*.*';
 
+  sDefCaption = 'Profiler 32 Report';
+  sDefHeader = 'Profiler 32 run %s by "%s" (machine %s).';
+
 //=== JvPrvwRender.pas =======================================================
 resourcestring
   sAPrintPreviewComponentMustBeAssigne = 'A PrintPreview component must be assigned in CreatePreview!';
@@ -886,6 +955,7 @@ resourcestring
   sUnknownScheduleVersions = 'Unknown schedule version ($%s)';
   sUnexpectedStructure = 'Unexpected structure.';
   sIncorrectIdentifierFound = 'Incorrect identifier found.';
+  sIncorrectStructure = 'Incorrect structure found.';
 
 //=== JvScheduledEvents.pas ==================================================
 resourcestring
@@ -1132,6 +1202,7 @@ resourcestring
   SInsertNilValidator = 'Cannot insert nil validator';
   SRemoveNilValidator = 'Cannot remove nil validator';
   SValidatorNotChild = 'Validator is not owned by this component';
+  sInvalidIndexd = 'Invalid index (%d)';
 
 //=== JvVirtualKeySelectionFrame.pas =========================================
 resourcestring
@@ -1197,21 +1268,16 @@ resourcestring
   sCopy = '&Copy';
   sCut = 'Cu&t';
   sPaste = '&Paste';
-  sDelete = '&Delete';
+  sDeleteItem = '&Delete';
   sSaveAllInfo = '&Save All Info';
   sSaveFoundInfo = 'Save Found Info';
   sBorderColor = '&Border Color...';
   sBookMarkColor = 'Book&Mark Color...';
-  sFind = '&Find...';
+  sFindItem = '&Find...';
   sClearFind = 'Clear Find';
   sYearGridFind = 'YearGrid Find';
   sEnterSeachText = 'Enter seach text:';
   sFounds = 'Found %s';
-
-//=== QWinCursors.pas ========================================================
-resourcestring
-  RsUnsupported = 'Unsupported or illegal format.';
-  RsInvalidOperation = 'Invalid operation.';
 
 implementation
 

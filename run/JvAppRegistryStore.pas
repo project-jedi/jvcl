@@ -78,14 +78,11 @@ implementation
 
 uses
   SysUtils,
-  JclRegistry, JclResources, JclStrings;
+  JclRegistry, JclResources, JclStrings,
+  JvResources;
 
 const
   cCount = 'Count';
-
-resourcestring
-  SUnableToCreateKey = 'Unable to create key ''%s''';
-  SErrorEnumeratingRegistry = 'Error enumerating registry.';
 
 { (rom) disabled unused
 const

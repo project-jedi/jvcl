@@ -106,10 +106,7 @@ implementation
 
 uses
   Math,
-  JvID3v2Types;
-
-resourcestring
-  SNotActive = 'Not active';
+  JvID3v2Types, JvResources;
 
 const
   CID3v1Tag = 'TAG';  { do not change case }

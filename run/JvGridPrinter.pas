@@ -100,12 +100,7 @@ type
 implementation
 
 uses
-  JvGridPreviewForm, JvTypes;
-
-resourcestring
-  SPrintOptionsPageFooter = 'date|time|page';
-  SPrintOptionsDateFormat = 'd-mmm-yyyy';
-  SPrintOptionsTimeFormat = 'h:nn am/pm';
+  JvGridPreviewForm, JvTypes, JvResources;
 
 constructor TJvGridPrinter.Create(AOwner: TComponent);
 begin

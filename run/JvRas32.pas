@@ -147,9 +147,8 @@ type
 
 implementation
 
-resourcestring
-  RC_RasError = 'RAS: Unable to find RasApi32.dll';
-  RC_RasDllName = 'RASAPI32.DLL';
+uses
+  JvResources;
 
 constructor TJvRas32.Create(AOwner: TComponent);
 begin

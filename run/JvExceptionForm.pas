@@ -83,13 +83,9 @@ implementation
 
 uses
   Windows, ComObj, Consts,
-  JvTypes, JvConsts, JvJVCLUtils, JvJCLUtils;
+  JvTypes, JvConsts, JvJVCLUtils, JvJCLUtils, JvResources;
 
 {$R *.dfm}
-
-resourcestring
-  SCodeError = '%s.' + sLineBreak + 'Error Code: %.8x (%1:d).';
-  SModuleError = 'Exception in module %s.' + sLineBreak + '%s';
 
 var
   JvErrorDialog: TJvErrorDialog = nil;

@@ -152,9 +152,8 @@ type
 
 implementation
 
-resourcestring
-  RES_ErrorConnection = 'Unable to connect';
-  RES_Agent = 'TJvMultiHTTPGrabber Component';
+uses
+  JvResources;
 
 type
   PRequestInfos = ^TRequestInfos;

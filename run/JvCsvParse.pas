@@ -53,7 +53,6 @@ const MaxInitStrNum = 9;
 {new 2003}
 function StrSplit( const inString:String; const splitChar,quoteChar:Char; var OutStrings:Array of String;MaxSplit:Integer):Integer;
 
-
 { circa 1998-2001 classic functions }
 function StrStrip(s:string):string; // Strip whitespace, carriage returns, linefeeds.
 function GetString(var source : string;seperator:string):string; // Iteratively split off a piece of a string. Modifies original string.
@@ -68,8 +67,6 @@ function StripQuotes( s1:String) : String;
 { TStringList helper functions }
 function GetIntValueFromResultString( VarName : String; ResultStrings:TStringList;DefVal:Integer):Integer;
 function GetValueFromResultString( VarName : String; ResultStrings:TStringList):String;
-
-
 
 { Pascal Low Level PChar Functions }
 function ValidNumericLiteral(s1:PChar) : Boolean;
@@ -89,24 +86,15 @@ function GetParenthesis(s1,s2:Pchar):Boolean;
 procedure GetVarReference( s1,s2,sidx : PChar );
 procedure PcharEatWs(s1:PChar);
 
-
-
 { Debugging functions related to GetToken function. }
 function GetTokenCount:Integer;
 procedure ResetTokenCount;
 
-
-
-
-
 implementation
 
-
-
-uses SysUtils;
-
-resourcestring
-  sInvalidHexLiteral = 'HexStrToInt: Invalid hex literal';
+uses
+  SysUtils,
+  JvResources;
 
 var
   TokenCount : integer;

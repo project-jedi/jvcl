@@ -234,12 +234,8 @@ implementation
 
 uses
   Math, Clipbrd,
-  JvTypes, JvPainterEffectsForm, JvQuickPreviewForm, JvPainterQBForm;
-
-resourcestring
-  sImageMustBeSquare = 'image must be square for Spirographs';
-  sSumOfRadiTolarge = 'sum of radi to large';
-  sBothRadiMustBeGr = 'both radi must be >%d';
+  JvTypes, JvPainterEffectsForm, JvQuickPreviewForm, JvPainterQBForm,
+  JvResources;
 
 const
   // Texture constants

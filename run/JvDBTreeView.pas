@@ -263,15 +263,10 @@ type
 
   EJvDBTreeViewError = class(ETreeViewError);
 
-
-resourcestring
-  sErrorValueForDetailValue = 'error value for DetailValue';
-  sInternalError = 'internal error';
-
 implementation
 
 uses
-  JvConsts, JvDBConsts;
+  JvConsts, JvDBConsts, JvResources;
 
 // (rom) moved to implementation and removed type
 // (rom) never rely on assignable consts

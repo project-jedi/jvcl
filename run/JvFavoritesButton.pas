@@ -62,8 +62,8 @@ type
 
 implementation
 
-resourcestring
-  RC_EmptyItem = '<Empty>';
+uses
+  JvResources;
 
 constructor TJvFavoritesButton.Create(AOwner: TComponent);
 var

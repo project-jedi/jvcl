@@ -94,10 +94,7 @@ type
 implementation
 
 uses
-  JvColorForm;
-
-resourcestring
-  SOtherCaption = '&Other...';
+  JvColorForm, JvResources;
 
 constructor TJvColorButton.Create(AOwner: TComponent);
 begin

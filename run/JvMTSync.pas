@@ -100,12 +100,7 @@ type
 implementation
 
 uses
-  JvMTThreading;
-
-resourcestring
-  SSemaphoreFailure = 'Semaphore failure';
-  SSemaphoreAbandoned = 'Semaphore was abandoned';
-  SThreadAbandoned = 'Thread was abandoned';
+  JvMTThreading, JvResources;
 
 //=== TMTSemaphore ===========================================================
 

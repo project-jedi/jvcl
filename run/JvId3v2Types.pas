@@ -256,14 +256,11 @@ implementation
 
 uses
   Math, SysUtils,
-  JvTypes;
-
-resourcestring
-  SFrameIDSizeCanOnlyBe34 = 'Frame ID size can only be 3 or 4';
+  JvTypes, JvResources;
 
 type
-  TJvListType = (ltID3LongText, ltID3ShortText, ltISO_639_2Code, ltISO_639_2Name,
-    ltID3Genres);
+  TJvListType =
+    (ltID3LongText, ltID3ShortText, ltISO_639_2Code, ltISO_639_2Name, ltID3Genres);
 
   TJvID3FrameDef = packed record
     ShortTextID: array [0..2] of Char;

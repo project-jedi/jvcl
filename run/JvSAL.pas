@@ -165,32 +165,9 @@ type
 implementation
 
 uses
-  JvTypes;
+  JvTypes, JvResources;
 
-resourcestring
-  sBooleanStackOverflow = 'boolean stack overflow';
-  sBooleanStackUnderflow = 'boolean stack underflow';
-  sProgramStopped = 'program stopped';
-  sUnterminatedIncludeDirectiveNears = 'unterminated include directive near %s';
-  sOngetUnitEventHandlerIsNotAssigned = 'ongetUnit event handler is not assigned';
-  sCouldNotIncludeUnits = 'could not include unit %s';
-  sUnterminatedCommentNears = 'unterminated comment near %s';
-  sUnterminatedStringNears = 'unterminated string near %s';
-  sUnterminatedProcedureNears = 'unterminated procedure near %s';
-  sVariablesAllreadyDefineds = 'variable %s allready defined;%s';
-  sVariablesIsNotYetDefineds = 'variable %s is not yet defined;%s';
-  sProceduresNears = 'procedure %s near %s';
-  sUndefinedProcedures = 'undefined procedure %s';
-  sStackUnderflow = 'stack underflow';
-  sStackOverflow = 'stack overflow';
-  sReturnStackUnderflow = 'return stack underflow';
-  sReturnStackOverflow = 'return stack overflow';
-  sCouldNotFindEndOfProcedure = 'could not find end of procedure';
-
-
-{ TJvAtom }
-
-procedure TJvAtom.Setactor(const Value: TJvSALProc);
+procedure TJvAtom.SetActor(const Value: TJvSALProc);
 begin
   Factor := Value;
 end;

@@ -69,15 +69,9 @@ implementation
 
 uses
   DbConsts,
-  JvJVCLUtils, JvTypes;
+  JvJVCLUtils, JvTypes, JvResources;
 
 {$R *.dfm}
-
-resourcestring
-  // (p3) copied from bdeconst so we don't have to include the entire BDE for three strings...
-  SDataTypes = ';String;SmallInt;Integer;Word;Boolean;Float;Currency;BCD;Date;Time;DateTime;;;;Blob;Memo;Graphic;;;;;Cursor;';
-  SParamEditor = '%s%s%s Parameters';
-  SInvalidParamFieldType = 'Must have a valid field type selected';
 
 var
   FieldTypes: array [TFieldType] of string;

@@ -55,8 +55,8 @@ type
 
 implementation
 
-resourcestring
-  sError = 'Error';
+uses
+  JvResources;
 
 procedure TJvSerialMaker.ChangeUser(AUserName: string);
 begin

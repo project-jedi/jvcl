@@ -275,16 +275,10 @@ const
 
 procedure ResetNodeCount;
 
-
-resourcestring
-  sTNodeGetNodeTypeUnknownClass = 'TNode.GetNodeType: Unknown class';
-  sNoMoreNodesToReturn = 'No more nodes to return';
-  sNoMoreRecordsToReturn = 'No more records to return';
-
 implementation
 
 uses
-  JvConsts;
+  JvConsts, JvResources;
 
 type
   TRectList = class(TOwnerPointerList)

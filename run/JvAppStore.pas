@@ -566,20 +566,13 @@ implementation
 uses
   SysUtils,
   JclStrings, JclRTTI,
-  JvPropertyStore;
+  JvPropertyStore, JvResources;
 
 const
   // (rom) this name is shared in several units and should be made global
   cCount = 'Count';
   cItem = 'Item';
   cInvalidIdentifier = ' #!@not known@!# ';
-
-resourcestring
-  SInvalidType = 'Invalid type';
-  SUnknownBaseType = 'Unknown base type for given set';
-  SInvalidPath = 'Invalid path';
-  SNotAUniqueRootPath = '''%s'' is not a unique root path';
-  SCircularReferenceOfStorages = 'Circular reference of storages';
 
 procedure UpdateGlobalPath(GlobalPaths, NewPaths: TStrings);
 var

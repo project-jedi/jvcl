@@ -76,10 +76,7 @@ procedure RegisterHtHints;
 implementation
 
 uses
-  JvConsts;
-
-resourcestring
-  SHint = 'Hint';
+  JvConsts, JvResources;
 
 //=== TJvHint ================================================================
 

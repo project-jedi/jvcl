@@ -113,23 +113,11 @@ type
     property OnStop: TNotifyEvent read FOnStop write FOnStop;
   end;
 
-
-resourcestring
-  sMaxNumberOfIDsExceededd = 'Max number of ID''s exceeded (%d)';
-  sMaxStackSizeExceededd = 'Max stack size exceeded (%d)';
-  ssTotalElapsedTimedms = '%s -  total elapsed time: %d (ms)';
-  sTextFormatsasctxtinfdocAllFiles = 'Text formats|*.asc;*.txt;*.inf;*.doc|All files|*.*';
-
 implementation
 
 uses
   SysUtils, CommCtrl,
-  JvConsts, JvTypes;
-
-
-resourcestring
-  DefCaption = 'Profiler 32 Report';
-  DefHeader = 'Profiler 32 run %s by "%s" (machine %s).';
+  JvConsts, JvTypes, JvResources;
 
 const
   EmptyLine = '0.00';
@@ -379,7 +367,7 @@ begin
         LItem.SubItems.Add(EmptyLine);
       end;
     end;
-  Caption := Format(ssTotalElapsedTimedms, [DefCaption, TotalSum]);
+  Caption := Format(ssTotalElapsedTimedms, [sDefCaption, TotalSum]);
   lvReport.Items.EndUpdate;
 end;
 
@@ -435,7 +423,7 @@ begin
     if Execute then
     begin
       OutList := TStringList.Create;
-      OutList.Add(Format(DefHeader, [DateToStr(Now), GetUserNamePas,
+      OutList.Add(Format(sDefHeader, [DateToStr(Now), GetUserNamePas,
         GetComputerNamePas]));
       OutList.Add(DefHeader2);
       S := '';

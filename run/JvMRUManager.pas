@@ -167,14 +167,11 @@ type
   end;
 
 
-resourcestring
-  sDuplicatesNotAllowedInMRUList = 'Duplicates not allowed in MRU list.';
-
 implementation
 
 uses
   Controls, Math,
-  JvConsts, JvJVCLUtils;
+  JvConsts, JvJVCLUtils, JvResources;
 
 const
   siRecentItem = 'Item_%d';

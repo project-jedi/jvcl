@@ -87,15 +87,9 @@ var
 implementation
 
 uses
-  JvConsts;
+  JvConsts, JvResources;
 
 {$R *.dfm}
-
-resourcestring
-  sPainterQuickBackdrops = 'Painter Quick Backdrops';
-  sEnterName = 'Enter Name:';
-  sNoItemSelected = 'No item selected!';
-  sErrorInPresets = 'Error in Presets';
 
 type
   TColorProc = function(OutLoop, InLoop: Integer): Integer;

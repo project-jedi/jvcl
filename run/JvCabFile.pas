@@ -82,8 +82,8 @@ type
 
 implementation
 
-resourcestring
-  RC_ErrorSetupDll = 'Unable to find SetupApi.dll';
+uses
+  JvResources;
 
 const
   SPFILENOTIFY_CabinetINFO    = $00000010;

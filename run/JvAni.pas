@@ -90,12 +90,11 @@ type
 
 implementation
 
+uses
+  JvResources;
+
 const
   RC_AniExtension = 'ani';
-
-resourcestring
-  RC_AniFilterName = 'ANI Image';
-  SInvalidAnimatedIconImage = 'Animated icon image is not valid';
 
 constructor TJvAni.Create;
 begin

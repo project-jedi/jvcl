@@ -147,17 +147,10 @@ type
     property OnMappingChanged: TNotifyEvent read FOnMappingChanged write FOnMappingChanged;
   end;
 
-
-resourcestring
-  sTheCurrentCharacterHasBeenModifiedA = 'The current character has been modified. Apply changes?';
-  sTheCurrentMappingHasBeenModifiedSav = 'The current mapping has been modified. Save changes to file?';
-  sSegmentedLEDDisplayMappingFilessdms = 'Segmented LED display mapping files (*.sdm)|*.sdm|All files (*.*)|*.*';
-  sSelectCharacter = 'Select character...';
-  sSpecifyANewCharacter = 'Specify a new character';
-
 implementation
 
-uses JvConsts;
+uses
+  JvConsts, JvResources;
 
 {$R *.dfm}
 

@@ -405,10 +405,8 @@ procedure GetRegisteredLabelBehaviorOptions(Strings: TStrings);
 
 implementation
 
-resourcestring
-  sNone = '(none)';
-  sNeedBehaviorLabel = 'Cannot call TJvLabelBehavior.Create with ALabel = nil!';
-  sNoOwnerLabelParent = 'OwnerLabel.Parent is nil in %s.Start!';
+uses
+  JvResources;
 
 var
   FBehaviorOptions: TStringList = nil;

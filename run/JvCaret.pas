@@ -88,10 +88,7 @@ type
 implementation
 
 uses
-  JvJCLUtils;
-
-resourcestring
-  SInvalidCaretOwner = 'TJvCaret.Create: cannot be created without a valid Owner';
+  JvJCLUtils, JvResources;
 
 constructor TJvCaret.Create(Owner: TWinControl);
 begin

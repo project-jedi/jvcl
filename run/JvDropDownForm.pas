@@ -74,10 +74,7 @@ implementation
 
 uses
   SysUtils,
-  JvConsts;
-
-resourcestring
-  sTJvCustomDropDownFormCreateOwnerMus = 'TJvCustomDropDownForm.Create: Owner must be a TCustomEdit';
+  JvConsts, JvResources;
 
 function IsChildWindow(const AChild, AParent: HWND): Boolean;
 var

@@ -153,14 +153,7 @@ implementation
 uses
   Consts,
   JclSysInfo,
-  JvJCLUtils, JvJVCLUtils;
-
-resourcestring
-  sCantOpenPerfKey = 'Performance registry key not found';
-  sCantStart = 'Can''t start performance statistics (%s)';
-  sCantStop = 'Can''t stop performance statistics (%s)';
-  sKeyNotExist = 'Specified key "%s" does not exist';
-  sWrongOS = 'TJvPerfMon95 component is intended for Win95/98 only';
+  JvJCLUtils, JvJVCLUtils, JvResources;
 
 const
   PerfEnumKey = 'System\CurrentControlSet\Control\PerfStats\Enum';

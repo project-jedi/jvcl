@@ -286,10 +286,7 @@ implementation
 uses
   Consts, FileCtrl,
   JclSysUtils,
-  JvTypes;
-
-resourcestring
-  SShellNotCompatible = 'Shell not compatible with BrowseForFolder';
+  JvTypes, JvResources;
 
 type
   TSHGetFolderPathProc = function(hWnd: HWND; csidl: Integer; hToken: THandle;

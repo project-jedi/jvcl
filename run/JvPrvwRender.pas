@@ -225,18 +225,11 @@ type
     property OnAbort:TNotifyEvent read FOnAbort write FOnAbort;
   end;
 
-
-resourcestring
-  sAPrintPreviewComponentMustBeAssigne = 'A PrintPreview component must be assigned in CreatePreview!';
-  sARichEditComponentMustBeAssignedInC = 'A RichEdit component must be assigned in CreatePreview!';
-  sCannotPerfromThisOperationWhilePrin = 'Cannot perfrom this operation while printing!';
-  sPrinterNotAssigned = 'Printer not assigned!';
-  sNoPrintPreviewAssigned = 'No PrintPreview assigned!';
-
 implementation
+
 uses
   Forms,
-  JvConsts;
+  JvConsts, JvResources;
 
 type
   TAccessPrvwDoc = class(TJvCustomPreviewControl);

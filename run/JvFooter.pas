@@ -128,14 +128,10 @@ type
     property BevelVisible: Boolean read FBevelVisible write SetBevelVisible default False;
   end;
 
-
-resourcestring
-  sTJvFooterBtnCanOnlyBePlacedOnATJvFo = 'TJvFooterBtn can only be placed on a TJvFooter';
-
 implementation
 
 uses
-  JvConsts;
+  JvConsts, JvResources;
 
 //=== TJvFooterBtn ===========================================================
 

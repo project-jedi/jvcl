@@ -71,14 +71,14 @@ type
 
 implementation
 
+uses
+  JvResources;
+
 type
   TGeneticMember = class
     Points: Cardinal;
     Data: PByte;
   end;
-
-resourcestring
-  RC_NoTest = 'TJvGenetic: OnTestMember must be assigned';
 
 constructor TJvGenetic.Create(AOwner: TComponent);
 begin

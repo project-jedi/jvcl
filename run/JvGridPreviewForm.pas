@@ -95,14 +95,9 @@ type
 implementation
 
 uses
-  JvTypes, JvPaintFX;
+  JvTypes, JvPaintFX, JvResources;
 
 {$R *.dfm}
-
-resourcestring
-  sOfd = 'of %d';
-  sPaged = 'Page %d';
-  sNoPrinterIsInstalled = 'No Printer is installed';
 
 var
   RowHeights: array of Integer;

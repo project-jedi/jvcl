@@ -1168,33 +1168,15 @@ function HexBytes(const Buf; Length: Integer): string;
 // Move to other unit? Render text in a disabled way (much like TLabel does)
 procedure DisabledTextRect(ACanvas: TCanvas; var ARect: TRect; Left, Top: Integer; Text: string);
 
-
-resourcestring
-  sInternalError = 'Internal error.';
-  sItemsMayNotBeMovedInTheMainTree = 'Items may not be moved in the main tree.';
-  sInvalidIndex = 'Invalid index';
-  sItemCanNotBeDeleted = 'Item can not be deleted.';
-  sContextNameExpected = 'Context name expected.';
-  sConsumerStackIsEmpty = 'Consumer stack is empty.';
-  sContextStackIsEmpty = 'Context stack is empty.';
-  sAContextWithThatNameAlreadyExists = 'A context with that name already exists.';
-  sCannotCreateAContextWithoutAContext = 'Cannot create a context without a context list owner.';
-  sComponentDoesNotSupportTheIJvDataPr = 'Component does not support the IJvDataProvider interface.';
-  sComponentDoesNotSupportTheIInterfac = 'Component does not support the IInterfaceComponentReference interface.';
-  sYouMustSpecifyAProviderBeforeSettin = 'You must specify a provider before setting the context.';
-  sProviderHasNoContextNameds = 'Provider has no context named "%s"';
-  sProviderDoesNotSupportContexts = 'Provider does not support contexts.';
-  sTheSpecifiedContextIsNotPartOfTheSa = 'The specified context is not part of the same provider.';
-  sYouMustSpecifyAProviderBeforeSettin_ = 'You must specify a provider before setting the item.';
-  sItemNotFoundInTheSelectedContext = 'Item not found in the selected context.';
-  sViewListOutOfSync = 'ViewList out of sync';
-
 implementation
 
 uses
-  ActiveX, Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}Controls, TypInfo,
+  ActiveX, Consts, Controls, TypInfo,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF COMPILER6_UP}
   JclStrings,
-  JvTypes;
+  JvTypes, JvResources;
 
 const
   vifHasChildren = Integer($80000000);

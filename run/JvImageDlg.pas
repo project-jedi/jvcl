@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms,
-  ExtCtrls, Jpeg,
+  ExtCtrls, jpeg,
   JvBaseDlg, JvComponent, JvTypes;
 
 type
@@ -53,8 +53,8 @@ type
 
 implementation
 
-resourcestring
-  RC_ImageTitle = 'Image Viewer';
+uses
+  JvResources;
 
 constructor TJvImageDialog.Create(AOwner: TComponent);
 begin

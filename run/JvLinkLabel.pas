@@ -183,14 +183,10 @@ type
 implementation
 
 uses
-  JvThemes;
+  JvThemes, JvResources;
 
 // Bianconi - Use property LinkCursor
 //{.$R ..\resources\JvLinkLabel.res}
-
-resourcestring
-  sUnableToLocateMode = 'Unable to locate specified node';
-  sTagNotFound = 'Tag not found';
 
 const
   crNewLinkHand = 1;

@@ -96,13 +96,10 @@ type
     property OnStartDrag;
   end;
 
-resourcestring
-  SListOutOfBounds = 'List index out of bounds (%d)';
-
 implementation
 
 uses
-  JvTypes, JvThemes;
+  JvTypes, JvThemes, JvResources;
 
 type
   PStyles = ^TStyles;

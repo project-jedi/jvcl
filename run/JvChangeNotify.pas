@@ -129,23 +129,12 @@ type
 function ActionsToString(Actions: TJvChangeActions): string;
 
 implementation
+
 uses
   {$IFNDEF COMPILER6_UP}
   JvJCLUtils, // DirectoryExists
-  {$ENDIF}
-  JvTypes;
-
-resourcestring
-  sFileNameChange = 'Filename Change';
-  sDirectoryNameChange = 'Directory Name Change';
-  sAttributesChange = 'Attributes Change';
-  sSizeChange = 'Size Change';
-  sWriteChange = 'Write Change';
-  sSecurityChange = 'Security Change';
-  sFmtCannotChangeName = 'Cannot change %s when active';
-  sFmtInvalidPath = 'Invalid or empty path (%s)';
-  sFmtMaxCountExceeded = 'Maximum of %d items allowed';
-  SFmtInvalidPathAtIndex = 'Invalid or empty path ("%s") at index %d';
+  {$ENDIF COMPILER6_UP}
+  JvTypes, JvResources;
 
 function ActionsToString(Actions: TJvChangeActions): string;
 const

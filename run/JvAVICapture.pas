@@ -544,17 +544,13 @@ type
 implementation
 
 uses
-  Math; // for min and max
+  Math, // for min and max
+  JvResources;
 
 const
   // minimal height and width of the display window
   cMinHeight = 20;
   cMinWidth = 20;
-
-resourcestring
-  SNotConnected = 'Not connected';
-  SErrorMessagePrefix = 'Error #';
-  SInvalidDriverIndex = '%d is an invalid driver index. The maximum value is %d';
 
 { Global functions }
 

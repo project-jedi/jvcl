@@ -269,11 +269,11 @@ type
     property OnStartDrag;
   end;
 
-resourcestring
-  SCustomCaption = 'Custom...';
-  SNewColorPrefix = 'Custom';
-
 implementation
+
+uses
+  JvResources;
+
 {$R ..\resources\JvColorCombo.res}
 
 const

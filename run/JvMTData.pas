@@ -107,8 +107,8 @@ type
 
 implementation
 
-resourcestring
-  sMethodOnlyForMainThread = '%s method can only be used by the main VCL thread.';
+uses
+  JvResources;
 
 var
   DataThreadsMan: TMTManager = nil;

@@ -87,11 +87,7 @@ implementation
 uses
   IniFiles, Registry,
   MConnect,
-  JvJVCLUtils;
-
-resourcestring
-  SKeyLoginSection = 'Remote Login';
-  SKeyLastLoginUserName = 'Last User';
+  JvJVCLUtils, JvResources;
 
 type
   TJvServer = class(TCustomRemoteServer);

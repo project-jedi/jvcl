@@ -24,17 +24,15 @@ home page, located at http://cnxmanager.sourceforge.net
 
 Known Issues: none to date.
 -----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
 unit JvClipbrd;
 
 interface
 
-uses Clipbrd, Messages, Classes, Contnrs;
-
-// the string displayed when an exception is risen because no
-// OnRenderFormat handler was given. Put in resources to allow to
-// be translated
-resourcestring
-  SNoRenderFormatEventGiven = 'No OnRenderFormat was given.';
+uses
+  Clipbrd, Messages, Classes, Contnrs;
 
 type
   // the type of the event fired when a format has been added with delayed
@@ -223,7 +221,9 @@ function JvClipboard: TJvClipboard;
 
 implementation
 
-uses Windows, SysUtils, Consts;
+uses
+  Windows, SysUtils, Consts,
+  JvResources;
 
 { TJvClipboard }
 

@@ -230,13 +230,7 @@ implementation
 uses
   Forms, Controls, Dialogs, Consts, DBConsts, Math,
   BDEConst, DBCommon,
-  JvConsts, JvJVCLUtils, JvJCLUtils, JvTypes;
-
-resourcestring
-  STableNotInExclusiveMode = 'Table must be opened in exclusive mode to add passwords';
-  STableNotOpen = 'Table must be opened to pack';
-  STableNotOpenExclusively = 'Table must be opened exclusively to pack';
-  SNoParadoxDBaseTable = 'Table must be either of Paradox or dBASE type to pack';
+  JvConsts, JvJVCLUtils, JvJCLUtils, JvTypes, JvResources;
 
 { Utility routines }
 

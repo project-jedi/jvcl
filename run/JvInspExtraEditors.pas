@@ -146,7 +146,7 @@ implementation
 
 uses
   StdCtrls, TypInfo,
-  JclRTTI;
+  JclRTTI, JvResources;
 
 type
   TOpenInspector = class(TJvCustomInspector);

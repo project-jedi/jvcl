@@ -167,12 +167,8 @@ type
 
 implementation
 
-resourcestring
-  RC_NoJoystickDriver = 'The joystick driver is not present.';
-  RC_CannotCaptureJoystick = 'Can''t capture the joystick';
-  RC_JoystickUnplugged = 'The specified joystick is not connected to the system.';
-  RC_JoystickErrorParam = 'The specified joystick device identifier is invalid.';
-  RC_JoystickError = 'Unable to initialize joystick driver';
+uses
+  JvResources;
 
 constructor TJvJoystick.Create(AOwner: TComponent);
 begin

@@ -220,15 +220,7 @@ implementation
 uses
   Math,
   JclSysUtils,
-  JvJCLUtils, JvTypes;
-
-resourcestring
-  RsProcessIsRunning = 'Can''t perform this operation when process is running';
-  RsProcessNotRunning = 'Process is not running';
-  RsIdle = 'Idle';
-  RsNormal = 'Normal';
-  RsHigh = 'High';
-  RsRealTime = 'RealTime';
+  JvJCLUtils, JvTypes, JvResources;
 
 const
   CM_READ = WM_USER + 1;
@@ -441,13 +433,17 @@ begin
 end;
 
 class function TJvProcessEntry.PriorityText(Priority: TJvProcessPriority): string;
-const
-  {$TYPEDADDRESS OFF}
-  PriorityTexts: array [TJvProcessPriority] of PResStringRec =
-    (@RsIdle, @RsNormal, @RsHigh, @RsRealTime);
-  {$TYPEDADDRESS ON}
 begin
-  Result := LoadResString(PriorityTexts[Priority]);
+  case Priority of
+    ppIdle:
+      Result := RsIdle;
+    ppNormal:
+      Result := RsNormal;
+    ppHigh:
+      Result := RsHigh;
+    ppRealTime:
+      Result := RsRealTime;
+  end;
 end;
 
 procedure TJvProcessEntry.SetPriority(const Value: TJvProcessPriority);

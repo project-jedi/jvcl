@@ -126,16 +126,10 @@ type
     property OnProgress: TJvReplaceProgressEvent read FOnProgress write FOnProgress;
   end;
 
-resourcestring
-  SNotFound = 'Search string ''%s'' not found';
-  SReplaceCap = 'Replace';
-  SFindCap = 'Find';
-  SNoEditAssigned = 'No edit control assigned!';
-
 implementation
 
 uses
-  JvTypes;
+  JvTypes, JvResources;
 
 type
   TFoundText = record

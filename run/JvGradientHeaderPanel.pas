@@ -155,8 +155,8 @@ type
 
 implementation
 
-resourcestring
-  RC_YourTextHere = 'Put your text here ...';
+uses
+  JvResources;
 
 constructor TJvGradientHeaderPanel.Create(AOwner: TComponent);
 begin

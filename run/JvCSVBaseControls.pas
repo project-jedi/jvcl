@@ -159,24 +159,9 @@ type
 implementation
 
 uses
-  JvThemes;
+  JvThemes, JvResources;
 
 {$R ..\Resources\JvCSVBase}
-
-resourcestring
-  sReplaceExistingDatabase = 'Replace existing database?';
-  sNoFieldsDefined = 'no fields defined';
-  sCVSDatabase = 'CSV DataBase';
-  sFindText = 'Find Text:';
-  sFirst = 'First';
-  sPrevious = 'Previous';
-  sFind = 'Find';
-  sNext = 'Next';
-  sLast = 'Last';
-  sAdd = 'Add';
-  sDelete = 'Delete';
-  sPost = 'Post';
-  sRefresh = 'Refresh';
 
 { TJvCSVBase }
 

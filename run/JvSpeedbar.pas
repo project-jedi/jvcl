@@ -506,10 +506,7 @@ implementation
 
 uses
   Consts, Math,
-  JvJVCLUtils, JvJCLUtils, JvConsts, JvSpeedbarSetupForm;
-
-resourcestring
-  SAutoSpeedbarMode = 'Cannot set this property value while Position is bpAuto';
+  JvJVCLUtils, JvJCLUtils, JvConsts, JvSpeedbarSetupForm, JvResources;
 
 const
   DefaultButtonSize: TPoint = (X: DefButtonWidth; Y: DefButtonHeight);

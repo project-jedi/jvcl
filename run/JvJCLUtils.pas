@@ -970,11 +970,6 @@ uses
   JclSysInfo, JclStrings,
   JvTypes;
 
-// (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
-resourcestring
-  SPropertyNotExists    = 'Property "%s" does not exist';
-  SInvalidPropertyType  = 'Property "%s" has invalid type';
-
 const
   Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
     ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
@@ -983,6 +978,10 @@ const
   RC_ShellName = 'Shell_TrayWnd';
   RC_DefaultIcon = 'DefaultIcon';
 
+resourcestring
+  // (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
+  SPropertyNotExists    = 'Property "%s" does not exist';
+  SInvalidPropertyType  = 'Property "%s" has invalid type';
 
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
 var

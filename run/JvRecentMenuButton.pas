@@ -63,10 +63,8 @@ type
 implementation
 
 uses
-  ShlObj, ActiveX, Math;
-
-resourcestring
-  RC_EmptyItem = '<Empty>';
+  ShlObj, ActiveX, Math,
+  JvResources;
 
 const
   cMaxItems = 15;

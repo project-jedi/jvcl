@@ -236,13 +236,8 @@ type
 
 implementation
 
-resourcestring
-  sNoThreadManager = 'No ThreadManager specified';
-  sOperatorNotAvailable = 'Operation not available while thread is active';
-  sCannotChangePropertySection = 'Can not change property of active section';
-  sCannotChangePropertyBuffer = 'Can''t change property of active buffer';
-
-{ TJvMtManager }
+uses
+  JvResources;
 
 constructor TJvMtManager.Create(aOwner: TComponent);
 begin

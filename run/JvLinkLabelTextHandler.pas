@@ -176,9 +176,8 @@ type
 
 implementation
 
-resourcestring
-  sNoMoreWords = 'No more words to return';
-  sUnsupported = 'Unsupported TParentTextElement descendant encountered';
+uses
+  JvResources;
 
 //=== TWordEnumerator ========================================================
 

@@ -73,13 +73,8 @@ type
 
 implementation
 
-resourcestring
-  RC_PcxUnknownFormat = 'PCX: Unknown format';
-  RC_PcxPaletteProblem = 'PCX: Unable to retrieve palette';
-  RC_PcxInvalid = 'PCX: Invalid PCX file';
-
-  RC_PcxExtension = 'pcx';
-  RC_PcxFilterName = 'PCX Image';
+uses
+  JvResources;
 
 constructor TJvPcx.Create;
 begin
