@@ -361,7 +361,16 @@ begin
    // *****
    // C++BUILDER .dcp creation
    // *****
-    // create Delphi packages for BCB .dcp compilation
+    i := CaptureExecute(
+                'cmd',
+                '/C makejcldcp4bcb.bat ' +
+                IntToStr(FTarget.MajorVersion)+ ' '+
+                '"' + FTarget.RootDir + '" '+
+                '"' + FTarget.JCLDir + '"',
+                JVCLPackageDir,
+                CaptureLine);
+    Result := True;     // Note: CMD.EXE always returns 1...
+{    // create Delphi packages for BCB .dcp compilation
     Files := TStringList.Create; // files that were created
     try
       //if IsJcl then
@@ -399,14 +408,14 @@ begin
           DeleteDcuFiles(OutDir, StartDir + '\xyz');
           DeleteDcuFiles(OutDir + '\obj', StartDir + '\xyz');
         end;}
-      finally
+{      finally
         SetEnvironmentVariable('DCCOPT', nil);
         PrepareBpgData.Cleaning := Result;
         PrepareBpgData.Free;
       end;
     finally
       Files.Free;
-    end;
+    end;}
   end;
 
 end;
