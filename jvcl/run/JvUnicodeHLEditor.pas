@@ -26,9 +26,9 @@ description : JvEditor with built-in highlighting for:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvUnicodeHLEditor;
+
+{$I jvcl.inc}
 
 interface
 

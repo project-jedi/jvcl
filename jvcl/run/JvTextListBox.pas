@@ -30,9 +30,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvTextListBox;
+
+{$I jvcl.inc}
 
 interface
 
@@ -137,7 +137,6 @@ begin
     FMaxWidth := Max(FMaxWidth, GetItemWidth(I));
   SetHorizontalExtent;
 end;
-
 
 procedure TJvTextListBox.WndProc(var Msg: TMessage);
 begin

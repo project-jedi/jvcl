@@ -19,35 +19,36 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Thumbimage, ThumbNail components
+  Thumbimage is a TImage descentant wich passes the control of the mouse events
+  to the ThumbNail and have the ability to change an images look by changing
+  the rgb values with the changergb,changergbcurve procedures.
+  You can have precise control over the images look.
+  The changergb procedure just adds the values you pass to its rgb variables to
+  the actual values of the image.
+  The Changergbcurves procedure just replaces the value of the rgb values
+  accordingly with the values that passed in the the arrays.
+  e.g.
+  the r array in the position 15 has a value of 35 this meens that wherever in
+  the Picture there is a pixels which has a red value equall to 15 it will be ]
+  replaced with the value 35.
+
+  ThumbNail is what the name says a component to simply shrink an image
+  proportionally to fit in a portion of the screen with some extra mouse handling
+  to Create a Button like effect. Just give it a FileName and it will do the work
+  for you.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvThumbnails;
+
+{$I jvcl.inc}
 
 interface
 
-{Thumbimage, ThumbNail components
- Thumbimage is a TImage descentant wich passes the control of the mouse events
- to the ThumbNail and have the ability to change an images look by changing
- the rgb values with the changergb,changergbcurve procedures.
- You can have precise control over the images look.
- The changergb procedure just adds the values you pass to its rgb variables to
- the actual values of the image.
- The Changergbcurves procedure just replaces the value of the rgb values
- accordingly with the values that passed in the the arrays.
- e.g.
- the r array in the position 15 has a value of 35 this meens that wherever in
- the Picture there is a pixels which has a red value equall to 15 it will be ]
- replaced with the value 35.
-
- ThumbNail is what the name says a component to simply shrink an image
- proportionaly to fit in a portion of the screen with some extra mouse handling
- to Create a Button like effect.Just give it a FileName and it will do the work
- for you.
-}
 uses
   Classes, Controls, ExtCtrls, SysUtils, Messages, Graphics, Windows, Forms,
   JvThumbImage, JvBaseThumbnail, Dialogs;

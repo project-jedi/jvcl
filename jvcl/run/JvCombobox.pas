@@ -32,13 +32,12 @@ interface
 
 uses
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, Menus,
-  JvDataProvider, JvMaxPixel, JvExStdCtrls,
   {$IFDEF USEJVCL}
   JvCheckListBox,
   {$ELSE}
   CheckLst,
   {$ENDIF USEJVCL}
-  JvToolEdit;
+  JvDataProvider, JvMaxPixel, JvExStdCtrls, JvToolEdit;
 
 type
   TJvCustomComboBox = class;
@@ -266,8 +265,11 @@ type
     property OnParentColorChange;
   end;
 
-
   TJvCHBQuoteStyle = (qsNone, qsSingle, qsDouble);
+
+  {$IFNDEF USEJVCL}
+  TJvCheckListBox = TCheckListBox;
+  {$ENDIF USEJVCL}
 
   TJvCheckedComboBox = class(TJvCustomComboEdit)
   private
@@ -276,11 +278,7 @@ type
     FMouseOverButton: Boolean;
     FItems: TStrings;
     FPrivForm: TForm;
-    {$IFDEF USEJVCL}
     FListBox: TJvCheckListBox;
-    {$ELSE}
-    FListBox: TCheckListBox;
-    {$ENDIF USEJVCL}
     FPopupMenu: TPopupMenu;
     FSelectAll: TMenuItem;
     FDeselectAll: TMenuItem;
@@ -293,7 +291,7 @@ type
     FDelimiter: Char;
     procedure SetItems(AItems: TStrings);
     procedure ToggleOnOff(Sender: TObject);
-    procedure KeyListBox(Sender: TObject; var Key: word; Shift: TShiftState);
+    procedure KeyListBox(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ShowCheckList;
     procedure CloseCheckList(Sender: TObject);
     procedure ItemsChange(Sender: TObject);
@@ -459,7 +457,8 @@ procedure TJvComboBoxStrings.SetUpdateState(Updating: Boolean);
 begin
   FUpdating := Updating;
   SendMessage(ComboBox.Handle, WM_SETREDRAW, Ord(not Updating), 0);
-  if not Updating then ComboBox.Refresh;
+  if not Updating then
+    ComboBox.Refresh;
 end;
 
 procedure TJvComboBoxStrings.SetWndDestroying(Destroying: Boolean);
@@ -1410,13 +1409,11 @@ begin
   begin
     case Msg.Msg of
       WM_KEYDOWN:
+        if Msg.WParam in [VK_DOWN, VK_UP, VK_RIGHT, VK_LEFT, VK_F4] then
         begin
-          if Msg.WParam in [VK_DOWN, VK_UP, VK_RIGHT, VK_LEFT, VK_F4] then
-          begin
-            // see keelab aktiivse itemi vahetamise nooleklahvidega DDL kui CB on aktiivne
-            Msg.Result := 0;
-            Exit;
-          end;
+          // see keelab aktiivse itemi vahetamise nooleklahvidega DDL kui CB on aktiivne
+          Msg.Result := 0;
+          Exit;
         end;
       WM_CHAR:
         begin
@@ -1425,40 +1422,32 @@ begin
           Exit;
         end;
       WM_SYSKEYDOWN:
+        if (Msg.WParam = VK_DOWN) or (Msg.WParam = VK_UP) then
         begin
-          if (Msg.WParam = VK_DOWN) or (Msg.WParam = VK_UP) then
-          begin
-            // see keelab Ald+Down listi avamise fookuses DDL CB-l
-            Msg.Result := 0;
-            Exit;
-          end;
+          // see keelab Ald+Down listi avamise fookuses DDL CB-l
+          Msg.Result := 0;
+          Exit;
         end;
       WM_COMMAND:
+        // DD editis nooleklahviga vahetamise valtimiseks kui fookuses
+        if HiWord(Msg.WParam) = CBN_SELCHANGE then
         begin
-          // DD editis nooleklahviga vahetamise valtimiseks kui fookuses
-          if HiWord(Msg.WParam) = CBN_SELCHANGE then
-          begin
-            Msg.Result := 0;
-            Exit;
-          end;
+          Msg.Result := 0;
+          Exit;
         end;
       WM_USER + $B900:
+        if Msg.WParam = VK_F4 then
         begin
-          if Msg.WParam = VK_F4 then
-          begin
-            // DD F4 ei avaks
-            Msg.Result := 1;
-            Exit;
-          end;
+          // DD F4 ei avaks
+          Msg.Result := 1;
+          Exit;
         end;
       WM_USER + $B904:
+        if (Msg.WParam = VK_DOWN) or (Msg.WParam = VK_UP) then
         begin
-          if (Msg.WParam = VK_DOWN) or (Msg.WParam = VK_UP) then
-          begin
-            // DD Alt+ down ei avaks
-            Msg.Result := 1;
-            Exit;
-          end;
+          // DD Alt+ down ei avaks
+          Msg.Result := 1;
+          Exit;
         end;
     end;
   end;
@@ -1505,6 +1494,7 @@ begin
     inherited;
 end;
 
+//=== { TJvPrivForm } ========================================================
 
 type
   TJvPrivForm = class(TForm)
@@ -1514,13 +1504,25 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
+constructor TJvPrivForm.Create(AOwner: TComponent);
+begin
+  inherited CreateNew(AOwner);
+  Color := clWindow;
+end;
+
+procedure TJvPrivForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.Style := WS_POPUP or WS_BORDER;
+  Params.ExStyle := WS_EX_TOOLWINDOW;
+end;
+
+//=== { TJvCheckedComboBox } =================================================
+
 const
   MAXSELLENGTH = 256;
   MINDROPLINES = 6;
   MAXDROPLINES = 10;
-
-
-{ TJvCheckedComboBox }
 
 constructor TJvCheckedComboBox.Create(AOwner: TComponent);
 begin
@@ -1554,11 +1556,7 @@ begin
   FPrivForm := TJvPrivForm.Create(Self);
 
   // Create CheckListBox
-  {$IFDEF USEJVCL}
   FListBox := TJvCheckListBox.Create(FPrivForm);
-  {$ELSE}
-  FListBox := TCheckListBox.Create(FPrivForm);
-  {$ENDIF USEJVCL}
   FListBox.Parent := FPrivForm;
   FListBox.BorderStyle := bsNone;
   FListBox.Ctl3D := False;
@@ -1589,7 +1587,6 @@ begin
   FPrivForm.Free;
   inherited Destroy;
 end;
-//====================== Show - Close List Box
 
 procedure TJvCheckedComboBox.ShowCheckList;
 var  
@@ -1623,8 +1620,8 @@ begin
     BorderStyle := bsNone;
     OnDeactivate := CloseCheckList;
   end;
-  if FPrivForm.Height + ScreenPoint.y > Screen.Height - 20 then
-    FPrivForm.Top := ScreenPoint.y - FprivForm.Height - Self.Height;
+  if FPrivForm.Height + ScreenPoint.Y > Screen.Height - 20 then
+    FPrivForm.Top := ScreenPoint.Y - FPrivForm.Height - Self.Height;
   FPrivForm.Show;
 end;
 
@@ -1641,9 +1638,9 @@ begin
   FPrivForm.Close;
 end;
 
-//===========================================
 // exanines if string (part) exist in string (source)
 // where source is in format part1[,part2]
+
 function PartExist(const Part, Source: string; Delimiter: Char): Boolean;
 var
   m: Integer;
@@ -1655,9 +1652,9 @@ begin
   begin
     m := Pos(Delimiter, Temp1);
     if m > 0 then
-      temp2 := Copy(Temp1, 1, m - 1)
+      Temp2 := Copy(Temp1, 1, m - 1)
     else
-      temp2 := Temp1;
+      Temp2 := Temp1;
     Result := Part = Temp2;
     if Result or (m = 0) then
       Break;
@@ -1665,27 +1662,26 @@ begin
   end;
 end;
 
-{
-  removes a string (part) from another string (source)
-  when source is in format part1[,part2]
-}
+// removes a string (part) from another string (source)
+// when source is in format part1[,part2]
+
 function RemovePart(const Part, Source: string; Delimiter: Char): string;
 var
-  lp, p: Integer;
+  Len, P: Integer;
   S1, S2: string;
 begin
   Result := Source;
-  s1 := Delimiter + Part + Delimiter;
-  s2 := Delimiter + Source + Delimiter;
-  p := Pos(S1, S2);
-  if p > 0 then
+  S1 := Delimiter + Part + Delimiter;
+  S2 := Delimiter + Source + Delimiter;
+  P := Pos(S1, S2);
+  if P > 0 then
   begin
-    lp := Length(Part);
-    if p = 1 then
-      Result := Copy(Source, p + lp + 1, MAXSELLENGTH)
+    Len := Length(Part);
+    if P = 1 then
+      Result := Copy(Source, P + Len + 1, MAXSELLENGTH)
     else
     begin
-      Result := Copy(S2, 2, p - 1) + Copy(S2, p + lp + 2, MAXSELLENGTH);
+      Result := Copy(S2, 2, P - 1) + Copy(S2, P + Len + 2, MAXSELLENGTH);
       SetLength(Result, Length(Result) - 1);
     end;
   end;
@@ -1704,7 +1700,8 @@ begin
     Str := Sub;
     Result := True;
   end
-  else if not PartExist(Sub, Str, Delimiter) then
+  else
+  if not PartExist(Sub, Str, Delimiter) then
   begin
     Str := Str + Delimiter + Sub;
     Result := True;
@@ -1736,16 +1733,17 @@ begin
   S := Text;
   if FListBox.Checked[FListBox.ItemIndex] then
   begin
-    if Add(FListBox.Items[FListBox.ItemIndex], s, Delimiter) then
+    if Add(FListBox.Items[FListBox.ItemIndex], S, Delimiter) then
       FCheckedCount := FCheckedCount + 1
   end
-  else if Remove(FListBox.Items[FListBox.ItemIndex], s, Delimiter) then
+  else
+  if Remove(FListBox.Items[FListBox.ItemIndex], S, Delimiter) then
     FCheckedCount := FCheckedCount - 1;
   Text := S;
   Change;
 end;
 
-procedure TJvCheckedComboBox.KeyListBox(Sender: TObject; var Key: word;
+procedure TJvCheckedComboBox.KeyListBox(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
@@ -1781,7 +1779,6 @@ begin
     Result := GetFormatedText(FQuoteStyle, Text, Delimiter);
 end;
 
-//========================== CheckListBox
 procedure TJvCheckedComboBox.SetDropDownLines(Value: Integer);
 begin
   if FDropDownLines <> Value then
@@ -1857,7 +1854,8 @@ begin
         ChangeData := True;
       end;
     end
-    else if FListBox.Checked[Index] and not Checked then
+    else
+    if FListBox.Checked[Index] and not Checked then
       if Remove(FListBox.Items[Index], S, Delimiter) then
       begin
         FCheckedCount := FCheckedCount - 1;
@@ -1965,8 +1963,7 @@ begin
   Result := FListBox.ItemEnabled[Index];
 end;
 
-procedure TJvCheckedComboBox.SetItemEnabled(Index: Integer;
-  const Value: Boolean);
+procedure TJvCheckedComboBox.SetItemEnabled(Index: Integer; const Value: Boolean);
 begin
   FListBox.ItemEnabled[Index] := Value;
 end;
@@ -2025,21 +2022,6 @@ end;
 function TJvCheckedComboBox.IsStoredCapSelAll: Boolean;
 begin
   Result := FCapDeselAll <> sCapDeselAll;
-end;
-
-{ TJvPrivForm }
-
-constructor TJvPrivForm.Create(AOwner: TComponent);
-begin
-  inherited CreateNew(AOwner);
-  Color := clWindow;
-end;
-
-procedure TJvPrivForm.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  Params.Style := WS_POPUP or WS_BORDER;
-  Params.ExStyle := WS_EX_TOOLWINDOW;
 end;
 
 end.

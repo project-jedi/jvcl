@@ -241,7 +241,7 @@ type
     procedure DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
     {$IFDEF VCL}
     property Canvas: TCanvas read GetCanvas;
-    {$ENDIF}
+    {$ENDIF VCL}
   published
     property Color;
     property ParentColor;

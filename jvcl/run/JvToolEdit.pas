@@ -29,10 +29,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvToolEdit;
+
 {$I jvcl.inc}
 {$I crossplatform.inc}
-
-unit JvToolEdit;
 
 interface
 
@@ -3234,17 +3234,15 @@ begin
       LRight := -1;
   end
   else
-  {$ENDIF}
-  begin
-    if (BorderStyle = bsSingle) and
-       {$IFDEF VCL}
-       Ctl3D then
-       {$ENDIF VCL}
-       {$IFDEF VisualCLX}
-       not Flat then
-       {$ENDIF VisualCLX}
-        LTop := 2;
-  end;
+  {$ENDIF JVCLThemesEnabled}
+  if (BorderStyle = bsSingle) and
+    {$IFDEF VCL}
+    Ctl3D then
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    not Flat then
+    {$ENDIF VisualCLX}
+    LTop := 2;
 
   GetInternalMargins(LLeft, LRight);
 
@@ -3468,25 +3466,25 @@ end;
 
 function TJvCustomDateEdit.AcceptPopup(var Value: Variant): Boolean;
 var
-  d: TDateTime;
+  D: TDateTime;
 begin
   Result := True;
   if Assigned(FOnAcceptDate) then
   begin
     if VarIsNull(Value) or VarIsEmpty(Value) then
-      d := NullDate
+      D := NullDate
     else
     try
-      d := VarToDateTime(Value);
+      D := VarToDateTime(Value);
     except
       if DefaultToday then
-        d := SysUtils.Date
+        D := SysUtils.Date
       else
-        d := NullDate;
+        D := NullDate;
     end;
-    FOnAcceptDate(Self, d, Result);
+    FOnAcceptDate(Self, D, Result);
     if Result then
-      Value := VarFromDateTime(d);
+      Value := VarFromDateTime(D);
   end;
 end;
 
@@ -3712,13 +3710,13 @@ end;
 
 procedure TJvCustomDateEdit.PopupDropDown(DisableEdit: Boolean);
 var
-  d: TDateTime;
+  D: TDateTime;
   Action: Boolean;
 begin
   if CalendarStyle = csDialog then
   begin
-    d := Self.Date;
-    Action := SelectDate(Self, d, DialogTitle, StartOfWeek, Weekends, // Polaris (Self added)
+    D := Self.Date;
+    Action := SelectDate(Self, D, DialogTitle, StartOfWeek, Weekends, // Polaris (Self added)
       WeekendColor, CalendarHints,
       MinDate, MaxDate); // Polaris
     if CanFocus then
@@ -3726,10 +3724,10 @@ begin
     if Action then
     begin
       if Assigned(FOnAcceptDate) then
-        FOnAcceptDate(Self, d, Action);
+        FOnAcceptDate(Self, D, Action);
       if Action then
       begin
-        Self.Date := d;
+        Self.Date := D;
         if FFocused then
           inherited SelectAll;
       end;
@@ -3787,7 +3785,7 @@ end;
 
 procedure TJvCustomDateEdit.SetDate(Value: TDateTime);
 var
-  d: TDateTime;
+  D: TDateTime;
 begin
   if not ValidDate(Value) or (Value = NullDate) then
   begin
@@ -3796,28 +3794,28 @@ begin
     else
       Value := NullDate;
   end;
-  d := Self.Date;
+  D := Self.Date;
   TestDateBetween(Value); // Polaris
   if Value = NullDate then
     Text := ''
   else
     Text := FormatDateTime(FDateFormat, Value);
-  Modified := d <> Self.Date;
+  Modified := D <> Self.Date;
 end;
 
 procedure TJvCustomDateEdit.SetDateAutoBetween(Value: Boolean);
 var
-  d: TDateTime;
+  D: TDateTime;
 begin
   if Value <> FDateAutoBetween then
   begin
     FDateAutoBetween := Value;
     if Value then
     begin
-      d := Date;
-      TestDateBetween(d);
-      if d <> Date then
-        Date := d;
+      D := Date;
+      TestDateBetween(D);
+      if D <> Date then
+        Date := D;
     end;
     Invalidate;
   end;

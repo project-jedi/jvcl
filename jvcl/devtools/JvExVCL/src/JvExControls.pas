@@ -627,8 +627,8 @@ procedure Control_MouseEnter(Instance, Control: TControl; var FMouseOver: Boolea
 begin
   // (HEG) VCL: Control is nil iff Instance is the control that the mouse has left.
   // Otherwise this is just a notification that the mouse entered
-  // one of it's child controls
-  if {$IFDEF VCL}(Control = nil) and{$ENDIF} not FMouseOver and not (csDesigning in Instance.ComponentState) then
+  // one of its child controls
+  if {$IFDEF VCL} (Control = nil) and {$ENDIF} not FMouseOver and not (csDesigning in Instance.ComponentState) then
   begin
     FMouseOver := True;
     FSavedHintColor := Application.HintColor;
@@ -654,8 +654,8 @@ procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolea
 begin
   // (HEG) Control is nil iff Instance is the control that the mouse has left.
   // Otherwise this is just a notification that the mouse left
-  // one of it's child controls
-  if {$IFDEF VCL}(Control = nil) and{$ENDIF} FMouseOver and not (csDesigning in Instance.ComponentState) then
+  // one of its child controls
+  if {$IFDEF VCL} (Control = nil) and {$ENDIF} FMouseOver and not (csDesigning in Instance.ComponentState) then
   begin
     FMouseOver := False;
     Application.HintColor := FSavedHintColor;
@@ -703,7 +703,7 @@ begin
   R := Rect(0, 0, 0, 0);
   QRegion_boundingRect(EventRegion, @R);
   if IsRectEmpty(R) then
-    exit;
+    Exit;
 
   Instance.GetInterface(IJvWinControlEvents, Intf);
   IsDoubleBuffered := Intf.GetDoubleBuffered;

@@ -30,13 +30,14 @@ History:
   during runtime. S Steed.
 05/02/2002
   Initial create
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvWizardRouteMapNodes;
+
+{$I jvcl.inc}
 
 interface
 

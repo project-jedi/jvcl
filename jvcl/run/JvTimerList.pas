@@ -43,10 +43,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvTimerList;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvTimerList;
 
 interface
 

@@ -45,7 +45,7 @@ uses
   JvInterpreter_DbGrids,
   {$IFDEF JVCL_UseQuickReport}
   JvInterpreter_Quickrpt,
-  {$ENDIF}
+  {$ENDIF JVCL_UseQuickReport}
   {$ENDIF DelphiPersonalEdition}
   JvInterpreter_JvEditor, JvInterpreterFm,
   {$ENDIF VCL}

@@ -97,9 +97,12 @@ type
     procedure SetItems(const Value: TJvPageIndexNodes);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function CreateNode: TTreeNode;{$IFDEF VCL}override;{$ENDIF}{$IFDEF VisualCLX}dynamic;{$ENDIF}
-    function CreateNodes: TTreeNodes;{$IFDEF VCL}{$IFDEF COMPILER6_UP}override;{$ENDIF}{$ENDIF}
-    function CanChange(Node: TTreeNode): Boolean;{$IFDEF VCL}override;{$ENDIF}{$IFDEF VisualCLX}dynamic;{$ENDIF}
+    function CreateNode: TTreeNode;
+      {$IFDEF VCL} override; {$ENDIF}{$IFDEF VisualCLX} dynamic; {$ENDIF}
+    function CreateNodes: TTreeNodes;
+      {$IFDEF VCL}{$IFDEF COMPILER6_UP} override; {$ENDIF}{$ENDIF}
+    function CanChange(Node: TTreeNode): Boolean;
+      {$IFDEF VCL} override; {$ENDIF}{$IFDEF VisualCLX} dynamic; {$ENDIF}
     procedure Change(Node: TTreeNode); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -187,7 +190,7 @@ type
     procedure DoGetImageIndex(Sender: TObject; Node: TTreeNode);
     procedure DoGetSelectedIndex(Sender: TObject; Node: TTreeNode);
     procedure GetSelectedIndex(Node: TTreeNode); override;
-    procedure GetImageIndex(Node: TTreeNode); {$IFDEF VCL}override;{$ENDIF}
+    procedure GetImageIndex(Node: TTreeNode); {$IFDEF VCL} override; {$ENDIF}
     {$ENDIF VCL}
     function CanChange(Node: TTreeNode): Boolean; override;
     procedure Change(Node: TTreeNode); override;
@@ -836,10 +839,7 @@ begin
       N.ImageIndex := FNodeImages.SelectedIndex;
       N.SelectedIndex := FNodeImages.SelectedIndex;
       R := N.DisplayRect{$IFDEF VCL}(False){$ENDIF};
-      {$IFDEF VisualCLX}
-      QWindows.
-      {$ENDIF VisualCLX}
-      InvalidateRect(Handle, @R, True);
+      {$IFDEF VisualCLX} QWindows.{$ENDIF}InvalidateRect(Handle, @R, True);
       SetPreviousNode(N);
     end;
   end;
@@ -896,10 +896,7 @@ begin
     FLastSelected.ImageIndex := FNodeImages.ImageIndex;
     FLastSelected.SelectedIndex := FNodeImages.ImageIndex;
     R := FLastSelected.DisplayRect{$IFDEF VCL}(False){$ENDIF};
-    {$IFDEF VisualCLX}
-    QWindows.
-    {$ENDIF VisualCLX}
-    InvalidateRect(Handle, @R, True);
+    {$IFDEF VisualCLX} QWindows.{$ENDIF}InvalidateRect(Handle, @R, True);
   end;
 end;
 

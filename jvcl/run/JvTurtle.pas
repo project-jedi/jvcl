@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvTurtle;
+
+{$I jvcl.inc}
 
 interface
 
@@ -38,7 +38,6 @@ uses
   QGraphics, QControls, Types, QWindows,
   {$ENDIF VisualCLX}
   Math;
-
 
 type
   TRequestBackgroundEvent = procedure(Sender: TObject; Background: string) of object;

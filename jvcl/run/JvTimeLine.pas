@@ -19,6 +19,9 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A timeline component with support for inserting items at selectable dates.
+
 Known Issues:
   Bugs / Limitations:
     * DateAtPos is approximate
@@ -27,11 +30,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvTimeLine;
 
-{A timeline component with support for inserting items at selectable dates. }
+{$I jvcl.inc}
 
 interface
 
@@ -1010,7 +1011,7 @@ begin
   {$IFDEF VCL}
   GetKeyboardState(KeyState);
   ShiftState := KeyboardStateToShiftState(KeyState);
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   ShiftState := []; // TODO: detect shift state on CLX
   {$ENDIF VisualCLX}
@@ -1718,7 +1719,7 @@ begin
       LRect.Bottom := LRect.Top + TextHeight(sDay);
       {$IFDEF VCL}
       DrawText(ACanvas.Handle, PChar(sDay), -1, LRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-      {$ENDIF}
+      {$ENDIF VCL}
       {$IFDEF VisualCLX}
       DrawText(ACanvas, sDay, Length(sDay), LRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
       {$ENDIF VisualCLX}
@@ -1763,7 +1764,7 @@ begin
     LRect.Bottom := LRect.Top + TextHeight(AName);
     {$IFDEF VCL}
     DrawText(ACanvas.Handle, PChar(AName), -1, LRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-    {$ENDIF}
+    {$ENDIF VCL}
     {$IFDEF VisualCLX}
     DrawText(ACanvas, AName, -1, LRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
     {$ENDIF VisualCLX}

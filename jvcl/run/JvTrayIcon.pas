@@ -23,11 +23,6 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
------------------------------------------------------------------------------}
-// $Id$
-
-{
 History:
   2004-03-23
      Added code to hide balloon correctly under W2k, as suggested by VladS
@@ -38,20 +33,23 @@ History:
       Clean the trayicon when session ends.
       Restore the trayicon when session restart.
     Remove the old unsuccessful DoCheckCrash method.
-}
 
-{$I jvcl.inc}
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
 
 unit JvTrayIcon;
+
+{$I jvcl.inc}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   Menus, ShellAPI, ImgList,
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   DateUtils,
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
   JvConsts, JvTypes, JvComponent, JvFinalize;
 
 type
@@ -393,6 +391,45 @@ end;
 
 //=== { TJvTrayIcon } ========================================================
 
+constructor TJvTrayIcon.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FIcon := TIcon.Create;
+  FIcon.OnChange := IconChanged;
+  FCurrentIcon := TIcon.Create;
+  FSnap := False;
+  FHandle := AllocateHWndEx(WndProc);
+
+  FState := [];
+  FVisibility := [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide];
+  FAnimated := False;
+  FDelay := 100;
+  FIconIndex := 0;
+  FBalloonCount := 0;
+  FActive := False;
+  FTask := True;
+
+  { (rb) todo: make global }
+  FTaskbarRestartMsg := RegisterWindowMessage('TaskbarCreated');
+end;
+
+destructor TJvTrayIcon.Destroy;
+begin
+  StopTimer(DblClickTimer); { Vlad S}
+  StopTimer(CloseBalloonTimer);
+
+  SetActive(False);
+
+  if not (csDestroying in Application.ComponentState) then
+    SetTask(False);
+
+  FIcon.Free;
+  FCurrentIcon.Free;
+  DeallocateHWndEx(FHandle);
+
+  inherited Destroy;
+end;
+
 function TJvTrayIcon.AcceptBalloons: Boolean;
 begin
   // Balloons are only accepted with shell32.dll 5.0+
@@ -403,9 +440,7 @@ function TJvTrayIcon.ApplicationHook(var Msg: TMessage): Boolean;
 begin
   if (Msg.Msg = WM_SYSCOMMAND) and (Msg.WParam = SC_MINIMIZE) and
     (tvAutoHide in Visibility) and Active then
-
     HideApplication;
-
   Result := False;
 end;
 
@@ -448,54 +483,13 @@ begin
     // was really shown (title and value are not both empty)
     // (rb) XP: if Value = '' then balloon is not shown
     if (ADelay < GetSystemMinimumBalloonDelay) and ((Title <> '') or (Value <> '')) then
-    begin
       // then we enable the ballon closer timer which will cancel
       // the balloon when the delay is elapsed
       SetTimer(FHandle, CloseBalloonTimer, ADelay, nil);
-    end;
 
     if Assigned(FOnBalloonShow) then
       FOnBalloonShow(Self);
   end;
-end;
-
-constructor TJvTrayIcon.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FIcon := TIcon.Create;
-  FIcon.OnChange := IconChanged;
-  FCurrentIcon := TIcon.Create;
-  FSnap := False;
-  FHandle := AllocateHWndEx(WndProc);
-
-  FState := [];
-  FVisibility := [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide];
-  FAnimated := False;
-  FDelay := 100;
-  FIconIndex := 0;
-  FBalloonCount := 0;
-  FActive := False;
-  FTask := True;
-
-  { (rb) todo: make global }
-  FTaskbarRestartMsg := RegisterWindowMessage('TaskbarCreated');
-end;
-
-destructor TJvTrayIcon.Destroy;
-begin
-  StopTimer(DblClickTimer); { Vlad S}
-  StopTimer(CloseBalloonTimer);
-
-  SetActive(False);
-
-  if not (csDestroying in Application.ComponentState) then
-    SetTask(False);
-
-  FIcon.Free;
-  FCurrentIcon.Free;
-  DeallocateHWndEx(FHandle);
-
-  inherited Destroy;
 end;
 
 procedure TJvTrayIcon.DoAnimation;
@@ -511,8 +505,8 @@ begin
   end;
 end;
 
-procedure TJvTrayIcon.DoClick(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvTrayIcon.DoClick(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
   if Assigned(FOnClick) then
     FOnClick(Self, Button, Shift, X, Y);
@@ -627,9 +621,9 @@ procedure TJvTrayIcon.DoMouseUp(Button: TMouseButton; Shift: TShiftState;
     Result :=
         Assigned(FOnClick) or
         ((Button = mbLeft) and (Assigned(FDropDownMenu) or
-          ([tvRestoreClick, tvMinimizeClick] * Visibility <> []))
-        );
+          ([tvRestoreClick, tvMinimizeClick] * Visibility <> [])));
   end;
+
 begin
   if tisClicked in FState then
   begin
@@ -645,7 +639,6 @@ begin
       if not (tisWaitingForDoubleClick in FState) then
       begin
         Include(FState, tisWaitingForDoubleClick);
-
         SetTimer(FHandle, DblClickTimer, GetDoubleClickTime, nil);
       end;
     end;
@@ -678,7 +671,6 @@ begin
   if tisAnimating in FState then
   begin
     Exclude(FState, tisAnimating);
-
     StopTimer(AnimationTimer);
   end;
 end;
@@ -725,7 +717,7 @@ begin
   // We call BalloonHint with title and info set to
   // empty strings which surprisingly will cancel any existing
   // balloon for the icon. This is clearly not documented by
-  // microsoft and may not work in later releases of Windows
+  // Microsoft and may not work in later releases of Windows
   // Under Windows XP, you only need to do this once. But under
   // Windows 2000, it seems one must do this one time more than
   // there were calls to BalloonHint with real messages
@@ -741,9 +733,7 @@ begin
   if tisTrayIconVisible in FState then
   begin
     Exclude(FState, tisTrayIconVisible);
-
     EndAnimation;
-
     NotifyIcon(0, NIM_DELETE);
   end;
 end;
@@ -753,9 +743,7 @@ begin
   // reentrance check; also no hooking while designing
   if (tisHooked in FState) or (csDesigning in ComponentState) then
     Exit;
-
   Include(FState, tisHooked);
-
   Application.HookMainWindow(ApplicationHook);
 end;
 
@@ -836,9 +824,7 @@ begin
         // application's button on the taskbar for a short time.
         // So we use the tisHiddenNotMinized flag as work-around, to indicate that
         // the application is minimized.
-
         ShowWindow(Application.Handle, SW_HIDE);
-
         Include(FState, tisAppHiddenButNotMinimized);
       end;
 
@@ -850,7 +836,7 @@ end;
 
 procedure TJvTrayIcon.Notification(AComponent: TComponent; Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if Operation = opRemove then
   begin
     if AComponent = DropDownMenu then
@@ -865,7 +851,6 @@ end;
 function TJvTrayIcon.NotifyIcon(uFlags: UINT; dwMessage: DWORD): Boolean;
 begin
   FIconData.uFlags := uFlags;
-
   Result := Shell_NotifyIcon(dwMessage, @FIconData);
 end;
 
@@ -880,20 +865,15 @@ begin
     if FActive then
     begin
       InitIconData;
-
       if (csDesigning in ComponentState) and not (tvVisibleDesign in Visibility) then
         Exit;
-
       Hook;
-
       ShowTrayIcon;
     end
     else
     begin
       EndAnimation;
-
       Unhook;
-
       HideTrayIcon;
     end;
   end;
@@ -1110,7 +1090,6 @@ begin
   if [tisAnimating, tisTrayIconVisible] * FState = [tisTrayIconVisible] then
   begin
     Include(FState, tisAnimating);
-
     SetTimer(FHandle, AnimationTimer, FDelay, nil)
   end;
 end;
@@ -1127,7 +1106,6 @@ begin
   if tisHooked in FState then
   begin
     Exclude(FState, tisHooked);
-
     Application.UnhookMainWindow(ApplicationHook);
   end;
 end;

@@ -14,11 +14,10 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buyp
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s):
-Michael Beck [mbeck att bigfoot dott com].
-Peter Thornqvist
-Oliver Giesen
-Gustavo Bianconi
+Contributor(s): Michael Beck [mbeck att bigfoot dott com].
+                Peter Thornqvist
+                Oliver Giesen
+                Gustavo Bianconi
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -27,9 +26,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvTypes;
+
+{$I jvcl.inc}
 
 interface
 
