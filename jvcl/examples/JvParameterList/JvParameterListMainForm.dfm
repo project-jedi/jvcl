@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 288
   Top = 215
   Width = 689
-  Height = 581
+  Height = 660
   Caption = 'JvDynControlEngine / JvParameterList Sample'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -1713,7 +1713,7 @@ object Form1: TForm1
     Left = 10
     Top = 285
     Width = 361
-    Height = 266
+    Height = 336
     Caption = 'Parameterlist Test'
     TabOrder = 3
     object JvGroupBox2: TJvGroupBox
@@ -1885,6 +1885,33 @@ object Form1: TForm1
         end
       end
     end
+    object GroupBox6: TGroupBox
+      Left = 5
+      Top = 260
+      Width = 176
+      Height = 65
+      Caption = 'GroupBox6'
+      TabOrder = 3
+      object StaticText5: TStaticText
+        Left = 5
+        Top = 15
+        Width = 156
+        Height = 21
+        AutoSize = False
+        Caption = 'Parameterlist with Crypted Values'
+        TabOrder = 0
+      end
+      object Button14: TButton
+        Left = 5
+        Top = 34
+        Width = 156
+        Height = 25
+        Caption = 'Test Cr&ypt'
+        Default = True
+        TabOrder = 1
+        OnClick = Button14Click
+      end
+    end
   end
   object GroupBox5: TGroupBox
     Left = 10
@@ -1927,10 +1954,12 @@ object Form1: TForm1
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     StorageOptions.SetAsString = True
     StorageOptions.DefaultIfReadConvertError = True
+    OnEncryptPropertyValue = JvAppRegistryStorageEncryptPropertyValue
+    OnDecryptPropertyValue = JvAppRegistryStorageDecryptPropertyValue
     Root = 'Software\JVCL\JvParameterListDemo'
     SubStorages = <>
     Left = 274
-    Top = 53
+    Top = 63
   end
   object JvFormStorage1: TJvFormStorage
     AppStoragePath = 'Form\'
@@ -1983,5 +2012,12 @@ object Form1: TForm1
     RootNodeName = 'Configuration'
     Left = 275
     Top = 10
+  end
+  object Cipher: TJvVigenereCipher
+    Key = '234234234'
+    Encoded = 'dfhdf'
+    Decoded = '23423'
+    Left = 360
+    Top = 50
   end
 end

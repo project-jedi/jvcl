@@ -45,7 +45,7 @@ uses
   JvAppRegistryStorage, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
   JvCombobox, CheckLst, ShlObj, ExtDlgs, JvImage,
   JvMaskEdit, JvSpin, JvBaseEdits, JvGroupBox, JvExStdCtrls,
-  JvExExtCtrls, JvAppXMLStorage;
+  JvExExtCtrls, JvAppXMLStorage, JvCaesarCipher, JvVigenereCipher;
 
 type
   TForm1 = class (TForm)
@@ -108,6 +108,10 @@ type
     StaticText3: TStaticText;
     StaticText4: TStaticText;
     JvAppXMLStorage: TJvAppXMLFileStorage;
+    Cipher: TJvVigenereCipher;
+    GroupBox6: TGroupBox;
+    StaticText5: TStaticText;
+    Button14: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -125,6 +129,9 @@ type
     procedure Button12Click(Sender: TObject);
     procedure JvPanelAllControlsResize(Sender: TObject);
     procedure Button13Click(Sender: TObject);
+    procedure JvAppRegistryStorageDecryptPropertyValue(var Value: String);
+    procedure JvAppRegistryStorageEncryptPropertyValue(var Value: String);
+    procedure Button14Click(Sender: TObject);
   private
     { Private-Deklarationen }
     procedure ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
@@ -134,6 +141,7 @@ type
     procedure ShowTest1(const aDynControlEngine: tJvDynControlEngine);
     procedure ShowTest2(const aDynControlEngine: tJvDynControlEngine);
     procedure ShowTest3(const aDynControlEngine: tJvDynControlEngine);
+    procedure ShowTestCrypt(const aDynControlEngine: tJvDynControlEngine);
   end;
 
 var
@@ -591,6 +599,63 @@ begin
 end;
 
 
+procedure TForm1.ShowTestCrypt(const aDynControlEngine: tJvDynControlEngine);
+var
+  ParameterList: TJvParameterList;
+  Parameter:     TJvBaseParameter;
+begin
+  ParameterList := TJvParameterList.Create(self);
+  try
+    if Assigned(aDynControlEngine) then
+      ParameterList.DynControlEngine := aDynControlEngine;
+    {$IFDEF INCLUDE_DEVEXP_CX}
+    if ParameterList.DynControlEngine is tJvDynControlEngineDevExpCx then
+      with tJvDynControlEngineDevExpCx(ParameterList.DynControlEngine) do
+      begin
+        case DevExpCxLookAndFeelRadioGroup.ItemIndex of
+          1: cxProperties.LookAndFeel.Kind := lfFlat;
+          2: cxProperties.LookAndFeel.Kind := lfUltraFlat;
+          else
+            cxProperties.LookAndFeel.Kind := lfStandard;
+        end;
+        CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
+        if ThickLinesCheckBox.Checked then
+          CxProperties.StyleController.Style.BorderStyle := ebsThick
+        else
+          CxProperties.StyleController.Style.BorderStyle := ebsNone;
+      end;
+    {$ENDIF}
+    Parameter := tjvEditParameter.Create(ParameterList);
+    with tjvEditParameter(Parameter) do
+    begin
+      SearchName := 'EditTest';
+      Caption    := 'EditTest';
+//      AsString   := Edit1.Text;
+
+    end;
+    ParameterList.AddParameter(Parameter);
+    Parameter := tjvEditParameter.Create(ParameterList);
+    with tjvEditParameter(Parameter) do
+    begin
+      SearchName := 'PasswordTest';
+      Caption    := 'PasswordTest';
+//      AsString   := Edit1.Text;
+//      PasswordChar := '*';
+      StoreValueCrypted := True;
+    end;
+    ParameterList.AddParameter(Parameter);
+    ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
+    ParameterList.AppStorage  := DefaultStorage;
+    ParameterList.AppStoragePath      := 'Dialog Crypt';
+    ParameterList.LoadData;
+    if ParameterList.ShowParameterDialog then
+        ParameterList.storeData;
+//    Edit1.text := ParameterList.parameterByName('RadioGroupTest').AsString;
+  finally
+    ParameterList.Free;
+  end;
+end;
+
 
 
 procedure TForm1.FormShow(Sender: TObject);
@@ -744,7 +809,28 @@ end;
 
 function TForm1.DefaultStorage : TJvCustomAppStorage;
 begin
-  Result := JvAppXMLStorage;
+  Result := JvAppRegistryStorage;
+end;
+
+procedure TForm1.JvAppRegistryStorageDecryptPropertyValue(
+  var Value: String);
+begin
+  Cipher.Encoded := Value;
+  Value := Cipher.Decoded;
+//  Value := Copy(Value, 3, Length(Value)-4);
+end;
+
+procedure TForm1.JvAppRegistryStorageEncryptPropertyValue(
+  var Value: String);
+begin
+  Cipher.Decoded := Value;
+  Value := Cipher.Encoded;
+//  Value := '##'+Value+'##';
+end;
+
+procedure TForm1.Button14Click(Sender: TObject);
+begin
+  ShowTestCrypt(nil);
 end;
 
 end.
