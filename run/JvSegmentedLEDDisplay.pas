@@ -766,6 +766,7 @@ end;
 constructor TJvCustomSegmentedLEDDisplay.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDigitClass := TJv7SegmentedLEDDigit;
   FDigits := TJvSegmentedLEDDigits.Create(Self);
   FDigitHeight := 30;
   FDigitSpacing := 2;
