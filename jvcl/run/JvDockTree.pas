@@ -34,10 +34,6 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Consts,
   JvDockSupportClass;
 
-const
-  HTSPLITTER = 30;
-  HTNONE = 31;
-
 type
   TJvDockTree = class;
 

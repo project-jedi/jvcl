@@ -463,6 +463,7 @@ type
 
 //=== TExtension =============================================================
 
+type
   TExtension = class(TPersistent)
   private
     FExtType: TExtensionType;

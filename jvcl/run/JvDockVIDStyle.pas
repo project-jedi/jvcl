@@ -34,10 +34,6 @@ uses
   ComCtrls, ExtCtrls, ImgList,
   JvDockControlForm, JvDockSupportControl, JvDockTree;
 
-const
-  VIDDefaulTJvDockGrabbersSize = 18;
-  VIDDefaulTJvDockSplitterWidth = 4;
-
 type
   TJvDockVIDConjoinServerOption = class(TJvDockBasicConjoinServerOption)
   private
@@ -4372,8 +4368,8 @@ begin
   FInactiveFont.Assign(FActiveFont);
   FActiveFont.Color := JvDockGetActiveTitleFontColor;
   FInactiveFont.Color := JvDockGetInactiveTitleFontColor;
-  GrabbersSize := VIDDefaulTJvDockGrabbersSize;
-  SplitterWidth := VIDDefaulTJvDockSplitterWidth;
+  GrabbersSize := VIDDefaultDockGrabbersSize;
+  SplitterWidth := VIDDefaultDockSplitterWidth;
 end;
 
 procedure TJvDockVIDConjoinServerOption.SetActiveFont(const Value: TFont);
@@ -4393,8 +4389,8 @@ end;
 procedure TJvDockVIDConjoinServerOption.ResetDockControlOption;
 begin
   inherited ResetDockControlOption;
-  FSystemInfo := FSystemInfo and (GrabbersSize = VIDDefaulTJvDockGrabbersSize)
-    and (SplitterWidth = VIDDefaulTJvDockSplitterWidth);
+  FSystemInfo := FSystemInfo and (GrabbersSize = VIDDefaultDockGrabbersSize)
+    and (SplitterWidth = VIDDefaultDockSplitterWidth);
   TJvDockVIDStyle(DockStyle).DoSystemInfoChange(FSystemInfo);
 end;
 
