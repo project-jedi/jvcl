@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, Db, Grids, DBGrids, ComCtrls,
-  JvComponent, JvDBGridExport, JvCsvData, 
+  JvComponent, JvDBGridExport, JvCsvData,
   JvBaseDlg, JvProgressDialog, JvDBGrid, JvExDBGrids;
 
 type
@@ -34,8 +34,13 @@ type
     procedure DataSource1DataChange(Sender: TObject; Field: TField);
     procedure StatusBar1Resize(Sender: TObject);
     procedure SaveDialog1TypeChange(Sender: TObject);
+    procedure DBGrid1TitleClick(Column: TColumn);
+    procedure DBGrid1GetBtnParams(Sender: TObject; Field: TField;
+      AFont: TFont; var Background: TColor; var SortMarker: TSortMarker;
+      IsDown: Boolean);
   private
     Data: TJvCsvDataSet;
+    Ascending:boolean;
     procedure DoExportProgress(Sender: TObject; Min, Max, Position: Cardinal; const AText: string;
       var AContinue: Boolean);
     procedure SetupData;
@@ -242,6 +247,28 @@ begin
     SendMessage(Windows.GetParent(SaveDialog1.Handle), CDM_SETCONTROLTEXT,
       edt1, Integer(PChar(S)));
   end;
+end;
+
+procedure TfrmMain.DBGrid1TitleClick(Column: TColumn);
+begin
+  if DBGrid1.SortedField = Column.FieldName then
+    Ascending := not Ascending
+  else
+    Ascending := false;
+  Data.Sort(Column.FieldName, Ascending);
+  DBGrid1.SortedField := Column.FieldName;
+end;
+
+procedure TfrmMain.DBGrid1GetBtnParams(Sender: TObject; Field: TField;
+  AFont: TFont; var Background: TColor; var SortMarker: TSortMarker;
+  IsDown: Boolean);
+const
+  Direction: array[boolean] of TSortmarker = (smDown, smUp);
+begin
+  if Field.FieldName = DBGrid1.SortedField then
+    SortMarker := Direction[Ascending]
+  else
+    SortMarker := smNone;
 end;
 
 end.

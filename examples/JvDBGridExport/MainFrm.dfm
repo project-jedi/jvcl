@@ -23,7 +23,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 672
-    Height = 245
+    Height = 248
     Align = alClient
     DataSource = DataSource1
     Font.Charset = ANSI_CHARSET
@@ -39,8 +39,10 @@ object frmMain: TfrmMain
     TitleFont.Height = -11
     TitleFont.Name = 'MS Shell Dlg 2'
     TitleFont.Style = []
+    OnTitleClick = DBGrid1TitleClick
     MultiSelect = True
     TitleButtons = True
+    OnGetBtnParams = DBGrid1GetBtnParams
     AlternateRowColor = 16768667
     TitleArrow = True
     MinColumnWidth = 100
@@ -125,7 +127,7 @@ object frmMain: TfrmMain
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 245
+    Top = 248
     Width = 672
     Height = 19
     Panels = <
