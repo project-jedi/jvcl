@@ -35,8 +35,7 @@ uses
   {$IFDEF MSWINDOWS}
   ShellAPI,
   {$ENDIF MSWINDOWS}
-  Windows, Messages, Graphics, Controls, Forms,
-  Dialogs, Grids, Menus, Clipbrd,
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, Grids, Menus, Clipbrd,
   {$IFDEF USEJVCL}
   JvTypes,
   {$ENDIF USEJVCL}
@@ -48,25 +47,23 @@ uses
 {$ENDIF COMPILER6_UP}
 {$ENDIF}
 
+const
+  JvDefaultBorderColor = TColor($EEF5FF);
 
 type
-{$IFNDEF USEJVCL}
-
+  {$IFNDEF USEJVCL}
   THintString = string;
-{$HPPEMIT '#ifndef TDate'}
-{$IFDEF VCL}
-{$HPPEMIT '#define TDate Controls::TDate'}
-{$HPPEMIT '#define TTime Controls::TTime'}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$HPPEMIT '#define TDate TDateTime'}
-{$HPPEMIT '#define TTime TDateTime'}
-{$ENDIF VisualCLX}
-{$HPPEMIT '#endif'}
-
-{$ENDIF USEJVCL}
-
-
+  {$HPPEMIT '#ifndef TDate'}
+  {$IFDEF VCL}
+  {$HPPEMIT '#define TDate Controls::TDate'}
+  {$HPPEMIT '#define TTime Controls::TTime'}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  {$HPPEMIT '#define TDate TDateTime'}
+  {$HPPEMIT '#define TTime TDateTime'}
+  {$ENDIF VisualCLX}
+  {$HPPEMIT '#endif'}
+  {$ENDIF USEJVCL}
 
   TYearData = record
     DisplayText : string;
@@ -250,7 +247,7 @@ type
   published
     property HTMLBorder    : Boolean                read FHTMLBorder     write SetHTMLBorder;
     property HTMLFontName  : string                 read FHTMLFontName   write SetHTMLFontName;
-    property BorderColor   : TColor                 read FBorderColor    write SetBorderColor    default $EEF5FF;
+    property BorderColor   : TColor                 read FBorderColor    write SetBorderColor    default JvDefaultBorderColor;
     property BookMarkColor : TColor                 read FBookMarkColor  write SetBookMarkColor  default clYellow;
     property Orientation   : TJvYearGridOrientation read FOrientation    write SetOrientation    default yoHorizontal;
     property FirstDayOfWeek: TJvWeekDay             read FFirstDayOfWeek write SetFirstDayOfWeek default wdMonday;
@@ -362,7 +359,7 @@ begin
 
   FAutoSizeOptions := [aoGrid, aoFirstColumn, aoFirstRow, aoColumns, aoRows];
 
-  FBorderColor := $EEF5FF;
+  FBorderColor := JvDefaultBorderColor;
   FBookMarkColor := clYellow;
   ShowHint := True;
   CreatePopup;

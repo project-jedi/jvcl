@@ -35,6 +35,9 @@ uses
   Grids, StdCtrls, Forms,
   JvgTypes, JvgCommClasses, JvgUtils, JVCLVer;
 
+const
+  JvDefaultEditorColor = $00FEE392;
+
 type
   TglStringGridExtOptions_ = (fsgVertCaptions, fsgHottrack, fsgMemoEditor,
     fsgWordWrap, fsgCellHeightAutoSize, fsgTabThroughCells);
@@ -42,24 +45,23 @@ type
 
   TglGridCellStyle = record
     Hottracking: Boolean;
-    GradientFilling, Default_Drawing: Boolean;
+    GradientFilling: Boolean;
+    Default_Drawing: Boolean;
     R: TRect;
     CellBorders: TglSides;
-    BevelInner,
-      BevelOuter: TPanelBevel;
+    BevelInner: TPanelBevel;
+    BevelOuter: TPanelBevel;
     BevelBold: Boolean;
     FontStyle: TFontStyles;
-    FontColor,
-      BackgrColor: TColor;
+    FontColor: TColor;
+    BackgrColor: TColor;
     Interspace: Integer
   end;
 
-  TglOnGetCellStyleEvent = procedure(Sender: TObject; ACol, ARow: longint; var
-    Style: TglGridCellStyle) of object;
-  TglOnGetCellGradientParamsEvent = procedure(Sender: TObject; ACol, ARow:
-    longint;
-    var CellRect: TRect;
-    var Gradient: TJvgGradient) of object;
+  TglOnGetCellStyleEvent = procedure(Sender: TObject; ACol, ARow: Longint;
+    var Style: TglGridCellStyle) of object;
+  TglOnGetCellGradientParamsEvent = procedure(Sender: TObject;
+    ACol, ARow: Longint; var CellRect: TRect; var Gradient: TJvgGradient) of object;
 
   TJvgStringGrid = class(TStringGrid)
   private
@@ -111,13 +113,13 @@ type
     procedure CMChildKey(var Message: TMessage); message CM_CHILDKEY;
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
 
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
-      Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
     //    procedure DblClick; dynamic;
 
     procedure GetCellStyle(Sender: TObject; var ACol, ARow: Integer; var
       Style: TglGridCellStyle); virtual;
-    procedure GetCellGradientParams(Sender: TObject; ACol, ARow: longint; var
+    procedure GetCellGradientParams(Sender: TObject; ACol, ARow: Longint; var
       CellRect: TRect; var Gradient: TJvgGradient); virtual;
   public
     //    property InplaceEditor;
@@ -148,7 +150,7 @@ type
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
     property Image: TImage read FImage write SetImage;
     property ExtOptions: TglStringGridExtOptions read FExtOptions write SetExtOptions;
-    property EditorColor: TColor read FEditorColor write FEditorColor default $00FEE392;
+    property EditorColor: TColor read FEditorColor write FEditorColor default JvDefaultEditorColor;
     property EditorFont: TFont read FEditorFont write FEditorFont;
     property OnGetCellStyle: TglOnGetCellStyleEvent read FOnGetCellStyle write FOnGetCellStyle;
     property OnGetCellGradientParams: TglOnGetCellGradientParamsEvent read
@@ -175,7 +177,7 @@ begin
   FCaptions.OnChange := UpdateCaptions;
   AHottrackCol := -1;
   HottrackColor := clHighlight;
-  FEditorColor := $00FEE392;
+  FEditorColor := JvDefaultEditorColor;
   FExtOptions := [fsgHottrack, fsgMemoEditor, fsgWordWrap,
     fsgCellHeightAutoSize, fsgTabThroughCells];
   Options := Options + [goEditing];
@@ -220,7 +222,7 @@ procedure TJvgStringGrid.DrawCell(ACol, ARow: Longint; ARect: TRect; AState:
 const
   aAlignments: array[TAlignment] of Longint = (DT_LEFT,
     DT_RIGHT, DT_CENTER);
-  aWordWrap: array[Boolean] of longint = (0, DT_WORDBREAK);
+  aWordWrap: array[Boolean] of Longint = (0, DT_WORDBREAK);
 var
   R: TRect;
   doHottracking, isFixedCell: Boolean;
@@ -441,7 +443,7 @@ end;
 procedure TJvgStringGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   R: TRect;
-  ACol, ARow: longint;
+  ACol, ARow: Longint;
 begin
   inherited MouseMove(Shift, X, Y);
   if not (fsgHottrack in FExtOptions) then

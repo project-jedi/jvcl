@@ -88,7 +88,7 @@ procedure TJvgShade.Paint;
 var
   I, J, N: Integer;
 const
-  cShiftColor = $003939;
+  cShiftColor = TColor($003939);
 begin
   N := 0;
   if FNeedRebuildImage then

@@ -36,7 +36,7 @@ uses
 procedure DotNetMessageHandler(var Msg: TMessage; AControl: TWinControl;
   AColor: TColor; var InControl: Boolean);
 procedure DrawDotNetControl(Control: TWinControl; AColor: TColor; InControl: Boolean);
-procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor:TColor);
+procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor: TColor);
 
 implementation
 
@@ -44,7 +44,7 @@ var
   InternalFocusedColor: TColor = TColor($00733800);
   InternalUnfocusedColor: TColor = clGray;
 
-procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor:TColor);
+procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor: TColor);
 begin
   InternalFocusedColor := FocusedColor;
   InternalUnfocusedColor := UnfocusedColor;

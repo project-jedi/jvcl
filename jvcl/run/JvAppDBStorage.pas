@@ -76,7 +76,7 @@ type
     procedure EnumValues(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
     function PathExistsInt(const Path: string): Boolean; override;
-    function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
+    function IsFolderInt(const Path: string; ListIsValue: Boolean = True): Boolean; override;
     procedure RemoveValue(const Section, Key: string);
     procedure DeleteSubTreeInt(const Path: string); override;
 
@@ -86,8 +86,8 @@ type
     procedure DoWriteInteger(const Path: string; Value: Integer); override;
     function DoReadFloat(const Path: string; Default: Extended): Extended; override;
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
-    function DoReadString(const Path: string; Default: string): string; override;
-    procedure DoWriteString(const Path: string; Value: string); override;
+    function DoReadString(const Path: string; const Default: string): string; override;
+    procedure DoWriteString(const Path: string; const Value: string); override;
     function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
     procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -204,7 +204,7 @@ begin
 end;
 
 function TJvCustomAppDBStorage.DoReadString(const Path: string;
-  Default: string): string;
+  const Default: string): string;
 var
   Section: string;
   Key: string;
@@ -245,7 +245,7 @@ begin
 end;
 
 procedure TJvCustomAppDBStorage.DoWriteString(const Path: string;
-  Value: string);
+  const Value: string);
 var
   Section: string;
   Key: string;
@@ -291,7 +291,7 @@ begin
   Result := FValueLink.FieldName;
 end;
 
-function TJvCustomAppDBStorage.IsFolderInt(Path: string;
+function TJvCustomAppDBStorage.IsFolderInt(const Path: string;
   ListIsValue: Boolean): Boolean;
 begin
   { TODO -oJVCL -cTESTING : Is this correct implementation? }

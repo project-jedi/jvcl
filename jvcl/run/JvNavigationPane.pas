@@ -120,8 +120,8 @@ type
     property Visible;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
 
-    property ColorFrom: TColor read FColorFrom write SetColorFrom default $D0835C;
-    property ColorTo: TColor read FColorTo write SetColorTo default $903B09;
+    property ColorFrom: TColor read FColorFrom write SetColorFrom default TColor($D0835C);
+    property ColorTo: TColor read FColorTo write SetColorTo default TColor($903B09);
     property Images: TCustomImageList read FImages write SetImages;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property StyleManager: TJvNavPaneStyleManager read FStyleManager write SetStyleManager;
@@ -173,13 +173,13 @@ type
     property Anchors;
     property AutoSnap default False;
     property Caption;
-    property ColorFrom: TColor read FColorFrom write SetColorFrom default $FFDBBC;
-    property ColorTo: TColor read FColorTo write SetColorTo default $F2C0A4;
+    property ColorFrom: TColor read FColorFrom write SetColorFrom default TColor($FFDBBC);
+    property ColorTo: TColor read FColorTo write SetColorTo default TColor($F2C0A4);
     property Constraints;
     property Cursor default crSizeNS;
     property Enabled;
     property Font;
-    property FrameColor: TColor read FFrameColor write SetFrameColor default $6F2F0C;
+    property FrameColor: TColor read FFrameColor write SetFrameColor default TColor($6F2F0C);
     property Height default 19;
     property ResizeStyle default rsUpdate;
     property StyleManager: TJvNavPaneStyleManager read FStyleManager write SetStyleManager;
@@ -234,8 +234,8 @@ type
     property DragZone: integer read FDragZone write FDragZone default 0;
     {$ENDIF VCL}
     property ResizeStyle default rsUpdate;
-    property ColorFrom: TColor read FColorFrom write SetColorFrom default $B78676;
-    property ColorTo: TColor read FColorTo write SetColorTo default $A03D09;
+    property ColorFrom: TColor read FColorFrom write SetColorFrom default TColor($B78676);
+    property ColorTo: TColor read FColorTo write SetColorTo default TColor($A03D09);
     property Height default 7;
     property Enabled;
     property StyleManager: TJvNavPaneStyleManager read FStyleManager write SetStyleManager;
@@ -295,24 +295,24 @@ type
     constructor Create;
     procedure Assign(Source: TPersistent); override;
   published
-    property ButtonColorFrom: TColor read FButtonColorFrom write SetButtonColorFrom default $F7E2CD;
-    property ButtonColorTo: TColor read FButtonColorTo write SetButtonColorTo default $F3A080;
-    property ButtonHotColorFrom: TColor read FButtonHotColorFrom write SetButtonHotColorFrom default $DBFBFF;
-    property ButtonHotColorTo: TColor read FButtonHotColorTo write SetButtonHotColorTo default $5FC8FB;
-    property ButtonSelectedColorFrom: TColor read FButtonSelectedColorFrom write SetButtonSelectedColorFrom default $BBE2EA;
-    property ButtonSelectedColorTo: TColor read FButtonSelectedColorTo write SetButtonSelectedColorTo default $389FDD;
+    property ButtonColorFrom: TColor read FButtonColorFrom write SetButtonColorFrom default TColor($F7E2CD);
+    property ButtonColorTo: TColor read FButtonColorTo write SetButtonColorTo default TColor($F3A080);
+    property ButtonHotColorFrom: TColor read FButtonHotColorFrom write SetButtonHotColorFrom default TColor($DBFBFF);
+    property ButtonHotColorTo: TColor read FButtonHotColorTo write SetButtonHotColorTo default TColor($5FC8FB);
+    property ButtonSelectedColorFrom: TColor read FButtonSelectedColorFrom write SetButtonSelectedColorFrom default TColor($BBE2EA);
+    property ButtonSelectedColorTo: TColor read FButtonSelectedColorTo write SetButtonSelectedColorTo default TColor($389FDD);
     property ButtonSeparatorColor: TColor read FButtonSeparatorColor write SetButtonSeparatorColor default clGray;
-    property SplitterColorFrom: TColor read FSplitterColorFrom write SetSplitterColorFrom default $B78676;
-    property SplitterColorTo: TColor read FSplitterColorTo write SetSplitterColorTo default $A03D09;
-    property DividerColorFrom: TColor read FDividerColorFrom write SetDividerColorFrom default $FFDBBC;
-    property DividerColorTo: TColor read FDividerColorTo write SetDividerColorTo default $F2C0A4;
-    property HeaderColorFrom: TColor read FHeaderColorFrom write SetHeaderColorFrom default $D0835C;
-    property HeaderColorTo: TColor read FHeaderColorTo write SetHeaderColorTo default $903B09;
-    property FrameColor: TColor read FFrameColor write SetFrameColor default $6F2F0C;
+    property SplitterColorFrom: TColor read FSplitterColorFrom write SetSplitterColorFrom default TColor($B78676);
+    property SplitterColorTo: TColor read FSplitterColorTo write SetSplitterColorTo default TColor($A03D09);
+    property DividerColorFrom: TColor read FDividerColorFrom write SetDividerColorFrom default TColor($FFDBBC);
+    property DividerColorTo: TColor read FDividerColorTo write SetDividerColorTo default TColor($F2C0A4);
+    property HeaderColorFrom: TColor read FHeaderColorFrom write SetHeaderColorFrom default TColor($D0835C);
+    property HeaderColorTo: TColor read FHeaderColorTo write SetHeaderColorTo default TColor($903B09);
+    property FrameColor: TColor read FFrameColor write SetFrameColor default TColor($6F2F0C);
     property ToolPanelColorFrom: TColor read FToolPanelColorFrom write SetToolPanelColorFrom default clWindow;
     property ToolPanelColorTo: TColor read FToolPanelColorTo write SetToolPanelColorTo default clWindow;
-    property ToolPanelHeaderColorFrom: TColor read FToolPanelHeaderColorFrom write SetToolPanelHeaderColorFrom default $F7E2CD;
-    property ToolPanelHeaderColorTo: TColor read FToolPanelHeaderColorTo write SetToolPanelHeaderColorTo default $F3A080;
+    property ToolPanelHeaderColorFrom: TColor read FToolPanelHeaderColorFrom write SetToolPanelHeaderColorFrom default TColor($F7E2CD);
+    property ToolPanelHeaderColorTo: TColor read FToolPanelHeaderColorTo write SetToolPanelHeaderColorTo default TColor($F3A080);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -2467,24 +2467,24 @@ constructor TJvNavPanelColors.Create;
 begin
   inherited Create;
   // use XPBlue as standard
-  FButtonColorFrom := $F7E2CD;
-  FButtonColorTo := $F3A080;
-  FButtonSelectedColorFrom := $BBE2EA;
-  FButtonSelectedColorTo := $389FDD;
-  FFrameColor := $6F2F0C;
-  FButtonHotColorFrom := $DBFBFF;
-  FButtonHotColorTo := $5FC8FB;
-  FDividerColorFrom := $FFDBBC;
-  FDividerColorTo := $F2C0A4;
-  FHeaderColorFrom := $D0835C;
-  FHeaderColorTo := $903B09;
-  FSplitterColorFrom := $B78676;
-  FSplitterColorTo := $A03D09;
+  FButtonColorFrom := TColor($F7E2CD);
+  FButtonColorTo := TColor($F3A080);
+  FButtonSelectedColorFrom := TColor($BBE2EA);
+  FButtonSelectedColorTo := TColor($389FDD);
+  FFrameColor := TColor($6F2F0C);
+  FButtonHotColorFrom := TColor($DBFBFF);
+  FButtonHotColorTo := TColor($5FC8FB);
+  FDividerColorFrom := TColor($FFDBBC);
+  FDividerColorTo := TColor($F2C0A4);
+  FHeaderColorFrom := TColor($D0835C);
+  FHeaderColorTo := TColor($903B09);
+  FSplitterColorFrom := TColor($B78676);
+  FSplitterColorTo := TColor($A03D09);
   FButtonSeparatorColor := clGray;
   FToolPanelColorFrom := clWindow;
   FToolPanelColorTo := clWindow;
-  FToolPanelHeaderColorFrom := $F7E2CD;
-  FToolPanelHeaderColorTo := $F3A080;
+  FToolPanelHeaderColorFrom := TColor($F7E2CD);
+  FToolPanelHeaderColorTo := TColor($F3A080);
 end;
 
 procedure TJvNavPanelColors.Assign(Source: TPersistent);
@@ -3179,8 +3179,8 @@ begin
   inherited Create(AOwner);
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
-  FColorFrom := $B78676;
-  FColorTo := $A03D09;
+  FColorFrom := TColor($B78676);
+  FColorTo := TColor($A03D09);
   Align := alBottom;
   AutoSnap := False;
   ResizeStyle := rsUpdate;
@@ -3404,8 +3404,8 @@ begin
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
   ControlStyle := ControlStyle + [csOpaque, csAcceptsControls];
-  FColorFrom := $D0835C;
-  FColorTo := $903B09;
+  FColorFrom := TColor($D0835C);
+  FColorTo := TColor($903B09);
   Font.Name := 'Arial';
   Font.Size := 12;
   Font.Style := [fsBold];
@@ -3668,9 +3668,9 @@ begin
   AutoSnap := False;
   ResizeStyle := rsUpdate;
   ControlStyle := ControlStyle + [csOpaque];
-  FColorFrom := $FFDBBC;
-  FColorTo := $F2C0A4;
-  FFrameColor := $6F2F0C;
+  FColorFrom := TColor($FFDBBC);
+  FColorTo := TColor($F2C0A4);
+  FFrameColor := TColor($6F2F0C);
   Cursor := crSizeNS;
   {$IFDEF VCL}
   Font := Screen.IconFont;
@@ -3966,24 +3966,24 @@ begin
       case Value of
         nptStandard:
           begin
-            FColors.ButtonColorFrom := $FFFFFF;
-            FColors.ButtonColorTo := $BDBEBD;
-            FColors.ButtonSelectedColorFrom := $DECFCE;
-            FColors.ButtonSelectedColorTo := $DECFCE;
-            FColors.FrameColor := $848484;
-            FColors.ButtonHotColorFrom := $C68284;
-            FColors.ButtonHotColorTo := $C68284;
-            FColors.DividerColorFrom := $EFF3EF;
-            FColors.DividerColorTo := $C6C3C6;
-            FColors.HeaderColorFrom := $848284;
-            FColors.HeaderColorTo := $848284;
-            FColors.SplitterColorFrom := $C6C3C6;
-            FColors.SplitterColorTo := $8C8E8C;
+            FColors.ButtonColorFrom := TColor($FFFFFF);
+            FColors.ButtonColorTo := TColor($BDBEBD);
+            FColors.ButtonSelectedColorFrom := TColor($DECFCE);
+            FColors.ButtonSelectedColorTo := TColor($DECFCE);
+            FColors.FrameColor := TColor($848484);
+            FColors.ButtonHotColorFrom := TColor($C68284);
+            FColors.ButtonHotColorTo := TColor($C68284);
+            FColors.DividerColorFrom := TColor($EFF3EF);
+            FColors.DividerColorTo := TColor($C6C3C6);
+            FColors.HeaderColorFrom := TColor($848284);
+            FColors.HeaderColorTo := TColor($848284);
+            FColors.SplitterColorFrom := TColor($C6C3C6);
+            FColors.SplitterColorTo := TColor($8C8E8C);
             FColors.ButtonSeparatorColor := clGray;
             FColors.FToolPanelColorFrom := clWindow;
             FColors.FToolPanelColorTo := clWindow;
-            FColors.FToolPanelHeaderColorFrom := $FFFFFF;
-            FColors.FToolPanelHeaderColorTo := $BDBEBD;
+            FColors.FToolPanelHeaderColorFrom := TColor($FFFFFF);
+            FColors.FToolPanelHeaderColorTo := TColor($BDBEBD);
 
             FFonts.HeaderFont.Color := clWindow;
             FFonts.NavPanelFont.Color := clWindowText;
@@ -3992,25 +3992,25 @@ begin
           end;
         nptXPBlue:
           begin
-            FColors.ButtonColorFrom := $F7E2CD;
-            FColors.ButtonColorTo := $F3A080;
-            FColors.ButtonSelectedColorFrom := $BBE2EA;
-            FColors.ButtonSelectedColorTo := $389FDD;
-            FColors.FrameColor := $6F2F0C;
-            FColors.ButtonHotColorFrom := $DBFBFF;
-            FColors.ButtonHotColorTo := $5FC8FB;
-            FColors.DividerColorFrom := $FFDBBC;
-            FColors.DividerColorTo := $F2C0A4;
-            FColors.HeaderColorFrom := $D0835C;
-            FColors.HeaderColorTo := $903B09;
-            FColors.SplitterColorFrom := $B78676;
-            FColors.SplitterColorTo := $A03D09;
+            FColors.ButtonColorFrom := TColor($F7E2CD);
+            FColors.ButtonColorTo := TColor($F3A080);
+            FColors.ButtonSelectedColorFrom := TColor($BBE2EA);
+            FColors.ButtonSelectedColorTo := TColor($389FDD);
+            FColors.FrameColor := TColor($6F2F0C);
+            FColors.ButtonHotColorFrom := TColor($DBFBFF);
+            FColors.ButtonHotColorTo := TColor($5FC8FB);
+            FColors.DividerColorFrom := TColor($FFDBBC);
+            FColors.DividerColorTo := TColor($F2C0A4);
+            FColors.HeaderColorFrom := TColor($D0835C);
+            FColors.HeaderColorTo := TColor($903B09);
+            FColors.SplitterColorFrom := TColor($B78676);
+            FColors.SplitterColorTo := TColor($A03D09);
             FColors.ButtonSeparatorColor := clGray;
 
             FColors.FToolPanelColorFrom := clWindow;
             FColors.FToolPanelColorTo := clWindow;
-            FColors.FToolPanelHeaderColorFrom := $F7E2CD;
-            FColors.FToolPanelHeaderColorTo := $F3A080;
+            FColors.FToolPanelHeaderColorFrom := TColor($F7E2CD);
+            FColors.FToolPanelHeaderColorTo := TColor($F3A080);
 
             FFonts.HeaderFont.Color := clWindow;
             FFonts.NavPanelFont.Color := clWindowText;
@@ -4019,24 +4019,24 @@ begin
           end;
         nptXPSilver:
           begin
-            FColors.ButtonColorFrom := $F4E2E1;
-            FColors.ButtonColorTo := $B09494;
-            FColors.ButtonSelectedColorFrom := $BBE2EA;
-            FColors.ButtonSelectedColorTo := $389FDD;
-            FColors.FrameColor := $527D92;
-            FColors.ButtonHotColorFrom := $DBFBFF;
-            FColors.ButtonHotColorTo := $5FC8FB;
-            FColors.DividerColorFrom := $F8F3F4;
-            FColors.DividerColorTo := $EADADB;
-            FColors.HeaderColorFrom := $BAA8BA;
-            FColors.HeaderColorTo := $917275;
-            FColors.SplitterColorFrom := $B8ABA9;
-            FColors.SplitterColorTo := $81767E;
+            FColors.ButtonColorFrom := TColor($F4E2E1);
+            FColors.ButtonColorTo := TColor($B09494);
+            FColors.ButtonSelectedColorFrom := TColor($BBE2EA);
+            FColors.ButtonSelectedColorTo := TColor($389FDD);
+            FColors.FrameColor := TColor($527D92);
+            FColors.ButtonHotColorFrom := TColor($DBFBFF);
+            FColors.ButtonHotColorTo := TColor($5FC8FB);
+            FColors.DividerColorFrom := TColor($F8F3F4);
+            FColors.DividerColorTo := TColor($EADADB);
+            FColors.HeaderColorFrom := TColor($BAA8BA);
+            FColors.HeaderColorTo := TColor($917275);
+            FColors.SplitterColorFrom := TColor($B8ABA9);
+            FColors.SplitterColorTo := TColor($81767E);
             FColors.ButtonSeparatorColor := clGray;
             FColors.FToolPanelColorFrom := clWindow;
             FColors.FToolPanelColorTo := clWindow;
-            FColors.FToolPanelHeaderColorFrom := $F4E2E1;
-            FColors.FToolPanelHeaderColorTo := $B09494;
+            FColors.FToolPanelHeaderColorFrom := TColor($F4E2E1);
+            FColors.FToolPanelHeaderColorTo := TColor($B09494);
 
             FFonts.HeaderFont.Color := clWindow;
             FFonts.NavPanelFont.Color := clWindowText;
@@ -4045,24 +4045,24 @@ begin
           end;
         nptXPOlive:
           begin
-            FColors.ButtonColorFrom := $D6F3E3;
-            FColors.ButtonColorTo := $93BFB2;
-            FColors.ButtonSelectedColorFrom := $BBE2EA;
-            FColors.ButtonSelectedColorTo := $389FDD;
-            FColors.FrameColor := $5A7972;
-            FColors.ButtonHotColorFrom := $DBFBFF;
-            FColors.ButtonHotColorTo := $5FC8FB;
-            FColors.DividerColorFrom := $D2F4EE;
-            FColors.DividerColorTo := $B5DFD8;
-            FColors.HeaderColorFrom := $94BFB4;
-            FColors.HeaderColorTo := $427665;
-            FColors.SplitterColorFrom := $758D81;
-            FColors.SplitterColorTo := $3A584D;
+            FColors.ButtonColorFrom := TColor($D6F3E3);
+            FColors.ButtonColorTo := TColor($93BFB2);
+            FColors.ButtonSelectedColorFrom := TColor($BBE2EA);
+            FColors.ButtonSelectedColorTo := TColor($389FDD);
+            FColors.FrameColor := TColor($5A7972);
+            FColors.ButtonHotColorFrom := TColor($DBFBFF);
+            FColors.ButtonHotColorTo := TColor($5FC8FB);
+            FColors.DividerColorFrom := TColor($D2F4EE);
+            FColors.DividerColorTo := TColor($B5DFD8);
+            FColors.HeaderColorFrom := TColor($94BFB4);
+            FColors.HeaderColorTo := TColor($427665);
+            FColors.SplitterColorFrom := TColor($758D81);
+            FColors.SplitterColorTo := TColor($3A584D);
             FColors.ButtonSeparatorColor := clGray;
             FColors.ToolPanelColorFrom := clWindow;
             FColors.ToolPanelColorTo := clWindow;
-            FColors.ToolPanelHeaderColorFrom := $D6F3E3;
-            FColors.ToolPanelHeaderColorTo := $93BFB2;
+            FColors.ToolPanelHeaderColorFrom := TColor($D6F3E3);
+            FColors.ToolPanelHeaderColorTo := TColor($93BFB2);
 
             FFonts.HeaderFont.Color := clWindow;
             FFonts.NavPanelFont.Color := clWindowText;
@@ -4143,9 +4143,9 @@ begin
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoImagesChange;
   {
-  FColorFrom := $F7E2CD;
-  FColorTo := $F3A080;
-  FButtonColor := $A03D09;
+  FColorFrom := TColor($F7E2CD);
+  FColorTo := TColor($F3A080);
+  FButtonColor := TColor($A03D09);
   }
   FButtonWidth := 25;
   FButtonHeight := 22;
@@ -4413,13 +4413,13 @@ begin
           B.Visible := True;
           if I > 0 then
           begin
-            Canvas.Pen.Color := $E7EBEF;
+            Canvas.Pen.Color := TColor($E7EBEF);
             Canvas.MoveTo(X, R2.Top + 2);
             Canvas.LineTo(X, R2.Bottom - 3);
           end;
           if I < Buttons.Count - 1 then
           begin
-            Canvas.Pen.Color := $CED3D6;
+            Canvas.Pen.Color := TColor($CED3D6);
             Canvas.MoveTo(X + ButtonWidth - 1, R2.Top + 1);
             Canvas.LineTo(X + ButtonWidth - 1, R2.Bottom - 4);
           end;
@@ -4832,9 +4832,9 @@ begin
   //  inherited Paint;
   if MouseStates <> [] then
   begin
-    Canvas.Pen.Color := $6B2408;
+    Canvas.Pen.Color := TColor($6B2408);
     if bsMouseInside in MouseStates then
-      Canvas.Brush.Color := $D6BEB5;
+      Canvas.Brush.Color := TColor($D6BEB5);
     if (bsMouseDown in MouseStates) or Down then
     begin
       if TransparentDown then
@@ -4855,11 +4855,11 @@ begin
         end;
       end
       else
-        Canvas.Brush.Color := $B59284;
+        Canvas.Brush.Color := TColor($B59284);
     end;
     Canvas.Rectangle(ClientRect);
   end;
-  DrawButton:
+DrawButton:
   case ButtonType of
     nibDropArrow: // dropdown arrow is 7x4, right-aligned
       begin
