@@ -3236,6 +3236,7 @@ begin
         X := R2.Left + ButtonWidth * i;
         with TJvNavIconButton(FRealButtons[i]) do
         begin
+//          Images := Self.Images;
           Left := X;
           Top := Y;
           Visible := True;
@@ -3296,10 +3297,9 @@ begin
   end;
 end;
 
-procedure TJvNavPaneToolPanel.SetButtons(
-  const Value: TJvNavPaneToolButtons);
+procedure TJvNavPaneToolPanel.SetButtons(const Value: TJvNavPaneToolButtons);
 begin
-  FButtons := Value;
+  FButtons.Assign(Value);
 end;
 
 procedure TJvNavPaneToolPanel.SetButtonWidth(const Value: Integer);
@@ -3366,6 +3366,7 @@ begin
 end;
 
 procedure TJvNavPaneToolPanel.SetImages(const Value: TCustomImageList);
+var i:integer;
 begin
   if FImages <> Value then
   begin
@@ -3377,6 +3378,8 @@ begin
       FImages.RegisterChanges(FChangeLink);
       FImages.FreeNotification(Self);
     end;
+    for i := 0 to Buttons.Count -1 do
+      TJvNavIconButton(FRealButtons[i]).Images := FImages;
     Invalidate;
   end;
 end;
