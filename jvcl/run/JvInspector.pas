@@ -25,6 +25,14 @@
  page, located at http://www.delphi-jedi.org
 
  RECENT CHANGES:
+    May 2, 2004, Markus Spoettl:
+      - Added iifOwnerDrawListMaxHeight flag; using this flag will result in
+        a fixed height owner draw list; the item height used will be that of
+        the tallest item in the list (i.e. DoMeasureListItem is called on each
+        item before the list is shown; the largest Height value returned will
+        be used as the list box's ItemHeight value).
+      - Font name item will use the new iifOwnerDrawListMaxHeight flag instead
+        of iifOwnerDrawListVariable.
     Apr 30, 2004, Marcel Bestebroer:
       - Using the MouseWheel during drop down, will no longer result in the
         scrolling of the inspector. Unfortunately, it will also not scroll
@@ -234,7 +242,7 @@ type
   TInspectorItemFlag = (iifReadonly, iifHidden, iifExpanded, iifVisible,
     iifQualifiedNames, iifAutoUpdate, iifMultiLine, iifValueList,
     iifAllowNonListValues, iifOwnerDrawListFixed, iifOwnerDrawListVariable,
-    iifEditButton, iifEditFixed);
+    iifEditButton, iifEditFixed, iifOwnerDrawListMaxHeight);
   TInspectorItemFlags = set of TInspectorItemFlag;
   TInspectorSetFlag = (isfEditString, isfCreateMemberItems, isfRenderAsCategory);
   TInspectorSetFlags = set of TInspectorSetFlag;
@@ -817,11 +825,8 @@ type
     procedure Deactivate; dynamic;
     procedure DoAfterItemCreate; virtual;
     function DoCompare(const Item: TJvCustomInspectorItem): Integer; virtual;
-
-
+    procedure DoDrawListItemText(ACanvas: TCanvas; Rect: TRect; AText: string); virtual;
     {$IFDEF VCL}
-//    procedure OnInternalEditControlExiting(Sender:TObject); //NEW. WP.
-
     procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
       State: TOwnerDrawState); virtual;
     {$ENDIF VCL}
@@ -5388,6 +5393,16 @@ begin
     Result := 0;
 end;
 
+procedure TJvCustomInspectorItem.DoDrawListItemText(ACanvas: TCanvas; Rect: TRect; AText: string);
+var
+  h: Integer;
+begin
+  ACanvas.FillRect(Rect);
+  h := ACanvas.TextHeight(AText);
+  Rect.Top := Rect.Top + (Rect.Bottom - Rect.Top - h) div 2;
+  ACanvas.TextRect(Rect, Rect.Left, Rect.Top, AText);
+end;
+
 {$IFDEF VCL}
 procedure TJvCustomInspectorItem.DoDrawListItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
@@ -5397,8 +5412,7 @@ procedure TJvCustomInspectorItem.DoDrawListItem(Control: TObject; Index: Integer
   State: TOwnerDrawState; var Handled: Boolean);
 {$ENDIF VisualCLX}
 begin
-  with (Control as TListBox) do
-    Canvas.TextOut(Rect.Left, Rect.Top, Items[Index]);
+  DoDrawListItemText(TListBox(Control).Canvas, Rect, TListBox(Control).Items[Index]);
 end;
 
 procedure TJvCustomInspectorItem.DoDropDownKeys(var Key: Word; Shift: TShiftState);
@@ -5451,24 +5465,41 @@ var
   Y: Integer;
   J: Integer;
   I: Integer;
-  _h: Integer;
+  IH: Integer;
+  MH: Integer;
 begin
   if not DroppedDown then
   begin
     ListBox.Width := RectWidth(Rects[iprValueArea]);
     TListBox(ListBox).Font := TOpenEdit(EditCtrl).Font;
-    {$IFDEF VCL}
-    if TListBox(ListBox).IntegralHeight then
-    begin
-      ListBox.Canvas.Font := TListBox(ListBox).Font;
-//      TListBox(ListBox).ItemHeight := CanvasMaxTextHeight(ListBox.Canvas);
-      _h := CanvasMaxTextHeight(ListBox.Canvas);
-      DoMeasureListItem(ListBox, -1, _h);
-      TListBox(ListBox).ItemHeight := _h; //CanvasMaxTextHeight(ListBox.Canvas);
-    end;
-    {$ENDIF VCL}
     ListBox.Items.Clear;
     GetValueList(ListBox.Items);
+    {$IFDEF VCL}
+    if ([iifOwnerDrawListFixed, iifOwnerDrawListVariable, iifOwnerDrawListMaxHeight] * Flags <> []) then
+    begin
+      ListBox.Canvas.Font := TListBox(ListBox).Font;
+      IH := CanvasMaxTextHeight(ListBox.Canvas);
+      if (iifOwnerDrawListFixed in Flags) then
+      begin
+        DoMeasureListItem(ListBox, -1, IH);
+        MH := IH;
+      end
+      else if (iifOwnerDrawListMaxHeight in Flags) then
+      begin
+        MH := IH;
+        for I := 0 to (ListBox.Items.Count-1) do
+        begin
+          DoMeasureListItem(ListBox, i, IH);
+          if (MH < IH) then
+            MH := IH;
+        end;
+      end
+      else begin
+        MH := IH;
+      end;
+      TListBox(ListBox).ItemHeight := MH;
+    end;
+    {$ENDIF VCL}
     if ListBox.Items.Count < DropDownCount then
       ListCount := ListBox.Items.Count
     else
@@ -6252,10 +6283,12 @@ var
   OldFlags: TInspectorItemFlags;
 begin
   NewFlags := Value;
+  if (iifOwnerDrawListFixed in NewFlags) and (iifOwnerDrawListMaxHeight in NewFlags) then
+    Exclude(NewFlags, iifOwnerDrawListFixed);
   if (iifOwnerDrawListFixed in NewFlags) and (iifOwnerDrawListVariable in NewFlags) then
     Exclude(NewFlags, iifOwnerDrawListFixed);
-  if (iifAllowNonListValues in NewFlags) or (iifOwnerDrawListFixed in NewFlags) or
-    (iifOwnerDrawListVariable in NewFlags) then
+  if ([iifAllowNonListValues, iifOwnerDrawListFixed, iifOwnerDrawListVariable,
+      iifOwnerDrawListMaxHeight] * NewFlags <> []) then
     Include(NewFlags, iifValueList);
   if Flags <> NewFlags then
   begin
@@ -6889,11 +6922,11 @@ begin
       TListBox(ListBox).OnMouseUp := ListMouseUp;
 
       TListBox(ListBox).ItemHeight := 11;
-      if iifOwnerDrawListFixed in Flags then
+      if (iifOwnerDrawListFixed in Flags) or (iifOwnerDrawListMaxHeight in Flags) then
         TListBox(ListBox).Style := lbOwnerDrawFixed
       else
-      if iifOwnerDrawListVariable in Flags then
-        TListBox(ListBox).Style := lbOwnerDrawVariable;
+       if iifOwnerDrawListVariable in Flags then
+         TListBox(ListBox).Style := lbOwnerDrawVariable;
       TListBox(ListBox).OnDrawItem := DoDrawListItem;
       TListBox(ListBox).OnMeasureItem := DoMeasureListItem;
       TListBox(ListBox).OnExit := ListExit;
@@ -7052,7 +7085,7 @@ var
   NewFlags: TInspectorItemFlags;
 begin
   NewFlags := Value - [iifAutoUpdate, iifMultiLine, iifValueList,
-    iifAllowNonListValues, iifOwnerDrawListFixed, iifOwnerDrawListVariable,
+    iifAllowNonListValues, iifOwnerDrawListFixed, iifOwnerDrawListVariable, iifOwnerDrawListMaxHeight,
     iifEditButton] + [iifReadonly, iifEditFixed];
   inherited SetFlags(NewFlags);
 end;
@@ -7465,7 +7498,7 @@ var
 begin
   NewFlags := Value - [iifQualifiedNames, iifAutoUpdate, iifMultiLine,
     iifValueList, iifAllowNonListValues, iifOwnerDrawListFixed,
-    iifOwnerDrawListVariable, iifEditButton] + [iifReadonly,
+    iifOwnerDrawListVariable, iifOwnerDrawListMaxHeight, iifEditButton] + [iifReadonly,
     iifEditFixed];
   inherited SetFlags(NewFlags);
 end;
@@ -8622,7 +8655,7 @@ begin
       FontName := Items[Index];
       Canvas.Font.Name := FontName;
     end;
-    Canvas.TextRect(Rect, Rect.Left, Rect.Top, Items[Index]);
+    DoDrawListItemText(TListBox(Control).Canvas, Rect, TListBox(Control).Items[Index]);
   end;
 end;
 
@@ -8663,7 +8696,7 @@ procedure TJvInspectorFontNameItem.SetFlags(const Value: TInspectorItemFlags);
 var
   NewValue: TInspectorItemFlags;
 begin
-  NewValue := Value + [iifValueList, iifOwnerDrawListVariable];
+  NewValue := Value + [iifValueList, iifOwnerDrawListMaxHeight];
   inherited SetFlags(NewValue);
 end;
 
