@@ -28,7 +28,7 @@ Parameters
 Summary
   This event is triggered when a menu item has to be painted by the owner
 Description
-  Access the Canvas property of the Sender to draw the given Item in  the give Rect and respecting
+  Access the Canvas property of the Sender to draw the given Item in the given Rect and respecting
   the given State.
   Please note that this event will only be triggered if the Style of the Sender is msOwnerDraw   
 Parameters
@@ -199,6 +199,19 @@ Description
 See Also
   TJvMainMenu.ImageMargin, TJvPopupMenu.ImageMargin
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomMenuItemPainter.LeftMargin
+Summary
+  This is the size of the margin to be drawn on the left side of the menu
+Description
+  Most derived painters will publish this property, thus allowing you to specify that you
+  want a colored margin to be drawn on the side of your menu items.
+  By default, this is a gradient from clBlue to clBlack but you can provide an event handler
+  for OnDrawLeftMargin and do your own rendering in it.
+  Note: If the system displays text from right to left, the margin is drawn on the right
+  side of the menu.
+See Also
+  OnDrawLeftMargin
+----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.Images
 Summary
   Returns the Images property of the associated menu
@@ -255,6 +268,18 @@ Parameters
   Height - On return, must contain the height of the item
 See Also
   Paint
+----------------------------------------------------------------------------------------------------
+@@TJvCustomMenuItemPainter.OnDrawLeftMargin
+Summary
+  This is the event called when the margin is to be drawn
+Description
+  Most derived painters will publish this property, thus allowing you to provide an event 
+  handler for OnDrawLeftMargin and do your own rendering in it.
+  If LeftMargin is equal to 0, the event is never fired.
+  Note: If the system displays text from right to left, the margin is drawn on the right
+  side of the menu.
+See Also
+  LeftMargin
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.Paint
 Summary
