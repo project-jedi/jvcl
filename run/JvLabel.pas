@@ -16,8 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Michael Beck [mbeck att bigfoot dott com].
-Peter Thornqvist [peter3 att sourceforge dott net]
-Hans-eric Grönlund
+Peter Thornqvist [peter3 at sourceforge dot net]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -112,7 +111,7 @@ type
     procedure SetImageIndex(Value: TImageIndex);
     procedure SetImages(Value: TCustomImageList);
     procedure DoImagesChange(Sender:TObject);
-    procedure DrawAngleText(var Rect: TRect; Flags: Word);
+    procedure DrawAngleText(var Rect: TRect {HEG}; Flags: Word);
     procedure SetAngle(Value: TJvLabelRotateAngle);
     procedure SetHotTrackFont(Value: TFont);
     procedure SetSpacing(Value: Integer);
@@ -477,29 +476,29 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvCustomLabel.DrawAngleText(var Rect: TRect; Flags: Word);
+procedure TJvCustomLabel.DrawAngleText(var Rect: TRect {HEG}; Flags: Word);
 var
   Text: array[0..4096] of Char;
   LogFont, NewLogFont: TLogFont;
   NewFont: HFont;
-
+  //HEG: MRect: TRect;
   TextX, TextY: Integer;
   Phi: Real;
   Angle10: Integer;
-  w, h: Integer;
-  CalcRect: Boolean;
+  w, h: Integer; //HEG
+  CalcRect: Boolean; //HEG
 begin
   Angle10 := Angle * 10;
-  CalcRect := (Flags and DT_CALCRECT <> 0);
+  CalcRect := (Flags and DT_CALCRECT <> 0); //HEG
   StrLCopy(@Text, PChar(GetLabelCaption), SizeOf(Text) - 1);
-  if CalcRect and ((Text[0] = #0) or ShowAccelChar and
+  if {HEG: (Flags and DT_CALCRECT <> 0)}CalcRect and ((Text[0] = #0) or ShowAccelChar and
     (Text[0] = '&') and (Text[1] = #0)) then
     StrCopy(Text, ' ');
   Canvas.Font := Font;
   if GetObject(Font.Handle, SizeOf(TLogFont), @LogFont) = 0 then
     RaiseLastOSError;
   NewLogFont := LogFont;
-
+  //HEG: MRect := ClientRect;
   NewLogFont.lfEscapement := Angle10;
   NewLogFont.lfOutPrecision := OUT_TT_ONLY_PRECIS;
   NewFont := CreateFontIndirect(NewLogFont);
@@ -513,17 +512,19 @@ begin
   Phi := Angle10 * Pi / 1800;
   if not AutoSize then
   begin
-    w := Rect.Right - Rect.Left;
-    h := Rect.Bottom - Rect.Top;
-    TextX := Trunc(0.5 * w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) - 0.5 * Canvas.TextHeight(Text) *
+    w := Rect.Right - Rect.Left; // HEG
+    h := Rect.Bottom - Rect.Top; // HEG
+    TextX := Trunc(0.5 * {HEG: ClientWidth}w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) - 0.5 * Canvas.TextHeight(Text) *
       Sin(Phi));
-    TextY := Trunc(0.5 * h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) + 0.5 * Canvas.TextWidth(Text) *
+    TextY := Trunc(0.5 * {HEG: ClientHeight}h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) + 0.5 * Canvas.TextWidth(Text) *
       Sin(Phi));
   end
   else
   begin
-    w := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
-    h := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
+    w := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi))); // HEG
+    h := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi))); // HEG
+    //HEG: ClientWidth := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
+    //HEG: ClientHeight := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
     TextX := 2;
     if (Angle10 > 900) and (Angle10 < 2700) then
       TextX := TextX + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)));
@@ -536,13 +537,13 @@ begin
       TextY := TextY + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)));
   end;
 
-  if CalcRect then
-  begin                          
-    Rect.Right := Rect.Left + w; 
-    Rect.Bottom := Rect.Top + h; 
-  end                            
-  else                           
-  begin                          
+  if CalcRect then               // HEG
+  begin                          // HEG
+    Rect.Right := Rect.Left + w; // HEG
+    Rect.Bottom := Rect.Top + h; // HEG
+  end                            // HEG
+  else                           // HEG
+  begin                          // HEG
     if not Enabled then
     begin
       Canvas.Font.Color := clBtnHighlight;
@@ -552,23 +553,26 @@ begin
     end
     else
       Canvas.TextOut(TextX, TextY, Text);
-  end;                           
+  end;                           // HEG
 end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-procedure TJvCustomLabel.DrawAngleText(Flags: Word);
+procedure TJvCustomLabel.DrawAngleText(var Rect: TRect {HEG}; Flags: Word);
 var
   Text: array[0..4096] of Char;
-  MRect: TRect;
+  //HEG: MRect: TRect;
   TextX, TextY: Integer;
   Phi: Real;
+  w, h: Integer; //HEG
+  CalcRect: Boolean; //HEG
 begin
+  CalcRect := (Flags and DT_CALCRECT <> 0); //HEG
   StrLCopy(@Text, PChar(GetLabelCaption), SizeOf(Text) - 1);
-  if (Flags and DT_CALCRECT <> 0) and ((Text[0] = #0) or ShowAccelChar and
+  if {HEG: (Flags and DT_CALCRECT <> 0)}CalcRect and ((Text[0] = #0) or ShowAccelChar and
     (Text[0] = '&') and (Text[1] = #0)) then
     StrCopy(Text, ' ');
-  MRect := ClientRect;
+  //HEG: MRect := ClientRect;
 
   Canvas.Start;
 //  QPainter_save(Canvas.Handle);
@@ -578,15 +582,17 @@ begin
     Phi := Angle * Pi / 180;
     if not AutoSize then
     begin
-      TextX := Trunc(0.5 * ClientWidth - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) - 0.5 * Canvas.TextHeight(Text) *
+      w := Rect.Right - Rect.Left; // HEG
+      h := Rect.Bottom - Rect.Top; // HEG
+      TextX := Trunc(0.5 * {HEG: ClientWidth}w - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) - 0.5 * Canvas.TextHeight(Text) *
         Sin(Phi));
-      TextY := Trunc(0.5 * ClientHeight - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) + 0.5 * Canvas.TextWidth(Text) *
+      TextY := Trunc(0.5 * {HEG: ClientHeight}h - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) + 0.5 * Canvas.TextWidth(Text) *
         Sin(Phi));
     end
     else
     begin
-      ClientWidth := 6 + Ceil(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
-      ClientHeight := 6 + Ceil(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
+      //HEG: ClientWidth := 6 + Ceil(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
+      //HEG: ClientHeight := 6 + Ceil(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
       TextX := 3;
       TextY := 3;
       if Angle <= 90 then
@@ -610,18 +616,23 @@ begin
 
 //    QPainter_translate(Canvas.Handle, TextX, TextY);
 //    QPainter_rotate(Canvas.Handle, -(Angle {div 2}));
-    if not Enabled then
-    begin
-      Canvas.Font.Color := clBtnHighlight;
-      TextOutAngle( Canvas, Angle, TextX+1, TextY+1, Text);
-      Canvas.Font.Color := clBtnShadow;
-      TextOutAngle(Canvas, Angle, TextX, TextY, Text);
-    end
-    else
-      //Canvas.TextOut(0, 0, Text);
-    begin
-      TextOutAngle(Canvas, Angle, TextX, TextY, Text);
-    end;
+    if CalcRect then               // HEG
+    begin                          // HEG
+      Rect.Right := Rect.Left + w; // HEG
+      Rect.Bottom := Rect.Top + h; // HEG
+    end                            // HEG
+    else                           // HEG
+    begin                          // HEG
+      if not Enabled then
+      begin
+        Canvas.Font.Color := clBtnHighlight;
+        TextOutAngle( Canvas, Angle, TextX+1, TextY+1, Text);
+        Canvas.Font.Color := clBtnShadow;
+        TextOutAngle(Canvas, Angle, TextX, TextY, Text);
+      end
+      else
+        TextOutAngle(Canvas, Angle, TextX, TextY, Text);
+    end;                           // HEG
   finally
 //    QPainter_restore(Canvas.Handle);
     Canvas.Stop;
@@ -646,7 +657,7 @@ begin
       DrawThemedBackground(Self, Canvas, ClientRect, Self.Color);
     Brush.Style := bsClear;
     if Angle <> 0 then
-      DrawAngleText(Rect, DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment])
+      DrawAngleText(Rect{HEG}, DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment])
     else
     begin
       Rect := ClientRect;
@@ -676,6 +687,7 @@ begin
       Brush.Color := Self.Color;
       DrawFocusRect(Rect);
     end;
+    //HEG: AdjustBounds;
   end;
 end;
 
@@ -706,16 +718,16 @@ begin
     Canvas.Start(False);
     try
     {$ENDIF VisualCLX}
-      if Angle = 0 then
-      begin
+      if Angle = 0 then // HEG
+      begin             // HEG
         DoDrawText(Rect, DT_EXPANDTABS or DT_CALCRECT or WordWraps[FWordWrap]);
         Dec(Rect.Left, FLeftMargin);
         Inc(Rect.Right, FRightMargin);
-      end
-      else
-      begin
-        DrawAngleText(Rect, DT_CALCRECT or DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment]); 
-      end;              
+      end               // HEG
+      else              // HEG
+      begin             // HEG
+        DrawAngleText(Rect, DT_CALCRECT or DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment]); // HEG
+      end;              // HEG
     {$IFDEF VisualCLX}
     finally
       Canvas.Stop;
