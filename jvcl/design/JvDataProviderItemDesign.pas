@@ -56,12 +56,13 @@ implementation
 
 uses
   SysUtils, TypInfo,
-  Windows, ImgList,
-  {$IFDEF VisualCLX}
   {$IFDEF MSWINDOWS}
-  //Windows,
+  Windows,
   {$ENDIF MSWINDOWS}
+  {$IFDEF VisualCLX}
+  QWindows, 	
   {$ENDIF VisualCLX}
+  ImgList,
   JvDsgnConsts;
 
 type
