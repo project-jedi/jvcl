@@ -57,21 +57,7 @@ type
       const Text: WideString; lpDx: Pointer): Boolean;
 
     function ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions; Rect: PRect;
-      const Text: String; lpDx: Pointer): Boolean; overload;
-    {$IFDEF COMPILER6_UP}
-    function ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions;
-      Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean; overload;
-    {$ENDIF}
-
-    {$IFDEF VCL}
-    {$IFDEF COMPILER6_UP}
-    function TextExtent(const Text: WideString): TSize; overload;
-    function TextWidth(const Text: WideString): Integer; overload;
-    function TextHeight(const Text: WideString): Integer; overload;
-    procedure TextOut(X, Y: Integer; const Text: WideString); overload;
-    procedure TextRect(Rect: TRect; X, Y: Integer; const Text: WideString); overload;
-    {$ENDIF}
-    {$ENDIF VCL}
+      const Text: String; lpDx: Pointer): Boolean;
 
     {$IFDEF VisualCLX}
     procedure TextOutVCL(X, Y: Integer; const Text: WideString);
@@ -135,42 +121,6 @@ function TJvUnicodeCanvas.TextHeightW(const Text: WideString): Integer;
 begin
   Result := TextExtent(Text).cy;
 end;
-
-{$IFDEF COMPILER6_UP}
-
-function TJvUnicodeCanvas.TextExtent(const Text: WideString): TSize;
-begin
-  Result := TextExtentW(Text);
-end;
-
-function TJvUnicodeCanvas.TextHeight(const Text: WideString): Integer;
-begin
-  Result := TextHeightW(Text);
-end;
-
-procedure TJvUnicodeCanvas.TextOut(X, Y: Integer; const Text: WideString);
-begin
-  TextOutW(X, Y, Text);
-end;
-
-procedure TJvUnicodeCanvas.TextRect(Rect: TRect; X, Y: Integer;
-  const Text: WideString);
-begin
-  TextRectW(Rect, X, Y, Text);
-end;
-
-function TJvUnicodeCanvas.TextWidth(const Text: WideString): Integer;
-begin
-  Result := TextWidthW(Text);
-end;
-
-function TJvUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions; Rect: PRect;
-  const Text: WideString; lpDx: Pointer): Boolean;
-begin
-  Result := ExtTextOutW(X, Y, Options, Rect, Text, lpDx);
-end;
-
-{$ENDIF COMPILER6_UP}
 
 {$ENDIF VCL}
 
