@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Locked by peter3
+##Status: Completed (peter3), Review
 ----------------------------------------------------------------------------------------------------
 @@JvLinkedControls.pas
 Summary
@@ -10,121 +10,63 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControl
 Summary
-  Write here a summary (1 line)
+  An item in a TJvLinkedControls collection.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvLinkedControl.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvLinkedControl is the type of the Items property of TJvLinkedControls. It has properties that specifies
+  which control it is linked to and options for how the control should be managed.
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControl.Control
 Summary
-  Write here a summary (1 line)
+  Specifies the control this item is linked to.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set Control to a TControl or descendant on the form that you want to link
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControl.Options
 Summary
-  Write here a summary (1 line)
+  Specifies how the linked control is affected by changes to the owning control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use options to specify how Control is modified when the owning control's Enabled and/Or hcecked state changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControls
 Summary
-  Write here a summary (1 line)
+  Maintains a list of linked controls.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvLinkedControls.Add
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvLinkedControls.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvLinkedControls.Items
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvLinkedControls.Notification
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AComponent - Description for this parameter
-  Operation  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvLinkedControls.OnChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvLinkedControls is used as a support class for controls that wants to modify the Enabled stae of other
+  controls when it's own properties changes. TJvLinkedControls cannot be used by itself: it must be
+  associated with an owning control.
+
+  To add support for TJvLinkedControls to a control, you should:
+    * Declare a pubished property of type TJvLinkedControls
+    * Create the TJvLinkedControls instance in the constructor and set the AControl parameter of TJvLinkedControls.Create to self.
+    * Destroy the TJvLinkedControls instance in the destructor.
+    * Override the control's Notification procedure and call TJvLinkedControls.Notification.
+    * Implement a method that iterates the list of linked controls when the Enabled state of
+      the linked controls needs to be checked or changed.
+
+  For examples of controls using TJvLinkedControls, see TJvCheckBox and TJvRadioButton.
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControls.RestoreEnabled
 Summary
-  Write here a summary (1 line)
+  Specifies whether the enabled state of linked controls are restored when the linked control is removed or
+  replaced.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use RestoreEnabled to specify whether the Enabled state of linked controls is restored when the linked Control
+  is removed from the list or replaced by another Control. When RestoreEnabled is true, the Enabled state
+  is set to the same value as it was at the time the control was assigned. If false, the control's current
+  Enabled state is left untouched.
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControlsOption
 <TITLE TJvLinkedControlsOption type>
 Summary
-  Write here a summary (1 line)
+  Defines the available linking options for a linked control in a TJvLinkedControl.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvLinkedControlsOption defines the options available for how the Enabled state of a
+  linked control is modified when the Enabled and/or Checked state of the owning control
+  changes.
 @@TJvLinkedControlsOption.loLinkChecked
-  Description for loLinkChecked
+  Link the Checked state of the owning control to the Enabled state of the linked control.
 @@TJvLinkedControlsOption.loLinkEnabled
-  Description for loLinkEnabled
+  Link the Enabled state of the owning control to the Enabled state of the linked control.
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControlsOptions
 <TITLE TJvLinkedControlsOptions type>

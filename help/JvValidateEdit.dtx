@@ -181,18 +181,15 @@ Summary
 Description
   Write here a description
 Parameters
-  Sender  - Description for this parameter
-  Key     - Description for this parameter
-  AText   - Description for this parameter
-  Pos     - Description for this parameter
-  IsValid - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender  - The TJvCustomValidateEdit that called the event.
+  Key     - The key that was pressed last.
+  AText   - The current text of the control.
+  Pos     - The current caret position in the text.
+  IsValid - Set to true to accept the text, false otherwise.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.OnValueChanged
 Summary
-  Occurs when the value in the edit changes.
+  Occurs when the value (text) in the edit control changes.
 Description
   Write here a description
 See Also
@@ -250,19 +247,6 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvValidateEditCriticalPoints.Assign
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPoints.CheckPoints
 Summary
