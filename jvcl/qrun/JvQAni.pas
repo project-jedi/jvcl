@@ -43,13 +43,13 @@ interface
 
 uses
   SysUtils, Classes,
-  
+
   RTLConsts,
-  
-  
-  
-  QGraphics, QExtCtrls, QDialogs, Types, QWindows, 
-  
+
+
+
+  QGraphics, QExtCtrls, QDialogs, Types, QTypes, QWindows,
+
   JvQTypes;
 
 type
@@ -112,11 +112,15 @@ type
     constructor Create; override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
+
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;
-    
+
+    procedure LoadFromMimeSource(MimeSource: TMimeSource);override;
+    procedure SaveToMimeSource(MimeSource: TClxMimeSource);override;
+
     procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
       DecreaseColors, Vertical: Boolean);
     procedure AssignIconsToBitmap(Bitmap: TBitmap; BackColor: TColor;
@@ -132,6 +136,7 @@ type
     property Index: Integer read FIndex write SetIndex;
     property OriginalColors: Word read FOriginalColors;
     property Title: string read GetTitle;
+
   end;
 
 function LoadJvAniDialog: TJvAni;
@@ -139,10 +144,10 @@ function LoadJvAniDialog: TJvAni;
 implementation
 
 uses
-  
-  
+
+
   QConsts,
-  
+
   Math,
   JvQJVCLUtils, JvQJCLUtils, JvQIconList, JvQConsts, JvQResources;
 
@@ -1048,6 +1053,16 @@ begin
   finally
     Temp.Free;
   end;
+end;
+
+procedure TJvAni.LoadFromMimeSource(MimeSource: TMimeSource);
+begin
+  raise EInvalidGraphicOperation.Create(RsENotSupported);
+end;
+
+procedure TJvAni.SaveToMimeSource(MimeSource: TClxMimeSource);
+begin
+  raise EInvalidGraphicOperation.Create(RsENotSupported);
 end;
 
 initialization

@@ -466,6 +466,7 @@ type
     FAlignment: TJvWizardImageAlignment;
     FLayout: TJvWizardImageLayout;
     FOnChange: TNotifyEvent;
+    FTransparent:boolean;
     procedure SetPicture(Value: TPicture);
     procedure SetAlignment(Value: TJvWizardImageAlignment);
     procedure SetLayout(Value: TJvWizardImageLayout);
@@ -619,7 +620,7 @@ type
     property BorderWidth: Integer read FBorderWidth write SetBorderWidth default 1;
     property Image: TJvWizardImage read FImage write FImage;
     property Width: Integer read FWidth write SetWidth default 164;
-    property Color default clActiveCaption;
+    property Color default clActiveHighlight;
     property Visible;
   end;
 
@@ -1616,6 +1617,8 @@ end;
 procedure TJvWizardImage.SetPicture(Value: TPicture);
 begin
   FPicture.Assign(Value);
+  if FPicture.Graphic <> nil then
+    FPicture.Graphic.Transparent := FTransparent;
 end;
 
 procedure TJvWizardImage.SetLayout(Value: TJvWizardImageLayout);
@@ -1635,7 +1638,7 @@ begin
   if Assigned(AGraphic) then
     Result := AGraphic.Transparent
   else
-    Result := False;
+    Result := FTransparent;
 end;
 
 procedure TJvWizardImage.SetTransparent(Value: Boolean);
@@ -1643,6 +1646,7 @@ var
   AGraphic: TGraphic;
 begin
   AGraphic := FPicture.Graphic;
+  FTransparent := Value;
   if Assigned(AGraphic) and not
      (
      (AGraphic is TIcon)) then
@@ -2077,7 +2081,7 @@ constructor TJvWizardWaterMark.Create;
 begin
   inherited Create;
   FAlign := alLeft;
-  Color := clActiveCaption;
+  Color := clActiveHighlight;
   FWidth := 164;
   FBorderWidth := 1;
   FImage := TJvWizardImage.Create;

@@ -45,7 +45,7 @@ uses
   Windows, Graphics, ExtCtrls, Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QExtCtrls, QDialogs, Types, QWindows, 
+  QGraphics, QExtCtrls, QDialogs, Types, QTypes, QWindows, 
   {$ENDIF VisualCLX}
   JvTypes;
 
@@ -117,6 +117,10 @@ type
     procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE); override;
     procedure SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE); override;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure LoadFromMimeSource(MimeSource: TMimeSource);override;
+    procedure SaveToMimeSource(MimeSource: TClxMimeSource);override;
+    {$ENDIF VisualCLX}
     procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
       DecreaseColors, Vertical: Boolean);
     procedure AssignIconsToBitmap(Bitmap: TBitmap; BackColor: TColor;
@@ -1079,6 +1083,18 @@ begin
     Temp.Free;
   end;
 end;
+
+{$IFDEF VisualCLX}
+procedure TJvAni.LoadFromMimeSource(MimeSource: TMimeSource);
+begin
+  raise EInvalidGraphicOperation.Create(RsENotSupported);
+end;
+
+procedure TJvAni.SaveToMimeSource(MimeSource: TClxMimeSource);
+begin
+  raise EInvalidGraphicOperation.Create(RsENotSupported);
+end;
+{$ENDIF VisualCLX}
 
 initialization
   Classes.RegisterClass(TJvAni);

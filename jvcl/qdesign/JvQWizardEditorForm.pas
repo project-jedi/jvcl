@@ -129,6 +129,7 @@ type
       var Handled: Boolean);
     procedure acMoveUpExecute(Sender: TObject);
     procedure acMoveDownExecute(Sender: TObject);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
   private
     FWizard: TJvWizard;
     procedure SetWizard(const Value: TJvWizard);
@@ -392,14 +393,15 @@ procedure TJvWizardPageListEditor.SelectWizardPage(const Index: Integer);
 var
   Page: TJvWizardCustomPage;
 begin
-  if Assigned(FWizard) and Active then
+  if Assigned(FWizard) {and Active} then
   begin
     Page := nil;
     if (Index >= 0) and (Index < FWizard.PageCount) then
       Page := TJvWizardCustomPage(FWizard.Pages[Index]);
-    Designer.SelectComponent(Page);
     Wizard.ActivePage := Page;
+    Designer.SelectComponent(Page);
     Designer.Modified;
+    BringToFront;
   end;
 end;
 
@@ -601,6 +603,12 @@ begin
     TJvWizardCustomPage(FWizard.Pages[I]).PageIndex := I + 1;
     lbxWizardPages.ItemIndex := I + 1;
   end;
+end;
+
+procedure TJvWizardPageListEditor.FormKeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  ActivateInspector(Key);
 end;
 
 end.
