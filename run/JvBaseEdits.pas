@@ -434,6 +434,24 @@ begin
   Result := (DisplayFormat <> DefaultDisplayFormat);
 end;
 
+{ (rb) This function works NOT the same as JvJCLUtils.TextToValText; for example
+       it does NOT remove 'a'..'z' chars.
+       Couldn't come up with a good name, so feel free to change it
+}
+function xTextToValText(const AValue: string): string;
+begin
+  Result := DelRSpace(AValue);
+  if DecimalSeparator <> ThousandSeparator then begin
+    Result := DelChars(Result, ThousandSeparator);
+  end;
+  if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
+    Result := ReplaceStr(Result, '.', DecimalSeparator);
+  if (DecimalSeparator <> ',') and (ThousandSeparator <> ',') then
+    Result := ReplaceStr(Result, ',', DecimalSeparator);
+  if Result = '' then Result := '0'
+  else if Result = '-' then Result := '-0';
+end;
+
 function TJvCustomNumEdit.IsValidChar(Key: Char): Boolean;
 var
   S: string;
@@ -445,7 +463,7 @@ begin
   GetSel(SelStart, SelStop);
   System.Delete(S, SelStart + 1, SelStop - SelStart);
   System.Insert(Key, S, SelStart + 1);
-  S := TextToValText(S);
+  S := xTextToValText(S);
   DecPos := Pos(DecimalSeparator, S);
   if DecPos > 0 then
   begin
