@@ -30,9 +30,6 @@ Known Issues:
   TJvTreeView:
     When dragging an item and MultiSelect is True droptarget node is not painted
     correctly.
-  TJvIpAddress:
-    Can't focus next internal edit by TAB key.
-    Changing the color only changes the color of the child edits, not the control background
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -90,6 +87,8 @@ type
     constructor Create(AIPAddress: TJvIPAddress);
     destructor Destroy; override;
 
+    procedure SetFocus;
+    function Focused: Boolean;
     procedure DefaultHandler(var Msg); override;
   end;
 
@@ -144,7 +143,7 @@ type
     property Value4: Byte index 3 read GetValues write SetValues;
   end;
 
-  TJvIPAddress = class(TJvWinControl)
+  TJvIPAddress = class(TJvCustomControl)
   private
     FEditControls: array [0..3] of TJvIPEditControlHelper;
     FEditControlCount: Integer;
@@ -153,8 +152,9 @@ type
     FRange: TJvIPAddressRange;
     FAddressValues: TJvIPAddressValues;
     FSaveBlank: Boolean;
+    FTabThroughFields: Boolean;
+    FLocalFont: HFONT;
     FOnFieldChange: TJvIpAddrFieldChangeEvent;
-    LocalFont: HFONT;
     FOnChange: TNotifyEvent;
     procedure ClearEditControls;
     procedure DestroyLocalFont;
@@ -167,6 +167,10 @@ type
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
     procedure WMSetText(var Msg: TWMSetText); message WM_SETTEXT;
     procedure WMCtlColorEdit(var Msg: TWMCtlColorEdit); message WM_CTLCOLOREDIT;
+    procedure WMKeyDown(var Msg: TWMKeyDown); message WM_KEYDOWN;
+    procedure WMKeyUp(var Msg: TWMKeyUp); message WM_KEYUP;
+    //procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    procedure SelectTabControl(Previous: Boolean);
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
@@ -179,6 +183,7 @@ type
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
     procedure DoChange; dynamic;
+    procedure Paint; override;
 
     procedure DoAddressChange(Sender: TObject); virtual;
     procedure DoAddressChanging(Sender: TObject; Index: Integer;
@@ -212,6 +217,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop default True;
+    property TabThroughFields: Boolean read FTabThroughFields write FTabThroughFields default True;
     property Text;
     property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -541,7 +547,9 @@ type
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+    procedure DestroyWnd; override;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
+    procedure WMPaint(var Msg: TMessage); message WM_PAINT;
     {$ENDIF VCL}
     procedure Change(Node: TTreeNode); override;
     procedure Delete(Node: TTreeNode); override;
@@ -713,6 +721,23 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvIPEditControlHelper.SetFocus;
+begin
+  if FHandle <> 0 then
+  begin
+    Windows.SetFocus(FHandle);
+    SendMessage(FHandle, EM_SETSEL, 0, MaxInt); 
+  end;
+end;
+
+function TJvIPEditControlHelper.Focused: Boolean;
+begin
+  if FHandle <> 0 then
+    Result := Windows.GetFocus = FHandle
+  else
+    Result := False;
+end;
+
 procedure TJvIPEditControlHelper.DefaultHandler(var Msg);
 begin
   with TMessage(Msg) do
@@ -745,7 +770,11 @@ begin
     WM_DESTROY:
       Handle := 0;
     WM_KEYFIRST..WM_KEYLAST:
-      FIPAddress.Dispatch(Msg);
+      begin
+        FIPAddress.Dispatch(Msg);
+        if Msg.WParam = VK_TAB then
+          Exit;
+      end;
     // mouse messages are sent through TJvIPAddress.WMParentNotify
   end;
   Dispatch(Msg);
@@ -761,12 +790,14 @@ begin
   CheckCommonControl(ICC_INTERNET_CLASSES);
   {$ENDIF MSWINDOWS}
   inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csFixedHeight, csReflector];
+
   FRange := TJvIPAddressRange.Create(Self);
   FAddressValues := TJvIPAddressValues.Create;
   FAddressValues.OnChange := DoAddressChange;
   FAddressValues.OnChanging := DoAddressChanging;
+  FTabThroughFields := True;
 
-  ControlStyle := ControlStyle + [csFixedHeight, csReflector];
   Color := clWindow;
   ParentColor := False;
   TabStop := True;
@@ -846,10 +877,10 @@ end;
 
 procedure TJvIPAddress.DestroyLocalFont;
 begin
-  if LocalFont <> 0 then
+  if FLocalFont <> 0 then
   begin
-    OSCheck(DeleteObject(LocalFont));
-    LocalFont := 0;
+    OSCheck(DeleteObject(FLocalFont));
+    FLocalFont := 0;
   end;
 end;
 
@@ -857,6 +888,92 @@ procedure TJvIPAddress.DestroyWnd;
 begin
   FSaveBlank := IsBlank;
   inherited DestroyWnd;
+end;
+
+type
+  TWinControlAccess = class(TWinControl);
+
+procedure TJvIPAddress.SelectTabControl(Previous: Boolean);
+var
+  Control: TWinControl;
+begin
+  Control := TWinControlAccess(Parent).FindNextControl(Self, not Previous, True, True);
+  if Control <> nil then
+    Control.SetFocus;
+end;
+
+procedure TJvIPAddress.WMKeyDown(var Msg: TWMKeyDown);
+var
+  I, FocusIndex: Integer;
+begin
+  if Msg.CharCode = VK_TAB then
+  begin
+    FocusIndex := -1;
+    for I := 0 to FEditControlCount - 1 do
+    begin
+      if FEditControls[I].Focused then
+      begin
+        FocusIndex := I;
+        Break;
+      end;
+    end;
+
+    if GetKeyState(VK_SHIFT) < 0 then
+      Dec(FocusIndex)
+    else
+      Inc(FocusIndex);
+
+    if FocusIndex >= 0 then
+    begin
+      if FocusIndex < FEditControlCount then
+        FEditControls[FocusIndex].SetFocus
+      else
+        SelectTabControl(False);
+    end
+    else
+    if FocusIndex = -1 then
+      SelectTabControl(True);
+  end
+  else
+    inherited;
+end;
+
+procedure TJvIPAddress.WMKeyUp(var Msg: TWMKeyUp);
+begin
+  if Msg.CharCode = VK_TAB then
+    Msg.Result := 0
+  else
+    inherited;
+end;
+
+function TJvIPAddress.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  Canvas.Brush.Color := Color;
+  Canvas.FillRect(ClientRect);
+  Result := True;
+end;
+
+procedure TJvIPAddress.Paint;
+var
+  I: Integer;
+  R1, R2: TRect;
+  X, Y: Integer;
+  Pt: TPoint;
+begin
+  { We paint the '.' ourself so we can also paint the control's background in
+    DoPaintBackground what would be impossible without self-painting because
+    the IP-Control always paints a clWindow background in WM_PAINT. } 
+  for I := 0 to (FEditControlCount - 1) - 1 do
+  begin
+    GetWindowRect(FEditControls[I].Handle, R1);
+    GetWindowRect(FEditControls[I + 1].Handle, R2);
+    X := R1.Right + (R2.Left - R1.Right) div 2;
+    Y := R1.Top;
+    Pt := ScreenToClient(Point(X, Y));
+    Canvas.Font.Color := Font.Color;
+    Canvas.Brush.Color := Color;
+    Canvas.TextOut(Pt.X, Pt.Y, '.');
+  end;
 end;
 
 procedure TJvIPAddress.AdjustHeight;
@@ -875,12 +992,12 @@ begin
   Height := Metrics.tmHeight + (GetSystemMetrics(SM_CYBORDER) * 8);
   {  for I := 0 to FEditControlCount - 1 do
     begin
-      GetWindowRect(FEditControls[I], R);
+      GetWindowRect(FEditControls[I].Handle, R);
       R.TopLeft := ScreenToClient(R.TopLeft);
       R.BottomRight := ScreenToClient(R.BottomRight);
       OffsetRect(R, -R.Left, -R.Top);
       R.Bottom := ClientHeight;
-      SetWindowPos(FEditControls[I], 0, 0, 0, R.Right, R.Bottom,
+      SetWindowPos(FEditControls[I].Handle, 0, 0, 0, R.Right, R.Bottom,
         SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE);
     end;}
 end;
@@ -1038,14 +1155,11 @@ begin
   inherited;
 end;
 
-function TJvIPAddress.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  Result := True;
-end;
-
 procedure TJvIPAddress.DoGetDlgCode(var Code: TDlgCodes);
 begin
   Include(Code, dcWantArrows);
+  if FTabThroughFields then
+    Include(Code, dcWantTab);
   Exclude(Code, dcNative); // prevent inherited call
 end;
 
@@ -1099,8 +1213,8 @@ begin
   try
     OSCheck(GetObject(Font.Handle, SizeOf(LF), @LF) > 0);
     DestroyLocalFont;
-    LocalFont := CreateFontIndirect(LF);
-    Msg.Font := LocalFont;
+    FLocalFont := CreateFontIndirect(LF);
+    Msg.Font := FLocalFont;
     inherited;
   except
     Application.HandleException(Self);
@@ -1489,7 +1603,6 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
 procedure TJvTabControl.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if (Key = VK_TAB) and (ssCtrl in Shift) then
@@ -1544,7 +1657,6 @@ begin
   else
     Result := inherited DrawTab(TabIndex, Rect, Active);
 end;
-
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
@@ -2095,8 +2207,11 @@ end;
 
 procedure TJvTreeNode.Reinitialize;
 begin
-  FChecked := not FChecked;
-  SetChecked(not FChecked);
+  if FChecked <> GetChecked then
+  begin
+    FChecked := not FChecked;
+    SetChecked(not FChecked);
+  end;
 end;
 
 //=== { TJvTreeView } ========================================================
@@ -2173,6 +2288,16 @@ procedure TJvTreeView.CreateWnd;
 begin
   FReinitializeTreeNode := True;
   inherited CreateWnd;
+end;
+
+procedure TJvTreeView.DestroyWnd;
+var
+  I: Integer;
+begin
+  // update the FChecked field with the current data
+  for I := 0 to Items.Count - 1 do
+    TJvTreeNode(Items[I]).FChecked := TJvTreeNode(Items[I]).Checked;
+  inherited DestroyWnd;
 end;
 
 procedure TJvTreeView.Delete(Node: TTreeNode);
@@ -2494,31 +2619,28 @@ begin
   inherited;
 end;
 
+procedure TJvTreeView.WMPaint(var Msg: TMessage);
+var
+  I: Integer;
+begin
+  inherited;
+  { The tree node's checked property is reset at the first WM_PAINT.
+    So we must set it here again, but only the first time. }
+  if FReinitializeTreeNode then
+  begin
+    FReinitializeTreeNode := False;
+    for I := 0 to Items.Count - 1 do
+      TJvTreeNode(Items[I]).Reinitialize;
+  end;
+end;
+
 procedure TJvTreeView.CNNotify(var Msg: TWMNotify);
 var
   Node: TTreeNode;
   Point: TPoint;
   I, J: Integer;
 begin
-  if Assigned(Msg.NMHdr) then
-  begin
-    case Msg.NMHdr^.code of
-      NM_CUSTOMDRAW:
-        begin
-          { The tree node's checked property is reset by the first CustomDraw.
-            So we must set it here again, but only at the first time. }
-          if FReinitializeTreeNode then
-          begin
-            FReinitializeTreeNode := False;
-            for I := 0 to Items.Count - 1 do
-              TJvTreeNode(Items[I]).Reinitialize;
-          end;
-        end;
-    end;
-  end;
-
   inherited;
-
   if Windows.GetCursorPos(Point) then // prevent AV after "computer locked" dialog
   begin
     Point := ScreenToClient(Point);
@@ -2892,6 +3014,9 @@ begin
     Change;
   end;
 end;
+
+initialization
+  AllocConsole;
 
 end.
 
