@@ -69,7 +69,7 @@ const
   // (rom) now in JvJCLUtils.pas
 
   { RALib 1.55 }
-
+  {$IFDEF MSWINDOWS}
   {$IFDEF DELPHI2}
   SDelphiKey = 'Software\Borland\Delphi\2.0';
   {$ENDIF DELPHI2}
@@ -109,6 +109,10 @@ const
   {$IFDEF DELPHI8}
   SDelphiKey = 'Software\Borland\Delphi\8.0';
   {$ENDIF DELPHI8}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  SDelphiKey = '.borland\.Jvcl';
+  {$ENDIF LINUX}
 
   { JvDataProvider constants }
   { Consumer attributes }
@@ -189,6 +193,7 @@ const
   AllFilePattern = '*.*';
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
+  RegPathDelim = '_';
   PathDelim = '/';
   AllFilePattern = '*';
   {$ENDIF LINUX}
