@@ -1342,8 +1342,17 @@ const
   WAIT_ABANDONED          = STATUS_ABANDONED_WAIT_0;
   WAIT_ABANDONED_0        = STATUS_ABANDONED_WAIT_0;
   WAIT_TIMEOUT            = STATUS_TIMEOUT;
+  MAXIMUM_WAIT_OBJECTS    = 64;
+
+type
+  TWOHandleArray = array[0..MAXIMUM_WAIT_OBJECTS - 1] of THandle;
+  PWOHandleArray = ^TWOHandleArray;
+
+function WaitForMultipleObjects(Count: Cardinal; Handles: PWOHandleArray;
+  WaitAll: LongBool; Milliseconds: Cardinal): Cardinal;
 
 // all Handles are TObject derived classes
+
 function CloseHandle(hObject: THandle): LongBool;
 
 // memory management
@@ -6182,7 +6191,7 @@ begin
   case vKey of
     VK_SHIFT:
       if Mask and ShiftMask <> 0 then
-        Result := -32768;
+        Result := -32768;  // = $8000
     VK_CONTROL:
       if Mask and ControlMask <> 0 then
         Result := -32768;
@@ -6381,46 +6390,47 @@ var
   sem: TSemaphoreBuffer;
   psem: PSemaphoreBuffer;
   i: integer;
-  WaitTime: integer;
+  WaitTicks, StartTicks: cardinal;
 begin
   if timeout = nil then
     Result := semop(semid, sops, nsops)
   else
   begin
     Result := 0; // incase nsops = 0
-    WaitTime := 1000 * timeout.tv_sec  + timeout.tv_nsec div 1000000;
+    WaitTicks := 1000 * timeout.tv_sec  + timeout.tv_nsec div 1000000;
     psem := sops;
-    StartTime := GetTickCount ;
+    StartTicks := GetTickCount ;
     try
       for i:= 0 to nsops-1 do
       begin
         sem := psem^ ;
         sem.sem_flg := sem.sem_flg OR IPC_NOWAIT;
-        // process sem
-        while (GetTickCount - StartTime) >= WaitTime do
+
+        // process one sem
+        while (GetTickCount - StartTicks) <= WaitTicks do
         begin
           Result := semop(semid, @sem, 1);
-          case Result of
-          0:
-            begin
-              inc(psem);  // next one
-              break;
-            end;
-          EAGAIN:
-            if (psem^.sem_flg and IPC_NOWAIT) <> 0 then  // original flag
-              break
-            else
-              Sleep(10);  // try again
+          if Result <> -1 then
+          begin
+            inc(psem);  // succes, next semaphore
+            break;
+          end
           else
-            break;   // error
-          end; // case Result
+          begin
+            if (errno = EAGAIN) and ((psem^.sem_flg and IPC_NOWAIT) = 0)
+            then
+              Sleep(10) // try again
+            else
+              exit;    // no wait allowed or other error
+          end;
         end; // while
 
-        if Result <> 0 then
+        if (Result = -1)  and (errno <> EAGAIN) then
           break;
       end;  // for i:= 0 to ..
     except
-      Result := 1; // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      Result := -1;
+      // errno := EFAULT;
     end;
   end;
 end;
@@ -6945,6 +6955,7 @@ begin
 end;
 
 // common handle functions
+
 function WaitForSingleObject(Handle: THandle; Milliseconds: Cardinal): Cardinal;
 begin
   Result := WAIT_FAILED;
@@ -6960,6 +6971,66 @@ begin
     end;
   except
     Result := WAIT_FAILED;
+  end;
+end;
+
+// The WaitForMultipleObjects function returns when one of the following occurs:
+//
+// ·	Either any one or all of the specified objects are in the signaled state.
+// ·	The time-out interval elapses.
+function WaitForMultipleObjects(Count: Cardinal; Handles: PWOHandleArray;
+  WaitAll: LongBool; Milliseconds: Cardinal): Cardinal;
+var
+  i: integer;
+  startticks: int64;
+  ticks: integer;
+begin
+  startticks := GetTickCount;
+  Result := WAIT_OBJECT_0;
+  if WaitAll then
+  begin
+    for i := 0 to Count - 1  do
+    begin
+      ticks :=  Milliseconds - (GetTickCount - StartTicks);
+      if ticks < 0 then
+      begin
+        Result := WAIT_TIMEOUT;
+        exit;
+      end
+      else
+      begin
+        Result := WaitForSingleObject(Handles[i], Ticks);
+        if Result <> WAIT_OBJECT_0 then
+        begin
+          Inc(Result, i);
+          exit;
+        end;
+      end;
+    end;
+  end
+  else
+  begin  //
+    while true do
+    begin
+      for i := 0 to Count-1 do
+      begin
+        Result := WaitForSingleObject(Handles[i], 0);
+        case Result of
+        WAIT_FAILED, WAIT_ABANDONED, WAIT_OBJECT_0:
+          begin
+            Inc(Result, i);
+            exit;
+          end;
+        else
+          if (startticks-GetTickCount) > MilliSeconds then
+          begin
+            Result := WAIT_TIMEOUT;
+            exit;
+          end;
+        end;
+      end;
+      Sleep(10);
+    end;
   end;
 end;
 
@@ -7182,16 +7253,17 @@ begin
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   if (Operation = 'open') or (Operation = '') then
-    Line := Format('%s "%s" %s&',[Shell, Filename, Parameters])
+    Line := Format('%s "%s" %s',[Shell, Filename, Parameters])
   else
   if Operation = 'browse' then
-    Line := Format('%s "%s" %s&',
+    Line := Format('%s "%s" %s',
       [GetEnvironmentVariable('BROWSER'), Filename, Parameters])
   else
   begin
     Result := THandle(HINSTANCE_ERROR);
     Exit;
   end;
+  Line := Trim(Line)+ '&';
   if Directory <> '' then
     Line := Format('cd "%s";', [Directory]) + Line;
   if Libc.system(PChar(Line)) <> -1 then
@@ -7881,9 +7953,7 @@ end;
 initialization
   {$IFDEF LINUX}
   InitGetTickCount;
-  {$IFDEF DEBUG}
   WaitObjectList := THandleObjectList.Create;
-  {$ENDIF DEBUG}
   {$ENDIF LINUX}
   GlobalCaret := TEmulatedCaret.Create;
   InitializeCriticalSection(SockObjectListCritSect);
@@ -7897,9 +7967,6 @@ finalization
   FreePainterInfos;
   DeleteCriticalSection(SockObjectListCritSect);
   {$IFDEF LINUX}
-  {$IFDEF DEBUG}
   WaitObjectList.Free;
-  {$ENDIF}
   {$ENDIF LINUX}
-
 end.
