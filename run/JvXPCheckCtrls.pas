@@ -318,7 +318,7 @@ begin
             BitBlt(Handle, R.Left + 3 + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
               ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
               FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
-            {$IFDEF VisualCLX}
+            {$ENDIF VCL}
             FBgGradient.Canvas.Stop;
             {$ENDIF VisualCLX}
           end
@@ -347,7 +347,7 @@ begin
       Bitmap := TBitmap.Create;
       try
         Bitmap.Transparent := True;
-        Bitmap.LoadFromResourceName(hInstance, 'CHECKBOX');
+        Bitmap.LoadFromResourceName(hInstance, 'XPCHECKBOX');
         if Theme = WindowsXP then
           JvXPColorizeBitmap(Bitmap, dxColor_Chk_Enb_NmSymb_WXP)
         else

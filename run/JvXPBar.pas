@@ -604,14 +604,14 @@ begin
   Client := AClient as TJvXPBarItem;
 end;
 
-{$IFDEF VCL}
 {$IFDEF COMPILER6_UP}
+
 function TJvXPBarItemActionLink.IsAutoCheckLinked: Boolean;
 begin
   Result := (Client.AutoCheck = (Action as TCustomAction).AutoCheck);
 end;
 {$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
+{$ENDIF}
 
 function TJvXPBarItemActionLink.IsCaptionLinked: Boolean;
 begin
@@ -939,7 +939,7 @@ begin
   Result := (ActionLink = nil) or not FActionLink.IsAutoCheckLinked;
 end;
 {$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
+{$ENDIF}
 
 function TJvXPBarItem.IsCaptionStored: Boolean;
 begin
@@ -2070,9 +2070,9 @@ begin
               Index := 2; // down
           end;
           if FCollapsed then
-            Bitmap.LoadFromResourceName(hInstance, 'EXPAND' + IntToStr(Index))
+            Bitmap.LoadFromResourceName(hInstance, 'XPEXPAND' + IntToStr(Index))
           else
-            Bitmap.LoadFromResourceName(hInstance, 'COLLAPSE' + IntToStr(Index));
+            Bitmap.LoadFromResourceName(hInstance, 'XPCOLLAPSE' + IntToStr(Index));
         end;
         Bitmap.Transparent := True;
         Draw(Rect.Right - 24, Rect.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
