@@ -3,8 +3,8 @@ program DockingInCode;
  showing use of new center dock area.}
 uses
   Forms,
-  MainFm in '..\Tab2\MainFm.pas' {MainForm},
-  DocFm in '..\Tab2\DocFm.pas' {DocForm};
+  MainFm in 'MainFm.pas' {MainForm},
+  DocFm in 'DocFm.pas' {DocForm};
 
 {$R *.res}
 
