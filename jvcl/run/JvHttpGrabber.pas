@@ -346,11 +346,8 @@ begin
 end;
 
 function TJvHttpThread.GetLastErrorMsg: string;
-var
-  Msg: array [0..1023] of Char;
 begin
-  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil, GetLastError, 0, Msg, SizeOf(Msg), nil);
-  Result := Msg;
+  Result := SysErrorMessage(GetLastError);
 end;
 
 procedure DownloadCallBack(Handle: HInternet; Context: DWord;
