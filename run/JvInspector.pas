@@ -4102,7 +4102,7 @@ end;
 procedure TJvInspectorPainter.ApplyNameFont;
 begin
   Canvas.Font := Inspector.Font;
-  if Item.IsCategory then
+  if Assigned(Item) and Item.IsCategory then
     Canvas.Font.Color := CategoryTextColor
   else
     Canvas.Font.Color := NameColor;
