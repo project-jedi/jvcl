@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2004-01-06
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -56,6 +56,9 @@ type
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
+    {$IFDEF VCL}
+    procedure CreateWnd; override;
+    {$ENDIF VCL}    
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -94,20 +97,18 @@ begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
     FOver := True;
+    inherited MouseEnter(AControl);
   end;
-  inherited MouseEnter(AControl);
 end;
 
 procedure TJvProgressBar.MouseLeave(AControl: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     FOver := False;
     Application.HintColor := FSaved;
+    inherited MouseLeave(AControl);
   end;
-  inherited MouseLeave(AControl);
 end;
 
 procedure TJvProgressBar.ParentColorChanged;
@@ -118,14 +119,23 @@ begin
 end;
 
 {$IFDEF VCL}
+procedure TJvProgressBar.CreateWnd;
+begin
+  inherited CreateWnd;
+  SendMessage(Handle, PBM_SETBARCOLOR, 0, ColorToRGB(FFillColor));
+end;
+
 procedure TJvProgressBar.SetFillColor(const Value: TColor);
 begin
   if FFillColor <> Value then
   begin
     FFillColor := Value;
-    SendMessage(Handle, PBM_SETBARCOLOR, 0, ColorToRGB(FFillColor));
-    // (rom) Invalidate is not good enough
-    Repaint;
+    if HandleAllocated then
+    begin
+      SendMessage(Handle, PBM_SETBARCOLOR, 0, ColorToRGB(FFillColor));
+      // (rom) Invalidate is not good enough
+      Repaint;
+    end;
   end;
 end;
 {$ENDIF}
