@@ -19,7 +19,6 @@ object MyParams: TMyParams
     Width = 345
     Height = 225
     ActivePage = TabSheet1
-    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Application specific page 1'

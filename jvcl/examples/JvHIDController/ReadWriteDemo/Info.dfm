@@ -14,9 +14,6 @@ object InfoForm: TInfoForm
   OldCreateOrder = False
   Position = poOwnerFormCenter
   OnShow = FormShow
-  DesignSize = (
-    565
-    379)
   PixelsPerInch = 96
   TextHeight = 16
   object Label1: TLabel

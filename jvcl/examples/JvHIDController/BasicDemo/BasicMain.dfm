@@ -48,9 +48,6 @@ object MainForm: TMainForm
     C3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFFC3FFFFFF
     C3FFFFFFC3FFFFFF01FFFFFC003FFFFFFFFFFFFFFFFF}
   OldCreateOrder = False
-  DesignSize = (
-    272
-    380)
   PixelsPerInch = 96
   TextHeight = 13
   object Description: TLabel

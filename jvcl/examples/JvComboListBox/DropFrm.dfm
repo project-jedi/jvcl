@@ -18,9 +18,6 @@ object frmDrop: TfrmDrop
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
-  DesignSize = (
-    290
-    287)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

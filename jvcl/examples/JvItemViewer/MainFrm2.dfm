@@ -11,9 +11,6 @@ object Form1: TForm1
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
-  DesignSize = (
-    775
-    513)
   PixelsPerInch = 96
   TextHeight = 13
   object JvImageFilesViewer1: TJvImageFilesViewer

@@ -15,9 +15,6 @@ object frmErrIndicatorDemo: TfrmErrIndicatorDemo
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  DesignSize = (
-    556
-    351)
   PixelsPerInch = 96
   TextHeight = 13
   object lblClient: TLabel

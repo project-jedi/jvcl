@@ -16,9 +16,6 @@ object frmSpellChecker: TfrmSpellChecker
   Position = poMainFormCenter
   OnCreate = FormCreate
   OnShow = FormShow
-  DesignSize = (
-    384
-    334)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

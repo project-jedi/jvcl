@@ -22,7 +22,6 @@ object Form1: TForm1
     Width = 553
     Height = 353
     ActivePage = TabSheet1
-    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Source (DBDEMOS)'

@@ -13,9 +13,6 @@ object frmKnownTags: TfrmKnownTags
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
-  DesignSize = (
-    580
-    411)
   PixelsPerInch = 96
   TextHeight = 13
   object bbtOk: TBitBtn
@@ -89,7 +86,6 @@ object frmKnownTags: TfrmKnownTags
     Height = 356
     ActivePage = tshOutside
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 0
     TabOrder = 1
     object tshOutside: TTabSheet
       Caption = 'Outside any repeating section'

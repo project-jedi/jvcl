@@ -51,9 +51,6 @@ object UsagesForm: TUsagesForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnShow = FormShow
-  DesignSize = (
-    442
-    484)
   PixelsPerInch = 96
   TextHeight = 13
   object Info: TSpeedButton
