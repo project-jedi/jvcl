@@ -12,7 +12,7 @@ The Original Code is: JvConst.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -31,12 +31,12 @@ interface
 
 uses
   SysUtils,
-  {$IFDEF VCL}
+{$IFDEF VCL}
   Controls, Graphics, Windows;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QGraphics;
-  {$ENDIF VisualCLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+QControls, QGraphics;
+{$ENDIF VisualCLX}
 
 {$IFDEF VisualCLX}
 const
@@ -48,7 +48,7 @@ const
 
 const
   { JvEditor }
-  JvEditorCompletionChars = #8+'0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
+  JvEditorCompletionChars = #8 + '0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
 
   { various units }
   DigitSymbols = ['0'..'9'];
@@ -75,54 +75,51 @@ const
 
   { RALib 1.55 }
 
-  {$IFDEF DELPHI2}
+{$IFDEF DELPHI2}
   SDelphiKey = 'Software\Borland\Delphi\2.0';
-  {$ENDIF}
-  {$IFDEF BCB1}
+{$ENDIF}
+{$IFDEF BCB1}
   SDelphiKey = 'Software\Borland\C++Builder\1.0';
-  {$ENDIF}
-  {$IFDEF DELPHI3}
+{$ENDIF}
+{$IFDEF DELPHI3}
   SDelphiKey = 'Software\Borland\Delphi\3.0';
-  {$ENDIF}
-  {$IFDEF BCB3}
+{$ENDIF}
+{$IFDEF BCB3}
   SDelphiKey = 'Software\Borland\C++Builder\3.0';
-  {$ENDIF}
-  {$IFDEF DELPHI4}
+{$ENDIF}
+{$IFDEF DELPHI4}
   SDelphiKey = 'Software\Borland\Delphi\4.0';
-  {$ENDIF}
-  {$IFDEF BCB4}
+{$ENDIF}
+{$IFDEF BCB4}
   SDelphiKey = 'Software\Borland\C++Builder\4.0';
-  {$ENDIF}
-  {$IFDEF DELPHI5}
+{$ENDIF}
+{$IFDEF DELPHI5}
   SDelphiKey = 'Software\Borland\Delphi\5.0';
-  {$ENDIF}
-  {$IFDEF BCB5}
+{$ENDIF}
+{$IFDEF BCB5}
   SDelphiKey = 'Software\Borland\C++Builder\5.0';
-  {$ENDIF}
-  {$IFDEF DELPHI6}
+{$ENDIF}
+{$IFDEF DELPHI6}
   SDelphiKey = 'Software\Borland\Delphi\6.0';
-  {$ENDIF}
-  {$IFDEF BCB6}
+{$ENDIF}
+{$IFDEF BCB6}
   SDelphiKey = 'Software\Borland\C++Builder\6.0';
-  {$ENDIF}
-  {$IFDEF DELPHI7}
+{$ENDIF}
+{$IFDEF DELPHI7}
   SDelphiKey = 'Software\Borland\Delphi\7.0';
-  {$ENDIF}
-  {$IFDEF BCB7} // will it ever be released?
+{$ENDIF}
+{$IFDEF BCB7} // will it ever be released?
   SDelphiKey = 'Software\Borland\C++Builder\7.0';
-  {$ENDIF}
-  {$IFDEF DELPHI8}
+{$ENDIF}
+{$IFDEF DELPHI8}
   SDelphiKey = 'Software\Borland\Delphi\8.0';
-  {$ENDIF}
+{$ENDIF}
 
   { JvDataProvider constants }
   { Consumer attributes }
   DPA_RenderDisabledAsGrayed = 1;
-  DPA_RendersSingleItem      = 2;
-  DPA_ConsumerDisplaysList   = 3;
-
-  crHand     = TCursor(14000);
-  crDragHand = TCursor(14001);
+  DPA_RendersSingleItem = 2;
+  DPA_ConsumerDisplaysList = 3;
 
   CM_JVBASE = CM_BASE + 80;
   { Command message for JvSpeedbar editor }
@@ -137,27 +134,27 @@ const
   //CM_TRAYICON        = CM_JVBASE + 4;
 
   { Values for WParam for CM_SPEEDBARCHANGED message }
-  SBR_CHANGED = 0;        { change buttons properties  }
-  SBR_DESTROYED = 1;      { destroy SpeedBar           }
-  SBR_BTNSELECT = 2;      { select button in SpeedBar  }
+  SBR_CHANGED = 0; { change buttons properties  }
+  SBR_DESTROYED = 1; { destroy SpeedBar           }
+  SBR_BTNSELECT = 2; { select button in SpeedBar  }
   SBR_BTNSIZECHANGED = 3; { button size changed        }
 
   { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
   PaletteMask = $02000000;
 
   // (rom) unused
-  {$IFDEF COMPILER7_UP}
+{$IFDEF COMPILER7_UP}
   DEFAULT_SYSCOLOR_MASK = $000000FF;
-  {$ELSE}
+{$ELSE}
   DEFAULT_SYSCOLOR_MASK = $80000000;
-  {$ENDIF COMPILER7_UP}
+{$ENDIF COMPILER7_UP}
 
-  {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
   { Standard Windows colors that are not defined in Delphi 5}
   COLOR_MENUHILIGHT = 29;
-  {$EXTERNALSYM COLOR_MENUHILIGHT}
+{$EXTERNALSYM COLOR_MENUHILIGHT}
   COLOR_MENUBAR = 30;
-  {$EXTERNALSYM COLOR_MENUBAR}
+{$EXTERNALSYM COLOR_MENUBAR}
 
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($F0CAA6);
@@ -168,16 +165,16 @@ const
   clHotLight = TColor(COLOR_HOTLIGHT or $80000000);
   clMenuHighlight = TColor(COLOR_MENUHILIGHT or $80000000);
   clMenuBar = TColor(COLOR_MENUBAR or $80000000);
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 
-  {$IFNDEF COMPILER6_UP}
-  {$IFDEF MSWINDOWS}
+{$IFNDEF COMPILER6_UP}
+{$IFDEF MSWINDOWS}
   sLineBreak = #13#10;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
   sLineBreak = #10;
-  {$ENDIF LINUX}
-  {$ENDIF COMPILER6_UP}
+{$ENDIF LINUX}
+{$ENDIF COMPILER6_UP}
   sLineBreakLen = Length(sLineBreak);
 
   CrLf = #13#10;
@@ -188,31 +185,35 @@ const
   Esc = #27;
   CtrlC = ^C;
   CtrlV = ^V;
-  {$IFDEF MSWINDOWS}
+{$IFDEF MSWINDOWS}
   RegPathDelim = '\';
   PathDelim = '\';
   DriveDelim = ':';
   PathSep = ';';
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
   PathDelim = '/';
-  {$ENDIF LINUX}
+{$ENDIF LINUX}
 
- {const Separators is used in GetWordOnPos, JvUtils.ReplaceStrings and SubWord}
+  {const Separators is used in GetWordOnPos, JvUtils.ReplaceStrings and SubWord}
   Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',
-    ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
+  ':', '+', '%', '*', '(', ')', ';', '=', '{', '}', '[', ']', '{', '}', '<', '>'];
 
   DigitChars = ['0'..'9'];
   // (rom) disabled unused
   //Brackets = ['(', ')', '[', ']', '{', '}'];
   //StdWordDelims = [#0..' ', ',', '.', ';', '/', '\', ':', '''', '"', '`'] + Brackets;
- 
-const
-  crJVCLFirst = TCursor(100);
-  crMultiDragLink = TCursor(100);
-  crDragAlt = TCursor(101);
-  crMultiDragAlt = TCursor(102);
-  crMultiDragLinkAlt = TCursor(103);
+
+var
+  crJVCLFirst: TCursor = 100;
+  crMultiDragLink: TCursor = 100;
+  crDragAlt: TCursor = 101;
+  crMultiDragAlt: TCursor = 102;
+  crMultiDragLinkAlt: TCursor = 103;
+  crHand: TCursor = 104;
+  crDragHand: TCursor = 105;
+  // this should be incremented to always contain the last default JVCL cursor index
+  crJVCLLast: TCursor = 105;
 
 const
   ROP_DSPDxax = $00E20746;
@@ -228,11 +229,12 @@ const
   FOURCC_fram = 'fram';
   FOURCC_icon = 'icon';
   FOURCC_rate = 'rate';
-  FOURCC_seq  = 'seq ';
+  FOURCC_seq = 'seq ';
 
-  AF_ICON     = $00000001;
+  AF_ICON = $00000001;
   AF_SEQUENCE = $00000002;
 
 implementation
 
 end.
+
