@@ -205,8 +205,8 @@ begin
   with TSaveDialog.Create(Application) do
   try
     InitialDir := LastSaveFolder;
-    Options := [ofOverwritePrompt, ofNoChangeDir, ofNoValidate, ofPathMustExist,
-      ofShareAware, ofNoReadOnlyReturn, ofNoTestFileCreate, ofEnableSizing];
+    Options := [ofOverwritePrompt, ofNoChangeDir, ofPathMustExist,
+      ofEnableSizing];
     Filter := RsSegmentedLEDDisplayMappingFilessdms;
     FilterIndex := 0;
     FileName := FLastSaveFileName;
@@ -343,7 +343,7 @@ begin
     try
       InitialDir := LastOpenFolder;
       Options := [ofNoChangeDir, ofPathMustExist, ofFileMustExist,
-        ofShareAware, ofNoNetworkButton, ofNoLongNames, ofEnableSizing];
+         ofEnableSizing];
       Filter := RsSegmentedLEDDisplayMappingFilessdms;
       FilterIndex := 0;
       if Execute then

@@ -256,7 +256,7 @@ var
 begin
   DataBaseClose;
   if FieldNames.Count = 0 then
-    raise Exception.Create(RsNoFieldsDefined);
+    raise Exception.Create('RsNoFieldsDefined');
 
   OldBase := TStringList.Create;
   OldRec := TStringList.Create;

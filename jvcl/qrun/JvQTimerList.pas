@@ -170,10 +170,7 @@ implementation
 
 uses
   
-  
-  QConsts,
-  
-  Math,
+  Consts, Math,
   JvQJVCLUtils, JvQResources, JvQTypes;
 
 const

@@ -282,8 +282,8 @@ begin
   CanSelect := True;
 end;
 
-procedure TJvSpeedbarSetupWindow.SectionListDrawCell(Sender: TObject; Col,
-  Row: Longint; Rect: TRect; State: TGridDrawState);
+procedure TJvSpeedbarSetupWindow.SectionListDrawCell(Sender: TObject;
+  Col, Row: Longint; Rect: TRect; State: TGridDrawState);
 begin
   if CheckSpeedBar then
     if Row < FSpeedbar.SectionCount then
@@ -291,9 +291,8 @@ begin
         FSpeedbar.Sections[Row].Caption, Rect, taLeftJustify, vaCenterJustify,
           
           
-          False
+          False);
           
-        );
 end;
 
 procedure TJvSpeedbarSetupWindow.ButtonsListMouseDown(Sender: TObject;
@@ -398,8 +397,8 @@ begin
   FImage.Free;
 end;
 
-procedure TJvSpeedbarSetupWindow.ButtonsListDrawCell(Sender: TObject; Col,
-  Row: Longint; Rect: TRect; State: TGridDrawState);
+procedure TJvSpeedbarSetupWindow.ButtonsListDrawCell(Sender: TObject;
+  Col, Row: Longint; Rect: TRect; State: TGridDrawState);
 var
   I: Integer;
 begin
@@ -408,9 +407,8 @@ begin
     DrawCellButton(Sender as TDrawGrid, Rect, ItemByRow(Row), FImage,
       
       
-      False
+      False);
       
-    );
 end;
 
 procedure TJvSpeedbarSetupWindow.CloseBtnClick(Sender: TObject);

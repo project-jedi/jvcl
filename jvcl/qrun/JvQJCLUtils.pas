@@ -5957,12 +5957,12 @@ end;
 
 procedure OpenCdDrive;
 begin
-  mciSendString(PChar(RC_OpenCDDrive), nil, 0, GetForegroundWindow);
+//  mciSendString(PChar(RC_OpenCDDrive), nil, 0, GetForegroundWindow);
 end;
 
 procedure CloseCdDrive;
 begin
-  mciSendString(PChar(RC_CloseCDDrive), nil, 0, GetForegroundWindow);
+//  mciSendString(PChar(RC_CloseCDDrive), nil, 0, GetForegroundWindow);
 end;
 
 { (rb) Duplicate of JclFileUtils.DiskInDrive }
@@ -6014,7 +6014,7 @@ var
   Operation: string;
 begin
   Operation := 'open';
-  ShellExecute(GetForegroundWindow, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
+  ShellExecute(0 {GetForegroundWindow}, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
     SW_SHOWNORMAL);
 end;
 {$IFDEF LINUX}

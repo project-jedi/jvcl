@@ -1337,9 +1337,9 @@ type
 implementation
 
 uses
-  WinInet, Registry, ShellAPI, ActiveX,
+  WinInet, Registry, ShellAPI, ActiveX, Math,
   JclShell, JclRegistry, JclFileUtils,
-  JvJVCLUtils, JvResources, Math;
+  JvQJVCLUtils, JvQResources;
 
 var
   IsDesigning: Boolean = False;

@@ -61,7 +61,7 @@ uses
 const
   clGrayText = clDark; // (ahuser) This is wrong in QGraphics.
                        //          Since when is clGrayText = clLight = clWhite?
-  
+
 
 type
   TJvCustomEdit = class(TJvExCustomEdit)

@@ -1307,7 +1307,7 @@ begin
     Delete(TgtPath, 1, Length(SubStorageItem.RootPath) + 1);
     TgtPath := '\' + OptimizePaths([TgtPath]);
     if TgtPath = '\' then
-      raise EJVCLAppStorageError.Create(RsEInvalidPath);
+      raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
   end;
 end;
 
@@ -1582,7 +1582,7 @@ begin
             OrdValue := ReadIntegerInt(Path, OrdValue);
         end
         else
-          raise EJVCLAppStorageError.Create(RsEInvalidType);
+          raise EJVCLAppStorageError.CreateRes(@RsEInvalidType);
       except
         on E: EConvertError do
           if StorageOptions.DefaultIfReadConvertError then
@@ -1630,7 +1630,7 @@ begin
       WriteIntegerInt(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType));
   end
   else
-    raise EJVCLAppStorageError.Create(RsEInvalidType);
+    raise EJVCLAppStorageError.CreateRes(@RsEInvalidType);
 end;
 
 procedure TJvCustomAppStorage.ReadEnumeration(const Path: string;  TypeInfo: PTypeInfo;
@@ -1690,7 +1690,7 @@ begin
               (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).SetAsList(Value, Lst);
             end;
           else
-            raise EJVCLAppStorageError.Create(RsEUnknownBaseType);
+            raise EJVCLAppStorageError.CreateRes(@RsEUnknownBaseType);
         end;
       end;
     finally
@@ -1737,7 +1737,7 @@ begin
                   Lst.IndexOf(IntToStr(I)) > - 1);
             end;
           else
-            raise EJVCLAppStorageError.Create(RsEUnknownBaseType);
+            raise EJVCLAppStorageError.CreateRes(@RsEUnknownBaseType);
         end;
       end;
     finally
@@ -1974,107 +1974,107 @@ end;
 
 function TJvAppStorage.IsFolderInt(Path: string; ListIsValue: Boolean): Boolean;
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 function TJvAppStorage.PathExistsInt(const Path: string): Boolean;
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 function TJvAppStorage.ValueStoredInt(const Path: string): Boolean;
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 procedure TJvAppStorage.DeleteValueInt(const Path: string);
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 procedure TJvAppStorage.DeleteSubTreeInt(const Path: string);
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 function TJvAppStorage.ReadIntegerInt(const Path: string; Default: Integer): Integer;
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 procedure TJvAppStorage.WriteIntegerInt(const Path: string; Value: Integer);
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 function TJvAppStorage.ReadFloatInt(const Path: string; Default: Extended): Extended;
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 procedure TJvAppStorage.WriteFloatInt(const Path: string; Value: Extended);
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 function TJvAppStorage.ReadStringInt(const Path: string; Default: string): string;
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 procedure TJvAppStorage.WriteStringInt(const Path: string; Value: string);
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 function TJvAppStorage.ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer;
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 procedure TJvAppStorage.WriteBinaryInt(const Path: string; const Buf; BufSize: Integer);
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 function TJvAppStorage.ReadDateTimeInt(const Path: string; Default: TDateTime): TDateTime;
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 procedure TJvAppStorage.WriteDateTimeInt(const Path: string; Value: TDateTime);
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 function TJvAppStorage.ReadBooleanInt(const Path: string; Default: Boolean): Boolean;
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 procedure TJvAppStorage.WriteBooleanInt(const Path: string; Value: Boolean);
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 procedure TJvAppStorage.ReadEnumerationInt(const Path: string;  TypeInfo: PTypeInfo; const Default; out Value);
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 procedure TJvAppStorage.WriteEnumerationInt(const Path: string;  TypeInfo: PTypeInfo; const Value);
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 procedure TJvAppStorage.ReadSetInt(const Path: string;  ATypeInfo: PTypeInfo; const Default; out Value);
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 procedure TJvAppStorage.WriteSetInt(const Path: string;  ATypeInfo: PTypeInfo; const Value);
 begin
-  raise EJVCLAppStorageError.Create(RsEInvalidPath);
+  raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
 end;
 
 //=== TJvAppSubStorages ========================================================
@@ -2202,7 +2202,7 @@ begin
     if TJvAppSubStorages(Collection).CheckUniqueBase(Value, Index) then
       FRootPath := Value
     else
-      raise EJVCLAppStorageError.CreateFmt(RsENotAUniqueRootPath, [Value]);
+      raise EJVCLAppStorageError.CreateResFmt(@RsENotAUniqueRootPath, [Value]);
 end;
 
 procedure TJvAppSubStorage.SetAppStorage(Value: TJvCustomAppStorage);
@@ -2210,7 +2210,7 @@ begin
   if Value <> AppStorage then
   begin
     if (Value <> nil) and (Value.HasSubStorage(OwnerStore) or (Value = OwnerStore)) then
-      raise EJVCLAppStorageError.Create(RsECircularReferenceOfStorages);
+      raise EJVCLAppStorageError.CreateRes(@RsECircularReferenceOfStorages);
     if AppStorage <> nil then
       AppStorage.RemoveFreeNotification(OwnerStore);
     FAppStorage := Value;
@@ -2219,7 +2219,7 @@ begin
   end;
 end;
 
-// === TJvAppStorageFileName ===================================================
+//=== TJvAppStorageFileName ==================================================
 
 {procedure TJvAppStorageFileName.SetLocation(Value: TFileLocation);
 begin

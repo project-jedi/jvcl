@@ -78,9 +78,8 @@ begin
   FOwner := AOwner;
   while FOwner.GetParentComponent <> nil do
     FOwner := FOwner.GetParentComponent;
-  // (rom) TForm or TCustomForm?
-  if not (FOwner is TForm) then
-    raise EJVCLException.Create(RsEOwnerForm);
+  if not (FOwner is TCustomForm) then
+    raise EJVCLException.CreateRes(@RsEOwnerForm);
 end;
 
 destructor TJvWinHelp.Destroy;
@@ -108,7 +107,7 @@ begin
   if (FOwner is TWinControl) and not (csDestroying in TWinControl(FOwner).ComponentState) then
     
     
-    Result := QWidget_winID( TWidgetControl(FOwner).Handle)
+    Result := QWidget_winId(TWidgetControl(FOwner).Handle)
     
   else
   if Application <> nil then
@@ -116,13 +115,13 @@ begin
     if (Screen <> nil) and (Screen.ActiveForm <> nil) then
       
       
-      Result := QWidget_winID(Screen.ActiveForm.Handle)
+      Result := QWidget_winId(Screen.ActiveForm.Handle)
       
     else
     if Application.MainForm <> nil then
       
       
-      Result := QWidget_winID(Application.MainForm.Handle)
+      Result := QWidget_winId(Application.MainForm.Handle)
       
     
   end;

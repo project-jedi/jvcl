@@ -357,7 +357,6 @@ resourcestring
 //=== JvCSVBaseControls.pas ==================================================
 resourcestring
   RsReplaceExistingDatabase = 'Replace existing database?';
-  RsNoFieldsDefined = 'No fields defined';
   RsCVSDatabase = 'CSV Database';
   RsFindText = 'Find Text:';
   RsFirstHint = 'First';
@@ -369,6 +368,7 @@ resourcestring
   RsDeleteHint = 'Delete';
   RsPostHint = 'Post';
   RsRefreshHint = 'Refresh';
+  RsENoFieldsDefined = 'No fields defined';
 
 //=== JvCsvData.pas ==========================================================
 resourcestring
@@ -484,14 +484,14 @@ resourcestring
 
 //=== JvDBGridExport.pas =====================================================
 resourcestring
-  RsDataSetIsUnassigned = 'Dataset or DataSource unassigned';
-  RsGridIsUnassigned = 'No grid assigned';
   RsHTMLExportDocTitle = 'Grid to HTML Export';
   RsExportWord = 'Exporting to MS Word...';
   RsExportExcel = 'Exporting to MS Excel...';
   RsExportHTML = 'Exporting to HTML...';
   RsExportFile = 'Exporting to CSV/Text...';
   RsExportClipboard = 'Exporting to Clipboard...';
+  RsEDataSetDataSourceIsUnassigned = 'Dataset or DataSource unassigned';
+  RsEGridIsUnassigned = 'No grid assigned';
 
 //=== JvDBImage.pas ==========================================================
 resourcestring
@@ -1342,8 +1342,23 @@ resourcestring
 
 //=== JvObjectPickerDialog.pas ===============================================
 resourcestring
-  RsAttributeIndexOutOfBounds = '%d is not a valid attribute index';
-  RsSelectionIndexOutOfBounds = '%d is not a valid selection index';
+  RsEAttributeIndexOutOfBounds = '%d is not a valid attribute index';
+  RsESelectionIndexOutOfBounds = '%d is not a valid selection index';
+
+//=== JvOfficeColorButton.pas ================================================
+resourcestring
+  RsDragToFloating = 'Drag to floating';
+
+//=== JvOfficeColorForm.pas ==================================================
+resourcestring
+  RsColorWindow = 'Color Window';
+  // (rom) probably the same as RsDragToFloating
+  RsDragToFloat = 'Drag to float';
+
+//=== JvOfficeColorPanel.pas =================================================
+resourcestring
+  RsAutoCaption = 'Automatic';
+  RsOtherColorCaption = 'Other Colors...';
 
 //=== JvPageSetup.pas ========================================================
 resourcestring

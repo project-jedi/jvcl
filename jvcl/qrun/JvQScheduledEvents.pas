@@ -36,8 +36,16 @@ unit JvQScheduledEvents;
 interface
 
 uses
-  SysUtils, QWindows, Classes, SyncObjs, QMessages,
-  JclSchedule, JvQAppStorage, JvQFinalize;
+  SysUtils, Classes, Contnrs, SyncObjs,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  
+  
+  Qt, QForms, Types, QWindows,
+  
+  JclSchedule,
+  JvQAppStorage, JvQFinalize;
 
 const
   CM_EXECEVENT = WM_USER + $1000;
@@ -75,7 +83,8 @@ type
     procedure DeleteSingleEvent(Sender: TJvCustomAppStorage; const Path: string;
       const List: TObject; const First, Last: Integer);
     procedure SetEvents(Value: TJvEventCollection);
-    procedure WndProc(var Msg: TMessage); virtual;
+    
+    procedure CMExecEvent(var Msg: TMessage); message CM_EXECEVENT;
     property AutoSave: Boolean read FAutoSave write FAutoSave;
     property OnStartEvent: TNotifyEvent read FOnStartEvent write FOnStartEvent;
     property OnEndEvent: TNotifyEvent read FOnEndEvent write FOnEndEvent;
@@ -91,7 +100,6 @@ type
     procedure StartAll;
     procedure StopAll;
     procedure PauseAll;
-  published
   end;
 
   TJvScheduledEvents = class(TJvCustomScheduledEvents)
@@ -218,7 +226,7 @@ type
 implementation
 
 uses
-  Contnrs, QForms, TypInfo,
+  TypInfo,
   JclDateTime, JclRTTI,
   JvQJVCLUtils, JvQResources, JvQTypes;
 
@@ -431,8 +439,11 @@ begin
     ScheduleThread.RemoveEventComponent(Self);
     if AutoSave then
       SaveEventStates;
-    if FWnd <> 0 then
-      DeallocateHWndEx(FWnd);
+    
+    
+    if FWnd <> nil then
+      DeallocateMessageObject(FWnd);
+    
   end;
   FEvents.Free;
   inherited Destroy;
@@ -478,7 +489,10 @@ procedure TJvCustomScheduledEvents.Loaded;
 begin
   if not (csDesigning in ComponentState) then
   begin
-    FWnd := AllocateHWndEx(WndProc);
+    
+    
+    FWnd := QWidgetH(AllocateMessageObject(Self));
+    
     if AutoSave then
       LoadEventStates;
     InitEvents;
@@ -608,10 +622,11 @@ begin
   FEvents.Assign(Value);
 end;
 
-procedure TJvCustomScheduledEvents.WndProc(var Msg: TMessage);
+
+
+procedure TJvCustomScheduledEvents.CMExecEvent(var Msg: TMessage);
 begin
   with Msg do
-    if Msg = CM_EXECEVENT then
     try
       DoStartEvent(TJvEventCollectionItem(WParam));
       TJvEventCollectionItem(WParam).Execute;
@@ -623,8 +638,6 @@ begin
         ApplicationHandleException(Self);
       
     end
-    else
-      Result := DefWindowProc(Handle, Msg, WParam, LParam);
 end;
 
 //=== TJvEventCollection =====================================================
@@ -1175,7 +1188,7 @@ end;
 procedure TJvEventCollectionItem.Start;
 begin
   if FState in [sesTriggered, sesExecuting] then
-    raise EJVCLException.Create(RsECannotRestart);
+    raise EJVCLException.CreateRes(@RsECannotRestart);
   if State = sesPaused then
   begin
     FScheduleFire := Schedule.NextEventFromNow(CountMissedEvents);

@@ -33,15 +33,14 @@ unit JvQThemes;
 
 interface
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
+  SysUtils, Classes,
+
   
-  
+
   
   QControls, QForms, QGraphics, QButtons, Types, QWindows,
   
-  SysUtils, Classes,
+
   JvQFinalize;
 
 const
