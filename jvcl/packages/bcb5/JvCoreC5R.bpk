@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="JvCoreC5R.bpl"/>
+    <OBJFILES value="..\..\dcu\JvJVCLAboutForm.obj ..\..\dcu\JvActnResForm.obj 
+      ..\..\dcu\JvCoreC5R.obj"/>
+    <RESFILES value=""/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) ..\..\run\JvJVCLAboutForm.dfm ..\..\design\JvActnResForm.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value="vcljpg50.lib"/>
+    <SPARELIBS value="Vcl50.lib vcljpg50.lib"/>
+    <PACKAGES value="vcl50.bpi vclx50.bpi CJCL50.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;..\..\run;..\..\design"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="JvCoreC5R.cpp"/>
+    <INCLUDEPATH value="..\..\design;..\..\run"/>
+    <LIBPATH value="$(BCB)\Lib;$(BCB)\Projects\Lib;..\..\design;..\..\run"/>
+    <WARNINGS value="-w-par"/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\..\design -I..\..\run -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c -tWM"/>
+    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Core Runtime Package&quot; -aa -Tpp -Gpr -x -Gl -Gi -v"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=5
+Item0=..\..\run;
+Item1=..\..\design;..\..\run;
+Item2=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl
+Item3=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\include;$(BCB)\include\vcl
+Item4=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\..\JCL\source
+
+[HistoryLists\hlLibraryPath]
+Count=8
+Item0=$(BCB)\Lib;$(BCB)\Projects\Lib;..\..\design;..\..\run;
+Item1=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+Item2=C:\Prog\Delphi5\Lib\JCL\dcu;..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+Item3=C:\Prog\Delphi5\Lib\JCL\dcu;c:\prog\CBuilder5\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
+Item4=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
+Item5=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common;..\..\..\JCL\dcu;..\..\..\JCL\source
+Item6=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\JCL\dcu;..\..\..\JCL\source
+Item7=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\..\dcu
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>
