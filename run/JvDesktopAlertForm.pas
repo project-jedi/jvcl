@@ -27,15 +27,21 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvDesktopAlertForm;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ImgList, ExtCtrls, ActnList, Menus, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, ImgList, ExtCtrls,
+  ActnList, Menus, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisuaLCLX}
+  QGraphics, QControls, QForms, QDialogs, QImgList, QExtCtrls, QActnList,
+  QMenus, QStdCtrls, Types, QWindows,
+  {$ENDIF VisuaLCLX}
   JvButton, JvComponent, JvLabel;
 
 const
@@ -85,13 +91,13 @@ type
     procedure SetAlphaBlendValue(const Value: Byte);
     procedure DoAlphaBlend(Value: Byte);
     {$ENDIF !COMPILER6_UP}
+    {$IFDEF VCL}
     procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
+    {$ENDIF VCL}
 
     procedure FadeInTimer(Sender: TObject);
     procedure FadeOutTimer(Sender: TObject);
     procedure WaitTimer(Sender: TObject);
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
 
     procedure DoMouseTimer(Sender: TObject);
     procedure FormPaint(Sender: TObject);
@@ -101,9 +107,13 @@ type
     procedure Wait;
     procedure DoShow; override;
     procedure DoClose(var Action: TCloseAction); override;
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
 
+    {$IFDEF VCL}
     procedure WMMove(var Message: TWMMove); message WM_MOVE;
     procedure CreateWindowHandle(const Params: TCreateParams); override;
+    {$ENDIF VCL}
   public
     imIcon: TImage;
     lblText: TJvLabel;
@@ -190,7 +200,12 @@ begin
   WindowRect.Top := ATop;
   Inc(WindowRect.Bottom);
   Canvas.Brush.Color := clGray;
+  {$IFDEF VCL}
   Canvas.FrameRect(WindowRect);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FrameRect(Canvas, WindowRect);
+  {$ENDIF VisualCLX}
 end;
 
 //=== TJvFormDesktopAlert ====================================================
@@ -198,19 +213,29 @@ end;
 constructor TJvFormDesktopAlert.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
   inherited CreateNew(AOwner, Dummy);
+  {$IFDEF VCL}
   Font.Assign(Screen.IconFont);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Font.Assign(Application.Font);
+  {$ENDIF VisualCLX}
   MouseTimer := TTimer.Create(Self);
   MouseTimer.Enabled := False;
   MouseTimer.Interval := 200;
   MouseTimer.OnTimer := DoMouseTimer;
   MouseTimer.Enabled := True;
 
+  {$IFDEF VCL}
   {$IFDEF COMPILER6_UP}
   AlphaBlend := True;
   {$ENDIF COMPILER6_UP}
   AlphaBlendValue := 0;
-  BorderIcons := [];
   BorderStyle := bsNone;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  BorderStyle := fbsNone;
+  {$ENDIF VisualCLX}
+  BorderIcons := [];
   FormStyle := fsStayOnTop;
   Scaled := False;
   Height := cDefaultAlertFormHeight;
@@ -264,6 +289,7 @@ begin
   DrawDesktopAlertWindow(Canvas, ClientRect, FrameColor, WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo, Moveable or MoveAnywhere);
 end;
 
+{$IFDEF VCL}
 procedure TJvFormDesktopAlert.WMNCHitTest(var Message: TWMNCHitTest);
 var
   P: TPoint;
@@ -279,6 +305,7 @@ begin
   else
     inherited;
 end;
+{$ENDIF VCL}
 
 procedure TJvFormDesktopAlert.acCloseExecute(Sender: TObject);
 begin
@@ -286,22 +313,24 @@ begin
     Close;
 end;
 
-procedure TJvFormDesktopAlert.CMMouseEnter(var Message: TMessage);
+procedure TJvFormDesktopAlert.MouseEnter(AControl: TControl);
 begin
-  inherited;
+  inherited MouseEnter(AControl);
   MouseInControl := True;
   //  SetFocus;
   FadeTimer.Enabled := False;
+  {$IFDEF VCL}
   AlphaBlendValue := MaxAlphaBlendValue;
+  {$ENDIF VCL}
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
-procedure TJvFormDesktopAlert.CMMouseLeave(var Message: TMessage);
+procedure TJvFormDesktopAlert.MouseLeave(AControl: TControl);
 var
   P: TPoint;
 begin
-  inherited;
+  inherited MouseLeave(AControl);
   // make sure the mouse actually left the outer boundaries
   GetCursorPos(P);
   if not PtInRect(BoundsRect, P) then
@@ -317,6 +346,7 @@ end;
 procedure TJvFormDesktopAlert.FadeInTimer(Sender: TObject);
 begin
   FadeTimer.Enabled := False;
+{$IFDEF VCL}
   if AlphaBlendValue <= MaxAlphaBlendValue - cAlphaIncrement then
     AlphaBlendValue := AlphaBlendValue + cAlphaIncrement;
   if AlphaBlendValue >= MaxAlphaBlendValue - cAlphaIncrement then
@@ -326,11 +356,13 @@ begin
   end
   else
     FadeTimer.Enabled := True;
+{$ENDIF VCL}
 end;
 
 procedure TJvFormDesktopAlert.FadeOutTimer(Sender: TObject);
 begin
   FadeTimer.Enabled := False;
+{$IFDEF VCL}
   if AlphaBlendValue > cAlphaIncrement then
   begin
     AlphaBlendValue := AlphaBlendValue - cAlphaIncrement;
@@ -340,6 +372,7 @@ begin
       FadeTimer.Enabled := True;
   end
   else
+{$ENDIF VCL}
     Close;
 end;
 
@@ -352,7 +385,9 @@ end;
 procedure TJvFormDesktopAlert.DoShow;
 begin
   inherited DoShow;
+  {$IFDEF VCL}
   AlphaBlendValue := 0;
+  {$ENDIF VCL}
   FadeTimer.Enabled := False;
   lblText.HotTrackFont.Style := [fsUnderLine];
   lblText.HotTrackFont.Color := clNavy;
@@ -386,12 +421,14 @@ begin
   MouseTimer.Enabled := True;
 end;
 
+{$IFDEF VCL}
 procedure TJvFormDesktopAlert.WMMove(var Message: TWMMove);
 begin
   inherited;
   if Showing and Assigned(FOnUserMove) then
     FOnUserMove(Self);
 end;
+{$ENDIF VCL}
 
 procedure TJvFormDesktopAlert.SetNewTop(const Value: Integer);
 begin
@@ -433,7 +470,9 @@ end;
 
 procedure TJvFormDesktopAlert.FadeIn;
 begin
+  {$IFDEF VCL}
   AlphaBlendValue := 0;
+  {$ENDIF VCL}
   Update;
   FadeTimer.Enabled := False;
   FadeTimer.Interval := FadeInTime;
@@ -445,7 +484,9 @@ end;
 
 procedure TJvFormDesktopAlert.FadeOut;
 begin
+  {$IFDEF VCL}
   AlphaBlendValue := MaxAlphaBlendValue;
+  {$ENDIF VCL}
   Update;
   FadeTimer.Enabled := False;
   FadeTimer.Interval := FadeOutTime;
@@ -458,7 +499,9 @@ end;
 
 procedure TJvFormDesktopAlert.Wait;
 begin
+  {$IFDEF VCL}
   AlphaBlendValue := MaxAlphaBlendValue;
+  {$ENDIF VCL}
   Update;
   FadeTimer.Enabled := False;
   FadeTimer.Interval := WaitTime;
@@ -526,6 +569,7 @@ end;
 
 {$ENDIF !COMPILER6_UP}
 
+{$IFDEF VCL}
 procedure TJvFormDesktopAlert.CreateWindowHandle(const Params: TCreateParams);
 begin
   inherited;
@@ -533,6 +577,7 @@ begin
   DoAlphaBlend(0);
   {$ENDIF !COMPILER6_UP}
 end;
+{$ENDIF VCL}
 
 procedure TJvFormDesktopAlert.FadeClose;
 begin
@@ -693,7 +738,9 @@ begin
             (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
             ImageIndex,
             {$IFDEF COMPILER6_UP}
+             {$IFDEF VCL}
             dsTransparent,
+             {$ENDIF VCL}
             itImage,
             {$ENDIF COMPILER6_UP}
             Enabled);

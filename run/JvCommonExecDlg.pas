@@ -31,10 +31,10 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Controls, Forms,
+  Windows, Controls, 
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, Types, QWindows,
+  QControls, Types, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvBaseDlg, JvTypes;

@@ -24,13 +24,20 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvCommonDialogD;
 
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls,
+  Windows, SetupApi, SysUtils, Classes,
+  {$IFDEF VCL}
+  Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Qt, QControls,
+  {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 
 type
@@ -52,7 +59,6 @@ function JvDiskStylesToDWORD(const Style: TJvDiskStyles): DWORD;
 implementation
 
 uses
-  SetupApi,
   JvResources;
 
 const
@@ -96,7 +102,12 @@ begin
   inherited Create(AOwner);
   FTitle := '';
   if Owner is TWinControl then
+    {$IFDEF VCL}
     FOwnerWindow := (AOwner as TWinControl).Handle
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FOwnerWindow := QWidget_winId((AOwner as TWinControl).Handle)
+    {$ENDIF VisualCLX}
   else
     FOwnerWindow := HWND_DESKTOP;
   LoadSetupApi;

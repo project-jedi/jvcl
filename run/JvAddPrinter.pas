@@ -32,11 +32,10 @@ unit JvAddPrinter;
 interface
 
 uses
-  Windows, SysUtils, Classes, ActiveX, ShlObj, ShellApi,
+  Windows, ActiveX, ShlObj, ShellApi, SysUtils, Classes,
   JvBaseDlg;
 
 type
-  // (rom) changed to new TJvCommonDialogF to get a better Execute
   TJvAddPrinterDialog = class(TJvCommonDialogF)
   published
     function Execute: Boolean; override;

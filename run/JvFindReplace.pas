@@ -41,7 +41,7 @@ uses
   Windows, Messages, Controls, Dialogs, StdCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QDialogs, QStdCtrls,
+  QControls, QDialogs, QStdCtrls, Types, QWindows,
   {$ENDIF VisualCLX}
   JvComponent;
 
@@ -433,15 +433,25 @@ begin
   NeedDialogs;
 
   FFindDialog.Position := GetPosition;
+  {$IFDEF VCL}
   FFindDialog.Top := GetTop;
   FFindDialog.Left := GetLeft;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FFindDialog.Position := Point(GetTop, GetLeft);
+  {$ENDIF VisualCLX}
   FFindDialog.Options := FOptions;
   FFindDialog.HelpContext := GetHelpContext;
   FFindDialog.FindText := GetFindText;
   FReplaceDialog.Position := GetPosition;
 
+  {$IFDEF VCL}
   FReplaceDialog.Top := GetTop;
   FReplaceDialog.Left := GetLeft;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FReplaceDialog.Position := Point(GetTop, GetLeft);
+  {$ENDIF VisualCLX}
   FReplaceDialog.Options := FOptions;
   FReplaceDialog.HelpContext := GetHelpContext;
   FReplaceDialog.FindText := GetFindText;
@@ -486,7 +496,9 @@ begin
       FEditControl.SetFocus;
       FEditControl.SelStart := FoundPos.StartAt;
       FEditControl.SelLength := FoundPos.EndAt;
+      {$IFDEF VCL}
       SendMessage(FEditControl.Handle, EM_SCROLLCARET, 0, 0);
+      {$ENDIF VCL}
       if Assigned(FOnFind) then
         FOnFind(Self);
     end
@@ -553,7 +565,14 @@ begin
   else
     FCaption := RsFindCaption;
 
-  MessageBox(TFindDialog(Sender).Handle, PChar(Format(RsNotFound, [TFindDialog(Sender).FindText])),
+  MessageBox(
+    {$IFDEF VCL}
+    TFindDialog(Sender).Handle,
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    TFindDialog(Sender).Form.Handle,
+    {$ENDIF VisualCLX}
+    PChar(Format(RsNotFound, [TFindDialog(Sender).FindText])),
     PChar(FCaption), MB_OK or MB_ICONINFORMATION);
 end;
 
@@ -567,7 +586,14 @@ procedure TJvFindReplace.DoReplacedAll(Sender: TObject);
 begin
   if FShowDialogs then
   begin
-    MessageBox(TFindDialog(Sender).Handle, PChar(Format(RsXOccurencesReplaced, [FNumberReplaced, TFindDialog(Sender).FindText])),
+    MessageBox(
+      {$IFDEF VCL}
+      TFindDialog(Sender).Handle,
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      TFindDialog(Sender).Form.Handle,
+      {$ENDIF VisualCLX}
+      PChar(Format(RsXOccurencesReplaced, [FNumberReplaced, TFindDialog(Sender).FindText])),
       PChar(RsReplaceCaption), MB_OK or MB_ICONINFORMATION);
   end;
 
@@ -629,8 +655,14 @@ begin
   if not Value then
   begin
     NeedDialogs;
+    {$IFDEF VCL}
     FFindDialog.CloseDialog;
     FReplaceDialog.CloseDialog;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FFindDialog.Form.Close;
+    FReplaceDialog.Form.Close;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -660,7 +692,12 @@ begin
   if (csDesigning in ComponentState) or not Assigned(FFindDialog) then
     Result := FPosition.Y
   else
+    {$IFDEF VCL}
     Result := FFindDialog.Top;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Result := FFindDialog.Position.Y;
+    {$ENDIF VisualCLX}
 end;
 
 function TJvFindReplace.GetLeft: Integer;
@@ -668,8 +705,12 @@ begin
   if (csDesigning in ComponentState) or not Assigned(FFindDialog) then
     Result := FPosition.X
   else
+    {$IFDEF VCL}
     Result := FFindDialog.Left;
-
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Result := FFindDialog.Position.X;
+    {$ENDIF VisualCLX}
 end;
 
 function TJvFindReplace.GetOptions: TFindOptions;

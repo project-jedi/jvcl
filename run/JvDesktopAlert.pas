@@ -25,15 +25,20 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvDesktopAlert;
 
 interface
 
 uses
-  Windows, Classes, SysUtils, Controls, Graphics, Forms, Menus, ImgList,
-  JvComponent, JvBaseDlg, JvDesktopAlertForm;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Controls, Graphics, Forms, Menus, ImgList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QGraphics, QForms, QMenus, QImgList, Types, QWindows,
+  {$ENDIF VisualCLX}
+  JvComponent, JvBaseDlg, JvDesktopAlertForm, JvTypes;
 
 type
   TJvDesktopAlertStack = class;
@@ -251,6 +256,9 @@ type
   end;
 
 implementation
+
+uses
+  JvJVCLUtils;
 
 var
   FGlobalStacker: TJvDesktopAlertStack = nil;
@@ -514,7 +522,8 @@ begin
   Assert(FDesktopForm <> nil);
   if FDesktopForm.Visible then
     FDesktopForm.Close;
-  SystemParametersInfo(SPI_GETWORKAREA, 0, @ARect, 0);
+
+  ARect := ScreenWorkArea;
   if Location.Width <> 0 then
     FDesktopForm.Width := Location.Width
   else
@@ -627,9 +636,9 @@ begin
   if not AutoFocus then
     FActiveWindow := GetActiveWindow
   else
-    FActiveWindow := 0;
+    FActiveWindow := NullHandle;
   FDesktopForm.Show;
-  if not AutoFocus and (FActiveWindow <> 0) then
+  if not AutoFocus and (FActiveWindow <> NullHandle) then
     SetActiveWindow(FActiveWindow);
   GetStacker.Add(FDesktopForm);
 end;
@@ -1001,7 +1010,7 @@ begin
   C := Count;
   if C > 0 then
   begin
-    SystemParametersInfo(SPI_GETWORKAREA, 0, @R, 0);
+    R := ScreenWorkArea;
     case Position of
       dapBottomRight:
         begin

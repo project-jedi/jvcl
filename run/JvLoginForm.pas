@@ -30,8 +30,11 @@ interface
 
 uses
   SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows, // GetCurrentThreadID => Linux: System.pas
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
@@ -59,7 +62,6 @@ type
     FAppStorage: TJvCustomAppStorage;
     FAppStoragePath: string;
     FLocked: Boolean;
-    FUnlockDlgShowing: Boolean;
     FSaveOnRestore: TNotifyEvent;
     FAfterLogin: TNotifyEvent;
     FBeforeLogin: TNotifyEvent;
@@ -67,10 +69,11 @@ type
     FOnUnlockApp: TUnlockAppEvent;
     FOnIconDblClick: TNotifyEvent;
     {$IFDEF VCL}
+    FUnlockDlgShowing: Boolean;
     FPasswordChar: Char;
+    function UnlockHook(var Msg: TMessage): Boolean;
     {$ENDIF VCL}
     function GetLoggedUser: string;
-    function UnlockHook(var Msg: TMessage): Boolean;
     procedure SetAppStorage(Value: TJvCustomAppStorage);
   protected
     function CheckUnlock(const UserName, Password: string): Boolean; dynamic;
@@ -125,7 +128,9 @@ type
     property AttemptNumber;
     property MaxPasswordLen;
     property UpdateCaption;
+    {$IFDEF VCL}
     property PasswordChar;
+    {$ENDIF VCL}
     property OnCheckUser: TJvLoginEvent read FOnCheckUser write FOnCheckUser;
     property AfterLogin;
     property BeforeLogin;
@@ -213,7 +218,9 @@ begin
   FLoggedUser := EmptyStr;
   FActive := True;
   FAttemptNumber := 3;
+  {$IFDEF VCL}
   FPasswordChar := '*';
+  {$ENDIF VCL}
   FAllowEmptyPassword := True;
 end;
 
@@ -221,7 +228,9 @@ destructor TJvCustomLogin.Destroy;
 begin
   if FLocked then
   begin
+    {$IFDEF VCL}
     Application.UnhookMainWindow(UnlockHook);
+    {$ENDIF VCL}
     FLocked := False;
   end;
   inherited Destroy;
@@ -262,7 +271,7 @@ end;
 
 procedure TJvCustomLogin.DoUpdateCaption;
 var
-  F: TForm;
+  F: TCustomForm;
 begin
   F := Application.MainForm;
   if (F = nil) and (Owner is TForm) then
@@ -298,7 +307,9 @@ procedure TJvCustomLogin.Lock;
 begin
   FSaveOnRestore := Application.OnRestore;
   Application.Minimize;
+  {$IFDEF VCL}
   Application.HookMainWindow(UnlockHook);
+  {$ENDIF VCL}
   FLocked := True;
 end;
 
@@ -307,8 +318,10 @@ begin
   with Application do
   begin
     ShowMainForm := False;
+    {$IFDEF VCL}
     if Handle <> 0 then
       ShowOwnedPopups(Handle, False);
+    {$ENDIF VCL}
     Terminate;
   end;
   CallTerminateProcs;
@@ -395,6 +408,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 function TJvCustomLogin.UnlockHook(var Msg: TMessage): Boolean;
 
   function DoUnlock: Boolean;
@@ -444,6 +458,7 @@ begin
     end;
   end;
 end;
+{$ENDIF VCL}
 
 //=== TJvLoginDialog =========================================================
 

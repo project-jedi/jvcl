@@ -35,14 +35,13 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Forms, Graphics, ExtCtrls, StdCtrls,
-  Controls, ComCtrls,
+  Windows, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls, ActnList,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QForms, QGraphics, QExtCtrls, QStdCtrls,
-  QControls, QComCtrls, QTypes,
+  QWindows, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QActnList,
+  QComCtrls, QTypes,
   {$ENDIF VisualCLX}
-  JvComponent, ActnList;
+  JvComponent;
 
 type
   TJvPrivateProgressUpdate = procedure(Sender: TObject;

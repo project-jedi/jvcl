@@ -24,14 +24,20 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
+{$I crossplatform.inc}
 
 unit JvSelectDirectory;
 
 interface
 
 uses
-  Classes, FileCtrl,
+  Classes,
+  {$IFDEF VCL}
+  FileCtrl,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QDialogs,
+  {$ENDIF VisualCLX}
   JvBaseDlg;
 
 type
@@ -39,20 +45,24 @@ type
   TJvSelectDirectory = class(TJvCommonDialog)
   private
     FDirectory: string;
-    FClassicDialog: Boolean;
     FHelpContext: Longint;
     FInitialDir: string;
+    {$IFDEF VCL}
+    FClassicDialog: Boolean;
     FOptions: TSelectDirOpts;
+    {$ENDIF VCL}
     FTitle: string;
   public
     constructor Create(AOwner: TComponent); override;
     function Execute: Boolean; override;
   published
-    property ClassicDialog: Boolean read FClassicDialog write FClassicDialog default True;
     property Directory: string read FDirectory;
     property HelpContext: Longint read FHelpContext write FHelpContext default 0;
     property InitialDir: string read FInitialDir write FInitialDir;
+    {$IFDEF VCL}
+    property ClassicDialog: Boolean read FClassicDialog write FClassicDialog default True;
     property Options: TSelectDirOpts read FOptions write FOptions default [sdAllowCreate, sdPerformCreate, sdPrompt];
+    {$ENDIF VCL}
     property Title: string read FTitle write FTitle;
   end;
 
@@ -61,21 +71,34 @@ implementation
 constructor TJvSelectDirectory.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FClassicDialog := True;
   FDirectory := '';
   FInitialDir := '';
   FHelpContext := 0;
+  {$IFDEF VCL}
+  FClassicDialog := True;
   FOptions := [sdAllowCreate, sdPerformCreate, sdPrompt];
+  {$ENDIF VCL}
   FTitle := '';
 end;
 
 function TJvSelectDirectory.Execute: Boolean;
+{$IFDEF VisualCLX}
+var
+  dir: WideString;
+{$ENDIF VisualCLX}
 begin
   FDirectory := InitialDir;
+  {$IFDEF VCL}
   if ClassicDialog then
     Result := SelectDirectory(FDirectory, Options, HelpContext)
   else
     Result := SelectDirectory(Title, InitialDir, FDirectory);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  dir := FDirectory;
+  Result := SelectDirectory(Title, InitialDir, dir);
+  FDirectory := dir;
+  {$ENDIF VisualCLX}
 end;
 
 end.

@@ -200,12 +200,7 @@ end;
 
 procedure TJvProgressComponent.FormOnShow(Sender: TObject);
 begin
-  {$IFDEF VCL}
   PostMessage(FForm.Handle, CM_SHOWEVENT, 0, Integer(Self));
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  PostMsg(FForm.Handle, CM_SHOWEVENT, 0, Integer(Self));
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvProgressComponent.FormOnCancel(Sender: TObject);

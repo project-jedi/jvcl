@@ -31,13 +31,22 @@ unit JvWinDialogs;
 interface
 
 uses
-  ShellAPI, Windows, Classes, Forms, SysUtils, Graphics, Dialogs,
-  Controls, ShlObj, ComObj, ActiveX, CommDlg,
+  Windows, ShellAPI, ShlObj, ComObj, ActiveX, CommDlg, UrlMon,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, Forms, Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Qt, QGraphics, QControls, QForms, QDialogs, Types, QWindows,
+  {$ENDIF VisualCLX}
   JvBaseDlg, JvTypes, JvComponent, JvJCLUtils; // For OSCheck
 
-{$HPPEMIT '#include "dbt.h"'}  
+{$HPPEMIT '#include "dbt.h"'}
 
 type
+  {$IFDEF VisualCLX}
+  HWND = Windows.HWND;
+  {$ENDIF VisualCLX}
   EShellOleError = class(Exception);
   EWinDialogError = class(Exception);
 
@@ -169,6 +178,7 @@ type
   // the signature of procedures in CPL's that implements Control Panel functionality
   TCplApplet = function(hwndCPl: HWND; uMsg: DWORD; lParam1, lParam2: Longint): Longint; stdcall;
 
+  {$IFDEF VCL}
   // (rom) largely reimplemented
   TJvAppletDialog = class(TJvCommonDialogF)
   private
@@ -195,6 +205,7 @@ type
     property AppletName: string read FAppletName write SetAppletName;
     property AppletIndex: Integer read FAppletIndex write FAppletIndex default 0;
   end;
+  {$ENDIF VCL}
 
   TJvComputerNameDialog = class(TJvCommonDialog)
   private
@@ -334,6 +345,7 @@ type
     procedure Execute; override;
   end;
 
+  {$IFDEF VCL}
   // (p3) this extension (PlacesBar) is already in TJvOpenDialog
   TJvOpenDialog2000 = class(TOpenDialog)
   public
@@ -345,6 +357,7 @@ type
   public
     function Execute: Boolean; override;
   end;
+  {$ENDIF VCL}
 
   TJvURLAssociationDialogOption = (uaDefaultName, uaRegisterAssoc);
   TJvURLAssociationDialogOptions = set of TJvURLAssociationDialogOption;
@@ -587,7 +600,6 @@ var
 implementation
 
 uses
-  UrlMon,
   JvResources;
 
 const
@@ -774,7 +786,7 @@ begin
       'DoOrganizeFavDlg'));
     if not Assigned(lpfnDoOrganizeFavDlg) then
       raise EWinDialogError.CreateRes(@RsEFunctionNotSupported);
-    lpfnDoOrganizeFavDlg(GetForegroundWindow, PChar(Path));
+    lpfnDoOrganizeFavDlg(Windows.GetForegroundWindow, PChar(Path));
   finally
     FreeLibrary(SHModule);
   end;
@@ -802,6 +814,7 @@ type
     lData: Longint;
   end;
 
+{$IFDEF VCL}
 constructor TJvAppletDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -904,6 +917,12 @@ begin
     ShellExecute(GetFocus, 'open', 'Control.exe', nil, nil, SW_SHOWDEFAULT);
 end;
 
+function TJvAppletDialog.ValidApplet: boolean;
+begin
+  Result := Assigned(FAppletFunc) and (AppletIndex >= 0) and (AppletIndex < Count)
+end;
+{$ENDIF VCL}
+
 //=== TJvComputerNameDialog ==================================================
 
 constructor TJvComputerNameDialog.Create(AOwner: TComponent);
@@ -917,7 +936,9 @@ var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
   NameBuffer: array[0..MAX_PATH] of Char;
+  {$IFDEF VCL}
   WindowList: Pointer;
+  {$ENDIF VCL}
 begin
   Result := False;
 
@@ -931,11 +952,15 @@ begin
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
   BrowseInfo.ulFlags := BIF_BROWSEFORCOMPUTER;
+  {$IFDEF VCL}
   WindowList := DisableTaskWindows(0);
+  {$ENDIF VCL}
   try
     Result := SHBrowseForFolder(BrowseInfo) <> nil;
   finally
+    {$IFDEF VCL}
     EnableTaskWindows(WindowList);
+    {$ENDIF VCL}
     FreePidl(BrowseInfo.pidlRoot);
   end;
   if Result then
@@ -956,7 +981,9 @@ var
   ItemIDList: PItemIDList;
   ItemSelected: PItemIDList;
   NameBuffer: array[0..MAX_PATH] of Char;
+  {$IFDEF VCL}
   WindowList: Pointer;
+  {$ENDIF VCL}
 begin
   ItemIDList := nil;
   FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
@@ -965,12 +992,16 @@ begin
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
   BrowseInfo.ulFlags := BIF_RETURNONLYFSDIRS;
+  {$IFDEF VCL}
   WindowList := DisableTaskWindows(0);
+  {$ENDIF VCL}
   try
     ItemSelected := SHBrowseForFolder(BrowseInfo);
     Result := ItemSelected <> nil;
   finally
+    {$IFDEF VCL}
     EnableTaskWindows(WindowList);
+    {$ENDIF VCL}
   end;
 
   if Result then
@@ -987,10 +1018,18 @@ constructor TJvFormatDriveDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDrive := 'A';
+  {$IFDEF VCL}
   if AOwner is TCustomForm then
     FHandle := TCustomForm(AOwner).Handle
   else
     FHandle := HWND_DESKTOP;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if AOwner is TCustomForm then
+    FHandle := QWidget_winId(TCustomForm(AOwner).Handle)
+  else
+    FHandle := Windows.HWND_DESKTOP;
+  {$ENDIF VisualCLX}
 end;
 
 function TJvFormatDriveDialog.Execute: Boolean;
@@ -1230,8 +1269,14 @@ begin
 
   CaptionText := CaptionText + CaptionSeparator + Product;
 
+  {$IFDEF VCL}
   OSCheck(LongBool(ShellAbout(Application.MainForm.Handle,
     PChar(CaptionText), PChar(OtherText), FIcon.Handle)));
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  OSCheck(LongBool(ShellAbout(QWidget_winId(Application.MainForm.Handle),
+    PChar(CaptionText), PChar(OtherText), 0)));
+  {$ENDIF VisualCLX}
   Result := True;
 end;
 
@@ -1282,8 +1327,14 @@ begin
   end;
 
   if Assigned(SHRunDialog) then
+    {$IFDEF VCL}
     SHRunDialog(GetForegroundWindow, FIcon.Handle, nil, CaptionBuffer,
       DescriptionBuffer, 0)
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    SHRunDialog(GetForegroundWindow, 0, nil, CaptionBuffer,
+      DescriptionBuffer, 0)
+    {$ENDIF VisualCLX}
   else
     raise EWinDialogError.CreateRes(@RsENotSupported);
 end;
@@ -1607,6 +1658,7 @@ begin
   Result := GetSaveFileNameEx(DialogDataEx);
 end;
 
+{$IFDEF VCL}
 //=== TJvOpenDialog2000 ======================================================
 
 function TJvOpenDialog2000.Execute: Boolean;
@@ -1626,11 +1678,7 @@ begin
   else
     Result := inherited Execute;
 end;
-
-function TJvAppletDialog.ValidApplet: boolean;
-begin
-  Result := Assigned(FAppletFunc) and (AppletIndex >= 0) and (AppletIndex < Count)
-end;
+{$ENDIF VCL}
 
 { TJvURLAssociationDialog }
 
@@ -1674,12 +1722,17 @@ begin
   begin
     F := GetParentForm(TControl(Owner));
     if F <> nil then
+      {$IFDEF VCL}
       Result := F.Handle;
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Result := QWidget_winId(F.Handle);
+      {$ENDIF VisualCLX}
   end;
   if Result = 0 then
-    Result := GetForegroundWindow;
+    Result := Windows.GetForegroundWindow;
   if Result = 0 then
-    Result := GetDesktopWindow;
+    Result := Windows.GetDesktopWindow;
 end;
 
 { TJvMIMEAssociationDialog }
@@ -1715,12 +1768,17 @@ begin
   begin
     F := GetParentForm(TControl(Owner));
     if F <> nil then
+      {$IFDEF VCL}
       Result := F.Handle;
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Result := QWidget_winId(F.Handle);
+      {$ENDIF VisualCLX}
   end;
   if Result = 0 then
-    Result := GetForegroundWindow;
+    Result := Windows.GetForegroundWindow;
   if Result = 0 then
-    Result := GetDesktopWindow;
+    Result := Windows.GetDesktopWindow;
 end;
 
 { TJvSoftwareUpdateDialog }
@@ -1746,7 +1804,7 @@ begin
   if Assigned(SoftwareUpdateMessageBox) then
   begin
     psdi := FDistInfo.SoftDistInfo;
-    FReturnValue := SoftwareUpdateMessageBox(GetDesktopWindow, '', 0, psdi);
+    FReturnValue := SoftwareUpdateMessageBox(Windows.GetDesktopWindow, '', 0, psdi);
     Result := ReturnValue = IDYES;
     if ReturnValue <> IDABORT then
       FDistInfo.SoftDistInfo := psdi;

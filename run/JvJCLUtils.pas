@@ -6630,12 +6630,12 @@ end;
 
 procedure OpenCdDrive;
 begin
-  mciSendString(PChar(RC_OpenCDDrive), nil, 0, GetForegroundWindow);
+  mciSendString(PChar(RC_OpenCDDrive), nil, 0, Windows.GetForegroundWindow);
 end;
 
 procedure CloseCdDrive;
 begin
-  mciSendString(PChar(RC_CloseCDDrive), nil, 0, GetForegroundWindow);
+  mciSendString(PChar(RC_CloseCDDrive), nil, 0, Windows.GetForegroundWindow);
 end;
 
 { (rb) Duplicate of JclFileUtils.DiskInDrive }
@@ -6674,21 +6674,19 @@ begin
   end;
 end;
 
-{$IFDEF LINUX}
-// for Exec function
-function GetForegroundWindow: QWidgetH;
-begin
-  Result := nil; // QWindows ShellExececute ignores handle under linux
-end;
-{$ENDIF LINUX}
-
 procedure Exec(FileName, Parameters, Directory: string);
 var
   Operation: string;
 begin
   Operation := 'open';
+  {$IFDEF MSWINDOWS}
+  ShellExecute(Windows.GetForegroundWindow, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
+    SW_SHOWNORMAL);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   ShellExecute(GetForegroundWindow, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
     SW_SHOWNORMAL);
+  {$ENDIF LINUX}
 end;
 {$IFDEF LINUX}
 // begin

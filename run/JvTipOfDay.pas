@@ -348,7 +348,6 @@ begin
     Release;   // destroy it
     FRunning := False;
   end;
-  inherited FormHide(Sender);
 end;
 {$ENDIF VisualCLX}
 
