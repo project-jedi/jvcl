@@ -28,16 +28,18 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQAppDBStorage;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes, DB, 
-  Variants,   
-  QDBCtrls, 
+  SysUtils, Classes, DB,
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  QDBCtrls,
   JvQAppStorage;
 
 // DB table must contain 3 fields for the storage
@@ -86,8 +88,8 @@ type
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
     function DoReadString(const Path: string; const Default: string): string; override;
     procedure DoWriteString(const Path: string; const Value: string); override;
-    function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
-    procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
+    function DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer; override;
+    procedure DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function SectionExists(const Path: string; RestorePosition: Boolean): Boolean;
     function ValueExists(const Section, Key: string; RestorePosition: Boolean): Boolean;
@@ -95,6 +97,7 @@ type
     procedure WriteValue(const Section, Key, Value: string); virtual;
     procedure StoreDataset;
     procedure RestoreDataset;
+    function GetPhysicalReadOnly : Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -109,6 +112,8 @@ type
 
   TJvAppDBStorage = class(TJvCustomAppDBStorage)
   published
+    property ReadOnly;
+
     property DataSource;
     property KeyField;
     property SectionField;
@@ -121,6 +126,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclMime,
   JvQJCLUtils, JvQResources;
 
@@ -174,7 +182,7 @@ begin
   end;
 end;
 
-function TJvCustomAppDBStorage.DoReadBinary(const Path: string; var Buf;
+function TJvCustomAppDBStorage.DoReadBinary(const Path: string; Buf: Pointer;
   BufSize: Integer): Integer;
 var
   Value: string;
@@ -214,7 +222,7 @@ begin
 end;
 
 procedure TJvCustomAppDBStorage.DoWriteBinary(const Path: string;
-  const Buf; BufSize: Integer);
+  Buf: Pointer; BufSize: Integer);
 var
   Value, Buf1: string;
 begin
@@ -233,7 +241,7 @@ end;
 procedure TJvCustomAppDBStorage.DoWriteFloat(const Path: string;
   Value: Extended);
 begin
-  DoWriteString(Path, FloatToStr(Value));
+  WriteBinary(Path, @Value, SizeOf(Value));
 end;
 
 procedure TJvCustomAppDBStorage.DoWriteInteger(const Path: string;
@@ -334,19 +342,27 @@ begin
   if FBookmark = '' then
     Exit;
   if FieldsAssigned then
-    DataSource.Dataset.Bookmark := FBookmark;
+    DataSource.DataSet.Bookmark := FBookmark;
   FBookmark := '';
+end;
+
+function TJvCustomAppDBStorage.GetPhysicalReadOnly : Boolean;
+begin
+  if FieldsAssigned then
+    Result := False
+  else
+    Result := Not DataSource.DataSet.CanModify;
 end;
 
 function TJvCustomAppDBStorage.SectionExists(const Path: string; RestorePosition: Boolean): Boolean;
 begin
-  Result := FieldsAssigned and DataSource.Dataset.Active;
+  Result := FieldsAssigned and DataSource.DataSet.Active;
   if Result then
   begin
     if RestorePosition then
       StoreDataset;
     try
-      Result := DataSource.Dataset.Locate(SectionField, Path, [loCaseInsensitive]);
+      Result := DataSource.DataSet.Locate(SectionField, Path, [loCaseInsensitive]);
     finally
       if RestorePosition then
         RestoreDataset;
@@ -385,22 +401,22 @@ procedure TJvCustomAppDBStorage.StoreDataset;
 begin
   if FBookmark <> '' then
     RestoreDataset;
-  if FieldsAssigned and DataSource.Dataset.Active then
+  if FieldsAssigned and DataSource.DataSet.Active then
   begin
-    FBookmark := DataSource.Dataset.Bookmark;
-    DataSource.Dataset.DisableControls;
+    FBookmark := DataSource.DataSet.Bookmark;
+    DataSource.DataSet.DisableControls;
   end;
 end;
 
 function TJvCustomAppDBStorage.ValueExists(const Section, Key: string; RestorePosition: Boolean): Boolean;
 begin
-  Result := FieldsAssigned and DataSource.Dataset.Active;
+  Result := FieldsAssigned and DataSource.DataSet.Active;
   if Result then
   begin
     if RestorePosition then
       StoreDataset;
     try
-      Result := DataSource.Dataset.Locate(Format('%s;%s', [SectionField, KeyField]), VarArrayOf([Section, Key]),
+      Result := DataSource.DataSet.Locate(Format('%s;%s', [SectionField, KeyField]), VarArrayOf([Section, Key]),
         [loCaseInsensitive]);
     finally
       if RestorePosition then
@@ -426,19 +442,35 @@ begin
     begin
       if AnsiSameStr(FValueLink.Field.AsString, Value) then
         Exit; // don't save if it's the same value (NB: this also skips the event)
-      DataSource.Dataset.Edit
+      DataSource.DataSet.Edit
     end
     else
-      DataSource.Dataset.Append;
+      DataSource.DataSet.Append;
     FSectionLink.Field.AsString := Section;
     FKeyLink.Field.AsString := Key;
     FValueLink.Field.AsString := Value;
-    DataSource.Dataset.Post;
+    DataSource.DataSet.Post;
   end;
   // always call event
   if Assigned(FOnWrite) then
     FOnWrite(Self, Section, Key, Value);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

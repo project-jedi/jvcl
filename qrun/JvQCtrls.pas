@@ -80,7 +80,7 @@ type
     FAnimateFrames: Integer;
     FAnimateInterval: Cardinal;
     FAnimating: Boolean;
-//    FCanvas: TCanvas;
+    FCanvas: TCanvas;
     FCurrentAnimateFrame: Byte;
     FImageIndex: Integer;
     FImages: TCustomImageList;
@@ -157,8 +157,7 @@ type
     procedure DrawButtonImage(ImageBounds: TRect);
     procedure DrawButtonFocusRect(const RectContent: TRect);
     procedure DrawButtonFrame(const DrawItemStruct: TDrawItemStruct; var RectContent: TRect);
-    procedure DrawButtonText(TextBounds: TRect; TextEnabled: Boolean);
-//    property Canvas: TCanvas read FCanvas;
+    procedure DrawButtonText(TextBounds: TRect; TextEnabled: Boolean); 
     property CurrentAnimateFrame: Byte read FCurrentAnimateFrame;
     property MouseInControl: Boolean read FMouseInControl;
   end;
@@ -241,8 +240,8 @@ end;
 
 constructor TJvCustomImageButton.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-//  FCanvas := TCanvas.Create;
+  inherited Create(AOwner);  
+  FCanvas := Canvas; 
   FAlignment := taCenter;
   FAnimateInterval := 200;
   FImageChangeLink := TChangeLink.Create;
@@ -260,9 +259,7 @@ end;
 destructor TJvCustomImageButton.Destroy;
 begin
   FreeAndNil(FImageChangeLink);
-  inherited Destroy;
-  // (rom) destroy Canvas AFTER inherited Destroy
-//  FreeAndNil(FCanvas);
+  inherited Destroy; 
 end;
 
 procedure TJvCustomImageButton.Notification(AComponent: TComponent;
@@ -272,6 +269,8 @@ begin
   if (Operation = opRemove) and (AComponent = Images) then
     Images:= nil;
 end;
+
+
 
 procedure TJvCustomImageButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
@@ -395,12 +394,15 @@ begin
   end;
 end;
 
+
+
 procedure TJvCustomImageButton.Paint;
 var
   DrawItemStruct: TDrawItemStruct;
 begin
   if csDestroying in ComponentState then
     Exit;
+
   with DrawItemStruct do
   begin
     itemState := 0;
@@ -412,26 +414,19 @@ begin
       itemState := ODS_SELECTED;
   end;
 
-//  FCanvas.Handle := inherited Canvas.Handle;
-  Canvas.Start;
-  try
-    Canvas.Font := Font;
-    if FOwnerDraw and Assigned(FOnButtonDraw) then
-      FOnButtonDraw(Self, DrawItemStruct)
-    else
-      DrawItem(DrawItemStruct);
-  finally
-    Canvas.Stop;
-//    FCanvas.Handle := NullHandle;
-  end;
+  Canvas.Font := Font;
+  if FOwnerDraw and Assigned(FOnButtonDraw) then
+    FOnButtonDraw(Self, DrawItemStruct)
+  else
+    DrawItem(DrawItemStruct);
 end;
 
 
 procedure TJvCustomImageButton.DrawButtonFocusRect(const RectContent: TRect);
 begin
   if FIsFocused and not (csDestroying in ComponentState) then
-  begin
-    Canvas.DrawFocusRect(RectContent);
+  begin  
+    Canvas.DrawFocusRect(RectContent); 
   end;
 end;
 
@@ -449,7 +444,7 @@ begin
     IsDown := (itemState and ODS_SELECTED <> 0) and IsEnabled;
     IsDefault := itemState and ODS_FOCUS <> 0;
   end;
-
+ 
   begin
     R := ClientRect;
 
@@ -461,29 +456,25 @@ begin
 
     if FIsFocused or IsDefault then
     begin
-      Canvas.Pen.Color := clWindowFrame;
-      Canvas.Pen.Width := 1;
-      Canvas.Brush.Style := bsClear;
-      Canvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+      FCanvas.Pen.Color := clWindowFrame;
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Style := bsClear;
+      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
       InflateRect(R, -1, -1);
     end;
 
     if IsDown then
     begin
-      Canvas.Pen.Color := clBtnShadow;
-      Canvas.Pen.Width := 1;
-      Canvas.Brush.Color := clBtnFace;
-      Canvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+      FCanvas.Pen.Color := clBtnShadow;
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Color := clBtnFace;
+      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
       InflateRect(R, -1, -1);
     end
     else
-    begin
-      InflateRect(R, -2, -2);
-      DrawFrameControl(Canvas.Handle, R, DFC_BUTTON, Flags);
-    end;
-//    InflateRect(R, -4, -4);
-    Canvas.Brush.Color := Color;
-    Canvas.FillRect(R);
+      DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
+    FCanvas.Brush.Color := Color;
+    FCanvas.FillRect(R);
 
     // Return content rect
     RectContent := ClientRect;
@@ -502,13 +493,13 @@ begin
   with ImageBounds do
     if IsImageVisible then  
       if Assigned(FImages) then
-        FImages.Draw(Canvas, Left, Top, GetImageIndex, itImage, Enabled)
+        FImages.Draw(FCanvas, Left, Top, GetImageIndex, itImage, Enabled)
       else
       begin
         Glyph := TBitmap.Create;
         DefaultImgBtnImagesList.GetBitmap(GetKindImageIndex, Glyph);
         Glyph.TransparentColor := clOlive;
-        Canvas.Draw(Left, Top, Glyph);
+        FCanvas.Draw(Left, Top, Glyph);
         Glyph.Free;
       end; 
 end;
@@ -547,7 +538,7 @@ begin
   //InflateRect(R, -4, -4);
   R := RectContent;
   if (DrawItemStruct.itemState and ODS_SELECTED <> 0) and Enabled then
-  begin
+  begin 
       OffsetRect(R, 1, 1);
   end;
 
