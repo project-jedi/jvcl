@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-05-26
+Last Modified: 2002-10-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ Property editor for the TJvTipWindow components }
+{ Property editor for the TJvTipOfDay component }
 
 unit JvTipOfDayProp;
 
@@ -35,7 +35,7 @@ interface
 uses
 {$IFDEF COMPILER6_UP}DesignEditors, DesignIntf{$ELSE}DsgnIntf{$ENDIF};
 type
-  { a component editor that by default opens the editor for the Items property in TTimeline }
+  { a component editor that shows the 'Tip of the Day' dialog }
   TJvTipOfDayEditor = class(TComponentEditor)
   public
     procedure ExecuteVerb(Index: Integer); override;
@@ -52,10 +52,9 @@ procedure Register;
 implementation
 
 uses
-  SysUtils, JvTipOfDay,
-  Classes; // Alleen voor RegisterComponents; nog weghalen
+  SysUtils, JvTipOfDay;
 
-{ TJvTipPropertyEditor }
+{ TJvTipOfDayEditor }
 
 procedure TJvTipOfDayEditor.Edit;
 var
@@ -98,12 +97,6 @@ end;
 function TJvTipOfDayEditor.GetVerbCount: Integer;
 begin
   Result := 1;
-end;
-
-procedure Register;
-begin
-  RegisterComponents('Test', [TJvTipOfDay]);
-  RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
 end;
 
 end.

@@ -10,13 +10,16 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvTipsOfDay.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
-Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
+The Initial Developers of the Original Code are Sébastien Buysse [sbuysse@buypin.com]
+and Peter Thörnqvist [peter3@peter3.com]. Portions created by Sébastien Buysse
+are Copyright (C) 2001 Sébastien Buysse. Portions created by Peter Thörnqvist
+are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
+                Remko Bonte [remkobonte@hotmail.com]
 
-Last Modified: 2000-02-28
+Last Modified: 2000-10-24
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,8 +34,8 @@ unit JvTipOfDay;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Registry, JvBaseDlg, JvTypes, JvButtonPersistent, StdCtrls;
+  Classes, Graphics, Controls, Forms,
+  JvBaseDlg, JvButtonPersistent, JvTypes, StdCtrls;
 
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
@@ -47,6 +50,7 @@ type
     FCheckBoxText: string;
     FHeaderText: string;
     FColor: TColor;
+    FDefaultFonts: Boolean;
     FTipFont: TFont;
     FHeaderFont: TFont;
     FButtonNext: TJvButtonPersistent;
@@ -58,16 +62,18 @@ type
     FOnAfterExecute: TNotifyEvent;
     FOnCanShow: TJvCanShowEvent;
 
-    { Reentrance check }
+    { For reentrance check: }
     FRunning: Boolean;
     { FIsAutoExecute = False  -> User called Execute
       FIsAutoExecute = True   -> Execute is called in method Loaded }
     FIsAutoExecute: Boolean;
 
+    { Maybe a bit overkill, but use a generic base class to access the
+      visual components, thus enabling you to easily extend the
+      'Tip of the Day' component }
     FTipLabel: TControl;
     FNextTipButton: TControl;
     FCheckBox: TButtonControl;
-    FDefaultFonts: Boolean;
 
     procedure FontChanged(Sender: TObject);
     function GetRegKey: string;
@@ -108,10 +114,10 @@ type
       associated with Style: }
     procedure UpdateFonts;
 
-    { Places a new tip on the dialog }
+    { Places a new tip on the dialog: }
     procedure UpdateTip;
 
-    { Handles button clicks on the 'Next' button }
+    { Handles button clicks on the 'Next' button: }
     procedure HandleNextClick(Sender: TObject);
 
     procedure Loaded; override;
@@ -151,7 +157,7 @@ type
 implementation
 
 uses
-  ExtCtrls, JvSpeedButton, JvButton;
+  Windows, ExtCtrls, JvSpeedButton, JvButton, Dialogs, SysUtils, Registry;
 
 {$R JvTipOfDay.res}
 
@@ -167,7 +173,7 @@ type
   TControlAccess = class(TControl);
   TButtonControlAccess = class(TButtonControl);
 
-  { TJvTipsOfDay }
+  { TJvTipOfDay }
 
 procedure TJvTipOfDay.AutoExecute;
 begin
