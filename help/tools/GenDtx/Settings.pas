@@ -202,7 +202,10 @@ implementation
 uses
   SysUtils, Forms, IniFiles;
 
-{ TSettings }
+var
+  GInstance: TSettings = nil;
+
+//=== TSettings ==============================================================
 
 procedure TSettings.AddToIgnoreTokenList(const AUnit, AToken: string);
 const
@@ -211,7 +214,7 @@ var
   DotPos: Integer;
   S: string;
   I: Integer;
-  LToken: string;
+  lToken: string;
 begin
   if (Length(AToken) < 3) or (AToken[1] <> '@') or (AToken[2] <> '@') then
     Exit;
@@ -228,11 +231,11 @@ begin
     Inc(I);
   end;
 
-  LToken := Copy(AToken, 1, I);
+  lToken := Copy(AToken, 1, I);
 
   if DotPos < 0 then
   begin
-    S := Format('%s=%s', [AUnit, LToken]);
+    S := Format('%s=%s', [AUnit, lToken]);
     I := FIgnoredTokens.Add(S) + 1;
     while (I < FIgnoredTokens.Count - 1) and
       (StrLIComp(PChar(S), PChar(FIgnoredTokens[I]), Length(S)) = 0) do
@@ -241,11 +244,11 @@ begin
   end
   else
   begin
-    S := Copy(LToken, 1, DotPos - 1);
+    S := Copy(lToken, 1, DotPos - 1);
     if FIgnoredTokens.IndexOf(Format('%s=%s', [AUnit, S])) >= 0 then
       Exit;
 
-    FIgnoredTokens.Add(Format('%s=%s', [AUnit, LToken]));
+    FIgnoredTokens.Add(Format('%s=%s', [AUnit, lToken]));
   end;
 
   SaveIgnoredTokens;
@@ -625,9 +628,6 @@ function TSettings.GetUnitsStatus(
 begin
   Result := FUnitsStatus[AUnitStatus];
 end;
-
-var
-  GInstance: TSettings = nil;
 
 class function TSettings.Instance: TSettings;
 begin
@@ -1058,4 +1058,3 @@ initialization
 finalization
   FreeAndNil(GInstance);
 end.
-

@@ -14,7 +14,9 @@ uses
   DirectoriesDlg in 'DirectoriesDlg.pas' {frmDirectories},
   FilterDlg in 'FilterDlg.pas' {frmFilter},
   VisibilityDlg in 'VisibilityDlg.pas' {frmVisibility},
-  ClassStructureDlg in 'ClassStructureDlg.pas' {frmClassStructure};
+  ClassStructureDlg in 'ClassStructureDlg.pas' {frmClassStructure},
+  EditPasCleanOptionsDlg in 'EditPasCleanOptionsDlg.pas' {frmEditPasCleanOptions},
+  ItemFilter in 'ItemFilter.pas';
 
 {$R *.res}
 

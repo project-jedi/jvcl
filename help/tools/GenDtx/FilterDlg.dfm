@@ -1,7 +1,7 @@
 object frmFilter: TfrmFilter
   Left = 264
   Top = 113
-  Width = 539
+  Width = 663
   Height = 509
   Caption = 'Filter'
   Color = clBtnFace
@@ -12,15 +12,12 @@ object frmFilter: TfrmFilter
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
-  DesignSize = (
-    531
-    475)
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel2: TBevel
     Left = 0
     Top = 427
-    Width = 528
+    Width = 652
     Height = 9
     Anchors = [akLeft, akRight, akBottom]
     Shape = bsBottomLine
@@ -314,7 +311,7 @@ object frmFilter: TfrmFilter
     OnEnter = ItemWithoutMorePageEnter
   end
   object Button1: TButton
-    Left = 358
+    Left = 482
     Top = 442
     Width = 75
     Height = 25
@@ -324,7 +321,7 @@ object frmFilter: TfrmFilter
     TabOrder = 16
   end
   object Button2: TButton
-    Left = 446
+    Left = 570
     Top = 442
     Width = 75
     Height = 25
@@ -335,25 +332,19 @@ object frmFilter: TfrmFilter
   end
   object rgrDuplicatesOrUnique: TRadioGroup
     Left = 312
-    Top = 19
+    Top = 3
     Width = 201
-    Height = 81
+    Height = 110
     Anchors = [akLeft, akBottom]
     Caption = ' Show Duplicates? '
-    Items.Strings = (
-      'Hide duplicates'
-      'Hide duplicates (case sensitive)'
-      'Show only duplicates'
-      'Show only case sensitive duplicates'
-      'Show All')
     TabOrder = 18
   end
   object pgcMore: TPageControl
     Left = 8
     Top = 243
-    Width = 517
+    Width = 641
     Height = 185
-    ActivePage = tshProperty
+    ActivePage = tshFunction
     Anchors = [akLeft, akRight, akBottom]
     TabOrder = 19
     object tshProperty: TTabSheet
@@ -644,7 +635,7 @@ object frmFilter: TfrmFilter
       object pnlProcedureMethod_Directives: TPanel
         Left = 8
         Top = 8
-        Width = 249
+        Width = 385
         Height = 137
         BevelOuter = bvLowered
         TabOrder = 0
@@ -663,7 +654,7 @@ object frmFilter: TfrmFilter
         end
       end
       object pnlProcedureMethod_Scope: TPanel
-        Left = 264
+        Left = 400
         Top = 8
         Width = 89
         Height = 137
@@ -684,7 +675,7 @@ object frmFilter: TfrmFilter
         end
       end
       object chbProcMeth_MinParamCount: TCheckBox
-        Left = 360
+        Left = 496
         Top = 8
         Width = 121
         Height = 17
@@ -692,7 +683,7 @@ object frmFilter: TfrmFilter
         TabOrder = 2
       end
       object sedProcMeth_MinParamCount: TJvSpinEdit
-        Left = 376
+        Left = 512
         Top = 24
         Width = 57
         Height = 21
@@ -702,7 +693,7 @@ object frmFilter: TfrmFilter
         TabOrder = 3
       end
       object chbProcMeth_MaxParamCount: TCheckBox
-        Left = 360
+        Left = 496
         Top = 48
         Width = 121
         Height = 17
@@ -710,7 +701,7 @@ object frmFilter: TfrmFilter
         TabOrder = 4
       end
       object sedProcMeth_MaxParamCount: TJvSpinEdit
-        Left = 376
+        Left = 512
         Top = 64
         Width = 57
         Height = 21
@@ -742,7 +733,7 @@ object frmFilter: TfrmFilter
         ImageIndex = 2
       end
       object pnlFunctionMethod_Scope: TPanel
-        Left = 264
+        Left = 392
         Top = 8
         Width = 89
         Height = 137
@@ -765,7 +756,7 @@ object frmFilter: TfrmFilter
       object pnlFunctionMethod_Directives: TPanel
         Left = 8
         Top = 8
-        Width = 249
+        Width = 377
         Height = 137
         BevelOuter = bvLowered
         TabOrder = 1
@@ -784,7 +775,7 @@ object frmFilter: TfrmFilter
         end
       end
       object CheckBox5: TCheckBox
-        Left = 360
+        Left = 488
         Top = 8
         Width = 121
         Height = 17
@@ -792,7 +783,7 @@ object frmFilter: TfrmFilter
         TabOrder = 2
       end
       object CheckBox6: TCheckBox
-        Left = 360
+        Left = 488
         Top = 48
         Width = 105
         Height = 17
@@ -800,7 +791,7 @@ object frmFilter: TfrmFilter
         TabOrder = 3
       end
       object JvSpinEdit5: TJvSpinEdit
-        Left = 376
+        Left = 504
         Top = 64
         Width = 57
         Height = 21
@@ -810,7 +801,7 @@ object frmFilter: TfrmFilter
         TabOrder = 4
       end
       object JvSpinEdit6: TJvSpinEdit
-        Left = 376
+        Left = 504
         Top = 24
         Width = 57
         Height = 21
@@ -829,27 +820,10 @@ object frmFilter: TfrmFilter
       Caption = 'tshProcedure'
       ImageIndex = 4
       TabVisible = False
-      object jlbProcedure_ClassMethod: TJvLabel
-        Left = 8
-        Top = 152
-        Width = 97
-        Height = 19
-        AutoSize = False
-        Caption = 'Class method'
-        OnClick = TriStateLabelClick
-        AutoOpenURL = False
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'MS Sans Serif'
-        HotTrackFont.Style = []
-        Images = ImageList1
-        ImageIndex = 2
-      end
       object pnlProcedure_Directives: TPanel
         Left = 8
         Top = 8
-        Width = 249
+        Width = 417
         Height = 137
         BevelOuter = bvLowered
         TabOrder = 0
@@ -868,7 +842,7 @@ object frmFilter: TfrmFilter
         end
       end
       object CheckBox3: TCheckBox
-        Left = 272
+        Left = 432
         Top = 8
         Width = 121
         Height = 17
@@ -876,7 +850,7 @@ object frmFilter: TfrmFilter
         TabOrder = 1
       end
       object CheckBox4: TCheckBox
-        Left = 272
+        Left = 432
         Top = 32
         Width = 121
         Height = 17
@@ -884,7 +858,7 @@ object frmFilter: TfrmFilter
         TabOrder = 2
       end
       object JvSpinEdit3: TJvSpinEdit
-        Left = 400
+        Left = 560
         Top = 32
         Width = 57
         Height = 21
@@ -894,92 +868,13 @@ object frmFilter: TfrmFilter
         TabOrder = 3
       end
       object JvSpinEdit4: TJvSpinEdit
-        Left = 400
+        Left = 560
         Top = 8
         Width = 57
         Height = 21
         CheckOptions = [coCheckOnExit, coCropBeyondLimit]
         ButtonKind = bkClassic
         MaxValue = 100.000000000000000000
-        TabOrder = 4
-      end
-    end
-    object tshFunction: TTabSheet
-      Caption = 'tshFunction'
-      ImageIndex = 5
-      TabVisible = False
-      object jlbFunction_ClassMethod: TJvLabel
-        Left = 8
-        Top = 152
-        Width = 97
-        Height = 19
-        AutoSize = False
-        Caption = 'Class method'
-        OnClick = TriStateLabelClick
-        AutoOpenURL = False
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'MS Sans Serif'
-        HotTrackFont.Style = []
-        Images = ImageList1
-        ImageIndex = 2
-      end
-      object pnlFunction_Directives: TPanel
-        Left = 8
-        Top = 8
-        Width = 249
-        Height = 137
-        BevelOuter = bvLowered
-        TabOrder = 0
-        object Label6: TLabel
-          Left = 6
-          Top = 5
-          Width = 58
-          Height = 13
-          Caption = 'Directives'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'MS Sans Serif'
-          Font.Style = [fsBold]
-          ParentFont = False
-        end
-      end
-      object JvSpinEdit1: TJvSpinEdit
-        Left = 400
-        Top = 8
-        Width = 57
-        Height = 21
-        CheckOptions = [coCheckOnExit, coCropBeyondLimit]
-        ButtonKind = bkClassic
-        MaxValue = 100.000000000000000000
-        TabOrder = 1
-      end
-      object JvSpinEdit2: TJvSpinEdit
-        Left = 400
-        Top = 32
-        Width = 57
-        Height = 21
-        CheckOptions = [coCheckOnExit, coCropBeyondLimit]
-        ButtonKind = bkClassic
-        MaxValue = 100.000000000000000000
-        TabOrder = 2
-      end
-      object CheckBox1: TCheckBox
-        Left = 272
-        Top = 8
-        Width = 121
-        Height = 17
-        Caption = 'Parameter count >='
-        TabOrder = 3
-      end
-      object CheckBox2: TCheckBox
-        Left = 272
-        Top = 32
-        Width = 121
-        Height = 17
-        Caption = 'Parameter count <='
         TabOrder = 4
       end
     end
@@ -1003,10 +898,169 @@ object frmFilter: TfrmFilter
         Text = 'edtAncestor'
       end
     end
+    object tshFunction: TTabSheet
+      Caption = 'tshFunction'
+      ImageIndex = 5
+      TabVisible = False
+      object pnlFunction_Directives: TPanel
+        Left = 8
+        Top = 8
+        Width = 417
+        Height = 137
+        BevelOuter = bvLowered
+        TabOrder = 0
+        object Label6: TLabel
+          Left = 6
+          Top = 5
+          Width = 58
+          Height = 13
+          Caption = 'Directives'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'MS Sans Serif'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+      end
+      object JvSpinEdit1: TJvSpinEdit
+        Left = 560
+        Top = 8
+        Width = 57
+        Height = 21
+        CheckOptions = [coCheckOnExit, coCropBeyondLimit]
+        ButtonKind = bkClassic
+        MaxValue = 100.000000000000000000
+        TabOrder = 1
+      end
+      object JvSpinEdit2: TJvSpinEdit
+        Left = 560
+        Top = 32
+        Width = 57
+        Height = 21
+        CheckOptions = [coCheckOnExit, coCropBeyondLimit]
+        ButtonKind = bkClassic
+        MaxValue = 100.000000000000000000
+        TabOrder = 2
+      end
+      object CheckBox1: TCheckBox
+        Left = 432
+        Top = 8
+        Width = 121
+        Height = 17
+        Caption = 'Parameter count >='
+        TabOrder = 3
+      end
+      object CheckBox2: TCheckBox
+        Left = 432
+        Top = 32
+        Width = 121
+        Height = 17
+        Caption = 'Parameter count <='
+        TabOrder = 4
+      end
+    end
+  end
+  object grbLegend: TGroupBox
+    Left = 520
+    Top = 8
+    Width = 129
+    Height = 97
+    Caption = ' Meaning: '
+    TabOrder = 20
+    object JvLabel1: TJvLabel
+      Left = 8
+      Top = 16
+      Width = 113
+      Height = 19
+      AutoSize = False
+      Caption = 'Must not be set'
+      AutoOpenURL = False
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
+      Images = ImageList1
+      ImageIndex = 0
+    end
+    object JvLabel2: TJvLabel
+      Left = 8
+      Top = 36
+      Width = 89
+      Height = 19
+      AutoSize = False
+      Caption = 'Don'#39't care'
+      AutoOpenURL = False
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
+      Images = ImageList1
+      ImageIndex = 1
+    end
+    object JvLabel3: TJvLabel
+      Left = 8
+      Top = 56
+      Width = 116
+      Height = 19
+      AutoSize = False
+      Caption = 'One of must be set'
+      AutoOpenURL = False
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
+      Images = ImageList1
+      ImageIndex = 2
+    end
+    object JvLabel4: TJvLabel
+      Left = 8
+      Top = 76
+      Width = 101
+      Height = 19
+      AutoSize = False
+      Caption = 'Must be set'
+      AutoOpenURL = False
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
+      Images = ImageList1
+      ImageIndex = 3
+    end
+  end
+  object rgrSearchSection: TRadioGroup
+    Left = 312
+    Top = 123
+    Width = 201
+    Height = 110
+    Anchors = [akLeft, akBottom]
+    Caption = ' Search where? '
+    TabOrder = 21
+  end
+  object chbSearchInterface: TCheckBox
+    Left = 328
+    Top = 144
+    Width = 129
+    Height = 17
+    Caption = 'Interface section'
+    TabOrder = 22
+  end
+  object chbSearchImplementation: TCheckBox
+    Left = 328
+    Top = 168
+    Width = 153
+    Height = 17
+    Caption = 'Implementation section'
+    TabOrder = 23
   end
   object ActionList1: TActionList
-    Left = 312
-    Top = 112
+    Left = 520
+    Top = 8
     object actOK: TAction
       Caption = 'OK'
       OnExecute = actOKExecute
@@ -1029,8 +1083,8 @@ object frmFilter: TfrmFilter
     end
   end
   object ImageList1: TImageList
-    Left = 360
-    Top = 112
+    Left = 552
+    Top = 8
     Bitmap = {
       494C010104000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030

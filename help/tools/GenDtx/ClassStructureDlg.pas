@@ -27,14 +27,16 @@ implementation
 
 {$R *.dfm}
 
-procedure TfrmClassStructure.actOKExecute(Sender: TObject);
-begin
-  ModalResult := mrOk;
-end;
+//=== TfrmClassStructure =====================================================
 
 procedure TfrmClassStructure.actCancelExecute(Sender: TObject);
 begin
   ModalResult := mrCancel;
+end;
+
+procedure TfrmClassStructure.actOKExecute(Sender: TObject);
+begin
+  ModalResult := mrOk;
 end;
 
 class function TfrmClassStructure.Execute(var Source: TSourceType;
@@ -56,4 +58,3 @@ begin
 end;
 
 end.
-

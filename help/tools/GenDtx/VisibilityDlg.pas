@@ -32,8 +32,26 @@ type
 implementation
 
 {$R *.dfm}
+//=== TfrmVisibility =========================================================
 
-{ TfrmVisibility }
+procedure TfrmVisibility.actCancelExecute(Sender: TObject);
+begin
+  ModalResult := mrCancel;
+end;
+
+procedure TfrmVisibility.actDefaultExecute(Sender: TObject);
+begin
+  chbPrivate.Checked := False;
+  chbProtected.Checked := False;
+  chbPublic.Checked := True;
+  chbPublished.Checked := True;
+  ModalResult := mrOk;
+end;
+
+procedure TfrmVisibility.actOKExecute(Sender: TObject);
+begin
+  ModalResult := mrOk;
+end;
 
 class function TfrmVisibility.Execute(
   var Visibility: TClassVisibilities): Boolean;
@@ -63,24 +81,4 @@ begin
   end;
 end;
 
-procedure TfrmVisibility.actOKExecute(Sender: TObject);
-begin
-  ModalResult := mrOk;
-end;
-
-procedure TfrmVisibility.actCancelExecute(Sender: TObject);
-begin
-  ModalResult := mrCancel;
-end;
-
-procedure TfrmVisibility.actDefaultExecute(Sender: TObject);
-begin
-  chbPrivate.Checked := False;
-  chbProtected.Checked := False;
-  chbPublic.Checked := True;
-  chbPublished.Checked := True;
-  ModalResult := mrOk;
-end;
-
 end.
-

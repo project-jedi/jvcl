@@ -34,19 +34,27 @@ type
 implementation
 
 {$R *.dfm}
-
 const
   CReview = 'Review';
+
   COther = 'Other';
+
   CCompleted = 'Completed';
+
   CIncomplete = 'Incomplete';
+
   CIgnored = 'Ignored';
+
   CGenerated = 'Generated';
+
   CLocked = 'Locked';
 
   { usCompleted, usIgnored, usGenerated, usOther }
+
   CUnitStatusStr: array[TUnitStatus] of string = (
     CCompleted, CIgnored, CGenerated, COther);
+
+//=== Local procedures =======================================================
 
 function StrToUnitStatus(const S: string): TUnitStatus;
 var
@@ -85,7 +93,7 @@ begin
     Result := COther;
 end;
 
-{ TfrmUnitStatus }
+//=== TfrmUnitStatus =========================================================
 
 procedure TfrmUnitStatus.AddIgnoredItem(const AFileName: string);
 begin
@@ -107,6 +115,18 @@ begin
   end;
 end;
 
+procedure TfrmUnitStatus.Button1Click(Sender: TObject);
+var
+  I: Integer;
+begin
+  with TSettings.Instance do
+    for I := 0 to ListView1.Items.Count - 1 do
+      with ListView1.Items[I] do
+        AddToUnitStatus(StrToUnitStatus(SubItems[1]), Caption);
+
+  TSettings.Instance.SaveUnitStatusAll;
+end;
+
 class procedure TfrmUnitStatus.Execute(ACtrl: TMainCtrl);
 begin
   with TfrmUnitStatus.Create(Application) do
@@ -116,6 +136,33 @@ begin
   finally
     Free;
   end;
+end;
+
+{procedure TfrmUnitStatus.UpdateUnitStatus(const AFileName: string;
+  const AUnitStatus: TUnitStatus);
+var
+  LFileName: string;
+  LUnitStatus: TUnitStatus;
+  I: Integer;
+begin
+  LFileName := ChangeFileExt(AFileName, '.pas');
+  with TSettings.Instance do
+  begin
+    for LUnitStatus := Low(TUnitStatus) to High(TUnitStatus) do
+      if LUnitStatus = AUnitStatus then
+        UnitsStatus[LUnitStatus].Add(LFileName)
+      else
+      begin
+        I := UnitsStatus[LUnitStatus].IndexOf(LFileName);
+        if I >= 0 then
+          UnitsStatus[LUnitStatus].Delete(I);
+      end;
+  end;
+end;}
+
+procedure TfrmUnitStatus.FormActivate(Sender: TObject);
+begin
+  Init;
 end;
 
 procedure TfrmUnitStatus.Init;
@@ -146,6 +193,27 @@ procedure TfrmUnitStatus.JvSearchFiles1FindFile(Sender: TObject;
   const AName: string);
 begin
   ProcessFile(AName);
+end;
+
+procedure TfrmUnitStatus.ListView1ColumnClick(Sender: TObject;
+  Column: TListColumn);
+begin
+  FColumnToSort := Column.Index;
+  (Sender as TCustomListView).AlphaSort;
+end;
+
+procedure TfrmUnitStatus.ListView1Compare(Sender: TObject; Item1,
+  Item2: TListItem; Data: Integer; var Compare: Integer);
+var
+  ix: Integer;
+begin
+  if FColumnToSort = 0 then
+    Compare := CompareText(Item1.Caption, Item2.Caption)
+  else
+  begin
+    ix := FColumnToSort - 1;
+    Compare := CompareText(Item1.SubItems[ix], Item2.SubItems[ix]);
+  end;
 end;
 
 procedure TfrmUnitStatus.ProcessFile(const AFileName: string);
@@ -206,65 +274,4 @@ begin
   end;
 end;
 
-procedure TfrmUnitStatus.ListView1ColumnClick(Sender: TObject;
-  Column: TListColumn);
-begin
-  FColumnToSort := Column.Index;
-  (Sender as TCustomListView).AlphaSort;
-end;
-
-procedure TfrmUnitStatus.ListView1Compare(Sender: TObject; Item1,
-  Item2: TListItem; Data: Integer; var Compare: Integer);
-var
-  ix: Integer;
-begin
-  if FColumnToSort = 0 then
-    Compare := CompareText(Item1.Caption, Item2.Caption)
-  else
-  begin
-    ix := FColumnToSort - 1;
-    Compare := CompareText(Item1.SubItems[ix], Item2.SubItems[ix]);
-  end;
-end;
-
-procedure TfrmUnitStatus.Button1Click(Sender: TObject);
-var
-  I: Integer;
-begin
-  with TSettings.Instance do
-    for I := 0 to ListView1.Items.Count - 1 do
-      with ListView1.Items[I] do
-        AddToUnitStatus(StrToUnitStatus(SubItems[1]), Caption);
-
-  TSettings.Instance.SaveUnitStatusAll;
-end;
-
-{procedure TfrmUnitStatus.UpdateUnitStatus(const AFileName: string;
-  const AUnitStatus: TUnitStatus);
-var
-  LFileName: string;
-  LUnitStatus: TUnitStatus;
-  I: Integer;
-begin
-  LFileName := ChangeFileExt(AFileName, '.pas');
-  with TSettings.Instance do
-  begin
-    for LUnitStatus := Low(TUnitStatus) to High(TUnitStatus) do
-      if LUnitStatus = AUnitStatus then
-        UnitsStatus[LUnitStatus].Add(LFileName)
-      else
-      begin
-        I := UnitsStatus[LUnitStatus].IndexOf(LFileName);
-        if I >= 0 then
-          UnitsStatus[LUnitStatus].Delete(I);
-      end;
-  end;
-end;}
-
-procedure TfrmUnitStatus.FormActivate(Sender: TObject);
-begin
-  Init;
-end;
-
 end.
-

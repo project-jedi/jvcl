@@ -31,21 +31,29 @@ type
 implementation
 
 {$R *.dfm}
-
-procedure TfrmEditNiceName.actOKExecute(Sender: TObject);
-begin
-  ModalResult := mrOK;
-end;
+//=== TfrmEditNiceName =======================================================
 
 procedure TfrmEditNiceName.actCancelExecute(Sender: TObject);
 begin
   ModalResult := mrCancel;
 end;
 
+procedure TfrmEditNiceName.actOKExecute(Sender: TObject);
+begin
+  ModalResult := mrOK;
+end;
+
 procedure TfrmEditNiceName.actOKUpdate(Sender: TObject);
 begin
   if Sender is TAction then
     TAction(Sender).Enabled := edtClass.Text > '';
+end;
+
+procedure TfrmEditNiceName.edtClassKeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  if not (Key in ['A'..'Z', 'a'..'z', '0'..'9', #8, #13]) then
+    Key := #0;
 end;
 
 class function TfrmEditNiceName.ExecuteAdd(var AClass,
@@ -83,12 +91,4 @@ begin
   end;
 end;
 
-procedure TfrmEditNiceName.edtClassKeyPress(Sender: TObject;
-  var Key: Char);
-begin
-  if not (Key in ['A'..'Z', 'a'..'z', '0'..'9', #8, #13]) then
-    Key := #0;
-end;
-
 end.
-

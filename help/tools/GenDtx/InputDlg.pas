@@ -26,21 +26,28 @@ type
 implementation
 
 {$R *.dfm}
-
-procedure TfrmInput.actOKExecute(Sender: TObject);
-begin
-  ModalResult := mrOK;
-end;
+//=== TfrmInput ==============================================================
 
 procedure TfrmInput.actCancelExecute(Sender: TObject);
 begin
   ModalResult := mrCancel;
 end;
 
+procedure TfrmInput.actOKExecute(Sender: TObject);
+begin
+  ModalResult := mrOK;
+end;
+
 procedure TfrmInput.actOKUpdate(Sender: TObject);
 begin
   if Sender is TAction then
     TAction(Sender).Enabled := edtName.Text > '';
+end;
+
+procedure TfrmInput.edtNameKeyPress(Sender: TObject; var Key: Char);
+begin
+  if not (Key in ['A'..'Z', '0'..'9', 'a'..'z', #8, #13]) then
+    Key := #0;
 end;
 
 class function TfrmInput.Execute(var AName: string): Boolean;
@@ -55,11 +62,4 @@ begin
   end;
 end;
 
-procedure TfrmInput.edtNameKeyPress(Sender: TObject; var Key: Char);
-begin
-  if not (Key in ['A'..'Z', '0'..'9', 'a'..'z', #8, #13]) then
-    Key := #0;
-end;
-
 end.
-

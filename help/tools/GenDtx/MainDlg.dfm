@@ -444,6 +444,12 @@ object frmMain: TfrmMain
       OnExecute = actGenerateClassStructureExecute
       OnUpdate = actGenerateClassStructureUpdate
     end
+    object actSortPas: TAction
+      Category = 'Generate'
+      Caption = 'Sort Impl. Pas'
+      OnExecute = actSortPasExecute
+      OnUpdate = actSortPasUpdate
+    end
   end
   object MainMenu1: TMainMenu
     Left = 32
@@ -509,6 +515,9 @@ object frmMain: TfrmMain
       end
       object GenerateList1: TMenuItem
         Action = actGenerateList
+      end
+      object SortImplPas1: TMenuItem
+        Action = actSortPas
       end
       object N3: TMenuItem
         Caption = '-'

@@ -77,8 +77,104 @@ type
 implementation
 
 {$R *.dfm}
+//=== TfrmDirectories ========================================================
 
-{ TfrmDirectories }
+procedure TfrmDirectories.actApplyExecute(Sender: TObject);
+begin
+  Uitvoeren;
+end;
+
+procedure TfrmDirectories.actCancelExecute(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfrmDirectories.actDesignTimePasDirExecute(Sender: TObject);
+begin
+  with JvBrowseForFolderDialog1 do
+  begin
+    Directory := edtDesignTimePasDir.Text;
+    if Execute then
+      edtDesignTimePasDir.Text := Directory;
+  end;
+end;
+
+procedure TfrmDirectories.actGeneratedDtxDirExecute(Sender: TObject);
+begin
+  with JvBrowseForFolderDialog1 do
+  begin
+    Directory := edtGeneratedDtxDir.Text;
+    if Execute then
+      edtGeneratedDtxDir.Text := Directory;
+  end;
+end;
+
+procedure TfrmDirectories.actOKExecute(Sender: TObject);
+begin
+  Uitvoeren;
+  Close;
+end;
+
+procedure TfrmDirectories.actPackageDirExecute(Sender: TObject);
+begin
+  with JvBrowseForFolderDialog1 do
+  begin
+    Directory := edtPackageDir.Text;
+    if Execute then
+      edtPackageDir.Text := Directory;
+  end;
+end;
+
+procedure TfrmDirectories.actRealDtxDirExecute(Sender: TObject);
+begin
+  with JvBrowseForFolderDialog1 do
+  begin
+    Directory := edtRealDtxDir.Text;
+    if Execute then
+      edtRealDtxDir.Text := Directory;
+  end;
+end;
+
+procedure TfrmDirectories.actRootDelphiDirExecute(Sender: TObject);
+begin
+  with JvBrowseForFolderDialog1 do
+  begin
+    Directory := edtRootDelphiDir.Text;
+    if Execute then
+      edtRootDelphiDir.Text := Directory;
+  end;
+end;
+
+procedure TfrmDirectories.actRootDirExecute(Sender: TObject);
+begin
+  with JvBrowseForFolderDialog1 do
+  begin
+    Directory := edtRootDir.Text;
+    if Execute then
+      edtRootDir.Text := Directory;
+  end;
+end;
+
+procedure TfrmDirectories.actRunTimePasDirExecute(Sender: TObject);
+begin
+  with JvBrowseForFolderDialog1 do
+  begin
+    Directory := edtRunTimePasDir.Text;
+    if Execute then
+      edtRunTimePasDir.Text := Directory;
+  end;
+end;
+
+procedure TfrmDirectories.chbUseRootDirClick(Sender: TObject);
+begin
+  UpdateUseRootDir;
+end;
+
+procedure TfrmDirectories.edtRootDirChange(Sender: TObject);
+begin
+  if chbUseRootDir.Checked then
+    UpdateDirs;
+end;
 
 class procedure TfrmDirectories.Execute;
 begin
@@ -121,83 +217,6 @@ begin
   UpdateUseRootDir;
 end;
 
-procedure TfrmDirectories.Uitvoeren;
-begin
-  SaveFiles;
-
-  with TSettings.Instance do
-  begin
-    Assign(FSettings);
-    SaveSettings;
-  end;
-end;
-
-procedure TfrmDirectories.actCancelExecute(Sender: TObject);
-begin
-  Close;
-end;
-
-procedure TfrmDirectories.actOKExecute(Sender: TObject);
-begin
-  Uitvoeren;
-  Close;
-end;
-
-procedure TfrmDirectories.actApplyExecute(Sender: TObject);
-begin
-  Uitvoeren;
-end;
-
-procedure TfrmDirectories.actRunTimePasDirExecute(Sender: TObject);
-begin
-  with JvBrowseForFolderDialog1 do
-  begin
-    Directory := edtRunTimePasDir.Text;
-    if Execute then
-      edtRunTimePasDir.Text := Directory;
-  end;
-end;
-
-procedure TfrmDirectories.actDesignTimePasDirExecute(Sender: TObject);
-begin
-  with JvBrowseForFolderDialog1 do
-  begin
-    Directory := edtDesignTimePasDir.Text;
-    if Execute then
-      edtDesignTimePasDir.Text := Directory;
-  end;
-end;
-
-procedure TfrmDirectories.actGeneratedDtxDirExecute(Sender: TObject);
-begin
-  with JvBrowseForFolderDialog1 do
-  begin
-    Directory := edtGeneratedDtxDir.Text;
-    if Execute then
-      edtGeneratedDtxDir.Text := Directory;
-  end;
-end;
-
-procedure TfrmDirectories.actRealDtxDirExecute(Sender: TObject);
-begin
-  with JvBrowseForFolderDialog1 do
-  begin
-    Directory := edtRealDtxDir.Text;
-    if Execute then
-      edtRealDtxDir.Text := Directory;
-  end;
-end;
-
-procedure TfrmDirectories.actPackageDirExecute(Sender: TObject);
-begin
-  with JvBrowseForFolderDialog1 do
-  begin
-    Directory := edtPackageDir.Text;
-    if Execute then
-      edtPackageDir.Text := Directory;
-  end;
-end;
-
 procedure TfrmDirectories.SaveFiles;
 begin
   with FSettings do
@@ -214,19 +233,27 @@ begin
   end;
 end;
 
-procedure TfrmDirectories.actRootDirExecute(Sender: TObject);
+procedure TfrmDirectories.Uitvoeren;
 begin
-  with JvBrowseForFolderDialog1 do
+  SaveFiles;
+
+  with TSettings.Instance do
   begin
-    Directory := edtRootDir.Text;
-    if Execute then
-      edtRootDir.Text := Directory;
+    Assign(FSettings);
+    SaveSettings;
   end;
 end;
 
-procedure TfrmDirectories.chbUseRootDirClick(Sender: TObject);
+procedure TfrmDirectories.UpdateDirs;
+var
+  RootDir: string;
 begin
-  UpdateUseRootDir;
+  RootDir := IncludeTrailingPathDelimiter(edtRootDir.Text);
+  edtRunTimePasDir.Text := RootDir + 'dev\JVCL3\run';
+  edtDesignTimePasDir.Text := RootDir + 'dev\JVCL3\design';
+  edtGeneratedDtxDir.Text := RootDir + 'dev\help\Gen';
+  edtRealDtxDir.Text := RootDir + 'dev\help';
+  edtPackageDir.Text := RootDir + 'dev\JVCL3\packages\d7';
 end;
 
 procedure TfrmDirectories.UpdateUseRootDir;
@@ -250,33 +277,4 @@ begin
     UpdateDirs;
 end;
 
-procedure TfrmDirectories.UpdateDirs;
-var
-  RootDir: string;
-begin
-  RootDir := IncludeTrailingPathDelimiter(edtRootDir.Text);
-  edtRunTimePasDir.Text := RootDir + 'dev\JVCL3\run';
-  edtDesignTimePasDir.Text := RootDir + 'dev\JVCL3\design';
-  edtGeneratedDtxDir.Text := RootDir + 'dev\help\Gen';
-  edtRealDtxDir.Text := RootDir + 'dev\help';
-  edtPackageDir.Text := RootDir + 'dev\JVCL3\packages\d7';
-end;
-
-procedure TfrmDirectories.edtRootDirChange(Sender: TObject);
-begin
-  if chbUseRootDir.Checked then
-    UpdateDirs;
-end;
-
-procedure TfrmDirectories.actRootDelphiDirExecute(Sender: TObject);
-begin
-  with JvBrowseForFolderDialog1 do
-  begin
-    Directory := edtRootDelphiDir.Text;
-    if Execute then
-      edtRootDelphiDir.Text := Directory;
-  end;
-end;
-
 end.
-
