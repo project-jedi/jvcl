@@ -21,106 +21,106 @@ PROJECTS = JvQCoreD7R.bpl JvQCoreD7D.bpl JvQSystemD7R.bpl JvQSystemD7D.bpl \
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-JvQCoreD7R.bpl: d7\JvQCoreD7R.dpk
+JvQCoreD7R.bpl: d7clx\JvQCoreD7R.dpk
   $(DCC)
 
-JvQCoreD7D.bpl: d7\JvQCoreD7D.dpk
+JvQCoreD7D.bpl: d7clx\JvQCoreD7D.dpk
   $(DCC)
 
-JvQSystemD7R.bpl: d7\JvQSystemD7R.dpk
+JvQSystemD7R.bpl: d7clx\JvQSystemD7R.dpk
   $(DCC)
 
-JvQSystemD7D.bpl: d7\JvQSystemD7D.dpk
+JvQSystemD7D.bpl: d7clx\JvQSystemD7D.dpk
   $(DCC)
 
-JvQStdCtrlsD7R.bpl: d7\JvQStdCtrlsD7R.dpk
+JvQStdCtrlsD7R.bpl: d7clx\JvQStdCtrlsD7R.dpk
   $(DCC)
 
-JvQStdCtrlsD7D.bpl: d7\JvQStdCtrlsD7D.dpk
+JvQStdCtrlsD7D.bpl: d7clx\JvQStdCtrlsD7D.dpk
   $(DCC)
 
-JvQCmpD7R.bpl: d7\JvQCmpD7R.dpk
+JvQCmpD7R.bpl: d7clx\JvQCmpD7R.dpk
   $(DCC)
 
-JvQCmpD7D.bpl: d7\JvQCmpD7D.dpk
+JvQCmpD7D.bpl: d7clx\JvQCmpD7D.dpk
   $(DCC)
 
-JvQCtrlsD7R.bpl: d7\JvQCtrlsD7R.dpk
+JvQCtrlsD7R.bpl: d7clx\JvQCtrlsD7R.dpk
   $(DCC)
 
-JvQCtrlsD7D.bpl: d7\JvQCtrlsD7D.dpk
+JvQCtrlsD7D.bpl: d7clx\JvQCtrlsD7D.dpk
   $(DCC)
 
-JvQCustomD7R.bpl: d7\JvQCustomD7R.dpk
+JvQCustomD7R.bpl: d7clx\JvQCustomD7R.dpk
   $(DCC)
 
-JvQCustomD7D.bpl: d7\JvQCustomD7D.dpk
+JvQCustomD7D.bpl: d7clx\JvQCustomD7D.dpk
   $(DCC)
 
-JvQDlgsD7R.bpl: d7\JvQDlgsD7R.dpk
+JvQDlgsD7R.bpl: d7clx\JvQDlgsD7R.dpk
   $(DCC)
 
-JvQDlgsD7D.bpl: d7\JvQDlgsD7D.dpk
+JvQDlgsD7D.bpl: d7clx\JvQDlgsD7D.dpk
   $(DCC)
 
-JvQCryptD7R.bpl: d7\JvQCryptD7R.dpk
+JvQCryptD7R.bpl: d7clx\JvQCryptD7R.dpk
   $(DCC)
 
-JvQCryptD7D.bpl: d7\JvQCryptD7D.dpk
+JvQCryptD7D.bpl: d7clx\JvQCryptD7D.dpk
   $(DCC)
 
-JvQValidatorsD7R.bpl: d7\JvQValidatorsD7R.dpk
+JvQValidatorsD7R.bpl: d7clx\JvQValidatorsD7R.dpk
   $(DCC)
 
-JvQValidatorsD7D.bpl: d7\JvQValidatorsD7D.dpk
+JvQValidatorsD7D.bpl: d7clx\JvQValidatorsD7D.dpk
   $(DCC)
 
-JvQManagedThreadsD7R.bpl: d7\JvQManagedThreadsD7R.dpk
+JvQManagedThreadsD7R.bpl: d7clx\JvQManagedThreadsD7R.dpk
   $(DCC)
 
-JvQManagedThreadsD7D.bpl: d7\JvQManagedThreadsD7D.dpk
+JvQManagedThreadsD7D.bpl: d7clx\JvQManagedThreadsD7D.dpk
   $(DCC)
 
-JvQMMD7R.bpl: d7\JvQMMD7R.dpk
+JvQMMD7R.bpl: d7clx\JvQMMD7R.dpk
   $(DCC)
 
-JvQMMD7D.bpl: d7\JvQMMD7D.dpk
+JvQMMD7D.bpl: d7clx\JvQMMD7D.dpk
   $(DCC)
 
-JvQJansD7R.bpl: d7\JvQJansD7R.dpk
+JvQJansD7R.bpl: d7clx\JvQJansD7R.dpk
   $(DCC)
 
-JvQJansD7D.bpl: d7\JvQJansD7D.dpk
+JvQJansD7D.bpl: d7clx\JvQJansD7D.dpk
   $(DCC)
 
-JvQNetD7R.bpl: d7\JvQNetD7R.dpk
+JvQNetD7R.bpl: d7clx\JvQNetD7R.dpk
   $(DCC)
 
-JvQNetD7D.bpl: d7\JvQNetD7D.dpk
+JvQNetD7D.bpl: d7clx\JvQNetD7D.dpk
   $(DCC)
 
-JvQUIBD7R.bpl: d7\JvQUIBD7R.dpk
+JvQUIBD7R.bpl: d7clx\JvQUIBD7R.dpk
   $(DCC)
 
-JvQUIBD7D.bpl: d7\JvQUIBD7D.dpk
+JvQUIBD7D.bpl: d7clx\JvQUIBD7D.dpk
   $(DCC)
 
-JvQWizardD7R.bpl: d7\JvQWizardD7R.dpk
+JvQWizardD7R.bpl: d7clx\JvQWizardD7R.dpk
   $(DCC)
 
-JvQWizardD7D.bpl: d7\JvQWizardD7D.dpk
+JvQWizardD7D.bpl: d7clx\JvQWizardD7D.dpk
   $(DCC)
 
-JvQAppFrmD7R.bpl: d7\JvQAppFrmD7R.dpk
+JvQAppFrmD7R.bpl: d7clx\JvQAppFrmD7R.dpk
   $(DCC)
 
-JvQAppFrmD7D.bpl: d7\JvQAppFrmD7D.dpk
+JvQAppFrmD7D.bpl: d7clx\JvQAppFrmD7D.dpk
   $(DCC)
 
-JvQHMID7R.bpl: d7\JvQHMID7R.dpk
+JvQHMID7R.bpl: d7clx\JvQHMID7R.dpk
   $(DCC)
 
-JvQHMID7D.bpl: d7\JvQHMID7D.dpk
+JvQHMID7D.bpl: d7clx\JvQHMID7D.dpk
   $(DCC)
 
 
