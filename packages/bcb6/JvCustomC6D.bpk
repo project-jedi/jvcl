@@ -26,8 +26,8 @@
       visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib 
       inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib 
       dbxcds.lib indy.lib bcb2kaxserver.lib"/>
-    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi dclstd.bpi CJCL60.bpi vclx.bpi JvCoreC6R.bpi 
-      JvCoreC6D.bpi JvSystemC6R.bpi JvStdCtrlsC6R.bpi JvCustomC6R.bpi"/>
+    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi dclstd.bpi CJCL60.bpi vclx.bpi JvCoreC6D.bpi 
+      JvStdCtrlsC6R.bpi JvCustomC6R.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design"/>
     <PATHRC value=".;"/>
@@ -39,7 +39,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvCustomC6D.cpp"/>
     <INCLUDEPATH value="..\..\design;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;..\..\dcu;..\..\resources;..\..\run;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="..\..\design;..\..\dcu;..\..\resources;..\..\run;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -78,9 +78,7 @@
       <FILE FILENAME="dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6D.bpi" FORMNAME="" UNITNAME="JvCoreC6D" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvSystemC6R.bpi" FORMNAME="" UNITNAME="JvSystemC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvStdCtrlsC6R.bpi" FORMNAME="" UNITNAME="JvStdCtrlsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCustomC6R.bpi" FORMNAME="" UNITNAME="JvCustomC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
