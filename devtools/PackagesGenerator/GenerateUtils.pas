@@ -1337,7 +1337,7 @@ begin
     end;
 end;
 
-function TDefinesList.IsDefined(const Condition): Boolean;
+function TDefinesList.IsDefined(const Condition : string): Boolean;
 begin
   Result := (IndexOf(Condition) >= 0);
 end;
