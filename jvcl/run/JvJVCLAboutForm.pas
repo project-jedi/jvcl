@@ -42,8 +42,8 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons,
   {$ENDIF VisualCLX}
-  JclSysInfo, JVCLVer,
-  JvBaseDlg, JvComponent;
+  JclSysInfo,
+  JVCLVer, JvBaseDlg, JvComponent;
 
 type
   TJvJVCLAboutForm = class(TJvForm)
@@ -213,7 +213,12 @@ end;
 
 procedure TJvJVCLAboutForm.SaveOptions;
 begin
+  {$IFDEF MSWINDOWS}
   with TIniFile.Create(ExtractFileDir(Application.ExeName) + cJVCLIni) do
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  with TIniFile.Create(GetEnvironmentVariable('HOME') + cJVCLIni) do
+  {$ENDIF LINUX}
   try
     if WindowState = wsNormal then
     begin

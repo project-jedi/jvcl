@@ -41,7 +41,7 @@ uses
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   {$IFDEF VCL}
-  VCLEditors;
+  VCLEditors,
   {$ENDIF VCL}
   DesignIntf, DesignEditors, DesignMenus;
   {$ELSE}

@@ -36,9 +36,9 @@ uses
   Forms, Classes, Windows, Messages, Graphics, Controls,
   StdCtrls, ComCtrls, Mask,
   {$IFDEF USEJVCL}
+  CheckLst,
   JvRichEdit, JvListView, JvCheckListBox, JvEdit, JvHotKey,
   JvListBox, JvMaskEdit, JvMemo, JvComCtrls, JvScrollBox, JvToolEdit,
-  CheckLst,
   JVCLVer;
   {$ELSE}
   CheckLst;

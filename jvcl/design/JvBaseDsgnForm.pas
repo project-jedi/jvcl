@@ -49,9 +49,9 @@ type
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
   {$ENDIF VCL}
   protected
-  {$IFDEF VisualCLX}
+    {$IFDEF VisualCLX}
     procedure ShowingChanged; override;
-  {$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
     { Determines the key to write the settings to or read from. Generally you don't need to override
       this method.
       Default will return (DELPHIRootKey)\Property Editors\(DesignerFormName)\(ClassName), where
@@ -127,12 +127,14 @@ end;
 
 {$IFDEF VCL}
 procedure TJvBaseDesign.CMShowingChanged(var Msg: TMessage);
+begin
+  inherited;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvBaseDesign.ShowingChanged;
-{$ENDIF VisuaLCLX}
 begin
-  inherited;
+  inherited ShowingChanged;
+{$ENDIF VisualCLX}
   if not (csDesigning in ComponentState) and AutoStoreSettings then
   try
     if Showing then
@@ -146,7 +148,8 @@ end;
 
 function TJvBaseDesign.GetRegKey: string;
 begin
-  Result := {$IFDEF VCL}SDelphiKey +{$ENDIF} RsPropertyEditors + RegPathDelim + Trim(DesignerFormName) + RegPathDelim + ClassName
+  Result := {$IFDEF VCL} SDelphiKey + {$ENDIF} RsPropertyEditors +
+    RegPathDelim + Trim(DesignerFormName) + RegPathDelim + ClassName;
 end;
 
 function TJvBaseDesign.DesignerFormName: string;
@@ -164,27 +167,27 @@ var
   I: Integer;
 begin
   {$IFDEF LINUX}
-  with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
+  with TIniFile.Create(GetEnvironmentVariable('HOME') + PathDelim + SDelphiKey) do
   {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do
   {$ENDIF MSWINDOWS}
-  try
-    {$IFDEF MSWINDOWS}
-    LazyWrite := False;
-    {$ENDIF MSWINDOWS}
-    if OpenKey(GetRegKey, True) then
     try
-      WriteInteger(cLeft, Left);
-      WriteInteger(cTop, Top);
-      WriteInteger(cWidth, Width);
-      WriteInteger(cHeight, Height);
+      {$IFDEF MSWINDOWS}
+      LazyWrite := False;
+      {$ENDIF MSWINDOWS}
+      if OpenKey(GetRegKey, True) then
+        try
+          WriteInteger(cLeft, Left);
+          WriteInteger(cTop, Top);
+          WriteInteger(cWidth, Width);
+          WriteInteger(cHeight, Height);
+        finally
+          CloseKey;
+        end;
     finally
-      CloseKey;
+      Free;
     end;
-  finally
-    Free;
-  end;
   for I := 0 to ComponentCount - 1 do
     if Components[I] is TfmeJvBaseDesign then
       TfmeJvBaseDesign(Components[I]).StoreSettings;
@@ -195,28 +198,28 @@ var
   I: Integer;
 begin
   {$IFDEF LINUX}
-  with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + SDelphiKey) do
+  with TIniFile.Create(GetEnvironmentVariable('HOME') + PathDelim + SDelphiKey) do
   {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do
   {$ENDIF MSWINDOWS}
-  try
-    if OpenKey(GetRegKey, False) then
     try
-      if ValueExists(cWidth) then
-        Width := ReadInteger(cWidth);
-      if ValueExists(cHeight) then
-        Height := ReadInteger(cHeight);
-      if ValueExists(cLeft) then
-        Left := ReadInteger(cLeft);
-      if ValueExists(cTop) then
-        Top := ReadInteger(cTop);
+      if OpenKey(GetRegKey, False) then
+        try
+          if ValueExists(cWidth) then
+            Width := ReadInteger(cWidth);
+          if ValueExists(cHeight) then
+            Height := ReadInteger(cHeight);
+          if ValueExists(cLeft) then
+            Left := ReadInteger(cLeft);
+          if ValueExists(cTop) then
+            Top := ReadInteger(cTop);
+        finally
+          CloseKey;
+        end;
     finally
-      CloseKey;
+      Free;
     end;
-  finally
-    Free;
-  end;
   for I := 0 to ComponentCount - 1 do
     if Components[I] is TfmeJvBaseDesign then
       TfmeJvBaseDesign(Components[I]).RestoreSettings;
