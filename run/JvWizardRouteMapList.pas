@@ -78,6 +78,7 @@ type
     FHotTrack: Boolean;
     FCurvature: Integer;
     FHotTrackBorder: Integer;
+    FBorderColor: TColor;
     {$IFDEF USEJVCL}
     FHotTrackFontOptions: TJvTrackFontOptions;
     FActiveFontOptions: TJvTrackFontOptions;
@@ -99,6 +100,7 @@ type
     {$IFDEF USEJVCL}
     procedure SetActiveFontOptions(const Value: TJvTrackFontOptions);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+    procedure SetBorderColor(Value: TColor);
     {$ENDIF USEJVCL}
   protected
     procedure DrawPageItem(ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer); virtual;
@@ -133,6 +135,7 @@ type
       DefaultTrackFontOptions;
     {$ENDIF USEJVCL}
     property IncludeDisabled: Boolean read FIncludeDisabled write SetIncludeDisabled default False;
+    property BorderColor: TColor read FBorderColor write SetBorderColor default clNavy;
     property ItemColor: TColor read FItemColor write SetItemColor default clCream;
     property ItemHeight: Integer read FItemHeight write SetItemHeight default 25;
     property ItemText: TRouteMapListItemText read FItemText write SetItemText default itCaption;
@@ -167,6 +170,7 @@ begin
   FClickable := True;
   FAlignment := taCenter;
   FTextOffset := 8;
+  FBorderColor := clNavy;
   FItemColor := clCream;
   FItemText := itCaption;
   FHotTrack := True;
@@ -245,7 +249,10 @@ var
 begin
   Canvas.Brush.Style := bsSolid;
   Canvas.Brush.Color := Color;
-  Canvas.Pen.Color := clNavy;
+  if BorderColor = clNone then
+    Canvas.Pen.Color := Color
+  else
+    Canvas.Pen.Color := BorderColor;
   GetCursorPos(P);
   P := ScreenToClient(P);
   R := ClientRect;
@@ -534,6 +541,15 @@ begin
 end;
 
 {$ENDIF USEJVCL}
+
+procedure TJvWizardRouteMapList.SetBorderColor(Value: TColor);
+begin
+  if Value <> FBorderColor then
+  begin
+    FBorderColor := Value;
+    Invalidate;
+  end;
+end;
 
 end.
 
