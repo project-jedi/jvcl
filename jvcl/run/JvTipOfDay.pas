@@ -157,7 +157,12 @@ uses
   Windows, ExtCtrls, Dialogs, SysUtils,
   JvButton, JvWndProcHook, JvResources;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvTipOfDay.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvTipOfDay.res}
+{$ENDIF LINUX}
 
 type
   TControlAccess = class(TControl);

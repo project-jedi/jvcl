@@ -674,7 +674,12 @@ uses
   SysUtils, Dialogs, DbConsts, Math,
   JvDBUtils, JvJVCLUtils, JvCalc, JvConsts, JvResources, JvTypes;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvDBControls.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvDBControls.res}
+{$ENDIF LINUX}
 
 //=== NEW IN JVCL 3.0 ==
 //=== TJvDBMaskEdit ==============================================================

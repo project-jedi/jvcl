@@ -409,7 +409,12 @@ uses
   {$ENDIF JVCLThemesEnabled}
   JvJCLUtils, JvConsts, JvResources;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvSpin.Res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvSpin.Res}
+{$ENDIF LINUX}
 
 const
   sSpinUpBtn = 'JVSPINUP';

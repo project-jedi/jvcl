@@ -55,7 +55,12 @@ uses
   JvInterpreter_SysUtils, JvInterpreter_Types, JvInterpreter_Windows,
   JvInterpreterConst, JvInterpreterFm, JvDsgnEditors;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvInterpreterReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvInterpreterReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

@@ -30,7 +30,12 @@ unit JvDockingReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvDockingReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvDockingReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 

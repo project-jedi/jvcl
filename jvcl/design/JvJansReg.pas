@@ -23,7 +23,12 @@ procedure Register;
 
 implementation
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvJansReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvJansReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 const

@@ -930,7 +930,12 @@ uses
 const
   sUnitName = 'JvToolEdit';
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvToolEdit.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvToolEdit.res}
+{$ENDIF LINUX}
 
 type
   TWinControlHack = class(TWinControl);

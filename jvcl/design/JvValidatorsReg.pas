@@ -30,7 +30,12 @@ unit JvValidatorsReg;
 
 interface
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvValidatorsReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvValidatorsReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 

@@ -127,7 +127,12 @@ implementation
 uses
   SysUtils;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvLED.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvLED.res}
+{$ENDIF LINUX}
 
 const
   cMaskLEDName = 'JVTR_MASK_LED';

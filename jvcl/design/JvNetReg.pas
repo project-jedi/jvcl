@@ -47,7 +47,12 @@ uses
   JvMailEditor, JvHTMLParserEditor, JvUrlListGrabber, JvUrlGrabbers,
   JvUrlListGrabberEditors;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvNetReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvNetReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

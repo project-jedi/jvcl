@@ -346,7 +346,12 @@ implementation
 uses
   JvXPCoreUtils;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvXPCore.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvXPCore.res}
+{$ENDIF LINUX}
 
 {$IFNDEF USEJVCL}
 resourcestring

@@ -186,7 +186,7 @@ uses
   Consts,
   JvThemes, JvJCLUtils;
 
-{$R ../Resources/JvCtrls.res}
+{$R ..\Resources\JvCtrls.res}
 
 const
   sUnitName = 'JvCtrls';

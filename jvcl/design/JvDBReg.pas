@@ -52,7 +52,12 @@ uses
   {$ENDIF JV_MIDAS}
   JvDBEditors, JvDBMemDatasetEditor, JvDBGridExportEditors;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvDBReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvDBReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 const

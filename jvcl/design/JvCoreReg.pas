@@ -47,7 +47,12 @@ uses
   JvColorProviderEditors, JvDataProviderEditors, JvDataProvider,
   JvDataProviderIntf, JvAppStorage, JvAppStorageSelectList;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvCoreReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvCoreReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 const

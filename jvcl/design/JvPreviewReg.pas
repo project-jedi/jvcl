@@ -55,7 +55,7 @@ uses
   JvDsgnConsts,
   JvPrvwDoc, JvPrvwRender;
 
-{$R ../Resources/JvPreviewReg.dcr}
+{$R ..\Resources\JvPreviewReg.dcr}
 
 type
   TJvHackCustomPreviewer = class(TJvCustomPreviewRenderer);

@@ -277,7 +277,12 @@ uses
   Consts, Math,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvTypes, JvThemes;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvxSlider.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvxSlider.res}
+{$ENDIF LINUX}
 
 //=== TJvCustomSlider ========================================================
 

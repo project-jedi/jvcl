@@ -300,7 +300,12 @@ uses
   Math,
   JvConsts, JvResources, JvTypes;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvColorCombo.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvColorCombo.res}
+{$ENDIF LINUX}
 
 function LoadInternalBitmap(ResName: string): TBitmap;
 begin

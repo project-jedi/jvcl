@@ -52,7 +52,12 @@ uses
   JvFormPropertiesForm, JvPerfStatEditor, JvTimerListEditor, JvDsgnEditors,
   JvAppXMLStorage, JvFormPlacementSelectList;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvSystemReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvSystemReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

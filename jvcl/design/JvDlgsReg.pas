@@ -53,7 +53,12 @@ uses
   JvProgressDialog, JvAppletEditor, JvObjectPickerDialog, JvBaseDlgEditor,
   JvCommonDialogDEditor, JvTipOfDayEditor;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvDlgsReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvDlgsReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 const

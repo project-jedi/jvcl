@@ -193,7 +193,13 @@ uses
   JvDsgnConsts;
 
 {$R *.dfm}
+
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvgLabelEditorForm.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvgLabelEditorForm.res}
+{$ENDIF LINUX}
 
 function IntToTextStyle(Tag: Integer): TglTextStyle;
 begin

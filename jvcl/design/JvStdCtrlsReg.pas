@@ -56,7 +56,12 @@ uses
   JvTransparentPanel, JvCheckedItemsForm, JvColorCombo, JvProgressEditor,
   JvDsgnEditors;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvStdCtrlsReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvStdCtrlsReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 const

@@ -48,7 +48,12 @@ uses
   JvMouseGesture, JvLogFile, JvDataEmbeddedEditor, JvPatcherEditor,
   JvProfilerForm, JvPageManagerForm, JvDsgnEditors;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvCmpReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvCmpReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

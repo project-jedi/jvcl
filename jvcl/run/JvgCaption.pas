@@ -131,7 +131,12 @@ uses
   JvConsts, JvJVCLUtils;
 
 {$IFDEF GL_CAPT_BUTTONS}
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvgCaption.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvgCaption.res}
+{$ENDIF LINUX}
 {$ENDIF GL_CAPT_BUTTONS}
 
 {$IFNDEF USEJVCL}
