@@ -435,7 +435,7 @@ procedure TPainterQBForm.AddBackdrop1Click(Sender: TObject);
 var
   S: string;
 begin
-  S := InputBox(sPainterQuickBackdrops, sEnterName, '');
+  S := InputBox(RsPainterQuickBackdrops, RsEnterName, '');
   if S = '' then
     Exit;
   S := S + '=' +
@@ -506,13 +506,13 @@ var
 begin
   if qbpresets.ItemIndex < 0 then
   begin
-    ShowMessage(sNoItemSelected);
+    ShowMessage(RsNoItemSelected);
     Exit;
   end;
   S := qbpresets.Items[qbpresets.ItemIndex];
   P := Pos('=', S);
   S := Copy(S, 1, P - 1);
-  S := InputBox(sPainterQuickBackdrops, sEnterName, S);
+  S := InputBox(RsPainterQuickBackdrops, RsEnterName, S);
   if S = '' then
     Exit;
   S := S + '=' +
@@ -556,7 +556,7 @@ begin
       QuickBack;
       Result := True;
     except
-      ShowMessage(sErrorInPresets);
+      ShowMessage(RsErrorInPresets);
       Result := False;
     end;
   finally

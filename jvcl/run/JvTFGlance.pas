@@ -996,7 +996,7 @@ begin
   If Assigned(CellCollection.GlanceControl) and
      (not CellCollection.GlanceControl.AllowCustomDates and
       not (csLoading in CellCollection.GlanceControl.ComponentState)) Then
-    Raise EJvTFGlanceError.Create(sCellDatesCannotBeChanged);
+    Raise EJvTFGlanceError.Create(RsECellDatesCannotBeChanged);
 
   InternalSetCellDate(Value);
 end;
@@ -1204,7 +1204,7 @@ begin
         Begin
           S := '(' + IntToStr(Result.ColIndex) + ':' + IntToStr(ColIndex) + ') ' +
                '(' + IntToStr(Result.RowIndex) + ':' + IntToStr(RowIndex) + ')';
-          Raise EJvTFGlanceError.CreateFmt(sCellMapHasBeenCorrupteds, [S]);
+          Raise EJvTFGlanceError.CreateFmt(RsECellMapHasBeenCorrupteds, [S]);
         End;
     End;
 end;
@@ -1691,19 +1691,19 @@ end;
 procedure TJvTFCustomGlance.EnsureCell(aCell: TJvTFGlanceCell);
 begin
   If not Assigned(aCell) Then
-    Raise EJvTFGlanceError.Create(sCellObjectNotAssigned);
+    Raise EJvTFGlanceError.Create(RsECellObjectNotAssigned);
 end;
 
 procedure TJvTFCustomGlance.EnsureCol(Col : Integer);
 begin
   If (Col < 0) or (Col >= ColCount) Then
-    Raise EJvTFGlanceError.CreateFmt(sInvalidColIndexd, [Col]);
+    Raise EJvTFGlanceError.CreateFmt(RsEInvalidColIndexd, [Col]);
 end;
 
 procedure TJvTFCustomGlance.EnsureRow(Row : Integer);
 begin
   If (Row < 0) or (Row >= RowCount) Then
-    Raise EJvTFGlanceError.CreateFmt(sInvalidRowIndexd, [Row]);
+    Raise EJvTFGlanceError.CreateFmt(RsEInvalidRowIndexd, [Row]);
 end;
 
 function TJvTFCustomGlance.GetCellAttr(aCell: TJvTFGlanceCell): TJvTFGlanceCellAttr;
@@ -3513,7 +3513,7 @@ var
   AbsIndex : Integer;
 begin
   If (Index < 0) or (Index > ApptCount - 1) Then
-    Raise EGlanceViewerError.CreateFmt(sApptIndexOutOfBoundsd, [Index]);
+    Raise EGlanceViewerError.CreateFmt(RsEApptIndexOutOfBoundsd, [Index]);
 
   AbsIndex := 0;
   I := -1;
@@ -3540,7 +3540,7 @@ begin
   Try
     GetDistinctAppts(ApptList);
     If (Index < 0) or (Index >= ApptList.Count) Then
-      Raise EGlanceViewerError.CreateFmt(sApptIndexOutOfBoundsd, [Index]);
+      Raise EGlanceViewerError.CreateFmt(RsEApptIndexOutOfBoundsd, [Index]);
 
     Result := TJvTFAppt(ApptList.Objects[Index]);
   Finally
@@ -4015,10 +4015,10 @@ begin
   If Assigned(CellCollection.GlanceControl) and
      not CellCollection.GlanceControl.AllowCustomDates and
      not CellCollection.Configuring Then
-    Raise EJvTFGlanceError.Create(sCellCannotBeSplit);
+    Raise EJvTFGlanceError.Create(RsECellCannotBeSplit);
 
   If IsSubCell Then
-    Raise EJvTFGlanceError.Create(sASubcellCannotBeSplit);
+    Raise EJvTFGlanceError.Create(RsEASubcellCannotBeSplit);
 
   If not IsSplit Then
     Begin

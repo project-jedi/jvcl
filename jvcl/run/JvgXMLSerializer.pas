@@ -242,13 +242,13 @@ var
 {$IFNDEF USEJVCL}
 resourcestring
 (* RUSSIAN
-  ERR_OpenXMLTagNotFound = 'ќткрывающий тег не найден: <%s>';
-  ERR_CloseXMLTagNotFound = '«акрывающий тег не найден: </%s>';
-  ERR_UnknownProperty = 'Unknown property: %s';
+  RsOpenXMLTagNotFound = 'ќткрывающий тег не найден: <%s>';
+  RsCloseXMLTagNotFound = '«акрывающий тег не найден: </%s>';
+  RsUnknownProperty = 'Unknown property: %s';
 *)
-  ERR_OpenXMLTagNotFound = 'Open tag not found: <%s>';
-  ERR_CloseXMLTagNotFound = 'Close tag not found: </%s>';
-  ERR_UnknownProperty = 'Unknown property: %s';
+  RsOpenXMLTagNotFound = 'Open tag not found: <%s>';
+  RsCloseXMLTagNotFound = 'Close tag not found: </%s>';
+  RsUnknownProperty = 'Unknown property: %s';
 {$ENDIF USEJVCL}
 
 constructor TJvgXMLSerializer.Create(AOwner: TComponent);
@@ -663,7 +663,7 @@ begin
 
     //{ иначе провер€ем его присутствие }
     { Otherwise check its presence  [translated] }
-    check(BlockStart <> nil, Format(ERR_OpenXMLTagNotFound,
+    check(BlockStart <> nil, Format(RsOpenXMLTagNotFound,
       [ComponentTagName]), EJvgXMLOpenTagNotFoundException);
     inc(BlockStart, length(ComponentTagName) + 2);
 
@@ -671,13 +671,13 @@ begin
     { Looking for closing tag  [translated] }
     BlockEnd := StrPosExt(BlockStart, PChar('</' + ComponentTagName + '>'),
       BufferEnd - BlockStart + 3 + length(ComponentTagName) {BufferLength});
-    check(BlockEnd <> nil, Format(ERR_CloseXMLTagNotFound,
+    check(BlockEnd <> nil, Format(RsCloseXMLTagNotFound,
       [ComponentTagName]), EJvgXMLCloseTagNotFoundException);
 
     //{ проверка на вхождение закр. тега в родительский тег }
     { Checking the closing tag to be nested within parent tag  [translated] }
     check((ParentBlockEnd = nil) or (BlockEnd < ParentBlockEnd),
-      Format(ERR_CloseXMLTagNotFound, [ComponentTagName]),
+      Format(RsCloseXMLTagNotFound, [ComponentTagName]),
       EJvgXMLCloseTagNotFoundException);
 
     TagEnd := BlockStart;
@@ -739,7 +739,7 @@ begin
           TokenPtr := TagStart;
 
         if not IgnoreUnknownTags then
-          check(PropIndex <> -1, Format(ERR_UnknownProperty, [TagName]),
+          check(PropIndex <> -1, Format(RsUnknownProperty, [TagName]),
             EJvgXMLUncknownPropertyException);
 
         if PropIndex <> -1 then

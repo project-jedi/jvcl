@@ -102,7 +102,7 @@ type
 implementation
 
 uses
-  JvThemes, JvResources;
+  JvJVCLUtils, JvThemes, JvResources;
 
 constructor TJvScrollText.Create(AOwner: TComponent);
 begin
@@ -364,9 +364,11 @@ procedure TJvScrollText.CalculateMemo(Sender: TObject);
 var
   I, J: Integer;
   Ts: TStringList;
+  Canvas: TCanvas;
 begin
   //calculate the Size of the memo (vertically)
-  with TCanvas.Create do
+  Canvas := TCanvas.Create;
+  with Canvas do
   begin
     Handle := GetDC(HWND_DESKTOP);
     Font.Assign(FMemo.Font);
@@ -378,7 +380,7 @@ begin
       if Ts[I] <> '' then
         J := J + TextHeight(Ts[I]) * ((TextWidth(Ts[I]) div Width) + 1)
       else
-        J := J + TextHeight(RC_TestText);
+        J := J + CanvasMaxTextHeight(Canvas);
     except
     end;
     if J <= 0 then

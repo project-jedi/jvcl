@@ -311,8 +311,7 @@ begin
   SetLength(Result, 256);
   SetLength(Result, FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
     GetLastError, 0, PChar(Result), Length(Result), nil));
-  raise
-    EJVCLException.CreateFmt('%s:' + sLineBreak + '%s', [Result, Msg]);
+  raise EJVCLException.CreateFmt(RsENotifyErrorFmt, [Result, Msg]);
 end;
 
 procedure TJvChangeNotify.DoThreadChangeNotify(Sender: TObject; Index: Integer);

@@ -171,29 +171,29 @@ begin
   if Pos(CrLf, S) = 0 then
     S := ReplaceStr(S, Lf, CrLf);
   if FExceptObj is EInOutError then
-    S := Format(SCodeError, [S, EInOutError(FExceptObj).ErrorCode])
+    S := Format(RsCodeError, [S, EInOutError(FExceptObj).ErrorCode])
   else
   if FExceptObj is EOleException then
   begin
     with EOleException(FExceptObj) do
       if (Source <> '') and (AnsiCompareText(S, Trim(Source)) <> 0) then
         S := S + CrLf + Trim(Source);
-    S := Format(SCodeError, [S, EOleException(FExceptObj).ErrorCode])
+    S := Format(RsCodeError, [S, EOleException(FExceptObj).ErrorCode])
   end
   else
   if FExceptObj is EOleSysError then
-    S := Format(SCodeError, [S, EOleSysError(FExceptObj).ErrorCode])
+    S := Format(RsCodeError, [S, EOleSysError(FExceptObj).ErrorCode])
   else
   if FExceptObj is EExternalException then
-    S := Format(SCodeError, [S,
+    S := Format(RsCodeError, [S,
       EExternalException(FExceptObj).ExceptionRecord^.ExceptionCode])
   else
   if FExceptObj is {$IFDEF COMPILER6_UP} EOSError {$ELSE} EWin32Error {$ENDIF} then
-    S := Format(SCodeError,
+    S := Format(RsCodeError,
      [S, {$IFDEF COMPILER6_UP} EOSError {$ELSE} EWin32Error {$ENDIF} (FExceptObj).ErrorCode])
   else
     S := S + '.';
-  MessageText.Text := Format(SModuleError, [ModuleName, S]);
+  MessageText.Text := Format(RsModuleError, [ModuleName, S]);
 end;
 
 procedure TJvErrorDialog.SetShowDetails(Value: Boolean);

@@ -217,8 +217,7 @@ begin
   if AParent is TJvFooterBtn then // (p3) D6 messing up ?
     AParent := TJvFooterBtn(AParent).Parent;
   if not ((AParent is TJvFooter) or (AParent = nil)) then
-    raise
-      EJvFooterError.Create(sTJvFooterBtnCanOnlyBePlacedOnATJvFo);
+    raise EJvFooterError.Create(RsETJvFooterBtnCanOnlyBePlacedOnATJvFo);
   inherited SetParent(AParent);
 end;
 

@@ -169,7 +169,7 @@ var
 begin
   if FCharModified then
   begin
-    mr := MessageDlg(sTheCurrentCharacterHasBeenModifiedA, mtConfirmation,
+    mr := MessageDlg(RsTheCurrentCharacterHasBeenModifiedA, mtConfirmation,
       [mbYes, mbNo, mbCancel], 0);
     Result := mr <> mrCancel;
     if mr = mrYes then
@@ -187,7 +187,7 @@ var
 begin
   if FMapperModified then
   begin
-    mr := MessageDlg(sTheCurrentMappingHasBeenModifiedSav, mtConfirmation,
+    mr := MessageDlg(RsTheCurrentMappingHasBeenModifiedSav, mtConfirmation,
       [mbYes, mbNo, mbCancel], 0);
     Result := mr <> mrCancel;
     if mr = mrYes then
@@ -206,7 +206,7 @@ begin
     InitialDir := LastSaveFolder;
     Options := [ofOverwritePrompt, ofNoChangeDir, ofNoValidate, ofPathMustExist, ofShareAware,
       ofNoReadOnlyReturn, ofNoTestFileCreate, ofEnableSizing];
-    Filter := sSegmentedLEDDisplayMappingFilessdms;
+    Filter := RsSegmentedLEDDisplayMappingFilessdms;
     FilterIndex := 0;
     FileName := FLastSaveFileName;
     Result := Execute;
@@ -344,7 +344,7 @@ begin
       InitialDir := LastOpenFolder;
       Options := [ofNoChangeDir, ofPathMustExist, ofFileMustExist, ofShareAware, ofNoNetworkButton,
         ofNoLongNames, ofEnableSizing];
-      Filter := sSegmentedLEDDisplayMappingFilessdms;
+      Filter := RsSegmentedLEDDisplayMappingFilessdms;
       FilterIndex := 0;
       if Execute then
       begin
@@ -439,7 +439,7 @@ begin
     S := '';
   Done := False;
   repeat
-    if InputQuery(sSelectCharacter, sSpecifyANewCharacter, S) then
+    if InputQuery(RsSelectCharacter, RsSpecifyANewCharacter, S) then
     begin
       if Length(S) > 0 then
       begin

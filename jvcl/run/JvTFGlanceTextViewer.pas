@@ -1095,7 +1095,7 @@ var
   Attr : TJvTFGlanceCellAttr;
 begin
   If not Assigned(GlanceControl) Then
-    Raise EGlanceViewerError.Create(sGlanceControlNotAssigned);
+    Raise EGlanceViewerError.Create(RsEGlanceControlNotAssigned);
 
   With Result do
     Begin

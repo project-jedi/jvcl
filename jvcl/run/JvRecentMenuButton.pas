@@ -82,7 +82,7 @@ begin
   with It do
   begin
     Enabled := False;
-    Caption := RC_EmptyItem;
+    Caption := RsEmptyItem;
     Tag := 1;
   end;
   FPopup.Items.Add(It);

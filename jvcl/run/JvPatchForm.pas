@@ -106,7 +106,7 @@ begin
   AssignFile(g, FileNameBox2.FileName);
   Reset(f);
   Reset(g);
-  Caption := Format(sJvPatcherEditorComparingFilesd, [0]);
+  Caption := Format(RsJvPatcherEditorComparingFilesd, [0]);
   Repaint;
   l := Res.Add(IntToStr(FileSize(f)));
   Res.Add(IntToStr(FileSize(g)));
@@ -114,7 +114,7 @@ begin
   lastcount := 0;
   while not Eof(f) and not Eof(g) do
   begin
-    Caption := Format(sJvPatcherEditorComparingFilesd, [icount div l]);
+    Caption := Format(RsJvPatcherEditorComparingFilesd, [icount div l]);
     Application.ProcessMessages;
     BlockRead(f, buf1, 1024, res1); //f = original file
     BlockRead(g, buf2, 1024, res2); //g = patched file
@@ -132,7 +132,7 @@ begin
     end;
   end;
 
-  Caption := sJvPatcherEditorEndStep;
+  Caption := RsJvPatcherEditorEndStep;
   Repaint;
   if res1 > res2 then
   begin

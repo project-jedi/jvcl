@@ -154,7 +154,7 @@ begin
   Result := ExtractDay(WorkDate);
   // Finally, check to make sure WorkDate is in the given month
   If Trunc(EncodeDate(Year, Month, 1)) <> Trunc(FirstOfMonth(WorkDate)) Then
-    Raise EJvTFDateError.Create(sResultDoesNotFallInMonth);
+    Raise EJvTFDateError.Create(RsEResultDoesNotFallInMonth);
 end;
 
 function GetWeeksInMonth(Year, Month : Word; StartOfWeek: Integer): Word;
@@ -295,13 +295,13 @@ end;
 procedure EnsureMonth(Month: Word);
 begin
   If (Month < 1) or (Month > 12) Then
-    Raise EJvTFDateError.CreateFmt(sInvalidMonthValue, [Month]);
+    Raise EJvTFDateError.CreateFmt(RsEInvalidMonthValue, [Month]);
 end;
 
 procedure EnsureDOW(DOW: Word);
 begin
   If (DOW < 1) or (DOW > 7) Then
-    Raise EJvTFDateError.CreateFmt(sInvalidDayOfWeekValue, [DOW]);
+    Raise EJvTFDateError.CreateFmt(RsEInvalidDayOfWeekValue, [DOW]);
 end;
 
 function EqualDates(D1, D2 : TDateTime) : Boolean;

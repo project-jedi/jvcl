@@ -141,7 +141,7 @@ type
 
 procedure Error;
 begin
-  EJVCLException.Create(SNoEditAssigned);
+  EJVCLException.Create(RsENoEditAssigned);
 end;
 
 { utility }
@@ -540,11 +540,11 @@ begin
     Exit;
 
   if Sender = FReplaceDialog then
-    FCaption := SReplaceCap
+    FCaption := RsReplaceCaption
   else
-    FCaption := SFindCap;
+    FCaption := RsFindCaption;
 
-  MessageBox(TFindDialog(Sender).Handle, PChar(Format(SNotFound, [TFindDialog(Sender).FindText])),
+  MessageBox(TFindDialog(Sender).Handle, PChar(Format(RsNotFound, [TFindDialog(Sender).FindText])),
     PChar(FCaption), MB_OK or MB_ICONINFORMATION);
 end;
 

@@ -108,7 +108,7 @@ begin
   Height := 21;
   FColorForm := TJvClrFrm.CreateNew(Self);
   TJvClrFrm(FColorForm).SetButton(Self);
-  FOtherCaption := SOtherCaption;
+  FOtherCaption := RsOtherCaption;
   FColorForm.Visible := False;
 end;
 

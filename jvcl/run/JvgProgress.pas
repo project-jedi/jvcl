@@ -127,7 +127,7 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sProgressd = 'progress...[%d%%]';
+  RsProgressCaption = 'Progress...[%d%%]';
 {$ENDIF USEJVCL}
 
 constructor TJvgProgress.Create(AOwner: TComponent);
@@ -153,7 +153,7 @@ begin
       Delineate := clGray;
       Shadow := 0;
       Background := 0;
-      Caption := sProgressd;
+      Caption := RsProgressCaption;
     end;
   FColors.OnChanged := OnSmthChanged;
   FGradientB.OnChanged := OnSmthChanged;

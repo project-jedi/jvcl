@@ -230,7 +230,7 @@ var
 begin
   if not Assigned(FImageList) then
   begin
-    EJVCLException.Create(sImagesNotAssigned);
+    EJVCLException.Create(RsEImagesNotAssigned);
     Exit;
   end;
   Bmp := TBitmap.Create;

@@ -44,7 +44,7 @@ implementation
 uses
   SysUtils, Classes, Controls, Forms, Graphics, Db,
   QrPrntr, Quickrpt, QrCtrls,
-  JvInterpreterFm, JvResources;
+  JvInterpreterFm, JvResources, JvTypes;
 
 const
   cQuickRep1 = 'QuickRep1';
@@ -66,7 +66,7 @@ begin
           Break;
         end;
     if QuickRep1 = nil then
-      raise Exception.Create(RsENoQuickReportFound);
+      raise EJVCLException.Create(RsENoQuickReportFound);
     QuickRep1.Preview;
   finally
     Form.Free;
@@ -90,7 +90,7 @@ begin
           Break;
         end;
     if QuickRep1 = nil then
-      raise Exception.Create(RsENoQuickReportFound);
+      raise EJVCLException.Create(RsENoQuickReportFound);
     QuickRep1.Preview;
   finally
     Form.Free;

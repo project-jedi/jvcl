@@ -1674,7 +1674,7 @@ var
 begin
   Supports(GetItems.GetProvider.SelectedConsumer, IJvColorProviderSettings, Settings);
   if Settings = nil then
-    Result := SNoSettings
+    Result := RsNoSettings
   else
     case ListNumber of
       0:
@@ -1739,7 +1739,7 @@ var
 begin
   Supports(GetItems.GetProvider.SelectedConsumer, IJvColorProviderSettings, Settings);
   if Settings = nil then
-    Result := SNoSettings
+    Result := RsNoSettings
   else
     Result := Settings.CustomColorSettings.AddColorSettings.Caption;
 end;

@@ -248,7 +248,7 @@ begin
     else
       Ini := TIniFile.Create(IniFileName);
     try
-      IniWriteString(Ini, SKeyLoginSection, SKeyLastLoginUserName, UserName);
+      IniWriteString(Ini, RsKeyLoginSection, RsKeyLastLoginUserName, UserName);
     finally
       Ini.Free;
     end;

@@ -106,9 +106,9 @@ constructor TJvGridPrinter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPrintOptions := TJvPrintOptions.Create;
-  FPrintOptions.PageFooter := SPrintOptionsPageFooter;
-  FPrintOptions.DateFormat := SPrintOptionsDateFormat;
-  FPrintOptions.TimeFormat := SPrintOptionsTimeFormat;
+  FPrintOptions.PageFooter := RsPrintOptionsPageFooter;
+  FPrintOptions.DateFormat := RsPrintOptionsDateFormat;
+  FPrintOptions.TimeFormat := RsPrintOptionsTimeFormat;
   FPrintOptions.HeaderSize := 14;
   FPrintOptions.FooterSize := 8;
   FPrintOptions.PreviewPage := 1;

@@ -84,7 +84,7 @@ begin
     Result := Result + IntToStr(A);
   end
   else
-    Result := SError;
+    Result := RsError;
 end;
 
 function TJvSerialMaker.SerialIsCorrect(ABase: Integer; AUserName: string; Serial: string): Boolean;

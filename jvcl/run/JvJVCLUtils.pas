@@ -3151,7 +3151,7 @@ begin
       if ResolveLink(QWidget_winId(Application.AppWidget), FileName, Result) <> 0
         then
 {$ENDIF}
-        raise Exception.CreateFmt(RsECantGetShortCut, [FileName]);
+        raise EJVCLException.CreateFmt(RsECantGetShortCut, [FileName]);
 end;
 
 function ResolveLink(const HWND: HWND; const LinkFile: TFileName;

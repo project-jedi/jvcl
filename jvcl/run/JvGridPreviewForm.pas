@@ -213,7 +213,7 @@ begin
   Margin.Value := GridPrinter.PrintOptions.MarginTop;
   Margins.ItemIndex := 0;
   PreviewPage.MaxValue := PageCount;
-  lblpages.Caption := Format(sOfd, [PreviewPage.MaxValue]);
+  lblpages.Caption := Format(RsOfd, [PreviewPage.MaxValue]);
   GridPrinter.PrintOptions.PreviewPage := 1;
   PreviewPage.Value := 1;
   ckBorders.Checked := (GridPrinter.PrintOptions.BorderStyle = bsSingle);
@@ -467,7 +467,7 @@ var
     end;
     Y := Y + ScaleY(HHeader);
     //Page nr
-    S := Format(sPaged, [PageRow]);
+    S := Format(RsPaged, [PageRow]);
     if (ToCol < Grid.ColCount - 1) or (PageCol > 1) then
       S := S + '-' + IntToStr(PageCol);
     fstr := GridPrinter.PrintOptions.PageFooter;
@@ -671,7 +671,7 @@ begin
   UpdateRowHeights;
   if Printer.Printers.Count = 0 then
   begin
-    MessageDlg(sNoPrinterIsInstalled, mtError, [mbOK], 0);
+    MessageDlg(RsNoPrinterIsInstalled, mtError, [mbOK], 0);
     Exit;
   end;
   Printer.Title := GridPrinter.PrintOptions.JobTitle;

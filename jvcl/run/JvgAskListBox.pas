@@ -188,8 +188,8 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sYes = 'yes';
-  sNo = 'no';
+  RsYes = 'yes';
+  RsNo = 'no';
 {$ENDIF USEJVCL}
 
 constructor TJvgAskListBox.Create(AOwner: TComponent);
@@ -204,8 +204,8 @@ begin
   FItemSelStyle := TJvgAskListBoxItemStyle.Create;
 
   TmpBitmap := TBitmap.Create;
-  FButtons.Add(sYes);
-  FButtons.Add(sNo);
+  FButtons.Add(RsYes);
+  FButtons.Add(RsNo);
   FAutoTransparentColor := ftcLeftBottomPixel;
   FWallpaperOption := fwoNone;
   FShowWallpaper := True;

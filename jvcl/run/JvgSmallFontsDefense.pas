@@ -68,7 +68,7 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
+  RsTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
 {$ENDIF USEJVCL}
 
 constructor TJvgSmallFontsDefense.Create(AOwner: TComponent);
@@ -84,7 +84,7 @@ begin
     (Owner as TForm).Scaled := False;
   if csDesigning in ComponentState then
     if not IsSmallFonts then
-      ShowMessage(sTJvgSmallFontsDefenseCannotBeUsedWi);
+      ShowMessage(RsTJvgSmallFontsDefenseCannotBeUsedWi);
 end;
 
 procedure TJvgSmallFontsDefense.SetOptions(const Value: TglSmallFontsDefenseOptions);

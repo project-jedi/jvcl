@@ -1498,7 +1498,7 @@ begin
     SelectAll;
     if CanFocus then
       SetFocus;
-    raise
+    raise;
   end;
   inherited;
 end;

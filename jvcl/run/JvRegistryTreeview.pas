@@ -405,7 +405,7 @@ begin
           rdUnknown:
             begin
               TmpItem.ImageIndex := imText;
-              TmpItem.SubItems.Add(SUnknownCaption);
+              TmpItem.SubItems.Add(RsUnknownCaption);
             end;
           rdString, rdExpandString:
             begin
@@ -632,9 +632,9 @@ constructor TJvRegistryTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FRegistryKeys := [hkCurrentUser, hkLocalMachine];
-  FRootCaption := SMyComputer;
-  FDefaultCaption := SDefaultCaption;
-  FDefaultNoValue := SDefaultNoValue;
+  FRootCaption := RsMyComputer;
+  FDefaultCaption := RsDefaultCaption;
+  FDefaultNoValue := RsDefaultNoValue;
   SetDefaultImages;
 end;
 

@@ -63,7 +63,7 @@ begin
       if Assigned(FOnExpire) then
         FOnExpire(Self)
       else
-        ShowMessage(RC_Expired);
+        ShowMessage(RsExpired);
       Application.Terminate;
     end;
 end;

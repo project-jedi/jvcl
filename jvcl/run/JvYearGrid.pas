@@ -548,14 +548,14 @@ var
   s: string;
   Ayear: word;
 begin
-  s := inputbox(sYearGrid, sEnterYear, inttostr(GridYear));
+  s := inputbox(RsYearGrid, RsEnterYear, inttostr(GridYear));
   try
     if s = '' then exit;
     ayear := strtoint(s);
     if ((ayear < 1999) or (ayear > 2050)) then exit;
     GridYear := ayear;
   except
-    showmessage(sInvalidYear);
+    showmessage(RsInvalidYear);
   end;
 
 end;
@@ -587,7 +587,7 @@ begin
   GridPop := Tpopupmenu.create(self);
   g := GridPop;
   m := tmenuitem.Create(g);
-  m.Caption := sYear;
+  m.Caption := RsYear;
   m.OnClick := year1click;
   m.tag := 1;
   g.Items.Add(m);
@@ -595,46 +595,46 @@ begin
   m.Caption := cMenuBreakCaption;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sEdit;
+  m.Caption := RsEdit;
   m.OnClick := edit1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sColor;
+  m.Caption := RsColor;
   m.OnClick := color1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sNoColor;
+  m.Caption := RsNoColor;
   m.OnClick := nocolor1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := cMenuBreakCaption;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sCopy;
+  m.Caption := RsCopy;
   m.OnClick := copy1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sCut;
+  m.Caption := RsCut;
   m.OnClick := cut1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sPaste;
+  m.Caption := RsPaste;
   m.OnClick := paste1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sDeleteItem;
+  m.Caption := RsDeleteItem;
   m.OnClick := delete1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := cMenuBreakCaption;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sSaveAllInfo;
+  m.Caption := RsSaveAllInfo;
   m.OnClick := SaveAsHTML;
   m.tag := 1;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sSaveFoundInfo;
+  m.Caption := RsSaveFoundInfo;
   m.OnClick := SaveFound;
   m.tag := 1;
   g.Items.Add(m);
@@ -642,12 +642,12 @@ begin
   m.Caption := cMenuBreakCaption;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sBorderColor;
+  m.Caption := RsBorderColor;
   m.OnClick := bordercolor1click;
   m.tag := 1;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sBookMarkColor;
+  m.Caption := RsBookMarkColor;
   m.OnClick := bookmarkcolor1click;
   m.tag := 1;
   g.Items.Add(m);
@@ -655,16 +655,15 @@ begin
   m.Caption := cMenuBreakCaption;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sFindItem;
+  m.Caption := RsFindItem;
   m.OnClick := find1click;
   m.tag := 1;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := sClearFind;
+  m.Caption := RsClearFind;
   m.OnClick := clearfind1click;
   m.tag := 1;
   g.Items.Add(m);
-
 end;
 
 procedure TJvYearGrid.Edit1Click(Sender: TObject);
@@ -927,7 +926,7 @@ var
   acol, arow: integer;
 begin
   ClearBookMarks;
-  s := inputbox(sYearGridFind, sEnterSeachText, '');
+  s := inputbox(RsYearGridFind, RsEnterSeachText, '');
   if s = '' then exit;
   s := lowercase(s);
   for arow := 0 to 12 do
@@ -955,7 +954,7 @@ var
 begin
   alist := tstringlist.create;
   MakeHTML(alist, HTMLBorder, true);
-  afile := Format(sFounds, [changefileext(YearFile, '.htm')]);
+  afile := Format(RsFounds, [changefileext(YearFile, '.htm')]);
   alist.savetofile(afile);
   alist.free;
   launch(afile);

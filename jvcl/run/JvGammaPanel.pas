@@ -140,7 +140,7 @@ begin
   FRLabel.Font.Size := 8;
   FRLabel.AutoSize := True;
   FRLabel.Font.Name := 'Arial';
-  FRLabel.Caption := RC_DefaultR;
+  FRLabel.Caption := RsDefaultR;
   FRLabel.Transparent := True;
   FRLabel.Parent := FPanel4;
 
@@ -150,7 +150,7 @@ begin
   FGLabel.AutoSize := True;
   FGLabel.Font.Name := 'Arial';
   FGLabel.Font.Size := 8;
-  FGLabel.Caption := RC_DefaultG;
+  FGLabel.Caption := RsDefaultG;
   FGLabel.Transparent := True;
   FGLabel.Parent := FPanel4;
 
@@ -160,7 +160,7 @@ begin
   FBLabel.Font.Size := 8;
   FBLabel.Font.Name := 'arial';
   FBLabel.AutoSize := True;
-  FBLabel.Caption := RC_DefaultB;
+  FBLabel.Caption := RsDefaultB;
   FBLabel.Transparent := True;
   FBLabel.Parent := FPanel4;
 
@@ -216,7 +216,7 @@ begin
   FBackgroundColorImg.Canvas.Brush.Color := clWhite;
   FBackgroundColorImg.Canvas.Brush.Style := bsSolid;
   FBackgroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
-  FBackgroundColorImg.Hint := RC_Hint1;
+  FBackgroundColorImg.Hint := RsHint1;
   FBackgroundColorImg.ShowHint := True;
   FBackgroundColorImg.OnClick := Color2Click;
 
@@ -226,7 +226,7 @@ begin
   FForegroundColorImg.Canvas.Brush.Color := clBlack;
   FForegroundColorImg.Canvas.Brush.Style := bsSolid;
   FForegroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
-  FForegroundColorImg.Hint := RC_Hint2;
+  FForegroundColorImg.Hint := RsHint2;
   FForegroundColorImg.ShowHint := True;
   FForegroundColorImg.OnClick := Color1Click;
 
@@ -234,8 +234,8 @@ begin
   FXLabel.Left := 7;
   FXLabel.Top := 32;
   FXLabel.AutoSize := True;
-  FXLabel.Caption := RC_LabelCaption;
-  FXLabel.Hint := RC_LabelHint;
+  FXLabel.Caption := RsLabelCaption;
+  FXLabel.Hint := RsLabelHint;
   FXLabel.OnClick := Exchange;
   FXLabel.ShowHint := True;
   FXLabel.Visible := True;
@@ -308,9 +308,9 @@ var
 begin
   Col := FGamma.Picture.Bitmap.Canvas.Pixels[X, Y];
   LastCol := col;
-  FRLabel.Caption := Format(RC_RedFormat, [GetRValue(Col)]);
-  FGLabel.Caption := Format(RC_GreenFormat, [GetGValue(Col)]);
-  FBLabel.Caption := Format(RC_BlueFormat, [GetBValue(Col)]);
+  FRLabel.Caption := Format(RsRedFormat, [GetRValue(Col)]);
+  FGLabel.Caption := Format(RsGreenFormat, [GetGValue(Col)]);
+  FBLabel.Caption := Format(RsBlueFormat, [GetBValue(Col)]);
   FChoosed.Canvas.Brush.Color := Col;
   FChoosed.Canvas.Brush.Style := bsSolid;
   FChoosed.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));

@@ -342,8 +342,7 @@ end;
 function TJvPreviewRenderRichEdit.CreatePreview(Append: boolean): boolean;
 begin
   if RichEdit = nil then
-    raise
-      EPrintPreviewError.Create(RsEARichEditComponentMustBeAssignedInC);
+    raise EPrintPreviewError.Create(RsEARichEditComponentMustBeAssignedInC);
   Result := RichEdit.Lines.Count > 0;
   FFinished := not Result;
   FLastChar := 0;

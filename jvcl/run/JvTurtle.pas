@@ -701,7 +701,7 @@ var
 begin
   ALine := 0;
   ACol := 0;
-  Result := sErrorCanvasNotAssigned;
+  Result := RsErrorCanvasNotAssigned;
   if not Assigned(FCanvas) then
     Exit;
   txDefault;
@@ -736,7 +736,7 @@ begin
       ACol := 0;
   end
   else
-    Result := sEmptyScript;
+    Result := RsEmptyScript;
 end;
 
 procedure TJvTurtle.DoGo(Dest: TPoint);
@@ -991,7 +991,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['angle']);
+    Result := Format(RsInvalidIntegerIns, ['angle']);
 end;
 
 function TJvTurtle.txArea: string;
@@ -1004,7 +1004,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['area']);
+    Result := Format(RsInvalidIntegerIns, ['area']);
 end;
 
 function TJvTurtle.txBrushColor: string;
@@ -1017,7 +1017,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidColorIns, ['brushcolor']);
+    Result := Format(RsInvalidColorIns, ['brushcolor']);
 end;
 
 function TJvTurtle.txBsClear: string;
@@ -1048,7 +1048,7 @@ var
   S: string;
   CopyMode: TCopyMode;
 begin
-  Result := sInvalidCopyMode;
+  Result := RsInvalidCopyMode;
   if GetToken(S) then
   begin
     S := 'cm' + S;
@@ -1078,7 +1078,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['ellipse']);
+    Result := Format(RsInvalidIntegerIns, ['ellipse']);
 end;
 
 function TJvTurtle.txGo: string;
@@ -1091,7 +1091,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['go']);
+    Result := Format(RsInvalidIntegerIns, ['go']);
 end;
 
 function TJvTurtle.txGoMark: string;
@@ -1110,7 +1110,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['turn']);
+    Result := Format(RsInvalidIntegerIns, ['turn']);
 end;
 
 function TJvTurtle.txLeft: string;
@@ -1123,7 +1123,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['left']);
+    Result := Format(RsInvalidIntegerIns, ['left']);
 end;
 
 function TJvTurtle.txRight: string;
@@ -1136,7 +1136,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['right']);
+    Result := Format(RsInvalidIntegerIns, ['right']);
 end;
 
 function TJvTurtle.txMark: string;
@@ -1155,7 +1155,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidColorIns, ['pencolor']);
+    Result := Format(RsInvalidColorIns, ['pencolor']);
 end;
 
 function TJvTurtle.txPenMode: string;
@@ -1163,7 +1163,7 @@ var
   S: string;
   PenMode: TPenMode;
 begin
-  Result := sInvalidPenMode;
+  Result := RsInvalidPenMode;
   if GetToken(S) then
   begin
     S := 'pm' + S;
@@ -1185,7 +1185,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['pensize']);
+    Result := Format(RsInvalidIntegerIns, ['pensize']);
 end;
 
 function TJvTurtle.txPos: string;
@@ -1198,7 +1198,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['pos']);
+    Result := Format(RsInvalidIntegerIns, ['pos']);
 end;
 
 function TJvTurtle.txRectangle: string;
@@ -1213,7 +1213,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['rectangle']);
+    Result := Format(RsInvalidIntegerIns, ['rectangle']);
 end;
 
 function TJvTurtle.txText: string;
@@ -1229,7 +1229,7 @@ begin
     DoRepaintRequest;
   end
   else
-    Result := Format(sInvalidTextIns, ['text']);
+    Result := Format(RsInvalidTextIns, ['text']);
 end;
 
 function TJvTurtle.txTextBold: string;
@@ -1248,7 +1248,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidColorIns, ['textcolor']);
+    Result := Format(RsInvalidColorIns, ['textcolor']);
 end;
 
 function TJvTurtle.txTextFont: string;
@@ -1261,7 +1261,7 @@ begin
     Result := '';
   end
   else
-    Result := sMissingFontname;
+    Result := RsMissingFontname;
 end;
 
 function TJvTurtle.txTextItalic: string;
@@ -1286,7 +1286,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['fontsize']);
+    Result := Format(RsInvalidIntegerIns, ['fontsize']);
 end;
 
 function TJvTurtle.txTextUnderline: string;
@@ -1313,7 +1313,7 @@ begin
         Result := '';
   end
   else
-    Result := Format(sNumberExpectedIns, ['do']);
+    Result := Format(RsNumberExpectedIns, ['do']);
 end;
 
 function TJvTurtle.txLoop: string;
@@ -1347,7 +1347,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['flood']);
+    Result := Format(RsInvalidIntegerIns, ['flood']);
 end;
 
 procedure TJvTurtle.SetOnRequestBackGround(const Value: TRequestBackGroundEvent);
@@ -1372,7 +1372,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidTextIns, ['background']);
+    Result := Format(RsInvalidTextIns, ['background']);
 end;
 
 function TJvTurtle.txTextOut: string;
@@ -1385,7 +1385,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidTextIns, ['text']);
+    Result := Format(RsInvalidTextIns, ['text']);
 end;
 
 function TJvTurtle.txAddBrushColor: string;
@@ -1398,7 +1398,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidColorIns, ['addbrushcolor']);
+    Result := Format(RsInvalidColorIns, ['addbrushcolor']);
 end;
 
 function TJvTurtle.txAddPenColor: string;
@@ -1411,7 +1411,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidColorIns, ['addbrushcolor']);
+    Result := Format(RsInvalidColorIns, ['addbrushcolor']);
 end;
 
 function TJvTurtle.txGoMarkAngle: string;
@@ -1458,7 +1458,7 @@ begin
     Msg := '';
   end
   else
-    Msg := sNumberStackUnderflow;
+    Msg := RsNumberStackUnderflow;
 end;
 
 function TJvTurtle.NPush(var Msg: string; Num: Integer): Boolean;
@@ -1471,7 +1471,7 @@ begin
     Msg := '';
     Result := True;
   except
-    Msg := sNumberStackOverflow;
+    Msg := RsNumberStackOverflow;
     Result := False;
   end;
 end;
@@ -1486,7 +1486,7 @@ begin
     Result := '';
   end
   else
-    Result := sMissingAfterComment;
+    Result := RsMissingAfterComment;
 end;
 (*)
 
@@ -1530,7 +1530,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sErrorIns, ['gobottom']);
+    Result := Format(RsErrorIns, ['gobottom']);
 end;
 
 function TJvTurtle.txGoLeft: string;
@@ -1544,7 +1544,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sErrorIns, ['goleft']);
+    Result := Format(RsErrorIns, ['goleft']);
 end;
 
 function TJvTurtle.txGoRight: string;
@@ -1558,7 +1558,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sErrorIns, ['goright']);
+    Result := Format(RsErrorIns, ['goright']);
 end;
 
 function TJvTurtle.txGoTop: string;
@@ -1572,7 +1572,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sErrorIns, ['gotop']);
+    Result := Format(RsErrorIns, ['gotop']);
 end;
 
 function TJvTurtle.txDiv: string;
@@ -1583,7 +1583,7 @@ begin
     if B <> 0 then
       NPush(Result, A div B)
     else
-      Result := sDivisionByZero;
+      Result := RsDivisionByZero;
 end;
 
 function TJvTurtle.txDrop: string;
@@ -1640,7 +1640,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sErrorIns, ['gocenter']);
+    Result := Format(RsErrorIns, ['gocenter']);
 end;
 
 function TJvTurtle.txDiamond: string;
@@ -1648,7 +1648,7 @@ var
   I, X: Integer;
   OldDown: Boolean;
 begin
-  Result := Format(sInvalidIntegerIns, ['diamond']);
+  Result := Format(RsInvalidIntegerIns, ['diamond']);
   if GetNum(X) then
   begin
     OldDown := PenDown;
@@ -1686,7 +1686,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidParameterIns, ['curve']);
+    Result := Format(RsInvalidParameterIns, ['curve']);
 end;
 
 function TJvTurtle.txMove: string;
@@ -1699,7 +1699,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['move']);
+    Result := Format(RsInvalidIntegerIns, ['move']);
 end;
 
 procedure TJvTurtle.SetOnRequestFilter(const Value: TRequestFilterEvent);
@@ -1724,7 +1724,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidTextIns, ['filter']);
+    Result := Format(RsInvalidTextIns, ['filter']);
 end;
 
 function TJvTurtle.txUser(Sym: string): string;
@@ -1743,7 +1743,7 @@ begin
       Result := RsStackOverflow;
   end
   else
-    Result := Format(sSymbolsIsNotDefined, [Sym]);
+    Result := Format(RsSymbolsIsNotDefined, [Sym]);
 end;
 
 function TJvTurtle.txBlock: string;
@@ -1756,7 +1756,7 @@ begin
     Result := '';
   end
   else
-    Result := sMissingAfterBlock;
+    Result := RsMissingAfterBlock;
 end;
 
 function TJvTurtle.txReturn: string;
@@ -1785,7 +1785,7 @@ begin
   if DoRequestImageSize then
     NPush(Result, FImageRect.Bottom)
   else
-    Result := Format(sErrorIns, ['=bottom']);
+    Result := Format(RsErrorIns, ['=bottom']);
 end;
 
 function TJvTurtle.tx_BrushColor: string;
@@ -1798,7 +1798,7 @@ begin
   if DoRequestImageSize then
     NPush(Result, FImageRect.Left)
   else
-    Result := Format(sErrorIns, ['=left']);
+    Result := Format(RsErrorIns, ['=left']);
 end;
 
 function TJvTurtle.tx_Loop: string;
@@ -1811,7 +1811,7 @@ begin
     NPush(Result, Num);
   end
   else
-    Result := Format(sStackUnderflowIns, ['=loop']);
+    Result := Format(RsStackUnderflowIns, ['=loop']);
 end;
 
 function TJvTurtle.tx_MarkX: string;
@@ -1844,7 +1844,7 @@ begin
   if DoRequestImageSize then
     NPush(Result, FImageRect.Right)
   else
-    Result := Format(sErrorIns, ['=right']);
+    Result := Format(RsErrorIns, ['=right']);
 end;
 
 function TJvTurtle.tx_Top: string;
@@ -1852,7 +1852,7 @@ begin
   if DoRequestImageSize then
     NPush(Result, FImageRect.Top)
   else
-    Result := Format(sErrorIns, ['=top']);
+    Result := Format(RsErrorIns, ['=top']);
 end;
 
 function TJvTurtle.tx_PenSize: string;
@@ -1880,7 +1880,7 @@ begin
       if GetToken(Token) then
         Result := ''
       else
-        Result := sSymbolExpectedAfterIf;
+        Result := RsSymbolExpectedAfterIf;
 end;
 
 function TJvTurtle.txAnd: string;
@@ -2014,7 +2014,7 @@ begin
     if A <> 0 then
       NPush(Result, Variant(Sqrt(A)))
     else
-      Result := sCanNotTakeSqrtOf;
+      Result := RsCanNotTakeSqrtOf;
 end;
 
 function TJvTurtle.txDec: string;
@@ -2040,13 +2040,13 @@ var
   OldHeading, A: Real;
   Pt: TPoint;
 begin
-  Result := Format(sInvalidIntegerIns, ['polygon']);
+  Result := Format(RsInvalidIntegerIns, ['polygon']);
   if not (GetNum(N) and GetNum(S)) then
     Exit;
-  Result := Format(sNotAllowedIns, ['polygon']);
+  Result := Format(RsNotAllowedIns, ['polygon']);
   if (N = 0) or (S = 0) then
     Exit;
-  Result := Format(sNeedMinimumOfSidesIns, ['polygon']);
+  Result := Format(RsNeedMinimumOfSidesIns, ['polygon']);
   if N < 3 then
     Exit;
   OldHeading := Heading;
@@ -2073,16 +2073,16 @@ var
   A, OldHeading: Real;
   Pt: TPoint;
 begin
-  Result := Format(sInvalidIntegerIns, ['star']);
+  Result := Format(RsInvalidIntegerIns, ['star']);
   if not (GetNum(N) and GetNum(S)) then
     Exit;
-  Result := Format(sNotAllowedIns, ['star']);
+  Result := Format(RsNotAllowedIns, ['star']);
   if (N = 0) or (S = 0) then
     Exit;
-  Result := Format(sNeedMinimumOfSidesIns, ['star']);
+  Result := Format(RsNeedMinimumOfSidesIns, ['star']);
   if N < 3 then
     Exit;
-  Result := Format(sMaximumSidesExceededIns, ['star']);
+  Result := Format(RsMaximumSidesExceededIns, ['star']);
   if N > 12 then
     Exit;
   OldHeading := Heading;
@@ -2114,7 +2114,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['lineto']);
+    Result := Format(RsInvalidIntegerIns, ['lineto']);
 end;
 
 function TJvTurtle.txRoundRect: string;
@@ -2129,7 +2129,7 @@ begin
     Result := '';
   end
   else
-    Result := Format(sInvalidIntegerIns, ['roundrect']);
+    Result := Format(RsInvalidIntegerIns, ['roundrect']);
 end;
 
 function TJvTurtle.txDefault: string;
@@ -2164,7 +2164,7 @@ begin
       Result := '';
     end
     else
-      Result := sTokenExpected;
+      Result := RsTokenExpected;
 end;
 
 function TJvTurtle.IsVar(Tex: string): Boolean;
@@ -2191,10 +2191,10 @@ begin
         Result := '';
       end
       else
-        Result := Format(ssDoesNotExist, [Token]);
+        Result := Format(RssDoesNotExist, [Token]);
     end
     else
-      Result := sTokenExpected;
+      Result := RsTokenExpected;
 end;
 
 function TJvTurtle.txInSub: string;
@@ -2211,10 +2211,10 @@ begin
         Result := '';
       end
       else
-        Result := Format(ssDoesNotExist, [Token]);
+        Result := Format(RssDoesNotExist, [Token]);
     end
     else
-      Result := sTokenExpected;
+      Result := RsTokenExpected;
 end;
 
 function TJvTurtle.txInMult: string;
@@ -2231,10 +2231,10 @@ begin
         Result := '';
       end
       else
-        Result := Format(ssDoesNotExist, [Token]);
+        Result := Format(RssDoesNotExist, [Token]);
     end
     else
-      Result := sTokenExpected;
+      Result := RsTokenExpected;
 end;
 
 function TJvTurtle.txInDiv: string;
@@ -2244,7 +2244,7 @@ var
 begin
   if NPop(Result, Num) then
     if Num = 0 then
-      Result := sDivisionByZeroNotAllowedInIn
+      Result := RsDivisionByZeroNotAllowedInIn
     else
     if GetToken(Token) then
     begin
@@ -2254,10 +2254,10 @@ begin
         Result := '';
       end
       else
-        Result := Format(ssDoesNotExist, [Token]);
+        Result := Format(RssDoesNotExist, [Token]);
     end
     else
-      Result := sTokenExpected;
+      Result := RsTokenExpected;
 end;
 
 function TJvTurtle.txInDec: string;
@@ -2273,10 +2273,10 @@ begin
       Result := '';
     end
     else
-      Result := Format(ssDoesNotExist, [Token]);
+      Result := Format(RssDoesNotExist, [Token]);
   end
   else
-    Result := sTokenExpected;
+    Result := RsTokenExpected;
 end;
 
 function TJvTurtle.txInInc: string;
@@ -2292,10 +2292,10 @@ begin
       Result := '';
     end
     else
-      Result := Format(ssDoesNotExist, [Token]);
+      Result := Format(RssDoesNotExist, [Token]);
   end
   else
-    Result := sTokenExpected;
+    Result := RsTokenExpected;
 end;
 
 end.

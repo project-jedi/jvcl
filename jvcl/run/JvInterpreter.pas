@@ -1027,7 +1027,7 @@ uses
   OleConst,
   ActiveX, ComObj,
   {$ENDIF JvInterpreter_OLEAUTO}
-  JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils, JvResources;
+  JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils, JvResources, JvTypes;
 
 {$R ..\resources\JvInterpreter.res} { error messages }
 
@@ -1756,7 +1756,7 @@ begin
       begin
         Str := E.Message;
         UniqueString(Str);
-        raise Exception.Create(Str);
+        raise EJVCLException.Create(Str);
       end;
     end;
   end
@@ -2010,7 +2010,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise Exception.Create(RsESorryDynamicArraysSupportIsMadeForO);
+    raise EJVCLException.Create(RsESorryDynamicArraysSupportIsMadeForO);
   OldSize := ArrayRec^.Size;
   if OldSize > ASize then
   begin
@@ -2041,7 +2041,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise Exception.Create(RsESorryForOneDimensionalArraysOnly);
+    raise EJVCLException.Create(RsESorryForOneDimensionalArraysOnly);
   Result := ArrayRec^.Size;
 end;
 
@@ -2051,7 +2051,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise Exception.Create(RsESorryForOneDimensionalArraysOnly);
+    raise EJVCLException.Create(RsESorryForOneDimensionalArraysOnly);
   Result := ArrayRec^.BeginPos[0];
 end;
 
@@ -2061,7 +2061,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise Exception.Create(RsESorryForOneDimensionalArraysOnly);
+    raise EJVCLException.Create(RsESorryForOneDimensionalArraysOnly);
   Result := ArrayRec^.EndPos[0];
 end;
 
@@ -2071,7 +2071,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise Exception.Create(RsESorryForOneDimensionalArraysOnly);
+    raise EJVCLException.Create(RsESorryForOneDimensionalArraysOnly);
   if (AElement < ArrayRec^.BeginPos[0]) or (AElement > ArrayRec^.EndPos[0]) then
     JvInterpreterError(ieArrayIndexOutOfBounds, -1);
   ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] - 1;
@@ -2092,7 +2092,7 @@ var
 begin
   ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
   if ArrayRec^.Dimension > 1 then
-    raise Exception.Create(RsESorryForOneDimensionalArraysOnly);
+    raise EJVCLException.Create(RsESorryForOneDimensionalArraysOnly);
   if (AElement < ArrayRec^.BeginPos[0]) or (AElement > ArrayRec^.EndPos[0]) then
     JvInterpreterError(ieArrayIndexOutOfBounds, -1);
   ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] + 1;
@@ -2121,7 +2121,7 @@ begin
   begin
     ArrayRec := PJvInterpreterArrayRec(TVarData(V).VPointer);
     if ArrayRec^.Dimension > 1 then
-      raise Exception.Create(RsESorryForOneDimensionalArraysOnly);
+      raise EJVCLException.Create(RsESorryForOneDimensionalArraysOnly);
     Size := ArrayRec^.Size;
     for I := 0 to Size - 1 do
     begin

@@ -423,19 +423,19 @@ begin
   ys := Picture.Bitmap.Height div 2;
   if xs <> ys then
   begin
-    showmessage(sImageMustBeSquare);
+    showmessage(RsImageMustBeSquare);
     exit;
   end;
   r0 := variant(sqrt(sqr(center.X - xs) + sqr(center.Y - ys)));
   R1 := variant(sqrt(sqr(Radius.X - center.X) + sqr(Radius.Y - center.Y)));
   if (r0 + R1) > xs then
   begin
-    showmessage(sSumOfRadiTolarge);
+    showmessage(RsSumOfRadiTolarge);
     exit;
   end;
   if (r0 < 5) or (R1 < 5) then
   begin
-    showmessage(Format(sBothRadiMustBeGr, [5]));
+    showmessage(Format(RsBothRadiMustBeGr, [5]));
     exit;
   end;
   da1 := 2 * pi / 36;

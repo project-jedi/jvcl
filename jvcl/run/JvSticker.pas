@@ -224,7 +224,7 @@ begin
     Form.Width := 350;
     Form.Height := 200;
     Form.BorderStyle := bsDialog;
-    Form.Caption := SEditSticker;
+    Form.Caption := RsEditStickerCaption;
     Memo := TMemo.Create(Form);
     with Memo do
     begin

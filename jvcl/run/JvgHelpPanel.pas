@@ -132,8 +132,8 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  SHelp = ' help ';
-  SOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
+  RsHelp = ' help ';
+  RsOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
 {$ENDIF USEJVCL}
 
 constructor TJvgHelpPanel.Create(AOwner: TComponent);
@@ -146,7 +146,7 @@ begin
 
   FStrings := TStringList.Create;
   Height := 70;
-  Caption := SHelp;
+  Caption := RsHelp;
 
   //if csDesigning in ComponentState then Align := alBottom;
   Expanded := False;
@@ -218,7 +218,7 @@ var
   Warning: string;
   R: TRect;
 begin
-  Warning := SOpenContextMenuToLoadRTFTextControl;
+  Warning := RsOpenContextMenuToLoadRTFTextControl;
   //inherited;
 
   Canvas.Brush.Style := bsSolid;
