@@ -36,22 +36,22 @@ unit JvQDsgnEditors;
 { Various property editors }
 
 interface
+
 uses
-  Classes, SysUtils,
   
   
-  QForms, QControls, QGraphics, QExtCtrls, QDialogs, QTypes,
-  QExtDlgs, QMenus, QStdCtrls, QImgList, Types, QWindows, ClxImgEdit,
+  QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
+  QExtDlgs, QMenus, QStdCtrls, QImgList,
   
   DsnConst,
   
-  RTLConsts, DesignIntf, DesignEditors, DesignMenus,
+  FiltEdit, RTLConsts, DesignIntf, DesignEditors, DesignMenus,
   
-
-  ClxEditors
   
-  ;
+  ClxEditors,
   
+  
+  Classes, SysUtils;
 
 
 //
@@ -91,8 +91,6 @@ type
       const ARect: TRect; ASelected: Boolean);
   end;
 
-(*)
-type
   TJvQColorProperty = class(TIntegerProperty, ICustomPropertyDrawing,
     ICustomPropertyListDrawing)
   public
@@ -116,13 +114,13 @@ type
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean);
   end;
-(*)
+
 
 
 type
   // Special TClassProperty, that show events along with all other properties
   // This is only useful with version 5 and before
-
+  
 
   TJvHintProperty = class(TStringProperty)
   public
@@ -240,7 +238,6 @@ type
     procedure SetValue(const Value: string); override;
   end;
                   
-type
   TJvImageListEditor = class(TComponentEditor)
   private
     procedure SaveAsBitmap(ImageList: TImageList);
@@ -259,6 +256,7 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
   end;
+
 
 procedure DefaultPropertyDrawName(Prop: TPropertyEditor; Canvas: TCanvas;
   const Rect: TRect);
@@ -280,7 +278,7 @@ uses
   
   QFileCtrls, QConsts,
   
-  JvQTypes, JvQStringsForm, {JvQDateTimeForm,} JvQDsgnConsts;
+  JvQTypes, JvQStringsForm, JvQDateTimeForm, JvQDsgnConsts;
 
 function ValueName(E: Extended): string;
 begin
@@ -378,7 +376,7 @@ end;
 procedure TJvDirectoryProperty.Edit;
 var
   AName: string;
-  FolderName: widestring;
+  FolderName: THintString; // (ahuser) TCaption is "type Xxxstring", THintString is "Xxxstring"
   C: TPersistent;
 begin
   C := GetComponent(0);
@@ -540,7 +538,7 @@ end;
 
 function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList, paSortList, paMultiSelect, paRevertable];
+  Result := [paValueList, paMultiSelect, paRevertable];
 end;
 
 function TJvDefaultImageIndexProperty.GetValue: string;
@@ -645,7 +643,7 @@ end;
 
 function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList, paSortList, paMultiselect];
+  Result := [paValueList, paMultiSelect, paRevertable];
 end;
 
 function TJvDefaultImageIndexProperty.GetValue: string;
@@ -808,7 +806,7 @@ end;
 
 procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
 begin
-//  SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(RsStripFilePath));
+  SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, PChar(RsStripFilePath));
 end;
 
 //=== TJvExeNameProperty =====================================================
@@ -889,8 +887,8 @@ begin
             Canvas.FillRect(Bounds(0, 0, Width, Height));
             for I := 0 to ImageList.Count - 1 do
               ImageList.Draw(Canvas, ImageList.Width * I, 0, I);
-//            HandleType := bmDIB;
-            if PixelFormat in [pf8bit, pf16bit] then
+            HandleType := bmDIB;
+            if PixelFormat in [pf15bit, pf16bit] then
             try
               PixelFormat := pf24bit;
             except
@@ -975,18 +973,23 @@ begin
     inherited SetValue(Value);
 end;
 
-{ TJvPersistentProperty }
+//=== TJvPersistentProperty ==================================================
 
 
-(*)
+
+//=== TJvQColorProperty ======================================================
+
+
+
 procedure TJvQColorProperty.Edit;
 var
   ColorDialog: TColorDialog;
-  IniFile: TIniFile;
+  IniFile: TRegIniFile;
 
   procedure GetCustomColors;
   begin
-    if BaseRegistryKey = '' then Exit;
+    if BaseRegistryKey = '' then
+      Exit;
     IniFile := TRegIniFile.Create(BaseRegistryKey);
     try
       IniFile.ReadSectionValues(SCustomColors, ColorDialog.CustomColors);
@@ -1014,6 +1017,7 @@ var
           end;
         end;
   end;
+
 begin
   IniFile := nil;
   ColorDialog := TColorDialog.Create(Application);
@@ -1022,7 +1026,8 @@ begin
     ColorDialog.Color := GetOrdValue;
     ColorDialog.HelpContext := hcDColorEditor;
     ColorDialog.Options := [cdShowHelp];
-    if ColorDialog.Execute then SetOrdValue(ColorDialog.Color);
+    if ColorDialog.Execute then
+      SetOrdValue(ColorDialog.Color);
     SaveCustomColors;
   finally
     IniFile.Free;
@@ -1049,27 +1054,29 @@ procedure TJvQColorProperty.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
   ASelected: Boolean);
 begin
   if GetVisualValue <> '' then
-    ListDrawValue(GetVisualValue, ACanvas, ARect, True{ASelected})
+    ListDrawValue(GetVisualValue, ACanvas, ARect, True) // ASelected
   else
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
 
 procedure TJvQColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
+
   function ColorToBorderColor(AColor: TColor): TColor;
   type
     TColorQuad = record
-      Red,
-      Green,
-      Blue,
+      Red: Byte;
+      Green: Byte;
+      Blue: Byte;
       Alpha: Byte;
     end;
   begin
     if (TColorQuad(AColor).Red > 192) or
-       (TColorQuad(AColor).Green > 192) or
-       (TColorQuad(AColor).Blue > 192) then
+      (TColorQuad(AColor).Green > 192) or
+      (TColorQuad(AColor).Blue > 192) then
       Result := clBlack
-    else if ASelected then
+    else
+    if ASelected then
       Result := clWhite
     else
       Result := AColor;
@@ -1129,7 +1136,6 @@ procedure TJvQColorProperty.PropDrawName(ACanvas: TCanvas; const ARect: TRect;
 begin
   DefaultPropertyDrawName(Self, ACanvas, ARect);
 end;
-(*)
 
 procedure DefaultPropertyDrawName(Prop: TPropertyEditor; Canvas: TCanvas;
   const Rect: TRect);

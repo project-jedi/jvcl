@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -21,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-07-15
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -47,7 +46,7 @@ uses
   
   JvQBaseDsgnForm, JvQDataProvider, JvQDataProviderItemDesign, JvQDataProviderIntf,
   JvQProviderTreeListFrame, JvQBaseDsgnFrame, JvQBaseDsgnToolbarFrame,
-  JvQStdToolbarDsgnFrame, JvQProviderToolbarFrame, JvQDsgnTypes, QTypes;
+  JvQStdToolbarDsgnFrame, JvQProviderToolbarFrame, JvQDsgnTypes;
 
 type
   TfrmDataProviderDesigner = class(TJvBaseDesign)
@@ -311,7 +310,8 @@ var
   ProviderImpl: TComponent;
 begin
   fmeTreeList.Provider.SetProviderIntf(Value);
-  if csDestroying in ComponentState then Exit;
+  if csDestroying in ComponentState then
+    Exit;
   if Provider <> nil then
   begin
     FRootItem := TJvProviderRootItem.Create(Provider as IJvDataItems);
