@@ -335,6 +335,13 @@ function TJvLocateObject.Locate(const KeyField, KeyValue: string;
   Exact, CaseSensitive: Boolean): Boolean;
 var
   LookupKey: TField;
+  function IsStringType(FieldType:TFieldType):boolean;
+  const
+    cStringTypes = [ftString, ftWideString];
+  begin
+    Result := FieldType in cStringTypes;
+  end;
+
 begin
   if DataSet = nil then
   begin
@@ -348,7 +355,7 @@ begin
   FLookupValue := KeyValue;
   FLookupExact := Exact;
   FCaseSensitive := CaseSensitive;
-  if FLookupField.DataType <> ftString then
+  if not IsStringType(FLookupField.DataType) then
   begin
     FCaseSensitive := True;
     try
@@ -357,7 +364,9 @@ begin
       Result := False;
       Exit;
     end;
-  end;
+  end
+  else
+    FCaseSensitive := CaseSensitive;
   FBookmark := DataSet.GetBookmark;
   try
     DataSet.DisableControls;
