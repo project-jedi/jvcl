@@ -4,6 +4,7 @@ unit MainFrm;
 interface
 
 uses
+  JvNavigationPane,
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtDlgs, ImgList, Menus, StdCtrls, ComCtrls,
   ExtCtrls, JvDesktopAlert, JvAppStorage, JvAppIniStorage, JvComponent,
@@ -49,7 +50,6 @@ type
     Label9: TLabel;
     JvFormStorage1: TJvFormStorage;
     JvAppIniFileStorage1: TJvAppIniFileStorage;
-    JvLabel1: TJvLabel;
     procedure btnPreviewClick(Sender: TObject);
     procedure Clickme1Click(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
@@ -125,7 +125,6 @@ begin
     DA.FadeInTime := udFadeIn.Position;
     DA.WaitTime  := udWait.Position; //  + Random(WaitTime);
     DA.FadeOutTime := udFadeOut.Position;
-
     if chkClickable.Checked then
       Include(FOptions,daoCanClick);
     if chkMovable.Checked then
