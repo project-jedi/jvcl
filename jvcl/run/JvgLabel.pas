@@ -223,9 +223,7 @@ type
     procedure CallMouseEnter; override;
     procedure CallMouseLeave; override;
   protected
-    procedure SetAutoSize(Value: boolean);
-    {$IFDEF COMPILER6_UP} override;
-    {$ENDIF}
+    procedure SetAutoSize(Value: boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
   public
     procedure Paint; override;
     property Canvas;
@@ -297,17 +295,10 @@ type
       SetGlyphDisabled stored IsCustomGlyph;
   end;
 
-procedure Register;
-
 implementation
 
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-
-procedure Register;
-begin
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-//________________________________________________________ TJvgCustomLabel _
+uses
+  JvJVCLUtils;
 
 constructor TJvgCustomLabel.Create(AOwner: TComponent);
 begin
@@ -411,7 +402,7 @@ begin
   if (P <> FNewWndProc) then
   begin
     FPrevWndProc := P;
-    FNewWndProc := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(FocusControlWndHookProc);
+    FNewWndProc := JvMakeObjectInstance(FocusControlWndHookProc);
     SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FNewWndProc));
   end;
 end;
@@ -425,6 +416,8 @@ begin
     FNewWndProc) then
   begin
     SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FPrevWndProc));
+    // (rom) JvFreeObjectInstance call added
+    JvFreeObjectInstance(FNewWndProc);
     FNewWndProc := nil;
   end;
 end;

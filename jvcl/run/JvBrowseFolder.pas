@@ -167,8 +167,11 @@ type
   TOptionsDir = set of TOptionsDirectory;
 
   // (rom) changed name
-  TJvBrowseForFolderDialog = class(TJvCommonDialogF, IFolderFilter
-    {$IFNDEF COMPILER6_UP}, IUnknown {$ENDIF COMPILER6_UP})
+  {$IFDEF COMPILER6_UP}
+  TJvBrowseForFolderDialog = class(TJvCommonDialogF, IFolderFilter)
+  {$ELSE}
+  TJvBrowseForFolderDialog = class(TJvCommonDialogF, IFolderFilter, IUnknown)
+  {$ENDIF COMPILER6_UP}
   private
     // (rom) changed names to Window and type to HWND
     { Handle to the owner form of the dialog, used if Position = fpFormCenter }
@@ -286,7 +289,7 @@ implementation
 uses
   Consts, FileCtrl,
   JclSysUtils,
-  JvTypes, JvResources;
+  JvJVCLUtils, JvTypes, JvResources;
 
 type
   TSHGetFolderPathProc = function(hWnd: HWND; csidl: Integer; hToken: THandle;
@@ -871,11 +874,7 @@ begin
   FOptions := [odStatusAvailable, odNewDialogStyle];
   FPosition := fpDefault;
   FRootDirectory := fdNoSpecialFolder;
-  {$IFDEF COMPILER6_UP}
-  FObjectInstance := Classes.MakeObjectInstance(MainWndProc);
-  {$ELSE}
-  FObjectInstance := MakeObjectInstance(MainWndProc);
-  {$ENDIF}
+  FObjectInstance := JvMakeObjectInstance(MainWndProc);
 end;
 
 procedure TJvBrowseForFolderDialog.DefaultHandler(var Msg);
@@ -890,11 +889,7 @@ end;
 destructor TJvBrowseForFolderDialog.Destroy;
 begin
   if FObjectInstance <> nil then
-    {$IFDEF COMPILER6_UP}
-    Classes.FreeObjectInstance(FObjectInstance);
-    {$ELSE}
-    FreeObjectInstance(FObjectInstance);
-    {$ENDIF}
+    JvFreeObjectInstance(FObjectInstance);
   inherited Destroy;
 end;
 

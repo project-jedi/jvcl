@@ -57,7 +57,7 @@ type
     FParentWnd: HWND;
     {$IFNDEF COMPILER6_UP}
     FShowPlacesBar: Boolean;
-  {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     FOnShareViolation: TCloseQueryEvent;
     FHeight: Integer;
     FWidth: Integer;
@@ -94,7 +94,7 @@ type
     property Height: Integer read FHeight write FHeight;
     {$IFNDEF COMPILER6_UP}
     property ShowPlacesBar: Boolean read FShowPlacesBar write FShowPlacesBar default True;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property UseUserSize: Boolean read FUseUserSize write FUseUserSize default False;
     property Width: Integer read FWidth write FWidth;
     property OnShareViolation: TCloseQueryEvent read FOnShareViolation write FOnShareViolation;
@@ -132,7 +132,9 @@ var
 implementation
 
 uses
-  CommDlg, CommCtrl, Dlgs, Math, JclSysInfo;
+  CommDlg, CommCtrl, Dlgs, Math,
+  JclSysInfo,
+  JvJVCLUtils;
 
 const
   btnOk = 1;
@@ -176,21 +178,16 @@ begin
   FActiveControl := acEdit;
   FActiveStyle := asSmallIcon;
   FMakeResizeable := GetWindowsVersion in [wvWin95, wvWin95OSR2, wvWinNT4];
-  {$IFDEF COMPILER6_UP}
-  FParentWndInstance := Classes.MakeObjectInstance(ParentWndProc);
-  {$ELSE}
+  FParentWndInstance := JvMakeObjectInstance(ParentWndProc);
+  {$IFNDEF COMPILER6_UP}
   FShowPlacesBar := True;
-  FParentWndInstance := MakeObjectInstance(ParentWndProc);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
+  FParentWndInstance := JvMakeObjectInstance(ParentWndProc);
 end;
 
 destructor TJvOpenDialog.Destroy;
 begin
-  {$IFDEF COMPILER6_UP}
-  Classes.FreeObjectInstance(FParentWndInstance);
-  {$ELSE}
-  FreeObjectInstance(FParentWndInstance);
-  {$ENDIF}
+  JvFreeObjectInstance(FParentWndInstance);
   inherited Destroy;
 end;
 
@@ -403,7 +400,7 @@ const
   PlacesBar: array [Boolean] of DWORD = (OFN_EX_NOPLACESBAR, 0);
 var
   DialogData2000: TOpenFileName2000;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 begin
   TOpenFileName(DialogData).hInstance := FindClassHInstance(Self.ClassType);
   FActiveSettingDone := False;
@@ -419,7 +416,7 @@ begin
     Result := inherited TaskModalDialog(DialogFunc, DialogData2000);
     {$ELSE}
     Result := inherited TaskModalDialog(DialogFunc, DialogData);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end
   else
     Result := inherited TaskModalDialog(DialogFunc, DialogData);

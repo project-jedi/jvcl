@@ -168,7 +168,7 @@ type
 implementation
 
 uses
-  JvResources;
+  JvJVCLUtils, JvResources;
 
 constructor TJvJoystick.Create(AOwner: TComponent);
 begin
@@ -177,11 +177,7 @@ begin
   FJoystick2 := joyGetNumDevs > 1;
   FJoy1 := TJoystick.CreateJoy(Self, JOYSTICKID1);
   FJoy2 := TJoystick.CreateJoy(Self, JOYSTICKID2);
-  {$IFDEF COMPILER6_UP}
-  FHandle := Classes.AllocateHWND(WndProc);
-  {$ELSE}
-  FHandle := AllocateHWND(WndProc);
-  {$ENDIF}
+  FHandle := AllocateHWndEx(WndProc);
   FCapture1 := False;
   FCapture2 := False;
   FPoll := 50;
@@ -191,11 +187,7 @@ destructor TJvJoystick.Destroy;
 begin
   FJoy1.Free;
   FJoy2.Free;
-  {$IFDEF COMPILER6_UP}
-  Classes.DeallocateHWnd(FHandle);
-  {$ELSE}
-  DeallocateHWnd(FHandle);
-  {$ENDIF}
+  DeallocateHWndEx(FHandle);
   if FCapture1 then
     joyReleaseCapture(JOYSTICKID1);
   if FCapture2 then

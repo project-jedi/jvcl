@@ -1237,14 +1237,16 @@ end;
 
 procedure TJvPopupList.Add(Popup: TPopupMenu);
 begin
-  if Count = 0 then Window := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWnd(WndProc);
+  if Count = 0 then
+    Window := AllocateHWndEx(WndProc);
   inherited Add(Popup);
 end;
 
 procedure TJvPopupList.Remove(Popup: TPopupMenu);
 begin
   inherited Remove(Popup);
-  if Count = 0 then {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(Window);
+  if Count = 0 then
+    DeallocateHWndEx(Window);
 end;
 
 { TJvPopupMenu }

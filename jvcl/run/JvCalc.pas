@@ -35,7 +35,7 @@ interface
 uses
   {$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Menus, ExtCtrls, Buttons, Clipbrd,
   JvSpeedButton, JvBaseDlg;

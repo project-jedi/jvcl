@@ -56,25 +56,20 @@ type
 
 implementation
 
+uses
+  JvJVCLUtils;
+
 // (rom) change to RegisterWndProcHook mechanism?
 
 constructor TJvDeviceChanged.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF COMPILER6_UP}
-  FHandle := Classes.AllocateHWnd(WndProc);
-  {$ELSE}
-  FHandle := AllocateHWnd(WndProc);
-  {$ENDIF COMPILER6_UP}
+  FHandle := AllocateHWndEx(WndProc);
 end;
 
 destructor TJvDeviceChanged.Destroy;
 begin
-  {$IFDEF COMPILER6_UP}
-  Classes.DeallocateHWnd(FHandle);
-  {$ELSE}
-  DeallocateHWnd(FHandle);
-  {$ENDIF COMPILER6_UP}
+  DeallocateHWndEx(FHandle);
   inherited Destroy;
 end;
 

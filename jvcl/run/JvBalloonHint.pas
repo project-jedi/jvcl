@@ -102,12 +102,11 @@ type
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    {$IFNDEF COMPILER6_UP}
-    procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
-    {$ENDIF COMPILER6_UP}
     procedure CreateParams(var Params: TCreateParams); override;
     {$IFDEF COMPILER6_UP}
     procedure NCPaint(DC: HDC); override;
+    {$ELSE}
+    procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
     {$ENDIF COMPILER6_UP}
     procedure Paint; override;
 
@@ -271,7 +270,7 @@ uses
   SysUtils, CommCtrl, Registry, Math,
   MMSystem, // needed for sndPlaySound
   ComCtrls, // needed for GetComCtlVersion
-  JvThemes, JvWndProcHook, JvResources;
+  JvJVCLUtils, JvThemes, JvWndProcHook, JvResources;
 
 const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);
@@ -809,7 +808,13 @@ procedure TJvBalloonWindow.NCPaint(DC: HDC);
 begin
   { Do nothing, thus prevent TJvHintWindow from drawing }
 end;
+{$ELSE}
+procedure TJvBalloonWindow.WMNCPaint(var Msg: TMessage);
+begin
+  { Do nothing, thus prevent TJvHintWindow from drawing }
+end;
 {$ENDIF COMPILER6_UP}
+
 
 procedure TJvBalloonWindow.Paint;
 var
@@ -877,13 +882,6 @@ begin
   end;
   Msg.Result := 1;
 end;
-
-{$IFNDEF COMPILER6_UP}
-procedure TJvBalloonWindow.WMNCPaint(var Msg: TMessage);
-begin
-  { Do nothing, thus prevent TJvHintWindow from drawing }
-end;
-{$ENDIF COMPILER6_UP}
 
 //=== TJvBalloonHint =========================================================
 
@@ -1044,11 +1042,7 @@ begin
   StopHintTimer;
 
   if FHandle <> 0 then
-    {$IFDEF COMPILER6_UP}
-    Classes.DeallocateHWnd(FHandle);
-    {$ELSE}
-    DeallocateHWnd(FHandle);
-    {$ENDIF COMPILER6_UP}
+    DeallocateHWndEx(FHandle);
 
   TGlobalCtrl.Instance.Remove(Self);
 
@@ -1058,11 +1052,7 @@ end;
 function TJvBalloonHint.GetHandle: THandle;
 begin
   if FHandle = 0 then
-    {$IFDEF COMPILER6_UP}
-    FHandle := Classes.AllocateHWnd(WndProc);
-    {$ELSE}
-    FHandle := AllocateHWnd(WndProc);
-    {$ENDIF COMPILER6_UP}
+    FHandle := AllocateHWndEx(WndProc);
   Result := FHandle;
 end;
 

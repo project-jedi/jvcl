@@ -129,7 +129,7 @@ uses
   {$IFDEF USEJVCL}
   JvResources,
   {$ENDIF USEJVCL}
-  JvConsts;
+  JvConsts, JvJVCLUtils;
 
 {$IFDEF GL_CAPT_BUTTONS}
 {$R ..\Resources\JvgCaption.res}
@@ -223,7 +223,7 @@ begin
   if (P <> FNewWndProc) then
   begin
     FPrevWndProc := P;
-    FNewWndProc := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(ParentWindowHookProc);
+    FNewWndProc := JvMakeObjectInstance(ParentWindowHookProc);
     SetWindowLong(TForm(Owner).Handle, GWL_WNDPROC, LongInt(FNewWndProc));
   end;
 end;
@@ -237,6 +237,8 @@ begin
   begin
     //Repaint;
     SetWindowLong(TForm(Owner).Handle, GWL_WNDPROC, LongInt(FPrevWndProc));
+    // (rom) JvFreeObjectInstance call added
+    JvFreeObjectInstance(FNewWndProc);
     FNewWndProc := nil;
   end;
 end;

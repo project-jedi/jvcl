@@ -69,9 +69,7 @@ type
     procedure SetRightButton(const Value: boolean);
     function GetReadOnly: boolean;
   protected
-    procedure SetAutoSize(Value: boolean);
-{$IFDEF COMPILER6_UP} override;
-{$ENDIF}
+    procedure SetAutoSize(Value: boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;

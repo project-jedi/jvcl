@@ -148,7 +148,7 @@ type
 implementation
 
 uses
-  JvResources;
+  JvJVCLUtils, JvResources;
 
 constructor TJvRas32.Create(AOwner: TComponent);
 begin
@@ -163,11 +163,7 @@ begin
   FCallBack := '';
   FDomain := '';
   FConnection := 0;
-  {$IFDEF COMPILER6_UP}
-  FHandle := Classes.AllocateHWnd(WndProc);
-  {$ELSE}
-  FHandle := AllocateHWnd(WndProc);
-  {$ENDIF}
+  FHandle := AllocateHWndEx(WndProc);
   RASEvent := RegisterWindowMessage(RASDialEvent);
   if RASEvent = 0 then
     RASEvent := WM_RASDialEvent;
@@ -207,11 +203,7 @@ begin
     end;
     FreeLibrary(FDll);
   end;
-  {$IFDEF COMPILER6_UP}
-  Classes.DeallocateHWnd(FHandle);
-  {$ELSE}
-  DeallocateHWnd(FHandle);
-  {$ENDIF}
+  DeallocateHWndEx(FHandle);
   inherited Destroy;
 end;
 
