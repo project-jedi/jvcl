@@ -37,12 +37,7 @@ uses
   JvgTypes, JvComponent, JvgUtils, JvgCommClasses;
 
 type
-  TGraphDigitsElem = (_deT_, _deC_, _deB_, _deTL_, _deTR_, _deBL_, _deBR_,
-    _deDOT_);
-  TGraphDigitsElemSet = set of TGraphDigitsElem;
-  TColorsPair = record ActiveColor, PassiveColor: TColor;
-  end;
-  TSpSymbol = (_none_, _colon_, _slash_, _backslash_);
+  TJvgSpecialSymbol = (ssyNone, ssyColon, ssySlash, ssyBackslash);
 
   TJvgDigits = class(TJvGraphicControl)
   private
@@ -50,44 +45,39 @@ type
     FDSize: TJvgPointClass;
     FActiveColor: TColor;
     FPassiveColor: TColor;
-    FBackgrColor: TColor;
-    FInsertSpSymbolAt: integer;
-    FPositions: word;
-    FPenWidth: word;
-    FGap: word;
-    FInterspace: word;
-    FTransparent: boolean;
+    FBackgroundColor: TColor;
+    FInsertSpecialSymbolAt: Integer;
+    FPositions: Word;
+    FPenWidth: Word;
+    FGap: Word;
+    FInterspace: Word;
+    FTransparent: Boolean;
     FAlignment: TAlignment;
-    FInteriorOffset: word;
+    FInteriorOffset: Word;
     FPenStyle: TPenStyle;
-    FSpecialSymbol: TSpSymbol;
+    FSpecialSymbol: TJvgSpecialSymbol;
     FBevel: TJvgExtBevelOptions;
     FGradient: TJvgGradient;
-    FDigitCount: integer;
-
-    OldStrWidth: integer;
-    OldDotPos: integer;
-    fNeedRepaint: boolean;
-    ClientR: TRect;
-    ColorsPair: TColorsPair;
-
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    FDigitCount: Integer;
+    FOldStrWidth: Integer;
+    FOldDotPos: Integer;
+    FNeedBackgroundPaint: Boolean;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure SetValue(NewValue: Double);
     procedure SetActiveColor(Value: TColor);
     procedure SetPassiveColor(Value: TColor);
-    procedure SetBackgrColor(Value: TColor);
+    procedure SetBackgroundColor(Value: TColor);
     procedure SetPositions(Value: Word);
     procedure SetPenWidth(Value: Word);
     procedure SetInterspace(Value: Word);
     procedure SetGap(Value: Word);
-    procedure SetTransparent(Value: boolean);
+    procedure SetTransparent(Value: Boolean);
     procedure SetAlignment(Value: TAlignment);
-    procedure SetInteriorOffset(Value: word);
-    procedure SetInsertSpSymbolAt(Value: integer);
+    procedure SetInteriorOffset(Value: Word);
+    procedure SetInsertSpecialSymbolAt(Value: Integer);
     procedure SetPenStyle(Value: TPenStyle);
-    procedure SetSpecialSymbol(Value: TSpSymbol);
-    procedure SetDigitCount(Value: integer);
-
+    procedure SetSpecialSymbol(Value: TJvgSpecialSymbol);
+    procedure SetDigitCount(Value: Integer);
     procedure SmthChanged(Sender: TObject);
   public
     procedure Paint; override;
@@ -95,93 +85,82 @@ type
     property Canvas;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
   published
+    property Value: Double read FValue write SetValue;
+    property DigitSize: TJvgPointClass read FDSize write FDSize;
+    property ActiveColor: TColor read FActiveColor write SetActiveColor default clWhite;
+    property PassiveColor: TColor read FPassiveColor write SetPassiveColor default $00202020;
+    property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default clBlack;
+    property Positions: Word read FPositions write SetPositions default 0;
+    property PenWidth: Word read FPenWidth write SetPenWidth default 1;
+    property Gap: Word read FGap write SetGap default 1;
+    property Interspace: Word read FInterspace write SetInterspace default 3;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
+    property InteriorOffset: Word read FInteriorOffset write SetInteriorOffset default 0;
+    property InsertSpecialSymbolAt: Integer read FInsertSpecialSymbolAt write SetInsertSpecialSymbolAt default -1;
+    property PenStyle: TPenStyle read FPenStyle write SetPenStyle default psSolid;
+    property SpecialSymbol: TJvgSpecialSymbol read FSpecialSymbol write SetSpecialSymbol default ssyNone;
+    property Bevel: TJvgExtBevelOptions read FBevel write FBevel;
+    property Gradient: TJvgGradient read FGradient write FGradient;
+    property DigitCount: Integer read FDigitCount write SetDigitCount default -1;
+    property Width default 160;
+    property Height default 28;
     property OnClick;
     property OnMouseDown;
     property OnMouseMove;
-    property Value: Double read FValue write SetValue;
-    property DigitSize: TJvgPointClass read FDSize write FDSize;
-    property ActiveColor: TColor read FActiveColor write SetActiveColor
-      default clWhite;
-    property PassiveColor: TColor read FPassiveColor write SetPassiveColor
-      default $00202020;
-    property BackgrColor: TColor read FBackgrColor write SetBackgrColor
-      default clBlack;
-    property Positions: word read FPositions write SetPositions
-      default 0;
-    property PenWidth: word read FPenWidth write SetPenWidth
-      default 1;
-    property Gap: word read FGap write SetGap
-      default 1;
-    property Interspace: word read FInterspace write SetInterspace
-      default 3;
-    property Transparent: boolean read FTransparent write SetTransparent
-      default false;
-    property Alignment: TAlignment read FAlignment write SetAlignment
-      default taCenter;
-    property InteriorOffset: word read FInteriorOffset write SetInteriorOffset
-      default 0;
-    property InsertSpSymbolAt: integer read FInsertSpSymbolAt write
-      SetInsertSpSymbolAt
-      default -1;
-    property PenStyle: TPenStyle read FPenStyle write SetPenStyle
-      default psSolid;
-    property SpecialSymbol: TSpSymbol
-      read FSpecialSymbol write SetSpecialSymbol default _none_;
-    property Bevel: TJvgExtBevelOptions read FBevel write FBevel;
-    property Gradient: TJvgGradient read FGradient write FGradient;
-    property DigitCount: integer read FDigitCount write SetDigitCount
-      default -1;
   end;
 
+  TJvgGraphDigitsElem =
+    (dlT, dlC, dlB, dlTL, dlTR, dlBL, dlBR, dlDOT);
+  TJvgGraphDigitsElemSet = set of TJvgGraphDigitsElem;
+
 const
-  DigitsSet: array[0..11] of TGraphDigitsElemSet
-  = ([_deT_, _deB_, _deTL_, _deTR_, _deBL_, _deBR_], //...0
-    [_deTR_, _deBR_], //...1
-    [_deT_, _deC_, _deB_, _deTR_, _deBL_], //...2
-    [_deT_, _deC_, _deB_, _deTR_, _deBR_], //...3
-    [_deC_, _deTL_, _deTR_, _deBR_], //...4
-    [_deT_, _deC_, _deB_, _deTL_, _deBR_], //...5
-    [_deT_, _deC_, _deB_, _deTL_, _deBL_, _deBR_], //...6
-    [_deT_, _deTR_, _deBR_], //...7
-    [_deT_, _deC_, _deB_, _deTL_, _deTR_, _deBL_, _deBR_], //...8
-    [_deT_, _deC_, _deB_, _deTL_, _deTR_, _deBR_], //...9
-    [], //...' '
-    [_deDOT_] //...','
-    );
+  DigitsSet: array [0..11] of TJvgGraphDigitsElemSet =
+   (
+    [dlT, dlB, dlTL, dlTR, dlBL, dlBR],      // 0
+    [dlTR, dlBR],                            // 1
+    [dlT, dlC, dlB, dlTR, dlBL],             // 2
+    [dlT, dlC, dlB, dlTR, dlBR],             // 3
+    [dlC, dlTL, dlTR, dlBR],                 // 4
+    [dlT, dlC, dlB, dlTL, dlBR],             // 5
+    [dlT, dlC, dlB, dlTL, dlBL, dlBR],       // 6
+    [dlT, dlTR, dlBR],                       // 7
+    [dlT, dlC, dlB, dlTL, dlTR, dlBL, dlBR], // 8
+    [dlT, dlC, dlB, dlTL, dlTR, dlBR],       // 9
+    [],                                      // ' '
+    [dlDOT]                                  // ','
+   );
 
 implementation
 
-//*****************************************_____________LowLevel METHODS
-
 constructor TJvgDigits.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FDSize := TJvgPointClass.Create;
   //...set defaults
   Width := 160;
   Height := 28;
   //  if csDesigning in ComponentState then FValue:=1.1234567890;
-  FDSize.x := 10;
-  FDSize.y := 21;
+  FDSize.X := 10;
+  FDSize.Y := 21;
   FDSize.OnChanged := SmthChanged;
   FActiveColor := clWhite;
   FPassiveColor := $00202020;
-  FBackgrColor := clBlack;
+  FBackgroundColor := clBlack;
   FPositions := 0;
   FPenWidth := 1;
   FGap := 1;
   FInterspace := 3;
-  FTransparent := false;
+  FTransparent := False;
   FInteriorOffset := 0;
-  FInsertSpSymbolAt := -1;
+  FInsertSpecialSymbolAt := -1;
   FDigitCount := -1;
   FPenStyle := psSolid;
-  fNeedRepaint := true;
-  Color := FBackgrColor;
+  FNeedBackgroundPaint := True;
+  Color := FBackgroundColor;
   FAlignment := taCenter;
-  FSpecialSymbol := _none_;
+  FSpecialSymbol := ssyNone;
   FBevel := TJvgExtBevelOptions.Create;
   FBevel.OnChanged := SmthChanged;
   FGradient := TJvgGradient.Create;
@@ -193,13 +172,13 @@ begin
   FDSize.Free;
   FBevel.Free;
   FGradient.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvgDigits.Paint;
 begin
   try
-    if Canvas.handle <> 0 then
+    if Canvas.Handle <> 0 then
       PaintTo(Canvas);
   except
   end;
@@ -207,258 +186,254 @@ end;
 
 procedure TJvgDigits.PaintTo(Canvas: TCanvas);
 var
-  pt, OldPt: TPoint;
-  xPos, yPos, D, CenterY, s, i, IWidth: integer;
-  str, sChar: string;
-  r: TRect;
-  SPassive: boolean;
+  Pt, OldPt: TPoint;
+  XPos, YPos, D, CenterY, S, I, IWidth: Integer;
+  Str, SChar: string;
+  R: TRect;
+  SPassive: Boolean;
+  ClientR: TRect;
 
-  procedure FillBackgr; //**************************LOCAL PROC
+  procedure FillBackground;
   begin
     if FTransparent or FGradient.Active then
-      exit;
+      Exit;
     Canvas.Brush.Style := bsSolid;
-    Canvas.Brush.Color := FBackgrColor;
+    Canvas.Brush.Color := FBackgroundColor;
     Canvas.FillRect(ClientR);
-  end; //********************************************LOCAL PROC END
+  end;
 
-  function DrawDigit(pt: TPoint; C: TColorsPair): integer; //****LOCAL PROC
+  function DrawDigit(Pt: TPoint; CActive, CPassive: TColor): Integer;
   label
     deC_L, deB_L, deTL_L, deTR_L, deBL_L, deBR_L, deEND_L;
   begin
     with Canvas do
     begin
-      if FInsertSpSymbolAt = i then
+      if FInsertSpecialSymbolAt = I then
       begin
-
         case FSpecialSymbol of
-          _Colon_:
+          ssyColon:
             begin
-              pt.x := pt.x + FInterspace;
-              Windows.SetPixel(Handle, pt.x, pt.y + FDsize.y div 3,
-                ColorToRGB(C.ActiveColor));
-              Windows.SetPixel(Handle, pt.x, pt.y + FDSize.y - FDsize.y
-                div 3, ColorToRGB(C.ActiveColor));
-              pt.x := pt.x + FInterspace * 2;
+              Pt.X := Pt.X + FInterspace;
+              Windows.SetPixel(Handle, Pt.X, Pt.Y + FDsize.Y div 3,
+                ColorToRGB(CActive));
+              Windows.SetPixel(Handle, Pt.X, Pt.Y + FDSize.Y - FDsize.Y div 3,
+                ColorToRGB(CActive));
+              Pt.X := Pt.X + FInterspace * 2;
             end;
-          _slash_:
+          ssySlash:
             begin
-              Windows.MoveToEx(Handle, pt.x + FDSize.x, pt.y + 1,
-                @OldPt);
-              Windows.LineTo(Handle, pt.x, pt.y + FDSize.y);
-              pt.x := pt.x + FDSize.x + FInterspace;
+              Windows.MoveToEx(Handle, Pt.X + FDSize.X, Pt.Y + 1, @OldPt);
+              Windows.LineTo(Handle, Pt.X, Pt.Y + FDSize.Y);
+              Pt.X := Pt.X + FDSize.X + FInterspace;
             end;
-          _backslash_:
+          ssyBackslash:
             begin
-              Windows.MoveToEx(Handle, pt.x, pt.y + 1, @OldPt);
-              Windows.LineTo(Handle, pt.x + FDSize.x, pt.y + FDSize.y);
-              pt.x := pt.x + FDSize.x + FInterspace;
+              Windows.MoveToEx(Handle, Pt.X, Pt.Y + 1, @OldPt);
+              Windows.LineTo(Handle, Pt.X + FDSize.X, Pt.Y + FDSize.Y);
+              Pt.X := Pt.X + FDSize.X + FInterspace;
             end;
         end;
       end;
-      //OldColonpt.x:=pt.x;
+      //OldColonpt.X:=Pt.X;
       if Pen.Width = 1 then
-        s := 1
+        S := 1
       else
-        s := 0;
-      r := Rect(pt.x, pt.y, pt.x + FDSize.x, FDSize.y + pt.y);
-      CenterY := r.top + (FDSize.y - Pen.Width) div 2;
+        S := 0;
+      R := Rect(Pt.X, Pt.Y, Pt.X + FDSize.X, FDSize.Y + Pt.Y);
+      CenterY := R.Top + (FDSize.Y - Pen.Width) div 2;
 
-      sChar := str[i];
-      if sChar = ' ' then
-        d := 10
-      else if (sChar = ',') or (sChar = '.') then
-        d := 11
+      SChar := Str[I];
+      if SChar = ' ' then
+        D := 10
       else
-        d := StrToInt(sChar);
+      if (SChar = ',') or (SChar = '.') then
+        D := 11
+      else
+        D := StrToInt(SChar);
 
       //...Draw Dot
-      if pt.x <= Width then
-        if _deDOT_ in DigitsSet[d] then
+      if Pt.X <= Width then
+        if dlDOT in DigitsSet[D] then
         begin
-          OldDotPos := i;
-          Windows.SetPixel(Handle, pt.x, r.bottom,
-            ColorToRGB(C.ActiveColor));
-          pt.x := pt.x + FInterspace;
+          FOldDotPos := I;
+          Windows.SetPixel(Handle, Pt.X, R.Bottom,
+            ColorToRGB(CActive));
+          Pt.X := Pt.X + FInterspace;
         end
         else
         begin ///...Draw Digit
-
-          if _deT_ in DigitsSet[d] then
-            Pen.Color := C.ActiveColor
-          else if SPassive then
-            Pen.Color := C.PassiveColor
+          if dlT in DigitsSet[D] then
+            Pen.Color := CActive
+          else
+          if SPassive then
+            Pen.Color := CPassive
           else
             goto deC_L;
-          MoveTo(r.left + FGap, r.top);
-          LineTo(r.right - FGap + s, r.top);
-          deC_L:
-          if _deC_ in DigitsSet[d] then
-            Pen.Color := C.ActiveColor
-          else if SPassive then
-            Pen.Color := C.PassiveColor
+          MoveTo(R.Left + FGap, R.Top);
+          LineTo(R.Right - FGap + S, R.Top);
+        deC_L:
+          if dlC in DigitsSet[D] then
+            Pen.Color := CActive
+          else
+          if SPassive then
+            Pen.Color := CPassive
           else
             goto deB_L;
-          MoveTo(r.left + FGap, CenterY);
-          LineTo(r.right - FGap + s, CenterY);
-          deB_L:
-          if _deB_ in DigitsSet[d] then
-            Pen.Color := C.ActiveColor
-          else if SPassive then
-            Pen.Color := C.PassiveColor
+          MoveTo(R.Left + FGap, CenterY);
+          LineTo(R.Right - FGap + S, CenterY);
+        deB_L:
+          if dlB in DigitsSet[D] then
+            Pen.Color := CActive
+          else
+          if SPassive then
+            Pen.Color := CPassive
           else
             goto deTL_L;
-          MoveTo(r.left + FGap, r.bottom);
-          LineTo(r.right - FGap + s, r.bottom);
-          deTL_L:
-          if _deTL_ in DigitsSet[d] then
-            Pen.Color := C.ActiveColor
-          else if SPassive then
-            Pen.Color := C.PassiveColor
+          MoveTo(R.Left + FGap, R.Bottom);
+          LineTo(R.Right - FGap + S, R.Bottom);
+        deTL_L:
+          if dlTL in DigitsSet[D] then
+            Pen.Color := CActive
+          else
+          if SPassive then
+            Pen.Color := CPassive
           else
             goto deTR_L;
-          MoveTo(r.left, r.top + FGap);
-          LineTo(r.left, CenterY - FGap + s);
-          deTR_L:
-          if _deTR_ in DigitsSet[d] then
-            Pen.Color := C.ActiveColor
-          else if SPassive then
-            Pen.Color := C.PassiveColor
+          MoveTo(R.Left, R.Top + FGap);
+          LineTo(R.Left, CenterY - FGap + S);
+        deTR_L:
+          if dlTR in DigitsSet[D] then
+            Pen.Color := CActive
+          else
+          if SPassive then
+            Pen.Color := CPassive
           else
             goto deBL_L;
-          MoveTo(r.right, r.top + FGap);
-          LineTo(r.right, CenterY - FGap + s);
-          deBL_L:
-          if _deBL_ in DigitsSet[d] then
-            Pen.Color := C.ActiveColor
-          else if SPassive then
-            Pen.Color := C.PassiveColor
+          MoveTo(R.Right, R.Top + FGap);
+          LineTo(R.Right, CenterY - FGap + S);
+        deBL_L:
+          if dlBL in DigitsSet[D] then
+            Pen.Color := CActive
+          else
+          if SPassive then
+            Pen.Color := CPassive
           else
             goto deBR_L;
-          MoveTo(r.left, r.bottom - FGap);
-          LineTo(r.left, CenterY + Pen.Width - s + FGap);
-          deBR_L:
-          if _deBR_ in DigitsSet[d] then
-            Pen.Color := C.ActiveColor
-          else if SPassive then
-            Pen.Color := C.PassiveColor
+          MoveTo(R.Left, R.Bottom - FGap);
+          LineTo(R.Left, CenterY + Pen.Width - S + FGap);
+        deBR_L:
+          if dlBR in DigitsSet[D] then
+            Pen.Color := CActive
+          else
+          if SPassive then
+            Pen.Color := CPassive
           else
             goto deEND_L;
-          MoveTo(r.right, r.bottom - FGap);
-          LineTo(r.right, CenterY + Pen.Width - s + FGap);
-          deEND_L:
-          pt.x := pt.x + FDSize.x + FInterspace;
+          MoveTo(R.Right, R.Bottom - FGap);
+          LineTo(R.Right, CenterY + Pen.Width - S + FGap);
+        deEND_L:
+          Pt.X := Pt.X + FDSize.X + FInterspace;
         end;
     end;
-    Result := pt.x;
-  end; //********************************************LOCAL PROC END
+    Result := Pt.X;
+  end;
 
-begin //*********************************************MAIN PAINT PROC
+begin
   ClientR := GetClientRect;
   //--- gradient and Bevels
   if FGradient.Active then
     with FBevel, FGradient do
     begin
       InflateRect(ClientR, -FInteriorOffset, -FInteriorOffset);
-      GradientBox(Canvas.handle, ClientR, Gradient,
-        integer(BevelPenStyle), BevelPenWidth);
+      GradientBox(Canvas.Handle, ClientR, Gradient,
+        Integer(BevelPenStyle), BevelPenWidth);
     end;
   if FBevel.Active then
     with FBevel do
     begin
       ClientR := ClientRect;
-      dec(ClientR.right);
-      dec(ClientR.bottom);
+      Dec(ClientR.Right);
+      Dec(ClientR.Bottom);
       Canvas.Pen.Width := BevelPenWidth;
       Canvas.Pen.Style := BevelPenStyle;
       ClientR := DrawBoxEx(Canvas.Handle, ClientR,
-        Sides, Inner, Outer,
-        Bold, 0, true);
-      inc(ClientR.Right);
-      inc(ClientR.Bottom);
+        Sides, Inner, Outer, Bold, 0, True);
+      Inc(ClientR.Right);
+      Inc(ClientR.Bottom);
     end;
-  //---
-//  InflateRect(ClientR,-InteriorOffset,-InteriorOffset);
-  r := ClientR; //dec( r.right ); dec( r.bottom );
-  str := FloatToStr(FValue);
-  if (DigitCount <> -1) and (DigitCount > Length(str)) then
-    for i := 1 to DigitCount - Length(str) do
-      str := str + '0';
+  //InflateRect(ClientR,-InteriorOffset,-InteriorOffset);
+  R := ClientR; //Dec( R.Right ); Dec( R.Bottom );
+  Str := FloatToStr(FValue);
+  if (DigitCount <> -1) and (DigitCount > Length(Str)) then
+    for I := 1 to DigitCount - Length(Str) do
+      Str := Str + '0';
   if FPositions > 0 then
-    str := Spaces(FPositions - Length(str)) + str;
+    Str := Spaces(FPositions - Length(Str)) + Str;
 
   IWidth := 0;
-  for i := 1 to Length(str) do
-    if str[i] <> ',' then
-      inc(IWidth, FDSize.x + InterSpace)
+  for I := 1 to Length(Str) do
+    if Str[I] <> ',' then
+      Inc(IWidth, FDSize.X + InterSpace)
     else
-      inc(IWidth, InterSpace);
-  inc(IWidth, InterSpace);
+      Inc(IWidth, InterSpace);
+  Inc(IWidth, InterSpace);
 
-  if (FInsertSpSymbolAt > 0) and (FInsertSpSymbolAt <= Length(str)) then
-    if FSpecialSymbol = _colon_ then
-      inc(IWidth, InterSpace * 3)
+  if (FInsertSpecialSymbolAt > 0) and (FInsertSpecialSymbolAt <= Length(Str)) then
+    if FSpecialSymbol = ssyColon then
+      Inc(IWidth, InterSpace * 3)
     else
-      inc(IWidth, FDSize.x + InterSpace);
-  //else inc( IWidth ,6 );
+      Inc(IWidth, FDSize.X + InterSpace);
+  //else Inc( IWidth ,6 );
   case Alignment of
-    taLeftJustify: xPos := InterSpace;
-    taCenter: xPos := (ClientR.right - ClientR.left - IWidth) div 2 +
-      InterSpace;
-  else {taRightJustify:}
-    xPos := ClientR.right - ClientR.left - IWidth + InterSpace;
+    taLeftJustify:
+      XPos := InterSpace;
+    taCenter:
+      XPos := (ClientR.Right - ClientR.Left - IWidth) div 2 + InterSpace;
+  else //taRightJustify
+    XPos := ClientR.Right - ClientR.Left - IWidth + InterSpace;
   end;
-  yPos := (Height - FDSize.y) div 2;
-  i := Pos(',', str);
-  if (i <> 0) and (i <> OldDotPos) then
-    fNeedRepaint := true;
-  //if (FInsertSpSymbolAt>0)and(OldSpSymbolxPos<>xPos) then fNeedRepaint:=true;
+  YPos := (Height - FDSize.Y) div 2;
+  I := Pos(',', Str);
+  if (I <> 0) and (I <> FOldDotPos) then
+    FNeedBackgroundPaint := True;
+  //if (FInsertSpecialSymbolAt>0)and(OldSpSymbolxPos<>XPos) then FNeedBackgroundPaint:=True;
   with Canvas do
   begin
-    if fNeedRepaint then
-      FillBackgr;
+    if FNeedBackgroundPaint then
+      FillBackground;
     Pen.Color := FActiveColor;
     Pen.Style := PenStyle;
     Pen.Width := FPenWidth;
 
-    pt.x := xPos;
-    pt.y := yPos;
-    ColorsPair.ActiveColor := FActiveColor;
-    ColorsPair.PassiveColor := FPassiveColor;
+    Pt.X := XPos;
+    Pt.Y := YPos;
     SPassive := not FGradient.Active;
-    for i := 1 to Length(str) do
-      pt.x := DrawDigit(pt, ColorsPair);
+    for I := 1 to Length(Str) do
+      Pt.X := DrawDigit(Pt, FActiveColor, FPassiveColor);
   end;
-  fNeedRepaint := true;
+  FNeedBackgroundPaint := True;
 end;
 
-procedure TJvgDigits.WMSize(var Message: TWMSize);
+procedure TJvgDigits.WMSize(var Msg: TWMSize);
 begin
-  fNeedRepaint := true;
+  FNeedBackgroundPaint := True;
 end;
 
 procedure TJvgDigits.SmthChanged(Sender: TObject);
 begin
   Repaint;
 end;
-//...______________________________________________PROPERTIES METHODS
 
 procedure TJvgDigits.SetValue(NewValue: Double);
 begin
   try
-    if FValue = NewValue then
-      exit;
-    FValue := NewValue;
-    if OldStrWidth <> Length(FloatToStr(FValue)) then
+    if FValue <> NewValue then
     begin
-      OldStrWidth := Length(FloatToStr(FValue));
-      fNeedRepaint := true;
-      rePaint;
-    end
-    else
-    begin
-      fNeedRepaint := false;
-      Paint;
+      FValue := NewValue;
+      FNeedBackgroundPaint := FOldStrWidth <> Length(FloatToStr(FValue));
+      if FNeedBackgroundPaint then
+        FOldStrWidth := Length(FloatToStr(FValue));
+      Repaint;
     end;
   except
   end;
@@ -466,130 +441,144 @@ end;
 
 procedure TJvgDigits.SetActiveColor(Value: TColor);
 begin
-  if FActiveColor = Value then
-    exit;
-  FActiveColor := Value;
-  fNeedRepaint := false;
-  Paint;
+  if FActiveColor <> Value then
+  begin
+    FActiveColor := Value;
+    FNeedBackgroundPaint := False;
+    Repaint;
+  end;
 end;
 
 procedure TJvgDigits.SetPassiveColor(Value: TColor);
 begin
-  if FPassiveColor = Value then
-    exit;
-  FPassiveColor := Value;
-  fNeedRepaint := false;
-  Paint;
+  if FPassiveColor <> Value then
+  begin
+    FPassiveColor := Value;
+    FNeedBackgroundPaint := False;
+    Repaint;
+  end;
 end;
 
-procedure TJvgDigits.SetBackgrColor(Value: TColor);
+procedure TJvgDigits.SetBackgroundColor(Value: TColor);
 begin
-  if FBackgrColor = Value then
-    exit;
-  FBackgrColor := Value;
-  fNeedRepaint := true;
-  rePaint;
+  if FBackgroundColor <> Value then
+  begin
+    FBackgroundColor := Value;
+    FNeedBackgroundPaint := True;
+    Repaint;
+  end;
 end;
 
 procedure TJvgDigits.SetPositions(Value: Word);
 begin
-  if FPositions = Value then
-    exit;
-  FPositions := Value;
-  fNeedRepaint := true;
-  rePaint;
+  if FPositions <> Value then
+  begin
+    FPositions := Value;
+    FNeedBackgroundPaint := True;
+    Repaint;
+  end;
 end;
 
 procedure TJvgDigits.SetPenWidth(Value: Word);
 begin
-  if FPenWidth = Value then
-    exit;
-  FPenWidth := Value;
-  fNeedRepaint := true;
-  rePaint;
+  if FPenWidth <> Value then
+  begin
+    FPenWidth := Value;
+    FNeedBackgroundPaint := True;
+    Repaint;
+  end;
 end;
 
 procedure TJvgDigits.SetInterspace(Value: Word);
 begin
-  if FInterspace = Value then
-    exit;
-  FInterspace := Value;
-  fNeedRepaint := true;
-  rePaint;
+  if FInterspace <> Value then
+  begin
+    FInterspace := Value;
+    FNeedBackgroundPaint := True;
+    Repaint;
+  end;
 end;
 
 procedure TJvgDigits.SetGap(Value: Word);
 begin
-  if FGap = Value then
-    exit;
-  FGap := Value;
-  fNeedRepaint := true;
-  rePaint;
+  if FGap <> Value then
+  begin
+    FGap := Value;
+    FNeedBackgroundPaint := True;
+    Repaint;
+  end;
 end;
 
-procedure TJvgDigits.SetTransparent(Value: boolean);
+procedure TJvgDigits.SetTransparent(Value: Boolean);
 begin
-  if FTransparent = Value then
-    exit;
-  FTransparent := Value;
-  fNeedRepaint := true;
-  rePaint;
+  if FTransparent <> Value then
+  begin
+    FTransparent := Value;
+    FNeedBackgroundPaint := True;
+    Repaint;
+  end;
 end;
 
 procedure TJvgDigits.SetAlignment(Value: TAlignment);
 begin
-  if FAlignment = Value then
-    exit;
-  FAlignment := Value;
-  fNeedRepaint := true;
-  rePaint;
+  if FAlignment <> Value then
+  begin
+    FAlignment := Value;
+    FNeedBackgroundPaint := True;
+    Repaint;
+  end;
 end;
 
-procedure TJvgDigits.SetInteriorOffset(Value: word);
+procedure TJvgDigits.SetInteriorOffset(Value: Word);
 begin
-  if FInteriorOffset = Value then
-    exit;
-  FInteriorOffset := Value;
-  fNeedRepaint := true;
-  rePaint;
+  if FInteriorOffset <> Value then
+  begin
+    FInteriorOffset := Value;
+    FNeedBackgroundPaint := True;
+    Repaint;
+  end;
 end;
 
-procedure TJvgDigits.SetInsertSpSymbolAt(Value: integer);
+procedure TJvgDigits.SetInsertSpecialSymbolAt(Value: Integer);
 begin
-  if FInsertSpSymbolAt = Value then
-    exit;
-  FInsertSpSymbolAt := Value;
-  fNeedRepaint := true;
-  Paint;
+  if FInsertSpecialSymbolAt <> Value then
+  begin
+    FInsertSpecialSymbolAt := Value;
+    FNeedBackgroundPaint := True;
+    Repaint;
+  end;
 end;
 
 procedure TJvgDigits.SetPenStyle(Value: TPenStyle);
 begin
-  if FPenStyle = Value then
-    exit;
-  FPenStyle := Value;
-  fNeedRepaint := false;
-  Paint;
+  if FPenStyle <> Value then
+  begin
+    FPenStyle := Value;
+    FNeedBackgroundPaint := False;
+    Repaint;
+  end;
 end;
 
-procedure TJvgDigits.SetSpecialSymbol(Value: TSpSymbol);
+procedure TJvgDigits.SetSpecialSymbol(Value: TJvgSpecialSymbol);
 begin
-  if FSpecialSymbol = Value then
-    exit;
-  FSpecialSymbol := Value;
-  if Value = _none_ then
-    FInsertSpSymbolAt := -1;
-  fNeedRepaint := true;
-  rePaint;
+  if FSpecialSymbol <> Value then
+  begin
+    FSpecialSymbol := Value;
+    if Value = ssyNone then
+      FInsertSpecialSymbolAt := -1;
+    FNeedBackgroundPaint := True;
+    Repaint;
+  end;
 end;
 
-procedure TJvgDigits.SetDigitCount(Value: integer);
+procedure TJvgDigits.SetDigitCount(Value: Integer);
 begin
-  if FDigitCount = Value then
-    exit;
-  FDigitCount := Value;
-  fNeedRepaint := true;
-  rePaint;
+  if FDigitCount <> Value then
+  begin
+    FDigitCount := Value;
+    FNeedBackgroundPaint := True;
+    Repaint;
+  end;
 end;
 
 end.

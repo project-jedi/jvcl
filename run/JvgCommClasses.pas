@@ -96,7 +96,7 @@ type
     procedure SetPercentFilling(Value: TPercentRange);
     procedure SetBrushStyle(Value: TBrushStyle);
   public
-    procedure TextOut(DC: HDC; Str: string; TextR: TRect; x, y: Integer);
+    procedure TextOut(DC: HDC; Str: string; TextR: TRect; X, Y: Integer);
     function GetColorFromGradientLine(GradientLineWidth, Position: Word): COLORREF;
 
     constructor Create; override;
@@ -165,8 +165,8 @@ type
   public
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
-    property x: Integer read FX write SetX;
-    property y: Integer read FY write SetY;
+    property X: Integer read FX write SetX;
+    property Y: Integer read FY write SetY;
   end;
   //*************************************{ . TJvgBevel . }
   TJvgBevelOptions = class(TPersistent)
@@ -631,7 +631,7 @@ begin
     trunc(c3F + Step3 * Position));
 end;
 
-procedure TJvgCustomGradient.TextOut(DC: HDC; Str: string; TextR: TRect; x, y: Integer);
+procedure TJvgCustomGradient.TextOut(DC: HDC; Str: string; TextR: TRect; X, Y: Integer);
 var
   i, Steps: Integer;
   r: TRect;
@@ -643,7 +643,7 @@ var
 begin
   if (not Active) or (GetDeviceCaps(DC, BITSPIXEL) < 16) then
   begin
-    Windows.TextOut(DC, x, y, PChar(Str), Length(Str));
+    Windows.TextOut(DC, X, Y, PChar(Str), Length(Str));
     Exit;
   end;
   r := TextR;
@@ -682,7 +682,7 @@ begin
       r.Bottom := r.Top + 1;
     end;
 
-    Windows.ExtTextOut(DC, x, y, ETO_CLIPPED, @r,
+    Windows.ExtTextOut(DC, X, Y, ETO_CLIPPED, @r,
       PChar(Str), Length(Str), nil);
     c1 := c1 + Step1;
     c2 := c2 + Step2;
@@ -1406,7 +1406,7 @@ end;
 
 procedure TJvgGradient.Draw(DC: HDC; r: TRect; PenStyle, PenWidth: Integer);
 var
-  i, j, x, y, x2, y2, h, w, NumberOfColors: Integer;
+  i, j, X, Y, x2, y2, h, w, NumberOfColors: Integer;
   c1F, c2F, c3F: Byte;
   c1T, c2T, c3T: Byte;
   c1D, c2D, c3D: Integer;
@@ -1436,8 +1436,8 @@ begin
     DeleteObject(FillBrush);
     Exit;
   end;
-  x := r.Left;
-  y := r.Top;
+  X := r.Left;
+  Y := r.Top;
   h := r.Bottom - r.Top;
   w := r.Right - r.Left;
   x2 := 0;
@@ -1509,12 +1509,12 @@ begin
         if PenWidth = 0 then PenWidth := 1;
         Pen := CreatePen(PenStyle, PenWidth, 0);
         OldPen := SelectObject(TargetDC, Pen);
-        y2 := y;
+        y2 := Y;
         if Orientation = fgdLeftBias then
-          x2 := x
+          x2 := X
         else
         begin
-          x := r.Right;
+          X := r.Right;
           x2 := r.Right;
         end;
       end;
@@ -1595,28 +1595,28 @@ begin
           case Orientation of
             fgdLeftBias:
               begin
-                if y >= r.Bottom then
-                  Inc(x, PenWidth)
+                if Y >= r.Bottom then
+                  Inc(X, PenWidth)
                 else
-                  y := y + PenWidth;
+                  Y := Y + PenWidth;
                 if x2 >= r.Right then
                   Inc(y2, PenWidth)
                 else
                   x2 := x2 + PenWidth;
-                MoveToEx(TargetDC, x, y, nil);
+                MoveToEx(TargetDC, X, Y, nil);
                 LineTo(TargetDC, x2, y2);
               end;
           else {fgdRightBias:}
             begin
-              if x <= r.Left then
-                Inc(y, PenWidth)
+              if X <= r.Left then
+                Inc(Y, PenWidth)
               else
-                x := x - PenWidth;
+                X := X - PenWidth;
               if y2 >= r.Bottom then
                 dec(x2, PenWidth)
               else
                 y2 := y2 + PenWidth;
-              MoveToEx(TargetDC, x, y, nil);
+              MoveToEx(TargetDC, X, Y, nil);
               LineTo(TargetDC, x2, y2);
             end;
           end; {end case}
