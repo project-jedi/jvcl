@@ -58,7 +58,7 @@ uses
   
   
   Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList,
-  QWindows, QTypes, QExtCtrls, JvQTypes,
+  QWindows, QMessages, QTypes, QExtCtrls, JvQTypes,
   
   JvQConsts, JvQXPCore, JvQXPCoreUtils;
 
@@ -1193,10 +1193,11 @@ end;
 constructor TJvXPFadeThread.Create(WinXPBar: TJvXPCustomWinXPBar;
   RollDirection: TJvXPBarRollDirection);
 begin
-  inherited Create(False);
+  inherited Create(True);
   FWinXPBar := WinXPBar;
   FRollDirection := RollDirection;
   FreeOnTerminate := True;
+  Suspended := false;
 end;
 
 procedure TJvXPFadeThread.Execute;
@@ -1219,12 +1220,12 @@ begin
     if NewOffset > FWinXPBar.FItemHeight then
       NewOffset := FWinXPBar.FItemHeight;
     FWinXPBar.RollOffset := NewOffset;
+    Synchronize(FWinXPBar.Repaint);
 
     { terminate on 'out-of-range' }
     if ((FRollDirection = rdCollapse) and (NewOffset = 0)) or
       ((FRollDirection = rdExpand) and (NewOffset = FWinXPBar.FItemHeight)) then
       Terminate;
-
     { idle process }
     Sleep(FWinXPBar.FRollDelay);
   finally
