@@ -36,7 +36,6 @@ uses
   JvComponent;
 
 type
-
   TJvDualListDialog = class(TJvComponent)
   private
     FSorted: Boolean;
