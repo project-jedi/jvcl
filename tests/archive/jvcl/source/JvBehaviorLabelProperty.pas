@@ -8,6 +8,7 @@ uses
 type
   TJvLabelBehaviorProperty = class(TStringProperty)
   public
+    function AutoFill: Boolean; override;
     procedure SetValue(const Value: string); override;
     procedure GetValues(Proc: TGetStrProc); override;
     function GetAttributes: TPropertyAttributes; override;
@@ -27,6 +28,13 @@ begin
 end;
 
 { TJvLabelBehaviorProperty }
+
+function TJvLabelBehaviorProperty.AutoFill: Boolean;
+begin
+  Result := inherited AutoFill;
+  // if you want to fix the flickering when double-clicking a value, uncomment line below:
+//  Result := false;
+end;
 
 function TJvLabelBehaviorProperty.GetAttributes: TPropertyAttributes;
 begin

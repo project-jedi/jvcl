@@ -431,7 +431,7 @@ begin
   Result := Handle <> INVALID_HANDLE_VALUE;
   if not Result then
   begin
-    Result := GetLastError = ERROR_FILE_NOT_FOUND;
+    Result := GetLastError in [ERROR_FILE_NOT_FOUND, ERROR_ACCESS_DENIED];;
     Exit;
   end;
 
@@ -878,7 +878,7 @@ begin
       if stFileMaskCaseSensitive in SearchTypes then
         FileName := cFileName
       else
-        FileName := UpperCase(cFileName);
+        FileName := AnsiUpperCase(cFileName);
 
       I := 0;
       while (I < FFileMasks.Count) and
@@ -1002,7 +1002,7 @@ begin
 
   if not (stFileMaskCaseSensitive in SearchTypes) then
     for I := 0 to FCaseFileMasks.Count - 1 do
-      FCaseFileMasks[I] := UpperCase(FCaseFileMasks[I]);
+      FCaseFileMasks[I] := AnsiUpperCase(FCaseFileMasks[I]);
 end;
 
 end.

@@ -78,7 +78,7 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
-  TJvCustomListBox = class(TListBox)
+  TJvCustomListBox = class(TCustomListBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FAlignment: TAlignment;
