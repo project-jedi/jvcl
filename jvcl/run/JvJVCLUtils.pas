@@ -5599,11 +5599,13 @@ var
   ImageSize, Length, Len: Longint;
   P, InitData: Pointer;
   ColorCount: Integer;
+  SourceBitmapFormat:TPixelFormat;
 begin
   Result := nil;
   if Bitmap.Handle = 0 then
     InvalidBitmap;
-  if (GetBitmapPixelFormat(Bitmap) = PixelFormat) and
+  SourceBitmapFormat := GetBitmapPixelFormat(Bitmap);
+  if (SourceBitmapFormat = PixelFormat) and
     (Method <> mmGrayscale) then
   begin
     Result := TMemoryStream.Create;
@@ -5695,7 +5697,10 @@ begin
       Result := TMemoryStream.Create;
       try
         Result.Write(P^, Length);
-        Result.Write(Bits^, ImageSize div 3);
+        if SourceBitmapFormat = pfDevice then
+          Result.Write(Bits^, ImageSize)
+        else
+          Result.Write(Bits^, ImageSize div 3);
         Result.Position := 0;
       except
         Result.Free;
