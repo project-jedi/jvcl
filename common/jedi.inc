@@ -333,7 +333,21 @@
   {$IFDEF KYLIX}
     {$I kylix.inc} // FPC incompatible stuff
   {$ELSE ~KYLIX}
-  
+
+    {$IFDEF VER170}
+      {$DEFINE COMPILER9}
+      {$DEFINE DELPHI9}
+      {$DEFINE DELPHICOMPILER9}
+      {$DEFINE RTL170_UP}
+    {$ENDIF}
+
+    {$IFDEF VER160}
+      {$DEFINE COMPILER8}
+      {$DEFINE DELPHI8}
+      {$DEFINE DELPHICOMPILER8}
+      {$DEFINE RTL160_UP}
+    {$ENDIF}
+
     {$IFDEF VER150}
       {$DEFINE COMPILER7}
       {$IFDEF BCB}
@@ -430,6 +444,29 @@
 {------------------------------------------------------------------------------}
 { DELPHIX_UP from DELPHIX mappings                                             }
 {------------------------------------------------------------------------------}
+
+{$IFDEF DELPHI9}
+  {$DEFINE DELPHI9_UP}
+  {$DEFINE DELPHI8_UP}
+  {$DEFINE DELPHI7_UP}
+  {$DEFINE DELPHI6_UP}
+  {$DEFINE DELPHI5_UP}
+  {$DEFINE DELPHI4_UP}
+  {$DEFINE DELPHI3_UP}
+  {$DEFINE DELPHI2_UP}
+  {$DEFINE DELPHI1_UP}
+{$ENDIF}
+
+{$IFDEF DELPHI8}
+  {$DEFINE DELPHI8_UP}
+  {$DEFINE DELPHI7_UP}
+  {$DEFINE DELPHI6_UP}
+  {$DEFINE DELPHI5_UP}
+  {$DEFINE DELPHI4_UP}
+  {$DEFINE DELPHI3_UP}
+  {$DEFINE DELPHI2_UP}
+  {$DEFINE DELPHI1_UP}
+{$ENDIF}
 
 {$IFDEF DELPHI7}
   {$DEFINE DELPHI7_UP}
@@ -546,6 +583,29 @@
 { DELPHICOMPILERX_UP from DELPHICOMPILERX mappings                             }
 {------------------------------------------------------------------------------}
 
+{$IFDEF DELPHICOMPILER9}
+  {$DEFINE DELPHICOMPILER9_UP}
+  {$DEFINE DELPHICOMPILER8_UP}
+  {$DEFINE DELPHICOMPILER7_UP}
+  {$DEFINE DELPHICOMPILER6_UP}
+  {$DEFINE DELPHICOMPILER5_UP}
+  {$DEFINE DELPHICOMPILER4_UP}
+  {$DEFINE DELPHICOMPILER3_UP}
+  {$DEFINE DELPHICOMPILER2_UP}
+  {$DEFINE DELPHICOMPILER1_UP}
+{$ENDIF}
+
+{$IFDEF DELPHICOMPILER8}
+  {$DEFINE DELPHICOMPILER8_UP}
+  {$DEFINE DELPHICOMPILER7_UP}
+  {$DEFINE DELPHICOMPILER6_UP}
+  {$DEFINE DELPHICOMPILER5_UP}
+  {$DEFINE DELPHICOMPILER4_UP}
+  {$DEFINE DELPHICOMPILER3_UP}
+  {$DEFINE DELPHICOMPILER2_UP}
+  {$DEFINE DELPHICOMPILER1_UP}
+{$ENDIF}
+
 {$IFDEF DELPHICOMPILER7}
   {$DEFINE DELPHICOMPILER7_UP}
   {$DEFINE DELPHICOMPILER6_UP}
@@ -598,6 +658,31 @@
 {------------------------------------------------------------------------------}
 { COMPILERX_UP from COMPILERX mappings                                         }
 {------------------------------------------------------------------------------}
+
+{$IFDEF COMPILER9}
+  {$DEFINE COMPILER9_UP}
+  {$DEFINE COMPILER8_UP}
+  {$DEFINE COMPILER7_UP}
+  {$DEFINE COMPILER6_UP}
+  {$DEFINE COMPILER5_UP}
+  {$DEFINE COMPILER4_UP}
+  {$DEFINE COMPILER35_UP}
+  {$DEFINE COMPILER3_UP}
+  {$DEFINE COMPILER2_UP}
+  {$DEFINE COMPILER1_UP}
+{$ENDIF}
+
+{$IFDEF COMPILER8}
+  {$DEFINE COMPILER8_UP}
+  {$DEFINE COMPILER7_UP}
+  {$DEFINE COMPILER6_UP}
+  {$DEFINE COMPILER5_UP}
+  {$DEFINE COMPILER4_UP}
+  {$DEFINE COMPILER35_UP}
+  {$DEFINE COMPILER3_UP}
+  {$DEFINE COMPILER2_UP}
+  {$DEFINE COMPILER1_UP}
+{$ENDIF}
 
 {$IFDEF COMPILER7}
   {$DEFINE COMPILER7_UP}
@@ -672,6 +757,14 @@
 {------------------------------------------------------------------------------}
 { RTLX_UP from RTLX_UP mappings                                                }
 {------------------------------------------------------------------------------}
+
+{$IFDEF RTL170_UP}
+  {$DEFINE RTL160_UP}
+{$ENDIF}
+
+{$IFDEF RTL160_UP}
+  {$DEFINE RTL150_UP}
+{$ENDIF}
 
 {$IFDEF RTL150_UP}
   {$DEFINE RTL145_UP}
@@ -758,7 +851,6 @@
     {$DEFINE ACCEPT_LIBRARY}
     {$DEFINE SUPPORTS_EXTSYM}
     {$DEFINE SUPPORTS_NODEFINE}
-    {$DEFINE SUPPORTS_COMPILETIME_MESSAGES}
 
     {$DEFINE SUPPORTS_CUSTOMVARIANTS}
     {$DEFINE SUPPORTS_VARARGS}
@@ -912,6 +1004,10 @@
 // History:
 
 // $Log$
+// Revision 1.8  2004/08/08 16:04:17  peter3
+// - D8 support added
+// - D9 support added (guesswork)
+//
 // Revision 1.7  2004/07/30 07:33:34  marquardt
 // inc files on JCL level, minor cleanings
 //
@@ -977,4 +1073,3 @@
 //  - add RTL definitions
 //  - add FPC definitions
 
-{$ENDIF ~JEDI_INC}
