@@ -49,7 +49,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvTypes, JvDsgnConsts, JvJCLUtils, JVCLVer, JvComponent,
   JvActions, JvActnResForm, JvJVCLAboutForm, JvDsgnEditors, JvIDEZoom,
-  JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor,
+  JvJVCLAboutEditor, JvBaseDlg, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor,
   JvAppIniStorage, JvBackgrounds,
   {$IFDEF MSWINDOWS}
   JvAppRegistryStorage, JvContextProvider,
