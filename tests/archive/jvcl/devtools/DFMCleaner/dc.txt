@@ -13,7 +13,7 @@ where <options> can be:
 
 The output file is only written if it is different from the input. Input DFM's can be in either text or binary format but the output is always written in text format. 
 
-The skiplist has the followig format:
+The skiplist has the following format:
 Each row contains the name of a property to remove, preceeded by it's classname or a "*". A "*"means "any class". 
 Examples:
 *.DesignSize - remove all DesignSize properties
