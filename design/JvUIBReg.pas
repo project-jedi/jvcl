@@ -37,13 +37,13 @@ procedure Register;
 
 implementation //DesignIntf
 {$IFNDEF UIBNOCOMPONENT}
-uses Classes, JvUIB, JvUIBDataSet;
+uses Classes, JvUIB {$IFNDEF DelphiPersonalEdition}, JvUIBDataSet{$ENDIF};
 {$R ..\Resources\JvUIBReg.dcr}
 
 procedure Register;
 begin
   RegisterComponents('Jv UIB', [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
-    TJvUIBDataSet, TJvUIBScript, TJvUIBBackup, TJvUIBRestore]);
+    {$IFNDEF DelphiPersonalEdition}TJvUIBDataSet,{$ENDIF} TJvUIBScript, TJvUIBBackup, TJvUIBRestore]);
 end;
 {$ENDIF}
 

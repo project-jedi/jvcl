@@ -58,15 +58,10 @@ begin
     RegisterPropertyEditor(TypeInfo(Double), BaseClass, '', TJvFloatProperty);
     RegisterPropertyEditor(TypeInfo(Extended), BaseClass, '', TJvFloatProperty);
     RegisterPropertyEditor(TypeInfo(Currency), BaseClass, '', TJvFloatProperty);
-    RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
-    RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
 
-    {$IFNDEF DelphiPersonalEdition}
-      RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
-      RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
-      RegisterComponentEditor(TImageList, TJvImageListEditor);
-    {$ENDIF}
-    RegisterComponentEditor(TImage, TJvGraphicsEditor);
+    RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
+    RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
+    RegisterComponentEditor(TImageList, TJvImageListEditor);
     RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   {$ENDIF}
 

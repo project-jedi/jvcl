@@ -9,7 +9,7 @@ procedure Register;
 implementation
 {.$DEFINE USE_JV_GIF}
 uses
-  Classes, Graphics,
+  Classes, Graphics, ExtCtrls,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -53,12 +53,16 @@ begin
   RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
   RegisterComponentEditor(TJvID3Controller, TJvID3ControllerEditor);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-  RegisterPropertyEditor(typeinfo(TPicture),TObject,'',TJvPictProperty);
+  RegisterPropertyEditor(TypeInfo(TPicture),TObject,'',TJvPictProperty);
+  RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
+  RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
+  RegisterComponentEditor(TImage, TJvGraphicsEditor);
   {$ENDIF}
 
   {$IFDEF USE_JV_GIF}
   RegisterComponentEditor(TJvGIFAnimator, TJvGraphicsEditor);
   {$ENDIF}
+
 end;
 
 end.
