@@ -53,8 +53,8 @@ uses
   ComCtrls,
   ExtCtrls,
   TypInfo,
-  Buttons{$IFDEF COMPILER5_UP},
-  ImgList{$ENDIF};
+  Buttons,
+  ImgList;
 
 type
 

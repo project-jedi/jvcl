@@ -28,8 +28,6 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{$UNDEF COMPILER5_UP}
-
 unit JvIDEZoom;
 
 interface
@@ -42,14 +40,13 @@ procedure RegisterZoom;
 implementation
 
 type
+  {$UNDEF COMPILER5_UP}
   {$IFDEF COMPILER5_UP}
   TJvEEditorZoom = class(TNotifierObject, IUnknown, IOTAKeyboardBinding)
   private
     procedure Zoom(Sender: TObject);
   public
-    {$IFDEF COMPILER5_UP}
     procedure BindKeyboard(const BindingServices: IOTAKeyBindingServices);
-    {$ENDIF COMPILER5_UP}
   end;
   {$ELSE}
   TJvEEditorZoom = class(TObject)
@@ -58,13 +55,6 @@ type
   public
   end;
   {$ENDIF COMPILER5_UP}
-
-{$IFDEF COMPILER5_UP}
-procedure TJvEEditorZoom.BindKeyboard(const BindingServices: IOTAKeyBindingServices);
-begin
-  BindingServices.AddKeyBinding([ShortCut(Ord('B'), [ssCtrl])], BufferListProc, nil);
-end;
-{$ENDIF COMPILER5_UP}
 
 procedure Unregister;
 var
@@ -154,6 +144,13 @@ begin
   if MenuItem <> nil then
     MenuItem.ShortCut := Menus.ShortCut(ord('Z'), [ssAlt]); }
 end;
+
+{$IFDEF COMPILER5_UP}
+procedure TJvEEditorZoom.BindKeyboard(const BindingServices: IOTAKeyBindingServices);
+begin
+  BindingServices.AddKeyBinding([ShortCut(Ord('B'), [ssCtrl])], BufferListProc, nil);
+end;
+{$ENDIF COMPILER5_UP}
 
 initialization
 

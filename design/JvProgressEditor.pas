@@ -31,11 +31,7 @@ procedure TJvProgressControlProperty.CheckComponent(const AName: string);
 var
   Component: TComponent;
 begin
-  {$IFDEF WIN32}
   Component := Designer.GetComponent(AName);
-  {$ELSE}
-  Component := Designer.Form.FindComponent(AName);
-  {$ENDIF}
   if (Component <> nil) and (Component is TControl) and
     SupportsProgressControl(TControl(Component)) and Assigned(FProc) then
     FProc(AName);

@@ -38,12 +38,7 @@ uses
   DsgnIntf,
   {$ENDIF}
   StdCtrls, ExtCtrls,
-  {$IFDEF COMPILER3}
-  ExtDlgs, ComCtrls,
-  {$ELSE}
-  JvImagePreviewForm,
-  {$ENDIF}
-  JvMRUManager, JvFormPlacement, JvxCtrls, JvClipboardMonitor, JvComponent;
+  JvImagePreviewForm, JvMRUManager, JvFormPlacement, JvxCtrls, JvClipboardMonitor, JvComponent;
 
 type
   TPictureEditDialog = class(TForm)
@@ -87,15 +82,8 @@ type
     Pic: TPicture;
     FIconColor: TColor;
     FClipMonitor: TJvClipboardMonitor;
-    {$IFDEF COMPILER3}
-    FProgress: TProgressBar;
-    FProgressPos: Integer;
-    FileDialog: TOpenPictureDialog;
-    SaveDialog: TSavePictureDialog;
-    {$ELSE}
     FileDialog: TOpenDialog;
     SaveDialog: TSaveDialog;
-    {$ENDIF}
     procedure CheckEnablePaste;
     procedure ValidateImage;
     procedure DecreaseBMPColors;
@@ -106,10 +94,6 @@ type
     procedure UpdateClipboard(Sender: TObject);
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
     procedure WMDestroy(var Msg: TMessage); message WM_DESTROY;
-    {$IFDEF COMPILER3}
-    procedure GraphicProgress(Sender: TObject; Stage: TProgressStage;
-      PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
-    {$ENDIF}
   protected
     procedure CreateHandle; override;
   public
@@ -172,9 +156,7 @@ uses
   JvJVCLUtils, JvJCLUtils, JvConsts, JvDirectoryListForm, JvTypes;
 
 {$B-}
-{$IFDEF WIN32}
 {$D-}
-{$ENDIF}
 
 {$R *.DFM}
 
@@ -378,7 +360,7 @@ var
 begin
   Picture := TPicture(GetOrdValue);
   if Picture.Graphic = nil then
-    Result := ResStr(srNone)
+    Result := srNone
   else
     Result := '(' + Picture.Graphic.ClassName + ')';
 end;
@@ -410,7 +392,7 @@ begin
         (PictureEditor.Picture.Graphic is PictureEditor.GraphicClass) then
         SetOrdValue(LongInt(PictureEditor.Picture.Graphic))
       else
-        raise EJVCLException.Create(ResStr(SInvalidPropertyValue));
+        raise EJVCLException.Create(SInvalidPropertyValue);
   finally
     PictureEditor.Free;
   end;
@@ -427,7 +409,7 @@ var
 begin
   Graphic := TGraphic(GetOrdValue);
   if (Graphic = nil) or Graphic.Empty then
-    Result := ResStr(srNone)
+    Result := srNone
   else
     Result := '(' + Graphic.ClassName + ')';
 end;
@@ -482,29 +464,6 @@ begin
   Copy.Enabled := Enable;
 end;
 
-{$IFDEF COMPILER3}
-procedure TPictureEditDialog.GraphicProgress(Sender: TObject; Stage: TProgressStage;
-  PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
-begin
-  if Stage in [psStarting, psEnding] then
-  begin
-    FProgressPos := 0;
-    FProgress.Position := 0;
-  end
-  else
-  if Stage = psRunning then
-  begin
-    if PercentDone >= FProgressPos + 10 then
-    begin
-      FProgress.Position := PercentDone;
-      FProgressPos := PercentDone;
-    end;
-  end;
-  if RedrawNow then
-    ImagePaintBox.Update;
-end;
-{$ENDIF}
-
 procedure TPictureEditDialog.UpdateClipboard(Sender: TObject);
 begin
   CheckEnablePaste;
@@ -513,28 +472,10 @@ end;
 procedure TPictureEditDialog.FormCreate(Sender: TObject);
 begin
   Pic := TPicture.Create;
-  {$IFDEF COMPILER3}
-  FileDialog := TOpenPictureDialog.Create(Self);
-  SaveDialog := TSavePictureDialog.Create(Self);
-  UsePreviewBox.Visible := False;
-  FProgress := TProgressBar.Create(Self);
-  with FProgress do
-  begin
-    SetBounds(UsePreviewBox.Left, UsePreviewBox.Top, UsePreviewBox.Width,
-      UsePreviewBox.Height);
-    Parent := Self;
-    Min := 0;
-    Max := 100;
-    Position := 0;
-  end;
-  Pic.OnProgress := GraphicProgress;
-  {$ELSE}
   FileDialog := TOpenDialog.Create(Self);
   SaveDialog := TSaveDialog.Create(Self);
-  {$ENDIF}
   FileDialog.Title := 'Load picture';
   SaveDialog.Title := 'Save picture as';
-  {$IFDEF WIN32}
   Bevel.Visible := False;
   Font.Style := [];
   with FormStorage do
@@ -542,10 +483,6 @@ begin
     UseRegistry := True;
     IniFileName := SDelphiKey;
   end;
-  {$ELSE}
-  if NewStyleControls then
-    Font.Style := [];
-  {$ENDIF}
   PathsMRU.RecentMenu := PathsMenu.Items;
   FIconColor := clBtnFace;
   HelpContext := hcDPictureEditor;
@@ -659,10 +596,8 @@ procedure TPictureEditDialog.ImagePaintBoxPaint(Sender: TObject);
 var
   DrawRect: TRect;
   SNone: string;
-  {$IFDEF WIN32}
   Ico: HICON;
   W, H: Integer;
-  {$ENDIF}
 begin
   with TPaintBox(Sender) do
   begin
@@ -683,7 +618,6 @@ begin
         begin
           with DrawRect do
           begin
-            {$IFDEF WIN32}
             if Pic.Graphic is TIcon then
             begin
               Ico := CreateRealSizeIcon(Pic.Icon);
@@ -696,7 +630,6 @@ begin
               end;
             end
             else
-            {$ENDIF}
               Canvas.Draw((Right + Left - Pic.Width) div 2,
                 (Bottom + Top - Pic.Height) div 2, Pic.Graphic);
           end;
@@ -705,7 +638,7 @@ begin
     else
       with DrawRect, Canvas do
       begin
-        SNone := ResStr(srNone);
+        SNone := srNone;
         TextOut(Left + (Right - Left - TextWidth(SNone)) div 2, Top + (Bottom -
           Top - TextHeight(SNone)) div 2, SNone);
       end;
@@ -731,7 +664,7 @@ var
 begin
   Msg.Result := 0;
   try
-    Num := DragQueryFile(Msg.Drop, {$IFDEF WIN32} $FFFFFFFF {$ELSE} $FFFF {$ENDIF}, nil, 0);
+    Num := DragQueryFile(Msg.Drop, $FFFFFFFF, nil, 0);
     if Num > 0 then
     begin
       DragQueryFile(Msg.Drop, 0, PChar(@AFileName), Pred(SizeOf(AFileName)));

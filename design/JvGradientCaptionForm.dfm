@@ -157,6 +157,9 @@ object GradCaptionsEditor: TGradCaptionsEditor
     Height = 157
     Caption = '&Captions'
     TabOrder = 0
+    DesignSize = (
+      137
+      157)
     object NewButton: TButton
       Left = 8
       Top = 124
@@ -182,6 +185,8 @@ object GradCaptionsEditor: TGradCaptionsEditor
       Height = 105
       Anchors = [akLeft, akTop, akRight, akBottom]
       ItemHeight = 13
+      Background.FillMode = bfmTile
+      Background.Visible = False
       TabOrder = 2
     end
   end
@@ -206,6 +211,7 @@ object GradCaptionsEditor: TGradCaptionsEditor
   end
   object FormStorage: TJvFormStorage
     Active = False
+    RegistryRoot = hkClassesRoot
     UseRegistry = True
     StoredValues = <
       item

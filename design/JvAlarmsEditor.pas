@@ -32,11 +32,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  {$IFDEF COMPILER5}
-  DsgnIntf,
-  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
   {$ENDIF}
   JvAlarmsForm;
 

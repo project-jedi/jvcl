@@ -107,13 +107,8 @@ end;
 procedure TJvMemDataSetEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-    {$IFDEF COMPILER5_UP}
     0:
       ShowFieldsEditor(Designer, TDataSet(Component), TDSDesigner);
-    {$ELSE}
-    0:
-      ShowDatasetDesigner(Designer, TDataSet(Component));
-    {$ENDIF}
     1:
       BorrowStructure;
   end;
@@ -123,7 +118,7 @@ function TJvMemDataSetEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := ResStr(SDatasetDesigner);
+      Result := SDatasetDesigner;
     1:
       Result := srBorrowStructure;
   end;

@@ -32,11 +32,10 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms,
-  {$IFDEF COMPILER5}
-  DsgnIntf,
-  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
   {$ENDIF}
   JvFormWallpaper;
 

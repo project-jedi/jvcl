@@ -5,11 +5,10 @@ unit JvMailEditor;
 interface
 uses
   Windows, SysUtils, Classes, Dlgs, Dialogs,
-  {$IFDEF COMPILER5}
-  DsgnIntf,
-  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
   {$ENDIF}
   JvMail;
   

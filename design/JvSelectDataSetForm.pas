@@ -68,13 +68,7 @@ implementation
 
 uses
   TypInfo,
-  {$IFDEF COMPILER3_UP}
-  {$IFDEF COMPILER5_UP}
   DsnDbCst,
-  {$ELSE}
-  BdeConst,
-  {$ENDIF}
-  {$ENDIF}
   DSDesign,
   JvJVCLUtils, JvConsts;
 

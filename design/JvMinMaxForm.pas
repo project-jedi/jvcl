@@ -99,9 +99,7 @@ implementation
 
 {$R *.DFM}
 
-{$IFDEF WIN32}
 {$D-}
-{$ENDIF}
 
 procedure MakeIntEdit(Edit:TCustomEdit);
 begin
@@ -137,7 +135,7 @@ begin
   with WinMinMaxInfo do
   begin
     if DefaultMinMaxInfo then
-      Result := ResStr(srNone)
+      Result := srNone
     else
       Result := Format('(%d,%d),(%d,%d),(%d,%d),(%d,%d)',
         [MaxPosLeft, MaxPosTop, MaxSizeWidth, MaxSizeHeight,

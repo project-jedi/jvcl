@@ -75,21 +75,13 @@ type
     procedure DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean); override;
     {$ELSE}
     procedure FormModified; override;
-    {$IFDEF COMPILER3_UP}
     procedure FormClosed(Form: TCustomForm); override;
-    {$ELSE}
-    procedure FormClosed(Form: TForm); override;
-    {$ENDIF}
     {$ENDIF}
     function GetEditState: TEditState; override;
     {$IFDEF COMPILER6_UP}
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     {$ELSE}
-    {$IFDEF COMPILER4_UP}
     procedure ComponentDeleted(Component: IPersistent); override;
-    {$ELSE}
-    procedure ComponentDeleted(Component: TComponent); override;
-    {$ENDIF}
     {$ENDIF}
     property PageManager: TJvPageManager read FPageManager write SetPageManager;
     property OwnerForm: TCustomForm read GetForm;
@@ -124,20 +116,16 @@ uses
 
 {$R *.DFM}
 
-{$IFDEF WIN32}
 {$D-}
-{$ENDIF}
 
 {$IFDEF COMPILER6_UP}
 type
   TDesigner = DesignIntf.IDesigner;
   TFormDesigner = DesignIntf.IDesigner;
 {$ELSE}
-{$IFDEF COMPILER4_UP}
 type
   TDesigner = IDesigner;
   TFormDesigner = IFormDesigner;
-{$ENDIF}
 {$ENDIF}
 
 function FindEditor(Manager: TJvPageManager): TJvProxyEditor;
@@ -194,7 +182,7 @@ var
 begin
   List := TList(Pointer(GetOrdValue));
   if (List = nil) or (List.Count = 0) then
-    Result := ResStr(srNone)
+    Result := srNone
   else
     FmtStr(Result, '(%s)', [GetPropType^.Name]);
 end;
@@ -291,10 +279,6 @@ end;
 function TJvProxyEditor.UniqueName(Component: TComponent): string;
 var
   Temp: string;
-  {$IFNDEF WIN32}
-  I: Integer;
-  Comp: TComponent;
-  {$ENDIF}
 begin
   Result := '';
   if (Component <> nil) then
@@ -303,16 +287,7 @@ begin
     Temp := TJvPageProxy.ClassName;
   if (UpCase(Temp[1]) = 'T') and (Length(Temp) > 1) then
     System.Delete(Temp, 1, 1);
-  {$IFDEF WIN32}
   Result := Designer.UniqueName(Temp);
-  {$ELSE}
-  I := 1;
-  repeat
-    Result := Temp + IntToStr(I);
-    Comp := OwnerForm.FindComponent(Result);
-    Inc(I);
-  until (Comp = nil) or (Comp = Component);
-  {$ENDIF}
 end;
 
 function TJvProxyEditor.GetEditState: TEditState;
@@ -329,11 +304,7 @@ end;
 {$IFDEF COMPILER6_UP}
 procedure TJvProxyEditor.DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean);
 {$ELSE}
-{$IFDEF COMPILER3_UP}
 procedure TJvProxyEditor.FormClosed(Form: TCustomForm);
-{$ELSE}
-procedure TJvProxyEditor.FormClosed(Form: TForm);
-{$ENDIF}
 {$ENDIF}
 begin
   {$IFDEF COMPILER6_UP}
@@ -365,17 +336,10 @@ begin
   if Item = FPageManager then
   begin
 {$ELSE}
-{$IFDEF COMPILER4_UP}
 procedure TJvProxyEditor.ComponentDeleted(Component: IPersistent);
 begin
   if ExtractPersistent(Component) = FPageManager then
   begin
-{$ELSE}
-procedure TJvProxyEditor.ComponentDeleted(Component: TComponent);
-begin
-  if Component = FPageManager then
-  begin
-{$ENDIF}
 {$ENDIF}
     FPageManager := nil;
     Close;
@@ -566,13 +530,11 @@ procedure TJvProxyEditor.FormCreate(Sender: TObject);
 begin
   if NewStyleControls then
     Font.Style := [];
-  {$IFDEF WIN32}
   with FormStorage do
   begin
     UseRegistry := True;
     IniFileName := SDelphiKey;
   end;
-  {$ENDIF}
 end;
 
 end.

@@ -32,40 +32,18 @@ unit JvgReportEditorForm;
 interface
 
 uses
-  Windows,
-  JvgReport,
-  JvgCaption,
-  JvgBevel,
-  JvgPage,
-  Printers,
-  JvgLabel,
-  JvgRuler,
-  Mask,
-  JvgListBox,
+  Windows, Mask, Spin, Menus,ExtCtrls, StdCtrls, Buttons, ComCtrls, Controls, Dialogs, Forms,
+  Classes, Sysutils, Graphics,Imglist,
+  JvgReport, JvgCaption, JvgBevel, JvgPage, Printers, JvgLabel, JvgRuler,
+  JvgListBox, JvComponent, JvgReportParamEditorForm,
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   DesignEditors,
-  PropertyCategories,
+  PropertyCategories
   {$ELSE}
-  DsgnIntf,
+  DsgnIntf
   {$ENDIF COMPILER6_UP}
-  JvComponent,
-
-  Spin,
-  JvgReportParamEditorForm,
-  Menus,
-  ExtCtrls,
-  StdCtrls,
-  Buttons,
-  ComCtrls,
-  Controls,
-  Dialogs,
-  Forms,
-  Classes,
-  Sysutils,
-  graphics
-  {$IFDEF COMPILER5_UP},
-  Imglist{$ENDIF};
+  ;
 
 type
 

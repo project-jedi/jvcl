@@ -45,9 +45,6 @@ uses
   {$ELSE}
   DsgnIntf
   {$ENDIF COMPILER6_UP},
-  {$IFNDEF COMPILER4_UP}
-  Forms,
-  {$ENDIF}
   JvDsgnIntf;
 
 implementation
