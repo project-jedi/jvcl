@@ -63,7 +63,7 @@ uses
   JvScrollText, JvFontCombobox, JvRecentMenuBtn, JvControlPanel,
   JvRegistryViewer, JvGradientCaption, JvImageListBox, JvImageCombobox,
   JvZoom, JvWaitingGradient, JvSpecialProgress, JvWaitingProgress,
-  JvGammaPanel, JvSlider, JvOutlookPanel,
+  JvGammaPanel, JvSlider, JvOutlookPanel, JvSpinEdit,
 
   //Mp3
   JvBreatheSkin, JvId3v2, JvVisualId3v2, JvWinampApi, JvId3v1, JvVisualId3v1,
@@ -91,7 +91,7 @@ uses
 
   //Internet
   JvHttpGrabber, JvFtpGrabber, JvHtmlParser, JvSurfTo, JvImageMailto,
-  JvImageSurfTo, JvMultiHttpGrabber,
+  JvImageSurfTo, JvMultiHttpGrabber, JvXml,
 
   //Utils
   JvChrono, JvComplex, JvCplLauncher, JvCreateShortcut,
@@ -110,26 +110,25 @@ uses
 
   //Utils 3
   JvRegion, JvCaesarCipher, JvVigenereCipher, JvXorCipher, JvGenetic,
+  JvTranslator,
 
   //Dialogs
   JvCommonDialogD, JvBaseDlg, JvFindFiles,
-
-  JvSelectDirectory, JvInputBox,
-   JvPasswordForm, JvMessageBox, JvMessageBeep,
+  JvSelectDirectory, JvInputBox, JvPasswordForm, JvMessageBox, JvMessageBeep,
   JvFatalAppExit, JvExchListboxes, JvLoginDlg, JvSerialDlg, JvNagScreen,
   JvTipsOfDay, JvImageDlg, JvCalculator, JvProgressDlg, JvDiskPrompt,
-  JvCopyError, JvDeleteError, JvRenameError,  JvPageSetupTitled,   JvPageSetup,
+  JvCopyError, JvDeleteError, JvRenameError,  JvPageSetupTitled, JvPageSetup,
 
 
-   //WinDialogs
-     JvBrowseFolder, 
+  //WinDialogs
+  JvBrowseFolder,
 
 
   //Win32
-  JvStatusBar2, JvTabControl, JvPageControl2, JvRichEdit, JvTrackBar2,
-  JvProgressBar, JvUpDown2, JvHotKey, JvAnimate, JvDateTimePicker,
+  JvStatusBar, JvTabControl, JvPageControl2, JvRichEdit, JvTrackBar2,
+  JvProgressBar, JvUpDown, JvHotKey, JvAnimate, JvDateTimePicker,
   JvMonthCalendar, JvTreeView2, JvListView, JvHeaderControl, JvToolBar,
-  JvCoolBar, JvPageScroller,
+  JvCoolBar, JvPageScroller, JvHotKeyEx,
 
   //Image types
   JvPcx, JvAni,
@@ -146,7 +145,7 @@ uses
   JvExTabcontrol, JvFixedCheckListBox, JvFixedTrackbar, JvHighlighter, JvKeyScrollBox,
   JvMLButton, JvMousePanel, JvMultilineListbox, JvMultiselectChecklistbox, JvObserverLabel,
   JvObservibleCheckBox, JvOneSizeFitsAllButton, JvExEdit, JvExStringgrid, JvGroupBox,
-  JvOwnerDrawPageControl, JvReorderListBox, JvUpDown, JvPopupMemo, JvScrollEvStringGrid,
+  JvOwnerDrawPageControl, JvReorderListBox, JvPopupMemo, JvScrollEvStringGrid,
   JvSizeablePanel, JvSpacer, JvSyncSplitter, JvTextcontainer, JvTransparentPanel,
 
   //Petr Vones Components
@@ -220,39 +219,37 @@ begin
       TJvMousePositionner, TJvMruList, TJvWinHelp, TJvEasterEgg, TJvWindowsTitle,
       TJvPrint, TJvLogFile, TJvCabFile, TJvRle, TJvDataEmbedded]);
 
-  //Registering Utils2 components - 5
+  //Registering Utils2 components - 7
   RegisterComponents('Jv Utils 3', [TJvRegion, TJvCaesarCipher, TJvVigenereCipher,
-    TJvXorCipher, TJvGenetic]);
+    TJvXorCipher, TJvGenetic, TJvTranslator, TJvVarClass]);
 
   //Registering Dialogs components - 20
-  RegisterComponents('Jv Dialogs', [TJvFindFiles,
-TJvInputBox,  TJvPasswordForm, TJvMessageBox,
+  RegisterComponents('Jv Dialogs', [TJvFindFiles,TJvInputBox,  TJvPasswordForm, TJvMessageBox,
       TJvMessageBeep, TJvFatalAppExit, TJvExchListboxes, TJvLoginDlg,
       TJvSerialDlg, TJvNagScreen, TJvTipsOfDay, TJvImageDlg, TJvCalculator,
       TJvProgressDlg, TJvDiskPrompt, TJvCopyError, TJvDeleteError, TJvRenameError, TJvPageSetupDialog,
       TJvPageSetupTitledDialog]);
 
-//Register WinDialogs components  -  2
-
+  //Register WinDialogs components  -  2
   RegisterComponents('Jv WinDialogs', [TJvBrowseFolder, TJvSelectDirectory ]);
 
 
-  //Registering Controls components - 19
+  //Registering Controls components - 20
   RegisterComponents('Jv Controls', [TJvPlaylist, TJvButtonShaped, TJvFavoritesButton,
     TJvStartMenuBtn, TJvClock, TJvGammaPanel, TJvScrollText, TJvFontCombobox,
       TJvRecentMenuBtn, TJvControlPanel, TJvRegistryViewer, TJvSlider, TJvGradientCaption,
       TJvImageListBox, TJvImageCombobox, TJvZoom, TJvWaitingGradient, TJvSpecialProgress,
-      TJvWaitingProgress, TJvOutlookPanel]);
+      TJvWaitingProgress, TJvOutlookPanel, TJvSpinEdit]);
 
-  //Register Win32 components - 17
-  RegisterComponents('Jv Win32', [TJvStatusBar2, TJvTabControl, TJvPageControl2,
-    TJvRichEdit, TJvTrackBar2, TJvProgressBar, TJvUpDown2, TJvHotKey,
+  //Register Win32 components - 18
+  RegisterComponents('Jv Win32', [TJvStatusBar, TJvTabControl, TJvPageControl2,
+    TJvRichEdit, TJvTrackBar2, TJvProgressBar, TJvUpDown, TJvHotKey, TJvHotKeyEx,
       TJvAnimate, TJvDateTimePicker, TJvMonthCalendar, TJvTreeView2, TJvListView,
       TJvHeaderControl, TJvToolBar, TJvCoolBar, TJvPageScroller]);
 
-  //Register Net components - 7
+  //Register Net components - 8
   RegisterComponents('Jv Net', [TJvHtmlParser, TJvSurfTo, TJvImageSurfTo, TJvImageMailTo,
-    TJvHttpGrabber, TJvMultiHttpGrabber, TJvFtpGrabber]);
+    TJvHttpGrabber, TJvMultiHttpGrabber, TJvFtpGrabber, TJvSimpleXml]);
 
   //Register Edits Components - 12
   RegisterComponents('Jv Edits', [TJvFileNameBox, TJvDirectoryBox, TJvImageBox,
@@ -268,28 +265,25 @@ TJvInputBox,  TJvPasswordForm, TJvMessageBox,
   RegisterComponents('Jv MP3', [TJvId3v1, TJvVisualId3v1, TJvId3v2, TJvBreatheSkin,
     TJvWinampApi, TJvVisualId3v2]);
 
-// Register Shapes Components - 1
+  // Register Shapes Components - 1
   RegisterComponents('Jv Shapes', [TJvArrow]);
 
-//Composites - 2
-RegisterComponents('Jv Composites', [TJvYesNoPicker, TJvDateTimeNullPicker]);
+  //Composites - 2
+  RegisterComponents('Jv Composites', [TJvYesNoPicker, TJvDateTimeNullPicker]);
 
 
-
-   //Register Peter Below Components - 34
+  //Register Peter Below Components - 34
   RegisterComponents('JEDI-VCL2', [TJvAlignedEdit, TJvBMPListBox, TJvAlignListbox, TJvButtonDrawGrid,
     TJvButtonPageControl, TJvControlStringgrid, TJvCoupler, TJvDisplayMemo, TJvExLabel,
       TJvExListbox, TJvExTabcontrol, TJvFixedCheckListBox, TJvHighlighter, TJvKeyScrollBox, TJvMultilineButton,
       TJvMousePanel, TJvMultilineListbox, TJvObserverLabel, TJvObservibleCheckBox, TJvOneSizeFitsAllButton,
       TJvOwnerDrawPageControl, TJvExEdit, TJvExStringgrid, TJvGroupBox, TJvReorderListBox, TJvSyncSplitter,
-      TJvUpDown, TJvPopupMemo, TJvScrollEvStringGrid, TJvSizeablePanel, TJvSpacer, TJvTextContainer,
+      TJvPopupMemo, TJvScrollEvStringGrid, TJvSizeablePanel, TJvSpacer, TJvTextContainer,
       TJvTransparentPanel, TJvCaretEdit, TJvCaretMemo]);
 
 
   //Petr Vones Components  - 15
-
-  RegisterComponents('JEDI-VCL', [TJvIpAddress,
-    TJvPageControl, TJvStatusBar, TJvTrackBar, TJvTreeView]);
+  RegisterComponents('JEDI-VCL', [TJvIpAddress, TJvPageControl, TJvTrackBar, TJvTreeView]);
   RegisterComponents('JEDI-VCL', [TJvListBox, TJvImgBtn]);
   RegisterPropertyEditor(TypeInfo(TJvImgBtnKind), TJvImgBtn, 'Kind', TJvNosortEnumProperty);
   RegisterComponents('JEDI-VCL', [TJvAppDdeCmd]);

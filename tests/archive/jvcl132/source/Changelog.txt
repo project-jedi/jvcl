@@ -1,0 +1,9 @@
+2002-06-03
+
+- TJvTrayIcon: Added Balloon help support //Sebastien Buysse
+- TJvTrayIcon: Added protection against Explorer crashes //Sebastien Buysse
+- TJvFileNameBox: Fixed name selection when re-clicking on the button //Sebastien Buysse
+- TJvCheckBox: Added Associated control property (Checked//Enabled) //Sebastien Buysse
+- TJvUpdown: merged vith JvUpdown2   //Sebastien Buysse
+- TJvStatusBar: merged vith JvStatusBar2  //Sebastien Buysse
+
