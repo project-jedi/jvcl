@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: ColorCtrls.pas, released on 2004-10-11.
+The Original Code is: ColorCtrls.pas, released on 2004-09-11.
 
 The Initial Developer of the Original Code is Florent Ouchet [ouchet dott florent att laposte dott net]
 Portions created by Florent Ouchet are Copyright (C) 2004 Florent Ouchet.
@@ -3515,6 +3515,12 @@ begin
 end;
 
 procedure TJvFullColorGroup.Paint;
+var
+  Index, IndexX, IndexY, XMaj: Integer;
+  XOffset, YOffset, XInc, YInc: Integer;
+  X, Y: Integer;
+  Edge: TJvFullColorEdge;
+  ClipRect: TRect;
 
   procedure BevelRect(const R: TRect; Style: TJvFullColorEdge;
     FillStyle: TBrushStyle; FillColor: TColor);
@@ -3554,12 +3560,7 @@ procedure TJvFullColorGroup.Paint;
         Point(R.Left, R.Bottom)]);
     end;
   end;
-var
-  Index, IndexX, IndexY, XMaj: Integer;
-  XOffset, YOffset, XInc, YInc: Integer;
-  X, Y: Integer;
-  Edge: TJvFullColorEdge;
-  ClipRect: TRect;
+
 begin
   CalcRects(XOffset, YOffset, XInc, YInc);
   BevelRect(Rect(0, 0, Width - 1, Height - 1), FEdge, bsClear, Color);
