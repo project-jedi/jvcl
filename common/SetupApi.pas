@@ -3777,25 +3777,25 @@ function SetupDiBuildClassInfoListEx(Flags: DWORD; ClassGuidList: PGUID;
 {$EXTERNALSYM SetupDiBuildClassInfoListEx}
 
 function SetupDiGetClassDescriptionA(var ClassGuid: TGUID; ClassDescription: PAnsiChar;
-  ClassDescriptionSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ClassDescriptionSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
 {$EXTERNALSYM SetupDiGetClassDescriptionA}
 function SetupDiGetClassDescriptionW(var ClassGuid: TGUID; ClassDescription: PWideChar;
-  ClassDescriptionSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ClassDescriptionSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
 {$EXTERNALSYM SetupDiGetClassDescriptionW}
 function SetupDiGetClassDescription(var ClassGuid: TGUID; ClassDescription: PChar;
-  ClassDescriptionSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ClassDescriptionSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
 {$EXTERNALSYM SetupDiGetClassDescription}
 
 function SetupDiGetClassDescriptionExA(var ClassGuid: TGUID;
-  ClassDescription: PAnsiChar; ClassDescriptionSize: DWORD; RequiredSize: PDWORD;
+  ClassDescription: PAnsiChar; ClassDescriptionSize: DWORD; var RequiredSize: DWORD;
   const MachineName: PAnsiChar; Reserved: Pointer): LongBool; stdcall;
 {$EXTERNALSYM SetupDiGetClassDescriptionExA}
 function SetupDiGetClassDescriptionExW(var ClassGuid: TGUID;
-  ClassDescription: PWideChar; ClassDescriptionSize: DWORD; RequiredSize: PDWORD;
+  ClassDescription: PWideChar; ClassDescriptionSize: DWORD; var RequiredSize: DWORD;
   const MachineName: PWideChar; Reserved: Pointer): LongBool; stdcall;
 {$EXTERNALSYM SetupDiGetClassDescriptionExW}
 function SetupDiGetClassDescriptionEx(var ClassGuid: TGUID;
-  ClassDescription: PChar; ClassDescriptionSize: DWORD; RequiredSize: PDWORD;
+  ClassDescription: PChar; ClassDescriptionSize: DWORD; var RequiredSize: DWORD;
   const MachineName: PChar; Reserved: Pointer): LongBool; stdcall;
 {$EXTERNALSYM SetupDiGetClassDescriptionEx}
 
@@ -5238,16 +5238,16 @@ type
   TSetupDiBuildClassInfoListEx = TSetupDiBuildClassInfoListExA;
 
   TSetupDiGetClassDescriptionA = function(var ClassGuid: TGUID; ClassDescription: PAnsiChar;
-    ClassDescriptionSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ClassDescriptionSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
   TSetupDiGetClassDescriptionW = function(var ClassGuid: TGUID; ClassDescription: PWideChar;
-    ClassDescriptionSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ClassDescriptionSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
   TSetupDiGetClassDescription = TSetupDiGetClassDescriptionA;
 
   TSetupDiGetClassDescriptionExA = function(var ClassGuid: TGUID;
-    ClassDescription: PAnsiChar; ClassDescriptionSize: DWORD; RequiredSize: PDWORD;
+    ClassDescription: PAnsiChar; ClassDescriptionSize: DWORD; var RequiredSize: DWORD;
     const MachineName: PAnsiChar; Reserved: Pointer): LongBool; stdcall;
   TSetupDiGetClassDescriptionExW = function(var ClassGuid: TGUID;
-    ClassDescription: PWideChar; ClassDescriptionSize: DWORD; RequiredSize: PDWORD;
+    ClassDescription: PWideChar; ClassDescriptionSize: DWORD; var RequiredSize: DWORD;
     const MachineName: PWideChar; Reserved: Pointer): LongBool; stdcall;
   TSetupDiGetClassDescriptionEx = TSetupDiGetClassDescriptionExA;
 
