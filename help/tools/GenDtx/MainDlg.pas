@@ -65,6 +65,10 @@ type
     Button5: TButton;
     actClearMessages: TAction;
     actSaveMessages: TAction;
+    ToolButton11: TToolButton;
+    actGeneratePackageList: TAction;
+    ToolButton12: TToolButton;
+    actGenerateRegisteredClasses: TAction;
     { Form }
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -97,6 +101,8 @@ type
     procedure actClearGeneratedDtxDirExecute(Sender: TObject);
     procedure actClearMessagesExecute(Sender: TObject);
     procedure actSaveMessagesExecute(Sender: TObject);
+    procedure actGeneratePackageListExecute(Sender: TObject);
+    procedure actGenerateRegisteredClassesExecute(Sender: TObject);
   private
     FMainCtrl: TMainCtrl;
   protected
@@ -291,7 +297,7 @@ procedure TForm1.UpdateLabels;
 begin
   with TSettings.Instance do
   begin
-    lblPasDir.Caption := PasDir;
+    lblPasDir.Caption := RunTimePasDir;
     lblGeneratedDtxDir.Caption := GeneratedDtxDir;
     lblRealDtxDir.Caption := RealDtxDir;
   end;
@@ -333,7 +339,7 @@ procedure TForm1.SettingsChanged(Sender: TObject;
   ChangeType: TSettingsChangeType);
 begin
   case ChangeType of
-    ctPasDirectory, ctGeneratedDtxDirectory, ctRealDtxDirectory:
+    ctDirectory:
       UpdateLabels;
   end;
 end;
@@ -509,6 +515,16 @@ begin
   finally
     Free;
   end;
+end;
+
+procedure TForm1.actGeneratePackageListExecute(Sender: TObject);
+begin
+  FMainCtrl.GeneratePackageList;
+end;
+
+procedure TForm1.actGenerateRegisteredClassesExecute(Sender: TObject);
+begin
+  FMainCtrl.GenerateRegisteredClassesList;
 end;
 
 end.

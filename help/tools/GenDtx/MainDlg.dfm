@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 318
-  Top = 95
-  Width = 511
-  Height = 558
+  Top = 74
+  Width = 503
+  Height = 579
   Caption = 'Form1'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -17,8 +17,8 @@ object Form1: TForm1
   TextHeight = 13
   object lsbMessages: TListBox
     Left = 0
-    Top = 392
-    Width = 503
+    Top = 413
+    Width = 495
     Height = 91
     Align = alBottom
     ItemHeight = 13
@@ -26,9 +26,9 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Top = 145
-    Width = 503
-    Height = 247
+    Top = 173
+    Width = 495
+    Height = 240
     Align = alClient
     BevelInner = bvLowered
     BevelOuter = bvNone
@@ -91,6 +91,8 @@ object Form1: TForm1
       Width = 97
       Height = 25
       Action = actAddToIgnoreList
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 6
     end
     object Button3: TButton
@@ -99,12 +101,14 @@ object Form1: TForm1
       Width = 121
       Height = 25
       Action = actAddToCompletedList
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 7
     end
     object ToolBar2: TToolBar
       Left = 1
       Top = 1
-      Width = 501
+      Width = 493
       Height = 29
       ButtonHeight = 21
       ButtonWidth = 87
@@ -115,21 +119,29 @@ object Form1: TForm1
         Left = 0
         Top = 2
         Action = actShowCompleted
+        ParentShowHint = False
+        ShowHint = True
       end
       object ToolButton5: TToolButton
         Left = 87
         Top = 2
         Action = actShowIgnored
+        ParentShowHint = False
+        ShowHint = True
       end
       object ToolButton9: TToolButton
         Left = 174
         Top = 2
         Action = actShowGenerated
+        ParentShowHint = False
+        ShowHint = True
       end
       object ToolButton6: TToolButton
         Left = 261
         Top = 2
         Action = actShowOther
+        ParentShowHint = False
+        ShowHint = True
       end
       object ToolButton7: TToolButton
         Left = 348
@@ -143,16 +155,18 @@ object Form1: TForm1
         Left = 358
         Top = 2
         Action = actRefresh
+        ParentShowHint = False
+        ShowHint = True
       end
     end
   end
   object ToolBar1: TToolBar
     Left = 0
     Top = 0
-    Width = 503
-    Height = 29
+    Width = 495
+    Height = 57
     ButtonHeight = 21
-    ButtonWidth = 91
+    ButtonWidth = 144
     Caption = 'ToolBar1'
     ShowCaptions = True
     TabOrder = 2
@@ -162,25 +176,44 @@ object Form1: TForm1
       Action = actSettings
     end
     object ToolButton2: TToolButton
-      Left = 91
+      Left = 144
       Top = 2
       Action = actUnitStatus
+      ParentShowHint = False
+      ShowHint = True
     end
     object ToolButton3: TToolButton
-      Left = 182
+      Left = 288
       Top = 2
       Action = actGenerateDtxFiles
+      ParentShowHint = False
+      Wrap = True
+      ShowHint = True
     end
     object ToolButton10: TToolButton
-      Left = 273
-      Top = 2
+      Left = 0
+      Top = 23
       Action = actCheckDtxFiles
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object ToolButton11: TToolButton
+      Left = 144
+      Top = 23
+      Action = actGeneratePackageList
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object ToolButton12: TToolButton
+      Left = 288
+      Top = 23
+      Action = actGenerateRegisteredClasses
     end
   end
   object Panel2: TPanel
     Left = 0
-    Top = 29
-    Width = 503
+    Top = 57
+    Width = 495
     Height = 116
     Align = alTop
     BevelInner = bvLowered
@@ -257,8 +290,8 @@ object Form1: TForm1
   end
   object Panel3: TPanel
     Left = 0
-    Top = 483
-    Width = 503
+    Top = 504
+    Width = 495
     Height = 41
     Align = alBottom
     TabOrder = 4
@@ -268,6 +301,8 @@ object Form1: TForm1
       Width = 75
       Height = 25
       Action = actClearMessages
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
     end
     object Button5: TButton
@@ -276,6 +311,8 @@ object Form1: TForm1
       Width = 75
       Height = 25
       Action = actSaveMessages
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
     end
   end
@@ -310,6 +347,9 @@ object Form1: TForm1
     object actGenerateDtxFiles: TAction
       Category = 'TopToolbar'
       Caption = 'Generate Dtx files'
+      Hint = 
+        'Generates *.dtx files from the files listed'#13#10'in the right list b' +
+        'ox and puts them in the'#13#10'generated *.dtx directory'
       OnExecute = actGenerateDtxFilesExecute
       OnUpdate = ProcessFilesAvailable
     end
@@ -319,26 +359,37 @@ object Form1: TForm1
     end
     object actAddToIgnoreList: TAction
       Caption = 'Add to Ignore List'
+      Hint = 'Marks the selected files in the right list box as '#39'ignored'#39
       OnExecute = actAddToIgnoreListExecute
     end
     object actAddToCompletedList: TAction
       Caption = 'Add to Completed List'
+      Hint = 'Marks the selected files in the right list box as '#39'completed'#39
       OnExecute = actAddToCompletedListExecute
     end
     object actUnitStatus: TAction
       Category = 'TopToolbar'
       Caption = 'Unit Status'
+      Hint = 
+        'View the status of the dtx files, and enables you to'#13#10'update the' +
+        ' status files, such as '#39'Completed units.txt'#39' etc.'
       OnExecute = actUnitStatusExecute
     end
     object actShowCompleted: TAction
       Category = 'ShowToolbar'
       Caption = 'Show Completed'
+      Hint = 
+        'Shows the files in the *.pas directory that are marked as '#39'compl' +
+        'eted'#39#13#10'These files are listed in the '#39'Completed units.txt'#39' file'
       OnExecute = actShowCompletedExecute
       OnUpdate = actShowCompletedUpdate
     end
     object actShowIgnored: TAction
       Category = 'ShowToolbar'
       Caption = 'Show Ignored'
+      Hint = 
+        'Shows the files in the *.pas directory that are marked as '#39'ignor' +
+        'ed'#39#13#10'These files are listed in the '#39'Ignored units.txt'#39' file'
       OnExecute = actShowIgnoredExecute
       OnUpdate = actShowIgnoredUpdate
     end
@@ -346,12 +397,16 @@ object Form1: TForm1
       Category = 'ShowToolbar'
       Caption = 'Show Other'
       Checked = True
+      Hint = 
+        'Shows the files in the *.pas directory that are marked as '#39'other' +
+        #39#13#10'These files are listed in the '#39'Other units.txt'#39' file'
       OnExecute = actShowOtherExecute
       OnUpdate = actShowOtherUpdate
     end
     object actRefresh: TAction
       Category = 'ShowToolbar'
       Caption = 'Refresh'
+      Hint = 'Rescans the directory'
       OnExecute = actRefreshExecute
     end
     object actShowGenerated: TAction
@@ -363,6 +418,7 @@ object Form1: TForm1
     object actCheckDtxFiles: TAction
       Category = 'TopToolbar'
       Caption = 'Check Dtx files'
+      Hint = 'Checks the files in the real *.dtx directory'
       OnExecute = actCheckDtxFilesExecute
       OnUpdate = ProcessFilesAvailable
     end
@@ -373,12 +429,24 @@ object Form1: TForm1
     object actClearMessages: TAction
       Category = 'Messages'
       Caption = 'Clear'
+      Hint = 'Clears the above message list box'
       OnExecute = actClearMessagesExecute
     end
     object actSaveMessages: TAction
       Category = 'Messages'
       Caption = 'Save'
+      Hint = 'Saves the messages in the above list box to a file'
       OnExecute = actSaveMessagesExecute
+    end
+    object actGeneratePackageList: TAction
+      Category = 'TopToolbar'
+      Caption = 'Generate Package'
+      Hint = 'Updates the '#39'Files In Packages.txt'#39' file'
+      OnExecute = actGeneratePackageListExecute
+    end
+    object actGenerateRegisteredClasses: TAction
+      Caption = 'Generate Registered Classes'
+      OnExecute = actGenerateRegisteredClassesExecute
     end
   end
   object OpenDialog1: TOpenDialog

@@ -1,8 +1,8 @@
 object frmSettings: TfrmSettings
   Left = 400
   Top = 208
-  Width = 559
-  Height = 376
+  Width = 558
+  Height = 370
   Caption = 'frmSettings'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,75 +11,90 @@ object frmSettings: TfrmSettings
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poMainFormCenter
   DesignSize = (
-    551
-    342)
+    550
+    336)
   PixelsPerInch = 96
   TextHeight = 13
   object pgcSettings: TPageControl
     Left = 8
     Top = 8
-    Width = 535
-    Height = 283
+    Width = 534
+    Height = 277
     ActivePage = tshFiles
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
     object tshFiles: TTabSheet
       Caption = 'Files'
       DesignSize = (
-        527
-        255)
-      object lblInDirDesc: TLabel
+        526
+        249)
+      object lblRunTimePasDirDesc: TLabel
         Left = 8
-        Top = 16
+        Top = 8
         Width = 70
         Height = 13
         Caption = '*.pas directory:'
       end
       object lblOutDirDesc: TLabel
         Left = 8
-        Top = 64
+        Top = 88
         Width = 120
         Height = 13
         Caption = 'Generated *.dtx directory:'
       end
       object Label1: TLabel
         Left = 8
-        Top = 112
+        Top = 128
         Width = 92
         Height = 13
         Caption = 'Real *.dtx directory:'
       end
-      object edtPasDir: TEdit
+      object Label2: TLabel
         Left = 8
-        Top = 32
-        Width = 471
+        Top = 168
+        Width = 57
+        Height = 13
+        Caption = 'Package dir'
+      end
+      object lblDesignTimePasDir: TLabel
+        Left = 8
+        Top = 48
+        Width = 70
+        Height = 13
+        Caption = '*.pas directory:'
+      end
+      object edtRunTimePasDir: TEdit
+        Left = 8
+        Top = 24
+        Width = 470
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
-        Text = 'edtPasDir'
+        Text = 'edtRunTimePasDir'
       end
       object edtGeneratedDtxDir: TEdit
         Left = 8
-        Top = 80
-        Width = 471
+        Top = 104
+        Width = 470
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 1
         Text = 'edtGeneratedDtxDir'
       end
-      object btnPasDir: TButton
-        Left = 478
-        Top = 32
+      object btnRunTimePasDir: TButton
+        Left = 477
+        Top = 24
         Width = 25
         Height = 21
-        Action = actSelectPasDir
+        Action = actSelectRunTimePasDir
         Anchors = [akTop, akRight]
         TabOrder = 2
       end
       object btnGeneratedDtxDir: TButton
-        Left = 478
-        Top = 80
+        Left = 477
+        Top = 104
         Width = 25
         Height = 21
         Action = actSelectGeneratedDtxDir
@@ -88,7 +103,7 @@ object frmSettings: TfrmSettings
       end
       object chbOverwriteExisting: TCheckBox
         Left = 8
-        Top = 168
+        Top = 224
         Width = 113
         Height = 17
         Caption = 'Overwrite Existing'
@@ -96,21 +111,57 @@ object frmSettings: TfrmSettings
       end
       object edtRealDtxDir: TEdit
         Left = 8
-        Top = 128
-        Width = 471
+        Top = 144
+        Width = 470
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 5
         Text = 'edtOutDir'
       end
       object btnRealDtxDir: TButton
-        Left = 478
-        Top = 128
+        Left = 477
+        Top = 144
         Width = 25
         Height = 21
         Action = actSelectGeneratedDtxDir
         Anchors = [akTop, akRight]
         TabOrder = 6
+      end
+      object edtPackageDir: TEdit
+        Left = 8
+        Top = 184
+        Width = 470
+        Height = 21
+        Anchors = [akLeft, akTop, akRight]
+        TabOrder = 7
+        Text = 'edtOutDir'
+      end
+      object btnPackageDir: TButton
+        Left = 477
+        Top = 184
+        Width = 25
+        Height = 21
+        Action = actSelectPackageDir
+        Anchors = [akTop, akRight]
+        TabOrder = 8
+      end
+      object edtDesignTimePasDir: TEdit
+        Left = 8
+        Top = 64
+        Width = 470
+        Height = 21
+        Anchors = [akLeft, akTop, akRight]
+        TabOrder = 9
+        Text = 'edtPasDir'
+      end
+      object btnDesignTimePasDir: TButton
+        Left = 477
+        Top = 64
+        Width = 25
+        Height = 21
+        Action = actSelectDesignTimePasDir
+        Anchors = [akTop, akRight]
+        TabOrder = 10
       end
     end
     object tshOutput: TTabSheet
@@ -119,8 +170,8 @@ object frmSettings: TfrmSettings
       object tbcOutputTypes: TTabControl
         Left = 0
         Top = 0
-        Width = 527
-        Height = 255
+        Width = 526
+        Height = 249
         Align = alClient
         MultiLine = True
         TabOrder = 0
@@ -144,8 +195,8 @@ object frmSettings: TfrmSettings
         TabIndex = 0
         OnChange = tbcOutputTypesChange
         DesignSize = (
-          527
-          255)
+          526
+          249)
         object lblOutput: TLabel
           Left = 8
           Top = 64
@@ -155,7 +206,7 @@ object frmSettings: TfrmSettings
           FocusControl = memOutput
         end
         object lblFor: TLabel
-          Left = 366
+          Left = 365
           Top = 64
           Width = 18
           Height = 13
@@ -166,15 +217,15 @@ object frmSettings: TfrmSettings
         object memOutput: TMemo
           Left = 8
           Top = 80
-          Width = 351
-          Height = 163
+          Width = 350
+          Height = 157
           Anchors = [akLeft, akTop, akRight, akBottom]
           Lines.Strings = (
             'memOutput')
           TabOrder = 0
         end
         object lsbFor: TListBox
-          Left = 366
+          Left = 365
           Top = 80
           Width = 153
           Height = 129
@@ -185,7 +236,7 @@ object frmSettings: TfrmSettings
           OnClick = lsbForClick
         end
         object btnAdd: TButton
-          Left = 366
+          Left = 365
           Top = 216
           Width = 75
           Height = 25
@@ -194,7 +245,7 @@ object frmSettings: TfrmSettings
           TabOrder = 2
         end
         object btnDelete: TButton
-          Left = 446
+          Left = 445
           Top = 216
           Width = 75
           Height = 25
@@ -216,8 +267,8 @@ object frmSettings: TfrmSettings
       Caption = 'Nice Names'
       ImageIndex = 2
       DesignSize = (
-        527
-        255)
+        526
+        249)
       object lblDefaultNiceName: TLabel
         Left = 8
         Top = 16
@@ -229,16 +280,16 @@ object frmSettings: TfrmSettings
       object lsbNiceNames: TListBox
         Left = 8
         Top = 56
-        Width = 513
-        Height = 161
+        Width = 512
+        Height = 155
         Anchors = [akLeft, akTop, akRight, akBottom]
         ItemHeight = 13
         Sorted = True
         TabOrder = 1
       end
       object Button1: TButton
-        Left = 280
-        Top = 224
+        Left = 282
+        Top = 219
         Width = 75
         Height = 25
         Action = actAddNiceName
@@ -246,8 +297,8 @@ object frmSettings: TfrmSettings
         TabOrder = 2
       end
       object Button2: TButton
-        Left = 360
-        Top = 224
+        Left = 362
+        Top = 219
         Width = 75
         Height = 25
         Action = actDeleteNiceName
@@ -255,8 +306,8 @@ object frmSettings: TfrmSettings
         TabOrder = 3
       end
       object Button3: TButton
-        Left = 440
-        Top = 224
+        Left = 442
+        Top = 219
         Width = 75
         Height = 25
         Action = actEditNiceName
@@ -266,7 +317,7 @@ object frmSettings: TfrmSettings
       object edtDefaultNiceName: TEdit
         Left = 64
         Top = 16
-        Width = 457
+        Width = 456
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
@@ -276,21 +327,21 @@ object frmSettings: TfrmSettings
       Caption = 'Directives'
       ImageIndex = 3
       DesignSize = (
-        527
-        255)
+        526
+        249)
       object lsbDirectives: TListBox
-        Left = 8
-        Top = 8
-        Width = 513
-        Height = 209
+        Left = 0
+        Top = 0
+        Width = 526
+        Height = 212
         Anchors = [akLeft, akTop, akRight, akBottom]
         ItemHeight = 13
         Sorted = True
         TabOrder = 0
       end
       object Button4: TButton
-        Left = 280
-        Top = 224
+        Left = 282
+        Top = 219
         Width = 75
         Height = 25
         Action = actAddDirective
@@ -298,8 +349,8 @@ object frmSettings: TfrmSettings
         TabOrder = 1
       end
       object Button5: TButton
-        Left = 360
-        Top = 224
+        Left = 362
+        Top = 219
         Width = 75
         Height = 25
         Action = actDeleteDirective
@@ -308,105 +359,121 @@ object frmSettings: TfrmSettings
       end
       object edtDirective: TEdit
         Left = 8
-        Top = 224
-        Width = 265
+        Top = 219
+        Width = 264
         Height = 21
-        Anchors = [akLeft, akTop, akRight]
+        Anchors = [akLeft, akRight, akBottom]
         TabOrder = 3
       end
     end
     object tshIgnoredUnits: TTabSheet
       Caption = 'Ignored Units'
       ImageIndex = 4
+      DesignSize = (
+        526
+        249)
       object lsbIgnoredUnits: TListBox
-        Left = 8
-        Top = 8
-        Width = 513
-        Height = 209
+        Left = 0
+        Top = 0
+        Width = 526
+        Height = 212
+        Anchors = [akLeft, akTop, akRight, akBottom]
         ItemHeight = 13
         Sorted = True
         TabOrder = 0
       end
       object edtIgnoredUnits: TEdit
         Left = 8
-        Top = 224
-        Width = 233
+        Top = 219
+        Width = 264
         Height = 21
+        Anchors = [akLeft, akRight, akBottom]
         TabOrder = 1
       end
       object Button6: TButton
-        Left = 248
-        Top = 224
+        Left = 282
+        Top = 219
         Width = 75
         Height = 25
         Action = actIgnoredUnits_Add
+        Anchors = [akRight, akBottom]
         TabOrder = 2
       end
       object Button7: TButton
-        Left = 336
-        Top = 224
+        Left = 362
+        Top = 219
         Width = 75
         Height = 25
         Action = actIgnoredUnits_Delete
+        Anchors = [akRight, akBottom]
         TabOrder = 3
       end
       object Button10: TButton
-        Left = 424
-        Top = 224
+        Left = 442
+        Top = 219
         Width = 75
         Height = 25
         Action = actIgnoredUnits_Load
+        Anchors = [akRight, akBottom]
         TabOrder = 4
       end
     end
     object tshRegisteredClasses: TTabSheet
       Caption = 'Registered Classes'
       ImageIndex = 5
+      DesignSize = (
+        526
+        249)
       object lsbRegisteredClasses: TListBox
-        Left = 8
-        Top = 8
-        Width = 513
-        Height = 209
+        Left = 0
+        Top = 0
+        Width = 526
+        Height = 212
+        Anchors = [akLeft, akTop, akRight, akBottom]
         ItemHeight = 13
         Sorted = True
         TabOrder = 0
       end
       object edtRegisteredClasses: TEdit
         Left = 8
-        Top = 224
-        Width = 233
+        Top = 219
+        Width = 264
         Height = 21
+        Anchors = [akLeft, akRight, akBottom]
         TabOrder = 1
       end
       object Button8: TButton
-        Left = 248
-        Top = 224
+        Left = 282
+        Top = 219
         Width = 75
         Height = 25
         Action = actRegisteredClasses_Add
+        Anchors = [akRight, akBottom]
         TabOrder = 2
       end
       object Button9: TButton
-        Left = 336
-        Top = 224
+        Left = 362
+        Top = 219
         Width = 75
         Height = 25
         Action = actRegisteredClasses_Delete
+        Anchors = [akRight, akBottom]
         TabOrder = 3
       end
       object Button11: TButton
-        Left = 424
-        Top = 224
+        Left = 442
+        Top = 219
         Width = 75
         Height = 25
         Action = actRegisteredClasses_Load
+        Anchors = [akRight, akBottom]
         TabOrder = 4
       end
     end
   end
   object btnCancel: TButton
-    Left = 470
-    Top = 306
+    Left = 469
+    Top = 300
     Width = 75
     Height = 25
     Action = actCancel
@@ -414,8 +481,8 @@ object frmSettings: TfrmSettings
     TabOrder = 1
   end
   object btnOK: TButton
-    Left = 382
-    Top = 306
+    Left = 381
+    Top = 300
     Width = 75
     Height = 25
     Action = actOK
@@ -423,8 +490,8 @@ object frmSettings: TfrmSettings
     TabOrder = 2
   end
   object btnApply: TButton
-    Left = 294
-    Top = 306
+    Left = 293
+    Top = 300
     Width = 75
     Height = 25
     Action = actApply
@@ -446,13 +513,25 @@ object frmSettings: TfrmSettings
       Caption = '&Apply'
       OnExecute = actApplyExecute
     end
-    object actSelectPasDir: TAction
+    object actSelectRunTimePasDir: TAction
+      Category = 'Files'
       Caption = '...'
-      OnExecute = actSelectPasDirExecute
+      OnExecute = actSelectRunTimePasDirExecute
     end
     object actSelectGeneratedDtxDir: TAction
+      Category = 'Files'
       Caption = '...'
       OnExecute = actSelectGeneratedDtxDirExecute
+    end
+    object actSelectRealDtxDir: TAction
+      Category = 'Files'
+      Caption = '...'
+      OnExecute = actSelectRealDtxDirExecute
+    end
+    object actSelectPackageDir: TAction
+      Category = 'Files'
+      Caption = '...'
+      OnExecute = actSelectPackageDirExecute
     end
     object actAdd: TAction
       Caption = '&Add'
@@ -531,9 +610,10 @@ object frmSettings: TfrmSettings
       Category = 'DocumentedUnits'
       Caption = 'Load'
     end
-    object actSelectRealDtxDir: TAction
+    object actSelectDesignTimePasDir: TAction
+      Category = 'Files'
       Caption = '...'
-      OnExecute = actSelectRealDtxDirExecute
+      OnExecute = actSelectDesignTimePasDirExecute
     end
   end
   object JvBrowseForFolderDialog1: TJvBrowseForFolderDialog

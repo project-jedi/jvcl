@@ -1,8 +1,8 @@
 object frmUnitStatus: TfrmUnitStatus
   Left = 318
   Top = 153
-  Width = 533
-  Height = 424
+  Width = 534
+  Height = 422
   Caption = 'frmUnitStatus'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,13 +11,18 @@ object frmUnitStatus: TfrmUnitStatus
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poMainFormCenter
+  DesignSize = (
+    526
+    388)
   PixelsPerInch = 96
   TextHeight = 13
   object ListView1: TListView
     Left = 8
     Top = 8
-    Width = 505
-    Height = 337
+    Width = 506
+    Height = 335
+    Anchors = [akLeft, akTop, akRight, akBottom]
     Columns = <
       item
         Caption = 'Filename'
@@ -37,10 +42,11 @@ object frmUnitStatus: TfrmUnitStatus
     OnCompare = ListView1Compare
   end
   object Button1: TButton
-    Left = 328
-    Top = 352
+    Left = 329
+    Top = 350
     Width = 185
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'Update settings'
     TabOrder = 1
     OnClick = Button1Click

@@ -204,6 +204,11 @@ type
     default;
   end;
 
+  TInterfaceItem = class(TClassItem)
+  private
+    function GetDelphiType: TDelphiType; override;
+  end;
+
   TConstItem = class(TValueItem)
   private
     function GetDelphiType: TDelphiType; override;
@@ -957,6 +962,13 @@ end;
 function TValueItem.GetValueString: string;
 begin
   Result := FValue;
+end;
+
+{ TInterfaceItem }
+
+function TInterfaceItem.GetDelphiType: TDelphiType;
+begin
+  Result := dtInterface;
 end;
 
 end.

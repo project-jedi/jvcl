@@ -11,6 +11,7 @@ object frmInput: TfrmInput
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poMainFormCenter
   PixelsPerInch = 96
   TextHeight = 13
   object lblNaam: TLabel

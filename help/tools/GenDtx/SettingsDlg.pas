@@ -20,13 +20,13 @@ type
     actCancel: TAction;
     actApply: TAction;
     tshFiles: TTabSheet;
-    lblInDirDesc: TLabel;
+    lblRunTimePasDirDesc: TLabel;
     lblOutDirDesc: TLabel;
-    edtPasDir: TEdit;
+    edtRunTimePasDir: TEdit;
     edtGeneratedDtxDir: TEdit;
-    btnPasDir: TButton;
+    btnRunTimePasDir: TButton;
     btnGeneratedDtxDir: TButton;
-    actSelectPasDir: TAction;
+    actSelectRunTimePasDir: TAction;
     actSelectGeneratedDtxDir: TAction;
     chbOverwriteExisting: TCheckBox;
     tshOutput: TTabSheet;
@@ -84,10 +84,18 @@ type
     edtRealDtxDir: TEdit;
     btnRealDtxDir: TButton;
     actSelectRealDtxDir: TAction;
+    Label2: TLabel;
+    edtPackageDir: TEdit;
+    btnPackageDir: TButton;
+    actSelectPackageDir: TAction;
+    lblDesignTimePasDir: TLabel;
+    edtDesignTimePasDir: TEdit;
+    btnDesignTimePasDir: TButton;
+    actSelectDesignTimePasDir: TAction;
     procedure actOKExecute(Sender: TObject);
     procedure actCancelExecute(Sender: TObject);
     procedure actApplyExecute(Sender: TObject);
-    procedure actSelectPasDirExecute(Sender: TObject);
+    procedure actSelectRunTimePasDirExecute(Sender: TObject);
     procedure actSelectGeneratedDtxDirExecute(Sender: TObject);
     procedure actAddExecute(Sender: TObject);
     procedure actDeleteExecute(Sender: TObject);
@@ -110,6 +118,8 @@ type
     procedure actIgnoredUnits_LoadExecute(Sender: TObject);
     procedure actRegisteredClasses_LoadExecute(Sender: TObject);
     procedure actSelectRealDtxDirExecute(Sender: TObject);
+    procedure actSelectPackageDirExecute(Sender: TObject);
+    procedure actSelectDesignTimePasDirExecute(Sender: TObject);
   private
     FSettings: TSettings;
     FCurrentTab: Integer;
@@ -176,9 +186,11 @@ begin
 
   with FSettings do
   begin
-    edtPasDir.Text := PasDir;
+    edtRunTimePasDir.Text := RunTimePasDir;
+    edtDesignTimePasDir.Text := DesignTimePasDir;
     edtGeneratedDtxDir.Text := GeneratedDtxDir;
     edtRealDtxDir.Text := RealDtxDir;
+    edtPackageDir.Text := PackageDir;
     chbOverwriteExisting.Checked := OverwriteExisting;
   end;
   pgcSettings.ActivePage := tshFiles;
@@ -233,13 +245,13 @@ begin
   Uitvoeren;
 end;
 
-procedure TfrmSettings.actSelectPasDirExecute(Sender: TObject);
+procedure TfrmSettings.actSelectRunTimePasDirExecute(Sender: TObject);
 begin
   with JvBrowseForFolderDialog1 do
   begin
-    Directory := edtPasDir.Text;
+    Directory := edtRunTimePasDir.Text;
     if Execute then
-      edtPasDir.Text := Directory;
+      edtRunTimePasDir.Text := Directory;
   end;
 end;
 
@@ -392,9 +404,11 @@ procedure TfrmSettings.SaveFiles;
 begin
   with FSettings do
   begin
-    PasDir := edtPasDir.Text;
+    RunTimePasDir := edtRunTimePasDir.Text;
+    DesignTimePasDir := edtDesignTimePasDir.Text;
     GeneratedDtxDir := edtGeneratedDtxDir.Text;
     RealDtxDir := edtRealDtxDir.Text;
+    PackageDir := edtPackageDir.Text;
     OverwriteExisting := chbOverwriteExisting.Checked;
   end;
 end;
@@ -666,6 +680,26 @@ begin
     Directory := edtRealDtxDir.Text;
     if Execute then
       edtRealDtxDir.Text := Directory;
+  end;
+end;
+
+procedure TfrmSettings.actSelectPackageDirExecute(Sender: TObject);
+begin
+  with JvBrowseForFolderDialog1 do
+  begin
+    Directory := edtPackageDir.Text;
+    if Execute then
+      edtPackageDir.Text := Directory;
+  end;
+end;
+
+procedure TfrmSettings.actSelectDesignTimePasDirExecute(Sender: TObject);
+begin
+  with JvBrowseForFolderDialog1 do
+  begin
+    Directory := edtDesignTimePasDir.Text;
+    if Execute then
+      edtDesignTimePasDir.Text := Directory;
   end;
 end;
 

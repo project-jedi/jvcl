@@ -40,10 +40,12 @@ type
     procedure SetShowOtherFiles(const Value: Boolean);
     procedure SetShowGeneratedFiles(const Value: Boolean);
   protected
-    procedure DoMessage(const Msg: string);
+    procedure DoMessage(const Msg: string); overload;
+    procedure DoMessage(Strings: TStrings); overload;
     procedure WriteDtx(ATypeList: TTypeList);
     procedure FillWithHeaders(ATypeList: TTypeList; Optional, NotOptional: TStrings);
-    procedure CompareDtxFile(const AFileName: string; DtxHeaders: TStrings; ATypeList: TTypeList);
+    procedure CompareDtxFile(const AFileName: string;
+      DtxHeaders, NotInDtx, NotInPas: TStrings; ATypeList: TTypeList);
     procedure SettingsChanged(Sender: TObject; ChangeType: TSettingsChangeType);
     procedure DetermineCheckable(CheckableList, NotInPasDir, NotInRealDtxDir: TStrings);
     procedure GetAllFilesFrom(const ADir, AFilter: string; AFiles: TStrings);
@@ -58,6 +60,12 @@ type
 
     procedure CheckDtxFile(const AFileName: string);
     procedure CheckDtxFiles;
+
+    procedure GenerateListInPackage(const AFileName: string; List, AllList: TStrings);
+    procedure GeneratePackageList;
+
+    procedure GenerateRegisteredClassesListInFile(const AFileName: string; List: TStrings);
+    procedure GenerateRegisteredClassesList;
 
     procedure RefreshFiles;
 
@@ -91,8 +99,24 @@ const
 
   CConvert: array[TDelphiType] of TOutputType =
   (otClass, otConst, otType, otFunction, otFunctionType,
-    otType, otFunction, otProcedure, otProcedure, otProcedureType,
+    otInterface, otFunction, otProcedure, otProcedure, otProcedureType,
     otProperty, otRecord, otResourcestring, otSet, otType, otVar);
+
+  { efJVCLInfoGroup, efJVCLInfoFlag, efNoPackageTag, efPackageTagNotFilled, efNoStatusTag }
+  CErrorNice: array[TErrorFlag] of string =
+  ('JVCLINFO: GROUP', 'JVCLINFO: FLAG', 'No ##Package tag',
+    '##Package tag not filled', 'No ##Status tag');
+
+  { dtWriteSummary, dtWriteDescription, dtListProperties }
+  CDefaultTextNice: array[TDefaultText] of string =
+  ('Write here a summary', 'write here a description',
+    'This type is used by (for reference):',
+    'List here other properties',
+    'Remove the ''see also'' section if there are no references',
+    'Describe here what the function returns',
+    'This is an overridden method, you don''t have to describe these',
+    'If it does the same as the inherited method',
+    'Description for');
 
 procedure DiffLists(Source1, Source2, InBoth, NotInSource1, NotInSource2: TStrings);
 var
@@ -343,8 +367,6 @@ var
   LIsGeneratedUnit: Boolean;
   LDoAdd: Boolean;
 begin
-  AllList.AddStrings(FilteredList);
-
   FilteredList.BeginUpdate;
   try
     FilteredList.Clear;
@@ -387,7 +409,7 @@ var
 begin
   if not Assigned(ProcessList) then
     Exit;
-  Dir := IncludeTrailingPathDelimiter(TSettings.Instance.PasDir);
+  Dir := IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir);
   FParsedOK := 0;
   FParsedError := 0;
 
@@ -437,7 +459,7 @@ end;
 
 procedure TMainCtrl.RefreshFiles;
 begin
-  GetAllFilesFrom(TSettings.Instance.PasDir, '*.pas', FAllFiles);
+  GetAllFilesFrom(TSettings.Instance.RunTimePasDir, '*.pas', FAllFiles);
   UpdateFiles;
 end;
 
@@ -538,9 +560,7 @@ procedure TMainCtrl.SettingsChanged(Sender: TObject;
   ChangeType: TSettingsChangeType);
 begin
   case ChangeType of
-    ctPasDirectory: RefreshFiles;
-    ctGeneratedDtxDirectory: ;
-    ctRealDtxDirectory: ;
+    ctDirectory: RefreshFiles;
   end;
 end;
 
@@ -594,8 +614,10 @@ var
   begin
     UnitName := ChangeFileExt(ExtractFileName(FileName), '');
     S := TSettings.Instance.OutputTypeDefaults[otHeader];
-    S := StringReplace(S, '%author', ATypeList.Author, [rfReplaceAll,
-      rfIgnoreCase]);
+    S := StringReplace(S, '%package',
+      Format('##Package: %s', [TSettings.Instance.FileNameToPackage(UnitName)]),
+      [rfReplaceAll, rfIgnoreCase]);
+    S := StringReplace(S, '%author', ATypeList.Author, [rfReplaceAll, rfIgnoreCase]);
     S := StringReplace(S, '%unitname', UnitName, [rfReplaceAll, rfIgnoreCase]);
     FileStream.Write(PChar(S)^, Length(S));
   end;
@@ -690,14 +712,24 @@ procedure TMainCtrl.CheckDtxFile(const AFileName: string);
 var
   DelphiParser: TDelphiParser;
   DtxParser: TCompareParser;
+  NotInDtx, NotInPas: TStringList;
+  I: Integer;
+  FileStatus: string;
+  Error: TErrorFlag;
+  DefaultText: TDefaultText;
 begin
   DelphiParser := TDelphiParser.Create;
   DtxParser := TCompareParser.Create;
+  NotInDtx := TStringList.Create;
+  NotInPas := TStringList.Create;
   try
+    NotInDtx.Sorted := True;
+    NotInPas.Sorted := True;
+
     DelphiParser.AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
     DelphiParser.AcceptVisibilities := [inProtected, inPublic, inPublished];
 
-    if not DelphiParser.Execute(IncludeTrailingPathDelimiter(TSettings.Instance.PasDir) +
+    if not DelphiParser.Execute(IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir) +
       ChangeFileExt(AFileName, '.pas')) then
     begin
       Inc(FParsedError);
@@ -713,11 +745,60 @@ begin
       Exit;
     end;
 
-    CompareDtxFile(AFileName, DtxParser.List, DelphiParser.TypeList);
+    CompareDtxFile(AFileName, DtxParser.List, NotInDtx, NotInPas, DelphiParser.TypeList);
+
+    FileStatus := '';
+    if (NotInDtx.Count <> 0) or (NotInPas.Count <> 0) then
+      FileStatus := 'Differs';
+    if DtxParser.Errors <> [] then
+      if FileStatus = '' then
+        FileStatus := 'Errors'
+      else
+        FileStatus := FileStatus + ' & errors';
+    if DtxParser.DefaultTexts <> [] then
+      if FileStatus = '' then
+        FileStatus := 'Contains default texts'
+      else
+        FileStatus := FileStatus + ' & contains default texts';
+
+    if FileStatus = '' then
+      FileStatus := 'Ok';
+
+    DoMessage('');
+    DoMessage(Format('------------Comparing %s .... %s', [AFileName, FileStatus]));
+
+    if DtxParser.Errors <> [] then
+    begin
+      DoMessage('--   Errors');
+      for Error := Low(TErrorFlag) to High(TErrorFlag) do
+        if Error in DtxParser.Errors then
+          DoMessage(CErrorNice[Error]);
+    end;
+    if DtxParser.DefaultTexts <> [] then
+    begin
+      DoMessage('--   Contained default texts');
+      for DefaultText := Low(TDefaultText) to High(TDefaultText) do
+        if DefaultText in DtxParser.DefaultTexts then
+          DoMessage(CDefaultTextNice[DefaultText]);
+    end;
+    if NotInDtx.Count > 0 then
+    begin
+      DoMessage('--   Not in dtx file');
+      for I := 0 to NotInDtx.Count - 1 do
+        DoMessage(NotInDtx[I]);
+    end;
+    if NotInPas.Count > 0 then
+    begin
+      DoMessage('--   Not in pas file');
+      for I := 0 to NotInPas.Count - 1 do
+        DoMessage(NotInPas[I]);
+    end;
 
     Inc(FParsedOK);
     //WriteDtx(Parser.TypeList);
   finally
+    NotInDtx.Free;
+    NotInPas.Free;
     DtxParser.Free;
     DelphiParser.Free;
   end;
@@ -811,7 +892,7 @@ begin
     AllFilesInRealDtxDir.Sorted := True;
     AllFiles.Sorted := True;
 
-    GetAllFilesFrom(TSettings.Instance.PasDir, '*.pas', AllFilesInPasDir);
+    GetAllFilesFrom(TSettings.Instance.RunTimePasDir, '*.pas', AllFilesInPasDir);
     GetAllFilesFrom(TSettings.Instance.RealDtxDir, '*.dtx', AllFilesInRealDtxDir);
 
     DiffLists(ProcessList, AllFilesInPasDir, CheckableList, nil, NotInPasDir);
@@ -839,7 +920,7 @@ begin
       DirOption := doExcludeSubDirs;
       RootDirectory := ADir;
       Options := [soSearchFiles, soSorted, soStripDirs];
-      ErrorResponse := erRaise;
+      ErrorResponse := erIgnore;
       DirParams.SearchTypes := [];
       FileParams.SearchTypes := [stFileMask];
       FileParams.FileMask := AFilter;
@@ -856,23 +937,19 @@ begin
   end;
 end;
 
-procedure TMainCtrl.CompareDtxFile(const AFileName: string; DtxHeaders: TStrings;
+procedure TMainCtrl.CompareDtxFile(
+  const AFileName: string;
+  DtxHeaders, NotInDtx, NotInPas: TStrings;
   ATypeList: TTypeList);
 var
-  I: Integer;
   Optional: TStringList;
   NotOptional: TStringList;
-  NotInDtx, NotInPas: TStringList;
 begin
   Optional := TStringList.Create;
   NotOptional := TStringList.Create;
-  NotInDtx := TStringList.Create;
-  NotInPas := TStringList.Create;
   try
     Optional.Sorted := True;
     NotOptional.Sorted := True;
-    NotInDtx.Sorted := True;
-    NotInPas.Sorted := True;
 
     FillWithHeaders(ATypeList, Optional, NotOptional);
     NotOptional.Add('@@' + ChangeFileExt(AFileName, '.pas'));
@@ -882,36 +959,14 @@ begin
     DiffLists(DtxHeaders, NotOptional, nil, NotInDtx, NotInPas);
     ExcludeList(NotInPas, Optional);
     ExcludeList(NotInDtx, Optional);
-
-    if (NotInDtx.Count = 0) and (NotInPas.Count = 0) then
-    begin
-      DoMessage(Format('------------Comparing %s .... Ok', [AFileName]));
-      Exit;
-    end;
-
-    DoMessage(Format('------------Comparing %s .... Differs', [AFileName]));
-    if NotInDtx.Count > 0 then
-    begin
-      DoMessage('Not in dtx file');
-      for I := 0 to NotInDtx.Count - 1 do
-        DoMessage(NotInDtx[I]);
-    end;
-    if NotInPas.Count > 0 then
-    begin
-      DoMessage('Not in pas file');
-      for I := 0 to NotInPas.Count - 1 do
-        DoMessage(NotInPas[I]);
-    end;
   finally
     Optional.Free;
     NotOptional.Free;
-    NotInDtx.Free;
-    NotInPas.Free;
   end;
 end;
 
-procedure TMainCtrl.FillWithHeaders(ATypeList: TTypeList; Optional,
-  NotOptional: TStrings);
+procedure TMainCtrl.FillWithHeaders(ATypeList: TTypeList;
+  Optional, NotOptional: TStrings);
 var
   I: Integer;
   ATypeItem: TAbstractItem;
@@ -980,6 +1035,153 @@ begin
     end;
   finally
     NewSkipList.Free;
+  end;
+end;
+
+procedure TMainCtrl.GeneratePackageList;
+var
+  RunTimeDpkFiles: TStringList;
+  LFilesInPackages, LAllFilesInPackages: TStringList;
+  LNotInPasDir, LNotInDpk: TStringList;
+  I: Integer;
+begin
+  RunTimeDpkFiles := TStringList.Create;
+  LFilesInPackages := TStringList.Create;
+  LAllFilesInPackages := TStringList.Create;
+  try
+    LFilesInPackages.Sorted := True;
+    RunTimeDpkFiles.Sorted := True;
+    LAllFilesInPackages.Sorted := True;
+
+    with TSettings.Instance do
+    begin
+      if PackageDir = '' then
+        raise Exception.Create('No package dir specified in settings');
+
+      if not DirectoryExists(PackageDir) then
+        raise Exception.CreateFmt('Dir ''%s'' does not exists', [PackageDir]);
+
+      GetAllFilesFrom(PackageDir, '*r.dpk', RunTimeDpkFiles);
+
+      for I := 0 to RunTimeDpkFiles.Count - 1 do
+        GenerateListInPackage(PackageDir + '\' + ChangeFileExt(RunTimeDpkFiles[I], '.dpk'),
+          LFilesInPackages, LAllFilesInPackages);
+
+      { update list of all .pas files }
+      UpdateFiles;
+
+      LNotInPasDir := TStringList.Create;
+      LNotInDpk := TStringList.Create;
+      try
+        DiffLists(FAllFiles, LAllFilesInPackages, nil, LNotInPasDir, LNotInDpk);
+        if LNotInPasDir.Count > 0 then
+        begin
+          DoMessage('-- Files in .dpk''s, but not in .pas dir');
+          DoMessage(LNotInPasDir);
+        end;
+        if LNotInDpk.Count > 0 then
+        begin
+          DoMessage('-- Files in .pas dir, but not in any .dpk file');
+          DoMessage(LNotInDpk);
+        end;
+      finally
+        LNotInDpk.Free;
+        LNotInPasDir.Free;
+      end;
+
+      FilesInPackages := LFilesInPackages;
+      SaveFilesInPackages;
+    end;
+  finally
+    RunTimeDpkFiles.Free;
+    LFilesInPackages.Free;
+    LAllFilesInPackages.Free;
+  end;
+end;
+
+function NiceName(const S: string): string;
+begin
+  { 1234567890123
+    JvCoreD7R.dpk ->
+
+    Core
+  }
+  Result := Copy(S, 3, Length(S) - 9);
+end;
+
+procedure TMainCtrl.GenerateListInPackage(const AFileName: string;
+  List, AllList: TStrings);
+var
+  DpkParser: TDpkParser;
+  I: Integer;
+begin
+  DpkParser := TDpkParser.Create;
+  try
+    DpkParser.Execute(AFileName);
+    for I := 0 to DpkParser.List.Count - 1 do
+      List.Add(Format('%s=%s', [DpkParser.List[I], NiceName(ExtractFileName(AFileName))]));
+    AllList.AddStrings(DpkParser.List);
+  finally
+    DpkParser.Free;
+  end;
+end;
+
+procedure TMainCtrl.DoMessage(Strings: TStrings);
+var
+  I: Integer;
+begin
+  for I := 0 to Strings.Count - 1 do
+    DoMessage(Strings[I]);
+end;
+
+procedure TMainCtrl.GenerateRegisteredClassesList;
+var
+  DesignTimePasFiles: TStringList;
+  LRegisteredClasses: TStringList;
+  I: Integer;
+begin
+  DesignTimePasFiles := TStringList.Create;
+  LRegisteredClasses := TStringList.Create;
+  try
+    DesignTimePasFiles.Sorted := True;
+    LRegisteredClasses.Sorted := True;
+
+    with TSettings.Instance do
+    begin
+      if DesignTimePasDir = '' then
+        raise Exception.Create('No design-time *.pas dir specified in settings');
+
+      if not DirectoryExists(DesignTimePasDir) then
+        raise Exception.CreateFmt('Dir ''%s'' does not exists', [PackageDir]);
+
+      GetAllFilesFrom(DesignTimePasDir, '*.pas', DesignTimePasFiles);
+
+      for I := 0 to DesignTimePasFiles.Count - 1 do
+        GenerateRegisteredClassesListInFile(
+          DesignTimePasDir + '\' + ChangeFileExt(DesignTimePasFiles[I], '.pas'),
+          LRegisteredClasses);
+
+      RegisteredClasses := LRegisteredClasses;
+      SaveRegisteredClasses;
+    end;
+  finally
+    DesignTimePasFiles.Free;
+    LRegisteredClasses.Free;
+  end;
+end;
+
+procedure TMainCtrl.GenerateRegisteredClassesListInFile(
+  const AFileName: string; List: TStrings);
+var
+  RegisteredClassesParser: TRegisteredClassesParser;
+begin
+  RegisteredClassesParser := TRegisteredClassesParser.Create;
+  try
+    RegisteredClassesParser.AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
+    RegisteredClassesParser.Execute(AFileName);
+    List.AddStrings(RegisteredClassesParser.List);
+  finally
+    RegisteredClassesParser.Free;
   end;
 end;
 

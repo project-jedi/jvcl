@@ -59,6 +59,7 @@ type
     function TokenString: string;
     function TokenWideString: WideString;
     function TokenSymbolIs(const S: string): Boolean;
+    function TokenSymbolIsExact(const S: string): Boolean;
     function TokenSymbolIn(const List: array of string): Integer;
     procedure BeginRecording;
     procedure EndRecording;
@@ -108,6 +109,7 @@ type
     procedure ReadInterfaceBlock;
     procedure ReadInterfaceStatement;
     procedure ReadInterfaceType(const TypeName: string);
+    procedure ReadInterfaceMethods(AInterfaceItem: TInterfaceItem);
     procedure ReadFunction;
     procedure ReadFunctionType(const TypeName: string);
     procedure ReadParamList(AParams, ATypes: TStrings);
@@ -144,17 +146,66 @@ type
     property ErrorMsg: string read FErrorMsg;
   end;
 
+  TErrorFlag = (efJVCLInfoGroup, efJVCLInfoFlag, efNoPackageTag, efPackageTagNotFilled, efNoStatusTag);
+  TErrorFlags = set of TErrorFlag;
+
+  TDefaultText = (dtWriteSummary, dtWriteDescription, dtTypeUsedBy,
+    dtListProperties, dtRemoveSeeAlso, dtDescribeReturns, dtOverridenMethod,
+    dtInheritedMethod, dtDescriptionFor);
+
+  TDefaultTexts = set of TDefaultText;
+
+  TCompareTokenType = (ctHelpTag, ctText, ctParseTag, ctSeperator);
+
   TCompareParser = class(TBasicParser)
   private
     FList: TStrings;
+    FErrors: TErrorFlags;
+    FDefaultTexts: TDefaultTexts;
+    function GetCompareTokenType: TCompareTokenType;
   protected
     function Parse: Boolean;
     function ReadNextToken: Char; override;
+
+    property CompareTokenType: TCompareTokenType read GetCompareTokenType;
   public
     constructor Create; override;
     destructor Destroy; override;
 
     function Execute(const AFileName: string): Boolean;
+    property List: TStrings read FList;
+    property Errors: TErrorFlags read FErrors;
+    property DefaultTexts: TDefaultTexts read FDefaultTexts;
+  end;
+
+  TDpkParser = class(TDelphiParser)
+  private
+    FList: TStrings;
+    procedure ReadUntilContainsBlock;
+    function ReadFileReference: Boolean;
+  protected
+    function Parse: Boolean; override;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+
+    function Execute(const AFileName: string): Boolean; override;
+    property List: TStrings read FList;
+  end;
+
+  TRegisteredClassesParser = class(TDelphiParser)
+  private
+    FList: TStrings;
+  protected
+    function ReadUntilRegisterBlock: Boolean;
+    function ReadUntilRegisterComponentsBlock: Boolean;
+    function ReadRegisterComponentsBlock: Boolean;
+    function Parse: Boolean; override;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+
+    function Execute(const AFileName: string): Boolean; override;
     property List: TStrings read FList;
   end;
 
@@ -1123,12 +1174,36 @@ begin
 end;}
 
 procedure TDelphiParser.ReadInterfaceType(const TypeName: string);
+var
+  InterfaceItem: TInterfaceItem;
 begin
-  { TODO: Toevoegen }
-  SkipUntilSymbol('end');
-  SkipUntilToken(toSemiColon); //SkipUntilSemiColon;
-  CheckToken(toSemiColon);
+  (* vb
+
+    IJvDataConsumer = interface;
+    IJvDataConsumer = interface
+    ['{B2F18D03-F615-4AA2-A51A-74D330C05C0E}']
+
+    PRE : Token staat op 'class'
+    POST: Token staat op eerste teken na ;
+  *)
   NextToken;
+  if Token = toSemiColon then
+  begin
+    { Class is nog niet compleet gedefinieerd; niet toevoegen }
+    NextToken;
+    Exit;
+  end;
+  if Token = '[' then
+  begin
+    SkipUntilToken(']');
+    CheckToken(']');
+  end;
+
+  { Nu pas toevoegen }
+  InterfaceItem := TInterfaceItem.Create(TypeName);
+  FTypeList.Add(InterfaceItem);
+
+  ReadInterfaceMethods(InterfaceItem)
 end;
 
 procedure TDelphiParser.ReadEnumerator(const TypeName: string);
@@ -1996,6 +2071,50 @@ begin
     NextToken;
 end;
 
+procedure TDelphiParser.ReadInterfaceMethods(
+  AInterfaceItem: TInterfaceItem);
+begin
+  while True do
+  begin
+    case Token of
+      toSymbol:
+        begin
+          if TokenSymbolIs('end') then
+          begin
+            SkipUntilToken(toSemiColon); //SkipUntilSemiColon;
+            CheckToken(toSemiColon);
+            NextToken;
+            Exit;
+          end
+          else
+            if TokenSymbolIs('property') then
+          begin
+            ReadClass_Property(AInterfaceItem, inPublic, True);
+            { Token is eerste token na ; }
+            Continue;
+          end
+          else
+            if TokenSymbolIs('procedure') then
+          begin
+            ReadClass_Procedure(AInterfaceItem, inPublic, True);
+            { Token is eerste token na ; }
+            Continue;
+          end
+          else
+            if TokenSymbolIs('function') then
+          begin
+            ReadClass_Function(AInterfaceItem, inPublic, True);
+            { Token is eerste token na ; }
+            Continue;
+          end;
+        end;
+      toEof:
+        Error('Unexpected end of file');
+    end;
+    NextToken;
+  end;
+end;
+
 { TCompareParser }
 
 constructor TCompareParser.Create;
@@ -2013,6 +2132,9 @@ end;
 
 function TCompareParser.Execute(const AFileName: string): Boolean;
 begin
+  FErrors := [];
+  FDefaultTexts := [];
+
   Result := FileExists(AFileName);
   if not Result then
     Exit;
@@ -2022,22 +2144,163 @@ begin
     FList.Clear;
     Init;
     Result := Parse;
-    TStringList(FList).Sort;
   finally
     FreeAndNil(FStream);
   end;
 end;
 
-function TCompareParser.Parse: Boolean;
+type
+  TCompareState = (csNone, csParseTag, csJVCLInfoGroup, csJVCLInfoFlag);
+
+const
+  CDefaultText: array[TDefaultText] of PChar = (
+    'write here a summary (1 line)',
+    'write here a description',
+    'this type is used by (for reference):',
+    'list here other properties, methods',
+    'remove the ''see also'' section if there are no references',
+    'describe here what the function returns',
+    'this is an overridden method, you don''t have to describe these',
+    'if it does the same as the inherited method',
+    'description for'
+    );
+
+function TCompareParser.GetCompareTokenType: TCompareTokenType;
 var
   S: string;
 begin
+  S := TokenString;
+  if Length(S) > 2 then
+  begin
+    if (S[1] = '@') and (S[2] = '@') then
+      Result := ctHelpTag
+    else
+      if (S[1] = '#') and (S[2] = '#') then
+      Result := ctParseTag
+    else
+      if (S[1] = '-') and (S[2] = '-') then
+      Result := ctSeperator
+    else
+      Result := ctText;
+  end
+  else
+    Result := ctText;
+end;
+
+type
+  TParseTagType = (ptStatus, ptPackage);
+
+function TCompareParser.Parse: Boolean;
+var
+  S: string;
+  State: TCompareState;
+
+  procedure CheckDefaultText(var ACheck: string);
+  var
+    DefaultText: TDefaultText;
+  begin
+    for DefaultText := Low(TDefaultText) to High(TDefaultText) do
+      if StrLIComp(PChar(ACheck), CDefaultText[DefaultText], Length(ACheck)) = 0 then
+      begin
+        if Length(ACheck) = Length(CDefaultText[DefaultText]) then
+        begin
+          ACheck := '';
+          Include(FDefaultTexts, DefaultText);
+        end;
+        Exit;
+      end;
+    ACheck := '';
+  end;
+
+var
+  Check: string;
+  LTokenType: TCompareTokenType;
+  ParseTagType: TParseTagType;
+begin
   Result := True;
+  State := csNone;
+  ParseTagType := ptStatus;
+  FErrors := [efNoPackageTag, efNoStatusTag];
+  Check := '';
+
   while Token <> toEof do
   begin
     S := TokenString;
-    if (Length(S) > 2) and (S[1] = '@') and (S[2] = '@') then
+    LTokenType := CompareTokenType;
+
+    if LTokenType = ctHelpTag then
       FList.Add(S);
+
+    { check defaults }
+    if LTokenType = ctText then
+    begin
+      if Check = '' then
+        Check := S
+      else
+        Check := Check + ' ' + S;
+      CheckDefaultText(Check);
+    end
+    else
+      Check := '';
+
+    case State of
+      csNone:
+        if CompareStr(S, 'JVCLINFO') = 0 then
+          State := csJVCLInfoGroup
+        else
+          if SameText(S, '##package:') then
+        begin
+          State := csParseTag;
+          ParseTagType := ptPackage;
+          Exclude(FErrors, efNoPackageTag);
+        end
+        else
+          if SameText(S, '##status:') then
+        begin
+          State := csParseTag;
+          ParseTagType := ptStatus;
+          Exclude(FErrors, efNoStatusTag);
+        end
+        else
+          State := csNone;
+      csParseTag:
+        case LTokenType of
+          ctText:
+            if (ParseTagType = ptPackage) and (Pos('?', S) > 0) then
+              Include(FErrors, efPackageTagNotFilled);
+          ctParseTag:
+            if SameText(S, '##package:') then
+            begin
+              State := csParseTag;
+              ParseTagType := ptPackage;
+              Exclude(FErrors, efNoPackageTag);
+            end
+            else
+              if SameText(S, '##status:') then
+            begin
+              State := csParseTag;
+              ParseTagType := ptStatus;
+              Exclude(FErrors, efNoStatusTag);
+            end
+            else
+              State := csNone;
+        else
+          State := csNone;
+        end;
+      csJVCLInfoGroup:
+        begin
+          { Now expect GROUP=blabla }
+          if (StrLComp(PChar(S), 'GROUP=', 6) <> 0) or (Pos('?', S) > 0) then
+            Include(FErrors, efJVCLInfoGroup);
+          State := csJVCLInfoFlag;
+        end;
+      csJVCLInfoFlag:
+        begin
+          if (StrLComp(PChar(S), 'FLAG=', 6) <> 0) or (Pos('?', S) > 0) then
+            Include(FErrors, efJVCLInfoFlag);
+          State := csNone;
+        end;
+    end;
     ReadNextToken;
   end;
 end;
@@ -2182,6 +2445,177 @@ end;
 function TBasicParser.GetRecordStrWithCurrentToken: string;
 begin
   Result := FRecordStr + ' ' + TokenString;
+end;
+
+{ TDpkParser }
+
+constructor TDpkParser.Create;
+begin
+  inherited;
+  FList := TStringList.Create;
+  TStringList(FList).Sorted := True;
+end;
+
+destructor TDpkParser.Destroy;
+begin
+  FList.Free;
+  inherited;
+end;
+
+function TDpkParser.Execute(const AFileName: string): Boolean;
+begin
+  Result := FileExists(AFileName);
+  if not Result then
+    Exit;
+
+  FStream := TFileStream.Create(AFileName, fmOpenRead, fmShareDenyWrite);
+  try
+    FList.Clear;
+    Init;
+    Result := Parse;
+  finally
+    FreeAndNil(FStream);
+  end;
+end;
+
+function TDpkParser.Parse: Boolean;
+begin
+  Result := False;
+  try
+    ReadUntilContainsBlock;
+    while ReadFileReference do
+      ;
+    {while ReadUntilFunction do
+      ReadFunction;}
+    Result := True;
+  except
+    on E: Exception do
+      FErrorMsg := E.Message;
+  end;
+end;
+
+function TDpkParser.ReadFileReference: Boolean;
+begin
+  NextToken;
+  Result := (Token = toSymbol) and not TokenSymbolIs('end');
+  if not Result then
+    Exit;
+
+  List.Add(TokenString);
+  ReadNextToken;
+  while not (Token in [',', ';', toEof]) do
+    ReadNextToken;
+end;
+
+procedure TDpkParser.ReadUntilContainsBlock;
+begin
+  SkipUntilSymbol('contains');
+end;
+
+{ TRegisteredClassesParser }
+
+constructor TRegisteredClassesParser.Create;
+begin
+  inherited Create;
+  FList := TStringList.Create;
+  TStringList(FList).Sorted := True;
+end;
+
+destructor TRegisteredClassesParser.Destroy;
+begin
+  FList.Free;
+  inherited;
+end;
+
+function TRegisteredClassesParser.Execute(
+  const AFileName: string): Boolean;
+begin
+  Result := FileExists(AFileName);
+  if not Result then
+    Exit;
+
+  FStream := TFileStream.Create(AFileName, fmOpenRead, fmShareDenyWrite);
+  try
+    FList.Clear;
+    Init;
+    Result := Parse;
+  finally
+    FreeAndNil(FStream);
+  end;
+end;
+
+function TRegisteredClassesParser.Parse: Boolean;
+begin
+  Result := False;
+  try
+    if not ReadUntilRegisterBlock then
+    begin
+      Result := True;
+      Exit;
+    end;
+    while ReadUntilRegisterComponentsBlock and ReadRegisterComponentsBlock do
+      ;
+    Result := True;
+  except
+    on E: Exception do
+      FErrorMsg := E.Message;
+  end;
+end;
+
+function TRegisteredClassesParser.ReadRegisterComponentsBlock: Boolean;
+begin
+  { PRE : Token = 'RegisterComponents'
+    POST: Token = token after ; or )
+
+   vb:
+
+    RegisterComponents(x, [C1]);
+    RegisterComponents(x, [C1, C2, C3]);
+  }
+
+  NextToken;
+  CheckToken('(');
+  SkipUntilToken(',');
+  CheckToken(',');
+  NextToken;
+  CheckToken('[');
+  NextToken;
+  CheckToken(toSymbol);
+  List.Add(TokenString);
+  NextToken;
+  while Token = ',' do
+  begin
+    NextToken;
+    CheckToken(toSymbol);
+    List.Add(TokenString);
+    NextToken;
+  end;
+  CheckToken(']');
+  NextToken;
+  CheckToken(')');
+  NextToken;
+  if Token = ';' then
+    NextToken;
+  Result := Token <> toEof;
+end;
+
+function TRegisteredClassesParser.ReadUntilRegisterBlock: Boolean;
+begin
+  while (Token <> toEof) and not TokenSymbolIsExact('Register') and not TokenSymbolIs('implementation') do
+    NextToken;
+
+  Result := TokenSymbolIsExact('Register');
+end;
+
+function TRegisteredClassesParser.ReadUntilRegisterComponentsBlock: Boolean;
+begin
+  SkipUntilSymbol('RegisterComponents');
+  Result := TokenSymbolIs('RegisterComponents');
+end;
+
+function TBasicParser.TokenSymbolIsExact(const S: string): Boolean;
+begin
+  Result := (Token = toSymbol) and (CompareStr(S, TokenString) = 0);
 end;
 
 end.

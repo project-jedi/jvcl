@@ -1,3 +1,4 @@
+Tgl3DColors
 TJvAddHardwareDialog
 TJvAddPrinterDialog
 TJvAirBrush
@@ -21,6 +22,7 @@ TJvBehaviorLabel
 TJvBevel
 TJvBitBtn
 TJvBitmapButton
+TJvBlinkingLED
 TJvBmpAnimator
 TJvBrowseForFolderDialog
 TJvCabFile
@@ -48,6 +50,7 @@ TJvComponentPanel
 TJvComputerNameDialog
 TJvConnectNetwork
 TJvContentScroller
+TJvContextProvider
 TJvControlBar
 TJvControlPanelButton
 TJvConverter
@@ -158,7 +161,7 @@ TJvgHelpPanel
 TJvgHint
 TJvgHoleShape
 TJvGIFAnimator
-TJvgInspectorGrid
+TJvginspectorGrid
 TJvgJumpingComponent
 TJvgLabel
 TJvgLanguageLoader
@@ -167,17 +170,20 @@ TJvgLogicProducer
 TJvgMailSlotClient
 TJvgMailSlotServer
 TJvgMaskEdit
+TJvgMultipleResources
 TJvgMyQRPreview
 TJvgPageControl
 TJvgPrintCrossTable
 TJvgProcess
 TJvgProgress
+TJvgPropertyCenter
 TJvgQRDBText
 TJvgQRLabel
 TJvGradient
 TJvGradientCaption
 TJvGradientHeaderPanel
 TJvgReport
+TJvgReportEditor
 TJvgReportParamsEditor
 TJvGridFilter
 TJvGridPrinter
@@ -219,7 +225,7 @@ TJvId3v1
 TJvId3v2
 TJvImage
 TJvImageComboBox
-TJvImageDlg
+TJvImageDialog
 TJvImageListBox
 TJvImageRotate
 TJvImageSquare
@@ -255,6 +261,8 @@ TJvMemo
 TJvMemoryData
 TJvMergeManager
 TJvMonthCalendar
+TJvMouseGesture
+TJvMouseGestureHook
 TJvMovableBevel
 TJvMRUList
 TJvMRUManager
@@ -361,6 +369,14 @@ TJvSystemColors
 TJvSystemPopup
 TJvTabControl
 TJvTableItems
+TJvTFAlarm
+TJvTFDays
+TJvTFDaysPrinter
+TJvTFGlanceTextViewer
+TJvTFMonths
+TJvTFScheduleManager
+TJvTFUniversalPrinter
+TJvTFWeeks
 TJvThread
 TJvThreadTimer
 TJvThumbImage
@@ -374,6 +390,7 @@ TJvToolBar
 TJvTrackBar
 TJvTracker
 TJvTranslator
+TJvTranslatorStrings
 TJvTransLED
 TJvTransparentButton
 TJvTransparentButton2
@@ -399,6 +416,9 @@ TJvWavePlayer
 TJvWinampLabel
 TJvWindowHook
 TJvWinHelp
+TJvWizard
+TJvWizardRouteMapNodes
+TJvWizardRouteMapSteps
 TJvxClock
 TJvXMLDatabase
 TJvXorCipher
