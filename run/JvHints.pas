@@ -434,7 +434,7 @@ var
 begin
   Result := Rect(0, 0, MaxWidth, 0);
   DrawText(Canvas, AHint, -1, Result,
-    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or {$IFDEF VCL}DrawTextBiDiModeFlagsReadingOnly{$ENDIF VCL});
+    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or {$IFDEF VCL} DrawTextBiDiModeFlagsReadingOnly {$ENDIF});
   Inc(Result.Right, 8);
   Inc(Result.Bottom, 4);
   FRect := Result;

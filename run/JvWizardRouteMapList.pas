@@ -338,7 +338,7 @@ begin
               begin
                 Wizard.HeaderImages.Draw(ACanvas, ARect.Right - Wizard.HeaderImages.Width - 4, ARect.Top + ATop,
                   Pages[PageIndex].Header.ImageIndex,
-                  {$IFDEF VisualCLX} itImage, {$ENDIF VisualCLX} Pages[PageIndex].Enabled);
+                  {$IFDEF VisualCLX} itImage, {$ENDIF} Pages[PageIndex].Enabled);
                 Dec(ARect.Right, Wizard.HeaderImages.Width + 4);
               end;
             taCenter:

@@ -1717,11 +1717,9 @@ var
 begin
   AGraphic := FPicture.Graphic;
   FTransparent := Value;
-  if Assigned(AGraphic) and not
-     ({$IFDEF VCL}(AGraphic is TMetaFile) or {$ENDIF VCL} (AGraphic is TIcon)) then
-  begin
+  if Assigned(AGraphic) and
+    not ({$IFDEF VCL} (AGraphic is TMetaFile) or {$ENDIF} (AGraphic is TIcon)) then
     AGraphic.Transparent := Value;
-  end;
 end;
 
 procedure TJvWizardImage.DoPictureChange(Sender: TObject);
@@ -1733,6 +1731,7 @@ end;
 
 constructor TJvWizardGraphicObject.Create;
 begin
+  inherited Create;
   FColor := clBtnFace;
   FVisible := True;
 end;
@@ -2350,7 +2349,12 @@ procedure TJvWizardCustomPage.CMEnabledChanged(var Msg: TMessage);
 var
   NextPage: TJvWizardCustomPage;
 begin
+  {$IFDEF VisualCLX}
+  inherited EnabledChanged;
+  {$ENDIF VisualCLX}
+  {$IFDEF VCL}
   inherited;
+  {$ENDIF VCL}
   if Assigned(FWizard) then
   begin
     if Assigned(FWizard.FRouteMap) then
@@ -2361,10 +2365,7 @@ begin
       NextPage := FWizard.FindNextPage(PageIndex, 1,
         not (csDesigning in ComponentState));
       if not Assigned(NextPage) then
-      begin
-        NextPage := FWizard.FindNextPage(PageIndex, -1,
-          not (csDesigning in ComponentState));
-      end;
+        NextPage := FWizard.FindNextPage(PageIndex, -1, not (csDesigning in ComponentState));
       FWizard.SetActivePage(NextPage);
     end;
   end;
@@ -2967,7 +2968,7 @@ begin
     FRouteMap.DoDeletePage(Page);
   FPages.Remove(Page);
   SetActivePage(NextPage);
-  { !!! YW - We must not call Page.Free, becaure page is the child
+  { !!! YW - We must not call Page.Free, because page is the child
     control of the wizard now, so when the wizard being destroy, this page
     will be destroyed as well. }
 end;
@@ -3244,7 +3245,7 @@ begin
   begin
     Control := Controls[I];
     { YW - Because all the pages are already loaded, so here we do NOT need to
-       load them again, otherwise it will cause 'duplicate component nam'
+       load them again, otherwise it will cause 'duplicate component name'
        error. }
     if not (Control is TJvWizardCustomPage) and (Control.Owner = Root) then
       Proc(Control);

@@ -124,8 +124,7 @@ type
     procedure SetFlatBorder(const Value: Boolean);
     procedure SetFlatBorderColor(const Value: TColor);
     procedure DrawCaption;
-    procedure DrawCaptionTo(ACanvas: TCanvas
-  {$IFDEF VisualCLX}; DrawingMask: Boolean = false{$ENDIF});
+    procedure DrawCaptionTo(ACanvas: TCanvas {$IFDEF VisualCLX}; DrawingMask: Boolean = False {$ENDIF});
     procedure DrawBorders;
     procedure SetMultiLine(const Value: Boolean);
     procedure SetHotColor(const Value: TColor);
@@ -631,8 +630,7 @@ begin
   DrawCaptionTo(self.Canvas);
 end;
 
-procedure TJvPanel.DrawCaptionTo(ACanvas: TCanvas
-  {$IFDEF VisualCLX}; DrawingMask: Boolean = false{$ENDIF});
+procedure TJvPanel.DrawCaptionTo(ACanvas: TCanvas {$IFDEF VisualCLX}; DrawingMask: Boolean = False {$ENDIF});
 const
   Alignments: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWrap: array [Boolean] of Longint = (DT_SINGLELINE, DT_WORDBREAK);

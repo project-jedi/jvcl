@@ -1007,15 +1007,13 @@ end;
 
 //=== { TJvCustomCalcEdit } ==================================================
 
-
-
 constructor TJvCustomCalcEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csAcceptsControls];
   ControlState := ControlState + [csCreating];
   try
-    FPopup := TJvPopupWindow(CreatePopupCalculator(Self {$IFDEF VCL}, BiDiMode {$ENDIF VCL}));
+    FPopup := TJvPopupWindow(CreatePopupCalculator(Self {$IFDEF VCL}, BiDiMode {$ENDIF}));
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
     UpdatePopup;
   finally
@@ -1037,10 +1035,13 @@ begin
   if GCalcImageIndex < 0 then
   begin
     Bmp := TBitmap.Create;
-    //Bmp.Handle := LoadBitmap(HInstance, sCalcBmp);
-    Bmp.LoadFromResourceName(HInstance, sCalcBmp);
-    GCalcImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
-    Bmp.Free;
+    try
+      //Bmp.Handle := LoadBitmap(HInstance, sCalcBmp);
+      Bmp.LoadFromResourceName(HInstance, sCalcBmp);
+      GCalcImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
+    finally
+      Bmp.Free;
+    end;
   end;
 
   Result := GCalcImageIndex;

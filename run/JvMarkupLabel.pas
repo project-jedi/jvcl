@@ -61,9 +61,8 @@ type
     procedure DoReadBackColor(Reader: TReader);
   protected
     procedure FontChanged; override;
-    procedure SetText(const Value: TCaption); {$IFDEF VisualCLX} override;{$ENDIF}
-
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override;{$ENDIF VCL}
+    procedure SetText(const Value: TCaption); {$IFDEF VisualCLX} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
     procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -81,7 +80,7 @@ type
     property AutoSize;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    property AutoSize: boolean read FAutoSize write SetAutoSize default false;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     {$ENDIF VisualCLX}
     property Align;
     property Font;
@@ -221,10 +220,10 @@ var
     Result := False;
     if Length(V) < 2 then
       Exit;
-    if not (V[1] in ['#','$']) then
+    if not (V[1] in ['#', '$']) then
     begin
       // allow the use of both "clBlack" and "Black" 
-      if Pos('cl',AnsiLowerCase(V)) = 1 then
+      if Pos('cl', AnsiLowerCase(V)) = 1 then
         VV := V
       else
         VV := 'cl' + V;
@@ -447,7 +446,7 @@ var
     SetFont(EE);
     if EE.SolText <> '' then
     begin
-      SS := trimLeft(EE.SolText);
+      SS := TrimLeft(EE.SolText);
       WW := Canvas.TextWidth(SS);
       if not Test then
         Canvas.TextOut(X, Y + BaseLine - EE.Ascent, SS);

@@ -383,7 +383,7 @@ begin
 end;
 
 function CreatePopupCalculator(AOwner: TComponent
-  {$IFDEF VCL}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF VCL}): TWinControl;
+  {$IFDEF VCL}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
 begin
   Result := TJvPopupCalculator.Create(AOwner);
   {$IFDEF VCL}
