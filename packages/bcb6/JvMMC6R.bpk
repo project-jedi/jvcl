@@ -2,9 +2,9 @@
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
-    <VERSION value="BCB.06.00"/>      
+    <VERSION value="BCB.06.00"/>
     <PROJECT value="JvMMC6R.bpl"/>
-    <OBJFILES value="..\..\dcu\JvMMC6R.obj ..\..\dcu\JvWavePlayer.obj ..\..\dcu\JvAni.obj
+    <OBJFILES value="..\..\dcu\JvMMC6R.obj ..\..\dcu\JvWavePlayer.obj ..\..\dcu\JvAni.obj 
       ..\..\dcu\JvAniFile.obj ..\..\dcu\JvAnimate.obj 
       ..\..\dcu\JvAnimatedImage.obj ..\..\dcu\JvAVICapture.obj 
       ..\..\dcu\JvBmpAnimator.obj ..\..\dcu\JvGIF.obj ..\..\dcu\JvGIFCtrl.obj 
@@ -16,7 +16,8 @@
       ..\..\dcu\JvSlider.obj ..\..\dcu\JvSpecialImage.obj 
       ..\..\dcu\JvSpecialProgress.obj ..\..\dcu\JvSplashWindow.obj 
       ..\..\dcu\JvStarfield.obj ..\..\dcu\JvVirtualKeySelectionFrame.obj 
-      ..\..\dcu\JvWaitingGradient.obj ..\..\dcu\JvWaitingProgress.obj"/>
+      ..\..\dcu\JvWaitingGradient.obj ..\..\dcu\JvWaitingProgress.obj 
+      ..\..\dcu\VFW.obj"/>
     <RESFILES value="JvMMC6R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -25,10 +26,10 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi vcl.bpi CJCL60.bpi JvCoreC6R.bpi vclx.bpi bcbsmp.bpi bcbie.bpi
+    <PACKAGES value="rtl.bpi vcl.bpi CJCL60.bpi JvCoreC6R.bpi vclx.bpi bcbsmp.bpi bcbie.bpi 
       JvSystemC6R.bpi JvCtrlsC6R.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\..\run"/>
+    <PATHPAS value=".;..\..\run;..\..\common"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
@@ -38,12 +39,12 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvMMC6R.cpp"/>
     <INCLUDEPATH value="..\..\common;..\..\run;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\dcu;..\..\run;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <LIBPATH value="..\..\common;..\..\dcu;..\..\run;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\common -I..\..\run -I$(BCB)\include -I$(BCB)\include\vcl
+    <IDLCFLAGS value="-I..\..\common -I..\..\run -I$(BCB)\include -I$(BCB)\include\vcl 
       -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
@@ -64,7 +65,6 @@
       <FILE FILENAME="JvMMC6R.res" FORMNAME="" UNITNAME="JvMMC6R.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvMMC6R.cpp" FORMNAME="" UNITNAME="JvMMC6R" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\common\VFW.pas" FORMNAME="" UNITNAME="VFW" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvWavePlayer.pas" FORMNAME="" UNITNAME="JvWavePlayer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvAni.pas" FORMNAME="" UNITNAME="JvAni" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvAniFile.pas" FORMNAME="" UNITNAME="JvAniFile" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -102,6 +102,7 @@
       <FILE FILENAME="bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvSystemC6R.bpi" FORMNAME="" UNITNAME="JvSystemC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCtrlsC6R.bpi" FORMNAME="" UNITNAME="JvCtrlsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\common\VFW.pas" FORMNAME="" UNITNAME="VFW" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

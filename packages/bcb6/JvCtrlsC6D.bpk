@@ -7,7 +7,7 @@
     <OBJFILES value="..\..\dcu\JvCtrlsC6D.obj ..\..\dcu\JvSpeedbarForm.obj 
       ..\..\dcu\JvBehaviorLabelEditor.obj ..\..\dcu\JvCtrlsReg.obj 
       ..\..\dcu\JvFooterEditor.obj ..\..\dcu\JvHTHintForm.obj 
-      ..\..\dcu\JvScrollMaxEditor.obj"/>
+      ..\..\dcu\JvScrollMaxEditor.obj ..\..\dcu\JvGroupHeaderEditor.obj"/>
     <RESFILES value="JvCtrlsC6D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -61,6 +61,7 @@
       <FILE FILENAME="..\..\design\JvFooterEditor.pas" FORMNAME="" UNITNAME="JvFooterEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvHTHintForm.pas" FORMNAME="JvHintEditor" UNITNAME="JvHTHintForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvScrollMaxEditor.pas" FORMNAME="" UNITNAME="JvScrollMaxEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvGroupHeaderEditor.pas" FORMNAME="" UNITNAME="JvGroupHeaderEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
