@@ -58,7 +58,8 @@ unit JvQComputerInfo;
 interface
 
 uses
-  Windows, SysUtils, Classes, Registry, MMSystem, Controls,
+  Windows, SysUtils, Classes, Registry, MMSystem,
+  
   JvQComponent, JvQTypes;
 
 type

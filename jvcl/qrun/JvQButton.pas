@@ -210,12 +210,13 @@ begin
   Result := GlobalPattern;
 end;
 
-// == TJvCustomGraphicButton ===================================================
+//=== TJvCustomGraphicButton =================================================
 
 constructor TJvCustomGraphicButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle - [csOpaque, csDoubleClicks,csCaptureMouse];
+  ControlStyle := ControlStyle -
+    [csOpaque, csDoubleClicks , csCaptureMouse ];
   FStates := [];
   SetBounds(0, 0, 40, 40);
   FBuffer := TBitmap.Create;
@@ -327,8 +328,8 @@ begin
   DoDropDownMenu(Button, Shift, Tmp.X, Tmp.Y);
 end;
 
-procedure TJvCustomGraphicButton.MouseMove(Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvCustomGraphicButton.MouseMove(Shift: TShiftState;
+  X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
   
@@ -581,7 +582,7 @@ begin
     inherited SetBounds(Left, Top, AWidth, AHeight);
 end;
 
-// == TJvCustomButton ==========================================================
+//=== TJvCustomButton ========================================================
 
 constructor TJvCustomButton.Create(AOwner: TComponent);
 begin
@@ -759,7 +760,7 @@ begin
     inherited SetBounds(Left, Top, AWidth, AHeight);
 end;
 
-// == TJvDropDownButton ===================================================
+//=== TJvDropDownButton ======================================================
 
 constructor TJvDropDownButton.Create(AOwner: TComponent);
 begin

@@ -46,8 +46,8 @@ uses
   SysUtils, Classes,
   
   
-  Types, QControls, QButtons, QGraphics, QTypes,
-  QImgList, QForms, QStdCtrls, QExtCtrls, QWindows,
+  QControls, QButtons, QGraphics, QTypes, QImgList, QForms, QStdCtrls,
+  QExtCtrls, Types, QWindows,
   
   JvQThemes, JvQComponent, JvQExButtons;
 

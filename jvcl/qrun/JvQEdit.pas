@@ -84,7 +84,9 @@ type
     FPasswordChar: Char;
     FNullPixmap: QPixmapH;
     
-    
+    FEmptyValue: string;
+    FIsEmptyValue: boolean;
+    FEmptyFontColor, FOldFontColor: TColor;
     function GetPasswordChar: Char;
     procedure SetAlignment(Value: TAlignment);
     procedure SetCaret(const Value: TJvCaret);
@@ -93,9 +95,10 @@ type
     procedure SetPasswordChar(Value: Char);
     procedure SetHotTrack(const Value: Boolean);
     
-    procedure SetGroupIndex(const Value: Integer);
+    procedure SetEmptyValue(const Value: string);
+    procedure SetGroupIndex(Value: Integer);
     function GetFlat: Boolean;
-    procedure SetAutoHint(const Value: Boolean);
+    procedure SetAutoHint(Value: Boolean);
   protected
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
@@ -113,7 +116,12 @@ type
     function GetPopupMenu: TPopupMenu; override;
 
     
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure DoEmptyValueEnter; virtual;
+    procedure DoEmptyValueExit; virtual;
     
+    procedure InitWidget; override;
     procedure Paint; override;
     procedure TextChanged; override;
     procedure KeyPress(var Key: Char); override;
@@ -138,7 +146,8 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoHint: Boolean read FAutoHint write SetAutoHint default False;
     property Caret: TJvCaret read FCaret write SetCaret;
-    
+    property EmptyValue: string read FEmptyValue write SetEmptyValue;
+    property EmptyFontColor:TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property PasswordChar: Char read GetPasswordChar write SetPasswordChar;
     // set to True to disable read/write of PasswordChar and read of Text
@@ -249,6 +258,7 @@ begin
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
   FGroupIndex := -1;
+  FEmptyFontColor := clGrayText;
 end;
 
 destructor TJvCustomEdit.Destroy;
@@ -501,7 +511,7 @@ begin
   UpdateEdit;
 end;
 
-procedure TJvCustomEdit.SetGroupIndex(const Value: Integer);
+procedure TJvCustomEdit.SetGroupIndex(Value: Integer);
 begin
   FGroupIndex := Value;
   UpdateEdit;
@@ -643,7 +653,7 @@ begin
   end;
 end;
 
-procedure TJvCustomEdit.SetAutoHint(const Value: Boolean);
+procedure TJvCustomEdit.SetAutoHint(Value: Boolean);
 begin
   if FAutoHint <> Value then
   begin
@@ -662,6 +672,72 @@ begin
   UpdateAutoHint;
 end;
 
+procedure TJvCustomEdit.DoEnter;
+begin
+  inherited DoEnter;
+  DoEmptyValueEnter;
+end;
+
+procedure TJvCustomEdit.DoExit;
+begin
+  inherited DoExit;
+  DoEmptyValueExit;
+end;
+
+procedure TJvCustomEdit.DoEmptyValueEnter;
+begin
+  if EmptyValue <> '' then
+  begin
+    if FIsEmptyValue then
+    begin
+      Text := '';
+      FIsEmptyValue := false;
+      if not (csDesigning in ComponentState) then
+        Font.Color := FOldFontColor;
+    end;
+  end;
+end;
+
+procedure TJvCustomEdit.DoEmptyValueExit;
+begin
+  if EmptyValue <> '' then
+  begin
+    if Text = '' then
+    begin
+      Text := EmptyValue;
+      FIsEmptyValue := true;
+      if not (csDesigning in ComponentState) then
+      begin
+        FOldFontColor := Font.Color;
+        Font.Color := FEmptyFontColor;
+      end;
+    end;
+  end;
+end;
+
+
+
+procedure TJvCustomEdit.InitWidget;
+
+begin
+  inherited;
+  if Focused then
+    DoEmptyValueEnter
+  else
+    DoEmptyValueExit;
+end;
+
+procedure TJvCustomEdit.SetEmptyValue(const Value: string);
+begin
+  FEmptyValue := Value;
+  if HandleAllocated then
+  begin
+    if Focused then
+      DoEmptyValueEnter
+    else
+      DoEmptyValueExit;
+  end;
+end;
 
 
 end.

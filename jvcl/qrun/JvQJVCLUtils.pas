@@ -986,8 +986,8 @@ begin
       try
         QPixmap_grabWidget(Pixmap, Control.Parent.Handle, Control.Left,
           Control.Top, Control.Width, Control.Height);
-        BitBlt(DestDev, 0, 0, Pixmap, 0, 0, Control.Width,
-          Control.Height, RasterOp_CopyROP, True);
+        Qt.bitBlt(DestDev, 0, 0, Pixmap, 0, 0, Control.Width,
+          Control.Height, Qt.RasterOp_CopyROP, True);
       finally
         TPrivateControl(Control).FVisible := OrigVisible;
         QPixmap_destroy(Pixmap);
@@ -1545,11 +1545,11 @@ end;
 procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
 var
   DC: Windows.HDC;
-  i: Integer;
+  I: Integer;
 begin
   DC := Windows.GetDC(0);
   try
-    for i := 1 to Width do
+    for I := 1 to Width do
     begin
       Windows.DrawFocusRect(DC, ScreenRect);
       //InflateRect(ScreenRect, -1, -1);
@@ -1619,7 +1619,8 @@ begin
       end;
     end;
   end
-  else if Control.Parent <> nil then
+  else
+  if Control.Parent <> nil then
   begin
     with Control do
     begin
@@ -1785,7 +1786,7 @@ var
   RGBDelta: array[0..2] of Integer;
   { Difference between start and end RGB values }
   ColorBand: TRect; { Color band rectangular coordinates }
-  i, Delta: Integer;
+  I, Delta: Integer;
   Brush: HBRUSH;
   TmpColor:TCOlor;
 begin
@@ -1846,25 +1847,25 @@ begin
       { Perform the fill }
       if Delta > 0 then
       begin
-        for i := 0 to Colors - 1 do
+        for I := 0 to Colors - 1 do
         begin
           if Direction = fdTopToBottom then
           { Calculate the color band's top and bottom coordinates }
           begin
-            ColorBand.Top := ARect.Top + i * Delta;
+            ColorBand.Top := ARect.Top + I * Delta;
             ColorBand.Bottom := ColorBand.Top + Delta;
           end
           { Calculate the color band's left and right coordinates }
           else
           begin
-            ColorBand.Left := ARect.Left + i * Delta;
+            ColorBand.Left := ARect.Left + I * Delta;
             ColorBand.Right := ColorBand.Left + Delta;
           end;
         { Calculate the color band's color }
           Brush := CreateSolidBrush(RGB(
-            StartRGB[0] + MulDiv(i, RGBDelta[0], Colors - 1),
-            StartRGB[1] + MulDiv(i, RGBDelta[1], Colors - 1),
-            StartRGB[2] + MulDiv(i, RGBDelta[2], Colors - 1)));
+            StartRGB[0] + MulDiv(I, RGBDelta[0], Colors - 1),
+            StartRGB[1] + MulDiv(I, RGBDelta[1], Colors - 1),
+            StartRGB[2] + MulDiv(I, RGBDelta[2], Colors - 1)));
           FillRect(Canvas.Handle, ColorBand, Brush);
           DeleteObject(Brush);
         end;
@@ -1902,13 +1903,13 @@ end;
 
 function GetAveCharSize(Canvas: TCanvas): TPoint;
 var
-  i: Integer;
+  I: Integer;
   Buffer: array[0..51] of char;
 begin
-  for i := 0 to 25 do
-    Buffer[i] := Chr(i + Ord('A'));
-  for i := 0 to 25 do
-    Buffer[i + 26] := Chr(i + Ord('a'));
+  for I := 0 to 25 do
+    Buffer[I] := Chr(I + Ord('A'));
+  for I := 0 to 25 do
+    Buffer[I + 26] := Chr(I + Ord('a'));
   
   Canvas.Start;
   
@@ -1973,7 +1974,8 @@ begin
   begin
     if Result >= crSizeAll then Result := crSizeAll - 1;
   end
-  else if Result <= crDefault then
+  else
+  if Result <= crDefault then
     Result := crDefault + 1;
   while (Screen.Cursors[Result] <> Screen.Cursors[crDefault]) do
   begin
@@ -1982,7 +1984,7 @@ begin
     else
       Inc(Result);
     if (Result < Low(TCursor)) or (Result > High(TCursor)) then
-      raise EOutOfResources.Create(SOutOfResources);
+      raise EOutOfResources.CreateRes(@SOutOfResources);
   end;
 end;
 
@@ -2252,11 +2254,11 @@ end;
 function FindByTag(WinControl: TWinControl; ComponentClass: TComponentClass;
   const Tag: Integer): TComponent;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to WinControl.ControlCount - 1 do
+  for I := 0 to WinControl.ControlCount - 1 do
   begin
-    Result := WinControl.Controls[i];
+    Result := WinControl.Controls[I];
     if (Result is ComponentClass) and (Result.Tag = Tag) then
       Exit;
   end;
@@ -2265,13 +2267,13 @@ end;
 
 function ControlAtPos2(Parent: TWinControl; X, Y: Integer): TControl;
 var
-  i: Integer;
+  I: Integer;
   P: TPoint;
 begin
   P := Point(X, Y);
-  for i := Parent.ControlCount - 1 downto 0 do
+  for I := Parent.ControlCount - 1 downto 0 do
   begin
-    Result := Parent.Controls[i];
+    Result := Parent.Controls[I];
     with Result do
       if PtInRect(BoundsRect, P) then
         Exit;
@@ -2282,15 +2284,15 @@ end;
 function RBTag(Parent: TWinControl): Integer;
 var
   RB: TRadioButton;
-  i: Integer;
+  I: Integer;
 begin
   RB := nil;
   with Parent do
-    for i := 0 to ControlCount - 1 do
-      if (Controls[i] is TRadioButton) and
-        (Controls[i] as TRadioButton).Checked then
+    for I := 0 to ControlCount - 1 do
+      if (Controls[I] is TRadioButton) and
+        (Controls[I] as TRadioButton).Checked then
       begin
-        RB := Controls[i] as TRadioButton;
+        RB := Controls[I] as TRadioButton;
         break;
       end;
   if RB <> nil then
@@ -2301,26 +2303,26 @@ end;
 
 function FindFormByClass(FormClass: TFormClass): TForm;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := nil;
-  for i := 0 to Application.ComponentCount - 1 do
-    if Application.Components[i].ClassName = FormClass.ClassName then
+  for I := 0 to Application.ComponentCount - 1 do
+    if Application.Components[I].ClassName = FormClass.ClassName then
     begin
-      Result := Application.Components[i] as TForm;
+      Result := Application.Components[I] as TForm;
       break;
     end;
 end;
 
 function FindFormByClassName(FormClassName: string): TForm;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := nil;
-  for i := 0 to Application.ComponentCount - 1 do
-    if Application.Components[i].ClassName = FormClassName then
+  for I := 0 to Application.ComponentCount - 1 do
+    if Application.Components[I].ClassName = FormClassName then
     begin
-      Result := Application.Components[i] as TForm;
+      Result := Application.Components[I] as TForm;
       break;
     end;
 end;
@@ -2375,38 +2377,38 @@ end;
 procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of
   TControl);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := Low(Controls) to High(Controls) do
-    Controls[i].Left := Max(MinLeft, (Parent.Width - Controls[i].Width) div 2)
+  for I := Low(Controls) to High(Controls) do
+    Controls[I].Left := Max(MinLeft, (Parent.Width - Controls[I].Width) div 2)
 end;
 
 procedure EnableControls(Control: TWinControl; const Enable: Boolean);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Control.ControlCount - 1 do
-    Control.Controls[i].Enabled := Enable;
+  for I := 0 to Control.ControlCount - 1 do
+    Control.Controls[I].Enabled := Enable;
 end;
 
 procedure EnableMenuItems(MenuItem: TMenuItem; const Tag: Integer; const Enable:
   Boolean);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to MenuItem.Count - 1 do
-    if MenuItem[i].Tag <> Tag then
-      MenuItem[i].Enabled := Enable;
+  for I := 0 to MenuItem.Count - 1 do
+    if MenuItem[I].Tag <> Tag then
+      MenuItem[I].Enabled := Enable;
 end;
 
 procedure ExpandWidth(Parent: TControl; MinWidth: Integer; Controls: array of
   TControl);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := Low(Controls) to High(Controls) do
-    Controls[i].Width := Max(MinWidth, Parent.ClientWidth - 2 *
-      Controls[i].Left);
+  for I := Low(Controls) to High(Controls) do
+    Controls[I].Width := Max(MinWidth, Parent.ClientWidth - 2 *
+      Controls[I].Left);
 end;
 
 function PanelBorder(Panel: TCustomPanel): Integer;
@@ -2433,7 +2435,7 @@ end;
 
 procedure ShowMenu(Form: TForm; MenuAni: TMenuAnimation);
 var
-  i: Integer;
+  I: Integer;
   h: Integer;
   w: Integer;
 begin
@@ -2447,7 +2449,7 @@ begin
         h := Form.Height;
         Form.Height := 0;
         Form.Show;
-        for i := 0 to h div 10 do
+        for I := 0 to h div 10 do
           if Form.Height < h then
             Form.Height := Form.Height + 10;
       end;
@@ -2458,7 +2460,7 @@ begin
         Form.Height := 0;
         Form.Width := 0;
         Form.Show;
-        for i := 0 to Max(h div 5, w div 5) do
+        for I := 0 to Max(h div 5, w div 5) do
         begin
           if Form.Height < h then
             Form.Height := Form.Height + 5;
@@ -2583,15 +2585,15 @@ end;
 procedure ExecAfterPause(Proc: TProcObj; Pause: Integer);
 var
   Num: Integer;
-  i: Integer;
+  I: Integer;
 begin
   if ProcList = nil then
     ProcList := TList.Create;
   Num := -1;
-  for i := 0 to ProcList.Count - 1 do
-    if @TJvProcItem(ProcList[i]).FProcObj = @Proc then
+  for I := 0 to ProcList.Count - 1 do
+    if @TJvProcItem(ProcList[I]).FProcObj = @Proc then
     begin
-      Num := i;
+      Num := I;
       Break;
     end;
   if Num <> -1 then
@@ -2667,14 +2669,14 @@ end;
 
 function FindForm(FormClass: TFormClass): TForm;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := nil;
-  for i := 0 to Screen.FormCount - 1 do
+  for I := 0 to Screen.FormCount - 1 do
   begin
-    if Screen.Forms[i] is FormClass then
+    if Screen.Forms[I] is FormClass then
     begin
-      Result := Screen.Forms[i];
+      Result := Screen.Forms[I];
       break;
     end;
   end;
@@ -2683,15 +2685,15 @@ end;
 function InternalFindShowForm(FormClass: TFormClass;
   const Caption: string; Restore: Boolean): TForm;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := nil;
-  for i := 0 to Screen.FormCount - 1 do
+  for I := 0 to Screen.FormCount - 1 do
   begin
-    if Screen.Forms[i] is FormClass then
-      if (Caption = '') or (Caption = Screen.Forms[i].Caption) then
+    if Screen.Forms[I] is FormClass then
+      if (Caption = '') or (Caption = Screen.Forms[I].Caption) then
       begin
-        Result := Screen.Forms[i];
+        Result := Screen.Forms[I];
         break;
       end;
   end;
@@ -2892,7 +2894,8 @@ begin
   if IniFile is TCustomIniFile then
     TCustomIniFile(IniFile).ReadSections(Strings)
   {$IFDEF MSWINDOWS}
-  else if IniFile is TRegIniFile then
+  else
+  if IniFile is TRegIniFile then
     TRegIniFile(IniFile).ReadSections(Strings);
   {$ENDIF MSWINDOWS}
 end;
@@ -2949,20 +2952,20 @@ procedure InternalSaveMDIChildren(MainForm: TForm; const AppStorage:
   TJvCustomAppStorage;
   const StorePath: string);
 var
-  i: Integer;
+  I: Integer;
 begin
   if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
-    raise EInvalidOperation.Create(SNoMDIForm);
+    raise EInvalidOperation.CreateRes(@SNoMDIForm);
   AppStorage.DeleteSubTree(AppStorage.ConcatPaths([StorePath, siMDIChild]));
   if MainForm.MDIChildCount > 0 then
   begin
     AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
       siListCount]),
         MainForm.MDIChildCount);
-    for i := 0 to MainForm.MDIChildCount - 1 do
+    for I := 0 to MainForm.MDIChildCount - 1 do
       AppStorage.WriteString(AppStorage.ConcatPaths([StorePath, siMDIChild,
-        Format(siItem, [i])]),
-          MainForm.MDIChildren[i].ClassName);
+        Format(siItem, [I])]),
+          MainForm.MDIChildren[I].ClassName);
   end;
 end;
 
@@ -2970,23 +2973,23 @@ procedure InternalRestoreMDIChildren(MainForm: TForm; const AppStorage:
   TJvCustomAppStorage;
   const StorePath: string);
 var
-  i: Integer;
+  I: Integer;
   Count: Integer;
   FormClass: TFormClass;
 begin
   if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
-    raise EInvalidOperation.Create(SNoMDIForm);
+    raise EInvalidOperation.CreateRes(@SNoMDIForm);
   StartWait;
   try
     Count := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
       siListCount]), 0);
     if Count > 0 then
     begin
-      for i := 0 to Count - 1 do
+      for I := 0 to Count - 1 do
       begin
         FormClass :=
           TFormClass(GetClass(AppStorage.ReadString(AppStorage.ConcatPaths([StorePath,
-          siMDIChild, Format(siItem, [i])]), '')));
+          siMDIChild, Format(siItem, [I])]), '')));
         if FormClass <> nil then
           InternalFindShowForm(FormClass, '', False);
       end;
@@ -3143,24 +3146,24 @@ procedure InternalSaveGridLayout(Grid: TCustomGrid; const AppStorage:
   TJvCustomAppStorage;
   const StorePath: string);
 var
-  i: Longint;
+  I: Longint;
 begin
-  for i := 0 to TDrawGrid(Grid).ColCount - 1 do
+  for I := 0 to TDrawGrid(Grid).ColCount - 1 do
     AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, Format(siItem,
-        [i])]),
-      TDrawGrid(Grid).ColWidths[i]);
+        [I])]),
+      TDrawGrid(Grid).ColWidths[I]);
 end;
 
 procedure InternalRestoreGridLayout(Grid: TCustomGrid; const AppStorage:
   TJvCustomAppStorage;
   const StorePath: string);
 var
-  i: Longint;
+  I: Longint;
 begin
-  for i := 0 to TDrawGrid(Grid).ColCount - 1 do
-    TDrawGrid(Grid).ColWidths[i] :=
+  for I := 0 to TDrawGrid(Grid).ColCount - 1 do
+    TDrawGrid(Grid).ColWidths[I] :=
       AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath,
-      Format(siItem, [i])]), TDrawGrid(Grid).ColWidths[i]);
+      Format(siItem, [I])]), TDrawGrid(Grid).ColWidths[I]);
 end;
 
 procedure RestoreGridLayout(Grid: TCustomGrid; const AppStorage:
@@ -3191,22 +3194,22 @@ end;
 
 function MaxFloat(const Values: array of Extended): Extended;
 var
-  i: Cardinal;
+  I: Cardinal;
 begin
   Result := Values[Low(Values)];
-  for i := Low(Values) + 1 to High(Values) do
-    if Values[i] > Result then
-      Result := Values[i];
+  for I := Low(Values) + 1 to High(Values) do
+    if Values[I] > Result then
+      Result := Values[I];
 end;
 
 procedure InvalidBitmap;
 begin
-  raise EInvalidGraphic.Create(SInvalidBitmap);
+  raise EInvalidGraphic.CreateRes(@SInvalidBitmap);
 end;
 
-function WidthBytes(i: Longint): Longint;
+function WidthBytes(I: Longint): Longint;
 begin
-  Result := ((i + 31) div 32) * 4;
+  Result := ((I + 31) div 32) * 4;
 end;
 
 function PixelFormatToColors(PixelFormat: TPixelFormat): Integer;
@@ -3261,23 +3264,23 @@ procedure PInsert(ColorList: PQColorList; Number: Integer;
   SortRGBAxis: Integer);
 var
   Q1, Q2: PQColor;
-  i, j: Integer;
+  I, J: Integer;
   Temp: PQColor;
 begin
-  for i := 1 to Number - 1 do
+  for I := 1 to Number - 1 do
   begin
-    Temp := ColorList^[i];
-    j := i - 1;
-    while j >= 0 do
+    Temp := ColorList^[I];
+    J := I - 1;
+    while J >= 0 do
     begin
       Q1 := Temp;
-      Q2 := ColorList^[j];
+      Q2 := ColorList^[J];
       if Q1^.RGB[SortRGBAxis] - Q2^.RGB[SortRGBAxis] > 0 then
         break;
-      ColorList^[j + 1] := ColorList^[j];
-      Dec(j);
+      ColorList^[J + 1] := ColorList^[J];
+      Dec(J);
     end;
-    ColorList^[j + 1] := Temp;
+    ColorList^[J + 1] := Temp;
   end;
 end;
 
@@ -3285,7 +3288,7 @@ procedure PSort(ColorList: PQColorList; Number: Integer;
   SortRGBAxis: Integer);
 var
   Q1, Q2: PQColor;
-  i, j, N, Nr: Integer;
+  I, J, N, Nr: Integer;
   Temp, Part: PQColor;
 begin
   if Number < 8 then
@@ -3294,44 +3297,44 @@ begin
     Exit;
   end;
   Part := ColorList^[Number div 2];
-  i := -1;
-  j := Number;
+  I := -1;
+  J := Number;
   repeat
     repeat
-      Inc(i);
-      Q1 := ColorList^[i];
+      Inc(I);
+      Q1 := ColorList^[I];
       Q2 := Part;
       N := Q1^.RGB[SortRGBAxis] - Q2^.RGB[SortRGBAxis];
     until N >= 0;
     repeat
-      Dec(j);
-      Q1 := ColorList^[j];
+      Dec(J);
+      Q1 := ColorList^[J];
       Q2 := Part;
       N := Q1^.RGB[SortRGBAxis] - Q2^.RGB[SortRGBAxis];
     until N <= 0;
-    if i >= j then
+    if I >= J then
       break;
-    Temp := ColorList^[i];
-    ColorList^[i] := ColorList^[j];
-    ColorList^[j] := Temp;
+    Temp := ColorList^[I];
+    ColorList^[I] := ColorList^[J];
+    ColorList^[J] := Temp;
   until False;
-  Nr := Number - i;
-  if i < Number div 2 then
+  Nr := Number - I;
+  if I < Number div 2 then
   begin
-    PSort(ColorList, i, SortRGBAxis);
-    PSort(PQColorList(@ColorList^[i]), Nr, SortRGBAxis);
+    PSort(ColorList, I, SortRGBAxis);
+    PSort(PQColorList(@ColorList^[I]), Nr, SortRGBAxis);
   end
   else
   begin
-    PSort(PQColorList(@ColorList^[i]), Nr, SortRGBAxis);
-    PSort(ColorList, i, SortRGBAxis);
+    PSort(PQColorList(@ColorList^[I]), Nr, SortRGBAxis);
+    PSort(ColorList, I, SortRGBAxis);
   end;
 end;
 
 function DivideMap(NewColorSubdiv: PNewColorArray; ColorMapSize: Integer;
   var NewColormapSize: Integer; LPSTR: Pointer): Integer;
 var
-  i, j: Integer;
+  I, J: Integer;
   MaxSize, Index: Integer;
   NumEntries, MinColor,
     MaxColor: Integer;
@@ -3345,16 +3348,16 @@ begin
   while ColorMapSize > NewColormapSize do
   begin
     MaxSize := -1;
-    for i := 0 to NewColormapSize - 1 do
+    for I := 0 to NewColormapSize - 1 do
     begin
-      for j := 0 to 2 do
+      for J := 0 to 2 do
       begin
-        if (NewColorSubdiv^[i].RGBWidth[j] > MaxSize) and
-          (NewColorSubdiv^[i].NumEntries > 1) then
+        if (NewColorSubdiv^[I].RGBWidth[J] > MaxSize) and
+          (NewColorSubdiv^[I].NumEntries > 1) then
         begin
-          MaxSize := NewColorSubdiv^[i].RGBWidth[j];
-          Index := i;
-          SortRGBAxis := j;
+          MaxSize := NewColorSubdiv^[I].RGBWidth[J];
+          Index := I;
+          SortRGBAxis := J;
         end;
       end;
     end;
@@ -3364,18 +3367,18 @@ begin
       Exit;
     end;
     SortArray := PQColorList(LPSTR);
-    j := 0;
+    J := 0;
     QuantizedColor := NewColorSubdiv^[Index].QuantizedColors;
-    while (j < NewColorSubdiv^[Index].NumEntries) and
+    while (J < NewColorSubdiv^[Index].NumEntries) and
       (QuantizedColor <> nil) do
     begin
-      SortArray^[j] := QuantizedColor;
-      Inc(j);
+      SortArray^[J] := QuantizedColor;
+      Inc(J);
       QuantizedColor := QuantizedColor^.PNext;
     end;
     PSort(SortArray, NewColorSubdiv^[Index].NumEntries, SortRGBAxis);
-    for j := 0 to NewColorSubdiv^[Index].NumEntries - 2 do
-      SortArray^[j]^.PNext := SortArray^[j + 1];
+    for J := 0 to NewColorSubdiv^[Index].NumEntries - 2 do
+      SortArray^[J]^.PNext := SortArray^[J + 1];
     SortArray^[NewColorSubdiv^[Index].NumEntries - 1]^.PNext := nil;
     NewColorSubdiv^[Index].QuantizedColors := SortArray^[0];
     QuantizedColor := SortArray^[0];
@@ -3400,12 +3403,12 @@ begin
     NewColorSubdiv^[NewColormapSize].NumEntries :=
       NewColorSubdiv^[Index].NumEntries - NumEntries;
     NewColorSubdiv^[Index].NumEntries := NumEntries;
-    for j := 0 to 2 do
+    for J := 0 to 2 do
     begin
-      NewColorSubdiv^[NewColormapSize].RGBMin[j] :=
-        NewColorSubdiv^[Index].RGBMin[j];
-      NewColorSubdiv^[NewColormapSize].RGBWidth[j] :=
-        NewColorSubdiv^[Index].RGBWidth[j];
+      NewColorSubdiv^[NewColormapSize].RGBMin[J] :=
+        NewColorSubdiv^[Index].RGBMin[J];
+      NewColorSubdiv^[NewColormapSize].RGBWidth[J] :=
+        NewColorSubdiv^[Index].RGBWidth[J];
     end;
     NewColorSubdiv^[NewColormapSize].RGBWidth[SortRGBAxis] :=
       NewColorSubdiv^[NewColormapSize].RGBMin[SortRGBAxis] +
@@ -3428,7 +3431,7 @@ var
   LineBuffer, Data: Pointer;
   LineWidth: Longint;
   TmpLineWidth, NewLineWidth: Longint;
-  i, j: Longint;
+  I, J: Longint;
   Index: Word;
   NewColormapSize, NumOfEntries: Integer;
   Mems: Longint;
@@ -3453,20 +3456,20 @@ begin
       LineBuffer := HugeOffset(LPSTR, (Longint(SizeOf(TQColor)) * (MAX_COLORS))
         +
         (Longint(SizeOf(TNewColor)) * 256));
-      for i := 0 to MAX_COLORS - 1 do
+      for I := 0 to MAX_COLORS - 1 do
       begin
-        ColorArrayEntries^[i].RGB[0] := i shr 8;
-        ColorArrayEntries^[i].RGB[1] := (i shr 4) and $0F;
-        ColorArrayEntries^[i].RGB[2] := i and $0F;
-        ColorArrayEntries^[i].Count := 0;
+        ColorArrayEntries^[I].RGB[0] := I shr 8;
+        ColorArrayEntries^[I].RGB[1] := (I shr 4) and $0F;
+        ColorArrayEntries^[I].RGB[2] := I and $0F;
+        ColorArrayEntries^[I].Count := 0;
       end;
       Tmp := Temp;
-      for i := 0 to Bmp.biHeight - 1 do
+      for I := 0 to Bmp.biHeight - 1 do
       begin
-        HMemCpy(LineBuffer, HugeOffset(gptr, (Bmp.biHeight - 1 - i) *
+        HMemCpy(LineBuffer, HugeOffset(gptr, (Bmp.biHeight - 1 - I) *
           LineWidth), LineWidth);
         P := LineBuffer;
-        for j := 0 to Bmp.biWidth - 1 do
+        for J := 0 to Bmp.biWidth - 1 do
         begin
           Index := (Longint(P^[2] and $F0) shl 4) +
             Longint(P^[1] and $F0) + (Longint(P^[0] and $F0) shr 4);
@@ -3476,37 +3479,37 @@ begin
           Tmp := HugeOffset(Tmp, 2);
         end;
       end;
-      for i := 0 to 255 do
+      for I := 0 to 255 do
       begin
-        NewColorSubdiv^[i].QuantizedColors := nil;
-        NewColorSubdiv^[i].Count := 0;
-        NewColorSubdiv^[i].NumEntries := 0;
-        for j := 0 to 2 do
+        NewColorSubdiv^[I].QuantizedColors := nil;
+        NewColorSubdiv^[I].Count := 0;
+        NewColorSubdiv^[I].NumEntries := 0;
+        for J := 0 to 2 do
         begin
-          NewColorSubdiv^[i].RGBMin[j] := 0;
-          NewColorSubdiv^[i].RGBWidth[j] := 255;
+          NewColorSubdiv^[I].RGBMin[J] := 0;
+          NewColorSubdiv^[I].RGBWidth[J] := 255;
         end;
       end;
-      i := 0;
-      while i < MAX_COLORS do
+      I := 0;
+      while I < MAX_COLORS do
       begin
-        if ColorArrayEntries^[i].Count > 0 then
+        if ColorArrayEntries^[I].Count > 0 then
           break;
-        Inc(i);
+        Inc(I);
       end;
-      QuantizedColor := @ColorArrayEntries^[i];
-      NewColorSubdiv^[0].QuantizedColors := @ColorArrayEntries^[i];
+      QuantizedColor := @ColorArrayEntries^[I];
+      NewColorSubdiv^[0].QuantizedColors := @ColorArrayEntries^[I];
       NumOfEntries := 1;
-      Inc(i);
-      while i < MAX_COLORS do
+      Inc(I);
+      while I < MAX_COLORS do
       begin
-        if ColorArrayEntries^[i].Count > 0 then
+        if ColorArrayEntries^[I].Count > 0 then
         begin
-          QuantizedColor^.PNext := @ColorArrayEntries^[i];
-          QuantizedColor := @ColorArrayEntries^[i];
+          QuantizedColor^.PNext := @ColorArrayEntries^[I];
+          QuantizedColor := @ColorArrayEntries^[I];
           Inc(NumOfEntries);
         end;
-        Inc(i);
+        Inc(I);
       end;
       QuantizedColor^.PNext := nil;
       NewColorSubdiv^[0].NumEntries := NumOfEntries;
@@ -3517,45 +3520,45 @@ begin
         Longint(SizeOf(TNewColor)) * 256 + LineWidth));
       if NewColormapSize < ColorCount then
       begin
-        for i := NewColormapSize to ColorCount - 1 do
-          FillChar(OutputColormap[i], SizeOf(TRGBQuad), 0);
+        for I := NewColormapSize to ColorCount - 1 do
+          FillChar(OutputColormap[I], SizeOf(TRGBQuad), 0);
       end;
-      for i := 0 to NewColormapSize - 1 do
+      for I := 0 to NewColormapSize - 1 do
       begin
-        j := NewColorSubdiv^[i].NumEntries;
-        if j > 0 then
+        J := NewColorSubdiv^[I].NumEntries;
+        if J > 0 then
         begin
-          QuantizedColor := NewColorSubdiv^[i].QuantizedColors;
+          QuantizedColor := NewColorSubdiv^[I].QuantizedColors;
           cRed := 0;
           cGreen := 0;
           cBlue := 0;
           while QuantizedColor <> nil do
           begin
-            QuantizedColor^.NewColorIndex := i;
+            QuantizedColor^.NewColorIndex := I;
             Inc(cRed, QuantizedColor^.RGB[0]);
             Inc(cGreen, QuantizedColor^.RGB[1]);
             Inc(cBlue, QuantizedColor^.RGB[2]);
             QuantizedColor := QuantizedColor^.PNext;
           end;
-          with OutputColormap[i] do
+          with OutputColormap[I] do
           begin
-            rgbRed := (Longint(cRed shl 4) or $0F) div j;
-            rgbGreen := (Longint(cGreen shl 4) or $0F) div j;
-            rgbBlue := (Longint(cBlue shl 4) or $0F) div j;
+            rgbRed := (Longint(cRed shl 4) or $0F) div J;
+            rgbGreen := (Longint(cGreen shl 4) or $0F) div J;
+            rgbBlue := (Longint(cBlue shl 4) or $0F) div J;
             rgbReserved := 0;
             if (rgbRed <= $10) and (rgbGreen <= $10) and (rgbBlue <= $10) then
-              FillChar(OutputColormap[i], SizeOf(TRGBQuad), 0); { clBlack }
+              FillChar(OutputColormap[I], SizeOf(TRGBQuad), 0); { clBlack }
           end;
         end;
       end;
       TmpLineWidth := Longint(Bmp.biWidth) * SizeOf(Word);
       NewLineWidth := WidthBytes(Longint(Bmp.biWidth) * 8);
       FillChar(Data8^, NewLineWidth * Bmp.biHeight, #0);
-      for i := 0 to Bmp.biHeight - 1 do
+      for I := 0 to Bmp.biHeight - 1 do
       begin
-        LineBuffer := HugeOffset(Temp, (Bmp.biHeight - 1 - i) * TmpLineWidth);
-        Data := HugeOffset(Data8, i * NewLineWidth);
-        for j := 0 to Bmp.biWidth - 1 do
+        LineBuffer := HugeOffset(Temp, (Bmp.biHeight - 1 - I) * TmpLineWidth);
+        Data := HugeOffset(Data8, I * NewLineWidth);
+        for J := 0 to Bmp.biWidth - 1 do
         begin
           PByte(Data)^ := ColorArrayEntries^[PWord(LineBuffer)^].NewColorIndex;
           LineBuffer := HugeOffset(LineBuffer, 2);
@@ -3607,26 +3610,26 @@ procedure InitTruncTables;
 
   function NearestIndex(Value: Byte; const Bytes: array of Byte): Byte;
   var
-    b, i: Byte;
+    b, I: Byte;
     Diff, DiffMin: Word;
   begin
     Result := 0;
     b := Bytes[0];
     DiffMin := Abs(Value - b);
-    for i := 1 to High(Bytes) do
+    for I := 1 to High(Bytes) do
     begin
-      b := Bytes[i];
+      b := Bytes[I];
       Diff := Abs(Value - b);
       if Diff < DiffMin then
       begin
         DiffMin := Diff;
-        Result := i;
+        Result := I;
       end;
     end;
   end;
 
 var
-  i: Integer;
+  I: Integer;
 begin
   if not TruncTablesInitialized then
   begin
@@ -3635,12 +3638,12 @@ begin
     // (ahuser) moved from initialization section to "on demand" initialization
     try
       { For 7 Red X 8 Green X 4 Blue palettes etc. }
-      for i := 0 to 255 do
+      for I := 0 to 255 do
       begin
-        TruncIndex04[i] := NearestIndex(Byte(i), Scale04);
-        TruncIndex06[i] := NearestIndex(Byte(i), Scale06);
-        TruncIndex07[i] := NearestIndex(Byte(i), Scale07);
-        TruncIndex08[i] := NearestIndex(Byte(i), Scale08);
+        TruncIndex04[I] := NearestIndex(Byte(I), Scale04);
+        TruncIndex06[I] := NearestIndex(Byte(I), Scale06);
+        TruncIndex07[I] := NearestIndex(Byte(I), Scale07);
+        TruncIndex08[I] := NearestIndex(Byte(I), Scale08);
       end;
     except
     end;
@@ -3667,19 +3670,19 @@ end;
 
 procedure TruncPal6R6G6B(var Colors: TRGBPalette);
 var
-  i, r, g, b: Byte;
+  I, r, g, b: Byte;
 begin
   FillChar(Colors, SizeOf(TRGBPalette), $80);
-  i := 0;
+  I := 0;
   for r := 0 to 5 do
     for g := 0 to 5 do
       for b := 0 to 5 do
       begin
-        Colors[i].rgbRed := Scale06[r];
-        Colors[i].rgbGreen := Scale06[g];
-        Colors[i].rgbBlue := Scale06[b];
-        Colors[i].rgbReserved := 0;
-        Inc(i);
+        Colors[I].rgbRed := Scale06[r];
+        Colors[I].rgbGreen := Scale06[g];
+        Colors[I].rgbBlue := Scale06[b];
+        Colors[I].rgbReserved := 0;
+        Inc(I);
       end;
 end;
 
@@ -3720,19 +3723,19 @@ end;
 
 procedure TruncPal7R8G4B(var Colors: TRGBPalette);
 var
-  i, r, g, b: Byte;
+  I, r, g, b: Byte;
 begin
   FillChar(Colors, SizeOf(TRGBPalette), $80);
-  i := 0;
+  I := 0;
   for r := 0 to 6 do
     for g := 0 to 7 do
       for b := 0 to 3 do
       begin
-        Colors[i].rgbRed := Scale07[r];
-        Colors[i].rgbGreen := Scale08[g];
-        Colors[i].rgbBlue := Scale04[b];
-        Colors[i].rgbReserved := 0;
-        Inc(i);
+        Colors[I].rgbRed := Scale07[r];
+        Colors[I].rgbGreen := Scale08[g];
+        Colors[I].rgbBlue := Scale04[b];
+        Colors[I].rgbReserved := 0;
+        Inc(I);
       end;
 end;
 
@@ -3769,11 +3772,11 @@ end;
 
 procedure GrayPal(var Colors: TRGBPalette);
 var
-  i: Byte;
+  I: Byte;
 begin
   FillChar(Colors, SizeOf(TRGBPalette), 0);
-  for i := 0 to 255 do
-    FillChar(Colors[i], 3, i);
+  for I := 0 to 255 do
+    FillChar(Colors[I], 3, I);
 end;
 
 procedure GrayScale(const Header: TBitmapInfoHeader; Data24, Data8: Pointer);
@@ -3809,14 +3812,14 @@ end;
 
 procedure TripelPal(var Colors: TRGBPalette);
 var
-  i: Byte;
+  I: Byte;
 begin
   FillChar(Colors, SizeOf(TRGBPalette), 0);
-  for i := 0 to $40 do
+  for I := 0 to $40 do
   begin
-    Colors[i].rgbRed := i shl 2;
-    Colors[i + $40].rgbGreen := i shl 2;
-    Colors[i + $80].rgbBlue := i shl 2;
+    Colors[I].rgbRed := I shl 2;
+    Colors[I + $40].rgbGreen := I shl 2;
+    Colors[I + $80].rgbBlue := I shl 2;
   end;
 end;
 
@@ -3984,62 +3987,62 @@ procedure PalHistogram(var Hist: THist; var Colors: TRGBPalette;
   ColorsWanted: Integer);
 { work out a palette from Hist }
 var
-  i, j: Longint;
+  I, J: Longint;
   MinDist, Dist: Longint;
   MaxJ, MinJ: Longint;
   DeltaB, DeltaG, DeltaR: Longint;
   MaxFreq: Longint;
 begin
-  i := 0;
+  I := 0;
   MaxJ := 0;
   MinJ := 0;
   { Now find the ColorsWanted most frequently used ones }
-  while (i < ColorsWanted) and (i < Hist.ColCount) do
+  while (I < ColorsWanted) and (I < Hist.ColCount) do
   begin
     MaxFreq := 0;
-    for j := 0 to Hist.ColCount - 1 do
-      if Hist.Freqs[j].Frequency > MaxFreq then
+    for J := 0 to Hist.ColCount - 1 do
+      if Hist.Freqs[J].Frequency > MaxFreq then
       begin
-        MaxJ := j;
-        MaxFreq := Hist.Freqs[j].Frequency;
+        MaxJ := J;
+        MaxFreq := Hist.Freqs[J].Frequency;
       end;
-    Hist.Freqs[MaxJ].Nearest := Byte(i);
+    Hist.Freqs[MaxJ].Nearest := Byte(I);
     Hist.Freqs[MaxJ].Frequency := 0; { Prevent later use of Freqs[MaxJ] }
-    Colors[i].rgbBlue := Hist.Freqs[MaxJ].b;
-    Colors[i].rgbGreen := Hist.Freqs[MaxJ].g;
-    Colors[i].rgbRed := Hist.Freqs[MaxJ].r;
-    Colors[i].rgbReserved := 0;
-    Inc(i);
+    Colors[I].rgbBlue := Hist.Freqs[MaxJ].b;
+    Colors[I].rgbGreen := Hist.Freqs[MaxJ].g;
+    Colors[I].rgbRed := Hist.Freqs[MaxJ].r;
+    Colors[I].rgbReserved := 0;
+    Inc(I);
   end;
   { Unused palette entries will be medium grey }
-  while i <= 255 do
+  while I <= 255 do
   begin
-    Colors[i].rgbRed := $80;
-    Colors[i].rgbGreen := $80;
-    Colors[i].rgbBlue := $80;
-    Colors[i].rgbReserved := 0;
-    Inc(i);
+    Colors[I].rgbRed := $80;
+    Colors[I].rgbGreen := $80;
+    Colors[I].rgbBlue := $80;
+    Colors[I].rgbReserved := 0;
+    Inc(I);
   end;
   { For the rest, find the closest one in the first ColorsWanted }
-  for i := 0 to Hist.ColCount - 1 do
+  for I := 0 to Hist.ColCount - 1 do
   begin
-    if Hist.Freqs[i].Frequency <> 0 then
+    if Hist.Freqs[I].Frequency <> 0 then
     begin
       MinDist := 3 * 256 * 256;
-      for j := 0 to ColorsWanted - 1 do
+      for J := 0 to ColorsWanted - 1 do
       begin
-        DeltaB := Hist.Freqs[i].b - Colors[j].rgbBlue;
-        DeltaG := Hist.Freqs[i].g - Colors[j].rgbGreen;
-        DeltaR := Hist.Freqs[i].r - Colors[j].rgbRed;
+        DeltaB := Hist.Freqs[I].b - Colors[J].rgbBlue;
+        DeltaG := Hist.Freqs[I].g - Colors[J].rgbGreen;
+        DeltaR := Hist.Freqs[I].r - Colors[J].rgbRed;
         Dist := Longint(DeltaR * DeltaR) + Longint(DeltaG * DeltaG) +
           Longint(DeltaB * DeltaB);
         if Dist < MinDist then
         begin
           MinDist := Dist;
-          MinJ := j;
+          MinJ := J;
         end;
       end;
-      Hist.Freqs[i].Nearest := Byte(MinJ);
+      Hist.Freqs[I].Nearest := Byte(MinJ);
     end;
   end;
 end;
@@ -4102,7 +4105,8 @@ begin
       begin
         if Gm > Rm then
           Gm := Gm shl 1
-        else if Rm > BM then
+        else
+        if Rm > BM then
           Rm := Rm shl 1
         else
           BM := BM shl 1;
@@ -4371,10 +4375,10 @@ end;
 // ToolBarMenu
 //==============================================================================
 
-procedure JvCreateToolBarMenu(AForm: TForm; AToolBar: TToolBar; AMenu:
-  TMainMenu);
+procedure JvCreateToolBarMenu(AForm: TForm; AToolBar: TToolBar;
+  AMenu: TMainMenu);
 var
-  i, TotalWidth: Integer;
+  I, TotalWidth: Integer;
   Button: TToolButton;
 begin
   if AForm.FormStyle = fsMDIForm then
@@ -4388,30 +4392,30 @@ begin
     TotalWidth := BorderWidth;
     
     
-    for i := ControlCount - 1 downto 0 do
-      if Controls[i] is TToolButton then
-        Controls[i].Free;
+    for I := ControlCount - 1 downto 0 do
+      if Controls[I] is TToolButton then
+        Controls[I].Free;
     
     ShowCaptions := True;
   end;
   with AMenu do
-    for i := Items.Count - 1 downto 0 do
+    for I := Items.Count - 1 downto 0 do
     begin
       Button := TToolButton.Create(AToolBar);
       Button.Parent := AToolBar;
       Button.AutoSize := True;
-      Button.Caption := Items[i].Caption;
+      Button.Caption := Items[I].Caption;
       Button.Grouped := True;
       
       
-      if Items[i].Action <> nil then
-        Button.Action := Items[i].Action
+      if Items[I].Action <> nil then
+        Button.Action := Items[I].Action
       else
       begin
-        Button.Caption := Items[i].Caption;
-        Button.Enabled := Items[i].Enabled;
-        Button.ImageIndex := Items[i].ImageIndex;
-        Button.OnClick := Items[i].OnClick;
+        Button.Caption := Items[I].Caption;
+        Button.Enabled := Items[I].Enabled;
+        Button.ImageIndex := Items[I].ImageIndex;
+        Button.OnClick := Items[I].OnClick;
       end;
       
       Inc(TotalWidth, Button.Width + AToolBar.BorderWidth);
@@ -4541,14 +4545,14 @@ var
 
   function FmtStrToInt(s: string): Integer;
   var
-    i: Integer;
+    I: Integer;
   begin
-    i := 1;
-    while i <= Length(s) do
-      if not (s[i] in (DigitChars + ['-'])) then
-        Delete(s, i, 1)
+    I := 1;
+    while I <= Length(s) do
+      if not (s[I] in (DigitChars + ['-'])) then
+        Delete(s, I, 1)
       else
-        Inc(i);
+        Inc(I);
     Result := StrToInt(s);
   end;
 
@@ -4579,7 +4583,7 @@ end;
 
 procedure JvListViewSelectAll(ListView: TListView; Deselect: Boolean);
 var
-  i: Integer;
+  I: Integer;
   
   SaveOnSelectItem: TLVSelectItemEvent;
 begin
@@ -4592,8 +4596,8 @@ begin
       try
         
         
-        for i := 0 to Items.Count - 1 do
-          Items[i].Selected := not Deselect;
+        for I := 0 to Items.Count - 1 do
+          Items[I].Selected := not Deselect;
         
       finally
         OnSelectItem := SaveOnSelectItem;
@@ -4612,7 +4616,8 @@ begin
     Selected := Assigned(ListView.Selected);
     if Focused then
       TempItem := ListView.ItemFocused
-    else if Selected then
+    else
+    if Selected then
       TempItem := ListView.Selected
     else
       TempItem := nil;
@@ -4643,7 +4648,8 @@ begin
       TempItem.Focused := Data.Focused;
       TempItem.Selected := Data.Selected;
     end
-    else if FocusFirst and (Items.Count > 0) then
+    else
+    if FocusFirst and (Items.Count > 0) then
     begin
       TempItem := Items[0];
       TempItem.Focused := True;
@@ -4651,9 +4657,9 @@ begin
     end;
     if MakeVisible and (TempItem <> nil) then
       
-    
-    TempItem.MakeVisible;
-    
+      
+      TempItem.MakeVisible;
+      
   end;
 end;
 
@@ -4940,7 +4946,7 @@ end;
 
 procedure DrawArrow(Canvas: TCanvas; Rect: TRect; Color: TColor = clBlack; Direction: TAnchorKind = akBottom);
 var
-  i, Size: integer;
+  I, Size: Integer;
 begin
   Size := Rect.Right - Rect.Left;
   if Odd(Size) then
@@ -4953,34 +4959,34 @@ begin
   case Direction of
     akLeft:
       begin
-        for i := 0 to Size div 2 do
+        for I := 0 to Size div 2 do
         begin
-          Canvas.MoveTo(Rect.Right - i, Rect.Top + i);
-          Canvas.LineTo(Rect.Right - i, Rect.Bottom - i);
+          Canvas.MoveTo(Rect.Right - I, Rect.Top + I);
+          Canvas.LineTo(Rect.Right - I, Rect.Bottom - I);
         end;
       end;
     akRight:
       begin
-        for i := 0 to Size div 2 do
+        for I := 0 to Size div 2 do
         begin
-          Canvas.MoveTo(Rect.Left + i, Rect.Top + i);
-          Canvas.LineTo(Rect.Left + i, Rect.Bottom - i);
+          Canvas.MoveTo(Rect.Left + I, Rect.Top + I);
+          Canvas.LineTo(Rect.Left + I, Rect.Bottom - I);
         end;
       end;
     akTop:
       begin
-        for i := 0 to Size div 2 do
+        for I := 0 to Size div 2 do
         begin
-          Canvas.MoveTo(Rect.Left + i, Rect.Bottom - i);
-          Canvas.LineTo(Rect.Right - i, Rect.Bottom - i);
+          Canvas.MoveTo(Rect.Left + I, Rect.Bottom - I);
+          Canvas.LineTo(Rect.Right - I, Rect.Bottom - I);
         end;
       end;
     akBottom:
       begin
-        for i := 0 to Size div 2 do
+        for I := 0 to Size div 2 do
         begin
-          Canvas.MoveTo(Rect.Left + i, Rect.Top + i);
-          Canvas.LineTo(Rect.Right - i, Rect.Top + i);
+          Canvas.MoveTo(Rect.Left + I, Rect.Top + I);
+          Canvas.LineTo(Rect.Right - I, Rect.Top + I);
         end;
       end;
   end;

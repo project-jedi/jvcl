@@ -33,12 +33,11 @@ unit JvQGradientCaption;
 interface
 
 uses
-
-
+  
+  
   QClasses, QGraphics, QControls, QForms, QMenus,
   JvQJCLUtils, JvQWndProcHook;
-
-
+  
 
 type
   THideDirection = (hdLeftToRight, hdRightToLeft);

@@ -1198,7 +1198,7 @@ begin
     if csDesigning in ComponentState then
     begin
       Brush.Color := clBlack;
-      FrameRect(Canvas, R);
+      FrameRect( Canvas,  R);
     end;
 
     if (FImageSize = isSmall) and Assigned(FSmallImages) then
