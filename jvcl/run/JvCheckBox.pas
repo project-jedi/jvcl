@@ -60,7 +60,7 @@ type
     FAlignment: TAlignment;
     FLayout: TTextLayout;
     FLeftText: Boolean;
-    FLinkedControls:TJvLinkedControls;
+    FLinkedControls: TJvLinkedControls;
     function GetCanvas: TCanvas;
     function GetReadOnly: Boolean;
     procedure SetHotTrackFont(const Value: TFont);
@@ -94,7 +94,12 @@ type
     procedure LinkedControlsChange(Sender:TObject);
     procedure CheckLinkedControls;virtual;
     procedure DefineProperties(Filer: TFiler); override;
+    {$IFDEF VCL}
     procedure BmSetCheck(var Msg:TMessage); message BM_SETCHECK;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure StateChanged(State: TToggleState); override;
+    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -140,7 +145,7 @@ begin
   FAlignment := taLeftJustify;
   FLeftText := False;
   FLayout := tlCenter;
-  FLinkedControls := TJvLinkedControls.Create(self);
+  FLinkedControls := TJvLinkedControls.Create(Self);
   FLinkedControls.OnChange := LinkedControlsChange;
 end;
 
@@ -434,15 +439,25 @@ begin
   Filer.DefineProperty('Associated',ReadAssociated, nil, false);
 end;
 
+{$IFDEF VCL}
 procedure TJvCheckBox.BmSetCheck(var Msg: TMessage);
 begin
   inherited;
   CheckLinkedControls;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvCheckBox.StateChanged(State: TToggleState);
+begin
+  inherited StateChanged(State);
+  CheckLinkedControls;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvCheckBox.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   CheckLinkedControls;
 end;
 

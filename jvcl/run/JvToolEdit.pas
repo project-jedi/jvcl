@@ -40,12 +40,12 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
-  Buttons, FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
+  Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus, Buttons,
+  FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus,
-  QButtons, QFileCtrls, QMask, QImgList, QActnList,
+  Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
+  QFileCtrls, QMask, QImgList, QActnList,
   QExtDlgs, QComboEdits, Types, QWindows,
   JvExComboEdits,
   {$ENDIF VisualCLX}
@@ -65,12 +65,7 @@ type
   TCloseUpEvent = procedure(Sender: TObject; Accept: Boolean) of object;
   TPopupAlign = (epaRight, epaLeft);
 
-  {$IFDEF VCL}
-  TJvPopupWindow = class(TJvCustomControl)
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
   TJvPopupWindow = class(TCustomForm)
-  {$ENDIF VisualCLX}
   private
     FEditor: TWinControl;
     FCloseUp: TCloseUpEvent;
@@ -83,12 +78,13 @@ type
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure SetParent(const Value: TWidgetControl); override;
+    function WidgetFlags: Integer; override;
     {$ENDIF VisualCLX}
     function GetValue: Variant; virtual; abstract;
     procedure SetValue(const Value: Variant); virtual; abstract;
     procedure InvalidateEditor;
-    procedure PopupMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
     procedure CloseUp(Accept: Boolean); virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -2866,7 +2862,11 @@ begin
 
   FBlanksChar := ' ';
   FTitle := RsDateDlgCaption;
+  {$IFDEF VCL}
   FPopupColor := clMenu;
+  {$ELSE}
+  FPopupColor := clWindow;
+  {$ENDIF VCL}
   //  FDefNumGlyphs := 2;
   FStartOfWeek := Mon;
   FWeekends := [Sun];
@@ -2913,7 +2913,7 @@ end;
 procedure TJvCustomDateEdit.CreateWidget;
 begin
   inherited CreateWidget;
-  if Handle <> nil then
+  if HandleAllocated then
     UpdateMask;
 end;
 {$ENDIF VisualCLX}
@@ -3975,18 +3975,13 @@ begin
   inherited CreateNew(AOwner);
   {$ENDIF VisualCLX}
   FEditor := TWinControl(AOwner);
-  ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable, csAcceptsControls];
+  //ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable, csAcceptsControls];
   Visible := False;
   {$IFDEF VCL}
   Ctl3D := False;
   ParentCtl3D := False;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  BorderStyle := fbsNone;
-  FormStyle := fsStayOnTop;
-  {$ENDIF VisualCLX}
   Parent := FEditor;
-  OnMouseUp := PopupMouseUp;
+  {$ENDIF VCL}
 end;
 
 {$IFDEF VCL}
@@ -4017,6 +4012,13 @@ begin
     BoundsRect := R;
   end;
 end;
+
+function TJvPopupWindow.WidgetFlags: Integer;
+begin
+  Result := Integer(WidgetFlags_WType_Popup) or // WS_POPUP
+            Integer(WidgetFlags_WStyle_NormalBorder) or // WS_BORDER
+            Integer(WidgetFlags_WStyle_Tool);  // WS_EX_TOOLWINDOW
+end;
 {$ENDIF VisualCLX}
 
 function TJvPopupWindow.GetPopupText: string;
@@ -4026,8 +4028,10 @@ end;
 
 procedure TJvPopupWindow.Hide;
 begin
+  {$IFDEF VCL}
   SetWindowPos(Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
     SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
+  {$ENDIF VCL}
   Visible := False;
 end;
 
@@ -4049,11 +4053,12 @@ begin
   UpdateWindow(FEditor.Handle);
 end;
 
-procedure TJvPopupWindow.PopupMouseUp(Sender: TObject; Button: TMouseButton;
+procedure TJvPopupWindow.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+  inherited MouseUp(Button, Shift, X, Y);
   if Button = mbLeft then
-    CloseUp(PtInRect(Self.ClientRect, Point(X, Y)));
+    CloseUp(PtInRect(ClientRect, Point(X, Y)));
 end;
 
 procedure TJvPopupWindow.Show(Origin: TPoint);
@@ -4072,9 +4077,13 @@ begin
     Inc(Origin.X, Monitor.Left);
     Inc(Origin.Y, Monitor.Top);
   end;
-  {$ENDIF VCL}
   SetWindowPos(Handle, HWND_TOP, Origin.X, Origin.Y, 0, 0,
     SWP_NOACTIVATE or SWP_SHOWWINDOW or SWP_NOSIZE);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Left := Origin.X;
+  Top := Origin.Y;
+  {$ENDIF VisualCLX}
   Visible := True;
 end;
 

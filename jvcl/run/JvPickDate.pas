@@ -1127,7 +1127,7 @@ procedure TJvPopupCalendar.CalendarMouseUp(Sender: TObject; Button: TMouseButton
 var
   Col, Row: Longint;
 begin
-  if (Button = mbLeft) and (Shift = []) then
+  if (Button = mbLeft) and (Shift - [ssLeft] = []) then
   begin
     TJvLocCalendar(FCalendar).MouseToCell(X, Y, Col, Row);
     if (Row > 0) and (FCalendar.CellText[Col, Row] <> '') then
@@ -1233,13 +1233,16 @@ type
     procedure CalendarChange(Sender: TObject);
     procedure CalendarDblClick(Sender: TObject);
     procedure TopPanelDblClick(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
-    FBtns: array [0..3] of TJvSpeedButton;
+    FBtns: array[0..3] of TJvSpeedButton;
     procedure SetDate(Date: TDateTime);
     procedure CheckButton; // Polaris
     function GetDate: TDateTime;
+  {$IFDEF VisualCLX}
+  protected
+    function WidgetFlags: Integer; override;
+  {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     property Date: TDateTime read GetDate write SetDate;
@@ -1249,23 +1252,20 @@ constructor TJvSelectDateDlg.Create(AOwner: TComponent);
 var
   Control: TWinControl;
 begin
-  {$IFDEF BCB}
-  inherited CreateNew(AOwner, 0);
-  {$ELSE}
-  inherited CreateNew(AOwner);
-  {$ENDIF BCB}
+  inherited CreateNew(AOwner, 0); // BCB compatible
   Caption := RsDateDlgCaption;
   {$IFDEF VCL}
   BorderStyle := bsToolWindow;
+  Color := clBtnFace;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   BorderStyle := fbsToolWindow;
+  Color := clBase;
   {$ENDIF VisualCLX}
   BorderIcons := [biSystemMenu];
   ClientHeight := 158; // Polaris
   ClientWidth := 222;
   FontSetDefault(Font);
-  Color := clBtnFace;
   Position := poScreenCenter;
   ShowHint := True;
   KeyPreview := True;
@@ -1410,6 +1410,13 @@ begin
   Calendar.CalendarDate := Trunc(Now);
   ActiveControl := Calendar;
 end;
+
+{$IFDEF VisualCLX}
+function TJvSelectDateDlg.WidgetFlags: Integer;
+begin
+  Result := inherited WidgetFlags;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvSelectDateDlg.SetDate(Date: TDateTime);
 begin
