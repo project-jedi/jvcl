@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2004-06-02
+- VisualCLX support: use installer to install! // asn
+- Updated/fixed Kylix 3(PE) packages. // asn
+- cleaned ifdefs VCL/VisualCLX. // asn
 2004-05-27
 - reimplemented TJvXORCipher, TJvVigenereCipher and JvCaesarCipher from scratch in JvCipher.pas // (rom)
 - all components now have palette icons // (rom)
