@@ -80,7 +80,6 @@ type
     property BoundLines;
     property Checked;
     property Spacing;
-    property BiDiMode;
     property ParentColor;
     property Color;
 
@@ -101,6 +100,7 @@ type
     //property AutoSize;
     property Constraints;
     {$IFDEF VCL}
+    property BiDiMode;
     property DragCursor;
     property DragKind;
     property OnCanResize;
@@ -266,13 +266,14 @@ begin
     // draw caption.
     SetBkMode(Handle, Transparent);
     Font.Assign(Self.Font);
-
+    {$IFDEF VCL}
     if BiDiMode = bdRightToLeft then
     begin
       Dec(Rect.Right, FCheckSize + 4 + FSpacing);
       JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, True, taRightJustify, True, Rect)
     end
     else
+    {$ENDIF VCL}
     begin
       Inc(Rect.Left, FCheckSize + 4 + FSpacing);
       JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, True, taLeftJustify, True, Rect);
@@ -297,15 +298,10 @@ var
     else
       BitBlt(Canvas.Handle, R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
         FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
-    {$ENDIF VCL}  
+    {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    if BiDiMode = bdRightToLeft then
-      BitBlt(Canvas, R.Right - 1 - FCheckSize, (ClientHeight - FCheckSize) div 2 + 1,
-        FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas.Handle, 0, 0, SRCCOPY)
-    else
       BitBlt(Canvas, R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
-        FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
-      FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas, 0, 0, SRCCOPY);
+        FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas, 0, 0, SRCCOPY);
     {$ENDIF VisualCLX}
   end;
 
@@ -323,10 +319,11 @@ begin
       Pen.Color := dxColor_Chk_Enb_Border_WXP
     else
       Pen.Color := dxColor_BorderLineOXP;
-
+    {$IFDEF VCL}
     if BiDiMode = bdRightToLeft then
       Rectangle(Bounds(R.Right - 2 - FCheckSize , (ClientHeight - FCheckSize) div 2,FCheckSize, FCheckSize))
     else
+    {$ENDIF VCL}
       Rectangle(Bounds(R.Left + 2, (ClientHeight - FCheckSize) div 2,FCheckSize, FCheckSize));
 
     // draw background.
@@ -348,16 +345,9 @@ begin
                 FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
             {$ENDIF VCL}
             {$IFDEF VisualCLX}
-            if BiDiMode = bdRightToLeft then
-              BitBlt(Canvas, R.Right - 1 - FCheckSize + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
-                ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
-                FBgGradient.Canvas.Handle, 0, 0, SRCCOPY)
-            else
               BitBlt(Canvas, R.Left + 3 + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
                 ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
-                FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
-              ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
-              FBgGradient.Canvas, 0, 0, SRCCOPY);
+                FBgGradient.Canvas, 0, 0, SRCCOPY);
             {$ENDIF VisualCLX}
           end
           else
@@ -371,10 +361,12 @@ begin
               Brush.Color := dxColor_BgOXP
             else
               Brush.Color := dxColor_BgCkOXP;
+            {$IFDEF VCL}
             if BiDiMode = bdRightToLeft then
               FillRect(Bounds(R.Right - 1, (ClientHeight - FCheckSize) div 2 + 1,
                 FCheckSize - 2, FCheckSize - 2))
             else
+            {$ENDIF VCL}
               FillRect(Bounds(R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
                 FCheckSize - 2, FCheckSize - 2))
           end;
@@ -395,9 +387,11 @@ begin
         else
         if (dsClicked in DrawState) and (dsHighlight in DrawState) then
           JvXPColorizeBitmap(Bitmap, clWhite);
+        {$IFDEF VCL}
         if BiDiMode = bdRightToLeft then
           Draw(R.Right - FCheckSize + 1, (ClientHeight - FCheckSize) div 2 + 3, Bitmap)
         else
+        {$ENDIF VCL}
           Draw(FCheckSize div 2 - 1, (ClientHeight - FCheckSize) div 2 + 3, Bitmap);
       finally
         Bitmap.Free;
