@@ -564,6 +564,10 @@ resourcestring
   RsEUnsupportedControlClass = 'TJvDynControlEngine.RegisterControl: Unsupported ControlClass';
   RsENoRegisteredControlClass = 'TJvDynControlEngine.CreateControl: No Registered ControlClass';
 
+//=== JvEDIDBBuffering.pas ===================================================
+resourcestring
+  RsENoProfileDatasets = 'Not all profile datasets have been assigned.';
+
 //=== JvEditor.pas, JvUnicodeEditor.pas ======================================
 resourcestring
   RsERedoNotYetImplemented = 'Redo not yet implemented';

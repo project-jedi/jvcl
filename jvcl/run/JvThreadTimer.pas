@@ -84,10 +84,7 @@ type
     property KeepAlive: Boolean read FKeepAlive write SetKeepAlive default False;
     property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
     property Priority: TThreadPriority read FPriority write SetPriority
-      {$IFDEF MSWINDOWS}
-      default tpNormal
-      {$ENDIF MSWINDOWS}
-      ;
+      {$IFDEF MSWINDOWS} default tpNormal {$ENDIF};
   end;
 
 implementation
@@ -279,7 +276,7 @@ end;
 
 procedure TJvThreadTimer.SetKeepAlive(const Value: Boolean);
 begin
-  if Value <> KeepAlive then
+  if FKeepAlive <> Value then
   begin
     StopTimer;
     FKeepAlive := Value;
