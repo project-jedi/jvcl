@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-12-31
+Last Modified: 2004-01-29
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,8 +31,8 @@ unit JvDockVSNetStyle;
 interface
 
 uses
-  Windows, Messages, Classes, Controls, Graphics, ComCtrls,
-  ExtCtrls, ImgList, Forms,
+  Windows, Messages, Classes, Controls, Graphics, ComCtrls, ExtCtrls,
+  ImgList, Forms,
   JvDockControlForm, JvDockSupportControl, JvDockTree, JvDockVIDStyle;
 
 const
@@ -448,7 +448,7 @@ var
 implementation
 
 uses
-  SysUtils, Math, AppEvnts,
+  SysUtils, Math, {AppEvnts,}
   JvDockSupportProc, JvDockGlobals;
 
 type
@@ -470,19 +470,21 @@ type
     procedure HideForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer); virtual;
   end;
 
+  { (ahuser) not used:
   TJvDockAppEvents = class(TApplicationEvents)
   private
     FOldOnMessage: TMessageEvent;
     procedure NewOnMessage(var Msg: TMsg; var Handled: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-  end;
+  end;}
 
-  THackWinControl = class(TWinControl);
+  TOpenWinControl = class(TWinControl);
 
 var
   GlobalPopupPanelAnimate: TPopupPanelAnimate = nil;
-  GlobalApplicationEvents: TJvDockAppEvents = nil;
+  // (ahuser) not used:
+  // GlobalApplicationEvents: TJvDockAppEvents = nil;
   GlobalPopupPanelAnimateInterval: Integer = 20;
   GlobalPopupPanelAnimateMoveWidth: Integer = 20;
 
@@ -496,12 +498,14 @@ begin
   Result := GlobalPopupPanelAnimate;
 end;
 
+{ (ahuser) not used:
 function ApplicationEvents: TJvDockAppEvents;
 begin
   if GlobalApplicationEvents = nil then
     GlobalApplicationEvents := TJvDockAppEvents.Create(nil);
   Result := GlobalApplicationEvents;
 end;
+}
 
 procedure HideAllPopupPanel(ExcludeChannel: TJvDockVSChannel);
 var
@@ -2582,8 +2586,8 @@ begin
         if ActiveControl <> nil then
         begin
           FActiveControl := ActiveControl;
-          FOldKeyDown := THackWinControl(FActiveControl).OnKeyDown;
-          THackWinControl(FActiveControl).OnKeyDown := FocusKeyDown;
+          FOldKeyDown := TOpenWinControl(FActiveControl).OnKeyDown;
+          TOpenWinControl(FActiveControl).OnKeyDown := FocusKeyDown;
         end;
       if ResizeStyle in [rsLine, rsPattern] then
         DrawLine;
@@ -2737,7 +2741,7 @@ begin
     ReleaseLineDC;
     if Assigned(FActiveControl) then
     begin
-      THackWinControl(FActiveControl).OnKeyDown := FOldKeyDown;
+      TOpenWinControl(FActiveControl).OnKeyDown := FOldKeyDown;
       FActiveControl := nil;
     end;
   end;
@@ -3061,6 +3065,7 @@ begin
   FShowImage := Value;
 end;
 
+{ (ahuer) not used:
 //=== TJvDockAppEvents =======================================================
 
 constructor TJvDockAppEvents.Create(AOwner: TComponent);
@@ -3115,16 +3120,16 @@ begin
         end;
       end;
 end;
+}
 
 initialization
 
 finalization
   GlobalPopupPanelAnimate.Free;
   GlobalPopupPanelAnimate := nil;
-  { (ahuser) Do not create if the instance does not exist. Else the application
-             will crash. }
+  { (ahuser) not used:
   GlobalApplicationEvents.Free;
-  GlobalApplicationEvents := nil;
+  GlobalApplicationEvents := nil; }
 
 end.
 
