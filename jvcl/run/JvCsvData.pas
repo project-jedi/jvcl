@@ -1790,6 +1790,11 @@ begin
   //------------------------------------------------------------------------
 
   RowPtr := PCsvRow(pSource);
+  if ( Field.Offset+Field.DataSize > MAXLINELENGTH ) then begin
+      // SIMPLE WORKAROUND: MAKES FIELDS NON FUNCTIONAL BUT DOES NOT CRASH SYSTEM.
+      OutputDebugString('JvCsvData.GetFieldData: Invalid field.Offset in Data field.');
+      exit;
+  end;
 
   TempString := GetCsvRowItem(RowPtr, PhysicalLocation);
 
