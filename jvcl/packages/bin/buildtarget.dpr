@@ -103,6 +103,48 @@ begin
   Result := (attr <> $FFFFFFFF) and (attr and FILE_ATTRIBUTE_DIRECTORY = 0);
 end;
 
+function Execute(const Cmd: string): Integer;
+var
+  ProcessInfo: TProcessInformation;
+  StartupInfo: TStartupInfo;
+begin
+  StartupInfo.cb := SizeOf(StartupInfo);
+  GetStartupInfo(StartupInfo);
+  if CreateProcess(nil, PChar(Cmd), nil, nil, True, 0, nil, nil, StartupInfo, ProcessInfo) then
+  begin
+    CloseHandle(ProcessInfo.hThread);
+    WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
+    GetExitCodeProcess(ProcessInfo.hProcess, Cardinal(Result));
+    CloseHandle(ProcessInfo.hProcess);
+  end
+  else
+    Result := -1;
+end;
+
+function GetRootDirOf(const Edition: string): string;
+var
+  KeyName: string;
+  reg: HKEY;
+  len: Longint;
+  RegTyp: LongWord;
+  Version: string;
+begin
+  Version := Edition[2];
+  Result := '';
+  if UpCase(Edition[1]) = 'D' then
+    KeyName := 'Software\Borland\Delphi\' + Version + '.0'
+  else
+    KeyName := 'Software\Borland\C++Builder\' + Version + '.0';
+
+  if RegOpenKeyEx(HKEY_LOCAL_MACHINE, PChar(KeyName), 0, KEY_QUERY_VALUE or KEY_READ, reg) <> ERROR_SUCCESS then
+    Exit;
+  SetLength(Result, MAX_PATH);
+  len := MAX_PATH;
+  RegQueryValueEx(reg, 'RootDir', nil, @RegTyp, PByte(Result), @len);
+  SetLength(Result, StrLen(PChar(Result)));
+  RegCloseKey(reg);
+end;
+
 type
   IAttr = interface
     function Name: string;
@@ -370,14 +412,14 @@ var
 begin
   if ed = '' then
     Exit;
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if SameText(ed, 'k3') then
     Exit;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   if not SameText(ed, 'k3') then
     Exit;
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
   for i := 0 to High(Editions) do
     if SameText(Editions[i], ed) then
       Exit;
@@ -398,22 +440,27 @@ begin
   end;
 end;
 
-function Execute(const Cmd: string): Integer;
+procedure AddNewestEdition;
 var
-  ProcessInfo: TProcessInformation;
-  StartupInfo: TStartupInfo;
+  i: Integer;
+  Tg: string;
 begin
-  StartupInfo.cb := SizeOf(StartupInfo);
-  GetStartupInfo(StartupInfo);
-  if CreateProcess(nil, PChar(Cmd), nil, nil, True, 0, nil, nil, StartupInfo, ProcessInfo) then
+  Editions := nil;
+  Tg := 'd5';
+  for i := High(Targets) downto 0 do
   begin
-    CloseHandle(ProcessInfo.hThread);
-    WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
-    GetExitCodeProcess(ProcessInfo.hProcess, Cardinal(Result));
-    CloseHandle(ProcessInfo.hProcess);
-  end
-  else
-    Result := -1;
+    if Length(Targets[i].Name) = 2 then
+    begin
+      if Tg[2] <= Targets[i].Name[2] then
+      begin
+        if GetRootDirOf(Targets[i].Name) <> '' then
+        begin
+          Tg := Targets[i].Name;
+        end;
+      end;
+    end;
+  end;
+  AddEdition(Tg);
 end;
 
 procedure Help;
@@ -498,6 +545,10 @@ begin
       begin
         AddAllEditions(False);
       end
+      else if SameText(S, 'newest') then
+      begin
+        AddNewestEdition;
+      end
       else if IndexOfEdition(S) = -1 then
       begin
         WriteLn('Unknown edition: ', S);
@@ -510,12 +561,7 @@ begin
   end;
 end;
 
-
 var
-  KeyName: string;
-  reg: HKEY;
-  len: Longint;
-  RegTyp: LongWord;
   i: Integer;
 begin
   JVCLRoot := ExtractFileDir(ParamStr(0)); // $(JVCL)\Packages\bin
@@ -537,24 +583,13 @@ begin
     if Length(Editions) > 1 then
       WriteLn('################################ ' + Edition + ' #########################################');
 
-    Version := Edition[2];
-
-    if UpCase(Edition[1]) = 'D' then
-      KeyName := 'Software\Borland\Delphi\' + Version + '.0'
-    else
-      KeyName := 'Software\Borland\C++Builder\' + Version + '.0';
-
-    if RegOpenKeyEx(HKEY_LOCAL_MACHINE, PChar(KeyName), 0, KEY_QUERY_VALUE or KEY_READ, reg) <> ERROR_SUCCESS then
+    Root := GetRootDirOf(Edition);
+    if Root = '' then
     begin
       WriteLn('Delphi/BCB version not installed.');
       Continue;
     end;
-    SetLength(Root, MAX_PATH);
-    len := MAX_PATH;
-    RegQueryValueEx(reg, 'RootDir', nil, @RegTyp, PByte(Root), @len);
-    SetLength(Root, StrLen(PChar(Root)));
-    RegCloseKey(reg);
-
+    Version := Edition[2];
     PkgDir := Edition;
     if (UpCase(PkgDir[3]) = 'P') or (UpCase(PkgDir[3]) = 'S') then
       if PkgDir[2] = '5' then
