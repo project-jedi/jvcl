@@ -15,13 +15,7 @@ Description
   TJvCustomListBox encapsulates new behavior common to all enhanced list boxes by introducing methods
   and properties that provide ability to:
 
-  * Align the strings in the list box.
-  * Display a string on more than one row.
-  * Search for strings that have a specific prefix or substring.
-  * Alter the selection in various ways.
-  * Specify the horizontally scrollable width of the list box.
-  * Respond when the user scrolls a scroll bar of the list box.
-  * Display a background image.
+  <INCLUDE JvListBox_Features.inc.dtx>
 
   Do not create instances of TJvCustomListBox. Use TJvCustomListBox as a base class when declaring
   list boxes, that will use the new behavior introduced in TJvCustomListBox.
@@ -242,6 +236,19 @@ See Also
   DeleteAllButSelected, <LINK TJvCustomListBox.DeleteExactString, DeleteExactString>, DeleteSelected,
   SelectAll, UnselectAll
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.ItemsShowing
+Summary
+	The list of strings the list box currently displays.
+Description
+	ItemsShowing contains all the strings of the items the list box will display. The method either
+	returns the same reference as the Items property or a reference to a virtual TStrings instance
+	that references the currently selected provider.
+	
+	If a provider is selected, ItemsShowing should be considered read-only (and in fact does not allow
+	any changes at all), otherwise it's the same as using the Items property.
+See Also
+	Items, Provider
+----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.MaxWidth
 Summary
   Specifies the horizontally scrollable width of the list box, in pixels.
@@ -375,6 +382,23 @@ Description
   Use parameter Msg to determine whether to set DontScroll to True or False.
 See Also
   OnHorizontalScroll
+----------------------------------------------------------------------------------------------------
+@@TJvCustomListBox.Provider
+Summary
+  <INCLUDE JVCL.Provider.Summary.dtx>
+Description
+  <INCLUDE JVCL.Provider.Description.dtx>
+
+  When a provider has been selected, the Items property will retain it's list of strings. Once you
+  manipulate them (i.e. add or delete strings) the provider will be deselected automatically. Note
+  that the Items property is also manipulated when you use DeleteExactString. You can read the Items
+  property without the provider being deselected.
+
+	Besides the Items property, you can also use the ItemsShowing method to retrieve a reference to
+	either the normal Items (if no provider is selected) or a dummy list that references the provider
+	items.
+See Also
+	ItemsShowing
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.ScrollBars
 Summary
