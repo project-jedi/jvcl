@@ -33,13 +33,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvTypes, JvImageDrawThread, JVCLVer;
+  JvTypes, JvImageDrawThread, JVCLVer, JvComponent;
 
 type
   TJvScrollTextDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom); // also in JvMoveableBevel, JvAppearingLabel
-  TJvScrollText = class(TCustomControl)
+  TJvScrollText = class(TJvCustomControl)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FMemo: TStaticText;
     FTimerTag: Integer;
     FActive: Boolean;
@@ -78,7 +77,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     // (p3) this should be just Alignment
     property TextAlignment: TAlignment read GetAlignment write SetAlignment;
     property Items: TStringList read FStrings write SetItems;
@@ -96,6 +94,9 @@ type
     property ParentShowHint;
     property Height default 150;
     property Width default 200;
+  {$IFDEF JVCLThemesEnabled}
+    property ParentBackground default True;
+  {$ENDIF}
   end;
 
 implementation
