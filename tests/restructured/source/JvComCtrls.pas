@@ -19,6 +19,7 @@ Contributor(s):
 Peter Below [100113.1101@compuserve.com] - alternate TJvPageControl.OwnerDraw routine
 Peter Thörnqvist [peter3@peter3.com] added AddressValues property to TJvIPAddress
 Alfi [alioscia_alessi@onde.net] alternate TJvPageControl.OwnerDraw routine
+Rudy Velthuis - ShowRange in TJvTrackBar
 
 Last Modified: 2002-06-27
 Current Version: 0.50
@@ -47,7 +48,6 @@ This unit is only supported on Windows!
 unit JvComCtrls;
 
 interface
-
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Menus,
@@ -89,34 +89,29 @@ type
 
   TJvIpAddrFieldChangeEvent = procedure(Sender: TJvIpAddress; FieldIndex: Integer;
     FieldRange: TJvIpAddressMinMax; var Value: Integer) of object;
-  TJvIPAddressChanging = procedure (Sender:TObject;Index:integer;Value:byte;var AllowChange:boolean) of object;
+  TJvIPAddressChanging = procedure(Sender: TObject; Index: integer; Value: byte; var AllowChange: boolean) of object;
 
   TJvIpAddressValues = class(TPersistent)
   private
-    FValue4: byte;
-    FValue3: byte;
-    FValue2: byte;
-    FValue1: byte;
+    FValues:array[0..3] of byte;
     FOnChange: TNotifyEvent;
     FOnChanging: TJvIPAddressChanging;
     function GetValue: Cardinal;
     procedure SetValue(const AValue: Cardinal);
-    procedure SetValue1(const AValue: byte);
-    procedure SetValue2(const AValue: byte);
-    procedure SetValue3(const AValue: byte);
-    procedure SetValue4(const AValue: byte);
+    procedure SetValues(Index:integer;Value:byte);
+    function GetValues(Index:integer):byte;
   protected
-    procedure Change;virtual;
-    function Changing(Index:integer;Value:byte):boolean;virtual;
+    procedure Change; virtual;
+    function Changing(Index: integer; Value: byte): boolean; virtual;
   public
-    property Address:Cardinal read GetValue write SetValue;
-    property OnChange:TNotifyEvent read FOnChange write FOnChange;
-    property OnChanging:TJvIPAddressChanging read FOnChanging write FOnChanging;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChanging: TJvIPAddressChanging read FOnChanging write FOnChanging;
   published
-    property Value1:byte read FValue1 write SetValue1;
-    property Value2:byte read FValue2 write SetValue2;
-    property Value3:byte read FValue3 write SetValue3;
-    property Value4:byte read FValue4 write SetValue4;
+    property Address: Cardinal read GetValue write SetValue;
+    property Value1: byte index 0 read GetValues write SetValues;
+    property Value2: byte index 1 read GetValues write SetValues;
+    property Value3: byte index 2 read GetValues write SetValues;
+    property Value4: byte index 3 read GetValues write SetValues;
   end;
 
   TJvIpAddress = class(TWinControl)
@@ -126,7 +121,7 @@ type
     FAddress: LongWord;
     FChanging: Boolean;
     FRange: TJvIpAddressRange;
-    FAddressValues:TJvIpAddressValues;
+    FAddressValues: TJvIpAddressValues;
     FSaveBlank: Boolean;
     FOnFieldChange: TJvIpAddrFieldChangeEvent;
     LocalFont: HFONT;
@@ -152,9 +147,9 @@ type
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
     procedure DoChange; dynamic;
-    procedure DoAddressChange(Sender:TObject);virtual;
+    procedure DoAddressChange(Sender: TObject); virtual;
     procedure DoAddressChanging(Sender: TObject; Index: integer;
-      Value: byte; var AllowChange: boolean);virtual;
+      Value: byte; var AllowChange: boolean); virtual;
     procedure DoFieldChange(FieldIndex: Integer; var FieldValue: Integer); dynamic;
   public
     constructor Create(AOwner: TComponent); override;
@@ -165,7 +160,7 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Address: LongWord read FAddress write SetAddress default 0;
-    property AddressValues:TJvIpAddressValues read FAddressValues write SetAddressValues;
+    property AddressValues: TJvIpAddressValues read FAddressValues write SetAddressValues;
     property Anchors;
     property Constraints;
     property DragCursor;
@@ -221,8 +216,8 @@ type
     procedure SetDrawTabShadow(const Value: boolean);
   protected
     procedure Loaded; override;
-    procedure DrawDefaultTab(TabIndex: Integer; const Rect: TRect; Active: Boolean;DefaultDraw:boolean);
-    procedure DrawShadowTab(TabIndex: Integer; const Rect: TRect; Active: Boolean;DefaultDraw:boolean);
+    procedure DrawDefaultTab(TabIndex: Integer; const Rect: TRect; Active: Boolean; DefaultDraw: boolean);
+    procedure DrawShadowTab(TabIndex: Integer; const Rect: TRect; Active: Boolean; DefaultDraw: boolean);
     procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -231,7 +226,7 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default
       JvDefPageControlBorder;
-    property DrawTabShadow:boolean read FDrawTabShadow write SetDrawTabShadow;
+    property DrawTabShadow: boolean read FDrawTabShadow write SetDrawTabShadow;
     property HideAllTabs: Boolean read FHideAllTabs write FHideAllTabs default False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -257,6 +252,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FOnChanged: TNotifyEvent;
     FAboutJVCL: TJVCLAboutInfo;
+    FShowRange: boolean;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
@@ -266,6 +262,7 @@ type
     procedure WMNotify(var Message: TWMNotify); message WM_NOTIFY;
     procedure CNHScroll(var Message: TWMHScroll); message CN_HSCROLL;
     procedure CNVScroll(var Message: TWMVScroll); message CN_VSCROLL;
+    procedure SetShowRange(const Value: boolean);
   protected
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -275,6 +272,7 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property ShowRange: boolean read FShowRange write SetShowRange default true;
     property ToolTips: Boolean read FToolTips write SetToolTips default False;
     property ToolTipSide: TJvTrackToolTipSide read FToolTipSide write SetToolTipSide default tsLeft;
     property HintColor: TColor read FColor write FColor default clInfoBk;
@@ -371,7 +369,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ClearSelection;reintroduce;
+    procedure ClearSelection; reintroduce;
     function IsNodeSelected(Node: TTreeNode): Boolean;
     procedure InvalidateNodeIcon(Node: TTreeNode);
     procedure InvalidateSelectedItems;
@@ -645,7 +643,7 @@ begin
   Address := FAddressValues.Address;
 end;
 
-procedure TJvIpAddress.DoAddressChanging(Sender:TObject;Index:integer;Value:byte;var AllowChange:boolean);
+procedure TJvIpAddress.DoAddressChanging(Sender: TObject; Index: integer; Value: byte; var AllowChange: boolean);
 begin
   AllowChange := (Index > -1) and (Index < 4) and
     (Value >= FRange.FRange[Index].Min) and (Value <= FRange.FRange[Index].Max);
@@ -716,8 +714,8 @@ begin
             WM_DESTROY:
                 ClearEditControls;}
       WM_LBUTTONDOWN, WM_MBUTTONDOWN, WM_RBUTTONDOWN:
-//        if not (csDesigning in ComponentState) then
-          Perform(Event, Value, Integer(SmallPoint(XPos, YPos)));
+        //        if not (csDesigning in ComponentState) then
+        Perform(Event, Value, Integer(SmallPoint(XPos, YPos)));
     end;
   inherited;
 end;
@@ -781,7 +779,7 @@ begin
 end;
 
 procedure TJvPageControl.DrawDefaultTab(TabIndex: Integer;
-  const Rect: TRect; Active: Boolean;DefaultDraw:boolean);
+  const Rect: TRect; Active: Boolean; DefaultDraw: boolean);
 var
   imageindex: Integer;
   r: TRect;
@@ -810,14 +808,14 @@ begin
   S := Pages[TabIndex].Caption;
   InflateRect(r, -2, -2);
   // (p3) TODO: draw rotated when TabPosition in tbLeft,tbRight
-  DrawText(Canvas.Handle,PChar(S),Length(S),r,DT_SINGLELINE or DT_LEFT or DT_TOP);
+  DrawText(Canvas.Handle, PChar(S), Length(S), r, DT_SINGLELINE or DT_LEFT or DT_TOP);
 end;
 
 procedure TJvPageControl.DrawShadowTab(TabIndex: Integer;
-  const Rect: TRect; Active: Boolean;DefaultDraw:boolean);
+  const Rect: TRect; Active: Boolean; DefaultDraw: boolean);
 var ImageIndex: Integer;
-    R: TRect;
-    S: string;
+  R: TRect;
+  S: string;
 begin
   //inherited;
   if not Pages[TabIndex].Enabled then
@@ -827,7 +825,7 @@ begin
     with Canvas do
     begin
       Brush.Color := clInactiveCaption;
-      Font.Color :=  clInactiveCaptionText;
+      Font.Color := clInactiveCaptionText;
     end;
   end;
   if DefaultDraw then
@@ -846,16 +844,16 @@ begin
   end;
   S := Pages[TabIndex].Caption;
   InflateRect(R, -2, -2);
-  DrawText(Canvas.Handle,PChar(S),Length(S),R,DT_SINGLELINE or DT_LEFT or DT_TOP);
+  DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_LEFT or DT_TOP);
 end;
 
 procedure TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
   Active: Boolean);
 begin
   if DrawTabShadow then
-    DrawShadowTab(TabIndex,Rect,Active,Assigned(OnDrawTab))
+    DrawShadowTab(TabIndex, Rect, Active, Assigned(OnDrawTab))
   else
-    DrawDefaultTab(TabIndex,Rect,Active,Assigned(OnDrawTab));
+    DrawDefaultTab(TabIndex, Rect, Active, Assigned(OnDrawTab));
 end;
 
 procedure TJvPageControl.Loaded;
@@ -924,7 +922,6 @@ begin
   inherited UpdateTabImages;
 end;
 
-
 procedure TJvPageControl.WMLButtonDown(var msg: TWMLButtonDown);
 var
   hi: TTCHitTestInfo;
@@ -982,14 +979,20 @@ begin
   FColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FToolTipSide := tsLeft;
+  FShowRange   := true;
 end;
 
 procedure TJvTrackBar.CreateParams(var Params: TCreateParams);
 begin
   inherited;
   with Params do
+  begin
     if FToolTips and (GetComCtlVersion >= ComCtlVersionIE3) then
       Style := Style or TBS_TOOLTIPS;
+    // (p3) this stolen from Rudy Velthuis's ExTrackBar
+    if not ShowRange then
+      Style := Style and not (TBS_ENABLESELRANGE);
+  end;
 end;
 
 procedure TJvTrackBar.CreateWnd;
@@ -1028,6 +1031,15 @@ begin
   inherited;
   if Assigned(FOnChanged) then
     FOnChanged(Self);
+end;
+
+procedure TJvTrackBar.SetShowRange(const Value: boolean);
+begin
+  if FShowRange <> Value then
+  begin
+    FShowRange := Value;
+    RecreateWnd;
+  end;
 end;
 
 procedure TJvTrackBar.SetToolTips(const Value: Boolean);
@@ -1611,7 +1623,6 @@ begin
     inherited;
 end;
 
-
 procedure TJvTreeView.WMVScroll(var Msg: TWMVScroll);
 begin
   inherited;
@@ -1623,45 +1634,51 @@ end;
 
 procedure TJvIpAddressValues.Change;
 begin
-  if Assigned(FOnChange) then FOnChange(self);
+  if Assigned(FOnChange) then
+    FOnChange(self);
 end;
 
 function TJvIpAddressValues.Changing(Index: integer; Value: byte): boolean;
 begin
   Result := true;
   if Assigned(FOnChanging) then
-    FOnChanging(self,Index,Value,Result);
+    FOnChanging(self, Index, Value, Result);
 end;
 
 function TJvIpAddressValues.GetValue: Cardinal;
 begin
-  Result := MAKEIPADDRESS(FValue1,FValue2,FValue3,FValue4);
+  Result := MAKEIPADDRESS(FValues[0], FValues[1], FValues[2], FValues[3]);
+end;
+
+function TJvIpAddressValues.GetValues(Index: integer): byte;
+begin
+  Result := FValues[Index]; 
 end;
 
 procedure TJvIpAddressValues.SetValue(const AValue: Cardinal);
-var FChange:boolean;
+var FChange: boolean;
 begin
   FChange := false;
   if GetValue <> AValue then
   begin
-    if Changing(0,FIRST_IPADDRESS(AValue)) then
+    if Changing(0, FIRST_IPADDRESS(AValue)) then
     begin
-      FValue1 := FIRST_IPADDRESS(AValue);
+      FValues[0] := FIRST_IPADDRESS(AValue);
       FChange := true;
     end;
-    if Changing(1,SECOND_IPADDRESS(AValue)) then
+    if Changing(1, SECOND_IPADDRESS(AValue)) then
     begin
-      FValue2 := SECOND_IPADDRESS(AValue);
+      FValues[1] := SECOND_IPADDRESS(AValue);
       FChange := true;
     end;
-    if Changing(2,THIRD_IPADDRESS(AValue)) then
+    if Changing(2, THIRD_IPADDRESS(AValue)) then
     begin
-      FValue3 := THIRD_IPADDRESS(AValue);
+      FValues[2] := THIRD_IPADDRESS(AValue);
       FChange := true;
     end;
-    if Changing(3,FOURTH_IPADDRESS(AValue)) then
+    if Changing(3, FOURTH_IPADDRESS(AValue)) then
     begin
-      FValue4 := FOURTH_IPADDRESS(AValue);
+      FValues[3] := FOURTH_IPADDRESS(AValue);
       FChange := true;
     end;
     if FChange then
@@ -1669,40 +1686,14 @@ begin
   end;
 end;
 
-procedure TJvIpAddressValues.SetValue1(const AValue: byte);
+procedure TJvIpAddressValues.SetValues(Index: integer; Value: byte);
 begin
-  if (FValue1 <> AValue) and Changing(0,AValue) then
+  if (Index >= Low(FValues)) and (Index <= High(FValues)) and (FValues[Index] <> Value) then
   begin
-    FValue1 := AValue;
-    Change;
-  end;
-end;
-
-procedure TJvIpAddressValues.SetValue2(const AValue: byte);
-begin
-  if (FValue2 <> AValue) and Changing(1,AValue) then
-  begin
-    FValue2 := AValue;
-    Change;
-  end;
-end;
-
-procedure TJvIpAddressValues.SetValue3(const AValue: byte);
-begin
-  if (FValue3 <> AValue) and Changing(2,AValue) then
-  begin
-    FValue3 := AValue;
-    Change;
-  end;
-end;
-
-procedure TJvIpAddressValues.SetValue4(const AValue: byte);
-begin
-  if (FValue4 <> AValue) and Changing(3,AValue) then
-  begin
-    FValue4 := AValue;
+    FValues[Index] := Value;
     Change;
   end;
 end;
 
 end.
+
