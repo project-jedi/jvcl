@@ -1,6 +1,0 @@
-[Directories]
-OutputDir=..\..\bin
-UnitOutputDir=..\..\dcu
-PackageDLLOutputDir=
-PackageDCPOutputDir=
-SearchPath=..\..\run;..\..\common
