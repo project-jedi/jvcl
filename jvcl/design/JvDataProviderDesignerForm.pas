@@ -1,16 +1,46 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvDataProviderDesignerForm.pas, released on --.
+
+The Initial Developer of the Original Code is Marcel Bestebroer
+Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
+Bestebroer
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-07-15
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvDataProviderDesignerForm;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvBaseDsgnToolbarForm, ActnList, Menus, ImgList, ToolWin, ComCtrls,
+  JvBaseDsgnForm, ActnList, Menus, ImgList, ToolWin, ComCtrls, StdCtrls,
   ExtCtrls, {$IFNDEF COMPILER6_UP} DsgnIntf, {$ELSE} DesignIntf, DesignEditors, {$ENDIF}
-  JvDataProvider, JvDataProviderItemDesign, JvDataProviderImpl, StdCtrls;
+  JvDataProvider, JvDataProviderItemDesign, JvDataProviderImpl,
+  JvProviderTreeListFrame, JvBaseDsgnFrame, JvBaseDsgnToolbarFrame,
+  JvStdToolbarDsgnFrame, JvProviderToolbarFrame;
 
 type
-  TfrmDataProviderDesigner = class(TJvBaseDesignToolbar)
+  TfrmDataProviderDesigner = class(TJvBaseDesign)
     alProviderEditor: TActionList;
     aiAddItem: TAction;
     aiDeleteItem: TAction;
@@ -23,61 +53,36 @@ type
     pmAddMenu: TPopupMenu;
     miDivider2: TMenuItem;
     miShowToolbar: TMenuItem;
-    lvProvider: TListView;
-    tbAddItem: TToolButton;
-    tbDivider1: TToolButton;
-    tbDeleteItem: TToolButton;
-    tbClearSub: TToolButton;
-    tbDivider2: TToolButton;
-    pnlContexts: TPanel;
-    cbContexts: TComboBox;
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure lvProviderCustomDrawItem(Sender: TCustomListView;
-      Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
-    procedure lvProviderData(Sender: TObject; Item: TListItem);
-    procedure lvProviderDblClick(Sender: TObject);
-    procedure lvProviderMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure lvProviderResize(Sender: TObject);
-    procedure lvProviderSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
+    fmeToolbar: TfmeJvProviderToolbar;
+    fmeTreeList: TfmeJvProviderTreeList;
     procedure aiAddItemExecute(Sender: TObject);
     procedure aiDeleteItemExecute(Sender: TObject);
     procedure aiClearSubExecute(Sender: TObject);
-    procedure tbrToolbarResize(Sender: TObject);
-    procedure pnlContextsResize(Sender: TObject);
+    procedure cbContextsChange(Sender: TObject);
   private
     { Private declarations }
-    FProvider: IJvDataProvider;
     FDesigner: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF};
   protected
     FOrgSelect: IDesignerSelections;
     FPropView: TJvDataProviderItem;
-    FRootItem: TJvBaseDataItem;
-    FConsumerSvc: TJvDataConsumer;
-    function GetViewList: IJvDataConsumerViewList;
-    function GetDataItem(Index: Integer): IJvDataItem;
-    function LocateID(ID: string): Integer;
+    FRootItem: IJvDataItem;
     procedure ResetSelection;
     procedure SetNewSelection(AnItem: IJvDataItem);
-    procedure ConsumerChanged(Sender: TObject);
-    procedure UpdateLV;
-    procedure UpdateColumnSize;
-    procedure UpdateSelectedItem;
-    procedure SelectItemID(ID: string);
+    procedure NeedRoot(Sender: TObject; var AVirtualRoot: IJvDataItem);
+    procedure UpdateSelectedItem(Sender: TObject);
     procedure InitContexts;
+    procedure InitViewList(Sender: TJvDataConsumer; SubSvc: TJvDataConsumerAggregatedObject);
+    function GetProvider: IJvDataProvider;
     procedure SetProvider(Value: IJvDataProvider);
     procedure SetDesigner(Value: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF});
-    class function DesignerFormName: string; override;
-    class function AutoStoreSettings: Boolean; override;
-    property ConsumerSvc: TJvDataConsumer read FConsumerSvc;
-    property ViewList: IJvDataConsumerViewList read GetViewList;
+    procedure Loaded; override;
+    function DesignerFormName: string; override;
+    function AutoStoreSettings: Boolean; override;
   public
     { Public declarations }
     PropName: string;
-    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Provider: IJvDataProvider read FProvider write SetProvider;
+    property Provider: IJvDataProvider read GetProvider write SetProvider;
     property Designer: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF} read FDesigner write SetDesigner;
   end;
 
@@ -90,7 +95,7 @@ implementation
 
 uses
   Commctrl,
-  JvBaseDsgnForm, JvDsgnConsts, JvConsts, JvTypes;
+  JvDsgnConsts, JvConsts, JvTypes;
 
 function IsProviderDesignForm(Form: TJvBaseDesign; const Args: array of const): Boolean;
 begin
@@ -125,38 +130,13 @@ begin
   Form.BringToFront;
 end;
 
-function GetItemIndexAt(LV: TListView; X, Y: Integer): Integer;
-var
-  Info: TLVHitTestInfo;
-begin
-  if LV.HandleAllocated then
-  begin
-    Info.pt := Point(X, Y);
-    Result := ListView_HitTest(LV.Handle, Info);
-  end
-  else
-    Result := -1;
-end;
-
 type
   TJvProviderRootItem = class(TJvBaseDataItem)
   protected
-    function _AddRef: Integer; override; stdcall;
-    function _Release: Integer; override; stdcall;
     procedure InitID; override;
   public
     function GetInterface(const IID: TGUID; out Obj): Boolean; override;
   end;
-
-function TJvProviderRootItem._AddRef: Integer;
-begin
-  Result := -1;
-end;
-
-function TJvProviderRootItem._Release: Integer;
-begin
-  Result := -1;
-end;
 
 procedure TJvProviderRootItem.InitID;
 begin
@@ -171,31 +151,6 @@ begin
 end;
 
 //===TfrmDataProviderDesigner=======================================================================
-
-function TfrmDataProviderDesigner.GetViewList: IJvDataConsumerViewList;
-begin
-  Supports(ConsumerSvc as IJvDataConsumer, IJvDataConsumerViewList, Result);
-end;
-
-function TfrmDataProviderDesigner.GetDataItem(Index: Integer): IJvDataItem;
-begin
-  if Index = 0 then
-    Result := FRootItem
-  else
-    Result := ViewList.Item(Index - 1);
-end;
-
-function TfrmDataProviderDesigner.LocateID(ID: string): Integer;
-begin
-  if AnsiSameText(ID, (FRootItem as IJvDataItem).GetID) then
-    Result := 0
-  else
-  begin
-    Result := ViewList.IndexOfID(ID);
-    if Result >= 0 then
-      Inc(Result);
-  end;
-end;
 
 procedure TfrmDataProviderDesigner.ResetSelection;
 begin
@@ -214,26 +169,12 @@ begin
     Designer.SelectComponent(FPropView);
 end;
 
-procedure TfrmDataProviderDesigner.ConsumerChanged(Sender: TObject);
+procedure TfrmDataProviderDesigner.NeedRoot(Sender: TObject; var AVirtualRoot: IJvDataItem);
 begin
-  UpdateLV;
+  AVirtualRoot := FRootItem;
 end;
 
-procedure TfrmDataProviderDesigner.UpdateLV;
-begin
-  if ViewList = nil then
-    lvProvider.Items.Count := 0
-  else
-    lvProvider.Items.Count := ViewList.Count + 1;
-  lvProvider.Invalidate;
-end;
-
-procedure TfrmDataProviderDesigner.UpdateColumnSize;
-begin
-  lvProvider.Columns[0].Width := lvProvider.ClientWidth;
-end;
-
-procedure TfrmDataProviderDesigner.UpdateSelectedItem;
+procedure TfrmDataProviderDesigner.UpdateSelectedItem(Sender: TObject);
 var
   Item: IJvDataItem;
   Items: IJvDataItems;
@@ -254,9 +195,9 @@ var
   end;
 
 begin
-  if lvProvider.SelCount <> 0 then
+  if fmeTreeList.lvProvider.SelCount <> 0 then
   begin
-    Item := GetDataItem(lvProvider.Selected.Index);
+    Item := fmeTreeList.GetDataItem(fmeTreeList.lvProvider.Selected.Index);
     if (Item <> nil) and Supports(Item, IJvDataItems, Items) then
     begin
       if Supports(Items, IJvDataItemsManagement, Man) then
@@ -286,16 +227,16 @@ begin
   if (Dsgn = nil) or (Dsgn.GetCount = 0) then
   begin
     miAddItem.Action := aiAddItem;
-    tbAddItem.Action := aiAddItem;
-    tbAddItem.Style := tbsButton;
+    fmeToolbar.tbAddItem.Action := aiAddItem;
+    fmeToolbar.tbAddItem.Style := tbsButton;
   end
   else
   begin
     miAddItem.Action := nil;
     miAddItem.OnClick := nil;
-    tbAddItem.Action := nil;
-    tbAddItem.OnClick := nil;
-    tbAddItem.Style := tbsDropDown;
+    fmeToolbar.tbAddItem.Action := nil;
+    fmeToolbar.tbAddItem.OnClick := nil;
+    fmeToolbar.tbAddItem.Style := tbsDropDown;
     for I := 0 to Dsgn.GetCount - 1 do
     begin
       miAddItem.Add(MakeMenuItem(I, miAddItem));
@@ -303,23 +244,12 @@ begin
     end;
     miAddItem.Visible := Man <> nil;
     miAddItem.Enabled := (Man <> nil) and (Items <> nil);
-    tbAddItem.Visible := miAddItem.Visible;
-    tbAddItem.Enabled := miAddItem.Enabled;
+    fmeToolbar.tbAddItem.Visible := miAddItem.Visible;
+    fmeToolbar.tbAddItem.Enabled := miAddItem.Enabled;
   end;
   aiAddItem.Enabled := (Man <> nil) and (Items <> nil);
-  aiDeleteItem.Enabled := (ParentMan <> nil) and (Item <> nil) and
-    (Item.GetImplementer <> FRootItem);
+  aiDeleteItem.Enabled := (ParentMan <> nil) and (Item <> nil) and (Item <> FRootItem);
   aiClearSub.Enabled := (Man <> nil) and (Items <> nil) and (Items.Count > 0);
-end;
-
-procedure TfrmDataProviderDesigner.SelectItemID(ID: string);
-var
-  Idx: Integer;
-begin
-  Idx := LocateID(ID);
-  if Idx > -1 then
-    ListView_SetItemState(lvProvider.Handle, Idx, LVIS_SELECTED or LVIS_FOCUSED,
-      LVIS_SELECTED or LVIS_FOCUSED);
 end;
 
 procedure TfrmDataProviderDesigner.InitContexts;
@@ -327,46 +257,64 @@ var
   Ctx: IJvDataContexts;
   I: Integer;
 begin
-  cbContexts.Items.BeginUpdate;
+  fmeToolbar.cbContexts.Items.BeginUpdate;
   try
-    cbContexts.ItemIndex := -1;
-    cbContexts.Items.Clear;
-    cbContexts.Sorted := False;
+    fmeToolbar.cbContexts.ItemIndex := -1;
+    fmeToolbar.cbContexts.Items.Clear;
+    fmeToolbar.cbContexts.Sorted := False;
     if (Provider <> nil) and Supports(Provider, IJvDataContexts, Ctx) then
     begin
       for I := 0 to Ctx.GetCount - 1 do
-        cbContexts.Items.AddObject(Ctx.GetContext(I).Name, TObject(I));
-      cbContexts.Sorted := True;
-      cbContexts.Sorted := False;
+        fmeToolbar.cbContexts.Items.AddObject(Ctx.GetContext(I).Name, TObject(I));
+      fmeToolbar.cbContexts.Sorted := True;
+      fmeToolbar.cbContexts.Sorted := False;
     end;
-    cbContexts.Items.InsertObject(0, '<Default>', TObject(-99));
+    fmeToolbar.cbContexts.Items.InsertObject(0, '<Default>', TObject(-99));
   finally
-    cbContexts.Items.EndUpdate;
-    if cbContexts.Items.Count > 0 then
-      cbContexts.ItemIndex := 0;
+    fmeToolbar.cbContexts.Items.EndUpdate;
+    if fmeToolbar.cbContexts.Items.Count > 0 then
+      fmeToolbar.cbContexts.ItemIndex := 0;
+    fmeToolbar.pnlContexts.Visible := fmeToolbar.cbContexts.Items.Count > 1;
+    fmeToolbar.UpdateToolbarSeparators;
   end;
+end;
+
+procedure TfrmDataProviderDesigner.InitViewList(Sender: TJvDataConsumer;
+  SubSvc: TJvDataConsumerAggregatedObject);
+var
+  VL: IJvDataConsumerViewList;
+begin
+  if SubSvc is TJvCustomDataConsumerViewList then
+  begin
+    if SubSvc.GetInterface(IJvDataConsumerViewList, VL) then
+      VL.ExpandOnNewItem := True;
+  end;
+end;
+
+function TfrmDataProviderDesigner.GetProvider: IJvDataProvider;
+begin
+  Result := fmeTreeList.Provider.ProviderIntf;
 end;
 
 procedure TfrmDataProviderDesigner.SetProvider(Value: IJvDataProvider);
 var
+  ViewList: IJvDataConsumerViewList;
   ProviderImpl: TComponent;
-  DsgnCtx: IJvDataContext;
 begin
-  ConsumerSvc.SetProviderIntf(Value);
-  FProvider := Value;
+  fmeTreeList.Provider.SetProviderIntf(Value);
+  if csDestroying in ComponentState then Exit;
   if Provider <> nil then
   begin
     FRootItem := TJvProviderRootItem.Create(Provider as IJvDataItems);
-    if Supports(Provider, IJvDataContext, DsgnCtx) then
-      FConsumerSvc.SetContextIntf(DsgnCtx);
-    if ViewList <> nil then
+    fmeTreeList.Provider.SetContextIntf(nil);
+    // Odd behaviour: ViewList is not filled when the provider is set. Look into this issue later!
+    if Supports(fmeTreeList.Provider as IJvDataConsumer, IJvDataConsumerViewList, ViewList) then
       ViewList.RebuildView;
     ProviderImpl := (Provider as IInterfaceComponentReference).GetComponent;
     Caption := Format(SDataProviderDesignerCaption, [ProviderImpl.Name, '.' + PropName]);
   end;
   InitContexts;
-  UpdateLV;
-  UpdateSelectedItem;
+  UpdateSelectedItem(Self);
 end;
 
 procedure TfrmDataProviderDesigner.SetDesigner(Value: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF});
@@ -386,21 +334,27 @@ begin
   end;
 end;
 
-class function TfrmDataProviderDesigner.DesignerFormName: string;
+procedure TfrmDataProviderDesigner.Loaded;
+begin
+  inherited Loaded;
+  if fmeTreeList <> nil then
+    with fmeTreeList do
+    begin
+      OnGetVirtualRoot := NeedRoot;
+      OnItemSelect := UpdateSelectedItem;
+      Provider.AfterCreateSubSvc := InitViewList;
+      UseVirtualRoot := True;
+    end;
+end;
+
+function TfrmDataProviderDesigner.DesignerFormName: string;
 begin
   Result := 'DataProvider Designer';
 end;
 
-class function TfrmDataProviderDesigner.AutoStoreSettings: Boolean;
+function TfrmDataProviderDesigner.AutoStoreSettings: Boolean;
 begin
   Result := True;
-end;
-
-constructor TfrmDataProviderDesigner.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RenderDisabledAsGrayed, DPA_ConsumerDisplaysList]);
-  FConsumerSvc.OnChanged := ConsumerChanged;
 end;
 
 destructor TfrmDataProviderDesigner.Destroy;
@@ -408,144 +362,7 @@ begin
   ResetSelection;
   Provider := nil;
   Designer := nil;
-  FreeAndNil(FConsumerSvc);
   inherited Destroy;
-end;
-
-procedure TfrmDataProviderDesigner.FormClose(Sender: TObject;
-  var Action: TCloseAction);
-begin
-  Action := caFree;
-end;
-
-procedure TfrmDataProviderDesigner.lvProviderCustomDrawItem(
-  Sender: TCustomListView; Item: TListItem; State: TCustomDrawState;
-  var DefaultDraw: Boolean);
-var
-  ACanvas: TCanvas;
-  ARect: TRect;
-  BtnWdth: Integer;
-  MidX, MidY: Integer;
-begin
-  ACanvas := Sender.Canvas;
-  DefaultDraw := False;
-  ARect := Item.DisplayRect(drBounds);
-  ARect.Right := Sender.ClientRect.Right;
-  if Item.Selected then
-  begin
-    ACanvas.Brush.Color := clHighlight;
-    ACanvas.Brush.Style := bsSolid;
-    ACanvas.Font.Color := clHighlightText;
-    ACanvas.FillRect(ARect);
-  end
-  else
-  begin
-    ACanvas.Brush.Color := clWindow;
-    ACanvas.Brush.Style := bsSolid;
-    ACanvas.Font.Color := clWindowText;
-    ACanvas.FillRect(ARect);
-  end;
-  BtnWdth := Succ(ARect.Bottom - ARect.Top) + 2;
-  ARect.Left := ARect.Left + (BtnWdth * Item.Indent);
-  if (Item.Index = 0) or ViewList.ItemHasChildren(Item.Index - 1) then
-  begin
-    with ACanvas do
-    begin
-      MidX := ARect.Left + (BtnWdth - 3) div 2;
-      MidY := ARect.Top + (BtnWdth - 3) div 2;
-      Pen.Color := ACanvas.Font.Color;
-      Pen.Style := psSolid;
-      Pen.Width := 1;
-      MoveTo(ARect.Left + 3, ARect.Top + 3);
-      LineTo(ARect.Left + BtnWdth - 6, ARect.Top + 3);
-      LineTo(ARect.Left + BtnWdth - 6, ARect.Top + BtnWdth - 6);
-      LineTo(ARect.Left + 3, ARect.Top + BtnWdth - 6);
-      LineTo(ARect.Left + 3, ARect.Top + 3);
-
-      MoveTo(ARect.Left + 5, MidY);
-      LineTo(ARect.Left + BtnWdth - 7, MidY);
-
-      if (Item.Index <> 0) and not ViewList.ItemIsExpanded(Item.Index - 1) then
-      begin
-        MoveTo(MidX, ARect.Top + 5);
-        LineTo(MidX, ARect.Top + BtnWdth - 7);
-      end;
-    end;
-  end;
-  ARect.Left := ARect.Left + BtnWdth;
-  DrawText(ACanvas.Handle, PChar(Item.Caption), Length(Item.Caption), ARect, DT_SINGLELINE + DT_LEFT + DT_END_ELLIPSIS);
-end;
-
-procedure TfrmDataProviderDesigner.lvProviderData(Sender: TObject;
-  Item: TListItem);
-var
-  DataItem: IJvDataItem;
-  ItemText: IJvDataItemText;
-begin
-  if (ConsumerSvc.ProviderIntf = nil) or (Item.Index > ViewList.Count) then
-    Exit;
-  if Item.Index = 0 then
-  begin
-    DataItem := FRootItem;
-    Item.Indent := 0;
-  end
-  else
-  begin
-    DataItem := ViewList.Item(Item.Index - 1);
-    Item.Indent := ViewList.ItemLevel(Item.Index - 1) + 1;
-  end;
-  if DataItem <> nil then
-  begin
-    if Supports(DataItem, IJvDataItemText, ItemText) then
-      Item.Caption := ItemText.Caption
-    else
-    begin
-      if DataItem.GetImplementer = FRootItem then
-        Item.Caption := SDataItemRootCaption
-      else
-        Item.Caption := SDataItemNoTextIntf;
-    end;
-  end
-end;
-
-procedure TfrmDataProviderDesigner.lvProviderDblClick(Sender: TObject);
-begin
-  if lvProvider.Selected <> nil then
-    if lvProvider.Selected.Index > 0 then
-      ViewList.ToggleItem(lvProvider.Selected.Index - 1);
-end;
-
-procedure TfrmDataProviderDesigner.lvProviderMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  Item: Integer;
-  ItemLevel: Integer;
-  TmpRect: TRect;
-begin
-  Item := GetItemIndexAt(lvProvider, X, Y);
-  if Item <> -1 then
-  begin
-    if Item = 0 then
-      ItemLevel := 0
-    else
-      ItemLevel := ViewList.ItemLevel(Item - 1) + 1;
-    ListView_GetItemRect(lvProvider.Handle, Item, TmpRect, LVIR_BOUNDS);
-    TmpRect.Right := TmpRect.Left + (Succ((TmpRect.Bottom - TmpRect.Top) + 2) * Succ(ItemLevel));
-    if (X < TmpRect.Right) and (X > TmpRect.Right - ((TmpRect.Bottom - TmpRect.Top) + 2)) then
-      if Item > 0 then
-        ViewList.ToggleItem(Item - 1);
-  end;
-end;
-
-procedure TfrmDataProviderDesigner.lvProviderResize(Sender: TObject);
-begin
-  UpdateColumnSize;
-end;
-
-procedure TfrmDataProviderDesigner.lvProviderSelectItem(
-  Sender: TObject; Item: TListItem; Selected: Boolean);
-begin
-  UpdateSelectedItem;
 end;
 
 procedure TfrmDataProviderDesigner.aiAddItemExecute(Sender: TObject);
@@ -555,9 +372,9 @@ var
   Dsgn: IJvDataItemsDesigner;
   Mangr: IJvDataItemsManagement;
 begin
-  if lvProvider.Selected <> nil then
+  if fmeTreeList.lvProvider.Selected <> nil then
   begin
-    Item := GetDataItem(lvProvider.Selected.Index);
+    Item := fmeTreeList.GetDataItem(fmeTreeList.lvProvider.Selected.Index);
     if Item <> nil then
       Item.QueryInterface(IJvDataItems, Items)
     else // should never occur
@@ -575,7 +392,7 @@ begin
     else // should never occur
       raise EJVCLException.CreateFmt(SDataProviderAddErrorReason, [SDataProviderNoManOrDsgn]);
     if Item <> nil then
-      SelectItemID(Item.GetID)
+      fmeTreeList.SelectItemID(Item.GetID)
     else
       raise EJVCLException.Create(SDataProviderAddFailed);
   end
@@ -591,10 +408,10 @@ var
   Items: IJvDataItems;
   Mangr: IJvDataItemsManagement;
 begin
-  if lvProvider.Selected <> nil then
+  if fmeTreeList.lvProvider.Selected <> nil then
   begin
-    I := lvProvider.Selected.Index;
-    Item := GetDataItem(I);
+    I := fmeTreeList.lvProvider.Selected.Index;
+    Item := fmeTreeList.GetDataItem(I);
     if Item <> nil then
       Items := Item.Items
     else
@@ -607,7 +424,7 @@ begin
     end
     else
       raise EJVCLException.CreateFmt(SDataProviderDeleteErrorReason, [SDataProviderNoMan]);
-    UpdateSelectedItem;
+//    UpdateSelectedItem;
   end;
 end;
 
@@ -617,9 +434,9 @@ var
   Items: IJvDataItems;
   Mangr: IJvDataItemsManagement;
 begin
-  if lvProvider.Selected <> nil then
+  if fmeTreeList.lvProvider.Selected <> nil then
   begin
-    Item := GetDataItem(lvProvider.Selected.Index);
+    Item := fmeTreeList.GetDataItem(fmeTreeList.lvProvider.Selected.Index);
     if Item <> nil then
     begin
       if not Supports(Item, IJvDataItems, Items) then
@@ -633,7 +450,7 @@ begin
       raise EJVCLException.CreateFmt(SDataProviderDeleteErrorReason, [SDataProviderNoMan]);
   end;
 end;
-
+(*
 procedure TfrmDataProviderDesigner.tbrToolbarResize(Sender: TObject);
 begin
   inherited;
@@ -644,6 +461,29 @@ procedure TfrmDataProviderDesigner.pnlContextsResize(Sender: TObject);
 begin
   inherited;
   cbContexts.Top := (pnlContexts.ClientHeight - cbContexts.Height) div 2;
+end;
+*)
+procedure TfrmDataProviderDesigner.cbContextsChange(Sender: TObject);
+var
+  CtxIdx: Integer;
+  CtxList: IJvDataContexts;
+begin
+  if fmeToolbar.cbContexts.ItemIndex > 0 then
+  begin
+    CtxIdx := Integer(fmeToolbar.cbContexts.Items.Objects[fmeToolbar.cbContexts.ItemIndex]);
+    if CtxIdx >= 0 then
+    begin
+      { Retrieve context and activate it in the consumer service. }
+      if Supports(Provider, IJvDataContexts, CtxList) then
+        fmeTreeList.Provider.SetContextIntf(CtxList.GetContext(CtxIdx))
+      else
+        raise EJVCLException.Create('Internal error: unable to retrieve context list.');
+    end
+    else
+      fmeTreeList.Provider.SetContextIntf(nil);
+  end
+  else
+    fmeTreeList.Provider.SetContextIntf(nil);
 end;
 
 end.

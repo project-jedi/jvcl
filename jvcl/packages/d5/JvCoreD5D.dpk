@@ -45,7 +45,12 @@ contains
   JvDataProviderEditors in '..\..\design\JvDataProviderEditors.pas',
   JvDsgnConsts in '..\..\design\JvDsgnConsts.pas',
   JvBaseDsgnForm in '..\..\design\JvBaseDsgnForm.pas' {JvBaseDesign},
-  JvBaseDsgnToolbarForm in '..\..\design\JvBaseDsgnToolbarForm.pas' {JvBaseDesignToolbar},
-  JvDataProviderDesignerForm in '..\..\design\JvDataProviderDesignerForm.pas' {frmDataProviderDesigner};
+  JvDataProviderDesignerForm in '..\..\design\JvDataProviderDesignerForm.pas' {frmDataProviderDesigner},
+  JvDataContextManagerForm in '..\..\design\JvDataContextManagerForm.pas' {frmJvDataContextManager},
+  JvBaseDsgnFrame in '..\..\design\JvBaseDsgnFrame.pas' {fmeJvBaseDesign: TFrame},
+  JvBaseDsgnToolbarFrame in '..\..\design\JvBaseDsgnToolbarFrame.pas' {fmeJvBaseToolbarDesign: TFrame},
+  JvProviderTreeListFrame in '..\..\design\JvProviderTreeListFrame.pas' {fmeJvProviderTreeList: TFrame},
+  JvStdToolbarDsgnFrame in '..\..\design\JvStdToolbarDsgnFrame.pas' {fmeJvStdToolbarDesign: TFrame},
+  JvProviderToolbarFrame in '..\..\design\JvProviderToolbarFrame.pas' {fmeJvProviderToolbar: TFrame};
 
 end.
