@@ -37,7 +37,7 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QControls, QDialogs, Types,
   {$ENDIF VisualCLX}
-  ZLib, JvComponent;
+  JclZLib, JvComponent;
 
 type
   TFileEvent = procedure(Sender: TObject; const FileName: string) of object;
@@ -143,7 +143,7 @@ procedure TJvZlibMultiple.AddFile(FileName, Directory, FilePath: string;
 var
   Stream: TStream;
   FileStream: TFileStream;
-  ZStream: TCompressionStream;
+  ZStream: TJclZLibWriter;
   Buffer: array[0..1023] of Byte;
   Count: Integer;
 
@@ -175,7 +175,7 @@ begin
   Stream := TMemoryStream.Create;
   FileStream := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyWrite);
   try
-    ZStream := TCompressionStream.Create(clDefault, Stream);
+    ZStream := TJclZLibWriter.Create(Stream);
     try
       if Assigned(FOnCompressingFile) then
         FOnCompressingFile(Self, FilePath);
@@ -267,7 +267,7 @@ procedure TJvZlibMultiple.DecompressStream(Stream: TStream;
   Directory: string; Overwrite: Boolean; const RelativePaths: Boolean);
 var
   FileStream: TFileStream;
-  ZStream: TDecompressionStream;
+  ZStream: TJclZLibReader;
   CStream: TMemoryStream;
   B, LastPos: Byte;
   S: string;
@@ -314,7 +314,7 @@ begin
       begin
         //This fails if Directory isn't empty
         FileStream := TFileStream.Create(S, fmCreate or fmShareExclusive);
-        ZStream := TDecompressionStream.Create(CStream);
+        ZStream := TJclZLibReader.Create(CStream);
         try
           if Assigned(FOnDecompressingFile) then
             FOnDecompressingFile(Self, S);
