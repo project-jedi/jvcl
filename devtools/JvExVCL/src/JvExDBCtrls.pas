@@ -87,15 +87,15 @@ begin
   InheritMsg(Self, CM_BUTTONPRESSED, GroupIndex, Integer(Sender));
 end;
 
-procedure TJvExNavButton.Dispatch(var Message);
+procedure TJvExNavButton.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Message) then
-    case TMessage(Message).Msg of
+  if not DispatchMsg(Self, Msg) then
+    case TMessage(Msg).Msg of
       CM_BUTTONPRESSED:
-        with TMessage(Message) do
+        with TMessage(Msg) do
           ButtonPressed(TSpeedButton(LParam), WParam);
     else
-      inherited Dispatch(Message);
+      inherited Dispatch(Msg);
     end;
 end;
 

@@ -76,9 +76,9 @@ type
 
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 
-function InheritMsg(Self: TControl; Msg: Integer; WParam, LParam: Integer): Integer; overload;
-function InheritMsg(Self: TControl; Msg: Integer): Integer; overload;
-function DispatchMsg(Self: TControl; var Message): Boolean;
+function InheritMsg(ASelf: TControl; Msg: Integer; WParam, LParam: Integer): Integer; overload;
+function InheritMsg(ASelf: TControl; Msg: Integer): Integer; overload;
+function DispatchMsg(ASelf: TControl; var Msg): Boolean;
 
 {$ENDIF VCL}
 
@@ -95,61 +95,68 @@ begin
     Result := Result or AltMask;
 end;
 
-function InheritMsg(Self: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
+function InheritMsg(ASelf: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
 type
-  TMessageHandler = procedure(Self: TObject; var Message: TMessage);
+  TMessageHandler = procedure(Self: TObject; var Msg: TMessage);
 var
   Proc: TMessageHandler;
-  Message: TMessage;
+  Mesg: TMessage;
 begin
-  Message.Msg := Msg;
-  Message.WParam := WParam;
-  Message.LParam := LParam;
-  Message.Result := 0;
+  Mesg.Msg := Msg;
+  Mesg.WParam := WParam;
+  Mesg.LParam := LParam;
+  Mesg.Result := 0;
   Proc := @TObject.Dispatch;
-  Proc(Self, Message);
-  Result := Message.Result;
+  Proc(ASelf, Mesg);
+  Result := Mesg.Result;
 end;
 
-function InheritMsg(Self: TControl; Msg: Integer): Integer;
+function InheritMsg(ASelf: TControl; Msg: Integer): Integer;
 begin
-  Result := InheritMsg(Self, Msg, 0, 0);
+  Result := InheritMsg(ASelf, Msg, 0, 0);
 end;
 
-function DispatchMsg(Self: TControl; var Message): Boolean;
+function DispatchMsg(ASelf: TControl; var Msg): Boolean;
 var
   IntfControl: IJvControlEvents;
   IntfWinControl: IJvWinControlEvents;
-  Msg: PMessage;
+  PMsg: PMessage;
 begin
-  Msg := @Message;
-  { GetInterface is no problem because Self is a TComponent derived class that
+  PMsg := @Msg;
+  { GetInterface is no problem because ASelf is a TComponent derived class that
     is not released by an interface "Release". }
-  if Self.GetInterface(IJvControlEvents, IntfControl) then
+  if ASelf.GetInterface(IJvControlEvents, IntfControl) then
   begin
     Result := True;
     with IntfControl do
-      case Msg^.Msg of
-        CM_VISIBLECHANGED: VisibleChanged;
-        CM_ENABLEDCHANGED: EnabledChanged;
-        CM_FONTCHANGED: FontChanged;
-        CM_COLORCHANGED: ColorChanged;
-        CM_PARENTFONTCHANGED: ParentFontChanged;
-        CM_PARENTCOLORCHANGED: ParentColorChanged;
-        CM_PARENTSHOWHINTCHANGED: ParentShowHintChanged;
-        CM_TEXTCHANGED: TextChanged;
-
+      case PMsg^.Msg of
+        CM_VISIBLECHANGED:
+          VisibleChanged;
+        CM_ENABLEDCHANGED:
+          EnabledChanged;
+        CM_FONTCHANGED:
+          FontChanged;
+        CM_COLORCHANGED:
+          ColorChanged;
+        CM_PARENTFONTCHANGED:
+          ParentFontChanged;
+        CM_PARENTCOLORCHANGED:
+          ParentColorChanged;
+        CM_PARENTSHOWHINTCHANGED:
+          ParentShowHintChanged;
+        CM_TEXTCHANGED:
+          TextChanged;
         CM_HINTSHOW:
-          Msg^.Result := Integer(HintShow(TCMHintShow(Msg^).HintInfo^));
+          PMsg^.Result := Integer(HintShow(TCMHintShow(PMsg^).HintInfo^));
         CM_HITTEST:
-          with TCMHitTest(Msg^) do
+          with TCMHitTest(PMsg^) do
             Result := Integer(HitTest(XPos, YPos));
         CM_MOUSEENTER:
-            MouseEnter(TControl(Msg^.LParam));
+            MouseEnter(TControl(PMsg^.LParam));
         CM_MOUSELEAVE:
-            MouseLeave(TControl(Msg^.LParam));
+            MouseLeave(TControl(PMsg^.LParam));
         CM_DIALOGCHAR:
-          with TCMDialogChar(Msg^) do
+          with TCMDialogChar(PMsg^) do
             Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
       else
         Result := False;
@@ -160,24 +167,27 @@ begin
 
   if not Result then
   begin
-    if Self.GetInterface(IJvWinControlEvents, IntfWinControl) then
+    if ASelf.GetInterface(IJvWinControlEvents, IntfWinControl) then
     begin
       Result := True;
       with IntfWinControl do
-        case Msg^.Msg of
-          CM_CURSORCHANGED: CursorChanged;
-          CM_SHOWINGCHANGED: ShowingChanged;
-          CM_SHOWHINTCHANGED: ShowHintChanged;
+        case PMsg^.Msg of
+          CM_CURSORCHANGED:
+            CursorChanged;
+          CM_SHOWINGCHANGED:
+            ShowingChanged;
+          CM_SHOWHINTCHANGED:
+            ShowHintChanged;
           CM_CONTROLLISTCHANGE:
-            if BOOL(Msg^.LParam) then
-              ControlsListChanging(TControl(Msg.WParam), BOOL(Msg^.LParam))
+            if PMsg^.LParam <> 0 then
+              ControlsListChanging(TControl(PMsg^.WParam), True)
             else
-              ControlsListChanged(TControl(Msg.WParam), BOOL(Msg^.LParam));
+              ControlsListChanged(TControl(PMsg^.WParam), False);
           CM_CONTROLCHANGE:
-            if not BOOL(Msg^.LParam) then
-              ControlsListChanging(TControl(Msg.WParam), BOOL(Msg^.LParam))
+            if PMsg^.LParam = 0 then
+              ControlsListChanging(TControl(PMsg^.WParam), False)
             else
-              ControlsListChanged(TControl(Msg.WParam), BOOL(Msg^.LParam));
+              ControlsListChanged(TControl(PMsg^.WParam), True);
         else
           Result := False;
         end;
