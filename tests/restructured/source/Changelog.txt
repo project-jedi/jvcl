@@ -1,5 +1,5 @@
 2002-07-05
-- Added JvInspector and support units (JvInspDB and JvINspXVCL) from Marcel Berestroeber. 
+- Added JvInspector and support units (JvInspDB and JvINspXVCL) from Marcel Bestebroer
 
 - JvInspector bug fixes by Deepak Shenoy:
 
