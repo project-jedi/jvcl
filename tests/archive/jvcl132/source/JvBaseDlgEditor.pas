@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   EditIntf, ToolIntf, TypInfo,
-  {$IFDEF DELPHI5} DsgnIntf, {$ENDIF} {$IFDEF DELPHI6_UP} DesignEditors, DesignIntf, {$ENDIF}
+{$IFDEF DELPHI5}DsgnIntf, {$ENDIF}{$IFDEF DELPHI6_UP}DesignEditors, DesignIntf, {$ENDIF}
   ExptIntf,
   JvBaseDlg;
 
@@ -44,26 +44,29 @@ type
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
+    procedure Edit; override;
   end;
 
 implementation
 
 {*************************************************}
 
+procedure TJvBaseDlgEditor.Edit;
+begin
+  ExecuteVerb(0);
+end;
+
 procedure TJvBaseDlgEditor.ExecuteVerb(Index: Integer);
 begin
- try
-  with Component as TJvCommonDialog do
-    case Index of
-      0:
-        Execute;
-    end;
-  except
-  with Component as TJvCommonDialogP do
-    case Index of
-      0:
-        Execute;
-    end;
+  if Index <> 0 then
+    Exit;
+  if Component is TJvCommonDialog then
+  begin
+    TJvCommonDialog(Component).Execute;
+  end
+  else if Component is TJvCommonDialogP then
+  begin
+    TJvCommonDialogP(Component).Execute;
   end;
 end;
 
@@ -85,3 +88,4 @@ begin
 end;
 
 end.
+
