@@ -2472,6 +2472,7 @@ begin
     FCell.Free;
     FCell := nil;
   end;
+  NeedsResize := true;
   AdjustBounds;
   Invalidate;
 end;
