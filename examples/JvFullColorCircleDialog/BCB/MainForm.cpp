@@ -48,7 +48,7 @@ void __fastcall TfrmMain::FormatMemo(TMemo* AMemo, const TJvColorDelta* Delta)
 //  with ColorSpaceManager, ColorSpace[Delta.ColorID], AMemo.Lines do
   {
     TJvColorSpace* cspace = ColorSpaceManager()->ColorSpace[Delta->ColorID];
-    AMemo->Lines->Add(Format("%s (%s)",ARRAYOFCONST((Name, cspace->ShortName))));
+    AMemo->Lines->Add(Format("%s (%s)",ARRAYOFCONST((cspace->Name, cspace->ShortName))));
     for (int i = axIndex0; i <= axIndex2; i++)
     {
       TJvAxisIndex Index = static_cast<TJvAxisIndex>(i);
