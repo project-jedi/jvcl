@@ -43,8 +43,8 @@ type
   TControlClass = class of TControl;
 {$ENDIF}
 
-procedure RegisterProgressControl(AClass: TControlClass; const MaxPropName,
-  MinPropName, ProgressPropName: string);
+procedure RegisterProgressControl(AClass: TControlClass;
+  const MaxPropName, MinPropName, ProgressPropName: string);
 procedure UnRegisterProgressControl(AClass: TControlClass);
 function SupportsProgressControl(Control: TControl): Boolean;
 
@@ -53,6 +53,7 @@ procedure SetProgressMin(Control: TControl; MinValue: Longint);
 procedure SetProgressValue(Control: TControl; ProgressValue: Longint);
 
 implementation
+
 uses
   TypInfo;
 
@@ -71,8 +72,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Add(AClass: TControlClass; const MaxPropName, MinPropName,
-      ProgressPropName: string);
+    procedure Add(AClass: TControlClass;
+      const MaxPropName, MinPropName, ProgressPropName: string);
     function FindClass(AClass: TControlClass): Integer;
     procedure Remove(AClass: TControlClass);
     function SetControlProperty(Control: TControl; Prop: TProgressProp;
@@ -161,8 +162,8 @@ begin
         PropName := PProgressData(Items[I])^.ProgressProperty;
       end;
       PropInfo := GetPropInfo(Control.ClassInfo, PropName);
-      if (PropInfo <> nil) and (PropInfo^.PropType^.Kind in
-        [tkInteger, tkFloat, tkVariant]) then
+      if (PropInfo <> nil) and
+        (PropInfo^.PropType^.Kind in [tkInteger, tkFloat, tkVariant]) then
       begin
         SetOrdProp(Control, PropInfo, Value);
         Result := True;
@@ -218,8 +219,9 @@ begin
 end;
 
 initialization
+
 finalization
-  ProgressList.Free;
+  FreeAndNil(ProgressList);
 
 end.
 

@@ -76,8 +76,6 @@ implementation
 uses
   JvWndProcHook;
 
-{ $R HotKey.dcr }
-
 var
   HotKeyInstances: Integer = 0;
 
@@ -210,8 +208,6 @@ begin
   end;
   FHandle := 0;
 end;
-
-// (rom) better do it with Application.HookMainWindow?
 
 function TJvApplicationHotKey.WndProc(var Msg: TMessage): Boolean;
 begin

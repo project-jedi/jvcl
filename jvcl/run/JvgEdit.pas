@@ -30,29 +30,32 @@ Known Issues:
 unit JvgEdit;
 
 interface
-uses Dialogs,
-  Windows, Messages, Classes, Controls, Graphics, forms, JvMaskEdit,
-  JvgTypes, JvgCommClasses, JvgUtils, StdCtrls, ExtCtrls, SysUtils, Mask, Jvg3DColors;
+
+uses
+  Windows, Messages, Classes, Controls, Graphics, Forms,
+  StdCtrls, ExtCtrls, SysUtils, Mask,
+  JvgTypes, JvgCommClasses, JvgUtils, JvMaskEdit, Jvg3DColors;
 
 type
   TJvgMaskEdit = class(TJvMaskEdit)
   private
     FScrollBars: TScrollStyle;
     FAlignment: TAlignment;
-    FMultiline: boolean;
-    FWordWrap: boolean;
-    FAfterPaint: TNotifyEvent;
+    FMultiLine: Boolean;
+    FWordWrap: Boolean;
+    FOnAfterPaint: TNotifyEvent;
+    FCanvas: TCanvas;
     procedure SetScrollBars(Value: TScrollStyle);
     procedure SetAlignment(Value: TAlignment);
-    procedure SetMultiline(Value: boolean);
-    procedure SetWordWrap(Value: boolean);
+    procedure SetMultiLine(Value: Boolean);
+    procedure SetWordWrap(Value: Boolean);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
-    Canvas: TCanvas;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Paint(var Message: TWMPaint); message WM_PAINT;
+    procedure Paint(var Msg: TWMPaint); message WM_PAINT;
+    property Canvas: TCanvas read FCanvas write FCanvas;
   published
     property AutoSelect;
     property AutoSize;
@@ -93,93 +96,108 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-
-    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars
-      default ssNone;
-    property Alignment: TAlignment read FAlignment write SetAlignment
-      default taLeftJustify;
-    property Multiline: boolean read FMultiline write SetMultiline
-      default false;
-    property WordWrap: boolean read FWordWrap write SetWordWrap
-      default false;
-    property AfterPaint: TNotifyEvent read FAfterPaint write FAfterPaint;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssNone;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    property MultiLine: Boolean read FMultiLine write SetMultiLine default False;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
+    property OnAfterPaint: TNotifyEvent read FOnAfterPaint write FOnAfterPaint;
   end;
 
 implementation
+
 //{$R JvgShadow.res}
 
 constructor TJvgMaskEdit.Create(AOwner: TComponent);
 begin
-  inherited;
-  Canvas := TControlCanvas.Create;
-  TControlCanvas(Canvas).Control := Self; //...i can draw now! :)
+  inherited Create(AOwner);
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self; //...i can draw now! :)
+
+  FScrollBars := ssNone;
+  FAlignment := taLeftJustify;
+  FMultiLine := False;
+  FWordWrap := False;
+
   {$IFDEF FR_RUS}
   Font.CharSet := RUSSIAN_CHARSET;
-  {$ENDIF}
+  {$ENDIF FR_RUS}
 end;
 
 destructor TJvgMaskEdit.Destroy;
 begin
-  Canvas.Free;
-  inherited;
+  FCanvas.Free;
+  inherited Destroy;
 end;
 
-procedure TJvgMaskEdit.Paint(var Message: TWMPaint);
+procedure TJvgMaskEdit.Paint(var Msg: TWMPaint);
 begin
   inherited;
-  if Assigned(FAfterPaint) then FAfterPaint(self);
+  if Assigned(FOnAfterPaint) then
+    FOnAfterPaint(Self);
 end;
 
 procedure TJvgMaskEdit.CreateParams(var Params: TCreateParams);
 const
-  aAlignments: array[TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
-  aMultiline: array[boolean] of DWORD = (0, ES_MULTILINE);
-  ScrollBar: array[TScrollStyle] of DWORD = (0, WS_HSCROLL, WS_VSCROLL,
+  cAlignments: array [TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
+  cMultiLine: array [Boolean] of DWORD = (0, ES_MULTILINE);
+  cScrollBar: array [TScrollStyle] of DWORD = (0, WS_HSCROLL, WS_VSCROLL,
     WS_HSCROLL or WS_VSCROLL);
-  WordWraps: array[Boolean] of DWORD = (0, ES_AUTOHSCROLL);
+  cWordWraps: array [Boolean] of DWORD = (0, ES_AUTOHSCROLL);
 begin
   inherited CreateParams(Params);
-  Params.Style := Params.Style or aMultiline[FMultiline] or WS_CLIPCHILDREN
-    or aAlignments[FAlignment] or ScrollBar[FScrollBars] or WordWraps[FWordWrap];
+  Params.Style := Params.Style or cMultiLine[FMultiLine] or WS_CLIPCHILDREN
+    or cAlignments[FAlignment] or cScrollBar[FScrollBars] or cWordWraps[FWordWrap];
 end;
 
 procedure TJvgMaskEdit.SetScrollBars(Value: TScrollStyle);
 begin
-  FScrollBars := Value;
-  RecreateWnd;
+  if FScrollBars <> Value then
+  begin
+    FScrollBars := Value;
+    RecreateWnd;
+  end;
 end;
 
 procedure TJvgMaskEdit.SetAlignment(Value: TAlignment);
 begin
-  FAlignment := Value;
-  RecreateWnd;
+  if FAlignment <> Value then
+  begin
+    FAlignment := Value;
+    RecreateWnd;
+  end;
 end;
 
-procedure TJvgMaskEdit.SetMultiline(Value: boolean);
+procedure TJvgMaskEdit.SetMultiLine(Value: Boolean);
 begin
-  FMultiline := Value;
-  RecreateWnd;
+  if FMultiLine <> Value then
+  begin
+    FMultiLine := Value;
+    RecreateWnd;
+  end;
 end;
 
-procedure TJvgMaskEdit.SetWordWrap(Value: boolean);
+procedure TJvgMaskEdit.SetWordWrap(Value: Boolean);
 begin
-  FWordWrap := Value;
-  RecreateWnd;
+  if FWordWrap <> Value then
+  begin
+    FWordWrap := Value;
+    RecreateWnd;
+  end;
 end;
 {
 procedure TJvgMaskEdit.SetText( Value: string );
 var
-  i: integer;
-  fIsDigit: boolean;
+  i: Integer;
+  fIsDigit: Boolean;
 begin
   if DigitsOnly then
   begin
     Value := trim( Value );
-    fIsDigit := true;
+    fIsDigit := True;
     try
       i := StrToInt( Value );
     except
-      fIsDigit := false;
+      fIsDigit := False;
     end;
     if fIsDigit then Control.Text := Value;
   end
@@ -187,10 +205,10 @@ begin
 
 end;
 }
-{procedure TJvgMaskEdit.SetDigitsOnly( Value: boolean );
+{procedure TJvgMaskEdit.SetDigitsOnly( Value: Boolean );
 var
   Text: string;
-  i: integer;
+  i: Integer;
 begin
   if DigitsOnly = Value then exit;
   FDigitsOnly := Value;

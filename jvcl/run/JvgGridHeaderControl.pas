@@ -32,39 +32,39 @@ unit JvgGridHeaderControl;
 interface
 
 uses
-  Windows, Classes, comctrls, grids, sysutils, Forms,
-  {$IFNDEF DelphiPersonalEdition}dbgrids,{$ENDIF}  // Defines added by JGB
-  JVCLVer, dialogs;
+  Windows, Classes, ComCtrls, Grids, SysUtils, Forms,
+  {$IFNDEF DelphiPersonalEdition}
+  DBGrids,
+  {$ENDIF DelphiPersonalEdition}  // Defines added by JGB
+  JVCLVer;
 
 type
   TJvgGridHeaderControl = class(THeaderControl)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FGrid: TCustomGrid;
     FJoinColumns: TStringList;
     //    aColWidths: array[0..255] of word;
-    FEqualSize: boolean;
+    FEqualSize: Boolean;
     FSections: THeaderSections;
-    FAboutJVCL: TJVCLAboutInfo;
   public
-    FActiveSectionNo: integer;
+    FActiveSectionNo: Integer;
     procedure ResizeColumns;
   protected
     procedure Loaded; override;
     procedure Resize; override;
     procedure SetSections(Value: THeaderSections);
     procedure SetJoinColumns(Value: TStringList);
-    procedure SetEqualSize(Value: boolean);
+    procedure SetEqualSize(Value: Boolean);
     procedure SectionResize(Section: THeaderSection); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
-      False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Grid: TCustomGrid read FGrid write FGrid;
     property JoinColumns: TStringList read FJoinColumns write SetJoinColumns;
-    property EqualSize: boolean read FEqualSize write SetEqualSize default
-      true;
+    property EqualSize: Boolean read FEqualSize write SetEqualSize default True;
     //    property Sections: THeaderSections read FSections write SetSections;
   end;
 
@@ -72,85 +72,88 @@ type
   end;
 
 implementation
-uses JvgUtils;
+
+uses
+  JvgUtils;
 
 constructor TJvgGridHeaderControl.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FJoinColumns := TStringList.Create;
-  FSections := THeaderSections.Create(self);
-  FEqualSize := true;
+  FSections := THeaderSections.Create(Self);
+  FEqualSize := True;
 end;
 
 destructor TJvgGridHeaderControl.Destroy;
 begin
   FJoinColumns.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvgGridHeaderControl.Loaded;
 begin
-  inherited;
-  if not Assigned(Grid) then
-    exit;
+  inherited Loaded;
+  // (rom) disabled  no effect
+  // if not Assigned(Grid) then
+  //  Exit;
 end;
 
 procedure TJvgGridHeaderControl.Resize;
 begin
-  inherited;
+  inherited Resize;
   if not Assigned(Grid) then
-    exit;
-  //  for i:=0 to TJvgPublicGrid(Grid).ColCount-1 do
-  //    aColWidths[i] := TJvgPublicGrid(Grid).ColWidths[i];
-
-  ResizeColumns;
+  begin
+    //  for i:=0 to TJvgPublicGrid(Grid).ColCount-1 do
+    //    aColWidths[i] := TJvgPublicGrid(Grid).ColWidths[i];
+    ResizeColumns;
+  end;
 end;
 
 procedure TJvgGridHeaderControl.SectionResize(Section: THeaderSection);
 begin
-  inherited;
+  inherited SectionResize(Section);
   ResizeColumns;
 end;
 
 procedure TJvgGridHeaderControl.ResizeColumns;
 var
   //   ItemsCount,
-  i, Col, Sect, ColsToJoin, ColsToJoinWidth: integer;
-  fIndicator: boolean;
+  i, Col, Sect, ColsToJoin, ColsToJoinWidth: Integer;
+  Indicator: Boolean;
   G: TJvgPublicGrid;
 begin
   if not Assigned(Grid) then
-    exit;
+    Exit;
 
   G := TJvgPublicGrid(Grid);
   //   ItemsCount := min(G.ColCount, Sections.Count);
-  for i := 0 to max(FJoinColumns.Count - 1, Sections.Count - 1) do
+  for I := 0 to Max(FJoinColumns.Count - 1, Sections.Count - 1) do
   try
-    if FJoinColumns.Count <= i then
+    if FJoinColumns.Count <= I then
       FJoinColumns.Add('1');
-    FJoinColumns.Objects[i] := Pointer(StrToInt(FJoinColumns[i]));
+    FJoinColumns.Objects[I] := Pointer(StrToInt(FJoinColumns[I]));
   except
-    FJoinColumns.Objects[i] := Pointer(1);
+    FJoinColumns.Objects[I] := Pointer(1);
   end;
 
   Col := 0;
   Sect := 0;
-// DEFINE ADDED BY JGB 6-10-2003
-{$IFNDEF DelphiPersonalEdition}
-  fIndicator := (Grid is TDBGrid) and (dgIndicator in TDBGrid(g).Options);
-{$ELSE}
-  fIndicator := False;
-{$ENDIF}
-  if fIndicator then
-    col := 1;
+  // DEFINE ADDED BY JGB 6-10-2003
+  {$IFDEF DelphiPersonalEdition}
+  Indicator := False;
+  {$ELSE}
+  Indicator := (Grid is TDBGrid) and (dgIndicator in TDBGrid(g).Options);
+  {$ENDIF DelphiPersonalEdition}
+  if Indicator then
+    Col := 1;
 
   while (Col < G.ColCount) and (Sect < Sections.Count) do
   begin
-    ColsToJoin := min(integer(FJoinColumns.Objects[Sect]), G.ColCount - Col);
+    ColsToJoin := Min(Integer(FJoinColumns.Objects[Sect]), G.ColCount - Col);
 
     ColsToJoinWidth := 0;
-    for i := 0 to ColsToJoin - 1 do
-      inc(ColsToJoinWidth, g.ColWidths[Col + i]);
+    for I := 0 to ColsToJoin - 1 do
+      Inc(ColsToJoinWidth, G.ColWidths[Col + I]);
 
     //      inc(ColsToJoinWidth ,-ColsToJoin);
 
@@ -160,27 +163,26 @@ begin
 
     if ColsToJoinWidth <> 0 then
     begin
-      for i := 0 to ColsToJoin - 1 do
+      for I := 0 to ColsToJoin - 1 do
       begin
         if EqualSize then
-          G.ColWidths[Col + i] := trunc((ColsToJoinWidth / ColsToJoin /
+          G.ColWidths[Col + I] := Trunc((ColsToJoinWidth / ColsToJoin /
             ColsToJoinWidth) * Sections[Sect].Width) - 1
         else
-          G.ColWidths[Col + i] := trunc((g.ColWidths[Col + i] /
+          G.ColWidths[Col + I] := Trunc((G.ColWidths[Col + I] /
             ColsToJoinWidth) * Sections[Sect].Width) - 1;
       end;
       //G.ColWidths[Col + ColsToJoin-1] := G.ColWidths[Col + ColsToJoin-1] + Sections[Sect].Width - ColsToJoinWidth - ColsToJoin;
     end;
 
-    inc(Col, integer(JoinColumns.Objects[Sect]));
-    inc(Sect);
+    Inc(Col, Integer(JoinColumns.Objects[Sect]));
+    Inc(Sect);
   end;
   if G.BorderStyle <> bsNone then
-    G.ColWidths[integer(fIndicator)] := G.ColWidths[integer(fIndicator)] - 3;
-  if fIndicator then
+    G.ColWidths[Ord(Indicator)] := G.ColWidths[Ord(Indicator)] - 3;
+  if Indicator then
     G.ColWidths[1] := G.ColWidths[1] - 12;
 end;
-//------------------------------------------------------------------------------
 
 procedure TJvgGridHeaderControl.SetSections(Value: THeaderSections);
 begin
@@ -193,10 +195,13 @@ begin
   ResizeColumns;
 end;
 
-procedure TJvgGridHeaderControl.SetEqualSize(Value: boolean);
+procedure TJvgGridHeaderControl.SetEqualSize(Value: Boolean);
 begin
-  FEqualSize := Value;
-  ResizeColumns;
+  if FEqualSize <> Value then
+  begin
+    FEqualSize := Value;
+    ResizeColumns;
+  end;
 end;
 
 end.

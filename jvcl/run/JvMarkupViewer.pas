@@ -472,7 +472,7 @@ begin
       begin
         if el.Height > maxheight then maxheight := el.Height;
         if el.Ascent > maxAscent then maxAscent := el.Ascent;
-        el.Break(bm.canvas, xav);
+        el.Breakup(bm.canvas, xav);
         if el.soltext <> '' then
         begin
           xav := xav - bm.canvas.TextWidth(el.Soltext);
