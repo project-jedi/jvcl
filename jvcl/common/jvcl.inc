@@ -118,7 +118,7 @@ OLE automation calls (for VCL only). }
 
 { This activates the unit versioning system where each JVCL unit gets a record that defines
 which revision, date and filename the unit has. }
-{$DEFINE UNITVERSIONING}
+{.$DEFINE UNITVERSIONING}
 
 {$IFDEF NO_UNITVERSIONING}
  {$UNDEF UNITVERSIONING}
