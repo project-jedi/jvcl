@@ -54,13 +54,14 @@ uses
 type
   TTarget = class (TObject)
   private
-    FName  : string;
-    FDir   : string;
-    FPName : string;
-    FPDir  : string;
-    FEnv   : string;
-    FVer   : string;
+    FName   : string;
+    FDir    : string;
+    FPName  : string;
+    FPDir   : string;
+    FEnv    : string;
+    FVer    : string;
     FDefines: TStringList;
+    FPathSep: string;
     function GetDir: string;
     function GetEnv: string;
     function GetPDir: string;
@@ -69,13 +70,14 @@ type
     constructor Create(Node : TJvSimpleXmlElem); overload;
     destructor Destroy; override;
 
-    property Name  : string read FName;
-    property Dir   : string read GetDir;
-    property PName : string read FPName;
-    property PDir  : string read GetPDir;
-    property Env   : string read GetEnv;
-    property Ver   : string read GetVer;
+    property Name   : string read FName;
+    property Dir    : string read GetDir;
+    property PName  : string read FPName;
+    property PDir   : string read GetPDir;
+    property Env    : string read GetEnv;
+    property Ver    : string read GetVer;
     property Defines: TStringList read FDefines;
+    property PathSep: string read FPathSep;
   end;
 
   TTargetList = class (TObjectList)
@@ -562,9 +564,8 @@ begin
   // first ensure we only have backslashes
   StrReplace(Name, '/', '\', [rfReplaceAll]);
 
-  // and if the environment is kylix, replace all them by forward slashes
-  if TargetList[GetNonPersoTarget(target)].Env = 'K' then
-    StrReplace(Name, '\', '/', [rfReplaceAll]);
+  // and replace all them by the path separator for the target
+  StrReplace(Name, '\', TargetList[GetNonPersoTarget(target)].PathSep, [rfReplaceAll]);
 end;
 
 procedure ApplyFormName(fileNode : TJvSimpleXmlElem; var Lines : string; target : string);
@@ -1369,12 +1370,16 @@ begin
   if Assigned(Node.Properties.ItemNamed['ver']) then
     FVer := AnsiLowerCase(Node.Properties.ItemNamed['ver'].Value)[1];
 
-  FDefines := TStringList.Create;  
+  FDefines := TStringList.Create;
   if Assigned(Node.Properties.ItemNamed['defines']) then
     StrToStrings(Node.Properties.ItemNamed['defines'].Value,
                  ',',
                  FDefines,
                  False);
+
+  FPathSep := '\';
+  if Assigned(Node.Properties.ItemNamed['pathsep']) then
+    FPathSep := Node.Properties.ItemNamed['pathsep'].Value;
 end;
 
 destructor TTarget.Destroy;
