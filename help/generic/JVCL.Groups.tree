@@ -62,6 +62,7 @@
 |- HMI=Human Machine Interface=JVCL provides a number of components and controls that can be use used in application used for plant process (not to be confused with processes as used by the operating system) control/monitoring. These types of controls and components are referred to as Human Process Interface controls/components.
 |   |- Indicators=Indicators=JVCL provides a number of components and controls that can be used to indicate some state of a plant process. These include gauges and meters.
 |   |- Controls=Controls=JVCL provides a number of components and controls that can be used to control some plant process. These include levers, switches and knobs.
+|   |- NonVisual=Non visual=JVCL provides a number of HMI related non-visual components.
 |- Internet=Internet=JVCL provides a number of components and controls that deal with internet related topics (both protocols as well as content).
 |   |- ConvertersAndParsers=Converters and Parsers=JVCL provides a number of components and controls that convert and/or parse internet related content (such as HTML and XML).
 |   |   |- HTML=HTML=JVCL provides a number of components and controls that convert and/or parse HTML content.
