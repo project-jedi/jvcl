@@ -1372,8 +1372,9 @@ begin
             Exit;
           end;
           if (j = StartPage) and (i = 0) then
-            APrinter.BeginDoc;
-          APrinter.NewPage;
+            APrinter.BeginDoc
+          else
+            APrinter.NewPage;
           APrinter.GetCanvas.Draw(0, 0, Pages[j]);
         end;
     end
@@ -1389,8 +1390,9 @@ begin
             Exit;
           end;
           if (j = StartPage) and (i = 0) then
-            APrinter.BeginDoc;
-          APrinter.NewPage;
+            APrinter.BeginDoc
+          else
+            APrinter.NewPage;
           APrinter.GetCanvas.Draw(0, 0, Pages[j]);
         end;
     end;
@@ -1410,8 +1412,9 @@ begin
             Exit;
           end;
           if (j = StartPage) and (i = 0) then
-            APrinter.BeginDoc;
-          APrinter.NewPage;
+            APrinter.BeginDoc
+          else
+            APrinter.NewPage;
           APrinter.GetCanvas.Draw(0, 0, Pages[j]);
         end;
     end
@@ -1427,8 +1430,9 @@ begin
             Exit;
           end;
           if (j = StartPage) and (i = 0) then
-            APrinter.BeginDoc;
-          APrinter.NewPage;
+            APrinter.BeginDoc
+          else
+            APrinter.NewPage;
           APrinter.GetCanvas.Draw(0, 0, Pages[j]);
         end;
     end;

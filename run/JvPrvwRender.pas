@@ -134,8 +134,8 @@ type
   protected
     function GetPPX(ADC:HDC):Integer;
     function GetPPY(ADC:HDC):Integer;
-    procedure DoAddPage(Sender: TObject; PageIndex: Integer;
-      Canvas: TCanvas; PageRect, PrintRect: TRect; var NeedMorePages: Boolean); override;
+    procedure DoAddPage(Sender: TObject; PageIndex: Integer; Canvas: TCanvas;
+      PageRect, PrintRect: TRect; var NeedMorePages: Boolean); override;
   public
     function CreatePreview(Append: Boolean): Boolean; override;
     constructor Create(AOwner: TComponent); override;
@@ -162,7 +162,6 @@ type
     procedure DrawControl(ACanvas: TCanvas; AWidth, AHeight: Integer);
   public
     constructor Create(AOwner: TComponent); override;
-
   published
     property PrintPreview;
     property Control: TControl read FControl write SetControl;
@@ -173,6 +172,7 @@ type
   end;
 
   TJvNewPageEvent = procedure(Sender:TObject;PageIndex:Integer) of object;
+
   // a class that implements the IJvPrinter interface
   TJvPreviewPrinter = class(TJvComponent, IUnknown, IJvPrinter)
   private
@@ -267,7 +267,7 @@ begin
       if w > h then
       begin
         w := cw;
-        h := trunc(cw / xyaspect);
+        h := Trunc(cw / xyaspect);
         if h > ch then // woops, too big
         begin
           h := ch;
@@ -277,11 +277,11 @@ begin
       else
       begin
         h := ch;
-        w := trunc(ch * xyaspect);
+        w := Trunc(ch * xyaspect);
         if w > cw then // woops, too big
         begin
           w := cw;
-          h := trunc(cw / xyaspect);
+          h := Trunc(cw / xyaspect);
         end;
       end;
     end
@@ -346,10 +346,10 @@ begin
   if FPrintPreview <> value then
   begin
     if FPrintPreview <> nil then
-      FPrintPreview.RemoveFreeNotification(self);
+      FPrintPreview.RemoveFreeNotification(Self);
     FPrintPreview := Value;
     if FPrintPreview <> nil then
-      FPrintPreview.FreeNotification(self);
+      FPrintPreview.FreeNotification(Self);
   end;
 end;
 
@@ -390,10 +390,10 @@ begin
     end
     else
     begin
-      Range.rc.left := RichEdit.PageRect.Left * 1440 div LogX;
-      Range.rc.top := RichEdit.PageRect.Top * 1440 div LogY;
-      Range.rc.right := RichEdit.PageRect.Right * 1440 div LogX;
-      Range.rc.bottom := RichEdit.PageRect.Bottom * 1440 div LogY;
+      Range.rc.Left := RichEdit.PageRect.Left * 1440 div LogX;
+      Range.rc.Top := RichEdit.PageRect.Top * 1440 div LogY;
+      Range.rc.Right := RichEdit.PageRect.Right * 1440 div LogX;
+      Range.rc.Bottom := RichEdit.PageRect.Bottom * 1440 div LogY;
     end;
     Range.rcPage := Range.rc;
     MaxLen := RichEdit.GetTextLen;
@@ -430,10 +430,10 @@ begin
   if FRichEdit <> Value then
   begin
     if FRichEdit <> nil then
-      FRichEdit.RemoveFreeNotification(self);
+      FRichEdit.RemoveFreeNotification(Self);
     FRichEdit := Value;
     if FRichEdit <> nil then
-      FRichEdit.FreeNotification(self);
+      FRichEdit.FreeNotification(Self);
   end;
 end;
 
@@ -482,13 +482,15 @@ begin
     begin
       ARect.Right := PrintRect.Right;
       S := Strings[i];
-      IncValue := DrawText(Canvas.Handle, PChar(S), Length(S), ARect, DT_CALCRECT or DT_NOPREFIX or DT_EXPANDTABS or DT_WORDBREAK or DT_LEFT or DT_TOP);
+      IncValue := DrawText(Canvas.Handle, PChar(S), Length(S), ARect,
+        DT_CALCRECT or DT_NOPREFIX or DT_EXPANDTABS or DT_WORDBREAK or DT_LEFT or DT_TOP);
       if ARect.Right > PrintRect.Right then
       begin
         ARect.Right := PrintRect.Right; // reset and jsut force a line break in the middle (not fail proof!)
         S := Copy(S, 1, Length(S) div 2) + #13#10 +
           Copy(S, Length(S) div 2 + 1, Length(S));
-        IncValue := DrawText(Canvas.Handle, PChar(S), Length(S), ARect, DT_CALCRECT or DT_NOPREFIX or DT_EXPANDTABS or DT_WORDBREAK or DT_LEFT or DT_TOP);
+        IncValue := DrawText(Canvas.Handle, PChar(S), Length(S), ARect,
+          DT_CALCRECT or DT_NOPREFIX or DT_EXPANDTABS or DT_WORDBREAK or DT_LEFT or DT_TOP);
       end;
       if ARect.Bottom > PrintRect.Bottom then
       begin
@@ -496,7 +498,8 @@ begin
         NeedMorePages := True;
         Exit;
       end;
-      DrawText(Canvas.Handle, PChar(S), Length(S), ARect, DT_NOPREFIX or DT_EXPANDTABS or DT_WORDBREAK or DT_LEFT or DT_TOP);
+      DrawText(Canvas.Handle, PChar(S), Length(S), ARect,
+        DT_NOPREFIX or DT_EXPANDTABS or DT_WORDBREAK or DT_LEFT or DT_TOP);
       OffsetRect(ARect, 0, IncValue);
     end;
   end;
@@ -553,7 +556,8 @@ begin
     DrawControl(Bitmap.Canvas, Bitmap.Width, Bitmap.Height);
     if (Bitmap.Width > 0) and (Bitmap.Height > 0) then
     begin
-      ARect := CalcDestRect(Bitmap.Width, Bitmap.Height, PrintRect, Stretch, Proportional, Center);
+      ARect := CalcDestRect(Bitmap.Width, Bitmap.Height, PrintRect, Stretch,
+        Proportional, Center);
       StretchDrawBitmap(Canvas, ARect, Bitmap);
     end;
   finally
@@ -574,10 +578,10 @@ begin
   if FControl <> Value then
   begin
     if FControl <> nil then
-      FControl.RemoveFreeNotification(self);
+      FControl.RemoveFreeNotification(Self);
     FControl := Value;
     if FControl <> nil then
-      FControl.FreeNotification(self);
+      FControl.FreeNotification(Self);
   end;
 end;
 
@@ -687,7 +691,7 @@ end;
 constructor TJvPreviewRenderGraphics.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FImages := TJvPreviewGraphicItems.Create(self);
+  FImages := TJvPreviewGraphicItems.Create(Self);
 end;
 
 function TJvPreviewRenderGraphics.CreatePreview(Append: Boolean): Boolean;
@@ -755,7 +759,7 @@ begin
   if GetPrinting then
     FPrinter.Abort;
   if Assigned(FOnAbort) then
-    FOnAbort(self);
+    FOnAbort(Self);
 end;
 
 procedure TJvPreviewPrinter.Assign(Source: TPersistent);
@@ -789,7 +793,7 @@ begin
   CheckPrinter;
   FPrinter.BeginDoc;
   if Assigned(FOnBeginDoc) then
-    FOnBeginDoc(self);
+    FOnBeginDoc(Self);
   FPageIndex := 0;
 end;
 
@@ -810,7 +814,7 @@ begin
   CheckPrinter;
   FPrinter.EndDoc;
   if Assigned(FOnEndDoc) then
-    FOnEndDoc(self);
+    FOnEndDoc(Self);
 end;
 
 function TJvPreviewPrinter.GetAborted: Boolean;
@@ -854,7 +858,7 @@ begin
   CheckPrinter;
   FPrinter.NewPage;
   if Assigned(FOnNewPage) then
-    FOnNewPage(self,FPageIndex);
+    FOnNewPage(Self, FPageIndex);
   Inc(FPageIndex);
 end;
 
@@ -882,7 +886,7 @@ begin
     AMin := FromPage - 1;
     AMax := ToPage - 1;
   end;
-  PrintPreview.PrintRange(self, AMin, AMax, Copies, Collate);
+  PrintPreview.PrintRange(Self, AMin, AMax, Copies, Collate);
 end;
 
 procedure TJvPreviewPrinter.SetNumCopies(const Value: Integer);
@@ -904,10 +908,10 @@ begin
   if FPrintPreview <> Value then
   begin
     if FPrintPreview <> nil then
-      FPrintPreview.RemoveFreeNotification(self);
+      FPrintPreview.RemoveFreeNotification(Self);
     FPrintPreview := Value;
     if FPrintPreview <> nil then
-      FPrintPreview.FreeNotification(self);
+      FPrintPreview.FreeNotification(Self);
   end;
 end;
 
@@ -916,7 +920,6 @@ begin
   CheckPrinter;
   FPrinter.Title := Value;
 end;
-
 
 end.
 
