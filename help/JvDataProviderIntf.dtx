@@ -1648,10 +1648,10 @@ Description
   forwardslash; both are allowed), the path is considered from the root of the provider
   (GetProvider.GetItems).
 
-  Each '..\' is considered as '1 level up the tree'.
+  Each '..' is considered as '1 level up the tree'.
 
   As soon as a term in the path can't be retrieved the entire result will be nil. This can happen when
-  to many '..\' terms appear or one of the ID's in the path can't be found.
+  to many '..' terms appear or one of the ID's in the path can't be found.
 Parameters
   ID - The ID or ID-path of the item to retrieve.
 See Also

@@ -94,22 +94,25 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.EmptyFontColor
 Summary
-  Write here a summary (1 line)
+  The font color to use when the EmptyValue is displayed.
 Description
-  Write here a description
+  Set EmptyFontColor to a color to use for the text when the edit control displays the EmptyValue hint
+  in the edit field. If EmptyValue is an empty string, this property has no effect.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EmptyValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.EmptyValue
 Summary
-  Write here a summary (1 line)
+  A text to display when the Text property is empty.
 Description
-  Write here a description
+  Use EmptyValue if you want to display a hint to the user when the Text property is empty. As soon as
+  the user selects the edit or types some text into the control, the EmptyValue is removed and replaced
+  by the new text. If the user clears the content of the edit, the EmptyValue is displayed again.
+
+  Set EmptyValue to an empty string (the default) to disable this feature.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EmptyFontColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.Flat

@@ -11,7 +11,7 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseEditListAutoComplete
 Summary
-  Write here a summary (1 line)
+  Base class for auto complete support for Edit/TStrings pairs.
 Description
   Write here a description
 
@@ -38,9 +38,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvComboBoxAutoComplete
 Summary
-  Write here a summary (1 line)
+  TComboBoxAutoComplete implements autocomplete support for ComboBoxes.
 Description
-  Write here a description
+  After you have created an instance of this class you must either assign the AutoCompleteEvent to the
+  OnKeyPress event of the edit control or you must call the AutoComplete method from the KeyPress
+  method.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboBoxAutoComplete.ComboBox
@@ -55,9 +57,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvControlAutoComplete
 Summary
-  Write here a summary (1 line)
+  Base class for auto complete support for controls.
 Description
-  Write here a description
+  TControlAutoComplete implements autocomplete support for controls and is an abstract base class.
+  After you have created an instance of a derived class you must either assign the AutoCompleteEvent to
+  the OnKeyPress event of the control or you must call the AutoComplete method from the controls
+  KeyPress method.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvControlAutoComplete.Active
@@ -157,9 +162,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvEditListAutoComplete
 Summary
-  Write here a summary (1 line)
+  Provides auto complete support for Edit/TStrings pairs.
 Description
-  Write here a description
+  TEditListAutoComplete implements autocomplete support for an Edit/TStrings pair. After you have
+  created an instance of this class you must either assign the AutoCompleteEvent to the OnKeyPress
+  event of the edit control or you must call the AutoComplete method from the KeyPress method.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEditListAutoComplete.FItemIndex
@@ -250,9 +257,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvEditListBoxAutoComplete
 Summary
-  Write here a summary (1 line)
+  TEditListBoxAutoComplete implements autocomplete support for an Edit/ListBox pair.
 Description
-  Write here a description
+  After you have created an instance of this class you must either assign the AutoCompleteEvent to the
+  OnKeyPress event of the edit control or you must call the AutoComplete method from the KeyPress
+  method.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEditListBoxAutoComplete.ListBox

@@ -177,7 +177,7 @@ Summary
   This property only have meaning on portable computers that run off batteries. Provides access to the
   current status of the computer battery.
 Description
-  \\Read BatteryFlag to learn the current status of the computers battery. BatteryFlag can have one of
+  \Read BatteryFlag to learn the current status of the computers battery. BatteryFlag can have one of
   the following values:
 
   <TABLE>
@@ -286,7 +286,7 @@ Description
 Summary
   Holds the BIOS Copyright notice
 Description
-  \\Contains the copyright notice of the BIOS. If the BIOS doesn\'t contain a copyright or is
+  \Contains the copyright notice of the BIOS. If the BIOS doesn\'t contain a copyright or is
   unsupported by the BIOS, this property returns an empty string.
 
 ----------------------------------------------------------------------------------------------------
@@ -379,7 +379,7 @@ Description
   </CODE>
   <AUTOLINK ON>
 
-  Sub-classes are instantiated on-demand which means that sub-classes that you don\\'t use will not be
+  Sub-classes are instantiated on-demand which means that sub-classes that you don\'t use will not be
   created nor will the system be queried for the information the sub-classes provide. This saves you a
   lot of time and memory at run-time.
 See Also
@@ -514,7 +514,7 @@ See Also
 Summary
   Occurs when a device is added to the system.
 Description
-  \\Write a handler for this event to take specific action when a new device have become available in
+  \Write a handler for this event to take specific action when a new device have become available in
   the system.
 
   This event is triggered in response to a WM_DEVICECHANGE message and a wParam set to
@@ -527,7 +527,7 @@ See Also
 Summary
   Occurs when a device is added or removed from the system.
 Description
-  \\Write a handler for this event to take specific actions when devices are added or removed from the
+  \Write a handler for this event to take specific actions when devices are added or removed from the
   computer. If you only want to handle device additions, use OnDeviceAdded instead. If you only want to
   handle device removals, use OnDeviceRemoved instead.
 
@@ -544,7 +544,7 @@ See Also
 Summary
   Occurs when the user changes device mode settings.
 Description
-  \\Write a handler for this event to take specific action when the user make device mode setting
+  \Write a handler for this event to take specific action when the user make device mode setting
   changes on the computer.
 
   This event is triggered in response to a WM_DEVMODECHANGE message from Windows.
@@ -559,7 +559,7 @@ See Also
 Summary
   Occurs when a device has been removed from the system.
 Description
-  \\Write a handler for this event to take specific action when a device have been removed from the
+  \Write a handler for this event to take specific action when a device have been removed from the
   system.
 
   This event is triggered in response to a WM_DEVICECHANGE message and a wParam set to
@@ -572,7 +572,7 @@ See Also
 Summary
   Occurs when the user changes display settings.
 Description
-  \\Write a handler for this event to take specifi actions when the user changes his display settings.
+  \Write a handler for this event to take specifi actions when the user changes his display settings.
 
   This event is triggered in response to a WM_DISPLAYCHANGE message.
 Parameters
@@ -616,7 +616,7 @@ See Also
 Summary
   Occurs before a window is about to realize its logical palette.
 Description
-  \\Write a handler for this event to take specific action before a window realizes its logical
+  \Write a handler for this event to take specific action before a window realizes its logical
   palette.
 
   The application changing its palette does not wait for acknowledgment of this event before changing
@@ -632,7 +632,7 @@ See Also
 Summary
   Occurs when a power-management event has occurred
 Description
-  \\Write a handler for this event to take specific actions when a power-management event has
+  \Write a handler for this event to take specific actions when a power-management event has
   occurred.
 
   This event is triggered in response to a WM_POWER or a WM_POWERBROADCAST message. Note that the
@@ -678,7 +678,7 @@ Summary
   The WM_SPOOLERSTATUS message is not supported after Windows XP. Occurs whenever a job is added to or
   removed from the Print Manager queue.
 Description
-  \\Write a handler for this event to take specific actions when print jobs are added or removed from
+  \Write a handler for this event to take specific actions when print jobs are added or removed from
   the print queue.
 
   This event is triggered in response to a WM_SPOOLERSTATUS message.
@@ -697,7 +697,7 @@ See Also
 Summary
   Occurs when a system color has changed.
 Description
-  \\Write a handler for this event to take specific actions when a system color is changed.
+  \Write a handler for this event to take specific actions when a system color is changed.
 
   This event is triggered in response to a WM_SYSCOLORCHANGE message.
 See Also
@@ -708,7 +708,7 @@ See Also
 Summary
   Occurs when the computers time is changed.
 Description
-  \\Write a handler for this event to take specific actions when the system time is changed.
+  \Write a handler for this event to take specific actions when the system time is changed.
 
   This event is triggered in response to a WM_TIMECHANGE message.
 See Also
@@ -719,7 +719,7 @@ See Also
 Summary
   Occurs when a user has logged on or off.
 Description
-  \\Write a handler for this event to take specific actions when a user logs on or off.
+  \Write a handler for this event to take specific actions when a user logs on or off.
 
   Note that most GUI applications do not recieve this message since they are either started after the
   user has logged in or closed before the user logs out. This message is mainly intended for
@@ -1748,12 +1748,12 @@ See Also
 Summary
   Provides information about the state of arbitrary keys.
 Description
-  Use KeyState to \\read or \\write the current state of a key on the keyboard. If KeyState returns
-  True, the key is pressed. If it returns False, the key is unpressed.
+  Use KeyState to \read or \write the current state of a key on the keyboard. If KeyState returns True,
+  the key is pressed. If it returns False, the key is unpressed.
 
   For keys that toggles when pressed, use the CapsLock, ScrollLock and NumLock properties instead.
 Parameters
-  VirtualKey - The key you want to \\read or \\write.
+  VirtualKey - The key you want to \read or \write.
 See Also
   TJvKeyInfo.CapsLock, TJvKeyInfo.NumLock, TJvKeyInfo.ScrollLock
 
@@ -2036,7 +2036,7 @@ See Also
 Summary
   Specifies the current horizontal location of the mouse cursor.
 Description
-  \\Read CursorX to find the current horizontal location of the mouse cursor in screen coordinates.
+  \Read CursorX to find the current horizontal location of the mouse cursor in screen coordinates.
   Change CursorX to move the mouse cursor to another screen location.
 See Also
   TJvMetricsInfo.CursorY
@@ -2046,7 +2046,7 @@ See Also
 Summary
   Specifies the current vertical location of the mouse cursor.
 Description
-  \\Read CursorY to find the current vertical location of the mouse cursor in screen coordinates.
+  \Read CursorY to find the current vertical location of the mouse cursor in screen coordinates.
   Change CursorY to move the mouse cursor to another screen location.
 See Also
   TJvMetricsInfo.CursorX
@@ -2859,7 +2859,7 @@ See Also
 Summary
   Provides access to the location of the screensaver.
 Description
-  \\Read ScreenSaver to access the location of the current screen saver file. Change ScreenSaver to set
+  \Read ScreenSaver to access the location of the current screen saver file. Change ScreenSaver to set
   a new ScreenSaver. Setting ScreenSaver to an emtpy string, disables the screen saver completely.
 
 ----------------------------------------------------------------------------------------------------
@@ -4201,7 +4201,7 @@ See Also
 Summary
   Specifies the curernt directory.
 Description
-  \\Read Current to access the path to the currently selected folder in the system. Change Current to
+  \Read Current to access the path to the currently selected folder in the system. Change Current to
   set a new current folder.
 
 ----------------------------------------------------------------------------------------------------
@@ -4400,7 +4400,7 @@ Summary
   Determines how a system folder path string is terminated.
 Description
   Use TrailingPathDelimiter to specify how a system folder path string is terminated. If
-  TrailingPathDelimiter is True, a path delimiter (\'\\\' on Windows) is added to the end of the path
+  TrailingPathDelimiter is True, a path delimiter ('\\' on Windows) is added to the end of the path
   unless already present. If TrailingPathDelimiter is False, a path delimiter is removed from the end
   of the path if present.
 
