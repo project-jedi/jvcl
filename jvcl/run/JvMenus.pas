@@ -2102,12 +2102,26 @@ procedure TJvCustomMenuItemPainter.Paint(Item: TMenuItem; ItemRect: TRect;
 var
   MaxWidth, I: Integer;
   Bmp: TBitmap;
+
+  // the rect that will contain the size of the menu item caption
+  CaptionRect: TRect;
+
+  // The rect in which to draw the check mark for the item
   CheckMarkRect: TRect;
+
+  // The rect in which to draw the image, with or without the image margins
   ImageRect: TRect;
   ImageAndMarginRect: TRect;
+
+  // The rect in which to draw the text, with or without the margins
   TextRect: TRect;
   TextAndMarginRect: TRect;
+
+  // The rect where the Left margin has to be drawn (its height is the height of the entire menu, not just the item)
   LeftMarginRect: TRect;
+
+  // The item rect, whithout the left margin
+  ItemRectNoLeftMargin: TRect;
 
   CanvasWindow: HWND;
   CanvasRect: TRect;
@@ -2130,6 +2144,7 @@ begin
       CheckMarkRect := Rect(ItemRect.Right - CheckMarkWidth + 1, ItemRect.Top, ItemRect.Right, ItemRect.Bottom);
       ImageAndMarginRect := Rect(CheckMarkRect.Left - 1 - ImageMargin.Left - ImageWidth - ImageMargin.Right, ItemRect.Top, CheckMarkRect.Left - 1, ItemRect.Bottom);
       TextAndMarginRect := Rect(ItemRect.Left, ItemRect.Top, ImageAndMarginRect.Left - 1, ItemRect.Bottom);
+      ItemRectNoLeftMargin := Rect(ItemRect.Left, ItemRect.Top, Cardinal(ItemRect.Right)-LeftMargin, ItemRect.Bottom);
       OffsetRect(CheckMarkRect, -LeftMargin, 0);
       OffsetRect(ImageAndMarginRect, -LeftMargin, 0);
       OffsetRect(TextAndMarginRect, -LeftMargin, 0);
@@ -2141,6 +2156,7 @@ begin
       CheckMarkRect := Rect(ItemRect.Left, ItemRect.Top, ItemRect.Left + CheckMarkWidth - 1, ItemRect.Bottom);
       ImageAndMarginRect := Rect(CheckMarkRect.Right + 1, ItemRect.Top, CheckMarkRect.Right + 1 + ImageMargin.Left + ImageWidth + ImageMargin.Right - 1, ItemRect.Bottom);
       TextAndMarginRect := Rect(ImageAndMarginRect.Right + 1, ItemRect.Top, ItemRect.Right, ItemRect.Bottom);
+      ItemRectNoLeftMargin := Rect(Cardinal(ItemRect.Left)+LeftMargin, ItemRect.Top, ItemRect.Right, ItemRect.Bottom);
       OffsetRect(CheckMarkRect, LeftMargin, 0);
       OffsetRect(ImageAndMarginRect, LeftMargin, 0);
       OffsetRect(TextAndMarginRect, LeftMargin, 0);
@@ -2174,7 +2190,7 @@ begin
 
   // if the item is selected, then draw the frame to represent that
   if mdSelected in State then
-    DrawSelectedFrame(ItemRect);
+    DrawSelectedFrame(ItemRectNoLeftMargin);
 
   if Assigned(Item) then
   begin
@@ -2186,94 +2202,110 @@ begin
     if Item.Checked and ShowCheckMarks and IsPopup then
       DrawCheckImage(CheckMarkRect);
 
-    // if we have a valid image from the list to use for this item
-    if UseImages then
+    // It is now time to draw the image. The image will not be
+    // drawn for root menu items (non popup).
+    if IsPopup then
     begin
-      // Draw the corresponding back of an item
-      // if the item is to be drawn checked or not
-      if Item.Checked and not ShowCheckMarks then
-        DrawCheckedImageBack(ImageAndMarginRect)
-      else
-        DrawNotCheckedImageBack(ImageAndMarginRect);
-
-      // then, draw the correct image, according to the state
-      // of the item
-      if (mdDisabled in State) then
-        DrawDisabledImage(ImageRect.Left, ImageRect.Top)
-      else
-        DrawEnabledImage(ImageRect.Left, ImageRect.Top)
-    end
-      // else, we may have a valid glyph, but we won't use it if
-      // the item is a separator
-    else
-    if Assigned(FGlyph) and not FGlyph.Empty and
-      (Item.Caption <> Separator) then
-    begin
-      // Draw the corresponding back of an item
-      // if the item is to be drawn checked or not
-      if Item.Checked and not ShowCheckMarks then
-        DrawCheckedImageBack(ImageAndMarginRect)
-      else
-        DrawNotCheckedImageBack(ImageAndMarginRect);
-
-      if FGlyph is TBitmap then
+      // if we have a valid image from the list to use for this item
+      if UseImages then
       begin
-        // in the case of a bitmap, we may have more than one glyph
-        // in the graphic. If so, we draw only the one that corresponds
-        // to the current state of the item
-        // if not, we simply draw the bitmap
-        if FNumGlyphs in [2..5] then
+        // Draw the corresponding back of an item
+        // if the item is to be drawn checked or not
+        if Item.Checked and not ShowCheckMarks then
+          DrawCheckedImageBack(ImageAndMarginRect)
+        else
+          DrawNotCheckedImageBack(ImageAndMarginRect);
+
+        // then, draw the correct image, according to the state
+        // of the item
+        if (mdDisabled in State) then
+          DrawDisabledImage(ImageRect.Left, ImageRect.Top)
+        else
+          DrawEnabledImage(ImageRect.Left, ImageRect.Top)
+      end
+        // else, we may have a valid glyph, but we won't use it if
+        // the item is a separator
+      else
+      if Assigned(FGlyph) and not FGlyph.Empty and
+        (Item.Caption <> Separator) then
+      begin
+        // Draw the corresponding back of an item
+        // if the item is to be drawn checked or not
+        if Item.Checked and not ShowCheckMarks then
+          DrawCheckedImageBack(ImageAndMarginRect)
+        else
+          DrawNotCheckedImageBack(ImageAndMarginRect);
+
+        if FGlyph is TBitmap then
         begin
-          I := 0;
-          if mdDisabled in State then
-            I := 1
-          else
-          if mdChecked in State then
-            I := 3
-          else
-          if mdSelected in State then
-            I := 2;
-          if I > FNumGlyphs - 1 then
+          // in the case of a bitmap, we may have more than one glyph
+          // in the graphic. If so, we draw only the one that corresponds
+          // to the current state of the item
+          // if not, we simply draw the bitmap
+          if FNumGlyphs in [2..5] then
+          begin
             I := 0;
-          Bmp := TBitmap.Create;
-          try
-            AssignBitmapCell(FGlyph, Bmp, FNumGlyphs, 1, I);
-            DrawMenuBitmap(ImageRect.Left, ImageRect.Top, Bmp);
-          finally
-            Bmp.Free;
-          end;
+            if mdDisabled in State then
+              I := 1
+            else
+            if mdChecked in State then
+              I := 3
+            else
+            if mdSelected in State then
+              I := 2;
+            if I > FNumGlyphs - 1 then
+              I := 0;
+            Bmp := TBitmap.Create;
+            try
+              AssignBitmapCell(FGlyph, Bmp, FNumGlyphs, 1, I);
+              DrawMenuBitmap(ImageRect.Left, ImageRect.Top, Bmp);
+            finally
+              Bmp.Free;
+            end;
+          end
+          else
+            DrawMenuBitmap(ImageRect.Left, ImageRect.Top, TBitmap(FGlyph));
         end
         else
-          DrawMenuBitmap(ImageRect.Left, ImageRect.Top, TBitmap(FGlyph));
+        begin
+          Canvas.Draw(ImageRect.Left, ImageRect.Top, FGlyph);
+        end;
       end
+      // at last, if there is no image given by the user, there may
+      // be a check mark to draw instead
       else
+      if Item.Checked and not ShowCheckMarks then
       begin
-        Canvas.Draw(ImageRect.Left, ImageRect.Top, FGlyph);
+        DrawCheckedImageBack(ImageAndMarginRect);
+        DrawCheckImage(ImageRect);
       end;
-    end
-    // at last, if there is no image given by the user, there may
-    // be a check mark to draw instead
-    else
-    if Item.Checked and not ShowCheckMarks then
-    begin
-      DrawCheckedImageBack(ImageAndMarginRect);
-      DrawCheckImage(ImageRect);
     end;
 
     // now that the image and check mark are drawn, we can
     // draw the text of the item (or a separator)
 
     if Item.Caption = Separator then
-      DrawSeparator(ItemRect)
+      DrawSeparator(ItemRectNoLeftMargin)
     else
     begin
       // find the largest text element
-      MaxWidth := Canvas.TextWidth(StripHotkey(Item.Caption) + ShortcutSpacing{Tab + Tab});
+      Windows.DrawText(Canvas.Handle,
+                       PChar(Item.Caption),
+                       Length(Item.Caption),
+                       CaptionRect,
+                       DT_CALCRECT or DT_EXPANDTABS or DT_LEFT or DT_SINGLELINE);
+      MaxWidth := CaptionRect.Right - CaptionRect.Left;
       if (Item.Parent <> nil) and (Item.ShortCut <> scNone) then
       begin
         for I := 0 to Item.Parent.Count - 1 do
-          MaxWidth := Max(Canvas.TextWidth(StripHotkey(Item.Parent.Items[I].Caption) +
-            ShortcutSpacing { Tab + Tab}), MaxWidth);
+        begin
+          Windows.DrawText(Canvas.Handle,
+                           PChar(Item.Parent.Items[I].Caption+ShortcutSpacing),
+                           Length(Item.Parent.Items[I].Caption+ShortcutSpacing),
+                           CaptionRect,
+                           DT_CALCRECT or DT_EXPANDTABS or DT_LEFT or DT_SINGLELINE);
+          MaxWidth := Max(CaptionRect.Right - CaptionRect.Left, MaxWidth);
+        end;
       end;
 
       // draw the text
@@ -2343,6 +2375,7 @@ var
   tmpWidth: Integer;
   ShortcutWidth: Integer;
   OneItemHasChildren: Boolean;
+  CaptionRect: TRect;
 begin
   if IsPopup then
   begin
@@ -2350,7 +2383,12 @@ begin
     // Text Shortcut SubMenuArrow.
     // with the two last ones being not compulsory
 
-    MaxWidth := Canvas.TextWidth(StripHotkey(Item.Caption));
+    Windows.DrawText(Canvas.Handle,
+                     PChar(Item.Caption),
+                     Length(Item.Caption),
+                     CaptionRect,
+                     DT_CALCRECT or DT_EXPANDTABS or DT_LEFT or DT_SINGLELINE);
+    MaxWidth := CaptionRect.Right - CaptionRect.Left;
 
     ShortcutWidth := 0;
     OneItemHasChildren := False;
@@ -2371,7 +2409,12 @@ begin
 
       for I := 0 to Item.Parent.Count - 1 do
       begin
-        tmpWidth := Canvas.TextWidth(StripHotkey(Item.Parent.Items[I].Caption));
+        Windows.DrawText(Canvas.Handle,
+                         PChar(Item.Parent.Items[I].Caption),
+                         Length(Item.Parent.Items[I].Caption),
+                         CaptionRect,
+                         DT_CALCRECT or DT_EXPANDTABS or DT_LEFT or DT_SINGLELINE);
+        tmpWidth := CaptionRect.Right - CaptionRect.Left;
         if tmpWidth > MaxWidth then
           MaxWidth := tmpWidth;
 
@@ -2383,7 +2426,12 @@ begin
 
         if Item.Parent.Items[I].ShortCut <> scNone then
         begin
-          tmpWidth := Canvas.TextWidth(ShortcutToText(Item.Parent.Items[I].ShortCut));
+          Windows.DrawText(Canvas.Handle,
+                           PChar(ShortcutToText(Item.Parent.Items[I].ShortCut)),
+                           Length(ShortcutToText(Item.Parent.Items[I].ShortCut)),
+                           CaptionRect,
+                           DT_CALCRECT or DT_EXPANDTABS or DT_LEFT or DT_SINGLELINE);
+          tmpWidth := CaptionRect.Right - CaptionRect.Left;
           if tmpWidth > ShortcutWidth then
             ShortcutWidth := tmpWidth;
         end;
