@@ -1346,7 +1346,7 @@ begin
       AProgramVersionInfo.ProgramLocationFileName, ALocalDirectory, ALocalInstallerFileName, ABaseThread);
     FDownloadError := SelectedLocation.DownloadError;
   end
-  else
+  else                                     
     Result := '';
 end;
 
