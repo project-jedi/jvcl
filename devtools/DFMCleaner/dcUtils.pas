@@ -9,7 +9,7 @@ procedure Run;
 implementation
 
 uses
-  SysUtils, Classes, JTools, TypInfo
+  SysUtils, Classes, JTools, TypInfo,
   {$IFNDEF DELPHI6_UP}
   Consts,
   {$ELSE}
