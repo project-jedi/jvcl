@@ -40,6 +40,7 @@ requires
   JvCoreD7R,
   JvStdCtrlsD7R,
   JvSystemD7R,
+  JvCtrlsD7R,
   dbrtl,
   vcldb
   ;
@@ -66,7 +67,8 @@ contains
   JvDBGrid in '..\..\run\JvDBGrid.pas' ,
   JvDBGridExport in '..\..\run\JvDBGridExport.pas' ,
   JvDBGridSelectColumnForm in '..\..\run\JvDBGridSelectColumnForm.pas' {frmSelectColumn},
-  JvExDBGrids in '..\..\run\JvExDBGrids.pas' 
+  JvExDBGrids in '..\..\run\JvExDBGrids.pas',
+  JvDBHTLabel in '..\..\run\JvDBHTLabel.pas'
   ;
 
 end.

@@ -1,7 +1,12 @@
 Changelog for JVCL 3.0
 ======================
+2004-01-30
+- added JvDBHTLabel donation from Maciej Kaczkowski // peter3
+2004-01-29
+- added AutoHint property to JvEdit // peter3
+- added tvAutoHideIcon to TJvTrayIcon.Options // peter3
 2004-01-26
-- splitted JvEditor into JvEditorCommon, JvEditor, JvUnicodeEditor // ahuser
+- split JvEditor into JvEditorCommon, JvEditor, JvUnicodeEditor // ahuser
 2004-01-20
 - changed makefile.mak in Images and created JvDBControls.rc and JvDBGrid.rc // (rom)
 - Internal reimplementations in JvBehaviorLabel.pas. Added TJvLabelNone behavior // (rom)

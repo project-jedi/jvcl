@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, Db, Grids, DBGrids, ComCtrls,
-  JvComponent, JvDBGridExport, JvCsvData,
+  JvComponent, JvDBGridExport, JvCsvData, 
   JvBaseDlg, JvProgressDialog, JvDBGrid, JvExDBGrids;
 
 type
@@ -96,10 +96,10 @@ end;
 procedure TfrmMain.SetupData;
 begin
   Data.CsvFieldDef := 'Filename:$255,Size:%,Attributes:$64,Type:$255';
-  Data.FieldDefs.Add('Filename', ftString, 255, false);
-  Data.FieldDefs.Add('Size', ftInteger, 0, false);
-  Data.FieldDefs.Add('Attributes', ftString, 64, false);
-  Data.FieldDefs.Add('Type', ftString, 255, false);
+//  Data.FieldDefs.Add('Filename', ftString, 255, false);
+//  Data.FieldDefs.Add('Size', ftInteger, 0, false);
+//  Data.FieldDefs.Add('Attributes', ftString, 64, false);
+//  Data.FieldDefs.Add('Type', ftString, 255, false);
   Data.Filename := ExtractFilePath(Application.Exename) + 'TestData.csv';
   Data.Active := true;
   Data.Sort('Filename,Type,Attributes,Size', true);

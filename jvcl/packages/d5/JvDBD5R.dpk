@@ -39,6 +39,7 @@ package JvDBD5R;
 requires
   JvCoreD5R,
   JvStdCtrlsD5R,
+  JvCtrlsD5R,
   vcldb50
   ;
 
@@ -64,7 +65,7 @@ contains
   JvDBGrid in '..\..\run\JvDBGrid.pas' ,
   JvDBGridExport in '..\..\run\JvDBGridExport.pas' ,
   JvDBGridSelectColumnForm in '..\..\run\JvDBGridSelectColumnForm.pas' {frmSelectColumn},
-  JvExDBGrids in '..\..\run\JvExDBGrids.pas' 
-  ;
+  JvExDBGrids in '..\..\run\JvExDBGrids.pas',
+  JvDBHTLabel in '..\..\run\JvDBHTLabel.pas';
 
 end.
