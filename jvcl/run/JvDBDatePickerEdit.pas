@@ -91,6 +91,7 @@ type
     property Dropped;
   published
     property AllowNoDate;
+    property AlwaysReturnEditDate;
     property Anchors;
     property AutoSelect;
     property AutoSize default False;
