@@ -1,0 +1,44 @@
+----------------------------------------------------------------------------------------------------
+@@JvBaseDlg.pas
+<GROUP JVCL.FileRef>
+Summary
+  Contains the base dialog components for JVCL.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Sébastien Buysse
+----------------------------------------------------------------------------------------------------
+@@TJvCommonDialog
+Summary
+  Base class for all common dialogs that return a Boolean result to indicate if the dialog was
+  canceled or not.
+Description
+  TJvCommonDialog is the base class for all common dialogs that return a Boolean result to indicate
+  if the dialog was canceled or not.
+  
+  The Execute method will return False if the dialog was canceled. Otherwise True will be returned.
+See Also
+  TJvCommonDialogP
+----------------------------------------------------------------------------------------------------
+@@TJvCommonDialog.Execute
+Summary
+  Displays the dialog.
+Description
+  Execute will show the common dialog. The function returns False if the dialog was canceled or True
+  if it was not canceled.
+----------------------------------------------------------------------------------------------------
+@@TJvCommonDialogP
+Summary
+  Base class for all common dialogs that do not return a Boolean result to indicate if the dialog
+  was canceled or not.
+Description
+  TJvCommonDialog is the base class for all common dialogs that do not return a Boolean result to
+  indicate if the dialog was canceled or not.
+See Also
+  TJvCommonDialog
+----------------------------------------------------------------------------------------------------
+@@TJvCommonDialogP.Execute
+Summary
+  Displays the dialog.
+Description
+  Execute will show the common dialog.
+----------------------------------------------------------------------------------------------------
