@@ -24,7 +24,7 @@
 
 ******************************************************************}
 
-unit MainFrm;
+unit PackageModifierMainForm;
 
 interface
 
@@ -34,7 +34,7 @@ uses
 
 type
   EInvalidPackageFormat = class(Exception);
-  TfrmMain = class(TForm)
+  TPackageModifierMainFrm = class(TForm)
     PageControl1: TPageControl;
     tabOptions: TTabSheet;
     tabFiles: TTabSheet;
@@ -75,37 +75,35 @@ type
     procedure reFilesChange(Sender: TObject);
   private
     { Private declarations }
-
     procedure ModifyPackages;
     function ModifyStrings(Strings:TStrings):boolean;
     procedure LoadSettings;
     procedure SaveSettings;
   protected
     procedure WMDropFiles(var Message: TWMDropFiles); message WM_DROPFILES;
-  public
-    { Public declarations }
   end;
 
 var
-  frmMain: TfrmMain;
+  PackageModifierMainFrm: TPackageModifierMainFrm;
 
 implementation
+
 uses
   IniFiles, ShellAPI;
   
 {$R *.dfm}
 
-procedure TfrmMain.btnOKClick(Sender: TObject);
+procedure TPackageModifierMainFrm.btnOKClick(Sender: TObject);
 begin
   ModifyPackages;
 end;
 
-procedure TfrmMain.btnCancelClick(Sender: TObject);
+procedure TPackageModifierMainFrm.btnCancelClick(Sender: TObject);
 begin
   Close;
 end;
 
-procedure TfrmMain.ModifyPackages;
+procedure TPackageModifierMainFrm.ModifyPackages;
 var i:integer;S:TStringlist;
 begin
   S := TStringlist.Create;
@@ -136,7 +134,7 @@ begin
 end;
 
 
-function TfrmMain.ModifyStrings(Strings: TStrings):boolean;
+function TPackageModifierMainFrm.ModifyStrings(Strings: TStrings):boolean;
 const
   cDirectives:array[0..17] of PChar =
     ('ASSERTIONS','BOOLEVAL','DEBUGINFO','EXTENDEDSYNTAX','IOCHECKS','LOCALSYMBOLS',
@@ -203,25 +201,25 @@ begin
     Strings[i] := Format('{$%s %s}',[cDirectives[17],cChecked[rbImplicitBuildOn.Checked]]);
 end;
 
-procedure TfrmMain.btnAddClick(Sender: TObject);
+procedure TPackageModifierMainFrm.btnAddClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then
     reFiles.Lines.AddStrings(OpenDialog1.Files);
 end;
 
-procedure TfrmMain.FormCreate(Sender: TObject);
+procedure TPackageModifierMainFrm.FormCreate(Sender: TObject);
 begin
   DragAcceptFiles(Handle,true);
   LoadSettings;
 end;
 
-procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+procedure TPackageModifierMainFrm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   SaveSettings;
   DragAcceptFiles(Handle,false);
 end;
 
-procedure TfrmMain.WMDropFiles(var Message: TWMDropFiles);
+procedure TPackageModifierMainFrm.WMDropFiles(var Message: TWMDropFiles);
 var
   Count:integer;buf:array[0..MAX_PATH] of char;
 begin
@@ -239,12 +237,12 @@ begin
   end;
 end;
 
-procedure TfrmMain.reFilesChange(Sender: TObject);
+procedure TPackageModifierMainFrm.reFilesChange(Sender: TObject);
 begin
   btnOK.Enabled := reFiles.Lines.Count > 0;
 end;
 
-procedure TfrmMain.LoadSettings;
+procedure TPackageModifierMainFrm.LoadSettings;
 begin
   with TIniFile.Create(ChangeFileExt(Application.Exename,'.ini')) do
   try
@@ -273,7 +271,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.SaveSettings;
+procedure TPackageModifierMainFrm.SaveSettings;
 var i:integer;
 begin
   with TIniFile.Create(ChangeFileExt(Application.Exename,'.ini')) do

@@ -2,12 +2,12 @@ program pm;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {frmMain};
+  PackageModifierMainForm in 'PackageModifierMainForm.pas' {PackageModifierMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TPackageModifierMainFrm, PackageModifierMainFrm);
   Application.Run;
 end.
