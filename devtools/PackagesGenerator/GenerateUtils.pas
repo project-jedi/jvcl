@@ -236,7 +236,22 @@ begin
   Result := PathExtractFileNameNoExt(FileName);
 end;
 
-procedure ApplyFormName(fileNode : TJvSimpleXmlElem; var Lines : string);
+procedure EnsureProperSeparator(var Name : string; target : string);
+begin
+  // ensure that the path separator stored in the xml file is
+  // replaced by the one for the system we are targeting
+
+  target := StrLower(target);
+
+  // first ensure we only have backslashes
+  StrReplace(Name, '/', '\', [rfReplaceAll]);
+
+  // and if the target is kylix, replace all them by forward slashes
+  if target[1] = 'k' then
+    StrReplace(Name, '\', '/', [rfReplaceAll]);
+end;
+
+procedure ApplyFormName(fileNode : TJvSimpleXmlElem; var Lines : string; target : string);
 var
   formName : string;
   formType : string;
@@ -244,14 +259,19 @@ var
   incFileName : string;
   openPos : Integer;
   closePos : Integer;
+  unitname : string;
+  punitname : string;
+  formpathname : string;
 begin
   formNameAndType := fileNode.Properties.ItemNamed['FormName'].Value;
   incFileName := fileNode.Properties.ItemNamed['Name'].Value;
 
-  // ensure that the path separator stored in the xml file is
-  // replaced by the one for the system we are running on
-  StrReplace(incFileName, '/', '\', [rfReplaceAll]);
-  StrReplace(incFileName, '\', PathSeparator, [rfReplaceAll]);
+  unitname := GetUnitName(incFileName);
+  punitname := StrProper(unitname);
+  formpathname := StrEnsureSuffix(PathSeparator, ExtractFilePath(incFileName))+GetUnitName(incFileName);
+
+  EnsureProperSeparator(formpathname, target);
+  EnsureProperSeparator(incfilename, target);
 
   if Pos(':', formNameAndType) = 0 then
   begin
@@ -265,10 +285,8 @@ begin
   end;
 
   StrReplace(Lines, '%FILENAME%', incFileName, [rfReplaceAll]);
-  StrReplace(Lines, '%UNITNAME%', GetUnitName(incFileName), [rfReplaceAll]);
-  StrReplace(Lines, '%Unitname%',
-             StrProper(GetUnitName(incFileName)),
-             [rfReplaceAll]);
+  StrReplace(Lines, '%UNITNAME%', unitname, [rfReplaceAll]);
+  StrReplace(Lines, '%Unitname%', punitname, [rfReplaceAll]);
 
   if (formType = '') or (formName = '') then
   begin
@@ -298,9 +316,7 @@ begin
     StrReplace(Lines, '%FORMNAME%', formName, [rfReplaceAll]);
     StrReplace(Lines, '%FORMTYPE%', formType, [rfReplaceAll]);
     StrReplace(Lines, '%FORMNAMEANDTYPE%', formNameAndType, [rfReplaceAll]);
-    StrReplace(Lines, '%FORMPATHNAME%',
-               StrEnsureSuffix(PathSeparator, ExtractFilePath(incFileName))+GetUnitName(incFileName),
-               [rfReplaceAll]);
+    StrReplace(Lines, '%FORMPATHNAME%', formpathname, [rfReplaceAll]);
   end;
 end;
 
@@ -510,7 +526,7 @@ begin
             begin
               tmpStr := repeatLines;
               incFileName := fileNode.Properties.ItemNamed['Name'].Value;
-              ApplyFormName(fileNode, tmpStr);
+              ApplyFormName(fileNode, tmpStr, target);
               containsSomething := True;
               outFile.Text := outFile.Text +
                               EnsureCondition(tmpStr, fileNode, target);
@@ -554,7 +570,7 @@ begin
               if (fileNode.Properties.ItemNamed['FormName'].Value <> '') then
               begin
                 tmpStr := repeatLines;
-                ApplyFormName(fileNode, tmpStr);
+                ApplyFormName(fileNode, tmpStr, target);
                 outFile.Text := outFile.Text + tmpStr;
               end;
             end;
