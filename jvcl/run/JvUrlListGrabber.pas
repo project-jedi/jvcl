@@ -114,7 +114,7 @@ type
     // the cleanup threshold. When the difference between Urls.Count
     // and the internal Grabber count is greater than this value
     // the process of cleaning if launched. This can take some time
-    // and this is why it's done every time
+    // and this is why it's not done every time
     property CleanupThreshold: Cardinal read FCleanupThreshold write FCleanupThreshold default 10;
 
     // The Urls to grab
@@ -362,7 +362,8 @@ type
 
   // A thread that will grab the given URL in the background
   // this is the ancestor of all the grabber threads, and there
-  // should be as many descendants as there are TJvUrlGrabber descendants.
+  // should be as many descendants as there are TJvCustomUrlGrabber
+  // descendants.
   TJvCustomUrlGrabberThread = class(TThread)
   protected
     FErrorText: string; // the error string received from the server
@@ -406,7 +407,7 @@ type
     procedure Populate(DefaultPropertiesList: TJvUrlGrabberDefaultPropertiesList);
     function Add(AGrabberClass: TJvCustomUrlGrabberClass): Integer;
     procedure Insert(Index: Integer; AGrabberClass: TJvCustomUrlGrabberClass);
-    function CreateFor(Owner: TComponent; Url: string; DefaultPropertiesCollection: TJvUrlGrabberDefaultPropertiesList): TJvCustomUrlGrabber;
+    function CreateFor(Owner: TComponent; Url: string; DefaultPropertiesList: TJvUrlGrabberDefaultPropertiesList): TJvCustomUrlGrabber;
     property Items[Index: Integer]: TJvCustomUrlGrabberClass read GetItem write SetItem; default;
   end;
 
@@ -681,7 +682,7 @@ begin
 end;
 
 function TJvUrlGrabberClassList.CreateFor(Owner: TComponent; Url: string;
-  DefaultPropertiesCollection: TJvUrlGrabberDefaultPropertiesList): TJvCustomUrlGrabber;
+  DefaultPropertiesList: TJvUrlGrabberDefaultPropertiesList): TJvCustomUrlGrabber;
 var
   I: Integer;
 begin
@@ -690,7 +691,7 @@ begin
   while (I < Count) and not Assigned(Result) do
   begin
     if Items[I].CanGrab(Url) then
-      Result := Items[I].Create(Owner, Url, DefaultPropertiesCollection.Items[I]);
+      Result := Items[I].Create(Owner, Url, DefaultPropertiesList.Items[I]);
     Inc(I);
   end;
 end;
