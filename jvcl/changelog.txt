@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2004-11-01:
+-Support for drawing HTML text in a more generic fashion (support functions in JvJVCLUtils) // peter3
+- Previous HTML routines in JvHTControls now only calls equivalent in JvJVCLUtils // peter3
+- Added custom drawing to JvPrint and also a PrintHTML function // peter3
 2004-10-24
 - TJvCustomMenuItemPainter.DrawText renamed to DrawItemText to avoid problems in C++ Builder
   (see JvMenus.pas for further details) // obones
