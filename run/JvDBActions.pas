@@ -37,6 +37,7 @@ uses
   QActnList, QWindows, QImgList,
   {$ENDIF UNIX}
   Forms, Controls, Classes, DB,
+  JvPanel,
   JvDynControlEngineDB, JvDynControlEngineDBTools;
 
 type
@@ -54,8 +55,16 @@ type
     FLeft: Integer;
     FWidth: Integer;
     FHeight: Integer;
+    FArrangeConstraints : TSizeConstraints;
+    FArrangeSettings : TJvArrangeSettings;
+    FFieldCreateOptions : TJvCreateDBFieldsOnControlOptions;
+  protected
+    procedure SetArrangeSettings (Value : TJvArrangeSettings);
+    procedure SetArrangeConstraints (Value : TSizeConstraints);
+    procedure SetFieldCreateOptions(Value : TJvCreateDBFieldsOnControlOptions);
   public
     constructor Create;
+    destructor Destroy; override;
     procedure SetOptionsToDialog(ADialog: TJvDynControlDataSourceEditDialog);
   published
     property DialogCaption: string read FDialogCaption write FDialogCaption;
@@ -68,6 +77,9 @@ type
     property Left: Integer read FLeft write FLeft default 0;
     property Width: Integer read FWidth write FWidth default 640;
     property Height: Integer read FHeight write FHeight default 480;
+    property ArrangeConstraints : TSizeConstraints read FArrangeConstraints write SetArrangeConstraints;
+    property ArrangeSettings : TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
+    property FieldCreateOptions : TJvCreateDBFieldsOnControlOptions read FFieldCreateOptions write SetFieldCreateOptions;
   end;
 
   TJvDatabaseActionList = class(TActionList)
@@ -114,7 +126,7 @@ type
   protected
     function GetDataSource(ADataComponent: TComponent): TDataSource; override;
     procedure OnCreateDataControls(ADynControlEngineDB: TJvDynControlEngineDB;
-      AParentControl: TWinControl);
+      AParentControl: TWinControl; AFieldCreateOptions : TJvCreateDBFieldsOnControlOptions);
   public
     function Supports(ADataComponent: TComponent): Boolean; override;
     procedure ShowSingleRecordWindow(AOptions: TJvShowSingleRecordWindowOptions;
@@ -340,7 +352,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, DBGrids, Grids,
-  JvResources, JvParameterList, JvParameterListParameter, JvPanel;
+  JvResources, JvParameterList, JvParameterListParameter;
 
 type
   TJvDatabaseActionEngineList = class(TList)
@@ -390,6 +402,43 @@ begin
   FWidth := 640;
   FHeight := 480;
   FPosition := poScreenCenter;
+  FArrangeSettings := TJvArrangeSettings.Create(nil);
+  with FArrangeSettings do
+  begin
+    AutoSize := asBoth;
+    DistanceHorizontal := 3;
+    DistanceVertical := 3;
+    BorderLeft := 3;
+    BorderTop := 3;
+    WrapControls := true;
+  end;
+  FArrangeConstraints := TSizeConstraints.Create(nil);
+  FArrangeConstraints.MaxHeight := 480;
+  FArrangeConstraints.MaxWidth := 640;
+  FFieldCreateOptions := TJvCreateDBFieldsOnControlOptions.Create;
+end;
+
+destructor TJvShowSingleRecordWindowOptions.Destroy;
+begin
+  FFieldCreateOptions.Free;
+  FArrangeConstraints.Free;
+  FArrangeSettings.Free;
+  inherited Destroy;
+end;
+
+procedure TJvShowSingleRecordWindowOptions.SetArrangeSettings (Value : TJvArrangeSettings);
+begin
+  FArrangeSettings.Assign(Value);
+end;
+
+procedure TJvShowSingleRecordWindowOptions.SetArrangeConstraints (Value : TSizeConstraints);
+begin
+  FArrangeConstraints.Assign(Value);
+end;
+
+procedure TJvShowSingleRecordWindowOptions.SetFieldCreateOptions(Value : TJvCreateDBFieldsOnControlOptions);
+begin
+  FFieldCreateOptions.Assign(Value);
 end;
 
 procedure TJvShowSingleRecordWindowOptions.SetOptionsToDialog(ADialog: TJvDynControlDataSourceEditDialog);
@@ -406,6 +455,9 @@ begin
     ADialog.Left := Left;
     ADialog.Width := Width;
     ADialog.Height := Height;
+    ADialog.ArrangeConstraints := ArrangeConstraints;
+    ADialog.ArrangeSettings := ArrangeSettings;
+    ADialog.FieldCreateOptions := FieldCreateOptions;
   end;
 end;
 
@@ -617,33 +669,43 @@ type
   TAccessCustomControl = class(TCustomControl);
 
 procedure TJvDatabaseActionDBGridEngine.OnCreateDataControls(ADynControlEngineDB: TJvDynControlEngineDB;
-  AParentControl: TWinControl);
+  AParentControl: TWinControl; AFieldCreateOptions : TJvCreateDBFieldsOnControlOptions);
 var
   I: Integer;
   ds: TDataSource;
   Field: TField;
-//  LabelControl : TControl;
+  LabelControl : TControl;
   Control: TWinControl;
   Column: TColumn;
 begin
   if Assigned(FCurrentDataComponent) and (FCurrentDataComponent is TCustomDBGrid) then
   begin
     ds := GetDataSource(FCurrentDataComponent);
+    with AFieldCreateOptions do
     for I := 0 to TAccessCustomDBGrid(FCurrentDataComponent).ColCount - 2 do
     begin
       Column := TAccessCustomDBGrid(FCurrentDataComponent).Columns[I];
-      if Column.Visible then
+      if Column.Visible or ShowInvisibleFields then
       begin
         Field := Column.Field;
         Control := ADynControlEngineDB.CreateDBFieldControl(Field, AParentControl, AParentControl, '', ds);
-        if Field.Size > 0 then
-          Control.Width :=
+        if FieldDefaultWidth > 0 then
+          Control.Width := FieldDefaultWidth
+        else
+        begin
+          if Field.Size > 0 then
+            Control.Width :=
             TAccessCustomControl(AParentControl).Canvas.TextWidth(' ') * Field.Size;
-{        LabelControl := }ADynControlEngineDB.DynControlEngine.CreateLabelControlPanel(AParentControl, AParentControl,
-          '', '&' + Column.Title.Caption, Control, True, 0);
-//        if (AFieldSizeStep > 0) then
-//          if ((LabelControl.Width mod AFieldSizeStep) <> 0) then
-//            LabelControl.Width := ((LabelControl.Width div AFieldSizeStep) + 1) * AFieldSizeStep;
+          if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
+            Control.Width := FieldMaxWidth
+          else if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
+            Control.Width := FieldMinWidth;
+        end;
+        LabelControl := ADynControlEngineDB.DynControlEngine.CreateLabelControlPanel(AParentControl, AParentControl,
+            '', '&' + Column.Title.Caption, Control, True, 0);
+        if FieldWidthStep > 0 then
+          if (LabelControl.Width mod FieldWidthStep) <> 0 then
+            LabelControl.Width := ((LabelControl.Width div FieldWidthStep) + 1) * FieldWidthStep;
       end;
     end;
   end;

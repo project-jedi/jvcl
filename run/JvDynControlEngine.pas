@@ -786,19 +786,19 @@ begin
       Panel.Width := LabelControl.Width
     else
       Panel.Width := AFocusControl.Width;
-    Panel.Height := AFocusControl.Height + LabelControl.Height;
+    Panel.Height := AFocusControl.Top + AFocusControl.Height;
   end
   else
   begin
     if ALabelDefaultWidth > 0 then
       LabelControl.Width := ALabelDefaultWidth;
-    AFocusControl.Left := LabelControl.Width + 1;
+    AFocusControl.Left := LabelControl.Width + 4;
     AFocusControl.Top := 1;
     if LabelControl.Height > AFocusControl.Height then
       Panel.Height := LabelControl.Height
     else
       Panel.Height := AFocusControl.Height;
-    Panel.Width := AFocusControl.Width + LabelControl.Width;
+    Panel.Width := AFocusControl.Width + AFocusControl.Left;
   end;
   Panel.Width := Panel.Width + 1;
   Panel.Height := Panel.Height + 1;
