@@ -29,7 +29,14 @@ unit JvDynControlEngineJVCL;
 interface
 
 uses
-  Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
+  {$IFDEF MSWINDOWS}
+  ActnList, Graphics,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  QActnList, QGraphics,
+  {$ENDIF UNIX}
+  Classes,
+  Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, 
   Buttons, Dialogs, FileCtrl,
   JvMaskEdit, JvDateTimePicker, JvBitBtn, JvCheckBox, JvBaseEdits,
   JvLabel, JvListBox, JvMemo, JvRichEdit, JvPanel, JvRadioGroup, JvToolEdit,
@@ -548,7 +555,7 @@ type
   end;
 
   TJvDynControlJVCLButton = class(TJvBitBtn, IUnknown,
-    IJvDynControl, IJvDynControlButton)
+    IJvDynControl, IJvDynControlButton, IJvDynControlAction)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -564,6 +571,9 @@ type
     procedure ControlSetLayout(Value: TButtonLayout);
     procedure ControlSetDefault(Value: Boolean);
     procedure ControlSetCancel(Value: Boolean);
+
+    // IJvDynControlAction
+    procedure ControlSetAction(Value: TCustomAction);
   end;
 
   TJvDynControlJVCLRadioButton = class(TRadioButton, IUnknown,
@@ -2295,6 +2305,10 @@ begin
   Cancel := Value;
 end;
 
+procedure TJvDynControlJVCLButton.ControlSetAction(Value: TCustomAction);
+begin
+  Action := Value;
+end;
 
 //=== { TJvDynControlJVCLRadioButton } =======================================
 

@@ -28,7 +28,13 @@ unit JvDynControlEngineDBTools;
 interface
 
 uses
-  Controls, DB, Forms, Classes,
+  Controls, DB, Classes,
+  {$IFDEF MSWINDOWS}
+  ActnList, Forms, Graphics,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  QActnList, QForms, QGraphics,
+  {$ENDIF UNIX}
   JvPanel, JvDynControlEngineTools, JvDynControlEngine, JvDynControlEngineDB;
 
 type
@@ -45,6 +51,9 @@ type
     FPostButtonCaption: string;
     FCancelButtonCaption: string;
     FCloseButtonCaption: string;
+    FPostButtonGlyph: TBitmap;
+    FCancelButtonGlyph: TBitmap;
+    FCloseButtonGlyph: TBitmap;
     FIncludeNavigator: Boolean;
     FBorderStyle: TFormBorderStyle;
     FPosition: TPosition;
@@ -59,6 +68,8 @@ type
     FScrollBox: TScrollBox;
     FNavigatorPanel: TJvPanel;
     FButtonPanel: TWinControl;
+    FPostAction: TCustomAction;
+    FCancelAction: TCustomAction;
   protected
     function GetDynControlEngineDB: TJvDynControlEngineDB;
     procedure SetDataComponent(Value: TComponent);
@@ -81,6 +92,9 @@ type
     property PostButtonCaption: string read FPostButtonCaption write FPostButtonCaption;
     property CancelButtonCaption: string read FCancelButtonCaption write FCancelButtonCaption;
     property CloseButtonCaption: string read FCloseButtonCaption write FCloseButtonCaption;
+    property PostButtonGlyph: TBitmap read FPostButtonGlyph write FPostButtonGlyph;
+    property CancelButtonGlyph: TBitmap read FCancelButtonGlyph write FCancelButtonGlyph;
+    property CloseButtonGlyph: TBitmap read FCloseButtonGlyph write FCloseButtonGlyph;
     property DialogCaption: string read FDialogCaption write FDialogCaption;
     property DynControlEngineDB: TJvDynControlEngineDB read GetDynControlEngineDB write FDynControlEngineDB;
     property IncludeNavigator: Boolean read FIncludeNavigator write FIncludeNavigator;
@@ -111,7 +125,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  StdCtrls, SysUtils,
+  JvDBActions, StdCtrls, SysUtils,
   JvDynControlEngineIntf, JvResources;
 
 procedure TJvDynControlDataSourceEditDialog.SetDataComponent(Value: TComponent);
@@ -158,6 +172,9 @@ begin
   FPostButtonCaption := RSSRWPostButtonCaption;
   FCancelButtonCaption := RSSRWCancelButtonCaption;
   FCloseButtonCaption := RSSRWCloseButtonCaption;
+  FPostButtonGlyph := nil;
+  FCancelButtonGlyph := nil;
+  FCloseButtonGlyph := nil;
   FBorderStyle := bsDialog;
   FTop := 0;
   FLeft := 0;
@@ -221,6 +238,9 @@ begin
     FForm.ClientHeight := ChangedSize + FButtonPanel.Height + 35;
 end;
 
+type
+  TAccessControl = class(TControl);
+
 function TJvDynControlDataSourceEditDialog.CreateDynControlDialog(var AMainPanel: TWinControl): TCustomForm;
 var
   DynControlEngine: TJvDynControlEngine;
@@ -228,6 +248,21 @@ var
   PostButton, CancelButton, CloseButton: TButtonControl;
   LeftPos: Integer;
   DynCtrlButton: IJvDynControlButton;
+  DynCtrlAction: IJvDynControlAction;
+
+  function CalcButtonWidth (ACaptionWidth: Integer; AGlyph: TBitmap) : Integer;
+  begin
+    Result := 4;
+    if Assigned(AGlyph) then
+      Result := Result + AGlyph.Width;
+    if ACaptionWidth > 0 then
+    begin
+      Result := Result + ACaptionWidth;
+      if ACaptionWidth > 0 then
+        Result := Result + 4;
+    end;
+  end;
+
 begin
   DynControlEngine := DynControlEngineDB.DynControlEngine;
   Form := DynControlEngine.CreateForm(DialogCaption, '');
@@ -244,15 +279,17 @@ begin
   end;
 
   FButtonPanel := DynControlEngine.CreatePanelControl(Form, Form, '', '', alBottom);
+  FButtonPanel.Width := Form.ClientWidth;
   AMainPanel := DynControlEngine.CreatePanelControl(Form, Form, '', '', alClient);
   LeftPos := FButtonPanel.Width;
-  if CloseButtonCaption <> '' then
+  if (CloseButtonCaption <> '') or Assigned(CloseButtonGlyph) then
   begin
     CloseButton := DynControlEngine.CreateButton(Form, FButtonPanel, '', CloseButtonCaption, '', OnCloseButtonClick,
       True, False);
     FButtonPanel.Height := CloseButton.Height + 6;
     CloseButton.Top := 3;
     CloseButton.Anchors := [akTop, akRight];
+    CloseButton.Width := CalcButtonWidth(Form.Canvas.TextWidth(CloseButtonCaption), CloseButtonGlyph);
     CloseButton.Left := LeftPos - CloseButton.Width - 5;
     LeftPos := CloseButton.Left;
     CloseButton.TabOrder := 0;
@@ -260,15 +297,26 @@ begin
     begin
       DynCtrlButton.ControlSetDefault(True);
       DynCtrlButton.ControlSetCancel(True);
+      if Assigned(CloseButtonGlyph) then
+        DynCtrlButton.ControlSetGlyph(CloseButtonGlyph);
     end;
   end;
-  if CancelButtonCaption <> '' then
+  if (CancelButtonCaption <> '') or Assigned(CancelButtonGlyph) then
   begin
     CancelButton := DynControlEngine.CreateButton(Form, FButtonPanel, '', CancelButtonCaption, '', OnCancelButtonClick,
       True, False);
+    if Supports(CancelButton, IJvDynControlAction, DynCtrlAction) then
+    begin
+      FCancelAction := TJvDatabaseCancelAction.Create (Form);
+      FCancelAction.Caption := CancelButtonCaption;
+      DynCtrlAction.ControlSetAction(FCancelAction);
+    end
+    else
+      FCancelAction := nil;
     FButtonPanel.Height := CancelButton.Height + 6;
     CancelButton.Top := 3;
     CancelButton.Anchors := [akTop, akRight];
+    CancelButton.Width := CalcButtonWidth(Form.Canvas.TextWidth(CancelButtonCaption), CancelButtonGlyph);
     CancelButton.Left := LeftPos - CancelButton.Width - 5;
     LeftPos := CancelButton.Left;
     CancelButton.TabOrder := 0;
@@ -276,21 +324,34 @@ begin
     begin
       DynCtrlButton.ControlSetDefault (False);
       DynCtrlButton.ControlSetCancel(False);
+      if Assigned(CancelButtonGlyph) then
+        DynCtrlButton.ControlSetGlyph(CancelButtonGlyph);
     end;
   end;
-  if PostButtonCaption <> '' then
+  if (PostButtonCaption <> '') or Assigned(PostButtonGlyph) then
   begin
     PostButton := DynControlEngine.CreateButton(Form, FButtonPanel, '', PostButtonCaption, '', OnPostButtonClick, True,
       False);
     FButtonPanel.Height := PostButton.Height + 6;
+    if Supports(PostButton, IJvDynControlAction, DynCtrlAction) then
+    begin
+      FPostAction := TJvDatabasePostAction.Create (Form);
+      FPostAction.Caption := PostButtonCaption;
+      DynCtrlAction.ControlSetAction(FPostAction);
+    end
+    else
+      FPostAction := nil;
     PostButton.Top := 3;
     PostButton.Anchors := [akTop, akRight];
+    PostButton.Width := CalcButtonWidth(Form.Canvas.TextWidth(PostButtonCaption), PostButtonGlyph);
     PostButton.Left := LeftPos - PostButton.Width - 5;
     PostButton.TabOrder := 0;
     if Supports(PostButton, IJvDynControlButton, DynCtrlButton) then
     begin
       DynCtrlButton.ControlSetDefault (False);
       DynCtrlButton.ControlSetCancel(False);
+      if Assigned(PostButtonGlyph) then
+        DynCtrlButton.ControlSetGlyph(PostButtonGlyph);
     end;
   end;
   Result := Form;
@@ -346,6 +407,11 @@ begin
       OnCreateDataControlsEvent(DynControlEngineDB, ArrangePanel, FieldCreateOptions)
     else
       DynControlEngineDB.CreateControlsFromDataComponentOnControl(DataComponent, ArrangePanel, FieldCreateOptions);
+    if Assigned (FCancelAction) then
+      TJvDatabaseCancelAction(FCancelAction).DataComponent := DataComponent;
+    if Assigned (FPostAction) then
+      TJvDatabaseCancelAction(FPostAction).DataComponent := DataComponent;
+
 //    ArrangePanel.ArrangeControls;
     ArrangePanel.ArrangeSettings.AutoArrange := True;
     MainPanel.TabOrder := 0;
