@@ -76,7 +76,8 @@ type
     FRemoveConditions: TStringList;
     FConvertProtected: TStringList; // list of Conditions where no unit names should be translated
 
-    FFilename: string; // currently parsed file
+    FFilename: string;
+    FUnixPathDelim: Boolean; // currently parsed file
 
     procedure SetOutDirectory(const Value: string);
     procedure WriteFile(Lines: TStrings; const Filename: string; AllowBeforeSave: Boolean);
@@ -176,6 +177,9 @@ type
     property UnixLineBreak: Boolean read FUnixLineBreak write FUnixLineBreak default False;
       { If UnixLineBreak is True the written files have #10 as line break else
         it uses #13#10. }
+    property UnixPathDelim: Boolean read FUnixPathDelim write FUnixPathDelim default False;
+      { Set UnixPathDelim to True if you want the converter to change every '\'
+        in the "uses unitname in 'filename.pas'" filename to '/'. }
     property ForceOverwrite: Boolean read FForceOverwrite write FForceOverwrite default False;
       { If ForceOverwrite is True even unchanged files will be rewritten. }
 
@@ -750,6 +754,8 @@ var
   Parser: TPascalParser;
   StartConditionStackCount: Integer;
 //  InsertTypesUnitStartIndex: Integer;
+  i: Integer;
+  Changed: Boolean;
 begin
 //  InsertTypesUnitStartIndex := -1;
   StartConditionStackCount := FConditionStack.OpenCount;
@@ -762,6 +768,26 @@ begin
           Break; // finished
       tkIdent:
         begin
+          if SameText(Token.Value, 'in') and UnixPathDelim then // uses unitname in 'filename.pas';
+          begin
+            if GetNextToken(Parser, Token, Context) then
+            begin
+              { Replace '\' by '/' in the filename }
+              if Token.Kind = tkString then
+              begin
+                Changed := False;
+                for i := 1 to Length(Token.Value) do
+                  if Token.Value[i] = '\' then
+                  begin
+                    Token.Value[i] := '/';
+                    Changed := True;
+                  end;
+                if Changed then
+                  Parser.ReplaceParseNext(Token, Token, Token.Value);
+              end;
+            end;
+            Continue;
+          end;
           if SameText(Token.Value, 'type') or SameText(Token.Value, 'const') or
              SameText(Token.Value, 'resourcestring') or SameText(Token.Value, 'var') or
              SameText(Token.Value, 'function') or SameText(Token.Value, 'procedure') or

@@ -54,7 +54,7 @@ object FormMain: TFormMain
     Width = 75
     Height = 25
     Caption = '&Execute'
-    TabOrder = 10
+    TabOrder = 11
     OnClick = BtnExecuteClick
   end
   object ProgressBar: TProgressBar
@@ -104,7 +104,7 @@ object FormMain: TFormMain
     Width = 75
     Height = 25
     Caption = '&Quit'
-    TabOrder = 11
+    TabOrder = 12
     OnClick = BtnQuitClick
   end
   object EditJVCLDir: TJvDirectoryEdit
@@ -145,13 +145,13 @@ object FormMain: TFormMain
   end
   object CheckBoxForceOverwrite: TCheckBox
     Left = 434
-    Top = 80
+    Top = 104
     Width = 201
     Height = 17
     Caption = '&Force overwrite'
     Checked = True
     State = cbChecked
-    TabOrder = 9
+    TabOrder = 10
   end
   object ListBox1: TListBox
     Left = 15
@@ -159,7 +159,7 @@ object FormMain: TFormMain
     Width = 400
     Height = 57
     ItemHeight = 13
-    TabOrder = 12
+    TabOrder = 13
   end
   object RBtnAll: TRadioButton
     Left = 8
@@ -168,7 +168,7 @@ object FormMain: TFormMain
     Height = 17
     Caption = '&All JVCL JVCLX files'
     Checked = True
-    TabOrder = 13
+    TabOrder = 14
     TabStop = True
   end
   object EditDirectory: TJvDirectoryEdit
@@ -179,6 +179,22 @@ object FormMain: TFormMain
     OnButtonClick = EditDirectoryButtonClick
     ClipboardCommands = []
     DialogKind = dkWin32
-    TabOrder = 14
+    TabOrder = 15
+  end
+  object CheckBoxRecursiveDir: TCheckBox
+    Left = 320
+    Top = 117
+    Width = 97
+    Height = 17
+    Caption = 'Recursive'
+    TabOrder = 16
+  end
+  object CheckBoxUnixPathDelim: TCheckBox
+    Left = 434
+    Top = 80
+    Width = 201
+    Height = 17
+    Caption = '&Unix Path Delimiter'
+    TabOrder = 9
   end
 end
