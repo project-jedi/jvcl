@@ -89,6 +89,9 @@ function JvDockExchangeOrient(Orient: TDockOrientation): TDockOrientation;
 function JvDockGetControlOrient(AControl: TControl): TDockOrientation;
 function JvDockGetControlSize(AControl: TControl): Integer;
 
+procedure RegisterSettingChangeClient(Client: TObject; Event: TNotifyEvent);
+procedure UnRegisterSettingChangeClient(Client: TObject);
+
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
@@ -105,9 +108,34 @@ implementation
 
 uses
   SysUtils, Math,
+  {$IFDEF USEJVCL}
+  JvJVCLUtils,
+  {$ENDIF USEJVCL}
   JvDockControlForm, JvDockGlobals;
 
+type
+  { The dock style components used to hook the form they were dropped on, so
+    they could respond to Windows setting changes. The components can now use
+    the TJvMsgWindow -via the RegisterSettingChangeClient procedure- that creates
+    a window so it is able to receive WM_SETTINGCHANGE messages. Notification is
+    done via the Observer pattern
+  }
+  TJvMsgWindow = class(TObject)
+  private
+    FHandle: HWND;
+    FClients: TList;
+    FNotifyEvents: TList;
+    procedure WndProc(var Msg: TMessage);
+    procedure NotifyClients;
+  public
+    constructor Create; virtual;
+    destructor Destroy; override;
+    procedure RegisterClient(Client: TObject; Event: TNotifyEvent); virtual;
+    procedure UnRegisterClient(Client: TObject); virtual;
+  end;
+
 var
+  GMsgHook: TJvMsgWindow;
   JvDockTitleFont: TFont = nil;
 
 function JvDockStreamDataToString(Stream: TStream): string;
@@ -168,47 +196,46 @@ function JvDockFindDockServerFromDockManager(const FormName: string; FromList: B
 var
   I: Integer;
 begin
-  Result := nil;
   case ScanKind of
     lskForward:
-      for I := 0 to JvGlobalDockManager.DockServersList.Count - 1 do
-        if FormName = TCustomForm(JvGlobalDockManager.DockServersList[I]).Name then
-        begin
-          Result := TCustomForm(JvGlobalDockManager.DockServersList[I]);
-          Break;
-        end;
+      for I := 0 to JvGlobalDockManager.DockServerCount - 1 do
+      begin
+        Result := JvGlobalDockManager.DockServer[I].ParentForm;
+        if Assigned(Result) and (FormName = Result.Name) then
+          Exit;
+      end;
     lskBackward:
-       for I := JvGlobalDockManager.DockServersList.Count - 1 downto 0 do
-         if FormName = TCustomForm(JvGlobalDockManager.DockServersList[I]).Name then
-         begin
-           Result := TCustomForm(JvGlobalDockManager.DockServersList[I]);
-           Break;
-         end;
+      for I := JvGlobalDockManager.DockServerCount - 1 downto 0 do
+      begin
+        Result := JvGlobalDockManager.DockServer[I].ParentForm;
+        if Assigned(Result) and (FormName = Result.Name) then
+          Exit;
+      end;
   end;
+  Result := nil;
 end;
-
 function JvDockFindDockClientFromDockManager(const FormName: string; FromList: Boolean;
   ScanKind: TJvDockListScanKind): TCustomForm;
 var
   I: Integer;
 begin
-  Result := nil;
   case ScanKind of
     lskForward:
-      for I := 0 to JvGlobalDockManager.DockClientsList.Count - 1 do
-        if FormName = TCustomForm(JvGlobalDockManager.DockClientsList[I]).Name then
-        begin
-          Result := TCustomForm(JvGlobalDockManager.DockClientsList[I]);
-          Break;
-        end;
+      for I := 0 to JvGlobalDockManager.DockClientCount - 1 do
+      begin
+        Result := JvGlobalDockManager.DockClient[I].ParentForm;
+        if Assigned(Result) and (FormName = Result.Name) then
+          Exit;
+      end;
     lskBackward:
-      for I := JvGlobalDockManager.DockClientsList.Count - 1 downto 0 do
-        if FormName = TCustomForm(JvGlobalDockManager.DockClientsList[I]).Name then
-        begin
-          Result := TCustomForm(JvGlobalDockManager.DockClientsList[I]);
-          Break;
-        end;
+      for I := JvGlobalDockManager.DockClientCount - 1 downto 0 do
+      begin
+        Result := JvGlobalDockManager.DockClient[I].ParentForm;
+        if Assigned(Result) and (FormName = Result.Name) then
+          Exit;
+      end;
   end;
+  Result := nil;
 end;
 
 function JvDockFindDockFormFromScreen(const FormName: string;
@@ -387,6 +414,96 @@ begin
   end;
 end;
 
+procedure RegisterSettingChangeClient(Client: TObject; Event: TNotifyEvent);
+begin
+  if GMsgHook = nil then
+    GMsgHook := TJvMsgWindow.Create;
+  GMsgHook.RegisterClient(Client, Event);
+end;
+
+procedure UnRegisterSettingChangeClient(Client: TObject);
+begin
+  if Assigned(GMsgHook) then
+  begin
+    GMsgHook.UnRegisterClient(Client);
+    if GMsgHook.FClients.Count = 0 then
+      FreeAndNil(GMsgHook);
+  end;
+end;
+
+//=== { TJvMsgWindow } =========================================================
+
+constructor TJvMsgWindow.Create;
+begin
+  inherited Create;
+  FClients := TList.Create;
+  FNotifyEvents := TList.Create;
+  {$IFDEF USEJVCL}
+  FHandle := AllocateHWndEx(WndProc);
+  {$ELSE}
+  FHandle := AllocateHWnd(WndProc);
+  {$ENDIF USEJVCL}
+end;
+
+destructor TJvMsgWindow.Destroy;
+begin
+  if FHandle <> 0 then
+    {$IFDEF USEJVCL}
+    DeallocateHWndEx(FHandle);
+    {$ELSE}
+    DeallocateHWnd(FHandle);
+    {$ENDIF USEJVCL}
+  FClients.Free;
+  FNotifyEvents.Free;
+  inherited Destroy;
+end;
+
+procedure TJvMsgWindow.NotifyClients;
+var
+  I: Integer;
+  NotifyEvent: TNotifyEvent;
+begin
+  for I := 0 to FClients.Count - 1 do
+  begin
+    TMethod(NotifyEvent).Code := FNotifyEvents[I];
+    TMethod(NotifyEvent).Data := FClients[I];
+    NotifyEvent(Self);
+  end;
+end;
+
+procedure TJvMsgWindow.RegisterClient(Client: TObject; Event: TNotifyEvent);
+begin
+  FClients.Add(Client);
+  FNotifyEvents.Add(TMethod(Event).Code);
+end;
+
+procedure TJvMsgWindow.UnRegisterClient(Client: TObject);
+var
+  Index: Integer;
+begin
+  Index := FClients.IndexOf(Client);
+  if Index <> -1 then
+  begin
+    FClients.Delete(Index);
+    FNotifyEvents.Delete(Index);
+  end;
+end;
+
+procedure TJvMsgWindow.WndProc(var Msg: TMessage);
+begin
+  try
+    if (Msg.Msg = WM_SETTINGCHANGE) or (Msg.Msg = WM_SYSCOLORCHANGE) then
+      NotifyClients;
+  except
+    {$IFDEF COMPILER6_UP}
+    if Assigned(ApplicationHandleException) then
+      ApplicationHandleException(Self);
+    {$ELSE}
+    Application.HandleException(Self);
+    {$ENDIF COMPILER6_UP}
+  end;
+end;
+
 initialization
   {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
@@ -396,6 +513,7 @@ initialization
 
 finalization
   FreeAndNil(JvDockTitleFont);
+  FreeAndNil(GMsgHook);
   {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);

@@ -272,7 +272,6 @@ type
     FConjoinServerOption: TJvDockBasicConjoinServerOption;
     FTabServerOption: TJvDockBasicTabServerOption;
     FParentForm: TForm;
-    FOldWindowProc: TWndMethod;
     FDockBaseControlList: TList;
     function GetCount: Integer;
     function GetDockBaseControlLists(Index: Integer): TJvDockBaseControl;
@@ -299,7 +298,6 @@ type
     procedure SetDockBaseControl(IsCreate: Boolean; DockBaseControl: TJvDockBaseControl); virtual;
     function DockServerWindowProc(DockServer: TJvDockServer; var Msg: TMessage): Boolean; virtual;
     function DockClientWindowProc(DockClient: TJvDockClient; var Msg: TMessage): Boolean; virtual;
-    procedure ParentFormWindowProc(var Msg: TMessage); virtual;
     procedure AddDockBaseControl(ADockBaseControl: TJvDockBaseControl); virtual;
     procedure RemoveDockBaseControl(ADockBaseControl: TJvDockBaseControl); virtual;
     procedure SetConjoinServerOption(Value: TJvDockBasicConjoinServerOption); virtual;
@@ -667,7 +665,7 @@ type
     function CreateTabHostAndDockControl(Control1, Control2: TControl): TJvDockTabHostForm; virtual;
 
     function FindTabHostForm: TForm;
-      // return nil if not found, otherwise, get currently docked parent tabhost form if there is one.
+    // return nil if not found, otherwise, get currently docked parent tabhost form if there is one.
 
     procedure DoNCButtonDown(Msg: TWMNCHitMessage; Button: TMouseButton;
       MouseStation: TJvDockMouseStation); virtual;
@@ -871,6 +869,38 @@ type
     property DockClient;
     { Constructed in TJvDockClient.CreateTabDockClass }
     property PageControl: TJvDockTabPageControl read FPageControl write FPageControl;
+  end;
+
+  TJvGlobalDockManager = class(TJvDockManager)
+  private
+    FDockServers: TList;
+    FDockClients: TList;
+    FDockableForms: TList;
+    function GetDockClient(const Index: Integer): TJvDockClient;
+    function GetDockClientCount: Integer;
+    function GetDockServer(const Index: Integer): TJvDockServer;
+    function GetDockServerCount: Integer;
+    function GetDockableForm(const Index: Integer): TJvDockableForm;
+    function GetDockableFormCount: Integer;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    procedure RegisterDockServer(ADockServer: TJvDockServer);
+    procedure RegisterDockClient(ADockClient: TJvDockClient);
+    procedure RegisterDockableForm(ADockableForm: TJvDockableForm);
+    procedure UnRegisterDockServer(ADockServer: TJvDockServer);
+    procedure UnRegisterDockClient(ADockClient: TJvDockClient);
+    procedure UnRegisterDockableForm(ADockableForm: TJvDockableForm);
+    function FindDockServerForm(const AName: string): TControl;
+    function FindDockClientForm(const AName: string): TControl;
+    function FindDockControlForm(const AName: string): TControl;
+
+    property DockServer[const Index: Integer]: TJvDockServer read GetDockServer;
+    property DockClient[const Index: Integer]: TJvDockClient read GetDockClient;
+    property DockableForm[const Index: Integer]: TJvDockableForm read GetDockableForm;
+    property DockServerCount: Integer read GetDockServerCount;
+    property DockClientCount: Integer read GetDockClientCount;
+    property DockableFormCount: Integer read GetDockableFormCount;
   end;
 
 var
@@ -1236,7 +1266,6 @@ function FindDockClient(Client: TControl): TJvDockClient;
 var
   ADockControl: TJvDockBaseControl;
 begin
-  { (rb) Weird routine }
   ADockControl := FindDockBaseControl(Client);
   if ADockControl is TJvDockClient then
     Result := TJvDockClient(ADockControl)
@@ -1248,7 +1277,6 @@ function FindDockServer(Client: TControl): TJvDockServer;
 var
   ADockControl: TJvDockBaseControl;
 begin
-  { (rb) Weird routine }
   ADockControl := FindDockBaseControl(Client);
   if ADockControl is TJvDockServer then
     Result := TJvDockServer(ADockControl)
@@ -1261,9 +1289,9 @@ var
   I: Integer;
 begin
   Assert(JvGlobalDockManager <> nil);
-  for I := JvGlobalDockManager.DockableFormList.Count - 1 downto 0 do
-    if TJvDockableForm(JvGlobalDockManager.DockableFormList[I]).DockableControl.DockClientCount = 0 then
-      TJvDockableForm(JvGlobalDockManager.DockableFormList[I]).Free;
+  for I := JvGlobalDockManager.DockableFormCount - 1 downto 0 do
+    if JvGlobalDockManager.DockableForm[I].DockableControl.DockClientCount = 0 then
+      JvGlobalDockManager.DockableForm[I].Free;
 end;
 
 function GetClientAlignControlArea(AControl: TWinControl; Align: TAlign; Exclude: TControl): Integer;
@@ -1609,6 +1637,84 @@ begin
         for I := 0 to DockClientCount - 1 do
           MakeDockClientEvent(DockClients[I], Visible);
   end;
+end;
+
+{ Quick way to do tabbed docking programmatically - Added by Warren }
+
+function ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockTabHostForm;
+var
+  TabHost: TJvDockTabHostForm;
+// wasVisible1,wasVisible2:Boolean;
+  DockClient1, DockCLient2: TJvDockClient;
+  ScreenPos: TRect;
+begin
+  //Form1.Show;
+  //Form2.Show;
+
+  DockClient1 := FindDockClient(Form1);
+  //wasVisible1 := Form1.Visible;
+  Form1.Hide;
+  Assert(Assigned(DockClient1));
+  if DockClient1.DockState = JvDockState_Docking then
+  begin
+    ScreenPos := Application.MainForm.ClientRect; // Just making it float temporarily.
+    Form1.ManualFloat(ScreenPos);
+  end;
+  DockClient2 := FindDockClient(Form2);
+  //wasVisible2 := Form2.Visible;
+  Form2.Hide;
+
+  Assert(Assigned(DockClient2));
+  if DockClient2.DockState = JvDockState_Docking then
+  begin
+    ScreenPos := Application.MainForm.ClientRect; // Just making it float temporarily.
+    Form2.ManualFloat(ScreenPos);
+  end;
+
+  TabHost := DockClient1.CreateTabHostAndDockControl(Form1, Form2);
+    {DockClient1.ParentForm, DockClient2.ParentForm}
+  TabHost.Hide;
+
+  TabHost.ManualDock(DockSite);
+  if not Form1.Visible then
+    Form1.Show;
+  if not Form2.Visible then
+    Form2.Show;
+
+  TabHost.Show;
+  ShowDockForm(Form2);
+  Result := TabHost;
+end;
+
+{ Must create the initial tab dock with two pages, using ManualTabDock,
+  then you can add more pages with this:}
+
+procedure ManualTabDockAddPage(TabHost: TJvDockTabHostForm; AForm: TForm);
+begin
+  Assert(Assigned(TabHost));
+  Assert(Assigned(TabHost.PageControl));
+  //AForm.Show;
+  AForm.ManualDock(TabHost.PageControl);
+  AForm.Show;
+end;
+
+{ Quick way to do conjoined docking programmatically - Added by Warren }
+
+function ManualConjoinDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockConjoinHostForm;
+var
+  ConjoinHost: TJvDockConjoinHostForm;
+  DockClient1, DockCLient2: TJvDockClient;
+begin
+  Form1.Show;
+  Form2.Show;
+  DockClient1 := FindDockClient(Form1);
+  Assert(Assigned(DockClient1));
+  DockClient2 := FindDockClient(Form2);
+  Assert(Assigned(DockClient2));
+  ConjoinHost := DockClient1.CreateConjoinHostAndDockControl(DockClient1.ParentForm, Form2, alTop);
+  ShowDockForm(Form2);
+  ConjoinHost.ManualDock(DockSite);
+  Result := ConjoinHost;
 end;
 
 procedure ResetDockClient(Control: TControl; NewTarget: TControl);
@@ -1971,22 +2077,16 @@ begin
   inherited Create(AOwner);
   DragKind := dkDock;
   FDockClient := TJvDockClient.Create(Self);
-  JvGlobalDockManager.DockableFormList.Add(Self);
+  JvGlobalDockManager.RegisterDockableForm(Self);
   FFloatingChild := nil;
   TBDockHeight := FDockClient.TBDockHeight;
   LRDockWidth := FDockClient.LRDockWidth;
 end;
 
 destructor TJvDockableForm.Destroy;
-var
-  Index: Integer;
 begin
   if JvGlobalDockManager <> nil then
-  begin
-    Index := JvGlobalDockManager.DockableFormList.IndexOf(Self);
-    if Index <> -1 then
-      JvGlobalDockManager.DockableFormList.Delete(Index);
-  end;
+    JvGlobalDockManager.UnRegisterDockableForm(Self);
   { Now handled in destroy of DockClient via TJvDockClient.SetLastDockSite }
   //if DockClient.LastDockSite is TJvDockPanel then
   //  if Assigned(TJvDockPanel(DockClient.LastDockSite).JvDockManager) then
@@ -2343,28 +2443,34 @@ end;
 procedure TJvDockBaseControl.DoFormOnClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-  if (Action = caFree) and (JvGlobalDockManager <> nil) then
-  begin
-    if Self is TJvDockServer then
-      JvGlobalDockManager.RemoveDockServerFromDockManager(ParentForm)
-    else
-    if Self is TJvDockClient then
-      JvGlobalDockManager.RemoveDockClientFromDockManager(ParentForm);
-  end;
+  { Code is moved to AddDockStyle, RemoveDockStyle; if a user assigns OnClose,
+    OnCreate handlers things would go wrong.
+  }
+//  if (Action = caFree) and (JvGlobalDockManager <> nil) then
+//  begin
+//    if Self is TJvDockServer then
+//      JvGlobalDockManager.UnRegisterDockServer(TJvDockServer(Self))
+//    else
+//    if Self is TJvDockClient then
+//      JvGlobalDockManager.UnRegisterDockClient(TJvDockClient(Self));
+//  end;
   if Assigned(FOldOnClose) then
     FOldOnClose(Sender, Action);
 end;
 
 procedure TJvDockBaseControl.DoFormOnCreate(Sender: TObject);
 begin
-  if JvGlobalDockManager <> nil then
-  begin
-    if Self is TJvDockServer then
-      JvGlobalDockManager.AddDockServerToDockManager(ParentForm)
-    else
-    if Self is TJvDockClient then
-      JvGlobalDockManager.AddDockClientToDockManager(ParentForm);
-  end;
+  { Code is moved to AddDockStyle, RemoveDockStyle; if a user assigns OnClose,
+    OnCreate handlers things would go wrong.
+  }
+//  if JvGlobalDockManager <> nil then
+//  begin
+//    if Self is TJvDockServer then
+//      JvGlobalDockManager.RegisterDockServer(TJvDockServer(Self))
+//    else
+//    if Self is TJvDockClient then
+//      JvGlobalDockManager.RegisterDockClient(TJvDockClient(Self));
+//  end;
   if Assigned(FOldOnCreate) then
     FOldOnCreate(Sender);
 end;
@@ -2655,12 +2761,6 @@ begin
     FParentForm := TForm(AOwner)
   else
     FParentForm := nil;
-
-  if not (csDesigning in ComponentState) then
-  begin
-    FOldWindowProc := FParentForm.WindowProc;
-    FParentForm.WindowProc := ParentFormWindowProc;
-  end;
 end;
 
 destructor TJvDockBasicStyle.Destroy;
@@ -2669,12 +2769,6 @@ var
   I: Integer;
 {$ENDIF JVCL_DOCKING_NOTIFYLISTENERS}
 begin
-  if not (csDesigning in ComponentState) then
-  begin
-    if Assigned(FOldWindowProc) then
-      FParentForm.WindowProc := FOldWindowProc;
-    FOldWindowProc := nil;
-  end;
   {$IFDEF JVCL_DOCKING_NOTIFYLISTENERS}
   for I := FNotifyListeners.Count - 1 downto 0 do
   begin
@@ -3093,13 +3187,6 @@ begin
   end;
 end;
 
-procedure TJvDockBasicStyle.ParentFormWindowProc(var Msg: TMessage);
-begin
-  if not (csDesigning in ComponentState) then
-    if Assigned(FOldWindowProc) then
-      FOldWindowProc(Msg);
-end;
-
 procedure TJvDockBasicStyle.RemoveDockBaseControl(ADockBaseControl: TJvDockBaseControl);
 begin
   if ADockBaseControl <> nil then
@@ -3376,6 +3463,8 @@ end;
 
 procedure TJvDockClient.AddDockStyle(ADockStyle: TJvDockBasicStyle);
 begin
+  JvGlobalDockManager.RegisterDockClient(Self);
+
   if Assigned(ADockStyle) and Assigned(ADockStyle.ConjoinPanelClass) then
     FConjoinPanelClass := ADockStyle.ConjoinPanelClass
   else
@@ -3781,6 +3870,9 @@ begin
 
   FConjoinPanelClass := nil;
   FTabDockClass := nil;
+
+  if JvGlobalDockManager <> nil then
+    JvGlobalDockManager.UnRegisterDockClient(Self);
 end;
 
 procedure TJvDockClient.RestoreChild;
@@ -4567,6 +4659,8 @@ end;
 
 procedure TJvDockServer.AddDockStyle(ADockStyle: TJvDockBasicStyle);
 begin
+  JvGlobalDockManager.RegisterDockServer(Self);
+
   if Assigned(ADockStyle) and Assigned(ADockStyle.DockPanelClass) then
     FDockPanelClass := ADockStyle.DockPanelClass
   else
@@ -4851,6 +4945,10 @@ begin
 
   FDockPanelClass := nil;
   FDockSplitterClass := nil;
+
+  { !! can be nil }
+  if JvGlobalDockManager <> nil then
+    JvGlobalDockManager.UnRegisterDockServer(Self);
 end;
 
 procedure TJvDockServer.SetBottomDock(const Value: Boolean);
@@ -5364,6 +5462,141 @@ begin
   Stream.Write(TabPageStreamEndFlag, SizeOf(TabPageStreamEndFlag));
 end;
 
+//=== { TJvGlobalDockManager } ===============================================
+
+constructor TJvGlobalDockManager.Create;
+begin
+  inherited Create;
+  FDockServers := TList.Create;
+  FDockClients := TList.Create;
+  FDockableForms := TList.Create;
+end;
+
+destructor TJvGlobalDockManager.Destroy;
+begin
+  FDockableForms.Free;
+  FDockServers.Free;
+  FDockClients.Free;
+  inherited Destroy;
+end;
+
+function TJvGlobalDockManager.FindDockClientForm(
+  const AName: string): TControl;
+var
+  I: Integer;
+begin
+  for I := 0 to DockClientCount - 1 do
+  begin
+    Result := DockClient[I].ParentForm;
+    if Result.Name = AName then
+      Exit;
+  end;
+  Result := nil;
+end;
+
+function TJvGlobalDockManager.FindDockControlForm(
+  const AName: string): TControl;
+begin
+  Result := FindDockServerForm(AName);
+  if Result = nil then
+    FindDockClientForm(AName);
+end;
+
+function TJvGlobalDockManager.FindDockServerForm(
+  const AName: string): TControl;
+var
+  I: Integer;
+begin
+  for I := 0 to DockServerCount - 1 do
+  begin
+    Result := DockServer[I].ParentForm;
+    if Result.Name = AName then
+      Exit;
+  end;
+  Result := nil;
+end;
+
+function TJvGlobalDockManager.GetDockableForm(
+  const Index: Integer): TJvDockableForm;
+begin
+  Result := TJvDockableForm(FDockableForms[Index]);
+end;
+
+function TJvGlobalDockManager.GetDockableFormCount: Integer;
+begin
+  Result := FDockableForms.Count;
+end;
+
+function TJvGlobalDockManager.GetDockClient(
+  const Index: Integer): TJvDockClient;
+begin
+  Result := TJvDockClient(FDockClients[Index]);
+end;
+
+function TJvGlobalDockManager.GetDockClientCount: Integer;
+begin
+  Result := FDockClients.Count;
+end;
+
+function TJvGlobalDockManager.GetDockServer(
+  const Index: Integer): TJvDockServer;
+begin
+  Result := TJvDockServer(FDockServers[Index]);
+end;
+
+function TJvGlobalDockManager.GetDockServerCount: Integer;
+begin
+  Result := FDockServers.Count;
+end;
+
+procedure TJvGlobalDockManager.RegisterDockableForm(
+  ADockableForm: TJvDockableForm);
+var
+  Index: Integer;
+begin
+  Index := FDockableForms.IndexOf(ADockableForm);
+  if Index < 0 then
+    FDockableForms.Add(ADockableForm);
+end;
+
+procedure TJvGlobalDockManager.RegisterDockClient(
+  ADockClient: TJvDockClient);
+var
+  Index: Integer;
+begin
+  Index := FDockClients.IndexOf(ADockClient);
+  if Index < 0 then
+    FDockClients.Add(ADockClient);
+end;
+
+procedure TJvGlobalDockManager.RegisterDockServer(
+  ADockServer: TJvDockServer);
+var
+  Index: Integer;
+begin
+  Index := FDockServers.IndexOf(ADockServer);
+  if Index < 0 then
+    FDockServers.Add(ADockServer);
+end;
+
+procedure TJvGlobalDockManager.UnRegisterDockableForm(
+  ADockableForm: TJvDockableForm);
+begin
+  FDockableForms.Remove(ADockableForm);
+end;
+
+procedure TJvGlobalDockManager.UnRegisterDockClient(
+  ADockClient: TJvDockClient);
+begin
+  FDockClients.Remove(ADockClient);
+end;
+
+procedure TJvGlobalDockManager.UnRegisterDockServer(
+  ADockServer: TJvDockServer);
+begin
+  FDockServers.Remove(ADockServer);
+end;
+
 procedure InitDockManager;
 var
   OSVersionInfo: TOSVersionInfo;
@@ -5371,7 +5604,7 @@ begin
   try
     JvGlobalDockManager.Free;
     JvGlobalDockManager := nil;
-    JvGlobalDockManager := TJvDockManager.Create;
+    JvGlobalDockManager := TJvGlobalDockManager.Create;
 
     OSVersionInfo.dwOSVersionInfoSize := SizeOf(OSVersionInfo);
     GetVersionEx(OSVersionInfo);
@@ -5384,84 +5617,6 @@ procedure DoneDockManager;
 begin
   JvGlobalDockManager.Free;
   JvGlobalDockManager := nil;
-end;
-
-{ Quick way to do tabbed docking programmatically - Added by Warren }
-
-function ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockTabHostForm;
-var
-  TabHost: TJvDockTabHostForm;
-// wasVisible1,wasVisible2:Boolean;
-  DockClient1, DockCLient2: TJvDockClient;
-  ScreenPos: TRect;
-begin
-  //Form1.Show;
-  //Form2.Show;
-
-  DockClient1 := FindDockClient(Form1);
-  //wasVisible1 := Form1.Visible;
-  Form1.Hide;
-  Assert(Assigned(DockClient1));
-  if DockClient1.DockState = JvDockState_Docking then
-  begin
-    ScreenPos := Application.MainForm.ClientRect; // Just making it float temporarily.
-    Form1.ManualFloat(ScreenPos);
-  end;
-  DockClient2 := FindDockClient(Form2);
-  //wasVisible2 := Form2.Visible;
-  Form2.Hide;
-
-  Assert(Assigned(DockClient2));
-  if DockClient2.DockState = JvDockState_Docking then
-  begin
-    ScreenPos := Application.MainForm.ClientRect; // Just making it float temporarily.
-    Form2.ManualFloat(ScreenPos);
-  end;
-
-  TabHost := DockClient1.CreateTabHostAndDockControl(Form1, Form2);
-    {DockClient1.ParentForm, DockClient2.ParentForm}
-  TabHost.Hide;
-
-  TabHost.ManualDock(DockSite);
-  if not Form1.Visible then
-    Form1.Show;
-  if not Form2.Visible then
-    Form2.Show;
-
-  TabHost.Show;
-  ShowDockForm(Form2);
-  Result := TabHost;
-end;
-
-{ Must create the initial tab dock with two pages, using ManualTabDock,
-  then you can add more pages with this:}
-
-procedure ManualTabDockAddPage(TabHost: TJvDockTabHostForm; AForm: TForm);
-begin
-  Assert(Assigned(TabHost));
-  Assert(Assigned(TabHost.PageControl));
-  //AForm.Show;
-  AForm.ManualDock(TabHost.PageControl);
-  AForm.Show;
-end;
-
-{ Quick way to do conjoined docking programmatically - Added by Warren }
-
-function ManualConjoinDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockConjoinHostForm;
-var
-  ConjoinHost: TJvDockConjoinHostForm;
-  DockClient1, DockCLient2: TJvDockClient;
-begin
-  Form1.Show;
-  Form2.Show;
-  DockClient1 := FindDockClient(Form1);
-  Assert(Assigned(DockClient1));
-  DockClient2 := FindDockClient(Form2);
-  Assert(Assigned(DockClient2));
-  ConjoinHost := DockClient1.CreateConjoinHostAndDockControl(DockClient1.ParentForm, Form2, alTop);
-  ShowDockForm(Form2);
-  ConjoinHost.ManualDock(DockSite);
-  Result := ConjoinHost;
 end;
 
 initialization

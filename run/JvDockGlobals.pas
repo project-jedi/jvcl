@@ -142,7 +142,7 @@ resourcestring
     }
 
 var
-  JvGlobalDockManager: TJvDockManager = nil;
+  JvGlobalDockManager: TJvGlobalDockManager = nil;
   JvGlobalDockIsLoading: Boolean = False;
   JvGlobalDockClient: TJvDockClient = nil;
 

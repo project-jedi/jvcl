@@ -620,9 +620,9 @@ var
   Channel: TJvDockVSChannel;
   DockServer: TJvDockServer;
 begin
-  for I := 0 to JvGlobalDockManager.DockServersList.Count - 1 do
+  for I := 0 to JvGlobalDockManager.DockServerCount - 1 do
   begin
-    DockServer := FindDockServer(JvGlobalDockManager.DockServersList[I]);
+    DockServer := JvGlobalDockManager.DockServer[I];
     if (DockServer <> nil) and (DockServer.TopDockPanel is TJvDockVSNETPanel) then
       for J := alTop to alRight do
         if Assigned(DockServer.DockPanelWithAlign[J]) then
@@ -748,8 +748,6 @@ begin
   until (ADockWindow = nil) or (ADockWindow.Parent = nil);
   ShowPopupPanel(TmpDockWindow);
 end;
-
-//=== { TJvDockAppEvents } ===================================================
 
 { (ahuser) not used:
 
@@ -1280,6 +1278,26 @@ procedure TJvDockVSChannel.HidePopupPanelWithAnimate;
 begin
   if FActivePane <> nil then
     PopupPanelAnimate.HideForm(Self, FActivePane.FWidth);
+end;
+
+procedure TJvDockVSChannel.InternalInsertControl(AWinControl: TWinControl);
+begin
+  if Assigned(AWinControl) then
+  begin
+    if Assigned(VSPopupPanel) and VSPopupPanel.UseDockManager and (VSPopupPanel.JvDockManager <> nil) then
+      VSPopupPanel.JvDockManager.InsertControl(AWinControl, alNone, nil);
+    AWinControl.FreeNotification(Self);
+  end;
+end;
+
+procedure TJvDockVSChannel.InternalRemoveControl(AWinControl: TWinControl);
+begin
+  if Assigned(AWinControl) then
+  begin
+    AWinControl.RemoveFreeNotification(Self);
+    if Assigned(VSPopupPanel) and VSPopupPanel.UseDockManager and (VSPopupPanel.JvDockManager <> nil) then
+      VSPopupPanel.JvDockManager.RemoveControl(AWinControl);
+  end;
 end;
 
 procedure TJvDockVSChannel.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -3658,26 +3676,6 @@ begin
     end
     else
       Inc(FCurrentWidth, TJvDockVSNetStyle.GetAnimationMoveWidth);
-  end;
-end;
-
-procedure TJvDockVSChannel.InternalInsertControl(AWinControl: TWinControl);
-begin
-  if Assigned(AWinControl) then
-  begin
-    if Assigned(VSPopupPanel) and VSPopupPanel.UseDockManager and (VSPopupPanel.JvDockManager <> nil) then
-      VSPopupPanel.JvDockManager.InsertControl(AWinControl, alNone, nil);
-    AWinControl.FreeNotification(Self);
-  end;
-end;
-
-procedure TJvDockVSChannel.InternalRemoveControl(AWinControl: TWinControl);
-begin
-  if Assigned(AWinControl) then
-  begin
-    AWinControl.RemoveFreeNotification(Self);
-    if Assigned(VSPopupPanel) and VSPopupPanel.UseDockManager and (VSPopupPanel.JvDockManager <> nil) then
-      VSPopupPanel.JvDockManager.RemoveControl(AWinControl);
   end;
 end;
 
