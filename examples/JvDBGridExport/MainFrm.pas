@@ -99,6 +99,7 @@ end;
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   Data := TJvCsvDataSet.Create(self);
+  Data.CaseInsensitive := true;
   SetupData;
 end;
 

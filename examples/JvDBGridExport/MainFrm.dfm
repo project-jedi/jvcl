@@ -44,6 +44,7 @@ object frmMain: TfrmMain
     TitleButtons = True
     OnGetBtnParams = DBGrid1GetBtnParams
     AlternateRowColor = 16768667
+    SortedField = 'Filename'
     TitleArrow = True
     MinColumnWidth = 100
     AutoSizeColumns = True
@@ -121,7 +122,7 @@ object frmMain: TfrmMain
         Title.Font.Height = -19
         Title.Font.Name = 'Comic Sans MS'
         Title.Font.Style = [fsUnderline]
-        Width = 152
+        Width = 100
         Visible = True
       end>
   end

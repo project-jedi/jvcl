@@ -114,7 +114,6 @@ object frmMain: TfrmMain
     Height = 378
     ActivePage = tabIFViewer
     Align = alClient
-    TabIndex = 0
     TabOrder = 2
     OnChange = pgViewersChange
     object tabIFViewer: TTabSheet

@@ -315,7 +315,6 @@ object AnimatorForm: TAnimatorForm
     Width = 191
     Height = 357
     ActivePage = OptionsTab
-    TabIndex = 0
     TabOrder = 6
     object OptionsTab: TTabSheet
       Caption = 'Options'
