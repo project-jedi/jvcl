@@ -48,11 +48,7 @@ unit JvInspector;
 interface
 
 uses
-  SysUtils, Classes, Contnrs,
-{$IFDEF COMPILER6_UP}
-  Types,
-{$ENDIF COMPILER6_UP}
-  TypInfo,
+  SysUtils, Classes, Contnrs, TypInfo, IniFiles,
 {$IFDEF MSWINDOWS}
   Windows, Messages,
 {$ENDIF}
@@ -60,9 +56,8 @@ uses
   Graphics, Controls, StdCtrls, ExtCtrls,
 {$ENDIF}
 {$IFDEF COMPLIB_CLX}
-  Qt, QGraphics, QControls, QStdCtrls, QExtCtrls,
+  Qt, Types, QGraphics, QControls, QStdCtrls, QExtCtrls,
 {$ENDIF}
-  IniFiles,
   JvClxUtils, JvComponent, JvTypes;
 
 resourcestring
@@ -250,10 +245,10 @@ type
     FUseBands: Boolean;
     FVisibleList: TStrings;
     FWantTabs: Boolean;
-   {$IFDEF COMPLIB_CLX}
+  {$IFDEF COMPLIB_CLX}
     FHorzScrollBar: TScrollBar;
     FVertScrollBar: TScrollBar;
-   {$ENDIF} 
+  {$ENDIF}
     { Standard TCustomControl events -WAP}
     FOnEnter: TNotifyEvent;
     FOnContextPopup: TContextPopupEvent;
@@ -266,7 +261,12 @@ type
     procedure SetInspectObject(const Value: TObject);
 
 //    FOnMouseDown: TInspectorMouseDownEvent;
-
+  {$IFDEF COMPLIB_CLX}
+   // ClientWidth and ClientHeight replaces the inherited properties by
+   // methods that adjusts the client width and height by AdjustClientRect
+    function ClientWidth: Integer;
+    function ClientHeight: Integer;
+  {$ENDIF}
   protected
     function CalcImageHeight: Integer; virtual;
     function CalcItemIndex(X, Y: Integer; var Rect: TRect): Integer; virtual;
@@ -366,6 +366,7 @@ type
       var ScrollPos: Integer); dynamic;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       const MousePos: TPoint): Boolean; override;
+    procedure AdjustClientRect(var Rect: TRect); override;
     {$ENDIF}
     procedure ShowScrollBars(Bar: Integer; Visible: Boolean); virtual;
     function YToIdx(const Y: Integer): Integer; virtual;
@@ -2128,6 +2129,24 @@ var
   DataRegister: TJvInspDataReg;
 //=== TJvCustomInspector =====================================================
 
+{$IFDEF COMPLIB_CLX}
+function TJvCustomInspector.ClientWidth: Integer;
+var R: TRect;
+begin
+  R := ClientRect;
+  AdjustClientRect(R);
+  Result := R.Right - R.Left;
+end;
+
+function TJvCustomInspector.ClientHeight: Integer;
+var R: TRect;
+begin
+  R := ClientRect;
+  AdjustClientRect(R);
+  Result := R.Bottom - R.Top;
+end;
+{$ENDIF COMPLIB_CLX}
+
 function TJvCustomInspector.CalcImageHeight: Integer;
 var
   BandHeightNoSB: Integer;
@@ -2682,8 +2701,6 @@ var
   ItemRect: TRect;
   Item: TJvCustomInspectorItem;
 begin
-  { marcelb: removed this line which resulted in a compiler hint and seems to have no use at all }
-//  Item := nil; // Make sure bogus Item pointer doesn't get into event.
   inherited MouseDown(Button, Shift, X, Y);
   if UseBands then
   begin
@@ -2872,9 +2889,24 @@ begin
 end;
 
 procedure TJvCustomInspector.Paint;
+var
+  PaintRect: TRect;
 begin
+  PaintRect := ClientRect;
 {$IFDEF COMPLIB_CLX}
+  if FHorzScrollBar.Align <> alNone then
+  begin
+    FHorzScrollBar.Align := alNone;
+    FHorzScrollBar.Anchors := [akLeft, akRight, akBottom];
+  end;
+  if FVertScrollBar.Align <> alNone then
+  begin
+    FVertScrollBar.Align := alNone;
+    FVertScrollBar.Anchors := [akTop, akRight, akBottom];
+  end;
+
   inherited Paint;
+  AdjustClientRect(PaintRect);
 {$ENDIF}
   if Painter <> nil then
   begin
@@ -2887,7 +2919,7 @@ begin
   else
   begin
     Canvas.Brush.Color := Color;
-    Canvas.FillRect(ClientRect);
+    Canvas.FillRect(PaintRect);
     if csDesigning in Self.ComponentState then
       Canvas.TextOut(10, 10, Name + ':' + ClassName);
   end;
@@ -3309,7 +3341,6 @@ begin
 {$ELSE}
     with FVertScrollBar do
     begin
-      Masked := True;
       Min := 0;
       try
         Max := Round((IdxToY(Succ(YToIdx(ImageHeight - ClientHeight))) + ClientHeight) / ScFactor);
@@ -3344,7 +3375,6 @@ begin
 {$ELSE}
     with FHorzScrollBar do
     begin
-      Masked := True;
       Min := 0;
       Max := BCount - 1;
       LargeChange := BPerPage;
@@ -3363,6 +3393,9 @@ end;
 function TJvCustomInspector.ViewRect: TRect;
 begin
   Result := ClientRect;
+{$IFDEF COMPLIB_CLX}
+  AdjustClientRect(Result);
+{$ENDIF}
 end;
 
 function TJvCustomInspector.ViewWidth: Integer;
@@ -3517,16 +3550,27 @@ constructor TJvCustomInspector.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 {$IFDEF COMPLIB_CLX}
+  ControlStyle := ControlStyle - [csAcceptsControls, csNoFocus];
   FHorzScrollBar := TScrollBar.Create(nil);
   FVertScrollBar := TScrollBar.Create(nil);
 
+  FHorzScrollBar.Parent := Self;
   FHorzScrollBar.Visible := False;
   FHorzScrollBar.Kind := sbHorizontal;
-  FHorzScrollBar.Align := alRight;
+  FHorzScrollBar.Align := alBottom;
+  FHorzScrollBar.OnScroll := Scrolled;
 
+  FVertScrollBar.Parent := Self;
   FVertScrollBar.Visible := False;
   FVertScrollBar.Kind := sbVertical;
-  FVertScrollBar.Align := alBottom;
+  FVertScrollBar.Align := alRight;
+  FVertScrollBar.OnScroll := Scrolled;
+
+ { HorzScrollBar and VertScrollBar are a little bit tricky. As JvCustomPainter
+   overrides AdjustClientRect the Align property will force the scroll bars to
+   fit into the adjusted client rect. To prevent this the AdjustClientRect only
+   adjusts the client rect if ScrollBar.Align <> alBottom/alRight is. This is
+   the case after the first Paint event. }
 {$ENDIF}
 
   FBandStartsNoSB := TList.Create;
@@ -3848,6 +3892,9 @@ begin
       end;
       MaxBandItemIdx := Rect.Right + 4;
       Rect := Inspector.ClientRect;
+    {$IFDEF COMPLIB_CLX}
+      Inspector.AdjustClientRect(Rect);
+    {$ENDIF}
       Rect.Left := MaxBandItemIdx;
       Rect.Right := Rect.Left + Inspector.BandWidth - 4;
       Canvas.Pen.Color := clBtnShadow;
@@ -4275,18 +4322,18 @@ begin
     InflateRect(TmpRect, 0, 1);
     Dec(TmpRect.Top);
     Inc(TmpRect.Right);
-    Frame3D(Canvas, TmpRect, clBlack, clWhite, 1);
-    Frame3D(Canvas, TmpRect, clBlack, cl3DLight, 1);
+    Frame3D(Canvas, TmpRect, clGray, clWhite, 1);
+    Frame3D(Canvas, TmpRect, clGray, cl3DLight, 1);
   end
   else
   begin
     // Dotted line
     X := TmpRect.Left;
     MaxX := TmpRect.Right;
-    Canvas.Pen.Color := clBlack;
+    Canvas.Pen.Color := clGray;
     while X < MaxX do
     begin
-      Canvas.Pixels[X, TmpRect.Bottom] := clBlack;
+      Canvas.Pixels[X, TmpRect.Bottom] := clGray;
       Inc(X, 2);
     end;
   end;
@@ -5136,7 +5183,7 @@ begin
   Result := FEditCtrl;
 end;
 
-function TJvCustomInspectorItem.GetEditorText:String; {NEW:WAP}
+function TJvCustomInspectorItem.GetEditorText: string; {NEW:WAP}
 begin
   if Assigned(FEditCtrl) then
     Result := FEditCtrl.Text;
@@ -11233,6 +11280,17 @@ begin
     FVertScrollBar.Visible := Visible;
 {$ENDIF}
 end;
+
+{$IFDEF COMPLIB_CLX}
+procedure TJvCustomInspector.AdjustClientRect(var Rect: TRect);
+begin
+  inherited AdjustClientRect(Rect);
+  if FHorzScrollBar.Align <> alBottom then
+    if FHorzScrollBar.Visible then Dec(Rect.Bottom, FHorzScrollBar.Height);
+  if FVertScrollBar.Align <> alRight then
+    if FVertScrollBar.Visible then Dec(Rect.Right, FVertScrollBar.Width);
+end;
+{$ENDIF}
 
 
 initialization
