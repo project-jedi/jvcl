@@ -37,6 +37,12 @@ Known Issues:
 
 Merge notes (2002-03-21):
 * (p3) merged JvMultilineListBox, JvReorderListBox, JvTextListBox, JvBMPListBox
+Notes (2003-05-21) // Remko Bonte
+* Removed OwnerData
+* Some bug-fixes. Combinations of Multiline, Alignment, Scrollbars seem to work now.
+* Did some rewrite of background-drawing. Most of it seems to work, but a lot
+  of flickering, best avoid it or set ScrollBars to ssNone.
+* Updated drag image to use with MultiLine.
 
 -----------------------------------------------------------------------------}
 
@@ -66,12 +72,15 @@ type
     procedure SetFillMode(const Value: TJvListboxFillMode);
     procedure SetImage(const Value: TBitmap);
     procedure SetVisible(const Value: Boolean);
+    function GetDoDraw: Boolean;
   protected
     procedure Change;
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
   published
+    property DoDraw: Boolean read GetDoDraw;
     property Image: TBitmap read FImage write SetImage;
     property FillMode: TJvListboxFillMode read FFillMode write SetFillMode;
     property Visible: Boolean read FVisible write SetVisible;
@@ -88,12 +97,9 @@ type
     FOver: Boolean;
     FMaxWidth: Integer;
     FItemSearchs: TJvItemsSearchs;
-    FCount: Integer;
     FScrollBars: TScrollStyle;
     FSorted: Boolean;
-    FOwnerData: Boolean;
     FOnGetText: TJvListBoxDataEvent;
-    FOldStyle: TListBoxStyle;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
@@ -112,12 +118,16 @@ type
     FSelectedColor: TColor;
     FDisabledTextColor: TColor;
     FBackground: TJvListBoxBackground;
-    { Private declarations }
+    FLeftPosition: Integer;
+
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
+    procedure CNKeyDown(var Msg: TWMKeyDown); message CN_KEYDOWN;
 
-    procedure DrawBackGround(ADC: HDC);
+    procedure DrawBackGround(ADC: HDC; const DoOffSet: Boolean);
+
+    procedure UpdateStyle;
 
     { Handle messages that insert or delete strings from the listbox to
       manage the horizontal scrollbar if FMutliline is false. }
@@ -135,13 +145,14 @@ type
     procedure SetDisabledTextColor(const Value: TColor);
     procedure SetMaxWidth(const Value: Integer);
     procedure SetScrollBars(const Value: TScrollStyle);
-    procedure SetOwnerData(const Value: Boolean);
-    procedure SetCount(const Value: Integer);
-    procedure SetItems(const Value: TStrings);
     procedure SetSorted(const Value: Boolean);
     procedure SetHotTrack(const Value: Boolean);
-    function GetItems: TStrings;
+    procedure SetBackground(const Value: TJvListBoxBackground);
+    function GetLimitToClientWidth: Boolean;
   protected
+    procedure BeginRedraw;
+    procedure EndRedraw;
+
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
@@ -156,11 +167,11 @@ type
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
     procedure RemeasureAll;
     procedure DoBackgroundChange(Sender: TObject);
-    property MaxWidth: Integer read FMaxWidth write SetMaxWidth;
 
-    property Count: Integer read FCount write SetCount;
-    property Items: TStrings read GetItems write SetItems;
-    property OwnerData: Boolean read FOwnerData write SetOwnerData default False;
+    procedure Loaded; override;
+
+    property LimitToClientWidth: Boolean read GetLimitToClientWidth;
+    property MaxWidth: Integer read FMaxWidth write SetMaxWidth;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property Sorted: Boolean read FSorted write SetSorted default False;
     property OnGetText: TJvListBoxDataEvent read FOnGetText write FOnGetText;
@@ -182,8 +193,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    function MeasureString(const S: string; WidthAvail: Integer): Integer;
-    procedure DefaultDrawItem(Index: Integer; Rect: TRect;
+    procedure MeasureString(const S: string; WidthAvail: Integer; var ASize: TSize);
+
+    procedure DefaultDrawItem(Index: Integer; ARect: TRect;
       State: TOwnerDrawState); virtual;
     procedure DefaultDragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); virtual;
@@ -197,9 +209,7 @@ type
     procedure WndProc(var Msg: TMessage); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
-    procedure UpdateCount;
     procedure UpdateHorizontalExtent;
-
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
@@ -220,7 +230,7 @@ type
     property SelectedTextColor: TColor read FSelectedTextColor write SetSelectedTextColor default clHighlightText;
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
     property ShowFocusRect: Boolean read FShowFocusRect write SetShowFocusRect default True;
-    property Background: TJvListBoxBackground read FBackground write FBackground;
+    property Background: TJvListBoxBackground read FBackground write SetBackground;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -236,52 +246,12 @@ resourcestring
 const
   AlignFlags: array [TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);
 
-{ TJvListBoxBackground }
+  { TJvCustomListBox }
 
-procedure TJvListBoxBackground.Change;
+procedure TJvCustomListBox.BeginRedraw;
 begin
-  if Assigned(FOnChange) then
-    FOnChange(Self);
+  SendMessage(Handle, WM_SETREDRAW, Ord(False), 0);
 end;
-
-constructor TJvListBoxBackground.Create;
-begin
-  inherited Create;
-  FImage := TBitmap.Create;
-end;
-
-destructor TJvListBoxBackground.Destroy;
-begin
-  FImage.Free;
-  inherited;
-end;
-
-procedure TJvListBoxBackground.SetFillMode(
-  const Value: TJvListboxFillMode);
-begin
-  if FFillMode <> Value then
-  begin
-    FFillMode := Value;
-    Change;
-  end;
-end;
-
-procedure TJvListBoxBackground.SetImage(const Value: TBitmap);
-begin
-  FImage.Assign(Value);
-  Change;
-end;
-
-procedure TJvListBoxBackground.SetVisible(const Value: Boolean);
-begin
-  if FVisible <> Value then
-  begin
-    FVisible := Value;
-    Change;
-  end;
-end;
-
-{ TJvCustomListBox }
 
 procedure TJvCustomListBox.Changed;
 begin
@@ -296,10 +266,13 @@ begin
 end;
 
 procedure TJvCustomListBox.CMFontChanged(var Msg: TMessage);
+const
+  CShowFocusRect: array [Boolean] of Integer = (0, 2);
 begin
   inherited;
   Canvas.Font := Font;
-  Itemheight := Canvas.TextHeight('Äy') + 2;
+  if Style <> lbStandard then
+    ItemHeight := Canvas.TextHeight('Äy') + CShowFocusRect[ShowFocusRect];
   RemeasureAll;
 end;
 
@@ -368,12 +341,37 @@ begin
       DrawItem(itemID, rcItem, State)
     else
     begin
-      Canvas.FillRect(rcItem);
-      if odFocused in State then
-        DrawFocusRect(hDC, rcItem);
+      if Background.DoDraw then
+      begin
+        Perform(WM_ERASEBKGND, Canvas.Handle, 0);
+        if odFocused in State then
+          DrawFocusRect(hDC, rcItem);
+      end
+      else
+      begin
+        Canvas.FillRect(rcItem);
+        if odFocused in State then
+          DrawFocusRect(hDC, rcItem);
+      end;
     end;
     Canvas.Handle := 0;
   end;
+end;
+
+procedure TJvCustomListBox.CNKeyDown(var Msg: TWMKeyDown);
+begin
+  if Background.DoDraw and
+    (Msg.Result = 0) and (Msg.CharCode in [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN]) then
+  begin
+    BeginRedraw;
+    try
+      inherited;
+    finally
+      EndRedraw;
+    end;
+  end
+  else
+    inherited;
 end;
 
 constructor TJvCustomListBox.Create(AOwner: TComponent);
@@ -401,16 +399,30 @@ begin
 end;
 
 procedure TJvCustomListBox.CreateDragImage(const S: string);
+const
+  CLeftMargin = 15;
 var
   Size: TSize;
   Bmp: TBitmap;
+  SizeRect: TRect;
 begin
   if not Assigned(FDragImage) then
     FDragImage := TDragImageList.Create(Self)
   else
     FDragImage.Clear;
   Canvas.Font := Font;
-  Size := Canvas.TextExtent(S);
+  if MultiLine then
+  begin
+    SizeRect := Rect(0, 0, MaxInt, 0);
+    DrawText(Canvas.Handle, PChar(S), -1, SizeRect, DT_CALCRECT or
+      DrawTextBiDiModeFlags(DT_WORDBREAK or DT_NOPREFIX or AlignFlags[FAlignment]));
+    Size.cx := SizeRect.Right;
+    Size.cy := SizeRect.Bottom;
+  end
+  else
+    Size := Canvas.TextExtent(S);
+  Inc(Size.cx, CLeftMargin);
+
   FDragImage.Width := Size.cx;
   FDragImage.Height := Size.cy;
   Bmp := TBitmap.Create;
@@ -421,7 +433,16 @@ begin
     Bmp.Canvas.Font.Color := clBlack;
     Bmp.Canvas.Brush.Color := clWhite;
     Bmp.Canvas.Brush.Style := bsSolid;
-    Bmp.Canvas.TextOut(0, 0, S);
+    if MultiLine then
+    begin
+      Inc(SizeRect.Right, CLeftMargin);
+      Bmp.Canvas.FillRect(SizeRect);
+      Inc(SizeRect.Left, CLeftMargin);
+      DrawText(Bmp.Canvas.Handle, PChar(S), -1, SizeRect,
+        DrawTextBiDiModeFlags(DT_WORDBREAK or DT_NOPREFIX or AlignFlags[FAlignment]));
+    end
+    else
+      Bmp.Canvas.TextOut(CLeftMargin, 0, S);
     FDragImage.AddMasked(Bmp, clWhite);
   finally
     Bmp.Free;
@@ -441,20 +462,21 @@ begin
   begin
     Style := Style and not (WS_HSCROLL or WS_VSCROLL) or ScrollBar[FScrollBars] or
       Sorted[FSorted];
-    if FOwnerData then
-    begin
-      Style := Style and not (LBS_SORT or LBS_HASSTRINGS) or LBS_NODATA;
-      if Self.Style = lbStandard then
-        Style := Style or LBS_OWNERDRAWFIXED;
-    end;
   end;
 end;
 
 procedure TJvCustomListBox.CreateWnd;
 begin
+  if not (csLoading in ComponentState) then
+  begin
+    FMultiLine := MultiLine and (Style = lbOwnerDrawVariable);
+
+    if not (Style in [lbOwnerDrawVariable, lbOwnerDrawFixed]) then
+      FAlignment := taLeftJustify;
+  end;
+  FLeftPosition := 0;
   inherited CreateWnd;
   UpdateHorizontalExtent;
-  UpdateCount;
 end;
 
 procedure TJvCustomListBox.DefaultDragDrop(Source: TObject;
@@ -515,17 +537,28 @@ end;
 
 { This procedure is a slightly modified version of TCustomListbox.DrawItem! }
 
-procedure TJvCustomListBox.DefaultDrawItem(Index: Integer; Rect: TRect;
+procedure TJvCustomListBox.DefaultDrawItem(Index: Integer; ARect: TRect;
   State: TOwnerDrawState);
 const
   AlignFlags: array [TAlignment] of DWORD =
     (DT_LEFT, DT_RIGHT, DT_CENTER);
 var
   Flags: Longint;
+  ActualRect: TRect;
 begin
   // JvBMPListBox:
   // draw text transparently
-  if Background.Visible and not Background.Image.Empty then
+  if ScrollBars in [ssHorizontal, ssBoth] then
+  begin
+    if FMaxWidth < ClientWidth then
+      ActualRect := Rect(0, ARect.Top, ClientWidth, ARect.Bottom)
+    else
+      ActualRect := Rect(0, ARect.Top, FMaxWidth, ARect.Bottom);
+  end
+  else
+    ActualRect := ARect;
+
+  if Background.DoDraw then
   begin
     Canvas.Brush.Style := bsClear;
     // always use font color, CNDrawItem sets it to clHighlitetext for
@@ -535,32 +568,35 @@ begin
     // The listbox does not erase the background for the item before
     // sending the WM_DRAWITEM message! We have to do that here manually.
     SaveDC(Canvas.Handle);
-    IntersectClipRect(Canvas.Handle, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
-    Perform(WM_ERASEBKGND, Canvas.Handle, 0);
+    IntersectClipRect(Canvas.Handle, ActualRect.Left, ActualRect.Top, ActualRect.Right, ActualRect.Bottom);
+    DrawBackGround(Canvas.Handle, True);
     RestoreDC(Canvas.Handle, -1);
+  end;
 
-    if (Index >= 0) and (Index < Items.Count) then
-      Canvas.TextOut(Rect.Left + 2, Rect.Top, Items[Index]);
-
-    // invert the item if selected
-    if odSelected in State then
-      InvertRect(Canvas.Handle, Rect);
-    // no need to draw focus rect, CNDrawItem does that for us
-  end
-  else
   if Index < Items.Count then
   begin
-    Canvas.FillRect(Rect);
+    if not Background.DoDraw then
+      Canvas.FillRect(ActualRect);
+
     if FMultiline then
       Flags := DrawTextBiDiModeFlags(DT_WORDBREAK or DT_NOPREFIX or
         AlignFlags[FAlignment])
     else
-      Flags := DrawTextBiDiModeFlags(DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+      Flags := DrawTextBiDiModeFlags(DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or
+        AlignFlags[FAlignment]);
     if not UseRightToLeftAlignment then
-      Inc(Rect.Left, 2)
+      Inc(ActualRect.Left, 2)
     else
-      Dec(Rect.Right, 2);
-    DrawText(Canvas.Handle, PChar(Items[Index]), Length(Items[Index]), Rect, Flags);
+      Dec(ActualRect.Right, 2);
+    DrawText(Canvas.Handle, PChar(Items[Index]), Length(Items[Index]), ActualRect, Flags);
+
+    //if (Index >= 0) and (Index < Items.Count) then
+    //  Canvas.TextOut(ActualRect.Left + 2, ActualRect.Top, Items[Index]);
+
+    // invert the item if selected
+    if Background.DoDraw and (odSelected in State) then
+      InvertRect(Canvas.Handle, ActualRect);
+    // no need to draw focus rect, CNDrawItem does that for us
   end;
 end;
 
@@ -655,13 +691,13 @@ begin
     DefaultDragOver(Source, X, Y, State, Accept);
 end;
 
-procedure TJvCustomListBox.DrawBackGround(ADC: HDC);
+procedure TJvCustomListBox.DrawBackGround(ADC: HDC; const DoOffSet: Boolean);
 var
   ImageRect, ClipBox, ClientRect, Temp: TRect;
   Cv: TCanvas;
   ClipComplexity: Integer;
 begin
-  if (ADC = 0) or not Background.Visible then
+  if (ADC = 0) or not Background.DoDraw then
     Exit;
   ClientRect := Self.ClientRect;
   ClipComplexity := GetClipBox(ADC, ClipBox);
@@ -669,6 +705,9 @@ begin
     Exit; // nothing to paint
   if ClipComplexity = ERROR then
     ClipBox := ClientRect;
+
+  if DoOffSet then
+    OffsetRect(ClientRect, FLeftPosition, 0);
 
   Cv := TCanvas.Create;
   try
@@ -713,14 +752,23 @@ begin
   end;
 end;
 
+procedure TJvCustomListBox.EndRedraw;
+var
+  R: TRect;
+begin
+  SendMessage(Handle, WM_SETREDRAW, Ord(True), 0);
+  R := Rect(0, 0, Width, Height);
+  InvalidateRect(Handle, @R, True);
+end;
+
 function TJvCustomListBox.GetDragImages: TDragImageList;
 begin
   Result := FDragImage;
 end;
 
-function TJvCustomListBox.GetItems: TStrings;
+function TJvCustomListBox.GetLimitToClientWidth: Boolean;
 begin
-  Result := inherited Items;
+  Result := FMultiline and (ScrollBars in [ssNone, ssVertical]);
 end;
 
 procedure TJvCustomListBox.InvertSelection;
@@ -738,7 +786,7 @@ end;
 
 procedure TJvCustomListBox.LBAddString(var Msg: TMessage);
 var
-  W: Integer;
+  LSize: TSize;
 begin
   { (rb) Because TJvDirectoryListBox displays shorter strings than it stores in
          it's Items property - ie it stores the complete path, displays only
@@ -746,11 +794,11 @@ begin
          TJvCustomListBox think that the size of the strings are bigger than
          they really are (thus you probably will see a horizontal scroll bar)
   }
-  if not FMultiline then
+  if not LimitToClientWidth then
   begin
-    W := MeasureString(PChar(Msg.LParam), 0);
-    if W > FMaxWidth then
-      SetMaxWidth(W);
+    MeasureString(PChar(Msg.LParam), 0, LSize);
+    if LSize.cx > FMaxWidth then
+      SetMaxWidth(LSize.cx);
   end;
   inherited;
   if Assigned(FOnAddString) then
@@ -761,14 +809,14 @@ end;
 
 procedure TJvCustomListBox.LBDeleteString(var Msg: TMessage);
 var
-  W: Integer;
+  LSize: TSize;
   InheritedCalled: Boolean;
 begin
   InheritedCalled := False;
-  if not FMultiline then
+  if not LimitToClientWidth then
   begin
-    W := MeasureString(Items[Msg.WParam], 0);
-    InheritedCalled := W = FMaxWidth;
+    MeasureString(Items[Msg.WParam], 0, LSize);
+    InheritedCalled := LSize.cy = FMaxWidth;
     if InheritedCalled then
     begin
       inherited;
@@ -785,51 +833,70 @@ end;
 
 procedure TJvCustomListBox.LBInsertString(var Msg: TMessage);
 var
-  W: Integer;
+  LSize: TSize;
 begin
-  if not FMultiline then
+  if not LimitToClientWidth then
   begin
-    W := MeasureString(PChar(Msg.LParam), 0);
-    if W > FMaxWidth then
-      SetMaxWidth(W);
+    MeasureString(PChar(Msg.LParam), 0, LSize);
+    if LSize.cx > FMaxWidth then
+      SetMaxWidth(LSize.cx);
   end;
   inherited;
 end;
 
+procedure TJvCustomListBox.Loaded;
+begin
+  inherited Loaded;
+
+  UpdateStyle;
+end;
+
 procedure TJvCustomListBox.MeasureItem(Index: Integer;
   var Height: Integer);
+var
+  LSize: TSize;
 begin
   if Assigned(OnMeasureItem) or not MultiLine or
     (Index < 0) or (Index >= Items.Count) then
     inherited MeasureItem(Index, Height)
   else
-    Height := MeasureString(Items[Index], ClientWidth);
+  begin
+    if LimitToClientWidth then
+      MeasureString(Items[Index], ClientWidth, LSize)
+    else
+      MeasureString(Items[Index], 0, LSize);
+    Height := LSize.cy;
+  end;
 end;
 
-function TJvCustomListBox.MeasureString(const S: string;
-  WidthAvail: Integer): Integer;
+procedure TJvCustomListBox.MeasureString(const S: string;
+  WidthAvail: Integer; var ASize: TSize);
 var
   Flags: Longint;
   R: TRect;
 begin
   Canvas.Font := Font;
-  Result := Canvas.TextWidth(S);
-  { Note: doing the TextWidth unconditionally makes sure the font is properly
+  { Note: doing the TextHeight unconditionally makes sure the font is properly
     selected into the device context. }
-  if WidthAvail > 0 then
-  begin
-    Flags := DrawTextBiDiModeFlags(
-      DT_WORDBREAK or DT_NOPREFIX or DT_CALCRECT or AlignFlags[FAlignment]);
-    R := Rect(0, 0, WidthAvail - 2, 1);
-    DrawText(Canvas.Handle, PChar(S), Length(S), R, Flags);
-    Result := R.Bottom;
-    if Result > 255 then
-      Result := 255;
-    if Result < ItemHeight then
-      Result := ItemHeight;
-    { Note: item height in a listbox is limited to 255 pixels since Windows
-      stores the height in a single byte.}
-  end;
+  ASize.cx := Canvas.TextHeight(S);
+
+  Flags := DrawTextBiDiModeFlags(
+    DT_WORDBREAK or DT_NOPREFIX or DT_CALCRECT or AlignFlags[FAlignment]);
+  if WidthAvail = 0 then
+    WidthAvail := MaxInt
+  else
+    Dec(WidthAvail, 2);
+  R := Rect(0, 0, WidthAvail, 1);
+  DrawText(Canvas.Handle, PChar(S), Length(S), R, Flags);
+  ASize.cx := R.Right + 4;
+  ASize.cy := R.Bottom;
+
+  { Note: item height in a listbox is limited to 255 pixels since Windows
+    stores the height in a single byte.}
+  if ASize.cy > 255 then
+    ASize.cy := 255;
+  if ASize.cy < ItemHeight then
+    ASize.cy := ItemHeight;
 end;
 
 procedure TJvCustomListBox.MoveSelectedDown;
@@ -891,27 +958,26 @@ end;
 procedure TJvCustomListBox.RemeasureAll;
 var
   I: Integer;
-  Max, cx, W: Integer;
+  LMaxWidth, cx: Integer;
+  LItemSize: TSize;
 begin
-  Max := 0;
-  W := 0;
-  if FMultiline then
+  LMaxWidth := 0;
+  if LimitToClientWidth then
     cx := ClientWidth
   else
     cx := 0;
 
   for I := 0 to Items.Count - 1 do
   begin
-    W := MeasureString(Items[I], cx);
-    if FMultiline then
-      Perform(LB_SETITEMHEIGHT, I, W)
-    else
-      if W > Max then
-      Max := W;
-  end;
+    MeasureString(Items[I], cx, LItemSize);
+    if MultiLine then
+      Perform(LB_SETITEMHEIGHT, I, LItemSize.cy);
 
-  if not FMultiline then
-    MaxWidth := W;
+    if not LimitToClientWidth and (LItemSize.cx > LMaxWidth) then
+      LMaxWidth := LItemSize.cx;
+  end;
+  if not LimitToClientWidth then
+    MaxWidth := LMaxWidth;
 end;
 
 function TJvCustomListBox.SearchExactString(Value: string;
@@ -956,15 +1022,16 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
-    if FAlignment <> taLeftJustify then
-    begin
-      FOldStyle := Style;
-      Style := lbOwnerDrawFixed;
-    end
-    else
-      Style := FoldStyle;
+
+    UpdateStyle;
     Invalidate;
   end;
+end;
+
+procedure TJvCustomListBox.SetBackground(
+  const Value: TJvListBoxBackground);
+begin
+  FBackground.Assign(Value);
 end;
 
 procedure TJvCustomListBox.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
@@ -972,15 +1039,6 @@ begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if Alignment <> taLeftJustify then
     Repaint;
-end;
-
-procedure TJvCustomListBox.SetCount(const Value: Integer);
-begin
-  if FCount <> Value then
-  begin
-    FCount := Value;
-    UpdateCount;
-  end;
 end;
 
 procedure TJvCustomListBox.SetDisabledTextColor(const Value: TColor);
@@ -1001,17 +1059,9 @@ begin
   end;
 end;
 
-procedure TJvCustomListBox.SetItems(const Value: TStrings);
-begin
-  if FOwnerData then
-    inherited Items.Clear
-  else
-    inherited Items := Value;
-end;
-
 procedure TJvCustomListBox.SetMaxWidth(const Value: Integer);
 begin
-  if not FMultiline and (FMaxWidth <> Value) then
+  if not LimitToClientWidth and (FMaxWidth <> Value) then
   begin
     FMaxWidth := Value;
     Perform(LB_SETHORIZONTALEXTENT, Value, 0);
@@ -1023,11 +1073,12 @@ begin
   if FMultiline <> Value then
   begin
     FMultiline := Value;
-    if Value then
+
+    UpdateStyle;
+    if FMultiline then
     begin
-      Style := lbOwnerDrawVariable;
       // make sure scrollbars matches
-      if (ScrollBars = ssBoth) then
+      if ScrollBars = ssBoth then
         ScrollBars := ssVertical;
       if ScrollBars = ssHorizontal then
         ScrollBars := ssNone;
@@ -1035,21 +1086,7 @@ begin
       Perform(LB_SETHORIZONTALEXTENT, 0, 0);
     end
     else
-    begin
-      Style := lbOwnerDrawFixed;
       RemeasureAll;
-    end;
-  end;
-end;
-
-procedure TJvCustomListBox.SetOwnerData(const Value: Boolean);
-begin
-  if FOwnerData <> Value then
-  begin
-    FOwnerData := Value;
-    Items.Clear;
-    FSorted := False;
-    RecreateWnd;
   end;
 end;
 
@@ -1081,10 +1118,15 @@ begin
 end;
 
 procedure TJvCustomListBox.SetShowFocusRect(const Value: Boolean);
+const
+  CShowFocusRect: array [Boolean] of Integer = (0, 2);
 begin
   if FShowFocusRect <> Value then
   begin
     FShowFocusRect := Value;
+
+    ItemHeight := Canvas.TextHeight('Äy') + CShowFocusRect[ShowFocusRect];
+    RemeasureAll;
     if Focused then
       Invalidate;
   end;
@@ -1094,10 +1136,6 @@ procedure TJvCustomListBox.SetSorted(const Value: Boolean);
 begin
   if FSorted <> Value then
   begin
-    if FOwnerData and Value then
-      {$TYPEDADDRESS OFF}
-      raise EJclError.CreateResRec(@RsLBVirtualCantBeSorted);
-      {$TYPEDADDRESS ON}
     FSorted := Value;
     RecreateWnd;
   end;
@@ -1118,12 +1156,6 @@ begin
     ItemIndex := -1;
 end;
 
-procedure TJvCustomListBox.UpdateCount;
-begin
-  if FOwnerData and HandleAllocated then
-    Perform(LB_SETCOUNT, FCount, 0);
-end;
-
 procedure TJvCustomListBox.UpdateHorizontalExtent;
 begin
   if HandleAllocated and (FScrollBars in [ssHorizontal, ssBoth]) then
@@ -1131,14 +1163,38 @@ begin
   //    SendMessage(Handle, LB_SETHORIZONTALEXTENT, FHorizontalExtent, 0);
 end;
 
+procedure TJvCustomListBox.UpdateStyle;
+const
+  CShowFocusRect: array [Boolean] of Integer = (0, 2);
+var
+  PreviousStyle: TListBoxStyle;
+begin
+  if csLoading in ComponentState then
+    Exit;
+
+  PreviousStyle := Style;
+
+  if MultiLine then
+    Style := lbOwnerDrawVariable
+  else
+  if Alignment <> taLeftJustify then
+    Style := lbOwnerDrawFixed;
+
+  if (PreviousStyle = lbStandard) and (Style <> lbStandard) then
+  begin
+    ItemHeight := Canvas.TextHeight('Äy') + CShowFocusRect[ShowFocusRect];
+    RemeasureAll;
+  end;
+end;
+
 procedure TJvCustomListBox.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-  if Background.Image.Empty or not Background.Visible then
+  if not Background.DoDraw then
     inherited
   else
   begin
     //    Msg.Result := 1;
-    DrawBackGround(Msg.DC);
+    DrawBackGround(Msg.DC, False);
   end;
 end;
 
@@ -1146,11 +1202,12 @@ procedure TJvCustomListBox.WMHScroll(var Msg: TWMHScroll);
 var
   DontScroll: Boolean;
   DoUpdate: Boolean;
+  ScrollInfo: TScrollInfo;
 begin
-  DoUpdate := Background.Visible and not Background.Image.Empty;
+  DoUpdate := Background.DoDraw;
 
   if DoUpdate then
-    Items.BeginUpdate;
+    BeginRedraw;
   try
     if Assigned(FOnHorizontalScroll) then
     begin
@@ -1160,11 +1217,25 @@ begin
         Exit;
     end;
     inherited;
-    if DoUpdate then
-      Invalidate;
+
+    if DoUpdate and (FMaxWidth > 0) then
+    begin
+      with ScrollInfo do
+      begin
+        cbSize := SizeOf(ScrollInfo);
+        fMask := SIF_ALL;
+        if GetScrollInfo(Handle, SB_HORZ, ScrollInfo) then
+          FLeftPosition := Round((FMaxWidth / nMax) * nPos);
+      end;
+    end
+    else
+      FLeftPosition := 0;
+
+    //if DoUpdate then
+    //  Invalidate;
   finally
     if DoUpdate then
-      Items.EndUpdate;
+      EndRedraw;
   end;
 end;
 
@@ -1173,10 +1244,10 @@ var
   DontScroll: Boolean;
   DoUpdate: Boolean;
 begin
-  DoUpdate := Background.Visible and not Background.Image.Empty;
+  DoUpdate := Background.DoDraw;
 
   if DoUpdate then
-    Items.BeginUpdate;
+    BeginRedraw;
   try
     if Assigned(FOnVerticalScroll) then
     begin
@@ -1187,79 +1258,110 @@ begin
     end;
     inherited;
 
-    if DoUpdate then
-      Invalidate;
+    //if DoUpdate then
+    //  Invalidate;
   finally
     if DoUpdate then
-      Items.EndUpdate;
+      EndRedraw;
   end;
 end;
 
 procedure TJvCustomListBox.WndProc(var Msg: TMessage);
 var
-  Text: string;
   ItemWidth: Word;
 begin
-  if FOwnerData then
-  begin
-    with Msg do
-      case Msg of
-        LB_GETTEXT:
-          if Assigned(FOnGetText) and (WParam > -1) and (WParam < Count) then
-          begin
-            Text := '';
-            OnGetText(Self, WParam, Text);
-            Result := Length(Text);
-            StrPCopy(PChar(LParam), Text);
-          end
-          else
-            Result := LB_ERR;
-        LB_GETTEXTLEN:
-          if Assigned(FOnGetText) and (WParam > -1) and (WParam < Count) then
-          begin
-            Text := '';
-            OnGetText(Self, WParam, Text);
-            Result := Length(Text);
-          end
-          else
-            Result := LB_ERR;
-        LB_ADDSTRING, LB_INSERTSTRING, LB_SETITEMDATA:
-          Result := LB_ERR;
-      else
-        inherited;
+  case Msg.Msg of
+    LB_ADDSTRING, LB_INSERTSTRING:
+      begin
+        ItemWidth := Canvas.TextWidth(StrPas(PChar(Msg.LParam)) + ' ');
+        if FMaxWidth < ItemWidth then
+          FMaxWidth := ItemWidth;
+        SendMessage(Handle, LB_SETHORIZONTALEXTENT, FMaxWidth, 0);
       end;
-    Exit;
-  end
-  else
-    case Msg.Msg of
-      LB_ADDSTRING, LB_INSERTSTRING:
-        begin
-          ItemWidth := Canvas.TextWidth(StrPas(PChar(Msg.LParam)) + ' ');
-          if FMaxWidth < ItemWidth then
-            FMaxWidth := ItemWidth;
-          SendMessage(Handle, LB_SETHORIZONTALEXTENT, FMaxWidth, 0);
-        end;
-      LB_DELETESTRING:
-        begin
-          ItemWidth := Canvas.TextWidth(Items[Msg.WParam] + ' ');
-          if ItemWidth = FMaxWidth then
-          begin
-            inherited WndProc(Msg);
-            UpdateHorizontalExtent;
-            Exit;
-          end;
-        end;
-      LB_RESETCONTENT:
-        SendMessage(Handle, LB_SETHORIZONTALEXTENT, 0, 0);
-      WM_SETFONT:
+    LB_DELETESTRING:
+      begin
+        ItemWidth := Canvas.TextWidth(Items[Msg.WParam] + ' ');
+        if ItemWidth = FMaxWidth then
         begin
           inherited WndProc(Msg);
-          Canvas.Font.Assign(Font);
           UpdateHorizontalExtent;
           Exit;
         end;
-    end;
+      end;
+    LB_RESETCONTENT:
+      SendMessage(Handle, LB_SETHORIZONTALEXTENT, 0, 0);
+    WM_SETFONT:
+      begin
+        inherited WndProc(Msg);
+        Canvas.Font.Assign(Font);
+        UpdateHorizontalExtent;
+        Exit;
+      end;
+  end;
   inherited WndProc(Msg);
 end;
 
+{ TJvListBoxBackground }
+
+procedure TJvListBoxBackground.Assign(Source: TPersistent);
+begin
+  if Source is TJvListBoxBackground then
+  begin
+    FImage.Assign(TJvListBoxBackground(Source).Image);
+    FFillmode := TJvListBoxBackground(Source).FillMode;
+    FVisible := TJvListBoxBackground(Source).Visible;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TJvListBoxBackground.Change;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+constructor TJvListBoxBackground.Create;
+begin
+  inherited Create;
+  FImage := TBitmap.Create;
+end;
+
+destructor TJvListBoxBackground.Destroy;
+begin
+  FImage.Free;
+  inherited;
+end;
+
+function TJvListBoxBackground.GetDoDraw: Boolean;
+begin
+  Result := Visible and not Image.Empty;
+end;
+
+procedure TJvListBoxBackground.SetFillMode(
+  const Value: TJvListboxFillMode);
+begin
+  if FFillMode <> Value then
+  begin
+    FFillMode := Value;
+    Change;
+  end;
+end;
+
+procedure TJvListBoxBackground.SetImage(const Value: TBitmap);
+begin
+  FImage.Assign(Value);
+  Change;
+end;
+
+procedure TJvListBoxBackground.SetVisible(const Value: Boolean);
+begin
+  if FVisible <> Value then
+  begin
+    FVisible := Value;
+    Change;
+  end;
+end;
+
 end.
+
