@@ -127,7 +127,7 @@ object CsvDataSourceForm: TCsvDataSourceForm
     Width = 265
     Height = 25
     Anchors = [akLeft, akBottom]
-    Caption = 'JvCsvDataSet1.AssignToStrings(Memo1.Lines)'
+    Caption = 'JvCsvDataSet1.AssignFromStrings(Memo1.Lines)'
     TabOrder = 5
     OnClick = Button3Click
   end
@@ -195,6 +195,9 @@ object CsvDataSourceForm: TCsvDataSourceForm
     CsvFieldDef = 
       'NAME,ADDRESS,ADDRESS2,TELEPHONE,AGE:%,LASTPHONECALL:@,PRIVATENUM' +
       'BER:!'
+    CsvUniqueKeys = False
+    CaseInsensitive = False
+    AutoBackupCount = 0
     StoreDefs = True
     Left = 124
     Top = 196
