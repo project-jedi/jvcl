@@ -70,7 +70,7 @@ type
     procedure DropDown; override;
     function EditCanModify: Boolean; override;
     procedure SetChecked(const AValue: Boolean); override;
-    procedure SetShowCheckBox(const AValue: Boolean); override;
+    procedure SetShowCheckbox(const AValue: Boolean); override;
     procedure UpdateDisplay; override;
     function GetEnableValidation: Boolean; override;
     function ValidateDate(const ADate: TDateTime): Boolean; override;
@@ -189,6 +189,20 @@ uses
   {$ENDIF COMPILER6_UP}
   SysUtils;
 
+//=== TJvCustomDBDatePickerEdit ==============================================
+
+procedure TJvCustomDBDatePickerEdit.Change;
+begin
+  if IsLinked then
+    FDataLink.Modified;
+  inherited Change;
+end;
+
+procedure TJvCustomDBDatePickerEdit.CMGetDataLink(var Msg: TMessage);
+begin
+  Msg.Result := Integer(FDataLink);
+end;
+
 constructor TJvCustomDBDatePickerEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -203,6 +217,12 @@ begin
   end;
 end;
 
+procedure TJvCustomDBDatePickerEdit.DataChange(Sender: TObject);
+begin
+  if IsLinked then
+    Self.Date := FDataLink.Field.AsDateTime;
+end;
+
 destructor TJvCustomDBDatePickerEdit.Destroy;
 begin
   FDataLink.OnDataChange := nil;
@@ -211,17 +231,45 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomDBDatePickerEdit.Change;
+procedure TJvCustomDBDatePickerEdit.DoClipboardCut;
 begin
-  if IsLinked then
-    FDataLink.Modified;
-  inherited Change;
+  if EditCanModify then
+    inherited DoClipboardCut;
 end;
 
-procedure TJvCustomDBDatePickerEdit.DataChange(Sender: TObject);
+procedure TJvCustomDBDatePickerEdit.DoClipboardPaste;
 begin
-  if IsLinked then
-    Self.Date := FDataLink.Field.AsDateTime;
+  if EditCanModify then
+    inherited DoClipboardPaste;
+end;
+
+procedure TJvCustomDBDatePickerEdit.DoKillFocusEvent(const ANextControl: TWinControl);
+begin
+  if IsLinked and FDataLink.Editing then
+    try
+      FDataLink.UpdateRecord;
+    except
+      SetFocus;
+      raise;
+    end;
+  inherited DoKillFocusEvent(ANextControl);
+end;
+
+procedure TJvCustomDBDatePickerEdit.DoUndo;
+begin
+  if EditCanModify then
+    inherited DoUndo;
+end;
+
+procedure TJvCustomDBDatePickerEdit.DropDown;
+begin
+  if EditCanModify then
+    inherited DropDown;
+end;
+
+function TJvCustomDBDatePickerEdit.EditCanModify: Boolean;
+begin
+  Result := (not IsLinked) or FDataLink.Edit;
 end;
 
 function TJvCustomDBDatePickerEdit.GetDataField: string;
@@ -238,6 +286,16 @@ begin
     Result := FDataLink.DataSource
   else
     Result := nil;
+end;
+
+function TJvCustomDBDatePickerEdit.GetEnableValidation: Boolean;
+begin
+  Result := inherited GetEnableValidation;
+  {if we enabled "as-you-type" validation for an unlinked control, we'd have
+   validation errors pop up just from tabbing over the control, therefore we
+   temporary disable it}
+  if InternalChanging or Leaving then
+    Result := Result and IsLinked and FDataLink.Editing;
 end;
 
 function TJvCustomDBDatePickerEdit.IsEmpty: Boolean;
@@ -262,16 +320,15 @@ begin
   Result := Assigned(FDataLink) and Assigned(FDataLink.Field);
 end;
 
-procedure TJvCustomDBDatePickerEdit.DoKillFocusEvent(const ANextControl: TWinControl);
+procedure TJvCustomDBDatePickerEdit.SetChecked(const AValue: Boolean);
 begin
-  if IsLinked and FDataLink.Editing then
-    try
-      FDataLink.UpdateRecord;
-    except
-      SetFocus;
-      raise;
-    end;
-  inherited DoKillFocusEvent(ANextControl);
+  if AValue <> Checked then
+  begin
+    if EditCanModify then
+      inherited SetChecked(AValue)
+    else
+      UpdateDisplay;
+  end;
 end;
 
 procedure TJvCustomDBDatePickerEdit.SetDataField(const AValue: string);
@@ -292,9 +349,9 @@ begin
   ValidateShowCheckBox;
 end;
 
-procedure TJvCustomDBDatePickerEdit.SetShowCheckBox(const AValue: Boolean);
+procedure TJvCustomDBDatePickerEdit.SetShowCheckbox(const AValue: Boolean);
 begin
-  inherited SetShowCheckBox(ValidateShowCheckBox(AValue));
+  inherited SetShowCheckbox(ValidateShowCheckBox(AValue));
 end;
 
 procedure TJvCustomDBDatePickerEdit.UpdateData(Sender: TObject);
@@ -318,9 +375,12 @@ begin
   end;
 end;
 
-procedure TJvCustomDBDatePickerEdit.ValidateShowCheckBox;
+function TJvCustomDBDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
 begin
-  inherited SetShowCheckBox(ValidateShowCheckBox(ShowCheckBox));
+  Result := (not IsLinked) or (FDataLink.DataSet.IsEmpty) or
+    (not FDataLink.Editing) or
+    ((not Focused) and (FDataLink.DataSet.State = dsInsert) and FDataLink.Field.IsNull) or
+    (inherited ValidateDate(ADate));
 end;
 
 function TJvCustomDBDatePickerEdit.ValidateShowCheckBox(const AValue: Boolean): Boolean;
@@ -334,68 +394,9 @@ begin
   end;
 end;
 
-function TJvCustomDBDatePickerEdit.GetEnableValidation: Boolean;
+procedure TJvCustomDBDatePickerEdit.ValidateShowCheckBox;
 begin
-  Result := inherited GetEnableValidation;
-  {if we enabled "as-you-type" validation for an unlinked control, we'd have
-   validation errors pop up just from tabbing over the control, therefore we
-   temporary disable it}
-  if InternalChanging or Leaving then
-    Result := Result and IsLinked and FDataLink.Editing;
-end;
-
-function TJvCustomDBDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
-begin
-  Result := (not IsLinked) or (FDataLink.DataSet.IsEmpty) or
-    (not FDataLink.Editing) or
-    ((not Focused) and (FDataLink.DataSet.State = dsInsert) and FDataLink.Field.IsNull) or
-    (inherited ValidateDate(ADate));
-end;
-
-procedure TJvCustomDBDatePickerEdit.CMGetDataLink(var Msg: TMessage);
-begin
-  Msg.Result := Integer(FDataLink);
-end;
-
-procedure TJvCustomDBDatePickerEdit.DropDown;
-begin
-  if EditCanModify then
-    inherited DropDown;
-end;
-
-function TJvCustomDBDatePickerEdit.EditCanModify: Boolean;
-begin
-  Result := (not IsLinked) or FDataLink.Edit;
-end;
-
-procedure TJvCustomDBDatePickerEdit.SetChecked(const AValue: Boolean);
-begin
-  if AValue <> Checked then
-  begin
-    if EditCanModify then
-      inherited SetChecked(AValue)
-    else
-      UpdateDisplay;
-  end;
-end;
-
-procedure TJvCustomDBDatePickerEdit.DoClipboardCut;
-begin
-  if EditCanModify then
-    inherited DoClipboardCut;
-end;
-
-procedure TJvCustomDBDatePickerEdit.DoClipboardPaste;
-begin
-  if EditCanModify then
-    inherited DoClipboardPaste;
-end;
-
-procedure TJvCustomDBDatePickerEdit.DoUndo;
-begin
-  if EditCanModify then
-    inherited DoUndo;
+  inherited SetShowCheckbox(ValidateShowCheckBox(ShowCheckBox));
 end;
 
 end.
-
