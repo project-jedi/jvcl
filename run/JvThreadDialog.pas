@@ -29,7 +29,7 @@ unit JvThreadDialog;
 interface
 
 uses
-  SysUtils, Classes, Forms, ExtCtrls, Buttons, StdCtrls, 
+  SysUtils, Classes, Forms, ExtCtrls, Buttons, StdCtrls,
   {$IFDEF MSWINDOWS}
   Windows, Controls, ComCtrls,
   {$ENDIF MSWINDOWS}
@@ -87,12 +87,16 @@ type
   TJvCustomThreadDialog = class(TJvComponent)
   private
     FDialogOptions: TJvThreadBaseDialogOptions;
+    FThreadStatusDialog: TJvCustomThreadDialogForm;
   protected
     function CreateDialogOptions: TJvThreadBaseDialogOptions; virtual; abstract;
     procedure TransferThreadDialogOptions; virtual;
+    property  ThreadStatusDialog: TJvCustomThreadDialogForm read FThreadStatusDialog write FThreadStatusDialog;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     destructor Destroy; override;
+    procedure CloseThreadDialogForm;
     function CreateThreadDialogForm(ConnectedThread: TComponent): TJvCustomThreadDialogForm; virtual; abstract;
   published
     property DialogOptions: TJvThreadBaseDialogOptions read FDialogOptions write FDialogOptions;
@@ -100,7 +104,6 @@ type
 
   TJvThreadSimpleDialog = class(TJvCustomThreadDialog)
   private
-    FThreadStatusDialog: TJvCustomThreadDialogForm;
     FCancelButtonPanel: TPanel;
     FCancelBtn: TButton;
     FInfoTextPanel: TPanel;
@@ -134,7 +137,6 @@ type
 
   TJvThreadAnimateDialog = class(TJvCustomThreadDialog)
   private
-    FThreadStatusDialog: TJvCustomThreadDialogForm;
     FCancelButtonPanel: TPanel;
     FCancelBtn: TButton;
     FAnimatePanel: TPanel;
@@ -273,8 +275,25 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvCustomThreadDialog.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+    if AComponent = FThreadStatusDialog then
+      FThreadStatusDialog := nil;
+end;
+
 procedure TJvCustomThreadDialog.TransferThreadDialogOptions;
 begin
+end;
+
+procedure TJvCustomThreadDialog.CloseThreadDialogForm;
+begin
+  if Assigned(FThreadStatusDialog) and not (csDestroying in ComponentState) then
+  begin
+    FThreadStatusDialog.Close;
+    Application.HandleMessage;
+  end;
 end;
 
 //=== { TJvThreadSimpleDialog } ==============================================
@@ -289,17 +308,17 @@ begin
   Result := nil;
   if DialogOptions.ShowDialog then
   begin
-    FThreadStatusDialog := TJvCustomThreadDialogForm.CreateNew(Self);
-    FThreadStatusDialog.ConnectedThread := ConnectedThread;
-    Result := FThreadStatusDialog;
-    FCancelButtonPanel := TPanel.Create(FThreadStatusDialog);
-    FCancelBtn := TBitBtn.Create(FThreadStatusDialog);
-    FInfoTextPanel := TPanel.Create(FThreadStatusDialog);
-    FInfoText := TStaticText.Create(FThreadStatusDialog);
-    FTimeTextPanel := TPanel.Create(FThreadStatusDialog);
-    FTimeText := TStaticText.Create(FThreadStatusDialog);
-    FMainTimer := TTimer.Create(FThreadStatusDialog);
-    with FThreadStatusDialog do
+    ThreadStatusDialog := TJvCustomThreadDialogForm.CreateNew(Self);
+    ThreadStatusDialog.ConnectedThread := ConnectedThread;
+    Result := ThreadStatusDialog;
+    FCancelButtonPanel := TPanel.Create(ThreadStatusDialog);
+    FCancelBtn := TBitBtn.Create(ThreadStatusDialog);
+    FInfoTextPanel := TPanel.Create(ThreadStatusDialog);
+    FInfoText := TStaticText.Create(ThreadStatusDialog);
+    FTimeTextPanel := TPanel.Create(ThreadStatusDialog);
+    FTimeText := TStaticText.Create(ThreadStatusDialog);
+    FMainTimer := TTimer.Create(ThreadStatusDialog);
+    with ThreadStatusDialog do
     begin
       BorderIcons := [];
       BorderStyle := bsDialog;
@@ -339,7 +358,7 @@ begin
     with FTimeTextPanel do
     begin
       Top := FInfoTextPanel.Top + FInfoTextPanel.Height + 1;
-      Parent := FThreadStatusDialog;
+      Parent := ThreadStatusDialog;
       Align := alTop;
       BevelOuter := bvNone;
       BorderWidth := 3;
@@ -363,7 +382,7 @@ begin
     begin
       Top := FTimeTextPanel.Top + FTimeTextPanel.Height + 1;
       Caption := '';
-      Parent := FThreadStatusDialog;
+      Parent := ThreadStatusDialog;
       Align := alTop;
       BevelOuter := bvNone;
     end;
@@ -383,9 +402,9 @@ begin
       OnTimer := MainTimerTimer;
     end;
     if DialogOptions.ShowModal then
-      FThreadStatusDialog.ShowModal
+      ThreadStatusDialog.ShowModal
     else
-      FThreadStatusDialog.Show;
+      ThreadStatusDialog.Show;
   end;
 end;
 
@@ -406,32 +425,35 @@ end;
 
 procedure TJvThreadSimpleDialog.CancelBtnClick(Sender: TObject);
 begin
-  if Assigned(JvThreadComp(FThreadStatusDialog.ConnectedThread)) then
-    JvThreadComp(FThreadStatusDialog.ConnectedThread).Terminate;
+  if Assigned(JvThreadComp(ThreadStatusDialog.ConnectedThread)) then
+    JvThreadComp(ThreadStatusDialog.ConnectedThread).Terminate;
 end;
 
 procedure TJvThreadSimpleDialog.MainTimerTimer(Sender: TObject);
 begin
-  if not (csDestroying in ComponentState) and Assigned(FThreadStatusDialog) and
-    Assigned(FThreadStatusDialog.ConnectedThread) and Assigned(DialogOptions) then
-    if JvThreadComp(FThreadStatusDialog.ConnectedThread).Terminated then
-      FThreadStatusDialog.Close
+  if not (csDestroying in ComponentState) and Assigned(ThreadStatusDialog) then
+    if Assigned(ThreadStatusDialog.ConnectedThread) and
+      Assigned(DialogOptions) then
+      if JvThreadComp(ThreadStatusDialog.ConnectedThread).Terminated then
+        ThreadStatusDialog.Close
+      else
+      begin
+        SetFormData;
+        FCounter := FCounter + 1;
+        case FCounter mod 4 of
+          0:
+            FInfoText.Caption := DialogOptions.FInfoText + ' | ';
+          1:
+            FInfoText.Caption := DialogOptions.FInfoText + ' / ';
+          2:
+            FInfoText.Caption := DialogOptions.FInfoText + ' --';
+          3:
+            FInfoText.Caption := DialogOptions.FInfoText + ' \ ';
+        end;
+        FTimeText.Caption := FormatDateTime('hh:nn:ss', Now - FStartTime);
+      end
     else
-    begin
-      FCounter := FCounter + 1;
-      case FCounter mod 4 of
-        0:
-          FInfoText.Caption := DialogOptions.FInfoText + ' | ';
-        1:
-          FInfoText.Caption := DialogOptions.FInfoText + ' / ';
-        2:
-          FInfoText.Caption := DialogOptions.FInfoText + ' --';
-        3:
-          FInfoText.Caption := DialogOptions.FInfoText + ' \ ';
-      end;
-      FTimeText.Caption := FormatDateTime('hh:nn:ss', Now - FStartTime);
-//      SetFormData;
-    end;
+      ThreadStatusDialog.Close;
 end;
 
 procedure TJvThreadSimpleDialog.TransferThreadDialogOptions;
@@ -443,28 +465,28 @@ procedure TJvThreadSimpleDialog.SetFormHeightWidth;
 var
   H, W: Integer;
 begin
-  if Assigned(FThreadStatusDialog) then
+  if Assigned(ThreadStatusDialog) then
   begin
-    W := FThreadStatusDialog.Canvas.TextWidth(DialogOptions.FInfoText) + 80;
+    W := ThreadStatusDialog.Canvas.TextWidth(DialogOptions.FInfoText) + 80;
     if W < 200 then
       W := 200;
-    FThreadStatusDialog.ClientWidth := W;
+    ThreadStatusDialog.ClientWidth := W;
     FCancelBtn.Left := (FCancelButtonPanel.Width - FCancelBtn.Width) div 2;
     H := FInfoTextPanel.Height + 6;
     if FTimeTextPanel.Visible then
       H := H + FTimeTextPanel.Height;
     if FCancelButtonPanel.Visible then
       H := H + FCancelButtonPanel.Height;
-    if FThreadStatusDialog.ClientHeight <> H then
-      FThreadStatusDialog.ClientHeight := H;
+    if ThreadStatusDialog.ClientHeight <> H then
+      ThreadStatusDialog.ClientHeight := H;
   end;
 end;
 
 procedure TJvThreadSimpleDialog.SetFormData;
 begin
-  if Assigned(FThreadStatusDialog) and Assigned(DialogOptions) then
+  if Assigned(ThreadStatusDialog) and Assigned(DialogOptions) then
   begin
-    FThreadStatusDialog.Caption := DialogOptions.Caption;
+    ThreadStatusDialog.Caption := DialogOptions.Caption;
     FTimeTextPanel.Visible := DialogOptions.ShowElapsedTime;
     FCancelBtn.Enabled := DialogOptions.EnableCancelButton;
     FCancelButtonPanel.Visible := DialogOptions.ShowCancelButton;
@@ -489,19 +511,19 @@ begin
   Result := nil;
   if DialogOptions.ShowDialog then
   begin
-    FThreadStatusDialog := TJvCustomThreadDialogForm.CreateNew(Self);
-    FThreadStatusDialog.ConnectedThread := ConnectedThread;
-    Result := FThreadStatusDialog;
-    FCancelButtonPanel := TPanel.Create(FThreadStatusDialog);
-    FCancelBtn := TBitBtn.Create(FThreadStatusDialog);
-    FAnimatePanel := TPanel.Create(FThreadStatusDialog);
-    FAnimate := TAnimate.Create(FThreadStatusDialog);
-    FInfoTextPanel := TPanel.Create(FThreadStatusDialog);
-    FInfoText := TStaticText.Create(FThreadStatusDialog);
-    FTimeTextPanel := TPanel.Create(FThreadStatusDialog);
-    FTimeText := TStaticText.Create(FThreadStatusDialog);
-    FMainTimer := TTimer.Create(FThreadStatusDialog);
-    with FThreadStatusDialog do
+    ThreadStatusDialog := TJvCustomThreadDialogForm.CreateNew(Self);
+    ThreadStatusDialog.ConnectedThread := ConnectedThread;
+    Result := ThreadStatusDialog;
+    FCancelButtonPanel := TPanel.Create(ThreadStatusDialog);
+    FCancelBtn := TBitBtn.Create(ThreadStatusDialog);
+    FAnimatePanel := TPanel.Create(ThreadStatusDialog);
+    FAnimate := TAnimate.Create(ThreadStatusDialog);
+    FInfoTextPanel := TPanel.Create(ThreadStatusDialog);
+    FInfoText := TStaticText.Create(ThreadStatusDialog);
+    FTimeTextPanel := TPanel.Create(ThreadStatusDialog);
+    FTimeText := TStaticText.Create(ThreadStatusDialog);
+    FMainTimer := TTimer.Create(ThreadStatusDialog);
+    with ThreadStatusDialog do
     begin
       BorderIcons := [];
       BorderStyle := bsDialog;
@@ -519,7 +541,7 @@ begin
     with FInfoTextPanel do
     begin
       Top := 0;
-      Parent := FThreadStatusDialog;
+      Parent := ThreadStatusDialog;
       Align := alTop;
       BevelOuter := bvNone;
       BorderWidth := 3;
@@ -541,7 +563,7 @@ begin
     begin
       Caption := '';
       Top := FInfoTextPanel.Height + 1;
-      Parent := FThreadStatusDialog;
+      Parent := ThreadStatusDialog;
       Align := alTop;
       BevelOuter := bvNone;
       BorderWidth := 3;
@@ -560,7 +582,7 @@ begin
     begin
       Top := FAnimatePanel.Top + FAnimatePanel.Height + 1;
       Caption := '';
-      Parent := FThreadStatusDialog;
+      Parent := ThreadStatusDialog;
       Align := alTop;
       BevelOuter := bvNone;
       BorderWidth := 3;
@@ -583,7 +605,7 @@ begin
     begin
       Top := FTimeTextPanel.Top + FTimeText.Height + 1;
       Caption := '';
-      Parent := FThreadStatusDialog;
+      Parent := ThreadStatusDialog;
       Align := alTop;
       BevelOuter := bvNone;
     end;
@@ -603,9 +625,9 @@ begin
       OnTimer := MainTimerTimer;
     end;
     if DialogOptions.ShowModal then
-      FThreadStatusDialog.ShowModal
+      ThreadStatusDialog.ShowModal
     else
-      FThreadStatusDialog.Show;
+      ThreadStatusDialog.Show;
   end;
 end;
 
@@ -627,18 +649,23 @@ end;
 
 procedure TJvThreadAnimateDialog.CancelBtnClick(Sender: TObject);
 begin
-  if Assigned(JvThreadComp(FThreadStatusDialog.ConnectedThread)) then
-    JvThreadComp(FThreadStatusDialog.ConnectedThread).Terminate;
+  if Assigned(JvThreadComp(ThreadStatusDialog.ConnectedThread)) then
+    JvThreadComp(ThreadStatusDialog.ConnectedThread).Terminate;
 end;
 
 procedure TJvThreadAnimateDialog.MainTimerTimer(Sender: TObject);
 begin
-  if not (csDestroying in ComponentState) and Assigned(FThreadStatusDialog) and
-    Assigned(FThreadStatusDialog.ConnectedThread) and Assigned(DialogOptions) then
-    if JvThreadComp(FThreadStatusDialog.ConnectedThread).Terminated then
-      FThreadStatusDialog.Close
+  if not (csDestroying in ComponentState) and Assigned(ThreadStatusDialog) then
+    if Assigned(ThreadStatusDialog.ConnectedThread) and Assigned(DialogOptions) then
+      if JvThreadComp(ThreadStatusDialog.ConnectedThread).Terminated then
+        ThreadStatusDialog.Close
+      else
+      begin
+        SetFormData;
+        FTimeText.Caption := FormatDateTime('hh:nn:ss',Now-FStartTime);
+      end
     else
-      FTimeText.Caption := FormatDateTime('hh:nn:ss',Now-FStartTime);
+      ThreadStatusDialog.Close
 end;
 
 procedure TJvThreadAnimateDialog.TransferThreadDialogOptions;
@@ -651,14 +678,14 @@ var
   H, W: Integer;
 begin
   H := 6;
-  if Assigned(FThreadStatusDialog) then
+  if Assigned(ThreadStatusDialog) then
   begin
     W := 200;
     if FInfoTextPanel.Visible then
     begin
-      W := FThreadStatusDialog.Canvas.TextWidth(DialogOptions.FInfoText) + 80;
-      if FThreadStatusDialog.Canvas.TextWidth(DialogOptions.FInfoText) + 80 > W then
-        W := FThreadStatusDialog.Canvas.TextWidth(DialogOptions.FInfoText) + 80;
+      W := ThreadStatusDialog.Canvas.TextWidth(DialogOptions.FInfoText) + 80;
+      if ThreadStatusDialog.Canvas.TextWidth(DialogOptions.FInfoText) + 80 > W then
+        W := ThreadStatusDialog.Canvas.TextWidth(DialogOptions.FInfoText) + 80;
       H := H + FInfoTextPanel.Height;
     end;
     if FAnimatePanel.Visible then
@@ -673,19 +700,19 @@ begin
       H := H + FTimeTextPanel.Height;
     if FCancelButtonPanel.Visible then
       H := H + FCancelButtonPanel.Height;
-    if FThreadStatusDialog.ClientWidth <> W then
-      FThreadStatusDialog.ClientWidth := W;
-    if FThreadStatusDialog.ClientHeight <> H then
-      FThreadStatusDialog.ClientHeight := H;
+    if ThreadStatusDialog.ClientWidth <> W then
+      ThreadStatusDialog.ClientWidth := W;
+    if ThreadStatusDialog.ClientHeight <> H then
+      ThreadStatusDialog.ClientHeight := H;
   end;
 end;
 
 procedure TJvThreadAnimateDialog.SetFormData;
 begin
-  if Assigned(FThreadStatusDialog) and Assigned(DialogOptions) then
+  if Assigned(ThreadStatusDialog) and Assigned(DialogOptions) then
   begin
     FInfoText.Caption := DialogOptions.FInfoText;
-    FThreadStatusDialog.Caption := DialogOptions.Caption;
+    ThreadStatusDialog.Caption := DialogOptions.Caption;
     FInfoTextPanel.Visible := DialogOptions.InfoText <> '';
     FAnimatePanel.Visible := FileExists(FAnimate.Filename) or (FAnimate.CommonAVI <> aviNone);
     FTimeTextPanel.Visible := DialogOptions.ShowElapsedTime;
