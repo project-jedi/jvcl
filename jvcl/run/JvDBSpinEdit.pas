@@ -36,7 +36,7 @@ uses
 type
   TJvDBSpinEdit = class(TJvSpinEdit)
   private
-    FFieldDataLink: TFieldDataLink;
+    FDataLink: TFieldDataLink;
     FOnChange: TNotifyEvent;
     FIsNull: Boolean;
     FAllowNull: Boolean;
@@ -47,10 +47,10 @@ type
     function GetDataField: string; { Returns data field name. }
     function GetDataSource: TDataSource; { Returns linked data source. }
     procedure SetDataField(const NewFieldName: string); { Assigns new field. }
-    procedure SetDataSource(NewSource: TDataSource); { Assigns new data source. }
+    procedure SetDataSource(Value: TDataSource); { Assigns new data source. }
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
-    function GetReadOnlyField: Boolean;
-    procedure SetReadOnlyField(Value: Boolean);
+    function GetReadOnly: Boolean; reintroduce;
+    procedure SetReadOnly(Value: Boolean); reintroduce;
   protected
     function IsValidChar(Key: Char): Boolean; override;
     procedure Change; override;
@@ -61,15 +61,20 @@ type
     procedure UpClick(Sender: TObject); override;
     procedure DownClick(Sender: TObject); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    { Backwards compatibility; eventually remove }
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure ReadReadOnlyField(Reader: TReader);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property IsNull: Boolean read FIsNull;
   published
+    { (rb) Property Value should be public and not stored. This can only be
+           done by adjusting TJvSpinEdit/TJvCustomSpinEdit (?) }
     property AllowNull: Boolean read FAllowNull write FAllowNull default True;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-    property ReadOnlyField: Boolean read GetReadOnlyField write SetReadOnlyField;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -80,58 +85,56 @@ uses
   Variants;
 {$ENDIF HAS_UNIT_VARIANTS}
 
+//=== { TJvDBSpinEdit } ======================================================
+
 constructor TJvDBSpinEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  inherited ReadOnly := True;
   FAllowNull := True;
-  FFieldDataLink := TFieldDataLink.Create;
-  FFieldDataLink.Control := Self;
-  FFieldDataLink.OnDataChange := DataChange;
-  FFieldDataLink.OnEditingChange := EditingChange;
-  FFieldDataLink.OnUpdateData := UpdateData;
-  FFieldDataLink.OnActiveChange := ActiveChange;
+  FDataLink := TFieldDataLink.Create;
+  FDataLink.Control := Self;
+  FDataLink.OnDataChange := DataChange;
+  FDataLink.OnEditingChange := EditingChange;
+  FDataLink.OnUpdateData := UpdateData;
+  FDataLink.OnActiveChange := ActiveChange;
 end;
 
 destructor TJvDBSpinEdit.Destroy;
 begin
-  FFieldDataLink.Free;
+  FDataLink.Free;
   inherited Destroy;
 end;
 
-procedure TJvDBSpinEdit.DoExit;
+procedure TJvDBSpinEdit.ActiveChange(Sender: TObject);
 begin
-  try
-    if Modified then
-      FFieldDataLink.Modified;
-    FFieldDataLink.UpdateRecord; { tell data link to update database }
-  except
-    SetFocus; { if it failed, don't let focus leave }
-    SelectAll;
-    raise;
-  end;
-  inherited DoExit;
+  if not (csDesigning in ComponentState) then
+    Enabled := FDataLink.Active;
 end;
 
-{ UpdateData is only called after calls to both FFieldDataLink.Modified and
-  FFieldDataLink.UpdateRecord. }
-
-procedure TJvDBSpinEdit.UpdateData(Sender: TObject);
+procedure TJvDBSpinEdit.Change;
 begin
-  if FFieldDataLink.Editing then
-    FFieldDataLink.Field.Text := Text;
+  if (FDataLink <> nil) and (FDataLink.Field <> nil) then
+    FDataLink.Modified;
+  inherited Change;
+end;
+
+procedure TJvDBSpinEdit.CMGetDataLink(var Msg: TMessage);
+begin
+  Msg.Result := Longint(FDataLink);
 end;
 
 procedure TJvDBSpinEdit.DataChange(Sender: TObject); { Triggered when data changes in DataSource. }
 begin
-  if FFieldDataLink.Field <> nil then
+  if FDataLink.Field <> nil then
   begin
-    if Focused and FFieldDataLink.CanModify then
-      Text := FFieldDataLink.Field.Text
+    if Focused and FDataLink.CanModify then
+      Text := FDataLink.Field.Text
     else
     begin
-      FIsNull := (FFieldDataLink.Field.DisplayText = '');
-      Text := FFieldDataLink.Field.DisplayText;
-      if FFieldDataLink.Editing or (FFieldDataLink.Field.DataSet.State = dsInsert) then
+      FIsNull := (FDataLink.Field.DisplayText = '');
+      Text := FDataLink.Field.DisplayText;
+      if FDataLink.Editing or (FDataLink.Field.DataSet.State = dsInsert) then
         Modified := True;
     end;
   end
@@ -145,61 +148,113 @@ begin
   end;
 end;
 
+procedure TJvDBSpinEdit.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty('ReadOnlyField', ReadReadOnlyField, nil, False);
+end;
+
+procedure TJvDBSpinEdit.DoExit;
+begin
+  try
+    if Modified then
+      FDataLink.Modified;
+    FDataLink.UpdateRecord; { tell data link to update database }
+  except
+    SetFocus; { if it failed, don't let focus leave }
+    SelectAll;
+    raise;
+  end;
+  inherited DoExit;
+end;
+
+procedure TJvDBSpinEdit.DownClick(Sender: TObject);
+begin
+  FDataLink.Edit;
+  if IsNull then
+  begin
+    FIsNull := False;
+    Value := 1;
+    FIsNull := False;
+    Text := '1';
+  end;
+  inherited DownClick(Sender);
+end;
+
+procedure TJvDBSpinEdit.EditingChange(Sender: TObject);
+begin
+  inherited ReadOnly := not FDataLink.Editing;
+end;
+
 function TJvDBSpinEdit.GetDataField: string; { Returns data field name. }
 begin
-  { FFieldDataLink is built in TJvDBSpinEdit.Create; there's no need to check to see if it's assigned. }
-  Result := FFieldDataLink.FieldName;
+  { FDataLink is built in TJvDBSpinEdit.Create; there's no need to check to see if it's assigned. }
+  Result := FDataLink.FieldName;
 end;
 
 function TJvDBSpinEdit.GetDataSource: TDataSource; { Returns linked data source. }
 begin
-  { FFieldDataLink is built in TJvDBSpinEdit.Create; there's no need to check to see if it's assigned. }
-  Result := FFieldDataLink.DataSource;
+  { FDataLink is built in TJvDBSpinEdit.Create; there's no need to check to see if it's assigned. }
+  Result := FDataLink.DataSource;
 end;
 
-procedure TJvDBSpinEdit.SetDataField(const NewFieldName: string); { Assigns new field. }
+function TJvDBSpinEdit.GetReadOnly: Boolean;
 begin
-  { FFieldDataLink is built in TJvDBSpinEdit.Create; there's no need to check to see if it's assigned. }
-  FFieldDataLink.FieldName := NewFieldName;
-end;
-
-procedure TJvDBSpinEdit.CMGetDataLink(var Msg: TMessage);
-begin
-  Msg.Result := Longint(FFieldDataLink);
-end;
-
-procedure TJvDBSpinEdit.SetDataSource(NewSource: TDataSource); { Assigns new data source. }
-begin
-  { FFieldDataLink is built in TJvDBSpinEdit.Create; there's no need to check to see if it's assigned. }
-  FFieldDataLink.DataSource := NewSource;
-  { Tell the new DataSource that our TJvDBSpinEdit component should be notified
-    (using the Notification method) if the DataSource is ever removed from
-    a data module or form that is different than the owner of this control. }
-  if NewSource <> nil then
-    NewSource.FreeNotification(Self);
-end;
-
-function TJvDBSpinEdit.GetReadOnlyField: Boolean;
-begin
-  Result := FFieldDataLink.ReadOnly;
-end;
-
-procedure TJvDBSpinEdit.SetReadOnlyField(Value: Boolean);
-begin
-  FFieldDataLink.ReadOnly := Value;
-end;
-
-procedure TJvDBSpinEdit.Change;
-begin
-  if (FFieldDataLink <> nil) and (FFieldDataLink.Field <> nil) then
-    FFieldDataLink.Modified;
-  inherited Change;
+  Result := FDataLink.ReadOnly;
 end;
 
 function TJvDBSpinEdit.GetValue: Extended;
 begin
   Result := inherited GetValue;
   FIsNull := (Text = '') and (Result = 0.0);
+end;
+
+function TJvDBSpinEdit.IsValidChar(Key: Char): Boolean;
+begin
+  Result := inherited IsValidChar(Key);
+  if not Result and AllowNull and
+    (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE)) then
+    Result := True;
+end;
+
+procedure TJvDBSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  if (Key = VK_DELETE) or (Key = VK_BACK) or
+    ((Key = VK_INSERT) and (ssShift in Shift)) or IsValidChar(Char(Key)) then
+    FDataLink.Edit;
+end;
+
+procedure TJvDBSpinEdit.ReadReadOnlyField(Reader: TReader);
+begin
+  ReadOnly := Reader.ReadBoolean;
+end;
+
+procedure TJvDBSpinEdit.SetDataField(const NewFieldName: string); { Assigns new field. }
+begin
+  { FDataLink is built in TJvDBSpinEdit.Create; there's no need to check to see if it's assigned. }
+  FDataLink.FieldName := NewFieldName;
+end;
+
+procedure TJvDBSpinEdit.SetDataSource(Value: TDataSource); { Assigns new data source. }
+begin
+  { FDataLink is built in TJvDBSpinEdit.Create; there's no need to check to see if it's assigned. }
+  if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
+    FDataLink.DataSource := Value;
+  { Tell the new DataSource that our TJvDBSpinEdit component should be notified
+    (using the Notification method) if the DataSource is ever removed from
+    a data module or form that is different than the owner of this control. }
+  if Value <> nil then
+    Value.FreeNotification(Self);
+
+  //FDataLink.DataSource := NewSource;
+  //if NewSource <> nil then
+  //  NewSource.FreeNotification(Self);
+end;
+
+procedure TJvDBSpinEdit.SetReadOnly(Value: Boolean);
+begin
+  FDataLink.ReadOnly := Value;
 end;
 
 procedure TJvDBSpinEdit.SetValue(NewValue: Extended);
@@ -216,22 +271,9 @@ begin
     inherited TextChanged;
 end;
 
-procedure TJvDBSpinEdit.DownClick(Sender: TObject);
-begin
-  FFieldDataLink.Edit;
-  if IsNull then
-  begin
-    FIsNull := False;
-    Value := 1;
-    FIsNull := False;
-    Text := '1';
-  end;
-  inherited DownClick(Sender);
-end;
-
 procedure TJvDBSpinEdit.UpClick(Sender: TObject);
 begin
-  FFieldDataLink.Edit;
+  FDataLink.Edit;
   if IsNull then
   begin
     FIsNull := False;
@@ -243,32 +285,15 @@ begin
     inherited UpClick(Sender);
 end;
 
-procedure TJvDBSpinEdit.ActiveChange(Sender: TObject);
-begin
-  if not (csDesigning in ComponentState) then
-    Enabled := FFieldDataLink.Active;
-end;
+{ UpdateData is only called after calls to both FDataLink.Modified and
+  FDataLink.UpdateRecord. }
 
-procedure TJvDBSpinEdit.EditingChange(Sender: TObject);
+procedure TJvDBSpinEdit.UpdateData(Sender: TObject);
 begin
-  inherited ReadOnly := not FFieldDataLink.Editing;
-end;
-
-procedure TJvDBSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
-begin
-  inherited KeyDown(Key, Shift);
-  if (Key = VK_DELETE) or (Key = VK_BACK) or
-    ((Key = VK_INSERT) and (ssShift in Shift)) or IsValidChar(Char(Key)) then
-    FFieldDataLink.Edit;
-end;
-
-function TJvDBSpinEdit.IsValidChar(Key: Char): Boolean;
-begin
-  Result := inherited IsValidChar(Key);
-  if not Result and AllowNull and
-    (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE)) then
-    Result := True;
+  { Never masked? }
+  {ValidateEdit;}
+  if FDataLink.Editing then
+    FDataLink.Field.Text := Text;
 end;
 
 end.
-
