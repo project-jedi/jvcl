@@ -35,10 +35,10 @@ interface
 uses
 {$IFDEF COMPILER3_UP} 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, JvRegAuto, ComCtrls,
+  StdCtrls, ExtCtrls, ComCtrls,
   JvInterpreter, JvInterpreterFm, JvEditor, JvHLParser, JvHLEditor,
   Db, DBTables, Grids, DBGrids, Quickrpt, QRCtrls
- {$IFDEF COMPILER6_UP}, Variants, JvComponent {$ENDIF};
+ {$IFDEF COMPILER6_UP}, Variants, JvComponent, JvFormPlacement {$ENDIF};
 {$ELSE}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, JvRegAuto, ComCtrls,
@@ -48,7 +48,7 @@ uses
 
 type
   TTest = class(TForm)
-    RegAuto1: TJvRegAuto;
+    RegAuto1: TJvFormStorage;
     Panel1: TPanel;
     OpenDialog1: TOpenDialog;
     Table1: TTable;
@@ -59,7 +59,6 @@ type
     Notebook1: TNotebook;
     bRunReport: TButton;
     bRunForm: TButton;
-    Button4: TButton;
     Label1: TLabel;
     Button1: TButton;
     Button5: TButton;
@@ -67,7 +66,7 @@ type
     pnlTime: TPanel;
     Label3: TLabel;
     ComboBox1: TComboBox;
-    RegAuto2: TJvRegAuto;
+    RegAuto2: TJvFormStorage;
     Panel3: TPanel;
     pnlResult: TPanel;
     Button2: TButton;
@@ -107,7 +106,7 @@ var
 
 implementation
 
-uses JvStrUtil, JvUtils, JvInterpreter_all, JvInterpreter_SysUtils{, JvInterpreter_iMTracer};
+uses JvJCLUtils, JvJVCLUtils, JvInterpreter_all, JvInterpreter_SysUtils{, JvInterpreter_iMTracer};
 
 {$R *.DFM}
 
@@ -175,6 +174,8 @@ var
   SS: TStringList;
   i: Integer;
 begin
+{
+//!!!
   try
     RegAuto2.IniStrings.LoadFromFile(ExePath + 'JvInterpreterTest.ini');
   except
@@ -182,14 +183,16 @@ begin
       'Please put it in same folder as JvInterpreterTest.exe.',
       mtError, [mbCancel], -1);
   end;
+
   RegAuto2.ReadSection('Demos', ComboBox1.Items);
+}
   InternalExamplesCount := ComboBox1.Items.Count;
   SS := TStringList.Create;
   try
     ReadFolder(ExePath + 'samples', 'sample - *.pas', SS);
     if SS.Count > 0 then
       ComboBox1.Items.Add('------ custom files (samples folder) ------');
-    SS.Sort;  
+    SS.Sort;
     for i := 0 to SS.Count - 1 do
       ComboBox1.Items.Add(SS[i]);
   finally
@@ -198,7 +201,7 @@ begin
   JvInterpreterProgram1.Adapter.AddGet(EZeroDivide, 'Create', EZeroDivide_Create, 1, [varEmpty], varEmpty);
   DecimalSeparator := '.';
   Parser := TJvIParser.Create;
-end;                            
+end;
 
 procedure TTest.FormDestroy(Sender: TObject);
 begin
@@ -300,15 +303,18 @@ end;
               
 procedure TTest.RegAuto1AfterSave(Sender: TObject);
 begin
+{
+//!!!
   RegAuto1.WriteInteger(Name, 'PrId', ComboBox1.ItemIndex);
   if ComboBox1.ItemIndex >= InternalExamplesCount then
     Memo1.Lines.SaveToFile(ExePath + 'samples\' + ComboBox1.Text);
+}    
 end;
 
 procedure TTest.RegAuto1AfterLoad(Sender: TObject);
 begin
-  ComboBox1.ItemIndex := RegAuto1.ReadInteger(Name, 'PrId', 0);
-  ComboBox1Change(nil);
+//!!!  ComboBox1.ItemIndex := RegAuto1.ReadInteger(Name, 'PrId', 0);
+//!!!  ComboBox1Change(nil);
 end;
 
 var
@@ -359,7 +365,7 @@ begin
         QuickRep1.Preview;
       finally { wrap up }
         Free;
-      end;    { try/finally } 
+      end;    { try/finally }
   end;
 end;
 
@@ -369,9 +375,9 @@ begin
   Memo2.Lines.Clear;
   if ComboBox1.ItemIndex < InternalExamplesCount then
   begin
-    RegAuto2.ReadWholeSection(ComboBox1.Text + '\Source', Memo1.Lines);
-    RegAuto2.ReadWholeSection(ComboBox1.Text + '\Description', Memo2.Lines);
-    Notebook1.ActivePage := RegAuto2.ReadString(ComboBox1.Text, 'Page', 'Default');
+//!!!    RegAuto2.ReadWholeSection(ComboBox1.Text + '\Source', Memo1.Lines);
+//!!!    RegAuto2.ReadWholeSection(ComboBox1.Text + '\Description', Memo2.Lines);
+//!!!    Notebook1.ActivePage := RegAuto2.ReadString(ComboBox1.Text, 'Page', 'Default');
   end else
   begin
     Memo1.Lines.LoadFromFile(ExePath + 'samples\' + ComboBox1.Text);

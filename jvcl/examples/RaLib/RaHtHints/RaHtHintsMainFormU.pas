@@ -33,14 +33,14 @@ interface
      
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvHint, JvRegAuto, JvComponent;
+  StdCtrls, JvHint, JvComponent, JvFormPlacement;
 
 type
   TRaHtHintsMainForm = class(TForm)
     Button1: TButton;
     Memo1: TMemo;
     Label1: TLabel;
-    RegAuto1: TJvRegAuto;
+    RegAuto1: TJvFormStorage;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   end;

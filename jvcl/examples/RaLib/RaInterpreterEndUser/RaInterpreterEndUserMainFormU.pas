@@ -4,8 +4,8 @@ interface
 
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls,
-  StdCtrls, Forms, DBCtrls, DB, DBGrids, Grids, ExtCtrls, JvRegAuto,
-  Buttons, JvComponent;
+  StdCtrls, Forms, DBCtrls, DB, DBGrids, Grids, ExtCtrls, 
+  Buttons, JvComponent, JvFormPlacement;
 
 type
   TRaInterpreterEndUserMainForm = class(TForm)
@@ -13,7 +13,7 @@ type
     DBNavigator: TDBNavigator;
     Panel1: TPanel;
     Panel2: TPanel;
-    RegAuto1: TJvRegAuto;
+    RegAuto1: TJvFormStorage;
     GradButton1: TButton;
     Panel3: TPanel;
     Memo1: TMemo;

@@ -8,7 +8,7 @@ uses
 
 type
   TForm2 = class(TForm)
-    RegAuto1: TJvRegAuto;
+    RegAuto1: TJvFormStorage;
     GroupBox2: TGroupBox;
     CheckBox2: TCheckBox;
     Button2: TButton;

@@ -1,4 +1,6 @@
 [Directories]
 OutputDir=..\..\..\Bin
 UnitOutputDir=..\..\..\Dcu
+PackageDLLOutputDir=..\..\..\bin
+PackageDCPOutputDir=..\..\..\bin
 SearchPath=..\..\..\source;..\..\..\resources

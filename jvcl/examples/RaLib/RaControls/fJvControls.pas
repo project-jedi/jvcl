@@ -2,14 +2,13 @@ unit fJvControls;
 
 interface
 
-{$INCLUDE JVCL.INC}
+{$I JVCL.INC}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, ExtCtrls, JvComponentPanel, StdCtrls, ComCtrls,
-  JvRegAuto, JvButtons, Buttons, JvScrollMax, Mask, DBCtrls,
-  JvDlg, JvHtControls, JvaScrollText
-  {$IFDEF COMPILER4_UP}, ImgList, JvComponent{$ENDIF COMPILER4_UP};
+  JvButtons, Buttons, JvScrollMax, Mask, DBCtrls, JvBDEMove, 
+  JvProgressComponent, JvHtControls, JvaScrollText, ImgList, JvComponent, JvCaptionButton;
 
 type
   TMainForm  = class(TForm)
@@ -19,12 +18,10 @@ type
     TabControl1: TTabControl;
     RAComponentPanel1: TJvComponentPanel;
     Memo1: TMemo;
-    RegAuto2: TJvRegAuto;
-    RACaptionButton1: TJvaCaptionButton;
-    RACaptionButton2: TJvaCaptionButton;
-    RACaptionButton3: TJvaCaptionButton;
+    RACaptionButton1: TJvCaptionButton;
+    RACaptionButton2: TJvCaptionButton;
+    RACaptionButton3: TJvCaptionButton;
     ImageList1: TImageList;
-    RegAuto1: TJvRegAuto;
     Notebook1: TNotebook;
     Panel2: TPanel;
     Label20: TLabel;
@@ -85,7 +82,7 @@ type
     CheckBox2: TCheckBox;
     Button2: TButton;
     Button3: TButton;
-    RAProgressForm1: TJvProgressForm;
+    RAProgressForm1: TJvProgressComponent;
     Label26: TLabel;
     RAhtComboBox1: TJvHTComboBox;
     RAScrollText1: TJvaScrollText;
@@ -118,23 +115,27 @@ var
 
 implementation
 
-uses JvStrUtil, JvUtils;
+uses JvJCLUtils, JvJVCLUtils;
 
 {$R *.DFM}
 
-{$R ..\..\..\resources\ractl.dcr}
-{$R ..\..\..\resources\radb.dcr}
+{$R ..\..\..\resources\JvStdCtrlsReg.dcr}
+{$R ..\..\..\resources\JvDlgsReg.dcr}
+{$R ..\..\..\resources\JvCustomReg.dcr}
+{$R ..\..\..\resources\JvCtrlsReg.dcr}
+{$R ..\..\..\resources\JvDBReg.dcr}
+{$R ..\..\..\resources\JvBDEReg.dcr}
 //{$R rai.dcr}
 {$R res.dcr}
 
 procedure TMainForm .TabControl1Change(Sender: TObject);
 const
   sRAControls = 'TJvEditor,TJvHLEditor,TJvHLEdPropDlg,'+
-                'TJvScrollMax,TJvaScrollText,TJvRegAuto,'+
+                'TJvScrollMax,TJvaScrollText,'+
                 'TJvhtListBox,TJvHTComboBox,TJvHTButton,TJvHTLabel,'+
-                'TJvaCaptionButton,TJvProgressForm,TJvComponentPanel,' +
+                'TJvCaptionButton,TJvProgressComponent,TJvComponentPanel,' +
                 //'TJvInterpreterProgram,TJvInterpreterFm,' +
-                'TJvaSQLScript,TJvDBTreeView,TJvDBLookupTreeView,'+
+                'TJvBDESQLScript,TJvDBTreeView,TJvDBLookupTreeView,'+
                 'TJvDBLookupTreeViewCombo,TJvDBMove';
 var
   Comps : string;
@@ -220,27 +221,27 @@ procedure TMainForm .RAComponentPanel1Click(Sender: TObject; Button: Integer);
 begin
   Memo1.Lines.Clear;
   if Button < 0 then exit;
-  RegAuto2.ReadSection(RAComponentPanel1.Buttons[Button].Hint+'\Descript', Memo1.Lines);
+//!!!  RegAuto2.ReadSection(RAComponentPanel1.Buttons[Button].Hint+'\Descript', Memo1.Lines);
   RAScrollText1.Stop;
-  NoteBook1.ActivePage := Trim(RegAuto2.ReadString(RAComponentPanel1.Buttons[Button].Hint, 'Page', ''));
-  Memo1.Visible := RegAuto2.ReadBool(RAComponentPanel1.Buttons[Button].Hint, 'Memo', True);
+//!!!  NoteBook1.ActivePage := Trim(RegAuto2.ReadString(RAComponentPanel1.Buttons[Button].Hint, 'Page', ''));
+//!!!  Memo1.Visible := RegAuto2.ReadBool(RAComponentPanel1.Buttons[Button].Hint, 'Memo', True);
   if NoteBook1.ActivePage = 'JvaScrollText' then
     RAScrollText1.Scroll;
 end;
 
 procedure TMainForm .RACaptionButton1Click(Sender: TObject);
 begin
-  ShowMessage('RACaptionButton displays glyph');
+  ShowMessage('JvCaptionButton displays glyph');
 end;
 
 procedure TMainForm .RANoFrameButton1Click(Sender: TObject);
 begin
-  ShowMessage('RANoFrameButton has not border');
+  ShowMessage('JvNoFrameButton has not border');
 end;
 
 procedure TMainForm .RAColorButton1Click(Sender: TObject);
 begin
-  ShowMessage('RAColorButton has color');
+  ShowMessage('JvColorButton has color');
 end;
 
 procedure TMainForm .RAImage1KeyPress(Sender: TObject; var Key: Char);
@@ -264,7 +265,7 @@ end;
 procedure TMainForm .CheckBox2Click(Sender: TObject);
 begin
   RAhtListBox1.HideSel := CheckBox2.Checked;
-  RAhtComboBox1.HideSel := CheckBox2.Checked;       
+  RAhtComboBox1.HideSel := CheckBox2.Checked;
 end;
 
 procedure TMainForm .Button2Click(Sender: TObject);
@@ -274,7 +275,7 @@ end;
 
 procedure TMainForm .RAProgressForm1Show(Sender: TObject);
 begin
-  RAProgressForm1.ProgressPosition := RAProgressForm1.ProgressMin; 
+  RAProgressForm1.ProgressPosition := RAProgressForm1.ProgressMin;
   while RAProgressForm1.ProgressPosition < RAProgressForm1.ProgressMax do
   begin
     Sleep(50);

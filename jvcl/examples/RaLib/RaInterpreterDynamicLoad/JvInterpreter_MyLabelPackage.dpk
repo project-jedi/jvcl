@@ -29,7 +29,9 @@ requires
   vcl,
   MyLabelPackage,
   DJCL60,
-  JVCL200_R60;
+  vclx,
+  JvCoreD6R,
+  JvInterpreterD6R;
 
 contains
   JvInterpreter_MyLabel in 'JvInterpreter_MyLabel.pas';

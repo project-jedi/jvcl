@@ -14,13 +14,13 @@ uses MyLabel;
   { TMyLabel }
 
 {  procedure DoSomething; }
-procedure TMyLabel_DoSomething(var Value: Variant; Args: TArgs);
+procedure TMyLabel_DoSomething(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TMyLabel(Args.Obj).DoSomething;
 end;
 
 { property Write SomeProperty(Value: String) }
-procedure TMyLabel_Write_SomeProperty(const Value: Variant; Args: TArgs);
+procedure TMyLabel_Write_SomeProperty(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TMyLabel(Args.Obj).SomeProperty := Value;
 end;

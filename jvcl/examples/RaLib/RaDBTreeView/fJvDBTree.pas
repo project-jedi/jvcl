@@ -38,7 +38,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, ComCtrls, JvDBTreeView, Db, DBTables, StdCtrls, Grids, DBGrids,
-  JvDBUtil, DBCtrls, JvHint, JvRegAuto, JvSQLS, JvComponent;
+  JvBDEUtils, DBCtrls, JvHint, JvComponent, JvFormPlacement, JvBDESQLScript;
 
 type
   TForm1 = class(TForm)
@@ -50,10 +50,10 @@ type
     Label2: TLabel;
     Memo1: TMemo;
     DBGrid1: TDBGrid;
-    RASQLScript1: TJvaSQLScript;
+    RASQLScript1: TJvBDESQLScript;
     Database1: TDatabase;
     DBText1: TDBText;
-    RegAuto1: TJvRegAuto;
+    RegAuto1: TJvFormStorage;
     Label3: TLabel;
     procedure Table1NewRecord(DataSet: TDataSet);
     procedure FormCreate(Sender: TObject);
@@ -75,7 +75,7 @@ implementation
 
 procedure TForm1.Table1NewRecord(DataSet: TDataSet);
 begin
-  Table1['Uni'] := JvDBUtil.GetQueryResult(Table1.DatabaseName,
+  Table1['Uni'] := JvBDEUtils.GetQueryResult(Table1.DatabaseName,
      'select max(Uni) from "Tree.dbf"') + 1;
 end;
 

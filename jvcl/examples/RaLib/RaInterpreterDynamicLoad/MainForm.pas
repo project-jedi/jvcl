@@ -31,16 +31,16 @@ implementation
 
 const
 {$IFDEF COMPILER5}
-  PackageFileName    = 'JVCL200_R50.bpl';
-  ALLPackageFileName = 'JVCL200_R50.bpl';
+  PackageFileName    = 'JvInterpreterD5R.bpl';
+  ALLPackageFileName = 'JvInterpreterD5R.bpl';
 {$ENDIF COMPILER5}
 {$IFDEF COMPILER6}
-  PackageFileName    = 'JVCL200_R60.bpl';
-  ALLPackageFileName = 'JVCL200_R60.bpl';
+  PackageFileName    = 'JvInterpreterD6R.bpl';
+  ALLPackageFileName = 'JvInterpreterD6R.bpl';
 {$ENDIF COMPILER6}
 {$IFDEF COMPILER7}
-  PackageFileName    = 'JVCL200_R70.bpl';
-  ALLPackageFileName = 'JVCL200_R70.bpl';
+  PackageFileName    = 'JvInterpreterD7R.bpl';
+  ALLPackageFileName = 'JvInterpreterD7R.bpl';
 {$ENDIF COMPILER7}
 
 procedure DynamicJvInterpreterRunFormModal(const FileName: TFileName);
@@ -68,7 +68,7 @@ begin
      Proc := GetProcAddress(ALLPak, ('@JvInterpreter_all@initialization$qqrv'));
 
      if not Assigned(Proc) then
-        raise Exception.CreateFmt('Funktion %s.Initialization nicht gefunden!', [ExtractFileName(AllPackageFileName)]);
+        raise Exception.CreateFmt('%s Initialization section not found!', [ChangeFileExt(ExtractFileName(AllPackageFileName),'')]);
 
      Proc;
 
