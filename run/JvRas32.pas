@@ -39,21 +39,21 @@ uses
 type
   TJvRas32 = class(TJvComponent)
   private
-    FPath: TFileName;
+    FPhoneBookPath: TFileName;
     FPassword: string;
     FDeviceName: string;
     FUsername: string;
     FEntry: string;
-    FDevice: string;
-    FPhone: string;
-    FCallBack: string;
+    FDeviceType: string;
+    FPhoneNumber: string;
+    FCallBackNumber: string;
     FDomain: string;
     FConnection: DWord;
     FHandle: THandle;
     FPHandle: THandle;
     RASEvent: Word;
     FEntryIndex: Integer;
-    FConnected: Boolean;
+    FDummyConnected: Boolean;
     FPhoneBook: TStringList;
     FOnAuthProject: TNotifyEvent;
     FOnAuthChangePassword: TNotifyEvent;
@@ -92,7 +92,7 @@ type
     FKeepConnected: Boolean;
     //    function GetPhoneBook: TStringList;
     procedure WndProc(var Msg: TMessage);
-    procedure SetIndex(const Value: Integer);
+    procedure SetEntryIndex(const Value: Integer);
     function GetConnected: Boolean;
     function GetPhoneBook: TStrings;
   public
@@ -104,21 +104,21 @@ type
     function CreateNewConnection: Boolean;
     function EditConnection(Index: Integer): Boolean;
     function GetActiveConnection: string;
-    property CallBackNumber: string read FCallBack write FCallBack;
-    property DeviceType: string read FDevice;
+    property CallBackNumber: string read FCallBackNumber write FCallBackNumber;
+    property DeviceType: string read FDeviceType;
     property DeviceName: string read FDeviceName;
-    property PhoneNumber: string read FPhone write FPhone;
+    property PhoneNumber: string read FPhoneNumber write FPhoneNumber;
     property Domain: string read FDomain write FDomain;
     property PhoneBook: TStrings read GetPhoneBook;
   published
-    property KeepConnected: Boolean read FKeepConnected write FKeepConnected;
+    property KeepConnected: Boolean read FKeepConnected write FKeepConnected default False;
     //    property PhoneBook: TStringList read GetPhoneBook;
-    property EntryIndex: Integer read FEntryIndex write SetIndex default -1;
-    property PhoneBookPath: TFileName read FPath write FPath;
+    property EntryIndex: Integer read FEntryIndex write SetEntryIndex default -1;
+    property PhoneBookPath: TFileName read FPhoneBookPath write FPhoneBookPath;
     property Entry: string read FEntry write FEntry;
     property Username: string read FUsername write FUsername;
     property Password: string read FPassword write FPassword;
-    property Connected: Boolean read GetConnected write FConnected;
+    property Connected: Boolean read GetConnected write FDummyConnected stored False;
     property OnOpenPort: TNotifyEvent read FOnOpenPort write FOnOpenPort;
     property OnPortOpened: TNotifyEvent read FOnPortOpened write FOnPortOpened;
     property OnConnectDevice: TNotifyEvent read FOnConnectDevice write FOnConnectDevice;
@@ -155,14 +155,15 @@ uses
 constructor TJvRas32.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FPath := '';
+  FKeepConnected := False;
+  FPhoneBookPath := '';
   FPassword := '';
   FDeviceName := '';
   FUsername := '';
   FEntry := '';
-  FDevice := '';
-  FPhone := '';
-  FCallBack := '';
+  FDeviceType := '';
+  FPhoneNumber := '';
+  FCallBackNumber := '';
   FDomain := '';
   FConnection := 0;
   FHandle := AllocateHWndEx(WndProc);
@@ -172,6 +173,7 @@ begin
   if AOwner is TWinControl then
     FPHandle := (AOwner as TWinControl).Handle
   else
+    // (rom) is this safe?
     FPHandle := GetForegroundWindow;
   FEntryIndex := -1;
 
@@ -269,12 +271,11 @@ begin
       szDomain := '*';
       szCallbackNumber := '*';
       szPhoneNumber := '';
-
     end;
     if Assigned(FRasDial) then
     begin
-      if FPath <> '' then
-        R := FRasDial(nil, PChar(FPath), @RASDialParams, $FFFFFFFF, FHandle, FConnection)
+      if FPhoneBookPath <> '' then
+        R := FRasDial(nil, PChar(FPhoneBookPath), @RASDialParams, $FFFFFFFF, FHandle, FConnection)
       else
         R := FRasDial(nil, nil, @RASDialParams, $FFFFFFFF, FHandle, FConnection);
       Result := R = 0;
@@ -325,8 +326,8 @@ begin
 
     if Assigned(FRasEnumEntries) then
     begin
-      if FPath <> '' then
-        I := FRasEnumEntries(nil, PChar(FPath), @RASEntryName[1], BufSize, Entries)
+      if FPhoneBookPath <> '' then
+        I := FRasEnumEntries(nil, PChar(FPhoneBookPath), @RASEntryName[1], BufSize, Entries)
       else
         I := FRasEnumEntries(nil, nil, @RASEntryName[1], BufSize, Entries);
       if (I = 0) or (I = ERROR_BUFFER_TOO_SMALL) then
@@ -372,7 +373,7 @@ begin
   end;
 end;
 
-procedure TJvRas32.SetIndex(const Value: Integer);
+procedure TJvRas32.SetEntryIndex(const Value: Integer);
 var
   RasDial: TRASDialParams;
   Res: LongBool;
@@ -381,9 +382,9 @@ begin
 
   FEntry := '';
   FUsername := '';
-  FPhone := '';
+  FPhoneNumber := '';
   FDomain := '';
-  FCallBack := '';
+  FCallBackNumber := '';
   FPassword := '';
 
   if FEntryIndex >= PhoneBook.Count then
@@ -409,8 +410,8 @@ begin
           FUsername := StrPas(szUsername);
           FPassword := StrPas(szPassword);
           FDomain := StrPas(szDomain);
-          FCallBack := StrPas(szCallbackNumber);
-          FPhone := StrPas(szPhoneNumber);
+          FCallBackNumber := StrPas(szCallbackNumber);
+          FPhoneNumber := StrPas(szPhoneNumber);
         end;
   end;
 end;

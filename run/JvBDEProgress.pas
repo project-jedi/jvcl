@@ -99,7 +99,6 @@ type
     property OnProgress: TOnProgressEvent read FOnProgress write FOnProgress;
   end;
 
-type
   TJvDBCallbackEvent = function(CBInfo: Pointer): CBRType of object;
   TJvDBCallbackChain = (dcOnlyOnce, dcChain, dcReplace);
 
@@ -137,9 +136,7 @@ const
 function BdeCallBack(CallType: CBType; Data: Longint; CBInfo: Pointer): CBRType; stdcall;
 begin
   if Data <> 0 then
-  begin
-    Result := TJvDBCallback(Data).Invoke(CallType, CBInfo);
-  end
+    Result := TJvDBCallback(Data).Invoke(CallType, CBInfo)
   else
     Result := cbrUSEDEF;
 end;
@@ -172,16 +169,14 @@ end;
 destructor TJvDBCallback.Destroy;
 begin
   if FInstalled then
-  begin
     if Assigned(FOldCBFunc) and (FChain = dcChain) then
-    try
-      DbiRegisterCallback(nil, FCBType, FOldCBData, FOldCBBufLen,
-        FOldCBBuf, pfDBICallback(FOldCBFunc));
-    except
-    end
+      try
+        DbiRegisterCallback(nil, FCBType, FOldCBData, FOldCBBufLen,
+          FOldCBBuf, pfDBICallback(FOldCBFunc));
+      except
+      end
     else
       DbiRegisterCallback(nil, FCBType, 0, 0, nil, nil);
-  end;
   if FCBBuf <> nil then
     FreeMem(FCBBuf, FCBBufLen);
   inherited Destroy;
@@ -191,11 +186,11 @@ function TJvDBCallback.Invoke(CallType: CBType; var CBInfo: Pointer): CBRType;
 begin
   Result := cbrUSEDEF;
   if CallType = FCBType then
-  try
-    Result := FCallbackEvent(CBInfo);
-  except
-    Application.HandleException(Self);
-  end;
+    try
+      Result := FCallbackEvent(CBInfo);
+    except
+      Application.HandleException(Self);
+    end;
   if Assigned(FOldCBFunc) and (FChain = dcChain) then
     Result := pfDBICallBack(FOldCBFunc)(CallType, FOldCBData, CBInfo);
 end;
@@ -423,7 +418,6 @@ var
   KeepActive, KeepTrace: Boolean;
 begin
   if Value <> SessionName then
-  begin
     if not (csDesigning in ComponentState) then
     begin
       KeepActive := Active;
@@ -436,13 +430,11 @@ begin
     end
     else
       FSessionName := Value;
-  end;
 end;
 
 procedure TJvDBProgress.SetTrace(Value: Boolean);
 begin
   if (FTrace <> Value) or (FStreamedValue and Value) then
-  begin
     if not (csDesigning in ComponentState) then
     begin
       if Value then
@@ -465,7 +457,6 @@ begin
     end
     else
       FTrace := Value;
-  end;
 end;
 
 procedure TJvDBProgress.SetTraceFlags(Value: TTraceFlags);
@@ -531,13 +522,11 @@ procedure TJvDBProgress.Notification(AComponent: TComponent; AOperation: TOperat
 begin
   inherited Notification(AComponent, AOperation);
   if AOperation = opRemove then
-  begin
     if AComponent = Gauge then
       Gauge := nil
     else
     if AComponent = MessageControl then
       MessageControl := nil;
-  end;
 end;
 
 function TJvDBProgress.GenProgressCallback(CBInfo: Pointer): CBRType;

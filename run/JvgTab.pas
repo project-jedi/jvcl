@@ -42,8 +42,9 @@ uses
   ComCtrls, CommCtrl, ExtCtrls, ImgList,
   JvclVer, JvgTypes, JvgUtils, JvgDrawTab, JvgTabComm, JvgCommClasses;
 
-const
-  TCM_SETTEXTCOLOR = (TCM_FIRST + 36);
+// (rom) disabled  unused
+//const
+//  TCM_SETTEXTCOLOR = TCM_FIRST + 36;
 
 type
   TJvgTabControl = class(TTabControl)

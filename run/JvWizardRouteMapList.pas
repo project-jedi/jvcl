@@ -33,6 +33,7 @@ Known Issues:
 unit JvWizardRouteMapList;
 
 interface
+
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
@@ -106,8 +107,8 @@ type
     function PageAtPos(Pt: TPoint): TJvWizardCustomPage; override;
     procedure Paint; override;
     procedure Loaded; override;
-    procedure CMCursorChanged(var Message: TMessage); message CM_CURSORCHANGED;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CMCursorChanged(var Msg: TMessage); message CM_CURSORCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -172,6 +173,19 @@ begin
   FHotTrack := True;
   FCurvature := 9;
   FHotTrackBorder := 2;
+end;
+
+destructor TJvWizardRouteMapList.Destroy;
+begin
+  FHotTrackFont.Free;
+  FActiveFont.Free;
+  inherited Destroy;
+end;
+
+procedure TJvWizardRouteMapList.Loaded;
+begin
+  inherited Loaded;
+  FOldCursor := Cursor;
 end;
 
 procedure TJvWizardRouteMapList.MouseMove(Shift: TShiftState;
@@ -247,7 +261,7 @@ begin
       DrawPageItem(Canvas, R, P, I);
       OffsetRect(R, 0, ItemHeight);
       if R.Bottom >= ClientHeight - 2 then
-        Exit;
+        Break;
     end;
 end;
 
@@ -410,32 +424,19 @@ begin
   FHotTrackFont.Assign(Value);
 end;
 
-destructor TJvWizardRouteMapList.Destroy;
-begin
-  FHotTrackFont.Free;
-  FActiveFont.Free;
-  inherited;
-end;
-
 procedure TJvWizardRouteMapList.DoFontChange(Sender: TObject);
 begin
   Invalidate;
 end;
 
-procedure TJvWizardRouteMapList.Loaded;
-begin
-  inherited;
-  FOldCursor := Cursor;
-end;
-
-procedure TJvWizardRouteMapList.CMCursorChanged(var Message: TMessage);
+procedure TJvWizardRouteMapList.CMCursorChanged(var Msg: TMessage);
 begin
   inherited;
   if (Cursor <> FHotTrackCursor) and (Cursor <> FOldCursor) then
     FOldCursor := Cursor;
 end;
 
-procedure TJvWizardRouteMapList.CMFontChanged(var Message: TMessage);
+procedure TJvWizardRouteMapList.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   {$IFDEF USEJVCL}

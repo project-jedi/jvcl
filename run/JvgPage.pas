@@ -38,11 +38,12 @@ unit JvgPage;
 interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, CommCtrl, Imglist, ExtCtrls,
-  JvgTypes, JVclVer, JvgDrawTab, JvgTabComm, JvgCommClasses;
+  ComCtrls, CommCtrl, ImgList, ExtCtrls,
+  JvgTypes, JVCLVer, JvgDrawTab, JvgTabComm, JvgCommClasses;
 
-const
-  TCM_SETTEXTCOLOR = TCM_FIRST + 36;
+// (rom) disabled  unused
+//const
+//  TCM_SETTEXTCOLOR = TCM_FIRST + 36;
 
 type
   TJvgPageControl = class(TPageControl)
@@ -61,7 +62,6 @@ type
     FOnGetItemColor: TglOnGetItemColorEvent;
     FOnGetItemFontColor: TglOnGetItemColorEvent;
     FOnGetGradientColors: TglOnGetGradientColors;
-
     FGlyphsChangeLink: TChangeLink;
     FDrawTabStr: TDRAWTABSTRUCT;
     FGlyphTmpBitmap: TBitmap;
@@ -269,19 +269,16 @@ begin
           SendMessage(Handle, TCM_SETITEM, WParam, LParam);
         end;
       TCM_DELETEITEM:
-        begin
-        end;
+        ;
       TCM_DELETEALLITEMS:
-        begin
-        end;
+        ;
     end;
 end;
 
 procedure TJvgPageControl.GlyphsListChanged(Sender: TObject);
 begin
   if HandleAllocated then
-    SendMessage(Handle, TCM_SETIMAGELIST, 0,
-      Longint(TImageList(Sender).Handle));
+    SendMessage(Handle, TCM_SETIMAGELIST, 0, Longint(TImageList(Sender).Handle));
 end;
 
 procedure TJvgPageControl.DrawItem(lpDrawItemStr: PDrawItemStruct);

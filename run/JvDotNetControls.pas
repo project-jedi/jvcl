@@ -49,7 +49,7 @@ type
   TJvDotNetCheckListBox = class(TJvCheckListBox)
   {$ELSE}
   TJvDotNetCheckListBox = class(TCheckListBox)
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   private
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
@@ -63,7 +63,7 @@ type
   TJvDotNetEdit = class(TJvEdit)
   {$ELSE}
   TJvDotNetEdit = class(TEdit)
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   private
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
@@ -148,7 +148,7 @@ type
   TJvDotNetRichEdit = class(TJvRichEdit)
   {$ELSE}
   TJvDotNetRichEdit = class(TRichEdit)
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   private
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
@@ -438,8 +438,9 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
+//=== TJvDotNetFilenameEdit ==================================================
+
 {$IFDEF USEJVCL}
-{ TJvDotNetFilenameEdit }
 
 constructor TJvDotNetFilenameEdit.Create(AOwner: TComponent);
 begin
@@ -460,7 +461,7 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-{ TJvDotNetDirectoryEdit }
+//=== TJvDotNetDirectoryEdit =================================================
 
 constructor TJvDotNetDirectoryEdit.Create(AOwner: TComponent);
 begin
@@ -483,7 +484,7 @@ end;
 
 {$ENDIF USEJVCL}
 
-{ TJvDotNetButton }
+//=== TJvDotNetButton ========================================================
 
 constructor TJvDotNetButton.Create(AOwner: TComponent);
 begin
