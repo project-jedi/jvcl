@@ -127,7 +127,7 @@ type
     procedure PpnWidthHr(Value: Byte);
     procedure PpnWidthMin(Value: Byte);
 
-    procedure Zrisi;
+    procedure InternalPaint;
     procedure Loaded; override;
     procedure Resize; override;
     procedure Paint; override;
@@ -290,7 +290,7 @@ begin
 //	pfMinFont.Pitch := Font.Pitch;
 //	pfMinFont.FontAdapter := Font.FontAdapter;
 //	pfMinFont.OnChange := Font.OnChange;
- //Zrisi;
+ //InternalPaint;
 
   DecodeTime(Now, h, m, s, hund);
   OldMin := m;
@@ -308,19 +308,19 @@ end;
 procedure TJvAnalogClock.Loaded;
 begin
   inherited Loaded;
-  Zrisi;
+  InternalPaint;
 end;
 
 procedure TJvAnalogClock.Resize;
 begin
   inherited;
-  Zrisi;
+  InternalPaint;
 end;
 
 procedure TJvAnalogClock.Paint;
 begin
   inherited;
-  Zrisi;
+  InternalPaint;
 end;
 
 procedure TJvAnalogClock.PpdUra(Value: TDateTime);
@@ -481,7 +481,7 @@ procedure TJvAnalogClock.PplDate(Value: Boolean);
 begin
   plDate := Value;
   Invalidate;
-//Zrisi;
+//InternalPaint;
 end;
 
 procedure TJvAnalogClock.DoAlarm;
@@ -509,7 +509,7 @@ begin
 end;
 
 
-procedure TJvAnalogClock.Zrisi;
+procedure TJvAnalogClock.InternalPaint;
 var
   fak: real;
   t: Integer;
