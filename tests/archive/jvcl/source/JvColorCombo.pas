@@ -17,12 +17,17 @@ All Rights Reserved.
 Contributor(s):
 Brian Cook (borland.public.vcl.components.writing)
 
-Last Modified: 2002-10-21
+Last Modified: 2002-11-20
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+If you set AutoComplete in TJvColorComboBox to true and use the same text for
+all Custom colors, the inherited Change behaviour from TJvComboBox makes the *first*
+custom color selected, not the last added as it should be thus AutoComplete is
+set to default to false. (p3)
+
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -95,7 +100,7 @@ type
     property CustomColorCount: integer read FCustCnt;
   published
     property Anchors;
-    property AutoComplete;
+    property AutoComplete default false;
 {$IFDEF COMPILER6_UP}
     property AutoDropDown;
 {$ENDIF}
@@ -203,7 +208,7 @@ type
     property Text;
   published
     property Anchors;
-    property AutoComplete;
+    property AutoComplete default false;
 {$IFDEF COMPILER6_UP}
     property AutoDropDown;
 {$ENDIF}
@@ -255,7 +260,7 @@ type
   end;
 
 resourcestring
-  SOtherCaption = '(Other...)';
+  SOtherCaption = 'Custom...';
   SNewColorPrefix = 'Custom';
 
 implementation
@@ -361,9 +366,10 @@ begin
   FOptions := [coText];
   FHiLiteColor := clHighLight;
   FHiLiteText := clHighLightText;
+  AutoComplete := false;
   // make sure that if this is the first time the component is dropped on the form,
   // the default Name/Value map is created (thanks to Brian Cook on the borland NG's):
-  if (Owner <> nil) and ([csDesigning,csLoading] * Owner.ComponentState = [csDesigning]) then
+  if (Owner <> nil) and ([csDesigning, csLoading] * Owner.ComponentState = [csDesigning]) then
     InitColorNames;
 end;
 
@@ -421,7 +427,7 @@ begin
 end;
 
 procedure TJvColorComboBox.SetOther(Value: string);
-var i:integer;
+var i: integer;
 begin
   if FOther <> Value then
   begin
@@ -448,34 +454,32 @@ procedure TJvColorComboBox.SetColorValue(Value: TColor);
 var
   i: Integer;
 begin
-  if (ItemIndex < 0) or (Value <> FColorValue) then
+  i := Items.IndexOfObject(TObject(Value));
+  if i >= 0 then
   begin
-    i := Items.IndexOfObject(TObject(Value));
-    if i >= 0 then
-    begin
-      FColorValue := Value;
-      if ItemIndex <> i then
-        ItemIndex := i;
-      Change;
-      Exit;
-    end
-    else if (coCustomColors in Options) then
-      InsertColor(Items.Count-1, Value, Format(FPrefix, [FCustCnt]))
-        //      Items.InsertObject(Items.Count, FPrefix + IntToStr(FCustCnt), TObject(Value))
-    else
-      AddColor(Value, Format(FPrefix, [FCustCnt]));
-    //      Items.AddObject(FPrefix + IntToStr(FCustCnt), TObject(Value));
-    Inc(FCustCnt);
-    ItemIndex := Items.Count - 2;
     FColorValue := Value;
-  end;
+    if ItemIndex <> i then
+      ItemIndex := i;
+    Change;
+    Exit;
+  end
+  else if (coCustomColors in Options) then
+    InsertColor(Items.Count - 1, Value, Format(FPrefix, [FCustCnt]))
+        //      Items.InsertObject(Items.Count, FPrefix + IntToStr(FCustCnt), TObject(Value))
+  else
+    AddColor(Value, Format(FPrefix, [FCustCnt]));
+    //      Items.AddObject(FPrefix + IntToStr(FCustCnt), TObject(Value));
+  Inc(FCustCnt);
+  ItemIndex := Items.Count - 2;
+  FColorValue := Value;
 end;
 
 function TJvColorComboBox.DoNewColor(Color: TColor; var DisplayName: string): boolean;
 begin
-  Result := true;
   if Assigned(FNewColor) then
-    FNewColor(self, Color, DisplayName, Result);
+    FNewColor(self, Color, DisplayName, Result)
+  else
+    Result := Items.IndexOfObject(TObject(Color)) = -1;
 end;
 
 procedure TJvColorComboBox.CNDrawItem(var Message: TWMDrawItem);
@@ -589,26 +593,29 @@ begin
 end;
 
 procedure TJvColorComboBox.Click;
-var S: string;
+var S: string; CD: TColorDialog;
 begin
   if (ItemIndex = Items.Count - 1) and (coCustomColors in FOptions) then
-    with TColorDialog.Create(self) do
+  begin
+    CD := TColorDialog.Create(self);
+    with CD do
     try
-      Color := ColorValue;
+      CD.Color := ColorValue;
       Options := Options + [cdFullOpen, cdPreventFullOpen];
       S := FPrefix;
-      if Execute and DoNewColor(Color, S) then
+      if Execute and DoNewColor(CD.Color, S) then
       begin
         Inc(FCustCnt);
-        InsertColor(Items.Count - 1, Color, S);
+        InsertColor(Items.Count - 1, CD.Color, S);
         ItemIndex := Items.Count - 2;
-        ColorValue := Color;
-      end
-      else
-        ItemIndex := 0;
+//        ColorValue := CD.Color;
+      end;
+//      else
+        ColorValue := CD.Color;
     finally
       Free;
     end // with
+  end
   else if ItemIndex >= 0 then
     ColorValue := TColor(Items.Objects[ItemIndex]);
   inherited Click;
@@ -782,7 +789,7 @@ procedure TJvColorComboBox.ChangeColor(AIndex: integer; AColor: TColor;
   const DisplayName: string);
 begin
   // raise Exception ?
-  if (AIndex >= 0) and (AIndex < Items.Count-Ord(coCustomColors in Options)) then
+  if (AIndex >= 0) and (AIndex < Items.Count - Ord(coCustomColors in Options)) then
   begin
     Items[AIndex] := DisplayName;
     Items.Objects[AIndex] := TObject(AColor);
@@ -808,6 +815,7 @@ begin
   FDevice := fdScreen;
   FUseImages := true;
   Style := csOwnerDrawFixed;
+  AutoComplete := false;
   ResetItemHeight;
 end;
 
@@ -982,7 +990,7 @@ begin
 end;
 
 procedure TJvFontComboBox.Reset;
-var S:string;
+var S: string;
 begin
   if HandleAllocated then
   begin
