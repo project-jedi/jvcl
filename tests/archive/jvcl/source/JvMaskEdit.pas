@@ -99,6 +99,7 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored false;
     property Text:string read GetText write SetText;
     property PasswordChar:char read GetPasswordChar write SetPasswordChar;
+    // set to true to disable read/write of PasswordChar and read of Text
     property ProtectPassword:boolean read FProtectPassword write FProtectPassword default false;
 
     property HotTrack: Boolean read FEffect write SetCtl3d default False;
