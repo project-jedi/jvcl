@@ -843,7 +843,7 @@ begin
     if TargetConfig.GenerateMapFiles then
       DccOpt := DccOpt + ' -GD';
 
-    if (not TargetConfig.DebugUnits) or (not TargetConfig.DeveloperInstall) then
+    if (not DebugUnits) or (not TargetConfig.DeveloperInstall) then
     begin
       DccOpt := DccOpt + ' -DJVCL_NO_DEBUGINFO';
       CreateDir(TargetConfig.UnitOutDir + '\debug');
