@@ -37,19 +37,8 @@ uses
 
 type
   TJvColorAxisConfig = (acXYZ, acXZY, acYXZ, acYZX, acZXY, acZYX);
-  TJvColorOrientation = 0..1;
-  TJvArrowPosition = 0..1;
-
-const
-  coLeftToRight = TJvColorOrientation(0);
-  coRightToLeft = TJvColorOrientation(1);
-  coTopToBottom = TJvColorOrientation(0);
-  coBottomToTop = TJvColorOrientation(1);
-
-  apLeft = TJvArrowPosition(0);
-  apRight = TJvArrowPosition(1);
-  apTop = TJvArrowPosition(0);
-  apBottom = TJvArrowPosition(1);
+  TJvColorOrientation = (coNormal, coInverse);
+  TJvArrowPosition = (apNormal, apOpposite);
 
 type
   TKeyCode = (kcLeft, kcRight, kcUp, kcDown);
@@ -317,8 +306,8 @@ type
   published
     property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 9;
-    property ArrowPosition: TJvArrowPosition read FArrowPosition write SetArrowPosition default apTop;
-    property ColorOrientation: TJvColorOrientation read FColorOrientation write SetColorOrientation default coLeftToRight;
+    property ArrowPosition: TJvArrowPosition read FArrowPosition write SetArrowPosition default apNormal;
+    property ColorOrientation: TJvColorOrientation read FColorOrientation write SetColorOrientation default coNormal;
     property Orientation: TTrackBarOrientation read FOrientation write SetOrientation default trHorizontal;
     property BarWidth: Integer read FBarWidth write SetBarWidth default 10;
     property ValueX: Byte read FValueX write SetValueX stored IsValueXStored;
@@ -2154,8 +2143,8 @@ begin
   inherited Create(AOwner);
 
   FOrientation := trHorizontal;
-  FArrowPosition := apTop;
-  FColorOrientation := coLeftToRight;
+  FArrowPosition := apNormal;
+  FColorOrientation := coNormal;
 
   FArrowWidth := 9;
   FArrowColor := clBlack;
@@ -2239,8 +2228,7 @@ begin
     with FBuffer.Canvas do
       for IndexZ := MinZ to MaxZ do
       begin
-        if ((Orientation = trHorizontal) and (ColorOrientation = coRightToLeft)) or
-          ((Orientation = trVertical) and (ColorOrientation = coBottomToTop)) then
+        if ColorOrientation = coInverse then
           PosZ := MaxZ - IndexZ
         else
           PosZ := IndexZ - MinZ;
@@ -2281,11 +2269,12 @@ begin
     PosZ := GetAxisValue(FullColor, AxisZ);
     // (rom) This shift is simply not in effect. Seems to be a bug of GetAxisValue.
     // PosZ := PosZ - AxisMin[AxisZ] + ArrowWidth;
-    if ((Orientation = trHorizontal) and (ColorOrientation = coRightToLeft)) then
-      PosZ := FBuffer.Width - PosZ - 1
-    else
-    if ((Orientation = trVertical) and (ColorOrientation = coBottomToTop)) then
-      PosZ := FBuffer.Height - PosZ - 1;
+    if ColorOrientation = coInverse then
+      if Orientation = trHorizontal then
+        PosZ := FBuffer.Width - PosZ - 1
+      else
+      if Orientation = trVertical then
+        PosZ := FBuffer.Height - PosZ - 1;
     Inc(PosZ, ArrowWidth);
   end;
 
@@ -2298,7 +2287,7 @@ begin
           Points[1].X := PosZ;
           Points[2].X := PosZ + ArrowWidth;
           case ArrowPosition of
-            apTop:
+            apNormal:
               begin
                 Points[0].Y := 0;
                 Points[1].Y := ArrowWidth;
@@ -2306,7 +2295,7 @@ begin
                 DrawFrame(ArrowWidth, ArrowWidth+1);
                 Draw(ArrowWidth, ArrowWidth+1, FBuffer);
               end;
-            apBottom:
+            apOpposite:
               begin
                 Points[0].Y := Height - 1;
                 Points[1].Y := Height - 1 - ArrowWidth;
@@ -2322,7 +2311,7 @@ begin
           Points[1].Y := PosZ;
           Points[2].Y := PosZ + ArrowWidth;
           case ArrowPosition of
-            apLeft:
+            apNormal:
               begin
                 Points[0].X := 0;
                 Points[1].X := ArrowWidth;
@@ -2330,7 +2319,7 @@ begin
                 DrawFrame(ArrowWidth+1, ArrowWidth);
                 Draw(ArrowWidth+1, ArrowWidth, FBuffer);
               end;
-            apRight:
+            apOpposite:
               begin
                 Points[0].X := Width - 1;
                 Points[1].X := Width - 1 - ArrowWidth;
@@ -2371,7 +2360,7 @@ begin
   IndexAxisZ := GetIndexAxisZ(AxisConfig);
   ValueZ := GetAxisValue(FullColor, IndexAxisZ);
 
-  if (ColorOrientation = coBottomToTop) or (ColorOrientation = coRightToLeft) then
+  if ColorOrientation = coInverse then
     MoveCount := -MoveCount;
 
   case KeyCode of
@@ -2430,8 +2419,7 @@ begin
     MaxZ := AxisMax[AxisZ];
 
     Pos := EnsureRange(Pos, 0, MaxZ - MinZ);
-    if ((Orientation = trHorizontal) and (ColorOrientation = coRightToLeft)) or
-      ((Orientation = trVertical) and (ColorOrientation = coBottomToTop)) then
+    if ColorOrientation = coInverse then
       Pos := MaxZ - Pos
     else
       Pos := Pos - MinZ;
@@ -2463,7 +2451,7 @@ end;
 
 procedure TJvFullColorTrackBar.SetArrowWidth(const Value: Integer);
 begin
-  if FArrowPosition <> Value then
+  if FArrowWidth <> Value then
   begin
     FArrowWidth := Value;
     CalcSize;

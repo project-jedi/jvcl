@@ -115,7 +115,7 @@ object JvColorCircleForm: TJvColorCircleForm
       AxisConfig = acYZX
       TabOrder = 2
       ArrowWidth = 10
-      ColorOrientation = 1
+      ColorOrientation = coInverse
       Orientation = trVertical
     end
     object JvFullColorTrackBarBlue: TJvFullColorTrackBar
@@ -128,7 +128,7 @@ object JvColorCircleForm: TJvColorCircleForm
       TabOrder = 5
       ArrowColor = clBlue
       ArrowWidth = 10
-      ColorOrientation = 1
+      ColorOrientation = coInverse
       Orientation = trVertical
     end
     object JvFullColorTrackBarGreen: TJvFullColorTrackBar
@@ -141,7 +141,7 @@ object JvColorCircleForm: TJvColorCircleForm
       TabOrder = 4
       ArrowColor = clLime
       ArrowWidth = 10
-      ColorOrientation = 1
+      ColorOrientation = coInverse
       Orientation = trVertical
     end
     object JvFullColorTrackBarRed: TJvFullColorTrackBar
@@ -154,7 +154,7 @@ object JvColorCircleForm: TJvColorCircleForm
       TabOrder = 3
       ArrowColor = clRed
       ArrowWidth = 10
-      ColorOrientation = 1
+      ColorOrientation = coInverse
       Orientation = trVertical
     end
     object JvColorAxisConfigCombo: TJvColorAxisConfigCombo
