@@ -35,6 +35,33 @@ uses
   JvTypes, StdActns, CommCtrl, JVCLVer;
 
 type
+  TJvStatusPanel = class(TStatusPanel)
+  private
+    FControl: TControl;
+    FMarginLeft: integer;
+    FMarginTop: integer;
+    procedure SetControl(const Value: TControl);
+    procedure SetMarginLeft(const Value: integer);
+    procedure SetMarginTop(const Value: integer);
+    procedure Changed(AllItems:boolean);
+  public
+    constructor Create(Collection: TCollection); override;
+  published
+    property Control:TControl read FControl write SetControl;
+    property MarginLeft:integer read FMarginLeft write SetMarginLeft default 3;
+    property MarginTop:integer read FMarginTop write SetMarginTop default 3;
+  end;
+
+  TJvStatusPanels = class(TStatusPanels)
+  private
+    function GetItem(Index: integer): TJvStatusPanel;
+    procedure SetItem(Index: integer; const Value: TJvStatusPanel);
+  public
+    constructor Create(StatusBar:TStatusBar);
+    function Add:TJvStatusPanel;
+    property Items[Index:integer]:TJvStatusPanel read GetItem write SetItem;default;
+  end;
+
   TJvStatusBar = class(TStatusBar)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -46,21 +73,28 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FAutoHintShown: Boolean;
     FHiddenControls: array of TControl;
+    FPanels: TJvStatusPanels;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMSize(var Msg: TMessage); message WM_SIZE;
+    procedure MovePanelControls;
+    procedure SetPanels(const Value: TJvStatusPanels);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy;override;
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     property AutoHintShown: Boolean read FAutoHintShown;
   published
     property Color;
     property Font;
+    property Panels:TJvStatusPanels read FPanels write SetPanels;
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -70,10 +104,13 @@ type
   end;
 
 implementation
-
+uses
+  Math;
+  
 constructor TJvStatusBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FPanels := TJvStatusPanels.Create(self);
   FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
@@ -103,6 +140,7 @@ procedure TJvStatusBar.WMSize(var Msg: TMessage);
 begin
   inherited;
   Realign;
+  MovePanelControls;
   Invalidate; //Force full redraw, cause it's a lot buggy on XP without that!!!
 end;
 
@@ -194,6 +232,115 @@ begin
     DefaultHandler(Msg)
   else
     inherited;
+end;
+
+procedure TJvStatusBar.Notification(AComponent: TComponent;
+  Operation: TOperation);
+var i:integer;
+begin
+  inherited;
+  if Operation = opRemove then
+    for i := 0 to Panels.Count - 1 do
+      if Panels[i].Control = AComponent then
+        Panels[i].Control := nil;
+end;
+
+{ TJvStatusPanel }
+
+procedure TJvStatusPanel.Changed(AllItems: boolean);
+begin
+  inherited Changed(AllItems);
+  (TJvStatusPanels(Collection).GetOwner as TJvStatusBar).MovePanelControls;
+end;
+
+constructor TJvStatusPanel.Create(Collection: TCollection);
+begin
+  inherited;
+  FMarginLeft := 3;
+  FMarginTop := 3;
+end;
+
+procedure TJvStatusPanel.SetControl(const Value: TControl);
+var S:TJvStatusBar;
+begin
+    S := TJvStatusPanels(Collection).GetOwner as TJvStatusBar;
+    if FControl <> nil then
+      FControl.RemoveFreeNotification(S);
+    FControl := Value;
+    if FControl <> nil then
+    begin
+      if FControl = S then
+        raise Exception.Create('Invalid control selection.');
+      FControl.Parent := S;
+      FControl.Height := S.ClientHeight - 4;
+      FControl.FreeNotification(S);
+    end;
+    Changed(false);
+end;
+
+procedure TJvStatusPanel.SetMarginLeft(const Value: integer);
+begin
+  if FMarginLeft <> Value then
+  begin
+    FMarginLeft := Value;
+    Changed(false);
+  end;
+end;
+
+procedure TJvStatusPanel.SetMarginTop(const Value: integer);
+begin
+  if FMarginTop <> Value then
+  begin
+    FMarginTop := Value;
+    Changed(false);
+  end;
+end;
+
+procedure TJvStatusBar.MovePanelControls;
+var i, ALeft:integer;
+begin
+  ALeft := 0;
+  for i := 0 to Panels.Count - 1 do
+  begin
+    if TJvStatusPanel(Panels[i]).Control <> nil then
+      with TJvStatusPanel(Panels[i]) do
+        Control.SetBounds(ALeft + MarginLeft,MarginTop,Control.Width, Control.Height);
+    Inc(ALeft,TJvStatusPanel(Panels[i]).Width);
+  end;
+end;
+
+{ TJvStatusPanels }
+
+function TJvStatusPanels.Add: TJvStatusPanel;
+begin
+  Result := TJvStatusPanel(inherited Add);
+end;
+
+constructor TJvStatusPanels.Create(StatusBar: TStatusBar);
+begin
+  inherited Create(StatusBar);  
+end;
+
+function TJvStatusPanels.GetItem(Index: integer): TJvStatusPanel;
+begin
+  Result := TJvStatusPanel(inherited Items[Index]);
+end;
+
+procedure TJvStatusPanels.SetItem(Index: integer;
+  const Value: TJvStatusPanel);
+begin
+  inherited Items[Index] := Value;
+end;
+
+procedure TJvStatusBar.SetPanels(const Value: TJvStatusPanels);
+begin
+  FPanels.Assign(Value);
+end;
+
+destructor TJvStatusBar.Destroy;
+begin
+  FPanels.Free;
+  inherited;
 end;
 
 end.
