@@ -12,6 +12,9 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  DesignSize = (
+    862
+    606)
   PixelsPerInch = 96
   TextHeight = 13
   object DBGrid1: TDBGrid
@@ -232,6 +235,7 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     end
     object JvCsvDataSet1ADDRESS2: TStringField
       FieldName = 'ADDRESS2'
+      ReadOnly = True
       Size = 80
     end
     object JvCsvDataSet1TELEPHONE: TStringField
@@ -240,6 +244,7 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     end
     object JvCsvDataSet1AGE: TIntegerField
       FieldName = 'AGE'
+      ReadOnly = True
     end
     object JvCsvDataSet1LASTPHONECALL: TDateTimeField
       FieldName = 'LASTPHONECALL'
@@ -270,6 +275,7 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
       Options.ArrangeSettings.DistanceVertical = 3
       Options.ArrangeSettings.DistanceHorizontal = 3
       Options.ArrangeSettings.AutoSize = asBoth
+      Options.FieldCreateOptions.UseFieldSizeForWidth = False
     end
     object JvDatabaseFirstAction1: TJvDatabaseFirstAction
       Category = 'JVCL-DB'
