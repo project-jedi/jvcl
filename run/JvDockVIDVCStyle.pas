@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics, ComCtrls, ImgList,
-  JvDockControlForm, JvDockSupportControl, JvDockTree;
+  JvDockControlForm, JvDockSupportControl, JvDockTree, JvDockAdvTree;
 
 const
   VIDDefaultDockGrabbersSize = 18;
@@ -273,7 +273,7 @@ type
     property CaptionLeftOffset: Integer read FCaptionLeftOffset write SetCaptionLeftOffset;
     property CaptionRightOffset: Integer read FCaptionRightOffset write SetCaptionRightOffset;
   public
-    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass); override;
+    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;ADockStyle:TComponent ); override;
   end;
 
   TJvDockVIDVCTabPageControl = class;
@@ -1202,9 +1202,9 @@ end;
 //=== { TJvDockVIDVCTree } ===================================================
 
 constructor TJvDockVIDVCTree.Create(DockSite: TWinControl;
-  DockZoneClass: TJvDockZoneClass);
+  DockZoneClass: TJvDockZoneClass;ADockStyle:TComponent);
 begin
-  inherited Create(DockSite, DockZoneClass);
+  inherited Create(DockSite, DockZoneClass, ADockStyle);
   FDropOnZone := nil;
   GrabberSize := 18;
   ButtonHeight := 11;

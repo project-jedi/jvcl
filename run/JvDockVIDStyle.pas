@@ -31,7 +31,7 @@ interface
 
 uses
   Windows, Messages, Classes, Graphics, Controls, ComCtrls, ImgList,
-  JvDockControlForm, JvDockSupportControl, JvDockTree;
+  JvDockControlForm, JvDockSupportControl, JvDockTree, JvDockAdvTree;
 
 type
   TJvDockVIDConjoinServerOption = class(TJvDockBasicConjoinServerOption)
@@ -99,6 +99,9 @@ type
     FInactiveFont: TFont;
     FInactiveSheetColor: TColor;
     FShowTabImages: Boolean;
+    FShowCloseButtonOnTabs:Boolean; { NEW! if true, shows invididual close buttons on tabs. If false, you get the old VID behaviour. }
+    FShowCloseButtonOnGrabber:Boolean; {NEW! default is true, which is the old VID Style behaviour. False is a new behaviour added by Warren. }
+
     function GetActiveFont: TFont;
     function GetActiveSheetColor: TColor;
     function GetHotTrackColor: TColor;
@@ -126,13 +129,25 @@ type
     property InactiveFont: TFont read GetInactiveFont write SetInactiveFont;
     property HotTrackColor: TColor read GetHotTrackColor write SetHotTrackColor;
     property ShowTabImages: Boolean read GetShowTabImages write SetShowTabImages;
+    //NEW:
+
+    { NEW! if true, shows invididual close buttons on tabs.
+           If false, you get the old VID behaviour. }
+    property ShowCloseButtonOnTabs:Boolean read FShowCloseButtonOnTabs write FShowCloseButtonOnTabs;
+
+    {NEW! Default is true, which is the old VID Style behaviour.
+          False is a new behaviour added by Warren. }
+    property ShowCloseButtonOnGrabber:Boolean read FShowCloseButtonOnGrabber write FShowCloseButtonOnGrabber default true;
+
   end;
 
   TJvDockSystemInfoChange = procedure(Value: Boolean) of object;
 
   TJvDockVIDStyle = class(TJvDockAdvStyle)
   private
+    FAlwaysShowGrabber:Boolean;
     FSystemInfoChange: TJvDockSystemInfoChange;
+
   protected
     function DockClientWindowProc(DockClient: TJvDockClient; var Msg: TMessage): Boolean; override;
     procedure ParentFormWindowProc(var Msg: TMessage); override;
@@ -147,6 +162,8 @@ type
       var Source: TJvDockDragDockObject); override;
     procedure FormGetDockEdge(DockClient: TJvDockClient; Source: TJvDockDragDockObject;
       MousePos: TPoint; var DropAlign: TAlign); override;
+
+
     procedure CreateConjoinServerOption(var Option: TJvDockBasicConjoinServerOption); override;
     procedure CreateTabServerOption(var Option: TJvDockBasicTabServerOption); override;
     procedure AssignConjoinServerOption(APanel: TJvDockCustomPanel); override;
@@ -159,6 +176,7 @@ type
     {$ENDIF !USEJVCL}
     procedure SetDockBaseControl(IsCreate: Boolean; DockBaseControl: TJvDockBaseControl); override;
   published
+    property AlwaysShowGrabber : Boolean read FAlwaysShowGrabber  write FAlwaysShowGrabber; {NEW}
     property SystemInfoChange: TJvDockSystemInfoChange read FSystemInfoChange
       write FSystemInfoChange;
     property ConjoinServerOption;
@@ -168,7 +186,10 @@ type
   TJvDockVIDSplitter = class(TJvDockSplitter);
 
   TJvDockVIDPanel = class(TJvDockAdvPanel)
-  protected
+    private
+
+   protected
+
     procedure CustomGetSiteInfo(Source: TJvDockDragDockObject;
       Client: TControl; var InfluenceRect: TRect; MousePos: TPoint;
       var CanDock: Boolean); override;
@@ -180,6 +201,7 @@ type
       var DropAlign: TAlign); override;
     function CreateDockManager: IDockManager; override;
   public
+
     procedure DockDrop(Source: TDragDockObject; X, Y: Integer); override;
     procedure UpdateCaption(Exclude: TControl); override;
   end;
@@ -211,10 +233,12 @@ type
 
   TJvDockVIDTree = class(TJvDockAdvTree)
   private
+    FParent : TJvDockVIDPanel;
     FDropOnZone: TJvDockZone;
     FLockDropDockSizeCount: Integer;
     FCaptionLeftOffset: Integer;
     FCaptionRightOffset: Integer;
+
     procedure LockDropDockSize;
     procedure UnlockDropDockSize;
     procedure SetCaptionLeftOffset(const Value: Integer);
@@ -223,12 +247,16 @@ type
     procedure InsertControlFromConjoinHost(Control: TControl;
       InsertAt: TAlign; DropCtl: TControl); virtual;
     procedure IgnoreZoneInfor(Stream: TMemoryStream); virtual;
+
+    { [ERROR] Method 'AdjustDockRect' not found in base class.
+      if you get this error here, it is a Delphi compiler issue. }
+      
     procedure AdjustDockRect(Control: TControl; var ARect: TRect); override;
     procedure WindowProc(var Msg: TMessage); override;
     procedure SplitterMouseUp; override;
     function GetTopGrabbersHTFlag(const MousePos: TPoint;
       out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; override;
-    function GeTJvDockGrabbersPosition: TJvDockGrabbersPosition; override;
+    function GetJvDockGrabbersPosition: TJvDockGrabbersPosition; override;
     procedure GetSiteInfo(Client: TControl;
       var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean); override;
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
@@ -255,7 +283,9 @@ type
     property CaptionLeftOffset: Integer read FCaptionLeftOffset write SetCaptionLeftOffset;
     property CaptionRightOffset: Integer read FCaptionRightOffset write SetCaptionRightOffset;
   public
-    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass); override;
+    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass; ADockStyle:TComponent {TJvDockBasicStyle}); override;
+
+
   end;
 
   TJvDockVIDTabPageControl = class;
@@ -314,6 +344,8 @@ type
 
   TJvDockTabPanel = class(TCustomControl)
   private
+    FDockPanel: TJvDockPanel; // If docked to a dock panel, this is it. nil is floating.
+
     FPage: TJvDockVIDTabPageControl;
     FActiveSheetColor: TColor;
     FHotTrackColor: TColor;
@@ -387,6 +419,9 @@ type
     property Page: TJvDockVIDTabPageControl read FPage write SetPage;
     property SelectSheet: TJvDockVIDTabSheet read FSelectSheet write FSelectSheet;
     property ShowTabImages: Boolean read FShowTabImages write SetShowTabImages;
+
+    property DockPanel: TJvDockPanel read FDockPanel write FDockPanel; {NEW! If docked to a TjvDockPanel, this is it. if not (nil) then it is floating.}
+
   end;
 
   TJvDockTabPanelClass = class of TJvDockTabPanel;
@@ -1049,6 +1084,7 @@ procedure TJvDockVIDStyle.FormStartDock(DockClient: TJvDockClient;
 begin
   inherited FormStartDock(DockClient, Source);
   Source := TJvDockVIDDragDockObject.Create(DockClient.ParentForm);
+//  Source.DockClient := DockClient; {allows DockClient.OnCheckIsDockable event to fire once before docking, to block or allow drag/drop to this site. }
 end;
 
 procedure TJvDockVIDStyle.FormGetDockEdge(DockClient: TJvDockClient;
@@ -1064,6 +1100,8 @@ function TJvDockVIDStyle.DockClientWindowProc(DockClient: TJvDockClient;
 begin
   Result := inherited DockClientWindowProc(DockClient, Msg);
 end;
+
+
 
 procedure TJvDockVIDStyle.CreateConjoinServerOption(
   var Option: TJvDockBasicConjoinServerOption);
@@ -1128,7 +1166,11 @@ begin
   if (DockServer <> nil) and (Result <> nil) then
   begin
     Option := TJvDockVIDConjoinServerOption(DockServer.DockStyle.ConjoinServerOption);
-    (Result as IJvDockManager).GrabberSize := Option.GrabbersSize;
+
+    // This should already have happened, but when update when creating a new
+    // panel, just in case
+    if (Option.GrabbersSize>0) then
+        (Result as IJvDockManager).GrabberSize := Option.GrabbersSize;
   end;
 end;
 
@@ -1196,18 +1238,30 @@ begin
   Invalidate;
 end;
 
+
+
+
 //=== { TJvDockVIDTree } =====================================================
 
+
+
 constructor TJvDockVIDTree.Create(DockSite: TWinControl;
-  DockZoneClass: TJvDockZoneClass);
+  DockZoneClass: TJvDockZoneClass;ADockStyle:TComponent {TJvDockBasicStyle});
 begin
-  inherited Create(DockSite, DockZoneClass);
+  inherited Create(DockSite, DockZoneClass,ADockStyle);
   FDropOnZone := nil;
-  GrabberSize := 18;
+
+
+  { BASE CLASS TJvDockTree DOES THIS ALREADY: if Assigned(ADockStyle) then begin
+      GrabberSize := TJvDockBasicStyle(ADockStyle).GrabberSize
+  end; }
+  if GrabberSize <= 0 then 
+      GrabberSize := 18;
+
   ButtonHeight := 11;
   ButtonWidth := 13;
-  LeftOffset := 2;
-  RightOffset := 2;
+  LeftOffset := 4;
+  RightOffset := 4;
   TopOffset := 4;
   BottomOffset := 3;
   ButtonSplitter := 2;
@@ -1215,9 +1269,17 @@ begin
   MinSize := 20;
   CaptionLeftOffset := 0;
   CaptionRightOffset := 0;
+  if DockSite is TJvDockVIDPanel then begin {NEW!}
+      FParent  := TJvDockVIDPanel(DockSite);
+//      Assert(not Assigned(TJvDockVIDPanel(DockSite).FADVTree));
+//      TJvDockVIDPanel(DockSite).FADVTree := TJvDockAdvTree(Self);
+
+  end else begin
+      FParent  := nil;
+  end;
 end;
 
-function TJvDockVIDTree.GeTJvDockGrabbersPosition: TJvDockGrabbersPosition;
+function TJvDockVIDTree.GetJvDockGrabbersPosition: TJvDockGrabbersPosition;
 begin
   Result := gpTop;
 end;
@@ -1264,6 +1326,9 @@ var
     DockClient: TJvDockClient;
     APoint: TPoint;
   begin
+    {$ifdef JVDOCK_DEBUG}
+    OutputDebugString('TJvDockVIDTree.InsertControl.CreateDockPageControl');
+    {$endif}
     Result := nil;
     Zone := FindControlZone(DropCtl);
     DockClient := FindDockClient(DropCtl);
@@ -1334,6 +1399,10 @@ var
   end;
 
 begin
+  {$ifdef JVDOCK_DEBUG}
+  OutputDebugString('TJvDockVIDTree.InsertControl');
+  {$endif}
+
   if not JvGlobalDockIsLoading then
     JvDockLockWindow(nil);
   try
@@ -1694,25 +1763,46 @@ var
   DrawRect: TRect;
   uFormat: UINT;
   ActiveControl: TControl;
-
-  procedure DrawGrabberLine(Left, Top, Right, Bottom: Integer);
-  begin
-    with Canvas do
-    begin
-      Pen.Color := clBtnHighlight;
-      MoveTo(Right, Top);
-      LineTo(Left, Top);
-      LineTo(Left, Bottom);
-      Pen.Color := clBtnShadow;
-      LineTo(Right, Bottom);
-      LineTo(Right, Top - 1);
-    end;
-  end;
-
+  ShowCloseButtonOnGrabber:Boolean;
+  TabServerOption:TJvDockVIDTabServerOption;
 begin
+  Assert(Assigned(Control));
+  ShowCloseButtonOnGrabber := true;
+
+{$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+ if Assigned(DockStyle) then begin
+   // Still not extremely easy, but a lot less evil than the above.
+   if Control is TJvDockTabHostForm then begin
+         TabServerOption := TJvDockVIDTabServerOption(
+                                  TJvDockBasicStyle(DockStyle)
+                                  .TabServerOption );
+        ShowCloseButtonOnGrabber := TabServerOption.ShowCloseButtonOnGrabber
+   end;
+ end;
+{$else}
+  { The old way }
+  if Assigned(DockSite) and (DockSite is TJvDockPanel) then begin
+       if Control is TJvDockTabHostForm then begin
+         ShowCloseButtonOnGrabber :=
+                ((DockSite as TJvDockPanel)
+                      .DockServer  {I'm begging for accession violations! }
+                      .DockStyle
+                      .TabServerOption as TJvDockVIDTabServerOption
+                ).ShowCloseButtonOnGrabber;
+      end;
+  end;
+{$endif}
+
+ // Defaults should work if DockStyle is not set!
+ // -> Assert(DontAssume(Assigned(DockStyle)));
+
+
   with ARect do
     if GrabbersPosition = gpLeft then
     begin
+        {$ifdef JVDOCK_DEBUG}
+         OutputDebugSTring('GrabbersPosition=gpLeft - Not supported');
+        {$endif}
     end
     else
     if GrabbersPosition = gpTop then
@@ -1728,10 +1818,13 @@ begin
 
       ActiveControl := GetActiveControl;
       DrawRect := ARect;
+      //OutputDebugSTring(PChar('DrawRect ='+IntToStr(DrawRect.Left)+','+IntToStr(DrawRect.Top)+' - '+IntToStr(DrawRect.Right) +','+IntToStr(DrawRect.Bottom) ));
+
       Inc(DrawRect.Top, 2);
       DrawRect.Bottom := DrawRect.Top + GrabberSize - 3;
       if Option <> nil then
       begin
+         //OutputDebugSTring(PChar('PaintGradientBackground ='+IntToStr(DrawRect.Left)+','+IntToStr(DrawRect.Top)+' - '+IntToStr(DrawRect.Right) +','+IntToStr(DrawRect.Bottom) ));
         if ActiveControl = Control then
           PaintGradientBackground(Canvas, DrawRect, Option.ActiveTitleStartColor, Option.ActiveTitleEndColor, Option.ActiveTitleVerticalGradient)
         else
@@ -1748,15 +1841,23 @@ begin
       GetCaptionRect(DrawRect);
       uFormat := DT_VCENTER or DT_SINGLELINE or (UINT(Option.TextEllipsis) * DT_END_ELLIPSIS) or TextAlignment[Option.TextAlignment];
       DrawText(Canvas.Handle, PChar(TForm(Control).Caption), -1, DrawRect, uFormat);
-      DrawCloseButton(Canvas, FindControlZone(Control), Right - RightOffset - ButtonWidth, Top + TopOffset);
+      if ShowCloseButtonOnGrabber then begin
+          DrawCloseButton(Canvas, FindControlZone(Control), Right - RightOffset - ButtonWidth, Top + TopOffset);
+      end;
     end
     else
     if GrabbersPosition = gpBottom then
     begin
+        {$ifdef JVDOCK_DEBUG}
+        OutputDebugSTring('GrabbersPosition=gpBottom - Not supported');
+        {$endif}
     end
     else
     if GrabbersPosition = gpRight then
     begin
+        {$ifdef JVDOCK_DEBUG}
+        OutputDebugSTring('GrabbersPosition=gpRight - Not supported');
+        {$endif}
     end;
 end;
 
@@ -2329,10 +2430,18 @@ begin
   Dec(Rect.Bottom, 2);
 end;
 
+{ Adjust docking area rectangle to compensante for Grabber control }
 procedure TJvDockVIDTree.AdjustDockRect(Control: TControl;
   var ARect: TRect);
+var
+  AlwaysShowGrabber:Boolean;
 begin
-  if (DockSite.Align <> alClient) or (TopZone.VisibleChildTotal > 1) then
+  if Assigned( FParent ) then
+    AlwaysShowGrabber := TJvDockVIDStyle(FParent.DockServer.DockStyle).AlwaysShowGrabber
+  else
+    AlwaysShowGrabber := false;
+
+  if AlwaysShowGrabber or (DockSite.Align <> alClient) or (TopZone.VisibleChildTotal > 1) then
     inherited AdjustDockRect(Control, ARect);
 end;
 
@@ -2433,7 +2542,7 @@ begin
   TabSheetClass := TJvDockVIDTabSheet;
   TabPanelClass := TJvDockTabPanel;
   FTempSheet := nil;
-  TabPosition := tpBottom;
+  TabPosition := tpTop; // Warren changed! was tpBottom;
   FTabImageList := nil;
   Images := nil;
   if AOwner is TJvDockTabHostForm then
@@ -2990,6 +3099,9 @@ end;
 
 constructor TJvDockTabPanel.Create(AOwner: TComponent);
 begin
+  {$ifdef JVDOCK_DEBUG}
+  OutputDebugString('JvDockVIDStyle.pas: TJvDockTabPanel.Create');
+  {$endif}
   inherited Create(AOwner);
   Page := nil;
   FCaptionTopOffset := 0;
@@ -3269,6 +3381,10 @@ var
   Index: Integer;
   Msg: TWMMouse;
 begin
+ {$ifdef JVDOCK_DEBUG}
+  OutputDebugString('JvDockVIDStyle.pas : TJvDockTabPanel.MouseUp');
+ {$endif}
+
   inherited MouseUp(Button, Shift, X, Y);
   FSelectSheet := nil;
   if Page = nil then
@@ -3910,13 +4026,26 @@ var
   Page: TJvDockVIDTabPageControl;
 begin
   inherited MouseMsg(Msg);
+
+  // Warren added assertions:
+  Assert(Assigned( JvGlobalDockClient));
+  Assert(Assigned( JvGlobalDockManager));
+
   case Msg.Msg of
     WM_CAPTURECHANGED:
-      if JvGlobalDockClient.ParentForm.HostDockSite is TJvDockVIDTabPageControl then
-        TJvDockVIDTabPageControl(JvGlobalDockClient.ParentForm.HostDockSite).Panel.MouseUp(mbLeft, [], 0, 0)
-      else
-      if TWinControl(JvGlobalDockManager.DragObject.DragTarget) is TJvDockVIDTabPageControl then
-        TJvDockVIDTabPageControl(JvGlobalDockManager.DragObject.TargetControl).Panel.MouseUp(mbLeft, [], 0, 0);
+      begin
+        // Warren added Assertions:
+        Assert(Assigned( JvGlobalDockClient.ParentForm));
+//        Assert(Assigned( JvGlobalDockClient.ParentForm.HostDockSite));
+
+        if Assigned( JvGlobalDockClient.ParentForm.HostDockSite) and
+          (JvGlobalDockClient.ParentForm.HostDockSite is TJvDockVIDTabPageControl) then
+            TJvDockVIDTabPageControl(JvGlobalDockClient.ParentForm.HostDockSite).Panel.MouseUp(mbLeft, [], 0, 0)
+        else
+        if TWinControl(JvGlobalDockManager.DragObject.DragTarget) is TJvDockVIDTabPageControl then
+          TJvDockVIDTabPageControl(JvGlobalDockManager.DragObject.TargetControl).Panel.MouseUp(mbLeft, [], 0, 0);
+
+      end;
     WM_MOUSEMOVE:
       if JvGlobalDockManager.DragObject.TargetControl is TJvDockVIDTabPageControl then
       begin
@@ -4185,6 +4314,9 @@ begin
   FInactiveFont.Color := clWhite;
   FInactiveSheetColor := clBtnShadow;
   FShowTabImages := False;
+
+  FShowCloseButtonOnGrabber := true;
+  FShowCloseButtonOnTabs := false;
 end;
 
 destructor TJvDockVIDTabServerOption.Destroy;
@@ -4309,10 +4441,10 @@ end;
 
 procedure TJvDockVIDTabServerOption.SetTabPosition(const Value: TTabPosition);
 begin
-  if Value = tpBottom then
+//  if Value = tpBottom then
     inherited SetTabPosition(Value)
-  else
-    raise Exception.CreateRes(@RsEDockTabPositionMustBetpBottom);
+//  else // TabPosition property must be tpBottom.
+//    raise Exception.CreateRes(@RsEDockTabPositionMustBetpBottom);
 end;
 
 ///=== { TJvDockVIDConjoinServerOption } =====================================

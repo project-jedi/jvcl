@@ -31,7 +31,8 @@ interface
 
 uses
   Windows, Messages, Classes, Graphics, Controls,
-  JvDockControlForm, JvDockSupportControl, JvDockTree;
+  JvDockControlForm, JvDockSupportControl, JvDockTree,
+  JvDockAdvTree;
 
 type
   TJvDockVCConjoinServerOption = class(TJvDockBasicConjoinServerOption)
@@ -167,7 +168,7 @@ type
     procedure ShiftZone(Zone: TJvDockZone); override;
     procedure SplitterMouseUp; override;
   public
-    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass); override;
+    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;ADockStyle:TComponent); override;
   end;
 
   TJvDockVCDragDockObject = class(TJvDockDragDockObject)
@@ -771,9 +772,9 @@ end;
 
 //=== { TJvDockVCTree } ======================================================
 
-constructor TJvDockVCTree.Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass);
+constructor TJvDockVCTree.Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass;ADockStyle:TComponent);
 begin
-  inherited Create(DockSite, DockZoneClass);
+  inherited Create(DockSite, DockZoneClass, ADockStyle);
   Version := RsDockVCDockTreeVersion;
   BorderWidth := 4;
   MinSize := 20;

@@ -30,11 +30,18 @@ unit JvDockSupportClass;
 interface
 
 uses
-  Windows, Messages, Classes, Controls, Forms;
+  Windows, SysUtils, Messages, Classes, Controls, Forms;
 
 type
   TJvDockBaseTree = class;
 
+  { TJvDockBaseZone: A node in a tree.
+
+     This should probably be called TJvDockTreeItem since this is
+     the base Item type for items managed by the tree
+     TJvDockBaseTree.
+
+  }
   TJvDockBaseZone = class(TObject)
   private
     FBaseTree: TJvDockBaseTree;
@@ -65,20 +72,29 @@ type
   TJvDockTreeZoneClass = class of TJvDockBaseZone;
 
   TJvDockScanTreeZoneProc = procedure(TreeZone: TJvDockBaseZone);
-  
+
   TJvDockBaseTree = class(TObject)
   private
     FScanAction: TJvDockScanZoneNotification;
     FTreeZoneClass: TJvDockTreeZoneClass;
-    FTopTreeZone: TJvDockBaseZone;        
-    FCurrTreeZone: TJvDockBaseZone;       
-    FScanZoneProc: TJvDockScanTreeZoneProc; 
+    FTopTreeZone: TJvDockBaseZone;
+    FCurrTreeZone: TJvDockBaseZone;
+    FScanZoneProc: TJvDockScanTreeZoneProc;
   protected
-    procedure ForwardScanTree(TreeZone: TJvDockBaseZone); virtual; 
+    procedure ForwardScanTree(TreeZone: TJvDockBaseZone); virtual;
     procedure BackwardScanTree(TreeZone: TJvDockBaseZone); virtual;
-    procedure MiddleScanTree(TreeZone: TJvDockBaseZone); virtual;  
+    procedure MiddleScanTree(TreeZone: TJvDockBaseZone); virtual;
     procedure ScanTreeZone(TreeZone: TJvDockBaseZone); virtual;
   public
+
+{$ifdef JVDOCK_DEBUG}
+    // This helps us to understand the content of the tree by allowing
+    // us to build a dump:
+    procedure DebugDump(var index:Integer; indent,entity:String; TreeZone: TJvDockBaseZone; Strs:TStrings); //virtual;
+
+
+{$endif}
+
     constructor Create(TreeZone: TJvDockTreeZoneClass); virtual;
     destructor Destroy; override;
     function AddChildZone(TreeZone, NewZone: TJvDockBaseZone): TJvDockBaseZone; virtual;
@@ -303,6 +319,39 @@ begin
 end;
 
 //=== { TJvDockBaseTree } ====================================================
+
+{$ifdef JVDOCK_DEBUG}
+// This helps us to understand the content of the tree by allowing
+// us to build an XML dump of the tree.
+procedure TJvDockBaseTree.DebugDump(var index:Integer; indent,entity:String; TreeZone: TJvDockBaseZone; Strs:TStrings); //virtual;
+var
+  zone:TJvDockBaseZone;
+  wasIndex:Integer;
+  procedure write(s:String);
+  begin
+    Strs.Add(s);
+  end;
+begin
+ zone := TreeZone;
+ while Assigned(zone) do begin
+   wasIndex := index;
+   Inc(index);
+
+   write( indent+'<'+entity+IntToStr(wasIndex)+'>' );
+
+   write( indent+'   <class>'+ zone.ClassName +'</class>' );
+
+   DebugDump(index, indent+'       ', 'child.'+entity, zone.ChildZone, Strs );
+
+   write( indent+'</'+entity+IntToStr(wasIndex)+'>' );
+
+   write ( '');
+
+
+   zone := zone.NextSibling;
+ end;
+end;
+{$endif}
 
 constructor TJvDockBaseTree.Create(TreeZone: TJvDockTreeZoneClass);
 begin
