@@ -9,15 +9,14 @@
       ..\lib5\JvExchListboxes.obj ..\lib5\JvFormLists.obj ..\lib5\JvFormLog.obj 
       ..\lib5\JvHtmlParserEditor.obj ..\lib5\JvLogFile.obj 
       ..\lib5\JvLoginDlg.obj ..\lib5\JvPatcherEditor.obj ..\lib5\JVCLMiscal.obj 
-      ..\lib5\JvOutlookEdit.obj ..\lib5\JvDateTimeDlg.obj 
-      ..\lib5\JvDsgnEditors.obj ..\lib5\JvTimeLineEdit.obj ..\lib5\JvOutEdit.obj 
-      ..\lib5\JvStrLEdit.obj ..\lib5\JvOLBEditor.obj 
-      ..\lib5\JvChNtfyProperty.obj ..\lib5\JvLCProperty.obj 
-      ..\lib5\JvAppletProperty.obj ..\lib5\JvColors.obj ..\lib5\JvDsgn.obj 
-      ..\lib5\JvCtlReg.obj ..\lib5\JvDBReg.obj ..\lib5\JvBDEReg.obj 
-      ..\lib5\JvImagPrvw.obj ..\lib5\JvCheckItm.obj ..\lib5\JvDirFrm.obj 
-      ..\lib5\JvFormWallpaperEditor.obj ..\lib5\JvIColEdit.obj 
-      ..\lib5\JvGradedit.obj ..\lib5\JvJVCLAbout.obj ..\lib5\JvMinMaxEd.obj 
+      ..\lib5\JvDateTimeDlg.obj ..\lib5\JvDsgnEditors.obj 
+      ..\lib5\JvTimeLineEdit.obj ..\lib5\JvOutEdit.obj ..\lib5\JvStrLEdit.obj 
+      ..\lib5\JvOLBEditor.obj ..\lib5\JvChNtfyProperty.obj 
+      ..\lib5\JvLCProperty.obj ..\lib5\JvAppletProperty.obj ..\lib5\JvColors.obj 
+      ..\lib5\JvDsgn.obj ..\lib5\JvCtlReg.obj ..\lib5\JvDBReg.obj 
+      ..\lib5\JvBDEReg.obj ..\lib5\JvImagPrvw.obj ..\lib5\JvCheckItm.obj 
+      ..\lib5\JvDirFrm.obj ..\lib5\JvFormWallpaperEditor.obj 
+      ..\lib5\JvIColEdit.obj ..\lib5\JvGradedit.obj ..\lib5\JvMinMaxEd.obj 
       ..\lib5\JvPgMngrEd.obj ..\lib5\JvPictEdit.obj ..\lib5\JvPresrDsn.obj 
       ..\lib5\JvQBndDlg.obj ..\lib5\JvSbEdit.obj ..\lib5\JvSelDSFrm.obj 
       ..\lib5\JvTimLstEd.obj ..\lib5\JvActions.obj ..\lib5\JvActnRes.obj 
@@ -26,7 +25,9 @@
       ..\lib5\JvPluginParams.obj ..\lib5\JvPluginWizard.obj 
       ..\lib5\JvRegAutoEditor.obj ..\lib5\JvSchedEvntReg.obj 
       ..\lib5\JvTipOfDayProp.obj ..\lib5\ScheduleEditor.obj 
-      ..\lib5\JvToolReg.obj ..\lib5\JVCL200_D50C.obj"/>
+      ..\lib5\JvToolReg.obj ..\lib5\JvaDsgn.obj ..\lib5\JvaCtlReg.obj 
+      ..\lib5\JvaDBReg.obj ..\lib5\JvJVCLAboutProperty.obj ..\lib5\JvxDConst.obj 
+      ..\lib5\JvTransLEDReg.obj ..\lib5\JVCL200_D50C.obj"/>
     <RESFILES value="JVCL200_D50C.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -35,18 +36,17 @@
       ..\Source\JvDateTimeDlg.dfm ..\Source\JvStrLEdit.dfm 
       ..\Source\JvOLBEditor.dfm ..\source\JvImagPrvw.dfm 
       ..\source\JvCheckItm.dfm ..\source\JvDirFrm.dfm ..\source\JvIColEdit.dfm 
-      ..\source\JvGradedit.dfm ..\source\JvJVCLAbout.dfm 
-      ..\source\JvMinMaxEd.dfm ..\source\JvPgMngrEd.dfm ..\source\JvPictEdit.dfm 
-      ..\source\JvPresrDsn.dfm ..\source\JvQBndDlg.dfm ..\source\JvSbEdit.dfm 
-      ..\source\JvSelDSFrm.dfm ..\source\JvTimLstEd.dfm ..\source\JvActnRes.dfm 
-      ..\source\JvBandObjectDLLWizardForm.dfm ..\source\JvhtHintEditor.dfm 
-      ..\source\JvPluginParams.dfm ..\source\JvRegAutoEditor.dfm 
-      ..\source\ScheduleEditor.dfm"/>
+      ..\source\JvGradedit.dfm ..\source\JvMinMaxEd.dfm ..\source\JvPgMngrEd.dfm 
+      ..\source\JvPictEdit.dfm ..\source\JvPresrDsn.dfm ..\source\JvQBndDlg.dfm 
+      ..\source\JvSbEdit.dfm ..\source\JvSelDSFrm.dfm ..\source\JvTimLstEd.dfm 
+      ..\source\JvActnRes.dfm ..\source\JvBandObjectDLLWizardForm.dfm 
+      ..\source\JvhtHintEditor.dfm ..\source\JvPluginParams.dfm 
+      ..\source\JvRegAutoEditor.dfm ..\source\ScheduleEditor.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value="Vcl50.lib vcljpg50.lib dclstd50.lib Vcldb50.lib dcldb50.lib Vclbde50.lib"/>
     <PACKAGES value="vcldb50.bpi JVCL200_R50C.bpi dclstd50.bpi vclx50.bpi vclbde50.bpi 
-      vcljpg50.bpi dsnide50.bpi vcl50.bpi dcldb50.bpi"/>
+      vcljpg50.bpi dsnide50.bpi vcl50.bpi DCLDb50.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\source"/>
     <PATHRC value=".;"/>

@@ -17,13 +17,12 @@ USEUNIT("..\Source\JvLogFile.pas");
 USEUNIT("..\Source\JvLoginDlg.pas");
 USEUNIT("..\Source\JvPatcherEditor.pas");
 USEUNIT("..\Source\JVCLMiscal.pas");
-USEUNIT("..\Source\JvOutlookEdit.pas");
 USEFORMNS("..\Source\JvDateTimeDlg.pas", Jvdatetimedlg, frmSelectDateTimeDlg);
 USEUNIT("..\Source\JvDsgnEditors.pas");
 USEUNIT("..\Source\JvTimeLineEdit.pas");
 USEUNIT("..\Source\JvOutEdit.pas");
 USEFORMNS("..\Source\JvStrLEdit.pas", Jvstrledit, JvStrEditDlg);
-USEFORMNS("..\Source\JvOLBEditor.pas", JvOLBEditor, frmOLBEditor);
+USEFORMNS("..\Source\JvOLBEditor.pas", Jvolbeditor, frmOLBEditor);
 USEUNIT("..\Source\JvChNtfyProperty.pas");
 USEUNIT("..\Source\JvLCProperty.pas");
 USEUNIT("..\source\JvAppletProperty.pas");
@@ -38,7 +37,6 @@ USEFORMNS("..\source\JvDirFrm.pas", Jvdirfrm, JvDirectoryListDialog);
 USEUNIT("..\source\JvFormWallpaperEditor.pas");
 USEFORMNS("..\source\JvIColEdit.pas", Jvicoledit, IconListDialog);
 USEFORMNS("..\source\JvGradedit.pas", Jvgradedit, GradCaptionsEditor);
-USEFORMNS("..\source\JvJVCLAbout.pas", Jvjvclabout, JvJVCLAboutForm);
 USEFORMNS("..\source\JvMinMaxEd.pas", Jvminmaxed, MinMaxInfoEditDialog);
 USEFORMNS("..\source\JvPgMngrEd.pas", Jvpgmngred, JvProxyEditor);
 USEFORMNS("..\source\JvPictEdit.pas", Jvpictedit, PictureEditDialog);
@@ -71,6 +69,12 @@ USEPACKAGE("vcljpg50.bpi");
 USEPACKAGE("dsnide50.bpi");
 USEPACKAGE("vcl50.bpi");
 USEPACKAGE("DCLDb50.bpi");
+USEUNIT("..\source\JvaDsgn.pas");
+USEUNIT("..\source\JvaCtlReg.pas");
+USEUNIT("..\source\JvaDBReg.pas");
+USEUNIT("..\source\JvJVCLAboutProperty.pas");
+USEUNIT("..\source\JvxDConst.pas");
+USEUNIT("..\source\JvTransLEDReg.pas");
 //---------------------------------------------------------------------------
 #//---------------------------------------------------------------------------
 #pragma package(smart_init)
