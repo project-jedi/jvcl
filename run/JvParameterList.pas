@@ -28,7 +28,7 @@ unit JvParameterList;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Windows, Messages,
   StdCtrls, ExtCtrls, Graphics, Forms, Controls, Dialogs, ComCtrls,
   {$IFDEF COMPILER6_UP}
   Variants,
@@ -159,7 +159,9 @@ type
 
     procedure SetEnabled(Value: Boolean); virtual;
     procedure SetVisible(Value: Boolean); virtual;
+    function  GetHeight: Integer; virtual;
     procedure SetHeight(Value: Integer); virtual;
+    function  GetWidth: Integer; virtual;
     procedure SetWidth(Value: Integer); virtual;
     procedure SetTabOrder(Value: Integer); virtual;
 
@@ -210,8 +212,8 @@ type
     property Visible: Boolean read FVisible write SetVisible;
     {the next properties find their expressions in the same properties of TWinControl }
     property Caption: string read FCaption write FCaption;
-    property Width: Integer read FWidth write SetWidth;
-    property Height: Integer read FHeight write SetHeight;
+    property Width: Integer read GetWidth write SetWidth;
+    property Height: Integer read GetHeight write SetHeight;
     property Hint: string read FHint write FHint;
     property HelpContext: THelpContext read FHelpContext write FHelpContext;
     property TabOrder: Integer read FTabOrder write SetTabOrder;
@@ -257,6 +259,9 @@ type
     FHeight: Integer;
     FMaxWidth: Integer;
     FMaxHeight: Integer;
+    FDefaultParameterHeight : Integer;
+    FDefaultParameterWidth : Integer;
+    FDefaultParameterLabelWidth : Integer;
     FOkButtonVisible: Boolean;
     FCancelButtonVisible: Boolean;
     FParameterListPropertyStore: TJvParameterListPropertyStore;
@@ -275,11 +280,16 @@ type
     ArrangePanel: TJvPanel;
     ScrollBox: TScrollBox;
     RightPanel: TJvPanel;
+    MainPanel, HistoryPanel, BottomPanel, ButtonPanel: TWinControl;
+    OrgButtonPanelWidth,
+    OrgHistoryPanelWidth: Integer;
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
     procedure SetAppStoragePath(const Value: string);
     function GetAppStoragePath: string;
     function GetJvAppStorage: TJvCustomAppStorage;
     procedure SetJvAppStorage(Value: TJvCustomAppStorage);
+
+    procedure ResizeDialogAfterArrange(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
 
     procedure SetDynControlEngine(Value: TJvDynControlEngine);
 
@@ -382,6 +392,9 @@ type
     property MaxWidth: Integer read FMaxWidth write FMaxWidth default 400;
     {Maximum ClientHeight of the Dialog}
     property MaxHeight: Integer read FMaxHeight write FMaxHeight default 600;
+    property DefaultParameterHeight: Integer read fDefaultParameterHeight write fDefaultParameterHeight default 0;
+    property DefaultParameterWidth: Integer read fDefaultParameterWidth write fDefaultParameterWidth default 0;
+    property DefaultParameterLabelWidth: Integer read fDefaultParameterLabelWidth write fDefaultParameterLabelWidth default 0;
     property OkButtonVisible: Boolean read FOkButtonVisible write FOkButtonVisible;
     property CancelButtonVisible: Boolean read FCancelButtonVisible write FCancelButtonVisible;
     property HistoryEnabled: Boolean read FHistoryEnabled write FHistoryEnabled;
@@ -894,11 +907,27 @@ begin
     WinControl.Visible := Value;
 end;
 
+function TJvBaseParameter.GetHeight: Integer;
+begin
+  if Assigned(ParameterList) and (FHeight <= 0) then
+    Result := ParameterList.DefaultParameterHeight
+  else
+    Result := FHeight;
+end;
+
 procedure TJvBaseParameter.SetHeight(Value: Integer);
 begin
   FHeight := Value;
   if Assigned(WinControl) then
     WinControl.Height := Value;
+end;
+
+function TJvBaseParameter.GetWidth: Integer;
+begin
+  if Assigned(ParameterList) and (FWidth <= 0) then
+    Result := ParameterList.DefaultParameterWidth
+  else
+    Result := FWidth;
 end;
 
 procedure TJvBaseParameter.SetWidth(Value: Integer);
@@ -1006,6 +1035,9 @@ begin
   ArrangePanel := nil;
   FMaxWidth := 600;
   FMaxHeight := 400;
+  FDefaultParameterHeight := 0;
+  FDefaultParameterWidth := 0;
+  FDefaultParameterLabelWidth := 0;
   FOkButtonVisible := True;
   FCancelButtonVisible := True;
   FHistoryEnabled := False;
@@ -1196,7 +1228,6 @@ type
 
 procedure TJvParameterList.CreateParameterDialog;
 var
-  MainPanel, BottomPanel, HistoryPanel, ButtonPanel: TWinControl;
   CancelButton: TWinControl;
   LoadButton, SaveButton, ClearButton: TWinControl;
   ButtonLeft: Integer;
@@ -1268,6 +1299,7 @@ begin
     ButtonLeft := ButtonLeft + 3 + CancelButton.Width + 3;
 
   ButtonPanel.Width := ButtonLeft + 3;
+  OrgButtonPanelWidth := ButtonLeft + 3;
 
   OkButton.Anchors := [akTop, akRight];
   CancelButton.Anchors := [akTop, akRight];
@@ -1312,39 +1344,58 @@ begin
       ButtonLeft := Left + Width + 5;
     end;
     HistoryPanel.Width := ButtonLeft;
+    OrgHistoryPanelWidth := ButtonLeft;
   end
   else
     HistoryPanel := nil;
 
   CreateWinControlsOnParent(MainPanel);
 
-  if Width <= 0 then
-    if ArrangeSettings.AutoSize in [asWidth, asBoth] then
-      if ArrangePanel.Width > TForm(ParameterDialog).ClientWidth then
-        if ArrangePanel.Width + RightPanel.Width > MaxWidth then
-          TForm(ParameterDialog).ClientWidth := MaxWidth
-        else
-          TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+5
+  with MainPanel do
+    ResizeDialogAfterArrange(nil, Left, Top, Width, Height);
+
+end;
+
+procedure TJvParameterList.ResizeDialogAfterArrange(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
+begin
+  if (Width <= 0) or (ArrangeSettings.AutoSize in [asWidth, asBoth]) then
+    if ArrangePanel.Width+ RightPanel.Width > TForm(ParameterDialog).ClientWidth then
+      if ArrangePanel.Width + RightPanel.Width > MaxWidth then
+        TForm(ParameterDialog).ClientWidth := MaxWidth
       else
-        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+5;
-  if Height <= 0 then
-    if ArrangeSettings.AutoSize in [asHeight, asBoth] then
-      if ArrangePanel.Height + BottomPanel.Height > TForm(ParameterDialog).ClientHeight then
-        if ArrangePanel.Height + BottomPanel.Height > MaxHeight then
-          TForm(ParameterDialog).ClientHeight := MaxHeight + 5
-        else
-          TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 5
+        TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+ RightPanel.Width+5
+    else
+      TForm(ParameterDialog).ClientWidth := ArrangePanel.Width+ RightPanel.Width+5;
+  if Assigned(HistoryPanel) and
+     (TForm(ParameterDialog).ClientWidth < HistoryPanel.Width) then
+    TForm(ParameterDialog).ClientWidth := HistoryPanel.Width
+  else if TForm(ParameterDialog).ClientWidth < ButtonPanel.Width then
+    TForm(ParameterDialog).ClientWidth := ButtonPanel.Width;
+  if (Height <= 0) or (ArrangeSettings.AutoSize in [asHeight, asBoth]) then
+    if ArrangePanel.Height + BottomPanel.Height > TForm(ParameterDialog).ClientHeight then
+      if ArrangePanel.Height + BottomPanel.Height > MaxHeight then
+        TForm(ParameterDialog).ClientHeight := MaxHeight + 10
       else
-        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 5;
+        TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 10
+    else
+      TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 10;
 
   if Assigned(HistoryPanel) then
-    if (ButtonPanel.Width + HistoryPanel.Width) > BottomPanel.Width then
-    begin
-      ButtonPanel.Align := alBottom;
-      ButtonPanel.Height := BottomPanel.Height;
-      BottomPanel.Height := BottomPanel.Height * 2 + 1;
-      HistoryPanel.Align := alClient;
-    end;
+    if (OrgButtonPanelWidth + OrgHistoryPanelWidth) > BottomPanel.Width then
+      begin
+        ButtonPanel.Align := alBottom;
+        ButtonPanel.Height := OkButton.Height + 6 + 2;
+        BottomPanel.Height := ButtonPanel.Height * 2 + 1;
+        HistoryPanel.Align := alClient;
+      end
+    else
+      begin
+        ButtonPanel.Align := alRight;
+        ButtonPanel.Width := OrgButtonPanelWidth;
+        HistoryPanel.Align := alLeft;
+        HistoryPanel.Width := OrgHistoryPanelWidth;
+        BottomPanel.Height := OkButton.Height + 6 + 2;
+      end;
   CheckScrollBoxAutoScroll;
 end;
 
@@ -1559,6 +1610,7 @@ begin
     {$ENDIF COMPILER6_UP}
     {$ENDIF VCL}
     Align := alClient;
+    Width := ParameterParent.Width;
   end;
   RightPanel := TJvPanel.Create(Self);
   RightPanel.Parent := ScrollBox;
@@ -1568,12 +1620,7 @@ begin
     BorderStyle := bsNone;
     BevelInner := bvNone;
     BevelOuter := bvNone;
-    {$IFDEF VCL}
-    Width := ScrollBox.HorzScrollBar.Size+3;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Width := 23;       // asn: need to check this
-    {$ENDIF VisualCLX}
+    Width := 22;       // asn: need to check this
     Visible := False;
   end;
   FreeAndNil(ArrangePanel);
@@ -1590,14 +1637,19 @@ begin
     Caption := '';
     Left := 0;
     Top := 0;
+    OnResizeParent := ResizeDialogAfterArrange;
   end;
   ArrangePanel.ArrangeSettings := ArrangeSettings;
-  case ArrangeSettings.AutoSize of
+  case ArrangePanel.ArrangeSettings.AutoSize of
     asNone:
       ArrangePanel.ArrangeSettings.AutoSize := asHeight;
     asWidth:
       ArrangePanel.ArrangeSettings.AutoSize := asBoth;
   end;
+  if (Width > 0) and (ArrangePanel.ArrangeSettings.AutoSize = asHeight) then
+    ArrangePanel.Width := Scrollbox.Width-RightPanel.Width;
+  if MaxWidth > 0 then
+    ArrangePanel.ArrangeSettings.MaxWidth := MaxWidth-RightPanel.Width-2;
   try
     ArrangePanel.DisableArrange;
     for I := 0 to Count - 1 do
@@ -1612,11 +1664,6 @@ begin
          (Parameters[I] is TJvArrangeParameter) then
         TJvArrangeParameter(Parameters[I]).ArrangeControls;
     HandleEnableDisable;
-    //    for I := 0 to Count - 1 do
-    //      if Parameters[I].Visible then
-    //        if Assigned(Parameters[I].WinControl) then
-    //          if Assigned(TWinControlAccessProtected(Parameters[I].WinControl).OnExit) then
-    //            TWinControlAccessProtected(Parameters[I].WinControl).OnExit(Parameters[I].WinControl);
   finally
     ArrangePanel.EnableArrange;
   end;

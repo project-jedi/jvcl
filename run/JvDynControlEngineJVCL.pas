@@ -600,6 +600,7 @@ end;
 
 procedure TJvDynControlJVCLButtonEdit.ControlSetDefaultProperties;
 begin
+  Self.Caption := ' ';
 end;
 
 procedure TJvDynControlJVCLButtonEdit.ControlSetReadOnly(Value: Boolean);

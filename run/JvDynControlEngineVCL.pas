@@ -592,6 +592,7 @@ end;
 
 procedure TJvDynControlVCLButtonEdit.ControlSetDefaultProperties;
 begin
+  Self.Caption := ' ';
 end;
 
 procedure TJvDynControlVCLButtonEdit.ControlSetReadOnly(Value: Boolean);
@@ -701,6 +702,7 @@ begin
   Height      := FEditControl.Height;
   FButton.Width := Height;
   FEditControl.Align := alClient;
+  FDialogOptions := [ofHideReadOnly,ofEnableSizing];
   BevelInner  := bvNone;
   BevelOuter  := bvNone;
   FDialogKind := jdkOpen;
@@ -714,10 +716,13 @@ begin
 end;
 
 procedure TJvDynControlVCLFileNameEdit.DefaultOnButtonClick(Sender: TObject);
+var Dialog : TOpenDialog;
 begin
   case FDialogKind of
     jdkOpen:
-      with TOpenDialog.Create(Self) do
+    begin
+      Dialog := TOpenDialog.Create(Self);
+      with TOpenDialog(Dialog) do
         try
           Options := FDialogOptions;
           Title := FDialogTitle;
@@ -726,11 +731,12 @@ begin
           InitialDir := FInitialDir;
           DefaultExt := FDefaultExt;
           FileName := ControlGetValue;
-          if Execute then
+          if Dialog.Execute then
             ControlSetValue(FileName);
         finally
           Free;
         end;
+    end;
     jdkOpenPicture:
       with TOpenPictureDialog.Create(Self) do
         try
@@ -777,10 +783,13 @@ begin
           Free;
         end;
   end;
+  if FEditControl.CanFocus then
+    FEditControl.SetFocus;
 end;
 
 procedure TJvDynControlVCLFileNameEdit.ControlSetDefaultProperties;
 begin
+  Caption := ' ';
 end;
 
 procedure TJvDynControlVCLFileNameEdit.ControlSetReadOnly(Value: Boolean);
@@ -900,6 +909,21 @@ var
   {$ENDIF VisualCLX}
 begin
   Dir := ControlGetValue;
+  if Dir = '' then
+    if fInitialDir <> '' then
+      Dir := FInitialDir
+    else
+  {$IFDEF LINUX}
+      Dir := '\';
+  {$ELSE}
+      Dir := '/';
+  {$ENDIF LINUX}
+  if not DirectoryExists(Dir) then
+  {$IFDEF LINUX}
+    Dir := '\';
+  {$ELSE}
+    Dir := '/';
+  {$ENDIF LINUX}
   {$IFDEF VCL}
   if SelectDirectory(Dir, Opt, HelpContext) then
   {$ENDIF VCL}
@@ -912,10 +936,13 @@ begin
   {$ENDIF LINUX}
   {$ENDIF VisualCLX}
     ControlSetValue(Dir);
+  if FEditControl.CanFocus then
+    FEditControl.SetFocus;
 end;
 
 procedure TJvDynControlVCLDirectoryEdit.ControlSetDefaultProperties;
 begin
+  Self.Caption := ' ';
 end;
 
 procedure TJvDynControlVCLDirectoryEdit.ControlSetReadOnly(Value: Boolean);
@@ -1028,6 +1055,7 @@ end;
 
 procedure TJvDynControlVCLDateTimeEdit.ControlSetDefaultProperties;
 begin
+  Self.Caption := ' ';
 end;
 
 procedure TJvDynControlVCLDateTimeEdit.ControlSetCaption(const Value: string);
