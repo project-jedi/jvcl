@@ -77,11 +77,12 @@ type
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
-    procedure WMKeyDown(var Msg: TWMKeyDown); message WM_KEYDOWN;
     procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
     procedure SetWantDrawBuffer(Value: Boolean);
   protected
     procedure Paint; override;
+    procedure DrawFocus;
+    procedure DrawFrame(X, Y: Integer);
     procedure SetFullColor(const Value: TFullColor); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -89,6 +90,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure AxisConfigChange; virtual;
     procedure DrawBuffer; virtual;
     procedure ColorSpaceChange; virtual;
@@ -595,7 +597,7 @@ uses
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   Math, TypInfo, GraphUtil,
-  ColorSpacesStd;
+  ColorSpacesStd, JvTypes;
 
 resourcestring
   RsEDuplicateTrackBar = 'TrackBar already used by component "%s"';
@@ -685,7 +687,7 @@ begin
 
   TabStop := True;
 
-  ControlStyle := [csCaptureMouse, csSetCaption];
+  ControlStyle := [csCaptureMouse, csSetCaption, csOpaque];
 end;
 
 destructor TColorComponent.Destroy;
@@ -709,10 +711,11 @@ begin
   if WantDrawBuffer then
     DrawBuffer;
   WantDrawBuffer := False;
-
-  // FBuffer.PixelFormat := pfDevice;
   inherited Paint;
+end;
 
+procedure TColorComponent.DrawFocus;
+begin
   if Focused and not (csDesigning in ComponentState) then
     with Canvas do
     begin
@@ -720,6 +723,15 @@ begin
       Brush.Color := Color;
       DrawFocusRect(ClientRect);
     end;
+end;
+
+procedure TColorComponent.DrawFrame(X, Y: Integer);
+begin
+  Canvas.Brush.Color := Color;
+  Canvas.FillRect(Rect(0, 0, Width, Y));
+  Canvas.FillRect(Rect(0, Y+FBuffer.Height, Width, Height));
+  Canvas.FillRect(Rect(0, Y, X, Y+FBuffer.Height));
+  Canvas.FillRect(Rect(X+FBuffer.Width, Y, Width, Y+FBuffer.Height));
 end;
 
 procedure TColorComponent.SetFullColor(const Value: TFullColor);
@@ -813,19 +825,20 @@ end;
 
 procedure TColorComponent.WMGetDlgCode(var Msg: TWMGetDlgCode);
 begin
+  inherited;
   Msg.Result := DLGC_WANTARROWS;
 end;
 
 procedure TColorComponent.WMKillFocus(var Msg: TWMKillFocus);
 begin
-  Update;
-  Msg.Result := 0;
+  inherited;
+  Invalidate;
 end;
 
 procedure TColorComponent.WMSetFocus(var Msg: TWMSetFocus);
 begin
-  Update;
-  Msg.Result := 0;
+  inherited;
+  Invalidate;
 end;
 
 procedure TColorComponent.KeyMove(KeyCode: TKeyCode; MoveCount: Integer);
@@ -833,22 +846,17 @@ begin
   Update;
 end;
 
-procedure TColorComponent.WMKeyDown(var Msg: TWMKeyDown);
-var
-  MoveCount: Cardinal;
+procedure TColorComponent.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  // (rom) This is problematic. It may only work for your keyboard repeat settings.
-  MoveCount := (Word(Msg.KeyData)) shr 4;
-  MoveCount := (MoveCount * MoveCount) + 1;
-  case Msg.CharCode of
+  case Key of
     VK_LEFT:
-      KeyMove(kcLeft, MoveCount);
+      KeyMove(kcLeft, 1);
     VK_RIGHT:
-      KeyMove(kcRight, MoveCount);
+      KeyMove(kcRight, 1);
     VK_UP:
-      KeyMove(kcUp, MoveCount);
+      KeyMove(kcUp, 1);
     VK_DOWN:
-      KeyMove(kcDown, MoveCount);
+      KeyMove(kcDown, 1);
   end;
 end;
 
@@ -978,42 +986,78 @@ var
   MinX, MaxX, MinY, MaxY: Byte;
   TempColor: TFullColor;
   Line: PFullColorArray;
+  X, Y, I: Integer;
 begin
   AxisX := GetIndexAxisX(AxisConfig);
   AxisY := GetIndexAxisY(AxisConfig);
 
-  with ColorSpace do
-  begin
-    MinX := AxisMin[AxisX];
-    MaxX := AxisMax[AxisX];
-    MinY := AxisMin[AxisY];
-    MaxY := AxisMax[AxisY];
-
-    TempColor := SetAxisValue(0, GetIndexAxisZ(AxisConfig), ValueZ);
-    with FBuffer do
+  if ColorSpace.ID = csPredefined then
+    with FBuffer.Canvas do
     begin
-      Canvas.Brush.Color := Color;
-      Canvas.FillRect(Rect(0, 0, Width, Height));
-      for IndexY := MinY to MaxY do
+      X := 8;
+      Y := 8;
+
+      Brush.Color := Color;
+      FillRect(Rect(0, 0, Width, Height));
+      Pen.Color := clBlack;
+      for I := Low(ColorValues) to High(ColorValues) do
       begin
-        if ReverseAxisY then
-          Line := ScanLine[MaxY - IndexY]
-        else
-          Line := ScanLine[IndexY - MinY];
-
-        TempColor := SetAxisValue(TempColor, AxisY, IndexY);
-
-        for IndexX := MinX to MaxX do
+        Brush.Color := ColorValues[I].Value;
+        Rectangle(X, Y, X+16, Y+16);
+        Inc(X, 16+6);
+        if X > FBuffer.Width - 8 then
         begin
-          TempColor := SetAxisValue(TempColor, AxisX, IndexX);
-          if ReverseAxisX then
-            Line[MaxX - IndexX] := RGBToColor(ConvertToRGB(TempColor))
+          X := 8;
+          Inc(Y, 16+6);
+        end;
+      end;
+      X := 8;
+      Inc(Y, 16+6);
+      for I := Low(SysColorValues) to High(SysColorValues) do
+      begin
+        Brush.Color := SysColorValues[I].Value;
+        Rectangle(X, Y, X+16, Y+16);
+        Inc(X, 16+6);
+        if X > FBuffer.Width - 8 then
+        begin
+          X := 8;
+          Inc(Y, 16+6);
+        end;
+      end;
+    end
+  else
+    with ColorSpace do
+    begin
+      MinX := AxisMin[AxisX];
+      MaxX := AxisMax[AxisX];
+      MinY := AxisMin[AxisY];
+      MaxY := AxisMax[AxisY];
+
+      TempColor := SetAxisValue(0, GetIndexAxisZ(AxisConfig), ValueZ);
+      with FBuffer do
+      begin
+        Canvas.Brush.Color := Color;
+        Canvas.FillRect(Rect(0, 0, Width, Height));
+        for IndexY := MinY to MaxY do
+        begin
+          if ReverseAxisY then
+            Line := ScanLine[MaxY - IndexY]
           else
-            Line[IndexX - MinX] := RGBToColor(ConvertToRGB(TempColor));
+            Line := ScanLine[IndexY - MinY];
+
+          TempColor := SetAxisValue(TempColor, AxisY, IndexY);
+
+          for IndexX := MinX to MaxX do
+          begin
+            TempColor := SetAxisValue(TempColor, AxisX, IndexX);
+            if ReverseAxisX then
+              Line[MaxX - IndexX] := RGBToColor(ConvertToRGB(TempColor))
+            else
+              Line[IndexX - MinX] := RGBToColor(ConvertToRGB(TempColor));
+          end;
         end;
       end;
     end;
-  end;
 
   inherited DrawBuffer;
 end;
@@ -1023,14 +1067,12 @@ var
   PosX, PosY: Integer;
   AxisX, AxisY: TAxisIndex;
 begin
-  if WantDrawBuffer then
-    DrawBuffer;
-  WantDrawBuffer := False;
-
   inherited Paint;
 
   with Canvas do
   begin
+    Brush.Color := Color;
+    DrawFrame(CrossSize, CrossSize);
     Draw(CrossSize, CrossSize, FBuffer);
     Pen := CrossStyle;
 
@@ -1063,6 +1105,7 @@ begin
       LineTo(PosX, PosY + CrossSize);
     end;
   end;
+  DrawFocus;
 end;
 
 procedure TColorPanel.PenChange(Sender: TObject);
@@ -1418,7 +1461,7 @@ var
 
     with Canvas do
     begin
-      Pen.Assign(CrossStyle);
+      Pen := CrossStyle;
       Pen.Color := ACrossColor;
 
       MoveTo(Point.X, Point.Y + CrossSize);
@@ -1442,10 +1485,6 @@ var
   end;
 
 begin
-  if WantDrawBuffer then
-    DrawBuffer;
-  WantDrawBuffer := False;
-
   inherited Paint;
 
   RadiusIndex := GetIndexAxisX(AxisConfig);
@@ -1454,6 +1493,8 @@ begin
 
   with Canvas do
   begin
+    Brush.Color := Color;
+    DrawFrame(CrossSize, CrossSize);
     Draw(CrossSize, CrossSize, FBuffer);
 
     if crShowCommon in Styles then
@@ -1468,6 +1509,7 @@ begin
         DrawCross(GreenColor, CrossGreenColor);
     end;
   end;
+  DrawFocus;
 end;
 
 function TColorCircle.FullColorToPosition(AFullColor: TFullColor): TPoint;
@@ -2193,10 +2235,6 @@ var
   Points: array [0..2] of TPoint;
   Mask1, Mask2, Mask3: TRect;
 begin
-  if WantDrawBuffer then
-    DrawBuffer;
-  WantDrawBuffer := False;
-
   inherited Paint;
 
   AxisZ := GetIndexAxisZ(AxisConfig);
@@ -2232,6 +2270,7 @@ begin
                 Mask1 := Rect(ArrowWidth, 0, Width - ArrowWidth, ArrowWidth);
                 Mask2 := Rect(0, 0, ArrowWidth, Height);
                 Mask3 := Rect(Width - ArrowWidth, 0, Width, Height);
+                DrawFrame(ArrowWidth, ArrowWidth);
                 Draw(ArrowWidth, ArrowWidth, FBuffer);
               end;
             apBottom:
@@ -2240,6 +2279,7 @@ begin
                 Points[1].Y := Height - ArrowWidth;
                 Points[2].Y := Height;
                 Mask1 := Rect(ArrowWidth, Height - ArrowWidth, Width - ArrowWidth, Height);
+                DrawFrame(ArrowWidth, 0);
                 Draw(ArrowWidth, 0, FBuffer);
               end;
           end;
@@ -2258,6 +2298,7 @@ begin
                 Points[1].X := ArrowWidth;
                 Points[2].X := 0;
                 Mask1 := Rect(0, ArrowWidth, ArrowWidth, Height - ArrowWidth);
+                DrawFrame(ArrowWidth, ArrowWidth);
                 Draw(ArrowWidth, ArrowWidth, FBuffer);
               end;
             apRight:
@@ -2266,6 +2307,7 @@ begin
                 Points[1].X := Width - ArrowWidth;
                 Points[2].X := Width;
                 Mask1 := Rect(Width - ArrowWidth, ArrowWidth, Width, Height - ArrowWidth);
+                DrawFrame(0, ArrowWidth);
                 Draw(0, ArrowWidth, FBuffer);
               end;
           end;
@@ -2282,6 +2324,7 @@ begin
     Pen.Color := ArrowColor;
     Polygon(Points);
   end;
+  DrawFocus;
 end;
 
 procedure TColorTrackBar.FreeLink;

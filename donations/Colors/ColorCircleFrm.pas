@@ -138,7 +138,6 @@ type
     procedure SetBlueDelta(const Value: TAxisDelta); override;
     procedure SetDelta(const Value: TColorDelta); override;
   public
-    procedure AfterConstruction; override;
     procedure UpdateDeltaValue;
     procedure CalcDeltaValue(ARotateColor: TRotateColor);
     procedure UpdateColorSpace;
@@ -173,12 +172,6 @@ procedure TColorCircleForm.FormCreate(Sender: TObject);
 begin
   Options := DefaultColorCircleDialogOptions - [roShowSaturation];
   AxisConfigCombo.Selected := ColorCircle.AxisConfig;
-end;
-
-procedure TColorCircleForm.AfterConstruction;
-begin
-  inherited AfterConstruction;
-  FillInternalArrays;
 end;
 
 procedure TColorCircleForm.FillInternalArrays;

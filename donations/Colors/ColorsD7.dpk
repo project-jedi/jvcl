@@ -31,7 +31,8 @@ requires
   vcl,
   designide,
   vclx,
-  VclSmp;
+  VclSmp,
+  JvCoreD6R;
 
 contains
   ColorDialogs in 'ColorDialogs.pas',

@@ -91,7 +91,6 @@ type
     procedure Loaded; override;
     property Expanded: Boolean read FExpanded;
   public
-    procedure AfterConstruction; override;
     procedure Expand;
     procedure Collapse;
   end;
@@ -123,12 +122,6 @@ begin
   LabelDrawOld.Color := ColorSpaceManager.ConvertToID(FullColor, csRGB);
   SetFullColor(FullColor);
   SetOptions(Options);
-end;
-
-procedure TFullColorForm.AfterConstruction;
-begin
-  inherited AfterConstruction;
-  FillInternalArrays;
 end;
 
 procedure TFullColorForm.FillInternalArrays;
@@ -258,7 +251,7 @@ begin
 
   if LColorID = csPredefined then
   begin
-    ColorPanel.Visible := False;
+    ColorPanel.FullColor := TFullColor(clWindowText);
     ColorTrackBar.Visible := False;
     AxisConfigCombo.Enabled := False;
     for I := Low(TAxisIndex) to High(TAxisIndex) do
@@ -271,7 +264,6 @@ begin
   end
   else
   begin
-    ColorPanel.Visible := True;
     ColorTrackBar.Visible := True;
     AxisConfigCombo.Enabled := True;
     for I := Low(TAxisIndex) to High(TAxisIndex) do
