@@ -38,7 +38,7 @@ unit JvShell;
 interface
 
 uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF} Messages,
-  Classes, Graphics, SysUtils, Forms, Controls, Menus, ShellAPI,
+  Classes, Graphics, SysUtils, Forms, Controls, Menus, ShellAPI, JvComponent,
   {$IFDEF USE_TIMER} ExtCtrls, {$ENDIF} JvIcoList{, JvComponent};
 
 type
@@ -59,7 +59,7 @@ type
 
 { TJvxTrayIcon }
 
-  TJvxTrayIcon = class(TComponent)
+  TJvxTrayIcon = class(TJvComponent)
   private
     FHandle: HWnd;
     FActive: Boolean;
