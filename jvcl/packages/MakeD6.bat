@@ -25,7 +25,8 @@ REM call makedofs.bat
 
 echo.
 echo Createing .cfg files
-call makecfgs.bat
+MakeCFG "..\..\packages\%DIR%\*.dpk" %DIR%packscfg.tmpl
+
 
 echo.
 cd ..\..\packages
