@@ -41,13 +41,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  {$IFDEF VCL}
-  Windows,
-  {$ENDIF VCL}
-  Graphics, Controls, ExtCtrls, Dialogs,
-  {$IFDEF VisualCLX}
-  Types, QTypes, QWindows,
-  {$ENDIF VisualCLX}
+  Windows, Graphics, Controls, ExtCtrls, Dialogs,
   JvTypes;
 
 type
