@@ -1303,7 +1303,7 @@ begin
     Result := CISO_639_2Data[Index].S;
 end;
 
-//=== TJvID3TermFinder =======================================================
+//=== { TJvID3TermFinder } ===================================================
 
 constructor TJvID3TermFinder.Create;
 var

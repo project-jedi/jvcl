@@ -107,7 +107,7 @@ uses
   QExtCtrls, 
   JvQThemes, JvQResources;
 
-//=== TJvImageSquare =========================================================
+//=== { TJvImageSquare } =====================================================
 
 constructor TJvImageSquare.Create(AOwner: TComponent);
 begin

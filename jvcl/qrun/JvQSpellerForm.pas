@@ -175,7 +175,7 @@ begin
   end;
 end;
 
-//=== TJvSpeller =============================================================
+//=== { TJvSpeller } =========================================================
 
 constructor TJvSpeller.Create(AOwner: TComponent);
 var

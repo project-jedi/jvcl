@@ -98,7 +98,7 @@ type
 
 implementation
 
-//=== TJvAlarms ==============================================================
+//=== { TJvAlarms } ==========================================================
 
 constructor TJvAlarms.Create(AOwner: TComponent);
 begin
@@ -241,7 +241,7 @@ begin
   FAlarms.Assign(Value);
 end;
 
-//=== TJvAlarmItems ==========================================================
+//=== { TJvAlarmItems } ======================================================
 
 constructor TJvAlarmItems.Create(AOwner: TPersistent);
 begin
@@ -277,7 +277,7 @@ begin
   inherited Items[Index] := Value;
 end;
 
-//=== TJvAlarmItem ===========================================================
+//=== { TJvAlarmItem } =======================================================
 
 procedure TJvAlarmItem.Assign(Source: TPersistent);
 begin

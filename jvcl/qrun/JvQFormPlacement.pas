@@ -246,7 +246,7 @@ const
   siVisible = 'Visible'; // do not localize
   siVersion = 'FormVersion'; // do not localize
 
-//=== TJvFormPlacement =======================================================
+//=== { TJvFormPlacement } ===================================================
 
 constructor TJvFormPlacement.Create(AOwner: TComponent);
 begin
@@ -631,7 +631,7 @@ begin
     AppStorage := nil;
 end;
 
-//=== TJvWinMinMaxInfo =======================================================
+//=== { TJvWinMinMaxInfo } ===================================================
 
 procedure TJvWinMinMaxInfo.Assign(Source: TPersistent);
 begin
@@ -713,7 +713,7 @@ begin
   end;
 end;
 
-//=== TJvFormStorage =========================================================
+//=== { TJvFormStorage } =====================================================
 
 constructor TJvFormStorage.Create(AOwner: TComponent);
 begin
@@ -843,7 +843,7 @@ begin
   StoredValues.RestoreValues;
 end;
 
-//=== TJvIniLink =============================================================
+//=== { TJvIniLink } =========================================================
 
 destructor TJvIniLink.Destroy;
 begin
@@ -876,7 +876,7 @@ begin
     FOnLoad(Self);
 end;
 
-//=== TJvStoredValue =========================================================
+//=== { TJvStoredValue } =====================================================
 
 constructor TJvStoredValue.Create(Collection: TCollection);
 begin
@@ -965,7 +965,7 @@ begin
   Value := RestoreValue;
 end;
 
-//=== TJvStoredValues ========================================================
+//=== { TJvStoredValues } ====================================================
 
 constructor TJvStoredValues.Create(AOwner: TPersistent);
 begin

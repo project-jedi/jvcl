@@ -145,8 +145,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
-    property Canvas ;
+    procedure DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState); 
   published
     property Color;
     property ParentColor;
@@ -210,7 +209,7 @@ type
     function Empty: Boolean;
   end;
 
-//=== TJvGlyphList ===========================================================
+//=== { TJvGlyphList } =======================================================
 
 constructor TJvGlyphList.CreateSize(AWidth, AHeight: Integer);
 begin
@@ -251,7 +250,7 @@ begin
   end;
 end;
 
-//=== TJvGlyphCache ==========================================================
+//=== { TJvGlyphCache } ======================================================
 
 constructor TJvGlyphCache.Create;
 begin
@@ -296,7 +295,7 @@ begin
   Result := FGlyphLists.Count = 0;
 end;
 
-//=== TJvButtonGlyph =========================================================
+//=== { TJvButtonGlyph } =====================================================
 
 var
   GlyphCache: TJvGlyphCache = nil;
@@ -792,11 +791,11 @@ begin
     ItemHtHeight(Canvas, Caption));     // Kaczkowski
 end;
 
-//=== TJvaCaptionButton ======================================================
+//=== { TJvaCaptionButton } ==================================================
 
 
 
-//=== TJvaColorButton ========================================================
+//=== { TJvaColorButton } ====================================================
 
 constructor TJvaColorButton.Create(AOwner: TComponent);
 begin
@@ -908,7 +907,7 @@ begin
     end;
 end;
 
-//=== TJvNoFrameButton =======================================================
+//=== { TJvNoFrameButton } ===================================================
 
 constructor TJvNoFrameButton.Create(AOwner: TComponent);
 begin
@@ -1002,7 +1001,7 @@ begin
   end;
 end;
 
-//=== TJvHTButton ============================================================
+//=== { TJvHTButton } ========================================================
 
 constructor TJvHTButton.Create(AOwner: TComponent);
 begin

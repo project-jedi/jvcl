@@ -177,7 +177,7 @@ implementation
 uses
   JvQJVCLUtils, JvQResources;
 
-//=== TJvJoystick ============================================================
+//=== { TJvJoystick } ========================================================
 
 constructor TJvJoystick.Create(AOwner: TComponent);
 begin
@@ -366,7 +366,7 @@ begin
   end;
 end;
 
-//=== TJoystick ==============================================================
+//=== { TJoystick } ==========================================================
 
 constructor TJoystick.CreateJoy(AOwner: TComponent; Joy: Integer);
 begin

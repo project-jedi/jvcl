@@ -269,7 +269,7 @@ implementation
 uses
   JvQJCLUtils, JvQResources;
 
-//=== TJvOfficeColorPanelProperties ==========================================
+//=== { TJvOfficeColorPanelProperties } ======================================
 
 constructor TJvOfficeColorPanelProperties.Create;
 begin
@@ -478,7 +478,7 @@ begin
   end;
 end;
 
-//=== TJvSubColorButton ======================================================
+//=== { TJvSubColorButton } ==================================================
 
 constructor TJvSubColorButton.Create(AOwner: TComponent);
 begin
@@ -553,7 +553,7 @@ begin
   end;
 end;
 
-//=== TJvCustomOfficeColorPanel ==============================================
+//=== { TJvCustomOfficeColorPanel } ==========================================
 
 constructor TJvCustomOfficeColorPanel.Create(AOwner: TComponent);
 begin
@@ -926,7 +926,7 @@ begin
     AdjustColorButtons;
 end;
 
-{ TJvColorSpeedButton }
+//=== { TJvColorSpeedButton } ================================================
 
 procedure TJvColorSpeedButton.SetButtonColor(const Value: TColor);
 begin

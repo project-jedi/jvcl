@@ -162,7 +162,7 @@ begin
   end;
 end;
 
-//=== TJvAppXMLStorage =======================================================
+//=== { TJvAppXMLStorage } ===================================================
 
 constructor TJvCustomAppXMLStorage.Create(AOwner: TComponent);
 begin
@@ -640,7 +640,7 @@ begin
   Xml.LoadFromString(Value);
 end;
 
-//=== TJvAppXMLFileStorage ===================================================
+//=== { TJvAppXMLFileStorage } ===============================================
 
 procedure TJvAppXMLFileStorage.Flush;
 begin

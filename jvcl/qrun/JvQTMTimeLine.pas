@@ -334,7 +334,7 @@ uses
 const
   cMagic = 'Jv.TMTIMELINE1';
 
-//=== TJvTLSelFrame ==========================================================
+//=== { TJvTLSelFrame } ======================================================
 
 constructor TJvTLSelFrame.Create;
 begin
@@ -388,7 +388,7 @@ begin
   end;
 end;
 
-//=== TJvCustomTMTimeline ====================================================
+//=== { TJvCustomTMTimeline } ================================================
 
 constructor TJvCustomTMTimeline.Create(AOwner: TComponent);
 begin

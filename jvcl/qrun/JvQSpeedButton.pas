@@ -611,7 +611,7 @@ begin
   InflateRect(Result, -1, -1);
 end;
 
-//=== TJvButtonImage =========================================================
+//=== { TJvButtonImage } =====================================================
 
 constructor TJvButtonImage.Create;
 begin
@@ -707,7 +707,7 @@ begin
   TJvxButtonGlyph(FGlyph).WordWrap := Value;
 end;
 
-//=== TJvCustomSpeedButton ===================================================
+//=== { TJvCustomSpeedButton } ===============================================
 
 procedure TJvCustomSpeedButton.ButtonClick;
 begin
@@ -1423,7 +1423,7 @@ end;
 
 
 
-//=== TJvGlyphCache ==========================================================
+//=== { TJvGlyphCache } ======================================================
 
 constructor TJvGlyphCache.Create;
 begin
@@ -1468,7 +1468,7 @@ begin
   end;
 end;
 
-//=== TJvGlyphList ===========================================================
+//=== { TJvGlyphList } =======================================================
 
 function TJvGlyphList.Add(Image, Mask: TBitmap): Integer;
 begin
@@ -1516,7 +1516,7 @@ begin
   inherited Destroy;
 end;
 
-//=== TJvImageSpeedButton ====================================================
+//=== { TJvImageSpeedButton } ================================================
 
 procedure TJvImageSpeedButton.ActionChange(Sender: TObject;
   CheckDefaults: Boolean);
@@ -1617,7 +1617,7 @@ begin
   InvalidateImage;
 end;
 
-//=== TJvImageSpeedButtonActionLink ==========================================
+//=== { TJvImageSpeedButtonActionLink } ======================================
 
 procedure TJvImageSpeedButtonActionLink.AssignClient(AClient: TObject);
 begin
@@ -1652,7 +1652,7 @@ begin
     FClient.ImageIndex := Value;
 end;
 
-//=== TJvSpeedButton =========================================================
+//=== { TJvSpeedButton } =====================================================
 
 procedure TJvSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 
@@ -1785,7 +1785,7 @@ begin
   end;
 end;
 
-//=== TJvSpeedButtonActionLink ===============================================
+//=== { TJvSpeedButtonActionLink } ===========================================
 
 procedure TJvSpeedButtonActionLink.AssignClient(AClient: TObject);
 begin
@@ -1809,7 +1809,7 @@ begin
     TJvSpeedButton(FClient).Down := Value;
 end;
 
-//=== TJvxButtonGlyph ========================================================
+//=== { TJvxButtonGlyph } ====================================================
 
 procedure TJvxButtonGlyph.CalcButtonLayout(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
   var Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;

@@ -231,7 +231,7 @@ begin
     end;
 end;
 
-//=== TGlyphList =============================================================
+//=== { TGlyphList } =========================================================
 
 constructor TGlyphList.CreateSize(AWidth, AHeight: Integer);
 begin
@@ -272,7 +272,7 @@ begin
   end;
 end;
 
-//=== TGlyphCache ============================================================
+//=== { TGlyphCache } ========================================================
 
 constructor TGlyphCache.Create;
 begin
@@ -319,7 +319,7 @@ var
   Pattern: TBitmap = nil;
   ButtonCount: Integer = 0;
 
-//=== TButtonGlyph ===========================================================
+//=== { TButtonGlyph } =======================================================
 
 procedure CreateBrushPattern;
 var
@@ -725,7 +725,7 @@ begin
   DrawButtonText(Canvas, Caption, Result, State);
 end;
 
-//=== TJvArrowButton =========================================================
+//=== { TJvArrowButton } =====================================================
 
 constructor TJvArrowButton.Create(AOwner: TComponent);
 begin

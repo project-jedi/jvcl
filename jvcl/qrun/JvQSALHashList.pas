@@ -278,7 +278,7 @@ begin
   end;
 end;
 
-//=== TJvHashString ==========================================================
+//=== { TJvHashString } ======================================================
 
 constructor TJvHashWord.Create(AString: string; AId, AExId: TJvSALProc);
 begin
@@ -288,7 +288,7 @@ begin
   ExID := AExId;
 end;
 
-//=== TJvBaseStringHashList ==================================================
+//=== { TJvBaseStringHashList } ==============================================
 
 procedure TJvBaseStringHashList.Clear;
 var
@@ -333,7 +333,7 @@ begin
   end;
 end;
 
-//=== TJvHashStrings =========================================================
+//=== { TJvHashStrings } =====================================================
 
 procedure TJvHashStrings.AddString(AString: string; AId, AExId: TJvSALProc);
 begin
@@ -341,7 +341,7 @@ begin
   FList[Capacity] := TJvHashWord.Create(AString, AId, AExId);
 end;
 
-//=== TJvHashItems ===========================================================
+//=== { TJvHashItems } =======================================================
 
 constructor TJvHashItems.Create(AHash: TJvSALHash);
 begin
@@ -373,7 +373,7 @@ begin
   end;
 end;
 
-//=== TJvSALHashList =========================================================
+//=== { TJvSALHashList } =====================================================
 
 constructor TJvSALHashList.Create(Primary, Secondary: TJvSALHash; ACompare: TJvSALHashCompare);
 begin

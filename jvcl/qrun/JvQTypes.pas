@@ -387,7 +387,7 @@ type
 
 implementation
 
-//=== TJvPersistent ==========================================================
+//=== { TJvPersistent } ======================================================
 
 
 constructor TJvPersistent.Create(AOwner: TComponent);

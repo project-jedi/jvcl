@@ -106,7 +106,7 @@ type
 
 implementation
 
-//=== TJvWizardRouteMapNodeColors ============================================
+//=== { TJvWizardRouteMapNodeColors } ========================================
 
 constructor TJvWizardRouteMapNodeColors.Create(ARouteMap: TJvWizardRouteMapNodes);
 begin
@@ -160,7 +160,7 @@ begin
   end;
 end;
 
-//=== TJvWizardRouteMapNodes =================================================
+//=== { TJvWizardRouteMapNodes } =============================================
 
 constructor TJvWizardRouteMapNodes.Create(AOwner: TComponent);
 begin

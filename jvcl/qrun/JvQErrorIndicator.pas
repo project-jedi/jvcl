@@ -234,7 +234,7 @@ type
     property OnBlink: TJvBlinkThreadEvent read FOnBlink write FOnBlink;
   end;
 
-//=== TJvErrorIndicator ======================================================
+//=== { TJvErrorIndicator } ==================================================
 
 constructor TJvErrorIndicator.Create(AComponent: TComponent);
 
@@ -598,7 +598,7 @@ begin
   SetError(AControl, ErrorMessage);
 end;
 
-//=== TJvErrorControl ========================================================
+//=== { TJvErrorControl } ====================================================
 
 constructor TJvErrorControl.Create(AOwner: TComponent);
 begin
@@ -751,7 +751,7 @@ begin
     Control := nil;
 end;
 
-//=== TJvBlinkThread =========================================================
+//=== { TJvBlinkThread } =====================================================
 
 constructor TJvBlinkThread.Create(BlinkRate: Integer);
 begin

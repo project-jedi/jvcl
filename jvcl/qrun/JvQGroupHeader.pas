@@ -132,7 +132,7 @@ implementation
 uses
   JvQThemes;
 
-//=== TJvGroupHeaderOptions ==================================================
+//=== { TJvGroupHeaderOptions } ==============================================
 
 constructor TJvGroupHeaderOptions.Create;
 begin
@@ -198,7 +198,7 @@ begin
     FOnChange(Self);
 end;
 
-//=== TJvGroupHeader =========================================================
+//=== { TJvGroupHeader } =====================================================
 
 constructor TJvGroupHeader.Create(AOwner: TComponent);
 begin

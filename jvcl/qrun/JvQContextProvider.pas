@@ -155,7 +155,7 @@ type
     procedure Remove(var Item: IJvDataItem); override;
   end;
 
-//=== TContextItems ==========================================================
+//=== { TContextItems } ======================================================
 
 function TContextItems.GetContexts: IJvDataContexts;
 var
@@ -271,7 +271,7 @@ begin
     Result := TContextItem.CreateCtx(Self, CtxList.GetContext(I));
 end;
 
-//=== TContextRootItems ======================================================
+//=== { TContextRootItems } ==================================================
 
 constructor TContextRootItems.Create;
 begin
@@ -398,7 +398,7 @@ begin
     Supports(ClientProvider, IJvDataContexts, Result);
 end;
 
-//=== TContextItem ===========================================================
+//=== { TContextItem } =======================================================
 
 constructor TContextItem.CreateCtx(AOwner: IJvDataItems; AContext: IJvDataContext);
 begin
@@ -467,7 +467,7 @@ begin
     Result := True;
 end;
 
-//=== TContextItemsManager ===================================================
+//=== { TContextItemsManager } ===============================================
 
 function TContextItemsManager.GetContexts: IJvDataContexts;
 var
@@ -544,7 +544,7 @@ begin
   end;
 end;
 
-//=== TJvContextProvider =====================================================
+//=== { TJvContextProvider } =================================================
 
 function TJvContextProvider.GetProviderIntf: IJvDataProvider;
 begin
@@ -594,7 +594,7 @@ begin
   AddToArray(Result, TJvContextProviderServerNotify);
 end;
 
-//=== TJvContextProviderServerNotify =========================================
+//=== { TJvContextProviderServerNotify } =====================================
 
 procedure TJvContextProviderServerNotify.ItemSelected(Value: IJvDataItem);
 var

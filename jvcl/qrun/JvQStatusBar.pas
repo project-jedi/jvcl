@@ -90,7 +90,7 @@ uses
   Math,
   JvQResources, JvQTypes;
 
-//=== TJvStatusBar ===========================================================
+//=== { TJvStatusBar } =======================================================
 
 constructor TJvStatusBar.Create(AOwner: TComponent);
 begin
@@ -213,7 +213,7 @@ end;
 
 
 
-//=== TJvStatusPanel =========================================================
+//=== { TJvStatusPanel } =====================================================
 
 
 

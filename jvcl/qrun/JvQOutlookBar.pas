@@ -368,7 +368,7 @@ const
   cInitRepeatPause = 400;
   cRepeatPause = 100;
 
-//=== TJvOutlookBarEdit ======================================================
+//=== { TJvOutlookBarEdit } ==================================================
 
 type
   TJvOutlookBarEdit = class(TCustomEdit)
@@ -497,7 +497,7 @@ end;
 
 
 
-//=== TJvRepeatButton ========================================================
+//=== { TJvRepeatButton } ====================================================
 
 type
   // auto-repeating button using a timer (stolen from Borland's Spin.pas sample component)
@@ -557,7 +557,7 @@ begin
     end;
 end;
 
-//=== TJvOutlookBarButton ====================================================
+//=== { TJvOutlookBarButton } ================================================
 
 constructor TJvOutlookBarButton.Create(Collection: TCollection);
 begin
@@ -663,7 +663,7 @@ begin
   end;
 end;
 
-//=== TJvOutlookBarButtons ===================================================
+//=== { TJvOutlookBarButtons } ===============================================
 
 constructor TJvOutlookBarButtons.Create(AOwner: TPersistent);
 begin
@@ -719,7 +719,7 @@ begin
     TJvOutlookBarPage(Owner).Changed(False);
 end;
 
-//=== TJvOutlookBarPage ======================================================
+//=== { TJvOutlookBarPage } ==================================================
 
 constructor TJvOutlookBarPage.Create(Collection: TCollection);
 begin
@@ -967,7 +967,7 @@ begin
     Buttons[Value].Down := True;
 end;
 
-//=== TJvOutlookBarPages =====================================================
+//=== { TJvOutlookBarPages } =================================================
 
 constructor TJvOutlookBarPages.Create(AOwner: TPersistent);
 begin
@@ -1023,11 +1023,11 @@ begin
     TJvCustomOutlookBar(Owner).Repaint;
 end;
 
-//=== TJvThemedTopBottomButton =================================================
+//=== { TJvThemedTopBottomButton } =============================================
 
 
 
-//=== TJvCustomOutlookBar ====================================================
+//=== { TJvCustomOutlookBar } ================================================
 
 constructor TJvCustomOutlookBar.Create(AOwner: TComponent);
 var

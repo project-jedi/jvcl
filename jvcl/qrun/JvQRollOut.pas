@@ -340,7 +340,7 @@ begin
   Inc(Rect.Right);
 end;
 
-//=== TJvRollOutImageOptions =================================================
+//=== { TJvRollOutImageOptions } =============================================
 
 constructor TJvRollOutImageOptions.Create;
 begin
@@ -415,7 +415,7 @@ begin
   end;
 end;
 
-//=== TJvRollOutColors =======================================================
+//=== { TJvRollOutColors } ===================================================
 
 constructor TJvRollOutColors.Create;
 begin
@@ -498,7 +498,7 @@ begin
   end;
 end;
 
-//=== TJvCustomRollOut =======================================================
+//=== { TJvCustomRollOut } ===================================================
 
 constructor TJvCustomRollOut.Create(AOwner: TComponent);
 begin
@@ -934,9 +934,9 @@ begin
     WS := Caption;
     SetPenColor(Canvas.Handle, Font.Color);
     if Placement = plLeft then
-      DrawText(Canvas.Handle, WS, -1, R, 0, 270)
+      DrawText(Canvas.Handle, WS, -1, R, DT_VCENTER, 270)
     else
-      DrawText(Canvas.Handle, WS, -1, R, 0, 0);
+      DrawText(Canvas.Handle, WS, -1, R, DT_VCENTER, 0) 
   end;
   if ShowFocus and Focused then
   begin
@@ -1141,7 +1141,7 @@ begin
   FreeAndNil(FTabStops);
 end;
 
-//=== TJvRollOutAction =======================================================
+//=== { TJvRollOutAction } ===================================================
 
 destructor TJvRollOutAction.Destroy;
 begin

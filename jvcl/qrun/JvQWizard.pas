@@ -340,10 +340,8 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, QControls, QForms, Types, QGraphics, QButtons, QImgList, 
-  {$IFDEF USEJVCL}
-  JvQComponent, JvQThemes,
-  {$ENDIF USEJVCL}
+  QWindows, QMessages, QControls, QForms, Types, QGraphics, QButtons, QImgList,  
+  JvQComponent, JvQThemes, 
   JvQWizardCommon;
 
 type
@@ -758,12 +756,8 @@ type
     property Items[Index: Integer]: TJvWizardCustomPage read GetItems; default;
   end;
 
-  { YW - JvWizard Control }
-  {$IFDEF USEJVCL}
-  TJvWizard = class(TJvCustomControl)
-  {$ELSE}
-  TJvWizard = class(TCustomControl)
-  {$ENDIF USEJVCL}
+  { YW - JvWizard Control } 
+  TJvWizard = class(TJvCustomControl) 
   private
     FPages: TJvWizardPageList;
     FActivePage: TJvWizardCustomPage;
@@ -779,10 +773,7 @@ type
     FOnActivePageChanging: TJvWizardChangingPageEvent;
     FHeaderImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
-    FAutoHideButtonBar: Boolean;
-    {$IFNDEF USEJVCL}
-    FAboutInfo: TJvWizardAboutInfoForm; // Add by Steve Forbes
-    {$ENDIF !USEJVCL}
+    FAutoHideButtonBar: Boolean; 
     procedure SetShowDivider(Value: Boolean);
     function GetShowRouteMap: Boolean;
     procedure SetShowRouteMap(Value: Boolean);
@@ -835,11 +826,7 @@ type
     property PageCount: Integer read GetPageCount;
     property WizardPages[Index: Integer]: TJvWizardCustomPage read GetWizardPages;
   published
-    property Pages: TJvWizardPageList read FPages;
-    {$IFNDEF USEJVCL}
-    // Add by Steve Forbes
-    property About: TJvWizardAboutInfoForm read FAboutInfo write FAboutInfo stored False;
-    {$ENDIF !USEJVCL}
+    property Pages: TJvWizardPageList read FPages; 
     property ActivePage: TJvWizardCustomPage read FActivePage write SetActivePage;
     property AutoHideButtonBar: Boolean read FAutoHideButtonBar write SetAutoHideButtonBar default True;
     property ButtonBarHeight: Integer read FButtonBarHeight write SetButtonBarHeight;
@@ -878,10 +865,8 @@ type
 
 implementation
 
-uses
-  {$IFDEF USEJVCL}
-  JvQResources,
-  {$ENDIF USEJVCL}
+uses 
+  JvQResources, 
   QConsts;
 
 const
@@ -890,21 +875,7 @@ const
   ciButtonBarHeight = 42;
   ciButtonPlacement = (ciButtonBarHeight - ciButtonHeight) div 2;
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsBackButtonCaption = '< &Back';
-  RsNextButtonCaption = '&Next >';
 
-  RsFirstButtonCaption = 'To &Start Page';
-  RsLastButtonCaption = 'To &Last Page';
-  RsFinishButtonCaption = '&Finish';
-  RsWelcome = 'Welcome';
-  RsTitle = 'Title';
-  RsSubtitle = 'Subtitle';
-
-  RsEInvalidParentControl = 'The Parent should be TJvWizard or a descendant';
-  RsEInvalidWizardPage = 'The pages belong to another wizard';
-{$ENDIF USEJVCL}
 
 type
   // (ahuser) introduced for refactoring the WizardButtons
@@ -984,7 +955,7 @@ type
     procedure Click; override;
   end;
 
-//=== TJvWizardButtonControl =================================================
+//=== { TJvWizardButtonControl } =============================================
 
 constructor TJvWizardButtonControl.Create(AOwner: TComponent);
 begin
@@ -1018,7 +989,7 @@ begin
 end;
 
 
-//=== TJvWizardBaseButton ====================================================
+//=== { TJvWizardBaseButton } ================================================
 
 procedure TJvWizardBaseButton.Click;
 var
@@ -1051,7 +1022,7 @@ begin
   // do nothing (make Delphi 5 compiler happy)
 end;
 
-//=== TJvWizardStartButton ===================================================
+//=== { TJvWizardStartButton } ===============================================
 
 constructor TJvWizardStartButton.Create(AOwner: TComponent);
 begin
@@ -1080,7 +1051,7 @@ begin
   Result := Caption <> RsFirstButtonCaption;
 end;
 
-//=== TJvWizardLastButton ====================================================
+//=== { TJvWizardLastButton } ================================================
 
 constructor TJvWizardLastButton.Create(AOwner: TComponent);
 begin
@@ -1108,7 +1079,7 @@ begin
   Result := Caption <> RsLastButtonCaption;
 end;
 
-//=== TJvWizardBackButton ====================================================
+//=== { TJvWizardBackButton } ================================================
 
 constructor TJvWizardBackButton.Create(AOwner: TComponent);
 begin
@@ -1136,7 +1107,7 @@ begin
   Result := Caption <> RsBackButtonCaption;
 end;
 
-//=== TJvWizardNextButton ====================================================
+//=== { TJvWizardNextButton } ================================================
 
 constructor TJvWizardNextButton.Create(AOwner: TComponent);
 begin
@@ -1164,7 +1135,7 @@ begin
   Result := Caption <> RsNextButtonCaption;
 end;
 
-//=== TJvWizardFinishButton ==================================================
+//=== { TJvWizardFinishButton } ==============================================
 
 constructor TJvWizardFinishButton.Create(AOwner: TComponent);
 begin
@@ -1186,7 +1157,7 @@ begin
   Result := Caption <> RsFinishButtonCaption;
 end;
 
-//=== TJvWizardCancelButton ==================================================
+//=== { TJvWizardCancelButton } ==============================================
 
 constructor TJvWizardCancelButton.Create(AOwner: TComponent);
 begin
@@ -1210,7 +1181,7 @@ begin
   Result := Caption <> SCancelButton;
 end;
 
-//=== TJvWizardHelpButton ====================================================
+//=== { TJvWizardHelpButton } ================================================
 
 constructor TJvWizardHelpButton.Create(AOwner: TComponent); // Added by Theodore
 begin
@@ -1258,7 +1229,7 @@ begin
   Result := Caption <> SHelpButton;
 end;
 
-//=== TJvWizardNavigateButton ================================================
+//=== { TJvWizardNavigateButton } ============================================
 
 function TJvWizardNavigateButton.GetCaption: string;
 begin
@@ -1355,7 +1326,7 @@ begin
   Result := not Assigned(FControl) or FControl.StoreCaption;
 end;
 
-//=== TJvWizardRouteMapControl ===============================================
+//=== { TJvWizardRouteMapControl } ===========================================
 
 constructor TJvWizardRouteMapControl.Create(AOwner: TComponent);
 begin
@@ -1576,7 +1547,7 @@ begin
     FOnDisplaying(Self, APage, Result);
 end;
 
-//=== TJvWizardImage =========================================================
+//=== { TJvWizardImage } =====================================================
 
 constructor TJvWizardImage.Create;
 begin
@@ -1658,7 +1629,7 @@ begin
   DoChange;
 end;
 
-//=== TJvWizardGraphicObject =================================================
+//=== { TJvWizardGraphicObject } =============================================
 
 constructor TJvWizardGraphicObject.Create;
 begin
@@ -1694,7 +1665,7 @@ begin
   DoChange;
 end;
 
-//=== TJvWizardPageTitle =====================================================
+//=== { TJvWizardPageTitle } =================================================
 
 constructor TJvWizardPageTitle.Create;
 begin
@@ -1868,7 +1839,7 @@ begin
   DoChange;
 end;
 
-//=== TJvWizardPageObject ====================================================
+//=== { TJvWizardPageObject } ================================================
 
 procedure TJvWizardPageObject.DoChange;
 begin
@@ -1886,7 +1857,7 @@ begin
   Initialize;
 end;
 
-//=== TJvWizardPageHeader ====================================================
+//=== { TJvWizardPageHeader } ================================================
 
 constructor TJvWizardPageHeader.Create;
 begin
@@ -2069,7 +2040,7 @@ begin
     WizardPage.Realign;
 end;
 
-//=== TJvWizardWaterMark =====================================================
+//=== { TJvWizardWaterMark } =================================================
 
 constructor TJvWizardWaterMark.Create;
 begin
@@ -2160,7 +2131,7 @@ begin
     WizardPage.Realign;
 end;
 
-//=== TJvWizardPagePanel =====================================================
+//=== { TJvWizardPagePanel } =================================================
 
 constructor TJvWizardPagePanel.Create;
 begin
@@ -2198,7 +2169,7 @@ begin
   end;
 end;
 
-//=== TJvWizardCustomPage ====================================================
+//=== { TJvWizardCustomPage } ================================================
 
 constructor TJvWizardCustomPage.Create(AOwner: TComponent);
 begin
@@ -2468,7 +2439,7 @@ begin
   Header.Title := Value;
 end;
 
-//=== TJvWizardWelcomePage ===================================================
+//=== { TJvWizardWelcomePage } ===============================================
 
 constructor TJvWizardWelcomePage.Create(AOwner: TComponent);
 begin
@@ -2505,14 +2476,14 @@ begin
   FHeader.PaintTo(ACanvas, ARect);
 end;
 
-//=== TJvWizardInteriorPage ==================================================
+//=== { TJvWizardInteriorPage } ==============================================
 
 procedure TJvWizardInteriorPage.DrawPage(ACanvas: TCanvas; var ARect: TRect);
 begin
   FHeader.PaintTo(ACanvas, ARect);
 end;
 
-//=== TJvWizardPageList ======================================================
+//=== { TJvWizardPageList } ==================================================
 
 destructor TJvWizardPageList.Destroy;
 begin
@@ -2535,7 +2506,7 @@ begin
   end;
 end;
 
-//=== TJvWizard ==============================================================
+//=== { TJvWizard } ==========================================================
 
 constructor TJvWizard.Create(AOwner: TComponent);
 begin

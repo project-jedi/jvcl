@@ -196,7 +196,7 @@ type
     destructor Destroy; override;
   end;
 
-//=== TJvAppEventList ========================================================
+//=== { TJvAppEventList } ====================================================
 
 constructor TJvAppEventList.Create;
 begin
@@ -546,7 +546,7 @@ begin
 end;
 
 
-//=== TJvAppEvents ===========================================================
+//=== { TJvAppEvents } =======================================================
 
 // (rom) changed to var
 var

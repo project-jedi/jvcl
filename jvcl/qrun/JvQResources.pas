@@ -2030,7 +2030,10 @@ resourcestring
   RsFounds = 'Found %s';
   RsToday = 'Today ';
 {$ENDIF USEJVCL}
-  
+
+//=== QMonthCalendar.pas =========================================================
+  RsNow = 'Today:';
+
 //=== not taken into JVCL ====================================================
 {
 resourcestring

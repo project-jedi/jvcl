@@ -357,7 +357,7 @@ begin
     Result := 'image/';
 end;
 
-//=== TJvID3Images ===========================================================
+//=== { TJvID3Images } =======================================================
 
 constructor TJvID3Images.Create(AController: TJvID3Controller);
 begin
@@ -373,7 +373,7 @@ begin
   inherited Destroy;
 end;
 
-//=== TJvID3Ipl ==============================================================
+//=== { TJvID3Ipl } ==========================================================
 
 function TJvID3Ipl.GetItemCount: Integer;
 var
@@ -463,7 +463,7 @@ begin
   end;
 end;
 
-//=== TJvID3Owner ============================================================
+//=== { TJvID3Owner } ========================================================
 
 function TJvID3Owner.GetDatePurchased: TDateTime;
 var
@@ -516,7 +516,7 @@ begin
     TJvID3OwnershipFrame.FindOrCreate(FController).Seller := Value;
 end;
 
-//=== TJvID3Persistent =======================================================
+//=== { TJvID3Persistent } ===================================================
 
 constructor TJvID3Persistent.Create(AController: TJvID3Controller);
 begin
@@ -524,7 +524,7 @@ begin
   FController := AController;
 end;
 
-//=== TJvID3Pictures =========================================================
+//=== { TJvID3Pictures } =====================================================
 
 constructor TJvID3Pictures.Create(AController: TJvID3Controller);
 var
@@ -622,7 +622,7 @@ begin
   //ChangePicture(AType);
 end;
 
-//=== TJvID3PicturesDesc =====================================================
+//=== { TJvID3PicturesDesc } =================================================
 
 function TJvID3PicturesDesc.GetText(const AType: Integer{TJvID3PictureType}): string;
 var
@@ -642,7 +642,7 @@ begin
     TJvID3PictureFrame.FindOrCreate(FController, TJvID3PictureType(AType)).Description := Value;
 end;
 
-//=== TJvID3Popularimeter ====================================================
+//=== { TJvID3Popularimeter } ================================================
 
 function TJvID3Popularimeter.GetCounter: Cardinal;
 var
@@ -695,7 +695,7 @@ begin
     TJvID3PopularimeterFrame.FindOrCreate(FController).Rating := Value;
 end;
 
-//=== TJvID3Text =============================================================
+//=== { TJvID3Text } =========================================================
 
 constructor TJvID3Text.Create(AController: TJvID3Controller);
 begin
@@ -780,7 +780,7 @@ begin
     TJvID3TextFrame.FindOrCreate(FController, TJvID3FrameID(FrameID)).Text := Value;
 end;
 
-//=== TJvID3UDText ===========================================================
+//=== { TJvID3UDText } =======================================================
 
 procedure TJvID3UDText.Add(const ADescription, AValue: string);
 begin
@@ -861,7 +861,7 @@ begin
     TJvID3UserFrame.Find(FController, ItemIndex).Value := Value;
 end;
 
-//=== TJvID3UDUrl ============================================================
+//=== { TJvID3UDUrl } ========================================================
 
 procedure TJvID3UDUrl.Add(const ADescription, AURL: string);
 begin
@@ -942,7 +942,7 @@ begin
     TJvID3URLUserFrame.Find(FController, ItemIndex).URL := Value;
 end;
 
-//=== TJvID3v2 ===============================================================
+//=== { TJvID3v2 } ===========================================================
 
 constructor TJvID3v2.Create(AOwner: TComponent);
 begin
@@ -1005,7 +1005,7 @@ begin
     TJvID3PlayCounterFrame.FindOrCreate(Self).Counter := Value;
 end;
 
-//=== TJvID3Web ==============================================================
+//=== { TJvID3Web } ==========================================================
 
 function TJvID3Web.GetText(const FrameID: Integer{TJvID3FrameID}): string;
 var

@@ -4115,7 +4115,7 @@ begin
   Inc(p);
 end;
 
-//=== TUIBLibrary ============================================================
+//=== { TUIBLibrary } ========================================================
 
 constructor TUIBaseLibrary.Create;
 begin

@@ -334,7 +334,7 @@ type
     // elected not to register the association. To find out if the user made
     // a one-time choice, check the AssociatedApp property: if it is empty,
     // the user cancelled
-    function Execute: boolean; override;
+    function Execute: Boolean; override;
     constructor Create(AOwner: TComponent); override;
     // After Execute, contains the path and filename to the associated application (if user didn't cancel)
     property AssociatedApp: string read FAssociatedApp;
@@ -369,7 +369,7 @@ type
     FReturnValue: HResult;
     function GetParentHandle: THandle;
   public
-    function Execute: boolean; override;
+    function Execute: Boolean; override;
     // After Execute, contains the path and filename to the associated application (if user didn't cancel)
     property AssociatedApp: string read FAssociatedApp;
     // Value returned by the function called by Execute.
@@ -465,7 +465,7 @@ type
     FDistributionUnit: string;
     FDistInfo: TJvSoftwareUpdateInfo;
   public
-    function Execute: boolean; override;
+    function Execute: Boolean; override;
     property ReturnValue: Cardinal read FReturnValue;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -741,7 +741,7 @@ begin
   end;
 end;
 
-//=== TJvOrganizeFavoritesDialog =============================================
+//=== { TJvOrganizeFavoritesDialog } =========================================
 
 function TJvOrganizeFavoritesDialog.Execute: Boolean;
 var
@@ -767,7 +767,7 @@ begin
   Result := True;
 end;
 
-//=== TJvAppletDialog ========================================================
+//=== { TJvAppletDialog } ====================================================
 
 const
   CPL_INIT = 1;
@@ -790,7 +790,7 @@ type
 
 
 
-//=== TJvComputerNameDialog ==================================================
+//=== { TJvComputerNameDialog } ==============================================
 
 constructor TJvComputerNameDialog.Create(AOwner: TComponent);
 begin
@@ -834,7 +834,7 @@ begin
     FComputerName := NameBuffer;
 end;
 
-//=== TJvBrowseFolderDialog ==================================================
+//=== { TJvBrowseFolderDialog } ==============================================
 
 constructor TJvBrowseFolderDialog.Create(AOwner: TComponent);
 begin
@@ -859,9 +859,9 @@ begin
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
   BrowseInfo.ulFlags := BIF_RETURNONLYFSDIRS;
-  {$IFDEF WINDOWS}
+  {$IFDEF MSWINDOWS}
   WindowList := DisableTaskWindows(0);
-  {$ENDIF WINDOWS}
+  {$ENDIF MSWINDOWS}
   try
     ItemSelected := SHBrowseForFolder(BrowseInfo);
     Result := ItemSelected <> nil;
@@ -879,7 +879,7 @@ begin
   FreePIDL(BrowseInfo.pidlRoot);
 end;
 
-//=== TJvFormatDialog ========================================================
+//=== { TJvFormatDialog } ====================================================
 
 constructor TJvFormatDriveDialog.Create(AOwner: TComponent);
 begin
@@ -1063,7 +1063,7 @@ begin
   end;
 end;
 
-//=== TJvOutOfMemoryDialog ===================================================
+//=== { TJvOutOfMemoryDialog } ===============================================
 
 function TJvOutOfMemoryDialog.Execute: Boolean;
 var
@@ -1090,7 +1090,7 @@ begin
     raise EWinDialogError.CreateRes(@RsENotSupported);
 end;
 
-//=== TJvShellAboutDialog ====================================================
+//=== { TJvShellAboutDialog } ================================================
 
 constructor TJvShellAboutDialog.Create(AOwner: TComponent);
 begin
@@ -1133,7 +1133,7 @@ begin
   Result := True;
 end;
 
-//=== TJvRunDialog ===========================================================
+//=== { TJvRunDialog } =======================================================
 
 constructor TJvRunDialog.Create(AOwner: TComponent);
 begin
@@ -1191,7 +1191,7 @@ begin
   FIcon.Assign(Value);
 end;
 
-//=== TJvObjectPropertiesDialog ==============================================
+//=== { TJvObjectPropertiesDialog } ==========================================
 
 function TJvObjectPropertiesDialog.Execute: Boolean;
 var
@@ -1256,14 +1256,14 @@ begin
   end;
 end;
 
-//=== TJvNewLinkDialog =======================================================
+//=== { TJvNewLinkDialog } ===================================================
 
 procedure TJvNewLinkDialog.Execute;
 begin
   NewLinkHere(0, 0, PChar(DestinationFolder), 0);
 end;
 
-//=== TJvAddHardwareDialog ===================================================
+//=== { TJvAddHardwareDialog } ===============================================
 
 procedure TJvAddHardwareDialog.Execute;
 var
@@ -1411,14 +1411,14 @@ end;
 
 // (rom) ExecuteApplet function removed
 
-//=== TJvOpenWithDialog ======================================================
+//=== { TJvOpenWithDialog } ==================================================
 
 procedure TJvOpenWithDialog.Execute;
 begin
   SHOpenWith(0, 0, PChar(FileName), SW_SHOW);
 end;
 
-//=== TJvDiskFullDialog ======================================================
+//=== { TJvDiskFullDialog } ==================================================
 
 constructor TJvDiskFullDialog.Create(AOwner: TComponent);
 begin
@@ -1452,14 +1452,14 @@ begin
   FDriveChar := Value;
 end;
 
-//=== TJvExitWindowsDialog ===================================================
+//=== { TJvExitWindowsDialog } ===============================================
 
 procedure TJvExitWindowsDialog.Execute;
 begin
   SHShutDownDialog(GetForegroundWindow);
 end;
 
-//=== TJvChangeIconDialog ====================================================
+//=== { TJvChangeIconDialog } ================================================
 
 function TJvChangeIconDialog.Execute: Boolean;
 var
@@ -1507,21 +1507,21 @@ end;
 
 
 
-{ TJvURLAssociationDialog }
+//=== { TJvURLAssociationDialog } ============================================
 
 constructor TJvURLAssociationDialog.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FOptions := [];
   FDefaultProtocol := 'http://'; // the URL property needs a protocol or the function call fails
 end;
 
-function TJvURLAssociationDialog.Execute: boolean;
+function TJvURLAssociationDialog.Execute: Boolean;
 var
   dwFlags: DWORD;
-  buf: array[0..MAX_PATH] of char;
+  Buf: array [0..MAX_PATH] of Char;
 begin
-  Result := false;
+  Result := False;
   FReturnValue := S_FALSE;
   FAssociatedApp := '';
   if Pos(':', URL) < 1 then
@@ -1529,14 +1529,15 @@ begin
   if Assigned(URLAssociationDialogA) then
   begin
     dwFlags := 0;
-    FillChar(buf[0], SizeOf(buf), 0);
+    FillChar(Buf[0], SizeOf(Buf), 0);
     if uaDefaultName in Options then
       dwFlags := dwFlags or URLASSOCDLG_FL_USE_DEFAULT_NAME;
     if uaRegisterAssoc in Options then
       dwFlags := dwFlags or URLASSOCDLG_FL_REGISTER_ASSOC;
-    FReturnValue := URLAssociationDialogA(GetParentHandle, dwFlags, PChar(FileName), PChar(URL), buf, SizeOf(buf));
+    FReturnValue := URLAssociationDialogA(GetParentHandle, dwFlags,
+      PChar(FileName), PChar(URL), Buf, SizeOf(Buf));
     Result := ReturnValue = S_OK;
-    FAssociatedApp := string(buf);
+    FAssociatedApp := Buf;
   end;
 end;
 
@@ -1557,27 +1558,27 @@ begin
     Result := GetDesktopWindow;
 end;
 
-{ TJvMIMEAssociationDialog }
+//=== { TJvMIMEAssociationDialog } ===========================================
 
-function TJvMIMEAssociationDialog.Execute: boolean;
+function TJvMIMEAssociationDialog.Execute: Boolean;
 var
   dwFlags: Cardinal;
-  buf: array[0..MAX_PATH] of char;
+  Buf: array [0..MAX_PATH] of Char;
 begin
-  Result := false;
+  Result := False;
   FReturnValue := S_FALSE;
   if Assigned(MIMEAssociationDialogA) then
   begin
-    FillChar(buf[0], SizeOf(buf), 0);
+    FillChar(Buf[0], SizeOf(Buf), 0);
     FAssociatedApp := '';
     if maRegisterAssoc in Options then
       dwFlags := MIMEASSOCDLG_FL_REGISTER_ASSOC
     else
       dwFlags := 0;
-    FReturnValue := MIMEAssociationDialogA(GetParentHandle, dwFlags, PChar(FileName), PChar(ContentType), buf,
-      SizeOf(buf));
+    FReturnValue := MIMEAssociationDialogA(GetParentHandle, dwFlags,
+      PChar(FileName), PChar(ContentType), Buf, SizeOf(Buf));
     Result := ReturnValue = 0;
-    FAssociatedApp := string(buf);
+    FAssociatedApp := Buf;
   end;
 end;
 
@@ -1598,25 +1599,25 @@ begin
     Result := GetDesktopWindow;
 end;
 
-{ TJvSoftwareUpdateDialog }
+//=== { TJvSoftwareUpdateDialog } ============================================
 
 constructor TJvSoftwareUpdateDialog.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FDistInfo := TJvSoftwareUpdateInfo.Create;
 end;
 
 destructor TJvSoftwareUpdateDialog.Destroy;
 begin
   FDistInfo.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-function TJvSoftwareUpdateDialog.Execute: boolean;
+function TJvSoftwareUpdateDialog.Execute: Boolean;
 var
   psdi: TSoftDistInfo;
 begin
-  Result := false;
+  Result := False;
   FReturnValue := IDCANCEL;
   if Assigned(SoftwareUpdateMessageBox) then
   begin
@@ -1628,25 +1629,27 @@ begin
   end;
 end;
 
-{ TJvSoftwareUpdateInfo }
+//=== { TJvSoftwareUpdateInfo } ==============================================
 
 function TJvSoftwareUpdateInfo.GetSoftDistInfo: TSoftDistInfo;
 const
-  cAdState: array[TJvSoftwareUpdateAdState] of DWORD = (SOFTDIST_ADSTATE_NONE, SOFTDIST_ADSTATE_AVAILABLE,
+  cAdState: array [TJvSoftwareUpdateAdState] of DWORD =
+   (SOFTDIST_ADSTATE_NONE, SOFTDIST_ADSTATE_AVAILABLE,
     SOFTDIST_ADSTATE_DOWNLOADED, SOFTDIST_ADSTATE_INSTALLED);
-  cFlags: array[TJvSoftwareUpdateFlags] of DWORD = (SOFTDIST_FLAG_USAGE_EMAIL, SOFTDIST_FLAG_USAGE_PRECACHE,
+  cFlags: array [TJvSoftwareUpdateFlags] of DWORD =
+   (SOFTDIST_FLAG_USAGE_EMAIL, SOFTDIST_FLAG_USAGE_PRECACHE,
     SOFTDIST_FLAG_USAGE_AUTOINSTALL, SOFTDIST_FLAG_DELETE_SUBSCRIPTION);
 begin
-  FillChar(Result, sizeof(Result), 0);
+  FillChar(Result, SizeOf(Result), 0);
   Result.cbSize := SizeOf(Result);
   with Result do
   begin
     dwAdState := cAdState[AdState];
     dwFlags := cFlags[Flags];
     // (p3)_ does result from StringToOLEStr need to be freed? 
-    lpszTitle := StringToOLEStr(Title);
-    lpszAbstract := StringToOLEStr(Description);
-    lpszHREF := StringToOLEStr(HREF);
+    lpszTitle := StringToOleStr(Title);
+    lpszAbstract := StringToOleStr(Description);
+    lpszHREF := StringToOleStr(HREF);
     dwInstalledVersionMS := InstalledVersionMS;
     dwInstalledVersionLS := InstalledVersionLS;
     dwUpdateVersionMS := UpdateVersionMS;
@@ -1661,16 +1664,24 @@ begin
   with Value do
   begin
     case dwAdState of
-      SOFTDIST_ADSTATE_NONE: AdState := asNone;
-      SOFTDIST_ADSTATE_AVAILABLE: AdState := asAvailable;
-      SOFTDIST_ADSTATE_DOWNLOADED: AdState := asDownloaded;
-      SOFTDIST_ADSTATE_INSTALLED: AdState := asInstalled;
+      SOFTDIST_ADSTATE_NONE:
+        AdState := asNone;
+      SOFTDIST_ADSTATE_AVAILABLE:
+        AdState := asAvailable;
+      SOFTDIST_ADSTATE_DOWNLOADED:
+        AdState := asDownloaded;
+      SOFTDIST_ADSTATE_INSTALLED:
+        AdState := asInstalled;
     end;
     case dwFlags of
-      SOFTDIST_FLAG_USAGE_EMAIL: Flags := ufEMail;
-      SOFTDIST_FLAG_USAGE_PRECACHE: Flags := ufPreCache;
-      SOFTDIST_FLAG_USAGE_AUTOINSTALL: Flags := ufAutoInstall;
-      SOFTDIST_FLAG_DELETE_SUBSCRIPTION: Flags := ufDeleteSubscription;
+      SOFTDIST_FLAG_USAGE_EMAIL:
+        Flags := ufEMail;
+      SOFTDIST_FLAG_USAGE_PRECACHE:
+        Flags := ufPreCache;
+      SOFTDIST_FLAG_USAGE_AUTOINSTALL:
+        Flags := ufAutoInstall;
+      SOFTDIST_FLAG_DELETE_SUBSCRIPTION:
+        Flags := ufDeleteSubscription;
     end;
 
     Title := lpszTitle;

@@ -115,7 +115,7 @@ end;
 
 {$ENDIF LINUX}
 
-//=== TMTMonitor =============================================================
+//=== { TMTMonitor } =========================================================
 
 constructor TMTMonitor.Create;
 begin
@@ -232,7 +232,7 @@ begin
   FNext.Wait;
 end;
 
-//=== TMTCondition ===========================================================
+//=== { TMTCondition } =======================================================
 
 constructor TMTCondition.Create(AMonitor: TMTMonitor; AID: Integer);
 begin

@@ -77,7 +77,7 @@ type
   {$ENDIF USE_DXGETTEXT}
   end;
 
-//=== TJvPopupListBox ========================================================
+//=== { TJvPopupListBox } ====================================================
 
 type
   TJvPopupListBox = class(TJvExCustomListBox)
@@ -97,7 +97,7 @@ const
   cDomainName = 'jvcl';
 {$ENDIF USE_DXGETTEXT}
 
-//=== TJvForm ================================================================
+//=== { TJvForm } ============================================================
 
 {$IFDEF USE_DXGETTEXT}
 
@@ -114,7 +114,7 @@ end;
 
 {$ENDIF USE_DXGETTEXT}
 
-//=== TJvPopupListBox ========================================================
+//=== { TJvPopupListBox } ====================================================
 
 
 

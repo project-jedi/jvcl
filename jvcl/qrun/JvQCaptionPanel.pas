@@ -185,7 +185,7 @@ implementation
 uses
   JvQConsts;
 
-//=== TJvCapBtn ==============================================================
+//=== { TJvCapBtn } ==========================================================
 
 constructor TJvCapBtn.Create(AOwner: TComponent);
 begin
@@ -366,7 +366,7 @@ begin
   end; 
 end;
 
-//=== TJvCaptionPanel ========================================================
+//=== { TJvCaptionPanel } ====================================================
 
 constructor TJvCaptionPanel.Create(AOwner: TComponent);
 var

@@ -748,7 +748,7 @@ begin
     Stream.Read(PChar(Str)^, Len);
 end;
 
-//=== TMetaNode ==============================================================
+//=== { TMetaNode } ==========================================================
 
 constructor TMetaNode.Create(AOwner: TMetaNode; ClassIndex: Integer);
 begin
@@ -892,7 +892,7 @@ begin
   Result := MetaNode;
 end;
 
-//=== TMetaGenerator =========================================================
+//=== { TMetaGenerator } =====================================================
 
 procedure TMetaGenerator.LoadFromDataBase(Transaction: TJvUIBTransaction;
   const Name: string);
@@ -945,7 +945,7 @@ begin
   Result := MetaGenerator;
 end;
 
-//=== TMetaTable =============================================================
+//=== { TMetaTable } =========================================================
 
 constructor TMetaTable.Create(AOwner: TMetaNode; ClassIndex: Integer);
 begin
@@ -1216,7 +1216,7 @@ begin
   Result := MetaTable;
 end;
 
-//=== TMetaBaseField =========================================================
+//=== { TMetaBaseField } =====================================================
 
 procedure TMetaBaseField.LoadFromStream(Stream: TStream);
 begin
@@ -1411,7 +1411,7 @@ begin
   Result := MetaBaseField;
 end;
 
-//=== TMetaDataBase ==========================================================
+//=== { TMetaDataBase } ======================================================
 
 constructor TMetaDataBase.Create(AOwner: TMetaNode; ClassIndex: Integer);
 begin
@@ -1885,7 +1885,7 @@ begin
   raise Exception.CreateFmt(EUIB_PROCSTRNOTFOUND, [ProcName]);
 end;
 
-//=== TMetaConstraint ========================================================
+//=== { TMetaConstraint } ====================================================
 
 function TMetaConstraint.GetFields(const Index: Word): TMetaTableField;
 begin
@@ -1948,7 +1948,7 @@ begin
   Result := MetaConstraint;
 end;
 
-//=== TMetaUnique ============================================================
+//=== { TMetaUnique } ========================================================
 
 class function TMetaUnique.NodeClass: string;
 begin
@@ -1975,7 +1975,7 @@ begin
   Stream.WriteString(');');
 end;
 
-//=== TMetaPrimary ===========================================================
+//=== { TMetaPrimary } =======================================================
 
 class function TMetaPrimary.NodeClass: string;
 begin
@@ -2021,7 +2021,7 @@ begin
   Result := MetaPrimary;
 end;
 
-//=== TMetaIndex =============================================================
+//=== { TMetaIndex } =========================================================
 
 class function TMetaIndex.NodeClass: string;
 begin
@@ -2074,7 +2074,7 @@ begin
   Result := MetaIndex;
 end;
 
-//=== TMetaForeign ===========================================================
+//=== { TMetaForeign } =======================================================
 
 function TMetaForeign.GetForFields(const Index: Word): TMetaTableField;
 begin
@@ -2178,7 +2178,7 @@ begin
   Result := MetaForeign;
 end;
 
-//=== TMetaCheck =============================================================
+//=== { TMetaCheck } =========================================================
 
 class function TMetaCheck.NodeClass: string;
 begin
@@ -2208,7 +2208,7 @@ begin
   Result := MetaCheck;
 end;
 
-//=== TMetaTrigger ===========================================================
+//=== { TMetaTrigger } =======================================================
 
 class function TMetaTrigger.DecodePrefix(Value: Integer): TTriggerPrefix;
 begin
@@ -2291,7 +2291,7 @@ begin
   Result := MetaTrigger;
 end;
 
-//=== TMetaView ==============================================================
+//=== { TMetaView } ==========================================================
 
 constructor TMetaView.Create(AOwner: TMetaNode; ClassIndex: Integer);
 begin
@@ -2397,7 +2397,7 @@ begin
   Result := MetaView;
 end;
 
-//=== TMetaDomain ============================================================
+//=== { TMetaDomain } ========================================================
 
 class function TMetaDomain.NodeClass: string;
 begin
@@ -2421,7 +2421,7 @@ begin
   Stream.WriteString(';');
 end;
 
-//=== TMetaProcedure =========================================================
+//=== { TMetaProcedure } =====================================================
 
 constructor TMetaProcedure.Create(AOwner: TMetaNode; ClassIndex: Integer);
 begin
@@ -2559,7 +2559,7 @@ begin
   Result := MetaProcedure;
 end;
 
-//=== TMetaException =========================================================
+//=== { TMetaException } =====================================================
 
 class function TMetaException.NodeClass: string;
 begin
@@ -2598,7 +2598,7 @@ begin
   Result := MetaException;
 end;
 
-//=== TMetaUDF ===============================================================
+//=== { TMetaUDF } ===========================================================
 
 constructor TMetaUDF.Create(AOwner: TMetaNode; ClassIndex: Integer);
 begin
@@ -2704,7 +2704,7 @@ begin
   Result := MetaUDF;
 end;
 
-//=== TMetaTableField ========================================================
+//=== { TMetaTableField } ====================================================
 
 function TMetaTableField.GetDomain: TMetaDomain;
 begin
@@ -2771,7 +2771,7 @@ begin
   Stream.Write(FDomain, SizeOf(FDomain));
 end;
 
-//=== TMetaProcInField =======================================================
+//=== { TMetaProcInField } ===================================================
 
 class function TMetaProcInField.NodeClass: string;
 begin
@@ -2783,7 +2783,7 @@ begin
   Result := MetaProcInField;
 end;
 
-//=== TMetaProcOutField ======================================================
+//=== { TMetaProcOutField } ==================================================
 
 class function TMetaProcOutField.NodeClass: string;
 begin
@@ -2795,7 +2795,7 @@ begin
   Result := MetaProcOutField;
 end;
 
-//=== TMetaField =============================================================
+//=== { TMetaField } =========================================================
 
 procedure TMetaField.LoadFromQuery(Q, C: TJvUIBStatement);
 begin
@@ -2815,7 +2815,7 @@ begin
   inherited SaveToDDL(Stream);
 end;
 
-//=== TMetaUDFField ==========================================================
+//=== { TMetaUDFField } ======================================================
 
 procedure TMetaUDFField.LoadFromQuery(QField, QCharset: TJvUIBStatement);
 begin
@@ -2862,7 +2862,7 @@ begin
   Stream.Write(FMechanism, SizeOf(FMechanism));
 end;
 
-//=== TMetaRole ==============================================================
+//=== { TMetaRole } ==========================================================
 
 procedure TMetaRole.LoadFromQuery(QName: TJvUIBStatement);
 begin
