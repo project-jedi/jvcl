@@ -8,6 +8,7 @@
   <Requires>
     <Package Name="JvQCore-R" Targets="allclx" Condition=""/>
     <Package Name="rtl" Targets="allclx" Condition=""/>
+    <Package Name="vcl" Targets="allclx" Condition=""/>
     <Package Name="visualclx" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>

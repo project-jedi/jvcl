@@ -6,7 +6,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="all" Condition="USEJVCL"/>
+    <Package Name="JvCore-R" Targets="allbutclx" Condition="USEJVCL"/>
     <Package Name="CJCL50" Targets="C5" Condition="USEJVCL"/>
     <Package Name="CJCL" Targets="C6,C6p" Condition="USEJVCL"/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
@@ -20,15 +20,15 @@
     <Package Name="vclx50" Targets="D5,D5s" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvTFSparseMatrix.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTFUtils.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTFWeeks.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTFAlarm.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTFDays.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTFGantt.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTFGlance.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTFGlanceTextViewer.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTFManager.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTFMonths.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFSparseMatrix.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFWeeks.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFAlarm.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFDays.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFGantt.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFGlance.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFGlanceTextViewer.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFManager.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTFMonths.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -6,8 +6,8 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvBDE-R" Targets="all" Condition=""/>
-    <Package Name="JvDB-D" Targets="all" Condition=""/>
+    <Package Name="JvBDE-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvDB-D" Targets="allbutclx" Condition=""/>
     <Package Name="JvSystem-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="JvDlgs-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p" Condition=""/>
@@ -35,9 +35,9 @@
     <Package Name="dclstd" Targets="D6,D6p,D7,D7p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvBDESecurityEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBDEEditors.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBDEMemTableEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBDEReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDESecurityEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDEEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDEMemTableEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDEReg.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -6,9 +6,9 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="all" Condition="USEJVCL"/>
-    <Package Name="JvStdCtrls-R" Targets="all" Condition="USEJVCL"/>
-    <Package Name="JvDB-R" Targets="all" Condition="USEJVCL"/>
+    <Package Name="JvCore-R" Targets="allbutclx" Condition="USEJVCL"/>
+    <Package Name="JvStdCtrls-R" Targets="allbutclx" Condition="USEJVCL"/>
+    <Package Name="JvDB-R" Targets="allbutclx" Condition="USEJVCL"/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
@@ -19,8 +19,8 @@
     <Package Name="vcldb50" Targets="C5,D5" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvDotNetControls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBDotNetControls.pas" Targets="C5,C6,D5,D6,D7" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDotNetUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDotNetControls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBDotNetControls.pas" Targets="allbutperso" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDotNetUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -6,8 +6,8 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="all" Condition=""/>
-    <Package Name="JvPrintPreview-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
+    <Package Name="JvPrintPreview-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvCore-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
@@ -19,6 +19,6 @@
     <Package Name="vclx50" Targets="D5,D5s" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvPreviewReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPreviewReg.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

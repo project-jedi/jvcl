@@ -6,11 +6,11 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvSystem-R" Targets="C5,C6,C6p,D7,D7p" Condition=""/>
-    <Package Name="JvDlgs-R" Targets="all" Condition=""/>
+    <Package Name="JvDlgs-R" Targets="allbutclx" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p,D7,D7p" Condition=""/>
-    <Package Name="JvDB-R" Targets="all" Condition=""/>
+    <Package Name="JvDB-R" Targets="allbutclx" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="vcldb50" Targets="C5" Condition=""/>
     <Package Name="vclbde50" Targets="C5,D5,D5s" Condition=""/>
@@ -24,19 +24,19 @@
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvBDELoginDialog.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDEMemTable.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDEMove.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDEProgress.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDEQBE.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDEQuery.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDESecurity.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDESQLScript.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBdeUtils.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDECheckPasswordForm.pas" Targets="all" Formname="JvChPswdForm" Condition=""/>
-    <File Name="..\..\run\JvBDEExceptionForm.pas" Targets="all" Formname="JvBdeErrorDlg" Condition=""/>
-    <File Name="..\..\run\JvBDEFilter.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDEIndex.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDELists.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDELoginDialog.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEMemTable.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEMove.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEProgress.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEQBE.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEQuery.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDESecurity.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDESQLScript.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBdeUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDECheckPasswordForm.pas" Targets="allbutclx" Formname="JvChPswdForm" Condition=""/>
+    <File Name="..\..\run\JvBDEExceptionForm.pas" Targets="allbutclx" Formname="JvBdeErrorDlg" Condition=""/>
+    <File Name="..\..\run\JvBDEFilter.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEIndex.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDELists.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>
