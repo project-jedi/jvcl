@@ -75,6 +75,9 @@ implementation
 
 uses
   Messages, Consts, Forms, Buttons, StdCtrls, Grids, ExtCtrls,
+  {$IFDEF COMPILER7_UP}
+  Themes,
+  {$ENDIF}
   JvxCtrls, JvxConst, JvToolEdit, JvVCLUtils, JvMaxMin, JvStrUtils;
 
 {$IFDEF WIN32}
@@ -912,9 +915,18 @@ begin
 end;
 
 constructor TJvPopupCalendar.Create(AOwner: TComponent);
+{$IFNDEF COMPILER7_UP}
 const
   BtnSide = 14;
+  VertOffset = -1;
+  HorzOffset = 1;
 var
+{$ELSE}
+var
+  BtnSide: Integer;
+  VertOffset: Integer;
+  HorzOffset: Integer;
+{$ENDIF}
   Control, BackPanel: TWinControl;
 begin
   inherited Create(AOwner);
@@ -929,6 +941,21 @@ begin
     ShowHint := True;
   if csDesigning in ComponentState then
     Exit;
+
+  {$IFDEF COMPILER7_UP}
+  if ThemeServices.ThemesEnabled then
+  begin
+    VertOffset := 0;
+    HorzOffset := 0;
+    BtnSide := 16
+  end
+  else
+  begin
+    VertOffset := -1;
+    HorzOffset := 1;
+    BtnSide := 14;
+  end;
+  {$ENDIF}
 
   BackPanel := TPanel.Create(Self);
   with BackPanel as TPanel do
@@ -968,7 +995,7 @@ begin
   with FBtns[0] do
   begin
     Parent := Control;
-    SetBounds(-1, -1, BtnSide, BtnSide);
+    SetBounds(0 - HorzOffset, VertOffset, BtnSide, BtnSide);
     Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[0]);
     OnClick := PrevYearBtnClick;
     Hint := SPrevYear;
@@ -978,7 +1005,7 @@ begin
   with FBtns[1] do
   begin
     Parent := Control;
-    SetBounds(BtnSide - 2, -1, BtnSide, BtnSide);
+    SetBounds(BtnSide - 1 - HorzOffset, VertOffset, BtnSide, BtnSide);
     Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[1]);
     OnClick := PrevMonthBtnClick;
     Hint := SPrevMonth;
@@ -1002,7 +1029,7 @@ begin
   with FBtns[2] do
   begin
     Parent := Control;
-    SetBounds(Control.Width - 2 * BtnSide + 2, -1, BtnSide, BtnSide);
+    SetBounds(Control.Width - 2 * BtnSide + 1 + HorzOffset, VertOffset, BtnSide, BtnSide);
     Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[2]);
     OnClick := NextMonthBtnClick;
     Hint := SNextMonth;
@@ -1012,7 +1039,7 @@ begin
   with FBtns[3] do
   begin
     Parent := Control;
-    SetBounds(Control.Width - BtnSide + 1, -1, BtnSide, BtnSide);
+    SetBounds(Control.Width - BtnSide + HorzOffset, VertOffset, BtnSide, BtnSide);
     Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[3]);
     OnClick := NextYearBtnClick;
     Hint := SNextYear;

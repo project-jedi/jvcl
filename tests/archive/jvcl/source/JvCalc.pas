@@ -502,7 +502,14 @@ end;
 procedure TJvCalculatorPanel.TextChanged;
 begin
   if Assigned(FControl) then
-    TLabel(FControl).Caption := FText;
+  begin
+    if FControl is TCustomLabel then
+      TCustomLabel(FControl).Caption := FText
+    else
+    { (rb) Fix to update the text of a TJvCalcEdit }
+    if FControl is TCustomEdit then
+      TCustomEdit(FControl).Text := FText;
+  end;
   if Assigned(FOnTextChange) then
     FOnTextChange(Self);
 end;
@@ -925,6 +932,9 @@ begin
     Align := alClient;
     BevelOuter := bvRaised;
     FPrecision := DefCalcPrecision;
+    { (rb) Fix to update the text of a TJvCalcEdit }
+    if AOwner is TControl then
+      FControl := TControl(AOwner);
     Visible := True;
     OnTextChange := Self.TextChange;
     OnResultClick := Self.ResultClick;
