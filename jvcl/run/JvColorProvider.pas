@@ -31,13 +31,7 @@ unit JvColorProvider;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
-  Classes, Contnrs, Graphics, Dialogs,
+  Windows, Classes, Contnrs, Graphics, Dialogs,
   JclBase,
   JvDataProvider, JvDataProviderIntf, JvTypes;
 

@@ -33,12 +33,13 @@ unit JvImageList;
 interface
 
 uses
-  Windows, Graphics, Controls, ImgList,
-  {$IFDEF VCL}
-  CommCtrl,
-  {$ENDIF VCL}
-  SysUtils, Classes,
-  JvFinalize;
+  {$IFDEF MSWINDOWS}
+  Windows, CommCtrl,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VisualCLX}
+  Types, QWindows,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes, Graphics, Controls, ImgList;
 
 type
   TJvImageListMode = (imClassic, imPicture, imResourceIds, imItemList);
@@ -241,13 +242,11 @@ function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitma
 implementation
 
 uses
+  Consts,
   {$IFDEF VCL}
-  Consts, ActiveX,
+  ActiveX,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
-  TypInfo, JvJVCLUtils, JvResources;
+  TypInfo, JvJVCLUtils, JvResources, JvFinalize;
 
 const
   sUnitName = 'JvImageList';

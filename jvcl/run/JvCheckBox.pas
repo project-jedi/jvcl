@@ -34,8 +34,9 @@ unit JvCheckBox;
 interface
 
 uses
+  Windows, 
   {$IFDEF VCL}
-  Windows, Messages,
+  Messages,
   {$ENDIF VCL}
   Classes, Graphics, Controls, StdCtrls,
   JvTypes, JvExStdCtrls, JvLinkedControls;

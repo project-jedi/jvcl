@@ -35,22 +35,15 @@ unit JvCheckedMaskEdit;
 interface
 
 uses
+  Windows,
   {$IFDEF VCL}
-  Windows, Messages,
+  Messages,
   {$ENDIF VCL}
   Classes, Controls, StdCtrls,
-  {$IFDEF VisualCLX}
-  QComboEdits, JvQExComboEdits, QComCtrlsEx,
-  {$ENDIF VisualCLX}
   JvMaskEdit;
 
 type
-  {$IFDEF VCL}
   TJvCustomCheckedMaskEdit = class(TJvCustomMaskEdit)
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  TJvCustomCheckedMaskEdit = class(TJvExCustomComboMaskEdit)
-  {$ENDIF VisualCLX}
   private
     FCheck: TCheckBox;
     { (rb) JvBaseEdits.pas name: FFormatting }

@@ -50,7 +50,7 @@ uses
   Messages,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QTypes, Types, QWindows, QDialogs,
+  Qt, QTypes,
   {$ENDIF VisualCLX}
   Classes, Graphics, Controls, Menus,
   JvCaret, JvMaxPixel, JvTypes, JvExStdCtrls;

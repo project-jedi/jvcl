@@ -37,20 +37,16 @@ unit JvToolEdit;
 interface
 
 uses
-  SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   Messages,
   {$ENDIF VCL}
-  Graphics, Controls, Forms, Dialogs, StdCtrls, Menus, Buttons,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus, Buttons,
   FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
-  {$IFDEF COMPILER6_UP}
-  RTLConsts, Variants,
-  {$ENDIF COMPILER6_UP}
   {$IFDEF VisualCLX}
-  Qt, QComboEdits, QWindows, JvQExComboEdits,
+  Qt, Types, QWindows, QComboEdits, JvQExComboEdits,
   {$ENDIF VisualCLX}
   JvSpeedButton, JvTypes, JvExMask, JvExForms;
 
@@ -991,6 +987,9 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, Variants,
+  {$ENDIF COMPILER6_UP}
   Math, Consts,
   {$IFDEF MSWINDOWS}
   ShellAPI,
@@ -2964,7 +2963,13 @@ begin
   else
   {$ENDIF}
   begin
-    if (BorderStyle = bsSingle) and Ctl3D then
+    if (BorderStyle = bsSingle) and
+       {$IFDEF VCL}
+       Ctl3D then
+       {$ENDIF VCL}
+       {$IFDEF VisualCLX}
+       not Flat then
+       {$ENDIF VisualCLX}
       LRight := 3
   end;
 
