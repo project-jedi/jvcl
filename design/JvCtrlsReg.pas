@@ -41,13 +41,13 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts, JvZoom, JvAnalogClock, JvBehaviorLabel, JvArrowButton,
+  JvConsts, JvZoom, JvBehaviorLabel, JvArrowButton,
   JvaScrollText, JvCaptionButton, JvClock, JvContentScroller, JvColorBox,
   JvColorButton, JvDice, JvDriveCtrls, JvFooter, JvGroupHeader, JvHint,
   JvHtControls, JvInstallLabel, JvItemsPanel, JvListComb, JvPageScroller,
   JvRegistryTreeView, JvRollOut, JvScrollPanel, JvScrollText, JvSpacer,
   JvSpeedBar, JvSplit, JvSplitter, JvSwitch, JvSyncSplitter,
-  JvTransparentButton, JvxClock, JvSpeedbarSetupForm, JvColorForm, JvDsgnIntf,
+  JvTransparentButton, JvSpeedbarSetupForm, JvColorForm, JvDsgnIntf,
   JvImageDrawThread, JvWinampLabel, JvPlaylist, JvComponentPanel, JvButtons,
   JvCaptionPanel, JvScrollMax, JvUninstallControls, JvMovableBevel,
   JvComboListBox, JvCharMap, JvScrollMaxEditor, JvBehaviorLabelEditor,
@@ -74,7 +74,7 @@ begin
     TJvContentScroller, TJvPageScroller, TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(SPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter]);
-  RegisterComponents(SPaletteVisual, [TJvAnalogClock, TJvClock, TJvxClock,
+  RegisterComponents(SPaletteVisual, [TJvClock,
     TJvZoom, TJvDice, TJvCharMap]);
   RegisterComponents(SPaletteNonVisual, [TJvHint {, TJvRegAuto}]);
 
@@ -83,7 +83,6 @@ begin
   RegisterPropertyEditor(TypeInfo(TCursor), TJvxSplitter, 'Cursor', nil);
   RegisterPropertyEditor(TypeInfo(TDateTime),TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TDateTime),TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
-  RegisterPropertyEditor(TypeInfo(TDateTime),TJvAnalogClock, 'Time', TJvTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', TStringProperty);
 
   RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'ActiveIndex', TJvTBImagesProperty);

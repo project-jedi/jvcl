@@ -154,8 +154,8 @@ object ControlsForm: TControlsForm
             'clDefault=Default')
           ColorValue = clLime
           ColorDialogText = '(Other...)'
-          NewColorText = 'Custom'
           DroppedDownWidth = 129
+          NewColorText = 'Custom'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
@@ -212,6 +212,7 @@ object ControlsForm: TControlsForm
           Top = 36
           Width = 145
           Height = 22
+          DroppedDownWidth = 145
           FontName = 'Roman'
           Device = fdPrinter
           Font.Charset = DEFAULT_CHARSET
@@ -1078,6 +1079,9 @@ object ControlsForm: TControlsForm
           Height = 21
           AutoSize = False
           CheckChars = '01234567890'
+          CriticalPoints.CheckPoints = cpNone
+          CriticalPoints.ColorAbove = clBlue
+          CriticalPoints.ColorBelow = clRed
           EditText = '0'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -1163,6 +1167,13 @@ object ControlsForm: TControlsForm
           Font.Name = 'MS Sans Serif'
           Font.Style = []
           ParentFont = False
+          AutoOpenURL = False
+          HotTrackFont.Charset = DEFAULT_CHARSET
+          HotTrackFont.Color = clWindowText
+          HotTrackFont.Height = -11
+          HotTrackFont.Name = 'MS Sans Serif'
+          HotTrackFont.Style = []
+          ImageIndex = 0
         end
         object Label23: TLabel
           Left = 120
@@ -1321,8 +1332,8 @@ object ControlsForm: TControlsForm
             'clDefault=Default')
           ColorValue = clWhite
           ColorDialogText = '(Other...)'
-          NewColorText = 'Custom'
           DroppedDownWidth = 113
+          NewColorText = 'Custom'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -11
@@ -2533,15 +2544,6 @@ object ControlsForm: TControlsForm
             333333333333333333333333333333330000}
           Visible = False
         end
-        object AnimatedImage1: TJvAnimatedImage
-          Left = 18
-          Top = 68
-          Width = 32
-          Height = 32
-          TransparentColor = 50331647
-          OnStart = AnimatedImage1StartStop
-          OnStop = AnimatedImage1StartStop
-        end
         object ComboBox7: TComboBox
           Left = 104
           Top = 56
@@ -2745,7 +2747,7 @@ object ControlsForm: TControlsForm
           Font.Style = []
           ParentFont = False
         end
-        object rxClock1: TJvxClock
+        object rxClock1: TJvClock
           Left = 6
           Top = 32
           Width = 115
