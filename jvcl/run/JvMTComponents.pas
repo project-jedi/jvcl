@@ -313,7 +313,7 @@ begin
     WaitThreads;
   end;
   
-  inherited;
+  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvMTManager.ReleaseThread(Ticket: TMTTicket);
@@ -454,7 +454,7 @@ end;
 procedure TJvMTThread.SetManager(Value: TJvMTManager);
 begin
   UnhookThread;
-  inherited;
+  inherited SetManager(Value);
 end;
 
 procedure TJvMTThread.SetOnExecute(Value: TJvMTThreadEvent);

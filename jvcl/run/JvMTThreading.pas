@@ -32,12 +32,15 @@ interface
 uses
   SysUtils, Classes, SyncObjs, Contnrs,
   {$IFDEF MSWINDOWS}
-  Windows,
+  Windows, Messages,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc, QWindows,
   {$ENDIF LINUX}
-  JvMTConsts, JvMTSync, JvFinalize;
+  {$IFDEF COMPILER5}
+  Forms,
+  {$ENDIF COMPILER5}
+  JvMTConsts, JvMTSync;
 
 type
   TMTManager = class;
@@ -48,7 +51,9 @@ type
   {$IFDEF COMPILER5}
   TIntThread = class(Classes.TThread)
   public
+    destructor Destroy; override;
     procedure Synchronize(Method: TThreadMethod);
+    function WaitFor: Longword;
   end;
   {$ELSE}
   TIntThread = TThread;
@@ -84,6 +89,9 @@ type
     procedure Log(const Msg: string);
     procedure OnIntThreadExecute(Sender: TObject);
     procedure OnIntThreadTerminate(Sender: TObject);
+    {$IFDEF COMPILER5}
+    procedure SyncOnIntThreadTerminate;
+    {$ENDIF COMPILER5}
     procedure SetName(const Value: string);
   protected
     procedure DecRef;
@@ -138,7 +146,7 @@ implementation
 
 {$IFDEF USEJVCL}
 uses
-  JvResources;
+  JvResources, JvFinalize;
 {$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
@@ -177,6 +185,7 @@ var
   ThreadSyncLock: TRTLCriticalSection;
   SyncRequestList: TList = nil;
   FirstSyncRequestList: Boolean = True;
+  SyncWindow: HWND;
 
 function CheckSynchronize: Boolean;
 var
@@ -187,11 +196,11 @@ begin
   if GetCurrentThreadID <> MainThreadID then
     Exit;
 
-  if SyncRequestAvailable and (SyncRequestList <> nil) then
-  begin
-    // Do not block while another thread is adding a new synchronization request.
-    EnterCriticalSection(ThreadSyncLock);
-    try
+  EnterCriticalSection(ThreadSyncLock);
+  try
+    if SyncRequestAvailable and (SyncRequestList <> nil) then
+    begin
+      // Do not block while another thread is adding a new synchronization request.
       while SyncRequestList.Count > 0 do
       begin
         SyncRequest := SyncRequestList[0];
@@ -206,9 +215,9 @@ begin
         SyncRequestAvailable := False;
         Result := True;
       end;
-    finally
-      LeaveCriticalSection(ThreadSyncLock);
     end;
+  finally
+    LeaveCriticalSection(ThreadSyncLock);
   end;
 end;
 
@@ -221,6 +230,14 @@ begin
     SyncRequestList.Free;
     SyncRequestList := nil;
   end;
+end;
+
+function SyncWndProc(wnd: HWND; Msg: Cardinal; wParam, lParam: Integer): Integer; stdcall;
+begin
+  if Msg = WM_USER + 1 then
+    Result := Integer(CheckSynchronize)
+  else
+    Result := DefWindowProc(wnd, Msg, wParam, lParam);
 end;
 
 //=== TIntThread =============================================================
@@ -240,8 +257,10 @@ begin
         if SyncRequestList = nil then
         begin
           SyncRequestList := TList.Create;
+          {$IFDEF USEJVCL}
           if FirstSyncRequestList then
             AddFinalizeProc(sUnitName, FinalizeSyncRequestList);
+          {$ENDIF USEJVCL}
         end;
 
         SyncRequest.ExceptionObject := nil;
@@ -253,6 +272,7 @@ begin
       finally
         LeaveCriticalSection(ThreadSyncLock);
       end;
+      PostMessage(SyncWindow, WM_USER + 1, 0, 0);
       // Wait for CheckSynchronize.
       WaitForSingleObject(SyncRequest.Signal, INFINITE);
     finally
@@ -262,6 +282,18 @@ begin
     if Assigned(SyncRequest.ExceptionObject) then
       raise SyncRequest.ExceptionObject;
   end;
+end;
+
+destructor TIntThread.Destroy;
+begin
+  CheckSynchronize;
+  inherited Destroy;
+end;
+
+function TIntThread.WaitFor: Longword;
+begin
+  CheckSynchronize;
+  Result := inherited WaitFor;
 end;
 
 {$ENDIF COMPILER5}
@@ -393,7 +425,7 @@ begin
     on E: Exception do
       Log('OnExecute Exception: "' + E.Message+'"'); // do not localize
   end;
-
+  
   // make sure terminate flag is set
   FIntThread.Terminate;
 
@@ -405,12 +437,24 @@ begin
     on E: Exception do
       Log('OnTerminate Exception: "' + E.Message+'"'); // do not localize
   end;
+  {$IFDEF COMPILER5}
+  Synchronize(SyncOnIntThreadTerminate);
+  {$ENDIF COMPILER5}
 end;
+
+{$IFDEF COMPILER5}
+procedure TMTThread.SyncOnIntThreadTerminate;
+begin
+  OnIntThreadTerminate(Self);
+end;
+{$ENDIF COMPILER5}
 
 procedure TMTThread.OnIntThreadTerminate(Sender: TObject);
 begin
   FStatusChange.Acquire;
   try
+    if FFinished then
+      Exit;
     FFinished := True;
   finally
     FStatusChange.Release;
@@ -516,13 +560,13 @@ begin
       while Status <> tsFinished do
       begin
         CheckSynchronize;
-        Sleep(0);
+        Sleep(1);
       end;
     end
     else
     begin
       while Status <> tsFinished do
-        Sleep(0);
+        Sleep(1);
     end;
   finally
     Release;
@@ -603,7 +647,7 @@ begin
   Result := 0;
   FThreadsChange.Acquire;
   try
-    for I := 0 to FThreads.Count-1 do
+    for I := 0 to FThreads.Count - 1 do
       if TMTThread(FThreads[I]).Status <> tsFinished then
       begin
         if (RaiseID <> 0) and
@@ -725,7 +769,7 @@ begin
     while ActiveThreads do
     begin
       CheckSynchronize;
-      Sleep(0);
+      Sleep(1);
     end;
   end
   else
@@ -741,19 +785,45 @@ begin
        -1:
          raise EMTThreadError.CreateRes(@RsECurThreadIsPartOfManager);
       end;
-      Sleep(0);
+      Sleep(1);
     end;
   end;
 end;
 
 {$IFDEF COMPILER5}
 
+var
+  SyncWindowClass: TWndClass = (
+    style: 0;
+    lpfnWndProc: @SyncWndProc;
+    cbClsExtra: 0;
+    cbWndExtra: 0;
+    hInstance: 0;
+    hIcon: 0;
+    hCursor: 0;
+    hbrBackground: 0;
+    lpszMenuName: nil;
+    lpszClassName: 'JvMTThreadingSyncWindow');
+
+procedure CreateSyncWindow;
+begin
+  RegisterClass(SyncWindowClass);
+  SyncWindow := CreateWindowEx(WS_EX_TOOLWINDOW, SyncWindowClass.lpszClassName,
+    '', WS_POPUP, 0, 0, 0, 0, 0, 0, HInstance, nil);
+end;
+
 initialization
   InitializeCriticalSection(ThreadSyncLock);
+  CreateSyncWindow;
 
 finalization
+  {$IFDEF USEJVCL}
   FinalizeUnit(sUnitName);
+  {$ELSE}
+  FinalizeSyncRequestList;
+  {$ENDIF USEJvCL}
   DeleteCriticalSection(ThreadSyncLock);
+  DestroyWindow(SyncWindow);
 
 {$ENDIF COMPILER5}
 
