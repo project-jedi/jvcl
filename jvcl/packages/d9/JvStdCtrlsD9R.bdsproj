@@ -5,7 +5,7 @@
       <Option Name="Personality" Type="String">Delphi.Personality</Option>
       <Option Name="ProjectType" Type="String"></Option>
       <Option Name="Version" Type="String">1.0</Option>
-      <Option Name="GUID" Type="String">{9097434C-1C91-4ED6-BAE5-828078AD76BF}</Option>
+      <Option Name="GUID" Type="String"></Option>
     </Option>
   </PersonalityInfo>
   <Delphi.Personality>
