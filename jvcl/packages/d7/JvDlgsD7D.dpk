@@ -35,7 +35,6 @@ requires
 contains
   JvDlgsReg in '..\..\design\JvDlgsReg.pas',
   JvTipOfDayEditor in '..\..\design\JvTipOfDayEditor.pas',
-  JvCommonDialogDEditor in '..\..\design\JvCommonDialogDEditor.pas',
-  JvBaseDlgEditor in '..\..\design\JvBaseDlgEditor.pas';
+  JvCommonDialogDEditor in '..\..\design\JvCommonDialogDEditor.pas';
 
 end.

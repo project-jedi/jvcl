@@ -22,26 +22,18 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvSchedEvntReg;
+unit JvScheduleEditors;
 
 interface
 
 uses
   SysUtils, Classes,
-  JvScheduleEditorForm, JvScheduledEvents;
-
-procedure Register;
-
-implementation
-
-uses
-  ColnEdit, Controls,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors
   {$ELSE}
   DsgnIntf
   {$ENDIF},
-  JclSchedule, JvxDConst;
+  JvScheduleEditorForm, JvScheduledEvents;
 
 type
   TJvSchedulePropertyEditor = class(TPropertyEditor)
@@ -57,6 +49,13 @@ type
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
+
+implementation
+
+uses
+  ColnEdit, Controls,
+  JclSchedule, JvConsts;
+
 
 //=== TJvSchedulePropertyEditor ================================================
 
@@ -98,13 +97,6 @@ end;
 function TJvSchedEventComponentEditor.GetVerbCount: Integer;
 begin
   Result := 1;
-end;
-
-procedure Register;
-begin
-  RegisterComponents(srJvAdditionalPalette, [TJvScheduledEvents]);
-  RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem, 'Schedule', TJvSchedulePropertyEditor);
-  RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventComponentEditor);
 end;
 
 end.

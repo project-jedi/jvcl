@@ -53,7 +53,7 @@ type
 implementation
 
 uses
-  JvxDConst;
+  JvConsts;
 
 function TJvPatcherEditor.GetAttributes: TPropertyAttributes;
 begin

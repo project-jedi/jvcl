@@ -127,7 +127,7 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   Controls, SysUtils,
-  JvPlugin, JvPluginParams, JvTypes;
+  JvPlugin, JvPluginParamsForm, JvTypes;
 
 {$R ..\resources\JvPluginWiz.res}
 

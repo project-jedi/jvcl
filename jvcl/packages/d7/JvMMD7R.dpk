@@ -29,11 +29,16 @@ package JvMMD7R;
 requires
   JvCoreD7R,
   JvSystemD7R,
-  JvCmpD7R;
+  JvCmpD7R,
+  vcl,
+  rtl,
+  designide,
+  vclactnband,
+  vclx,
+  JvStdCtrlsD7R;
 
 contains
   JvVisualId3v2 in '..\..\run\JvVisualId3v2.pas',
-  JvEasterEgg in '..\..\run\JvEasterEgg.pas',
   JvGradient in '..\..\run\JvGradient.pas',
   JvGradientCaption in '..\..\run\JvGradientCaption.pas',
   JvId3v1 in '..\..\run\JvId3v1.pas',
@@ -56,6 +61,12 @@ contains
   JvID3v2Base in '..\..\run\JvID3v2Base.pas',
   JvAnimatedImage in '..\..\run\JvAnimatedImage.pas',
   JvImageDrawThread in '..\..\run\JvImageDrawThread.pas',
-  JvSpecialImage in '..\..\run\JvSpecialImage.pas';
+  JvSpecialImage in '..\..\run\JvSpecialImage.pas',
+  JvPicClip in '..\..\run\JvPicClip.pas',
+  JvAni in '..\..\run\JvAni.pas',
+  JvAniFile in '..\..\run\JvAniFile.pas',
+  JvAnimate in '..\..\run\JvAnimate.pas',
+  JvBmpAnimator in '..\..\run\JvBmpAnimator.pas',
+  JvIconList in '..\..\run\JvIconList.pas';
 
 end.

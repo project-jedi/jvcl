@@ -8,22 +8,27 @@ procedure Register;
 
 implementation
 uses
-  Classes,
+  Classes, Controls, DesignIntf, DesignEditors, FiltEdit,  
   JvSpin, JvEdit, JvRichEdit, JvProgressBar, JvDateTimePicker, JvDatePickerEdit, JvCheckedMaskEdit,
   JvMaskEdit, JvCalendar, JvBaseEdits, JvCalc, JvToolEdit, JvxCtrls,
   JvxSlider, JvBevel, JvCheckBox, JvCheckListBox, JvCombobox,
-  JvComCtrls, JvControlBar, JvCoolBar, JvCtrls, JvGroupBox, JvGroupHeader, JvHeaderControl,
+  JvComCtrls, JvControlBar, JvCoolBar, JvCtrls, JvGroupBox, JvHeaderControl,
   JvHotKey, JvImage, JvLabel, JvListView, JvMemo, JvMenus, JvRadioButton, JvRadioGroup,
   JvScrollBar, JvScrollBox, JvShape, JvStaticText, JvStatusBar, JvStringGrid,
   JvSystemPopup, JvTabControl, JvToolBar, JvUpDown, JvBitBtn, JvPanel, JvMonthCalendar,
   JvFindReplace, JvControlPanelButton, JvStartMenuButton, JvRecentMenuButton, JvFavoritesButton,
   
-  JvBrowseFolder, JvTransparentPanel, JvColorCombo;
+  JvBrowseFolder, JvTransparentPanel, JvCheckedItemsForm, JvColorCombo,
+
+  JvProgressEditor,
+  JvDsgnEditors;
 
 
 {.$R ..\resources\JvStdCtrlsReg.dcr}
 
 procedure Register;
+const
+  BaseClass:TClass = TComponent;
 begin
   RegisterComponents('Jv Standard',[
     TJvMainMenu, TJvPopupMenu, TJvSystemPopup, TJvEdit, TJvCheckedMaskEdit,
@@ -40,8 +45,20 @@ begin
     TJvUpDown, TJvDomainUpDown, TJvBrowseForFolderDialog,
 
     TJvControlPanelButton, TJvStartMenuButton, TJvRecentMenuButton, TJvFavoritesButton,
-    TJvGroupBox, TJvGroupHeader, TJvHeaderControl, TJvImage, TJvLabel, TJvFindReplace
+    TJvGroupBox, TJvHeaderControl, TJvImage, TJvLabel, TJvFindReplace
     ]);
+
+  RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
+  RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, 'Text', nil);
+  RegisterPropertyEditor(TypeInfo(string), TJvFileDirEdit, 'Text', TStringProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCustomDateEdit, 'Text', TStringProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'Filter', TFilterProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'FileName', TJvFilenameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDirectoryEdit, 'Text', TJvDirectoryProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCustomComboEdit, 'ButtonHint', TJvHintProperty);
+  RegisterPropertyEditor(TypeInfo(TStrings), TJvxCheckListBox, 'Items', TJvCheckItemsProperty);
+
 end;
 
 end.

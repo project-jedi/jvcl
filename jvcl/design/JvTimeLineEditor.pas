@@ -53,8 +53,6 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-procedure Register;
-
 implementation
 
 uses
@@ -109,11 +107,6 @@ end;
 function TJvTimeLineEditor.GetVerbCount: Integer;
 begin
   Result := 1;
-end;
-
-procedure Register;
-begin
-  RegisterComponentEditor(TJvCustomTimeLine, TJvTimeLineEditor);
 end;
 
 end.

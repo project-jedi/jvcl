@@ -27,9 +27,18 @@ package JvStdCtrlsD7D;
 {$IMPLICITBUILD ON}
 
 requires
-  JvStdCtrlsD7R;
+  JvStdCtrlsD7R,
+  designide,
+  vcl,
+  rtl,
+  vclx,
+  JvCoreD7D,
+  dclstd,
+  vclactnband;
 
 contains
-  JvStdCtrlsReg in '..\..\design\JvStdCtrlsReg.pas';
+  JvStdCtrlsReg in '..\..\design\JvStdCtrlsReg.pas',
+  JvProgressEditor in '..\..\design\JvProgressEditor.pas',
+  JvCheckedItemsForm in '..\..\design\JvCheckedItemsForm.pas';
 
 end.

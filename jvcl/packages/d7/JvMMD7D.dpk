@@ -27,9 +27,18 @@ package JvMMD7D;
 {$IMPLICITBUILD ON}
 
 requires
-  JvMMD7R;
+  JvMMD7R,
+  designide,
+  vcl,
+  rtl,
+  vclactnband,
+  vclx;
 
 contains
-  JvMMReg in '..\..\design\JvMMReg.pas';
+  JvMMReg in '..\..\design\JvMMReg.pas',
+  JvAnimatedEditor in '..\..\design\JvAnimatedEditor.pas',
+  JvDirectoryListForm in '..\..\design\JvDirectoryListForm.pas',
+  JvPictureEditForm in '..\..\design\JvPictureEditForm.pas',
+  JvImagePreviewForm in '..\..\design\JvImagePreviewForm.pas';
 
 end.

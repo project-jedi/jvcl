@@ -35,8 +35,7 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF}
-  SysUtils, Classes, Graphics,
-  JvGraph;
+  SysUtils, Classes, Graphics;
 
 const
   RT_GIF = 'GIF'; { GIF Resource Type }

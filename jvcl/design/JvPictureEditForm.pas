@@ -30,11 +30,7 @@ unit JvPictureEditForm;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   Messages, Classes, Graphics, Forms, Controls, Dialogs, Menus,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
@@ -45,9 +41,9 @@ uses
   {$IFDEF COMPILER3}
   ExtDlgs, ComCtrls,
   {$ELSE}
-  JvImagPrvw,
+  JvImagePreviewForm,
   {$ENDIF}
-  JvMRUList, JvPlacemnt, JvxCtrls, JvClipMon, JvComponent;
+  JvMRUManager, JvFormPlacement, JvxCtrls, JvClipboardMonitor, JvComponent;
 
 type
   TPictureEditDialog = class(TForm)
@@ -173,7 +169,7 @@ implementation
 
 uses
   TypInfo, SysUtils, Clipbrd, Consts, ShellApi, LibHelp,
-  JvClipIcon, JvGraph, JvVCLUtils, JvAppUtils, JvConst, JvDirFrm, JvFileUtil, JvTypes;
+  JvJVCLUtils, JvJCLUtils, JvConsts, JvDirectoryListForm, JvTypes;
 
 {$B-}
 {$IFDEF WIN32}

@@ -69,12 +69,16 @@ implementation
 
 uses
   DbConsts,
-  {$IFDEF COMPILER3_UP}
-  BdeConst,
-  {$ENDIF}
   JvJVCLUtils, JvTypes;
 
 {$R *.DFM}
+resourcestring
+  // (p3) copied from bdeconst so we don't have to include the entire BDE for three strings...
+  SDataTypes = ';String;SmallInt;Integer;Word;Boolean;Float;Currency;BCD;Date;Time;DateTime;;;;Blob;Memo;Graphic;;;;;Cursor;';
+  SParamEditor = '%s%s%s Parameters';
+  SInvalidParamFieldType = 'Must have a valid field type selected';
+
+
 
 var
   FieldTypes: array [TFieldType] of string;
@@ -87,7 +91,7 @@ var
 begin
   for J := Low(TFieldType) to High(TFieldType) do
     FieldTypes[J] := EmptyStr;
-  ParamString := ResStr(SDataTypes);
+  ParamString := SDataTypes;
   J := Low(TFieldType);
   I := 1;
   while I <= Length(ParamString) do
@@ -132,7 +136,7 @@ begin
       CancelBtn.Left := CancelBtn.Left + HelpBtn.Width div 2;
     end;
     if csDesigning in DataSet.ComponentState then
-      Caption := Format(ResStr(SParamEditor),
+      Caption := Format(SParamEditor,
         {$IFDEF COMPILER3_UP}
         {$IFDEF CBUILDER}
         [DataSet.Owner.Name, '->', DataSet.Name]);
@@ -229,7 +233,7 @@ begin
     if (TypeList.Text = '') and TypeList.CanFocus then
     begin
       TypeList.SetFocus;
-      raise EJVCLException.Create(ResStr(SInvalidParamFieldType));
+      raise EJVCLException.Create(SInvalidParamFieldType);
     end;
     if ParamValue.Text = '' then
       with InitList.ParamByName(ParamList.Items[ParamList.ItemIndex]) do

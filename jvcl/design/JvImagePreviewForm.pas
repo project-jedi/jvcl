@@ -37,7 +37,7 @@ uses
   WinTypes, WinProcs,
   {$ENDIF}
   SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls, FileCtrl,
-  JvxCtrls, JvPicClip, JvPlacemnt, JvComponent;
+  JvxCtrls, JvPicClip, JvFormPlacement, JvComponent;
 
 type
   TImageForm = class(TForm)
@@ -85,7 +85,7 @@ implementation
 
 uses
   Math,
-  JvConst, JvVCLUtils, JvGraph;
+  JvConsts, JvJVCLUtils;
 
 {$R *.DFM}
 
@@ -152,7 +152,7 @@ procedure TImageForm.ZoomImage;
 begin
   if ValidPicture(Image.Picture) then
   begin
-    with JvGraph.ZoomImage(Image.Picture.Width, Image.Picture.Height,
+    with JvJVCLUtils.ZoomImage(Image.Picture.Width, Image.Picture.Height,
       ImagePanel.ClientWidth - 4, ImagePanel.ClientHeight - 4,
       StretchCheck.Checked) do
     begin

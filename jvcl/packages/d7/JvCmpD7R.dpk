@@ -29,27 +29,24 @@ package JvCmpD7R;
 requires
   JvCoreD7R,
   DJCL70,
-  JvSystemD7R;
+  JvSystemD7R,
+  vcl,
+  rtl;
 
 contains
   JvAlarms in '..\..\run\JvAlarms.pas',
-  JvAni in '..\..\run\JvAni.pas',
-  JvAniFile in '..\..\run\JvAniFile.pas',
-  JvAnimate in '..\..\run\JvAnimate.pas',
-  JvBmpAnimator in '..\..\run\JvBmpAnimator.pas',
   JvConverter in '..\..\run\JvConverter.pas',
   JvDataEmbedded in '..\..\run\JvDataEmbedded.pas',
   JvEnterTab in '..\..\run\JvEnterTab.pas',
   JvMergeManager in '..\..\run\JvMergeManager.pas',
   JvPageManager in '..\..\run\JvPageManager.pas',
   JvPatchFile in '..\..\run\JvPatchFile.pas',
-  JvPicClip in '..\..\run\JvPicclip.pas',
   JvStringHolder in '..\..\run\JvStringHolder.pas',
   JvTimeLimit in '..\..\run\JvTimeLimit.pas',
   JvWinHelp in '..\..\run\JvWinHelp.pas',
-  JvGraph in '..\..\run\JvGraph.pas',
   JvTranslator in '..\..\run\JvTranslator.pas',
   JvPrint in '..\..\run\JvPrint.pas',
-  JvIconList in '..\..\run\JvIconList.pas';
+  JvCreateProcess in '..\..\run\JvCreateProcess.pas',
+  JvEasterEgg in '..\..\run\JvEasterEgg.pas';
 
 end.

@@ -58,7 +58,6 @@ contains
   JvCoolBar in '..\..\run\JvCoolBar.pas',
   JvCtrls in '..\..\run\JvCtrls.pas',
   JvGroupBox in '..\..\run\JvGroupBox.pas',
-  JvGroupHeader in '..\..\run\JvGroupHeader.pas',
   JvHeaderControl in '..\..\run\JvHeaderControl.pas',
   JvHints in '..\..\run\JvHints.pas',
   JvHotKey in '..\..\run\JvHotKey.pas',

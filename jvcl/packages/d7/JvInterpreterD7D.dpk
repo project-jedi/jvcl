@@ -27,7 +27,10 @@ package JvInterpreterD7D;
 {$IMPLICITBUILD ON}
 
 requires
-  JvInterpreterD7R;
+  JvInterpreterD7R,
+  JvCoreD7D,
+  designide,
+  dclstd;
 
 contains
   JvInterpreterReg in '..\..\design\JvInterpreterReg.pas';
