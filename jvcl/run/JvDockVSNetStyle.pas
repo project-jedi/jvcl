@@ -309,7 +309,8 @@ type
   public
     // Can't put 'override' this one because signature is different!
     // But it MUST have DockStyle in the constructor now! -Wpostma!
-    constructor Create(AOwner: TComponent;DockStyle:TComponent); reintroduce; // WARNING UNAVOIDABLE. IGNORE WARNING.
+    constructor Create(AOwner: TComponent); override; 
+
     procedure ShowDockPanel(MakeVisible: Boolean; Client: TControl;
       PanelSizeFrom: TJvDockSetDockPanelSizeFrom); override;
     { Dirty override; solve with virtual method? }
@@ -1048,7 +1049,7 @@ end;
 procedure TJvDockVSChannel.CreateVSPopupPanel(DockStyle:TComponent);
 begin
   Assert(Assigned(DockStyle));
-  FVSPopupPanel := TJvDockVSPopupPanel.Create(FVSNETDockPanel,DockStyle);
+  FVSPopupPanel := TJvDockVSPopupPanel.Create(FVSNETDockPanel);
 
 
   { Channel is maintainer/Creator }
@@ -3023,10 +3024,15 @@ end;
 
 //=== { TJvDockVSPopupPanel } ================================================
 
-constructor TJvDockVSPopupPanel.Create(AOwner: TComponent;DockStyle:TComponent);
+constructor TJvDockVSPopupPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDockStyle := DockStyle; // Must be set before CreateDockManager is called!
+  if AOwner is TJvDockVSNETPanel then begin {new! WPOSTMA added.}
+      FDockStyle := TJvDockVSNETPanel(AOwner).DockServer.DockStyle; // Must be set before CreateDockManager is called!
+  end else begin
+      FDockStyle := nil;
+  end;
+
   DockSite := True;  {calls CreateDockManager when you do this!}
   if AOwner is TJvDockVSNETPanel then
   begin
