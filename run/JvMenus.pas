@@ -91,7 +91,7 @@ type
 
   { TJvMenuChangeLink}
 
-  // This class should be used by any class that wish to be notified
+  // This class should be used by any class that wishes to be notified
   // when the content of the menu has changed. Pass an instance of
   // TJvMenuChangeLink to a TJvMainMenu through RegisterChanges and
   // the OnChange event of your object will be fired whenever it is
@@ -150,7 +150,7 @@ type
   // event trigerred when about to draw the menu item and a
   // glyph for it is required. If no handler is provided, the
   // image list will be asked and if not available, no image
-  // will be draw
+  // will be drawn
   TItemParamsEvent = procedure(Sender: TMenu; Item: TMenuItem;
     State: TMenuOwnerDrawState; AFont: TFont; var Color: TColor;
     var Graphic: TGraphic; var NumGlyphs: Integer) of object;
@@ -229,7 +229,7 @@ type
     procedure RefreshMenu(AOwnerDraw: Boolean); virtual;
     function IsOwnerDrawMenu: Boolean;
 
-    // called when the menu as changed. If Rebuild is true, the menu
+    // called when the menu has changed. If Rebuild is true, the menu
     // as had to be rebuilt because of a change in its layout, not in
     // the properties of one of its item. Unfortunately, for a reason
     // yet to be discovered, Rebuild is always false, even when adding
@@ -406,6 +406,8 @@ type
     function GetMenu: TMenu;
     procedure SetMenu(const Value: TMenu);
     function GetCanvas: TCanvas;
+
+    procedure EmptyDrawItem(Sender: TObject;ACanvas: TCanvas; ARect: TRect; Selected: Boolean);
   protected
     // property fields
     FImageBackgroundColor: TColor;
@@ -852,6 +854,8 @@ end;
 constructor TJvMainMenu.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  inherited OwnerDraw := True;
+  
   RegisterWndProcHook(FindForm, NewWndProc, hoAfterMsg);
   FStyle := msStandard;
   FStyleItemPainter := CreateMenuItemPainterFromStyle(FStyle, Self);
@@ -2126,6 +2130,11 @@ var
   CanvasWindow: HWND;
   CanvasRect: TRect;
 begin
+  // We must do this to prevent the code in Menus.pas from drawing
+  // the item before us, thus trigerring rendering glitches, especially
+  // when a top menuitem has an image index not equal to -1
+  Item.OnDrawItem := EmptyDrawItem;
+
   // prepare the painting
   PreparePaint(Item, ItemRect, State, False);
 
@@ -2168,6 +2177,7 @@ begin
   end
   else
   begin
+    ItemRectNoLeftMargin := ItemRect;
     TextAndMarginRect := ItemRect;
     TextRect := ItemRect;
   end;
@@ -2714,6 +2724,12 @@ begin
     Result := FPopupMenu.Canvas
   else
     Result := nil;
+end;
+
+procedure TJvCustomMenuItemPainter.EmptyDrawItem(Sender: TObject; ACanvas: TCanvas;
+  ARect: TRect; Selected: Boolean);
+begin
+// Do nothing, on purpose
 end;
 
 //=== TJvBtnMenuItemPainter ==================================================
