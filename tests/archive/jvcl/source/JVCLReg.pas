@@ -173,7 +173,7 @@ FiltEdit,
 
   JvChangeNotify, JvEnterTab, JvFindFiles,
   JvFileInfo, JvItemsPanel, JvDsgnEditors, JvCntScr, JvCmdEdit,
-  JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBarEditor, JvSHFmt,
+  JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBEditor, JvSHFmt,
   JvInspector, JvHidControllerClass, JvAnalogClock, JvRadioCtl,
   // Fernando Silva
   JvFooter, JvGroupHeader, JvNTEventLog,
@@ -208,7 +208,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TDate), nil, '', TDateExProperty);
   RegisterPropertyEditor(TypeInfo(TTime), nil, '', TTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimeExProperty);
-  RegisterPropertyEditor(typeinfo(integer), TJvCustomOutlookBar, 'ActivePageIndex', TOLBarActivePageEditor);
+  
     {Thumbview.filter editor}
   RegisterPropertyEditor(typeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
 //  RegisterPropertyEditor(typeinfo(string), TJvAppletDialog,'AppletName',TJvAppletFileProperty);
@@ -239,7 +239,6 @@ begin
   RegisterComponentEditor(TJvChangeNotify, TJvChangeNotifyEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);
   RegisterComponentEditor(TJvFooter, TJvFooterEditor);
-  RegisterComponentEditor(TJvCustomOutlookBar, TOLBarComponentEditor);
 end;
 
 procedure RegComps;
