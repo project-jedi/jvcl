@@ -1,21 +1,17 @@
-
 2003-03-24
 - Merged JvMultilineListBox, JvReorderListBox, JvTextListBox, JvBMPListBox into JvListBox, updated examples, moved JvBmpListBox.pas, JvReorderListBox.pas and JvMultiLineListbox.pas to \archive // peter3
 - Merged JvHotLink and JvAngelLabel into JvLabel
 - Merged JvAppearingLabel, JvBlinkingLabel, JvBouncingLabel, JvRealLabel and JvSpecialLabel into JvBehaviorLabel. Use Nehavior property to control what label to simulate. // peter3
 - Removed JvReversedLabel - use (new) JvLabel with Angle set to 180 to simulate same behavior
+- Merged TJvTransparentButton and TJvTransparentButton2 into one unit. Now derives from common ancestor in JvButton. Moved JvTransBtn2.pas to \archive
 
 2003-03-23
 - Replaced TJvFloatEdit, TJvFloatEdit2, TJvCurrencyEdit, TJvxCurrencyEdit, TJvIntegerEdit and TJvYearEdit with TJvValidateEdit. JvFloatEdit.pas and JvTypedEdit.pas moved to \archive, examples updated. // peter3
-
-2003-03-23
-Merged TJvRichEdit with TJvxRichEdit. TJvxRichEdit renamed to TJvRichEdit. JvRichEdit.pas moved to \archive. // roko, peter3
-2003-03-23
+- Merged TJvRichEdit with TJvxRichEdit. TJvxRichEdit renamed to TJvRichEdit. JvRichEdit.pas moved to \archive. // roko, peter3
 - Removed TJvOpenDialog2000 and TJvSaveDialog2000 from registration in JVCLReg.pas: use TJvOpenDialog and TJvSaveDialog instead. They contain a better implementation of the same things as the xxx2000 versions. // peter3
 - Added EnablePopupChange property to TJvCustomCalcEdit (in JvCurrEdit.pas). Set it to true to get notified when changes are done in the popup calculator // peter3
- 
-2003-03-23
-Modifications from Andreas Hausladen:
+
+- Modifications from Andreas Hausladen:
 ==============================================================================
 Theses modifications were primary applied to the R&A Library 2.00 in order to
 make the highlighter editor RAHLEditor (now JvHLEditor) more acting like the
@@ -60,7 +56,6 @@ JvHLEditor.pas:
     magic LStrAddRef is needed.
   * some speed optimations 
 ==============================================================================
-2003-03-23
 - Several properties in TJvRollout have changed and been put into nested sub-properties. 
   To update current usage do the following:
    * Color: change to Colors.Color
