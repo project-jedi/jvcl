@@ -12,6 +12,9 @@ object frmOLBarEditFrm: TfrmOLBarEditFrm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  DesignSize = (
+    340
+    306)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
@@ -22,6 +25,9 @@ object frmOLBarEditFrm: TfrmOLBarEditFrm
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = '  Pa&ges:  '
     TabOrder = 0
+    DesignSize = (
+      333
+      261)
     object Label1: TLabel
       Left = 174
       Top = 53
