@@ -509,7 +509,8 @@ begin
       AliasList  := TAliasList.Create(Node.Items.ItemNamed['aliases']);
       ClxReplacementList  := TClxReplacementList.Create(Node.Items.ItemNamed['ClxReplacements']);
 
-      GIncDefFileName   := Node.Properties.ItemNamed['incdeffile'].Value;
+      if Assigned(Node.Properties.ItemNamed['incdeffile']) then
+        GIncDefFileName   := Node.Properties.ItemNamed['incdeffile'].Value;
       GIncFileName      := Node.Properties.ItemNamed['IncFile'].Value;
       GPackagesLocation := Node.Properties.ItemNamed['packages'].Value;
       GFormat           := Node.Properties.ItemNamed['format'].Value;
