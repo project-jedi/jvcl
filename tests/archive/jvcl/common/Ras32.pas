@@ -53,7 +53,9 @@ const
   RAS_MaxCallbackNumber = RAS_MaxPhoneNumber;
 
 type
+  {$IFNDEF BCB}
   UINT = Word;
+  {$ENDIF}
   PHRASConn = ^HRASConn;
   HRASConn = DWORD;
 

@@ -1,8 +1,41 @@
+2003-06-16:
+- Renamed TJVAnalogClock.ClockEnabled to TJVAnalogClock.Active
+- Renamed TJVAnalogClock.Alarm.Show to TJVAnalogClock.Alarm.Visible // peter3
+- Renamed TJvOnAlarm to TJvAlarmEvent in JvAlarms.pas // peter3
+- Renamed a lot of cryptic, internal variables in JvAnalogClock. Don't even know if I've understood them all correctly... // peter3
+- Added updates and modifications from Gustavo Bianconi to JvAnalogClock, JvAlarms and JvTypes:
+  * New property Alarm that shows the alarm time on clock surface.
+      Subproperties:
+      Date : Date and Time of alarm
+      Enabled : That's it!
+      ColorOn : Color for pointer when alarm is enabled
+      ColorOff : Color for pointer when alarm is disabled
+      Show : Show alarm pointer
+      Trigger : Trigger kind. Is the same of TJvAlarms (tkOneShot, tkEachSecond, tkEachMinute, tkEachHour, tkEachDay, tkEachMonth, tkEachYear)
+        The Trigger property has the follow behaviour :
+        tkOneShot : After Alarm, turn Alarm.Enabled = False;
+        tkEachSecond : After Alarm, increase Alarm.Date by 1 second.
+        tkEachMinute : After Alarm, increase Alarm.Date by 1 minute.
+        tkEachHour : After Alarm, increase Alarm.Date by 1 hour.
+        tkEachDay : After Alarm, increase Alarm.Date by 1 day.
+        tkEachMonth : After Alarm, increase Alarm.Date by 1 month.
+        tkEachYear : After Alarm, increase Alarm.Date by 1 year.
+      WidthMin : pointer whidth for minutes
+      WidthHour : pointer width for hours
+    * New OnAlarm event
+
+    * The property SameTime and event OnSameTime removed.
+    * Added, in JVCLReg.pas, property editor to set Alarm.Date
+    * Moved TJvTriggerKind from JvAlarms.pas to JvTypes.pas
+    * Added JvTypes to uses clauses in JvAlarms
+    * Added JvTypes to uses clauses in JvAnalogClock
+    // gustavo
+
 2003-06-15:
 ====================
 - Cleaned and updated JvTypes.pas: several event types, enumerations and sets were renamed/removed. Some of the removed types are only used by units in \archive. These have been commented out and a reference to the using unit has been added. A complete list of changes are below. You can also get the JvTypesRename030615.dat file from CVS (it's in the jvcl\convert folder) and run your project through JVCLConvert using it.
 
-NOTE: even if you run the dat file with JVCLConvert, you will still have to change any occurence of TJvAnimations -> TJvAnimation and TJvAnimation -> TJvAnimations manually. 
+NOTE: even if you run the dat file with JVCLConvert, you will still have to change any occurence of TJvAnimations -> TJvAnimation and TJvAnimation -> TJvAnimations manually.
 
 List of renames in JvTypes.pas:
 
@@ -40,6 +73,7 @@ PAniTag=PJvAniTag
 TAniTag=TJvAniTag
 TAniHeader=TJvAniHeader
 TPositionInMenu=TJvPositionInMenu
+// peter3
 ====================
 
 2003-05-28

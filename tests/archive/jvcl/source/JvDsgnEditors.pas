@@ -502,10 +502,12 @@ var
 begin
   D := GetFloatValue;
   if D = 0.0 then
-    D := Now;
+    D := Now
+  else // (p3) we need the date part or we might get a "Must be in ShowCheckBox mode" error 
+    D := SysUtils.Date + frac(D);
   if TFrmSelectDateTimeDlg.SelectDateTime(D, dstTime) then
   begin
-    SetFloatValue(D);
+    SetFloatValue(frac(D)); // (p3) only return the time portion
     Designer.Modified;
   end;
 end;

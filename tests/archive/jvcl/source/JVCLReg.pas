@@ -219,12 +219,15 @@ begin
   RegisterPropertyEditor(TypeInfo(TTime), nil, '', TJvTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TJvDateTimeExProperty);
   {$ENDIF}
+  RegisterPropertyEditor(TypeInfo(TDateTime),TJvAlarmInfo,'Date',TJvDateTimeExProperty);
+  RegisterPropertyEditor(TypeInfo(TDateTime),TJvAnalogClock,'Time',TJvTimeExProperty);
 
   {Thumbview.filter editor}
   RegisterPropertyEditor(TypeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, 'AppletName', TJvAppletNameProperty);
   RegisterPropertyEditor(TypeInfo(integer), TJvAppletDialog, 'AppletIndex', TJvAppletIndexProperty);
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
+
 
 // JvPlugin
 //   RegisterPropertyEditor(TypeInfo(string), TJvPlugin, 'Version', TVersionEditor);
