@@ -51,6 +51,7 @@ type
     FNullText: string;
     FNullDate: TDateTime;
     FDropDownDate: TDate;
+    FWeekNumbers: boolean;
     {$IFDEF COMPILER5}
     FFormat: string;
     procedure SetFormat(const Value: string);
@@ -58,11 +59,12 @@ type
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure SetNullDate(const Value: TDateTime);
     procedure SetNullText(const Value: string);
+    procedure UpdateWeekNumbers(CalHandle: THandle);
   protected
     function WithinDelta(Val1, Val2: TDateTime): Boolean; virtual;
     // returns True if NullDate matches Date or Frac(NullDate) matches Frac(Time) depending on Kind
     function CheckNullValue: Boolean; overload;
-    function CheckNullValue(const ANullText, AFormat: string; AKind: TDateTimeKind; ADateTime, ANullDate: TDateTime): Boolean;overload;virtual;
+    function CheckNullValue(const ANullText, AFormat: string; AKind: TDateTimeKind; ADateTime, ANullDate: TDateTime): Boolean; overload; virtual;
     procedure Change; override;
     function MsgSetDateTime(Value: TSystemTime): Boolean; override;
   public
@@ -77,6 +79,7 @@ type
     property NullDate: TDateTime read FNullDate write SetNullDate;
     // The text to display when NullDate = Date/Time
     property NullText: string read FNullText write SetNullText;
+    property WeekNumbers: boolean read FWeekNumbers write FWeekNumbers default False;
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -91,7 +94,7 @@ uses
 constructor TJvDateTimePicker.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-//   FNullText := RsNoneCaption;  XXX Don't do this unless you also set the 'default' specifier in the property declaration above! Causes problems. -WP 
+//   FNullText := RsNoneCaption;  XXX Don't do this unless you also set the 'default' specifier in the property declaration above! Causes problems. -WP
   FDropDownDate := SysUtils.Date;
 end;
 
@@ -111,11 +114,13 @@ function TJvDateTimePicker.CheckNullValue(const ANullText, AFormat: string;
   AKind: TDateTimeKind; ADateTime, ANullDate: TDateTime): Boolean;
 begin
  // Warren added NullText length check so that this feature can be disabled if not used!
-   if Length(ANullText) = 0 then begin
-        Result := false;
-   end else
-       Result := ((AKind = dtkDate) and (Trunc(ADateTime) = Trunc(ANullDate)) or
-    ((AKind = dtkTime) and WithinDelta(ADateTime, ANullDate)));
+  if Length(ANullText) = 0 then
+  begin
+    Result := false;
+  end
+  else
+    Result := ((AKind = dtkDate) and (Trunc(ADateTime) = Trunc(ANullDate)) or
+      ((AKind = dtkTime) and WithinDelta(ADateTime, ANullDate)));
 
   if Result then
     SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(ANullText)))
@@ -133,17 +138,18 @@ procedure TJvDateTimePicker.SetNullText(const Value: string);
 begin
   if FNullText <> Value then
   begin
-    FNullText:= Value;
+    FNullText := Value;
     CheckNullValue;
   end;
 end;
 
 {$IFDEF COMPILER5}
+
 procedure TJvDateTimePicker.SetFormat(const Value: string);
 begin
   if FFormat <> Value then
   begin
-    FFormat:= Value;
+    FFormat := Value;
     CheckNullValue;
   end;
 end;
@@ -170,6 +176,21 @@ begin
       (wSecond = 0) and (wMilliseconds = 0);
 end;
 
+procedure TJvDateTimePicker.UpdateWeekNumbers(CalHandle: THandle);
+var
+  AStyle: Cardinal;
+begin
+  if CalHandle <> 0 then
+  begin
+    AStyle := GetWindowLong(CalHandle, GWL_STYLE);
+    if not WeekNumbers then
+      AStyle := AStyle and not MCS_WEEKNUMBERS
+    else
+      AStyle := AStyle or MCS_WEEKNUMBERS;
+    SetWindowLong(CalHandle, GWL_STYLE, AStyle);
+  end;
+end;
+
 procedure TJvDateTimePicker.CNNotify(var Msg: TWMNotify);
 var
   ACal: THandle;
@@ -182,15 +203,13 @@ begin
       DTN_DROPDOWN:
         begin
           inherited;
-          if CheckNullValue then
+          ACal := DateTime_GetMonthCal(Handle);
+          UpdateWeekNumbers(ACal);
+          if CheckNullValue and (ACal <> 0) then
           begin
-            ACal := DateTime_GetMonthCal(Handle);
-            if ACal <> 0 then
-            begin
-              DateTimeToSystemTime(FDropDownDate, St);
-              if not IsBlankSysTime(St) then
-                MonthCal_SetCurSel(ACal, St);
-            end;
+            DateTimeToSystemTime(FDropDownDate, St);
+            if not IsBlankSysTime(St) then
+              MonthCal_SetCurSel(ACal, St);
           end;
         end;
       DTN_USERSTRING:
@@ -214,7 +233,6 @@ begin
       inherited;
     end;
 end;
-
 
 end.
 

@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-05-07
+- Added support for WeekNumbers in JvDateTimePicker // peter3
 2004-05-05
 - Moved inspector components to their own package (JvInspector) // marcelb
 2004-04-28
