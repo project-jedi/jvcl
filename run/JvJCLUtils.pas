@@ -28,9 +28,6 @@ Known Issues:
 // $Id$
 
 // (ahuser) No dependency on JCL units. Required functions are emulated.
-//          With NO_JCL defined the executable file size shrinks because
-//          the JCL has no JvFinalize support and executes all in the
-//          initialization sections.
 {$DEFINE NO_JCL}
 
 unit JvJCLUtils;
@@ -152,24 +149,24 @@ function ReplaceString(S: string; const OldPattern, NewPattern: string): string;
 function ReplaceStringW(S: WideString; const OldPattern, NewPattern: WideString): WideString;
 { ConcatSep concatenate S1 and S2 strings with Separator.
   if S = '' then separator not included }
-function ConcatSep(const S1, S2, Separator: string): string; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function ConcatSep(const S1, S2, Separator: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 { ConcatLeftSep is same to previous function, but
   strings concatenate right to left }
-function ConcatLeftSep(const S1, S2, Separator: string): string; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function ConcatLeftSep(const S1, S2, Separator: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 
 { Next 4 function for russian chars transliterating.
   This functions are needed because Oem2Ansi and Ansi2Oem functions
   sometimes suck }
 procedure Dos2Win(var S: string);
 procedure Win2Dos(var S: string);
-function Dos2WinRes(const S: string): string; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
-function Win2DosRes(const S: string): string; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function Dos2WinRes(const S: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function Win2DosRes(const S: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function Win2Koi(const S: string): string;
 
 { FillWideChar fills Buffer with Count WideChars (2 Bytes) }
 procedure FillWideChar(var Buffer; Count: Integer; const Value: WideChar);
 { MoveWideChar copies Count WideChars from Source to Dest }
-procedure MoveWideChar(const Source; var Dest; Count: Integer); {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+procedure MoveWideChar(const Source; var Dest; Count: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 
 { Spaces returns string consists on N space chars }
 function Spaces(const N: Integer): string;
@@ -183,17 +180,17 @@ function LastDateRUS(const Dat: TDateTime): string;
 { CurrencyToStr format Currency, Cur, using ffCurrency float format}
 function CurrencyToStr(const Cur: Currency): string;
 { Cmp compares two strings and returns True if they are equal. Case-insensitive.}
-function Cmp(const S1, S2: string): Boolean; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function Cmp(const S1, S2: string): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 { StringCat add S2 string to S1 and returns this string }
 function StringCat(var S1: string; S2: string): string;
 { HasChar returns True, if Char, Ch, contains in string, S }
 function HasChar(const Ch: Char; const S: string): Boolean;
-function HasCharW(const Ch: WideChar; const S: WideString): Boolean; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function HasCharW(const Ch: WideChar; const S: WideString): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function HasAnyChar(const Chars: string; const S: string): Boolean;
-function CharInSet(const Ch: Char; const SetOfChar: TSysCharSet): Boolean; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
-function CharInSetW(const Ch: WideChar; const SetOfChar: TSysCharSet): Boolean; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function CharInSet(const Ch: Char; const SetOfChar: TSysCharSet): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function CharInSetW(const Ch: WideChar; const SetOfChar: TSysCharSet): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function CountOfChar(const Ch: Char; const S: string): Integer;
-function DefStr(const S: string; Default: string): string; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function DefStr(const S: string; Default: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 
 { StrLICompW2 is a faster replacement for JclUnicode.StrLICompW }
 function StrLICompW2(S1, S2: PWideChar; MaxLen: Integer): Integer;
@@ -204,9 +201,9 @@ function WideCompareText(const S1, S2: WideString): Integer;
 function WideUpperCase(const S: WideString): WideString;
 function WideLowerCase(const S: WideString): WideString;
 {$ENDIF COMPILER5}
-function TrimW(const S: WideString): WideString; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
-function TrimLeftW(const S: WideString): WideString; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
-function TrimRightW(const S: WideString): WideString; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function TrimW(const S: WideString): WideString; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function TrimLeftW(const S: WideString): WideString; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function TrimRightW(const S: WideString): WideString; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 {**** files routines}
 procedure SetDelimitedText(List: TStrings; const Text: string; Delimiter: Char);
 
@@ -273,7 +270,7 @@ function HasSubFolder(APath: TFileName): Boolean;
   folders in given folder, APath}
 function IsEmptyFolder(APath: TFileName): Boolean;
 { AddSlash add slash Char to Dir parameter, if needed }
-procedure AddSlash(var Dir: TFileName); {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+procedure AddSlash(var Dir: TFileName); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 { AddSlash returns string with added slash Char to Dir parameter, if needed }
 function AddSlash2(const Dir: TFileName): string;
 { AddPath returns FileName with Path, if FileName not contain any path }
@@ -288,7 +285,7 @@ function HasParam(const Param: string): Boolean;
 function HasSwitch(const Param: string): Boolean;
 function Switch(const Param: string): string;
 { ExePath returns ExtractFilePath(ParamStr(0)) }
-function ExePath: TFileName; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function ExePath: TFileName; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function CopyDir(const SourceDir, DestDir: TFileName): Boolean;
 //function FileTimeToDateTime(const FT: TFileTime): TDateTime;
 function MakeValidFileName(const FileName: TFileName; ReplaceBadChar: Char): TFileName;
@@ -319,7 +316,7 @@ function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
 function TrueInflateRect(const R: TRect; const I: Integer): TRect;
 
 {**** other routines }
-procedure SwapInt(var Int1, Int2: Integer); {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+procedure SwapInt(var Int1, Int2: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function IntPower(Base, Exponent: Integer): Integer;
 function ChangeTopException(E: TObject): TObject; // Linux version writes error message to ErrOutput
 function StrToBool(const S: string): Boolean;
@@ -448,9 +445,9 @@ procedure PrepareIniSection(Ss: TStrings);
   they are don't work properly, so don't use them }
 
 // (rom) from JvBandWindows to make it obsolete
-function PointL(const X, Y: Longint): TPointL; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function PointL(const X, Y: Longint): TPointL; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 // (rom) from JvBandUtils to make it obsolete
-function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 
 procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);
 function CreateIconFromClipboard: TIcon;
@@ -478,7 +475,7 @@ procedure RleDecompress(Stream: TStream);
 { end JvRLE }
 
 { begin JvDateUtil }
-function CurrentYear: Word; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function CurrentYear: Word; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function IsLeapYear(AYear: Integer): Boolean;
 function DaysPerMonth(AYear, AMonth: Integer): Integer;
 function FirstDayOfPrevMonth: TDateTime;
@@ -488,7 +485,7 @@ function ExtractDay(ADate: TDateTime): Word;
 function ExtractMonth(ADate: TDateTime): Word;
 function ExtractYear(ADate: TDateTime): Word;
 function IncDate(ADate: TDateTime; Days, Months, Years: Integer): TDateTime;
-function IncDay(ADate: TDateTime; Delta: Integer): TDateTime; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function IncDay(ADate: TDateTime; Delta: Integer): TDateTime; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function IncMonth(ADate: TDateTime; Delta: Integer): TDateTime;
 function IncYear(ADate: TDateTime; Delta: Integer): TDateTime;
 function ValidDate(ADate: TDateTime): Boolean;
@@ -503,7 +500,7 @@ function IncHour(ATime: TDateTime; Delta: Integer): TDateTime;
 function IncMinute(ATime: TDateTime; Delta: Integer): TDateTime;
 function IncSecond(ATime: TDateTime; Delta: Integer): TDateTime;
 function IncMSec(ATime: TDateTime; Delta: Integer): TDateTime;
-function CutTime(ADate: TDateTime): TDateTime; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE} { Set time to 00:00:00:00 }
+function CutTime(ADate: TDateTime): TDateTime; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE} { Set time to 00:00:00:00 }
 
 { String to date conversions }
 function GetDateOrder(const DateFormat: string): TDateOrder;
@@ -568,7 +565,7 @@ function NPos(const C: string; S: string; N: Integer): Integer;
 { NPos searches for a N-th position of substring C in a given string. }
 function MakeStr(C: Char; N: Integer): string; overload;
 function MakeStr(C: WideChar; N: Integer): WideString; overload;
-function MS(C: Char; N: Integer): string; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function MS(C: Char; N: Integer): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 { MakeStr return a string of length N filled with character C. }
 function AddChar(C: Char; const S: string; N: Integer): string;
 { AddChar return a string left-padded to length N with characters C. }
@@ -647,7 +644,7 @@ function GetCmdLineArg(const Switch: string; ASwitchChars: TSysCharSet): string;
 
 function Numb2USA(const S: string): string;
 { Numb2USA converts numeric string S to USA-format. }
-function Dec2Hex(N: Longint; A: Byte): string; {$IFDEF HAS_INLINE} inline; {$ENDIF HAS_INLINE}
+function Dec2Hex(N: Longint; A: Byte): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 { Dec2Hex converts the given value to a hexadecimal string representation
   with the minimum number of digits (A) specified. }
 function Hex2Dec(const S: string): Longint;
@@ -1156,21 +1153,6 @@ function CharIsAlpha(Ch: AnsiChar): Boolean;
 begin
   Result := Windows.IsCharAlpha(Ch);
 end;
-
-{ (ahuser) make Delphi 5 compiler happy
-function StrStripNonNumberChars(const S: string): string;
-var
-  I: Integer;
-  Ch: Char;
-begin
-  Result := '';
-  for I := 1 to Length(S) do
-  begin
-    Ch := S[I];
-    if CharIsNumber(Ch) or (Ch = DecimalSeparator) then
-      Result := Result + Ch;
-  end;
-end;}
 
 {$IFDEF MSWINDOWS}
 function GetRecentFolder: string;
