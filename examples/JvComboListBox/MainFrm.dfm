@@ -4,7 +4,7 @@ object Form1: TForm1
   AutoScroll = False
   Caption = 'Form1'
   ClientHeight = 436
-  ClientWidth = 834
+  ClientWidth = 647
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,6 +22,7 @@ object Form1: TForm1
     Height = 436
     Cursor = crHSplit
     AutoSnap = False
+    MinSize = 100
   end
   object JvClipboardViewer1: TJvClipboardViewer
     Left = 304
@@ -59,14 +60,14 @@ object Form1: TForm1
     end
     object Label3: TLabel
       Left = 304
-      Top = 216
+      Top = 200
       Width = 56
       Height = 13
       Caption = '&Draw Type:'
     end
     object Label4: TLabel
       Left = 304
-      Top = 80
+      Top = 72
       Width = 67
       Height = 13
       Caption = 'Button &Width:'
@@ -74,11 +75,19 @@ object Form1: TForm1
     end
     object Label5: TLabel
       Left = 304
-      Top = 264
+      Top = 280
       Width = 44
       Height = 13
       Caption = 'Col&umns:'
       FocusControl = edColumns
+    end
+    object Label6: TLabel
+      Left = 304
+      Top = 240
+      Width = 78
+      Height = 13
+      Caption = 'Dropdown ali&gn:'
+      FocusControl = cbPopupAlign
     end
     object Memo1: TMemo
       Left = 16
@@ -86,45 +95,48 @@ object Form1: TForm1
       Width = 281
       Height = 169
       Lines.Strings = (
-        'Please read this entire file before deploying Delphi 6 app-'
-        'lications, components, or libraries. This file is provided'
-        'pursuant to the Borland No-Nonsense License Statement and'
-        'provides information on deploying Delphi 6 applications.'
+        
+          'TJvCustomListBox is a listbox that can display a combobox overla' +
+          'ying the '
+        
+          'selected or "highlighted" item. Assign a TPopupMenu to the Dropd' +
+          'ownMenu '
+        
+          'property and it will be shown when the combo button is clicked. ' +
+          'You can also '
+        
+          'handle the OnDropDown event for custom handling when the button ' +
+          'is clicked,'
+        'for example, displaying a drop down form.'
         ''
-        'Table of Contents'
-        '==========================================================='
+        
+          'Note that the location of the dropdown  is controlled using the ' +
+          'TPopupMenu.Alignment property.'
         ''
-        '  1.  General Application Deployment'
-        '  2.  Components and Packages'
-        '      2.1 Distributing Custom Packages'
-        '      2.2 Borland Runtime Packages'
-        '      2.3 Runtime packages: Enterprise Edition'
-        '            2.3.1 VCL applications'
-        '            2.3.2 CLX applications'
-        '            2.3.3 Common redistributables'
-        '      2.4 Runtime packages: Professional Edition'
-        '            2.4.1 VCL applications'
-        '            2.4.2 CLX applications'
-        '            2.4.3 Common redistributables'
-        '      2.5 Runtime packages: Personal Edition'
-        '      2.6 Restrictions on CLXDisplay API (Qt.pas) usage'
-        '  3.  The Borland Database Engine (BDE)'
-        '  4.  ActiveX Controls (OCXs)'
-        '  5.  Sample Images'
-        '  6.  InterBase Deployment'
-        '      6.1 Applications that use the 32-bit Local InterBase'
-        '      6.2 The 32-bit five-user InterBase Server'
-        '  7.  DataSnap applications (formerly MIDAS)'
-        '  8.  WebSnap Applications and Interbase'
-        '  9.  VisiBroker'
-        '  10. SQL Links deployment (Enterprise edition only)'
-        '      10.1 SQL Links redistributable files'
-        '      10.2 InterBase'
-        '  11. JPEG compression software'
-        '  12. Data compression library (zlib)'
-        '  13. Windows Common Controls'
-        '  14. Delphi Utilities'
-        '  15. Removed Or Modified "Redistributable" Files')
+        
+          'Apart from the combobox overlay, the listbox also handles data i' +
+          'n its '
+        
+          'Items.Objects property specially. If you put a TPicture into the' +
+          ' '
+        
+          'Objects list, the picture will be drawn by the control instead o' +
+          'f the text.'
+        ''
+        'Note that if you use the Objects property, TJvComboListBox '
+        
+          'automatically frees the object when an item is deleted, so don'#39't' +
+          ' free the '
+        'object yourself. To be able to free the object yourself, set '
+        
+          'Objects[Index] to nil before deleting the item, clearing the lis' +
+          'tor destroying'
+        'the control.'
+        ''
+        
+          'If you use AddImage and InsertImage, an internal copy of the obj' +
+          'ect is '
+        'created and you then need to free the original object yourself.')
       ScrollBars = ssBoth
       TabOrder = 0
       WordWrap = False
@@ -1666,7 +1678,7 @@ object Form1: TForm1
     end
     object btnLoadImage: TButton
       Left = 304
-      Top = 352
+      Top = 372
       Width = 75
       Height = 25
       Caption = 'L&oad...'
@@ -1675,7 +1687,7 @@ object Form1: TForm1
     end
     object btnCopyImage: TButton
       Left = 304
-      Top = 392
+      Top = 400
       Width = 75
       Height = 25
       Caption = 'Co&py'
@@ -1714,7 +1726,7 @@ object Form1: TForm1
     end
     object cbDrawStyle: TComboBox
       Left = 304
-      Top = 232
+      Top = 216
       Width = 81
       Height = 21
       Style = csDropDownList
@@ -1728,73 +1740,102 @@ object Form1: TForm1
     end
     object edButtonWidth: TEdit
       Left = 304
-      Top = 96
+      Top = 88
       Width = 65
       Height = 21
-      TabOrder = 8
+      TabOrder = 9
       Text = '26'
     end
     object udButtonWidth: TUpDown
       Left = 369
-      Top = 96
+      Top = 88
       Width = 15
       Height = 21
       Associate = edButtonWidth
       Min = 0
       Max = 32767
       Position = 26
-      TabOrder = 9
+      TabOrder = 10
       Wrap = False
       OnClick = udButtonWidthClick
     end
     object btnLoadText: TButton
       Left = 304
-      Top = 136
+      Top = 140
       Width = 75
       Height = 25
       Caption = '&Load...'
-      TabOrder = 10
+      TabOrder = 11
       OnClick = btnLoadTextClick
     end
     object chkHotTrackCombo: TCheckBox
       Left = 304
-      Top = 304
+      Top = 328
       Width = 97
       Height = 17
-      Caption = 'Hot&Track Combo'
-      TabOrder = 11
+      Caption = 'Hot&TrackCombo'
+      TabOrder = 12
       OnClick = chkHotTrackComboClick
     end
     object edColumns: TEdit
       Left = 304
-      Top = 280
+      Top = 296
       Width = 65
       Height = 21
-      TabOrder = 12
+      TabOrder = 13
       Text = '26'
     end
     object udColumns: TUpDown
       Left = 369
-      Top = 280
+      Top = 296
       Width = 15
       Height = 21
       Associate = edColumns
       Min = 0
       Max = 32767
       Position = 26
-      TabOrder = 13
+      TabOrder = 14
       Wrap = False
       OnClick = udColumnsClick
     end
     object chkInsert: TCheckBox
       Left = 304
-      Top = 328
+      Top = 344
       Width = 97
       Height = 17
       Caption = 'Ins&ert at top'
-      TabOrder = 14
+      TabOrder = 15
       OnClick = chkHotTrackComboClick
     end
+    object cbPopupAlign: TComboBox
+      Left = 304
+      Top = 256
+      Width = 81
+      Height = 21
+      Style = csDropDownList
+      DropDownCount = 100
+      ItemHeight = 13
+      TabOrder = 8
+      OnChange = cbPopupAlignChange
+      Items.Strings = (
+        'Popup at Left'
+        'Popup at Right'
+        'Popup at Center')
+    end
+    object chkCustomDrop: TCheckBox
+      Left = 304
+      Top = 120
+      Width = 97
+      Height = 17
+      Caption = 'Custom Drop'
+      TabOrder = 16
+    end
+  end
+  object JvColorButton1: TJvColorButton
+    Left = 232
+    Top = 384
+    OtherCaption = '&Other...'
+    Options = []
   end
   object OpenPictureDialog1: TOpenPictureDialog
     InitialDir = '.'
@@ -1802,6 +1843,7 @@ object Form1: TForm1
     Top = 48
   end
   object PopupMenu1: TPopupMenu
+    Alignment = paRight
     OnPopup = PopupMenu1Popup
     Left = 32
     Top = 48
