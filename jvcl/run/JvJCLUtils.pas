@@ -971,6 +971,11 @@ procedure AntiAlias(Clip: TBitmap);
 procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
   XFinal, YFinal: Integer);
 
+{$IFDEF VCL}
+procedure CopyRectDIBits(ACanvas: TCanvas; const DestRect: TRect;
+  ABitmap: TBitmap; const SourceRect: TRect);
+{$ENDIF VCL}
+
 implementation
 
 uses
@@ -6731,13 +6736,14 @@ begin
 end;
 
 function GetRecentDocs: TStringList;
+{$IFDEF VCL}
 var
   Path: string;
   t: TSearchRec;
   Res: Integer;
+{$ENDIF VCL}
 begin
   Result := TStringList.Create;
-  Result.Clear;
   {$IFDEF VCL}
   Path := IncludeTrailingPathDelimiter(GetRecentFolder);
   //search for all files
@@ -6752,7 +6758,7 @@ begin
   finally
     FindClose(t);
   end;
-  {$ENDIF}
+  {$ENDIF VCL}
 end;
 
 { (rb) Duplicate of JvWinDialogs.AddToRecentDocs }
@@ -8043,5 +8049,48 @@ begin
   end;
   Clip.PixelFormat := OPF;
 end;
+
+{$IFDEF VCL}
+procedure CopyRectDIBits(ACanvas: TCanvas; const DestRect: TRect; ABitmap: TBitmap;
+  const SourceRect: TRect);
+var
+  Header, Bits: Pointer;
+  HeaderSize, BitsSize: Cardinal;
+  Bmp: TBitmap;
+begin
+  if ABitmap.PixelFormat < pf15bit then
+  begin
+    Bmp := ABitmap;
+    // this function does not support palettes
+    ABitmap := TBitmap.Create;
+    ABitmap.Assign(Bmp);
+    ABitmap.PixelFormat := pf24bit;
+  end
+  else
+    Bmp := nil;
+  try
+    GetDIBSizes(ABitmap.Handle, HeaderSize, BitsSize);
+    { Do not use Delphi's memory manager. }
+    Header := VirtualAlloc(nil, HeaderSize, MEM_COMMIT, PAGE_READWRITE);
+    Bits := VirtualAlloc(nil, BitsSize, MEM_COMMIT, PAGE_READWRITE);
+    try
+      GetDIB(ABitmap.Handle, ABitmap.Palette, Header^, Bits^);
+      StretchDIBits(ACanvas.Handle,
+         DestRect.Left, DestRect.Top,
+         DestRect.Right - DestRect.Left, DestRect.Bottom - DestRect.Top,
+         SourceRect.Left, SourceRect.Top,
+         SourceRect.Right - SourceRect.Left, SourceRect.Bottom - SourceRect.Top,
+         Bits, TBitmapInfo(Header^),
+         DIB_RGB_COLORS, ACanvas.CopyMode);
+    finally
+      VirtualFree(Bits, 0, MEM_FREE);
+      VirtualFree(Header, 0, MEM_FREE);
+    end;
+  finally
+    if Bmp <> nil then
+      ABitmap.Free;
+  end;
+end;
+{$ENDIF VCL}
 
 end.
