@@ -4437,6 +4437,7 @@ end;
 procedure TJvCustomDataConsumerViewList.DataProviderChanging(ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
 var
+  Item: IJvDataItem;
   ItemIdx: Integer;
 begin
   case AReason of
@@ -4445,11 +4446,21 @@ begin
         // Source is a reference to the item being deleted
         if (Source <> nil) then
         begin
-          ItemIdx := IndexOfItem(IJvDataItem(Source));
-          if ItemIdx >= 0 then
-          begin
-            DeleteItem(ItemIdx);
-            NotifyViewChanged;
+          ConsumerImpl.Enter;
+          try
+            Item := (ConsumerImpl.ProviderIntf.GetItems as IJvDataIDSearch).Find(
+              IJvDataItem(Source).GetID, True);
+            if (Item <> nil) then
+            begin
+              ItemIdx := IndexOfItem(Item);
+              if ItemIdx >= 0 then
+              begin
+                DeleteItem(ItemIdx);
+                NotifyViewChanged;
+              end;
+            end;
+          finally
+            ConsumerImpl.Leave;
           end;
         end;
       end;
