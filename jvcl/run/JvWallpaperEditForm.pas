@@ -62,7 +62,7 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TFoWallpaperChooser.FormCreate(Sender: TObject);
 begin

@@ -93,7 +93,7 @@ uses
   Consts, Math,
   JvConsts, JvJVCLUtils;
 
-{$R *.DFM}
+{$R *.dfm}
 
 function FindEditor(JvSpeedBar: TJvSpeedBar): TJvSpeedbarSetupWindow;
 var

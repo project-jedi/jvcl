@@ -51,7 +51,7 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TAlignForm.B_OkClick(Sender: TObject);
 begin

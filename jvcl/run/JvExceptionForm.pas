@@ -93,7 +93,7 @@ uses
   Consts,
   JvTypes, JvConsts, JvJVCLUtils, JvJCLUtils;
 
-{$R *.DFM}
+{$R *.dfm}
 
 resourcestring
   SCodeError = '%s.' + sLineBreak + 'Error Code: %.8x (%1:d).';

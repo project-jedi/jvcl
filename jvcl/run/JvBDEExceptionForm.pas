@@ -91,7 +91,7 @@ implementation
 uses
   Consts, Windows, BDE, JvConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 var
   DbEngineErrorDlg: TJvBdeErrorDlg = nil;

@@ -159,7 +159,7 @@ implementation
 
 uses JvConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 type
   TOpenDisplay = class(TJvCustomSegmentedLEDDisplay);

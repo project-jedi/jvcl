@@ -165,7 +165,7 @@ uses
   Registry, Consts, IniFiles,
   JvJCLUtils, JvJVCLUtils, JvConsts, JvTypes;
 
-{$R *.DFM}
+{$R *.dfm}
 
 const
   keyLoginSection = 'Login Dialog'; // do not localize

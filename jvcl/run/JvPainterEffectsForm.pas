@@ -57,7 +57,7 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TPainterEffectsForm.Bar(AMax, AMin, APos: Integer);
 begin

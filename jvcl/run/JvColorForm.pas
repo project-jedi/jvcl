@@ -75,7 +75,7 @@ implementation
 uses
   JvColorButton, JvTypes;
 
-{.$R *.DFM}
+{.$R *.dfm}
 
 procedure TJvClrFrm.SetButton(Button: TControl);
 begin

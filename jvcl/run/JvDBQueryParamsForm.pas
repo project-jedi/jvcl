@@ -70,7 +70,7 @@ uses
   DbConsts,
   JvJVCLUtils, JvTypes;
 
-{$R *.DFM}
+{$R *.dfm}
 resourcestring
   // (p3) copied from bdeconst so we don't have to include the entire BDE for three strings...
   SDataTypes = ';String;SmallInt;Integer;Word;Boolean;Float;Currency;BCD;Date;Time;DateTime;;;;Blob;Memo;Graphic;;;;;Cursor;';

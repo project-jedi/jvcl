@@ -62,7 +62,7 @@ procedure SegmentedLEDDisplayMappingEditor(ADisplay: TJvCustomSegmentedLEDDispla
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure SegmentedLEDDisplayMappingEditor(ADisplay: TJvCustomSegmentedLEDDisplay;
   var OpenFolder, SaveFolder: string);

@@ -23,40 +23,37 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
   When Position 0 you can not click on the far left of the button to move.
-  When Position 100 you can not click on the far Right of the button to move.
+  When Position 100 you can not click on the far right of the button to move.
 
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvGridFilter;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Grids;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Grids;
 
 type
   TJvGridFilter = class(TComponent)
   private
     FGrid: TStringGrid;
+    // (rom) lifted the stupid limit of 10 filters
+    FGridRowFilter: TList;
     procedure ApplyFilter;
-
-    function parseFilter(Afilter: string): boolean;
+    function ParseFilter(AFilter: string): Boolean;
     procedure SetGrid(const Value: TStringGrid);
-    { Private declarations }
-  protected
-    { Protected declarations }
   public
-    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Filter(AFilter: string);
     procedure ShowRows;
   published
-    { Published declarations }
     property Grid: TStringGrid read FGrid write SetGrid;
   end;
-
-
-resourcestring
-  sFilterTooComplex = 'Filter too complex';
 
 implementation
 
@@ -64,149 +61,166 @@ uses
   JvConsts;
 
 type
-  TGridFilterFunc = function(FieldValue, FilterValue: string): boolean;
+  TGridFilterFunc = function(FieldValue, FilterValue: string): Boolean;
 
+  PGridFieldFilter = ^TGridFieldFilter;
   TGridFieldFilter = record
     FilterFunc: TGridFilterFunc;
-    FilterField: integer;
+    FilterField: Integer;
     FilterValue: string;
   end;
 
-  TGridRowFilter = record
-    FilterCount: integer;
-    Filters: array[0..9] of TGridFieldFilter;
-  end;
+function FilterEQ(FieldValue, FilterValue: string): Boolean;
+begin
+  Result := FieldValue = FilterValue;
+end;
 
+function FilterNE(FieldValue, FilterValue: string): Boolean;
+begin
+  Result := FieldValue <> FilterValue;
+end;
+
+function FilterGT(FieldValue, FilterValue: string): Boolean;
+begin
+  Result := FieldValue > FilterValue;
+end;
+
+function FilterLT(FieldValue, FilterValue: string): Boolean;
+begin
+  Result := FieldValue < FilterValue;
+end;
+
+function FilterLIKE(FieldValue, FilterValue: string): Boolean;
+begin
+  Result := Pos(LowerCase(FilterValue), LowerCase(FieldValue)) > 0;
+end;
+
+constructor TJvGridFilter.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FGridRowFilter := TList.Create;
+end;
+
+destructor TJvGridFilter.Destroy;
 var
-  GridRowFilter: TGridRowFilter;
-
-  // Grid filter functions
-
-function filterEQ(FieldValue, FilterValue: string): boolean;
+  I: Integer;
 begin
-  result := FieldValue = FilterValue;
+  for I := 0 to FGridRowFilter.Count-1 do
+    Dispose(FGridRowFilter[I]);
+  FGridRowFilter.Free;
+  inherited Destroy;
 end;
 
-function filterNE(FieldValue, FilterValue: string): boolean;
-begin
-  result := FieldValue <> FilterValue;
-end;
-
-function filterGT(FieldValue, FilterValue: string): boolean;
-begin
-  result := FieldValue > FilterValue;
-end;
-
-function filterLT(FieldValue, FilterValue: string): boolean;
-begin
-  result := FieldValue < FilterValue;
-end;
-
-function filterLIKE(FieldValue, FilterValue: string): boolean;
-begin
-  result := pos(lowercase(FilterValue), lowercase(FieldValue)) > 0;
-end;
-
-function TJvGridFilter.parseFilter(Afilter: string): boolean;
+function TJvGridFilter.ParseFilter(AFilter: string): Boolean;
 var
-  op, s: string;
-  f: TGridFilterFunc;
-  fieldnr, i, p: integer;
-  Fieldname, Filtervalue: string;
+  Op, S: string;
+  Func: TGridFilterFunc;
+  FieldNr, I, P: Integer;
+  FieldName, FilterValue: string;
+  Filt: PGridFieldFilter;
 begin
-  result := false;
-  GridRowFilter.FilterCount := 0;
-  s := trim(Afilter);
-  if s = '' then exit;
-  @f := nil;
+  Result := False;
+  for I := 0 to FGridRowFilter.Count-1 do
+    Dispose(FGridRowFilter[I]);
+  FGridRowFilter.Clear;
+
+  S := Trim(AFilter);
+  if S = '' then
+    Exit;
+  @Func := nil;
   // parse field name
   repeat
-    p := pos('[', s);
+    P := Pos('[', S);
 
-    if p = 0 then exit;
-    s := copy(s, p + 1, length(s));
-    p := pos(']', s);
-    if p = 0 then exit;
-    Fieldname := copy(s, 1, p - 1);
-    s := trim(copy(s, p + 1, length(s)));
-    if FieldName = '' then exit;
+    if P = 0 then
+      Exit;
+    S := Copy(S, P + 1, Length(S));
+    P := Pos(']', S);
+    if P = 0 then
+      Exit;
+    FieldName := Copy(S, 1, P - 1);
+    S := Trim(Copy(S, P + 1, Length(S)));
+    if FieldName = '' then
+      Exit;
     // find fieldnumber
     FieldNr := 0;
-    for i := 1 to Grid.colcount - 1 do
-      if Grid.cells[i, 0] = Fieldname then
+    for i := 1 to Grid.ColCount - 1 do
+      if Grid.Cells[i, 0] = FieldName then
       begin
-        Fieldnr := i;
+        FieldNr := i;
         Break;
       end;
-    if fieldnr = 0 then exit;
+    if FieldNr = 0 then
+      Exit;
     // we have the field number, now check operand
-    p := pos('"', s); // " marks the beginning of the filter value
-    if p = 0 then exit;
-    op := lowercase(trim(copy(s, 1, p - 1)));
-    s := copy(s, p + 1, length(s));
-    p := pos('"', s); // find the end of the filtervalue
-    if p = 0 then exit;
-    FilterValue := copy(s, 1, p - 1);
-    s := trim(copy(s, p + 1, length(s)));
-//    f := nil;
-    if op = '=' then
-      f := filterEQ
-    else if op = '<>' then
-      f := filterNE
-    else if op = '>' then
-      f := filterGT
-    else if op = '<' then
-      f := filterLT
-    else if op = 'like' then
-      f := filterLIKE
+    P := Pos('"', S); // " marks the beginning of the filter value
+    if P = 0 then
+      Exit;
+    Op := LowerCase(Trim(Copy(S, 1, P - 1)));
+    S := Copy(S, P + 1, Length(S));
+    P := Pos('"', S); // find the end of the FilterValue
+    if P = 0 then
+      Exit;
+    FilterValue := Copy(S, 1, P - 1);
+    S := Trim(Copy(S, P + 1, Length(S)));
+//    Func := nil;
+    if Op = '=' then
+      Func := FilterEQ
     else
-      exit;
-    inc(GridRowFilter.FilterCount);
-    if (GridRowFilter.FilterCount > 9) then
-    begin
-      showmessage(sFilterTooComplex);
-      GridRowFilter.FilterCount := 0;
-      exit;
-    end;
-    GridrowFilter.Filters[Gridrowfilter.FilterCount - 1].FilterFunc := f; //invalid warning
-    GridrowFilter.Filters[Gridrowfilter.FilterCount - 1].FilterField := FieldNr;
-    GridrowFilter.Filters[Gridrowfilter.FilterCount - 1].FilterValue := FilterValue;
-  until s = '';
-  result := true;
+    if Op = '<>' then
+      Func := FilterNE
+    else
+    if Op = '>' then
+      Func := FilterGT
+    else
+    if Op = '<' then
+      Func := FilterLT
+    else
+    if Op = 'like' then
+      Func := FilterLIKE
+    else
+      Exit;
+
+    New(Filt);
+    Filt^.FilterFunc := Func;
+    Filt^.FilterField := FieldNr;
+    Filt^.FilterValue := FilterValue;
+    FGridRowFilter.Add(Filt);
+  until S = '';
+  Result := True;
 end;
 
 procedure TJvGridFilter.ApplyFilter;
 var
-  arow, fi, fc, Filterfield: integer;
-  FieldValue, FilterValue: string;
-  fn: TGridFilterFunc;
-  CanHide: boolean;
+  Row, I: Integer;
+  FieldValue: string;
+  CanHide: Boolean;
+  Filt: PGridFieldFilter;
 begin
-  if GridRowFilter.FilterCount = 0 then exit;
-  fc := GridRowFilter.FilterCount;
-  for arow := 1 to Grid.rowcount - 1 do
+  if FGridRowFilter.Count = 0 then
+    Exit;
+  for Row := 1 to Grid.RowCount - 1 do
   begin
-    CanHide := false;
-    for fi := 0 to fc - 1 do
+    CanHide := False;
+    for I := 0 to FGridRowFilter.Count - 1 do
     begin
-      fn := GridRowFilter.Filters[fi].FilterFunc;
-      FilterValue := GridRowFilter.Filters[fi].FilterValue;
-      filterField := GridRowFilter.Filters[fi].FilterField;
-      FieldValue := Grid.cells[FilterField, arow];
-      if not fn(FieldValue, FilterValue) then
+      Filt := FGridRowFilter[I];
+      FieldValue := Grid.Cells[Filt^.FilterField, Row];
+      if not Filt^.FilterFunc(FieldValue, Filt^.FilterValue) then
       begin
-        CanHide := true;
-        break;
+        CanHide := True;
+        Break;
       end;
     end;
-    if CanHide then Grid.rowheights[arow] := 0;
+    if CanHide then
+      Grid.RowHeights[Row] := 0;
   end;
 end;
 
 procedure TJvGridFilter.Filter(AFilter: string);
 begin
-  if assigned(FGrid) then
-    if parseFilter(AFilter) then
+  if Assigned(FGrid) then
+    if ParseFilter(AFilter) then
       ApplyFilter;
 end;
 
@@ -217,10 +231,10 @@ end;
 
 procedure TJvGridFilter.ShowRows;
 var
-  arow: integer;
+  Row: Integer;
 begin
-  for arow := 0 to Grid.rowcount - 1 do
-    Grid.rowheights[arow] := grid.defaultrowheight;
+  for Row := 0 to Grid.RowCount - 1 do
+    Grid.RowHeights[Row] := Grid.DefaultRowHeight;
 end;
 
 end.

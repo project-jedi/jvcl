@@ -109,7 +109,7 @@ resourcestring
 implementation
 uses
   JvConsts, JvgTypes, JvgExport, JvgQPrintSetupForm, Printers; //, mdrpt;
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TJvgfPrintPreview.FormCreate(Sender: TObject);
 begin

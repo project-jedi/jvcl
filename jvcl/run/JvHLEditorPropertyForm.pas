@@ -192,7 +192,7 @@ uses
   Math,
   JvConsts, JvJVCLUtils, JvJCLUtils;
 
-{$R *.DFM}
+{$R *.dfm}
 
 function GetHardCodedExamples: string; forward;
 
