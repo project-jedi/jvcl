@@ -23,5 +23,3 @@ brc32 JvValidatorsReg.rc -r -fo..\Resources\JvValidatorsReg.dcr
 brc32 JvWizardReg.rc -r -fo..\Resources\JvWizardReg.dcr
 brc32 JvTimeFrameWorkReg.rc -r -fo..\Resources\JvTimeFrameWorkReg.dcr
 brc32 JvManagedThreadsReg.rc -r -fo..\Resources\JvManagedThreadsReg.dcr
-rem Other resources...
-brc32 JvSegmentedLEDDisplay.rc -r -fo..\Resources\JvSegmentedLEDDisplay.res

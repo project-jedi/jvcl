@@ -1,0 +1,39 @@
+14 DIALOG FIXED IMPURE  21, 16, 355, 196
+STYLE DS_MODALFRAME | DS_3DLOOK | DS_CONTEXTHELP | WS_POPUP | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Page Setup with Header & Footer"
+FONT 8, "MS Sans Serif"
+BEGIN
+    GROUPBOX        "Paper",1073,8,8,224,56,WS_GROUP
+    LTEXT           "Si&ze",1089,16,25,30,8
+    COMBOBOX        1137,49,23,175,160,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_GROUP | WS_TABSTOP
+    LTEXT           "&Source",1090,16,44,32,8
+    COMBOBOX        1138,49,42,175,160,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_GROUP | WS_TABSTOP
+    GROUPBOX        "Orientation",1072,8,69,68,56,WS_GROUP
+    CONTROL         "P&ortrait",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | 
+                    WS_TABSTOP,16,83,53,10
+    CONTROL         "L&andscape",1057,"Button",BS_AUTORADIOBUTTON,16,103,53,
+                    10
+    GROUPBOX        "\037>;O",1075,84,69,148,56,WS_GROUP
+    LTEXT           "&Left:",1102,90,85,32,8
+    EDITTEXT        1155,123,84,32,12,WS_GROUP
+    LTEXT           "&Right:",1103,161,85,30,8
+    EDITTEXT        1157,192,84,32,12,WS_GROUP
+    LTEXT           "&Top:",1104,90,104,32,8
+    EDITTEXT        1156,123,103,32,12,WS_GROUP
+    LTEXT           "&Bottom:",1105,161,104,31,8
+    EDITTEXT        1158,192,103,32,12,WS_GROUP
+    LTEXT           "Page Header:",32,8,135,74,8
+    EDITTEXT        30,84,133,148,12,ES_AUTOHSCROLL
+    LTEXT           "Page Footer:",33,8,154,73,8
+    EDITTEXT        31,84,152,148,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",1,190,174,50,14,WS_GROUP
+    PUSHBUTTON      "Cancel",2,244,174,50,14
+    PUSHBUTTON      "&Printer...",1026,298,174,50,14
+    GROUPBOX        "Preview",34,240,8,108,158
+    CONTROL         "",1080,"Static",SS_WHITERECT,254,46,80,80
+    CONTROL         "",1081,"Static",SS_GRAYRECT,333,50,4,80
+    CONTROL         "",1082,"Static",SS_GRAYRECT,257,126,80,4
+END
