@@ -273,7 +273,8 @@ procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer
 
 implementation
 uses
-  JvThemes, JvJCLUtils, JvJVCLUtils, Math;
+  Math,
+  JvThemes, JvJCLUtils, JvJVCLUtils;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -715,14 +716,16 @@ begin
       if RoundedFrame=0 then
       begin
         Brush.Color := FrameColor;
-        FrameRect(ClientRect);
+        FrameRect({$IFDEF VisualCLX}Canvas, {$ENDIF} ClientRect);
       end
       else
       begin
         Brush.Color := Color;
         FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame);
-        if not Transparent then
+        {$IFDEF VCL}
+        if not Transparent then    // clx: TODO
           FloodFill(ClientRect.Left + 1, ClientRect.Top + RoundedFrame, FrameColor, fsBorder);
+        {$ENDIF VCL}
       end;
     end;
     Brush.Style := bsClear;

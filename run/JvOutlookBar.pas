@@ -1360,7 +1360,8 @@ begin
         begin
           if HasImage then
           begin
-            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex, Pages[Index].Enabled);
+            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
+              {$IFDEF VisualCLX}itImage, {$ENDIF}Pages[Index].Enabled);
             Inc(R.Left, PageImages.Width + 8);
           end
           else
@@ -1370,14 +1371,16 @@ begin
       taCenter:
         if HasImage then
         begin
-          PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex, Pages[Index].Enabled);
+          PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
+            {$IFDEF VisualCLX}itImage, {$ENDIF}Pages[Index].Enabled);
           Inc(R.Left, PageImages.Width + 4);
         end;
       taRightJustify:
         begin
           if HasImage then
           begin
-            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex, Pages[Index].Enabled);
+            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
+              {$IFDEF VisualCLX}itImage, {$ENDIF}Pages[Index].Enabled);
             Inc(R.Left, PageImages.Width + 8);
           end;
           Dec(R.Right, 4);
@@ -1395,11 +1398,21 @@ begin
     begin
       OffsetRect(R, 1, 1);
       Canvas.Font.Color := clWhite;
+      {$IFDEF VCL}
       DrawText(Canvas.Handle, PChar(Pages[Index].Caption), -1, R, Flags or DT_END_ELLIPSIS);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS);
+      {$ENDIF VisualCLX}
       OffsetRect(R, -1, -1);
       Canvas.Font.Color := clGrayText;
     end;
+    {$IFDEF VCL}
     DrawText(Canvas.Handle, PChar(Pages[Index].Caption), -1, R, Flags or DT_END_ELLIPSIS);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS);
+    {$ENDIF VisualCLX}
   finally
     Canvas.Font.Color := SavedColor;
   end;
@@ -1532,7 +1545,9 @@ begin
                 try
                   if LargeImages <> nil then
                     LargeImages.Draw(Canvas, R.Left + ((R.Right - R.Left) - LargeImages.Width) div 2, R.Top + 4,
-                      Pages[Index].Buttons[I].ImageIndex, Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
+                      Pages[Index].Buttons[I].ImageIndex,
+                      {$IFDEF VisualCLX}itImage, {$ENDIF}
+                      Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
                 finally
                   RestoreDC(Canvas.Handle, SavedDC);
                 end;
@@ -1545,8 +1560,14 @@ begin
                   else
                     Canvas.Font.Color := clGrayText;
                 end;
+                {$IFDEF VCL}
                 DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
                   DT_EXPANDTABS or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+                {$ENDIF VCL}
+                {$IFDEF VisualCLX}
+                DrawText(Canvas, Pages[Index].Buttons[I].Caption, -1, R3,
+                  DT_EXPANDTABS or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+                {$ENDIF VisualCLX}
               finally
                 Canvas.Font.Color := SavedColor;
               end;
@@ -1558,7 +1579,10 @@ begin
                 SavedDC := SaveDC(Canvas.Handle);
                 try
                   if SmallImages <> nil then
-                    SmallImages.Draw(Canvas, R.Left + 2, R.Top + 2, Pages[Index].Buttons[I].ImageIndex, Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
+                    SmallImages.Draw(Canvas, R.Left + 2, R.Top + 2,
+                      Pages[Index].Buttons[I].ImageIndex,
+                      {$IFDEF VisualCLX}itImage, {$ENDIF}
+                      Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
                 finally
                   RestoreDC(Canvas.Handle, SavedDC);
                 end;
@@ -1572,8 +1596,14 @@ begin
                     Canvas.Font.Color := clGrayText;
                 end;
                 InflateRect(R3, -4, 0);
+                {$IFDEF VCL}
                 DrawText(Canvas.Handle, PChar(Pages[Index].Buttons[I].Caption), -1, R3,
                   DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP or DT_EDITCONTROL);
+                {$ENDIF VCL}
+                {$IFDEF VisualCLX}
+                DrawText(Canvas, Pages[Index].Buttons[I].Caption, -1, R3,
+                  DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP);
+                {$ENDIF VisualCLX}
               finally
                 Canvas.Font.Color := SavedColor;
               end;
