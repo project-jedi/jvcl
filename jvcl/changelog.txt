@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2004-04-08
+- Compatible to newest JCL // ahuser
+- All components compile and run under BCB 6 without any error or hint // ahuser
 2004-04-07
 - New JVCL installer // ahuser
 2004-04-05
