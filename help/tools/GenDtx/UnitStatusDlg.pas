@@ -237,7 +237,7 @@ begin
 
   Stream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite);
   try
-    BytesRead := Stream.Read(FBuffer, SizeOf(FBuffer));
+    BytesRead := Stream.read(FBuffer, SizeOf(FBuffer));
     P := FBuffer;
     if BytesRead < SizeOf(FBuffer) then
       Q := FBuffer + BytesRead - 1

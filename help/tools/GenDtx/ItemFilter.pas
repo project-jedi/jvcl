@@ -147,98 +147,59 @@ implementation
 uses
   Settings;
 
+//=== Local procedures =======================================================
+
 function TriStateOk(const ATriState: TTriState; const ABool: Boolean): Boolean;
 begin
   Result := (ATriState = tsDontCare) or (ABool = (ATriState = tsYes));
 end;
 
-{ TPropertyFilter }
+//=== TClassFilter ===========================================================
 
-procedure TPropertyFilter.Assign(Source: TPersistent);
+procedure TClassFilter.Assign(Source: TPersistent);
 var
-  Src: TPropertyFilter;
+  Src: TClassFilter;
 begin
-  if Source is TPropertyFilter then
+  if Source is TClassFilter then
   begin
-    Src := Source as TPropertyFilter;
+    Src := Source as TClassFilter;
 
-    FScope := Src.FScope;
-    FMustIncludeSpecifiers := Src.FMustIncludeSpecifiers;
-    FMustIncludeOneOfSpecifiers := Src.FMustIncludeOneOfSpecifiers;
-    FMustExcludeSpecifiers := Src.FMustExcludeSpecifiers;
-    FInList := Src.FInList;
-    FShowInherited := Src.FShowInherited;
-    FShowArray := Src.FShowArray;
+    FDescendantOf := Src.FDescendantOf;
   end
   else
-
     inherited Assign(Source);
 end;
 
-constructor TPropertyFilter.Create(AOwnerFilter: TItemFilter);
+constructor TClassFilter.Create(AOwnerFilter: TItemFilter);
 begin
   inherited Create;
 
   FFilter := AOwnerFilter;
 
-  FInList := TStringList.Create;
-  TStringList(FInList).Sorted := True;
-  TStringList(FInList).Duplicates := dupIgnore;
-
   Reset;
 end;
 
-destructor TPropertyFilter.Destroy;
+function TClassFilter.Includes(AItem: TAbstractItem): Boolean;
 begin
-  FInList.Free;
-  inherited Destroy;
-end;
-
-function TPropertyFilter.Includes(AItem: TAbstractItem): Boolean;
-begin
-  Result := AItem is TClassPropertyItem;
+  Result := AItem is TClassItem;
   if not Result then
     Exit;
 
-  with AItem as TClassPropertyItem do
+  with AItem as TClassItem do
   begin
-    if FFilter.ClassFilter.DescendantOf > '' then
-    begin
-      Result := TSettings.Instance.IsDescendantOf(ClassString,
-        FFilter.ClassFilter.DescendantOf);
-      if not Result then
-        Exit;
-    end;
-
-    Result :=
-      TriStateOk(Self.ShowInherited, IsInherited) and
-      TriStateOk(Self.ShowArray, IsArray) and
-      (Position in Self.Scope) and
-      (Self.MustExcludeSpecifiers * Specifiers = []) and
-      (Self.MustIncludeSpecifiers * Specifiers = Self.MustIncludeSpecifiers) and
-      ((Self.MustIncludeOneOfSpecifiers = []) or
-      (Self.MustIncludeOneOfSpecifiers * Specifiers <> [])) and
-      ((Self.InList.Count = 0) or (Self.InList.IndexOf(SimpleName) >= 0));
+    if Self.DescendantOf > '' then
+      Result := TSettings.Instance.IsDescendantOf(SimpleName, Self.DescendantOf)
+    else
+      Result := True;
   end;
 end;
 
-procedure TPropertyFilter.Reset;
+procedure TClassFilter.Reset;
 begin
-  FScope := [Low(TClassVisibility)..High(TClassVisibility)];
-  FMustIncludeSpecifiers := [];
-  FMustIncludeOneOfSpecifiers := [];
-  FMustExcludeSpecifiers := [];
-  FInList.Clear;
-  FShowInherited := tsDontCare;
-  FShowArray := tsDontCare;
+  FDescendantOf := '';
 end;
 
-procedure TPropertyFilter.SetInList(const Value: TStrings);
-begin
-  FInList.Assign(Value);
-end;
-
-{ TItemFilter }
+//=== TItemFilter ============================================================
 
 procedure TItemFilter.Assign(Source: TPersistent);
 var
@@ -355,7 +316,7 @@ begin
   FPropertyFilter.Assign(Value);
 end;
 
-{ TMethodFilter }
+//=== TMethodFilter ==========================================================
 
 procedure TMethodFilter.Assign(Source: TPersistent);
 var
@@ -439,7 +400,7 @@ begin
   FShowConstructor := tsDontCare;
 end;
 
-{ TProcedureFunctionFilter }
+//=== TProcedureFunctionFilter ===============================================
 
 procedure TProcedureFunctionFilter.Assign(Source: TPersistent);
 var
@@ -489,50 +450,90 @@ begin
   FMustIncludeDirectives := [];
 end;
 
-{ TClassFilter }
+//=== TPropertyFilter ========================================================
 
-procedure TClassFilter.Assign(Source: TPersistent);
+procedure TPropertyFilter.Assign(Source: TPersistent);
 var
-  Src: TClassFilter;
+  Src: TPropertyFilter;
 begin
-  if Source is TClassFilter then
+  if Source is TPropertyFilter then
   begin
-    Src := Source as TClassFilter;
+    Src := Source as TPropertyFilter;
 
-    FDescendantOf := Src.FDescendantOf;
+    FScope := Src.FScope;
+    FMustIncludeSpecifiers := Src.FMustIncludeSpecifiers;
+    FMustIncludeOneOfSpecifiers := Src.FMustIncludeOneOfSpecifiers;
+    FMustExcludeSpecifiers := Src.FMustExcludeSpecifiers;
+    FInList := Src.FInList;
+    FShowInherited := Src.FShowInherited;
+    FShowArray := Src.FShowArray;
   end
   else
+
     inherited Assign(Source);
 end;
 
-constructor TClassFilter.Create(AOwnerFilter: TItemFilter);
+constructor TPropertyFilter.Create(AOwnerFilter: TItemFilter);
 begin
   inherited Create;
 
   FFilter := AOwnerFilter;
 
+  FInList := TStringList.Create;
+  TStringList(FInList).Sorted := True;
+  TStringList(FInList).Duplicates := dupIgnore;
+
   Reset;
 end;
 
-function TClassFilter.Includes(AItem: TAbstractItem): Boolean;
+destructor TPropertyFilter.Destroy;
 begin
-  Result := AItem is TClassItem;
+  FInList.Free;
+  inherited Destroy;
+end;
+
+function TPropertyFilter.Includes(AItem: TAbstractItem): Boolean;
+begin
+  Result := AItem is TClassPropertyItem;
   if not Result then
     Exit;
 
-  with AItem as TClassItem do
+  with AItem as TClassPropertyItem do
   begin
-    if Self.DescendantOf > '' then
-      Result := TSettings.Instance.IsDescendantOf(SimpleName, Self.DescendantOf)
-    else
-      Result := True;
+    if FFilter.ClassFilter.DescendantOf > '' then
+    begin
+      Result := TSettings.Instance.IsDescendantOf(ClassString,
+        FFilter.ClassFilter.DescendantOf);
+      if not Result then
+        Exit;
+    end;
+
+    Result :=
+      TriStateOk(Self.ShowInherited, IsInherited) and
+      TriStateOk(Self.ShowArray, IsArray) and
+      (Position in Self.Scope) and
+      (Self.MustExcludeSpecifiers * Specifiers = []) and
+      (Self.MustIncludeSpecifiers * Specifiers = Self.MustIncludeSpecifiers) and
+      ((Self.MustIncludeOneOfSpecifiers = []) or
+      (Self.MustIncludeOneOfSpecifiers * Specifiers <> [])) and
+      ((Self.InList.Count = 0) or (Self.InList.IndexOf(SimpleName) >= 0));
   end;
 end;
 
-procedure TClassFilter.Reset;
+procedure TPropertyFilter.Reset;
 begin
-  FDescendantOf := '';
+  FScope := [Low(TClassVisibility)..High(TClassVisibility)];
+  FMustIncludeSpecifiers := [];
+  FMustIncludeOneOfSpecifiers := [];
+  FMustExcludeSpecifiers := [];
+  FInList.Clear;
+  FShowInherited := tsDontCare;
+  FShowArray := tsDontCare;
+end;
+
+procedure TPropertyFilter.SetInList(const Value: TStrings);
+begin
+  FInList.Assign(Value);
 end;
 
 end.
-

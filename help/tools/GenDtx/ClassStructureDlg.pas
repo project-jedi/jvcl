@@ -26,7 +26,6 @@ type
 implementation
 
 {$R *.dfm}
-
 //=== TfrmClassStructure =====================================================
 
 procedure TfrmClassStructure.actCancelExecute(Sender: TObject);

@@ -27,7 +27,7 @@ type
     rbtOutputToSameDir: TRadioButton;
     rbtOutputToOtherDir: TRadioButton;
     Label2: TLabel;
-    edtCapitalizationFile: TJvFileNameEdit;
+    edtCapitalizationFile: TJvFilenameEdit;
     edtOutputDirectory: TJvDirectoryEdit;
     Button1: TButton;
     Button2: TButton;

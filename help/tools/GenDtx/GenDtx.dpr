@@ -16,7 +16,9 @@ uses
   VisibilityDlg in 'VisibilityDlg.pas' {frmVisibility},
   ClassStructureDlg in 'ClassStructureDlg.pas' {frmClassStructure},
   EditPasCleanOptionsDlg in 'EditPasCleanOptionsDlg.pas' {frmEditPasCleanOptions},
-  ItemFilter in 'ItemFilter.pas';
+  ItemFilter in 'ItemFilter.pas',
+  DtxRenameU in 'DtxRenameU.pas' {frmDtxRename},
+  Utils in 'Utils.pas';
 
 {$R *.res}
 

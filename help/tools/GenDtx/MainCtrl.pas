@@ -4,17 +4,17 @@ interface
 
 uses
   Classes, ParserTypes, Settings, FilterDlg, JvProgressDialog,
-  EditPascleanOptionsDlg, ItemFilter;
+  EditPasCleanOptionsDlg, ItemFilter, DelphiParser;
 
-const
-  CSummaryDescription = 'Summary'#13#10'  Write here a summary (1 line)';
-  CDescriptionDescription = 'Description'#13#10'  Write here a description'#13#10;
-  CSeeAlsoDescription = 'See Also'#13#10'  List here other properties, methods (comma seperated)'#13#10 +
-    '  Remove the ''See Also'' section if there are no references';
-  CReturnsDescription = 'Return value'#13#10'  Describe here what the function returns';
-  CParamDescription = 'Parameters'#13#10;
-  CValueReference = '(Value = %Value - for reference)';
-  CClassInfo = '<TITLEIMG %s>'#13#10'JVCLInfo'#13#10'  GROUP=JVCL.??'#13#10'  FLAG=Component'#13#10;
+//const
+//  CSummaryDescription = 'Summary'#13#10'  Write here a summary (1 line)';
+//  CDescriptionDescription = 'Description'#13#10'  Write here a description'#13#10;
+//  CSeeAlsoDescription = 'See Also'#13#10'  List here other properties, methods (comma seperated)'#13#10 +
+//    '  Remove the ''See Also'' section if there are no references';
+//  CReturnsDescription = 'Return value'#13#10'  Describe here what the function returns';
+//  CParamDescription = 'Parameters'#13#10;
+//  CValueReference = '(Value = %Value - for reference)';
+//  CClassInfo = '<TITLEIMG %s>'#13#10'JVCLInfo'#13#10'  GROUP=JVCL.??'#13#10'  FLAG=Component'#13#10;
 
 type
   TMainCtrl = class
@@ -62,12 +62,12 @@ type
     procedure DoError(Strings: TStrings); overload;
     procedure DoErrorFmt(const AFormat: string; const Args: array of const);
 
-    procedure WriteDtx(ATypeList: TTypeList);
-    procedure FillWithHeaders(const UnitName: string; ATypeList: TTypeList; Optional, NotOptional: TStrings);
+    procedure WriteDtx(APasItems: TPasItems);
+    //    procedure FillWithHeaders(const UnitName: string; APasItems: TPasItems; Optional, NotOptional: TStrings);
     procedure CompareDtxFile(const AUnitName: string;
-      DtxHeaders: TList; NotInDtx, NotInPas, DuplicatesInDtx: TStrings; ATypeList: TTypeList);
-    procedure CheckJVCLInfos(DtxHeaders: TList);
-    procedure CompareParameters(ATypeList: TTypeList; DtxHeaders: TList;
+      ADtxItems: TDtxItems; NotInDtx, NotInPas, DuplicatesInDtx: TStrings; APasItems: TPasItems);
+    procedure CheckJVCLInfos(ADtxItems: TDtxItems);
+    procedure CompareParameters(APasItems: TPasItems; ADtxItems: TDtxItems;
       NotInDtx, NotInPas: TStrings);
     procedure SettingsChanged(Sender: TObject; ChangeType: TSettingsChangeType);
     procedure DetermineCheckable(CheckableList, NotInPasDir, NotInRealDtxDir: TStrings);
@@ -89,8 +89,8 @@ type
     procedure GenerateDtxFile(const AFileName: string);
     procedure GenerateDtxFiles;
 
-    procedure CheckDtxFile(const AFileName: string);
-    procedure CheckDtxFiles;
+    procedure CheckDtxFile(const AFileName: string; const WithDialog: Boolean);
+    procedure CheckDtxFiles(const WithDialog: Boolean);
 
     procedure CheckPasFile(const AFileName: string);
     procedure CheckPasFiles;
@@ -141,13 +141,7 @@ implementation
 uses
   Windows, SysUtils,
   JclFileUtils, JvSearchFiles, VisibilityDlg, ClassStructureDlg,
-  DelphiParser;
-
-type
-  TCaseSensitiveStringList = class(TStringList)
-  protected
-    function CompareStrings(const S1, S2: string): Integer; override;
-  end;
+  DtxRenameU, Utils;
 
 const
   CConvert: array[TDelphiType] of TOutputType =
@@ -188,69 +182,15 @@ const
     'Description for',
     'Description for this parameter');
 
-  //=== Local procedures =======================================================
-
-procedure DiffLists(Source1, Source2, InBoth, NotInSource1, NotInSource2: TStrings; const CaseSensitive: Boolean =
-  False);
-var
-  Index1, Index2: Integer;
-  C: Integer;
-begin
-  if not Assigned(Source1) or not Assigned(Source2) then
-    Exit;
-
-  Index1 := 0;
-  Index2 := 0;
-  while (Index1 < Source1.Count) and (Index2 < Source2.Count) do
-  begin
-    if CaseSensitive then
-      C := CompareStr(Source1[Index1], Source2[Index2])
-    else
-      C := AnsiCompareText(Source1[Index1], Source2[Index2]);
-    if C = 0 then
-    begin
-      if Assigned(InBoth) then
-        InBoth.AddObject(Source1[Index1], Source1.Objects[Index1]);
-      Inc(Index1);
-      Inc(Index2);
-    end
-    else
-      if C < 0 then
-    begin
-      if Assigned(NotInSource2) then
-        NotInSource2.AddObject(Source1[Index1], Source1.Objects[Index1]);
-      Inc(Index1)
-    end
-    else
-      if C > 0 then
-    begin
-      if Assigned(NotInSource1) then
-        NotInSource1.AddObject(Source2[Index2], Source2.Objects[Index2]);
-      Inc(Index2);
-    end;
-  end;
-
-  if Assigned(NotInSource1) then
-    while Index2 < Source2.Count do
-    begin
-      NotInSource1.AddObject(Source2[Index2], Source2.Objects[Index2]);
-      Inc(Index2);
-    end;
-  if Assigned(NotInSource2) then
-    while Index1 < Source1.Count do
-    begin
-      NotInSource2.AddObject(Source1[Index1], Source1.Objects[Index1]);
-      Inc(Index1);
-    end;
-end;
+//=== Local procedures =======================================================
 
 procedure DetermineDuplicates(Source, Duplicates: TStrings);
 var
   I: Integer;
 begin
-  for I := 1 to Source.Count-1 do
-    if SameText(Source[i-1], Source[i]) then
-      Duplicates.Add(Source[i]);
+  for I := 1 to Source.Count - 1 do
+    if SameText(Source[I - 1], Source[I]) then
+      Duplicates.Add(Source[I]);
 end;
 
 procedure RemoveDoubles(AStrings: TStrings);
@@ -291,42 +231,16 @@ begin
   end;
 end;
 
-procedure FillWithDtxHeaders(DtxHeaders: TList; Dest: TStrings);
-var
-  I: Integer;
-begin
-  for I := 0 to DtxHeaders.Count - 1 do
-    with TDtxItem(DtxHeaders[I]) do
-      if HasTocEntry then
-        Dest.Add(Tag);
-end;
-
-procedure ExcludeList(Source, RemoveList: TStrings; const CaseSensitive: Boolean = False);
-var
-  SourceIndex, RemoveIndex: Integer;
-  C: Integer;
-begin
-  SourceIndex := 0;
-  RemoveIndex := 0;
-  while (SourceIndex < Source.Count) and (RemoveIndex < RemoveList.Count) do
-  begin
-    if CaseSensitive then
-      C := CompareStr(Source[SourceIndex], RemoveList[RemoveIndex])
-    else
-      C := AnsiCompareText(Source[SourceIndex], RemoveList[RemoveIndex]);
-    if C = 0 then
-    begin
-      Source.Delete(SourceIndex);
-      Inc(RemoveIndex);
-    end
-    else
-      if C < 0 then
-      Inc(SourceIndex)
-    else
-      if C > 0 then
-      Inc(RemoveIndex);
-  end;
-end;
+//procedure FillWithDtxHeaders(ADtxItems: TDtxItems; Dest: TStrings);
+//var
+//  I: Integer;
+//begin
+//  for I := 0 to ADtxItems.Count - 1 do
+//    if TObject(ADtxItems[i]) is TDtxHelpItem then
+//      with TDtxHelpItem(ADtxItems[I]) do
+//        if HasTocEntry then
+//          Dest.Add(Tag);
+//end;
 
 procedure RemoveSingles(AStrings: TStrings);
 var
@@ -388,95 +302,75 @@ begin
   Result := CompareStr(List[Index1], List[Index2]);
 end;
 
-function GetClassInfoStr(AItem: TAbstractItem): string;
-begin
-  if (AItem.DelphiType = dtClass) and TSettings.Instance.IsRegisteredClass(AItem.SimpleName) then
-    Result := Format(CClassInfo, [AItem.SimpleName])
-  else
-    Result := '';
-end;
-
-function GetCombineStr(AItem: TAbstractItem): string;
-begin
-  if AItem.CombineString > '' then
-    Result := Format('<COMBINE %s>', [AItem.CombineString])
-  else
-    Result := '';
-end;
-
-function GetDescriptionStr(AItem: TAbstractItem): string;
-begin
-  Result := AItem.AddDescriptionString;
-  if Result = '' then
-    Result := CDescriptionDescription
-  else
-    Result := 'Description'#13#10 + Result;
-end;
-
-function GetParamStr(AItem: TAbstractItem): string;
-begin
-  Result := AItem.ParamString;
-  if Result > '' then
-    Result := CParamDescription + Result;
-end;
-
-function GetRealFileName(const ADir, AFileName: string): string;
-var
-  FindData: TWin32FindData;
-  Handle: THandle;
-  LFileName: string;
-begin
-  LFileName := IncludeTrailingPathDelimiter(ADir) + AFileName;
-
-  Handle := FindFirstFile(PChar(LFileName), FindData);
-  if Handle <> INVALID_HANDLE_VALUE then
-  begin
-    Windows.FindClose(Handle);
-    Result := ExtractFileName(FindData.cFileName);
-  end
-  else
-    Result := AFileName;
-end;
-
-function GetReturnsStr(AItem: TAbstractItem): string;
-begin
-  if AItem.DelphiType in [dtFunction, dtProcedure] then
-    Result := ''
-  else
-    Result := CReturnsDescription;
-end;
-
-function GetSummaryStr(AItem: TAbstractItem): string;
-const
-  CSummaryDescription = 'Summary'#13#10'  Write here a summary (1 line)';
-begin
-  Result := AItem.AddSummaryString;
-  if Result = '' then
-    Result := CSummaryDescription
-  else
-    Result := 'Summary'#13#10 + Result;
-end;
-
-function GetTitleStr(AItem: TAbstractItem): string;
-begin
-  if AItem.TitleName > '' then
-    Result := Format('<TITLE %s>', [AItem.TitleName])
-  else
-    Result := '';
-end;
-
-function IndexInDtxHeaders(DtxHeaders: TList; const S: string): Integer;
-var
-  I: Integer;
-begin
-  for I := 0 to DtxHeaders.Count - 1 do
-    if SameText(TDtxItem(DtxHeaders[I]).Tag, S) then
-    begin
-      Result := I;
-      Exit;
-    end;
-  Result := -1;
-end;
+//function GetClassInfoStr(AItem: TAbstractItem): string;
+//begin
+//  if (AItem.DelphiType = dtClass) and TSettings.Instance.IsRegisteredClass(AItem.SimpleName) then
+//    Result := Format(CClassInfo, [AItem.SimpleName])
+//  else
+//    Result := '';
+//end;
+//function GetCombineStr(AItem: TAbstractItem): string;
+//begin
+//  if AItem.CombineString > '' then
+//    Result := Format('<COMBINE %s>', [AItem.CombineString])
+//  else
+//    Result := '';
+//end;
+//
+//function GetDescriptionStr(AItem: TAbstractItem): string;
+//begin
+//  Result := AItem.AddDescriptionString;
+//  if Result = '' then
+//    Result := CDescriptionDescription
+//  else
+//    Result := 'Description'#13#10 + Result;
+//end;
+//
+//function GetParamStr(AItem: TAbstractItem): string;
+//begin
+//  Result := AItem.ParamString;
+//  if Result > '' then
+//    Result := CParamDescription + Result;
+//end;
+//function GetReturnsStr(AItem: TAbstractItem): string;
+//begin
+//  if AItem.DelphiType in [dtFunction, dtProcedure] then
+//    Result := ''
+//  else
+//    Result := CReturnsDescription;
+//end;
+//
+//function GetSummaryStr(AItem: TAbstractItem): string;
+//const
+//  CSummaryDescription = 'Summary'#13#10'  Write here a summary (1 line)';
+//begin
+//  Result := AItem.AddSummaryString;
+//  if Result = '' then
+//    Result := CSummaryDescription
+//  else
+//    Result := 'Summary'#13#10 + Result;
+//end;
+//
+//function GetTitleStr(AItem: TAbstractItem): string;
+//begin
+//  if AItem.TitleName > '' then
+//    Result := Format('<TITLE %s>', [AItem.TitleName])
+//  else
+//    Result := '';
+//end;
+//function IndexInDtxHeaders(ADtxItems: TDtxItems; const S: string): Integer;
+//var
+//  I: Integer;
+//begin
+//  for I := 0 to ADtxItems.Count - 1 do
+//    if (TObject(ADtxItems[I]) is TDtxHelpItem) and
+//      SameText(TDtxHelpItem(ADtxItems[I]).Tag, S) then
+//    begin
+//      Result := I;
+//      Exit;
+//    end;
+//  Result := -1;
+//end;
 
 function DpkNameToNiceName(const S: string): string;
 begin
@@ -488,14 +382,9 @@ begin
   Result := Copy(S, 3, Length(S) - 9);
 end;
 
-//=== TCaseSensitiveStringList ===============================================
-
-function TCaseSensitiveStringList.CompareStrings(const S1, S2: string): Integer;
-begin
-  Result := CompareStr(S1, S2);
-end;
-
 //=== TMainCtrl ==============================================================
+
+//=== TCaseSensitiveStringList ===============================================
 
 procedure TMainCtrl.AddToCompletedList(const S: string);
 var
@@ -630,7 +519,7 @@ begin
     raise Exception.CreateFmt('Dir ''%s'' does not exists', [ADir]);
 end;
 
-procedure TMainCtrl.CheckDtxFile(const AFileName: string);
+procedure TMainCtrl.CheckDtxFile(const AFileName: string; const WithDialog: Boolean);
 const
   CCaseRelatied: array[Boolean] of string = ('', ' <casing differs>');
 var
@@ -642,6 +531,7 @@ var
   I: Integer;
   Error: TDtxCompareErrorFlag;
   DefaultText: TDefaultText;
+  FileName: string;
 begin
   DelphiParser := TDelphiParser.Create;
   DtxParser := TDtxCompareParser.Create;
@@ -660,6 +550,8 @@ begin
     DelphiParser.AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
     DelphiParser.AcceptVisibilities := [inProtected, inPublic, inPublished];
 
+    DtxParser.CollectData := True;
+
     if not DelphiParser.ExecuteFile(IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir) +
       ChangeFileExt(AFileName, '.pas')) then
     begin
@@ -673,6 +565,17 @@ begin
     begin
       Inc(FParsedError);
       DoMessage(Format('[Error] %s - %s', [AFileName, '..']));
+      Exit;
+    end;
+
+    if WithDialog then
+    begin
+      if TfrmDtxRename.Execute(DtxParser.List, DelphiParser.TypeList) then
+      begin
+        FileName := IncludeTrailingPathDelimiter(TSettings.Instance.GeneratedDtxDir) +
+          ChangeFileExt(ExtractFileName(AFileName), '.dtx');
+        DtxParser.List.WriteToFile(FileName);
+      end;
       Exit;
     end;
 
@@ -712,7 +615,8 @@ begin
         StartErrorGroup('Not in dtx file');
         for I := 0 to NotInDtx.Count - 1 do
           DoError(NotInDtx[I] +
-            CCaseRelatied[IndexInDtxHeaders(DtxParser.List, NotInDtx[I]) >= 0]);
+            CCaseRelatied[DtxParser.List.IndexOfReferenceName(NotInDtx[I]) >= 0]);
+        //            CCaseRelatied[IndexInDtxHeaders(DtxParser.List, NotInDtx[I]) >= 0]);
       end;
       if NotInPas.Count > 0 then
       begin
@@ -747,7 +651,7 @@ begin
   end;
 end;
 
-procedure TMainCtrl.CheckDtxFiles;
+procedure TMainCtrl.CheckDtxFiles(const WithDialog: Boolean);
 var
   I: Integer;
 
@@ -798,7 +702,7 @@ begin
       for I := 0 to CheckableList.Count - 1 do
       begin
         UpdateProgress(CheckableList[I], I);
-        CheckDtxFile(CheckableList[I]);
+        CheckDtxFile(CheckableList[I], WithDialog);
       end;
       DoMessage('Done');
       DoMessage('--');
@@ -871,7 +775,7 @@ begin
       for I := 0 to TypeList.Count - 1 do
       begin
         Item := TAbstractItem(TypeList[I]);
-        if Item.DelphiType in [dtClass, DtType, dtVar] then
+        if Item.DelphiType in [dtClass, dtType, dtVar] then
           List.AddObject(Item.SimpleName, TObject(AID));
       end;
     end
@@ -885,10 +789,10 @@ begin
   end;
 end;
 
-procedure TMainCtrl.CheckJVCLInfos(DtxHeaders: TList);
+procedure TMainCtrl.CheckJVCLInfos(ADtxItems: TDtxItems);
 var
   I: Integer;
-  Item: TDtxItem;
+  Item: TDtxHelpItem;
   S: string;
   IsRegisteredClass: Boolean;
   JVCLInfoError: TJVCLInfoError;
@@ -896,30 +800,31 @@ var
 begin
   StartErrorGroup('JVCLINFO errors');
 
-  for I := 0 to DtxHeaders.Count - 1 do
-  begin
-    Item := TDtxItem(DtxHeaders[I]);
-    ItemTagStripped := Copy(Item.Tag, 3, MaxInt);
-
-    if Item.HasJVCLInfo and (Item.JVCLInfoErrors <> []) then
+  for I := 0 to ADtxItems.Count - 1 do
+    if TObject(ADtxItems[I]) is TDtxHelpItem then
     begin
-      S := Format('%s: ', [Item.Tag]);
-      for JVCLInfoError := Low(TJVCLInfoError) to High(TJVCLInfoError) do
-        if JVCLInfoError in Item.JVCLInfoErrors then
-          S := S + CJVCLInfoErrorNice[JVCLInfoError] + ', ';
+      Item := TDtxHelpItem(ADtxItems[I]);
+      ItemTagStripped := Copy(Item.Tag, 3, MaxInt);
 
-      Delete(S, Length(S) - 1, 2);
-      DoError(S);
+      if Item.HasJVCLInfo and (Item.JVCLInfoErrors <> []) then
+      begin
+        S := Format('%s: ', [Item.Tag]);
+        for JVCLInfoError := Low(TJVCLInfoError) to High(TJVCLInfoError) do
+          if JVCLInfoError in Item.JVCLInfoErrors then
+            S := S + CJVCLInfoErrorNice[JVCLInfoError] + ', ';
+
+        Delete(S, Length(S) - 1, 2);
+        DoError(S);
+      end;
+
+      IsRegisteredClass := TSettings.Instance.IsRegisteredClass(ItemTagStripped);
+
+      if Item.IsRegisteredComponent and not IsRegisteredClass then
+        DoErrorFmt('%s has FLAG=Component in JVCLInfo but is not a registered component', [ItemTagStripped])
+      else
+        if not Item.IsRegisteredComponent and IsRegisteredClass then
+        DoErrorFmt('%s is a registered component but has no FLAG=Component', [ItemTagStripped])
     end;
-
-    IsRegisteredClass := TSettings.Instance.IsRegisteredClass(ItemTagStripped);
-
-    if Item.IsRegisteredComponent and not IsRegisteredClass then
-      DoErrorFmt('%s has FLAG=Component in JVCLInfo but is not a registered component', [ItemTagStripped])
-    else
-      if not Item.IsRegisteredComponent and IsRegisteredClass then
-      DoErrorFmt('%s is a registered component but has no FLAG=Component', [ItemTagStripped])
-  end;
 end;
 
 procedure TMainCtrl.CheckPasFile(const AFileName: string);
@@ -984,8 +889,8 @@ end;
 
 procedure TMainCtrl.CompareDtxFile(
   const AUnitName: string;
-  DtxHeaders: TList; NotInDtx, NotInPas, DuplicatesInDtx: TStrings;
-  ATypeList: TTypeList);
+  ADtxItems: TDtxItems; NotInDtx, NotInPas, DuplicatesInDtx: TStrings;
+  APasItems: TPasItems);
 var
   Optional: TStringList;
   NotOptional: TStringList;
@@ -998,20 +903,21 @@ begin
   LNotInPas := TCaseSensitiveStringList.Create;
   LNotInDtx := TCaseSensitiveStringList.Create;
   try
-    FillWithHeaders(AUnitName, ATypeList, Optional, NotOptional);
+    APasItems.FillWithHeaders(AUnitName, ADtxItems.SkipList, Optional, NotOptional);
+    //    FillWithHeaders(AUnitName, APasItems, Optional, NotOptional);
 
     NotOptional.Add('@@' + GetRealFileName(
       TSettings.Instance.RunTimePasDir,
       ChangeFileExt(AUnitName, '.pas')));
-    FillWithDtxHeaders(DtxHeaders, LDtxHeaders);
+    ADtxItems.FillWithDtxHeaders(LDtxHeaders);
 
     NotOptional.Sort;
     Optional.Sort;
     LDtxHeaders.Sort;
 
-//    Optional.SaveToFile('C:\Temp\Optional.txt');
-//    NotOptional.SaveToFile('C:\Temp\NotOptional.txt');
-//    LDtxHeaders.SaveToFile('C:\Temp\DtxHeaders.txt');
+    //    Optional.SaveToFile('C:\Temp\Optional.txt');
+    //    NotOptional.SaveToFile('C:\Temp\NotOptional.txt');
+    //    LDtxHeaders.SaveToFile('C:\Temp\ADtxItems.txt');
 
     LDtxHeadersNonCaseSensitive := TStringList.Create;
     try
@@ -1042,7 +948,7 @@ begin
   end;
 end;
 
-procedure TMainCtrl.CompareParameters(ATypeList: TTypeList; DtxHeaders: TList;
+procedure TMainCtrl.CompareParameters(APasItems: TPasItems; ADtxItems: TDtxItems;
   NotInDtx, NotInPas: TStrings);
 var
   I, J: Integer;
@@ -1050,7 +956,7 @@ var
   AllPasParameters, AllOptionalPasParameters, AllDtxParameters: TStringList;
   ParamsNotInPas, ParamsNotInDtx: TStringList;
   Params: TStrings;
-  DtxItem: TDtxItem;
+  DtxItem: TDtxHelpItem;
   TagName: string;
 begin
   AllPasParameters := TCaseSensitiveStringList.Create;
@@ -1065,14 +971,14 @@ begin
     AllOptionalPasParameters.Duplicates := dupIgnore;
     AllDtxParameters.Duplicates := dupAccept;
 
-    for I := 0 to ATypeList.Count - 1 do
+    for I := 0 to APasItems.Count - 1 do
     begin
-      Params := ATypeList[I].ParamList;
+      Params := APasItems[I].ParamList;
       if Params <> nil then
       begin
-        TagName := '@@' + ATypeList[I].ReferenceName;
-        if (ATypeList[I] is TClassPropertyItem) and
-          (TClassPropertyItem(ATypeList[I]).IsArray) then
+        TagName := '@@' + APasItems[I].ReferenceName;
+        if (APasItems[I] is TClassPropertyItem) and
+          (TClassPropertyItem(APasItems[I]).IsArray) then
         begin
           // 1 param -> optional
           // more params -> required
@@ -1084,10 +990,11 @@ begin
         end
         else
         begin
-          Index := IndexInDtxHeaders(DtxHeaders, TagName);
-          if Index >= 0 then
+          Index := ADtxItems.IndexOfReferenceName(TagName);
+          //          IndexInDtxHeaders(ADtxItems, TagName);
+          if (Index >= 0) and (TObject(ADtxItems[Index]) is TDtxHelpItem) then
           begin
-            DtxItem := TDtxItem(DtxHeaders[Index]);
+            DtxItem := TDtxHelpItem(ADtxItems[Index]);
             if DtxItem.Combine > '' then
               TagName := '@@' + DtxItem.Combine;
             for J := 0 to Params.Count - 1 do
@@ -1097,13 +1004,14 @@ begin
       end;
     end;
 
-    for I := 0 to DtxHeaders.Count - 1 do
-    begin
-      Params := TDtxItem(DtxHeaders[I]).Parameters;
-      if Params <> nil then
-        for J := 0 to Params.Count - 1 do
-          AllDtxParameters.Add(TDtxItem(DtxHeaders[I]).Tag + ' - ' + Params[J]);
-    end;
+    for I := 0 to ADtxItems.Count - 1 do
+      if TObject(ADtxItems[I]) is TDtxHelpItem then
+      begin
+        Params := TDtxHelpItem(ADtxItems[I]).Parameters;
+        if Params <> nil then
+          for J := 0 to Params.Count - 1 do
+            AllDtxParameters.Add(TDtxHelpItem(ADtxItems[I]).Tag + ' - ' + Params[J]);
+      end;
 
     //AllPasParameters.Sorted := False;
 
@@ -1111,8 +1019,8 @@ begin
     //AllDtxParameters.CustomSort(CaseSensitiveSort);
     AllDtxParameters.Sort;
 
-//    AllPasParameters.SaveToFile('C:\temp\AllPasParameters.txt');
-//    AllDtxParameters.SaveToFile('C:\temp\AllDtxParameters.txt');
+    //    AllPasParameters.SaveToFile('C:\temp\AllPasParameters.txt');
+    //    AllDtxParameters.SaveToFile('C:\temp\AllDtxParameters.txt');
 
     DiffLists(AllPasParameters, AllDtxParameters,
       nil, ParamsNotInPas, ParamsNotInDtx, True);
@@ -1199,14 +1107,6 @@ begin
   end;
 end;
 
-procedure TMainCtrl.DoError(Strings: TStrings);
-var
-  I: Integer;
-begin
-  for I := 0 to Strings.Count - 1 do
-    DoError(Strings[I]);
-end;
-
 procedure TMainCtrl.DoError(const Msg: string);
 begin
   PrintHeaderOfCurrentErrorGroup;
@@ -1215,16 +1115,18 @@ begin
   DoMessage('       ' + Msg);
 end;
 
+procedure TMainCtrl.DoError(Strings: TStrings);
+var
+  I: Integer;
+begin
+  for I := 0 to Strings.Count - 1 do
+    DoError(Strings[I]);
+end;
+
 procedure TMainCtrl.DoErrorFmt(const AFormat: string;
   const Args: array of const);
 begin
   DoError(Format(AFormat, Args));
-end;
-
-procedure TMainCtrl.DoMessage(const Msg: string);
-begin
-  if Assigned(MessagesList) then
-    MessagesList.Add(Msg);
 end;
 
 procedure TMainCtrl.DoMessage(Strings: TStrings);
@@ -1233,6 +1135,12 @@ var
 begin
   for I := 0 to Strings.Count - 1 do
     DoMessage(Strings[I]);
+end;
+
+procedure TMainCtrl.DoMessage(const Msg: string);
+begin
+  if Assigned(MessagesList) then
+    MessagesList.Add(Msg);
 end;
 
 procedure TMainCtrl.DoMessageFmt(const AFormat: string;
@@ -1265,73 +1173,71 @@ begin
   FreeAndNil(FProgressDlg);
 end;
 
-procedure TMainCtrl.FillWithHeaders(const UnitName: string; ATypeList: TTypeList;
-  Optional, NotOptional: TStrings);
-var
-  I, J: Integer;
-  ATypeItem: TAbstractItem;
-  ReferenceName, S: string;
-  IsOptional: Boolean;
-begin
-  for I := 0 to ATypeList.Count - 1 do
-  begin
-    ATypeItem := ATypeList[I];
-
-    ReferenceName := '@@' + ATypeItem.ReferenceName;
-
-    if TSettings.Instance.OutputTypeEnabled[CConvert[ATypeItem.DelphiType]] then
-    begin
-      IsOptional :=
-        { private,protected members are optional; protected properties not }
-      (
-        ((ATypeItem is TClassMemberOrFieldItem) and (TClassMemberOrFieldItem(ATypeItem).Position in [inPrivate,
-        inProtected]))
-          and
-        not ((ATypeItem.DelphiType = dtProperty) and (TClassMemberOrFieldItem(ATypeItem).Position = inProtected))
-        )
-
-      or
-
-      { overridden methods are optional }
-      ((ATypeItem is TParamClassMethodItem) and (diOverride in TParamClassMethodItem(ATypeItem).Directives))
-
-      or
-
-      { inherited properties are optional }
-      ((ATypeItem is TClassPropertyItem) and (TClassPropertyItem(ATypeItem).IsInherited))
-
-      or
-
-      { create, destroy are optional}
-      ((ATypeItem is TParamClassMethodItem) and
-        (SameText(ATypeItem.SimpleName, 'create') or SameText(ATypeItem.SimpleName, 'destroy')));
-
-      IsOptional := IsOptional or
-        TSettings.Instance.OnIgnoreTokenList(UnitName, ReferenceName);
-
-      if IsOptional then
-      begin
-        Optional.Add(ReferenceName);
-        if ATypeItem is TListItem then
-          TListItem(ATypeItem).AddToList(Optional);
-      end
-      else
-      begin
-        NotOptional.Add(ReferenceName);
-        if ATypeItem is TListItem then
-          with ATypeItem as TListItem do
-            for J := 0 to Items.Count - 1 do
-            begin
-              S := '@@' + ReferenceName + '.' + Items[J];
-              if TSettings.Instance.OnIgnoreTokenList(UnitName, S) then
-                Optional.Add(S)
-              else
-                NotOptional.Add(S);
-            end;
-      end;
-    end;
-  end;
-end;
+//procedure TMainCtrl.FillWithHeaders(const UnitName: string; APasItems: TPasItems;
+//  Optional, NotOptional: TStrings);
+//var
+//  I, J: Integer;
+//  ATypeItem: TAbstractItem;
+//  ReferenceName, S: string;
+//  IsOptional: Boolean;
+//begin
+//  for I := 0 to APasItems.Count - 1 do
+//  begin
+//    ATypeItem := APasItems[I];
+//
+//    ReferenceName := '@@' + ATypeItem.ReferenceName;
+//
+//    if TSettings.Instance.OutputTypeEnabled[CConvert[ATypeItem.DelphiType]] then
+//    begin
+//      IsOptional :=
+//        { private,protected members are optional; protected properties not }
+//        ((ATypeItem is TClassMemberOrFieldItem) and (TClassMemberOrFieldItem(ATypeItem).Position in [inPrivate,
+//        inProtected]))
+//          and
+//        not ((ATypeItem.DelphiType = dtProperty) and (TClassMemberOrFieldItem(ATypeItem).Position = inProtected))
+//
+//      or
+//
+//      { overridden methods are optional }
+//      ((ATypeItem is TParamClassMethodItem) and (diOverride in TParamClassMethodItem(ATypeItem).Directives))
+//
+//      or
+//
+//      { inherited properties are optional }
+//      ((ATypeItem is TClassPropertyItem) and (TClassPropertyItem(ATypeItem).IsInherited))
+//
+//      or
+//
+//      { create, destroy are optional}
+//      ((ATypeItem is TParamClassMethodItem) and
+//        (SameText(ATypeItem.SimpleName, 'create') or SameText(ATypeItem.SimpleName, 'destroy')));
+//
+//      IsOptional := IsOptional or
+//        TSettings.Instance.OnIgnoreTokenList(UnitName, ReferenceName);
+//
+//      if IsOptional then
+//      begin
+//        Optional.Add(ReferenceName);
+//        if ATypeItem is TListItem then
+//          TListItem(ATypeItem).AddToList(Optional);
+//      end
+//      else
+//      begin
+//        NotOptional.Add(ReferenceName);
+//        if ATypeItem is TListItem then
+//          with ATypeItem as TListItem do
+//            for J := 0 to Items.Count - 1 do
+//            begin
+//              S := '@@' + ReferenceName + '.' + Items[J];
+//              if TSettings.Instance.OnIgnoreTokenList(UnitName, S) then
+//                Optional.Add(S)
+//              else
+//                NotOptional.Add(S);
+//            end;
+//      end;
+//    end;
+//  end;
+//end;
 
 procedure TMainCtrl.FilterFiles(AllList, FilteredList: TStrings);
 var
@@ -1814,11 +1720,11 @@ procedure TMainCtrl.GenerateRegisteredClassesListInFile(
 begin
   with TRegisteredClassesParser.Create do
   try
-//    AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
+    //    AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
 
     if ExecuteFile(AFileName) then
     begin
-      Inc(FParsedOk);
+      Inc(FParsedOK);
       AList.AddStrings(List);
     end
     else
@@ -1943,7 +1849,7 @@ begin
       for I := 0 to ProcessList.Count - 1 do
       begin
         UpdateProgress(ProcessList[I], I);
-        RecapitalizeFile(capitalization, ProcessList[I]);
+        RecapitalizeFile(Capitalization, ProcessList[I]);
       end;
       DoMessage('Done');
       DoMessage('--');
@@ -2176,7 +2082,7 @@ begin
   FProgressDlg.Position := APosition;
 end;
 
-procedure TMainCtrl.WriteDtx(ATypeList: TTypeList);
+procedure TMainCtrl.WriteDtx(APasItems: TPasItems);
 var
   FileName: string;
   FileStream: TFileStream;
@@ -2195,30 +2101,6 @@ var
     end;
   end;
 
-  procedure WriteClassHeader(ATypeItem: TAbstractItem);
-  var
-    S: string;
-  begin
-    //S := TSettings.Instance.OutputTypeDefaults[otClassHeader];
-    S := GetOutputStr(otClassHeader, ATypeItem.SimpleName);
-    S := StringReplace(S, '%author', ATypeList.Author, [rfReplaceAll,
-      rfIgnoreCase]);
-    S := StringReplace(S, '%simplename', ATypeItem.SimpleName, [rfReplaceAll,
-      rfIgnoreCase]);
-    S := StringReplace(S, '%referencename', ATypeItem.ReferenceName, [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%sortname', ATypeItem.DtxSortName, [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%titlename', ATypeItem.TitleName, [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%title', GetTitleStr(ATypeItem), [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%param', ATypeItem.ParamString, [rfReplaceAll,
-      rfIgnoreCase]);
-    S := StringReplace(S, '%items', ATypeItem.ItemsString, [rfReplaceAll,
-      rfIgnoreCase]);
-    S := StringReplace(S, '%nicename',
-      TSettings.Instance.NiceName[ATypeItem.ClassString], [rfReplaceAll,
-      rfIgnoreCase]);
-    FileStream.Write(PChar(S)^, Length(S));
-  end;
-
   procedure WriteHeader;
   var
     S: string;
@@ -2229,78 +2111,15 @@ var
     S := StringReplace(S, '%package',
       Format('##Package: %s', [TSettings.Instance.FileNameToPackage(UnitName)]),
       [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%author', ATypeList.Author, [rfReplaceAll, rfIgnoreCase]);
+    S := StringReplace(S, '%author', APasItems.Author, [rfReplaceAll, rfIgnoreCase]);
     S := StringReplace(S, '%unitname', UnitName, [rfReplaceAll, rfIgnoreCase]);
-    FileStream.Write(PChar(S)^, Length(S));
+    FileStream.write(PChar(S)^, Length(S));
   end;
-
-  procedure WriteType(ATypeItem: TAbstractItem);
-  var
-    S: string;
-  begin
-    { Inherited properties [property X;] niet toevoegen }
-    if (ATypeItem is TClassPropertyItem) and (TClassPropertyItem(ATypeItem).IsInherited) then
-      Exit;
-
-    { Create, Destroy ook niet }
-    if SameText(ATypeItem.SimpleName, 'create') or SameText(ATypeItem.SimpleName, 'destroy') then
-      Exit;
-
-    if (ATypeItem is TTypeItem) and
-      (StrLIComp(PChar(TTypeItem(ATypeItem).Value), 'class of', 8) = 0) then
-      Exit;
-
-    if not TSettings.Instance.OutputTypeEnabled[CConvert[ATypeItem.DelphiType]] then
-      Exit;
-    //S := TSettings.Instance.OutputTypeDefaults[CConvert[ATypeItem.DelphiType]];
-
-    S := GetOutputStr(CConvert[ATypeItem.DelphiType], ATypeItem.SimpleName);
-
-    S := StringReplace(S, '%author', ATypeList.Author, [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%name', ATypeItem.SimpleName, [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%classinfo', GetClassInfoStr(ATypeItem), [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%titlename', ATypeItem.TitleName, [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%title', GetTitleStr(ATypeItem), [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%referencename', ATypeItem.ReferenceName, [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%sortname', ATypeItem.DtxSortName, [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%param', GetParamStr(ATypeItem), [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%items', ATypeItem.ItemsString, [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%class', ATypeItem.ClassString, [rfReplaceAll, rfIgnoreCase]);
-    S := StringReplace(S, '%nicename', TSettings.Instance.NiceName[ATypeItem.ClassString], [rfReplaceAll,
-      rfIgnoreCase]);
-    if not ATypeItem.CanCombine then
-    begin
-      S := StringReplace(S, '%summary', GetSummaryStr(ATypeItem), [rfReplaceAll, rfIgnoreCase]);
-      S := StringReplace(S, '%description', GetDescriptionStr(ATypeItem), [rfReplaceAll, rfIgnoreCase]);
-      S := StringReplace(S, '%seealso', CSeeAlsoDescription, [rfReplaceAll, rfIgnoreCase]);
-      S := StringReplace(S, '%returns', GetReturnsStr(ATypeItem), [rfReplaceAll, rfIgnoreCase]);
-      S := StringReplace(S, '%combine', '', [rfReplaceAll, rfIgnoreCase]);
-      S := StringReplace(S, '%refvalue', CValueReference, [rfReplaceAll, rfIgnoreCase]);
-      S := StringReplace(S, '%value', ATypeItem.ValueString, [rfReplaceAll, rfIgnoreCase]);
-    end
-    else
-    begin
-      S := StringReplace(S, '%summary', '', [rfReplaceAll, rfIgnoreCase]);
-      S := StringReplace(S, '%description', '', [rfReplaceAll, rfIgnoreCase]);
-      S := StringReplace(S, '%seealso', '', [rfReplaceAll, rfIgnoreCase]);
-      S := StringReplace(S, '%returns', '', [rfReplaceAll, rfIgnoreCase]);
-      S := StringReplace(S, '%combine', GetCombineStr(ATypeItem), [rfReplaceAll, rfIgnoreCase]);
-      S := StringReplace(S, '%refvalue', '', [rfReplaceAll, rfIgnoreCase]);
-      S := StringReplace(S, '%value', '', [rfReplaceAll, rfIgnoreCase]);
-    end;
-    S := Trim(S) + #13#10#13#10;
-    S := Trim(StringReplace(S, #13#10#13#10, #13#10, [rfReplaceAll]));
-    S := Trim(StringReplace(S, #13#10#13#10, #13#10, [rfReplaceAll]));
-    S := S + #13#10;
-
-    FileStream.Write(PChar(S)^, Length(S));
-  end;
-
 var
   I: Integer;
 begin
   FileName := IncludeTrailingPathDelimiter(TSettings.Instance.GeneratedDtxDir) +
-    ChangeFileExt(ExtractFileName(ATypeList.FileName), '.dtx');
+    ChangeFileExt(ExtractFileName(APasItems.FileName), '.dtx');
   if FileExists(FileName) and not TSettings.Instance.OverwriteExisting then
     Exit;
 
@@ -2308,21 +2127,21 @@ begin
   try
     { Eerst de classheaders }
     if TSettings.Instance.OutputTypeEnabled[otClassHeader] then
-      for I := 0 to ATypeList.Count - 1 do
-        if ATypeList[I] is TClassItem then
-          WriteClassHeader(ATypeList[I]);
+      for I := 0 to APasItems.Count - 1 do
+        if (APasItems[I] is TClassItem) and APasItems[I].IncludeInGeneratedDtx then
+          APasItems[I].WriteDtxDataToStream(FileStream);
 
     { Dan de header }
     if TSettings.Instance.OutputTypeEnabled[otHeader] then
       WriteHeader;
 
     { Dan de rest }
-    for I := 0 to ATypeList.Count - 1 do
-      WriteType(ATypeList[I]);
+    for I := 0 to APasItems.Count - 1 do
+      if APasItems[I].IncludeInGeneratedDtx then
+        APasItems[I].WriteDtxDataToStream(FileStream);
   finally
     FileStream.Free;
   end;
 end;
 
 end.
-

@@ -197,7 +197,7 @@ const
   CImageIndexFourState: array[TFourState] of TImageIndex = (0, 1, 2, 3);
   CImageIndexTriState: array[TTriState] of TImageIndex = (0, 1, 3);
 
-  //=== Local procedures =======================================================
+//=== Local procedures =======================================================
 
 function ImageIndexToFourState(const AImageIndex: TImageIndex): TFourState;
 begin
@@ -889,4 +889,3 @@ begin
 end;
 
 end.
-

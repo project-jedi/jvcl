@@ -3,7 +3,7 @@ unit DelphiParser;
 interface
 
 uses
-  Classes, ParserTypes;
+  Classes, ParserTypes, Contnrs;
 
 const
   toComment = Char(6);
@@ -117,7 +117,7 @@ type
 
   TDelphiParser = class(TBasicParser)
   private
-    FTypeList: TTypeList;
+    FPasItems: TPasItems;
     FErrorMsg: string;
     FAcceptCompilerDirectives: TStrings;
     FAcceptVisibilities: TClassVisibilities;
@@ -259,7 +259,7 @@ type
 
     function ExecuteFile(const AFileName: string): Boolean; virtual;
     function Execute(AStream: TStream): Boolean; virtual;
-    property TypeList: TTypeList read FTypeList;
+    property TypeList: TPasItems read FPasItems;
     property AcceptCompilerDirectives: TStrings read FAcceptCompilerDirectives
       write SetAcceptCompilerDirectives;
     property AcceptVisibilities: TClassVisibilities read FAcceptVisibilities
@@ -291,7 +291,50 @@ type
   TJVCLInfoError = (jieGroupNotFilled, jieFlagNotFilled, jieOtherNotFilled, jieNoGroup, jieDoubles);
   TJVCLInfoErrors = set of TJVCLInfoError;
 
-  TDtxItem = class
+  TDtxBaseItem = class
+  private
+    FData: string;
+    procedure SetData(const Value: string);
+  public
+    procedure WriteToStream(AStream: TStream); virtual; abstract;
+    function CompareWith(AItem: TDtxBaseItem): Integer; virtual; abstract;
+    property Data: string read FData write SetData;
+  end;
+
+  TDtxStartSymbol = (dssPackage, dssStatus, dssSkip, dssOther);
+
+  TDtxItems = class(TObjectList)
+  private
+    FSkipList: TStrings;
+  public
+    constructor Create; virtual;
+    destructor Destroy; override;
+
+    procedure DtxSort;
+
+    procedure FillWithDtxHeaders(Dest: TStrings);
+    procedure ConstructSkipList;
+
+    function IndexOfReferenceName(ReferenceName: string): Integer;
+    procedure WriteToFile(const AFileName: string);
+
+    property SkipList: TStrings read FSkipList;
+  end;
+
+  TDtxStartItem = class(TDtxBaseItem)
+  private
+    FSymbolStr: string;
+    FSymbol: TDtxStartSymbol;
+    procedure SetSymbolStr(const Value: string);
+    procedure SetSymbol(const Value: TDtxStartSymbol);
+  public
+    function CompareWith(AItem: TDtxBaseItem): Integer; override;
+    procedure WriteToStream(AStream: TStream); override;
+    property SymbolStr: string read FSymbolStr write SetSymbolStr;
+    property Symbol: TDtxStartSymbol read FSymbol write SetSymbol;
+  end;
+
+  TDtxHelpItem = class(TDtxBaseItem)
   private
     FTag: string;
     FParameters: TStrings;
@@ -303,9 +346,13 @@ type
     FHasJVCLInfo: Boolean;
     FJVCLInfoErrors: TJVCLInfoErrors;
     FIsRegisteredComponent: Boolean;
+    FIsFileInfo: Boolean;
   public
     constructor Create(const ATag: string); virtual;
     destructor Destroy; override;
+    function CompareWith(AItem: TDtxBaseItem): Integer; override;
+    procedure WriteToStream(AStream: TStream); override;
+    property IsFileInfo: Boolean read FIsFileInfo write FIsFileInfo;
     property Tag: string read FTag write FTag;
     property Parameters: TStrings read FParameters;
     property Title: string read FTitle write FTitle;
@@ -320,11 +367,13 @@ type
 
   TDtxCompareParser = class(TBasicParser)
   private
-    FList: TList;
+    FList: TDtxItems;
     FErrors: TDtxCompareErrorFlags;
     FDefaultTexts: TDefaultTexts;
     FPasFileNameWithoutPath: string;
     FTags: TStrings;
+    FSkipList: TStrings;
+    FCollectData: Boolean;
     function GetDtxCompareTokenType: TDtxCompareTokenType;
   protected
     function ReadNextToken: Char; override;
@@ -332,20 +381,21 @@ type
     function Parse: Boolean;
 
     procedure ReadAuthor;
-    procedure ReadCombine(Item: TDtxItem);
-    procedure ReadCombineWith(Item: TDtxItem);
+    procedure ReadCombine(Item: TDtxHelpItem);
+    procedure ReadCombineWith(Item: TDtxHelpItem);
     procedure ReadFileInfo;
-    procedure ReadHasTocEntry(Item: TDtxItem);
-    procedure ReadHelpTopic(Item: TDtxItem);
-    procedure ReadJVCLINFO(Item: TDtxItem);
+    procedure ReadHasTocEntry(Item: TDtxHelpItem);
+    procedure ReadHelpTopic(Item: TDtxHelpItem);
+    procedure ReadJVCLINFO(Item: TDtxHelpItem);
     procedure ReadPackage;
+    procedure ReadSkip;
     procedure ReadParameters(List: TStrings);
     procedure ReadRest;
     procedure ReadSeeAlso;
     procedure ReadStartBlock;
     procedure ReadStatus;
     procedure ReadOther;
-    procedure ReadTitleImg(Item: TDtxItem);
+    procedure ReadTitleImg(Item: TDtxHelpItem);
 
     property CompareTokenType: TDtxCompareTokenType read GetDtxCompareTokenType;
   public
@@ -353,10 +403,12 @@ type
     destructor Destroy; override;
 
     function Execute(const AFileName: string): Boolean;
-    property List: TList read FList;
+    property CollectData: Boolean read FCollectData write FCollectData;
+    property List: TDtxItems read FList;
     property Tags: TStrings read FTags;
     property Errors: TDtxCompareErrorFlags read FErrors;
     property DefaultTexts: TDefaultTexts read FDefaultTexts;
+    property SkipList: TStrings read FSkipList write FSkipList;
   end;
 
   TDpkParser = class(TDelphiParser)
@@ -469,7 +521,7 @@ type
 implementation
 
 uses
-  SysUtils, Dialogs, Windows, Math, Contnrs;
+  SysUtils, Dialogs, Windows, Math, Utils;
 
 resourcestring
   SCharExpected = '''''%s'''' expected';
@@ -488,9 +540,9 @@ type
 const
   CParseBufSize = 4096 * 16;
 
-  CAllowableSymbolsInTypeDef: array [0..4] of string = ('Low', 'High', 'Ord', 'Succ', 'Pred');
+  CAllowableSymbolsInTypeDef: array[0..4] of string = ('Low', 'High', 'Ord', 'Succ', 'Pred');
 
-  CDefaultText: array [TDefaultText] of string = (
+  CDefaultText: array[TDefaultText] of string = (
     'write here a summary (1 line)',
     'write here a description',
     'this type is used by (for reference):',
@@ -514,7 +566,7 @@ const
   SNotNumberExpected = 'Not number expected';
   SNotStringExpected = 'Not string expected';
 
-  //=== Local procedures =======================================================
+//=== Local procedures =======================================================
 
 function CheckText(const Short, Long: string; const CaseSensitive: Boolean): TCheckTextResult;
 var
@@ -528,7 +580,7 @@ begin
   if not AreEqual then
     Result := ctDifferent
   else
-  if Length(Short) = Length(Long) then
+    if Length(Short) = Length(Long) then
     Result := ctEqual
   else
     Result := ctPrefix;
@@ -539,6 +591,97 @@ begin
   Result := S;
   while (Length(Result) > 0) and (Result[Length(Result)] in Chars) do
     Delete(Result, Length(Result), 1);
+end;
+
+function FirstChar(const S: string): Char;
+begin
+  if S = '' then
+    Result := #0
+  else
+    Result := S[1];
+end;
+
+function DtxSortCompare(Item1, Item2: Pointer): Integer;
+begin
+  Result := TDtxBaseItem(Item1).CompareWith(TDtxBaseItem(Item2));
+end;
+
+function AddLeading(const S: string): string;
+begin
+  if (Length(S) < 2) or (S[1] <> '@') or (S[2] <> '@') then
+    Result := '@@' + S
+  else
+    Result := S;
+end;
+
+function RemoveStartEndCRLF(const S: string): string;
+var
+  I, J: integer;
+begin
+  I := 1;
+  J := Length(S);
+  while (I <= J) and (S[i] in [#10, #13]) do
+    Inc(I);
+  while (I <= J) and (S[J] in [#10, #13]) do
+    Dec(J);
+
+  if I > J then
+    Result := ''
+  else
+    Result := Copy(S, I, J - I + 1);
+end;
+
+function RemoveSepLines(const S: string): string;
+
+  procedure AddString(StartPtr, EndPtr: PChar);
+  var
+    CurrentLength: Integer;
+  begin
+    if EndPtr <= StartPtr then
+      Exit;
+    CurrentLength := Length(Result);
+    SetLength(Result, CurrentLength + EndPtr - StartPtr);
+    Move(StartPtr^, (PChar(Result) + CurrentLength)^, EndPtr - StartPtr);
+  end;
+var
+  P, Q, R: PChar;
+begin
+  P := PChar(S);
+  R := P;
+  while P^ <> #0 do
+  begin
+    while not (P^ in ['-', #0]) do
+      Inc(P);
+
+    Q := P;
+    while P^ = '-' do
+      Inc(P);
+    if Q + 3 < P then { 3 = arbitrary }
+    begin
+      if P^ = #0 then
+      begin
+        AddString(R, Q);
+        R := P;
+      end
+      else
+        if P^ = #13 then
+      begin
+        Inc(P);
+        if P^ = #10 then
+        begin
+          AddString(R, Q);
+          Inc(P);
+          R := P;
+          Continue;
+        end;
+      end;
+    end;
+    while not (P^ in [#13, #10, #0]) do
+      Inc(P);
+    while P^ in [#13, #10] do
+      Inc(P);
+  end;
+  AddString(R, P);
 end;
 
 //=== TBasicParser ===========================================================
@@ -659,7 +802,7 @@ begin
       if I = High(List) - 1 then
         Msg := Msg + ' or '
       else
-      if I < High(List) - 1 then
+        if I < High(List) - 1 then
         Msg := Msg + ', ';
     end;
     Error(Msg + ' expected');
@@ -797,7 +940,7 @@ begin
   Inc(FOrigin, FSourcePtr - FBuffer);
 
   if Assigned(FLowOutputStream) then
-    FLowOutputStream.Write(FBuffer^, FSourcePtr - FBuffer);
+    FLowOutputStream.write(FBuffer^, FSourcePtr - FBuffer);
 
   if LowRecording and (FSourcePtr > FLowRecordPtr) then
     AddToLowRecording(FLowRecordPtr, FSourcePtr);
@@ -821,7 +964,7 @@ begin
   FBufPtr := FBuffer + Count;
   if FBufEnd = FBufPtr then
     raise Exception.Create('ReadBuffer Error');
-  Inc(FBufPtr, FStream.Read(FBufPtr[0], FBufEnd - FBufPtr));
+  Inc(FBufPtr, FStream.read(FBufPtr[0], FBufEnd - FBufPtr));
 
   Start := FBuffer;
   if Assigned(FSavedSourcePtr) then
@@ -1030,7 +1173,7 @@ end;
 constructor TDelphiParser.Create;
 begin
   inherited Create;
-  FTypeList := TTypeList.Create;
+  FPasItems := TPasItems.Create;
   FAcceptCompilerDirectives := TStringList.Create;
   TStringList(FAcceptCompilerDirectives).Sorted := True;
   FAcceptVisibilities := [inPublic, inPublished];
@@ -1044,7 +1187,7 @@ end;
 destructor TDelphiParser.Destroy;
 begin
   FCopiedDEFList.Free;
-  FTypeList.Free;
+  FPasItems.Free;
   FAcceptCompilerDirectives.Free;
   FDEFList.Free;
   FSavedDEFList.Free;
@@ -1245,7 +1388,7 @@ procedure TDelphiParser.EndBlock(const AllowDoubleEnd: Boolean);
         Result := True;
       end
       else
-      if (FBlockDEFList.Count = 0) and (Tmp.Count > 0) and AllowDoubleEnd then
+        if (FBlockDEFList.Count = 0) and (Tmp.Count > 0) and AllowDoubleEnd then
       begin
         // {$IFNDEF A}
         // procedure X(A: TA);    <- BeginBlock, EndBlock, return 'A', 'ifndef'
@@ -1271,13 +1414,13 @@ procedure TDelphiParser.EndBlock(const AllowDoubleEnd: Boolean);
     if SameText(S, 'VisualCLX') then
       Result := 0
     else
-    if SameText(S, 'VCL') then
+      if SameText(S, 'VCL') then
       Result := 1
     else
-    if SameText(S, 'MSWINDOWS') then
+      if SameText(S, 'MSWINDOWS') then
       Result := 2
     else
-    if SameText(S, 'LINUX') then
+      if SameText(S, 'LINUX') then
       Result := 3
     else
       Result := -1;
@@ -1391,7 +1534,7 @@ begin
   if not Result then
     Exit;
 
-  FTypeList.FileName := AFileName;
+  FPasItems.FileName := AFileName;
 
   LStream := TFileStream.Create(AFileName, fmOpenRead, fmShareDenyWrite);
   try
@@ -1415,7 +1558,7 @@ end;
 procedure TDelphiParser.Init;
 begin
   inherited Init;
-  FTypeList.Clear;
+  FPasItems.Clear;
   FLastCompilerDirectiveAccepted := False;
 end;
 
@@ -1443,8 +1586,8 @@ begin
   SkipUsesBlock;
   ReadInterfaceBlock;
   FErrorMsg := '';
-  FTypeList.DtxSort;
-  FTypeList.CalculateCombines;
+  FPasItems.DtxSort;
+  FPasItems.CalculateCombines;
 
   Result := True;
 end;
@@ -1487,7 +1630,7 @@ begin
   if TokenSymbolIs('of') then
   begin
     Result := TMetaClassItem.Create('');
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
     DoNextToken;
     CheckToken(toSymbol);
     TMetaClassItem(Result).Value := TokenString;
@@ -1498,7 +1641,7 @@ begin
   begin
     Result := TClassItem.Create('');
     TClassItem(Result).Ancestor := LAncestor;
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
 
     if Token <> toSemiColon then
       ReadClassMethods(TClassItem(Result)); { Token = ; or directive }
@@ -1627,7 +1770,7 @@ begin
   }
 
   Result := TClassFieldItem.Create(TokenString);
-  FTypeList.Add(Result);
+  FPasItems.Add(Result);
 
   ClassField := Result as TClassFieldItem;
   ClassField.OwnerClass := AClassItem;
@@ -1686,7 +1829,7 @@ begin
   end;
 
   Result := TMethodFuncItem.Create(LMethodName);
-  FTypeList.Add(Result);
+  FPasItems.Add(Result);
 
   MethodFunc := Result as TMethodFuncItem;
   MethodFunc.OwnerClass := AClassItem;
@@ -1751,7 +1894,7 @@ begin
   end;
 
   Result := TMethodProcItem.Create(LMethodName);
-  FTypeList.Add(Result);
+  FPasItems.Add(Result);
 
   MethodProc := Result as TMethodProcItem;
   MethodProc.OwnerClass := AClassItem;
@@ -1790,7 +1933,7 @@ begin
   CheckNotToken(toEof);
 
   Result := TClassPropertyItem.Create(TokenString);
-  FTypeList.Add(Result);
+  FPasItems.Add(Result);
 
   ClassProperty := Result as TClassPropertyItem;
 
@@ -1879,7 +2022,7 @@ begin
         if Q1 = nil then
           Q := Q2
         else
-        if (Q2 = nil) or (Q1 < Q2) then
+          if (Q2 = nil) or (Q1 < Q2) then
           Q := Q1
         else
           Q := Q2;
@@ -1904,7 +2047,7 @@ begin
         if Pos('<', T) > 0 then
           T := Copy(T, 1, Pos('<', T) - 1);
 
-        FTypeList.Author := Trim(T);
+        FPasItems.Author := Trim(T);
       end;
     end;
     DoNextToken(False);
@@ -1925,7 +2068,7 @@ begin
   begin
     Result := TCommentItem.Create(TokenString);
     TCommentItem(Result).IsSameLineComment := Token = toSameLineComment;
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
   end
   else
     Result := nil;
@@ -1945,7 +2088,7 @@ begin
     Result := TCompilerDirectiveItem.Create(TokenString);
     Result.BeginDEFList := FCopiedDEFList;
     Result.EndDEFList := FDEFList;
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
   end
   else
     Result := nil;
@@ -1969,7 +2112,7 @@ begin
   }
 
   ConstItem := TConstItem.Create(TokenString);
-  FTypeList.Add(ConstItem);
+  FPasItems.Add(ConstItem);
   Result := ConstItem;
 
   BeginRecording;
@@ -2176,7 +2319,7 @@ begin
   }
 
   EnumItem := TEnumItem.Create('');
-  FTypeList.Add(EnumItem);
+  FPasItems.Add(EnumItem);
   Result := EnumItem;
 
   { NewValue hebben we nodig om bv in '(Small = 5, ..' 5 niet mee te nemen }
@@ -2230,7 +2373,7 @@ begin
   CheckToken(toSymbol);
 
   FunctionItem := TFunctionItem.Create(TokenString);
-  FTypeList.Add(FunctionItem);
+  FPasItems.Add(FunctionItem);
   DoNextToken;
 
   { Token = toLeftParens or toColon }
@@ -2271,7 +2414,7 @@ begin
     if DoAdd then
     begin
       Result := TMethodFuncItem.Create(TokenString);
-      FTypeList.Add(Result);
+      FPasItems.Add(Result);
 
       TMethodFuncItem(Result).OwnerClassAsString := FirstToken;
     end
@@ -2285,7 +2428,7 @@ begin
     if DoAdd then
     begin
       Result := TFunctionItem.Create(FirstToken);
-      FTypeList.Add(Result);
+      FPasItems.Add(Result);
     end
     else
       Result := nil;
@@ -2412,7 +2555,7 @@ begin
   }
 
   Result := TFunctionTypeItem.Create('');
-  FTypeList.Add(Result);
+  FPasItems.Add(Result);
 
   DoNextToken;
 
@@ -2536,7 +2679,7 @@ begin
 
               { Minus the 'end' }
               S := LowRecordingStr;
-              FTypeList.Add(TInitializationFinaliziationItem.Create(
+              FPasItems.Add(TInitializationFinaliziationItem.Create(
                 Copy(S, 1, Length(S) - 3)));
 
               DoNextToken;
@@ -2674,7 +2817,7 @@ begin
 
   { Nu pas toevoegen }
   InterfaceItem := TInterfaceItem.Create('');
-  FTypeList.Add(InterfaceItem);
+  FPasItems.Add(InterfaceItem);
   Result := InterfaceItem;
 
   ReadInterfaceMethods(InterfaceItem);
@@ -2891,8 +3034,8 @@ end;
 
 procedure TDelphiParser.ReadParamList(AParams, ATypes: TStrings; const HaakType: THaakType);
 const
-  CLeftHaak: array [THaakType] of Char = (toLeftParens, toLeftBracket);
-  CRightHaak: array [THaakType] of Char = (toRightParens, toRightBracket);
+  CLeftHaak: array[THaakType] of Char = (toLeftParens, toLeftBracket);
+  CRightHaak: array[THaakType] of Char = (toRightParens, toRightBracket);
 
   procedure EndParamTypeRecording;
   begin
@@ -3004,7 +3147,7 @@ begin
   CheckToken(toSymbol);
 
   ProcedureItem := TProcedureItem.Create(TokenString);
-  FTypeList.Add(ProcedureItem);
+  FPasItems.Add(ProcedureItem);
 
   DoNextToken;
 
@@ -3029,7 +3172,7 @@ begin
   if TokenSymbolIs('constructor') then
     MethodType := mtConstructor
   else
-  if TokenSymbolIs('destructor') then
+    if TokenSymbolIs('destructor') then
     MethodType := mtDestructor
   else
     MethodType := mtNormal;
@@ -3048,7 +3191,7 @@ begin
     if DoAdd then
     begin
       Result := TMethodProcItem.Create(TokenString);
-      FTypeList.Add(Result);
+      FPasItems.Add(Result);
 
       TMethodProcItem(Result).MethodType := MethodType;
       TMethodProcItem(Result).OwnerClassAsString := FirstToken;
@@ -3063,7 +3206,7 @@ begin
     if DoAdd then
     begin
       Result := TProcedureItem.Create(FirstToken);
-      FTypeList.Add(Result);
+      FPasItems.Add(Result);
     end
     else
       Result := nil;
@@ -3132,7 +3275,7 @@ begin
   }
 
   Result := TProcedureTypeItem.Create('');
-  FTypeList.Add(Result);
+  FPasItems.Add(Result);
 
   DoNextToken;
   { Token is toLeftParens or toSemiColon or 'of object' or ?? }
@@ -3219,7 +3362,7 @@ begin
     POST: Token is token after 'end'
   }
   Result := TRecordItem.Create('');
-  FTypeList.Add(Result);
+  FPasItems.Add(Result);
 
   DoNextToken;
 
@@ -3230,7 +3373,7 @@ begin
         if TokenSymbolIs('end') then
           Break
         else
-        if TokenSymbolIs('case') then
+          if TokenSymbolIs('case') then
         begin
           SkipUntilSymbol('of');
           DoNextToken;
@@ -3290,7 +3433,7 @@ begin
   StartCapitalization;
 
   ResourceStringItem := TResourceStringItem.Create(TokenString);
-  FTypeList.Add(ResourceStringItem);
+  FPasItems.Add(ResourceStringItem);
 
   DoNextToken;
   CheckToken(toEquals);
@@ -3396,7 +3539,7 @@ begin
           if TokenSymbolIs('record') then
             Result := ReadRecord
           else
-          if TokenSymbolIs('array') then
+            if TokenSymbolIs('array') then
             Result := ReadSimpleType
           else
           begin
@@ -3471,7 +3614,7 @@ begin
   if TokenSymbolIs('library') then
     AModuleType := mtLibrary
   else
-  if TokenSymbolIs('unit') then
+    if TokenSymbolIs('unit') then
     AModuleType := mtUnit
   else
     Error('''library'' or ''unit'' expected');
@@ -3504,7 +3647,7 @@ begin
   begin
     MakeCopyOfDEFList;
     Result := TUsesItem.Create('');
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
     BeginLowRecording;
   end;
 
@@ -3546,14 +3689,14 @@ begin
   }
 
   Result := TVarItem.Create(TokenString);
-  FTypeList.Add(Result);
+  FPasItems.Add(Result);
 
   DoNextToken;
   while Token = toComma do
   begin
     DoNextToken;
     CheckToken(toSymbol);
-    FTypeList.Add(TVarItem.Create(TokenString));
+    FPasItems.Add(TVarItem.Create(TokenString));
     DoNextToken;
   end;
 
@@ -3657,7 +3800,7 @@ begin
     if DoAdd then
     begin
       Result := TTypeItem.Create('');
-      FTypeList.Add(Result);
+      FPasItems.Add(Result);
     end
     else
       Result := nil;
@@ -3679,7 +3822,7 @@ begin
       Result := TMetaClassItem.Create('')
     else
       Result := TClassItem.Create('');
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
   end
   else
     Result := nil;
@@ -3691,7 +3834,7 @@ begin
     SkipUntilToken(toSemiColon);
   end
   else
-  if Token <> toSemiColon then
+    if Token <> toSemiColon then
     SkipClassMethods
 end;
 
@@ -3901,7 +4044,7 @@ begin
   if DoAdd then
   begin
     Result := TConstItem.Create(TokenString);
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
   end
   else
     Result := nil;
@@ -3959,7 +4102,7 @@ begin
     if TokenSymbolInC(CAllowableSymbolsInTypeDef) >= 0 then
       SkipUntilTokenInHaak(toLeftParens, toRightParens)
     else
-    if TokenSymbolIs('end') then
+      if TokenSymbolIs('end') then
       Exit
     else
       case Token of
@@ -4086,7 +4229,7 @@ begin
   if DoAdd then
   begin
     Result := TEnumItem.Create('');
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
   end
   else
     Result := nil;
@@ -4174,7 +4317,7 @@ begin
   if DoAdd then
   begin
     Result := TFunctionTypeItem.Create('');
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
   end
   else
     Result := nil;
@@ -4311,7 +4454,7 @@ begin
   if DoAdd then
   begin
     Result := TInterfaceItem.Create('');
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
   end
   else
     result := nil;
@@ -4322,8 +4465,8 @@ end;
 
 procedure TDelphiParser.SkipParamList(const HaakType: THaakType);
 const
-  CLeftHaak: array [THaakType] of Char = (toLeftParens, toLeftBracket);
-  CRightHaak: array [THaakType] of Char = (toRightParens, toRightBracket);
+  CLeftHaak: array[THaakType] of Char = (toLeftParens, toLeftBracket);
+  CRightHaak: array[THaakType] of Char = (toRightParens, toRightBracket);
 var
   Haakjes: Integer;
   NewParam: Boolean;
@@ -4435,7 +4578,7 @@ begin
   if DoAdd then
   begin
     Result := TProcedureTypeItem.Create('');
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
   end
   else
     Result := nil;
@@ -4519,7 +4662,7 @@ begin
   if DoAdd then
   begin
     Result := TRecordItem.Create('');
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
   end
   else
     Result := nil;
@@ -4533,7 +4676,7 @@ begin
         if TokenSymbolIs('end') then
           Break
         else
-        if TokenSymbolIs('case') then
+          if TokenSymbolIs('case') then
         begin
           SkipUntilSymbol('of');
           DoNextToken;
@@ -4589,7 +4732,7 @@ begin
   if DoAdd then
   begin
     Result := TResourceStringItem.Create(TokenString);
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
   end
   else
     Result := nil;
@@ -4613,7 +4756,7 @@ begin
   if DoAdd then
   begin
     Result := TTypeItem.Create('');
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
   end
   else
     Result := nil;
@@ -4625,7 +4768,7 @@ begin
     SkipType(False, False);
   end
   else
-  if TokenSymbolIs('set') then
+    if TokenSymbolIs('set') then
   begin
     { same as array }
     SkipUntilSymbol('of');
@@ -4633,14 +4776,14 @@ begin
     SkipType(False, False);
   end
   else
-  if Token = '^' then
+    if Token = '^' then
   begin
     DoNextToken;
     CheckToken(toSymbol);
     DoNextToken;
   end
   else
-  if TokenSymbolIs('string') then
+    if TokenSymbolIs('string') then
   begin
     DoNextToken;
     if Token = toLeftBracket then
@@ -4651,7 +4794,7 @@ begin
     end;
   end
   else
-  if TokenSymbolIs('file') then
+    if TokenSymbolIs('file') then
   begin
     { same as array }
     DoNextToken;
@@ -4662,7 +4805,7 @@ begin
     end;
   end
   else
-  if TokenSymbolInC(CAllowableSymbolsInTypeDef) >= 0 then
+    if TokenSymbolInC(CAllowableSymbolsInTypeDef) >= 0 then
     SkipConstantExpression(True)
   else
   begin
@@ -4680,7 +4823,7 @@ begin
       SkipConstantExpression(False);
     end
     else
-    if Token = '.' then
+      if Token = '.' then
     begin
       DoNextToken;
       CheckToken(toSymbol);
@@ -4699,7 +4842,7 @@ begin
       end;
     end
     else
-    if not (Token in [toRightParens, toSemiColon, toEquals]) and not TokenSymbolIs('end') then
+      if not (Token in [toRightParens, toSemiColon, toEquals]) and not TokenSymbolIs('end') then
       SkipConstantExpression(True);
   end;
 
@@ -4794,6 +4937,32 @@ begin
   CheckToken(T);
 end;
 
+procedure TDelphiParser.SkipUntilTokenInHaak(OpenSymbol, CloseSymbol: Char;
+  const InitialOpenCount: Integer);
+var
+  OpenCount: Integer;
+begin
+  { Post : Token on CloseHaak }
+
+  if OpenSymbol = CloseSymbol then
+    Error('Internal error: OpenHaak = CloseHaak');
+  OpenCount := InitialOpenCount;
+  while Token <> toEof do
+  begin
+    if Token = OpenSymbol then
+      Inc(OpenCount)
+    else
+      if Token = CloseSymbol then
+    begin
+      Dec(OpenCount);
+      if OpenCount = 0 then
+        Exit;
+    end;
+
+    DoNextToken;
+  end;
+end;
+
 procedure TDelphiParser.SkipUntilTokenInHaak(T: Char; const InitHaak: Integer);
 var
   Haakjes: Integer;
@@ -4815,32 +4984,6 @@ begin
     if Token = T then
       if Haakjes <= 0 then
         Exit;
-    DoNextToken;
-  end;
-end;
-
-procedure TDelphiParser.SkipUntilTokenInHaak(OpenSymbol, CloseSymbol: Char;
-  const InitialOpenCount: Integer);
-var
-  OpenCount: Integer;
-begin
-  { Post : Token on CloseHaak }
-
-  if OpenSymbol = CloseSymbol then
-    Error('Internal error: OpenHaak = CloseHaak');
-  OpenCount := InitialOpenCount;
-  while Token <> toEof do
-  begin
-    if Token = OpenSymbol then
-      Inc(OpenCount)
-    else
-    if Token = CloseSymbol then
-    begin
-      Dec(OpenCount);
-      if OpenCount = 0 then
-        Exit;
-    end;
-
     DoNextToken;
   end;
 end;
@@ -4888,7 +5031,7 @@ begin
   if DoAdd then
   begin
     Result := TVarItem.Create(TokenString);
-    FTypeList.Add(Result);
+    FPasItems.Add(Result);
   end
   else
     Result := nil;
@@ -4899,7 +5042,7 @@ begin
     DoNextToken;
     CheckToken(toSymbol);
     if DoAdd then
-      FTypeList.Add(TVarItem.Create(TokenString));
+      FPasItems.Add(TVarItem.Create(TokenString));
     DoNextToken;
   end;
 
@@ -4945,14 +5088,6 @@ begin
   else
     Current := dftIFDEF;
   FDEFList.Objects[FDEFList.Count - 1] := TObject(Current);
-end;
-
-function FirstChar(const S: string): Char;
-begin
-  if S = '' then
-    Result := #0
-  else
-    Result := S[1];
 end;
 
 function TDelphiParser.TokenCompilerDirective: TCompilerDirective;
@@ -5070,12 +5205,20 @@ begin
   SkipUntilSymbol('contains');
 end;
 
+//=== TDtxBaseItem ===========================================================
+
+procedure TDtxBaseItem.SetData(const Value: string);
+begin
+  FData := RemoveSepLines(Value);
+  EnsureEndingCRLF(FData);
+end;
+
 //=== TDtxCompareParser ======================================================
 
 constructor TDtxCompareParser.Create;
 begin
   inherited;
-  FList := TObjectList.Create;
+  FList := TDtxItems.Create;
   FTags := TStringList.Create;
 end;
 
@@ -5118,10 +5261,10 @@ begin
     if (S[1] = '@') and (S[2] = '@') then
       Result := ctHelpTag
     else
-    if (S[1] = '#') and (S[2] = '#') then
+      if (S[1] = '#') and (S[2] = '#') then
       Result := ctParseTag
     else
-    if (S[1] = '-') and (S[2] = '-') then
+      if (S[1] = '-') and (S[2] = '-') then
       Result := ctSeperator
     else
       Result := ctText;
@@ -5137,6 +5280,8 @@ begin
 
   ReadStartBlock;
   ReadRest;
+
+  FList.ConstructSkipList;
   Result := True;
 end;
 
@@ -5147,7 +5292,7 @@ begin
     Exclude(FErrors, defNoAuthor);
 end;
 
-procedure TDtxCompareParser.ReadCombine(Item: TDtxItem);
+procedure TDtxCompareParser.ReadCombine(Item: TDtxHelpItem);
 var
   S: string;
 begin
@@ -5164,7 +5309,7 @@ begin
   end;
 end;
 
-procedure TDtxCompareParser.ReadCombineWith(Item: TDtxItem);
+procedure TDtxCompareParser.ReadCombineWith(Item: TDtxHelpItem);
 var
   S: string;
 begin
@@ -5196,7 +5341,7 @@ begin
       LowNextToken;
 end;
 
-procedure TDtxCompareParser.ReadHasTocEntry(Item: TDtxItem);
+procedure TDtxCompareParser.ReadHasTocEntry(Item: TDtxHelpItem);
 var
   S: string;
 begin
@@ -5213,7 +5358,7 @@ begin
     if SameText(S, 'on') then
       Item.HasTocEntry := True
     else
-    if SameText(S, 'off') then
+      if SameText(S, 'off') then
       Item.HasTocEntry := False
     else
       Include(FErrors, defHasTocEntryError);
@@ -5221,7 +5366,7 @@ begin
   end;
 end;
 
-procedure TDtxCompareParser.ReadHelpTopic(Item: TDtxItem);
+procedure TDtxCompareParser.ReadHelpTopic(Item: TDtxHelpItem);
 
   procedure CheckDefaultText(var ACheck: string);
   var
@@ -5300,13 +5445,13 @@ begin
       if SameText(LTokenString, '<COMBINE') then
         ReadCombine(Item)
       else
-      if SameText(LTokenString, '<COMBINEWith') then
+        if SameText(LTokenString, '<COMBINEWith') then
         ReadCombineWith(Item)
       else
-      if SameText(LTokenString, '<HASTOCENTRY') then
+        if SameText(LTokenString, '<HASTOCENTRY') then
         ReadHasTocEntry(Item)
       else
-      if SameText(LTokenString, '<TITLEIMG') then
+        if SameText(LTokenString, '<TITLEIMG') then
         ReadTitleImg(Item)
       else
         { Token starts with < but not a known token }
@@ -5318,7 +5463,7 @@ begin
       if CompareStr(LTokenString, 'Parameters') = 0 then
         ReadParameters(Item.Parameters)
       else
-      if SameText(LTokenString, 'JVCLInfo') then
+        if SameText(LTokenString, 'JVCLInfo') then
         ReadJVCLINFO(Item)
       else
         { Token start on new line but not a known token }
@@ -5327,7 +5472,7 @@ begin
   end;
 end;
 
-procedure TDtxCompareParser.ReadJVCLINFO(Item: TDtxItem);
+procedure TDtxCompareParser.ReadJVCLINFO(Item: TDtxHelpItem);
 var
   IsFlag, IsGroup: Boolean;
   FlagFound, GroupFound: Boolean;
@@ -5355,13 +5500,13 @@ begin
       if IsFlag then
         Include(Item.FJVCLInfoErrors, jieFlagNotFilled)
       else
-      if IsGroup then
+        if IsGroup then
         Include(Item.FJVCLInfoErrors, jieGroupNotFilled)
       else
         Include(Item.FJVCLInfoErrors, jieOtherNotFilled)
     end
     else
-    if IsFlag then
+      if IsFlag then
       Item.IsRegisteredComponent :=
         SameText('component', Trim(Copy(TokenString, 6, MaxInt)));
 
@@ -5414,16 +5559,33 @@ begin
 end;
 
 procedure TDtxCompareParser.ReadPackage;
+var
+  DtxItem: TDtxStartItem;
 begin
   Exclude(FErrors, defNoPackageTag);
 
   LowNextToken;
+
+  if CollectData then
+    BeginLowRecording;
+
   while (Token <> toEof) and (CompareTokenType = ctText) do
   begin
     if Pos('?', TokenString) > 0 then
       Include(FErrors, defPackageTagNotFilled);
 
     LowNextToken;
+  end;
+
+  if CollectData then
+  begin
+    EndLowRecordingWithoutCurrent;
+
+    DtxItem := TDtxStartItem.Create;
+    FList.Add(DtxItem);
+
+    DtxItem.Symbol := dssPackage;
+    DtxItem.Data := LowRecordingStr;
   end;
 end;
 
@@ -5493,20 +5655,32 @@ end;
 procedure TDtxCompareParser.ReadRest;
 var
   HelpToken: string;
-  DtxItem: TDtxItem;
+  DtxItem: TDtxHelpItem;
 begin
   while (Token <> toEof) and (CompareTokenType = ctHelpTag) do
   begin
     HelpToken := TokenString;
-    DtxItem := TDtxItem.Create(HelpToken);
+    DtxItem := TDtxHelpItem.Create(HelpToken);
     FList.Add(DtxItem);
 
     LowNextToken;
 
-    if (Length(HelpToken) > 2) and SameText(Copy(HelpToken, 3, MaxInt), FPasFileNameWithoutPath) then
+    if CollectData then
+      BeginLowRecording;
+
+    DtxItem.IsFileInfo := (Length(HelpToken) > 2) and
+      SameText(Copy(HelpToken, 3, MaxInt), FPasFileNameWithoutPath);
+
+    if DtxItem.IsFileInfo then
       ReadFileInfo
     else
       ReadHelpTopic(DtxItem);
+
+    if CollectData then
+    begin
+      EndLowRecordingWithoutCurrent;
+      DtxItem.Data := LowRecordingStr;
+    end;
   end;
 end;
 
@@ -5515,6 +5689,42 @@ begin
   LowNextToken;
   if CompareTokenType <> ctText then
     Include(FErrors, defEmptySeeAlso);
+end;
+
+procedure TDtxCompareParser.ReadSkip;
+var
+  DtxItem: TDtxStartItem;
+begin
+  LowNextToken;
+
+  if CollectData then
+    BeginLowRecording;
+
+  if CompareTokenType = ctText then
+  begin
+    if Assigned(FSkipList) then
+      FSkipList.Add(TokenString);
+    LowNextToken;
+  end;
+
+  while (Token <> toEof) and (CompareTokenType = ctText) do
+  begin
+    if Pos('?', TokenString) > 0 then
+      Include(FErrors, defPackageTagNotFilled);
+
+    LowNextToken;
+  end;
+
+  if CollectData then
+  begin
+    EndLowRecordingWithoutCurrent;
+
+    DtxItem := TDtxStartItem.Create;
+    FList.Add(DtxItem);
+
+    DtxItem.Symbol := dssSkip;
+    DtxItem.Data := LowRecordingStr;
+  end;
 end;
 
 procedure TDtxCompareParser.ReadStartBlock;
@@ -5527,8 +5737,11 @@ begin
       if TokenSymbolIs('##package:') then
         ReadPackage
       else
-      if TokenSymbolIs('##status:') then
+        if TokenSymbolIs('##status:') then
         ReadStatus
+      else
+        if TokenSymbolIs('##skip:') then
+        ReadSkip
       else
         ReadOther;
     end
@@ -5538,12 +5751,32 @@ begin
 end;
 
 procedure TDtxCompareParser.ReadStatus;
+var
+  DtxItem: TDtxStartItem;
 begin
   Exclude(FErrors, defNoStatusTag);
+
   LowNextToken;
+
+  if CollectData then
+    BeginLowRecording;
+
+  while (Token <> toEof) and (CompareTokenType = ctText) do
+    LowNextToken;
+
+  if CollectData then
+  begin
+    EndLowRecordingWithoutCurrent;
+
+    DtxItem := TDtxStartItem.Create;
+    FList.Add(DtxItem);
+
+    DtxItem.Symbol := dssStatus;
+    DtxItem.Data := LowRecordingStr;
+  end;
 end;
 
-procedure TDtxCompareParser.ReadTitleImg(Item: TDtxItem);
+procedure TDtxCompareParser.ReadTitleImg(Item: TDtxHelpItem);
 var
   S: string;
 begin
@@ -5560,19 +5793,179 @@ begin
   end;
 end;
 
-//=== TDtxItem ===============================================================
+//=== TDtxHelpItem ===========================================================
 
-constructor TDtxItem.Create(const ATag: string);
+function TDtxHelpItem.CompareWith(AItem: TDtxBaseItem): Integer;
+const
+  CBoolInt: array[Boolean] of Integer = (0, -1);
+var
+  OtherItem: TDtxHelpItem;
+begin
+  if AItem is TDtxHelpItem then
+  begin
+    OtherItem := TDtxHelpItem(AItem);
+
+    Result := CBoolInt[FIsFileInfo] - CBoolInt[OtherItem.FIsFileInfo];
+    if (Result = 0) and not FIsFileInfo then
+      Result := CompareText(FTag, OtherItem.FTag);
+  end
+  else
+    Result := 1;
+end;
+
+constructor TDtxHelpItem.Create(const ATag: string);
 begin
   FParameters := TStringList.Create;
   FTag := ATag;
   FHasTocEntry := True;
 end;
 
-destructor TDtxItem.Destroy;
+destructor TDtxHelpItem.Destroy;
 begin
   FParameters.Free;
   inherited;
+end;
+
+procedure TDtxHelpItem.WriteToStream(AStream: TStream);
+var
+  S: string;
+begin
+  S := Tag + #13#10 + FData;
+  AStream.write(PChar(S)^, Length(S));
+end;
+
+//=== TDtxItems ==============================================================
+
+procedure TDtxItems.ConstructSkipList;
+var
+  I: Integer;
+begin
+  FSkipList.Clear;
+  for I := 0 to Count - 1 do
+    if (Items[i] is TDtxStartItem) and (TDtxStartItem(Items[i]).Symbol = dssSkip) then
+      FSkipList.Add(
+        AddLeading(RemoveStartEndCRLF(TDtxStartItem(Items[i]).Data)));
+end;
+
+constructor TDtxItems.Create;
+begin
+  inherited Create;
+  FSkipList := TStringList.Create;
+  with TStringList(FSkipList) do
+  begin
+    CaseSensitive := True;
+    Sorted := True;
+    Duplicates := dupIgnore;
+  end;
+end;
+
+destructor TDtxItems.Destroy;
+begin
+  FSkipList.Free;
+  inherited Destroy;
+end;
+
+procedure TDtxItems.DtxSort;
+begin
+  Sort(DtxSortCompare);
+end;
+
+procedure TDtxItems.FillWithDtxHeaders(Dest: TStrings);
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 1 do
+    if Items[i] is TDtxHelpItem then
+      with TDtxHelpItem(Items[I]) do
+        if HasTocEntry then
+          Dest.Add(Tag);
+end;
+
+function TDtxItems.IndexOfReferenceName(ReferenceName: string): Integer;
+begin
+  ReferenceName := AddLeading(ReferenceName);
+
+  Result := 0;
+  while (Result < Count) and
+    (not (Items[Result] is TDtxHelpItem) or
+    not SameText((Items[Result] as TDtxHelpItem).Tag, ReferenceName)) do
+    Inc(Result);
+  if Result >= Count then
+    Result := -1;
+end;
+
+procedure TDtxItems.WriteToFile(const AFileName: string);
+const
+  cSepLength = 100;
+var
+  Stream: TFileStream;
+  I: Integer;
+  Sep: string;
+begin
+  SetLength(Sep, cSepLength + 2);
+  FillChar(PChar(Sep)^, cSepLength, '-');
+  Sep[cSepLength + 1] := #13;
+  Sep[cSepLength + 2] := #10;
+
+  Stream := TFileStream.Create(AFileName, fmCreate);
+  try
+    for I := 0 to Count - 1 do
+    begin
+      if Items[i] is TDtxHelpItem then
+        Stream.write(PChar(Sep)^, cSepLength + 2);
+      (Items[i] as TDtxBaseItem).WriteToStream(Stream);
+    end;
+  finally
+    Stream.Free;
+  end;
+end;
+
+//=== TDtxStartItem ==========================================================
+
+function TDtxStartItem.CompareWith(AItem: TDtxBaseItem): Integer;
+begin
+  if AItem is TDtxStartItem then
+  begin
+    Result := Ord(FSymbol) - Ord(TDtxStartItem(AItem).FSymbol);
+    if (Result = 0) and (FSymbol in [dssOther, dssSkip]) then
+      Result := CompareText(FData, TDtxStartItem(AItem).FData);
+  end
+  else
+    Result := -1;
+end;
+
+procedure TDtxStartItem.SetSymbol(const Value: TDtxStartSymbol);
+begin
+  FSymbol := Value;
+  case FSymbol of
+    dssPackage: FSymbolStr := '##Package:';
+    dssStatus: FSymbolStr := '##Status:';
+    dssSkip: FSymbolStr := '##Skip:';
+  end;
+end;
+
+procedure TDtxStartItem.SetSymbolStr(const Value: string);
+begin
+  FSymbolStr := Value;
+
+  if SameText(FSymbolStr, '##package:') then
+    FSymbol := dssPackage
+  else
+    if SameText(FSymbolStr, '##status:') then
+    FSymbol := dssStatus
+  else
+    if SameText(FSymbolStr, '##skip:') then
+    FSymbol := dssSkip
+  else
+    FSymbol := dssOther;
+end;
+
+procedure TDtxStartItem.WriteToStream(AStream: TStream);
+var
+  S: string;
+begin
+  S := SymbolStr + ' ' + Data;
+  AStream.write(PChar(S)^, Length(S));
 end;
 
 //=== TFunctionParser ========================================================
@@ -5694,10 +6087,10 @@ begin
   try
     GlobalProcedureNames.Sorted := True;
     GlobalProcedureNames.Duplicates := dupIgnore;
-    for I := 0 to FTypeList.Count - 1 do
-      if FTypeList[i].DelphiType in [dtFunction, dtProcedure] then
-        GlobalProcedureNames.Add(FTypeList[i].SimpleName);
-    FTypeList.Clear;
+    for I := 0 to FPasItems.Count - 1 do
+      if FPasItems[i].DelphiType in [dtFunction, dtProcedure] then
+        GlobalProcedureNames.Add(FPasItems[i].SimpleName);
+    FPasItems.Clear;
 
     CheckTokenSymbolC('implementation');
     if Assigned(FOutputStream) then
@@ -5707,9 +6100,9 @@ begin
 
     ReadImplementationBlock;
 
-    for I := 0 to FTypeList.Count - 1 do
-      if FTypeList[i] is TBaseFuncItem then
-        with TBaseFuncItem(FTypeList[i]) do
+    for I := 0 to FPasItems.Count - 1 do
+      if FPasItems[i] is TBaseFuncItem then
+        with TBaseFuncItem(FPasItems[i]) do
           IsLocal := GlobalProcedureNames.IndexOf(SimpleName) < 0;
 
     if SortImplementation then
@@ -5777,9 +6170,9 @@ begin
     if not Result then
       Exit;
 
-    for I := 0 to FTypeList.Count - 1 do
+    for I := 0 to FPasItems.Count - 1 do
     begin
-      Item := TAbstractItem(FTypeList[I]);
+      Item := TAbstractItem(FPasItems[I]);
       if DoCount then
       begin
         Index := FList.Add(Item.SimpleName);
@@ -5971,4 +6364,3 @@ begin
 end;
 
 end.
-

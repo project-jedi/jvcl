@@ -6,7 +6,7 @@ uses
   Classes, Contnrs;
 
 const
-  CParamDescription = 'Description for this parameter';
+  CParamItemDescription = 'Description for this parameter';
   CItemDescription = '  Description for %s'#13#10;
   CDefaultEnters = 2;
 
@@ -119,7 +119,7 @@ const
 type
   TAbstractItem = class;
 
-  TTypeList = class(TObjectList)
+  TPasItems = class(TObjectList)
   private
     FAuthor: string;
     FFileName: string;
@@ -148,6 +148,7 @@ type
     procedure RemoveTrivialComments(Classes: TStrings);
   public
     function IndexOfName(const SimpleName: string): Integer;
+    function IndexOfReferenceName(ReferenceName: string): Integer;
 
     procedure SortImplementation;
     procedure OnlyCapitalization;
@@ -156,6 +157,8 @@ type
     procedure DtxSort;
     procedure CalculateCombines;
 
+    procedure FillWithHeaders(const UnitName: string; Ignore, Optional, NotOptional: TStrings);
+
     property Items[Index: Integer]: TAbstractItem read GetItem write SetItem; default;
     property Author: string read FAuthor write FAuthor;
     property FileName: string read FFileName write FFileName;
@@ -163,11 +166,10 @@ type
 
   TAbstractItem = class(TPersistent)
   private
-    FTypeList: TTypeList;
+    FTypeList: TPasItems;
     FSimpleName: string;
     FCombineList: TObjectList;
     FCombineWithList: TObjectList;
-    //    FHelpStr: string;
     FImplementationStr: string;
     FIndex: Integer;
     FBeginDEFList: TStrings;
@@ -213,9 +215,23 @@ type
     function ConstructCopy: TAbstractItem;
     procedure Assign(Source: TPersistent); override;
 
-    //    function IncludedInFilter(const AData: TFilterData): Boolean; virtual;
+    procedure WriteDtxDataToStream(AStream: TStream);
+    function DtxDataWithoutHeader: string;
+    function DtxData: string;
 
-    property TypeList: TTypeList read FTypeList;
+    function IsOptionalInDtx: Boolean; virtual;
+    function IncludeInGeneratedDtx: Boolean; virtual;
+
+    { strings for dtx file }
+    function DtxClassInfoStr: string;
+    function DtxDescriptionStr: string;
+    function DtxParamStr: string;
+    function DtxReturnsStr: string;
+    function DtxSummaryStr: string;
+    function DtxTitleStr: string;
+    function DtxCombineStr: string;
+
+    property TypeList: TPasItems read FTypeList;
     { Simple name,   zonder . zonder @ }
     property SimpleName: string read FSimpleName write FSimpleName;
     { Reference name       met @ met . }
@@ -223,8 +239,6 @@ type
     { Title name     zonder . met 'function', 'type', 'procedure' }
     property TitleName: string read GetTitleName;
     property DtxSortName: string read GetDtxSortName;
-    //    property CompilerPrefix: string read GetCompilerPrefix;
-    //    property CompilerSuffix: string read GetCompilerSuffix;
     property PasSortName: string read GetPasSortName;
     property PasSortOnIndex: Boolean read GetPasSortOnIndex;
     property DelphiType: TDelphiType read GetDelphiType;
@@ -450,7 +464,8 @@ type
     function GetReferenceName: string; override;
     function GetClassString: string; override;
   public
-    //    function IncludedInFilter(const AData: TFilterData): Boolean; override;
+    function IsOptionalInDtx: Boolean; override;
+//    function IncludeInGeneratedDtx: Boolean; override;
 
     property OwnerClassAsString: string read FOwnerClassAsString write FOwnerClassAsString;
     property OwnerClass: TClassItem read FOwnerClass write FOwnerClass;
@@ -472,6 +487,9 @@ type
     constructor Create(const AName: string); override;
     destructor Destroy; override;
 
+    function IsOptionalInDtx: Boolean; override;
+    function IncludeInGeneratedDtx: Boolean; override;
+
     property Params: TStringList read FParams;
     property ParamTypes: TStringList read FParamTypes;
     property Directives: TDirectives read FDirectives write FDirectives;
@@ -490,8 +508,6 @@ type
   public
     constructor Create(const AName: string); override;
     destructor Destroy; override;
-
-    //    function IncludedInFilter(const AData: TFilterData): Boolean; override;
 
     procedure AddProcedure(AItem: TClassMemberOrFieldItem);
     procedure AddFunction(AItem: TClassMemberOrFieldItem);
@@ -519,8 +535,6 @@ type
   private
     function GetTitleName: string; override;
     function GetDelphiType: TDelphiType; override;
-  public
-    //    function IncludedInFilter(const AData: TFilterData): Boolean; override;
   end;
 
   TFunctionTypeItem = class(TBaseFuncItem)
@@ -536,8 +550,6 @@ type
   TMethodFuncItem = class(TParamClassMethodItem)
   private
     function GetDelphiType: TDelphiType; override;
-  public
-    //    function IncludedInFilter(const AData: TFilterData): Boolean; override;
   end;
 
   TMethodProcItem = class(TParamClassMethodItem)
@@ -546,8 +558,6 @@ type
     function GetDelphiType: TDelphiType; override;
     function GetDtxSortName: string; override;
   public
-    //    function IncludedInFilter(const AData: TFilterData): Boolean; override;
-
     property MethodType: TMethodType read FMethodType write FMethodType;
   end;
 
@@ -568,7 +578,8 @@ type
   public
     destructor Destroy; override;
 
-    //    function IncludedInFilter(const AData: TFilterData): Boolean; override;
+    function IsOptionalInDtx: Boolean; override;
+    function IncludeInGeneratedDtx: Boolean; override;
 
     property IsArray: Boolean read FIsArray write FIsArray;
     property IsInherited: Boolean read FIsInherited write FIsInherited;
@@ -590,8 +601,6 @@ type
   private
     function GetTitleName: string; override;
     function GetDelphiType: TDelphiType; override;
-  public
-    //    function IncludedInFilter(const AData: TFilterData): Boolean; override;
   end;
 
   TProcedureTypeItem = class(TBaseFuncItem)
@@ -660,7 +669,7 @@ function StrToCompilerDirective(const S: string): TCompilerDirective;
 implementation
 
 uses
-  SysUtils, Settings, Dialogs,
+  SysUtils, Settings, Dialogs, Utils,
   Math;
 
 type
@@ -670,6 +679,11 @@ type
   end;
 
 const
+  CConvert: array[TDelphiType] of TOutputType =
+  (otClass, otConst, otType, otFunction, otFunctionType,
+    otInterface, otFunction, otProcedure, otProcedure, otProcedureType,
+    otProperty, otRecord, otResourcestring, otSet, otType, otVar, otField, otMetaClass, otType);
+
   CTitleFunction = '%s function';
 
   CDelphiSectionStr: array[TDelphiSection] of string = (
@@ -683,6 +697,7 @@ const
 
   CIFDEFFmt = '{$xIFDEF %s}'#13#10;
   CIFNDEFFmt = '{$xIFNDEF %s}'#13#10;
+
   CEndFmt = '{$xENDIF %s}'#13#10;
 
   CCompilerDirectives: array[0..84] of TCompilerDirectiveRec = (
@@ -773,7 +788,7 @@ const
     (S: 'Z4'; M: cdMinimumEnumSize)
     );
 
-  //=== Local procedures =======================================================
+//=== Local procedures =======================================================
 
 function DtxSortCompare(Item1, Item2: Pointer): Integer;
 begin
@@ -821,7 +836,7 @@ begin
     MaxLength := Max(MaxLength, Length(AStrings[I]));
   Inc(MaxLength);
   for I := 0 to AStrings.Count - 1 do
-    Result := Result + '  ' + RightFill(AStrings[I], MaxLength) + '- ' + CParamDescription + #13#10;
+    Result := Result + '  ' + RightFill(AStrings[I], MaxLength) + '- ' + CParamItemDescription + #13#10;
   { Laatste return eraf halen }
   Delete(Result, Length(Result) - 1, 2);
 end;
@@ -878,11 +893,54 @@ begin
 
     List2.Clear;
     for I := 0 to List1.Count - 1 do
-      if TObject(List1[i]) is TAbstractItem then
-        List2.Add(TAbstractItem(List1[i]).ConstructCopy);
+      if TObject(List1[I]) is TAbstractItem then
+        List2.Add(TAbstractItem(List1[I]).ConstructCopy);
   end
   else
     FreeAndNil(List2);
+end;
+
+function GetOutputStrFromSettings(const OutputType: TOutputType; const AName: string): string;
+var
+  Index: Integer;
+begin
+  with TSettings.Instance do
+  begin
+    Index := OutputTypeDesc[OutputType].IndexOf(UpperCase(AName));
+    if Index < 0 then
+      Result := OutputTypeDefaults[OutputType]
+    else
+      Result := OutputTypeStrings[OutputType][Index];
+  end;
+end;
+
+function OnIgnoreList(IgnoreList: TStrings; const ReferenceName: string): Boolean;
+var
+  P: Integer;
+begin
+  if not Assigned(IgnoreList) then
+  begin
+    Result := False;
+    Exit;
+  end;
+
+  Result := IgnoreList.IndexOf(ReferenceName) >= 0;
+  if Result then
+    Exit;
+
+  P := Pos('.', ReferenceName);
+  if P < 0 then
+    Exit;
+
+  Result := IgnoreList.IndexOf(Copy(ReferenceName, 1, P - 1)) >= 0;
+end;
+
+function StripLeading(const S: string): string;
+begin
+  if (Length(S) > 1) and (S[1] = '@') and (S[2] = '@') then
+    Result := Copy(S, 3, MaxInt)
+  else
+    Result := S;
 end;
 
 //=== Global procedures ======================================================
@@ -926,7 +984,7 @@ begin
   if Source is TAbstractItem then
   begin
     Src := Source as TAbstractItem;
-    //FTypeList: TTypeList;
+    //FTypeList: TPasItems;
     FSimpleName := Src.FSimpleName;
     //FCombineList: TObjectList;
     //FCombineWithList: TObjectList;
@@ -967,6 +1025,127 @@ begin
   FEndDEFList.Free;
   FSwitchDEFList.Free;
   inherited Destroy;
+end;
+
+function TAbstractItem.DtxClassInfoStr: string;
+const
+  CClassInfo = '<TITLEIMG %s>'#13#10'JVCLInfo'#13#10'  GROUP=JVCL.??'#13#10'  FLAG=Component'#13#10;
+begin
+  if (DelphiType = dtClass) and TSettings.Instance.IsRegisteredClass(SimpleName) then
+    Result := Format(CClassInfo, [SimpleName])
+  else
+    Result := '';
+end;
+
+function TAbstractItem.DtxCombineStr: string;
+begin
+  if CombineString > '' then
+    Result := Format('<COMBINE %s>', [CombineString])
+  else
+    Result := '';
+end;
+
+function TAbstractItem.DtxData: string;
+begin
+  Result := '@@' + ReferenceName + #13#10 + DtxDataWithoutHeader;
+end;
+
+function TAbstractItem.DtxDataWithoutHeader: string;
+const
+  CSeeAlsoDescription = 'See Also'#13#10'  List here other properties, methods (comma seperated)'#13#10 +
+    '  Remove the ''See Also'' section if there are no references';
+  CValueReference = '(Value = %Value - for reference)';
+begin
+  Result := GetOutputStrFromSettings(CConvert[Self.DelphiType], Self.SimpleName);
+
+  Result := StringReplace(Result, '%author', FTypeList.Author, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, '%name', SimpleName, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, '%classinfo', DtxClassInfoStr, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, '%titlename', TitleName, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, '%title', DtxTitleStr, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, '%referencename', ReferenceName, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, '%sortname', DtxSortName, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, '%param', DtxParamStr, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, '%items', ItemsString, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, '%class', ClassString, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, '%nicename', TSettings.Instance.NiceName[ClassString],
+    [rfReplaceAll, rfIgnoreCase]);
+  if not CanCombine then
+  begin
+    Result := StringReplace(Result, '%summary', DtxSummaryStr, [rfReplaceAll, rfIgnoreCase]);
+    Result := StringReplace(Result, '%description', DtxDescriptionStr, [rfReplaceAll, rfIgnoreCase]);
+    Result := StringReplace(Result, '%seealso', CSeeAlsoDescription, [rfReplaceAll, rfIgnoreCase]);
+    Result := StringReplace(Result, '%returns', DtxReturnsStr, [rfReplaceAll, rfIgnoreCase]);
+    Result := StringReplace(Result, '%combine', '', [rfReplaceAll, rfIgnoreCase]);
+    Result := StringReplace(Result, '%refvalue', CValueReference, [rfReplaceAll, rfIgnoreCase]);
+    Result := StringReplace(Result, '%value', ValueString, [rfReplaceAll, rfIgnoreCase]);
+  end
+  else
+  begin
+    Result := StringReplace(Result, '%summary', '', [rfReplaceAll, rfIgnoreCase]);
+    Result := StringReplace(Result, '%description', '', [rfReplaceAll, rfIgnoreCase]);
+    Result := StringReplace(Result, '%seealso', '', [rfReplaceAll, rfIgnoreCase]);
+    Result := StringReplace(Result, '%returns', '', [rfReplaceAll, rfIgnoreCase]);
+    Result := StringReplace(Result, '%combine', DtxCombineStr, [rfReplaceAll, rfIgnoreCase]);
+    Result := StringReplace(Result, '%refvalue', '', [rfReplaceAll, rfIgnoreCase]);
+    Result := StringReplace(Result, '%value', '', [rfReplaceAll, rfIgnoreCase]);
+  end;
+  Result := StringReplace(Result, #13#10#13#10, #13#10, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, #13#10#13#10, #13#10, [rfReplaceAll, rfIgnoreCase]);
+  Result := TrimRight(Result);
+
+  EnsureEndingCRLF(Result);
+  while Copy(Result, 1, 2) = #13#10 do
+    Result := Copy(Result, 3, MaxInt);
+end;
+
+function TAbstractItem.DtxDescriptionStr: string;
+const
+  CDescriptionDescription = 'Description'#13#10'  Write here a description'#13#10;
+begin
+  Result := AddDescriptionString;
+  if Result = '' then
+    Result := CDescriptionDescription
+  else
+    Result := 'Description'#13#10 + Result;
+end;
+
+function TAbstractItem.DtxParamStr: string;
+const
+  CParamDescription = 'Parameters'#13#10;
+begin
+  Result := ParamString;
+  if Result > '' then
+    Result := CParamDescription + Result;
+end;
+
+function TAbstractItem.DtxReturnsStr: string;
+const
+  CReturnsDescription = 'Return value'#13#10'  Describe here what the function returns';
+begin
+  if DelphiType in [dtFunction, dtProcedure] then
+    Result := ''
+  else
+    Result := CReturnsDescription;
+end;
+
+function TAbstractItem.DtxSummaryStr: string;
+const
+  CSummaryDescription = 'Summary'#13#10'  Write here a summary (1 line)';
+begin
+  Result := AddSummaryString;
+  if Result = '' then
+    Result := CSummaryDescription
+  else
+    Result := 'Summary'#13#10 + Result;
+end;
+
+function TAbstractItem.DtxTitleStr: string;
+begin
+  if TitleName > '' then
+    Result := Format('<TITLE %s>', [TitleName])
+  else
+    Result := '';
 end;
 
 function TAbstractItem.EntersAfter: TEnterCount;
@@ -1022,32 +1201,6 @@ begin
   else
     Result := 0;
 end;
-
-//function TAbstractItem.GetCompilerPrefix: string;
-//var
-//  I: Integer;
-//begin
-//  Result := '';
-//  if Assigned(FBeginDEFList) then
-//  begin
-//    for I := 0 to FBeginDefList.Count - 1 do
-//      case TDefineType(FBeginDefList.Objects[i]) of
-//        dftIFDEF: Result := Result + Format(CIFDEFFmt, [FBeginDefList[i]]);
-//        dftIFNDEF: Result := Result + Format(CIFNDEFFmt, [FBeginDefList[i]]);
-//      end;
-//  end;
-//end;
-//function TAbstractItem.GetCompilerSuffix: string;
-//var
-//  I: Integer;
-//begin
-//  Result := '';
-//  if Assigned(FEndDEFList) then
-//  begin
-//    for I := 0 to FEndDEFList.Count - 1 do
-//      Result := Result + Format(CEndFmt, [FEndDEFList[i]]);
-//  end;
-//end;
 
 function TAbstractItem.GetDtxSortName: string;
 begin
@@ -1158,10 +1311,15 @@ begin
   Result := '';
 end;
 
-//function TAbstractItem.IncludedInFilter(const AData: TFilterData): Boolean;
-//begin
-//  Result := DelphiType in AData.RShow;
-//end;
+function TAbstractItem.IncludeInGeneratedDtx: Boolean;
+begin
+  Result := TSettings.Instance.OutputTypeEnabled[CConvert[DelphiType]];
+end;
+
+function TAbstractItem.IsOptionalInDtx: Boolean;
+begin
+  Result := not TSettings.Instance.OutputTypeEnabled[CConvert[DelphiType]];
+end;
 
 procedure TAbstractItem.SetBeginDEFList(const Value: TStrings);
 begin
@@ -1217,9 +1375,25 @@ begin
     { FSwitchDEFList is a object list }
     FSwitchDEFList.Clear;
     for I := 0 to Value.Count - 1 do
-      if TObject(Value[i]) is TCompilerDirectiveItem then
-        FSwitchDEFList.Add(TCompilerDirectiveItem(Value[i]).ConstructCopy);
+      if TObject(Value[I]) is TCompilerDirectiveItem then
+        FSwitchDEFList.Add(TCompilerDirectiveItem(Value[I]).ConstructCopy);
   end;
+end;
+
+procedure TAbstractItem.WriteDtxDataToStream(AStream: TStream);
+const
+  cSepLength = 100;
+var
+  cSep: array[0..cSepLength + 1] of Char;
+var
+  S: string;
+begin
+  S := DtxData;
+  FillChar(cSep[0], cSepLength, '-');
+  cSep[cSepLength] := #13;
+  cSep[cSepLength + 1] := #10;
+  AStream.write(cSep[0], cSepLength + 2);
+  AStream.write(PChar(S)^, Length(S));
 end;
 
 //=== TBaseFuncItem ==========================================================
@@ -1340,16 +1514,6 @@ begin
   Result := dsType;
 end;
 
-//function TClassItem.IncludedInFilter(const AData: TFilterData): Boolean;
-//begin
-//  Result := inherited IncludedInFilter(AData);
-//  if not Result then
-//    Exit;
-//
-//  if (AData.RClass_DescendantOf > '') then
-//    Result := TSettings.Instance.IsDescendantOf(SimpleName, AData.RClass_DescendantOf);
-//end;
-
 procedure TClassItem.SetItem(Index: Integer; const Value: TAbstractItem);
 begin
   FList[Index] := Value;
@@ -1385,17 +1549,13 @@ begin
     Result := OwnerClassAsString + '.' + inherited GetReferenceName
 end;
 
-//function TClassMemberOrFieldItem.IncludedInFilter(
-//  const AData: TFilterData): Boolean;
-//begin
-//  Result := inherited IncludedInFilter(AData);
-//  if not Result then
-//    Exit;
-//
-//  if (AData.RClass_DescendantOf > '') then
-//    Result := TSettings.Instance.IsDescendantOf(
-//      ClassString, AData.RClass_DescendantOf);
-//end;
+function TClassMemberOrFieldItem.IsOptionalInDtx: Boolean;
+begin
+  { private,protected members are optional; protected properties not }
+  Result := inherited IsOptionalInDtx or
+    (Position = inPrivate) or
+    ((Position = inProtected) and (DelphiType <> dtProperty));
+end;
 
 //=== TClassPropertyItem =====================================================
 
@@ -1446,26 +1606,17 @@ begin
   Result := FParams;
 end;
 
-//function TClassPropertyItem.IncludedInFilter(
-//  const AData: TFilterData): Boolean;
-//begin
-//  Result := inherited IncludedInFilter(AData);
-//  if not Result then
-//    Exit;
-//
-//  with AData do
-//    Result :=
-//      TriStateOk(RProperty_ShowInherited, IsInherited) and
-//      TriStateOk(RProperty_ShowArray, IsArray) and
-//      (Position in RProperty_Scope) and
-//      (RProperty_MustExcludeSpecifiers * Specifiers = []) and
-//      (RProperty_MustIncludeSpecifiers * Specifiers = RProperty_MustIncludeSpecifiers) and
-//
-//    ((RProperty_MustIncludeOneOfSpecifiers = []) or
-//      (RProperty_MustIncludeOneOfSpecifiers * Specifiers <> [])) and
-//
-//    (not Assigned(RProperty_In) or (RProperty_In.IndexOf(SimpleName) >= 0));
-//end;
+function TClassPropertyItem.IncludeInGeneratedDtx: Boolean;
+begin
+  { inherited properties are optional }
+  Result := inherited IncludeInGeneratedDtx and not IsInherited;
+end;
+
+function TClassPropertyItem.IsOptionalInDtx: Boolean;
+begin
+  { inherited properties are optional }
+  Result := inherited IsOptionalInDtx or IsInherited;
+end;
 
 //=== TCommentItem ===========================================================
 
@@ -1481,9 +1632,9 @@ begin
   SetLength(S, Length(FImplementationStr));
   J := 1;
   for I := 1 to Length(FImplementationStr) do
-    if not (FImplementationStr[i] in AllSkipChars) then
+    if not (FImplementationStr[I] in AllSkipChars) then
     begin
-      S[j] := FImplementationStr[i];
+      S[J] := FImplementationStr[I];
       Inc(J);
     end;
   SetLength(S, J - 1);
@@ -1684,10 +1835,10 @@ begin
     I := Index + 1;
     while I < TypeList.Count do
     begin
-      if not (TypeList[i] is TCompilerDirectiveItem) and
-        not (TypeList[i] is TCommentItem) then
+      if not (TypeList[I] is TCompilerDirectiveItem) and
+        not (TypeList[I] is TCommentItem) then
       begin
-        Result := TypeList[i].Indentation;
+        Result := TypeList[I].Indentation;
         Exit;
       end;
       Inc(I);
@@ -1913,24 +2064,6 @@ begin
   Result := Format(CTitleFunction, [SimpleName]);
 end;
 
-//function TFunctionItem.IncludedInFilter(const AData: TFilterData): Boolean;
-//begin
-//  Result := inherited IncludedInFilter(AData);
-//  if not Result then
-//    Exit;
-//
-//  with AData do
-//    Result :=
-//      (RFunction_MustExcludeDirectives * Directives = []) and
-//      (RFunction_MustIncludeDirectives * Directives = RFunction_MustIncludeDirectives) and
-//
-//    ((RFunction_MustIncludeOneOfDirectives = []) or
-//      (RFunction_MustIncludeOneOfDirectives * Directives <> []));
-//
-//  //RFunction_MinimalParamCount: Integer; { -1 -> ignore }
-//  //RFunction_MaximalParamCount: Integer; { -1 -> ignore }
-//end;
-
 //=== TFunctionTypeItem ======================================================
 
 function TFunctionTypeItem.GetAddDescriptionString: string;
@@ -1960,7 +2093,7 @@ end;
 
 function TFunctionTypeItem.GetPasSortOnIndex: Boolean;
 begin
-  REsult := True;
+  Result := True;
 end;
 
 function TFunctionTypeItem.GetSection: TDelphiSection;
@@ -2073,27 +2206,6 @@ begin
   Result := dtMethodFunc;
 end;
 
-//function TMethodFuncItem.IncludedInFilter(
-//  const AData: TFilterData): Boolean;
-//begin
-//  Result := inherited IncludedInFilter(AData);
-//  if not Result then
-//    Exit;
-//
-//  with AData do
-//    Result :=
-//      TriStateOk(RMethodFunction_ShowClassMethod, IsClassMethod) and
-//      (Position in RMethodFunction_Scope) and
-//      (RMethodFunction_MustExcludeDirectives * Directives = []) and
-//      (RMethodFunction_MustIncludeDirectives * Directives = RMethodFunction_MustIncludeDirectives) and
-//
-//    ((RMethodFunction_MustIncludeOneOfDirectives = []) or
-//      (RMethodFunction_MustIncludeOneOfDirectives * Directives <> []));
-//
-//  //RMethodFunction_MinimalParamCount: Integer; { -1 -> ignore }
-//  //RMethodFunction_MaximalParamCount: Integer; { -1 -> ignore }
-//end;
-
 //=== TMethodProcItem ========================================================
 
 function TMethodProcItem.GetDelphiType: TDelphiType;
@@ -2118,29 +2230,6 @@ begin
     raise Exception.Create('Unknown type');
   end;
 end;
-
-//function TMethodProcItem.IncludedInFilter(
-//  const AData: TFilterData): Boolean;
-//begin
-//  Result := inherited IncludedInFilter(AData);
-//  if not Result then
-//    Exit;
-//
-//  with AData do
-//    Result :=
-//      TriStateOk(RMethodProcedure_ShowConstructor, MethodType = mtConstructor) and
-//      TriStateOk(RMethodProcedure_ShowDestructor, MethodType = mtDestructor) and
-//      TriStateOk(RMethodProcedure_ShowClassMethod, IsClassMethod) and
-//      (Position in RMethodProcedure_Scope) and
-//      (RMethodProcedure_MustExcludeDirectives * Directives = []) and
-//      (RMethodProcedure_MustIncludeDirectives * Directives = RMethodProcedure_MustIncludeDirectives) and
-//
-//    ((RMethodProcedure_MustIncludeOneOfDirectives = []) or
-//      (RMethodProcedure_MustIncludeOneOfDirectives * Directives <> []));
-//
-//  //RMethodProcedure_MinimalParamCount: Integer; { -1 -> ignore }
-//  //RMethodProcedure_MaximalParamCount: Integer; { -1 -> ignore }
-//end;
 
 //=== TOtherItem =============================================================
 
@@ -2231,6 +2320,856 @@ begin
   Result := dsClassMethods;
 end;
 
+function TParamClassMethodItem.IncludeInGeneratedDtx: Boolean;
+begin
+  //{ overridden methods are optional }
+  { create, destroy are optional}
+
+  Result := inherited IncludeInGeneratedDtx and
+    //(diOverride in Directives) or
+    not SameText(SimpleName, 'create') and not SameText(SimpleName, 'destroy');
+end;
+
+function TParamClassMethodItem.IsOptionalInDtx: Boolean;
+begin
+  { overridden methods are optional }
+  { create, destroy are optional}
+
+  Result := inherited IsOptionalInDtx or
+    (diOverride in Directives) or
+    SameText(SimpleName, 'create') or SameText(SimpleName, 'destroy');
+end;
+
+//=== TPasItems ==============================================================
+
+procedure TPasItems.CalculateAttachTo;
+var
+  I: Integer;
+  LastNonComment: TAbstractItem;
+begin
+  LastNonComment := nil;
+
+  for I := 0 to Count - 1 do
+    if (Items[I] is TCommentItem) or (Items[I] is TCompilerDirectiveItem) then
+    begin
+      if TOtherItem(Items[I]).AttachedType = atAfter then
+        TOtherItem(Items[I]).AttachedTo := LastNonComment;
+    end
+    else
+      LastNonComment := Items[I];
+
+  for I := Count - 1 downto 0 do
+    if (Items[I] is TCommentItem) or (Items[I] is TCompilerDirectiveItem) then
+    begin
+      if TOtherItem(Items[I]).AttachedType = atBefore then
+        TOtherItem(Items[I]).AttachedTo := LastNonComment;
+    end
+    else
+      LastNonComment := Items[I];
+end;
+
+procedure TPasItems.CalculateCombines;
+var
+  I: Integer;
+
+  procedure Examine(const S: string);
+  var
+    Indx: Integer;
+  begin
+    Indx := IndexOfName(S);
+    if Indx < 0 then
+      Exit;
+
+    Items[I].AddCombine(Items[Indx]);
+    Items[Indx].AddCombineWith(Items[I]);
+  end;
+
+  procedure ExamineEvent(const S: string);
+  var
+    Indx: Integer;
+  begin
+    if S = '' then
+      Exit;
+
+    Indx := 0;
+    while Indx < Count do
+    begin
+      if (Items[Indx] is TClassPropertyItem) and SameText(TClassPropertyItem(Items[Indx]).TypeStr, S) then
+      begin
+        Items[I].AddCombine(Items[Indx]);
+        Items[Indx].AddCombineWith(Items[I]);
+      end;
+
+      Inc(Indx);
+    end;
+  end;
+
+var
+  S: string;
+begin
+  for I := 0 to Count - 1 do
+    if Items[I] is TTypeItem then
+    begin
+      S := Items[I].ValueString;
+      if S = '' then
+        Continue;
+
+      if StrLIComp(PChar(S), 'set of', 6) = 0 then
+      begin
+        S := Trim(Copy(S, 8, MaxInt));
+        while (Length(S) > 0) and (S[Length(S)] in [' ', ';']) do
+          System.Delete(S, Length(S), 1);
+
+        Examine(S);
+        Continue;
+      end;
+
+      if S[1] = '^' then
+      begin
+        System.Delete(S, 1, 1);
+        S := Trim(S);
+        while (Length(S) > 0) and (S[Length(S)] in [' ', ';']) do
+          System.Delete(S, Length(S), 1);
+
+        Examine(S);
+        Continue;
+      end;
+    end
+    else
+      if (Items[I] is TFunctionTypeItem) or (Items[I] is TProcedureTypeItem) then
+    begin
+      S := Items[I].SimpleName;
+      ExamineEvent(S);
+    end;
+end;
+
+procedure TPasItems.CalculateGroupedWith;
+var
+  List: TList;
+
+  procedure ResolveGroupWith1(AItem: TCompilerDirectiveItem);
+  var
+    I: Integer;
+  begin
+    for I := List.Count - 1 downto 0 do
+      if TCompilerDirectiveItem(List[I]).IsConditionalDirective and
+        SameText(AItem.ArgumentStr, TCompilerDirectiveItem(List[I]).ArgumentStr) then
+      begin
+        AItem.GroupedWith := TObject(List[I]) as TCompilerDirectiveItem;
+        AItem.GroupedWith.GroupedWith := AItem;
+        List.Delete(I);
+        Exit;
+      end;
+    raise Exception.Create('Invalid grouped conditional defines');
+  end;
+
+  procedure ResolveGroupWith2(AItem: TCompilerDirectiveItem);
+  var
+    I: Integer;
+  begin
+    for I := List.Count - 1 downto 0 do
+      if TCompilerDirectiveItem(List[I]).IsSwitchDirective and
+        TCompilerDirectiveItem(List[I]).IsInverseOf(AItem) then
+      begin
+        AItem.GroupedWith := TObject(List[I]) as TCompilerDirectiveItem;
+        AItem.GroupedWith.GroupedWith := AItem;
+        List.Delete(I);
+        Exit;
+      end;
+    List.Add(AItem);
+  end;
+var
+  I: Integer;
+  Item: TCompilerDirectiveItem;
+begin
+  List := TList.Create;
+  try
+    for I := 0 to Count - 1 do
+      if Items[I] is TCompilerDirectiveItem then
+      begin
+        Item := Items[I] as TCompilerDirectiveItem;
+        if Item.IsConditionalDirective then
+          case Item.Directive of
+            cdIFDEF, cdIFNDEF: List.Add(Item);
+            cdENDIF: ResolveGroupWith1(Item);
+          else
+            raise Exception.Create('Can''t work with that directive');
+          end
+        else
+          if Item.IsSwitchDirective then
+          ResolveGroupWith2(Item);
+      end;
+
+    for I := 0 to List.Count - 1 do
+    begin
+      Item := TObject(List[I]) as TCompilerDirectiveItem;
+      Item.GroupedWith := Item;
+    end;
+  finally
+    List.Free;
+  end;
+end;
+
+procedure TPasItems.CombineComments;
+var
+  I, J: Integer;
+  CombinedComment: string;
+begin
+  I := Count - 1;
+  while I >= 0 do
+  begin
+    while (I >= 0) and
+      (not (Items[I] is TCommentItem) or TCommentItem(Items[I]).IsSameLineComment) do
+      Dec(I);
+
+    J := I - 1;
+    while (J >= 0) and
+      (Items[J] is TCommentItem) and not TCommentItem(Items[J]).IsSameLineComment do
+      Dec(J);
+
+    { (J..I] are comments }
+    if I - J >= 2 then
+    begin
+      CombinedComment := '';
+      while I > J do
+      begin
+        CombinedComment := Items[I].ImplementationStr + #13#10 + CombinedComment;
+        Delete(I);
+        Dec(I);
+      end;
+      Insert(I + 1, TCommentItem.Create(CombinedComment));
+    end;
+
+    I := J;
+  end;
+end;
+
+procedure TPasItems.DtxSort;
+begin
+  Sort(DtxSortCompare);
+  FIndexDirty := True;
+end;
+
+procedure TPasItems.EnsureIndexOK;
+var
+  I: Integer;
+begin
+  if not FIndexDirty then
+    Exit;
+
+  for I := 0 to Count - 1 do
+    Items[I].FIndex := I;
+  FIndexDirty := False;
+end;
+
+procedure TPasItems.FillClasses(Classes: TStrings);
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 1 do
+    if (Items[I] is TClassItem) and (Items[I].DelphiType = dtClass) then
+      Classes.Add(Items[I].SimpleName)
+    else
+      if (Items[I] is TClassMemberOrFieldItem) then
+      Classes.Add(TClassMemberOrFieldItem(Items[I]).OwnerClassAsString);
+end;
+
+procedure TPasItems.FillWithHeaders(const UnitName: string; Ignore, Optional,
+  NotOptional: TStrings);
+var
+  I, J: Integer;
+  ATypeItem: TAbstractItem;
+  ReferenceName, S: string;
+  IsOptional: Boolean;
+begin
+  for I := 0 to Count - 1 do
+  begin
+    ATypeItem := Items[I];
+
+    ReferenceName := '@@' + ATypeItem.ReferenceName;
+
+    IsOptional := ATypeItem.IsOptionalInDtx or OnIgnoreList(Ignore, ReferenceName);
+
+    if IsOptional then
+    begin
+      Optional.Add(ReferenceName);
+      if ATypeItem is TListItem then
+        TListItem(ATypeItem).AddToList(Optional);
+    end
+    else
+    begin
+      NotOptional.Add(ReferenceName);
+      if ATypeItem is TListItem then
+        with ATypeItem as TListItem do
+          for J := 0 to Items.Count - 1 do
+          begin
+            S := '@@' + ReferenceName + '.' + Items[J];
+            //              if TSettings.Instance.OnIgnoreTokenList(UnitName, S) then
+            if OnignoreList(Ignore, S) then
+              Optional.Add(S)
+            else
+              NotOptional.Add(S);
+          end;
+    end;
+  end;
+end;
+
+function TPasItems.GetItem(Index: Integer): TAbstractItem;
+begin
+  Result := TAbstractItem(inherited Items[Index]);
+end;
+
+function TPasItems.IndexOfName(const SimpleName: string): Integer;
+begin
+  Result := 0;
+  while (Result < Count) and not SameText(Items[Result].SimpleName, SimpleName) do
+    Inc(Result);
+  if Result >= Count then
+    Result := -1;
+end;
+
+function TPasItems.IndexOfReferenceName(
+  ReferenceName: string): Integer;
+begin
+  ReferenceName := StripLeading(ReferenceName);
+
+  Result := 0;
+  while (Result < Count) and not SameText(Items[Result].ReferenceName, ReferenceName) do
+    Inc(Result);
+  if Result >= Count then
+    Result := -1;
+end;
+
+procedure TPasItems.InsertClassComments;
+const
+  CComment = '//=== %s =';
+  CLocalComment = '//=== Local procedures =';
+  CGlobalComment = '//=== Global procedures =';
+var
+  I: Integer;
+  LastClass: string;
+  NewClass: string;
+  IsLocal: Boolean;
+  LocalProcsCommentAdded, GlobalProcsCommentAdded: Boolean;
+  CommentItem: TCommentItem;
+begin
+  I := 0;
+  LocalProcsCommentAdded := False;
+  GlobalProcsCommentAdded := False;
+  while I < Count do
+  begin
+    case Items[I].DelphiType of
+      dtMethodFunc, dtMethodProc:
+        begin
+          if Items[I] is TClassMemberOrFieldItem then
+            NewClass := TClassItem(Items[I]).ClassString
+          else
+            raise Exception.Create('Unknown type');
+
+          if not SameText(NewClass, LastClass) then
+          begin
+            LastClass := NewClass;
+
+            CommentItem := TCommentItem.Create(RightFill(Format(CComment, [LastClass]), 78, '='));
+            CommentItem.AttachedTo := Items[I];
+            Insert(I, CommentItem);
+          end;
+        end;
+      dtProcedure, dtFunction:
+        if not GlobalProcsCommentAdded or not LocalProcsCommentAdded then
+        begin
+          if Items[I] is TBaseFuncItem then
+          begin
+            IsLocal := TBaseFuncItem(Items[I]).IsLocal
+          end
+          else
+            raise Exception.Create('Unknown type');
+
+          if not GlobalProcsCommentAdded and not IsLocal then
+          begin
+            GlobalProcsCommentAdded := True;
+
+            CommentItem := TCommentItem.Create(RightFill(CGlobalComment, 78, '='));
+            CommentItem.AttachedTo := Items[I];
+            Insert(I, CommentItem);
+          end
+          else
+            if not LocalProcsCommentAdded and IsLocal then
+          begin
+            LocalProcsCommentAdded := True;
+
+            CommentItem := TCommentItem.Create(RightFill(CLocalComment, 78, '='));
+            CommentItem.AttachedTo := Items[I];
+            Insert(I, CommentItem);
+          end;
+        end;
+    end;
+    Inc(I);
+  end;
+end;
+
+procedure TPasItems.InsertComments(CommentList: TList);
+var
+  I: Integer;
+  OtherItem: TOtherItem;
+  Index: Integer;
+begin
+  for I := CommentList.Count - 1 downto 0 do
+  begin
+    OtherItem := TObject(CommentList[I]) as TOtherItem;
+    Index := Self.IndexOf(OtherItem.AttachedTo);
+    case OtherItem.AttachedType of
+      atBefore: ;
+      atAfter:
+        if Index >= 0 then
+          Inc(Index);
+    else
+      raise Exception.Create('Unexpected attach type');
+    end;
+
+    if Index >= 0 then
+      Self.Insert(Index, OtherItem)
+    else
+      Self.Add(OtherItem);
+  end;
+end;
+
+procedure TPasItems.InsertConditionalDefines;
+var
+  AddList, RemoveList: TList;
+
+  procedure ConstructDiff(Strings1, Strings2: TStrings);
+  var
+    I, Index: Integer;
+    CompilerDirective: TCompilerDirectiveItem;
+  begin
+    if (Strings1 <> nil) and (Strings2 <> nil) and
+      (Strings1.Count > 0) and (Strings2.Count > 0) then
+    begin
+      { First remove duplicates }
+      for I := Strings1.Count - 1 downto 0 do
+      begin
+        Index := Strings2.IndexOf(Strings1[I]);
+        if (Index >= 0) and (Strings1.Objects[I] = Strings2.Objects[Index]) then
+        begin
+          Strings1.Delete(I);
+          Strings2.Delete(Index);
+        end;
+      end;
+    end;
+
+    AddList.Clear;
+    RemoveList.Clear;
+
+    if Assigned(Strings1) and (Strings1.Count > 0) then
+      for I := 0 to Strings1.Count - 1 do
+      begin
+        CompilerDirective := TCompilerDirectiveItem.CreateEndDEF(Strings1[I]);
+        RemoveList.Add(CompilerDirective);
+      end;
+    if Assigned(Strings2) and (Strings2.Count > 0) then
+      for I := 0 to Strings2.Count - 1 do
+      begin
+        CompilerDirective :=
+          TCompilerDirectiveItem.CreateBeginDEF(TDefineType(Strings2.Objects[I]), Strings2[I]);
+        AddList.Add(CompilerDirective);
+      end;
+  end;
+var
+  I, J: Integer;
+  InsertItem: TCompilerDirectiveItem;
+begin
+  if Count = 0 then
+    Exit;
+
+  AddList := TList.Create;
+  RemoveList := TList.Create;
+  try
+    I := 0;
+    while I <= Count do
+    begin
+      if I = 0 then
+        ConstructDiff(nil, Items[0].BeginDEFList)
+      else
+        if I < Count then
+        ConstructDiff(Items[I - 1].EndDEFList, Items[I].BeginDEFList)
+      else
+        ConstructDiff(Items[I - 1].EndDEFList, nil);
+
+      for J := RemoveList.Count - 1 downto 0 do
+      begin
+        InsertItem := TCompilerDirectiveItem(RemoveList[J]);
+        Insert(I, InsertItem);
+        Inc(I);
+      end;
+      for J := 0 to AddList.Count - 1 do
+      begin
+        InsertItem := TCompilerDirectiveItem(AddList[J]);
+        Insert(I, InsertItem);
+        Inc(I);
+      end;
+      Inc(I);
+    end;
+  finally
+    AddList.Free;
+    RemoveList.Free;
+  end;
+end;
+
+procedure TPasItems.InsertDirectives(CommentList: TList);
+var
+  I: Integer;
+  OtherItem: TOtherItem;
+  Index: Integer;
+begin
+  for I := CommentList.Count - 1 downto 0 do
+    if TObject(CommentList[I]) is TCompilerDirectiveItem then
+    begin
+      OtherItem := TObject(CommentList[I]) as TOtherItem;
+      Index := Self.IndexOf(OtherItem.AttachedTo);
+      case OtherItem.AttachedType of
+        atBefore: ;
+        atAfter:
+          if Index >= 0 then
+            Inc(Index);
+      else
+        raise Exception.Create('Unexpected attach type');
+      end;
+
+      if Index >= 0 then
+        Self.Insert(Index, OtherItem)
+      else
+        Self.Add(OtherItem);
+
+      CommentList.Delete(I);
+    end;
+end;
+
+procedure TPasItems.InsertSections;
+var
+  I: Integer;
+  LastSection, CurrentSection: TDelphiSection;
+
+begin
+  LastSection := dsNone;
+  I := 0;
+  while I < Count do
+  begin
+    CurrentSection := Items[I].Section;
+    if (CurrentSection <> LastSection) and (CurrentSection in CSectionsStartingWithAReservedWord) then
+    begin
+      Insert(I, TSectionItem.Create(CurrentSection));
+      Inc(I);
+    end;
+
+    if not (Items[I] is TCommentItem) and
+      (not (Items[I] is TCompilerDirectiveItem) or
+      TCompilerDirectiveItem(Items[I]).IsConditionalDirective) then
+      LastSection := CurrentSection;
+    Inc(I);
+  end;
+end;
+
+procedure TPasItems.InsertSwitchDefines;
+var
+  AddList, RemoveList: TList;
+
+  procedure ConstructDiff(List1, List2: TList);
+  var
+    I, J: Integer;
+    HasSame: Boolean;
+  begin
+    { full compare }
+    AddList.Clear;
+    RemoveList.Clear;
+    if (List1 = nil) or (List2 = nil) then
+    begin
+      if List1 <> nil then
+        RemoveList.Assign(List1);
+      if List2 <> nil then
+        AddList.Assign(List2);
+      Exit;
+    end;
+
+    { Remove }
+    for I := 0 to List1.Count - 1 do
+    begin
+      HasSame := False;
+      J := 0;
+      while not HasSame and (J < List2.Count) do
+      begin
+        HasSame := TCompilerDirectiveItem(List1[I]).SameAs(TCompilerDirectiveItem(List2[J]));
+        Inc(J);
+      end;
+      if not HasSame then
+        RemoveList.Add(List1[I]);
+    end;
+
+    { Add }
+    for J := 0 to List2.Count - 1 do
+    begin
+      HasSame := False;
+      I := 0;
+      while not HasSame and (I < List1.Count) do
+      begin
+        HasSame := TCompilerDirectiveItem(List1[I]).SameAs(TCompilerDirectiveItem(List2[J]));
+        Inc(I);
+      end;
+      if not HasSame then
+        AddList.Add(List2[J]);
+    end;
+  end;
+var
+  I, J: Integer;
+  InsertItem: TCompilerDirectiveItem;
+begin
+  if Count = 0 then
+    Exit;
+
+  AddList := TList.Create;
+  RemoveList := TList.Create;
+  try
+    I := 0;
+    while I <= Count do
+    begin
+      if I = 0 then
+        ConstructDiff(nil, Items[0].SwitchDEFList)
+      else
+        if I < Count then
+        ConstructDiff(Items[I - 1].SwitchDEFList, Items[I].SwitchDEFList)
+      else
+        ConstructDiff(Items[I - 1].SwitchDEFList, nil);
+
+      for J := RemoveList.Count - 1 downto 0 do
+      begin
+        InsertItem := TCompilerDirectiveItem(TCompilerDirectiveItem(RemoveList[J]).ConstructCopy);
+        InsertItem.Inverse;
+        Insert(I, InsertItem);
+        Inc(I);
+      end;
+      for J := 0 to AddList.Count - 1 do
+      begin
+        InsertItem := TCompilerDirectiveItem(TCompilerDirectiveItem(AddList[J]).ConstructCopy);
+        //InsertItem.Inverse;
+        Insert(I, InsertItem);
+        Inc(I);
+      end;
+      Inc(I);
+    end;
+  finally
+    AddList.Free;
+    RemoveList.Free;
+  end;
+end;
+
+procedure TPasItems.Notify(Ptr: Pointer; Action: TListNotification);
+begin
+  inherited Notify(Ptr, Action);
+
+  FIndexDirty := FIndexDirty or (Action in [lnAdded, lnDeleted]);
+
+  if (Action = lnAdded) and (TObject(Ptr) is TAbstractItem) then
+    TAbstractItem(Ptr).FTypeList := Self;
+end;
+
+procedure TPasItems.OnlyCapitalization;
+begin
+  CalculateAttachTo;
+  CalculateGroupedWith;
+  InsertSections;
+end;
+
+procedure TPasItems.PasSort;
+begin
+  Sort(PasSortCompare);
+  FIndexDirty := True;
+end;
+
+procedure TPasItems.RemoveComments(CommentList: TList);
+var
+  I: Integer;
+begin
+  Self.OwnsObjects := False;
+  try
+    for I := Count - 1 downto 0 do
+      if (Items[I] is TOtherItem) and (TOtherItem(Items[I]).AttachedType in [atBefore, atAfter]) then
+      begin
+        CommentList.Add(Items[I]);
+        Delete(I);
+      end;
+  finally
+    Self.OwnsObjects := True;
+  end;
+end;
+
+procedure TPasItems.RemoveDEFSwitches;
+var
+  SwitchDEFList: TList;
+
+  procedure AddToList(ADirective: TCompilerDirectiveItem);
+  var
+    I: Integer;
+  begin
+    for I := SwitchDEFList.Count - 1 downto 0 do
+      if TCompilerDirectiveItem(SwitchDEFList[I]).IsInverseOf(ADirective) then
+      begin
+        SwitchDEFList.Delete(I);
+        Exit;
+      end;
+    SwitchDEFList.Add(ADirective)
+  end;
+var
+  I: Integer;
+begin
+  SwitchDEFList := TList.Create;
+  try
+    for I := 0 to Count - 1 do
+      if Items[I] is TCompilerDirectiveItem then
+      begin
+        if TCompilerDirectiveItem(Items[I]).IsSwitchDirective then
+          AddToList(Items[I] as TCompilerDirectiveItem);
+      end
+      else
+        Items[I].SwitchDEFList := SwitchDEFList;
+
+    { and remove }
+    for I := Count - 1 downto 0 do
+      if (Items[I] is TCompilerDirectiveItem) and
+        TCompilerDirectiveItem(Items[I]).IsSwitchDirective then
+        Delete(I);
+    { Note: values in SwitchDEFList are now no longer valid }
+  finally
+    SwitchDEFList.Free;
+  end;
+end;
+
+procedure TPasItems.RemoveDuplicateDEFS;
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 2 do
+    RemoveDuplicateDEFSFrom(Items[I], Items[I + 1]);
+end;
+
+procedure TPasItems.RemoveDuplicateDEFSFrom(const Item1, Item2: TAbstractItem);
+var
+  List1, List2: TStrings;
+  I, Index: Integer;
+begin
+  List1 := Item1.FEndDEFList;
+  List2 := Item2.FBeginDEFList;
+
+  if not Assigned(List1) or not Assigned(List2) then
+    Exit;
+  if (List1.Count = 0) or (List2.Count = 0) then
+    Exit;
+
+  for I := List1.Count - 1 downto 0 do
+  begin
+    Index := List2.IndexOf(List1[I]);
+    if (Index >= 0) and (List1.Objects[I] = List2.Objects[Index]) then
+    begin
+      List1.Delete(I);
+      List2.Delete(Index);
+    end;
+  end;
+end;
+
+procedure TPasItems.RemoveTrivialComments(Classes: TStrings);
+var
+  I: Integer;
+  LClassName: string;
+  CommentItem: TCommentItem;
+begin
+  for I := Count - 1 downto 0 do
+    if Items[I].ImplementationStr = '' then
+      Delete(I)
+    else
+      if Items[I] is TCommentItem then
+    begin
+      CommentItem := TCommentItem(Items[I]);
+      if CommentItem.GetClassName(LClassName) and (Classes.IndexOf(LClassName) >= 0) then
+        Delete(I)
+      else
+        if CommentItem.IsSingleCharComment or CommentItem.CanThrowAwayComment then
+        Delete(I)
+    end;
+end;
+
+procedure TPasItems.SetItem(Index: Integer; const Value: TAbstractItem);
+begin
+  inherited Items[Index] := Value;
+end;
+
+procedure TPasItems.SortImplementation;
+var
+  Classes: TStringList;
+  CommentList: TList;
+begin
+  { Determine classes }
+  Classes := TStringList.Create;
+  try
+    Classes.Sorted := True;
+    Classes.Duplicates := dupIgnore;
+
+    FillClasses(Classes);
+    RemoveTrivialComments(Classes);
+    RemoveDEFSwitches;
+    CombineComments;
+    CalculateAttachTo;
+
+    CommentList := TList.Create;
+    try
+      RemoveComments(CommentList);
+      PasSort;
+      InsertDirectives(CommentList);
+      InsertSwitchDefines;
+      RemoveDuplicateDEFS;
+      InsertConditionalDefines;
+      { after InsertConditionalDefines }
+      CalculateGroupedWith;
+      InsertClassComments;
+      InsertSections;
+      InsertComments(CommentList);
+    finally
+      CommentList.Free;
+    end;
+  finally
+    Classes.Free;
+  end;
+end;
+
+procedure TPasItems.WriteImplementationToStream(Stream: TStream);
+const
+  CEnters: array[TEnterCount] of string = ('', #13#10, #13#10#13#10);
+
+  procedure DoWrite(const S: string);
+  begin
+    Stream.write(PChar(S)^, Length(S));
+  end;
+var
+  I: Integer;
+  EntersAfter, EntersBefore: TEnterCount;
+  LNext: TAbstractItem;
+begin
+  DoWrite(CEnters[CDefaultEnters]);
+
+  for I := 0 to Count - 1 do
+  begin
+    LNext := Items[I].Next;
+    if Assigned(LNext) then
+      EntersBefore := LNext.EntersBefore
+    else
+      EntersBefore := CDefaultEnters;
+
+    EntersAfter := Items[I].EntersAfter;
+
+    DoWrite(Items[I].OutputStr + CEnters[Min(EntersAfter, EntersBefore)]);
+  end;
+
+  DoWrite('end.'#13#10);
+end;
+
 //=== TProcedureItem =========================================================
 
 function TProcedureItem.GetDelphiType: TDelphiType;
@@ -2242,25 +3181,6 @@ function TProcedureItem.GetTitleName: string;
 begin
   Result := Format(CTitleProcedure, [SimpleName]);
 end;
-
-//function TProcedureItem.IncludedInFilter(
-//  const AData: TFilterData): Boolean;
-//begin
-//  Result := inherited IncludedInFilter(AData);
-//  if not Result then
-//    Exit;
-//
-//  with AData do
-//    Result :=
-//      (RProcedure_MustExcludeDirectives * Directives = []) and
-//      (RProcedure_MustIncludeDirectives * Directives = RProcedure_MustIncludeDirectives) and
-//
-//    ((RProcedure_MustIncludeOneOfDirectives = []) or
-//      (RProcedure_MustIncludeOneOfDirectives * Directives <> []));
-//
-//  //RProcedure_MinimalParamCount: Integer; { -1 -> ignore }
-//  //RProcedure_MaximalParamCount: Integer; { -1 -> ignore }
-//end;
 
 //=== TProcedureTypeItem =====================================================
 
@@ -2404,7 +3324,7 @@ end;
 
 function TTypeItem.GetDelphiType: TDelphiType;
 begin
-  Result := DtType;
+  Result := dtType;
 end;
 
 function TTypeItem.GetPasSortOnIndex: Boolean;
@@ -2420,784 +3340,6 @@ end;
 function TTypeItem.GetTitleName: string;
 begin
   Result := Format(CTitleType, [SimpleName]);
-end;
-
-//=== TTypeList ==============================================================
-
-procedure TTypeList.CalculateAttachTo;
-var
-  I: Integer;
-  LastNonComment: TAbstractItem;
-begin
-  LastNonComment := nil;
-
-  for I := 0 to Count - 1 do
-    if (Items[i] is TCommentItem) or (Items[i] is TCompilerDirectiveItem) then
-    begin
-      if TOtherItem(Items[i]).AttachedType = atAfter then
-        TOtherItem(Items[i]).AttachedTo := LastNonComment;
-    end
-    else
-      LastNonComment := Items[i];
-
-  for I := Count - 1 downto 0 do
-    if (Items[i] is TCommentItem) or (Items[i] is TCompilerDirectiveItem) then
-    begin
-      if TOtherItem(Items[i]).AttachedType = atBefore then
-        TOtherItem(Items[i]).AttachedTo := LastNonComment;
-    end
-    else
-      LastNonComment := Items[i];
-end;
-
-procedure TTypeList.CalculateCombines;
-var
-  I: Integer;
-
-  procedure Examine(const S: string);
-  var
-    Indx: Integer;
-  begin
-    Indx := IndexOfName(S);
-    if Indx < 0 then
-      Exit;
-
-    Items[I].AddCombine(Items[Indx]);
-    Items[Indx].AddCombineWith(Items[I]);
-  end;
-
-  procedure ExamineEvent(const S: string);
-  var
-    Indx: Integer;
-  begin
-    if S = '' then
-      Exit;
-
-    Indx := 0;
-    while Indx < Count do
-    begin
-      if (Items[Indx] is TClassPropertyItem) and SameText(TClassPropertyItem(Items[Indx]).TypeStr, S) then
-      begin
-        Items[I].AddCombine(Items[Indx]);
-        Items[Indx].AddCombineWith(Items[I]);
-      end;
-
-      Inc(Indx);
-    end;
-  end;
-
-var
-  S: string;
-begin
-  for I := 0 to Count - 1 do
-    if Items[I] is TTypeItem then
-    begin
-      S := Items[I].ValueString;
-      if S = '' then
-        Continue;
-
-      if StrLIComp(PChar(S), 'set of', 6) = 0 then
-      begin
-        S := Trim(Copy(S, 8, MaxInt));
-        while (Length(S) > 0) and (S[Length(S)] in [' ', ';']) do
-          System.Delete(S, Length(S), 1);
-
-        Examine(S);
-        Continue;
-      end;
-
-      if S[1] = '^' then
-      begin
-        System.Delete(S, 1, 1);
-        S := Trim(S);
-        while (Length(S) > 0) and (S[Length(S)] in [' ', ';']) do
-          System.Delete(S, Length(S), 1);
-
-        Examine(S);
-        Continue;
-      end;
-    end
-    else
-      if (Items[I] is TFunctionTypeItem) or (Items[I] is TProcedureTypeItem) then
-    begin
-      S := Items[I].SimpleName;
-      ExamineEvent(S);
-    end;
-end;
-
-procedure TTypeList.CalculateGroupedWith;
-var
-  List: TList;
-
-  procedure ResolveGroupWith1(AItem: TCompilerDirectiveItem);
-  var
-    I: Integer;
-  begin
-    for I := List.Count - 1 downto 0 do
-      if TCompilerDirectiveItem(List[i]).IsConditionalDirective and
-        SameText(AItem.ArgumentStr, TCompilerDirectiveItem(List[i]).ArgumentStr) then
-      begin
-        AItem.GroupedWith := TObject(List[i]) as TCompilerDirectiveItem;
-        AItem.GroupedWith.GroupedWith := AItem;
-        List.Delete(I);
-        Exit;
-      end;
-    raise Exception.Create('Invalid grouped conditional defines');
-  end;
-
-  procedure ResolveGroupWith2(AItem: TCompilerDirectiveItem);
-  var
-    I: Integer;
-  begin
-    for I := List.Count - 1 downto 0 do
-      if TCompilerDirectiveItem(List[i]).IsSwitchDirective and
-        TCompilerDirectiveItem(List[i]).IsInverseOf(AItem) then
-      begin
-        AItem.GroupedWith := TObject(List[i]) as TCompilerDirectiveItem;
-        AItem.GroupedWith.GroupedWith := AItem;
-        List.Delete(I);
-        Exit;
-      end;
-    List.Add(AItem);
-  end;
-var
-  I: Integer;
-  Item: TCompilerDirectiveItem;
-begin
-  List := TList.Create;
-  try
-    for I := 0 to Count - 1 do
-      if Items[i] is TCompilerDirectiveItem then
-      begin
-        Item := Items[i] as TCompilerDirectiveItem;
-        if Item.IsConditionalDirective then
-          case Item.Directive of
-            cdIFDEF, cdIFNDEF: List.Add(Item);
-            cdENDIF: ResolveGroupWith1(Item);
-          else
-            raise Exception.Create('Can''t work with that directive');
-          end
-        else
-          if Item.IsSwitchDirective then
-          ResolveGroupWith2(Item);
-      end;
-
-    for I := 0 to List.Count - 1 do
-    begin
-      Item := TObject(List[i]) as TCompilerDirectiveItem;
-      Item.GroupedWith := Item;
-    end;
-  finally
-    List.Free;
-  end;
-end;
-
-procedure TTypeList.CombineComments;
-var
-  I, J: Integer;
-  CombinedComment: string;
-begin
-  I := Count - 1;
-  while I >= 0 do
-  begin
-    while (I >= 0) and
-      (not (Items[i] is TCommentItem) or TCommentItem(Items[i]).IsSameLineComment) do
-      Dec(I);
-
-    J := I - 1;
-    while (J >= 0) and
-      (Items[j] is TCommentItem) and not TCommentItem(Items[j]).IsSameLineComment do
-      Dec(J);
-
-    { (J..I] are comments }
-    if I - J >= 2 then
-    begin
-      CombinedComment := '';
-      while I > J do
-      begin
-        CombinedComment := Items[I].ImplementationStr + #13#10 + CombinedComment;
-        Delete(I);
-        Dec(I);
-      end;
-      Insert(I + 1, TCommentItem.Create(CombinedComment));
-    end;
-
-    I := J;
-  end;
-end;
-
-procedure TTypeList.DtxSort;
-begin
-  Sort(DtxSortCompare);
-  FIndexDirty := True;
-end;
-
-procedure TTypeList.EnsureIndexOK;
-var
-  I: Integer;
-begin
-  if not FIndexDirty then
-    Exit;
-
-  for I := 0 to Count - 1 do
-    Items[I].FIndex := I;
-  FIndexDirty := False;
-end;
-
-procedure TTypeList.FillClasses(Classes: TStrings);
-var
-  I: Integer;
-begin
-  for I := 0 to Count - 1 do
-    if (Items[I] is TClassItem) and (Items[I].DelphiType = dtClass) then
-      Classes.Add(Items[I].SimpleName)
-    else
-      if (Items[I] is TClassMemberOrFieldItem) then
-      Classes.Add(TClassMemberOrFieldItem(Items[I]).OwnerClassAsString);
-end;
-
-function TTypeList.GetItem(Index: Integer): TAbstractItem;
-begin
-  Result := TAbstractItem(inherited Items[Index]);
-end;
-
-function TTypeList.IndexOfName(const SimpleName: string): Integer;
-begin
-  Result := 0;
-  while (Result < Count) and not SameText(Items[Result].SimpleName, SimpleName) do
-    Inc(Result);
-  if Result >= Count then
-    Result := -1;
-end;
-
-procedure TTypeList.InsertClassComments;
-const
-  CComment = '//=== %s =';
-  CLocalComment = '//=== Local procedures =';
-  CGlobalComment = '//=== Global procedures =';
-var
-  I: Integer;
-  LastClass: string;
-  NewClass: string;
-  IsLocal: Boolean;
-  LocalProcsCommentAdded, GlobalProcsCommentAdded: Boolean;
-  CommentItem: TCommentItem;
-begin
-  I := 0;
-  LocalProcsCommentAdded := False;
-  GlobalProcsCommentAdded := False;
-  while I < Count do
-  begin
-    case Items[i].DelphiType of
-      dtMethodFunc, dtMethodProc:
-        begin
-          if Items[i] is TClassMemberOrFieldItem then
-            NewClass := TClassItem(Items[i]).ClassString
-          else
-            raise Exception.Create('Unknown type');
-
-          if not SameText(NewClass, LastClass) then
-          begin
-            LastClass := NewClass;
-
-            CommentItem := TCommentItem.Create(RightFill(Format(CComment, [LastClass]), 78, '='));
-            CommentItem.AttachedTo := Items[i];
-            Insert(I, CommentItem);
-          end;
-        end;
-      dtProcedure, dtFunction:
-        if not GlobalProcsCommentAdded or not LocalProcsCommentAdded then
-        begin
-          if Items[i] is TBaseFuncItem then
-          begin
-            IsLocal := TBaseFuncItem(Items[i]).IsLocal
-          end
-          else
-            raise Exception.Create('Unknown type');
-
-          if not GlobalProcsCommentAdded and not IsLocal then
-          begin
-            GlobalProcsCommentAdded := True;
-
-            CommentItem := TCommentItem.Create(RightFill(CGlobalComment, 78, '='));
-            CommentItem.AttachedTo := Items[i];
-            Insert(I, CommentItem);
-          end
-          else
-            if not LocalProcsCommentAdded and IsLocal then
-          begin
-            LocalProcsCommentAdded := True;
-
-            CommentItem := TCommentItem.Create(RightFill(CLocalComment, 78, '='));
-            CommentItem.AttachedTo := Items[i];
-            Insert(I, CommentItem);
-          end;
-        end;
-    end;
-    Inc(I);
-  end;
-end;
-
-procedure TTypeList.InsertComments(CommentList: TList);
-var
-  I: Integer;
-  OtherItem: TOtherItem;
-  Index: Integer;
-begin
-  for I := CommentList.Count - 1 downto 0 do
-  begin
-    OtherItem := TObject(CommentList[i]) as TOtherItem;
-    Index := Self.IndexOf(OtherItem.AttachedTo);
-    case OtherItem.AttachedType of
-      atBefore: ;
-      atAfter:
-        if Index >= 0 then
-          Inc(Index);
-    else
-      raise Exception.Create('Unexpected attach type');
-    end;
-
-    if Index >= 0 then
-      Self.Insert(Index, OtherItem)
-    else
-      Self.Add(OtherItem);
-  end;
-end;
-
-procedure TTypeList.InsertConditionalDefines;
-var
-  AddList, RemoveList: TList;
-
-  procedure ConstructDiff(Strings1, Strings2: TStrings);
-  var
-    I, Index: Integer;
-    CompilerDirective: TCompilerDirectiveItem;
-  begin
-    if (Strings1 <> nil) and (Strings2 <> nil) and
-      (Strings1.Count > 0) and (Strings2.Count > 0) then
-    begin
-      { First remove duplicates }
-      for I := Strings1.Count - 1 downto 0 do
-      begin
-        Index := Strings2.IndexOf(Strings1[i]);
-        if (Index >= 0) and (Strings1.Objects[i] = Strings2.Objects[Index]) then
-        begin
-          Strings1.Delete(I);
-          Strings2.Delete(Index);
-        end;
-      end;
-    end;
-
-    AddList.Clear;
-    RemoveList.Clear;
-
-    if Assigned(Strings1) and (Strings1.Count > 0) then
-      for I := 0 to Strings1.Count - 1 do
-      begin
-        CompilerDirective := TCompilerDirectiveItem.CreateEndDEF(Strings1[i]);
-        RemoveList.Add(CompilerDirective);
-      end;
-    if Assigned(Strings2) and (Strings2.Count > 0) then
-      for I := 0 to Strings2.Count - 1 do
-      begin
-        CompilerDirective :=
-          TCompilerDirectiveItem.CreateBeginDEF(TDefineType(Strings2.Objects[i]), Strings2[i]);
-        AddList.Add(CompilerDirective);
-      end;
-  end;
-var
-  I, J: Integer;
-  InsertItem: TCompilerDirectiveItem;
-begin
-  if Count = 0 then
-    Exit;
-
-  AddList := TList.Create;
-  RemoveList := TList.Create;
-  try
-    I := 0;
-    while I <= Count do
-    begin
-      if I = 0 then
-        ConstructDiff(nil, Items[0].BeginDEFList)
-      else
-        if I < Count then
-        ConstructDiff(Items[i - 1].EndDEFList, Items[i].BeginDEFList)
-      else
-        ConstructDiff(Items[i - 1].EndDEFList, nil);
-
-      for J := RemoveList.Count - 1 downto 0 do
-      begin
-        InsertItem := TCompilerDirectiveItem(RemoveList[J]);
-        Insert(I, InsertItem);
-        Inc(I);
-      end;
-      for J := 0 to AddList.Count - 1 do
-      begin
-        InsertItem := TCompilerDirectiveItem(AddList[J]);
-        Insert(I, InsertItem);
-        Inc(I);
-      end;
-      Inc(I);
-    end;
-  finally
-    AddList.Free;
-    RemoveList.Free;
-  end;
-end;
-
-procedure TTypeList.InsertDirectives(CommentList: TList);
-var
-  I: Integer;
-  OtherItem: TOtherItem;
-  Index: Integer;
-begin
-  for I := CommentList.Count - 1 downto 0 do
-    if TObject(CommentList[i]) is TCompilerDirectiveItem then
-    begin
-      OtherItem := TObject(CommentList[i]) as TOtherItem;
-      Index := Self.IndexOf(OtherItem.AttachedTo);
-      case OtherItem.AttachedType of
-        atBefore: ;
-        atAfter:
-          if Index >= 0 then
-            Inc(Index);
-      else
-        raise Exception.Create('Unexpected attach type');
-      end;
-
-      if Index >= 0 then
-        Self.Insert(Index, OtherItem)
-      else
-        Self.Add(OtherItem);
-
-      CommentList.Delete(I);
-    end;
-end;
-
-procedure TTypeList.InsertSections;
-var
-  I: Integer;
-  LastSection, CurrentSection: TDelphiSection;
-
-begin
-  LastSection := dsNone;
-  i := 0;
-  while I < count do
-  begin
-    CurrentSection := Items[I].Section;
-    if (CurrentSection <> LastSection) and (CurrentSection in CSectionsStartingWithAReservedWord) then
-    begin
-      Insert(I, TSectionItem.Create(CurrentSection));
-      Inc(I);
-    end;
-
-    if not (Items[i] is TCommentItem) and
-      (not (Items[i] is TCompilerDirectiveItem) or
-      TCompilerDirectiveItem(Items[i]).IsConditionalDirective) then
-      LastSection := CurrentSection;
-    Inc(I);
-  end;
-end;
-
-procedure TTypeList.InsertSwitchDefines;
-var
-  AddList, RemoveList: TList;
-
-  procedure ConstructDiff(List1, List2: TList);
-  var
-    I, J: Integer;
-    HasSame: Boolean;
-  begin
-    { full compare }
-    AddList.Clear;
-    RemoveList.Clear;
-    if (List1 = nil) or (List2 = nil) then
-    begin
-      if List1 <> nil then
-        RemoveList.Assign(List1);
-      if List2 <> nil then
-        AddList.Assign(List2);
-      Exit;
-    end;
-
-    { Remove }
-    for I := 0 to List1.Count - 1 do
-    begin
-      HasSame := False;
-      J := 0;
-      while not HasSame and (J < List2.Count) do
-      begin
-        HasSame := TCompilerDirectiveItem(List1[i]).SameAs(TCompilerDirectiveItem(List2[j]));
-        Inc(J);
-      end;
-      if not HasSame then
-        RemoveList.Add(List1[i]);
-    end;
-
-    { Add }
-    for J := 0 to List2.Count - 1 do
-    begin
-      HasSame := False;
-      I := 0;
-      while not HasSame and (I < List1.Count) do
-      begin
-        HasSame := TCompilerDirectiveItem(List1[I]).SameAs(TCompilerDirectiveItem(List2[j]));
-        Inc(I);
-      end;
-      if not HasSame then
-        AddList.Add(List2[j]);
-    end;
-  end;
-var
-  I, J: Integer;
-  InsertItem: TCompilerDirectiveItem;
-begin
-  if Count = 0 then
-    Exit;
-
-  AddList := TList.Create;
-  RemoveList := TList.Create;
-  try
-    I := 0;
-    while I <= Count do
-    begin
-      if I = 0 then
-        ConstructDiff(nil, Items[0].SwitchDEFList)
-      else
-        if I < Count then
-        ConstructDiff(Items[i - 1].SwitchDEFList, Items[i].SwitchDEFList)
-      else
-        ConstructDiff(Items[i - 1].SwitchDEFList, nil);
-
-      for J := RemoveList.Count - 1 downto 0 do
-      begin
-        InsertItem := TCompilerDirectiveItem(TCompilerDirectiveItem(RemoveList[J]).ConstructCopy);
-        InsertItem.Inverse;
-        Insert(I, InsertItem);
-        Inc(I);
-      end;
-      for J := 0 to AddList.Count - 1 do
-      begin
-        InsertItem := TCompilerDirectiveItem(TCompilerDirectiveItem(AddList[J]).ConstructCopy);
-        //InsertItem.Inverse;
-        Insert(I, InsertItem);
-        Inc(I);
-      end;
-      Inc(I);
-    end;
-  finally
-    AddList.Free;
-    RemoveList.Free;
-  end;
-end;
-
-procedure TTypeList.Notify(Ptr: Pointer; Action: TListNotification);
-begin
-  inherited Notify(Ptr, Action);
-
-  FIndexDirty := FIndexDirty or (Action in [lnAdded, lnDeleted]);
-
-  if (Action = lnAdded) and (TObject(Ptr) is TAbstractItem) then
-    TAbstractItem(Ptr).FTypeList := Self;
-end;
-
-procedure TTypeList.OnlyCapitalization;
-begin
-  CalculateAttachTo;
-  CalculateGroupedWith;
-  InsertSections;
-end;
-
-procedure TTypeList.PasSort;
-begin
-  Sort(PasSortCompare);
-  FIndexDirty := True;
-end;
-
-procedure TTypeList.RemoveComments(CommentList: TList);
-var
-  I: Integer;
-begin
-  Self.OwnsObjects := False;
-  try
-    for I := Count - 1 downto 0 do
-      if (Items[i] is TOtherItem) and (TOtherItem(Items[i]).AttachedType in [atBefore, atAfter]) then
-      begin
-        CommentList.Add(Items[i]);
-        Delete(I);
-      end;
-  finally
-    Self.OwnsObjects := True;
-  end;
-end;
-
-procedure TTypeList.RemoveDEFSwitches;
-var
-  SwitchDEFList: TList;
-
-  procedure AddToList(ADirective: TCompilerDirectiveItem);
-  var
-    I: Integer;
-  begin
-    for I := SwitchDEFList.Count - 1 downto 0 do
-      if TCompilerDirectiveItem(SwitchDEFList[i]).IsInverseOf(ADirective) then
-      begin
-        SwitchDEFList.Delete(I);
-        Exit;
-      end;
-    SwitchDEFList.Add(ADirective)
-  end;
-var
-  I: Integer;
-begin
-  SwitchDEFList := TList.Create;
-  try
-    for I := 0 to Count - 1 do
-      if Items[i] is TCompilerDirectiveItem then
-      begin
-        if TCompilerDirectiveItem(Items[i]).IsSwitchDirective then
-          AddToList(Items[i] as TCompilerDirectiveItem);
-      end
-      else
-        Items[i].SwitchDEFList := SwitchDEFList;
-
-    { and remove }
-    for I := Count - 1 downto 0 do
-      if (Items[i] is TCompilerDirectiveItem) and
-        TCompilerDirectiveItem(Items[i]).IsSwitchDirective then
-        Delete(I);
-    { Note: values in SwitchDEFList are now no longer valid }
-  finally
-    SwitchDEFList.Free;
-  end;
-end;
-
-procedure TTypeList.RemoveDuplicateDEFS;
-var
-  I: Integer;
-begin
-  for I := 0 to Count - 2 do
-    RemoveDuplicateDEFSFrom(Items[I], Items[I + 1]);
-end;
-
-procedure TTypeList.RemoveDuplicateDEFSFrom(const Item1, Item2: TAbstractItem);
-var
-  List1, List2: TStrings;
-  I, Index: Integer;
-begin
-  List1 := Item1.FEndDEFList;
-  List2 := Item2.FBeginDEFList;
-
-  if not Assigned(List1) or not Assigned(List2) then
-    Exit;
-  if (List1.Count = 0) or (List2.Count = 0) then
-    Exit;
-
-  for I := List1.Count - 1 downto 0 do
-  begin
-    Index := List2.IndexOf(List1[i]);
-    if (Index >= 0) and (List1.Objects[i] = List2.Objects[Index]) then
-    begin
-      List1.Delete(I);
-      List2.Delete(Index);
-    end;
-  end;
-end;
-
-procedure TTypeList.RemoveTrivialComments(Classes: TStrings);
-var
-  I: Integer;
-  LClassName: string;
-  CommentItem: TCommentItem;
-begin
-  for I := Count - 1 downto 0 do
-    if Items[I].ImplementationStr = '' then
-      Delete(I)
-    else
-      if Items[I] is TCommentItem then
-    begin
-      CommentItem := TCommentItem(Items[I]);
-      if CommentItem.GetClassName(LClassName) and (Classes.IndexOf(LClassName) >= 0) then
-        Delete(I)
-      else
-        if CommentItem.IsSingleCharComment or CommentItem.CanThrowAwayComment then
-        Delete(I)
-    end;
-end;
-
-procedure TTypeList.SetItem(Index: Integer; const Value: TAbstractItem);
-begin
-  inherited Items[Index] := Value;
-end;
-
-procedure TTypeList.SortImplementation;
-var
-  Classes: TStringList;
-  CommentList: TList;
-begin
-  { Determine classes }
-  Classes := TStringList.Create;
-  try
-    Classes.Sorted := True;
-    Classes.Duplicates := dupIgnore;
-
-    FillClasses(Classes);
-    RemoveTrivialComments(Classes);
-    RemoveDEFSwitches;
-    CombineComments;
-    CalculateAttachTo;
-
-    CommentList := TList.Create;
-    try
-      RemoveComments(CommentList);
-      PasSort;
-      InsertDirectives(CommentList);
-      InsertSwitchDefines;
-      RemoveDuplicateDEFS;
-      InsertConditionalDefines;
-      { after InsertConditionalDefines }
-      CalculateGroupedWith;
-      InsertClassComments;
-      InsertSections;
-      InsertComments(CommentList);
-    finally
-      CommentList.Free;
-    end;
-  finally
-    Classes.Free;
-  end;
-end;
-
-procedure TTypeList.WriteImplementationToStream(Stream: TStream);
-const
-  CEnters: array[TEnterCount] of string = ('', #13#10, #13#10#13#10);
-
-  procedure DoWrite(const S: string);
-  begin
-    Stream.Write(PChar(S)^, Length(S));
-  end;
-var
-  I: Integer;
-  EntersAfter, EntersBefore: TEnterCount;
-  LNext: TAbstractItem;
-begin
-  DoWrite(CEnters[CDefaultEnters]);
-
-  for I := 0 to Count - 1 do
-  begin
-    LNext := Items[i].Next;
-    if Assigned(LNext) then
-      EntersBefore := LNext.EntersBefore
-    else
-      EntersBefore := CDefaultEnters;
-
-    EntersAfter := Items[i].EntersAfter;
-
-    DoWrite(Items[i].OutputStr + CEnters[Min(EntersAfter, EntersBefore)]);
-  end;
-
-  DoWrite('end.'#13#10);
 end;
 
 //=== TUsesItem ==============================================================
@@ -3286,4 +3428,3 @@ begin
 end;
 
 end.
-

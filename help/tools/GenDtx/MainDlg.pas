@@ -7,7 +7,8 @@ uses
   Dialogs, StdCtrls, ActnList,
 
   ParserTypes, MainCtrl, Settings, JvComponent, JvProgressComponent,
-  ComCtrls, ToolWin, ExtCtrls, Menus, Buttons;
+  ComCtrls, ToolWin, ExtCtrls, Menus, Buttons, JvFormPlacement, JvAppStore,
+  JvAppRegistryStore;
 
 const
   CM_CheckDirectories = WM_APP + 1;
@@ -92,12 +93,15 @@ type
     GenerateList1: TMenuItem;
     Button1: TButton;
     actCopyToClipboard: TAction;
-    Button6: TButton;
     actAddToIgnoreTokenList: TAction;
     actGenerateClassStructure: TAction;
     GenerateClassStructure1: TMenuItem;
     actSortPas: TAction;
     SortImplPas1: TMenuItem;
+    JvAppRegistryStore1: TJvAppRegistryStore;
+    JvFormStorage1: TJvFormStorage;
+    actCheckDtxFilesDialog: TAction;
+    CheckDtxFilesDialog1: TMenuItem;
     procedure actAddToCompletedListExecute(Sender: TObject);
     procedure actAddToIgnoreUnitListExecute(Sender: TObject);
     procedure actCheckCasePasFilesExecute(Sender: TObject);
@@ -145,12 +149,13 @@ type
     procedure actGenerateListExecute(Sender: TObject);
     procedure actGenerateListUpdate(Sender: TObject);
     procedure actCopyToClipboardExecute(Sender: TObject);
-    procedure actAddToIgnoreTokenListUpdate(Sender: TObject);
-    procedure actAddToIgnoreTokenListExecute(Sender: TObject);
     procedure actGenerateClassStructureExecute(Sender: TObject);
     procedure actGenerateClassStructureUpdate(Sender: TObject);
     procedure actSortPasUpdate(Sender: TObject);
     procedure actSortPasExecute(Sender: TObject);
+    procedure JvFormStorage1RestorePlacement(Sender: TObject);
+    procedure JvFormStorage1SavePlacement(Sender: TObject);
+    procedure actCheckDtxFilesDialogExecute(Sender: TObject);
   private
     FMainCtrl: TMainCtrl;
     function ProcessFilesAvailable: Boolean;
@@ -161,6 +166,9 @@ type
     procedure SetItem(List: TListBox; Index: Integer);
     function GetFirstSelection(List: TCustomListBox): Integer;
     procedure CMCheckDirectories(var Msg: TMessage); message CM_CheckDirectories;
+
+    procedure LoadOptions;
+    procedure SaveOptions;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -248,33 +256,6 @@ begin
   SetItem(lsbDest, Index);
 end;
 
-procedure TfrmMain.actAddToIgnoreTokenListExecute(Sender: TObject);
-const
-  CComparing = 'Comparing ';
-var
-  I: Integer;
-  UnitName: string;
-begin
-  UnitName := '';
-  with lsbMessages, TSettings.Instance do
-    for I := 0 to Items.Count - 1 do
-    begin
-      if SameText(Copy(Items[I], 1, Length(CComparing)), CComparing) then
-      begin
-        UnitName := Copy(Items[I], Length(CComparing) + 1, MaxInt);
-        UnitName := Copy(UnitName, 1, Pos(' ', UnitName) - 1);
-      end;
-      if Selected[I] then
-        AddToIgnoreTokenList(UnitName, Trim(Items[I]));
-    end;
-end;
-
-procedure TfrmMain.actAddToIgnoreTokenListUpdate(Sender: TObject);
-begin
-  if Sender is TAction then
-    TAction(Sender).Enabled := lsbMessages.SelCount > 0;
-end;
-
 procedure TfrmMain.actAddToIgnoreUnitListExecute(Sender: TObject);
 var
   Index: Integer;
@@ -301,9 +282,14 @@ begin
     TAction(Sender).Enabled := ProcessFilesAvailable and (TSettings.Instance.RunTimePasDir > '');
 end;
 
+procedure TfrmMain.actCheckDtxFilesDialogExecute(Sender: TObject);
+begin
+  FMainCtrl.CheckDtxFiles(True);
+end;
+
 procedure TfrmMain.actCheckDtxFilesExecute(Sender: TObject);
 begin
-  FMainCtrl.CheckDtxFiles;
+  FMainCtrl.CheckDtxFiles(False);
 end;
 
 procedure TfrmMain.actCheckDtxFilesUpdate(Sender: TObject);
@@ -624,6 +610,27 @@ begin
   Result := LB_ERR;
 end;
 
+procedure TfrmMain.JvFormStorage1RestorePlacement(Sender: TObject);
+begin
+  LoadOptions;
+end;
+
+procedure TfrmMain.JvFormStorage1SavePlacement(Sender: TObject);
+begin
+  SaveOptions;
+end;
+
+procedure TfrmMain.LoadOptions;
+begin
+  with JvAppRegistryStore1 do
+  begin
+    FMainCtrl.ShowCompletedFiles := ReadBoolean('Main\ShowCompletedFiles', False);
+    FMainCtrl.ShowIgnoredFiles := ReadBoolean('Main\ShowIgnoredFiles', False);
+    FMainCtrl.ShowGeneratedFiles := ReadBoolean('Main\ShowGeneratedFiles', True);
+    FMainCtrl.ShowOtherFiles := ReadBoolean('Main\ShowOtherFiles', False);
+  end;
+end;
+
 procedure TfrmMain.MoveSelected(List: TCustomListBox; Items: TStrings);
 var
   I: Integer;
@@ -687,6 +694,17 @@ end;
 function TfrmMain.ProcessFilesAvailable: Boolean;
 begin
   Result := lsbDest.Count > 0;
+end;
+
+procedure TfrmMain.SaveOptions;
+begin
+  with JvAppRegistryStore1 do
+  begin
+    WriteBoolean('Main\ShowCompletedFiles', FMainCtrl.ShowCompletedFiles);
+    WriteBoolean('Main\ShowIgnoredFiles', FMainCtrl.ShowIgnoredFiles);
+    WriteBoolean('Main\ShowGeneratedFiles', FMainCtrl.ShowGeneratedFiles);
+    WriteBoolean('Main\ShowOtherFiles', FMainCtrl.ShowOtherFiles);
+  end;
 end;
 
 procedure TfrmMain.SelectedProcessFilesAvailable(Sender: TObject);

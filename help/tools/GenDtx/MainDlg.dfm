@@ -229,17 +229,6 @@ object frmMain: TfrmMain
       Anchors = [akLeft, akBottom]
       TabOrder = 3
     end
-    object Button6: TButton
-      Left = 301
-      Top = 135
-      Width = 105
-      Height = 25
-      Action = actAddToIgnoreTokenList
-      Anchors = [akLeft, akBottom]
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 4
-    end
   end
   object ActionList1: TActionList
     Left = 128
@@ -435,8 +424,6 @@ object frmMain: TfrmMain
       Category = 'Messages'
       Caption = 'Add to Ignore List'
       Hint = 'Marks the selected tokens in the message list box as '#39'ignored'#39
-      OnExecute = actAddToIgnoreTokenListExecute
-      OnUpdate = actAddToIgnoreTokenListUpdate
     end
     object actGenerateClassStructure: TAction
       Category = 'Generate'
@@ -449,6 +436,12 @@ object frmMain: TfrmMain
       Caption = 'Sort Impl. Pas'
       OnExecute = actSortPasExecute
       OnUpdate = actSortPasUpdate
+    end
+    object actCheckDtxFilesDialog: TAction
+      Category = 'Check'
+      Caption = 'Check &Dtx Files (Dialog)'
+      OnExecute = actCheckDtxFilesDialogExecute
+      OnUpdate = actCheckDtxFilesUpdate
     end
   end
   object MainMenu1: TMainMenu
@@ -485,6 +478,9 @@ object frmMain: TfrmMain
       Caption = 'Check'
       object CheckDtxfiles1: TMenuItem
         Action = actCheckDtxFiles
+      end
+      object CheckDtxFilesDialog1: TMenuItem
+        Action = actCheckDtxFilesDialog
       end
       object Checkpasfiles1: TMenuItem
         Action = actCheckPasFiles
@@ -536,5 +532,23 @@ object frmMain: TfrmMain
         Action = actSettings
       end
     end
+  end
+  object JvAppRegistryStore1: TJvAppRegistryStore
+    StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StoreOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    Root = 'Software\JVCL\GenDtx'
+    RegRoot = hkCurrentUser
+    SubStores = <>
+    Left = 336
+    Top = 136
+  end
+  object JvFormStorage1: TJvFormStorage
+    AppStorage = JvAppRegistryStore1
+    AppStoragePath = 'Main\Placement\'
+    OnSavePlacement = JvFormStorage1SavePlacement
+    OnRestorePlacement = JvFormStorage1RestorePlacement
+    StoredValues = <>
+    Left = 336
+    Top = 168
   end
 end
