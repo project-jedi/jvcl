@@ -80,16 +80,21 @@ type
     FFileName: TFileName;
     // output mode (stream or file)
     FOutputMode: TJvOutputMode;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    property EditorTrick: TJvUrlGrabberDefPropEdTrick read FEditorTrick;
-  protected
+
+    // The user-friendly name of the supported URL type
+    function GetSupportedURLName: string; virtual; abstract;
+
     // The agent to impersonate
     property Agent: string read FAgent write FAgent;
     // the user name and password to use for authentication
     property UserName: string read FUserName write FUserName;
     property Password: string read FPassword write FPassword;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    
+    property EditorTrick: TJvUrlGrabberDefPropEdTrick read FEditorTrick;
+    property SupportedURLName: string read GetSupportedURLName;
   published
     // the name of the file to write to if OutputMode is omFile
     property FileName: TFileName read FFileName write FFileName;
@@ -100,6 +105,8 @@ type
   TJvUrlGrabberDefaultPropertiesClass = class of TJvUrlGrabberDefaultProperties;
 
   TJvUrlGrabberDefaultPropertiesList = class(TPersistent)
+  private
+    function GetItemsNamed(Name: string): TJvUrlGrabberDefaultProperties;
   protected
     FItems: TObjectList;
     function GetCount: Integer;
@@ -112,6 +119,7 @@ type
     procedure Add(Item: TJvUrlGrabberDefaultProperties);
     property Count: Integer read GetCount;
     property Items[Index: Integer]: TJvUrlGrabberDefaultProperties read GetItems write SetItems;
+    property ItemsNamed[Name: string]: TJvUrlGrabberDefaultProperties read GetItemsNamed; default;
   end;
 
   // the status of a grabber
@@ -227,6 +235,8 @@ type
   protected
     FPassive: Boolean;
     FMode: TJvFtpDownloadMode;
+
+    function GetSupportedURLName: string; override;
   published
     property Agent;
     property UserName;
@@ -253,6 +263,8 @@ type
 
   // A grabber for HTTP URLs
   TJvHttpUrlGrabberDefaultProperties = class(TJvUrlGrabberDefaultProperties)
+  protected
+    function GetSupportedURLName: string; override;
   published
     property Agent;
     property UserName;
@@ -309,6 +321,8 @@ type
   TJvLocalFileUrlGrabberProperties = class(TJvUrlGrabberDefaultProperties)
   private
     FPreserveAttributes: boolean;
+  protected
+    function GetSupportedURLName: string; override;
   public
     constructor Create;
   published
@@ -992,6 +1006,21 @@ begin
   FItems[Index] := Value;
 end;
 
+function TJvUrlGrabberDefaultPropertiesList.GetItemsNamed(
+  Name: string): TJvUrlGrabberDefaultProperties;
+var
+  I: Integer;
+begin
+  I := 0;
+  Result := nil;
+  while (I < Count) and (Result = nil) do
+  begin
+    if Items[I].SupportedURLName = Name then
+      Result := Items[I];
+    Inc(I);
+  end;
+end;
+
 //=== TJvUrlGrabberDefPropEdTrick ============================================
 
 constructor TJvUrlGrabberDefPropEdTrick.Create(
@@ -1121,6 +1150,25 @@ constructor TJvLocalFileUrlGrabberProperties.Create;
 begin
   inherited Create;
   FPreserveAttributes := True;
+end;
+
+function TJvLocalFileUrlGrabberProperties.GetSupportedURLName: string;
+begin
+  Result := 'LocalFile';
+end;
+
+{ TJvFtpUrlGrabberDefaultProperties }
+
+function TJvFtpUrlGrabberDefaultProperties.GetSupportedURLName: string;
+begin
+  Result := 'FTP';
+end;
+
+{ TJvHttpUrlGrabberDefaultProperties }
+
+function TJvHttpUrlGrabberDefaultProperties.GetSupportedURLName: string;
+begin
+  Result := 'HTTP';
 end;
 
 initialization
