@@ -911,13 +911,13 @@ procedure TJvCustomNumEdit.WMPaint(var Msg: TWMPaint);
 var
   S: string;
 begin
-  inherited;
   if PopupVisible then
     S := TJvPopupWindow(FPopup).GetPopupText
   else
     S := GetDisplayText;
-  {  if not PaintComboEdit(Self, S, FAlignment, FFocused and not PopupVisible,
-      FCanvas, Msg) then inherited;}
+  if not PaintComboEdit(Self, S, FAlignment, FFocused and not PopupVisible,
+     FCanvas, Msg) then
+     inherited;
 end;
 
 procedure TJvCustomNumEdit.CMFontChanged(var Msg: TMessage);
