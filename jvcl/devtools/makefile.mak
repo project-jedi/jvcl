@@ -40,6 +40,7 @@ Bpg2Make.exe \
 MakeRC.exe \
 dc.exe \
 NoQuotes.exe \
+SetPoHeader.exe \
 pg.exe \
 pgEdit.exe \
 ErrLook.exe \
@@ -121,7 +122,17 @@ NoQuotes.exe: NoQuotes\NoQuotes.dpr
   cd NoQuotes
   $(DCC) $&.dpr
   cd ..
+  
+SetPoHeader.exe: SetPoHeader\SetPoHeader.dpr
+  cd SetPoHeader
+  $(DCC) $&.dpr
+  cd ..
 
+JVCLConvert.exe: JVCLConvert\JVCLConvert.dpr
+  cd JVCLConvert
+  $(DCC) $&.dpr
+  cd ..
+  
 # these are put last because they are most likely to fail
 ErrLook.exe: ErrLook\src\ErrLook.dpr
   cd ErrLook\src
@@ -144,7 +155,3 @@ Res2Bmp.exe: Res2Bmp\Res2Bmp.dpr
   $(DCC) $&.dpr
   cd ..
 
-JVCLConvert.exe: JVCLConvert\JVCLConvert.dpr
-  cd JVCLConvert
-  $(DCC) $&.dpr
-  cd ..
