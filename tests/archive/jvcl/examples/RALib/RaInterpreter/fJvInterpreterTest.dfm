@@ -99,9 +99,9 @@ object Test: TTest
     Colors.Reserved.Style = [fsBold]
     Colors.Reserved.ForeColor = clBlack
     Colors.Reserved.BackColor = clWindow
-    Colors.Identifer.Style = []
-    Colors.Identifer.ForeColor = clBlack
-    Colors.Identifer.BackColor = clWindow
+    Colors.Identifier.Style = []
+    Colors.Identifier.ForeColor = clBlack
+    Colors.Identifier.BackColor = clWindow
     Colors.Preproc.Style = []
     Colors.Preproc.ForeColor = clGreen
     Colors.Preproc.BackColor = clWindow

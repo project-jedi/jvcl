@@ -91,7 +91,7 @@ type
     procedure JvInterpreterProgram1GetDfmFileName(Sender: TObject; UnitName: String;
       var FileName: String; var Done: Boolean);
     procedure JvInterpreterProgram1GetValue(Sender: TObject;
-      Identifer: String; var Value: Variant; Args: TJvInterpreterArgs;
+      Identifier: String; var Value: Variant; Args: TJvInterpreterArgs;
       var Done: Boolean);
   private
     { Private declarations }
@@ -397,29 +397,29 @@ begin
 end;
                                                     
 procedure TTest.JvInterpreterProgram1GetValue(Sender: TObject;
-  Identifer: String; var Value: Variant; Args: TJvInterpreterArgs;
+  Identifier: String; var Value: Variant; Args: TJvInterpreterArgs;
   var Done: Boolean);
 begin
-  if Cmp(Identifer, 'Test') then
+  if Cmp(Identifier, 'Test') then
   begin
     Done := True;
     Value := O2V(Self);
   end
-  else if Cmp(Identifer, 'Rec') then
+  else if Cmp(Identifier, 'Rec') then
   begin
     Done := True;
     //Value := SearchRec2Var(temp);
     JvInterpreterVarCopy(Value, SearchRec2Var(temp));
   end
   else
-  if Cmp(Identifer, 'ShowMessage') and (Args.Obj = Self) then
+  if Cmp(Identifier, 'ShowMessage') and (Args.Obj = Self) then
   begin
     Done := True;
     ShowMessage(Args.Values[0]);
     Value := Null;
   end
   else
-  if Cmp(Identifer, 'MyFunction') then
+  if Cmp(Identifier, 'MyFunction') then
   begin
     Done := True;
     Value := Args.Values[0] + 1;
