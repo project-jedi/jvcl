@@ -58,7 +58,6 @@
     <File Name="..\..\run\JvDBGridSelectColumnForm.pas" Targets="allbutclx" Formname="frmSelectColumn" Condition=""/>
     <File Name="..\..\run\JvDBUltimGrid.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBGridFooter.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDynControlEngineTools.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDynControlEngineDBTools.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvExDBGrids.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBHTLabel.pas" Targets="all" Formname="" Condition=""/>

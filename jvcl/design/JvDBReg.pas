@@ -117,15 +117,14 @@ begin
 
   RegisterComponentEditor(TJvMemoryData, TJvMemDataSetEditor);
 
-  RegisterActions (RsJVCLDBActionsCategory, [TJvDatabaseFirstAction,
-      TJvDatabaseLastAction, TJvDatabaseNextAction, TJvDatabasePriorAction,
-      TJvDatabaseNextBlockAction, TJvDatabasePriorBlockAction,
-      TJvDatabasePositionAction, TJvDatabaseRefreshAction,
-      TJvDatabaseInsertAction, TJvDatabaseCopyAction, TJvDatabaseEditAction,
-      TJvDatabaseDeleteAction, TJvDatabasePostAction, TJvDatabaseCancelAction,
-      TJvDatabaseSingleRecordWindowAction, TJvDatabaseSimpleAction,
-      TJvDatabaseOpenAction, TJvDatabaseCloseAction], TJvDialogActions);
-
+  RegisterActions(RsJVCLDBActionsCategory, [TJvDatabaseFirstAction,
+    TJvDatabaseLastAction, TJvDatabaseNextAction, TJvDatabasePriorAction,
+    TJvDatabaseNextBlockAction, TJvDatabasePriorBlockAction,
+    TJvDatabasePositionAction, TJvDatabaseRefreshAction,
+    TJvDatabaseInsertAction, TJvDatabaseCopyAction, TJvDatabaseEditAction,
+    TJvDatabaseDeleteAction, TJvDatabasePostAction, TJvDatabaseCancelAction,
+    TJvDatabaseSingleRecordWindowAction, TJvDatabaseSimpleAction,
+    TJvDatabaseOpenAction, TJvDatabaseCloseAction], TJvDialogActions);
 end;
 
 end.

@@ -486,6 +486,20 @@ resourcestring
 resourcestring
   RsNoneCaption = '(none)';
 
+//=== JvDBActions.pas, JvDynControlEngineDBTools.pas =========================
+resourcestring
+  RsDBPosDialogCaption = 'Change Current Record Position';
+  RsDBPosCurrentPosition = 'Current Position';
+  RsDBPosNewPosition = 'New Position';
+  RsDBPosMovementType = 'Movement Type';
+  RsDBPosAbsolute = 'Absolute';
+  RsDBPosBackward = 'Backward';
+  RsDBPosForward = 'Forward';
+  RsDBPosPercental = 'Percental';
+  RsSRWPostButtonCaption = '&Post';
+  RsSRWCancelButtonCaption = '&Cancel';
+  RsSRWCloseButtonCaption = 'C&lose';
+
 //=== JvDBControls.pas =======================================================
 resourcestring
   RsInactiveData = 'Closed';
@@ -727,6 +741,84 @@ resourcestring
     'Axis %s = %d' + sLineBreak +
     'Axis %s = %d' + sLineBreak +
     'Axis %s = %d';
+
+  Rs_EDuplicateTrackBar     = 'TrackBar already used by component "%s"';
+  Rs_EUnsupportedColorSpace = 'Unsupported color space "%d"';
+
+//=== JvFullColorDialogs.pas =================================================
+resourcestring
+  RsExpandedCaption = '<< &Hide';
+  RsCollapsedCaption = '&Panels >>';
+
+//=== JvFullColorSpaces.pas ==================================================
+resourcestring
+  RsENoTypeInfo         = 'The class %s contains no run time type info' + sLineBreak +
+    '"Class in module" test cannot be executed';
+  RsEUnnamedAxis        = 'Unnamed Color Axis';
+  RsEUnnamedSpace       = 'Unnamed Color Space';
+  RsEUCS                = 'UCS';
+  RsENoName             = 'No Name';
+  RsECSNotFound         = 'Color Space not found: %d';
+  RsEIllegalID          = 'Color Space ID %d is illegal';
+  RsECSAlreadyExists    = 'Color Space Already exists [ID: %d, Name: %s]';
+  RsEInconvertibleColor = 'TColor value $%.8X cannot be converted to TJvFullColor';
+
+  RsRGB_Red       = 'Red';
+  RsRGB_Green     = 'Green';
+  RsRGB_Blue      = 'Blue';
+  RsRGB_FullName  = 'True Color';
+  RsRGB_ShortName = 'RGB';
+
+  RsHLS_Hue        = 'Hue';
+  RsHLS_Lightness  = 'Lightness';
+  RsHLS_Saturation = 'Saturation';
+  RsHLS_FullName   = 'Chromatic Vision';
+  RsHLS_ShortName  = 'HLS';
+
+  RsCMY_Cyan      = 'Cyan';
+  RsCMY_Magenta   = 'Magenta';
+  RsCMY_Yellow    = 'Yellow';
+  RsCMY_FullName  = 'Substractive Vision';
+  RsCMY_ShortName = 'CMY';
+
+  RsYUV_Y         = 'Y Value';
+  RsYUV_U         = 'U Value';
+  RsYUV_V         = 'V Value';
+  RsYUV_FullName  = 'PC Video';
+  RsYUV_ShortName = 'YUV';
+
+  RsHSV_Hue        = 'Hue';
+  RsHSV_Saturation = 'Saturation';
+  RsHSV_Value      = 'Value';
+  RsHSV_FullName   = 'Rotation Vision';
+  RsHSV_ShortName  = 'HSV';
+
+  RsYIQ_Y         = 'Y';
+  RsYIQ_I         = 'I';
+  RsYIQ_Q         = 'Q';
+  RsYIQ_FullName  = 'NTSC US television standard';
+  RsYIQ_ShortName = 'YIQ';
+
+  RsYCC_Y         = 'Y';
+  RsYCC_Cr        = 'Cr';
+  RsYCC_Cb        = 'Cb';
+  RsYCC_FullName  = 'YCrCb';
+  RsYCC_ShortName = 'YCC';
+
+  RsXYZ_X         = 'Y';
+  RsXYZ_Y         = 'Y';
+  RsXYZ_Z         = 'Z';
+  RsXYZ_FullName  = 'CIE XYZ';
+  RsXYZ_ShortName = 'XYZ';
+
+  RsLAB_L         = 'L';
+  RsLAB_A         = 'A';
+  RsLAB_B         = 'B';
+  RsLAB_FullName  = 'CIE LAB';
+  RsLAB_ShortName = 'LAB';
+
+  RsDEF_FullName  = 'Delphi predefined colors';
+  RsDEF_ShortName = 'DEF';
 
 //=== Jvg3DColors.pas ========================================================
 {$IFDEF USEJVCL}
@@ -2124,100 +2216,6 @@ resourcestring
   RsFounds = 'Found %s';
   RsToday = 'Today ';
 {$ENDIF USEJVCL}
-
-//=== JvFullColorCtrls.pas =========================================================
-resourcestring
-  Rs_EDuplicateTrackBar     = 'TrackBar already used by component "%s"';
-  Rs_EUnsupportedColorSpace = 'Unsupported color space "%d"';
-
-//=== JvFullColorDialogs.pas =========================================================
-resourcestring
-  RsExpandedCaption = '<< &Hide';
-  RsCollapsedCaption = '&Panels >>';
-
-//=== JvFullColorSpaces.pas =========================================================
-resourcestring
-  RsENoTypeInfo         = 'The class %s contains no run time type info' + sLineBreak +
-    '"Class in module" test cannot be executed';
-  RsEUnnamedAxis        = 'Unnamed Color Axis';
-  RsEUnnamedSpace       = 'Unnamed Color Space';
-  RsEUCS                = 'UCS';
-  RsENoName             = 'No Name';
-  RsECSNotFound         = 'Color Space not found: %d';
-  RsEIllegalID          = 'Color Space ID %d is illegal';
-  RsECSAlreadyExists    = 'Color Space Already exists [ID: %d, Name: %s]';
-  RsEInconvertibleColor = 'TColor value $%.8X cannot be converted to TJvFullColor';
-
-  RsRGB_Red       = 'Red';
-  RsRGB_Green     = 'Green';
-  RsRGB_Blue      = 'Blue';
-  RsRGB_FullName  = 'True Color';
-  RsRGB_ShortName = 'RGB';
-
-  RsHLS_Hue        = 'Hue';
-  RsHLS_Lightness  = 'Lightness';
-  RsHLS_Saturation = 'Saturation';
-  RsHLS_FullName   = 'Chromatic Vision';
-  RsHLS_ShortName  = 'HLS';
-
-  RsCMY_Cyan      = 'Cyan';
-  RsCMY_Magenta   = 'Magenta';
-  RsCMY_Yellow    = 'Yellow';
-  RsCMY_FullName  = 'Substractive Vision';
-  RsCMY_ShortName = 'CMY';
-
-  RsYUV_Y         = 'Y Value';
-  RsYUV_U         = 'U Value';
-  RsYUV_V         = 'V Value';
-  RsYUV_FullName  = 'PC Video';
-  RsYUV_ShortName = 'YUV';
-
-  RsHSV_Hue        = 'Hue';
-  RsHSV_Saturation = 'Saturation';
-  RsHSV_Value      = 'Value';
-  RsHSV_FullName   = 'Rotation Vision';
-  RsHSV_ShortName  = 'HSV';
-
-  RsYIQ_Y         = 'Y';
-  RsYIQ_I         = 'I';
-  RsYIQ_Q         = 'Q';
-  RsYIQ_FullName  = 'NTSC US television standard';
-  RsYIQ_ShortName = 'YIQ';
-
-  RsYCC_Y         = 'Y';
-  RsYCC_Cr        = 'Cr';
-  RsYCC_Cb        = 'Cb';
-  RsYCC_FullName  = 'YCrCb';
-  RsYCC_ShortName = 'YCC';
-
-  RsXYZ_X         = 'Y';
-  RsXYZ_Y         = 'Y';
-  RsXYZ_Z         = 'Z';
-  RsXYZ_FullName  = 'CIE XYZ';
-  RsXYZ_ShortName = 'XYZ';
-
-  RsLAB_L         = 'L';
-  RsLAB_A         = 'A';
-  RsLAB_B         = 'B';
-  RsLAB_FullName  = 'CIE LAB';
-  RsLAB_ShortName = 'LAB';
-
-  RsDEF_FullName  = 'Delphi predefined colors';
-  RsDEF_ShortName = 'DEF';
-
-//=== JvDBActions.pas JvDynControlEngineDBTools =========================================================
-  RsDBPosDialogCaption = 'Change Current Record Position';
-  RsDBPosCurrentPosition = 'Current Position';
-  RsDBPosNewPosition = 'New Position';
-  RsDBPosMovementType = 'Movement Type';
-  RsDBPosAbsolute = 'Absolute';
-  RsDBPosBackward = 'Backward';
-  RsDBPosForward = 'Forward';
-  RsDBPosPercental = 'Percental';
-  RsSRWPostButtonCaption = '&Post';
-  RsSRWCancelButtonCaption = '&Cancel';
-  RsSRWCloseButtonCaption = 'C&lose';
-
 
 //=== not taken into JVCL ====================================================
 {

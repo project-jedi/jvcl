@@ -23,6 +23,8 @@ Known Issues:
 
 unit JvDynControlEngineTools;
 
+{$I jvcl.inc}
+
 interface
 
 uses
@@ -34,7 +36,18 @@ function CreateDynControlDialog(const AFormCaption, AButton1Caption, AButton2Cap
   var AMainPanel: TWinControl;
   ADynControlEngine: TJvDynControlEngine = nil): TCustomForm;
 
+function JvDynControlVariantToBoolean(Value: Variant): Boolean;
+
 implementation
+
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  SysUtils;
 
 function CreateDynControlDialog(const AFormCaption, AButton1Caption, AButton2Caption: string;
   const AButton1Click, AButton2Click: TNotifyEvent;
@@ -85,6 +98,30 @@ begin
       Button1.Left := ButtonPanel.Width - Button1.Width - 5;
   Result := Form;
 end;
+
+function JvDynControlVariantToBoolean(Value: Variant): Boolean;
+begin
+  if VarType(Value) = varBoolean then
+    Result := Value
+  else
+    Result := UpperCase(Value) = 'TRUE';
+end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+    );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 
