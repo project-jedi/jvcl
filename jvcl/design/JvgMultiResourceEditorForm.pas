@@ -32,14 +32,8 @@ unit JvgMultiResourceEditorForm;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
+  Windows, Messages,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   DesignEditors,
@@ -47,10 +41,8 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-
-  StdCtrls,
-  JvgMultiResources,
-  Grids;
+  StdCtrls, Grids,
+  JvgMultiResources, JvComponent;
 
 type
 
@@ -60,7 +52,7 @@ type
     procedure Edit; override;
   end;
 
-  TJvgMultipleResourceEdit = class(TForm)
+  TJvgMultipleResourceEdit = class(TJvForm)
     sg: TStringGrid;
     procedure FormShow(Sender: TObject);
     procedure sgSetEditText(Sender: TObject; ACol, ARow: Integer; const Value:

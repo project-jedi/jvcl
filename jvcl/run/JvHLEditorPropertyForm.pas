@@ -35,12 +35,12 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, ComCtrls, Controls,
   Forms, StdCtrls, ExtCtrls,
-  JvFormPlacement, JvEditor, JvHLEditor;
+  JvFormPlacement, JvEditor, JvHLEditor, JvComponent;
 
 type
   TJvHLEdPropDlg = class;
 
-  TJvHLEditorParamsForm = class(TForm)
+  TJvHLEditorParamsForm = class(TJvForm)
     Pages: TPageControl;
     bCancel: TButton;
     bOK: TButton;

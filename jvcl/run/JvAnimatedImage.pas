@@ -163,7 +163,7 @@ implementation
 
 uses
   JvHook,
-  JvConsts, JvJVCLUtils;
+  JvTypes, JvJVCLUtils;
 
 
 //=== TJvHackBitmap ==========================================================

@@ -35,6 +35,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+{$IFDEF USE_DXGETTEXT}
+  gnugettext,
+{$ENDIF}
   StdCtrls;
 
 type
@@ -70,7 +73,10 @@ resourcestring
 
 constructor TJvVirtualKeySelectionFrame.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
+{$IFDEF USE_DXGETTEXT}
+  TranslateComponent(Self);
+{$ENDIF}
 
   EnumKeys;
 end;

@@ -33,11 +33,11 @@ interface
 uses
   Windows,
   SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls, FileCtrl,
-  JvPicClip, JvFormPlacement, JvComponent, Buttons, JvAppStore,
-  JvAppRegistryStore;
+  Buttons,
+  JvPicClip, JvFormPlacement, JvAppStore, JvAppRegistryStore, JvComponent;
 
 type
-  TImageForm = class(TForm)
+  TImageForm = class(TJvForm)
     DirectoryList: TDirectoryListBox;
     DriveCombo: TDriveComboBox;
     PathLabel: TLabel;

@@ -37,12 +37,14 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  JvJVCLUtils, JvFormPlacement, JvPropsStorage;
-{ TODO -oJVCL -cREIMPLEMENT : 
-Add support for "Box" style procedures again but remove dependency on 
+  JvJVCLUtils, JvFormPlacement, JvPropsStorage, JvComponent;
+
+{ TODO -oJVCL -cREIMPLEMENT :
+Add support for "Box" style procedures again but remove dependency on
 JvxCtrls and JvBoxProcs units }
+
 type
-  TJvFormPropsDlg = class(TForm)
+  TJvFormPropsDlg = class(TJvForm)
     Bevel1: TBevel;
     Label30: TLabel;
     Label31: TLabel;

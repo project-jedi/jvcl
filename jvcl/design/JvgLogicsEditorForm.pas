@@ -33,20 +33,9 @@ unit JvgLogicsEditorForm;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  JvgLogics,
-  JvgScrollBox,
-  StdCtrls,
-  JvgGroupBox,
-  ExtCtrls,
-  ComCtrls,
+  Windows, Messages,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvgLogics, JvgScrollBox,
+  StdCtrls, JvgGroupBox, ExtCtrls, ComCtrls,
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   DesignEditors,
@@ -54,12 +43,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-
-  ToolWin,
-  ImgList,
-  richEdit,
-  JvgPage,
-  Tabs;
+  ToolWin, ImgList, RichEdit, JvgPage, Tabs, JvComponent;
 
 type
   TJvgGroupBoxPlus = class;
@@ -72,7 +56,7 @@ type
     procedure ShowEditor(LogicProducer: TJvgLogicProducer);
   end;
 
-  TJvgLogicsEditor = class(TForm)
+  TJvgLogicsEditor = class(TJvForm)
     SB: TJvgScrollBox;
     Panel1: TPanel;
     iPKey: TImage;

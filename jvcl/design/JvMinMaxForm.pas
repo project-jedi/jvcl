@@ -40,10 +40,10 @@ uses
   DsgnIntf,
   {$ENDIF}
   Consts,
-  JvJVCLUtils, JvFormPlacement;
+  JvJVCLUtils, JvFormPlacement, JvComponent;
 
 type
-  TMinMaxInfoEditDialog = class(TForm)
+  TMinMaxInfoEditDialog = class(TJvForm)
     Bevel1: TBevel;
     Label1: TLabel;
     Label2: TLabel;

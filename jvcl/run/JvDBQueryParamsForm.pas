@@ -30,10 +30,10 @@ unit JvDBQueryParamsForm;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls, DB;
+  SysUtils, Classes, Controls, Forms, StdCtrls, DB, JvComponent;
 
 type
-  TJvQueryParamsDialog = class(TForm)
+  TJvQueryParamsDialog = class(TJvForm)
     GroupBox1: TGroupBox;
     Label1: TLabel;
     ParamValue: TEdit;

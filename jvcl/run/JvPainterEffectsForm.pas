@@ -30,10 +30,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, ComCtrls, JvDrawImage;
+  StdCtrls, ExtCtrls, ComCtrls, JvDrawImage, JvComponent;
 
 type
-  TPainterEffectsF = class(TForm)
+  TPainterEffectsF = class(TJvForm)
     effectspanel: TPanel;
     EBar: TScrollBar;
     extrabar: TScrollBar;

@@ -33,13 +33,13 @@ uses
   SysUtils,
   Windows,
   Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Buttons,
-  DBTables, DB;
+  DBTables, DB, JvComponent;
 
 type
   TChangePasswordEvent = function(UsersTable: TTable;
     const OldPassword, NewPassword: string): Boolean of object;
 
-  TJvChPswdForm = class(TForm)
+  TJvChPswdForm = class(TJvForm)
     OldPswdLabel: TLabel;
     OldPswd: TEdit;
     NewPswdLabel: TLabel;

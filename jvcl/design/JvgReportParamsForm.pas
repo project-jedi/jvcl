@@ -32,17 +32,9 @@ unit JvgReportParamsForm;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  Grids,
-  JvgStringGrid,
-  stdctrls,
+  Windows, Messages,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Grids, JvgStringGrid,
+  StdCtrls,
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   DesignEditors,
@@ -50,10 +42,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvgReport,
-  Buttons,
-  ExtCtrls,
-  mask;
+  JvgReport, Buttons, ExtCtrls, Mask, JvComponent;
 
 type
 
@@ -63,7 +52,7 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-  TJvgReportParamsForm = class(TForm)
+  TJvgReportParamsForm = class(TJvForm)
     SB: TScrollBox;
     Panel1: TPanel;
     Panel2: TPanel;

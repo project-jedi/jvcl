@@ -32,7 +32,7 @@ interface
 uses
   Windows,
   Messages, Classes, Controls, Graphics, StdCtrls, Forms, Grids,
-  JvAppStore, JvConsts, JvFormPlacement;
+  JvAppStore, JvTypes, JvFormPlacement;
 
 type
   TAcceptKeyEvent = function(Sender: TObject; var Key: Char): Boolean of object;

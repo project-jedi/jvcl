@@ -38,6 +38,9 @@ uses
   {$ELSE}
   QStdCtrls,  QExtCtrls, QControls, QForms, QCheckLst, Types,
   {$ENDIF}
+  {$IFDEF USE_DXGETTEXT}
+  gnugettext,
+  {$ENDIF}
   JVCLVer, JvTypes;
 
 type
@@ -99,15 +102,16 @@ type
 
   TJvForm = class(TForm)
   private
-    FAboutJVCL: TJVCLAboutInfo;
 {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
     procedure SetParentBackground(const Value: Boolean);
   protected
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
 {$ENDIF}
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+{$IFDEF USE_DXGETTEXT}
+  public
+    constructor Create(AOwner: TComponent); override;
+{$ENDIF}
   end;
 
   // (p3) obsolete - MultiSelect is already published in JvCheckListBox
@@ -155,6 +159,14 @@ procedure TJvWinControl.SetParentBackground(const Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
+
+{$IFDEF USE_DXGETTEXT}
+constructor TJvForm.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  TranslateComponent(Self);
+end;
+{$ENDIF}
 
 function TJvForm.GetParentBackground: Boolean;
 begin

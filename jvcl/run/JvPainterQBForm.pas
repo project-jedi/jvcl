@@ -31,10 +31,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Menus, ComCtrls, JvDrawImage;
+  StdCtrls, ExtCtrls, Menus, ComCtrls, JvDrawImage, JvComponent;
 
 type
-  TPainterQBF = class(TForm)
+  TPainterQBF = class(TJvForm)
     Bevel1: TBevel;
     qbpresets: TComboBox;
     presetspop: TPopupMenu;

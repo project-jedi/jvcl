@@ -38,10 +38,10 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  CheckLst;
+  CheckLst, JvComponent;
 
 type
-  TJvCheckItemEditor = class(TForm)
+  TJvCheckItemEditor = class(TJvForm)
   private
     FEdit: TEdit;
     FOkBtn: TButton;
@@ -52,7 +52,7 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-  TJvCheckItemsEditor = class(TForm)
+  TJvCheckItemsEditor = class(TJvForm)
     Popup: TPopupMenu;
     cbGrayedItem: TMenuItem;
     cbCheckedItem: TMenuItem;

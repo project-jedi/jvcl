@@ -40,10 +40,10 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvHint;
+  JvHint, JvComponent;
 
 type
-  TJvHintEditor = class(TForm)
+  TJvHintEditor = class(TJvForm)
     HintMemo: TMemo;
     Label1: TLabel;
     BtnOk: TButton;

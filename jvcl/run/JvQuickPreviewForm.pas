@@ -31,10 +31,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Buttons, ExtCtrls, StdCtrls, JvDrawImage;
+  Buttons, ExtCtrls, StdCtrls, JvDrawImage, JvComponent;
 
 type
-  TQuickPreviewF = class(TForm)
+  TQuickPreviewF = class(TJvForm)
     ScrollBox1: TScrollBox;
     Image1: TImage;
     Panel1: TPanel;

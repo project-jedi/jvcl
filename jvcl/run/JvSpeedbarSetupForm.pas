@@ -31,12 +31,12 @@ interface
 
 uses
   Windows,
-  SysUtils, Messages, Classes, Graphics, Controls, Forms,
-  StdCtrls, Grids, ExtCtrls,
-  JvxCtrls, JvSpeedBar, JvConsts;
+  SysUtils, Messages, Classes, Graphics, Controls, Forms, StdCtrls, Grids,
+  ExtCtrls,
+  JvTypes, JvxCtrls, JvSpeedBar, JvComponent;
 
 type
-  TJvSpeedbarSetupWindow = class(TForm)
+  TJvSpeedbarSetupWindow = class(TJvForm)
     ButtonsList: TDrawGrid;
     ButtonsLabel: TLabel;
     SectionList: TDrawGrid;
@@ -91,7 +91,7 @@ implementation
 
 uses
   Consts, Math,
-  JvJVCLUtils;
+  JvConsts, JvJVCLUtils;
 
 {$R *.DFM}
 

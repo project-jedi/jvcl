@@ -35,10 +35,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Buttons, JvgSpeedButton, JvgWizardHeader, JvgShadow,
-  ComCtrls, JvgSmallFontsDefense;
+  ComCtrls, JvgSmallFontsDefense, JvComponent;
 
 type
-  TJvgfCheckVersionInfo = class(TForm)
+  TJvgfCheckVersionInfo = class(TJvForm)
     JvgWizardHeader: TJvgWizardHeader;
     sbNext: TJvgSpeedButton;
     Bevel1: TBevel;

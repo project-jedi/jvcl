@@ -40,7 +40,7 @@ uses
 type
   TDBErrorEvent = procedure(Error: TDBError; var Msg: string) of object;
 
-  TJvBdeErrorDlg = class(TForm)
+  TJvBdeErrorDlg = class(TJvForm)
     BasicPanel: TPanel;
     ErrorText: TLabel;
     IconPanel: TPanel;

@@ -163,13 +163,13 @@ implementation
 
 uses
   Registry, Consts, IniFiles,
-  JvJVCLUtils, JvConsts;
+  JvJVCLUtils, JvConsts, JvTypes;
 
 {$R *.DFM}
 
 const
-  keyLoginSection = 'Login Dialog';
-  keyLastLoginUserName = 'Last Logged User';
+  keyLoginSection = 'Login Dialog'; // do not localize
+  keyLastLoginUserName = 'Last Logged User'; // do not localize
 
 function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
   FormShowEvent, OkClickEvent: TNotifyEvent): TJvLoginForm;

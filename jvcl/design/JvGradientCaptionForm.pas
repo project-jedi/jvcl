@@ -41,7 +41,7 @@ uses
   JvComponent, JvToolEdit, JvAppStore, JvAppRegistryStore;
 
 type
-  TGradCaptionsEditor = class(TForm)
+  TGradCaptionsEditor = class(TJvForm)
     ApplyButton: TButton;
     CancelButton: TButton;
     OkButton: TButton;

@@ -4,10 +4,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, JvVirtualKeySelectionFrame;
+  Dialogs, StdCtrls, Buttons, JvVirtualKeySelectionFrame, JvComponent;
 
 type
-  TfrmJvVirtualKeyEditor = class(TForm)
+  TfrmJvVirtualKeyEditor = class(TJvForm)
     bbtOk: TBitBtn;
     bbtCancel: TBitBtn;
   private

@@ -32,10 +32,10 @@ unit JvgQPrintSetupForm;
 interface
 
 uses
-  Windows, Controls, Forms, StdCtrls, ExtCtrls, Classes;
+  Windows, Controls, Forms, StdCtrls, ExtCtrls, Classes, JvComponent;
 
 type
-  TJvgPrintSetup = class(TForm)
+  TJvgPrintSetup = class(TJvForm)
     rgOrientation: TRadioGroup;
     rgRadioGroup2: TRadioGroup;
   private

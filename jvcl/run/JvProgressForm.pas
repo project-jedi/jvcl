@@ -35,12 +35,13 @@ interface
 
 uses
   Windows, SysUtils, Forms, Graphics, ExtCtrls, StdCtrls, Controls, ComCtrls,
-  Classes;
+  Classes, JvComponent;
 
 type
   TJvPrivateProgressUpdate = procedure (Sender:TObject; var AMin, AMax, APosition, AInterval:integer;
     var ACaption,ALabel:string; AnImage:TPicture; var AContinue:boolean) of object;
-  TfrmProgress = class(TForm)
+
+  TfrmProgress = class(TJvForm)
     pbProgress: TProgressBar;
     imProgress: TImage;
     Label1: TLabel;

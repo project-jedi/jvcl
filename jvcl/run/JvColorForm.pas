@@ -38,7 +38,7 @@ uses
   JvColorBox, JvColorButton, JvComponent;
 
 type
-  TJvClrFrm = class(TForm)
+  TJvClrFrm = class(TJvForm)
     Bevel1: TBevel;
     OtherBtn: TSpeedButton;
     ColorSquare1: TJvColorSquare;

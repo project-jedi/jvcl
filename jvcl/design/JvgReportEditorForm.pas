@@ -36,15 +36,15 @@ uses
   Windows, Mask, Spin, Menus,ExtCtrls, StdCtrls, Buttons, ComCtrls, Controls, Dialogs, Forms,
   Classes, Sysutils, Graphics,Imglist,
   JvgReport, JvgCaption, JvgBevel, JvgPage, Printers, JvgLabel, JvgRuler,
-  JvgListBox, JvComponent, JvgReportParamEditorForm,
+  JvgListBox, JvgReportParamEditorForm,
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   DesignEditors,
-  PropertyCategories
+  PropertyCategories,
   {$ELSE}
-  DsgnIntf
+  DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  ;
+  JvComponent;
 
 type
 
@@ -72,7 +72,7 @@ type
     property Report: TJvgReport read FReport write FReport;
   end;
 
-  TJvgReportEditorForm = class(TForm)
+  TJvgReportEditorForm = class(TJvForm)
     OpenDialog1: TOpenDialog;
     SaveDialog1: TSaveDialog;
     PM_Control: TPopupMenu;

@@ -31,11 +31,12 @@ unit JvJVCLAboutForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Forms, IniFiles, StdCtrls, ExtCtrls,
-  JclSysInfo, JclWin32, JVCLVer, JvBaseDlg, Dialogs, jpeg, Buttons;
+  Windows, Messages, SysUtils, Classes, Controls, Forms, IniFiles, StdCtrls,
+  ExtCtrls,
+  JclSysInfo, JclWin32, JVCLVer, JvBaseDlg, Dialogs, jpeg, Buttons, JvComponent;
 
 type
-  TJvJVCLAboutForm = class(TForm)
+  TJvJVCLAboutForm = class(TJvForm)
     Bevel1: TBevel;
     lblVersion: TLabel;
     pnlImage: TPanel;
