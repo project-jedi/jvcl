@@ -186,13 +186,6 @@ type
     procedure SetSortedField(const Value: string);
     procedure SetSortMarker(const Value: TSortMarker);
 
-    { TODO -oJVCL -cPOST_JVCL3 : Make protected }
-    procedure DoGetBtnParams(Field: TField; AFont: TFont; var Background: TColor; var ASortMarker: TSortMarker; IsDown:
-      Boolean); virtual;
-    { TODO -oJVCL -cPOST_JVCL3 : Make published }
-    property SortMarker: TSortMarker read FSortMarker write SetSortMarker default smNone;
-    { TODO -oJVCL -cPOST_JVCL3 : Make published }
-    property AutoSort: boolean read FAutoSort write FAutoSort default true;
   protected
     FCurrentDrawRow: integer;
 
@@ -260,6 +253,7 @@ type
     function LastVisibleColumn: Integer;
     function FirstVisibleColumn: Integer;
     procedure TitleClick(Column: TColumn); override;
+    procedure DoGetBtnParams(Field: TField; AFont: TFont; var Background: TColor; var ASortMarker: TSortMarker; IsDown: Boolean); virtual;
   public
     constructor Create(AOwner: TComponent); override; // Modified by Lionel
     destructor Destroy; override; // Modified by Lionel
@@ -295,32 +289,25 @@ type
     property TitleOffset: Byte read GetTitleOffset;
   published
     property AutoAppend: Boolean read FAutoAppend write FAutoAppend default True; // Polaris
-    property Options: TDBGridOptions read GetOptions write SetOptions
-      default DefJvGridOptions;
+    property SortMarker: TSortMarker read FSortMarker write SetSortMarker default smNone;
+    property AutoSort: boolean read FAutoSort write FAutoSort default true;
+    property Options: TDBGridOptions read GetOptions write SetOptions default DefJvGridOptions;
     property FixedCols: Integer read GetFixedCols write SetFixedCols default 0;
-    property ClearSelection: Boolean read FClearSelection write FClearSelection
-      default True;
-    property DefaultDrawing: Boolean read FDefaultDrawing write FDefaultDrawing
-      default True;
+    property ClearSelection: Boolean read FClearSelection write FClearSelection default True;
+    property DefaultDrawing: Boolean read FDefaultDrawing write FDefaultDrawing default True;
     property IniStorage: TJvFormPlacement read GetStorage write SetStorage;
-    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect
-      default False;
-    property ShowGlyphs: Boolean read FShowGlyphs write SetShowGlyphs
-      default True;
-    property TitleButtons: Boolean read FTitleButtons write SetTitleButtons
-      default False;
-    property RowsHeight: Integer read GetRowsHeight write SetRowsHeight
-      stored False; { obsolete, for backward compatibility only }
+    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
+    property ShowGlyphs: Boolean read FShowGlyphs write SetShowGlyphs default True;
+    property TitleButtons: Boolean read FTitleButtons write SetTitleButtons default False;
+    property RowsHeight: Integer read GetRowsHeight write SetRowsHeight stored False; { obsolete, for backward compatibility only }
     property OnCheckButton: TCheckTitleBtnEvent read FOnCheckButton write FOnCheckButton;
-    property OnGetCellProps: TGetCellPropsEvent read FOnGetCellProps
-      write FOnGetCellProps; { obsolete }
+    property OnGetCellProps: TGetCellPropsEvent read FOnGetCellProps write FOnGetCellProps; { obsolete }
     property OnGetCellParams: TGetCellParamsEvent read FOnGetCellParams write FOnGetCellParams;
     property OnGetBtnParams: TGetBtnParamsEvent read FOnGetBtnParams write FOnGetBtnParams;
     property OnEditChange: TNotifyEvent read FOnEditChange write FOnEditChange;
     property OnShowEditor: TJvDBEditShowEvent read FOnShowEditor write FOnShowEditor;
     property OnTitleBtnClick: TTitleClickEvent read FOnTitleBtnClick write FOnTitleBtnClick;
-    { TODO -oJVCL -cPOST_JVCL3 : uncomment }
-//    property OnTitleBtnDblClick: TTitleClickEvent read FOnTitleBtnDblClick write FOnTitleBtnDblClick;
+    property OnTitleBtnDblClick: TTitleClickEvent read FOnTitleBtnDblClick write FOnTitleBtnDblClick;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
     property OnDrawColumnTitle: TDrawColumnTitleEvent read FOnDrawColumnTitle write FOnDrawColumnTitle;
@@ -1035,8 +1022,6 @@ type
 
 procedure TJvDBGrid.GetCellProps(Field: TField; AFont: TFont;
   var Background: TColor; Highlight: Boolean);
-var
-  AColor, ABack: TColor;
 
   function IsAfterFixedCols: Boolean;
   var
@@ -1057,19 +1042,6 @@ begin
     IsAfterFixedCols then
     Background := AlternateRowColor;
 
-  if Assigned(FOnGetCellParams) then
-    FOnGetCellParams(Self, Field, AFont, Background, Highlight)
-  else if Assigned(FOnGetCellProps) then
-  begin
-    if Highlight then
-    begin
-      AColor := AFont.Color;
-      FOnGetCellProps(Self, Field, AFont, ABack);
-      AFont.Color := AColor;
-    end
-    else
-      FOnGetCellProps(Self, Field, AFont, Background);
-  end;
   // Lionel
   if Highlight then
   begin
@@ -1077,6 +1049,10 @@ begin
     Background := clHighlight;
   end;
   // End Lionel
+  if Assigned(FOnGetCellParams) then
+    FOnGetCellParams(Self, Field, AFont, Background, Highlight)
+  else if Assigned(FOnGetCellProps) then
+    FOnGetCellProps(Self, Field, AFont, Background);
 end;
 
 procedure TJvDBGrid.DoTitleClick(ACol: Longint; AField: TField);
@@ -1128,9 +1104,7 @@ begin
     begin
       IndexFound := true;  
       SortedField := AField.FieldName;
-      { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-      // (p3) maybe this should be the other way around, i.e cDirection[not Descending]?
-//      SortMarker := cDirection[Descending];
+      SortMarker := cDirection[Descending];
       try
         SetStrProp(DataSource.DataSet, 'IndexName', lIndexName);
       except
