@@ -61,7 +61,6 @@ contains
   JvSimpleXml in '..\..\run\JvSimpleXML.pas',
   Ras32 in '..\..\common\Ras32.pas',
   JvWndProcHook in '..\..\run\JvWndProcHook.pas',
-  JvHook in '..\..\run\JvHook.pas',
   JvFormPlacement in '..\..\run\JvFormPlacement.pas',
   JvPropsStorage in '..\..\run\JvPropsStorage.pas',
   JvTimer in '..\..\run\JvTimer.pas',

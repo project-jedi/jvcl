@@ -11,7 +11,7 @@
       ..\..\dcu\JvDdeCmd.obj ..\..\dcu\JvDeviceChanged.obj 
       ..\..\dcu\JvDirectories.obj ..\..\dcu\JvDragDrop.obj 
       ..\..\dcu\JvFormPlacement.obj ..\..\dcu\JvHidControllerClass.obj 
-      ..\..\dcu\JvHook.obj ..\..\dcu\JvJoystick.obj 
+      ..\..\dcu\JvJoystick.obj 
       ..\..\dcu\JvKeyboardStates.obj ..\..\dcu\JvMRUList.obj 
       ..\..\dcu\JvMRUManager.obj ..\..\dcu\JvNTEventLog.obj 
       ..\..\dcu\JvPerfMon95.obj ..\..\dcu\JvPropsStorage.obj 
@@ -83,7 +83,6 @@
       <FILE FILENAME="..\..\run\JvDragDrop.pas" FORMNAME="" UNITNAME="JvDragDrop" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvFormPlacement.pas" FORMNAME="" UNITNAME="JvFormPlacement" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvHidControllerClass.pas" FORMNAME="" UNITNAME="JvHidControllerClass" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvHook.pas" FORMNAME="" UNITNAME="JvHook" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvJoystick.pas" FORMNAME="" UNITNAME="JvJoystick" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvKeyboardStates.pas" FORMNAME="" UNITNAME="JvKeyboardStates" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvMRUList.pas" FORMNAME="" UNITNAME="JvMRUList" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
