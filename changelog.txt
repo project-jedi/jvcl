@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-12-10:
+- Moved obsolute common/JvFinalize.pas to archive/  // AHUser
 2004-12-06:
 - TJvThread enhanced, now it's possible to show a dialog while the thread is executed. Two sample dialogs included // jfudickar
 2004-11-28:
