@@ -66,7 +66,12 @@ const
 type
 {$IFNDEF COMPILER6_UP}
   EOSError = class(EWin32Error);
+  IInterface = IUnknown;
 {$ENDIF}
+  {$M+}
+  IInvokable = interface(IInterface)
+  end;
+  {$M-}
 
   TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkPerformanceData,
     hkCurrentConfig, hkDynData);
