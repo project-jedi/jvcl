@@ -1193,11 +1193,16 @@ begin
     case FDown of
       sbNotDown:
         {$IFDEF JVCLThemesEnabled}
-        if FMouseInTopBtn then
-          Draw(0, 0, FTopHotBtn)
-        else
-        if FMouseInBottomBtn then
-          Draw(0, 0, FBottomHotBtn)
+        if ThemeServices.ThemesEnabled then
+        begin
+          if FMouseInTopBtn then
+            Draw(0, 0, FTopHotBtn)
+          else
+          if FMouseInBottomBtn then
+            Draw(0, 0, FBottomHotBtn)
+          else
+            Draw(0, 0, FNotDownBtn);
+        end
         else
         {$ENDIF JVCLThemesEnabled}
           Draw(0, 0, FNotDownBtn);
@@ -1289,6 +1294,8 @@ procedure TJvSpinButton.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
+  { (rb) only themed spin buttons have hot states, so it's not necessairy
+         to calc FMouseInBottomBtn and FMouseInTopBtn for non-themed apps }
   if not FMouseInTopBtn and not FMouseInBottomBtn then
   begin
     if MouseInBottomBtn(ScreenToClient(Mouse.CursorPos)) then
