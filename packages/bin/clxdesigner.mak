@@ -8,13 +8,17 @@
 ROOT = $(MAKEDIR)\..
 !endif
 #--------------------------------------------------------------------------------------------------#
-MAKE = "$(ROOT)\bin\make.exe" -$(MAKEFLAGS) -f$**
-BRCC = "$(ROOT)\bin\brcc32.exe" $**
+
+!ifndef DCPDIR
 DCPDIR = $(ROOT)\Projects\bpl 
+!endif
 
 !ifndef DCCOPT
 DCCOPT=-Q -M
 !endif
+
+MAKE = "$(ROOT)\bin\make.exe" -l+
+BRCC = "$(ROOT)\bin\brcc32.exe"
 
 !ifndef DCC
 DCC  = "$(ROOT)\bin\dcc32.exe" -U"$(DCPDIR)" -LE"$(DCPDIR)" -LN"$(DCPDIR)" $(DCCOPT) -Q -W -H -M $&.dpk
@@ -28,11 +32,26 @@ PROJECTS = clxdesigner.dcp
 default: $(PROJECTS)
 #---------------------------------------------------------------------------------------------------
 
-clxdesigner.dcp: d7clx\clxdesigner.dpk
-	@cd d7clx
+clxdesigner.dcp: ..\d7clx\clxdesigner.dpk
 	@echo [Compiling: clxdesigner.dcp]
+	@cd ..\d7clx
+	-@md temp >NUL
+	@cd temp
+	@echo. >ClxImgEdit.rc
+	$(BRCC) ClxImgEdit.rc
+	@cd ..
+	@echo. >clxdesigner.cfg
+	@echo -U"$(ROOT)\Source\Property Editors" >>clxdesigner.cfg
+	@echo -U"$(ROOT)\Source\ToolsAPI" >>clxdesigner.cfg
+	@echo -R"temp" >>clxdesigner.cfg
+	@echo -N0"temp" >>clxdesigner.cfg
+	@echo -N1"temp" >>clxdesigner.cfg
+	@echo -N2"temp" >>clxdesigner.cfg
+	@echo -LE"temp" >>clxdesigner.cfg
+	@echo -LN"$(DCPDIR)" >>clxdesigner.cfg
 	$(DCC)
-	del $(DCPDIR)\clxdesigner70.bpl
+        -@del /q temp\*.* temp >NUL
+	-@del /q clxdesigner.cfg >NUL
+	-@rd temp
 	@echo.
 	@cd ..
-
