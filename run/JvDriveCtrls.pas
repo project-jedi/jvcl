@@ -225,10 +225,11 @@ type
     procedure DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
-    procedure ReadFilenames; override;
+    procedure ReadFileNames; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure ApplyFilePath(const EditText: string); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Directory stored False;
@@ -265,7 +266,7 @@ type
     FDisplayNames: TStringList;
     FOnDriveChangeError: TJvDriveChangeError;
     function GetDrive: Char;
-    procedure SetFileListBox(Value: TJvFileListBox);
+    procedure SetFileList(Value: TJvFileListBox);
     procedure SetDirLabel(Value: TLabel);
     procedure SetDirLabelCaption;
     procedure SetDrive(Value: Char);
@@ -316,7 +317,7 @@ type
     property DragCursor;
     property DragMode;
     property Enabled;
-    property FileList: TJvFileListBox read FFileList write SetFileListBox;
+    property FileList: TJvFileListBox read FFileList write SetFileList;
     property DriveCombo: TJvDriveCombo read FDriveCombo write SetDriveCombo;
     property Font;
     property IntegralHeight;
@@ -1089,13 +1090,16 @@ begin
   end;
 end;
 
-procedure TJvDirectoryListBox.SetFileListBox(Value: TJvFileListBox);
+procedure TJvDirectoryListBox.SetFileList(Value: TJvFileListBox);
 begin
   if FFileList <> nil then
     FFileList.FDirList := nil;
   FFileList := Value;
   if FFileList <> nil then
+  begin
     FFileList.FreeNotification(Self);
+    FFileList.Directory := Directory;
+  end;
 end;
 
 procedure TJvDirectoryListBox.SetDirLabel(Value: TLabel);
@@ -1566,12 +1570,22 @@ begin
   end;
 end;
 
+procedure TJvFileListBox.ApplyFilePath(const EditText: string);
+begin
+  if (EditText <> '') and
+    (AnsiCompareFileName(ExtractFilePath(FileName), ExtractFilePath(EditText)) <> 0) then
+  begin
+    inherited ApplyFilePath(EditText);
+    ReadFileNames;
+  end;
+end;
+
 procedure TJvFileListBox.SetForceFileExtensions(const Value: Boolean);
 begin
   if FForceFileExtensions <> Value then
   begin
     FForceFileExtensions := Value;
-    ReadFilenames;
+    ReadFileNames;
   end;
 end;
 
