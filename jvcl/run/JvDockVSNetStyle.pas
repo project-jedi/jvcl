@@ -62,6 +62,7 @@ type
     FShowImage: Boolean;
     FMouseleaveHide: Boolean;
     FHideHoldTime: Integer;
+    FTabColor: TColor;
     procedure SetActivePaneSize(const Value: Integer);
     procedure SetShowImage(const Value: Boolean);
     procedure SetHideHoldTime(const Value: Integer);
@@ -77,6 +78,7 @@ type
     property ShowImage: Boolean read FShowImage write SetShowImage;
     property MouseleaveHide: Boolean read FMouseleaveHide write SetMouseleaveHide;
     property HideHoldTime: Integer read FHideHoldTime write SetHideHoldTime;
+    property TabColor:TColor read FTabColor write FTabColor default clBtnFace;
   end;
 
   TJvDockVSNETChannelOptionClass = class of TJvDockVSNETChannelOption;
@@ -1747,7 +1749,7 @@ var
 
       GetBlockRect(Block, I, DrawRect);
 
-      Canvas.Brush.Color := clBtnFace;
+      Canvas.Brush.Color := (DockServer.DockStyle as TJvDockVSNETStyle).ChannelOption.TabColor;
       Canvas.FillRect(DrawRect);
       Canvas.Brush.Color := clGray;
       Canvas.FrameRect(DrawRect);
@@ -1769,7 +1771,7 @@ var
             DrawRect.Left := 20;
           DrawRect.Right := DrawRect.Left + (DrawRect.Bottom - DrawRect.Top);
         end;
-        Canvas.Brush.Color := clBtnFace;
+        Canvas.Brush.Color := (DockServer.DockStyle as TJvDockVSNETStyle).ChannelOption.TabColor;
         Canvas.Pen.Color := clBlack;
 
         Dec(DrawRect.Right, 3);
@@ -2971,6 +2973,7 @@ begin
   FShowImage := True;
   FMouseleaveHide := False;
   FHideHoldTime := 1000;
+  FTabColor := clBtnFace;
 end;
 
 procedure TJvDockVSNETChannelOption.ResetDockClientOption(
