@@ -236,13 +236,9 @@ begin
   end;
   if (ClientWidth > 2) and (ClientHeight > 2) then
   begin
+      
     
-    FBuffer.Canvas.Start;
-    
-    BitBlt(Canvas.Handle, Left, Top, ClientWidth, ClientHeight,
-      FBuffer.Canvas.Handle, 0, 0, SRCCOPY);
-    
-    FBuffer.Canvas.Stop;
+    Canvas.Draw(0,0, FBuffer);
     
   end;
 end;

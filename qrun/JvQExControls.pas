@@ -1028,7 +1028,8 @@ end;
 
 function TJvExWinControl.GetColor: TColor;
 begin
-  Result := Brush.Color;
+//  Result := Brush.Color;
+  Result := QColorColor(QWidget_backGroundColor(Handle));
 end;
 
 function TJvExWinControl.NeedKey(Key: Integer; Shift: TShiftState;
@@ -1209,6 +1210,7 @@ begin
     Canvas.Brush.Color := Color;
     QPainter_setFont(Canvas.Handle, Font.Handle);
     QPainter_setPen(Canvas.Handle, Font.FontPen);
+//    QPainter_setBrush(Canvas.Handle, Canvas.Brush.Handle);
     Canvas.Font.Assign(Font);
     inherited PaintRequest;
   finally
@@ -1295,7 +1297,7 @@ begin
       end;
       CanvasPainter := Canvas.Handle;
       Canvas.Handle := Buffer.canvas.handle;
-      DoPaintBackground(Canvas, 0);
+//      DoPaintBackground(Canvas, 0);
       Paint;
       Canvas.Handle := CanvasPainter;
       bitblt(Canvas.Handle, 0, 0, width, height, Buffer.canvas.handle, 0, 0, SRCCOPY);
@@ -1395,6 +1397,7 @@ begin
   
   FDoubleBuffered := true;
   QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
+  Color := QColorColor(QWidget_backGroundColor(Handle));
   
 end;
 

@@ -334,13 +334,15 @@ begin
         begin
           
           
-          SetBkMode(Handle, QWindows.TRANSPARENT);
-          
+//          SetBkMode(Handle, QWindows.TRANSPARENT);
+
           Canvas.Font.Color := clHighlightText;
+          SetPainterFont(Handle, Canvas.Font);
           DrawText(Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
           OffsetRect(ARect, -1, -1);
           Canvas.Font.Color := clGrayText;
         end;
+        SetPainterFont(Handle, Canvas.Font);
         DrawText(Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
         InflateRect(ARect, 4, 4);
       end;

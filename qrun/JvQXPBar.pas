@@ -48,8 +48,8 @@ uses
   Classes, SysUtils,
 
 
-  Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList, QWindows,
-  QTypes, QExtCtrls, JvQTypes,
+  Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList,
+  QWindows, QTypes, QExtCtrls, JvQTypes,
 
   JvQConsts, JvQXPCore, JvQXPCoreUtils;
 
@@ -84,7 +84,9 @@ const
 
   dxColor_FocusedColorXP = $00D8ACB0;
   dxColor_CheckedColorXP = $00D9C1BB;
-
+  
+  clHotLight = clActiveHighLight;
+  
 type
   TJvXPBarItem = class;
   TJvXPBarItems = class;
@@ -106,9 +108,6 @@ type
     FClient: TJvXPBarItem;
   protected
     procedure AssignClient(AClient: TObject); override;
-
-    function IsAutoCheckLinked: Boolean; virtual;
-
     function IsCaptionLinked: Boolean; override;
     function IsCheckedLinked: Boolean; override;
     function IsEnabledLinked: Boolean; override;
@@ -121,9 +120,6 @@ type
     procedure SetCaption(const Value: TCaption); override;
     procedure SetHint(const Value: widestring); override;
     function DoShowHint(var HintStr: widestring): Boolean; virtual;
-
-
-    procedure SetAutoCheck(Value: Boolean); //override;
 
     procedure SetChecked(Value: Boolean); override;
     procedure SetEnabled(Value: Boolean); override;
@@ -156,9 +152,6 @@ type
     FOnDblClick: TNotifyEvent;
     FGroupIndex: Integer;
     FChecked: Boolean;
-    FAutoCheck: Boolean;
-
-    function IsAutoCheckStored: Boolean;
 
     function IsCaptionStored: Boolean;
     function IsEnabledStored: Boolean;
@@ -199,7 +192,7 @@ type
     property WinXPBar: TJvXPCustomWinXPBar read FWinXPBar;
   published
     property Action: TBasicAction read GetAction write SetAction;
-    property AutoCheck: Boolean read FAutoCheck write FAutoCheck stored IsAutoCheckStored default False;
+    
     property Caption: TCaption read FCaption write SetCaption stored IsCaptionStored;
     property Checked: Boolean read FChecked write SetChecked stored IsCheckedStored default False;
     property Enabled: Boolean read FEnabled write SetEnabled stored IsEnabledStored default True;
@@ -557,11 +550,6 @@ end;
 
 
 
-function TJvXPBarItemActionLink.IsAutoCheckLinked: Boolean;
-begin
-  Result := false; //(Client.AutoCheck = (Action.AutoCheck);
-end;
-
 
 function TJvXPBarItemActionLink.IsCaptionLinked: Boolean;
 begin
@@ -607,8 +595,8 @@ end;
 
 
 
-  procedure TJvXPBarItemActionLink.SetCaption(const Value: TCaption);
-  
+procedure TJvXPBarItemActionLink.SetCaption(const Value: TCaption);
+
   begin
     if IsCaptionLinked then
       Client.Caption := Value;
@@ -619,12 +607,6 @@ end;
     if IsEnabledLinked then
       Client.Enabled := Value;
   end;
-
-
-procedure TJvXPBarItemActionLink.SetAutoCheck(Value: Boolean);
-begin
-  if IsAutoCheckLinked then Client.AutoCheck := Value;
-end;
 
 
 procedure TJvXPBarItemActionLink.SetChecked(Value: Boolean);
@@ -676,7 +658,7 @@ begin
   FWinXPBar := FCollection.FWinXPBar;
   FTag := 0;
   FVisible := True;
-  FAutoCheck := False;
+  
   FChecked := False;
   FGroupIndex := 0;
   FWinXPBar.ItemVisibilityChanged(Self);
@@ -734,9 +716,6 @@ begin
     with TCustomAction(Sender) do
     begin
 
-      if not CheckDefaults or (Self.AutoCheck = False) then
-        Self.AutoCheck := AutoCheck;
-
       if not CheckDefaults or (Self.Caption = '') or (Self.Caption = Self.Name) then
         Self.Caption := Caption;
       if not CheckDefaults or (Self.Checked = False) then
@@ -765,6 +744,9 @@ begin
   HasImages := self.Images <> nil;
   with ACanvas do
   begin
+    
+    Start;
+    
     Font.Assign(lBar.Font);
     Brush.Color := lBar.Colors.BodyColor;
     if not ShowItemFrame then
@@ -785,14 +767,11 @@ begin
         begin
           Brush.Color := lBar.Colors.FocusedColor;
           if lBar.RoundedItemFrame>0 then
-//            RoundedFrame(ACanvas, Rect, clHighlight, lBar.RoundedItemFrame)
             RoundedFrame(ACanvas, Rect, lBar.Colors.ItemFrameColor, lBar.RoundedItemFrame)
           else
           begin
             FillRect(Rect);
-//            Frame3D(ACanvas, Rect, clHighlight, clHighlight, 1)
-            Frame3D(ACanvas, Rect, lBar.Colors.ItemFrameColor, lBar.Colors.ItemFrameColor, 1)
-
+            JvXPFrame3D(ACanvas, Rect, lBar.Colors.ItemFrameColor, lBar.Colors.ItemFrameColor);
           end;
         end;
       end
@@ -806,7 +785,7 @@ begin
           else
           begin
             FillRect(Rect);
-            Frame3D(ACanvas, Rect, clHighlight, clHighlight, 1)
+            JvXPFrame3D(ACanvas, Rect, clHotLight, clHotLight);
           end;
         end;
       end
@@ -826,6 +805,7 @@ begin
     SetPainterFont(Handle, Font);
     DrawTextW(Handle, PWideChar(ItemCaption), -1, Rect, DT_SINGLELINE or
       DT_VCENTER or DT_END_ELLIPSIS);
+    Stop;
     
   end;
 end;
@@ -852,7 +832,7 @@ begin
       Self.Tag := Tag;
       Self.Visible := Visible;
       Self.OnClick := OnClick;
-      Self.AutoCheck := AutoCheck;
+      
       Self.Checked := Checked;
       Self.GroupIndex := GroupIndex;
       Self.OnDblClick := OnDblClick;
@@ -861,12 +841,6 @@ begin
     inherited Assign(Source);
 end;
 
-
-
-function TJvXPBarItem.IsAutoCheckStored: Boolean;
-begin
-  Result := (ActionLink = nil) or not FActionLink.IsAutoCheckLinked;
-end;
 
 
 function TJvXPBarItem.IsCaptionStored: Boolean;
@@ -1804,17 +1778,7 @@ begin
       Exit;
 
 //dejoy add
-    lItem := FVisibleItems[FHoverIndex];
-    with lItem do
-    begin
-
-      if (not Assigned(ActionLink) and AutoCheck) or
-        (Assigned(ActionLink) and not ActionLink.IsAutoCheckLinked and AutoCheck) then
-
-
-        lItem.Checked := not lItem.Checked;
-    end;
-
+    
     if FVisibleItems[FHoverIndex].Checked then
       DrawState := DrawState + [dsClicked]
     else
@@ -1850,7 +1814,9 @@ begin
   Bitmap := TBitmap.Create;
   with Canvas do
   try
+    
     Start;
+    
     Bitmap.Assign(nil);
     ItemRect := GetItemRect(Index);
     HasImages := FVisibleItems[Index].Images <> nil;
@@ -1863,7 +1829,9 @@ begin
       FVisibleItems[Index].DrawItem(Self, Canvas, ItemRect, State, ShowItemFrame, Bitmap);
   finally
     Bitmap.Free;
+    
     Stop;
+    
   end;
 end;
 

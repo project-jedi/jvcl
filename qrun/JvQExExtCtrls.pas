@@ -42,7 +42,7 @@ interface
 uses
   
   
-  Qt, QGraphics, QControls, QForms, QExtCtrls, Types, QWindows,
+  Qt, QGraphics, QControls, QForms, QExtCtrls, Types, QTypes, QWindows,
   
   Classes, SysUtils,
   JvQTypes, JvQThemes, JVQCLVer, JvQExControls;
@@ -510,7 +510,7 @@ type
   TJvExPubRadioGroup = class(TJvExRadioGroup)
   
   end;
-  
+
   TJvExSplitter = class(TSplitter, IJvControlEvents, IPerformControl)
   
   
@@ -523,6 +523,8 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+    function GetText: TCaption; override;
+    procedure SetText(const Value: TCaption); override;
   
   private
     FHintColor: TColor;
@@ -545,11 +547,12 @@ type
   private
   
   
+    FText: TCaption;
     FAboutJVCLX: TJVCLAboutInfo;
   published
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
   
-  
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1500,6 +1503,7 @@ begin
   Result := FDoubleBuffered;
 end;
 
+
 function TJvExRadioGroup.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -1627,6 +1631,21 @@ begin
   Result := False;
 end;
 
+function TJvExSplitter.GetText: TCaption;
+begin
+  Result := FText;
+end;
+
+procedure TJvExSplitter.SetText(const Value: TCaption);
+begin
+  if Value <> FText then
+  begin
+    FText := Value;
+    TextChanged;
+  end;
+end;
+
+
 procedure TJvExSplitter.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -1647,7 +1666,8 @@ begin
   
   inherited Create(AOwner);
   FHintColor := clInfoBk;
-  
+  ControlStyle := ControlStyle + [csSetCaption];
+
 end;
 
 destructor TJvExSplitter.Destroy;
