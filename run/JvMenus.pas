@@ -742,11 +742,6 @@ begin
   AFont.Color := clMenuText;
 end;
 
-function GetMarginOffset: Integer;
-begin
-  Result := Round(LoWord(GetMenuCheckMarkDimensions) * 0.3);
-end;
-
 procedure MenuLine(Canvas: TCanvas; C: TColor; X1, Y1, X2, Y2: Integer);
 begin
   with Canvas do

@@ -134,11 +134,6 @@ uses
   SysUtils,
   JvJVCLUtils, JvJCLUtils, JvTypes;
 
-function MemAlloc(Size: Longint): Pointer;
-begin
-  GetMem(Result, Size);
-end;
-
 const
   LanguageValues: array [TVersionLanguage] of Word =
     ($0401, $0402, $0403, $0404, $0405, $0406, $0407, $0408, $0409, $040A,
@@ -172,7 +167,7 @@ begin
   FSize := GetFileVersionInfoSize(FFileName, FHandle);
   if FSize > 0 then
   try
-    FBuffer := MemAlloc(FSize);
+    GetMem(FBuffer, FSize);
     FValid := GetFileVersionInfo(FFileName, FHandle, FSize, FBuffer);
   except
     FValid := False;

@@ -241,9 +241,6 @@ implementation
 uses
   JclBase;
 
-resourcestring
-  RsLBVirtualCantBeSorted = 'ListBox doesn''t allow sorting in virtual mode';
-
 const
   AlignFlags: array [TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);
 
