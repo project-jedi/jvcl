@@ -1,6 +1,7 @@
 {
-a demo for the JvFormatEdit component. You don't need to install the component
-to run this demo, but the JvFormatEdit and the JvFmtEdEditors units must be in the path.
+ A demo for the JvValidateEdit component. You don't need to install the component
+ to run this demo, but the JvValidateEdit and the JvCharStrEditor units
+ must be in the path ..\..\source.
 }
 unit MainFrm;
 
@@ -8,7 +9,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvValidateCtrls, StdCtrls, ComCtrls;
+  JvValidateEdit, StdCtrls, ComCtrls;
 
 type
   TForm1 = class(TForm)
@@ -28,7 +29,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    FE:TJvValidateEdit;
+    FValidateEdit:TJvValidateEdit;
   end;
 
 var
@@ -56,11 +57,11 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 var i:TJvCharType;
 begin
-  FE := TJvValidateEdit.Create(self);
-  FE.Parent := self;
-  FE.SetBounds(Label2.Left,Label2.Top + Label2.Height + 4,self.ClientWidth - Label2.Left * 2,FE.Height);
-  FE.Anchors := [akLeft,akTop,akRight];
-  FE.Validator.OnValidateChar := DoCustomValidate;
+  FValidateEdit := TJvValidateEdit.Create(self);
+  FValidateEdit.Parent := self;
+  FValidateEdit.SetBounds(Label2.Left,Label2.Top + Label2.Height + 4,self.ClientWidth - Label2.Left * 2,FValidateEdit.Height);
+  FValidateEdit.Anchors := [akLeft,akTop,akRight];
+  FValidateEdit.OnCustomValidate := DoCustomValidate;
   for i := Low(TJvCharType) to High(TJvCharType) do
     ComboBox1.Items.Add(GetEnumName(typeinfo(TJvCharType),Ord(i)));
   ComboBox1.ItemIndex := 0;
@@ -71,12 +72,12 @@ end;
 procedure TForm1.Button2Click(Sender: TObject);
 var S:String;
 begin
-  S := FE.Validator.Characters;
+  S := FValidateEdit.Characters;
   if TfrmJvCharEditDlg.Edit(S) then
   begin
-    FE.Validator.Characters := S;
-    RichEdit1.Lines.Text := SysCharSetToString(StringToSysCharSet(FE.Validator.Characters),true);
-    FE.Validator.MakeValid;
+    FValidateEdit.Characters := S;
+    RichEdit1.Lines.Text := SysCharSetToString(StringToSysCharSet(FValidateEdit.Characters),true);
+    FValidateEdit.MakeValid;
   end;
 end;
 
@@ -88,7 +89,7 @@ end;
 
 procedure TForm1.ComboBox1Change(Sender: TObject);
 begin
-  FE.Validator.CharType := TJvCharType(ComboBox1.ItemIndex);
+  FValidateEdit.CharType := TJvCharType(ComboBox1.ItemIndex);
 end;
 
 end.

@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 304
   Top = 186
-  AutoScroll = False
+  BorderStyle = bsDialog
   Caption = 'JvValidateEdit Demo'
   ClientHeight = 143
   ClientWidth = 396

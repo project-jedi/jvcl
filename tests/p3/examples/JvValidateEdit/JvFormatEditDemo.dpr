@@ -3,9 +3,7 @@ program JvFormatEditDemo;
 uses
   Forms,
   MainFrm in 'MainFrm.pas' {Form1},
-  JvValidateCtrls in '..\..\source\JvValidateCtrls.pas',
-  JvErrProvider in '..\..\source\JvErrProvider.pas',
-  JvValidators in '..\..\source\JvValidators.pas',
+  JvValidateEdit in '..\..\source\JvValidateEdit.pas',
   JvCharStrEditor in '..\..\source\JvCharStrEditor.pas' {frmJvCharEditDlg};
 
 {$R *.RES}
