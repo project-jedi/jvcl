@@ -102,7 +102,7 @@ type
     procedure CMShowEvent(var Msg: TCMShowEvent); message CM_SHOWEVENT;
   end;
 
-//=== TJvProgressComponent ===================================================
+//=== { TJvProgressComponent } ===============================================
 
 constructor TJvProgressComponent.Create(AOwner: TComponent);
 begin

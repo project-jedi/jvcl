@@ -307,7 +307,7 @@ uses
 const
   CDate1_1_1980 = 29221;
 
-//=== TJvSearchFiles =========================================================
+//=== { TJvSearchFiles } =====================================================
 
 constructor TJvSearchFiles.Create(AOwner: TComponent);
 begin
@@ -728,7 +728,7 @@ begin
   end;
 end;
 
-//=== TJvSearchAttributes ====================================================
+//=== { TJvSearchAttributes } ================================================
 
 procedure TJvSearchAttributes.Assign(Source: TPersistent);
 begin
@@ -811,7 +811,7 @@ begin
   Writer.WriteInteger(FIncludeAttr);
 end;
 
-//=== TJvSearchParams ========================================================
+//=== { TJvSearchParams } ====================================================
 
 constructor TJvSearchParams.Create;
 begin

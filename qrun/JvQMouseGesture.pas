@@ -441,7 +441,7 @@ var
   //<combine JvMouseGestureHookAlreadyInstalled>
   JvMouseButtonUp: ButtonState = ButtonState_RightButton; 
 
-//=== TJvMouseGesture ========================================================
+//=== { TJvMouseGesture } ====================================================
 
 constructor TJvMouseGesture.Create(AOwner: TComponent);
 begin
@@ -770,7 +770,7 @@ begin
   end;
 end;
 
-//=== TJvMouseGestureHook ====================================================
+//=== { TJvMouseGestureHook } ================================================
 
 constructor TJvMouseGestureHook.Create(AOwner: TComponent);
 begin

@@ -193,7 +193,7 @@ uses
 const
   BufSize = 1024;
 
-//=== TExInplaceEdit =========================================================
+//=== { TExInplaceEdit } =====================================================
 
 type
   TExInplaceEdit = class(TJvExInplaceEdit)
@@ -221,7 +221,7 @@ begin
   inherited DoSetFocus(FocusedWnd);
 end;
 
-//=== TJvStringGrid ==========================================================
+//=== { TJvStringGrid } ======================================================
 
 constructor TJvStringGrid.Create(AOwner: TComponent);
 begin

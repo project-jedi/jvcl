@@ -296,7 +296,7 @@ end;
 
 
 
-//=== TJvBaseValidator =======================================================
+//=== { TJvBaseValidator } ===================================================
 
 constructor TJvBaseValidator.Create(AOwner: TComponent);
 begin
@@ -450,7 +450,7 @@ begin
     FOnValidateFailed(Self);
 end;
 
-//=== TJvRequiredFieldValidator ==============================================
+//=== { TJvRequiredFieldValidator } ==========================================
 
 procedure TJvRequiredFieldValidator.Validate;
 var
@@ -460,7 +460,7 @@ begin
   Valid := VarCompareValue(R, '') <> vrEqual;
 end;
 
-//=== TJvCustomValidator =====================================================
+//=== { TJvCustomValidator } =================================================
 
 function TJvCustomValidator.DoValidate: Boolean;
 begin
@@ -474,7 +474,7 @@ begin
   Valid := DoValidate;
 end;
 
-//=== TJvRegularExpressionValidator ==========================================
+//=== { TJvRegularExpressionValidator } ======================================
 
 function MatchesMask(const Filename, Mask: string;
   const SearchFlags: TSearchFlags = [sfCaseSensitive]): Boolean;
@@ -510,7 +510,7 @@ begin
   Valid := (R = ValidationExpression) or MatchesMask(R, ValidationExpression);
 end;
 
-//=== TJvCompareValidator ====================================================
+//=== { TJvCompareValidator } ================================================
 
 procedure TJvCompareValidator.Validate;
 var
@@ -531,7 +531,7 @@ begin
   end;
 end;
 
-//=== TJvRangeValidator ======================================================
+//=== { TJvRangeValidator } ==================================================
 
 procedure TJvRangeValidator.Validate;
 var
@@ -546,7 +546,7 @@ begin
   end;
 end;
 
-//=== TJvControlsCompareValidator ============================================
+//=== { TJvControlsCompareValidator } ========================================
 
 constructor TJvControlsCompareValidator.Create(AOwner: TComponent);
 begin
@@ -610,7 +610,7 @@ begin
   end;
 end;
 
-//=== TJvValidators ==========================================================
+//=== { TJvValidators } ======================================================
 
 constructor TJvValidators.Create(AOwner: TComponent);
 begin
@@ -746,7 +746,7 @@ begin
   ReferenceInterface(FErrorIndicator, opInsert); 
 end;
 
-//=== TJvValidationSummary ===================================================
+//=== { TJvValidationSummary } ===============================================
 
 destructor TJvValidationSummary.Destroy;
 begin

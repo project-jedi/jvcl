@@ -97,7 +97,6 @@ type
     procedure AcceptValue(const Value: Variant); override;
     procedure Change; override;
     procedure ReformatEditText; dynamic;
-    class function DefaultImageIndex: TImageIndex; override;
     procedure DataChanged; virtual;
     function DefaultDisplayFormat: string; virtual;
     procedure KeyPress(var Key: Char); override;
@@ -126,6 +125,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    class function DefaultImageIndex: TImageIndex; override;
     procedure Clear; override;
     property AsInteger: Longint read GetAsInteger write SetAsInteger;
     property DisplayText: string read GetDisplayText;
@@ -340,7 +340,7 @@ begin
     Result := S[1] + Result;
 end;
 
-//=== TJvCustomNumEdit =======================================================
+//=== { TJvCustomNumEdit } ===================================================
 
 constructor TJvCustomNumEdit.Create(AOwner: TComponent);
 begin
@@ -868,7 +868,7 @@ begin
   Invalidate;
 end;
 
-//=== TJvxCurrencyEdit =======================================================
+//=== { TJvxCurrencyEdit } ===================================================
 
 constructor TJvxCurrencyEdit.Create(AOwner: TComponent);
 begin
@@ -911,7 +911,7 @@ begin
   Result := Format('%s;-%s', [Result, Result]);
 end;
 
-//=== TJvCustomCalcEdit ======================================================
+//=== { TJvCustomCalcEdit } ==================================================
 
 constructor TJvCustomCalcEdit.Create(AOwner: TComponent);
 begin

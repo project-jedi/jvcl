@@ -106,7 +106,7 @@ const
    );
 }
 
-//=== TJvAppRegistryStorage ====================================================
+//=== { TJvAppRegistryStorage } ================================================
 
 constructor TJvAppRegistryStorage.Create(AOwner: TComponent);
 begin

@@ -3591,6 +3591,7 @@ procedure TJvChart.MyAxisFont;
 begin
   ChartCanvas.Brush.Color := clWhite;
   ChartCanvas.Font.Assign(Options.AxisFont);
+  SetBkMode( ChartCanvas.Handle, OPAQUE);
 end;
 
 

@@ -254,7 +254,7 @@ uses
   QForms;
 
 
-//=== TJvCustomPage ==========================================================
+//=== { TJvCustomPage } ======================================================
 
 constructor TJvCustomPage.Create(AOwner: TComponent);
 begin
@@ -459,7 +459,7 @@ begin
 end;
 
 
-//=== TJvCustomPageList ======================================================
+//=== { TJvCustomPageList } ==================================================
 
 constructor TJvCustomPageList.Create(AOwner: TComponent);
 begin

@@ -145,7 +145,7 @@ const
   Row2: string[31] = '0123456789._:()-''!_+\/[]^&%.=$#';
   Row3: string[31] = 'ÂÖÄ?* ';
 
-//=== TJvWinampThread ========================================================
+//=== { TJvWinampThread } ====================================================
 
 procedure TJvWinampThread.Draw;
 begin
@@ -167,7 +167,7 @@ begin
   end;
 end;
 
-//=== TJvWinampLabel =========================================================
+//=== { TJvWinampLabel } =====================================================
 
 constructor TJvWinampLabel.Create(AOwner: TComponent);
 begin

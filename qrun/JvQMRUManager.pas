@@ -201,7 +201,7 @@ const
   siRecentItem = 'Item_%d';
   siRecentData = 'User_%d';
 
-//=== TJvMRUManager ==========================================================
+//=== { TJvMRUManager } ======================================================
 
 constructor TJvMRUManager.Create(AOwner: TComponent);
 begin
@@ -661,7 +661,7 @@ begin
   end;
 end;
 
-//=== TJvRecentStrings =======================================================
+//=== { TJvRecentStrings } ===================================================
 
 constructor TJvRecentStrings.Create;
 begin

@@ -218,7 +218,7 @@ const
 var
   DefaultImgBtnImagesList: TImageList = nil;
 
-//=== TJvImgBtnActionLink ====================================================
+//=== { TJvImgBtnActionLink } ================================================
 
 procedure TJvImgBtnActionLink.AssignClient(AClient: TObject);
 begin
@@ -238,7 +238,7 @@ begin
     FClient.ImageIndex := Value;
 end;
 
-//=== TJvCustomImageButton ==============================================================
+//=== { TJvCustomImageButton } ==========================================================
 
 constructor TJvCustomImageButton.Create(AOwner: TComponent);
 begin

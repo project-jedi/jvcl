@@ -1455,7 +1455,7 @@ begin
     Result := Result or ARW_TOPRIGHT;
 end;
 
-//=== TJvWriteableInfo =======================================================
+//=== { TJvWriteableInfo } ===================================================
 
 constructor TJvWriteableInfo.Create;
 begin
@@ -1463,7 +1463,7 @@ begin
   FReadOnly := True;
 end;
 
-//=== TJvAPMInfo =============================================================
+//=== { TJvAPMInfo } =========================================================
 
 function TJvAPMInfo.GetAPMBatteryFlag: TAPMBatteryFlag;
 begin
@@ -1527,7 +1527,7 @@ begin
   RaiseReadOnly;
 end;
 
-//=== TJvOSVersionInfo =======================================================
+//=== { TJvOSVersionInfo } ===================================================
 
 const
   HKLM_CURRENT_VERSION_WINDOWS = 'Software\Microsoft\Windows\CurrentVersion';
@@ -1631,7 +1631,7 @@ begin
   RaiseReadOnly;
 end;
 
-//=== TJvCPUInfo =============================================================
+//=== { TJvCPUInfo } =========================================================
 
 function TJvCPUInfo.AMDSpecific: TAMDSpecific;
 begin
@@ -1838,7 +1838,7 @@ begin
   RaiseReadOnly;
 end;
 
-//=== TJvBIOSInfo ============================================================
+//=== { TJvBIOSInfo } ========================================================
 
 function TJvBIOSInfo.GetBIOSCopyright: string;
 begin
@@ -1880,7 +1880,7 @@ begin
   RaiseReadOnly;
 end;
 
-//=== TJvSystemFolders =======================================================
+//=== { TJvSystemFolders } ===================================================
 
 function TJvSystemFolders.AdjustPathDelimiter(const S: String): String;
 begin
@@ -1967,7 +1967,7 @@ begin
   RaiseReadOnly;
 end;
 
-//=== TJvMemInfo =============================================================
+//=== { TJvMemInfo } =========================================================
 
 function TJvMemInfo.GetFreePageFileMemory: Integer;
 begin
@@ -2079,7 +2079,7 @@ begin
   RaiseReadOnly;
 end;
 
-//=== TJvKeyInfo =============================================================
+//=== { TJvKeyInfo } =========================================================
 
 function TJvKeyInfo.GetCapsLockKeyState: Boolean;
 begin
@@ -2157,7 +2157,7 @@ begin
     RaiseReadOnly;
 end;
 
-//=== TJvIdentification ======================================================
+//=== { TJvIdentification } ==================================================
 
 const
   cCommentRegPath = 'System\CurrentControlSet\Services\VxD\VNETSUP';
@@ -2368,7 +2368,7 @@ begin
     RaiseReadOnly;
 end;
 
-//=== TJvScreenMode ==========================================================
+//=== { TJvScreenMode } ======================================================
 
 function DisplayFlagsToSet(Flags: DWORD): TJvDisplayFlags;
 begin
@@ -2413,7 +2413,7 @@ begin
   RaiseReadOnly;
 end;
 
-//=== TJvScreenInfo ==========================================================
+//=== { TJvScreenInfo } ======================================================
 
 destructor TJvScreenInfo.Destroy;
 begin
@@ -2575,7 +2575,7 @@ begin
     RaiseReadOnly;
 end;
 
-//=== TJvAppVersions =========================================================
+//=== { TJvAppVersions } =====================================================
 
 function TJvAppVersions.GetADOVersion: string;
 begin
@@ -2650,7 +2650,7 @@ begin
   RaiseReadOnly;
 end;
 
-//=== TJvHardwareProfile =====================================================
+//=== { TJvHardwareProfile } =================================================
 
 function TJvHardwareProfile.GetDockInfo: TJvHWDockInfo;
 var
@@ -2715,7 +2715,7 @@ begin
   RaiseReadOnly;
 end;
 
-//=== TJvScreenModes =========================================================
+//=== { TJvScreenModes } =====================================================
 
 constructor TJvScreenModes.Create;
 begin
@@ -2798,7 +2798,7 @@ begin
   RaiseReadOnly;
 end;
 
-//=== TJvMiscInfo ============================================================
+//=== { TJvMiscInfo } ========================================================
 
 const
   HKCU_CONTROL_PANEL_DESKTOP = '\Control Panel\Desktop';
@@ -2999,7 +2999,7 @@ begin
     RaiseReadOnly;
 end;
 
-//=== TJvMetricsInfo =========================================================
+//=== { TJvMetricsInfo } =====================================================
 
 function TJvMetricsInfo.GetACP: Integer;
 begin
@@ -3163,7 +3163,7 @@ begin
   RaiseReadOnly;
 end;
 
-//=== TJvAccessTimeOut =======================================================
+//=== { TJvAccessTimeOut } ===================================================
 
 function TJvAccessTimeOut.GetFlags: TJvAccessTimeOutFlags;
 var
@@ -3233,7 +3233,7 @@ begin
   end;
 end;
 
-//=== TJvFilterKeys ==========================================================
+//=== { TJvFilterKeys } ======================================================
 
 function TJvFilterKeys.GetBounceMSec: DWORD;
 begin
@@ -3377,7 +3377,7 @@ begin
   end;
 end;
 
-//=== TJvHighContrast ========================================================
+//=== { TJvHighContrast } ====================================================
 
 function TJvHighContrast.GetDefaultScheme: string;
 begin
@@ -3467,7 +3467,7 @@ begin
     RaiseReadOnly;
 end;
 
-//=== TJvIconMetrics =========================================================
+//=== { TJvIconMetrics } =====================================================
 
 destructor TJvIconMetrics.Destroy;
 begin
@@ -3566,7 +3566,7 @@ begin
   end;
 end;
 
-//=== TJvMinimizedMetrics ====================================================
+//=== { TJvMinimizedMetrics } ================================================
 
 function TJvMinimizedMetrics.GetArrange: TJvWindowsArrange;
 begin
@@ -3661,7 +3661,7 @@ begin
   end;
 end;
 
-//=== TJvMouseKeys ===========================================================
+//=== { TJvMouseKeys } =======================================================
 
 function TJvMouseKeys.GetCtrlSpeed: DWORD;
 begin
@@ -3793,7 +3793,7 @@ begin
   end;
 end;
 
-//=== TJvNonClientMetrics ====================================================
+//=== { TJvNonClientMetrics } ================================================
 
 destructor TJvNonClientMetrics.Destroy;
 begin
@@ -4221,7 +4221,7 @@ begin
   end;
 end;
 
-//=== TJvSoundSentry =========================================================
+//=== { TJvSoundSentry } =====================================================
 
 function TJvSoundSentry.GetFlags: TJvSoundSentryFlags;
 var
@@ -4443,7 +4443,7 @@ begin
   end;
 end;
 
-//=== TJvSystemParametersInfo ================================================
+//=== { TJvSystemParametersInfo } ============================================
 
 constructor TJvSystemParametersInfo.Create;
 begin
@@ -5139,7 +5139,7 @@ begin
   Result := GetSysColor(Index);
 end;
 
-//=== TJvComputerInfoEx ======================================================
+//=== { TJvComputerInfoEx } ==================================================
 
 constructor TJvComputerInfoEx.Create(AOwner: TComponent);
 begin

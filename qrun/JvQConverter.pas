@@ -151,7 +151,7 @@ implementation
 uses
   JvQConsts, JvQResources;
 
-//=== TJvDateTimeFormat ======================================================
+//=== { TJvDateTimeFormat } ==================================================
 
 constructor TJvDateTimeFormat.Create;
 begin
@@ -290,7 +290,7 @@ begin
   Result := GetDateMask + ' ' + GetTimeMask;
 end;
 
-//=== TJvConverter ===========================================================
+//=== { TJvConverter } =======================================================
 
 constructor TJvConverter.Create(AOwner: TComponent);
 begin

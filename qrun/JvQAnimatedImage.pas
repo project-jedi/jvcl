@@ -176,7 +176,7 @@ uses
   JvQConsts, JvQJVCLUtils;
 
 
-//=== TJvLockedBitmap ==========================================================
+//=== { TJvLockedBitmap } ======================================================
 
 // (rom) do we really need this ugly hack?
 // (ahuser) lets try without the hook by using TJvLockedBitmap directly
@@ -215,7 +215,7 @@ begin
     end;
 end;
 }
-//=== TJvImageControl ========================================================
+//=== { TJvImageControl } ====================================================
 
 constructor TJvImageControl.Create(AOwner: TComponent);
 begin
@@ -356,7 +356,7 @@ begin
   end;
 end;
 
-//=== TJvAnimatedImage =======================================================
+//=== { TJvAnimatedImage } ===================================================
 
 constructor TJvAnimatedImage.Create(AOwner: TComponent);
 begin

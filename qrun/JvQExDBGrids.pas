@@ -53,9 +53,9 @@ uses
   {$DEFINE NeedMouseEnterLeave}
  {$IFEND}
 
-  
+
 type
-  TJvExCustomDBGrid = class(TCustomDBGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
+  TJvExCustomDBGrid = class(TCustomDBGrid,   IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -65,19 +65,17 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
-  private
-    FDoubleBuffered: Boolean;
-    function GetColor: TColor;
-    procedure SetColor(Value: TColor);
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
-    property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
@@ -116,7 +114,7 @@ type
   TJvExPubCustomDBGrid = class(TJvExCustomDBGrid) 
   end;
   
-  TJvExDBGrid = class(TDBGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
+  TJvExDBGrid = class(TDBGrid,   IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -126,19 +124,17 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
-  private
-    FDoubleBuffered: Boolean;
-    function GetColor: TColor;
-    procedure SetColor(Value: TColor);
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
-    property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
@@ -184,7 +180,7 @@ implementation
 
 procedure TJvExCustomDBGrid.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -194,7 +190,7 @@ end;
 
 procedure TJvExCustomDBGrid.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -233,11 +229,57 @@ function TJvExCustomDBGrid.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-procedure TJvExCustomDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+procedure TJvExCustomDBGrid.MouseEnter(Control: TControl);
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  inherited MouseEnter(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+  {$IFEND}
 end;
 
+procedure TJvExCustomDBGrid.MouseLeave(Control: TControl);
+begin
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  inherited MouseLeave(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+  {$IFEND}
+end;
+
+procedure TJvExCustomDBGrid.ParentColorChanged;
+begin
+  inherited ParentColorChanged;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+function TJvExCustomDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCustomDBGrid.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
+
+function TJvExCustomDBGrid.IsRightToLeft: Boolean;
+begin
+  Result := False;
+end;
 function TJvExCustomDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -250,24 +292,77 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+procedure TJvExCustomDBGrid.MouseEnter(Control: TControl);
+begin
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  inherited MouseEnter(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+  {$IFEND}
+end;
+
+procedure TJvExCustomDBGrid.MouseLeave(Control: TControl);
+begin
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  inherited MouseLeave(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+  {$IFEND}
+end;
+
+procedure TJvExCustomDBGrid.ParentColorChanged;
+begin
+  inherited ParentColorChanged;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+function TJvExCustomDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExCustomDBGrid.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
+
+function TJvExCustomDBGrid.IsRightToLeft: Boolean;
+begin
+  Result := False;
+end;
+function TJvExCustomDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExCustomDBGrid.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  DoBoundsChanged;
+end;
+procedure TJvExCustomDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
 
 procedure TJvExCustomDBGrid.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
-end;
-
-function TJvExCustomDBGrid.GetColor: TColor;
-begin
-  Result := Brush.Color;
-end;
-
-procedure TJvExCustomDBGrid.SetColor(Value: TColor);
-begin
-  if Brush.Color <> Value then
-  begin
-    inherited Color := Value;
-    Brush.Color := Value;
-  end;
 end;
 
 function TJvExCustomDBGrid.GetDoubleBuffered: Boolean;
@@ -341,7 +436,7 @@ end;
 
 procedure TJvExDBGrid.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -351,7 +446,7 @@ end;
 
 procedure TJvExDBGrid.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -390,11 +485,57 @@ function TJvExDBGrid.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-procedure TJvExDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+procedure TJvExDBGrid.MouseEnter(Control: TControl);
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  inherited MouseEnter(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+  {$IFEND}
 end;
 
+procedure TJvExDBGrid.MouseLeave(Control: TControl);
+begin
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  inherited MouseLeave(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+  {$IFEND}
+end;
+
+procedure TJvExDBGrid.ParentColorChanged;
+begin
+  inherited ParentColorChanged;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+function TJvExDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExDBGrid.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
+
+function TJvExDBGrid.IsRightToLeft: Boolean;
+begin
+  Result := False;
+end;
 function TJvExDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -407,24 +548,77 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+procedure TJvExDBGrid.MouseEnter(Control: TControl);
+begin
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
+  inherited MouseEnter(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+  {$IFEND}
+end;
+
+procedure TJvExDBGrid.MouseLeave(Control: TControl);
+begin
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
+  inherited MouseLeave(Control);
+  {$IF not declared(PatchedVCLX)}
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+  {$IFEND}
+end;
+
+procedure TJvExDBGrid.ParentColorChanged;
+begin
+  inherited ParentColorChanged;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+function TJvExDBGrid.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Result := 0;
+  if Self <> nil then
+  begin
+    Mesg.Msg := Msg;
+    Mesg.WParam := WParam;
+    Mesg.LParam := LParam;
+    WindowProc(Mesg);
+  end;
+  Result := Mesg.Result;
+end;
+
+procedure TJvExDBGrid.WndProc(var Msg: TMessage);
+begin
+  Dispatch(Msg);
+end;
+
+function TJvExDBGrid.IsRightToLeft: Boolean;
+begin
+  Result := False;
+end;
+function TJvExDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
+    inherited NeedKey(Key, Shift, KeyText));
+end;
+
+procedure TJvExDBGrid.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  DoBoundsChanged;
+end;
+procedure TJvExDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
 
 procedure TJvExDBGrid.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
-end;
-
-function TJvExDBGrid.GetColor: TColor;
-begin
-  Result := Brush.Color;
-end;
-
-procedure TJvExDBGrid.SetColor(Value: TColor);
-begin
-  if Brush.Color <> Value then
-  begin
-    inherited Color := Value;
-    Brush.Color := Value;
-  end;
 end;
 
 function TJvExDBGrid.GetDoubleBuffered: Boolean;

@@ -209,7 +209,7 @@ begin
   Result := False; 
 end;
 
-//=== TJvArrangeSettings =====================================================
+//=== { TJvArrangeSettings } =================================================
 
 constructor TJvArrangeSettings.Create(APanel: TJvPanel);
 begin
@@ -315,7 +315,7 @@ begin
     FPanel.ArrangeControls;
 end;
 
-//=== TJvPanel ===============================================================
+//=== { TJvPanel } ===========================================================
 
 constructor TJvPanel.Create(AOwner: TComponent);
 begin

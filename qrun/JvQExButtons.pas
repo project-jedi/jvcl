@@ -105,19 +105,17 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
-  private
-    FDoubleBuffered: Boolean;
-    function GetColor: TColor;
-    procedure SetColor(Value: TColor);
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
+      const KeyText: WideString): Boolean; override;	
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
-    property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
@@ -167,7 +165,7 @@ implementation
 
 procedure TJvExSpeedButton.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -177,7 +175,7 @@ end;
 
 procedure TJvExSpeedButton.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -247,7 +245,7 @@ end;
 
 procedure TJvExBitBtn.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -257,7 +255,7 @@ end;
 
 procedure TJvExBitBtn.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -296,11 +294,6 @@ function TJvExBitBtn.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-procedure TJvExBitBtn.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
-end;
-
 function TJvExBitBtn.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -313,24 +306,14 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+procedure TJvExBitBtn.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
 
 procedure TJvExBitBtn.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
-end;
-
-function TJvExBitBtn.GetColor: TColor;
-begin
-  Result := Brush.Color;
-end;
-
-procedure TJvExBitBtn.SetColor(Value: TColor);
-begin
-  if Brush.Color <> Value then
-  begin
-    inherited Color := Value;
-    Brush.Color := Value;
-  end;
 end;
 
 function TJvExBitBtn.GetDoubleBuffered: Boolean;
@@ -406,6 +389,7 @@ procedure TJvExBitBtn.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
+
 
 
 end.

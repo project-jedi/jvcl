@@ -29,7 +29,7 @@ object FoLog: TFoLog
   ParentFont = False
   Position = poScreenCenter
   Scaled = False
-  PixelsPerInch = 113
+  PixelsPerInch = 96
   object ToolBar1: TToolBar
     Left = 0
     Top = 0
@@ -82,14 +82,7 @@ object FoLog: TFoLog
         Tag = 0
         Width = 150
       end>
-    Font.Color = clText
-    Font.Height = 13
-    Font.Name = 'adobe-helvetica'
-    Font.Pitch = fpVariable
-    Font.Style = []
-    Font.Weight = 0
     RowSelect = True
-    ParentFont = False
     ReadOnly = True
     ShowColumnSortIndicators = True
     Sorted = True
@@ -152,9 +145,9 @@ object FoLog: TFoLog
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFF424D7E000000000000003E0000002800000020000000
       10000000010001000000000040000000120B0000120B00000200000002000000
-      FFFFFF0000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000}
+      FFFFFF000000000000000000000000007FFC07E87FFC00047FDC9FF07FFC8FF4
+      7FFCFFF67FFC83EA7FFC7FF47FFC300A70FC17C0707C1810707C0BE05FFC0C08
+      7FFC07FC00000000}
   end
   object ActionList1: TActionList
     Left = 60

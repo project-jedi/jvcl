@@ -196,7 +196,7 @@ type
   PIntArray = ^TIntArray;
   TIntArray = array [0..MaxCustomExtents] of Integer;
 
-//=== TJvGridPopupListBox ====================================================
+//=== { TJvGridPopupListBox } ================================================
 
 type
   TJvGridPopupListBox = class;
@@ -249,7 +249,7 @@ begin
   TJvInplaceEdit(Owner).CloseUp((X >= 0) and (Y >= 0) and (X < Width) and (Y < Height));
 end;
 
-//=== TJvInplaceEdit =========================================================
+//=== { TJvInplaceEdit } =====================================================
 
 constructor TJvInplaceEdit.Create(Owner: TComponent);
 begin
@@ -567,7 +567,7 @@ end;
 
 
 
-//=== TJvDrawGrid ============================================================
+//=== { TJvDrawGrid } ========================================================
 
 constructor TJvDrawGrid.Create(AOwner: TComponent);
 begin

@@ -103,20 +103,13 @@ type
 
 implementation
 
-uses
-  {$IFDEF USEJVCL}
-  JvQResources,
-  {$ENDIF USEJVCL}
+uses 
+  JvQResources, 
   JvQMTThreading;
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsESemaphoreFailure = 'Semaphore failure (%d)';
-  RsESemaphoreAbandoned = 'Semaphore was abandoned';
-  RsEThreadAbandoned = 'Thread was abandoned';
-{$ENDIF USEJVCL}
 
-//=== TMTSemaphore ===========================================================
+
+//=== { TMTSemaphore } =======================================================
 
 constructor TMTSynchroObject.Create(Name: string);
 begin
@@ -241,7 +234,7 @@ begin
   end;
 end;
 
-//=== TMTSemaphore ===========================================================
+//=== { TMTSemaphore } =======================================================
 
 constructor TMTSemaphore.Create(InitialCount, MaximumCount: Integer;
   Name: string);
@@ -261,7 +254,7 @@ begin
   ReleaseSemaphore(FHandle, 1, nil);
 end;
 
-//=== TMTMutex ===============================================================
+//=== { TMTMutex } ===========================================================
 
 constructor TMTMutex.Create(Name: string = '');
 begin
@@ -278,7 +271,7 @@ begin
   Release;
 end;
 
-//=== TMTCriticalSection =====================================================
+//=== { TMTCriticalSection } =================================================
 
 procedure TMTCriticalSection.Release;
 begin
@@ -309,7 +302,7 @@ begin
 end;
 
 
-//=== TMTSimpleEvent =========================================================
+//=== { TMTSimpleEvent } =====================================================
 
 function TMTSimpleEvent.CreateHandle: THandle;
 begin

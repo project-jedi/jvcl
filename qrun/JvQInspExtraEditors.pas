@@ -181,7 +181,7 @@ type
     Alpha: Byte;
   end;
 
-//=== TJvInspectorAlignItem ==================================================
+//=== { TJvInspectorAlignItem } ==============================================
 
 constructor TJvInspectorAlignItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
@@ -383,7 +383,7 @@ begin
   TJvCustomInspectorData.ItemRegister.Delete(Self);
 end;
 
-//=== TJvInspectorColorItem ==================================================
+//=== { TJvInspectorColorItem } ==============================================
 
 constructor TJvInspectorColorItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
@@ -628,7 +628,7 @@ begin
   TJvCustomInspectorData.ItemRegister.Delete(Self);
 end;
 
-//=== TJvInspectorAnchorsItem ================================================
+//=== { TJvInspectorAnchorsItem } ============================================
 
 constructor TJvInspectorAnchorsItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
@@ -818,7 +818,7 @@ begin
   TJvCustomInspectorData.ItemRegister.Delete(Self);
 end;
 
-//=== TJvInspectorTImageIndexItem ============================================
+//=== { TJvInspectorTImageIndexItem } ========================================
 
 procedure TJvInspectorTImageIndexItem.PaintValue(const ImgNum: Integer; const ImgName: string;
   const ACanvas: TCanvas; const ARect: TRect);

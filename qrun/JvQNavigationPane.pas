@@ -740,6 +740,7 @@ type
     procedure SetHeaderVisible(const Value: Boolean);
     function IsColorsStored: Boolean; 
   protected
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure TextChanged; override;
@@ -1936,7 +1937,8 @@ end;
 constructor TJvNavIconButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ParentColor := false;
+//  ParentColor := false;
+  Color := clWindow;     // clx
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
   FColors := TJvNavPanelColors.Create;
@@ -2085,6 +2087,7 @@ begin
         end;
 
     end;
+
     if csDesigning in ComponentState then
     begin
       Canvas.Pen.Color := clBlack;
@@ -2092,6 +2095,7 @@ begin
       Canvas.Brush.Style := bsClear;
       Canvas.Rectangle(ClientRect);
     end;
+
   end;
 end;
 
@@ -2758,7 +2762,7 @@ begin
   FBackground := TJvNavPaneBackgroundImage.Create;
   FBackground.OnChange := DoBackgroundChange;
   ParentColor := False;
-  Color := clWindow;
+  Color := clWindow;    // clx: default = clBlack
   ControlStyle := ControlStyle + [csDisplayDragImage];
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
@@ -4006,7 +4010,7 @@ constructor TJvCustomNavPaneToolPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHeaderVisible := True;
-  ParentColor := False;
+  Color := clWindow;  
   FColors := TJvNavPanelColors.Create;
   FColors.OnChange := DoImagesChange;
   FBackground := TJvNavPaneBackgroundImage.Create;
@@ -4176,6 +4180,11 @@ begin
     if AComponent = DropDownMenu then
       DropDownMenu := nil;
   end;
+end;
+
+procedure TJvCustomNavPaneToolPanel.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  inherited Painting(Sender, EventRegion);
 end;
 
 procedure TJvCustomNavPaneToolPanel.Paint;
@@ -4616,6 +4625,7 @@ end;
 constructor TJvNavPanelToolButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  Color := clWindow;  
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoImagesChange;
   DrawPartialMenuFrame := False;

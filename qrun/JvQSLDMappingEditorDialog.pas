@@ -86,7 +86,7 @@ begin
   end;
 end;
 
-//=== TfrmSLDMappingEditorDialog =============================================
+//=== { TfrmSLDMappingEditorDialog } =========================================
 
 procedure TfrmSLDMappingEditorDialog.Loaded;
 begin

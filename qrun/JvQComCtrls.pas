@@ -41,29 +41,28 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
+//{$I windowsonly.inc}
 
 unit JvQComCtrls;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Contnrs, Types, QGraphics, QControls, QForms, QDialogs,
   Classes, // (ahuser) "Classes" after "Forms" (D5 warning)
-  Menus, ComCtrls, CommCtrl, StdActns, ImgList, Buttons,
-  JclBase,
-  JvQJVCLUtils, JvQComponent, JvQExControls, JvQExComCtrls;
-
+  QMenus, QComCtrls, QStdActns, QImgList, QButtons, QWindows,
+  JclBase, JvQJVCLUtils, JvQComponent, JvQExControls, JvQExComCtrls;
 const
   JvDefPageControlBorder = 4;
-  TVM_SETLINECOLOR = TV_FIRST + 40;
-  TVM_GETLINECOLOR = TV_FIRST + 41;
+//  TVM_SETLINECOLOR = TV_FIRST + 40;
+//  TVM_GETLINECOLOR = TV_FIRST + 41;
   {$IFDEF BCB6}
   {$EXTERNALSYM TVM_SETLINECOLOR}
   {$EXTERNALSYM TVM_GETLINECOLOR}
   {$ENDIF BCB6}
 
 type
+(*
   TJvIPAddress = class;
 
   TJvIPAddressMinMax = record
@@ -221,7 +220,7 @@ type
     property OnStartDock;
     property OnStartDrag;
   end;
-
+  *)
   // TJvHintSource is a hint enumeration type to describe how to display hints for
   // controls that have hint properties both for the main control as well as
   // for it's subitems (like a PageControl)
@@ -339,15 +338,17 @@ type
 
   TJvPageControl = class(TJvExPageControl)
   private
-    FClientBorderWidth: TBorderWidth;
+//    FClientBorderWidth: TBorderWidth;
     FHideAllTabs: Boolean;
     FHandleGlobalTab: Boolean;
     FHintSource: TJvHintSource;
     FReduceMemoryUse: Boolean;
     FTabPainter: TJvTabControlPainter;
-    procedure SetClientBorderWidth(const Value: TBorderWidth);
+//    procedure SetClientBorderWidth(const Value: TBorderWidth);
+    (*
     procedure TCMAdjustRect(var Msg: TMessage); message TCM_ADJUSTRECT;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
+    *)
     procedure SetHideAllTabs(const Value: Boolean);
     function FormKeyPreview: Boolean;
     procedure SetReduceMemoryUse(const Value: Boolean);
@@ -357,7 +358,7 @@ type
     function HintShow(var HintInfo: THintInfo): Boolean; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Loaded; override;
     procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
     function CanChange: Boolean; override;
@@ -369,7 +370,7 @@ type
     property TabPainter: TJvTabControlPainter read FTabPainter write SetTabPainter;
     property HintSource: TJvHintSource read FHintSource write FHintSource default hsDefault;
     property HandleGlobalTab: Boolean read FHandleGlobalTab write FHandleGlobalTab default False;
-    property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default JvDefPageControlBorder;
+//    property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default JvDefPageControlBorder;
     property ParentColor;
     property ReduceMemoryUse: Boolean read FReduceMemoryUse write SetReduceMemoryUse default False;
     property HideAllTabs: Boolean read FHideAllTabs write SetHideAllTabs default False;
@@ -383,7 +384,7 @@ type
   TJvTrackToolTipSide = (tsLeft, tsTop, tsRight, tsBottom);
   TJvTrackToolTipEvent = procedure(Sender: TObject; var ToolTipText: string) of object;
 
-  TJvTrackBar = class(TJvExTrackBar)
+  TJvTrackBar = class(TTrackBar)
   private
     FToolTips: Boolean;
     FToolTipSide: TJvTrackToolTipSide;
@@ -393,21 +394,25 @@ type
     FShowRange: Boolean;
     procedure SetToolTips(const Value: Boolean);
     procedure SetToolTipSide(const Value: TJvTrackToolTipSide);
+    (*
     procedure WMNotify(var Msg: TWMNotify); message WM_NOTIFY;
     procedure CNHScroll(var Msg: TWMHScroll); message CN_HSCROLL;
     procedure CNVScroll(var Msg: TWMVScroll); message CN_VSCROLL;
+    *)
     procedure SetShowRange(const Value: Boolean);
   protected
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    (*
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure InternalSetToolTipSide;
+    *)
   public
     constructor Create(AOwner: TComponent); override;
   published
     property ShowRange: Boolean read FShowRange write SetShowRange default True;
-    property ToolTips: Boolean read FToolTips write SetToolTips default False;
-    property ToolTipSide: TJvTrackToolTipSide read FToolTipSide write SetToolTipSide default tsLeft;
+//    property ToolTips: Boolean read FToolTips write SetToolTips default False;
+//    property ToolTipSide: TJvTrackToolTipSide read FToolTipSide write SetToolTipSide default tsLeft;
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -417,9 +422,9 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnToolTip: TJvTrackToolTipEvent read FOnToolTip write FOnToolTip;
+//    property OnToolTip: TJvTrackToolTipEvent read FOnToolTip write FOnToolTip;
   end;
-
+  (*
   TJvTreeNode = class(TTreeNode)
   private
     FBold: Boolean;
@@ -553,7 +558,7 @@ type
 
 
     property AutoDragScroll: Boolean read FAutoDragScroll write FAutoDragScroll default False;
-    
+
     property OnComparePage: TJvTreeViewComparePageEvent read FOnComparePage write FOnComparePage;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -562,6 +567,7 @@ type
     property OnEditCancelled: TNotifyEvent read FOnEditCancelled write FOnEditCancelled;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
   end;
+*)
 
 implementation
 
@@ -573,6 +579,7 @@ uses
 const
   TVIS_CHECKED = $2000;
 
+(*
 //=== TJvIPAddressRange ======================================================
 
 constructor TJvIPAddressRange.Create(Control: TWinControl);
@@ -1052,6 +1059,7 @@ begin
     Application.HandleException(Self);
   end;
 end;
+*)
 
 //=== TJvTabControlPainter ===================================================
 
@@ -1364,7 +1372,7 @@ begin
   inherited Create(AOwner);
   
   InputKeys := [ikTabs];
-  
+
 end;
 
 
@@ -1499,7 +1507,7 @@ begin
   inherited Loaded;
   HideAllTabs := FHideAllTabs;
 end;
-
+(*
 procedure TJvPageControl.SetClientBorderWidth(const Value: TBorderWidth);
 begin
   if FClientBorderWidth <> Value then
@@ -1508,7 +1516,7 @@ begin
     RecreateWnd;
   end;
 end;
-
+*)
 procedure TJvPageControl.SetHideAllTabs(const Value: Boolean);
 var
   I: Integer;
@@ -1528,6 +1536,7 @@ begin
   end;
 end;
 
+(*
 procedure TJvPageControl.TCMAdjustRect(var Msg: TMessage);
 var
   Offset: Integer;
@@ -1539,15 +1548,16 @@ begin
     InflateRect(PRect(Msg.LParam)^, Offset, Offset);
   end;
 end;
+*)
 
 procedure TJvPageControl.UpdateTabImages;
 begin
   inherited UpdateTabImages;
 end;
 
-procedure TJvPageControl.WMLButtonDown(var Msg: TWMLButtonDown);
+//procedure TJvPageControl.WMLButtonDown(var Msg: TWMLButtonDown);
+procedure TJvPageControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  hi: TTCHitTestInfo;
   I, TabIndex, RealIndex: Integer;
 begin
   if csDesigning in ComponentState then
@@ -1555,10 +1565,7 @@ begin
     inherited;
     Exit;
   end;
-  hi.pt.x := Msg.XPos;
-  hi.pt.y := Msg.YPos;
-  hi.flags := 0;
-  TabIndex := Perform(TCM_HITTEST, 0, Longint(@hi));
+  TabIndex := IndexOfTabAt(X, Y);
   I := 0;
   RealIndex := 0;
   while I <= TabIndex + RealIndex do
@@ -1567,10 +1574,9 @@ begin
     Inc(I);
   end;
   RealIndex := RealIndex + TabIndex;
-  if (RealIndex < PageCount) and (RealIndex >= 0) and ((hi.flags and TCHT_ONITEM) <> 0) then
+  if (RealIndex < PageCount) and (RealIndex >= 0) and (TabIndex <> -1) then
     if not Pages[RealIndex].Enabled then
     begin
-      Msg.Result := 0;
       Exit;
     end;
   inherited;
@@ -1663,6 +1669,7 @@ begin
   FShowRange := True;
 end;
 
+(*
 procedure TJvTrackBar.CNHScroll(var Msg: TWMHScroll);
 begin
   if Msg.ScrollCode <> SB_ENDSCROLL then
@@ -1702,6 +1709,7 @@ begin
   if HandleAllocated and (GetComCtlVersion >= ComCtlVersionIE3) then
     SendMessage(Handle, TBM_SETTIPSIDE, ToolTipSides[FToolTipSide], 0);
 end;
+*)
 
 procedure TJvTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
@@ -1716,7 +1724,7 @@ begin
   if FShowRange <> Value then
   begin
     FShowRange := Value;
-    RecreateWnd;
+    RecreateWidget;
   end;
 end;
 
@@ -1725,7 +1733,7 @@ begin
   if FToolTips <> Value then
   begin
     FToolTips := Value;
-    RecreateWnd;
+    RecreateWidget;
   end;
 end;
 
@@ -1734,10 +1742,11 @@ begin
   if FToolTipSide <> Value then
   begin
     FToolTipSide := Value;
-    InternalSetToolTipSide;
+//    InternalSetToolTipSide;
   end;
 end;
 
+(*
 procedure TJvTrackBar.WMNotify(var Msg: TWMNotify);
 var
   ToolTipTextLocal: string;
@@ -1787,8 +1796,6 @@ begin
 end;
 
 function TJvTreeNode.GetChecked: Boolean;
-var
-  Item: TTVItem;
 begin
   with Item do
   begin
@@ -1838,7 +1845,6 @@ begin
     TreeView_SetItem(Handle, Item);
   end;
 end;
-
 //=== TJvTreeView ============================================================
 
 const
@@ -1961,12 +1967,14 @@ begin
     ScrollDirection := 0;
 end;
 
+(*
 procedure TJvTreeView.Edit(const Item: TTVItem);
 begin
   inherited Edit(Item);
   if Item.pszText = nil then
     DoEditCancelled;
 end;
+
 
 function TJvTreeView.GetBold(Node: TTreeNode): Boolean;
 begin
@@ -2185,15 +2193,15 @@ begin
     FOnHScroll(Self);
 end;
 
-procedure TJvTreeView.WMLButtonDown(var Msg: TWMLButtonDown);
+//procedure TJvTreeView.WMLButtonDown(var Msg: TWMLButtonDown);
+procedure TJvTreeView.Click;
 var
   Node: TTreeNode;
 begin
   ResetPostOperationFlags;
-  with Msg do
-    if FMultiSelect and (htOnItem in GetHitTestInfoAt(XPos, YPos)) then
+    if FMultiSelect and (htOnItem in GetHitTestInfoAt(X, Y)) then
     begin
-      Node := GetNodeAt(XPos, YPos);
+      Node := GetNodeAt(X, Y);
       if Assigned(Node) and (ssCtrl in KeysToShiftState(Keys)) then
         SelectItem(Node, IsNodeSelected(Node))
       else
@@ -2559,6 +2567,7 @@ begin
     Change;
   end;
 end;
+*)
 
 procedure TJvTabDefaultPainter.SetGlyphLayout(const Value: TButtonLayout);
 begin

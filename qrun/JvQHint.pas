@@ -90,7 +90,7 @@ uses
   Math,
   JvQConsts, JvQResources;
 
-//=== TJvHint ================================================================
+//=== { TJvHint } ============================================================
 
 constructor TJvHint.Create(AOwner: TComponent);
 begin
@@ -213,7 +213,7 @@ begin
   HintWindow.Caption := '';
 end;
 
-//=== TJvHTHintWindow ========================================================
+//=== { TJvHTHintWindow } ====================================================
 
 constructor TJvHTHintWindow.Create(AOwner: TComponent);
 begin

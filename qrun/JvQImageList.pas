@@ -224,7 +224,7 @@ const
 
 
 
-//=== TJvImageListItem =======================================================
+//=== { TJvImageListItem } ===================================================
 
 constructor TJvImageListItem.Create(Collection: TCollection);
 begin
@@ -382,7 +382,7 @@ begin
     AImageList.ReplaceMasked(AIndex, FBitmap, FTransparentColor);
 end;
 
-//=== TJvImageListItems ======================================================
+//=== { TJvImageListItems } ==================================================
 
 constructor TJvImageListItems.Create(AOwner: TComponent);
 begin
@@ -510,7 +510,7 @@ begin
   end;
 end;
 
-//=== TJvImageList ===========================================================
+//=== { TJvImageList } =======================================================
 
 destructor TJvImageList.Destroy;
 begin

@@ -248,7 +248,7 @@ uses
   Math,
   JvQJCLUtils;
 
-//=== TJvCustomValidateEdit ==================================================
+//=== { TJvCustomValidateEdit } ==============================================
 
 constructor TJvCustomValidateEdit.Create(AOwner: TComponent);
 begin
@@ -1014,7 +1014,7 @@ begin
     SetAsFloat(FMinValue);
 end;
 
-//=== TJvValidateEditCriticalPoints ==========================================
+//=== { TJvValidateEditCriticalPoints } ======================================
 
 constructor TJvValidateEditCriticalPoints.Create;
 begin

@@ -176,7 +176,7 @@ const
   MinInterval = 100; { 0.1 sec }
   MaxTimerInterval: Longint = High(Longint);
 
-//=== TJvTimerEvent ==========================================================
+//=== { TJvTimerEvent } ======================================================
 
 constructor TJvTimerEvent.Create(ACollection: TCollection);
 begin
@@ -269,7 +269,7 @@ begin
     inherited Assign(Source);
 end;
 
-//=== TJvTimerList ===========================================================
+//=== { TJvTimerList } =======================================================
 
 constructor TJvTimerList.Create(AOwner: TComponent);
 begin

@@ -36,7 +36,7 @@ unit JvQCommonDialogD;
 interface
 
 uses
-  Windows, SetupApi, SysUtils, Classes,  
+  Windows, QSetUpApi, SysUtils, Classes,  
   Qt, QControls, 
   JvQTypes, JvQComponent;
 
@@ -95,7 +95,7 @@ begin
     Result := Result or IDF_WARNIFSKIP;
 end;
 
-//=== TJvCommonDialogD =======================================================
+//=== { TJvCommonDialogD } ===================================================
 
 constructor TJvCommonDialogD.Create(AOwner: TComponent);
 begin

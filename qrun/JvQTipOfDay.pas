@@ -272,7 +272,10 @@ begin
     end;
 
     if not CanShow then
+    begin
+      FRunning := False;
       Exit;
+    end;
 
     { toShowOnStartUp will be changed in ExecuteVS/ExecuteStandard if
       the user changes the checkbox }

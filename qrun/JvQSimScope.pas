@@ -136,7 +136,7 @@ type
 
 implementation
 
-//=== TJvScopeLine ===========================================================
+//=== { TJvScopeLine } =======================================================
 
 constructor TJvScopeLine.Create(Collection: TCollection);
 begin
@@ -165,7 +165,7 @@ begin
     Result := Name;
 end;
 
-//=== TJvScopeLines ==========================================================
+//=== { TJvScopeLines } ======================================================
 
 constructor TJvScopeLines.Create(AOwner: TPersistent);
 begin
@@ -214,7 +214,7 @@ begin
   inherited Items[Index] := Value;
 end;
 
-//=== TJvSimScope ============================================================
+//=== { TJvSimScope } ========================================================
 
 constructor TJvSimScope.Create(AOwner: TComponent);
 begin

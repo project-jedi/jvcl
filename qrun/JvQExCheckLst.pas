@@ -65,19 +65,17 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
-  private
-    FDoubleBuffered: Boolean;
-    function GetColor: TColor;
-    procedure SetColor(Value: TColor);
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
+      const KeyText: WideString): Boolean; override;	
+  private
+    FDoubleBuffered: Boolean;
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
+  protected
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
-    property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
     property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
@@ -127,7 +125,7 @@ implementation
 
 procedure TJvExCheckListBox.MouseEnter(Control: TControl);
 begin
-  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -137,7 +135,7 @@ end;
 
 procedure TJvExCheckListBox.MouseLeave(Control: TControl);
 begin
-  Control_MouseLeave(FMouseOver, FSavedHintColor);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -176,11 +174,6 @@ function TJvExCheckListBox.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
-procedure TJvExCheckListBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
-end;
-
 function TJvExCheckListBox.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -193,24 +186,14 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+procedure TJvExCheckListBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  WidgetControl_Painting(Self, Canvas, EventRegion);
+end;
 
 procedure TJvExCheckListBox.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
-end;
-
-function TJvExCheckListBox.GetColor: TColor;
-begin
-  Result := Brush.Color;
-end;
-
-procedure TJvExCheckListBox.SetColor(Value: TColor);
-begin
-  if Brush.Color <> Value then
-  begin
-    inherited Color := Value;
-    Brush.Color := Value;
-  end;
 end;
 
 function TJvExCheckListBox.GetDoubleBuffered: Boolean;
@@ -286,6 +269,7 @@ procedure TJvExCheckListBox.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
+
 
 
 end.

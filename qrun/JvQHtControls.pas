@@ -120,7 +120,7 @@ uses
 
 type
   THyperLinkClick = procedure (Sender: TObject; LinkName: string) of object;
-  
+
   TJvCustomHTListBox = class(TJvExCustomListBox)
   private
     FHyperLinkClick: THyperLinkClick;
@@ -286,11 +286,8 @@ type
     procedure SetAutoSize(Value: Boolean); override;
     procedure Paint; override;
     procedure Loaded; override; 
-    procedure TextChanged; override;  // handles autosize
+    procedure TextChanged; override;  // handles autosize 
     property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   end;
 
   TJvHTLabel = class(TJvCustomHTLabel)
@@ -299,7 +296,7 @@ type
     // property Alignment;  // Kaczkowski
     property AutoSize;
     property Caption;
-    property Color;
+    property Color; 
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -776,7 +773,7 @@ end;
 
 // Kaczkowski - end
 
-//=== TJvCustomHTListBox =====================================================
+//=== { TJvCustomHTListBox } =================================================
 
 constructor TJvCustomHTListBox.Create(AOwner: TComponent);
 begin
@@ -895,7 +892,7 @@ begin
   end;
 end;
 
-//=== TJvCustomHTComboBox ====================================================
+//=== { TJvCustomHTComboBox } ================================================
 
 constructor TJvCustomHTComboBox.Create(AOwner: TComponent);
 begin
@@ -914,16 +911,11 @@ function TJvCustomHTComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
 
 begin
-  if DroppedDown then
+  if odSelected in State then
   begin
-    if (odSelected in State) then
-    begin
-      Canvas.Brush.Color := FSelectedColor;
-      Canvas.Font.Color  := FSelectedTextColor;
-    end;
-  end
-  else
-    State := State - [odSelected];    
+    Canvas.Brush.Color := FSelectedColor;
+    Canvas.Font.Color  := FSelectedTextColor;
+  end;
   if not Enabled then
     Canvas.Font.Color := FDisabledTextColor;
 
@@ -972,19 +964,9 @@ begin
   end;
 end;
 
-//=== TJvCustomHTLabel =======================================================
+//=== { TJvCustomHTLabel } ===================================================
 
 
-
-constructor TJvCustomHTLabel.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-end;
-
-destructor TJvCustomHTLabel.Destroy;
-begin
-  inherited Destroy;
-end;
 
 procedure TJvCustomHTLabel.TextChanged;
 begin
@@ -1034,7 +1016,7 @@ begin
   if not (csReading in ComponentState) and AutoSize then
   begin 
     AdjustSize; 
-    Rect := ClientRect;
+    Rect := ClientRect;  
     Canvas.Font.Assign(Font);
     Rect.Bottom := ItemHTHeight(Canvas, Caption);
     MaxWidth := ItemHTWidth(Canvas, Bounds(0, 0, 0, 0), [], Caption) + 2; 
