@@ -32,7 +32,8 @@ PROJECTS = AppDdeCmdExample.exe ArrowButtonDemo.exe BmpAnimDemo.exe \
   RAEditorTest.exe RAHLEdPropDlgTest.exe ColorHintsTest.exe JvInterpreterTest.exe \
   JvInterpreterEndUser.exe MDIapp.exe RANotepad.exe RegEditDemo.exe \
   RunDLL32Demo.exe DBEXPL32.exe Rxdemo.exe RxGIFAnm.exe ScrollWinDemo.exe \
-  TimeLineDemo.exe TipsDemo.exe SimpleTLTest1.exe TransparentButtonDemo.exe
+  TimeLineDemo.exe TipsDemo.exe SimpleTLTest1.exe TransparentButtonDemo.exe \
+  JvLogFileDemo.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -311,4 +312,6 @@ TransparentButtonDemo.exe: TransBtn\TransparentButtonDemo.dpr
 SimpleHIDWrite.exe: HID\ReadWriteDemo\SimpleHIDWrite.dpr
   $(DCC)
 
-
+JvLogFileDemo.exe: JvLogFile\JvLogFileDemo.dpr
+  $(DCC)
+  

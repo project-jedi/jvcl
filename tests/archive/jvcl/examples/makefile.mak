@@ -115,6 +115,7 @@ TimeLineDemo.exe \
 TipsDemo.exe \
 SimpleTLTest1.exe \
 TransparentButtonDemo.exe \
+JvLogFileDemo.exe \
 #---------------------------------------------------------------------------------------------------
 
 AppDdeCmdExample.exe: AppDdeCmdExample\AppDdeCmdExample.dpr
@@ -571,3 +572,9 @@ TransparentButtonDemo.exe: TransBtn\TransparentButtonDemo.dpr
   cd TransBtn
   $(DCC) $&.dpr
   cd ..
+
+JvLogFileDemo.exe: JvLogFile\JvLogFileDemo.dpr
+  cd JvLogFile
+  $(DCC) $&.dpr
+  cd ..
+
