@@ -61,7 +61,9 @@ uses
   {$ENDIF USE_JV_GIF}
   JvSlider, JvAnimatedImage, JvSpecialImage,
   JvPictureEditors, JvAnimatedEditor, JvPictureEditForm,
-  JvIconListForm;
+  JvIconListForm,
+  JvFullColorDialogs, JvFullColorCtrls, JvFullColorEditors,
+  JvFullColorSpacesEditors, JvFullColorSpaces;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvMMReg.dcr}
@@ -97,11 +99,34 @@ begin
   RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
   RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
   RegisterComponentEditor(TImage, TJvGraphicsEditor);
+  RegisterPropertyEditor(TypeInfo(TColor), nil, '', TJvFullColorProperty);
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
   {$IFDEF USE_JV_GIF}
   RegisterComponentEditor(TJvGIFAnimator, TJvGraphicsEditor);
   {$ENDIF USE_JV_GIF}
+
+  // JvFullColor components and editors
+  RegisterComponents(RsPaletteBarPanel, [TJvFullColorPanel, TJvFullColorTrackBar, TJvFullColorGroup]);
+  RegisterComponents(RsPaletteLabel, [TJvFullColorLabel]);
+  RegisterComponents(RsPaletteListComboTree, [TJvFullColorSpaceCombo, TJvFullColorAxisCombo]);
+  RegisterComponents(RsPaletteDialog, [TJvFullColorDialog, TJvFullColorCircleDialog]);
+  RegisterComponents(RsPaletteVisual, [TJvFullColorCircle]);
+
+  RegisterPropertyEditor(TypeInfo(TJvFullColor), nil, '', TJvFullColorProperty);
+  RegisterPropertyEditor(TypeInfo(TJvFullColorList), nil, '', TJvFullColorListEditor);
+  {$IFDEF COMPILER6_UP}
+  RegisterSelectionEditor(TJvFullColorDialog, TJvFullColorDialogSelection);
+  RegisterSelectionEditor(TJvFullColorCircleDialog, TJvFullColorCircleDialogSelection);
+  RegisterSelectionEditor(TJvFullColorPanel, TJvFullColorSelection);
+  RegisterSelectionEditor(TJvFullColorTrackBar, TJvFullColorSelection);
+  RegisterSelectionEditor(TJvFullColorCircle, TJvFullColorSelection);
+  RegisterSelectionEditor(TJvFullColorLabel, TJvFullColorSelection);
+  RegisterSelectionEditor(TJvFullColorSpaceCombo, TJvFullColorSelection);
+  RegisterSelectionEditor(TJvFullColorAxisCombo, TJvFullColorSelection);
+  {$ENDIF COMPILER6_UP}
+  RegisterPropertyEditor(TypeInfo(TJvFullColorSpaceID), nil, '', TJvColorIDEditor);
+
 end;
 
 end.

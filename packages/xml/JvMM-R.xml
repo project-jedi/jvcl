@@ -12,7 +12,7 @@
     <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvCmp-R" Targets="D5,D5s,D6,D6p" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="D5,D5s,D6,D6p" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="C5,C5s,D5,D5s,D6,D6p" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
     <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
@@ -21,8 +21,11 @@
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
+    <Package Name="vclx50" Targets="C5,C5s" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
+    <Package Name="vclsmp" Targets="D6,D6p,C6,C6p" Condition=""/>
+    <Package Name="vclsmp50" Targets="C5,C5s" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAVICapture.pas" Targets="allbutclx" Formname="" Condition=""/>
@@ -56,6 +59,12 @@
     <File Name="..\..\run\JvAnimate.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAnimatedImage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorTrackbar.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFullColorSpaces.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFullColorCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFullColorDialogs.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFullColorRotate.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFullColorForm.pas" Targets="all" Formname="JvFullColorFrm" Condition=""/>
+    <File Name="..\..\run\JvFullColorCircleForm.pas" Targets="all" Formname="JvFullColorCircleFrm" Condition=""/>
     <File Name="..\..\common\VFW.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>
