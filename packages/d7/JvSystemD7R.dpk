@@ -27,10 +27,12 @@ package JvSystemD7R;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCoreD7R,
-  DJCL70,
+  vcljpg,
   vcl,
-  rtl;
+  rtl,
+  vclx,
+  JvCoreD7R,
+  DJCL70;
 
 contains
   JvClipboardMonitor in '..\..\run\JvClipboardMonitor.pas',
@@ -64,7 +66,6 @@ contains
   JvFormPlacement in '..\..\run\JvFormPlacement.pas',
   JvPropsStorage in '..\..\run\JvPropsStorage.pas',
   JvTimer in '..\..\run\JvTimer.pas',
-  JvCaret in '..\..\run\JvCaret.pas',
   JvSearchFiles in '..\..\run\JvSearchFiles.pas',
   JvMRUManager in '..\..\run\JvMRUManager.pas',
   JvDirectories in '..\..\run\JvDirectories.pas',

@@ -27,7 +27,10 @@ package JvUIBD6R;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl;
+  rtl,
+  vcl,
+  vclx,
+  JvCoreD6R;
 
 contains
   JvUIBase in '..\..\run\JvUIBase.pas',

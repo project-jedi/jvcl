@@ -27,16 +27,14 @@ package JvSystemD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvSystemD7R,
   designide,
   dclstd,
-  vcl,
   rtl,
-  DJCL70,
-  JvCoreD7R,
+  vcljpg,
   JvCoreD7D,
-  vclactnband,
-  vclx;
+  JvCoreD7R,
+  DJCL70,
+  JvSystemD7R;
 
 contains
   JvSystemReg in '..\..\design\JvSystemReg.pas',

@@ -28,9 +28,11 @@ package JvBDED7R;
 
 requires
   JvCoreD7R,
-  JvDBD7R,
+  bdertl,
+  JvSystemD7R,
+  JvStdCtrlsD7R,
   JvDlgsD7R,
-  bdertl;
+  JvDBD7R;
 
 contains
   JvBdeUtils in '..\..\run\JvBdeUtils.pas',
